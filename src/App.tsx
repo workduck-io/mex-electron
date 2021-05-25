@@ -7,6 +7,9 @@ import Main from './Layout/Main';
 import normalize from './Styled/normalize';
 import { darkTheme, lightTheme } from './Styled/themes';
 import Dashboard from './Views/Dashboard';
+import Integrations from './Views/Integrations';
+import Snippets from './Views/Snippets';
+import Tasks from './Views/Tasks';
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}; // NormalizeCSS normalization
@@ -28,6 +31,10 @@ const GlobalStyle = createGlobalStyle`
       text-decoration-color: ${({ theme }) => theme.colors.primary};
     }
   }
+
+  #root {
+    width: 100%;
+  }
 `;
 
 function App() {
@@ -44,7 +51,10 @@ function App() {
               path="/editor"
               component={() => <Editor content={SampleMarkdown} />}
             />
-            <Route path="/" component={() => <Dashboard files={23} />} />
+            <Route path="/tasks" component={Tasks} />
+            <Route path="/integrations" component={Integrations} />
+            <Route path="/snippets" component={Snippets} />
+            <Route path="/" component={Dashboard} />
           </Switch>
         </Main>
       </ThemeProvider>
