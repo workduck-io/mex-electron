@@ -52,13 +52,6 @@ const installExtensions = async () => {
 };
 
 const createWindow = async () => {
-  if (
-    process.env.NODE_ENV === 'development' ||
-    process.env.DEBUG_PROD === 'true'
-  ) {
-    await installExtensions();
-  }
-
   const RESOURCES_PATH = app.isPackaged
     ? path.join(process.resourcesPath, 'assets')
     : path.join(__dirname, '../assets');
@@ -77,6 +70,18 @@ const createWindow = async () => {
     },
   });
 
+  if (
+    process.env.NODE_ENV === 'development' ||
+    process.env.DEBUG_PROD === 'true'
+  ) {
+    mainWindow.webContents.on('did-frame-finish-load', async () => {
+      if (process.env.NODE_ENV === 'development') {
+        await installExtensions();
+      }
+    });
+
+    // await installExtensions();
+  }
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
   // @TODO: Use 'ready-to-show' event
