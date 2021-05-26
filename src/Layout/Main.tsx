@@ -10,7 +10,8 @@ const AppWrapper = styled.div`
 const Content = styled.div`
   flex-grow: 1;
   margin-left: ${({ theme }) => theme.width.nav};
-  width: 100%;
+  max-width: calc(100% - ${({ theme }) => theme.width.nav});
+  overflow-x: hidden;
 `;
 
 export type MainProps = { children: React.ReactNode };
