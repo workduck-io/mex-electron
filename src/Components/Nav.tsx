@@ -22,11 +22,19 @@ const StyledDiv = styled('div')`
 `;
 
 const Link = styled(NavLink)`
-  margin-top: ${({ theme }) => theme.spacing.small};
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: ${({ theme }) => theme.colors.text.secondary};
   padding: ${({ theme }) => theme.spacing.small};
+
+  margin-top: ${({ theme }) => theme.spacing.medium};
   &:first-child {
     margin-top: 0;
+  }
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.background.card};
   }
 
   &.active {
