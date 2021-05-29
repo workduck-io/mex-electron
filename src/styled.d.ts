@@ -1,7 +1,9 @@
 // import original module declarations
 import 'styled-components';
 
-interface BorderStyle {
+type Pixels = number; // Pixels in integer
+
+interface LayoutStyle {
   spacing: {
     large: string;
     medium: string;
@@ -13,13 +15,15 @@ interface BorderStyle {
     small: string;
   };
   width: {
-    nav: string;
+    nav: Pixels;
+    sidebar: Pixels;
   };
+  indent: { sidebar: Pixels };
 }
 
 // and extend them!
 declare module 'styled-components' {
-  export interface DefaultTheme extends BorderStyle {
+  export interface DefaultTheme extends LayoutStyle {
     colors: {
       primary: string;
       secondary: string;
@@ -33,6 +37,11 @@ declare module 'styled-components' {
         green: string;
         yellow: string;
         red: string;
+      };
+      gray: {
+        light: string;
+        gray: string;
+        dark: string;
       };
       border: {
         divider: string;

@@ -1,7 +1,7 @@
 import { DefaultTheme } from 'styled-components';
-import { BorderStyle } from '../styled';
+import { LayoutStyle } from '../styled';
 
-const borderStyles: BorderStyle = {
+const LayoutTheme: LayoutStyle = {
   spacing: {
     large: '2rem',
     medium: '1rem',
@@ -13,14 +13,18 @@ const borderStyles: BorderStyle = {
     small: '0.5rem',
   },
   width: {
-    nav: '48px',
+    nav: 48,
+    sidebar: 350,
+  },
+  indent: {
+    sidebar: 8,
   },
 };
 
 export const darkTheme: DefaultTheme = {
-  ...borderStyles,
+  ...LayoutTheme,
   colors: {
-    primary: '#0F36C1',
+    primary: '#4284ff',
     secondary: '#4dd0e1',
     background: {
       app: '#040015',
@@ -32,6 +36,11 @@ export const darkTheme: DefaultTheme = {
       green: '#9fe732',
       yellow: '#FFCB6B',
       red: '#ff4f58',
+    },
+    gray: {
+      light: '#7D90C3',
+      gray: '#5f6d92',
+      dark: '#4b5570',
     },
     border: {
       divider: '#ffffff10',
@@ -51,7 +60,7 @@ export const darkTheme: DefaultTheme = {
 
 // TODO: Add light theme colors
 export const lightTheme: DefaultTheme = {
-  ...borderStyles,
+  ...LayoutTheme,
 
   colors: {
     primary: '#5b94ff',
@@ -66,6 +75,11 @@ export const lightTheme: DefaultTheme = {
       green: '#9fe732',
       yellow: '#FFCB6B',
       red: '#ff4f58',
+    },
+    gray: {
+      light: '#7D90C3',
+      gray: '#7D90C3',
+      dark: '#7D90C3',
     },
     border: {
       divider: '#ffffff10',
