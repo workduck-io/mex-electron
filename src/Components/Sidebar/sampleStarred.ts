@@ -1,4 +1,4 @@
-import { BlockTree } from '../../Types/tree';
+import { BlockTree } from './Tree';
 
 const starred: BlockTree = {
   title: 'Starred',

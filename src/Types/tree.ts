@@ -1,9 +1,10 @@
 import MexIcons from '../Icons';
 
-export interface BlockTree {
+export default interface TreeNode {
   title: string;
   id: string;
+  key: string;
   path: string;
-  icon?: keyof typeof MexIcons;
-  children: BlockTree[];
+  mex_icon: keyof typeof MexIcons | undefined;
+  children: TreeNode[];
 }

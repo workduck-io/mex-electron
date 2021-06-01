@@ -10,10 +10,17 @@ import {
   TreeNode,
 } from '../../Styled/Sidebar';
 import { darkTheme } from '../../Styled/themes';
-import { BlockTree } from '../../Types/tree';
 /* 
 npm install --save-dev @iconify/react @iconify-icons/ri
 */
+
+export interface BlockTree {
+  title: string;
+  id: string;
+  path: string;
+  icon?: keyof typeof MexIcons;
+  children: BlockTree[];
+}
 
 type TreeProps = {
   tree: BlockTree;
@@ -22,6 +29,14 @@ type TreeProps = {
   accent?: string;
 };
 
+/* 
+  <Tree
+    tree={tree}
+    id="sidebar_tree"
+    accent={themeCtx.colors.secondary}
+    level={0}
+  /> 
+*/
 const Tree = ({ tree, id, level, accent }: TreeProps) => {
   const shouldCollapse = tree.children.length !== 0;
   const [collapsed, setCollapsed] = useState(
@@ -43,9 +58,7 @@ const Tree = ({ tree, id, level, accent }: TreeProps) => {
   const defaultIcon = MexIcons.defaultFile;
 
   const toggleCollapsed = () => {
-    if (shouldCollapse) {
-      setCollapsed(() => !collapsed);
-    }
+    if (shouldCollapse) setCollapsed(() => !collapsed);
   };
 
   return (

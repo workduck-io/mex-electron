@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import SideBar from '../Components/Sidebar';
-import starred from '../Components/Sidebar/sampleStarred';
-import sampleTree from '../Components/Sidebar/sampleTree';
+import sampleRCTree from '../Components/Sidebar/RCTree/sampleRCTreeData';
 import { PixelToCSS } from '../Styled/helpers';
 
 const AppWrapper = styled.div`
@@ -22,7 +21,7 @@ export type MainProps = { children: React.ReactNode };
 const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   return (
     <AppWrapper>
-      <SideBar tree={sampleTree} starred={starred} />
+      <SideBar tree={sampleRCTree} starred={sampleRCTree} />
       <Content>{children}</Content>
     </AppWrapper>
   );
