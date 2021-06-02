@@ -1,8 +1,8 @@
 import circleOutline from '@iconify-icons/codicon/circle-outline';
 import React from 'react';
-import MexIcons from '../../../Icons';
-import { SIcon } from '../../../Styled/Sidebar';
-import TreeNode from '../../../Types/tree';
+import MexIcons from '../../Icons';
+import { SIcon } from '../../Styled/Sidebar';
+import TreeNode from '../../Types/tree';
 
 interface RCIconProps {
   data: TreeNode;

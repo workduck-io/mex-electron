@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import SideBar from '../Components/Sidebar';
-import sampleRCTree from '../Components/Sidebar/RCTree/sampleRCTreeData';
+import sampleRCTree from '../Components/Sidebar/sampleRCTreeData';
 import { PixelToCSS } from '../Styled/helpers';
 
 const AppWrapper = styled.div`

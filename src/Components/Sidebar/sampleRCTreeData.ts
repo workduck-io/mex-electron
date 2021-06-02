@@ -1,4 +1,4 @@
-import TreeNode from '../../../Types/tree';
+import TreeNode from '../../Types/tree';
 
 const sampleRCTree: TreeNode[] = [
   {

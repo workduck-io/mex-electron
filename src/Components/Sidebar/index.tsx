@@ -3,7 +3,7 @@ import links from '../../Conf/links';
 import { SidebarContent, SidebarDiv } from '../../Styled/Sidebar';
 import TreeNode from '../../Types/tree';
 import Nav from './Nav';
-import RCTree from './RCTree/RcTree';
+import RCTree from './RcTree';
 
 export type SideBarProps = { tree: TreeNode[]; starred: TreeNode[] };
 
