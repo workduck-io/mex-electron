@@ -13,6 +13,7 @@ export const SRCTree = styled.div`
 
   .rc-tree {
     margin: 0;
+    border: 1px solid transparent;
     .rc-tree-treenode {
       margin: 0;
       padding: 0;
@@ -21,7 +22,7 @@ export const SRCTree = styled.div`
       list-style: none;
       outline: 0;
       .draggable {
-        color: ${({ theme }) => theme.colors.text.secondary};
+        color: #333;
         -moz-user-select: none;
         -khtml-user-select: none;
         -webkit-user-select: none;
@@ -37,23 +38,23 @@ export const SRCTree = styled.div`
             right: 0;
             top: 0;
             bottom: 0;
-            box-shadow: inset 0 0 0 2px ${({ theme }) => theme.colors.primary};
+            box-shadow: inset 0 0 0 2px red;
             content: '';
           }
         }
         & ~ .rc-tree-treenode {
-          border-left: 2px solid ${({ theme }) => theme.colors.primary};
+          border-left: 2px solid chocolate;
         }
       }
       &.drop-target {
-        background-color: ${({ theme }) => theme.colors.background.card};
+        background-color: yellowgreen;
         & ~ .rc-tree-treenode {
           border-left: none;
         }
       }
       &.filter-node {
         & > .rc-tree-node-content-wrapper {
-          color: ${({ theme }) => theme.colors.text.primary} !important;
+          color: #a60000 !important;
           font-weight: bold !important;
         }
       }
@@ -66,28 +67,18 @@ export const SRCTree = styled.div`
         display: inline-block;
         height: 24px;
         margin: 0;
-        padding: 4px 8px 4px 4px;
+        padding: 0;
         text-decoration: none;
         vertical-align: top;
         cursor: pointer;
-        border-radius: 8px;
-        transition: 0.2s ease-in-out;
-
-        &:hover {
-          background-color: ${({ theme }) => theme.colors.primary};
-          .rc-tree-title {
-            color: ${({ theme }) => theme.colors.text.primary};
-          }
-          transition: 0s ease;
-        }
       }
       span {
         &.rc-tree-icon_loading {
           margin-right: 2px;
           vertical-align: top;
-          background: ${({ theme }) => theme.colors.secondary};
+          background: url('data:image/gif;');
         }
-        /* &.rc-tree-switcher {
+        &.rc-tree-switcher {
           &.rc-tree-switcher-noop {
             cursor: auto;
           }
@@ -97,7 +88,7 @@ export const SRCTree = styled.div`
           &.rc-tree-switcher_close {
             background-position: -75px -56px;
           }
-        } */
+        }
         &.rc-tree-checkbox {
           width: 13px;
           height: 13px;
@@ -151,7 +142,7 @@ export const SRCTree = styled.div`
       .rc-tree-treenode {
         &:not(:last-child) {
           & > ul {
-            background: ${({ theme }) => theme.colors.primary};
+            background: url('data:image/gif;');
           }
           & > .rc-tree-switcher-noop {
             background-position: -56px -18px;
@@ -170,30 +161,17 @@ export const SRCTree = styled.div`
       border-color: cyan;
     }
   }
-  .rc-tree .rc-tree-treenode span.rc-tree-switcher {
-    display: inline-block;
-    width: 20px;
-    height: 24px;
-    margin-right: 2px;
-    padding-top: 2px;
-    line-height: 16px;
-    /* vertical-align: 0.1em; */
-    color: ${({ theme }) => theme.colors.primary};
-    background-repeat: no-repeat;
-    background-attachment: scroll;
-    border: 0 none;
-    outline: none;
-    cursor: pointer;
-  }
-  .rc-tree .rc-tree-treenode span.rc-tree-checkbox {
+  .rc-tree .rc-tree-treenode span.rc-tree-switcher,
+  .rc-tree .rc-tree-treenode span.rc-tree-checkbox,
+  .rc-tree .rc-tree-treenode span.rc-tree-iconEle {
     display: inline-block;
     width: 16px;
     height: 16px;
     margin-right: 2px;
     line-height: 16px;
     vertical-align: -0.125em;
-    background-color: ${({ theme }) => theme.colors.secondary};
-    /* background-image: url('data:image/png'); */
+    background-color: transparent;
+    background-image: url('data:image/png;');
     background-repeat: no-repeat;
     background-attachment: scroll;
     border: 0 none;
@@ -214,19 +192,16 @@ export const SRCTree = styled.div`
   .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
   .rc-tree-treenode-disabled > a,
   .rc-tree-treenode-disabled > a span {
-    color: ${({ theme }) => theme.colors.primary};
+    color: #767676;
     cursor: not-allowed;
   }
   .rc-tree-treenode-active {
     background: rgba(0, 0, 0, 0.1);
   }
   .rc-tree-node-selected {
-    background-color: ${({ theme }) => rgba(theme.colors.primary, 0.4)};
-    /* box-shadow: 0 0 0 1px #ffb951; */
-    /* opacity: 0.8; */
-    .rc-tree-title {
-      color: ${({ theme }) => theme.colors.text.primary};
-    }
+    background-color: #ffe6b0;
+    box-shadow: 0 0 0 1px #ffb951;
+    opacity: 0.8;
   }
   .rc-tree-icon__open {
     margin-right: 2px;

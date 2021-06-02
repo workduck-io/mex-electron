@@ -30,7 +30,7 @@ const RCIcon = ({ data, expanded }: RCIconProps) => {
     ? getIcon(collapsed, MexIcons[customIcon])
     : collapsedIcon;
 
-  return <SIcon icon={icon} width="20px" height="20px" />;
+  return <SIcon icon={icon} width="16px" height="16px" />;
 };
 
 export default RCIcon;
