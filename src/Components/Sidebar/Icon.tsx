@@ -14,7 +14,7 @@ const getIcon = (collapsed: boolean, array: [any, any]): any => {
   return collapsed ? array[0] : array[1];
 };
 
-const RCIcon = ({ data, expanded }: RCIconProps) => {
+const TreeExpandIcon = ({ data, expanded }: RCIconProps) => {
   const canCollapse = data.children.length > 0;
   const collapsed = !expanded;
   const customIcon = data.mex_icon;
@@ -33,4 +33,4 @@ const RCIcon = ({ data, expanded }: RCIconProps) => {
   return <SIcon icon={icon} width="16px" height="16px" />;
 };
 
-export default RCIcon;
+export default TreeExpandIcon;

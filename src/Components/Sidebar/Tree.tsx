@@ -1,13 +1,13 @@
 /* eslint-disable no-console, react/no-access-state-in-setstate */
 /* eslint-disable react/no-danger, no-param-reassign */
-import Tree from 'rc-tree';
+import RCTree from 'rc-tree';
 /* eslint-enable react/no-danger, no-param-reassign */
 /* eslint-enable no-console, react/no-access-state-in-setstate */
 // eslint-disable no-explicit-any
 
 import React from 'react';
-import RCIcon from './RCIcon';
-import { SRCTree } from './styles';
+import { StyledTree } from '../../Styled/Sidebar';
+import TreeExpandIcon from './Icon';
 
 const motion = {
   motionName: 'node-motion',
@@ -22,7 +22,8 @@ const motion = {
   onLeaveActive: () => ({ height: 0 }),
 };
 
-class RCTree extends React.Component<RCTreeProps> {
+/* Renders a draggable tree with custom collapse-able icon */
+class Tree extends React.Component<RCTreeProps> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -31,6 +32,7 @@ class RCTree extends React.Component<RCTreeProps> {
       expandedKeys: ['lib'],
     };
 
+    // These three functions were from the react-component/tree example
     this.onDragEnter = this.onDragEnter.bind(this);
     this.onDrop = this.onDrop.bind(this);
     this.onExpand = this.onExpand.bind(this);
@@ -124,8 +126,8 @@ class RCTree extends React.Component<RCTreeProps> {
     const { expandedKeys, gData, autoExpandParent }: any = this.state;
 
     return (
-      <SRCTree className="draggable-demo">
-        <Tree
+      <StyledTree className="draggable-demo">
+        <RCTree
           expandedKeys={expandedKeys}
           onExpand={this.onExpand}
           autoExpandParent={autoExpandParent}
@@ -135,10 +137,10 @@ class RCTree extends React.Component<RCTreeProps> {
           onDrop={this.onDrop}
           treeData={gData}
           motion={motion}
-          switcherIcon={RCIcon}
+          switcherIcon={TreeExpandIcon}
           showIcon={false}
         />
-      </SRCTree>
+      </StyledTree>
     );
   }
 }
@@ -147,4 +149,4 @@ interface RCTreeProps {
   tree: any;
 }
 
-export default RCTree;
+export default Tree;
