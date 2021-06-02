@@ -38,8 +38,8 @@ export const darkTheme: DefaultTheme = {
       red: '#ff4f58',
     },
     gray: {
-      light: '#7D90C3',
-      gray: '#5f6d92',
+      light: '#5e6c92',
+      gray: '#2e364e',
       dark: '#1c2744',
     },
     border: {

@@ -4,7 +4,12 @@ import styled from 'styled-components';
 import React from 'react';
 import { PixelToCSS, ThinScrollbar } from './helpers';
 
-export const Sicon = styled(Icon)``;
+export const Sicon = styled(Icon)`
+  height: 26px;
+  padding-left: 7px;
+  border-left: 1px solid ${({ theme }) => theme.colors.gray.gray};
+  margin-left: -8px;
+`;
 // Disabled as IconifyIcon type doesn't work
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 export const SIcon = (props: any) => {
@@ -49,7 +54,7 @@ export const SidebarSection = styled.div`
     color: ${({ theme }) => theme.colors.palette.yellow};
   }
   &.tree:hover {
-    color: ${({ theme }) => theme.colors.palette.green};
+    color: ${({ theme }) => theme.colors.secondary};
   }
 `;
 
@@ -75,9 +80,11 @@ export const StyledTree = styled.div`
       line-height: 24px;
       white-space: nowrap;
       list-style: none;
+      height: 26px;
       outline: 0;
+
       .draggable {
-        color: ${({ theme }) => theme.colors.gray.gray};
+        color: ${({ theme }) => theme.colors.text.secondary};
         -moz-user-select: none;
         -khtml-user-select: none;
         -webkit-user-select: none;
@@ -153,7 +160,7 @@ export const StyledTree = styled.div`
           /* background: url('data:image/gif;'); */
         }
         &.rc-tree-switcher {
-          color: ${({ theme }) => theme.colors.text.secondary};
+          color: ${({ theme }) => theme.colors.gray.light};
           &.rc-tree-switcher-noop {
             cursor: auto;
           }
