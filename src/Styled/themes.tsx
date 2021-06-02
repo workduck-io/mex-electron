@@ -1,7 +1,7 @@
 import { DefaultTheme } from 'styled-components';
-import { BorderStyle } from '../styled';
+import { LayoutStyle } from '../styled';
 
-const borderStyles: BorderStyle = {
+const LayoutTheme: LayoutStyle = {
   spacing: {
     large: '2rem',
     medium: '1rem',
@@ -13,31 +13,40 @@ const borderStyles: BorderStyle = {
     small: '0.5rem',
   },
   width: {
-    nav: '48px',
+    nav: 48,
+    sidebar: 350,
+  },
+  indent: {
+    sidebar: 8,
   },
 };
 
 export const darkTheme: DefaultTheme = {
-  ...borderStyles,
+  ...LayoutTheme,
   colors: {
-    primary: '#0F36C1',
+    primary: '#4284ff',
     secondary: '#4dd0e1',
     background: {
       app: '#040015',
-      card: '#0D1A46',
-      surface: '#00071E',
-      sidebar: '#000C36',
+      surface: '#0C1121',
+      card: '#1F2947',
+      sidebar: '#091744',
     },
     palette: {
       green: '#9fe732',
       yellow: '#FFCB6B',
       red: '#ff4f58',
     },
+    gray: {
+      light: '#5e6c92',
+      gray: '#2e364e',
+      dark: '#1c2744',
+    },
     border: {
       divider: '#ffffff10',
     },
     fade: {
-      primary: '#4e8cff',
+      primary: '#1c65ec',
       secondary: '#4dd0e1',
       background: '#030303',
     },
@@ -45,13 +54,14 @@ export const darkTheme: DefaultTheme = {
       primary: '#e2e4ee',
       secondary: '#7D90C3',
       disabled: '#5d5d6d',
+      accent: '#82aeff',
     },
   },
 };
 
 // TODO: Add light theme colors
 export const lightTheme: DefaultTheme = {
-  ...borderStyles,
+  ...LayoutTheme,
 
   colors: {
     primary: '#5b94ff',
@@ -67,6 +77,11 @@ export const lightTheme: DefaultTheme = {
       yellow: '#FFCB6B',
       red: '#ff4f58',
     },
+    gray: {
+      light: '#7D90C3',
+      gray: '#7D90C3',
+      dark: '#7D90C3',
+    },
     border: {
       divider: '#ffffff10',
     },
@@ -79,6 +94,7 @@ export const lightTheme: DefaultTheme = {
       primary: '#e2e4ee',
       secondary: '#7D90C3',
       disabled: '#5d5d6d',
+      accent: '#5b94ff',
     },
   },
 };

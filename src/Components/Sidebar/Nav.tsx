@@ -54,7 +54,6 @@ export type NavProps = {
 };
 
 const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
-  console.log({ links });
   return (
     <StyledDiv>
       {links.map((l) => (
