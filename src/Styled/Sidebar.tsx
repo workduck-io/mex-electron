@@ -27,7 +27,35 @@ export const SidebarContent = styled.div`
   overflow-x: hidden;
   padding: ${({ theme }) => theme.spacing.medium};
 `;
+export const SectionHeading = styled.div`
+  margin: ${({ theme }) => theme.spacing.medium} 0
+    ${({ theme }) => theme.spacing.small};
+  display: flex;
+  align-items: center;
+  h2 {
+    margin: 0;
+    font-weight: normal;
+    font-size: 1.2rem;
+  }
+  svg {
+    margin-right: ${({ theme }) => theme.spacing.tiny};
+  }
+`;
 
+export const SidebarSection = styled.div`
+  color: ${({ theme }) => theme.colors.text.secondary};
+
+  &.starred:hover {
+    color: ${({ theme }) => theme.colors.palette.yellow};
+  }
+  &.tree:hover {
+    color: ${({ theme }) => theme.colors.palette.green};
+  }
+`;
+
+// ============================
+// Styles for the Sidebar Tree
+// ============================
 export const StyledTree = styled.div`
   .rc-tree-child-tree {
     display: block;
