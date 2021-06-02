@@ -3,7 +3,8 @@
 import Tree from 'rc-tree';
 /* eslint-enable react/no-danger, no-param-reassign */
 /* eslint-enable no-console, react/no-access-state-in-setstate */
-import PropTypes from 'prop-types';
+// eslint-disable no-explicit-any
+
 import React from 'react';
 import RCIcon from './RCIcon';
 import { SRCTree } from './styles';
@@ -11,18 +12,18 @@ import { SRCTree } from './styles';
 const motion = {
   motionName: 'node-motion',
   motionAppear: false,
-  onAppearStart: (node) => {
+  onAppearStart: (node: any) => {
     // eslint-disable-next-line no-console
     console.log('Start Motion:', node);
     return { height: 0 };
   },
-  onAppearActive: (node) => ({ height: node.scrollHeight }),
-  onLeaveStart: (node) => ({ height: node.offsetHeight }),
+  onAppearActive: (node: any) => ({ height: node.scrollHeight }),
+  onLeaveStart: (node: any) => ({ height: node.offsetHeight }),
   onLeaveActive: () => ({ height: 0 }),
 };
 
-class RCTree extends React.Component {
-  constructor(props) {
+class RCTree extends React.Component<RCTreeProps> {
+  constructor(props: any) {
     super(props);
     this.state = {
       gData: props.tree,
@@ -35,7 +36,7 @@ class RCTree extends React.Component {
     this.onExpand = this.onExpand.bind(this);
   }
 
-  onDragEnter({ expandedKeys }) {
+  onDragEnter({ expandedKeys }: any) {
     // eslint-disable-next-line no-console
     console.log('enter', expandedKeys);
     this.setState({
@@ -43,7 +44,7 @@ class RCTree extends React.Component {
     });
   }
 
-  onDrop(info) {
+  onDrop(info: any) {
     // eslint-disable-next-line no-console
     console.log('drop', info);
     const dropKey = info.node.props.eventKey;
@@ -52,8 +53,8 @@ class RCTree extends React.Component {
     const dropPosition =
       info.dropPosition - Number(dropPos[dropPos.length - 1]);
 
-    const loop = (data, key, callback) => {
-      data.forEach((item, index, arr) => {
+    const loop = (data: any, key: any, callback: any) => {
+      data.forEach((item: any, index: any, arr: any) => {
         if (item.key === key) {
           callback(item, index, arr);
           return;
@@ -63,19 +64,19 @@ class RCTree extends React.Component {
         }
       });
     };
-    const { gData: gDataTemp } = this.state;
+    const { gData: gDataTemp }: any = this.state;
     const data = [...gDataTemp];
 
     // Find dragObject
-    let dragObj;
-    loop(data, dragKey, (item, index, arr) => {
+    let dragObj: any;
+    loop(data, dragKey, (item: any, index: any, arr: any) => {
       arr.splice(index, 1);
       dragObj = item;
     });
 
     if (!info.dropToGap) {
       // Drop on the content
-      loop(data, dropKey, (item) => {
+      loop(data, dropKey, (item: any) => {
         item.children = item.children || [];
         // where to insert
         item.children.push(dragObj);
@@ -85,16 +86,16 @@ class RCTree extends React.Component {
       info.node.props.expanded && // Is expanded
       dropPosition === 1 // On the bottom gap
     ) {
-      loop(data, dropKey, (item) => {
+      loop(data, dropKey, (item: any) => {
         item.children = item.children || [];
         // where to insert
         item.children.unshift(dragObj);
       });
     } else {
       // Drop on the gap
-      let ar;
-      let i;
-      loop(data, dropKey, (item, index, arr) => {
+      let ar: any;
+      let i: any;
+      loop(data, dropKey, (_item: any, index: any, arr: any) => {
         ar = arr;
         i = index;
       });
@@ -110,7 +111,7 @@ class RCTree extends React.Component {
     });
   }
 
-  onExpand(expandedKeys) {
+  onExpand(expandedKeys: any) {
     // eslint-disable-next-line no-console
     console.log('onExpand', expandedKeys);
     this.setState({
@@ -120,7 +121,7 @@ class RCTree extends React.Component {
   }
 
   render() {
-    const { expandedKeys, gData, autoExpandParent } = this.state;
+    const { expandedKeys, gData, autoExpandParent }: any = this.state;
 
     return (
       <SRCTree className="draggable-demo">
@@ -129,7 +130,7 @@ class RCTree extends React.Component {
           onExpand={this.onExpand}
           autoExpandParent={autoExpandParent}
           draggable
-          onDragStart={this.onDragStart}
+          // onDragStart={this.onDragStart}
           onDragEnter={this.onDragEnter}
           onDrop={this.onDrop}
           treeData={gData}
@@ -142,12 +143,8 @@ class RCTree extends React.Component {
   }
 }
 
-RCTree.propTypes = {
-  tree: PropTypes.instanceOf(Array),
-};
-
-RCTree.defaultProps = {
-  tree: [],
-};
+interface RCTreeProps {
+  tree: any;
+}
 
 export default RCTree;
