@@ -29,17 +29,21 @@ class RCTree extends React.Component {
       autoExpandParent: true,
       expandedKeys: ['lib'],
     };
+
+    this.onDragEnter = this.onDragEnter.bind(this);
+    this.onDrop = this.onDrop.bind(this);
+    this.onExpand = this.onExpand.bind(this);
   }
 
-  onDragEnter = ({ expandedKeys }) => {
+  onDragEnter({ expandedKeys }) {
     // eslint-disable-next-line no-console
     console.log('enter', expandedKeys);
     this.setState({
       expandedKeys,
     });
-  };
+  }
 
-  onDrop = (info) => {
+  onDrop(info) {
     // eslint-disable-next-line no-console
     console.log('drop', info);
     const dropKey = info.node.props.eventKey;
@@ -104,16 +108,16 @@ class RCTree extends React.Component {
     this.setState({
       gData: data,
     });
-  };
+  }
 
-  onExpand = (expandedKeys) => {
+  onExpand(expandedKeys) {
     // eslint-disable-next-line no-console
     console.log('onExpand', expandedKeys);
     this.setState({
       expandedKeys,
       autoExpandParent: false,
     });
-  };
+  }
 
   render() {
     const { expandedKeys, gData, autoExpandParent } = this.state;
