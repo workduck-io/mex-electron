@@ -1,3 +1,4 @@
+import { rgba } from 'polished';
 import styled from 'styled-components';
 
 export const SRCTree = styled.div`
@@ -65,10 +66,20 @@ export const SRCTree = styled.div`
         display: inline-block;
         height: 24px;
         margin: 0;
-        padding: 0;
+        padding: 4px 8px 4px 4px;
         text-decoration: none;
         vertical-align: top;
         cursor: pointer;
+        border-radius: 8px;
+        transition: 0.2s ease-in-out;
+
+        &:hover {
+          background-color: ${({ theme }) => theme.colors.primary};
+          .rc-tree-title {
+            color: ${({ theme }) => theme.colors.text.primary};
+          }
+          transition: 0s ease;
+        }
       }
       span {
         &.rc-tree-icon_loading {
@@ -210,9 +221,12 @@ export const SRCTree = styled.div`
     background: rgba(0, 0, 0, 0.1);
   }
   .rc-tree-node-selected {
-    background-color: ${({ theme }) => theme.colors.gray.dark};
+    background-color: ${({ theme }) => rgba(theme.colors.primary, 0.4)};
     /* box-shadow: 0 0 0 1px #ffb951; */
     /* opacity: 0.8; */
+    .rc-tree-title {
+      color: ${({ theme }) => theme.colors.text.primary};
+    }
   }
   .rc-tree-icon__open {
     margin-right: 2px;

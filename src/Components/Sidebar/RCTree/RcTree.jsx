@@ -3,51 +3,44 @@
 import Tree from 'rc-tree';
 /* eslint-enable react/no-danger, no-param-reassign */
 /* eslint-enable no-console, react/no-access-state-in-setstate */
-import React, { useState } from 'react';
-import TreeNode from '../../../Types/tree';
+import PropTypes from 'prop-types';
+import React from 'react';
+// import TreeNode from '../../../Types/tree';
 import RCIcon from './RCIcon';
 import { SRCTree } from './styles';
 
 const motion = {
   motionName: 'node-motion',
   motionAppear: false,
-  onAppearStart: (node: HTMLElement) => {
+  onAppearStart: (node) => {
     console.log('Start Motion:', node); /* eslint-disable-line no-console */
     return { height: 0 };
   },
-  onAppearActive: (node: HTMLElement) => ({ height: node.scrollHeight }),
-  onLeaveStart: (node: HTMLElement) => ({ height: node.offsetHeight }),
+  onAppearActive: (node) => ({ height: node.scrollHeight }),
+  onLeaveStart: (node) => ({ height: node.offsetHeight }),
   onLeaveActive: () => ({ height: 0 }),
 };
 
-interface RCTReeProps {
-  tree: TreeNode[];
-}
-
-interface State {
-  gData: TreeNode[];
-  autoExpandParent: boolean;
-  expandedKeys: string[];
-}
-
-const RCTree = ({ tree }: RCTReeProps) => {
-  const [state, setState] = useState<State>({
-    gData: tree,
-    autoExpandParent: true,
-    expandedKeys: ['pursuits'],
-  });
+class RCTree extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      gData: props.tree,
+      autoExpandParent: true,
+      expandedKeys: ['pursuits'],
+    };
+  }
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  const onDragEnter = (expandedKeys: any) => {
+  onDragEnter = (expandedKeys) => {
     // console.log('enter', expandedKeys);
-    setState({
-      ...state,
+    this.setState({
       expandedKeys,
     });
   };
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  const onDrop = (info: any) => {
+  onDrop = (info) => {
     // console.log('drop', info);
     const dropKey = info.node.props.eventKey;
     const dragKey = info.dragNode.props.eventKey;
@@ -55,9 +48,9 @@ const RCTree = ({ tree }: RCTReeProps) => {
     const dropPosition =
       info.dropPosition - Number(dropPos[dropPos.length - 1]);
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    const loop = (data: any, key: any, callback: any) => {
+    const loop = (data, key, callback) => {
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      data.forEach((item: any, index: any, arr: any) => {
+      data.forEach((item, index, arr) => {
         if (item.key === key) {
           callback(item, index, arr);
           return;
@@ -67,13 +60,15 @@ const RCTree = ({ tree }: RCTReeProps) => {
         }
       });
     };
-    const data = [...state.gData];
+
+    const { gDataS } = this.state;
+    const data = [...gDataS];
 
     // Find dragObject
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    let dragObj: any;
+    let dragObj;
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    loop(data, dragKey, (item: any, index: any, arr: any) => {
+    loop(data, dragKey, (item, index, arr) => {
       arr.splice(index, 1);
       dragObj = item;
     });
@@ -81,7 +76,7 @@ const RCTree = ({ tree }: RCTReeProps) => {
     if (!info.dropToGap) {
       // Drop on the content
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      loop(data, dropKey, (item: any) => {
+      loop(data, dropKey, (item) => {
         item.children = item.children || [];
         // where to insert
         item.children.push(dragObj);
@@ -92,7 +87,7 @@ const RCTree = ({ tree }: RCTReeProps) => {
       dropPosition === 1 // On the bottom gap
     ) {
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      loop(data, dropKey, (item: any) => {
+      loop(data, dropKey, (item) => {
         item.children = item.children || [];
         // where to insert
         item.children.unshift(dragObj);
@@ -100,11 +95,11 @@ const RCTree = ({ tree }: RCTReeProps) => {
     } else {
       // Drop on the gap
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      let ar: any;
+      let ar;
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      let i: any;
+      let i;
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      loop(data, dropKey, (_item: any, index: any, arr: any) => {
+      loop(data, dropKey, (_item, index, arr) => {
         ar = arr;
         i = index;
       });
@@ -115,39 +110,49 @@ const RCTree = ({ tree }: RCTReeProps) => {
       }
     }
 
-    setState(() => ({
-      ...state,
+    this.setState({
       gData: data,
-    }));
+    });
   };
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  const onExpand = (expandedKeys: any[]) => {
+  onExpand = (expandedKeys) => {
     console.log('onExpand', expandedKeys); /* eslint-disable-line no-console */
-    setState(() => ({
-      ...state,
+    this.setState({
       expandedKeys,
       autoExpandParent: false,
-    }));
+    });
   };
 
-  return (
-    <SRCTree className="mex_tree">
-      {/* All styles are applied in SRCTree due to class-based styling of tree */}
-      <Tree
-        expandedKeys={state.expandedKeys}
-        onExpand={onExpand}
-        autoExpandParent={state.autoExpandParent}
-        draggable
-        switcherIcon={RCIcon}
-        // onDragStart={onDragStart}
-        onDragEnter={onDragEnter}
-        onDrop={onDrop}
-        treeData={state.gData}
-        motion={motion}
-      />
-    </SRCTree>
-  );
+  render() {
+    const { expandedKeys, autoExpandParent, gData } = this.state;
+
+    return (
+      <SRCTree className="mex_tree">
+        {/* All styles are applied in SRCTree due to class-based styling of tree */}
+        <Tree
+          expandedKeys={expandedKeys}
+          onExpand={this.onExpand}
+          autoExpandParent={autoExpandParent}
+          draggable
+          switcherIcon={RCIcon}
+          onDragStart={this.onDragStart}
+          onDragEnter={this.onDragEnter}
+          onDrop={this.onDrop}
+          treeData={gData}
+          motion={motion}
+        />
+      </SRCTree>
+    );
+  }
+}
+
+RCTree.propTypes = {
+  tree: PropTypes.instanceOf(Array),
+};
+
+RCTree.defaultProps = {
+  tree: [],
 };
 
 export default RCTree;
