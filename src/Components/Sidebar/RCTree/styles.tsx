@@ -1,4 +1,3 @@
-import { rgba } from 'polished';
 import styled from 'styled-components';
 
 export const SRCTree = styled.div`
@@ -22,7 +21,7 @@ export const SRCTree = styled.div`
       list-style: none;
       outline: 0;
       .draggable {
-        color: #333;
+        color: ${({ theme }) => theme.colors.gray.gray};
         -moz-user-select: none;
         -khtml-user-select: none;
         -webkit-user-select: none;
@@ -38,23 +37,23 @@ export const SRCTree = styled.div`
             right: 0;
             top: 0;
             bottom: 0;
-            box-shadow: inset 0 0 0 2px red;
+            box-shadow: inset 0 0 2px 2px ${({ theme }) => theme.colors.primary};
             content: '';
           }
         }
         & ~ .rc-tree-treenode {
-          border-left: 2px solid chocolate;
+          border-left: 2px solid ${({ theme }) => theme.colors.primary};
         }
       }
       &.drop-target {
-        background-color: yellowgreen;
+        background-color: ${({ theme }) => theme.colors.gray.dark};
         & ~ .rc-tree-treenode {
           border-left: none;
         }
       }
       &.filter-node {
         & > .rc-tree-node-content-wrapper {
-          color: #a60000 !important;
+          color: ${({ theme }) => theme.colors.primary} !important;
           font-weight: bold !important;
         }
       }
@@ -67,26 +66,48 @@ export const SRCTree = styled.div`
         display: inline-block;
         height: 24px;
         margin: 0;
-        padding: 0;
+        padding: 0 6px;
         text-decoration: none;
         vertical-align: top;
         cursor: pointer;
+        border-radius: ${({ theme }) => theme.borderRadius.small};
+        transition: 0.3s ease;
+        &:hover {
+          transition: 0s ease;
+          background-color: ${({ theme }) => theme.colors.fade.primary};
+          color: ${({ theme }) => theme.colors.text.primary};
+          .rc-tree-title {
+            color: ${({ theme }) => theme.colors.text.primary};
+          }
+        }
+      }
+      .rc-tree-node-selected {
+        background-color: ${({ theme }) => theme.colors.gray.dark};
+        /* box-shadow: 0 0 0 1px #ffb951; */
+        border-radius: ${({ theme }) => theme.borderRadius.small};
+        /* opacity: 0.8; */
+        .rc-tree-title {
+          color: ${({ theme }) => theme.colors.primary};
+        }
       }
       span {
         &.rc-tree-icon_loading {
           margin-right: 2px;
           vertical-align: top;
-          background: url('data:image/gif;');
+          /* background: url('data:image/gif;'); */
         }
         &.rc-tree-switcher {
+          color: ${({ theme }) => theme.colors.text.secondary};
           &.rc-tree-switcher-noop {
             cursor: auto;
           }
           &.rc-tree-switcher_open {
-            background-position: -93px -56px;
           }
           &.rc-tree-switcher_close {
             background-position: -75px -56px;
+          }
+          &:hover {
+            color: ${({ theme }) => theme.colors.primary};
           }
         }
         &.rc-tree-checkbox {
@@ -142,7 +163,8 @@ export const SRCTree = styled.div`
       .rc-tree-treenode {
         &:not(:last-child) {
           & > ul {
-            background: url('data:image/gif;');
+            /* background: url('data:image/gif;'); */
+            background-color: ${({ theme }) => theme.colors.primary};
           }
           & > .rc-tree-switcher-noop {
             background-position: -56px -18px;
@@ -158,7 +180,7 @@ export const SRCTree = styled.div`
   }
   .rc-tree-focused {
     &:not(.rc-tree-active-focused) {
-      border-color: cyan;
+      border-color: ${({ theme }) => theme.colors.primary};
     }
   }
   .rc-tree .rc-tree-treenode span.rc-tree-switcher,
@@ -171,7 +193,7 @@ export const SRCTree = styled.div`
     line-height: 16px;
     vertical-align: -0.125em;
     background-color: transparent;
-    background-image: url('data:image/png;');
+    /* background-image: url('data:image/png;'); */
     background-repeat: no-repeat;
     background-attachment: scroll;
     border: 0 none;
@@ -192,17 +214,13 @@ export const SRCTree = styled.div`
   .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
   .rc-tree-treenode-disabled > a,
   .rc-tree-treenode-disabled > a span {
-    color: #767676;
+    color: ${({ theme }) => theme.colors.text.disabled};
     cursor: not-allowed;
   }
   .rc-tree-treenode-active {
-    background: rgba(0, 0, 0, 0.1);
+    background-color: ${({ theme }) => theme.colors.gray.dark};
   }
-  .rc-tree-node-selected {
-    background-color: #ffe6b0;
-    box-shadow: 0 0 0 1px #ffb951;
-    opacity: 0.8;
-  }
+
   .rc-tree-icon__open {
     margin-right: 2px;
     vertical-align: top;

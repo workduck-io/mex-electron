@@ -28,9 +28,9 @@ export const darkTheme: DefaultTheme = {
     secondary: '#4dd0e1',
     background: {
       app: '#040015',
-      card: '#0D1A46',
-      surface: '#00071E',
-      sidebar: '#000C36',
+      surface: '#0C1121',
+      card: '#1F2947',
+      sidebar: '#091744',
     },
     palette: {
       green: '#9fe732',
@@ -40,13 +40,13 @@ export const darkTheme: DefaultTheme = {
     gray: {
       light: '#7D90C3',
       gray: '#5f6d92',
-      dark: '#4b5570',
+      dark: '#1c2744',
     },
     border: {
       divider: '#ffffff10',
     },
     fade: {
-      primary: '#4e8cff',
+      primary: '#1c65ec',
       secondary: '#4dd0e1',
       background: '#030303',
     },
@@ -54,6 +54,7 @@ export const darkTheme: DefaultTheme = {
       primary: '#e2e4ee',
       secondary: '#7D90C3',
       disabled: '#5d5d6d',
+      accent: '#82aeff',
     },
   },
 };
@@ -93,6 +94,7 @@ export const lightTheme: DefaultTheme = {
       primary: '#e2e4ee',
       secondary: '#7D90C3',
       disabled: '#5d5d6d',
+      accent: '#5b94ff',
     },
   },
 };
