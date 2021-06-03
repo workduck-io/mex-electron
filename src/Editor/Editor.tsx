@@ -24,13 +24,13 @@ const Editor: React.FC<EditorProps> = ({ content }: EditorProps) => {
   }, []);
 
   return (
-    <StyledEditor>
+    <StyledEditor className="mex_editor">
       <NodeInfo>
         <NoteTitle>Button Component</NoteTitle>
         <InfoTools>
-          <IconButton icon={shareLine} title="Share" />
-          <IconButton icon={linkIcon} title="Copy Link" />
-          <IconButton icon={more2Fill} title="Options" />
+          <IconButton size={24} icon={shareLine} title="Share" />
+          <IconButton size={24} icon={linkIcon} title="Copy Link" />
+          <IconButton size={24} icon={more2Fill} title="Options" />
         </InfoTools>
       </NodeInfo>
       <RichMarkdownEditor

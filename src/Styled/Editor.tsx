@@ -14,9 +14,10 @@ export const NodeInfo = styled.div`
   margin: 0 0 3rem;
 
   ${NoteTitle} {
+    color: ${({ theme }) => theme.colors.text.secondary};
     font-size: 1.25rem;
     font-weight: normal;
-    margin: 0;
+    margin: 0 0 0 ${({ theme }) => theme.spacing.small};
   }
 `;
 
@@ -25,7 +26,7 @@ export const InfoTools = styled.div`
 `;
 
 export const StyledEditor = styled('div')`
-  /* width: 100%; */
+  max-width: 800px;
   padding: ${({ theme }) => theme.spacing.medium};
   margin: ${({ theme }) => theme.spacing.medium};
 
@@ -33,8 +34,27 @@ export const StyledEditor = styled('div')`
   /* font-weight: 400; */
   line-height: 1.75;
 
-  p {
+  p,
+  ol,
+  ul,
+  .code-block,
+  table {
     margin-bottom: 1rem;
+  }
+  ol ol,
+  ol ul,
+  ul ol,
+  ul ul {
+    margin-bottom: 0.5rem;
+  }
+
+  table {
+    p {
+      margin: 0.25rem 0;
+    }
+    th {
+      background-color: ${({ theme }) => theme.colors.background.surface};
+    }
   }
 
   h1,
@@ -42,14 +62,15 @@ export const StyledEditor = styled('div')`
   h3,
   h4,
   h5 {
-    margin: 3rem 0 1.38rem;
+    margin: 2rem 0 1.3rem;
     line-height: 1.3;
     font-weight: 600;
     color: ${({ theme }) => theme.colors.text.primary};
   }
 
   h1 {
-    margin-top: 0;
+    margin-bottom: 1.3rem;
+    font-weight: 700;
     font-size: 2.488rem;
   }
 
@@ -73,11 +94,32 @@ export const StyledEditor = styled('div')`
   .text_small {
     font-size: 0.833rem;
   }
+
+  blockquote:before {
+    background: ${({ theme }) => theme.colors.gray.light};
+  }
+  blockquote {
+    :before {
+      background: ${({ theme }) => theme.colors.gray.light}!important;
+    }
+    p {
+      margin: 0.25rem 0;
+    }
+  }
+
+  p.caption {
+    color: ${({ theme }) => theme.colors.text.secondary};
+  }
+
+  pre,
+  pre code {
+    font-size: 1rem;
+  }
 `;
 
 const colors = {
   almostBlack: darkTheme.colors.background.surface,
-  lightBlack: darkTheme.colors.gray.gray,
+  lightBlack: darkTheme.colors.background.surface,
   almostWhite: darkTheme.colors.text.default,
   white: darkTheme.colors.text.primary,
   white10: 'rgba(255, 255, 255, 0.1)',
@@ -87,36 +129,37 @@ const colors = {
   greyLight: '#F4F7FA',
   grey: '#E8EBED',
   greyMid: '#C5CCD3',
-  greyDark: '#DAE1E9',
+  greyDark: darkTheme.colors.gray.s1,
   transparent: 'rgba(0, 0, 0, 0)',
 };
 
 export const base = {
   ...colors,
   fontFamily:
-    "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen, Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif",
+    "'Inter', -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen, Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif",
   fontFamilyMono:
-    "'SFMono-Regular',Consolas,'Liberation Mono', Menlo, Courier,monospace",
+    "'Iosevka',Consolas,'Liberation Mono', Menlo, Courier,monospace",
   fontWeight: 400,
   zIndex: 100,
   link: colors.primary,
   placeholder: '#B1BECC',
-  textSecondary: '#4E5C6E',
+  textSecondary: darkTheme.colors.gray.s0,
   textLight: colors.white,
   textHighlight: '#b3e7ff',
   textHighlightForeground: colors.black,
   selected: colors.primary,
-  codeComment: '#6a737d',
-  codePunctuation: '#5e6687',
-  codeNumber: '#d73a49',
-  codeProperty: '#c08b30',
-  codeTag: '#3d8fd1',
-  codeString: '#032f62',
-  codeSelector: '#6679cc',
-  codeAttr: '#c76b29',
+  //
+  codeComment: '#464B5D',
+  codePunctuation: '#89DDFF',
+  codeNumber: '#F78C6C',
+  codeProperty: '#B2CCD6',
+  codeTag: '#f07178',
+  codeString: '#C3E88D',
+  codeSelector: '#82AAFF',
+  codeAttr: '#FFCB6B',
   codeEntity: '#22a2c9',
-  codeKeyword: '#d73a49',
-  codeFunction: '#6f42c1',
+  codeKeyword: '#C792EA',
+  codeFunction: '#82AAFF',
   codeStatement: '#22a2c9',
   codePlaceholder: '#3d8fd1',
   codeInserted: '#202746',

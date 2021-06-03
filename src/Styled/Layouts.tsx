@@ -1,4 +1,10 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+export const centeredCss = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const Centered = styled.div`
   display: flex;
