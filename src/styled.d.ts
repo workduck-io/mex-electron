@@ -39,9 +39,7 @@ declare module 'styled-components' {
         red: string;
       };
       gray: {
-        light: string;
-        gray: string;
-        dark: string;
+        [shade: string]: string;
       };
       border: {
         divider: string;

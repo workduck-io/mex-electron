@@ -7,7 +7,7 @@ import { PixelToCSS, ThinScrollbar } from './helpers';
 export const Sicon = styled(Icon)`
   height: 26px;
   padding-left: 7px;
-  border-left: 1px solid ${({ theme }) => theme.colors.gray.gray};
+  border-left: 1px solid ${({ theme }) => theme.colors.gray.s1};
   margin-left: -8px;
 `;
 // Disabled as IconifyIcon type doesn't work
@@ -109,7 +109,7 @@ export const StyledTree = styled.div`
         }
       }
       &.drop-target {
-        background-color: ${({ theme }) => theme.colors.gray.dark};
+        background-color: ${({ theme }) => theme.colors.gray.s2};
         & ~ .rc-tree-treenode {
           border-left: none;
         }
@@ -145,7 +145,7 @@ export const StyledTree = styled.div`
         }
       }
       .rc-tree-node-selected {
-        background-color: ${({ theme }) => theme.colors.gray.dark};
+        background-color: ${({ theme }) => theme.colors.gray.s2};
         /* box-shadow: 0 0 0 1px #ffb951; */
         border-radius: ${({ theme }) => theme.borderRadius.small};
         /* opacity: 0.8; */
@@ -160,7 +160,7 @@ export const StyledTree = styled.div`
           /* background: url('data:image/gif;'); */
         }
         &.rc-tree-switcher {
-          color: ${({ theme }) => theme.colors.gray.light};
+          color: ${({ theme }) => theme.colors.gray.s0};
           &.rc-tree-switcher-noop {
             cursor: auto;
           }
@@ -281,7 +281,7 @@ export const StyledTree = styled.div`
     cursor: not-allowed;
   }
   .rc-tree-treenode-active {
-    background-color: ${({ theme }) => theme.colors.gray.dark};
+    background-color: ${({ theme }) => theme.colors.gray.s2};
   }
 
   .rc-tree-icon__open {

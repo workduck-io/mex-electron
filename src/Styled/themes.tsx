@@ -28,7 +28,7 @@ export const darkTheme: DefaultTheme = {
     secondary: '#4dd0e1',
     background: {
       app: '#040015',
-      surface: '#0C1121',
+      surface: '#13192e',
       card: '#1F2947',
       sidebar: '#091744',
     },
@@ -38,9 +38,9 @@ export const darkTheme: DefaultTheme = {
       red: '#ff4f58',
     },
     gray: {
-      light: '#5e6c92',
-      gray: '#2e364e',
-      dark: '#1c2744',
+      s0: '#5e6c92',
+      s1: '#2e364e',
+      s2: '#1c2744',
     },
     border: {
       divider: '#ffffff10',
@@ -79,9 +79,9 @@ export const lightTheme: DefaultTheme = {
       red: '#ff4f58',
     },
     gray: {
-      light: '#7D90C3',
-      gray: '#7D90C3',
-      dark: '#7D90C3',
+      s0: '#7D90C3',
+      s1: '#7D90C3',
+      s2: '#7D90C3',
     },
     border: {
       divider: '#ffffff10',

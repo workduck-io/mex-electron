@@ -1,17 +1,16 @@
 const SampleMarkdown = `
-# h1 Heading 8-)
 
-Paragraphs. Lorizzle ipsizzle dang ass izzle, the bizzle adipiscing elit. My shizz sapizzle velizzle, i'm in the shizzle volutpat, suscipizzle quizzle, sizzle vizzle, arcu. Sure crackalackin tortor. Sed erizzle. Mammasay mammasa mamma oo sa izzle dolor dawg tempizzle shiznit. Own yo' pellentesque fizzle shizznit turpis. Fo shizzle my nizzle in fo shizzle. Daahng dawg sheezy rhoncus nisi. Da bomb hac ass platea away. dapibizzle. Shut the shizzle up that's the shizzle urna, pretizzle nizzle, mattizzle gangster, eleifend dang, nunc. Its fo rizzle suscipizzle. Integizzle semper nizzle sed purus.
+# What is Markdown?
 
-**Bold**
+It is a simple syntax to represent the structure of the content. It can be converted to HTML as a page.
+
+First helpful way to structure thing is with headings:
+
+# h1 Heading
 
 ## h2 Heading
 
-Etiam laorizzle urna shut the shizzle up mammasay mammasa mamma oo sa. Bizzle quizzle get down get down. Maecenizzle pulvinar, ipsizzle get down get down malesuada shiznit, nulla ma nizzle euismizzle crackalackin, pimpin' cool check out this nulla et fo shizzle. Vivamizzle fo shizzle my nizzle, tortor crazy we gonna chung fo shizzle, shiznit nunc ultricizzle gizzle, izzle daahng dawg leo elit izzle mofo. Maurizzle fizzle, orci vizzle volutpat black, sizzle augue luctus away, at bibendizzle enizzle check it out izzle get down get down. Nullam da bomb velizzle mah nizzle shizzlin dizzle that's the shizzle viverra. Phasellus nizzle black. Curabitizzle pimpin' my shizz vel pede yo facilisizzle.
-
 ### h3 Heading
-
-Crunk yo tortizzle in mofo yo mamma consequizzle. Crazy convallizzle, fizzle izzle that's the shizzle posuere, we gonna chung lorizzle luctus the bizzle, bizzle blandizzle fo shizzle dolor mah nizzle velizzle. Gangsta ac yo mamma i'm in the shizzle elit fo shizzle mah nizzle fo rizzle, mah home g-dizzle i'm in the shizzle. Curabitizzle gangsta nisi, dizzle izzle, funky fresh eleifend, fo shizzle my nizzle izzle, metizzle. Nunc dope neque. Lorem ipsum dolizzle nizzle crackalackin, consectetizzle dang elizzle. Maecenas izzle elit. Fo shizzle nizzle. Vestibulum ac erat shiz velizzle shit dictizzle. Gangsta break it down mammasay mammasa mamma oo sa sizzle amizzle nibh. Cras own yo'.
 
 #### h4 Heading
 
@@ -19,27 +18,13 @@ Crunk yo tortizzle in mofo yo mamma consequizzle. Crazy convallizzle, fizzle izz
 
 ###### h6 Heading
 
-Lorizzle ipsizzle dang ass izzle, the bizzle adipiscing elit. My shizz sapizzle velizzle, i'm in the shizzle volutpat, suscipizzle quizzle, sizzle vizzle, arcu. Sure crackalackin tortor. Sed erizzle. Mammasay mammasa mamma oo sa izzle dolor dawg tempizzle shiznit. Own yo' pellentesque fizzle shizznit turpis. Fo shizzle my nizzle in fo shizzle. Daahng dawg sheezy rhoncus nisi. Da bomb hac ass platea away. dapibizzle. Shut the shizzle up that's the shizzle urna, pretizzle nizzle, mattizzle gangster, eleifend dang, nunc. Its fo rizzle suscipizzle. Integizzle semper nizzle sed purus.
+Now let us see the other things:
 
 ## Horizontal Rules
 
 ---
 
----
-
----
-
-## Typographic replacements
-
-Enable typographer option to see result.
-
-(c) (C) (r) (R) (tm) (TM) (p) (P) +-
-
-test.. test... test..... test?..... test!....
-
-!!!!!! ???? ,, -- ---
-
-"Smartypants, double quotes" and 'single quotes'
+***
 
 ## Emphasis
 
