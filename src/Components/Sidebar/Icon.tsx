@@ -10,7 +10,7 @@ interface RCIconProps {
 }
 
 // eslint-disable-next-line
-const getIcon = (collapsed: boolean, array: [any, any]): any => {
+const getIcon = (collapsed: boolean, array: [object, object]): object => {
   return collapsed ? array[0] : array[1];
 };
 

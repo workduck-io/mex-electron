@@ -54,6 +54,7 @@ declare module 'styled-components' {
       text: {
         primary: string;
         secondary: string;
+        default: string;
         disabled: string;
         accent: string;
       };
