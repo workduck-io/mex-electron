@@ -119,7 +119,7 @@ export const StyledEditor = styled('div')`
 
 const colors = {
   almostBlack: darkTheme.colors.background.surface,
-  lightBlack: darkTheme.colors.background.surface,
+  lightBlack: darkTheme.colors.background.card,
   almostWhite: darkTheme.colors.text.default,
   white: darkTheme.colors.text.primary,
   white10: 'rgba(255, 255, 255, 0.1)',
