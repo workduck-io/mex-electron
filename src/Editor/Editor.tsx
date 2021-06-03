@@ -1,22 +1,40 @@
-import React from 'react';
+import linkIcon from '@iconify-icons/ri/link';
+import more2Fill from '@iconify-icons/ri/more-2-fill';
+import shareLine from '@iconify-icons/ri/share-line';
+import React, { useEffect } from 'react';
+import ReactTooltip from 'react-tooltip';
 import RichMarkdownEditor from 'rich-markdown-editor';
-import styled from 'styled-components';
-
-const StyledDiv = styled('div')`
-  /* width: 100%; */
-  padding: ${({ theme }) => theme.spacing.medium};
-  margin: ${({ theme }) => theme.spacing.medium};
-`;
+import IconButton from '../Styled/Buttons';
+import {
+  dark,
+  InfoTools,
+  NodeInfo,
+  NoteTitle,
+  StyledEditor,
+} from '../Styled/Editor';
 
 export type EditorProps = { content: string };
 
 const Editor: React.FC<EditorProps> = ({ content }: EditorProps) => {
-  console.log({ content });
+  // console.log({ content });
   const noF = () => {};
+
+  useEffect(() => {
+    ReactTooltip.rebuild();
+  }, []);
+
   return (
-    <StyledDiv>
+    <StyledEditor>
+      <NodeInfo>
+        <NoteTitle>Button Component</NoteTitle>
+        <InfoTools>
+          <IconButton icon={shareLine} title="Share" />
+          <IconButton icon={linkIcon} title="Copy Link" />
+          <IconButton icon={more2Fill} title="Options" />
+        </InfoTools>
+      </NodeInfo>
       <RichMarkdownEditor
-        dark
+        theme={dark}
         // Dark theme for the editor
 
         autoFocus
@@ -29,14 +47,14 @@ const Editor: React.FC<EditorProps> = ({ content }: EditorProps) => {
         onClickLink={noF}
         onFocus={noF}
         onHoverLink={(e) => {
-          console.log(e);
+          console.log(e); // eslint-disable-line no-console
           return false;
         }}
         onChange={noF}
         onSave={noF}
         onShowToast={noF}
       />
-    </StyledDiv>
+    </StyledEditor>
   );
 };
 

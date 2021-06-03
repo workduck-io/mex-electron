@@ -52,6 +52,7 @@ export const darkTheme: DefaultTheme = {
     },
     text: {
       primary: '#e2e4ee',
+      default: '#b8bccf',
       secondary: '#7D90C3',
       disabled: '#5d5d6d',
       accent: '#82aeff',
@@ -92,6 +93,7 @@ export const lightTheme: DefaultTheme = {
     },
     text: {
       primary: '#e2e4ee',
+      default: '#e2e4ee',
       secondary: '#7D90C3',
       disabled: '#5d5d6d',
       accent: '#5b94ff',

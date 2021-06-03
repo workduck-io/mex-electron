@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import styled from 'styled-components';
-import ReactTooltip from 'react-tooltip';
+import styled, { css } from 'styled-components';
 
 const StyledDiv = styled('div')`
   z-index: 10;
@@ -13,8 +12,11 @@ const StyledDiv = styled('div')`
   position: fixed;
   background-color: ${({ theme }) => theme.colors.background.sidebar};
   width: ${({ theme }) => theme.width.nav};
+`;
+
+export const navTooltip = css`
   .nav-tooltip {
-    background: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.primary} !important;
     &::after {
       border-right-color: ${({ theme }) => theme.colors.primary} !important;
     }
@@ -68,7 +70,6 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
           {l.icon !== undefined ? l.icon : l.title}
         </Link>
       ))}
-      <ReactTooltip effect="solid" />
     </StyledDiv>
   );
 };
