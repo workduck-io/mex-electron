@@ -84,6 +84,12 @@ const createWindow = async () => {
   }
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
+  mainWindow.webContents.on('new-window', function (e, url) {
+    e.preventDefault();
+    require('electron').shell.openExternal();
+  });
+
+  // mainWindow.webContents.setWindow
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
   mainWindow.webContents.on('did-finish-load', () => {

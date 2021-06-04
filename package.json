@@ -249,7 +249,6 @@
     "react-sortablejs": "^6.0.0",
     "react-tooltip": "^4.2.19",
     "regenerator-runtime": "^0.13.5",
-    "rich-markdown-editor": "^11.9.0",
     "sortablejs": "^1.13.0",
     "source-map-support": "^0.5.19",
     "styled-components": "^5.3.0"

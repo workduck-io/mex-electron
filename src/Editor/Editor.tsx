@@ -23,6 +23,18 @@ const Editor: React.FC<EditorProps> = ({ content }: EditorProps) => {
     ReactTooltip.rebuild();
   }, []);
 
+  const onClickLink = (href: string, event: any) => {
+    console.log('Click', href);
+    // currently opens link in the browser, check if
+    window.open(href, '_blank');
+    // require('shell').openExternal('http://www.google.com');
+    // if (isInternalLink(href)) {
+    //   history.push(href);
+    // } else {
+    //   window.location.href = href;
+    // }
+  };
+
   return (
     <StyledEditor className="mex_editor">
       <NodeInfo>
@@ -44,7 +56,7 @@ const Editor: React.FC<EditorProps> = ({ content }: EditorProps) => {
         onBlur={noF}
         onCancel={noF}
         onClickHashtag={noF}
-        onClickLink={noF}
+        onClickLink={onClickLink}
         onFocus={noF}
         onHoverLink={(e) => {
           console.log(e); // eslint-disable-line no-console
