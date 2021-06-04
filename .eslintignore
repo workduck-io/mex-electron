@@ -54,3 +54,5 @@ package.json
 *.css.d.ts
 *.sass.d.ts
 *.scss.d.ts
+
+src/rich-markdown-editor/package.json
