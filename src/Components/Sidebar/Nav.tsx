@@ -61,6 +61,7 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
       {links.map((l) => (
         <Link
           exact
+          activeClassName="active"
           to={l.path}
           key={`nav_${l.title}`}
           // Tooltip
