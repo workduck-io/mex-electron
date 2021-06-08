@@ -11,6 +11,7 @@ import Dashboard from './Views/Dashboard';
 import Integrations from './Views/Integrations';
 import Snippets from './Views/Snippets';
 import Tasks from './Views/Tasks';
+import { ProvideEditorContext } from './Context/Editor';
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}; // NormalizeCSS normalization
@@ -46,20 +47,22 @@ function App() {
   return (
     <Router>
       <ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
-        <Main>
-          <GlobalStyle />
-          <Switch>
-            <Route
-              exact
-              path="/editor"
-              component={() => <Editor content={SampleMarkdown} />}
-            />
-            <Route path="/tasks" component={Tasks} />
-            <Route path="/integrations" component={Integrations} />
-            <Route path="/snippets" component={Snippets} />
-            <Route path="/" component={Dashboard} />
-          </Switch>
-        </Main>
+        <ProvideEditorContext>
+          <Main>
+            <GlobalStyle />
+            <Switch>
+              <Route
+                exact
+                path="/editor"
+                component={() => <Editor content={SampleMarkdown} />}
+              />
+              <Route path="/tasks" component={Tasks} />
+              <Route path="/integrations" component={Integrations} />
+              <Route path="/snippets" component={Snippets} />
+              <Route path="/" component={Dashboard} />
+            </Switch>
+          </Main>
+        </ProvideEditorContext>
       </ThemeProvider>
     </Router>
   );

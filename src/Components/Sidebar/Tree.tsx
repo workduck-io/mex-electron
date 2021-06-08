@@ -1,12 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console, react/no-access-state-in-setstate */
 /* eslint-disable react/no-danger, no-param-reassign */
 import RCTree from 'rc-tree';
 /* eslint-enable react/no-danger, no-param-reassign */
 /* eslint-enable no-console, react/no-access-state-in-setstate */
-// eslint-disable no-explicit-any
 
 import React from 'react';
+import { withEditorCtx } from '../../Context/Editor';
 import { StyledTree } from '../../Styled/Sidebar';
+import TreeNode from '../../Types/tree';
 import TreeExpandIcon from './Icon';
 
 const motion = {
@@ -21,6 +23,11 @@ const motion = {
   onLeaveStart: (node: any) => ({ height: node.offsetHeight }),
   onLeaveActive: () => ({ height: 0 }),
 };
+
+interface RCTreeProps {
+  tree: any;
+  edCtx: any;
+}
 
 /* Renders a draggable tree with custom collapse-able icon */
 class Tree extends React.Component<RCTreeProps> {
@@ -139,14 +146,17 @@ class Tree extends React.Component<RCTreeProps> {
           motion={motion}
           switcherIcon={TreeExpandIcon}
           showIcon={false}
+          onSelect={(_selectedKeys, info) => {
+            const { selectedNodes } = info;
+            const { edCtx } = this.props;
+
+            if (selectedNodes.length > 0)
+              edCtx.loadNode(selectedNodes[0] as TreeNode);
+          }}
         />
       </StyledTree>
     );
   }
 }
 
-interface RCTreeProps {
-  tree: any;
-}
-
-export default Tree;
+export default withEditorCtx(Tree);
