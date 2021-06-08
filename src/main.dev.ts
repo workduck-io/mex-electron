@@ -43,6 +43,8 @@ const installExtensions = async () => {
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
   const extensions = ['REACT_DEVELOPER_TOOLS'];
 
+  // console.log('Installing Dev Tools', { installer, forceDownload, extensions });
+
   return installer
     .default(
       extensions.map((name) => installer[name]),
@@ -75,16 +77,13 @@ const createWindow = async () => {
     process.env.DEBUG_PROD === 'true'
   ) {
     mainWindow.webContents.on('did-frame-finish-load', async () => {
-      if (process.env.NODE_ENV === 'development') {
-        await installExtensions();
-      }
+      await installExtensions();
     });
-
-    // await installExtensions();
   }
+
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
-  mainWindow.webContents.on('new-window', function (e, url) {
+  mainWindow.webContents.on('new-window', (e, _url) => {
     e.preventDefault();
     require('electron').shell.openExternal();
   });
