@@ -4,6 +4,7 @@ import shareLine from '@iconify-icons/ri/share-line';
 import React, { useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import RichMarkdownEditor from 'rich-markdown-editor';
+import { useEditorContext } from '../Context/Editor';
 import IconButton from '../Styled/Buttons';
 import {
   dark,
@@ -18,13 +19,13 @@ export type EditorProps = { content: string };
 const Editor: React.FC<EditorProps> = ({ content }: EditorProps) => {
   // console.log({ content });
   const noF = () => {};
-
+  const edCtx = useEditorContext();
   useEffect(() => {
     ReactTooltip.rebuild();
   }, []);
 
-  const onClickLink = (href: string, event: any) => {
-    console.log('Click', href);
+  const onClickLink = (href: string, event: unknown) => {
+    console.log('Click', href, event); // eslint-disable-line no-console
     // currently opens link in the browser, check if
     window.open(href, '_blank');
     // require('shell').openExternal('http://www.google.com');
@@ -38,7 +39,7 @@ const Editor: React.FC<EditorProps> = ({ content }: EditorProps) => {
   return (
     <StyledEditor className="mex_editor">
       <NodeInfo>
-        <NoteTitle>Button Component</NoteTitle>
+        <NoteTitle>{edCtx?.state?.node.title}</NoteTitle>
         <InfoTools>
           <IconButton size={24} icon={shareLine} title="Share" />
           <IconButton size={24} icon={linkIcon} title="Copy Link" />
@@ -58,7 +59,8 @@ const Editor: React.FC<EditorProps> = ({ content }: EditorProps) => {
         onClickHashtag={noF}
         onClickLink={onClickLink}
         onFocus={noF}
-        onHoverLink={(e) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onHoverLink={(e: any) => {
           console.log(e); // eslint-disable-line no-console
           return false;
         }}
