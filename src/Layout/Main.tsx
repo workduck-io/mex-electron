@@ -11,6 +11,7 @@ const AppWrapper = styled.div`
   min-height: 100%;
   ${navTooltip};
 `;
+
 const Content = styled.div`
   display: flex;
   flex-grow: 1;
@@ -27,8 +28,8 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
     <AppWrapper>
       <ReactTooltip
         effect="solid"
-        backgroundColor={theme.colors.gray.dark}
-        arrowColor={theme.colors.gray.dark}
+        backgroundColor={theme.colors.gray.s5}
+        arrowColor={theme.colors.gray.s5}
       />
       <SideBar tree={sampleRCTree} starred={sampleRCTree} />
       <Content>{children}</Content>
