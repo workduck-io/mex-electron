@@ -96,11 +96,11 @@ export const StyledEditor = styled('div')`
   }
 
   blockquote:before {
-    background: ${({ theme }) => theme.colors.gray.light};
+    background: ${({ theme }) => theme.colors.gray.s3};
   }
   blockquote {
     :before {
-      background: ${({ theme }) => theme.colors.gray.light}!important;
+      background: ${({ theme }) => theme.colors.gray.s3}!important;
     }
     p {
       margin: 0.25rem 0;
@@ -129,7 +129,7 @@ const colors = {
   greyLight: '#F4F7FA',
   grey: '#E8EBED',
   greyMid: '#C5CCD3',
-  greyDark: darkTheme.colors.gray.s1,
+  greyDark: darkTheme.colors.gray.s3,
   transparent: 'rgba(0, 0, 0, 0)',
 };
 
@@ -143,7 +143,7 @@ export const base = {
   zIndex: 100,
   link: colors.primary,
   placeholder: '#B1BECC',
-  textSecondary: darkTheme.colors.gray.s0,
+  textSecondary: darkTheme.colors.gray.s3,
   textLight: colors.white,
   textHighlight: '#b3e7ff',
   textHighlightForeground: colors.black,

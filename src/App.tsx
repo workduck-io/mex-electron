@@ -1,7 +1,11 @@
 import React from 'react';
+import Modal from 'react-modal';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
+import Lookup, { LookupStyles } from './Components/Lookup';
+import sampleRCTree from './Components/Sidebar/sampleRCTreeData';
 import SampleMarkdown from './Conf/sampleMarkdown';
+import { ProvideEditorContext } from './Context/Editor';
 import Editor from './Editor/Editor';
 import Main from './Layout/Main';
 import { ThinScrollbar } from './Styled/helpers';
@@ -11,7 +15,8 @@ import Dashboard from './Views/Dashboard';
 import Integrations from './Views/Integrations';
 import Snippets from './Views/Snippets';
 import Tasks from './Views/Tasks';
-import { ProvideEditorContext } from './Context/Editor';
+
+Modal.setAppElement('#root');
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}; // NormalizeCSS normalization
@@ -39,6 +44,8 @@ const GlobalStyle = createGlobalStyle`
   #root {
     width: 100%;
   }
+  
+  ${LookupStyles};
 `;
 
 function App() {
@@ -49,7 +56,7 @@ function App() {
       <ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
         <ProvideEditorContext>
           <Main>
-            <GlobalStyle />
+            <Lookup flatTree={sampleRCTree} />
             <Switch>
               <Route
                 exact
@@ -61,6 +68,7 @@ function App() {
               <Route path="/snippets" component={Snippets} />
               <Route path="/" component={Dashboard} />
             </Switch>
+            <GlobalStyle />
           </Main>
         </ProvideEditorContext>
       </ThemeProvider>
