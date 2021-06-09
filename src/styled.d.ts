@@ -34,6 +34,8 @@ declare module 'styled-components' {
         sidebar: string;
       };
       palette: {
+        white: string;
+        black: string;
         green: string;
         yellow: string;
         red: string;

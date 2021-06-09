@@ -12,7 +12,7 @@ const Button = styled.div`
   transition: 0.3s ease;
   &:hover {
     color: ${({ theme }) => theme.colors.text.primary};
-    background: ${({ theme }) => theme.colors.gray.dark};
+    background: ${({ theme }) => theme.colors.gray.s5};
   }
 `;
 
