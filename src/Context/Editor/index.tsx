@@ -1,44 +1,30 @@
-import React, { useContext, createContext, useState } from 'react';
-import TreeNode from '../Types/tree';
+import React, { createContext, useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { EditorContextType, EditorStateProps } from '../../Types/EditorContext';
+import TreeNode from '../../Types/tree';
+import { getContent, getInitialEditorState } from './helpers';
 
-interface EditorStateProps {
-  node: TreeNode;
-  // Is the editor in focus
-}
-
-export type EditorContextType = {
-  // State variables
-  state: EditorStateProps | null;
-  // State transformations
-  loadNode: (node: TreeNode) => void;
-};
-
-export const editorContext = createContext<EditorContextType | null>(null);
-
-const getInitialEditorState = (): EditorStateProps | null => {
-  return {
-    node: {
-      title: '@',
-      id: '@',
-      key: '@',
-      path: '@',
-      mex_icon: undefined,
-      children: [],
-    },
-  };
-};
+export const editorContext = createContext<EditorContextType>({
+  state: getInitialEditorState(),
+  loadNode: () => {},
+});
 
 function useProvideEditorContext(): EditorContextType {
-  const [editorState, setEditorState] = useState<EditorStateProps | null>(
+  const [editorState, setEditorState] = useState<EditorStateProps>(
     getInitialEditorState()
   );
+  const history = useHistory();
 
   const loadEditorNode = (node: TreeNode) => {
+    // console.log('loading Node', { node });
     setEditorState({
       ...editorState,
       node,
+      content: getContent(node.id),
     });
+    history.push('/editor');
   };
+
   return { state: editorState, loadNode: loadEditorNode };
 }
 
@@ -64,4 +50,9 @@ export const withEditorCtx = (Component: any) => {
   };
 };
 
-export { ProvideEditorContext, useEditorContext };
+export {
+  ProvideEditorContext,
+  useEditorContext,
+  getContent,
+  getInitialEditorState,
+};
