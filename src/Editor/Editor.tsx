@@ -14,15 +14,16 @@ import {
   StyledEditor,
 } from '../Styled/Editor';
 
-export type EditorProps = { content: string };
-
-const Editor: React.FC<EditorProps> = ({ content }: EditorProps) => {
-  // console.log({ content });
+const Editor = () => {
   const noF = () => {};
   const edCtx = useEditorContext();
   useEffect(() => {
     ReactTooltip.rebuild();
   }, []);
+  const content = edCtx.state?.content ?? 'Start Writing';
+  const id = edCtx.state?.node.id || '@';
+
+  // console.log('Editor here is updating', { content, id });
 
   const onClickLink = (href: string, event: unknown) => {
     console.log('Click', href, event); // eslint-disable-line no-console
@@ -54,6 +55,13 @@ const Editor: React.FC<EditorProps> = ({ content }: EditorProps) => {
         // When set true together with readOnly set to false, focus at the end of the document automatically.
 
         defaultValue={content}
+        value={content}
+        /** Default value is set for the first render
+         * Value and default value change with editor context
+         * Value is used to change editor content on node change in context
+         */
+
+        id={id}
         onBlur={noF}
         onCancel={noF}
         onClickHashtag={noF}

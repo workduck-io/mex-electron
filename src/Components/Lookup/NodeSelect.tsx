@@ -6,14 +6,10 @@ import { ActionMeta } from 'react-select';
 
 const createOption = (label: string) => ({
   label,
-  value: label.toLowerCase().replace(/\W/g, ''),
+  value: label.toLowerCase().replace(/\s/g, '-'),
 });
 
-const defaultOptions = [
-  createOption('pro'),
-  createOption('pro.git'),
-  createOption('pro.okayish'),
-];
+const defaultOptions = [createOption('@'), createOption('p')];
 
 type Value = {
   label: string;

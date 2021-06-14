@@ -2,6 +2,7 @@
 /* eslint-disable no-console, react/no-access-state-in-setstate */
 /* eslint-disable react/no-danger, no-param-reassign */
 import RCTree from 'rc-tree';
+import { Key } from 'rc-tree/lib/interface';
 /* eslint-enable react/no-danger, no-param-reassign */
 /* eslint-enable no-console, react/no-access-state-in-setstate */
 
@@ -43,6 +44,7 @@ class Tree extends React.Component<RCTreeProps> {
     this.onDragEnter = this.onDragEnter.bind(this);
     this.onDrop = this.onDrop.bind(this);
     this.onExpand = this.onExpand.bind(this);
+    this.onSelect = this.onSelect.bind(this);
   }
 
   onDragEnter({ expandedKeys }: any) {
@@ -129,6 +131,15 @@ class Tree extends React.Component<RCTreeProps> {
     });
   }
 
+  onSelect(_selectedKeys: Key[], info: any) {
+    const { selectedNodes } = info;
+    const { edCtx } = this.props;
+
+    if (selectedNodes.length > 0) {
+      edCtx.loadNode(selectedNodes[0] as TreeNode);
+    }
+  }
+
   render() {
     const { expandedKeys, gData, autoExpandParent }: any = this.state;
 
@@ -146,13 +157,7 @@ class Tree extends React.Component<RCTreeProps> {
           motion={motion}
           switcherIcon={TreeExpandIcon}
           showIcon={false}
-          onSelect={(_selectedKeys, info) => {
-            const { selectedNodes } = info;
-            const { edCtx } = this.props;
-
-            if (selectedNodes.length > 0)
-              edCtx.loadNode(selectedNodes[0] as TreeNode);
-          }}
+          onSelect={this.onSelect}
         />
       </StyledTree>
     );
