@@ -29,6 +29,7 @@ export const StyledEditor = styled('div')`
   max-width: 800px;
   padding: ${({ theme }) => theme.spacing.medium};
   margin: ${({ theme }) => theme.spacing.medium};
+  width: 100%;
 
   font-family: 'Poppins', sans-serif;
   /* font-weight: 400; */
