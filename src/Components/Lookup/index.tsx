@@ -21,8 +21,8 @@ export const LookupStyles = css`
     overflow: auto;
     border-radius: ${({ theme }) => theme.borderRadius.large};
     outline: none;
-    padding: ${({ theme }) => theme.spacing.large};
-    min-height: 400px;
+    padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
+    min-height: 440px;
     min-width: 400px;
   }
   .LookupOverlay {
@@ -67,7 +67,7 @@ const Lookup: React.FC<LookupProps> = () => {
       isOpen={open}
     >
       <h1>Lookup</h1>
-      <LookupInput />
+      <LookupInput closeModal={closeModal} />
     </Modal>
   );
 };

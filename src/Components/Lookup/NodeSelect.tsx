@@ -3,13 +3,17 @@ import React, { useState } from 'react';
 import { useTheme } from 'styled-components';
 import { ThemeConfig } from 'react-select/src/theme';
 import { ActionMeta } from 'react-select';
+import getFlatTree, { getNodeFlatTree, getOptions } from '../../Lib/flatTree';
+import sampleRCTree from '../Sidebar/sampleRCTreeData';
+import { useEditorContext } from '../../Context/Editor';
 
 const createOption = (label: string) => ({
   label,
   value: label.toLowerCase().replace(/\s/g, '-'),
 });
 
-const defaultOptions = [createOption('@'), createOption('p')];
+const flatTree = getFlatTree(sampleRCTree);
+const defaultOptions = getOptions(flatTree);
 
 type Value = {
   label: string;
@@ -21,13 +25,17 @@ interface SelectState {
   options: { label: string; value: string }[];
   value: Value | null;
 }
-
-const LookupInput: React.FC = () => {
+interface LookupInputProps {
+  closeModal: () => void;
+}
+const LookupInput = ({ closeModal }: LookupInputProps) => {
   const [state, setState] = useState<SelectState>({
     isLoading: false,
     options: defaultOptions,
     value: null,
   });
+
+  const edCtx = useEditorContext();
 
   const styledTheme = useTheme();
   const handleChange = (
@@ -39,6 +47,11 @@ const LookupInput: React.FC = () => {
     // console.log(`action: ${actionMeta.action}`);
     // console.groupEnd();
     setState({ ...state, value: newValue });
+    if (newValue) {
+      const node = getNodeFlatTree(newValue.value, flatTree);
+      if (node.length > 0) edCtx.loadNode(node[0]);
+    }
+    closeModal();
   };
 
   const handleCreate = (inputValue: string) => {
