@@ -91,6 +91,10 @@ export const StyledEditor = styled('div')`
     font-size: 1.2rem;
   }
 
+  a {
+    cursor: pointer;
+  }
+
   small,
   .text_small {
     font-size: 0.833rem;
