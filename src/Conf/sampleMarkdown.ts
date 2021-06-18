@@ -4,8 +4,6 @@ const SampleMarkdown = `
 
 It is a simple syntax to represent the structure of the content. It can be converted to HTML as a page.
 
-[[para.link]]
-
 First helpful way to structure thing is with headings:
 
 # h1 Heading
