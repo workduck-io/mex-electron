@@ -46,12 +46,7 @@ const Editor = () => {
       <NodeInfo>
         <NoteTitle>{edCtx?.state?.node.title}</NoteTitle>
         <InfoTools>
-          <IconButton
-            size={24}
-            icon={saveLine}
-            onClick={onSave}
-            title="Share"
-          />
+          <IconButton size={24} icon={saveLine} onClick={onSave} title="Save" />
           <IconButton size={24} icon={shareLine} title="Share" />
           <IconButton size={24} icon={linkIcon} title="Copy Link" />
           <IconButton size={24} icon={more2Fill} title="Options" />
