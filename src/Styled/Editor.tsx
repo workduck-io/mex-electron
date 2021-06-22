@@ -120,6 +120,9 @@ export const StyledEditor = styled('div')`
   pre code {
     font-size: 1rem;
   }
+  pre {
+    background-color: ${({ theme }) => theme.colors.background.surface};
+  }
 `;
 
 const colors = {
