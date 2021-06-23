@@ -254,6 +254,8 @@
     "react-sortablejs": "^6.0.0",
     "react-tooltip": "^4.2.19",
     "regenerator-runtime": "^0.13.5",
+    "remark-parse": "^9.0.0",
+    "remark-slate": "^1.8.0",
     "slate": "^0.63.0",
     "slate-history": "^0.62.0",
     "slate-hyperscript": "^0.62.0",
@@ -261,7 +263,8 @@
     "sortablejs": "^1.13.0",
     "source-map-support": "^0.5.19",
     "styled-components": "^5.3.0",
-    "tinykeys": "^1.2.0"
+    "tinykeys": "^1.2.0",
+    "unified": "^9.2.1"
   },
   "devEngines": {
     "node": ">=10.x",
