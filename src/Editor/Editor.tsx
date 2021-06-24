@@ -10,13 +10,11 @@ import {
 } from '@udecode/slate-plugins';
 import React, { useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
-import markdown from 'remark-parse';
-import slate from 'remark-slate';
-import unified from 'unified';
 import { useEditorContext } from '../Context/Editor';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
 import Plugins from './plugins';
+import { deserialize } from './md-serialize';
 
 const components = createSlatePluginsComponents();
 const options = createSlatePluginsOptions();
@@ -27,6 +25,7 @@ const Editor = () => {
     ReactTooltip.rebuild();
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [content, setContent] = useState<any[] | undefined>(undefined);
 
   const useEditorState = useStoreEditorValue();
@@ -41,21 +40,22 @@ const Editor = () => {
   // console.log(initialValueBasicElements);
 
   useEffect(() => {
-    if (edCtx.state) {
-      unified()
-        .use(markdown)
-        .use(slate)
-        .process(edCtx.state.content, (err, file) => {
-          if (err) throw err;
-          console.log(file.result);
-          setContent(file.result as any[]);
-        });
-      setId(edCtx.state.node.id);
+    const markdownContent = edCtx.state?.content;
+    const nodeId = edCtx.state?.node.id;
+    if (markdownContent && nodeId) {
+      deserialize(markdownContent)
+        .then((sdoc) => {
+          setContent(sdoc);
+          setId(nodeId);
+          return null;
+        })
+        .catch((e) => console.error(e));
     }
   }, [edCtx]);
 
   const onSave = () => {
-    // console.log(useEditorState);
+    console.log(useEditorState);
+    // value.map((v) => serialize(v)).join('');
     // On save the editor should serialize the state to markdown plaintext
   };
 
@@ -81,9 +81,6 @@ const Editor = () => {
           options={options}
         />
       )}
-
-      <hr />
-      {/* <div>{content}</div> */}
     </StyledEditor>
   );
 };
