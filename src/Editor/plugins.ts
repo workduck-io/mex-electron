@@ -1,21 +1,33 @@
 import {
-  createReactPlugin,
-  createHistoryPlugin,
-  createParagraphPlugin,
+  createAutoformatPlugin,
   createBlockquotePlugin,
-  createCodeBlockPlugin,
-  createHeadingPlugin,
   createBoldPlugin,
-  createItalicPlugin,
-  createUnderlinePlugin,
-  createStrikethroughPlugin,
+  createCodeBlockPlugin,
   createCodePlugin,
   createDeserializeMDPlugin,
+  createExitBreakPlugin,
+  createHeadingPlugin,
+  createHistoryPlugin,
   createImagePlugin,
+  createItalicPlugin,
   createLinkPlugin,
   createListPlugin,
+  createParagraphPlugin,
+  createReactPlugin,
+  createResetNodePlugin,
+  createSelectOnBackspacePlugin,
+  createSoftBreakPlugin,
+  createStrikethroughPlugin,
   createTablePlugin,
+  createUnderlinePlugin,
 } from '@udecode/slate-plugins';
+import {
+  optionsAutoformat,
+  optionsExitBreakPlugin,
+  optionsResetBlockTypePlugin,
+  optionsSelectOnBackspacePlugin,
+  optionsSoftBreakPlugin,
+} from './pluginOptions';
 
 const Plugins = [
   // editor
@@ -40,6 +52,15 @@ const Plugins = [
   createLinkPlugin(), // Link
   createListPlugin(), // List
   createTablePlugin(), // Table
+
+  createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin),
+
+  // Editing Plugins
+  createSoftBreakPlugin(optionsSoftBreakPlugin),
+  createExitBreakPlugin(optionsExitBreakPlugin),
+  createResetNodePlugin(optionsResetBlockTypePlugin),
+
+  createAutoformatPlugin(optionsAutoformat),
 
   // serialization / deseriailization
 
