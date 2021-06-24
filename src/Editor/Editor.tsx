@@ -1,21 +1,19 @@
 import linkIcon from '@iconify-icons/ri/link';
 import more2Fill from '@iconify-icons/ri/more-2-fill';
-import shareLine from '@iconify-icons/ri/share-line';
 import saveLine from '@iconify-icons/ri/save-line';
-
+import shareLine from '@iconify-icons/ri/share-line';
 import {
   createSlatePluginsComponents,
   createSlatePluginsOptions,
   SlatePlugins,
   useStoreEditorValue,
 } from '@udecode/slate-plugins';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { useEditorContext } from '../Context/Editor';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
-
-import { initialValueBasicElements } from './defaultValue';
+import { serialize, deserialize } from './md-serialize';
 import Plugins from './plugins';
 
 const components = createSlatePluginsComponents();
@@ -26,9 +24,12 @@ const Editor = () => {
   useEffect(() => {
     ReactTooltip.rebuild();
   }, []);
-  const content = edCtx.state?.content ?? 'Start Writing';
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [content, setContent] = useState<any[] | undefined>(undefined);
+
   const useEditorState = useStoreEditorValue();
-  // const id = edCtx.state?.node.id || '@';
+  const [id, setId] = useState('__null__');
   const editableProps = {
     placeholder: 'Type…',
     style: {
@@ -36,9 +37,25 @@ const Editor = () => {
     },
   };
 
+  // console.log(initialValueBasicElements);
+
+  useEffect(() => {
+    const markdownContent = edCtx.state?.content;
+    const nodeId = edCtx.state?.node.id;
+    if (markdownContent && nodeId) {
+      deserialize(markdownContent)
+        .then((sdoc) => {
+          setContent(sdoc);
+          setId(nodeId);
+          return null;
+        })
+        .catch((e) => console.error(e));
+    }
+  }, [edCtx]);
+
   const onSave = () => {
-    console.log(useEditorState);
     // On save the editor should serialize the state to markdown plaintext
+    console.log(serialize(useEditorState));
   };
 
   return (
@@ -53,17 +70,16 @@ const Editor = () => {
         </InfoTools>
       </NodeInfo>
 
-      <SlatePlugins
-        id="1"
-        editableProps={editableProps}
-        initialValue={initialValueBasicElements}
-        plugins={Plugins}
-        components={components}
-        options={options}
-      />
-
-      <hr />
-      <div>{content}</div>
+      {content && (
+        <SlatePlugins
+          id={id}
+          editableProps={editableProps}
+          initialValue={content}
+          plugins={Plugins}
+          components={components}
+          options={options}
+        />
+      )}
     </StyledEditor>
   );
 };

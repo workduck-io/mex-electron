@@ -1,7 +1,8 @@
 const rishankNotes = `
-![](https://media-exp3.licdn.com/dms/image/C5103AQEqI77XZ3o3Rw/profile-displayphoto-shrink_800_800/0/1522933627521?e=1629331200&v=beta&t=6EkPzOL3h6z-bRqQ9vIdNkRyl31YS9IYKwG2NRfWOrE)
-
 # Rishank Pandey
+
+![Rishank](https://media-exp3.licdn.com/dms/image/C5103AQEqI77XZ3o3Rw/profile-displayphoto-shrink_800_800/0/1522933627521?e=1629331200&v=beta&t=6EkPzOL3h6z-bRqQ9vIdNkRyl31YS9IYKwG2NRfWOrE)
+
 
 > Too Jobs to be Woz, too Woz to be Jobs.
 > Making creation of software feel magical again ---  https://workduck.io!
