@@ -13,8 +13,8 @@ import ReactTooltip from 'react-tooltip';
 import { useEditorContext } from '../Context/Editor';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
+import { serialize, deserialize } from './md-serialize';
 import Plugins from './plugins';
-import { deserialize } from './md-serialize';
 
 const components = createSlatePluginsComponents();
 const options = createSlatePluginsOptions();
@@ -54,9 +54,8 @@ const Editor = () => {
   }, [edCtx]);
 
   const onSave = () => {
-    console.log(useEditorState);
-    // value.map((v) => serialize(v)).join('');
     // On save the editor should serialize the state to markdown plaintext
+    console.log(serialize(useEditorState));
   };
 
   return (
