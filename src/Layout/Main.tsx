@@ -3,7 +3,9 @@ import ReactTooltip from 'react-tooltip';
 import styled, { useTheme } from 'styled-components';
 import SideBar from '../Components/Sidebar';
 import { navTooltip } from '../Components/Sidebar/Nav';
-import sampleRCTree from '../Components/Sidebar/sampleRCTreeData';
+import sampleRCTree, {
+  sampleStarredTree,
+} from '../Components/Sidebar/sampleRCTreeData';
 import { getInitialEditorState, useEditorContext } from '../Context/Editor';
 import { PixelToCSS } from '../Styled/helpers';
 
@@ -42,7 +44,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
         backgroundColor={theme.colors.gray.s5}
         arrowColor={theme.colors.gray.s5}
       />
-      <SideBar tree={sampleRCTree} starred={sampleRCTree} />
+      <SideBar tree={sampleRCTree} starred={sampleStarredTree} />
       <Content>{children}</Content>
     </AppWrapper>
   );

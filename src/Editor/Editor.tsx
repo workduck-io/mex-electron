@@ -54,7 +54,7 @@ const Editor = () => {
         autoFocus
         // When set true together with readOnly set to false, focus at the end of the document automatically.
 
-        defaultValue={content}
+        // defaultValue={content}
         value={content}
         /** Default value is set for the first render
          * Value and default value change with editor context

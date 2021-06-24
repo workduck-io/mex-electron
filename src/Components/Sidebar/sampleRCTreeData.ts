@@ -179,4 +179,77 @@ const sampleRCTree: TreeNode[] = [
   },
 ];
 
+export const sampleStarredTree: TreeNode[] = [
+  {
+    title: '@',
+    id: '@',
+    key: '@',
+    path: '@',
+    mex_icon: undefined,
+    children: [
+      {
+        title: 'Rishank Pandey',
+        id: '@.rishank',
+        key: '@.rishank',
+        path: '@.rishank',
+        mex_icon: undefined,
+        children: [],
+      },
+    ],
+  },
+
+  {
+    title: 'doc',
+    id: 'doc',
+    key: 'doc',
+    path: 'doc',
+    mex_icon: undefined,
+    children: [],
+  },
+
+  {
+    title: 'meet',
+    id: 'meet',
+    key: 'meet',
+    path: 'meet',
+    mex_icon: undefined,
+    children: [],
+  },
+
+  {
+    title: 'workduck',
+
+    id: 'twitter.workduck',
+    key: 'twitter.workduck',
+    path: 'twitter.workduck',
+    mex_icon: undefined,
+    children: [],
+  },
+  {
+    title: 'Pursuits',
+    id: 'pursuits',
+    key: 'pursuits',
+    path: 'pursuits',
+    mex_icon: 'pursuits',
+    children: [
+      {
+        title: 'chess',
+        id: 'pursuits.chess',
+        key: 'pursuits.chess',
+        path: 'pursuits.chess',
+        mex_icon: undefined,
+        children: [],
+      },
+      {
+        title: 'Painting',
+        id: 'pursuits.painting',
+        key: 'pursuits.painting',
+        path: 'pursuits.painting',
+        mex_icon: undefined,
+        children: [],
+      },
+    ],
+  },
+];
+
 export default sampleRCTree;
