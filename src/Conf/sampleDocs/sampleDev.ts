@@ -1,5 +1,10 @@
 const devNotes = ` 
-![xkcd: git](https://imgs.xkcd.com/comics/git_2x.png)
+![git](https://imgs.xkcd.com/comics/git_2x.png)
+
+<img src="https://imgs.xkcd.com/comics/git_2x.png"/>
+
+[xyp](https://www.xypnox.com/)
+
 # Git
 
 - [Notes](#notes)
