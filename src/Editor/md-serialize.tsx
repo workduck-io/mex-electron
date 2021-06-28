@@ -29,7 +29,7 @@ const customNodeTypes = {
 
 export const deserializationOptions: OptionType = {
   nodeTypes: customNodeTypes,
-  linkDestinationKey: 'href',
+  linkDestinationKey: 'url',
   imageSourceKey: 'src',
   imageCaptionKey: 'alt',
 };
