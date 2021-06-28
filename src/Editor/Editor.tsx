@@ -3,7 +3,6 @@ import more2Fill from '@iconify-icons/ri/more-2-fill';
 import saveLine from '@iconify-icons/ri/save-line';
 import shareLine from '@iconify-icons/ri/share-line';
 import {
-  createSlatePluginsComponents,
   createSlatePluginsOptions,
   SlatePlugins,
   useStoreEditorValue,
@@ -13,10 +12,10 @@ import ReactTooltip from 'react-tooltip';
 import { useEditorContext } from '../Context/Editor';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
+import components from './Components/components';
 import { serialize, deserialize } from './md-serialize';
 import Plugins from './plugins';
 
-const components = createSlatePluginsComponents();
 const options = createSlatePluginsOptions();
 
 const Editor = () => {
