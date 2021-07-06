@@ -1,14 +1,22 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import * as React from 'react';
+import Icon from '@iconify/react';
 import { LinkNodeData } from '@udecode/slate-plugins-link';
 import {
   getRootClassNames,
   StyledElementProps,
 } from '@udecode/slate-plugins-ui-fluent';
+import * as React from 'react';
+import styled from 'styled-components';
 
-// import Icon from '@iconify/react';
-// import { EditorIcons } from '../../Icons';
+import { EditorIcons } from '../../Icons';
+
+const Link = styled.a`
+  span.LinkIcon {
+    vertical-align: middle;
+    margin-right: ${({ theme }) => theme.spacing.tiny};
+  }
+`;
 
 const getClassNames = getRootClassNames();
 
@@ -27,9 +35,13 @@ const LinkElement = ({
   const classNames = getClassNames(styles, {
     className,
   });
+  const isExternal = element.url.startsWith('#');
 
   const openLink = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (isExternal) {
+      return;
+    }
     if (e.metaKey) {
       // Only open the link if meta key is pressed
       window.open(element.url);
@@ -37,18 +49,20 @@ const LinkElement = ({
   };
 
   return (
-    <a
+    <Link
       {...attributes}
       href={element.url}
       className={classNames.root}
       onClick={openLink}
       {...nodeProps}
     >
-      {/* <span>
-        <Icon icon={EditorIcons.externalLink} />
-      </span> */}
+      {!isExternal && (
+        <span className="LinkIcon">
+          <Icon icon={EditorIcons.externalLink} />
+        </span>
+      )}
       {children}
-    </a>
+    </Link>
   );
 };
 
