@@ -12,9 +12,23 @@ import styled from 'styled-components';
 import { EditorIcons } from '../../Icons';
 
 const Link = styled.a`
-  span.LinkIcon {
+  .LinkIcon {
+    cursor: pointer;
+    background: ${({ theme }) => theme.colors.background.card};
     vertical-align: middle;
+    padding: 2px 4px 0px;
     margin-right: ${({ theme }) => theme.spacing.tiny};
+    border-radius: ${({ theme }) => theme.borderRadius.small};
+    border: none;
+    svg {
+      color: ${({ theme }) => theme.colors.text.secondary};
+    }
+  }
+
+  &:hover {
+    .LinkIcon svg {
+      color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `;
 
@@ -37,13 +51,17 @@ const LinkElement = ({
   });
   const isExternal = element.url.startsWith('#');
 
-  const openLink = (e: React.MouseEvent) => {
+  const openLink = (e: React.MouseEvent, meta: boolean) => {
     e.preventDefault();
     if (isExternal) {
       return;
     }
-    if (e.metaKey) {
-      // Only open the link if meta key is pressed
+    if (meta) {
+      if (e.metaKey) {
+        // Only open the link if meta key is pressed
+        window.open(element.url);
+      }
+    } else {
       window.open(element.url);
     }
   };
@@ -53,13 +71,22 @@ const LinkElement = ({
       {...attributes}
       href={element.url}
       className={classNames.root}
-      onClick={openLink}
+      onClick={(e) => {
+        openLink(e, true);
+      }}
       {...nodeProps}
     >
       {!isExternal && (
-        <span className="LinkIcon">
+        <button
+          className="LinkIcon"
+          type="button"
+          aria-label="Open link"
+          onClick={(e) => {
+            openLink(e, false);
+          }}
+        >
           <Icon icon={EditorIcons.externalLink} />
-        </span>
+        </button>
       )}
       {children}
     </Link>
