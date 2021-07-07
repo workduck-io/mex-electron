@@ -49,6 +49,14 @@ export const StyledEditor = styled('div')`
     margin-bottom: 0.5rem;
   }
 
+  li,
+  ul {
+    p {
+      margin-bottom: 0;
+      padding: 0;
+    }
+  }
+
   table {
     p {
       margin: 0.25rem 0;

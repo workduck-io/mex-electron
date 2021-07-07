@@ -4,7 +4,7 @@ import {
   createBoldPlugin,
   createCodeBlockPlugin,
   createCodePlugin,
-  createDeserializeMDPlugin,
+  // createDeserializeMDPlugin,
   createExitBreakPlugin,
   createHeadingPlugin,
   createHistoryPlugin,
@@ -65,7 +65,7 @@ const Plugins = [
   // serialization / deseriailization
 
   // Convert pasted markdown to contents of the editor
-  createDeserializeMDPlugin(),
+  // createDeserializeMDPlugin(),
 ];
 
 export default Plugins;

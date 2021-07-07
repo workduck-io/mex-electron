@@ -1,14 +1,36 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import * as React from 'react';
+import Icon from '@iconify/react';
 import { LinkNodeData } from '@udecode/slate-plugins-link';
 import {
   getRootClassNames,
   StyledElementProps,
 } from '@udecode/slate-plugins-ui-fluent';
+import * as React from 'react';
+import styled from 'styled-components';
 
-// import Icon from '@iconify/react';
-// import { EditorIcons } from '../../Icons';
+import { EditorIcons } from '../../Icons';
+
+const Link = styled.a`
+  .LinkIcon {
+    cursor: pointer;
+    background: ${({ theme }) => theme.colors.background.card};
+    vertical-align: middle;
+    padding: 2px 4px 0px;
+    margin-right: ${({ theme }) => theme.spacing.tiny};
+    border-radius: ${({ theme }) => theme.borderRadius.small};
+    border: none;
+    svg {
+      color: ${({ theme }) => theme.colors.text.secondary};
+    }
+  }
+
+  &:hover {
+    .LinkIcon svg {
+      color: ${({ theme }) => theme.colors.primary};
+    }
+  }
+`;
 
 const getClassNames = getRootClassNames();
 
@@ -27,28 +49,47 @@ const LinkElement = ({
   const classNames = getClassNames(styles, {
     className,
   });
+  const isExternal = element.url.startsWith('#');
 
-  const openLink = (e: React.MouseEvent) => {
+  const openLink = (e: React.MouseEvent, meta: boolean) => {
     e.preventDefault();
-    if (e.metaKey) {
-      // Only open the link if meta key is pressed
+    if (isExternal) {
+      return;
+    }
+    if (meta) {
+      if (e.metaKey) {
+        // Only open the link if meta key is pressed
+        window.open(element.url);
+      }
+    } else {
       window.open(element.url);
     }
   };
 
   return (
-    <a
+    <Link
       {...attributes}
       href={element.url}
       className={classNames.root}
-      onClick={openLink}
+      onClick={(e) => {
+        openLink(e, true);
+      }}
       {...nodeProps}
     >
-      {/* <span>
-        <Icon icon={EditorIcons.externalLink} />
-      </span> */}
+      {!isExternal && (
+        <button
+          className="LinkIcon"
+          type="button"
+          aria-label="Open link"
+          onClick={(e) => {
+            openLink(e, false);
+          }}
+        >
+          <Icon icon={EditorIcons.externalLink} />
+        </button>
+      )}
       {children}
-    </a>
+    </Link>
   );
 };
 
