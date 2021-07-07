@@ -13,6 +13,7 @@ import { useEditorContext } from '../Context/Editor';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
 import components from './Components/components';
+import BallonToolbarMarks from './Components/toolbar';
 import { serialize, deserialize } from './md-serialize';
 import Plugins from './plugins';
 
@@ -48,7 +49,7 @@ const Editor = () => {
           setId(nodeId);
           return null;
         })
-        .catch((e) => console.error(e));
+        .catch((e) => console.error(e)); // eslint-disable-line no-console
     }
   }, [edCtx]);
 
@@ -70,14 +71,17 @@ const Editor = () => {
       </NodeInfo>
 
       {content && (
-        <SlatePlugins
-          id={id}
-          editableProps={editableProps}
-          initialValue={content}
-          plugins={Plugins}
-          components={components}
-          options={options}
-        />
+        <>
+          <BallonToolbarMarks />
+          <SlatePlugins
+            id={id}
+            editableProps={editableProps}
+            initialValue={content}
+            plugins={Plugins}
+            components={components}
+            options={options}
+          />
+        </>
       )}
     </StyledEditor>
   );
