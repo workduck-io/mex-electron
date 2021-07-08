@@ -13,7 +13,7 @@ import { useEditorContext } from '../Context/Editor';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
 import components from './Components/components';
-import BallonToolbarMarks from './Components/toolbar';
+import BallonToolbarMarks from './Components/BaloonToolbar';
 import { serialize, deserialize } from './md-serialize';
 import Plugins from './plugins';
 

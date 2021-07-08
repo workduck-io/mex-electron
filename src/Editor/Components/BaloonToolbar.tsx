@@ -21,56 +21,88 @@ import {
   useStoreEditorRef,
   useStoreEditorState,
 } from '@udecode/slate-plugins';
-import React from 'react';
+import React, { useState } from 'react';
 import linkIcon from '@iconify-icons/ri/link';
-
+import { MouseEventHandler } from 'react';
+import { useForm } from 'react-hook-form';
 const LinkButton = ({ getLinkUrl, ...props }: ToolbarLinkProps) => {
   const editor = useStoreEditorState(useEventEditorId('focus'));
 
   const type = getSlatePluginType(editor, ELEMENT_LINK);
   const isLink = !!editor?.selection && someNode(editor, { match: { type } });
 
-  return (
-    <ToolbarButton
-      active={isLink}
-      onMouseDown={async (event) => {
-        if (!editor) return;
+  const [showInput, setShowInput] = useState(false);
 
-        event.preventDefault();
-        let prevUrl = '';
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data: any) => console.log(data);
 
-        const linkNode = getAbove(editor, {
-          match: { type },
+  const handleMouseDownLink: MouseEventHandler<HTMLSpanElement> = async (
+    event
+  ) => {
+    if (!editor) return;
+
+    event.preventDefault();
+    setShowInput(true);
+  };
+
+  const onSubmitLink = async () => {
+    if (!editor) return;
+
+    // return;
+    let prevUrl = '';
+
+    const linkNode = getAbove(editor, {
+      match: { type },
+    });
+    if (linkNode) {
+      prevUrl = linkNode[0].url as string;
+    }
+    console.log(prevUrl);
+
+    let url: string = '';
+    if (getLinkUrl) {
+      let _url = await getLinkUrl(prevUrl);
+      if (_url) {
+        url = _url;
+      }
+    } else {
+      // Get url from user
+      url = 'https://xypnox.com';
+    }
+
+    if (prevUrl) {
+      if (linkNode && editor.selection)
+        unwrapNodes(editor, {
+          at: editor.selection,
+          match: { type: getSlatePluginType(editor, ELEMENT_LINK) },
         });
-        if (linkNode) {
-          prevUrl = linkNode[0].url as string;
-        }
 
-        let url;
-        if (getLinkUrl) {
-          url = await getLinkUrl(prevUrl);
-        } else {
-          // Get url from user
-          url = 'https://xypnox.com';
-        }
+      return;
+    }
 
-        if (!url) {
-          if (linkNode && editor.selection)
-            unwrapNodes(editor, {
-              at: editor.selection,
-              match: { type: getSlatePluginType(editor, ELEMENT_LINK) },
-            });
+    // If our cursor is in middle of a link, then we don't want to inser it inline
+    const shouldWrap: boolean =
+      linkNode !== undefined && isCollapsed(editor.selection);
+    upsertLinkAtSelection(editor, { url, wrap: shouldWrap });
+  };
 
-          return;
-        }
-
-        // If our cursor is in middle of a link, then we don't want to inser it inline
-        const shouldWrap: boolean =
-          linkNode !== undefined && isCollapsed(editor.selection);
-        upsertLinkAtSelection(editor, { url, wrap: shouldWrap });
-      }}
-      {...props}
-    />
+  return (
+    <>
+      <button
+        active={isLink}
+        onMouseDown={handleMouseDownLink}
+        // tooltip={{ interactive: true }}
+        {...props}
+      >
+        {props.icon}
+      </button>
+      {showInput && <input {...register('link_value')} />}
+    </>
   );
 };
 
