@@ -14,8 +14,8 @@ import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
 import components from './Components/components';
 import BallonToolbarMarks from './Components/BaloonToolbar';
-import { serialize, deserialize } from './md-serialize';
-import Plugins from './plugins';
+import { serialize, deserialize } from './Plugins/md-serialize';
+import Plugins from './Plugins/plugins';
 
 const options = createSlatePluginsOptions();
 

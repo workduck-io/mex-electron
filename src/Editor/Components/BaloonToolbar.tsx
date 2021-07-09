@@ -1,9 +1,9 @@
 import boldIcon from '@iconify-icons/ri/bold';
 import italicIcon from '@iconify-icons/ri/italic';
+import linkIcon from '@iconify-icons/ri/link';
 import underlineIcon from '@iconify-icons/ri/underline';
 import Icon from '@iconify/react';
 import {
-  BalloonToolbar,
   ELEMENT_LINK,
   getAbove,
   getSlatePluginType,
@@ -12,7 +12,6 @@ import {
   MARK_ITALIC,
   MARK_UNDERLINE,
   someNode,
-  ToolbarButton,
   ToolbarButtonProps,
   ToolbarMark,
   unwrapNodes,
@@ -21,40 +20,57 @@ import {
   useStoreEditorRef,
   useStoreEditorState,
 } from '@udecode/slate-plugins';
-import React, { useState } from 'react';
-import linkIcon from '@iconify-icons/ri/link';
-import { MouseEventHandler } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-const LinkButton = ({ getLinkUrl, ...props }: ToolbarLinkProps) => {
+import { Transforms } from 'slate';
+import { ReactEditor } from 'slate-react';
+import styled from 'styled-components';
+import { BalloonToolbar } from './BalloonToolbar/BalloonToolbar';
+
+const StyledDiv = styled.div`
+  user-select: all;
+`;
+
+interface LinkButtonProps extends ToolbarLinkProps {
+  setSelected: (selected: boolean) => void;
+}
+
+const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
   const editor = useStoreEditorState(useEventEditorId('focus'));
 
   const type = getSlatePluginType(editor, ELEMENT_LINK);
   const isLink = !!editor?.selection && someNode(editor, { match: { type } });
 
-  const [showInput, setShowInput] = useState(false);
-
   const {
     register,
     handleSubmit,
-    watch,
-    formState: { errors },
+    // watch,
+    // formState: { errors },
+    getValues,
   } = useForm();
-  const onSubmit = (data: any) => console.log(data);
 
-  const handleMouseDownLink: MouseEventHandler<HTMLSpanElement> = async (
-    event
-  ) => {
-    if (!editor) return;
-
-    event.preventDefault();
-    setShowInput(true);
-  };
+  useEffect(() => {
+    setSelected(true);
+    return () => {
+      setSelected(false);
+    };
+  });
 
   const onSubmitLink = async () => {
     if (!editor) return;
 
-    // return;
     let prevUrl = '';
+
+    // Blur focus returns
+    if (!editor || ReactEditor.isFocused(editor)) return;
+    try {
+      ReactEditor.focus(editor);
+      if (!editor.selection && editor.blurSelection) {
+        Transforms.select(editor, editor.blurSelection);
+      }
+    } catch (err) {
+      console.error(err); // eslint-disable-line no-console
+    }
 
     const linkNode = getAbove(editor, {
       match: { type },
@@ -62,17 +78,20 @@ const LinkButton = ({ getLinkUrl, ...props }: ToolbarLinkProps) => {
     if (linkNode) {
       prevUrl = linkNode[0].url as string;
     }
-    console.log(prevUrl);
+    // console.log(prevUrl);
 
-    let url: string = '';
+    let url = '';
     if (getLinkUrl) {
-      let _url = await getLinkUrl(prevUrl);
-      if (_url) {
-        url = _url;
+      const tempUrl = await getLinkUrl(prevUrl);
+      if (tempUrl) {
+        url = tempUrl;
       }
     } else {
       // Get url from user
-      url = 'https://xypnox.com';
+      const val = getValues();
+      // console.log({ val });
+
+      if (val['link-input']) url = val['link-input'];
     }
 
     if (prevUrl) {
@@ -89,27 +108,40 @@ const LinkButton = ({ getLinkUrl, ...props }: ToolbarLinkProps) => {
     const shouldWrap: boolean =
       linkNode !== undefined && isCollapsed(editor.selection);
     upsertLinkAtSelection(editor, { url, wrap: shouldWrap });
+
+    setSelected(false);
   };
 
+  const onSubmit = async (data: any) => {
+    console.log(data);
+    await onSubmitLink();
+  };
+
+  const { icon } = props;
+
   return (
-    <>
-      <button
-        active={isLink}
-        onMouseDown={handleMouseDownLink}
-        // tooltip={{ interactive: true }}
-        {...props}
-      >
-        {props.icon}
-      </button>
-      {showInput && <input {...register('link_value')} />}
-    </>
+    <StyledDiv className="button_of_link">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <button
+          active={isLink.toString()}
+          // onMouseDown={handleMouseDownLink}
+          type="submit"
+          // tooltip={{ interactive: true }}
+          {...props}
+        >
+          {icon}
+        </button>
+        <input type="text" {...register('link-input')} />
+      </form>
+    </StyledDiv>
   );
 };
 
 const BallonToolbarMarks = () => {
   const editor = useStoreEditorRef(useEventEditorId('focus'));
+  const [selected, setSelected] = useState(false);
 
-  const arrow = false;
+  const arrow = true;
   const theme = 'dark';
   const direction = 'top';
   const hiddenDelay = 0;
@@ -117,10 +149,18 @@ const BallonToolbarMarks = () => {
     arrow: true,
     delay: 0,
     duration: [200, 0] as [number, number],
-    hideOnClick: false,
+    // hideOnClick: false,
     offset: [0, 17] as [number, number],
     placement: 'top' as const,
   };
+  // const styles = {
+  //   root: [
+  //     'slate-BalloonToolbar',
+  //     {
+  //       userSelect: 'all',
+  //     },
+  //   ],
+  // };
 
   return (
     <BalloonToolbar
@@ -128,6 +168,8 @@ const BallonToolbarMarks = () => {
       hiddenDelay={hiddenDelay}
       theme={theme}
       arrow={arrow}
+      // styles={styles}
+      selected={selected}
     >
       <ToolbarMark
         type={getSlatePluginType(editor, MARK_BOLD)}
@@ -147,6 +189,7 @@ const BallonToolbarMarks = () => {
       <LinkButton
         tooltip={{ content: 'Link', ...tooltip }}
         icon={<Icon height={24} icon={linkIcon} />}
+        setSelected={setSelected}
       />
     </BalloonToolbar>
   );
