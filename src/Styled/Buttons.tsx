@@ -23,6 +23,11 @@ export type IconButtonProps = {
   onClick?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
+export const HeadlessButton = styled.button`
+  border: none;
+  background: transparent;
+`;
+
 const IconButton: React.FC<IconButtonProps> = ({
   icon,
   title,

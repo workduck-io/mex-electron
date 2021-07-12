@@ -21,6 +21,7 @@ import {
   createTablePlugin,
   createUnderlinePlugin,
 } from '@udecode/slate-plugins';
+import { createBlurSelectionPlugin } from './blurSelection';
 import {
   optionsAutoformat,
   optionsExitBreakPlugin,
@@ -66,6 +67,9 @@ const Plugins = [
 
   // Convert pasted markdown to contents of the editor
   // createDeserializeMDPlugin(),
+
+  // Custom Plugins
+  createBlurSelectionPlugin(),
 ];
 
 export default Plugins;
