@@ -13,6 +13,7 @@ interface LayoutStyle {
   borderRadius: {
     large: string;
     small: string;
+    tiny: string;
   };
   width: {
     nav: Pixels;

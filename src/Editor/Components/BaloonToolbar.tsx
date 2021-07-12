@@ -25,10 +25,24 @@ import { useForm } from 'react-hook-form';
 import { Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import styled from 'styled-components';
+import { HeadlessButton } from '../../Styled/Buttons';
 import { BalloonToolbar } from './BalloonToolbar/BalloonToolbar';
 
-const StyledDiv = styled.div`
+const LinkButtonStyled = styled.div`
   user-select: all;
+  form {
+    display: flex;
+    align-items: center;
+    ${HeadlessButton} {
+      color: inherit;
+    }
+    input {
+      background: ${({ theme }) => theme.colors.background.card};
+      border: 1px solid ${({ theme }) => theme.colors.gray.s3};
+      color: ${({ theme }) => theme.colors.text.secondary};
+      border-radius: ${({ theme }) => theme.borderRadius.tiny};
+    }
+  }
 `;
 
 interface LinkButtonProps extends ToolbarLinkProps {
@@ -40,6 +54,9 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
 
   const type = getSlatePluginType(editor, ELEMENT_LINK);
   const isLink = !!editor?.selection && someNode(editor, { match: { type } });
+  const [inp, setInp] = useState({
+    prev: '',
+  });
 
   const {
     register,
@@ -56,10 +73,20 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
     };
   });
 
+  useEffect(() => {
+    if (!editor) return;
+    const linkNode = getAbove(editor, {
+      match: { type },
+    });
+    if (inp.prev === '' && linkNode) {
+      setInp({
+        prev: linkNode[0].url as string,
+      });
+    }
+  }, [editor, inp.prev, type]);
+
   const onSubmitLink = async () => {
     if (!editor) return;
-
-    let prevUrl = '';
 
     // Blur focus returns
     if (!editor || ReactEditor.isFocused(editor)) return;
@@ -76,13 +103,15 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
       match: { type },
     });
     if (linkNode) {
-      prevUrl = linkNode[0].url as string;
+      setInp({
+        prev: linkNode[0].url as string,
+      });
     }
-    // console.log(prevUrl);
+    console.log(inp);
 
     let url = '';
     if (getLinkUrl) {
-      const tempUrl = await getLinkUrl(prevUrl);
+      const tempUrl = await getLinkUrl(inp.prev);
       if (tempUrl) {
         url = tempUrl;
       }
@@ -94,7 +123,7 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
       if (val['link-input']) url = val['link-input'];
     }
 
-    if (prevUrl) {
+    if (inp.prev) {
       if (linkNode && editor.selection)
         unwrapNodes(editor, {
           at: editor.selection,
@@ -120,9 +149,9 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
   const { icon } = props;
 
   return (
-    <StyledDiv className="button_of_link">
+    <LinkButtonStyled className="button_of_link">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <button
+        <HeadlessButton
           active={isLink.toString()}
           // onMouseDown={handleMouseDownLink}
           type="submit"
@@ -130,10 +159,14 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
           {...props}
         >
           {icon}
-        </button>
-        <input type="text" {...register('link-input')} />
+        </HeadlessButton>
+        <input
+          defaultValue={inp.prev}
+          type="text"
+          {...register('link-input')}
+        />
       </form>
-    </StyledDiv>
+    </LinkButtonStyled>
   );
 };
 
@@ -173,22 +206,22 @@ const BallonToolbarMarks = () => {
     >
       <ToolbarMark
         type={getSlatePluginType(editor, MARK_BOLD)}
-        icon={<Icon height={24} icon={boldIcon} />}
+        icon={<Icon height={20} icon={boldIcon} />}
         tooltip={{ content: 'Bold (⌘B)', ...tooltip }}
       />
       <ToolbarMark
         type={getSlatePluginType(editor, MARK_ITALIC)}
-        icon={<Icon height={24} icon={italicIcon} />}
+        icon={<Icon height={20} icon={italicIcon} />}
         tooltip={{ content: 'Italic (⌘I)', ...tooltip }}
       />
       <ToolbarMark
         type={getSlatePluginType(editor, MARK_UNDERLINE)}
-        icon={<Icon height={24} icon={underlineIcon} />}
+        icon={<Icon height={20} icon={underlineIcon} />}
         tooltip={{ content: 'Underline (⌘U)', ...tooltip }}
       />
       <LinkButton
         tooltip={{ content: 'Link', ...tooltip }}
-        icon={<Icon height={24} icon={linkIcon} />}
+        icon={<Icon height={20} icon={linkIcon} />}
         setSelected={setSelected}
       />
     </BalloonToolbar>

@@ -11,6 +11,7 @@ const LayoutTheme: LayoutStyle = {
   borderRadius: {
     large: '1rem',
     small: '0.5rem',
+    tiny: '0.25rem',
   },
   width: {
     nav: 48,
