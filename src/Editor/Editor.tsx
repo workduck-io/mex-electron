@@ -4,18 +4,26 @@ import saveLine from '@iconify-icons/ri/save-line';
 import shareLine from '@iconify-icons/ri/share-line';
 import {
   createSlatePluginsOptions,
+  OnChange,
   SlatePlugins,
+  useStoreEditorRef,
   useStoreEditorValue,
 } from '@udecode/slate-plugins';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
+import { MENTIONABLES } from '../Conf/mentions';
 import { useEditorContext } from '../Context/Editor';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
-import components from './Components/components';
 import BallonToolbarMarks from './Components/BaloonToolbar';
-import { serialize, deserialize } from './Plugins/md-serialize';
-import Plugins from './Plugins/plugins';
+import { useComboboxOnKeyDown } from './Components/combobox/hooks/useComboboxOnKeyDown';
+import { useComboboxIsOpen } from './Components/combobox/selectors/useComboboxIsOpen';
+import { useComboboxStore } from './Components/combobox/useComboboxStore';
+import components from './Components/components';
+import { useTagOnChange } from './Components/tag/hooks/useTagOnChange';
+import { useTagOnSelectItem } from './Components/tag/hooks/useTagOnSelectItem';
+import { deserialize, serialize } from './Plugins/md-serialize';
+import generatePlugins, { ComboboxContainer } from './Plugins/plugins';
 
 const options = createSlatePluginsOptions();
 
@@ -58,6 +66,52 @@ const Editor = () => {
     console.log(serialize(useEditorState));
   };
 
+  // Combobox
+
+  // Handle multiple combobox
+  const useComboboxOnChange = (): OnChange => {
+    const editor = useStoreEditorRef(id)!;
+
+    const tagOnChange = useTagOnChange(editor, MENTIONABLES);
+    const isOpen = useComboboxIsOpen();
+    const closeMenu = useComboboxStore((state) => state.closeMenu);
+
+    return useCallback(
+      () => () => {
+        let changed: boolean | undefined = false;
+        changed = tagOnChange();
+
+        if (changed) return;
+
+        if (!changed && isOpen) {
+          closeMenu();
+        }
+      },
+      [closeMenu, isOpen, tagOnChange]
+    );
+  };
+
+  const comboboxOnChange = useComboboxOnChange();
+
+  const tagOnSelect = useTagOnSelectItem();
+
+  // Handle multiple combobox
+  const comboboxOnKeyDown = useComboboxOnKeyDown({
+    onSelectItem: tagOnSelect,
+  });
+
+  const pluginConfigs = {
+    combobox: {
+      onChange: comboboxOnChange,
+      onKeyDown: comboboxOnKeyDown,
+    },
+  };
+
+  // We get memoized plugins
+  const plugins = useMemo(() => generatePlugins(pluginConfigs), [
+    pluginConfigs,
+  ]);
+
   return (
     <StyledEditor className="mex_editor">
       <NodeInfo>
@@ -77,10 +131,12 @@ const Editor = () => {
             id={id}
             editableProps={editableProps}
             initialValue={content}
-            plugins={Plugins}
+            plugins={plugins}
             components={components}
             options={options}
-          />
+          >
+            <ComboboxContainer />
+          </SlatePlugins>
         </>
       )}
     </StyledEditor>
