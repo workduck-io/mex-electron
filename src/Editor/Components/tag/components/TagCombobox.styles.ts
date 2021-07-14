@@ -7,7 +7,7 @@ import styled, { css } from 'styled-components';
 // };
 
 export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
-  ${({ isOpen }) =>
+  ${({ isOpen, theme }) =>
     isOpen &&
     css`
       top: -9999px;
@@ -16,7 +16,7 @@ export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
       padding: 0;
       margin: 0;
       z-index: 11;
-      background: white;
+      background: ${theme.colors.background.surface};
       width: 300px;
       border-radius: 0 0 2px 2px;
       box-shadow: rgba(0, 0, 0, 0.133) 0 3.2px 7.2px 0,
@@ -37,13 +37,15 @@ export const ComboboxItem = styled.div<{ highlighted: boolean }>`
   // lineHeight: "20px";
   // overflowWrap: "break-word";
   user-select: none;
-  color: rgb(32, 31, 30);
-  background: ${({ highlighted }) =>
-    !highlighted ? 'transparent' : 'rgb(237, 235, 233)'};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  background: ${({ highlighted, theme }) =>
+    !highlighted ? 'transparent' : theme.colors.background.highlight};
   cursor: pointer;
 
   :hover {
-    background-color: ${({ highlighted }) =>
-      !highlighted ? 'rgb(243, 242, 241)' : 'rgb(237, 235, 233)'};
+    background-color: ${({ highlighted, theme }) =>
+      !highlighted
+        ? theme.colors.background.card
+        : theme.colors.background.highlight};
   }
 `;

@@ -20,6 +20,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   const at = useComboboxStore((state) => state.targetRange);
   const items = useComboboxStore((state) => state.items);
   const itemIndex = useComboboxStore((state) => state.itemIndex);
+  const search = useComboboxStore((state) => state.search);
   const combobox = useComboboxControls();
   const isOpen = useComboboxIsOpen();
 
@@ -41,6 +42,11 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   return (
     <PortalBody>
       <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
+        {isOpen && items.length === 0 ? (
+          <ComboboxItem key="new" highlighted>
+            Create tag: {search}
+          </ComboboxItem>
+        ) : null}
         {isOpen &&
           items.map((item, index) => {
             const Item = onRenderItem ? onRenderItem({ item }) : item.text;

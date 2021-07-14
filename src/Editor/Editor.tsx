@@ -80,30 +80,25 @@ const Editor = () => {
       () => () => {
         let changed: boolean | undefined = false;
         changed = tagOnChange();
-
         if (changed) return;
 
-        if (!changed && isOpen) {
-          closeMenu();
-        }
+        if (!changed && isOpen) closeMenu();
       },
       [closeMenu, isOpen, tagOnChange]
     );
   };
 
-  const comboboxOnChange = useComboboxOnChange();
-
-  const tagOnSelect = useTagOnSelectItem();
-
-  // Handle multiple combobox
-  const comboboxOnKeyDown = useComboboxOnKeyDown({
-    onSelectItem: tagOnSelect,
-  });
-
   const pluginConfigs = {
     combobox: {
-      onChange: comboboxOnChange,
-      onKeyDown: comboboxOnKeyDown,
+      onChange: useComboboxOnChange(),
+      onKeyDown: useComboboxOnKeyDown({
+        // Handle multiple combobox
+        onSelectItem: useTagOnSelectItem(),
+        onNewItem: (editor, setName) => {
+          console.log('We gotta create a new item here fellas', { editor });
+          setName('Hello');
+        },
+      }),
     },
   };
 

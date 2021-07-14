@@ -11,12 +11,15 @@ import { getNextWrappingIndex } from '../utils/getNextWrappingIndex';
  */
 export const useComboboxOnKeyDown = ({
   onSelectItem,
+  onNewItem,
 }: {
   onSelectItem: (editor: SPEditor, item: IComboboxItem) => any;
+  onNewItem: (editor: SPEditor, setName: (name: string) => void) => void;
 }): KeyboardHandler => {
   const itemIndex = useComboboxStore((state) => state.itemIndex);
   const setItemIndex = useComboboxStore((state) => state.setItemIndex);
   const closeMenu = useComboboxStore((state) => state.closeMenu);
+  const search = useComboboxStore((state) => state.search);
   const items = useComboboxStore((state) => state.items);
   const isOpen = useComboboxIsOpen();
 
@@ -59,12 +62,17 @@ export const useComboboxOnKeyDown = ({
           closeMenu();
           if (items[itemIndex]) {
             onSelectItem(editor, items[itemIndex]);
+          } else {
+            onNewItem(editor, () => {
+              console.log({ search });
+              if (search) onSelectItem(editor, { key: search, text: search });
+            });
           }
           return false;
         }
       }
       return false;
     },
-    [isOpen, itemIndex, items, setItemIndex, closeMenu, onSelectItem]
+    [isOpen, itemIndex, items, setItemIndex, closeMenu, onSelectItem, onNewItem]
   );
 };
