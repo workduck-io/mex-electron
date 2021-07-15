@@ -14,7 +14,7 @@ export const useComboboxOnKeyDown = ({
   onNewItem,
 }: {
   onSelectItem: (editor: SPEditor, item: IComboboxItem) => any;
-  onNewItem: (editor: SPEditor, setName: (name: string) => void) => void;
+  onNewItem: (name: string) => void;
 }): KeyboardHandler => {
   const itemIndex = useComboboxStore((state) => state.itemIndex);
   const setItemIndex = useComboboxStore((state) => state.setItemIndex);
@@ -62,11 +62,9 @@ export const useComboboxOnKeyDown = ({
           closeMenu();
           if (items[itemIndex]) {
             onSelectItem(editor, items[itemIndex]);
-          } else {
-            onNewItem(editor, () => {
-              console.log({ search });
-              if (search) onSelectItem(editor, { key: search, text: search });
-            });
+          } else if (search) {
+            onSelectItem(editor, { key: search, text: search });
+            onNewItem(search);
           }
           return false;
         }

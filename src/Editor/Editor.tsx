@@ -11,8 +11,7 @@ import {
 } from '@udecode/slate-plugins';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { MENTIONABLES } from '../Conf/mentions';
-import { useEditorContext } from '../Context/Editor';
+import { useEditorStore } from './Store/EditorStore';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
 import BallonToolbarMarks from './Components/BaloonToolbar';
@@ -24,11 +23,17 @@ import { useTagOnChange } from './Components/tag/hooks/useTagOnChange';
 import { useTagOnSelectItem } from './Components/tag/hooks/useTagOnSelectItem';
 import { deserialize, serialize } from './Plugins/md-serialize';
 import generatePlugins, { ComboboxContainer } from './Plugins/plugins';
+import useDataStore from './Store/DataStore';
 
 const options = createSlatePluginsOptions();
 
 const Editor = () => {
-  const edCtx = useEditorContext();
+  const mdContent = useEditorStore((state) => state.content);
+  const nodeId = useEditorStore((state) => state.node.id);
+  const title = useEditorStore((state) => state.node.title);
+
+  const tags = useDataStore((state) => state.tags);
+
   useEffect(() => {
     ReactTooltip.rebuild();
   }, []);
@@ -45,13 +50,12 @@ const Editor = () => {
     },
   };
 
+  const addTag = useDataStore((state) => state.addTag);
   // console.log(initialValueBasicElements);
 
   useEffect(() => {
-    const markdownContent = edCtx.state?.content;
-    const nodeId = edCtx.state?.node.id;
-    if (markdownContent && nodeId) {
-      deserialize(markdownContent)
+    if (mdContent && nodeId) {
+      deserialize(mdContent)
         .then((sdoc) => {
           setContent(sdoc);
           setId(nodeId);
@@ -59,7 +63,7 @@ const Editor = () => {
         })
         .catch((e) => console.error(e)); // eslint-disable-line no-console
     }
-  }, [edCtx]);
+  }, [mdContent, nodeId]);
 
   const onSave = () => {
     // On save the editor should serialize the state to markdown plaintext
@@ -72,7 +76,7 @@ const Editor = () => {
   const useComboboxOnChange = (): OnChange => {
     const editor = useStoreEditorRef(id)!;
 
-    const tagOnChange = useTagOnChange(editor, MENTIONABLES);
+    const tagOnChange = useTagOnChange(editor, tags);
     const isOpen = useComboboxIsOpen();
     const closeMenu = useComboboxStore((state) => state.closeMenu);
 
@@ -94,9 +98,10 @@ const Editor = () => {
       onKeyDown: useComboboxOnKeyDown({
         // Handle multiple combobox
         onSelectItem: useTagOnSelectItem(),
-        onNewItem: (editor, setName) => {
-          console.log('We gotta create a new item here fellas', { editor });
-          setName('Hello');
+        onNewItem: (newTag) => {
+          console.log('We gotta create a new item here fellas', { newTag });
+          addTag(newTag);
+          // addTag()
         },
       }),
     },
@@ -110,7 +115,7 @@ const Editor = () => {
   return (
     <StyledEditor className="mex_editor">
       <NodeInfo>
-        <NoteTitle>{edCtx?.state?.node.title}</NoteTitle>
+        <NoteTitle>{title}</NoteTitle>
         <InfoTools>
           <IconButton size={24} icon={saveLine} onClick={onSave} title="Save" />
           <IconButton size={24} icon={shareLine} title="Share" />

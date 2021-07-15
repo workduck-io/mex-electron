@@ -29,12 +29,14 @@ export const useTagOnChange = (editor: TEditor, data: MentionNodeData[]) => {
 
     if (!search) return false;
 
+    console.log({ data });
+
     const items: IComboboxItem[] = data
-      .filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
+      .filter((c) => c.text.toLowerCase().includes(search.toLowerCase()))
       .slice(0, maxSuggestions)
       .map((item) => ({
         key: item.value,
-        text: item.name,
+        text: item.text,
       }));
 
     setItems(items);

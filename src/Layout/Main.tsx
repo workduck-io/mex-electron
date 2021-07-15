@@ -1,11 +1,15 @@
 import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import styled, { useTheme } from 'styled-components';
 import SideBar from '../Components/Sidebar';
 import { navTooltip } from '../Components/Sidebar/Nav';
 import sampleRCTree from '../Components/Sidebar/sampleRCTreeData';
-import { getInitialEditorState, useEditorContext } from '../Context/Editor';
+import { getInitialNode } from '../Editor/Store/helpers';
+import { useEditorStore } from '../Editor/Store/EditorStore';
 import { PixelToCSS } from '../Styled/helpers';
+import useDataStore from '../Editor/Store/DataStore';
+import tagStrings from '../Conf/sampleTags';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -25,15 +29,24 @@ export type MainProps = { children: React.ReactNode };
 
 const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const theme = useTheme();
-  const edCtx = useEditorContext();
-  /** Initialization of the app details occur here
-   * It is located in main as all the contexts are initialized
-   */
+  const history = useHistory();
+  const loadNode = useEditorStore((state) => state.loadNode);
+  const id = useEditorStore((state) => state.node.id);
+
+  const initializeData = useDataStore((state) => state.initializeData);
+  /** Initialization of the app details occur here */
   useEffect(() => {
     console.log('Initializing'); // eslint-disable-line no-console
 
-    edCtx?.loadNode(getInitialEditorState().node);
+    loadNode(getInitialNode());
+
+    initializeData(tagStrings, ['Fill sample IDs here']);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    // Switch to the editor page whenever a new ID is loaded
+    history.push('/editor');
+  }, [id]);
 
   return (
     <AppWrapper>

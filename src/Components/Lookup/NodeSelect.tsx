@@ -1,11 +1,11 @@
-import CreatableSelect from 'react-select/creatable';
 import React, { useState } from 'react';
-import { useTheme } from 'styled-components';
-import { ThemeConfig } from 'react-select/src/theme';
 import { ActionMeta } from 'react-select';
+import CreatableSelect from 'react-select/creatable';
+import { ThemeConfig } from 'react-select/src/theme';
+import { useTheme } from 'styled-components';
+import { useEditorStore } from '../../Editor/Store/EditorStore';
 import getFlatTree, { getNodeFlatTree, getOptions } from '../../Lib/flatTree';
 import sampleRCTree from '../Sidebar/sampleRCTreeData';
-import { useEditorContext } from '../../Context/Editor';
 
 const createOption = (label: string) => ({
   label,
@@ -35,7 +35,7 @@ const LookupInput = ({ closeModal }: LookupInputProps) => {
     value: null,
   });
 
-  const edCtx = useEditorContext();
+  const loadNode = useEditorStore((s) => s.loadNode);
 
   const styledTheme = useTheme();
   const handleChange = (
@@ -49,7 +49,7 @@ const LookupInput = ({ closeModal }: LookupInputProps) => {
     setState({ ...state, value: newValue });
     if (newValue) {
       const node = getNodeFlatTree(newValue.value, flatTree);
-      if (node.length > 0) edCtx.loadNode(node[0]);
+      if (node.length > 0) loadNode(node[0]);
     }
     closeModal();
   };

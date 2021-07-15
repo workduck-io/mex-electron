@@ -25,7 +25,7 @@ import {
   SlatePlugin,
   SPEditor,
 } from '@udecode/slate-plugins';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useComboboxControls } from '../Components/combobox/hooks/useComboboxControls';
 import { TagCombobox } from '../Components/tag/components/TagCombobox';
 import { createTagPlugin } from '../Components/tag/createTagPlugin';

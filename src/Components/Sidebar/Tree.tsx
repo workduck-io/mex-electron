@@ -7,7 +7,7 @@ import { Key } from 'rc-tree/lib/interface';
 /* eslint-enable no-console, react/no-access-state-in-setstate */
 
 import React from 'react';
-import { withEditorCtx } from '../../Context/Editor';
+import { withLoadNode } from '../../Editor/Store/EditorStore';
 import { StyledTree } from '../../Styled/Sidebar';
 import TreeNode from '../../Types/tree';
 import TreeExpandIcon from './Icon';
@@ -27,7 +27,7 @@ const motion = {
 
 interface RCTreeProps {
   tree: any;
-  edCtx: any;
+  loadNode: any;
 }
 
 /* Renders a draggable tree with custom collapse-able icon */
@@ -133,10 +133,10 @@ class Tree extends React.Component<RCTreeProps> {
 
   onSelect(_selectedKeys: Key[], info: any) {
     const { selectedNodes } = info;
-    const { edCtx } = this.props;
+    const { loadNode } = this.props;
 
     if (selectedNodes.length > 0) {
-      edCtx.loadNode(selectedNodes[0] as TreeNode);
+      loadNode(selectedNodes[0] as TreeNode);
     }
   }
 
@@ -164,4 +164,4 @@ class Tree extends React.Component<RCTreeProps> {
   }
 }
 
-export default withEditorCtx(Tree);
+export default withLoadNode(Tree);

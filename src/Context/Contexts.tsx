@@ -1,6 +1,7 @@
 import React from 'react';
-import { ProvideEditorContext } from './Editor';
 
 export default function Contexts({ children }: { children: React.ReactNode }) {
-  return <ProvideEditorContext>{children}</ProvideEditorContext>;
+  // Add contexts around children (if any)
+  // Use a zustand store to mitigate contexts (if possible)
+  return <>{children}</>;
 }
