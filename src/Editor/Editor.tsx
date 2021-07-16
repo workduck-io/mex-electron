@@ -99,9 +99,8 @@ const Editor = () => {
         // Handle multiple combobox
         onSelectItem: useTagOnSelectItem(),
         onNewItem: (newTag) => {
-          console.log('We gotta create a new item here fellas', { newTag });
+          // console.log('We gotta create a new item here fellas', { newTag });
           addTag(newTag);
-          // addTag()
         },
       }),
     },
