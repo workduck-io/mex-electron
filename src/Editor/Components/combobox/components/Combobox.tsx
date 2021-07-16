@@ -44,7 +44,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   return (
     <PortalBody>
       <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
-        {isOpen && items.length === 0 ? (
+        {isOpen && items.length === 0 && search !== '' ? (
           <ComboboxItem key="new" highlighted>
             Create tag: {search}
           </ComboboxItem>

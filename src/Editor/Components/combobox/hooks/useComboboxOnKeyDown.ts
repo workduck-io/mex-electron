@@ -57,7 +57,7 @@ export const useComboboxOnKeyDown = ({
           return closeMenu();
         }
 
-        if (['Tab', 'Enter'].includes(e.key)) {
+        if (['Tab', 'Enter', ' '].includes(e.key)) {
           e.preventDefault();
           closeMenu();
           if (items[itemIndex]) {
