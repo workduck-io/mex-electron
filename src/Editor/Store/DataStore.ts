@@ -1,4 +1,5 @@
 import create from 'zustand';
+import { generateILink } from '../../Conf/sampleILinks';
 import { generateTag } from '../../Conf/sampleTags';
 
 interface ComboText {
@@ -32,7 +33,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   },
   addILink: (ilink) => {
     set({
-      ilinks: [...get().ilinks, generateTag(ilink, get().ilinks.length)],
+      ilinks: [...get().ilinks, generateILink(ilink, get().ilinks.length)],
     });
   },
 }));
