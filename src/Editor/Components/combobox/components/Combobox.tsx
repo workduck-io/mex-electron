@@ -39,7 +39,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
 
   if (!combobox) return null;
 
-  console.log({ items });
+  // console.log({ items });
 
   return (
     <PortalBody>

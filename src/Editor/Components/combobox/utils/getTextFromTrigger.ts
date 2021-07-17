@@ -18,6 +18,8 @@ export const getTextFromTrigger = (
   let start: Point | undefined = at;
   let end: Point | undefined;
 
+  console.log({ start, end, at, trigger });
+
   while (true) {
     end = start;
 

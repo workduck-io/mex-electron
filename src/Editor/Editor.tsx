@@ -24,6 +24,8 @@ import { useTagOnSelectItem } from './Components/tag/hooks/useTagOnSelectItem';
 import { deserialize, serialize } from './Plugins/md-serialize';
 import generatePlugins, { ComboboxContainer } from './Plugins/plugins';
 import useDataStore from './Store/DataStore';
+import { useILinkOnSelectItem } from './Components/ilink/hooks/useILinkOnSelectItem';
+import { useILinkOnChange } from './Components/ilink/hooks/useILinkOnChange';
 
 const options = createSlatePluginsOptions();
 
@@ -33,6 +35,7 @@ const Editor = () => {
   const title = useEditorStore((state) => state.node.title);
 
   const tags = useDataStore((state) => state.tags);
+  const ilinks = useDataStore((state) => state.ilinks);
 
   useEffect(() => {
     ReactTooltip.rebuild();
@@ -51,6 +54,7 @@ const Editor = () => {
   };
 
   const addTag = useDataStore((state) => state.addTag);
+  const addILink = useDataStore((state) => state.addILink);
   // console.log(initialValueBasicElements);
 
   useEffect(() => {
@@ -76,19 +80,20 @@ const Editor = () => {
   const useComboboxOnChange = (): OnChange => {
     const editor = useStoreEditorRef(id)!;
 
-    const tagOnChange = useTagOnChange(editor, tags);
+    const ilinkOnChange = useILinkOnChange(editor, ilinks);
+    // const tagOnChange = useTagOnChange(editor, tags);
     const isOpen = useComboboxIsOpen();
     const closeMenu = useComboboxStore((state) => state.closeMenu);
 
     return useCallback(
       () => () => {
         let changed: boolean | undefined = false;
-        changed = tagOnChange();
+        changed = ilinkOnChange();
         if (changed) return;
 
         if (!changed && isOpen) closeMenu();
       },
-      [closeMenu, isOpen, tagOnChange]
+      [closeMenu, isOpen, ilinkOnChange]
     );
   };
 
@@ -97,10 +102,12 @@ const Editor = () => {
       onChange: useComboboxOnChange(),
       onKeyDown: useComboboxOnKeyDown({
         // Handle multiple combobox
-        onSelectItem: useTagOnSelectItem(),
-        onNewItem: (newTag) => {
-          // console.log('We gotta create a new item here fellas', { newTag });
-          addTag(newTag);
+        onSelectItem: useILinkOnSelectItem(),
+        // onSelectItem: useTagOnSelectItem(),
+        onNewItem: (newItem) => {
+          // console.log('We gotta create a new item here fellas', { newItem });
+          addILink(newItem);
+          // addTag(newItem);
         },
       }),
     },

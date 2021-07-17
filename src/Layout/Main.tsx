@@ -9,7 +9,8 @@ import { getInitialNode } from '../Editor/Store/helpers';
 import { useEditorStore } from '../Editor/Store/EditorStore';
 import { PixelToCSS } from '../Styled/helpers';
 import useDataStore from '../Editor/Store/DataStore';
-import tagStrings from '../Conf/sampleTags';
+import tags from '../Conf/sampleTags';
+import ilinks from '../Conf/sampleILinks';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -40,7 +41,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
     loadNode(getInitialNode());
 
-    initializeData(tagStrings, ['Fill sample IDs here']);
+    initializeData(tags, ilinks);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {

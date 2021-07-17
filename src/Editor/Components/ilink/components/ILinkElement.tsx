@@ -68,7 +68,7 @@ export const ILinkElementBase = ({
       contentEditable={false}
     >
       <div className={`${classNames.link}`} {...onClickProps}>
-        #{element.value}
+        [[{element.value}]]
       </div>
       {children}
     </div>

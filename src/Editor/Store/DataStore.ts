@@ -10,23 +10,29 @@ interface ComboText {
 
 interface DataStoreState {
   tags: ComboText[];
-  ids: string[];
-  initializeData: (tags: ComboText[], ids: string[]) => void;
+  ilinks: ComboText[];
+  initializeData: (tags: ComboText[], ids: ComboText[]) => void;
   addTag: (tag: string) => void;
+  addILink: (ilink: string) => void;
 }
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   tags: [],
-  ids: [],
-  initializeData: (tags, ids) => {
+  ilinks: [],
+  initializeData: (tags, ilinks) => {
     set({
       tags,
-      ids,
+      ilinks,
     });
   },
   addTag: (tag) => {
     set({
       tags: [...get().tags, generateTag(tag, get().tags.length)],
+    });
+  },
+  addILink: (ilink) => {
+    set({
+      ilinks: [...get().ilinks, generateTag(ilink, get().ilinks.length)],
     });
   },
 }));

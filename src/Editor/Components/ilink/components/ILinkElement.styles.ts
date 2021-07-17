@@ -4,8 +4,8 @@ import {
 } from './ILinkElement.types';
 
 const classNames = {
-  root: 'slate-ILinkElement',
-  link: 'slate-ILinkElement-link',
+  root: 'slate-ilinkElement',
+  link: 'slate-ilinkElement-link',
 };
 
 export const getILinkElementStyles = ({

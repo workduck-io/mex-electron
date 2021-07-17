@@ -27,8 +27,10 @@ import {
 } from '@udecode/slate-plugins';
 import React from 'react';
 import { useComboboxControls } from '../Components/combobox/hooks/useComboboxControls';
-import { TagCombobox } from '../Components/tag/components/TagCombobox';
-import { createTagPlugin } from '../Components/tag/createTagPlugin';
+import { ILinkCombobox } from '../Components/ilink/components/ILinkCombobox';
+import { createILinkPlugin } from '../Components/ilink/createILinkPlugin';
+// import { TagCombobox } from '../Components/tag/components/TagCombobox';
+// import { createTagPlugin } from '../Components/tag/createTagPlugin';
 import { createBlurSelectionPlugin } from './blurSelection';
 import {
   optionsAutoformat,
@@ -42,7 +44,8 @@ import {
 export const ComboboxContainer = () => {
   useComboboxControls();
 
-  return <TagCombobox />;
+  // return <TagCombobox />;
+  return <ILinkCombobox />;
 };
 
 interface PluginConfigs {
@@ -101,8 +104,8 @@ const generatePlugins = (config: PluginConfigs) => {
     createBlurSelectionPlugin() as SlatePlugin<SPEditor>,
 
     // Comboboxes
-    // Tags
-    createTagPlugin(),
+    // createTagPlugin(), // Tags
+    createILinkPlugin(), // Internal Links ILinks
     {
       onChange: config.combobox.onChange,
       onKeyDown: config.combobox.onKeyDown,
