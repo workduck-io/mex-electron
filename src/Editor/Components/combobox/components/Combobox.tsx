@@ -24,7 +24,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   const combobox = useComboboxControls();
   const isOpen = useComboboxIsOpen();
 
-  const ref = React.useRef<any>(null);
+  const ref = React.useRef<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const editor = useEditorState();
   // const _editor = useStoreEditorState(useEventEditorId('focus'));
   // console.log(editor === _editor);
@@ -46,7 +46,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
       <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
         {isOpen && items.length === 0 && search !== '' ? (
           <ComboboxItem key="new" highlighted>
-            Create tag: {search}
+            Create new: {search}
           </ComboboxItem>
         ) : null}
         {isOpen &&

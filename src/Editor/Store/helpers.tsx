@@ -50,7 +50,6 @@ export const getInitialEditorState = (): EditorStateProps => {
       title: '@',
       id: '@',
       key: '@',
-      path: '@',
       mex_icon: undefined,
       children: [],
     },
@@ -62,7 +61,17 @@ export const getInitialNode = (): TreeNode => ({
   title: '@',
   id: '@',
   key: '@',
-  path: '@',
   mex_icon: undefined,
   children: [],
 });
+
+export const getNodeFromId = (id: string): TreeNode => {
+  // search for ID and load it's node
+  return {
+    title: id,
+    id,
+    key: id,
+    mex_icon: undefined,
+    children: [],
+  };
+};

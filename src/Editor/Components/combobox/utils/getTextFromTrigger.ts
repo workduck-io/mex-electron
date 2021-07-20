@@ -18,8 +18,9 @@ export const getTextFromTrigger = (
   let start: Point | undefined = at;
   let end: Point | undefined;
 
-  console.log({ start, end, at, trigger });
+  // console.log({ start, end, at, trigger });
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     end = start;
 

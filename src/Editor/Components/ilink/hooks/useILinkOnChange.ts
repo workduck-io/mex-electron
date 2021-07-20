@@ -29,7 +29,7 @@ export const useILinkOnChange = (editor: TEditor, data: MentionNodeData[]) => {
 
     if (!search) return false;
 
-    console.log({ data });
+    // console.log({ data });
 
     const items: IComboboxItem[] = data
       .filter((c) => c.text.toLowerCase().includes(search.toLowerCase()))

@@ -16,6 +16,8 @@ export type EditorContextType = {
 
   // Load a node and its contents in the editor
   loadNode: (node: TreeNode) => void;
+
+  loadNodeFromId: (id: string) => void;
 };
 
 export const useEditorStore = create<EditorContextType>((set) => ({
@@ -26,6 +28,9 @@ export const useEditorStore = create<EditorContextType>((set) => ({
       node,
       content: getContent(node.id),
     }));
+  },
+  loadNodeFromId: (id: string) => {
+    Error(`Make me ${id}`);
   },
 }));
 

@@ -34,7 +34,7 @@ export const useComboboxOnChange = ({
 
       if (isCursorAfterTrigger) {
         const { range, textAfterTrigger } = isCursorAfterTrigger;
-        console.log({ range, textAfterTrigger });
+        // console.log({ range, textAfterTrigger });
 
         setKey(key);
         setTargetRange(range);
