@@ -2,6 +2,7 @@ import create from 'zustand';
 import { generateTree } from '../../Components/Sidebar/sampleRCTreeData';
 import { generateILink } from '../../Conf/sampleILinks';
 import { generateTag } from '../../Conf/sampleTags';
+import getFlatTree from '../../Lib/flatTree';
 
 interface ComboText {
   // This interface is used to store tags in a combobox friendly way.
@@ -54,6 +55,10 @@ export const useTreeFromLinks = () => {
   const tree = generateTree(links);
 
   return tree;
+};
+
+export const useFlatTreeFromILinks = () => {
+  return getFlatTree(useTreeFromLinks());
 };
 
 export default useDataStore;

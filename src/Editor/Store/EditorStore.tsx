@@ -1,6 +1,6 @@
 import React from 'react';
 import create from 'zustand';
-import { getContent, getInitialNode } from './helpers';
+import { getContent, getInitialNode, getNodeFromId } from './helpers';
 import TreeNode from '../../Types/tree';
 
 export type EditorContextType = {
@@ -30,7 +30,11 @@ export const useEditorStore = create<EditorContextType>((set) => ({
     }));
   },
   loadNodeFromId: (id: string) => {
-    Error(`Make me ${id}`);
+    const node = getNodeFromId(id);
+    set(() => ({
+      node,
+      content: getContent(node.id),
+    }));
   },
 }));
 
