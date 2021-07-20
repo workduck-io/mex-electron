@@ -46,7 +46,7 @@ export const getILinkElementStyles = ({
         // textDecoration: selectedFocused ? 'underline' : 'none',
         textDecoration: 'none',
         whiteSpace: 'nowrap',
-        color: 'rgb(0, 120, 212) !important',
+        // color: 'rgb(0, 120, 212) !important',
       },
       'hover:underline',
       classNames.link,

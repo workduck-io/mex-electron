@@ -19,8 +19,6 @@ import { useComboboxOnKeyDown } from './Components/combobox/hooks/useComboboxOnK
 import { useComboboxIsOpen } from './Components/combobox/selectors/useComboboxIsOpen';
 import { useComboboxStore } from './Components/combobox/useComboboxStore';
 import components from './Components/components';
-import { useTagOnChange } from './Components/tag/hooks/useTagOnChange';
-import { useTagOnSelectItem } from './Components/tag/hooks/useTagOnSelectItem';
 import { deserialize, serialize } from './Plugins/md-serialize';
 import generatePlugins, { ComboboxContainer } from './Plugins/plugins';
 import useDataStore from './Store/DataStore';
@@ -34,7 +32,7 @@ const Editor = () => {
   const nodeId = useEditorStore((state) => state.node.id);
   const title = useEditorStore((state) => state.node.title);
 
-  const tags = useDataStore((state) => state.tags);
+  // const tags = useDataStore((state) => state.tags);
   const ilinks = useDataStore((state) => state.ilinks);
 
   useEffect(() => {
@@ -53,7 +51,7 @@ const Editor = () => {
     },
   };
 
-  const addTag = useDataStore((state) => state.addTag);
+  // const addTag = useDataStore((state) => state.addTag);
   const addILink = useDataStore((state) => state.addILink);
   // console.log(initialValueBasicElements);
 

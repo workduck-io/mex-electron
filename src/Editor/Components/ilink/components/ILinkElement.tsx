@@ -11,6 +11,7 @@ import {
   ILinkElementStyleProps,
   ILinkElementStyleSet,
 } from './ILinkElement.types';
+import { useEditorStore } from '../../../Store/EditorStore';
 
 const getClassNames = getRootClassNames<
   ILinkElementStyleProps,
@@ -31,8 +32,11 @@ export const ILinkElementBase = ({
   const editor = useEditorRef();
   const selected = useSelected();
   const focused = useFocused();
+  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId);
 
-  const onClickProps = useOnMouseClick(() => console.info('ILink clicked'));
+  const onClickProps = useOnMouseClick(() => {
+    loadNodeFromId(element.value);
+  });
 
   useHotkeys(
     'backspace',
@@ -68,7 +72,9 @@ export const ILinkElementBase = ({
       contentEditable={false}
     >
       <div className={`${classNames.link}`} {...onClickProps}>
-        [[{element.value}]]
+        <span className="ILink_decoration ILink_decoration_left">[[</span>
+        {element.value}
+        <span className="ILink_decoration ILink_decoration_right">]]</span>
       </div>
       {children}
     </div>
