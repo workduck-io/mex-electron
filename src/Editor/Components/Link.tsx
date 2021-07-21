@@ -84,6 +84,7 @@ const LinkElement = ({
           onClick={(e) => {
             openLink(e, false);
           }}
+          contentEditable={false}
         >
           <Icon icon={EditorIcons.externalLink} />
         </button>

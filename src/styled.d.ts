@@ -33,6 +33,7 @@ declare module 'styled-components' {
         card: string;
         surface: string;
         sidebar: string;
+        highlight: string;
       };
       palette: {
         white: string;

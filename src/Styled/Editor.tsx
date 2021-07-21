@@ -101,6 +101,7 @@ export const StyledEditor = styled('div')`
 
   a {
     cursor: pointer;
+    color: ${({ theme }) => theme.colors.secondary};
   }
 
   small,
@@ -130,6 +131,19 @@ export const StyledEditor = styled('div')`
   }
   pre {
     background-color: ${({ theme }) => theme.colors.background.surface};
+  }
+
+  .slate-ilinkElement-link {
+    color: ${({ theme }) => theme.colors.secondary};
+    .ILink_decoration {
+      color: ${({ theme }) => theme.colors.text.disabled};
+      &_left {
+        margin-right: ${({ theme }) => theme.spacing.tiny};
+      }
+      &_right {
+        margin-left: ${({ theme }) => theme.spacing.tiny};
+      }
+    }
   }
 `;
 

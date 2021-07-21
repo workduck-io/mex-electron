@@ -32,9 +32,10 @@ export const darkTheme: DefaultTheme = {
       surface: '#13192e',
       card: '#1F2947',
       sidebar: '#091744',
+      highlight: '#1a2d64',
     },
     palette: {
-      white: '#fff',
+      white: '#ecdbdb',
       black: '#000',
       green: '#9fe732',
       yellow: '#FFCB6B',
@@ -84,6 +85,7 @@ export const lightTheme: DefaultTheme = {
       card: '#202c3f',
       surface: '#1B2537',
       sidebar: '#1B2537',
+      highlight: '#1a2d64',
     },
     palette: {
       white: '#fff',
