@@ -6,8 +6,9 @@ import { Key } from 'rc-tree/lib/interface';
 /* eslint-enable react/no-danger, no-param-reassign */
 /* eslint-enable no-console, react/no-access-state-in-setstate */
 
+import equal from 'fast-deep-equal';
 import React from 'react';
-import { withEditorCtx } from '../../Context/Editor';
+import { withLoadNode } from '../../Editor/Store/EditorStore';
 import { StyledTree } from '../../Styled/Sidebar';
 import TreeNode from '../../Types/tree';
 import TreeExpandIcon from './Icon';
@@ -27,17 +28,16 @@ const motion = {
 
 interface RCTreeProps {
   tree: any;
-  edCtx: any;
+  loadNode: any;
 }
 
 /* Renders a draggable tree with custom collapse-able icon */
 class Tree extends React.Component<RCTreeProps> {
-  constructor(props: any) {
+  constructor(props: RCTreeProps) {
     super(props);
     this.state = {
       gData: props.tree,
       autoExpandParent: true,
-      expandedKeys: ['lib'],
     };
 
     // These three functions were from the react-component/tree example
@@ -45,6 +45,13 @@ class Tree extends React.Component<RCTreeProps> {
     this.onDrop = this.onDrop.bind(this);
     this.onExpand = this.onExpand.bind(this);
     this.onSelect = this.onSelect.bind(this);
+  }
+
+  componentDidUpdate(prevProps: RCTreeProps) {
+    const { tree } = this.props;
+    if (!equal(prevProps, this.props))
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ gData: tree });
   }
 
   onDragEnter({ expandedKeys }: any) {
@@ -133,15 +140,16 @@ class Tree extends React.Component<RCTreeProps> {
 
   onSelect(_selectedKeys: Key[], info: any) {
     const { selectedNodes } = info;
-    const { edCtx } = this.props;
+    const { loadNode } = this.props;
 
     if (selectedNodes.length > 0) {
-      edCtx.loadNode(selectedNodes[0] as TreeNode);
+      loadNode(selectedNodes[0] as TreeNode);
     }
   }
 
   render() {
-    const { expandedKeys, gData, autoExpandParent }: any = this.state;
+    const { expandedKeys, autoExpandParent }: any = this.state;
+    const { tree } = this.props;
 
     return (
       <StyledTree className="draggable-demo">
@@ -153,7 +161,7 @@ class Tree extends React.Component<RCTreeProps> {
           // onDragStart={this.onDragStart}
           onDragEnter={this.onDragEnter}
           onDrop={this.onDrop}
-          treeData={gData}
+          treeData={tree}
           motion={motion}
           switcherIcon={TreeExpandIcon}
           showIcon={false}
@@ -164,4 +172,4 @@ class Tree extends React.Component<RCTreeProps> {
   }
 }
 
-export default withEditorCtx(Tree);
+export default withLoadNode(Tree);

@@ -1,19 +1,13 @@
-import CreatableSelect from 'react-select/creatable';
 import React, { useState } from 'react';
-import { useTheme } from 'styled-components';
-import { ThemeConfig } from 'react-select/src/theme';
 import { ActionMeta } from 'react-select';
-import getFlatTree, { getNodeFlatTree, getOptions } from '../../Lib/flatTree';
-import sampleRCTree from '../Sidebar/sampleRCTreeData';
-import { useEditorContext } from '../../Context/Editor';
-
-const createOption = (label: string) => ({
-  label,
-  value: label.toLowerCase().replace(/\s/g, '-'),
-});
-
-const flatTree = getFlatTree(sampleRCTree);
-const defaultOptions = getOptions(flatTree);
+import CreatableSelect from 'react-select/creatable';
+import { ThemeConfig } from 'react-select/src/theme';
+import { useTheme } from 'styled-components';
+import useDataStore, {
+  useFlatTreeFromILinks,
+} from '../../Editor/Store/DataStore';
+import { useEditorStore } from '../../Editor/Store/EditorStore';
+import { getNodeFlatTree, getOptions } from '../../Lib/flatTree';
 
 type Value = {
   label: string;
@@ -25,51 +19,43 @@ interface SelectState {
   options: { label: string; value: string }[];
   value: Value | null;
 }
+
 interface LookupInputProps {
   closeModal: () => void;
 }
+
 const LookupInput = ({ closeModal }: LookupInputProps) => {
+  const defaultOptions = getOptions(useFlatTreeFromILinks());
   const [state, setState] = useState<SelectState>({
     isLoading: false,
     options: defaultOptions,
     value: null,
   });
 
-  const edCtx = useEditorContext();
+  const loadNode = useEditorStore((s) => s.loadNode);
+  const loadNodeFromId = useEditorStore((s) => s.loadNodeFromId);
+  const addILink = useDataStore((s) => s.addILink);
 
   const styledTheme = useTheme();
+  const flattree = useFlatTreeFromILinks();
+
   const handleChange = (
     newValue: Value | null,
     _actionMeta: ActionMeta<Value> // eslint-disable-line @typescript-eslint/no-unused-vars
   ) => {
-    // console.group('Value Changed');
-    // console.log(newValue);
-    // console.log(`action: ${actionMeta.action}`);
-    // console.groupEnd();
-    setState({ ...state, value: newValue });
+    // setState({ ...state, value: newValue });
     if (newValue) {
-      const node = getNodeFlatTree(newValue.value, flatTree);
-      if (node.length > 0) edCtx.loadNode(node[0]);
+      const node = getNodeFlatTree(newValue.value, flattree);
+      if (node.length > 0) loadNode(node[0]);
     }
     closeModal();
   };
 
   const handleCreate = (inputValue: string) => {
     setState({ ...state, isLoading: true });
-    // console.group('Option created');
-    // console.log('Wait a moment...');
-    setTimeout(() => {
-      const { options } = state;
-      const newOption = createOption(inputValue);
-      // console.log(newOption);
-      // console.groupEnd();
-      setState({
-        ...state,
-        isLoading: false,
-        options: [...options, newOption],
-        value: newOption,
-      });
-    }, 1000);
+    addILink(inputValue);
+    loadNodeFromId(inputValue);
+    closeModal();
   };
 
   const { isLoading, options, value } = state;

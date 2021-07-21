@@ -66,12 +66,12 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
     getValues,
   } = useForm();
 
-  useEffect(() => {
-    setSelected(true);
-    return () => {
-      setSelected(false);
-    };
-  });
+  // useEffect(() => {
+  //   setSelected(true);
+  //   return () => {
+  //     setSelected(false);
+  //   };
+  // });
 
   useEffect(() => {
     if (!editor) return;

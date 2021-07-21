@@ -1,182 +1,85 @@
 import TreeNode from '../../Types/tree';
 
-const sampleRCTree: TreeNode[] = [
-  {
-    title: '@',
-    id: '@',
-    key: '@',
-    path: '@',
-    mex_icon: undefined,
-    children: [
-      {
-        title: 'Rishank Pandey',
-        id: '@.rishank',
-        key: '@.rishank',
-        path: '@.rishank',
-        mex_icon: undefined,
-        children: [],
-      },
-    ],
-  },
-  {
-    title: 'dev',
-    id: 'dev',
-    key: 'dev',
-    path: 'dev',
-    mex_icon: undefined,
-    children: [],
-  },
-  {
-    title: 'doc',
-    id: 'doc',
-    key: 'doc',
-    path: 'doc',
-    mex_icon: undefined,
-    children: [],
-  },
-  {
-    title: 'meet',
-    id: 'meet',
-    key: 'meet',
-    path: 'meet',
-    mex_icon: undefined,
-    children: [],
-  },
-  {
-    title: 'twitter',
-    id: 'twitter',
-    key: 'twitter',
-    path: 'twitter',
-    mex_icon: undefined,
-    children: [
-      {
-        title: 'workduck',
-        id: 'twitter.workduck',
-        key: 'twitter.workduck',
-        path: 'twitter.workduck',
-        mex_icon: undefined,
-        children: [],
-      },
-    ],
-  },
-  {
-    title: 'Pursuits',
-    id: 'pursuits',
-    key: 'pursuits',
-    path: 'pursuits',
-    mex_icon: 'pursuits',
-    children: [
-      {
-        title: 'chess',
-        id: 'pursuits.chess',
-        key: 'pursuits.chess',
-        path: 'pursuits.chess',
-        mex_icon: undefined,
-        children: [],
-      },
-      {
-        title: 'Painting',
-        id: 'pursuits.painting',
-        key: 'pursuits.painting',
-        path: 'pursuits.painting',
-        mex_icon: undefined,
-        children: [],
-      },
-    ],
-  },
-  {
-    title: 'Library',
-    id: 'lib',
-    key: 'lib',
-    path: 'lib',
-    mex_icon: undefined,
-    children: [
-      {
-        title: 'Books',
-        id: 'lib.books',
-        key: 'lib.books',
-        path: 'lib.books',
-        mex_icon: undefined,
-        children: [
-          {
-            title: 'The Night',
-            id: 'lib.books.the-night',
-            key: 'lib.books.the-night',
-            path: 'lib.books.the-night',
-            mex_icon: undefined,
-            children: [],
-          },
-          {
-            title: 'Once Upon a Time',
-            id: 'lib.books.once-upon-a-time',
-            key: 'lib.books.once-upon-a-time',
-            path: 'lib.books.once-upon-a-time',
-            mex_icon: undefined,
-            children: [
-              {
-                title: 'chapters',
-                id: 'lib.books.once-upon-a-time.chapters',
-                key: 'lib.books.once-upon-a-time.chapters',
-                path: 'lib.books.once-upon-a-time.chapters',
-                mex_icon: undefined,
-                children: [],
-              },
-              {
-                title: 'quotes',
-                id: 'lib.books.once-upon-a-time.quotes',
-                key: 'lib.books.once-upon-a-time.quotes',
-                path: 'lib.books.once-upon-a-time.quotes',
-                mex_icon: undefined,
-                children: [],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        title: 'Series',
-        id: 'lib.series',
-        key: 'lib.series',
-        path: 'lib.series',
-        mex_icon: undefined,
-        children: [
-          {
-            title: 'Alma Matters',
-            id: 'lib.series.alma-matters',
-            key: 'lib.series.alma-matters',
-            path: 'lib.series.alma-matters',
-            mex_icon: undefined,
-            children: [],
-          },
-          {
-            title: 'Yes Minister',
-            id: 'lib.series.yes-minister',
-            key: 'lib.series.yes-minister',
-            path: 'lib.series.yes-minister',
-            mex_icon: undefined,
-            children: [
-              {
-                title: 'Chess',
-                id: 'lib.series.yes-minister.chess',
-                key: 'lib.series.yes-minister.chess',
-                path: 'lib.series.yes-minister.chess',
-                mex_icon: undefined,
-                children: [],
-              },
-              {
-                title: 'Painting',
-                id: 'lib.series.yes-minister.painting',
-                key: 'lib.series.yes-minister.painting',
-                path: 'lib.series.yes-minister.painting',
-                mex_icon: undefined,
-                children: [],
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
+export const sampleFlatTree = [
+  '@',
+  'docs',
+  'dev',
+  'dev.big',
+  'dev.big.small',
+  'dev.git',
+  'dev.js',
+  'pro',
+  'pro.mex',
+  'pro.mex.issues',
+  'com',
+  'com.workduck',
 ];
 
-export default sampleRCTree;
+const SEPARATOR = '.';
+
+export const getParentId = (id: string) => {
+  const lastIndex = id.lastIndexOf(SEPARATOR);
+  if (lastIndex === -1) return null;
+  return id.slice(0, lastIndex);
+};
+
+export const isElder = (id: string, xparent: string) => {
+  return id.startsWith(xparent + SEPARATOR);
+};
+
+export const isParent = (id: string, parent: string) => {
+  return getParentId(id) === parent;
+};
+
+const createChildLess = (n: string): TreeNode => ({
+  id: n,
+  title: n,
+  key: n,
+  mex_icon: undefined,
+  children: [],
+});
+
+// Insert the given node in a nested tree
+const insertInNested = (iNode: TreeNode, nestedTree: TreeNode[]) => {
+  const newNested = [...nestedTree];
+
+  newNested.forEach((n) => {
+    const index = newNested.indexOf(n);
+    if (index > -1) {
+      if (isElder(iNode.id, n.id)) {
+        let children: TreeNode[];
+        if (isParent(iNode.id, n.id)) {
+          children = [...n.children, iNode];
+        } else {
+          children = insertInNested(iNode, n.children);
+        }
+        // console.log({ children });
+        newNested.splice(index, 1, {
+          ...n,
+          children,
+        });
+      }
+    }
+  });
+
+  return newNested;
+};
+
+// Generate nested node tree from a list of ordered id strings
+export const generateTree = (tree: string[]) => {
+  // tree should be sorted
+  let nestedTree: TreeNode[] = [];
+  tree.forEach((n) => {
+    const parentId = getParentId(n);
+    if (parentId === null) {
+      // add to tree first level
+      nestedTree.push(createChildLess(n));
+    } else {
+      // Will have a parent
+      nestedTree = insertInNested(createChildLess(n), nestedTree);
+    }
+  });
+  return nestedTree;
+};
+
+export default generateTree(sampleFlatTree);
