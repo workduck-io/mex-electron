@@ -12,12 +12,13 @@ import ReactTooltip from 'react-tooltip';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
 import BallonToolbarMarks from './Components/BaloonToolbar';
-import { useComboboxOnKeyDown } from './Components/combobox/hooks/useComboboxOnKeyDown';
 import components from './Components/components';
 import { useILinkOnChange } from './Components/ilink/hooks/useILinkOnChange';
 import { useILinkOnSelectItem } from './Components/ilink/hooks/useILinkOnSelectItem';
 import useMultiComboboxOnChange from './Components/multi-combobox/useMultiComboboxChange';
+import useMultiComboboxOnKeyDown from './Components/multi-combobox/useMultiComboboxOnKeyDown';
 import { useTagOnChange } from './Components/tag/hooks/useTagOnChange';
+import { useTagOnSelectItem } from './Components/tag/hooks/useTagOnSelectItem';
 import { deserialize, serialize } from './Plugins/md-serialize';
 import generatePlugins, { ComboboxContainer } from './Plugins/plugins';
 import useDataStore from './Store/DataStore';
@@ -49,7 +50,7 @@ const Editor = () => {
     },
   };
 
-  // const addTag = useDataStore((state) => state.addTag);
+  const addTag = useDataStore((state) => state.addTag);
   const addILink = useDataStore((state) => state.addILink);
   // console.log(initialValueBasicElements);
 
@@ -84,12 +85,19 @@ const Editor = () => {
           data: tags,
         },
       }),
-      // Replace onKeyDown with a custom multi-combobox handler
-      onKeyDown: useComboboxOnKeyDown({
+      onKeyDown: useMultiComboboxOnKeyDown({
         // Handle multiple combobox
-        onSelectItem: useILinkOnSelectItem(),
-        onNewItem: (newItem) => {
-          addILink(newItem);
+        ilink: {
+          selectHandler: useILinkOnSelectItem,
+          newItemHandler: (newItem) => {
+            addILink(newItem);
+          },
+        },
+        tag: {
+          selectHandler: useTagOnSelectItem,
+          newItemHandler: (newItem) => {
+            addTag(newItem);
+          },
         },
       }),
     },
