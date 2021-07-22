@@ -63,8 +63,7 @@ export const useComboboxOnKeyDown = ({
           if (items[itemIndex]) {
             onSelectItem(editor, items[itemIndex]);
           } else if (search) {
-            console.log({ search });
-
+            // console.log({ search });
             onSelectItem(editor, { key: String(items.length), text: search });
             onNewItem(search);
           }

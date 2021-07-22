@@ -11,7 +11,6 @@ import {
 } from '@udecode/slate-plugins';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { useEditorStore } from './Store/EditorStore';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
 import BallonToolbarMarks from './Components/BaloonToolbar';
@@ -19,11 +18,13 @@ import { useComboboxOnKeyDown } from './Components/combobox/hooks/useComboboxOnK
 import { useComboboxIsOpen } from './Components/combobox/selectors/useComboboxIsOpen';
 import { useComboboxStore } from './Components/combobox/useComboboxStore';
 import components from './Components/components';
+import { useILinkOnChange } from './Components/ilink/hooks/useILinkOnChange';
+import { useILinkOnSelectItem } from './Components/ilink/hooks/useILinkOnSelectItem';
 import { deserialize, serialize } from './Plugins/md-serialize';
 import generatePlugins, { ComboboxContainer } from './Plugins/plugins';
 import useDataStore from './Store/DataStore';
-import { useILinkOnSelectItem } from './Components/ilink/hooks/useILinkOnSelectItem';
-import { useILinkOnChange } from './Components/ilink/hooks/useILinkOnChange';
+import { useEditorStore } from './Store/EditorStore';
+// import { useTagOnChange } from './Components/tag/hooks/useTagOnChange';
 
 const options = createSlatePluginsOptions();
 

@@ -10,7 +10,7 @@ export const useILinkOnChange = (editor: TEditor, data: MentionNodeData[]) => {
   const comboboxOnChange = useComboboxOnChange({
     editor,
     key: ComboboxKey.ILINK,
-    trigger: '[',
+    trigger: '[[',
   });
   const { maxSuggestions, setItems } = useComboboxStore(
     // eslint-disable-next-line @typescript-eslint/no-shadow
