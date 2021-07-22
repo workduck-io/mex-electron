@@ -12,6 +12,7 @@ import {
   createItalicPlugin,
   createLinkPlugin,
   createListPlugin,
+  createMediaEmbedPlugin,
   createParagraphPlugin,
   createReactPlugin,
   createResetNodePlugin,
@@ -20,11 +21,13 @@ import {
   createStrikethroughPlugin,
   createTablePlugin,
   createUnderlinePlugin,
+  ELEMENT_MEDIA_EMBED,
   KeyboardHandler,
   OnChange,
   SlatePlugin,
   SPEditor,
 } from '@udecode/slate-plugins';
+
 import React from 'react';
 import { useComboboxControls } from '../Components/combobox/hooks/useComboboxControls';
 import { ILinkCombobox } from '../Components/ilink/components/ILinkCombobox';
@@ -100,6 +103,9 @@ const generatePlugins = (config: PluginConfigs) => {
     // Convert pasted markdown to contents of the editor
     // createDeserializeMDPlugin(),
 
+    // Media and link embed
+    createMediaEmbedPlugin(),
+    createSelectOnBackspacePlugin({ allow: [ELEMENT_MEDIA_EMBED] }),
     // Custom Plugins
     createBlurSelectionPlugin() as SlatePlugin<SPEditor>,
 
