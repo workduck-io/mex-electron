@@ -40,11 +40,15 @@ export const useComboboxOnChange = ({
         setTargetRange(range);
         setSearch(textAfterTrigger);
 
+        console.log({
+          search: textAfterTrigger,
+        });
         return {
           search: textAfterTrigger,
         };
       }
     }
+
     return { search: undefined };
   }, [editor, trigger, setKey, key, setTargetRange, setSearch]);
 };
