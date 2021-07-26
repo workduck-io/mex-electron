@@ -14,10 +14,10 @@ import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
 import BallonToolbarMarks from './Components/BaloonToolbar';
 import { ComboboxKey } from './Components/combobox/useComboboxStore';
 import components from './Components/components';
-import { useILinkOnSelectItem } from './Components/ilink/hooks/useILinkOnSelectItem';
+import { ELEMENT_ILINK } from './Components/ilink/defaults';
 import useMultiComboboxOnChange from './Components/multi-combobox/useMultiComboboxChange';
 import useMultiComboboxOnKeyDown from './Components/multi-combobox/useMultiComboboxOnKeyDown';
-import { useTagOnSelectItem } from './Components/tag/hooks/useTagOnSelectItem';
+import { ELEMENT_TAG } from './Components/tag/defaults';
 import { deserialize, serialize } from './Plugins/md-serialize';
 import generatePlugins, { ComboboxContainer } from './Plugins/plugins';
 import useDataStore from './Store/DataStore';
@@ -87,15 +87,14 @@ const Editor = () => {
         },
       }),
       onKeyDown: useMultiComboboxOnKeyDown({
-        // Handle multiple combobox
         ilink: {
-          selectHandler: useILinkOnSelectItem,
+          slateElementType: ELEMENT_ILINK,
           newItemHandler: (newItem) => {
             addILink(newItem);
           },
         },
         tag: {
-          selectHandler: useTagOnSelectItem,
+          slateElementType: ELEMENT_TAG,
           newItemHandler: (newItem) => {
             addTag(newItem);
           },
