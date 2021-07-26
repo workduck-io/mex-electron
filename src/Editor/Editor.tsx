@@ -7,17 +7,16 @@ import {
   SlatePlugins,
   useStoreEditorValue,
 } from '@udecode/slate-plugins';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
 import BallonToolbarMarks from './Components/BaloonToolbar';
+import { ComboboxKey } from './Components/combobox/useComboboxStore';
 import components from './Components/components';
-import { useILinkOnChange } from './Components/ilink/hooks/useILinkOnChange';
 import { useILinkOnSelectItem } from './Components/ilink/hooks/useILinkOnSelectItem';
 import useMultiComboboxOnChange from './Components/multi-combobox/useMultiComboboxChange';
 import useMultiComboboxOnKeyDown from './Components/multi-combobox/useMultiComboboxOnKeyDown';
-import { useTagOnChange } from './Components/tag/hooks/useTagOnChange';
 import { useTagOnSelectItem } from './Components/tag/hooks/useTagOnSelectItem';
 import { deserialize, serialize } from './Plugins/md-serialize';
 import generatePlugins, { ComboboxContainer } from './Plugins/plugins';
@@ -68,7 +67,7 @@ const Editor = () => {
 
   const onSave = () => {
     // On save the editor should serialize the state to markdown plaintext
-    console.log(serialize(useEditorState));
+    console.log(serialize(useEditorState)); // eslint-disable-line no-console
   };
 
   // Combobox
@@ -77,11 +76,13 @@ const Editor = () => {
     combobox: {
       onChange: useMultiComboboxOnChange(id, {
         ilink: {
-          handler: useILinkOnChange,
+          cbKey: ComboboxKey.ILINK,
+          trigger: '[[',
           data: ilinks,
         },
         tag: {
-          handler: useTagOnChange,
+          cbKey: ComboboxKey.TAG,
+          trigger: '#',
           data: tags,
         },
       }),
@@ -104,9 +105,7 @@ const Editor = () => {
   };
 
   // We get memoized plugins
-  const plugins = useMemo(() => generatePlugins(pluginConfigs), [
-    pluginConfigs,
-  ]);
+  const plugins = generatePlugins(pluginConfigs);
 
   return (
     <StyledEditor className="mex_editor">

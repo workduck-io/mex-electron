@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import { isCollapsed, TEditor } from '@udecode/slate-plugins';
-import { Range } from 'slate';
+import { TEditor } from '@udecode/slate-plugins';
 import { useComboboxStore } from '../useComboboxStore';
-import { getTextFromTrigger } from '../utils/getTextFromTrigger';
+import { ComboboxType } from '../../multi-combobox/types';
+import getTextFromTriggers from '../../multi-combobox/getMultiTextFromTrigger';
 
 /**
  * If the cursor is after the trigger and at the end of the word:
@@ -10,45 +10,28 @@ import { getTextFromTrigger } from '../utils/getTextFromTrigger';
  */
 export const useComboboxOnChange = ({
   editor,
-  key,
-  trigger,
+  keys,
 }: {
   editor: TEditor;
-  key: string;
-  trigger: string;
+  keys: {
+    [type: string]: ComboboxType;
+  };
 }) => {
   const setTargetRange = useComboboxStore((state) => state.setTargetRange);
   const setSearch = useComboboxStore((state) => state.setSearch);
   const setKey = useComboboxStore((state) => state.setKey);
 
   return useCallback(() => {
-    const { selection } = editor;
+    const textFromTrigger = getTextFromTriggers(editor, keys);
+    if (textFromTrigger) {
+      const { key, search, range } = textFromTrigger;
 
-    if (selection && isCollapsed(selection)) {
-      const cursor = Range.start(selection);
-
-      const isCursorAfterTrigger = getTextFromTrigger(editor, {
-        at: cursor,
-        trigger,
-      });
-
-      if (isCursorAfterTrigger) {
-        const { range, textAfterTrigger } = isCursorAfterTrigger;
-        // console.log({ range, textAfterTrigger });
-
-        setKey(key);
-        setTargetRange(range);
-        setSearch(textAfterTrigger);
-
-        console.log({
-          search: textAfterTrigger,
-        });
-        return {
-          search: textAfterTrigger,
-        };
-      }
+      setKey(key);
+      setTargetRange(range);
+      setSearch(search);
+      return { search };
     }
 
     return { search: undefined };
-  }, [editor, trigger, setKey, key, setTargetRange, setSearch]);
+  }, [editor, keys, setKey, setTargetRange, setSearch]);
 };
