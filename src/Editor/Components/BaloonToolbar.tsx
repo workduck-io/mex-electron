@@ -142,7 +142,7 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
   };
 
   const onSubmit = async (data: any) => {
-    console.log(data);
+    console.log(data); // eslint-disable-line no-console
     await onSubmitLink();
   };
 
