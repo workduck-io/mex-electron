@@ -21,6 +21,9 @@ export const useILinkOnChange = (editor: TEditor, data: MentionNodeData[]) => {
     shallow
   );
 
+  // REMOVE
+  // console.log('We be called all the time without any reason.');
+
   return useCallback(() => {
     const res = comboboxOnChange();
     if (!res) return false;

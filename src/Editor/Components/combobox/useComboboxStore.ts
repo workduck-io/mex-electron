@@ -41,7 +41,7 @@ export type ComboboxState = {
 };
 
 export const useComboboxStore = createStore()<ComboboxState>((set) => ({
-  key: ComboboxKey.SLASH_COMMAND,
+  key: ComboboxKey.ILINK,
   setKey: setStoreValue(set, 'key', 'setKey'),
 
   maxSuggestions: 10,

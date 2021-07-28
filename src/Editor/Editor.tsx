@@ -4,27 +4,30 @@ import saveLine from '@iconify-icons/ri/save-line';
 import shareLine from '@iconify-icons/ri/share-line';
 import {
   createSlatePluginsOptions,
-  OnChange,
   SlatePlugins,
-  useStoreEditorRef,
   useStoreEditorValue,
 } from '@udecode/slate-plugins';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
 import BallonToolbarMarks from './Components/BaloonToolbar';
-import { useComboboxOnKeyDown } from './Components/combobox/hooks/useComboboxOnKeyDown';
-import { useComboboxIsOpen } from './Components/combobox/selectors/useComboboxIsOpen';
-import { useComboboxStore } from './Components/combobox/useComboboxStore';
+import { ComboboxKey } from './Components/combobox/useComboboxStore';
 import components from './Components/components';
-import { useILinkOnChange } from './Components/ilink/hooks/useILinkOnChange';
-import { useILinkOnSelectItem } from './Components/ilink/hooks/useILinkOnSelectItem';
+import { ILinkComboboxItem } from './Components/ilink/components/ILinkComboboxItem';
+import { ELEMENT_ILINK } from './Components/ilink/defaults';
+import {
+  ComboElementProps,
+  MultiComboboxContainer,
+} from './Components/multi-combobox/multiComboboxContainer';
+import useMultiComboboxOnChange from './Components/multi-combobox/useMultiComboboxChange';
+import useMultiComboboxOnKeyDown from './Components/multi-combobox/useMultiComboboxOnKeyDown';
+import { TagComboboxItem } from './Components/tag/components/TagComboboxItem';
+import { ELEMENT_TAG } from './Components/tag/defaults';
 import { deserialize, serialize } from './Plugins/md-serialize';
-import generatePlugins, { ComboboxContainer } from './Plugins/plugins';
+import generatePlugins from './Plugins/plugins';
 import useDataStore from './Store/DataStore';
 import { useEditorStore } from './Store/EditorStore';
-// import { useTagOnChange } from './Components/tag/hooks/useTagOnChange';
 
 const options = createSlatePluginsOptions();
 
@@ -33,7 +36,7 @@ const Editor = () => {
   const nodeId = useEditorStore((state) => state.node.id);
   const title = useEditorStore((state) => state.node.title);
 
-  // const tags = useDataStore((state) => state.tags);
+  const tags = useDataStore((state) => state.tags);
   const ilinks = useDataStore((state) => state.ilinks);
 
   useEffect(() => {
@@ -46,13 +49,13 @@ const Editor = () => {
   const useEditorState = useStoreEditorValue();
   const [id, setId] = useState('__null__');
   const editableProps = {
-    placeholder: 'Type…',
+    placeholder: 'Murmuring the mex hype...',
     style: {
       padding: '15px',
     },
   };
 
-  // const addTag = useDataStore((state) => state.addTag);
+  const addTag = useDataStore((state) => state.addTag);
   const addILink = useDataStore((state) => state.addILink);
   // console.log(initialValueBasicElements);
 
@@ -70,52 +73,70 @@ const Editor = () => {
 
   const onSave = () => {
     // On save the editor should serialize the state to markdown plaintext
-    console.log(serialize(useEditorState));
+    console.log(serialize(useEditorState)); // eslint-disable-line no-console
   };
+
+  // const onChange = (value: any) => {
+  //   console.log('Hello we be saving', JSON.stringify(value, null, 2));
+  // };
 
   // Combobox
-
-  // Handle multiple combobox
-  const useComboboxOnChange = (): OnChange => {
-    const editor = useStoreEditorRef(id)!;
-
-    const ilinkOnChange = useILinkOnChange(editor, ilinks);
-    // const tagOnChange = useTagOnChange(editor, tags);
-    const isOpen = useComboboxIsOpen();
-    const closeMenu = useComboboxStore((state) => state.closeMenu);
-
-    return useCallback(
-      () => () => {
-        let changed: boolean | undefined = false;
-        changed = ilinkOnChange();
-        if (changed) return;
-
-        if (!changed && isOpen) closeMenu();
-      },
-      [closeMenu, isOpen, ilinkOnChange]
-    );
-  };
-
   const pluginConfigs = {
     combobox: {
-      onChange: useComboboxOnChange(),
-      onKeyDown: useComboboxOnKeyDown({
-        // Handle multiple combobox
-        onSelectItem: useILinkOnSelectItem(),
-        // onSelectItem: useTagOnSelectItem(),
-        onNewItem: (newItem) => {
-          // console.log('We gotta create a new item here fellas', { newItem });
-          addILink(newItem);
-          // addTag(newItem);
+      onChange: useMultiComboboxOnChange(id, {
+        ilink: {
+          cbKey: ComboboxKey.ILINK,
+          trigger: '[[',
+          data: ilinks,
+        },
+        tag: {
+          cbKey: ComboboxKey.TAG,
+          trigger: '#',
+          data: tags,
+        },
+      }),
+      onKeyDown: useMultiComboboxOnKeyDown({
+        ilink: {
+          slateElementType: ELEMENT_ILINK,
+          newItemHandler: (newItem) => {
+            addILink(newItem);
+          },
+        },
+        tag: {
+          slateElementType: ELEMENT_TAG,
+          newItemHandler: (newItem) => {
+            addTag(newItem);
+          },
         },
       }),
     },
   };
 
+  const comboboxRenderConfig: ComboElementProps = {
+    keys: {
+      ilink: {
+        comboTypeHandlers: {
+          slateElementType: ELEMENT_ILINK,
+          newItemHandler: (newItem) => {
+            addILink(newItem);
+          },
+        },
+        renderElement: ILinkComboboxItem,
+      },
+      tag: {
+        comboTypeHandlers: {
+          slateElementType: ELEMENT_TAG,
+          newItemHandler: (newItem) => {
+            addTag(newItem);
+          },
+        },
+        renderElement: TagComboboxItem,
+      },
+    },
+  };
+
   // We get memoized plugins
-  const plugins = useMemo(() => generatePlugins(pluginConfigs), [
-    pluginConfigs,
-  ]);
+  const plugins = generatePlugins(pluginConfigs);
 
   return (
     <StyledEditor className="mex_editor">
@@ -133,6 +154,7 @@ const Editor = () => {
         <>
           <BallonToolbarMarks />
           <SlatePlugins
+            // onChange={onChange}
             id={id}
             editableProps={editableProps}
             initialValue={content}
@@ -140,7 +162,7 @@ const Editor = () => {
             components={components}
             options={options}
           >
-            <ComboboxContainer />
+            <MultiComboboxContainer keys={comboboxRenderConfig.keys} />
           </SlatePlugins>
         </>
       )}
