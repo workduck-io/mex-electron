@@ -14,12 +14,18 @@ import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
 import BallonToolbarMarks from './Components/BaloonToolbar';
 import { ComboboxKey } from './Components/combobox/useComboboxStore';
 import components from './Components/components';
+import { ILinkComboboxItem } from './Components/ilink/components/ILinkComboboxItem';
 import { ELEMENT_ILINK } from './Components/ilink/defaults';
+import {
+  ComboElementProps,
+  MultiComboboxContainer,
+} from './Components/multi-combobox/multiComboboxContainer';
 import useMultiComboboxOnChange from './Components/multi-combobox/useMultiComboboxChange';
 import useMultiComboboxOnKeyDown from './Components/multi-combobox/useMultiComboboxOnKeyDown';
+import { TagComboboxItem } from './Components/tag/components/TagComboboxItem';
 import { ELEMENT_TAG } from './Components/tag/defaults';
 import { deserialize, serialize } from './Plugins/md-serialize';
-import generatePlugins, { ComboboxContainer } from './Plugins/plugins';
+import generatePlugins from './Plugins/plugins';
 import useDataStore from './Store/DataStore';
 import { useEditorStore } from './Store/EditorStore';
 
@@ -43,7 +49,7 @@ const Editor = () => {
   const useEditorState = useStoreEditorValue();
   const [id, setId] = useState('__null__');
   const editableProps = {
-    placeholder: 'Type…',
+    placeholder: 'Murmuring the mex hype...',
     style: {
       padding: '15px',
     },
@@ -70,8 +76,11 @@ const Editor = () => {
     console.log(serialize(useEditorState)); // eslint-disable-line no-console
   };
 
-  // Combobox
+  // const onChange = (value: any) => {
+  //   console.log('Hello we be saving', JSON.stringify(value, null, 2));
+  // };
 
+  // Combobox
   const pluginConfigs = {
     combobox: {
       onChange: useMultiComboboxOnChange(id, {
@@ -103,6 +112,29 @@ const Editor = () => {
     },
   };
 
+  const comboboxRenderConfig: ComboElementProps = {
+    keys: {
+      ilink: {
+        comboTypeHandlers: {
+          slateElementType: ELEMENT_ILINK,
+          newItemHandler: (newItem) => {
+            addILink(newItem);
+          },
+        },
+        renderElement: ILinkComboboxItem,
+      },
+      tag: {
+        comboTypeHandlers: {
+          slateElementType: ELEMENT_TAG,
+          newItemHandler: (newItem) => {
+            addTag(newItem);
+          },
+        },
+        renderElement: TagComboboxItem,
+      },
+    },
+  };
+
   // We get memoized plugins
   const plugins = generatePlugins(pluginConfigs);
 
@@ -122,6 +154,7 @@ const Editor = () => {
         <>
           <BallonToolbarMarks />
           <SlatePlugins
+            // onChange={onChange}
             id={id}
             editableProps={editableProps}
             initialValue={content}
@@ -129,7 +162,7 @@ const Editor = () => {
             components={components}
             options={options}
           >
-            <ComboboxContainer />
+            <MultiComboboxContainer keys={comboboxRenderConfig.keys} />
           </SlatePlugins>
         </>
       )}

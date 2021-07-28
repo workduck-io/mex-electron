@@ -13,32 +13,30 @@ import { useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown';
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen';
 import { useComboboxStore } from '../combobox/useComboboxStore';
 
-const useMultiComboboxOnKeyDown = (keys: {
-  [type: string]: {
-    slateElementType: string;
-    newItemHandler: (newItem: string) => any;
-  };
-}) => {
-  const comboboxKey: string = useComboboxStore((state) => state.key);
-  const comboType = keys[comboboxKey];
+export interface ComboTypeHandlers {
+  slateElementType: string;
+  newItemHandler: (newItem: string) => any;
+}
 
-  // We need to create the select handlers ourselves here
-
+export const useElementOnChange = (comboType: ComboTypeHandlers) => {
   const isOpen = useComboboxIsOpen();
   const targetRange = useComboboxStore((state) => state.targetRange);
   const closeMenu = useComboboxStore((state) => state.closeMenu);
 
-  const useElementOnChange = useCallback(
+  return useCallback(
     (editor: SPEditor & ReactEditor, item: IComboboxItem) => {
       const type = getSlatePluginType(editor, comboType.slateElementType);
 
       if (isOpen && targetRange) {
+        // console.log('useElementOnChange 1', { comboType, type });
+
         const pathAbove = getBlockAbove(editor)?.[1];
         const isBlockEnd =
           editor.selection &&
           pathAbove &&
           Editor.isEnd(editor, editor.selection.anchor, pathAbove);
 
+        // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
         // insert a space to fix the bug
         if (isBlockEnd) {
           Transforms.insertText(editor, ' ');
@@ -51,7 +49,8 @@ const useMultiComboboxOnKeyDown = (keys: {
           children: [{ text: '' }],
           value: item.text,
         });
-        // console.log({ type, item });
+
+        // console.log('Inserted', { item, type });
 
         // move the selection after the ilink element
         Transforms.move(editor);
@@ -65,12 +64,23 @@ const useMultiComboboxOnKeyDown = (keys: {
       }
       return undefined;
     },
-    [closeMenu, isOpen, targetRange]
+    [closeMenu, isOpen, targetRange, comboType]
   );
+};
+
+const useMultiComboboxOnKeyDown = (keys: {
+  [type: string]: ComboTypeHandlers;
+}) => {
+  const comboboxKey: string = useComboboxStore((state) => state.key);
+  const comboType = keys[comboboxKey];
+
+  // We need to create the select handlers ourselves here
+
+  const elementChangeHandler = useElementOnChange(comboType);
 
   return useComboboxOnKeyDown({
     // Handle multiple combobox
-    onSelectItem: useElementOnChange,
+    onSelectItem: elementChangeHandler,
     onNewItem: (newItem) => {
       comboType.newItemHandler(newItem);
     },

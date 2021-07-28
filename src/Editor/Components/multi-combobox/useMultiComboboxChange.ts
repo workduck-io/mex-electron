@@ -38,7 +38,7 @@ const useMultiComboboxOnChange = (
 
     const { search } = res;
 
-    if (!search) return false;
+    if (!search || !data) return false;
 
     const items: IComboboxItem[] = data
       .filter((c) => c.text.toLowerCase().includes(search.toLowerCase()))
