@@ -1,33 +1,21 @@
 import * as React from 'react';
-import { getRootClassNames, useEditorRef } from '@udecode/slate-plugins';
-import { styled } from '@uifabric/utilities';
+import { useEditorRef } from '@udecode/plate';
 import { Transforms } from 'slate';
 import { useFocused, useSelected } from 'slate-react';
 import { useHotkeys } from '../hooks/useHotkeys';
 import { useOnMouseClick } from '../hooks/useOnMouseClick';
-import { getILinkElementStyles } from './ILinkElement.styles';
-import {
-  ILinkElementProps,
-  ILinkElementStyleProps,
-  ILinkElementStyleSet,
-} from './ILinkElement.types';
+import { SILink, SILinkRoot } from './ILinkElement.styles';
+import { ILinkElementProps } from './ILinkElement.types';
 import { useEditorStore } from '../../../Store/EditorStore';
-
-const getClassNames = getRootClassNames<
-  ILinkElementStyleProps,
-  ILinkElementStyleSet
->();
 
 /**
  * ILinkElement with no default styles.
  * [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling)
  */
-export const ILinkElementBase = ({
+export const ILinkElement = ({
   attributes,
   children,
   element,
-  styles,
-  className,
 }: ILinkElementProps) => {
   const editor = useEditorRef();
   const selected = useSelected();
@@ -57,37 +45,18 @@ export const ILinkElementBase = ({
     [selected, focused]
   );
 
-  const classNames = getClassNames(styles, {
-    className,
-    // Other style props
-    selected,
-    focused,
-  });
-
   return (
-    <div
+    <SILinkRoot
       {...attributes}
       data-slate-value={element.value}
-      className={classNames.root}
       contentEditable={false}
     >
-      <div className={`${classNames.link}`} {...onClickProps}>
+      <SILink {...onClickProps}>
         <span className="ILink_decoration ILink_decoration_left">[[</span>
         {element.value}
         <span className="ILink_decoration ILink_decoration_right">]]</span>
-      </div>
+      </SILink>
       {children}
-    </div>
+    </SILinkRoot>
   );
 };
-
-/**
- * ILinkElement
- */
-export const ILinkElement = styled<
-  ILinkElementProps,
-  ILinkElementStyleProps,
-  ILinkElementStyleSet
->(ILinkElementBase, getILinkElementStyles, undefined, {
-  scope: 'ILinkElement',
-});

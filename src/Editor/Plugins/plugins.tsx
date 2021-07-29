@@ -24,9 +24,9 @@ import {
   ELEMENT_MEDIA_EMBED,
   KeyboardHandler,
   OnChange,
-  SlatePlugin,
+  PlatePlugin,
   SPEditor,
-} from '@udecode/slate-plugins';
+} from '@udecode/plate';
 
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin';
 import { createTagPlugin } from '../Components/tag/createTagPlugin';
@@ -51,10 +51,10 @@ interface PluginConfigs {
 /**
  * Plugin generator
  * @param config Configurations for the plugins, event handlers etc.
- * @returns Array of SlatePlugin
+ * @returns Array of PlatePlugin
  */
 const generatePlugins = (config: PluginConfigs) => {
-  const Plugins: SlatePlugin[] = [
+  const Plugins: PlatePlugin[] = [
     // editor
     createReactPlugin(), // withReact
     createHistoryPlugin(), // withHistory
@@ -97,7 +97,7 @@ const generatePlugins = (config: PluginConfigs) => {
     createMediaEmbedPlugin(),
     createSelectOnBackspacePlugin({ allow: [ELEMENT_MEDIA_EMBED] }),
     // Custom Plugins
-    createBlurSelectionPlugin() as SlatePlugin<SPEditor>,
+    createBlurSelectionPlugin() as PlatePlugin<SPEditor>,
 
     // Comboboxes
     createTagPlugin(), // Tags

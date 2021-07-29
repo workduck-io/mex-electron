@@ -239,6 +239,7 @@
     "yarn-deduplicate": "^3.1.0"
   },
   "dependencies": {
+    "@udecode/plate": "^1.1.2",
     "@udecode/slate-plugins": "^1.0.0-next.39",
     "caniuse-lite": "^1.0.30001228",
     "downshift": "^6.1.3",

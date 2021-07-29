@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { StyledProps } from '@udecode/slate-plugins-ui-fluent';
+import { StyledProps } from '@udecode/plate-styled-components';
 
 export interface BalloonToolbarProps
   extends StyledProps<BalloonToolbarStyleProps> {

@@ -6,7 +6,7 @@ import Icon from '@iconify/react';
 import {
   ELEMENT_LINK,
   getAbove,
-  getSlatePluginType,
+  getPlatePluginType,
   isCollapsed,
   MARK_BOLD,
   MARK_ITALIC,
@@ -19,7 +19,7 @@ import {
   useEventEditorId,
   useStoreEditorRef,
   useStoreEditorState,
-} from '@udecode/slate-plugins';
+} from '@udecode/plate';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Transforms } from 'slate';
@@ -52,7 +52,7 @@ interface LinkButtonProps extends ToolbarLinkProps {
 const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
   const editor = useStoreEditorState(useEventEditorId('focus'));
 
-  const type = getSlatePluginType(editor, ELEMENT_LINK);
+  const type = getPlatePluginType(editor, ELEMENT_LINK);
   const isLink = !!editor?.selection && someNode(editor, { match: { type } });
   const [inp, setInp] = useState({
     prev: '',
@@ -127,7 +127,7 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
       if (linkNode && editor.selection)
         unwrapNodes(editor, {
           at: editor.selection,
-          match: { type: getSlatePluginType(editor, ELEMENT_LINK) },
+          match: { type: getPlatePluginType(editor, ELEMENT_LINK) },
         });
 
       return;
@@ -153,6 +153,7 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <HeadlessButton
           active={isLink.toString()}
+          as={undefined as any}
           // onMouseDown={handleMouseDownLink}
           type="submit"
           // tooltip={{ interactive: true }}
@@ -205,17 +206,17 @@ const BallonToolbarMarks = () => {
       selected={selected}
     >
       <ToolbarMark
-        type={getSlatePluginType(editor, MARK_BOLD)}
+        type={getPlatePluginType(editor, MARK_BOLD)}
         icon={<Icon height={20} icon={boldIcon} />}
         tooltip={{ content: 'Bold (⌘B)', ...tooltip }}
       />
       <ToolbarMark
-        type={getSlatePluginType(editor, MARK_ITALIC)}
+        type={getPlatePluginType(editor, MARK_ITALIC)}
         icon={<Icon height={20} icon={italicIcon} />}
         tooltip={{ content: 'Italic (⌘I)', ...tooltip }}
       />
       <ToolbarMark
-        type={getSlatePluginType(editor, MARK_UNDERLINE)}
+        type={getPlatePluginType(editor, MARK_UNDERLINE)}
         icon={<Icon height={20} icon={underlineIcon} />}
         tooltip={{ content: 'Underline (⌘U)', ...tooltip }}
       />

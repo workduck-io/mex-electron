@@ -1,4 +1,4 @@
-import { RootStyleSet, Styles } from '@udecode/slate-plugins-ui-fluent';
+import { RootStyleSet, Styles } from '@udecode/plate-styled-components';
 import { concatStyleSets, IStyle } from '@uifabric/styling';
 import { memoizeFunction } from '@uifabric/utilities';
 import { BalloonToolbarStyleProps } from './BalloonToolbar.types';

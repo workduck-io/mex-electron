@@ -2,12 +2,12 @@ import {
   Deserialize,
   getNodeDeserializer,
   getSlateClass,
-  getSlatePluginOptions,
-} from '@udecode/slate-plugins';
+  getPlatePluginOptions,
+} from '@udecode/plate';
 import { ELEMENT_ILINK } from './defaults';
 
 export const getILinkDeserialize = (): Deserialize => (editor) => {
-  const options = getSlatePluginOptions(editor, ELEMENT_ILINK);
+  const options = getPlatePluginOptions(editor, ELEMENT_ILINK);
 
   return {
     element: getNodeDeserializer({

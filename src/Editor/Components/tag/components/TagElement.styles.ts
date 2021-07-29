@@ -1,52 +1,21 @@
-import { TagElementStyleProps, TagElementStyleSet } from './TagElement.types';
+import styled from 'styled-components';
 
-const classNames = {
-  root: 'slate-TagElement',
-  link: 'slate-TagElement-link',
-};
+export const STagRoot = styled.div`
+  display: inline-block;
+  line-height: 1.2;
 
-export const getTagElementStyles = ({
-  className,
-  focused,
-  selected,
-}: TagElementStyleProps): TagElementStyleSet => {
-  const selectedFocused = selected && focused;
+  /* outline: selectedFocused ? rgb(0, 120, 212) auto 1px : undefined, */
+`;
 
-  return {
-    root: [
-      classNames.root,
-      {
-        // Insert css properties
-        display: 'inline-block',
-        lineHeight: '1.2',
-
-        outline: selectedFocused ? 'rgb(0, 120, 212) auto 1px' : undefined,
-
-        selectors: {
-          ':hover .slate-TagElement-link': {
-            // color: selectedFocused ? '#40a9ff !important' : undefined,
-            // textDecoration: selectedFocused ? 'underline' : undefined,
-            // background: !selectedFocused
-            //   ? 'rgba(148, 148, 148, 0.15)'
-            //   : undefined,
-            // boxShadow: !selectedFocused
-            //   ? '0 0 0 3px rgba(148, 148, 148, 0.15)'
-            //   : undefined,
-          },
-        },
-      },
-      className,
-    ],
-    link: [
-      {
-        userDrag: 'none',
-        // textDecoration: selectedFocused ? 'underline' : 'none',
-        textDecoration: 'none',
-        whiteSpace: 'nowrap',
-        color: 'rgb(0, 120, 212) !important',
-      },
-      'hover:underline',
-      classNames.link,
-    ],
-  };
-};
+export const STag = styled.div`
+  color: ${({ theme }) => theme.colors.secondary};
+  .ILink_decoration {
+    color: ${({ theme }) => theme.colors.text.disabled};
+    &_left {
+      margin-right: ${({ theme }) => theme.spacing.tiny};
+    }
+    &_right {
+      margin-left: ${({ theme }) => theme.spacing.tiny};
+    }
+  }
+`;

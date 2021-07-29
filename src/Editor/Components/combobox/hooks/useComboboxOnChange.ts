@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { TEditor } from '@udecode/slate-plugins';
+import { TEditor } from '@udecode/plate';
 import { useComboboxStore } from '../useComboboxStore';
 import { ComboboxType } from '../../multi-combobox/types';
 import getTextFromTriggers from '../../multi-combobox/getMultiTextFromTrigger';
