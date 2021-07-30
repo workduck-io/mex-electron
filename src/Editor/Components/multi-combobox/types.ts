@@ -1,4 +1,4 @@
-import { MentionNodeData } from '@udecode/slate-plugins';
+import { MentionNodeData } from '@udecode/plate';
 import { ComboboxKey } from '../combobox/useComboboxStore';
 
 export interface ComboboxType {

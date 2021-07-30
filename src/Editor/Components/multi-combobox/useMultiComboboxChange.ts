@@ -1,4 +1,4 @@
-import { OnChange, useStoreEditorRef } from '@udecode/slate-plugins';
+import { OnChange, useStoreEditorRef } from '@udecode/plate';
 import { useCallback } from 'react';
 import { IComboboxItem } from '../combobox/components/Combobox.types';
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange';

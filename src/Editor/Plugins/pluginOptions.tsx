@@ -18,7 +18,7 @@ import {
   ELEMENT_TODO_LI,
   ELEMENT_UL,
   getParent,
-  getSlatePluginType,
+  getPlatePluginType,
   insertEmptyCodeBlock,
   isBlockAboveEmpty,
   isElement,
@@ -34,7 +34,7 @@ import {
   toggleList,
   unwrapList,
   WithAutoformatOptions,
-} from '@udecode/slate-plugins';
+} from '@udecode/plate';
 
 const preFormat = (editor: TEditor<AnyObject>) =>
   unwrapList(editor as SPEditor);
@@ -166,7 +166,7 @@ export const optionsAutoformat: WithAutoformatOptions = {
       preFormat,
       format: (editor: TEditor<AnyObject>) => {
         insertEmptyCodeBlock(editor as SPEditor, {
-          defaultType: getSlatePluginType(editor as SPEditor, ELEMENT_DEFAULT),
+          defaultType: getPlatePluginType(editor as SPEditor, ELEMENT_DEFAULT),
           insertNodesOptions: { select: true },
         });
       },

@@ -1,11 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
 import Icon from '@iconify/react';
-import { LinkNodeData } from '@udecode/slate-plugins-link';
-import {
-  getRootClassNames,
-  StyledElementProps,
-} from '@udecode/slate-plugins-ui-fluent';
+import { LinkNodeData } from '@udecode/plate-link';
+import { StyledElementProps } from '@udecode/plate-styled-components';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -32,8 +29,6 @@ const Link = styled.a`
   }
 `;
 
-const getClassNames = getRootClassNames();
-
 /**
  * LinkElement with no default styles.
  * [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling)
@@ -42,13 +37,8 @@ const LinkElement = ({
   attributes,
   children,
   element,
-  styles,
-  className,
   nodeProps,
 }: StyledElementProps<LinkNodeData>) => {
-  const classNames = getClassNames(styles, {
-    className,
-  });
   const isExternal = element.url.startsWith('#');
 
   const openLink = (e: React.MouseEvent, meta: boolean) => {
@@ -70,7 +60,6 @@ const LinkElement = ({
     <Link
       {...attributes}
       href={element.url}
-      className={classNames.root}
       onClick={(e) => {
         openLink(e, true);
       }}
