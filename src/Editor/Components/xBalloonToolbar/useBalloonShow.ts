@@ -12,10 +12,12 @@ export const useBalloonShow = ({
   editor,
   ref,
   hiddenDelay,
+  selected,
 }: {
   editor?: TEditor;
   ref: any;
   hiddenDelay: number;
+  selected?: boolean;
 }) => {
   const [hidden, setHidden] = useState(true);
 
@@ -24,6 +26,8 @@ export const useBalloonShow = ({
 
   const show = useCallback(() => {
     if (ref.current && hidden && selectionExpanded) {
+      console.log('show: ', { cur: ref.current, hidden, selectionExpanded });
+
       setHidden(false);
     }
   }, [hidden, ref, selectionExpanded]);
@@ -40,7 +44,12 @@ export const useBalloonShow = ({
    * Hide if not selecting.
    */
   useEffect(() => {
-    if (!hidden && !selectionExpanded) {
+    if (!hidden && !selectionExpanded && !selected) {
+      console.log('Set hidden: ', {
+        cur: ref.current,
+        hidden,
+        selectionExpanded,
+      });
       setHidden(true);
       if (ref.current) {
         ref.current.removeAttribute('style');
@@ -51,10 +60,17 @@ export const useBalloonShow = ({
     hiddenDelay,
     reset,
     selectionExpanded,
+    selected,
     show,
     selectionText?.length,
     ref,
   ]);
+
+  // useEffect(() => {
+  //   if (selected) {
+  //     setHidden(() => !selected);
+  //   }
+  // }, [selected]);
 
   /**
    * If hiddenDelay > 0:

@@ -2,16 +2,11 @@ import linkIcon from '@iconify-icons/ri/link';
 import more2Fill from '@iconify-icons/ri/more-2-fill';
 import saveLine from '@iconify-icons/ri/save-line';
 import shareLine from '@iconify-icons/ri/share-line';
-import {
-  createSlatePluginsOptions,
-  SlatePlugins,
-  useStoreEditorValue,
-} from '@udecode/slate-plugins';
+import { createPlateOptions, Plate, useStoreEditorValue } from '@udecode/plate';
 import React, { useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
-import BallonToolbarMarks from './Components/BaloonToolbar';
 import { ComboboxKey } from './Components/combobox/useComboboxStore';
 import components from './Components/components';
 import { ILinkComboboxItem } from './Components/ilink/components/ILinkComboboxItem';
@@ -29,7 +24,7 @@ import generatePlugins from './Plugins/plugins';
 import useDataStore from './Store/DataStore';
 import { useEditorStore } from './Store/EditorStore';
 
-const options = createSlatePluginsOptions();
+const options = createPlateOptions();
 
 const Editor = () => {
   const mdContent = useEditorStore((state) => state.content);
@@ -152,8 +147,8 @@ const Editor = () => {
 
       {content && (
         <>
-          <BallonToolbarMarks />
-          <SlatePlugins
+          {/* <BallonToolbarMarks /> */}
+          <Plate
             // onChange={onChange}
             id={id}
             editableProps={editableProps}
@@ -163,7 +158,7 @@ const Editor = () => {
             options={options}
           >
             <MultiComboboxContainer keys={comboboxRenderConfig.keys} />
-          </SlatePlugins>
+          </Plate>
         </>
       )}
     </StyledEditor>

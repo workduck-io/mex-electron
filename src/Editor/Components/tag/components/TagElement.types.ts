@@ -1,8 +1,4 @@
-import {
-  ClassName,
-  RootStyleSet,
-  StyledElementProps,
-} from '@udecode/slate-plugins';
+import { ClassName, RootStyleSet, StyledElementProps } from '@udecode/plate';
 import { IStyle } from '@uifabric/styling';
 import { TagNode } from '../types';
 

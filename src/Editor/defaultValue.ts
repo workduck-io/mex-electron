@@ -14,7 +14,7 @@ import {
   MARK_UNDERLINE,
   MARK_STRIKETHROUGH,
   MARK_CODE,
-} from '@udecode/slate-plugins';
+} from '@udecode/plate';
 
 // Quick helper to create a block element with (marked) text
 export const createElement = (

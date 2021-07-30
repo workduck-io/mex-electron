@@ -14,5 +14,7 @@
     "postinstall": "yarn electron-rebuild"
   },
   "license": "x",
-  "dependencies": {}
+  "dependencies": {
+    "twin.macro": "^2.6.2"
+  }
 }

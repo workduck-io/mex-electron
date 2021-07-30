@@ -1,5 +1,5 @@
 import { Range } from 'slate';
-import { isCollapsed, TEditor } from '@udecode/slate-plugins';
+import { isCollapsed, TEditor } from '@udecode/plate';
 import { ComboboxType } from './types';
 import { getTextFromTrigger } from '../combobox/utils/getTextFromTrigger';
 

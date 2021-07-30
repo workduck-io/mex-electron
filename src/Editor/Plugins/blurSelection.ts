@@ -1,4 +1,4 @@
-import { SlatePlugin, SPEditor } from '@udecode/slate-plugins';
+import { PlatePlugin, SPEditor } from '@udecode/plate';
 
 export interface BlurSelectionEditor extends SPEditor {
   selection: any;
@@ -10,7 +10,7 @@ export const setBlurSelection = (editor: BlurSelectionEditor) => {
   }
 };
 
-export const createBlurSelectionPlugin = (): SlatePlugin<
+export const createBlurSelectionPlugin = (): PlatePlugin<
   BlurSelectionEditor
 > => ({
   onBlur: (editor) => () => {
