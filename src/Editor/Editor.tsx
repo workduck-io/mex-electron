@@ -7,7 +7,6 @@ import React, { useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
-// import BallonToolbarMarks from './Components/BaloonToolbar';
 import { ComboboxKey } from './Components/combobox/useComboboxStore';
 import components from './Components/components';
 import { ILinkComboboxItem } from './Components/ilink/components/ILinkComboboxItem';
@@ -148,7 +147,7 @@ const Editor = () => {
 
       {content && (
         <>
-          {/* <BallonToolbarMarks /> Use the latest version with correct portal */}
+          {/* <BallonToolbarMarks /> */}
           <Plate
             // onChange={onChange}
             id={id}

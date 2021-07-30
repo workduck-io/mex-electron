@@ -1,6 +1,5 @@
 import boldIcon from '@iconify-icons/ri/bold';
 import italicIcon from '@iconify-icons/ri/italic';
-import linkIcon from '@iconify-icons/ri/link';
 import underlineIcon from '@iconify-icons/ri/underline';
 import Icon from '@iconify/react';
 import {
@@ -26,7 +25,8 @@ import { Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import styled from 'styled-components';
 import { HeadlessButton } from '../../Styled/Buttons';
-import { BalloonToolbar } from './BalloonToolbar/BalloonToolbar';
+import { BalloonToolbar } from './BalloonToolbar';
+// import { BalloonToolbar } from './xBalloonToolbar/BalloonToolbar';
 
 const LinkButtonStyled = styled.div`
   user-select: all;
@@ -49,7 +49,11 @@ interface LinkButtonProps extends ToolbarLinkProps {
   setSelected: (selected: boolean) => void;
 }
 
-const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
+export const LinkButton = ({
+  getLinkUrl,
+  setSelected,
+  ...props
+}: LinkButtonProps) => {
   const editor = useStoreEditorState(useEventEditorId('focus'));
 
   const type = getPlatePluginType(editor, ELEMENT_LINK);
@@ -66,12 +70,12 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
     getValues,
   } = useForm();
 
-  // useEffect(() => {
-  //   setSelected(true);
-  //   return () => {
-  //     setSelected(false);
-  //   };
-  // });
+  useEffect(() => {
+    setSelected(true);
+    return () => {
+      setSelected(false);
+    };
+  });
 
   useEffect(() => {
     if (!editor) return;
@@ -107,7 +111,7 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
         prev: linkNode[0].url as string,
       });
     }
-    console.log(inp);
+    // console.log(inp);
 
     let url = '';
     if (getLinkUrl) {
@@ -173,7 +177,7 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
 
 const BallonToolbarMarks = () => {
   const editor = useStoreEditorRef(useEventEditorId('focus'));
-  const [selected, setSelected] = useState(false);
+  // const [selected, setSelected] = useState(false);
 
   const arrow = true;
   const theme = 'dark';
@@ -187,14 +191,6 @@ const BallonToolbarMarks = () => {
     offset: [0, 17] as [number, number],
     placement: 'top' as const,
   };
-  // const styles = {
-  //   root: [
-  //     'slate-BalloonToolbar',
-  //     {
-  //       userSelect: 'all',
-  //     },
-  //   ],
-  // };
 
   return (
     <BalloonToolbar
@@ -202,8 +198,7 @@ const BallonToolbarMarks = () => {
       hiddenDelay={hiddenDelay}
       theme={theme}
       arrow={arrow}
-      // styles={styles}
-      selected={selected}
+      // selected={selected}
     >
       <ToolbarMark
         type={getPlatePluginType(editor, MARK_BOLD)}
@@ -220,11 +215,12 @@ const BallonToolbarMarks = () => {
         icon={<Icon height={20} icon={underlineIcon} />}
         tooltip={{ content: 'Underline (⌘U)', ...tooltip }}
       />
-      <LinkButton
+
+      {/* <LinkButton
         tooltip={{ content: 'Link', ...tooltip }}
         icon={<Icon height={20} icon={linkIcon} />}
         setSelected={setSelected}
-      />
+      /> */}
     </BalloonToolbar>
   );
 };
@@ -235,4 +231,5 @@ export interface ToolbarLinkProps extends ToolbarButtonProps {
    */
   getLinkUrl?: (prevUrl: string | null) => Promise<string | null>;
 }
+
 export default BallonToolbarMarks;

@@ -1,12 +1,8 @@
 import { ReactNode } from 'react';
 import { StyledProps } from '@udecode/plate-styled-components';
-import { ToolbarProps } from '../Toolbar/Toolbar.types';
 
-export interface BalloonToolbarStyleProps extends BalloonToolbarProps {
-  hidden?: boolean;
-}
-
-export interface BalloonToolbarProps extends StyledProps<ToolbarProps> {
+export interface BalloonToolbarProps
+  extends StyledProps<BalloonToolbarStyleProps> {
   children: ReactNode;
 
   /**
@@ -26,7 +22,20 @@ export interface BalloonToolbarProps extends StyledProps<ToolbarProps> {
   theme?: 'dark' | 'light';
 
   /**
+   * Set the selected state without focus.
+   */
+  selected?: boolean;
+
+  /**
    * Show an arrow pointing to up or down depending on the direction.
    */
   arrow?: boolean;
+}
+
+export interface BalloonToolbarStyleProps {
+  hidden?: boolean;
+  hiddenDelay?: BalloonToolbarProps['hiddenDelay'];
+  direction?: BalloonToolbarProps['direction'];
+  theme?: BalloonToolbarProps['theme'];
+  arrow?: BalloonToolbarProps['arrow'];
 }

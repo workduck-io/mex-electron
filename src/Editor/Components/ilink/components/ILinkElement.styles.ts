@@ -8,6 +8,7 @@ export const SILinkRoot = styled.div`
 `;
 
 export const SILink = styled.div`
+  display: inline-block;
   color: ${({ theme }) => theme.colors.secondary};
   .ILink_decoration {
     color: ${({ theme }) => theme.colors.text.disabled};
