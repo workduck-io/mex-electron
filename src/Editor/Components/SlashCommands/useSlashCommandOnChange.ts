@@ -1,33 +1,34 @@
 import {
-  getBlockAbove,
-  getPlatePluginType,
-  insertNodes,
   SPEditor,
+  getPlatePluginType,
+  getBlockAbove,
+  insertNodes,
   TElement,
 } from '@udecode/plate';
 import { useCallback } from 'react';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { IComboboxItem } from '../combobox/components/Combobox.types';
-import { useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown';
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen';
-import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore';
-import { SlashCommandHandler } from '../SlashCommands/Types';
-import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChange';
+import { useComboboxStore } from '../combobox/useComboboxStore';
+import { SlashCommandHandler } from './Types';
 
-export interface ComboTypeHandlers {
-  slateElementType: string;
-  newItemHandler: (newItem: string) => any;
-}
-
-export const useElementOnChange = (comboType: ComboTypeHandlers) => {
+export const useSlashCommandOnChange = (keys: {
+  [type: string]: SlashCommandHandler;
+}) => {
   const isOpen = useComboboxIsOpen();
   const targetRange = useComboboxStore((state) => state.targetRange);
   const closeMenu = useComboboxStore((state) => state.closeMenu);
 
   return useCallback(
     (editor: SPEditor & ReactEditor, item: IComboboxItem) => {
-      const type = getPlatePluginType(editor, comboType.slateElementType);
+      const commandKey = Object.keys(keys).filter(
+        (k) => keys[k].command === item.text
+      )[0];
+
+      const commandConfig = keys[commandKey];
+
+      const type = getPlatePluginType(editor, commandConfig.slateElementType);
 
       if (isOpen && targetRange) {
         // console.log('useElementOnChange 1', { comboType, type });
@@ -49,7 +50,7 @@ export const useElementOnChange = (comboType: ComboTypeHandlers) => {
         insertNodes<TElement>(editor, {
           type: type as any,
           children: [{ text: '' }],
-          value: item.text,
+          ...commandConfig.options,
         });
 
         // console.log('Inserted', { item, type });
@@ -66,35 +67,6 @@ export const useElementOnChange = (comboType: ComboTypeHandlers) => {
       }
       return undefined;
     },
-    [closeMenu, isOpen, targetRange, comboType]
+    [closeMenu, isOpen, targetRange, keys]
   );
 };
-
-const useMultiComboboxOnKeyDown = (
-  keys: {
-    [type: string]: ComboTypeHandlers;
-  },
-  slashCommands: {
-    [type: string]: SlashCommandHandler;
-  }
-) => {
-  const comboboxKey: string = useComboboxStore((state) => state.key);
-  const comboType = keys[comboboxKey];
-
-  // We need to create the select handlers ourselves here
-
-  const elementChangeHandler =
-    comboboxKey === ComboboxKey.SLASH_COMMAND
-      ? useSlashCommandOnChange(slashCommands)
-      : useElementOnChange(comboType);
-
-  return useComboboxOnKeyDown({
-    // Handle multiple combobox
-    onSelectItem: elementChangeHandler,
-    onNewItem: (newItem) => {
-      comboType.newItemHandler(newItem);
-    },
-  });
-};
-
-export default useMultiComboboxOnKeyDown;
