@@ -5,7 +5,7 @@ import dashboardLine from '@iconify-icons/ri/dashboard-line';
 import quillPenLine from '@iconify-icons/ri/quill-pen-line';
 import { Icon } from '@iconify/react';
 import React from 'react';
-import { NavLinkData } from '../Components/Sidebar/Nav';
+import { NavLinkData } from '../Components/Sidebar/Types';
 
 /*
 Sidebar links are defined here
@@ -13,33 +13,35 @@ Sidebar links are defined here
 
 // Disabled as IconifyIcon type doesn't work
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-const getIcon = (icon: any): React.ReactNode => <Icon width="32" icon={icon} />;
+export const GetIcon = (icon: any): React.ReactNode => (
+  <Icon width="32" icon={icon} />
+);
 
 const links: NavLinkData[] = [
   {
     title: 'Dashboard',
     path: '/',
-    icon: getIcon(dashboardLine),
+    icon: GetIcon(dashboardLine),
   },
   {
     title: 'Editor',
     path: '/editor',
-    icon: getIcon(fileDocument),
+    icon: GetIcon(fileDocument),
   },
   {
     title: 'Tasks',
     path: '/tasks',
-    icon: getIcon(checkboxLine),
+    icon: GetIcon(checkboxLine),
   },
   {
     title: 'Integrations',
     path: '/integrations',
-    icon: getIcon(appsLine),
+    icon: GetIcon(appsLine),
   },
   {
     title: 'Snippets',
     path: '/snippets',
-    icon: getIcon(quillPenLine),
+    icon: GetIcon(quillPenLine),
   },
 ];
 

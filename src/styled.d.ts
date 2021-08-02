@@ -22,6 +22,45 @@ interface LayoutStyle {
   indent: { sidebar: Pixels };
 }
 
+export interface CustomTheme extends LayoutStyle {
+  palette: {
+    primary: string;
+    secondary: string;
+    background: {
+      app: string;
+      card: string;
+      surface: string;
+      sidebar: string;
+      highlight: string;
+    };
+    palette: {
+      white: string;
+      black: string;
+      green: string;
+      yellow: string;
+      red: string;
+    };
+    gray: {
+      [shade: string]: string;
+    };
+    border: {
+      divider: string;
+    };
+    fade: {
+      primary: string;
+      secondary: string;
+      background: string;
+    };
+    text: {
+      primary: string;
+      secondary: string;
+      default: string;
+      disabled: string;
+      accent: string;
+    };
+  };
+}
+
 // and extend them!
 declare module 'styled-components' {
   export interface DefaultTheme extends LayoutStyle {

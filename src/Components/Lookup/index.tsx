@@ -17,7 +17,7 @@ export const LookupStyles = css`
     height: max-content;
     margin: auto;
     background: ${({ theme }) => theme.colors.background.card};
-    box-shadow: 0px 20px 100px ${({ theme }) => theme.colors.palette.black};
+    box-shadow: 0px 20px 100px ${({ theme }) => theme.colors.gray.sb};
     overflow: auto;
     border-radius: ${({ theme }) => theme.borderRadius.large};
     outline: none;
