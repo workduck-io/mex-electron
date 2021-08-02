@@ -2,7 +2,12 @@ import linkIcon from '@iconify-icons/ri/link';
 import more2Fill from '@iconify-icons/ri/more-2-fill';
 import saveLine from '@iconify-icons/ri/save-line';
 import shareLine from '@iconify-icons/ri/share-line';
-import { createPlateOptions, Plate, useStoreEditorValue } from '@udecode/plate';
+import {
+  createPlateOptions,
+  ELEMENT_MEDIA_EMBED,
+  Plate,
+  useStoreEditorValue,
+} from '@udecode/plate';
 import React, { useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import IconButton from '../Styled/Buttons';
@@ -89,21 +94,46 @@ const Editor = () => {
           trigger: '#',
           data: tags,
         },
-      }),
-      onKeyDown: useMultiComboboxOnKeyDown({
-        ilink: {
-          slateElementType: ELEMENT_ILINK,
-          newItemHandler: (newItem) => {
-            addILink(newItem);
-          },
-        },
-        tag: {
-          slateElementType: ELEMENT_TAG,
-          newItemHandler: (newItem) => {
-            addTag(newItem);
-          },
+
+        slash_command: {
+          cbKey: ComboboxKey.SLASH_COMMAND,
+          trigger: '/',
+          data: [],
         },
       }),
+      onKeyDown: useMultiComboboxOnKeyDown(
+        {
+          ilink: {
+            slateElementType: ELEMENT_ILINK,
+            newItemHandler: (newItem) => {
+              addILink(newItem);
+            },
+          },
+          tag: {
+            slateElementType: ELEMENT_TAG,
+            newItemHandler: (newItem) => {
+              addTag(newItem);
+            },
+          },
+          // Slash command configs
+
+          slash_command: {
+            slateElementType: ELEMENT_MEDIA_EMBED,
+            newItemHandler: (newItem) => {
+              console.log({ newItem });
+            },
+          },
+        },
+        {
+          webem: {
+            slateElementType: ELEMENT_MEDIA_EMBED,
+            command: 'webem',
+            options: {
+              url: 'http://example.com/',
+            },
+          },
+        }
+      ),
     },
   };
 
@@ -123,6 +153,16 @@ const Editor = () => {
           slateElementType: ELEMENT_TAG,
           newItemHandler: (newItem) => {
             addTag(newItem);
+          },
+        },
+        renderElement: TagComboboxItem,
+      },
+      slash_command: {
+        comboTypeHandlers: {
+          slateElementType: ELEMENT_MEDIA_EMBED,
+          newItemHandler: (newItem) => {
+            console.log({ newItem });
+            // addTag(newItem);
           },
         },
         renderElement: TagComboboxItem,
