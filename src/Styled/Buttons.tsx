@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { centeredCss } from './Layouts';
 
-const Button = styled.div`
+export const Button = styled.div`
   ${centeredCss};
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};

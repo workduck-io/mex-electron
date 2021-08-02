@@ -1,12 +1,15 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import settings4Line from '@iconify-icons/ri/settings-4-line';
+import { GetIcon } from '../../Conf/links';
+import { NavProps } from './Types';
 
-const StyledDiv = styled('div')`
+const StyledDiv = styled.div`
   z-index: 10;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   min-height: 100%;
   position: fixed;
@@ -45,32 +48,39 @@ const Link = styled(NavLink)`
   }
 `;
 
-export interface NavLinkData {
-  path: string;
-  title: string;
-  icon?: React.ReactNode;
-}
-
-export type NavProps = {
-  links: NavLinkData[];
-};
-
 const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
   return (
     <StyledDiv>
-      {links.map((l) => (
+      <div />
+      <div>
+        {links.map((l) => (
+          <Link
+            exact
+            activeClassName="active"
+            to={l.path}
+            key={`nav_${l.title}`}
+            // Tooltip
+            data-tip={l.title}
+            data-class="nav-tooltip"
+          >
+            {l.icon !== undefined ? l.icon : l.title}
+          </Link>
+        ))}
+      </div>
+      <div>
         <Link
           exact
           activeClassName="active"
-          to={l.path}
-          key={`nav_${l.title}`}
+          to="/settings"
+          key="nav_settings"
           // Tooltip
-          data-tip={l.title}
+          data-tip="Settings"
           data-class="nav-tooltip"
         >
-          {l.icon !== undefined ? l.icon : l.title}
+          {GetIcon(settings4Line)}
+          {/* <Icon icon={settings4Line} /> */}
         </Link>
-      ))}
+      </div>
     </StyledDiv>
   );
 };

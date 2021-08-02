@@ -1,12 +1,14 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
-import { darkTheme, lightTheme } from '../Styled/themes';
+import useThemeStore from '../Editor/Store/ThemeStore';
+import { darkTheme } from '../Styled/themes';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const [theme] = React.useState<'dark' | 'light'>('dark');
+  const theme = useThemeStore((state) => state.theme);
+  // const [theme] = React.useState<'dark' | 'light'>('dark');
 
   return (
-    <ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
+    <ThemeProvider theme={theme?.themeData ?? darkTheme}>
       {children}
     </ThemeProvider>
   );
