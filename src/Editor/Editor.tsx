@@ -128,6 +128,9 @@ const Editor = () => {
           webem: {
             slateElementType: ELEMENT_MEDIA_EMBED,
             command: 'webem',
+            options: {
+              url: 'http://example.com/',
+            },
           },
         }
       ),

@@ -12,12 +12,12 @@ import { IComboboxItem } from '../combobox/components/Combobox.types';
 import { useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown';
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen';
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore';
-import { SlashCommandHandler } from '../SlashCommands/Types';
+import { SlashCommandConfig } from '../SlashCommands/Types';
 import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChange';
 
 export interface ComboTypeHandlers {
   slateElementType: string;
-  newItemHandler: (newItem: string) => any;
+  newItemHandler: (newItem: string) => any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export const useElementOnChange = (comboType: ComboTypeHandlers) => {
@@ -47,7 +47,7 @@ export const useElementOnChange = (comboType: ComboTypeHandlers) => {
         // select the ilink text and insert the ilink element
         Transforms.select(editor, targetRange);
         insertNodes<TElement>(editor, {
-          type: type as any,
+          type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
           children: [{ text: '' }],
           value: item.text,
         });
@@ -75,18 +75,20 @@ const useMultiComboboxOnKeyDown = (
     [type: string]: ComboTypeHandlers;
   },
   slashCommands: {
-    [type: string]: SlashCommandHandler;
+    [type: string]: SlashCommandConfig;
   }
 ) => {
   const comboboxKey: string = useComboboxStore((state) => state.key);
   const comboType = keys[comboboxKey];
+  const slashCommandOnChange = useSlashCommandOnChange(slashCommands);
+  const elementOnChange = useElementOnChange(comboType);
 
   // We need to create the select handlers ourselves here
 
   const elementChangeHandler =
     comboboxKey === ComboboxKey.SLASH_COMMAND
-      ? useSlashCommandOnChange(slashCommands)
-      : useElementOnChange(comboType);
+      ? slashCommandOnChange
+      : elementOnChange;
 
   return useComboboxOnKeyDown({
     // Handle multiple combobox

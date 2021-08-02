@@ -11,10 +11,10 @@ import { ReactEditor } from 'slate-react';
 import { IComboboxItem } from '../combobox/components/Combobox.types';
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen';
 import { useComboboxStore } from '../combobox/useComboboxStore';
-import { SlashCommandHandler } from './Types';
+import { SlashCommandConfig } from './Types';
 
 export const useSlashCommandOnChange = (keys: {
-  [type: string]: SlashCommandHandler;
+  [type: string]: SlashCommandConfig;
 }) => {
   const isOpen = useComboboxIsOpen();
   const targetRange = useComboboxStore((state) => state.targetRange);
@@ -48,7 +48,7 @@ export const useSlashCommandOnChange = (keys: {
         // select the ilink text and insert the ilink element
         Transforms.select(editor, targetRange);
         insertNodes<TElement>(editor, {
-          type: type as any,
+          type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
           children: [{ text: '' }],
           ...commandConfig.options,
         });

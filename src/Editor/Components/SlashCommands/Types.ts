@@ -1,7 +1,7 @@
-export type command = 'webem';
+export type Command = 'webem';
 
-export interface SlashCommandHandler {
-  command: command;
+export interface SlashCommandConfig {
+  command: Command;
   slateElementType: string;
-  options?: any;
+  options?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
