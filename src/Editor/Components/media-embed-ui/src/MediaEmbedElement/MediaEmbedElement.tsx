@@ -3,44 +3,34 @@ import { setNodes } from '@udecode/plate-common';
 import { TElement, useEditorRef } from '@udecode/plate-core';
 import { MediaEmbedNodeData } from '@udecode/plate-media-embed';
 import { ReactEditor } from 'slate-react';
-import { getMediaEmbedElementStyles } from './MediaEmbedElement.styles';
+import { IFrame, IFrameWrapper, RootElement } from './MediaEmbedElement.styles';
 import { MediaEmbedElementProps } from './MediaEmbedElement.types';
 import { MediaEmbedUrlInput } from './MediaEmbedUrlInput';
 
 export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
   const { attributes, children, element, nodeProps } = props;
+  const [expand, setExpand] = React.useState(false);
 
   const editor = useEditorRef();
   const { url } = element;
 
-  const styles = getMediaEmbedElementStyles(props);
+  // console.log('styles', JSON.stringify({ styles }, null, 2));
 
   return (
-    <div
-      {...attributes}
-      css={styles.root.css}
-      className={styles.root.className}
-    >
+    <RootElement {...attributes}>
       <div contentEditable={false}>
-        <div
-          css={styles.iframeWrapper?.css}
-          className={styles.iframeWrapper?.className}
-        >
-          <iframe
-            css={styles.iframe?.css}
-            className={styles.iframe?.className}
+        <IFrameWrapper expand={expand}>
+          <IFrame
             title="embed"
             src={`${url}?title=0&byline=0&portrait=0`}
             frameBorder="0"
             {...nodeProps}
           />
-        </div>
+        </IFrameWrapper>
 
         <MediaEmbedUrlInput
-          data-testid="MediaEmbedUrlInput"
-          css={styles.input?.css}
-          className={styles.input?.className}
           url={url}
+          setExpand={setExpand}
           onChange={(val: string) => {
             const path = ReactEditor.findPath(editor, element);
             setNodes<TElement<MediaEmbedNodeData>>(
@@ -52,6 +42,6 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
         />
       </div>
       {children}
-    </div>
+    </RootElement>
   );
 };

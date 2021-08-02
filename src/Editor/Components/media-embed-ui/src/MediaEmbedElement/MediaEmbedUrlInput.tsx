@@ -1,15 +1,21 @@
+import globalLine from '@iconify-icons/ri/global-line';
+// npm install --save-dev @iconify/react @iconify-icons/ri
+import { Icon } from '@iconify/react';
 import * as React from 'react';
-import { CSSProp } from 'styled-components';
+import {
+  InputPrompt,
+  InputWrapper,
+  MediaInput,
+} from './MediaEmbedElement.styles';
 
 export const MediaEmbedUrlInput = ({
   url,
   onChange,
-  ...props
+  setExpand,
 }: {
-  className?: string;
-  css?: CSSProp;
   url: string;
   onChange: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  setExpand: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }) => {
   const [value, setValue] = React.useState(url);
 
@@ -31,21 +37,25 @@ export const MediaEmbedUrlInput = ({
   };
 
   return (
-    <input
-      value={value}
-      onClick={(e) => e.stopPropagation()}
-      onChange={(e) => {
-        const newUrl = e.target.value;
-        validateUrl(newUrl);
-        setValue(newUrl);
-        onChange(newUrl);
-      }}
-      {...props}
-    />
+    <InputWrapper>
+      <InputPrompt
+        onClick={() => {
+          setExpand((i: boolean) => !i);
+        }}
+      >
+        <Icon icon={globalLine} height={18} />
+      </InputPrompt>
+      <MediaInput
+        data-testid="MediaEmbedUrlInput"
+        value={value}
+        onClick={(e) => e.stopPropagation()}
+        onChange={(e) => {
+          const newUrl = e.target.value;
+          validateUrl(newUrl);
+          setValue(newUrl);
+          onChange(newUrl);
+        }}
+      />
+    </InputWrapper>
   );
-};
-
-MediaEmbedUrlInput.defaultProps = {
-  className: null,
-  css: null,
 };

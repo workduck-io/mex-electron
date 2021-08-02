@@ -306,5 +306,18 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "babelMacros": {
+    "twin": {
+      "preset": "styled-components",
+      "styled": {
+        "import": "default",
+        "from": "styled-components"
+      },
+      "css": {
+        "import": "css",
+        "from": "styled-components"
+      }
+    }
   }
 }
