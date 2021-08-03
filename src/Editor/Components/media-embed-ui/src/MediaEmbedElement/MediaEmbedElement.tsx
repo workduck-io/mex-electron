@@ -1,8 +1,10 @@
-import * as React from 'react';
 import { setNodes } from '@udecode/plate-common';
 import { TElement, useEditorRef } from '@udecode/plate-core';
 import { MediaEmbedNodeData } from '@udecode/plate-media-embed';
+import * as React from 'react';
+import { useEffect } from 'react';
 import { ReactEditor } from 'slate-react';
+import { getEmbedData } from './getEmbedUrl';
 import { IFrame, IFrameWrapper, RootElement } from './MediaEmbedElement.styles';
 import { MediaEmbedElementProps } from './MediaEmbedElement.types';
 import { MediaEmbedUrlInput } from './MediaEmbedUrlInput';
@@ -15,6 +17,16 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
   const { url } = element;
 
   // console.log('styles', JSON.stringify({ styles }, null, 2));
+
+  useEffect(() => {
+    const getData = async () => {
+      const d = await getEmbedData(element.url);
+      console.log({ d });
+      // if (d) {
+      // }
+    };
+    getData();
+  });
 
   return (
     <RootElement {...attributes}>

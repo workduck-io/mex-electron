@@ -19,23 +19,6 @@ export const MediaEmbedUrlInput = ({
 }) => {
   const [value, setValue] = React.useState(url);
 
-  const validateUrl = (newUrl: string) => {
-    let resultUrl = newUrl;
-    // if not starting with http, assume pasting of full iframe embed code
-    if (newUrl.substring(0, 4) !== 'http') {
-      const regexMatchSrc = /src=".*?"/;
-      const regexGroupQuotes = /"([^"]*)"/;
-
-      const src = newUrl.match(regexMatchSrc)?.[0];
-      const returnString = src?.match(regexGroupQuotes)?.[1];
-
-      if (returnString) {
-        resultUrl = returnString;
-      }
-    }
-    return resultUrl;
-  };
-
   return (
     <InputWrapper>
       <InputPrompt
@@ -51,7 +34,6 @@ export const MediaEmbedUrlInput = ({
         onClick={(e) => e.stopPropagation()}
         onChange={(e) => {
           const newUrl = e.target.value;
-          validateUrl(newUrl);
           setValue(newUrl);
           onChange(newUrl);
         }}
