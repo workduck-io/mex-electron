@@ -91,3 +91,18 @@ export const MediaInput = styled.input`
     outline: none;
   }
 `;
+
+export const MediaHtml = styled.div`
+  > div {
+    display: flex;
+  }
+  background: ${({ theme }) => theme.colors.background.card};
+  border-radius: ${({ theme: { borderRadius } }) => `${borderRadius.small}`};
+  blockquote {
+    &.twitter-tweet {
+      margin: 0;
+      padding: ${({ theme: { spacing } }) =>
+        `${spacing.medium} ${spacing.large}`};
+    }
+  }
+`;

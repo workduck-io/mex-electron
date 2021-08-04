@@ -3043,6 +3043,7 @@ export const oembedProviders: OembedProvider[] = [
           'https://*.twitter.com/*/status/*',
           'https://twitter.com/*/moments/*',
           'https://*.twitter.com/*/moments/*',
+          'https://twitter.com/*',
         ],
         url: 'https://publish.twitter.com/oembed',
       },

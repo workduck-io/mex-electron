@@ -6,7 +6,9 @@ const fetchOembed = async (
   endpoint: string
 ): Promise<string | undefined> => {
   // Create URL for Oembed request
-  const requestUrl = `${endpoint}?format=json&url=${encodeURIComponent(url)}`;
+  const requestUrl = `${endpoint}?type=json&theme=dark&url=${encodeURIComponent(
+    url
+  )}`;
 
   const resp = await axios
     .get(requestUrl)
@@ -37,20 +39,24 @@ export const getEmbedData = async (
       // Schemes provide Supported URLs
       if (end.schemes)
         // Traverse which scheme matches
-        end.schemes.some(async (s) => {
+        end.schemes.some((s) => {
           if (foundMarker) return foundMarker;
 
           // Create the regex from provided match string
           const regexString = s
             .replaceAll('/', '\\/') // escape /
             .replaceAll('.', '\\.') // escape .
-            .replaceAll('*', '[\\w,\\d]+'); // Replace * with words/digit
+            .replaceAll('*', '[\\w,\\d,\\=,\\?]+'); // Replace * with words/digit
 
           const re = new RegExp(regexString);
           const match = url.match(re);
 
+          // console.log(s, { foundMarker, re, match });
+
+          // console.log({ s, matchUrl, re, url });
           if (match) {
             // We save the endpoint where we have to call for oembed data
+            // console.log({ s, matchUrl, re, url });
             matchUrl = end.url;
             foundMarker = true;
           }
@@ -62,6 +68,7 @@ export const getEmbedData = async (
     return foundMarker;
   });
 
+  // console.log({ matchUrl, url });
   if (matchUrl === '') return undefined;
 
   // fetch Oembed Data
