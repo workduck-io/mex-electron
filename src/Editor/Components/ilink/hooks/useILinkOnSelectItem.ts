@@ -1,11 +1,5 @@
 import { useCallback } from 'react';
-import {
-  getBlockAbove,
-  getPlatePluginType,
-  insertNodes,
-  SPEditor,
-  TElement,
-} from '@udecode/plate';
+import { getBlockAbove, getPlatePluginType, insertNodes, SPEditor, TElement } from '@udecode/plate';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { IComboboxItem } from '../../combobox/components/Combobox.types';
@@ -18,8 +12,8 @@ import { ELEMENT_ILINK } from '../defaults';
  */
 export const useILinkOnSelectItem = () => {
   const isOpen = useComboboxIsOpen();
-  const targetRange = useComboboxStore((state) => state.targetRange);
-  const closeMenu = useComboboxStore((state) => state.closeMenu);
+  const targetRange = useComboboxStore(state => state.targetRange);
+  const closeMenu = useComboboxStore(state => state.closeMenu);
 
   return useCallback(
     (editor: SPEditor & ReactEditor, item: IComboboxItem) => {
@@ -27,10 +21,7 @@ export const useILinkOnSelectItem = () => {
 
       if (isOpen && targetRange) {
         const pathAbove = getBlockAbove(editor)?.[1];
-        const isBlockEnd =
-          editor.selection &&
-          pathAbove &&
-          Editor.isEnd(editor, editor.selection.anchor, pathAbove);
+        const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove);
 
         // insert a space to fix the bug
         if (isBlockEnd) {

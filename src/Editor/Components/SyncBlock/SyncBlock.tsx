@@ -41,11 +41,11 @@ const getIcon = (s: string) => {
 export const SyncBlock = (props: SyncBlockProps) => {
   const { attributes, children, element } = props;
   const { register, handleSubmit } = useForm<FormValues>();
-  const onSubmit = handleSubmit((data) => console.log(JSON.stringify(data))); // eslint-disable-line no-console
+  const onSubmit = handleSubmit(data => console.log(JSON.stringify(data))); // eslint-disable-line no-console
 
-  const blocksData = useSyncStore((state) => state.syncBlocks);
+  const blocksData = useSyncStore(state => state.syncBlocks);
 
-  const blockData = blocksData.filter((d) => d.id === element.id)[0];
+  const blockData = blocksData.filter(d => d.id === element.id)[0];
 
   React.useEffect(() => {
     ReactTooltip.rebuild();
@@ -63,17 +63,12 @@ export const SyncBlock = (props: SyncBlockProps) => {
             <Icon icon={refreshFill} height={20} />
             SyncBlock
           </ElementHeader>
-          <textarea
-            {...register('content')}
-            placeholder="Your content here..."
-            defaultValue={blockData.content}
-          />
+          <textarea {...register('content')} placeholder="Your content here..." defaultValue={blockData.content} />
 
           <FormControls>
             <div>
-              {connection_services.map((cs) => {
-                const checked =
-                  blockData && blockData.connections.includes(cs as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+              {connection_services.map(cs => {
+                const checked = blockData && blockData.connections.includes(cs as any); // eslint-disable-line @typescript-eslint/no-explicit-any
                 return (
                   <ServiceSelectorLabel
                     htmlFor={`connections.${cs}`}
@@ -86,11 +81,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
                       <Icon icon={getIcon(cs)} />
                       {cs}
                     </ServiceLabel>
-                    <input
-                      type="checkbox"
-                      {...register(`connections.${cs}`)}
-                      checked={checked}
-                    />
+                    <input type="checkbox" {...register(`connections.${cs}`)} checked={checked} />
                   </ServiceSelectorLabel>
                 );
               })}

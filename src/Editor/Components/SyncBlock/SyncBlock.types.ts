@@ -23,10 +23,7 @@ export interface SyncBlockStyles {
   input: CSSProp;
 }
 
-export type SyncBlockProps = StyledElementProps<
-  SyncElementData,
-  SyncBlockStyles
->;
+export type SyncBlockProps = StyledElementProps<SyncElementData, SyncBlockStyles>;
 
 export type SyncContextType = {
   syncBlocks: SyncBlockData[];

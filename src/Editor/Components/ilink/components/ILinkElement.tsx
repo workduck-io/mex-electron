@@ -12,15 +12,11 @@ import { useEditorStore } from '../../../Store/EditorStore';
  * ILinkElement with no default styles.
  * [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling)
  */
-export const ILinkElement = ({
-  attributes,
-  children,
-  element,
-}: ILinkElementProps) => {
+export const ILinkElement = ({ attributes, children, element }: ILinkElementProps) => {
   const editor = useEditorRef();
   const selected = useSelected();
   const focused = useFocused();
-  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId);
+  const loadNodeFromId = useEditorStore(state => state.loadNodeFromId);
 
   const onClickProps = useOnMouseClick(() => {
     loadNodeFromId(element.value);
@@ -46,11 +42,7 @@ export const ILinkElement = ({
   );
 
   return (
-    <SILinkRoot
-      {...attributes}
-      data-slate-value={element.value}
-      contentEditable={false}
-    >
+    <SILinkRoot {...attributes} data-slate-value={element.value} contentEditable={false}>
       <SILink {...onClickProps}>
         <span className="ILink_decoration ILink_decoration_left">[[</span>
         {element.value}

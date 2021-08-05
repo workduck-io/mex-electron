@@ -20,7 +20,7 @@ export type EditorContextType = {
   loadNodeFromId: (id: string) => void;
 };
 
-export const useEditorStore = create<EditorContextType>((set) => ({
+export const useEditorStore = create<EditorContextType>(set => ({
   node: getInitialNode(),
   content: getContent('@'),
   loadNode: (node: TreeNode) => {
@@ -42,7 +42,7 @@ export const useEditorStore = create<EditorContextType>((set) => ({
 
 export const withLoadNode = (Component: any) => {
   return function C2(props: any) {
-    const loadNode = useEditorStore((state) => state.loadNode);
+    const loadNode = useEditorStore(state => state.loadNode);
 
     return <Component loadNode={loadNode} {...props} />; // eslint-disable-line react/jsx-props-no-spreading
   };

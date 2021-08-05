@@ -5,17 +5,11 @@ import { useComboboxStore } from '../useComboboxStore';
 
 export const useComboboxControls = () => {
   const isOpen = useComboboxIsOpen();
-  const itemIndex = useComboboxStore((state) => state.itemIndex);
-  const items = useComboboxStore((state) => state.items);
+  const itemIndex = useComboboxStore(state => state.itemIndex);
+  const items = useComboboxStore(state => state.items);
 
   // Menu combobox
-  const {
-    closeMenu,
-    getMenuProps,
-    getComboboxProps,
-    getInputProps,
-    getItemProps,
-  } = useCombobox({
+  const { closeMenu, getMenuProps, getComboboxProps, getInputProps, getItemProps } = useCombobox({
     isOpen,
     highlightedIndex: itemIndex,
     items,

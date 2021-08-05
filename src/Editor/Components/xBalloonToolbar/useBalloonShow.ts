@@ -55,16 +55,7 @@ export const useBalloonShow = ({
         ref.current.removeAttribute('style');
       }
     }
-  }, [
-    hidden,
-    hiddenDelay,
-    reset,
-    selectionExpanded,
-    selected,
-    show,
-    selectionText?.length,
-    ref,
-  ]);
+  }, [hidden, hiddenDelay, reset, selectionExpanded, selected, show, selectionText?.length, ref]);
 
   // useEffect(() => {
   //   if (selected) {

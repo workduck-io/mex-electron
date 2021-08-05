@@ -4,10 +4,7 @@ import { ReactEditor } from 'slate-react';
 /**
  * Set element position below a range.
  */
-export const setElementPositionByRange = (
-  editor: ReactEditor,
-  { ref, at }: { ref: any; at: Range | null }
-) => {
+export const setElementPositionByRange = (editor: ReactEditor, { ref, at }: { ref: any; at: Range | null }) => {
   if (!at) return;
 
   const el = ref.current;

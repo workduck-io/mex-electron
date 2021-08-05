@@ -14,7 +14,7 @@ interface ThemeStoreState {
   setThemes: (theme: Theme[]) => void;
 }
 
-const useThemeStore = create<ThemeStoreState>((set) => ({
+const useThemeStore = create<ThemeStoreState>(set => ({
   theme: {
     id: 'dark',
     themeData: darkTheme,

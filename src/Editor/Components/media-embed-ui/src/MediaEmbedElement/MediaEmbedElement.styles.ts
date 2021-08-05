@@ -79,8 +79,7 @@ export const MediaHtml = styled.div`
   blockquote {
     &.twitter-tweet {
       margin: 0;
-      padding: ${({ theme: { spacing } }) =>
-        `${spacing.medium} ${spacing.large}`};
+      padding: ${({ theme: { spacing } }) => `${spacing.medium} ${spacing.large}`};
     }
   }
 

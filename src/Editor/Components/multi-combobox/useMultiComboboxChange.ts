@@ -16,12 +16,12 @@ const useMultiComboboxOnChange = (
   const editor = useStoreEditorRef(editorId)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
   const isOpen = useComboboxIsOpen();
-  const closeMenu = useComboboxStore((state) => state.closeMenu);
+  const closeMenu = useComboboxStore(state => state.closeMenu);
 
-  const maxSuggestions = useComboboxStore((state) => state.maxSuggestions);
-  const setItems = useComboboxStore((state) => state.setItems);
+  const maxSuggestions = useComboboxStore(state => state.maxSuggestions);
+  const setItems = useComboboxStore(state => state.setItems);
 
-  const comboboxKey = useComboboxStore((state) => state.key);
+  const comboboxKey = useComboboxStore(state => state.key);
   const comboType = keys[comboboxKey];
 
   const comboboxOnChange = useComboboxOnChange({
@@ -41,9 +41,9 @@ const useMultiComboboxOnChange = (
     if (!search || !data) return false;
 
     const items: IComboboxItem[] = data
-      .filter((c) => c.text.toLowerCase().includes(search.toLowerCase()))
+      .filter(c => c.text.toLowerCase().includes(search.toLowerCase()))
       .slice(0, maxSuggestions)
-      .map((item) => ({
+      .map(item => ({
         key: item.value,
         text: item.text,
       }));

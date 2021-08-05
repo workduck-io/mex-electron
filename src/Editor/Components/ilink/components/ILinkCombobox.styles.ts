@@ -13,8 +13,7 @@ export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
       background: ${theme.colors.background.surface};
       width: 300px;
       border-radius: 0 0 2px 2px;
-      box-shadow: rgba(0, 0, 0, 0.133) 0 3.2px 7.2px 0,
-        rgba(0, 0, 0, 0.11) 0 0.6px 1.8px 0;
+      box-shadow: rgba(0, 0, 0, 0.133) 0 3.2px 7.2px 0, rgba(0, 0, 0, 0.11) 0 0.6px 1.8px 0;
     `}
 `;
 
@@ -32,14 +31,11 @@ export const ComboboxItem = styled.div<{ highlighted: boolean }>`
   // overflowWrap: "break-word";
   user-select: none;
   color: ${({ theme }) => theme.colors.text.secondary};
-  background: ${({ highlighted, theme }) =>
-    !highlighted ? 'transparent' : theme.colors.background.highlight};
+  background: ${({ highlighted, theme }) => (!highlighted ? 'transparent' : theme.colors.background.highlight)};
   cursor: pointer;
 
   :hover {
     background-color: ${({ highlighted, theme }) =>
-      !highlighted
-        ? theme.colors.background.card
-        : theme.colors.background.highlight};
+      !highlighted ? theme.colors.background.card : theme.colors.background.highlight};
   }
 `;

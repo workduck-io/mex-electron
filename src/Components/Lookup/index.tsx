@@ -47,7 +47,7 @@ const Lookup: React.FC<LookupProps> = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      '$mod+KeyL': (event) => {
+      '$mod+KeyL': event => {
         event.preventDefault();
         openModal();
       },
@@ -60,12 +60,7 @@ const Lookup: React.FC<LookupProps> = () => {
   // console.log({ flatTree, open });
 
   return (
-    <Modal
-      className="LookupContent"
-      overlayClassName="LookupOverlay"
-      onRequestClose={closeModal}
-      isOpen={open}
-    >
+    <Modal className="LookupContent" overlayClassName="LookupOverlay" onRequestClose={closeModal} isOpen={open}>
       <h1>Lookup</h1>
       <LookupInput closeModal={closeModal} />
     </Modal>

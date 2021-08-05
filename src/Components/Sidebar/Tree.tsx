@@ -68,8 +68,7 @@ class Tree extends React.Component<RCTreeProps> {
     const dropKey = info.node.props.eventKey;
     const dragKey = info.dragNode.props.eventKey;
     const dropPos = info.node.props.pos.split('-');
-    const dropPosition =
-      info.dropPosition - Number(dropPos[dropPos.length - 1]);
+    const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
 
     const loop = (data: any, key: any, callback: any) => {
       data.forEach((item: any, index: any, arr: any) => {

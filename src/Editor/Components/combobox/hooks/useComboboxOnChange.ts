@@ -17,9 +17,9 @@ export const useComboboxOnChange = ({
     [type: string]: ComboboxType;
   };
 }) => {
-  const setTargetRange = useComboboxStore((state) => state.setTargetRange);
-  const setSearch = useComboboxStore((state) => state.setSearch);
-  const setKey = useComboboxStore((state) => state.setKey);
+  const setTargetRange = useComboboxStore(state => state.setTargetRange);
+  const setSearch = useComboboxStore(state => state.setSearch);
+  const setKey = useComboboxStore(state => state.setKey);
 
   return useCallback(() => {
     const textFromTrigger = getTextFromTriggers(editor, keys);

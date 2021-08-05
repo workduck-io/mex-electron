@@ -75,9 +75,7 @@ export const initialValueBasicElements = [
   createElement(
     'The basic marks consist of text formatting such as bold, italic, underline, strikethrough, subscript, superscript, and code.'
   ),
-  createElement(
-    'You can customize the type, the component and the hotkey for each of these.'
-  ),
+  createElement('You can customize the type, the component and the hotkey for each of these.'),
   createElement('This text is bold.', { mark: MARK_BOLD }),
   createElement('This text is italic.', { mark: MARK_ITALIC }),
   createElement('This text is underlined.', {

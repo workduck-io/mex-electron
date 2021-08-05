@@ -1,10 +1,7 @@
 import { ReactEditor } from 'slate-react';
 
 export interface RenderFunction<P = { [key: string]: any }> {
-  (
-    props: P,
-    defaultRender?: (props?: P) => JSX.Element | null
-  ): JSX.Element | null;
+  (props: P, defaultRender?: (props?: P) => JSX.Element | null): JSX.Element | null;
 }
 
 export enum ComboboxItemType {

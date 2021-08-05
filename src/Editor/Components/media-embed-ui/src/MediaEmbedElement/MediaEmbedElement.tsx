@@ -6,12 +6,7 @@ import { useEffect } from 'react';
 import EmbedContainer from 'react-oembed-container';
 import { ReactEditor } from 'slate-react';
 import { getEmbedData } from './getEmbedUrl';
-import {
-  IFrame,
-  IFrameWrapper,
-  MediaHtml,
-  RootElement,
-} from './MediaEmbedElement.styles';
+import { IFrame, IFrameWrapper, MediaHtml, RootElement } from './MediaEmbedElement.styles';
 import { MediaEmbedElementProps } from './MediaEmbedElement.types';
 import { MediaEmbedUrlInput } from './MediaEmbedUrlInput';
 
@@ -50,12 +45,7 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
           </EmbedContainer>
         ) : (
           <IFrameWrapper expand={expand}>
-            <IFrame
-              title="embed"
-              src={`${url}?title=0&byline=0&portrait=0`}
-              frameBorder="0"
-              {...nodeProps}
-            />
+            <IFrame title="embed" src={`${url}?title=0&byline=0&portrait=0`} frameBorder="0" {...nodeProps} />
           </IFrameWrapper>
         )}
 
@@ -65,11 +55,7 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
           htmlData={htmlData}
           onChange={(val: string) => {
             const path = ReactEditor.findPath(editor, element);
-            setNodes<TElement<MediaEmbedNodeData>>(
-              editor,
-              { url: val },
-              { at: path }
-            );
+            setNodes<TElement<MediaEmbedNodeData>>(editor, { url: val }, { at: path });
           }}
         />
       </div>

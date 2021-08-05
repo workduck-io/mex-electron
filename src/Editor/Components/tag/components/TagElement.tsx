@@ -11,11 +11,7 @@ import { STag, STagRoot } from './TagElement.styles';
  * TagElement with no default styles.
  * [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling)
  */
-export const TagElement = ({
-  attributes,
-  children,
-  element,
-}: TagElementProps) => {
+export const TagElement = ({ attributes, children, element }: TagElementProps) => {
   const editor = useEditorRef();
   const selected = useSelected();
   const focused = useFocused();
@@ -42,11 +38,7 @@ export const TagElement = ({
   );
 
   return (
-    <STagRoot
-      {...attributes}
-      data-slate-value={element.value}
-      contentEditable={false}
-    >
+    <STagRoot {...attributes} data-slate-value={element.value} contentEditable={false}>
       <STag {...onClickProps}>#{element.value}</STag>
       {children}
     </STagRoot>

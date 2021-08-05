@@ -217,9 +217,8 @@ export const StyledEditor = styled('div')`
   }
 
   select {
-    background: ${({ theme }) => theme.colors.background.input}
-      ${({ theme }) => theme.colors.primary} calc(100% - 12px) 50% / 12px
-      no-repeat;
+    background: ${({ theme }) => theme.colors.background.input} ${({ theme }) => theme.colors.primary} calc(100% - 12px)
+      50% / 12px no-repeat;
     padding-right: 35px;
   }
 
@@ -312,8 +311,7 @@ export const base = {
   ...colors,
   fontFamily:
     "'Inter', -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen, Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif",
-  fontFamilyMono:
-    "'Iosevka',Consolas,'Liberation Mono', Menlo, Courier,monospace",
+  fontFamilyMono: "'Iosevka',Consolas,'Liberation Mono', Menlo, Courier,monospace",
   fontWeight: 400,
   zIndex: 100,
   link: colors.primary,

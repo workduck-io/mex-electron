@@ -40,7 +40,7 @@ export type ComboboxState = {
   closeMenu: () => void;
 };
 
-export const useComboboxStore = createStore()<ComboboxState>((set) => ({
+export const useComboboxStore = createStore()<ComboboxState>(set => ({
   key: ComboboxKey.ILINK,
   setKey: setStoreValue(set, 'key', 'setKey'),
 
@@ -63,7 +63,7 @@ export const useComboboxStore = createStore()<ComboboxState>((set) => ({
   setCombobox: setStoreValue(set, 'combobox', 'setCombobox'),
 
   closeMenu: () => {
-    set((state) => {
+    set(state => {
       state.targetRange = null;
       state.items = [];
       state.search = '';

@@ -25,14 +25,14 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   },
 
   // Add a new tag to the store
-  addTag: (tag) => {
+  addTag: tag => {
     set({
       tags: [...get().tags, generateTag(tag, get().tags.length)],
     });
   },
 
   // Add a new ILink to the store
-  addILink: (ilink) => {
+  addILink: ilink => {
     set({
       ilinks: [...get().ilinks, generateILink(ilink, get().ilinks.length)],
     });
@@ -40,8 +40,8 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 }));
 
 export const useTreeFromLinks = () => {
-  const ilinks = useDataStore((store) => store.ilinks);
-  const links = ilinks.map((i) => i.text);
+  const ilinks = useDataStore(store => store.ilinks);
+  const links = ilinks.map(i => i.text);
   const tree = generateTree(links);
 
   return tree;

@@ -6,12 +6,7 @@ import { BalloonToolbarProps } from './BalloonToolbar.types';
 import { useBalloonMove } from './useBalloonMove';
 import { useBalloonShow } from './useBalloonShow';
 
-export const BalloonToolbar = ({
-  children,
-  selected,
-  hiddenDelay = 0,
-  direction = 'top',
-}: BalloonToolbarProps) => {
+export const BalloonToolbar = ({ children, selected, hiddenDelay = 0, direction = 'top' }: BalloonToolbarProps) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const editor = useStoreEditorState(useEventEditorId('focus'));
 

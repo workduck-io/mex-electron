@@ -8,7 +8,4 @@ export interface MediaEmbedElementStyles {
   input: CSSProp;
 }
 
-export type MediaEmbedElementProps = StyledElementProps<
-  MediaEmbedNodeData,
-  MediaEmbedElementStyles
->;
+export type MediaEmbedElementProps = StyledElementProps<MediaEmbedNodeData, MediaEmbedElementStyles>;

@@ -1,11 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import {
-  createPlateComponents,
-  ELEMENT_LINK,
-  ELEMENT_MEDIA_EMBED,
-  withProps,
-} from '@udecode/plate';
+import { createPlateComponents, ELEMENT_LINK, ELEMENT_MEDIA_EMBED, withProps } from '@udecode/plate';
 import { ILinkElement } from './ilink/components/ILinkElement';
 import { ELEMENT_ILINK } from './ilink/defaults';
 import LinkElement from './Link';
