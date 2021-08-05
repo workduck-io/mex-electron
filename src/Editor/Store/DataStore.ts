@@ -3,21 +3,7 @@ import { generateTree } from '../../Components/Sidebar/sampleRCTreeData';
 import { generateILink } from '../../Conf/sampleILinks';
 import { generateTag } from '../../Conf/sampleTags';
 import getFlatTree from '../../Lib/flatTree';
-
-interface ComboText {
-  // This interface is used to store tags in a combobox friendly way.
-  key: string;
-  text: string;
-  value: string;
-}
-
-interface DataStoreState {
-  tags: ComboText[];
-  ilinks: ComboText[];
-  initializeData: (tags: ComboText[], ids: ComboText[]) => void;
-  addTag: (tag: string) => void;
-  addILink: (ilink: string) => void;
-}
+import { DataStoreState } from './Types';
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   // Tags
@@ -26,11 +12,15 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   // Internal links (node ids)
   ilinks: [],
 
+  // Slash commands
+  slash_commands: [],
+
   // Load initial data in the store
-  initializeData: (tags, ilinks) => {
+  initializeData: (tags, ilinks, slash_commands) => {
     set({
       tags,
       ilinks,
+      slash_commands,
     });
   },
 

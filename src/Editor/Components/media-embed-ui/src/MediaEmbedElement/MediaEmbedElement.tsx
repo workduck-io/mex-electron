@@ -62,6 +62,7 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
         <MediaEmbedUrlInput
           url={url}
           setExpand={setExpand}
+          htmlData={htmlData}
           onChange={(val: string) => {
             const path = ReactEditor.findPath(editor, element);
             setNodes<TElement<MediaEmbedNodeData>>(

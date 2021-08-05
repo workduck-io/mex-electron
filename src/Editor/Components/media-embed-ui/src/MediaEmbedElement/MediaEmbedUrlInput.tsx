@@ -1,3 +1,4 @@
+import magicLine from '@iconify-icons/ri/magic-line';
 import globalLine from '@iconify-icons/ri/global-line';
 // npm install --save-dev @iconify/react @iconify-icons/ri
 import { Icon } from '@iconify/react';
@@ -12,10 +13,12 @@ export const MediaEmbedUrlInput = ({
   url,
   onChange,
   setExpand,
+  htmlData,
 }: {
   url: string;
   onChange: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   setExpand: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  htmlData: string | undefined;
 }) => {
   const [value, setValue] = React.useState(url);
 
@@ -26,7 +29,11 @@ export const MediaEmbedUrlInput = ({
           setExpand((i: boolean) => !i);
         }}
       >
-        <Icon icon={globalLine} height={18} />
+        {htmlData ? (
+          <Icon icon={magicLine} height={18} />
+        ) : (
+          <Icon icon={globalLine} height={18} />
+        )}
       </InputPrompt>
       <MediaInput
         data-testid="MediaEmbedUrlInput"

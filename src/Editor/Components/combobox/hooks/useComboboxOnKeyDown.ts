@@ -12,9 +12,11 @@ import { getNextWrappingIndex } from '../utils/getNextWrappingIndex';
 export const useComboboxOnKeyDown = ({
   onSelectItem,
   onNewItem,
+  creatable,
 }: {
-  onSelectItem: (editor: SPEditor, item: IComboboxItem) => any;
+  onSelectItem: (editor: SPEditor, item: IComboboxItem) => any; // eslint-disable-line @typescript-eslint/no-explicit-any
   onNewItem: (name: string) => void;
+  creatable?: boolean;
 }): KeyboardHandler => {
   const itemIndex = useComboboxStore((state) => state.itemIndex);
   const setItemIndex = useComboboxStore((state) => state.setItemIndex);
@@ -62,7 +64,7 @@ export const useComboboxOnKeyDown = ({
           closeMenu();
           if (items[itemIndex]) {
             onSelectItem(editor, items[itemIndex]);
-          } else if (search) {
+          } else if (search && creatable) {
             // console.log({ search });
             onSelectItem(editor, { key: String(items.length), text: search });
             onNewItem(search);
@@ -72,6 +74,15 @@ export const useComboboxOnKeyDown = ({
       }
       return false;
     },
-    [isOpen, itemIndex, items, setItemIndex, closeMenu, onSelectItem, onNewItem]
+    [
+      isOpen,
+      itemIndex,
+      items,
+      creatable,
+      setItemIndex,
+      closeMenu,
+      onSelectItem,
+      onNewItem,
+    ]
   );
 };
