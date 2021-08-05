@@ -261,7 +261,6 @@
     "react-router-dom": "^5.2.0",
     "react-select": "^4.3.1",
     "react-sortablejs": "^6.0.0",
-    "react-tiny-oembed": "^1.1.0",
     "react-tooltip": "^4.2.19",
     "regenerator-runtime": "^0.13.5",
     "remark-parse": "^9.0.0",
