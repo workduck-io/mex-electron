@@ -3,8 +3,9 @@ import notionIcon from '@iconify/icons-simple-icons/notion';
 import slackIcon from '@iconify/icons-simple-icons/slack';
 import telegramIcon from '@iconify/icons-simple-icons/telegram';
 import Icon from '@iconify/react';
-import * as React from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
+import ReactTooltip from 'react-tooltip';
 import { useSyncStore } from '../../Store/SyncStore';
 import {
   ElementHeader,
@@ -46,6 +47,10 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
   const blockData = blocksData.filter((d) => d.id === element.id)[0];
 
+  React.useEffect(() => {
+    ReactTooltip.rebuild();
+  }, []);
+
   // Use a useEffect for sync
 
   return (
@@ -74,11 +79,10 @@ export const SyncBlock = (props: SyncBlockProps) => {
                     htmlFor={`connections.${cs}`}
                     key={`${blockData.id}_syncBlocks_${cs}`}
                     checked={checked}
+                    data-tip={`Sync with ${cs}`}
+                    data-place="bottom"
                   >
-                    <ServiceLabel
-                      data-tip={`Sync with ${cs}`}
-                      data-place="bottom"
-                    >
+                    <ServiceLabel>
                       <Icon icon={getIcon(cs)} />
                       {cs}
                     </ServiceLabel>
