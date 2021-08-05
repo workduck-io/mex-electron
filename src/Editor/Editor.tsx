@@ -22,6 +22,7 @@ import {
 } from './Components/multi-combobox/multiComboboxContainer';
 import useMultiComboboxOnChange from './Components/multi-combobox/useMultiComboboxChange';
 import useMultiComboboxOnKeyDown from './Components/multi-combobox/useMultiComboboxOnKeyDown';
+import { SlashComboboxItem } from './Components/SlashCommands/SlashComboboxItem';
 import { TagComboboxItem } from './Components/tag/components/TagComboboxItem';
 import { ELEMENT_TAG } from './Components/tag/defaults';
 import { deserialize, serialize } from './Plugins/md-serialize';
@@ -38,6 +39,7 @@ const Editor = () => {
 
   const tags = useDataStore((state) => state.tags);
   const ilinks = useDataStore((state) => state.ilinks);
+  const slash_commands = useDataStore((state) => state.slash_commands);
 
   useEffect(() => {
     ReactTooltip.rebuild();
@@ -98,9 +100,10 @@ const Editor = () => {
         slash_command: {
           cbKey: ComboboxKey.SLASH_COMMAND,
           trigger: '/',
-          data: [],
+          data: slash_commands,
         },
       }),
+
       onKeyDown: useMultiComboboxOnKeyDown(
         {
           ilink: {
@@ -119,9 +122,8 @@ const Editor = () => {
 
           slash_command: {
             slateElementType: ELEMENT_MEDIA_EMBED,
-            newItemHandler: (newItem) => {
-              console.log({ newItem });
-            },
+            // Support for creating slash commands by user can be added here
+            newItemHandler: () => {},
           },
         },
         {
@@ -160,12 +162,9 @@ const Editor = () => {
       slash_command: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_MEDIA_EMBED,
-          newItemHandler: (newItem) => {
-            console.log({ newItem });
-            // addTag(newItem);
-          },
+          newItemHandler: () => {},
         },
-        renderElement: TagComboboxItem,
+        renderElement: SlashComboboxItem,
       },
     },
   };

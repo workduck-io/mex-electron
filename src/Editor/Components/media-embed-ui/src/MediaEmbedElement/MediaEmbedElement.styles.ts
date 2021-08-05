@@ -1,31 +1,9 @@
-import { createStyles } from '@udecode/plate-styled-components';
-import styled, { css } from 'styled-components';
-import tw from 'twin.macro';
-import { MediaEmbedElementProps } from './MediaEmbedElement.types';
-
-export const getMediaEmbedElementStyles = (props: MediaEmbedElementProps) =>
-  createStyles(
-    { prefixClassNames: 'MediaEmbedElement', ...props },
-    {
-      root: tw`relative`,
-      iframeWrapper: [tw`relative`, tw`padding[75% 0 0 0]`],
-      iframe: [tw`absolute top-0 left-0 w-full h-full`],
-      input: [
-        tw`w-full`,
-        css`
-          padding: 0.5em;
-          font-size: 0.85em;
-          border: 2px solid #ddd;
-          background: #fafafa;
-          margin-top: 5px;
-        `,
-      ],
-    }
-  );
+import styled from 'styled-components';
 
 interface IFrameWrapperProps {
   expand: boolean;
 }
+
 export const IFrameWrapper = styled.div<IFrameWrapperProps>`
   position: relative;
   transition: padding 0.2s ease-in-out;
@@ -89,5 +67,26 @@ export const MediaInput = styled.input`
   :focus {
     background-color: ${({ theme }) => theme.colors.background.card};
     outline: none;
+  }
+`;
+
+export const MediaHtml = styled.div`
+  > div {
+    display: flex;
+  }
+  background: ${({ theme }) => theme.colors.background.card};
+  border-radius: ${({ theme: { borderRadius } }) => `${borderRadius.small}`};
+  blockquote {
+    &.twitter-tweet {
+      margin: 0;
+      padding: ${({ theme: { spacing } }) =>
+        `${spacing.medium} ${spacing.large}`};
+    }
+  }
+
+  iframe[src*='youtube'],
+  iframe[src*='youtu.be'] {
+    min-width: 100%;
+    min-height: 500px;
   }
 `;
