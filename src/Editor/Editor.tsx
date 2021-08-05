@@ -24,12 +24,14 @@ import useMultiComboboxOnChange from './Components/multi-combobox/useMultiCombob
 import useMultiComboboxOnKeyDown from './Components/multi-combobox/useMultiComboboxOnKeyDown';
 import { SlashComboboxItem } from './Components/SlashCommands/SlashComboboxItem';
 import { ELEMENT_SYNC_BLOCK } from './Components/SyncBlock';
+import { getNewBlockData } from './Components/SyncBlock/getNewBlockData';
 import { TagComboboxItem } from './Components/tag/components/TagComboboxItem';
 import { ELEMENT_TAG } from './Components/tag/defaults';
 import { deserialize, serialize } from './Plugins/md-serialize';
 import generatePlugins from './Plugins/plugins';
 import useDataStore from './Store/DataStore';
 import { useEditorStore } from './Store/EditorStore';
+import { useSyncStore } from './Store/SyncStore';
 
 const options = createPlateOptions();
 
@@ -41,6 +43,7 @@ const Editor = () => {
   const tags = useDataStore((state) => state.tags);
   const ilinks = useDataStore((state) => state.ilinks);
   const slash_commands = useDataStore((state) => state.slash_commands);
+  const addSyncBlock = useSyncStore((state) => state.addSyncBlock);
 
   useEffect(() => {
     ReactTooltip.rebuild();
@@ -138,6 +141,11 @@ const Editor = () => {
           sync_block: {
             slateElementType: ELEMENT_SYNC_BLOCK,
             command: 'sync',
+            getBlockData: () => {
+              const nd = getNewBlockData();
+              addSyncBlock(nd); // Also need to add the newly created block to the sync store
+              return nd;
+            },
           },
         }
       ),
