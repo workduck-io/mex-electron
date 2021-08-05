@@ -23,6 +23,7 @@ import {
 import useMultiComboboxOnChange from './Components/multi-combobox/useMultiComboboxChange';
 import useMultiComboboxOnKeyDown from './Components/multi-combobox/useMultiComboboxOnKeyDown';
 import { SlashComboboxItem } from './Components/SlashCommands/SlashComboboxItem';
+import { ELEMENT_SYNC_BLOCK } from './Components/SyncBlock';
 import { TagComboboxItem } from './Components/tag/components/TagComboboxItem';
 import { ELEMENT_TAG } from './Components/tag/defaults';
 import { deserialize, serialize } from './Plugins/md-serialize';
@@ -133,6 +134,10 @@ const Editor = () => {
             options: {
               url: 'http://example.com/',
             },
+          },
+          sync_block: {
+            slateElementType: ELEMENT_SYNC_BLOCK,
+            command: 'sync',
           },
         }
       ),

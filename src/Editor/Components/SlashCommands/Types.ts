@@ -1,4 +1,4 @@
-export type Command = 'webem';
+export type Command = 'webem' | 'sync';
 
 export interface SlashCommandConfig {
   command: Command;

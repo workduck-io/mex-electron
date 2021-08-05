@@ -47,7 +47,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
     initializeData(
       defaultTags,
       generateILinks(sampleFlatTree),
-      generateComboTexts(['webem'])
+      generateComboTexts(['webem', 'sync'])
     );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
