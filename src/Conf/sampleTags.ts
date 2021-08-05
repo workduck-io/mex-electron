@@ -1,3 +1,5 @@
+import { ComboText } from '../Editor/Store/Types';
+
 const tagStrings: string[] = [
   'github',
   'workduck',
@@ -8,14 +10,15 @@ const tagStrings: string[] = [
   'javascript',
 ];
 
-const generateTag = (tag: string, value: number) => ({
+export const generateComboText = (tag: string, value: number): ComboText => ({
   key: tag,
   text: tag,
   value: String(value),
 });
 
-const generateTags = (tags: string[]) => tags.map(generateTag);
+export const generateComboTexts = (items: string[]) =>
+  items.map(generateComboText);
 
-export default generateTags(tagStrings);
+export default generateComboTexts(tagStrings);
 
-export { generateTag, generateTags };
+export { generateComboText as generateTag, generateComboTexts as generateTags };

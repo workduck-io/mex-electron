@@ -96,6 +96,7 @@ const useMultiComboboxOnKeyDown = (
     onNewItem: (newItem) => {
       comboType.newItemHandler(newItem);
     },
+    creatable: comboboxKey !== ComboboxKey.SLASH_COMMAND,
   });
 };
 

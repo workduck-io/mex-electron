@@ -12,7 +12,7 @@ import {
 import { setElementPositionByRange } from '../../tag/utils/setElementPositionByRange';
 import { useComboboxControls } from '../hooks/useComboboxControls';
 import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen';
-import { useComboboxStore } from '../useComboboxStore';
+import { ComboboxKey, useComboboxStore } from '../useComboboxStore';
 import { ComboboxProps } from './Combobox.types';
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
@@ -23,6 +23,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   const search = useComboboxStore((state) => state.search);
   const combobox = useComboboxControls();
   const isOpen = useComboboxIsOpen();
+  const comboboxKey = useComboboxStore((state) => state.key);
 
   const ref = React.useRef<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const editor = useEditorState();
@@ -44,7 +45,10 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   return (
     <PortalBody>
       <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
-        {isOpen && items.length === 0 && search !== '' ? (
+        {isOpen &&
+        items.length === 0 &&
+        search !== '' &&
+        comboboxKey !== ComboboxKey.SLASH_COMMAND ? (
           <ComboboxItem key="new" highlighted>
             Create new: {search}
           </ComboboxItem>

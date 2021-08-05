@@ -11,7 +11,7 @@ import { getInitialNode } from '../Editor/Store/helpers';
 import { useEditorStore } from '../Editor/Store/EditorStore';
 import { PixelToCSS } from '../Styled/helpers';
 import useDataStore, { useTreeFromLinks } from '../Editor/Store/DataStore';
-import defaultTags from '../Conf/sampleTags';
+import defaultTags, { generateComboTexts } from '../Conf/sampleTags';
 import { generateILinks } from '../Conf/sampleILinks';
 
 const AppWrapper = styled.div`
@@ -44,7 +44,11 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
     loadNode(getInitialNode());
 
-    initializeData(defaultTags, generateILinks(sampleFlatTree));
+    initializeData(
+      defaultTags,
+      generateILinks(sampleFlatTree),
+      generateComboTexts(['webem'])
+    );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {

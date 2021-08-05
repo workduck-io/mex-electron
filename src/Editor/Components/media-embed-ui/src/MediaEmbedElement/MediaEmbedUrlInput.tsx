@@ -1,3 +1,4 @@
+import magicLine from '@iconify-icons/ri/magic-line';
 import globalLine from '@iconify-icons/ri/global-line';
 // npm install --save-dev @iconify/react @iconify-icons/ri
 import { Icon } from '@iconify/react';
@@ -12,29 +13,14 @@ export const MediaEmbedUrlInput = ({
   url,
   onChange,
   setExpand,
+  htmlData,
 }: {
   url: string;
   onChange: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   setExpand: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  htmlData: string | undefined;
 }) => {
   const [value, setValue] = React.useState(url);
-
-  const validateUrl = (newUrl: string) => {
-    let resultUrl = newUrl;
-    // if not starting with http, assume pasting of full iframe embed code
-    if (newUrl.substring(0, 4) !== 'http') {
-      const regexMatchSrc = /src=".*?"/;
-      const regexGroupQuotes = /"([^"]*)"/;
-
-      const src = newUrl.match(regexMatchSrc)?.[0];
-      const returnString = src?.match(regexGroupQuotes)?.[1];
-
-      if (returnString) {
-        resultUrl = returnString;
-      }
-    }
-    return resultUrl;
-  };
 
   return (
     <InputWrapper>
@@ -43,7 +29,11 @@ export const MediaEmbedUrlInput = ({
           setExpand((i: boolean) => !i);
         }}
       >
-        <Icon icon={globalLine} height={18} />
+        {htmlData ? (
+          <Icon icon={magicLine} height={18} />
+        ) : (
+          <Icon icon={globalLine} height={18} />
+        )}
       </InputPrompt>
       <MediaInput
         data-testid="MediaEmbedUrlInput"
@@ -51,7 +41,6 @@ export const MediaEmbedUrlInput = ({
         onClick={(e) => e.stopPropagation()}
         onChange={(e) => {
           const newUrl = e.target.value;
-          validateUrl(newUrl);
           setValue(newUrl);
           onChange(newUrl);
         }}
