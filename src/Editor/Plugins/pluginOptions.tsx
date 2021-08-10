@@ -36,8 +36,7 @@ import {
   WithAutoformatOptions,
 } from '@udecode/plate';
 
-const preFormat = (editor: TEditor<AnyObject>) =>
-  unwrapList(editor as SPEditor);
+const preFormat = (editor: TEditor<AnyObject>) => unwrapList(editor as SPEditor);
 
 export const optionsAutoformat: WithAutoformatOptions = {
   rules: [

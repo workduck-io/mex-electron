@@ -1,8 +1,8 @@
 import { Deserialize, getNodeDeserializer, getSlateClass, getPlatePluginOptions } from '@udecode/plate';
-import { ELEMENT_ILINK } from './defaults';
+import { ELEMENT_SYNC_BLOCK } from '.';
 
-export const getILinkDeserialize = (): Deserialize => editor => {
-  const options = getPlatePluginOptions(editor, ELEMENT_ILINK);
+export const getSyncBlockDeserialize = (): Deserialize => editor => {
+  const options = getPlatePluginOptions(editor, ELEMENT_SYNC_BLOCK);
 
   return {
     element: getNodeDeserializer({

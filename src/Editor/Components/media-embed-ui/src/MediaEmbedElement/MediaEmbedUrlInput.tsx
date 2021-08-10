@@ -3,11 +3,7 @@ import globalLine from '@iconify-icons/ri/global-line';
 // npm install --save-dev @iconify/react @iconify-icons/ri
 import { Icon } from '@iconify/react';
 import * as React from 'react';
-import {
-  InputPrompt,
-  InputWrapper,
-  MediaInput,
-} from './MediaEmbedElement.styles';
+import { InputPrompt, InputWrapper, MediaInput } from './MediaEmbedElement.styles';
 
 export const MediaEmbedUrlInput = ({
   url,
@@ -29,17 +25,13 @@ export const MediaEmbedUrlInput = ({
           setExpand((i: boolean) => !i);
         }}
       >
-        {htmlData ? (
-          <Icon icon={magicLine} height={18} />
-        ) : (
-          <Icon icon={globalLine} height={18} />
-        )}
+        {htmlData ? <Icon icon={magicLine} height={18} /> : <Icon icon={globalLine} height={18} />}
       </InputPrompt>
       <MediaInput
         data-testid="MediaEmbedUrlInput"
         value={value}
-        onClick={(e) => e.stopPropagation()}
-        onChange={(e) => {
+        onClick={e => e.stopPropagation()}
+        onChange={e => {
           const newUrl = e.target.value;
           setValue(newUrl);
           onChange(newUrl);

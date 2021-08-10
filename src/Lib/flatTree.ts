@@ -3,7 +3,7 @@ import TreeNode from '../Types/tree';
 const getFlatTree = (nestedTree: TreeNode[]) => {
   let newTree: TreeNode[] = [];
 
-  nestedTree.forEach((c) => {
+  nestedTree.forEach(c => {
     newTree.push({ ...c, children: [] });
     if (c.children.length > 0) {
       newTree = newTree.concat(getFlatTree(c.children));
@@ -19,11 +19,11 @@ type Value = {
 };
 
 export const getOptions = (flatTree: TreeNode[]): Value[] => {
-  return flatTree.map((n) => ({ label: n.id, value: n.id }));
+  return flatTree.map(n => ({ label: n.id, value: n.id }));
 };
 
 export const getNodeFlatTree = (id: string, flatTree: TreeNode[]) => {
-  return flatTree.filter((n) => n.id === id);
+  return flatTree.filter(n => n.id === id);
 };
 
 export default getFlatTree;

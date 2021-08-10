@@ -1,7 +1,4 @@
-export const setPositionAtSelection = (
-  el: HTMLElement,
-  direction: 'top' | 'bottom' = 'top'
-) => {
+export const setPositionAtSelection = (el: HTMLElement, direction: 'top' | 'bottom' = 'top') => {
   const domSelection = window.getSelection();
   if (!domSelection || domSelection.rangeCount < 1) return;
 
@@ -13,7 +10,5 @@ export const setPositionAtSelection = (
   } else {
     el.style.top = `${rect.bottom + window.pageYOffset}px`;
   }
-  el.style.left = `${
-    rect.left + window.pageXOffset - el.offsetWidth / 2 + rect.width / 2
-  }px`;
+  el.style.left = `${rect.left + window.pageXOffset - el.offsetWidth / 2 + rect.width / 2}px`;
 };

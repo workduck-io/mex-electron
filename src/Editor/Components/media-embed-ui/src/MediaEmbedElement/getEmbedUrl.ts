@@ -1,45 +1,38 @@
 import axios from 'axios';
 import { oembedProviders } from './embedProviders';
 
-const fetchOembed = async (
-  url: string,
-  endpoint: string
-): Promise<string | undefined> => {
+const fetchOembed = async (url: string, endpoint: string): Promise<string | undefined> => {
   // Create URL for Oembed request
-  const requestUrl = `${endpoint}?type=json&theme=dark&url=${encodeURIComponent(
-    url
-  )}`;
+  const requestUrl = `${endpoint}?type=json&theme=dark&url=${encodeURIComponent(url)}`;
 
   const resp = await axios
     .get(requestUrl)
-    .then((r) => {
+    .then(r => {
       return r.data.html;
     })
-    .catch((e) => console.log(e)); // eslint-disable-line no-console
+    .catch(e => console.log(e)); // eslint-disable-line no-console
 
   return resp;
 };
 
 // https:\/\/twitter.com\/[\w,\d]+\/status\/[\w,\d]+
-export const getEmbedData = async (
-  url: string
-): Promise<string | undefined> => {
+export const getEmbedData = async (url: string): Promise<string | undefined> => {
   // found is used to skip further matches via Array.some returning true after match
   let foundMarker = false;
   let matchUrl = '';
 
   // Traverse the provider list and match to see if url is oembeddable
-  oembedProviders.some((p) => {
+  oembedProviders.some(p => {
     if (foundMarker) return foundMarker; // no need to find we have foundMarker
 
     // Traverse provided endpoints
-    p.endpoints.some((end) => {
+    p.endpoints.some(end => {
       if (foundMarker) return foundMarker;
 
       // Schemes provide Supported URLs
       if (end.schemes)
         // Traverse which scheme matches
-        end.schemes.some((s) => {
+        end.schemes.some(s => {
           if (foundMarker) return foundMarker;
 
           // Create the regex from provided match string

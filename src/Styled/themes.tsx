@@ -33,6 +33,7 @@ export const darkTheme: DefaultTheme = {
       card: '#1F2947',
       sidebar: '#091744',
       highlight: '#1a2d64',
+      input: '#070e25',
     },
     palette: {
       white: '#ecdbdb',
@@ -57,6 +58,7 @@ export const darkTheme: DefaultTheme = {
     },
     border: {
       divider: '#ffffff10',
+      input: '#1F2947',
     },
     fade: {
       primary: '#1c65ec',
@@ -86,6 +88,7 @@ export const lightTheme: DefaultTheme = {
       surface: '#e2faf0',
       sidebar: '#e2faf3',
       highlight: '#00a179',
+      input: '#8bbb9b',
     },
     palette: {
       white: '#fff',
@@ -110,6 +113,7 @@ export const lightTheme: DefaultTheme = {
     },
     border: {
       divider: '#00000010',
+      input: '#7dc39d',
     },
     fade: {
       primary: '#b9e7d0',

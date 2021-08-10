@@ -8,13 +8,7 @@ import { useBalloonMove } from './useBalloonMove';
 import { useBalloonShow } from './useBalloonShow';
 
 export const BalloonToolbar = (props: BalloonToolbarProps) => {
-  const {
-    children,
-    hiddenDelay = 0,
-    direction = 'top',
-    theme = 'dark',
-    arrow = false,
-  } = props;
+  const { children, hiddenDelay = 0, direction = 'top', theme = 'dark', arrow = false } = props;
 
   const ref = React.useRef<HTMLDivElement>(null);
   const editor = useStoreEditorState(useEventEditorId('focus'));
@@ -33,11 +27,7 @@ export const BalloonToolbar = (props: BalloonToolbarProps) => {
 
   return (
     <PortalBody>
-      <ToolbarBase
-        ref={ref}
-        css={styles.root.css}
-        className={styles.root.className}
-      >
+      <ToolbarBase ref={ref} css={styles.root.css} className={styles.root.className}>
         {children}
       </ToolbarBase>
     </PortalBody>

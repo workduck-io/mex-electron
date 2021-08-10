@@ -43,7 +43,7 @@ const createChildLess = (n: string): TreeNode => ({
 const insertInNested = (iNode: TreeNode, nestedTree: TreeNode[]) => {
   const newNested = [...nestedTree];
 
-  newNested.forEach((n) => {
+  newNested.forEach(n => {
     const index = newNested.indexOf(n);
     if (index > -1) {
       if (isElder(iNode.id, n.id)) {
@@ -69,7 +69,7 @@ const insertInNested = (iNode: TreeNode, nestedTree: TreeNode[]) => {
 export const generateTree = (tree: string[]) => {
   // tree should be sorted
   let nestedTree: TreeNode[] = [];
-  tree.forEach((n) => {
+  tree.forEach(n => {
     const parentId = getParentId(n);
     if (parentId === null) {
       // add to tree first level

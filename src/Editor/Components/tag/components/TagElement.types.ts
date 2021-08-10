@@ -11,8 +11,4 @@ export interface TagElementStyleSet extends RootStyleSet {
   link?: IStyle;
 }
 
-export type TagElementProps = StyledElementProps<
-  TagNode,
-  TagElementStyleProps,
-  TagElementStyleSet
->;
+export type TagElementProps = StyledElementProps<TagNode, TagElementStyleProps, TagElementStyleSet>;

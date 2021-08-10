@@ -29,6 +29,7 @@ import {
 } from '@udecode/plate';
 
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin';
+import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin';
 import { createTagPlugin } from '../Components/tag/createTagPlugin';
 // import { TagCombobox } from '../Components/tag/components/TagCombobox';
 // import { createTagPlugin } from '../Components/tag/createTagPlugin';
@@ -106,6 +107,9 @@ const generatePlugins = (config: PluginConfigs) => {
       onChange: config.combobox.onChange,
       onKeyDown: config.combobox.onKeyDown,
     },
+
+    // Sync Blocks
+    createSyncBlockPlugin(),
   ];
 
   return Plugins;

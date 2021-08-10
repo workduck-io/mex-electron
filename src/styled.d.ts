@@ -73,6 +73,7 @@ declare module 'styled-components' {
         surface: string;
         sidebar: string;
         highlight: string;
+        input: string;
       };
       palette: {
         white: string;
@@ -86,6 +87,7 @@ declare module 'styled-components' {
       };
       border: {
         divider: string;
+        input: string;
       };
       fade: {
         primary: string;

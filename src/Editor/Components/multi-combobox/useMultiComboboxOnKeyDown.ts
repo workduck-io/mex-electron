@@ -1,10 +1,4 @@
-import {
-  getBlockAbove,
-  getPlatePluginType,
-  insertNodes,
-  SPEditor,
-  TElement,
-} from '@udecode/plate';
+import { getBlockAbove, getPlatePluginType, insertNodes, SPEditor, TElement } from '@udecode/plate';
 import { useCallback } from 'react';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
@@ -22,8 +16,8 @@ export interface ComboTypeHandlers {
 
 export const useElementOnChange = (comboType: ComboTypeHandlers) => {
   const isOpen = useComboboxIsOpen();
-  const targetRange = useComboboxStore((state) => state.targetRange);
-  const closeMenu = useComboboxStore((state) => state.closeMenu);
+  const targetRange = useComboboxStore(state => state.targetRange);
+  const closeMenu = useComboboxStore(state => state.closeMenu);
 
   return useCallback(
     (editor: SPEditor & ReactEditor, item: IComboboxItem) => {
@@ -33,10 +27,7 @@ export const useElementOnChange = (comboType: ComboTypeHandlers) => {
         // console.log('useElementOnChange 1', { comboType, type });
 
         const pathAbove = getBlockAbove(editor)?.[1];
-        const isBlockEnd =
-          editor.selection &&
-          pathAbove &&
-          Editor.isEnd(editor, editor.selection.anchor, pathAbove);
+        const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove);
 
         // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
         // insert a space to fix the bug
@@ -78,22 +69,19 @@ const useMultiComboboxOnKeyDown = (
     [type: string]: SlashCommandConfig;
   }
 ) => {
-  const comboboxKey: string = useComboboxStore((state) => state.key);
+  const comboboxKey: string = useComboboxStore(state => state.key);
   const comboType = keys[comboboxKey];
   const slashCommandOnChange = useSlashCommandOnChange(slashCommands);
   const elementOnChange = useElementOnChange(comboType);
 
   // We need to create the select handlers ourselves here
 
-  const elementChangeHandler =
-    comboboxKey === ComboboxKey.SLASH_COMMAND
-      ? slashCommandOnChange
-      : elementOnChange;
+  const elementChangeHandler = comboboxKey === ComboboxKey.SLASH_COMMAND ? slashCommandOnChange : elementOnChange;
 
   return useComboboxOnKeyDown({
     // Handle multiple combobox
     onSelectItem: elementChangeHandler,
-    onNewItem: (newItem) => {
+    onNewItem: newItem => {
       comboType.newItemHandler(newItem);
     },
     creatable: comboboxKey !== ComboboxKey.SLASH_COMMAND,

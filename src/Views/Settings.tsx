@@ -3,9 +3,9 @@ import useThemeStore from '../Editor/Store/ThemeStore';
 import { Button } from '../Styled/Buttons';
 
 const Settings = () => {
-  const themes = useThemeStore((state) => state.themes);
-  const theme = useThemeStore((state) => state.theme);
-  const setTheme = useThemeStore((state) => state.setTheme);
+  const themes = useThemeStore(state => state.themes);
+  const theme = useThemeStore(state => state.theme);
+  const setTheme = useThemeStore(state => state.setTheme);
 
   const onThemeSelect = (i: number) => {
     if (themes[i]) setTheme(themes[i]);

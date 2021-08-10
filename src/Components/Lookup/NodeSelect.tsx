@@ -3,9 +3,7 @@ import { ActionMeta } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { ThemeConfig } from 'react-select/src/theme';
 import { useTheme } from 'styled-components';
-import useDataStore, {
-  useFlatTreeFromILinks,
-} from '../../Editor/Store/DataStore';
+import useDataStore, { useFlatTreeFromILinks } from '../../Editor/Store/DataStore';
 import { useEditorStore } from '../../Editor/Store/EditorStore';
 import { getNodeFlatTree, getOptions } from '../../Lib/flatTree';
 
@@ -32,9 +30,9 @@ const LookupInput = ({ closeModal }: LookupInputProps) => {
     value: null,
   });
 
-  const loadNode = useEditorStore((s) => s.loadNode);
-  const loadNodeFromId = useEditorStore((s) => s.loadNodeFromId);
-  const addILink = useDataStore((s) => s.addILink);
+  const loadNode = useEditorStore(s => s.loadNode);
+  const loadNodeFromId = useEditorStore(s => s.loadNodeFromId);
+  const addILink = useDataStore(s => s.addILink);
 
   const styledTheme = useTheme();
   const flattree = useFlatTreeFromILinks();

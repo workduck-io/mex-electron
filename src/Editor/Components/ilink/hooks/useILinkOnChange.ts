@@ -35,9 +35,9 @@ export const useILinkOnChange = (editor: TEditor, data: MentionNodeData[]) => {
     // console.log({ data });
 
     const items: IComboboxItem[] = data
-      .filter((c) => c.text.toLowerCase().includes(search.toLowerCase()))
+      .filter(c => c.text.toLowerCase().includes(search.toLowerCase()))
       .slice(0, maxSuggestions)
-      .map((item) => ({
+      .map(item => ({
         key: item.value,
         text: item.text,
       }));
