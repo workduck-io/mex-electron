@@ -33,8 +33,7 @@ export const SidebarContent = styled.div`
   padding: ${({ theme }) => theme.spacing.medium};
 `;
 export const SectionHeading = styled.div`
-  margin: ${({ theme }) => theme.spacing.medium} 0
-    ${({ theme }) => theme.spacing.small};
+  margin: ${({ theme }) => theme.spacing.medium} 0 ${({ theme }) => theme.spacing.small};
   display: flex;
   align-items: center;
   h2 {

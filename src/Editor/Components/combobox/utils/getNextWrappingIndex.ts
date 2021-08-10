@@ -38,13 +38,7 @@ export const getNextWrappingIndex = (
     newIndex = circular ? 0 : itemsLastIndex;
   }
 
-  const nonDisabledNewIndex = getNextNonDisabledIndex(
-    moveAmount,
-    newIndex,
-    itemCount,
-    getItemNodeFromIndex,
-    circular
-  );
+  const nonDisabledNewIndex = getNextNonDisabledIndex(moveAmount, newIndex, itemCount, getItemNodeFromIndex, circular);
 
   if (nonDisabledNewIndex === -1) {
     return be >= itemCount ? -1 : be;

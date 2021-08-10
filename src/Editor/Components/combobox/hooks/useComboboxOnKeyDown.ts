@@ -18,40 +18,28 @@ export const useComboboxOnKeyDown = ({
   onNewItem: (name: string) => void;
   creatable?: boolean;
 }): KeyboardHandler => {
-  const itemIndex = useComboboxStore((state) => state.itemIndex);
-  const setItemIndex = useComboboxStore((state) => state.setItemIndex);
-  const closeMenu = useComboboxStore((state) => state.closeMenu);
-  const search = useComboboxStore((state) => state.search);
-  const items = useComboboxStore((state) => state.items);
+  const itemIndex = useComboboxStore(state => state.itemIndex);
+  const setItemIndex = useComboboxStore(state => state.setItemIndex);
+  const closeMenu = useComboboxStore(state => state.closeMenu);
+  const search = useComboboxStore(state => state.search);
+  const items = useComboboxStore(state => state.items);
   const isOpen = useComboboxIsOpen();
 
   return useCallback(
-    (editor) => (e) => {
+    editor => e => {
       // if (!combobox) return false;
 
       if (isOpen) {
         if (e.key === 'ArrowDown') {
           e.preventDefault();
 
-          const newIndex = getNextWrappingIndex(
-            1,
-            itemIndex,
-            items.length,
-            () => {},
-            true
-          );
+          const newIndex = getNextWrappingIndex(1, itemIndex, items.length, () => {}, true);
           return setItemIndex(newIndex);
         }
         if (e.key === 'ArrowUp') {
           e.preventDefault();
 
-          const newIndex = getNextWrappingIndex(
-            -1,
-            itemIndex,
-            items.length,
-            () => {},
-            true
-          );
+          const newIndex = getNextWrappingIndex(-1, itemIndex, items.length, () => {}, true);
           return setItemIndex(newIndex);
         }
         if (e.key === 'Escape') {
@@ -74,15 +62,6 @@ export const useComboboxOnKeyDown = ({
       }
       return false;
     },
-    [
-      isOpen,
-      itemIndex,
-      items,
-      creatable,
-      setItemIndex,
-      closeMenu,
-      onSelectItem,
-      onNewItem,
-    ]
+    [isOpen, itemIndex, items, creatable, setItemIndex, closeMenu, onSelectItem, onNewItem]
   );
 };

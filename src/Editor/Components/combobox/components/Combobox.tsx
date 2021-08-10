@@ -1,14 +1,7 @@
 import React, { useEffect } from 'react';
 import useMergedRef from '@react-hook/merged-ref';
-import {
-  getPreventDefaultHandler,
-  PortalBody,
-  useEditorState,
-} from '@udecode/plate';
-import {
-  ComboboxItem,
-  ComboboxRoot,
-} from '../../tag/components/TagCombobox.styles';
+import { getPreventDefaultHandler, PortalBody, useEditorState } from '@udecode/plate';
+import { ComboboxItem, ComboboxRoot } from '../../tag/components/TagCombobox.styles';
 import { setElementPositionByRange } from '../../tag/utils/setElementPositionByRange';
 import { useComboboxControls } from '../hooks/useComboboxControls';
 import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen';
@@ -17,13 +10,13 @@ import { ComboboxProps } from './Combobox.types';
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   // TODO
-  const at = useComboboxStore((state) => state.targetRange);
-  const items = useComboboxStore((state) => state.items);
-  const itemIndex = useComboboxStore((state) => state.itemIndex);
-  const search = useComboboxStore((state) => state.search);
+  const at = useComboboxStore(state => state.targetRange);
+  const items = useComboboxStore(state => state.items);
+  const itemIndex = useComboboxStore(state => state.itemIndex);
+  const search = useComboboxStore(state => state.search);
   const combobox = useComboboxControls();
   const isOpen = useComboboxIsOpen();
-  const comboboxKey = useComboboxStore((state) => state.key);
+  const comboboxKey = useComboboxStore(state => state.key);
 
   const ref = React.useRef<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const editor = useEditorState();
@@ -45,10 +38,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   return (
     <PortalBody>
       <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
-        {isOpen &&
-        items.length === 0 &&
-        search !== '' &&
-        comboboxKey !== ComboboxKey.SLASH_COMMAND ? (
+        {isOpen && items.length === 0 && search !== '' && comboboxKey !== ComboboxKey.SLASH_COMMAND ? (
           <ComboboxItem key="new" highlighted>
             Create new: {search}
           </ComboboxItem>
@@ -65,9 +55,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
                   item,
                   index,
                 })}
-                onMouseDown={
-                  editor && getPreventDefaultHandler(onSelectItem, editor, item)
-                }
+                onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, item)}
               >
                 {Item}
               </ComboboxItem>

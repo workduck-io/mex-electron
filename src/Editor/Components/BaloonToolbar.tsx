@@ -49,11 +49,7 @@ interface LinkButtonProps extends ToolbarLinkProps {
   setSelected: (selected: boolean) => void;
 }
 
-export const LinkButton = ({
-  getLinkUrl,
-  setSelected,
-  ...props
-}: LinkButtonProps) => {
+export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
   const editor = useStoreEditorState(useEventEditorId('focus'));
 
   const type = getPlatePluginType(editor, ELEMENT_LINK);
@@ -138,8 +134,7 @@ export const LinkButton = ({
     }
 
     // If our cursor is in middle of a link, then we don't want to inser it inline
-    const shouldWrap: boolean =
-      linkNode !== undefined && isCollapsed(editor.selection);
+    const shouldWrap: boolean = linkNode !== undefined && isCollapsed(editor.selection);
     upsertLinkAtSelection(editor, { url, wrap: shouldWrap });
 
     setSelected(false);
@@ -165,11 +160,7 @@ export const LinkButton = ({
         >
           {icon}
         </HeadlessButton>
-        <input
-          defaultValue={inp.prev}
-          type="text"
-          {...register('link-input')}
-        />
+        <input defaultValue={inp.prev} type="text" {...register('link-input')} />
       </form>
     </LinkButtonStyled>
   );

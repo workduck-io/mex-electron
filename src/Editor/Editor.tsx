@@ -2,12 +2,7 @@ import linkIcon from '@iconify-icons/ri/link';
 import more2Fill from '@iconify-icons/ri/more-2-fill';
 import saveLine from '@iconify-icons/ri/save-line';
 import shareLine from '@iconify-icons/ri/share-line';
-import {
-  createPlateOptions,
-  ELEMENT_MEDIA_EMBED,
-  Plate,
-  useStoreEditorValue,
-} from '@udecode/plate';
+import { createPlateOptions, ELEMENT_MEDIA_EMBED, Plate, useStoreEditorValue } from '@udecode/plate';
 import React, { useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import IconButton from '../Styled/Buttons';
@@ -16,30 +11,31 @@ import { ComboboxKey } from './Components/combobox/useComboboxStore';
 import components from './Components/components';
 import { ILinkComboboxItem } from './Components/ilink/components/ILinkComboboxItem';
 import { ELEMENT_ILINK } from './Components/ilink/defaults';
-import {
-  ComboElementProps,
-  MultiComboboxContainer,
-} from './Components/multi-combobox/multiComboboxContainer';
+import { ComboElementProps, MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer';
 import useMultiComboboxOnChange from './Components/multi-combobox/useMultiComboboxChange';
 import useMultiComboboxOnKeyDown from './Components/multi-combobox/useMultiComboboxOnKeyDown';
 import { SlashComboboxItem } from './Components/SlashCommands/SlashComboboxItem';
+import { ELEMENT_SYNC_BLOCK } from './Components/SyncBlock';
+import { getNewBlockData } from './Components/SyncBlock/getNewBlockData';
 import { TagComboboxItem } from './Components/tag/components/TagComboboxItem';
 import { ELEMENT_TAG } from './Components/tag/defaults';
 import { deserialize, serialize } from './Plugins/md-serialize';
 import generatePlugins from './Plugins/plugins';
 import useDataStore from './Store/DataStore';
 import { useEditorStore } from './Store/EditorStore';
+import { useSyncStore } from './Store/SyncStore';
 
 const options = createPlateOptions();
 
 const Editor = () => {
-  const mdContent = useEditorStore((state) => state.content);
-  const nodeId = useEditorStore((state) => state.node.id);
-  const title = useEditorStore((state) => state.node.title);
+  const mdContent = useEditorStore(state => state.content);
+  const nodeId = useEditorStore(state => state.node.id);
+  const title = useEditorStore(state => state.node.title);
 
-  const tags = useDataStore((state) => state.tags);
-  const ilinks = useDataStore((state) => state.ilinks);
-  const slash_commands = useDataStore((state) => state.slash_commands);
+  const tags = useDataStore(state => state.tags);
+  const ilinks = useDataStore(state => state.ilinks);
+  const slash_commands = useDataStore(state => state.slash_commands);
+  const addSyncBlock = useSyncStore(state => state.addSyncBlock);
 
   useEffect(() => {
     ReactTooltip.rebuild();
@@ -57,19 +53,19 @@ const Editor = () => {
     },
   };
 
-  const addTag = useDataStore((state) => state.addTag);
-  const addILink = useDataStore((state) => state.addILink);
+  const addTag = useDataStore(state => state.addTag);
+  const addILink = useDataStore(state => state.addILink);
   // console.log(initialValueBasicElements);
 
   useEffect(() => {
     if (mdContent && nodeId) {
       deserialize(mdContent)
-        .then((sdoc) => {
+        .then(sdoc => {
           setContent(sdoc);
           setId(nodeId);
           return null;
         })
-        .catch((e) => console.error(e)); // eslint-disable-line no-console
+        .catch(e => console.error(e)); // eslint-disable-line no-console
     }
   }, [mdContent, nodeId]);
 
@@ -108,13 +104,13 @@ const Editor = () => {
         {
           ilink: {
             slateElementType: ELEMENT_ILINK,
-            newItemHandler: (newItem) => {
+            newItemHandler: newItem => {
               addILink(newItem);
             },
           },
           tag: {
             slateElementType: ELEMENT_TAG,
-            newItemHandler: (newItem) => {
+            newItemHandler: newItem => {
               addTag(newItem);
             },
           },
@@ -134,6 +130,15 @@ const Editor = () => {
               url: 'http://example.com/',
             },
           },
+          sync_block: {
+            slateElementType: ELEMENT_SYNC_BLOCK,
+            command: 'sync',
+            getBlockData: () => {
+              const nd = getNewBlockData();
+              addSyncBlock(nd); // Also need to add the newly created block to the sync store
+              return nd;
+            },
+          },
         }
       ),
     },
@@ -144,7 +149,7 @@ const Editor = () => {
       ilink: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_ILINK,
-          newItemHandler: (newItem) => {
+          newItemHandler: newItem => {
             addILink(newItem);
           },
         },
@@ -153,7 +158,7 @@ const Editor = () => {
       tag: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_TAG,
-          newItemHandler: (newItem) => {
+          newItemHandler: newItem => {
             addTag(newItem);
           },
         },

@@ -55,9 +55,7 @@ export const deserialize = async (content: string): Promise<any[]> => {
 
 export const serialize = (slateDoc: any[] | undefined): string => {
   if (slateDoc) {
-    const newVal = slateDoc
-      .map((v) => RemarkSlateSerialize(v, serializationOptions))
-      .join('\n');
+    const newVal = slateDoc.map(v => RemarkSlateSerialize(v, serializationOptions)).join('\n');
     return newVal;
   }
   return '';

@@ -1,8 +1,7 @@
 import { ReactNode } from 'react';
 import { StyledProps } from '@udecode/plate-styled-components';
 
-export interface BalloonToolbarProps
-  extends StyledProps<BalloonToolbarStyleProps> {
+export interface BalloonToolbarProps extends StyledProps<BalloonToolbarStyleProps> {
   children: ReactNode;
 
   /**

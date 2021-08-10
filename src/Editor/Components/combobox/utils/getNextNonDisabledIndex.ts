@@ -37,13 +37,7 @@ export const getNextNonDisabledIndex = (
   if (circular) {
     return moveAmount > 0
       ? getNextNonDisabledIndex(1, 0, itemCount, getItemNodeFromIndex, false)
-      : getNextNonDisabledIndex(
-          -1,
-          itemCount - 1,
-          itemCount,
-          getItemNodeFromIndex,
-          false
-        );
+      : getNextNonDisabledIndex(-1, itemCount - 1, itemCount, getItemNodeFromIndex, false);
   }
 
   return -1;

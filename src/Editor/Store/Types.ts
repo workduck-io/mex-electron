@@ -10,11 +10,7 @@ export interface DataStoreState {
   ilinks: ComboText[];
   slash_commands: ComboText[];
 
-  initializeData: (
-    tags: ComboText[],
-    ids: ComboText[],
-    slash_commands: ComboText[]
-  ) => void;
+  initializeData: (tags: ComboText[], ids: ComboText[], slash_commands: ComboText[]) => void;
 
   addTag: (tag: string) => void;
   addILink: (ilink: string) => void;

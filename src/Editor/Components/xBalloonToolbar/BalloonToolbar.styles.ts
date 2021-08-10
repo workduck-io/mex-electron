@@ -104,9 +104,7 @@ export const getBalloonToolbarStyles = memoizeFunction(
             borderColor,
             padding: '0 4px',
             marginTop,
-            transition: hiddenDelay
-              ? ''
-              : 'top 75ms ease-out,left 75ms ease-out',
+            transition: hiddenDelay ? '' : 'top 75ms ease-out,left 75ms ease-out',
 
             selectors: {
               '::before': arrowBorderStyle,

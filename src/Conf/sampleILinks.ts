@@ -1,12 +1,4 @@
-const ilinkStrings: string[] = [
-  'github',
-  'workduck',
-  'mex',
-  'dev',
-  'testing',
-  'deployment',
-  'javascript',
-];
+const ilinkStrings: string[] = ['github', 'workduck', 'mex', 'dev', 'testing', 'deployment', 'javascript'];
 
 const generateILink = (ilink: string, value: number) => ({
   key: ilink,

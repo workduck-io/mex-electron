@@ -10,10 +10,8 @@ export const setBlurSelection = (editor: BlurSelectionEditor) => {
   }
 };
 
-export const createBlurSelectionPlugin = (): PlatePlugin<
-  BlurSelectionEditor
-> => ({
-  onBlur: (editor) => () => {
+export const createBlurSelectionPlugin = (): PlatePlugin<BlurSelectionEditor> => ({
+  onBlur: editor => () => {
     setBlurSelection(editor);
   },
 });

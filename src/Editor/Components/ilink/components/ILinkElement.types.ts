@@ -11,8 +11,4 @@ export interface ILinkElementStyleSet extends RootStyleSet {
   link?: IStyle;
 }
 
-export type ILinkElementProps = StyledElementProps<
-  ILinkNode,
-  ILinkElementStyleProps,
-  ILinkElementStyleSet
->;
+export type ILinkElementProps = StyledElementProps<ILinkNode, ILinkElementStyleProps, ILinkElementStyleSet>;

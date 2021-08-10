@@ -53,7 +53,7 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
     <StyledDiv>
       <div />
       <div>
-        {links.map((l) => (
+        {links.map(l => (
           <Link
             exact
             activeClassName="active"

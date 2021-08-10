@@ -57,10 +57,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://alpha.app.net/browse/posts/',
     endpoints: [
       {
-        schemes: [
-          'https://alpha.app.net/*/post/*',
-          'https://photos.app.net/*/*',
-        ],
+        schemes: ['https://alpha.app.net/*/post/*', 'https://photos.app.net/*/*'],
         url: 'https://alpha-api.app.net/oembed',
         formats: ['json'],
       },
@@ -82,10 +79,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://www.altrulabs.com',
     endpoints: [
       {
-        schemes: [
-          'https://app.altrulabs.com/*/*?answer_id=*',
-          'https://app.altrulabs.com/player/*',
-        ],
+        schemes: ['https://app.altrulabs.com/*/*?answer_id=*', 'https://app.altrulabs.com/player/*'],
         url: 'https://api.altrulabs.com/api/v1/social/oembed',
         formats: ['json'],
       },
@@ -106,10 +100,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://www.animatron.com/',
     endpoints: [
       {
-        schemes: [
-          'https://www.animatron.com/project/*',
-          'https://animatron.com/project/*',
-        ],
+        schemes: ['https://www.animatron.com/project/*', 'https://animatron.com/project/*'],
         url: 'https://animatron.com/oembed/json',
         discovery: true,
       },
@@ -140,9 +131,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://www.apester.com',
     endpoints: [
       {
-        schemes: [
-          'https://renderer.apester.com/v2/*?preview=true&iframe_preview=true',
-        ],
+        schemes: ['https://renderer.apester.com/v2/*?preview=true&iframe_preview=true'],
         url: 'https://display.apester.com/oembed',
         discovery: true,
       },
@@ -189,10 +178,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://audioclip.naver.com',
     endpoints: [
       {
-        schemes: [
-          'https://audioclip.naver.com/channels/*/clips/*',
-          'https://audioclip.naver.com/audiobooks/*',
-        ],
+        schemes: ['https://audioclip.naver.com/channels/*/clips/*', 'https://audioclip.naver.com/audiobooks/*'],
         url: 'https://audioclip.naver.com/oembed',
         discovery: true,
       },
@@ -279,10 +265,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://blackfire.io',
     endpoints: [
       {
-        schemes: [
-          'https://blackfire.io/profiles/*/graph',
-          'https://blackfire.io/profiles/compare/*/graph',
-        ],
+        schemes: ['https://blackfire.io/profiles/*/graph', 'https://blackfire.io/profiles/compare/*/graph'],
         url: 'https://blackfire.io/oembed',
         discovery: true,
       },
@@ -293,10 +276,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://blogcast.host/',
     endpoints: [
       {
-        schemes: [
-          'https://blogcast.host/embed/*',
-          'https://blogcast.host/embedly/*',
-        ],
+        schemes: ['https://blogcast.host/embed/*', 'https://blogcast.host/embedly/*'],
         url: 'https://blogcast.host/oembed',
         discovery: true,
       },
@@ -452,10 +432,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'http://www.clipland.com/',
     endpoints: [
       {
-        schemes: [
-          'http://www.clipland.com/v/*',
-          'https://www.clipland.com/v/*',
-        ],
+        schemes: ['http://www.clipland.com/v/*', 'https://www.clipland.com/v/*'],
         url: 'https://www.clipland.com/api/oembed',
         discovery: true,
       },
@@ -525,10 +502,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://codesandbox.io',
     endpoints: [
       {
-        schemes: [
-          'https://codesandbox.io/s/*',
-          'https://codesandbox.io/embed/*',
-        ],
+        schemes: ['https://codesandbox.io/s/*', 'https://codesandbox.io/embed/*'],
         url: 'https://codesandbox.io/oembed',
       },
     ],
@@ -611,10 +585,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'http://www.cyranosystems.com/',
     endpoints: [
       {
-        schemes: [
-          'https://staging.cyranosystems.com/msg/*',
-          'https://app.cyranosystems.com/msg/*',
-        ],
+        schemes: ['https://staging.cyranosystems.com/msg/*', 'https://app.cyranosystems.com/msg/*'],
         url: 'https://staging.cyranosystems.com/oembed',
         formats: ['json'],
         discovery: true,
@@ -927,10 +898,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://fireworktv.com/',
     endpoints: [
       {
-        schemes: [
-          'https://*.fireworktv.com/*',
-          'https://*.fireworktv.com/embed/*/v/*',
-        ],
+        schemes: ['https://*.fireworktv.com/*', 'https://*.fireworktv.com/embed/*/v/*'],
         url: 'https://www.fireworktv.com/oembed',
         discovery: true,
       },
@@ -979,10 +947,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://flourish.studio/',
     endpoints: [
       {
-        schemes: [
-          'https://public.flourish.studio/visualisation/*',
-          'https://public.flourish.studio/story/*',
-        ],
+        schemes: ['https://public.flourish.studio/visualisation/*', 'https://public.flourish.studio/story/*'],
         url: 'https://app.flourish.studio/api/v1/oembed',
         discovery: true,
       },
@@ -1069,11 +1034,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'http://geo-en.hlipp.de/',
     endpoints: [
       {
-        schemes: [
-          'http://geo-en.hlipp.de/*',
-          'http://geo.hlipp.de/*',
-          'http://germany.geograph.org/*',
-        ],
+        schemes: ['http://geo-en.hlipp.de/*', 'http://geo.hlipp.de/*', 'http://germany.geograph.org/*'],
         url: 'http://geo.hlipp.de/restapi.php/api/oembed',
       },
     ],
@@ -1094,12 +1055,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://gfycat.com/',
     endpoints: [
       {
-        schemes: [
-          'http://gfycat.com/*',
-          'http://www.gfycat.com/*',
-          'https://gfycat.com/*',
-          'https://www.gfycat.com/*',
-        ],
+        schemes: ['http://gfycat.com/*', 'http://www.gfycat.com/*', 'https://gfycat.com/*', 'https://www.gfycat.com/*'],
         url: 'https://api.gfycat.com/v1/oembed',
         discovery: true,
       },
@@ -1481,10 +1437,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://www.kidoju.com/',
     endpoints: [
       {
-        schemes: [
-          'https://www.kidoju.com/en/x/*/*',
-          'https://www.kidoju.com/fr/x/*/*',
-        ],
+        schemes: ['https://www.kidoju.com/en/x/*/*', 'https://www.kidoju.com/fr/x/*/*'],
         url: 'https://www.kidoju.com/api/oembed',
       },
     ],
@@ -1494,10 +1447,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://kirim.email/',
     endpoints: [
       {
-        schemes: [
-          'https://halaman.email/form/*',
-          'https://aplikasi.kirim.email/form/*',
-        ],
+        schemes: ['https://halaman.email/form/*', 'https://aplikasi.kirim.email/form/*'],
         url: 'https://halaman.email/service/oembed',
         discovery: true,
       },
@@ -1540,10 +1490,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'http://jdr.knacki.info',
     endpoints: [
       {
-        schemes: [
-          'http://jdr.knacki.info/meuh/*',
-          'https://jdr.knacki.info/meuh/*',
-        ],
+        schemes: ['http://jdr.knacki.info/meuh/*', 'https://jdr.knacki.info/meuh/*'],
         url: 'https://jdr.knacki.info/oembed',
       },
     ],
@@ -1650,10 +1597,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'http://mathembed.com',
     endpoints: [
       {
-        schemes: [
-          'http://mathembed.com/latex?inputText=*',
-          'http://mathembed.com/latex?inputText=*',
-        ],
+        schemes: ['http://mathembed.com/latex?inputText=*', 'http://mathembed.com/latex?inputText=*'],
         url: 'http://mathembed.com/oembed',
       },
     ],
@@ -1699,8 +1643,7 @@ export const oembedProviders: OembedProvider[] = [
     ],
   },
   {
-    provider_name:
-      'Medienarchiv der K\u00fcnste - Z\u00fcrcher Hochschule der K\u00fcnste',
+    provider_name: 'Medienarchiv der K\u00fcnste - Z\u00fcrcher Hochschule der K\u00fcnste',
     provider_url: 'https://medienarchiv.zhdk.ch/',
     endpoints: [
       {
@@ -1715,12 +1658,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'http://www.meetup.com',
     endpoints: [
       {
-        schemes: [
-          'http://meetup.com/*',
-          'https://www.meetup.com/*',
-          'https://meetup.com/*',
-          'http://meetu.ps/*',
-        ],
+        schemes: ['http://meetup.com/*', 'https://www.meetup.com/*', 'https://meetup.com/*', 'http://meetu.ps/*'],
         url: 'https://api.meetup.com/oembed',
         formats: ['json'],
       },
@@ -1751,10 +1689,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://stream.microsoft.com',
     endpoints: [
       {
-        schemes: [
-          'https://*.microsoftstream.com/video/*',
-          'https://*.microsoftstream.com/channel/*',
-        ],
+        schemes: ['https://*.microsoftstream.com/video/*', 'https://*.microsoftstream.com/channel/*'],
         url: 'https://web.microsoftstream.com/oembed',
         discovery: true,
       },
@@ -1783,10 +1718,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://mixcloud.com/',
     endpoints: [
       {
-        schemes: [
-          'http://www.mixcloud.com/*/*/',
-          'https://www.mixcloud.com/*/*/',
-        ],
+        schemes: ['http://www.mixcloud.com/*/*/', 'https://www.mixcloud.com/*/*/'],
         url: 'https://www.mixcloud.com/oembed/',
       },
     ],
@@ -1796,10 +1728,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'http://www.mobypicture.com',
     endpoints: [
       {
-        schemes: [
-          'http://www.mobypicture.com/user/*/view/*',
-          'http://moby.to/*',
-        ],
+        schemes: ['http://www.mobypicture.com/user/*/view/*', 'http://moby.to/*'],
         url: 'http://api.mobypicture.com/oEmbed',
       },
     ],
@@ -1950,11 +1879,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://observablehq.com',
     endpoints: [
       {
-        schemes: [
-          'https://observablehq.com/@*/*',
-          'https://observablehq.com/d/*',
-          'https://observablehq.com/embed/*',
-        ],
+        schemes: ['https://observablehq.com/@*/*', 'https://observablehq.com/d/*', 'https://observablehq.com/embed/*'],
         url: 'https://api.observablehq.com/oembed',
         formats: ['json'],
       },
@@ -1995,10 +1920,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'http://official.fm',
     endpoints: [
       {
-        schemes: [
-          'http://official.fm/tracks/*',
-          'http://official.fm/playlists/*',
-        ],
+        schemes: ['http://official.fm/tracks/*', 'http://official.fm/playlists/*'],
         url: 'http://official.fm/services/oembed.{format}',
       },
     ],
@@ -2198,10 +2120,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'http://www.pixdor.com/',
     endpoints: [
       {
-        schemes: [
-          'https://store.pixdor.com/place-marker-widget/*/show',
-          'https://store.pixdor.com/map/*/show',
-        ],
+        schemes: ['https://store.pixdor.com/place-marker-widget/*/show', 'https://store.pixdor.com/map/*/show'],
         url: 'https://store.pixdor.com/oembed',
         formats: ['json', 'xml'],
         discovery: true,
@@ -2234,11 +2153,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'http://polldaddy.com',
     endpoints: [
       {
-        schemes: [
-          'http://*.polldaddy.com/s/*',
-          'http://*.polldaddy.com/poll/*',
-          'http://*.polldaddy.com/ratings/*',
-        ],
+        schemes: ['http://*.polldaddy.com/s/*', 'http://*.polldaddy.com/poll/*', 'http://*.polldaddy.com/ratings/*'],
         url: 'http://polldaddy.com/oembed/',
       },
     ],
@@ -2268,10 +2183,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://posixion.com/',
     endpoints: [
       {
-        schemes: [
-          'https://posixion.com/question/*',
-          'https://posixion.com/*/question/*',
-        ],
+        schemes: ['https://posixion.com/question/*', 'https://posixion.com/*/question/*'],
         url: 'http://posixion.com/services/oembed/',
       },
     ],
@@ -2388,10 +2300,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://reddit.com/',
     endpoints: [
       {
-        schemes: [
-          'https://reddit.com/r/*/comments/*/*',
-          'https://www.reddit.com/r/*/comments/*/*',
-        ],
+        schemes: ['https://reddit.com/r/*/comments/*/*', 'https://www.reddit.com/r/*/comments/*/*'],
         url: 'https://www.reddit.com/oembed',
       },
     ],
@@ -2434,10 +2343,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://www.reverbnation.com/',
     endpoints: [
       {
-        schemes: [
-          'https://www.reverbnation.com/*',
-          'https://www.reverbnation.com/*/songs/*',
-        ],
+        schemes: ['https://www.reverbnation.com/*', 'https://www.reverbnation.com/*/songs/*'],
         url: 'https://www.reverbnation.com/oembed',
         discovery: true,
       },
@@ -2458,10 +2364,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'http://roomshare.jp',
     endpoints: [
       {
-        schemes: [
-          'http://roomshare.jp/post/*',
-          'http://roomshare.jp/en/post/*',
-        ],
+        schemes: ['http://roomshare.jp/post/*', 'http://roomshare.jp/en/post/*'],
         url: 'http://roomshare.jp/en/oembed.{format}',
       },
     ],
@@ -2614,10 +2517,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://getshow.io/',
     endpoints: [
       {
-        schemes: [
-          'https://app.getshow.io/iframe/*',
-          'https://*.getshow.io/share/*',
-        ],
+        schemes: ['https://app.getshow.io/iframe/*', 'https://*.getshow.io/share/*'],
         url: 'https://api.getshow.io/oembed.{format}',
         discovery: true,
       },
@@ -2698,10 +2598,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://smashnotes.com',
     endpoints: [
       {
-        schemes: [
-          'https://smashnotes.com/p/*',
-          'https://smashnotes.com/p/*/e/* - https://smashnotes.com/p/*/e/*/s/*',
-        ],
+        schemes: ['https://smashnotes.com/p/*', 'https://smashnotes.com/p/*/e/* - https://smashnotes.com/p/*/e/*/s/*'],
         url: 'https://smashnotes.com/services/oembed',
         discovery: true,
       },
@@ -2739,11 +2636,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'http://soundcloud.com/',
     endpoints: [
       {
-        schemes: [
-          'http://soundcloud.com/*',
-          'https://soundcloud.com/*',
-          'https://soundcloud.app.goog.gl/*',
-        ],
+        schemes: ['http://soundcloud.com/*', 'https://soundcloud.com/*', 'https://soundcloud.app.goog.gl/*'],
         url: 'https://soundcloud.com/oembed',
       },
     ],
@@ -2798,10 +2691,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://sproutvideo.com',
     endpoints: [
       {
-        schemes: [
-          'https://sproutvideo.com/videos/*',
-          'https://*.vids.io/videos/*',
-        ],
+        schemes: ['https://sproutvideo.com/videos/*', 'https://*.vids.io/videos/*'],
         url: 'http://sproutvideo.com/oembed.{format}',
         formats: ['json', 'xml'],
         discovery: true,
@@ -2896,11 +2786,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://www.ted.com',
     endpoints: [
       {
-        schemes: [
-          'http://ted.com/talks/*',
-          'https://ted.com/talks/*',
-          'https://www.ted.com/talks/*',
-        ],
+        schemes: ['http://ted.com/talks/*', 'https://ted.com/talks/*', 'https://www.ted.com/talks/*'],
         url: 'https://www.ted.com/services/v1/oembed.{format}',
         discovery: true,
       },
@@ -2911,11 +2797,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://www.nytimes.com',
     endpoints: [
       {
-        schemes: [
-          'https://www.nytimes.com/svc/oembed',
-          'https://nytimes.com/*',
-          'https://*.nytimes.com/*',
-        ],
+        schemes: ['https://www.nytimes.com/svc/oembed', 'https://nytimes.com/*', 'https://*.nytimes.com/*'],
         url: 'https://www.nytimes.com/svc/oembed/json/',
         discovery: true,
       },
@@ -3054,11 +2936,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://typecast.ai',
     endpoints: [
       {
-        schemes: [
-          'https://play.typecast.ai/s/*',
-          'https://play.typecast.ai/e/*',
-          'https://play.typecast.ai/*',
-        ],
+        schemes: ['https://play.typecast.ai/s/*', 'https://play.typecast.ai/e/*', 'https://play.typecast.ai/*'],
         url: 'https://play.typecast.ai/oembed',
       },
     ],
@@ -3110,10 +2988,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://mais.uol.com.br/',
     endpoints: [
       {
-        schemes: [
-          'https://*.uol.com.br/view/*',
-          'https://*.uol.com.br/video/*',
-        ],
+        schemes: ['https://*.uol.com.br/view/*', 'https://*.uol.com.br/video/*'],
         url: 'https://mais.uol.com.br/apiuol/v3/oembed/view',
         discovery: true,
       },
@@ -3157,10 +3032,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://www.ustudio.com',
     endpoints: [
       {
-        schemes: [
-          'https://*.ustudio.com/embed/*',
-          'https://*.ustudio.com/embed/*/*',
-        ],
+        schemes: ['https://*.ustudio.com/embed/*', 'https://*.ustudio.com/embed/*/*'],
         url: 'https://app.ustudio.com/api/v2/oembed',
         discovery: true,
         formats: ['json'],
@@ -3235,10 +3107,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'http://www.videojug.com',
     endpoints: [
       {
-        schemes: [
-          'http://www.videojug.com/film/*',
-          'http://www.videojug.com/interview/*',
-        ],
+        schemes: ['http://www.videojug.com/film/*', 'http://www.videojug.com/interview/*'],
         url: 'http://www.videojug.com/oembed.{format}',
       },
     ],
@@ -3554,10 +3423,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://app.zingsoft.com',
     endpoints: [
       {
-        schemes: [
-          'https://app.zingsoft.com/embed/*',
-          'https://app.zingsoft.com/view/*',
-        ],
+        schemes: ['https://app.zingsoft.com/embed/*', 'https://app.zingsoft.com/view/*'],
         url: 'https://app.zingsoft.com/oembed',
         discovery: true,
       },

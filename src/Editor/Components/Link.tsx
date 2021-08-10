@@ -33,12 +33,7 @@ const Link = styled.a`
  * LinkElement with no default styles.
  * [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling)
  */
-const LinkElement = ({
-  attributes,
-  children,
-  element,
-  nodeProps,
-}: StyledElementProps<LinkNodeData>) => {
+const LinkElement = ({ attributes, children, element, nodeProps }: StyledElementProps<LinkNodeData>) => {
   const isExternal = element.url.startsWith('#');
 
   const openLink = (e: React.MouseEvent, meta: boolean) => {
@@ -60,7 +55,7 @@ const LinkElement = ({
     <Link
       {...attributes}
       href={element.url}
-      onClick={(e) => {
+      onClick={e => {
         openLink(e, true);
       }}
       {...nodeProps}
@@ -70,7 +65,7 @@ const LinkElement = ({
           className="LinkIcon"
           type="button"
           aria-label="Open link"
-          onClick={(e) => {
+          onClick={e => {
             openLink(e, false);
           }}
           contentEditable={false}

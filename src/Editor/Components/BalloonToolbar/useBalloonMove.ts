@@ -19,7 +19,6 @@ export const useBalloonMove = ({
   const selectionText = editor && getSelectionText(editor);
 
   useEffect(() => {
-    if (ref.current && selectionExpanded)
-      setPositionAtSelection(ref.current, direction);
+    if (ref.current && selectionExpanded) setPositionAtSelection(ref.current, direction);
   }, [direction, selectionText?.length, selectionExpanded, ref]);
 };

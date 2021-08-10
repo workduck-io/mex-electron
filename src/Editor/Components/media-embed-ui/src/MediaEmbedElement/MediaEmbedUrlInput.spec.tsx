@@ -6,11 +6,7 @@ it('should render', () => {
   const onChange = jest.fn();
 
   const { getByTestId } = render(
-    <MediaEmbedUrlInput
-      data-testid="MediaEmbedUrlInput"
-      url="test"
-      onChange={onChange}
-    />
+    <MediaEmbedUrlInput data-testid="MediaEmbedUrlInput" url="test" onChange={onChange} />
   );
 
   const element = getByTestId('MediaEmbedUrlInput');

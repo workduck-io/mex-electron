@@ -7,16 +7,11 @@ import { TagComboboxItem } from './TagComboboxItem';
 export const TagComboboxComponent = () => {
   const onSelectItem = useTagOnSelectItem();
 
-  return (
-    <Combobox
-      onSelectItem={onSelectItem as any}
-      onRenderItem={TagComboboxItem}
-    />
-  );
+  return <Combobox onSelectItem={onSelectItem as any} onRenderItem={TagComboboxItem} />;
 };
 
 export const TagCombobox = () => {
-  const key = useComboboxStore((state) => state.key);
+  const key = useComboboxStore(state => state.key);
 
   return (
     <div style={key !== ComboboxKey.TAG ? { display: 'none' } : {}}>
