@@ -26,16 +26,28 @@ const options = {
   },
   edges: {
     color: '#5e6c92',
+    smooth: {
+      enabled: true,
+      type: 'dynamic',
+      roundness: 0.5,
+    },
+  },
+
+  nodes: {
+    font: '16px sans-serif #7D90C3',
+    scaling: {
+      label: true,
+    },
   },
   physics: {
     barnesHut: {
       theta: 0.5,
       gravitationalConstant: -2000,
-      centralGravity: 0.2,
-      springLength: 95,
+      centralGravity: 0.3,
+      springLength: 75,
       springConstant: 0.04,
       damping: 0.09,
-      avoidOverlap: 0.75,
+      avoidOverlap: 0,
     },
   },
 };

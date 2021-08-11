@@ -11,6 +11,7 @@ interface GraphEdge {
   from: number;
   to: number;
   color?: string;
+  physics?: boolean;
 }
 
 export const useGraphData = () => {
@@ -21,7 +22,7 @@ export const useGraphData = () => {
     return {
       id: id + 1,
       label: node,
-      color: '#4284ff',
+      color: '#1F2947',
     };
   });
 
@@ -34,13 +35,14 @@ export const useGraphData = () => {
           edges.push({
             to: node.id,
             from: compNode.id,
-            color: '#ffffff',
+            color: '#4284ff',
           });
         } else if (isElder(node.label, compNode.label)) {
           edges.push({
             to: node.id,
             from: compNode.id,
             color: '#5e6c92',
+            // physics: false,
           });
         }
       }
@@ -57,7 +59,7 @@ export const useGraphData = () => {
   nodes.push({
     id: 0,
     label: 'Root',
-    color: '#9fe732',
+    color: '#1c2744',
   });
 
   return {
