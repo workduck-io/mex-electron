@@ -12,6 +12,7 @@ import useDataStore, { useTreeFromLinks } from '../Editor/Store/DataStore';
 import defaultTags, { generateComboTexts } from '../Conf/sampleTags';
 import { generateILinks } from '../Conf/sampleILinks';
 import Graph from '../Components/Graph/Graph';
+import { useGraphData } from '../Components/Graph/useGraphData';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -38,6 +39,8 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const showGraph = useEditorStore(state => state.showGraph);
   const initializeData = useDataStore(state => state.initializeData);
 
+  const graphData = useGraphData();
+
   /** Initialization of the app details occur here */
   useEffect(() => {
     console.log('Initializing', { sampleRCTree }); // eslint-disable-line no-console
@@ -60,7 +63,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
       <SideBar tree={Tree} starred={Tree} />
       <Content>{children}</Content>
 
-      {showGraph && <Graph />}
+      {showGraph && <Graph graphData={graphData} />}
     </AppWrapper>
   );
 };

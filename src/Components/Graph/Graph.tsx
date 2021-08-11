@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from 'react';
-import styled from 'styled-components';
-
+import equal from 'fast-deep-equal';
+import React, { useEffect, useState } from 'react';
 import Graph from 'react-vis-network-graph';
+import styled from 'styled-components';
+import { useEditorStore } from '../../Editor/Store/EditorStore';
 
 const StyledGraph = styled('div')`
   /* width: 100%; */
   max-height: 100vh;
-  max-width: 40vw;
-  width: calc(100vw - ${({ theme }) => theme.width.sidebar}px - ${({ theme }) => theme.width.nav}px - 800px);
+  width: calc(100vw - ${({ theme }) => theme.width.sidebar}px - ${({ theme }) => theme.width.nav}px - 600px);
   position: fixed;
   top: 0;
   right: 0;
@@ -25,73 +25,55 @@ const options = {
     hierarchical: false,
   },
   edges: {
-    color: '#000000',
+    color: '#5e6c92',
+  },
+  physics: {
+    barnesHut: {
+      theta: 0.5,
+      gravitationalConstant: -2000,
+      centralGravity: 0.2,
+      springLength: 95,
+      springConstant: 0.04,
+      damping: 0.09,
+      avoidOverlap: 0.75,
+    },
   },
 };
 
-function randomColor() {
-  const red = Math.floor(Math.random() * 256)
-    .toString(16)
-    .padStart(2, '0');
-  const green = Math.floor(Math.random() * 256)
-    .toString(16)
-    .padStart(2, '0');
-  const blue = Math.floor(Math.random() * 256)
-    .toString(16)
-    .padStart(2, '0');
-  return `#${red}${green}${blue}`;
-}
+export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
+  const { graphData } = props;
+  const loadNode = useEditorStore(state => state.loadNode);
 
-export const TreeGraph = () => {
-  const createNode = (x: any, y: any) => {
-    const color = randomColor();
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    setState(({ graph: { nodes, edges }, counter, ...rest }: any) => {
-      const id = counter + 1;
-      const from = Math.floor(Math.random() * (counter - 1)) + 1;
-      return {
-        graph: {
-          nodes: [...nodes, { id, label: `Node ${id}`, color, x, y }],
-          edges: [...edges, { from, to: id }],
-        },
-        counter: id,
-        ...rest,
-      };
-    });
-  };
+  // console.log('Checking for graph data 12321: ', { graphData });
 
   const [state, setState] = useState({
-    counter: 5,
-    graph: {
-      nodes: [
-        { id: 1, label: 'Node 1', color: '#e04141' },
-        { id: 2, label: 'Node 2', color: '#e09c41' },
-        { id: 3, label: 'Node 3', color: '#e0df41' },
-        { id: 4, label: 'Node 4', color: '#7be041' },
-        { id: 5, label: 'Node 5', color: '#41e0c9' },
-      ],
-      edges: [
-        { from: 1, to: 2 },
-        { from: 1, to: 3 },
-        { from: 2, to: 4 },
-        { from: 2, to: 5 },
-      ],
-    },
+    counter: graphData.nodes.length,
+    graph: graphData,
     events: {
-      select: ({ nodes, edges }: any) => {
-        console.log('Selected nodes:');
-        console.log(nodes);
-        console.log('Selected edges:');
-        console.log(edges);
-        alert(`Selected node: ${nodes}`);
-      },
-      doubleClick: ({ pointer: { canvas } }: any) => {
-        createNode(canvas.x, canvas.y);
+      select: (selectProps: any) => {
+        // if (props.nodes.length === 1) {
+        //   const node = graphData.nodes[props.nodes[0]].label;
+        // }
+        console.log(`Selected node: ${JSON.stringify(selectProps, null, 2)}`);
       },
     },
   });
 
+  useEffect(() => {
+    if (equal(state.graph, graphData)) return;
+    setState(({ graph, counter, ...rest }: any) => {
+      const id = counter + 1;
+      return {
+        graph: graphData,
+        counter: id,
+        ...rest,
+      };
+    });
+  }, [graphData]);
+
   const { graph, events } = state;
+  // console.log('Graph', { graph });
+
   return (
     <StyledGraph>
       <Graph graph={graph} options={options} events={events} style={{ height: '100vh' }} />

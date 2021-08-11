@@ -31,6 +31,10 @@ export const isParent = (id: string, parent: string) => {
   return getParentId(id) === parent;
 };
 
+export const isTopNode = (id: string) => {
+  return getParentId(id) === null;
+};
+
 const createChildLess = (n: string): TreeNode => ({
   id: n,
   title: n,

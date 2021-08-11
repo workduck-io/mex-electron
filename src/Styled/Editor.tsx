@@ -37,7 +37,7 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   ${({ showGraph }) =>
     showGraph
       ? css`
-          max-width: 800px;
+          max-width: 600px;
         `
       : css`
           max-width: 800px;
