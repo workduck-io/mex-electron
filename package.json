@@ -264,6 +264,7 @@
     "react-select": "^4.3.1",
     "react-sortablejs": "^6.0.0",
     "react-tooltip": "^4.2.19",
+    "react-vis-network-graph": "^3.0.1",
     "regenerator-runtime": "^0.13.5",
     "remark-parse": "^9.0.0",
     "remark-slate": "^1.8.0",

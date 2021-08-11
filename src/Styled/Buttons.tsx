@@ -1,9 +1,13 @@
 import Icon from '@iconify/react';
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { centeredCss } from './Layouts';
 
-export const Button = styled.div`
+interface ButtonProps {
+  highlight?: boolean;
+}
+
+export const Button = styled.div<ButtonProps>`
   ${centeredCss};
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
@@ -14,6 +18,14 @@ export const Button = styled.div`
     color: ${({ theme }) => theme.colors.text.primary};
     background: ${({ theme }) => theme.colors.gray.s5};
   }
+
+  ${({ theme, highlight }) =>
+    highlight
+      ? css`
+          background-color: ${theme.colors.primary};
+          color: ${theme.colors.text.primary};
+        `
+      : ``}
 `;
 
 export type IconButtonProps = {
@@ -21,6 +33,7 @@ export type IconButtonProps = {
   title: string;
   size?: string | number;
   onClick?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  highlight?: boolean;
 };
 
 export const HeadlessButton = styled.button`
@@ -28,9 +41,9 @@ export const HeadlessButton = styled.button`
   background: transparent;
 `;
 
-const IconButton: React.FC<IconButtonProps> = ({ icon, title, size, onClick }: IconButtonProps) => {
+const IconButton: React.FC<IconButtonProps> = ({ icon, title, size, onClick, highlight }: IconButtonProps) => {
   return (
-    <Button onClick={onClick} data-tip={title} data-place="bottom">
+    <Button onClick={onClick} highlight={highlight} data-tip={title} data-place="bottom">
       <Icon icon={icon} height={size} />
     </Button>
   );
