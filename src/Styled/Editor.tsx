@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { darkTheme } from './themes';
 
 export const NoteTitle = styled.h1``;
@@ -25,11 +25,23 @@ export const InfoTools = styled.div`
   display: flex;
 `;
 
-export const StyledEditor = styled('div')`
-  max-width: 800px;
+interface StyledEditorProps {
+  showGraph: boolean;
+}
+
+export const StyledEditor = styled.div<StyledEditorProps>`
   padding: ${({ theme }) => theme.spacing.medium};
   margin: ${({ theme }) => theme.spacing.medium};
   width: 100%;
+
+  ${({ showGraph }) =>
+    showGraph
+      ? css`
+          max-width: 600px;
+        `
+      : css`
+          max-width: 800px;
+        `}
 
   font-family: 'Poppins', sans-serif;
   /* font-weight: 400; */
