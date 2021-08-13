@@ -25,6 +25,7 @@ import generatePlugins from './Plugins/plugins';
 import useDataStore from './Store/DataStore';
 import { useEditorStore } from './Store/EditorStore';
 import { useSyncStore } from './Store/SyncStore';
+import { useSaveData } from '../Data/useSaveData';
 
 const options = createPlateOptions();
 
@@ -56,6 +57,8 @@ const Editor = () => {
     },
   };
 
+  const saveData = useSaveData();
+
   const addTag = useDataStore(state => state.addTag);
   const addILink = useDataStore(state => state.addILink);
   // console.log(initialValueBasicElements);
@@ -74,6 +77,8 @@ const Editor = () => {
 
   const onSave = () => {
     // On save the editor should serialize the state to markdown plaintext
+    // setContent then save
+    saveData();
     console.log(serialize(useEditorState)); // eslint-disable-line no-console
   };
 

@@ -15,7 +15,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   slash_commands: [],
 
   // Load initial data in the store
-  initializeData: (tags, ilinks, slash_commands) => {
+  initializeDataStore: (tags, ilinks, slash_commands) => {
     set({
       tags,
       ilinks,

@@ -4,15 +4,15 @@ import ReactTooltip from 'react-tooltip';
 import styled, { useTheme } from 'styled-components';
 import SideBar from '../Components/Sidebar';
 import { navTooltip } from '../Components/Sidebar/Nav';
-import sampleRCTree, { sampleFlatTree } from '../Components/Sidebar/sampleRCTreeData';
+import sampleRCTree from '../Components/Sidebar/sampleRCTreeData';
 import { getInitialNode } from '../Editor/Store/helpers';
 import { useEditorStore } from '../Editor/Store/EditorStore';
 import { PixelToCSS } from '../Styled/helpers';
-import useDataStore, { useTreeFromLinks } from '../Editor/Store/DataStore';
-import { generateComboTexts } from '../Editor/Store/sampleTags';
+import { useTreeFromLinks } from '../Editor/Store/DataStore';
 import Graph from '../Components/Graph/Graph';
 import { useGraphData } from '../Components/Graph/useGraphData';
 import { useLocalData } from '../Data/useLocalData';
+import { useInitialize } from '../Data/useInitialize';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -37,7 +37,8 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const id = useEditorStore(state => state.node.id);
 
   const showGraph = useEditorStore(state => state.showGraph);
-  const initializeData = useDataStore(state => state.initializeData);
+
+  const initialize = useInitialize();
 
   const graphData = useGraphData();
   const localData = useLocalData();
@@ -52,20 +53,11 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
           console.log('Data here', d);
           return d;
         })
+        .then(d => initialize(d))
         .catch(e => console.error(e));
     })();
 
     loadNode(getInitialNode());
-
-    initializeData(
-      // Tags
-      [],
-      // Ilinks
-      generateComboTexts(sampleFlatTree),
-      // combotexts
-      generateComboTexts(['webem', 'sync'])
-      // Need to add content here as well
-    );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
