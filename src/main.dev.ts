@@ -9,12 +9,16 @@
  * `./src/main.prod.js` using webpack. This gives us some performance wins.
  */
 import 'core-js/stable';
-import 'regenerator-runtime/runtime';
-import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
-import { autoUpdater } from 'electron-updater';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import log from 'electron-log';
+import { autoUpdater } from 'electron-updater';
+import fs from 'fs';
+import path from 'path';
+import 'regenerator-runtime/runtime';
+import { DefaultFileData } from './Defaults/baseData';
+import { DataFileName } from './Defaults/data';
 import MenuBuilder from './menu';
+import { FileData } from './Types/data';
 
 export default class AppUpdater {
   constructor() {
@@ -129,4 +133,34 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
+});
+
+ipcMain.on('get-local-data', event => {
+  let fileData: FileData;
+
+  const dataPath = path.join(app.getPath('userData'), DataFileName);
+
+  if (fs.existsSync(dataPath)) {
+    const stringData = fs.readFileSync(dataPath, 'utf-8');
+    fileData = JSON.parse(stringData);
+  } else {
+    fs.writeFileSync(dataPath, JSON.stringify(DefaultFileData));
+    fileData = DefaultFileData;
+  }
+
+  // console.log('Sending data', fileData, dataPath);
+
+  event.sender.send('recieve-local-data', fileData);
+});
+
+ipcMain.on('set-local-data', (_event, arg) => {
+  console.log('set-local-data', { arg });
+
+  const dataPath = path.join(app.getPath('userData'), DataFileName);
+
+  // fs.writeFileSync(dataPath, JSON.stringify(data));
+
+  // console.log('Sending data', fileData, dataPath);
+
+  // event.sender.send('recieve-local-data', fileData);
 });

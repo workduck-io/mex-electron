@@ -9,10 +9,10 @@ import { getInitialNode } from '../Editor/Store/helpers';
 import { useEditorStore } from '../Editor/Store/EditorStore';
 import { PixelToCSS } from '../Styled/helpers';
 import useDataStore, { useTreeFromLinks } from '../Editor/Store/DataStore';
-import defaultTags, { generateComboTexts } from '../Conf/sampleTags';
-import { generateILinks } from '../Conf/sampleILinks';
+import { generateComboTexts } from '../Editor/Store/sampleTags';
 import Graph from '../Components/Graph/Graph';
 import { useGraphData } from '../Components/Graph/useGraphData';
+import { useLocalData } from '../Data/useLocalData';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -40,14 +40,32 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const initializeData = useDataStore(state => state.initializeData);
 
   const graphData = useGraphData();
+  const localData = useLocalData();
 
   /** Initialization of the app details occur here */
   useEffect(() => {
     console.log('Initializing', { sampleRCTree }); // eslint-disable-line no-console
 
+    (async () => {
+      localData
+        .then(d => {
+          console.log('Data here', d);
+          return d;
+        })
+        .catch(e => console.error(e));
+    })();
+
     loadNode(getInitialNode());
 
-    initializeData(defaultTags, generateILinks(sampleFlatTree), generateComboTexts(['webem', 'sync']));
+    initializeData(
+      // Tags
+      [],
+      // Ilinks
+      generateComboTexts(sampleFlatTree),
+      // combotexts
+      generateComboTexts(['webem', 'sync'])
+      // Need to add content here as well
+    );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {

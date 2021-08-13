@@ -1,7 +1,6 @@
 import create from 'zustand';
 import { generateTree } from '../../Components/Sidebar/sampleRCTreeData';
-import { generateILink } from '../../Conf/sampleILinks';
-import { generateTag } from '../../Conf/sampleTags';
+import { generateComboText } from './sampleTags';
 import getFlatTree from '../../Lib/flatTree';
 import { DataStoreState } from './Types';
 
@@ -27,14 +26,14 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   // Add a new tag to the store
   addTag: tag => {
     set({
-      tags: [...get().tags, generateTag(tag, get().tags.length)],
+      tags: [...get().tags, generateComboText(tag, get().tags.length)],
     });
   },
 
   // Add a new ILink to the store
   addILink: ilink => {
     set({
-      ilinks: [...get().ilinks, generateILink(ilink, get().ilinks.length)],
+      ilinks: [...get().ilinks, generateComboText(ilink, get().ilinks.length)],
     });
   },
 }));
