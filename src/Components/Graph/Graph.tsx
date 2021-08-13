@@ -54,7 +54,7 @@ const options = {
 
 export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
   const { graphData } = props;
-  const loadNode = useEditorStore(state => state.loadNode);
+  const loadNodeFromId = useEditorStore(state => state.loadNodeFromId);
 
   // console.log('Checking for graph data 12321: ', { graphData });
 
@@ -63,10 +63,14 @@ export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
     graph: graphData,
     events: {
       select: (selectProps: any) => {
-        // if (props.nodes.length === 1) {
-        //   const node = graphData.nodes[props.nodes[0]].label;
-        // }
-        console.log(`Selected node: ${JSON.stringify(selectProps, null, 2)}`);
+        if (selectProps.nodes.length === 1) {
+          const selectId = selectProps.nodes[0];
+          const selectNode = graphData.nodes.filter((n: any) => n.id === selectId);
+
+          console.log('Selected node', selectNode, selectId);
+
+          if (selectNode.length > 0) loadNodeFromId(selectNode[0].label);
+        }
       },
     },
   });
