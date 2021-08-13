@@ -11,6 +11,8 @@ import { PixelToCSS } from '../Styled/helpers';
 import useDataStore, { useTreeFromLinks } from '../Editor/Store/DataStore';
 import defaultTags, { generateComboTexts } from '../Conf/sampleTags';
 import { generateILinks } from '../Conf/sampleILinks';
+import Graph from '../Components/Graph/Graph';
+import { useGraphData } from '../Components/Graph/useGraphData';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -34,7 +36,10 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const loadNode = useEditorStore(state => state.loadNode);
   const id = useEditorStore(state => state.node.id);
 
+  const showGraph = useEditorStore(state => state.showGraph);
   const initializeData = useDataStore(state => state.initializeData);
+
+  const graphData = useGraphData();
 
   /** Initialization of the app details occur here */
   useEffect(() => {
@@ -57,6 +62,8 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
       <ReactTooltip effect="solid" backgroundColor={theme.colors.gray.s5} arrowColor={theme.colors.gray.s5} />
       <SideBar tree={Tree} starred={Tree} />
       <Content>{children}</Content>
+
+      {showGraph && <Graph graphData={graphData} />}
     </AppWrapper>
   );
 };

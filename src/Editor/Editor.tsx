@@ -2,6 +2,7 @@ import linkIcon from '@iconify-icons/ri/link';
 import more2Fill from '@iconify-icons/ri/more-2-fill';
 import saveLine from '@iconify-icons/ri/save-line';
 import shareLine from '@iconify-icons/ri/share-line';
+import bubbleChartLine from '@iconify-icons/ri/bubble-chart-line';
 import { createPlateOptions, ELEMENT_MEDIA_EMBED, Plate, useStoreEditorValue } from '@udecode/plate';
 import React, { useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
@@ -31,6 +32,8 @@ const Editor = () => {
   const mdContent = useEditorStore(state => state.content);
   const nodeId = useEditorStore(state => state.node.id);
   const title = useEditorStore(state => state.node.title);
+  const showGraph = useEditorStore(state => state.showGraph);
+  const toggleGraph = useEditorStore(state => state.toggleGraph);
 
   const tags = useDataStore(state => state.tags);
   const ilinks = useDataStore(state => state.ilinks);
@@ -178,34 +181,43 @@ const Editor = () => {
   const plugins = generatePlugins(pluginConfigs);
 
   return (
-    <StyledEditor className="mex_editor">
-      <NodeInfo>
-        <NoteTitle>{title}</NoteTitle>
-        <InfoTools>
-          <IconButton size={24} icon={saveLine} onClick={onSave} title="Save" />
-          <IconButton size={24} icon={shareLine} title="Share" />
-          <IconButton size={24} icon={linkIcon} title="Copy Link" />
-          <IconButton size={24} icon={more2Fill} title="Options" />
-        </InfoTools>
-      </NodeInfo>
+    <>
+      <StyledEditor showGraph={showGraph} className="mex_editor">
+        <NodeInfo>
+          <NoteTitle>{title}</NoteTitle>
+          <InfoTools>
+            <IconButton size={24} icon={saveLine} onClick={onSave} title="Save" />
+            <IconButton size={24} icon={shareLine} title="Share" />
+            <IconButton size={24} icon={linkIcon} title="Copy Link" />
+            <IconButton size={24} icon={more2Fill} title="Options" />
+            <IconButton
+              size={24}
+              icon={bubbleChartLine}
+              title="Graph"
+              highlight={showGraph}
+              onClick={() => toggleGraph()}
+            />
+          </InfoTools>
+        </NodeInfo>
 
-      {content && (
-        <>
-          {/* <BallonToolbarMarks /> */}
-          <Plate
-            // onChange={onChange}
-            id={id}
-            editableProps={editableProps}
-            initialValue={content}
-            plugins={plugins}
-            components={components}
-            options={options}
-          >
-            <MultiComboboxContainer keys={comboboxRenderConfig.keys} />
-          </Plate>
-        </>
-      )}
-    </StyledEditor>
+        {content && (
+          <>
+            {/* <BallonToolbarMarks /> */}
+            <Plate
+              // onChange={onChange}
+              id={id}
+              editableProps={editableProps}
+              initialValue={content}
+              plugins={plugins}
+              components={components}
+              options={options}
+            >
+              <MultiComboboxContainer keys={comboboxRenderConfig.keys} />
+            </Plate>
+          </>
+        )}
+      </StyledEditor>
+    </>
   );
 };
 
