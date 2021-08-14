@@ -1,15 +1,21 @@
 import { rgba } from 'polished';
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import { ActionMeta } from 'react-select';
 import { css } from 'styled-components';
 import tinykeys from 'tinykeys';
+import useDataStore, { useFlatTreeFromILinks } from '../../Editor/Store/DataStore';
+import { useEditorStore } from '../../Editor/Store/EditorStore';
+import { getNodeFlatTree } from '../../Lib/flatTree';
 import TreeNode from '../../Types/tree';
-import LookupInput from './NodeSelect';
+import LookupInput from '../NodeInput/NodeSelect';
+import { Value } from '../NodeInput/Types';
 
 export type LookupProps = {
   flatTree: TreeNode[];
 };
 
+/** Is added to Global Styles */
 export const LookupStyles = css`
   .LookupContent {
     /* position: absolute; */
@@ -57,12 +63,37 @@ const Lookup: React.FC<LookupProps> = () => {
     };
   });
 
+  const loadNode = useEditorStore(s => s.loadNode);
+  const loadNodeFromId = useEditorStore(s => s.loadNodeFromId);
+  const addILink = useDataStore(s => s.addILink);
+
+  const flattree = useFlatTreeFromILinks();
   // console.log({ flatTree, open });
+
+  const handleChange = (
+    newValue: Value | null,
+    _actionMeta: ActionMeta<Value> // eslint-disable-line @typescript-eslint/no-unused-vars
+  ) => {
+    // setState({ ...state, value: newValue });
+    if (newValue) {
+      const node = getNodeFlatTree(newValue.value, flattree);
+      if (node.length > 0) {
+        loadNode(node[0]);
+      }
+    }
+    closeModal();
+  };
+
+  const handleCreate = (inputValue: string) => {
+    addILink(inputValue);
+    loadNodeFromId(inputValue);
+    closeModal();
+  };
 
   return (
     <Modal className="LookupContent" overlayClassName="LookupOverlay" onRequestClose={closeModal} isOpen={open}>
       <h1>Lookup</h1>
-      <LookupInput closeModal={closeModal} />
+      <LookupInput autoFocus menuOpen handleChange={handleChange} handleCreate={handleCreate} />
     </Modal>
   );
 };

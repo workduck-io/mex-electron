@@ -16,7 +16,7 @@ interface GraphEdge {
 
 export const useGraphData = () => {
   const ilinks = useDataStore(store => store.ilinks);
-  const links = ilinks.map(i => i.text);
+  const links = ilinks.map(i => i.raw_id);
 
   const nodes = links.map((node, id): GraphNode => {
     return {

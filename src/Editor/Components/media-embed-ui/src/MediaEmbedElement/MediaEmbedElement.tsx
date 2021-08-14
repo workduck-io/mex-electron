@@ -45,7 +45,7 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
           </EmbedContainer>
         ) : (
           <IFrameWrapper expand={expand}>
-            <IFrame title="embed" src={`${url}?title=0&byline=0&portrait=0`} frameBorder="0" {...nodeProps} />
+            <IFrame title="embed" src={`${url}`} frameBorder="0" {...nodeProps} />
           </IFrameWrapper>
         )}
 

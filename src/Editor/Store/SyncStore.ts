@@ -1,14 +1,14 @@
 import create from 'zustand';
-import { SyncBlockData, SyncContextType } from '../Components/SyncBlock/SyncBlock.types';
+import { SyncContextType } from '../Components/SyncBlock/SyncBlock.types';
 
 export const useSyncStore = create<SyncContextType>((set, get) => ({
   syncBlocks: [],
-  addSyncBlock: (block: SyncBlockData) => {
+  addSyncBlock: block => {
     set(() => ({
       syncBlocks: [...get().syncBlocks, block],
     }));
   },
-  editSyncBlock: (block: SyncBlockData) => {
+  editSyncBlock: block => {
     let oldBlocks = get().syncBlocks;
     oldBlocks = oldBlocks.filter(s => s.id !== block.id);
 

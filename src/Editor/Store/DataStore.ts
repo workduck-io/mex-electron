@@ -36,11 +36,17 @@ const useDataStore = create<DataStoreState>((set, get) => ({
       ilinks: [...get().ilinks, generateComboText(ilink, get().ilinks.length)],
     });
   },
+
+  setIlinks: ilinks => {
+    set({
+      ilinks,
+    });
+  },
 }));
 
 export const useTreeFromLinks = () => {
   const ilinks = useDataStore(store => store.ilinks);
-  const links = ilinks.map(i => i.text);
+  const links = ilinks.map(i => i.raw_id);
   const tree = generateTree(links);
 
   return tree;

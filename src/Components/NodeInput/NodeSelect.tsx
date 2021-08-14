@@ -3,62 +3,54 @@ import { ActionMeta } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { ThemeConfig } from 'react-select/src/theme';
 import { useTheme } from 'styled-components';
-import useDataStore, { useFlatTreeFromILinks } from '../../Editor/Store/DataStore';
-import { useEditorStore } from '../../Editor/Store/EditorStore';
-import { getNodeFlatTree, getOptions } from '../../Lib/flatTree';
-
-type Value = {
-  label: string;
-  value: string;
-};
+import { useFlatTreeFromILinks } from '../../Editor/Store/DataStore';
+import { getOptions } from '../../Lib/flatTree';
+import { Value } from './Types';
 
 interface SelectState {
-  isLoading: boolean;
   options: { label: string; value: string }[];
   value: Value | null;
 }
 
 interface LookupInputProps {
-  closeModal: () => void;
+  menuOpen?: boolean;
+  loading?: boolean;
+  autoFocus?: boolean;
+  handleChange: (
+    newValue: Value | null,
+    _actionMeta: ActionMeta<Value> // eslint-disable-line @typescript-eslint/no-unused-vars
+  ) => void;
+  handleCreate?: (inputValue: string) => void;
 }
 
-const LookupInput = ({ closeModal }: LookupInputProps) => {
+const LookupInput = ({ handleChange, handleCreate, loading: LoadingProp, autoFocus, menuOpen }: LookupInputProps) => {
   const defaultOptions = getOptions(useFlatTreeFromILinks());
   const [state, setState] = useState<SelectState>({
-    isLoading: false,
     options: defaultOptions,
     value: null,
   });
-
-  const loadNode = useEditorStore(s => s.loadNode);
-  const loadNodeFromId = useEditorStore(s => s.loadNodeFromId);
-  const addILink = useDataStore(s => s.addILink);
+  const [loading, setLoading] = useState(LoadingProp);
 
   const styledTheme = useTheme();
-  const flattree = useFlatTreeFromILinks();
 
-  const handleChange = (
-    newValue: Value | null,
-    _actionMeta: ActionMeta<Value> // eslint-disable-line @typescript-eslint/no-unused-vars
-  ) => {
-    // setState({ ...state, value: newValue });
-    if (newValue) {
-      const node = getNodeFlatTree(newValue.value, flattree);
-      if (node.length > 0) {
-        loadNode(node[0]);
-      }
-    }
-    closeModal();
+  const handleCreateWrapper = (inputValue: string) => {
+    setLoading(true);
+    if (handleCreate) handleCreate(inputValue);
+    setState({ ...state, value: { label: inputValue, value: inputValue } });
+
+    setLoading(false);
   };
 
-  const handleCreate = (inputValue: string) => {
-    setState({ ...state, isLoading: true });
-    addILink(inputValue);
-    loadNodeFromId(inputValue);
-    closeModal();
+  const handleChangeWrapper = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
+    setLoading(true);
+    // setState({ ...state, isLoading: true });
+    handleChange(newValue, _actionMeta);
+
+    setState({ ...state, value: newValue });
+    setLoading(false);
   };
 
-  const { isLoading, options, value } = state;
+  const { options, value } = state;
 
   const colors = {
     primary: styledTheme.colors.primary,
@@ -73,8 +65,8 @@ const LookupInput = ({ closeModal }: LookupInputProps) => {
     neutral10: styledTheme.colors.gray.s7,
     neutral20: styledTheme.colors.gray.s6,
     neutral30: styledTheme.colors.gray.s5,
-    neutral40: styledTheme.colors.gray.s4,
-    neutral50: styledTheme.colors.gray.s3,
+    neutral40: styledTheme.colors.gray.s2,
+    neutral50: styledTheme.colors.gray.s2,
     neutral60: styledTheme.colors.gray.s2,
     neutral70: styledTheme.colors.gray.s1,
     neutral80: styledTheme.colors.gray.s0,
@@ -104,17 +96,24 @@ const LookupInput = ({ closeModal }: LookupInputProps) => {
   return (
     <CreatableSelect
       isClearable
-      isDisabled={isLoading}
-      isLoading={isLoading}
-      onChange={handleChange}
-      onCreateOption={handleCreate}
+      // isDisabled={loading}
+      isLoading={loading}
+      onChange={handleChangeWrapper}
+      onCreateOption={handleCreateWrapper}
       options={options}
-      defaultMenuIsOpen
+      defaultMenuIsOpen={menuOpen}
       value={value}
-      autoFocus
+      autoFocus={autoFocus}
       theme={customTheme}
     />
   );
+};
+
+LookupInput.defaultProps = {
+  handleCreate: () => {},
+  menuOpen: false,
+  loading: false,
+  autoFocus: false,
 };
 
 export default LookupInput;

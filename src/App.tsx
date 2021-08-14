@@ -2,6 +2,7 @@ import React from 'react';
 import Modal from 'react-modal';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Lookup from './Components/Lookup';
+import Refactor from './Components/Refactor/Refactor';
 import sampleRCTree from './Components/Sidebar/sampleRCTreeData';
 import Contexts from './Context/Contexts';
 import Providers from './Context/Providers';
@@ -23,6 +24,7 @@ function App() {
         <Contexts>
           <Main>
             <Lookup flatTree={sampleRCTree} />
+            <Refactor />
             <Switch>
               <Route exact path="/editor" component={Editor} />
               <Route path="/tasks" component={Tasks} />

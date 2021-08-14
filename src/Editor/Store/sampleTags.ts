@@ -2,7 +2,7 @@ import { ComboText } from './Types';
 
 export const generateComboText = (tag: string, value: number): ComboText => ({
   key: tag,
-  text: tag,
+  raw_id: tag,
   value: String(value),
 });
 
