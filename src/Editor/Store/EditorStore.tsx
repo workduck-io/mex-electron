@@ -2,6 +2,7 @@ import React from 'react';
 import create from 'zustand';
 import { getContent, getInitialNode, getNodeFromId } from './helpers';
 import TreeNode from '../../Types/tree';
+import { NodeEditorContent } from './Types';
 
 export type EditorContextType = {
   // State
@@ -10,7 +11,7 @@ export type EditorContextType = {
   node: TreeNode;
   // Contents of the current node
   // These are loaded internally from ID
-  content: string;
+  content: NodeEditorContent;
 
   showGraph: boolean;
 
@@ -28,19 +29,22 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
   node: getInitialNode(),
   content: getContent('@'),
   showGraph: false,
+
   loadNode: (node: TreeNode) => {
     set(() => ({
       node,
       content: getContent(node.id),
     }));
   },
+
   loadNodeFromId: (id: string) => {
     const node = getNodeFromId(id);
     set(() => ({
       node,
-      content: getContent(node.id),
+      content: getContent(id),
     }));
   },
+
   toggleGraph: () => {
     set(() => ({
       showGraph: !get().showGraph,
@@ -50,6 +54,7 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+// Used to wrap a class component to provide hooks
 export const withLoadNode = (Component: any) => {
   return function C2(props: any) {
     const loadNode = useEditorStore(state => state.loadNode);

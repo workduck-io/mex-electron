@@ -1,47 +1,52 @@
-import devNotes from '../../Conf/sampleDocs/sampleDev';
-import PDR from '../../Conf/sampleDocs/samplePDR';
-import rishankNotes from '../../Conf/sampleDocs/sampleRishank';
-import twitterNotes from '../../Conf/sampleDocs/sampleTwitter';
-import SampleMarkdown from '../../Conf/sampleMarkdown';
-import meetingNotes from '../../Conf/sampleMeeting';
 import { EditorStateProps } from '../../Types/EditorContext';
 import TreeNode from '../../Types/tree';
+import { useContentStore } from './ContentStore';
+import { NodeEditorContent } from './Types';
 
 /** Get the contents of the node with id */
-export function getContent(id: string): string {
+export function getContent(id: string): NodeEditorContent {
   // console.log('Loading ID', id);
   // create a hashmap with id vs content
   // load the content from hashmap
 
-  if (id === '@') {
-    return 'This is temporary markdown for @';
+  const { contents } = useContentStore.getState();
+
+  if (contents[id]) {
+    const { content } = contents[id];
+
+    if (content) {
+      return content;
+    }
   }
 
-  if (id === 'lib') {
-    return SampleMarkdown;
-  }
+  // if (id === '@') {
+  //   return ' is temporary markdown for @';
+  // }
 
-  if (id.includes('meet')) {
-    return meetingNotes;
-  }
+  // if (id === 'lib') {
+  //   return SampleMarkdown;
+  // }
 
-  if (id.includes('doc')) {
-    return PDR;
-  }
+  // if (id.includes('meet')) {
+  //   return meetingNotes;
+  // }
 
-  if (id.includes('dev')) {
-    return devNotes;
-  }
+  // if (id.includes('doc')) {
+  //   return PDR;
+  // }
 
-  if (id.includes('twitter')) {
-    return twitterNotes;
-  }
+  // if (id.includes('dev')) {
+  //   return devNotes;
+  // }
 
-  if (id.includes('rishank')) {
-    return rishankNotes;
-  }
+  // if (id.includes('twitter')) {
+  //   return twitterNotes;
+  // }
 
-  return 'This is default content';
+  // if (id.includes('rishank')) {
+  //   return rishankNotes;
+  // }
+  return [{ children: [{ text: '' }] }];
 }
 
 export const getInitialEditorState = (): EditorStateProps => {

@@ -67,7 +67,7 @@ export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
           const selectId = selectProps.nodes[0];
           const selectNode = graphData.nodes.filter((n: any) => n.id === selectId);
 
-          console.log('Selected node', selectNode, selectId);
+          // console.log('Selected node', selectNode, selectId);
 
           if (selectNode.length > 0) loadNodeFromId(selectNode[0].label);
         }
@@ -85,7 +85,7 @@ export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
         ...rest,
       };
     });
-  }, [graphData]);
+  }, [graphData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const { graph, events } = state;
   // console.log('Graph', { graph });
