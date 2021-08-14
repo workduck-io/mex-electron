@@ -14,6 +14,8 @@ export interface DataStoreState {
 
   addTag: (tag: string) => void;
   addILink: (ilink: string) => void;
+
+  setIlinks: (ilinks: ComboText[]) => void;
 }
 
 export type NodeEditorContent = any[]; // eslint-disable-line @typescript-eslint/no-explicit-any

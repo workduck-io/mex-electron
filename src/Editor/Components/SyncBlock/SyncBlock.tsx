@@ -100,31 +100,37 @@ export const SyncBlock = (props: SyncBlockProps) => {
             <Icon icon={refreshFill} height={20} />
             SyncBlock
           </ElementHeader>
-          <textarea {...register('content')} placeholder="Your content here..." defaultValue={blockData.content} />
+          <textarea
+            {...register('content')}
+            placeholder="Your content here..."
+            defaultValue={blockData && blockData.content}
+          />
 
-          <FormControls>
-            <div>
-              {connection_services.map(cs => {
-                const checked = blockData && blockData.connections.includes(cs as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-                return (
-                  <ServiceSelectorLabel
-                    htmlFor={`connections.${cs}`}
-                    key={`${blockData.id}_syncBlocks_${cs}`}
-                    checked={checked}
-                    data-tip={`Sync with ${cs}`}
-                    data-place="bottom"
-                  >
-                    <ServiceLabel>
-                      <Icon icon={getIcon(cs)} />
-                      {cs}
-                    </ServiceLabel>
-                    <input type="checkbox" {...register(`connections.${cs}`)} checked={checked} />
-                  </ServiceSelectorLabel>
-                );
-              })}
-            </div>
-            <input type="submit" />
-          </FormControls>
+          {blockData && (
+            <FormControls>
+              <div>
+                {connection_services.map(cs => {
+                  const checked = blockData && blockData.connections.includes(cs as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+                  return (
+                    <ServiceSelectorLabel
+                      htmlFor={`connections.${cs}`}
+                      key={`${blockData.id}_syncBlocks_${cs}`}
+                      checked={checked}
+                      data-tip={`Sync with ${cs}`}
+                      data-place="bottom"
+                    >
+                      <ServiceLabel>
+                        <Icon icon={getIcon(cs)} />
+                        {cs}
+                      </ServiceLabel>
+                      <input type="checkbox" {...register(`connections.${cs}`)} checked={checked} />
+                    </ServiceSelectorLabel>
+                  );
+                })}
+              </div>
+              <input type="submit" />
+            </FormControls>
+          )}
         </SyncForm>
       </div>
 
