@@ -8,4 +8,15 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
       syncBlocks: [...get().syncBlocks, block],
     }));
   },
+  editSyncBlock: (block: SyncBlockData) => {
+    let oldBlocks = get().syncBlocks;
+    oldBlocks = oldBlocks.filter(s => s.id !== block.id);
+
+    set({ syncBlocks: [block, ...oldBlocks] });
+  },
+  initSyncBlocks: syncBlocks => {
+    set(() => ({
+      syncBlocks,
+    }));
+  },
 }));

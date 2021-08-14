@@ -154,13 +154,7 @@ ipcMain.on('get-local-data', event => {
 });
 
 ipcMain.on('set-local-data', (_event, arg) => {
-  console.log('set-local-data', { arg });
-
   const dataPath = path.join(app.getPath('userData'), DataFileName);
 
   fs.writeFileSync(dataPath, JSON.stringify(arg));
-
-  // console.log('Sending data', fileData, dataPath);
-
-  // event.sender.send('recieve-local-data', fileData);
 });

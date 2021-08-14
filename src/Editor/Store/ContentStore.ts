@@ -1,22 +1,25 @@
 import create from 'zustand';
 import { NodeContent } from '../../Types/data';
+import { NodeEditorContent } from './Types';
 
-interface Contents {
+export interface Contents {
   [key: string]: NodeContent;
 }
 
 interface ContentStoreState {
   contents: Contents;
   getContent: (id: string) => void;
-  setContent: (id: string, content: string) => void;
+  setContent: (id: string, content: NodeEditorContent) => void;
   initContents: (contents: Contents) => void;
 }
 
 export const useContentStore = create<ContentStoreState>((set, get) => ({
   contents: {},
   setContent: (id, content) => {
+    const oldContent = get().contents;
+    delete oldContent[id];
     set({
-      contents: { ...get().contents, [id]: { type: 'string', content } },
+      contents: { [id]: { type: 'editor', content }, ...oldContent },
     });
   },
   getContent: id => {

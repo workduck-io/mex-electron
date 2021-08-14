@@ -44,7 +44,9 @@ const LookupInput = ({ closeModal }: LookupInputProps) => {
     // setState({ ...state, value: newValue });
     if (newValue) {
       const node = getNodeFlatTree(newValue.value, flattree);
-      if (node.length > 0) loadNode(node[0]);
+      if (node.length > 0) {
+        loadNode(node[0]);
+      }
     }
     closeModal();
   };

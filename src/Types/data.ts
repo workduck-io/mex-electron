@@ -1,8 +1,9 @@
-import { ComboText } from '../Editor/Store/Types';
+import { SyncBlockData } from '../Editor/Components/SyncBlock';
+import { ComboText, NodeEditorContent } from '../Editor/Store/Types';
 
 export interface NodeContent {
   type: string;
-  content: string | undefined;
+  content: NodeEditorContent;
 }
 
 export interface FileData {
@@ -11,4 +12,5 @@ export interface FileData {
   contents: {
     [key: string]: NodeContent;
   };
+  syncBlocks: SyncBlockData[];
 }
