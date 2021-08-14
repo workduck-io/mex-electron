@@ -57,7 +57,7 @@ const Refactor = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      '$mod+KeyP KeyR': event => {
+      '$mod+KeyK KeyR': event => {
         event.preventDefault();
         openModal();
       },
@@ -92,14 +92,13 @@ const Refactor = () => {
   const { getMockRefactor, execRefactor } = useRefactor();
 
   useEffect(() => {
-    console.log({ to, from });
-
+    // console.log({ to, from });
     if (to && from) {
       setMockRefactored(getMockRefactor(from, to));
     }
   }, [to, from, getMockRefactor]);
 
-  console.log({ mockRefactored });
+  // console.log({ mockRefactored });
 
   const handleRefactor = () => {
     if (to && from) execRefactor(from, to);

@@ -12,6 +12,8 @@ import { withLoadNode } from '../../Editor/Store/EditorStore';
 import { StyledTree } from '../../Styled/Sidebar';
 import TreeNode from '../../Types/tree';
 import TreeExpandIcon from './Icon';
+import { withRefactor } from '../../Editor/Actions/useRefactor';
+import { getNodeIdLast, SEPARATOR } from './sampleRCTreeData';
 
 const motion = {
   motionName: 'node-motion',
@@ -29,6 +31,8 @@ const motion = {
 interface RCTreeProps {
   tree: any;
   loadNode: any;
+  getMockRefactor: any;
+  execRefactor: any;
 }
 
 /* Renders a draggable tree with custom collapse-able icon */
@@ -49,6 +53,7 @@ class Tree extends React.Component<RCTreeProps> {
 
   componentDidUpdate(prevProps: RCTreeProps) {
     const { tree } = this.props;
+
     if (!equal(prevProps, this.props))
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ gData: tree });
@@ -123,9 +128,21 @@ class Tree extends React.Component<RCTreeProps> {
       }
     }
 
-    this.setState({
-      gData: data,
-    });
+    // console.log('We be dropping stuff here', { dropPos, dragObj, dragKey, dropKey });
+
+    const singleId = getNodeIdLast(dragKey);
+
+    const from = dragKey;
+    const to = dropKey + SEPARATOR + singleId;
+
+    const { execRefactor } = this.props;
+
+    // console.log(getMockRefactor(from, to));
+    execRefactor(from, to);
+
+    // this.setState({
+    //   gData: data,
+    // });
   }
 
   onExpand(expandedKeys: any) {
@@ -171,4 +188,4 @@ class Tree extends React.Component<RCTreeProps> {
   }
 }
 
-export default withLoadNode(Tree);
+export default withRefactor(withLoadNode(Tree));

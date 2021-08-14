@@ -1,7 +1,7 @@
 export interface ComboText {
   // This interface is used to store tags in a combobox friendly way.
   key: string;
-  raw_id: string;
+  text: string;
   value: string;
 }
 

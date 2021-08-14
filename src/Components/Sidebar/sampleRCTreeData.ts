@@ -15,7 +15,7 @@ export const sampleFlatTree = [
   'com.workduck',
 ];
 
-const SEPARATOR = '.';
+export const SEPARATOR = '.';
 
 export const getParentId = (id: string) => {
   const lastIndex = id.lastIndexOf(SEPARATOR);
@@ -33,6 +33,12 @@ export const isParent = (id: string, parent: string) => {
 
 export const isTopNode = (id: string) => {
   return getParentId(id) === null;
+};
+
+export const getNodeIdLast = (id: string) => {
+  const split = id.split(SEPARATOR);
+  if (split.length > 1) return split[split.length - 1];
+  return id;
 };
 
 const createChildLess = (n: string): TreeNode => ({

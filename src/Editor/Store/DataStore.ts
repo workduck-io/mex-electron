@@ -1,5 +1,5 @@
 import create from 'zustand';
-import { generateTree } from '../../Components/Sidebar/sampleRCTreeData';
+import { generateTree, SEPARATOR } from '../../Components/Sidebar/sampleRCTreeData';
 import { generateComboText } from './sampleTags';
 import getFlatTree from '../../Lib/flatTree';
 import { DataStoreState } from './Types';
@@ -44,10 +44,36 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   },
 }));
 
+export const getLevel = (id: string) => id.split(SEPARATOR).length;
+
+/** Link sanatization
+ *
+ * Orders the links according to their level in tree
+ * Guarantees parent is before child -> Condition required for correct tree
+ */
+export const sanatizeLinks = (links: string[]): string[] => {
+  let oldLinks = links;
+  const newLinks: string[] = [];
+  let currentDepth = 1;
+
+  while (oldLinks.length > 0) {
+    for (const l of links) {
+      if (getLevel(l) === currentDepth) {
+        newLinks.push(l);
+        oldLinks = oldLinks.filter(k => k !== l);
+      }
+    }
+    currentDepth += 1;
+  }
+
+  return newLinks;
+};
+
 export const useTreeFromLinks = () => {
   const ilinks = useDataStore(store => store.ilinks);
-  const links = ilinks.map(i => i.raw_id);
-  const tree = generateTree(links);
+  const links = ilinks.map(i => i.text);
+  const sanatizedLinks = sanatizeLinks(links);
+  const tree = generateTree(sanatizedLinks);
 
   return tree;
 };
