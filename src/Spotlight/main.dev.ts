@@ -1,30 +1,17 @@
 /* eslint global-require: off, no-console: off */
 
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `yarn build` or `yarn build:main`, this file is compiled to
- * `./src/main.prod.js` using webpack. This gives us some performance wins.
- */
-import chokidar from 'chokidar';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, shell, Tray } from 'electron';
 import path from 'path';
-import fs from 'fs';
-import { DefaultFileData } from './Defaults/baseData';
-import { getSaveLocation } from './Defaults/data';
-import { FileData } from './Types/data';
-import toggleWindow from './Spotlight/utils/toggleWindow';
-import MenuBuilder from './Spotlight/utils/menu';
-import { getSelectedText } from './Spotlight/utils/getSelectedText';
-import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml';
+import toggleWindow from './utils/toggleWindow';
+import MenuBuilder from './utils/menu';
+import { getSelectedText } from './utils/getSelectedText';
+import { sanitizeHtml } from './utils/sanitizeHtml';
 
 let tray;
 let mexWindow: BrowserWindow | null;
-let mainWindow: BrowserWindow | null;
+let mainWindow: BrowserWindow | null = null;
 
 let trayIconSrc = path.join(__dirname, '..', 'assets/icon.png');
 if (process.platform === 'darwin') {
@@ -91,6 +78,8 @@ const createSpotLighWindow = () => {
     }
     if (process.env.START_MINIMIZED) {
       mainWindow.minimize();
+    } else {
+      mainWindow.show();
     }
   });
 
@@ -125,7 +114,7 @@ const createMexWindow = () => {
   });
 
   mexWindow.on('closed', () => {
-    mexWindow = null;
+    mainWindow = null;
   });
 
   mexWindow.webContents.on('new-window', (event, url) => {
@@ -215,47 +204,3 @@ app.on('activate', () => {
   if (mainWindow === null) createSpotLighWindow();
   if (mexWindow === null) createMexWindow();
 });
-
-ipcMain.on('get-local-data', event => {
-  let fileData: FileData;
-
-  if (fs.existsSync(getSaveLocation(app))) {
-    const stringData = fs.readFileSync(getSaveLocation(app), 'utf-8');
-    fileData = JSON.parse(stringData);
-  } else {
-    fs.writeFileSync(getSaveLocation(app), JSON.stringify(DefaultFileData));
-    fileData = DefaultFileData;
-  }
-
-  // console.log('Sending data', fileData, dataPath);
-
-  event.sender.send('recieve-local-data', fileData);
-});
-
-ipcMain.on('set-local-data', (_event, arg) => {
-  fs.writeFileSync(getSaveLocation(app), JSON.stringify(arg));
-});
-
-// Send data back if modified externally
-chokidar
-  .watch(getSaveLocation(app), {
-    alwaysStat: true,
-    awaitWriteFinish: {
-      stabilityThreshold: 2000,
-      // pollInterval: 1000,
-    },
-  })
-  .on('change', () => {
-    // console.log({ path, event, c: count++ });
-    let fileData: FileData;
-    if (fs.existsSync(getSaveLocation(app))) {
-      const stringData = fs.readFileSync(getSaveLocation(app), 'utf-8');
-      fileData = JSON.parse(stringData);
-    } else {
-      return;
-    }
-
-    if (mainWindow) {
-      mainWindow.webContents.send('sync-data', fileData);
-    }
-  });
