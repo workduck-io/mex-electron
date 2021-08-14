@@ -63,11 +63,13 @@ export const SyncBlock = (props: SyncBlockProps) => {
     });
 
     axios.post(`https://k43k03g5ab.execute-api.us-east-1.amazonaws.com/dev/listen?${param}`, {
-      blockId: 'BLOCK_random',
+      parentNodeId: 'BLOCK_random',
+      blockId: element.id,
       text: data.content,
+      eventType: blockData.content === '' ? 'INSERT' : 'EDIT', // FIXME
     });
 
-    toast('Sync MAx');
+    toast('Sync Successful');
   }); // eslint-disable-line no-console
   React.useEffect(() => {
     ReactTooltip.rebuild();
@@ -128,7 +130,11 @@ export const SyncBlock = (props: SyncBlockProps) => {
                   );
                 })}
               </div>
-              <input type="submit" />
+              <button type="submit">
+                {
+                  blockData.content === '' ? 'Submit' : 'Edit' // FIXME
+                }
+              </button>
             </FormControls>
           )}
         </SyncForm>
