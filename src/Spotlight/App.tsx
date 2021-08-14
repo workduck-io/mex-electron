@@ -1,12 +1,12 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
+import { spotlightTheme } from '../Styled/themes';
 import Routes from './Routes';
-import { theme } from './styles/theme';
 import { SpotlightProvider } from './utils/context';
 
 export default function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={spotlightTheme}>
       <SpotlightProvider>
         <Routes />
       </SpotlightProvider>

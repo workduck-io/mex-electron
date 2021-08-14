@@ -10,34 +10,20 @@ export const Result: React.FC<{
 }> = ({ result, selected, key }) => {
   return (
     <StyledRow color={selected} key={key}>
-      {result?.title}
-      <Description>{result?.author?.name}</Description>
+      {result?.text}
+      <Description>{result?.desc}</Description>
     </StyledRow>
   );
 };
 
-const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({
-  current,
-  data,
-}) => {
+const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ current, data }) => {
   return (
     <StyledResults>
       <Heading>Search Results</Heading>
-      <FixedSizeList
-        height={400}
-        itemCount={data.length}
-        itemSize={35}
-        width={300}
-      >
+      <FixedSizeList height={400} itemCount={data.length} itemSize={35} width={300}>
         {({ index }) => {
           const result = data[index];
-          return (
-            <Result
-              selected={index === current}
-              key={result?.title}
-              result={result}
-            />
-          );
+          return <Result selected={index === current} key={result.value} result={result} />;
         }}
       </FixedSizeList>
     </StyledResults>

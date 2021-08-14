@@ -27,6 +27,7 @@ export interface CustomTheme extends LayoutStyle {
     primary: string;
     secondary: string;
     background: {
+      spotlight: string;
       app: string;
       card: string;
       surface: string;
@@ -68,6 +69,7 @@ declare module 'styled-components' {
       primary: string;
       secondary: string;
       background: {
+        spotlight: string;
         app: string;
         card: string;
         surface: string;

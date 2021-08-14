@@ -24,7 +24,7 @@ import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml';
 
 let tray;
 let mexWindow: BrowserWindow | null;
-let mainWindow: BrowserWindow | null;
+let mainWindow: BrowserWindow | null = null;
 
 let trayIconSrc = path.join(__dirname, '..', 'assets/icon.png');
 if (process.platform === 'darwin') {
@@ -38,12 +38,9 @@ if (process.env.NODE_ENV === 'production') {
   sourceMapSupport.install();
 }
 
-// if (
-//   process.env.NODE_ENV === 'development' ||
-//   process.env.DEBUG_PROD === 'true'
-// ) {
-//   require('electron-debug')();
-// }
+if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+  require('electron-debug')();
+}
 
 const RESOURCES_PATH = app.isPackaged ? path.join(process.resourcesPath, 'assets') : path.join(__dirname, '../assets');
 
@@ -52,9 +49,9 @@ const getAssetPath = (...paths: string[]): string => {
 };
 
 const MEX_WINDOW_OPTIONS = {
+  width: 2560,
+  height: 1660,
   show: false,
-  width: 1024,
-  height: 728,
   icon: getAssetPath('icon.png'),
   webPreferences: {
     nodeIntegration: true,
@@ -68,6 +65,7 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
   center: false,
   alwaysOnTop: true,
   maximizable: false,
+  resizable: false,
   frame: false,
   icon: getAssetPath('icon.png'),
   webPreferences: {
@@ -76,6 +74,27 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
     enableRemoteModule: true,
     contextIsolation: false,
   },
+};
+
+export const setFileData = (data: FileData) => {
+  const dataPath = path.join(app.getPath('userData'), DataFileName);
+
+  fs.writeFileSync(dataPath, JSON.stringify(data));
+};
+
+export const getFileData = () => {
+  let fileData: FileData;
+
+  const dataPath = path.join(app.getPath('userData'), DataFileName);
+
+  if (fs.existsSync(dataPath)) {
+    const stringData = fs.readFileSync(dataPath, 'utf-8');
+    fileData = JSON.parse(stringData);
+  } else {
+    fs.writeFileSync(dataPath, JSON.stringify(DefaultFileData));
+    fileData = DefaultFileData;
+  }
+  return fileData;
 };
 
 const createSpotLighWindow = () => {
@@ -97,9 +116,6 @@ const createSpotLighWindow = () => {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
-
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
 
   // Open urls in the user's browser
   mainWindow.webContents.on('new-window', (event, url) => {
@@ -123,6 +139,9 @@ const createMexWindow = () => {
       mexWindow.show();
     }
   });
+
+  const menuBuilder = new MenuBuilder(mexWindow);
+  menuBuilder.buildMenu();
 
   mexWindow.on('closed', () => {
     mexWindow = null;
@@ -165,13 +184,19 @@ const handleSelectedText = async () => {
   return selection.text && selection.metadata;
 };
 
+const syncFileData = () => {
+  const fileData: FileData = getFileData();
+  mainWindow?.webContents.send('recieve-local-data', fileData);
+};
+
 const handleToggleMainWindow = async () => {
   const isSelection = await handleSelectedText();
   toggleMainWindow(mainWindow, isSelection);
+  syncFileData();
 };
 
 const closeWindow = () => {
-  mainWindow?.hide();
+  mainWindow?.close();
 };
 
 // app.on('browser-window-blur', () => {
@@ -199,7 +224,6 @@ app
 
     tray.setToolTip('Mex');
     tray.setContextMenu(contextMenu);
-
     return 0;
   })
   .then(createWindow)

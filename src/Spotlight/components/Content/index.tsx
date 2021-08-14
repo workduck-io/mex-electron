@@ -1,8 +1,8 @@
+import { search as getSearchResults } from 'fast-fuzzy';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { DEFAULT_PREVIEW_TEXT } from '../../utils/constants';
 import { useSpotlightContext } from '../../utils/context';
-import { results } from '../../utils/data';
 import { useCurrentIndex } from '../../utils/hooks';
 import Preview from '../Preview';
 import SideBar from '../SideBar';
@@ -20,14 +20,35 @@ const initPreview = {
 };
 
 const Content = () => {
-  const { search, selection } = useSpotlightContext();
+  const { search, selection, localData } = useSpotlightContext();
 
   const [data, setData] = useState<Array<any>>();
   const [preview, setPreview] = useState<any>(initPreview);
   const currentIndex = useCurrentIndex(data, search);
 
   useEffect(() => {
-    setData(search ? results : undefined);
+    if (localData) {
+      const results = getSearchResults(search, localData?.ilinks, { keySelector: obj => obj.key });
+      if (search) {
+        const resultsWithContent = results.map(result => {
+          const { content } = localData.contents[result.key];
+          let rawText = '';
+
+          content?.map(item => {
+            rawText += item?.children?.[0]?.text;
+            return item;
+          });
+
+          return {
+            ...result,
+            desc: rawText,
+          };
+        });
+        setData(resultsWithContent);
+      } else {
+        setData(undefined);
+      }
+    }
   }, [search]);
 
   useEffect(() => {
@@ -45,9 +66,19 @@ const Content = () => {
         text: 'No result found!',
       });
     } else {
+      const contentKey = data[currentIndex];
+      const content = localData?.contents[contentKey.key];
+
+      let rawText = '';
+      content?.content?.map(item => {
+        rawText += `\n\n${item?.children?.[0]?.text}`;
+        return item;
+      });
+      const text = rawText || 'No text here...';
+
       setPreview({
         ...prevTemplate,
-        text: data[currentIndex].desc,
+        text,
       });
     }
   }, [data, currentIndex, selection]);
