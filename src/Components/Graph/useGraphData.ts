@@ -37,14 +37,16 @@ export const useGraphData = () => {
             from: compNode.id,
             color: '#4284ff',
           });
-        } else if (isElder(node.label, compNode.label)) {
-          edges.push({
-            to: node.id,
-            from: compNode.id,
-            color: '#5e6c92',
-            // physics: false,
-          });
         }
+
+        // else if (isElder(node.label, compNode.label)) {
+        //   edges.push({
+        //     to: node.id,
+        //     from: compNode.id,
+        //     color: '#5e6c92',
+        //     // physics: false,
+        //   });
+        // }
       }
     });
     if (isTopNode(node.label)) {
