@@ -26,7 +26,7 @@ export const useBalloonShow = ({
 
   const show = useCallback(() => {
     if (ref.current && hidden && selectionExpanded) {
-      console.log('show: ', { cur: ref.current, hidden, selectionExpanded });
+      // console.log('show: ', { cur: ref.current, hidden, selectionExpanded });
 
       setHidden(false);
     }

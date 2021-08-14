@@ -2,17 +2,17 @@ import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import styled, { useTheme } from 'styled-components';
-import SideBar from '../Components/Sidebar';
-import { navTooltip } from '../Components/Sidebar/Nav';
-import sampleRCTree, { sampleFlatTree } from '../Components/Sidebar/sampleRCTreeData';
-import { getInitialNode } from '../Editor/Store/helpers';
-import { useEditorStore } from '../Editor/Store/EditorStore';
-import { PixelToCSS } from '../Styled/helpers';
-import useDataStore, { useTreeFromLinks } from '../Editor/Store/DataStore';
-import defaultTags, { generateComboTexts } from '../Conf/sampleTags';
-import { generateILinks } from '../Conf/sampleILinks';
 import Graph from '../Components/Graph/Graph';
 import { useGraphData } from '../Components/Graph/useGraphData';
+import { Notifications } from '../Components/Notifications/Notifications';
+import SideBar from '../Components/Sidebar';
+import { navTooltip } from '../Components/Sidebar/Nav';
+import { useInitialize } from '../Data/useInitialize';
+import { useLocalData } from '../Data/useLocalData';
+import { useTreeFromLinks } from '../Editor/Store/DataStore';
+import { useEditorStore } from '../Editor/Store/EditorStore';
+import { getInitialNode } from '../Editor/Store/helpers';
+import { PixelToCSS } from '../Styled/helpers';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -37,17 +37,27 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const id = useEditorStore(state => state.node.id);
 
   const showGraph = useEditorStore(state => state.showGraph);
-  const initializeData = useDataStore(state => state.initializeData);
+
+  const initialize = useInitialize();
 
   const graphData = useGraphData();
+  const localData = useLocalData();
 
   /** Initialization of the app details occur here */
   useEffect(() => {
-    console.log('Initializing', { sampleRCTree }); // eslint-disable-line no-console
+    // console.log('Initializing', { sampleRCTree }); // eslint-disable-line no-console
+
+    (async () => {
+      localData
+        .then(d => {
+          // console.log('Data here', d);
+          return d;
+        })
+        .then(d => initialize(d))
+        .catch(e => console.error(e)); // eslint-disable-line no-console
+    })();
 
     loadNode(getInitialNode());
-
-    initializeData(defaultTags, generateILinks(sampleFlatTree), generateComboTexts(['webem', 'sync']));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -62,6 +72,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
       <ReactTooltip effect="solid" backgroundColor={theme.colors.gray.s5} arrowColor={theme.colors.gray.s5} />
       <SideBar tree={Tree} starred={Tree} />
       <Content>{children}</Content>
+      <Notifications />
 
       {showGraph && <Graph graphData={graphData} />}
     </AppWrapper>

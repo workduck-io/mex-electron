@@ -10,8 +10,10 @@ export interface DataStoreState {
   ilinks: ComboText[];
   slash_commands: ComboText[];
 
-  initializeData: (tags: ComboText[], ids: ComboText[], slash_commands: ComboText[]) => void;
+  initializeDataStore: (tags: ComboText[], ids: ComboText[], slash_commands: ComboText[]) => void;
 
   addTag: (tag: string) => void;
   addILink: (ilink: string) => void;
 }
+
+export type NodeEditorContent = any[]; // eslint-disable-line @typescript-eslint/no-explicit-any

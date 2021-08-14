@@ -29,4 +29,6 @@ export type SyncContextType = {
   syncBlocks: SyncBlockData[];
   // Load a node and its contents in the editor
   addSyncBlock: (block: SyncBlockData) => void;
+  initSyncBlocks: (syncBlocks: SyncBlockData[]) => void;
+  editSyncBlock: (block: SyncBlockData) => void;
 };

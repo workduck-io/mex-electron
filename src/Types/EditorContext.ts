@@ -1,3 +1,4 @@
+import { NodeEditorContent } from '../Editor/Store/Types';
 import TreeNode from './tree';
 
 export interface EditorStateProps {
@@ -5,7 +6,7 @@ export interface EditorStateProps {
   node: TreeNode;
   // Contents of the current node
   // These are loaded internally from ID
-  content: string;
+  content: NodeEditorContent;
 }
 
 export type EditorContextType = {

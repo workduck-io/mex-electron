@@ -1,11 +1,14 @@
+import bubbleChartLine from '@iconify-icons/ri/bubble-chart-line';
 import linkIcon from '@iconify-icons/ri/link';
 import more2Fill from '@iconify-icons/ri/more-2-fill';
 import saveLine from '@iconify-icons/ri/save-line';
 import shareLine from '@iconify-icons/ri/share-line';
-import bubbleChartLine from '@iconify-icons/ri/bubble-chart-line';
 import { createPlateOptions, ELEMENT_MEDIA_EMBED, Plate, useStoreEditorValue } from '@udecode/plate';
 import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import ReactTooltip from 'react-tooltip';
+import tinykeys from 'tinykeys';
+import { useSaveData } from '../Data/useSaveData';
 import IconButton from '../Styled/Buttons';
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
 import { ComboboxKey } from './Components/combobox/useComboboxStore';
@@ -20,8 +23,8 @@ import { ELEMENT_SYNC_BLOCK } from './Components/SyncBlock';
 import { getNewBlockData } from './Components/SyncBlock/getNewBlockData';
 import { TagComboboxItem } from './Components/tag/components/TagComboboxItem';
 import { ELEMENT_TAG } from './Components/tag/defaults';
-import { deserialize, serialize } from './Plugins/md-serialize';
 import generatePlugins from './Plugins/plugins';
+import { useContentStore } from './Store/ContentStore';
 import useDataStore from './Store/DataStore';
 import { useEditorStore } from './Store/EditorStore';
 import { useSyncStore } from './Store/SyncStore';
@@ -29,7 +32,7 @@ import { useSyncStore } from './Store/SyncStore';
 const options = createPlateOptions();
 
 const Editor = () => {
-  const mdContent = useEditorStore(state => state.content);
+  const fsContent = useEditorStore(state => state.content);
   const nodeId = useEditorStore(state => state.node.id);
   const title = useEditorStore(state => state.node.title);
   const showGraph = useEditorStore(state => state.showGraph);
@@ -40,6 +43,8 @@ const Editor = () => {
   const slash_commands = useDataStore(state => state.slash_commands);
   const addSyncBlock = useSyncStore(state => state.addSyncBlock);
 
+  const setFsContent = useContentStore(state => state.setContent);
+
   useEffect(() => {
     ReactTooltip.rebuild();
   }, []);
@@ -47,7 +52,7 @@ const Editor = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [content, setContent] = useState<any[] | undefined>(undefined);
 
-  const useEditorState = useStoreEditorValue();
+  const editorState = useStoreEditorValue();
   const [id, setId] = useState('__null__');
   const editableProps = {
     placeholder: 'Murmuring the mex hype...',
@@ -56,31 +61,46 @@ const Editor = () => {
     },
   };
 
+  const saveData = useSaveData();
+
   const addTag = useDataStore(state => state.addTag);
   const addILink = useDataStore(state => state.addILink);
   // console.log(initialValueBasicElements);
 
   useEffect(() => {
-    if (mdContent && nodeId) {
-      deserialize(mdContent)
-        .then(sdoc => {
-          setContent(sdoc);
-          setId(nodeId);
-          return null;
-        })
-        .catch(e => console.error(e)); // eslint-disable-line no-console
+    if (fsContent) {
+      // console.log('setting content', fsContent);
+
+      setContent(fsContent);
+      setId(nodeId);
+      // deserialize(fsContent)
+      //   .then(sdoc => {
+      //     return null;
+      //   })
+      //   .catch(e => console.error(e)); // eslint-disable-line no-console
     }
-  }, [mdContent, nodeId]);
+  }, [fsContent, nodeId]);
 
   const onSave = () => {
     // On save the editor should serialize the state to markdown plaintext
-    console.log(serialize(useEditorState)); // eslint-disable-line no-console
+    // setContent then save
+    if (editorState) setFsContent(id, editorState);
+    saveData(useContentStore.getState().contents);
+
+    toast('Saved!', { duration: 1000 });
   };
 
-  // const onChange = (value: any) => {
-  //   console.log('Hello we be saving', JSON.stringify(value, null, 2));
-  // };
-
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      '$mod+KeyS': event => {
+        event.preventDefault();
+        onSave();
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
   // Combobox
   const pluginConfigs = {
     combobox: {
@@ -207,7 +227,7 @@ const Editor = () => {
               // onChange={onChange}
               id={id}
               editableProps={editableProps}
-              initialValue={content}
+              value={content}
               plugins={plugins}
               components={components}
               options={options}
