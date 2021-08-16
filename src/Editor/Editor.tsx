@@ -68,7 +68,7 @@ const Editor = () => {
   const addILink = useDataStore(state => state.addILink);
   // console.log(initialValueBasicElements);
 
-  const generateEditorId = () => `${id}_${syncId}`;
+  const generateEditorId = () => `${id}`;
 
   useEffect(() => {
     if (fsContent) {
