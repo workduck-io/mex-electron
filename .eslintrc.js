@@ -7,6 +7,7 @@ module.exports = {
     'import/prefer-default-export': 'off',
     '@typescript-eslint/naming-convention': 'off',
     'no-restricted-syntax': 'off',
+    'no-underscore-dangle': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

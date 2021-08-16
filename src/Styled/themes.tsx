@@ -22,18 +22,27 @@ const LayoutTheme: LayoutStyle = {
   },
 };
 
+export const palette = {
+  p1: '#cc5d6f',
+  b0: '#0f111a',
+  b1: '#161824',
+  b2: '#191d2c',
+  b3: '#202331',
+  b4: '#1d233d',
+};
+
 export const darkTheme: DefaultTheme = {
   ...LayoutTheme,
   colors: {
-    primary: '#4284ff',
-    secondary: '#4dd0e1',
+    primary: palette.p1,
+    secondary: '#8158e0',
     background: {
-      app: '#040015',
-      surface: '#13192e',
-      card: '#1F2947',
-      sidebar: '#091744',
-      highlight: '#1a2d64',
-      input: '#070e25',
+      app: palette.b0,
+      surface: palette.b1,
+      card: palette.b2,
+      sidebar: palette.b0,
+      highlight: palette.b4,
+      input: palette.b2,
     },
     palette: {
       white: '#ecdbdb',
@@ -53,7 +62,7 @@ export const darkTheme: DefaultTheme = {
       s6: '#1F2947',
       s7: '#091744',
       s8: '#13192e',
-      s9: '#040015',
+      s9: palette.b0,
       sb: '#000000',
     },
     border: {
@@ -61,7 +70,7 @@ export const darkTheme: DefaultTheme = {
       input: '#1F2947',
     },
     fade: {
-      primary: '#1c65ec',
+      primary: '#b32768',
       secondary: '#4dd0e1',
       background: '#030303',
     },
