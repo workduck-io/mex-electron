@@ -11,8 +11,6 @@
 import chokidar from 'chokidar';
 import 'core-js/stable';
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
-import log from 'electron-log';
-import { autoUpdater } from 'electron-updater';
 import fs from 'fs';
 import path from 'path';
 import { DefaultFileData } from './Defaults/baseData';
@@ -53,29 +51,33 @@ const createWindow = (): void => {
 
   // mainWindow.webContents.openDevTools();
 
-  // Send data back if modified externally
-  chokidar
-    .watch(getSaveLocation(app), {
-      alwaysStat: true,
-      awaitWriteFinish: {
-        stabilityThreshold: 2000,
-        // pollInterval: 1000,
-      },
-    })
-    .on('change', () => {
-      // console.log({ path, event, c: count++ });
-      let fileData: FileData;
-      if (fs.existsSync(getSaveLocation(app))) {
-        const stringData = fs.readFileSync(getSaveLocation(app), 'utf-8');
-        fileData = JSON.parse(stringData);
-      } else {
-        return;
-      }
+  try {
+    // Send data back if modified externally
+    chokidar
+      .watch(getSaveLocation(app), {
+        alwaysStat: true,
+        awaitWriteFinish: {
+          stabilityThreshold: 2000,
+          // pollInterval: 1000,
+        },
+      })
+      .on('change', () => {
+        // console.log({ path, event, c: count++ });
+        let fileData: FileData;
+        if (fs.existsSync(getSaveLocation(app))) {
+          const stringData = fs.readFileSync(getSaveLocation(app), 'utf-8');
+          fileData = JSON.parse(stringData);
+        } else {
+          return;
+        }
 
-      if (mainWindow) {
-        mainWindow.webContents.send('sync-data', fileData);
-      }
-    });
+        if (mainWindow) {
+          mainWindow.webContents.send('sync-data', fileData);
+        }
+      });
+  } catch (e) {
+    console.log(e);
+  }
 };
 app.on('ready', createWindow);
 
