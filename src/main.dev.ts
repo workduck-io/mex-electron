@@ -8,6 +8,7 @@
  * When running `yarn build` or `yarn build:main`, this file is compiled to
  * `./src/main.prod.js` using webpack. This gives us some performance wins.
  */
+import chokidar from 'chokidar';
 import 'core-js/stable';
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import log from 'electron-log';
@@ -16,7 +17,7 @@ import fs from 'fs';
 import path from 'path';
 import 'regenerator-runtime/runtime';
 import { DefaultFileData } from './Defaults/baseData';
-import { DataFileName } from './Defaults/data';
+import { getSaveLocation } from './Defaults/data';
 import MenuBuilder from './menu';
 import { FileData } from './Types/data';
 
@@ -138,13 +139,11 @@ app.on('activate', () => {
 ipcMain.on('get-local-data', event => {
   let fileData: FileData;
 
-  const dataPath = path.join(app.getPath('userData'), DataFileName);
-
-  if (fs.existsSync(dataPath)) {
-    const stringData = fs.readFileSync(dataPath, 'utf-8');
+  if (fs.existsSync(getSaveLocation(app))) {
+    const stringData = fs.readFileSync(getSaveLocation(app), 'utf-8');
     fileData = JSON.parse(stringData);
   } else {
-    fs.writeFileSync(dataPath, JSON.stringify(DefaultFileData));
+    fs.writeFileSync(getSaveLocation(app), JSON.stringify(DefaultFileData));
     fileData = DefaultFileData;
   }
 
@@ -154,7 +153,29 @@ ipcMain.on('get-local-data', event => {
 });
 
 ipcMain.on('set-local-data', (_event, arg) => {
-  const dataPath = path.join(app.getPath('userData'), DataFileName);
-
-  fs.writeFileSync(dataPath, JSON.stringify(arg));
+  fs.writeFileSync(getSaveLocation(app), JSON.stringify(arg));
 });
+
+// Send data back if modified externally
+chokidar
+  .watch(getSaveLocation(app), {
+    alwaysStat: true,
+    awaitWriteFinish: {
+      stabilityThreshold: 2000,
+      // pollInterval: 1000,
+    },
+  })
+  .on('change', () => {
+    // console.log({ path, event, c: count++ });
+    let fileData: FileData;
+    if (fs.existsSync(getSaveLocation(app))) {
+      const stringData = fs.readFileSync(getSaveLocation(app), 'utf-8');
+      fileData = JSON.parse(stringData);
+    } else {
+      return;
+    }
+
+    if (mainWindow) {
+      mainWindow.webContents.send('sync-data', fileData);
+    }
+  });

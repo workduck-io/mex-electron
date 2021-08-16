@@ -9,6 +9,7 @@ import SideBar from '../Components/Sidebar';
 import { navTooltip } from '../Components/Sidebar/Nav';
 import { useInitialize } from '../Data/useInitialize';
 import { useLocalData } from '../Data/useLocalData';
+import { useSyncData } from '../Data/useSyncData';
 import { useTreeFromLinks } from '../Editor/Store/DataStore';
 import { useEditorStore } from '../Editor/Store/EditorStore';
 import { getInitialNode } from '../Editor/Store/helpers';
@@ -38,10 +39,16 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
   const showGraph = useEditorStore(state => state.showGraph);
 
-  const initialize = useInitialize();
+  const { init } = useInitialize();
 
   const graphData = useGraphData();
   const localData = useLocalData();
+
+  const setIpc = useSyncData();
+
+  useEffect(() => {
+    setIpc();
+  }, [setIpc]);
 
   /** Initialization of the app details occur here */
   useEffect(() => {
@@ -53,7 +60,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
           // console.log('Data here', d);
           return d;
         })
-        .then(d => initialize(d))
+        .then(d => init(d))
         .catch(e => console.error(e)); // eslint-disable-line no-console
     })();
 

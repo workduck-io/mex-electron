@@ -26,6 +26,7 @@ export interface SyncBlockStyles {
 export type SyncBlockProps = StyledElementProps<SyncElementData, SyncBlockStyles>;
 
 export type SyncContextType = {
+  syncId: string;
   syncBlocks: SyncBlockData[];
   // Load a node and its contents in the editor
   addSyncBlock: (block: SyncBlockData) => void;

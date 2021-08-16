@@ -11,15 +11,17 @@ export const useInitialize = () => {
   const loadNode = useEditorStore(state => state.loadNodeFromId);
   const initSyncBlocks = useSyncStore(state => state.initSyncBlocks);
 
-  const init = (data: FileData) => {
+  const update = (data: FileData) => {
     const { tags, ilinks, contents, syncBlocks } = data;
     initializeDataStore(tags, ilinks, defaultCommands);
     initContents(contents);
-    // console.log('loading', contents);
     initSyncBlocks(syncBlocks);
+  };
 
+  const init = (data: FileData) => {
+    update(data);
     loadNode('@');
   };
 
-  return init;
+  return { init, update };
 };
