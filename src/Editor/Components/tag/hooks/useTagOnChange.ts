@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { useCallback } from 'react';
 import { MentionNodeData } from '@udecode/plate';
 import { TEditor } from '@udecode/plate-core';

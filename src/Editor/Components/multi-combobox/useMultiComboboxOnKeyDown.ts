@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { getBlockAbove, getPlatePluginType, insertNodes, SPEditor, TElement } from '@udecode/plate';
 import { useCallback } from 'react';
 import { Editor, Transforms } from 'slate';
