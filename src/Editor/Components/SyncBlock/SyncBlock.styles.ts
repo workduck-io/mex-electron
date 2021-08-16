@@ -52,7 +52,10 @@ export const ServiceSelectorLabel = styled.label<ServiceSelectorLabelProps>`
   ${({ theme, checked }) =>
     checked
       ? css`
-          color: ${theme.colors.primary};
+          svg {
+            color: ${theme.colors.primary};
+          }
+          color: ${theme.colors.text.secondary};
           background-color: ${theme.colors.background.highlight};
         `
       : css``}

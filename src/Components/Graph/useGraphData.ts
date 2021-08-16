@@ -1,4 +1,5 @@
 import useDataStore from '../../Editor/Store/DataStore';
+import { palette } from '../../Styled/themes';
 import { isElder, isParent, isTopNode } from '../Sidebar/sampleRCTreeData';
 
 interface GraphNode {
@@ -35,7 +36,7 @@ export const useGraphData = () => {
           edges.push({
             to: node.id,
             from: compNode.id,
-            color: '#4284ff',
+            color: palette.p1,
           });
         }
 
@@ -53,7 +54,7 @@ export const useGraphData = () => {
       edges.push({
         to: node.id,
         from: 0,
-        color: '#00ff00',
+        color: palette.p1,
       });
     }
   });

@@ -56,6 +56,8 @@ export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
   const { graphData } = props;
   const loadNodeFromId = useEditorStore(state => state.loadNodeFromId);
 
+  const [network, setNetwork] = useState<any>();
+
   // console.log('Checking for graph data 12321: ', { graphData });
 
   const [state, setState] = useState({
@@ -68,6 +70,10 @@ export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
           const selectNode = graphData.nodes.filter((n: any) => n.id === selectId);
 
           // console.log('Selected node', selectNode, selectId);
+
+          if (network) {
+            network._callbacks.$select[0]({ nodes: selectNode });
+          }
 
           if (selectNode.length > 0) loadNodeFromId(selectNode[0].label);
         }
@@ -92,7 +98,15 @@ export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
 
   return (
     <StyledGraph>
-      <Graph graph={graph} options={options} events={events} style={{ height: '100vh' }} />
+      <Graph
+        graph={graph}
+        options={options}
+        events={events}
+        style={{ height: '100vh' }}
+        getNetwork={(p: any) => {
+          setNetwork(p);
+        }}
+      />
     </StyledGraph>
   );
 };
