@@ -42,6 +42,7 @@ const Editor = () => {
   const ilinks = useDataStore(state => state.ilinks);
   const slash_commands = useDataStore(state => state.slash_commands);
   const addSyncBlock = useSyncStore(state => state.addSyncBlock);
+  const syncId = useSyncStore(state => state.syncId);
 
   const setFsContent = useContentStore(state => state.setContent);
 
@@ -67,6 +68,8 @@ const Editor = () => {
   const addILink = useDataStore(state => state.addILink);
   // console.log(initialValueBasicElements);
 
+  const generateEditorId = () => `${id}`;
+
   useEffect(() => {
     if (fsContent) {
       // console.log('setting content', fsContent);
@@ -79,7 +82,7 @@ const Editor = () => {
       //   })
       //   .catch(e => console.error(e)); // eslint-disable-line no-console
     }
-  }, [fsContent, nodeId]);
+  }, [fsContent, nodeId, syncId]);
 
   const onSave = () => {
     // On save the editor should serialize the state to markdown plaintext
@@ -104,7 +107,7 @@ const Editor = () => {
   // Combobox
   const pluginConfigs = {
     combobox: {
-      onChange: useMultiComboboxOnChange(id, {
+      onChange: useMultiComboboxOnChange(generateEditorId(), {
         ilink: {
           cbKey: ComboboxKey.ILINK,
           trigger: '[[',
@@ -225,7 +228,7 @@ const Editor = () => {
             {/* <BallonToolbarMarks /> */}
             <Plate
               // onChange={onChange}
-              id={id}
+              id={generateEditorId()}
               editableProps={editableProps}
               value={content}
               plugins={plugins}

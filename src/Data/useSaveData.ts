@@ -1,29 +1,24 @@
 import { ipcRenderer } from 'electron';
-import { Contents, useContentStore } from '../Editor/Store/ContentStore';
+import { Contents } from '../Editor/Store/ContentStore';
 import useDataStore from '../Editor/Store/DataStore';
 import { useSyncStore } from '../Editor/Store/SyncStore';
 
 // Save the data in the local file database
 export const useSaveData = () => {
-  // const contents = useContentStore(state => state.contents);
-  const ilinks = useDataStore(state => state.ilinks);
-  const tags = useDataStore(state => state.tags);
-  const syncBlocks = useSyncStore(state => state.syncBlocks);
-
   const saveData = (contents: Contents) => {
-    // console.log('Contents being saved', contents);
+    // console.log('We saved the data for you');
 
     ipcRenderer.send('set-local-data', {
-      ilinks,
-      tags,
+      ilinks: useDataStore.getState().ilinks,
+      tags: useDataStore.getState().tags,
       contents,
-      syncBlocks,
+      syncBlocks: useSyncStore.getState().syncBlocks,
     });
   };
 
-  useContentStore.subscribe(({ contents }) => {
-    saveData(contents);
-  });
+  // useContentStore.subscribe(({ contents }) => {
+  //   saveData(contents);
+  // });
 
   return saveData;
 };

@@ -38,6 +38,8 @@ const Link = styled(NavLink)`
     margin-top: 0;
   }
 
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+
   &:hover {
     background-color: ${({ theme }) => theme.colors.background.card};
   }
