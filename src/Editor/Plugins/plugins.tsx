@@ -4,6 +4,7 @@ import {
   createBoldPlugin,
   createCodeBlockPlugin,
   createCodePlugin,
+  createDeserializeHTMLPlugin,
   // createDeserializeMDPlugin,
   createExitBreakPlugin,
   createHeadingPlugin,
@@ -79,8 +80,6 @@ const generatePlugins = (config: PluginConfigs) => {
     createListPlugin(), // List
     createTablePlugin(), // Table
 
-    createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin),
-
     // Editing Plugins
     createSoftBreakPlugin(optionsSoftBreakPlugin),
     createExitBreakPlugin(optionsExitBreakPlugin),
@@ -96,7 +95,7 @@ const generatePlugins = (config: PluginConfigs) => {
 
     // Media and link embed
     createMediaEmbedPlugin(),
-    createSelectOnBackspacePlugin({ allow: [ELEMENT_MEDIA_EMBED] }),
+
     // Custom Plugins
     createBlurSelectionPlugin() as PlatePlugin<SPEditor>,
 
@@ -110,7 +109,11 @@ const generatePlugins = (config: PluginConfigs) => {
 
     // Sync Blocks
     createSyncBlockPlugin(),
+
+    createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin),
   ];
+
+  Plugins.push(createDeserializeHTMLPlugin({ plugins: Plugins }));
 
   return Plugins;
 };
