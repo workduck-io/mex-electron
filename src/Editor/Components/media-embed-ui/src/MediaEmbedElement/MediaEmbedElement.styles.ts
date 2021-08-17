@@ -8,7 +8,7 @@ export const IFrameWrapper = styled.div<IFrameWrapperProps>`
   position: relative;
   transition: padding 0.2s ease-in-out;
 
-  padding: ${({ expand }) => (expand ? `75% 0 0 0` : `50% 0 0 0`)};
+  padding: ${({ expand }) => (expand ? `100% 0 0 0` : `50% 0 0 0`)};
 `;
 
 export const RootElement = styled.div`

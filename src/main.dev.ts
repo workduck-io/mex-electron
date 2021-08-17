@@ -10,12 +10,12 @@
  */
 import chokidar from 'chokidar';
 import 'core-js/stable';
-import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, BrowserWindow, session, ipcMain, shell } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { DefaultFileData } from './Defaults/baseData';
 import { getSaveLocation } from './Defaults/data';
-import MenuBuilder from './menu';
+// import MenuBuilder from './menu';
 import { FileData } from './Types/data';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
@@ -50,6 +50,21 @@ const createWindow = (): void => {
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // mainWindow.webContents.openDevTools();
+
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [''],
+      },
+    });
+  });
+
+  // Open urls in the user's browser
+  mainWindow.webContents.on('new-window', (event, url) => {
+    event.preventDefault();
+    shell.openExternal(url);
+  });
 
   try {
     // Send data back if modified externally
