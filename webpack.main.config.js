@@ -1,3 +1,4 @@
+var path = require('path');
 module.exports = {
   /**
    * This is the main entry point for your application, it's the first file
@@ -8,7 +9,10 @@ module.exports = {
   module: {
     rules: require('./webpack.rules'),
   },
+  externals: {
+    'active-win': path.resolve(__dirname, './node_modules', 'active-win'),
+  },
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json']
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
   },
 };

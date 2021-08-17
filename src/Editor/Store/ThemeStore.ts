@@ -1,6 +1,6 @@
 import { DefaultTheme } from 'styled-components';
 import create from 'zustand';
-import { darkTheme, lightTheme } from '../../Styled/themes';
+import { darkTheme, lightTheme, spotlightTheme } from '../../Styled/themes';
 
 interface Theme {
   id: string;
@@ -16,8 +16,8 @@ interface ThemeStoreState {
 
 const useThemeStore = create<ThemeStoreState>(set => ({
   theme: {
-    id: 'dark',
-    themeData: darkTheme,
+    id: 'Spotlight',
+    themeData: spotlightTheme,
   },
 
   themes: [
@@ -28,6 +28,10 @@ const useThemeStore = create<ThemeStoreState>(set => ({
     {
       id: 'light',
       themeData: lightTheme,
+    },
+    {
+      id: 'Spotlight',
+      themeData: spotlightTheme,
     },
   ],
 
