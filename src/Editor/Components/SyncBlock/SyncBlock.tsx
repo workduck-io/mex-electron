@@ -2,7 +2,7 @@ import refreshFill from '@iconify-icons/ri/refresh-fill';
 import notionIcon from '@iconify/icons-simple-icons/notion';
 import slackIcon from '@iconify/icons-simple-icons/slack';
 import telegramIcon from '@iconify/icons-simple-icons/telegram';
-import Icon from '@iconify/react';
+import { Icon } from '@iconify/react';
 import axios from 'axios';
 import React from 'react';
 import { useForm } from 'react-hook-form';

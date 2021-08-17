@@ -1,7 +1,7 @@
 import boldIcon from '@iconify-icons/ri/bold';
 import italicIcon from '@iconify-icons/ri/italic';
 import underlineIcon from '@iconify-icons/ri/underline';
-import Icon from '@iconify/react';
+import { Icon } from '@iconify/react';
 import {
   ELEMENT_LINK,
   getAbove,

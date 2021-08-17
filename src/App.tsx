@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import Lookup from './Components/Lookup';
 import Refactor from './Components/Refactor/Refactor';
 import sampleRCTree from './Components/Sidebar/sampleRCTreeData';

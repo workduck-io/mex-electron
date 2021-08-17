@@ -1,7 +1,7 @@
 module.exports = [
   // Add support for native node modules
   {
-    test: /\.node$/,
+    test: /native_modules\/.+\.node$/,
     use: 'node-loader',
   },
   {
@@ -20,8 +20,8 @@ module.exports = [
     use: {
       loader: 'ts-loader',
       options: {
-        transpileOnly: true
-      }
-    }
+        transpileOnly: true,
+      },
+    },
   },
 ];
