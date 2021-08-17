@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { useCallback } from 'react';
 import { MentionNodeData } from '@udecode/plate';
 import { TEditor } from '@udecode/plate-core';
@@ -5,6 +6,7 @@ import shallow from 'zustand/shallow';
 import { IComboboxItem } from '../../combobox/components/Combobox.types';
 import { useComboboxOnChange } from '../../combobox/hooks/useComboboxOnChange';
 import { ComboboxKey, useComboboxStore } from '../../combobox/useComboboxStore';
+
 
 export const useILinkOnChange = (editor: TEditor, data: MentionNodeData[]) => {
   const comboboxOnChange = useComboboxOnChange({
