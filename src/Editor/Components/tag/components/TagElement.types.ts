@@ -1,4 +1,5 @@
-import { ClassName, RootStyleSet, StyledElementProps } from '@udecode/plate';
+//@ts-nocheck
+import { ClassName, RootStyled, StyledElementProps } from '@udecode/plate';
 import { IStyle } from '@uifabric/styling';
 import { TagNode } from '../types';
 
@@ -7,8 +8,7 @@ export interface TagElementStyleProps extends ClassName {
   focused?: boolean;
 }
 
-export interface TagElementStyleSet extends RootStyleSet {
+export interface TagElementStyleSet extends RootStyled {
   link?: IStyle;
 }
-
 export type TagElementProps = StyledElementProps<TagNode, TagElementStyleProps, TagElementStyleSet>;
