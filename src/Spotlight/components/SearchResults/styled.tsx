@@ -21,6 +21,9 @@ export const Description = styled.p`
   margin: 4px 0;
   font-size: 10px;
   font-weight: lighter;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 export const Heading = styled.div`

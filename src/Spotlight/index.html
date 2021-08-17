@@ -3,8 +3,34 @@
   <head>
     <meta charset="utf-8" />
     <title>Workduck Lookup</title>
+    <script>
+      (() => {
+        if (process?.env?.NODE_ENV !== 'development') {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = './dist/style.css';
+          document.getElementsByTagName('head')[0].appendChild(link);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      const scripts = [];
+
+      if (process.env.NODE_ENV === 'development') {
+        scripts.push('../.erb/dll/renderer.dev.dll.js');
+
+        const port = process.env.PORT || 1212;
+        scripts.push(`http://localhost:${port}/dist/spotlight.renderer.dev.js`);
+      } else {
+        scripts.push('./dist/spotlight.renderer.prod.js');
+      }
+
+      if (scripts.length) {
+        document.write(scripts.map(script => `<script defer src="${script}"><\/script>`).join(''));
+      }
+    </script>
   </body>
 </html>

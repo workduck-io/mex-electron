@@ -5,7 +5,7 @@ const toggleWindow = (appWindow: any, isSelection: boolean) => {
     appWindow.hide();
   } else {
     appWindow.show();
-    appWindow.focus();
+    // appWindow.focus();
   }
 };
 

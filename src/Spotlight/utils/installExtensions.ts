@@ -7,7 +7,7 @@ const installExtensions = async () => {
 
   return installer
     .default(
-      extensions.map((name) => installer[name]),
+      extensions.map(name => installer[name]),
       forceDownload
     )
     .catch(console.log);
