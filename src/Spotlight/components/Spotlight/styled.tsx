@@ -7,10 +7,11 @@ export const StyledLookup = styled.div`
   display: flex;
   width: 97.1%;
   height: 95vh;
+  color: ${({ theme }) => theme.colors.text.primary};
   overflow: hidden;
   flex-direction: column;
 `;
 
 export const StyledBackground = css`
-  background-color: #f4f8ff;
+  background-color: ${({ theme }) => theme.colors.background.spotlight};
 `;

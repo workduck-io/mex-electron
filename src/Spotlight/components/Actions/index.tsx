@@ -1,16 +1,9 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import {Icon} from '@iconify/react';
+import { Icon } from '@iconify/react';
 import CreateIcon from '@iconify-icons/ph/lightning';
 import { StyledKey } from '../Shortcuts';
-import {
-  Action,
-  ActionDesc,
-  ActionTitle,
-  ColumnContainer,
-  CreateMex,
-  FlexBetween,
-  StyledUndordered,
-} from './styled';
+import { Action, ActionDesc, ActionTitle, ColumnContainer, CreateMex, FlexBetween, StyledUndordered } from './styled';
 // import Recent from '../Recent';
 
 const Actions: React.FC<{ current: number }> = ({ current }) => {
@@ -20,13 +13,7 @@ const Actions: React.FC<{ current: number }> = ({ current }) => {
         <ActionTitle>ACTIONS</ActionTitle>
         <FlexBetween>
           <CreateMex color={current === 0}>
-            <Icon
-              style={{ marginRight: '5px' }}
-              color="#888"
-              height={20}
-              width={20}
-              icon={CreateIcon}
-            />
+            <Icon style={{ marginRight: '5px' }} color="#888" height={20} width={20} icon={CreateIcon} />
             Create new Mex
           </CreateMex>
           <StyledKey>TAB</StyledKey>

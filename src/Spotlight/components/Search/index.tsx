@@ -1,8 +1,9 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 import SearchIcon from '@iconify-icons/ph/magnifying-glass-bold';
-import {Icon} from '@iconify/react';
+import { Icon } from '@iconify/react';
 import { useSpotlightContext } from '../../utils/context';
 import { StyledSearch, StyledInput } from './styled';
 import { CenterIcon } from '../../styles/layout';
