@@ -60,7 +60,12 @@
                 {
                   "html": "./src/index.html",
                   "js": "./src/index.tsx",
-                  "name": "main_window"
+                  "name": "mex_window"
+                },
+                {
+                  "html": "./src/Spotlight/index.html",
+                  "js": "./src/Spotlight/index.tsx",
+                  "name": "spotlight_window"
                 }
               ]
             }
@@ -81,10 +86,11 @@
     "@iconify-icons/codicon": "^1.1.15",
     "@iconify-icons/gg": "^1.1.0",
     "@iconify-icons/majesticons": "^1.1.3",
+    "@iconify-icons/ph": "^1.1.3",
     "@iconify-icons/radix-icons": "^1.1.2",
     "@iconify-icons/ri": "^1.1.0",
     "@iconify/icons-simple-icons": "^1.1.36",
-    "@iconify/react": "^1.1.4",
+    "@iconify/react": "^3.0.1",
     "@types/react": "^17.0.18",
     "@types/react-dom": "^17.0.9",
     "@types/react-router-dom": "^5.1.8",
@@ -105,13 +111,14 @@
     "@testing-library/react": "^12.0.0",
     "@udecode/plate": "^1.1.8",
     "@uifabric/styling": "^7.19.0",
+    "active-win": "^7.6.0",
     "axios": "^0.21.1",
     "caniuse-lite": "^1.0.30001228",
     "chokidar": "^3.5.2",
     "downshift": "^6.1.3",
     "electron-squirrel-startup": "^1.0.0",
     "fast-deep-equal": "^3.1.3",
-    "history": "^5.0.0",
+    "history": "^5.0.1",
     "hotkeys-js": "^3.8.7",
     "nanoid": "^3.1.23",
     "polished": "^4.1.2",
@@ -121,6 +128,7 @@
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.10.1",
     "react-hot-toast": "^2.1.0",
+    "react-linkify": "^1.0.0-alpha",
     "react-modal": "^3.14.2",
     "react-oembed-container": "^1.0.0",
     "react-router-dom": "^5.2.0",
@@ -128,8 +136,11 @@
     "react-sortablejs": "^6.0.0",
     "react-tooltip": "^4.2.19",
     "react-vis-network-graph": "^3.0.1",
+    "react-window": "^1.8.6",
     "remark-parse": "^9.0.0",
     "remark-slate": "^1.8.0",
+    "robotjs": "^0.6.0",
+    "sanitize-html": "^2.4.0",
     "slate": "^0.65.3",
     "slate-history": "^0.62.0",
     "slate-hyperscript": "^0.62.0",
@@ -139,6 +150,7 @@
     "tinykeys": "^1.2.0",
     "twin.macro": "^2.6.2",
     "unified": "^9.2.1",
+    "use-debounce": "^7.0.0",
     "zustand": "^3.5.8"
   }
 }

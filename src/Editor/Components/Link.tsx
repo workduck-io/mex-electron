@@ -1,6 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
-
-import Icon from '@iconify/react';
+import { Icon } from '@iconify/react';
 import { LinkNodeData } from '@udecode/plate-link';
 import { StyledElementProps } from '@udecode/plate-styled-components';
 import * as React from 'react';
