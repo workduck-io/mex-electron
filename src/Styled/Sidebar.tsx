@@ -1,5 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import Icon from '@iconify/react';
+import { Icon } from '@iconify/react';
 import styled from 'styled-components';
 import React from 'react';
 import { PixelToCSS, ThinScrollbar } from './helpers';

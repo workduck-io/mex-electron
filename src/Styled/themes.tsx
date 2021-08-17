@@ -138,3 +138,58 @@ export const lightTheme: DefaultTheme = {
     },
   },
 };
+
+export const spotlightTheme: DefaultTheme = {
+  ...LayoutTheme,
+
+  colors: {
+    primary: '#5b94ff',
+    secondary: '#4dd0e1',
+    background: {
+      spotlight: '#f4f8ff',
+      app: '#fff',
+      card: '#a3c3fd',
+      surface: '#e5eeff',
+      sidebar: '#f4f8ff',
+      highlight: '#5b8de9',
+      input: '#a3c3fd',
+    },
+    palette: {
+      white: '#fff',
+      black: '#000',
+      green: '#9fe732',
+      yellow: '#d4a348',
+      red: '#ff4f58',
+    },
+    gray: {
+      sb: '#ffffff',
+      s9: '#e2e5ee',
+      s8: '#b8bfcf',
+      s7: '#7d9bc3',
+      s6: '#8b9ebb',
+      s5: '#e0e5f1',
+      s4: '#bbc1ca',
+      s3: '#1F2947',
+      s2: '#091744',
+      s1: '#13192e',
+      s0: '#040015',
+      sw: '#000000',
+    },
+    border: {
+      divider: '#00000010',
+      input: '#7fa0dd',
+    },
+    fade: {
+      primary: '#e5eeff',
+      secondary: '#4dd0e1',
+      background: '#dbc5c5',
+    },
+    text: {
+      primary: '#2a2e46',
+      default: '#404666',
+      secondary: '#6a779b',
+      disabled: '#919191',
+      accent: '#5b94ff',
+    },
+  },
+};
