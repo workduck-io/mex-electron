@@ -2321,8 +2321,8 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'https://repl.it/',
     endpoints: [
       {
-        schemes: ['https://repl.it/@*/*'],
-        url: 'https://repl.it/data/oembed',
+        schemes: ['https://replit.com/@*/*', 'https://repl.it/@*/*'],
+        url: 'https://replit.com/data/oembed',
         discovery: true,
       },
     ],
