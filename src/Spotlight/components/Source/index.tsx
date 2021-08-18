@@ -7,7 +7,7 @@ const AppSource = styled.div`
   font-size: 14px;
   padding: 8px;
   border-radius: 5px;
-  border: 2px dashed ${({ theme }) => theme.colors.text.primary};
+  border: 2px dashed ${({ theme }) => theme.colors.text.heading};
 `;
 
 const UrlSource = styled.div`
@@ -15,7 +15,7 @@ const UrlSource = styled.div`
   font-size: 14px;
   padding: 8px;
   border-radius: 5px;
-  border: 2px dashed ${({ theme }) => theme.colors.text.primary};
+  border: 2px dashed ${({ theme }) => theme.colors.text.heading};
   a {
     color: ${({ theme }) => theme.colors.primary};
   }
@@ -24,7 +24,7 @@ const UrlSource = styled.div`
 const AppName = styled.div`
   font-weight: bold;
   margin-top: 6px;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: ${({ theme }) => theme.colors.text.subheading};
 `;
 
 const SourceTitle = styled.div`

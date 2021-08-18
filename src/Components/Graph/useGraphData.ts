@@ -1,11 +1,18 @@
-import useDataStore from '../../Editor/Store/DataStore';
+import useDataStore, { getLevel } from '../../Editor/Store/DataStore';
 import { palette } from '../../Styled/themes';
+import { DefaultTheme, useTheme } from 'styled-components';
 import { isElder, isParent, isTopNode } from '../Sidebar/sampleRCTreeData';
+import { darken, lighten, mix } from 'polished';
 
 interface GraphNode {
   id: number;
   label: string;
   color: string;
+  font?: {
+    color?: string;
+    face?: string;
+    size?: string;
+  };
 }
 
 interface GraphEdge {
@@ -19,11 +26,20 @@ export const useGraphData = () => {
   const ilinks = useDataStore(store => store.ilinks);
   const links = ilinks.map(i => i.text);
 
+  const theme = useTheme();
+
+  const { primary, gray, secondary } = theme.colors;
+
+  const getColor = (l: number) => mix(0.05, primary, lighten(0.025 * (5 - l), gray[10]));
+  const getFontColor = (l: number) => mix(0.45, gray[4], darken(0.05 * (5 - l), primary));
+
   const nodes = links.map((node, id): GraphNode => {
+    const level = getLevel(node);
     return {
       id: id + 1,
       label: node,
-      color: '#1F2947',
+      color: getColor(level),
+      font: { color: getFontColor(level) },
     };
   });
 
@@ -36,7 +52,7 @@ export const useGraphData = () => {
           edges.push({
             to: node.id,
             from: compNode.id,
-            color: palette.p1,
+            color: secondary,
           });
         }
 
@@ -54,15 +70,18 @@ export const useGraphData = () => {
       edges.push({
         to: node.id,
         from: 0,
-        color: palette.p1,
+        color: primary,
       });
     }
   });
 
   nodes.push({
     id: 0,
-    label: 'Root',
-    color: '#1c2744',
+    label: 'root',
+    color: getColor(0),
+    font: {
+      color: primary,
+    },
   });
 
   return {

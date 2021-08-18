@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ActionMeta } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { ThemeConfig } from 'react-select/src/theme';
-import { useTheme } from 'styled-components';
+import { useTheme, DefaultTheme } from 'styled-components';
 import { useFlatTreeFromILinks } from '../../Editor/Store/DataStore';
 import { getOptions } from '../../Lib/flatTree';
 import { Value } from './Types';
@@ -31,7 +31,7 @@ const LookupInput = ({ handleChange, handleCreate, loading: LoadingProp, autoFoc
   });
   const [loading, setLoading] = useState(LoadingProp);
 
-  const styledTheme = useTheme();
+  const theme: DefaultTheme = useTheme();
 
   const handleCreateWrapper = (inputValue: string) => {
     setLoading(true);
@@ -53,24 +53,24 @@ const LookupInput = ({ handleChange, handleCreate, loading: LoadingProp, autoFoc
   const { options, value } = state;
 
   const colors = {
-    primary: styledTheme.colors.primary,
-    primary75: styledTheme.colors.fade.primary,
-    primary50: styledTheme.colors.secondary,
-    primary25: styledTheme.colors.fade.primary,
-    danger: styledTheme.colors.palette.red,
+    primary: theme.colors.primary,
+    primary75: theme.colors.fade.primary,
+    primary50: theme.colors.secondary,
+    primary25: theme.colors.fade.primary,
+    danger: theme.colors.palette.red,
     dangerLight: '#FFBDAD',
 
-    neutral0: styledTheme.colors.gray.s8,
-    neutral5: styledTheme.colors.gray.s8,
-    neutral10: styledTheme.colors.gray.s7,
-    neutral20: styledTheme.colors.gray.s6,
-    neutral30: styledTheme.colors.gray.s5,
-    neutral40: styledTheme.colors.gray.s2,
-    neutral50: styledTheme.colors.gray.s2,
-    neutral60: styledTheme.colors.gray.s2,
-    neutral70: styledTheme.colors.gray.s1,
-    neutral80: styledTheme.colors.gray.s0,
-    neutral90: styledTheme.colors.gray.sw,
+    neutral0: theme.colors.gray[9],
+    neutral5: theme.colors.gray[8],
+    neutral10: theme.colors.gray[7],
+    neutral20: theme.colors.gray[6],
+    neutral30: theme.colors.gray[5],
+    neutral40: theme.colors.gray[2],
+    neutral50: theme.colors.gray[2],
+    neutral60: theme.colors.gray[2],
+    neutral70: theme.colors.gray[1],
+    neutral80: theme.colors.gray[0],
+    neutral90: theme.colors.gray[0],
   };
 
   const borderRadius = 4;

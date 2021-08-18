@@ -11,7 +11,7 @@ const GlobalStyle = createGlobalStyle`
     min-height: 100vh;
     display: flex;
     font-family: Inter, sans-serif;
-    color: ${({ theme }) => theme.colors.text.primary};
+    color: ${({ theme }) => theme.colors.text.heading};
     background: ${({ theme }) => theme.colors.background.app};
     
     ${ThinScrollbar};

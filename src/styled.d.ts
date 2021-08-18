@@ -1,5 +1,6 @@
 // import original module declarations
 import 'styled-components';
+import { ShadePalette, ColorPalette } from './Styled/themeGenerator';
 
 type Pixels = number; // Pixels in integer
 
@@ -22,82 +23,43 @@ interface LayoutStyle {
   indent: { sidebar: Pixels };
 }
 
-export interface CustomTheme extends LayoutStyle {
-  palette: {
-    primary: string;
-    secondary: string;
-    background: {
-      app: string;
-      card: string;
-      surface: string;
-      sidebar: string;
-      highlight: string;
-    };
-    palette: {
-      white: string;
-      black: string;
-      green: string;
-      yellow: string;
-      red: string;
-    };
-    gray: {
-      [shade: string]: string;
-    };
-    border: {
-      divider: string;
-    };
-    fade: {
-      primary: string;
-      secondary: string;
-      background: string;
-    };
-    text: {
-      primary: string;
-      secondary: string;
-      default: string;
-      disabled: string;
-      accent: string;
-    };
-  };
-}
-
 // and extend them!
 declare module 'styled-components' {
   export interface DefaultTheme extends LayoutStyle {
     colors: {
       primary: string;
       secondary: string;
+
+      //
+      palette: ColorPalette;
+      gray: ShadePalette;
+
       background: {
         app: string;
         card: string;
-        surface: string;
+        modal: string;
         sidebar: string;
         highlight: string;
         input: string;
       };
-      palette: {
-        white: string;
-        black: string;
-        green: string;
-        yellow: string;
-        red: string;
-      };
-      gray: {
-        [shade: string]: string;
-      };
-      border: {
-        divider: string;
-        input: string;
-      };
+      divider: string;
       fade: {
         primary: string;
         secondary: string;
         background: string;
       };
+      form: {
+        input: {
+          bg: string;
+          fg: string;
+          border: string;
+        };
+      };
       text: {
-        primary: string;
-        secondary: string;
+        heading: string;
+        subheading: string;
         default: string;
+        fade: string;
         disabled: string;
         accent: string;
       };
