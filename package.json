@@ -18,61 +18,7 @@
   },
   "license": "MIT",
   "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "mex"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-dmg",
-          "config": {
-            "background": "./assets/icon.png",
-            "format": "ULFO"
-          }
-        }
-      ],
-      "plugins": [
-        [
-          "@electron-forge/plugin-webpack",
-          {
-            "mainConfig": "./webpack.main.config.js",
-            "renderer": {
-              "config": "./webpack.renderer.config.js",
-              "entryPoints": [
-                {
-                  "html": "./src/index.html",
-                  "js": "./src/index.tsx",
-                  "name": "mex_window"
-                },
-                {
-                  "html": "./src/Spotlight/index.html",
-                  "js": "./src/Spotlight/index.tsx",
-                  "name": "spotlight_window"
-                }
-              ]
-            }
-          }
-        ]
-      ]
-    }
+    "forge": "./forge.config.js"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.59",
@@ -98,10 +44,12 @@
     "@typescript-eslint/parser": "^4.0.1",
     "@vercel/webpack-asset-relocator-loader": "1.6.0",
     "css-loader": "^6.0.0",
+    "dpkg": "^1.0.0",
     "electron": "13.1.9",
     "eslint": "^7.6.0",
     "eslint-plugin-import": "^2.20.0",
     "fork-ts-checker-webpack-plugin": "^6.0.1",
+    "fs-extra": "^10.0.0",
     "node-loader": "^2.0.0",
     "style-loader": "^3.0.0",
     "ts-loader": "^9.2.2",

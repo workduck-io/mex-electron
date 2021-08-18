@@ -10,7 +10,7 @@ module.exports = {
     rules: require('./webpack.rules'),
   },
   externals: {
-    'active-win': path.resolve(__dirname, './node_modules', 'active-win'),
+    'active-win': 'active-win',
   },
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
