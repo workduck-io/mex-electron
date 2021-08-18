@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ColumnContainer } from '../Actions/styled';
+import { ColorProp, ColumnContainer } from '../Actions/styled';
 import { StyledBackground } from '../Spotlight/styled';
 
 export const StyledResults = styled(ColumnContainer)`
@@ -10,8 +10,8 @@ export const StyledResults = styled(ColumnContainer)`
   }
 `;
 
-export const StyledRow = styled.div`
-  ${({ color }) => color && StyledBackground}
+export const StyledRow = styled.div<ColorProp>`
+  ${({ showColor }) => showColor && StyledBackground}
   padding: 10px 1rem;
   margin: 5px 0;
   border-radius: 10px;

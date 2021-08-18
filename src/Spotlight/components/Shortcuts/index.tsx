@@ -22,8 +22,8 @@ export const StyledKey = styled.span`
   margin: 0 5px;
   font-size: 12px;
   font-weight: 700;
-  background: ${({ theme }) => theme.colors.background.shortcut};
-  box-shadow: 2px 2px 2px ${({ theme }) => theme.colors.background.primary};
+  background: ${({ theme }) => theme.colors.gray[8]};
+  box-shadow: 2px 2px 2px ${({ theme }) => theme.colors.gray[9]};
 `;
 
 const Shortcuts = () => {

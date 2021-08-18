@@ -2,6 +2,10 @@ import styled, { css } from 'styled-components';
 import { Scroll } from '../../styles/layout';
 import { StyledBackground } from '../Spotlight/styled';
 
+export interface ColorProp {
+  showColor: boolean;
+}
+
 export const Draggable = css`
   user-select: none;
   -webkit-user-select: none;
@@ -46,8 +50,8 @@ export const FlexBetween = styled.div`
   align-items: center;
 `;
 
-export const CreateMex = styled.div`
-  ${({ color }) => color && StyledBackground}
+export const CreateMex = styled.div<ColorProp>`
+  ${({ showColor }) => showColor && StyledBackground}
   width: 100%;
   align-items: center;
   border-radius: 8px;
@@ -57,8 +61,8 @@ export const CreateMex = styled.div`
   display: flex;
 `;
 
-export const ActionDesc = styled.div`
-  ${({ color }) => color && StyledBackground}
+export const ActionDesc = styled.div<ColorProp>`
+  ${({ showColor }) => showColor && StyledBackground}
   font-weight: lighter;
   padding: 0.5rem;
   border-radius: 8px;

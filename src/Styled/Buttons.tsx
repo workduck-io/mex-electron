@@ -11,19 +11,19 @@ export const Button = styled.div<ButtonProps>`
   ${centeredCss};
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: ${({ theme }) => theme.colors.text.subheading};
   cursor: pointer;
   transition: 0.3s ease;
   &:hover {
-    color: ${({ theme }) => theme.colors.text.primary};
-    background: ${({ theme }) => theme.colors.gray.s5};
+    color: ${({ theme }) => theme.colors.text.heading};
+    background: ${({ theme }) => theme.colors.gray[5]};
   }
 
   ${({ theme, highlight }) =>
     highlight
       ? css`
           background-color: ${theme.colors.primary};
-          color: ${theme.colors.text.primary};
+          color: ${theme.colors.text.heading};
         `
       : ``}
 `;

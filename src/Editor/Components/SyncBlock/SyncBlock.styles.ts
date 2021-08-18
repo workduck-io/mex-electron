@@ -10,7 +10,7 @@ export const ElementHeader = styled.div`
   display: flex;
   align-items: center;
   font-size: 0.9rem;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: ${({ theme }) => theme.colors.text.subheading};
 
   svg {
     margin-right: ${({ theme }) => theme.spacing.tiny};
@@ -26,7 +26,7 @@ export const SyncForm = styled.form`
   margin: ${({ theme }) => theme.spacing.small};
   padding: ${({ theme: { spacing } }) => spacing.small};
 
-  background: ${({ theme }) => theme.colors.background.surface};
+  background: ${({ theme }) => theme.colors.background.modal};
   border-radius: ${({ theme: { borderRadius } }) => `${borderRadius.small}`};
 `;
 
@@ -55,7 +55,7 @@ export const ServiceSelectorLabel = styled.label<ServiceSelectorLabelProps>`
           svg {
             color: ${theme.colors.primary};
           }
-          color: ${theme.colors.text.secondary};
+          color: ${theme.colors.text.subheading};
           background-color: ${theme.colors.background.highlight};
         `
       : css``}
