@@ -12,6 +12,7 @@ import {
   ELEMENT_H6,
   ELEMENT_IMAGE,
   ELEMENT_LI,
+  ELEMENT_MEDIA_EMBED,
   ELEMENT_OL,
   ELEMENT_PARAGRAPH,
   ELEMENT_TD,
@@ -225,4 +226,4 @@ export const optionsResetBlockTypePlugin = {
   ],
 };
 
-export const optionsSelectOnBackspacePlugin = { allow: [ELEMENT_IMAGE] };
+export const optionsSelectOnBackspacePlugin = { allow: [ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED] };

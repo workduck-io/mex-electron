@@ -9,7 +9,7 @@ export const Result: React.FC<{
   key?: string;
 }> = ({ result, selected }) => {
   return (
-    <StyledRow color={selected} key={`STRING_${result.key}`}>
+    <StyledRow showColor={selected} key={`STRING_${result.key}`}>
       {result?.text}
       <Description>{result?.desc}</Description>
     </StyledRow>

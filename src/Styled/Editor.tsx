@@ -4,7 +4,7 @@ import { darkTheme } from './themes';
 export const NoteTitle = styled.h1``;
 
 export const NodeInfo = styled.div`
-  background-color: ${({ theme }) => theme.colors.background.surface};
+  background-color: ${({ theme }) => theme.colors.background.modal};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -14,7 +14,7 @@ export const NodeInfo = styled.div`
   margin: 0 0 3rem;
 
   ${NoteTitle} {
-    color: ${({ theme }) => theme.colors.text.secondary};
+    color: ${({ theme }) => theme.colors.text.subheading};
     font-size: 1.25rem;
     font-weight: normal;
     margin: 0 0 0 ${({ theme }) => theme.spacing.small};
@@ -33,6 +33,8 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   padding: ${({ theme }) => theme.spacing.medium};
   margin: ${({ theme }) => theme.spacing.medium};
   width: 100%;
+
+  font-weight: 300;
 
   ${({ showGraph }) =>
     showGraph
@@ -74,7 +76,13 @@ export const StyledEditor = styled.div<StyledEditorProps>`
       margin: 0.25rem 0;
     }
     th {
-      background-color: ${({ theme }) => theme.colors.background.surface};
+      border: 1px solid ${({ theme }) => theme.colors.gray[6]};
+      background-color: ${({ theme }) => theme.colors.background.modal};
+      border-bottom: 1px solid ${({ theme }) => theme.colors.gray[4]};
+    }
+    td {
+      background-color: ${({ theme }) => theme.colors.gray[8]};
+      border: 1px solid ${({ theme }) => theme.colors.gray[6]};
     }
   }
 
@@ -86,7 +94,7 @@ export const StyledEditor = styled.div<StyledEditorProps>`
     margin: 2rem 0 1.3rem;
     line-height: 1.3;
     font-weight: 600;
-    color: ${({ theme }) => theme.colors.text.primary};
+    color: ${({ theme }) => theme.colors.text.heading};
   }
 
   h1 {
@@ -121,12 +129,14 @@ export const StyledEditor = styled.div<StyledEditorProps>`
     font-size: 0.833rem;
   }
 
-  blockquote:before {
-    background: ${({ theme }) => theme.colors.gray.s3};
+  blockquote {
+    border-color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.text.default};
+    background: ${({ theme }) => theme.colors.gray[8]};
   }
   blockquote {
     :before {
-      background: ${({ theme }) => theme.colors.gray.s3}!important;
+      background: ${({ theme }) => theme.colors.gray[3]} !important;
     }
     p {
       margin: 0.25rem 0;
@@ -134,7 +144,7 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   }
 
   p.caption {
-    color: ${({ theme }) => theme.colors.text.secondary};
+    color: ${({ theme }) => theme.colors.text.subheading};
   }
 
   pre,
@@ -142,7 +152,7 @@ export const StyledEditor = styled.div<StyledEditorProps>`
     font-size: 1rem;
   }
   pre {
-    background-color: ${({ theme }) => theme.colors.background.surface};
+    background-color: ${({ theme }) => theme.colors.background.modal};
   }
 
   // Forms
@@ -166,7 +176,7 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   button,
   textarea,
   select {
-    color: ${({ theme }) => theme.colors.text.primary};
+    color: ${({ theme }) => theme.colors.text.heading};
     background-color: ${({ theme }) => theme.colors.background.input};
     font-family: inherit;
     font-size: inherit;
@@ -304,10 +314,10 @@ export const StyledEditor = styled.div<StyledEditorProps>`
 `;
 
 const colors = {
-  almostBlack: darkTheme.colors.background.surface,
+  almostBlack: darkTheme.colors.background.modal,
   lightBlack: darkTheme.colors.background.card,
   almostWhite: darkTheme.colors.text.default,
-  white: darkTheme.colors.text.primary,
+  white: darkTheme.colors.text.heading,
   white10: 'rgba(255, 255, 255, 0.1)',
   black: '#000',
   black10: 'rgba(0, 0, 0, 0.1)',
@@ -315,7 +325,7 @@ const colors = {
   greyLight: '#F4F7FA',
   grey: '#E8EBED',
   greyMid: '#C5CCD3',
-  greyDark: darkTheme.colors.gray.s3,
+  greyDark: darkTheme.colors.gray[3],
   transparent: 'rgba(0, 0, 0, 0)',
 };
 
@@ -328,7 +338,7 @@ export const base = {
   zIndex: 100,
   link: colors.primary,
   placeholder: '#B1BECC',
-  textSecondary: darkTheme.colors.gray.s3,
+  textSecondary: darkTheme.colors.gray[3],
   textLight: colors.white,
   textHighlight: '#b3e7ff',
   textHighlightForeground: colors.black,

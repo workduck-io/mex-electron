@@ -12,7 +12,7 @@ const Actions: React.FC<{ current: number }> = ({ current }) => {
       <Action>
         <ActionTitle>ACTIONS</ActionTitle>
         <FlexBetween>
-          <CreateMex color={current === 0}>
+          <CreateMex showColor={current === 0}>
             <Icon style={{ marginRight: '5px' }} color="#888" height={20} width={20} icon={CreateIcon} />
             Create new Mex
           </CreateMex>
@@ -22,7 +22,7 @@ const Actions: React.FC<{ current: number }> = ({ current }) => {
       <Action>
         <ActionTitle>MEX IT</ActionTitle>
         <FlexBetween>
-          <ActionDesc color={current === 1}>
+          <ActionDesc showColor={current === 1}>
             To use Mex It, re-open Spotlight while:
             <StyledUndordered>
               <li>visiting a webpage, or </li>

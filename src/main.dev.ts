@@ -57,6 +57,8 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
   show: false,
   width: 700,
   height: 400,
+  maxWidth: 700,
+  maxHeight: 400,
   center: false,
   alwaysOnTop: true,
   frame: false,

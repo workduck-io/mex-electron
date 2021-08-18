@@ -28,7 +28,7 @@ export type EditorContextType = {
 export const useEditorStore = create<EditorContextType>((set, get) => ({
   node: getInitialNode(),
   content: getContent('@'),
-  showGraph: false,
+  showGraph: true,
 
   loadNode: (node: TreeNode) => {
     set(() => ({

@@ -35,9 +35,9 @@ export const InputWrapper = styled.div`
 
   margin-top: ${({ theme }) => theme.borderRadius.small};
 
-  background: ${({ theme }) => theme.colors.background.surface};
+  background: ${({ theme }) => theme.colors.background.modal};
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: ${({ theme }) => theme.colors.text.subheading};
 
   :focus-within {
     background: ${({ theme }) => theme.colors.background.card};
@@ -58,7 +58,7 @@ export const MediaInput = styled.input`
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.medium}`};
   padding-left: 0;
   border: none;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: ${({ theme }) => theme.colors.text.subheading};
   background: none;
 
   border-top-right-radius: ${({ theme }) => theme.borderRadius.small};

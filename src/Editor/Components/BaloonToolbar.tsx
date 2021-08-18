@@ -38,8 +38,8 @@ const LinkButtonStyled = styled.div`
     }
     input {
       background: ${({ theme }) => theme.colors.background.card};
-      border: 1px solid ${({ theme }) => theme.colors.gray.s3};
-      color: ${({ theme }) => theme.colors.text.secondary};
+      border: 1px solid ${({ theme }) => theme.colors.gray[3]};
+      color: ${({ theme }) => theme.colors.text.subheading};
       border-radius: ${({ theme }) => theme.borderRadius.tiny};
     }
   }

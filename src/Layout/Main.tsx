@@ -76,7 +76,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
   return (
     <AppWrapper>
-      <ReactTooltip effect="solid" backgroundColor={theme.colors.gray.s5} arrowColor={theme.colors.gray.s5} />
+      <ReactTooltip effect="solid" backgroundColor={theme.colors.gray[5]} arrowColor={theme.colors.gray[5]} />
       <SideBar tree={Tree} starred={Tree} />
       <Content>{children}</Content>
       <Notifications />

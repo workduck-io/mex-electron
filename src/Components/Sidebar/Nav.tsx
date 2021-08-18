@@ -30,7 +30,7 @@ const Link = styled(NavLink)`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: ${({ theme }) => theme.colors.text.subheading};
   padding: ${({ theme }) => theme.spacing.small};
 
   margin-top: ${({ theme }) => theme.spacing.medium};
@@ -46,7 +46,7 @@ const Link = styled(NavLink)`
 
   &.active {
     background-color: ${({ theme }) => theme.colors.primary};
-    color: ${({ theme }) => theme.colors.text.primary};
+    color: ${({ theme }) => theme.colors.text.heading};
   }
 `;
 

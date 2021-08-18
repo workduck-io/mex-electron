@@ -34,7 +34,7 @@ const options = {
   },
 
   nodes: {
-    font: '16px sans-serif #7D90C3',
+    font: '16px Inter #7D90C3',
     scaling: {
       label: true,
     },
