@@ -31,120 +31,6 @@ export const palette = {
   b4: '#1d233d',
 };
 
-export const darkTheme: DefaultTheme = {
-  ...LayoutTheme,
-  colors: {
-    primary: palette.p1,
-    secondary: '#8158e0',
-    background: {
-      app: palette.b0,
-      modal: palette.b1,
-      card: palette.b2,
-      sidebar: palette.b0,
-      highlight: palette.b4,
-      input: palette.b2,
-    },
-    palette: {
-      white: '#ecdbdb',
-      black: '#000',
-      green: '#9fe732',
-      yellow: '#FFCB6B',
-      red: '#ff4f58',
-    },
-    gray: {
-      1: '#b8bccf',
-      2: '#7D90C3',
-      3: '#5e6c92',
-      4: '#2e364e',
-      5: '#1c2744',
-      6: '#1F2947',
-      7: '#091744',
-      8: '#13192e',
-      9: palette.b0,
-      10: '#000000',
-    },
-    form: {
-      input: {
-        bg: palette.b1,
-        fg: palette.b2,
-        border: palette.p1,
-      },
-    },
-    divider: '#ffffff10',
-    fade: {
-      primary: '#b32768',
-      secondary: '#4dd0e1',
-      background: '#030303',
-    },
-    text: {
-      heading: '#e2e4ee',
-      default: '#b8bccf',
-      subheading: '#7D90C3',
-      disabled: '#5d5d6d',
-      fade: '#5d5d6d',
-      accent: '#82aeff',
-    },
-  },
-};
-
-// TODO: Add light theme colors
-export const lightTheme: DefaultTheme = {
-  ...LayoutTheme,
-
-  colors: {
-    primary: '#34be79',
-    secondary: '#2b76cc',
-    background: {
-      app: '#ffffff',
-      card: '#cefff4',
-      modal: '#e2faf0',
-      sidebar: '#e2faf3',
-      highlight: '#00a179',
-      input: '#8bbb9b',
-    },
-    palette: {
-      white: '#fff',
-      black: '#000',
-      green: '#9fe732',
-      yellow: '#d4a348',
-      red: '#ff4f58',
-    },
-    gray: {
-      1: '#b8bccf',
-      2: '#7D90C3',
-      3: '#5e6c92',
-      4: '#2e364e',
-      5: '#1c2744',
-      6: '#1F2947',
-      7: '#091744',
-      8: '#13192e',
-      9: palette.b0,
-      10: '#000000',
-    },
-    form: {
-      input: {
-        bg: palette.b1,
-        fg: palette.b2,
-        border: palette.p1,
-      },
-    },
-    divider: '#00000010',
-    fade: {
-      primary: '#b9e7d0',
-      secondary: '#4dd0e1',
-      background: '#dbc5c5',
-    },
-    text: {
-      heading: '#2a2e46',
-      default: '#404666',
-      subheading: '#6a779b',
-      disabled: '#919191',
-      accent: '#5b94ff',
-      fade: '#5b94ff',
-    },
-  },
-};
-
 export const spotlightTheme: DefaultTheme = {
   ...LayoutTheme,
 
@@ -157,7 +43,6 @@ export const spotlightTheme: DefaultTheme = {
       modal: '#e5eeff',
       sidebar: '#f4f8ff',
       highlight: '#5b8de9',
-      input: '#a3c3fd',
     },
     palette: {
       white: '#fff',
@@ -183,6 +68,12 @@ export const spotlightTheme: DefaultTheme = {
         bg: palette.b1,
         fg: palette.b2,
         border: palette.p1,
+      },
+      button: {
+        bg: palette.b1,
+        fg: palette.b2,
+        border: palette.p1,
+        hover: palette.b3,
       },
     },
     divider: '#00000010',
@@ -198,6 +89,7 @@ export const spotlightTheme: DefaultTheme = {
       disabled: '#919191',
       accent: '#5b94ff',
       fade: '#5b94ff',
+      oppositePrimary: '#000',
     },
   },
 };

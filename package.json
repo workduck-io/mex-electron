@@ -116,6 +116,7 @@
     "axios": "^0.21.1",
     "caniuse-lite": "^1.0.30001228",
     "chokidar": "^3.5.2",
+    "deepmerge": "^4.2.2",
     "downshift": "^6.1.3",
     "electron-squirrel-startup": "^1.0.0",
     "fast-deep-equal": "^3.1.3",

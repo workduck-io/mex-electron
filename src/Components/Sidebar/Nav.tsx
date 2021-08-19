@@ -30,7 +30,7 @@ const Link = styled(NavLink)`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${({ theme }) => theme.colors.text.subheading};
+  color: ${({ theme }) => theme.colors.gray[5]};
   padding: ${({ theme }) => theme.spacing.small};
 
   margin-top: ${({ theme }) => theme.spacing.medium};
@@ -46,7 +46,8 @@ const Link = styled(NavLink)`
 
   &.active {
     background-color: ${({ theme }) => theme.colors.primary};
-    color: ${({ theme }) => theme.colors.text.heading};
+    color: ${({ theme }) => theme.colors.text.oppositePrimary};
+    box-shadow: 0px 4px 8px ${({ theme }) => theme.colors.primary};
   }
 `;
 

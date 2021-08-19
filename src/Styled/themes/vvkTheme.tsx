@@ -2,7 +2,7 @@ import { generateTheme } from '../themeGenerator';
 
 export const vvkTheme = generateTheme({
   // Colors
-  primary: '#39e09b',
+  primary: '#C792EA',
   secondary: '#6D9AFF',
 
   // Palettes
@@ -31,6 +31,7 @@ export const vvkTheme = generateTheme({
     subheading: '#abafc7',
     fade: '#9196B3',
     disabled: '#7f8288',
-    accent: '#77cfa3',
+    accent: '#C792EA',
+    oppositePrimary: '#000',
   },
 });

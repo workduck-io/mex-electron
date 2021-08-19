@@ -23,7 +23,7 @@ export const Button = styled.div<ButtonProps>`
     highlight
       ? css`
           background-color: ${theme.colors.primary};
-          color: ${theme.colors.text.heading};
+          color: ${theme.colors.text.oppositePrimary};
         `
       : ``}
 `;
