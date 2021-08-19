@@ -99,12 +99,12 @@ const Editor = () => {
     };
   });
 
-  const editorS = useStoreEditorRef();
+  const editorRef = useStoreEditorRef();
 
   useEffect(() => {
-    console.log('Focusing', { editor: editorS });
-    if (editorS) selectEditor(editorS, { edge: 'end', focus: true });
-  }, [editorS]);
+    // console.log('Focusing', { editor: editorS });
+    if (editorRef) selectEditor(editorRef, { edge: 'end', focus: true });
+  }, [editorRef]);
 
   // Combobox
   const pluginConfigs = {
