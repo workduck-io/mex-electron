@@ -53,6 +53,12 @@ declare module 'styled-components' {
           fg: string;
           border: string;
         };
+        button: {
+          bg: string;
+          fg: string;
+          hover: string;
+          border: string;
+        };
       };
       text: {
         heading: string;

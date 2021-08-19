@@ -1,3 +1,4 @@
+import { mix } from 'polished';
 import styled, { css } from 'styled-components';
 
 export const NoteTitle = styled.h1``;
@@ -46,6 +47,13 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   /* font-weight: 400; */
   line-height: 1.75;
 
+  color: ${({ theme }) => theme.colors.text.default};
+
+  b,
+  strong {
+    color: ${({ theme }) => theme.colors.text.heading};
+  }
+
   p,
   ol,
   ul,
@@ -73,13 +81,13 @@ export const StyledEditor = styled.div<StyledEditorProps>`
       margin: 0.25rem 0;
     }
     th {
-      border: 1px solid ${({ theme }) => theme.colors.gray[6]};
-      background-color: ${({ theme }) => theme.colors.background.modal};
-      border-bottom: 1px solid ${({ theme }) => theme.colors.gray[4]};
+      border: 1px solid ${({ theme }) => theme.colors.gray[8]};
+      background-color: ${({ theme }) => theme.colors.gray[9]};
+      border-bottom: 1px solid ${({ theme }) => theme.colors.primary};
     }
     td {
-      background-color: ${({ theme }) => theme.colors.gray[8]};
-      border: 1px solid ${({ theme }) => theme.colors.gray[6]};
+      background-color: ${({ theme }) => theme.colors.gray[9]};
+      border: 1px solid ${({ theme }) => theme.colors.gray[8]};
     }
   }
 
@@ -146,10 +154,19 @@ export const StyledEditor = styled.div<StyledEditorProps>`
 
   pre,
   pre code {
+    font-family: 'JetBrains Mono', monospace;
+    color: ${({ theme }) => mix(0.2, theme.colors.primary, theme.colors.gray[3])};
     font-size: 1rem;
   }
   pre {
-    background-color: ${({ theme }) => theme.colors.background.modal};
+    background-color: ${({ theme }) => theme.colors.gray[9]};
+  }
+
+  pre,
+  pre code,
+  code,
+  blockquote {
+    border-radius: ${({ theme }) => theme.borderRadius.small};
   }
 
   // Forms
@@ -173,8 +190,6 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   button,
   textarea,
   select {
-    color: ${({ theme }) => theme.colors.text.subheading};
-    background-color: ${({ theme }) => theme.colors.form.input.bg};
     font-family: inherit;
     font-size: inherit;
     margin-right: 6px;
@@ -183,6 +198,23 @@ export const StyledEditor = styled.div<StyledEditorProps>`
     border: none;
     border-radius: 6px;
     outline: none;
+  }
+
+  input,
+  textarea {
+    color: ${({ theme }) => theme.colors.form.input.fg};
+    background-color: ${({ theme }) => theme.colors.form.input.bg};
+  }
+
+  button,
+  select,
+  input[type='button'] {
+    color: ${({ theme }) => theme.colors.form.button.fg};
+    background-color: ${({ theme }) => theme.colors.form.button.bg};
+
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.form.button.hover};
+    }
   }
 
   input[type='color'] {
@@ -307,5 +339,10 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   legend {
     font-size: 0.9em;
     font-weight: 600;
+  }
+
+  input[type='text'],
+  textarea {
+    border: 1px solid ${({ theme }) => theme.colors.form.input.border};
   }
 `;

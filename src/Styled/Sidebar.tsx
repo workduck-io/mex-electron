@@ -107,7 +107,9 @@ export const StyledTree = styled.div`
         }
       }
       &.drop-target {
-        background-color: ${({ theme }) => theme.colors.gray[5]};
+        background-color: ${({ theme }) => theme.colors.gray[7]};
+        border: 1px solid ${({ theme }) => theme.colors.primary};
+        border-radius: ${({ theme }) => theme.borderRadius.small};
         & ~ .rc-tree-treenode {
           border-left: none;
         }
@@ -158,7 +160,7 @@ export const StyledTree = styled.div`
           /* background: url('data:image/gif;'); */
         }
         &.rc-tree-switcher {
-          color: ${({ theme }) => theme.colors.gray[4]};
+          color: ${({ theme }) => theme.colors.gray[6]};
           &.rc-tree-switcher-noop {
             cursor: auto;
           }

@@ -105,9 +105,15 @@ export const generateTheme = (p: ThemePalette): DefaultTheme => {
         },
         form: {
           input: {
-            bg: mp(p.gray[9]),
+            bg: mix(0.5, p.gray[8], p.gray[9]),
             fg: mp(p.gray[1]),
-            border: mp(p.gray[4]),
+            border: mp(p.gray[8]),
+          },
+          button: {
+            bg: mp(p.gray[7]),
+            fg: mp(p.gray[1]),
+            border: mp(p.gray[8]),
+            hover: mp(p.primary),
           },
         },
         text: p.text ?? {

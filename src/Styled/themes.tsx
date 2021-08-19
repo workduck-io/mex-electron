@@ -69,6 +69,12 @@ export const spotlightTheme: DefaultTheme = {
         fg: palette.b2,
         border: palette.p1,
       },
+      button: {
+        bg: palette.b1,
+        fg: palette.b2,
+        border: palette.p1,
+        hover: palette.b3,
+      },
     },
     divider: '#00000010',
     fade: {

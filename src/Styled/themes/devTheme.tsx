@@ -3,7 +3,7 @@ import { generateTheme } from '../themeGenerator';
 export const devTheme = generateTheme({
   // Colors
   primary: '#31d181',
-  secondary: '#6dc9ff',
+  secondary: '#937cfc',
 
   // Palettes
   gray: {
