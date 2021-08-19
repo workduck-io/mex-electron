@@ -21,7 +21,6 @@ import { useContentStore } from './Store/ContentStore';
 import useDataStore from './Store/DataStore';
 import { useEditorStore } from './Store/EditorStore';
 import { useSyncStore } from './Store/SyncStore';
-import { NodeEditorContent } from './Store/Types';
 
 const options = createPlateOptions();
 
