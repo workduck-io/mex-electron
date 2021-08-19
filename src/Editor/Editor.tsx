@@ -1,4 +1,11 @@
-import { createPlateOptions, ELEMENT_MEDIA_EMBED, Plate, useStoreEditorValue } from '@udecode/plate';
+import {
+  createPlateOptions,
+  ELEMENT_MEDIA_EMBED,
+  Plate,
+  selectEditor,
+  useStoreEditorRef,
+  useStoreEditorValue,
+} from '@udecode/plate';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import ReactTooltip from 'react-tooltip';
@@ -91,6 +98,14 @@ const Editor = () => {
       unsubscribe();
     };
   });
+
+  const editorS = useStoreEditorRef();
+
+  useEffect(() => {
+    console.log('Focusing', { editor: editorS });
+    if (editorS) selectEditor(editorS, { edge: 'end', focus: true });
+  }, [editorS]);
+
   // Combobox
   const pluginConfigs = {
     combobox: {
@@ -100,6 +115,7 @@ const Editor = () => {
           trigger: '[[',
           data: ilinks,
         },
+
         tag: {
           cbKey: ComboboxKey.TAG,
           trigger: '#',
