@@ -26,7 +26,7 @@ export const ElementComboboxComponent = ({ keys }: ComboElementProps) => {
 
 // Handle multiple combobox
 export const MultiComboboxContainer = ({ keys }: ComboElementProps) => {
-  useComboboxControls();
+  useComboboxControls(true);
 
   return <ElementComboboxComponent keys={keys} />;
 };

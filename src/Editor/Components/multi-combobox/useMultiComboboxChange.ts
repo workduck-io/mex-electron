@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { IComboboxItem } from '../combobox/components/Combobox.types';
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange';
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen';
-import { useComboboxStore } from '../combobox/useComboboxStore';
+import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore';
 import { ComboboxType } from './types';
 
 // Handle multiple combobox
@@ -48,6 +48,12 @@ const useMultiComboboxOnChange = (
         text: item.text,
       }));
 
+    if (comboboxKey !== ComboboxKey.SLASH_COMMAND) {
+      items.push({
+        key: '__create_new',
+        text: `Create New ${search}`,
+      });
+    }
     setItems(items);
 
     return true;

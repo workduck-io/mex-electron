@@ -3,7 +3,7 @@ import { useCombobox } from 'downshift';
 import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen';
 import { useComboboxStore } from '../useComboboxStore';
 
-export const useComboboxControls = () => {
+export const useComboboxControls = (withNew: boolean) => {
   const isOpen = useComboboxIsOpen();
   const itemIndex = useComboboxStore(state => state.itemIndex);
   const items = useComboboxStore(state => state.items);

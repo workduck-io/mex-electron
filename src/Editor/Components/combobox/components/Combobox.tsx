@@ -5,7 +5,7 @@ import { ComboboxItem, ComboboxRoot } from '../../tag/components/TagCombobox.sty
 import { setElementPositionByRange } from '../../tag/utils/setElementPositionByRange';
 import { useComboboxControls } from '../hooks/useComboboxControls';
 import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen';
-import { ComboboxKey, useComboboxStore } from '../useComboboxStore';
+import { useComboboxStore } from '../useComboboxStore';
 import { ComboboxProps } from './Combobox.types';
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
@@ -13,10 +13,8 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   const at = useComboboxStore(state => state.targetRange);
   const items = useComboboxStore(state => state.items);
   const itemIndex = useComboboxStore(state => state.itemIndex);
-  const search = useComboboxStore(state => state.search);
-  const combobox = useComboboxControls();
+  const combobox = useComboboxControls(true);
   const isOpen = useComboboxIsOpen();
-  const comboboxKey = useComboboxStore(state => state.key);
 
   const ref = React.useRef<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const editor = useEditorState();
@@ -33,16 +31,11 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
 
   if (!combobox) return null;
 
-  // console.log({ items });
+  // console.log({ items, search, comboboxKey });
 
   return (
     <PortalBody>
       <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
-        {isOpen && items.length === 0 && search !== '' && comboboxKey !== ComboboxKey.SLASH_COMMAND ? (
-          <ComboboxItem key="new" highlighted>
-            Create new: {search}
-          </ComboboxItem>
-        ) : null}
         {isOpen &&
           items.map((item, index) => {
             const Item = onRenderItem ? onRenderItem({ item }) : item.text;
@@ -61,6 +54,15 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
               </ComboboxItem>
             );
           })}
+        {/* {isOpen && search !== '' && comboboxKey !== ComboboxKey.SLASH_COMMAND ? (
+          <ComboboxItem
+            key="new"
+            onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, search)}
+            highlighted={itemIndex === items.length}
+          >
+            Create new: {search}
+          </ComboboxItem>
+        ) : null} */}
       </ComboboxRoot>
     </PortalBody>
   );
