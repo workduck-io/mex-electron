@@ -1,7 +1,6 @@
 import { devTheme } from '../../Styled/themes/devTheme';
 import { DefaultTheme } from 'styled-components';
 import create from 'zustand';
-import { darkTheme, lightTheme, spotlightTheme } from '../../Styled/themes';
 import { defaultThemes } from '../../Styled/themes/defaultThemes';
 
 interface Theme {
@@ -17,10 +16,7 @@ interface ThemeStoreState {
 }
 
 const useThemeStore = create<ThemeStoreState>(set => ({
-  theme: {
-    id: 'dev',
-    themeData: devTheme,
-  },
+  theme: defaultThemes[0],
 
   themes: defaultThemes,
 

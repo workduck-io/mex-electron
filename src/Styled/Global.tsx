@@ -7,6 +7,7 @@ import { RefactorStyles } from '../Components/Refactor/Refactor';
 const GlobalStyle = createGlobalStyle`
   ${normalize}; // NormalizeCSS normalization
 
+
   body {
     min-height: 100vh;
     display: flex;

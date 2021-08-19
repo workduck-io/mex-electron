@@ -1,11 +1,11 @@
-import { darkTheme, lightTheme, spotlightTheme } from '../themes';
 import { devTheme } from './devTheme';
+import { dnshTheme } from './dnshTheme';
+import { lightTheme } from './lightTheme';
 import { vvkTheme } from './vvkTheme';
 
 export const defaultThemes = [
   { id: 'dev', themeData: devTheme },
-  { id: 'vvk', themeData: vvkTheme },
-  { id: 'dark', themeData: darkTheme },
   { id: 'light', themeData: lightTheme },
-  { id: 'Spotlight', themeData: spotlightTheme },
+  { id: 'vvk', themeData: vvkTheme },
+  { id: 'dnsh', themeData: dnshTheme },
 ];

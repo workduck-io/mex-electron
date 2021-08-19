@@ -40,7 +40,6 @@ declare module 'styled-components' {
         modal: string;
         sidebar: string;
         highlight: string;
-        input: string;
       };
       divider: string;
       fade: {
@@ -54,6 +53,12 @@ declare module 'styled-components' {
           fg: string;
           border: string;
         };
+        button: {
+          bg: string;
+          fg: string;
+          hover: string;
+          border: string;
+        };
       };
       text: {
         heading: string;
@@ -62,6 +67,7 @@ declare module 'styled-components' {
         fade: string;
         disabled: string;
         accent: string;
+        oppositePrimary: string;
       };
     };
   }
