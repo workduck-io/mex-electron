@@ -188,6 +188,9 @@ const createMexWindow = () => {
 const createWindow = () => {
   createMexWindow();
   createSpotLighWindow();
+  if (process.platform === 'darwin') {
+    app.dock.show();
+  }
 };
 
 const sendToRenderer = (selection: any) => {
