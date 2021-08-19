@@ -1,16 +1,9 @@
-import bubbleChartLine from '@iconify-icons/ri/bubble-chart-line';
-import linkIcon from '@iconify-icons/ri/link';
-import more2Fill from '@iconify-icons/ri/more-2-fill';
-import saveLine from '@iconify-icons/ri/save-line';
-import shareLine from '@iconify-icons/ri/share-line';
 import { createPlateOptions, ELEMENT_MEDIA_EMBED, Plate, useStoreEditorValue } from '@udecode/plate';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import ReactTooltip from 'react-tooltip';
 import tinykeys from 'tinykeys';
 import { useSaveData } from '../Data/useSaveData';
-import IconButton from '../Styled/Buttons';
-import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor';
 import { ComboboxKey } from './Components/combobox/useComboboxStore';
 import components from './Components/components';
 import { ILinkComboboxItem } from './Components/ilink/components/ILinkComboboxItem';
@@ -28,15 +21,13 @@ import { useContentStore } from './Store/ContentStore';
 import useDataStore from './Store/DataStore';
 import { useEditorStore } from './Store/EditorStore';
 import { useSyncStore } from './Store/SyncStore';
+import { NodeEditorContent } from './Store/Types';
 
 const options = createPlateOptions();
 
 const Editor = () => {
   const fsContent = useEditorStore(state => state.content);
   const nodeId = useEditorStore(state => state.node.id);
-  const title = useEditorStore(state => state.node.title);
-  const showGraph = useEditorStore(state => state.showGraph);
-  const toggleGraph = useEditorStore(state => state.toggleGraph);
 
   const tags = useDataStore(state => state.tags);
   const ilinks = useDataStore(state => state.ilinks);
@@ -66,14 +57,11 @@ const Editor = () => {
 
   const addTag = useDataStore(state => state.addTag);
   const addILink = useDataStore(state => state.addILink);
-  // console.log(initialValueBasicElements);
 
   const generateEditorId = () => `${id}`;
 
   useEffect(() => {
     if (fsContent) {
-      // console.log('setting content', fsContent);
-
       setContent(fsContent);
       setId(nodeId);
       // deserialize(fsContent)
@@ -205,41 +193,22 @@ const Editor = () => {
 
   return (
     <>
-      <StyledEditor showGraph={showGraph} className="mex_editor">
-        <NodeInfo>
-          <NoteTitle>{title}</NoteTitle>
-          <InfoTools>
-            <IconButton size={24} icon={saveLine} onClick={onSave} title="Save" />
-            <IconButton size={24} icon={shareLine} title="Share" />
-            <IconButton size={24} icon={linkIcon} title="Copy Link" />
-            <IconButton size={24} icon={more2Fill} title="Options" />
-            <IconButton
-              size={24}
-              icon={bubbleChartLine}
-              title="Graph"
-              highlight={showGraph}
-              onClick={() => toggleGraph()}
-            />
-          </InfoTools>
-        </NodeInfo>
-
-        {content && (
-          <>
-            {/* <BallonToolbarMarks /> */}
-            <Plate
-              // onChange={onChange}
-              id={generateEditorId()}
-              editableProps={editableProps}
-              value={content}
-              plugins={plugins}
-              components={components}
-              options={options}
-            >
-              <MultiComboboxContainer keys={comboboxRenderConfig.keys} />
-            </Plate>
-          </>
-        )}
-      </StyledEditor>
+      {content && (
+        <>
+          {/* <BallonToolbarMarks /> */}
+          <Plate
+            // onChange={onChange}
+            id={generateEditorId()}
+            editableProps={editableProps}
+            value={content}
+            plugins={plugins}
+            components={components}
+            options={options}
+          >
+            <MultiComboboxContainer keys={comboboxRenderConfig.keys} />
+          </Plate>
+        </>
+      )}
     </>
   );
 };
