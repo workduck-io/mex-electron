@@ -26,7 +26,7 @@ export const SyncForm = styled.form`
   margin: ${({ theme }) => theme.spacing.small};
   padding: ${({ theme: { spacing } }) => spacing.small};
 
-  background: ${({ theme }) => theme.colors.background.modal};
+  background: ${({ theme }) => theme.colors.background.card};
   border-radius: ${({ theme: { borderRadius } }) => `${borderRadius.small}`};
 `;
 
@@ -54,9 +54,10 @@ export const ServiceSelectorLabel = styled.label<ServiceSelectorLabelProps>`
       ? css`
           svg {
             color: ${theme.colors.primary};
+            text-shadow: 0px 2px 4px ${({ theme }) => theme.colors.fade.primary};
           }
-          color: ${theme.colors.text.subheading};
-          background-color: ${theme.colors.background.highlight};
+          color: ${theme.colors.text.heading};
+          background-color: ${theme.colors.gray[8]};
         `
       : css``}
 

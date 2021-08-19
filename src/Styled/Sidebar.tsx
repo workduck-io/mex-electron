@@ -6,7 +6,7 @@ import { PixelToCSS, ThinScrollbar } from './helpers';
 export const Sicon = styled(Icon)`
   height: 26px;
   padding-left: 7px;
-  border-left: 1px solid ${({ theme }) => theme.colors.gray[4]};
+  border-left: 1px solid ${({ theme }) => theme.colors.gray[7]};
   margin-left: -8px;
 `;
 // Disabled as IconifyIcon type doesn't work
@@ -48,12 +48,12 @@ export const SectionHeading = styled.div`
 export const SidebarSection = styled.div`
   color: ${({ theme }) => theme.colors.text.subheading};
 
-  &.starred:hover {
+  /* &.starred:hover {
     color: ${({ theme }) => theme.colors.palette.yellow};
   }
   &.tree:hover {
     color: ${({ theme }) => theme.colors.secondary};
-  }
+  } */
 `;
 
 // ============================
@@ -136,14 +136,14 @@ export const StyledTree = styled.div`
         &:hover {
           transition: 0s ease;
           background-color: ${({ theme }) => theme.colors.fade.primary};
-          color: ${({ theme }) => theme.colors.text.heading};
+          color: ${({ theme }) => theme.colors.text.oppositePrimary};
           .rc-tree-title {
-            color: ${({ theme }) => theme.colors.text.heading};
+            color: ${({ theme }) => theme.colors.text.oppositePrimary};
           }
         }
       }
       .rc-tree-node-selected {
-        background-color: ${({ theme }) => theme.colors.gray[5]};
+        background-color: ${({ theme }) => theme.colors.gray[7]};
         /* box-shadow: 0 0 0 1px #ffb951; */
         border-radius: ${({ theme }) => theme.borderRadius.small};
         /* opacity: 0.8; */
@@ -158,7 +158,7 @@ export const StyledTree = styled.div`
           /* background: url('data:image/gif;'); */
         }
         &.rc-tree-switcher {
-          color: ${({ theme }) => theme.colors.gray[3]};
+          color: ${({ theme }) => theme.colors.gray[4]};
           &.rc-tree-switcher-noop {
             cursor: auto;
           }
@@ -279,7 +279,7 @@ export const StyledTree = styled.div`
     cursor: not-allowed;
   }
   .rc-tree-treenode-active {
-    background-color: ${({ theme }) => theme.colors.gray[5]};
+    background-color: ${({ theme }) => theme.colors.gray[8]};
   }
 
   .rc-tree-icon__open {

@@ -1,10 +1,9 @@
 import styled, { css } from 'styled-components';
-import { darkTheme } from './themes';
 
 export const NoteTitle = styled.h1``;
 
 export const NodeInfo = styled.div`
-  background-color: ${({ theme }) => theme.colors.background.modal};
+  background-color: ${({ theme }) => theme.colors.gray[9]};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -34,8 +33,6 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   margin: ${({ theme }) => theme.spacing.medium};
   width: 100%;
 
-  font-weight: 300;
-
   ${({ showGraph }) =>
     showGraph
       ? css`
@@ -45,7 +42,7 @@ export const StyledEditor = styled.div<StyledEditorProps>`
           max-width: 800px;
         `}
 
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   /* font-weight: 400; */
   line-height: 1.75;
 
@@ -176,8 +173,8 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   button,
   textarea,
   select {
-    color: ${({ theme }) => theme.colors.text.heading};
-    background-color: ${({ theme }) => theme.colors.background.input};
+    color: ${({ theme }) => theme.colors.text.subheading};
+    background-color: ${({ theme }) => theme.colors.form.input.bg};
     font-family: inherit;
     font-size: inherit;
     margin-right: 6px;
@@ -239,7 +236,7 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   }
 
   select {
-    background: ${({ theme }) => theme.colors.background.input} ${({ theme }) => theme.colors.primary} calc(100% - 12px)
+    background: ${({ theme }) => theme.colors.form.input.bg} ${({ theme }) => theme.colors.primary} calc(100% - 12px)
       50% / 12px no-repeat;
     padding-right: 35px;
   }
@@ -296,7 +293,7 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   }
 
   ::placeholder {
-    color: ${({ theme }) => theme.colors.text.default};
+    color: ${({ theme }) => theme.colors.text.fade};
   }
 
   fieldset {
@@ -312,125 +309,3 @@ export const StyledEditor = styled.div<StyledEditorProps>`
     font-weight: 600;
   }
 `;
-
-const colors = {
-  almostBlack: darkTheme.colors.background.modal,
-  lightBlack: darkTheme.colors.background.card,
-  almostWhite: darkTheme.colors.text.default,
-  white: darkTheme.colors.text.heading,
-  white10: 'rgba(255, 255, 255, 0.1)',
-  black: '#000',
-  black10: 'rgba(0, 0, 0, 0.1)',
-  primary: darkTheme.colors.primary,
-  greyLight: '#F4F7FA',
-  grey: '#E8EBED',
-  greyMid: '#C5CCD3',
-  greyDark: darkTheme.colors.gray[3],
-  transparent: 'rgba(0, 0, 0, 0)',
-};
-
-export const base = {
-  ...colors,
-  fontFamily:
-    "'Inter', -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen, Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif",
-  fontFamilyMono: "'Iosevka',Consolas,'Liberation Mono', Menlo, Courier,monospace",
-  fontWeight: 400,
-  zIndex: 100,
-  link: colors.primary,
-  placeholder: '#B1BECC',
-  textSecondary: darkTheme.colors.gray[3],
-  textLight: colors.white,
-  textHighlight: '#b3e7ff',
-  textHighlightForeground: colors.black,
-  selected: colors.primary,
-  //
-  codeComment: '#464B5D',
-  codePunctuation: '#89DDFF',
-  codeNumber: '#F78C6C',
-  codeProperty: '#B2CCD6',
-  codeTag: '#f07178',
-  codeString: '#C3E88D',
-  codeSelector: '#82AAFF',
-  codeAttr: '#FFCB6B',
-  codeEntity: '#22a2c9',
-  codeKeyword: '#C792EA',
-  codeFunction: '#82AAFF',
-  codeStatement: '#22a2c9',
-  codePlaceholder: '#3d8fd1',
-  codeInserted: '#202746',
-  codeImportant: '#c94922',
-
-  blockToolbarBackground: colors.white,
-  blockToolbarTrigger: colors.greyMid,
-  blockToolbarTriggerIcon: colors.white,
-  blockToolbarItem: colors.almostBlack,
-  blockToolbarIcon: undefined,
-  blockToolbarIconSelected: colors.black,
-  blockToolbarText: colors.almostBlack,
-  blockToolbarTextSelected: colors.black,
-  blockToolbarHoverBackground: colors.greyLight,
-  blockToolbarDivider: colors.greyMid,
-
-  noticeInfoBackground: '#F5BE31',
-  noticeInfoText: colors.almostBlack,
-  noticeTipBackground: '#9E5CF7',
-  noticeTipText: colors.white,
-  noticeWarningBackground: '#FF5C80',
-  noticeWarningText: colors.white,
-};
-
-export const light = {
-  ...base,
-  background: colors.white,
-  text: colors.almostBlack,
-  code: colors.lightBlack,
-  cursor: colors.black,
-  divider: colors.greyMid,
-
-  toolbarBackground: colors.lightBlack,
-  toolbarHoverBackground: colors.black,
-  toolbarInput: colors.white10,
-  toolbarItem: colors.white,
-
-  tableDivider: colors.greyMid,
-  tableSelected: colors.primary,
-  tableSelectedBackground: '#E5F7FF',
-
-  quote: colors.greyDark,
-  codeBackground: colors.greyLight,
-  codeBorder: colors.grey,
-  horizontalRule: colors.greyMid,
-  imageErrorBackground: colors.greyLight,
-
-  scrollbarBackground: colors.greyLight,
-  scrollbarThumb: colors.greyMid,
-};
-
-export const dark = {
-  ...base,
-  background: colors.transparent,
-  text: colors.almostWhite,
-  code: colors.almostWhite,
-  cursor: colors.primary,
-  divider: '#4E5C6E',
-  placeholder: '#52657A',
-
-  toolbarBackground: colors.white,
-  toolbarHoverBackground: colors.greyMid,
-  toolbarInput: colors.black10,
-  toolbarItem: colors.lightBlack,
-
-  tableDivider: colors.lightBlack,
-  tableSelected: colors.primary,
-  tableSelectedBackground: '#002333',
-
-  quote: colors.greyDark,
-  codeBackground: colors.almostBlack,
-  codeBorder: colors.lightBlack,
-  codeString: '#3d8fd1',
-  horizontalRule: colors.lightBlack,
-  imageErrorBackground: 'rgba(0, 0, 0, 0.5)',
-
-  scrollbarBackground: colors.black,
-  scrollbarThumb: colors.lightBlack,
-};

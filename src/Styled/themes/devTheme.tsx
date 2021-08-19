@@ -2,13 +2,13 @@ import { generateTheme } from '../themeGenerator';
 
 export const devTheme = generateTheme({
   // Colors
-  primary: '#C792EA',
-  secondary: '#6D9AFF',
+  primary: '#31d181',
+  secondary: '#6dc9ff',
 
   // Palettes
   gray: {
     10: '#0f111a', // Darkest
-    9: '#1C1D21',
+    9: '#1a1d27',
     8: '#252A41',
     7: '#3D435C',
     6: '#575C75',
@@ -32,5 +32,6 @@ export const devTheme = generateTheme({
     fade: '#9196B3',
     disabled: '#7f8288',
     accent: '#C792EA',
+    oppositePrimary: '#000',
   },
 });
