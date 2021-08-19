@@ -6,7 +6,7 @@ import Refactor from './Components/Refactor/Refactor';
 import sampleRCTree from './Components/Sidebar/sampleRCTreeData';
 import Contexts from './Context/Contexts';
 import Providers from './Context/Providers';
-import Editor from './Editor/Editor';
+import MainEditor from './Editor/MainEditor';
 import Main from './Layout/Main';
 import GlobalStyle from './Styled/Global';
 import Dashboard from './Views/Dashboard';
@@ -26,7 +26,7 @@ function App() {
             <Lookup flatTree={sampleRCTree} />
             <Refactor />
             <Switch>
-              <Route exact path="/editor" component={Editor} />
+              <Route exact path="/editor" component={MainEditor} />
               <Route path="/tasks" component={Tasks} />
               <Route path="/integrations" component={Integrations} />
               <Route path="/snippets" component={Snippets} />

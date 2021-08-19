@@ -43,32 +43,32 @@ export const optionsAutoformat: WithAutoformatOptions = {
   rules: [
     {
       type: ELEMENT_H1,
-      markup: '#',
+      markup: 'h1',
       preFormat,
     },
     {
       type: ELEMENT_H2,
-      markup: '##',
+      markup: 'h2',
       preFormat,
     },
     {
       type: ELEMENT_H3,
-      markup: '###',
+      markup: 'h3',
       preFormat,
     },
     {
       type: ELEMENT_H4,
-      markup: '####',
+      markup: 'h4',
       preFormat,
     },
     {
       type: ELEMENT_H5,
-      markup: '#####',
+      markup: 'h5',
       preFormat,
     },
     {
       type: ELEMENT_H6,
-      markup: '######',
+      markup: 'h6',
       preFormat,
     },
     {
