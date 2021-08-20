@@ -54,6 +54,7 @@ export const useComboboxOnKeyDown = ({
             const item = items[itemIndex];
             if (item.key === '__create_new') {
               onSelectItem(editor, { key: String(items.length), text: search });
+              onNewItem(search);
             } else onSelectItem(editor, item);
           } else if (search && creatable) {
             // console.log({ search });
