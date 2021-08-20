@@ -9,7 +9,7 @@ interface ButtonProps {
 
 export const Button = styled.button<ButtonProps>`
   ${centeredCss};
-  padding: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.tiny};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   color: ${({ theme }) => theme.colors.text.subheading};
   cursor: pointer;

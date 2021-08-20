@@ -2,6 +2,7 @@ import React from 'react';
 import Modal from 'react-modal';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import Lookup from './Components/Lookup';
+import Delete from './Components/Refactor/DeleteModal';
 import Refactor from './Components/Refactor/Refactor';
 import Rename from './Components/Refactor/Rename';
 import sampleRCTree from './Components/Sidebar/sampleRCTreeData';
@@ -27,6 +28,7 @@ function App() {
             <Lookup flatTree={sampleRCTree} />
             <Refactor />
             <Rename />
+            <Delete />
             <Switch>
               <Route path="/editor" component={MainEditor} />
               <Route path="/tasks" component={Tasks} />
