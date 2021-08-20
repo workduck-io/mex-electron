@@ -16,6 +16,7 @@ interface LookupInputProps {
   menuOpen?: boolean;
   loading?: boolean;
   autoFocus?: boolean;
+  defaultValue?: Value;
   handleChange: (
     newValue: Value | null,
     _actionMeta: ActionMeta<Value> // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -23,11 +24,18 @@ interface LookupInputProps {
   handleCreate?: (inputValue: string) => void;
 }
 
-const LookupInput = ({ handleChange, handleCreate, loading: LoadingProp, autoFocus, menuOpen }: LookupInputProps) => {
+const LookupInput = ({
+  handleChange,
+  handleCreate,
+  loading: LoadingProp,
+  autoFocus,
+  menuOpen,
+  defaultValue,
+}: LookupInputProps) => {
   const defaultOptions = getOptions(useFlatTreeFromILinks());
   const [state, setState] = useState<SelectState>({
     options: defaultOptions,
-    value: null,
+    value: defaultValue,
   });
   const [loading, setLoading] = useState(LoadingProp);
 

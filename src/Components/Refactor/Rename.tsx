@@ -2,6 +2,7 @@ import { rgba } from 'polished';
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { ActionMeta } from 'react-select';
+import { useEditorStore, withLoadNode } from '../../Editor/Store/EditorStore';
 import { css } from 'styled-components';
 import tinykeys from 'tinykeys';
 import { useRefactor } from '../../Editor/Actions/useRefactor';
@@ -32,32 +33,55 @@ export const RefactorStyles = css`
   }
 `;
 
-const Refactor = () => {
-  const [open, setOpen] = useState(false);
-  const [from, setFrom] = useState<string | undefined>(undefined);
-  const [to, setTo] = useState<string | undefined>(undefined);
-  const [mockRefactored, setMockRefactored] = useState<
-    {
-      from: string;
-      to: string;
-    }[]
-  >([]);
+interface RenameState {
+  open: boolean;
+  from: string;
+  to: string;
+  defFrom: { label: string; value: string };
+}
+
+const Rename = () => {
+  const { execRefactor } = useRefactor();
+  const loadNodeFromId = useEditorStore(state => state.loadNodeFromId);
+
+  const [renameState, setRenameState] = useState<RenameState>({
+    open: false,
+    from: '',
+    to: '',
+    defFrom: {
+      label: '',
+      value: '',
+    },
+  });
 
   const openModal = () => {
-    setOpen(true);
-    // searchInput.current.focus();
+    const nodeId = useEditorStore.getState().node.id;
+    setRenameState({
+      open: true,
+      from: nodeId,
+      defFrom: {
+        value: nodeId,
+        label: nodeId,
+      },
+      to: '',
+    });
   };
 
   const closeModal = () => {
-    setFrom(undefined);
-    setTo(undefined);
-    setMockRefactored([]);
-    setOpen(false);
+    setRenameState({
+      open: false,
+      from: '',
+      defFrom: {
+        value: '',
+        label: '',
+      },
+      to: '',
+    });
   };
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      '$mod+KeyK KeyR': event => {
+      '$mod+KeyK KeyN': event => {
         event.preventDefault();
         openModal();
       },
@@ -67,64 +91,83 @@ const Refactor = () => {
     };
   });
 
-  // console.log({ flatTree, open });
+  // console.log({ to, from, open });
 
   const handleFromChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
     if (newValue) {
       const { value } = newValue;
-      setFrom(value);
+      setRenameState({
+        ...renameState,
+        from: value,
+      });
     }
   };
 
   const handleToChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
     if (newValue) {
       const { value } = newValue;
-      setTo(value);
+      setRenameState({
+        ...renameState,
+        to: value,
+      });
     }
   };
 
   const handleToCreate = (inputValue: string) => {
     if (inputValue) {
-      setTo(inputValue);
+      setRenameState({
+        ...renameState,
+        to: inputValue,
+      });
     }
   };
 
-  const { getMockRefactor, execRefactor } = useRefactor();
-
-  useEffect(() => {
-    // console.log({ to, from });
-    if (to && from) {
-      setMockRefactored(getMockRefactor(from, to));
-    }
-  }, [to, from, getMockRefactor]);
+  // useEffect(() => {
+  //   // console.log({ to, from });
+  //   if (to && from) {
+  //     // setMockRename(getMockRefactor(from, to));
+  //   }
+  // }, [to, from, getMockRefactor]);
 
   // console.log({ mockRefactored });
 
+  const { from, to, defFrom, open } = renameState;
+
   const handleRefactor = () => {
-    if (to && from) execRefactor(from, to);
+    if (to && from) {
+      const res = execRefactor(from, to);
+      console.log(res);
+
+      if (res.length > 0) {
+        loadNodeFromId(res[0].to);
+      }
+    }
+    closeModal();
   };
 
   return (
     <Modal className="RefactorContent" overlayClassName="RefactorOverlay" onRequestClose={closeModal} isOpen={open}>
-      <h1>Refactor</h1>
+      <h1>Rename</h1>
       <br />
       <h2>From</h2>
-      <LookupInput menuOpen autoFocus handleChange={handleFromChange} />
+      <LookupInput defaultValue={defFrom} handleChange={handleFromChange} />
 
       <br />
       <h2>To</h2>
-      <LookupInput handleChange={handleToChange} handleCreate={handleToCreate} />
+      <LookupInput autoFocus menuOpen handleChange={handleToChange} handleCreate={handleToCreate} />
 
-      {mockRefactored.length > 0 && <h1>Nodes being refactored:</h1>}
-      {mockRefactored.map(t => (
-        <div key={`MyKeys_${t.from}`}>
-          <p>From: {t.from}</p>
-          <p>To: {t.to}</p>
-        </div>
-      ))}
-      <Button onClick={handleRefactor}>Apply Refactor</Button>
+      {from !== '' && (
+        <>
+          <h1>Node rename:</h1>
+          <div>
+            <p>From: {from}</p>
+            <p>To: {to}</p>
+          </div>
+        </>
+      )}
+      <Button onClick={handleRefactor}>Rename</Button>
     </Modal>
   );
 };
 
-export default Refactor;
+export default Rename;

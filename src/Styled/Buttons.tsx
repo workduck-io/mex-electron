@@ -7,7 +7,7 @@ interface ButtonProps {
   highlight?: boolean;
 }
 
-export const Button = styled.div<ButtonProps>`
+export const Button = styled.button<ButtonProps>`
   ${centeredCss};
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
