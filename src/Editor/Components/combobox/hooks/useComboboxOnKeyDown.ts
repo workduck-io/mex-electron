@@ -51,7 +51,11 @@ export const useComboboxOnKeyDown = ({
           e.preventDefault();
           closeMenu();
           if (items[itemIndex]) {
-            onSelectItem(editor, items[itemIndex]);
+            const item = items[itemIndex];
+            if (item.key === '__create_new') {
+              onSelectItem(editor, { key: String(items.length), text: search });
+              onNewItem(search);
+            } else onSelectItem(editor, item);
           } else if (search && creatable) {
             // console.log({ search });
             onSelectItem(editor, { key: String(items.length), text: search });

@@ -13,4 +13,7 @@ export interface FileData {
     [key: string]: NodeContent;
   };
   syncBlocks: SyncBlockData[];
+  userSettings: {
+    theme: string;
+  };
 }
