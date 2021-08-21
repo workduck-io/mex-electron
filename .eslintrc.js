@@ -1,5 +1,10 @@
 module.exports = {
-  extends: ['plugin:react/recommended', 'standard'],
+  extends: [
+    'plugin:react/recommended',
+    'standard',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react-hooks/recommended',
+  ],
   rules: {
     // A temporary hack related to IDE not resolving correct package.json
     'import/no-extraneous-dependencies': 'off',
@@ -9,6 +14,7 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'no-underscore-dangle': 'off',
     'multiline-ternary': 'off',
+    'no-use-before-define': 'off',
   },
   parser: '@typescript-eslint/parser',
   parserOptions: {
