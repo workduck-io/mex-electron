@@ -194,11 +194,8 @@ export const EditorStyles = styled.div`
   select {
     font-family: inherit;
     font-size: inherit;
-    margin-right: 6px;
-    margin-bottom: 6px;
     padding: 10px;
     border: none;
-    border-radius: 6px;
     outline: none;
   }
 

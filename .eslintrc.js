@@ -15,6 +15,8 @@ module.exports = {
     'no-underscore-dangle': 'off',
     'multiline-ternary': 'off',
     'no-use-before-define': 'off',
+    camelcase: 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
   },
   parser: '@typescript-eslint/parser',
   parserOptions: {

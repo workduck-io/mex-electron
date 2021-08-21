@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 interface IFrameWrapperProps {
   expand: boolean;
@@ -8,12 +8,12 @@ export const IFrameWrapper = styled.div<IFrameWrapperProps>`
   position: relative;
   transition: padding 0.2s ease-in-out;
 
-  padding: ${({ expand }) => (expand ? `100% 0 0 0` : `50% 0 0 0`)};
-`;
+  padding: ${({ expand }) => (expand ? '100% 0 0 0' : '50% 0 0 0')};
+`
 
 export const RootElement = styled.div`
   position: relative;
-`;
+`
 
 export const IFrame = styled.iframe`
   position: absolute;
@@ -23,7 +23,7 @@ export const IFrame = styled.iframe`
   height: 100%;
 
   border-radius: ${({ theme }) => theme.borderRadius.small};
-`;
+`
 
 // Input
 
@@ -42,15 +42,16 @@ export const InputWrapper = styled.div`
   :focus-within {
     background: ${({ theme }) => theme.colors.background.card};
   }
-`;
+`
 
 export const InputPrompt = styled.div`
   display: flex;
   align-items: center;
   max-width: 4rem;
+  color: ${({ theme }) => theme.colors.primary};
 
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.medium}`};
-`;
+`
 
 export const MediaInput = styled.input`
   width: 100%;
@@ -60,6 +61,7 @@ export const MediaInput = styled.input`
   border: none;
   color: ${({ theme }) => theme.colors.text.subheading};
   background: none;
+  margin: 0;
 
   border-top-right-radius: ${({ theme }) => theme.borderRadius.small};
   border-bottom-right-radius: ${({ theme }) => theme.borderRadius.small};
@@ -68,7 +70,7 @@ export const MediaInput = styled.input`
     background-color: ${({ theme }) => theme.colors.background.card};
     outline: none;
   }
-`;
+`
 
 export const MediaHtml = styled.div`
   > div {
@@ -88,4 +90,4 @@ export const MediaHtml = styled.div`
     min-width: 100%;
     min-height: 500px;
   }
-`;
+`
