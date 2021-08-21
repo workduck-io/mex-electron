@@ -71,6 +71,8 @@ export const useRefactor = () => {
 
     setILinks(newIlinks);
     initContents(newContents);
+
+    return refactored;
   };
 
   return { getMockRefactor, execRefactor };

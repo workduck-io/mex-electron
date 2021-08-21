@@ -123,7 +123,7 @@ export const generateTheme = (p: ThemePalette): DefaultTheme => {
           fade: mp(p.gray[4]),
           disabled: mp(p.gray[5]),
           accent: mp(p.gray[3]),
-          oppositePrimary: getLuminance(p.gray[5]) >= getLuminance(p.primary) ? p.gray[10] : p.gray[0],
+          oppositePrimary: getLuminance(p.gray[5]) >= getLuminance(p.primary) ? p.gray[10] : p.gray[1],
         },
       },
     },
