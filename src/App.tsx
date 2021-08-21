@@ -5,7 +5,7 @@ import Lookup from './Components/Lookup';
 import Delete from './Components/Refactor/DeleteModal';
 import Refactor from './Components/Refactor/Refactor';
 import Rename from './Components/Refactor/Rename';
-import sampleRCTree from './Components/Sidebar/sampleRCTreeData';
+import sampleRCTree from './Components/Sidebar/treeUtils';
 import Contexts from './Context/Contexts';
 import Providers from './Context/Providers';
 import MainEditor from './Editor/MainEditor';

@@ -13,7 +13,7 @@ import { StyledTree } from '../../Styled/Sidebar';
 import TreeNode from '../../Types/tree';
 import TreeExpandIcon from './Icon';
 import { withRefactor } from '../../Editor/Actions/useRefactor';
-import { getNodeIdLast, SEPARATOR } from './sampleRCTreeData';
+import { getNodeIdLast, SEPARATOR } from './treeUtils';
 
 const motion = {
   motionName: 'node-motion',

@@ -1,6 +1,7 @@
 import { setNodes } from '@udecode/plate-common';
 import { TElement, useEditorRef } from '@udecode/plate-core';
 import { MediaEmbedNodeData } from '@udecode/plate-media-embed';
+import { debounce } from 'lodash';
 import * as React from 'react';
 import { useEffect } from 'react';
 import EmbedContainer from 'react-oembed-container';
@@ -53,10 +54,10 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
           url={url}
           setExpand={setExpand}
           htmlData={htmlData}
-          onChange={(val: string) => {
+          onChange={debounce((val: string) => {
             const path = ReactEditor.findPath(editor, element);
             setNodes<TElement<MediaEmbedNodeData>>(editor, { url: val }, { at: path });
-          }}
+          }, 500)}
         />
       </div>
       {children}

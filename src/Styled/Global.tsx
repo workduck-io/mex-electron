@@ -1,8 +1,8 @@
-import { createGlobalStyle } from 'styled-components';
-import { ThinScrollbar } from './helpers';
-import { LookupStyles } from '../Components/Lookup';
-import normalize from './normalize';
-import { RefactorStyles } from '../Components/Refactor/Refactor';
+import { createGlobalStyle } from 'styled-components'
+import { ThinScrollbar } from './helpers'
+import { LookupStyles } from '../Components/Lookup'
+import normalize from './normalize'
+import { RefactorStyles } from '../Components/Refactor/Refactor'
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}; // NormalizeCSS normalization
@@ -47,6 +47,16 @@ const GlobalStyle = createGlobalStyle`
     margin-inline-end: 0px;
     padding-inline-start: 0px;
   }
-`;
 
-export default GlobalStyle;
+  button {
+    background-color: ${({ theme }) => theme.colors.gray[7]};
+    color: ${({ theme }) => theme.colors.gray[3]};
+    border: none;
+    &:hover, &:active {
+      color: ${({ theme }) => theme.colors.primary};
+      background-color: ${({ theme }) => theme.colors.gray[6]};
+    }
+  }
+`
+
+export default GlobalStyle

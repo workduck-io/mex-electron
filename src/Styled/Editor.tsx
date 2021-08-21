@@ -1,15 +1,15 @@
-import { mix } from 'polished';
-import styled, { css } from 'styled-components';
+import { mix } from 'polished'
+import styled, { css } from 'styled-components'
 
-export const NoteTitle = styled.h1``;
+export const NoteTitle = styled.h1``
 
 export const NodeInfo = styled.div`
   background-color: ${({ theme }) => theme.colors.gray[9]};
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.medium}`};
-  border-radius: ${({ theme }) => theme.borderRadius.large};
+  padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.small}`};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
 
   margin: 0 0 3rem;
 
@@ -19,11 +19,11 @@ export const NodeInfo = styled.div`
     font-weight: normal;
     margin: 0 0 0 ${({ theme }) => theme.spacing.small};
   }
-`;
+`
 
 export const InfoTools = styled.div`
   display: flex;
-`;
+`
 
 interface StyledEditorProps {
   showGraph: boolean;
@@ -42,7 +42,9 @@ export const StyledEditor = styled.div<StyledEditorProps>`
       : css`
           max-width: 800px;
         `}
+`
 
+export const EditorStyles = styled.div`
   font-family: 'Inter', sans-serif;
   /* font-weight: 400; */
   line-height: 1.75;
@@ -192,11 +194,8 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   select {
     font-family: inherit;
     font-size: inherit;
-    margin-right: 6px;
-    margin-bottom: 6px;
     padding: 10px;
     border: none;
-    border-radius: 6px;
     outline: none;
   }
 
@@ -345,4 +344,4 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   textarea {
     border: 1px solid ${({ theme }) => theme.colors.form.input.border};
   }
-`;
+`
