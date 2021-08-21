@@ -29,7 +29,15 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
 
   const multiRef = useMergedRef(menuProps.ref, ref);
 
-  if (!combobox) return null;
+  if (!combobox || menuProps) return null;
+  const comboProps = (item, index) => {
+    if (combobox)
+      return combobox.getItemProps({
+        item,
+        index,
+      });
+    return;
+  };
 
   // console.log({ items, search, comboboxKey });
 
@@ -44,25 +52,13 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
               <ComboboxItem
                 key={item.key}
                 highlighted={index === itemIndex}
-                {...combobox.getItemProps({
-                  item,
-                  index,
-                })}
+                {...comboProps(item, index)}
                 onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, item)}
               >
                 {Item}
               </ComboboxItem>
             );
           })}
-        {/* {isOpen && search !== '' && comboboxKey !== ComboboxKey.SLASH_COMMAND ? (
-          <ComboboxItem
-            key="new"
-            onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, search)}
-            highlighted={itemIndex === items.length}
-          >
-            Create new: {search}
-          </ComboboxItem>
-        ) : null} */}
       </ComboboxRoot>
     </PortalBody>
   );

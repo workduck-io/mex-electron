@@ -11,4 +11,7 @@ export const DefaultFileData: FileData = {
   },
   tags: generateComboTexts(['mex']),
   syncBlocks: [],
+  userSettings: {
+    theme: 'dev',
+  },
 };
