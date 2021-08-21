@@ -5,6 +5,7 @@
   "description": "mexMEXmex",
   "main": ".webpack/main",
   "scripts": {
+    "prepare": "husky install",
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
@@ -15,6 +16,12 @@
   "author": {
     "name": "xypnox",
     "email": "xypnox@workduck.io"
+  },
+  "lint-staged": {
+    "./src/**/*.{ts,tsx,js,json,css,sass,scss,less,html,md}": [
+      "yarn run prettier -c ./.prettierrc --write"
+    ],
+    "*.{ts,tsx}": "eslint --cache --fix"
   },
   "license": "MIT",
   "config": {
@@ -96,15 +103,23 @@
     "@types/react-router-dom": "^5.1.8",
     "@types/react-select": "^4.0.17",
     "@types/styled-components": "^5.1.12",
-    "@typescript-eslint/eslint-plugin": "^4.0.1",
-    "@typescript-eslint/parser": "^4.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.2",
+    "@typescript-eslint/parser": "^4.29.2",
     "@vercel/webpack-asset-relocator-loader": "1.6.0",
     "css-loader": "^6.0.0",
     "electron": "13.1.9",
     "eslint": "^7.6.0",
+    "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-prettier": "^3.4.1",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-standard": "^5.0.0",
     "fork-ts-checker-webpack-plugin": "^6.0.1",
+    "husky": "^7.0.1",
+    "lint-staged": ">=10",
     "node-loader": "^2.0.0",
+    "prettier": "^2.3.2",
     "style-loader": "^3.0.0",
     "ts-loader": "^9.2.2",
     "typescript": "^4.0.5"
@@ -120,6 +135,8 @@
     "deepmerge": "^4.2.2",
     "downshift": "^6.1.3",
     "electron-squirrel-startup": "^1.0.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
     "fast-deep-equal": "^3.1.3",
     "fast-fuzzy": "^1.10.10",
     "history": "^5.0.1",

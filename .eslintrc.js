@@ -1,5 +1,10 @@
 module.exports = {
-  extends: 'erb',
+  extends: [
+    'plugin:react/recommended',
+    'standard',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react-hooks/recommended',
+  ],
   rules: {
     // A temporary hack related to IDE not resolving correct package.json
     'import/no-extraneous-dependencies': 'off',
@@ -8,7 +13,12 @@ module.exports = {
     '@typescript-eslint/naming-convention': 'off',
     'no-restricted-syntax': 'off',
     'no-underscore-dangle': 'off',
+    'multiline-ternary': 'off',
+    'no-use-before-define': 'off',
+    camelcase: 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
   },
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',
@@ -20,9 +30,6 @@ module.exports = {
     'import/resolver': {
       // See https://github.com/benmosher/eslint-plugin-import/issues/1396#issuecomment-575727774 for line below
       node: {},
-      webpack: {
-        config: require.resolve('./.erb/configs/webpack.config.eslint.js'),
-      },
     },
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts', '.tsx'],

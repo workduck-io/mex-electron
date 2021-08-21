@@ -1,5 +1,5 @@
 import create from 'zustand';
-import { generateTree, SEPARATOR } from '../../Components/Sidebar/sampleRCTreeData';
+import { generateTree, SEPARATOR } from '../../Components/Sidebar/treeUtils';
 import { generateComboText } from './sampleTags';
 import getFlatTree from '../../Lib/flatTree';
 import { DataStoreState } from './Types';

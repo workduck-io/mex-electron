@@ -1,9 +1,10 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import styled, { css } from 'styled-components';
-import settings4Line from '@iconify-icons/ri/settings-4-line';
-import { GetIcon } from '../../Conf/links';
-import { NavProps } from './Types';
+import React from 'react'
+import { NavLink } from 'react-router-dom'
+import styled, { css } from 'styled-components'
+import settings4Line from '@iconify-icons/ri/settings-4-line'
+import { GetIcon } from '../../Conf/links'
+import { NavProps } from './Types'
+import { transparentize } from 'polished'
 
 const StyledDiv = styled.div`
   z-index: 10;
@@ -15,7 +16,7 @@ const StyledDiv = styled.div`
   position: fixed;
   background-color: ${({ theme }) => theme.colors.background.sidebar};
   width: ${({ theme }) => theme.width.nav};
-`;
+`
 
 export const navTooltip = css`
   .nav-tooltip {
@@ -24,7 +25,7 @@ export const navTooltip = css`
       border-right-color: ${({ theme }) => theme.colors.primary} !important;
     }
   }
-`;
+`
 
 const Link = styled(NavLink)`
   display: flex;
@@ -47,9 +48,9 @@ const Link = styled(NavLink)`
   &.active {
     background-color: ${({ theme }) => theme.colors.primary};
     color: ${({ theme }) => theme.colors.text.oppositePrimary};
-    box-shadow: 0px 4px 8px ${({ theme }) => theme.colors.primary};
+    box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.primary)};
   }
-`;
+`
 
 const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
   return (
@@ -85,7 +86,7 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
         </Link>
       </div>
     </StyledDiv>
-  );
-};
+  )
+}
 
-export default Nav;
+export default Nav

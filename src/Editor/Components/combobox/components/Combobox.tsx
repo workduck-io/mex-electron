@@ -29,7 +29,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
 
   const multiRef = useMergedRef(menuProps.ref, ref);
 
-  if (!combobox || menuProps) return null;
+  if (!combobox) return null;
   const comboProps = (item, index) => {
     if (combobox)
       return combobox.getItemProps({
