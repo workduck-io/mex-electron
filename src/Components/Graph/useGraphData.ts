@@ -1,11 +1,12 @@
 import useDataStore, { getLevel } from '../../Editor/Store/DataStore';
 import { palette } from '../../Styled/themes';
 import { DefaultTheme, useTheme } from 'styled-components';
-import { isElder, isParent, isTopNode } from '../Sidebar/sampleRCTreeData';
+import { getNodeIdLast, isElder, isParent, isTopNode } from '../Sidebar/treeUtils';
 import { darken, lighten, mix } from 'polished';
 
 interface GraphNode {
   id: number;
+  nodeId: string;
   label: string;
   color: string;
   font?: {
@@ -37,7 +38,8 @@ export const useGraphData = () => {
     const level = getLevel(node);
     return {
       id: id + 1,
-      label: node,
+      label: getNodeIdLast(node),
+      nodeId: node,
       color: getColor(level),
       font: { color: getFontColor(level) },
     };
@@ -48,7 +50,7 @@ export const useGraphData = () => {
   nodes.forEach(node => {
     nodes.forEach(compNode => {
       if (node.id !== compNode.id) {
-        if (isParent(node.label, compNode.label)) {
+        if (isParent(node.nodeId, compNode.nodeId)) {
           edges.push({
             to: node.id,
             from: compNode.id,
@@ -66,7 +68,7 @@ export const useGraphData = () => {
         // }
       }
     });
-    if (isTopNode(node.label)) {
+    if (isTopNode(node.nodeId)) {
       edges.push({
         to: node.id,
         from: 0,
@@ -77,6 +79,7 @@ export const useGraphData = () => {
 
   nodes.push({
     id: 0,
+    nodeId: 'root',
     label: 'root',
     color: getColor(0),
     font: {

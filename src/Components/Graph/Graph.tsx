@@ -75,7 +75,7 @@ export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
             network._callbacks.$select[0]({ nodes: selectNode });
           }
 
-          if (selectNode.length > 0) loadNodeFromId(selectNode[0].label);
+          if (selectNode.length > 0) loadNodeFromId(selectNode[0].nodeId);
         }
       },
     },

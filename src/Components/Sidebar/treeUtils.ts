@@ -43,7 +43,7 @@ export const getNodeIdLast = (id: string) => {
 
 const createChildLess = (n: string): TreeNode => ({
   id: n,
-  title: n,
+  title: getNodeIdLast(n),
   key: n,
   mex_icon: undefined,
   children: [],
