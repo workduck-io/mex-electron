@@ -3,8 +3,15 @@ import { SPEditor } from '@udecode/plate'
 import { KeyboardHandler } from '@udecode/plate-core'
 import { IComboboxItem } from '../components/Combobox.types'
 import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen'
-import { useComboboxStore } from '../useComboboxStore'
+import { ComboboxKey, useComboboxStore } from '../useComboboxStore'
 import { getNextWrappingIndex } from '../utils/getNextWrappingIndex'
+
+const pure = (id: string) => {
+  if (id.endsWith(']]')) {
+    return id.substr(0, id.length - 2)
+  }
+  return id
+}
 
 /**
  * If the combobox is open, handle keyboard
@@ -12,7 +19,7 @@ import { getNextWrappingIndex } from '../utils/getNextWrappingIndex'
 export const useComboboxOnKeyDown = ({
   onSelectItem,
   onNewItem,
-  creatable,
+  creatable
 }: {
   onSelectItem: (editor: SPEditor, item: IComboboxItem) => any // eslint-disable-line @typescript-eslint/no-explicit-any
   onNewItem: (name: string) => void
@@ -25,6 +32,21 @@ export const useComboboxOnKeyDown = ({
   const items = useComboboxStore((state) => state.items)
   const isOpen = useComboboxIsOpen()
 
+  const createNew = (textVal: string, editor: any) => {
+    closeMenu()
+    if (items[itemIndex]) {
+      const item = items[itemIndex]
+      if (item.key === '__create_new') {
+        onSelectItem(editor, { key: String(items.length), text: textVal })
+        onNewItem(textVal)
+      } else onSelectItem(editor, item)
+    } else if (textVal && creatable) {
+      // console.log({ search });
+      onSelectItem(editor, { key: String(items.length), text: textVal })
+      onNewItem(textVal)
+    }
+  }
+
   return useCallback(
     (editor) => (e) => {
       // if (!combobox) return false;
@@ -33,13 +55,13 @@ export const useComboboxOnKeyDown = ({
         if (e.key === 'ArrowDown') {
           e.preventDefault()
 
-          const newIndex = getNextWrappingIndex(1, itemIndex, items.length, () => {}, true)
+          const newIndex = getNextWrappingIndex(1, itemIndex, items.length, () => undefined, true)
           return setItemIndex(newIndex)
         }
         if (e.key === 'ArrowUp') {
           e.preventDefault()
 
-          const newIndex = getNextWrappingIndex(-1, itemIndex, items.length, () => {}, true)
+          const newIndex = getNextWrappingIndex(-1, itemIndex, items.length, () => undefined, true)
           return setItemIndex(newIndex)
         }
         if (e.key === 'Escape') {
@@ -47,20 +69,9 @@ export const useComboboxOnKeyDown = ({
           return closeMenu()
         }
 
-        if (['Tab', 'Enter', ' '].includes(e.key)) {
+        if (['Tab', 'Enter', ' ', ']'].includes(e.key)) {
           e.preventDefault()
-          closeMenu()
-          if (items[itemIndex]) {
-            const item = items[itemIndex]
-            if (item.key === '__create_new') {
-              onSelectItem(editor, { key: String(items.length), text: search })
-              onNewItem(search)
-            } else onSelectItem(editor, item)
-          } else if (search && creatable) {
-            // console.log({ search });
-            onSelectItem(editor, { key: String(items.length), text: search })
-            onNewItem(search)
-          }
+          createNew(pure(search), editor)
           return false
         }
       }

@@ -1,4 +1,3 @@
-import { deserializeHTMLToDocumentFragment } from '@udecode/plate'
 import React from 'react'
 import { Contents, useContentStore } from '../Store/ContentStore'
 import useDataStore from '../Store/DataStore'
@@ -50,7 +49,7 @@ export const useDelete = () => {
 
 // Used to wrap a class component to provide hooks
 export const withDelete = (Component: any) => {
-  return function C2(props: any) {
+  return function C2 (props: any) {
     const { getMockDelete, execDelete } = useDelete()
 
     return <Component getMockDelete={getMockDelete} execDelete={execDelete} {...props} /> // eslint-disable-line react/jsx-props-no-spreading

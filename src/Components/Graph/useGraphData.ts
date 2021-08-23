@@ -2,6 +2,8 @@ import { mix } from 'polished'
 import { DefaultTheme, useTheme } from 'styled-components'
 import useDataStore, { getLevel } from '../../Editor/Store/DataStore'
 import { getNodeIdLast, isParent, isTopNode } from '../Sidebar/treeUtils'
+import { GraphTools } from './Graph.styles'
+import { useGraphStore } from './GraphStore'
 
 interface GraphNode {
   id: number
@@ -51,17 +53,17 @@ const getNodeStyles = (level: number, theme: DefaultTheme) => {
       background: color,
       highlight: {
         border: mix(0.1, primary, color),
-        background: mix(0.2, primary, color),
+        background: mix(0.2, primary, color)
       },
       hover: {
         border: mix(0.2, primary, color),
-        background: mix(0.3, primary, color),
-      },
+        background: mix(0.3, primary, color)
+      }
     },
     font: {
-      color: fontColor,
+      color: fontColor
     },
-    shape: 'box',
+    shape: 'box'
     // size: 16 / (0.66 * (level * 0.75 + 1)),
   }
 }
@@ -74,13 +76,15 @@ const getEdgeStyles = (level: number, theme: DefaultTheme) => {
   const color = mix(level * step, gray[10], colorBase)
 
   return {
-    color,
+    color
   }
 }
 
-export const useGraphData = (showLocal?: boolean) => {
+export const useGraphData = () => {
   const ilinks = useDataStore((store) => store.ilinks)
   const links = ilinks.map((i) => i.text)
+
+  const showLocal = useGraphStore((state) => state.showLocal)
 
   const theme = useTheme()
 
@@ -90,7 +94,7 @@ export const useGraphData = (showLocal?: boolean) => {
       id: id + 1,
       label: getNodeIdLast(node),
       nodeId: node,
-      ...getNodeStyles(level, theme),
+      ...getNodeStyles(level, theme)
     }
   })
 
@@ -104,7 +108,7 @@ export const useGraphData = (showLocal?: boolean) => {
           edges.push({
             to: node.id,
             from: compNode.id,
-            ...getEdgeStyles(level, theme),
+            ...getEdgeStyles(level, theme)
           })
         }
 
@@ -123,7 +127,7 @@ export const useGraphData = (showLocal?: boolean) => {
       edges.push({
         to: node.id,
         from: 0,
-        ...getEdgeStyles(0, theme),
+        ...getEdgeStyles(0, theme)
       })
     }
   })
@@ -132,11 +136,11 @@ export const useGraphData = (showLocal?: boolean) => {
     id: 0,
     nodeId: 'root',
     label: 'root',
-    ...getNodeStyles(0, theme),
+    ...getNodeStyles(0, theme)
   })
 
   return {
     nodes,
-    edges,
+    edges
   }
 }
