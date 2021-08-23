@@ -2,10 +2,9 @@ import { rgba } from 'polished'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import { ActionMeta } from 'react-select'
-import { useEditorStore, withLoadNode } from '../../Editor/Store/EditorStore'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { css } from 'styled-components'
 import tinykeys from 'tinykeys'
-import { useRefactor } from '../../Editor/Actions/useRefactor'
 import { Button } from '../../Styled/Buttons'
 import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
@@ -50,9 +49,9 @@ const Delete = () => {
     del: '',
     defDel: {
       label: '',
-      value: '',
+      value: ''
     },
-    mockData: [],
+    mockData: []
   })
 
   const openModal = () => {
@@ -61,10 +60,10 @@ const Delete = () => {
       open: true,
       defDel: {
         value: nodeId,
-        label: nodeId,
+        label: nodeId
       },
       del: nodeId,
-      mockData: getMockDelete(nodeId),
+      mockData: getMockDelete(nodeId)
     })
   }
 
@@ -74,9 +73,9 @@ const Delete = () => {
       del: '',
       defDel: {
         value: '',
-        label: '',
+        label: ''
       },
-      mockData: [],
+      mockData: []
     })
   }
 
@@ -85,7 +84,7 @@ const Delete = () => {
       '$mod+KeyK KeyD': (event) => {
         event.preventDefault()
         openModal()
-      },
+      }
     })
     return () => {
       unsubscribe()
@@ -100,7 +99,7 @@ const Delete = () => {
       setDeleteState({
         ...deleteState,
         del: value,
-        mockData: getMockDelete(value),
+        mockData: getMockDelete(value)
       })
     }
   }
@@ -138,7 +137,7 @@ const Delete = () => {
           <h1>Please confirm deleting the node(s):</h1>
           <div>
             {mockData.map((d) => (
-              <p>{d}</p>
+              <p key={`delete_${d}`}>{d}</p>
             ))}
           </div>
         </>

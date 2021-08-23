@@ -8,10 +8,10 @@ import { useEditorStore } from '../../Editor/Store/EditorStore'
 const StyledGraph = styled('div')`
   /* width: 100%; */
   max-height: 100vh;
-  width: calc(100vw - ${({ theme }) => theme.width.sidebar}px - ${({ theme }) => theme.width.nav}px - 600px);
-  position: fixed;
-  top: 0;
-  right: 0;
+  width: 100%;
+  /* position: fixed; */
+  /* top: 0; */
+  /* right: 0; */
   /* border: 3px solid red; */
   * {
     outline: none;
@@ -22,22 +22,22 @@ const StyledGraph = styled('div')`
 const options = {
   autoResize: true,
   layout: {
-    hierarchical: false,
+    hierarchical: false
   },
   edges: {
     color: '#5e6c92',
     smooth: {
       enabled: true,
       type: 'dynamic',
-      roundness: 0.5,
-    },
+      roundness: 0.5
+    }
   },
   nodes: {
     font: '16px Inter #7D90C3',
     scaling: {
-      label: true,
+      label: true
     },
-    shape: 'dot',
+    shape: 'dot'
   },
   physics: {
     barnesHut: {
@@ -47,9 +47,9 @@ const options = {
       springLength: 75,
       springConstant: 0.04,
       damping: 0.09,
-      avoidOverlap: 0,
-    },
-  },
+      avoidOverlap: 0
+    }
+  }
 }
 
 export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
@@ -77,18 +77,18 @@ export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
 
           if (selectNode.length > 0) loadNodeFromId(selectNode[0].nodeId)
         }
-      },
-    },
+      }
+    }
   })
 
   useEffect(() => {
     if (equal(state.graph, graphData)) return
-    setState(({ graph, counter, ...rest }: any) => {
+    setState(({ graph: _, counter, ...rest }: any) => {
       const id = counter + 1
       return {
         graph: graphData,
         counter: id,
-        ...rest,
+        ...rest
       }
     })
   }, [graphData]) // eslint-disable-line react-hooks/exhaustive-deps

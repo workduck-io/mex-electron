@@ -28,12 +28,12 @@ export type EditorContextType = {
 export const useEditorStore = create<EditorContextType>((set, get) => ({
   node: getInitialNode(),
   content: getContent('@'),
-  showGraph: true,
+  showGraph: false,
 
   loadNode: (node: TreeNode) => {
     set(() => ({
       node,
-      content: getContent(node.id),
+      content: getContent(node.id)
     }))
   },
 
@@ -41,22 +41,22 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
     const node = getNodeFromId(id)
     set(() => ({
       node,
-      content: getContent(id),
+      content: getContent(id)
     }))
   },
 
   toggleGraph: () => {
     set(() => ({
-      showGraph: !get().showGraph,
+      showGraph: !get().showGraph
     }))
-  },
+  }
 }))
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Used to wrap a class component to provide hooks
 export const withLoadNode = (Component: any) => {
-  return function C2(props: any) {
+  return function C2 (props: any) {
     const loadNode = useEditorStore((state) => state.loadNode)
 
     return <Component loadNode={loadNode} {...props} /> // eslint-disable-line react/jsx-props-no-spreading

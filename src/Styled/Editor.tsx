@@ -31,17 +31,18 @@ interface StyledEditorProps {
 
 export const StyledEditor = styled.div<StyledEditorProps>`
   padding: ${({ theme }) => theme.spacing.medium};
-  margin: ${({ theme }) => theme.spacing.medium};
+  margin: ${({ theme }) => theme.spacing.medium} auto;
   width: 100%;
-
-  ${({ showGraph }) =>
+  max-width: 1000px;
+  min-width: 800px;
+  /* ${({ showGraph }) =>
     showGraph
       ? css`
           max-width: 600px;
         `
       : css`
           max-width: 800px;
-        `}
+        `} */
 `
 
 export const EditorStyles = styled.div`

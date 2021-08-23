@@ -2,8 +2,6 @@ import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
 import styled, { useTheme } from 'styled-components'
-import Graph from '../Components/Graph/Graph'
-import { useGraphData } from '../Components/Graph/useGraphData'
 import { Notifications } from '../Components/Notifications/Notifications'
 import SideBar from '../Components/Sidebar'
 import { navTooltip } from '../Components/Sidebar/Nav'
@@ -13,11 +11,11 @@ import { useSyncData } from '../Data/useSyncData'
 import { useTreeFromLinks } from '../Editor/Store/DataStore'
 import { useEditorStore } from '../Editor/Store/EditorStore'
 import { getInitialNode } from '../Editor/Store/helpers'
+import { GridWrapper } from '../Styled/Grid'
 import { PixelToCSS } from '../Styled/helpers'
 import InfoBar from './InfoBar'
 
 const AppWrapper = styled.div`
-  display: flex;
   min-height: 100%;
   ${navTooltip};
 `
@@ -25,9 +23,10 @@ const AppWrapper = styled.div`
 const Content = styled.div`
   display: flex;
   flex-grow: 1;
-  margin-left: ${({ theme }) => PixelToCSS(theme.width.sidebar)};
-  max-width: calc(100% - ${({ theme }) => PixelToCSS(theme.width.sidebar)});
-  overflow-x: hidden;
+  grid-column-start: 2;
+  /* margin-left: ${({ theme }) => PixelToCSS(theme.width.sidebar)}; */
+  /* max-width: calc(100% - ${({ theme }) => PixelToCSS(theme.width.sidebar)}); */
+  overflow: scroll;
 `
 
 export type MainProps = { children: React.ReactNode }
@@ -38,11 +37,8 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const loadNode = useEditorStore((state) => state.loadNode)
   const id = useEditorStore((state) => state.node.id)
 
-  const showGraph = useEditorStore((state) => state.showGraph)
-
   const { init } = useInitialize()
 
-  const graphData = useGraphData()
   const localData = useLocalData()
 
   const setIpc = useSyncData()
@@ -55,7 +51,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   useEffect(() => {
     // console.log('Initializing', { sampleRCTree }); // eslint-disable-line no-console
 
-    ;(async () => {
+    (async () => {
       localData
         .then((d) => {
           // console.log('Data here', d);
@@ -77,12 +73,13 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
   return (
     <AppWrapper>
-      <ReactTooltip effect="solid" backgroundColor={theme.colors.gray[5]} arrowColor={theme.colors.gray[5]} />
-      <SideBar tree={Tree} starred={Tree} />
-      <Content>{children}</Content>
+      <GridWrapper>
+        <SideBar tree={Tree} starred={Tree} />
+        <Content>{children}</Content>
+        <InfoBar />
+      </GridWrapper>
+      <ReactTooltip effect="solid" backgroundColor={theme.colors.gray[6]} arrowColor={theme.colors.gray[6]} />
       <Notifications />
-
-      <InfoBar />
     </AppWrapper>
   )
 }

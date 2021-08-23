@@ -17,8 +17,8 @@ export const SIcon = (props: any) => {
 
 export const SidebarDiv = styled.div`
   background-color: ${({ theme }) => theme.colors.background.app};
-  position: fixed;
   height: 100%;
+  position: fixed;
   display: flex;
   max-width: ${({ theme }) => PixelToCSS(theme.width.sidebar)};
   width: ${({ theme }) => PixelToCSS(theme.width.sidebar)};
