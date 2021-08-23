@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
+import { useGraphStore } from '../Components/Graph/GraphStore'
 import styled, { useTheme } from 'styled-components'
 import { Notifications } from '../Components/Notifications/Notifications'
 import SideBar from '../Components/Sidebar'
@@ -36,6 +37,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const history = useHistory()
   const loadNode = useEditorStore((state) => state.loadNode)
   const id = useEditorStore((state) => state.node.id)
+  const showGraph = useGraphStore((state) => state.showGraph)
 
   const { init } = useInitialize()
 
@@ -73,7 +75,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
   return (
     <AppWrapper>
-      <GridWrapper>
+      <GridWrapper showGraph={showGraph}>
         <SideBar tree={Tree} starred={Tree} />
         <Content>{children}</Content>
         <InfoBar />

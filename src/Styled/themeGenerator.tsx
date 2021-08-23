@@ -1,5 +1,4 @@
 import { getLuminance, mix, tint } from 'polished'
-import { DeepPartial } from '../Types/utility'
 import { DefaultTheme } from 'styled-components'
 import { LayoutStyle } from '../styled'
 import merge from 'deepmerge'
@@ -9,20 +8,20 @@ const LayoutTheme: LayoutStyle = {
     large: '2rem',
     medium: '1rem',
     small: '0.5rem',
-    tiny: '0.25rem',
+    tiny: '0.25rem'
   },
   borderRadius: {
     large: '1rem',
     small: '0.5rem',
-    tiny: '0.25rem',
+    tiny: '0.25rem'
   },
   width: {
     nav: 48,
-    sidebar: 350,
+    sidebar: 300
   },
   indent: {
-    sidebar: 8,
-  },
+    sidebar: 8
+  }
 }
 
 export interface ShadePalette {
@@ -95,26 +94,26 @@ export const generateTheme = (p: ThemePalette): DefaultTheme => {
           card: p.gray[9],
           modal: p.gray[9],
           sidebar: p.gray[10],
-          highlight: p.gray[8],
+          highlight: p.gray[8]
         },
         divider: p.gray[4],
         fade: {
           primary: tint(0.15, p.primary),
           secondary: tint(0.15, p.secondary),
-          background: tint(0.15, p.gray[10]),
+          background: tint(0.15, p.gray[10])
         },
         form: {
           input: {
             bg: mix(0.5, p.gray[8], p.gray[9]),
             fg: mp(p.gray[1]),
-            border: mp(p.gray[8]),
+            border: mp(p.gray[8])
           },
           button: {
             bg: mp(p.gray[7]),
             fg: mp(p.gray[1]),
             border: mp(p.gray[8]),
-            hover: mp(p.primary),
-          },
+            hover: mp(p.primary)
+          }
         },
         text: p.text ?? {
           heading: mp(p.gray[1]),
@@ -123,9 +122,9 @@ export const generateTheme = (p: ThemePalette): DefaultTheme => {
           fade: mp(p.gray[4]),
           disabled: mp(p.gray[5]),
           accent: mp(p.gray[3]),
-          oppositePrimary: getLuminance(p.gray[5]) >= getLuminance(p.primary) ? p.gray[10] : p.gray[1],
-        },
-      },
+          oppositePrimary: getLuminance(p.gray[5]) >= getLuminance(p.primary) ? p.gray[10] : p.gray[1]
+        }
+      }
     },
     p
   )

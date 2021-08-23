@@ -3,22 +3,14 @@ import equal from 'fast-deep-equal'
 import Graph from 'react-vis-network-graph'
 import styled from 'styled-components'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
+import { GraphTools, StyledGraph } from './Graph.styles'
+import IconButton from '../../Styled/Buttons'
+import more2Fill from '@iconify-icons/ri/more-2-fill'
+import bubbleChartLine from '@iconify-icons/ri/bubble-chart-line'
+import Switch from '../Forms/Switch'
+import { useGraphStore } from './GraphStore'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const StyledGraph = styled('div')`
-  /* width: 100%; */
-  max-height: 100vh;
-  width: 100%;
-  /* position: fixed; */
-  /* top: 0; */
-  /* right: 0; */
-  /* border: 3px solid red; */
-  * {
-    outline: none;
-    outline-style: none;
-  }
-`
-
 const options = {
   autoResize: true,
   layout: {
@@ -52,10 +44,20 @@ const options = {
   }
 }
 
-export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
+interface TreeGraphProps {
+  graphData: { nodes: any; edges: any }
+}
+
+export const TreeGraph = (props: TreeGraphProps) => {
   const { graphData } = props
   const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
 
+  const showGraph = useGraphStore((state) => state.showGraph)
+  const toggleGraph = useGraphStore((state) => state.toggleGraph)
+  const showTools = useGraphStore((state) => state.showTools)
+
+  const showLocal = useGraphStore((state) => state.showLocal)
+  const toggleLocal = useGraphStore((state) => state.toggleLocal)
   const [network, setNetwork] = useState<any>()
 
   // console.log('Checking for graph data 12321: ', { graphData });
@@ -98,6 +100,27 @@ export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
 
   return (
     <StyledGraph>
+      {showTools ? (
+        <GraphTools>
+          <IconButton
+            size={24}
+            icon={bubbleChartLine}
+            title="Graph"
+            highlight={showGraph}
+            onClick={() => toggleGraph()}
+          />
+
+          <Switch
+            showLabel
+            id="LocalGraphSwitch"
+            label="Show Local Graph"
+            value={showLocal}
+            onChange={() => toggleLocal()}
+          />
+
+          <IconButton size={24} icon={more2Fill} title="Options" />
+        </GraphTools>
+      ) : null}
       <Graph
         graph={graph}
         options={options}

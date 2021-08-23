@@ -13,22 +13,17 @@ export type EditorContextType = {
   // These are loaded internally from ID
   content: NodeEditorContent
 
-  showGraph: boolean
-
   // State transformations
 
   // Load a node and its contents in the editor
   loadNode: (node: TreeNode) => void
 
   loadNodeFromId: (id: string) => void
-
-  toggleGraph: () => void
 }
 
 export const useEditorStore = create<EditorContextType>((set, get) => ({
   node: getInitialNode(),
   content: getContent('@'),
-  showGraph: false,
 
   loadNode: (node: TreeNode) => {
     set(() => ({
@@ -42,12 +37,6 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
     set(() => ({
       node,
       content: getContent(id)
-    }))
-  },
-
-  toggleGraph: () => {
-    set(() => ({
-      showGraph: !get().showGraph
     }))
   }
 }))

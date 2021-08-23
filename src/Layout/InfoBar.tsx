@@ -4,12 +4,13 @@ import Graph from '../Components/Graph/Graph'
 import { useGraphData } from '../Components/Graph/useGraphData'
 import styled from 'styled-components'
 import tinykeys from 'tinykeys'
+import { useGraphStore } from '../Components/Graph/GraphStore'
 
 const InfoBarWrapper = styled.div``
 
 const InfoBar = () => {
-  const showGraph = useEditorStore((state) => state.showGraph)
-  const toggleGraph = useEditorStore((state) => state.toggleGraph)
+  const showGraph = useGraphStore((state) => state.showGraph)
+  const toggleGraph = useGraphStore((state) => state.toggleGraph)
 
   const graphData = useGraphData()
 

@@ -7,6 +7,7 @@ import { useStoreEditorValue } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import ReactTooltip from 'react-tooltip'
+import { useGraphStore } from '../Components/Graph/GraphStore'
 import { useSaveData } from '../Data/useSaveData'
 import IconButton from '../Styled/Buttons'
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor'
@@ -16,8 +17,8 @@ import { useEditorStore } from './Store/EditorStore'
 
 const MainEditor = () => {
   const title = useEditorStore((state) => state.node.title)
-  const showGraph = useEditorStore((state) => state.showGraph)
-  const toggleGraph = useEditorStore((state) => state.toggleGraph)
+  const showGraph = useGraphStore((state) => state.showGraph)
+  const toggleGraph = useGraphStore((state) => state.toggleGraph)
 
   const setFsContent = useContentStore((state) => state.setContent)
 
