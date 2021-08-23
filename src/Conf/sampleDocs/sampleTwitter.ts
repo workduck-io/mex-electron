@@ -15,6 +15,6 @@ Tweeted first by [Rishank](https://twitter.com/Rish1907).
 
 ![11:35 PM · Apr 3, 2021](https://i.imgur.com/JbFPvYx.png)
 
-`;
+`
 
-export default twitterNotes;
+export default twitterNotes

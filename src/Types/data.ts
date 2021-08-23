@@ -1,19 +1,19 @@
-import { SyncBlockData } from '../Editor/Components/SyncBlock';
-import { ComboText, NodeEditorContent } from '../Editor/Store/Types';
+import { SyncBlockData } from '../Editor/Components/SyncBlock'
+import { ComboText, NodeEditorContent } from '../Editor/Store/Types'
 
 export interface NodeContent {
-  type: string;
-  content: NodeEditorContent;
+  type: string
+  content: NodeEditorContent
 }
 
 export interface FileData {
-  ilinks: ComboText[];
-  tags: ComboText[];
+  ilinks: ComboText[]
+  tags: ComboText[]
   contents: {
-    [key: string]: NodeContent;
-  };
-  syncBlocks: SyncBlockData[];
+    [key: string]: NodeContent
+  }
+  syncBlocks: SyncBlockData[]
   userSettings: {
-    theme: string;
-  };
+    theme: string
+  }
 }

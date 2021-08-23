@@ -1,9 +1,9 @@
-import { css } from 'styled-components';
-import { Pixels } from '../styled';
+import { css } from 'styled-components'
+import { Pixels } from '../styled'
 
 export const PixelToCSS = (x: Pixels): string => {
-  return `${String(x)}px`;
-};
+  return `${String(x)}px`
+}
 
 export const ThinScrollbar = css`
   scrollbar-color: dark;
@@ -28,4 +28,4 @@ export const ThinScrollbar = css`
   &::-webkit-scrollbar-track {
     background: ${({ theme }) => theme.colors.background.app};
   }
-`;
+`

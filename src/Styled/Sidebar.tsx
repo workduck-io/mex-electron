@@ -1,19 +1,19 @@
-import { Icon } from '@iconify/react';
-import styled from 'styled-components';
-import React from 'react';
-import { PixelToCSS, ThinScrollbar } from './helpers';
+import { Icon } from '@iconify/react'
+import styled from 'styled-components'
+import React from 'react'
+import { PixelToCSS, ThinScrollbar } from './helpers'
 
 export const Sicon = styled(Icon)`
   height: 26px;
   padding-left: 7px;
   border-left: 1px solid ${({ theme }) => theme.colors.gray[7]};
   margin-left: -8px;
-`;
+`
 // Disabled as IconifyIcon type doesn't work
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 export const SIcon = (props: any) => {
-  return <Sicon {...props} />;
-};
+  return <Sicon {...props} />
+}
 
 export const SidebarDiv = styled.div`
   background-color: ${({ theme }) => theme.colors.background.app};
@@ -22,7 +22,7 @@ export const SidebarDiv = styled.div`
   display: flex;
   max-width: ${({ theme }) => PixelToCSS(theme.width.sidebar)};
   width: ${({ theme }) => PixelToCSS(theme.width.sidebar)};
-`;
+`
 
 export const SidebarContent = styled.div`
   ${ThinScrollbar};
@@ -30,7 +30,7 @@ export const SidebarContent = styled.div`
   margin-left: ${({ theme }) => PixelToCSS(theme.width.nav)};
   overflow-x: hidden;
   padding: ${({ theme }) => theme.spacing.medium};
-`;
+`
 export const SectionHeading = styled.div`
   margin: ${({ theme }) => theme.spacing.medium} 0 ${({ theme }) => theme.spacing.small};
   display: flex;
@@ -43,7 +43,7 @@ export const SectionHeading = styled.div`
   svg {
     margin-right: ${({ theme }) => theme.spacing.tiny};
   }
-`;
+`
 
 export const SidebarSection = styled.div`
   color: ${({ theme }) => theme.colors.text.subheading};
@@ -54,7 +54,7 @@ export const SidebarSection = styled.div`
   &.tree:hover {
     color: ${({ theme }) => theme.colors.secondary};
   } */
-`;
+`
 
 // ============================
 // Styles for the Sidebar Tree
@@ -315,9 +315,9 @@ export const StyledTree = styled.div`
     width: 16px;
     display: inline-block;
   }
-`;
+`
 
 export const SRCIcon = styled.span`
   height: 24px;
   color: ${({ theme }) => theme.colors.primary};
-`;
+`

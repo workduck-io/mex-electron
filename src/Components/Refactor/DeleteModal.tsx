@@ -1,15 +1,15 @@
-import { rgba } from 'polished';
-import React, { useEffect, useState } from 'react';
-import Modal from 'react-modal';
-import { ActionMeta } from 'react-select';
-import { useEditorStore, withLoadNode } from '../../Editor/Store/EditorStore';
-import { css } from 'styled-components';
-import tinykeys from 'tinykeys';
-import { useRefactor } from '../../Editor/Actions/useRefactor';
-import { Button } from '../../Styled/Buttons';
-import LookupInput from '../NodeInput/NodeSelect';
-import { Value } from '../NodeInput/Types';
-import { useDelete } from '../../Editor/Actions/useDelete';
+import { rgba } from 'polished'
+import React, { useEffect, useState } from 'react'
+import Modal from 'react-modal'
+import { ActionMeta } from 'react-select'
+import { useEditorStore, withLoadNode } from '../../Editor/Store/EditorStore'
+import { css } from 'styled-components'
+import tinykeys from 'tinykeys'
+import { useRefactor } from '../../Editor/Actions/useRefactor'
+import { Button } from '../../Styled/Buttons'
+import LookupInput from '../NodeInput/NodeSelect'
+import { Value } from '../NodeInput/Types'
+import { useDelete } from '../../Editor/Actions/useDelete'
 
 export const RefactorStyles = css`
   .RefactorContent {
@@ -32,18 +32,18 @@ export const RefactorStyles = css`
     display: flex;
     background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};
   }
-`;
+`
 
 interface DeleteState {
-  open: boolean;
-  defDel: { label: string; value: string };
-  del: string;
-  mockData: string[];
+  open: boolean
+  defDel: { label: string; value: string }
+  del: string
+  mockData: string[]
 }
 
 const Delete = () => {
-  const { getMockDelete, execDelete } = useDelete();
-  const loadNodeFromId = useEditorStore(state => state.loadNodeFromId);
+  const { getMockDelete, execDelete } = useDelete()
+  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
 
   const [deleteState, setDeleteState] = useState<DeleteState>({
     open: false,
@@ -53,10 +53,10 @@ const Delete = () => {
       value: '',
     },
     mockData: [],
-  });
+  })
 
   const openModal = () => {
-    const nodeId = useEditorStore.getState().node.id;
+    const nodeId = useEditorStore.getState().node.id
     setDeleteState({
       open: true,
       defDel: {
@@ -65,8 +65,8 @@ const Delete = () => {
       },
       del: nodeId,
       mockData: getMockDelete(nodeId),
-    });
-  };
+    })
+  }
 
   const closeModal = () => {
     setDeleteState({
@@ -77,33 +77,33 @@ const Delete = () => {
         label: '',
       },
       mockData: [],
-    });
-  };
+    })
+  }
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      '$mod+KeyK KeyD': event => {
-        event.preventDefault();
-        openModal();
+      '$mod+KeyK KeyD': (event) => {
+        event.preventDefault()
+        openModal()
       },
-    });
+    })
     return () => {
-      unsubscribe();
-    };
-  });
+      unsubscribe()
+    }
+  })
 
   // console.log({ to, from, open });
 
   const handleDeleteChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
     if (newValue) {
-      const { value } = newValue;
+      const { value } = newValue
       setDeleteState({
         ...deleteState,
         del: value,
         mockData: getMockDelete(value),
-      });
+      })
     }
-  };
+  }
 
   // useEffect(() => {
   //   // console.log({ to, from });
@@ -114,17 +114,17 @@ const Delete = () => {
 
   // console.log({ mockRefactored });
 
-  const { del, defDel, mockData, open } = deleteState;
+  const { del, defDel, mockData, open } = deleteState
 
   const handleDelete = () => {
-    const { newLinks } = execDelete(del);
-    if (newLinks.length > 0) loadNodeFromId(newLinks[0].text);
-    closeModal();
-  };
+    const { newLinks } = execDelete(del)
+    if (newLinks.length > 0) loadNodeFromId(newLinks[0].text)
+    closeModal()
+  }
 
   const handleCancel = () => {
-    closeModal();
-  };
+    closeModal()
+  }
 
   return (
     <Modal className="RefactorContent" overlayClassName="RefactorOverlay" onRequestClose={closeModal} isOpen={open}>
@@ -137,7 +137,7 @@ const Delete = () => {
         <>
           <h1>Please confirm deleting the node(s):</h1>
           <div>
-            {mockData.map(d => (
+            {mockData.map((d) => (
               <p>{d}</p>
             ))}
           </div>
@@ -146,7 +146,7 @@ const Delete = () => {
       <Button onClick={handleDelete}>Delete</Button>
       <Button onClick={handleCancel}>Cancel Culture</Button>
     </Modal>
-  );
-};
+  )
+}
 
-export default Delete;
+export default Delete

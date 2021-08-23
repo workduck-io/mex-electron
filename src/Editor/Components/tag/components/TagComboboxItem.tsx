@@ -1,11 +1,11 @@
-import * as React from 'react';
-import { ComboboxItemProps } from '../../combobox/components/Combobox.types';
+import * as React from 'react'
+import { ComboboxItemProps } from '../../combobox/components/Combobox.types'
 
 export type ITagComboboxItemData =
   | {
-      isNew?: boolean;
+      isNew?: boolean
     }
-  | undefined;
+  | undefined
 
 export const TagComboboxItem = ({ item }: ComboboxItemProps) => {
   return !(item.data as ITagComboboxItemData)?.isNew ? (
@@ -14,5 +14,5 @@ export const TagComboboxItem = ({ item }: ComboboxItemProps) => {
     <div className="inline-flex items-center">
       New &quot;<span className="font-medium">{item.text}</span>&quot; tag
     </div>
-  );
-};
+  )
+}

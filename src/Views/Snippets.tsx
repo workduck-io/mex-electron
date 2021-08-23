@@ -1,9 +1,9 @@
-import React from 'react';
-import Centered from '../Styled/Layouts';
+import React from 'react'
+import Centered from '../Styled/Layouts'
 
 export type SnippetsProps = {
-  title?: string;
-};
+  title?: string
+}
 
 const Snippets: React.FC<SnippetsProps> = () => {
   return (
@@ -15,7 +15,7 @@ const Snippets: React.FC<SnippetsProps> = () => {
       </div>
       Snippets
     </Centered>
-  );
-};
+  )
+}
 
-export default Snippets;
+export default Snippets

@@ -26,5 +26,5 @@ const rishankNotes = `
 **Email**
 
 [rishank98@gmail.com](mailto:rishank98@gmail.com)
-`;
-export default rishankNotes;
+`
+export default rishankNotes

@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useTimeoutFn } from 'react-use';
-import { getSelectionText, isSelectionExpanded } from '@udecode/plate-common';
-import { TEditor } from '@udecode/plate-core';
+import { useCallback, useEffect, useState } from 'react'
+import { useTimeoutFn } from 'react-use'
+import { getSelectionText, isSelectionExpanded } from '@udecode/plate-common'
+import { TEditor } from '@udecode/plate-core'
 
 /**
  * Hide if not selecting.
@@ -14,31 +14,31 @@ export const useBalloonShow = ({
   hiddenDelay,
   selected,
 }: {
-  editor?: TEditor;
-  ref: any;
-  hiddenDelay: number;
-  selected?: boolean;
+  editor?: TEditor
+  ref: any
+  hiddenDelay: number
+  selected?: boolean
 }) => {
-  const [hidden, setHidden] = useState(true);
+  const [hidden, setHidden] = useState(true)
 
-  const selectionExpanded = editor && isSelectionExpanded(editor);
-  const selectionText = editor && getSelectionText(editor);
+  const selectionExpanded = editor && isSelectionExpanded(editor)
+  const selectionText = editor && getSelectionText(editor)
 
   const show = useCallback(() => {
     if (ref.current && hidden && selectionExpanded) {
       // console.log('show: ', { cur: ref.current, hidden, selectionExpanded });
 
-      setHidden(false);
+      setHidden(false)
     }
-  }, [hidden, ref, selectionExpanded]);
+  }, [hidden, ref, selectionExpanded])
 
-  const [, , reset] = useTimeoutFn(show, hiddenDelay);
+  const [, , reset] = useTimeoutFn(show, hiddenDelay)
 
   useEffect(() => {
     if (!hiddenDelay) {
-      show();
+      show()
     }
-  }, [selectionText?.length, reset, hiddenDelay, show]);
+  }, [selectionText?.length, reset, hiddenDelay, show])
 
   /**
    * Hide if not selecting.
@@ -49,13 +49,13 @@ export const useBalloonShow = ({
         cur: ref.current,
         hidden,
         selectionExpanded,
-      });
-      setHidden(true);
+      })
+      setHidden(true)
       if (ref.current) {
-        ref.current.removeAttribute('style');
+        ref.current.removeAttribute('style')
       }
     }
-  }, [hidden, hiddenDelay, reset, selectionExpanded, selected, show, selectionText?.length, ref]);
+  }, [hidden, hiddenDelay, reset, selectionExpanded, selected, show, selectionText?.length, ref])
 
   // useEffect(() => {
   //   if (selected) {
@@ -68,11 +68,11 @@ export const useBalloonShow = ({
    * Hide when the selection length changes.
    */
   useEffect(() => {
-    if (!hiddenDelay) return;
+    if (!hiddenDelay) return
 
-    reset();
-    setHidden(true);
-  }, [hiddenDelay, selectionText?.length, reset]);
+    reset()
+    setHidden(true)
+  }, [hiddenDelay, selectionText?.length, reset])
 
-  return [hidden];
-};
+  return [hidden]
+}

@@ -1,4 +1,4 @@
-import { generateTheme } from '../themeGenerator';
+import { generateTheme } from '../themeGenerator'
 
 export const gruvboxTheme = generateTheme({
   // Colors
@@ -34,4 +34,4 @@ export const gruvboxTheme = generateTheme({
     accent: '#fe8019',
     oppositePrimary: '#282828',
   },
-});
+})

@@ -4,7 +4,7 @@ import {
   Plate,
   selectEditor,
   useStoreEditorRef,
-  useStoreEditorValue
+  useStoreEditorValue,
 } from '@udecode/plate'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
@@ -33,16 +33,16 @@ import { useSyncStore } from './Store/SyncStore'
 const options = createPlateOptions()
 
 const Editor = () => {
-  const fsContent = useEditorStore(state => state.content)
-  const nodeId = useEditorStore(state => state.node.id)
+  const fsContent = useEditorStore((state) => state.content)
+  const nodeId = useEditorStore((state) => state.node.id)
 
-  const tags = useDataStore(state => state.tags)
-  const ilinks = useDataStore(state => state.ilinks)
-  const slash_commands = useDataStore(state => state.slash_commands)
-  const addSyncBlock = useSyncStore(state => state.addSyncBlock)
-  const syncId = useSyncStore(state => state.syncId)
+  const tags = useDataStore((state) => state.tags)
+  const ilinks = useDataStore((state) => state.ilinks)
+  const slash_commands = useDataStore((state) => state.slash_commands)
+  const addSyncBlock = useSyncStore((state) => state.addSyncBlock)
+  const syncId = useSyncStore((state) => state.syncId)
 
-  const setFsContent = useContentStore(state => state.setContent)
+  const setFsContent = useContentStore((state) => state.setContent)
 
   useEffect(() => {
     ReactTooltip.rebuild()
@@ -56,14 +56,14 @@ const Editor = () => {
   const editableProps = {
     placeholder: 'Murmuring the mex hype...',
     style: {
-      padding: '15px'
-    }
+      padding: '15px',
+    },
   }
 
   const saveData = useSaveData()
 
-  const addTag = useDataStore(state => state.addTag)
-  const addILink = useDataStore(state => state.addILink)
+  const addTag = useDataStore((state) => state.addTag)
+  const addILink = useDataStore((state) => state.addILink)
 
   const generateEditorId = () => `${id}`
 
@@ -90,10 +90,10 @@ const Editor = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      '$mod+KeyS': event => {
+      '$mod+KeyS': (event) => {
         event.preventDefault()
         onSave()
-      }
+      },
     })
     return () => {
       unsubscribe()
@@ -114,51 +114,51 @@ const Editor = () => {
         ilink: {
           cbKey: ComboboxKey.ILINK,
           trigger: '[[',
-          data: ilinks
+          data: ilinks,
         },
 
         tag: {
           cbKey: ComboboxKey.TAG,
           trigger: '#',
-          data: tags
+          data: tags,
         },
 
         slash_command: {
           cbKey: ComboboxKey.SLASH_COMMAND,
           trigger: '/',
-          data: slash_commands
-        }
+          data: slash_commands,
+        },
       }),
 
       onKeyDown: useMultiComboboxOnKeyDown(
         {
           ilink: {
             slateElementType: ELEMENT_ILINK,
-            newItemHandler: newItem => {
+            newItemHandler: (newItem) => {
               addILink(newItem)
-            }
+            },
           },
           tag: {
             slateElementType: ELEMENT_TAG,
-            newItemHandler: newItem => {
+            newItemHandler: (newItem) => {
               addTag(newItem)
-            }
+            },
           },
           // Slash command configs
 
           slash_command: {
             slateElementType: ELEMENT_MEDIA_EMBED,
             // Support for creating slash commands by user can be added here
-            newItemHandler: () => undefined
-          }
+            newItemHandler: () => undefined,
+          },
         },
         {
           webem: {
             slateElementType: ELEMENT_MEDIA_EMBED,
             command: 'webem',
             options: {
-              url: 'http://example.com/'
-            }
+              url: 'http://example.com/',
+            },
           },
           sync_block: {
             slateElementType: ELEMENT_SYNC_BLOCK,
@@ -167,11 +167,11 @@ const Editor = () => {
               const nd = getNewBlockData()
               addSyncBlock(nd) // Also need to add the newly created block to the sync store
               return nd
-            }
-          }
+            },
+          },
         }
-      )
-    }
+      ),
+    },
   }
 
   const comboboxRenderConfig: ComboElementProps = {
@@ -179,29 +179,29 @@ const Editor = () => {
       ilink: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_ILINK,
-          newItemHandler: newItem => {
+          newItemHandler: (newItem) => {
             addILink(newItem)
-          }
+          },
         },
-        renderElement: ILinkComboboxItem
+        renderElement: ILinkComboboxItem,
       },
       tag: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_TAG,
-          newItemHandler: newItem => {
+          newItemHandler: (newItem) => {
             addTag(newItem)
-          }
+          },
         },
-        renderElement: TagComboboxItem
+        renderElement: TagComboboxItem,
       },
       slash_command: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_MEDIA_EMBED,
-          newItemHandler: () => undefined
+          newItemHandler: () => undefined,
         },
-        renderElement: SlashComboboxItem
-      }
-    }
+        renderElement: SlashComboboxItem,
+      },
+    },
   }
 
   // We get memoized plugins

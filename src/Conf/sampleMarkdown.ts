@@ -126,6 +126,6 @@ Autoconverted link https://github.com/nodeca/pica (enable linkify to see)
 ---
 
 > _There is more to come_
-`;
+`
 
-export default SampleMarkdown;
+export default SampleMarkdown

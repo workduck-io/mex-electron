@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { getToolbarStyles } from './Toolbar.styles';
-import { ToolbarProps } from './Toolbar.types';
+import * as React from 'react'
+import { getToolbarStyles } from './Toolbar.styles'
+import { ToolbarProps } from './Toolbar.types'
 
 export const ToolbarBase = React.forwardRef<HTMLDivElement, ToolbarProps>((props, ref) => {
-  return <div data-testid="Toolbar" ref={ref} {...props} />;
-});
+  return <div data-testid="Toolbar" ref={ref} {...props} />
+})
 
-ToolbarBase.displayName = 'ToolbarBase';
+ToolbarBase.displayName = 'ToolbarBase'
 
 // export const withStyles = <T,>(
 //   Component: FunctionComponent<T>,
@@ -17,9 +17,9 @@ ToolbarBase.displayName = 'ToolbarBase';
 //   ));
 
 export const Toolbar = React.forwardRef<HTMLDivElement, ToolbarProps>((props: ToolbarProps, ref) => {
-  const { root } = getToolbarStyles(props);
+  const { root } = getToolbarStyles(props)
 
-  return <ToolbarBase {...props} ref={ref} css={root.css} className={root.className} />;
-});
+  return <ToolbarBase {...props} ref={ref} css={root.css} className={root.className} />
+})
 
-Toolbar.displayName = 'Toolbar';
+Toolbar.displayName = 'Toolbar'

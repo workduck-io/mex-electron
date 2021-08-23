@@ -1,7 +1,7 @@
-import markdown from 'remark-parse';
-import slate, { serialize as RemarkSlateSerialize } from 'remark-slate';
-import { OptionType } from 'remark-slate/dist/deserialize';
-import unified from 'unified';
+import markdown from 'remark-parse'
+import slate, { serialize as RemarkSlateSerialize } from 'remark-slate'
+import { OptionType } from 'remark-slate/dist/deserialize'
+import unified from 'unified'
 
 const customNodeTypes = {
   paragraph: 'p',
@@ -25,38 +25,38 @@ const customNodeTypes = {
   inline_code_mark: 'code',
   thematic_break: 'thematic_break',
   image: 'img',
-};
+}
 
 export const deserializationOptions: OptionType = {
   nodeTypes: customNodeTypes,
   linkDestinationKey: 'url',
   imageSourceKey: 'src',
   imageCaptionKey: 'alt',
-};
+}
 
 export const serializationOptions = {
   nodeTypes: customNodeTypes,
-};
+}
 
 /** Deserialize Markdown string to a slate plugin document */
 export const deserialize = async (content: string): Promise<any[]> => {
-  let slateObj: any[] = [];
+  let slateObj: any[] = []
 
   unified()
     .use(markdown)
     .use(slate, deserializationOptions)
     .process(content, (err, file) => {
-      if (err) throw err;
-      slateObj = file.result as any[];
-    });
+      if (err) throw err
+      slateObj = file.result as any[]
+    })
 
-  return slateObj;
-};
+  return slateObj
+}
 
 export const serialize = (slateDoc: any[] | undefined): string => {
   if (slateDoc) {
-    const newVal = slateDoc.map(v => RemarkSlateSerialize(v, serializationOptions)).join('\n');
-    return newVal;
+    const newVal = slateDoc.map((v) => RemarkSlateSerialize(v, serializationOptions)).join('\n')
+    return newVal
   }
-  return '';
-};
+  return ''
+}

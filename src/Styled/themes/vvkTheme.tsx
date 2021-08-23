@@ -1,4 +1,4 @@
-import { generateTheme } from '../themeGenerator';
+import { generateTheme } from '../themeGenerator'
 
 export const vvkTheme = generateTheme({
   // Colors
@@ -34,4 +34,4 @@ export const vvkTheme = generateTheme({
     accent: '#C792EA',
     oppositePrimary: '#000',
   },
-});
+})

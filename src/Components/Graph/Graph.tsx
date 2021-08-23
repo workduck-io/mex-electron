@@ -22,22 +22,22 @@ const StyledGraph = styled('div')`
 const options = {
   autoResize: true,
   layout: {
-    hierarchical: false
+    hierarchical: false,
   },
   edges: {
     color: '#5e6c92',
     smooth: {
       enabled: true,
       type: 'dynamic',
-      roundness: 0.5
-    }
+      roundness: 0.5,
+    },
   },
   nodes: {
     font: '16px Inter #7D90C3',
     scaling: {
-      label: true
+      label: true,
     },
-    shape: 'dot'
+    shape: 'dot',
   },
   physics: {
     barnesHut: {
@@ -47,14 +47,14 @@ const options = {
       springLength: 75,
       springConstant: 0.04,
       damping: 0.09,
-      avoidOverlap: 0
-    }
-  }
+      avoidOverlap: 0,
+    },
+  },
 }
 
 export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
   const { graphData } = props
-  const loadNodeFromId = useEditorStore(state => state.loadNodeFromId)
+  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
 
   const [network, setNetwork] = useState<any>()
 
@@ -77,8 +77,8 @@ export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
 
           if (selectNode.length > 0) loadNodeFromId(selectNode[0].nodeId)
         }
-      }
-    }
+      },
+    },
   })
 
   useEffect(() => {
@@ -88,7 +88,7 @@ export const TreeGraph = (props: { graphData: { nodes: any; edges: any } }) => {
       return {
         graph: graphData,
         counter: id,
-        ...rest
+        ...rest,
       }
     })
   }, [graphData]) // eslint-disable-line react-hooks/exhaustive-deps

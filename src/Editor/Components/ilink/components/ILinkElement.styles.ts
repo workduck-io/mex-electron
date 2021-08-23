@@ -1,11 +1,11 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 export const SILinkRoot = styled.div`
   display: inline-block;
   line-height: 1.2;
 
   /* outline: selectedFocused ? rgb(0, 120, 212) auto 1px : undefined, */
-`;
+`
 
 export const SILink = styled.div`
   display: inline-block;
@@ -19,4 +19,4 @@ export const SILink = styled.div`
       margin-left: ${({ theme }) => theme.spacing.tiny};
     }
   }
-`;
+`

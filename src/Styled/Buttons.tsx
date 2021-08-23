@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components'
 import { centeredCss } from './Layouts'
 
 interface ButtonProps {
-  highlight?: boolean;
+  highlight?: boolean
 }
 
 export const Button = styled.button<ButtonProps>`
@@ -32,12 +32,12 @@ export const Button = styled.button<ButtonProps>`
 `
 
 export type IconButtonProps = {
-  icon: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  title: string;
-  size?: string | number;
-  onClick?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  highlight?: boolean;
-};
+  icon: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  title: string
+  size?: string | number
+  onClick?: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  highlight?: boolean
+}
 
 export const HeadlessButton = styled.button`
   border: none;

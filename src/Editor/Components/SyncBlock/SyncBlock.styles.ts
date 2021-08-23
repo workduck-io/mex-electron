@@ -1,8 +1,8 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from 'styled-components'
 
 export const RootElement = styled.div`
   position: relative;
-`;
+`
 
 // Input
 
@@ -16,7 +16,7 @@ export const ElementHeader = styled.div`
     margin-right: ${({ theme }) => theme.spacing.tiny};
   }
   margin-bottom: ${({ theme }) => theme.spacing.small};
-`;
+`
 
 export const SyncForm = styled.form`
   display: flex;
@@ -28,17 +28,17 @@ export const SyncForm = styled.form`
 
   background: ${({ theme }) => theme.colors.background.card};
   border-radius: ${({ theme: { borderRadius } }) => `${borderRadius.small}`};
-`;
+`
 
 export const FormControls = styled.div`
   display: flex;
   width: 100%;
   margin-top: ${({ theme }) => theme.spacing.small};
   justify-content: space-between;
-`;
+`
 
 interface ServiceSelectorLabelProps {
-  checked: boolean;
+  checked: boolean
 }
 export const ServiceSelectorLabel = styled.label<ServiceSelectorLabelProps>`
   position: relative;
@@ -70,7 +70,7 @@ export const ServiceSelectorLabel = styled.label<ServiceSelectorLabelProps>`
     left: 0;
     opacity: 0;
   }
-`;
+`
 
 export const ServiceLabel = styled.div`
   display: flex;
@@ -80,4 +80,4 @@ export const ServiceLabel = styled.div`
   svg {
     margin-right: ${({ theme }) => theme.spacing.small};
   }
-`;
+`

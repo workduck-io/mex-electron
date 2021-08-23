@@ -1,23 +1,23 @@
-import React from 'react';
-import Modal from 'react-modal';
-import { HashRouter as Router, Route, Switch } from 'react-router-dom';
-import Lookup from './Components/Lookup';
-import Delete from './Components/Refactor/DeleteModal';
-import Refactor from './Components/Refactor/Refactor';
-import Rename from './Components/Refactor/Rename';
-import sampleRCTree from './Components/Sidebar/treeUtils';
-import Contexts from './Context/Contexts';
-import Providers from './Context/Providers';
-import MainEditor from './Editor/MainEditor';
-import Main from './Layout/Main';
-import GlobalStyle from './Styled/Global';
-import Dashboard from './Views/Dashboard';
-import Integrations from './Views/Integrations';
-import Settings from './Views/Settings';
-import Snippets from './Views/Snippets';
-import Tasks from './Views/Tasks';
+import React from 'react'
+import Modal from 'react-modal'
+import { HashRouter as Router, Route, Switch } from 'react-router-dom'
+import Lookup from './Components/Lookup'
+import Delete from './Components/Refactor/DeleteModal'
+import Refactor from './Components/Refactor/Refactor'
+import Rename from './Components/Refactor/Rename'
+import sampleRCTree from './Components/Sidebar/treeUtils'
+import Contexts from './Context/Contexts'
+import Providers from './Context/Providers'
+import MainEditor from './Editor/MainEditor'
+import Main from './Layout/Main'
+import GlobalStyle from './Styled/Global'
+import Dashboard from './Views/Dashboard'
+import Integrations from './Views/Integrations'
+import Settings from './Views/Settings'
+import Snippets from './Views/Snippets'
+import Tasks from './Views/Tasks'
 
-Modal.setAppElement('#root');
+Modal.setAppElement('#root')
 
 function App() {
   return (
@@ -42,7 +42,7 @@ function App() {
         </Contexts>
       </Providers>
     </Router>
-  );
+  )
 }
 
-export default App;
+export default App

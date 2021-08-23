@@ -260,6 +260,6 @@ Quick disaster management guide for git: https://ohshitgit.com/
 <https://res.cloudinary.com/hy4kyit2a/image/upload/SF_git_cheatsheet.pdf>
 
 <http://jonas.nitro.dk/git/quick-reference.html>
-`;
+`
 
-export default devNotes;
+export default devNotes

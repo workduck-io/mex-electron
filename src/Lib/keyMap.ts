@@ -1,5 +1,5 @@
 const keyMap = {
   LOOKUP: 'command+l',
-};
+}
 
-export default keyMap;
+export default keyMap

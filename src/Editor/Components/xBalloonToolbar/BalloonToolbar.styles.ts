@@ -1,11 +1,11 @@
 // import { RootStyleSet, Styles } from '@udecode/plate-styled-components';
-import { concatStyleSets, IStyle } from '@uifabric/styling';
-import { memoizeFunction } from '@uifabric/utilities';
-import { BalloonToolbarStyleProps } from './BalloonToolbar.types';
+import { concatStyleSets, IStyle } from '@uifabric/styling'
+import { memoizeFunction } from '@uifabric/utilities'
+import { BalloonToolbarStyleProps } from './BalloonToolbar.types'
 
 const classNames = {
   root: 'slate-BalloonToolbar',
-};
+}
 
 export const getBalloonToolbarStyles = memoizeFunction(
   (
@@ -17,21 +17,21 @@ export const getBalloonToolbarStyles = memoizeFunction(
     direction?: BalloonToolbarStyleProps['direction'],
     arrow?: BalloonToolbarStyleProps['arrow']
   ): any => {
-    let color = 'rgb(157, 170, 182)';
-    let colorActive = 'white';
-    let background = 'rgb(36, 42, 49)';
-    let borderColor = 'transparent';
+    let color = 'rgb(157, 170, 182)'
+    let colorActive = 'white'
+    let background = 'rgb(36, 42, 49)'
+    let borderColor = 'transparent'
 
     if (theme === 'light') {
-      color = 'rgba(0, 0, 0, 0.50)';
-      colorActive = 'black';
-      background = 'rgb(250, 250, 250)';
-      borderColor = 'rgb(196, 196, 196)';
+      color = 'rgba(0, 0, 0, 0.50)'
+      colorActive = 'black'
+      background = 'rgb(250, 250, 250)'
+      borderColor = 'rgb(196, 196, 196)'
     }
 
-    let marginTop;
-    let arrowStyle: IStyle = {};
-    let arrowBorderStyle: IStyle = {};
+    let marginTop
+    let arrowStyle: IStyle = {}
+    let arrowBorderStyle: IStyle = {}
 
     if (arrow) {
       arrowStyle = {
@@ -42,7 +42,7 @@ export const getBalloonToolbarStyles = memoizeFunction(
         transform: 'translateX(-50%)',
         borderColor: `${background} transparent`,
         borderStyle: 'solid',
-      };
+      }
 
       if (direction === 'top') {
         arrowStyle = {
@@ -50,7 +50,7 @@ export const getBalloonToolbarStyles = memoizeFunction(
           top: '100%',
           bottom: 'auto',
           borderWidth: '8px 8px 0px',
-        };
+        }
 
         if (theme === 'light') {
           arrowBorderStyle = {
@@ -58,7 +58,7 @@ export const getBalloonToolbarStyles = memoizeFunction(
             marginTop: 0,
             borderWidth: '9px 9px 0px',
             borderColor: `${borderColor} transparent`,
-          };
+          }
         }
       } else {
         arrowStyle = {
@@ -66,7 +66,7 @@ export const getBalloonToolbarStyles = memoizeFunction(
           top: 'auto',
           bottom: '100%',
           borderWidth: '0px 8px 8px',
-        };
+        }
 
         if (theme === 'light') {
           arrowBorderStyle = {
@@ -74,15 +74,15 @@ export const getBalloonToolbarStyles = memoizeFunction(
             marginTop: 0,
             borderWidth: '0px 9px 9px',
             borderColor: `${borderColor} transparent`,
-          };
+          }
         }
       }
     }
 
     if (direction === 'top') {
-      marginTop = -9;
+      marginTop = -9
     } else {
-      marginTop = 9;
+      marginTop = 9
     }
 
     return concatStyleSets(
@@ -121,6 +121,6 @@ export const getBalloonToolbarStyles = memoizeFunction(
         ],
       },
       styles
-    );
+    )
   }
-);
+)

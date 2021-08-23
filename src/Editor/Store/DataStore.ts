@@ -1,8 +1,8 @@
-import create from 'zustand';
-import { generateTree, SEPARATOR } from '../../Components/Sidebar/treeUtils';
-import { generateComboText } from './sampleTags';
-import getFlatTree from '../../Lib/flatTree';
-import { DataStoreState } from './Types';
+import create from 'zustand'
+import { generateTree, SEPARATOR } from '../../Components/Sidebar/treeUtils'
+import { generateComboText } from './sampleTags'
+import getFlatTree from '../../Lib/flatTree'
+import { DataStoreState } from './Types'
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   // Tags
@@ -20,31 +20,31 @@ const useDataStore = create<DataStoreState>((set, get) => ({
       tags,
       ilinks,
       slash_commands,
-    });
+    })
   },
 
   // Add a new tag to the store
-  addTag: tag => {
+  addTag: (tag) => {
     set({
       tags: [...get().tags, generateComboText(tag, get().tags.length)],
-    });
+    })
   },
 
   // Add a new ILink to the store
-  addILink: ilink => {
+  addILink: (ilink) => {
     set({
       ilinks: [...get().ilinks, generateComboText(ilink, get().ilinks.length)],
-    });
+    })
   },
 
-  setIlinks: ilinks => {
+  setIlinks: (ilinks) => {
     set({
       ilinks,
-    });
+    })
   },
-}));
+}))
 
-export const getLevel = (id: string) => id.split(SEPARATOR).length;
+export const getLevel = (id: string) => id.split(SEPARATOR).length
 
 /** Link sanatization
  *
@@ -52,34 +52,34 @@ export const getLevel = (id: string) => id.split(SEPARATOR).length;
  * Guarantees parent is before child -> Condition required for correct tree
  */
 export const sanatizeLinks = (links: string[]): string[] => {
-  let oldLinks = links;
-  const newLinks: string[] = [];
-  let currentDepth = 1;
+  let oldLinks = links
+  const newLinks: string[] = []
+  let currentDepth = 1
 
   while (oldLinks.length > 0) {
     for (const l of links) {
       if (getLevel(l) === currentDepth) {
-        newLinks.push(l);
-        oldLinks = oldLinks.filter(k => k !== l);
+        newLinks.push(l)
+        oldLinks = oldLinks.filter((k) => k !== l)
       }
     }
-    currentDepth += 1;
+    currentDepth += 1
   }
 
-  return newLinks;
-};
+  return newLinks
+}
 
 export const useTreeFromLinks = () => {
-  const ilinks = useDataStore(store => store.ilinks);
-  const links = ilinks.map(i => i.text);
-  const sanatizedLinks = sanatizeLinks(links);
-  const tree = generateTree(sanatizedLinks);
+  const ilinks = useDataStore((store) => store.ilinks)
+  const links = ilinks.map((i) => i.text)
+  const sanatizedLinks = sanatizeLinks(links)
+  const tree = generateTree(sanatizedLinks)
 
-  return tree;
-};
+  return tree
+}
 
 export const useFlatTreeFromILinks = () => {
-  return getFlatTree(useTreeFromLinks());
-};
+  return getFlatTree(useTreeFromLinks())
+}
 
-export default useDataStore;
+export default useDataStore

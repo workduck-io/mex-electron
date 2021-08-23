@@ -4,34 +4,34 @@ import useDataStore, { getLevel } from '../../Editor/Store/DataStore'
 import { getNodeIdLast, isParent, isTopNode } from '../Sidebar/treeUtils'
 
 interface GraphNode {
-  id: number;
-  nodeId: string;
-  label: string;
+  id: number
+  nodeId: string
+  label: string
   color: {
-    border: string;
-    background: string;
+    border: string
+    background: string
     highlight: {
-      border: string;
-      background: string;
-    };
+      border: string
+      background: string
+    }
     hover: {
-      border: string;
-      background: string;
-    };
-  };
+      border: string
+      background: string
+    }
+  }
   font?: {
-    color?: string;
-    face?: string;
-    size?: string;
-  };
-  size?: number;
+    color?: string
+    face?: string
+    size?: string
+  }
+  size?: number
 }
 
 interface GraphEdge {
-  from: number;
-  to: number;
-  color?: string;
-  physics?: boolean;
+  from: number
+  to: number
+  color?: string
+  physics?: boolean
 }
 
 const getNodeStyles = (level: number, theme: DefaultTheme) => {
@@ -51,17 +51,17 @@ const getNodeStyles = (level: number, theme: DefaultTheme) => {
       background: color,
       highlight: {
         border: mix(0.1, primary, color),
-        background: mix(0.2, primary, color)
+        background: mix(0.2, primary, color),
       },
       hover: {
         border: mix(0.2, primary, color),
-        background: mix(0.3, primary, color)
-      }
+        background: mix(0.3, primary, color),
+      },
     },
     font: {
-      color: fontColor
+      color: fontColor,
     },
-    shape: 'box'
+    shape: 'box',
     // size: 16 / (0.66 * (level * 0.75 + 1)),
   }
 }
@@ -74,13 +74,13 @@ const getEdgeStyles = (level: number, theme: DefaultTheme) => {
   const color = mix(level * step, gray[10], colorBase)
 
   return {
-    color
+    color,
   }
 }
 
-export const useGraphData = () => {
-  const ilinks = useDataStore(store => store.ilinks)
-  const links = ilinks.map(i => i.text)
+export const useGraphData = (showLocal?: boolean) => {
+  const ilinks = useDataStore((store) => store.ilinks)
+  const links = ilinks.map((i) => i.text)
 
   const theme = useTheme()
 
@@ -90,21 +90,21 @@ export const useGraphData = () => {
       id: id + 1,
       label: getNodeIdLast(node),
       nodeId: node,
-      ...getNodeStyles(level, theme)
+      ...getNodeStyles(level, theme),
     }
   })
 
   const edges: GraphEdge[] = []
 
-  nodes.forEach(node => {
-    nodes.forEach(compNode => {
+  nodes.forEach((node) => {
+    nodes.forEach((compNode) => {
       if (node.id !== compNode.id) {
         const level = getLevel(compNode.nodeId)
         if (isParent(node.nodeId, compNode.nodeId)) {
           edges.push({
             to: node.id,
             from: compNode.id,
-            ...getEdgeStyles(level, theme)
+            ...getEdgeStyles(level, theme),
           })
         }
 
@@ -123,7 +123,7 @@ export const useGraphData = () => {
       edges.push({
         to: node.id,
         from: 0,
-        ...getEdgeStyles(0, theme)
+        ...getEdgeStyles(0, theme),
       })
     }
   })
@@ -132,11 +132,11 @@ export const useGraphData = () => {
     id: 0,
     nodeId: 'root',
     label: 'root',
-    ...getNodeStyles(0, theme)
+    ...getNodeStyles(0, theme),
   })
 
   return {
     nodes,
-    edges
+    edges,
   }
 }

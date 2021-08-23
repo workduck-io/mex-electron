@@ -24,4 +24,4 @@ export const results = [
     },
     desc: 'The Lock Artist is a standalone crime novel by American novelist Steve Hamilton. It was first published in 2010',
   },
-];
+]

@@ -18,9 +18,6 @@
     "email": "xypnox@workduck.io"
   },
   "lint-staged": {
-    "./src/**/*.{ts,tsx,js,json,css,sass,scss,less,html,md}": [
-      "yarn run prettier -c ./.prettierrc --write"
-    ],
     "*.{ts,tsx}": "eslint --cache --fix"
   },
   "license": "MIT",
