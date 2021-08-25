@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import equal from 'fast-deep-equal'
-import Graph from 'react-vis-network-graph'
-import styled from 'styled-components'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
-import { GraphTools, StyledGraph } from './Graph.styles'
-import IconButton from '../../Styled/Buttons'
-import more2Fill from '@iconify-icons/ri/more-2-fill'
 import bubbleChartLine from '@iconify-icons/ri/bubble-chart-line'
+import more2Fill from '@iconify-icons/ri/more-2-fill'
+import equal from 'fast-deep-equal'
+import React, { useEffect, useState } from 'react'
+import Graph from 'react-vis-network-graph'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
+import IconButton from '../../Styled/Buttons'
 import Switch from '../Forms/Switch'
+import { GraphTools, StyledGraph } from './Graph.styles'
 import { useGraphStore } from './GraphStore'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -60,10 +59,10 @@ export const TreeGraph = (props: TreeGraphProps) => {
   const toggleLocal = useGraphStore((state) => state.toggleLocal)
   const [network, setNetwork] = useState<any>()
 
-  // console.log('Checking for graph data 12321: ', { graphData });
+  console.log('Checking for graph data 12321: ', { graphData })
 
   const [state, setState] = useState({
-    counter: graphData.nodes.length,
+    counter: showLocal ? -graphData.nodes.length : graphData.nodes.length,
     graph: graphData,
     events: {
       select: (selectProps: any): void => {

@@ -1,8 +1,10 @@
 import { mix } from 'polished'
 import { DefaultTheme, useTheme } from 'styled-components'
+import { useLinks } from '../../Editor/Actions/useLinks'
 import useDataStore, { getLevel } from '../../Editor/Store/DataStore'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
+import { NodeLink } from '../../Types/relations'
 import { getNodeIdLast, isParent, isTopNode } from '../Sidebar/treeUtils'
-import { GraphTools } from './Graph.styles'
 import { useGraphStore } from './GraphStore'
 
 interface GraphNode {
@@ -53,17 +55,17 @@ const getNodeStyles = (level: number, theme: DefaultTheme) => {
       background: color,
       highlight: {
         border: mix(0.1, primary, color),
-        background: mix(0.2, primary, color),
+        background: mix(0.2, primary, color)
       },
       hover: {
         border: mix(0.2, primary, color),
-        background: mix(0.3, primary, color),
-      },
+        background: mix(0.3, primary, color)
+      }
     },
     font: {
-      color: fontColor,
+      color: fontColor
     },
-    shape: 'box',
+    shape: 'box'
     // size: 16 / (0.66 * (level * 0.75 + 1)),
   }
 }
@@ -76,15 +78,18 @@ const getEdgeStyles = (level: number, theme: DefaultTheme) => {
   const color = mix(level * step, gray[10], colorBase)
 
   return {
-    color,
+    color
   }
 }
 
 export const useGraphData = () => {
   const ilinks = useDataStore((store) => store.ilinks)
   const links = ilinks.map((i) => i.text)
+  const nodeId = useEditorStore((store) => store.node.id)
 
   const showLocal = useGraphStore((state) => state.showLocal)
+
+  const { getLinks } = useLinks()
 
   const theme = useTheme()
 
@@ -94,26 +99,27 @@ export const useGraphData = () => {
       id: id + 1,
       label: getNodeIdLast(node),
       nodeId: node,
-      ...getNodeStyles(level, theme),
+      ...getNodeStyles(level, theme)
     }
   })
 
   const edges: GraphEdge[] = []
 
-  nodes.forEach((node) => {
-    nodes.forEach((compNode) => {
-      if (node.id !== compNode.id) {
-        const level = getLevel(compNode.nodeId)
-        if (isParent(node.nodeId, compNode.nodeId)) {
-          edges.push({
-            to: node.id,
-            from: compNode.id,
-            ...getEdgeStyles(level, theme),
-          })
-        }
+  if (!showLocal) {
+    nodes.forEach((node) => {
+      nodes.forEach((compNode) => {
+        if (node.id !== compNode.id) {
+          const level = getLevel(compNode.nodeId)
+          if (isParent(node.nodeId, compNode.nodeId)) {
+            edges.push({
+              to: node.id,
+              from: compNode.id,
+              ...getEdgeStyles(level, theme)
+            })
+          }
 
-        // Uncomment to show links of any level of parent
-        /* else if (isElder(node.label, compNode.label)) {
+          // Uncomment to show links of any level of parent
+          /* else if (isElder(node.label, compNode.label)) {
           edges.push({
             to: node.id,
             from: compNode.id,
@@ -121,26 +127,59 @@ export const useGraphData = () => {
             // physics: false,
           });
         } */
+        }
+      })
+      if (isTopNode(node.nodeId)) {
+        edges.push({
+          to: node.id,
+          from: 0,
+          ...getEdgeStyles(0, theme)
+        })
       }
     })
-    if (isTopNode(node.nodeId)) {
-      edges.push({
-        to: node.id,
-        from: 0,
-        ...getEdgeStyles(0, theme),
-      })
-    }
-  })
 
-  nodes.push({
-    id: 0,
-    nodeId: 'root',
-    label: 'root',
-    ...getNodeStyles(0, theme),
-  })
+    nodes.push({
+      id: 0,
+      nodeId: 'root',
+      label: 'root',
+      ...getNodeStyles(0, theme)
+    })
+
+    return {
+      nodes,
+      edges
+    }
+  }
+
+  // Filter for the local graph here
+  const nodeLinks = getLinks(nodeId)
+  const newNodes = filterNodeInLinks(nodeId, nodes, nodeLinks)
+
+  nodeLinks.forEach((l) =>
+    edges.push({
+      to: getNodeNumId(l.to, newNodes),
+      from: getNodeNumId(l.from, newNodes)
+    })
+  )
 
   return {
-    nodes,
-    edges,
+    nodes: newNodes,
+    edges: edges
   }
+}
+
+const getNodeNumId = (id: string, nodes: GraphNode[]): number => {
+  const fNodes = nodes.filter((n) => n.nodeId === id)
+  if (fNodes.length === 1) return fNodes[0].id
+  return -1
+}
+
+const filterNodeInLinks = (id: string, nodes: GraphNode[], links: NodeLink[]) => {
+  const fLinks = links
+    .filter((n) => n.from === id || n.to === id)
+    .map((n) => [n.from, n.to])
+    .flat()
+
+  const fNodes = nodes.filter((n) => fLinks.indexOf(n.nodeId) !== -1)
+  return fNodes
 }

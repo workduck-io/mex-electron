@@ -1,16 +1,15 @@
 import React from 'react'
 import { NodeLink } from '../../Types/relations'
-import { Contents, useContentStore } from '../Store/ContentStore'
-import useDataStore from '../Store/DataStore'
+import { useContentStore } from '../Store/ContentStore'
 
 const getLinksFromContent = (content: any[]): string[] => {
   let links: string[] = []
 
-  content.map((n) => {
-    if (n.type == 'ilink') {
+  content.forEach((n) => {
+    if (n.type === 'ilink') {
       links.push(n.value)
     }
-    if (n.children.length > 0) {
+    if (n.children && n.children.length > 0) {
       links = links.concat(getLinksFromContent(n.children))
     }
   })
@@ -19,11 +18,7 @@ const getLinksFromContent = (content: any[]): string[] => {
 }
 
 export const useLinks = () => {
-  const ilinks = useDataStore((state) => state.ilinks)
   const contents = useContentStore((state) => state.contents)
-
-  const setILinks = useDataStore((state) => state.setIlinks)
-  const initContents = useContentStore((state) => state.initContents)
 
   const getAllLinks = () => {
     // We assume that all links exist
@@ -35,7 +30,7 @@ export const useLinks = () => {
         links.forEach((to) => {
           allLinks.push({
             from: key,
-            to,
+            to
           })
         })
       }
@@ -52,16 +47,17 @@ export const useLinks = () => {
         newLinks.push({ from, to })
       }
     })
+
+    return newLinks
   }
 
   return { getAllLinks, getLinks }
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 // Used to wrap a class component to provide hooks
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const withILinks = (Component: any) => {
-  return function C2(props: any) {
+  return function C2 (props: any) {
     const links = useLinks()
 
     return <Component {...links} {...props} /> // eslint-disable-line react/jsx-props-no-spreading
