@@ -2,12 +2,14 @@ import { rgba } from 'polished'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import { ActionMeta } from 'react-select'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { css } from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useRefactor } from '../../Editor/Actions/useRefactor'
 import { Button } from '../../Styled/Buttons'
 import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
+import { doesLinkRemain } from './doesLinkRemain'
 
 export const RefactorStyles = css`
   .RefactorContent {
@@ -43,6 +45,10 @@ const Refactor = () => {
     }[]
   >([])
 
+  const loadNodeFromId = useEditorStore((store) => store.loadNodeFromId)
+
+  const nodeId = useEditorStore((store) => store.node.id)
+
   const openModal = () => {
     setOpen(true)
     // searchInput.current.focus();
@@ -60,7 +66,7 @@ const Refactor = () => {
       '$mod+KeyK KeyR': (event) => {
         event.preventDefault()
         openModal()
-      },
+      }
     })
     return () => {
       unsubscribe()
@@ -101,7 +107,12 @@ const Refactor = () => {
   // console.log({ mockRefactored });
 
   const handleRefactor = () => {
-    if (to && from) execRefactor(from, to)
+    const res = execRefactor(from, to)
+    if (doesLinkRemain(nodeId, res)) {
+      loadNodeFromId(nodeId)
+    } else if (res.length > 0) {
+      loadNodeFromId(res[0].to)
+    }
   }
 
   return (

@@ -1,4 +1,6 @@
 import React from 'react'
+import { NodeContent } from '../../Types/data'
+import { NodeLink } from '../../Types/relations'
 import { Contents, useContentStore } from '../Store/ContentStore'
 import useDataStore from '../Store/DataStore'
 
@@ -11,8 +13,8 @@ export const useRefactor = () => {
 
   Then we need to remap the contents to the new IDs.
 
-  We will return two functions, first that returns the list of refactoring, the second function applies the refactoring 
-  
+  We will return two functions, first that returns the list of refactoring, the second function applies the refactoring
+
   getMockRefactor is used to get a preview of the links that will be refactored.
   execRefactor will apply the refactor action.
   */
@@ -20,7 +22,7 @@ export const useRefactor = () => {
   const setILinks = useDataStore((state) => state.setIlinks)
   const initContents = useContentStore((state) => state.initContents)
 
-  const getMockRefactor = (from: string, to: string): { from: string; to: string }[] => {
+  const getMockRefactor = (from: string, to: string): NodeLink[] => {
     const refactorMap = ilinks.filter((i) => {
       const match = i.text.startsWith(from)
 
@@ -31,7 +33,7 @@ export const useRefactor = () => {
     const refactored = refactorMap.map((f) => {
       return {
         from: f.text,
-        to: f.text.replace(from, to),
+        to: f.text.replace(from, to)
       }
     })
 
@@ -48,7 +50,7 @@ export const useRefactor = () => {
           return {
             ...i,
             text: ref.to,
-            key: ref.to,
+            key: ref.to
           }
         }
       }
@@ -62,11 +64,11 @@ export const useRefactor = () => {
       let isRef = false
       for (const ref of refactored) {
         if (ref.from === key) {
-          newContents[ref.to] = content
+          newContents[ref.to] = { type: content.type, content: refactorLinksInContent(refactored, content.content) }
           isRef = true
         }
       }
-      if (!isRef) newContents[key] = content
+      if (!isRef) { newContents[key] = { type: content.type, content: refactorLinksInContent(refactored, content.content) } }
     })
 
     setILinks(newIlinks)
@@ -78,11 +80,34 @@ export const useRefactor = () => {
   return { getMockRefactor, execRefactor }
 }
 
+const refactorLinksInContent = (refactored: NodeLink[], content: any[]) => {
+  const refMap: Record<string, string> = {}
+  refactored.forEach((n) => (refMap[n.from] = n.to))
+
+  if (!content) return []
+
+  const newCont = content.map((n) => {
+    if (n.type === 'ilink') {
+      if (Object.keys(refMap).indexOf(n.value) !== -1) {
+        return {
+          ...n,
+          value: refMap[n.value]
+        }
+      }
+    }
+    if (n.children && n.children.length > 0) {
+      return { ...n, children: refactorLinksInContent(refactored, n.children) }
+    }
+    return n
+  })
+  return newCont
+}
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Used to wrap a class component to provide hooks
 export const withRefactor = (Component: any) => {
-  return function C2(props: any) {
+  return function C2 (props: any) {
     const { getMockRefactor, execRefactor } = useRefactor()
 
     return <Component getMockRefactor={getMockRefactor} execRefactor={execRefactor} {...props} /> // eslint-disable-line react/jsx-props-no-spreading
