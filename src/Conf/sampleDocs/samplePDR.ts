@@ -27,5 +27,5 @@ Once high level product design is figured out, add the releases below, what is i
 - Always have active and upcoming Intermissions printed in your team area or war room.
 - Always use plain simple English, no technical terminology or codenames. Write this document as you would describe the problem to a colleague face to face.
 - The PM owns the Intermission, but should always always solicit input from the full team.
-`;
-export default PDR;
+`
+export default PDR

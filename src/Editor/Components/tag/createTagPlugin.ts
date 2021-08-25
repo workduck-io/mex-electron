@@ -1,7 +1,7 @@
-import { getRenderElement, getPlatePluginTypes } from '@udecode/plate';
-import { PlatePlugin } from '@udecode/plate-core';
-import { ELEMENT_TAG } from './defaults';
-import { getTagDeserialize } from './getTagDeserialize';
+import { getRenderElement, getPlatePluginTypes } from '@udecode/plate'
+import { PlatePlugin } from '@udecode/plate-core'
+import { ELEMENT_TAG } from './defaults'
+import { getTagDeserialize } from './getTagDeserialize'
 
 /**
  * Enables support for hypertags.
@@ -11,4 +11,4 @@ export const createTagPlugin = (): PlatePlugin => ({
   deserialize: getTagDeserialize(),
   inlineTypes: getPlatePluginTypes(ELEMENT_TAG),
   voidTypes: getPlatePluginTypes(ELEMENT_TAG),
-});
+})

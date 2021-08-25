@@ -1,23 +1,23 @@
-import { createStyles } from '@udecode/plate-styled-components';
-import { css, CSSProp } from 'styled-components';
-import tw from 'twin.macro';
-import { getToolbarStyles } from '../Toolbar/Toolbar.styles';
-import { BalloonToolbarStyleProps } from './BalloonToolbar.types';
+import { createStyles } from '@udecode/plate-styled-components'
+import { css, CSSProp } from 'styled-components'
+import tw from 'twin.macro'
+import { getToolbarStyles } from '../Toolbar/Toolbar.styles'
+import { BalloonToolbarStyleProps } from './BalloonToolbar.types'
 
 export const getBalloonToolbarStyles = (props: BalloonToolbarStyleProps) => {
-  let color = 'rgb(157, 170, 182)';
-  let colorActive = 'white';
-  let background = 'rgb(36, 42, 49)';
-  let borderColor = 'transparent';
+  let color = 'rgb(157, 170, 182)'
+  let colorActive = 'white'
+  let background = 'rgb(36, 42, 49)'
+  let borderColor = 'transparent'
 
   if (props.theme === 'light') {
-    color = 'rgba(0, 0, 0, 0.50)';
-    colorActive = 'black';
-    background = 'rgb(250, 250, 250)';
-    borderColor = 'rgb(196, 196, 196)';
+    color = 'rgba(0, 0, 0, 0.50)'
+    colorActive = 'black'
+    background = 'rgb(250, 250, 250)'
+    borderColor = 'rgb(196, 196, 196)'
   }
 
-  let marginTop;
+  let marginTop
   const arrowStyle: CSSProp = [
     props.arrow &&
       css`
@@ -51,7 +51,7 @@ export const getBalloonToolbarStyles = (props: BalloonToolbarStyleProps) => {
           border-width: 0 8px 8px;
         }
       `,
-  ];
+  ]
 
   const arrowBorderStyle: CSSProp = [
     props.arrow &&
@@ -74,12 +74,12 @@ export const getBalloonToolbarStyles = (props: BalloonToolbarStyleProps) => {
           border-color: ${borderColor} transparent;
         }
       `,
-  ];
+  ]
 
   if (props.direction === 'top') {
-    marginTop = -9;
+    marginTop = -9
   } else {
-    marginTop = 9;
+    marginTop = 9
   }
 
   return createStyles(
@@ -111,5 +111,5 @@ export const getBalloonToolbarStyles = (props: BalloonToolbarStyleProps) => {
         ...arrowBorderStyle,
       ],
     }
-  );
-};
+  )
+}

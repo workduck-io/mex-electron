@@ -1,7 +1,7 @@
-import { ReactEditor } from 'slate-react';
+import { ReactEditor } from 'slate-react'
 
 export interface RenderFunction<P = { [key: string]: any }> {
-  (props: P, defaultRender?: (props?: P) => JSX.Element | null): JSX.Element | null;
+  (props: P, defaultRender?: (props?: P) => JSX.Element | null): JSX.Element | null
 }
 
 export enum ComboboxItemType {
@@ -14,35 +14,35 @@ export interface IComboboxItem {
   /**
    * Arbitrary string associated with this option.
    */
-  key: string;
+  key: string
 
   /**
    * Text to render for this option
    */
-  text: any;
+  text: any
 
   /**
    * Text to render for this option
    */
-  itemType?: ComboboxItemType;
+  itemType?: ComboboxItemType
 
   /**
    * Whether the option is disabled
    * @defaultvalue false
    */
-  disabled?: boolean;
+  disabled?: boolean
 
   /**
    * Data available to onRenderItem.
    */
-  data?: unknown;
+  data?: unknown
 }
 
 export interface ComboboxItemProps {
-  item: IComboboxItem;
+  item: IComboboxItem
 }
 
 export interface ComboboxProps {
-  onSelectItem: (editor: ReactEditor, item: IComboboxItem) => void;
-  onRenderItem?: RenderFunction<ComboboxItemProps>;
+  onSelectItem: (editor: ReactEditor, item: IComboboxItem) => void
+  onRenderItem?: RenderFunction<ComboboxItemProps>
 }

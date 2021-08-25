@@ -1,18 +1,18 @@
-import { NodeEditorContent } from '../Editor/Store/Types';
-import TreeNode from './tree';
+import { NodeEditorContent } from '../Editor/Store/Types'
+import TreeNode from './tree'
 
 export interface EditorStateProps {
   // Data of the current node
-  node: TreeNode;
+  node: TreeNode
   // Contents of the current node
   // These are loaded internally from ID
-  content: NodeEditorContent;
+  content: NodeEditorContent
 }
 
 export type EditorContextType = {
   // State
-  state: EditorStateProps | null;
+  state: EditorStateProps | null
   // State transformations
   // Load a node and its contents in the editor
-  loadNode: (node: TreeNode) => void;
-};
+  loadNode: (node: TreeNode) => void
+}

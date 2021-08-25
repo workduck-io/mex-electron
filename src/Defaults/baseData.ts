@@ -1,5 +1,5 @@
-import { generateComboTexts } from '../Editor/Store/sampleTags';
-import { FileData } from '../Types/data';
+import { generateComboTexts } from '../Editor/Store/sampleTags'
+import { FileData } from '../Types/data'
 
 export const DefaultFileData: FileData = {
   ilinks: generateComboTexts(['doc', 'dev', 'design', '@']),
@@ -14,4 +14,4 @@ export const DefaultFileData: FileData = {
   userSettings: {
     theme: 'dev',
   },
-};
+}

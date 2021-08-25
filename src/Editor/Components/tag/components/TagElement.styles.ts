@@ -1,11 +1,11 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 export const STagRoot = styled.div`
   display: inline-block;
   line-height: 1.2;
 
   /* outline: selectedFocused ? rgb(0, 120, 212) auto 1px : undefined, */
-`;
+`
 
 export const STag = styled.div`
   color: ${({ theme }) => theme.colors.secondary};
@@ -18,4 +18,4 @@ export const STag = styled.div`
       margin-left: ${({ theme }) => theme.spacing.tiny};
     }
   }
-`;
+`

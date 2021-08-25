@@ -33,16 +33,16 @@ import { useSyncStore } from './Store/SyncStore'
 const options = createPlateOptions()
 
 const Editor = () => {
-  const fsContent = useEditorStore(state => state.content)
-  const nodeId = useEditorStore(state => state.node.id)
+  const fsContent = useEditorStore((state) => state.content)
+  const nodeId = useEditorStore((state) => state.node.id)
 
-  const tags = useDataStore(state => state.tags)
-  const ilinks = useDataStore(state => state.ilinks)
-  const slash_commands = useDataStore(state => state.slash_commands)
-  const addSyncBlock = useSyncStore(state => state.addSyncBlock)
-  const syncId = useSyncStore(state => state.syncId)
+  const tags = useDataStore((state) => state.tags)
+  const ilinks = useDataStore((state) => state.ilinks)
+  const slash_commands = useDataStore((state) => state.slash_commands)
+  const addSyncBlock = useSyncStore((state) => state.addSyncBlock)
+  const syncId = useSyncStore((state) => state.syncId)
 
-  const setFsContent = useContentStore(state => state.setContent)
+  const setFsContent = useContentStore((state) => state.setContent)
 
   useEffect(() => {
     ReactTooltip.rebuild()
@@ -62,8 +62,8 @@ const Editor = () => {
 
   const saveData = useSaveData()
 
-  const addTag = useDataStore(state => state.addTag)
-  const addILink = useDataStore(state => state.addILink)
+  const addTag = useDataStore((state) => state.addTag)
+  const addILink = useDataStore((state) => state.addILink)
 
   const generateEditorId = () => `${id}`
 
@@ -90,7 +90,7 @@ const Editor = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      '$mod+KeyS': event => {
+      '$mod+KeyS': (event) => {
         event.preventDefault()
         onSave()
       }
@@ -104,7 +104,7 @@ const Editor = () => {
 
   useEffect(() => {
     // console.log('Focusing', { editor: editorS });
-    if (editorRef) selectEditor(editorRef, { edge: 'end', focus: true })
+    if (editorRef) selectEditor(editorRef, { edge: 'start', focus: true })
   }, [editorRef])
 
   // Combobox
@@ -134,13 +134,13 @@ const Editor = () => {
         {
           ilink: {
             slateElementType: ELEMENT_ILINK,
-            newItemHandler: newItem => {
+            newItemHandler: (newItem) => {
               addILink(newItem)
             }
           },
           tag: {
             slateElementType: ELEMENT_TAG,
-            newItemHandler: newItem => {
+            newItemHandler: (newItem) => {
               addTag(newItem)
             }
           },
@@ -179,7 +179,7 @@ const Editor = () => {
       ilink: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_ILINK,
-          newItemHandler: newItem => {
+          newItemHandler: (newItem) => {
             addILink(newItem)
           }
         },
@@ -188,7 +188,7 @@ const Editor = () => {
       tag: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_TAG,
-          newItemHandler: newItem => {
+          newItemHandler: (newItem) => {
             addTag(newItem)
           }
         },

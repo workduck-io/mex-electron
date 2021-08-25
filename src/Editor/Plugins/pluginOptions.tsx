@@ -35,9 +35,9 @@ import {
   toggleList,
   unwrapList,
   WithAutoformatOptions,
-} from '@udecode/plate';
+} from '@udecode/plate'
 
-const preFormat = (editor: TEditor<AnyObject>) => unwrapList(editor as SPEditor);
+const preFormat = (editor: TEditor<AnyObject>) => unwrapList(editor as SPEditor)
 
 export const optionsAutoformat: WithAutoformatOptions = {
   rules: [
@@ -77,9 +77,9 @@ export const optionsAutoformat: WithAutoformatOptions = {
       preFormat,
       format: (editor: TEditor<AnyObject>) => {
         if (editor.selection) {
-          const parentEntry = getParent(editor, editor.selection);
-          if (!parentEntry) return;
-          const [node] = parentEntry;
+          const parentEntry = getParent(editor, editor.selection)
+          if (!parentEntry) return
+          const [node] = parentEntry
           if (
             isElement(node) &&
             !isType(editor as SPEditor, node, ELEMENT_CODE_BLOCK) &&
@@ -87,7 +87,7 @@ export const optionsAutoformat: WithAutoformatOptions = {
           ) {
             toggleList(editor as SPEditor, {
               type: ELEMENT_UL,
-            });
+            })
           }
         }
       },
@@ -98,9 +98,9 @@ export const optionsAutoformat: WithAutoformatOptions = {
       preFormat,
       format: (editor: TEditor<AnyObject>) => {
         if (editor.selection) {
-          const parentEntry = getParent(editor, editor.selection);
-          if (!parentEntry) return;
-          const [node] = parentEntry;
+          const parentEntry = getParent(editor, editor.selection)
+          if (!parentEntry) return
+          const [node] = parentEntry
           if (
             isElement(node) &&
             !isType(editor as SPEditor, node, ELEMENT_CODE_BLOCK) &&
@@ -108,7 +108,7 @@ export const optionsAutoformat: WithAutoformatOptions = {
           ) {
             toggleList(editor as SPEditor, {
               type: ELEMENT_OL,
-            });
+            })
           }
         }
       },
@@ -168,11 +168,11 @@ export const optionsAutoformat: WithAutoformatOptions = {
         insertEmptyCodeBlock(editor as SPEditor, {
           defaultType: getPlatePluginType(editor as SPEditor, ELEMENT_DEFAULT),
           insertNodesOptions: { select: true },
-        });
+        })
       },
     },
   ],
-};
+}
 
 export const optionsSoftBreakPlugin = {
   rules: [
@@ -184,7 +184,7 @@ export const optionsSoftBreakPlugin = {
       },
     },
   ],
-};
+}
 
 export const optionsExitBreakPlugin = {
   rules: [
@@ -204,12 +204,12 @@ export const optionsExitBreakPlugin = {
       },
     },
   ],
-};
+}
 
 const resetBlockTypesCommonRule = {
   types: [ELEMENT_BLOCKQUOTE, ELEMENT_TODO_LI],
   defaultType: ELEMENT_PARAGRAPH,
-};
+}
 
 export const optionsResetBlockTypePlugin = {
   rules: [
@@ -224,6 +224,6 @@ export const optionsResetBlockTypePlugin = {
       predicate: isSelectionAtBlockStart,
     },
   ],
-};
+}
 
-export const optionsSelectOnBackspacePlugin = { allow: [ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED] };
+export const optionsSelectOnBackspacePlugin = { allow: [ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED] }

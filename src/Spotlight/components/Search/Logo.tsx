@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const WDLogo = () => {
   return (
@@ -23,7 +23,7 @@ const WDLogo = () => {
         fill="#5B94FF"
       />
     </svg>
-  );
-};
+  )
+}
 
-export default WDLogo;
+export default WDLogo

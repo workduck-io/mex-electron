@@ -1,46 +1,46 @@
-import * as React from 'react';
-import { useEditorRef } from '@udecode/plate';
-import { Transforms } from 'slate';
-import { useFocused, useSelected } from 'slate-react';
-import { useHotkeys } from '../hooks/useHotkeys';
-import { useOnMouseClick } from '../hooks/useOnMouseClick';
-import { TagElementProps } from './TagElement.types';
-import { STag, STagRoot } from './TagElement.styles';
+import * as React from 'react'
+import { useEditorRef } from '@udecode/plate'
+import { Transforms } from 'slate'
+import { useFocused, useSelected } from 'slate-react'
+import { useHotkeys } from '../hooks/useHotkeys'
+import { useOnMouseClick } from '../hooks/useOnMouseClick'
+import { TagElementProps } from './TagElement.types'
+import { STag, STagRoot } from './TagElement.styles'
 
 /**
  * TagElement with no default styles.
  * [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling)
  */
 export const TagElement = ({ attributes, children, element }: TagElementProps) => {
-  const editor = useEditorRef();
-  const selected = useSelected();
-  const focused = useFocused();
+  const editor = useEditorRef()
+  const selected = useSelected()
+  const focused = useFocused()
 
-  const onClickProps = useOnMouseClick(() => console.info('tag clicked'));
+  const onClickProps = useOnMouseClick(() => console.info('tag clicked'))
 
   useHotkeys(
     'backspace',
     () => {
       if (selected && focused && editor.selection) {
-        Transforms.move(editor);
+        Transforms.move(editor)
       }
     },
     [selected, focused]
-  );
+  )
   useHotkeys(
     'delete',
     () => {
       if (selected && focused && editor.selection) {
-        Transforms.move(editor, { reverse: true });
+        Transforms.move(editor, { reverse: true })
       }
     },
     [selected, focused]
-  );
+  )
 
   return (
     <STagRoot {...attributes} data-slate-value={element.value} contentEditable={false}>
       <STag {...onClickProps}>#{element.value}</STag>
       {children}
     </STagRoot>
-  );
-};
+  )
+}

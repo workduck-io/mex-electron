@@ -1,14 +1,14 @@
-import gitBranchLine from '@iconify-icons/ri/git-branch-line';
-import starLine from '@iconify-icons/ri/star-line';
-import { Icon } from '@iconify/react';
-import React from 'react';
-import links from '../../Conf/links';
-import { SectionHeading, SidebarContent, SidebarDiv, SidebarSection } from '../../Styled/Sidebar';
-import TreeNode from '../../Types/tree';
-import Nav from './Nav';
-import Tree from './Tree';
+import gitBranchLine from '@iconify-icons/ri/git-branch-line'
+import starLine from '@iconify-icons/ri/star-line'
+import { Icon } from '@iconify/react'
+import React from 'react'
+import links from '../../Conf/links'
+import { SectionHeading, SidebarContent, SidebarDiv, SidebarSection } from '../../Styled/Sidebar'
+import TreeNode from '../../Types/tree'
+import Nav from './Nav'
+import Tree from './Tree'
 
-export type SideBarProps = { tree: TreeNode[]; starred: TreeNode[] };
+export type SideBarProps = { tree: TreeNode[]; starred: TreeNode[] }
 
 const SideBar = ({ tree, starred }: SideBarProps) => (
   <SidebarDiv>
@@ -33,6 +33,6 @@ const SideBar = ({ tree, starred }: SideBarProps) => (
       </SidebarSection>
     </SidebarContent>
   </SidebarDiv>
-);
+)
 
-export default SideBar;
+export default SideBar

@@ -1,7 +1,7 @@
-import boldIcon from '@iconify-icons/ri/bold';
-import italicIcon from '@iconify-icons/ri/italic';
-import underlineIcon from '@iconify-icons/ri/underline';
-import { Icon } from '@iconify/react';
+import boldIcon from '@iconify-icons/ri/bold'
+import italicIcon from '@iconify-icons/ri/italic'
+import underlineIcon from '@iconify-icons/ri/underline'
+import { Icon } from '@iconify/react'
 import {
   ELEMENT_LINK,
   getAbove,
@@ -18,14 +18,14 @@ import {
   useEventEditorId,
   useStoreEditorRef,
   useStoreEditorState,
-} from '@udecode/plate';
-import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Transforms } from 'slate';
-import { ReactEditor } from 'slate-react';
-import styled from 'styled-components';
-import { HeadlessButton } from '../../Styled/Buttons';
-import { BalloonToolbar } from './BalloonToolbar';
+} from '@udecode/plate'
+import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { Transforms } from 'slate'
+import { ReactEditor } from 'slate-react'
+import styled from 'styled-components'
+import { HeadlessButton } from '../../Styled/Buttons'
+import { BalloonToolbar } from './BalloonToolbar'
 // import { BalloonToolbar } from './xBalloonToolbar/BalloonToolbar';
 
 const LinkButtonStyled = styled.div`
@@ -43,20 +43,20 @@ const LinkButtonStyled = styled.div`
       border-radius: ${({ theme }) => theme.borderRadius.tiny};
     }
   }
-`;
+`
 
 interface LinkButtonProps extends ToolbarLinkProps {
-  setSelected: (selected: boolean) => void;
+  setSelected: (selected: boolean) => void
 }
 
 export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
-  const editor = useStoreEditorState(useEventEditorId('focus'));
+  const editor = useStoreEditorState(useEventEditorId('focus'))
 
-  const type = getPlatePluginType(editor, ELEMENT_LINK);
-  const isLink = !!editor?.selection && someNode(editor, { match: { type } });
+  const type = getPlatePluginType(editor, ELEMENT_LINK)
+  const isLink = !!editor?.selection && someNode(editor, { match: { type } })
   const [inp, setInp] = useState({
     prev: '',
-  });
+  })
 
   const {
     register,
@@ -64,63 +64,63 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
     // watch,
     // formState: { errors },
     getValues,
-  } = useForm();
+  } = useForm()
 
   useEffect(() => {
-    setSelected(true);
+    setSelected(true)
     return () => {
-      setSelected(false);
-    };
-  });
+      setSelected(false)
+    }
+  })
 
   useEffect(() => {
-    if (!editor) return;
+    if (!editor) return
     const linkNode = getAbove(editor, {
       match: { type },
-    });
+    })
     if (inp.prev === '' && linkNode) {
       setInp({
         prev: linkNode[0].url as string,
-      });
+      })
     }
-  }, [editor, inp.prev, type]);
+  }, [editor, inp.prev, type])
 
   const onSubmitLink = async () => {
-    if (!editor) return;
+    if (!editor) return
 
     // Blur focus returns
-    if (!editor || ReactEditor.isFocused(editor)) return;
+    if (!editor || ReactEditor.isFocused(editor)) return
     try {
-      ReactEditor.focus(editor);
+      ReactEditor.focus(editor)
       if (!editor.selection && editor.blurSelection) {
-        Transforms.select(editor, editor.blurSelection);
+        Transforms.select(editor, editor.blurSelection)
       }
     } catch (err) {
-      console.error(err); // eslint-disable-line no-console
+      console.error(err) // eslint-disable-line no-console
     }
 
     const linkNode = getAbove(editor, {
       match: { type },
-    });
+    })
     if (linkNode) {
       setInp({
         prev: linkNode[0].url as string,
-      });
+      })
     }
     // console.log(inp);
 
-    let url = '';
+    let url = ''
     if (getLinkUrl) {
-      const tempUrl = await getLinkUrl(inp.prev);
+      const tempUrl = await getLinkUrl(inp.prev)
       if (tempUrl) {
-        url = tempUrl;
+        url = tempUrl
       }
     } else {
       // Get url from user
-      const val = getValues();
+      const val = getValues()
       // console.log({ val });
 
-      if (val['link-input']) url = val['link-input'];
+      if (val['link-input']) url = val['link-input']
     }
 
     if (inp.prev) {
@@ -128,24 +128,24 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
         unwrapNodes(editor, {
           at: editor.selection,
           match: { type: getPlatePluginType(editor, ELEMENT_LINK) },
-        });
+        })
 
-      return;
+      return
     }
 
     // If our cursor is in middle of a link, then we don't want to inser it inline
-    const shouldWrap: boolean = linkNode !== undefined && isCollapsed(editor.selection);
-    upsertLinkAtSelection(editor, { url, wrap: shouldWrap });
+    const shouldWrap: boolean = linkNode !== undefined && isCollapsed(editor.selection)
+    upsertLinkAtSelection(editor, { url, wrap: shouldWrap })
 
-    setSelected(false);
-  };
+    setSelected(false)
+  }
 
   const onSubmit = async (data: any) => {
-    console.log(data); // eslint-disable-line no-console
-    await onSubmitLink();
-  };
+    console.log(data) // eslint-disable-line no-console
+    await onSubmitLink()
+  }
 
-  const { icon } = props;
+  const { icon } = props
 
   return (
     <LinkButtonStyled className="button_of_link">
@@ -163,17 +163,17 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
         <input defaultValue={inp.prev} type="text" {...register('link-input')} />
       </form>
     </LinkButtonStyled>
-  );
-};
+  )
+}
 
 const BallonToolbarMarks = () => {
-  const editor = useStoreEditorRef(useEventEditorId('focus'));
+  const editor = useStoreEditorRef(useEventEditorId('focus'))
   // const [selected, setSelected] = useState(false);
 
-  const arrow = true;
-  const theme = 'dark';
-  const direction = 'top';
-  const hiddenDelay = 0;
+  const arrow = true
+  const theme = 'dark'
+  const direction = 'top'
+  const hiddenDelay = 0
   const tooltip = {
     arrow: true,
     delay: 0,
@@ -181,7 +181,7 @@ const BallonToolbarMarks = () => {
     // hideOnClick: false,
     offset: [0, 17] as [number, number],
     placement: 'top' as const,
-  };
+  }
 
   return (
     <BalloonToolbar
@@ -213,14 +213,14 @@ const BallonToolbarMarks = () => {
         setSelected={setSelected}
       /> */}
     </BalloonToolbar>
-  );
-};
+  )
+}
 
 export interface ToolbarLinkProps extends ToolbarButtonProps {
   /**
    * Default onMouseDown is getting the link url by calling this promise before inserting the image.
    */
-  getLinkUrl?: (prevUrl: string | null) => Promise<string | null>;
+  getLinkUrl?: (prevUrl: string | null) => Promise<string | null>
 }
 
-export default BallonToolbarMarks;
+export default BallonToolbarMarks

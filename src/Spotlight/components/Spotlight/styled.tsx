@@ -1,6 +1,6 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from 'styled-components'
 
-export const Anything = ``;
+export const Anything = ``
 
 export const StyledLookup = styled.div`
   padding: 10px;
@@ -10,8 +10,8 @@ export const StyledLookup = styled.div`
   color: ${({ theme }) => theme.colors.text.heading};
   overflow: hidden;
   flex-direction: column;
-`;
+`
 
 export const StyledBackground = css`
   background-color: ${({ theme }) => theme.colors.background.modal};
-`;
+`

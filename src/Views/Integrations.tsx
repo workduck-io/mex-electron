@@ -1,12 +1,12 @@
-import React from 'react';
-import Centered from '../Styled/Layouts';
+import React from 'react'
+import Centered from '../Styled/Layouts'
 
 export type IntegrationsProps = {
-  title?: string;
-};
+  title?: string
+}
 
 const Integrations: React.FC<IntegrationsProps> = () => {
-  return <Centered>Integrations</Centered>;
-};
+  return <Centered>Integrations</Centered>
+}
 
-export default Integrations;
+export default Integrations

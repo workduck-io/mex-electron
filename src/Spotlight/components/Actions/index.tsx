@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
-import { Icon } from '@iconify/react';
-import CreateIcon from '@iconify-icons/ph/lightning';
-import { StyledKey } from '../Shortcuts';
-import { Action, ActionDesc, ActionTitle, ColumnContainer, CreateMex, FlexBetween, StyledUndordered } from './styled';
+import React from 'react'
+import { Icon } from '@iconify/react'
+import CreateIcon from '@iconify-icons/ph/lightning'
+import { StyledKey } from '../Shortcuts'
+import { Action, ActionDesc, ActionTitle, ColumnContainer, CreateMex, FlexBetween, StyledUndordered } from './styled'
 // import Recent from '../Recent';
 
 const Actions: React.FC<{ current: number }> = ({ current }) => {
@@ -36,7 +36,7 @@ const Actions: React.FC<{ current: number }> = ({ current }) => {
         {/* <Recent current={current} recents={recents} /> */}
       </Action>
     </ColumnContainer>
-  );
-};
+  )
+}
 
-export default Actions;
+export default Actions

@@ -9,7 +9,7 @@
  * @param {boolean} circular Specify if navigation is circular. Default is true.
  * @returns {number} The new index after the move.
  */
-import { getNextNonDisabledIndex } from './getNextNonDisabledIndex';
+import { getNextNonDisabledIndex } from './getNextNonDisabledIndex'
 
 export const getNextWrappingIndex = (
   moveAmount: number,
@@ -18,31 +18,31 @@ export const getNextWrappingIndex = (
   getItemNodeFromIndex: any,
   circular = true
 ) => {
-  let be = baseIndex;
+  let be = baseIndex
   if (itemCount === 0) {
-    return -1;
+    return -1
   }
 
-  const itemsLastIndex = itemCount - 1;
+  const itemsLastIndex = itemCount - 1
 
   // noinspection SuspiciousTypeOfGuard
   if (typeof be !== 'number' || be < 0 || be >= itemCount) {
-    be = moveAmount > 0 ? -1 : itemsLastIndex + 1;
+    be = moveAmount > 0 ? -1 : itemsLastIndex + 1
   }
 
-  let newIndex = be + moveAmount;
+  let newIndex = be + moveAmount
 
   if (newIndex < 0) {
-    newIndex = circular ? itemsLastIndex : 0;
+    newIndex = circular ? itemsLastIndex : 0
   } else if (newIndex > itemsLastIndex) {
-    newIndex = circular ? 0 : itemsLastIndex;
+    newIndex = circular ? 0 : itemsLastIndex
   }
 
-  const nonDisabledNewIndex = getNextNonDisabledIndex(moveAmount, newIndex, itemCount, getItemNodeFromIndex, circular);
+  const nonDisabledNewIndex = getNextNonDisabledIndex(moveAmount, newIndex, itemCount, getItemNodeFromIndex, circular)
 
   if (nonDisabledNewIndex === -1) {
-    return be >= itemCount ? -1 : be;
+    return be >= itemCount ? -1 : be
   }
 
-  return nonDisabledNewIndex;
-};
+  return nonDisabledNewIndex
+}

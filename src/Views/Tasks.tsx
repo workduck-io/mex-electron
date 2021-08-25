@@ -1,12 +1,12 @@
-import React from 'react';
-import Centered from '../Styled/Layouts';
+import React from 'react'
+import Centered from '../Styled/Layouts'
 
 export type TasksProps = {
-  title?: string;
-};
+  title?: string
+}
 
 const Tasks: React.FC<TasksProps> = () => {
-  return <Centered>Tasks</Centered>;
-};
+  return <Centered>Tasks</Centered>
+}
 
-export default Tasks;
+export default Tasks

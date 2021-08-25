@@ -14,7 +14,7 @@ import {
   MARK_UNDERLINE,
   MARK_STRIKETHROUGH,
   MARK_CODE,
-} from '@udecode/plate';
+} from '@udecode/plate'
 
 // Quick helper to create a block element with (marked) text
 export const createElement = (
@@ -23,20 +23,20 @@ export const createElement = (
     type = ELEMENT_PARAGRAPH,
     mark,
   }: {
-    type?: string;
-    mark?: string;
+    type?: string
+    mark?: string
   } = {}
 ) => {
-  const leaf: any = { text };
+  const leaf: any = { text }
   if (mark) {
-    leaf[mark] = true;
+    leaf[mark] = true
   }
 
   return {
     type,
     children: [leaf],
-  };
-};
+  }
+}
 
 export const initialValueBasicElements = [
   createElement('🧱 Elements', { type: ELEMENT_H1 }),
@@ -96,4 +96,4 @@ export const initialValueBasicElements = [
     mark: MARK_STRIKETHROUGH,
   }),
   createElement('This is an inline code.', { mark: MARK_CODE }),
-];
+]

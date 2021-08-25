@@ -1,14 +1,14 @@
-import { rgba } from 'polished';
-import React, { useEffect, useState } from 'react';
-import Modal from 'react-modal';
-import { ActionMeta } from 'react-select';
-import { useEditorStore, withLoadNode } from '../../Editor/Store/EditorStore';
-import { css } from 'styled-components';
-import tinykeys from 'tinykeys';
-import { useRefactor } from '../../Editor/Actions/useRefactor';
-import { Button } from '../../Styled/Buttons';
-import LookupInput from '../NodeInput/NodeSelect';
-import { Value } from '../NodeInput/Types';
+import { rgba } from 'polished'
+import React, { useEffect, useState } from 'react'
+import Modal from 'react-modal'
+import { ActionMeta } from 'react-select'
+import { useEditorStore, withLoadNode } from '../../Editor/Store/EditorStore'
+import { css } from 'styled-components'
+import tinykeys from 'tinykeys'
+import { useRefactor } from '../../Editor/Actions/useRefactor'
+import { Button } from '../../Styled/Buttons'
+import LookupInput from '../NodeInput/NodeSelect'
+import { Value } from '../NodeInput/Types'
 
 export const RefactorStyles = css`
   .RefactorContent {
@@ -31,18 +31,18 @@ export const RefactorStyles = css`
     display: flex;
     background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};
   }
-`;
+`
 
 interface RenameState {
-  open: boolean;
-  from: string;
-  to: string;
-  defFrom: { label: string; value: string };
+  open: boolean
+  from: string
+  to: string
+  defFrom: { label: string; value: string }
 }
 
 const Rename = () => {
-  const { execRefactor } = useRefactor();
-  const loadNodeFromId = useEditorStore(state => state.loadNodeFromId);
+  const { execRefactor } = useRefactor()
+  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
 
   const [renameState, setRenameState] = useState<RenameState>({
     open: false,
@@ -52,10 +52,10 @@ const Rename = () => {
       label: '',
       value: '',
     },
-  });
+  })
 
   const openModal = () => {
-    const nodeId = useEditorStore.getState().node.id;
+    const nodeId = useEditorStore.getState().node.id
     setRenameState({
       open: true,
       from: nodeId,
@@ -64,8 +64,8 @@ const Rename = () => {
         label: nodeId,
       },
       to: '',
-    });
-  };
+    })
+  }
 
   const closeModal = () => {
     setRenameState({
@@ -76,51 +76,51 @@ const Rename = () => {
         label: '',
       },
       to: '',
-    });
-  };
+    })
+  }
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      '$mod+KeyK KeyN': event => {
-        event.preventDefault();
-        openModal();
+      '$mod+KeyK KeyN': (event) => {
+        event.preventDefault()
+        openModal()
       },
-    });
+    })
     return () => {
-      unsubscribe();
-    };
-  });
+      unsubscribe()
+    }
+  })
 
   // console.log({ to, from, open });
 
   const handleFromChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
     if (newValue) {
-      const { value } = newValue;
+      const { value } = newValue
       setRenameState({
         ...renameState,
         from: value,
-      });
+      })
     }
-  };
+  }
 
   const handleToChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
     if (newValue) {
-      const { value } = newValue;
+      const { value } = newValue
       setRenameState({
         ...renameState,
         to: value,
-      });
+      })
     }
-  };
+  }
 
   const handleToCreate = (inputValue: string) => {
     if (inputValue) {
       setRenameState({
         ...renameState,
         to: inputValue,
-      });
+      })
     }
-  };
+  }
 
   // useEffect(() => {
   //   // console.log({ to, from });
@@ -131,19 +131,19 @@ const Rename = () => {
 
   // console.log({ mockRefactored });
 
-  const { from, to, defFrom, open } = renameState;
+  const { from, to, defFrom, open } = renameState
 
   const handleRefactor = () => {
     if (to && from) {
-      const res = execRefactor(from, to);
-      console.log(res);
+      const res = execRefactor(from, to)
+      console.log(res)
 
       if (res.length > 0) {
-        loadNodeFromId(res[0].to);
+        loadNodeFromId(res[0].to)
       }
     }
-    closeModal();
-  };
+    closeModal()
+  }
 
   return (
     <Modal className="RefactorContent" overlayClassName="RefactorOverlay" onRequestClose={closeModal} isOpen={open}>
@@ -167,7 +167,7 @@ const Rename = () => {
       )}
       <Button onClick={handleRefactor}>Rename</Button>
     </Modal>
-  );
-};
+  )
+}
 
-export default Rename;
+export default Rename

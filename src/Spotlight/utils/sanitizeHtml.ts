@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import sanitize from 'sanitize-html';
+import sanitize from 'sanitize-html'
 
 const options = {
   allowedTags: [
@@ -48,7 +48,7 @@ const options = {
           padding: 0
           `,
         },
-      };
+      }
     },
     a: (tagName, attribs) => {
       return {
@@ -65,7 +65,7 @@ const options = {
           outline: 0px;
         `,
         },
-      };
+      }
     },
     img: (tagName, attribs) => {
       return {
@@ -82,7 +82,7 @@ const options = {
           margin-right: auto;
           `,
         },
-      };
+      }
     },
     pre: (tagName, attribs) => {
       return {
@@ -116,10 +116,10 @@ const options = {
             text-decoration-color: initial;
         `,
         },
-      };
+      }
     },
     ul: (tagName, attribs) => {
-      console.log(attribs.style);
+      console.log(attribs.style)
       return {
         tagName,
         attribs: {
@@ -133,7 +133,7 @@ const options = {
           font-family: Inter, -apple-system, system-ui, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
           `,
         },
-      };
+      }
     },
     ol: (tagName, attribs) => {
       return {
@@ -167,7 +167,7 @@ const options = {
           text-decoration-color: initial;
           `,
         },
-      };
+      }
     },
     li: (tagName, attribs) => {
       return {
@@ -180,7 +180,7 @@ const options = {
           padding-left: 0.75em !important;
           `,
         },
-      };
+      }
     },
     p: (tagName, attribs) => {
       return {
@@ -211,7 +211,7 @@ const options = {
             text-decoration-color: initial;
           `,
         },
-      };
+      }
     },
     h2: (tagName, attribs) => {
       return {
@@ -243,7 +243,7 @@ const options = {
           text-decoration-color: initial;
           `,
         },
-      };
+      }
     },
     h3: (tagName, attribs) => {
       return {
@@ -275,7 +275,7 @@ const options = {
           text-decoration-color: initial;
           `,
         },
-      };
+      }
     },
     b: (tagName, attribs) => {
       return {
@@ -288,7 +288,7 @@ const options = {
             scroll-margin: 75px;
           `,
         },
-      };
+      }
     },
     em: (tagName, attribs) => {
       return {
@@ -317,7 +317,7 @@ const options = {
           text-decoration-color: initial;
           `,
         },
-      };
+      }
     },
     strong: (tagName, attribs) => {
       return {
@@ -346,7 +346,7 @@ const options = {
           text-decoration-color: initial;
           `,
         },
-      };
+      }
     },
     div: (tagName, attribs) => {
       return {
@@ -374,7 +374,7 @@ const options = {
           text-decoration-color: initial;
           `,
         },
-      };
+      }
     },
     span: (tagName, attribs) => {
       return {
@@ -403,7 +403,7 @@ const options = {
           text-decoration-color: initial;
       `,
         },
-      };
+      }
     },
     code: (tagName, attribs) => {
       return {
@@ -435,11 +435,11 @@ const options = {
           text-decoration-color: initial;
           `,
         },
-      };
+      }
     },
   },
-};
+}
 
 export const sanitizeHtml = (html: any) => {
-  return sanitize(html, options);
-};
+  return sanitize(html, options)
+}

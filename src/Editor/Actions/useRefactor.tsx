@@ -1,10 +1,10 @@
-import React from 'react';
-import { Contents, useContentStore } from '../Store/ContentStore';
-import useDataStore from '../Store/DataStore';
+import React from 'react'
+import { Contents, useContentStore } from '../Store/ContentStore'
+import useDataStore from '../Store/DataStore'
 
 export const useRefactor = () => {
-  const ilinks = useDataStore(state => state.ilinks);
-  const contents = useContentStore(state => state.contents);
+  const ilinks = useDataStore((state) => state.ilinks)
+  const contents = useContentStore((state) => state.contents)
 
   /*  Notes:
   We need to refactor all ilinks that match with the given regex and replace the initial regex with the refactorId
@@ -17,74 +17,74 @@ export const useRefactor = () => {
   execRefactor will apply the refactor action.
   */
 
-  const setILinks = useDataStore(state => state.setIlinks);
-  const initContents = useContentStore(state => state.initContents);
+  const setILinks = useDataStore((state) => state.setIlinks)
+  const initContents = useContentStore((state) => state.initContents)
 
   const getMockRefactor = (from: string, to: string): { from: string; to: string }[] => {
-    const refactorMap = ilinks.filter(i => {
-      const match = i.text.startsWith(from);
+    const refactorMap = ilinks.filter((i) => {
+      const match = i.text.startsWith(from)
 
       // console.log('Trying matches', i.text, from, match, i.text.startsWith(from));
-      return match;
-    });
+      return match
+    })
 
-    const refactored = refactorMap.map(f => {
+    const refactored = refactorMap.map((f) => {
       return {
         from: f.text,
         to: f.text.replace(from, to),
-      };
-    });
+      }
+    })
 
-    return refactored;
-  };
+    return refactored
+  }
 
   const execRefactor = (from: string, to: string) => {
-    const refactored = getMockRefactor(from, to);
+    const refactored = getMockRefactor(from, to)
 
     // Generate the new links
-    const newIlinks = ilinks.map(i => {
+    const newIlinks = ilinks.map((i) => {
       for (const ref of refactored) {
         if (ref.from === i.text) {
           return {
             ...i,
             text: ref.to,
             key: ref.to,
-          };
+          }
         }
       }
-      return i;
-    });
+      return i
+    })
 
     // Remap the contents with changed links
-    const newContents: Contents = {};
-    Object.keys(contents).forEach(key => {
-      const content = contents[key];
-      let isRef = false;
+    const newContents: Contents = {}
+    Object.keys(contents).forEach((key) => {
+      const content = contents[key]
+      let isRef = false
       for (const ref of refactored) {
         if (ref.from === key) {
-          newContents[ref.to] = content;
-          isRef = true;
+          newContents[ref.to] = content
+          isRef = true
         }
       }
-      if (!isRef) newContents[key] = content;
-    });
+      if (!isRef) newContents[key] = content
+    })
 
-    setILinks(newIlinks);
-    initContents(newContents);
+    setILinks(newIlinks)
+    initContents(newContents)
 
-    return refactored;
-  };
+    return refactored
+  }
 
-  return { getMockRefactor, execRefactor };
-};
+  return { getMockRefactor, execRefactor }
+}
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Used to wrap a class component to provide hooks
 export const withRefactor = (Component: any) => {
   return function C2(props: any) {
-    const { getMockRefactor, execRefactor } = useRefactor();
+    const { getMockRefactor, execRefactor } = useRefactor()
 
-    return <Component getMockRefactor={getMockRefactor} execRefactor={execRefactor} {...props} />; // eslint-disable-line react/jsx-props-no-spreading
-  };
-};
+    return <Component getMockRefactor={getMockRefactor} execRefactor={execRefactor} {...props} /> // eslint-disable-line react/jsx-props-no-spreading
+  }
+}
