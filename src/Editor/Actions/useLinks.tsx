@@ -1,6 +1,7 @@
 import React from 'react'
 import { NodeLink } from '../../Types/relations'
 import { useContentStore } from '../Store/ContentStore'
+import { uniq } from 'lodash'
 
 const getLinksFromContent = (content: any[]): string[] => {
   let links: string[] = []
@@ -14,7 +15,7 @@ const getLinksFromContent = (content: any[]): string[] => {
     }
   })
 
-  return links
+  return uniq(links)
 }
 
 export const useLinks = () => {
