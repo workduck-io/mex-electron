@@ -1,4 +1,4 @@
-import { generateTheme } from '../themeGenerator';
+import { generateTheme } from '../themeGenerator'
 
 export const devTheme = generateTheme({
   // Colors
@@ -34,4 +34,4 @@ export const devTheme = generateTheme({
     accent: '#C792EA',
     oppositePrimary: '#000',
   },
-});
+})

@@ -1,4 +1,4 @@
-import { generateTheme } from '../themeGenerator';
+import { generateTheme } from '../themeGenerator'
 
 export const lightTheme = generateTheme({
   // Colors
@@ -33,4 +33,4 @@ export const lightTheme = generateTheme({
   //   disabled: '#7f8288',
   //   accent: '#C792EA',
   // },
-});
+})

@@ -1,5 +1,5 @@
-import { DefaultTheme } from 'styled-components';
-import { LayoutStyle } from '../styled';
+import { DefaultTheme } from 'styled-components'
+import { LayoutStyle } from '../styled'
 
 const LayoutTheme: LayoutStyle = {
   spacing: {
@@ -20,7 +20,7 @@ const LayoutTheme: LayoutStyle = {
   indent: {
     sidebar: 8,
   },
-};
+}
 
 export const palette = {
   p1: '#cc5d6f',
@@ -29,7 +29,7 @@ export const palette = {
   b2: '#191d2c',
   b3: '#202331',
   b4: '#1d233d',
-};
+}
 
 export const spotlightTheme: DefaultTheme = {
   ...LayoutTheme,
@@ -92,4 +92,4 @@ export const spotlightTheme: DefaultTheme = {
       oppositePrimary: '#000',
     },
   },
-};
+}

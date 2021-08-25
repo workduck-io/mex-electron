@@ -1,43 +1,43 @@
-import React, { useEffect } from 'react';
-import useMergedRef from '@react-hook/merged-ref';
-import { getPreventDefaultHandler, PortalBody, useEditorState } from '@udecode/plate';
-import { ComboboxItem, ComboboxRoot } from '../../tag/components/TagCombobox.styles';
-import { setElementPositionByRange } from '../../tag/utils/setElementPositionByRange';
-import { useComboboxControls } from '../hooks/useComboboxControls';
-import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen';
-import { useComboboxStore } from '../useComboboxStore';
-import { ComboboxProps } from './Combobox.types';
+import React, { useEffect } from 'react'
+import useMergedRef from '@react-hook/merged-ref'
+import { getPreventDefaultHandler, PortalBody, useEditorState } from '@udecode/plate'
+import { ComboboxItem, ComboboxRoot } from '../../tag/components/TagCombobox.styles'
+import { setElementPositionByRange } from '../../tag/utils/setElementPositionByRange'
+import { useComboboxControls } from '../hooks/useComboboxControls'
+import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen'
+import { useComboboxStore } from '../useComboboxStore'
+import { ComboboxProps } from './Combobox.types'
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   // TODO
-  const at = useComboboxStore(state => state.targetRange);
-  const items = useComboboxStore(state => state.items);
-  const itemIndex = useComboboxStore(state => state.itemIndex);
-  const combobox = useComboboxControls(true);
-  const isOpen = useComboboxIsOpen();
+  const at = useComboboxStore((state) => state.targetRange)
+  const items = useComboboxStore((state) => state.items)
+  const itemIndex = useComboboxStore((state) => state.itemIndex)
+  const combobox = useComboboxControls(true)
+  const isOpen = useComboboxIsOpen()
 
-  const ref = React.useRef<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
-  const editor = useEditorState();
+  const ref = React.useRef<any>(null) // eslint-disable-line @typescript-eslint/no-explicit-any
+  const editor = useEditorState()
   // const _editor = useStoreEditorState(useEventEditorId('focus'));
   // console.log(editor === _editor);
 
   useEffect(() => {
-    if (editor) setElementPositionByRange(editor, { ref, at });
-  }, [at, editor]);
+    if (editor) setElementPositionByRange(editor, { ref, at })
+  }, [at, editor])
 
-  const menuProps = combobox ? combobox.getMenuProps() : { ref: null };
+  const menuProps = combobox ? combobox.getMenuProps() : { ref: null }
 
-  const multiRef = useMergedRef(menuProps.ref, ref);
+  const multiRef = useMergedRef(menuProps.ref, ref)
 
-  if (!combobox) return null;
+  if (!combobox) return null
   const comboProps = (item, index) => {
     if (combobox)
       return combobox.getItemProps({
         item,
         index,
-      });
-    return;
-  };
+      })
+    return
+  }
 
   // console.log({ items, search, comboboxKey });
 
@@ -46,7 +46,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
       <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
         {isOpen &&
           items.map((item, index) => {
-            const Item = onRenderItem ? onRenderItem({ item }) : item.text;
+            const Item = onRenderItem ? onRenderItem({ item }) : item.text
 
             return (
               <ComboboxItem
@@ -57,9 +57,9 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
               >
                 {Item}
               </ComboboxItem>
-            );
+            )
           })}
       </ComboboxRoot>
     </PortalBody>
-  );
-};
+  )
+}

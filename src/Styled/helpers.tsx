@@ -1,9 +1,9 @@
-import { css } from 'styled-components';
-import { Pixels } from '../styled';
+import { css } from 'styled-components'
+import { Pixels } from '../styled'
 
 export const PixelToCSS = (x: Pixels): string => {
-  return `${String(x)}px`;
-};
+  return `${String(x)}px`
+}
 
 export const ThinScrollbar = css`
   scrollbar-color: dark;
@@ -15,7 +15,7 @@ export const ThinScrollbar = css`
     background: rgba(0, 0, 0, 0);
   }
   &::-webkit-scrollbar-thumb {
-    background-color: ${({ theme }) => theme.colors.gray[4]};
+    background-color: ${({ theme }) => theme.colors.gray[8]};
     border-radius: 6px;
     border: 2px solid rgba(0, 0, 0, 0);
     background-clip: content-box;
@@ -28,4 +28,4 @@ export const ThinScrollbar = css`
   &::-webkit-scrollbar-track {
     background: ${({ theme }) => theme.colors.background.app};
   }
-`;
+`

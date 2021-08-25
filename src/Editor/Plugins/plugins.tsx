@@ -27,27 +27,27 @@ import {
   OnChange,
   PlatePlugin,
   SPEditor,
-} from '@udecode/plate';
+} from '@udecode/plate'
 
-import { createILinkPlugin } from '../Components/ilink/createILinkPlugin';
-import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin';
-import { createTagPlugin } from '../Components/tag/createTagPlugin';
+import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
+import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin'
+import { createTagPlugin } from '../Components/tag/createTagPlugin'
 // import { TagCombobox } from '../Components/tag/components/TagCombobox';
 // import { createTagPlugin } from '../Components/tag/createTagPlugin';
-import { createBlurSelectionPlugin } from './blurSelection';
+import { createBlurSelectionPlugin } from './blurSelection'
 import {
   optionsAutoformat,
   optionsExitBreakPlugin,
   optionsResetBlockTypePlugin,
   optionsSelectOnBackspacePlugin,
   optionsSoftBreakPlugin,
-} from './pluginOptions';
+} from './pluginOptions'
 
 interface PluginConfigs {
   combobox: {
-    onChange: OnChange<SPEditor>;
-    onKeyDown: KeyboardHandler;
-  };
+    onChange: OnChange<SPEditor>
+    onKeyDown: KeyboardHandler
+  }
 }
 
 /**
@@ -111,11 +111,11 @@ const generatePlugins = (config: PluginConfigs) => {
     createSyncBlockPlugin(),
 
     createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin),
-  ];
+  ]
 
-  Plugins.push(createDeserializeHTMLPlugin({ plugins: Plugins }));
+  Plugins.push(createDeserializeHTMLPlugin({ plugins: Plugins }))
 
-  return Plugins;
-};
+  return Plugins
+}
 
-export default generatePlugins;
+export default generatePlugins

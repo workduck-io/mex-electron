@@ -1,7 +1,7 @@
-import { EditorStateProps } from '../../Types/EditorContext';
-import TreeNode from '../../Types/tree';
-import { useContentStore } from './ContentStore';
-import { NodeEditorContent } from './Types';
+import { EditorStateProps } from '../../Types/EditorContext'
+import TreeNode from '../../Types/tree'
+import { useContentStore } from './ContentStore'
+import { NodeEditorContent } from './Types'
 
 /** Get the contents of the node with id */
 export function getContent(id: string): NodeEditorContent {
@@ -9,13 +9,13 @@ export function getContent(id: string): NodeEditorContent {
   // create a hashmap with id vs content
   // load the content from hashmap
 
-  const { contents } = useContentStore.getState();
+  const { contents } = useContentStore.getState()
 
   if (contents[id]) {
-    const { content } = contents[id];
+    const { content } = contents[id]
 
     if (content) {
-      return content;
+      return content
     }
   }
 
@@ -46,7 +46,7 @@ export function getContent(id: string): NodeEditorContent {
   // if (id.includes('rishank')) {
   //   return rishankNotes;
   // }
-  return [{ children: [{ text: '' }] }];
+  return [{ children: [{ text: '' }] }]
 }
 
 export const getInitialEditorState = (): EditorStateProps => {
@@ -59,8 +59,8 @@ export const getInitialEditorState = (): EditorStateProps => {
       children: [],
     },
     content: getContent('@'),
-  };
-};
+  }
+}
 
 export const getInitialNode = (): TreeNode => ({
   title: '@',
@@ -68,7 +68,7 @@ export const getInitialNode = (): TreeNode => ({
   key: '@',
   mex_icon: undefined,
   children: [],
-});
+})
 
 export const getNodeFromId = (id: string): TreeNode => {
   // search for ID and load it's node
@@ -78,5 +78,5 @@ export const getNodeFromId = (id: string): TreeNode => {
     key: id,
     mex_icon: undefined,
     children: [],
-  };
-};
+  }
+}

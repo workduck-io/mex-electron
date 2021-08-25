@@ -1,20 +1,20 @@
-import styled, { css } from 'styled-components';
-import { Scroll } from '../../styles/layout';
-import { StyledBackground } from '../Spotlight/styled';
+import styled, { css } from 'styled-components'
+import { Scroll } from '../../styles/layout'
+import { StyledBackground } from '../Spotlight/styled'
 
 export interface ColorProp {
-  showColor: boolean;
+  showColor: boolean
 }
 
 export const Draggable = css`
   user-select: none;
   -webkit-user-select: none;
   -webkit-app-region: drag;
-`;
+`
 
 export const StyledUndordered = styled.ul`
   margin-block-end: 0 !important;
-`;
+`
 
 export const ColumnContainer = styled.div`
   flex: 4;
@@ -32,23 +32,23 @@ export const ColumnContainer = styled.div`
   font-weight: bold;
   ${Scroll}
   ${Draggable}
-`;
+`
 
 export const Action = styled.div`
   margin: 0.5rem 0 0.5rem;
-`;
+`
 
 export const ActionTitle = styled.div`
   font-size: 0.8rem;
   margin-bottom: 4px;
   color: rgb(141, 141, 141);
-`;
+`
 
 export const FlexBetween = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
+`
 
 export const CreateMex = styled.div<ColorProp>`
   ${({ showColor }) => showColor && StyledBackground}
@@ -59,7 +59,7 @@ export const CreateMex = styled.div<ColorProp>`
   font-weight: lighter;
   font-size: 0.9rem;
   display: flex;
-`;
+`
 
 export const ActionDesc = styled.div<ColorProp>`
   ${({ showColor }) => showColor && StyledBackground}
@@ -73,4 +73,4 @@ export const ActionDesc = styled.div<ColorProp>`
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-`;
+`

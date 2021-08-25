@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
-import styled from 'styled-components';
+import React from 'react'
+import styled from 'styled-components'
 
 const AppSource = styled.div`
   margin: 8px 0;
@@ -8,7 +8,7 @@ const AppSource = styled.div`
   padding: 8px;
   border-radius: 5px;
   border: 2px dashed ${({ theme }) => theme.colors.text.heading};
-`;
+`
 
 const UrlSource = styled.div`
   margin: 8px 0;
@@ -19,21 +19,21 @@ const UrlSource = styled.div`
   a {
     color: ${({ theme }) => theme.colors.primary};
   }
-`;
+`
 
 const AppName = styled.div`
   font-weight: bold;
   margin-top: 6px;
   color: ${({ theme }) => theme.colors.text.subheading};
-`;
+`
 
 const SourceTitle = styled.div`
   font-weight: bold;
-`;
+`
 
 const Source: React.FC<any> = ({ metadata }) => {
   if (!metadata) {
-    return null;
+    return null
   }
 
   if (metadata?.url) {
@@ -45,7 +45,7 @@ const Source: React.FC<any> = ({ metadata }) => {
         </a>
         {/* <AppName>{metadata?.owner?.name}</AppName> */}
       </UrlSource>
-    );
+    )
   }
 
   return (
@@ -53,7 +53,7 @@ const Source: React.FC<any> = ({ metadata }) => {
       <SourceTitle>{metadata?.title}</SourceTitle>
       <AppName>{metadata?.owner?.name}</AppName>
     </AppSource>
-  );
-};
+  )
+}
 
-export default Source;
+export default Source

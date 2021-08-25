@@ -9,13 +9,17 @@ const GlobalStyle = createGlobalStyle`
 
 
   body {
-    min-height: 100vh;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
     display: flex;
     font-family: Inter, sans-serif;
     color: ${({ theme }) => theme.colors.text.heading};
     background: ${({ theme }) => theme.colors.background.app};
     
-    ${ThinScrollbar};
+    * {
+      ${ThinScrollbar};
+    }
   }
 
   a {

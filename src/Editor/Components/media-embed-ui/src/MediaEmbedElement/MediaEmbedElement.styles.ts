@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 interface IFrameWrapperProps {
-  expand: boolean;
+  expand: boolean
 }
 
 export const IFrameWrapper = styled.div<IFrameWrapperProps>`

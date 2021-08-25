@@ -1,9 +1,9 @@
-import magicLine from '@iconify-icons/ri/magic-line';
-import globalLine from '@iconify-icons/ri/global-line';
+import magicLine from '@iconify-icons/ri/magic-line'
+import globalLine from '@iconify-icons/ri/global-line'
 // npm install --save-dev @iconify/react @iconify-icons/ri
-import { Icon } from '@iconify/react';
-import * as React from 'react';
-import { InputPrompt, InputWrapper, MediaInput } from './MediaEmbedElement.styles';
+import { Icon } from '@iconify/react'
+import * as React from 'react'
+import { InputPrompt, InputWrapper, MediaInput } from './MediaEmbedElement.styles'
 
 export const MediaEmbedUrlInput = ({
   url,
@@ -11,18 +11,18 @@ export const MediaEmbedUrlInput = ({
   setExpand,
   htmlData,
 }: {
-  url: string;
-  onChange: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  setExpand: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  htmlData: string | undefined;
+  url: string
+  onChange: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  setExpand: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  htmlData: string | undefined
 }) => {
-  const [value, setValue] = React.useState(url);
+  const [value, setValue] = React.useState(url)
 
   return (
     <InputWrapper>
       <InputPrompt
         onClick={() => {
-          setExpand((i: boolean) => !i);
+          setExpand((i: boolean) => !i)
         }}
       >
         {htmlData ? <Icon icon={magicLine} height={18} /> : <Icon icon={globalLine} height={18} />}
@@ -30,13 +30,13 @@ export const MediaEmbedUrlInput = ({
       <MediaInput
         data-testid="MediaEmbedUrlInput"
         value={value}
-        onClick={e => e.stopPropagation()}
-        onChange={e => {
-          const newUrl = e.target.value;
-          setValue(newUrl);
-          onChange(newUrl);
+        onClick={(e) => e.stopPropagation()}
+        onChange={(e) => {
+          const newUrl = e.target.value
+          setValue(newUrl)
+          onChange(newUrl)
         }}
       />
     </InputWrapper>
-  );
-};
+  )
+}

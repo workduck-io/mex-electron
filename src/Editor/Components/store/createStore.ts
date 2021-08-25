@@ -1,14 +1,14 @@
-import pipe from 'ramda/es/pipe';
-import create from 'zustand';
-import { immer } from './immer.middleware';
+import pipe from 'ramda/es/pipe'
+import create from 'zustand'
+import { immer } from './immer.middleware'
 
-export const createStore = () => pipe(immer, create);
+export const createStore = () => pipe(immer, create)
 
 // export const action = (type: string) =>
 
 export const action = <T>(draft: T & { actionType?: string }, actionType: string) => {
-  draft.actionType = actionType;
-};
+  draft.actionType = actionType
+}
 
 /**
  * Set a value in the store.
@@ -21,16 +21,16 @@ export const setStoreValue =
     merge?: boolean
   ) =>
   (value: any) => {
-    set(state => {
-      state.noDiff = true;
+    set((state) => {
+      state.noDiff = true
       if (state[storeKey] !== value) {
-        state.noDiff = false;
-        state.actionType = actionType;
+        state.noDiff = false
+        state.actionType = actionType
         if (!merge) {
-          state[storeKey] = value;
+          state[storeKey] = value
         } else {
-          state[storeKey] = { ...state[storeKey], ...value };
+          state[storeKey] = { ...state[storeKey], ...value }
         }
       }
-    });
-  };
+    })
+  }

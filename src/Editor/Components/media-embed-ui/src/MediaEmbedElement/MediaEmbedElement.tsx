@@ -1,38 +1,38 @@
-import { setNodes } from '@udecode/plate-common';
-import { TElement, useEditorRef } from '@udecode/plate-core';
-import { MediaEmbedNodeData } from '@udecode/plate-media-embed';
-import { debounce } from 'lodash';
-import * as React from 'react';
-import { useEffect } from 'react';
-import EmbedContainer from 'react-oembed-container';
-import { ReactEditor } from 'slate-react';
-import { getEmbedData } from './getEmbedUrl';
-import { IFrame, IFrameWrapper, MediaHtml, RootElement } from './MediaEmbedElement.styles';
-import { MediaEmbedElementProps } from './MediaEmbedElement.types';
-import { MediaEmbedUrlInput } from './MediaEmbedUrlInput';
+import { setNodes } from '@udecode/plate-common'
+import { TElement, useEditorRef } from '@udecode/plate-core'
+import { MediaEmbedNodeData } from '@udecode/plate-media-embed'
+import { debounce } from 'lodash'
+import * as React from 'react'
+import { useEffect } from 'react'
+import EmbedContainer from 'react-oembed-container'
+import { ReactEditor } from 'slate-react'
+import { getEmbedData } from './getEmbedUrl'
+import { IFrame, IFrameWrapper, MediaHtml, RootElement } from './MediaEmbedElement.styles'
+import { MediaEmbedElementProps } from './MediaEmbedElement.types'
+import { MediaEmbedUrlInput } from './MediaEmbedUrlInput'
 
 export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
-  const { attributes, children, element, nodeProps } = props;
-  const [expand, setExpand] = React.useState(false);
+  const { attributes, children, element, nodeProps } = props
+  const [expand, setExpand] = React.useState(false)
 
-  const editor = useEditorRef();
-  const { url } = element;
+  const editor = useEditorRef()
+  const { url } = element
 
-  const [htmlData, setHtmlData] = React.useState<string | undefined>(undefined);
+  const [htmlData, setHtmlData] = React.useState<string | undefined>(undefined)
   // console.log('styles', JSON.stringify({ styles }, null, 2));
 
   useEffect(() => {
     const getData = async () => {
-      const d = await getEmbedData(url);
+      const d = await getEmbedData(url)
       if (d) {
-        setHtmlData(d);
+        setHtmlData(d)
       } else {
-        setHtmlData('');
+        setHtmlData('')
       }
-    };
+    }
 
-    getData();
-  }, [url]);
+    getData()
+  }, [url])
 
   return (
     <RootElement {...attributes}>
@@ -55,12 +55,12 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
           setExpand={setExpand}
           htmlData={htmlData}
           onChange={debounce((val: string) => {
-            const path = ReactEditor.findPath(editor, element);
-            setNodes<TElement<MediaEmbedNodeData>>(editor, { url: val }, { at: path });
+            const path = ReactEditor.findPath(editor, element)
+            setNodes<TElement<MediaEmbedNodeData>>(editor, { url: val }, { at: path })
           }, 500)}
         />
       </div>
       {children}
     </RootElement>
-  );
-};
+  )
+}

@@ -1,8 +1,8 @@
-import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import Spotlight from './components/Spotlight';
-import New from './components/New';
-import GlobalStyle from './styles/global';
+import React from 'react'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import Spotlight from './components/Spotlight'
+import New from './components/New'
+import GlobalStyle from './styles/global'
 
 const Routes = () => {
   return (
@@ -13,7 +13,7 @@ const Routes = () => {
       </Switch>
       <GlobalStyle />
     </Router>
-  );
-};
+  )
+}
 
-export default Routes;
+export default Routes

@@ -39,6 +39,6 @@ const meetingNotes = `# Minutes Of The Meeting (09/04)
 ### NEXT WEEK'S AGENDA
 
 - V0
-- V1`;
+- V1`
 
-export default meetingNotes;
+export default meetingNotes

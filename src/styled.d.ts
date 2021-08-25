@@ -1,74 +1,74 @@
 // import original module declarations
-import 'styled-components';
-import { ShadePalette, ColorPalette } from './Styled/themeGenerator';
+import 'styled-components'
+import { ShadePalette, ColorPalette } from './Styled/themeGenerator'
 
-type Pixels = number; // Pixels in integer
+type Pixels = number // Pixels in integer
 
 interface LayoutStyle {
   spacing: {
-    large: string;
-    medium: string;
-    small: string;
-    tiny: string;
-  };
+    large: string
+    medium: string
+    small: string
+    tiny: string
+  }
   borderRadius: {
-    large: string;
-    small: string;
-    tiny: string;
-  };
+    large: string
+    small: string
+    tiny: string
+  }
   width: {
-    nav: Pixels;
-    sidebar: Pixels;
-  };
-  indent: { sidebar: Pixels };
+    nav: Pixels
+    sidebar: Pixels
+  }
+  indent: { sidebar: Pixels }
 }
 
 // and extend them!
 declare module 'styled-components' {
   export interface DefaultTheme extends LayoutStyle {
     colors: {
-      primary: string;
-      secondary: string;
+      primary: string
+      secondary: string
 
       //
-      palette: ColorPalette;
-      gray: ShadePalette;
+      palette: ColorPalette
+      gray: ShadePalette
 
       background: {
-        app: string;
-        card: string;
-        modal: string;
-        sidebar: string;
-        highlight: string;
-      };
-      divider: string;
+        app: string
+        card: string
+        modal: string
+        sidebar: string
+        highlight: string
+      }
+      divider: string
       fade: {
-        primary: string;
-        secondary: string;
-        background: string;
-      };
+        primary: string
+        secondary: string
+        background: string
+      }
       form: {
         input: {
-          bg: string;
-          fg: string;
-          border: string;
-        };
+          bg: string
+          fg: string
+          border: string
+        }
         button: {
-          bg: string;
-          fg: string;
-          hover: string;
-          border: string;
-        };
-      };
+          bg: string
+          fg: string
+          hover: string
+          border: string
+        }
+      }
       text: {
-        heading: string;
-        subheading: string;
-        default: string;
-        fade: string;
-        disabled: string;
-        accent: string;
-        oppositePrimary: string;
-      };
-    };
+        heading: string
+        subheading: string
+        default: string
+        fade: string
+        disabled: string
+        accent: string
+        oppositePrimary: string
+      }
+    }
   }
 }

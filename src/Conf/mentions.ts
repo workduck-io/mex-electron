@@ -1,4 +1,4 @@
-import { MentionNodeData } from '@udecode/plate';
+import { MentionNodeData } from '@udecode/plate'
 
 export const MENTIONABLES: MentionNodeData[] = [
   { value: '0', name: 'Aayla Secura', email: 'aayla_secura@force.com' },
@@ -548,4 +548,4 @@ export const MENTIONABLES: MentionNodeData[] = [
   { value: '400', name: 'Zev Senesca', email: 'zev_senesca@force.com' },
   { value: '401', name: 'Ziro the Hutt', email: 'ziro_the_hutt@force.com' },
   { value: '402', name: 'Zuckuss', email: 'zuckuss@force.com' },
-];
+]

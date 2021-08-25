@@ -1,11 +1,11 @@
-import fileDocument from '@iconify-icons/gg/file-document';
-import appsLine from '@iconify-icons/ri/apps-line';
-import checkboxLine from '@iconify-icons/ri/checkbox-line';
-import dashboardLine from '@iconify-icons/ri/dashboard-line';
-import quillPenLine from '@iconify-icons/ri/quill-pen-line';
-import { Icon } from '@iconify/react';
-import React from 'react';
-import { NavLinkData } from '../Components/Sidebar/Types';
+import fileDocument from '@iconify-icons/gg/file-document'
+import appsLine from '@iconify-icons/ri/apps-line'
+import checkboxLine from '@iconify-icons/ri/checkbox-line'
+import dashboardLine from '@iconify-icons/ri/dashboard-line'
+import quillPenLine from '@iconify-icons/ri/quill-pen-line'
+import { Icon } from '@iconify/react'
+import React from 'react'
+import { NavLinkData } from '../Components/Sidebar/Types'
 
 /*
 Sidebar links are defined here
@@ -13,7 +13,7 @@ Sidebar links are defined here
 
 // Disabled as IconifyIcon type doesn't work
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-export const GetIcon = (icon: any): React.ReactNode => <Icon width="32" icon={icon} />;
+export const GetIcon = (icon: any): React.ReactNode => <Icon width="32" icon={icon} />
 
 const links: NavLinkData[] = [
   {
@@ -41,6 +41,6 @@ const links: NavLinkData[] = [
     path: '/snippets',
     icon: GetIcon(quillPenLine),
   },
-];
+]
 
-export default links;
+export default links

@@ -1,4 +1,4 @@
-import { generateTheme } from '../themeGenerator';
+import { generateTheme } from '../themeGenerator'
 
 export const dnshTheme = generateTheme({
   // Colors
@@ -33,4 +33,4 @@ export const dnshTheme = generateTheme({
   //   disabled: '#7f8288',
   //   accent: '#C792EA',
   // },
-});
+})

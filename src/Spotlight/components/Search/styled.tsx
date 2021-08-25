@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import { Draggable } from '../Actions/styled';
-import { StyledBackground } from '../Spotlight/styled';
+import styled from 'styled-components'
+import { Draggable } from '../Actions/styled'
+import { StyledBackground } from '../Spotlight/styled'
 
 export const StyledInput = styled.input`
   ${StyledBackground}
@@ -13,7 +13,7 @@ export const StyledInput = styled.input`
   :focus {
     outline: none;
   }
-`;
+`
 
 export const StyledSearch = styled.section`
   ${Draggable}
@@ -21,4 +21,4 @@ export const StyledSearch = styled.section`
   padding: 5px;
   display: flex;
   border-radius: 10px;
-`;
+`

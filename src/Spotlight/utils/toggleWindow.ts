@@ -2,11 +2,11 @@
 
 const toggleWindow = (appWindow: any, isSelection: boolean) => {
   if (!isSelection && (appWindow.isFocused() || appWindow.isVisible())) {
-    appWindow.hide();
+    appWindow.hide()
   } else {
-    appWindow.show();
+    appWindow.show()
     // appWindow.focus();
   }
-};
+}
 
-export default toggleWindow;
+export default toggleWindow

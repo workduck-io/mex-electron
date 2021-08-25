@@ -1,19 +1,19 @@
-import { rgba } from 'polished';
-import React, { useEffect, useState } from 'react';
-import Modal from 'react-modal';
-import { ActionMeta } from 'react-select';
-import { css } from 'styled-components';
-import tinykeys from 'tinykeys';
-import useDataStore, { useFlatTreeFromILinks } from '../../Editor/Store/DataStore';
-import { useEditorStore } from '../../Editor/Store/EditorStore';
-import { getNodeFlatTree } from '../../Lib/flatTree';
-import TreeNode from '../../Types/tree';
-import LookupInput from '../NodeInput/NodeSelect';
-import { Value } from '../NodeInput/Types';
+import { rgba } from 'polished'
+import React, { useEffect, useState } from 'react'
+import Modal from 'react-modal'
+import { ActionMeta } from 'react-select'
+import { css } from 'styled-components'
+import tinykeys from 'tinykeys'
+import useDataStore, { useFlatTreeFromILinks } from '../../Editor/Store/DataStore'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
+import { getNodeFlatTree } from '../../Lib/flatTree'
+import TreeNode from '../../Types/tree'
+import LookupInput from '../NodeInput/NodeSelect'
+import { Value } from '../NodeInput/Types'
 
 export type LookupProps = {
-  flatTree: TreeNode[];
-};
+  flatTree: TreeNode[]
+}
 
 /** Is added to Global Styles */
 export const LookupStyles = css`
@@ -37,37 +37,37 @@ export const LookupStyles = css`
     display: flex;
     background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};
   }
-`;
+`
 
 const Lookup: React.FC<LookupProps> = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   const openModal = () => {
-    setOpen(true);
+    setOpen(true)
     // searchInput.current.focus();
-  };
+  }
 
   const closeModal = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      '$mod+KeyL': event => {
-        event.preventDefault();
-        openModal();
+      '$mod+KeyL': (event) => {
+        event.preventDefault()
+        openModal()
       },
-    });
+    })
     return () => {
-      unsubscribe();
-    };
-  });
+      unsubscribe()
+    }
+  })
 
-  const loadNode = useEditorStore(s => s.loadNode);
-  const loadNodeFromId = useEditorStore(s => s.loadNodeFromId);
-  const addILink = useDataStore(s => s.addILink);
+  const loadNode = useEditorStore((s) => s.loadNode)
+  const loadNodeFromId = useEditorStore((s) => s.loadNodeFromId)
+  const addILink = useDataStore((s) => s.addILink)
 
-  const flattree = useFlatTreeFromILinks();
+  const flattree = useFlatTreeFromILinks()
   // console.log({ flatTree, open });
 
   const handleChange = (
@@ -76,26 +76,26 @@ const Lookup: React.FC<LookupProps> = () => {
   ) => {
     // setState({ ...state, value: newValue });
     if (newValue) {
-      const node = getNodeFlatTree(newValue.value, flattree);
+      const node = getNodeFlatTree(newValue.value, flattree)
       if (node.length > 0) {
-        loadNode(node[0]);
+        loadNode(node[0])
       }
     }
-    closeModal();
-  };
+    closeModal()
+  }
 
   const handleCreate = (inputValue: string) => {
-    addILink(inputValue);
-    loadNodeFromId(inputValue);
-    closeModal();
-  };
+    addILink(inputValue)
+    loadNodeFromId(inputValue)
+    closeModal()
+  }
 
   return (
     <Modal className="LookupContent" overlayClassName="LookupOverlay" onRequestClose={closeModal} isOpen={open}>
       <h1>Lookup</h1>
       <LookupInput autoFocus menuOpen handleChange={handleChange} handleCreate={handleCreate} />
     </Modal>
-  );
-};
+  )
+}
 
-export default Lookup;
+export default Lookup

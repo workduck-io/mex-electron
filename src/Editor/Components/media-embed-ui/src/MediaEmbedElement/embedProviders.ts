@@ -1,12 +1,12 @@
 interface OembedProvider {
-  provider_name: string;
-  provider_url: string;
+  provider_name: string
+  provider_url: string
   endpoints: {
-    schemes?: string[];
-    url: string;
-    discovery?: boolean;
-    formats?: string[];
-  }[];
+    schemes?: string[]
+    url: string
+    discovery?: boolean
+    formats?: string[]
+  }[]
 }
 
 /** Provider list sourced from https://oembed.com/providers.json */
@@ -3451,4 +3451,4 @@ export const oembedProviders: OembedProvider[] = [
       },
     ],
   },
-];
+]

@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from 'styled-components'
 
 // const classNames = {
 //   root: 'slate-TagCombobox',
@@ -21,7 +21,7 @@ export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
       border-radius: 0 0 2px 2px;
       box-shadow: rgba(0, 0, 0, 0.133) 0 3.2px 7.2px 0, rgba(0, 0, 0, 0.11) 0 0.6px 1.8px 0;
     `}
-`;
+`
 
 export const ComboboxItem = styled.div<{ highlighted: boolean }>`
   display: flex;
@@ -44,4 +44,4 @@ export const ComboboxItem = styled.div<{ highlighted: boolean }>`
     background-color: ${({ highlighted, theme }) =>
       !highlighted ? theme.colors.background.card : theme.colors.background.highlight};
   }
-`;
+`
