@@ -70,7 +70,7 @@ const getNodeStyles = (level: number, theme: DefaultTheme) => {
   }
 }
 
-const getEdgeStyles = (level: number, theme: DefaultTheme) => {
+const getEdgeGlobalStyles = (level: number, theme: DefaultTheme) => {
   const { gray, primary } = theme.colors
 
   const step = 0.1
@@ -79,6 +79,13 @@ const getEdgeStyles = (level: number, theme: DefaultTheme) => {
 
   return {
     color
+  }
+}
+
+const getEdgeLocalStyles = (cent: boolean, theme: DefaultTheme) => {
+  const { secondary, gray } = theme.colors
+  return {
+    color: cent ? gray[6] : secondary
   }
 }
 
@@ -114,7 +121,7 @@ export const useGraphData = () => {
             edges.push({
               to: node.id,
               from: compNode.id,
-              ...getEdgeStyles(level, theme)
+              ...getEdgeGlobalStyles(level, theme)
             })
           }
 
@@ -133,7 +140,7 @@ export const useGraphData = () => {
         edges.push({
           to: node.id,
           from: 0,
-          ...getEdgeStyles(0, theme)
+          ...getEdgeGlobalStyles(0, theme)
         })
       }
     })
@@ -158,7 +165,8 @@ export const useGraphData = () => {
   nodeLinks.forEach((l) =>
     edges.push({
       to: getNodeNumId(l.to, newNodes),
-      from: getNodeNumId(l.from, newNodes)
+      from: getNodeNumId(l.from, newNodes),
+      ...getEdgeLocalStyles(l.to === nodeId, theme)
     })
   )
 
