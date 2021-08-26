@@ -2,7 +2,7 @@ import { createGlobalStyle } from 'styled-components'
 import { ThinScrollbar } from './helpers'
 import { LookupStyles } from '../Components/Lookup'
 import normalize from './normalize'
-import { RefactorStyles } from '../Components/Refactor/Refactor'
+import { RefactorStyles } from '../Components/Refactor/styles'
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}; // NormalizeCSS normalization
@@ -38,9 +38,7 @@ const GlobalStyle = createGlobalStyle`
   
   /* Styles for modals */
   ${LookupStyles}
-
   ${RefactorStyles}
-
 
   body > ul[role="listbox"]{
     display: block;
