@@ -9,6 +9,7 @@ import { useRefactor } from '../../Editor/Actions/useRefactor'
 import { Button } from '../../Styled/Buttons'
 import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
+import { doesLinkRemain } from './doesLinkRemain'
 
 export const RefactorStyles = css`
   .RefactorContent {
@@ -50,8 +51,8 @@ const Rename = () => {
     to: '',
     defFrom: {
       label: '',
-      value: '',
-    },
+      value: ''
+    }
   })
 
   const openModal = () => {
@@ -61,9 +62,9 @@ const Rename = () => {
       from: nodeId,
       defFrom: {
         value: nodeId,
-        label: nodeId,
+        label: nodeId
       },
-      to: '',
+      to: ''
     })
   }
 
@@ -73,9 +74,9 @@ const Rename = () => {
       from: '',
       defFrom: {
         value: '',
-        label: '',
+        label: ''
       },
-      to: '',
+      to: ''
     })
   }
 
@@ -84,7 +85,7 @@ const Rename = () => {
       '$mod+KeyK KeyN': (event) => {
         event.preventDefault()
         openModal()
-      },
+      }
     })
     return () => {
       unsubscribe()
@@ -98,7 +99,7 @@ const Rename = () => {
       const { value } = newValue
       setRenameState({
         ...renameState,
-        from: value,
+        from: value
       })
     }
   }
@@ -108,7 +109,7 @@ const Rename = () => {
       const { value } = newValue
       setRenameState({
         ...renameState,
-        to: value,
+        to: value
       })
     }
   }
@@ -117,7 +118,7 @@ const Rename = () => {
     if (inputValue) {
       setRenameState({
         ...renameState,
-        to: inputValue,
+        to: inputValue
       })
     }
   }
@@ -138,10 +139,14 @@ const Rename = () => {
       const res = execRefactor(from, to)
       console.log(res)
 
-      if (res.length > 0) {
+      const nodeId = useEditorStore.getState().node.id
+      if (doesLinkRemain(nodeId, res)) {
+        loadNodeFromId(nodeId)
+      } else if (res.length > 0) {
         loadNodeFromId(res[0].to)
       }
     }
+
     closeModal()
   }
 

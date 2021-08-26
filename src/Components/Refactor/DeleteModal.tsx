@@ -9,6 +9,10 @@ import { Button } from '../../Styled/Buttons'
 import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
 import { useDelete } from '../../Editor/Actions/useDelete'
+import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
+
+import { Icon } from '@iconify/react'
+import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
 
 export const RefactorStyles = css`
   .RefactorContent {
@@ -127,23 +131,29 @@ const Delete = () => {
 
   return (
     <Modal className="RefactorContent" overlayClassName="RefactorOverlay" onRequestClose={closeModal} isOpen={open}>
-      <h1>Rename</h1>
-      <br />
-      <h2>Delete Node:</h2>
+      <ModalHeader>Delete</ModalHeader>
+
       <LookupInput autoFocus defaultValue={defDel} handleChange={handleDeleteChange} />
 
       {del !== '' && (
-        <>
-          <h1>Please confirm deleting the node(s):</h1>
-          <div>
-            {mockData.map((d) => (
-              <p key={`delete_${d}`}>{d}</p>
-            ))}
-          </div>
-        </>
+        <MockRefactorMap>
+          <MRMHead>
+            <h1>Please confirm deleting the node(s):</h1>
+          </MRMHead>
+          {mockData.map((d) => (
+            <MRMRow key={`DelNodeModal_${d}`}>
+              <DeleteIcon>
+                <Icon icon={deleteBin2Line}></Icon>
+              </DeleteIcon>
+              <p>{d}</p>
+            </MRMRow>
+          ))}
+        </MockRefactorMap>
       )}
-      <Button onClick={handleDelete}>Delete</Button>
-      <Button onClick={handleCancel}>Cancel Culture</Button>
+      <ModalControls>
+        <Button onClick={handleDelete}>Delete</Button>
+        <Button onClick={handleCancel}>Cancel Culture</Button>
+      </ModalControls>
     </Modal>
   )
 }

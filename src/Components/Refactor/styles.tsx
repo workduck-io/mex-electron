@@ -80,13 +80,19 @@ export const MRMRow = styled.div`
   }
 `
 
-export const ArrowIcon = styled.div`
-  color: ${({ theme }) => theme.colors.text.accent};
+export const TableIcon = styled.div`
   margin: 0 ${({ theme }) => theme.spacing.small};
   display: flex;
   align-items: center;
 `
 
+export const ArrowIcon = styled(TableIcon)`
+  color: ${({ theme }) => theme.colors.text.accent};
+`
+
+export const DeleteIcon = styled(TableIcon)`
+  color: ${({ theme }) => theme.colors.palette.red};
+`
 export const ModalControls = styled.div`
   margin: ${({ theme: { spacing } }) => `${spacing.large} 0 ${spacing.medium}`};
   display: flex;
