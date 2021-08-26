@@ -13,29 +13,6 @@ import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
-export const RefactorStyles = css`
-  .RefactorContent {
-    /* position: absolute; */
-    width: max-content;
-    height: max-content;
-    margin: auto;
-    background: ${({ theme }) => theme.colors.background.card};
-    box-shadow: 0px 20px 100px ${({ theme }) => theme.colors.gray[9]};
-    overflow: visible;
-    border-radius: ${({ theme }) => theme.borderRadius.large};
-    outline: none;
-    padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
-    min-height: 240px;
-    min-width: 400px;
-  }
-  .RefactorOverlay {
-    position: fixed;
-    inset: 0px;
-    display: flex;
-    background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};
-  }
-`
-
 interface DeleteState {
   open: boolean
   defDel: { label: string; value: string }
@@ -52,9 +29,9 @@ const Delete = () => {
     del: '',
     defDel: {
       label: '',
-      value: ''
+      value: '',
     },
-    mockData: []
+    mockData: [],
   })
 
   const openModal = () => {
@@ -63,10 +40,10 @@ const Delete = () => {
       open: true,
       defDel: {
         value: nodeId,
-        label: nodeId
+        label: nodeId,
       },
       del: nodeId,
-      mockData: getMockDelete(nodeId)
+      mockData: getMockDelete(nodeId),
     })
   }
 
@@ -76,9 +53,9 @@ const Delete = () => {
       del: '',
       defDel: {
         value: '',
-        label: ''
+        label: '',
       },
-      mockData: []
+      mockData: [],
     })
   }
 
@@ -87,7 +64,7 @@ const Delete = () => {
       '$mod+KeyK KeyD': (event) => {
         event.preventDefault()
         openModal()
-      }
+      },
     })
     return () => {
       unsubscribe()
@@ -102,7 +79,7 @@ const Delete = () => {
       setDeleteState({
         ...deleteState,
         del: value,
-        mockData: getMockDelete(value)
+        mockData: getMockDelete(value),
       })
     }
   }

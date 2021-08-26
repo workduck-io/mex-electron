@@ -15,29 +15,6 @@ import { Value } from '../NodeInput/Types'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
-export const RefactorStyles = css`
-  .RefactorContent {
-    /* position: absolute; */
-    width: max-content;
-    height: max-content;
-    margin: auto;
-    background: ${({ theme }) => theme.colors.background.card};
-    box-shadow: 0px 20px 100px ${({ theme }) => theme.colors.gray[9]};
-    overflow: visible;
-    border-radius: ${({ theme }) => theme.borderRadius.large};
-    outline: none;
-    padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
-    min-height: 240px;
-    min-width: 400px;
-  }
-  .RefactorOverlay {
-    position: fixed;
-    inset: 0px;
-    display: flex;
-    background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};
-  }
-`
-
 interface RenameState {
   open: boolean
   from: string
@@ -56,9 +33,9 @@ const Rename = () => {
     to: '',
     defFrom: {
       label: '',
-      value: ''
+      value: '',
     },
-    mockRefactor: []
+    mockRefactor: [],
   })
 
   const openModal = () => {
@@ -69,8 +46,8 @@ const Rename = () => {
       from: nodeId,
       defFrom: {
         value: nodeId,
-        label: nodeId
-      }
+        label: nodeId,
+      },
     }))
   }
 
@@ -80,10 +57,10 @@ const Rename = () => {
       from: '',
       defFrom: {
         value: '',
-        label: ''
+        label: '',
       },
       to: '',
-      mockRefactor: []
+      mockRefactor: [],
     })
   }
 
@@ -92,7 +69,7 @@ const Rename = () => {
       '$mod+KeyK KeyN': (event) => {
         event.preventDefault()
         openModal()
-      }
+      },
     })
     return () => {
       unsubscribe()
@@ -106,7 +83,7 @@ const Rename = () => {
       const { value } = newValue
       setRenameState({
         ...renameState,
-        from: value
+        from: value,
       })
     }
   }
@@ -116,7 +93,7 @@ const Rename = () => {
       const { value } = newValue
       setRenameState((state) => ({
         ...state,
-        to: value
+        to: value,
       }))
     }
   }
@@ -125,7 +102,7 @@ const Rename = () => {
     if (inputValue) {
       setRenameState((state) => ({
         ...state,
-        to: inputValue
+        to: inputValue,
       }))
     }
   }
@@ -139,7 +116,7 @@ const Rename = () => {
     if (to && from) {
       setRenameState((state) => ({
         ...state,
-        mockRefactor: getMockRefactor(from, to)
+        mockRefactor: getMockRefactor(from, to),
       }))
     }
   }, [to, from])
