@@ -1,37 +1,17 @@
+import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
+import { Icon } from '@iconify/react'
 import { rgba } from 'polished'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import { ActionMeta } from 'react-select'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { css } from 'styled-components'
 import tinykeys from 'tinykeys'
+import { useDelete } from '../../Editor/Actions/useDelete'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
 import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
-import { useDelete } from '../../Editor/Actions/useDelete'
-
-export const RefactorStyles = css`
-  .RefactorContent {
-    /* position: absolute; */
-    width: max-content;
-    height: max-content;
-    margin: auto;
-    background: ${({ theme }) => theme.colors.background.card};
-    box-shadow: 0px 20px 100px ${({ theme }) => theme.colors.gray[9]};
-    overflow: visible;
-    border-radius: ${({ theme }) => theme.borderRadius.large};
-    outline: none;
-    padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
-    min-height: 240px;
-    min-width: 400px;
-  }
-  .RefactorOverlay {
-    position: fixed;
-    inset: 0px;
-    display: flex;
-    background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};
-  }
-`
+import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
 interface DeleteState {
   open: boolean
@@ -127,23 +107,34 @@ const Delete = () => {
 
   return (
     <Modal className="RefactorContent" overlayClassName="RefactorOverlay" onRequestClose={closeModal} isOpen={open}>
-      <h1>Rename</h1>
-      <br />
-      <h2>Delete Node:</h2>
+      <ModalHeader>Delete</ModalHeader>
+
       <LookupInput autoFocus defaultValue={defDel} handleChange={handleDeleteChange} />
 
-      {del !== '' && (
-        <>
-          <h1>Please confirm deleting the node(s):</h1>
-          <div>
-            {mockData.map((d) => (
-              <p key={`delete_${d}`}>{d}</p>
-            ))}
-          </div>
-        </>
+      {mockData.length > 0 && (
+        <MockRefactorMap>
+          <MRMHead>
+            <h1>Please confirm deleting the node(s):</h1>
+            <p>{mockData.length} changes</p>
+          </MRMHead>
+          {mockData.map((d) => (
+            <MRMRow key={`DelNodeModal_${d}`}>
+              <DeleteIcon>
+                <Icon icon={deleteBin2Line}></Icon>
+              </DeleteIcon>
+              <p>{d}</p>
+            </MRMRow>
+          ))}
+        </MockRefactorMap>
       )}
-      <Button onClick={handleDelete}>Delete</Button>
-      <Button onClick={handleCancel}>Cancel Culture</Button>
+      <ModalControls>
+        <Button size="large" primary onClick={handleDelete}>
+          Delete
+        </Button>
+        <Button size="large" onClick={handleCancel}>
+          Cancel Culture
+        </Button>
+      </ModalControls>
     </Modal>
   )
 }

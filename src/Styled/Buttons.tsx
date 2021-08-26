@@ -5,21 +5,32 @@ import styled, { css } from 'styled-components'
 import { centeredCss } from './Layouts'
 
 interface ButtonProps {
+  primary?: boolean
+  size?: 'large' | 'default'
   highlight?: boolean
 }
 
 export const Button = styled.button<ButtonProps>`
   ${centeredCss};
-  padding: ${({ theme }) => theme.spacing.small};
-  margin: 0 ${({ theme }) => theme.spacing.tiny};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   color: ${({ theme }) => theme.colors.text.subheading};
   cursor: pointer;
   transition: 0.3s ease;
   &:hover {
-    /* color: ${({ theme }) => theme.colors.text.heading}; */
-    /* background: ${({ theme }) => theme.colors.gray[5]}; */
+    box-shadow: 0px 3px 8px ${({ theme }) => transparentize(0.7, theme.colors.primary)};
   }
+
+  ${({ theme, size }) =>
+    size === 'large'
+      ? css`
+          padding: ${({ theme: { spacing } }) => `${spacing.small} ${spacing.medium}`};
+          margin: 0 ${({ theme }) => theme.spacing.small};
+          font-size: 1.2rem;
+        `
+      : css`
+          padding: ${({ theme }) => theme.spacing.small};
+          margin: 0 ${({ theme }) => theme.spacing.tiny};
+        `}
 
   ${({ theme, highlight }) =>
     highlight
@@ -27,6 +38,17 @@ export const Button = styled.button<ButtonProps>`
           background-color: ${theme.colors.primary};
           color: ${theme.colors.text.oppositePrimary};
           box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.primary)};
+        `
+      : ''}
+
+  ${({ theme, primary }) =>
+    primary
+      ? css`
+          background-color: ${theme.colors.primary};
+          color: ${theme.colors.text.oppositePrimary};
+          &:hover {
+            background-color: ${theme.colors.fade.primary};
+          }
         `
       : ''}
 `
