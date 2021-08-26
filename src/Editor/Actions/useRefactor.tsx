@@ -64,11 +64,16 @@ export const useRefactor = () => {
       let isRef = false
       for (const ref of refactored) {
         if (ref.from === key) {
-          newContents[ref.to] = { type: content.type, content: refactorLinksInContent(refactored, content.content) }
+          newContents[ref.to] = {
+            type: content.type ?? 'p',
+            content: refactorLinksInContent(refactored, content.content)
+          }
           isRef = true
         }
       }
-      if (!isRef) { newContents[key] = { type: content.type, content: refactorLinksInContent(refactored, content.content) } }
+      if (!isRef) {
+        newContents[key] = { type: content.type ?? 'p', content: refactorLinksInContent(refactored, content.content) }
+      }
     })
 
     setILinks(newIlinks)

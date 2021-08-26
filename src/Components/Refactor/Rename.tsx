@@ -1,15 +1,19 @@
+import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
+import { Icon } from '@iconify/react'
 import { rgba } from 'polished'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import { ActionMeta } from 'react-select'
-import { useEditorStore, withLoadNode } from '../../Editor/Store/EditorStore'
 import { css } from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useRefactor } from '../../Editor/Actions/useRefactor'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
+import { NodeLink } from '../../Types/relations'
 import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
 import { doesLinkRemain } from './doesLinkRemain'
+import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
 export const RefactorStyles = css`
   .RefactorContent {
@@ -39,10 +43,11 @@ interface RenameState {
   from: string
   to: string
   defFrom: { label: string; value: string }
+  mockRefactor: NodeLink[]
 }
 
 const Rename = () => {
-  const { execRefactor } = useRefactor()
+  const { execRefactor, getMockRefactor } = useRefactor()
   const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
 
   const [renameState, setRenameState] = useState<RenameState>({
@@ -52,20 +57,21 @@ const Rename = () => {
     defFrom: {
       label: '',
       value: ''
-    }
+    },
+    mockRefactor: []
   })
 
   const openModal = () => {
     const nodeId = useEditorStore.getState().node.id
-    setRenameState({
+    setRenameState((state) => ({
+      ...state,
       open: true,
       from: nodeId,
       defFrom: {
         value: nodeId,
         label: nodeId
-      },
-      to: ''
-    })
+      }
+    }))
   }
 
   const closeModal = () => {
@@ -76,7 +82,8 @@ const Rename = () => {
         value: '',
         label: ''
       },
-      to: ''
+      to: '',
+      mockRefactor: []
     })
   }
 
@@ -107,32 +114,35 @@ const Rename = () => {
   const handleToChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
     if (newValue) {
       const { value } = newValue
-      setRenameState({
-        ...renameState,
+      setRenameState((state) => ({
+        ...state,
         to: value
-      })
+      }))
     }
   }
 
   const handleToCreate = (inputValue: string) => {
     if (inputValue) {
-      setRenameState({
-        ...renameState,
+      setRenameState((state) => ({
+        ...state,
         to: inputValue
-      })
+      }))
     }
   }
 
-  // useEffect(() => {
-  //   // console.log({ to, from });
-  //   if (to && from) {
-  //     // setMockRename(getMockRefactor(from, to));
-  //   }
-  // }, [to, from, getMockRefactor]);
-
   // console.log({ mockRefactored });
 
-  const { from, to, defFrom, open } = renameState
+  const { from, to, defFrom, open, mockRefactor } = renameState
+
+  useEffect(() => {
+    // console.log({ to, from });
+    if (to && from) {
+      setRenameState((state) => ({
+        ...state,
+        mockRefactor: getMockRefactor(from, to)
+      }))
+    }
+  }, [to, from])
 
   const handleRefactor = () => {
     if (to && from) {
@@ -152,25 +162,40 @@ const Rename = () => {
 
   return (
     <Modal className="RefactorContent" overlayClassName="RefactorOverlay" onRequestClose={closeModal} isOpen={open}>
-      <h1>Rename</h1>
-      <br />
-      <h2>From</h2>
-      <LookupInput defaultValue={defFrom} handleChange={handleFromChange} />
+      <ModalHeader>Rename</ModalHeader>
 
-      <br />
-      <h2>To</h2>
-      <LookupInput autoFocus menuOpen handleChange={handleToChange} handleCreate={handleToCreate} />
+      <LookupInput placeholder="Rename node from..." defaultValue={defFrom} handleChange={handleFromChange} />
 
-      {from !== '' && (
-        <>
-          <h1>Node rename:</h1>
-          <div>
-            <p>From: {from}</p>
-            <p>To: {to}</p>
-          </div>
-        </>
+      <LookupInput
+        placeholder="Rename node to..."
+        autoFocus
+        menuOpen
+        handleChange={handleToChange}
+        handleCreate={handleToCreate}
+      />
+
+      {mockRefactor.length > 0 && (
+        <MockRefactorMap>
+          <MRMHead>
+            <h1>Nodes being refactored... </h1>
+          </MRMHead>
+          {mockRefactor.map((t) => (
+            <MRMRow key={`MyKeys_${t.from}`}>
+              <p>{t.from}</p>
+              <ArrowIcon>
+                <Icon icon={arrowRightLine}> </Icon>
+              </ArrowIcon>
+              <p>{t.to}</p>
+            </MRMRow>
+          ))}
+        </MockRefactorMap>
       )}
-      <Button onClick={handleRefactor}>Rename</Button>
+
+      <ModalControls>
+        <Button primary size="large" onClick={handleRefactor}>
+          Apply Rename
+        </Button>
+      </ModalControls>
     </Modal>
   )
 }

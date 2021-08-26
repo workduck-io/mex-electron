@@ -1,17 +1,17 @@
+import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
+import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import { ActionMeta } from 'react-select'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
 import tinykeys from 'tinykeys'
 import { useRefactor } from '../../Editor/Actions/useRefactor'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
+import { NodeLink } from '../../Types/relations'
 import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
 import { doesLinkRemain } from './doesLinkRemain'
-import { NodeLink } from '../../Types/relations'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
-import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
-import { Icon } from '@iconify/react'
 
 interface RefactorState {
   open: boolean

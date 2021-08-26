@@ -59,7 +59,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
   const toggleLocal = useGraphStore((state) => state.toggleLocal)
   const [network, setNetwork] = useState<any>()
 
-  console.log('Checking for graph data 12321: ', { graphData })
+  // console.log('Checking for graph data 12321: ', { graphData })
 
   const [state, setState] = useState({
     counter: showLocal ? -graphData.nodes.length : graphData.nodes.length,

@@ -46,6 +46,9 @@ export const Button = styled.button<ButtonProps>`
       ? css`
           background-color: ${theme.colors.primary};
           color: ${theme.colors.text.oppositePrimary};
+          &:hover {
+            background-color: ${theme.colors.fade.primary};
+          }
         `
       : ''}
 `

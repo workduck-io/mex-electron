@@ -45,6 +45,8 @@ export const MockRefactorMap = styled.div`
   padding: ${({ theme }) => theme.spacing.tiny};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   margin: ${({ theme: { spacing } }) => `${spacing.large} 0`};
+  max-height: 300px;
+  overflow-y: auto;
 `
 
 export const MRMHead = styled.div`

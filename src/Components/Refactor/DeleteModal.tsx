@@ -1,18 +1,17 @@
+import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
+import { Icon } from '@iconify/react'
 import { rgba } from 'polished'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import { ActionMeta } from 'react-select'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { css } from 'styled-components'
 import tinykeys from 'tinykeys'
+import { useDelete } from '../../Editor/Actions/useDelete'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
 import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
-import { useDelete } from '../../Editor/Actions/useDelete'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
-
-import { Icon } from '@iconify/react'
-import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
 
 export const RefactorStyles = css`
   .RefactorContent {
@@ -151,8 +150,12 @@ const Delete = () => {
         </MockRefactorMap>
       )}
       <ModalControls>
-        <Button onClick={handleDelete}>Delete</Button>
-        <Button onClick={handleCancel}>Cancel Culture</Button>
+        <Button size="large" primary onClick={handleDelete}>
+          Delete
+        </Button>
+        <Button size="large" onClick={handleCancel}>
+          Cancel Culture
+        </Button>
       </ModalControls>
     </Modal>
   )
