@@ -1,58 +1,49 @@
-import { rgba } from 'polished'
+import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
+import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import { ActionMeta } from 'react-select'
-import { css } from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useRefactor } from '../../Editor/Actions/useRefactor'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
+import { NodeLink } from '../../Types/relations'
 import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
+import { doesLinkRemain } from './doesLinkRemain'
+import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
-export const RefactorStyles = css`
-  .RefactorContent {
-    /* position: absolute; */
-    width: max-content;
-    height: max-content;
-    margin: auto;
-    background: ${({ theme }) => theme.colors.background.card};
-    box-shadow: 0px 20px 100px ${({ theme }) => theme.colors.gray[9]};
-    overflow: visible;
-    border-radius: ${({ theme }) => theme.borderRadius.large};
-    outline: none;
-    padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
-    min-height: 240px;
-    min-width: 400px;
-  }
-  .RefactorOverlay {
-    position: fixed;
-    inset: 0px;
-    display: flex;
-    background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};
-  }
-`
+interface RefactorState {
+  open: boolean
+  mockRefactored: NodeLink[]
+  from: string | undefined
+  to: string | undefined
+}
 
 const Refactor = () => {
-  const [open, setOpen] = useState(false)
-  const [from, setFrom] = useState<string | undefined>(undefined)
-  const [to, setTo] = useState<string | undefined>(undefined)
-  const [mockRefactored, setMockRefactored] = useState<
-    {
-      from: string
-      to: string
-    }[]
-  >([])
+  const [refactorState, setRefactoredState] = useState<RefactorState>({
+    from: undefined,
+    to: undefined,
+    mockRefactored: [],
+    open: false
+  })
+
+  const loadNodeFromId = useEditorStore((store) => store.loadNodeFromId)
 
   const openModal = () => {
-    setOpen(true)
-    // searchInput.current.focus();
+    setRefactoredState((state) => ({
+      ...state,
+      open: true
+    }))
   }
 
   const closeModal = () => {
-    setFrom(undefined)
-    setTo(undefined)
-    setMockRefactored([])
-    setOpen(false)
+    setRefactoredState({
+      from: undefined,
+      to: undefined,
+      mockRefactored: [],
+      open: false
+    })
   }
 
   useEffect(() => {
@@ -60,69 +51,100 @@ const Refactor = () => {
       '$mod+KeyK KeyR': (event) => {
         event.preventDefault()
         openModal()
-      },
+      }
     })
     return () => {
       unsubscribe()
     }
   })
 
-  // console.log({ flatTree, open });
-
   const handleFromChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
     if (newValue) {
       const { value } = newValue
-      setFrom(value)
+
+      setRefactoredState((state) => ({
+        ...state,
+        from: value
+      }))
     }
   }
 
   const handleToChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
     if (newValue) {
       const { value } = newValue
-      setTo(value)
+      setRefactoredState((state) => ({
+        ...state,
+        to: value
+      }))
     }
   }
 
   const handleToCreate = (inputValue: string) => {
     if (inputValue) {
-      setTo(inputValue)
+      setRefactoredState((state) => ({
+        ...state,
+        to: inputValue
+      }))
     }
   }
 
   const { getMockRefactor, execRefactor } = useRefactor()
 
+  const { from, to, mockRefactored, open } = refactorState
+
   useEffect(() => {
     // console.log({ to, from });
     if (to && from) {
-      setMockRefactored(getMockRefactor(from, to))
+      setRefactoredState((state) => ({
+        ...state,
+        mockRefactored: getMockRefactor(from, to)
+      }))
     }
-  }, [to, from, getMockRefactor])
+  }, [to, from])
 
   // console.log({ mockRefactored });
 
   const handleRefactor = () => {
-    if (to && from) execRefactor(from, to)
+    const res = execRefactor(from, to)
+    const nodeId = useEditorStore.getState().node.id
+    if (doesLinkRemain(nodeId, res)) {
+      loadNodeFromId(nodeId)
+    } else if (res.length > 0) {
+      loadNodeFromId(res[0].to)
+    }
+    closeModal()
   }
 
   return (
     <Modal className="RefactorContent" overlayClassName="RefactorOverlay" onRequestClose={closeModal} isOpen={open}>
-      <h1>Refactor</h1>
-      <br />
-      <h2>From</h2>
-      <LookupInput menuOpen autoFocus handleChange={handleFromChange} />
+      <ModalHeader>Refactor</ModalHeader>
 
-      <br />
-      <h2>To</h2>
-      <LookupInput handleChange={handleToChange} handleCreate={handleToCreate} />
+      <LookupInput placeholder="Refactor From Node..." menuOpen autoFocus handleChange={handleFromChange} />
 
-      {mockRefactored.length > 0 && <h1>Nodes being refactored:</h1>}
-      {mockRefactored.map((t) => (
-        <div key={`MyKeys_${t.from}`}>
-          <p>From: {t.from}</p>
-          <p>To: {t.to}</p>
-        </div>
-      ))}
-      <Button onClick={handleRefactor}>Apply Refactor</Button>
+      <LookupInput placeholder="Refactor To Node..." handleChange={handleToChange} handleCreate={handleToCreate} />
+
+      {mockRefactored.length > 0 && (
+        <MockRefactorMap>
+          <MRMHead>
+            <h1>Nodes being refactored... </h1>
+            <p>{mockRefactored.length} changes</p>
+          </MRMHead>
+          {mockRefactored.map((t) => (
+            <MRMRow key={`MyKeys_${t.from}`}>
+              <p>{t.from}</p>
+              <ArrowIcon>
+                <Icon icon={arrowRightLine}> </Icon>
+              </ArrowIcon>
+              <p>{t.to}</p>
+            </MRMRow>
+          ))}
+        </MockRefactorMap>
+      )}
+      <ModalControls>
+        <Button primary size="large" onClick={handleRefactor}>
+          Apply Refactor
+        </Button>
+      </ModalControls>
     </Modal>
   )
 }

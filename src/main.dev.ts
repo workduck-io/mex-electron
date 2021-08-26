@@ -167,7 +167,6 @@ const createMexWindow = () => {
         },
       })
       .on('change', () => {
-        // console.log({ path, event, c: count++ });
         let fileData: FileData
         if (fs.existsSync(getSaveLocation(app))) {
           const stringData = fs.readFileSync(getSaveLocation(app), 'utf-8')
