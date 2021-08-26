@@ -53,13 +53,16 @@ export const MRMHead = styled.div`
   padding: ${({ theme }) => theme.spacing.small};
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   h1 {
     font-size: 0.9rem;
     color: ${({ theme }) => theme.colors.gray[4]};
     font-weight: 700;
     margin: 0;
     /* flex: 1; */
+  }
+  p {
+    margin: 0;
   }
 `
 

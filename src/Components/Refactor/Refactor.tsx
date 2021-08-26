@@ -127,6 +127,7 @@ const Refactor = () => {
         <MockRefactorMap>
           <MRMHead>
             <h1>Nodes being refactored... </h1>
+            <p>{mockRefactored.length} changes</p>
           </MRMHead>
           {mockRefactored.map((t) => (
             <MRMRow key={`MyKeys_${t.from}`}>

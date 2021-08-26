@@ -33,9 +33,9 @@ const Rename = () => {
     to: '',
     defFrom: {
       label: '',
-      value: '',
+      value: ''
     },
-    mockRefactor: [],
+    mockRefactor: []
   })
 
   const openModal = () => {
@@ -46,8 +46,8 @@ const Rename = () => {
       from: nodeId,
       defFrom: {
         value: nodeId,
-        label: nodeId,
-      },
+        label: nodeId
+      }
     }))
   }
 
@@ -57,10 +57,10 @@ const Rename = () => {
       from: '',
       defFrom: {
         value: '',
-        label: '',
+        label: ''
       },
       to: '',
-      mockRefactor: [],
+      mockRefactor: []
     })
   }
 
@@ -69,7 +69,7 @@ const Rename = () => {
       '$mod+KeyK KeyN': (event) => {
         event.preventDefault()
         openModal()
-      },
+      }
     })
     return () => {
       unsubscribe()
@@ -83,7 +83,7 @@ const Rename = () => {
       const { value } = newValue
       setRenameState({
         ...renameState,
-        from: value,
+        from: value
       })
     }
   }
@@ -93,7 +93,7 @@ const Rename = () => {
       const { value } = newValue
       setRenameState((state) => ({
         ...state,
-        to: value,
+        to: value
       }))
     }
   }
@@ -102,7 +102,7 @@ const Rename = () => {
     if (inputValue) {
       setRenameState((state) => ({
         ...state,
-        to: inputValue,
+        to: inputValue
       }))
     }
   }
@@ -116,7 +116,7 @@ const Rename = () => {
     if (to && from) {
       setRenameState((state) => ({
         ...state,
-        mockRefactor: getMockRefactor(from, to),
+        mockRefactor: getMockRefactor(from, to)
       }))
     }
   }, [to, from])
@@ -155,6 +155,7 @@ const Rename = () => {
         <MockRefactorMap>
           <MRMHead>
             <h1>Nodes being refactored... </h1>
+            <p>{mockRefactor.length} changes</p>
           </MRMHead>
           {mockRefactor.map((t) => (
             <MRMRow key={`MyKeys_${t.from}`}>
