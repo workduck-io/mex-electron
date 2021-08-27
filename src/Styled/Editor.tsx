@@ -34,7 +34,7 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   margin: ${({ theme }) => theme.spacing.medium} auto;
   width: 100%;
   max-width: 1000px;
-  min-width: 800px;
+  min-width: 400px;
   /* ${({ showGraph }) =>
     showGraph
       ? css`
