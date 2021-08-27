@@ -52,7 +52,12 @@ export const useLinks = () => {
     return newLinks
   }
 
-  return { getAllLinks, getLinks }
+  const getBacklinks = (id: string) => {
+    const links = getLinks(id)
+    return links.filter((l) => l.to === id)
+  }
+
+  return { getAllLinks, getLinks, getBacklinks }
 }
 
 // Used to wrap a class component to provide hooks

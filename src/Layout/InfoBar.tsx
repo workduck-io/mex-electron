@@ -5,6 +5,7 @@ import { useGraphData } from '../Components/Graph/useGraphData'
 import styled from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useGraphStore } from '../Components/Graph/GraphStore'
+import Backlinks from '../Components/Backlinks/Backlinks'
 
 const InfoBarWrapper = styled.div``
 
@@ -26,7 +27,7 @@ const InfoBar = () => {
     }
   })
 
-  return <InfoBarWrapper>{showGraph && <Graph graphData={graphData} />}</InfoBarWrapper>
+  return <InfoBarWrapper>{showGraph ? <Graph graphData={graphData} /> : <Backlinks />}</InfoBarWrapper>
 }
 
 export default InfoBar
