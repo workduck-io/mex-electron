@@ -1,4 +1,5 @@
 import React from 'react'
+import { useRefactorStore } from '../../Components/Refactor/Refactor'
 import { NodeContent } from '../../Types/data'
 import { NodeLink } from '../../Types/relations'
 import { Contents, useContentStore } from '../Store/ContentStore'
@@ -115,6 +116,15 @@ export const withRefactor = (Component: any) => {
   return function C2 (props: any) {
     const { getMockRefactor, execRefactor } = useRefactor()
 
-    return <Component getMockRefactor={getMockRefactor} execRefactor={execRefactor} {...props} /> // eslint-disable-line react/jsx-props-no-spreading
+    const prefillRefactorModal = useRefactorStore((state) => state.prefillModal)
+
+    return (
+      <Component
+        getMockRefactor={getMockRefactor}
+        execRefactor={execRefactor}
+        prefillRefactorModal={prefillRefactorModal}
+        {...props}
+      />
+    ) // eslint-disable-line react/jsx-props-no-spreading
   }
 }

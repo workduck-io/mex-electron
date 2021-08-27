@@ -78,6 +78,7 @@ export const MediaHtml = styled.div`
   }
   background: ${({ theme }) => theme.colors.background.card};
   border-radius: ${({ theme: { borderRadius } }) => `${borderRadius.small}`};
+  overflow: hidden;
   blockquote {
     &.twitter-tweet {
       margin: 0;
@@ -89,5 +90,9 @@ export const MediaHtml = styled.div`
   iframe[src*='youtu.be'] {
     min-width: 100%;
     min-height: 500px;
+  }
+
+  iframe {
+    min-width: 100%;
   }
 `

@@ -15,7 +15,6 @@ import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRo
 
 interface DeleteState {
   open: boolean
-  defDel: { label: string; value: string }
   del: string
   mockData: string[]
 }
@@ -27,10 +26,6 @@ const Delete = () => {
   const [deleteState, setDeleteState] = useState<DeleteState>({
     open: false,
     del: '',
-    defDel: {
-      label: '',
-      value: ''
-    },
     mockData: []
   })
 
@@ -38,10 +33,6 @@ const Delete = () => {
     const nodeId = useEditorStore.getState().node.id
     setDeleteState({
       open: true,
-      defDel: {
-        value: nodeId,
-        label: nodeId
-      },
       del: nodeId,
       mockData: getMockDelete(nodeId)
     })
@@ -51,10 +42,6 @@ const Delete = () => {
     setDeleteState({
       open: false,
       del: '',
-      defDel: {
-        value: '',
-        label: ''
-      },
       mockData: []
     })
   }
@@ -93,7 +80,7 @@ const Delete = () => {
 
   // console.log({ mockRefactored });
 
-  const { del, defDel, mockData, open } = deleteState
+  const { del, mockData, open } = deleteState
 
   const handleDelete = () => {
     const { newLinks } = execDelete(del)
@@ -109,7 +96,7 @@ const Delete = () => {
     <Modal className="RefactorContent" overlayClassName="RefactorOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Delete</ModalHeader>
 
-      <LookupInput autoFocus defaultValue={defDel} handleChange={handleDeleteChange} />
+      <LookupInput autoFocus defaultValue={useEditorStore.getState().node.id} handleChange={handleDeleteChange} />
 
       {mockData.length > 0 && (
         <MockRefactorMap>

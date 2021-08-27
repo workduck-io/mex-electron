@@ -17,7 +17,7 @@ interface LookupInputProps {
   menuOpen?: boolean
   loading?: boolean
   autoFocus?: boolean
-  defaultValue?: Value
+  defaultValue?: string | undefined
   placeholder?: string
   handleChange: (
     newValue: Value | null,
@@ -38,7 +38,10 @@ const LookupInput = ({
   const defaultOptions = getOptions(useFlatTreeFromILinks())
   const [state, setState] = useState<SelectState>({
     options: defaultOptions,
-    value: defaultValue
+    value: {
+      label: defaultValue,
+      value: defaultValue
+    }
   })
   const [loading, setLoading] = useState(LoadingProp)
 
