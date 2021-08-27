@@ -25,7 +25,7 @@ const motion = {
   },
   onAppearActive: (node: any) => ({ height: node.scrollHeight }),
   onLeaveStart: (node: any) => ({ height: node.offsetHeight }),
-  onLeaveActive: () => ({ height: 0 }),
+  onLeaveActive: () => ({ height: 0 })
 }
 
 interface RCTreeProps {
@@ -33,15 +33,16 @@ interface RCTreeProps {
   loadNode: any
   getMockRefactor: any
   execRefactor: any
+  prefillRefactorModal: any
 }
 
 /* Renders a draggable tree with custom collapse-able icon */
 class Tree extends React.Component<RCTreeProps> {
-  constructor(props: RCTreeProps) {
+  constructor (props: RCTreeProps) {
     super(props)
     this.state = {
       gData: props.tree,
-      autoExpandParent: true,
+      autoExpandParent: true
     }
 
     // These three functions were from the react-component/tree example
@@ -51,23 +52,24 @@ class Tree extends React.Component<RCTreeProps> {
     this.onSelect = this.onSelect.bind(this)
   }
 
-  componentDidUpdate(prevProps: RCTreeProps) {
+  componentDidUpdate (prevProps: RCTreeProps) {
     const { tree } = this.props
 
-    if (!equal(prevProps, this.props))
+    if (!equal(prevProps, this.props)) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ gData: tree })
+    }
   }
 
-  onDragEnter({ expandedKeys }: any) {
+  onDragEnter ({ expandedKeys }: any) {
     // eslint-disable-next-line no-console
     console.log('enter', expandedKeys)
     this.setState({
-      expandedKeys,
+      expandedKeys
     })
   }
 
-  onDrop(info: any) {
+  onDrop (info: any) {
     // eslint-disable-next-line no-console
     console.log('drop', info)
     const dropKey = info.node.props.eventKey
@@ -135,26 +137,26 @@ class Tree extends React.Component<RCTreeProps> {
     const from = dragKey
     const to = dropKey + SEPARATOR + singleId
 
-    const { execRefactor } = this.props
+    const { prefillRefactorModal: prefillModal } = this.props
 
     // console.log(getMockRefactor(from, to));
-    execRefactor(from, to)
+    prefillModal(from, to)
 
     // this.setState({
     //   gData: data,
     // });
   }
 
-  onExpand(expandedKeys: any) {
+  onExpand (expandedKeys: any) {
     // eslint-disable-next-line no-console
     console.log('onExpand', expandedKeys)
     this.setState({
       expandedKeys,
-      autoExpandParent: false,
+      autoExpandParent: false
     })
   }
 
-  onSelect(_selectedKeys: Key[], info: any) {
+  onSelect (_selectedKeys: Key[], info: any) {
     const { selectedNodes } = info
     const { loadNode } = this.props
 
@@ -163,7 +165,7 @@ class Tree extends React.Component<RCTreeProps> {
     }
   }
 
-  render() {
+  render () {
     const { expandedKeys, autoExpandParent }: any = this.state
     const { tree } = this.props
 
