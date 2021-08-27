@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import { ActionMeta } from 'react-select'
 import tinykeys from 'tinykeys'
+import create from 'zustand'
 import { useRefactor } from '../../Editor/Actions/useRefactor'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
@@ -13,38 +14,70 @@ import { Value } from '../NodeInput/Types'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
+// Prefill modal has been added to the Tree via withRefactor from useRefactor
+
 interface RefactorState {
   open: boolean
+  focus: boolean
   mockRefactored: NodeLink[]
   from: string | undefined
   to: string | undefined
+  openModal: () => void
+  closeModal: () => void
+  setMockRefactored: (mR: NodeLink[]) => void
+  setFocus: (focus: boolean) => void
+  setFrom: (from: string) => void
+  setTo: (from: string) => void
+  prefillModal: (from: string, to: string) => void
 }
 
-const Refactor = () => {
-  const [refactorState, setRefactoredState] = useState<RefactorState>({
-    from: undefined,
-    to: undefined,
-    mockRefactored: [],
-    open: false
-  })
-
-  const loadNodeFromId = useEditorStore((store) => store.loadNodeFromId)
-
-  const openModal = () => {
-    setRefactoredState((state) => ({
-      ...state,
+export const useRefactorStore = create<RefactorState>((set) => ({
+  open: false,
+  mockRefactored: [],
+  from: undefined,
+  to: undefined,
+  focus: true,
+  openModal: () =>
+    set({
       open: true
-    }))
-  }
-
-  const closeModal = () => {
-    setRefactoredState({
+    }),
+  closeModal: () => {
+    set({
       from: undefined,
       to: undefined,
       mockRefactored: [],
       open: false
     })
-  }
+  },
+  setFocus: (focus: boolean) => set({ focus }),
+  setMockRefactored: (mockRefactored: NodeLink[]) => {
+    set({ mockRefactored })
+  },
+  setFrom: (from: string) => set({ from }),
+  setTo: (to: string) => set({ to }),
+  prefillModal: (from: string, to: string) =>
+    set({
+      from,
+      to,
+      open: true,
+      focus: false
+    })
+}))
+
+const Refactor = () => {
+  const open = useRefactorStore((store) => store.open)
+  const focus = useRefactorStore((store) => store.focus)
+  const to = useRefactorStore((store) => store.to)
+  const from = useRefactorStore((store) => store.from)
+  const mockRefactored = useRefactorStore((store) => store.mockRefactored)
+
+  const openModal = useRefactorStore((store) => store.openModal)
+  const closeModal = useRefactorStore((store) => store.closeModal)
+  const setMockRefactored = useRefactorStore((store) => store.setMockRefactored)
+  const setTo = useRefactorStore((store) => store.setTo)
+  const setFrom = useRefactorStore((store) => store.setFrom)
+
+  const loadNodeFromId = useEditorStore((store) => store.loadNodeFromId)
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -61,44 +94,29 @@ const Refactor = () => {
   const handleFromChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
     if (newValue) {
       const { value } = newValue
-
-      setRefactoredState((state) => ({
-        ...state,
-        from: value
-      }))
+      setFrom(value)
     }
   }
 
   const handleToChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
     if (newValue) {
       const { value } = newValue
-      setRefactoredState((state) => ({
-        ...state,
-        to: value
-      }))
+      setTo(value)
     }
   }
 
   const handleToCreate = (inputValue: string) => {
     if (inputValue) {
-      setRefactoredState((state) => ({
-        ...state,
-        to: inputValue
-      }))
+      setTo(inputValue)
     }
   }
 
   const { getMockRefactor, execRefactor } = useRefactor()
 
-  const { from, to, mockRefactored, open } = refactorState
-
   useEffect(() => {
     // console.log({ to, from });
     if (to && from) {
-      setRefactoredState((state) => ({
-        ...state,
-        mockRefactored: getMockRefactor(from, to)
-      }))
+      setMockRefactored(getMockRefactor(from, to))
     }
   }, [to, from])
 
@@ -119,9 +137,20 @@ const Refactor = () => {
     <Modal className="RefactorContent" overlayClassName="RefactorOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Refactor</ModalHeader>
 
-      <LookupInput placeholder="Refactor From Node..." menuOpen autoFocus handleChange={handleFromChange} />
+      <LookupInput
+        defaultValue={from}
+        placeholder="Refactor From Node..."
+        menuOpen={focus}
+        autoFocus={focus}
+        handleChange={handleFromChange}
+      />
 
-      <LookupInput placeholder="Refactor To Node..." handleChange={handleToChange} handleCreate={handleToCreate} />
+      <LookupInput
+        defaultValue={to}
+        placeholder="Refactor To Node..."
+        handleChange={handleToChange}
+        handleCreate={handleToCreate}
+      />
 
       {mockRefactored.length > 0 && (
         <MockRefactorMap>
@@ -141,7 +170,7 @@ const Refactor = () => {
         </MockRefactorMap>
       )}
       <ModalControls>
-        <Button primary size="large" onClick={handleRefactor}>
+        <Button primary autoFocus={!focus} size="large" onClick={handleRefactor}>
           Apply Refactor
         </Button>
       </ModalControls>

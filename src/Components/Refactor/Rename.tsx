@@ -19,7 +19,6 @@ interface RenameState {
   open: boolean
   from: string
   to: string
-  defFrom: { label: string; value: string }
   mockRefactor: NodeLink[]
 }
 
@@ -31,10 +30,6 @@ const Rename = () => {
     open: false,
     from: '',
     to: '',
-    defFrom: {
-      label: '',
-      value: ''
-    },
     mockRefactor: []
   })
 
@@ -43,11 +38,7 @@ const Rename = () => {
     setRenameState((state) => ({
       ...state,
       open: true,
-      from: nodeId,
-      defFrom: {
-        value: nodeId,
-        label: nodeId
-      }
+      from: nodeId
     }))
   }
 
@@ -55,10 +46,6 @@ const Rename = () => {
     setRenameState({
       open: false,
       from: '',
-      defFrom: {
-        value: '',
-        label: ''
-      },
       to: '',
       mockRefactor: []
     })
@@ -109,7 +96,7 @@ const Rename = () => {
 
   // console.log({ mockRefactored });
 
-  const { from, to, defFrom, open, mockRefactor } = renameState
+  const { from, to, open, mockRefactor } = renameState
 
   useEffect(() => {
     // console.log({ to, from });
@@ -141,7 +128,11 @@ const Rename = () => {
     <Modal className="RefactorContent" overlayClassName="RefactorOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Rename</ModalHeader>
 
-      <LookupInput placeholder="Rename node from..." defaultValue={defFrom} handleChange={handleFromChange} />
+      <LookupInput
+        placeholder="Rename node from..."
+        defaultValue={useEditorStore.getState().node.id}
+        handleChange={handleFromChange}
+      />
 
       <LookupInput
         placeholder="Rename node to..."
