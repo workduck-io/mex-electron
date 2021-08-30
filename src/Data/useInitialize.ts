@@ -6,6 +6,8 @@ import { useEditorStore } from '../Editor/Store/EditorStore'
 import { useSyncStore } from '../Editor/Store/SyncStore'
 import { FileData } from '../Types/data'
 import { getTheme } from '../Styled/themes/defaultThemes'
+import { extractSnippetIdsFromContent } from '../Snippets/useSnippets'
+import { generateComboTexts } from '../Editor/Store/sampleTags'
 
 export const useInitialize = () => {
   const initializeDataStore = useDataStore((state) => state.initializeDataStore)
@@ -16,7 +18,10 @@ export const useInitialize = () => {
 
   const update = (data: FileData) => {
     const { tags, ilinks, contents, syncBlocks } = data
-    initializeDataStore(tags, ilinks, defaultCommands)
+    const snippets = extractSnippetIdsFromContent(contents)
+    const slashCommands = generateComboTexts([...defaultCommands, ...snippets])
+
+    initializeDataStore(tags, ilinks, slashCommands)
     initContents(contents)
     initSyncBlocks(syncBlocks)
     setTheme(getTheme(data.userSettings.theme))

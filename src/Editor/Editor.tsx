@@ -29,6 +29,8 @@ import { useContentStore } from './Store/ContentStore'
 import useDataStore from './Store/DataStore'
 import { useEditorStore } from './Store/EditorStore'
 import { useSyncStore } from './Store/SyncStore'
+import { useSnippets } from '../Snippets/useSnippets'
+import { useUpdater } from '../Data/useUpdater'
 
 const options = createPlateOptions()
 
@@ -38,7 +40,7 @@ const Editor = () => {
 
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
-  const slash_commands = useDataStore((state) => state.slash_commands)
+  const slash_commands = useDataStore((state) => state.slashCommands)
   const addSyncBlock = useSyncStore((state) => state.addSyncBlock)
   const syncId = useSyncStore((state) => state.syncId)
 
@@ -65,6 +67,9 @@ const Editor = () => {
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
 
+  const { getSnippetsConfigs } = useSnippets()
+
+  const { updater } = useUpdater()
   const generateEditorId = () => `${id}`
 
   useEffect(() => {
@@ -83,6 +88,7 @@ const Editor = () => {
     // On save the editor should serialize the state to markdown plaintext
     // setContent then save
     if (editorState) setFsContent(id, editorState)
+    updater()
     saveData(useContentStore.getState().contents)
 
     toast('Saved!', { duration: 1000 })
@@ -148,7 +154,6 @@ const Editor = () => {
 
           slash_command: {
             slateElementType: ELEMENT_MEDIA_EMBED,
-            // Support for creating slash commands by user can be added here
             newItemHandler: () => undefined
           }
         },
@@ -168,7 +173,8 @@ const Editor = () => {
               addSyncBlock(nd) // Also need to add the newly created block to the sync store
               return nd
             }
-          }
+          },
+          ...getSnippetsConfigs()
         }
       )
     }

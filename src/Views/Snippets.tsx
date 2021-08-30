@@ -6,16 +6,7 @@ export type SnippetsProps = {
 }
 
 const Snippets: React.FC<SnippetsProps> = () => {
-  return (
-    <Centered>
-      <div>
-        <a target="_blank" rel="noreferrer" href="https://www.xypnox.com/">
-          xypnox
-        </a>
-      </div>
-      Snippets
-    </Centered>
-  )
+  return <Centered>Snippets</Centered>
 }
 
 export default Snippets

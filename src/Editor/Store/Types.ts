@@ -8,13 +8,14 @@ export interface ComboText {
 export interface DataStoreState {
   tags: ComboText[]
   ilinks: ComboText[]
-  slash_commands: ComboText[]
+  slashCommands: ComboText[]
 
   initializeDataStore: (tags: ComboText[], ids: ComboText[], slash_commands: ComboText[]) => void
 
   addTag: (tag: string) => void
   addILink: (ilink: string) => void
 
+  setSlashCommands: (slashCommands: ComboText[]) => void
   setIlinks: (ilinks: ComboText[]) => void
 }
 

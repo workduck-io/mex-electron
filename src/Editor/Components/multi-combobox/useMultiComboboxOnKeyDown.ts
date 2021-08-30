@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { getBlockAbove, getPlatePluginType, insertNodes, SPEditor, TElement } from '@udecode/plate'
 import { useCallback } from 'react'
 import { Editor, Transforms } from 'slate'
@@ -41,7 +40,7 @@ export const useElementOnChange = (comboType: ComboTypeHandlers) => {
         insertNodes<TElement>(editor, {
           type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
           children: [{ text: '' }],
-          value: item.text,
+          value: item.text
         })
 
         // console.log('Inserted', { item, type });
@@ -77,7 +76,12 @@ const useMultiComboboxOnKeyDown = (
 
   // We need to create the select handlers ourselves here
 
-  const elementChangeHandler = comboboxKey === ComboboxKey.SLASH_COMMAND ? slashCommandOnChange : elementOnChange
+  let elementChangeHandler: (editor: SPEditor & ReactEditor, item: IComboboxItem) => any
+  if (comboboxKey === ComboboxKey.SLASH_COMMAND) {
+    elementChangeHandler = slashCommandOnChange
+  } else {
+    elementChangeHandler = elementOnChange
+  }
 
   return useComboboxOnKeyDown({
     // Handle multiple combobox
@@ -85,7 +89,7 @@ const useMultiComboboxOnKeyDown = (
     onNewItem: (newItem) => {
       comboType.newItemHandler(newItem)
     },
-    creatable: comboboxKey !== ComboboxKey.SLASH_COMMAND,
+    creatable: comboboxKey !== ComboboxKey.SLASH_COMMAND
   })
 }
 
