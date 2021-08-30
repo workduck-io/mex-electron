@@ -17,6 +17,7 @@ interface SnippetStore {
 
 export const useSnippetStore = create<SnippetStore>((set) => ({
   snippets: [],
+
   initSnippets: (snippets: Snippet[]) =>
     set({
       snippets
@@ -24,5 +25,9 @@ export const useSnippetStore = create<SnippetStore>((set) => ({
 
   addSnippets: (snippet: Snippet) => set((state) => ({ snippets: [...state.snippets, snippet] })),
 
-  updateSnippet: (snippet: Snippet) => set((state) => ({ snippets: state.snippets }))
+  updateSnippet: (snippet: Snippet) =>
+    set((state) => {
+      const snippets = state.snippets.filter((s) => s.id !== snippet.id)
+      return { snippets: [...snippets, snippet] }
+    })
 }))
