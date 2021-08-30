@@ -1,10 +1,13 @@
-import React from 'react'
-import { useSnippetStore } from '../Editor/Store/SnippetStore'
-import { SnippetsWrapper, SSnippets, SSnippet, CreateSnippet } from '../Styled/Snippets'
-import { Title } from '../Styled/Typography'
 import { nanoid } from 'nanoid'
-
+import React from 'react'
 import { useHistory } from 'react-router-dom'
+import Editor from '../Editor/Editor'
+import { useSnippetStore } from '../Editor/Store/SnippetStore'
+import { CreateSnippet, SnippetsWrapper, SSnippet, SSnippets } from '../Styled/Snippets'
+import { Title } from '../Styled/Typography'
+import quillPenLine from '@iconify-icons/ri/quill-pen-line'
+import { Icon } from '@iconify/react'
+
 export type SnippetsProps = {
   title?: string
 }
@@ -17,6 +20,7 @@ const Snippets: React.FC<SnippetsProps> = () => {
   const history = useHistory()
 
   const onCreateNew = () => {
+    // Create a better way.
     const newId = nanoid()
     addSnippet({
       id: newId,
@@ -33,12 +37,17 @@ const Snippets: React.FC<SnippetsProps> = () => {
     <SnippetsWrapper>
       <Title>Snippets</Title>
       <SSnippets>
-        <CreateSnippet onClick={onCreateNew}>Create New Snippet</CreateSnippet>
+        <CreateSnippet onClick={onCreateNew}>
+          <Icon icon={quillPenLine} height={100} />
+          <p>Create New Snippet</p>
+        </CreateSnippet>
         {snippets.map((s) => (
           <SSnippet key={`SnippetPreview_${s.id}`}>
             {s.id}
 
             {JSON.stringify(s.content)}
+
+            <Editor readOnly content={s.content} editorId={`Editor_Embed_${s.id}`} />
           </SSnippet>
         ))}
       </SSnippets>

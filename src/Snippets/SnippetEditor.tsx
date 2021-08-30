@@ -5,8 +5,6 @@ import toast from 'react-hot-toast'
 import ReactTooltip from 'react-tooltip'
 import { useSaveData } from '../Data/useSaveData'
 import Editor from '../Editor/Editor'
-import { useContentStore } from '../Editor/Store/ContentStore'
-import { useEditorStore } from '../Editor/Store/EditorStore'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
 import IconButton from '../Styled/Buttons'
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor'
@@ -14,8 +12,6 @@ import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor'
 const SnippetEditor = () => {
   const snippet = useSnippetStore((store) => store.editor.snippet)
   const updateSnippet = useSnippetStore((state) => state.updateSnippet)
-
-  console.log(snippet)
 
   useEffect(() => {
     ReactTooltip.rebuild()

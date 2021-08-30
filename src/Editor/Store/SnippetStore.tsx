@@ -1,7 +1,5 @@
 import create from 'zustand'
 
-// To be used later
-
 interface Snippet {
   id: string
   title: string
