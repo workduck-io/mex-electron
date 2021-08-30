@@ -33,6 +33,11 @@ const Snippets: React.FC<SnippetsProps> = () => {
     history.push('/snippets/editor')
   }
 
+  const onOpenSnippet = (id: string) => {
+    loadSnippet(id)
+    history.push('/snippets/editor')
+  }
+
   return (
     <SnippetsWrapper>
       <Title>Snippets</Title>
@@ -42,10 +47,14 @@ const Snippets: React.FC<SnippetsProps> = () => {
           <p>Create New Snippet</p>
         </CreateSnippet>
         {snippets.map((s) => (
-          <SSnippet key={`SnippetPreview_${s.id}`}>
-            {s.id}
-
-            {JSON.stringify(s.content)}
+          <SSnippet
+            key={`SnippetPreview_${s.id}`}
+            onClick={() => {
+              onOpenSnippet(s.id)
+            }}
+          >
+            <h1>{s.title}</h1>
+            <p>Use /snip.{s.title}</p>
 
             <Editor readOnly content={s.content} editorId={`Editor_Embed_${s.id}`} />
           </SSnippet>
