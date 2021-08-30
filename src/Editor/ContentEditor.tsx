@@ -43,7 +43,7 @@ const ContentEditor = () => {
     // On save the editor should serialize the state to markdown plaintext
     // setContent then save
     if (editorState) setFsContent(id, editorState)
-    saveData(useContentStore.getState().contents)
+    saveData()
 
     toast('Saved!', { duration: 1000 })
   }

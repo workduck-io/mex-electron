@@ -1,7 +1,6 @@
 import { ipcRenderer } from 'electron'
 import useThemeStore from '../Editor/Store/ThemeStore'
-import { theme } from 'twin.macro'
-import { Contents } from '../Editor/Store/ContentStore'
+import { useContentStore } from '../Editor/Store/ContentStore'
 import useDataStore from '../Editor/Store/DataStore'
 import { useSyncStore } from '../Editor/Store/SyncStore'
 
@@ -12,17 +11,17 @@ interface UserSettings {
 
 // Save the data in the local file database
 export const useSaveData = () => {
-  const saveData = (contents: Contents) => {
+  const saveData = () => {
     // console.log('We saved the data for you');
 
     ipcRenderer.send('set-local-data', {
       ilinks: useDataStore.getState().ilinks,
       tags: useDataStore.getState().tags,
-      contents,
+      contents: useContentStore.getState().contents,
       syncBlocks: useSyncStore.getState().syncBlocks,
       userSettings: {
-        theme: useThemeStore.getState().theme.id,
-      },
+        theme: useThemeStore.getState().theme.id
+      }
     })
   }
 
