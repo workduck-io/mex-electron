@@ -1,17 +1,9 @@
-import {
-  createPlateOptions,
-  ELEMENT_MEDIA_EMBED,
-  Plate,
-  selectEditor,
-  useStoreEditorRef,
-  useStoreEditorValue
-} from '@udecode/plate'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+import { createPlateOptions, ELEMENT_MEDIA_EMBED, Plate, selectEditor, useStoreEditorRef } from '@udecode/plate'
+import React, { useEffect } from 'react'
 import ReactTooltip from 'react-tooltip'
-import { EditorStyles } from '../Styled/Editor'
 import tinykeys from 'tinykeys'
-import { useSaveData } from '../Data/useSaveData'
+import { useSnippets } from '../Snippets/useSnippets'
+import { EditorStyles } from '../Styled/Editor'
 import { ComboboxKey } from './Components/combobox/useComboboxStore'
 import components from './Components/components'
 import { ILinkComboboxItem } from './Components/ilink/components/ILinkComboboxItem'
@@ -25,74 +17,49 @@ import { getNewBlockData } from './Components/SyncBlock/getNewBlockData'
 import { TagComboboxItem } from './Components/tag/components/TagComboboxItem'
 import { ELEMENT_TAG } from './Components/tag/defaults'
 import generatePlugins from './Plugins/plugins'
-import { useContentStore } from './Store/ContentStore'
 import useDataStore from './Store/DataStore'
-import { useEditorStore } from './Store/EditorStore'
 import { useSyncStore } from './Store/SyncStore'
-import { useSnippets } from '../Snippets/useSnippets'
-import { useUpdater } from '../Data/useUpdater'
 
 const options = createPlateOptions()
 
-const Editor = () => {
-  const fsContent = useEditorStore((state) => state.content)
-  const nodeId = useEditorStore((state) => state.node.id)
+interface EditorProps {
+  content: any[]
+  editorId: string
+  readOnly?: boolean
+  focusAtBeginning?: boolean
 
+  onSave?: () => void
+}
+
+const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: EditorProps) => {
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
   const slash_commands = useDataStore((state) => state.slashCommands)
   const addSyncBlock = useSyncStore((state) => state.addSyncBlock)
-  const syncId = useSyncStore((state) => state.syncId)
-
-  const setFsContent = useContentStore((state) => state.setContent)
 
   useEffect(() => {
     ReactTooltip.rebuild()
   }, [])
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [content, setContent] = useState<any[] | undefined>(undefined)
-
-  const editorState = useStoreEditorValue()
-  const [id, setId] = useState('__null__')
   const editableProps = {
     placeholder: 'Murmuring the mex hype...',
     style: {
       padding: '15px'
-    }
+    },
+    readOnly
   }
-
-  const saveData = useSaveData()
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
-
   const { getSnippetsConfigs } = useSnippets()
 
-  const { updater } = useUpdater()
-  const generateEditorId = () => `${id}`
+  const generateEditorId = () => `${editorId}`
+  const editorRef = useStoreEditorRef()
 
   useEffect(() => {
-    if (fsContent) {
-      setContent(fsContent)
-      setId(nodeId)
-      // deserialize(fsContent)
-      //   .then(sdoc => {
-      //     return null;
-      //   })
-      //   .catch(e => console.error(e)); // eslint-disable-line no-console
-    }
-  }, [fsContent, nodeId, syncId])
-
-  const onSave = () => {
-    // On save the editor should serialize the state to markdown plaintext
-    // setContent then save
-    if (editorState) setFsContent(id, editorState)
-    updater()
-    saveData(useContentStore.getState().contents)
-
-    toast('Saved!', { duration: 1000 })
-  }
+    // console.log('Focusing', { editor: editorS });
+    if (editorRef && focusAtBeginning) selectEditor(editorRef, { edge: 'start', focus: true })
+  }, [editorRef])
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -105,13 +72,6 @@ const Editor = () => {
       unsubscribe()
     }
   })
-
-  const editorRef = useStoreEditorRef()
-
-  useEffect(() => {
-    // console.log('Focusing', { editor: editorS });
-    if (editorRef) selectEditor(editorRef, { edge: 'start', focus: true })
-  }, [editorRef])
 
   // Combobox
   const pluginConfigs = {
@@ -151,7 +111,6 @@ const Editor = () => {
             }
           },
           // Slash command configs
-
           slash_command: {
             slateElementType: ELEMENT_MEDIA_EMBED,
             newItemHandler: () => undefined
@@ -233,6 +192,12 @@ const Editor = () => {
       )}
     </>
   )
+}
+
+Editor.defaultProps = {
+  readOnly: false,
+  focusAtBeginning: true,
+  onSave: () => undefined
 }
 
 export default Editor

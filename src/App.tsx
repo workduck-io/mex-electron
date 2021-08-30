@@ -8,7 +8,7 @@ import Rename from './Components/Refactor/Rename'
 import sampleRCTree from './Components/Sidebar/treeUtils'
 import Contexts from './Context/Contexts'
 import Providers from './Context/Providers'
-import MainEditor from './Editor/MainEditor'
+import ContentEditor from './Editor/ContentEditor'
 import Main from './Layout/Main'
 import GlobalStyle from './Styled/Global'
 import Dashboard from './Views/Dashboard'
@@ -19,24 +19,29 @@ import Tasks from './Views/Tasks'
 
 Modal.setAppElement('#root')
 
-function App() {
+function App () {
   return (
     <Router>
       <Providers>
         <Contexts>
           <Main>
+            {/* Modals */}
             <Lookup flatTree={sampleRCTree} />
             <Refactor />
             <Rename />
             <Delete />
+
+            {/* Main Content */}
             <Switch>
-              <Route path="/editor" component={MainEditor} />
+              <Route path="/editor" component={ContentEditor} />
               <Route path="/tasks" component={Tasks} />
               <Route path="/integrations" component={Integrations} />
               <Route path="/snippets" component={Snippets} />
               <Route path="/settings" component={Settings} />
               <Route path="/" component={Dashboard} />
             </Switch>
+
+            {/* Non-Rendering components */}
             <GlobalStyle />
           </Main>
         </Contexts>
