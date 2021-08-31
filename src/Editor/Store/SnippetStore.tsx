@@ -1,6 +1,6 @@
 import create from 'zustand'
 
-interface Snippet {
+export interface Snippet {
   id: string
   title: string
   content: any[]

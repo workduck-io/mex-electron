@@ -74,6 +74,7 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
   })
 
   // Combobox
+  const snippetConfigs = getSnippetsConfigs()
   const pluginConfigs = {
     combobox: {
       onChange: useMultiComboboxOnChange(generateEditorId(), {
@@ -133,7 +134,7 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
               return nd
             }
           },
-          ...getSnippetsConfigs()
+          ...snippetConfigs
         }
       )
     }

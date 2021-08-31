@@ -21,6 +21,7 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
       const commandKey = Object.keys(keys).filter((k) => keys[k].command === item.text)[0]
 
       const commandConfig = keys[commandKey]
+      console.log({ commandConfig })
 
       if (isOpen && targetRange) {
         // console.log('useElementOnChange 1', { comboType, type });
@@ -31,9 +32,10 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
         // Snippets are handled differently as the content comes from the snippet and not created
         if (isElder(commandKey, 'snip')) {
           const content = getSnippetContent(commandConfig.command)
-          // select the ilink text and insert the ilink element
-          Transforms.select(editor, targetRange)
-          insertNodes<TElement>(editor, content)
+          if (content) {
+            Transforms.select(editor, targetRange)
+            insertNodes<TElement>(editor, content)
+          }
         } else {
           // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
           // insert a space to fix the bug

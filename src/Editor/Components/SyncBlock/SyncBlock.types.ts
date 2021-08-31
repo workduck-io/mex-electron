@@ -3,9 +3,9 @@ import { CSSProp } from 'styled-components'
 
 export const ELEMENT_SYNC_BLOCK = 'sync_block'
 
-export const connection_services = ['telegram', 'slack', 'notion']
+export const connection_services = ['telegram', 'slack', 'notion', 'github']
 
-export type connections = 'telegram' | 'slack' | 'notion'
+export type connections = 'telegram' | 'slack' | 'notion' | 'github'
 
 export interface SyncBlockData {
   id: string
