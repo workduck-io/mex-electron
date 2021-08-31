@@ -26,7 +26,7 @@ export const InfoTools = styled.div`
 `
 
 interface StyledEditorProps {
-  showGraph: boolean
+  showGraph?: boolean
 }
 
 export const StyledEditor = styled.div<StyledEditorProps>`

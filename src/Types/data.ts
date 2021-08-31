@@ -1,3 +1,4 @@
+import { Snippet } from '../Editor/Store/SnippetStore'
 import { SyncBlockData } from '../Editor/Components/SyncBlock'
 import { ComboText, NodeEditorContent } from '../Editor/Store/Types'
 
@@ -16,4 +17,5 @@ export interface FileData {
   userSettings: {
     theme: string
   }
+  snippets: Snippet[]
 }

@@ -7,11 +7,12 @@ export const DefaultFileData: FileData = {
     '@': { type: 'editor', content: [{ children: [{ text: '' }] }] },
     doc: { type: 'editor', content: [{ children: [{ text: '' }] }] },
     dev: { type: 'editor', content: [{ children: [{ text: '' }] }] },
-    design: { type: 'editor', content: [{ children: [{ text: '' }] }] },
+    design: { type: 'editor', content: [{ children: [{ text: '' }] }] }
   },
   tags: generateComboTexts(['mex']),
   syncBlocks: [],
   userSettings: {
-    theme: 'dev',
+    theme: 'dev'
   },
+  snippets: []
 }
