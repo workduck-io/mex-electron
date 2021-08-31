@@ -15,9 +15,10 @@ import {
   RootElement,
   ServiceLabel,
   ServiceSelectorLabel,
-  SyncForm,
+  SyncForm
 } from './SyncBlock.styles'
 import { connection_services, SyncBlockProps } from './SyncBlock.types'
+import githubFill from '@iconify-icons/ri/github-fill'
 
 type FormValues = {
   content: string
@@ -32,6 +33,7 @@ const Icons: {
   telegram: telegramIcon,
   slack: slackIcon,
   notion: notionIcon,
+  github: githubFill
 }
 
 const getIcon = (s: string) => {
@@ -53,20 +55,20 @@ export const SyncBlock = (props: SyncBlockProps) => {
   const onSubmit = handleSubmit((data) => {
     // console.log(JSON.stringify(data));
     const param = new URLSearchParams({
-      source: 'mex',
+      source: 'mex'
     }).toString()
 
     editSyncBlock({
       id: element.id,
       content: data.content,
-      connections: blockData.connections,
+      connections: blockData.connections
     })
 
     axios.post(`https://k43k03g5ab.execute-api.us-east-1.amazonaws.com/dev/listen?${param}`, {
       parentNodeId: 'BLOCK_random',
       blockId: element.id,
       text: data.content,
-      eventType: blockData.content === '' ? 'INSERT' : 'EDIT', // FIXME
+      eventType: blockData.content === '' ? 'INSERT' : 'EDIT' // FIXME
     })
 
     toast('Sync Successful')
@@ -77,9 +79,9 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
   // Use a useEffect for sync
   /**
-   * 
-   * 
-  
+   *
+   *
+
  'POST',
         uri: 'https://k43k03g5ab.execute-api.us-east-1.amazonaws.com/dev/listen',
         qs: {

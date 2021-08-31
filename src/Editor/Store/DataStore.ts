@@ -12,36 +12,38 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   ilinks: [],
 
   // Slash commands
-  slash_commands: [],
+  slashCommands: [],
 
   // Load initial data in the store
   initializeDataStore: (tags, ilinks, slash_commands) => {
     set({
       tags,
       ilinks,
-      slash_commands,
+      slashCommands: slash_commands
     })
   },
 
   // Add a new tag to the store
   addTag: (tag) => {
     set({
-      tags: [...get().tags, generateComboText(tag, get().tags.length)],
+      tags: [...get().tags, generateComboText(tag, get().tags.length)]
     })
   },
 
   // Add a new ILink to the store
   addILink: (ilink) => {
     set({
-      ilinks: [...get().ilinks, generateComboText(ilink, get().ilinks.length)],
+      ilinks: [...get().ilinks, generateComboText(ilink, get().ilinks.length)]
     })
   },
 
   setIlinks: (ilinks) => {
     set({
-      ilinks,
+      ilinks
     })
   },
+
+  setSlashCommands: (slashCommands) => set({ slashCommands })
 }))
 
 export const getLevel = (id: string) => id.split(SEPARATOR).length

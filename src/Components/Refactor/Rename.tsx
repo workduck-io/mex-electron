@@ -1,10 +1,8 @@
 import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
 import { Icon } from '@iconify/react'
-import { rgba } from 'polished'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import { ActionMeta } from 'react-select'
-import { css } from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useRefactor } from '../../Editor/Actions/useRefactor'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
@@ -111,7 +109,7 @@ const Rename = () => {
   const handleRefactor = () => {
     if (to && from) {
       const res = execRefactor(from, to)
-      console.log(res)
+      // console.log(res)
 
       const nodeId = useEditorStore.getState().node.id
       if (doesLinkRemain(nodeId, res)) {
