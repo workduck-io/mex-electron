@@ -8,26 +8,34 @@ export interface Contents {
 
 interface ContentStoreState {
   contents: Contents
-  getContent: (id: string) => void
+  isNew: boolean
+  setIsNew: (isNewContent: boolean) => void
+  getContent: (id: string) => NodeContent
   setContent: (id: string, content: NodeEditorContent) => void
   initContents: (contents: Contents) => void
 }
 
 export const useContentStore = create<ContentStoreState>((set, get) => ({
   contents: {},
+  isNew: false,
+  setIsNew: (isNewContent) => set(() => ({ isNew: isNewContent })),
   setContent: (id, content) => {
     const oldContent = get().contents
     delete oldContent[id]
     set({
-      contents: { [id]: { type: 'editor', content }, ...oldContent },
+      contents: { [id]: { type: 'editor', content }, ...oldContent }
     })
   },
   getContent: (id) => {
     return get().contents[id]
   },
+  deleteContent: (id) => {
+    const oldContent = get().contents
+    delete oldContent[id]
+  },
   initContents: (contents) => {
     set({
-      contents,
+      contents
     })
-  },
+  }
 }))

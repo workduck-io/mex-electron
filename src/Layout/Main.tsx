@@ -51,8 +51,6 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
   /** Initialization of the app details occur here */
   useEffect(() => {
-    // console.log('Initializing', { sampleRCTree }); // eslint-disable-line no-console
-
     (async () => {
       localData
         .then((d) => {

@@ -16,7 +16,7 @@ interface ThemeStoreState {
 }
 
 const useThemeStore = create<ThemeStoreState>((set) => ({
-  theme: defaultThemes[0],
+  theme: defaultThemes[3],
 
   themes: defaultThemes,
 
@@ -26,7 +26,7 @@ const useThemeStore = create<ThemeStoreState>((set) => ({
 
   setThemes: (themes: Theme[]) => {
     set({ themes })
-  },
+  }
 }))
 
 export default useThemeStore

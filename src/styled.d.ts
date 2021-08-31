@@ -29,8 +29,6 @@ declare module 'styled-components' {
     colors: {
       primary: string
       secondary: string
-
-      //
       palette: ColorPalette
       gray: ShadePalette
 

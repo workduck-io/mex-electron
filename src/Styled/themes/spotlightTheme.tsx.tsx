@@ -1,6 +1,6 @@
 import { generateTheme } from '../themeGenerator'
 
-export const dnshTheme = generateTheme({
+export const spotlightTheme = generateTheme({
   // Colors
   primary: '#5b94ff',
   secondary: '#2b76cc',
@@ -16,15 +16,15 @@ export const dnshTheme = generateTheme({
     4: '#647386',
     3: '#455966',
     2: '#2a3241',
-    1: '#161c24', // Text
+    1: '#161c24' // Text
   },
   palette: {
     white: '#ffffff',
     black: '#000000',
     green: '#00e676',
     yellow: '#eeff41',
-    red: '#ff3b30',
-  },
+    red: '#ff3b30'
+  }
   // text: {
   //   heading: '#CBCDD2',
   //   default: '#A6ACCD',
