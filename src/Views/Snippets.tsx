@@ -3,7 +3,15 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 import Editor from '../Editor/Editor'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
-import { CreateSnippet, SnippetsWrapper, SSnippet, SSnippets } from '../Styled/Snippets'
+import {
+  CreateSnippet,
+  SnippetCommand,
+  SnippetCommandPrefix,
+  SnippetsWrapper,
+  SSnippet,
+  SSnippets,
+  StyledSnippetPreview
+} from '../Styled/Snippets'
 import { Title } from '../Styled/Typography'
 import quillPenLine from '@iconify-icons/ri/quill-pen-line'
 import { Icon } from '@iconify/react'
@@ -53,10 +61,14 @@ const Snippets: React.FC<SnippetsProps> = () => {
               onOpenSnippet(s.id)
             }}
           >
-            <h1>{s.title}</h1>
-            <p>Use /snip.{s.title}</p>
+            <SnippetCommand>
+              <SnippetCommandPrefix>/snip.</SnippetCommandPrefix>
+              {s.title}
+            </SnippetCommand>
 
-            <Editor readOnly content={s.content} editorId={`Editor_Embed_${s.id}`} />
+            <StyledSnippetPreview>
+              <Editor readOnly content={s.content} editorId={`Editor_Embed_${s.id}`} />
+            </StyledSnippetPreview>
           </SSnippet>
         ))}
       </SSnippets>

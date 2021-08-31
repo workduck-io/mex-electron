@@ -8,7 +8,7 @@ export const devTheme = generateTheme({
   // Palettes
   gray: {
     10: '#0f111a', // Darkest
-    9: '#1a1d27',
+    9: '#181c2b',
     8: '#252A41',
     7: '#3D435C',
     6: '#575C75',
@@ -16,14 +16,14 @@ export const devTheme = generateTheme({
     4: '#9EA1B2',
     3: '#B9BBC6',
     2: '#D5D6DD',
-    1: '#EAEBED', // Lightest
+    1: '#EAEBED' // Lightest
   },
   palette: {
     white: '#ffffff',
     black: '#000000',
     green: '#00e676',
     yellow: '#eeff41',
-    red: '#ff3b30',
+    red: '#ff3b30'
   },
   text: {
     heading: '#CBCDD2',
@@ -32,6 +32,6 @@ export const devTheme = generateTheme({
     fade: '#9196B3',
     disabled: '#7f8288',
     accent: '#C792EA',
-    oppositePrimary: '#000',
-  },
+    oppositePrimary: '#000'
+  }
 })

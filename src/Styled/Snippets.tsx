@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import Editor from '../Editor/Editor'
 
 export const SnippetsWrapper = styled.div`
   margin: ${({ theme }) => theme.spacing.large};
@@ -14,13 +15,28 @@ export const SSnippets = styled.div`
 const SnippetLook = styled.div`
   cursor: pointer;
   padding: ${({ theme }) => theme.spacing.medium};
-  height: 300px;
+  height: 400px;
   border-radius: ${({ theme }) => theme.borderRadius.large};
 `
 
 export const SSnippet = styled(SnippetLook)`
   background-color: ${({ theme }) => theme.colors.gray[9]};
   overflow: auto;
+`
+
+export const StyledSnippetPreview = styled.div`
+  background-color: ${({ theme }) => theme.colors.gray[8]};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+`
+
+export const SnippetCommandPrefix = styled.div`
+  color: ${({ theme }) => theme.colors.secondary};
+`
+export const SnippetCommand = styled.div`
+  display: flex;
+  font-size: 1.5rem;
+  margin: ${({ theme }) => theme.spacing.medium} 0;
+  color: ${({ theme }) => theme.colors.text.heading};
 `
 
 export const CreateSnippet = styled(SnippetLook)`
