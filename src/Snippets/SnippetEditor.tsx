@@ -57,8 +57,7 @@ const SnippetEditor = () => {
       <StyledEditor className="snippets_editor">
         <NodeInfo>
           <NoteTitle>
-            /snip.
-            <Input defaultValue={snippet.title} {...register('title')} />
+            /snip. <Input defaultValue={snippet.title} {...register('title')} />
           </NoteTitle>
 
           <InfoTools>

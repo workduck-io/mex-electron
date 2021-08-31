@@ -7,6 +7,9 @@ import { RefactorStyles } from '../Components/Refactor/styles'
 const GlobalStyle = createGlobalStyle`
   ${normalize}; // NormalizeCSS normalization
 
+  input:focus-visible {
+    outline: ${({ theme }) => theme.colors.primary} solid 1px;
+  }
 
   body {
     height: 100vh;

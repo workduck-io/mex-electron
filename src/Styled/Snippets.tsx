@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 import Editor from '../Editor/Editor'
 
+import { size } from './responsive'
+
 export const SnippetsWrapper = styled.div`
   margin: ${({ theme }) => theme.spacing.large};
   width: 100%;
@@ -8,8 +10,15 @@ export const SnippetsWrapper = styled.div`
 
 export const SSnippets = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   grid-gap: ${({ theme }) => theme.spacing.medium};
+
+  @media (max-width: ${size.wide}) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: ${size.wide}) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 `
 
 const SnippetLook = styled.div`

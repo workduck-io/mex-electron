@@ -1,8 +1,11 @@
-import React from 'react'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
-import { useLinks } from '../../Editor/Actions/useLinks'
-import styled from 'styled-components'
+import arrowGoBackLine from '@iconify-icons/ri/arrow-go-back-line'
+import { Icon } from '@iconify/react'
 import { transparentize } from 'polished'
+import React from 'react'
+import styled from 'styled-components'
+import { useLinks } from '../../Editor/Actions/useLinks'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
+import { Note } from '../../Styled/Typography'
 
 const BackLinkWrapper = styled.div`
   display: flex;
@@ -17,6 +20,7 @@ const BackLinkWrapper = styled.div`
 `
 
 const SBackLinks = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
@@ -38,15 +42,40 @@ const BackLink = styled.div`
     color: ${({ theme }) => theme.colors.text.oppositePrimary};
   }
 `
+
+const BackLinksHeader = styled.div`
+  display: flex;
+  align-items: center;
+  color: ${({ theme }) => theme.colors.text.subheading};
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
+
+  svg {
+    margin-right: ${({ theme }) => theme.spacing.small};
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`
+
 const Backlinks = () => {
   const { getBacklinks } = useLinks()
   const loadNodeFromId = useEditorStore((store) => store.loadNodeFromId)
+  const backlinks = getBacklinks(useEditorStore.getState().node.id)
 
   return (
     <BackLinkWrapper>
       <SBackLinks>
-        <h1>Backlinks</h1>
-        {getBacklinks(useEditorStore.getState().node.id).map((l) => (
+        <BackLinksHeader>
+          <Icon icon={arrowGoBackLine}></Icon>
+          Backlinks
+        </BackLinksHeader>
+        {backlinks.length === 0 && (
+          <>
+            <Note>No backlinks found.</Note>
+            <Note>Link from other nodes to view them here.</Note>
+          </>
+        )}
+        {backlinks.map((l) => (
           <BackLink key={`backlink_${l.from}`} onClick={() => loadNodeFromId(l.from)}>
             {l.from}
           </BackLink>
