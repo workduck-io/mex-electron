@@ -33,6 +33,12 @@ export const SSnippet = styled(SnippetLook)`
   overflow: auto;
 `
 
+export const SnippetHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
 export const StyledSnippetPreview = styled.div`
   background-color: ${({ theme }) => theme.colors.gray[8]};
   border-radius: ${({ theme }) => theme.borderRadius.small};

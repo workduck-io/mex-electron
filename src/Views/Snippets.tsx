@@ -3,11 +3,13 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 import Editor from '../Editor/Editor'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
+import deleteBin6Line from '@iconify-icons/ri/delete-bin-6-line'
 import {
   CreateSnippet,
   SnippetCommand,
   SnippetCommandPrefix,
   SnippetsWrapper,
+  SnippetHeader,
   SSnippet,
   SSnippets,
   StyledSnippetPreview
@@ -15,6 +17,7 @@ import {
 import { Title } from '../Styled/Typography'
 import quillPenLine from '@iconify-icons/ri/quill-pen-line'
 import { Icon } from '@iconify/react'
+import IconButton from '../Styled/Buttons'
 
 export type SnippetsProps = {
   title?: string
@@ -24,6 +27,7 @@ const Snippets: React.FC<SnippetsProps> = () => {
   const snippets = useSnippetStore((store) => store.snippets)
   const addSnippet = useSnippetStore((store) => store.addSnippet)
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
+  const deleteSnippet = useSnippetStore((store) => store.deleteSnippet)
 
   const history = useHistory()
 
@@ -46,6 +50,10 @@ const Snippets: React.FC<SnippetsProps> = () => {
     history.push('/snippets/editor')
   }
 
+  const onDeleteSnippet = (id: string) => {
+    deleteSnippet(id)
+  }
+
   return (
     <SnippetsWrapper>
       <Title>Snippets</Title>
@@ -55,18 +63,21 @@ const Snippets: React.FC<SnippetsProps> = () => {
           <p>Create New Snippet</p>
         </CreateSnippet>
         {snippets.map((s) => (
-          <SSnippet
-            key={`SnippetPreview_${s.id}`}
-            onClick={() => {
-              onOpenSnippet(s.id)
-            }}
-          >
-            <SnippetCommand>
-              <SnippetCommandPrefix>/snip.</SnippetCommandPrefix>
-              {s.title}
-            </SnippetCommand>
+          <SSnippet key={`SnippetPreview_${s.id}`}>
+            <SnippetHeader>
+              <SnippetCommand onClick={() => onOpenSnippet(s.id)}>
+                <SnippetCommandPrefix>/snip.</SnippetCommandPrefix>
+                {s.title}
+              </SnippetCommand>
 
-            <StyledSnippetPreview>
+              <IconButton size={20} icon={deleteBin6Line} title="delete" onClick={() => onDeleteSnippet(s.id)} />
+            </SnippetHeader>
+
+            <StyledSnippetPreview
+              onClick={() => {
+                onOpenSnippet(s.id)
+              }}
+            >
               <Editor readOnly content={s.content} editorId={`Editor_Embed_${s.id}`} />
             </StyledSnippetPreview>
           </SSnippet>

@@ -38,7 +38,7 @@ const SnippetEditor = () => {
     if (snippet) {
       setContent(snippet.content)
     }
-  }, [snippet, snippet.id])
+  }, [snippet])
 
   const saveData = useSaveData()
 

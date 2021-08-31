@@ -16,6 +16,7 @@ interface SnippetStore {
   initSnippets: (snippets: Snippet[]) => void
   addSnippet: (snippets: Snippet) => void
   updateSnippet: (id: string, snippets: Snippet) => void
+  deleteSnippet: (id: string) => void
 
   editor: SnippetEditorStore
   loadSnippet: (id: string) => void
@@ -37,6 +38,14 @@ export const useSnippetStore = create<SnippetStore>((set) => ({
     set((state) => {
       const snippets = state.snippets.filter((s) => s.id !== id)
       return { snippets: [...snippets, snippet] }
+    }),
+
+  deleteSnippet: (id: string) =>
+    // Updates the snippet at the ID with a new snippet,
+    // replaces the entire value including ID
+    set((state) => {
+      const snippets = state.snippets.filter((s) => s.id !== id)
+      return { snippets }
     }),
 
   editor: { snippet: undefined },
