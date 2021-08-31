@@ -1,11 +1,10 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable react/prop-types */
-/* eslint-disable import/prefer-default-export */
 import { ipcRenderer } from 'electron'
 import tinykeys from 'tinykeys'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { FileData } from '../../Types/data'
+import { useInitialize } from '../../Data/useInitialize'
+import { useContentStore } from '../../Editor/Store/ContentStore'
 
 export const useLocalShortcuts = () => {
   const history = useHistory()
@@ -18,8 +17,35 @@ export const useLocalShortcuts = () => {
       },
       Tab: (event) => {
         event.preventDefault()
-        history.push('/new')
-      },
+        history.replace('/new')
+      }
+    })
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+}
+
+export const useMexPageShortcuts = () => {
+  const history = useHistory()
+  const { setSelection } = useSpotlightContext()
+
+  const { isNew, setIsNew } = useContentStore(({ isNew, setIsNew }) => ({ isNew, setIsNew }))
+
+  const handleCancel = () => {
+    if (isNew) {
+      setIsNew(false)
+      setSelection(undefined)
+    }
+  }
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      Escape: (event) => {
+        event.preventDefault()
+        handleCancel()
+        history.replace('/')
+      }
     })
     return () => {
       unsubscribe()
@@ -42,12 +68,14 @@ export const SpotlightProvider: React.FC = ({ children }) => {
   const [selection, setSelection] = useState<any>()
   const [localData, setLocalData] = useState<FileData>()
 
+  const { init } = useInitialize()
+
   const value = {
     search,
     setSearch,
     selection,
     setSelection,
-    localData,
+    localData
   }
 
   useEffect(() => {
@@ -56,7 +84,7 @@ export const SpotlightProvider: React.FC = ({ children }) => {
     })
 
     ipcRenderer.on('recieve-local-data', (_event, arg: FileData) => {
-      console.log(arg)
+      init(arg)
       setLocalData(arg)
     })
 

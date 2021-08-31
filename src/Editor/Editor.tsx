@@ -31,12 +31,88 @@ interface EditorProps {
   onSave?: () => void
 }
 
-const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: EditorProps) => {
+export const useEditorPluginConfig = (editorId: string) => {
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
   const slash_commands = useDataStore((state) => state.slashCommands)
   const addSyncBlock = useSyncStore((state) => state.addSyncBlock)
 
+  const addTag = useDataStore((state) => state.addTag)
+  const addILink = useDataStore((state) => state.addILink)
+  const { getSnippetsConfigs } = useSnippets()
+
+  // Combobox
+  const snippetConfigs = getSnippetsConfigs()
+
+  const pluginConfigs = {
+    combobox: {
+      onChange: useMultiComboboxOnChange(editorId, {
+        ilink: {
+          cbKey: ComboboxKey.ILINK,
+          trigger: '[[',
+          data: ilinks,
+        },
+
+        tag: {
+          cbKey: ComboboxKey.TAG,
+          trigger: '#',
+          data: tags,
+        },
+
+        slash_command: {
+          cbKey: ComboboxKey.SLASH_COMMAND,
+          trigger: '/',
+          data: slash_commands,
+        },
+      }),
+
+      onKeyDown: useMultiComboboxOnKeyDown(
+        {
+          ilink: {
+            slateElementType: ELEMENT_ILINK,
+            newItemHandler: (newItem) => {
+              addILink(newItem)
+            },
+          },
+          tag: {
+            slateElementType: ELEMENT_TAG,
+            newItemHandler: (newItem) => {
+              addTag(newItem)
+            },
+          },
+          // Slash command configs
+          slash_command: {
+            slateElementType: ELEMENT_MEDIA_EMBED,
+            newItemHandler: () => undefined,
+          },
+        },
+        {
+          webem: {
+            slateElementType: ELEMENT_MEDIA_EMBED,
+            command: 'webem',
+            options: {
+              url: 'http://example.com/',
+            },
+          },
+          sync_block: {
+            slateElementType: ELEMENT_SYNC_BLOCK,
+            command: 'sync',
+            getBlockData: () => {
+              const nd = getNewBlockData()
+              addSyncBlock(nd) // Also need to add the newly created block to the sync store
+              return nd
+            },
+          },
+          ...snippetConfigs,
+        }
+      ),
+    },
+  }
+
+  return pluginConfigs
+}
+
+const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: EditorProps) => {
   useEffect(() => {
     ReactTooltip.rebuild()
   }, [])
@@ -44,14 +120,13 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
   const editableProps = {
     placeholder: 'Murmuring the mex hype...',
     style: {
-      padding: '15px'
+      padding: '15px',
     },
-    readOnly
+    readOnly,
   }
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
-  const { getSnippetsConfigs } = useSnippets()
 
   const generateEditorId = () => `${editorId}`
   const editorRef = useStoreEditorRef()
@@ -66,79 +141,12 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
       '$mod+KeyS': (event) => {
         event.preventDefault()
         onSave()
-      }
+      },
     })
     return () => {
       unsubscribe()
     }
   })
-
-  // Combobox
-  const snippetConfigs = getSnippetsConfigs()
-  const pluginConfigs = {
-    combobox: {
-      onChange: useMultiComboboxOnChange(generateEditorId(), {
-        ilink: {
-          cbKey: ComboboxKey.ILINK,
-          trigger: '[[',
-          data: ilinks
-        },
-
-        tag: {
-          cbKey: ComboboxKey.TAG,
-          trigger: '#',
-          data: tags
-        },
-
-        slash_command: {
-          cbKey: ComboboxKey.SLASH_COMMAND,
-          trigger: '/',
-          data: slash_commands
-        }
-      }),
-
-      onKeyDown: useMultiComboboxOnKeyDown(
-        {
-          ilink: {
-            slateElementType: ELEMENT_ILINK,
-            newItemHandler: (newItem) => {
-              addILink(newItem)
-            }
-          },
-          tag: {
-            slateElementType: ELEMENT_TAG,
-            newItemHandler: (newItem) => {
-              addTag(newItem)
-            }
-          },
-          // Slash command configs
-          slash_command: {
-            slateElementType: ELEMENT_MEDIA_EMBED,
-            newItemHandler: () => undefined
-          }
-        },
-        {
-          webem: {
-            slateElementType: ELEMENT_MEDIA_EMBED,
-            command: 'webem',
-            options: {
-              url: 'http://example.com/'
-            }
-          },
-          sync_block: {
-            slateElementType: ELEMENT_SYNC_BLOCK,
-            command: 'sync',
-            getBlockData: () => {
-              const nd = getNewBlockData()
-              addSyncBlock(nd) // Also need to add the newly created block to the sync store
-              return nd
-            }
-          },
-          ...snippetConfigs
-        }
-      )
-    }
-  }
 
   const comboboxRenderConfig: ComboElementProps = {
     keys: {
@@ -147,28 +155,29 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
           slateElementType: ELEMENT_ILINK,
           newItemHandler: (newItem) => {
             addILink(newItem)
-          }
+          },
         },
-        renderElement: ILinkComboboxItem
+        renderElement: ILinkComboboxItem,
       },
       tag: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_TAG,
           newItemHandler: (newItem) => {
             addTag(newItem)
-          }
+          },
         },
-        renderElement: TagComboboxItem
+        renderElement: TagComboboxItem,
       },
       slash_command: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_MEDIA_EMBED,
-          newItemHandler: () => undefined
+          newItemHandler: () => undefined,
         },
-        renderElement: SlashComboboxItem
-      }
-    }
+        renderElement: SlashComboboxItem,
+      },
+    },
   }
+  const pluginConfigs = useEditorPluginConfig(editorId)
 
   // We get memoized plugins
   const plugins = generatePlugins(pluginConfigs)
@@ -198,7 +207,7 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
 Editor.defaultProps = {
   readOnly: false,
   focusAtBeginning: true,
-  onSave: () => undefined
+  onSave: () => undefined,
 }
 
 export default Editor

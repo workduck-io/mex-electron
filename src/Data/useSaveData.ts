@@ -24,8 +24,8 @@ export const useSaveData = () => {
       syncBlocks: useSyncStore.getState().syncBlocks,
       snippets: useSnippetStore.getState().snippets,
       userSettings: {
-        theme: useThemeStore.getState().theme.id
-      }
+        theme: useThemeStore.getState().theme.id,
+      },
     })
 
     updater()

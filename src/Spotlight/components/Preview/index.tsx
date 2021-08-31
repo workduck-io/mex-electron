@@ -1,12 +1,15 @@
-/* eslint-disable react/no-danger */
-/* eslint-disable react/prop-types */
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { StyledBackground } from '../Spotlight/styled'
-import Source from '../Source'
 import { Scroll } from '../../styles/layout'
+import { useEditorStore } from '../../../Editor/Store/EditorStore'
+import { useContentStore } from '../../../Editor/Store/ContentStore'
+import Editor, { useEditorPluginConfig } from '../../../Editor/Editor'
+import { deserializeHTMLToDocumentFragment } from '@udecode/plate-html-serializer'
+import generatePlugins from '../../../Editor/Plugins/plugins'
+import { useStoreEditorRef } from '@udecode/plate-core'
 
-const StyledPreview = styled.div`
+export const StyledPreview = styled.div`
   ${StyledBackground}
   ${Scroll}
 
@@ -16,11 +19,39 @@ const StyledPreview = styled.div`
   white-space: pre-wrap;
 `
 
-const Preview: React.FC<any> = ({ preview }) => {
+const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }) => {
+  const editor = useStoreEditorRef(nodeId)
+  const setFsContent = useContentStore((state) => state.setContent)
+  const fsContent = useEditorStore((state) => state.content)
+  const { isNew, setIsNew } = useContentStore(({ isNew, setIsNew }) => ({ isNew, setIsNew }))
+  const loadNodeFromId = useEditorStore(({ loadNodeFromId }) => loadNodeFromId)
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [content, setContent] = useState<any[] | undefined>(undefined)
+
+  const config = useEditorPluginConfig(nodeId)
+  const plugins = generatePlugins(config)
+  const nodes = deserializeHTMLToDocumentFragment(editor, {
+    plugins,
+    element: preview?.text || ''
+  })
+
+  useEffect(() => {
+    if (preview.text) {
+      setFsContent(nodeId, [{ children: nodes }])
+      loadNodeFromId(nodeId)
+    }
+  }, [preview.text])
+
+  useEffect(() => {
+    if (fsContent) {
+      setContent(fsContent)
+    }
+  }, [fsContent, nodeId])
+
   return (
     <StyledPreview>
-      <div dangerouslySetInnerHTML={{ __html: preview.text }} />
-      <Source metadata={preview.metadata} />
+      <Editor readOnly content={content} editorId={nodeId} />
     </StyledPreview>
   )
 }
