@@ -38,10 +38,6 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
           }
         } else {
           // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
-          // insert a space to fix the bug
-          if (isBlockEnd) {
-            Transforms.insertText(editor, ' ')
-          } // select the ilink text and insert the ilink element
           const type = getPlatePluginType(editor, commandConfig.slateElementType)
           const data = commandConfig.getBlockData ? commandConfig.getBlockData(item) : {}
 
@@ -53,10 +49,6 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
             ...data
           })
 
-          // delete the inserted space
-          if (isBlockEnd) {
-            Transforms.delete(editor)
-          }
           // move the selection after the inserted content
           Transforms.move(editor)
         }
