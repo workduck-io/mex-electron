@@ -93,3 +93,5 @@ src/dist/
 
 # Lock files
 *.lock
+
+.eslintignore
