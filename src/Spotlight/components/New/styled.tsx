@@ -9,6 +9,7 @@ export const StyledEditor = styled.div`
   margin-top: 5px;
   border-radius: 5px;
   max-height: 290px;
+  overflow-y: scroll;
   background-color: ${({ theme }) => theme.colors.background.modal};
 `
 
