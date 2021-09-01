@@ -5,19 +5,8 @@ import tinykeys from 'tinykeys'
 import create from 'zustand'
 import { Button } from '../../Styled/Buttons'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
-
-interface Shortcut {
-  title: string
-  keystrokes: string
-  category?: string
-}
-
-interface HelpState {
-  open: boolean
-  shortcuts: Record<keyof typeof defaultShortcuts, Shortcut>
-  toggleModal: () => void
-  closeModal: () => void
-}
+import ShortcutTable from './ShortcutTable'
+import { HelpState } from './Help.types'
 
 export const useHelpStore = create<HelpState>((set) => ({
   open: false,
@@ -55,14 +44,7 @@ const HelpModal = () => {
 
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
-      <ModalHeader>Help</ModalHeader>
-
-      {JSON.stringify(shortcuts)}
-      <ModalControls>
-        <Button primary size="large">
-          Help me pls
-        </Button>
-      </ModalControls>
+      <ShortcutTable />
     </Modal>
   )
 }
