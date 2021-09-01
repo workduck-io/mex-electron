@@ -2,14 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 
 type ContentType = {
-  justifyContent?: string;
-};
+  justifyContent?: string
+}
 
 const StyledShortcuts = styled.section<ContentType>`
   display: flex;
   width: 100%;
   margin-top: 0.5rem;
-  justify-content: ${({ justifyContent }) => (justifyContent || 'center')};
+  justify-content: ${({ justifyContent }) => justifyContent || 'center'};
   align-items: center;
 `
 
