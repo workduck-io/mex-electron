@@ -27,7 +27,7 @@ const Content = () => {
   const { search, selection, localData } = useSpotlightContext()
 
   const [data, setData] = useState<Array<any>>()
-  const [nodeId, setNodeId] = useState('@')
+  const [nodeId, setNodeId] = useState(getNewDraftKey())
   const [preview, setPreview] = useState<any>(initPreview)
   const currentIndex = useCurrentIndex(data, search)
   const getContent = useContentStore((state) => state.getContent)
@@ -39,9 +39,9 @@ const Content = () => {
   useEffect(() => {
     setIsNew(true)
     const draftMexKey = getNewDraftKey()
-    loadNodeFromId(draftMexKey)
-    setNodeId(draftMexKey)
     addILink(draftMexKey)
+    setNodeId(draftMexKey)
+    loadNodeFromId(draftMexKey)
   }, [])
 
   useEffect(() => {
@@ -77,6 +77,7 @@ const Content = () => {
 
     if (!data) {
       if (selection) setPreview(selection)
+      else setPreview(prevTemplate)
     } else if (data.length === 0) {
       setPreview({
         ...prevTemplate,
@@ -89,6 +90,7 @@ const Content = () => {
         text: null
       })
       loadNodeFromId(contentKey.key)
+      setNodeId(contentKey.key)
     }
   }, [data, currentIndex, selection])
 

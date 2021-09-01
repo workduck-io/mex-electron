@@ -23,7 +23,6 @@ const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }
   const editor = useStoreEditorRef(nodeId)
   const setFsContent = useContentStore((state) => state.setContent)
   const fsContent = useEditorStore((state) => state.content)
-  const { isNew, setIsNew } = useContentStore(({ isNew, setIsNew }) => ({ isNew, setIsNew }))
   const loadNodeFromId = useEditorStore(({ loadNodeFromId }) => loadNodeFromId)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,17 +36,15 @@ const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }
   })
 
   useEffect(() => {
-    if (preview.text) {
-      setFsContent(nodeId, [{ children: nodes }])
-      loadNodeFromId(nodeId)
-    }
+    setFsContent(nodeId, [{ children: nodes }])
+    loadNodeFromId(nodeId)
   }, [preview.text])
 
   useEffect(() => {
     if (fsContent) {
       setContent(fsContent)
     }
-  }, [fsContent, nodeId])
+  }, [fsContent])
 
   return (
     <StyledPreview>

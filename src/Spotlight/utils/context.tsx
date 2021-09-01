@@ -5,6 +5,9 @@ import { useHistory } from 'react-router-dom'
 import { FileData } from '../../Types/data'
 import { useInitialize } from '../../Data/useInitialize'
 import { useContentStore } from '../../Editor/Store/ContentStore'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
+import useDataStore from '../../Editor/Store/DataStore'
+import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
 
 export const useLocalShortcuts = () => {
   const history = useHistory()
@@ -28,13 +31,21 @@ export const useLocalShortcuts = () => {
 
 export const useMexPageShortcuts = () => {
   const history = useHistory()
+  const nodeId = useEditorStore((state) => state.node.id)
   const { setSelection } = useSpotlightContext()
+  const removeILink = useDataStore((state) => state.removeILink)
 
-  const { isNew, setIsNew } = useContentStore(({ isNew, setIsNew }) => ({ isNew, setIsNew }))
+  const { isNew, setIsNew, removeContent } = useContentStore(({ isNew, setIsNew, removeContent }) => ({
+    isNew,
+    setIsNew,
+    removeContent
+  }))
 
   const handleCancel = () => {
     if (isNew) {
       setIsNew(false)
+      // removeContent(nodeId)
+      // removeILink(nodeId)
       setSelection(undefined)
     }
   }
@@ -84,7 +95,8 @@ export const SpotlightProvider: React.FC = ({ children }) => {
     })
 
     ipcRenderer.on('recieve-local-data', (_event, arg: FileData) => {
-      init(arg)
+      const editorID = getNewDraftKey()
+      init(arg, editorID)
       setLocalData(arg)
     })
 

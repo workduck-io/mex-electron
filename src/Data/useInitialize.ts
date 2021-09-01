@@ -17,6 +17,7 @@ export const useInitialize = () => {
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setTheme = useThemeStore((state) => state.setTheme)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
+  const addILink = useDataStore((state) => state.addILink)
 
   const update = (data: FileData) => {
     const { tags, ilinks, contents, syncBlocks, snippets } = data
@@ -30,9 +31,10 @@ export const useInitialize = () => {
     setTheme(getTheme(data.userSettings.theme))
   }
 
-  const init = (data: FileData) => {
+  const init = (data: FileData, initNodeId?: string) => {
     update(data)
-    loadNode('@')
+    if (initNodeId) addILink(initNodeId)
+    loadNode(initNodeId || '@')
   }
 
   return { init, update }
