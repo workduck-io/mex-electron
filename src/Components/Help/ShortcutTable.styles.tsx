@@ -1,3 +1,4 @@
+import { transparentize } from 'polished'
 import styled from 'styled-components'
 
 export const StyledTable = styled.table`
@@ -15,7 +16,11 @@ export const StyledTHead = styled.thead`
   background-color: ${({ theme }) => theme.colors.gray[8]};
 `
 
-export const StyledRow = styled.tr``
+export const StyledRow = styled.tr`
+  &:nth-child(odd) {
+    background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
+  }
+`
 
 export const StyledTH = styled.th`
   padding: ${({ theme }) => theme.spacing.small};
@@ -26,6 +31,9 @@ export const StyledTBody = styled.tbody``
 
 export const StyledTD = styled.td`
   padding: ${({ theme }) => theme.spacing.small};
+  &:nth-child(2) {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 `
 
 export const TableHeader = styled.div`
