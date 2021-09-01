@@ -96,7 +96,9 @@ const createSpotLighWindow = () => {
     if (!spotlight) {
       throw new Error('Main Window is not initialized!')
     }
-    spotlight.hide()
+    if (process.env.START_MINIMIZED) {
+      spotlight.minimize()
+    }
   })
 
   spotlight.on('closed', () => {
