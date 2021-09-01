@@ -10,6 +10,7 @@ interface ContentStoreState {
   contents: Contents
   isNew: boolean
   setIsNew: (isNewContent: boolean) => void
+  removeContent: (id: string) => void
   getContent: (id: string) => NodeContent
   setContent: (id: string, content: NodeEditorContent) => void
   initContents: (contents: Contents) => void
@@ -29,7 +30,7 @@ export const useContentStore = create<ContentStoreState>((set, get) => ({
   getContent: (id) => {
     return get().contents[id]
   },
-  deleteContent: (id) => {
+  removeContent: (id) => {
     const oldContent = get().contents
     delete oldContent[id]
   },

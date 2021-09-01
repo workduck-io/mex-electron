@@ -37,10 +37,10 @@ const NewEditor = () => {
 
   useEffect(() => {
     if (!isNew) {
+      setIsNew(true)
       const draftMexKey = getNewDraftKey()
       addILink(draftMexKey)
       loadNodeFromId(draftMexKey)
-      setIsNew(true)
     } else {
       loadNodeFromId(nodeId)
     }
