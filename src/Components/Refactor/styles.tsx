@@ -23,11 +23,11 @@ const ModalOverlay = css`
   background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};
 `
 
-export const RefactorStyles = css`
-  .RefactorContent {
+export const ModalStyles = css`
+  .ModalContent {
     ${ModalContent}
   }
-  .RefactorOverlay {
+  .ModalOverlay {
     ${ModalOverlay}
   }
 `

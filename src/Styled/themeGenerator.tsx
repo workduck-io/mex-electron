@@ -63,6 +63,9 @@ export interface ButtonPalette {
   disabled: string
 }
 
+export interface BackgroundImages {
+  app: string
+}
 export interface ThemePalette {
   // Colors
   primary: string
@@ -71,6 +74,8 @@ export interface ThemePalette {
   // Palettes
   gray: ShadePalette
   palette: ColorPalette
+
+  backgroundImages?: BackgroundImages
 
   text?: TextPalette
 }
