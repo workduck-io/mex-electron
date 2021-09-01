@@ -1,8 +1,7 @@
-import { createGlobalStyle } from 'styled-components'
+import { createGlobalStyle, css } from 'styled-components'
 import { ThinScrollbar } from './helpers'
-import { LookupStyles } from '../Components/Lookup'
 import normalize from './normalize'
-import { RefactorStyles } from '../Components/Refactor/styles'
+import { ModalStyles } from '../Components/Refactor/styles'
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}; // NormalizeCSS normalization
@@ -18,7 +17,19 @@ const GlobalStyle = createGlobalStyle`
     display: flex;
     font-family: Inter, sans-serif;
     color: ${({ theme }) => theme.colors.text.heading};
-    background: ${({ theme }) => theme.colors.background.app};
+    ${({ theme }) => {
+      if (theme.backgroundImages) {
+        return css`
+          background-color: ${({ theme }) => theme.colors.background.app};
+          background-image: url(${theme.backgroundImages.app});
+          background-size: cover;
+        `
+      }
+
+      return css`
+        background: ${({ theme }) => theme.colors.background.app};
+      `
+    }}
     
     * {
       ${ThinScrollbar};
@@ -40,8 +51,7 @@ const GlobalStyle = createGlobalStyle`
   }
   
   /* Styles for modals */
-  ${LookupStyles}
-  ${RefactorStyles}
+  ${ModalStyles}
 
   body > ul[role="listbox"]{
     display: block;

@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import Editor from '../Editor/Editor'
 
 import { size } from './responsive'
 

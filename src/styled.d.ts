@@ -1,6 +1,6 @@
 // import original module declarations
 import 'styled-components'
-import { ShadePalette, ColorPalette } from './Styled/themeGenerator'
+import { ShadePalette, ColorPalette, BackgroundImages } from './Styled/themeGenerator'
 
 type Pixels = number // Pixels in integer
 
@@ -70,5 +70,6 @@ declare module 'styled-components' {
         oppositePrimary: string
       }
     }
+    backgroundImages?: BackgroundImages
   }
 }
