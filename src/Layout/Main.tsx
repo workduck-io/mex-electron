@@ -15,6 +15,7 @@ import { getInitialNode } from '../Editor/Store/helpers'
 import { GridWrapper } from '../Styled/Grid'
 import { PixelToCSS } from '../Styled/helpers'
 import InfoBar from './InfoBar'
+import HelpTooltip from '../Components/Help/HelpTooltip'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -78,6 +79,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
         <Content>{children}</Content>
         <InfoBar />
       </GridWrapper>
+      <HelpTooltip />
       <ReactTooltip effect="solid" backgroundColor={theme.colors.gray[6]} arrowColor={theme.colors.gray[6]} />
       <Notifications />
     </AppWrapper>
