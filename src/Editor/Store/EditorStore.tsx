@@ -12,6 +12,9 @@ export type EditorContextType = {
   // Contents of the current node
   // These are loaded internally from ID
   content: NodeEditorContent
+  readOnly: boolean
+
+  setReadOnly: (isReadOnly: boolean) => void
 
   // State transformations
 
@@ -24,6 +27,11 @@ export type EditorContextType = {
 export const useEditorStore = create<EditorContextType>((set, get) => ({
   node: getInitialNode(),
   content: getContent('@'),
+  readOnly: false,
+
+  setReadOnly: (isReadOnly: boolean) => {
+    set(() => ({ readOnly: isReadOnly }))
+  },
 
   loadNode: (node: TreeNode) => {
     set(() => ({

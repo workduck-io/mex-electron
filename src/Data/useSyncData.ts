@@ -6,10 +6,8 @@ import { useInitialize } from './useInitialize'
 export const useSyncData = () => {
   const { update } = useInitialize()
   const loadNode = useEditorStore((state) => state.loadNode)
-  // const loadNode = useEditorStore(state => state.loadNode);
   const setIpc = () => {
     ipcRenderer.on('sync-data', (_event, arg) => {
-      // console.log('New sync data recieved', arg);
       update(arg)
       loadNode(useEditorStore.getState().node)
     })

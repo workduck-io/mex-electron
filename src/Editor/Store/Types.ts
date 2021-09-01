@@ -14,7 +14,7 @@ export interface DataStoreState {
 
   addTag: (tag: string) => void
   addILink: (ilink: string) => void
-
+  removeILink: (Ilink: string) => void
   setSlashCommands: (slashCommands: ComboText[]) => void
   setIlinks: (ilinks: ComboText[]) => void
 }

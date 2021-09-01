@@ -6,20 +6,20 @@ const LayoutTheme: LayoutStyle = {
     large: '2rem',
     medium: '1rem',
     small: '0.5rem',
-    tiny: '0.25rem',
+    tiny: '0.25rem'
   },
   borderRadius: {
     large: '1rem',
     small: '0.5rem',
-    tiny: '0.25rem',
+    tiny: '0.25rem'
   },
   width: {
     nav: 48,
-    sidebar: 350,
+    sidebar: 350
   },
   indent: {
-    sidebar: 8,
-  },
+    sidebar: 8
+  }
 }
 
 export const palette = {
@@ -28,7 +28,7 @@ export const palette = {
   b1: '#161824',
   b2: '#191d2c',
   b3: '#202331',
-  b4: '#1d233d',
+  b4: '#1d233d'
 }
 
 export const spotlightTheme: DefaultTheme = {
@@ -42,14 +42,14 @@ export const spotlightTheme: DefaultTheme = {
       card: '#a3c3fd',
       modal: '#e5eeff',
       sidebar: '#f4f8ff',
-      highlight: '#5b8de9',
+      highlight: '#5b8de9'
     },
     palette: {
       white: '#fff',
       black: '#000',
       green: '#9fe732',
       yellow: '#d4a348',
-      red: '#ff4f58',
+      red: '#ff4f58'
     },
     gray: {
       1: '#b8bccf',
@@ -59,28 +59,28 @@ export const spotlightTheme: DefaultTheme = {
       5: '#1c2744',
       6: '#1F2947',
       7: '#091744',
-      8: '#13192e',
+      8: '#d0d1d4',
       9: palette.b0,
-      10: '#000000',
+      10: '#000000'
     },
     form: {
       input: {
         bg: palette.b1,
         fg: palette.b2,
-        border: palette.p1,
+        border: palette.p1
       },
       button: {
         bg: palette.b1,
         fg: palette.b2,
         border: palette.p1,
-        hover: palette.b3,
-      },
+        hover: palette.b3
+      }
     },
     divider: '#00000010',
     fade: {
       primary: '#e5eeff',
       secondary: '#4dd0e1',
-      background: '#dbc5c5',
+      background: '#dbc5c5'
     },
     text: {
       heading: '#2a2e46',
@@ -89,7 +89,7 @@ export const spotlightTheme: DefaultTheme = {
       disabled: '#919191',
       accent: '#5b94ff',
       fade: '#5b94ff',
-      oppositePrimary: '#000',
-    },
-  },
+      oppositePrimary: '#000'
+    }
+  }
 }

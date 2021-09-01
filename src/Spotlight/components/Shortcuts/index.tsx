@@ -1,10 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const StyledShortcuts = styled.section`
+type ContentType = {
+  justifyContent?: string;
+};
+
+const StyledShortcuts = styled.section<ContentType>`
   display: flex;
+  width: 100%;
   margin-top: 0.5rem;
-  justify-content: center;
+  justify-content: ${({ justifyContent }) => (justifyContent || 'center')};
   align-items: center;
 `
 
@@ -16,7 +21,6 @@ const Shortcut = styled.div`
 `
 
 export const StyledKey = styled.span`
-  /* padding: 2px 8px; */
   padding: 0 4px;
   border-radius: 5px;
   margin: 0 5px;
@@ -26,7 +30,25 @@ export const StyledKey = styled.span`
   box-shadow: 2px 2px 2px ${({ theme }) => theme.colors.gray[9]};
 `
 
-const Shortcuts = () => {
+export enum ShortcutType {
+  NEW,
+  HOME,
+}
+
+const Shortcuts: React.FC<{ type: ShortcutType }> = ({ type }) => {
+  if (type === ShortcutType.NEW) {
+    return (
+      <StyledShortcuts justifyContent="space-between">
+        <Shortcut>
+          <StyledKey>CMD+S</StyledKey> TO SAVE
+        </Shortcut>
+        <Shortcut>
+          <StyledKey>ESC</StyledKey> TO DISMISS
+        </Shortcut>
+      </StyledShortcuts>
+    )
+  }
+
   return (
     <StyledShortcuts>
       <Shortcut>

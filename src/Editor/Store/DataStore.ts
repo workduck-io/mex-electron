@@ -23,6 +23,15 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     })
   },
 
+  removeILink: (ilinkToDel) => {
+    const arr = get().ilinks
+
+    const newILinks = arr.filter((ilink) => ilink.key !== ilinkToDel)
+    set({
+      ilinks: newILinks
+    })
+  },
+
   // Add a new tag to the store
   addTag: (tag) => {
     set({

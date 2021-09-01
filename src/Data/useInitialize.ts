@@ -30,9 +30,9 @@ export const useInitialize = () => {
     setTheme(getTheme(data.userSettings.theme))
   }
 
-  const init = (data: FileData) => {
+  const init = (data: FileData, initNodeId?: string) => {
     update(data)
-    loadNode('@')
+    loadNode(initNodeId || '@')
   }
 
   return { init, update }

@@ -1,13 +1,17 @@
 import { search as getSearchResults } from 'fast-fuzzy'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { DEFAULT_PREVIEW_TEXT } from '../../utils/constants'
 import { useSpotlightContext } from '../../utils/context'
 import { useCurrentIndex } from '../../utils/hooks'
 import Preview from '../Preview'
 import SideBar from '../SideBar'
+import { useContentStore } from '../../../Editor/Store/ContentStore'
+import { useEditorStore } from '../../../Editor/Store/EditorStore'
+import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
+import useDataStore from '../../../Editor/Store/DataStore'
 
-const StyledContent = styled.section`
+export const StyledContent = styled.section`
   display: flex;
   flex: 1;
   max-height: 290px;
@@ -16,45 +20,55 @@ const StyledContent = styled.section`
 
 const initPreview = {
   text: DEFAULT_PREVIEW_TEXT,
-  metadata: null,
+  metadata: null
 }
 
 const Content = () => {
   const { search, selection, localData } = useSpotlightContext()
 
   const [data, setData] = useState<Array<any>>()
+  const ilinks = useDataStore((s) => s.ilinks)
+  const draftKey = useMemo(() => getNewDraftKey(), [])
+
   const [preview, setPreview] = useState<any>(initPreview)
   const currentIndex = useCurrentIndex(data, search)
+  const getContent = useContentStore((state) => state.getContent)
+
+  const loadNodeFromId = useEditorStore(({ loadNodeFromId }) => loadNodeFromId)
+  const { setIsNew } = useContentStore(({ setIsNew }) => ({ setIsNew }))
 
   useEffect(() => {
-    if (localData) {
-      const results = getSearchResults(search, localData?.ilinks, { keySelector: (obj) => obj.key })
-      if (search) {
-        const resultsWithContent = results.map((result) => {
-          const content = localData?.contents?.[result?.key]
-          let rawText = ''
+    setIsNew(true)
+    loadNodeFromId(draftKey)
+  }, [selection])
 
-          content?.content?.map((item) => {
-            rawText += item?.children?.[0]?.text
-            return item
-          })
+  useEffect(() => {
+    const results = getSearchResults(search, ilinks, { keySelector: (obj) => obj.key })
+    if (search) {
+      const resultsWithContent = results.map((result) => {
+        const content = getContent(result.key)
+        let rawText = ''
 
-          return {
-            ...result,
-            desc: rawText,
-          }
+        content?.content.map((item) => {
+          rawText += item?.children?.[0]?.text
+          return item
         })
-        setData(resultsWithContent)
-      } else {
-        setData(undefined)
-      }
+
+        return {
+          ...result,
+          desc: rawText
+        }
+      })
+      setData(resultsWithContent)
+    } else {
+      setData(undefined)
     }
-  }, [search])
+  }, [search, ilinks])
 
   useEffect(() => {
     const prevTemplate = {
       text: DEFAULT_PREVIEW_TEXT,
-      metadata: null,
+      metadata: null
     }
 
     if (!data) {
@@ -63,29 +77,21 @@ const Content = () => {
     } else if (data.length === 0) {
       setPreview({
         ...prevTemplate,
-        text: 'No result found!',
+        text: 'No result found!'
       })
     } else {
       const contentKey = data[currentIndex]
-      const content = localData?.contents?.[contentKey.key]
-
-      let rawText = ''
-      content?.content?.map((item) => {
-        rawText += `\n\n${item?.children?.[0]?.text}`
-        return item
-      })
-      const text = rawText || 'No text here...'
-
       setPreview({
         ...prevTemplate,
-        text,
+        text: null
       })
+      loadNodeFromId(contentKey.key)
     }
   }, [data, currentIndex, selection])
 
   return (
     <StyledContent>
-      <Preview preview={preview} />
+      <Preview preview={preview} nodeId={draftKey} />
       <SideBar index={currentIndex} data={data} />
     </StyledContent>
   )
