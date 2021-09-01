@@ -5,8 +5,8 @@ import { useHelpStore } from './HelpModal'
 const SHelpTooltip = styled.div`
   position: absolute;
   padding: ${({ theme: { spacing } }) => `${spacing.small} ${spacing.medium}`};
-  font-weight: bold;
-  font-size: 2rem;
+  font-weight: 400;
+  font-size: 1.5rem;
   bottom: ${({ theme }) => theme.spacing.medium};
   right: ${({ theme }) => theme.spacing.medium};
   z-index: 100;
@@ -23,8 +23,8 @@ const SHelpTooltip = styled.div`
 `
 
 const HelpTooltip = () => {
-  const openModal = useHelpStore((store) => store.openModal)
-  return <SHelpTooltip onClick={openModal}>?</SHelpTooltip>
+  const toggleModal = useHelpStore((store) => store.toggleModal)
+  return <SHelpTooltip onClick={toggleModal}>?</SHelpTooltip>
 }
 
 export default HelpTooltip
