@@ -1,7 +1,5 @@
 import styled, { css } from 'styled-components'
 
-export const Anything = ``
-
 export const StyledLookup = styled.div`
   padding: 10px;
   display: flex;
