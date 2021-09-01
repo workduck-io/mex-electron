@@ -95,3 +95,5 @@ src/dist/
 *.lock
 
 .eslintignore
+
+CHANGELOG.md

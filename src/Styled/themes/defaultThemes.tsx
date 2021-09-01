@@ -1,11 +1,11 @@
 import { airTheme } from './airTheme'
 import { devTheme } from './devTheme'
-import { dnshTheme } from './dnshTheme'
-import { gruvboxTheme } from './gruvboxTheme'
+import { spotlightTheme } from './spotlightTheme.tsx'
 import { lightTheme } from './lightTheme'
 import { matrixTheme } from './matrixTheme'
 import { reduxTheme } from './reduxTheme'
 import { vvkTheme } from './vvkTheme'
+import { gruvboxTheme } from './gruvboxTheme'
 
 export const defaultThemes = [
   { id: 'gruvy', themeData: gruvboxTheme },
@@ -15,7 +15,7 @@ export const defaultThemes = [
   { id: 'light', themeData: lightTheme },
   { id: 'air', themeData: airTheme },
   { id: 'vvk', themeData: vvkTheme },
-  { id: 'dnsh', themeData: dnshTheme }
+  { id: 'spotlight', themeData: spotlightTheme },
 ]
 
 export const getTheme = (themeId: string) => {

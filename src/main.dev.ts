@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import chokidar from 'chokidar'
 import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, session, shell, Tray } from 'electron'
 import toggleWindow from './Spotlight/utils/toggleWindow'
@@ -20,7 +21,7 @@ if (require('electron-squirrel-startup')) {
 
 let tray
 let mex: BrowserWindow | null
-let spotlight: BrowserWindow | null = null
+let spotlight: BrowserWindow | null
 
 let trayIconSrc = path.join(__dirname, '..', 'assets/icon.png')
 if (process.platform === 'darwin') {
@@ -35,22 +36,19 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const SAVE_LOCATION = getSaveLocation(app)
-const RESOURCES_PATH = app.isPackaged ? path.join(process.resourcesPath, 'assets') : path.join(__dirname, '../assets')
+// const RESOURCES_PATH = app.isPackaged ? path.join(process.resourcesPath, 'assets') : path.join(__dirname, '../assets')
 
-const getAssetPath = (...paths: string[]): string => {
-  return path.join(RESOURCES_PATH, ...paths)
-}
+// const getAssetPath = (...paths: string[]): string => {
+//   return path.join(RESOURCES_PATH, ...paths)
+// }
 
 const MEX_WINDOW_OPTIONS = {
   width: 2560,
-  height: 1660,
-  show: false,
-  icon: getAssetPath('icon.png'),
+  height: 800,
   webPreferences: {
     nodeIntegration: true,
-    enableRemoteModule: true,
-    contextIsolation: false,
-  },
+    contextIsolation: false
+  }
 }
 
 const SPOTLIGHT_WINDOW_OPTIONS = {
@@ -64,13 +62,10 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
   frame: false,
   maximizable: false,
   resizable: false,
-  icon: getAssetPath('icon.png'),
   webPreferences: {
     nodeIntegration: true,
-    nodeIntegrationInSubFrames: false,
-    enableRemoteModule: true,
-    contextIsolation: false,
-  },
+    contextIsolation: false
+  }
 }
 
 export const setFileData = (data: FileData) => {
@@ -94,7 +89,7 @@ const createSpotLighWindow = () => {
   spotlight = new BrowserWindow(SPOTLIGHT_WINDOW_OPTIONS)
   spotlight.loadURL(SPOTLIGHT_WINDOW_WEBPACK_ENTRY)
 
-  spotlight.setAlwaysOnTop(true, 'floating', 1)
+  spotlight.setAlwaysOnTop(true, 'modal-panel', 2)
   spotlight.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 
   spotlight.webContents.on('did-finish-load', () => {
@@ -110,7 +105,7 @@ const createSpotLighWindow = () => {
     spotlight = null
   })
 
-  // spotlight.webContents.openDevTools();
+  // spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -147,13 +142,16 @@ const createMexWindow = () => {
     shell.openExternal(url)
   })
 
+  // mex.webContents.openDevTools()
+
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    callback({
+    const callbackOptions = {
       responseHeaders: {
         ...details.responseHeaders,
-        'Content-Security-Policy': [''],
-      },
-    })
+        'Content-Security-Policy': ['']
+      }
+    }
+    callback(callbackOptions)
   })
 
   try {
@@ -162,9 +160,9 @@ const createMexWindow = () => {
       .watch(getSaveLocation(app), {
         alwaysStat: true,
         awaitWriteFinish: {
-          stabilityThreshold: 2000,
+          stabilityThreshold: 2000
           // pollInterval: 1000,
-        },
+        }
       })
       .on('change', () => {
         let fileData: FileData
@@ -175,9 +173,7 @@ const createMexWindow = () => {
           return
         }
 
-        if (spotlight) {
-          spotlight.webContents.send('sync-data', fileData)
-        }
+        spotlight?.webContents.send('sync-data', fileData)
       })
   } catch (e) {
     console.log(e)
@@ -196,7 +192,7 @@ const sendToRenderer = (selection: any) => {
   const text = sanitizeHtml(selection.text)
   const metaSelection = {
     ...selection,
-    text,
+    text
   }
   spotlight?.webContents.send('selected-text', metaSelection)
 }
@@ -218,15 +214,16 @@ const handleSelectedText = async () => {
   return selection.text && selection.metadata
 }
 
-const syncFileData = () => {
-  const fileData: FileData = getFileData()
-  spotlight?.webContents.send('recieve-local-data', fileData)
+const syncFileData = (data?: FileData) => {
+  const fileData = data || getFileData()
+  mex?.webContents.send('sync-data', fileData)
+  spotlight?.webContents.send('sync-data', fileData)
 }
 
 const handleToggleMainWindow = async () => {
   const isSelection = await handleSelectedText()
   toggleMainWindow(spotlight, isSelection)
-  syncFileData()
+  // syncFileData()
 }
 
 const closeWindow = () => {
@@ -252,7 +249,7 @@ app
       { label: 'Open Mex', type: 'radio' },
       { label: 'Toggle Spotlight search ', type: 'radio' },
       { label: 'Create new Mex', type: 'radio', checked: true },
-      { label: 'Search', type: 'radio' },
+      { label: 'Search', type: 'radio' }
     ])
 
     tray.setToolTip('Mex')
@@ -262,15 +259,9 @@ app
   .then(createWindow)
   .catch(console.log)
 
-// app.on('activate', () => {
-//   if (mainWindow === null) createSpotLighWindow();
-//   if (mexWindow === null) createMexWindow();
-// });
-
 app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
-  }
+  if (spotlight === null) createSpotLighWindow()
+  if (mex === null) createMexWindow()
 })
 
 app.on('window-all-closed', () => {
@@ -280,10 +271,11 @@ app.on('window-all-closed', () => {
 })
 
 ipcMain.on('get-local-data', (event) => {
-  let fileData: FileData = getFileData()
+  const fileData: FileData = getFileData()
   event.sender.send('recieve-local-data', fileData)
 })
 
 ipcMain.on('set-local-data', (_event, arg) => {
   setFileData(arg)
+  syncFileData(arg)
 })

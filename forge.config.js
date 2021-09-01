@@ -53,39 +53,12 @@ module.exports = {
         },
       },
     ],
+    [
+      '@timfish/forge-externals-plugin',
+      {
+        externals: ['active-win'],
+        includeDeps: true,
+      },
+    ],
   ],
-  hooks: {
-    readPackageJson: async (forgeConfig, packageJson) => {
-      // only copy deps if there isn't any
-      if (Object.keys(packageJson.dependencies).length === 0) {
-        const originalPackageJson = await fs.readJson(path.resolve(__dirname, 'package.json'))
-        const webpackConfigJs = require('./webpack.main.config.js')
-        Object.keys(webpackConfigJs.externals).forEach((package) => {
-          packageJson.dependencies[package] = originalPackageJson.dependencies[package]
-        })
-      }
-      return packageJson
-    },
-    packageAfterPrune: async (forgeConfig, buildPath) => {
-      console.log(buildPath)
-      return new Promise((resolve, reject) => {
-        const yarnInstall = spawn('yarn', ['install'], {
-          cwd: buildPath,
-          stdio: 'inherit',
-        })
-
-        yarnInstall.on('close', (code) => {
-          if (code === 0) {
-            resolve()
-          } else {
-            reject(new Error('process finished with error code ' + code))
-          }
-        })
-
-        yarnInstall.on('error', (error) => {
-          reject(error)
-        })
-      })
-    },
-  },
 }

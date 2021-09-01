@@ -31,53 +31,22 @@ interface EditorProps {
   onSave?: () => void
 }
 
-const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: EditorProps) => {
+export const useEditorPluginConfig = (editorId: string) => {
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
   const slash_commands = useDataStore((state) => state.slashCommands)
   const addSyncBlock = useSyncStore((state) => state.addSyncBlock)
 
-  useEffect(() => {
-    ReactTooltip.rebuild()
-  }, [])
-
-  const editableProps = {
-    placeholder: 'Murmuring the mex hype...',
-    style: {
-      padding: '15px'
-    },
-    readOnly
-  }
-
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
   const { getSnippetsConfigs } = useSnippets()
 
-  const generateEditorId = () => `${editorId}`
-  const editorRef = useStoreEditorRef()
-
-  useEffect(() => {
-    // console.log('Focusing', { editor: editorS });
-    if (editorRef && focusAtBeginning) selectEditor(editorRef, { edge: 'start', focus: true })
-  }, [editorRef])
-
-  useEffect(() => {
-    const unsubscribe = tinykeys(window, {
-      '$mod+KeyS': (event) => {
-        event.preventDefault()
-        onSave()
-      }
-    })
-    return () => {
-      unsubscribe()
-    }
-  })
-
   // Combobox
   const snippetConfigs = getSnippetsConfigs()
+
   const pluginConfigs = {
     combobox: {
-      onChange: useMultiComboboxOnChange(generateEditorId(), {
+      onChange: useMultiComboboxOnChange(editorId, {
         ilink: {
           cbKey: ComboboxKey.ILINK,
           trigger: '[[',
@@ -140,6 +109,47 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
     }
   }
 
+  return pluginConfigs
+}
+
+const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: EditorProps) => {
+  useEffect(() => {
+    ReactTooltip.rebuild()
+  }, [])
+
+  const editableProps = {
+    placeholder: 'Murmuring the mex hype...',
+    style: {
+      padding: '15px'
+    },
+    readOnly
+  }
+
+  const addTag = useDataStore((state) => state.addTag)
+  const addILink = useDataStore((state) => state.addILink)
+
+  console.log(editorId)
+
+  const generateEditorId = () => `${editorId}`
+  const editorRef = useStoreEditorRef()
+
+  useEffect(() => {
+    // console.log('Focusing', { editor: editorS });
+    if (editorRef && focusAtBeginning) selectEditor(editorRef, { edge: 'start', focus: true })
+  }, [editorRef])
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      '$mod+KeyS': (event) => {
+        event.preventDefault()
+        onSave()
+      }
+    })
+    return () => {
+      unsubscribe()
+    }
+  })
+
   const comboboxRenderConfig: ComboElementProps = {
     keys: {
       ilink: {
@@ -169,6 +179,7 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
       }
     }
   }
+  const pluginConfigs = useEditorPluginConfig(editorId)
 
   // We get memoized plugins
   const plugins = generatePlugins(pluginConfigs)
