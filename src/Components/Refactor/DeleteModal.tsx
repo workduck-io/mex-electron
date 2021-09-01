@@ -93,7 +93,7 @@ const Delete = () => {
   }
 
   return (
-    <Modal className="RefactorContent" overlayClassName="RefactorOverlay" onRequestClose={closeModal} isOpen={open}>
+    <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Delete</ModalHeader>
 
       <LookupInput autoFocus defaultValue={useEditorStore.getState().node.id} handleChange={handleDeleteChange} />

@@ -123,7 +123,7 @@ const Rename = () => {
   }
 
   return (
-    <Modal className="RefactorContent" overlayClassName="RefactorOverlay" onRequestClose={closeModal} isOpen={open}>
+    <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Rename</ModalHeader>
 
       <LookupInput

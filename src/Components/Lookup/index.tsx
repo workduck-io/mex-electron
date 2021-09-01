@@ -1,8 +1,6 @@
-import { rgba } from 'polished'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import { ActionMeta } from 'react-select'
-import { css } from 'styled-components'
 import tinykeys from 'tinykeys'
 import useDataStore, { useFlatTreeFromILinks } from '../../Editor/Store/DataStore'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
@@ -14,30 +12,6 @@ import { Value } from '../NodeInput/Types'
 export type LookupProps = {
   flatTree: TreeNode[]
 }
-
-/** Is added to Global Styles */
-export const LookupStyles = css`
-  .LookupContent {
-    /* position: absolute; */
-    width: max-content;
-    height: max-content;
-    margin: auto;
-    background: ${({ theme }) => theme.colors.background.card};
-    box-shadow: 0px 20px 100px ${({ theme }) => theme.colors.gray[9]};
-    overflow: auto;
-    border-radius: ${({ theme }) => theme.borderRadius.large};
-    outline: none;
-    padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
-    min-height: 440px;
-    min-width: 400px;
-  }
-  .LookupOverlay {
-    position: fixed;
-    inset: 0px;
-    display: flex;
-    background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};
-  }
-`
 
 const Lookup: React.FC<LookupProps> = () => {
   const [open, setOpen] = useState(false)
@@ -56,7 +30,7 @@ const Lookup: React.FC<LookupProps> = () => {
       '$mod+KeyL': (event) => {
         event.preventDefault()
         openModal()
-      },
+      }
     })
     return () => {
       unsubscribe()
@@ -91,7 +65,7 @@ const Lookup: React.FC<LookupProps> = () => {
   }
 
   return (
-    <Modal className="LookupContent" overlayClassName="LookupOverlay" onRequestClose={closeModal} isOpen={open}>
+    <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <h1>Lookup</h1>
       <LookupInput autoFocus menuOpen handleChange={handleChange} handleCreate={handleCreate} />
     </Modal>

@@ -15,7 +15,7 @@ export const ThinScrollbar = css`
     background: rgba(0, 0, 0, 0);
   }
   &::-webkit-scrollbar-thumb {
-    background-color: ${({ theme }) => theme.colors.gray[8]};
+    background: ${({ theme }) => theme.colors.gray[8]};
     border-radius: 6px;
     border: 2px solid rgba(0, 0, 0, 0);
     background-clip: content-box;
@@ -26,6 +26,6 @@ export const ThinScrollbar = css`
     background-color: ${({ theme }) => theme.colors.primary};
   }
   &::-webkit-scrollbar-track {
-    background: ${({ theme }) => theme.colors.background.app};
+    background: none;
   }
 `

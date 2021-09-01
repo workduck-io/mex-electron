@@ -14,7 +14,6 @@ const StyledDiv = styled.div`
   align-items: center;
   min-height: 100%;
   position: fixed;
-  background-color: ${({ theme }) => theme.colors.background.sidebar};
   width: ${({ theme }) => theme.width.nav};
 `
 
