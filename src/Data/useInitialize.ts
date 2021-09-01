@@ -17,7 +17,6 @@ export const useInitialize = () => {
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setTheme = useThemeStore((state) => state.setTheme)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
-  const addILink = useDataStore((state) => state.addILink)
 
   const update = (data: FileData) => {
     const { tags, ilinks, contents, syncBlocks, snippets } = data
@@ -33,7 +32,6 @@ export const useInitialize = () => {
 
   const init = (data: FileData, initNodeId?: string) => {
     update(data)
-    if (initNodeId) addILink(initNodeId)
     loadNode(initNodeId || '@')
   }
 

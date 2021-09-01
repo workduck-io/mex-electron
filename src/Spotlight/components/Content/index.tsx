@@ -1,5 +1,5 @@
 import { search as getSearchResults } from 'fast-fuzzy'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { DEFAULT_PREVIEW_TEXT } from '../../utils/constants'
 import { useSpotlightContext } from '../../utils/context'
@@ -9,7 +9,6 @@ import SideBar from '../SideBar'
 import { useContentStore } from '../../../Editor/Store/ContentStore'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
-import useDataStore from '../../../Editor/Store/DataStore'
 
 export const StyledContent = styled.section`
   display: flex;
@@ -27,22 +26,19 @@ const Content = () => {
   const { search, selection, localData } = useSpotlightContext()
 
   const [data, setData] = useState<Array<any>>()
-  const [nodeId, setNodeId] = useState(getNewDraftKey())
+  const draftKey = useMemo(() => getNewDraftKey(), [])
+
   const [preview, setPreview] = useState<any>(initPreview)
   const currentIndex = useCurrentIndex(data, search)
   const getContent = useContentStore((state) => state.getContent)
 
   const loadNodeFromId = useEditorStore(({ loadNodeFromId }) => loadNodeFromId)
   const { setIsNew } = useContentStore(({ setIsNew }) => ({ setIsNew }))
-  const addILink = useDataStore((state) => state.addILink)
 
   useEffect(() => {
     setIsNew(true)
-    const draftMexKey = getNewDraftKey()
-    addILink(draftMexKey)
-    setNodeId(draftMexKey)
-    loadNodeFromId(draftMexKey)
-  }, [])
+    loadNodeFromId(draftKey)
+  }, [selection])
 
   useEffect(() => {
     if (localData) {
@@ -90,13 +86,12 @@ const Content = () => {
         text: null
       })
       loadNodeFromId(contentKey.key)
-      setNodeId(contentKey.key)
     }
   }, [data, currentIndex, selection])
 
   return (
     <StyledContent>
-      <Preview preview={preview} nodeId={nodeId} />
+      <Preview preview={preview} nodeId={draftKey} />
       <SideBar index={currentIndex} data={data} />
     </StyledContent>
   )

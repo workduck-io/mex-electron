@@ -41,9 +41,7 @@ const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }
   }, [preview.text])
 
   useEffect(() => {
-    if (fsContent) {
-      setContent(fsContent)
-    }
+    setContent(fsContent)
   }, [fsContent])
 
   return (

@@ -12,6 +12,7 @@ const NewEditor = () => {
   const loadNodeFromId = useEditorStore(({ loadNodeFromId }) => loadNodeFromId)
   const nodeId = useEditorStore(({ node }) => node.id)
   const addILink = useDataStore((s) => s.addILink)
+  const ilinks = useDataStore((s) => s.ilinks)
   const { isNew, setIsNew } = useContentStore(({ isNew, setIsNew }) => ({ isNew, setIsNew }))
 
   const setFsContent = useContentStore((state) => state.setContent)
@@ -31,7 +32,12 @@ const NewEditor = () => {
   const saveData = useSaveData()
 
   const onSave = () => {
-    if (editorState) setFsContent(nodeId, editorState)
+    if (ilinks.filter((item) => item.key === nodeId).length === 0) {
+      addILink(nodeId)
+    }
+    if (editorState) {
+      setFsContent(nodeId, editorState)
+    }
     saveData()
   }
 
@@ -39,6 +45,7 @@ const NewEditor = () => {
     if (!isNew) {
       setIsNew(true)
       const draftMexKey = getNewDraftKey()
+
       addILink(draftMexKey)
       loadNodeFromId(draftMexKey)
     } else {
