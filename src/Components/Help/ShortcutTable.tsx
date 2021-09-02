@@ -29,7 +29,7 @@ const ShortcutTable = () => {
   const [search, setSearch] = useState('')
 
   useEffect(() => {
-    if (search) setTableData(sortBy(fuzzyTextFilterFn(data, search), ['category', 'title']))
+    if (search) setTableData(fuzzyTextFilterFn(data, search))
   }, [search, data])
 
   return (

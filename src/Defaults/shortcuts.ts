@@ -37,7 +37,7 @@ export const defaultShortcuts = {
     category: 'Actions'
   },
   showSpotlight: {
-    title: 'Open Lookup',
+    title: 'Open Spotlight Lookup',
     keystrokes: '$mod+Shift+KeyL',
     category: 'Actions'
   },
