@@ -7,6 +7,7 @@ import tinykeys from 'tinykeys'
 import { useGraphStore } from '../Components/Graph/GraphStore'
 import Backlinks from '../Components/Backlinks/Backlinks'
 import { useLocation, useHistory } from 'react-router-dom'
+import { useHelpStore } from '../Components/Help/HelpModal'
 
 const InfoBarWrapper = styled.div``
 
@@ -14,6 +15,7 @@ const InfoBar = () => {
   const [showInfobar, setShowInfobar] = useState(false)
   const showGraph = useGraphStore((state) => state.showGraph)
   const toggleGraph = useGraphStore((state) => state.toggleGraph)
+  const shortcuts = useHelpStore((store) => store.shortcuts)
   const location = useLocation()
   const history = useHistory()
   const graphData = useGraphData()
@@ -29,23 +31,27 @@ const InfoBar = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      '$mod+KeyK KeyG': (event) => {
+      [shortcuts.showGraph.keystrokes]: (event) => {
         event.preventDefault()
         toggleGraph()
       },
-      '$mod+Shift+KeyS': (event) => {
+      [shortcuts.showSnippets.keystrokes]: (event) => {
         event.preventDefault()
         history.push('/snippets')
       },
-      '$mod+Shift+KeyE': (event) => {
+      [shortcuts.showEditor.keystrokes]: (event) => {
         event.preventDefault()
         history.push('/editor')
+      },
+      [shortcuts.showSettings.keystrokes]: (event) => {
+        event.preventDefault()
+        history.push('/settings')
       }
     })
     return () => {
       unsubscribe()
     }
-  })
+  }, [shortcuts])
 
   return <InfoBarWrapper>{showInfobar && (showGraph ? <Graph graphData={graphData} /> : <Backlinks />)}</InfoBarWrapper>
 }

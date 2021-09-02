@@ -1,15 +1,11 @@
 import React from 'react'
 import Modal from 'react-modal'
 import { HashRouter as Router, Route, Switch } from 'react-router-dom'
-import Lookup from './Components/Lookup'
-import Delete from './Components/Refactor/DeleteModal'
-import Refactor from './Components/Refactor/Refactor'
-import Rename from './Components/Refactor/Rename'
-import sampleRCTree from './Components/Sidebar/treeUtils'
 import Contexts from './Context/Contexts'
 import Providers from './Context/Providers'
 import ContentEditor from './Editor/ContentEditor'
 import Main from './Layout/Main'
+import Modals from './Layout/Modals'
 import SnippetEditor from './Snippets/SnippetEditor'
 import GlobalStyle from './Styled/Global'
 import Dashboard from './Views/Dashboard'
@@ -27,10 +23,7 @@ function App () {
         <Contexts>
           <Main>
             {/* Modals */}
-            <Lookup flatTree={sampleRCTree} />
-            <Refactor />
-            <Rename />
-            <Delete />
+            <Modals />
 
             {/* Main Content */}
             <Switch>

@@ -8,6 +8,7 @@ import { useRefactor } from '../../Editor/Actions/useRefactor'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
 import { NodeLink } from '../../Types/relations'
+import { useHelpStore } from '../Help/HelpModal'
 import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
 import { doesLinkRemain } from './doesLinkRemain'
@@ -23,6 +24,7 @@ interface RenameState {
 const Rename = () => {
   const { execRefactor, getMockRefactor } = useRefactor()
   const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
+  const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const [renameState, setRenameState] = useState<RenameState>({
     open: false,
@@ -51,7 +53,7 @@ const Rename = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      '$mod+KeyK KeyN': (event) => {
+      [shortcuts.showRename.keystrokes]: (event) => {
         event.preventDefault()
         openModal()
       }
@@ -59,7 +61,7 @@ const Rename = () => {
     return () => {
       unsubscribe()
     }
-  })
+  }, [shortcuts])
 
   // console.log({ to, from, open });
 

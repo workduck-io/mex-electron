@@ -10,8 +10,8 @@ export const matrixTheme = generateTheme({
     10: '#0f111a', // Darkest
     9: '#181c2b',
     8: '#252A41',
-    7: '#3D435C',
-    6: '#575C75',
+    7: '#383f5c',
+    6: '#535875',
     5: '#73778C',
     4: '#9EA1B2',
     3: '#B9BBC6',
