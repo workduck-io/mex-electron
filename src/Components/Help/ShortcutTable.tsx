@@ -18,6 +18,10 @@ function fuzzyTextFilterFn (data: Shortcut[], search: any) {
   return matchSorter(data, search, { keys: ['title', 'keystrokes', 'category'] })
 }
 
+const ShowShortcut = (keybinding: string) => {
+  return keybinding.replaceAll('$mod', '⌘').replaceAll('Key', '')
+}
+
 const ShortcutTable = () => {
   const { data, columns } = useShortcutTableData()
 
@@ -56,6 +60,11 @@ const ShortcutTable = () => {
             return (
               <StyledRow key={`Row_${row.title}`}>
                 {Object.keys(row).map((cell, index) => {
+                  // console.log(cell)
+
+                  if (cell === 'keystrokes') {
+                    return <StyledTD key={`cell_${index}_${row[cell]}`}>{ShowShortcut(row[cell])}</StyledTD>
+                  }
                   return <StyledTD key={`cell_${index}_${row[cell]}`}>{row[cell]}</StyledTD>
                 })}
               </StyledRow>
