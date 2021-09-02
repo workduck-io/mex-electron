@@ -9,6 +9,7 @@ import { useRefactor } from '../../Editor/Actions/useRefactor'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
 import { NodeLink } from '../../Types/relations'
+import { useHelpStore } from '../Help/HelpModal'
 import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
 import { doesLinkRemain } from './doesLinkRemain'
@@ -70,6 +71,7 @@ const Refactor = () => {
   const to = useRefactorStore((store) => store.to)
   const from = useRefactorStore((store) => store.from)
   const mockRefactored = useRefactorStore((store) => store.mockRefactored)
+  const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const openModal = useRefactorStore((store) => store.openModal)
   const closeModal = useRefactorStore((store) => store.closeModal)
@@ -81,7 +83,7 @@ const Refactor = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      '$mod+KeyK KeyR': (event) => {
+      [shortcuts.showRefactor.keystrokes]: (event) => {
         event.preventDefault()
         openModal()
       }
@@ -89,7 +91,7 @@ const Refactor = () => {
     return () => {
       unsubscribe()
     }
-  })
+  }, [shortcuts])
 
   const handleFromChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
     if (newValue) {

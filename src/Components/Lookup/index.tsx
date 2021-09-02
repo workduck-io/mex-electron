@@ -6,6 +6,7 @@ import useDataStore, { useFlatTreeFromILinks } from '../../Editor/Store/DataStor
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { getNodeFlatTree } from '../../Lib/flatTree'
 import TreeNode from '../../Types/tree'
+import { useHelpStore } from '../Help/HelpModal'
 import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
 
@@ -15,6 +16,7 @@ export type LookupProps = {
 
 const Lookup: React.FC<LookupProps> = () => {
   const [open, setOpen] = useState(false)
+  const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const openModal = () => {
     setOpen(true)
@@ -27,7 +29,7 @@ const Lookup: React.FC<LookupProps> = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      '$mod+KeyL': (event) => {
+      [shortcuts.showLookup.keystrokes]: (event) => {
         event.preventDefault()
         openModal()
       }
@@ -35,7 +37,7 @@ const Lookup: React.FC<LookupProps> = () => {
     return () => {
       unsubscribe()
     }
-  })
+  }, [shortcuts])
 
   const loadNode = useEditorStore((s) => s.loadNode)
   const loadNodeFromId = useEditorStore((s) => s.loadNodeFromId)

@@ -1,6 +1,7 @@
 import { createPlateOptions, ELEMENT_MEDIA_EMBED, Plate, selectEditor, useStoreEditorRef } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import ReactTooltip from 'react-tooltip'
+import { useHelpStore } from '../Components/Help/HelpModal'
 import tinykeys from 'tinykeys'
 import { useSnippets } from '../Snippets/useSnippets'
 import { EditorStyles } from '../Styled/Editor'
@@ -36,6 +37,7 @@ export const useEditorPluginConfig = (editorId: string) => {
   const ilinks = useDataStore((state) => state.ilinks)
   const slash_commands = useDataStore((state) => state.slashCommands)
   const addSyncBlock = useSyncStore((state) => state.addSyncBlock)
+  const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
@@ -50,20 +52,20 @@ export const useEditorPluginConfig = (editorId: string) => {
         ilink: {
           cbKey: ComboboxKey.ILINK,
           trigger: '[[',
-          data: ilinks
+          data: ilinks,
         },
 
         tag: {
           cbKey: ComboboxKey.TAG,
           trigger: '#',
-          data: tags
+          data: tags,
         },
 
         slash_command: {
           cbKey: ComboboxKey.SLASH_COMMAND,
           trigger: '/',
-          data: slash_commands
-        }
+          data: slash_commands,
+        },
       }),
 
       onKeyDown: useMultiComboboxOnKeyDown(
@@ -72,27 +74,27 @@ export const useEditorPluginConfig = (editorId: string) => {
             slateElementType: ELEMENT_ILINK,
             newItemHandler: (newItem) => {
               addILink(newItem)
-            }
+            },
           },
           tag: {
             slateElementType: ELEMENT_TAG,
             newItemHandler: (newItem) => {
               addTag(newItem)
-            }
+            },
           },
           // Slash command configs
           slash_command: {
             slateElementType: ELEMENT_MEDIA_EMBED,
-            newItemHandler: () => undefined
-          }
+            newItemHandler: () => undefined,
+          },
         },
         {
           webem: {
             slateElementType: ELEMENT_MEDIA_EMBED,
             command: 'webem',
             options: {
-              url: 'http://example.com/'
-            }
+              url: 'http://example.com/',
+            },
           },
           sync_block: {
             slateElementType: ELEMENT_SYNC_BLOCK,
@@ -101,12 +103,12 @@ export const useEditorPluginConfig = (editorId: string) => {
               const nd = getNewBlockData()
               addSyncBlock(nd) // Also need to add the newly created block to the sync store
               return nd
-            }
+            },
           },
-          ...snippetConfigs
+          ...snippetConfigs,
         }
-      )
-    }
+      ),
+    },
   }
 
   return pluginConfigs
@@ -120,9 +122,9 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
   const editableProps = {
     placeholder: 'Murmuring the mex hype...',
     style: {
-      padding: '15px'
+      padding: '15px',
     },
-    readOnly
+    readOnly,
   }
 
   const addTag = useDataStore((state) => state.addTag)
@@ -143,7 +145,7 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
       '$mod+KeyS': (event) => {
         event.preventDefault()
         onSave()
-      }
+      },
     })
     return () => {
       unsubscribe()
@@ -157,27 +159,27 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
           slateElementType: ELEMENT_ILINK,
           newItemHandler: (newItem) => {
             addILink(newItem)
-          }
+          },
         },
-        renderElement: ILinkComboboxItem
+        renderElement: ILinkComboboxItem,
       },
       tag: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_TAG,
           newItemHandler: (newItem) => {
             addTag(newItem)
-          }
+          },
         },
-        renderElement: TagComboboxItem
+        renderElement: TagComboboxItem,
       },
       slash_command: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_MEDIA_EMBED,
-          newItemHandler: () => undefined
+          newItemHandler: () => undefined,
         },
-        renderElement: SlashComboboxItem
-      }
-    }
+        renderElement: SlashComboboxItem,
+      },
+    },
   }
   const pluginConfigs = useEditorPluginConfig(editorId)
 
@@ -209,7 +211,7 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
 Editor.defaultProps = {
   readOnly: false,
   focusAtBeginning: true,
-  onSave: () => undefined
+  onSave: () => undefined,
 }
 
 export default Editor

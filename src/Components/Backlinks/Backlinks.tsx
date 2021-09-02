@@ -14,9 +14,6 @@ const BackLinkWrapper = styled.div`
   align-items: center;
   justify-content: center;
   padding: ${({ theme }) => `${theme.spacing.medium}`};
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.gray[9]};
-  }
 `
 
 const SBackLinks = styled.div`

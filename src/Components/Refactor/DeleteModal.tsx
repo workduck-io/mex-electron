@@ -1,14 +1,13 @@
 import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
 import { Icon } from '@iconify/react'
-import { rgba } from 'polished'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import { ActionMeta } from 'react-select'
-import { css } from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useDelete } from '../../Editor/Actions/useDelete'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
+import { useHelpStore } from '../Help/HelpModal'
 import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
@@ -22,6 +21,7 @@ interface DeleteState {
 const Delete = () => {
   const { getMockDelete, execDelete } = useDelete()
   const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
+  const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const [deleteState, setDeleteState] = useState<DeleteState>({
     open: false,
@@ -48,7 +48,7 @@ const Delete = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      '$mod+KeyK KeyD': (event) => {
+      [shortcuts.showDelete.keystrokes]: (event) => {
         event.preventDefault()
         openModal()
       }
@@ -56,7 +56,7 @@ const Delete = () => {
     return () => {
       unsubscribe()
     }
-  })
+  }, [shortcuts])
 
   // console.log({ to, from, open });
 
