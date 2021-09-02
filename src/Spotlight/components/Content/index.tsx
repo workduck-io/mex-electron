@@ -24,7 +24,7 @@ const initPreview = {
 }
 
 const Content = () => {
-  const { search, selection, localData } = useSpotlightContext()
+  const { search, selection } = useSpotlightContext()
 
   const [data, setData] = useState<Array<any>>()
   const ilinks = useDataStore((s) => s.ilinks)
@@ -38,6 +38,7 @@ const Content = () => {
   const { setIsNew } = useContentStore(({ setIsNew }) => ({ setIsNew }))
 
   useEffect(() => {
+    console.log(selection)
     setIsNew(true)
     loadNodeFromId(draftKey)
   }, [selection])
