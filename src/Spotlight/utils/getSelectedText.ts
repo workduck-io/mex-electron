@@ -9,12 +9,12 @@ export const getSelectedText = async () => {
   clipboard.clear()
   simulateCopy()
   const windowDetails = await activeWindow()
-  const selectedText = clipboard.readHTML()
 
+  const selectedText = clipboard.readHTML()
   clipboard.writeText(contentBackup)
 
   return {
     text: selectedText,
-    metadata: windowDetails,
+    metadata: windowDetails
   }
 }

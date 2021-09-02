@@ -85,7 +85,7 @@ export const getFileData = () => {
   return fileData
 }
 
-const createSpotLighWindow = () => {
+const createSpotLighWindow = (show?: boolean) => {
   spotlight = new BrowserWindow(SPOTLIGHT_WINDOW_OPTIONS)
   spotlight.loadURL(SPOTLIGHT_WINDOW_WEBPACK_ENTRY)
 
@@ -96,8 +96,10 @@ const createSpotLighWindow = () => {
     if (!spotlight) {
       throw new Error('Main Window is not initialized!')
     }
-    if (process.env.START_MINIMIZED) {
-      spotlight.minimize()
+    if (show) {
+      spotlight.show()
+    } else {
+      spotlight.hide()
     }
   })
 
@@ -197,21 +199,14 @@ const sendToRenderer = (selection: any) => {
   spotlight?.webContents.send('selected-text', metaSelection)
 }
 
-const toggleMainWindow = (window, isSelection) => {
+const toggleMainWindow = (window) => {
   if (!window) {
-    createSpotLighWindow()
+    createSpotLighWindow(true)
+  } else if (window.isFocused()) {
+    window.hide()
   } else {
-    toggleWindow(window, isSelection)
+    window.show()
   }
-}
-
-const handleSelectedText = async () => {
-  const selection = await getSelectedText()
-  if (selection.text && selection.metadata) {
-    sendToRenderer(selection)
-  }
-
-  return selection.text && selection.metadata
 }
 
 const syncFileData = (data?: FileData) => {
@@ -221,13 +216,14 @@ const syncFileData = (data?: FileData) => {
 }
 
 const handleToggleMainWindow = async () => {
-  const isSelection = await handleSelectedText()
-  toggleMainWindow(spotlight, isSelection)
+  const selection = await getSelectedText()
+  toggleMainWindow(spotlight)
+  sendToRenderer(selection)
   // syncFileData()
 }
 
 const closeWindow = () => {
-  spotlight?.close()
+  spotlight?.hide()
 }
 
 // app.on('browser-window-blur', () => {
