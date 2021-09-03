@@ -1,5 +1,5 @@
 import create from 'zustand'
-import { generateTree, SEPARATOR } from '../../Components/Sidebar/treeUtils'
+import { generateTree, getAllParentIds, SEPARATOR } from '../../Components/Sidebar/treeUtils'
 import getFlatTree from '../../Lib/flatTree'
 import { removeLink } from '../../Lib/links'
 import { generateComboText } from './sampleTags'
@@ -26,6 +26,35 @@ const useDataStore = create<DataStoreState>((set, get) => ({
       slashCommands
     })
   },
+
+  // Add a new tag to the store
+  addTag: (tag) => {
+    set({
+      tags: [...get().tags, generateComboText(tag, get().tags.length)]
+    })
+  },
+
+  // Add a new ILink to the store
+  addILink: (ilink) => {
+    const linksStrings = get().ilinks.map((l) => l.text)
+    const parents = getAllParentIds(ilink) // includes link of child
+    const newLinks = parents.filter((l) => !linksStrings.includes(l)) // only create links for non existing
+    const comboTexts = newLinks.map((l, index) => {
+      return generateComboText(l, get().ilinks.length + index)
+    })
+
+    set({
+      ilinks: [...get().ilinks, ...comboTexts]
+    })
+  },
+
+  setIlinks: (ilinks) => {
+    set({
+      ilinks
+    })
+  },
+
+  setSlashCommands: (slashCommands) => set({ slashCommands }),
 
   addInternalLink: (ilink, nodeId) => {
     let nodeLinks = get().linkCache[nodeId]
@@ -79,29 +108,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
         [nodeId]: links
       }
     })
-  },
-
-  // Add a new tag to the store
-  addTag: (tag) => {
-    set({
-      tags: [...get().tags, generateComboText(tag, get().tags.length)]
-    })
-  },
-
-  // Add a new ILink to the store
-  addILink: (ilink) => {
-    set({
-      ilinks: [...get().ilinks, generateComboText(ilink, get().ilinks.length)]
-    })
-  },
-
-  setIlinks: (ilinks) => {
-    set({
-      ilinks
-    })
-  },
-
-  setSlashCommands: (slashCommands) => set({ slashCommands })
+  }
 }))
 
 export const getLevel = (id: string) => id.split(SEPARATOR).length

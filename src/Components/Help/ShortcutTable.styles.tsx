@@ -1,6 +1,11 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components'
 
+export const TableWrapperScrollable = styled.div`
+  max-height: 600px;
+  overflow: auto;
+`
+
 export const StyledTable = styled.table`
   margin: ${({ theme }) => theme.spacing.medium};
 
