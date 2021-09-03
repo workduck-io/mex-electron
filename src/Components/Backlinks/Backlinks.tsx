@@ -73,8 +73,8 @@ const Backlinks = () => {
           </>
         )}
         {backlinks.map((l) => (
-          <BackLink key={`backlink_${l.from}`} onClick={() => loadNodeFromId(l.from)}>
-            {l.from}
+          <BackLink key={`backlink_${l.nodeId}`} onClick={() => loadNodeFromId(l.nodeId)}>
+            {l.nodeId}
           </BackLink>
         ))}
       </SBackLinks>

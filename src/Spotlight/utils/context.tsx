@@ -1,14 +1,12 @@
 import { ipcRenderer } from 'electron'
-import tinykeys from 'tinykeys'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { FileData } from '../../Types/data'
+import tinykeys from 'tinykeys'
 import { useInitialize } from '../../Data/useInitialize'
-import { useContentStore } from '../../Editor/Store/ContentStore'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
-import useDataStore from '../../Editor/Store/DataStore'
 import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
 import { getHtmlString } from '../components/Source'
+import { useContentStore } from '../../Editor/Store/ContentStore'
+import { FileData } from '../../Types/data'
 
 export const useLocalShortcuts = () => {
   const history = useHistory()
@@ -22,7 +20,7 @@ export const useLocalShortcuts = () => {
       Tab: (event) => {
         event.preventDefault()
         history.replace('/new')
-      }
+      },
     })
     return () => {
       unsubscribe()
@@ -32,14 +30,12 @@ export const useLocalShortcuts = () => {
 
 export const useMexPageShortcuts = () => {
   const history = useHistory()
-  const nodeId = useEditorStore((state) => state.node.id)
   const { setSelection } = useSpotlightContext()
-  const removeILink = useDataStore((state) => state.removeILink)
 
   const { isNew, setIsNew, removeContent } = useContentStore(({ isNew, setIsNew, removeContent }) => ({
     isNew,
     setIsNew,
-    removeContent
+    removeContent,
   }))
 
   const handleCancel = () => {
@@ -57,7 +53,7 @@ export const useMexPageShortcuts = () => {
         event.preventDefault()
         handleCancel()
         history.replace('/')
-      }
+      },
     })
     return () => {
       unsubscribe()
@@ -75,7 +71,7 @@ type SpotlightContextType = {
 
 const SpotlightContext = createContext<SpotlightContextType>(undefined!)
 
-export const SpotlightProvider: React.FC = ({ children }) => {
+export const SpotlightProvider: React.FC = ({ children }: any) => {
   const [search, setSearch] = useState<string>('')
   const [selection, setSelection] = useState<any>()
   const [localData, setLocalData] = useState<FileData>()
@@ -87,7 +83,7 @@ export const SpotlightProvider: React.FC = ({ children }) => {
     setSearch,
     selection,
     setSelection,
-    localData
+    localData,
   }
 
   useEffect(() => {
@@ -99,7 +95,7 @@ export const SpotlightProvider: React.FC = ({ children }) => {
 
         const html = {
           ...data,
-          text: text.concat(source)
+          text: text.concat(source),
         }
 
         setSelection(html)

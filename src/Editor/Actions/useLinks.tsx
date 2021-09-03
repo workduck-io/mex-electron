@@ -1,7 +1,9 @@
-import React from 'react'
 import { NodeLink } from '../../Types/relations'
 import { useContentStore } from '../Store/ContentStore'
 import { uniq } from 'lodash'
+import useDataStore from '../Store/DataStore'
+import { ILink } from '../Store/Types'
+import { hasLink } from '../../Lib/links'
 
 const getLinksFromContent = (content: any[]): string[] => {
   let links: string[] = []
@@ -20,6 +22,9 @@ const getLinksFromContent = (content: any[]): string[] => {
 
 export const useLinks = () => {
   const contents = useContentStore((state) => state.contents)
+  const addInternalLink = useDataStore((state) => state.addInternalLink)
+  const removeInternalLink = useDataStore((state) => state.removeInternalLink)
+  const linkCache = useDataStore((state) => state.linkCache)
 
   const getAllLinks = () => {
     // We assume that all links exist
@@ -40,32 +45,53 @@ export const useLinks = () => {
     return allLinks
   }
 
-  const getLinks = (id: string) => {
-    const links = getAllLinks()
-    const newLinks: { from: string; to: string }[] = []
-    links.forEach(({ to, from }) => {
-      if (to === id || from === id) {
-        newLinks.push({ from, to })
-      }
-    })
-
-    return newLinks
+  const getLinks = (id: string): NodeLink[] => {
+    const links = linkCache[id]
+    if (links) {
+      return links.map((l) => {
+        return {
+          [l.type]: l.nodeId,
+          [l.type === 'from' ? 'to' : 'from']: id
+        } as unknown as NodeLink
+      })
+    }
+    return []
   }
 
   const getBacklinks = (id: string) => {
-    const links = getLinks(id)
-    return links.filter((l) => l.to === id)
+    const links = linkCache[id]
+    if (links) {
+      return links.filter((l) => l.type === 'from')
+    }
+    return []
   }
 
-  return { getAllLinks, getLinks, getBacklinks }
-}
+  const updateLinksFromContent = (nodeId: string, content: any[]) => {
+    // console.log('We are updating', nodeId, content, linkCache)
 
-// Used to wrap a class component to provide hooks
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export const withILinks = (Component: any) => {
-  return function C2 (props: any) {
-    const links = useLinks()
+    if (content) {
+      const links: ILink[] = getLinksFromContent(content).map((l) => ({
+        type: 'to',
+        nodeId: l
+      }))
 
-    return <Component {...links} {...props} /> // eslint-disable-line react/jsx-props-no-spreading
+      let currentLinks = linkCache[nodeId]
+      if (!currentLinks) currentLinks = []
+
+      const currentToLinks = currentLinks.filter((l) => l.type === 'to')
+
+      const toLinkstoDelete = currentToLinks.filter((l) => {
+        return !hasLink(l, links)
+      })
+
+      const toLinkstoAdd = links.filter((l) => {
+        return !hasLink(l, currentLinks)
+      })
+
+      toLinkstoDelete.map((l) => removeInternalLink(l, nodeId))
+      toLinkstoAdd.map((l) => addInternalLink(l, nodeId))
+    }
   }
+
+  return { getAllLinks, getLinks, getBacklinks, updateLinksFromContent }
 }

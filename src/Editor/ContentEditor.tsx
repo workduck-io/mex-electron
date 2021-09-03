@@ -8,6 +8,7 @@ import { useGraphStore } from '../Components/Graph/GraphStore'
 import { useSaveData } from '../Data/useSaveData'
 import IconButton from '../Styled/Buttons'
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor'
+import { useLinks } from './Actions/useLinks'
 import Editor from './Editor'
 import { useContentStore } from './Store/ContentStore'
 import { useEditorStore } from './Store/EditorStore'
@@ -25,6 +26,7 @@ const ContentEditor = () => {
 
   const editorState = useStoreEditorValue()
   const id = useEditorStore((state) => state.node.id)
+  const { updateLinksFromContent } = useLinks()
 
   const fsContent = useEditorStore((state) => state.content)
 
@@ -42,7 +44,11 @@ const ContentEditor = () => {
   const onSave = () => {
     // On save the editor should serialize the state to markdown plaintext
     // setContent then save
-    if (editorState) setFsContent(id, editorState)
+    if (editorState) {
+      setFsContent(id, editorState)
+      updateLinksFromContent(id, editorState)
+    }
+
     saveData()
 
     toast('Saved!', { duration: 1000 })
