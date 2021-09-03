@@ -23,7 +23,7 @@ export const defaultShortcuts = {
   // Actions
   save: {
     title: 'Save current document',
-    keystrokes: '$mod+KeyL',
+    keystrokes: '$mod+KeyS',
     category: 'Actions'
   },
   showGraph: {

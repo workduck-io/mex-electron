@@ -13,7 +13,7 @@ export const useUpdater = () => {
     const snippetCommands = extractSnippetCommands(useSnippetStore.getState().snippets)
     const commands = generateComboTexts(uniq([...snippetCommands, ...defaultCommands]))
 
-    console.log('Generated', { commands })
+    // console.log('Generated', { commands })
     setSlashCommands(Array.from(commands))
   }
 

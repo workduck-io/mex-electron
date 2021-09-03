@@ -19,11 +19,11 @@ export const useInitialize = () => {
   const initSnippets = useSnippetStore((state) => state.initSnippets)
 
   const update = (data: FileData) => {
-    const { tags, ilinks, contents, syncBlocks, snippets } = data
+    const { tags, ilinks, linkCache, contents, syncBlocks, snippets } = data
     const snippetCommands = extractSnippetCommands(snippets)
     const slashCommands = generateComboTexts([...defaultCommands, ...snippetCommands])
 
-    initializeDataStore(tags, ilinks, slashCommands)
+    initializeDataStore(tags, ilinks, slashCommands, linkCache)
     initContents(contents)
     initSyncBlocks(syncBlocks)
     initSnippets(snippets)
