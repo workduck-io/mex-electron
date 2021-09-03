@@ -1,8 +1,9 @@
 import create from 'zustand'
 import { generateTree, SEPARATOR } from '../../Components/Sidebar/treeUtils'
-import { generateComboText } from './sampleTags'
 import getFlatTree from '../../Lib/flatTree'
-import { DataStoreState } from './Types'
+import { removeLink } from '../../Lib/links'
+import { generateComboText } from './sampleTags'
+import { DataStoreState, ILink } from './Types'
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   // Tags
@@ -14,21 +15,69 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   // Slash commands
   slashCommands: [],
 
+  linkCache: {},
+
   // Load initial data in the store
-  initializeDataStore: (tags, ilinks, slash_commands) => {
+  initializeDataStore: (tags, ilinks, slashCommands, linkCache) => {
     set({
       tags,
       ilinks,
-      slashCommands: slash_commands
+      linkCache,
+      slashCommands
     })
   },
 
-  removeILink: (ilinkToDel) => {
-    const arr = get().ilinks
+  addInternalLink: (ilink, nodeId) => {
+    let nodeLinks = get().linkCache[nodeId]
+    let secondNodeLinks = get().linkCache[ilink.nodeId]
 
-    const newILinks = arr.filter((ilink) => ilink.key !== ilinkToDel)
+    if (!nodeLinks) nodeLinks = []
+    if (!secondNodeLinks) secondNodeLinks = []
+
+    nodeLinks.push(ilink)
+    secondNodeLinks.push({
+      type: ilink.type === 'from' ? 'to' : 'from',
+      nodeId
+    })
+
     set({
-      ilinks: newILinks
+      linkCache: {
+        ...get().linkCache,
+        [nodeId]: nodeLinks,
+        [ilink.nodeId]: secondNodeLinks
+      }
+    })
+  },
+
+  removeInternalLink: (ilink, nodeId) => {
+    let nodeLinks = get().linkCache[nodeId]
+    let secondNodeLinks = get().linkCache[ilink.nodeId]
+
+    if (!nodeLinks) nodeLinks = []
+    if (!secondNodeLinks) secondNodeLinks = []
+
+    nodeLinks = removeLink(ilink, nodeLinks)
+    const secondLinkToDelete: ILink = {
+      type: ilink.type === 'from' ? 'to' : 'from',
+      nodeId
+    }
+    secondNodeLinks = removeLink(secondLinkToDelete, secondNodeLinks)
+
+    set({
+      linkCache: {
+        ...get().linkCache,
+        [nodeId]: nodeLinks,
+        [ilink.nodeId]: secondNodeLinks
+      }
+    })
+  },
+
+  updateInternalLinks: (links, nodeId) => {
+    set({
+      linkCache: {
+        ...get().linkCache,
+        [nodeId]: links
+      }
     })
   },
 

@@ -12,7 +12,7 @@ interface GraphStoreState {
 export const useGraphStore = create<GraphStoreState>((set, get) => ({
   showTools: true,
   showGraph: false,
-  showLocal: false,
+  showLocal: true,
 
   toggleTools: () =>
     set((state) => ({
