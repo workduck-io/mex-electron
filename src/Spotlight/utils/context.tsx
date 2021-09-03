@@ -8,6 +8,7 @@ import { useContentStore } from '../../Editor/Store/ContentStore'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import useDataStore from '../../Editor/Store/DataStore'
 import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
+import { getHtmlString } from '../components/Source'
 
 export const useLocalShortcuts = () => {
   const history = useHistory()
@@ -91,7 +92,18 @@ export const SpotlightProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     ipcRenderer.on('selected-text', (_event, data) => {
-      setSelection(data)
+      if (!data) setSelection(undefined)
+      else {
+        const source = getHtmlString(data?.metadata)
+        const text: string = data?.text
+
+        const html = {
+          ...data,
+          text: text.concat(source)
+        }
+
+        setSelection(html)
+      }
     })
 
     ipcRenderer.on('recieve-local-data', (_event, arg: FileData) => {
