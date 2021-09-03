@@ -8,12 +8,13 @@ export const DefaultFileData: FileData = {
     doc: { type: 'init', content: [{ children: [{ text: '' }] }] },
     dev: { type: 'init', content: [{ children: [{ text: '' }] }] },
     design: { type: 'init', content: [{ children: [{ text: '' }] }] },
-    Draft: { type: 'init', content: [{ children: [{ text: '' }] }] },
+    Draft: { type: 'init', content: [{ children: [{ text: '' }] }] }
   },
+  linkCache: {},
   tags: generateComboTexts(['mex']),
   syncBlocks: [],
   userSettings: {
-    theme: 'dev',
+    theme: 'dev'
   },
-  snippets: [],
+  snippets: []
 }

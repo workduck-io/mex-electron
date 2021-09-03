@@ -18,10 +18,11 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   linkCache: {},
 
   // Load initial data in the store
-  initializeDataStore: (tags, ilinks, slashCommands) => {
+  initializeDataStore: (tags, ilinks, slashCommands, linkCache) => {
     set({
       tags,
       ilinks,
+      linkCache,
       slashCommands
     })
   },

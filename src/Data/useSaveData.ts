@@ -20,6 +20,7 @@ export const useSaveData = () => {
 
     ipcRenderer.send('set-local-data', {
       ilinks: useDataStore.getState().ilinks,
+      linkCache: useDataStore.getState().linkCache,
       tags: useDataStore.getState().tags,
       contents: useContentStore.getState().contents,
       syncBlocks: useSyncStore.getState().syncBlocks,

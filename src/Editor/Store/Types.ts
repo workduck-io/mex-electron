@@ -5,13 +5,15 @@ export interface ComboText {
   value: string
 }
 
+export type LinkCache = Record<string, ILink[]>
+
 export interface DataStoreState {
   tags: ComboText[]
   ilinks: ComboText[]
   slashCommands: ComboText[]
-  linkCache: Record<string, ILink[]>
+  linkCache: LinkCache
 
-  initializeDataStore: (tags: ComboText[], ids: ComboText[], slash_commands: ComboText[]) => void
+  initializeDataStore: (tags: ComboText[], ids: ComboText[], slash_commands: ComboText[], linkCache: LinkCache) => void
 
   addTag: (tag: string) => void
   addILink: (ilink: string) => void
