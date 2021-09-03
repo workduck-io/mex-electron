@@ -12,7 +12,7 @@ export const sampleFlatTree = [
   'pro.mex',
   'pro.mex.issues',
   'com',
-  'com.workduck',
+  'com.workduck'
 ]
 
 export const SEPARATOR = '.'
@@ -21,6 +21,25 @@ export const getParentId = (id: string) => {
   const lastIndex = id.lastIndexOf(SEPARATOR)
   if (lastIndex === -1) return null
   return id.slice(0, lastIndex)
+}
+
+/** Also includes the ID of the final node */
+export const getAllParentIds = (id: string) => {
+  const allParents: string[] = []
+  let past = ''
+  id.split(SEPARATOR).forEach((s) => {
+    const link = past === '' ? s : `${past}${SEPARATOR}${s}`
+    allParents.push(link)
+    past = link
+  })
+  return allParents
+  /*
+    id = a.b.c
+    link = [a b c]
+    a
+    a.b
+    a.b.c
+  */
 }
 
 export const isElder = (id: string, xparent: string) => {
@@ -46,7 +65,7 @@ const createChildLess = (n: string): TreeNode => ({
   title: getNodeIdLast(n),
   key: n,
   mex_icon: undefined,
-  children: [],
+  children: []
 })
 
 // Insert the given node in a nested tree
@@ -66,7 +85,7 @@ const insertInNested = (iNode: TreeNode, nestedTree: TreeNode[]) => {
         // console.log({ children });
         newNested.splice(index, 1, {
           ...n,
-          children,
+          children
         })
       }
     }

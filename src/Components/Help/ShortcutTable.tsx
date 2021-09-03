@@ -11,7 +11,8 @@ import {
   StyledTD,
   StyledTH,
   StyledTHead,
-  TableHeader
+  TableHeader,
+  TableWrapperScrollable
 } from './ShortcutTable.styles'
 
 function fuzzyTextFilterFn (data: Shortcut[], search: any) {
@@ -30,6 +31,7 @@ const ShortcutTable = () => {
 
   useEffect(() => {
     if (search) setTableData(fuzzyTextFilterFn(data, search))
+    else setTableData(data)
   }, [search, data])
 
   return (
@@ -44,34 +46,36 @@ const ShortcutTable = () => {
         />
       </TableHeader>
 
-      <StyledTable>
-        <StyledTHead>
-          {
-            <StyledRow>
-              {columns.map((column) => (
-                <StyledTH key={`THeader_${column.Header}`}> {column.Header} </StyledTH>
-              ))}
-            </StyledRow>
-          }
-        </StyledTHead>
-
-        <StyledTBody>
-          {tableData.map((row) => {
-            return (
-              <StyledRow key={`Row_${row.title}`}>
-                {Object.keys(row).map((cell, index) => {
-                  // console.log(cell)
-
-                  if (cell === 'keystrokes') {
-                    return <StyledTD key={`cell_${index}_${row[cell]}`}>{ShowShortcut(row[cell])}</StyledTD>
-                  }
-                  return <StyledTD key={`cell_${index}_${row[cell]}`}>{row[cell]}</StyledTD>
-                })}
+      <TableWrapperScrollable>
+        <StyledTable>
+          <StyledTHead>
+            {
+              <StyledRow>
+                {columns.map((column) => (
+                  <StyledTH key={`THeader_${column.Header}`}> {column.Header} </StyledTH>
+                ))}
               </StyledRow>
-            )
-          })}
-        </StyledTBody>
-      </StyledTable>
+            }
+          </StyledTHead>
+
+          <StyledTBody>
+            {tableData.map((row) => {
+              return (
+                <StyledRow key={`Row_${row.title}`}>
+                  {Object.keys(row).map((cell, index) => {
+                    // console.log(cell)
+
+                    if (cell === 'keystrokes') {
+                      return <StyledTD key={`cell_${index}_${row[cell]}`}>{ShowShortcut(row[cell])}</StyledTD>
+                    }
+                    return <StyledTD key={`cell_${index}_${row[cell]}`}>{row[cell]}</StyledTD>
+                  })}
+                </StyledRow>
+              )
+            })}
+          </StyledTBody>
+        </StyledTable>
+      </TableWrapperScrollable>
     </>
   )
 }
