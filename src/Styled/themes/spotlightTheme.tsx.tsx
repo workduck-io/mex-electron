@@ -32,5 +32,6 @@ export const spotlightTheme = generateTheme({
   //   fade: '#9196B3',
   //   disabled: '#7f8288',
   //   accent: '#C792EA',
+  //   oppositePrimary: '#000',
   // },
 })

@@ -38,7 +38,6 @@ const Content = () => {
   const { setIsNew } = useContentStore(({ setIsNew }) => ({ setIsNew }))
 
   useEffect(() => {
-    console.log(selection)
     setIsNew(true)
     loadNodeFromId(draftKey)
   }, [selection])
@@ -51,7 +50,7 @@ const Content = () => {
         let rawText = ''
 
         content?.content.map((item) => {
-          rawText += item?.children?.[0]?.text
+          rawText += item?.children?.[0]?.text || ''
           return item
         })
 

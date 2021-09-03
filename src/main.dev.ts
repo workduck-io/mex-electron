@@ -43,8 +43,8 @@ const SAVE_LOCATION = getSaveLocation(app)
 // }
 
 const MEX_WINDOW_OPTIONS = {
-  width: 2560,
-  height: 800,
+  width: 1600,
+  height: 1500,
   webPreferences: {
     nodeIntegration: true,
     contextIsolation: false
@@ -191,6 +191,10 @@ const createWindow = () => {
 }
 
 const sendToRenderer = (selection: any) => {
+  if (!selection) {
+    spotlight?.webContents.send('selected-text', selection)
+    return
+  }
   const text = sanitizeHtml(selection.text)
   const metaSelection = {
     ...selection,
@@ -218,7 +222,9 @@ const syncFileData = (data?: FileData) => {
 const handleToggleMainWindow = async () => {
   const selection = await getSelectedText()
   toggleMainWindow(spotlight)
-  sendToRenderer(selection)
+  if (selection?.text && selection?.metadata) {
+    sendToRenderer(selection)
+  } else sendToRenderer(undefined)
   // syncFileData()
 }
 
