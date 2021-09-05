@@ -39,7 +39,9 @@ const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }
 
   useEffect(() => {
     setFsContent(nodeId, [{ children: nodes }])
-    setNodeContent([{ children: nodes }])
+    if (preview.isSelection) {
+      setNodeContent([{ children: nodes }])
+    }
     loadNodeFromId(nodeId)
   }, [preview.text])
 

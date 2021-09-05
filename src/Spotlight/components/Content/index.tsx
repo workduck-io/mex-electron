@@ -10,6 +10,7 @@ import { useContentStore } from '../../../Editor/Store/ContentStore'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
 import useDataStore from '../../../Editor/Store/DataStore'
+import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
 
 export const StyledContent = styled.section`
   display: flex;
@@ -20,7 +21,8 @@ export const StyledContent = styled.section`
 
 const initPreview = {
   text: DEFAULT_PREVIEW_TEXT,
-  metadata: null
+  metadata: null,
+  isSelection: false
 }
 
 const Content = () => {
@@ -30,12 +32,21 @@ const Content = () => {
   const ilinks = useDataStore((s) => s.ilinks)
   const draftKey = useMemo(() => getNewDraftKey(), [])
 
-  const [preview, setPreview] = useState<any>(initPreview)
+  const [preview, setPreview] = useState<{
+    text: string
+    metadata: string | null
+    isSelection: boolean
+  }>(initPreview)
   const currentIndex = useCurrentIndex(data, search)
   const getContent = useContentStore((state) => state.getContent)
 
-  const loadNodeFromId = useEditorStore(({ loadNodeFromId }) => loadNodeFromId)
+  const { loadNodeFromId, loadNodeAndAppend } = useEditorStore(({ loadNodeFromId, loadNodeAndAppend }) => ({
+    loadNodeFromId,
+    loadNodeAndAppend
+  }))
   const { setSaved } = useContentStore(({ setSaved }) => ({ setSaved }))
+  const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
+  const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
 
   useEffect(() => {
     setSaved(false)
@@ -69,12 +80,20 @@ const Content = () => {
   useEffect(() => {
     const prevTemplate = {
       text: DEFAULT_PREVIEW_TEXT,
-      metadata: null
+      metadata: null,
+      isSelection: false
     }
 
     if (!data) {
-      if (selection) setPreview(selection)
-      else setPreview(prevTemplate)
+      if (selection) {
+        setPreview({
+          ...selection,
+          isSelection: true
+        })
+      } else {
+        setNodeContent(undefined)
+        setPreview(prevTemplate)
+      }
     } else if (data.length === 0) {
       setPreview({
         ...prevTemplate,
@@ -86,7 +105,11 @@ const Content = () => {
         ...prevTemplate,
         text: null
       })
-      loadNodeFromId(contentKey.key)
+      if (nodeContent) {
+        loadNodeAndAppend(contentKey.key, nodeContent)
+      } else {
+        loadNodeFromId(contentKey.key)
+      }
     }
     setSaved(false)
   }, [data, currentIndex, selection])
