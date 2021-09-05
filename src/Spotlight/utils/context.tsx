@@ -7,6 +7,8 @@ import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockDat
 import { getHtmlString } from '../components/Source'
 import { useContentStore } from '../../Editor/Store/ContentStore'
 import { FileData } from '../../Types/data'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
+import useDataStore from '../../Editor/Store/DataStore'
 
 export const useLocalShortcuts = () => {
   const history = useHistory()
@@ -20,7 +22,7 @@ export const useLocalShortcuts = () => {
       Tab: (event) => {
         event.preventDefault()
         history.replace('/new')
-      },
+      }
     })
     return () => {
       unsubscribe()
@@ -30,21 +32,13 @@ export const useLocalShortcuts = () => {
 
 export const useMexPageShortcuts = () => {
   const history = useHistory()
-  const { setSelection } = useSpotlightContext()
-
-  const { isNew, setIsNew, removeContent } = useContentStore(({ isNew, setIsNew, removeContent }) => ({
-    isNew,
-    setIsNew,
-    removeContent,
-  }))
+  const { setSelection, setSearch } = useSpotlightContext()
+  const setSaved = useContentStore((state) => state.setSaved)
 
   const handleCancel = () => {
-    if (isNew) {
-      setIsNew(false)
-      // removeContent(nodeId)
-      // removeILink(nodeId)
-      setSelection(undefined)
-    }
+    setSaved(false)
+    setSearch('')
+    setSelection(undefined)
   }
 
   useEffect(() => {
@@ -53,7 +47,7 @@ export const useMexPageShortcuts = () => {
         event.preventDefault()
         handleCancel()
         history.replace('/')
-      },
+      }
     })
     return () => {
       unsubscribe()
@@ -76,14 +70,14 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
   const [selection, setSelection] = useState<any>()
   const [localData, setLocalData] = useState<FileData>()
 
-  const { init } = useInitialize()
+  const { init, update } = useInitialize()
 
   const value = {
     search,
     setSearch,
     selection,
     setSelection,
-    localData,
+    localData
   }
 
   useEffect(() => {
@@ -95,7 +89,7 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
 
         const html = {
           ...data,
-          text: text.concat(source),
+          text: text.concat(source)
         }
 
         setSelection(html)
@@ -106,6 +100,11 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
       const editorID = getNewDraftKey()
       init(arg, editorID)
       setLocalData(arg)
+    })
+
+    ipcRenderer.on('sync-data', (_event, arg) => {
+      update(arg)
+      // loadNode(useEditorStore.getState().node)
     })
 
     ipcRenderer.send('get-local-data')

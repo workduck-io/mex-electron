@@ -1,4 +1,5 @@
 /* eslint-disable import/prefer-default-export */
+import { ipcRenderer } from 'electron'
 import { useEffect, useState } from 'react'
 
 export const useCurrentIndex = (data: Array<any> | undefined, search: string) => {
@@ -30,8 +31,12 @@ export const useCurrentIndex = (data: Array<any> | undefined, search: string) =>
   }, [data])
 
   useEffect(() => {
-    setCurrentIndex(0)
+    if (search) {
+      setCurrentIndex(0)
+    }
   }, [search])
 
   return currentIndex
 }
+
+export const openNodeInMex = (nodeId: string) => ipcRenderer.send('open-node-in-mex', { nodeId: nodeId })

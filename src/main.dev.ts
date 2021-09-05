@@ -107,7 +107,7 @@ const createSpotLighWindow = (show?: boolean) => {
     spotlight = null
   })
 
-  // spotlight.webContents.openDevTools()
+  spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -280,4 +280,8 @@ ipcMain.on('get-local-data', (event) => {
 ipcMain.on('set-local-data', (_event, arg) => {
   setFileData(arg)
   syncFileData(arg)
+})
+
+ipcMain.on('open-node-in-mex', (_event, arg) => {
+  mex?.webContents.send('open-node', { nodeId: arg.nodeId })
 })

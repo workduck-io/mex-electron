@@ -1,23 +1,17 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Shortcuts, { ShortcutType } from '../Shortcuts'
 import { StyledLookup } from '../Spotlight/styled'
 import { useMexPageShortcuts } from '../../utils/context'
-import { CenterIcon } from '../../styles/layout'
-import WDLogo from '../Search/Logo'
-import { StyledHeader, StyledHeading } from './styled'
+
 import NewEditor from './NewEditor'
+import CreateNodeInput from '../CreateNodeInput'
 
 const New = () => {
   useMexPageShortcuts()
 
   return (
     <StyledLookup>
-      <StyledHeader>
-        <StyledHeading>New Mex</StyledHeading>
-        <CenterIcon>
-          <WDLogo />
-        </CenterIcon>
-      </StyledHeader>
+      <CreateNodeInput />
       <NewEditor />
       <Shortcuts type={ShortcutType.NEW} />
     </StyledLookup>
