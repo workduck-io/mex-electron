@@ -16,6 +16,7 @@ import { GridWrapper } from '../Styled/Grid'
 import { PixelToCSS } from '../Styled/helpers'
 import InfoBar from './InfoBar'
 import HelpTooltip from '../Components/Help/HelpTooltip'
+import { ipcRenderer } from 'electron'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -37,12 +38,19 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const theme = useTheme()
   const history = useHistory()
   const loadNode = useEditorStore((state) => state.loadNode)
+  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
   const id = useEditorStore((state) => state.node.id)
   const showGraph = useGraphStore((state) => state.showGraph)
 
   const { init } = useInitialize()
 
   const localData = useLocalData()
+
+  useEffect(() => {
+    ipcRenderer.on('open-node', (_event, { nodeId }) => {
+      loadNodeFromId(nodeId)
+    })
+  }, [])
 
   const setIpc = useSyncData()
 

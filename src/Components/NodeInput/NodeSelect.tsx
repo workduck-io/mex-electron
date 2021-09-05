@@ -8,7 +8,7 @@ import { useFlatTreeFromILinks } from '../../Editor/Store/DataStore'
 import { getOptions } from '../../Lib/flatTree'
 import { Value } from './Types'
 
-interface SelectState {
+export interface SelectState {
   options: { label: string; value: string }[]
   value: Value | null
 }

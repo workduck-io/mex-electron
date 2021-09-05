@@ -35,10 +35,10 @@ const Content = () => {
   const getContent = useContentStore((state) => state.getContent)
 
   const loadNodeFromId = useEditorStore(({ loadNodeFromId }) => loadNodeFromId)
-  const { setIsNew } = useContentStore(({ setIsNew }) => ({ setIsNew }))
+  const { setSaved } = useContentStore(({ setSaved }) => ({ setSaved }))
 
   useEffect(() => {
-    setIsNew(true)
+    setSaved(false)
     loadNodeFromId(draftKey)
   }, [selection])
 
@@ -63,6 +63,7 @@ const Content = () => {
     } else {
       setData(undefined)
     }
+    setSaved(false)
   }, [search, ilinks])
 
   useEffect(() => {
@@ -87,6 +88,7 @@ const Content = () => {
       })
       loadNodeFromId(contentKey.key)
     }
+    setSaved(false)
   }, [data, currentIndex, selection])
 
   return (
