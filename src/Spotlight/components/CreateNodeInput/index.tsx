@@ -24,6 +24,7 @@ const CreateNodeInput = () => {
   const setFsContent = useContentStore((state) => state.setContent)
 
   const editorState = useStoreEditorValue()
+  const loadNodeFromId = useEditorStore((s) => s.loadNodeFromId)
 
   const onCreate = (newNodeId: string) => {
     addILink(newNodeId)
@@ -35,6 +36,7 @@ const CreateNodeInput = () => {
 
     saveData()
     setSaved(true)
+    loadNodeFromId(newNodeId)
     openNodeInMex(newNodeId)
   }
 

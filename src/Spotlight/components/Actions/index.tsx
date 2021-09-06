@@ -3,7 +3,16 @@ import React from 'react'
 import { Icon } from '@iconify/react'
 import CreateIcon from '@iconify-icons/ph/lightning'
 import { StyledKey } from '../Shortcuts'
-import { Action, ActionDesc, ActionTitle, ColumnContainer, CreateMex, FlexBetween, StyledUndordered } from './styled'
+import {
+  Action,
+  ActionDesc,
+  ActionDescStyled,
+  ActionTitle,
+  ColumnContainer,
+  CreateMex,
+  FlexBetween,
+  StyledUndordered
+} from './styled'
 // import Recent from '../Recent';
 
 const Actions: React.FC<{ current: number }> = ({ current }) => {
@@ -11,13 +20,13 @@ const Actions: React.FC<{ current: number }> = ({ current }) => {
     <ColumnContainer>
       <Action>
         <ActionTitle>ACTIONS</ActionTitle>
-        <FlexBetween>
-          <CreateMex showColor={current === 0}>
+        <CreateMex showColor>
+          <ActionDescStyled>
             <Icon style={{ marginRight: '5px' }} color="#888" height={20} width={20} icon={CreateIcon} />
             Create new Mex
-          </CreateMex>
+          </ActionDescStyled>
           <StyledKey>TAB</StyledKey>
-        </FlexBetween>
+        </CreateMex>
       </Action>
       <Action>
         <ActionTitle>MEX IT</ActionTitle>
