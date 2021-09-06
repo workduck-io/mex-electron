@@ -8,6 +8,7 @@ import {
   // createDeserializeMDPlugin,
   createExitBreakPlugin,
   createHeadingPlugin,
+  createHighlightPlugin,
   createHistoryPlugin,
   createImagePlugin,
   createItalicPlugin,
@@ -22,11 +23,10 @@ import {
   createStrikethroughPlugin,
   createTablePlugin,
   createUnderlinePlugin,
-  ELEMENT_MEDIA_EMBED,
   KeyboardHandler,
   OnChange,
   PlatePlugin,
-  SPEditor,
+  SPEditor
 } from '@udecode/plate'
 
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
@@ -40,7 +40,7 @@ import {
   optionsExitBreakPlugin,
   optionsResetBlockTypePlugin,
   optionsSelectOnBackspacePlugin,
-  optionsSoftBreakPlugin,
+  optionsSoftBreakPlugin
 } from './pluginOptions'
 
 interface PluginConfigs {
@@ -73,6 +73,7 @@ const generatePlugins = (config: PluginConfigs) => {
     createUnderlinePlugin(), // underline mark
     createStrikethroughPlugin(), // strikethrough mark
     createCodePlugin(), // code mark
+    createHighlightPlugin(), // highlight mark
 
     // Special Elements
     createImagePlugin(), // Image
@@ -104,13 +105,13 @@ const generatePlugins = (config: PluginConfigs) => {
     createILinkPlugin(), // Internal Links ILinks
     {
       onChange: config.combobox.onChange,
-      onKeyDown: config.combobox.onKeyDown,
+      onKeyDown: config.combobox.onKeyDown
     },
 
     // Sync Blocks
     createSyncBlockPlugin(),
 
-    createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin),
+    createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin)
   ]
 
   Plugins.push(createDeserializeHTMLPlugin({ plugins: Plugins }))

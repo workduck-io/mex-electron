@@ -3,7 +3,7 @@ import { Scroll } from '../../styles/layout'
 import { StyledBackground } from '../Spotlight/styled'
 
 export interface ColorProp {
-  showColor: boolean
+  showColor?: boolean
 }
 
 export const Draggable = css`
@@ -30,8 +30,7 @@ export const ColumnContainer = styled.div`
   font-variant-ligatures: normal;
   font-variant-caps: normal;
   font-weight: bold;
-  ${Scroll}
-  ${Draggable}
+  ${Scroll}/* ${Draggable} */
 `
 
 export const Action = styled.div`
@@ -44,6 +43,12 @@ export const ActionTitle = styled.div`
   color: rgb(141, 141, 141);
 `
 
+export const ActionDescStyled = styled.div`
+  display: flex;
+  flex: 1;
+  align-items: center;
+`
+
 export const FlexBetween = styled.div`
   display: flex;
   justify-content: space-between;
@@ -52,13 +57,12 @@ export const FlexBetween = styled.div`
 
 export const CreateMex = styled.div<ColorProp>`
   ${({ showColor }) => showColor && StyledBackground}
-  width: 100%;
   align-items: center;
+  display: flex;
   border-radius: 8px;
-  padding: 0.5rem;
+  padding: 0.8rem 0.5rem;
   font-weight: lighter;
   font-size: 0.9rem;
-  display: flex;
 `
 
 export const ActionDesc = styled.div<ColorProp>`
