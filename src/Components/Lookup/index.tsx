@@ -9,6 +9,7 @@ import TreeNode from '../../Types/tree'
 import { useHelpStore } from '../Help/HelpModal'
 import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
+import { NodeSelect } from '../NodeSelect/NodeSelect'
 
 export type LookupProps = {
   flatTree: TreeNode[]
@@ -69,7 +70,10 @@ const Lookup: React.FC<LookupProps> = () => {
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <h1>Lookup</h1>
-      <LookupInput autoFocus menuOpen handleChange={handleChange} handleCreate={handleCreate} />
+      <div>
+        <NodeSelect />
+      </div>
+      {/* <LookupInput autoFocus menuOpen handleChange={handleChange} handleCreate={handleCreate} /> */}
     </Modal>
   )
 }
