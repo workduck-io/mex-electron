@@ -58,6 +58,8 @@ const LookupInput = ({
   const handleChangeWrapper = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
     setLoading(true)
     // setState({ ...state, isLoading: true });
+    console.log({ _actionMeta })
+
     handleChange(newValue, _actionMeta)
 
     setState({ ...state, value: newValue })
@@ -114,7 +116,11 @@ const LookupInput = ({
       return {
         ...styles,
         backgroundColor: isDisabled ? null : isSelected ? color : isFocused ? theme.colors.gray[8] : null,
-        color: isDisabled ? theme.colors.text.disabled : isSelected ? color : theme.colors.text.default,
+        color: isDisabled
+          ? theme.colors.text.disabled
+          : isSelected
+            ? theme.colors.text.oppositePrimary
+            : theme.colors.text.default,
         cursor: isDisabled ? 'not-allowed' : 'default',
 
         ':active': {
@@ -133,6 +139,7 @@ const LookupInput = ({
       onChange={handleChangeWrapper}
       onCreateOption={handleCreateWrapper}
       options={options}
+      backspaceRemovesValue={false}
       defaultMenuIsOpen={menuOpen}
       placeholder={placeholder}
       value={value}
