@@ -8,6 +8,8 @@ import Editor, { useEditorPluginConfig } from '../../../Editor/Editor'
 import { deserializeHTMLToDocumentFragment } from '@udecode/plate-html-serializer'
 import generatePlugins from '../../../Editor/Plugins/plugins'
 import { useStoreEditorRef } from '@udecode/plate-core'
+import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
+import { useSpotlightContext } from '../../../Spotlight/utils/context'
 
 export const StyledPreview = styled.div`
   ${StyledBackground}
@@ -21,9 +23,12 @@ export const StyledPreview = styled.div`
 
 const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }) => {
   const editor = useStoreEditorRef(nodeId)
+  const { search } = useSpotlightContext()
   const setFsContent = useContentStore((state) => state.setContent)
   const fsContent = useEditorStore((state) => state.content)
+
   const loadNodeFromId = useEditorStore(({ loadNodeFromId }) => loadNodeFromId)
+  const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [content, setContent] = useState<any[] | undefined>(undefined)
@@ -37,7 +42,10 @@ const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }
 
   useEffect(() => {
     setFsContent(nodeId, [{ children: nodes }])
-    loadNodeFromId(nodeId)
+    if (!search) loadNodeFromId(nodeId)
+    if (preview.isSelection) {
+      setNodeContent([{ children: nodes }])
+    }
   }, [preview.text])
 
   useEffect(() => {
@@ -46,7 +54,7 @@ const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }
 
   return (
     <StyledPreview>
-      <Editor readOnly content={content} editorId={nodeId} />
+      <Editor focusAtBeginning={false} readOnly content={content} editorId={nodeId} />
     </StyledPreview>
   )
 }

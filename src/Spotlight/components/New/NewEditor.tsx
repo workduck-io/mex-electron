@@ -4,23 +4,20 @@ import Editor from '../../../Editor/Editor'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import useDataStore from '../../../Editor/Store/DataStore'
 import { useContentStore } from '../../../Editor/Store/ContentStore'
-import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
 import { useSaveData } from '../../../Data/useSaveData'
 import { useStoreEditorValue } from '@udecode/plate-core'
+import { openNodeInMex } from '../../../Spotlight/utils/hooks'
 
 const NewEditor = () => {
-  const loadNodeFromId = useEditorStore(({ loadNodeFromId }) => loadNodeFromId)
   const nodeId = useEditorStore(({ node }) => node.id)
   const addILink = useDataStore((s) => s.addILink)
-  const ilinks = useDataStore((s) => s.ilinks)
-  const { isNew, setIsNew } = useContentStore(({ isNew, setIsNew }) => ({ isNew, setIsNew }))
 
   const setFsContent = useContentStore((state) => state.setContent)
+  const setSaved = useContentStore((state) => state.setSaved)
 
   const editorState = useStoreEditorValue()
   const fsContent = useEditorStore((state) => state.content)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [content, setContent] = useState<any[] | undefined>(undefined)
 
   useEffect(() => {
@@ -32,31 +29,19 @@ const NewEditor = () => {
   const saveData = useSaveData()
 
   const onSave = () => {
-    if (ilinks.filter((item) => item.key === nodeId).length === 0) {
-      addILink(nodeId)
-    }
+    addILink(nodeId)
     if (editorState) {
       setFsContent(nodeId, editorState)
     }
     saveData()
+    setSaved(true)
+    openNodeInMex(nodeId)
   }
-
-  useEffect(() => {
-    if (!isNew) {
-      setIsNew(true)
-      const draftMexKey = getNewDraftKey()
-
-      addILink(draftMexKey)
-      loadNodeFromId(draftMexKey)
-    } else {
-      loadNodeFromId(nodeId)
-    }
-  }, [])
 
   return (
     <StyledEditor>
       <FullEditor>
-        <Editor onSave={onSave} content={content} editorId={nodeId} />
+        <Editor focusAtBeginning onSave={onSave} content={content} editorId={nodeId} />
       </FullEditor>
     </StyledEditor>
   )

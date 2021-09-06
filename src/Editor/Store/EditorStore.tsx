@@ -13,7 +13,7 @@ export type EditorContextType = {
   // These are loaded internally from ID
   content: NodeEditorContent
   readOnly: boolean
-
+  loadNodeAndAppend: (toNode: string, contentToAppend: NodeEditorContent) => void
   setReadOnly: (isReadOnly: boolean) => void
 
   // State transformations
@@ -38,6 +38,15 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
       node,
       content: getContent(node.id)
     }))
+  },
+
+  loadNodeAndAppend: (toNodeId, contentToAppend) => {
+    const toNodeIdContent = getContent(toNodeId)
+    const node = getNodeFromId(toNodeId)
+
+    const mergedContent = [...toNodeIdContent, ...contentToAppend]
+
+    set(() => ({ node, content: mergedContent }))
   },
 
   loadNodeFromId: (id: string) => {

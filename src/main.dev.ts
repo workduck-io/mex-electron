@@ -281,3 +281,7 @@ ipcMain.on('set-local-data', (_event, arg) => {
   setFileData(arg)
   syncFileData(arg)
 })
+
+ipcMain.on('open-node-in-mex', (_event, arg) => {
+  mex?.webContents.send('open-node', { nodeId: arg.nodeId })
+})
