@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useCombobox } from 'downshift'
 import { StyledCombobox, StyledInputWrapper, StyledMenu, Suggestion } from './NodeSelect.styles'
 import { Input } from '../../Styled/Form'
+import useDataStore from '../../Editor/Store/DataStore'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
 // import {items, menuStyles, comboboxStyles} from '../../shared'
 
 function stateReducer (state, actionAndChanges) {
@@ -32,41 +34,15 @@ function stateReducer (state, actionAndChanges) {
   }
 }
 
-export function NodeSelect () {
-  const items = [
-    'Neptunium',
-    'Plutonium',
-    'Americium',
-    'Curium',
-    'Berkelium',
-    'Californium',
-    'Einsteinium',
-    'Fermium',
-    'Mendelevium',
-    'Nobelium',
-    'Lawrencium',
-    'Rutherfordium',
-    'Dubnium',
-    'Seaborgium',
-    'Bohrium',
-    'Hassium',
-    'Meitnerium',
-    'Darmstadtium',
-    'Roentgenium',
-    'Copernicium',
-    'Nihonium',
-    'Flerovium',
-    'Moscovium',
-    'Livermorium',
-    'Tennessine',
-    'Oganesson'
-  ]
+interface NodeSelectProps {
+  handleSelectItem: (nodeId: string) => void
+}
+
+export function NodeSelect ({ handleSelectItem }: NodeSelectProps) {
+  const items = useDataStore((store) => store.ilinks).map((t) => t.text)
+  const loadNodeFromId = useEditorStore((store) => store.loadNodeFromId)
   const [inputItems, setInputItems] = useState(items)
   const [selectedItem, setSelectedItem] = useState(null)
-
-  function handleSelectedItemChange ({ selectedItem }: any) {
-    setSelectedItem(selectedItem)
-  }
 
   const {
     isOpen,
@@ -76,16 +52,27 @@ export function NodeSelect () {
     getInputProps,
     getComboboxProps,
     highlightedIndex,
-    getItemProps
+    getItemProps,
+    toggleMenu
   } = useCombobox({
     items: inputItems,
     selectedItem,
+    initialIsOpen: true,
     onSelectedItemChange: handleSelectedItemChange,
     onInputValueChange: ({ inputValue }) => {
       setInputItems(items.filter((item) => item.toLowerCase().startsWith(inputValue.toLowerCase())))
     }
   })
+
   console.log({ menuProps: getMenuProps() })
+
+  function handleSelectedItemChange ({ selectedItem }: any) {
+    console.log({ selectedItem })
+    setSelectedItem(selectedItem)
+    loadNodeFromId(selectedItem)
+    handleSelectItem(selectedItem)
+    toggleMenu()
+  }
 
   return (
     <StyledInputWrapper>
