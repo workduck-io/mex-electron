@@ -17,7 +17,7 @@ const CreateInput: React.FC<{ placeholder: string; defaultValue?: string; onCrea
   const loadNodeFromId = useEditorStore((s) => s.loadNodeFromId)
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
 
-  const handleOnCreateNexMex = (val: string) => {
+  const handleOnCreateNexMex = (val: any) => {
     const newVal = { label: val, value: val }
     onCreate(val)
     setInputState((s) => ({ options: [...s.options, newVal], value: newVal }))
@@ -29,27 +29,23 @@ const CreateInput: React.FC<{ placeholder: string; defaultValue?: string; onCrea
   })
 
   const handleChange = (newValue: any, actionMeta: any) => {
-    setInputState((s) => ({ ...s, value: newValue }))
     if (nodeContent) {
       loadNodeAndAppend(newValue.value, nodeContent)
     } else {
       loadNodeFromId(newValue.value)
     }
-  }
-
-  const handleInputChange = (inputValue: any, actionMeta: any) => {
-    setInputState((s) => ({ ...s, value: inputValue }))
+    setInputState((s) => ({ ...s, value: newValue }))
   }
 
   return (
     <StyledCreateInput
+      blurInputOnSelect
       placeholder={placeholder}
       isClearable
       onCreateOption={handleOnCreateNexMex}
       options={inputState.options}
       value={inputState.value}
       onChange={handleChange}
-      onInputChange={handleInputChange}
     />
   )
 }

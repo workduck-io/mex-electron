@@ -45,7 +45,9 @@ const Content = () => {
     loadNodeAndAppend
   }))
   const { setSaved } = useContentStore(({ setSaved }) => ({ setSaved }))
+
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
+
   const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
 
   useEffect(() => {
@@ -97,7 +99,7 @@ const Content = () => {
     } else if (data.length === 0) {
       setPreview({
         ...prevTemplate,
-        text: 'No result found!'
+        text: null
       })
     } else {
       const contentKey = data[currentIndex]

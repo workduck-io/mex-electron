@@ -9,6 +9,7 @@ import { deserializeHTMLToDocumentFragment } from '@udecode/plate-html-serialize
 import generatePlugins from '../../../Editor/Plugins/plugins'
 import { useStoreEditorRef } from '@udecode/plate-core'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
+import { useSpotlightContext } from '../../../Spotlight/utils/context'
 
 export const StyledPreview = styled.div`
   ${StyledBackground}
@@ -22,8 +23,10 @@ export const StyledPreview = styled.div`
 
 const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }) => {
   const editor = useStoreEditorRef(nodeId)
+  const { search } = useSpotlightContext()
   const setFsContent = useContentStore((state) => state.setContent)
   const fsContent = useEditorStore((state) => state.content)
+
   const loadNodeFromId = useEditorStore(({ loadNodeFromId }) => loadNodeFromId)
   const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
 
@@ -39,10 +42,10 @@ const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }
 
   useEffect(() => {
     setFsContent(nodeId, [{ children: nodes }])
+    if (!search) loadNodeFromId(nodeId)
     if (preview.isSelection) {
       setNodeContent([{ children: nodes }])
     }
-    loadNodeFromId(nodeId)
   }, [preview.text])
 
   useEffect(() => {
