@@ -107,7 +107,7 @@ const createSpotLighWindow = (show?: boolean) => {
     spotlight = null
   })
 
-  spotlight.webContents.openDevTools()
+  // spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {

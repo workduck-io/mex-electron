@@ -14,11 +14,13 @@ const CreateInput: React.FC<{ placeholder: string; defaultValue?: string; onCrea
   const defaultOptions = getOptions(useFlatTreeFromILinks())
 
   const loadNodeAndAppend = useEditorStore((s) => s.loadNodeAndAppend)
+  const loadNodeFromId = useEditorStore((s) => s.loadNodeFromId)
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
 
   const handleOnCreateNexMex = (val: string) => {
+    const newVal = { label: val, value: val }
     onCreate(val)
-    setInputState((s) => ({ ...s, value: { label: val, value: val } }))
+    setInputState((s) => ({ options: [...s.options, newVal], value: newVal }))
   }
 
   const [inputState, setInputState] = useState<SelectState>({
@@ -28,7 +30,11 @@ const CreateInput: React.FC<{ placeholder: string; defaultValue?: string; onCrea
 
   const handleChange = (newValue: any, actionMeta: any) => {
     setInputState((s) => ({ ...s, value: newValue }))
-    loadNodeAndAppend(newValue.value, nodeContent)
+    if (nodeContent) {
+      loadNodeAndAppend(newValue.value, nodeContent)
+    } else {
+      loadNodeFromId(newValue.value)
+    }
   }
 
   const handleInputChange = (inputValue: any, actionMeta: any) => {
