@@ -8,7 +8,7 @@ import { Key } from 'rc-tree/lib/interface'
 
 import equal from 'fast-deep-equal'
 import React from 'react'
-import { withLoadNode } from '../../Editor/Store/EditorStore'
+import { withNodeOps } from '../../Editor/Store/EditorStore'
 import { StyledTree } from '../../Styled/Sidebar'
 import TreeNode from '../../Types/tree'
 import TreeExpandIcon from './Icon'
@@ -30,6 +30,7 @@ const motion = {
 
 interface RCTreeProps {
   tree: any
+  currentNode: any
   loadNode: any
   getMockRefactor: any
   execRefactor: any
@@ -57,7 +58,7 @@ class Tree extends React.Component<RCTreeProps> {
 
     if (!equal(prevProps, this.props)) {
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ gData: tree })
+      this.setState({ gData: tree, expandedKeys: [this.props.currentNode.key] })
     }
   }
 
@@ -150,10 +151,13 @@ class Tree extends React.Component<RCTreeProps> {
   onExpand (expandedKeys: any) {
     // eslint-disable-next-line no-console
     console.log('onExpand', expandedKeys)
-    this.setState({
-      expandedKeys,
-      autoExpandParent: false
-    })
+    if (expandedKeys) {
+      const newExp = expandedKeys.filter((k) => k)
+      this.setState({
+        expandedKeys: newExp,
+        autoExpandParent: false
+      })
+    }
   }
 
   onSelect (_selectedKeys: Key[], info: any) {
@@ -167,17 +171,21 @@ class Tree extends React.Component<RCTreeProps> {
 
   render () {
     const { expandedKeys, autoExpandParent }: any = this.state
-    const { tree } = this.props
+    const { tree, currentNode } = this.props
+
+    const newExpKeys = expandedKeys !== undefined ? expandedKeys : [currentNode.key]
 
     return (
       <StyledTree className="draggable-demo">
         <RCTree
-          expandedKeys={expandedKeys}
+          expandedKeys={newExpKeys}
           onExpand={this.onExpand}
           autoExpandParent={autoExpandParent}
           draggable
           // onDragStart={this.onDragStart}
+          defaultExpandParent={true}
           onDragEnter={this.onDragEnter}
+          selectedKeys={[currentNode.key]}
           onDrop={this.onDrop}
           treeData={tree}
           motion={motion}
@@ -190,4 +198,4 @@ class Tree extends React.Component<RCTreeProps> {
   }
 }
 
-export default withRefactor(withLoadNode(Tree))
+export default withRefactor(withNodeOps(Tree))
