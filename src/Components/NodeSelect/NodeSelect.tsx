@@ -1,10 +1,13 @@
 import { useCombobox } from 'downshift'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import create from 'zustand'
 import useDataStore from '../../Editor/Store/DataStore'
 import { Input } from '../../Styled/Form'
 import { StyledCombobox, StyledInputWrapper, StyledMenu, Suggestion } from './NodeSelect.styles'
 
+import { Icon } from '@iconify/react'
+import errorWarningLine from '@iconify-icons/ri/error-warning-line'
+import checkboxCircleLine from '@iconify-icons/ri/checkbox-circle-line'
 type ComboItem = {
   text: string
   value: string
@@ -19,52 +22,48 @@ interface NodeSelectProps {
   autoFocus?: boolean
   defaultValue?: string | undefined
   placeholder?: string
+  highlightWhenSelected?: boolean
+  iconHighlight?: boolean
 }
 
 interface NodeSelectState {
   inputItems: ComboItem[]
   selectedItem: ComboItem | null
-
-  setInputItems: (inputItems: ComboItem[]) => void
-  setSelectedItem: (selectedItem: ComboItem | null) => void
-  reset: () => void
 }
-
-const useNodeSelectStore = create<NodeSelectState>((set) => ({
-  inputItems: [],
-  selectedItem: null,
-
-  setInputItems: (inputItems: ComboItem[]) => set({ inputItems }),
-
-  setSelectedItem: (selectedItem: ComboItem | null) => set({ selectedItem }),
-
-  reset: () =>
-    set({
-      inputItems: [],
-      selectedItem: null
-    })
-}))
 
 function NodeSelect ({
   autoFocus,
   menuOpen,
   defaultValue,
   placeholder,
+  highlightWhenSelected,
+  iconHighlight,
   handleSelectItem,
   handleCreateItem
 }: NodeSelectProps) {
+  const [nodeSelectState, setNodeSelectState] = useState<NodeSelectState>({
+    inputItems: [],
+    selectedItem: null
+  })
+
+  const setInputItems = (inputItems: ComboItem[]) => setNodeSelectState((state) => ({ ...state, inputItems }))
+
+  const setSelectedItem = (selectedItem: ComboItem | null) =>
+    setNodeSelectState((state) => ({ ...state, selectedItem }))
+
+  const reset = () =>
+    setNodeSelectState({
+      inputItems: [],
+      selectedItem: null
+    })
+
   const ilinks = useDataStore((store) => store.ilinks).map((l) => ({
     text: l.key,
     value: l.key,
     type: 'exists'
   }))
-  const inputItems = useNodeSelectStore((store) => store.inputItems)
-  const setInputItems = useNodeSelectStore((store) => store.setInputItems)
 
-  const selectedItem = useNodeSelectStore((store) => store.selectedItem)
-  const setSelectedItem = useNodeSelectStore((store) => store.setSelectedItem)
-
-  const reset = useNodeSelectStore((store) => store.reset)
+  const { inputItems, selectedItem } = nodeSelectState
 
   const getNewItems = (inputValue: string) => {
     const newItems = ilinks.filter((item) => item.text.toLowerCase().startsWith(inputValue.toLowerCase()))
@@ -76,7 +75,6 @@ function NodeSelect ({
 
   const {
     isOpen,
-    // getToggleButtonProps,
     getMenuProps,
     getInputProps,
     getComboboxProps,
@@ -88,6 +86,9 @@ function NodeSelect ({
     items: inputItems,
     selectedItem,
     initialIsOpen: menuOpen,
+    itemToString: (item) => {
+      return item ? item.value : ''
+    },
     onSelectedItemChange: handleSelectedItemChange,
     onHighlightedIndexChange: ({ highlightedIndex }) => {
       const highlightedItem = inputItems[highlightedIndex]
@@ -98,12 +99,15 @@ function NodeSelect ({
   })
 
   function handleSelectedItemChange ({ selectedItem }: any) {
-    if (selectedItem.type === 'new') {
-      handleCreateItem(selectedItem.value)
-    } else {
-      handleSelectItem(selectedItem.value)
+    if (selectedItem) {
+      if (selectedItem.type === 'new') {
+        handleCreateItem(selectedItem.value)
+      } else {
+        handleSelectItem(selectedItem.value)
+      }
+      setSelectedItem(selectedItem)
+      setInputValue(selectedItem.value)
     }
-    setSelectedItem(selectedItem.value)
     toggleMenu()
   }
 
@@ -111,11 +115,13 @@ function NodeSelect ({
     if (event.key === 'Enter') {
       if (inputItems[0] && highlightedIndex < 0) {
         const defaultItem = inputItems[0]
+        setSelectedItem(defaultItem)
         if (defaultItem.type === 'new') {
           handleCreateItem(defaultItem.value)
         } else {
           handleSelectItem(defaultItem.value)
         }
+        setInputValue(defaultItem.value)
         toggleMenu()
       }
     }
@@ -139,6 +145,8 @@ function NodeSelect ({
     }
   }, [])
 
+  // console.log({ selectedItem })
+
   return (
     <StyledInputWrapper>
       <StyledCombobox {...getComboboxProps()}>
@@ -146,12 +154,19 @@ function NodeSelect ({
           {...getInputProps()}
           autoFocus={autoFocus}
           placeholder={placeholder}
+          // defaultValue={defaultValue}
           onChange={(e) => {
             onInpChange(e)
             getInputProps().onChange(e)
           }}
           onKeyUp={onKeyUp}
         />
+        {highlightWhenSelected &&
+          (iconHighlight ? (
+            <Icon className="okayIcon" icon={checkboxCircleLine}></Icon>
+          ) : (
+            <Icon className="errorIcon" icon={errorWarningLine}></Icon>
+          ))}
         {/*
         Open lookup button
         <button type="button" {...getToggleButtonProps()} aria-label="toggle menu">
@@ -180,7 +195,9 @@ NodeSelect.defaultProps = {
   menuOpen: false,
   autoFocus: false,
   placeholder: 'Select Node',
-  handleCreateItem: undefined
+  handleCreateItem: undefined,
+  highlightWhenSelected: false,
+  iconHighlight: false
 }
 
 function isNew (input: string, items: ComboItem[]): boolean {

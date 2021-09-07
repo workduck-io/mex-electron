@@ -7,11 +7,23 @@ export const StyledInputWrapper = styled.div`
 `
 
 export const StyledCombobox = styled.div`
-  display: inline-block;
   display: flex;
   width: 100%;
+  margin-top: ${({ theme }) => theme.spacing.medium};
+  font-size: 1.2rem;
+  align-items: center;
   ${Input} {
     width: 100%;
+  }
+  svg {
+    margin-left: ${({ theme }) => theme.spacing.small};
+    color: ${({ theme }) => theme.colors.text.fade};
+    &.errorIcon {
+      color: ${({ theme }) => theme.colors.palette.red};
+    }
+    &.okayIcon {
+      color: ${({ theme }) => theme.colors.palette.green};
+    }
   }
 `
 
@@ -40,7 +52,7 @@ interface MenuProps {
 
 export const StyledMenu = styled.ul<MenuProps>`
   padding: ${({ theme }) => theme.spacing.small};
-  margin-top: ${({ theme }) => theme.spacing.small};
+  margin-top: 0;
   position: absolute;
   background-color: ${({ theme }) => theme.colors.gray[8]};
   width: calc(100% - (2 * ${({ theme }) => theme.spacing.small}));
@@ -50,8 +62,8 @@ export const StyledMenu = styled.ul<MenuProps>`
   outline: 0;
   transition: opacity 0.1s ease;
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
-  /* box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15); */
   border: 1px solid ${({ theme }) => theme.colors.gray[7]};
+  z-index: 1000;
 
   &::-webkit-scrollbar-thumb {
     background: ${({ theme }) => theme.colors.gray[7]};
