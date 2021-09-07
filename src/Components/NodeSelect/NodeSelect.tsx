@@ -9,10 +9,12 @@ import { StyledCombobox, StyledInputWrapper, StyledMenu, Suggestion } from './No
 type ComboItem = {
   text: string
   value: string
+  type: string
 }
 
 interface NodeSelectProps {
   handleSelectItem: (nodeId: string) => void
+  handleCreateItem: (nodeId: string) => void
 }
 
 interface NodeSelectState {
@@ -39,13 +41,12 @@ const useNodeSelectStore = create<NodeSelectState>((set) => ({
     })
 }))
 
-export function NodeSelect ({ handleSelectItem }: NodeSelectProps) {
+export function NodeSelect ({ handleSelectItem, handleCreateItem }: NodeSelectProps) {
   const ilinks = useDataStore((store) => store.ilinks).map((l) => ({
     text: l.key,
-    value: l.key
+    value: l.key,
+    type: 'exists'
   }))
-  const loadNodeFromId = useEditorStore((store) => store.loadNodeFromId)
-
   const inputItems = useNodeSelectStore((store) => store.inputItems)
   const setInputItems = useNodeSelectStore((store) => store.setInputItems)
 
@@ -57,7 +58,7 @@ export function NodeSelect ({ handleSelectItem }: NodeSelectProps) {
   const getNewItems = (inputValue: string) => {
     const newItems = ilinks.filter((item) => item.text.toLowerCase().startsWith(inputValue.toLowerCase()))
     if (inputValue !== '' && isNew(inputValue, ilinks)) {
-      newItems.push({ text: `Create new: ${inputValue}`, value: inputValue })
+      newItems.push({ text: `Create new: ${inputValue}`, value: inputValue, type: 'new' })
     }
     return newItems
   }
@@ -79,18 +80,33 @@ export function NodeSelect ({ handleSelectItem }: NodeSelectProps) {
     onSelectedItemChange: handleSelectedItemChange,
     onHighlightedIndexChange: ({ highlightedIndex }) => {
       const highlightedItem = inputItems[highlightedIndex]
-      if (highlightedItem && highlightedItem.value && highlightedItem.value !== '__create_new') {
+      if (highlightedItem && highlightedItem.value && highlightedItem.type !== 'new') {
         setInputValue(highlightedItem.value)
       }
     }
   })
 
   function handleSelectedItemChange ({ selectedItem }: any) {
-    // console.log({ selectedItem })
+    if (selectedItem.type === 'new') {
+      handleCreateItem(selectedItem.value)
+    } else {
+      handleSelectItem(selectedItem.value)
+    }
     setSelectedItem(selectedItem.value)
-    loadNodeFromId(selectedItem.value)
-    handleSelectItem(selectedItem.value)
     toggleMenu()
+  }
+
+  const onKeyUp = (event) => {
+    if (event.key === 'Enter') {
+      if (inputItems[0] && highlightedIndex < 0) {
+        const defaultItem = inputItems[0]
+        if (defaultItem.type === 'new') {
+          handleCreateItem(defaultItem.value)
+        } else {
+          handleSelectItem(defaultItem.value)
+        }
+      }
+    }
   }
 
   const onInpChange = (e) => {
@@ -99,13 +115,6 @@ export function NodeSelect ({ handleSelectItem }: NodeSelectProps) {
     setInputItems(newItems)
   }
 
-  const onKeyUp = (event) => {
-    if (event.key === 'Enter') {
-      if (inputItems[0] && highlightedIndex < 0) {
-        handleSelectItem(inputItems[0].value)
-      }
-    }
-  }
   useEffect(() => {
     setInputItems(ilinks)
     return () => {

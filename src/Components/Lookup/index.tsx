@@ -62,6 +62,11 @@ const Lookup: React.FC<LookupProps> = () => {
   }
 
   const handleSelectItem = (inputValue: string) => {
+    loadNodeFromId(inputValue)
+    closeModal()
+  }
+
+  const handleCreateItem = (inputValue: string) => {
     addILink(inputValue)
     loadNodeFromId(inputValue)
     closeModal()
@@ -71,7 +76,7 @@ const Lookup: React.FC<LookupProps> = () => {
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <h1>Lookup</h1>
       <div>
-        <NodeSelect handleSelectItem={handleSelectItem} />
+        <NodeSelect handleSelectItem={handleSelectItem} handleCreateItem={handleCreateItem} />
       </div>
       {/* <LookupInput autoFocus menuOpen handleChange={handleChange} handleCreate={handleCreate} /> */}
     </Modal>
