@@ -2,7 +2,6 @@ import { useCombobox } from 'downshift'
 import React, { useEffect } from 'react'
 import create from 'zustand'
 import useDataStore from '../../Editor/Store/DataStore'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Input } from '../../Styled/Form'
 import { StyledCombobox, StyledInputWrapper, StyledMenu, Suggestion } from './NodeSelect.styles'
 
@@ -110,7 +109,6 @@ export function NodeSelect ({ handleSelectItem, handleCreateItem }: NodeSelectPr
   }
 
   const onInpChange = (e) => {
-    // console.log(e)
     const newItems = getNewItems(e.target.value)
     setInputItems(newItems)
   }
@@ -133,11 +131,13 @@ export function NodeSelect ({ handleSelectItem, handleCreateItem }: NodeSelectPr
           }}
           onKeyUp={onKeyUp}
         />
+        {/*
+        Open lookup button
         <button type="button" {...getToggleButtonProps()} aria-label="toggle menu">
           &#8595;
-        </button>
+        </button> */}
       </StyledCombobox>
-      <StyledMenu {...getMenuProps()} isOpen={isOpen}>
+      <StyledMenu {...getMenuProps()} highlightFirst={highlightedIndex < 0} isOpen={isOpen}>
         {isOpen &&
           inputItems.map((item, index) => {
             return (

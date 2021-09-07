@@ -12,12 +12,30 @@ export const StyledCombobox = styled.div`
   width: 100%;
   ${Input} {
     width: 100%;
-    margin-right: ${({ theme }) => theme.spacing.small};
   }
+`
+
+interface SuggestionProps {
+  highlight: boolean
+}
+
+export const Suggestion = styled.li<SuggestionProps>`
+  padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
+  margin: ${({ theme }) => `${theme.spacing.tiny} 0`};
+
+  border-radius: ${({ theme }) => theme.borderRadius.tiny};
+
+  ${({ theme, highlight }) =>
+    highlight &&
+    css`
+      background-color: ${theme.colors.primary};
+      color: ${theme.colors.text.oppositePrimary};
+    `}
 `
 
 interface MenuProps {
   isOpen: boolean
+  highlightFirst: boolean
 }
 
 export const StyledMenu = styled.ul<MenuProps>`
@@ -32,8 +50,12 @@ export const StyledMenu = styled.ul<MenuProps>`
   outline: 0;
   transition: opacity 0.1s ease;
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
-  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
-  border: 1px solid ${({ theme }) => theme.colors.primary};
+  /* box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15); */
+  border: 1px solid ${({ theme }) => theme.colors.gray[7]};
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.gray[7]};
+  }
 
   ${({ isOpen }) =>
     !isOpen &&
@@ -41,20 +63,12 @@ export const StyledMenu = styled.ul<MenuProps>`
       border: none;
       display: none;
     `}
-`
 
-interface SuggestionProps {
-  highlight: boolean
-}
-
-export const Suggestion = styled.li<SuggestionProps>`
-  padding: ${({ theme }) => theme.spacing.tiny};
-  border-radius: ${({ theme }) => theme.borderRadius.tiny};
-
-  ${({ theme, highlight }) =>
-    highlight &&
+  ${({ highlightFirst, theme }) =>
+    highlightFirst &&
     css`
-      background-color: ${theme.colors.primary};
-      color: ${theme.colors.text.oppositePrimary};
+      ${Suggestion}:first-child {
+        background-color: ${theme.colors.gray[7]};
+      }
     `}
 `
