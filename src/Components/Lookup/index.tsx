@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
-import { ActionMeta } from 'react-select'
 import tinykeys from 'tinykeys'
-import useDataStore, { useFlatTreeFromILinks } from '../../Editor/Store/DataStore'
+import useDataStore from '../../Editor/Store/DataStore'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
-import { getNodeFlatTree } from '../../Lib/flatTree'
 import TreeNode from '../../Types/tree'
 import { useHelpStore } from '../Help/HelpModal'
-import LookupInput from '../NodeInput/NodeSelect'
-import { Value } from '../NodeInput/Types'
+import NodeSelect from '../NodeSelect/NodeSelect'
 
 export type LookupProps = {
   flatTree: TreeNode[]
@@ -39,28 +36,15 @@ const Lookup: React.FC<LookupProps> = () => {
     }
   }, [shortcuts])
 
-  const loadNode = useEditorStore((s) => s.loadNode)
   const loadNodeFromId = useEditorStore((s) => s.loadNodeFromId)
   const addILink = useDataStore((s) => s.addILink)
 
-  const flattree = useFlatTreeFromILinks()
-  // console.log({ flatTree, open });
-
-  const handleChange = (
-    newValue: Value | null,
-    _actionMeta: ActionMeta<Value> // eslint-disable-line @typescript-eslint/no-unused-vars
-  ) => {
-    // setState({ ...state, value: newValue });
-    if (newValue) {
-      const node = getNodeFlatTree(newValue.value, flattree)
-      if (node.length > 0) {
-        loadNode(node[0])
-      }
-    }
+  const handleSelectItem = (inputValue: string) => {
+    loadNodeFromId(inputValue)
     closeModal()
   }
 
-  const handleCreate = (inputValue: string) => {
+  const handleCreateItem = (inputValue: string) => {
     addILink(inputValue)
     loadNodeFromId(inputValue)
     closeModal()
@@ -69,7 +53,10 @@ const Lookup: React.FC<LookupProps> = () => {
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <h1>Lookup</h1>
-      <LookupInput autoFocus menuOpen handleChange={handleChange} handleCreate={handleCreate} />
+      <div>
+        <NodeSelect menuOpen autoFocus handleSelectItem={handleSelectItem} handleCreateItem={handleCreateItem} />
+      </div>
+      {/* <LookupInput autoFocus menuOpen handleChange={handleChange} handleCreate={handleCreate} /> */}
     </Modal>
   )
 }

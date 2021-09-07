@@ -93,7 +93,7 @@ const refactorLinksInContent = (refactored: NodeLink[], content: any[]) => {
   if (!content) return []
 
   const newCont = content.map((n) => {
-    if (n.type === 'ilink') {
+    if (n.type && n.type === 'ilink') {
       if (Object.keys(refMap).indexOf(n.value) !== -1) {
         return {
           ...n,

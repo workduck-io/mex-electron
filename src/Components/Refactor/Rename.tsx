@@ -2,15 +2,13 @@ import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
-import { ActionMeta } from 'react-select'
 import tinykeys from 'tinykeys'
 import { useRefactor } from '../../Editor/Actions/useRefactor'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
 import { NodeLink } from '../../Types/relations'
 import { useHelpStore } from '../Help/HelpModal'
-import LookupInput from '../NodeInput/NodeSelect'
-import { Value } from '../NodeInput/Types'
+import NodeSelect from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
@@ -65,22 +63,20 @@ const Rename = () => {
 
   // console.log({ to, from, open });
 
-  const handleFromChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
+  const handleFromChange = (newValue: string) => {
     if (newValue) {
-      const { value } = newValue
       setRenameState({
         ...renameState,
-        from: value
+        from: newValue
       })
     }
   }
 
-  const handleToChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
+  const handleToChange = (newValue: string) => {
     if (newValue) {
-      const { value } = newValue
       setRenameState((state) => ({
         ...state,
-        to: value
+        to: newValue
       }))
     }
   }
@@ -93,8 +89,6 @@ const Rename = () => {
       }))
     }
   }
-
-  // console.log({ mockRefactored });
 
   const { from, to, open, mockRefactor } = renameState
 
@@ -128,18 +122,22 @@ const Rename = () => {
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Rename</ModalHeader>
 
-      <LookupInput
+      <NodeSelect
         placeholder="Rename node from..."
         defaultValue={useEditorStore.getState().node.id}
-        handleChange={handleFromChange}
+        highlightWhenSelected
+        iconHighlight={from !== ''}
+        handleSelectItem={handleFromChange}
       />
 
-      <LookupInput
+      <NodeSelect
         placeholder="Rename node to..."
         autoFocus
         menuOpen
-        handleChange={handleToChange}
-        handleCreate={handleToCreate}
+        highlightWhenSelected
+        iconHighlight={to !== ''}
+        handleSelectItem={handleToChange}
+        handleCreateItem={handleToCreate}
       />
 
       {mockRefactor.length > 0 && (

@@ -2,14 +2,12 @@ import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
-import { ActionMeta } from 'react-select'
 import tinykeys from 'tinykeys'
 import { useDelete } from '../../Editor/Actions/useDelete'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
 import { useHelpStore } from '../Help/HelpModal'
-import LookupInput from '../NodeInput/NodeSelect'
-import { Value } from '../NodeInput/Types'
+import NodeSelect from '../NodeSelect/NodeSelect'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
 interface DeleteState {
@@ -60,25 +58,15 @@ const Delete = () => {
 
   // console.log({ to, from, open });
 
-  const handleDeleteChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
+  const handleDeleteChange = (newValue: string) => {
     if (newValue) {
-      const { value } = newValue
       setDeleteState({
         ...deleteState,
-        del: value,
-        mockData: getMockDelete(value)
+        del: newValue,
+        mockData: getMockDelete(newValue)
       })
     }
   }
-
-  // useEffect(() => {
-  //   // console.log({ to, from });
-  //   if (to && from) {
-  //     // setMockRename(getMockRefactor(from, to));
-  //   }
-  // }, [to, from, getMockRefactor]);
-
-  // console.log({ mockRefactored });
 
   const { del, mockData, open } = deleteState
 
@@ -96,7 +84,12 @@ const Delete = () => {
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Delete</ModalHeader>
 
-      <LookupInput autoFocus defaultValue={useEditorStore.getState().node.id} handleChange={handleDeleteChange} />
+      <NodeSelect
+        autoFocus
+        menuOpen
+        defaultValue={useEditorStore.getState().node.id}
+        handleSelectItem={handleDeleteChange}
+      />
 
       {mockData.length > 0 && (
         <MockRefactorMap>
