@@ -120,6 +120,10 @@ const createMexWindow = () => {
   mex = new BrowserWindow(MEX_WINDOW_OPTIONS)
   mex.loadURL(MEX_WINDOW_WEBPACK_ENTRY)
 
+  mex.on('close', () => {
+    mex?.webContents.send('save-and-exit', {})
+  })
+
   mex.webContents.on('did-finish-load', () => {
     if (!mex) {
       throw new Error('"mexWindow" is not defined')
@@ -231,6 +235,10 @@ const handleToggleMainWindow = async () => {
 const closeWindow = () => {
   spotlight?.hide()
 }
+
+app.on('before-quit', () => {
+  mex?.webContents.send('save-and-exit')
+})
 
 // app.on('browser-window-blur', () => {
 //   app?.hide();
