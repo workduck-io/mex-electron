@@ -150,12 +150,14 @@ class Tree extends React.Component<RCTreeProps> {
 
   onExpand (expandedKeys: any) {
     // eslint-disable-next-line no-console
-    console.log('onExpand', expandedKeys)
+    // console.log('onExpand', expandedKeys)
     if (expandedKeys) {
+      const { currentNode } = this.props
       const newExp = expandedKeys.filter((k) => k)
+      const expKeys = Array.from(new Set([...newExp, currentNode.key]))
       this.setState({
-        expandedKeys: newExp,
-        autoExpandParent: false
+        expandedKeys: expKeys,
+        autoExpandParent: true
       })
     }
   }
@@ -173,17 +175,17 @@ class Tree extends React.Component<RCTreeProps> {
     const { expandedKeys, autoExpandParent }: any = this.state
     const { tree, currentNode } = this.props
 
-    const newExpKeys = expandedKeys !== undefined ? expandedKeys : [currentNode.key]
+    // let newExpKeys = expandedKeys !== undefined ? [...expandedKeys, currentNode.key] : [currentNode.key]
 
     return (
       <StyledTree className="draggable-demo">
         <RCTree
-          expandedKeys={newExpKeys}
+          expandedKeys={expandedKeys}
           onExpand={this.onExpand}
           autoExpandParent={autoExpandParent}
           draggable
           // onDragStart={this.onDragStart}
-          defaultExpandParent={true}
+          // defaultExpandParent={}
           onDragEnter={this.onDragEnter}
           selectedKeys={[currentNode.key]}
           onDrop={this.onDrop}
