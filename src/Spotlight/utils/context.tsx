@@ -7,8 +7,7 @@ import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockDat
 import { getHtmlString } from '../components/Source'
 import { useContentStore } from '../../Editor/Store/ContentStore'
 import { FileData } from '../../Types/data'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
-import useDataStore from '../../Editor/Store/DataStore'
+import { useSpotlightSettingsStore } from '../store/settings'
 
 export const useLocalShortcuts = () => {
   const history = useHistory()
@@ -68,7 +67,9 @@ const SpotlightContext = createContext<SpotlightContextType>(undefined!)
 export const SpotlightProvider: React.FC = ({ children }: any) => {
   const [search, setSearch] = useState<string>('')
   const [selection, setSelection] = useState<any>()
+  const [temp, setTemp] = useState<any>()
   const [localData, setLocalData] = useState<FileData>()
+  const showSource = useSpotlightSettingsStore((state) => state.showSource)
 
   const { init, update } = useInitialize()
 
@@ -81,18 +82,25 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
   }
 
   useEffect(() => {
+    if (showSource && temp) {
+      const source = getHtmlString(temp.metadata)
+      const text: string = temp.text
+
+      const html = {
+        ...temp,
+        text: text.concat(source)
+      }
+      setSelection(html)
+    } else {
+      setSelection(temp)
+    }
+  }, [showSource, temp])
+
+  useEffect(() => {
     ipcRenderer.on('selected-text', (_event, data) => {
       if (!data) setSelection(undefined)
       else {
-        const source = getHtmlString(data?.metadata)
-        const text: string = data?.text
-
-        const html = {
-          ...data,
-          text: text.concat(source)
-        }
-
-        setSelection(html)
+        setTemp(data)
       }
     })
 

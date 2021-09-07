@@ -5,7 +5,7 @@ type ContentType = {
   justifyContent?: string
 }
 
-const StyledShortcuts = styled.section<ContentType>`
+export const StyledShortcuts = styled.section<ContentType>`
   display: flex;
   width: 100%;
   margin-top: 0.5rem;

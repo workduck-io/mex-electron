@@ -5,6 +5,8 @@ import useDataStore from '../Editor/Store/DataStore'
 import { useSyncStore } from '../Editor/Store/SyncStore'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
 import { useUpdater } from './useUpdater'
+import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
+import { useEditorStore } from '../Editor/Store/EditorStore'
 
 interface UserSettings {
   // Key of theme id in ThemeStore
@@ -17,6 +19,9 @@ export const useSaveData = () => {
   const saveData = () => {
     // console.log('We saved the data for you');
     // console.log(JSON.stringify(useContentStore.getState().contents, null, 2))
+    console.log('Content in Editor', useEditorStore.getState().content)
+    console.log('Node id: ', useEditorStore.getState().node.id)
+    console.log('Content: ', useContentStore.getState().contents[useEditorStore.getState().node.id])
 
     ipcRenderer.send('set-local-data', {
       ilinks: useDataStore.getState().ilinks,
@@ -26,7 +31,10 @@ export const useSaveData = () => {
       syncBlocks: useSyncStore.getState().syncBlocks,
       snippets: useSnippetStore.getState().snippets,
       userSettings: {
-        theme: useThemeStore.getState().theme.id
+        theme: useThemeStore.getState().theme.id,
+        spotlight: {
+          showSource: useSpotlightSettingsStore.getState().showSource
+        }
       }
     })
 
