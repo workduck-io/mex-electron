@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useCombobox } from 'downshift'
 import { StyledCombobox, StyledInputWrapper, StyledMenu, Suggestion } from './NodeSelect.styles'
 import { Input } from '../../Styled/Form'
@@ -34,14 +34,21 @@ function stateReducer (state, actionAndChanges) {
   }
 }
 
+type ComboItem = {
+  text: string
+  value: string
+}
+
 interface NodeSelectProps {
   handleSelectItem: (nodeId: string) => void
 }
 
 export function NodeSelect ({ handleSelectItem }: NodeSelectProps) {
-  const items = useDataStore((store) => store.ilinks).map((t) => t.text)
+  const ilinks = useDataStore((store) => store.ilinks)
   const loadNodeFromId = useEditorStore((store) => store.loadNodeFromId)
-  const [inputItems, setInputItems] = useState(items)
+
+  // Items to display in the combobox suggestions
+  const [inputItems, setInputItems] = useState(ilinks)
   const [selectedItem, setSelectedItem] = useState(null)
 
   const {
@@ -60,17 +67,23 @@ export function NodeSelect ({ handleSelectItem }: NodeSelectProps) {
     initialIsOpen: true,
     onSelectedItemChange: handleSelectedItemChange,
     onInputValueChange: ({ inputValue }) => {
-      setInputItems(items.filter((item) => item.toLowerCase().startsWith(inputValue.toLowerCase())))
+      const newItems = ilinks.filter((item) => item.text.toLowerCase().startsWith(inputValue.toLowerCase()))
+      if (isNew(inputValue, ilinks)) {
+        console.log('isnew', { inputValue })
+
+        newItems.push({ text: `Create new: ${inputValue}`, value: inputValue, key: '__create_new' })
+      }
+      setInputItems(newItems)
     }
   })
 
-  console.log({ menuProps: getMenuProps() })
+  console.log('ComboMain', { ilinks })
 
   function handleSelectedItemChange ({ selectedItem }: any) {
     console.log({ selectedItem })
     setSelectedItem(selectedItem)
-    loadNodeFromId(selectedItem)
-    handleSelectItem(selectedItem)
+    loadNodeFromId(selectedItem.value)
+    handleSelectItem(selectedItem.value)
     toggleMenu()
   }
 
@@ -89,14 +102,18 @@ export function NodeSelect ({ handleSelectItem }: NodeSelectProps) {
             return (
               <Suggestion
                 highlight={highlightedIndex === index}
-                key={`${item}${index}`}
+                key={`${item.value}${index}`}
                 {...getItemProps({ item, index })}
               >
-                {item}
+                {item.text}
               </Suggestion>
             )
           })}
       </StyledMenu>
     </StyledInputWrapper>
   )
+}
+
+function isNew (input: string, items: ComboItem[]): boolean {
+  return !items.map((t) => t.text).includes(input)
 }
