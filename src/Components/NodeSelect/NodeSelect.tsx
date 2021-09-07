@@ -1,13 +1,12 @@
+import checkboxCircleLine from '@iconify-icons/ri/checkbox-circle-line'
+import errorWarningLine from '@iconify-icons/ri/error-warning-line'
+import { Icon } from '@iconify/react'
 import { useCombobox } from 'downshift'
 import React, { useEffect, useState } from 'react'
-import create from 'zustand'
 import useDataStore from '../../Editor/Store/DataStore'
 import { Input } from '../../Styled/Form'
 import { StyledCombobox, StyledInputWrapper, StyledMenu, Suggestion } from './NodeSelect.styles'
 
-import { Icon } from '@iconify/react'
-import errorWarningLine from '@iconify-icons/ri/error-warning-line'
-import checkboxCircleLine from '@iconify-icons/ri/checkbox-circle-line'
 type ComboItem = {
   text: string
   value: string
