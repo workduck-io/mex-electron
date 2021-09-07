@@ -7,9 +7,8 @@ import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { getNodeFlatTree } from '../../Lib/flatTree'
 import TreeNode from '../../Types/tree'
 import { useHelpStore } from '../Help/HelpModal'
-import LookupInput from '../NodeInput/NodeSelect'
 import { Value } from '../NodeInput/Types'
-import { NodeSelect } from '../NodeSelect/NodeSelect'
+import NodeSelect from '../NodeSelect/NodeSelect'
 
 export type LookupProps = {
   flatTree: TreeNode[]
@@ -76,7 +75,7 @@ const Lookup: React.FC<LookupProps> = () => {
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <h1>Lookup</h1>
       <div>
-        <NodeSelect handleSelectItem={handleSelectItem} handleCreateItem={handleCreateItem} />
+        <NodeSelect menuOpen autoFocus handleSelectItem={handleSelectItem} handleCreateItem={handleCreateItem} />
       </div>
       {/* <LookupInput autoFocus menuOpen handleChange={handleChange} handleCreate={handleCreate} /> */}
     </Modal>
