@@ -1,8 +1,7 @@
 import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
 import { Icon } from '@iconify/react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Modal from 'react-modal'
-import { ActionMeta } from 'react-select'
 import tinykeys from 'tinykeys'
 import create from 'zustand'
 import { useRefactor } from '../../Editor/Actions/useRefactor'
@@ -10,8 +9,7 @@ import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
 import { NodeLink } from '../../Types/relations'
 import { useHelpStore } from '../Help/HelpModal'
-import LookupInput from '../NodeInput/NodeSelect'
-import { Value } from '../NodeInput/Types'
+import NodeSelect from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
@@ -93,17 +91,15 @@ const Refactor = () => {
     }
   }, [shortcuts])
 
-  const handleFromChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
+  const handleFromChange = (newValue: string) => {
     if (newValue) {
-      const { value } = newValue
-      setFrom(value)
+      setFrom(newValue)
     }
   }
 
-  const handleToChange = (newValue: Value | null, _actionMeta: ActionMeta<Value>) => {
+  const handleToChange = (newValue: string) => {
     if (newValue) {
-      const { value } = newValue
-      setTo(value)
+      setTo(newValue)
     }
   }
 
@@ -139,19 +135,23 @@ const Refactor = () => {
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Refactor</ModalHeader>
 
-      <LookupInput
-        defaultValue={from}
+      <NodeSelect
+        // defaultValue={from}
         placeholder="Refactor From Node..."
         menuOpen={focus}
         autoFocus={focus}
-        handleChange={handleFromChange}
+        highlightWhenSelected
+        iconHighlight={from !== undefined}
+        handleSelectItem={handleFromChange}
       />
 
-      <LookupInput
-        defaultValue={to}
+      <NodeSelect
+        // defaultValue={to}
         placeholder="Refactor To Node..."
-        handleChange={handleToChange}
-        handleCreate={handleToCreate}
+        highlightWhenSelected
+        iconHighlight={to !== undefined}
+        handleSelectItem={handleToChange}
+        handleCreateItem={handleToCreate}
       />
 
       {mockRefactored.length > 0 && (
