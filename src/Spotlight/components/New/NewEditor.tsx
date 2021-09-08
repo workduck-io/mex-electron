@@ -41,7 +41,13 @@ const NewEditor = () => {
   return (
     <StyledEditor>
       <FullEditor>
-        <Editor focusAtBeginning onSave={onSave} content={content} editorId={nodeId} />
+        <Editor
+          focusAtBeginning
+          // onSave={onSave}
+
+          content={content}
+          editorId={nodeId}
+        />
       </FullEditor>
     </StyledEditor>
   )

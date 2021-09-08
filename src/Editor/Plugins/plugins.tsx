@@ -23,12 +23,10 @@ import {
   createStrikethroughPlugin,
   createTablePlugin,
   createUnderlinePlugin,
-  KeyboardHandler,
-  OnChange,
   PlatePlugin,
-  SPEditor
+  SPEditor,
 } from '@udecode/plate'
-
+import { useMemo } from 'react'
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
 import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin'
 import { createTagPlugin } from '../Components/tag/createTagPlugin'
@@ -40,22 +38,15 @@ import {
   optionsExitBreakPlugin,
   optionsResetBlockTypePlugin,
   optionsSelectOnBackspacePlugin,
-  optionsSoftBreakPlugin
+  optionsSoftBreakPlugin,
 } from './pluginOptions'
-
-interface PluginConfigs {
-  combobox: {
-    onChange: OnChange<SPEditor>
-    onKeyDown: KeyboardHandler
-  }
-}
 
 /**
  * Plugin generator
  * @param config Configurations for the plugins, event handlers etc.
  * @returns Array of PlatePlugin
  */
-const generatePlugins = (config: PluginConfigs) => {
+const generatePlugins = () => {
   const Plugins: PlatePlugin[] = [
     // editor
     createReactPlugin(), // withReact
@@ -103,15 +94,11 @@ const generatePlugins = (config: PluginConfigs) => {
     // Comboboxes
     createTagPlugin(), // Tags
     createILinkPlugin(), // Internal Links ILinks
-    {
-      onChange: config.combobox.onChange,
-      onKeyDown: config.combobox.onKeyDown
-    },
 
     // Sync Blocks
     createSyncBlockPlugin(),
 
-    createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin)
+    createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin),
   ]
 
   Plugins.push(createDeserializeHTMLPlugin({ plugins: Plugins }))
@@ -119,4 +106,8 @@ const generatePlugins = (config: PluginConfigs) => {
   return Plugins
 }
 
-export default generatePlugins
+const useMemoizedPlugins = () => {
+  return useMemo(() => generatePlugins(), [])
+}
+
+export default useMemoizedPlugins
