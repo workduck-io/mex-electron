@@ -1,8 +1,6 @@
 import { createPlateOptions, ELEMENT_MEDIA_EMBED, Plate, selectEditor, useStoreEditorRef } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import ReactTooltip from 'react-tooltip'
-import tinykeys from 'tinykeys'
-import { useHelpStore } from '../Components/Help/HelpModal'
 import { useSnippets } from '../Snippets/useSnippets'
 import { EditorStyles } from '../Styled/Editor'
 import { ComboboxKey } from './Components/combobox/useComboboxStore'
@@ -28,8 +26,6 @@ interface EditorProps {
   editorId: string
   readOnly?: boolean
   focusAtBeginning?: boolean
-
-  onSave?: () => void
 }
 
 export const useEditorPluginConfig = (editorId: string) => {
@@ -113,7 +109,8 @@ export const useEditorPluginConfig = (editorId: string) => {
   return pluginConfigs
 }
 
-const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: EditorProps) => {
+// High performance guaranteed
+const Editor = ({ content, editorId, readOnly, focusAtBeginning }: EditorProps) => {
   useEffect(() => {
     ReactTooltip.rebuild()
   }, [])
@@ -128,29 +125,13 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
-  const shortcuts = useHelpStore((state) => state.shortcuts)
-
-  // console.log(editorId)
 
   const generateEditorId = () => `${editorId}`
   const editorRef = useStoreEditorRef()
 
   useEffect(() => {
-    // console.log('Focusing', { editor: editorS });
     if (editorRef && focusAtBeginning) selectEditor(editorRef, { edge: 'start', focus: true })
   }, [editorRef])
-
-  useEffect(() => {
-    const unsubscribe = tinykeys(window, {
-      [shortcuts.save.keystrokes]: (event) => {
-        event.preventDefault()
-        onSave()
-      }
-    })
-    return () => {
-      unsubscribe()
-    }
-  })
 
   const comboboxRenderConfig: ComboElementProps = {
     keys: {
@@ -184,15 +165,20 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
   const pluginConfigs = useEditorPluginConfig(editorId)
 
   // We get memoized plugins
-  const plugins = generatePlugins(pluginConfigs)
+  const prePlugins = generatePlugins()
+  const plugins = [
+    ...prePlugins,
+    {
+      onChange: pluginConfigs.combobox.onChange,
+      onKeyDown: pluginConfigs.combobox.onKeyDown
+    }
+  ]
 
   return (
     <>
       {content && (
         <EditorStyles>
-          {/* <BallonToolbarMarks /> */}
           <Plate
-            // onChange={onChange}
             id={generateEditorId()}
             editableProps={editableProps}
             value={content}
@@ -210,8 +196,7 @@ const Editor = ({ content, editorId, onSave, readOnly, focusAtBeginning }: Edito
 
 Editor.defaultProps = {
   readOnly: false,
-  focusAtBeginning: true,
-  onSave: () => undefined
+  focusAtBeginning: true
 }
 
 export default Editor

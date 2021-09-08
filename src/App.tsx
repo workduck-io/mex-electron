@@ -16,7 +16,7 @@ import Tasks from './Views/Tasks'
 
 Modal.setAppElement('#root')
 
-function App () {
+function App() {
   return (
     <Router>
       <Providers>

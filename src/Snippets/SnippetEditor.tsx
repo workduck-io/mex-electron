@@ -1,13 +1,9 @@
-import saveLine from '@iconify-icons/ri/save-line'
-import { useStoreEditorValue } from '@udecode/plate'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
 import ReactTooltip from 'react-tooltip'
-import { useSaveData } from '../Data/useSaveData'
+import { SnippetSaverButton } from '../Editor/Components/Saver'
 import Editor from '../Editor/Editor'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
-import IconButton from '../Styled/Buttons'
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor'
 import { Input } from '../Styled/Form'
 
@@ -17,7 +13,6 @@ type Inputs = {
 
 const SnippetEditor = () => {
   const snippet = useSnippetStore((store) => store.editor.snippet)
-  const updateSnippet = useSnippetStore((state) => state.updateSnippet)
 
   const {
     register,
@@ -29,8 +24,6 @@ const SnippetEditor = () => {
     ReactTooltip.rebuild()
   }, [])
 
-  const editorState = useStoreEditorValue()
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [content, setContent] = useState<any[] | undefined>(undefined)
 
@@ -40,32 +33,22 @@ const SnippetEditor = () => {
     }
   }, [snippet])
 
-  const saveData = useSaveData()
-
-  const onSave = () => {
-    // On save the editor should serialize the state to markdown plaintext
-    // setContent then save
-    // console.log('Saving', editorState)
-    const title = getValues().title
-    if (editorState) updateSnippet(snippet.id, { ...snippet, title, content: editorState })
-    saveData()
-    toast('Snippet Saved!', { duration: 1000 })
-  }
+  const getSnippetTitle = () => getValues().title
 
   return (
     <>
       <StyledEditor className="snippets_editor">
         <NodeInfo>
           <NoteTitle>
-            /snip. <Input defaultValue={snippet.title} {...register('title')} />
+            /snip. <Input defaultValue={snippet && snippet.title} {...register('title')} />
           </NoteTitle>
 
           <InfoTools>
-            <IconButton size={24} icon={saveLine} onClick={onSave} title="Save" />
+            <SnippetSaverButton getSnippetTitle={getSnippetTitle} title="Save Snippet" />
           </InfoTools>
         </NodeInfo>
 
-        <Editor onSave={onSave} content={content} editorId={snippet.id} />
+        <Editor content={content} editorId={snippet.id} />
       </StyledEditor>
     </>
   )
