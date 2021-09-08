@@ -17,7 +17,7 @@ const SnippetEditor = () => {
   const {
     register,
     getValues,
-    formState: { errors },
+    formState: { errors }
   } = useForm<Inputs>()
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const SnippetEditor = () => {
           </NoteTitle>
 
           <InfoTools>
-            <SnippetSaverButton getSnippetTitle={getSnippetTitle} title="Save" />
+            <SnippetSaverButton getSnippetTitle={getSnippetTitle} title="Save Snippet" />
           </InfoTools>
         </NodeInfo>
 

@@ -26,8 +26,6 @@ interface EditorProps {
   editorId: string
   readOnly?: boolean
   focusAtBeginning?: boolean
-
-  // onSave?: () => void
 }
 
 export const useEditorPluginConfig = (editorId: string) => {
@@ -49,20 +47,20 @@ export const useEditorPluginConfig = (editorId: string) => {
         ilink: {
           cbKey: ComboboxKey.ILINK,
           trigger: '[[',
-          data: ilinks,
+          data: ilinks
         },
 
         tag: {
           cbKey: ComboboxKey.TAG,
           trigger: '#',
-          data: tags,
+          data: tags
         },
 
         slash_command: {
           cbKey: ComboboxKey.SLASH_COMMAND,
           trigger: '/',
-          data: slash_commands,
-        },
+          data: slash_commands
+        }
       }),
 
       onKeyDown: useMultiComboboxOnKeyDown(
@@ -71,27 +69,27 @@ export const useEditorPluginConfig = (editorId: string) => {
             slateElementType: ELEMENT_ILINK,
             newItemHandler: (newItem) => {
               addILink(newItem)
-            },
+            }
           },
           tag: {
             slateElementType: ELEMENT_TAG,
             newItemHandler: (newItem) => {
               addTag(newItem)
-            },
+            }
           },
           // Slash command configs
           slash_command: {
             slateElementType: ELEMENT_MEDIA_EMBED,
-            newItemHandler: () => undefined,
-          },
+            newItemHandler: () => undefined
+          }
         },
         {
           webem: {
             slateElementType: ELEMENT_MEDIA_EMBED,
             command: 'webem',
             options: {
-              url: 'http://example.com/',
-            },
+              url: 'http://example.com/'
+            }
           },
           sync_block: {
             slateElementType: ELEMENT_SYNC_BLOCK,
@@ -100,12 +98,12 @@ export const useEditorPluginConfig = (editorId: string) => {
               const nd = getNewBlockData()
               addSyncBlock(nd) // Also need to add the newly created block to the sync store
               return nd
-            },
+            }
           },
-          ...snippetConfigs,
+          ...snippetConfigs
         }
-      ),
-    },
+      )
+    }
   }
 
   return pluginConfigs
@@ -120,9 +118,9 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning }: EditorProps) 
   const editableProps = {
     placeholder: 'Murmuring the mex hype...',
     style: {
-      padding: '15px',
+      padding: '15px'
     },
-    readOnly,
+    readOnly
   }
 
   const addTag = useDataStore((state) => state.addTag)
@@ -142,27 +140,27 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning }: EditorProps) 
           slateElementType: ELEMENT_ILINK,
           newItemHandler: (newItem) => {
             addILink(newItem)
-          },
+          }
         },
-        renderElement: ILinkComboboxItem,
+        renderElement: ILinkComboboxItem
       },
       tag: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_TAG,
           newItemHandler: (newItem) => {
             addTag(newItem)
-          },
+          }
         },
-        renderElement: TagComboboxItem,
+        renderElement: TagComboboxItem
       },
       slash_command: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_MEDIA_EMBED,
-          newItemHandler: () => undefined,
+          newItemHandler: () => undefined
         },
-        renderElement: SlashComboboxItem,
-      },
-    },
+        renderElement: SlashComboboxItem
+      }
+    }
   }
   const pluginConfigs = useEditorPluginConfig(editorId)
 
@@ -172,8 +170,8 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning }: EditorProps) 
     ...prePlugins,
     {
       onChange: pluginConfigs.combobox.onChange,
-      onKeyDown: pluginConfigs.combobox.onKeyDown,
-    },
+      onKeyDown: pluginConfigs.combobox.onKeyDown
+    }
   ]
 
   return (
@@ -198,7 +196,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning }: EditorProps) 
 
 Editor.defaultProps = {
   readOnly: false,
-  focusAtBeginning: true,
+  focusAtBeginning: true
 }
 
 export default Editor
