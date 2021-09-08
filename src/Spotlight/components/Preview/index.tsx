@@ -34,10 +34,10 @@ const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }
   const [content, setContent] = useState<any[] | undefined>(undefined)
 
   const config = useEditorPluginConfig(nodeId)
-  const plugins = generatePlugins(config)
+  const plugins = generatePlugins()
   const nodes = deserializeHTMLToDocumentFragment(editor, {
     plugins,
-    element: preview?.text || ''
+    element: preview?.text || '',
   })
 
   useEffect(() => {

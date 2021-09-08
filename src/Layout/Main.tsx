@@ -60,7 +60,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
   /** Initialization of the app details occur here */
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       localData
         .then((d) => {
           // console.log('Data here', d);
