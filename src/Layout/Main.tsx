@@ -17,6 +17,7 @@ import { PixelToCSS } from '../Styled/helpers'
 import InfoBar from './InfoBar'
 import HelpTooltip from '../Components/Help/HelpTooltip'
 import { ipcRenderer } from 'electron'
+import { useSaveData } from '../Data/useSaveData'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -45,10 +46,15 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const { init } = useInitialize()
 
   const localData = useLocalData()
+  const saveData = useSaveData()
 
   useEffect(() => {
     ipcRenderer.on('open-node', (_event, { nodeId }) => {
       loadNodeFromId(nodeId)
+    })
+
+    ipcRenderer.on('save-and-exit', () => {
+      saveData()
     })
   }, [])
 

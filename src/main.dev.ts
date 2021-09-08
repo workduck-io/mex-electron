@@ -21,6 +21,7 @@ if (require('electron-squirrel-startup')) {
 let tray
 let mex: BrowserWindow | null
 let spotlight: BrowserWindow | null
+let spotlightBubble = false
 
 let trayIconSrc = path.join(__dirname, '..', 'assets/icon.png')
 if (process.platform === 'darwin') {
@@ -106,7 +107,7 @@ const createSpotLighWindow = (show?: boolean) => {
     spotlight = null
   })
 
-  // spotlight.webContents.openDevTools()
+  spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -120,8 +121,8 @@ const createMexWindow = () => {
   mex = new BrowserWindow(MEX_WINDOW_OPTIONS)
   mex.loadURL(MEX_WINDOW_WEBPACK_ENTRY)
 
-  mex.on('close', () => {
-    mex?.webContents.send('save-and-exit', {})
+  mex.once('close', (_event) => {
+    mex?.webContents.send('save-and-exit')
   })
 
   mex.webContents.on('did-finish-load', () => {
@@ -210,6 +211,8 @@ const sendToRenderer = (selection: any) => {
 const toggleMainWindow = (window) => {
   if (!window) {
     createSpotLighWindow(true)
+  } else if (spotlightBubble) {
+    console.log(spotlightBubble)
   } else if (window.isFocused()) {
     window.hide()
   } else {
@@ -245,6 +248,22 @@ app.on('before-quit', () => {
 // });
 
 ipcMain.on('close', closeWindow)
+
+ipcMain.on('spotlight-bubble', (_event, arg) => {
+  const { isClicked } = arg
+  if (isClicked) {
+    spotlight.setContentSize(48, 48, false)
+    spotlightBubble = true
+  } else {
+    spotlight.setContentSize(700, 400, true)
+    spotlightBubble = false
+  }
+})
+
+app.on('quit', () => {
+  mex?.webContents.send('save-and-quit')
+  spotlight?.webContents.send('save-and-quit')
+})
 
 app
   .whenReady()

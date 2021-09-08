@@ -5,7 +5,8 @@ const GlobalStyle = createGlobalStyle`
   ${normalize}
 
   html {
-    overflow: hidden;
+    height: 100vh;  
+    /* overflow: hidden; */
   }
 
   body {

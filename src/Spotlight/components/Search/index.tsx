@@ -11,7 +11,6 @@ import WDLogo from './Logo'
 
 const Search: React.FC = () => {
   const { setSearch } = useSpotlightContext()
-
   const handleSearchInput = useDebouncedCallback((value: string) => {
     setSearch(value)
   }, 400)
@@ -26,6 +25,7 @@ const Search: React.FC = () => {
         placeholder="Search anything.."
         onChange={({ target: { value } }) => handleSearchInput(value)}
       />
+
       <CenterIcon>
         <WDLogo />
       </CenterIcon>

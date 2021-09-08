@@ -1,13 +1,31 @@
-import React from 'react'
+import { ipcRenderer } from 'electron'
+import React, { useEffect } from 'react'
+import styled from 'styled-components'
+import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
+
+const StyledLogo = styled.svg`
+  padding-right: 8px;
+  -webkit-app-region: no-drag;
+`
 
 const WDLogo = () => {
+  const { bubble, setBubble } = useSpotlightSettingsStore(({ bubble, setBubble }) => ({ bubble, setBubble }))
+
+  useEffect(() => {
+    ipcRenderer.send('spotlight-bubble', { isClicked: bubble })
+  }, [bubble])
+
+  const onClick = () => {
+    setBubble()
+  }
+
   return (
-    <svg
+    <StyledLogo
       width="25"
       height="25"
       viewBox="0 0 25 25"
       fill="none"
-      style={{ paddingRight: '8px' }}
+      onClick={onClick}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
@@ -22,7 +40,7 @@ const WDLogo = () => {
         d="M22.6654 15.8458C24.1976 10.8041 24.7669 6.68091 24.9988 0.577148C23.1378 3.99264 21.621 5.42155 18.9922 6.29282C19.304 9.07383 20.8285 13.6569 22.6654 15.8458Z"
         fill="#5B94FF"
       />
-    </svg>
+    </StyledLogo>
   )
 }
 
