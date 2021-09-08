@@ -64,11 +64,14 @@ const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }
   })
 
   useEffect(() => {
-    setFsContent(nodeId, [{ children: nodes }])
-    if (!search) loadNodeFromId(nodeId)
+    // setFsContent(nodeId, [{ children: nodes }])
+
     if (preview.isSelection) {
-      setNodeContent([{ children: nodes }])
+      console.log(JSON.stringify(fsContent, null, 2))
+      setNodeContent([...fsContent, { children: nodes }])
+      setFsContent(nodeId, [...fsContent, { children: nodes }])
     }
+    if (!search) loadNodeFromId(nodeId)
   }, [preview.text])
 
   useEffect(() => {
