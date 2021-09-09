@@ -18,6 +18,9 @@ import InfoBar from './InfoBar'
 import HelpTooltip from '../Components/Help/HelpTooltip'
 import { ipcRenderer } from 'electron'
 import { useSaveAndExit } from '../Spotlight/utils/hooks'
+import { useNavigation, useNavigationState } from '../Hooks/useNavigation/useNavigation'
+import { useHelpStore } from '../Components/Help/HelpModal'
+import tinykeys from 'tinykeys'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -38,10 +41,13 @@ export type MainProps = { children: React.ReactNode }
 const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const theme = useTheme()
   const history = useHistory()
+  const stack = useNavigationState((state) => state.history.stack)
   const loadNode = useEditorStore((state) => state.loadNode)
   const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
   const id = useEditorStore((state) => state.node.id)
   const showGraph = useGraphStore((state) => state.showGraph)
+
+  const { move, push } = useNavigation()
 
   const { init } = useInitialize()
 
@@ -73,7 +79,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
 
-    loadNode(getInitialNode())
+    push('@')
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -81,7 +87,27 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
     history.push('/editor')
   }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  const shortcuts = useHelpStore((store) => store.shortcuts)
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      [shortcuts.gotoBackwards.keystrokes]: (event) => {
+        event.preventDefault()
+        move(-1)
+      },
+      [shortcuts.gotoForward.keystrokes]: (event) => {
+        event.preventDefault()
+        move(+1)
+      }
+    })
+    return () => {
+      unsubscribe()
+    }
+  }, [shortcuts])
+
   const Tree = useTreeFromLinks()
+
+  // console.log({ stack })
 
   return (
     <AppWrapper>
