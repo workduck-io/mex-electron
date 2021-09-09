@@ -3,9 +3,10 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
 
-const StyledLogo = styled.svg`
+const StyledLogo = styled.svg<{ bubble?: boolean }>`
   padding-right: 8px;
   -webkit-app-region: no-drag;
+  cursor: pointer;
 `
 
 const WDLogo = () => {

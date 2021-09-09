@@ -35,6 +35,7 @@ export const useSaver = () => {
 
 interface SaverButtonProps {
   title?: string
+  noButton?: boolean
   callbackAfterSave?: () => void
 }
 
@@ -42,7 +43,7 @@ interface SaverButtonProps {
  *
  * It implements the save action and shortcuts in isolation so that the editor does not rerender on every document save.
  */
-export const SaverButton = ({ callbackAfterSave, title }: SaverButtonProps) => {
+export const SaverButton = ({ callbackAfterSave, title, noButton }: SaverButtonProps) => {
   const { onSave: onSaveFs } = useSaver()
 
   const shortcuts = useHelpStore((state) => state.shortcuts)
@@ -57,12 +58,14 @@ export const SaverButton = ({ callbackAfterSave, title }: SaverButtonProps) => {
       [shortcuts.save.keystrokes]: (event) => {
         event.preventDefault()
         onSave()
-      },
+      }
     })
     return () => {
       unsubscribe()
     }
   })
+
+  if (noButton) return <></>
 
   return <IconButton size={24} icon={saveLine} onClick={onSave} title={title ?? 'Save'} />
 }
@@ -100,7 +103,7 @@ export const SnippetSaverButton = ({ callbackAfterSave, title, getSnippetTitle }
     const unsubscribe = tinykeys(window, {
       [shortcuts.save.keystrokes]: (event) => {
         event.preventDefault()
-      },
+      }
     })
     return () => {
       unsubscribe()

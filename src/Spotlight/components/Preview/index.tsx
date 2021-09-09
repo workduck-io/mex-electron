@@ -4,12 +4,13 @@ import { StyledBackground } from '../Spotlight/styled'
 import { Scroll } from '../../styles/layout'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import { useContentStore } from '../../../Editor/Store/ContentStore'
-import Editor, { useEditorPluginConfig } from '../../../Editor/Editor'
+import Editor from '../../../Editor/Editor'
 import { deserializeHTMLToDocumentFragment } from '@udecode/plate-html-serializer'
 import generatePlugins from '../../../Editor/Plugins/plugins'
 import { useStoreEditorRef } from '@udecode/plate-core'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
 import { useSpotlightContext } from '../../../Spotlight/utils/context'
+import { NodeEditorContent } from '../../../Editor/Store/Types'
 
 export const StyledPreview = styled.div`
   ${StyledBackground}
@@ -39,8 +40,21 @@ export const SeePreview = styled.div`
   bottom: 3.25rem;
 `
 
-const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }) => {
+export const useDeserializeSelectionToNodes = (
+  nodeId: string,
+  selection: { text: string; metadata: string }
+): NodeEditorContent => {
   const editor = useStoreEditorRef(nodeId)
+  const plugins = generatePlugins()
+  const nodes = deserializeHTMLToDocumentFragment(editor, {
+    plugins,
+    element: selection?.text || ''
+  })
+
+  return nodes
+}
+
+const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }) => {
   const { search, selection } = useSpotlightContext()
   const setFsContent = useContentStore((state) => state.setContent)
   const fsContent = useEditorStore((state) => state.content)
@@ -55,21 +69,13 @@ const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [content, setContent] = useState<any[] | undefined>(undefined)
-
-  const config = useEditorPluginConfig(nodeId)
-  const plugins = generatePlugins()
-  const nodes = deserializeHTMLToDocumentFragment(editor, {
-    plugins,
-    element: preview?.text || '',
-  })
+  const nodes = useDeserializeSelectionToNodes(nodeId, preview)
 
   useEffect(() => {
-    // setFsContent(nodeId, [{ children: nodes }])
-
     if (preview.isSelection) {
-      console.log(JSON.stringify(fsContent, null, 2))
       setNodeContent([...fsContent, { children: nodes }])
-      setFsContent(nodeId, [...fsContent, { children: nodes }])
+      console.log(JSON.stringify(nodes, null, 2))
+      setFsContent(nodeId, [...fsContent, { children: nodes }, { children: [{ text: '' }] }])
     }
     if (!search) loadNodeFromId(nodeId)
   }, [preview.text])
