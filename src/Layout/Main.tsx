@@ -31,8 +31,6 @@ const Content = styled.div`
   display: flex;
   flex-grow: 1;
   grid-column-start: 2;
-  /* margin-left: ${({ theme }) => PixelToCSS(theme.width.sidebar)}; */
-  /* max-width: calc(100% - ${({ theme }) => PixelToCSS(theme.width.sidebar)}); */
   overflow: scroll;
 `
 
@@ -42,8 +40,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const theme = useTheme()
   const history = useHistory()
   const stack = useNavigationState((state) => state.history.stack)
-  const loadNode = useEditorStore((state) => state.loadNode)
-  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
+  const last10 = useNavigationState((state) => state.recents.last10)
   const id = useEditorStore((state) => state.node.id)
   const showGraph = useGraphStore((state) => state.showGraph)
 
@@ -57,7 +54,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
   useEffect(() => {
     ipcRenderer.on('open-node', (_event, { nodeId }) => {
-      loadNodeFromId(nodeId)
+      push(nodeId)
     })
   }, [])
 
@@ -107,7 +104,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
   const Tree = useTreeFromLinks()
 
-  // console.log({ stack })
+  console.log({ stack, last10 })
 
   return (
     <AppWrapper>

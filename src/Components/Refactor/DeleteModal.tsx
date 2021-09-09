@@ -2,6 +2,7 @@ import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import tinykeys from 'tinykeys'
 import { useDelete } from '../../Editor/Actions/useDelete'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
@@ -18,7 +19,7 @@ interface DeleteState {
 
 const Delete = () => {
   const { getMockDelete, execDelete } = useDelete()
-  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
+  const { push } = useNavigation()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const [deleteState, setDeleteState] = useState<DeleteState>({
@@ -72,7 +73,7 @@ const Delete = () => {
 
   const handleDelete = () => {
     const { newLinks } = execDelete(del)
-    if (newLinks.length > 0) loadNodeFromId(newLinks[0].text)
+    if (newLinks.length > 0) push(newLinks[0].text)
     closeModal()
   }
 

@@ -24,12 +24,12 @@ export const defaultShortcuts = {
   // Goto
   gotoForward: {
     title: 'Move Forward History',
-    keystrokes: '$mod+KeyG KeyL',
+    keystrokes: '$mod+]',
     category: 'Navigate'
   },
   gotoBackwards: {
-    title: 'Open Rename',
-    keystrokes: '$mod+KeyG KeyH',
+    title: 'Move Backwards History',
+    keystrokes: '$mod+[',
     category: 'Navigate'
   },
 

@@ -1,5 +1,6 @@
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import create from 'zustand'
+import { remove } from 'lodash'
 
 interface NavigationState {
   history: {
@@ -28,11 +29,14 @@ export const useNavigationState = create<NavigationState>((set, get) => ({
       set((state) => {
         const newIndex = state.history.currentNodeIndex + 1
         const remainingStack = state.history.stack.slice(0, newIndex)
+        // Don't append if same as current id
+        if (remainingStack[remainingStack.length - 1] === id) return
         remainingStack.push(id)
+        const resizedArr = remainingStack.slice(-25)
         return {
           history: {
             ...state.history,
-            stack: remainingStack,
+            stack: resizedArr,
             currentNodeIndex: newIndex
           }
         }
@@ -68,13 +72,20 @@ export const useNavigationState = create<NavigationState>((set, get) => ({
 
   recents: {
     last10: [],
-    addRecent: (id: string) =>
+    addRecent: (id: string) => {
+      // We move the id to the top if the id is present
+      // swapping can increase performance
+      const oldLast10 = Array.from(new Set(get().recents.last10))
+      if (oldLast10.includes(id)) {
+        remove(oldLast10, (item) => item === id)
+      }
       set((state) => ({
         recents: {
           ...state.recents,
-          last10: [...state.recents.last10.slice(-9), id]
+          last10: [...oldLast10.slice(-9), id]
         }
       }))
+    }
   }
 }))
 

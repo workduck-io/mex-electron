@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import tinykeys from 'tinykeys'
 import useDataStore from '../../Editor/Store/DataStore'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
@@ -36,17 +37,17 @@ const Lookup: React.FC<LookupProps> = () => {
     }
   }, [shortcuts])
 
-  const loadNodeFromId = useEditorStore((s) => s.loadNodeFromId)
+  const { push } = useNavigation()
   const addILink = useDataStore((s) => s.addILink)
 
   const handleSelectItem = (inputValue: string) => {
-    loadNodeFromId(inputValue)
+    push(inputValue)
     closeModal()
   }
 
   const handleCreateItem = (inputValue: string) => {
     addILink(inputValue)
-    loadNodeFromId(inputValue)
+    push(inputValue)
     closeModal()
   }
 

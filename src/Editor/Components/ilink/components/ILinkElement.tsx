@@ -17,7 +17,6 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const editor = useEditorRef()
   const selected = useSelected()
   const focused = useFocused()
-  // const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
   const { push } = useNavigation()
 
   const onClickProps = useOnMouseClick(() => {
