@@ -1,13 +1,16 @@
 import React from 'react'
+import { defaultThemes } from '../Styled/themes/defaultThemes'
 import { ThemeProvider } from 'styled-components'
-import { spotlightTheme } from '../Styled/themes'
 
 import Routes from './Routes'
 import { SpotlightProvider } from './utils/context'
+import useThemeStore from '../Editor/Store/ThemeStore'
 
 export default function App () {
+  const theme = useThemeStore((state) => state.theme)
+
   return (
-    <ThemeProvider theme={spotlightTheme}>
+    <ThemeProvider theme={theme?.themeData ?? defaultThemes[0].themeData}>
       <SpotlightProvider>
         <Routes />
       </SpotlightProvider>
