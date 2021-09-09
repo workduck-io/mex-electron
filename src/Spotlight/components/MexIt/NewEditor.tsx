@@ -22,11 +22,8 @@ const NewEditor = () => {
     }
   }, [fsContent, nodeId])
 
-  const { onSave: onSaveFs } = useSaver()
-
   const onSave = () => {
     addILink(nodeId)
-    onSaveFs()
     setSaved(true)
     openNodeInMex(nodeId)
   }
