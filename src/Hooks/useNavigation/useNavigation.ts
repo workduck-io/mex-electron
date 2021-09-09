@@ -1,6 +1,7 @@
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import create from 'zustand'
 import { remove } from 'lodash'
+import { MAX_HISTORY_SIZE, MAX_RECENT_SIZE } from '../../Defaults/navigation'
 
 interface NavigationState {
   history: {
@@ -12,7 +13,7 @@ interface NavigationState {
     getCurrentNodeId: () => string | undefined
   }
   recents: {
-    last10: string[]
+    lastOpened: string[]
     addRecent: (id: string) => void
   }
 }
@@ -27,12 +28,17 @@ export const useNavigationState = create<NavigationState>((set, get) => ({
      */
     push: (id) =>
       set((state) => {
-        const newIndex = state.history.currentNodeIndex + 1
+        let newIndex = state.history.currentNodeIndex + 1
         const remainingStack = state.history.stack.slice(0, newIndex)
         // Don't append if same as current id
         if (remainingStack[remainingStack.length - 1] === id) return
         remainingStack.push(id)
-        const resizedArr = remainingStack.slice(-25)
+        // Update index if large
+        if (remainingStack.length > MAX_HISTORY_SIZE) {
+          newIndex = MAX_HISTORY_SIZE - 1
+        }
+        // Trim till the last 25
+        const resizedArr = remainingStack.slice(-MAX_HISTORY_SIZE)
         return {
           history: {
             ...state.history,
@@ -71,18 +77,18 @@ export const useNavigationState = create<NavigationState>((set, get) => ({
   },
 
   recents: {
-    last10: [],
+    lastOpened: [],
     addRecent: (id: string) => {
       // We move the id to the top if the id is present
       // swapping can increase performance
-      const oldLast10 = Array.from(new Set(get().recents.last10))
+      const oldLast10 = Array.from(new Set(get().recents.lastOpened))
       if (oldLast10.includes(id)) {
         remove(oldLast10, (item) => item === id)
       }
       set((state) => ({
         recents: {
           ...state.recents,
-          last10: [...oldLast10.slice(-9), id]
+          lastOpened: [...oldLast10.slice(-MAX_RECENT_SIZE + 1), id]
         }
       }))
     }

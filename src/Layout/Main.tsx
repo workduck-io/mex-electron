@@ -39,8 +39,8 @@ export type MainProps = { children: React.ReactNode }
 const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const theme = useTheme()
   const history = useHistory()
-  const stack = useNavigationState((state) => state.history.stack)
-  const last10 = useNavigationState((state) => state.recents.last10)
+  const stack = useNavigationState((state) => state.history)
+  const last10 = useNavigationState((state) => state.recents.lastOpened)
   const id = useEditorStore((state) => state.node.id)
   const showGraph = useGraphStore((state) => state.showGraph)
 
