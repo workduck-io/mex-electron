@@ -1,6 +1,7 @@
 import saveLine from '@iconify-icons/ri/save-line'
 import { useStoreEditorValue } from '@udecode/plate'
-import React, { useEffect } from 'react'
+import { ipcRenderer } from 'electron'
+import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
