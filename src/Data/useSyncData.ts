@@ -12,5 +12,5 @@ export const useSyncData = () => {
       loadNode(useEditorStore.getState().node)
     })
   }
-  return setIpc
+  return { setIpc }
 }

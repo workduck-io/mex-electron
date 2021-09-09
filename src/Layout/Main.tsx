@@ -47,7 +47,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
   useSaveAndExit()
 
-  const localData = useLocalData()
+  const { getLocalData } = useLocalData()
 
   useEffect(() => {
     ipcRenderer.on('open-node', (_event, { nodeId }) => {
@@ -55,16 +55,16 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
     })
   }, [])
 
-  const setIpc = useSyncData()
+  const { setIpc } = useSyncData()
 
   useEffect(() => {
     setIpc()
-  }, [setIpc])
+  }, [])
 
   /** Initialization of the app details occur here */
   useEffect(() => {
     (async () => {
-      localData
+      getLocalData()
         .then((d) => {
           // console.log('Data here', d);
           return d
