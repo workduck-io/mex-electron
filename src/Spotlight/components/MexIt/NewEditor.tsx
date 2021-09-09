@@ -22,8 +22,11 @@ const NewEditor = () => {
     }
   }, [fsContent, nodeId])
 
-  const onSave = () => {
+  const onBeforeSave = () => {
     addILink(nodeId)
+  }
+
+  const onAfterSave = () => {
     setSaved(true)
     openNodeInMex(nodeId)
   }
@@ -38,7 +41,7 @@ const NewEditor = () => {
           content={content}
           editorId={nodeId}
         />
-        <SaverButton callbackAfterSave={onSave} noButton />
+        <SaverButton callbackAfterSave={onAfterSave} callbackBeforeSave={onBeforeSave} noButton />
       </FullEditor>
     </StyledEditor>
   )
