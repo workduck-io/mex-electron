@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigationState } from '../../Hooks/useNavigation/useNavigation'
 import { useRefactorStore } from '../../Components/Refactor/Refactor'
 import { NodeContent } from '../../Types/data'
 import { NodeLink } from '../../Types/relations'
@@ -9,6 +10,11 @@ export const useRefactor = () => {
   const ilinks = useDataStore((state) => state.ilinks)
   const contents = useContentStore((state) => state.contents)
 
+  const historyStack = useNavigationState((state) => state.history.stack)
+  const updateHistory = useNavigationState((state) => state.history.update)
+
+  const lastOpened = useNavigationState((state) => state.recents.lastOpened)
+  const updateLastOpened = useNavigationState((state) => state.recents.update)
   /*  Notes:
   We need to refactor all ilinks that match with the given regex and replace the initial regex with the refactorId
 
@@ -77,6 +83,9 @@ export const useRefactor = () => {
       }
     })
 
+    updateHistory(applyRefactorToIds(historyStack, refactored), 0)
+    updateLastOpened(applyRefactorToIds(lastOpened, refactored))
+
     setILinks(newIlinks)
     initContents(newContents)
 
@@ -127,4 +136,15 @@ export const withRefactor = (Component: any) => {
       />
     ) // eslint-disable-line react/jsx-props-no-spreading
   }
+}
+
+const applyRefactorToIds = (ids: string[], refactored: NodeLink[]) => {
+  return ids.map((id) => {
+    for (const ref of refactored) {
+      if (ref.from === id) {
+        return ref.to
+      }
+    }
+    return id
+  })
 }

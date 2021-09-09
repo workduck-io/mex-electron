@@ -9,12 +9,13 @@ interface NavigationState {
     currentNodeIndex: number
     move: (distance: number) => void
     push: (id: string) => void
-    clear: () => void
+    update: (stack: string[], currentNodeIndex: number) => void
     getCurrentNodeId: () => string | undefined
   }
   recents: {
     lastOpened: string[]
     addRecent: (id: string) => void
+    update: (lastOpened: string[]) => void
   }
 }
 
@@ -62,9 +63,9 @@ export const useNavigationState = create<NavigationState>((set, get) => ({
         }
       }),
 
-    clear: () =>
+    update: (stack, currentNodeIndex) =>
       set((state) => ({
-        history: { ...state.history, stack: [], currentNodeIndex: -1 }
+        history: { ...state.history, stack, currentNodeIndex }
       })),
 
     getCurrentNodeId: (): string | undefined => {
@@ -91,7 +92,14 @@ export const useNavigationState = create<NavigationState>((set, get) => ({
           lastOpened: [...oldLast10.slice(-MAX_RECENT_SIZE + 1), id]
         }
       }))
-    }
+    },
+    update: (lastOpened: string[]) =>
+      set((state) => ({
+        recents: {
+          ...state.recents,
+          lastOpened
+        }
+      }))
   }
 }))
 
