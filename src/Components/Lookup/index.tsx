@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import tinykeys from 'tinykeys'
 import useDataStore from '../../Editor/Store/DataStore'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
 import TreeNode from '../../Types/tree'
 import { useHelpStore } from '../Help/HelpModal'
 import NodeSelect from '../NodeSelect/NodeSelect'
@@ -36,17 +36,17 @@ const Lookup: React.FC<LookupProps> = () => {
     }
   }, [shortcuts])
 
-  const loadNodeFromId = useEditorStore((s) => s.loadNodeFromId)
+  const { push } = useNavigation()
   const addILink = useDataStore((s) => s.addILink)
 
   const handleSelectItem = (inputValue: string) => {
-    loadNodeFromId(inputValue)
+    push(inputValue)
     closeModal()
   }
 
   const handleCreateItem = (inputValue: string) => {
     addILink(inputValue)
-    loadNodeFromId(inputValue)
+    push(inputValue)
     closeModal()
   }
 
@@ -54,7 +54,13 @@ const Lookup: React.FC<LookupProps> = () => {
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <h1>Lookup</h1>
       <div>
-        <NodeSelect menuOpen autoFocus handleSelectItem={handleSelectItem} handleCreateItem={handleCreateItem} />
+        <NodeSelect
+          menuOpen
+          autoFocus
+          prefillLast
+          handleSelectItem={handleSelectItem}
+          handleCreateItem={handleCreateItem}
+        />
       </div>
       {/* <LookupInput autoFocus menuOpen handleChange={handleChange} handleCreate={handleCreate} /> */}
     </Modal>

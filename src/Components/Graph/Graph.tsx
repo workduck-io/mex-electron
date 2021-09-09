@@ -3,7 +3,7 @@ import more2Fill from '@iconify-icons/ri/more-2-fill'
 import equal from 'fast-deep-equal'
 import React, { useEffect, useState } from 'react'
 import Graph from 'react-vis-network-graph'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import IconButton from '../../Styled/Buttons'
 import Switch from '../Forms/Switch'
 import { GraphTools, StyledGraph } from './Graph.styles'
@@ -49,7 +49,7 @@ interface TreeGraphProps {
 
 export const TreeGraph = (props: TreeGraphProps) => {
   const { graphData } = props
-  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
+  const { push } = useNavigation()
 
   const showGraph = useGraphStore((state) => state.showGraph)
   const toggleGraph = useGraphStore((state) => state.toggleGraph)
@@ -76,7 +76,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
             network._callbacks.$select[0]({ nodes: selectNode })
           }
 
-          if (selectNode.length > 0) loadNodeFromId(selectNode[0].nodeId)
+          if (selectNode.length > 0) push(selectNode[0].nodeId)
         }
       }
     }

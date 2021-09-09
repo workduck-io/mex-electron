@@ -7,6 +7,7 @@ import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { SILink, SILinkRoot } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
 import { useEditorStore } from '../../../Store/EditorStore'
+import { useNavigation } from '../../../../Hooks/useNavigation/useNavigation'
 
 /**
  * ILinkElement with no default styles.
@@ -16,10 +17,10 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const editor = useEditorRef()
   const selected = useSelected()
   const focused = useFocused()
-  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
+  const { push } = useNavigation()
 
   const onClickProps = useOnMouseClick(() => {
-    loadNodeFromId(element.value)
+    push(element.value)
   })
 
   useHotkeys(
