@@ -15,7 +15,7 @@ export const StyledShortcuts = styled.section<ContentType>`
 
 const Shortcut = styled.div`
   font-size: 10px;
-  color: black;
+  color: ${({ theme }) => theme.colors.text.fade};
   font-weight: bold;
   margin-right: 2rem;
 `
@@ -24,9 +24,10 @@ export const StyledKey = styled.span`
   padding: 0 4px;
   border-radius: 5px;
   margin: 0 5px;
+  color: ${({ theme }) => theme.colors.background.card};
   font-size: 12px;
   font-weight: 700;
-  background: ${({ theme }) => theme.colors.gray[8]};
+  background: ${({ theme }) => theme.colors.primary};
   box-shadow: 2px 2px 2px ${({ theme }) => theme.colors.gray[9]};
 `
 

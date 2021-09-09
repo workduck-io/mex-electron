@@ -2,9 +2,9 @@
 import { Icon } from '@iconify/react'
 import React, { useEffect, useRef } from 'react'
 import { FixedSizeList } from 'react-window'
-import { Action, ActionDesc, ActionDescStyled, ActionTitle, CreateMex, FlexBetween } from '../Actions/styled'
+import { Action, ActionDesc, ActionDescStyled, ActionTitle, CreateMex } from '../Actions/styled'
 import { StyledKey } from '../Shortcuts'
-import { StyledRow, StyledResults, Heading, Description } from './styled'
+import { StyledRow, StyledResults, Description } from './styled'
 import CreateIcon from '@iconify-icons/ph/lightning'
 
 export const Result: React.FC<{
@@ -28,7 +28,7 @@ const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ curren
 
   return (
     <StyledResults>
-      <Heading>Search Results</Heading>
+      <ActionTitle>Search Results</ActionTitle>
       {data.length === 0 && (
         <>
           <ActionDesc>No search results found.</ActionDesc>

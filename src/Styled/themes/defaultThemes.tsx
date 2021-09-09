@@ -1,6 +1,6 @@
 import { airTheme } from './airTheme'
 import { devTheme } from './devTheme'
-import { spotlightTheme } from './spotlightTheme.tsx'
+import { spotlightTheme } from './spotlightTheme'
 import { lightTheme } from './lightTheme'
 import { matrixTheme } from './matrixTheme'
 import { reduxTheme } from './reduxTheme'
@@ -15,7 +15,7 @@ export const defaultThemes = [
   { id: 'light', themeData: lightTheme },
   { id: 'air', themeData: airTheme },
   { id: 'vvk', themeData: vvkTheme },
-  { id: 'spotlight', themeData: spotlightTheme },
+  { id: 'spotlight', themeData: spotlightTheme }
 ]
 
 export const getTheme = (themeId: string) => {

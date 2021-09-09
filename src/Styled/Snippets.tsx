@@ -44,7 +44,7 @@ export const StyledSnippetPreview = styled.div`
 `
 
 export const SnippetCommandPrefix = styled.div`
-  color: ${({ theme }) => theme.colors.secondary};
+  color: ${({ theme }) => theme.colors.primary};
 `
 export const SnippetCommand = styled.div`
   display: flex;
@@ -65,7 +65,7 @@ export const CreateSnippet = styled(SnippetLook)`
   flex-direction: column;
 
   svg {
-    color: ${({ theme }) => theme.colors.secondary};
-    filter: drop-shadow(0px 4px 10px ${({ theme }) => theme.colors.secondary});
+    color: ${({ theme }) => theme.colors.primary};
+    filter: drop-shadow(0px 4px 10px ${({ theme }) => theme.colors.primary});
   }
 `

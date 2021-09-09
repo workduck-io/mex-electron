@@ -47,8 +47,8 @@ const MEX_WINDOW_OPTIONS = {
   height: 1500,
   webPreferences: {
     nodeIntegration: true,
-    contextIsolation: false
-  }
+    contextIsolation: false,
+  },
 }
 
 const SPOTLIGHT_WINDOW_OPTIONS = {
@@ -64,8 +64,8 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
   resizable: false,
   webPreferences: {
     nodeIntegration: true,
-    contextIsolation: false
-  }
+    contextIsolation: false,
+  },
 }
 
 export const setFileData = (data: FileData) => {
@@ -107,7 +107,7 @@ const createSpotLighWindow = (show?: boolean) => {
     spotlight = null
   })
 
-  spotlight.webContents.openDevTools()
+  // spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -148,14 +148,14 @@ const createMexWindow = () => {
     shell.openExternal(url)
   })
 
-  mex.webContents.openDevTools()
+  // mex.webContents.openDevTools()
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const callbackOptions = {
       responseHeaders: {
         ...details.responseHeaders,
-        'Content-Security-Policy': ['']
-      }
+        'Content-Security-Policy': [''],
+      },
     }
     callback(callbackOptions)
   })
@@ -166,9 +166,9 @@ const createMexWindow = () => {
       .watch(getSaveLocation(app), {
         alwaysStat: true,
         awaitWriteFinish: {
-          stabilityThreshold: 2000
+          stabilityThreshold: 2000,
           // pollInterval: 1000,
-        }
+        },
       })
       .on('change', () => {
         let fileData: FileData
@@ -203,7 +203,7 @@ const sendToRenderer = (selection: any) => {
   const text = sanitizeHtml(selection.text)
   const metaSelection = {
     ...selection,
-    text
+    text,
   }
   spotlight?.webContents.send('selected-text', metaSelection)
 }
@@ -278,7 +278,7 @@ app
       { label: 'Open Mex', type: 'radio' },
       { label: 'Toggle Spotlight search ', type: 'radio' },
       { label: 'Create new Mex', type: 'radio', checked: true },
-      { label: 'Search', type: 'radio' }
+      { label: 'Search', type: 'radio' },
     ])
 
     tray.setToolTip('Mex')

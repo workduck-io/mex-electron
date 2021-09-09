@@ -8,8 +8,10 @@ import { useSpotlightContext } from '../../utils/context'
 import { StyledSearch, StyledInput } from './styled'
 import { CenterIcon } from '../../styles/layout'
 import WDLogo from './Logo'
+import { useTheme } from 'styled-components'
 
 const Search: React.FC = () => {
+  const theme = useTheme()
   const { setSearch } = useSpotlightContext()
   const handleSearchInput = useDebouncedCallback((value: string) => {
     setSearch(value)
@@ -18,14 +20,13 @@ const Search: React.FC = () => {
   return (
     <StyledSearch>
       <CenterIcon>
-        <Icon height={24} width={24} icon={SearchIcon} />
+        <Icon color={theme.colors.primary} height={24} width={24} icon={SearchIcon} />
       </CenterIcon>
       <StyledInput
         autoFocus
         placeholder="Search anything.."
         onChange={({ target: { value } }) => handleSearchInput(value)}
       />
-
       <CenterIcon>
         <WDLogo />
       </CenterIcon>

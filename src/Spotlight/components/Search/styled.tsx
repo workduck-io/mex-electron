@@ -10,7 +10,7 @@ export const StyledInput = styled.input`
   padding: 10px;
   flex: 1;
   border: none;
-  color: #333;
+  color: ${({ theme }) => theme.colors.text.fade};
   :focus {
     outline: none;
   }
@@ -23,7 +23,7 @@ export const StyledCreateInput = styled(CreatableSelect)`
   // padding: 10px;
   flex: 1;
   border: none;
-  color: #333;
+  color: ${({ theme }) => theme.colors.text.fade};
   :focus {
     outline: none;
   }
