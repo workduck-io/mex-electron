@@ -1,7 +1,6 @@
 import React from 'react'
 import { useNavigationState } from '../../Hooks/useNavigation/useNavigation'
 import { useRefactorStore } from '../../Components/Refactor/Refactor'
-import { NodeContent } from '../../Types/data'
 import { NodeLink } from '../../Types/relations'
 import { Contents, useContentStore } from '../Store/ContentStore'
 import useDataStore from '../Store/DataStore'
