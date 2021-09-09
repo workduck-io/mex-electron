@@ -1,8 +1,12 @@
+import { ipcRenderer } from 'electron'
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
-import { useGraphStore } from '../Components/Graph/GraphStore'
 import styled, { useTheme } from 'styled-components'
+import tinykeys from 'tinykeys'
+import { useGraphStore } from '../Components/Graph/GraphStore'
+import { useHelpStore } from '../Components/Help/HelpModal'
+import HelpTooltip from '../Components/Help/HelpTooltip'
 import { Notifications } from '../Components/Notifications/Notifications'
 import SideBar from '../Components/Sidebar'
 import { navTooltip } from '../Components/Sidebar/Nav'
@@ -11,16 +15,10 @@ import { useLocalData } from '../Data/useLocalData'
 import { useSyncData } from '../Data/useSyncData'
 import { useTreeFromLinks } from '../Editor/Store/DataStore'
 import { useEditorStore } from '../Editor/Store/EditorStore'
-import { getInitialNode } from '../Editor/Store/helpers'
-import { GridWrapper } from '../Styled/Grid'
-import { PixelToCSS } from '../Styled/helpers'
-import InfoBar from './InfoBar'
-import HelpTooltip from '../Components/Help/HelpTooltip'
-import { ipcRenderer } from 'electron'
+import { useNavigation } from '../Hooks/useNavigation/useNavigation'
 import { useSaveAndExit } from '../Spotlight/utils/hooks'
-import { useNavigation, useNavigationState } from '../Hooks/useNavigation/useNavigation'
-import { useHelpStore } from '../Components/Help/HelpModal'
-import tinykeys from 'tinykeys'
+import { GridWrapper } from '../Styled/Grid'
+import InfoBar from './InfoBar'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -39,8 +37,6 @@ export type MainProps = { children: React.ReactNode }
 const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const theme = useTheme()
   const history = useHistory()
-  const stack = useNavigationState((state) => state.history)
-  const last10 = useNavigationState((state) => state.recents.lastOpened)
   const id = useEditorStore((state) => state.node.id)
   const showGraph = useGraphStore((state) => state.showGraph)
 
@@ -103,8 +99,6 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   }, [shortcuts])
 
   const Tree = useTreeFromLinks()
-
-  console.log({ stack, last10 })
 
   return (
     <AppWrapper>
