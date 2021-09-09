@@ -133,7 +133,7 @@ export const EditorStyles = styled.div`
 
   a {
     cursor: pointer;
-    color: ${({ theme }) => theme.colors.secondary};
+    color: ${({ theme }) => theme.colors.primary};
   }
 
   small,

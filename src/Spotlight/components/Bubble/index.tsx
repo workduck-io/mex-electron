@@ -10,7 +10,7 @@ const StyledBubble = styled.div<{ modal?: boolean }>`
   left: 0;
   top: 0;
   z-index: 1000;
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.background.modal};
   display: ${({ modal }) => (modal ? 'block' : 'none')};
   padding: 0.6rem;
   position: fixed;

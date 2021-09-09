@@ -5,7 +5,7 @@ import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import useDataStore from '../../../Editor/Store/DataStore'
 import { useContentStore } from '../../../Editor/Store/ContentStore'
 import { openNodeInMex } from '../../utils/hooks'
-import { useSaver, SaverButton } from '../../../Editor/Components/Saver'
+import { SaverButton } from '../../../Editor/Components/Saver'
 
 const NewEditor = () => {
   const nodeId = useEditorStore(({ node }) => node.id)

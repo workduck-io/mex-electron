@@ -8,8 +8,8 @@ export const spotlightTheme = generateTheme({
   // Palettes
   gray: {
     10: '#ffffff', // Surface
-    9: '#a3c3fd',
-    8: '#e5eeff',
+    9: '#e5eeff',
+    8: '#fff',
     7: '#f4f8ff',
     6: '#a3cdfd',
     5: '#8b9aac',
