@@ -3,6 +3,7 @@ import errorWarningLine from '@iconify-icons/ri/error-warning-line'
 import { Icon } from '@iconify/react'
 import { useCombobox } from 'downshift'
 import React, { useEffect, useState } from 'react'
+import { useNavigationState } from '../../Hooks/useNavigation/useNavigation'
 import useDataStore from '../../Editor/Store/DataStore'
 import { Input } from '../../Styled/Form'
 import { StyledCombobox, StyledInputWrapper, StyledMenu, Suggestion } from './NodeSelect.styles'
@@ -17,6 +18,7 @@ interface NodeSelectProps {
   handleSelectItem: (nodeId: string) => void
   handleCreateItem?: (nodeId: string) => void
 
+  prefillLast?: boolean
   menuOpen?: boolean
   autoFocus?: boolean
   defaultValue?: string | undefined
@@ -37,6 +39,7 @@ function NodeSelect ({
   placeholder,
   highlightWhenSelected,
   iconHighlight,
+  prefillLast,
   handleSelectItem,
   handleCreateItem
 }: NodeSelectProps) {
@@ -61,6 +64,8 @@ function NodeSelect ({
     value: l.key,
     type: 'exists'
   }))
+
+  const lastOpened = useNavigationState((store) => store.recents.lastOpened)
 
   const { inputItems, selectedItem } = nodeSelectState
 
@@ -137,7 +142,19 @@ function NodeSelect ({
       setInputItems(newItems)
       setInputValue(defaultValue)
     } else {
-      setInputItems(ilinks)
+      if (prefillLast && lastOpened.length > 0) {
+        setInputItems(
+          Array.from(lastOpened)
+            .reverse()
+            .map((l) => ({
+              text: l,
+              value: l,
+              type: 'exists'
+            }))
+        )
+      } else {
+        setInputItems(ilinks)
+      }
     }
     return () => {
       reset()
@@ -196,7 +213,8 @@ NodeSelect.defaultProps = {
   placeholder: 'Select Node',
   handleCreateItem: undefined,
   highlightWhenSelected: false,
-  iconHighlight: false
+  iconHighlight: false,
+  prefillLast: false
 }
 
 function isNew (input: string, items: ComboItem[]): boolean {

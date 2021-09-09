@@ -10,11 +10,12 @@ import { extractSnippetCommands } from '../Snippets/useSnippets'
 import { generateComboTexts } from '../Editor/Store/sampleTags'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
 import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
+import { useNavigation } from '../Hooks/useNavigation/useNavigation'
 
 export const useInitialize = () => {
   const initializeDataStore = useDataStore((state) => state.initializeDataStore)
   const initContents = useContentStore((state) => state.initContents)
-  const loadNode = useEditorStore((state) => state.loadNodeFromId)
+  const { push } = useNavigation()
   const initSpotlightSettings = useSpotlightSettingsStore((state) => state.initSpotlightSettings)
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setTheme = useThemeStore((state) => state.setTheme)
@@ -35,7 +36,7 @@ export const useInitialize = () => {
 
   const init = (data: FileData, initNodeId?: string) => {
     update(data)
-    loadNode(initNodeId || '@')
+    push(initNodeId || '@')
   }
 
   return { init, update }

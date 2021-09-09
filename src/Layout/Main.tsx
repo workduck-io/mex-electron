@@ -1,8 +1,12 @@
+import { ipcRenderer } from 'electron'
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
-import { useGraphStore } from '../Components/Graph/GraphStore'
 import styled, { useTheme } from 'styled-components'
+import tinykeys from 'tinykeys'
+import { useGraphStore } from '../Components/Graph/GraphStore'
+import { useHelpStore } from '../Components/Help/HelpModal'
+import HelpTooltip from '../Components/Help/HelpTooltip'
 import { Notifications } from '../Components/Notifications/Notifications'
 import SideBar from '../Components/Sidebar'
 import { navTooltip } from '../Components/Sidebar/Nav'
@@ -11,13 +15,10 @@ import { useLocalData } from '../Data/useLocalData'
 import { useSyncData } from '../Data/useSyncData'
 import { useTreeFromLinks } from '../Editor/Store/DataStore'
 import { useEditorStore } from '../Editor/Store/EditorStore'
-import { getInitialNode } from '../Editor/Store/helpers'
-import { GridWrapper } from '../Styled/Grid'
-import { PixelToCSS } from '../Styled/helpers'
-import InfoBar from './InfoBar'
-import HelpTooltip from '../Components/Help/HelpTooltip'
-import { ipcRenderer } from 'electron'
+import { useNavigation } from '../Hooks/useNavigation/useNavigation'
 import { useSaveAndExit } from '../Spotlight/utils/hooks'
+import { GridWrapper } from '../Styled/Grid'
+import InfoBar from './InfoBar'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -28,8 +29,6 @@ const Content = styled.div`
   display: flex;
   flex-grow: 1;
   grid-column-start: 2;
-  /* margin-left: ${({ theme }) => PixelToCSS(theme.width.sidebar)}; */
-  /* max-width: calc(100% - ${({ theme }) => PixelToCSS(theme.width.sidebar)}); */
   overflow: scroll;
 `
 
@@ -38,10 +37,10 @@ export type MainProps = { children: React.ReactNode }
 const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const theme = useTheme()
   const history = useHistory()
-  const loadNode = useEditorStore((state) => state.loadNode)
-  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
   const id = useEditorStore((state) => state.node.id)
   const showGraph = useGraphStore((state) => state.showGraph)
+
+  const { move, push } = useNavigation()
 
   const { init } = useInitialize()
 
@@ -51,7 +50,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
   useEffect(() => {
     ipcRenderer.on('open-node', (_event, { nodeId }) => {
-      loadNodeFromId(nodeId)
+      push(nodeId)
     })
   }, [])
 
@@ -73,13 +72,31 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
 
-    loadNode(getInitialNode())
+    push('@')
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     // Switch to the editor page whenever a new ID is loaded
     history.push('/editor')
   }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const shortcuts = useHelpStore((store) => store.shortcuts)
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      [shortcuts.gotoBackwards.keystrokes]: (event) => {
+        event.preventDefault()
+        move(-1)
+      },
+      [shortcuts.gotoForward.keystrokes]: (event) => {
+        event.preventDefault()
+        move(+1)
+      }
+    })
+    return () => {
+      unsubscribe()
+    }
+  }, [shortcuts])
 
   const Tree = useTreeFromLinks()
 

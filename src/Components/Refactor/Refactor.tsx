@@ -2,6 +2,7 @@ import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import tinykeys from 'tinykeys'
 import create from 'zustand'
 import { useRefactor } from '../../Editor/Actions/useRefactor'
@@ -77,7 +78,7 @@ const Refactor = () => {
   const setTo = useRefactorStore((store) => store.setTo)
   const setFrom = useRefactorStore((store) => store.setFrom)
 
-  const loadNodeFromId = useEditorStore((store) => store.loadNodeFromId)
+  const { push } = useNavigation()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -124,9 +125,9 @@ const Refactor = () => {
     const res = execRefactor(from, to)
     const nodeId = useEditorStore.getState().node.id
     if (doesLinkRemain(nodeId, res)) {
-      loadNodeFromId(nodeId)
+      push(nodeId)
     } else if (res.length > 0) {
-      loadNodeFromId(res[0].to)
+      push(res[0].to)
     }
     closeModal()
   }

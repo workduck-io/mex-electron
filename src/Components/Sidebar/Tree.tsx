@@ -14,6 +14,7 @@ import TreeNode from '../../Types/tree'
 import TreeExpandIcon from './Icon'
 import { withRefactor } from '../../Editor/Actions/useRefactor'
 import { getNodeIdLast, SEPARATOR } from './treeUtils'
+import { withNavigation } from '../../Hooks/useNavigation/withNavigation'
 
 const motion = {
   motionName: 'node-motion',
@@ -31,7 +32,7 @@ const motion = {
 interface RCTreeProps {
   tree: any
   currentNode: any
-  loadNode: any
+  push: any
   getMockRefactor: any
   execRefactor: any
   prefillRefactorModal: any
@@ -164,10 +165,10 @@ class Tree extends React.Component<RCTreeProps> {
 
   onSelect (_selectedKeys: Key[], info: any) {
     const { selectedNodes } = info
-    const { loadNode } = this.props
+    const { push } = this.props
 
     if (selectedNodes.length > 0) {
-      loadNode(selectedNodes[0] as TreeNode)
+      push(selectedNodes[0].key)
     }
   }
 
@@ -200,4 +201,4 @@ class Tree extends React.Component<RCTreeProps> {
   }
 }
 
-export default withRefactor(withNodeOps(Tree))
+export default withNavigation(withRefactor(withNodeOps(Tree)))

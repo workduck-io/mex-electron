@@ -20,6 +20,19 @@ export const defaultShortcuts = {
     keystrokes: '$mod+Shift+KeyH',
     category: 'Navigate'
   },
+
+  // Goto
+  gotoForward: {
+    title: 'Move Forward History',
+    keystrokes: '$mod+]',
+    category: 'Navigate'
+  },
+  gotoBackwards: {
+    title: 'Move Backwards History',
+    keystrokes: '$mod+[',
+    category: 'Navigate'
+  },
+
   // Actions
   save: {
     title: 'Save current document',

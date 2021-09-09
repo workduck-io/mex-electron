@@ -2,6 +2,7 @@ import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import tinykeys from 'tinykeys'
 import { useRefactor } from '../../Editor/Actions/useRefactor'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
@@ -21,7 +22,7 @@ interface RenameState {
 
 const Rename = () => {
   const { execRefactor, getMockRefactor } = useRefactor()
-  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
+  const { push } = useNavigation()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const [renameState, setRenameState] = useState<RenameState>({
@@ -109,9 +110,9 @@ const Rename = () => {
 
       const nodeId = useEditorStore.getState().node.id
       if (doesLinkRemain(nodeId, res)) {
-        loadNodeFromId(nodeId)
+        push(nodeId)
       } else if (res.length > 0) {
-        loadNodeFromId(res[0].to)
+        push(res[0].to)
       }
     }
 

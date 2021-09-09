@@ -2,6 +2,7 @@ import arrowGoBackLine from '@iconify-icons/ri/arrow-go-back-line'
 import { Icon } from '@iconify/react'
 import { transparentize } from 'polished'
 import React from 'react'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import styled from 'styled-components'
 import { useLinks } from '../../Editor/Actions/useLinks'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
@@ -56,7 +57,7 @@ const BackLinksHeader = styled.div`
 
 const Backlinks = () => {
   const { getBacklinks } = useLinks()
-  const loadNodeFromId = useEditorStore((store) => store.loadNodeFromId)
+  const { push } = useNavigation()
   const backlinks = getBacklinks(useEditorStore.getState().node.id)
 
   return (
@@ -73,7 +74,7 @@ const Backlinks = () => {
           </>
         )}
         {backlinks.map((l) => (
-          <BackLink key={`backlink_${l.nodeId}`} onClick={() => loadNodeFromId(l.nodeId)}>
+          <BackLink key={`backlink_${l.nodeId}`} onClick={() => push(l.nodeId)}>
             {l.nodeId}
           </BackLink>
         ))}
