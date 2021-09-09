@@ -19,9 +19,6 @@ export const useSaveData = () => {
   const saveData = () => {
     // console.log('We saved the data for you');
     // console.log(JSON.stringify(useContentStore.getState().contents, null, 2))
-    console.log('Content in Editor', useEditorStore.getState().content)
-    console.log('Node id: ', useEditorStore.getState().node.id)
-    console.log('Content: ', useContentStore.getState().contents[useEditorStore.getState().node.id])
 
     ipcRenderer.send('set-local-data', {
       ilinks: useDataStore.getState().ilinks,

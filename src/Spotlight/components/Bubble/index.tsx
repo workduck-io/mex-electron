@@ -3,16 +3,16 @@ import { Draggable } from '../Actions/styled'
 import WDLogo from '../Search/Logo'
 import React from 'react'
 import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
+import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
 
 const StyledBubble = styled.div<{ modal?: boolean }>`
-  margin: 0.4rem 0.4rem 0.4rem 0rem;
+  margin: 0.2rem 0.4rem 0.4rem 0rem;
   left: 0;
   top: 0;
   z-index: 1000;
   background-color: white;
   display: ${({ modal }) => (modal ? 'block' : 'none')};
-  opacity: ${({ modal }) => (modal ? 1 : 0)};
-  padding: 0.5rem;
+  padding: 0.6rem;
   position: fixed;
   ${Draggable};
 `
@@ -28,11 +28,12 @@ const Badge = styled.span`
 
 const Bubble = () => {
   const bubble = useSpotlightSettingsStore((state) => state.bubble)
+  const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
 
   return (
     <StyledBubble modal={bubble}>
       <WDLogo />
-      <Badge />
+      {nodeContent && <Badge />}
     </StyledBubble>
   )
 }

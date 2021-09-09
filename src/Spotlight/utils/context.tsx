@@ -8,7 +8,6 @@ import { getHtmlString } from '../components/Source'
 import { useContentStore } from '../../Editor/Store/ContentStore'
 import { FileData } from '../../Types/data'
 import { useSpotlightSettingsStore } from '../store/settings'
-import { useSaveData } from '../../Data/useSaveData'
 
 export const useLocalShortcuts = () => {
   const history = useHistory()
@@ -71,7 +70,6 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
   const [localData, setLocalData] = useState<FileData>()
   const [temp, setTemp] = useState<any>()
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
-  const saveData = useSaveData()
 
   const { init, update } = useInitialize()
 
@@ -113,10 +111,6 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
     ipcRenderer.on('sync-data', (_event, arg) => {
       update(arg)
       // loadNode(useEditorStore.getState().node)
-    })
-
-    ipcRenderer.on('save-and-exit', () => {
-      saveData()
     })
 
     ipcRenderer.send('get-local-data')

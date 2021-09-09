@@ -4,18 +4,14 @@ import Editor from '../../../Editor/Editor'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import useDataStore from '../../../Editor/Store/DataStore'
 import { useContentStore } from '../../../Editor/Store/ContentStore'
-import { useSaveData } from '../../../Data/useSaveData'
-import { useStoreEditorValue } from '@udecode/plate-core'
-import { openNodeInMex } from '../../../Spotlight/utils/hooks'
+import { openNodeInMex } from '../../utils/hooks'
+import { useSaver, SaverButton } from '../../../Editor/Components/Saver'
 
 const NewEditor = () => {
   const nodeId = useEditorStore(({ node }) => node.id)
   const addILink = useDataStore((s) => s.addILink)
 
-  const setFsContent = useContentStore((state) => state.setContent)
   const setSaved = useContentStore((state) => state.setSaved)
-
-  const editorState = useStoreEditorValue()
   const fsContent = useEditorStore((state) => state.content)
 
   const [content, setContent] = useState<any[] | undefined>(undefined)
@@ -26,14 +22,11 @@ const NewEditor = () => {
     }
   }, [fsContent, nodeId])
 
-  const saveData = useSaveData()
+  const { onSave: onSaveFs } = useSaver()
 
   const onSave = () => {
     addILink(nodeId)
-    if (editorState) {
-      setFsContent(nodeId, editorState)
-    }
-    saveData()
+    onSaveFs()
     setSaved(true)
     openNodeInMex(nodeId)
   }
@@ -48,6 +41,7 @@ const NewEditor = () => {
           content={content}
           editorId={nodeId}
         />
+        <SaverButton callbackAfterSave={onSave} noButton />
       </FullEditor>
     </StyledEditor>
   )
