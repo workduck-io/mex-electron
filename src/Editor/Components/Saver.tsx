@@ -38,18 +38,20 @@ interface SaverButtonProps {
   title?: string
   noButton?: boolean
   callbackAfterSave?: () => void
+  callbackBeforeSave?: () => void
 }
 
 /** A very special saver button
  *
  * It implements the save action and shortcuts in isolation so that the editor does not rerender on every document save.
  */
-export const SaverButton = ({ callbackAfterSave, title, noButton }: SaverButtonProps) => {
+export const SaverButton = ({ callbackAfterSave, callbackBeforeSave, title, noButton }: SaverButtonProps) => {
   const { onSave: onSaveFs } = useSaver()
 
   const shortcuts = useHelpStore((state) => state.shortcuts)
 
   const onSave = () => {
+    if (callbackBeforeSave) callbackBeforeSave()
     onSaveFs()
     if (callbackAfterSave) callbackAfterSave()
   }
