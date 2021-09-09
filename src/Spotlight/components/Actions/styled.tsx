@@ -40,10 +40,11 @@ export const Action = styled.div`
 export const ActionTitle = styled.div`
   font-size: 0.8rem;
   margin-bottom: 4px;
-  color: rgb(141, 141, 141);
+  color: ${({ theme }) => theme.colors.text.heading};
 `
 
 export const ActionDescStyled = styled.div`
+  color: ${({ theme }) => theme.colors.text.fade};
   display: flex;
   flex: 1;
   align-items: center;
@@ -67,6 +68,7 @@ export const CreateMex = styled.div<ColorProp>`
 
 export const ActionDesc = styled.div<ColorProp>`
   ${({ showColor }) => showColor && StyledBackground}
+  color: ${({ theme }) => theme.colors.text.fade};
   font-weight: lighter;
   padding: 0.5rem;
   border-radius: 8px;
