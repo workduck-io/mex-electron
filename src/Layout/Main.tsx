@@ -17,6 +17,7 @@ import { PixelToCSS } from '../Styled/helpers'
 import InfoBar from './InfoBar'
 import HelpTooltip from '../Components/Help/HelpTooltip'
 import { ipcRenderer } from 'electron'
+import { useSaveAndExit } from '../Spotlight/utils/hooks'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -44,6 +45,8 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
   const { init } = useInitialize()
 
+  useSaveAndExit()
+
   const localData = useLocalData()
 
   useEffect(() => {
@@ -60,7 +63,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
   /** Initialization of the app details occur here */
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       localData
         .then((d) => {
           // console.log('Data here', d);

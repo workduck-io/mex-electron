@@ -17,6 +17,7 @@ export interface FileData {
   syncBlocks: SyncBlockData[]
   userSettings: {
     theme: string
+    spotlight: { [key: string]: any }
   }
   snippets: Snippet[]
 }

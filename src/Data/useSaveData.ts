@@ -5,6 +5,8 @@ import useDataStore from '../Editor/Store/DataStore'
 import { useSyncStore } from '../Editor/Store/SyncStore'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
 import { useUpdater } from './useUpdater'
+import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
+import { useEditorStore } from '../Editor/Store/EditorStore'
 
 interface UserSettings {
   // Key of theme id in ThemeStore
@@ -26,7 +28,10 @@ export const useSaveData = () => {
       syncBlocks: useSyncStore.getState().syncBlocks,
       snippets: useSnippetStore.getState().snippets,
       userSettings: {
-        theme: useThemeStore.getState().theme.id
+        theme: useThemeStore.getState().theme.id,
+        spotlight: {
+          showSource: useSpotlightSettingsStore.getState().showSource
+        }
       }
     })
 
