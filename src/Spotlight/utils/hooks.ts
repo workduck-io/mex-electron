@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { ipcRenderer } from 'electron'
 import { useEffect, useState } from 'react'
+import { useSaver } from '../../Editor/Components/Saver'
 
 export const useCurrentIndex = (data: Array<any> | undefined, search: string) => {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -37,6 +38,26 @@ export const useCurrentIndex = (data: Array<any> | undefined, search: string) =>
   }, [search])
 
   return currentIndex
+}
+
+export const useSaveAndExit = () => {
+  const [saved, setSaved] = useState(true)
+
+  const { onSave } = useSaver()
+
+  useEffect(() => {
+    if (!saved) {
+      onSave()
+    }
+  }, [saved])
+
+  useEffect(() => {
+    ipcRenderer.once('save-and-exit', () => {
+      setSaved(false)
+    })
+  }, [])
+
+  return [saved]
 }
 
 export const openNodeInMex = (nodeId: string) => ipcRenderer.send('open-node-in-mex', { nodeId: nodeId })

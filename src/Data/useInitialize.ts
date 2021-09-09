@@ -9,11 +9,13 @@ import { getTheme } from '../Styled/themes/defaultThemes'
 import { extractSnippetCommands } from '../Snippets/useSnippets'
 import { generateComboTexts } from '../Editor/Store/sampleTags'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
+import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
 
 export const useInitialize = () => {
   const initializeDataStore = useDataStore((state) => state.initializeDataStore)
   const initContents = useContentStore((state) => state.initContents)
   const loadNode = useEditorStore((state) => state.loadNodeFromId)
+  const initSpotlightSettings = useSpotlightSettingsStore((state) => state.initSpotlightSettings)
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setTheme = useThemeStore((state) => state.setTheme)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
@@ -24,6 +26,7 @@ export const useInitialize = () => {
     const slashCommands = generateComboTexts([...defaultCommands, ...snippetCommands])
 
     initializeDataStore(tags, ilinks, slashCommands, linkCache)
+    initSpotlightSettings(data.userSettings.spotlight)
     initContents(contents)
     initSyncBlocks(syncBlocks)
     initSnippets(snippets)
