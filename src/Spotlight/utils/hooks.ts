@@ -1,6 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import { ipcRenderer } from 'electron'
 import { useEffect, useState } from 'react'
+import { isFromSameSource } from '../../Editor/Store/helpers'
+import { NodeEditorContent } from '../../Editor/Store/Types'
 import { useSaver } from '../../Editor/Components/Saver'
 
 export const useCurrentIndex = (data: Array<any> | undefined, search: string) => {
@@ -58,6 +60,48 @@ export const useSaveAndExit = () => {
   }, [])
 
   return [saved]
+}
+
+export const combineSources = (
+  oldSourceContent: NodeEditorContent,
+  newSourceContent: NodeEditorContent
+): NodeEditorContent => {
+  let isParagraphSource = false
+
+  const oldSourceIndex = oldSourceContent.length - 1
+  const oldSourceChildrenIndex = oldSourceContent[oldSourceIndex].children.length - 1
+
+  const newSourceIndex = 0
+  const newSourceChildrenIndex = newSourceContent[newSourceIndex].children.length - 1
+
+  let oldSource = oldSourceContent[oldSourceIndex].children[oldSourceChildrenIndex]
+  let newSource = newSourceContent[newSourceIndex].children[newSourceChildrenIndex]
+
+  if (oldSource.type === 'p') {
+    oldSource = oldSource.children[oldSource.children.length - 1]
+    isParagraphSource = true
+  }
+
+  if (newSource.type === 'p') {
+    newSource = newSource.children[newSource.children.length - 1]
+  }
+
+  const areSameSource = isFromSameSource(oldSource, newSource)
+
+  const removedContent = areSameSource
+    ? oldSourceContent.map((content, index) => {
+      console.log(index, content)
+      if (index === oldSourceIndex) {
+        const sliceToIndex = isParagraphSource ? oldSourceChildrenIndex : oldSourceChildrenIndex - 2
+        return {
+          children: content.children.slice(0, sliceToIndex)
+        }
+      }
+      return content
+    })
+    : oldSourceContent
+
+  return removedContent
 }
 
 export const openNodeInMex = (nodeId: string) => ipcRenderer.send('open-node-in-mex', { nodeId: nodeId })

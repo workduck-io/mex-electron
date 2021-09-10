@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { StyledBackground } from '../Spotlight/styled'
 import { Scroll } from '../../styles/layout'
@@ -11,6 +11,7 @@ import { useStoreEditorRef } from '@udecode/plate-core'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
 import { useSpotlightContext } from '../../../Spotlight/utils/context'
 import { NodeEditorContent } from '../../../Editor/Store/Types'
+import { combineSources } from '../../../Spotlight/utils/hooks'
 
 export const StyledPreview = styled.div`
   ${StyledBackground}
@@ -56,7 +57,9 @@ export const useDeserializeSelectionToNodes = (
 
 const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }) => {
   const { search, selection } = useSpotlightContext()
+
   const setFsContent = useContentStore((state) => state.setContent)
+  const previewContent = useEditorStore((state) => state.content)
   const fsContent = useEditorStore((state) => state.content)
   const ref = useRef<HTMLDivElement>()
 
@@ -67,28 +70,27 @@ const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }
     ref.current.scrollTop = ref.current.scrollHeight
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [content, setContent] = useState<any[] | undefined>(undefined)
   const nodes = useDeserializeSelectionToNodes(nodeId, preview)
 
   useEffect(() => {
     if (preview.isSelection) {
-      setNodeContent([...fsContent, { children: nodes }])
-      console.log(JSON.stringify(nodes, null, 2))
-      setFsContent(nodeId, [...fsContent, { children: nodes }, { children: [{ text: '' }] }])
+      const newNodeContent = [{ children: nodes }]
+      const changedContent = combineSources(fsContent, newNodeContent)
+
+      setNodeContent([...changedContent, { children: nodes }])
+      setFsContent(nodeId, [...changedContent, { children: nodes }])
     }
-    if (!search) loadNodeFromId(nodeId)
   }, [preview.text])
 
   useEffect(() => {
-    setContent(fsContent)
-  }, [fsContent])
+    if (!search) loadNodeFromId(nodeId)
+  }, [preview.text])
 
   return (
     <StyledPreview ref={ref}>
       {selection && <SeePreview onClick={handleScrollToBottom}>See Preview</SeePreview>}
       <StyledEditorPreview>
-        <Editor focusAtBeginning={false} readOnly content={content} editorId={nodeId} />
+        <Editor focusAtBeginning={false} readOnly content={previewContent} editorId={nodeId} />
       </StyledEditorPreview>
     </StyledPreview>
   )
