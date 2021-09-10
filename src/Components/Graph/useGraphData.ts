@@ -167,6 +167,15 @@ export const useGraphData = () => {
   const nodeLinks = getLinks(nodeId)
   const newNodes = filterNodeInLinks(nodeId, nodes, nodeLinks)
 
+  if (newNodes.length === 0) {
+    newNodes.push({
+      id: 2,
+      nodeId,
+      label: nodeId,
+      ...getNodeStyles(0, theme)
+    })
+  }
+
   nodeLinks.forEach((l) =>
     edges.push({
       to: getNodeNumId(l.to, newNodes),
