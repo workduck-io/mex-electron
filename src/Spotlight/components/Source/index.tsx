@@ -3,7 +3,6 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 
 export const getHtmlString = (metadata: any) => {
-  console.log(metadata)
   return ReactDOMServer.renderToStaticMarkup(<Source metadata={metadata} />)
 }
 
@@ -17,7 +16,7 @@ const Source: React.FC<{ metadata: any }> = ({ metadata }) => {
       <>
         <br />
         <br />
-        <strong>Source:</strong>
+        <strong>Source: </strong>
         <a href={metadata.url} target="_blank" rel="noopener noreferrer">
           {metadata?.title}
         </a>
@@ -30,7 +29,8 @@ const Source: React.FC<{ metadata: any }> = ({ metadata }) => {
     <>
       <br />
       <br />
-      <strong>Source:</strong> <a href="#">{`${metadata?.title} ( ${metadata?.owner?.name} )`}</a>
+      <strong>Source: </strong>
+      <a href="#">{`${metadata?.title} ( ${metadata?.owner?.name} )`}</a>
     </>
   )
 }

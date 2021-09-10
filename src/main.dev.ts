@@ -22,6 +22,7 @@ let tray
 let mex: BrowserWindow | null
 let spotlight: BrowserWindow | null
 let spotlightBubble = false
+let isSelection = false
 
 let trayIconSrc = path.join(__dirname, '..', 'assets/icon.png')
 if (process.platform === 'darwin') {
@@ -47,8 +48,8 @@ const MEX_WINDOW_OPTIONS = {
   height: 1500,
   webPreferences: {
     nodeIntegration: true,
-    contextIsolation: false,
-  },
+    contextIsolation: false
+  }
 }
 
 const SPOTLIGHT_WINDOW_OPTIONS = {
@@ -64,8 +65,8 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
   resizable: false,
   webPreferences: {
     nodeIntegration: true,
-    contextIsolation: false,
-  },
+    contextIsolation: false
+  }
 }
 
 export const setFileData = (data: FileData) => {
@@ -107,7 +108,7 @@ const createSpotLighWindow = (show?: boolean) => {
     spotlight = null
   })
 
-  // spotlight.webContents.openDevTools()
+  spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -154,8 +155,8 @@ const createMexWindow = () => {
     const callbackOptions = {
       responseHeaders: {
         ...details.responseHeaders,
-        'Content-Security-Policy': [''],
-      },
+        'Content-Security-Policy': ['']
+      }
     }
     callback(callbackOptions)
   })
@@ -166,9 +167,9 @@ const createMexWindow = () => {
       .watch(getSaveLocation(app), {
         alwaysStat: true,
         awaitWriteFinish: {
-          stabilityThreshold: 2000,
+          stabilityThreshold: 2000
           // pollInterval: 1000,
-        },
+        }
       })
       .on('change', () => {
         let fileData: FileData
@@ -198,12 +199,14 @@ const createWindow = () => {
 const sendToRenderer = (selection: any) => {
   if (!selection) {
     spotlight?.webContents.send('selected-text', selection)
+    isSelection = false
     return
   }
+  isSelection = true
   const text = sanitizeHtml(selection.text)
   const metaSelection = {
     ...selection,
-    text,
+    text
   }
   spotlight?.webContents.send('selected-text', metaSelection)
 }
@@ -212,7 +215,11 @@ const toggleMainWindow = (window) => {
   if (!window) {
     createSpotLighWindow(true)
   } else if (spotlightBubble) {
-    console.log(spotlightBubble)
+    if (!isSelection) {
+      spotlight?.webContents.send('spotlight-bubble', { isChecked: false })
+      spotlight.setContentSize(700, 400, true)
+      spotlightBubble = false
+    }
   } else if (window.isFocused()) {
     window.hide()
   } else {
@@ -232,7 +239,6 @@ const handleToggleMainWindow = async () => {
   if (selection?.text && selection?.metadata) {
     sendToRenderer(selection)
   } else sendToRenderer(undefined)
-  // syncFileData()
 }
 
 const closeWindow = () => {
@@ -278,7 +284,7 @@ app
       { label: 'Open Mex', type: 'radio' },
       { label: 'Toggle Spotlight search ', type: 'radio' },
       { label: 'Create new Mex', type: 'radio', checked: true },
-      { label: 'Search', type: 'radio' },
+      { label: 'Search', type: 'radio' }
     ])
 
     tray.setToolTip('Mex')
