@@ -32,6 +32,7 @@ const motion = {
 interface RCTreeProps {
   tree: any
   currentNode: any
+  displayMenu: any
   push: any
   getMockRefactor: any
   execRefactor: any
@@ -174,7 +175,7 @@ class Tree extends React.Component<RCTreeProps> {
 
   render () {
     const { expandedKeys, autoExpandParent }: any = this.state
-    const { tree, currentNode } = this.props
+    const { tree, currentNode, displayMenu } = this.props
 
     // let newExpKeys = expandedKeys !== undefined ? [...expandedKeys, currentNode.key] : [currentNode.key]
 
@@ -195,6 +196,7 @@ class Tree extends React.Component<RCTreeProps> {
           switcherIcon={TreeExpandIcon}
           showIcon={false}
           onSelect={this.onSelect}
+          onRightClick={displayMenu}
         />
       </StyledTree>
     )

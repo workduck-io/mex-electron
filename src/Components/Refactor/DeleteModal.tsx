@@ -10,6 +10,7 @@ import { Button } from '../../Styled/Buttons'
 import { useHelpStore } from '../Help/HelpModal'
 import NodeSelect from '../NodeSelect/NodeSelect'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
+import create from 'zustand'
 
 interface DeleteState {
   open: boolean
@@ -17,39 +18,65 @@ interface DeleteState {
   mockData: string[]
 }
 
+interface DeleteStoreState {
+  open: boolean
+  focus: boolean
+  mockRefactored: string[]
+  del: string | undefined
+  openModal: (id?: string) => void
+  closeModal: () => void
+  setFocus: (focus: boolean) => void
+  setDel: (del: string) => void
+  setMockRefactored: (mr: string[]) => void
+  setDelAndRefactored: (del: string, mR: string[]) => void
+}
+
+export const useDeleteStore = create<DeleteStoreState>((set) => ({
+  open: false,
+  mockRefactored: [],
+  del: undefined,
+  focus: true,
+  openModal: (id) => {
+    if (id) {
+      set({ open: true, del: id })
+    } else {
+      set({
+        open: true
+      })
+    }
+  },
+  closeModal: () => {
+    set({
+      del: undefined,
+      mockRefactored: [],
+      open: false
+    })
+  },
+  setFocus: (focus) => set({ focus }),
+  setDel: (del) => set({ del }),
+  setMockRefactored: (mockRefactored) => set({ mockRefactored }),
+  setDelAndRefactored: (del, mockRefactored) => set({ del, mockRefactored })
+}))
+
 const Delete = () => {
   const { getMockDelete, execDelete } = useDelete()
   const { push } = useNavigation()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
-  const [deleteState, setDeleteState] = useState<DeleteState>({
-    open: false,
-    del: '',
-    mockData: []
-  })
+  const openModal = useDeleteStore((store) => store.openModal)
+  const closeModal = useDeleteStore((store) => store.closeModal)
+  const setDel = useDeleteStore((store) => store.setDel)
+  const setMockRefactored = useDeleteStore((store) => store.setMockRefactored)
 
-  const openModal = () => {
-    const nodeId = useEditorStore.getState().node.id
-    setDeleteState({
-      open: true,
-      del: nodeId,
-      mockData: getMockDelete(nodeId)
-    })
-  }
-
-  const closeModal = () => {
-    setDeleteState({
-      open: false,
-      del: '',
-      mockData: []
-    })
-  }
+  const del = useDeleteStore((store) => store.del)
+  const open = useDeleteStore((store) => store.open)
+  const mockRefactored = useDeleteStore((store) => store.mockRefactored)
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showDelete.keystrokes]: (event) => {
         event.preventDefault()
-        openModal()
+        openModal(useEditorStore.getState().node.id)
       }
     })
     return () => {
@@ -61,15 +88,16 @@ const Delete = () => {
 
   const handleDeleteChange = (newValue: string) => {
     if (newValue) {
-      setDeleteState({
-        ...deleteState,
-        del: newValue,
-        mockData: getMockDelete(newValue)
-      })
+      setDel(newValue)
     }
   }
 
-  const { del, mockData, open } = deleteState
+  // const { del, mockData, open } = deleteState
+  useEffect(() => {
+    if (del) {
+      setMockRefactored(getMockDelete(del))
+    }
+  }, [del])
 
   const handleDelete = () => {
     const { newLinks } = execDelete(del)
@@ -87,18 +115,18 @@ const Delete = () => {
 
       <NodeSelect
         autoFocus
-        menuOpen
-        defaultValue={useEditorStore.getState().node.id}
+        // menuOpen
+        defaultValue={del ?? useEditorStore.getState().node.id}
         handleSelectItem={handleDeleteChange}
       />
 
-      {mockData.length > 0 && (
+      {mockRefactored.length > 0 && (
         <MockRefactorMap>
           <MRMHead>
             <h1>Please confirm deleting the node(s):</h1>
-            <p>{mockData.length} changes</p>
+            <p>{mockRefactored.length} changes</p>
           </MRMHead>
-          {mockData.map((d) => (
+          {mockRefactored.map((d) => (
             <MRMRow key={`DelNodeModal_${d}`}>
               <DeleteIcon>
                 <Icon icon={deleteBin2Line}></Icon>

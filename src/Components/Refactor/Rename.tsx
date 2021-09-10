@@ -12,49 +12,83 @@ import { useHelpStore } from '../Help/HelpModal'
 import NodeSelect from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
+import create from 'zustand'
 
-interface RenameState {
+interface RenameStoreState {
   open: boolean
-  from: string
-  to: string
-  mockRefactor: NodeLink[]
+  focus: boolean
+  mockRefactored: NodeLink[]
+  from: string | undefined
+  to: string | undefined
+  openModal: (id?: string) => void
+  closeModal: () => void
+  setMockRefactored: (mR: NodeLink[]) => void
+  setFocus: (focus: boolean) => void
+  setFrom: (from: string) => void
+  setTo: (from: string) => void
+  prefillModal: (from: string, to: string) => void
 }
+
+export const useRenameStore = create<RenameStoreState>((set) => ({
+  open: false,
+  mockRefactored: [],
+  from: undefined,
+  to: undefined,
+  focus: true,
+  openModal: (id) => {
+    if (id) {
+      set({ open: true, from: id })
+    } else {
+      set({
+        open: true
+      })
+    }
+  },
+  closeModal: () => {
+    set({
+      from: undefined,
+      to: undefined,
+      mockRefactored: [],
+      open: false
+    })
+  },
+  setFocus: (focus: boolean) => set({ focus }),
+  setMockRefactored: (mockRefactored: NodeLink[]) => {
+    set({ mockRefactored })
+  },
+  setFrom: (from: string) => set({ from }),
+  setTo: (to: string) => set({ to }),
+  prefillModal: (from: string, to: string) =>
+    set({
+      from,
+      to,
+      open: true,
+      focus: false
+    })
+}))
 
 const Rename = () => {
   const { execRefactor, getMockRefactor } = useRefactor()
   const { push } = useNavigation()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
-  const [renameState, setRenameState] = useState<RenameState>({
-    open: false,
-    from: '',
-    to: '',
-    mockRefactor: []
-  })
+  const open = useRenameStore((store) => store.open)
+  const focus = useRenameStore((store) => store.focus)
+  const to = useRenameStore((store) => store.to)
+  const from = useRenameStore((store) => store.from)
+  const mockRefactored = useRenameStore((store) => store.mockRefactored)
 
-  const openModal = () => {
-    const nodeId = useEditorStore.getState().node.id
-    setRenameState((state) => ({
-      ...state,
-      open: true,
-      from: nodeId
-    }))
-  }
-
-  const closeModal = () => {
-    setRenameState({
-      open: false,
-      from: '',
-      to: '',
-      mockRefactor: []
-    })
-  }
+  const openModal = useRenameStore((store) => store.openModal)
+  const closeModal = useRenameStore((store) => store.closeModal)
+  const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
+  const setTo = useRenameStore((store) => store.setTo)
+  const setFrom = useRenameStore((store) => store.setFrom)
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showRename.keystrokes]: (event) => {
         event.preventDefault()
-        openModal()
+        openModal(useEditorStore.getState().node.id)
       }
     })
     return () => {
@@ -62,51 +96,35 @@ const Rename = () => {
     }
   }, [shortcuts])
 
-  // console.log({ to, from, open });
-
   const handleFromChange = (newValue: string) => {
     if (newValue) {
-      setRenameState({
-        ...renameState,
-        from: newValue
-      })
+      setFrom(newValue)
     }
   }
 
   const handleToChange = (newValue: string) => {
     if (newValue) {
-      setRenameState((state) => ({
-        ...state,
-        to: newValue
-      }))
+      setTo(newValue)
     }
   }
 
   const handleToCreate = (inputValue: string) => {
     if (inputValue) {
-      setRenameState((state) => ({
-        ...state,
-        to: inputValue
-      }))
+      setTo(inputValue)
     }
   }
 
-  const { from, to, open, mockRefactor } = renameState
+  // const { from, to, open, mockRefactor } = renameState
 
   useEffect(() => {
-    // console.log({ to, from });
     if (to && from) {
-      setRenameState((state) => ({
-        ...state,
-        mockRefactor: getMockRefactor(from, to)
-      }))
+      setMockRefactored(getMockRefactor(from, to))
     }
   }, [to, from])
 
   const handleRefactor = () => {
     if (to && from) {
       const res = execRefactor(from, to)
-      // console.log(res)
 
       const nodeId = useEditorStore.getState().node.id
       if (doesLinkRemain(nodeId, res)) {
@@ -125,9 +143,9 @@ const Rename = () => {
 
       <NodeSelect
         placeholder="Rename node from..."
-        defaultValue={useEditorStore.getState().node.id}
+        defaultValue={from ?? useEditorStore.getState().node.id}
         highlightWhenSelected
-        iconHighlight={from !== ''}
+        iconHighlight={from !== undefined}
         handleSelectItem={handleFromChange}
       />
 
@@ -136,18 +154,18 @@ const Rename = () => {
         autoFocus
         menuOpen
         highlightWhenSelected
-        iconHighlight={to !== ''}
+        iconHighlight={to !== undefined}
         handleSelectItem={handleToChange}
         handleCreateItem={handleToCreate}
       />
 
-      {mockRefactor.length > 0 && (
+      {mockRefactored.length > 0 && (
         <MockRefactorMap>
           <MRMHead>
             <h1>Nodes being refactored... </h1>
-            <p>{mockRefactor.length} changes</p>
+            <p>{mockRefactored.length} changes</p>
           </MRMHead>
-          {mockRefactor.map((t) => (
+          {mockRefactored.map((t) => (
             <MRMRow key={`MyKeys_${t.from}`}>
               <p>{t.from}</p>
               <ArrowIcon>

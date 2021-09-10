@@ -4,6 +4,12 @@ import { useRefactorStore } from '../../Components/Refactor/Refactor'
 import { NodeLink } from '../../Types/relations'
 import { Contents, useContentStore } from '../Store/ContentStore'
 import useDataStore from '../Store/DataStore'
+import { SEPARATOR } from '../../Components/Sidebar/treeUtils'
+
+const isMatch = (id: string, from: string) => {
+  if (from === id) return true
+  if (id.startsWith(from + SEPARATOR)) return true
+}
 
 export const useRefactor = () => {
   const ilinks = useDataStore((state) => state.ilinks)
@@ -30,7 +36,7 @@ export const useRefactor = () => {
 
   const getMockRefactor = (from: string, to: string): NodeLink[] => {
     const refactorMap = ilinks.filter((i) => {
-      const match = i.text.startsWith(from)
+      const match = isMatch(i.text, from)
 
       // console.log('Trying matches', i.text, from, match, i.text.startsWith(from));
       return match
