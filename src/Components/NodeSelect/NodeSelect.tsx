@@ -96,7 +96,7 @@ function NodeSelect ({
     onSelectedItemChange: handleSelectedItemChange,
     onHighlightedIndexChange: ({ highlightedIndex }) => {
       const highlightedItem = inputItems[highlightedIndex]
-      if (highlightedItem && highlightedItem.value && highlightedItem.type !== 'new') {
+      if (highlightedItem && highlightedItem.value) {
         setInputValue(highlightedItem.value)
       }
     }
@@ -104,30 +104,30 @@ function NodeSelect ({
 
   function handleSelectedItemChange ({ selectedItem }: any) {
     if (selectedItem) {
+      setSelectedItem(selectedItem)
+      setInputValue(selectedItem.value)
       if (selectedItem.type === 'new') {
         handleCreateItem(selectedItem.value)
       } else {
         handleSelectItem(selectedItem.value)
       }
-      setSelectedItem(selectedItem)
-      setInputValue(selectedItem.value)
     }
     toggleMenu()
   }
 
   const onKeyUp = (event) => {
     if (event.key === 'Enter') {
-      if (inputItems[0] && highlightedIndex < 0) {
+      if (inputItems[0] && highlightedIndex < 0 && selectedItem === null) {
         const defaultItem = inputItems[0]
+        setInputValue(defaultItem.value)
         setSelectedItem(defaultItem)
         if (defaultItem.type === 'new') {
           handleCreateItem(defaultItem.value)
         } else {
           handleSelectItem(defaultItem.value)
         }
-        setInputValue(defaultItem.value)
-        toggleMenu()
       }
+      toggleMenu()
     }
   }
 
@@ -141,6 +141,7 @@ function NodeSelect ({
       const newItems = getNewItems(defaultValue)
       setInputItems(newItems)
       setInputValue(defaultValue)
+      setSelectedItem({ text: defaultValue, value: defaultValue, type: 'exists' })
     } else {
       if (prefillLast && lastOpened.length > 0) {
         setInputItems(
@@ -161,8 +162,6 @@ function NodeSelect ({
     }
   }, [])
 
-  // console.log({ selectedItem })
-
   return (
     <StyledInputWrapper>
       <StyledCombobox {...getComboboxProps()}>
@@ -172,8 +171,8 @@ function NodeSelect ({
           placeholder={placeholder}
           // defaultValue={defaultValue}
           onChange={(e) => {
-            onInpChange(e)
             getInputProps().onChange(e)
+            onInpChange(e)
           }}
           onKeyUp={onKeyUp}
         />
