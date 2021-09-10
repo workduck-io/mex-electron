@@ -6,7 +6,7 @@ import links from '../../Conf/links'
 import { SectionHeading, SidebarContent, SidebarDiv, SidebarSection } from '../../Styled/Sidebar'
 import TreeNode from '../../Types/tree'
 import Nav from './Nav'
-import Tree from './Tree'
+import { TreeWithContextMenu } from './TreeWithContextMenu'
 
 export type SideBarProps = { tree: TreeNode[]; starred: TreeNode[] }
 
@@ -21,7 +21,7 @@ const SideBar = ({ tree, starred }: SideBarProps) => (
           <Icon height={20} icon={starLine} />
           <h2>Starred</h2>
         </SectionHeading>
-        <Tree tree={starred} />
+        <TreeWithContextMenu tree={starred} />
       </SidebarSection>
 
       <SidebarSection className="tree">
@@ -29,7 +29,7 @@ const SideBar = ({ tree, starred }: SideBarProps) => (
           <Icon height={20} icon={gitBranchLine} />
           <h2>Tree</h2>
         </SectionHeading>
-        <Tree tree={tree} />
+        <TreeWithContextMenu tree={tree} />
       </SidebarSection>
     </SidebarContent>
   </SidebarDiv>
