@@ -71,6 +71,8 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
   const [temp, setTemp] = useState<any>()
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
 
+  const setBubble = useSpotlightSettingsStore((state) => state.setBubble)
+
   const { init, update } = useInitialize()
 
   const value = {
@@ -106,6 +108,10 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
       const editorID = getNewDraftKey()
       init(arg, editorID)
       setLocalData(arg)
+    })
+
+    ipcRenderer.on('spotlight-bubble', (_event, arg) => {
+      setBubble()
     })
 
     ipcRenderer.on('sync-data', (_event, arg) => {

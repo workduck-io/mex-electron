@@ -22,6 +22,7 @@ let tray
 let mex: BrowserWindow | null
 let spotlight: BrowserWindow | null
 let spotlightBubble = false
+let isSelection = false
 
 let trayIconSrc = path.join(__dirname, '..', 'assets/icon.png')
 if (process.platform === 'darwin') {
@@ -198,8 +199,10 @@ const createWindow = () => {
 const sendToRenderer = (selection: any) => {
   if (!selection) {
     spotlight?.webContents.send('selected-text', selection)
+    isSelection = false
     return
   }
+  isSelection = true
   const text = sanitizeHtml(selection.text)
   const metaSelection = {
     ...selection,
@@ -212,7 +215,11 @@ const toggleMainWindow = (window) => {
   if (!window) {
     createSpotLighWindow(true)
   } else if (spotlightBubble) {
-    console.log(spotlightBubble)
+    if (!isSelection) {
+      spotlight?.webContents.send('spotlight-bubble', { isChecked: false })
+      spotlight.setContentSize(700, 400, true)
+      spotlightBubble = false
+    }
   } else if (window.isFocused()) {
     window.hide()
   } else {
@@ -232,7 +239,6 @@ const handleToggleMainWindow = async () => {
   if (selection?.text && selection?.metadata) {
     sendToRenderer(selection)
   } else sendToRenderer(undefined)
-  // syncFileData()
 }
 
 const closeWindow = () => {

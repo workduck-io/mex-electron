@@ -1,10 +1,11 @@
+import { SourceType } from '../../Spotlight/components/Source/types'
 import { EditorStateProps } from '../../Types/EditorContext'
 import TreeNode from '../../Types/tree'
 import { useContentStore } from './ContentStore'
 import { NodeEditorContent } from './Types'
 
 /** Get the contents of the node with id */
-export function getContent(id: string): NodeEditorContent {
+export function getContent (id: string): NodeEditorContent {
   // console.log('Loading ID', id);
   // create a hashmap with id vs content
   // load the content from hashmap
@@ -49,6 +50,21 @@ export function getContent(id: string): NodeEditorContent {
   return [{ children: [{ text: '' }] }]
 }
 
+export const isFromSameSource = (oldSource: SourceType, newSource: SourceType): boolean => {
+  if (oldSource.url === newSource.url) {
+    if (oldSource.url === '#') {
+      const oldSourceAppName = oldSource.children[0].text
+      const newSourceAppName = newSource.children[0].text
+
+      return oldSourceAppName === newSourceAppName
+    }
+
+    return true
+  }
+
+  return false
+}
+
 export const getInitialEditorState = (): EditorStateProps => {
   return {
     node: {
@@ -56,9 +72,9 @@ export const getInitialEditorState = (): EditorStateProps => {
       id: '@',
       key: '@',
       mex_icon: undefined,
-      children: [],
+      children: []
     },
-    content: getContent('@'),
+    content: getContent('@')
   }
 }
 
@@ -67,7 +83,7 @@ export const getInitialNode = (): TreeNode => ({
   id: '@',
   key: '@',
   mex_icon: undefined,
-  children: [],
+  children: []
 })
 
 export const getNodeFromId = (id: string): TreeNode => {
@@ -77,6 +93,6 @@ export const getNodeFromId = (id: string): TreeNode => {
     id,
     key: id,
     mex_icon: undefined,
-    children: [],
+    children: []
   }
 }
