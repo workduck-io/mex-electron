@@ -12,6 +12,7 @@ import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
 import { useSpotlightContext } from '../../../Spotlight/utils/context'
 import { NodeEditorContent } from '../../../Editor/Store/Types'
 import { combineSources } from '../../../Spotlight/utils/hooks'
+import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
 
 export const StyledPreview = styled.div`
   ${StyledBackground}
@@ -71,16 +72,17 @@ const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }
   }
 
   const nodes = useDeserializeSelectionToNodes(nodeId, preview)
+  const showSource = useSpotlightSettingsStore((state) => state.showSource)
 
   useEffect(() => {
     if (preview.isSelection) {
       const newNodeContent = [{ children: nodes }]
-      const changedContent = combineSources(fsContent, newNodeContent)
+      const changedContent = showSource ? combineSources(fsContent, newNodeContent) : fsContent
 
       setNodeContent([...changedContent, { children: nodes }])
       setFsContent(nodeId, [...changedContent, { children: nodes }])
     }
-  }, [preview.text])
+  }, [preview.text, showSource])
 
   useEffect(() => {
     if (!search) loadNodeFromId(nodeId)
