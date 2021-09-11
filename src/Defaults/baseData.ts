@@ -8,7 +8,7 @@ export const DefaultFileData: FileData = {
     doc: { type: 'init', content: [{ children: [{ text: '' }] }] },
     dev: { type: 'init', content: [{ children: [{ text: '' }] }] },
     design: { type: 'init', content: [{ children: [{ text: '' }] }] },
-    Draft: { type: 'init', content: [{ children: [{ text: '' }] }] },
+    Draft: { type: 'init', content: [{ children: [{ text: '' }] }] }
   },
   linkCache: {},
   tags: generateComboTexts(['mex']),
@@ -16,8 +16,8 @@ export const DefaultFileData: FileData = {
   userSettings: {
     theme: 'dev',
     spotlight: {
-      showSource: true,
-    },
+      showSource: false
+    }
   },
-  snippets: [],
+  snippets: []
 }
