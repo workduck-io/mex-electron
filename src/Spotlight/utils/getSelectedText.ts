@@ -2,9 +2,14 @@ import { clipboard } from 'electron'
 import { keyTap } from 'robotjs'
 import activeWindow from 'active-win'
 
+export type SelectionType = {
+  text: string
+  metadata: activeWindow.Result | undefined
+}
+
 export const simulateCopy = () => keyTap('c', process.platform === 'darwin' ? 'command' : 'control')
 
-export const getSelectedText = async () => {
+export const getSelectedText = async (): Promise<SelectionType> => {
   const contentBackup = clipboard.readText()
   clipboard.clear()
   simulateCopy()
