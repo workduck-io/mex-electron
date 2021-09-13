@@ -9,6 +9,7 @@ import listUnordered from '@iconify-icons/ri/list-unordered'
 import underlineIcon from '@iconify-icons/ri/underline'
 import { Icon } from '@iconify/react'
 import {
+  BalloonToolbar,
   ELEMENT_BLOCKQUOTE,
   ELEMENT_H1,
   ELEMENT_H2,
@@ -24,20 +25,22 @@ import {
   MARK_UNDERLINE,
   someNode,
   ToolbarButtonProps,
+  ToolbarElement,
+  ToolbarList,
+  ToolbarMark,
   unwrapNodes,
   upsertLinkAtSelection,
   useEventEditorId,
   useStoreEditorRef,
   useStoreEditorState
 } from '@udecode/plate'
-import { transparentize } from 'polished'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { HeadlessButton } from '../../Styled/Buttons'
-import { BToolbar, TElement, TList, TMark } from '../../Styled/Toolbar'
+import { ButtonSeparator } from '../../Styled/Toolbar'
 
 const LinkButtonStyled = styled.div`
   user-select: all;
@@ -178,63 +181,6 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
   )
 }
 
-export const TippyBalloonStyles = css`
-  .tippy-box[data-theme~='mex'] {
-    background-color: ${({ theme }) => theme.colors.gray[7]};
-    padding: ${({ theme }) => theme.spacing.small};
-    border-radius: ${({ theme }) => theme.borderRadius.small};
-
-    &[data-placement^='top'] > .tippy-arrow::before {
-      border-top-color: ${({ theme }) => theme.colors.gray[7]};
-    }
-
-    &[data-placement^='bottom'] > .tippy-arrow::before {
-      border-bottom-color: ${({ theme }) => theme.colors.gray[7]};
-    }
-
-    &[data-placement^='left'] > .tippy-arrow::before {
-      border-left-color: ${({ theme }) => theme.colors.gray[7]};
-    }
-
-    &[data-placement^='right'] > .tippy-arrow::before {
-      border-right-color: ${({ theme }) => theme.colors.gray[7]};
-    }
-
-    > .tippy-backdrop {
-      background-color: ${({ theme }) => theme.colors.gray[7]};
-    }
-
-    > .tippy-svg-arrow {
-      fill: ${({ theme }) => theme.colors.gray[7]};
-    }
-  }
-
-  body .slate-BalloonToolbar {
-    background-color: ${({ theme }) => theme.colors.gray[8]};
-    padding: ${({ theme: { spacing } }) => `${spacing.tiny} ${spacing.small}`};
-    box-shadow: 0px 3px 9px ${({ theme }) => transparentize(0.5, theme.colors.palette.black)};
-    &::after {
-      border-color: ${({ theme }) => theme.colors.gray[8]} transparent;
-    }
-    .slate-ToolbarButton {
-      color: ${({ theme }) => theme.colors.text.default};
-      padding: ${({ theme: { spacing } }) => `${spacing.tiny}`};
-      border-radius: ${({ theme }) => theme.borderRadius.tiny};
-    }
-    .slate-ToolbarButton-active,
-    .slate-ToolbarButton:hover {
-      color: ${({ theme }) => theme.colors.primary};
-      background-color: ${({ theme }) => theme.colors.gray[9]};
-    }
-  }
-`
-
-const ButtonSeparator = styled.div`
-  height: 10px;
-  margin: 0 ${({ theme }) => theme.spacing.small};
-  border: 1px solid ${({ theme }) => theme.colors.gray[7]};
-`
-
 const BallonToolbarMarks = () => {
   const editor = useStoreEditorRef(useEventEditorId('focus'))
   const [selected, setSelected] = useState(false)
@@ -253,26 +199,26 @@ const BallonToolbarMarks = () => {
   }
 
   return (
-    <BToolbar
+    <BalloonToolbar
       direction={direction}
       hiddenDelay={hiddenDelay}
       // theme={theme}
       arrow={arrow}
       // selected={selected}
     >
-      <TElement
+      <ToolbarElement
         type={getPlatePluginType(editor, ELEMENT_H1)}
         icon={<Icon height={20} icon={h1} />}
         tooltip={{ content: 'Heading 1', ...tooltip }}
       />
 
-      <TElement
+      <ToolbarElement
         type={getPlatePluginType(editor, ELEMENT_H2)}
         icon={<Icon height={20} icon={h2} />}
         tooltip={{ content: 'Heading 2', ...tooltip }}
       />
 
-      <TElement
+      <ToolbarElement
         type={getPlatePluginType(editor, ELEMENT_H3)}
         icon={<Icon height={20} icon={h3} />}
         tooltip={{ content: 'Heading 3', ...tooltip }}
@@ -280,19 +226,19 @@ const BallonToolbarMarks = () => {
 
       <ButtonSeparator />
 
-      <TElement
+      <ToolbarElement
         type={getPlatePluginType(editor, ELEMENT_BLOCKQUOTE)}
         icon={<Icon height={20} icon={doubleQuotesL} />}
         tooltip={{ content: 'Quote', ...tooltip }}
       />
 
-      <TList
+      <ToolbarList
         type={getPlatePluginType(editor, ELEMENT_UL)}
         icon={<Icon height={20} icon={listUnordered} />}
         tooltip={{ content: 'Bullet List', ...tooltip }}
       />
 
-      <TList
+      <ToolbarList
         type={getPlatePluginType(editor, ELEMENT_OL)}
         icon={<Icon height={20} icon={listOrdered} />}
         tooltip={{ content: 'Ordered List', ...tooltip }}
@@ -300,22 +246,22 @@ const BallonToolbarMarks = () => {
 
       <ButtonSeparator />
 
-      <TMark
+      <ToolbarMark
         type={getPlatePluginType(editor, MARK_BOLD)}
         icon={<Icon height={20} icon={boldIcon} />}
         tooltip={{ content: 'Bold (⌘B)', ...tooltip }}
       />
-      <TMark
+      <ToolbarMark
         type={getPlatePluginType(editor, MARK_ITALIC)}
         icon={<Icon height={20} icon={italicIcon} />}
         tooltip={{ content: 'Italic (⌘I)', ...tooltip }}
       />
-      <TMark
+      <ToolbarMark
         type={getPlatePluginType(editor, MARK_UNDERLINE)}
         icon={<Icon height={20} icon={underlineIcon} />}
         tooltip={{ content: 'Underline (⌘U)', ...tooltip }}
       />
-    </BToolbar>
+    </BalloonToolbar>
   )
 }
 

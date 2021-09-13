@@ -2,7 +2,7 @@ import { createGlobalStyle, css } from 'styled-components'
 import { ThinScrollbar } from './helpers'
 import normalize from './normalize'
 import { ModalStyles } from '../Components/Refactor/styles'
-import { TippyBalloonStyles } from '../Editor/Components/EditorToolbar'
+import { TippyBalloonStyles } from './Toolbar'
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}; // NormalizeCSS normalization
