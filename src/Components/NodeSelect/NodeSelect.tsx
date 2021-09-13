@@ -3,10 +3,10 @@ import errorWarningLine from '@iconify-icons/ri/error-warning-line'
 import { Icon } from '@iconify/react'
 import { useCombobox } from 'downshift'
 import React, { useEffect, useState } from 'react'
-import { useNavigationState } from '../../Hooks/useNavigation/useNavigation'
 import useDataStore from '../../Editor/Store/DataStore'
 import { Input } from '../../Styled/Form'
 import { StyledCombobox, StyledInputWrapper, StyledMenu, Suggestion } from './NodeSelect.styles'
+import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 
 type ComboItem = {
   text: string
@@ -65,7 +65,7 @@ function NodeSelect ({
     type: 'exists'
   }))
 
-  const lastOpened = useNavigationState((store) => store.recents.lastOpened)
+  const lastOpened = useRecentsStore((store) => store.lastOpened)
 
   const { inputItems, selectedItem } = nodeSelectState
 

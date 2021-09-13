@@ -11,6 +11,8 @@ import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
 import useDataStore from '../../../Editor/Store/DataStore'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
+import Recent from '../Recent'
+import { useRecentsStore } from '../../../Editor/Store/RecentsStore'
 
 export const StyledContent = styled.section`
   display: flex;
@@ -27,6 +29,8 @@ const initPreview = {
 
 const Content = () => {
   const { search, selection } = useSpotlightContext()
+  const recents = useRecentsStore((state) => state.lastOpened)
+  const clearRecents = useRecentsStore((state) => state.clear)
 
   const [data, setData] = useState<Array<any>>()
   const ilinks = useDataStore((s) => s.ilinks)
@@ -40,12 +44,11 @@ const Content = () => {
   const currentIndex = useCurrentIndex(data, search)
   const getContent = useContentStore((state) => state.getContent)
 
-  const { loadNodeFromId, loadNodeAndAppend } = useEditorStore(({ loadNodeFromId, loadNodeAndAppend }) => ({
-    loadNodeFromId,
-    loadNodeAndAppend
+  const { loadNodeAndAppend, loadNodeFromId } = useEditorStore(({ loadNodeAndAppend, loadNodeFromId }) => ({
+    loadNodeAndAppend,
+    loadNodeFromId
   }))
   const { setSaved } = useContentStore(({ setSaved }) => ({ setSaved }))
-
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
 
   const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
@@ -116,9 +119,17 @@ const Content = () => {
     setSaved(false)
   }, [data, currentIndex, selection])
 
+  const handleClearClick = () => {
+    clearRecents()
+  }
+
   return (
     <StyledContent>
-      <Preview preview={preview} nodeId={draftKey} />
+      {selection || search ? (
+        <Preview preview={preview} nodeId={draftKey} />
+      ) : (
+        <Recent current={currentIndex} recents={recents} onClearClick={handleClearClick} />
+      )}
       <SideBar index={currentIndex} data={data} />
     </StyledContent>
   )

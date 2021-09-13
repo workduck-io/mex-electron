@@ -11,6 +11,8 @@ import WDLogo from '../Search/Logo'
 import CreateInput from './CreateInput'
 import Message from '../Message'
 import { openNodeInMex } from '../../../Spotlight/utils/hooks'
+import { useHistoryStore } from '../../../Editor/Store/HistoryStore'
+import { useRecentsStore } from '../../../Editor/Store/RecentsStore'
 
 const CreateNodeInput = () => {
   const { setSelection } = useSpotlightContext()
@@ -23,8 +25,9 @@ const CreateNodeInput = () => {
 
   const setFsContent = useContentStore((state) => state.setContent)
 
+  const pushToHistory = useHistoryStore((state) => state.push)
+  const addRecent = useRecentsStore((state) => state.addRecent)
   const editorState = useStoreEditorValue()
-  const loadNodeFromId = useEditorStore((s) => s.loadNodeFromId)
 
   const onCreate = (newNodeId: string) => {
     addILink(newNodeId)
@@ -36,7 +39,8 @@ const CreateNodeInput = () => {
 
     saveData()
     setSaved(true)
-    loadNodeFromId(newNodeId)
+    pushToHistory(newNodeId)
+    addRecent(newNodeId)
     openNodeInMex(newNodeId)
   }
 
