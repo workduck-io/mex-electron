@@ -261,6 +261,13 @@ const BallonToolbarMarks = () => {
         icon={<Icon height={20} icon={underlineIcon} />}
         tooltip={{ content: 'Underline (⌘U)', ...tooltip }}
       />
+
+      {/* Looses focus when used.
+      <LinkButton
+        tooltip={{ content: 'Link', ...tooltip }}
+        icon={<Icon height={20} icon={underlineIcon} />}
+        setSelected={setSelected}
+      /> */}
     </BalloonToolbar>
   )
 }

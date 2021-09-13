@@ -1,35 +1,36 @@
 import styled, { css } from 'styled-components'
-import { BalloonToolbar, ToolbarMark, ToolbarElement, ToolbarList } from '@udecode/plate'
 import { transparentize } from 'polished'
 
 export const TippyBalloonStyles = css`
   .tippy-box[data-theme~='mex'] {
-    background-color: ${({ theme }) => theme.colors.gray[7]};
+    background-color: ${({ theme }) => theme.colors.gray[8]};
+    color: ${({ theme }) => theme.colors.text.default};
+
     padding: ${({ theme }) => theme.spacing.small};
     border-radius: ${({ theme }) => theme.borderRadius.small};
 
     &[data-placement^='top'] > .tippy-arrow::before {
-      border-top-color: ${({ theme }) => theme.colors.gray[7]};
+      border-top-color: ${({ theme }) => theme.colors.gray[8]};
     }
 
     &[data-placement^='bottom'] > .tippy-arrow::before {
-      border-bottom-color: ${({ theme }) => theme.colors.gray[7]};
+      border-bottom-color: ${({ theme }) => theme.colors.gray[8]};
     }
 
     &[data-placement^='left'] > .tippy-arrow::before {
-      border-left-color: ${({ theme }) => theme.colors.gray[7]};
+      border-left-color: ${({ theme }) => theme.colors.gray[8]};
     }
 
     &[data-placement^='right'] > .tippy-arrow::before {
-      border-right-color: ${({ theme }) => theme.colors.gray[7]};
+      border-right-color: ${({ theme }) => theme.colors.gray[8]};
     }
 
     > .tippy-backdrop {
-      background-color: ${({ theme }) => theme.colors.gray[7]};
+      background-color: ${({ theme }) => theme.colors.gray[8]};
     }
 
     > .tippy-svg-arrow {
-      fill: ${({ theme }) => theme.colors.gray[7]};
+      fill: ${({ theme }) => theme.colors.gray[8]};
     }
   }
 
