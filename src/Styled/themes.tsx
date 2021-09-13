@@ -86,7 +86,7 @@ export const spotlightTheme: DefaultTheme = {
       heading: '#2a2e46',
       default: '#404666',
       subheading: '#6a779b',
-      disabled: '#919191',
+      disabled: '#696969',
       accent: '#5b94ff',
       fade: '#5b94ff',
       oppositePrimary: '#000'

@@ -2,7 +2,7 @@ import { ipcRenderer } from 'electron'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import tinykeys from 'tinykeys'
-import { useInitialize } from '../../Data/useInitialize'
+import { AppType, useInitialize } from '../../Data/useInitialize'
 import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
 import { getHtmlString } from '../components/Source'
 import { useContentStore } from '../../Editor/Store/ContentStore'
@@ -11,16 +11,29 @@ import { useSpotlightSettingsStore } from '../store/settings'
 
 export const useLocalShortcuts = () => {
   const history = useHistory()
+  const { setSelection, setSearch } = useSpotlightContext()
+  const setSaved = useContentStore((state) => state.setSaved)
+
+  const handleCancel = () => {
+    setSaved(false)
+    setSearch('')
+    setSelection(undefined)
+  }
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       Escape: (event) => {
         event.preventDefault()
+        handleCancel()
         ipcRenderer.send('close')
       },
       Tab: (event) => {
         event.preventDefault()
         history.replace('/new')
+      },
+      '$mod+Shift+,': (event) => {
+        event.preventDefault()
+        history.replace('/settings')
       }
     })
     return () => {
@@ -106,7 +119,7 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
 
     ipcRenderer.on('recieve-local-data', (_event, arg: FileData) => {
       const editorID = getNewDraftKey()
-      init(arg, editorID)
+      init(arg, editorID, AppType.SPOTLIGHT)
       setLocalData(arg)
     })
 

@@ -6,6 +6,7 @@ import useDataStore from '../../../Editor/Store/DataStore'
 import { useContentStore } from '../../../Editor/Store/ContentStore'
 import { openNodeInMex } from '../../utils/hooks'
 import { SaverButton } from '../../../Editor/Components/Saver'
+import { useRecentsStore } from '../../../Editor/Store/RecentsStore'
 
 const NewEditor = () => {
   const nodeId = useEditorStore(({ node }) => node.id)
@@ -15,6 +16,7 @@ const NewEditor = () => {
   const fsContent = useEditorStore((state) => state.content)
 
   const [content, setContent] = useState<any[] | undefined>(undefined)
+  const addRecent = useRecentsStore((state) => state.addRecent)
 
   useEffect(() => {
     if (fsContent) {
@@ -28,6 +30,7 @@ const NewEditor = () => {
 
   const onAfterSave = () => {
     setSaved(true)
+    addRecent(nodeId)
     openNodeInMex(nodeId)
   }
 

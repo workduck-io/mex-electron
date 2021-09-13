@@ -6,6 +6,7 @@ import { getOptions } from '../../../Lib/flatTree'
 
 import { StyledCreateInput } from '../Search/styled'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
+import { useNavigation } from '../../../Hooks/useNavigation/useNavigation'
 
 const CreateInput: React.FC<{ placeholder: string; defaultValue?: string; onCreate: (nodeID: string) => void }> = ({
   placeholder,
@@ -13,8 +14,8 @@ const CreateInput: React.FC<{ placeholder: string; defaultValue?: string; onCrea
 }) => {
   const defaultOptions = getOptions(useFlatTreeFromILinks())
 
+  const { push } = useNavigation()
   const loadNodeAndAppend = useEditorStore((s) => s.loadNodeAndAppend)
-  const loadNodeFromId = useEditorStore((s) => s.loadNodeFromId)
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
 
   const handleOnCreateNexMex = (val: any) => {
@@ -32,7 +33,7 @@ const CreateInput: React.FC<{ placeholder: string; defaultValue?: string; onCrea
     if (nodeContent) {
       loadNodeAndAppend(newValue.value, nodeContent)
     } else {
-      loadNodeFromId(newValue.value)
+      push(newValue.value)
     }
     setInputState((s) => ({ ...s, value: newValue }))
   }

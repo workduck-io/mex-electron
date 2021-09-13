@@ -13,6 +13,11 @@ import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
 import { useNavigation } from '../Hooks/useNavigation/useNavigation'
 import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
 
+export enum AppType {
+  SPOTLIGHT,
+  MEX,
+}
+
 export const useInitialize = () => {
   const initializeDataStore = useDataStore((state) => state.initializeDataStore)
   const initContents = useContentStore((state) => state.initContents)
@@ -21,6 +26,7 @@ export const useInitialize = () => {
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setTheme = useThemeStore((state) => state.setTheme)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
+  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
 
   const update = (data: FileData) => {
     const { tags, ilinks, linkCache, contents, syncBlocks, snippets } = data
@@ -36,9 +42,14 @@ export const useInitialize = () => {
     setTheme(getTheme(data.userSettings.theme))
   }
 
-  const init = (data: FileData, initNodeId?: string) => {
+  const init = (data: FileData, initNodeId?: string, initFor?: AppType) => {
     update(data)
-    push(initNodeId || '@')
+    const keyToLoad = initNodeId || '@'
+    if (initFor === AppType.SPOTLIGHT) {
+      loadNodeFromId(keyToLoad)
+    } else {
+      push(keyToLoad)
+    }
   }
 
   return { init, update }

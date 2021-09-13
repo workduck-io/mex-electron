@@ -14,6 +14,7 @@ export const StyledRow = styled.div<ColorProp>`
   ${({ showColor }) => showColor && StyledBackground}
   padding: 10px 1rem;
   margin: 5px 0;
+  color: ${({ theme }) => theme.colors.text.fade};
   border-radius: 10px;
 `
 
@@ -30,5 +31,5 @@ export const Heading = styled.div`
   font-size: 1.1rem;
   margin: 5px 0 5px;
   font-weight: lighter;
-  color: #777;
+  color: ${({ theme }) => theme.colors.text.fade};
 `

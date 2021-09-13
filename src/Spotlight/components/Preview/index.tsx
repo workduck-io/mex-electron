@@ -13,6 +13,8 @@ import { useSpotlightContext } from '../../../Spotlight/utils/context'
 import { NodeEditorContent } from '../../../Editor/Store/Types'
 import { combineSources } from '../../../Spotlight/utils/hooks'
 import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
+import { useNavigation } from '../../../Hooks/useNavigation/useNavigation'
+import { useEditor } from 'slate-react'
 
 export const StyledPreview = styled.div`
   ${StyledBackground}
@@ -63,8 +65,8 @@ const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }
   const previewContent = useEditorStore((state) => state.content)
   const fsContent = useEditorStore((state) => state.content)
   const ref = useRef<HTMLDivElement>()
+  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
 
-  const loadNodeFromId = useEditorStore(({ loadNodeFromId }) => loadNodeFromId)
   const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
 
   const handleScrollToBottom = () => {
