@@ -118,6 +118,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning }: EditorProps) 
 
   const editableProps = {
     placeholder: 'Murmuring the mex hype...',
+    spellCheck: false,
     style: {
       padding: '15px'
     },
