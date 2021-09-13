@@ -1,11 +1,21 @@
 import boldIcon from '@iconify-icons/ri/bold'
+import doubleQuotesL from '@iconify-icons/ri/double-quotes-l'
+import h1 from '@iconify-icons/ri/h-1'
+import h2 from '@iconify-icons/ri/h-2'
+import h3 from '@iconify-icons/ri/h-3'
 import italicIcon from '@iconify-icons/ri/italic'
+import listOrdered from '@iconify-icons/ri/list-ordered'
+import listUnordered from '@iconify-icons/ri/list-unordered'
 import underlineIcon from '@iconify-icons/ri/underline'
 import { Icon } from '@iconify/react'
-import 'tippy.js/themes/material.css'
 import {
-  BalloonToolbar,
+  ELEMENT_BLOCKQUOTE,
+  ELEMENT_H1,
+  ELEMENT_H2,
+  ELEMENT_H3,
   ELEMENT_LINK,
+  ELEMENT_OL,
+  ELEMENT_UL,
   getAbove,
   getPlatePluginType,
   isCollapsed,
@@ -14,19 +24,20 @@ import {
   MARK_UNDERLINE,
   someNode,
   ToolbarButtonProps,
-  ToolbarMark,
   unwrapNodes,
   upsertLinkAtSelection,
   useEventEditorId,
   useStoreEditorRef,
   useStoreEditorState
 } from '@udecode/plate'
+import { transparentize } from 'polished'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
 import styled, { css } from 'styled-components'
 import { HeadlessButton } from '../../Styled/Buttons'
+import { BToolbar, TElement, TList, TMark } from '../../Styled/Toolbar'
 
 const LinkButtonStyled = styled.div`
   user-select: all;
@@ -197,6 +208,31 @@ export const TippyBalloonStyles = css`
       fill: ${({ theme }) => theme.colors.gray[7]};
     }
   }
+
+  body .slate-BalloonToolbar {
+    background-color: ${({ theme }) => theme.colors.gray[8]};
+    padding: ${({ theme: { spacing } }) => `${spacing.tiny} ${spacing.small}`};
+    box-shadow: 0px 3px 9px ${({ theme }) => transparentize(0.5, theme.colors.palette.black)};
+    &::after {
+      border-color: ${({ theme }) => theme.colors.gray[8]} transparent;
+    }
+    .slate-ToolbarButton {
+      color: ${({ theme }) => theme.colors.text.default};
+      padding: ${({ theme: { spacing } }) => `${spacing.tiny}`};
+      border-radius: ${({ theme }) => theme.borderRadius.tiny};
+    }
+    .slate-ToolbarButton-active,
+    .slate-ToolbarButton:hover {
+      color: ${({ theme }) => theme.colors.primary};
+      background-color: ${({ theme }) => theme.colors.gray[9]};
+    }
+  }
+`
+
+const ButtonSeparator = styled.div`
+  height: 10px;
+  margin: 0 ${({ theme }) => theme.spacing.small};
+  border: 1px solid ${({ theme }) => theme.colors.gray[7]};
 `
 
 const BallonToolbarMarks = () => {
@@ -204,7 +240,6 @@ const BallonToolbarMarks = () => {
   const [selected, setSelected] = useState(false)
 
   const arrow = true
-  const theme = 'dark'
   const direction = 'top'
   const hiddenDelay = 0
   const tooltip = {
@@ -218,29 +253,69 @@ const BallonToolbarMarks = () => {
   }
 
   return (
-    <BalloonToolbar
+    <BToolbar
       direction={direction}
       hiddenDelay={hiddenDelay}
-      theme={theme}
+      // theme={theme}
       arrow={arrow}
       // selected={selected}
     >
-      <ToolbarMark
+      <TElement
+        type={getPlatePluginType(editor, ELEMENT_H1)}
+        icon={<Icon height={20} icon={h1} />}
+        tooltip={{ content: 'Heading 1', ...tooltip }}
+      />
+
+      <TElement
+        type={getPlatePluginType(editor, ELEMENT_H2)}
+        icon={<Icon height={20} icon={h2} />}
+        tooltip={{ content: 'Heading 2', ...tooltip }}
+      />
+
+      <TElement
+        type={getPlatePluginType(editor, ELEMENT_H3)}
+        icon={<Icon height={20} icon={h3} />}
+        tooltip={{ content: 'Heading 3', ...tooltip }}
+      />
+
+      <ButtonSeparator />
+
+      <TElement
+        type={getPlatePluginType(editor, ELEMENT_BLOCKQUOTE)}
+        icon={<Icon height={20} icon={doubleQuotesL} />}
+        tooltip={{ content: 'Quote', ...tooltip }}
+      />
+
+      <TList
+        type={getPlatePluginType(editor, ELEMENT_UL)}
+        icon={<Icon height={20} icon={listUnordered} />}
+        tooltip={{ content: 'Bullet List', ...tooltip }}
+      />
+
+      <TList
+        type={getPlatePluginType(editor, ELEMENT_OL)}
+        icon={<Icon height={20} icon={listOrdered} />}
+        tooltip={{ content: 'Ordered List', ...tooltip }}
+      />
+
+      <ButtonSeparator />
+
+      <TMark
         type={getPlatePluginType(editor, MARK_BOLD)}
         icon={<Icon height={20} icon={boldIcon} />}
         tooltip={{ content: 'Bold (⌘B)', ...tooltip }}
       />
-      <ToolbarMark
+      <TMark
         type={getPlatePluginType(editor, MARK_ITALIC)}
         icon={<Icon height={20} icon={italicIcon} />}
         tooltip={{ content: 'Italic (⌘I)', ...tooltip }}
       />
-      <ToolbarMark
+      <TMark
         type={getPlatePluginType(editor, MARK_UNDERLINE)}
         icon={<Icon height={20} icon={underlineIcon} />}
         tooltip={{ content: 'Underline (⌘U)', ...tooltip }}
       />
-    </BalloonToolbar>
+    </BToolbar>
   )
 }
 
