@@ -2,7 +2,9 @@ import boldIcon from '@iconify-icons/ri/bold'
 import italicIcon from '@iconify-icons/ri/italic'
 import underlineIcon from '@iconify-icons/ri/underline'
 import { Icon } from '@iconify/react'
+import 'tippy.js/themes/material.css'
 import {
+  BalloonToolbar,
   ELEMENT_LINK,
   getAbove,
   getPlatePluginType,
@@ -17,16 +19,14 @@ import {
   upsertLinkAtSelection,
   useEventEditorId,
   useStoreEditorRef,
-  useStoreEditorState,
+  useStoreEditorState
 } from '@udecode/plate'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { HeadlessButton } from '../../Styled/Buttons'
-import { BalloonToolbar } from './BalloonToolbar'
-// import { BalloonToolbar } from './xBalloonToolbar/BalloonToolbar';
 
 const LinkButtonStyled = styled.div`
   user-select: all;
@@ -55,7 +55,7 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
   const type = getPlatePluginType(editor, ELEMENT_LINK)
   const isLink = !!editor?.selection && someNode(editor, { match: { type } })
   const [inp, setInp] = useState({
-    prev: '',
+    prev: ''
   })
 
   const {
@@ -63,7 +63,7 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
     handleSubmit,
     // watch,
     // formState: { errors },
-    getValues,
+    getValues
   } = useForm()
 
   useEffect(() => {
@@ -76,11 +76,11 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
   useEffect(() => {
     if (!editor) return
     const linkNode = getAbove(editor, {
-      match: { type },
+      match: { type }
     })
     if (inp.prev === '' && linkNode) {
       setInp({
-        prev: linkNode[0].url as string,
+        prev: linkNode[0].url as string
       })
     }
   }, [editor, inp.prev, type])
@@ -100,11 +100,11 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
     }
 
     const linkNode = getAbove(editor, {
-      match: { type },
+      match: { type }
     })
     if (linkNode) {
       setInp({
-        prev: linkNode[0].url as string,
+        prev: linkNode[0].url as string
       })
     }
     // console.log(inp);
@@ -124,11 +124,12 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
     }
 
     if (inp.prev) {
-      if (linkNode && editor.selection)
+      if (linkNode && editor.selection) {
         unwrapNodes(editor, {
           at: editor.selection,
-          match: { type: getPlatePluginType(editor, ELEMENT_LINK) },
+          match: { type: getPlatePluginType(editor, ELEMENT_LINK) }
         })
+      }
 
       return
     }
@@ -166,9 +167,41 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
   )
 }
 
+export const TippyBalloonStyles = css`
+  .tippy-box[data-theme~='mex'] {
+    background-color: ${({ theme }) => theme.colors.gray[7]};
+    padding: ${({ theme }) => theme.spacing.small};
+    border-radius: ${({ theme }) => theme.borderRadius.small};
+
+    &[data-placement^='top'] > .tippy-arrow::before {
+      border-top-color: ${({ theme }) => theme.colors.gray[7]};
+    }
+
+    &[data-placement^='bottom'] > .tippy-arrow::before {
+      border-bottom-color: ${({ theme }) => theme.colors.gray[7]};
+    }
+
+    &[data-placement^='left'] > .tippy-arrow::before {
+      border-left-color: ${({ theme }) => theme.colors.gray[7]};
+    }
+
+    &[data-placement^='right'] > .tippy-arrow::before {
+      border-right-color: ${({ theme }) => theme.colors.gray[7]};
+    }
+
+    > .tippy-backdrop {
+      background-color: ${({ theme }) => theme.colors.gray[7]};
+    }
+
+    > .tippy-svg-arrow {
+      fill: ${({ theme }) => theme.colors.gray[7]};
+    }
+  }
+`
+
 const BallonToolbarMarks = () => {
   const editor = useStoreEditorRef(useEventEditorId('focus'))
-  // const [selected, setSelected] = useState(false);
+  const [selected, setSelected] = useState(false)
 
   const arrow = true
   const theme = 'dark'
@@ -177,10 +210,11 @@ const BallonToolbarMarks = () => {
   const tooltip = {
     arrow: true,
     delay: 0,
+    theme: 'mex',
     duration: [200, 0] as [number, number],
     // hideOnClick: false,
     offset: [0, 17] as [number, number],
-    placement: 'top' as const,
+    placement: 'top' as const
   }
 
   return (
@@ -206,12 +240,6 @@ const BallonToolbarMarks = () => {
         icon={<Icon height={20} icon={underlineIcon} />}
         tooltip={{ content: 'Underline (⌘U)', ...tooltip }}
       />
-
-      {/* <LinkButton
-        tooltip={{ content: 'Link', ...tooltip }}
-        icon={<Icon height={20} icon={linkIcon} />}
-        setSelected={setSelected}
-      /> */}
     </BalloonToolbar>
   )
 }

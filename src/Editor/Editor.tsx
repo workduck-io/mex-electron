@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import ReactTooltip from 'react-tooltip'
 import { useSnippets } from '../Snippets/useSnippets'
 import { EditorStyles } from '../Styled/Editor'
+import BallonToolbarMarks from './Components/BaloonToolbar'
 import { ComboboxKey } from './Components/combobox/useComboboxStore'
 import components from './Components/components'
 import { ILinkComboboxItem } from './Components/ilink/components/ILinkComboboxItem'
@@ -178,6 +179,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning }: EditorProps) 
     <>
       {content && (
         <EditorStyles>
+          <BallonToolbarMarks />
           <Plate
             id={generateEditorId()}
             editableProps={editableProps}
