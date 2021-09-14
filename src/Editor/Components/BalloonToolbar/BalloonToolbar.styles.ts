@@ -1,8 +1,59 @@
+import { ToolbarBase } from '@udecode/plate'
 import { createStyles } from '@udecode/plate-styled-components'
-import { css, CSSProp } from 'styled-components'
-import tw from 'twin.macro'
+import styled, { css, CSSProp } from 'styled-components'
 import { getToolbarStyles } from '../Toolbar/Toolbar.styles'
 import { BalloonToolbarStyleProps } from './BalloonToolbar.types'
+
+export const StyledToolbarBase = styled<any>(ToolbarBase)`
+  display: flex;
+  align-items: center;
+  user-select: none;
+  box-sizing: content-border-box;
+  color: rgb(68, 68, 68);
+  min-height: 40px;
+  position: absolute;
+  white-space: nowrap;
+  padding: 0px ${({ theme }) => theme.spacing.small};
+  color: ${({ theme }) => theme.colors.text.default};
+  background: ${({ theme }) => theme.colors.gray[8]};
+  z-index: 500;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  margin-top: ${({ theme }) => theme.spacing.small};
+
+  .slate-ToolbarButton-active,
+  .slate-ToolbarButton:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  ${({ arrow, theme }) =>
+    arrow &&
+    css`
+      ::after {
+        left: 50%;
+        content: ' ';
+        position: absolute;
+        margin-top: -1px;
+        transform: translateX(-50%);
+        border-color: ${theme.colors.gray[8]} transparent;
+        border-style: solid;
+        top: 100%;
+        bottom: auto;
+        border-width: 8px 8px 0;
+      }
+    `}
+
+  ${({ hidden }) =>
+    hidden &&
+    css`
+      visibility: hidden;
+    `}
+          ${({ hiddenDelay }) =>
+    !hiddenDelay &&
+    css`
+      transition: top 75ms ease-out, left 75ms ease-out;
+    `}
+`
 
 export const getBalloonToolbarStyles = (props: BalloonToolbarStyleProps) => {
   let color = 'rgb(157, 170, 182)'
@@ -50,7 +101,7 @@ export const getBalloonToolbarStyles = (props: BalloonToolbarStyleProps) => {
           bottom: 100%;
           border-width: 0 8px 8px;
         }
-      `,
+      `
   ]
 
   const arrowBorderStyle: CSSProp = [
@@ -73,7 +124,7 @@ export const getBalloonToolbarStyles = (props: BalloonToolbarStyleProps) => {
           border-width: 0 9px 9px;
           border-color: ${borderColor} transparent;
         }
-      `,
+      `
   ]
 
   if (props.direction === 'top') {
@@ -87,10 +138,18 @@ export const getBalloonToolbarStyles = (props: BalloonToolbarStyleProps) => {
     {
       root: [
         ...getToolbarStyles(props).root.css,
-        tw`absolute whitespace-nowrap py-0 px-1`,
-        props.hidden && tw`invisible`,
-        !props.hiddenDelay && tw`transition[top 75ms ease-out,left 75ms ease-out]`,
         css`
+          ${props.hidden &&
+          css`
+            visibility: hidden;
+          `}
+          ${!props.hiddenDelay &&
+          css`
+            transition: top 75ms ease-out, left 75ms ease-out;
+          `}
+          position: absolute;
+          white-space: nowrap;
+          padding: 0px ${({ theme }) => theme.spacing.small};
           color: ${color};
           background: ${background};
           z-index: 500;
@@ -108,8 +167,8 @@ export const getBalloonToolbarStyles = (props: BalloonToolbarStyleProps) => {
           }
         `,
         ...arrowStyle,
-        ...arrowBorderStyle,
-      ],
+        ...arrowBorderStyle
+      ]
     }
   )
 }

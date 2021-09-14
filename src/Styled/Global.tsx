@@ -2,6 +2,7 @@ import { createGlobalStyle, css } from 'styled-components'
 import { ThinScrollbar } from './helpers'
 import normalize from './normalize'
 import { ModalStyles } from '../Components/Refactor/styles'
+import { TippyBalloonStyles } from './Toolbar'
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}; // NormalizeCSS normalization
@@ -52,6 +53,9 @@ const GlobalStyle = createGlobalStyle`
   
   /* Styles for modals */
   ${ModalStyles}
+
+  /* Tippy Balloon styles */
+  ${TippyBalloonStyles}
 
   body > ul[role="listbox"]{
     display: block;

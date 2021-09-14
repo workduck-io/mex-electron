@@ -1,32 +1,23 @@
-import boldIcon from '@iconify-icons/ri/bold'
-import italicIcon from '@iconify-icons/ri/italic'
-import underlineIcon from '@iconify-icons/ri/underline'
-import { Icon } from '@iconify/react'
 import {
-  ELEMENT_LINK,
-  getAbove,
-  getPlatePluginType,
-  isCollapsed,
-  MARK_BOLD,
-  MARK_ITALIC,
-  MARK_UNDERLINE,
-  someNode,
-  ToolbarButtonProps,
-  ToolbarMark,
-  unwrapNodes,
-  upsertLinkAtSelection,
-  useEventEditorId,
-  useStoreEditorRef,
+  ToolbarLinkProps,
   useStoreEditorState,
+  useEventEditorId,
+  getPlatePluginType,
+  ELEMENT_LINK,
+  someNode,
+  getAbove,
+  unwrapNodes,
+  isCollapsed,
+  upsertLinkAtSelection
 } from '@udecode/plate'
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
+import { HeadlessButton } from '../../../Styled/Buttons'
 import styled from 'styled-components'
-import { HeadlessButton } from '../../Styled/Buttons'
-import { BalloonToolbar } from './BalloonToolbar'
-// import { BalloonToolbar } from './xBalloonToolbar/BalloonToolbar';
+import { Input } from '../../../Styled/Form'
+import { clearBlurSelection } from '../../Plugins/blurSelection'
 
 const LinkButtonStyled = styled.div`
   user-select: all;
@@ -37,8 +28,8 @@ const LinkButtonStyled = styled.div`
       color: inherit;
     }
     input {
-      background: ${({ theme }) => theme.colors.background.card};
-      border: 1px solid ${({ theme }) => theme.colors.gray[3]};
+      background: ${({ theme }) => theme.colors.gray[9]};
+      border: 1px solid ${({ theme }) => theme.colors.gray[7]};
       color: ${({ theme }) => theme.colors.text.subheading};
       border-radius: ${({ theme }) => theme.borderRadius.tiny};
     }
@@ -49,13 +40,13 @@ interface LinkButtonProps extends ToolbarLinkProps {
   setSelected: (selected: boolean) => void
 }
 
-export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
+const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
   const editor = useStoreEditorState(useEventEditorId('focus'))
 
   const type = getPlatePluginType(editor, ELEMENT_LINK)
   const isLink = !!editor?.selection && someNode(editor, { match: { type } })
   const [inp, setInp] = useState({
-    prev: '',
+    prev: ''
   })
 
   const {
@@ -63,11 +54,12 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
     handleSubmit,
     // watch,
     // formState: { errors },
-    getValues,
+    getValues
   } = useForm()
 
   useEffect(() => {
     setSelected(true)
+
     return () => {
       setSelected(false)
     }
@@ -76,11 +68,11 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
   useEffect(() => {
     if (!editor) return
     const linkNode = getAbove(editor, {
-      match: { type },
+      match: { type }
     })
     if (inp.prev === '' && linkNode) {
       setInp({
-        prev: linkNode[0].url as string,
+        prev: linkNode[0].url as string
       })
     }
   }, [editor, inp.prev, type])
@@ -99,15 +91,16 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
       console.error(err) // eslint-disable-line no-console
     }
 
+    clearBlurSelection(editor as any)
+
     const linkNode = getAbove(editor, {
-      match: { type },
+      match: { type }
     })
     if (linkNode) {
       setInp({
-        prev: linkNode[0].url as string,
+        prev: linkNode[0].url as string
       })
     }
-    // console.log(inp);
 
     let url = ''
     if (getLinkUrl) {
@@ -124,11 +117,12 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
     }
 
     if (inp.prev) {
-      if (linkNode && editor.selection)
+      if (linkNode && editor.selection) {
         unwrapNodes(editor, {
           at: editor.selection,
-          match: { type: getPlatePluginType(editor, ELEMENT_LINK) },
+          match: { type: getPlatePluginType(editor, ELEMENT_LINK) }
         })
+      }
 
       return
     }
@@ -137,6 +131,7 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
     const shouldWrap: boolean = linkNode !== undefined && isCollapsed(editor.selection)
     upsertLinkAtSelection(editor, { url, wrap: shouldWrap })
 
+    // setInp({ prev: '' })
     setSelected(false)
   }
 
@@ -160,67 +155,10 @@ export const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProp
         >
           {icon}
         </HeadlessButton>
-        <input defaultValue={inp.prev} type="text" {...register('link-input')} />
+        <Input defaultValue={inp.prev} type="text" {...register('link-input')} />
       </form>
     </LinkButtonStyled>
   )
 }
 
-const BallonToolbarMarks = () => {
-  const editor = useStoreEditorRef(useEventEditorId('focus'))
-  // const [selected, setSelected] = useState(false);
-
-  const arrow = true
-  const theme = 'dark'
-  const direction = 'top'
-  const hiddenDelay = 0
-  const tooltip = {
-    arrow: true,
-    delay: 0,
-    duration: [200, 0] as [number, number],
-    // hideOnClick: false,
-    offset: [0, 17] as [number, number],
-    placement: 'top' as const,
-  }
-
-  return (
-    <BalloonToolbar
-      direction={direction}
-      hiddenDelay={hiddenDelay}
-      theme={theme}
-      arrow={arrow}
-      // selected={selected}
-    >
-      <ToolbarMark
-        type={getPlatePluginType(editor, MARK_BOLD)}
-        icon={<Icon height={20} icon={boldIcon} />}
-        tooltip={{ content: 'Bold (⌘B)', ...tooltip }}
-      />
-      <ToolbarMark
-        type={getPlatePluginType(editor, MARK_ITALIC)}
-        icon={<Icon height={20} icon={italicIcon} />}
-        tooltip={{ content: 'Italic (⌘I)', ...tooltip }}
-      />
-      <ToolbarMark
-        type={getPlatePluginType(editor, MARK_UNDERLINE)}
-        icon={<Icon height={20} icon={underlineIcon} />}
-        tooltip={{ content: 'Underline (⌘U)', ...tooltip }}
-      />
-
-      {/* <LinkButton
-        tooltip={{ content: 'Link', ...tooltip }}
-        icon={<Icon height={20} icon={linkIcon} />}
-        setSelected={setSelected}
-      /> */}
-    </BalloonToolbar>
-  )
-}
-
-export interface ToolbarLinkProps extends ToolbarButtonProps {
-  /**
-   * Default onMouseDown is getting the link url by calling this promise before inserting the image.
-   */
-  getLinkUrl?: (prevUrl: string | null) => Promise<string | null>
-}
-
-export default BallonToolbarMarks
+export default LinkButton
