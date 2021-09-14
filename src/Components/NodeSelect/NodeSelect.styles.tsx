@@ -4,17 +4,16 @@ import styled, { css } from 'styled-components'
 export const StyledInputWrapper = styled.div`
   width: 100%;
   position: relative;
+  ${Input} {
+    width: 100%;
+  }
 `
 
 export const StyledCombobox = styled.div`
   display: flex;
   width: 100%;
-  margin-top: ${({ theme }) => theme.spacing.medium};
-  font-size: 1.2rem;
+  font-size: 1rem;
   align-items: center;
-  ${Input} {
-    width: 100%;
-  }
   svg {
     margin-left: ${({ theme }) => theme.spacing.small};
     color: ${({ theme }) => theme.colors.text.fade};
@@ -56,7 +55,7 @@ export const StyledMenu = styled.ul<MenuProps>`
   position: absolute;
   background-color: ${({ theme }) => theme.colors.gray[8]};
   width: calc(100% - (2 * ${({ theme }) => theme.spacing.small}));
-  max-height: 20rem;
+  max-height: 16.2rem;
   overflow-y: auto;
   overflow-x: hidden;
   outline: 0;
@@ -74,13 +73,24 @@ export const StyledMenu = styled.ul<MenuProps>`
     css`
       border: none;
       display: none;
-    `}
-
-  ${({ highlightFirst, theme }) =>
+    `}/* ${({ highlightFirst, theme }) =>
     highlightFirst &&
     css`
       ${Suggestion}:first-child {
         background-color: ${theme.colors.gray[7]};
       }
-    `}
+    `} */
+`
+
+export const StyledSpotlightInputWrapper = styled.div`
+  width: 100%;
+  position: relative;
+  ${StyledMenu} {
+    margin-top: ${({ theme }) => theme.spacing.medium};
+  }
+  ${Input} {
+    color: ${({ theme }) => theme.colors.text.fade};
+    width: 100%;
+    border: none;
+  }
 `

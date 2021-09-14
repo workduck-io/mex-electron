@@ -13,8 +13,6 @@ import { useSpotlightContext } from '../../../Spotlight/utils/context'
 import { NodeEditorContent } from '../../../Editor/Store/Types'
 import { combineSources } from '../../../Spotlight/utils/hooks'
 import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
-import { useNavigation } from '../../../Hooks/useNavigation/useNavigation'
-import { useEditor } from 'slate-react'
 
 export const StyledPreview = styled.div`
   ${StyledBackground}
@@ -49,6 +47,7 @@ export const useDeserializeSelectionToNodes = (
   selection: { text: string; metadata: string }
 ): NodeEditorContent => {
   const editor = useStoreEditorRef(nodeId)
+
   const plugins = generatePlugins()
   const nodes = deserializeHTMLToDocumentFragment(editor, {
     plugins,
@@ -79,6 +78,7 @@ const Preview: React.FC<{ preview: any; nodeId: string }> = ({ preview, nodeId }
   useEffect(() => {
     if (preview.isSelection) {
       const newNodeContent = [{ children: nodes }]
+
       const changedContent = showSource ? combineSources(fsContent, newNodeContent) : fsContent
 
       setNodeContent([...changedContent, { children: nodes }])

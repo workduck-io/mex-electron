@@ -13,6 +13,7 @@ import { useTheme } from 'styled-components'
 const Search: React.FC = () => {
   const theme = useTheme()
   const { setSearch } = useSpotlightContext()
+
   const handleSearchInput = useDebouncedCallback((value: string) => {
     setSearch(value)
   }, 400)

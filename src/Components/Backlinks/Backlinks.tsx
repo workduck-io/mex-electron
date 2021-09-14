@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { useLinks } from '../../Editor/Actions/useLinks'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Note } from '../../Styled/Typography'
+import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 
 const BackLinkWrapper = styled.div`
   display: flex;
@@ -58,10 +59,12 @@ const BackLinksHeader = styled.div`
 const Backlinks = () => {
   const { getBacklinks } = useLinks()
   const { push } = useNavigation()
+  const lastOpened = useRecentsStore((state) => state.lastOpened)
   const backlinks = getBacklinks(useEditorStore.getState().node.id)
 
   return (
     <BackLinkWrapper>
+      {JSON.stringify(lastOpened, null, 2)}
       <SBackLinks>
         <BackLinksHeader>
           <Icon icon={arrowGoBackLine}></Icon>

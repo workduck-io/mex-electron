@@ -36,6 +36,10 @@ export const StyledRecentRow = styled.div<{ highlight: boolean }>`
   align-items: center;
   display: flex;
   margin-top: 4px;
+  :hover {
+    cursor: pointer;
+    background: ${({ theme, highlight }) => theme.colors.background.modal};
+  }
   border-radius: 8px;
   padding: 1rem 0.5rem;
   font-weight: lighter;
