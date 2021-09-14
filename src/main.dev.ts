@@ -163,6 +163,8 @@ const createMexWindow = () => {
 
   try {
     // Send data back if modified externally
+    console.log(getSaveLocation(app))
+
     chokidar
       .watch(getSaveLocation(app), {
         alwaysStat: true,
@@ -181,6 +183,7 @@ const createMexWindow = () => {
         }
 
         spotlight?.webContents.send('sync-data', fileData)
+        mex?.webContents.send('sync-data', fileData)
       })
   } catch (e) {
     console.log(e)
