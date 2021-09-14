@@ -6,7 +6,6 @@ import h3 from '@iconify-icons/ri/h-3'
 import italicIcon from '@iconify-icons/ri/italic'
 import listOrdered from '@iconify-icons/ri/list-ordered'
 import listUnordered from '@iconify-icons/ri/list-unordered'
-import underlineIcon from '@iconify-icons/ri/underline'
 import { Icon } from '@iconify/react'
 import {
   ELEMENT_BLOCKQUOTE,
@@ -25,10 +24,9 @@ import {
   useEventEditorId,
   useStoreEditorRef
 } from '@udecode/plate'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { ButtonSeparator } from '../../Styled/Toolbar'
 import { BalloonToolbar } from './BalloonToolbar'
-import LinkButton from './BalloonToolbar/LinkButton'
 
 const BallonToolbarMarks = () => {
   const editor = useStoreEditorRef(useEventEditorId('focus'))
@@ -101,11 +99,11 @@ const BallonToolbarMarks = () => {
       />
 
       {/* Looses focus when used. */}
-      <LinkButton
+      {/* <LinkButton
         tooltip={{ content: 'Link', ...tooltip }}
         icon={<Icon height={20} icon={underlineIcon} />}
         setSelected={setSelected}
-      />
+      /> */}
     </BalloonToolbar>
   )
 }
