@@ -18,17 +18,6 @@ export const setPositionAtSelection = (el: HTMLElement, direction: 'top' | 'bott
     }
     const left = `${rect.left + window.pageXOffset - el.offsetWidth / 2 + rect.width / 2}px`
 
-    console.log(
-      { top, left },
-      {
-        elOfHeight: el.offsetHeight,
-        elOfWidth: el.offsetWidth,
-        winOffY: window.pageYOffset,
-        winOffX: window.pageXOffset
-      },
-      rect,
-      window
-    )
     el.style.top = top
     el.style.left = left
     el.style.visibility = 'inherit'
