@@ -8,7 +8,17 @@ import { TEditor } from '@udecode/plate-core'
  * If hiddenDelay = 0 and the selection changes: show.
  * If hiddenDelay > 0: hide when the selection length changes.
  */
-export const useBalloonShow = ({ editor, ref, hiddenDelay }: { editor?: TEditor; ref: any; hiddenDelay: number }) => {
+export const useBalloonShow = ({
+  editor,
+  ref,
+  hiddenDelay,
+  selected
+}: {
+  editor?: TEditor
+  ref: any
+  hiddenDelay: number
+  selected?: boolean
+}) => {
   const [hidden, setHidden] = useState(true)
 
   const selectionExpanded = editor && isSelectionExpanded(editor)
@@ -32,13 +42,24 @@ export const useBalloonShow = ({ editor, ref, hiddenDelay }: { editor?: TEditor;
    * Hide if not selecting.
    */
   useEffect(() => {
-    if (!hidden && !selectionExpanded) {
+    if (!hidden && !selectionExpanded && !selected) {
+      console.log('Set hidden: ', {
+        cur: ref.current,
+        hidden,
+        selectionExpanded
+      })
       setHidden(true)
       if (ref.current) {
         ref.current.removeAttribute('style')
       }
     }
-  }, [hidden, hiddenDelay, reset, selectionExpanded, show, selectionText?.length, ref])
+  }, [hidden, hiddenDelay, reset, selectionExpanded, selected, show, selectionText?.length, ref])
+
+  // useEffect(() => {
+  //   if (selected) {
+  //     setHidden(() => !selected);
+  //   }
+  // }, [selected]);
 
   /**
    * If hiddenDelay > 0:

@@ -9,7 +9,7 @@ import { setPositionAtSelection } from './setPositionAtSelection'
 export const useBalloonMove = ({
   editor,
   ref,
-  direction,
+  direction
 }: {
   editor?: TEditor
   ref: any
@@ -20,5 +20,5 @@ export const useBalloonMove = ({
 
   useEffect(() => {
     if (ref.current && selectionExpanded) setPositionAtSelection(ref.current, direction)
-  }, [direction, selectionText?.length, selectionExpanded, ref])
+  }, [direction, selectionText, selectionExpanded, ref])
 }
