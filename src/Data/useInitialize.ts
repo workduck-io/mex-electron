@@ -14,8 +14,8 @@ import { useNavigation } from '../Hooks/useNavigation/useNavigation'
 import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
 
 export enum AppType {
-  SPOTLIGHT,
-  MEX,
+  SPOTLIGHT = 'SPOTLIGHT',
+  MEX = 'MEX',
 }
 
 export const useInitialize = () => {

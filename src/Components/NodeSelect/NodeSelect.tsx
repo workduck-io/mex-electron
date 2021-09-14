@@ -163,7 +163,7 @@ function NodeSelect ({
   }, [])
 
   return (
-    <StyledInputWrapper>
+    <>
       <StyledCombobox {...getComboboxProps()}>
         <Input
           {...getInputProps()}
@@ -188,7 +188,7 @@ function NodeSelect ({
           &#8595;
         </button> */}
       </StyledCombobox>
-      <StyledMenu {...getMenuProps()} highlightFirst={highlightedIndex < 0} isOpen={isOpen}>
+      <StyledMenu {...getMenuProps()} isOpen={isOpen}>
         {isOpen &&
           inputItems.map((item, index) => {
             return (
@@ -202,7 +202,7 @@ function NodeSelect ({
             )
           })}
       </StyledMenu>
-    </StyledInputWrapper>
+    </>
   )
 }
 
@@ -216,8 +216,8 @@ NodeSelect.defaultProps = {
   prefillLast: false
 }
 
-function isNew (input: string, items: ComboItem[]): boolean {
-  return !items.map((t) => t.text).includes(input)
+export function isNew (input: string, items: ComboItem[]): boolean {
+  return items.filter((item) => item.text === input).length === 0
 }
 
 export default NodeSelect

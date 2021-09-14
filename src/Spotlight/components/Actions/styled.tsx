@@ -40,6 +40,7 @@ export const Action = styled.div`
 export const ActionTitle = styled.div`
   font-size: 0.8rem;
   margin-bottom: 4px;
+  flex: 1;
   color: ${({ theme }) => theme.colors.text.heading};
 `
 

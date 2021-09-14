@@ -2,6 +2,7 @@ import { ipcRenderer } from 'electron'
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
+import { IpcAction } from '../Spotlight/utils/constants'
 import styled, { useTheme } from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useGraphStore } from '../Components/Graph/GraphStore'
@@ -19,6 +20,7 @@ import { useNavigation } from '../Hooks/useNavigation/useNavigation'
 import { useSaveAndExit } from '../Spotlight/utils/hooks'
 import { GridWrapper } from '../Styled/Grid'
 import InfoBar from './InfoBar'
+import { useRecentsStore } from '../Editor/Store/RecentsStore'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -39,6 +41,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const history = useHistory()
   const id = useEditorStore((state) => state.node.id)
   const showGraph = useGraphStore((state) => state.showGraph)
+  const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
 
   const { move, push } = useNavigation()
 
@@ -49,8 +52,15 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const { getLocalData } = useLocalData()
 
   useEffect(() => {
-    ipcRenderer.on('open-node', (_event, { nodeId }) => {
+    ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { nodeId }) => {
       push(nodeId)
+    })
+    ipcRenderer.on(IpcAction.CLEAR_RECENTS, () => {
+      clear()
+    })
+    ipcRenderer.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {
+      const { data } = arg
+      addRecent(data)
     })
   }, [])
 

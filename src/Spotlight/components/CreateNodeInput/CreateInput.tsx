@@ -1,53 +1,77 @@
-import React, { useState } from 'react'
+import React from 'react'
+
+import useDataStore from '../../../Editor/Store/DataStore'
+import { useContentStore } from '../../../Editor/Store/ContentStore'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
-import { SelectState } from '../../../Components/NodeInput/NodeSelect'
-import { useFlatTreeFromILinks } from '../../../Editor/Store/DataStore'
-import { getOptions } from '../../../Lib/flatTree'
-
-import { StyledCreateInput } from '../Search/styled'
+import { useSpotlightContext } from '../../../Spotlight/utils/context'
+import { useSaveData } from '../../../Data/useSaveData'
+import { useStoreEditorValue } from '@udecode/plate-core'
+import NodeSelect from '../../../Components/NodeSelect/NodeSelect'
+import { StyledSpotlightInputWrapper } from '../../../Components/NodeSelect/NodeSelect.styles'
+import { openNodeInMex } from '../../../Spotlight/utils/hooks'
+import { useHistoryStore } from '../../../Editor/Store/HistoryStore'
+import { useRecentsStore } from '../../../Editor/Store/RecentsStore'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
-import { useNavigation } from '../../../Hooks/useNavigation/useNavigation'
+import { AppType } from '../../../Data/useInitialize'
+import { IpcAction } from '../../../Spotlight/utils/constants'
+import { appNotifierWindow } from '../../../Spotlight/utils/notifiers'
 
-const CreateInput: React.FC<{ placeholder: string; defaultValue?: string; onCreate: (nodeID: string) => void }> = ({
-  placeholder,
-  onCreate
-}) => {
-  const defaultOptions = getOptions(useFlatTreeFromILinks())
+export type CreateInputType = { value?: string }
 
-  const { push } = useNavigation()
-  const loadNodeAndAppend = useEditorStore((s) => s.loadNodeAndAppend)
+const CreateInput: React.FC<CreateInputType> = () => {
+  const { setSelection } = useSpotlightContext()
+  const { setSaved } = useContentStore(({ saved, setSaved }) => ({ saved, setSaved }))
+  const nodeId = useEditorStore((state) => state.node.id)
+
+  const addILink = useDataStore((s) => s.addILink)
+
+  const saveData = useSaveData()
+
+  const setFsContent = useContentStore((state) => state.setContent)
+
+  const pushToHistory = useHistoryStore((state) => state.push)
+  const addRecent = useRecentsStore((state) => state.addRecent)
+  const editorState = useStoreEditorValue()
+
+  const { loadNodeAndAppend, loadNodeFromId } = useEditorStore(({ loadNodeAndAppend, loadNodeFromId }) => ({
+    loadNodeFromId,
+    loadNodeAndAppend
+  }))
+
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
 
-  const handleOnCreateNexMex = (val: any) => {
-    const newVal = { label: val, value: val }
-    onCreate(val)
-    setInputState((s) => ({ options: [...s.options, newVal], value: newVal }))
+  const handleOnCreate = (newNodeId: string) => {
+    addILink(newNodeId)
+    setSelection(undefined)
+
+    if (editorState) {
+      setFsContent(newNodeId, editorState)
+    }
+
+    pushToHistory(newNodeId)
+    addRecent(newNodeId)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, newNodeId)
+
+    openNodeInMex(newNodeId)
+    saveData()
+    setSaved(true)
   }
 
-  const [inputState, setInputState] = useState<SelectState>({
-    options: defaultOptions,
-    value: undefined
-  })
-
-  const handleChange = (newValue: any, actionMeta: any) => {
+  const handleChange = (nodeIdValue: string) => {
     if (nodeContent) {
-      loadNodeAndAppend(newValue.value, nodeContent)
+      loadNodeAndAppend(nodeIdValue, nodeContent)
     } else {
-      push(newValue.value)
+      loadNodeFromId(nodeIdValue)
+      pushToHistory(nodeIdValue)
+      addRecent(nodeIdValue)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeIdValue)
     }
-    setInputState((s) => ({ ...s, value: newValue }))
   }
 
   return (
-    <StyledCreateInput
-      blurInputOnSelect
-      placeholder={placeholder}
-      isClearable
-      onCreateOption={handleOnCreateNexMex}
-      options={inputState.options}
-      value={inputState.value}
-      onChange={handleChange}
-    />
+    <StyledSpotlightInputWrapper>
+      <NodeSelect prefillLast placeholder={nodeId} handleSelectItem={handleChange} handleCreateItem={handleOnCreate} />
+    </StyledSpotlightInputWrapper>
   )
 }
 

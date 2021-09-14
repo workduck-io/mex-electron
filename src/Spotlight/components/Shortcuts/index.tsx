@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSpotlightContext } from '../../../Spotlight/utils/context'
 import styled from 'styled-components'
 
 type ContentType = {
@@ -37,6 +38,8 @@ export enum ShortcutType {
 }
 
 const Shortcuts: React.FC<{ type: ShortcutType }> = ({ type }) => {
+  const { search } = useSpotlightContext()
+
   if (type === ShortcutType.NEW) {
     return (
       <StyledShortcuts justifyContent="space-between">
@@ -53,7 +56,10 @@ const Shortcuts: React.FC<{ type: ShortcutType }> = ({ type }) => {
   return (
     <StyledShortcuts>
       <Shortcut>
-        <StyledKey>ENTER</StyledKey> TO SELECT
+        <StyledKey>{search ? 'TAB' : 'ENTER'}</StyledKey> {search ? 'TO SELECT' : 'TO OPEN'}
+      </Shortcut>
+      <Shortcut>
+        <StyledKey>OPTION</StyledKey> SETTINGS
       </Shortcut>
       <Shortcut>
         <StyledKey>ESC</StyledKey> TO DISMISS

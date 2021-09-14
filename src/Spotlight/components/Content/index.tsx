@@ -1,7 +1,7 @@
 import { search as getSearchResults } from 'fast-fuzzy'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { DEFAULT_PREVIEW_TEXT } from '../../utils/constants'
+import { DEFAULT_PREVIEW_TEXT, IpcAction } from '../../utils/constants'
 import { useSpotlightContext } from '../../utils/context'
 import { useCurrentIndex } from '../../utils/hooks'
 import Preview from '../Preview'
@@ -13,6 +13,8 @@ import useDataStore from '../../../Editor/Store/DataStore'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
 import Recent from '../Recent'
 import { useRecentsStore } from '../../../Editor/Store/RecentsStore'
+import { appNotifierWindow } from '../../../Spotlight/utils/notifiers'
+import { AppType } from '../../../Data/useInitialize'
 
 export const StyledContent = styled.section`
   display: flex;
@@ -121,6 +123,7 @@ const Content = () => {
 
   const handleClearClick = () => {
     clearRecents()
+    appNotifierWindow(IpcAction.CLEAR_RECENTS, AppType.SPOTLIGHT)
   }
 
   return (
@@ -128,7 +131,7 @@ const Content = () => {
       {selection || search ? (
         <Preview preview={preview} nodeId={draftKey} />
       ) : (
-        <Recent current={currentIndex} recents={recents} onClearClick={handleClearClick} />
+        <Recent recents={recents} onClearClick={handleClearClick} />
       )}
       <SideBar index={currentIndex} data={data} />
     </StyledContent>

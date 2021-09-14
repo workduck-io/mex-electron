@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react'
 import { isFromSameSource } from '../../Editor/Store/helpers'
 import { NodeEditorContent } from '../../Editor/Store/Types'
 import { useSaver } from '../../Editor/Components/Saver'
+import { IpcAction } from './constants'
 
-export const useCurrentIndex = (data: Array<any> | undefined, search: string) => {
-  const [currentIndex, setCurrentIndex] = useState(0)
+export const useCurrentIndex = (data: Array<any> | undefined, search: string): number => {
+  const [currentIndex, setCurrentIndex] = useState<number>(0)
 
   useEffect(() => {
     const dataLength = data ? data.length : 0
@@ -104,4 +105,31 @@ export const combineSources = (
   return removedContent
 }
 
-export const openNodeInMex = (nodeId: string) => ipcRenderer.send('open-node-in-mex', { nodeId: nodeId })
+export const openNodeInMex = (nodeId: string) => ipcRenderer.send(IpcAction.OPEN_NODE_IN_MEX, { nodeId: nodeId })
+
+export const useKeyPress = (pressedKey: string): boolean => {
+  const [isPressed, setIsPressed] = useState<boolean>(false)
+
+  const onKeyDown = ({ key }) => {
+    if (key === pressedKey) {
+      setIsPressed(true)
+    }
+  }
+  const onKeyUp = ({ key }) => {
+    if (key === pressedKey) {
+      setIsPressed(false)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', onKeyDown)
+    window.addEventListener('keyup', onKeyUp)
+
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('keyup', onKeyUp)
+    }
+  }, [])
+
+  return isPressed
+}

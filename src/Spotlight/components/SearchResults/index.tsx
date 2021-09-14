@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Icon } from '@iconify/react'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FixedSizeList } from 'react-window'
 import { Action, ActionDesc, ActionDescStyled, ActionTitle, CreateMex } from '../Actions/styled'
 import { StyledKey } from '../Shortcuts'
@@ -9,11 +9,12 @@ import CreateIcon from '@iconify-icons/ph/lightning'
 
 export const Result: React.FC<{
   result: any
+  onClick: () => void
   selected?: boolean
   key?: string
-}> = ({ result, selected }) => {
+}> = ({ result, selected, onClick }) => {
   return (
-    <StyledRow showColor={selected} key={`STRING_${result.key}`}>
+    <StyledRow showColor={selected} onClick={onClick} key={`STRING_${result.key}`}>
       {result?.text}
       <Description>{result?.desc}</Description>
     </StyledRow>
@@ -22,13 +23,16 @@ export const Result: React.FC<{
 
 const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ current, data }) => {
   const ref = useRef<any>(undefined!)
+  const [selectedIndex, setSelectedIndex] = useState<number>(current)
+
   useEffect(() => {
     ref?.current?.scrollToItem(current)
+    setSelectedIndex(current)
   }, [current])
 
   return (
     <StyledResults>
-      <ActionTitle>Search Results</ActionTitle>
+      <ActionTitle>SEARCH RESULTS</ActionTitle>
       {data.length === 0 && (
         <>
           <ActionDesc>No search results found.</ActionDesc>
@@ -48,7 +52,15 @@ const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ curren
       <FixedSizeList ref={ref} height={250} itemCount={data.length} itemSize={51} width={300}>
         {({ index }) => {
           const result = data[index]
-          return <Result selected={index === current} result={result} />
+          return (
+            <Result
+              selected={index === selectedIndex}
+              onClick={() => {
+                setSelectedIndex(index)
+              }}
+              result={result}
+            />
+          )
         }}
       </FixedSizeList>
     </StyledResults>

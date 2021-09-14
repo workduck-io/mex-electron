@@ -8,6 +8,8 @@ import { getHtmlString } from '../components/Source'
 import { useContentStore } from '../../Editor/Store/ContentStore'
 import { FileData } from '../../Types/data'
 import { useSpotlightSettingsStore } from '../store/settings'
+import { IpcAction } from './constants'
+import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 
 export const useLocalShortcuts = () => {
   const history = useHistory()
@@ -31,9 +33,29 @@ export const useLocalShortcuts = () => {
         event.preventDefault()
         history.replace('/new')
       },
-      '$mod+Shift+,': (event) => {
+      Alt: (event) => {
         event.preventDefault()
         history.replace('/settings')
+      }
+    })
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+}
+
+export const useSettingsShortcuts = () => {
+  const history = useHistory()
+  const setSaved = useContentStore((state) => state.setSaved)
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      Escape: (event) => {
+        event.preventDefault()
+        history.replace('/')
+      },
+      '$mod+s': (event) => {
+        setSaved(true)
       }
     })
     return () => {
@@ -85,6 +107,7 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
 
   const setBubble = useSpotlightSettingsStore((state) => state.setBubble)
+  const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
 
   const { init, update } = useInitialize()
 
@@ -112,27 +135,35 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
   }, [showSource, temp])
 
   useEffect(() => {
-    ipcRenderer.on('selected-text', (_event, data) => {
+    ipcRenderer.on(IpcAction.SELECTED_TEXT, (_event, data) => {
       if (!data) setSelection(undefined)
       else setTemp(data)
     })
 
-    ipcRenderer.on('recieve-local-data', (_event, arg: FileData) => {
+    ipcRenderer.on(IpcAction.RECIEVE_LOCAL_DATA, (_event, arg: FileData) => {
       const editorID = getNewDraftKey()
       init(arg, editorID, AppType.SPOTLIGHT)
       setLocalData(arg)
     })
 
-    ipcRenderer.on('spotlight-bubble', (_event, arg) => {
+    ipcRenderer.on(IpcAction.SPOTLIGHT_BUBBLE, (_event, arg) => {
       setBubble()
     })
 
-    ipcRenderer.on('sync-data', (_event, arg) => {
+    ipcRenderer.on(IpcAction.CLEAR_RECENTS, (_event) => {
+      clear()
+    })
+
+    ipcRenderer.on(IpcAction.NEW_RECENT_ITEM, (_event, { data }) => {
+      addRecent(data)
+    })
+
+    ipcRenderer.on(IpcAction.SYNC_DATA, (_event, arg) => {
       update(arg)
       // loadNode(useEditorStore.getState().node)
     })
 
-    ipcRenderer.send('get-local-data')
+    ipcRenderer.send(IpcAction.GET_LOCAL_DATA)
   }, [])
 
   return <SpotlightContext.Provider value={value}>{children}</SpotlightContext.Provider>
