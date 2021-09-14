@@ -1,14 +1,36 @@
 export const setPositionAtSelection = (el: HTMLElement, direction: 'top' | 'bottom' = 'top') => {
   const domSelection = window.getSelection()
-  if (!domSelection || domSelection.rangeCount < 1) return
+  if (!domSelection || domSelection.rangeCount < 0) return
 
   const domRange = domSelection.getRangeAt(0)
   const rect = domRange.getBoundingClientRect()
 
-  if (direction === 'top') {
-    el.style.top = `${rect.top + window.pageYOffset - el.offsetHeight}px`
-  } else {
-    el.style.top = `${rect.bottom + window.pageYOffset}px`
+  if (el.offsetHeight === 0) {
+    el.style.visibility = 'hidden'
   }
-  el.style.left = `${rect.left + window.pageXOffset - el.offsetWidth / 2 + rect.width / 2}px`
+
+  setTimeout(() => {
+    let top: string
+    if (direction === 'top') {
+      top = `${rect.top + window.pageYOffset - el.offsetHeight}px`
+    } else {
+      top = `${rect.bottom + window.pageYOffset}px`
+    }
+    const left = `${rect.left + window.pageXOffset - el.offsetWidth / 2 + rect.width / 2}px`
+
+    console.log(
+      { top, left },
+      {
+        elOfHeight: el.offsetHeight,
+        elOfWidth: el.offsetWidth,
+        winOffY: window.pageYOffset,
+        winOffX: window.pageXOffset
+      },
+      rect,
+      window
+    )
+    el.style.top = top
+    el.style.left = left
+    el.style.visibility = 'inherit'
+  }, 20)
 }

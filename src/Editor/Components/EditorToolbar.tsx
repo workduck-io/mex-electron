@@ -9,7 +9,6 @@ import listUnordered from '@iconify-icons/ri/list-unordered'
 import underlineIcon from '@iconify-icons/ri/underline'
 import { Icon } from '@iconify/react'
 import {
-  BalloonToolbar,
   ELEMENT_BLOCKQUOTE,
   ELEMENT_H1,
   ELEMENT_H2,
@@ -41,6 +40,7 @@ import { ReactEditor } from 'slate-react'
 import styled from 'styled-components'
 import { HeadlessButton } from '../../Styled/Buttons'
 import { ButtonSeparator } from '../../Styled/Toolbar'
+import { BalloonToolbar } from './BalloonToolbar'
 
 const LinkButtonStyled = styled.div`
   user-select: all;

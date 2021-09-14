@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { useEventEditorId, useStoreEditorState } from '@udecode/plate-core'
 import { PortalBody } from '@udecode/plate-styled-components'
-import { ToolbarBase } from '../Toolbar/Toolbar'
-import { getBalloonToolbarStyles } from './BalloonToolbar.styles'
+import { getBalloonToolbarStyles, StyledToolbarBase } from './BalloonToolbar.styles'
 import { BalloonToolbarProps } from './BalloonToolbar.types'
 import { useBalloonMove } from './useBalloonMove'
 import { useBalloonShow } from './useBalloonShow'
@@ -22,14 +21,14 @@ export const BalloonToolbar = (props: BalloonToolbarProps) => {
     theme,
     arrow,
     hidden,
-    ...props,
+    ...props
   })
 
   return (
     <PortalBody>
-      <ToolbarBase ref={ref} css={styles.root.css} className={styles.root.className}>
+      <StyledToolbarBase ref={ref} hidden={hidden} arrow={arrow} className={styles.root.className}>
         {children}
-      </ToolbarBase>
+      </StyledToolbarBase>
     </PortalBody>
   )
 }

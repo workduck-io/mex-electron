@@ -13,5 +13,10 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
+    fallback: {
+      path: require.resolve('path-browserify'),
+      os: require.resolve('os-browserify/browser'),
+      fs: false,
+    },
   },
 }
