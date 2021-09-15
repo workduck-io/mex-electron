@@ -6,9 +6,9 @@ import { useSyncStore } from '../../../Editor/Store/SyncStore'
 import { findKey } from 'lodash'
 
 const ServiceMap = {
-  issue: { connections: ['github', 'slack'] },
-  com: { connections: ['telegram', 'slack'] },
-  slack: { connections: ['slack'] }
+  issue: { title: 'Issue', connections: ['github', 'slack'] },
+  com: { title: 'Communication', connections: ['telegram', 'slack'] },
+  slack: { title: 'Slack', connections: ['slack'] }
 }
 
 export const useSyncConfig = () => {
@@ -43,7 +43,12 @@ export const extractSyncBlockCommands = (): string[] => {
   return Object.keys(ServiceMap).map((c) => getSyncCommand(c))
 }
 
-export const getParentSyncBlock = (connections: string[]) => {
-  const key = findKey(ServiceMap, { connections })
-  return `BLOCK_${key}`
+export const getSyncServicesKey = (connections: string[]) => findKey(ServiceMap, { connections })
+
+export const getParentSyncBlock = (connections: string[]) => `BLOCK_${getSyncServicesKey(connections)}`
+
+export const getSyncBlockTitle = (connections: string[]): string | undefined => {
+  const key = getSyncServicesKey(connections)
+  if (key) return ServiceMap[key].title
+  return undefined
 }

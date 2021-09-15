@@ -15,11 +15,12 @@ import {
   RootElement,
   ServiceLabel,
   ServiceSelectorLabel,
-  SyncForm
+  SyncForm,
+  SyncTitle
 } from './SyncBlock.styles'
-import { connection_services, SyncBlockProps } from './SyncBlock.types'
+import { SyncBlockProps } from './SyncBlock.types'
 import githubFill from '@iconify-icons/ri/github-fill'
-import { getParentSyncBlock } from '../SlashCommands/useSyncConfig'
+import { getParentSyncBlock, getSyncBlockTitle } from '../SlashCommands/useSyncConfig'
 
 type FormValues = {
   content: string
@@ -60,6 +61,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
   if (blockData === undefined) return null
 
   const parentNodeId = getParentSyncBlock(blockData.connections)
+  const syncTitle = getSyncBlockTitle(blockData.connections)
 
   const onSubmit = handleSubmit((data) => {
     // console.log(JSON.stringify(data));
@@ -92,6 +94,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
           <ElementHeader>
             <Icon icon={refreshFill} height={20} />
             SyncBlock
+            {syncTitle && <SyncTitle>{syncTitle}</SyncTitle>}
           </ElementHeader>
           <textarea
             {...register('content')}
