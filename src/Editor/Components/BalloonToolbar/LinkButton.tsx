@@ -65,7 +65,8 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
     handleSubmit,
     // watch,
     // formState: { errors },
-    getValues
+    getValues,
+    reset
   } = useForm()
 
   useEffect(() => {
@@ -135,6 +136,7 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
     upsertLinkAtSelection(editor, { url, wrap: shouldWrap })
 
     setInp({ prev: '' })
+    reset()
   }
 
   const onSubmit = async (data: any) => {
