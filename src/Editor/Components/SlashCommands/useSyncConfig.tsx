@@ -3,12 +3,12 @@ import { SEPARATOR } from '../../../Components/Sidebar/treeUtils'
 import { getNewBlockId } from '../SyncBlock/getNewBlockData'
 import { ELEMENT_SYNC_BLOCK } from '../SyncBlock'
 import { useSyncStore } from '../../../Editor/Store/SyncStore'
-import { findKey } from 'lodash'
+import { findKey, clone } from 'lodash'
 
 const ServiceMap = {
-  issue: { title: 'Issue', connections: ['github', 'slack'] },
-  com: { title: 'Communication', connections: ['telegram', 'slack'] },
-  slack: { title: 'Slack', connections: ['slack'] }
+  issue: { title: 'Issue', connections: ['github', 'slack', 'mex'] },
+  com: { title: 'Communication', connections: ['telegram', 'slack', 'mex'] },
+  slack: { title: 'Slack', connections: ['slack', 'mex'] }
 }
 
 export const useSyncConfig = () => {
@@ -43,12 +43,16 @@ export const extractSyncBlockCommands = (): string[] => {
   return Object.keys(ServiceMap).map((c) => getSyncCommand(c))
 }
 
-export const getSyncServicesKey = (connections: string[]) => findKey(ServiceMap, { connections })
+export const getSyncServicesKey = (connections: string[]) =>
+  findKey(ServiceMap, (k) => {
+    return clone(k.connections).sort().toString() === clone(connections).sort().toString()
+  })
 
 export const getParentSyncBlock = (connections: string[]) => `BLOCK_${getSyncServicesKey(connections)}`
 
 export const getSyncBlockTitle = (connections: string[]): string | undefined => {
   const key = getSyncServicesKey(connections)
+
   if (key) return ServiceMap[key].title
   return undefined
 }
