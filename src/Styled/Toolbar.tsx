@@ -33,25 +33,6 @@ export const TippyBalloonStyles = css`
       fill: ${({ theme }) => theme.colors.gray[8]};
     }
   }
-
-  body .slate-BalloonToolbar {
-    background-color: ${({ theme }) => theme.colors.gray[8]};
-    padding: ${({ theme: { spacing } }) => `${spacing.tiny} ${spacing.small}`};
-    box-shadow: 0px 3px 9px ${({ theme }) => transparentize(0.5, theme.colors.palette.black)};
-    &::after {
-      border-color: ${({ theme }) => theme.colors.gray[8]} transparent;
-    }
-    .slate-ToolbarButton {
-      color: ${({ theme }) => theme.colors.text.default};
-      padding: ${({ theme: { spacing } }) => `${spacing.tiny}`};
-      border-radius: ${({ theme }) => theme.borderRadius.tiny};
-    }
-    .slate-ToolbarButton-active,
-    .slate-ToolbarButton:hover {
-      color: ${({ theme }) => theme.colors.primary};
-      background-color: ${({ theme }) => theme.colors.gray[9]};
-    }
-  }
 `
 
 export const ButtonSeparator = styled.div`

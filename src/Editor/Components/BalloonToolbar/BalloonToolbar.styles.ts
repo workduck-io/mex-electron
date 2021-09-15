@@ -1,5 +1,6 @@
 import { ToolbarBase } from '@udecode/plate'
 import { createStyles } from '@udecode/plate-styled-components'
+import { transparentize } from 'polished'
 import styled, { css, CSSProp } from 'styled-components'
 import { getToolbarStyles } from '../Toolbar/Toolbar.styles'
 import { BalloonToolbarStyleProps } from './BalloonToolbar.types'
@@ -20,10 +21,18 @@ export const StyledToolbarBase = styled<any>(ToolbarBase)`
   border: 1px solid transparent;
   border-radius: 4px;
   margin-top: ${({ theme }) => theme.spacing.small};
+  box-shadow: 0px 3px 9px ${({ theme }) => transparentize(0.5, theme.colors.palette.black)};
 
   .slate-ToolbarButton-active,
   .slate-ToolbarButton:hover {
     color: ${({ theme }) => theme.colors.primary};
+    background-color: ${({ theme }) => theme.colors.gray[9]};
+  }
+
+  .slate-ToolbarButton {
+    color: ${({ theme }) => theme.colors.text.default};
+    padding: ${({ theme: { spacing } }) => `${spacing.tiny}`};
+    border-radius: ${({ theme }) => theme.borderRadius.tiny};
   }
 
   ${({ arrow, theme }) =>
