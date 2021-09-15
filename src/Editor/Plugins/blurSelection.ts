@@ -3,11 +3,13 @@ import { PlatePlugin, SPEditor } from '@udecode/plate'
 export interface BlurSelectionEditor extends SPEditor {
   selection: any
   blurSelection: any
+  prevSelection: any
 }
 
 export const setBlurSelection = (editor: BlurSelectionEditor) => {
   if (editor && editor.selection) {
     editor.blurSelection = editor.selection
+    editor.prevSelection = editor.selection
   }
 }
 

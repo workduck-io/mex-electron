@@ -111,8 +111,6 @@ export const useEditorPluginConfig = (editorId: string) => {
     }
   }
 
-  console.log({ pluginConfigs })
-
   return pluginConfigs
 }
 
