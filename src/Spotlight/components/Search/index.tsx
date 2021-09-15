@@ -9,13 +9,18 @@ import { StyledSearch, StyledInput } from './styled'
 import { CenterIcon } from '../../styles/layout'
 import WDLogo from './Logo'
 import { useTheme } from 'styled-components'
+import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
 
 const Search: React.FC = () => {
   const theme = useTheme()
   const { setSearch } = useSpotlightContext()
+  const setIsPreview = useSpotlightEditorStore((state) => state.setIsPreview)
 
   const handleSearchInput = useDebouncedCallback((value: string) => {
     setSearch(value)
+    if (!value) {
+      setIsPreview(false)
+    }
   }, 400)
 
   return (

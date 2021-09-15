@@ -105,11 +105,15 @@ const createSpotLighWindow = (show?: boolean) => {
     }
   })
 
+  spotlight.on('blur', () => {
+    spotlight.webContents.send(IpcAction.SPOTLIGHT_BLURRED)
+  })
+
   spotlight.on('closed', () => {
     spotlight = null
   })
 
-  spotlight.webContents.openDevTools()
+  // spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -150,7 +154,7 @@ const createMexWindow = () => {
     shell.openExternal(url)
   })
 
-  mex.webContents.openDevTools()
+  // mex.webContents.openDevTools()
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const callbackOptions = {

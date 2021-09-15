@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import { Icon } from '@iconify/react'
 import React, { useEffect, useRef, useState } from 'react'
-import { FixedSizeList } from 'react-window'
 import { Action, ActionDesc, ActionDescStyled, ActionTitle, CreateMex } from '../Actions/styled'
-import { StyledKey } from '../Shortcuts'
+import { StyledKey } from '../Shortcuts/styled'
 import { StyledRow, StyledResults, Description } from './styled'
 import CreateIcon from '@iconify-icons/ph/lightning'
+import { useResultsShortcuts } from '../../../Spotlight/shortcuts/useResultsShortcuts'
 
 export const Result: React.FC<{
   result: any
@@ -24,6 +24,7 @@ export const Result: React.FC<{
 const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ current, data }) => {
   const ref = useRef<any>(undefined!)
   const [selectedIndex, setSelectedIndex] = useState<number>(current)
+  useResultsShortcuts()
 
   useEffect(() => {
     ref?.current?.scrollToItem(current)
@@ -49,20 +50,16 @@ const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ curren
           </Action>
         </>
       )}
-      <FixedSizeList ref={ref} height={250} itemCount={data.length} itemSize={51} width={300}>
-        {({ index }) => {
-          const result = data[index]
-          return (
-            <Result
-              selected={index === selectedIndex}
-              onClick={() => {
-                setSelectedIndex(index)
-              }}
-              result={result}
-            />
-          )
-        }}
-      </FixedSizeList>
+      {data?.map((result, index) => (
+        <Result
+          key={`RESULT_${result?.text || String(index)}`}
+          selected={index === selectedIndex}
+          onClick={() => {
+            setSelectedIndex(index)
+          }}
+          result={result}
+        />
+      ))}
     </StyledResults>
   )
 }
