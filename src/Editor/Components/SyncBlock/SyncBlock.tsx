@@ -15,10 +15,12 @@ import {
   RootElement,
   ServiceLabel,
   ServiceSelectorLabel,
-  SyncForm
+  SyncForm,
+  SyncTitle
 } from './SyncBlock.styles'
-import { connection_services, SyncBlockProps } from './SyncBlock.types'
+import { SyncBlockProps } from './SyncBlock.types'
 import githubFill from '@iconify-icons/ri/github-fill'
+import { getParentSyncBlock, getSyncBlockTitle } from '../SlashCommands/useSyncConfig'
 
 type FormValues = {
   content: string
@@ -52,6 +54,15 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
   const blockData = blocksData.filter((d) => d.id === element.id)[0]
 
+  React.useEffect(() => {
+    ReactTooltip.rebuild()
+  }, [])
+
+  if (blockData === undefined) return null
+
+  const parentNodeId = getParentSyncBlock(blockData.connections)
+  const syncTitle = getSyncBlockTitle(blockData.connections)
+
   const onSubmit = handleSubmit((data) => {
     // console.log(JSON.stringify(data));
     const param = new URLSearchParams({
@@ -65,7 +76,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
     })
 
     axios.post(`https://k43k03g5ab.execute-api.us-east-1.amazonaws.com/dev/listen?${param}`, {
-      parentNodeId: 'BLOCK_random',
+      parentNodeId: parentNodeId ?? 'BLOCK_random',
       blockId: element.id,
       text: data.content,
       eventType: blockData.content === '' ? 'INSERT' : 'EDIT' // FIXME
@@ -73,26 +84,6 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
     toast('Sync Successful')
   }) // eslint-disable-line no-console
-  React.useEffect(() => {
-    ReactTooltip.rebuild()
-  }, [])
-
-  // Use a useEffect for sync
-  /**
-   *
-   *
-
- 'POST',
-        uri: 'https://k43k03g5ab.execute-api.us-east-1.amazonaws.com/dev/listen',
-        qs: {
-        },
-        body: {
-        },
-   */
-
-  // useEffect(()=> {
-  //   axios.
-  // })
 
   return (
     <RootElement {...attributes}>
@@ -103,6 +94,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
           <ElementHeader>
             <Icon icon={refreshFill} height={20} />
             SyncBlock
+            {syncTitle && <SyncTitle>{syncTitle}</SyncTitle>}
           </ElementHeader>
           <textarea
             {...register('content')}
@@ -113,7 +105,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
           {blockData && (
             <FormControls>
               <div>
-                {connection_services.map((cs) => {
+                {blockData.connections.map((cs) => {
                   const checked = blockData && blockData.connections.includes(cs as any) // eslint-disable-line @typescript-eslint/no-explicit-any
                   return (
                     <ServiceSelectorLabel

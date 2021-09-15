@@ -11,6 +11,7 @@ import { generateComboTexts } from '../Editor/Store/sampleTags'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
 import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
 import { useNavigation } from '../Hooks/useNavigation/useNavigation'
+import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
 
 export const useInitialize = () => {
   const initializeDataStore = useDataStore((state) => state.initializeDataStore)
@@ -24,7 +25,8 @@ export const useInitialize = () => {
   const update = (data: FileData) => {
     const { tags, ilinks, linkCache, contents, syncBlocks, snippets } = data
     const snippetCommands = extractSnippetCommands(snippets)
-    const slashCommands = generateComboTexts([...defaultCommands, ...snippetCommands])
+    const syncCommands = extractSyncBlockCommands()
+    const slashCommands = generateComboTexts([...defaultCommands, ...syncCommands, ...snippetCommands])
 
     initializeDataStore(tags, ilinks, slashCommands, linkCache)
     initSpotlightSettings(data.userSettings.spotlight)
