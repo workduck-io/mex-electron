@@ -19,6 +19,7 @@ import { ELEMENT_TAG } from './Components/tag/defaults'
 import generatePlugins from './Plugins/plugins'
 import useDataStore from './Store/DataStore'
 import { useSyncStore } from './Store/SyncStore'
+import { useSyncConfig } from './Components/SlashCommands/useSyncConfig'
 
 const options = createPlateOptions()
 
@@ -38,9 +39,11 @@ export const useEditorPluginConfig = (editorId: string) => {
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
   const { getSnippetsConfigs } = useSnippets()
+  const { getSyncBlockConfigs } = useSyncConfig()
 
   // Combobox
   const snippetConfigs = getSnippetsConfigs()
+  const syncBlockConfigs = getSyncBlockConfigs()
 
   const pluginConfigs = {
     combobox: {
@@ -101,11 +104,14 @@ export const useEditorPluginConfig = (editorId: string) => {
               return nd
             }
           },
-          ...snippetConfigs
+          ...snippetConfigs,
+          ...syncBlockConfigs
         }
       )
     }
   }
+
+  console.log({ pluginConfigs })
 
   return pluginConfigs
 }

@@ -5,15 +5,18 @@ import { defaultCommands } from '../Defaults/slashCommands'
 import { uniq } from 'lodash'
 
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
+import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
 
 export const useUpdater = () => {
   const setSlashCommands = useDataStore((state) => state.setSlashCommands)
 
   const updater = () => {
     const snippetCommands = extractSnippetCommands(useSnippetStore.getState().snippets)
-    const commands = generateComboTexts(uniq([...snippetCommands, ...defaultCommands]))
+    const syncCommands = extractSyncBlockCommands()
 
-    // console.log('Generated', { commands })
+    const commands = generateComboTexts(uniq([...snippetCommands, ...syncCommands, ...defaultCommands]))
+
+    console.log('Generated', { commands })
     setSlashCommands(Array.from(commands))
   }
 

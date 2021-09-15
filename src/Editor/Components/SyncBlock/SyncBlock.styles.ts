@@ -18,6 +18,15 @@ export const ElementHeader = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.small};
 `
 
+export const SyncTitle = styled.div`
+  padding: ${({ theme: { spacing } }) => `${spacing.tiny} ${spacing.small}`};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+
+  color: ${({ theme }) => theme.colors.primary};
+
+  align-self: flex-end;
+`
+
 export const SyncForm = styled.form`
   display: flex;
   flex-direction: column;
