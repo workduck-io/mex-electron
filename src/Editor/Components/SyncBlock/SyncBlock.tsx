@@ -65,7 +65,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
     })
 
     axios.post(`https://k43k03g5ab.execute-api.us-east-1.amazonaws.com/dev/listen?${param}`, {
-      parentNodeId: 'BLOCK_random',
+      parentNodeId: 'BLOCK_random', // BLOCK_{type}
       blockId: element.id,
       text: data.content,
       eventType: blockData.content === '' ? 'INSERT' : 'EDIT' // FIXME
