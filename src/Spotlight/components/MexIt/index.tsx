@@ -1,13 +1,13 @@
 import React from 'react'
 import Shortcuts, { ShortcutType } from '../Shortcuts'
 import { StyledLookup } from '../Spotlight/styled'
-import { useMexPageShortcuts } from '../../utils/context'
+import { useMexItShortcuts } from '../../shortcuts/useMexItShortcuts'
 
 import NewEditor from './NewEditor'
 import CreateNodeInput from '../CreateNodeInput'
 
 const New = () => {
-  useMexPageShortcuts()
+  useMexItShortcuts()
 
   return (
     <StyledLookup>

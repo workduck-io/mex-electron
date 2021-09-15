@@ -2,9 +2,9 @@ import styled, { css } from 'styled-components'
 import { Scroll } from '../../../Spotlight/styles/layout'
 
 export const StyledRecent = styled.div`
-  ${Scroll}
   padding: 0 0.5rem;
   flex: 5;
+  ${Scroll}
   font-weight: bold;
   border-radius: 1rem;
   line-height: 1.65;
@@ -38,7 +38,7 @@ export const StyledRecentRow = styled.div<{ highlight: boolean }>`
   margin-top: 4px;
   :hover {
     cursor: pointer;
-    background: ${({ theme, highlight }) => theme.colors.background.modal};
+    background: ${({ theme }) => theme.colors.background.modal};
   }
   border-radius: 8px;
   padding: 1rem 0.5rem;

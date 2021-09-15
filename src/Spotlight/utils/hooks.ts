@@ -91,7 +91,6 @@ export const combineSources = (
 
   const removedContent = areSameSource
     ? oldSourceContent.map((content, index) => {
-      console.log(index, content)
       if (index === oldSourceIndex) {
         const sliceToIndex = isParagraphSource ? oldSourceChildrenIndex : oldSourceChildrenIndex - 2
         return {

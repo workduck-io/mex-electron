@@ -1,7 +1,7 @@
 import { search as getSearchResults } from 'fast-fuzzy'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { DEFAULT_PREVIEW_TEXT, IpcAction } from '../../utils/constants'
+import { DEFAULT_PREVIEW_TEXT } from '../../utils/constants'
 import { useSpotlightContext } from '../../utils/context'
 import { useCurrentIndex } from '../../utils/hooks'
 import Preview from '../Preview'
@@ -11,10 +11,6 @@ import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
 import useDataStore from '../../../Editor/Store/DataStore'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
-import Recent from '../Recent'
-import { useRecentsStore } from '../../../Editor/Store/RecentsStore'
-import { appNotifierWindow } from '../../../Spotlight/utils/notifiers'
-import { AppType } from '../../../Data/useInitialize'
 
 export const StyledContent = styled.section`
   display: flex;
@@ -30,34 +26,36 @@ const initPreview = {
 }
 
 const Content = () => {
-  const { search, selection } = useSpotlightContext()
-  const recents = useRecentsStore((state) => state.lastOpened)
-  const clearRecents = useRecentsStore((state) => state.clear)
-
-  const [data, setData] = useState<Array<any>>()
-  const ilinks = useDataStore((s) => s.ilinks)
   const draftKey = useMemo(() => getNewDraftKey(), [])
 
+  const [data, setData] = useState<Array<any>>()
   const [preview, setPreview] = useState<{
     text: string
     metadata: string | null
     isSelection: boolean
   }>(initPreview)
+
+  const { search, selection } = useSpotlightContext()
   const currentIndex = useCurrentIndex(data, search)
+
+  const ilinks = useDataStore((s) => s.ilinks)
   const getContent = useContentStore((state) => state.getContent)
 
   const { loadNodeAndAppend, loadNodeFromId } = useEditorStore(({ loadNodeAndAppend, loadNodeFromId }) => ({
     loadNodeAndAppend,
     loadNodeFromId
   }))
+
+  const saveEditorId = useSpotlightEditorStore((state) => state.setNodeId)
   const { setSaved } = useContentStore(({ setSaved }) => ({ setSaved }))
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
-
   const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
+  const isPreview = useSpotlightEditorStore((state) => state.isPreview)
 
   useEffect(() => {
     setSaved(false)
     loadNodeFromId(draftKey)
+    saveEditorId(draftKey)
   }, [selection])
 
   useEffect(() => {
@@ -95,7 +93,7 @@ const Content = () => {
       if (selection) {
         setPreview({
           ...selection,
-          isSelection: true
+          isSelection: isPreview
         })
       } else {
         setNodeContent(undefined)
@@ -119,20 +117,11 @@ const Content = () => {
       }
     }
     setSaved(false)
-  }, [data, currentIndex, selection])
-
-  const handleClearClick = () => {
-    clearRecents()
-    appNotifierWindow(IpcAction.CLEAR_RECENTS, AppType.SPOTLIGHT)
-  }
+  }, [data, currentIndex, isPreview, selection])
 
   return (
     <StyledContent>
-      {selection || search ? (
-        <Preview preview={preview} nodeId={draftKey} />
-      ) : (
-        <Recent recents={recents} onClearClick={handleClearClick} />
-      )}
+      <Preview preview={preview} nodeId={draftKey} />
       <SideBar index={currentIndex} data={data} />
     </StyledContent>
   )
