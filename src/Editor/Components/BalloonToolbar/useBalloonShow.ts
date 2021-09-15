@@ -2,27 +2,20 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTimeoutFn } from 'react-use'
 import { getSelectionText, isSelectionExpanded } from '@udecode/plate-common'
 import { TEditor } from '@udecode/plate-core'
+import { clearBlurSelection, isBlurSelection } from '../../../Editor/Plugins/blurSelection'
 
 /**
  * Hide if not selecting.
+ *
  * If hiddenDelay = 0 and the selection changes: show.
  * If hiddenDelay > 0: hide when the selection length changes.
  */
-export const useBalloonShow = ({
-  editor,
-  ref,
-  hiddenDelay,
-  selected
-}: {
-  editor?: TEditor
-  ref: any
-  hiddenDelay: number
-  selected?: boolean
-}) => {
+export const useBalloonShow = ({ editor, ref, hiddenDelay }: { editor?: TEditor; ref: any; hiddenDelay: number }) => {
   const [hidden, setHidden] = useState(true)
 
-  const selectionExpanded = editor && isSelectionExpanded(editor)
+  const selectionExpanded = editor && isSelectionExpanded(editor) // -> Selection start and end are different?
   const selectionText = editor && getSelectionText(editor)
+  const isBlurSelected = editor && isBlurSelection(editor as any)
 
   const show = useCallback(() => {
     if (ref.current && hidden && selectionExpanded) {
@@ -38,11 +31,16 @@ export const useBalloonShow = ({
     }
   }, [selectionText?.length, reset, hiddenDelay, show])
 
+  useEffect(() => {
+    clearBlurSelection(editor as any)
+  }, [selectionText?.length])
+
   /**
    * Hide if not selecting.
+   * When both blurSelection and selection are null.
    */
   useEffect(() => {
-    if (!hidden && !selectionExpanded && !selected) {
+    if (!hidden && !selectionExpanded && !isBlurSelected) {
       console.log('Set hidden: ', {
         cur: ref.current,
         hidden,
@@ -53,7 +51,7 @@ export const useBalloonShow = ({
         ref.current.removeAttribute('style')
       }
     }
-  }, [hidden, hiddenDelay, reset, selectionExpanded, selected, show, selectionText?.length, ref])
+  }, [hidden, hiddenDelay, reset, selectionExpanded, show, selectionText?.length, ref, isBlurSelected])
 
   // useEffect(() => {
   //   if (selected) {

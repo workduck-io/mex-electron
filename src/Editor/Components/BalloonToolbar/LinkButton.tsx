@@ -36,11 +36,9 @@ const LinkButtonStyled = styled.div`
   }
 `
 
-interface LinkButtonProps extends ToolbarLinkProps {
-  setSelected: (selected: boolean) => void
-}
+type LinkButtonProps = ToolbarLinkProps
 
-const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
+const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
   const editor = useStoreEditorState(useEventEditorId('focus'))
 
   const type = getPlatePluginType(editor, ELEMENT_LINK)
@@ -56,14 +54,6 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
     // formState: { errors },
     getValues
   } = useForm()
-
-  useEffect(() => {
-    setSelected(true)
-
-    return () => {
-      setSelected(false)
-    }
-  })
 
   useEffect(() => {
     if (!editor) return
@@ -84,8 +74,8 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
     if (!editor || ReactEditor.isFocused(editor)) return
     try {
       ReactEditor.focus(editor)
-      if (!editor.selection && editor.blurSelection) {
-        Transforms.select(editor, editor.blurSelection)
+      if (!editor.selection && editor.prevSelection) {
+        Transforms.select(editor, editor.prevSelection)
       }
     } catch (err) {
       console.error(err) // eslint-disable-line no-console
@@ -132,7 +122,6 @@ const LinkButton = ({ getLinkUrl, setSelected, ...props }: LinkButtonProps) => {
     upsertLinkAtSelection(editor, { url, wrap: shouldWrap })
 
     // setInp({ prev: '' })
-    setSelected(false)
   }
 
   const onSubmit = async (data: any) => {

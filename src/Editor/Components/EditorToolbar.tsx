@@ -6,6 +6,7 @@ import h3 from '@iconify-icons/ri/h-3'
 import italicIcon from '@iconify-icons/ri/italic'
 import listOrdered from '@iconify-icons/ri/list-ordered'
 import listUnordered from '@iconify-icons/ri/list-unordered'
+import linkIcon from '@iconify-icons/ri/link'
 import { Icon } from '@iconify/react'
 import {
   ELEMENT_BLOCKQUOTE,
@@ -27,10 +28,10 @@ import {
 import React, { useState } from 'react'
 import { ButtonSeparator } from '../../Styled/Toolbar'
 import { BalloonToolbar } from './BalloonToolbar'
+import LinkButton from './BalloonToolbar/LinkButton'
 
 const BallonToolbarMarks = () => {
   const editor = useStoreEditorRef(useEventEditorId('focus'))
-  const [selected, setSelected] = useState(false)
 
   const arrow = true
   const direction = 'top'
@@ -46,7 +47,7 @@ const BallonToolbarMarks = () => {
   }
 
   return (
-    <BalloonToolbar direction={direction} hiddenDelay={hiddenDelay} arrow={arrow} selected={selected}>
+    <BalloonToolbar direction={direction} hiddenDelay={hiddenDelay} arrow={arrow}>
       <ToolbarElement
         type={getPlatePluginType(editor, ELEMENT_H1)}
         icon={<Icon height={20} icon={h1} />}
@@ -99,11 +100,7 @@ const BallonToolbarMarks = () => {
       />
 
       {/* Looses focus when used. */}
-      {/* <LinkButton
-        tooltip={{ content: 'Link', ...tooltip }}
-        icon={<Icon height={20} icon={underlineIcon} />}
-        setSelected={setSelected}
-      /> */}
+      <LinkButton tooltip={{ content: 'Link', ...tooltip }} icon={<Icon height={20} icon={linkIcon} />} />
     </BalloonToolbar>
   )
 }
