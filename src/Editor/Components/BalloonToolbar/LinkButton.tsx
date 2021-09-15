@@ -18,6 +18,7 @@ import { HeadlessButton } from '../../../Styled/Buttons'
 import styled from 'styled-components'
 import { Input } from '../../../Styled/Form'
 import { clearBlurSelection } from '../../Plugins/blurSelection'
+import Tippy, { TippyProps } from '@tippyjs/react' // optional
 
 const LinkButtonStyled = styled.div`
   user-select: all;
@@ -26,13 +27,25 @@ const LinkButtonStyled = styled.div`
     align-items: center;
     ${HeadlessButton} {
       color: inherit;
+      color: ${({ theme }) => theme.colors.text.default};
+      padding: ${({ theme: { spacing } }) => `${spacing.tiny}`};
+      border-radius: ${({ theme }) => theme.borderRadius.tiny};
+      margin-right: ${({ theme }) => theme.spacing.tiny};
+      &:hover {
+        color: ${({ theme }) => theme.colors.primary};
+        background-color: ${({ theme }) => theme.colors.gray[9]};
+      }
     }
     input {
       background: ${({ theme }) => theme.colors.gray[9]};
-      border: 1px solid ${({ theme }) => theme.colors.gray[7]};
       color: ${({ theme }) => theme.colors.text.subheading};
       border-radius: ${({ theme }) => theme.borderRadius.tiny};
+      border: 1px solid transparent;
     }
+  }
+  input::placeholder {
+    color: ${({ theme }) => theme.colors.text.fade};
+    opacity: 0.5;
   }
 `
 
@@ -121,7 +134,7 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
     const shouldWrap: boolean = linkNode !== undefined && isCollapsed(editor.selection)
     upsertLinkAtSelection(editor, { url, wrap: shouldWrap })
 
-    // setInp({ prev: '' })
+    setInp({ prev: '' })
   }
 
   const onSubmit = async (data: any) => {
@@ -129,9 +142,19 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
     await onSubmitLink()
   }
 
-  const { icon } = props
+  const { icon, tooltip } = props
 
-  return (
+  const tooltipProps: TippyProps = {
+    content: '',
+    arrow: true,
+    offset: [0, 17],
+    delay: 0,
+    duration: [200, 0],
+    hideOnClick: false,
+    ...tooltip
+  }
+
+  const linkInput = (
     <LinkButtonStyled className="button_of_link">
       <form onSubmit={handleSubmit(onSubmit)}>
         <HeadlessButton
@@ -144,10 +167,12 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
         >
           {icon}
         </HeadlessButton>
-        <Input defaultValue={inp.prev} type="text" {...register('link-input')} />
+        <Input placeholder="Paste link here..." defaultValue={inp.prev} type="text" {...register('link-input')} />
       </form>
     </LinkButtonStyled>
   )
+
+  return tooltip ? <Tippy {...tooltipProps}>{linkInput}</Tippy> : linkInput
 }
 
 export default LinkButton
