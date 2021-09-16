@@ -29,12 +29,15 @@ const initPreview = {
 const Content = () => {
   const previewId = useSpotlightEditorStore((state) => state.nodeId)
   const backPressed = useSpotlightSettingsStore((state) => state.backPressed)
+  const { search, selection } = useSpotlightContext()
 
   const draftKey = useMemo(() => {
     const key = getNewDraftKey()
+
     if (backPressed) {
       return previewId
     }
+
     return key
   }, [backPressed])
 
@@ -45,7 +48,6 @@ const Content = () => {
     isSelection: boolean
   }>(initPreview)
 
-  const { search, selection } = useSpotlightContext()
   const currentIndex = useCurrentIndex(data, search)
 
   const ilinks = useDataStore((s) => s.ilinks)

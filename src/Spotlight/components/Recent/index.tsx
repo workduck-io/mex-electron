@@ -9,7 +9,6 @@ import { Action, ActionTitle } from '../Actions/styled'
 import { Faded, RecentBetween, StyledRecent, StyledRecentRow, StyledRecentList } from './styled'
 import { IpcAction } from '../../utils/constants'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
-import { ipcRenderer } from 'electron'
 import { NodeEditorContent } from '../../../Editor/Store/Types'
 import { useSpotlightAppStore } from '../../../Spotlight/store/app'
 
@@ -78,6 +77,7 @@ export const RecentList: React.FC<RecentListType> = ({ list }) => {
         return newIndex
       })
     }
+
     if (onEnter) {
       const id = list[currentIndex]
       loadContent(id, nodeContent)

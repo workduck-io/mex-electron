@@ -13,8 +13,12 @@ const Settings = () => {
 
   const { showSource, toggleSource } = useSpotlightSettingsStore(({ showSource, toggleSource }) => ({
     showSource,
-    toggleSource
+    toggleSource,
   }))
+
+  const onChange = () => {
+    // toggleSource(!showSource)
+  }
 
   return (
     <StyledLookup>
@@ -27,12 +31,7 @@ const Settings = () => {
       <SettingsContainer>
         <SettingOption>
           <div>Show source of selected content in Preview </div>
-          <ToggleButton
-            id="toggle-source"
-            value={showSource}
-            onChange={() => toggleSource(!showSource)}
-            checked={showSource}
-          />
+          <ToggleButton id="toggle-source" value={showSource} onChange={onChange} checked={showSource} />
         </SettingOption>
       </SettingsContainer>
       <Shortcuts type={ShortcutType.NEW} />
