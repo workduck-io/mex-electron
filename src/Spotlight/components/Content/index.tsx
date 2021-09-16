@@ -11,6 +11,7 @@ import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
 import useDataStore from '../../../Editor/Store/DataStore'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
+import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
 
 export const StyledContent = styled.section`
   display: flex;
@@ -26,7 +27,16 @@ const initPreview = {
 }
 
 const Content = () => {
-  const draftKey = useMemo(() => getNewDraftKey(), [])
+  const previewId = useSpotlightEditorStore((state) => state.nodeId)
+  const backPressed = useSpotlightSettingsStore((state) => state.backPressed)
+
+  const draftKey = useMemo(() => {
+    const key = getNewDraftKey()
+    if (backPressed) {
+      return previewId
+    }
+    return key
+  }, [backPressed])
 
   const [data, setData] = useState<Array<any>>()
   const [preview, setPreview] = useState<{
