@@ -50,7 +50,7 @@ const ContentEditor = () => {
           </InfoTools>
         </NodeInfo>
 
-        <Editor content={content} editorId={id} />
+        <Editor showBalloonToolbar content={content} editorId={id} />
       </StyledEditor>
     </>
   )
