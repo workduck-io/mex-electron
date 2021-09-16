@@ -1,9 +1,8 @@
 import { Icon } from '@iconify/react'
 import { LinkNodeData } from '@udecode/plate-link'
 import { StyledElementProps } from '@udecode/plate-styled-components'
-import * as React from 'react'
+import React from 'react'
 import styled from 'styled-components'
-
 import { EditorIcons } from '../../Icons'
 
 const Link = styled.a`
