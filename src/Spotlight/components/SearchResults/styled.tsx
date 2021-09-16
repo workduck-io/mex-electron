@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { ColorProp, ColumnContainer } from '../Actions/styled'
 import { StyledBackground } from '../Spotlight/styled'
 
@@ -11,9 +11,18 @@ export const StyledResults = styled(ColumnContainer)`
 `
 
 export const StyledRow = styled.div<ColorProp>`
-  ${({ showColor }) => showColor && StyledBackground}
+  ${({ showColor }) =>
+    showColor &&
+    css`
+      ${StyledBackground}
+      :hover {
+        ${StyledBackground}
+      }
+    `}
+  cursor: pointer;
   padding: 10px 1rem;
   margin: 5px 0;
+  color: ${({ theme }) => theme.colors.text.fade};
   border-radius: 10px;
 `
 
@@ -30,5 +39,5 @@ export const Heading = styled.div`
   font-size: 1.1rem;
   margin: 5px 0 5px;
   font-weight: lighter;
-  color: #777;
+  color: ${({ theme }) => theme.colors.text.fade};
 `

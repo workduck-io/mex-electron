@@ -8,7 +8,7 @@ const SideBar: React.FC<{ index: number; data: Array<any> | undefined }> = ({ in
     return <SearchResults current={index} data={data} />
   }
 
-  return <Actions current={index} />
+  return <Actions />
 }
 
 export default SideBar

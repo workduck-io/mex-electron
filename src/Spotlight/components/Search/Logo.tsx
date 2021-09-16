@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron'
 import React, { useEffect } from 'react'
+import { IpcAction } from '../../../Spotlight/utils/constants'
 import styled from 'styled-components'
 import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
 
@@ -17,7 +18,7 @@ const WDLogo = () => {
   const { bubble, setBubble } = useSpotlightSettingsStore(({ bubble, setBubble }) => ({ bubble, setBubble }))
 
   useEffect(() => {
-    ipcRenderer.send('spotlight-bubble', { isClicked: bubble })
+    ipcRenderer.send(IpcAction.SPOTLIGHT_BUBBLE, { isClicked: bubble })
   }, [bubble])
 
   const onClick = () => {

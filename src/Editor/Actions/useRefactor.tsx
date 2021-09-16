@@ -1,10 +1,11 @@
 import React from 'react'
-import { useNavigationState } from '../../Hooks/useNavigation/useNavigation'
 import { useRefactorStore } from '../../Components/Refactor/Refactor'
 import { NodeLink } from '../../Types/relations'
 import { Contents, useContentStore } from '../Store/ContentStore'
 import useDataStore from '../Store/DataStore'
 import { SEPARATOR } from '../../Components/Sidebar/treeUtils'
+import { useHistoryStore } from '../Store/HistoryStore'
+import { useRecentsStore } from '../Store/RecentsStore'
 
 const isMatch = (id: string, from: string) => {
   if (from === id) return true
@@ -15,11 +16,11 @@ export const useRefactor = () => {
   const ilinks = useDataStore((state) => state.ilinks)
   const contents = useContentStore((state) => state.contents)
 
-  const historyStack = useNavigationState((state) => state.history.stack)
-  const updateHistory = useNavigationState((state) => state.history.update)
+  const historyStack = useHistoryStore((state) => state.stack)
+  const updateHistory = useHistoryStore((state) => state.update)
 
-  const lastOpened = useNavigationState((state) => state.recents.lastOpened)
-  const updateLastOpened = useNavigationState((state) => state.recents.update)
+  const lastOpened = useRecentsStore((state) => state.lastOpened)
+  const updateLastOpened = useRecentsStore((state) => state.update)
   /*  Notes:
   We need to refactor all ilinks that match with the given regex and replace the initial regex with the refactorId
 

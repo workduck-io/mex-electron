@@ -15,6 +15,9 @@ import TreeExpandIcon from './Icon'
 import { withRefactor } from '../../Editor/Actions/useRefactor'
 import { getNodeIdLast, SEPARATOR } from './treeUtils'
 import { withNavigation } from '../../Hooks/useNavigation/withNavigation'
+import { IpcAction } from '../../Spotlight/utils/constants'
+import { AppType } from '../../Data/useInitialize'
+import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
 
 const motion = {
   motionName: 'node-motion',
@@ -170,6 +173,7 @@ class Tree extends React.Component<RCTreeProps> {
 
     if (selectedNodes.length > 0) {
       push(selectedNodes[0].key)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, selectedNodes[0].key)
     }
   }
 
