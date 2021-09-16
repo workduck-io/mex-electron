@@ -8,6 +8,7 @@ import { SILink, SILinkRoot } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
 import { useEditorStore } from '../../../Store/EditorStore'
 import { useNavigation } from '../../../../Hooks/useNavigation/useNavigation'
+import EditorPreview from '../../EditorPreview/EditorPreview'
 
 /**
  * ILinkElement with no default styles.
@@ -44,11 +45,13 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
 
   return (
     <SILinkRoot {...attributes} id={`ILINK_${element.value}`} data-slate-value={element.value} contentEditable={false}>
-      <SILink focused={selected} {...onClickProps}>
-        <span className="ILink_decoration ILink_decoration_left">[[</span>
-        {element.value}
-        <span className="ILink_decoration ILink_decoration_right">]]</span>
-      </SILink>
+      <EditorPreview id={element.value}>
+        <SILink focused={selected} {...onClickProps}>
+          <span className="ILink_decoration ILink_decoration_left">[[</span>
+          {element.value}
+          <span className="ILink_decoration ILink_decoration_right">]]</span>
+        </SILink>
+      </EditorPreview>
       {children}
     </SILinkRoot>
   )

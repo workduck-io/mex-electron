@@ -70,6 +70,7 @@ const LinkElement = ({ attributes, children, element, nodeProps }: StyledElement
           <Icon icon={EditorIcons.externalLink} />
         </button>
       )}
+
       {children}
     </Link>
   )

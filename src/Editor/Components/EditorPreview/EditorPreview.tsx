@@ -5,10 +5,10 @@ import { useContentStore } from '../../Store/ContentStore'
 
 export interface EditorPreviewProps {
   id: string
-  children: React.ReactNode
+  children: React.ReactElement
 }
 
-const EditorPreview = ({ id }: EditorPreviewProps) => {
+const EditorPreview = ({ id, children }: EditorPreviewProps) => {
   const getContent = useContentStore((store) => store.getContent)
 
   const content = getContent(id)
@@ -17,11 +17,11 @@ const EditorPreview = ({ id }: EditorPreviewProps) => {
     <Tippy
       render={(attrs) => (
         <div tabIndex={-1} {...attrs}>
-          {content && <Editor content={content.content} editorId={`preview_${id}`} />}
+          {content && <Editor content={content.content} readOnly editorId={`preview_${id}`} />}
         </div>
       )}
     >
-      <button>My button</button>
+      {children}
     </Tippy>
   )
 }
