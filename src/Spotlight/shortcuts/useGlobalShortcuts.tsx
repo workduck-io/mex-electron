@@ -14,11 +14,11 @@ export const useGlobalShortcuts = () => {
     const unsubscribe = tinykeys(window, {
       Alt: (event) => {
         event.preventDefault()
-        history.replace('/settings')
-      },
-      '$mod+Shift+,': (event) => {
-        toggleSource(!showSource)
+        history.push('/settings')
       }
+      // '$mod+Shift+,': (event) => {
+      //   toggleSource(!showSource)
+      // },
     })
     return () => {
       unsubscribe()

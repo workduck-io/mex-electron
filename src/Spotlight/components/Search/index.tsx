@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 
 import SearchIcon from '@iconify-icons/ph/magnifying-glass-bold'
@@ -13,7 +13,8 @@ import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
 
 const Search: React.FC = () => {
   const theme = useTheme()
-  const { setSearch } = useSpotlightContext()
+  const ref = useRef<HTMLInputElement>()
+  const { setSearch, search } = useSpotlightContext()
   const setIsPreview = useSpotlightEditorStore((state) => state.setIsPreview)
 
   const handleSearchInput = useDebouncedCallback((value: string) => {
@@ -23,12 +24,17 @@ const Search: React.FC = () => {
     }
   }, 400)
 
+  useEffect(() => {
+    if (search === '') ref.current.value = ''
+  }, [search])
+
   return (
     <StyledSearch>
       <CenterIcon>
         <Icon color={theme.colors.primary} height={24} width={24} icon={SearchIcon} />
       </CenterIcon>
       <StyledInput
+        ref={ref}
         autoFocus
         placeholder="Search anything.."
         onChange={({ target: { value } }) => handleSearchInput(value)}

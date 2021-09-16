@@ -11,6 +11,7 @@ import { IpcAction } from '../../utils/constants'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
 import { ipcRenderer } from 'electron'
 import { NodeEditorContent } from '../../../Editor/Store/Types'
+import { useSpotlightAppStore } from '../../../Spotlight/store/app'
 
 export type RecentType = { recents: Array<string>; onClearClick?: () => void }
 export type RecentRowType = { text: string; highlight?: boolean; onClick: () => void }
@@ -37,20 +38,13 @@ export const RecentList: React.FC<RecentListType> = ({ list }) => {
   const savedEditorId = useSpotlightEditorStore((state) => state.nodeId)
 
   const [currentIndex, setCurrentIndex] = useState<number>(list.length)
-  const [reset, setReset] = useState<boolean>(false)
-
+  const reset = useSpotlightAppStore((state) => state.reset)
   const { isPreview, setIsPreview } = useSpotlightEditorStore(({ isPreview, setIsPreview }) => ({
     isPreview,
     setIsPreview
   }))
 
   const listLength = useMemo(() => list.length, [list])
-
-  useEffect(() => {
-    ipcRenderer.on(IpcAction.SPOTLIGHT_BLURRED, () => {
-      setReset((s) => !s)
-    })
-  }, [])
 
   useEffect(() => {
     setCurrentIndex(list.length)
