@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { useLinks } from '../../Editor/Actions/useLinks'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Note } from '../../Styled/Typography'
+import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 
 const BackLinkWrapper = styled.div`
   display: flex;

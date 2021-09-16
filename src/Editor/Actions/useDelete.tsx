@@ -1,7 +1,8 @@
 import React from 'react'
-import { useNavigationState } from '../../Hooks/useNavigation/useNavigation'
 import { Contents, useContentStore } from '../Store/ContentStore'
 import useDataStore from '../Store/DataStore'
+import { useHistoryStore } from '../Store/HistoryStore'
+import { useRecentsStore } from '../Store/RecentsStore'
 
 export const useDelete = () => {
   const ilinks = useDataStore((state) => state.ilinks)
@@ -10,12 +11,12 @@ export const useDelete = () => {
   const setILinks = useDataStore((state) => state.setIlinks)
   const initContents = useContentStore((state) => state.initContents)
 
-  const historyStack = useNavigationState((state) => state.history.stack)
-  const currentIndex = useNavigationState((state) => state.history.currentNodeIndex)
-  const updateHistory = useNavigationState((state) => state.history.update)
+  const historyStack = useHistoryStore((state) => state.stack)
+  const currentIndex = useHistoryStore((state) => state.currentNodeIndex)
+  const updateHistory = useHistoryStore((state) => state.update)
 
-  const lastOpened = useNavigationState((state) => state.recents.lastOpened)
-  const updateLastOpened = useNavigationState((state) => state.recents.update)
+  const lastOpened = useRecentsStore((state) => state.lastOpened)
+  const updateLastOpened = useRecentsStore((state) => state.update)
 
   const getMockDelete = (del: string): string[] => {
     const deleteMap = ilinks.filter((i) => {

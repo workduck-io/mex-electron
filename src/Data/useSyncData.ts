@@ -1,4 +1,5 @@
 import { ipcRenderer } from 'electron'
+import { IpcAction } from '../Spotlight/utils/constants'
 import { useEditorStore } from '../Editor/Store/EditorStore'
 import { useInitialize } from './useInitialize'
 
@@ -8,7 +9,7 @@ export const useSyncData = () => {
   // This will load the current node directly and not push to the history.
   const loadNode = useEditorStore((state) => state.loadNode)
   const setIpc = () => {
-    ipcRenderer.on('sync-data', (_event, arg) => {
+    ipcRenderer.on(IpcAction.SYNC_DATA, (_event, arg) => {
       update(arg)
       loadNode(useEditorStore.getState().node)
     })

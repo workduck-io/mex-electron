@@ -6,7 +6,7 @@ import { useSyncStore } from '../Editor/Store/SyncStore'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
 import { useUpdater } from './useUpdater'
 import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
-import { useEditorStore } from '../Editor/Store/EditorStore'
+import { IpcAction } from '../Spotlight/utils/constants'
 
 interface UserSettings {
   // Key of theme id in ThemeStore
@@ -20,7 +20,7 @@ export const useSaveData = () => {
     // console.log('We saved the data for you');
     // console.log(JSON.stringify(useContentStore.getState().contents, null, 2))
 
-    ipcRenderer.send('set-local-data', {
+    ipcRenderer.send(IpcAction.SET_LOCAL_DATA, {
       ilinks: useDataStore.getState().ilinks,
       linkCache: useDataStore.getState().linkCache,
       tags: useDataStore.getState().tags,

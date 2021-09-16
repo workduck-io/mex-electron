@@ -1,5 +1,4 @@
 import React from 'react'
-import SpotlightSettings from '../Spotlight/components/SpotlightSettings'
 import useThemeStore from '../Editor/Store/ThemeStore'
 import IconButton, { Button } from '../Styled/Buttons'
 import { FlexBetween } from '../Spotlight/components/Actions/styled'
@@ -41,10 +40,6 @@ const Settings = () => {
           </div>
         ))}
       </div>
-      <br />
-      <br />
-      <h1>Spotlight Settings</h1>
-      <SpotlightSettings />
       <br />
       <br />
     </div>

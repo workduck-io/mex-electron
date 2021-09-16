@@ -9,12 +9,13 @@ import { DefaultFileData } from './Defaults/baseData'
 import { getSaveLocation } from './Defaults/data'
 import MenuBuilder from './menu'
 import { FileData } from './Types/data'
+import { IpcAction } from './Spotlight/utils/constants'
+import { AppType } from './Data/useInitialize'
 
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
 
 if (require('electron-squirrel-startup')) {
-  // eslint-disable-line global-require
   app.quit()
 }
 
@@ -48,8 +49,8 @@ const MEX_WINDOW_OPTIONS = {
   height: 1500,
   webPreferences: {
     nodeIntegration: true,
-    contextIsolation: false
-  }
+    contextIsolation: false,
+  },
 }
 
 const SPOTLIGHT_WINDOW_OPTIONS = {
@@ -65,8 +66,8 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
   resizable: false,
   webPreferences: {
     nodeIntegration: true,
-    contextIsolation: false
-  }
+    contextIsolation: false,
+  },
 }
 
 export const setFileData = (data: FileData) => {
@@ -104,6 +105,10 @@ const createSpotLighWindow = (show?: boolean) => {
     }
   })
 
+  spotlight.on('blur', () => {
+    spotlight.webContents.send(IpcAction.SPOTLIGHT_BLURRED)
+  })
+
   spotlight.on('closed', () => {
     spotlight = null
   })
@@ -123,7 +128,7 @@ const createMexWindow = () => {
   mex.loadURL(MEX_WINDOW_WEBPACK_ENTRY)
 
   mex.once('close', (_event) => {
-    mex?.webContents.send('save-and-exit')
+    mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
   })
 
   mex.webContents.on('did-finish-load', () => {
@@ -155,8 +160,8 @@ const createMexWindow = () => {
     const callbackOptions = {
       responseHeaders: {
         ...details.responseHeaders,
-        'Content-Security-Policy': ['']
-      }
+        'Content-Security-Policy': [''],
+      },
     }
     callback(callbackOptions)
   })
@@ -169,9 +174,9 @@ const createMexWindow = () => {
       .watch(getSaveLocation(app), {
         alwaysStat: true,
         awaitWriteFinish: {
-          stabilityThreshold: 2000
+          stabilityThreshold: 2000,
           // pollInterval: 1000,
-        }
+        },
       })
       .on('change', () => {
         let fileData: FileData
@@ -182,8 +187,8 @@ const createMexWindow = () => {
           return
         }
 
-        spotlight?.webContents.send('sync-data', fileData)
-        mex?.webContents.send('sync-data', fileData)
+        spotlight?.webContents.send(IpcAction.SYNC_DATA, fileData)
+        mex?.webContents.send(IpcAction.SYNC_DATA, fileData)
       })
   } catch (e) {
     console.log(e)
@@ -211,15 +216,15 @@ const createWindow = () => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const sendToRenderer = (selection: any) => {
   if (!selection) {
-    spotlight?.webContents.send('selected-text', selection)
+    spotlight?.webContents.send(IpcAction.SELECTED_TEXT, selection)
     return
   }
   const text = sanitizeHtml(selection.text)
   const metaSelection = {
     ...selection,
-    text
+    text,
   }
-  spotlight?.webContents.send('selected-text', metaSelection)
+  spotlight?.webContents.send(IpcAction.SELECTED_TEXT, metaSelection)
 }
 
 const toggleMainWindow = (window) => {
@@ -227,7 +232,7 @@ const toggleMainWindow = (window) => {
     createSpotLighWindow(true)
   } else if (spotlightBubble) {
     if (!isSelection) {
-      spotlight?.webContents.send('spotlight-bubble', { isChecked: false })
+      spotlight?.webContents.send(IpcAction.SPOTLIGHT_BUBBLE, { isChecked: false })
       spotlightInBubbleMode(false)
     }
   } else if (window.isFocused()) {
@@ -239,8 +244,8 @@ const toggleMainWindow = (window) => {
 
 const syncFileData = (data?: FileData) => {
   const fileData = data || getFileData()
-  mex?.webContents.send('sync-data', fileData)
-  spotlight?.webContents.send('sync-data', fileData)
+  mex?.webContents.send(IpcAction.SYNC_DATA, fileData)
+  spotlight?.webContents.send(IpcAction.SYNC_DATA, fileData)
 }
 
 const handleToggleMainWindow = async () => {
@@ -258,23 +263,19 @@ const closeWindow = () => {
 }
 
 app.once('before-quit', () => {
-  mex?.webContents.send('save-and-exit')
+  mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
 })
-
-// app.on('browser-window-blur', () => {
-//   app?.hide();
-// });
 
 ipcMain.on('close', closeWindow)
 
-ipcMain.on('spotlight-bubble', (_event, arg) => {
+ipcMain.on(IpcAction.SPOTLIGHT_BUBBLE, (_event, arg) => {
   const { isClicked } = arg
   spotlightInBubbleMode(isClicked)
 })
 
 app.on('quit', () => {
-  mex?.webContents.send('save-and-quit')
-  spotlight?.webContents.send('save-and-quit')
+  mex?.webContents.send(IpcAction.SAVE_AND_QUIT)
+  spotlight?.webContents.send(IpcAction.SAVE_AND_QUIT)
 })
 
 app
@@ -290,7 +291,7 @@ app
       { label: 'Open Mex', type: 'radio' },
       { label: 'Toggle Spotlight search ', type: 'radio' },
       { label: 'Create new Mex', type: 'radio', checked: true },
-      { label: 'Search', type: 'radio' }
+      { label: 'Search', type: 'radio' },
     ])
 
     tray.setToolTip('Mex')
@@ -311,16 +312,31 @@ app.on('window-all-closed', () => {
   }
 })
 
-ipcMain.on('get-local-data', (event) => {
+ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
   const fileData: FileData = getFileData()
-  event.sender.send('recieve-local-data', fileData)
+  event.sender.send(IpcAction.RECIEVE_LOCAL_DATA, fileData)
 })
 
-ipcMain.on('set-local-data', (_event, arg) => {
+ipcMain.on(IpcAction.SET_LOCAL_DATA, (_event, arg) => {
   setFileData(arg)
   syncFileData(arg)
 })
 
-ipcMain.on('open-node-in-mex', (_event, arg) => {
-  mex?.webContents.send('open-node', { nodeId: arg.nodeId })
+ipcMain.on(IpcAction.CLEAR_RECENTS, (_event, arg) => {
+  const { from } = arg
+  notifyOtherWindow(IpcAction.CLEAR_RECENTS, from)
 })
+
+ipcMain.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {
+  const { from, data } = arg
+  notifyOtherWindow(IpcAction.NEW_RECENT_ITEM, from, data)
+})
+
+ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
+  mex?.webContents.send(IpcAction.OPEN_NODE, { nodeId: arg.nodeId })
+})
+
+export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) => {
+  if (from === AppType.MEX) spotlight?.webContents.send(action, { data })
+  else mex?.webContents.send(action, { data })
+}

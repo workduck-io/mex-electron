@@ -6,6 +6,10 @@ import useDataStore from '../../Editor/Store/DataStore'
 import TreeNode from '../../Types/tree'
 import { useHelpStore } from '../Help/HelpModal'
 import NodeSelect from '../NodeSelect/NodeSelect'
+import { StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
+import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
+import { IpcAction } from '../../Spotlight/utils/constants'
+import { AppType } from '../../Data/useInitialize'
 
 export type LookupProps = {
   flatTree: TreeNode[]
@@ -41,19 +45,21 @@ const Lookup: React.FC<LookupProps> = () => {
 
   const handleSelectItem = (inputValue: string) => {
     push(inputValue)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, inputValue)
     closeModal()
   }
 
   const handleCreateItem = (inputValue: string) => {
     addILink(inputValue)
     push(inputValue)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, inputValue)
     closeModal()
   }
 
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <h1>Lookup</h1>
-      <div>
+      <StyledInputWrapper>
         <NodeSelect
           menuOpen
           autoFocus
@@ -61,7 +67,7 @@ const Lookup: React.FC<LookupProps> = () => {
           handleSelectItem={handleSelectItem}
           handleCreateItem={handleCreateItem}
         />
-      </div>
+      </StyledInputWrapper>
       {/* <LookupInput autoFocus menuOpen handleChange={handleChange} handleCreate={handleCreate} /> */}
     </Modal>
   )
