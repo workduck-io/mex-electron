@@ -11,7 +11,7 @@ export type SpotlightSettingsType = {
 }
 
 export const useSpotlightSettingsStore = create<SpotlightSettingsType>((set, get) => ({
-  showSource: false,
+  showSource: true,
   bubble: false,
   backPressed: false,
   setBackPressed: (back) => set({ backPressed: back }),
@@ -19,7 +19,7 @@ export const useSpotlightSettingsStore = create<SpotlightSettingsType>((set, get
   toggleSource: (checked: boolean) => set(() => ({ showSource: checked })),
   initSpotlightSettings: (settings) => {
     set(() => ({
-      showSource: settings.showSource
+      showSource: settings.showSource,
     }))
-  }
+  },
 }))

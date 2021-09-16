@@ -13,7 +13,6 @@ import { useSpotlightAppStore } from '../../../Spotlight/store/app'
 import { useHistory, useLocation } from 'react-router'
 
 const GlobalListener = memo(() => {
-  const history = useHistory()
   const location = useLocation()
   const [temp, setTemp] = useState<any>()
   const { setSelection, setSearch } = useSpotlightContext()
@@ -43,8 +42,8 @@ const GlobalListener = memo(() => {
 
   useEffect(() => {
     ipcRenderer.on(IpcAction.SELECTED_TEXT, (_event, data) => {
-      console.log(location.pathname)
       if (location.pathname === '/') {
+        setIsPreview(false)
         setSearch('')
       }
       if (!data) {

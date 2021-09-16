@@ -7,7 +7,7 @@ import NewEditor from './NewEditor'
 import CreateNodeInput from '../CreateNodeInput'
 
 const New = () => {
-  useMexItShortcuts()
+  // useMexItShortcuts()
 
   return (
     <StyledLookup>
