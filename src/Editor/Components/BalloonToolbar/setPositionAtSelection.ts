@@ -12,7 +12,7 @@ export const setPositionAtSelection = (el: HTMLElement, direction: 'top' | 'bott
   setTimeout(() => {
     let top: string
     if (direction === 'top') {
-      top = `${rect.top + window.pageYOffset - el.offsetHeight}px`
+      top = `${rect.top + window.pageYOffset - el.offsetHeight - 20}px`
     } else {
       top = `${rect.bottom + window.pageYOffset}px`
     }

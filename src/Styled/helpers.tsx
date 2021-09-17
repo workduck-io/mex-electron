@@ -1,3 +1,4 @@
+import { transparentize } from 'polished'
 import { css } from 'styled-components'
 import { Pixels } from '../styled'
 
@@ -28,4 +29,8 @@ export const ThinScrollbar = css`
   &::-webkit-scrollbar-track {
     background: none;
   }
+`
+
+export const CardShadow = css`
+  box-shadow: 0px 3px 9px ${({ theme }) => transparentize(0.5, theme.colors.palette.black)};
 `

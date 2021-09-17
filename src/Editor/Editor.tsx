@@ -28,6 +28,7 @@ interface EditorProps {
   editorId: string
   readOnly?: boolean
   focusAtBeginning?: boolean
+  showBalloonToolbar?: boolean
 }
 
 export const useEditorPluginConfig = (editorId: string) => {
@@ -115,7 +116,7 @@ export const useEditorPluginConfig = (editorId: string) => {
 }
 
 // High performance guaranteed
-const Editor = ({ content, editorId, readOnly, focusAtBeginning }: EditorProps) => {
+const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonToolbar }: EditorProps) => {
   useEffect(() => {
     ReactTooltip.rebuild()
   }, [])
@@ -184,7 +185,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning }: EditorProps) 
     <>
       {content && (
         <EditorStyles>
-          <BallonToolbarMarks />
+          {showBalloonToolbar && <BallonToolbarMarks />}
           <Plate
             id={generateEditorId()}
             editableProps={editableProps}
@@ -203,7 +204,8 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning }: EditorProps) 
 
 Editor.defaultProps = {
   readOnly: false,
-  focusAtBeginning: true
+  focusAtBeginning: true,
+  showBalloonToolbar: false
 }
 
 export default Editor
