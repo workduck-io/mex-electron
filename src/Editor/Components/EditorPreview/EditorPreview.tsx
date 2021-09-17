@@ -2,6 +2,7 @@ import React from 'react'
 import Tippy from '@tippyjs/react/headless' // different import path!
 import Editor from '../../Editor'
 import { useContentStore } from '../../Store/ContentStore'
+import { EditorPreviewWrapper } from './EditorPreview.styles'
 
 export interface EditorPreviewProps {
   id: string
@@ -15,10 +16,11 @@ const EditorPreview = ({ id, children }: EditorPreviewProps) => {
 
   return (
     <Tippy
+      interactive
       render={(attrs) => (
-        <div tabIndex={-1} {...attrs}>
+        <EditorPreviewWrapper tabIndex={-1} {...attrs} data-placement="top">
           {content && <Editor content={content.content} readOnly editorId={`preview_${id}`} />}
-        </div>
+        </EditorPreviewWrapper>
       )}
     >
       {children}

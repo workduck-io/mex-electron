@@ -1,6 +1,7 @@
 import { ToolbarBase } from '@udecode/plate'
 import { createStyles } from '@udecode/plate-styled-components'
 import { transparentize } from 'polished'
+import { CardShadow } from '../../../Styled/helpers'
 import styled, { css, CSSProp } from 'styled-components'
 import { getToolbarStyles } from '../Toolbar/Toolbar.styles'
 import { BalloonToolbarStyleProps } from './BalloonToolbar.types'
@@ -21,7 +22,7 @@ export const StyledToolbarBase = styled<any>(ToolbarBase)`
   border: 1px solid transparent;
   border-radius: 4px;
   margin-top: ${({ theme }) => theme.spacing.small};
-  box-shadow: 0px 3px 9px ${({ theme }) => transparentize(0.5, theme.colors.palette.black)};
+  ${CardShadow}
 
   .slate-ToolbarButton-active,
   .slate-ToolbarButton:hover {
