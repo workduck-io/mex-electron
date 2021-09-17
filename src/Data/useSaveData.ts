@@ -7,6 +7,7 @@ import { useSnippetStore } from '../Editor/Store/SnippetStore'
 import { useUpdater } from './useUpdater'
 import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
 import { IpcAction } from '../Spotlight/utils/constants'
+import { FileData } from '../Types/data'
 
 interface UserSettings {
   // Key of theme id in ThemeStore
@@ -17,10 +18,10 @@ interface UserSettings {
 export const useSaveData = () => {
   const { updater } = useUpdater()
   const saveData = () => {
-    // console.log('We saved the data for you');
+    // console.log('We saved the data for you')
     // console.log(JSON.stringify(useContentStore.getState().contents, null, 2))
-
-    ipcRenderer.send(IpcAction.SET_LOCAL_DATA, {
+    const fileData: FileData = {
+      remoteUpdate: false,
       ilinks: useDataStore.getState().ilinks,
       linkCache: useDataStore.getState().linkCache,
       tags: useDataStore.getState().tags,
@@ -33,7 +34,9 @@ export const useSaveData = () => {
           showSource: useSpotlightSettingsStore.getState().showSource
         }
       }
-    })
+    }
+
+    ipcRenderer.send(IpcAction.SET_LOCAL_DATA, fileData)
 
     updater()
   }

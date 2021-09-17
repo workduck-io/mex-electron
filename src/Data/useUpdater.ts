@@ -16,7 +16,7 @@ export const useUpdater = () => {
 
     const commands = generateComboTexts(uniq([...snippetCommands, ...syncCommands, ...defaultCommands]))
 
-    console.log('Generated', { commands })
+    // console.log('Generated', { commands })
     setSlashCommands(Array.from(commands))
   }
 
