@@ -45,13 +45,13 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
 
   return (
     <SILinkRoot {...attributes} id={`ILINK_${element.value}`} data-slate-value={element.value} contentEditable={false}>
-      <EditorPreview id={element.value}>
-        <SILink focused={selected} {...onClickProps}>
-          <span className="ILink_decoration ILink_decoration_left">[[</span>
-          {element.value}
-          <span className="ILink_decoration ILink_decoration_right">]]</span>
-        </SILink>
-      </EditorPreview>
+      {/* <EditorPreview id={element.value}> */}
+      <SILink focused={selected} {...onClickProps}>
+        <span className="ILink_decoration ILink_decoration_left">[[</span>
+        {element.value}
+        <span className="ILink_decoration ILink_decoration_right">]]</span>
+      </SILink>
+      {/* </EditorPreview> */}
       {children}
     </SILinkRoot>
   )
