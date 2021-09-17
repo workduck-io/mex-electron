@@ -107,6 +107,7 @@ export const SnippetSaverButton = ({ callbackAfterSave, title, getSnippetTitle }
     const unsubscribe = tinykeys(window, {
       [shortcuts.save.keystrokes]: (event) => {
         event.preventDefault()
+        onSave()
       }
     })
     return () => {

@@ -6,9 +6,9 @@ import { useHotkeys } from '../hooks/useHotkeys'
 import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { SILink, SILinkRoot } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
-import { useEditorStore } from '../../../Store/EditorStore'
 import { useNavigation } from '../../../../Hooks/useNavigation/useNavigation'
 import EditorPreview from '../../EditorPreview/EditorPreview'
+import create from 'zustand'
 
 /**
  * ILinkElement with no default styles.
@@ -19,6 +19,8 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const selected = useSelected()
   const focused = useFocused()
   const { push } = useNavigation()
+
+  console.log('We reached here', { editor }, isPreview(editor.id))
 
   const onClickProps = useOnMouseClick(() => {
     push(element.value)
@@ -33,6 +35,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
     },
     [selected, focused]
   )
+
   useHotkeys(
     'delete',
     () => {
@@ -45,14 +48,16 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
 
   return (
     <SILinkRoot {...attributes} id={`ILINK_${element.value}`} data-slate-value={element.value} contentEditable={false}>
-      {/* <EditorPreview id={element.value}> */}
-      <SILink focused={selected} {...onClickProps}>
-        <span className="ILink_decoration ILink_decoration_left">[[</span>
-        {element.value}
-        <span className="ILink_decoration ILink_decoration_right">]]</span>
-      </SILink>
-      {/* </EditorPreview> */}
+      <EditorPreview isPreview={isPreview(editor.id)} previewRef={editor} id={element.value}>
+        <SILink focused={selected} {...onClickProps}>
+          <span className="ILink_decoration ILink_decoration_left">[[</span>
+          {element.value}
+          <span className="ILink_decoration ILink_decoration_right">]]</span>
+        </SILink>
+      </EditorPreview>
       {children}
     </SILinkRoot>
   )
 }
+
+const isPreview = (id: string) => id.startsWith('__preview__')

@@ -14,6 +14,7 @@ interface SILinkProps {
 export const SILink = styled.div<SILinkProps>`
   display: inline-block;
   color: ${({ theme }) => theme.colors.secondary};
+  cursor: pointer;
   .ILink_decoration {
     color: ${({ theme }) => theme.colors.gray[6]};
     &_left {
