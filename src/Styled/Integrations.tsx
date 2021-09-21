@@ -20,16 +20,41 @@ interface ServiceButtonProps {
   bgColor: string
 }
 
+export const ServiceIconWrapper = styled.div`
+  padding: ${({ theme }) => theme.spacing.large};
+`
+
 export const ServiceButton = styled.div<ServiceButtonProps>`
   display: flex;
   flex-direction: column;
-  padding: ${({ theme }) => theme.spacing.small};
-
-  background: linear-gradient(30deg, ${({ bgColor }) => transparentize(0.2, bgColor)}, ${({ bgColor }) => bgColor});
+  align-items: center;
+  justify-content: space-between;
 
   border-radius: ${({ theme }) => theme.borderRadius.large};
+  overflow: hidden;
 
-  color: ${({ color }) => color};
+  h1 {
+    margin: ${({ theme }) => theme.spacing.medium} 0 0;
+  }
 
+  ${ServiceIconWrapper} {
+    width: 100%;
+    background: linear-gradient(-30deg, ${({ bgColor }) => transparentize(0.3, bgColor)}, ${({ bgColor }) => bgColor});
+    color: ${({ color }) => color};
+    text-align: center;
+  }
+`
+
+export const ServiceButtonFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  background-color: ${({ theme }) => theme.colors.gray[9]};
+  padding: ${({ theme: { spacing } }) => `${spacing.medium} ${spacing.large}`};
+
+  width: 100%;
+  color: ${({ theme }) => theme.colors.text.fade};
+  p {
+    margin: 0;
+  }
 `
