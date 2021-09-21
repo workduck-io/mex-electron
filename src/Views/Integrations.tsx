@@ -5,42 +5,12 @@ import { IntegrationsGrid, ServiceButton, ServiceButtonFooter, ServiceIconWrappe
 import Switch from '../Components/Forms/Switch'
 import { Icon } from '@iconify/react'
 import { getSyncServiceIcon } from '../Editor/Components/SyncBlock/SyncIcons'
-
-const sampleServices = [
-  {
-    name: 'slack',
-    title: 'Slack',
-    connected: false,
-    color: '#d48fad',
-    bgColor: '#3F0F3F'
-  },
-
-  {
-    name: 'telegram',
-    title: 'Telegram',
-    connected: false,
-    color: '#ffffff',
-    bgColor: '#0088cc'
-  },
-
-  {
-    name: 'notion',
-    title: 'Notion',
-    connected: false,
-    color: '#121212',
-    bgColor: '#ffffff'
-  },
-
-  {
-    name: 'github',
-    title: 'Github',
-    connected: false,
-    color: '#000000',
-    bgColor: '#ffffff'
-  }
-]
+import { sampleServices } from '../Components/Integrations/sampleServices'
+import NewSyncBlockModal, { useNewSyncBlockStore } from '../Components/Integrations/NewSyncBlockModal'
+import { Button } from '../Styled/Buttons'
 
 const Integrations = () => {
+  const openModal = useNewSyncBlockStore((store) => store.openModal)
   return (
     <Wrapper>
       <Title>Integrations</Title>
@@ -63,6 +33,11 @@ const Integrations = () => {
           </ServiceButton>
         ))}
       </IntegrationsGrid>
+
+      <Button size="large" primary onClick={() => openModal()}>
+        New Custom SyncBlock
+      </Button>
+      <NewSyncBlockModal />
     </Wrapper>
   )
 }
