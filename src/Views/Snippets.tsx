@@ -8,7 +8,6 @@ import {
   CreateSnippet,
   SnippetCommand,
   SnippetCommandPrefix,
-  SnippetsWrapper,
   SnippetHeader,
   SSnippet,
   SSnippets,
@@ -18,6 +17,7 @@ import { Title } from '../Styled/Typography'
 import quillPenLine from '@iconify-icons/ri/quill-pen-line'
 import { Icon } from '@iconify/react'
 import IconButton from '../Styled/Buttons'
+import { Wrapper } from '../Styled/Layouts'
 
 export type SnippetsProps = {
   title?: string
@@ -55,7 +55,7 @@ const Snippets: React.FC<SnippetsProps> = () => {
   }
 
   return (
-    <SnippetsWrapper>
+    <Wrapper>
       <Title>Snippets</Title>
       <SSnippets>
         <CreateSnippet onClick={onCreateNew}>
@@ -83,7 +83,7 @@ const Snippets: React.FC<SnippetsProps> = () => {
           </SSnippet>
         ))}
       </SSnippets>
-    </SnippetsWrapper>
+    </Wrapper>
   )
 }
 

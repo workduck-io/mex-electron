@@ -1,7 +1,4 @@
 import refreshFill from '@iconify-icons/ri/refresh-fill'
-import notionIcon from '@iconify/icons-simple-icons/notion'
-import slackIcon from '@iconify/icons-simple-icons/slack'
-import telegramIcon from '@iconify/icons-simple-icons/telegram'
 import { Icon } from '@iconify/react'
 import axios from 'axios'
 import React from 'react'
@@ -9,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import ReactTooltip from 'react-tooltip'
 import { useSyncStore } from '../../Store/SyncStore'
+import { getParentSyncBlock, getSyncBlockTitle } from '../SlashCommands/useSyncConfig'
 import {
   ElementHeader,
   FormControls,
@@ -19,29 +17,13 @@ import {
   SyncTitle
 } from './SyncBlock.styles'
 import { SyncBlockProps } from './SyncBlock.types'
-import githubFill from '@iconify-icons/ri/github-fill'
-import { getParentSyncBlock, getSyncBlockTitle } from '../SlashCommands/useSyncConfig'
+import { getSyncServiceIcon } from './SyncIcons'
 
 type FormValues = {
   content: string
   connections: {
     [key: string]: boolean
   }
-}
-
-const Icons: {
-  [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
-} = {
-  telegram: telegramIcon,
-  slack: slackIcon,
-  notion: notionIcon,
-  github: githubFill
-}
-
-const getIcon = (s: string) => {
-  const icon = Icons[s]
-  if (icon) return icon
-  return refreshFill
 }
 
 export const SyncBlock = (props: SyncBlockProps) => {
@@ -116,7 +98,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
                       data-place="bottom"
                     >
                       <ServiceLabel>
-                        <Icon icon={getIcon(cs)} />
+                        <Icon icon={getSyncServiceIcon(cs)} />
                         {cs}
                       </ServiceLabel>
                       <input type="checkbox" {...register(`connections.${cs}`)} checked={checked} />
