@@ -23,44 +23,32 @@ export const useNewSyncBlockStore = create<NewBlockModalState>((set) => ({
   focus: true,
   openModal: () => {
     set({
-      open: true
+      open: true,
     })
   },
   closeModal: () => {
     set({
-      open: false
+      open: false,
     })
   },
-  setFocus: (focus) => set({ focus })
+  setFocus: (focus) => set({ focus }),
 }))
 
 const NewSyncBlockModal = () => {
   // const { getMockDelete, execDelete } = useDelete()
   // const { push } = useNavigation()
-  const shortcuts = useHelpStore((store) => store.shortcuts)
+  // const shortcuts = useHelpStore((store) => store.shortcuts)
 
-  const openModal = useNewSyncBlockStore((store) => store.openModal)
+  // const openModal = useNewSyncBlockStore((store) => store.openModal)
   const closeModal = useNewSyncBlockStore((store) => store.closeModal)
   const open = useNewSyncBlockStore((store) => store.open)
 
-  const theme = useTheme()
+  // const theme = useTheme()
 
   const serviceOptions = sampleServices.map((s) => ({
     label: s.title,
-    value: s.name
+    value: s.name,
   }))
-
-  // useEffect(() => {
-  //   const unsubscribe = tinykeys(window, {
-  //     [shortcuts.showDelete.keystrokes]: (event) => {
-  //       event.preventDefault()
-  //       openModal(useEditorStore.getState().node.id)
-  //     },
-  //   })
-  //   return () => {
-  //     unsubscribe()
-  //   }
-  // }, [shortcuts])
 
   const handleParentBlockChange = (newValue: string) => {
     if (newValue) {
