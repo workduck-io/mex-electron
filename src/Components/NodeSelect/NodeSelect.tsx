@@ -221,3 +221,9 @@ export function isNew (input: string, items: ComboItem[]): boolean {
 }
 
 export default NodeSelect
+
+export const WrappedNodeSelect = (props: NodeSelectProps) => (
+  <StyledInputWrapper>
+    <NodeSelect {...props} />
+  </StyledInputWrapper>
+)

@@ -5,6 +5,7 @@ import { PixelToCSS, ThinScrollbar } from './helpers'
 
 export const Sicon = styled(Icon)`
   height: 26px;
+  width: 26px;
   padding-left: 7px;
   border-left: 1px solid ${({ theme }) => theme.colors.gray[7]};
   margin-left: -8px;

@@ -9,7 +9,7 @@ import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
 import { NodeLink } from '../../Types/relations'
 import { useHelpStore } from '../Help/HelpModal'
-import NodeSelect from '../NodeSelect/NodeSelect'
+import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 import create from 'zustand'
@@ -141,7 +141,7 @@ const Rename = () => {
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Rename</ModalHeader>
 
-      <NodeSelect
+      <WrappedNodeSelect
         placeholder="Rename node from..."
         defaultValue={from ?? useEditorStore.getState().node.id}
         highlightWhenSelected
@@ -149,7 +149,7 @@ const Rename = () => {
         handleSelectItem={handleFromChange}
       />
 
-      <NodeSelect
+      <WrappedNodeSelect
         placeholder="Rename node to..."
         autoFocus
         menuOpen

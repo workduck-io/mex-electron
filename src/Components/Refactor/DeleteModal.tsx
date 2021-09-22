@@ -8,7 +8,7 @@ import { useDelete } from '../../Editor/Actions/useDelete'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
 import { useHelpStore } from '../Help/HelpModal'
-import NodeSelect from '../NodeSelect/NodeSelect'
+import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 import create from 'zustand'
 
@@ -113,7 +113,7 @@ const Delete = () => {
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Delete</ModalHeader>
 
-      <NodeSelect
+      <WrappedNodeSelect
         autoFocus
         // menuOpen
         defaultValue={del ?? useEditorStore.getState().node.id}

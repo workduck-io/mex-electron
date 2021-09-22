@@ -9,11 +9,6 @@ import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
 import { IpcAction } from '../Spotlight/utils/constants'
 import { FileData } from '../Types/data'
 
-interface UserSettings {
-  // Key of theme id in ThemeStore
-  theme: string
-}
-
 // Save the data in the local file database
 export const useSaveData = () => {
   const { updater } = useUpdater()

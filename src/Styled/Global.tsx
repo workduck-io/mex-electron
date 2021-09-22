@@ -11,6 +11,10 @@ const GlobalStyle = createGlobalStyle`
     outline: ${({ theme }) => theme.colors.primary} solid 1px;
   }
 
+  * {
+    box-sizing: border-box;
+  }
+
   body {
     height: 100vh;
     width: 100vw;
