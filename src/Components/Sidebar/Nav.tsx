@@ -5,6 +5,11 @@ import settings4Line from '@iconify-icons/ri/settings-4-line'
 import { GetIcon } from '../../Conf/links'
 import { NavProps } from './Types'
 import { transparentize } from 'polished'
+import menuUnfoldLine from '@iconify-icons/ri/menu-unfold-line'
+import menuFoldLine from '@iconify-icons/ri/menu-fold-line'
+import { Icon } from '@iconify/react'
+import { Button } from '../../Styled/Buttons'
+import { useLayoutStore } from '../../Layout/LayoutStore'
 
 const StyledDiv = styled.div`
   z-index: 10;
@@ -52,9 +57,14 @@ const Link = styled(NavLink)`
 `
 
 const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
+  const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
+  const sidebarVisibility = useLayoutStore((store) => store.sidebar.visible)
+
   return (
     <StyledDiv>
-      <div />
+      <Button onClick={toggleSidebar}>
+        <Icon icon={sidebarVisibility ? menuFoldLine : menuUnfoldLine} />
+      </Button>
       <div>
         {links.map((l) => (
           <Link

@@ -17,7 +17,6 @@ export const SIcon = (props: any) => {
 }
 
 export const SidebarDiv = styled.div`
-  /* background-color: ${({ theme }) => theme.colors.background.app}; */
   height: 100%;
   position: fixed;
   display: flex;
