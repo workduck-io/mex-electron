@@ -17,7 +17,7 @@ export const Button = styled.button<ButtonProps>`
   cursor: pointer;
   transition: 0.3s ease;
   &:hover {
-    box-shadow: 0px 3px 8px ${({ theme }) => transparentize(0.7, theme.colors.primary)};
+    box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.5, theme.colors.primary)};
   }
 
   ${({ theme, size }) =>

@@ -39,6 +39,10 @@ const InfoBar = () => {
         event.preventDefault()
         history.push('/snippets')
       },
+      [shortcuts.showIntegrations.keystrokes]: (event) => {
+        event.preventDefault()
+        history.push('/integrations')
+      },
       [shortcuts.showEditor.keystrokes]: (event) => {
         event.preventDefault()
         history.push('/editor')

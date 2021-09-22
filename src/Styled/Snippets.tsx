@@ -2,11 +2,6 @@ import styled from 'styled-components'
 
 import { size } from './responsive'
 
-export const SnippetsWrapper = styled.div`
-  margin: ${({ theme }) => theme.spacing.large};
-  width: 100%;
-`
-
 export const SSnippets = styled.div`
   display: grid;
   grid-gap: ${({ theme }) => theme.spacing.medium};

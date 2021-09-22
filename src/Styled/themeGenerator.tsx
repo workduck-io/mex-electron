@@ -1,7 +1,8 @@
-import { getLuminance, mix, tint } from 'polished'
+import { getLuminance, lighten, mix, tint } from 'polished'
 import { DefaultTheme } from 'styled-components'
 import { LayoutStyle } from '../styled'
 import merge from 'deepmerge'
+import { ThemeConfig } from 'react-select/src/theme'
 
 const LayoutTheme: LayoutStyle = {
   spacing: {
@@ -66,6 +67,7 @@ export interface ButtonPalette {
 export interface BackgroundImages {
   app: string
 }
+
 export interface ThemePalette {
   // Colors
   primary: string
@@ -128,6 +130,36 @@ export const generateTheme = (p: ThemePalette): DefaultTheme => {
           disabled: mp(p.gray[5]),
           accent: mp(p.gray[3]),
           oppositePrimary: getLuminance(p.gray[5]) >= getLuminance(p.primary) ? p.gray[10] : p.gray[1]
+        }
+      },
+
+      additional: {
+        reactSelect: {
+          borderRadius: 4,
+          colors: {
+            primary: p.primary,
+            primary75: lighten(0.1, p.primary),
+            primary50: lighten(0.2, p.primary),
+            primary25: p.primary,
+            danger: p.palette.red,
+            dangerLight: '#FFBDAD',
+            neutral0: p.gray[10],
+            neutral5: p.gray[9],
+            neutral10: p.gray[8],
+            neutral20: p.gray[7],
+            neutral30: p.gray[6],
+            neutral40: p.gray[5],
+            neutral50: mix(0.5, p.gray[5], p.gray[4]),
+            neutral60: p.gray[4],
+            neutral70: p.gray[3],
+            neutral80: p.gray[2],
+            neutral90: p.gray[1]
+          },
+          spacing: {
+            baseUnit: 4,
+            controlHeight: 38,
+            menuGutter: 8
+          }
         }
       }
     },
