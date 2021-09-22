@@ -1,6 +1,5 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { StyledSelect } from '../../Styled/Form'
 import { useTheme } from 'styled-components'
 import create from 'zustand'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
@@ -9,6 +8,7 @@ import { useHelpStore } from '../Help/HelpModal'
 import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { sampleServices } from './sampleServices'
+import ServiceSelector from './ServiceSelector'
 
 interface NewBlockModalState {
   open: boolean
@@ -85,7 +85,7 @@ const NewSyncBlockModal = () => {
 
       <p>Services to sync</p>
       {/* Connect more services via integrations. */}
-      <StyledSelect isMulti options={serviceOptions}></StyledSelect>
+      <ServiceSelector options={serviceOptions} />
 
       <ModalControls>
         <Button size="large" primary onClick={() => console.log('Submit')}>
