@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components'
 export const StyledInputWrapper = styled.div`
   width: 100%;
   position: relative;
+  margin: ${({ theme }) => theme.spacing.small} 0;
   ${Input} {
     width: 100%;
   }
@@ -31,7 +32,7 @@ interface SuggestionProps {
 }
 
 export const Suggestion = styled.li<SuggestionProps>`
-  padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
+  padding: 6px 10px;
   margin: ${({ theme }) => `${theme.spacing.tiny} 0`};
 
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
@@ -51,18 +52,20 @@ interface MenuProps {
 
 export const StyledMenu = styled.ul<MenuProps>`
   padding: ${({ theme }) => theme.spacing.small};
-  margin-top: 0;
+  margin-top: 8px;
+  margin-bottom: 8px;
   position: absolute;
   background-color: ${({ theme }) => theme.colors.gray[8]};
-  width: calc(100% - (2 * ${({ theme }) => theme.spacing.small}));
+  width: 100%;
   max-height: 16.2rem;
   overflow-y: auto;
   overflow-x: hidden;
   outline: 0;
   transition: opacity 0.1s ease;
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
-  border: 1px solid ${({ theme }) => theme.colors.gray[7]};
+  /* border: 1px solid ${({ theme }) => theme.colors.gray[7]}; */
   z-index: 1000;
+  box-shadow: 0 0 0 1px hsla(0, 0%, 0%, 0.1), 0 4px 11px hsla(0, 0%, 0%, 0.1);
 
   &::-webkit-scrollbar-thumb {
     background: ${({ theme }) => theme.colors.gray[7]};

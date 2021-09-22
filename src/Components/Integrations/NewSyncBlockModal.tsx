@@ -1,6 +1,7 @@
 import React from 'react'
 import Modal from 'react-modal'
-import Select from 'react-select'
+import { StyledSelect } from '../../Styled/Form'
+import { useTheme } from 'styled-components'
 import create from 'zustand'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
@@ -42,6 +43,8 @@ const NewSyncBlockModal = () => {
   const closeModal = useNewSyncBlockStore((store) => store.closeModal)
   const open = useNewSyncBlockStore((store) => store.open)
 
+  const theme = useTheme()
+
   const serviceOptions = sampleServices.map((s) => ({
     label: s.title,
     value: s.name
@@ -82,7 +85,7 @@ const NewSyncBlockModal = () => {
 
       <p>Services to sync</p>
       {/* Connect more services via integrations. */}
-      <Select isMulti options={serviceOptions}></Select>
+      <StyledSelect isMulti options={serviceOptions}></StyledSelect>
 
       <ModalControls>
         <Button size="large" primary onClick={() => console.log('Submit')}>

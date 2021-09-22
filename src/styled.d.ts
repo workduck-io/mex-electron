@@ -1,4 +1,5 @@
 // import original module declarations
+import { ThemeConfig } from 'react-select/src/theme'
 import 'styled-components'
 import { ShadePalette, ColorPalette, BackgroundImages } from './Styled/themeGenerator'
 
@@ -69,5 +70,8 @@ declare module 'styled-components' {
       }
     }
     backgroundImages?: BackgroundImages
+    additional: {
+      reactSelect: ThemeConfig
+    }
   }
 }

@@ -20,7 +20,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const focused = useFocused()
   const { push } = useNavigation()
 
-  console.log('We reached here', { editor }, isPreview(editor.id))
+  // console.log('We reached here', { editor }, isPreview(editor.id))
 
   const onClickProps = useOnMouseClick(() => {
     push(element.value)
