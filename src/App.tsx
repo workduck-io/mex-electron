@@ -9,6 +9,7 @@ import Modals from './Layout/Modals'
 import SnippetEditor from './Snippets/SnippetEditor'
 import GlobalStyle from './Styled/Global'
 import Dashboard from './Views/Dashboard'
+import EditorView from './Views/EditorView'
 import Integrations from './Views/Integrations'
 import Settings from './Views/Settings'
 import Snippets from './Views/Snippets'
@@ -16,7 +17,7 @@ import Tasks from './Views/Tasks'
 
 Modal.setAppElement('#root')
 
-function App() {
+function App () {
   return (
     <Router>
       <Providers>
@@ -27,7 +28,7 @@ function App() {
 
             {/* Main Content */}
             <Switch>
-              <Route path="/editor" component={ContentEditor} />
+              <Route path="/editor" component={EditorView} />
               <Route path="/tasks" component={Tasks} />
               <Route path="/integrations" component={Integrations} />
               <Route exact path="/snippets" component={Snippets} />

@@ -8,11 +8,19 @@ import { useGraphStore } from '../Components/Graph/GraphStore'
 import Backlinks from '../Components/Backlinks/Backlinks'
 import { useLocation, useHistory } from 'react-router-dom'
 import { useHelpStore } from '../Components/Help/HelpModal'
+import { useLayoutStore } from './LayoutStore'
+import { useWidthTransition } from '../Components/Sidebar'
+import { animated } from 'react-spring'
 
-const InfoBarWrapper = styled.div``
+const InfoBarWrapper = styled(animated.div)``
 
 const InfoBar = () => {
-  const [showInfobar, setShowInfobar] = useState(false)
+  // const [showInfobar, setShowInfobar] = useState(false)
+  const { transitions } = useWidthTransition()
+  const infobarVisibile = useLayoutStore((store) => store.infobar.visible)
+  const toggleInfobar = useLayoutStore((store) => store.toggleInfobar)
+  const showInfobar = useLayoutStore((store) => store.showInfobar)
+  const hideInfobar = useLayoutStore((store) => store.hideInfobar)
   const showGraph = useGraphStore((state) => state.showGraph)
   const toggleGraph = useGraphStore((state) => state.toggleGraph)
   const shortcuts = useHelpStore((store) => store.shortcuts)
@@ -22,9 +30,9 @@ const InfoBar = () => {
 
   React.useEffect(() => {
     if (location.pathname === '/editor') {
-      setShowInfobar(true)
+      showInfobar()
     } else {
-      setShowInfobar(false)
+      hideInfobar()
       if (showGraph) toggleGraph()
     }
   }, [location])
@@ -57,7 +65,14 @@ const InfoBar = () => {
     }
   }, [shortcuts])
 
-  return <InfoBarWrapper>{showInfobar && (showGraph ? <Graph graphData={graphData} /> : <Backlinks />)}</InfoBarWrapper>
+  return transitions(
+    (styles, item) =>
+      item && (
+        <InfoBarWrapper style={styles}>
+          {infobarVisibile && (showGraph ? <Graph graphData={graphData} /> : <Backlinks />)}
+        </InfoBarWrapper>
+      )
+  )
 }
 
 export default InfoBar

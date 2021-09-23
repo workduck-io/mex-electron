@@ -2,25 +2,24 @@ import { ipcRenderer } from 'electron'
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
-import { IpcAction } from '../Spotlight/utils/constants'
 import styled, { useTheme } from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useGraphStore } from '../Components/Graph/GraphStore'
 import { useHelpStore } from '../Components/Help/HelpModal'
 import HelpTooltip from '../Components/Help/HelpTooltip'
 import { Notifications } from '../Components/Notifications/Notifications'
-import SideBar from '../Components/Sidebar'
-import { navTooltip } from '../Components/Sidebar/Nav'
+import Nav, { navTooltip } from '../Components/Sidebar/Nav'
+import links from '../Conf/links'
 import { useInitialize } from '../Data/useInitialize'
 import { useLocalData } from '../Data/useLocalData'
 import { useSyncData } from '../Data/useSyncData'
-import { useTreeFromLinks } from '../Editor/Store/DataStore'
 import { useEditorStore } from '../Editor/Store/EditorStore'
+import { useRecentsStore } from '../Editor/Store/RecentsStore'
 import { useNavigation } from '../Hooks/useNavigation/useNavigation'
+import { IpcAction } from '../Spotlight/utils/constants'
 import { useSaveAndExit } from '../Spotlight/utils/hooks'
 import { GridWrapper } from '../Styled/Grid'
 import InfoBar from './InfoBar'
-import { useRecentsStore } from '../Editor/Store/RecentsStore'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -108,12 +107,10 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
     }
   }, [shortcuts])
 
-  const Tree = useTreeFromLinks()
-
   return (
     <AppWrapper>
-      <GridWrapper showGraph={showGraph}>
-        <SideBar tree={Tree} starred={Tree} />
+      <GridWrapper>
+        <Nav links={links} />
         <Content>{children}</Content>
         <InfoBar />
       </GridWrapper>

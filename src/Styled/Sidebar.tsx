@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react'
 import styled from 'styled-components'
 import React from 'react'
 import { PixelToCSS, ThinScrollbar } from './helpers'
+import { animated } from 'react-spring'
 
 export const Sicon = styled(Icon)`
   height: 26px;
@@ -16,10 +17,8 @@ export const SIcon = (props: any) => {
   return <Sicon {...props} />
 }
 
-export const SidebarDiv = styled.div`
+export const SidebarDiv = styled(animated.div)`
   height: 100%;
-  position: fixed;
-  display: flex;
   max-width: ${({ theme }) => PixelToCSS(theme.width.sidebar)};
   width: ${({ theme }) => PixelToCSS(theme.width.sidebar)};
 `
@@ -27,7 +26,6 @@ export const SidebarDiv = styled.div`
 export const SidebarContent = styled.div`
   ${ThinScrollbar};
   flex-grow: 1;
-  margin-left: ${({ theme }) => PixelToCSS(theme.width.nav)};
   overflow-x: hidden;
   padding: ${({ theme }) => theme.spacing.medium};
 `

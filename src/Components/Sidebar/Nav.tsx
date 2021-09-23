@@ -10,6 +10,7 @@ import menuFoldLine from '@iconify-icons/ri/menu-fold-line'
 import { Icon } from '@iconify/react'
 import { Button } from '../../Styled/Buttons'
 import { useLayoutStore } from '../../Layout/LayoutStore'
+import useLayout from '../../Layout/useLayout'
 
 const StyledDiv = styled.div`
   z-index: 10;
@@ -57,7 +58,7 @@ const Link = styled(NavLink)`
 `
 
 const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
-  const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
+  const { toggleSidebar } = useLayout()
   const sidebarVisibility = useLayoutStore((store) => store.sidebar.visible)
 
   return (
