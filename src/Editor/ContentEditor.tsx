@@ -1,17 +1,24 @@
 import bubbleChartLine from '@iconify-icons/ri/bubble-chart-line'
 import React, { useEffect, useState } from 'react'
 import ReactTooltip from 'react-tooltip'
+import useLayout from '../Layout/useLayout'
 import { useGraphStore } from '../Components/Graph/GraphStore'
 import IconButton from '../Styled/Buttons'
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor'
 import { SaverButton } from './Components/Saver'
 import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
+import { useLayoutStore } from '../Layout/LayoutStore'
+import focusLine from '@iconify-icons/ri/focus-line'
+import tinykeys from 'tinykeys'
+import { useHelpStore } from '../Components/Help/HelpModal'
 
 const ContentEditor = () => {
   const title = useEditorStore((state) => state.node.title)
   const showGraph = useGraphStore((state) => state.showGraph)
   const toggleGraph = useGraphStore((state) => state.toggleGraph)
+  const { toggleFocusMode } = useLayout()
+  const focusMode = useLayoutStore((store) => store.focusMode)
 
   useEffect(() => {
     ReactTooltip.rebuild()
@@ -29,6 +36,20 @@ const ContentEditor = () => {
     }
   }, [fsContent, id])
 
+  const shortcuts = useHelpStore((store) => store.shortcuts)
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      [shortcuts.toggleFocusMode.keystrokes]: (event) => {
+        event.preventDefault()
+        toggleFocusMode()
+      }
+    })
+    return () => {
+      unsubscribe()
+    }
+  }, [shortcuts])
+
   const onSave = () => {
     // Callback after save
   }
@@ -36,10 +57,14 @@ const ContentEditor = () => {
   return (
     <>
       <StyledEditor showGraph={showGraph} className="mex_editor">
-        <NodeInfo>
+        <NodeInfo focusMode={focusMode}>
           <NoteTitle>{title}</NoteTitle>
           <InfoTools>
+            <IconButton size={24} icon={focusLine} title="Focus Mode" highlight={focusMode} onClick={toggleFocusMode} />
             <SaverButton callbackAfterSave={onSave} />
+            {/* <Button highlight={sidebarVisibility} onClick={toggleFocusMode}>
+        <Icon icon={focusLine} />
+      </Button> */}
             <IconButton
               size={24}
               icon={bubbleChartLine}

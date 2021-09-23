@@ -1,18 +1,17 @@
+import settings4Line from '@iconify-icons/ri/settings-4-line'
+import { transparentize } from 'polished'
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import { useLayoutStore } from '../../Layout/LayoutStore'
 import styled, { css } from 'styled-components'
-import settings4Line from '@iconify-icons/ri/settings-4-line'
 import { GetIcon } from '../../Conf/links'
 import { NavProps } from './Types'
-import { transparentize } from 'polished'
-import menuUnfoldLine from '@iconify-icons/ri/menu-unfold-line'
-import menuFoldLine from '@iconify-icons/ri/menu-fold-line'
-import { Icon } from '@iconify/react'
-import { Button } from '../../Styled/Buttons'
-import { useLayoutStore } from '../../Layout/LayoutStore'
-import useLayout from '../../Layout/useLayout'
 
-const StyledDiv = styled.div`
+interface StyledDivProps {
+  focusMode?: boolean
+}
+
+const StyledDiv = styled.div<StyledDivProps>`
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -21,6 +20,16 @@ const StyledDiv = styled.div`
   min-height: 100%;
   position: fixed;
   width: ${({ theme }) => theme.width.nav};
+  transition: opacity 0.3s ease-in-out;
+
+  ${({ focusMode }) =>
+    focusMode &&
+    css`
+      opacity: 0.2;
+      &:hover {
+        opacity: 1;
+      }
+    `}
 `
 
 export const navTooltip = css`
@@ -58,14 +67,10 @@ const Link = styled(NavLink)`
 `
 
 const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
-  const { toggleSidebar } = useLayout()
-  const sidebarVisibility = useLayoutStore((store) => store.sidebar.visible)
-
+  const focusMode = useLayoutStore((store) => store.focusMode)
   return (
-    <StyledDiv>
-      <Button onClick={toggleSidebar}>
-        <Icon icon={sidebarVisibility ? menuFoldLine : menuUnfoldLine} />
-      </Button>
+    <StyledDiv focusMode={focusMode}>
+      <div></div>
       <div>
         {links.map((l) => (
           <Link

@@ -10,16 +10,16 @@ import { TreeWithContextMenu } from './TreeWithContextMenu'
 
 export type SideBarProps = { tree: TreeNode[]; starred: TreeNode[] }
 
-export const useWidthTransition = () => {
-  const sidebarVisible = useLayoutStore((store) => store.sidebar.visible)
+export const useFocusTransition = () => {
+  const focusMode = useLayoutStore((store) => store.focusMode)
 
-  const transitions = useTransition(sidebarVisible, {
+  const transitions = useTransition(!focusMode, {
     from: { opacity: 0, width: '0%' },
     enter: { opacity: 1, width: '100%' },
     leave: { opacity: 0, width: '0%' },
-    reverse: sidebarVisible,
+    reverse: !focusMode,
     delay: 0,
-    config: config.default,
+    config: config.slow,
     onStart: ({ value }) => {
       // if (sidebarVisible) setSidebarWidth(0)
       // else setSidebarWidth(300)
@@ -33,7 +33,7 @@ export const useWidthTransition = () => {
 }
 
 const SideBar = ({ tree, starred }: SideBarProps) => {
-  const { transitions } = useWidthTransition()
+  const { transitions } = useFocusTransition()
 
   return transitions(
     (styles, item) =>

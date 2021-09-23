@@ -8,7 +8,7 @@ import Graph from '../Components/Graph/Graph'
 import { useGraphStore } from '../Components/Graph/GraphStore'
 import { useGraphData } from '../Components/Graph/useGraphData'
 import { useHelpStore } from '../Components/Help/HelpModal'
-import { useWidthTransition } from '../Components/Sidebar'
+import { useFocusTransition } from '../Components/Sidebar'
 
 interface InfoBarWrapperProps {
   showGraph: boolean
@@ -26,7 +26,7 @@ const InfoBarWrapper = styled(animated.div)<InfoBarWrapperProps>`
 `
 
 const InfoBar = () => {
-  const { transitions } = useWidthTransition()
+  const { transitions } = useFocusTransition()
   const showGraph = useGraphStore((state) => state.showGraph)
   const toggleGraph = useGraphStore((state) => state.toggleGraph)
   const shortcuts = useHelpStore((store) => store.shortcuts)
