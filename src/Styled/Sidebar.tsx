@@ -20,7 +20,8 @@ export const SIcon = (props: any) => {
 export const SidebarDiv = styled(animated.div)`
   height: 100%;
   max-width: ${({ theme }) => PixelToCSS(theme.width.sidebar)};
-  width: ${({ theme }) => PixelToCSS(theme.width.sidebar)};
+  /* width: ${({ theme }) => PixelToCSS(theme.width.sidebar)}; */
+  border: 1px solid white;
 `
 
 export const SidebarContent = styled.div`

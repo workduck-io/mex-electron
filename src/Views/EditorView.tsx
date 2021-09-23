@@ -3,10 +3,11 @@ import { useTreeFromLinks } from '../Editor/Store/DataStore'
 import SideBar from '../Components/Sidebar'
 import ContentEditor from '../Editor/ContentEditor'
 import styled from 'styled-components'
+import InfoBar from '../Layout/InfoBar'
 
 const EditorViewWrapper = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   width: 100%;
 `
 
@@ -17,6 +18,7 @@ const EditorView = () => {
     <EditorViewWrapper>
       <SideBar tree={Tree} starred={Tree} />
       <ContentEditor />
+      <InfoBar />
     </EditorViewWrapper>
   )
 }

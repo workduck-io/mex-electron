@@ -100,6 +100,22 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
       [shortcuts.gotoForward.keystrokes]: (event) => {
         event.preventDefault()
         move(+1)
+      },
+      [shortcuts.showSnippets.keystrokes]: (event) => {
+        event.preventDefault()
+        history.push('/snippets')
+      },
+      [shortcuts.showIntegrations.keystrokes]: (event) => {
+        event.preventDefault()
+        history.push('/integrations')
+      },
+      [shortcuts.showEditor.keystrokes]: (event) => {
+        event.preventDefault()
+        history.push('/editor')
+      },
+      [shortcuts.showSettings.keystrokes]: (event) => {
+        event.preventDefault()
+        history.push('/settings')
       }
     })
     return () => {
@@ -112,7 +128,6 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
       <GridWrapper>
         <Nav links={links} />
         <Content>{children}</Content>
-        <InfoBar />
       </GridWrapper>
       <HelpTooltip />
       <ReactTooltip effect="solid" backgroundColor={theme.colors.gray[6]} arrowColor={theme.colors.gray[6]} />

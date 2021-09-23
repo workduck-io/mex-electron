@@ -14,9 +14,9 @@ export const useWidthTransition = () => {
   const sidebarVisible = useLayoutStore((store) => store.sidebar.visible)
 
   const transitions = useTransition(sidebarVisible, {
-    from: { opacity: 0, width: 0 },
-    enter: { opacity: 1, width: 300 },
-    leave: { opacity: 0, width: 0 },
+    from: { opacity: 0, width: '0%' },
+    enter: { opacity: 1, width: '100%' },
+    leave: { opacity: 0, width: '0%' },
     reverse: sidebarVisible,
     delay: 0,
     config: config.default,

@@ -4,6 +4,7 @@ export const StyledGraph = styled.div`
   /* width: 100%; */
   max-height: 100vh;
   width: 100%;
+  min-width: 600px;
   /* position: fixed; */
   /* top: 0; */
   /* right: 0; */
