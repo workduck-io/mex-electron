@@ -16,6 +16,7 @@ const BackLinkWrapper = styled.div`
   align-items: center;
   justify-content: center;
   padding: ${({ theme }) => `${theme.spacing.medium}`};
+  max-width: 300px;
 `
 
 const SBackLinks = styled.div`

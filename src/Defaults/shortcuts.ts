@@ -44,6 +44,11 @@ export const defaultShortcuts = {
     keystrokes: '$mod+KeyS',
     category: 'Actions'
   },
+  toggleFocusMode: {
+    title: 'Toggle Focus Mode',
+    keystrokes: '$mod+Backslash',
+    category: 'Actions'
+  },
   showGraph: {
     title: 'Graph',
     keystrokes: '$mod+KeyK KeyG',
