@@ -3,13 +3,18 @@ import styled, { css } from 'styled-components'
 
 export const NoteTitle = styled.h1``
 
-export const NodeInfo = styled.div`
+interface NodeInfoProps {
+  focusMode?: boolean
+}
+
+export const NodeInfo = styled.div<NodeInfoProps>`
   background-color: ${({ theme }) => theme.colors.gray[9]};
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.small}`};
   border-radius: ${({ theme }) => theme.borderRadius.small};
+  transition: opacity 0.3s ease-in-out;
 
   margin: 0 0 3rem;
 
@@ -19,6 +24,15 @@ export const NodeInfo = styled.div`
     font-weight: normal;
     margin: 0 0 0 ${({ theme }) => theme.spacing.small};
   }
+
+  ${({ focusMode }) =>
+    focusMode &&
+    css`
+      opacity: 0.2;
+      &:hover {
+        opacity: 1;
+      }
+    `}
 `
 
 export const InfoTools = styled.div`
