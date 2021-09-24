@@ -97,3 +97,5 @@ src/dist/
 .eslintignore
 
 CHANGELOG.md
+
+src/main.prod.js
