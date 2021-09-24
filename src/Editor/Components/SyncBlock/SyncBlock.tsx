@@ -1,3 +1,4 @@
+import { useFocused, useSelected } from 'slate-react'
 import refreshFill from '@iconify-icons/ri/refresh-fill'
 import { Icon } from '@iconify/react'
 import axios from 'axios'
@@ -36,9 +37,13 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
   const blockData = blocksData.filter((d) => d.id === element.id)[0]
 
+  const selected = useSelected()
+  // const focused = useFocused()
+  console.log({ props, selected })
+
   React.useEffect(() => {
     ReactTooltip.rebuild()
-  }, [])
+  }, [selected])
 
   if (blockData === undefined) return null
 
@@ -72,7 +77,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
       <div contentEditable={false}>
         {/* For quick debug {blockData && JSON.stringify(blockData)} */}
 
-        <SyncForm onSubmit={onSubmit}>
+        <SyncForm onSubmit={onSubmit} selected={selected}>
           <ElementHeader>
             <Icon icon={refreshFill} height={20} />
             SyncBlock
@@ -81,10 +86,11 @@ export const SyncBlock = (props: SyncBlockProps) => {
           <textarea
             {...register('content')}
             placeholder="Your content here..."
+            className="syncTextArea"
             defaultValue={blockData && blockData.content}
           />
 
-          {blockData && (
+          {blockData && selected && (
             <FormControls>
               <div>
                 {blockData.connections.map((cs) => {
