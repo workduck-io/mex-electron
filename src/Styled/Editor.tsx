@@ -43,16 +43,14 @@ interface StyledEditorProps {
   showGraph?: boolean
 }
 
-const MediumPaddingMargin = css`
-  padding: ${({ theme }) => theme.spacing.medium};
-  margin: ${({ theme }) => theme.spacing.medium} auto;
-`
-
 export const StyledEditor = styled.div<StyledEditorProps>`
-  ${MediumPaddingMargin}
+  padding: ${({ theme }) => theme.spacing.large} ${({ theme }) => theme.spacing.medium};
+  margin-bottom: 0;
   width: 100%;
   max-width: 1000px;
   min-width: 400px;
+  height: 100%;
+  overflow-y: auto;
   /* ${({ showGraph }) =>
     showGraph
       ? css`
