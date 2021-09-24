@@ -1,3 +1,4 @@
+import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 
 export const RootElement = styled.div`
@@ -27,23 +28,51 @@ export const SyncTitle = styled.div`
   align-self: flex-end;
 `
 
-export const SyncForm = styled.form`
+interface SyncFormProps {
+  selected: boolean
+}
+
+export const SyncForm = styled.form<SyncFormProps>`
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
 
-  margin: ${({ theme }) => theme.spacing.small};
-  padding: ${({ theme: { spacing } }) => spacing.small};
+  margin: ${({ theme }) => theme.spacing.small} 0;
+  padding: 0;
 
-  background: ${({ theme }) => theme.colors.background.card};
+  /* background: ${({ theme }) => theme.colors.background.card}; */
   border-radius: ${({ theme: { borderRadius } }) => `${borderRadius.small}`};
-`
 
+  textarea.syncTextArea {
+    border-radius: ${({ theme }) => theme.borderRadius.small};
+    background-color: transparent;
+    ${({ selected }) =>
+      selected &&
+      css`
+        box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary};
+      `}
+  }
+
+  button {
+    display: block;
+    height: 100%;
+  }
+`
 export const FormControls = styled.div`
   display: flex;
   width: 100%;
+  z-index: 100;
+  position: absolute;
   margin-top: ${({ theme }) => theme.spacing.small};
   justify-content: space-between;
+  background-color: ${({ theme }) => transparentize(0.2, theme.colors.gray[9])};
+  backdrop-filter: blur(10px);
+  bottom: -${({ theme }) => theme.spacing.small};
+  transform: translateY(100%);
+  align-items: center;
+  padding: ${({ theme }) => theme.spacing.small};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
 `
 
 interface ServiceSelectorLabelProps {
