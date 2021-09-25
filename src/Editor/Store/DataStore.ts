@@ -2,8 +2,8 @@ import create from 'zustand'
 import { generateTree, getAllParentIds, SEPARATOR } from '../../Components/Sidebar/treeUtils'
 import getFlatTree from '../../Lib/flatTree'
 import { removeLink } from '../../Lib/links'
-import { generateComboText } from './sampleTags'
-import { DataStoreState, ILink } from './Types'
+import { generateComboText, generateIlink } from './sampleTags'
+import { DataStoreState, CachedILink } from './Types'
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   // Tags
@@ -40,7 +40,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     const parents = getAllParentIds(ilink) // includes link of child
     const newLinks = parents.filter((l) => !linksStrings.includes(l)) // only create links for non existing
     const comboTexts = newLinks.map((l, index) => {
-      return generateComboText(l, get().ilinks.length + index)
+      return generateIlink(l, get().ilinks.length + index)
     })
 
     set({
@@ -86,7 +86,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     if (!secondNodeLinks) secondNodeLinks = []
 
     nodeLinks = removeLink(ilink, nodeLinks)
-    const secondLinkToDelete: ILink = {
+    const secondLinkToDelete: CachedILink = {
       type: ilink.type === 'from' ? 'to' : 'from',
       nodeId
     }

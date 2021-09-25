@@ -1,6 +1,6 @@
 import { Snippet } from '../Editor/Store/SnippetStore'
 import { SyncBlockData } from '../Editor/Components/SyncBlock'
-import { ComboText, LinkCache, NodeEditorContent } from '../Editor/Store/Types'
+import { ComboText, LinkCache, NodeEditorContent, ILink } from '../Editor/Store/Types'
 
 export interface NodeContent {
   type: string
@@ -10,7 +10,7 @@ export interface NodeContent {
 export interface FileData {
   // variable to detect whether the data in the file was updated via mex/spotlight or externally
   remoteUpdate: boolean
-  ilinks: ComboText[]
+  ilinks: ILink[]
   tags: ComboText[]
   contents: {
     [key: string]: NodeContent
