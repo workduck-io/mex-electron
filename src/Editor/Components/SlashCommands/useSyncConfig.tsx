@@ -27,15 +27,14 @@ export const useSyncConfig = () => {
           slateElementType: ELEMENT_SYNC_BLOCK,
           command: getSyncCommand(cur),
           getBlockData: () => {
-            const intents = getIntents(useEditorStore.getState().node.id, cur)
             const nd = {
               id: cur,
-              title: curTemplate.title,
-              intents: curTemplate.intentTemplates,
+              intentGroupId: '',
               content: ''
             }
-            // addSyncBlock(nd)
-            return nd
+            // creation of IGID if none found. Don't create until services are linked
+            addSyncBlock(nd)
+            return { id: nd }
           }
         }
       }

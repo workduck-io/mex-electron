@@ -10,7 +10,7 @@ export type connections = 'telegram' | 'slack' | 'notion' | 'github' | 'mex'
 export interface SyncBlockData {
   id: string
   content: string
-  intentGroupId: string
+  intentGroupId: string | undefined
 }
 
 export interface SyncElementData {

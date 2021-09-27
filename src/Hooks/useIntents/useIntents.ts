@@ -28,12 +28,26 @@ const useIntents = () => {
     const template = getTemplate(id, intentGroupId)
     if (template) {
       const templateIntents = template.intents
-      const intents = generateIntents(templateIntents, id)
+      return generateIntents(templateIntents, id)
     }
     return undefined
   }
 
-  return { getIntents, getTemplate }
+  const getIntentGroupId = (id: string, templateId: string) => {
+    const nodeIntents = StoreIntents[id]
+    let intentGroupId: string | undefined
+    if (nodeIntents) {
+      const intentGroups = nodeIntents.intentGroups
+      Object.keys(intentGroups).forEach((k) => {
+        if (templateId === intentGroups[k]) {
+          intentGroupId = k
+        }
+      })
+    }
+    return intentGroupId
+  }
+
+  return { getIntents, getTemplate, getIntentGroupId }
 }
 
 export default useIntents
