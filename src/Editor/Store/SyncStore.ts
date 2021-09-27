@@ -4,10 +4,12 @@ import { SyncContextType } from '../Components/SyncBlock/SyncBlock.types'
 export const useSyncStore = create<SyncContextType>((set, get) => ({
   syncId: 'initial',
   syncBlocks: [],
+  intents: {},
+  syncBlockTemplates: [],
   addSyncBlock: (block) => {
     set(() => ({
       syncBlocks: [...get().syncBlocks, block],
-      syncId: String(Date.now()),
+      syncId: String(Date.now())
     }))
   },
   editSyncBlock: (block) => {
@@ -16,13 +18,27 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
 
     set({
       syncBlocks: [block, ...oldBlocks],
-      syncId: String(Date.now()),
+      syncId: String(Date.now())
     })
   },
   initSyncBlocks: (syncBlocks) => {
     set(() => ({
       syncBlocks,
-      syncId: String(Date.now()),
+      syncId: String(Date.now())
     }))
-  },
+  }
+
+  // addIntent: (id, intent) =>
+  //   set((state) => {
+  //     const prevIntents = state.intents[id] ?? []
+  //     return { intents: { ...state.intents, [id]: [...prevIntents, intent] } }
+  //   }),
+
+  // setIntentsForNode: (id, intents) =>
+  //   set((state) => ({
+  //     intents: {
+  //       ...state.intents,
+  //       [id]: intents,
+  //     },
+  //   })),
 }))

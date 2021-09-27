@@ -19,7 +19,6 @@ import { useNavigation } from '../Hooks/useNavigation/useNavigation'
 import { IpcAction } from '../Spotlight/utils/constants'
 import { useSaveAndExit } from '../Spotlight/utils/hooks'
 import { GridWrapper } from '../Styled/Grid'
-import InfoBar from './InfoBar'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -38,8 +37,7 @@ export type MainProps = { children: React.ReactNode }
 const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const theme = useTheme()
   const history = useHistory()
-  const id = useEditorStore((state) => state.node.id)
-  const showGraph = useGraphStore((state) => state.showGraph)
+  const nodeId = useEditorStore((state) => state.node.id)
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
 
   const { move, push } = useNavigation()
@@ -87,7 +85,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   useEffect(() => {
     // Switch to the editor page whenever a new ID is loaded
     history.push('/editor')
-  }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [nodeId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
 

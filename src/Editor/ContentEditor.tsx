@@ -62,9 +62,6 @@ const ContentEditor = () => {
           <InfoTools>
             <IconButton size={24} icon={focusLine} title="Focus Mode" highlight={focusMode} onClick={toggleFocusMode} />
             <SaverButton callbackAfterSave={onSave} />
-            {/* <Button highlight={sidebarVisibility} onClick={toggleFocusMode}>
-        <Icon icon={focusLine} />
-      </Button> */}
             <IconButton
               size={24}
               icon={bubbleChartLine}

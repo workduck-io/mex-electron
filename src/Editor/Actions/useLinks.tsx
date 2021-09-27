@@ -2,7 +2,7 @@ import { NodeLink } from '../../Types/relations'
 import { useContentStore } from '../Store/ContentStore'
 import { uniq } from 'lodash'
 import useDataStore from '../Store/DataStore'
-import { ILink } from '../Store/Types'
+import { CachedILink } from '../Store/Types'
 import { hasLink } from '../../Lib/links'
 
 const getLinksFromContent = (content: any[]): string[] => {
@@ -70,7 +70,7 @@ export const useLinks = () => {
     // console.log('We are updating', nodeId, content, linkCache)
 
     if (content) {
-      const links: ILink[] = getLinksFromContent(content).map((l) => ({
+      const links: CachedILink[] = getLinksFromContent(content).map((l) => ({
         type: 'to',
         nodeId: l
       }))
