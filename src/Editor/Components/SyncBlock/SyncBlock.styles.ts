@@ -75,10 +75,7 @@ export const FormControls = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.small};
 `
 
-interface ServiceSelectorLabelProps {
-  checked: boolean
-}
-export const ServiceSelectorLabel = styled.label<ServiceSelectorLabelProps>`
+export const ServiceSelectorLabel = styled.label`
   position: relative;
   display: flex;
   align-items: center;
@@ -86,18 +83,6 @@ export const ServiceSelectorLabel = styled.label<ServiceSelectorLabelProps>`
 
   padding: ${({ theme: { spacing } }) => `${spacing.tiny} ${spacing.small}`};
   border-radius: ${({ theme }) => theme.borderRadius.small};
-
-  ${({ theme, checked }) =>
-    checked
-      ? css`
-          svg {
-            color: ${theme.colors.primary};
-            text-shadow: 0px 2px 4px ${({ theme }) => theme.colors.fade.primary};
-          }
-          color: ${theme.colors.text.heading};
-          background-color: ${theme.colors.gray[8]};
-        `
-      : css``}
 
   input[type='checkbox'] {
     display: block;

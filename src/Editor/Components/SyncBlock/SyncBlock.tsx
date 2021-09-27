@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import ReactTooltip from 'react-tooltip'
 import { useSyncStore } from '../../Store/SyncStore'
-import { getParentSyncBlock, getSyncBlockTitle } from '../SlashCommands/useSyncConfig'
 import {
   ElementHeader,
   FormControls,
@@ -19,6 +18,8 @@ import {
 } from './SyncBlock.styles'
 import { SyncBlockProps } from './SyncBlock.types'
 import { getSyncServiceIcon } from './SyncIcons'
+import useIntents from '../../../Hooks/useIntents/useIntents'
+import { useEditorStore } from '../../../Editor/Store/EditorStore'
 
 type FormValues = {
   content: string
@@ -33,22 +34,24 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
   const editSyncBlock = useSyncStore((state) => state.editSyncBlock)
 
+  const nodeUniqueId = useEditorStore((store) => store.node.id)
+  const parentNodeId = useEditorStore((store) => store.node.key)
   const blocksData = useSyncStore((state) => state.syncBlocks)
-
   const blockData = blocksData.filter((d) => d.id === element.id)[0]
 
+  const { getIntents, getTemplate } = useIntents()
+  const intents = getIntents(nodeUniqueId, blockData.intentGroupId)
+  const template = getTemplate(nodeUniqueId, blockData.intentGroupId)
+
   const selected = useSelected()
-  // const focused = useFocused()
-  console.log({ props, selected })
 
   React.useEffect(() => {
     ReactTooltip.rebuild()
   }, [selected])
 
-  if (blockData === undefined) return null
+  if (blockData === undefined || template === undefined) return null
 
-  const parentNodeId = getParentSyncBlock(blockData.connections)
-  const syncTitle = getSyncBlockTitle(blockData.connections)
+  // const syncTitle = getSyncBlockTitle(blockData.title)
 
   const onSubmit = handleSubmit((data) => {
     // console.log(JSON.stringify(data));
@@ -59,13 +62,16 @@ export const SyncBlock = (props: SyncBlockProps) => {
     editSyncBlock({
       id: element.id,
       content: data.content,
-      connections: blockData.connections
+      intentGroupId: blockData.intentGroupId
     })
 
-    axios.post(`https://k43k03g5ab.execute-api.us-east-1.amazonaws.com/dev/listen?${param}`, {
+    axios.post(`https://api.workduck.io/integration/listen?${param}`, {
       parentNodeId: parentNodeId ?? 'BLOCK_random',
       blockId: element.id,
       text: data.content,
+      igId: null,
+      templateId: null,
+      workspaceId: null,
       eventType: blockData.content === '' ? 'INSERT' : 'EDIT' // FIXME
     })
 
@@ -81,7 +87,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
           <ElementHeader>
             <Icon icon={refreshFill} height={20} />
             SyncBlock
-            {syncTitle && <SyncTitle>{syncTitle}</SyncTitle>}
+            <SyncTitle>{template.id}</SyncTitle>
           </ElementHeader>
           <textarea
             {...register('content')}
@@ -93,24 +99,23 @@ export const SyncBlock = (props: SyncBlockProps) => {
           {blockData && selected && (
             <FormControls>
               <div>
-                {blockData.connections.map((cs) => {
-                  const checked = blockData && blockData.connections.includes(cs as any) // eslint-disable-line @typescript-eslint/no-explicit-any
-                  return (
-                    <ServiceSelectorLabel
-                      htmlFor={`connections.${cs}`}
-                      key={`${blockData.id}_syncBlocks_${cs}`}
-                      checked={checked}
-                      data-tip={`Sync with ${cs}`}
-                      data-place="bottom"
-                    >
-                      <ServiceLabel>
-                        <Icon icon={getSyncServiceIcon(cs)} />
-                        {cs}
-                      </ServiceLabel>
-                      <input type="checkbox" {...register(`connections.${cs}`)} checked={checked} />
-                    </ServiceSelectorLabel>
-                  )
-                })}
+                {intents &&
+                  intents.map((intent) => {
+                    return (
+                      <ServiceSelectorLabel
+                        htmlFor={`connections.${intent}`}
+                        key={`${blockData.id}_syncBlocks_${intent}`}
+                        data-tip={`Sync with ${intent}`}
+                        data-place="bottom"
+                      >
+                        <ServiceLabel>
+                          <Icon icon={getSyncServiceIcon(intent.service)} />
+                          {intent.type} - {intent.value}
+                        </ServiceLabel>
+                        <input type="checkbox" {...register(`connections.${intent}`)} />
+                      </ServiceSelectorLabel>
+                    )
+                  })}
               </div>
               <button type="submit">
                 {

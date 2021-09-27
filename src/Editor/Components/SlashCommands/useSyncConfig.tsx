@@ -1,32 +1,40 @@
 import { SlashCommandConfig } from './Types'
 import { SEPARATOR } from '../../../Components/Sidebar/treeUtils'
 import { getNewBlockId } from '../SyncBlock/getNewBlockData'
-import { ELEMENT_SYNC_BLOCK } from '../SyncBlock'
+import { ELEMENT_SYNC_BLOCK, IntentTemplate } from '../SyncBlock'
 import { useSyncStore } from '../../../Editor/Store/SyncStore'
 import { findKey, clone } from 'lodash'
-
-const ServiceMap = {
-  issue: { title: 'Issue', connections: ['github', 'slack', 'mex'] },
-  com: { title: 'Communication', connections: ['telegram', 'slack', 'mex'] },
-  slack: { title: 'Slack', connections: ['slack', 'mex'] }
-}
+import { DefaultSyncBlockTemplates } from '../../../Defaults/syncTemplates'
+import useIntents from '../../../Hooks/useIntents/useIntents'
+import { useEditorStore } from '../../../Editor/Store/EditorStore'
 
 export const useSyncConfig = () => {
+  const addSyncBlockTemplate = useSyncStore((state) => state.addTemplate)
   const addSyncBlock = useSyncStore((state) => state.addSyncBlock)
-  const getSyncBlockConfigs = (): { [key: string]: SlashCommandConfig } => {
-    return Object.keys(ServiceMap).reduce((prev, cur) => {
+
+  const { getIntents } = useIntents()
+
+  // Construct the SyncBlock configs for syncBlock templates
+  const getSyncBlockConfigs = (): {
+    [key: string]: SlashCommandConfig
+  } => {
+    return Object.keys(DefaultSyncBlockTemplates).reduce((prev, cur) => {
+      // Current Template
+      const curTemplate = DefaultSyncBlockTemplates[cur]
       return {
         ...prev,
         [cur]: {
           slateElementType: ELEMENT_SYNC_BLOCK,
           command: getSyncCommand(cur),
           getBlockData: () => {
+            const intents = getIntents(useEditorStore.getState().node.id, cur)
             const nd = {
-              id: getNewBlockId(),
-              connections: ServiceMap[cur].connections,
+              id: cur,
+              title: curTemplate.title,
+              intents: curTemplate.intentTemplates,
               content: ''
             }
-            addSyncBlock(nd)
+            // addSyncBlock(nd)
             return nd
           }
         }
@@ -40,12 +48,12 @@ export const useSyncConfig = () => {
 export const getSyncCommand = (title: string) => `sync${SEPARATOR}${title}`
 
 export const extractSyncBlockCommands = (): string[] => {
-  return Object.keys(ServiceMap).map((c) => getSyncCommand(c))
+  return Object.keys(DefaultSyncBlockTemplates).map((c) => getSyncCommand(c))
 }
 
 export const getSyncServicesKey = (connections: string[]) =>
-  findKey(ServiceMap, (k) => {
-    return clone(k.connections).sort().toString() === clone(connections).sort().toString()
+  findKey(DefaultSyncBlockTemplates, (k) => {
+    return clone(k.intentTemplates).sort().toString() === clone(connections).sort().toString()
   })
 
 export const getParentSyncBlock = (connections: string[]) => `BLOCK_${getSyncServicesKey(connections)}`
@@ -53,6 +61,6 @@ export const getParentSyncBlock = (connections: string[]) => `BLOCK_${getSyncSer
 export const getSyncBlockTitle = (connections: string[]): string | undefined => {
   const key = getSyncServicesKey(connections)
 
-  if (key) return ServiceMap[key].title
+  if (key) return DefaultSyncBlockTemplates[key].title
   return undefined
 }

@@ -37,7 +37,7 @@ export const useInitialize = () => {
     initializeDataStore(tags, ilinks, slashCommands, linkCache)
     initSpotlightSettings(data.userSettings.spotlight)
     initContents(contents)
-    initSyncBlocks(syncBlocks)
+    initSyncBlocks(syncBlocks, [])
     initSnippets(snippets)
     setTheme(getTheme(data.userSettings.theme))
   }

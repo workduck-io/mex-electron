@@ -5,13 +5,14 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
   syncId: 'initial',
   syncBlocks: [],
   intents: {},
-  syncBlockTemplates: [],
-  addSyncBlock: (block) => {
-    set(() => ({
-      syncBlocks: [...get().syncBlocks, block],
+  templates: [],
+
+  addSyncBlock: (block) =>
+    set((state) => ({
+      syncBlocks: [...state.syncBlocks, block],
       syncId: String(Date.now())
-    }))
-  },
+    })),
+
   editSyncBlock: (block) => {
     let oldBlocks = get().syncBlocks
     oldBlocks = oldBlocks.filter((s) => s.id !== block.id)
@@ -21,12 +22,18 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
       syncId: String(Date.now())
     })
   },
-  initSyncBlocks: (syncBlocks) => {
+
+  initSyncBlocks: (syncBlocks, templates) =>
     set(() => ({
       syncBlocks,
+      templates,
       syncId: String(Date.now())
+    })),
+
+  addTemplate: (template) =>
+    set((state) => ({
+      templates: [...state.templates, template]
     }))
-  }
 
   // addIntent: (id, intent) =>
   //   set((state) => {

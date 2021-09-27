@@ -10,10 +10,10 @@ export const getNewDraftKey = (): string => {
   return `Draft.${currentTime}`
 }
 
-export const getNewBlockData = (): SyncBlockData => {
+export const getNewBlockData = (templateId: string): SyncBlockData => {
   return {
     id: getNewBlockId(),
-    connections: connection_services as any,
-    content: '',
+    intentGroupId: templateId,
+    content: ''
   }
 }

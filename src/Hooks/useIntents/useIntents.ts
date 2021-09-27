@@ -1,21 +1,39 @@
-import { Intent } from '../../Editor/Components/SyncBlock/SyncBlock.types'
+import { Intent, IntentTemplate, SyncBlockTemplate } from '../../Editor/Components/SyncBlock/SyncBlock.types'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
 
 const useIntents = () => {
-  const intents = useSyncStore((store) => store.intents)
+  const StoreIntents = useSyncStore((store) => store.intents)
+  const templates = useSyncStore((store) => store.templates)
 
-  const getIntents = (id: string, templateId: string) => {
-    const nodeIntents = intents[id]
+  const generateIntents = (templateIntents: IntentTemplate[], id: string) => {
+    const nodeIntents = StoreIntents[id]
+    const intents = templateIntents.map((ti) => {
+      const intent = nodeIntents.intents.find((i) => i.service === ti.service && i.type === ti.type)
+      return intent
+    })
+    return intents
+  }
+
+  const getTemplate = (id: string, intentGroupId: string) => {
+    const nodeIntents = StoreIntents[id]
     if (nodeIntents) {
-      const templateIntents = nodeIntents.intentGroups[templateId]
-      return templateIntents
+      const templateId = nodeIntents.intentGroups[intentGroupId]
+      const template: SyncBlockTemplate = templates[templateId]
+      if (template) return template
     }
     return undefined
   }
 
-  // const addIntent = (id: string, templateId: string, intent: Intent) => {}
+  const getIntents = (id: string, intentGroupId: string) => {
+    const template = getTemplate(id, intentGroupId)
+    if (template) {
+      const templateIntents = template.intents
+      const intents = generateIntents(templateIntents, id)
+    }
+    return undefined
+  }
 
-  return { getIntents }
+  return { getIntents, getTemplate }
 }
 
 export default useIntents
