@@ -39,8 +39,10 @@ export const SyncBlock = (props: SyncBlockProps) => {
   const blocksData = useSyncStore((state) => state.syncBlocks)
   const blockData = blocksData.filter((d) => d.id === element.id)[0]
 
-  // Need IGID generated before this.
   const { getIntents, getTemplate } = useIntents()
+
+  // Need IGID generated before this.
+
   const intents = getIntents(nodeUniqueId, blockData.intentGroupId)
   const template = getTemplate(nodeUniqueId, blockData.intentGroupId)
 
@@ -49,6 +51,8 @@ export const SyncBlock = (props: SyncBlockProps) => {
   React.useEffect(() => {
     ReactTooltip.rebuild()
   }, [selected])
+
+  console.log('SyncBlock', { blockData, template })
 
   if (blockData === undefined || template === undefined) return null
 

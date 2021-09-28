@@ -47,25 +47,15 @@ export const useInitialize = () => {
     update(data)
     const keyToLoad = initNodeId || '@'
     const uidNode = data.ilinks.find((i) => i.key === keyToLoad)
-    console.log(data)
 
-    // if (initFor === AppType.SPOTLIGHT) {
-    //   loadNodeProps({
-    //     title: keyToLoad,
-    //     id: keyToLoad,
-    //     uid: uidNode.uid,
-    //     key: keyToLoad,
-    //   })
-    // } else {
-    //   loadNodeProps({
-    //     title: keyToLoad,
-    //     id: keyToLoad,
-    //     uid: uidNode.uid,
-    //     key: keyToLoad,
-    //   })
-    //   // push(keyToLoad)
-    //   console.log('Here\n\n\n')
-    // }
+    if (initFor === AppType.SPOTLIGHT) {
+      loadNodeProps({
+        title: keyToLoad,
+        id: keyToLoad,
+        uid: uidNode.uid,
+        key: keyToLoad
+      })
+    }
   }
 
   return { init, update }

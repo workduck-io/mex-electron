@@ -18,7 +18,7 @@ export interface SyncElementData {
 }
 
 export interface SyncBlockTemplate {
-  id: string
+  id: TemplateID
   title: string
   intents: IntentTemplate[]
 }
@@ -42,23 +42,20 @@ type TemplateID = string
 
 export type SyncBlockProps = StyledElementProps<SyncElementData, SyncBlockStyles>
 
-/**
+export interface SyncStoreIntents {
+  [id: string]: {
+    intents: Intent[]
+    intentGroups: {
+      [IntentGroupID: string]: TemplateID
+    }
+  } // ID of the node is mapped with intents
+}
 
-templateID
-
- */
 export type SyncContextType = {
   syncId: string
   syncBlocks: SyncBlockData[]
   templates: SyncBlockTemplate[]
-  intents: {
-    [id: string]: {
-      intents: Intent[]
-      intentGroups: {
-        [IntentGroupID: string]: TemplateID
-      }
-    } // ID of the node is mapped with intents
-  }
+  intents: SyncStoreIntents
   // Load a node and its contents in the editor
   addSyncBlock: (block: SyncBlockData) => void
   addTemplate: (template: SyncBlockTemplate) => void

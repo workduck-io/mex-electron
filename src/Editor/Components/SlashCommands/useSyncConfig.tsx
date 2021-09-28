@@ -7,12 +7,10 @@ import { findKey, clone } from 'lodash'
 import { DefaultSyncBlockTemplates } from '../../../Defaults/syncTemplates'
 import useIntents from '../../../Hooks/useIntents/useIntents'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
+import { nanoid } from 'nanoid'
 
 export const useSyncConfig = () => {
-  const addSyncBlockTemplate = useSyncStore((state) => state.addTemplate)
   const addSyncBlock = useSyncStore((state) => state.addSyncBlock)
-
-  const { getIntents } = useIntents()
 
   // Construct the SyncBlock configs for syncBlock templates
   const getSyncBlockConfigs = (): {
@@ -21,6 +19,7 @@ export const useSyncConfig = () => {
     return Object.keys(DefaultSyncBlockTemplates).reduce((prev, cur) => {
       // Current Template
       const curTemplate = DefaultSyncBlockTemplates[cur]
+      const id = nanoid()
       return {
         ...prev,
         [cur]: {
@@ -28,13 +27,13 @@ export const useSyncConfig = () => {
           command: getSyncCommand(cur),
           getBlockData: () => {
             const nd = {
-              id: cur,
+              id,
               intentGroupId: '',
               content: ''
             }
             // creation of IGID if none found. Don't create until services are linked
             addSyncBlock(nd)
-            return { id: nd }
+            return { id }
           }
         }
       }

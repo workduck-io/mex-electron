@@ -10,7 +10,6 @@ const useLoad = () => {
   const getNode = (id: string): NodeProperties => {
     const ilinks = useDataStore.getState().ilinks
     const respectiveLink = ilinks.find((i) => i.key === id)
-    console.log({ respectiveLink, ilinks })
 
     return {
       title: id,

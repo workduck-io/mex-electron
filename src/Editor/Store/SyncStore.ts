@@ -1,11 +1,12 @@
+import { intentsData, templates } from '../../Defaults/Test/intentsData'
 import create from 'zustand'
 import { SyncContextType } from '../Components/SyncBlock/SyncBlock.types'
 
 export const useSyncStore = create<SyncContextType>((set, get) => ({
   syncId: 'initial',
   syncBlocks: [],
-  intents: {},
-  templates: [],
+  intents: intentsData,
+  templates,
 
   addSyncBlock: (block) =>
     set((state) => ({
