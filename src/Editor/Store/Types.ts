@@ -6,7 +6,7 @@ export interface ComboText {
 }
 
 export interface ILink extends ComboText {
-  id: string
+  uid: string
 }
 
 export type LinkCache = Record<string, CachedILink[]>

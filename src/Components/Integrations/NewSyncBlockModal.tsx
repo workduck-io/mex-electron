@@ -1,10 +1,8 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { useTheme } from 'styled-components'
 import create from 'zustand'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { Button } from '../../Styled/Buttons'
-import { useHelpStore } from '../Help/HelpModal'
 import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { sampleServices } from './sampleServices'
@@ -23,15 +21,15 @@ export const useNewSyncBlockStore = create<NewBlockModalState>((set) => ({
   focus: true,
   openModal: () => {
     set({
-      open: true,
+      open: true
     })
   },
   closeModal: () => {
     set({
-      open: false,
+      open: false
     })
   },
-  setFocus: (focus) => set({ focus }),
+  setFocus: (focus) => set({ focus })
 }))
 
 const NewSyncBlockModal = () => {
@@ -47,7 +45,7 @@ const NewSyncBlockModal = () => {
 
   const serviceOptions = sampleServices.map((s) => ({
     label: s.title,
-    value: s.name,
+    value: s.name
   }))
 
   const handleParentBlockChange = (newValue: string) => {

@@ -1,4 +1,4 @@
-import { useFocused, useSelected } from 'slate-react'
+import { useSelected } from 'slate-react'
 import refreshFill from '@iconify-icons/ri/refresh-fill'
 import { Icon } from '@iconify/react'
 import axios from 'axios'
@@ -34,11 +34,12 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
   const editSyncBlock = useSyncStore((state) => state.editSyncBlock)
 
-  const nodeUniqueId = useEditorStore((store) => store.node.id)
+  const nodeUniqueId = useEditorStore((store) => store.node.uid)
   const parentNodeId = useEditorStore((store) => store.node.key)
   const blocksData = useSyncStore((state) => state.syncBlocks)
   const blockData = blocksData.filter((d) => d.id === element.id)[0]
 
+  // Need IGID generated before this.
   const { getIntents, getTemplate } = useIntents()
   const intents = getIntents(nodeUniqueId, blockData.intentGroupId)
   const template = getTemplate(nodeUniqueId, blockData.intentGroupId)

@@ -43,6 +43,8 @@ const useDataStore = create<DataStoreState>((set, get) => ({
       return generateIlink(l, get().ilinks.length + index)
     })
 
+    console.log('Link Added')
+
     set({
       ilinks: [...get().ilinks, ...comboTexts]
     })

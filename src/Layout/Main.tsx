@@ -2,6 +2,7 @@ import { ipcRenderer } from 'electron'
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
+import useLoad from '../Hooks/useLoad/useLoad'
 import styled, { useTheme } from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useGraphStore } from '../Components/Graph/GraphStore'
@@ -43,10 +44,25 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const { move, push } = useNavigation()
 
   const { init } = useInitialize()
+  const { loadNode } = useLoad()
 
   useSaveAndExit()
 
   const { getLocalData } = useLocalData()
+
+  /** Initialization of the app details occur here */
+  useEffect(() => {
+    (async () => {
+      getLocalData()
+        // .then((d) => {
+        //   console.log('Data here', d);
+        //   return d
+        // })
+        .then((d) => init(d))
+        .then(() => loadNode('@'))
+        .catch((e) => console.error(e)) // eslint-disable-line no-console
+    })()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { nodeId }) => {
@@ -66,21 +82,6 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   useEffect(() => {
     setIpc()
   }, [])
-
-  /** Initialization of the app details occur here */
-  useEffect(() => {
-    (async () => {
-      getLocalData()
-        .then((d) => {
-          // console.log('Data here', d);
-          return d
-        })
-        .then((d) => init(d))
-        .catch((e) => console.error(e)) // eslint-disable-line no-console
-    })()
-
-    push('@')
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     // Switch to the editor page whenever a new ID is loaded

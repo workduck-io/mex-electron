@@ -12,6 +12,7 @@ import { useSnippetStore } from '../Editor/Store/SnippetStore'
 import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
 import { useNavigation } from '../Hooks/useNavigation/useNavigation'
 import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
+import useLoad from '../Hooks/useLoad/useLoad'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
@@ -26,7 +27,7 @@ export const useInitialize = () => {
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setTheme = useThemeStore((state) => state.setTheme)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
-  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
+  const { loadNodeProps } = useLoad()
 
   const update = (data: FileData) => {
     const { tags, ilinks, linkCache, contents, syncBlocks, snippets } = data
@@ -45,11 +46,26 @@ export const useInitialize = () => {
   const init = (data: FileData, initNodeId?: string, initFor?: AppType) => {
     update(data)
     const keyToLoad = initNodeId || '@'
-    if (initFor === AppType.SPOTLIGHT) {
-      loadNodeFromId(keyToLoad)
-    } else {
-      push(keyToLoad)
-    }
+    const uidNode = data.ilinks.find((i) => i.key === keyToLoad)
+    console.log(data)
+
+    // if (initFor === AppType.SPOTLIGHT) {
+    //   loadNodeProps({
+    //     title: keyToLoad,
+    //     id: keyToLoad,
+    //     uid: uidNode.uid,
+    //     key: keyToLoad,
+    //   })
+    // } else {
+    //   loadNodeProps({
+    //     title: keyToLoad,
+    //     id: keyToLoad,
+    //     uid: uidNode.uid,
+    //     key: keyToLoad,
+    //   })
+    //   // push(keyToLoad)
+    //   console.log('Here\n\n\n')
+    // }
   }
 
   return { init, update }

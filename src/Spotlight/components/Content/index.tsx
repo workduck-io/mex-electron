@@ -12,6 +12,7 @@ import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlock
 import useDataStore from '../../../Editor/Store/DataStore'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
 import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
+import useLoad from '../../../Hooks/useLoad/useLoad'
 
 export const StyledContent = styled.section`
   display: flex;
@@ -53,10 +54,7 @@ const Content = () => {
   const ilinks = useDataStore((s) => s.ilinks)
   const getContent = useContentStore((state) => state.getContent)
 
-  const { loadNodeAndAppend, loadNodeFromId } = useEditorStore(({ loadNodeAndAppend, loadNodeFromId }) => ({
-    loadNodeAndAppend,
-    loadNodeFromId
-  }))
+  const { loadNodeAndAppend, loadNode } = useLoad()
 
   const saveEditorId = useSpotlightEditorStore((state) => state.setNodeId)
   const { setSaved } = useContentStore(({ setSaved }) => ({ setSaved }))
@@ -66,7 +64,7 @@ const Content = () => {
 
   useEffect(() => {
     setSaved(false)
-    loadNodeFromId(draftKey)
+    loadNode(draftKey)
     saveEditorId(draftKey)
   }, [selection])
 
@@ -125,7 +123,7 @@ const Content = () => {
       if (nodeContent) {
         loadNodeAndAppend(contentKey.key, nodeContent)
       } else {
-        loadNodeFromId(contentKey.key)
+        loadNode(contentKey.key)
       }
     }
     setSaved(false)

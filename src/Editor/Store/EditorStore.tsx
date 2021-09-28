@@ -1,27 +1,34 @@
 import React from 'react'
 import create from 'zustand'
-import { getContent, getInitialNode, getNodeFromId } from './helpers'
+import { getContent, getInitialNode } from './helpers'
 import TreeNode from '../../Types/tree'
 import { NodeEditorContent } from './Types'
+
+export interface NodeProperties {
+  title: string
+  id: string
+  uid: string
+  key: string
+}
 
 export type EditorContextType = {
   // State
 
   // Data of the current node
-  node: TreeNode
+  node: NodeProperties
   // Contents of the current node
   // These are loaded internally from ID
   content: NodeEditorContent
   readOnly: boolean
-  loadNodeAndAppend: (toNode: string, contentToAppend: NodeEditorContent) => void
-  setReadOnly: (isReadOnly: boolean) => void
 
   // State transformations
 
   // Load a node and its contents in the editor
-  loadNode: (node: TreeNode) => void
+  loadNode: (node: NodeProperties) => void
 
-  loadNodeFromId: (id: string) => void
+  loadNodeAndReplaceContent: (node: NodeProperties, content: NodeEditorContent) => void
+
+  setReadOnly: (isReadOnly: boolean) => void
 }
 
 export const useEditorStore = create<EditorContextType>((set, get) => ({
@@ -33,28 +40,15 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
     set(() => ({ readOnly: isReadOnly }))
   },
 
-  loadNode: (node: TreeNode) => {
+  loadNode: (node: NodeProperties) => {
     set(() => ({
       node,
       content: getContent(node.id)
     }))
   },
 
-  loadNodeAndAppend: (toNodeId, contentToAppend) => {
-    const toNodeIdContent = getContent(toNodeId)
-    const node = getNodeFromId(toNodeId)
-
-    const mergedContent = [...toNodeIdContent, ...contentToAppend]
-
-    set(() => ({ node, content: mergedContent }))
-  },
-
-  loadNodeFromId: (id: string) => {
-    const node = getNodeFromId(id)
-    set(() => ({
-      node,
-      content: getContent(id)
-    }))
+  loadNodeAndReplaceContent: (node, content) => {
+    set(() => ({ node, content }))
   }
 }))
 

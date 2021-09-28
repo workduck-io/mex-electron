@@ -15,6 +15,7 @@ import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
 import { AppType } from '../../../Data/useInitialize'
 import { IpcAction } from '../../../Spotlight/utils/constants'
 import { appNotifierWindow } from '../../../Spotlight/utils/notifiers'
+import useLoad from '../../../Hooks/useLoad/useLoad'
 
 export type CreateInputType = { value?: string }
 
@@ -33,11 +34,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
   const addRecent = useRecentsStore((state) => state.addRecent)
   const editorState = useStoreEditorValue()
 
-  const { loadNodeAndAppend, loadNodeFromId } = useEditorStore(({ loadNodeAndAppend, loadNodeFromId }) => ({
-    loadNodeFromId,
-    loadNodeAndAppend
-  }))
-
+  const { loadNodeAndAppend, loadNode } = useLoad()
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
 
   const handleOnCreate = (newNodeId: string) => {
@@ -61,7 +58,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
     if (nodeContent) {
       loadNodeAndAppend(nodeIdValue, nodeContent)
     } else {
-      loadNodeFromId(nodeIdValue)
+      loadNode(nodeIdValue)
       pushToHistory(nodeIdValue)
       addRecent(nodeIdValue)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeIdValue)

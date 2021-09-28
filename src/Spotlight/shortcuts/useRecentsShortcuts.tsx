@@ -3,17 +3,18 @@ import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { useSpotlightEditorStore } from '../store/editor'
 import tinykeys from 'tinykeys'
 import { useEffect } from 'react'
+import useLoad from '../../Hooks/useLoad/useLoad'
 
 export const useRecentsShortcuts = () => {
   const history = useHistory()
-  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
+  const { loadNode } = useLoad()
   const savedEditorId = useSpotlightEditorStore((state) => state.nodeId)
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       Tab: (event) => {
         event.preventDefault()
-        loadNodeFromId(savedEditorId)
+        loadNode(savedEditorId)
         history.replace('/new')
       }
     })
