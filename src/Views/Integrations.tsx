@@ -6,11 +6,12 @@ import Switch from '../Components/Forms/Switch'
 import { Icon } from '@iconify/react'
 import { getSyncServiceIcon } from '../Editor/Components/SyncBlock/SyncIcons'
 import { sampleServices } from '../Components/Integrations/sampleServices'
-import NewSyncBlockModal, { useNewSyncBlockStore } from '../Components/Integrations/NewSyncBlockModal'
+import NewSyncBlockModal, { useNewSyncTemplateModalStore } from '../Components/Integrations/NewSyncBlockModal'
 import { Button } from '../Styled/Buttons'
 
 const Integrations = () => {
-  const openModal = useNewSyncBlockStore((store) => store.openModal)
+  const openModal = useNewSyncTemplateModalStore((store) => store.openModal)
+
   return (
     <Wrapper>
       <Title>Integrations</Title>

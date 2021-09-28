@@ -8,7 +8,7 @@ import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { sampleServices } from './sampleServices'
 import ServiceSelector from './ServiceSelector'
 
-interface NewBlockModalState {
+interface NewSyncTemplateModalState {
   open: boolean
   focus: boolean
   openModal: (id?: string) => void
@@ -16,7 +16,7 @@ interface NewBlockModalState {
   closeModal: () => void
 }
 
-export const useNewSyncBlockStore = create<NewBlockModalState>((set) => ({
+export const useNewSyncTemplateModalStore = create<NewSyncTemplateModalState>((set) => ({
   open: false,
   focus: true,
   openModal: () => {
@@ -38,8 +38,8 @@ const NewSyncBlockModal = () => {
   // const shortcuts = useHelpStore((store) => store.shortcuts)
 
   // const openModal = useNewSyncBlockStore((store) => store.openModal)
-  const closeModal = useNewSyncBlockStore((store) => store.closeModal)
-  const open = useNewSyncBlockStore((store) => store.open)
+  const closeModal = useNewSyncTemplateModalStore((store) => store.closeModal)
+  const open = useNewSyncTemplateModalStore((store) => store.open)
 
   // const theme = useTheme()
 
@@ -58,9 +58,13 @@ const NewSyncBlockModal = () => {
     closeModal()
   }
 
+  const handleSubmit = () => {
+    closeModal()
+  }
+
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
-      <ModalHeader>New SyncBlock Type</ModalHeader>
+      <ModalHeader>New Sync Template</ModalHeader>
 
       <WrappedNodeSelect
         autoFocus
@@ -74,7 +78,7 @@ const NewSyncBlockModal = () => {
       <ServiceSelector options={serviceOptions} />
 
       <ModalControls>
-        <Button size="large" primary onClick={() => console.log('Submit')}>
+        <Button size="large" primary onClick={handleSubmit}>
           Submit
         </Button>
         <Button size="large" onClick={handleCancel}>

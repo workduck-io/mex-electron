@@ -222,17 +222,6 @@ export const EditorStyles = styled.div`
     background-color: ${({ theme }) => theme.colors.form.input.bg};
   }
 
-  button,
-  select,
-  input[type='button'] {
-    color: ${({ theme }) => theme.colors.form.button.fg};
-    background-color: ${({ theme }) => theme.colors.form.button.bg};
-
-    &:hover {
-      background-color: ${({ theme }) => theme.colors.form.button.hover};
-    }
-  }
-
   input[type='color'] {
     min-height: 2rem;
     padding: 8px;
@@ -297,29 +286,6 @@ export const EditorStyles = styled.div`
     padding-right: 10px;
     background-image: none;
     overflow-y: auto;
-  }
-
-  button,
-  input[type='submit'],
-  input[type='reset'],
-  input[type='button'] {
-    padding-right: 30px;
-    padding-left: 30px;
-  }
-
-  button:hover,
-  input[type='submit']:hover,
-  input[type='reset']:hover,
-  input[type='button']:hover {
-    color: ${({ theme }) => theme.colors.palette.black};
-    background: ${({ theme }) => theme.colors.secondary};
-  }
-
-  input:focus,
-  select:focus,
-  button:focus,
-  textarea:focus {
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary};
   }
 
   input[type='checkbox']:active,

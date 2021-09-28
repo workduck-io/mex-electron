@@ -3,8 +3,6 @@ import { Intent, IntentTemplate, SyncBlockTemplate } from '../../Editor/Componen
 import { useSyncStore } from '../../Editor/Store/SyncStore'
 
 const useIntents = () => {
-  const StoreIntents = useSyncStore((store) => store.intents)
-  const templates = useSyncStore((store) => store.templates)
   const addIgid = useSyncStore((store) => store.addIgid)
 
   const checkAndGenerateIGID = (id: string, templateId: string): string => {
@@ -38,8 +36,9 @@ const useIntents = () => {
   }
 
   const extractIntentsFromTemplate = (templateIntents: IntentTemplate[], id: string): (Intent | undefined)[] => {
+    const StoreIntents = useSyncStore.getState().intents
     const nodeIntents = StoreIntents[id]
-    console.log('extractIntentsFromTemplate ', { id, templateIntents, nodeIntents })
+    // console.log('extractIntentsFromTemplate ', { id, templateIntents, nodeIntents })
     const intents = templateIntents.map((ti) => {
       const intent = nodeIntents.intents.find((i) => i.service === ti.service && i.type === ti.type)
       if (intent === undefined) {
@@ -51,7 +50,11 @@ const useIntents = () => {
   }
 
   const getTemplate = (id: string, intentGroupId: string) => {
+    const templates = useSyncStore.getState().templates
+    const StoreIntents = useSyncStore.getState().intents
     const nodeIntents = StoreIntents[id]
+    console.log('getTemplate', { templates, nodeIntents })
+
     if (nodeIntents) {
       const templateId = nodeIntents.intentGroups[intentGroupId]
       const template: SyncBlockTemplate = templates.find((t) => t.id === templateId)
@@ -70,6 +73,7 @@ const useIntents = () => {
   }
 
   const getIntentGroupId = (id: string, templateId: string) => {
+    const StoreIntents = useSyncStore.getState().intents
     const nodeIntents = StoreIntents[id]
     let intentGroupId: string | undefined
     if (nodeIntents) {

@@ -12,7 +12,10 @@ export const ElementHeader = styled.div`
   align-items: center;
   font-size: 0.9rem;
   color: ${({ theme }) => theme.colors.text.subheading};
-
+  background-color: ${({ theme }) => theme.colors.gray[9]};
+  padding: ${({ theme: { spacing } }) => `${spacing.tiny} ${spacing.small}`};
+  width: max-content;
+  border-radius: ${({ theme }) => theme.borderRadius.small};
   svg {
     margin-right: ${({ theme }) => theme.spacing.tiny};
   }

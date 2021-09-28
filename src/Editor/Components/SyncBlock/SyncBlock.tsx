@@ -20,6 +20,7 @@ import { SyncBlockProps } from './SyncBlock.types'
 import { getSyncServiceIcon } from './SyncIcons'
 import useIntents from '../../../Hooks/useIntents/useIntents'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
+import { Button } from '../../../Styled/Buttons'
 
 type FormValues = {
   content: string
@@ -34,14 +35,12 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
   const editSyncBlock = useSyncStore((state) => state.editSyncBlock)
 
-  const nodeUniqueId = useEditorStore((store) => store.node.uid)
+  const nodeUniqueId = useEditorStore((store) => store.node.id)
   const parentNodeId = useEditorStore((store) => store.node.key)
   const blocksData = useSyncStore((state) => state.syncBlocks)
   const blockData = blocksData.filter((d) => d.id === element.id)[0]
 
   const { getIntents, getTemplate } = useIntents()
-
-  // Need IGID generated before this.
 
   const intents = getIntents(nodeUniqueId, blockData.igid)
   const template = getTemplate(nodeUniqueId, blockData.igid)
@@ -52,7 +51,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
     ReactTooltip.rebuild()
   }, [selected])
 
-  console.log('SyncBlock', { blockData, template })
+  // console.log('SyncBlock', { blockData, template })
 
   if (blockData === undefined || template === undefined) return null
 
@@ -92,7 +91,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
           <ElementHeader>
             <Icon icon={refreshFill} height={20} />
             SyncBlock
-            <SyncTitle>{template.id}</SyncTitle>
+            <SyncTitle>{template.title}</SyncTitle>
           </ElementHeader>
           <textarea
             {...register('content')}
@@ -108,9 +107,9 @@ export const SyncBlock = (props: SyncBlockProps) => {
                   intents.map((intent) => {
                     return (
                       <ServiceSelectorLabel
-                        htmlFor={`connections.${intent}`}
-                        key={`${blockData.id}_syncBlocks_${intent}`}
-                        data-tip={`Sync with ${intent}`}
+                        htmlFor={`connections.${intent.value}`}
+                        key={`${blockData.id}_syncBlocks_${intent.value}`}
+                        data-tip={`Sync with ${intent.service}`}
                         data-place="bottom"
                       >
                         <ServiceLabel>
@@ -122,11 +121,11 @@ export const SyncBlock = (props: SyncBlockProps) => {
                     )
                   })}
               </div>
-              <button type="submit">
+              <Button primary type="submit">
                 {
                   blockData.content === '' ? 'Submit' : 'Edit' // FIXME
                 }
-              </button>
+              </Button>
             </FormControls>
           )}
         </SyncForm>
