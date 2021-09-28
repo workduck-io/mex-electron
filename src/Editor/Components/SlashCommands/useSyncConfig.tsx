@@ -11,6 +11,7 @@ import { nanoid } from 'nanoid'
 
 export const useSyncConfig = () => {
   const addSyncBlock = useSyncStore((state) => state.addSyncBlock)
+  const { checkAndGenerateIGID } = useIntents()
 
   // Construct the SyncBlock configs for syncBlock templates
   const getSyncBlockConfigs = (): {
@@ -19,6 +20,7 @@ export const useSyncConfig = () => {
     return Object.keys(DefaultSyncBlockTemplates).reduce((prev, cur) => {
       // Current Template
       const curTemplate = DefaultSyncBlockTemplates[cur]
+      const editorNodeId = useEditorStore.getState().node.id
       const id = nanoid()
       return {
         ...prev,
@@ -26,9 +28,10 @@ export const useSyncConfig = () => {
           slateElementType: ELEMENT_SYNC_BLOCK,
           command: getSyncCommand(cur),
           getBlockData: () => {
+            const igid = checkAndGenerateIGID(editorNodeId, cur)
             const nd = {
               id,
-              intentGroupId: '',
+              igid,
               content: ''
             }
             // creation of IGID if none found. Don't create until services are linked

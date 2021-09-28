@@ -43,8 +43,8 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
   // Need IGID generated before this.
 
-  const intents = getIntents(nodeUniqueId, blockData.intentGroupId)
-  const template = getTemplate(nodeUniqueId, blockData.intentGroupId)
+  const intents = getIntents(nodeUniqueId, blockData.igid)
+  const template = getTemplate(nodeUniqueId, blockData.igid)
 
   const selected = useSelected()
 
@@ -67,7 +67,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
     editSyncBlock({
       id: element.id,
       content: data.content,
-      intentGroupId: blockData.intentGroupId
+      igid: blockData.igid
     })
 
     axios.post(`https://api.workduck.io/integration/listen?${param}`, {

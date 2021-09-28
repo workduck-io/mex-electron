@@ -27,13 +27,27 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
   initSyncBlocks: (syncBlocks, templates) =>
     set(() => ({
       syncBlocks,
-      templates,
+      // templates,
       syncId: String(Date.now())
     })),
 
   addTemplate: (template) =>
     set((state) => ({
       templates: [...state.templates, template]
+    })),
+
+  addIgid: (id, igid, templateId) =>
+    set((state) => ({
+      intents: {
+        ...state.intents,
+        [id]: {
+          ...state.intents[id],
+          intentGroups: {
+            ...state.intents[id].intentGroups,
+            [igid]: templateId
+          }
+        }
+      }
     }))
 
   // addIntent: (id, intent) =>

@@ -10,7 +10,7 @@ export type connections = 'telegram' | 'slack' | 'notion' | 'github' | 'mex'
 export interface SyncBlockData {
   id: string
   content: string
-  intentGroupId: string | undefined
+  igid: string | undefined
 }
 
 export interface SyncElementData {
@@ -61,4 +61,5 @@ export type SyncContextType = {
   addTemplate: (template: SyncBlockTemplate) => void
   initSyncBlocks: (syncBlocks: SyncBlockData[], templates: SyncBlockTemplate[]) => void
   editSyncBlock: (block: SyncBlockData) => void
+  addIgid: (id: string, igid: string, templateId: string) => void
 }

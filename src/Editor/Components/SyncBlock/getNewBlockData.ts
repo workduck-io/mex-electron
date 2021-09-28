@@ -13,7 +13,7 @@ export const getNewDraftKey = (): string => {
 export const getNewBlockData = (templateId: string): SyncBlockData => {
   return {
     id: getNewBlockId(),
-    intentGroupId: templateId,
+    igid: templateId,
     content: ''
   }
 }
