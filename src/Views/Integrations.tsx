@@ -1,13 +1,14 @@
-import React from 'react'
-import { Title } from '../Styled/Typography'
-import { Wrapper } from '../Styled/Layouts'
-import { IntegrationsGrid, ServiceButton, ServiceButtonFooter, ServiceIconWrapper } from '../Styled/Integrations'
-import Switch from '../Components/Forms/Switch'
 import { Icon } from '@iconify/react'
-import { getSyncServiceIcon } from '../Editor/Components/SyncBlock/SyncIcons'
-import { sampleServices } from '../Components/Integrations/sampleServices'
+import React from 'react'
+import Switch from '../Components/Forms/Switch'
 import NewSyncBlockModal, { useNewSyncTemplateModalStore } from '../Components/Integrations/NewSyncBlockModal'
+import { sampleServices } from '../Components/Integrations/sampleServices'
+import { getSyncServiceIcon } from '../Editor/Components/SyncBlock/SyncIcons'
+import { capitalize } from '../Lib/strings'
 import { Button } from '../Styled/Buttons'
+import { IntegrationsGrid, ServiceButton, ServiceButtonFooter, ServiceIconWrapper } from '../Styled/Integrations'
+import { Wrapper } from '../Styled/Layouts'
+import { Title } from '../Styled/Typography'
 
 const Integrations = () => {
   const openModal = useNewSyncTemplateModalStore((store) => store.openModal)
@@ -20,7 +21,7 @@ const Integrations = () => {
           <ServiceButton key={`sButton_${s.name}`} color={s.color} bgColor={s.bgColor}>
             <ServiceIconWrapper>
               <Icon height={64} icon={getSyncServiceIcon(s.name)} />
-              <h1>{s.title}</h1>
+              <h1>{capitalize(s.name)}</h1>
             </ServiceIconWrapper>
             <ServiceButtonFooter>
               <p>{s.connected ? 'Service Active' : 'Connect Service to use'}</p>

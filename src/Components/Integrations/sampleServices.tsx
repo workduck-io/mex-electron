@@ -1,33 +1,33 @@
 export const sampleServices = [
   {
     name: 'slack',
-    title: 'Slack',
     connected: false,
     color: '#d48fad',
+    type: 'channel',
     bgColor: '#3F0F3F'
   },
 
   {
     name: 'telegram',
-    title: 'Telegram',
     connected: false,
     color: '#ffffff',
+    type: 'group',
     bgColor: '#0088cc'
   },
 
   {
     name: 'notion',
-    title: 'Notion',
     connected: false,
     color: '#121212',
+    type: 'page',
     bgColor: '#ffffff'
   },
 
   {
     name: 'github',
-    title: 'Github',
     connected: false,
     color: '#000000',
+    type: 'repo',
     bgColor: '#ffffff'
   }
 ]

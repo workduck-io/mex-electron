@@ -22,7 +22,7 @@ export const MultiValueLabel = (props: any) => {
 
   return (
     <StyledLabel>
-      <Icon icon={getSyncServiceIcon(props.data.value)} />
+      <Icon icon={getSyncServiceIcon(props.data.icon)} />
       <components.MultiValueLabel {...props} />
     </StyledLabel>
   )
@@ -44,7 +44,7 @@ const Option = (props: any) => {
   return (
     <components.Option {...props}>
       <StyledOption>
-        <Icon icon={getSyncServiceIcon(props.data.value)} />
+        <Icon icon={getSyncServiceIcon(props.data.icon)} />
         {props.children}
       </StyledOption>
     </components.Option>
@@ -52,11 +52,23 @@ const Option = (props: any) => {
 }
 
 export interface ServiceSelectorProps {
-  options: { label: string; value: string }[]
+  options: { label: string; value: any }[]
+  onChange: (val: any, actionMeta: any) => void
+  label: string
+  inputRef?: any
 }
 
-const ServiceSelector = ({ options }: ServiceSelectorProps) => {
-  return <StyledSelect components={{ MultiValueLabel, Option }} options={options} isMulti />
+const ServiceSelector = ({ options, onChange, label, inputRef }: ServiceSelectorProps) => {
+  return (
+    <StyledSelect
+      inputRef={inputRef}
+      label={label}
+      onChange={onChange}
+      components={{ MultiValueLabel, Option }}
+      options={options}
+      isMulti
+    />
+  )
 }
 
 export default ServiceSelector

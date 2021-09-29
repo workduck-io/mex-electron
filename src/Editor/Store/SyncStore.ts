@@ -36,7 +36,7 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
       templates: [...state.templates, template]
     })),
 
-  addIgid: (id, igid, templateId) =>
+  addIgid: (id, igid, intents, templateId) =>
     set((state) => ({
       intents: {
         ...state.intents,
@@ -44,7 +44,10 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
           ...state.intents[id],
           intentGroups: {
             ...state.intents[id].intentGroups,
-            [igid]: templateId
+            [igid]: {
+              templateId,
+              intents
+            }
           }
         }
       }

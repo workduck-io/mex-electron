@@ -15,7 +15,22 @@ export const intentsData: SyncStoreIntents = {
       }
     ],
     intentGroups: {
-      testIntent: 'issue'
+      testIntent: {
+        templateId: 'issue',
+        intents: [
+          {
+            service: 'github',
+            type: 'repo',
+            value: '#kjdjdkfsh'
+          },
+
+          {
+            service: 'mex',
+            type: 'mex',
+            value: 'archangelina'
+          }
+        ]
+      }
     }
   }
 }

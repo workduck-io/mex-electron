@@ -24,7 +24,7 @@ const useIntents = () => {
           return igid
         } else {
           const newIgid = `IGID_${nanoid()}`
-          addIgid(id, newIgid, templateId)
+          addIgid(id, newIgid, blockIntents, templateId)
           return newIgid
         }
       } else {
@@ -56,8 +56,8 @@ const useIntents = () => {
     console.log('getTemplate', { templates, nodeIntents })
 
     if (nodeIntents) {
-      const templateId = nodeIntents.intentGroups[intentGroupId]
-      const template: SyncBlockTemplate = templates.find((t) => t.id === templateId)
+      const intentGroup = nodeIntents.intentGroups[intentGroupId]
+      const template: SyncBlockTemplate = templates.find((t) => t.id === intentGroup.templateId)
       if (template) return template
     }
     return undefined
@@ -79,7 +79,7 @@ const useIntents = () => {
     if (nodeIntents) {
       const intentGroups = nodeIntents.intentGroups
       Object.keys(intentGroups).forEach((k) => {
-        if (templateId === intentGroups[k]) {
+        if (templateId === intentGroups[k].templateId) {
           intentGroupId = k
         }
       })

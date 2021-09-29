@@ -18,6 +18,7 @@ interface NodeSelectProps {
   handleSelectItem: (nodeId: string) => void
   handleCreateItem?: (nodeId: string) => void
 
+  inputRef?: any
   prefillLast?: boolean
   menuOpen?: boolean
   autoFocus?: boolean
