@@ -1,17 +1,16 @@
+import { nanoid } from 'nanoid'
 import React from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import Modal from 'react-modal'
-import { useSyncStore } from '../../Editor/Store/SyncStore'
 import create from 'zustand'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
+import { SyncBlockTemplate } from '../../Editor/Components/SyncBlock'
+import { useSyncStore } from '../../Editor/Store/SyncStore'
+import { capitalize } from '../../Lib/strings'
 import { Button } from '../../Styled/Buttons'
-import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
+import { InputBlock, Label, TextAreaBlock } from '../../Styled/Form'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { sampleServices } from './sampleServices'
 import ServiceSelector from './ServiceSelector'
-import { IntentTemplate, SyncBlockTemplate } from '../../Editor/Components/SyncBlock'
-import { Controller, useForm } from 'react-hook-form'
-import { Input } from '../../Styled/Form'
-import { capitalize } from '../../Lib/strings'
 
 interface NewSyncTemplateModalState {
   open: boolean
@@ -23,7 +22,7 @@ interface NewSyncTemplateModalState {
 }
 
 export const useNewSyncTemplateModalStore = create<NewSyncTemplateModalState>((set) => ({
-  open: false,
+  open: true,
   focus: true,
 
   openModal: () => {
@@ -62,15 +61,17 @@ const NewSyncBlockModal = () => {
   }
 
   const handleSubmit = () => {
-    const vals = getValues()
-    console.log({ vals })
+    const { intents, command, title, description } = getValues()
+    // console.log({ intents, command, title, description })
 
-    // const template: SyncBlockTemplate = {
-    //   id: '',
-    //   title: '',
-    //   intents: [],
-    // }
-    // addTemplate(template)
+    const template: SyncBlockTemplate = {
+      id: `SYNCTEMP_${nanoid()}`,
+      command,
+      title,
+      intents,
+      description
+    }
+    addTemplate(template)
     closeModal()
   }
 
@@ -78,36 +79,16 @@ const NewSyncBlockModal = () => {
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>New Sync Template</ModalHeader>
 
-      <Input {...register('id')} />
+      <Label htmlFor="command">Command</Label>
+      <InputBlock autoFocus placeholder="Ex. notify" {...register('command')} />
 
-      <Input {...register('title')} />
+      <Label htmlFor="title">Title</Label>
+      <InputBlock placeholder="Ex. Notify Team Members" {...register('title')} />
 
-      <Controller
-        name="parentBlock"
-        control={control}
-        render={({ field: { onChange, value, ref } }) => (
-          <WrappedNodeSelect
-            highlightWhenSelected
-            iconHighlight={value !== undefined}
-            autoFocus
-            inputRef={ref}
-            handleSelectItem={onChange}
-            defaultValue={useEditorStore.getState().node.id}
-          />
-        )}
-      />
+      <Label htmlFor="description">Description</Label>
+      <TextAreaBlock placeholder="Ex. Notify team members about recent changes in spec" {...register('description')} />
 
-      {/* <WrappedNodeSelect
-        autoFocus
-        // menuOpen
-        defaultValue={useEditorStore.getState().node.id}
-        handleSelectItem={handleParentBlockChange}
-      /> */}
-
-      <p>Services to sync</p>
-      {/* Connect more services via integrations. */}
-      {/* <ServiceSelector label="Select services" onChange={handleServiceChange} options={serviceOptions} /> */}
-
+      <Label htmlFor="intents">Services to sync</Label>
       <Controller
         name="intents"
         control={control}

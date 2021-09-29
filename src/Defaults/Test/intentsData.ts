@@ -1,4 +1,4 @@
-import { Intent, SyncBlockTemplate, SyncStoreIntents } from '../../Editor/Components/SyncBlock'
+import { SyncBlockTemplate, SyncStoreIntents } from '../../Editor/Components/SyncBlock'
 
 export const intentsData: SyncStoreIntents = {
   '@': {
@@ -39,6 +39,8 @@ export const templates: SyncBlockTemplate[] = [
   {
     id: 'issue',
     title: 'Issue',
+    command: 'issue',
+    description: 'This is a description',
     intents: [
       {
         service: 'github',

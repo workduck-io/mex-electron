@@ -11,6 +11,12 @@ const GlobalStyle = createGlobalStyle`
     outline: ${({ theme }) => theme.colors.primary} solid 1px;
   }
 
+  *::placeholder {
+    color: ${({ theme }) => theme.colors.text.fade};
+    opacity: 0.5;
+  }
+
+
   * {
     box-sizing: border-box;
   }

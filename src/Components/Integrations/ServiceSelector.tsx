@@ -1,9 +1,11 @@
 import { Icon } from '@iconify/react'
 import React from 'react'
 import { components } from 'react-select'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { getSyncServiceIcon } from '../../Editor/Components/SyncBlock/SyncIcons'
 import { StyledSelect } from '../../Styled/Form'
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 const StyledLabel = styled.div`
   display: flex;
@@ -13,7 +15,7 @@ const StyledLabel = styled.div`
   background-color: ${({ theme }) => theme.colors.gray[8]};
 
   svg {
-    color: ${({ theme }) => theme.colors.secondary};
+    color: ${({ theme }) => theme.colors.primary};
   }
 `
 
@@ -39,7 +41,7 @@ const StyledOption = styled.div`
 `
 
 const Option = (props: any) => {
-  console.log({ props })
+  // console.log({ props })
 
   return (
     <components.Option {...props}>
@@ -48,6 +50,51 @@ const Option = (props: any) => {
         {props.children}
       </StyledOption>
     </components.Option>
+  )
+}
+
+const StyledValueContainer = styled(components.ValueContainer)`
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+
+  svg {
+    margin-right: ${({ theme }) => theme.spacing.small};
+  }
+`
+
+const ValueContainer = (props: any) => {
+  // console.log({ props })
+
+  return <StyledValueContainer {...props}>{props.children}</StyledValueContainer>
+}
+
+const StyledPlaceholder = styled(components.Placeholder)`
+  margin-left: 0.75rem !important;
+`
+
+const Placeholder = (props: any) => {
+  return <StyledPlaceholder {...props} />
+}
+
+const StyledInput = styled.div`
+  width: 100%;
+  color: ${({ theme }) => theme.colors.form.input.fg};
+  background-color: ${({ theme }) => theme.colors.gray[8]};
+  border-radius: ${({ theme }) => theme.borderRadius.tiny};
+  padding: ${({ theme: { spacing } }) => `${spacing.tiny} 8px`};
+  margin: ${({ theme: { spacing } }) => spacing.tiny} 0;
+`
+
+const Input = (props: any) => {
+  if (props.isHidden) {
+    return <components.Input {...props} />
+  }
+  return (
+    <StyledInput>
+      <components.Input {...props} />
+    </StyledInput>
   )
 }
 
@@ -64,7 +111,7 @@ const ServiceSelector = ({ options, onChange, label, inputRef }: ServiceSelector
       inputRef={inputRef}
       label={label}
       onChange={onChange}
-      components={{ MultiValueLabel, Option }}
+      components={{ MultiValueLabel, Option, ValueContainer, Input, Placeholder }}
       options={options}
       isMulti
     />

@@ -20,6 +20,8 @@ export interface SyncElementData {
 export interface SyncBlockTemplate {
   id: TemplateID
   title: string
+  command: string
+  description: string
   intents: IntentTemplate[]
 }
 

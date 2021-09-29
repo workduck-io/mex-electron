@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react'
 import React from 'react'
+import { useSyncStore } from '../Editor/Store/SyncStore'
 import Switch from '../Components/Forms/Switch'
 import NewSyncBlockModal, { useNewSyncTemplateModalStore } from '../Components/Integrations/NewSyncBlockModal'
 import { sampleServices } from '../Components/Integrations/sampleServices'
@@ -12,6 +13,7 @@ import { Title } from '../Styled/Typography'
 
 const Integrations = () => {
   const openModal = useNewSyncTemplateModalStore((store) => store.openModal)
+  const templates = useSyncStore((store) => store.templates)
 
   return (
     <Wrapper>
@@ -40,6 +42,14 @@ const Integrations = () => {
         New Custom SyncBlock
       </Button>
       <NewSyncBlockModal />
+      <br />
+
+      {templates.map((t) => (
+        <div key={t.id}>
+          <p>{t.command}</p>
+          <p>{t.id}</p>
+        </div>
+      ))}
     </Wrapper>
   )
 }
