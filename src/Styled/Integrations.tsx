@@ -1,6 +1,9 @@
 import { transparentize } from 'polished'
+import { ServiceLabel } from '../Editor/Components/SyncBlock'
 import styled from 'styled-components'
+import { Card } from './Card'
 import { size } from './responsive'
+import { Note, Title } from './Typography'
 
 export const IntegrationsGrid = styled.div`
   display: grid;
@@ -57,4 +60,51 @@ export const ServiceButtonFooter = styled.div`
   p {
     margin: 0;
   }
+`
+
+export const TemplatesGrid = styled.div`
+  display: grid;
+  grid-gap: ${({ theme }) => theme.spacing.medium};
+
+  @media (max-width: ${size.wide}) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: ${size.wide}) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+`
+
+export const SlashCommand = styled.code`
+  padding: 0.2em 0.4em;
+  margin: ${({ theme }) => theme.spacing.small} 0;
+  font-size: 85%;
+  background-color: ${({ theme }) => theme.colors.gray[8]};
+  border-radius: 6px;
+  color: ${({ theme }) => theme.colors.primary};
+`
+
+export const SlashCommandPrefix = styled.span`
+  color: ${({ theme }) => theme.colors.text.fade};
+`
+
+export const Template = styled(Card)`
+  cursor: inherit;
+  height: 100%;
+  background-color: ${({ theme }) => theme.colors.gray[9]};
+  ${Title} {
+    margin-bottom: 0;
+  }
+  ${Note} {
+    margin-bottom: ${({ theme }) => theme.spacing.medium};
+  }
+  ${ServiceLabel} {
+    margin: ${({ theme }) => theme.spacing.small} 0;
+  }
+`
+
+export const MenuTrigger = styled.div`
+  padding: ${({ theme: { spacing } }) => `${spacing.small} ${spacing.tiny}`};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  border: 1px dashed ${({ theme }) => theme.colors.form.input.border};
 `

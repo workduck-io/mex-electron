@@ -6,11 +6,13 @@ export const intentsData: SyncStoreIntents = {
       {
         service: 'github',
         type: 'repo',
+        name: 'Issue #124',
         value: 'issue#124e'
       },
       {
         service: 'mex',
         type: 'mex',
+        name: 'Node',
         value: 'node'
       }
     ],
@@ -21,12 +23,14 @@ export const intentsData: SyncStoreIntents = {
           {
             service: 'github',
             type: 'repo',
+            name: 'Issue #124',
             value: '#kjdjdkfsh'
           },
 
           {
             service: 'mex',
             type: 'mex',
+            name: 'Archangelina',
             value: 'archangelina'
           }
         ]

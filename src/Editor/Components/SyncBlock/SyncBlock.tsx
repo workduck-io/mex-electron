@@ -21,6 +21,7 @@ import { getSyncServiceIcon } from './SyncIcons'
 import useIntents from '../../../Hooks/useIntents/useIntents'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import { Button } from '../../../Styled/Buttons'
+import IntentSelector from './intentSelector'
 
 type FormValues = {
   content: string
@@ -32,7 +33,6 @@ type FormValues = {
 export const SyncBlock = (props: SyncBlockProps) => {
   const { attributes, children, element } = props
   const { register, handleSubmit } = useForm<FormValues>()
-
   const editSyncBlock = useSyncStore((state) => state.editSyncBlock)
 
   const nodeUniqueId = useEditorStore((store) => store.node.id)
@@ -102,6 +102,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
           {blockData && selected && (
             <FormControls>
+              <IntentSelector service="github" type="repo" onSelect={(val) => console.log({ val })} />
               <div>
                 {intents &&
                   intents.map((intent) => {

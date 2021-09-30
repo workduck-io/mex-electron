@@ -37,6 +37,7 @@ export interface IntentTemplate {
 }
 
 export interface Intent extends IntentTemplate {
+  name: string
   value: string // ID of the intent
 }
 

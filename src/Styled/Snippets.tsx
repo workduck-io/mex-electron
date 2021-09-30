@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Card } from './Card'
 
 import { size } from './responsive'
 
@@ -15,14 +16,7 @@ export const SSnippets = styled.div`
   }
 `
 
-const SnippetLook = styled.div`
-  cursor: pointer;
-  padding: ${({ theme }) => theme.spacing.medium};
-  height: 400px;
-  border-radius: ${({ theme }) => theme.borderRadius.large};
-`
-
-export const SSnippet = styled(SnippetLook)`
+export const SSnippet = styled(Card)`
   background-color: ${({ theme }) => theme.colors.gray[9]};
   overflow: auto;
 `
@@ -48,7 +42,7 @@ export const SnippetCommand = styled.div`
   color: ${({ theme }) => theme.colors.text.heading};
 `
 
-export const CreateSnippet = styled(SnippetLook)`
+export const CreateSnippet = styled(Card)`
   color: ${({ theme }) => theme.colors.text.fade};
   background-color: ${({ theme }) => theme.colors.gray[8]};
   display: flex;

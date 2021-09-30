@@ -1,4 +1,5 @@
 import { Icon } from '@iconify/react'
+import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
 import React from 'react'
 import { useSyncStore } from '../Editor/Store/SyncStore'
 import Switch from '../Components/Forms/Switch'
@@ -6,14 +7,31 @@ import NewSyncBlockModal, { useNewSyncTemplateModalStore } from '../Components/I
 import { sampleServices } from '../Components/Integrations/sampleServices'
 import { getSyncServiceIcon } from '../Editor/Components/SyncBlock/SyncIcons'
 import { capitalize } from '../Lib/strings'
-import { Button } from '../Styled/Buttons'
-import { IntegrationsGrid, ServiceButton, ServiceButtonFooter, ServiceIconWrapper } from '../Styled/Integrations'
-import { Wrapper } from '../Styled/Layouts'
-import { Title } from '../Styled/Typography'
+import IconButton, { Button } from '../Styled/Buttons'
+import {
+  IntegrationsGrid,
+  ServiceButton,
+  ServiceButtonFooter,
+  ServiceIconWrapper,
+  SlashCommand,
+  SlashCommandPrefix,
+  Template,
+  TemplatesGrid
+} from '../Styled/Integrations'
+import { SpaceBetweenHorizontalFlex, Wrapper } from '../Styled/Layouts'
+import { Note, Title } from '../Styled/Typography'
+import { ServiceLabel } from '../Editor/Components/SyncBlock'
+import ConfirmationModal, { useConfirmationModalStore } from '../Components/ConfirmationModal/ConfirmationModal'
 
 const Integrations = () => {
-  const openModal = useNewSyncTemplateModalStore((store) => store.openModal)
+  const openNewTemplateModal = useNewSyncTemplateModalStore((store) => store.openModal)
+  const openConfirmationModal = useConfirmationModalStore((store) => store.openModal)
   const templates = useSyncStore((store) => store.templates)
+
+  const handleDeleteCancel = () => undefined
+  const handleDeleteConfirm = (templateId: string) => {
+    console.log('Should delete', { templateId })
+  }
 
   return (
     <Wrapper>
@@ -38,18 +56,43 @@ const Integrations = () => {
         ))}
       </IntegrationsGrid>
 
-      <Button size="large" primary onClick={() => openModal()}>
-        New Custom SyncBlock
+      <Title>Templates</Title>
+      <Button size="large" primary onClick={() => openNewTemplateModal()}>
+        New SyncBlock Template
       </Button>
       <NewSyncBlockModal />
       <br />
 
-      {templates.map((t) => (
-        <div key={t.id}>
-          <p>{t.command}</p>
-          <p>{t.id}</p>
-        </div>
-      ))}
+      <TemplatesGrid>
+        {templates.map((t) => (
+          <Template key={t.id}>
+            <SpaceBetweenHorizontalFlex>
+              <SlashCommand>
+                <SlashCommandPrefix>/sync.</SlashCommandPrefix>
+                {t.command}
+              </SlashCommand>
+              <IconButton
+                icon={deleteBin2Line}
+                title="Delete Template"
+                onClick={() => {
+                  openConfirmationModal(t.id, `Delete: ${t.title}?`, 'Are you sure you want to delete the template?')
+                }}
+              />
+            </SpaceBetweenHorizontalFlex>
+            <Title>{t.title}</Title>
+            <Note>{t.description}</Note>
+            {t.intents.map((i) => (
+              <ServiceLabel key={`${i.service}_${i.type}`}>
+                <Icon icon={getSyncServiceIcon(i.service)} />
+                {i.service} - {i.type}
+              </ServiceLabel>
+            ))}
+            {/* <p>{t.id}</p> */}
+          </Template>
+        ))}
+      </TemplatesGrid>
+
+      <ConfirmationModal confirmKeyword="Delete" onCancel={handleDeleteCancel} onConfirm={handleDeleteConfirm} />
     </Wrapper>
   )
 }
