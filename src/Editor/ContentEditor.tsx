@@ -1,3 +1,4 @@
+import settings4Line from '@iconify-icons/ri/settings-4-line'
 import bubbleChartLine from '@iconify-icons/ri/bubble-chart-line'
 import React, { useEffect, useState } from 'react'
 import ReactTooltip from 'react-tooltip'
@@ -12,6 +13,7 @@ import { useLayoutStore } from '../Layout/LayoutStore'
 import focusLine from '@iconify-icons/ri/focus-line'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../Components/Help/HelpModal'
+import NodeIntentsModal, { useNodeIntentsModalStore } from '../Components/NodeIntentsModal/NodeIntentsModal'
 
 const ContentEditor = () => {
   const title = useEditorStore((state) => state.node.title)
@@ -19,6 +21,8 @@ const ContentEditor = () => {
   const toggleGraph = useGraphStore((state) => state.toggleGraph)
   const { toggleFocusMode } = useLayout()
   const focusMode = useLayoutStore((store) => store.focusMode)
+  const nodeIntentsModalOpen = useNodeIntentsModalStore((store) => store.open)
+  const nodeIntentsModalToggle = useNodeIntentsModalStore((store) => store.toggleModal)
 
   useEffect(() => {
     ReactTooltip.rebuild()
@@ -48,7 +52,7 @@ const ContentEditor = () => {
     return () => {
       unsubscribe()
     }
-  }, [shortcuts])
+  }, [shortcuts, toggleFocusMode])
 
   const onSave = () => {
     // Callback after save
@@ -61,6 +65,13 @@ const ContentEditor = () => {
           <NoteTitle>{title}</NoteTitle>
           <InfoTools>
             <IconButton size={24} icon={focusLine} title="Focus Mode" highlight={focusMode} onClick={toggleFocusMode} />
+            <IconButton
+              size={24}
+              icon={settings4Line}
+              title="Node Intents"
+              highlight={nodeIntentsModalOpen}
+              onClick={nodeIntentsModalToggle}
+            />
             <SaverButton callbackAfterSave={onSave} />
             <IconButton
               size={24}
@@ -74,6 +85,7 @@ const ContentEditor = () => {
 
         <Editor showBalloonToolbar content={content} editorId={id} />
       </StyledEditor>
+      <NodeIntentsModal id={id} />
     </>
   )
 }

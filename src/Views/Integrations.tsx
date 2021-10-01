@@ -4,7 +4,6 @@ import React from 'react'
 import { useSyncStore } from '../Editor/Store/SyncStore'
 import Switch from '../Components/Forms/Switch'
 import NewSyncBlockModal, { useNewSyncTemplateModalStore } from '../Components/Integrations/NewSyncBlockModal'
-import { sampleServices } from '../Components/Integrations/sampleServices'
 import { getSyncServiceIcon } from '../Editor/Components/SyncBlock/SyncIcons'
 import { capitalize } from '../Lib/strings'
 import IconButton, { Button } from '../Styled/Buttons'
@@ -27,6 +26,7 @@ const Integrations = () => {
   const openNewTemplateModal = useNewSyncTemplateModalStore((store) => store.openModal)
   const openConfirmationModal = useConfirmationModalStore((store) => store.openModal)
   const templates = useSyncStore((store) => store.templates)
+  const services = useSyncStore((store) => store.services)
 
   const handleDeleteCancel = () => undefined
   const handleDeleteConfirm = (templateId: string) => {
@@ -37,11 +37,11 @@ const Integrations = () => {
     <Wrapper>
       <Title>Integrations</Title>
       <IntegrationsGrid>
-        {sampleServices.map((s) => (
-          <ServiceButton key={`sButton_${s.name}`} color={s.color} bgColor={s.bgColor}>
+        {services.map((s) => (
+          <ServiceButton key={`sButton_${s.id}`} color={s.styles.color} bgColor={s.styles.bgColor}>
             <ServiceIconWrapper>
-              <Icon height={64} icon={getSyncServiceIcon(s.name)} />
-              <h1>{capitalize(s.name)}</h1>
+              <Icon height={64} icon={getSyncServiceIcon(s.id)} />
+              <h1>{capitalize(s.id)}</h1>
             </ServiceIconWrapper>
             <ServiceButtonFooter>
               <p>{s.connected ? 'Service Active' : 'Connect Service to use'}</p>

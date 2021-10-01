@@ -1,33 +1,26 @@
 export const sampleServices = [
   {
-    name: 'slack',
+    id: 'slack',
     connected: false,
-    color: '#d48fad',
     type: 'channel',
-    bgColor: '#3F0F3F'
+    styles: { color: '#d48fad', bgColor: '#3F0F3F' }
   },
-
   {
-    name: 'telegram',
+    id: 'telegram',
     connected: false,
-    color: '#ffffff',
     type: 'group',
-    bgColor: '#0088cc'
+    styles: { color: '#ffffff', bgColor: '#0088cc' }
   },
-
   {
-    name: 'notion',
+    id: 'notion',
     connected: false,
-    color: '#121212',
     type: 'page',
-    bgColor: '#ffffff'
+    styles: { color: '#121212', bgColor: '#ffffff' }
   },
-
   {
-    name: 'github',
+    id: 'github',
     connected: false,
-    color: '#000000',
     type: 'repo',
-    bgColor: '#ffffff'
+    styles: { color: '#000000', bgColor: '#ffffff' }
   }
 ]

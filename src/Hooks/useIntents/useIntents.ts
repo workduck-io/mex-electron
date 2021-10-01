@@ -72,6 +72,22 @@ const useIntents = () => {
     return undefined
   }
 
+  const getNodeIntents = (id: string) => {
+    const StoreIntents = useSyncStore.getState().intents
+    const StoreServices = useSyncStore.getState().services
+    const nodeIntents = StoreIntents[id]
+
+    const mappedIntents = StoreServices.map((s) => {
+      if (nodeIntents) {
+        const intent = nodeIntents.intents.find((i) => i.service === s.id)
+        return { intent, service: s }
+      }
+      return { intent: undefined, service: s }
+    })
+
+    return mappedIntents
+  }
+
   const getIntentGroupId = (id: string, templateId: string) => {
     const StoreIntents = useSyncStore.getState().intents
     const nodeIntents = StoreIntents[id]
@@ -87,7 +103,7 @@ const useIntents = () => {
     return intentGroupId
   }
 
-  return { getIntents, getTemplate, getIntentGroupId, checkAndGenerateIGID }
+  return { getIntents, getTemplate, getIntentGroupId, checkAndGenerateIGID, getNodeIntents }
 }
 
 export default useIntents

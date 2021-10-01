@@ -9,7 +9,6 @@ import { capitalize } from '../../Lib/strings'
 import { Button } from '../../Styled/Buttons'
 import { InputBlock, Label, TextAreaBlock } from '../../Styled/Form'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
-import { sampleServices } from './sampleServices'
 import ServiceSelector from './ServiceSelector'
 
 interface NewSyncTemplateModalState {
@@ -45,15 +44,16 @@ const NewSyncBlockModal = () => {
   const closeModal = useNewSyncTemplateModalStore((store) => store.closeModal)
   const open = useNewSyncTemplateModalStore((store) => store.open)
   const addTemplate = useSyncStore((store) => store.addTemplate)
+  const services = useSyncStore((store) => store.services)
 
   const { control, register, getValues } = useForm()
 
   // const theme = useTheme()
 
-  const serviceOptions = sampleServices.map((s) => ({
-    label: `${capitalize(s.name)} - ${capitalize(s.type)}`,
-    value: { service: s.name, type: s.type },
-    icon: s.name
+  const serviceOptions = services.map((s) => ({
+    label: `${capitalize(s.id)} - ${capitalize(s.type)}`,
+    value: { service: s.id, type: s.type },
+    icon: s.id
   }))
 
   const handleCancel = () => {
@@ -92,7 +92,7 @@ const NewSyncBlockModal = () => {
       <Controller
         name="intents"
         control={control}
-        render={({ field: { onChange, value, ref } }) => (
+        render={({ field: { onChange, /* value, */ ref } }) => (
           <ServiceSelector
             inputRef={ref}
             label="Select Services"

@@ -21,7 +21,7 @@ interface ConfirmationModalStoreState {
   closeModal: () => void
 }
 
-export const useConfirmationModalStore = create<ConfirmationModalStoreState>((set, get) => ({
+export const useConfirmationModalStore = create<ConfirmationModalStoreState>((set) => ({
   open: false,
   title: '',
   description: '',
@@ -30,7 +30,9 @@ export const useConfirmationModalStore = create<ConfirmationModalStoreState>((se
   closeModal: () =>
     set({
       open: false,
-      dataId: ''
+      dataId: '',
+      title: '',
+      description: ''
     })
 }))
 

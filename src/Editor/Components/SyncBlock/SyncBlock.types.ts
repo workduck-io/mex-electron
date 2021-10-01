@@ -31,6 +31,15 @@ export interface SyncBlockStyles {
   input: CSSProp
 }
 
+export interface Service {
+  id: string
+  type: string
+  connected: boolean
+  styles: {
+    color: string
+    bgColor: string
+  }
+}
 export interface IntentTemplate {
   service: string
   type: string // channel/repo etc
@@ -63,6 +72,7 @@ export type SyncContextType = {
   syncId: string
   syncBlocks: SyncBlockData[]
   templates: SyncBlockTemplate[]
+  services: Service[]
   intents: SyncStoreIntents
   // Load a node and its contents in the editor
   addSyncBlock: (block: SyncBlockData) => void
