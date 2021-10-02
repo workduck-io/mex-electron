@@ -1,4 +1,4 @@
-import { intentsData, templates } from '../../Defaults/Test/intentsData'
+import { defaultMexIntent, intentsData, templates } from '../../Defaults/Test/intentsData'
 import create from 'zustand'
 import { SyncContextType } from '../Components/SyncBlock/SyncBlock.types'
 import { sampleServices } from '../../Components/Integrations/sampleServices'
@@ -43,7 +43,7 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
       intents: {
         ...state.intents,
         [id]: {
-          intents: [],
+          intents: [defaultMexIntent],
           intentGroups: {}
         }
       }

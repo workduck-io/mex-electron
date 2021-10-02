@@ -1,10 +1,16 @@
 import { nanoid } from 'nanoid'
-import { Intent, IntentTemplate, SyncBlockTemplate } from '../../Editor/Components/SyncBlock/SyncBlock.types'
+import {
+  Intent,
+  IntentGroup,
+  IntentTemplate,
+  SyncBlockTemplate
+} from '../../Editor/Components/SyncBlock/SyncBlock.types'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
 
 const useIntents = () => {
   const addIgid = useSyncStore((store) => store.addIgid)
   const addIntentEmptyMap = useSyncStore((store) => store.addIntentEmptyMap)
+  const updateIntentsAndIGIDs = useSyncStore((store) => store.updateIntentsAndIGIDs)
 
   const checkAndGenerateIGID = (id: string, templateId: string): string => {
     const templates = useSyncStore.getState().templates
@@ -86,6 +92,8 @@ const useIntents = () => {
       if (nodeIntents) {
         const intent = nodeIntents.intents.find((i) => i.service === s.id)
         return { intent, service: s }
+      } else {
+        addIntentEmptyMap(id)
       }
       return { intent: undefined, service: s }
     })
@@ -108,18 +116,44 @@ const useIntents = () => {
     return intentGroupId
   }
 
-  const updateNodeIntents = (id: string, intents: Intent[]) => {
+  const updateNodeIntents = (id: string, changedIntents: Intent[]) => {
     const StoreIntents = useSyncStore.getState().intents
     const nodeIntents = StoreIntents[id]
-    const leftIntents: Intent[] = [...intents]
-    const newIntents = nodeIntents.intents.map((i) => {
-      const newIntent = intents.find((ni) => ni.service === i.service)
+    const leftIntents: Intent[] = [...changedIntents]
+    const updatedIntents = nodeIntents.intents.map((i) => {
+      const newIntent = changedIntents.find((ni) => ni.service === i.service)
       if (newIntent) {
-        leftIntents.splice(intents.indexOf(newIntent))
+        leftIntents.splice(changedIntents.indexOf(newIntent))
         return newIntent
       } else {
         return i
       }
+    })
+
+    const intents = [...updatedIntents, ...leftIntents]
+    console.log({ nodeIntents, newIntents: updatedIntents, leftIntents, intents, changedIntents })
+    const groups: { [igid: string]: IntentGroup } = {}
+    Object.keys(nodeIntents.intentGroups).forEach((k) => {
+      const intentGroup = nodeIntents.intentGroups[k]
+      const igintents = intentGroup.intents.map((i) => {
+        const newIntent = intents.find((ni) => ni.service === i.service)
+        if (newIntent) {
+          return newIntent
+        } else {
+          return i
+        }
+      })
+      groups[k] = {
+        templateId: intentGroup.templateId,
+        intents: igintents
+      }
+    })
+
+    console.log({ groups })
+
+    updateIntentsAndIGIDs(id, {
+      intents,
+      intentGroups: groups
     })
   }
 

@@ -45,6 +45,7 @@ interface StyledEditorProps {
 
 export const StyledEditor = styled.div<StyledEditorProps>`
   padding: ${({ theme }) => theme.spacing.large} ${({ theme }) => theme.spacing.medium};
+  margin: auto;
   margin-bottom: 0;
   width: 100%;
   max-width: 1000px;
