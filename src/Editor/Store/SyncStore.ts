@@ -4,7 +4,6 @@ import { SyncContextType } from '../Components/SyncBlock/SyncBlock.types'
 import { sampleServices } from '../../Components/Integrations/sampleServices'
 
 export const useSyncStore = create<SyncContextType>((set, get) => ({
-  syncId: 'initial',
   syncBlocks: [],
   intents: intentsData,
   services: sampleServices,
@@ -12,8 +11,7 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
 
   addSyncBlock: (block) =>
     set((state) => ({
-      syncBlocks: [...state.syncBlocks, block],
-      syncId: String(Date.now())
+      syncBlocks: [...state.syncBlocks, block]
     })),
 
   editSyncBlock: (block) => {
@@ -21,16 +19,14 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
     oldBlocks = oldBlocks.filter((s) => s.id !== block.id)
 
     set({
-      syncBlocks: [block, ...oldBlocks],
-      syncId: String(Date.now())
+      syncBlocks: [block, ...oldBlocks]
     })
   },
 
   initSyncBlocks: (syncBlocks, templates) =>
     set(() => ({
-      syncBlocks,
+      syncBlocks
       // templates,
-      syncId: String(Date.now())
     })),
 
   addTemplate: (template) =>

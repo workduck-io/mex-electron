@@ -18,7 +18,7 @@ const useIntents = () => {
     // console.log('checkAndGenerateIGID', { template, templates })
 
     if (template) {
-      const blockIntents: (Intent | undefined)[] = extractIntentsFromTemplate(template.intents, id)
+      const blockIntents: (Intent | IntentTemplate | undefined)[] = extractIntentsFromTemplate(template.intents, id)
 
       if (blockIntents) {
         const areAllIntentsPresent = blockIntents.reduce((prev, cur) => {
@@ -30,9 +30,13 @@ const useIntents = () => {
           const igid = getIntentGroupId(id, templateId)
           if (igid) return igid
         } else {
+          const filteredBlockIntents = blockIntents.filter((i) => i.type === 'Intent') as Intent[]
           const newIgid = `IGID_${nanoid()}`
-          addIgid(id, newIgid, blockIntents, templateId)
-          return newIgid
+          if (filteredBlockIntents.length === blockIntents.length) {
+            addIgid(id, newIgid, filteredBlockIntents, templateId)
+            console.log({ id, newIgid, blockIntents, templateId })
+            return newIgid
+          }
         }
       } else {
         throw new Error('Intents not defined')
@@ -42,7 +46,10 @@ const useIntents = () => {
     }
   }
 
-  const extractIntentsFromTemplate = (templateIntents: IntentTemplate[], id: string): (Intent | undefined)[] => {
+  const extractIntentsFromTemplate = (
+    templateIntents: IntentTemplate[],
+    id: string
+  ): (Intent | IntentTemplate | undefined)[] => {
     const StoreIntents = useSyncStore.getState().intents
     const nodeIntents = StoreIntents[id]
     // console.log('extractIntentsFromTemplate ', { id, templateIntents, nodeIntents })
@@ -50,7 +57,9 @@ const useIntents = () => {
       const intents = templateIntents.map((ti) => {
         const intent = nodeIntents.intents.find((i) => i.service === ti.service && i.type === ti.type)
         if (intent === undefined) {
-          return undefined
+          return {
+            ...ti
+          }
         }
         return intent
       })
@@ -60,22 +69,17 @@ const useIntents = () => {
     return templateIntents.map(() => undefined)
   }
 
-  const getTemplate = (id: string, intentGroupId: string | undefined) => {
+  const getTemplate = (templateId: string) => {
     const templates = useSyncStore.getState().templates
-    const StoreIntents = useSyncStore.getState().intents
-    const nodeIntents = StoreIntents[id]
     // console.log('getTemplate', { templates, nodeIntents })
 
-    if (nodeIntents && intentGroupId) {
-      const intentGroup = nodeIntents.intentGroups[intentGroupId]
-      const template = templates.find((t) => t.id === intentGroup.templateId)
-      if (template) return template
-    }
+    const template = templates.find((t) => t.id === templateId)
+    if (template) return template
     return undefined
   }
 
-  const getIntents = (id: string, intentGroupId: string) => {
-    const template = getTemplate(id, intentGroupId)
+  const getIntents = (id: string, templateId: string) => {
+    const template = getTemplate(templateId)
     if (template) {
       const templateIntents = template.intents
       return extractIntentsFromTemplate(templateIntents, id)

@@ -74,16 +74,18 @@ const IntentSelector = ({
   // Workspace ID, service, type
 
   function onIntentSelect (props, intent: Intent) {
-    console.log(props, intent)
-    onSelect(intent)
+    console.log({ props, intent })
     setIntentSelectorState({
       ...intentSelectorState,
       selected: intent
     })
+    console.log('Calling Onselect')
+
+    onSelect(intent)
   }
 
   function displayMenu (e) {
-    const timeoutId = setTimeout(() => {
+    setTimeout(() => {
       if (loading === true) {
         setIntentSelectorState({
           ...intentSelectorState,
@@ -113,12 +115,10 @@ const IntentSelector = ({
         <Icon icon={getSyncServiceIcon(service)} />
         {selected ? (
           <div>
-            {selected.name} {capitalize(type)} - with {capitalize(service)}
+            {selected.name} - {capitalize(type)}
           </div>
         ) : (
-          <div>
-            Connect {capitalize(type)} with {capitalize(service)}
-          </div>
+          <div>Connect {capitalize(type)}</div>
         )}
       </MenuTrigger>
 

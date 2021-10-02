@@ -145,3 +145,9 @@ export const IntentMapItem = styled.div`
   background-color: ${({ theme }) => theme.colors.gray[9]};
   position: relative;
 `
+
+export const SyncIntentsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+`

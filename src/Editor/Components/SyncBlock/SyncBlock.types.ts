@@ -11,6 +11,7 @@ export interface SyncBlockData {
   id: string
   content: string
   igid: string | undefined
+  templateId: string
 }
 
 export interface SyncElementData {
@@ -72,7 +73,6 @@ export interface SyncStoreIntents {
 }
 
 export type SyncContextType = {
-  syncId: string
   syncBlocks: SyncBlockData[]
   templates: SyncBlockTemplate[]
   services: Service[]

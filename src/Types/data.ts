@@ -1,5 +1,5 @@
 import { Snippet } from '../Editor/Store/SnippetStore'
-import { SyncBlockData } from '../Editor/Components/SyncBlock'
+import { Service, SyncBlockData, SyncBlockTemplate, SyncStoreIntents } from '../Editor/Components/SyncBlock'
 import { ComboText, LinkCache, NodeEditorContent, ILink } from '../Editor/Store/Types'
 
 export interface NodeContent {
@@ -16,7 +16,14 @@ export interface FileData {
     [key: string]: NodeContent
   }
   linkCache: LinkCache
+
+  // Sync
   syncBlocks: SyncBlockData[]
+  templates: SyncBlockTemplate[]
+  intents: SyncStoreIntents
+  services: Service[]
+
+  // Misc
   userSettings: {
     theme: string
     spotlight: { [key: string]: any }

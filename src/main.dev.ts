@@ -168,7 +168,6 @@ const createMexWindow = () => {
 
   try {
     // Send data back if modified externally
-    console.log(getSaveLocation(app))
 
     chokidar
       .watch(getSaveLocation(app), {

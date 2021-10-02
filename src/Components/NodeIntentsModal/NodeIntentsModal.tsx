@@ -20,7 +20,7 @@ interface NodeIntentsModal {
   toggleModal: () => void
   openModal: () => void
   closeModal: () => void
-  setIntent: (intent: Intent) => void
+  appendIntent: (intent: Intent) => void
 }
 
 export const useNodeIntentsModalStore = create<NodeIntentsModal>((set) => ({
@@ -32,7 +32,7 @@ export const useNodeIntentsModalStore = create<NodeIntentsModal>((set) => ({
     set({
       open: false
     }),
-  setIntent: (intent) =>
+  appendIntent: (intent) =>
     set((state) => ({
       intents: {
         ...state.intents,
@@ -47,7 +47,7 @@ const NodeIntentsModal = ({ id }: NodeIntegrationsModalProps) => {
   const closeModal = useNodeIntentsModalStore((store) => store.closeModal)
   const open = useNodeIntentsModalStore((store) => store.open)
   const intents = useNodeIntentsModalStore((store) => store.intents)
-  const setIntent = useNodeIntentsModalStore((store) => store.setIntent)
+  const appendIntent = useNodeIntentsModalStore((store) => store.appendIntent)
 
   const onSave = () => {
     console.log('onSave', intents)
@@ -66,9 +66,8 @@ const NodeIntentsModal = ({ id }: NodeIntegrationsModalProps) => {
     closeModal()
   }
 
-  const onSelectNewIntent = (value: Intent) => {
-    console.log({ value })
-    setIntent(value)
+  const onSelectNewIntent = (intent: Intent) => {
+    appendIntent(intent)
   }
 
   return (

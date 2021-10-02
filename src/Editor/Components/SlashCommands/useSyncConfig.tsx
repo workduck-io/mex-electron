@@ -1,13 +1,12 @@
-import { SlashCommandConfig } from './Types'
-import { SEPARATOR } from '../../../Components/Sidebar/treeUtils'
-import { getNewBlockId } from '../SyncBlock/getNewBlockData'
-import { ELEMENT_SYNC_BLOCK, IntentTemplate } from '../SyncBlock'
-import { useSyncStore } from '../../../Editor/Store/SyncStore'
-import { findKey, clone } from 'lodash'
-import { DefaultSyncBlockTemplates } from '../../../Defaults/syncTemplates'
-import useIntents from '../../../Hooks/useIntents/useIntents'
-import { useEditorStore } from '../../../Editor/Store/EditorStore'
+import { clone, findKey } from 'lodash'
 import { nanoid } from 'nanoid'
+import { SEPARATOR } from '../../../Components/Sidebar/treeUtils'
+import { DefaultSyncBlockTemplates } from '../../../Defaults/syncTemplates'
+import { useEditorStore } from '../../../Editor/Store/EditorStore'
+import { useSyncStore } from '../../../Editor/Store/SyncStore'
+import useIntents from '../../../Hooks/useIntents/useIntents'
+import { ELEMENT_SYNC_BLOCK } from '../SyncBlock'
+import { SlashCommandConfig } from './Types'
 
 export const useSyncConfig = () => {
   const addSyncBlock = useSyncStore((state) => state.addSyncBlock)
@@ -32,7 +31,8 @@ export const useSyncConfig = () => {
             const nd = {
               id,
               igid,
-              content: ''
+              content: '',
+              templateId: cur
             }
             // creation of IGID if none found. Don't create until services are linked
             addSyncBlock(nd)
