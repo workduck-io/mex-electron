@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react'
 import React, { useState } from 'react'
 import { Item, useContextMenu } from 'react-contexify'
 import { capitalize } from '../../../Lib/strings'
@@ -5,14 +6,20 @@ import { MenuTrigger } from '../../../Styled/Integrations'
 import Loading from '../../../Styled/Loading'
 import { StyledMenu } from '../../../Styled/Menu'
 import { Intent } from './SyncBlock.types'
+import { getSyncServiceIcon } from './SyncIcons'
 
 export interface IntentSelectorProps {
   service: string
+  id: string
   type: string
+  readOnly?: boolean
+  defaultIntent?: Intent
+  showPosition?: {
+    x: number
+    y: number
+  }
   onSelect: (intent: Intent) => void
 }
-
-const MENU_ID = 'IntentSelectorMenu'
 
 const sampleIntents = [
   {
@@ -37,72 +44,93 @@ const sampleIntents = [
   }
 ]
 
-const IntentSelector = ({ service, type }: IntentSelectorProps) => {
-  const [intents, setIntents] = useState<Intent[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
+interface IntentSelectorState {
+  intents: Intent[]
+  loading: boolean
+  selected: Intent | undefined
+}
 
+const IntentSelector = ({
+  service,
+  readOnly,
+  id,
+  type,
+  showPosition,
+  defaultIntent,
+  onSelect
+}: IntentSelectorProps) => {
+  const [intentSelectorState, setIntentSelectorState] = useState<IntentSelectorState>({
+    intents: [],
+    loading: true,
+    selected: defaultIntent
+  })
+
+  const MENU_ID = `IntentSelectorMenu_${service}_${type}_${id}`
   const { show } = useContextMenu({
     id: MENU_ID
   })
 
-  // useEffect(() => {
-  //   // Fetch intents
-  //   // Workspace ID, service, type
+  // Fetch intents
+  // Workspace ID, service, type
 
-  //   const timeoutId = setTimeout(() => {
-  //     setIntents(
-  //       sampleIntents.map((si) => ({
-  //         ...si,
-  //         service,
-  //         type,
-  //       }))
-  //     )
-  //     setLoading(false)
-  //   }, 2000)
-  //   return () => clearTimeout(timeoutId)
-  // }, [])
-
-  function handleItemClick ({ event, props, triggerEvent, data }) {
-    console.log(event, props, triggerEvent, data)
+  function onIntentSelect (props, intent: Intent) {
+    console.log(props, intent)
+    onSelect(intent)
+    setIntentSelectorState({
+      ...intentSelectorState,
+      selected: intent
+    })
   }
 
   function displayMenu (e) {
     const timeoutId = setTimeout(() => {
-      setIntents(
-        sampleIntents.map((si) => ({
-          ...si,
-          service,
-          type
-        }))
-      )
-      setLoading(false)
+      if (loading === true) {
+        setIntentSelectorState({
+          ...intentSelectorState,
+          intents: sampleIntents.map((si) => ({
+            ...si,
+            service,
+            type
+          })),
+          loading: false
+        })
+      }
     }, 2000)
     show(e, {
-      position: {
-        x: 0,
-        y: 64
-      }
+      position: showPosition
     })
   }
 
+  const { intents, loading, selected } = intentSelectorState
+
   return (
-    <div>
-      {/* just display the menu on right click */}
-      <MenuTrigger onClick={displayMenu}>
-        Connect {capitalize(type)} with {capitalize(service)}
+    <>
+      <MenuTrigger
+        readOnly={readOnly}
+        selected={selected !== undefined}
+        onClick={readOnly ? () => undefined : displayMenu}
+      >
+        <Icon icon={getSyncServiceIcon(service)} />
+        {selected ? (
+          <div>
+            {selected.name} {capitalize(type)} - with {capitalize(service)}
+          </div>
+        ) : (
+          <div>
+            Connect {capitalize(type)} with {capitalize(service)}
+          </div>
+        )}
       </MenuTrigger>
-      {/* run custom logic then display the menu */}
-      {/* <div onContextMenu={displayMenu}>Right click inside the box</div> */}
 
       <StyledMenu id={MENU_ID}>
         {loading && <Loading dots={4} />}
         {intents.map((i) => (
-          <Item key={`${i.name}-${i.service}`} onClick={handleItemClick}>
+          <Item key={`${i.name}-${i.service}`} onClick={(e) => onIntentSelect(e, i)}>
             {i.name} -{i.service}
           </Item>
         ))}
       </StyledMenu>
-    </div>
+    </>
   )
 }
 

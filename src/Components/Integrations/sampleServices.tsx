@@ -1,5 +1,11 @@
 export const sampleServices = [
   {
+    id: 'mex',
+    connected: true,
+    type: 'node',
+    styles: { color: '#d48fad', bgColor: '#3F0F3F' }
+  },
+  {
     id: 'slack',
     connected: false,
     type: 'channel',

@@ -38,21 +38,25 @@ const Integrations = () => {
       <Title>Integrations</Title>
       <IntegrationsGrid>
         {services.map((s) => (
-          <ServiceButton key={`sButton_${s.id}`} color={s.styles.color} bgColor={s.styles.bgColor}>
-            <ServiceIconWrapper>
-              <Icon height={64} icon={getSyncServiceIcon(s.id)} />
-              <h1>{capitalize(s.id)}</h1>
-            </ServiceIconWrapper>
-            <ServiceButtonFooter>
-              <p>{s.connected ? 'Service Active' : 'Connect Service to use'}</p>
-              <Switch
-                showLabel
-                id={`switch_${s}_service`}
-                value={s.connected}
-                onChange={() => console.log('toggle')}
-              ></Switch>
-            </ServiceButtonFooter>
-          </ServiceButton>
+          <>
+            {s.id !== 'mex' && (
+              <ServiceButton key={`sButton_${s.id}`} color={s.styles.color} bgColor={s.styles.bgColor}>
+                <ServiceIconWrapper>
+                  <Icon height={64} icon={getSyncServiceIcon(s.id)} />
+                  <h1>{capitalize(s.id)}</h1>
+                </ServiceIconWrapper>
+                <ServiceButtonFooter>
+                  <p>{s.connected ? 'Service Active' : 'Connect Service to use'}</p>
+                  <Switch
+                    showLabel
+                    id={`switch_${s}_service`}
+                    value={s.connected}
+                    onChange={() => console.log('toggle')}
+                  ></Switch>
+                </ServiceButtonFooter>
+              </ServiceButton>
+            )}
+          </>
         ))}
       </IntegrationsGrid>
 

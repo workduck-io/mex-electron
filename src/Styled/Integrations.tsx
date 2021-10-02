@@ -1,6 +1,6 @@
 import { transparentize } from 'polished'
 import { ServiceLabel } from '../Editor/Components/SyncBlock'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Card } from './Card'
 import { size } from './responsive'
 import { Note, Title } from './Typography'
@@ -103,8 +103,45 @@ export const Template = styled(Card)`
   }
 `
 
-export const MenuTrigger = styled.div`
-  padding: ${({ theme: { spacing } }) => `${spacing.small} ${spacing.tiny}`};
+interface MenuTriggerProps {
+  selected: boolean
+  readOnly: boolean
+}
+
+export const MenuTrigger = styled.div<MenuTriggerProps>`
+  display: flex;
+  align-items: center;
+  width: max-content;
+  padding: ${({ theme: { spacing } }) => `${spacing.small} ${spacing.medium}`};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   border: 1px dashed ${({ theme }) => theme.colors.form.input.border};
+  svg {
+    margin-right: ${({ theme }) => theme.spacing.small};
+  }
+
+  ${({ readOnly, theme }) =>
+    !readOnly &&
+    css`
+      cursor: pointer;
+      &:hover {
+        border-color: ${theme.colors.primary};
+      }
+    `}
+
+  ${({ theme, selected }) =>
+    selected &&
+    css`
+      border: 1px solid transparent;
+      background-color: ${theme.colors.gray[8]};
+      svg {
+        color: ${theme.colors.primary};
+      }
+    `}
+`
+
+export const IntentMapItem = styled.div`
+  padding: ${({ theme: { spacing } }) => `${spacing.small} ${spacing.tiny}`};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  background-color: ${({ theme }) => theme.colors.gray[9]};
+  position: relative;
 `

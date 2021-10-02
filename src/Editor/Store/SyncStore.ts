@@ -38,6 +38,17 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
       templates: [...state.templates, template]
     })),
 
+  addIntentEmptyMap: (id) =>
+    set((state) => ({
+      intents: {
+        ...state.intents,
+        [id]: {
+          intents: [],
+          intentGroups: {}
+        }
+      }
+    })),
+
   addIgid: (id, igid, intents, templateId) =>
     set((state) => ({
       intents: {
@@ -53,19 +64,13 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
           }
         }
       }
+    })),
+
+  updateIntentsAndIGIDs: (id, nodeIntentConfig) =>
+    set((state) => ({
+      intents: {
+        ...state.intents,
+        [id]: nodeIntentConfig
+      }
     }))
-
-  // addIntent: (id, intent) =>
-  //   set((state) => {
-  //     const prevIntents = state.intents[id] ?? []
-  //     return { intents: { ...state.intents, [id]: [...prevIntents, intent] } }
-  //   }),
-
-  // setIntentsForNode: (id, intents) =>
-  //   set((state) => ({
-  //     intents: {
-  //       ...state.intents,
-  //       [id]: intents,
-  //     },
-  //   })),
 }))

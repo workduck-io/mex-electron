@@ -59,13 +59,16 @@ type TemplateID = string
 
 export type SyncBlockProps = StyledElementProps<SyncElementData, SyncBlockStyles>
 
+export interface NodeIntentConfig {
+  intents: Intent[]
+  intentGroups: {
+    [IntentGroupID: string]: IntentGroup
+  }
+}
+
 export interface SyncStoreIntents {
-  [id: string]: {
-    intents: Intent[]
-    intentGroups: {
-      [IntentGroupID: string]: IntentGroup
-    }
-  } // ID of the node is mapped with intents
+  [id: string]: NodeIntentConfig
+  // ID of the node is mapped with intents
 }
 
 export type SyncContextType = {
@@ -80,4 +83,6 @@ export type SyncContextType = {
   initSyncBlocks: (syncBlocks: SyncBlockData[], templates: SyncBlockTemplate[]) => void
   editSyncBlock: (block: SyncBlockData) => void
   addIgid: (id: string, igid: string, intents: Intent[], templateId: string) => void
+  addIntentEmptyMap: (id: string) => void
+  updateIntentsAndIGIDs: (id: string, nodeIntentConfig: NodeIntentConfig) => void
 }

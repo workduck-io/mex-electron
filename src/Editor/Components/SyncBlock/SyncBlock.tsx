@@ -16,7 +16,7 @@ import {
   SyncForm,
   SyncTitle
 } from './SyncBlock.styles'
-import { SyncBlockProps } from './SyncBlock.types'
+import { SyncBlockData, SyncBlockProps } from './SyncBlock.types'
 import { getSyncServiceIcon } from './SyncIcons'
 import useIntents from '../../../Hooks/useIntents/useIntents'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
@@ -38,12 +38,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
   const nodeUniqueId = useEditorStore((store) => store.node.id)
   const parentNodeId = useEditorStore((store) => store.node.key)
   const blocksData = useSyncStore((state) => state.syncBlocks)
-  const blockData = blocksData.filter((d) => d.id === element.id)[0]
-
-  const { getIntents, getTemplate } = useIntents()
-
-  const intents = getIntents(nodeUniqueId, blockData.igid)
-  const template = getTemplate(nodeUniqueId, blockData.igid)
+  const blockDataFiltered = blocksData.filter((d) => d.id === element.id)
 
   const selected = useSelected()
 
@@ -51,9 +46,16 @@ export const SyncBlock = (props: SyncBlockProps) => {
     ReactTooltip.rebuild()
   }, [selected])
 
-  // console.log('SyncBlock', { blockData, template })
+  const { getIntents, getTemplate } = useIntents()
 
-  if (blockData === undefined || template === undefined) return null
+  if (blockDataFiltered.length === 0) return null
+
+  const blockData = blockDataFiltered[0] as SyncBlockData
+
+  const intents = getIntents(nodeUniqueId, blockData.igid)
+  const template = getTemplate(nodeUniqueId, blockData.igid)
+
+  console.log('SyncBlock', { blockData, template, intents })
 
   // const syncTitle = getSyncBlockTitle(blockData.title)
 
@@ -69,13 +71,22 @@ export const SyncBlock = (props: SyncBlockProps) => {
       igid: blockData.igid
     })
 
+    // Inserted only on send
+    const InsertParams =
+      blockData.content === ''
+        ? {
+            igId: null,
+            templateId: null,
+            workspaceId: null
+          }
+        : {}
+
     axios.post(`https://api.workduck.io/integration/listen?${param}`, {
       parentNodeId: parentNodeId ?? 'BLOCK_random',
       blockId: element.id,
       text: data.content,
-      igId: null,
-      templateId: null,
-      workspaceId: null,
+      // On insert
+      ...InsertParams,
       eventType: blockData.content === '' ? 'INSERT' : 'EDIT' // FIXME
     })
 
@@ -102,24 +113,34 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
           {blockData && selected && (
             <FormControls>
-              <IntentSelector service="github" type="repo" onSelect={(val) => console.log({ val })} />
+              <IntentSelector
+                id="SyncBlockIntentSelector"
+                showPosition={{ x: 0, y: 64 }}
+                service="github"
+                type="repo"
+                readOnly={true}
+                onSelect={(val) => console.log({ val })}
+              />
               <div>
                 {intents &&
                   intents.map((intent) => {
-                    return (
-                      <ServiceSelectorLabel
-                        htmlFor={`connections.${intent.value}`}
-                        key={`${blockData.id}_syncBlocks_${intent.value}`}
-                        data-tip={`Sync with ${intent.service}`}
-                        data-place="bottom"
-                      >
-                        <ServiceLabel>
-                          <Icon icon={getSyncServiceIcon(intent.service)} />
-                          {intent.type} - {intent.value}
-                        </ServiceLabel>
-                        <input type="checkbox" {...register(`connections.${intent}`)} />
-                      </ServiceSelectorLabel>
-                    )
+                    if (intent === undefined) return <p>Hello</p>
+                    else {
+                      return (
+                        <ServiceSelectorLabel
+                          htmlFor={`connections.${intent.value}`}
+                          key={`${blockData.id}_syncBlocks_${intent.value}`}
+                          data-tip={`Sync with ${intent.service}`}
+                          data-place="bottom"
+                        >
+                          <ServiceLabel>
+                            <Icon icon={getSyncServiceIcon(intent.service)} />
+                            {intent.type} - {intent.value}
+                          </ServiceLabel>
+                          <input type="checkbox" {...register(`connections.${intent}`)} />
+                        </ServiceSelectorLabel>
+                      )
+                    }
                   })}
               </div>
               <Button primary type="submit">
