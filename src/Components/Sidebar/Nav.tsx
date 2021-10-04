@@ -2,9 +2,9 @@ import settings4Line from '@iconify-icons/ri/settings-4-line'
 import { transparentize } from 'polished'
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { useLayoutStore } from '../../Layout/LayoutStore'
 import styled, { css } from 'styled-components'
 import { GetIcon } from '../../Conf/links'
+import { useLayoutStore } from '../../Layout/LayoutStore'
 import { NavProps } from './Types'
 
 interface StyledDivProps {
@@ -87,6 +87,17 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
         ))}
       </div>
       <div>
+        <Link
+          exact
+          activeClassName="active"
+          to="/login"
+          key="nav_login"
+          // Tooltip
+          data-tip="Login"
+          data-class="nav-tooltip"
+        >
+          Login
+        </Link>
         <Link
           exact
           activeClassName="active"

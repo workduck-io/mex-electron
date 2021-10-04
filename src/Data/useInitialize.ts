@@ -1,18 +1,17 @@
-import useThemeStore from '../Editor/Store/ThemeStore'
 import { defaultCommands } from '../Defaults/slashCommands'
+import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
 import { useContentStore } from '../Editor/Store/ContentStore'
 import useDataStore from '../Editor/Store/DataStore'
-import { useEditorStore } from '../Editor/Store/EditorStore'
-import { useSyncStore } from '../Editor/Store/SyncStore'
-import { FileData } from '../Types/data'
-import { getTheme } from '../Styled/themes/defaultThemes'
-import { extractSnippetCommands } from '../Snippets/useSnippets'
 import { generateComboTexts } from '../Editor/Store/sampleTags'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
-import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
-import { useNavigation } from '../Hooks/useNavigation/useNavigation'
-import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
+import { useSyncStore } from '../Editor/Store/SyncStore'
+import useThemeStore from '../Editor/Store/ThemeStore'
 import useLoad from '../Hooks/useLoad/useLoad'
+import { useNavigation } from '../Hooks/useNavigation/useNavigation'
+import { extractSnippetCommands } from '../Snippets/useSnippets'
+import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
+import { getTheme } from '../Styled/themes/defaultThemes'
+import { FileData } from '../Types/data'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
@@ -47,6 +46,7 @@ export const useInitialize = () => {
     update(data)
     const keyToLoad = initNodeId || '@'
     const uidNode = data.ilinks.find((i) => i.key === keyToLoad)
+    console.log({ uidNode, di: data.ilinks, initNodeId })
 
     if (initFor === AppType.SPOTLIGHT) {
       loadNodeProps({

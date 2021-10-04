@@ -1,8 +1,10 @@
+import axios from 'axios'
 import { nanoid } from 'nanoid'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import Modal from 'react-modal'
 import create from 'zustand'
+import { WORKSPACE_ID } from '../../Defaults/auth'
 import { SyncBlockTemplate } from '../../Editor/Components/SyncBlock'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
 import { capitalize } from '../../Lib/strings'
@@ -21,7 +23,7 @@ interface NewSyncTemplateModalState {
 }
 
 export const useNewSyncTemplateModalStore = create<NewSyncTemplateModalState>((set) => ({
-  open: true,
+  open: false,
   focus: true,
 
   openModal: () => {
@@ -39,7 +41,7 @@ export const useNewSyncTemplateModalStore = create<NewSyncTemplateModalState>((s
   setFocus: (focus) => set({ focus })
 }))
 
-const NewSyncBlockModal = () => {
+const NewSyncTemplateModal = () => {
   // const openModal = useNewSyncBlockStore((store) => store.openModal)
   const closeModal = useNewSyncTemplateModalStore((store) => store.closeModal)
   const open = useNewSyncTemplateModalStore((store) => store.open)
@@ -50,11 +52,13 @@ const NewSyncBlockModal = () => {
 
   // const theme = useTheme()
 
-  const serviceOptions = services.map((s) => ({
-    label: `${capitalize(s.id)} - ${capitalize(s.type)}`,
-    value: { service: s.id, type: s.type },
-    icon: s.id
-  }))
+  const serviceOptions = services
+    .filter((s) => s.id !== 'mex')
+    .map((s) => ({
+      label: `${capitalize(s.id)} - ${capitalize(s.type)}`,
+      value: { service: s.id, type: s.type },
+      icon: s.id
+    }))
 
   const handleCancel = () => {
     closeModal()
@@ -68,10 +72,33 @@ const NewSyncBlockModal = () => {
       id: `SYNCTEMP_${nanoid()}`,
       command,
       title,
-      intents,
+      intents: [
+        ...intents,
+        {
+          service: 'mex',
+          type: 'node'
+        }
+      ],
       description
     }
     addTemplate(template)
+    const intentMap = {}
+    template.intents.forEach((i) => {
+      intentMap[i.service.toUpperCase()] = i.type
+    })
+
+    const reqData = {
+      intentMap,
+      templateId: template.id,
+      workspaceId: WORKSPACE_ID,
+      name: template.id,
+      description: template.description
+    }
+
+    console.log({ reqData })
+
+    axios.post('http://802e-106-200-236-145.ngrok.io/local/sync/template', reqData)
+
     closeModal()
   }
 
@@ -114,4 +141,4 @@ const NewSyncBlockModal = () => {
   )
 }
 
-export default NewSyncBlockModal
+export default NewSyncTemplateModal

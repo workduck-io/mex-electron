@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import ReactTooltip from 'react-tooltip'
 import { useSelected } from 'slate-react'
+import { WORKSPACE_ID } from '../../../Defaults/auth'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import useIntents from '../../../Hooks/useIntents/useIntents'
 import { Button } from '../../../Styled/Buttons'
@@ -40,7 +41,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
     ReactTooltip.rebuild()
   }, [selected])
 
-  const { getIntents, getTemplate, updateNodeIntents } = useIntents()
+  const { getIntents, getTemplate, updateNodeIntentsAndCreateIGID } = useIntents()
 
   if (blockDataFiltered.length === 0) return new Error('BlockData undefined')
 
@@ -59,23 +60,31 @@ export const SyncBlock = (props: SyncBlockProps) => {
   // const syncTitle = getSyncBlockTitle(blockData.title)
   const onSelectIntent = (intent: Intent) => {
     const newState = { ...changedIntents, [intent.service]: intent }
-    console.log('NewState', newState)
-
+    // console.log('NewState', newState)
     setChangedIntents(newState)
   }
 
   const onIntentsSave = (e) => {
     e.preventDefault()
-    console.log('Saving Intents', { changedIntents })
+    // console.log('Saving Intents', { changedIntents })
 
-    updateNodeIntents(
+    const newIgid = updateNodeIntentsAndCreateIGID(
       nodeUniqueId,
       Object.keys(changedIntents).map((s) => {
         return changedIntents[s]
-      })
+      }),
+      template.id
     )
 
-    toast('Intents updated successfully')
+    editSyncBlock({
+      id: element.id,
+      content: blockData.content,
+      igid: newIgid,
+      templateId: blockData.templateId
+    })
+
+    // toast('Intents updated successfully')
+
     setChangedIntents({})
   }
 
@@ -85,21 +94,24 @@ export const SyncBlock = (props: SyncBlockProps) => {
     const param = new URLSearchParams({
       source: 'mex'
     }).toString()
+
     editSyncBlock({
       id: element.id,
       content: data.content,
       igid: blockData.igid,
       templateId: blockData.templateId
     })
+
     // Inserted only on send
     const InsertParams =
       blockData.content === ''
         ? {
-            igId: null,
-            templateId: null,
-            workspaceId: null
+            igId: blockData.igid,
+            templateId: blockData.templateId,
+            workspaceId: WORKSPACE_ID
           }
         : {}
+
     axios.post(`https://api.workduck.io/integration/listen?${param}`, {
       parentNodeId: parentNodeId ?? 'BLOCK_random',
       blockId: element.id,
@@ -129,6 +141,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
               placeholder="Your content here..."
               className="syncTextArea"
               defaultValue={blockData && blockData.content}
+              autoFocus={true}
             />
           ) : (
             <p>Please set the specific intents.</p>

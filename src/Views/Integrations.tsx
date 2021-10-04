@@ -1,10 +1,16 @@
-import { Icon } from '@iconify/react'
+import checkboxLine from '@iconify-icons/ri/checkbox-line'
 import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
+import { Icon } from '@iconify/react'
+import axios from 'axios'
+import { shell } from 'electron'
 import React from 'react'
-import { useSyncStore } from '../Editor/Store/SyncStore'
-import Switch from '../Components/Forms/Switch'
-import NewSyncBlockModal, { useNewSyncTemplateModalStore } from '../Components/Integrations/NewSyncBlockModal'
+import ConfirmationModal, { useConfirmationModalStore } from '../Components/ConfirmationModal/ConfirmationModal'
+import NewSyncTemplateModal, { useNewSyncTemplateModalStore } from '../Components/Integrations/NewSyncBlockModal'
+import { authURLs } from '../Components/Integrations/sampleServices'
+import { WORKSPACE_ID } from '../Defaults/auth'
+import { ServiceLabel } from '../Editor/Components/SyncBlock'
 import { getSyncServiceIcon } from '../Editor/Components/SyncBlock/SyncIcons'
+import { useSyncStore } from '../Editor/Store/SyncStore'
 import { capitalize } from '../Lib/strings'
 import IconButton, { Button } from '../Styled/Buttons'
 import {
@@ -19,18 +25,26 @@ import {
 } from '../Styled/Integrations'
 import { SpaceBetweenHorizontalFlex, Wrapper } from '../Styled/Layouts'
 import { Note, Title } from '../Styled/Typography'
-import { ServiceLabel } from '../Editor/Components/SyncBlock'
-import ConfirmationModal, { useConfirmationModalStore } from '../Components/ConfirmationModal/ConfirmationModal'
 
 const Integrations = () => {
   const openNewTemplateModal = useNewSyncTemplateModalStore((store) => store.openModal)
   const openConfirmationModal = useConfirmationModalStore((store) => store.openModal)
   const templates = useSyncStore((store) => store.templates)
   const services = useSyncStore((store) => store.services)
+  const connectService = useSyncStore((store) => store.connectService)
 
   const handleDeleteCancel = () => undefined
   const handleDeleteConfirm = (templateId: string) => {
     console.log('Should delete', { templateId })
+  }
+
+  const onConnectService = (id: string) => {
+    const authUrl = authURLs[id](WORKSPACE_ID)
+    // eslint-disable-next-line no-console
+    shell.openExternal(authUrl)
+    // store new services
+    axios.get(`http://802e-106-200-236-145.ngrok.io/local/workspace/${WORKSPACE_ID}/auth`)
+    connectService(id)
   }
 
   return (
@@ -40,19 +54,28 @@ const Integrations = () => {
         {services.map((s) => (
           <>
             {s.id !== 'mex' && (
-              <ServiceButton key={`sButton_${s.id}`} color={s.styles.color} bgColor={s.styles.bgColor}>
+              <ServiceButton
+                onClick={(e) => {
+                  e.preventDefault()
+                  if (!s.connected) onConnectService(s.id)
+                }}
+                key={`sButton_${s.id}`}
+                color={s.styles.color}
+                bgColor={s.styles.bgColor}
+              >
                 <ServiceIconWrapper>
                   <Icon height={64} icon={getSyncServiceIcon(s.id)} />
                   <h1>{capitalize(s.id)}</h1>
                 </ServiceIconWrapper>
                 <ServiceButtonFooter>
-                  <p>{s.connected ? 'Service Active' : 'Connect Service to use'}</p>
-                  <Switch
-                    showLabel
-                    id={`switch_${s}_service`}
-                    value={s.connected}
-                    onChange={() => console.log('toggle')}
-                  ></Switch>
+                  {s.connected ? (
+                    <>
+                      <Icon icon={checkboxLine} />
+                      Service Active
+                    </>
+                  ) : (
+                    'Click to connect service'
+                  )}
                 </ServiceButtonFooter>
               </ServiceButton>
             )}
@@ -64,7 +87,7 @@ const Integrations = () => {
       <Button size="large" primary onClick={() => openNewTemplateModal()}>
         New SyncBlock Template
       </Button>
-      <NewSyncBlockModal />
+      <NewSyncTemplateModal />
       <br />
 
       <TemplatesGrid>

@@ -32,6 +32,7 @@ export const ServiceButton = styled.div<ServiceButtonProps>`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  cursor: pointer;
 
   border-radius: ${({ theme }) => theme.borderRadius.large};
   overflow: hidden;
@@ -50,15 +51,14 @@ export const ServiceButton = styled.div<ServiceButtonProps>`
 
 export const ServiceButtonFooter = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.gray[9]};
   padding: ${({ theme: { spacing } }) => `${spacing.medium} ${spacing.large}`};
 
   width: 100%;
   color: ${({ theme }) => theme.colors.text.fade};
-  p {
-    margin: 0;
+  svg {
+    margin-right: ${({ theme }) => theme.spacing.small};
   }
 `
 

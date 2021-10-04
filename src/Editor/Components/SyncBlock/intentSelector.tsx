@@ -1,6 +1,8 @@
 import { Icon } from '@iconify/react'
+import axios from 'axios'
 import React, { useState } from 'react'
 import { Item, useContextMenu } from 'react-contexify'
+import { WORKSPACE_ID } from '../../../Defaults/auth'
 import { capitalize } from '../../../Lib/strings'
 import { MenuTrigger } from '../../../Styled/Integrations'
 import Loading from '../../../Styled/Loading'
@@ -85,19 +87,25 @@ const IntentSelector = ({
   }
 
   function displayMenu (e) {
-    setTimeout(() => {
-      if (loading === true) {
-        setIntentSelectorState({
-          ...intentSelectorState,
-          intents: sampleIntents.map((si) => ({
-            ...si,
-            service,
-            type
-          })),
-          loading: false
+    if (loading === true) {
+      axios
+        .post('http://802e-106-200-236-145.ngrok.io/local/intents/value', {
+          serviceType: service.toUpperCase(),
+          intentType: type,
+          workspaceId: WORKSPACE_ID
         })
-      }
-    }, 2000)
+        .then((d) => {
+          const { data } = d
+          const intents: Intent[] = data.map((i) => ({
+            service,
+            type,
+            value: i.id,
+            name: i.name
+          }))
+          console.log({ d })
+          setIntentSelectorState((state) => ({ ...state, intents, loading: false }))
+        })
+    }
     show(e, {
       position: showPosition
     })

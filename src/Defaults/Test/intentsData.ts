@@ -1,4 +1,4 @@
-import { Intent, SyncBlockTemplate, SyncStoreIntents } from '../../Editor/Components/SyncBlock'
+import { SyncBlockTemplate, SyncStoreIntents } from '../../Editor/Components/SyncBlock'
 
 export const intentsData: SyncStoreIntents = {
   '@': {
@@ -53,15 +53,15 @@ export const templates: SyncBlockTemplate[] = [
 
       {
         service: 'mex',
-        type: 'mex'
+        type: 'node'
       }
     ]
   }
 ]
 
-export const defaultMexIntent: Intent = {
+export const defaultMexIntent = (id: string) => ({
   service: 'mex',
-  type: 'mex',
+  type: 'node',
   name: 'Node',
-  value: 'node'
-}
+  value: id
+})

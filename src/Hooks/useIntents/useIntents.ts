@@ -1,10 +1,7 @@
+import axios from 'axios'
 import { nanoid } from 'nanoid'
-import {
-  Intent,
-  IntentGroup,
-  IntentTemplate,
-  SyncBlockTemplate
-} from '../../Editor/Components/SyncBlock/SyncBlock.types'
+import { WORKSPACE_ID } from '../../Defaults/auth'
+import { Intent, IntentGroup, IntentTemplate } from '../../Editor/Components/SyncBlock/SyncBlock.types'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
 
 const useIntents = () => {
@@ -31,8 +28,9 @@ const useIntents = () => {
           if (igid) return igid
         } else {
           const filteredBlockIntents = blockIntents.filter((i) => i.type === 'Intent') as Intent[]
-          const newIgid = `IGID_${nanoid()}`
+          const newIgid = `INTENTGROUP_${nanoid()}`
           if (filteredBlockIntents.length === blockIntents.length) {
+            apiCreateIntent(filteredBlockIntents, newIgid, templateId)
             addIgid(id, newIgid, filteredBlockIntents, templateId)
             console.log({ id, newIgid, blockIntents, templateId })
             return newIgid
@@ -120,7 +118,7 @@ const useIntents = () => {
     return intentGroupId
   }
 
-  const updateNodeIntents = (id: string, changedIntents: Intent[]) => {
+  const getUpdatedIntents = (id: string, changedIntents: Intent[]) => {
     const StoreIntents = useSyncStore.getState().intents
     const nodeIntents = StoreIntents[id]
     const leftIntents: Intent[] = [...changedIntents]
@@ -135,7 +133,7 @@ const useIntents = () => {
     })
 
     const intents = [...updatedIntents, ...leftIntents]
-    console.log({ nodeIntents, newIntents: updatedIntents, leftIntents, intents, changedIntents })
+    // console.log({ nodeIntents, newIntents: updatedIntents, leftIntents, intents, changedIntents })
     const groups: { [igid: string]: IntentGroup } = {}
     Object.keys(nodeIntents.intentGroups).forEach((k) => {
       const intentGroup = nodeIntents.intentGroups[k]
@@ -153,7 +151,17 @@ const useIntents = () => {
       }
     })
 
-    console.log({ groups })
+    // console.log({ groups })
+
+    return {
+      intents,
+      groups
+    }
+  }
+
+  const updateNodeIntents = (id: string, changedIntents: Intent[]) => {
+    const { intents, groups } = getUpdatedIntents(id, changedIntents)
+    // console.log({ groups })
 
     updateIntentsAndIGIDs(id, {
       intents,
@@ -161,7 +169,65 @@ const useIntents = () => {
     })
   }
 
-  return { getIntents, getTemplate, getIntentGroupId, checkAndGenerateIGID, getNodeIntents, updateNodeIntents }
+  const updateNodeIntentsAndCreateIGID = (id: string, changedIntents: Intent[], templateId: string) => {
+    const { intents, groups } = getUpdatedIntents(id, changedIntents)
+
+    const template = getTemplate(templateId)
+    const igidIntents = findIntentsFromIntentTemplate(template.intents, intents)
+
+    const newIgid = `INTENTGROUP_${nanoid()}`
+    groups[newIgid] = {
+      intents: igidIntents,
+      templateId
+    }
+
+    console.log({ groups })
+
+    apiCreateIntent(igidIntents, newIgid, templateId)
+
+    updateIntentsAndIGIDs(id, {
+      intents,
+      intentGroups: groups
+    })
+
+    return newIgid
+  }
+
+  return {
+    getIntents,
+    getTemplate,
+    getIntentGroupId,
+    checkAndGenerateIGID,
+    getNodeIntents,
+    updateNodeIntents,
+    updateNodeIntentsAndCreateIGID
+  }
+}
+
+const apiCreateIntent = (intents: Intent[], igid: string, templateId) => {
+  const syncDetails = intents.map((i: Intent) => ({
+    service: i.service,
+    intentType: i.type,
+    intentVal: i.value,
+    isActive: 'true'
+  }))
+  const reqData = {
+    intentGroupId: igid,
+    workspaceId: WORKSPACE_ID,
+    templateId: templateId,
+    syncDetails: syncDetails
+  }
+  console.log({ reqData })
+
+  axios.post('http://802e-106-200-236-145.ngrok.io/local/sync/intent/multiple?isNew=true', reqData)
 }
 
 export default useIntents
+
+const findIntentsFromIntentTemplate = (intentTemplates: IntentTemplate[], intents: Intent[]) => {
+  const blockIntents = intentTemplates.map((it) => {
+    const corespondingIntent = intents.find((i) => i.service === it.service)
+    return corespondingIntent
+  })
+  return blockIntents
+}

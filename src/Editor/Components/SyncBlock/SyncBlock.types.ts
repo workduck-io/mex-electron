@@ -80,6 +80,7 @@ export type SyncContextType = {
   // Load a node and its contents in the editor
   addSyncBlock: (block: SyncBlockData) => void
   addTemplate: (template: SyncBlockTemplate) => void
+  connectService: (id: string) => void
   initSyncBlocks: (syncBlocks: SyncBlockData[], templates: SyncBlockTemplate[]) => void
   editSyncBlock: (block: SyncBlockData) => void
   addIgid: (id: string, igid: string, intents: Intent[], templateId: string) => void
