@@ -41,10 +41,12 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
       }
     }),
 
-  initSyncBlocks: (syncBlocks, templates) =>
+  initSyncBlocks: (syncBlocks, templates, services, intents) =>
     set(() => ({
-      syncBlocks
-      // templates,
+      syncBlocks,
+      templates,
+      services,
+      intents
     })),
 
   addTemplate: (template) =>

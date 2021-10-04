@@ -24,6 +24,8 @@ const useEditorPluginConfig = (editorId: string) => {
   const snippetConfigs = getSnippetsConfigs()
   const syncBlockConfigs = getSyncBlockConfigs()
 
+  console.log({ syncBlockConfigs })
+
   const pluginConfigs = {
     combobox: {
       onChange: useMultiComboboxOnChange(editorId, {
@@ -66,6 +68,7 @@ const useEditorPluginConfig = (editorId: string) => {
             newItemHandler: () => undefined
           }
         },
+
         {
           webem: {
             slateElementType: ELEMENT_MEDIA_EMBED,

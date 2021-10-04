@@ -53,7 +53,7 @@ const Integrations = () => {
       <IntegrationsGrid>
         {services.map((s) => (
           <>
-            {s.id !== 'mex' && (
+            {s.id !== 'MEX' && (
               <ServiceButton
                 onClick={(e) => {
                   e.preventDefault()

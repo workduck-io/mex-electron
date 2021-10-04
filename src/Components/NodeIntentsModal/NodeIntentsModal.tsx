@@ -1,14 +1,13 @@
 import React from 'react'
-import create from 'zustand'
-import useIntents from '../../Hooks/useIntents/useIntents'
-
 import Modal from 'react-modal'
-import { ModalControls, ModalHeader } from '../Refactor/styles'
-import { Button } from '../../Styled/Buttons'
-import { Note } from '../../Styled/Typography'
-import IntentSelector from '../../Editor/Components/SyncBlock/intentSelector'
-import { IntentMapItem } from '../../Styled/Integrations'
+import create from 'zustand'
 import { Intent } from '../../Editor/Components/SyncBlock'
+import IntentSelector from '../../Editor/Components/SyncBlock/intentSelector'
+import useIntents from '../../Hooks/useIntents/useIntents'
+import { Button } from '../../Styled/Buttons'
+import { IntentMapItem } from '../../Styled/Integrations'
+import { Note } from '../../Styled/Typography'
+import { ModalControls, ModalHeader } from '../Refactor/styles'
 
 export interface NodeIntegrationsModalProps {
   id: string
@@ -80,7 +79,7 @@ const NodeIntentsModal = ({ id }: NodeIntegrationsModalProps) => {
           <IntentSelector
             id="ModalSelector"
             service={i.service.id}
-            readOnly={i.service.id === 'mex'}
+            readOnly={i.service.id === 'MEX'}
             type={i.service.type}
             onSelect={onSelectNewIntent}
             defaultIntent={i.intent}

@@ -1,7 +1,6 @@
 import { sampleServices } from '../Components/Integrations/sampleServices'
 import { generateComboTexts, generateILinks } from '../Editor/Store/sampleTags'
 import { FileData } from '../Types/data'
-import { intentsData, templates } from './Test/intentsData'
 
 export const DefaultFileData: FileData = {
   remoteUpdate: true,
@@ -16,8 +15,8 @@ export const DefaultFileData: FileData = {
   linkCache: {},
   tags: generateComboTexts(['mex']),
   syncBlocks: [],
-  templates,
-  intents: intentsData,
+  templates: [],
+  intents: {},
   services: sampleServices,
   userSettings: {
     theme: 'dev',

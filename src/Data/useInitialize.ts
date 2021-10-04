@@ -29,15 +29,15 @@ export const useInitialize = () => {
   const { loadNodeProps } = useLoad()
 
   const update = (data: FileData) => {
-    const { tags, ilinks, linkCache, contents, syncBlocks, snippets } = data
+    const { tags, ilinks, linkCache, contents, syncBlocks, snippets, templates, services, intents } = data
     const snippetCommands = extractSnippetCommands(snippets)
-    const syncCommands = extractSyncBlockCommands()
+    const syncCommands = extractSyncBlockCommands(templates)
     const slashCommands = generateComboTexts([...defaultCommands, ...syncCommands, ...snippetCommands])
 
     initializeDataStore(tags, ilinks, slashCommands, linkCache)
     initSpotlightSettings(data.userSettings.spotlight)
     initContents(contents)
-    initSyncBlocks(syncBlocks, [])
+    initSyncBlocks(syncBlocks, templates, services, intents)
     initSnippets(snippets)
     setTheme(getTheme(data.userSettings.theme))
   }
@@ -46,7 +46,7 @@ export const useInitialize = () => {
     update(data)
     const keyToLoad = initNodeId || '@'
     const uidNode = data.ilinks.find((i) => i.key === keyToLoad)
-    console.log({ uidNode, di: data.ilinks, initNodeId })
+    // console.log({ uidNode, di: data.ilinks, initNodeId })
 
     if (initFor === AppType.SPOTLIGHT) {
       loadNodeProps({

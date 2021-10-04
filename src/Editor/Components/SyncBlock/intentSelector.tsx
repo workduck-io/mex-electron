@@ -100,7 +100,8 @@ const IntentSelector = ({
             service,
             type,
             value: i.id,
-            name: i.name
+            name: i.name,
+            options: i.options
           }))
           console.log({ d })
           setIntentSelectorState((state) => ({ ...state, intents, loading: false }))

@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid'
 import { WORKSPACE_ID } from '../../Defaults/auth'
 import { Intent, IntentGroup, IntentTemplate } from '../../Editor/Components/SyncBlock/SyncBlock.types'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
+import { isIntent } from '../../Lib/intents'
 
 const useIntents = () => {
   const addIgid = useSyncStore((store) => store.addIgid)
@@ -12,29 +13,33 @@ const useIntents = () => {
   const checkAndGenerateIGID = (id: string, templateId: string): string => {
     const templates = useSyncStore.getState().templates
     const template = templates.find((t) => t.id === templateId)
-    // console.log('checkAndGenerateIGID', { template, templates })
 
     if (template) {
       const blockIntents: (Intent | IntentTemplate | undefined)[] = extractIntentsFromTemplate(template.intents, id)
 
+      console.log('checkAndGenerateIGID', { template, blockIntents })
       if (blockIntents) {
         const areAllIntentsPresent = blockIntents.reduce((prev, cur) => {
-          if (cur) return prev || true
+          if (isIntent(cur)) return prev && true
           else return false
         }, true)
 
         if (areAllIntentsPresent) {
           const igid = getIntentGroupId(id, templateId)
+
           if (igid) return igid
-        } else {
-          const filteredBlockIntents = blockIntents.filter((i) => i.type === 'Intent') as Intent[]
-          const newIgid = `INTENTGROUP_${nanoid()}`
-          if (filteredBlockIntents.length === blockIntents.length) {
-            apiCreateIntent(filteredBlockIntents, newIgid, templateId)
-            addIgid(id, newIgid, filteredBlockIntents, templateId)
+          else {
+            // return undefined
+            console.log({ areAllIntentsPresent, blockIntents, igid })
+
+            const newIgid = `INTENTGROUP_${nanoid()}`
+            apiCreateIntent(blockIntents as Intent[], newIgid, templateId)
+            addIgid(id, newIgid, blockIntents as Intent[], templateId)
             console.log({ id, newIgid, blockIntents, templateId })
             return newIgid
           }
+        } else {
+          return undefined
         }
       } else {
         throw new Error('Intents not defined')
@@ -163,6 +168,11 @@ const useIntents = () => {
     const { intents, groups } = getUpdatedIntents(id, changedIntents)
     // console.log({ groups })
 
+    Object.keys(groups).forEach((k) => {
+      const group = groups[k]
+      apiUpdateIntent(group.intents, k)
+    })
+
     updateIntentsAndIGIDs(id, {
       intents,
       intentGroups: groups
@@ -204,12 +214,13 @@ const useIntents = () => {
   }
 }
 
-const apiCreateIntent = (intents: Intent[], igid: string, templateId) => {
+const apiCreateIntent = (intents: Intent[], igid: string, templateId: string) => {
   const syncDetails = intents.map((i: Intent) => ({
     service: i.service,
     intentType: i.type,
     intentVal: i.value,
-    isActive: 'true'
+    isActive: 'true',
+    options: i.options
   }))
   const reqData = {
     intentGroupId: igid,
@@ -220,6 +231,24 @@ const apiCreateIntent = (intents: Intent[], igid: string, templateId) => {
   console.log({ reqData })
 
   axios.post('http://802e-106-200-236-145.ngrok.io/local/sync/intent/multiple?isNew=true', reqData)
+}
+
+const apiUpdateIntent = (intents: Intent[], igid: string) => {
+  const syncDetails = intents.map((i: Intent) => ({
+    service: i.service,
+    intentType: i.type,
+    intentVal: i.value,
+    isActive: 'true',
+    options: i.options
+  }))
+  const reqData = {
+    intentGroupId: igid,
+    workspaceId: WORKSPACE_ID,
+    syncDetails: syncDetails
+  }
+  console.log({ reqData })
+
+  axios.post('http://802e-106-200-236-145.ngrok.io/local/sync/intent/multiple', reqData)
 }
 
 export default useIntents

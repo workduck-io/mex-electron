@@ -9,6 +9,7 @@ import { useSelected } from 'slate-react'
 import { WORKSPACE_ID } from '../../../Defaults/auth'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import useIntents from '../../../Hooks/useIntents/useIntents'
+import { isIntent } from '../../../Lib/intents'
 import { Button } from '../../../Styled/Buttons'
 import { SyncIntentsWrapper } from '../../../Styled/Integrations'
 import { useSyncStore } from '../../Store/SyncStore'
@@ -112,12 +113,12 @@ export const SyncBlock = (props: SyncBlockProps) => {
           }
         : {}
 
-    axios.post(`https://api.workduck.io/integration/listen?${param}`, {
+    axios.post(`http://802e-106-200-236-145.ngrok.io/local/listen?${param}`, {
       parentNodeId: parentNodeId ?? 'BLOCK_random',
-      blockId: element.id,
+      syncId: element.id,
       text: data.content,
       // On insert
-      ...InsertParams,
+      // ...InsertParams,
       eventType: blockData.content === '' ? 'INSERT' : 'EDIT' // FIXME
     })
     toast('Sync Successful')
@@ -203,6 +204,3 @@ export const SyncBlock = (props: SyncBlockProps) => {
     </RootElement>
   )
 }
-
-// eslint-disable-next-line no-prototype-builtins
-const isIntent = (p: any): p is Intent => p.hasOwnProperty('value')

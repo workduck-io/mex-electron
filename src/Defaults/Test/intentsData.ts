@@ -60,7 +60,7 @@ export const templates: SyncBlockTemplate[] = [
 ]
 
 export const defaultMexIntent = (id: string) => ({
-  service: 'mex',
+  service: 'MEX',
   type: 'node',
   name: 'Node',
   value: id

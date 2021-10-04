@@ -1,18 +1,18 @@
 export const sampleServices = [
   {
-    id: 'mex',
+    id: 'MEX',
     connected: true,
     type: 'node',
     styles: { color: '#d48fad', bgColor: '#3F0F3F' }
   },
   {
-    id: 'slack',
+    id: 'SLACK',
     connected: false,
     type: 'channel',
     styles: { color: '#d48fad', bgColor: '#3F0F3F' }
   },
   {
-    id: 'github',
+    id: 'GITHUB',
     connected: false,
     type: 'repo',
     styles: { color: '#000000', bgColor: '#ffffff' }

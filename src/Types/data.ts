@@ -1,6 +1,6 @@
-import { Snippet } from '../Editor/Store/SnippetStore'
 import { Service, SyncBlockData, SyncBlockTemplate, SyncStoreIntents } from '../Editor/Components/SyncBlock'
-import { ComboText, LinkCache, NodeEditorContent, ILink } from '../Editor/Store/Types'
+import { Snippet } from '../Editor/Store/SnippetStore'
+import { ComboText, ILink, LinkCache, NodeEditorContent } from '../Editor/Store/Types'
 
 export interface NodeContent {
   type: string

@@ -49,6 +49,7 @@ export interface IntentTemplate {
 export interface Intent extends IntentTemplate {
   name: string
   value: string // ID of the intent
+  options?: any
 }
 
 export interface IntentGroup {
@@ -81,7 +82,12 @@ export type SyncContextType = {
   addSyncBlock: (block: SyncBlockData) => void
   addTemplate: (template: SyncBlockTemplate) => void
   connectService: (id: string) => void
-  initSyncBlocks: (syncBlocks: SyncBlockData[], templates: SyncBlockTemplate[]) => void
+  initSyncBlocks: (
+    syncBlocks: SyncBlockData[],
+    templates: SyncBlockTemplate[],
+    services: Service[],
+    intents: SyncStoreIntents
+  ) => void
   editSyncBlock: (block: SyncBlockData) => void
   addIgid: (id: string, igid: string, intents: Intent[], templateId: string) => void
   addIntentEmptyMap: (id: string) => void

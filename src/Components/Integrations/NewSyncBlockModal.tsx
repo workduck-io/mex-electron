@@ -53,7 +53,7 @@ const NewSyncTemplateModal = () => {
   // const theme = useTheme()
 
   const serviceOptions = services
-    .filter((s) => s.id !== 'mex')
+    .filter((s) => s.id !== 'MEX')
     .map((s) => ({
       label: `${capitalize(s.id)} - ${capitalize(s.type)}`,
       value: { service: s.id, type: s.type },
@@ -75,7 +75,7 @@ const NewSyncTemplateModal = () => {
       intents: [
         ...intents,
         {
-          service: 'mex',
+          service: 'MEX',
           type: 'node'
         }
       ],
