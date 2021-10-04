@@ -1,7 +1,6 @@
 import checkboxLine from '@iconify-icons/ri/checkbox-line'
 import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
 import { Icon } from '@iconify/react'
-import axios from 'axios'
 import { shell } from 'electron'
 import React from 'react'
 import ConfirmationModal, { useConfirmationModalStore } from '../Components/ConfirmationModal/ConfirmationModal'
@@ -43,7 +42,6 @@ const Integrations = () => {
     // eslint-disable-next-line no-console
     shell.openExternal(authUrl)
     // store new services
-    axios.get(`http://802e-106-200-236-145.ngrok.io/local/workspace/${WORKSPACE_ID}/auth`)
     connectService(id)
   }
 

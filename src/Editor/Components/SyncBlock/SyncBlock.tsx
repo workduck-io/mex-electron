@@ -10,6 +10,7 @@ import { WORKSPACE_ID } from '../../../Defaults/auth'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import useIntents from '../../../Hooks/useIntents/useIntents'
 import { isIntent } from '../../../Lib/intents'
+import { apiURLs } from '../../../Requests/routes'
 import { Button } from '../../../Styled/Buttons'
 import { SyncIntentsWrapper } from '../../../Styled/Integrations'
 import { useSyncStore } from '../../Store/SyncStore'
@@ -113,7 +114,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
           }
         : {}
 
-    axios.post(`http://802e-106-200-236-145.ngrok.io/local/listen?${param}`, {
+    axios.post(apiURLs.listen(param), {
       parentNodeId: parentNodeId ?? 'BLOCK_random',
       syncId: element.id,
       text: data.content,

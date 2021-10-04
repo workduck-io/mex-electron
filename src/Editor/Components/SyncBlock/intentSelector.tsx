@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Item, useContextMenu } from 'react-contexify'
 import { WORKSPACE_ID } from '../../../Defaults/auth'
 import { capitalize } from '../../../Lib/strings'
+import { apiURLs } from '../../../Requests/routes'
 import { MenuTrigger } from '../../../Styled/Integrations'
 import Loading from '../../../Styled/Loading'
 import { StyledMenu } from '../../../Styled/Menu'
@@ -89,7 +90,7 @@ const IntentSelector = ({
   function displayMenu (e) {
     if (loading === true) {
       axios
-        .post('http://802e-106-200-236-145.ngrok.io/local/intents/value', {
+        .post(apiURLs.getIntentValues, {
           serviceType: service.toUpperCase(),
           intentType: type,
           workspaceId: WORKSPACE_ID

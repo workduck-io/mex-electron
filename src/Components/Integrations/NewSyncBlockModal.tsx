@@ -8,6 +8,7 @@ import { WORKSPACE_ID } from '../../Defaults/auth'
 import { SyncBlockTemplate } from '../../Editor/Components/SyncBlock'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
 import { capitalize } from '../../Lib/strings'
+import { apiURLs } from '../../Requests/routes'
 import { Button } from '../../Styled/Buttons'
 import { InputBlock, Label, TextAreaBlock } from '../../Styled/Form'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
@@ -97,7 +98,7 @@ const NewSyncTemplateModal = () => {
 
     console.log({ reqData })
 
-    axios.post('http://802e-106-200-236-145.ngrok.io/local/sync/template', reqData)
+    axios.post(apiURLs.createTemplate, reqData)
 
     closeModal()
   }

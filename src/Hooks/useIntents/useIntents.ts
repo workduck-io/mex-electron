@@ -4,6 +4,7 @@ import { WORKSPACE_ID } from '../../Defaults/auth'
 import { Intent, IntentGroup, IntentTemplate } from '../../Editor/Components/SyncBlock/SyncBlock.types'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
 import { isIntent } from '../../Lib/intents'
+import { apiURLs } from '../../Requests/routes'
 
 const useIntents = () => {
   const addIgid = useSyncStore((store) => store.addIgid)
@@ -230,7 +231,7 @@ const apiCreateIntent = (intents: Intent[], igid: string, templateId: string) =>
   }
   console.log({ reqData })
 
-  axios.post('http://802e-106-200-236-145.ngrok.io/local/sync/intent/multiple?isNew=true', reqData)
+  axios.post(apiURLs.intentGroup(true), reqData)
 }
 
 const apiUpdateIntent = (intents: Intent[], igid: string) => {
@@ -248,7 +249,7 @@ const apiUpdateIntent = (intents: Intent[], igid: string) => {
   }
   console.log({ reqData })
 
-  axios.post('http://802e-106-200-236-145.ngrok.io/local/sync/intent/multiple', reqData)
+  axios.post(apiURLs.intentGroup(false), reqData)
 }
 
 export default useIntents
