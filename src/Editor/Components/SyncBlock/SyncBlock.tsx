@@ -74,6 +74,9 @@ export const SyncBlock = (props: SyncBlockProps) => {
         return changedIntents[s]
       })
     )
+
+    toast('Intents updated successfully')
+    setChangedIntents({})
   }
 
   const onSubmit = (e) => {
@@ -119,15 +122,20 @@ export const SyncBlock = (props: SyncBlockProps) => {
             SyncBlock
             <SyncTitle>{template.title}</SyncTitle>
           </ElementHeader>
-          <textarea
-            {...register('content')}
-            placeholder="Your content here..."
-            className="syncTextArea"
-            defaultValue={blockData && blockData.content}
-          />
+
+          {areAllIntentsPresent ? (
+            <textarea
+              {...register('content')}
+              placeholder="Your content here..."
+              className="syncTextArea"
+              defaultValue={blockData && blockData.content}
+            />
+          ) : (
+            <p>Please set the specific intents.</p>
+          )}
 
           {(!areAllIntentsPresent || selected) && (
-            <FormControls>
+            <FormControls float={areAllIntentsPresent}>
               <SyncIntentsWrapper>
                 {intents &&
                   intents.map((intent) => {
@@ -136,7 +144,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
                         <IntentSelector
                           id={`SyncBlocksIntentSelector${blockData.id}`}
                           key={`SyncBlocksIntentSelector${blockData.id}${intent.service}`}
-                          showPosition={{ x: 0, y: 64 }}
+                          // showPosition={{ x: 0, y: 64 }}
                           service={intent.service}
                           type={intent.type}
                           defaultIntent={intent}
@@ -149,7 +157,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
                         <IntentSelector
                           id={`SyncBlocksIntentPreview${blockData.id}`}
                           key={`SyncBlocksIntentPreview${blockData.id}${intent.service}`}
-                          showPosition={{ x: 0, y: 64 }}
+                          // showPosition={{ x: 0, y: 64 }}
                           service={intent.service}
                           type={intent.type}
                           readOnly={false}

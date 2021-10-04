@@ -1,6 +1,6 @@
 import { transparentize } from 'polished'
-import { ServiceLabel } from '../Editor/Components/SyncBlock'
 import styled, { css } from 'styled-components'
+import { ServiceLabel } from '../Editor/Components/SyncBlock'
 import { Card } from './Card'
 import { size } from './responsive'
 import { Note, Title } from './Typography'
@@ -150,4 +150,8 @@ export const SyncIntentsWrapper = styled.div`
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+
+  ${MenuTrigger} {
+    margin-right: ${({ theme }) => theme.spacing.small};
+  }
 `

@@ -62,20 +62,30 @@ export const SyncForm = styled.form<SyncFormProps>`
     height: 100%;
   }
 `
-export const FormControls = styled.div`
+
+interface FormControlsProps {
+  float: boolean
+}
+
+export const FormControls = styled.div<FormControlsProps>`
   display: flex;
   width: 100%;
-  z-index: 100;
-  position: absolute;
   margin-top: ${({ theme }) => theme.spacing.small};
   justify-content: space-between;
   background-color: ${({ theme }) => transparentize(0.2, theme.colors.gray[9])};
-  backdrop-filter: blur(10px);
-  bottom: -${({ theme }) => theme.spacing.small};
-  transform: translateY(100%);
   align-items: center;
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
+
+  ${({ theme, float }) =>
+    float &&
+    css`
+      z-index: 100;
+      position: absolute;
+      backdrop-filter: blur(10px);
+      bottom: -${theme.spacing.small};
+      transform: translateY(100%);
+    `}
 `
 
 export const ServiceSelectorLabel = styled.label`
