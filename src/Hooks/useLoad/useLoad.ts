@@ -2,6 +2,7 @@ import useDataStore from '../../Editor/Store/DataStore'
 import { NodeProperties, useEditorStore } from '../../Editor/Store/EditorStore'
 import { getContent } from '../../Editor/Store/helpers'
 import { NodeEditorContent } from '../../Editor/Store/Types'
+import { nanoid } from 'nanoid'
 
 const useLoad = () => {
   const loadNodeEditor = useEditorStore((store) => store.loadNode)
@@ -12,11 +13,14 @@ const useLoad = () => {
     const respectiveLink = ilinks.find((i) => i.uid === uid)
     console.log({ uid, ilinks, respectiveLink })
 
+    const UID = respectiveLink?.uid ?? uid
+    const text = respectiveLink?.text ?? uid
+
     return {
-      title: respectiveLink.text,
-      id: respectiveLink.text,
-      uid: respectiveLink.uid,
-      key: uid
+      title: text,
+      id: text,
+      uid: UID,
+      key: UID,
     }
   }
 
