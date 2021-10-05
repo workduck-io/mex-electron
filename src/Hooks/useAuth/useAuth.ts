@@ -1,0 +1,57 @@
+import create from 'zustand'
+import { confirmSignUp, signIn, signUp } from '../../Requests/Auth/Login'
+
+interface UserDetails {
+  email: string
+}
+interface AuthStoreState {
+  authenticated: boolean
+  registered: boolean
+  userDetails: undefined | UserDetails
+  setAuthenticated: (userDetails: UserDetails) => void
+  setUnAuthenticated: () => void
+  setRegistered: (val: boolean) => void
+}
+
+export const useAuthStore = create<AuthStoreState>((set) => ({
+  authenticated: false,
+  registered: false,
+  userDetails: undefined,
+  setAuthenticated: (userDetails) => set({ authenticated: true, userDetails }),
+  setUnAuthenticated: () => set({ authenticated: false, userDetails: undefined }),
+  setRegistered: (val) => set({ registered: val })
+}))
+
+export const useAuthentication = () => {
+  const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
+  const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
+  const setRegistered = useAuthStore((store) => store.setRegistered)
+
+  const login = async (email: string, password: string) => {
+    signIn({ email, password }).then(() => {
+      setAuthenticated({ email })
+    })
+  }
+
+  const registerDetails = (email: string, password: string) => {
+    signUp({
+      email,
+      password
+    }).then(() => {
+      setRegistered(true)
+    })
+  }
+
+  const verifySignup = (email: string, code: string) => {
+    confirmSignUp({ email, code }).then(() => {
+      setRegistered(false)
+      setAuthenticated({ email })
+    })
+  }
+
+  const logout = () => {
+    setUnAuthenticated()
+  }
+
+  return { login, registerDetails, logout, verifySignup }
+}

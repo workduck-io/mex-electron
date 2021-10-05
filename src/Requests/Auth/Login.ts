@@ -17,7 +17,6 @@ export interface SignInRequest {
 export interface SignUpRequest {
   email: string
   password: string
-  username: string
 }
 
 /**
@@ -25,11 +24,25 @@ export interface SignUpRequest {
  * - Code
  */
 export interface ConfirmSignUpRequest {
-  username: string
+  email: string
   code: string
 }
 
 export async function signIn (request: SignInRequest): Promise<any> {
   const user = await Auth.signIn(request.email, request.password)
   return user.getSignInUserSession()
+}
+
+export async function signUp (request: SignUpRequest) {
+  await Auth.signUp({
+    attributes: {
+      email: request.email
+    },
+    username: request.email,
+    password: request.password
+  })
+}
+
+export async function confirmSignUp (request: ConfirmSignUpRequest) {
+  await Auth.confirmSignUp(request.email, request.code)
 }

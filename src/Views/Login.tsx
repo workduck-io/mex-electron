@@ -1,7 +1,10 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { signIn } from '../Requests/Auth/Login'
+import { Link } from 'react-router-dom'
+import { useAuthentication } from '../Hooks/useAuth/useAuth'
+import { Card } from '../Styled/Card'
 import { InputBlock } from '../Styled/Form'
+import Centered from '../Styled/Layouts'
 
 interface LoginFormData {
   email: string
@@ -13,29 +16,29 @@ const Login = () => {
     handleSubmit,
     register,
     formState: { errors }
-  } = useForm()
+  } = useForm<LoginFormData>()
+  const { login } = useAuthentication()
 
-  const onSubmit = async (data) => {
-    const res = await signIn({
-      email: data.email,
-      password: data.password
-    })
-    console.log({ data, res })
+  const onSubmit = (data: LoginFormData) => {
+    login(data.email, data.password)
   }
 
   return (
-    <div>
-      <h1>Login</h1>
-      <p>Please login</p>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <InputBlock {...register('email', { required: true })} />
-        {errors.email?.type === 'required' && 'Email is required'}
-        <InputBlock {...register('password', { required: true })} />
-        {errors.password?.type === 'required' && 'Password is required'}
+    <Centered>
+      <Card>
+        <h1>Login</h1>
+        <p>Please login</p>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <InputBlock {...register('email', { required: true })} />
+          {errors.email?.type === 'required' && 'Email is required'}
+          <InputBlock {...register('password', { required: true })} />
+          {errors.password?.type === 'required' && 'Password is required'}
 
-        <InputBlock type="submit" />
-      </form>
-    </div>
+          <InputBlock type="submit" />
+        </form>
+        <Link to={'/register'}>Register</Link>
+      </Card>
+    </Centered>
   )
 }
 

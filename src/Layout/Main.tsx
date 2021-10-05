@@ -15,6 +15,7 @@ import { useSyncData } from '../Data/useSyncData'
 import { getUidFromNodeIdBase } from '../Editor/Actions/useLinks'
 import { useEditorStore } from '../Editor/Store/EditorStore'
 import { useRecentsStore } from '../Editor/Store/RecentsStore'
+import { useAuthStore } from '../Hooks/useAuth/useAuth'
 import useLoad from '../Hooks/useLoad/useLoad'
 import { useNavigation } from '../Hooks/useNavigation/useNavigation'
 import { IpcAction } from '../Spotlight/utils/constants'
@@ -40,6 +41,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const history = useHistory()
   const nodeId = useEditorStore((state) => state.node.id)
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
+  const authenticated = useAuthStore((store) => store.authenticated)
 
   const { move, push } = useNavigation()
 
@@ -62,7 +64,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
           init(d)
           return d
         })
-        .then((d) => loadNode(getUidFromNodeIdBase(d.ilinks, '@')))
+        .then((d) => authenticated && loadNode(getUidFromNodeIdBase(d.ilinks, '@')))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -88,8 +90,8 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
   useEffect(() => {
     // Switch to the editor page whenever a new ID is loaded
-    history.push('/editor')
-  }, [nodeId]) // eslint-disable-line react-hooks/exhaustive-deps
+    if (authenticated) history.push('/editor')
+  }, [nodeId, authenticated]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
