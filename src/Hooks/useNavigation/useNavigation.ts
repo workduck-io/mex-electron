@@ -1,4 +1,3 @@
-import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { useHistoryStore } from '../../Editor/Store/HistoryStore'
 import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 import useLoad from '../useLoad/useLoad'
@@ -10,23 +9,23 @@ export const useNavigation = () => {
   const replaceHs = useHistoryStore((store) => store.replace)
   const moveHs = useHistoryStore((store) => store.move)
   const addRecent = useRecentsStore((store) => store.addRecent)
-  const getCurrentNodeId = useHistoryStore((store) => store.getCurrentNodeId)
+  const getCurrentUID = useHistoryStore((store) => store.getCurrentUId)
 
-  const push = (id: string) => {
-    pushHs(id)
-    addRecent(id)
-    loadNode(id)
+  const push = (uid: string) => {
+    pushHs(uid)
+    addRecent(uid)
+    loadNode(uid)
   }
 
-  const replace = (id: string) => {
-    replaceHs(id)
-    addRecent(id)
-    loadNode(id)
+  const replace = (uid: string) => {
+    replaceHs(uid)
+    addRecent(uid)
+    loadNode(uid)
   }
 
   const move = (dist: number) => {
     moveHs(dist)
-    const newId = getCurrentNodeId()
+    const newId = getCurrentUID()
     if (newId) {
       loadNode(newId)
       addRecent(newId)

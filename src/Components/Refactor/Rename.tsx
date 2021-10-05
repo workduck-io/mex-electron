@@ -1,18 +1,19 @@
 import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
 import { Icon } from '@iconify/react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Modal from 'react-modal'
-import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import tinykeys from 'tinykeys'
+import create from 'zustand'
+import { useLinks } from '../../Editor/Actions/useLinks'
 import { useRefactor } from '../../Editor/Actions/useRefactor'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import { Button } from '../../Styled/Buttons'
 import { NodeLink } from '../../Types/relations'
 import { useHelpStore } from '../Help/HelpModal'
 import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
-import create from 'zustand'
 
 interface RenameStoreState {
   open: boolean
@@ -84,6 +85,8 @@ const Rename = () => {
   const setTo = useRenameStore((store) => store.setTo)
   const setFrom = useRenameStore((store) => store.setFrom)
 
+  const { getUidFromNodeId } = useLinks()
+
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showRename.keystrokes]: (event) => {
@@ -127,10 +130,12 @@ const Rename = () => {
       const res = execRefactor(from, to)
 
       const nodeId = useEditorStore.getState().node.id
+      const uid = useEditorStore.getState().node.uid
       if (doesLinkRemain(nodeId, res)) {
-        push(nodeId)
+        push(uid)
       } else if (res.length > 0) {
-        push(res[0].to)
+        const uid = getUidFromNodeId(res[0].to)
+        push(uid)
       }
     }
 

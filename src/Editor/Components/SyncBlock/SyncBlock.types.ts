@@ -89,7 +89,7 @@ export type SyncContextType = {
     intents: SyncStoreIntents
   ) => void
   editSyncBlock: (block: SyncBlockData) => void
-  addIgid: (id: string, igid: string, intents: Intent[], templateId: string) => void
-  addIntentEmptyMap: (id: string) => void
-  updateIntentsAndIGIDs: (id: string, nodeIntentConfig: NodeIntentConfig) => void
+  addIgid: (uid: string, igid: string, intents: Intent[], templateId: string) => void
+  addIntentEmptyMap: (uid: string) => void
+  updateIntentsAndIGIDs: (uid: string, nodeIntentConfig: NodeIntentConfig) => void
 }

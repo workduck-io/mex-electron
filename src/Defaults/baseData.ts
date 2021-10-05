@@ -2,16 +2,19 @@ import { sampleServices } from '../Components/Integrations/sampleServices'
 import { generateComboTexts, generateILinks } from '../Editor/Store/sampleTags'
 import { FileData } from '../Types/data'
 
+const links = generateILinks(['doc', 'dev', 'design', '@', 'Draft'])
+
+const contents = links.reduce((prev, cur) => {
+  return {
+    ...prev,
+    [cur.uid]: { type: 'init', content: [{ children: [{ text: '' }] }] }
+  }
+}, {})
+
 export const DefaultFileData: FileData = {
   remoteUpdate: true,
-  ilinks: generateILinks(['doc', 'dev', 'design', '@', 'Draft']),
-  contents: {
-    '@': { type: 'init', content: [{ children: [{ text: '' }] }] },
-    doc: { type: 'init', content: [{ children: [{ text: '' }] }] },
-    dev: { type: 'init', content: [{ children: [{ text: '' }] }] },
-    design: { type: 'init', content: [{ children: [{ text: '' }] }] },
-    Draft: { type: 'init', content: [{ children: [{ text: '' }] }] }
-  },
+  ilinks: links,
+  contents,
   linkCache: {},
   tags: generateComboTexts(['mex']),
   syncBlocks: [],

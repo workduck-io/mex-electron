@@ -1,9 +1,9 @@
+import { uniq } from 'lodash'
+import { hasLink } from '../../Lib/links'
 import { NodeLink } from '../../Types/relations'
 import { useContentStore } from '../Store/ContentStore'
-import { uniq } from 'lodash'
 import useDataStore from '../Store/DataStore'
-import { CachedILink } from '../Store/Types'
-import { hasLink } from '../../Lib/links'
+import { CachedILink, ILink } from '../Store/Types'
 
 const getLinksFromContent = (content: any[]): string[] => {
   let links: string[] = []
@@ -45,37 +45,37 @@ export const useLinks = () => {
     return allLinks
   }
 
-  const getLinks = (id: string): NodeLink[] => {
-    const links = linkCache[id]
+  const getLinks = (uid: string): NodeLink[] => {
+    const links = linkCache[uid]
     if (links) {
       return links.map((l) => {
         return {
-          [l.type]: l.nodeId,
-          [l.type === 'from' ? 'to' : 'from']: id
+          [l.type]: l.uid,
+          [l.type === 'from' ? 'to' : 'from']: uid
         } as unknown as NodeLink
       })
     }
     return []
   }
 
-  const getBacklinks = (id: string) => {
-    const links = linkCache[id]
+  const getBacklinks = (uid: string) => {
+    const links = linkCache[uid]
     if (links) {
       return links.filter((l) => l.type === 'from')
     }
     return []
   }
 
-  const updateLinksFromContent = (nodeId: string, content: any[]) => {
-    // console.log('We are updating', nodeId, content, linkCache)
+  const updateLinksFromContent = (uid: string, content: any[]) => {
+    // console.log('We are updating', uid, content, linkCache)
 
     if (content) {
       const links: CachedILink[] = getLinksFromContent(content).map((l) => ({
         type: 'to',
-        nodeId: l
+        uid: getUidFromNodeId(l)
       }))
 
-      let currentLinks = linkCache[nodeId]
+      let currentLinks = linkCache[uid]
       if (!currentLinks) currentLinks = []
 
       const currentToLinks = currentLinks.filter((l) => l.type === 'to')
@@ -88,10 +88,31 @@ export const useLinks = () => {
         return !hasLink(l, currentLinks)
       })
 
-      toLinkstoDelete.map((l) => removeInternalLink(l, nodeId))
-      toLinkstoAdd.map((l) => addInternalLink(l, nodeId))
+      toLinkstoDelete.map((l) => removeInternalLink(l, uid))
+      toLinkstoAdd.map((l) => addInternalLink(l, uid))
     }
   }
 
-  return { getAllLinks, getLinks, getBacklinks, updateLinksFromContent }
+  const getUidFromNodeId = (nodeId: string) => {
+    const links = useDataStore.getState().ilinks
+
+    const link = links.find((l) => l.text === nodeId)
+
+    if (link) return link.uid
+  }
+
+  const getNodeIdFromUid = (uid: string) => {
+    const links = useDataStore.getState().ilinks
+
+    const link = links.find((l) => l.uid === uid)
+
+    if (link) return link.text
+  }
+
+  return { getAllLinks, getLinks, getBacklinks, updateLinksFromContent, getUidFromNodeId, getNodeIdFromUid }
+}
+
+export const getUidFromNodeIdBase = (links: ILink[], nodeId: string) => {
+  const link = links.find((l) => l.text === nodeId)
+  if (link) return link.uid
 }

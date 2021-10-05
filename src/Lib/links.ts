@@ -1,9 +1,9 @@
-import { CachedILink } from '../Editor/Store/Types'
 import { isEqual } from 'lodash'
+import { CachedILink } from '../Editor/Store/Types'
 
 export const hasLink = (link: CachedILink, links: CachedILink[]): boolean => {
   const filtered = links.filter((l) => {
-    return link.nodeId === l.nodeId && link.type === l.type
+    return link.uid === l.uid && link.type === l.type
   })
   return filtered.length > 0
 }

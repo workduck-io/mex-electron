@@ -2,15 +2,15 @@ import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
-import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import tinykeys from 'tinykeys'
+import create from 'zustand'
 import { useDelete } from '../../Editor/Actions/useDelete'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import { Button } from '../../Styled/Buttons'
 import { useHelpStore } from '../Help/HelpModal'
 import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
-import create from 'zustand'
 
 interface DeleteStoreState {
   open: boolean
@@ -95,7 +95,7 @@ const Delete = () => {
 
   const handleDelete = () => {
     const { newLinks } = execDelete(del)
-    if (newLinks.length > 0) push(newLinks[0].text)
+    if (newLinks.length > 0) push(newLinks[0].uid)
     closeModal()
   }
 

@@ -1,18 +1,17 @@
 import { search as getSearchResults } from 'fast-fuzzy'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
+import { useContentStore } from '../../../Editor/Store/ContentStore'
+import useDataStore from '../../../Editor/Store/DataStore'
+import useLoad from '../../../Hooks/useLoad/useLoad'
+import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
+import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
 import { DEFAULT_PREVIEW_TEXT } from '../../utils/constants'
 import { useSpotlightContext } from '../../utils/context'
 import { useCurrentIndex } from '../../utils/hooks'
 import Preview from '../Preview'
 import SideBar from '../SideBar'
-import { useContentStore } from '../../../Editor/Store/ContentStore'
-import { useEditorStore } from '../../../Editor/Store/EditorStore'
-import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
-import useDataStore from '../../../Editor/Store/DataStore'
-import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
-import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
-import useLoad from '../../../Hooks/useLoad/useLoad'
 
 export const StyledContent = styled.section`
   display: flex;
@@ -72,7 +71,7 @@ const Content = () => {
     const results = getSearchResults(search, ilinks, { keySelector: (obj) => obj.key })
     if (search) {
       const resultsWithContent = results.map((result) => {
-        const content = getContent(result.key)
+        const content = getContent(result.uid)
         let rawText = ''
 
         content?.content.map((item) => {

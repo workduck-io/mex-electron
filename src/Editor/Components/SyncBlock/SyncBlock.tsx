@@ -30,7 +30,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
   const { register, getValues } = useForm<FormValues>()
   const editSyncBlock = useSyncStore((state) => state.editSyncBlock)
 
-  const nodeUniqueId = useEditorStore((store) => store.node.id)
+  const uid = useEditorStore((store) => store.node.uid)
   const parentNodeId = useEditorStore((store) => store.node.key)
   const blocksData = useSyncStore((state) => state.syncBlocks)
   const blockDataFiltered = blocksData.filter((d) => d.id === element.id)
@@ -49,7 +49,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
   const blockData = blockDataFiltered[0] as SyncBlockData
 
-  const intents = getIntents(nodeUniqueId, blockData.templateId)
+  const intents = getIntents(uid, blockData.templateId)
   const template = getTemplate(blockData.templateId)
 
   const areAllIntentsPresent = intents.reduce((prev, cur) => {
@@ -71,7 +71,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
     // console.log('Saving Intents', { changedIntents })
 
     const newIgid = updateNodeIntentsAndCreateIGID(
-      nodeUniqueId,
+      uid,
       Object.keys(changedIntents).map((s) => {
         return changedIntents[s]
       }),

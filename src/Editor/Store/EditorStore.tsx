@@ -1,7 +1,6 @@
 import React from 'react'
 import create from 'zustand'
 import { getContent, getInitialNode } from './helpers'
-import TreeNode from '../../Types/tree'
 import { NodeEditorContent } from './Types'
 
 export interface NodeProperties {
@@ -43,7 +42,7 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
   loadNode: (node: NodeProperties) => {
     set(() => ({
       node,
-      content: getContent(node.id)
+      content: getContent(node.uid)
     }))
   },
 

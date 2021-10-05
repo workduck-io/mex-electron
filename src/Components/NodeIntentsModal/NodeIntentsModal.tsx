@@ -1,6 +1,7 @@
 import React from 'react'
 import Modal from 'react-modal'
 import create from 'zustand'
+import { useLinks } from '../../Editor/Actions/useLinks'
 import { Intent } from '../../Editor/Components/SyncBlock'
 import IntentSelector from '../../Editor/Components/SyncBlock/intentSelector'
 import useIntents from '../../Hooks/useIntents/useIntents'
@@ -10,10 +11,10 @@ import { Note } from '../../Styled/Typography'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 
 export interface NodeIntegrationsModalProps {
-  id: string
+  uid: string
 }
 
-interface NodeIntentsModal {
+interface NodeIntentsModalProps {
   open: boolean
   intents: { [id: string]: Intent }
   toggleModal: () => void
@@ -22,7 +23,7 @@ interface NodeIntentsModal {
   appendIntent: (intent: Intent) => void
 }
 
-export const useNodeIntentsModalStore = create<NodeIntentsModal>((set) => ({
+export const useNodeIntentsModalStore = create<NodeIntentsModalProps>((set) => ({
   open: false,
   intents: {},
   openModal: () => set({ open: true }),
@@ -40,19 +41,20 @@ export const useNodeIntentsModalStore = create<NodeIntentsModal>((set) => ({
     }))
 }))
 
-const NodeIntentsModal = ({ id }: NodeIntegrationsModalProps) => {
+const NodeIntentsModal = ({ uid }: NodeIntegrationsModalProps) => {
   const { getNodeIntents, updateNodeIntents } = useIntents()
-  const intentMap = getNodeIntents(id)
+  const intentMap = getNodeIntents(uid)
   const closeModal = useNodeIntentsModalStore((store) => store.closeModal)
   const open = useNodeIntentsModalStore((store) => store.open)
   const intents = useNodeIntentsModalStore((store) => store.intents)
   const appendIntent = useNodeIntentsModalStore((store) => store.appendIntent)
+  const { getNodeIdFromUid } = useLinks()
 
   const onSave = () => {
     console.log('onSave', intents)
     // Replace intents in intents and specific intent groups
     updateNodeIntents(
-      id,
+      uid,
       Object.keys(intents).map((s) => {
         return intents[s]
       })
@@ -71,7 +73,7 @@ const NodeIntentsModal = ({ id }: NodeIntegrationsModalProps) => {
 
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
-      <ModalHeader>Node Intents for {id}</ModalHeader>
+      <ModalHeader>Node Intents for {getNodeIdFromUid(uid)}</ModalHeader>
       <Note>Node intents are used to sync blocks to specific places of applications.</Note>
 
       {intentMap.map((i) => (

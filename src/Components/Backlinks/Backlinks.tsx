@@ -2,12 +2,11 @@ import arrowGoBackLine from '@iconify-icons/ri/arrow-go-back-line'
 import { Icon } from '@iconify/react'
 import { transparentize } from 'polished'
 import React from 'react'
-import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import styled from 'styled-components'
 import { useLinks } from '../../Editor/Actions/useLinks'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import { Note } from '../../Styled/Typography'
-import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 
 const BackLinkWrapper = styled.div`
   display: flex;
@@ -60,7 +59,8 @@ const BackLinksHeader = styled.div`
 const Backlinks = () => {
   const { getBacklinks } = useLinks()
   const { push } = useNavigation()
-  const backlinks = getBacklinks(useEditorStore.getState().node.id)
+  const backlinks = getBacklinks(useEditorStore.getState().node.uid)
+  const { getNodeIdFromUid } = useLinks()
 
   return (
     <BackLinkWrapper>
@@ -76,8 +76,8 @@ const Backlinks = () => {
           </>
         )}
         {backlinks.map((l) => (
-          <BackLink key={`backlink_${l.nodeId}`} onClick={() => push(l.nodeId)}>
-            {l.nodeId}
+          <BackLink key={`backlink_${l.uid}`} onClick={() => push(l.uid)}>
+            {getNodeIdFromUid(l.uid)}
           </BackLink>
         ))}
       </SBackLinks>

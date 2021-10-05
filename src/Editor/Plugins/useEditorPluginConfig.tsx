@@ -24,7 +24,7 @@ const useEditorPluginConfig = (editorId: string) => {
   const snippetConfigs = getSnippetsConfigs()
   const syncBlockConfigs = getSyncBlockConfigs()
 
-  console.log({ syncBlockConfigs })
+  // console.log({ syncBlockConfigs })
 
   const pluginConfigs = {
     combobox: {

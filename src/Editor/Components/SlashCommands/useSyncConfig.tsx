@@ -17,14 +17,14 @@ export const useSyncConfig = () => {
   } => {
     const configs = templates.reduce((prev, cur) => {
       // Current Template
-      const editorNodeId = useEditorStore.getState().node.id
+      const curUid = useEditorStore.getState().node.uid
       const command = getSyncCommand(cur.command)
       const config = {
         slateElementType: ELEMENT_SYNC_BLOCK,
         command,
         getBlockData: () => {
           const id = `SYNC_${nanoid()}`
-          const igid = checkAndGenerateIGID(editorNodeId, cur.id)
+          const igid = checkAndGenerateIGID(curUid, cur.id)
           const nd = {
             id,
             igid,

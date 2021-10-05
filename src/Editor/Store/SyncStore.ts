@@ -54,25 +54,25 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
       templates: [...state.templates, template]
     })),
 
-  addIntentEmptyMap: (id) =>
+  addIntentEmptyMap: (uid) =>
     set((state) => ({
       intents: {
         ...state.intents,
-        [id]: {
-          intents: [defaultMexIntent(id)],
+        [uid]: {
+          intents: [defaultMexIntent(uid)],
           intentGroups: {}
         }
       }
     })),
 
-  addIgid: (id, igid, intents, templateId) =>
+  addIgid: (uid, igid, intents, templateId) =>
     set((state) => ({
       intents: {
         ...state.intents,
-        [id]: {
-          ...state.intents[id],
+        [uid]: {
+          ...state.intents[uid],
           intentGroups: {
-            ...state.intents[id].intentGroups,
+            ...state.intents[uid].intentGroups,
             [igid]: {
               templateId,
               intents
@@ -82,11 +82,11 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
       }
     })),
 
-  updateIntentsAndIGIDs: (id, nodeIntentConfig) =>
+  updateIntentsAndIGIDs: (uid, nodeIntentConfig) =>
     set((state) => ({
       intents: {
         ...state.intents,
-        [id]: nodeIntentConfig
+        [uid]: nodeIntentConfig
       }
     }))
 }))

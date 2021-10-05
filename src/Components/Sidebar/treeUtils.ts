@@ -60,10 +60,11 @@ export const getNodeIdLast = (id: string) => {
   return id
 }
 
-const createChildLess = (n: string): TreeNode => ({
+const createChildLess = (n: string, uid: string): TreeNode => ({
   id: n,
   title: getNodeIdLast(n),
   key: n,
+  uid,
   mex_icon: undefined,
   children: []
 })
@@ -95,20 +96,20 @@ const insertInNested = (iNode: TreeNode, nestedTree: TreeNode[]) => {
 }
 
 // Generate nested node tree from a list of ordered id strings
-export const generateTree = (tree: string[]) => {
+export const generateTree = (tree: { id: string; uid: string }[]) => {
   // tree should be sorted
   let nestedTree: TreeNode[] = []
   tree.forEach((n) => {
-    const parentId = getParentId(n)
+    const parentId = getParentId(n.id)
     if (parentId === null) {
       // add to tree first level
-      nestedTree.push(createChildLess(n))
+      nestedTree.push(createChildLess(n.id, n.uid))
     } else {
       // Will have a parent
-      nestedTree = insertInNested(createChildLess(n), nestedTree)
+      nestedTree = insertInNested(createChildLess(n.id, n.uid), nestedTree)
     }
   })
   return nestedTree
 }
 
-export default generateTree(sampleFlatTree)
+// export default generateTree(sampleFlatTree)

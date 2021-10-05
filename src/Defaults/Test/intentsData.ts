@@ -59,9 +59,9 @@ export const templates: SyncBlockTemplate[] = [
   }
 ]
 
-export const defaultMexIntent = (id: string) => ({
+export const defaultMexIntent = (uid: string) => ({
   service: 'MEX',
   type: 'node',
   name: 'Node',
-  value: id
+  value: uid
 })

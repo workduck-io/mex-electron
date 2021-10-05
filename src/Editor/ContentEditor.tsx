@@ -1,19 +1,19 @@
-import settings4Line from '@iconify-icons/ri/settings-4-line'
 import bubbleChartLine from '@iconify-icons/ri/bubble-chart-line'
+import focusLine from '@iconify-icons/ri/focus-line'
+import settings4Line from '@iconify-icons/ri/settings-4-line'
 import React, { useEffect, useState } from 'react'
 import ReactTooltip from 'react-tooltip'
-import useLayout from '../Layout/useLayout'
+import tinykeys from 'tinykeys'
 import { useGraphStore } from '../Components/Graph/GraphStore'
+import { useHelpStore } from '../Components/Help/HelpModal'
+import NodeIntentsModal, { useNodeIntentsModalStore } from '../Components/NodeIntentsModal/NodeIntentsModal'
+import { useLayoutStore } from '../Layout/LayoutStore'
+import useLayout from '../Layout/useLayout'
 import IconButton from '../Styled/Buttons'
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor'
 import { SaverButton } from './Components/Saver'
 import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
-import { useLayoutStore } from '../Layout/LayoutStore'
-import focusLine from '@iconify-icons/ri/focus-line'
-import tinykeys from 'tinykeys'
-import { useHelpStore } from '../Components/Help/HelpModal'
-import NodeIntentsModal, { useNodeIntentsModalStore } from '../Components/NodeIntentsModal/NodeIntentsModal'
 
 const ContentEditor = () => {
   const title = useEditorStore((state) => state.node.title)
@@ -28,7 +28,7 @@ const ContentEditor = () => {
     ReactTooltip.rebuild()
   }, [])
 
-  const id = useEditorStore((state) => state.node.id)
+  const uid = useEditorStore((state) => state.node.uid)
   const fsContent = useEditorStore((state) => state.content)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,7 +38,7 @@ const ContentEditor = () => {
     if (fsContent) {
       setContent(fsContent)
     }
-  }, [fsContent, id])
+  }, [fsContent, uid])
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
@@ -85,9 +85,9 @@ const ContentEditor = () => {
           </InfoTools>
         </NodeInfo>
 
-        <Editor showBalloonToolbar content={content} editorId={id} />
+        <Editor showBalloonToolbar content={content} editorId={uid} />
       </StyledEditor>
-      <NodeIntentsModal id={id} />
+      <NodeIntentsModal uid={uid} />
     </>
   )
 }

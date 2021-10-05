@@ -12,6 +12,7 @@ import links from '../Conf/links'
 import { useInitialize } from '../Data/useInitialize'
 import { useLocalData } from '../Data/useLocalData'
 import { useSyncData } from '../Data/useSyncData'
+import { getUidFromNodeIdBase } from '../Editor/Actions/useLinks'
 import { useEditorStore } from '../Editor/Store/EditorStore'
 import { useRecentsStore } from '../Editor/Store/RecentsStore'
 import useLoad from '../Hooks/useLoad/useLoad'
@@ -57,8 +58,11 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
         //   console.log('Data here', d);
         //   return d
         // })
-        .then((d) => init(d))
-        .then(() => loadNode('@'))
+        .then((d) => {
+          init(d)
+          return d
+        })
+        .then((d) => loadNode(getUidFromNodeIdBase(d.ilinks, '@')))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

@@ -7,7 +7,6 @@ import { useSnippetStore } from '../Editor/Store/SnippetStore'
 import { useSyncStore } from '../Editor/Store/SyncStore'
 import useThemeStore from '../Editor/Store/ThemeStore'
 import useLoad from '../Hooks/useLoad/useLoad'
-import { useNavigation } from '../Hooks/useNavigation/useNavigation'
 import { extractSnippetCommands } from '../Snippets/useSnippets'
 import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
 import { getTheme } from '../Styled/themes/defaultThemes'
@@ -21,7 +20,6 @@ export enum AppType {
 export const useInitialize = () => {
   const initializeDataStore = useDataStore((state) => state.initializeDataStore)
   const initContents = useContentStore((state) => state.initContents)
-  const { push } = useNavigation()
   const initSpotlightSettings = useSpotlightSettingsStore((state) => state.initSpotlightSettings)
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setTheme = useThemeStore((state) => state.setTheme)
