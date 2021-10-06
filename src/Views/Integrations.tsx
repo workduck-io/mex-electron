@@ -20,7 +20,7 @@ import {
   SlashCommand,
   SlashCommandPrefix,
   Template,
-  TemplatesGrid
+  TemplatesGrid,
 } from '../Styled/Integrations'
 import { SpaceBetweenHorizontalFlex, Wrapper } from '../Styled/Layouts'
 import { Note, Title } from '../Styled/Typography'
@@ -44,6 +44,8 @@ const Integrations = () => {
     // store new services
     connectService(id)
   }
+
+  console.log({ services })
 
   return (
     <Wrapper>
