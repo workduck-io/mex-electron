@@ -1,8 +1,8 @@
 import { Icon } from '@iconify/react'
-import styled from 'styled-components'
 import React from 'react'
-import { PixelToCSS, ThinScrollbar } from './helpers'
 import { animated } from 'react-spring'
+import styled from 'styled-components'
+import { PixelToCSS, ThinScrollbar } from './helpers'
 
 export const Sicon = styled(Icon)`
   height: 26px;
@@ -20,6 +20,7 @@ export const SIcon = (props: any) => {
 export const SidebarDiv = styled(animated.div)`
   height: 100%;
   max-width: ${({ theme }) => PixelToCSS(theme.width.sidebar)};
+  width: 100%;
 `
 
 export const SidebarContent = styled.div`

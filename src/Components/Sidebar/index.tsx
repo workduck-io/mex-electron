@@ -14,9 +14,18 @@ export const useFocusTransition = () => {
   const focusMode = useLayoutStore((store) => store.focusMode)
 
   const transitions = useTransition(!focusMode, {
-    from: { opacity: 0, width: '0%' },
-    enter: { opacity: 1, width: '100%' },
-    leave: { opacity: 0, width: '0%' },
+    from: {
+      opacity: 0
+      // width: '0%',
+    },
+    enter: {
+      opacity: 1
+      // width: '100%',
+    },
+    leave: {
+      opacity: 0
+      // width: '0%',
+    },
     reverse: !focusMode,
     delay: 0,
     config: config.slow,

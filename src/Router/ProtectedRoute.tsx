@@ -5,7 +5,7 @@ import { useAuthStore } from '../Hooks/useAuth/useAuth'
 const ProtectedRoute = ({ component: Component, path }: RouteProps) => {
   const authenticated = useAuthStore((store) => store.authenticated)
   if (!authenticated) {
-    return <Redirect to="/login" />
+    return <Redirect to="/register" />
   }
 
   return <Route component={Component} path={path} />

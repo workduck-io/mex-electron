@@ -1,10 +1,12 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import Input from '../Components/Forms/Input'
 import { useAuthentication } from '../Hooks/useAuth/useAuth'
-import { Card } from '../Styled/Card'
-import { InputBlock } from '../Styled/Form'
-import Centered from '../Styled/Layouts'
+import { Button } from '../Styled/Buttons'
+import { BackCard, FooterCard } from '../Styled/Card'
+import { CenteredColumn } from '../Styled/Layouts'
+import { Title } from '../Styled/Typography'
 
 interface LoginFormData {
   email: string
@@ -24,21 +26,43 @@ const Login = () => {
   }
 
   return (
-    <Centered>
-      <Card>
-        <h1>Login</h1>
-        <p>Please login</p>
+    <CenteredColumn>
+      <BackCard>
+        <Title>Login</Title>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <InputBlock {...register('email', { required: true })} />
-          {errors.email?.type === 'required' && 'Email is required'}
-          <InputBlock {...register('password', { required: true })} />
-          {errors.password?.type === 'required' && 'Password is required'}
+          <Input
+            name="email"
+            label="Email"
+            inputProps={{
+              autoFocus: true,
+              ...register('email', {
+                required: true
+              })
+            }}
+            error={errors.email?.type === 'required' ? 'Email is required' : undefined}
+          ></Input>
 
-          <InputBlock type="submit" />
+          <Input
+            name="password"
+            label="Password"
+            inputProps={{
+              type: 'password',
+              ...register('password', {
+                required: true
+              })
+            }}
+            error={errors.password?.type === 'required' ? 'Password is required' : undefined}
+          ></Input>
+          <br />
+          <Button size="large" type="submit" primary>
+            Login
+          </Button>
         </form>
+      </BackCard>
+      <FooterCard>
         <Link to={'/register'}>Register</Link>
-      </Card>
-    </Centered>
+      </FooterCard>
+    </CenteredColumn>
   )
 }
 
