@@ -14,12 +14,12 @@ interface AuthStoreState {
 }
 
 export const useAuthStore = create<AuthStoreState>((set) => ({
-  authenticated: false,
+  authenticated: true,
   registered: false,
   userDetails: undefined,
   setAuthenticated: (userDetails) => set({ authenticated: true, userDetails }),
   setUnAuthenticated: () => set({ authenticated: false, userDetails: undefined }),
-  setRegistered: (val) => set({ registered: val })
+  setRegistered: (val) => set({ registered: val }),
 }))
 
 export const useAuthentication = () => {
@@ -36,7 +36,7 @@ export const useAuthentication = () => {
   const registerDetails = (email: string, password: string) => {
     signUp({
       email,
-      password
+      password,
     }).then(() => {
       setRegistered(true)
     })

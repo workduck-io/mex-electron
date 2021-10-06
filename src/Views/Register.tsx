@@ -15,7 +15,7 @@ const Register = () => {
   const {
     handleSubmit,
     register,
-    formState: { errors }
+    formState: { errors },
   } = useForm<RegisterFormData>()
 
   const { registerDetails, verifySignup } = useAuthentication()

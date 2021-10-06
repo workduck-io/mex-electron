@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid'
 import { defaultCommands } from '../Defaults/slashCommands'
 import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
 import { useContentStore } from '../Editor/Store/ContentStore'
@@ -24,7 +25,7 @@ export const useInitialize = () => {
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setTheme = useThemeStore((state) => state.setTheme)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
-  const { loadNodeProps } = useLoad()
+  const { loadNode } = useLoad()
 
   const update = (data: FileData) => {
     const { tags, ilinks, linkCache, contents, syncBlocks, snippets, templates, services, intents } = data
@@ -43,16 +44,9 @@ export const useInitialize = () => {
   const init = (data: FileData, initNodeId?: string, initFor?: AppType) => {
     update(data)
     const keyToLoad = initNodeId || '@'
-    const uidNode = data.ilinks.find((i) => i.key === keyToLoad)
-    // console.log({ uidNode, di: data.ilinks, initNodeId })
 
     if (initFor === AppType.SPOTLIGHT) {
-      loadNodeProps({
-        title: keyToLoad,
-        id: keyToLoad,
-        uid: uidNode.uid,
-        key: keyToLoad
-      })
+      loadNode(keyToLoad)
     }
   }
 
