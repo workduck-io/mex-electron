@@ -2,9 +2,11 @@ import settings4Line from '@iconify-icons/ri/settings-4-line'
 import { transparentize } from 'polished'
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { useLayoutStore } from '../../Layout/LayoutStore'
 import styled, { css } from 'styled-components'
 import { GetIcon } from '../../Conf/links'
+import { useAuthentication, useAuthStore } from '../../Hooks/useAuth/useAuth'
+import { useLayoutStore } from '../../Layout/LayoutStore'
+import { Button } from '../../Styled/Buttons'
 import { NavProps } from './Types'
 
 interface StyledDivProps {
@@ -67,6 +69,8 @@ const Link = styled(NavLink)`
 `
 
 const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
+  const { logout } = useAuthentication()
+  const authenticated = useAuthStore((store) => store.authenticated)
   const focusMode = useLayoutStore((store) => store.focusMode)
   return (
     <StyledDiv focusMode={focusMode}>
@@ -87,6 +91,21 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
         ))}
       </div>
       <div>
+        {authenticated ? (
+          <Button onClick={logout}>Logout</Button>
+        ) : (
+          <Link
+            exact
+            activeClassName="active"
+            to="/login"
+            key="nav_login"
+            // Tooltip
+            data-tip="Login"
+            data-class="nav-tooltip"
+          >
+            Login
+          </Link>
+        )}
         <Link
           exact
           activeClassName="active"

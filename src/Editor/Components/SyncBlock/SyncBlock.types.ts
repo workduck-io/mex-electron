@@ -10,7 +10,8 @@ export type connections = 'telegram' | 'slack' | 'notion' | 'github' | 'mex'
 export interface SyncBlockData {
   id: string
   content: string
-  connections: connections[]
+  igid: string | undefined
+  templateId: string
 }
 
 export interface SyncElementData {
@@ -18,8 +19,11 @@ export interface SyncElementData {
 }
 
 export interface SyncBlockTemplate {
-  id: string
-  intents: Intent[]
+  id: TemplateID
+  title: string
+  command: string
+  description: string
+  intents: IntentTemplate[]
 }
 
 export interface SyncBlockStyles {
@@ -28,26 +32,64 @@ export interface SyncBlockStyles {
   input: CSSProp
 }
 
-export interface Intent {
+export interface Service {
+  id: string
+  type: string
+  connected: boolean
+  styles: {
+    color: string
+    bgColor: string
+  }
+}
+export interface IntentTemplate {
   service: string
   type: string // channel/repo etc
-  value: string // ID of the intent
 }
+
+export interface Intent extends IntentTemplate {
+  name: string
+  value: string // ID of the intent
+  options?: any
+}
+
+export interface IntentGroup {
+  templateId: string
+  intents: Intent[]
+}
+
+type TemplateID = string
 
 export type SyncBlockProps = StyledElementProps<SyncElementData, SyncBlockStyles>
 
-export type SyncContextType = {
-  syncId: string
-  syncBlocks: SyncBlockData[]
-  syncBlockTemplates: SyncBlockData[]
-  intents: {
-    [id: string]: {
-      intents: Intent[]
-      intentGroups: { [templateId: string]: Intent[] }
-    } // ID of the node is mapped with intents
+export interface NodeIntentConfig {
+  intents: Intent[]
+  intentGroups: {
+    [IntentGroupID: string]: IntentGroup
   }
+}
+
+export interface SyncStoreIntents {
+  [id: string]: NodeIntentConfig
+  // ID of the node is mapped with intents
+}
+
+export type SyncContextType = {
+  syncBlocks: SyncBlockData[]
+  templates: SyncBlockTemplate[]
+  services: Service[]
+  intents: SyncStoreIntents
   // Load a node and its contents in the editor
   addSyncBlock: (block: SyncBlockData) => void
-  initSyncBlocks: (syncBlocks: SyncBlockData[]) => void
+  addTemplate: (template: SyncBlockTemplate) => void
+  connectService: (id: string) => void
+  initSyncBlocks: (
+    syncBlocks: SyncBlockData[],
+    templates: SyncBlockTemplate[],
+    services: Service[],
+    intents: SyncStoreIntents
+  ) => void
   editSyncBlock: (block: SyncBlockData) => void
+  addIgid: (uid: string, igid: string, intents: Intent[], templateId: string) => void
+  addIntentEmptyMap: (uid: string) => void
+  updateIntentsAndIGIDs: (uid: string, nodeIntentConfig: NodeIntentConfig) => void
 }

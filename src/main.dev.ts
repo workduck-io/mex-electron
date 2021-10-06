@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import chokidar from 'chokidar'
 import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, session, shell, Tray } from 'electron'
-import { getSelectedText } from './Spotlight/utils/getSelectedText'
-import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import fs from 'fs'
 import path from 'path'
+import { AppType } from './Data/useInitialize'
 import { DefaultFileData } from './Defaults/baseData'
 import { getSaveLocation } from './Defaults/data'
 import MenuBuilder from './menu'
-import { FileData } from './Types/data'
 import { IpcAction } from './Spotlight/utils/constants'
-import { AppType } from './Data/useInitialize'
+import { getSelectedText } from './Spotlight/utils/getSelectedText'
+import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
+import { FileData } from './Types/data'
 
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
@@ -168,7 +168,6 @@ const createMexWindow = () => {
 
   try {
     // Send data back if modified externally
-    console.log(getSaveLocation(app))
 
     chokidar
       .watch(getSaveLocation(app), {

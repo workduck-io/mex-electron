@@ -3,6 +3,8 @@ import { Contents, useContentStore } from '../Store/ContentStore'
 import useDataStore from '../Store/DataStore'
 import { useHistoryStore } from '../Store/HistoryStore'
 import { useRecentsStore } from '../Store/RecentsStore'
+import { ILink } from '../Store/Types'
+import { getUidFromNodeIdBase } from './useLinks'
 
 export const useDelete = () => {
   const ilinks = useDataStore((state) => state.ilinks)
@@ -42,13 +44,14 @@ export const useDelete = () => {
     // Remap the contents for links that remain
     const newContents: Contents = {}
     newIlinks.forEach((l) => {
-      newContents[l.text] = contents[l.text]
+      const uid = getUidFromNodeIdBase(newIlinks, l.text)
+      newContents[uid] = contents[uid]
     })
 
-    const { newIds: newHistory, currentIndex: newCurIndex } = applyDeleteToIds(historyStack, currentIndex, deleted)
+    const { newIds: newHistory, currentIndex: newCurIndex } = applyDeleteToIds(historyStack, currentIndex, newIlinks)
     updateHistory(newHistory, newCurIndex)
 
-    const { newIds: newRecents } = applyDeleteToIds(lastOpened, 0, deleted)
+    const { newIds: newRecents } = applyDeleteToIds(lastOpened, 0, newIlinks)
     updateLastOpened(newRecents)
 
     setILinks(newIlinks)
@@ -60,22 +63,14 @@ export const useDelete = () => {
   return { getMockDelete, execDelete }
 }
 
-const applyDeleteToIds = (ids: string[], currentIndex: number, deleted: string[]) => {
-  let curIndexOffset = 0
+const applyDeleteToIds = (ids: string[], currentIndex: number, newIlinks: ILink[]) => {
+  const curIndexOffset = 0
   const newIds: string[] = []
 
-  ids.forEach((id, index) => {
-    let isDeleted = false
-    for (const d of deleted) {
-      if (d === id) {
-        isDeleted = true
-        if (index <= currentIndex) {
-          curIndexOffset -= 1
-        }
-      }
-    }
-    if (!isDeleted) {
-      newIds.push(id)
+  ids.forEach((uid) => {
+    const isPresent = newIlinks.some((l) => l.uid === uid)
+    if (!isPresent) {
+      newIds.push(uid)
     }
   })
 

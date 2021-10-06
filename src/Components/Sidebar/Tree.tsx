@@ -1,23 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console, react/no-access-state-in-setstate */
 /* eslint-disable react/no-danger, no-param-reassign */
-import RCTree from 'rc-tree'
-import { Key } from 'rc-tree/lib/interface'
 /* eslint-enable react/no-danger, no-param-reassign */
 /* eslint-enable no-console, react/no-access-state-in-setstate */
-
 import equal from 'fast-deep-equal'
+import RCTree from 'rc-tree'
+import { Key } from 'rc-tree/lib/interface'
 import React from 'react'
-import { withNodeOps } from '../../Editor/Store/EditorStore'
-import { StyledTree } from '../../Styled/Sidebar'
-import TreeNode from '../../Types/tree'
-import TreeExpandIcon from './Icon'
+import { AppType } from '../../Data/useInitialize'
 import { withRefactor } from '../../Editor/Actions/useRefactor'
-import { getNodeIdLast, SEPARATOR } from './treeUtils'
+import { withNodeOps } from '../../Editor/Store/EditorStore'
 import { withNavigation } from '../../Hooks/useNavigation/withNavigation'
 import { IpcAction } from '../../Spotlight/utils/constants'
-import { AppType } from '../../Data/useInitialize'
 import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
+import { StyledTree } from '../../Styled/Sidebar'
+import TreeExpandIcon from './Icon'
+import { getNodeIdLast, SEPARATOR } from './treeUtils'
 
 const motion = {
   motionName: 'node-motion',
@@ -63,13 +61,13 @@ class Tree extends React.Component<RCTreeProps> {
 
     if (!equal(prevProps, this.props)) {
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ gData: tree, expandedKeys: [this.props.currentNode.key] })
+      this.setState({ gData: tree, expandedKeys: [this.props.currentNode.id] })
     }
   }
 
   onDragEnter ({ expandedKeys }: any) {
     // eslint-disable-next-line no-console
-    console.log('enter', expandedKeys)
+    // console.log('enter', expandedKeys)
     this.setState({
       expandedKeys
     })
@@ -159,7 +157,9 @@ class Tree extends React.Component<RCTreeProps> {
     if (expandedKeys) {
       const { currentNode } = this.props
       const newExp = expandedKeys.filter((k) => k)
-      const expKeys = Array.from(new Set([...newExp, currentNode.key]))
+      const expKeys = Array.from(new Set([...newExp, currentNode.id]))
+      // console.log({ currentNode, expandedKeys, expKeys, newExp })
+
       this.setState({
         expandedKeys: expKeys,
         autoExpandParent: true
@@ -171,8 +171,10 @@ class Tree extends React.Component<RCTreeProps> {
     const { selectedNodes } = info
     const { push } = this.props
 
+    console.log({ selectedNodes })
+
     if (selectedNodes.length > 0) {
-      push(selectedNodes[0].key)
+      push(selectedNodes[0].uid)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, selectedNodes[0].key)
     }
   }
@@ -193,7 +195,7 @@ class Tree extends React.Component<RCTreeProps> {
           // onDragStart={this.onDragStart}
           // defaultExpandParent={}
           onDragEnter={this.onDragEnter}
-          selectedKeys={[currentNode.key]}
+          selectedKeys={[currentNode.id]}
           onDrop={this.onDrop}
           treeData={tree}
           motion={motion}

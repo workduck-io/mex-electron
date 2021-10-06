@@ -1,9 +1,10 @@
+import { NodeProperties } from '../Editor/Store/EditorStore'
 import { NodeEditorContent } from '../Editor/Store/Types'
 import TreeNode from './tree'
 
 export interface EditorStateProps {
   // Data of the current node
-  node: TreeNode
+  node: NodeProperties
   // Contents of the current node
   // These are loaded internally from ID
   content: NodeEditorContent

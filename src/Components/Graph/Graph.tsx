@@ -3,6 +3,7 @@ import more2Fill from '@iconify-icons/ri/more-2-fill'
 import equal from 'fast-deep-equal'
 import React, { useEffect, useState } from 'react'
 import Graph from 'react-vis-network-graph'
+import { useLinks } from '../../Editor/Actions/useLinks'
 import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import IconButton from '../../Styled/Buttons'
 import Switch from '../Forms/Switch'
@@ -38,7 +39,7 @@ const options = {
       springLength: 75,
       springConstant: 0.04,
       damping: 0.09,
-      avoidOverlap: 0
+      avoidOverlap: 0.5
     }
   }
 }
@@ -50,6 +51,7 @@ interface TreeGraphProps {
 export const TreeGraph = (props: TreeGraphProps) => {
   const { graphData } = props
   const { push } = useNavigation()
+  const { getUidFromNodeId } = useLinks()
 
   const showGraph = useGraphStore((state) => state.showGraph)
   const toggleGraph = useGraphStore((state) => state.toggleGraph)
@@ -76,7 +78,10 @@ export const TreeGraph = (props: TreeGraphProps) => {
             network._callbacks.$select[0]({ nodes: selectNode })
           }
 
-          if (selectNode.length > 0) push(selectNode[0].nodeId)
+          if (selectNode.length > 0) {
+            const uid = getUidFromNodeId(selectNode[0].nodeId)
+            push(uid)
+          }
         }
       }
     }

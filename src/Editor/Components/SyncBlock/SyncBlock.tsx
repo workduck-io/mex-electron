@@ -1,24 +1,22 @@
-import { useFocused, useSelected } from 'slate-react'
 import refreshFill from '@iconify-icons/ri/refresh-fill'
 import { Icon } from '@iconify/react'
 import axios from 'axios'
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import ReactTooltip from 'react-tooltip'
+import { useSelected } from 'slate-react'
+import { WORKSPACE_ID } from '../../../Defaults/auth'
+import { useEditorStore } from '../../../Editor/Store/EditorStore'
+import useIntents from '../../../Hooks/useIntents/useIntents'
+import { isIntent } from '../../../Lib/intents'
+import { apiURLs } from '../../../Requests/routes'
+import { Button } from '../../../Styled/Buttons'
+import { SyncIntentsWrapper } from '../../../Styled/Integrations'
 import { useSyncStore } from '../../Store/SyncStore'
-import { getParentSyncBlock, getSyncBlockTitle } from '../SlashCommands/useSyncConfig'
-import {
-  ElementHeader,
-  FormControls,
-  RootElement,
-  ServiceLabel,
-  ServiceSelectorLabel,
-  SyncForm,
-  SyncTitle
-} from './SyncBlock.styles'
-import { SyncBlockProps } from './SyncBlock.types'
-import { getSyncServiceIcon } from './SyncIcons'
+import IntentSelector from './intentSelector'
+import { ElementHeader, FormControls, RootElement, SyncForm, SyncTitle } from './SyncBlock.styles'
+import { Intent, SyncBlockData, SyncBlockProps } from './SyncBlock.types'
 
 type FormValues = {
   content: string
@@ -29,29 +27,72 @@ type FormValues = {
 
 export const SyncBlock = (props: SyncBlockProps) => {
   const { attributes, children, element } = props
-  const { register, handleSubmit } = useForm<FormValues>()
-
+  const { register, getValues } = useForm<FormValues>()
   const editSyncBlock = useSyncStore((state) => state.editSyncBlock)
 
+  const uid = useEditorStore((store) => store.node.uid)
+  const parentNodeId = useEditorStore((store) => store.node.key)
   const blocksData = useSyncStore((state) => state.syncBlocks)
+  const blockDataFiltered = blocksData.filter((d) => d.id === element.id)
 
-  const blockData = blocksData.filter((d) => d.id === element.id)[0]
+  const [changedIntents, setChangedIntents] = useState<{ [id: string]: Intent }>({})
 
   const selected = useSelected()
-  // const focused = useFocused()
-  console.log({ props, selected })
 
   React.useEffect(() => {
     ReactTooltip.rebuild()
   }, [selected])
 
-  if (blockData === undefined) return null
+  const { getIntents, getTemplate, updateNodeIntentsAndCreateIGID } = useIntents()
 
-  const parentNodeId = getParentSyncBlock(blockData.connections)
-  const syncTitle = getSyncBlockTitle(blockData.connections)
+  if (blockDataFiltered.length === 0) return new Error('BlockData undefined')
 
-  const onSubmit = handleSubmit((data) => {
-    // console.log(JSON.stringify(data));
+  const blockData = blockDataFiltered[0] as SyncBlockData
+
+  const intents = getIntents(uid, blockData.templateId)
+  const template = getTemplate(blockData.templateId)
+
+  const areAllIntentsPresent = intents.reduce((prev, cur) => {
+    if (cur) return prev && isIntent(cur)
+    else return false
+  }, true)
+
+  // console.log('SyncBlock', { areAllIntentsPresent, blockData, template, intents, changedIntents })
+
+  // const syncTitle = getSyncBlockTitle(blockData.title)
+  const onSelectIntent = (intent: Intent) => {
+    const newState = { ...changedIntents, [intent.service]: intent }
+    // console.log('NewState', newState)
+    setChangedIntents(newState)
+  }
+
+  const onIntentsSave = (e) => {
+    e.preventDefault()
+    // console.log('Saving Intents', { changedIntents })
+
+    const newIgid = updateNodeIntentsAndCreateIGID(
+      uid,
+      Object.keys(changedIntents).map((s) => {
+        return changedIntents[s]
+      }),
+      template.id
+    )
+
+    editSyncBlock({
+      id: element.id,
+      content: blockData.content,
+      igid: newIgid,
+      templateId: blockData.templateId
+    })
+
+    // toast('Intents updated successfully')
+
+    setChangedIntents({})
+  }
+
+  const onSubmit = (e) => {
+    e.preventDefault()
+    const data = getValues()
     const param = new URLSearchParams({
       source: 'mex'
     }).toString()
@@ -59,64 +100,102 @@ export const SyncBlock = (props: SyncBlockProps) => {
     editSyncBlock({
       id: element.id,
       content: data.content,
-      connections: blockData.connections
+      igid: blockData.igid,
+      templateId: blockData.templateId
     })
 
-    axios.post(`https://k43k03g5ab.execute-api.us-east-1.amazonaws.com/dev/listen?${param}`, {
+    // Inserted only on send
+    const InsertParams =
+      blockData.content === ''
+        ? {
+            igId: blockData.igid,
+            templateId: blockData.templateId,
+            workspaceId: WORKSPACE_ID
+          }
+        : {}
+
+    axios.post(apiURLs.listen(param), {
       parentNodeId: parentNodeId ?? 'BLOCK_random',
-      blockId: element.id,
+      syncId: element.id,
       text: data.content,
+      // On insert
+      // ...InsertParams,
       eventType: blockData.content === '' ? 'INSERT' : 'EDIT' // FIXME
     })
-
     toast('Sync Successful')
-  }) // eslint-disable-line no-console
+  } // eslint-disable-line no-console
 
   return (
     <RootElement {...attributes}>
       <div contentEditable={false}>
         {/* For quick debug {blockData && JSON.stringify(blockData)} */}
 
-        <SyncForm onSubmit={onSubmit} selected={selected}>
+        <SyncForm selected={selected}>
           <ElementHeader>
             <Icon icon={refreshFill} height={20} />
             SyncBlock
-            {syncTitle && <SyncTitle>{syncTitle}</SyncTitle>}
+            <SyncTitle>{template.title}</SyncTitle>
           </ElementHeader>
-          <textarea
-            {...register('content')}
-            placeholder="Your content here..."
-            className="syncTextArea"
-            defaultValue={blockData && blockData.content}
-          />
 
-          {blockData && selected && (
-            <FormControls>
-              <div>
-                {blockData.connections.map((cs) => {
-                  const checked = blockData && blockData.connections.includes(cs as any) // eslint-disable-line @typescript-eslint/no-explicit-any
-                  return (
-                    <ServiceSelectorLabel
-                      htmlFor={`connections.${cs}`}
-                      key={`${blockData.id}_syncBlocks_${cs}`}
-                      checked={checked}
-                      data-tip={`Sync with ${cs}`}
-                      data-place="bottom"
-                    >
-                      <ServiceLabel>
-                        <Icon icon={getSyncServiceIcon(cs)} />
-                        {cs}
-                      </ServiceLabel>
-                      <input type="checkbox" {...register(`connections.${cs}`)} checked={checked} />
-                    </ServiceSelectorLabel>
-                  )
-                })}
-              </div>
-              <button type="submit">
-                {
-                  blockData.content === '' ? 'Submit' : 'Edit' // FIXME
-                }
-              </button>
+          {areAllIntentsPresent ? (
+            <textarea
+              {...register('content')}
+              placeholder="Your content here..."
+              className="syncTextArea"
+              defaultValue={blockData && blockData.content}
+              autoFocus={true}
+            />
+          ) : (
+            <p>Please set the specific intents.</p>
+          )}
+
+          {(!areAllIntentsPresent || selected) && (
+            <FormControls float={areAllIntentsPresent}>
+              <SyncIntentsWrapper>
+                {intents &&
+                  intents.map((intent) => {
+                    if (isIntent(intent)) {
+                      return (
+                        <IntentSelector
+                          id={`SyncBlocksIntentSelector${blockData.id}`}
+                          key={`SyncBlocksIntentSelector${blockData.id}${intent.service}`}
+                          // showPosition={{ x: 0, y: 64 }}
+                          service={intent.service}
+                          type={intent.type}
+                          defaultIntent={intent}
+                          readOnly={true}
+                          onSelect={(val) => console.log({ val })}
+                        />
+                      )
+                    } else {
+                      return (
+                        <IntentSelector
+                          id={`SyncBlocksIntentPreview${blockData.id}`}
+                          key={`SyncBlocksIntentPreview${blockData.id}${intent.service}`}
+                          // showPosition={{ x: 0, y: 64 }}
+                          service={intent.service}
+                          type={intent.type}
+                          readOnly={false}
+                          onSelect={onSelectIntent}
+                        />
+                      )
+                    }
+                  })}
+              </SyncIntentsWrapper>
+
+              {areAllIntentsPresent && (
+                <Button primary onClick={onSubmit}>
+                  {
+                    blockData.content === '' ? 'Submit' : 'Edit' // FIXME
+                  }
+                </Button>
+              )}
+
+              {!areAllIntentsPresent && (
+                <Button primary onClick={onIntentsSave}>
+                  Save Intents
+                </Button>
+              )}
             </FormControls>
           )}
         </SyncForm>

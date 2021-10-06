@@ -10,9 +10,9 @@ interface ContentStoreState {
   contents: Contents
   saved: boolean
   setSaved: (saved: boolean) => void
-  removeContent: (id: string) => void
-  getContent: (id: string) => NodeContent
-  setContent: (id: string, content: NodeEditorContent) => void
+  removeContent: (uid: string) => void
+  getContent: (uid: string) => NodeContent
+  setContent: (uid: string, content: NodeEditorContent) => void
   initContents: (contents: Contents) => void
 }
 
@@ -20,19 +20,19 @@ export const useContentStore = create<ContentStoreState>((set, get) => ({
   contents: {},
   saved: false,
   setSaved: (saved) => set(() => ({ saved })),
-  setContent: (id, content) => {
+  setContent: (uid, content) => {
     const oldContent = get().contents
-    delete oldContent[id]
+    delete oldContent[uid]
     set({
-      contents: { [id]: { type: 'editor', content }, ...oldContent }
+      contents: { [uid]: { type: 'editor', content }, ...oldContent }
     })
   },
-  getContent: (id) => {
-    return get().contents[id]
+  getContent: (uid) => {
+    return get().contents[uid]
   },
-  removeContent: (id) => {
+  removeContent: (uid) => {
     const oldContent = get().contents
-    delete oldContent[id]
+    delete oldContent[uid]
   },
   initContents: (contents) => {
     set({

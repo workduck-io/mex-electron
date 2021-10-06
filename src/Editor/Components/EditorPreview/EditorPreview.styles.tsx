@@ -1,6 +1,6 @@
-import { CardShadow } from '../../../Styled/helpers'
+import { transparentize } from 'polished'
 import styled from 'styled-components'
-import { mix, transparentize } from 'polished'
+import { CardShadow } from '../../../Styled/helpers'
 
 export const EditorPreviewWrapper = styled.div`
   padding: ${({ theme }) => theme.spacing.small};
@@ -11,7 +11,7 @@ export const EditorPreviewWrapper = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   color: ${({ theme }) => theme.colors.fade};
   max-height: 400px;
-  max-width: 400px;
+  max-width: 700px;
   overflow-y: auto;
   ${CardShadow}
   min-width: 400px;

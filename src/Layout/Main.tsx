@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
 import styled, { useTheme } from 'styled-components'
 import tinykeys from 'tinykeys'
-import { useGraphStore } from '../Components/Graph/GraphStore'
 import { useHelpStore } from '../Components/Help/HelpModal'
 import HelpTooltip from '../Components/Help/HelpTooltip'
 import { Notifications } from '../Components/Notifications/Notifications'
@@ -13,8 +12,11 @@ import links from '../Conf/links'
 import { useInitialize } from '../Data/useInitialize'
 import { useLocalData } from '../Data/useLocalData'
 import { useSyncData } from '../Data/useSyncData'
+import { getUidFromNodeIdBase } from '../Editor/Actions/useLinks'
 import { useEditorStore } from '../Editor/Store/EditorStore'
 import { useRecentsStore } from '../Editor/Store/RecentsStore'
+import { useAuthStore } from '../Hooks/useAuth/useAuth'
+import useLoad from '../Hooks/useLoad/useLoad'
 import { useNavigation } from '../Hooks/useNavigation/useNavigation'
 import { IpcAction } from '../Spotlight/utils/constants'
 import { useSaveAndExit } from '../Spotlight/utils/hooks'
@@ -39,14 +41,33 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const history = useHistory()
   const nodeId = useEditorStore((state) => state.node.id)
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
+  const authenticated = useAuthStore((store) => store.authenticated)
 
   const { move, push } = useNavigation()
 
   const { init } = useInitialize()
+  const { loadNode } = useLoad()
 
   useSaveAndExit()
 
   const { getLocalData } = useLocalData()
+
+  /** Initialization of the app details occur here */
+  useEffect(() => {
+    (async () => {
+      getLocalData()
+        // .then((d) => {
+        //   console.log('Data here', d);
+        //   return d
+        // })
+        .then((d) => {
+          init(d)
+          return d
+        })
+        .then((d) => authenticated && loadNode(getUidFromNodeIdBase(d.ilinks, '@')))
+        .catch((e) => console.error(e)) // eslint-disable-line no-console
+    })()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { nodeId }) => {
@@ -67,25 +88,10 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
     setIpc()
   }, [])
 
-  /** Initialization of the app details occur here */
-  useEffect(() => {
-    (async () => {
-      getLocalData()
-        .then((d) => {
-          // console.log('Data here', d);
-          return d
-        })
-        .then((d) => init(d))
-        .catch((e) => console.error(e)) // eslint-disable-line no-console
-    })()
-
-    push('@')
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
   useEffect(() => {
     // Switch to the editor page whenever a new ID is loaded
-    history.push('/editor')
-  }, [nodeId]) // eslint-disable-line react-hooks/exhaustive-deps
+    if (authenticated) history.push('/editor')
+  }, [nodeId, authenticated]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
 

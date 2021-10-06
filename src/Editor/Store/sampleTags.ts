@@ -11,7 +11,7 @@ export const generateIlink = (nodeId: string, value: number): ILink => ({
   key: nodeId,
   text: nodeId,
   value: String(value),
-  id: nanoid()
+  uid: nanoid()
 })
 
 export const generateComboTexts = (items: string[]) => items.map(generateComboText)

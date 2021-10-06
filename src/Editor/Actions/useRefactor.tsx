@@ -1,11 +1,10 @@
 import React from 'react'
 import { useRefactorStore } from '../../Components/Refactor/Refactor'
+import { SEPARATOR } from '../../Components/Sidebar/treeUtils'
 import { NodeLink } from '../../Types/relations'
 import { Contents, useContentStore } from '../Store/ContentStore'
 import useDataStore from '../Store/DataStore'
-import { SEPARATOR } from '../../Components/Sidebar/treeUtils'
-import { useHistoryStore } from '../Store/HistoryStore'
-import { useRecentsStore } from '../Store/RecentsStore'
+import { useLinks } from './useLinks'
 
 const isMatch = (id: string, from: string) => {
   if (from === id) return true
@@ -16,11 +15,11 @@ export const useRefactor = () => {
   const ilinks = useDataStore((state) => state.ilinks)
   const contents = useContentStore((state) => state.contents)
 
-  const historyStack = useHistoryStore((state) => state.stack)
-  const updateHistory = useHistoryStore((state) => state.update)
+  // const historyStack = useHistoryStore((state) => state.stack)
+  // const updateHistory = useHistoryStore((state) => state.update)
 
-  const lastOpened = useRecentsStore((state) => state.lastOpened)
-  const updateLastOpened = useRecentsStore((state) => state.update)
+  // const lastOpened = useRecentsStore((state) => state.lastOpened)
+  // const updateLastOpened = useRecentsStore((state) => state.update)
   /*  Notes:
   We need to refactor all ilinks that match with the given regex and replace the initial regex with the refactorId
 
@@ -34,12 +33,11 @@ export const useRefactor = () => {
 
   const setILinks = useDataStore((state) => state.setIlinks)
   const initContents = useContentStore((state) => state.initContents)
+  const { getUidFromNodeId } = useLinks()
 
   const getMockRefactor = (from: string, to: string): NodeLink[] => {
     const refactorMap = ilinks.filter((i) => {
       const match = isMatch(i.text, from)
-
-      // console.log('Trying matches', i.text, from, match, i.text.startsWith(from));
       return match
     })
 
@@ -74,23 +72,11 @@ export const useRefactor = () => {
     const newContents: Contents = {}
     Object.keys(contents).forEach((key) => {
       const content = contents[key]
-      let isRef = false
-      for (const ref of refactored) {
-        if (ref.from === key) {
-          newContents[ref.to] = {
-            type: content.type ?? 'p',
-            content: refactorLinksInContent(refactored, content.content)
-          }
-          isRef = true
-        }
-      }
-      if (!isRef) {
-        newContents[key] = { type: content.type ?? 'p', content: refactorLinksInContent(refactored, content.content) }
-      }
+      if (content) { newContents[key] = { type: content.type ?? 'p', content: refactorLinksInContent(refactored, content.content) } }
     })
 
-    updateHistory(applyRefactorToIds(historyStack, refactored), 0)
-    updateLastOpened(applyRefactorToIds(lastOpened, refactored))
+    // updateHistory(applyRefactorToIds(historyStack, refactored), 0)
+    // updateLastOpened(applyRefactorToIds(lastOpened, refactored))
 
     setILinks(newIlinks)
     initContents(newContents)

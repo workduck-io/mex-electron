@@ -3,10 +3,11 @@ import errorWarningLine from '@iconify-icons/ri/error-warning-line'
 import { Icon } from '@iconify/react'
 import { useCombobox } from 'downshift'
 import React, { useEffect, useState } from 'react'
+import { useLinks } from '../../Editor/Actions/useLinks'
 import useDataStore from '../../Editor/Store/DataStore'
+import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 import { Input } from '../../Styled/Form'
 import { StyledCombobox, StyledInputWrapper, StyledMenu, Suggestion } from './NodeSelect.styles'
-import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 
 type ComboItem = {
   text: string
@@ -18,6 +19,7 @@ interface NodeSelectProps {
   handleSelectItem: (nodeId: string) => void
   handleCreateItem?: (nodeId: string) => void
 
+  inputRef?: any
   prefillLast?: boolean
   menuOpen?: boolean
   autoFocus?: boolean
@@ -53,6 +55,8 @@ function NodeSelect ({
   const setSelectedItem = (selectedItem: ComboItem | null) =>
     setNodeSelectState((state) => ({ ...state, selectedItem }))
 
+  const { getNodeIdFromUid } = useLinks()
+
   const reset = () =>
     setNodeSelectState({
       inputItems: [],
@@ -60,8 +64,8 @@ function NodeSelect ({
     })
 
   const ilinks = useDataStore((store) => store.ilinks).map((l) => ({
-    text: l.key,
-    value: l.key,
+    text: l.text,
+    value: l.text,
     type: 'exists'
   }))
 
@@ -101,6 +105,15 @@ function NodeSelect ({
       }
     }
   })
+
+  const lastOpenenedItems = Array.from(lastOpened)
+    .reverse()
+    .map((l) => {
+      const nodeId = getNodeIdFromUid(l)
+      return { text: nodeId, value: nodeId, type: 'exists' }
+    })
+
+  console.log({ lastOpenenedItems })
 
   function handleSelectedItemChange ({ selectedItem }: any) {
     if (selectedItem) {
@@ -144,15 +157,7 @@ function NodeSelect ({
       setSelectedItem({ text: defaultValue, value: defaultValue, type: 'exists' })
     } else {
       if (prefillLast && lastOpened.length > 0) {
-        setInputItems(
-          Array.from(lastOpened)
-            .reverse()
-            .map((l) => ({
-              text: l,
-              value: l,
-              type: 'exists'
-            }))
-        )
+        setInputItems(lastOpenenedItems)
       } else {
         setInputItems(ilinks)
       }

@@ -11,6 +11,7 @@ import { IpcAction } from '../../utils/constants'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
 import { NodeEditorContent } from '../../../Editor/Store/Types'
 import { useSpotlightAppStore } from '../../../Spotlight/store/app'
+import useLoad from '../../../Hooks/useLoad/useLoad'
 
 export type RecentType = { recents: Array<string>; onClearClick?: () => void }
 export type RecentRowType = { text: string; highlight?: boolean; onClick: () => void }
@@ -30,8 +31,7 @@ export const RecentList: React.FC<RecentListType> = ({ list }) => {
   const onEnter = useKeyPress('Enter')
 
   const history = useHistory()
-  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
-  const loadNodeAndAppend = useEditorStore((state) => state.loadNodeAndAppend)
+  const { loadNode, loadNodeAndAppend } = useLoad()
 
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
   const savedEditorId = useSpotlightEditorStore((state) => state.nodeId)
@@ -47,13 +47,13 @@ export const RecentList: React.FC<RecentListType> = ({ list }) => {
 
   useEffect(() => {
     setCurrentIndex(list.length)
-    loadNodeFromId(savedEditorId)
+    loadNode(savedEditorId)
   }, [reset])
 
   const loadContent = (id: string, content: NodeEditorContent) => {
     if (content) {
       loadNodeAndAppend(id, content)
-    } else loadNodeFromId(id)
+    } else loadNode(id)
   }
 
   useEffect(() => {
