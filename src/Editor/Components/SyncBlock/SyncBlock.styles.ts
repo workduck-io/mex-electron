@@ -12,7 +12,10 @@ export const ElementHeader = styled.div`
   align-items: center;
   font-size: 0.9rem;
   color: ${({ theme }) => theme.colors.text.subheading};
-
+  background-color: ${({ theme }) => theme.colors.gray[9]};
+  padding: ${({ theme: { spacing } }) => `${spacing.tiny} ${spacing.small}`};
+  width: max-content;
+  border-radius: ${({ theme }) => theme.borderRadius.small};
   svg {
     margin-right: ${({ theme }) => theme.spacing.tiny};
   }
@@ -59,26 +62,33 @@ export const SyncForm = styled.form<SyncFormProps>`
     height: 100%;
   }
 `
-export const FormControls = styled.div`
+
+interface FormControlsProps {
+  float: boolean
+}
+
+export const FormControls = styled.div<FormControlsProps>`
   display: flex;
   width: 100%;
-  z-index: 100;
-  position: absolute;
   margin-top: ${({ theme }) => theme.spacing.small};
   justify-content: space-between;
   background-color: ${({ theme }) => transparentize(0.2, theme.colors.gray[9])};
-  backdrop-filter: blur(10px);
-  bottom: -${({ theme }) => theme.spacing.small};
-  transform: translateY(100%);
   align-items: center;
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
+
+  ${({ theme, float }) =>
+    float &&
+    css`
+      z-index: 100;
+      position: absolute;
+      backdrop-filter: blur(10px);
+      bottom: -${theme.spacing.small};
+      transform: translateY(100%);
+    `}
 `
 
-interface ServiceSelectorLabelProps {
-  checked: boolean
-}
-export const ServiceSelectorLabel = styled.label<ServiceSelectorLabelProps>`
+export const ServiceSelectorLabel = styled.label`
   position: relative;
   display: flex;
   align-items: center;
@@ -86,18 +96,6 @@ export const ServiceSelectorLabel = styled.label<ServiceSelectorLabelProps>`
 
   padding: ${({ theme: { spacing } }) => `${spacing.tiny} ${spacing.small}`};
   border-radius: ${({ theme }) => theme.borderRadius.small};
-
-  ${({ theme, checked }) =>
-    checked
-      ? css`
-          svg {
-            color: ${theme.colors.primary};
-            text-shadow: 0px 2px 4px ${({ theme }) => theme.colors.fade.primary};
-          }
-          color: ${theme.colors.text.heading};
-          background-color: ${theme.colors.gray[8]};
-        `
-      : css``}
 
   input[type='checkbox'] {
     display: block;

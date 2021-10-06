@@ -6,7 +6,7 @@ export interface ComboText {
 }
 
 export interface ILink extends ComboText {
-  id: string
+  uid: string
 }
 
 export type LinkCache = Record<string, CachedILink[]>
@@ -20,13 +20,13 @@ export interface DataStoreState {
   initializeDataStore: (tags: ComboText[], ids: ILink[], slash_commands: ComboText[], linkCache: LinkCache) => void
 
   addTag: (tag: string) => void
-  addILink: (ilink: string) => void
+  addILink: (ilink: string) => string
   setSlashCommands: (slashCommands: ComboText[]) => void
   setIlinks: (ilinks: ILink[]) => void
 
-  addInternalLink: (ilink: CachedILink, nodeId: string) => void
-  removeInternalLink: (ilink: CachedILink, nodeId: string) => void
-  updateInternalLinks: (links: CachedILink[], nodeId: string) => void
+  addInternalLink: (ilink: CachedILink, uid: string) => void
+  removeInternalLink: (ilink: CachedILink, uid: string) => void
+  updateInternalLinks: (links: CachedILink[], uid: string) => void
 }
 
 export type NodeEditorContent = any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -34,5 +34,5 @@ export type NodeEditorContent = any[] // eslint-disable-line @typescript-eslint/
 export interface CachedILink {
   // ILink from/to nodeId
   type: 'from' | 'to'
-  nodeId: string
+  uid: string
 }

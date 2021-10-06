@@ -1,21 +1,17 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { HashRouter as Router, Route, Switch } from 'react-router-dom'
+import { HashRouter as Router } from 'react-router-dom'
 import Contexts from './Context/Contexts'
 import Providers from './Context/Providers'
-import ContentEditor from './Editor/ContentEditor'
 import Main from './Layout/Main'
 import Modals from './Layout/Modals'
-import SnippetEditor from './Snippets/SnippetEditor'
+import initializeAmplify from './Requests/amplify/init'
+import Switch from './Router/Switch'
 import GlobalStyle from './Styled/Global'
-import Dashboard from './Views/Dashboard'
-import EditorView from './Views/EditorView'
-import Integrations from './Views/Integrations'
-import Settings from './Views/Settings'
-import Snippets from './Views/Snippets'
-import Tasks from './Views/Tasks'
 
 Modal.setAppElement('#root')
+
+initializeAmplify()
 
 function App () {
   return (
@@ -27,15 +23,7 @@ function App () {
             <Modals />
 
             {/* Main Content */}
-            <Switch>
-              <Route path="/editor" component={EditorView} />
-              <Route path="/tasks" component={Tasks} />
-              <Route path="/integrations" component={Integrations} />
-              <Route exact path="/snippets" component={Snippets} />
-              <Route exact path="/snippets/editor" component={SnippetEditor} />
-              <Route path="/settings" component={Settings} />
-              <Route path="/" component={Dashboard} />
-            </Switch>
+            <Switch />
 
             {/* Non-Rendering components */}
             <GlobalStyle />

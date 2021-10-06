@@ -5,10 +5,10 @@ export type HistoryType = {
   stack: string[]
   currentNodeIndex: number
   move: (distance: number) => void
-  push: (id: string) => void
-  replace: (id: string) => void
+  push: (uid: string) => void
+  replace: (uid: string) => void
   update: (stack: string[], currentNodeIndex: number) => void
-  getCurrentNodeId: () => string | undefined
+  getCurrentUId: () => string | undefined
 }
 
 export const useHistoryStore = create<HistoryType>((set, get) => ({
@@ -18,26 +18,26 @@ export const useHistoryStore = create<HistoryType>((set, get) => ({
   /**
    * Push will remove all elements above the currentNodeIndex
    */
-  replace: (id) => {
+  replace: (uid) => {
     set((state) => {
       const historyStack = state.stack.slice(0)
       const lastElement = historyStack[historyStack.length - 1]
 
-      if (lastElement === id) return
-      historyStack[historyStack.length - 1] = id
+      if (lastElement === uid) return
+      historyStack[historyStack.length - 1] = uid
 
       return {
         stack: historyStack
       }
     })
   },
-  push: (id) =>
+  push: (uid) =>
     set((state) => {
       let newIndex = state.currentNodeIndex + 1
       const remainingStack = state.stack.slice(0, newIndex)
-      // Don't append if same as current id
-      if (remainingStack[remainingStack.length - 1] === id) return
-      remainingStack.push(id)
+      // Don't append if same as current uid
+      if (remainingStack[remainingStack.length - 1] === uid) return
+      remainingStack.push(uid)
       // Update index if large
       if (remainingStack.length > MAX_HISTORY_SIZE) {
         newIndex = MAX_HISTORY_SIZE - 1
@@ -67,7 +67,7 @@ export const useHistoryStore = create<HistoryType>((set, get) => ({
       currentNodeIndex
     })),
 
-  getCurrentNodeId: (): string | undefined => {
+  getCurrentUId: (): string | undefined => {
     const curIndex = get().currentNodeIndex
     if (curIndex >= 0 && curIndex < get().stack.length) {
       return get().stack[curIndex]

@@ -1,37 +1,49 @@
-import { SlashCommandConfig } from './Types'
+import { nanoid } from 'nanoid'
 import { SEPARATOR } from '../../../Components/Sidebar/treeUtils'
-import { getNewBlockId } from '../SyncBlock/getNewBlockData'
-import { ELEMENT_SYNC_BLOCK } from '../SyncBlock'
+import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import { useSyncStore } from '../../../Editor/Store/SyncStore'
-import { findKey, clone } from 'lodash'
-
-const ServiceMap = {
-  issue: { title: 'Issue', connections: ['github', 'slack', 'mex'] },
-  com: { title: 'Communication', connections: ['telegram', 'slack', 'mex'] },
-  slack: { title: 'Slack', connections: ['slack', 'mex'] }
-}
+import useIntents from '../../../Hooks/useIntents/useIntents'
+import { ELEMENT_SYNC_BLOCK, SyncBlockTemplate } from '../SyncBlock'
+import { SlashCommandConfig } from './Types'
 
 export const useSyncConfig = () => {
   const addSyncBlock = useSyncStore((state) => state.addSyncBlock)
-  const getSyncBlockConfigs = (): { [key: string]: SlashCommandConfig } => {
-    return Object.keys(ServiceMap).reduce((prev, cur) => {
-      return {
-        ...prev,
-        [cur]: {
-          slateElementType: ELEMENT_SYNC_BLOCK,
-          command: getSyncCommand(cur),
-          getBlockData: () => {
-            const nd = {
-              id: getNewBlockId(),
-              connections: ServiceMap[cur].connections,
-              content: ''
-            }
-            addSyncBlock(nd)
-            return nd
+  const { checkAndGenerateIGID } = useIntents()
+  const templates = useSyncStore((store) => store.templates)
+
+  // Construct the SyncBlock configs for syncBlock templates
+  const getSyncBlockConfigs = (): {
+    [key: string]: SlashCommandConfig
+  } => {
+    const configs = templates.reduce((prev, cur) => {
+      // Current Template
+      const curUid = useEditorStore.getState().node.uid
+      const command = getSyncCommand(cur.command)
+      const config = {
+        slateElementType: ELEMENT_SYNC_BLOCK,
+        command,
+        getBlockData: () => {
+          const id = `SYNC_${nanoid()}`
+          const igid = checkAndGenerateIGID(curUid, cur.id)
+          const nd = {
+            id,
+            igid,
+            content: '',
+            templateId: cur.id
           }
+          // creation of IGID if none found. Don't create until services are linked
+          addSyncBlock(nd)
+          return { id }
         }
       }
+
+      return {
+        ...prev,
+        [command]: config
+      }
     }, {})
+
+    return configs
   }
 
   return { getSyncBlockConfigs }
@@ -39,20 +51,6 @@ export const useSyncConfig = () => {
 
 export const getSyncCommand = (title: string) => `sync${SEPARATOR}${title}`
 
-export const extractSyncBlockCommands = (): string[] => {
-  return Object.keys(ServiceMap).map((c) => getSyncCommand(c))
-}
-
-export const getSyncServicesKey = (connections: string[]) =>
-  findKey(ServiceMap, (k) => {
-    return clone(k.connections).sort().toString() === clone(connections).sort().toString()
-  })
-
-export const getParentSyncBlock = (connections: string[]) => `BLOCK_${getSyncServicesKey(connections)}`
-
-export const getSyncBlockTitle = (connections: string[]): string | undefined => {
-  const key = getSyncServicesKey(connections)
-
-  if (key) return ServiceMap[key].title
-  return undefined
+export const extractSyncBlockCommands = (templates: SyncBlockTemplate[]): string[] => {
+  return templates.map((c) => getSyncCommand(c.command))
 }

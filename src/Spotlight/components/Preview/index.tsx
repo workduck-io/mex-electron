@@ -10,6 +10,7 @@ import { Icon } from '@iconify/react'
 import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
 import { SeePreview, StyledEditorPreview, StyledPreview } from './styled'
 import { useDeserializeSelectionToNodes } from '../../../Spotlight/utils/helpers'
+import useLoad from '../../../Hooks/useLoad/useLoad'
 
 export type PreviewType = {
   text: string
@@ -30,9 +31,9 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
   const fsContent = useEditorStore((state) => state.content)
   const previewContent = useEditorStore((state) => state.content)
   const setFsContent = useContentStore((state) => state.setContent)
-  const loadNodeFromId = useEditorStore((state) => state.loadNodeFromId)
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
   const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
+  const { loadNode } = useLoad()
 
   const handleScrollToBottom = () => {
     ref.current.scrollTop = ref.current.scrollHeight
@@ -52,7 +53,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
 
   useEffect(() => {
     if (!search) {
-      loadNodeFromId(nodeId)
+      loadNode(nodeId)
     }
   }, [preview.text])
 

@@ -21,7 +21,12 @@ export const useSaveData = () => {
       linkCache: useDataStore.getState().linkCache,
       tags: useDataStore.getState().tags,
       contents: useContentStore.getState().contents,
+
       syncBlocks: useSyncStore.getState().syncBlocks,
+      templates: useSyncStore.getState().templates,
+      intents: useSyncStore.getState().intents,
+      services: useSyncStore.getState().services,
+
       snippets: useSnippetStore.getState().snippets,
       userSettings: {
         theme: useThemeStore.getState().theme.id,

@@ -1,17 +1,19 @@
 import bubbleChartLine from '@iconify-icons/ri/bubble-chart-line'
+import focusLine from '@iconify-icons/ri/focus-line'
+import settings4Line from '@iconify-icons/ri/settings-4-line'
 import React, { useEffect, useState } from 'react'
 import ReactTooltip from 'react-tooltip'
-import useLayout from '../Layout/useLayout'
+import tinykeys from 'tinykeys'
 import { useGraphStore } from '../Components/Graph/GraphStore'
+import { useHelpStore } from '../Components/Help/HelpModal'
+import NodeIntentsModal, { useNodeIntentsModalStore } from '../Components/NodeIntentsModal/NodeIntentsModal'
+import { useLayoutStore } from '../Layout/LayoutStore'
+import useLayout from '../Layout/useLayout'
 import IconButton from '../Styled/Buttons'
 import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor'
 import { SaverButton } from './Components/Saver'
 import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
-import { useLayoutStore } from '../Layout/LayoutStore'
-import focusLine from '@iconify-icons/ri/focus-line'
-import tinykeys from 'tinykeys'
-import { useHelpStore } from '../Components/Help/HelpModal'
 
 const ContentEditor = () => {
   const title = useEditorStore((state) => state.node.title)
@@ -19,12 +21,14 @@ const ContentEditor = () => {
   const toggleGraph = useGraphStore((state) => state.toggleGraph)
   const { toggleFocusMode } = useLayout()
   const focusMode = useLayoutStore((store) => store.focusMode)
+  const nodeIntentsModalOpen = useNodeIntentsModalStore((store) => store.open)
+  const nodeIntentsModalToggle = useNodeIntentsModalStore((store) => store.toggleModal)
 
   useEffect(() => {
     ReactTooltip.rebuild()
   }, [])
 
-  const id = useEditorStore((state) => state.node.id)
+  const uid = useEditorStore((state) => state.node.uid)
   const fsContent = useEditorStore((state) => state.content)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -34,7 +38,7 @@ const ContentEditor = () => {
     if (fsContent) {
       setContent(fsContent)
     }
-  }, [fsContent, id])
+  }, [fsContent, uid])
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
@@ -48,9 +52,11 @@ const ContentEditor = () => {
     return () => {
       unsubscribe()
     }
-  }, [shortcuts])
+  }, [shortcuts, toggleFocusMode])
 
   const onSave = () => {
+    console.log('OnSave')
+
     // Callback after save
   }
 
@@ -61,6 +67,13 @@ const ContentEditor = () => {
           <NoteTitle>{title}</NoteTitle>
           <InfoTools>
             <IconButton size={24} icon={focusLine} title="Focus Mode" highlight={focusMode} onClick={toggleFocusMode} />
+            <IconButton
+              size={24}
+              icon={settings4Line}
+              title="Node Intents"
+              highlight={nodeIntentsModalOpen}
+              onClick={nodeIntentsModalToggle}
+            />
             <SaverButton callbackAfterSave={onSave} />
             <IconButton
               size={24}
@@ -72,8 +85,9 @@ const ContentEditor = () => {
           </InfoTools>
         </NodeInfo>
 
-        <Editor showBalloonToolbar content={content} editorId={id} />
+        <Editor showBalloonToolbar content={content} editorId={uid} />
       </StyledEditor>
+      <NodeIntentsModal uid={uid} />
     </>
   )
 }

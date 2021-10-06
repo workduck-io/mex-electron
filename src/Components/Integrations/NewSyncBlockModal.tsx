@@ -1,82 +1,137 @@
+import axios from 'axios'
+import { nanoid } from 'nanoid'
 import React from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import Modal from 'react-modal'
-import { useTheme } from 'styled-components'
 import create from 'zustand'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
+import { WORKSPACE_ID } from '../../Defaults/auth'
+import { SyncBlockTemplate } from '../../Editor/Components/SyncBlock'
+import { useSyncStore } from '../../Editor/Store/SyncStore'
+import { capitalize } from '../../Lib/strings'
+import { apiURLs } from '../../Requests/routes'
 import { Button } from '../../Styled/Buttons'
-import { useHelpStore } from '../Help/HelpModal'
-import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
+import { InputBlock, Label, TextAreaBlock } from '../../Styled/Form'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
-import { sampleServices } from './sampleServices'
 import ServiceSelector from './ServiceSelector'
 
-interface NewBlockModalState {
+interface NewSyncTemplateModalState {
   open: boolean
   focus: boolean
+
   openModal: (id?: string) => void
   setFocus: (focus: boolean) => void
   closeModal: () => void
 }
 
-export const useNewSyncBlockStore = create<NewBlockModalState>((set) => ({
+export const useNewSyncTemplateModalStore = create<NewSyncTemplateModalState>((set) => ({
   open: false,
   focus: true,
+
   openModal: () => {
     set({
-      open: true,
+      open: true
     })
   },
+
   closeModal: () => {
     set({
-      open: false,
+      open: false
     })
   },
-  setFocus: (focus) => set({ focus }),
+
+  setFocus: (focus) => set({ focus })
 }))
 
-const NewSyncBlockModal = () => {
-  // const { getMockDelete, execDelete } = useDelete()
-  // const { push } = useNavigation()
-  // const shortcuts = useHelpStore((store) => store.shortcuts)
-
+const NewSyncTemplateModal = () => {
   // const openModal = useNewSyncBlockStore((store) => store.openModal)
-  const closeModal = useNewSyncBlockStore((store) => store.closeModal)
-  const open = useNewSyncBlockStore((store) => store.open)
+  const closeModal = useNewSyncTemplateModalStore((store) => store.closeModal)
+  const open = useNewSyncTemplateModalStore((store) => store.open)
+  const addTemplate = useSyncStore((store) => store.addTemplate)
+  const services = useSyncStore((store) => store.services)
+
+  const { control, register, getValues } = useForm()
 
   // const theme = useTheme()
 
-  const serviceOptions = sampleServices.map((s) => ({
-    label: s.title,
-    value: s.name,
-  }))
-
-  const handleParentBlockChange = (newValue: string) => {
-    if (newValue) {
-      console.log({ newValue })
-    }
-  }
+  const serviceOptions = services
+    .filter((s) => s.id !== 'MEX')
+    .map((s) => ({
+      label: `${capitalize(s.id)} - ${capitalize(s.type)}`,
+      value: { service: s.id, type: s.type },
+      icon: s.id
+    }))
 
   const handleCancel = () => {
     closeModal()
   }
 
+  const handleSubmit = () => {
+    const { intents, command, title, description } = getValues()
+    // console.log({ intents, command, title, description })
+
+    const template: SyncBlockTemplate = {
+      id: `SYNCTEMP_${nanoid()}`,
+      command,
+      title,
+      intents: [
+        ...intents,
+        {
+          service: 'MEX',
+          type: 'node'
+        }
+      ],
+      description
+    }
+    addTemplate(template)
+    const intentMap = {}
+    template.intents.forEach((i) => {
+      intentMap[i.service.toUpperCase()] = i.type
+    })
+
+    const reqData = {
+      intentMap,
+      templateId: template.id,
+      workspaceId: WORKSPACE_ID,
+      name: template.id,
+      description: template.description
+    }
+
+    console.log({ reqData })
+
+    axios.post(apiURLs.createTemplate, reqData)
+
+    closeModal()
+  }
+
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
-      <ModalHeader>New SyncBlock Type</ModalHeader>
+      <ModalHeader>New Sync Template</ModalHeader>
 
-      <WrappedNodeSelect
-        autoFocus
-        // menuOpen
-        defaultValue={useEditorStore.getState().node.id}
-        handleSelectItem={handleParentBlockChange}
+      <Label htmlFor="command">Command</Label>
+      <InputBlock autoFocus placeholder="Ex. notify" {...register('command')} />
+
+      <Label htmlFor="title">Title</Label>
+      <InputBlock placeholder="Ex. Notify Team Members" {...register('title')} />
+
+      <Label htmlFor="description">Description</Label>
+      <TextAreaBlock placeholder="Ex. Notify team members about recent changes in spec" {...register('description')} />
+
+      <Label htmlFor="intents">Services to sync</Label>
+      <Controller
+        name="intents"
+        control={control}
+        render={({ field: { onChange, /* value, */ ref } }) => (
+          <ServiceSelector
+            inputRef={ref}
+            label="Select Services"
+            onChange={(val) => onChange(val.map((c) => c.value))}
+            options={serviceOptions}
+          />
+        )}
       />
 
-      <p>Services to sync</p>
-      {/* Connect more services via integrations. */}
-      <ServiceSelector options={serviceOptions} />
-
       <ModalControls>
-        <Button size="large" primary onClick={() => console.log('Submit')}>
+        <Button size="large" primary onClick={handleSubmit}>
           Submit
         </Button>
         <Button size="large" onClick={handleCancel}>
@@ -87,4 +142,4 @@ const NewSyncBlockModal = () => {
   )
 }
 
-export default NewSyncBlockModal
+export default NewSyncTemplateModal

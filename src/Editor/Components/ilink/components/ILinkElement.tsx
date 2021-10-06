@@ -1,14 +1,14 @@
-import * as React from 'react'
 import { useEditorRef } from '@udecode/plate'
+import * as React from 'react'
 import { Transforms } from 'slate'
 import { useFocused, useSelected } from 'slate-react'
+import { useNavigation } from '../../../../Hooks/useNavigation/useNavigation'
+import { useLinks } from '../../../Actions/useLinks'
+import EditorPreview from '../../EditorPreview/EditorPreview'
 import { useHotkeys } from '../hooks/useHotkeys'
 import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { SILink, SILinkRoot } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
-import { useNavigation } from '../../../../Hooks/useNavigation/useNavigation'
-import EditorPreview from '../../EditorPreview/EditorPreview'
-import create from 'zustand'
 
 /**
  * ILinkElement with no default styles.
@@ -19,11 +19,13 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const selected = useSelected()
   const focused = useFocused()
   const { push } = useNavigation()
-
+  const { getUidFromNodeId } = useLinks()
   // console.log('We reached here', { editor }, isPreview(editor.id))
 
+  const uid = getUidFromNodeId(element.value)
+
   const onClickProps = useOnMouseClick(() => {
-    push(element.value)
+    push(uid)
   })
 
   useHotkeys(
@@ -48,7 +50,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
 
   return (
     <SILinkRoot {...attributes} id={`ILINK_${element.value}`} data-slate-value={element.value} contentEditable={false}>
-      <EditorPreview isPreview={isPreview(editor.id)} previewRef={editor} id={element.value}>
+      <EditorPreview isPreview={isPreview(editor.id)} previewRef={editor} uid={uid}>
         <SILink focused={selected} {...onClickProps}>
           <span className="ILink_decoration ILink_decoration_left">[[</span>
           {element.value}

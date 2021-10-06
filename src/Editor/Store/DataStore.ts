@@ -3,7 +3,7 @@ import { generateTree, getAllParentIds, SEPARATOR } from '../../Components/Sideb
 import getFlatTree from '../../Lib/flatTree'
 import { removeLink } from '../../Lib/links'
 import { generateComboText, generateIlink } from './sampleTags'
-import { DataStoreState, CachedILink } from './Types'
+import { CachedILink, DataStoreState } from './Types'
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   // Tags
@@ -43,9 +43,15 @@ const useDataStore = create<DataStoreState>((set, get) => ({
       return generateIlink(l, get().ilinks.length + index)
     })
 
+    console.log('Link Added', { newLinks, comboTexts })
+    const newLink = comboTexts.find((l) => l.text === ilink)
+
     set({
       ilinks: [...get().ilinks, ...comboTexts]
     })
+
+    if (newLink) return newLink.uid
+    return ''
   },
 
   setIlinks: (ilinks) => {
@@ -56,9 +62,9 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
   setSlashCommands: (slashCommands) => set({ slashCommands }),
 
-  addInternalLink: (ilink, nodeId) => {
-    let nodeLinks = get().linkCache[nodeId]
-    let secondNodeLinks = get().linkCache[ilink.nodeId]
+  addInternalLink: (ilink, uid) => {
+    let nodeLinks = get().linkCache[uid]
+    let secondNodeLinks = get().linkCache[ilink.uid]
 
     if (!nodeLinks) nodeLinks = []
     if (!secondNodeLinks) secondNodeLinks = []
@@ -66,21 +72,21 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     nodeLinks.push(ilink)
     secondNodeLinks.push({
       type: ilink.type === 'from' ? 'to' : 'from',
-      nodeId
+      uid: uid
     })
 
     set({
       linkCache: {
         ...get().linkCache,
-        [nodeId]: nodeLinks,
-        [ilink.nodeId]: secondNodeLinks
+        [uid]: nodeLinks,
+        [ilink.uid]: secondNodeLinks
       }
     })
   },
 
-  removeInternalLink: (ilink, nodeId) => {
-    let nodeLinks = get().linkCache[nodeId]
-    let secondNodeLinks = get().linkCache[ilink.nodeId]
+  removeInternalLink: (ilink, uid) => {
+    let nodeLinks = get().linkCache[uid]
+    let secondNodeLinks = get().linkCache[ilink.uid]
 
     if (!nodeLinks) nodeLinks = []
     if (!secondNodeLinks) secondNodeLinks = []
@@ -88,44 +94,47 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     nodeLinks = removeLink(ilink, nodeLinks)
     const secondLinkToDelete: CachedILink = {
       type: ilink.type === 'from' ? 'to' : 'from',
-      nodeId
+      uid: uid
     }
     secondNodeLinks = removeLink(secondLinkToDelete, secondNodeLinks)
 
     set({
       linkCache: {
         ...get().linkCache,
-        [nodeId]: nodeLinks,
-        [ilink.nodeId]: secondNodeLinks
+        [uid]: nodeLinks,
+        [ilink.uid]: secondNodeLinks
       }
     })
   },
 
-  updateInternalLinks: (links, nodeId) => {
+  updateInternalLinks: (links, uid) => {
     set({
       linkCache: {
         ...get().linkCache,
-        [nodeId]: links
+        [uid]: links
       }
     })
   }
 }))
 
-export const getLevel = (id: string) => id.split(SEPARATOR).length
+export const getLevel = (nodeId: string) => nodeId.split(SEPARATOR).length
 
 /** Link sanatization
  *
  * Orders the links according to their level in tree
  * Guarantees parent is before child -> Condition required for correct tree
  */
-export const sanatizeLinks = (links: string[]): string[] => {
+
+type treeMap = { id: string; uid: string }[]
+
+export const sanatizeLinks = (links: treeMap): treeMap => {
   let oldLinks = links
-  const newLinks: string[] = []
+  const newLinks: treeMap = []
   let currentDepth = 1
 
   while (oldLinks.length > 0) {
     for (const l of links) {
-      if (getLevel(l) === currentDepth) {
+      if (getLevel(l.id) === currentDepth) {
         newLinks.push(l)
         oldLinks = oldLinks.filter((k) => k !== l)
       }
@@ -138,7 +147,7 @@ export const sanatizeLinks = (links: string[]): string[] => {
 
 export const useTreeFromLinks = () => {
   const ilinks = useDataStore((store) => store.ilinks)
-  const links = ilinks.map((i) => i.text)
+  const links = ilinks.map((i) => ({ id: i.text, uid: i.uid }))
   const sanatizedLinks = sanatizeLinks(links)
   const tree = generateTree(sanatizedLinks)
 

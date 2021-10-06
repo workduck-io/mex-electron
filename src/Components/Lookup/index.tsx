@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
-import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import tinykeys from 'tinykeys'
+import { AppType } from '../../Data/useInitialize'
+import { useLinks } from '../../Editor/Actions/useLinks'
 import useDataStore from '../../Editor/Store/DataStore'
-import TreeNode from '../../Types/tree'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
+import { IpcAction } from '../../Spotlight/utils/constants'
+import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
 import { useHelpStore } from '../Help/HelpModal'
 import NodeSelect from '../NodeSelect/NodeSelect'
 import { StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
-import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
-import { IpcAction } from '../../Spotlight/utils/constants'
-import { AppType } from '../../Data/useInitialize'
 
-export type LookupProps = {
-  flatTree: TreeNode[]
-}
-
-const Lookup: React.FC<LookupProps> = () => {
+const Lookup = () => {
   const [open, setOpen] = useState(false)
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
@@ -40,18 +36,20 @@ const Lookup: React.FC<LookupProps> = () => {
     }
   }, [shortcuts])
 
+  const { getUidFromNodeId } = useLinks()
   const { push } = useNavigation()
   const addILink = useDataStore((s) => s.addILink)
 
   const handleSelectItem = (inputValue: string) => {
-    push(inputValue)
+    const uid = getUidFromNodeId(inputValue)
+    push(uid)
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, inputValue)
     closeModal()
   }
 
   const handleCreateItem = (inputValue: string) => {
-    addILink(inputValue)
-    push(inputValue)
+    const uid = addILink(inputValue)
+    push(uid)
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, inputValue)
     closeModal()
   }

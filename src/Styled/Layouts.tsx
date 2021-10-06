@@ -19,4 +19,10 @@ const Centered = styled.div`
   height: 100%;
 `
 
+export const SpaceBetweenHorizontalFlex = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+
 export default Centered

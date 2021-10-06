@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
 import useMergedRef from '@react-hook/merged-ref'
 import { getPreventDefaultHandler, PortalBody, useEditorState } from '@udecode/plate'
+import React, { useEffect } from 'react'
 import { ComboboxItem, ComboboxRoot } from '../../tag/components/TagCombobox.styles'
 import { setElementPositionByRange } from '../../tag/utils/setElementPositionByRange'
 import { useComboboxControls } from '../hooks/useComboboxControls'
@@ -31,15 +31,13 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
 
   if (!combobox) return null
   const comboProps = (item, index) => {
-    if (combobox)
+    if (combobox) {
       return combobox.getItemProps({
         item,
-        index,
+        index
       })
-    return
+    }
   }
-
-  // console.log({ items, search, comboboxKey });
 
   return (
     <PortalBody>

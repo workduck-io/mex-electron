@@ -1,22 +1,16 @@
 import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
 import { Icon } from '@iconify/react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Modal from 'react-modal'
-import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import tinykeys from 'tinykeys'
+import create from 'zustand'
 import { useDelete } from '../../Editor/Actions/useDelete'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import { Button } from '../../Styled/Buttons'
 import { useHelpStore } from '../Help/HelpModal'
 import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
-import create from 'zustand'
-
-interface DeleteState {
-  open: boolean
-  del: string
-  mockData: string[]
-}
 
 interface DeleteStoreState {
   open: boolean
@@ -82,7 +76,7 @@ const Delete = () => {
     return () => {
       unsubscribe()
     }
-  }, [shortcuts])
+  }, [shortcuts, openModal])
 
   // console.log({ to, from, open });
 
@@ -97,11 +91,11 @@ const Delete = () => {
     if (del) {
       setMockRefactored(getMockDelete(del))
     }
-  }, [del])
+  }, [del, getMockDelete, setMockRefactored])
 
   const handleDelete = () => {
     const { newLinks } = execDelete(del)
-    if (newLinks.length > 0) push(newLinks[0].text)
+    if (newLinks.length > 0) push(newLinks[0].uid)
     closeModal()
   }
 

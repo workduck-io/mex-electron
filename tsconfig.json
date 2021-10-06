@@ -15,8 +15,7 @@
     "paths": {
       "*": ["node_modules/*"]
     }
+    // "strictNullChecks": true
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }

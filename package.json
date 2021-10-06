@@ -75,6 +75,7 @@
     "@udecode/plate-highlight": "^2.0.0",
     "@uifabric/styling": "^7.19.0",
     "active-win": "^7.6.0",
+    "aws-amplify": "^4.3.1",
     "axios": "^0.21.1",
     "caniuse-lite": "^1.0.30001228",
     "chokidar": "^3.5.2",

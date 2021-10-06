@@ -1,7 +1,6 @@
 import saveLine from '@iconify-icons/ri/save-line'
 import { useStoreEditorValue } from '@udecode/plate'
-import { ipcRenderer } from 'electron'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
@@ -15,7 +14,7 @@ import { useSnippetStore } from '../Store/SnippetStore'
 export const useSaver = () => {
   const setFsContent = useContentStore((state) => state.setContent)
 
-  const id = useEditorStore((state) => state.node.id)
+  const uid = useEditorStore((state) => state.node.uid)
   const { updateLinksFromContent } = useLinks()
 
   const saveData = useSaveData()
@@ -24,8 +23,10 @@ export const useSaver = () => {
   const onSave = () => {
     // setContent then save
     if (editorState) {
-      setFsContent(id, editorState)
-      updateLinksFromContent(id, editorState)
+      console.log({ uid, editorState })
+
+      setFsContent(uid, editorState)
+      updateLinksFromContent(uid, editorState)
     }
     saveData()
     toast('Saved!', { duration: 1000 })
