@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://api.workduck.io/integration'
+export const BASE_URL = 'http://802e-106-200-236-145.ngrok.io/local'
 export const apiURLs = {
   createTemplate: `${BASE_URL}/sync/template`,
   getIntentValues: `${BASE_URL}/intents/value`,

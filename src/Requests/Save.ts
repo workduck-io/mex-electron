@@ -27,6 +27,8 @@ export const saveDataAPI = (uid: string, content: any[]) => {
     updatedAt: 1234
   }
 
+  // API.get('mex', `/node/${uid}`, {}).then((d) => console.log(d))
+
   API.post('mex', '/node', {
     body: reqData
   })

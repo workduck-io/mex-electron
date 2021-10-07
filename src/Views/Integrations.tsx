@@ -2,10 +2,11 @@ import checkboxLine from '@iconify-icons/ri/checkbox-line'
 import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
 import { Icon } from '@iconify/react'
 import { shell } from 'electron'
-import React from 'react'
+import React, { useEffect } from 'react'
 import ConfirmationModal, { useConfirmationModalStore } from '../Components/ConfirmationModal/ConfirmationModal'
 import NewSyncTemplateModal, { useNewSyncTemplateModalStore } from '../Components/Integrations/NewSyncBlockModal'
 import { authURLs } from '../Components/Integrations/sampleServices'
+import { useUpdater } from '../Data/useUpdater'
 import { WORKSPACE_ID } from '../Defaults/auth'
 import { ServiceLabel } from '../Editor/Components/SyncBlock'
 import { getSyncServiceIcon } from '../Editor/Components/SyncBlock/SyncIcons'
@@ -20,7 +21,7 @@ import {
   SlashCommand,
   SlashCommandPrefix,
   Template,
-  TemplatesGrid,
+  TemplatesGrid
 } from '../Styled/Integrations'
 import { SpaceBetweenHorizontalFlex, Wrapper } from '../Styled/Layouts'
 import { Note, Title } from '../Styled/Typography'
@@ -31,11 +32,16 @@ const Integrations = () => {
   const templates = useSyncStore((store) => store.templates)
   const services = useSyncStore((store) => store.services)
   const connectService = useSyncStore((store) => store.connectService)
+  const { updateServices } = useUpdater()
 
   const handleDeleteCancel = () => undefined
   const handleDeleteConfirm = (templateId: string) => {
     console.log('Should delete', { templateId })
   }
+
+  useEffect(() => {
+    updateServices()
+  }, [])
 
   const onConnectService = (id: string) => {
     const authUrl = authURLs[id](WORKSPACE_ID)

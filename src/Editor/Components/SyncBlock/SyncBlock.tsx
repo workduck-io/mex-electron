@@ -118,6 +118,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
       parentNodeId: parentNodeId ?? 'BLOCK_random',
       syncId: element.id,
       text: data.content,
+      intentGroupId: blockData.igid,
       // On insert
       // ...InsertParams,
       eventType: blockData.content === '' ? 'INSERT' : 'EDIT' // FIXME

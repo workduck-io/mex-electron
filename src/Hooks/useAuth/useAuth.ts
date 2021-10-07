@@ -1,5 +1,6 @@
 import create from 'zustand'
-import { confirmSignUp, signIn, signUp } from '../../Requests/Auth/Login'
+import { useUpdater } from '../../Data/useUpdater'
+import { confirmSignUp, signIn, signUp } from '../../Requests/Auth/Auth'
 
 interface UserDetails {
   email: string
@@ -19,24 +20,27 @@ export const useAuthStore = create<AuthStoreState>((set) => ({
   userDetails: undefined,
   setAuthenticated: (userDetails) => set({ authenticated: true, userDetails }),
   setUnAuthenticated: () => set({ authenticated: false, userDetails: undefined }),
-  setRegistered: (val) => set({ registered: val }),
+  setRegistered: (val) => set({ registered: val })
 }))
 
 export const useAuthentication = () => {
   const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const setRegistered = useAuthStore((store) => store.setRegistered)
+  const { updateServices } = useUpdater()
 
   const login = async (email: string, password: string) => {
-    signIn({ email, password }).then(() => {
-      setAuthenticated({ email })
-    })
+    signIn({ email, password })
+      .then(() => {
+        setAuthenticated({ email })
+      })
+      .then(updateServices)
   }
 
   const registerDetails = (email: string, password: string) => {
     signUp({
       email,
-      password,
+      password
     }).then(() => {
       setRegistered(true)
     })

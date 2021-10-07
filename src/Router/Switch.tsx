@@ -20,23 +20,25 @@ const SwitchWrapper = styled(animated.div)`
   height: 100%;
 `
 
+const Perspective = '2000px'
+
 const Switch = () => {
   const location = useLocation()
   const transitions = useTransition(location, {
     from: {
       opacity: 0,
-      transform: 'scale(0.75) perspective(2000px) rotateX(20deg) translate(-15%, -15%)'
+      transform: `scale(0.75) perspective(${Perspective}) rotateX(20deg) translate(-15%, -15%)`
     },
     enter: {
       opacity: 1,
-      transform: 'scale(1.0) perspective(2000px) rotateX(0deg) translate(0%, 0%)'
+      transform: `scale(1.0) perspective(${Perspective}) rotateX(0deg) translate(0%, 0%)`
     },
     leave: {
       opacity: 0,
-      transform: 'scale(0.75) perspective(2000px) rotateX(-20deg) translate(15%, 15%)'
+      transform: `scale(0.75) perspective(${Perspective}) rotateX(-20deg) translate(15%, 15%)`
     },
     delay: 0,
-    config: config.gentle
+    config: config.default
   })
   return transitions((props, item) => (
     <SwitchWrapper style={props}>

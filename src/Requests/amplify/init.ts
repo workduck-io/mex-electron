@@ -14,7 +14,7 @@ export default function initializeAmplify () {
       endpoints: [
         {
           name: 'mex',
-          endpoint: 'https://xabdow1opb.execute-api.us-east-1.amazonaws.com/dev',
+          endpoint: 'https://api.workduck.io/mex',
           region: 'us-east-1'
         }
       ]
