@@ -27,13 +27,14 @@ export const useAuthentication = () => {
   const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const setRegistered = useAuthStore((store) => store.setRegistered)
-  const { updateServices } = useUpdater()
+  const { updateDefaultServices, updateServices } = useUpdater()
 
   const login = async (email: string, password: string) => {
     signIn({ email, password })
       .then(() => {
         setAuthenticated({ email })
       })
+      .then(updateDefaultServices)
       .then(updateServices)
   }
 

@@ -34,12 +34,13 @@ export interface SyncBlockStyles {
 
 export interface Service {
   id: string
+  name: string
   type: string
+  imageUrl: string
+  description: string
+  authUrl: string
+  // Is the service connected
   connected: boolean
-  styles: {
-    color: string
-    bgColor: string
-  }
 }
 
 export interface IntentTemplate {

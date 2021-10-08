@@ -1,6 +1,5 @@
 import { sortBy } from 'lodash'
 import create from 'zustand'
-import { sampleServices } from '../../Components/Integrations/sampleServices'
 import { defaultMexIntent, intentsData, templates } from '../../Defaults/Test/intentsData'
 import { Service, SyncContextType } from '../Components/SyncBlock/SyncBlock.types'
 
@@ -9,7 +8,7 @@ const sortServices = (services: Service[]) => sortBy(services, (s) => s.id)
 export const useSyncStore = create<SyncContextType>((set, get) => ({
   syncBlocks: [],
   intents: intentsData,
-  services: sortServices(sampleServices),
+  services: sortServices([]),
   templates,
 
   addSyncBlock: (block) =>

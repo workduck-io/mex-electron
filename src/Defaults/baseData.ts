@@ -1,4 +1,3 @@
-import { sampleServices } from '../Components/Integrations/sampleServices'
 import { generateComboTexts, generateILinks } from '../Editor/Store/sampleTags'
 import { FileData } from '../Types/data'
 
@@ -20,7 +19,7 @@ export const DefaultFileData: FileData = {
   syncBlocks: [],
   templates: [],
   intents: {},
-  services: sampleServices,
+  services: [],
   userSettings: {
     theme: 'dev',
     spotlight: {

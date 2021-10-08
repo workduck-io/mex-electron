@@ -5,9 +5,8 @@ import { shell } from 'electron'
 import React, { useEffect } from 'react'
 import ConfirmationModal, { useConfirmationModalStore } from '../Components/ConfirmationModal/ConfirmationModal'
 import NewSyncTemplateModal, { useNewSyncTemplateModalStore } from '../Components/Integrations/NewSyncBlockModal'
-import { authURLs } from '../Components/Integrations/sampleServices'
+import { styles } from '../Components/Integrations/sampleServices'
 import { useUpdater } from '../Data/useUpdater'
-import { WORKSPACE_ID } from '../Defaults/auth'
 import { ServiceLabel } from '../Editor/Components/SyncBlock'
 import { getSyncServiceIcon } from '../Editor/Components/SyncBlock/SyncIcons'
 import { useSyncStore } from '../Editor/Store/SyncStore'
@@ -40,14 +39,13 @@ const Integrations = () => {
   }
 
   useEffect(() => {
-    updateServices()
+    (async () => {
+      await updateServices()
+    })()
   }, [])
 
-  const onConnectService = (id: string) => {
-    const authUrl = authURLs[id](WORKSPACE_ID)
-    // eslint-disable-next-line no-console
+  const onConnectService = (id: string, authUrl: string) => {
     shell.openExternal(authUrl)
-    // store new services
     connectService(id)
   }
 
@@ -63,11 +61,11 @@ const Integrations = () => {
               <ServiceButton
                 onClick={(e) => {
                   e.preventDefault()
-                  if (!s.connected) onConnectService(s.id)
+                  if (!s.connected) onConnectService(s.id, s.authUrl)
                 }}
                 key={`sButton_${s.id}`}
-                color={s.styles.color}
-                bgColor={s.styles.bgColor}
+                color={styles[s.id].color}
+                bgColor={styles[s.id].bgColor}
               >
                 <ServiceIconWrapper>
                   <Icon height={64} icon={getSyncServiceIcon(s.id)} />

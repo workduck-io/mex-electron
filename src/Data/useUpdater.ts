@@ -3,6 +3,7 @@ import { uniq } from 'lodash'
 import { WORKSPACE_ID } from '../Defaults/auth'
 import { defaultCommands } from '../Defaults/slashCommands'
 import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
+import { Service } from '../Editor/Components/SyncBlock'
 import useDataStore from '../Editor/Store/DataStore'
 import { generateComboTexts } from '../Editor/Store/sampleTags'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
@@ -24,15 +25,31 @@ export const useUpdater = () => {
     setSlashCommands(Array.from(commands))
   }
 
-  const updateServices = () => {
-    axios
+  const updateDefaultServices = async () => {
+    await axios.get(apiURLs.getAllServiceData(WORKSPACE_ID)).then((d) => {
+      const data = d.data
+      const services: Service[] = data.map((s) => ({
+        id: s.serviceType,
+        name: s.name,
+        type: s.intentTypes[0],
+        imageUrl: s.imageUrl,
+        description: s.description,
+        authUrl: s.authUrl,
+        connected: false
+      }))
+      // console.log({ services })
+      setServices(services)
+    })
+  }
+
+  const updateServices = async () => {
+    await axios
       .get(apiURLs.getWorkspaceAuth(WORKSPACE_ID))
       .then((d) => {
         const services = useSyncStore.getState().services
         const sData = d.data
         const newServices = services.map((s) => {
           const connected = sData.some((cs) => s.id === cs.type)
-
           return { ...s, connected }
         })
         setServices(newServices)
@@ -40,5 +57,5 @@ export const useUpdater = () => {
       .catch((e) => console.error(e))
   }
 
-  return { updater, updateServices }
+  return { updater, updateServices, updateDefaultServices }
 }
