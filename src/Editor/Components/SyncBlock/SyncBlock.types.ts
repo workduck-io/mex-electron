@@ -16,6 +16,12 @@ export interface SyncBlockData {
 
 export interface SyncElementData {
   id: string
+  properties?: {
+    content: string
+    igid: string
+    templateId: string
+    service: string
+  }
 }
 
 export interface SyncBlockTemplate {

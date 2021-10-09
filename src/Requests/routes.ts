@@ -1,5 +1,5 @@
 // export const BASE_URL = 'https://api.workduck.io/integration'
-export const BASE_URL = 'http://802e-106-200-236-145.ngrok.io/local'
+export const BASE_URL = 'https://1873-106-200-232-245.ngrok.io/local'
 //
 export const apiURLs = {
   createTemplate: `${BASE_URL}/sync/template`,

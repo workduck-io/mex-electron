@@ -10,16 +10,23 @@ export const RootElement = styled.div`
 export const ElementHeader = styled.div`
   display: flex;
   align-items: center;
+  width: max-content;
+  margin-bottom: ${({ theme }) => theme.spacing.small};
+`
+
+export const Widget = styled.div`
+  display: flex;
+  align-items: center;
   font-size: 0.9rem;
   color: ${({ theme }) => theme.colors.text.subheading};
   background-color: ${({ theme }) => theme.colors.gray[9]};
-  padding: ${({ theme: { spacing } }) => `${spacing.tiny} ${spacing.small}`};
+  padding: ${({ theme: { spacing } }) => `${spacing.tiny} ${spacing.medium}`};
   width: max-content;
   border-radius: ${({ theme }) => theme.borderRadius.small};
+  margin-right: ${({ theme }) => theme.spacing.medium};
   svg {
-    margin-right: ${({ theme }) => theme.spacing.tiny};
+    margin-right: ${({ theme }) => theme.spacing.small};
   }
-  margin-bottom: ${({ theme }) => theme.spacing.small};
 `
 
 export const SyncTitle = styled.div`
@@ -115,5 +122,18 @@ export const ServiceLabel = styled.div`
 
   svg {
     margin-right: ${({ theme }) => theme.spacing.small};
+  }
+`
+
+export const SentFrom = styled.div`
+  display: flex;
+  align-items: space-around;
+  align-items: center;
+  padding: ${({ theme }) => theme.spacing.small};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  background-color: ${({ theme }) => theme.colors.gray[8]};
+  svg {
+    color: ${({ theme }) => theme.colors.primary};
+    margin-left: ${({ theme }) => theme.spacing.small};
   }
 `

@@ -32,22 +32,22 @@ export type EditorContextType = {
 
 export const useEditorStore = create<EditorContextType>((set, get) => ({
   node: getInitialNode(),
-  content: getContent('@'),
+  content: [{ children: [{ text: '' }] }],
   readOnly: false,
 
   setReadOnly: (isReadOnly: boolean) => {
-    set(() => ({ readOnly: isReadOnly }))
+    set({ readOnly: isReadOnly })
   },
 
-  loadNode: (node: NodeProperties) => {
-    set(() => ({
+  loadNode: async (node: NodeProperties) => {
+    set({
       node,
-      content: getContent(node.uid)
-    }))
+      content: await getContent(node.uid)
+    })
   },
 
   loadNodeAndReplaceContent: (node, content) => {
-    set(() => ({ node, content }))
+    set({ node, content })
   }
 }))
 

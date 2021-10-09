@@ -15,8 +15,9 @@ import { Button } from '../../../Styled/Buttons'
 import { SyncIntentsWrapper } from '../../../Styled/Integrations'
 import { useSyncStore } from '../../Store/SyncStore'
 import IntentSelector from './intentSelector'
-import { ElementHeader, FormControls, RootElement, SyncForm, SyncTitle } from './SyncBlock.styles'
+import { ElementHeader, FormControls, RootElement, SentFrom, SyncForm, SyncTitle, Widget } from './SyncBlock.styles'
 import { Intent, SyncBlockData, SyncBlockProps } from './SyncBlock.types'
+import { getSyncServiceIcon } from './SyncIcons'
 
 type FormValues = {
   content: string
@@ -33,7 +34,6 @@ export const SyncBlock = (props: SyncBlockProps) => {
   const uid = useEditorStore((store) => store.node.uid)
   const parentNodeId = useEditorStore((store) => store.node.key)
   const blocksData = useSyncStore((state) => state.syncBlocks)
-  const blockDataFiltered = blocksData.filter((d) => d.id === element.id)
 
   const [changedIntents, setChangedIntents] = useState<{ [id: string]: Intent }>({})
 
@@ -45,12 +45,31 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
   const { getIntents, getTemplate, updateNodeIntentsAndCreateIGID } = useIntents()
 
-  if (blockDataFiltered.length === 0) return new Error('BlockData undefined')
+  let blockData: SyncBlockData
+  const blockDataFiltered = blocksData.filter((d) => d.id === element.id)
 
-  const blockData = blockDataFiltered[0] as SyncBlockData
+  console.log({ blockDataFiltered, element })
 
-  const intents = getIntents(uid, blockData.templateId)
-  const template = getTemplate(blockData.templateId)
+  // Editable means whether this
+  let fromLocal = true
+  let service
+
+  if (blockDataFiltered.length > 0) {
+    blockData = blockDataFiltered[0] as SyncBlockData
+  } else {
+    if (element.properties) {
+      blockData = { id: element.id, ...element.properties }
+      fromLocal = false
+      service = element.properties.service
+    } else {
+      return new Error('Sync Block data not present in local store and in content as well')
+    }
+  }
+
+  const { content, templateId, igid } = blockData
+
+  const intents = getIntents(uid, templateId)
+  const template = getTemplate(templateId)
 
   const areAllIntentsPresent = intents.reduce((prev, cur) => {
     if (cur) return prev && isIntent(cur)
@@ -80,9 +99,9 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
     editSyncBlock({
       id: element.id,
-      content: blockData.content,
+      content: content,
       igid: newIgid,
-      templateId: blockData.templateId
+      templateId: templateId
     })
 
     // toast('Intents updated successfully')
@@ -100,16 +119,16 @@ export const SyncBlock = (props: SyncBlockProps) => {
     editSyncBlock({
       id: element.id,
       content: data.content,
-      igid: blockData.igid,
-      templateId: blockData.templateId
+      igid: igid,
+      templateId: templateId
     })
 
     // Inserted only on send
     const InsertParams =
-      blockData.content === ''
+      content === ''
         ? {
-            igId: blockData.igid,
-            templateId: blockData.templateId,
+            igId: igid,
+            templateId: templateId,
             workspaceId: WORKSPACE_ID
           }
         : {}
@@ -118,10 +137,10 @@ export const SyncBlock = (props: SyncBlockProps) => {
       parentNodeId: parentNodeId ?? 'BLOCK_random',
       syncId: element.id,
       text: data.content,
-      intentGroupId: blockData.igid,
+      intentGroupId: igid,
       // On insert
       // ...InsertParams,
-      eventType: blockData.content === '' ? 'INSERT' : 'EDIT' // FIXME
+      eventType: content === '' ? 'INSERT' : 'EDIT' // FIXME
     })
     toast('Sync Successful')
   } // eslint-disable-line no-console
@@ -129,13 +148,22 @@ export const SyncBlock = (props: SyncBlockProps) => {
   return (
     <RootElement {...attributes}>
       <div contentEditable={false}>
-        {/* For quick debug {blockData && JSON.stringify(blockData)} */}
+        {/* For quick debug {& JSON.stringify(blockData)} */}
 
         <SyncForm selected={selected}>
           <ElementHeader>
-            <Icon icon={refreshFill} height={20} />
-            SyncBlock
-            <SyncTitle>{template.title}</SyncTitle>
+            <Widget>
+              <Icon icon={refreshFill} height={20} />
+              SyncBlock
+              <SyncTitle>{template.title}</SyncTitle>
+            </Widget>
+            {!fromLocal && (
+              <Widget>
+                <Icon icon={getSyncServiceIcon(service)}></Icon>
+                Sent from
+                <SyncTitle>{service}</SyncTitle>
+              </Widget>
+            )}
           </ElementHeader>
 
           {areAllIntentsPresent ? (
@@ -143,7 +171,8 @@ export const SyncBlock = (props: SyncBlockProps) => {
               {...register('content')}
               placeholder="Your content here..."
               className="syncTextArea"
-              defaultValue={blockData && blockData.content}
+              defaultValue={content}
+              readOnly={!fromLocal}
               autoFocus={true}
             />
           ) : (
@@ -184,18 +213,27 @@ export const SyncBlock = (props: SyncBlockProps) => {
                   })}
               </SyncIntentsWrapper>
 
-              {areAllIntentsPresent && (
-                <Button primary onClick={onSubmit}>
-                  {
-                    blockData.content === '' ? 'Submit' : 'Edit' // FIXME
-                  }
-                </Button>
-              )}
+              {fromLocal ? (
+                <>
+                  {areAllIntentsPresent && (
+                    <Button primary onClick={onSubmit}>
+                      {
+                        content === '' ? 'Submit' : 'Edit' // FIXME
+                      }
+                    </Button>
+                  )}
 
-              {!areAllIntentsPresent && (
-                <Button primary onClick={onIntentsSave}>
-                  Save Intents
-                </Button>
+                  {!areAllIntentsPresent && (
+                    <Button primary onClick={onIntentsSave}>
+                      Save Intents
+                    </Button>
+                  )}
+                </>
+              ) : (
+                <SentFrom>
+                  Sent from {service}
+                  <Icon icon={getSyncServiceIcon(service)}></Icon>
+                </SentFrom>
               )}
             </FormControls>
           )}

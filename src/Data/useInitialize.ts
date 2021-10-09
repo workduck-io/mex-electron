@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 import { defaultCommands } from '../Defaults/slashCommands'
 import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
 import { useContentStore } from '../Editor/Store/ContentStore'
@@ -43,7 +42,7 @@ export const useInitialize = () => {
 
   const init = (data: FileData, initNodeId?: string, initFor?: AppType) => {
     update(data)
-    const keyToLoad = initNodeId || '@'
+    const keyToLoad = initNodeId || 'test'
 
     if (initFor === AppType.SPOTLIGHT) {
       loadNode(keyToLoad)
