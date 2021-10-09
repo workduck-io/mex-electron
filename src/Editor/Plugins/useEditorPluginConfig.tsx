@@ -7,13 +7,11 @@ import useMultiComboboxOnKeyDown from '../Components/multi-combobox/useMultiComb
 import { useSyncConfig } from '../Components/SlashCommands/useSyncConfig'
 import { ELEMENT_TAG } from '../Components/tag/defaults'
 import useDataStore from '../Store/DataStore'
-import { useSyncStore } from '../Store/SyncStore'
 
 const useEditorPluginConfig = (editorId: string) => {
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
   const slash_commands = useDataStore((state) => state.slashCommands)
-  const addSyncBlock = useSyncStore((state) => state.addSyncBlock)
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
