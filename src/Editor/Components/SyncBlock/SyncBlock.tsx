@@ -184,32 +184,34 @@ export const SyncBlock = (props: SyncBlockProps) => {
               <SyncIntentsWrapper>
                 {intents &&
                   intents.map((intent) => {
-                    if (isIntent(intent)) {
-                      return (
-                        <IntentSelector
-                          id={`SyncBlocksIntentSelector${blockData.id}`}
-                          key={`SyncBlocksIntentSelector${blockData.id}${intent.service}`}
-                          // showPosition={{ x: 0, y: 64 }}
-                          service={intent.service}
-                          type={intent.type}
-                          defaultIntent={intent}
-                          readOnly={true}
-                          onSelect={(val) => console.log({ val })}
-                        />
-                      )
-                    } else {
-                      return (
-                        <IntentSelector
-                          id={`SyncBlocksIntentPreview${blockData.id}`}
-                          key={`SyncBlocksIntentPreview${blockData.id}${intent.service}`}
-                          // showPosition={{ x: 0, y: 64 }}
-                          service={intent.service}
-                          type={intent.type}
-                          readOnly={false}
-                          onSelect={onSelectIntent}
-                        />
-                      )
-                    }
+                    if (intent.service !== 'MEX') {
+                      if (isIntent(intent)) {
+                        return (
+                          <IntentSelector
+                            id={`SyncBlocksIntentSelector${blockData.id}`}
+                            key={`SyncBlocksIntentSelector${blockData.id}${intent.service}`}
+                            // showPosition={{ x: 0, y: 64 }}
+                            service={intent.service}
+                            type={intent.type}
+                            defaultIntent={intent}
+                            readOnly={true}
+                            onSelect={(val) => console.log({ val })}
+                          />
+                        )
+                      } else {
+                        return (
+                          <IntentSelector
+                            id={`SyncBlocksIntentPreview${blockData.id}`}
+                            key={`SyncBlocksIntentPreview${blockData.id}${intent.service}`}
+                            // showPosition={{ x: 0, y: 64 }}
+                            service={intent.service}
+                            type={intent.type}
+                            readOnly={false}
+                            onSelect={onSelectIntent}
+                          />
+                        )
+                      }
+                    } else return null
                   })}
               </SyncIntentsWrapper>
 

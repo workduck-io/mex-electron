@@ -50,8 +50,8 @@ const Switch = () => {
         <ProtectedRoute exact path="/snippets/editor" component={SnippetEditor} />
         <ProtectedRoute path="/settings" component={Settings} />
         <ProtectedRoute path="/" exact component={Dashboard} />
-        <AuthRoute path="/register" component={Register} />
         <AuthRoute path="/login" component={Login} />
+        <AuthRoute path="/register" component={Register} />
       </ReactRouterSwitch>
     </SwitchWrapper>
   ))

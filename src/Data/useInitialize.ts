@@ -42,7 +42,7 @@ export const useInitialize = () => {
 
   const init = (data: FileData, initNodeId?: string, initFor?: AppType) => {
     update(data)
-    const keyToLoad = initNodeId || 'test'
+    const keyToLoad = initNodeId || '@'
 
     if (initFor === AppType.SPOTLIGHT) {
       loadNode(keyToLoad)

@@ -31,10 +31,12 @@ const Integrations = () => {
   const templates = useSyncStore((store) => store.templates)
   const services = useSyncStore((store) => store.services)
   const connectService = useSyncStore((store) => store.connectService)
+  const deleteTemplate = useSyncStore((store) => store.deleteTemplate)
   const { updateServices } = useUpdater()
 
   const handleDeleteCancel = () => undefined
   const handleDeleteConfirm = (templateId: string) => {
+    deleteTemplate(templateId)
     console.log('Should delete', { templateId })
   }
 

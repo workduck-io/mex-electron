@@ -64,7 +64,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
           init(d)
           return d
         })
-        .then((d) => authenticated && loadNode(getUidFromNodeIdBase(d.ilinks, 'test')))
+        .then((d) => authenticated && loadNode(getUidFromNodeIdBase(d.ilinks, '@')))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

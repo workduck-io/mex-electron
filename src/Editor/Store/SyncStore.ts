@@ -55,6 +55,13 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
       templates: [...state.templates, template]
     })),
 
+  deleteTemplate: (templateId) =>
+    set((state) => {
+      return {
+        templates: [...state.templates.filter((s) => s.id !== templateId)]
+      }
+    }),
+
   addIntentEmptyMap: (uid) =>
     set((state) => ({
       intents: {

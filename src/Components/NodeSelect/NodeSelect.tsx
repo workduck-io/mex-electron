@@ -182,11 +182,8 @@ function NodeSelect ({
           placeholder={placeholder}
           // defaultValue={defaultValue}
           onChange={(e) => {
-            // useDebounce(() => {
-            console.log(e)
             getInputProps().onChange(e)
             onInpChange(e)
-            // }, 500)
           }}
           onKeyUp={onKeyUp}
         />
