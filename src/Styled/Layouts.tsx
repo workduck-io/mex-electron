@@ -19,6 +19,10 @@ const Centered = styled.div`
   height: 100%;
 `
 
+export const CenteredColumn = styled(Centered)`
+  flex-direction: column;
+`
+
 export const SpaceBetweenHorizontalFlex = styled.div`
   display: flex;
   align-items: center;

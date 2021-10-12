@@ -1,5 +1,6 @@
 import { OnChange, useStoreEditorRef } from '@udecode/plate'
 import { useCallback } from 'react'
+import { fuzzySearch } from '../../../Lib/fuzzySearch'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange'
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'
@@ -26,7 +27,7 @@ const useMultiComboboxOnChange = (
 
   const comboboxOnChange = useComboboxOnChange({
     editor,
-    keys,
+    keys
   })
 
   const { data } = comboType
@@ -40,18 +41,17 @@ const useMultiComboboxOnChange = (
 
     if (!search || !data) return false
 
-    const items: IComboboxItem[] = data
-      .filter((c) => c.text.toLowerCase().includes(search.toLowerCase()))
-      .slice(0, maxSuggestions)
-      .map((item) => ({
-        key: item.value,
-        text: item.text,
-      }))
+    const searchItems = fuzzySearch(data, search, { keys: ['text'] })
+
+    const items: IComboboxItem[] = searchItems.slice(0, maxSuggestions).map((item) => ({
+      key: item.value,
+      text: item.text
+    }))
 
     if (comboboxKey !== ComboboxKey.SLASH_COMMAND) {
       items.push({
         key: '__create_new',
-        text: `Create New ${search}`,
+        text: `Create New ${search}`
       })
     }
     setItems(items)

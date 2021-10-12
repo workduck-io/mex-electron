@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
 import { useSaveData } from '../../Data/useSaveData'
+import { saveDataAPI } from '../../Requests/Save'
 import IconButton from '../../Styled/Buttons'
 import { useLinks } from '../Actions/useLinks'
 import { useContentStore } from '../Store/ContentStore'
@@ -24,8 +25,8 @@ export const useSaver = () => {
     // setContent then save
     if (editorState) {
       console.log({ uid, editorState })
-
       setFsContent(uid, editorState)
+      saveDataAPI(uid, editorState)
       updateLinksFromContent(uid, editorState)
     }
     saveData()

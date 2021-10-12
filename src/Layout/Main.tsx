@@ -31,7 +31,7 @@ const Content = styled.div`
   display: flex;
   flex-grow: 1;
   grid-column-start: 2;
-  overflow: scroll;
+  overflow: auto;
 `
 
 export type MainProps = { children: React.ReactNode }

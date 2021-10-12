@@ -44,6 +44,11 @@ export const defaultShortcuts = {
     keystrokes: '$mod+KeyS',
     category: 'Actions'
   },
+  refreshNode: {
+    title: 'Refresh current Node',
+    keystrokes: '$mod+KeyR',
+    category: 'Actions'
+  },
   toggleFocusMode: {
     title: 'Toggle Focus Mode',
     keystrokes: '$mod+Backslash',

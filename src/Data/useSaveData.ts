@@ -1,17 +1,16 @@
 import { ipcRenderer } from 'electron'
-import useThemeStore from '../Editor/Store/ThemeStore'
 import { useContentStore } from '../Editor/Store/ContentStore'
 import useDataStore from '../Editor/Store/DataStore'
-import { useSyncStore } from '../Editor/Store/SyncStore'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
-import { useUpdater } from './useUpdater'
+import { useSyncStore } from '../Editor/Store/SyncStore'
+import useThemeStore from '../Editor/Store/ThemeStore'
 import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
 import { IpcAction } from '../Spotlight/utils/constants'
 import { FileData } from '../Types/data'
 
 // Save the data in the local file database
 export const useSaveData = () => {
-  const { updater } = useUpdater()
+  // const { updater } = useUpdater()
   const saveData = () => {
     // console.log('We saved the data for you')
     // console.log(JSON.stringify(useContentStore.getState().contents, null, 2))
@@ -38,7 +37,7 @@ export const useSaveData = () => {
 
     ipcRenderer.send(IpcAction.SET_LOCAL_DATA, fileData)
 
-    updater()
+    // updater()
   }
 
   // useContentStore.subscribe(({ contents }) => {

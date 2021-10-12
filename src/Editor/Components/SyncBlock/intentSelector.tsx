@@ -24,29 +24,6 @@ export interface IntentSelectorProps {
   onSelect: (intent: Intent) => void
 }
 
-const sampleIntents = [
-  {
-    name: 'repository maximus',
-    value: 'repomaximus'
-  },
-  {
-    name: 'chud tan maximus',
-    value: 'jkshfjyurfweb'
-  },
-  {
-    name: 'chud ran minimal',
-    value: 'kajdsfhjkdasf'
-  },
-  {
-    name: 'lowen maximus',
-    value: 'sdajhfjkdlafhjkadsfh'
-  },
-  {
-    name: 'allure pure',
-    value: 'jhsdkflhiar'
-  }
-]
-
 interface IntentSelectorState {
   intents: Intent[]
   loading: boolean
