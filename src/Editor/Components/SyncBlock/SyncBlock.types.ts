@@ -16,6 +16,12 @@ export interface SyncBlockData {
 
 export interface SyncElementData {
   id: string
+  properties?: {
+    content: string
+    igid: string
+    templateId: string
+    service: string
+  }
 }
 
 export interface SyncBlockTemplate {
@@ -34,13 +40,15 @@ export interface SyncBlockStyles {
 
 export interface Service {
   id: string
+  name: string
   type: string
+  imageUrl: string
+  description: string
+  authUrl: string
+  // Is the service connected
   connected: boolean
-  styles: {
-    color: string
-    bgColor: string
-  }
 }
+
 export interface IntentTemplate {
   service: string
   type: string // channel/repo etc
@@ -81,7 +89,9 @@ export type SyncContextType = {
   // Load a node and its contents in the editor
   addSyncBlock: (block: SyncBlockData) => void
   addTemplate: (template: SyncBlockTemplate) => void
+  deleteTemplate: (templateId: string) => void
   connectService: (id: string) => void
+  setServices: (services: Service[]) => void
   initSyncBlocks: (
     syncBlocks: SyncBlockData[],
     templates: SyncBlockTemplate[],

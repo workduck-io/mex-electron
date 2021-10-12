@@ -20,10 +20,14 @@ export type EditorContextType = {
   content: NodeEditorContent
   readOnly: boolean
 
+  fetchingContent: boolean
+
   // State transformations
 
   // Load a node and its contents in the editor
   loadNode: (node: NodeProperties) => void
+
+  setFetchingContent: (value: boolean) => void
 
   loadNodeAndReplaceContent: (node: NodeProperties, content: NodeEditorContent) => void
 
@@ -32,22 +36,28 @@ export type EditorContextType = {
 
 export const useEditorStore = create<EditorContextType>((set, get) => ({
   node: getInitialNode(),
-  content: getContent('@'),
+  content: [{ children: [{ text: '' }] }],
   readOnly: false,
+  fetchingContent: false,
 
   setReadOnly: (isReadOnly: boolean) => {
-    set(() => ({ readOnly: isReadOnly }))
+    set({ readOnly: isReadOnly })
   },
 
+  setFetchingContent: (value) =>
+    set({
+      fetchingContent: value
+    }),
+
   loadNode: (node: NodeProperties) => {
-    set(() => ({
+    set({
       node,
       content: getContent(node.uid)
-    }))
+    })
   },
 
   loadNodeAndReplaceContent: (node, content) => {
-    set(() => ({ node, content }))
+    set({ node, content })
   }
 }))
 

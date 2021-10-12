@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid'
 import { SEPARATOR } from '../../../Components/Sidebar/treeUtils'
+import { SYNC_BLOCK_ID_PREFIX } from '../../../Defaults/idPrefixes'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import { useSyncStore } from '../../../Editor/Store/SyncStore'
 import useIntents from '../../../Hooks/useIntents/useIntents'
@@ -23,7 +24,7 @@ export const useSyncConfig = () => {
         slateElementType: ELEMENT_SYNC_BLOCK,
         command,
         getBlockData: () => {
-          const id = `SYNC_${nanoid()}`
+          const id = `${SYNC_BLOCK_ID_PREFIX}${nanoid()}`
           const igid = checkAndGenerateIGID(curUid, cur.id)
           const nd = {
             id,

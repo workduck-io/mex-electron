@@ -15,6 +15,7 @@ export function getContent (uid: string): NodeEditorContent {
     const { content } = contents[uid]
 
     if (content) {
+      // console.log(JSON.stringify(apiData, null, 2), JSON.stringify(content, null, 2))
       return content
     }
   }

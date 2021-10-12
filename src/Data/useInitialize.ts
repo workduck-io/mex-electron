@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 import { defaultCommands } from '../Defaults/slashCommands'
 import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
 import { useContentStore } from '../Editor/Store/ContentStore'

@@ -3,9 +3,11 @@ import errorWarningLine from '@iconify-icons/ri/error-warning-line'
 import { Icon } from '@iconify/react'
 import { useCombobox } from 'downshift'
 import React, { useEffect, useState } from 'react'
+import { useDebouncedCallback } from 'use-debounce'
 import { useLinks } from '../../Editor/Actions/useLinks'
 import useDataStore from '../../Editor/Store/DataStore'
 import { useRecentsStore } from '../../Editor/Store/RecentsStore'
+import { fuzzySearch } from '../../Lib/fuzzySearch'
 import { Input } from '../../Styled/Form'
 import { StyledCombobox, StyledInputWrapper, StyledMenu, Suggestion } from './NodeSelect.styles'
 
@@ -71,14 +73,27 @@ function NodeSelect ({
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)
 
+  const lastOpenedItems = Array.from(lastOpened)
+    .reverse()
+    .map((l) => {
+      const nodeId = getNodeIdFromUid(l)
+      return { text: nodeId, value: nodeId, type: 'exists' }
+    })
+    .filter((i) => i.text)
+
   const { inputItems, selectedItem } = nodeSelectState
 
   const getNewItems = (inputValue: string) => {
-    const newItems = ilinks.filter((item) => item.text.toLowerCase().startsWith(inputValue.toLowerCase()))
-    if (handleCreateItem && inputValue !== '' && isNew(inputValue, ilinks)) {
-      newItems.push({ text: `Create new: ${inputValue}`, value: inputValue, type: 'new' })
+    // const newItems =  ilinks.filter((item) => item.text.toLowerCase().startsWith(inputValue.toLowerCase()))
+    if (inputValue !== '') {
+      const newItems = fuzzySearch(ilinks, inputValue, { keys: ['text'] })
+      if (handleCreateItem && inputValue !== '' && isNew(inputValue, ilinks)) {
+        newItems.push({ text: `Create new: ${inputValue}`, value: inputValue, type: 'new' })
+      }
+      return newItems
+    } else {
+      return ilinks
     }
-    return newItems
   }
 
   const {
@@ -105,15 +120,6 @@ function NodeSelect ({
       }
     }
   })
-
-  const lastOpenenedItems = Array.from(lastOpened)
-    .reverse()
-    .map((l) => {
-      const nodeId = getNodeIdFromUid(l)
-      return { text: nodeId, value: nodeId, type: 'exists' }
-    })
-
-  console.log({ lastOpenenedItems })
 
   function handleSelectedItemChange ({ selectedItem }: any) {
     if (selectedItem) {
@@ -144,10 +150,10 @@ function NodeSelect ({
     }
   }
 
-  const onInpChange = (e) => {
+  const onInpChange = useDebouncedCallback((e) => {
     const newItems = getNewItems(e.target.value)
     setInputItems(newItems)
-  }
+  }, 150)
 
   useEffect(() => {
     if (defaultValue) {
@@ -156,8 +162,8 @@ function NodeSelect ({
       setInputValue(defaultValue)
       setSelectedItem({ text: defaultValue, value: defaultValue, type: 'exists' })
     } else {
-      if (prefillLast && lastOpened.length > 0) {
-        setInputItems(lastOpenenedItems)
+      if (prefillLast && lastOpenedItems.length > 0) {
+        setInputItems(lastOpenedItems.filter((i) => i.text))
       } else {
         setInputItems(ilinks)
       }

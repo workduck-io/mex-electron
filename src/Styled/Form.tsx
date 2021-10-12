@@ -1,12 +1,14 @@
 import React from 'react'
 import Select from 'react-select'
-import styled, { DefaultTheme, useTheme } from 'styled-components'
+import styled, { css, DefaultTheme, useTheme } from 'styled-components'
 import { AppType } from '../Data/useInitialize'
 
 interface InputProps {
   isSelected?: boolean
   appType?: AppType
+  error?: boolean
 }
+
 export const Input = styled.input<InputProps>`
   background-color: ${({ theme }) => theme.colors.form.input.bg};
   color: ${({ theme }) => theme.colors.form.input.fg};
@@ -18,6 +20,12 @@ export const Input = styled.input<InputProps>`
     border-color: ${({ theme }) => theme.colors.primary};
     outline: none;
   }
+
+  ${({ theme, error }) =>
+    error &&
+    css`
+      border-color: ${theme.colors.palette.red};
+    `}
 `
 
 export const InputBlock = styled(Input)`
@@ -51,10 +59,19 @@ export const TextAreaBlock = styled(TextArea)`
   margin: ${({ theme }) => theme.spacing.small} 0;
 `
 
-export const Label = styled.label`
+interface LabelProps {
+  error?: boolean
+}
+
+export const Label = styled.label<LabelProps>`
   color: ${({ theme }) => theme.colors.text.fade};
   margin: ${({ theme: { spacing } }) => `${spacing.medium} 0 3px`};
   display: block;
+  ${({ theme, error }) =>
+    error &&
+    css`
+      color: ${theme.colors.palette.red};
+    `}
 `
 
 export const ReactSelectStyles = (theme: DefaultTheme) => ({

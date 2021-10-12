@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { nanoid } from 'nanoid'
 import { WORKSPACE_ID } from '../../Defaults/auth'
+import { IG_ID_PREFIX } from '../../Defaults/idPrefixes'
 import { Intent, IntentGroup, IntentTemplate } from '../../Editor/Components/SyncBlock/SyncBlock.types'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
 import { isIntent } from '../../Lib/intents'
@@ -33,7 +34,7 @@ const useIntents = () => {
             // return undefined
             console.log({ areAllIntentsPresent, blockIntents, igid })
 
-            const newIgid = `INTENTGROUP_${nanoid()}`
+            const newIgid = `${IG_ID_PREFIX}${nanoid()}`
             apiCreateIntent(blockIntents as Intent[], newIgid, templateId)
             addIgid(uid, newIgid, blockIntents as Intent[], templateId)
             console.log({ uid, newIgid, blockIntents, templateId })
@@ -229,7 +230,7 @@ const apiCreateIntent = (intents: Intent[], igid: string, templateId: string) =>
     templateId: templateId,
     syncDetails: syncDetails
   }
-  console.log({ reqData })
+  // console.log({ reqData })
 
   axios.post(apiURLs.intentGroup(true), reqData)
 }
@@ -247,7 +248,7 @@ const apiUpdateIntent = (intents: Intent[], igid: string) => {
     workspaceId: WORKSPACE_ID,
     syncDetails: syncDetails
   }
-  console.log({ reqData })
+  // console.log({ reqData })
 
   axios.post(apiURLs.intentGroup(false), reqData)
 }

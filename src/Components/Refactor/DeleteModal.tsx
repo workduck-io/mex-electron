@@ -76,7 +76,7 @@ const Delete = () => {
     return () => {
       unsubscribe()
     }
-  }, [shortcuts, openModal])
+  }, [shortcuts])
 
   // console.log({ to, from, open });
 
@@ -91,7 +91,7 @@ const Delete = () => {
     if (del) {
       setMockRefactored(getMockDelete(del))
     }
-  }, [del, getMockDelete, setMockRefactored])
+  }, [del])
 
   const handleDelete = () => {
     const { newLinks } = execDelete(del)

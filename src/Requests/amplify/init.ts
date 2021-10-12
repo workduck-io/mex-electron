@@ -9,6 +9,15 @@ export default function initializeAmplify () {
       userPoolId: config.cognito.USER_POOL_ID,
       identityPoolId: config.cognito.IDENTITY_POOL_ID,
       userPoolWebClientId: config.cognito.APP_CLIENT_ID
+    },
+    API: {
+      endpoints: [
+        {
+          name: 'mex',
+          endpoint: 'https://api.workduck.io/mex',
+          region: 'us-east-1'
+        }
+      ]
     }
   })
 }

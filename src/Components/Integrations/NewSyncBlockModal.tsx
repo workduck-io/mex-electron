@@ -4,6 +4,8 @@ import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import Modal from 'react-modal'
 import create from 'zustand'
+import { useSaveData } from '../../Data/useSaveData'
+import { useUpdater } from '../../Data/useUpdater'
 import { WORKSPACE_ID } from '../../Defaults/auth'
 import { SyncBlockTemplate } from '../../Editor/Components/SyncBlock'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
@@ -48,7 +50,8 @@ const NewSyncTemplateModal = () => {
   const open = useNewSyncTemplateModalStore((store) => store.open)
   const addTemplate = useSyncStore((store) => store.addTemplate)
   const services = useSyncStore((store) => store.services)
-
+  const { updater } = useUpdater()
+  const saveData = useSaveData()
   const { control, register, getValues } = useForm()
 
   // const theme = useTheme()
@@ -82,7 +85,6 @@ const NewSyncTemplateModal = () => {
       ],
       description
     }
-    addTemplate(template)
     const intentMap = {}
     template.intents.forEach((i) => {
       intentMap[i.service.toUpperCase()] = i.type
@@ -98,9 +100,13 @@ const NewSyncTemplateModal = () => {
 
     console.log({ reqData })
 
-    axios.post(apiURLs.createTemplate, reqData)
+    axios.post(apiURLs.createTemplate, reqData).then(() => {
+      addTemplate(template)
+      saveData()
+      updater()
 
-    closeModal()
+      closeModal()
+    })
   }
 
   return (
