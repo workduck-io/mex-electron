@@ -1,9 +1,9 @@
 import refreshFill from '@iconify-icons/ri/refresh-fill'
 import { Icon } from '@iconify/react'
+import Tippy from '@tippyjs/react/headless' // different import path!
 import axios from 'axios'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
 import ReactTooltip from 'react-tooltip'
 import { useSelected } from 'slate-react'
 import { WORKSPACE_ID } from '../../../Defaults/auth'
@@ -13,6 +13,7 @@ import { isIntent } from '../../../Lib/intents'
 import { apiURLs } from '../../../Requests/routes'
 import { Button } from '../../../Styled/Buttons'
 import { SyncIntentsWrapper } from '../../../Styled/Integrations'
+import { TooltipBase } from '../../../Styled/tippy'
 import { useSyncStore } from '../../Store/SyncStore'
 import IntentSelector from './intentSelector'
 import { ElementHeader, FormControls, RootElement, SentFrom, SyncForm, SyncTitle, Widget } from './SyncBlock.styles'
@@ -30,6 +31,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
   const { attributes, children, element } = props
   const { register, getValues } = useForm<FormValues>()
   const editSyncBlock = useSyncStore((state) => state.editSyncBlock)
+  const [synced, setSynced] = useState(false)
 
   const uid = useEditorStore((store) => store.node.uid)
   const parentNodeId = useEditorStore((store) => store.node.key)
@@ -142,7 +144,10 @@ export const SyncBlock = (props: SyncBlockProps) => {
       // ...InsertParams,
       eventType: content === '' ? 'INSERT' : 'EDIT' // FIXME
     })
-    toast('Sync Successful')
+    setSynced(true)
+    setTimeout(() => {
+      setSynced(false)
+    }, 2000)
   } // eslint-disable-line no-console
 
   return (
@@ -167,14 +172,25 @@ export const SyncBlock = (props: SyncBlockProps) => {
           </ElementHeader>
 
           {areAllIntentsPresent ? (
-            <textarea
-              {...register('content')}
-              placeholder="Your content here..."
-              className="syncTextArea"
-              defaultValue={content}
-              readOnly={!fromLocal}
-              autoFocus={true}
-            />
+            <Tippy
+              placement="top-end"
+              appendTo={() => document.body}
+              visible={synced}
+              render={(attrs) => (
+                <TooltipBase className="__haha" tabIndex={-1} {...attrs}>
+                  Synced Successful
+                </TooltipBase>
+              )}
+            >
+              <textarea
+                {...register('content')}
+                placeholder="Your content here..."
+                className="syncTextArea"
+                defaultValue={content}
+                readOnly={!fromLocal}
+                autoFocus={true}
+              />
+            </Tippy>
           ) : (
             <p>Please set the specific intents.</p>
           )}
