@@ -10,7 +10,7 @@ import { WORKSPACE_ID } from '../../Defaults/auth'
 import { SyncBlockTemplate } from '../../Editor/Components/SyncBlock'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
 import { capitalize } from '../../Lib/strings'
-import { apiURLs } from '../../Requests/routes'
+import { integrationUrls } from '../../Requests/routes'
 import { Button } from '../../Styled/Buttons'
 import { InputBlock, Label, TextAreaBlock } from '../../Styled/Form'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
@@ -100,7 +100,7 @@ const NewSyncTemplateModal = () => {
 
     console.log({ reqData })
 
-    axios.post(apiURLs.createTemplate, reqData).then(() => {
+    axios.post(integrationUrls.createTemplate, reqData).then(() => {
       addTemplate(template)
       saveData()
       updater()

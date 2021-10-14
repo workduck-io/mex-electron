@@ -1,9 +1,12 @@
 import { RestAPI as API } from '@aws-amplify/api-rest'
+import axios from 'axios'
 import { WORKSPACE_ID } from '../Defaults/auth'
 import { defaultContent } from '../Defaults/baseData'
 import { USE_API } from '../Defaults/dev_'
+import { getAuthConfig } from '../Hooks/useAuth/useAuth'
 import { deserializeContent, serializeContent } from '../Lib/serialize'
 import initializeAmplify from './amplify/init'
+import { apiUrls } from './routes'
 
 initializeAmplify()
 
@@ -28,25 +31,27 @@ export const saveDataAPI = (uid: string, content: any[]) => {
     })
 }
 
-const testPerf = async (uid: string) => {
+const testPerf = async (uid: string, config: any) => {
   const ar = Array.from(Array(100).keys())
-  const t0 = performance.now()
   let lost = 0
-  await Promise.all(
-    ar.map(async (e) => {
-      const data = await API.get('mex', `/node/${uid}`, {}).catch(() => {
-        lost++
-      })
-    })
-  )
-  const t1 = performance.now()
-  console.log('Parallel Performance', {
-    time: t1 - t0,
-    t1,
-    t0,
-    lost,
-    avg: (t1 - t0) / ar.length
-  })
+  // const t0 = performance.now()
+  // await Promise.all(
+  //   ar.map(async (e) => {
+  //     const data = await axios
+  //       .get(`https://mvvr3lsvob.execute-api.us-east-1.amazonaws.com/node/${uid}`, config)
+  //       .catch(() => {
+  //         lost++
+  //       })
+  //   })
+  // )
+  // const t1 = performance.now()
+  // console.log('Parallel Performance', {
+  //   time: t1 - t0,
+  //   t1,
+  //   t0,
+  //   lost,
+  //   avg: (t1 - t0) / ar.length,
+  // })
 
   const t01 = performance.now()
   lost = 0
@@ -54,7 +59,7 @@ const testPerf = async (uid: string) => {
     .reduce((seq, n) => {
       return seq
         .then(async () => {
-          await API.get('mex', `/node/${uid}`, {})
+          await axios.get(`https://mvvr3lsvob.execute-api.us-east-1.amazonaws.com/node/${uid}`, config)
         })
         .catch((e) => {
           lost++
@@ -73,9 +78,8 @@ const testPerf = async (uid: string) => {
 }
 
 export const getDataAPI = async (uid: string) => {
-  const data = await API.get('mex', `/node/${uid}`, {}).then((d) => {
-    // console.log({ d })
-    return d.data
+  const data = await axios.get(apiUrls.getNode(uid), getAuthConfig()).then((d) => {
+    return d.data.data
   })
 
   const dd = deserializeContent(data)

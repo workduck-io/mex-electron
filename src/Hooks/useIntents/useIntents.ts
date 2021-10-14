@@ -5,7 +5,7 @@ import { IG_ID_PREFIX } from '../../Defaults/idPrefixes'
 import { Intent, IntentGroup, IntentTemplate } from '../../Editor/Components/SyncBlock/SyncBlock.types'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
 import { isIntent } from '../../Lib/intents'
-import { apiURLs } from '../../Requests/routes'
+import { integrationUrls } from '../../Requests/routes'
 
 const useIntents = () => {
   const addIgid = useSyncStore((store) => store.addIgid)
@@ -232,7 +232,7 @@ const apiCreateIntent = (intents: Intent[], igid: string, templateId: string) =>
   }
   // console.log({ reqData })
 
-  axios.post(apiURLs.intentGroup(true), reqData)
+  axios.post(integrationUrls.intentGroup(true), reqData)
 }
 
 const apiUpdateIntent = (intents: Intent[], igid: string) => {
@@ -250,7 +250,7 @@ const apiUpdateIntent = (intents: Intent[], igid: string) => {
   }
   // console.log({ reqData })
 
-  axios.post(apiURLs.intentGroup(false), reqData)
+  axios.post(integrationUrls.intentGroup(false), reqData)
 }
 
 export default useIntents

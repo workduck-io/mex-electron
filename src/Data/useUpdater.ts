@@ -8,7 +8,7 @@ import useDataStore from '../Editor/Store/DataStore'
 import { generateComboTexts } from '../Editor/Store/sampleTags'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
 import { useSyncStore } from '../Editor/Store/SyncStore'
-import { apiURLs } from '../Requests/routes'
+import { integrationUrls } from '../Requests/routes'
 import { extractSnippetCommands } from '../Snippets/useSnippets'
 
 export const useUpdater = () => {
@@ -26,7 +26,7 @@ export const useUpdater = () => {
   }
 
   const updateDefaultServices = async () => {
-    await axios.get(apiURLs.getAllServiceData(WORKSPACE_ID)).then((d) => {
+    await axios.get(integrationUrls.getAllServiceData(WORKSPACE_ID)).then((d) => {
       const data = d.data
       const services: Service[] = data.map((s) => ({
         id: s.serviceType,
@@ -44,7 +44,7 @@ export const useUpdater = () => {
 
   const updateServices = async () => {
     await axios
-      .get(apiURLs.getWorkspaceAuth(WORKSPACE_ID))
+      .get(integrationUrls.getWorkspaceAuth(WORKSPACE_ID))
       .then((d) => {
         const services = useSyncStore.getState().services
         const sData = d.data

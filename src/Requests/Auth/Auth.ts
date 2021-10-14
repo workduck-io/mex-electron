@@ -46,3 +46,11 @@ export async function signUp (request: SignUpRequest) {
 export async function confirmSignUp (request: ConfirmSignUpRequest) {
   await Auth.confirmSignUp(request.email, request.code)
 }
+
+export async function signOut () {
+  try {
+    await Auth.signOut()
+  } catch (error) {
+    console.log('error signing out: ', error)
+  }
+}

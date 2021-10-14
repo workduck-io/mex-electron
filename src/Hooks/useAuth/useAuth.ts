@@ -1,10 +1,13 @@
+import ls from 'local-storage'
 import create from 'zustand'
 import { useUpdater } from '../../Data/useUpdater'
 import { WORKSPACE_ID } from '../../Defaults/auth'
-import { confirmSignUp, signIn, signUp } from '../../Requests/Auth/Auth'
+import { confirmSignUp, signIn, signOut, signUp } from '../../Requests/Auth/Auth'
+import config from '../../Requests/config'
 
 interface UserDetails {
   email: string
+  authToken: string
 }
 
 interface WorkspaceDetails {
@@ -36,13 +39,16 @@ export const useAuthStore = create<AuthStoreState>((set) => ({
 export const useAuthentication = () => {
   const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
+  const userDetails = useAuthStore((store) => store.userDetails)
   const setRegistered = useAuthStore((store) => store.setRegistered)
   const { updateDefaultServices, updateServices } = useUpdater()
 
   const login = async (email: string, password: string) => {
     signIn({ email, password })
       .then(() => {
-        setAuthenticated({ email })
+        const authToken =
+          'Bearer ' + ls(`CognitoIdentityServiceProvider.${config.cognito.APP_CLIENT_ID}.${email}.idToken`)
+        setAuthenticated({ email, authToken })
       })
       .then(updateDefaultServices)
       .then(updateServices)
@@ -60,13 +66,27 @@ export const useAuthentication = () => {
   const verifySignup = (email: string, code: string) => {
     confirmSignUp({ email, code }).then(() => {
       setRegistered(false)
-      setAuthenticated({ email })
+      const authToken =
+        'Bearer ' + ls(`CognitoIdentityServiceProvider.${config.cognito.APP_CLIENT_ID}.${email}.idToken`)
+      setAuthenticated({ email, authToken })
     })
   }
 
   const logout = () => {
-    setUnAuthenticated()
+    signOut().then(() => setUnAuthenticated())
   }
 
   return { login, registerDetails, logout, verifySignup }
+}
+
+export const getAuthConfig = () => {
+  const userDetails = useAuthStore.getState().userDetails
+  if (userDetails) {
+    return {
+      headers: {
+        Authorization: userDetails.authToken
+      }
+    }
+  }
+  return {}
 }

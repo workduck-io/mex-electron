@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { Item, useContextMenu } from 'react-contexify'
 import { WORKSPACE_ID } from '../../../Defaults/auth'
 import { capitalize } from '../../../Lib/strings'
-import { apiURLs } from '../../../Requests/routes'
+import { integrationUrls } from '../../../Requests/routes'
 import { MenuTrigger } from '../../../Styled/Integrations'
 import Loading from '../../../Styled/Loading'
 import { StyledMenu } from '../../../Styled/Menu'
@@ -67,7 +67,7 @@ const IntentSelector = ({
   function displayMenu (e) {
     if (loading === true) {
       axios
-        .post(apiURLs.getIntentValues, {
+        .post(integrationUrls.getIntentValues, {
           serviceType: service.toUpperCase(),
           intentType: type,
           workspaceId: WORKSPACE_ID

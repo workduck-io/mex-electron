@@ -10,7 +10,7 @@ import { WORKSPACE_ID } from '../../../Defaults/auth'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import useIntents from '../../../Hooks/useIntents/useIntents'
 import { isIntent } from '../../../Lib/intents'
-import { apiURLs } from '../../../Requests/routes'
+import { integrationUrls } from '../../../Requests/routes'
 import { Button } from '../../../Styled/Buttons'
 import { SyncIntentsWrapper } from '../../../Styled/Integrations'
 import { TooltipBase } from '../../../Styled/tippy'
@@ -135,7 +135,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
           }
         : {}
 
-    axios.post(apiURLs.listen(param), {
+    axios.post(integrationUrls.listen(param), {
       parentNodeId: parentNodeId ?? 'BLOCK_random',
       syncId: element.id,
       text: data.content,
