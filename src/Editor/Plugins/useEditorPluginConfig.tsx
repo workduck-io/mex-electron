@@ -1,17 +1,21 @@
 import { ELEMENT_MEDIA_EMBED } from '@udecode/plate'
+import { useMemo } from 'react'
 import { useSnippets } from '../../Snippets/useSnippets'
 import { ComboboxKey } from '../Components/combobox/useComboboxStore'
 import { ELEMENT_ILINK } from '../Components/ilink/defaults'
+import { ELEMENT_INLINE_BLOCK } from '../Components/InlineBlock/types'
 import useMultiComboboxOnChange from '../Components/multi-combobox/useMultiComboboxChange'
 import useMultiComboboxOnKeyDown from '../Components/multi-combobox/useMultiComboboxOnKeyDown'
 import { useSyncConfig } from '../Components/SlashCommands/useSyncConfig'
 import { ELEMENT_TAG } from '../Components/tag/defaults'
 import useDataStore from '../Store/DataStore'
+import { useEditorStore } from '../Store/EditorStore'
 
 const useEditorPluginConfig = (editorId: string) => {
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
   const slash_commands = useDataStore((state) => state.slashCommands)
+  const node = useEditorStore((state) => state.node)
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
@@ -21,6 +25,10 @@ const useEditorPluginConfig = (editorId: string) => {
   // Combobox
   const snippetConfigs = getSnippetsConfigs()
   const syncBlockConfigs = getSyncBlockConfigs()
+
+  const ilinksForCurrentNode = useMemo(() => {
+    return ilinks.filter((item) => item.key !== node.id)
+  }, [node])
 
   // console.log({ syncBlockConfigs })
 
@@ -32,7 +40,11 @@ const useEditorPluginConfig = (editorId: string) => {
           trigger: '[[',
           data: ilinks
         },
-
+        inline_block: {
+          cbKey: ComboboxKey.INLINE_BLOCK,
+          trigger: '*[[',
+          data: ilinksForCurrentNode
+        },
         tag: {
           cbKey: ComboboxKey.TAG,
           trigger: '#',
@@ -50,6 +62,12 @@ const useEditorPluginConfig = (editorId: string) => {
         {
           ilink: {
             slateElementType: ELEMENT_ILINK,
+            newItemHandler: (newItem) => {
+              addILink(newItem)
+            }
+          },
+          inline_block: {
+            slateElementType: ELEMENT_INLINE_BLOCK,
             newItemHandler: (newItem) => {
               addILink(newItem)
             }

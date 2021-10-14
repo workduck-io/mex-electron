@@ -6,7 +6,8 @@ import { IComboboxItem } from './components/Combobox.types'
 export enum ComboboxKey {
   TAG = 'tag',
   ILINK = 'ilink',
-  SLASH_COMMAND = 'slash_command',
+  INLINE_BLOCK = 'inline_block',
+  SLASH_COMMAND = 'slash_command'
 }
 
 export type ComboboxState = {
@@ -69,5 +70,5 @@ export const useComboboxStore = createStore()<ComboboxState>((set) => ({
       state.search = ''
       state.itemIndex = 0
     })
-  },
+  }
 }))

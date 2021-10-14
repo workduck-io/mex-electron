@@ -24,9 +24,10 @@ import {
   createTablePlugin,
   createUnderlinePlugin,
   PlatePlugin,
-  SPEditor,
+  SPEditor
 } from '@udecode/plate'
 import { useMemo } from 'react'
+import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
 import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin'
 import { createTagPlugin } from '../Components/tag/createTagPlugin'
@@ -38,7 +39,7 @@ import {
   optionsExitBreakPlugin,
   optionsResetBlockTypePlugin,
   optionsSelectOnBackspacePlugin,
-  optionsSoftBreakPlugin,
+  optionsSoftBreakPlugin
 } from './pluginOptions'
 
 /**
@@ -98,7 +99,10 @@ const generatePlugins = () => {
     // Sync Blocks
     createSyncBlockPlugin(),
 
-    createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin),
+    // For Inline Blocks
+    createInlineBlockPlugin(),
+
+    createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin)
   ]
 
   Plugins.push(createDeserializeHTMLPlugin({ plugins: Plugins }))

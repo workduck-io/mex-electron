@@ -6,6 +6,7 @@ import components from './Components/components'
 import BallonToolbarMarks from './Components/EditorToolbar'
 import { ILinkComboboxItem } from './Components/ilink/components/ILinkComboboxItem'
 import { ELEMENT_ILINK } from './Components/ilink/defaults'
+import { ELEMENT_INLINE_BLOCK } from './Components/InlineBlock/types'
 import { ComboElementProps, MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
 import { SlashComboboxItem } from './Components/SlashCommands/SlashComboboxItem'
 import { TagComboboxItem } from './Components/tag/components/TagComboboxItem'
@@ -54,6 +55,15 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
       ilink: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_ILINK,
+          newItemHandler: (newItem) => {
+            addILink(newItem)
+          }
+        },
+        renderElement: ILinkComboboxItem
+      },
+      inline_block: {
+        comboTypeHandlers: {
+          slateElementType: ELEMENT_INLINE_BLOCK,
           newItemHandler: (newItem) => {
             addILink(newItem)
           }
