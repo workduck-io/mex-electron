@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid'
 
 // Direct properties are collated in the properties for api
 // and then unfurled when converting back to editor content
-const directPropertyKeys = ['bold', 'italic', 'underline', 'highlight', 'code', 'url']
+const directPropertyKeys = ['bold', 'italic', 'underline', 'highlight', 'code', 'url', 'value']
 const PropKeysArray = [...directPropertyKeys] as const
 type PropKeys = typeof PropKeysArray[number]
 type DirectProperties = Record<PropKeys, boolean | string>
