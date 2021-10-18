@@ -1,7 +1,15 @@
 import React from 'react'
 import { useContentStore } from '../../../Editor/Store/ContentStore'
 import { useLinks } from '../../../Editor/Actions/useLinks'
-import { FlexBetween, InlineBlockHeading, Chip, InlineBlockText, InlineFlex, StyledInlineBlock } from './styled'
+import {
+  FlexBetween,
+  InlineBlockHeading,
+  Chip,
+  InlineBlockText,
+  InlineFlex,
+  StyledInlineBlock,
+  StyledInlineBlockPreview
+} from './styled'
 import EditorPreviewRenderer from '../../../Editor/EditorPreviewRenderer'
 import { useNavigation } from '../../../Hooks/useNavigation/useNavigation'
 import { RootElement } from '../SyncBlock'
@@ -13,7 +21,6 @@ const InlineBlock = (props: any) => {
   const { getUidFromNodeId } = useLinks()
   const uid = getUidFromNodeId(props.element.value)
   const getContent = useContentStore((store) => store.getContent)
-
   const content = getContent(uid)
   const selected = useSelected()
   const { onSave } = useSaver()
@@ -26,18 +33,20 @@ const InlineBlock = (props: any) => {
 
   return (
     <RootElement {...props.attributes}>
-      <StyledInlineBlock selected={selected}>
-        <FlexBetween>
-          <InlineFlex>
-            <InlineBlockHeading>From:</InlineBlockHeading>
-            <InlineBlockText>{props.element.value}</InlineBlockText>
-          </InlineFlex>
-          <Chip onClick={openNode}>Open</Chip>
-        </FlexBetween>
-        <div contentEditable={false}>
-          {content && <EditorPreviewRenderer content={content && content.content} editorId={`__preview__${uid}`} />}
-        </div>
-      </StyledInlineBlock>
+      <div contentEditable={false}>
+        <StyledInlineBlock selected={selected}>
+          <FlexBetween>
+            <InlineFlex>
+              <InlineBlockHeading>From:</InlineBlockHeading>
+              <InlineBlockText>{props.element.value}</InlineBlockText>
+            </InlineFlex>
+            <Chip onClick={openNode}>Open</Chip>
+          </FlexBetween>
+          <StyledInlineBlockPreview>
+            {content && <EditorPreviewRenderer content={content && content.content} editorId={`__preview__${uid}`} />}
+          </StyledInlineBlockPreview>
+        </StyledInlineBlock>
+      </div>
       {props.children}
     </RootElement>
   )
