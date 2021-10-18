@@ -1,6 +1,7 @@
 import { uniq } from 'lodash'
 import { hasLink } from '../../Lib/links'
 import { NodeLink } from '../../Types/relations'
+import { ELEMENT_INLINE_BLOCK } from '../Components/InlineBlock/types'
 import { useContentStore } from '../Store/ContentStore'
 import useDataStore from '../Store/DataStore'
 import { CachedILink, ILink } from '../Store/Types'
@@ -9,7 +10,7 @@ const getLinksFromContent = (content: any[]): string[] => {
   let links: string[] = []
 
   content.forEach((n) => {
-    if (n.type === 'ilink') {
+    if (n.type === 'ilink' || n.type === ELEMENT_INLINE_BLOCK) {
       links.push(n.value)
     }
     if (n.children && n.children.length > 0) {
