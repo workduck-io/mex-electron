@@ -11,15 +11,19 @@ import { SyncBlock, ELEMENT_SYNC_BLOCK } from './SyncBlock'
 import { TagElement } from './tag/components/TagElement'
 import { ELEMENT_TAG } from './tag/defaults'
 
-const components = createPlateComponents({
+export const editorPreviewComponents = createPlateComponents({
   [ELEMENT_LINK]: withProps(LinkElement, {
     as: 'a'
   }),
   [ELEMENT_TAG]: TagElement as any,
-  [ELEMENT_INLINE_BLOCK]: InlineBlock as any,
   [ELEMENT_ILINK]: ILinkElement as any,
   [ELEMENT_MEDIA_EMBED]: MediaEmbedElement as any,
   [ELEMENT_SYNC_BLOCK]: SyncBlock as any
+})
+
+const components = createPlateComponents({
+  ...editorPreviewComponents,
+  [ELEMENT_INLINE_BLOCK]: InlineBlock as any
 })
 
 export default components
