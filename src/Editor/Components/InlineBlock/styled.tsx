@@ -1,12 +1,16 @@
 import { StyledMessage } from '../../../Spotlight/components/Message/styled'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 export type InlineBlockType = {
   selected: boolean
 }
 
+export const StyledInlineBlockPreview = styled.div`
+  max-height: 25vh;
+  overflow-y: auto;
+`
+
 export const StyledInlineBlock = styled.section<InlineBlockType>`
-  position: relative;
   height: fit-content;
   display: flex;
   flex-direction: column;

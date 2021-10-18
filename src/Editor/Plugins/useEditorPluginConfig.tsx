@@ -28,7 +28,7 @@ const useEditorPluginConfig = (editorId: string) => {
 
   const ilinksForCurrentNode = useMemo(() => {
     return ilinks.filter((item) => item.key !== node.id)
-  }, [node])
+  }, [node, ilinks])
 
   // console.log({ syncBlockConfigs })
 

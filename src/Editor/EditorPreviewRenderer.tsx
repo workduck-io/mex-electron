@@ -2,7 +2,7 @@ import { createPlateOptions, Plate } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import ReactTooltip from 'react-tooltip'
 import { EditorStyles } from '../Styled/Editor'
-import components from './Components/components'
+import { editorPreviewComponents } from './Components/components'
 import generatePlugins from './Plugins/plugins'
 
 interface EditorPreviewRendererProps {
@@ -40,7 +40,7 @@ const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps
             editableProps={editableProps}
             value={content}
             plugins={plugins}
-            components={components}
+            components={editorPreviewComponents}
             options={options}
           ></Plate>
         </EditorStyles>
