@@ -54,6 +54,11 @@ export const defaultShortcuts = {
     keystrokes: '$mod+Backslash',
     category: 'Actions'
   },
+  showSyncBlocks: {
+    title: 'Sync Blocks',
+    keystrokes: '$mod+KeyK KeyS',
+    category: 'Actions'
+  },
   showGraph: {
     title: 'Graph',
     keystrokes: '$mod+KeyK KeyG',

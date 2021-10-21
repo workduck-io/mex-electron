@@ -1,60 +1,78 @@
 import React, { useEffect } from 'react'
 import { animated } from 'react-spring'
+import useToggleElements from '../Hooks/useToggleElements/useToggleElements'
 import styled from 'styled-components'
 import tinykeys from 'tinykeys'
 import Backlinks from '../Components/Backlinks/Backlinks'
 import Graph from '../Components/Graph/Graph'
-import { useGraphStore } from '../Components/Graph/GraphStore'
 import { useGraphData } from '../Components/Graph/useGraphData'
 import { useHelpStore } from '../Components/Help/HelpModal'
 import { useFocusTransition } from '../Components/Sidebar'
 import { size } from '../Styled/responsive'
+import SyncBlockInfo from '../Editor/Components/SyncBlock/SyncBlockInfo'
 
 interface InfoBarWrapperProps {
-  showGraph: boolean
+  wide: boolean
 }
 
 const InfoBarWrapper = styled(animated.div)<InfoBarWrapperProps>`
   overflow: hidden;
 
   @media (max-width: ${size.wide}) {
-    min-width: ${({ showGraph, theme }) => {
-      const mainWidth = showGraph ? '600px' : '300px'
+    min-width: ${({ wide, theme }) => {
+      const mainWidth = wide ? '600px' : '300px'
       return `calc(${mainWidth} )`
     }};
   }
   @media (min-width: ${size.wide}) {
-    min-width: ${({ showGraph, theme }) => {
-      const mainWidth = showGraph ? '800px' : '300px'
+    min-width: ${({ wide, theme }) => {
+      const mainWidth = wide ? '800px' : '300px'
       return `calc(${mainWidth} )`
     }};
   }
 `
 
+const InfoBarItems: React.FC<{ showGraph: boolean; showSyncBlocks: boolean }> = ({ showGraph, showSyncBlocks }) => {
+  const graphData = useGraphData()
+  if (showGraph) {
+    return <Graph graphData={graphData} />
+  }
+  if (showSyncBlocks) {
+    return <SyncBlockInfo />
+  }
+
+  return <Backlinks />
+}
+
 const InfoBar = () => {
   const { transitions } = useFocusTransition()
-  const showGraph = useGraphStore((state) => state.showGraph)
-  const toggleGraph = useGraphStore((state) => state.toggleGraph)
   const shortcuts = useHelpStore((store) => store.shortcuts)
-  const graphData = useGraphData()
+
+  const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph } = useToggleElements()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showGraph.keystrokes]: (event) => {
         event.preventDefault()
+        if (showSyncBlocks) toggleSyncBlocks()
         toggleGraph()
+      },
+      [shortcuts.showSyncBlocks.keystrokes]: (event) => {
+        event.preventDefault()
+        if (showGraph) toggleGraph()
+        toggleSyncBlocks()
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [shortcuts])
+  }, [shortcuts, showGraph, showSyncBlocks])
 
   return transitions(
     (styles, item) =>
       item && (
-        <InfoBarWrapper showGraph={showGraph} style={styles}>
-          {showGraph ? <Graph graphData={graphData} /> : <Backlinks />}
+        <InfoBarWrapper wide={showGraph || showSyncBlocks} style={styles}>
+          <InfoBarItems showGraph={showGraph} showSyncBlocks={showSyncBlocks} />
         </InfoBarWrapper>
       )
   )

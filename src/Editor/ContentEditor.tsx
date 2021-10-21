@@ -1,10 +1,10 @@
 import bubbleChartLine from '@iconify-icons/ri/bubble-chart-line'
+import messageIcon from '@iconify-icons/ri/message-3-line'
 import focusLine from '@iconify-icons/ri/focus-line'
 import settings4Line from '@iconify-icons/ri/settings-4-line'
 import React, { useEffect, useState } from 'react'
 import ReactTooltip from 'react-tooltip'
 import tinykeys from 'tinykeys'
-import { useGraphStore } from '../Components/Graph/GraphStore'
 import { useHelpStore } from '../Components/Help/HelpModal'
 import NodeIntentsModal, { useNodeIntentsModalStore } from '../Components/NodeIntentsModal/NodeIntentsModal'
 import useLoad from '../Hooks/useLoad/useLoad'
@@ -16,17 +16,18 @@ import Loading from '../Styled/Loading'
 import { SaverButton } from './Components/Saver'
 import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
+import useToggleElements from '../Hooks/useToggleElements/useToggleElements'
 
 const ContentEditor = () => {
   const title = useEditorStore((state) => state.node.title)
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
-  const showGraph = useGraphStore((state) => state.showGraph)
-  const toggleGraph = useGraphStore((state) => state.toggleGraph)
   const { toggleFocusMode } = useLayout()
   const focusMode = useLayoutStore((store) => store.focusMode)
   const nodeIntentsModalOpen = useNodeIntentsModalStore((store) => store.open)
   const nodeIntentsModalToggle = useNodeIntentsModalStore((store) => store.toggleModal)
   const { loadNode } = useLoad()
+
+  const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph } = useToggleElements()
 
   useEffect(() => {
     ReactTooltip.rebuild()
@@ -88,11 +89,12 @@ const ContentEditor = () => {
             <SaverButton callbackAfterSave={onSave} />
             <IconButton
               size={24}
-              icon={bubbleChartLine}
-              title="Graph"
-              highlight={showGraph}
-              onClick={() => toggleGraph()}
+              icon={messageIcon}
+              title="Sync Blocks"
+              highlight={showSyncBlocks}
+              onClick={toggleSyncBlocks}
             />
+            <IconButton size={24} icon={bubbleChartLine} title="Graph" highlight={showGraph} onClick={toggleGraph} />
           </InfoTools>
         </NodeInfo>
 
