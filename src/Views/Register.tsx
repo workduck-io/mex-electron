@@ -1,6 +1,6 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import Input from '../Components/Forms/Input'
 import { useAuthentication, useAuthStore } from '../Hooks/useAuth/useAuth'
 import { Button } from '../Styled/Buttons'
@@ -24,12 +24,17 @@ const Register = () => {
   const { registerDetails, verifySignup } = useAuthentication()
   const registered = useAuthStore((store) => store.registered)
   const setRegistered = useAuthStore((store) => store.setRegistered)
+  const history = useHistory()
 
   const onSubmit = (data: RegisterFormData) => {
     if (!registered) {
       registerDetails(data.email, data.password)
     } else {
-      verifySignup(data.email, data.code)
+      verifySignup(data.code).then((d) => {
+        if (d === 'SUCCESS') {
+          history.push('/login')
+        }
+      })
     }
   }
 

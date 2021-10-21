@@ -4,28 +4,46 @@ import { defaultContent } from '../Defaults/baseData'
 import { USE_API } from '../Defaults/dev_'
 import { deserializeContent, serializeContent } from '../Lib/serialize'
 import initializeAmplify from './amplify/init'
+import { client } from '@workduck-io/dwindle'
+import { apiURLs } from './routes'
 
 initializeAmplify()
 
-export const saveDataAPI = (uid: string, content: any[]) => {
-  if (!USE_API) return
-  const reqData = {
-    id: uid,
-    namespaceIdentifier: 'NAMESPACE1',
-    workspaceIdentifier: WORKSPACE_ID,
-    data: serializeContent(content ?? defaultContent)
+export const useApi = () => {
+  const saveDataAPI = (uid: string, content: any[]) => {
+    if (!USE_API) return
+    const reqData = {
+      id: uid,
+      namespaceIdentifier: 'NAMESPACE1',
+      workspaceIdentifier: WORKSPACE_ID,
+      data: serializeContent(content ?? defaultContent)
+    }
+
+    client
+      .post(apiURLs.saveNode, reqData)
+      .then(() => {
+        console.log('Post data', { content, data: reqData.data })
+      })
+      .catch((e) => {
+        console.error(e)
+      })
   }
 
-  API.post('mex', '/node', {
-    body: reqData
-  })
-    // .then(() => {
-    //   console.log('Post data', { content, data: reqData.data })
-    //   console.log('Desanatized', { dC: JSON.stringify(desanatizedContent(reqData.data)) })
-    // })
-    .catch((e) => {
-      console.error(e)
+  const getDataAPI = async (uid: string) => {
+    const data = await client.get(apiURLs.getNode(uid), {}).then((d) => {
+      // console.log({ d })
+      return d.data
     })
+
+    const dd = deserializeContent(data)
+
+    console.log('API DATA', { uid, data, dd })
+    // testPerf(uid)
+
+    return dd
+  }
+
+  return { saveDataAPI, getDataAPI }
 }
 
 const testPerf = async (uid: string) => {
@@ -70,18 +88,4 @@ const testPerf = async (uid: string) => {
     lost,
     avg: (t11 - t01) / (ar.length - lost)
   })
-}
-
-export const getDataAPI = async (uid: string) => {
-  const data = await API.get('mex', `/node/${uid}`, {}).then((d) => {
-    // console.log({ d })
-    return d.data
-  })
-
-  const dd = deserializeContent(data)
-
-  // console.log('API DATA', { data, dd })
-  // testPerf(uid)
-
-  return dd
 }

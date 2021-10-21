@@ -1,7 +1,9 @@
+import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
+import config from '../Requests/config'
 import styled, { useTheme } from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../Components/Help/HelpModal'
@@ -47,6 +49,7 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
 
   const { init } = useInitialize()
   const { loadNode } = useLoad()
+  const { initCognito } = useAuth()
 
   useSaveAndExit()
 
@@ -89,7 +92,12 @@ const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   }, [])
 
   useEffect(() => {
+    initCognito({ UserPoolId: config.cognito.USER_POOL_ID, ClientId: config.cognito.APP_CLIENT_ID })
+  }, [])
+
+  useEffect(() => {
     // Switch to the editor page whenever a new ID is loaded
+
     if (authenticated) history.push('/editor')
   }, [nodeId, authenticated]) // eslint-disable-line react-hooks/exhaustive-deps
 
