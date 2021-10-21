@@ -28,7 +28,9 @@ type FormValues = {
 }
 
 export const SyncBlock = (props: SyncBlockProps) => {
-  const { attributes, children, element } = props
+  const { attributes, children, element, info } = props
+  console.log(attributes, children, element)
+
   const { register, getValues } = useForm<FormValues>()
   const editSyncBlock = useSyncStore((state) => state.editSyncBlock)
   const [synced, setSynced] = useState(false)
@@ -51,7 +53,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
   let blockData: SyncBlockData
   const blockDataFiltered = blocksData.filter((d) => d.id === element.id)
 
-  if (showSyncBlocks) {
+  if (showSyncBlocks && !info) {
     return <div>{children}</div>
   }
 
@@ -71,8 +73,6 @@ export const SyncBlock = (props: SyncBlockProps) => {
     //   return new Error('Sync Block data not present in local store and in content as well')
     // }
   }
-
-  return <RootElement {...attributes}>Sync Block{children}</RootElement>
 
   const { content, templateId, igid } = blockData
 

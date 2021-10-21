@@ -5,6 +5,7 @@ import IconButton from '../../../Styled/Buttons'
 import useToggleElements from '../../../Hooks/useToggleElements/useToggleElements'
 import { useFilteredContent } from '../../../Lib/filter'
 import styled from 'styled-components'
+import { SyncBlock } from '.'
 
 const StyledBlockInfo = styled.div`
   width: 100%;
@@ -21,11 +22,16 @@ const SyncBlockInfo = () => {
     <StyledGraph>
       <GraphTools>
         <IconButton size={24} icon={messageIcon} title="Graph" highlight={showSyncBlocks} onClick={toggleSyncBlocks} />
-        {/* <IconButton size={24} icon={more2Fill} title="Options" /> */}
       </GraphTools>
       <StyledBlockInfo>
         {syncBlocks.map((syncBlockId: string) => (
-          <div key={syncBlockId} />
+          <SyncBlock
+            info
+            attributes={{ 'data-slate-inline': true, 'data-slate-node': 'element', ref: null }}
+            element={{ id: syncBlockId, children: [{ text: '' }], type: 'sync_block' }}
+          >
+            {''}
+          </SyncBlock>
         ))}
       </StyledBlockInfo>
     </StyledGraph>
