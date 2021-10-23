@@ -65,6 +65,7 @@ export const serializeContent = (content: any[]) => {
 
 // From API to content
 export const deserializeContent = (sanatizedContent: any[]) => {
+  console.log({ sanatizedContent })
   return sanatizedContent.map((el) => {
     const nl: any = {}
 

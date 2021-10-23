@@ -1,27 +1,10 @@
-import { useAuth } from '@workduck-io/dwindle'
-import { ipcRenderer } from 'electron'
-import React, { useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import React from 'react'
 import ReactTooltip from 'react-tooltip'
-import config from '../Requests/config'
 import styled, { useTheme } from 'styled-components'
-import tinykeys from 'tinykeys'
-import { useHelpStore } from '../Components/Help/HelpModal'
 import HelpTooltip from '../Components/Help/HelpTooltip'
 import { Notifications } from '../Components/Notifications/Notifications'
 import Nav, { navTooltip } from '../Components/Sidebar/Nav'
 import links from '../Conf/links'
-import { useInitialize } from '../Data/useInitialize'
-import { useLocalData } from '../Data/useLocalData'
-import { useSyncData } from '../Data/useSyncData'
-import { getUidFromNodeIdBase } from '../Editor/Actions/useLinks'
-import { useEditorStore } from '../Editor/Store/EditorStore'
-import { useRecentsStore } from '../Editor/Store/RecentsStore'
-import { useAuthStore } from '../Hooks/useAuth/useAuth'
-import useLoad from '../Hooks/useLoad/useLoad'
-import { useNavigation } from '../Hooks/useNavigation/useNavigation'
-import { IpcAction } from '../Spotlight/utils/constants'
-import { useSaveAndExit } from '../Spotlight/utils/hooks'
 import { GridWrapper } from '../Styled/Grid'
 
 const AppWrapper = styled.div`
@@ -40,100 +23,6 @@ export type MainProps = { children: React.ReactNode }
 
 const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const theme = useTheme()
-  const history = useHistory()
-  const nodeId = useEditorStore((state) => state.node.id)
-  const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
-  const authenticated = useAuthStore((store) => store.authenticated)
-
-  const { move, push } = useNavigation()
-
-  const { init } = useInitialize()
-  const { loadNode } = useLoad()
-  const { initCognito } = useAuth()
-
-  useSaveAndExit()
-
-  const { getLocalData } = useLocalData()
-
-  /** Initialization of the app details occur here */
-  useEffect(() => {
-    (async () => {
-      getLocalData()
-        // .then((d) => {
-        //   console.log('Data here', d);
-        //   return d
-        // })
-        .then((d) => {
-          init(d)
-          return d
-        })
-        .then((d) => authenticated && loadNode(getUidFromNodeIdBase(d.ilinks, '@')))
-        .catch((e) => console.error(e)) // eslint-disable-line no-console
-    })()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { nodeId }) => {
-      push(nodeId)
-    })
-    ipcRenderer.on(IpcAction.CLEAR_RECENTS, () => {
-      clear()
-    })
-    ipcRenderer.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {
-      const { data } = arg
-      addRecent(data)
-    })
-  }, [])
-
-  const { setIpc } = useSyncData()
-
-  useEffect(() => {
-    setIpc()
-  }, [])
-
-  useEffect(() => {
-    initCognito({ UserPoolId: config.cognito.USER_POOL_ID, ClientId: config.cognito.APP_CLIENT_ID })
-  }, [])
-
-  useEffect(() => {
-    // Switch to the editor page whenever a new ID is loaded
-
-    if (authenticated) history.push('/editor')
-  }, [nodeId, authenticated]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const shortcuts = useHelpStore((store) => store.shortcuts)
-
-  useEffect(() => {
-    const unsubscribe = tinykeys(window, {
-      [shortcuts.gotoBackwards.keystrokes]: (event) => {
-        event.preventDefault()
-        move(-1)
-      },
-      [shortcuts.gotoForward.keystrokes]: (event) => {
-        event.preventDefault()
-        move(+1)
-      },
-      [shortcuts.showSnippets.keystrokes]: (event) => {
-        event.preventDefault()
-        history.push('/snippets')
-      },
-      [shortcuts.showIntegrations.keystrokes]: (event) => {
-        event.preventDefault()
-        history.push('/integrations')
-      },
-      [shortcuts.showEditor.keystrokes]: (event) => {
-        event.preventDefault()
-        history.push('/editor')
-      },
-      [shortcuts.showSettings.keystrokes]: (event) => {
-        event.preventDefault()
-        history.push('/settings')
-      }
-    })
-    return () => {
-      unsubscribe()
-    }
-  }, [shortcuts])
 
   return (
     <AppWrapper>

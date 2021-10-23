@@ -20,7 +20,7 @@ export const useApi = () => {
     }
 
     client
-      .post(apiURLs.saveNode, reqData)
+      .post(apiURLs.saveNode, reqData, {})
       .then(() => {
         console.log('Post data', { content, data: reqData.data })
       })
@@ -31,16 +31,10 @@ export const useApi = () => {
 
   const getDataAPI = async (uid: string) => {
     const data = await client.get(apiURLs.getNode(uid), {}).then((d) => {
-      // console.log({ d })
-      return d.data
+      return d.data.data
     })
 
-    const dd = deserializeContent(data)
-
-    console.log('API DATA', { uid, data, dd })
-    // testPerf(uid)
-
-    return dd
+    return deserializeContent(data)
   }
 
   return { saveDataAPI, getDataAPI }
@@ -51,8 +45,8 @@ const testPerf = async (uid: string) => {
   const t0 = performance.now()
   let lost = 0
   await Promise.all(
-    ar.map(async (e) => {
-      const data = await API.get('mex', `/node/${uid}`, {}).catch(() => {
+    ar.map(async () => {
+      await API.get('mex', `/node/${uid}`, {}).catch(() => {
         lost++
       })
     })
@@ -69,12 +63,12 @@ const testPerf = async (uid: string) => {
   const t01 = performance.now()
   lost = 0
   await ar
-    .reduce((seq, n) => {
+    .reduce((seq) => {
       return seq
         .then(async () => {
           await API.get('mex', `/node/${uid}`, {})
         })
-        .catch((e) => {
+        .catch(() => {
           lost++
         })
     }, Promise.resolve())

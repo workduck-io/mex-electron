@@ -1,6 +1,7 @@
 import React from 'react'
 import Modal from 'react-modal'
 import { HashRouter as Router } from 'react-router-dom'
+import Init from './Components/Init/Init'
 import Contexts from './Context/Contexts'
 import Providers from './Context/Providers'
 import Main from './Layout/Main'
@@ -18,6 +19,7 @@ function App () {
     <Router>
       <Providers>
         <Contexts>
+          <Init />
           <Main>
             {/* Modals */}
             <Modals />
