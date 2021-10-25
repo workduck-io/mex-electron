@@ -2,6 +2,7 @@ import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
+import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import tinykeys from 'tinykeys'
 import create from 'zustand'
 import { useLinks } from '../../Editor/Actions/useLinks'
@@ -80,18 +81,19 @@ const Refactor = () => {
   const setFrom = useRefactorStore((store) => store.setFrom)
 
   const { push } = useNavigation()
+  const { shortcutDisabled } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showRefactor.keystrokes]: (event) => {
         event.preventDefault()
-        openModal()
+        if (!shortcutDisabled) openModal()
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [shortcuts])
+  }, [shortcuts, shortcutDisabled])
 
   const handleFromChange = (newValue: string) => {
     if (newValue) {

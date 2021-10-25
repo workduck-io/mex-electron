@@ -17,6 +17,7 @@ import { SaverButton } from './Components/Saver'
 import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
 import useToggleElements from '../Hooks/useToggleElements/useToggleElements'
+import { useKeyListener } from '../Hooks/useCustomShortcuts/useShortcutListener'
 
 const ContentEditor = () => {
   const title = useEditorStore((state) => state.node.title)
@@ -46,16 +47,17 @@ const ContentEditor = () => {
   }, [fsContent, uid])
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
+  const { shortcutDisabled } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.toggleFocusMode.keystrokes]: (event) => {
         event.preventDefault()
-        toggleFocusMode()
+        if (!shortcutDisabled) toggleFocusMode()
       },
       [shortcuts.refreshNode.keystrokes]: (event) => {
         event.preventDefault()
-        loadNode(uid)
+        if (!shortcutDisabled) loadNode(uid)
       }
     })
     return () => {

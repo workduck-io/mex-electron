@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
+import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import tinykeys from 'tinykeys'
 import { AppType } from '../../Data/useInitialize'
 import { useLinks } from '../../Editor/Actions/useLinks'
@@ -24,17 +25,19 @@ const Lookup = () => {
     setOpen(false)
   }
 
+  const { shortcutDisabled } = useKeyListener()
+
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showLookup.keystrokes]: (event) => {
         event.preventDefault()
-        openModal()
+        if (!shortcutDisabled) openModal()
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [shortcuts])
+  }, [shortcuts, shortcutDisabled])
 
   const { getUidFromNodeId } = useLinks()
   const { push } = useNavigation()

@@ -7,6 +7,7 @@ interface InputProps {
   isSelected?: boolean
   appType?: AppType
   error?: boolean
+  center?: boolean
 }
 
 export const Input = styled.input<InputProps>`
@@ -21,6 +22,13 @@ export const Input = styled.input<InputProps>`
     outline: none;
   }
 
+  ${({ center }) =>
+    center &&
+    css`
+      text-align: center;
+      color: ${({ theme }) => theme.colors.primary};
+    `}
+
   ${({ theme, error }) =>
     error &&
     css`
@@ -31,7 +39,14 @@ export const Input = styled.input<InputProps>`
 export const InputBlock = styled(Input)`
   width: 100%;
   display: block;
-  margin: ${({ theme }) => theme.spacing.small} 0;
+  ${({ center, theme }) =>
+    center
+      ? css`
+          margin-top: ${({ theme }) => theme.spacing.medium};
+        `
+      : css`
+          margin: ${({ theme }) => theme.spacing.small} 0;
+        `}
 `
 
 export const TextArea = styled.textarea`

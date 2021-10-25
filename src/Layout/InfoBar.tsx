@@ -10,6 +10,7 @@ import { useHelpStore } from '../Components/Help/HelpModal'
 import { useFocusTransition } from '../Components/Sidebar'
 import { size } from '../Styled/responsive'
 import SyncBlockInfo from '../Editor/Components/SyncBlock/SyncBlockInfo'
+import { useKeyListener } from '../Hooks/useCustomShortcuts/useShortcutListener'
 
 interface InfoBarWrapperProps {
   wide: boolean
@@ -49,24 +50,29 @@ const InfoBar = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph } = useToggleElements()
+  const { shortcutDisabled } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showGraph.keystrokes]: (event) => {
         event.preventDefault()
-        if (showSyncBlocks) toggleSyncBlocks()
-        toggleGraph()
+        if (!shortcutDisabled) {
+          if (showSyncBlocks) toggleSyncBlocks()
+          toggleGraph()
+        }
       },
       [shortcuts.showSyncBlocks.keystrokes]: (event) => {
         event.preventDefault()
-        if (showGraph) toggleGraph()
-        toggleSyncBlocks()
+        if (!shortcutDisabled) {
+          if (showGraph) toggleGraph()
+          toggleSyncBlocks()
+        }
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [shortcuts, showGraph, showSyncBlocks])
+  }, [shortcuts, showGraph, showSyncBlocks, shortcutDisabled])
 
   return transitions(
     (styles, item) =>
