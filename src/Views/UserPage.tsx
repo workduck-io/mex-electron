@@ -1,6 +1,6 @@
 import { useAuth } from '@workduck-io/dwindle'
 import React from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { Button } from '../Styled/Buttons'
 import { useAuthentication } from '../Hooks/useAuth/useAuth'
 import { BackCard, FooterCard } from '../Styled/Card'
@@ -28,7 +28,6 @@ const UserPage = () => {
       </BackCard>
       <FooterCard>
         <Button onClick={onLogout}>Logout</Button>
-        <Link to={'/register'}>Register</Link>
       </FooterCard>
     </CenteredColumn>
   )
