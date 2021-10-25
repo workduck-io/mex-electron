@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
 import { useSaveData } from '../../Data/useSaveData'
-import { saveDataAPI } from '../../Requests/Save'
+import { useApi } from '../../Requests/Save'
 import IconButton from '../../Styled/Buttons'
 import { useLinks } from '../Actions/useLinks'
 import { useContentStore } from '../Store/ContentStore'
@@ -20,6 +20,7 @@ export const useSaver = () => {
 
   const saveData = useSaveData()
   const editorState = useStoreEditorValue()
+  const { saveDataAPI } = useApi()
 
   const onSave = () => {
     // setContent then save

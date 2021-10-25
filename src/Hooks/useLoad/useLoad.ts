@@ -4,13 +4,14 @@ import useDataStore from '../../Editor/Store/DataStore'
 import { NodeProperties, useEditorStore } from '../../Editor/Store/EditorStore'
 import { getContent } from '../../Editor/Store/helpers'
 import { NodeEditorContent } from '../../Editor/Store/Types'
-import { getDataAPI } from '../../Requests/Save'
+import { useApi } from '../../Requests/Save'
 
 const useLoad = () => {
   const loadNodeEditor = useEditorStore((store) => store.loadNode)
   const loadNodeAndReplaceContent = useEditorStore((store) => store.loadNodeAndReplaceContent)
   const setFetchingContent = useEditorStore((store) => store.setFetchingContent)
   const setContent = useContentStore((store) => store.setContent)
+  const { getDataAPI } = useApi()
 
   const getNode = (uid: string): NodeProperties => {
     const ilinks = useDataStore.getState().ilinks
@@ -29,6 +30,8 @@ const useLoad = () => {
   }
 
   const loadNode = async (uid: string) => {
+    console.log({ uid })
+
     const node = getNode(uid)
     loadNodeEditor(node)
     if (USE_API) {

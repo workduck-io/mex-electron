@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid'
 
 // Direct properties are collated in the properties for api
 // and then unfurled when converting back to editor content
-const directPropertyKeys = ['bold', 'italic', 'underline', 'highlight', 'code', 'url', 'value']
+const directPropertyKeys = ['bold', 'italic', 'underline', 'highlight', 'code', 'url', 'value', 'body']
 const PropKeysArray = [...directPropertyKeys] as const
 type PropKeys = typeof PropKeysArray[number]
 type DirectProperties = Record<PropKeys, boolean | string>
@@ -65,6 +65,7 @@ export const serializeContent = (content: any[]) => {
 
 // From API to content
 export const deserializeContent = (sanatizedContent: any[]) => {
+  console.log({ sanatizedContent })
   return sanatizedContent.map((el) => {
     const nl: any = {}
 
