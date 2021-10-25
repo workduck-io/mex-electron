@@ -1,7 +1,7 @@
+import { useAuth } from '@workduck-io/dwindle'
 import create from 'zustand'
 import { useUpdater } from '../../Data/useUpdater'
 import { WORKSPACE_ID } from '../../Defaults/auth'
-import { confirmSignUp, signIn, signUp } from '../../Requests/Auth/Auth'
 
 interface UserDetails {
   email: string
@@ -22,7 +22,7 @@ interface AuthStoreState {
 }
 
 export const useAuthStore = create<AuthStoreState>((set) => ({
-  authenticated: true,
+  authenticated: false,
   registered: false,
   userDetails: undefined,
   workspaceDetails: {
@@ -38,9 +38,10 @@ export const useAuthentication = () => {
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const setRegistered = useAuthStore((store) => store.setRegistered)
   const { updateDefaultServices, updateServices } = useUpdater()
+  const { signIn, signUp, verifySignUp, signOut } = useAuth()
 
   const login = async (email: string, password: string) => {
-    signIn({ email, password })
+    signIn(email, password)
       .then(() => {
         setAuthenticated({ email })
       })
@@ -49,23 +50,21 @@ export const useAuthentication = () => {
   }
 
   const registerDetails = (email: string, password: string) => {
-    signUp({
-      email,
-      password
-    }).then(() => {
+    signUp(email, password).then(() => {
       setRegistered(true)
     })
   }
 
-  const verifySignup = (email: string, code: string) => {
-    confirmSignUp({ email, code }).then(() => {
+  const verifySignup = async (code: string): Promise<string> => {
+    const vSign = await verifySignUp(code)
+    if (vSign) {
       setRegistered(false)
-      setAuthenticated({ email })
-    })
+    }
+    return vSign
   }
 
   const logout = () => {
-    setUnAuthenticated()
+    signOut().then(() => setUnAuthenticated())
   }
 
   return { login, registerDetails, logout, verifySignup }

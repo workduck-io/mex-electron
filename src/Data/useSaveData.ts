@@ -36,7 +36,6 @@ export const useSaveData = () => {
     }
 
     ipcRenderer.send(IpcAction.SET_LOCAL_DATA, fileData)
-
     // updater()
   }
 

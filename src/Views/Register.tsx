@@ -1,6 +1,7 @@
+import { useAuth } from '@workduck-io/dwindle'
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import Input from '../Components/Forms/Input'
 import { useAuthentication, useAuthStore } from '../Hooks/useAuth/useAuth'
 import { Button } from '../Styled/Buttons'
@@ -24,12 +25,18 @@ const Register = () => {
   const { registerDetails, verifySignup } = useAuthentication()
   const registered = useAuthStore((store) => store.registered)
   const setRegistered = useAuthStore((store) => store.setRegistered)
+  const history = useHistory()
+  const { resendCode } = useAuth()
 
   const onSubmit = (data: RegisterFormData) => {
     if (!registered) {
       registerDetails(data.email, data.password)
     } else {
-      verifySignup(data.email, data.code)
+      verifySignup(data.code).then((d) => {
+        if (d === 'SUCCESS') {
+          history.push('/login')
+        }
+      })
     }
   }
 
@@ -80,6 +87,17 @@ const Register = () => {
                 }}
                 error={errors.code?.type === 'required' ? 'Code is required' : undefined}
               ></Input>
+
+              <Button
+                size="large"
+                onClick={(e) => {
+                  e.preventDefault()
+
+                  resendCode()
+                }}
+              >
+                Resend Code
+              </Button>
             </>
           )}
           <br />
