@@ -40,23 +40,29 @@ export const useAuthentication = () => {
   const { updateDefaultServices, updateServices } = useUpdater()
   const { signIn, signUp, verifySignUp, signOut } = useAuth()
 
-  const login = async (email: string, password: string) => {
-    signIn(email, password)
+  const login = async (email: string, password: string): Promise<string> => {
+    return await signIn(email, password)
       .then(() => {
         setAuthenticated({ email })
       })
       .then(updateDefaultServices)
       .then(updateServices)
+      .then(() => 'success')
+      .catch((e) => {
+        console.log({ e })
+        return e.toString() as string
+      })
   }
 
   const registerDetails = (email: string, password: string) => {
+    // tag: mex
     signUp(email, password).then(() => {
       setRegistered(true)
     })
   }
 
-  const verifySignup = async (code: string): Promise<string> => {
-    const vSign = await verifySignUp(code)
+  const verifySignup = async (code: string, metadata: any): Promise<string> => {
+    const vSign = await verifySignUp(code, metadata)
     if (vSign) {
       setRegistered(false)
     }

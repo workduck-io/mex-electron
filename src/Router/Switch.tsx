@@ -1,6 +1,7 @@
 import React from 'react'
 import { Switch as ReactRouterSwitch, useLocation } from 'react-router-dom'
 import { animated, config, useTransition } from 'react-spring'
+import UserPage from '../Views/UserPage'
 import styled from 'styled-components'
 import SnippetEditor from '../Snippets/SnippetEditor'
 import Dashboard from '../Views/Dashboard'
@@ -48,6 +49,7 @@ const Switch = () => {
         <ProtectedRoute path="/integrations" component={Integrations} />
         <ProtectedRoute exact path="/snippets" component={Snippets} />
         <ProtectedRoute exact path="/snippets/editor" component={SnippetEditor} />
+        <ProtectedRoute path="/user" component={UserPage} />
         <ProtectedRoute path="/settings" component={Settings} />
         <ProtectedRoute path="/" exact component={Dashboard} />
         <AuthRoute path="/login" component={Login} />
