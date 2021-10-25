@@ -6,6 +6,7 @@ import path from 'path'
 import { AppType } from './Data/useInitialize'
 import { DefaultFileData } from './Defaults/baseData'
 import { getSaveLocation } from './Defaults/data'
+import { getKeyFromKeycode } from './Lib/keyMap'
 import MenuBuilder from './menu'
 import { IpcAction } from './Spotlight/utils/constants'
 import { getSelectedText } from './Spotlight/utils/getSelectedText'
@@ -312,6 +313,20 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+ipcMain.on(IpcAction.SET_SPOTLIGHT_SHORTCUT, (event, arg) => {
+  let { shortcut } = arg
+  shortcut = shortcut.replace('$mod', 'CommandOrControl')
+  shortcut = getKeyFromKeycode(shortcut)
+  globalShortcut.unregister('CommandOrControl+Shift+L')
+  globalShortcut.register(shortcut, handleToggleMainWindow)
+})
+
+ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
+  const { disable } = arg
+  // if (disable) globalShortcut.unregister('CommandOrControl+Shift+L')
+  // else globalShortcut.register('CommandOrControl+Shift+L', handleToggleMainWindow)
 })
 
 ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {

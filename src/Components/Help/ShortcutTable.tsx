@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useShortcutTableData from './useShortcutTableData'
 import Modal from 'react-modal'
 import { matchSorter } from 'match-sorter'
 import { Shortcut } from './Help.types'
-import { debounce, sortBy } from 'lodash'
+import { debounce } from 'lodash'
 import { Input } from '../../Styled/Form'
 import {
   StyledRow,
@@ -32,14 +32,21 @@ const ShortcutTable = () => {
   const [tableData, setTableData] = useState(data)
   const [search, setSearch] = useState('')
 
+  const editMode = useShortcutStore((state) => state.editMode)
+  const setEditMode = useShortcutStore((state) => state.setEditMode)
+  const currentShortcut = useShortcutStore((state) => state.currentShortcut)
+  const setCurrentShortcut = useShortcutStore((state) => state.setCurrentShortcut)
+
   useEffect(() => {
     setEditMode(false)
     if (search) setTableData(fuzzyTextFilterFn(data, search))
     else setTableData(data)
   }, [search, data])
 
-  const editMode = useShortcutStore((state) => state.editMode)
-  const setEditMode = useShortcutStore((state) => state.setEditMode)
+  const onRowClick = (shortcut: any) => {
+    setEditMode(true)
+    setCurrentShortcut(shortcut)
+  }
 
   return (
     <>
@@ -68,16 +75,16 @@ const ShortcutTable = () => {
           <StyledTBody>
             {tableData.map((row) => {
               return (
-                <StyledRow key={`Row_${row.title}`}>
+                <StyledRow
+                  key={`Row_${row.title}`}
+                  highlight={row.title === currentShortcut?.title}
+                  onClick={() => onRowClick(row)}
+                >
                   {Object.keys(row).map((cell, index) => {
                     // console.log(cell)
 
                     if (cell === 'keystrokes') {
-                      return (
-                        <StyledTD key={`cell_${index}_${row[cell]}`} onClick={() => setEditMode(true)}>
-                          {ShowShortcut(row[cell])}
-                        </StyledTD>
-                      )
+                      return <StyledTD key={`cell_${index}_${row[cell]}`}>{ShowShortcut(row[cell])}</StyledTD>
                     }
                     return <StyledTD key={`cell_${index}_${row[cell]}`}>{row[cell]}</StyledTD>
                   })}

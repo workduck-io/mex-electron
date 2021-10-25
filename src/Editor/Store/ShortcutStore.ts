@@ -1,5 +1,13 @@
-import { Key } from '../../Hooks/useCustomShortcuts/useShortcutListener'
+import { getKey, Key } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import create from 'zustand'
+import { EXCLUDED_KEYS_MODIFIERS, getKeyFromKeycode, KEY_MODIFIERS, MiscKeys } from '../../Lib/keyMap'
+import { ipcRenderer } from 'electron'
+import { IpcAction } from '../../Spotlight/utils/constants'
+
+export type KeyBinding = {
+  key: string
+  alias: string
+}
 
 export type ShortcutStoreType = {
   modifiers: Set<string>
@@ -8,42 +16,94 @@ export type ShortcutStoreType = {
   editMode: boolean
   setEditMode: (editMode: boolean) => void
 
-  keybinding: string
-  setKeyBinding: (keybinding: string) => void
+  resetIndex: number
+
+  currentShortcut?: any
+  setCurrentShortcut: (shortcut: any) => void
+
+  keybinding: KeyBinding
+  setKeyBinding: (keybinding: KeyBinding) => void
 
   withModifier: boolean
   setWithModifier: (withModifier: boolean) => void
 
-  shortcut: Array<string>
-  addInShortcut: (key: Key) => void
+  keystrokes: Array<Array<Key>>
+  addInKeystrokes: (key: Key) => void
+
+  resetStore: () => void
 }
 
 export const useShortcutStore = create<ShortcutStoreType>((set, get) => ({
-  excludedKeys: new Set(['Tab', 'CapsLock', 'Space', 'Enter', 'Escape']),
-  modifiers: new Set(['Control', 'Meta', 'Shift', 'Alt']),
+  excludedKeys: new Set(EXCLUDED_KEYS_MODIFIERS),
+  modifiers: new Set(KEY_MODIFIERS),
 
-  keybinding: '',
-  setKeyBinding: (keybinding: string) => set({ keybinding }),
+  keybinding: {
+    key: '',
+    alias: ''
+  },
+  setKeyBinding: (keybinding) => set({ keybinding }),
 
   editMode: false,
-  setEditMode: (editMode: boolean) => set({ editMode }),
+  setEditMode: (editMode: boolean) => {
+    ipcRenderer.send(IpcAction.DISABLE_GLOBAL_SHORTCUT, { disable: editMode })
+    set({ editMode })
+  },
+
+  resetIndex: 0,
+  setCurrentShortcut: (shortcut) => set({ currentShortcut: shortcut }),
 
   withModifier: false,
-  setWithModifier: (withModifier) =>
-    set({
-      shortcut: []
-    }),
+  setWithModifier: (withModifier) => set({ withModifier }),
 
-  shortcut: [],
+  keystrokes: [[], []],
 
-  addInShortcut: (key) => {
-    const shortcut = get().shortcut
+  addInKeystrokes: (key) => {
+    const modifiers = key.modifiers
+    let resetIndex = get().resetIndex
 
-    const keyInShortcut = shortcut.includes(key.name)
+    let keystrokes = get().keystrokes
+    const keyInModifers = get().modifiers.has(key.name)
+
+    const lastKeyStroke = keystrokes[resetIndex].slice(-1)[0]
+    const isLastKeyNonModifier = lastKeyStroke && !get().modifiers.has(lastKeyStroke.name)
+
     const notExcludedKey = !get().excludedKeys.has(key.name)
 
-    const modifiedShortcut = keyInShortcut ? [key.name] : [...shortcut, key.name]
+    const keyName = getKeyFromKeycode(key.code)
 
-    if (key.isModifier && notExcludedKey) set({ shortcut: modifiedShortcut, keybinding: modifiedShortcut.join('+') })
+    const modifiedShortcut: Array<Key> = keyInModifers ? modifiers : [...modifiers, { ...key, name: keyName }]
+
+    if (isLastKeyNonModifier) {
+      if (resetIndex === 0) resetIndex = 1
+      else {
+        resetIndex = 0
+        keystrokes = [[], []]
+      }
+    }
+
+    keystrokes[resetIndex] = modifiedShortcut
+
+    if ((key.isModifier && notExcludedKey) || (resetIndex === 1 && !keyInModifers)) {
+      set({
+        keystrokes,
+        keybinding: {
+          key: keystrokes.map((keystroke) => keystroke.map((key) => key.alias).join('+')).join(' '),
+          alias: keystrokes.map((keystroke) => keystroke.map((key) => key.name).join('+')).join(' ')
+        },
+        resetIndex
+      })
+    }
+  },
+
+  resetStore: () => {
+    set({
+      keybinding: {
+        key: '',
+        alias: ''
+      },
+      resetIndex: 0,
+      keystrokes: [[], []],
+      editMode: false
+    })
   }
 }))

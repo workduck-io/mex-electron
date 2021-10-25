@@ -9,8 +9,6 @@ export interface Shortcut {
 
 export interface HelpState {
   open: boolean
-  editMode: boolean
-  setEditMode: (editMode: boolean) => void
   changeShortcut: (keybinding: Shortcut) => void
   shortcuts: Record<keyof typeof defaultShortcuts, Shortcut>
   toggleModal: () => void

@@ -1,8 +1,8 @@
 import { transparentize } from 'polished'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 export const TableWrapperScrollable = styled.div`
-  max-height: 600px;
+  max-height: 800px;
   overflow: auto;
 `
 
@@ -21,10 +21,17 @@ export const StyledTHead = styled.thead`
   background-color: ${({ theme }) => theme.colors.gray[8]};
 `
 
-export const StyledRow = styled.tr`
+export const StyledRow = styled.tr<{ highlight?: boolean }>`
   &:nth-child(odd) {
     background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
   }
+
+  ${({ theme, highlight }) =>
+    highlight &&
+    css`
+      border: 1px solid ${theme.colors.primary};
+      border-radius: ${theme.borderRadius.small};
+    `}
 `
 
 export const StyledTH = styled.th`

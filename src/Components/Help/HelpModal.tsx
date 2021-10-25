@@ -4,8 +4,11 @@ import { defaultShortcuts } from '../../Defaults/shortcuts'
 import tinykeys from 'tinykeys'
 import create from 'zustand'
 import ShortcutTable from './ShortcutTable'
+import produce from 'immer'
 import { HelpState } from './Help.types'
 import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
+import { ipcRenderer } from 'electron'
+import { IpcAction } from '../../Spotlight/utils/constants'
 
 export const useHelpStore = create<HelpState>((set, get) => ({
   open: false,
@@ -13,30 +16,32 @@ export const useHelpStore = create<HelpState>((set, get) => ({
     set((state) => ({
       open: !state.open
     })),
-  editMode: false,
-  setEditMode: (editMode) => set({ editMode }),
   closeModal: () =>
     set({
       open: false
     }),
   changeShortcut: (keybinding) => {
-    const shortcuts = get().shortcuts
+    set(
+      produce((draft) => {
+        Object.keys(draft.shortcuts).map((k) => {
+          // * If key already exists, remove it
 
-    Object.keys(shortcuts).map((k) => {
-      // * If key already exists, remove it
-      if (shortcuts[k].keystrokes === keybinding.keystrokes) {
-        shortcuts[k].keystrokes = ''
-      }
+          if (draft.shortcuts[k].keystrokes === keybinding.keystrokes) {
+            draft.shortcuts[k].keystrokes = ''
+          }
 
-      // * New shortcut by user
-      if (shortcuts[k].title === keybinding.title) {
-        shortcuts[k].keystrokes = keybinding.keystrokes
-      }
+          // * New shortcut by user
+          if (draft.shortcuts[k].title === keybinding.title) {
+            draft.shortcuts[k].keystrokes = keybinding.keystrokes
+          }
+          if (keybinding.title === draft.shortcuts.showSpotlight.title) {
+            ipcRenderer.send(IpcAction.SET_SPOTLIGHT_SHORTCUT, { shortcut: keybinding.keystrokes })
+          }
 
-      return k
-    })
-
-    set({ shortcuts })
+          return k
+        })
+      })
+    )
   },
   shortcuts: defaultShortcuts
 }))

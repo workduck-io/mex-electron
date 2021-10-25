@@ -70,7 +70,7 @@ export const defaultShortcuts = {
     category: 'Actions'
   },
   showSpotlight: {
-    title: 'Open Spotlight Lookup',
+    title: 'Open Spotlight',
     keystrokes: '$mod+Shift+KeyL',
     category: 'Actions',
     global: true

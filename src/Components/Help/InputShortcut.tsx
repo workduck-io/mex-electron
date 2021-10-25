@@ -9,17 +9,24 @@ const InputShortcut = () => {
   const keybinding = useShortcutStore((state) => state.keybinding)
   const [value, setValue] = useState('')
 
+  const currentShortcut = useShortcutStore((state) => state.currentShortcut)
+  const resetStore = useShortcutStore((state) => state.resetStore)
+
   useShortcutListener()
 
   useEffect(() => {
+    return () => resetStore()
+  }, [resetStore])
+
+  useEffect(() => {
     if (keybinding) {
-      setValue(keybinding)
+      setValue(keybinding.alias.trim())
     }
   }, [keybinding])
 
   return (
     <CenterSpace>
-      <Heading>Enter new Shortcut</Heading>
+      <Heading>Enter new shortcut for {currentShortcut.title} </Heading>
       <InputBlock center autoFocus value={value} />
       <br />
       <Description>
