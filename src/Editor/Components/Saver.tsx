@@ -15,20 +15,20 @@ import { useSnippetStore } from '../Store/SnippetStore'
 export const useSaver = () => {
   const setFsContent = useContentStore((state) => state.setContent)
 
-  const uid = useEditorStore((state) => state.node.uid)
   const { updateLinksFromContent } = useLinks()
+
+  const defaultNode = useEditorStore((state) => state.node)
 
   const saveData = useSaveData()
   const editorState = useStoreEditorValue()
   const { saveDataAPI } = useApi()
 
-  const onSave = () => {
+  const onSave = (node = defaultNode) => {
     // setContent then save
     if (editorState) {
-      console.log({ uid, editorState })
-      setFsContent(uid, editorState)
-      saveDataAPI(uid, editorState)
-      updateLinksFromContent(uid, editorState)
+      setFsContent(node.uid, editorState)
+      saveDataAPI(node.uid, editorState)
+      updateLinksFromContent(node.uid, editorState)
     }
     saveData()
     toast('Saved!', { duration: 1000 })
@@ -40,7 +40,7 @@ export const useSaver = () => {
 interface SaverButtonProps {
   title?: string
   noButton?: boolean
-  callbackAfterSave?: () => void
+  callbackAfterSave?: (uid?: string) => void
   callbackBeforeSave?: () => void
 }
 
@@ -52,11 +52,12 @@ export const SaverButton = ({ callbackAfterSave, callbackBeforeSave, title, noBu
   const { onSave: onSaveFs } = useSaver()
 
   const shortcuts = useHelpStore((state) => state.shortcuts)
+  const node = useEditorStore((state) => state.node)
 
   const onSave = () => {
     if (callbackBeforeSave) callbackBeforeSave()
-    onSaveFs()
-    if (callbackAfterSave) callbackAfterSave()
+    onSaveFs(node)
+    if (callbackAfterSave) callbackAfterSave(node.uid)
   }
 
   useEffect(() => {

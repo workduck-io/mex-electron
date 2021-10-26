@@ -20,7 +20,7 @@ export interface DataStoreState {
   initializeDataStore: (tags: ComboText[], ids: ILink[], slash_commands: ComboText[], linkCache: LinkCache) => void
 
   addTag: (tag: string) => void
-  addILink: (ilink: string) => string
+  addILink: (ilink: string, uid?: string) => string
   setSlashCommands: (slashCommands: ComboText[]) => void
   setIlinks: (ilinks: ILink[]) => void
 

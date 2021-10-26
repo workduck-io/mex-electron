@@ -30,9 +30,8 @@ const useLoad = () => {
   }
 
   const loadNode = async (uid: string) => {
-    console.log({ uid })
-
     const node = getNode(uid)
+    console.log(node)
     loadNodeEditor(node)
     if (USE_API) {
       setFetchingContent(true)
@@ -58,6 +57,7 @@ const useLoad = () => {
 
   const loadNodeAndAppend = async (uid: string, content: NodeEditorContent) => {
     const nodeProps = getNode(uid)
+    console.log(nodeProps)
     const nodeContent = await getContent(uid)
 
     loadNodeAndReplaceContent(nodeProps, [...nodeContent, ...content])

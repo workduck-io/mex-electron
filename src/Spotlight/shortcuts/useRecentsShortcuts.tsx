@@ -7,19 +7,19 @@ import useLoad from '../../Hooks/useLoad/useLoad'
 
 export const useRecentsShortcuts = () => {
   const history = useHistory()
-  const { loadNode } = useLoad()
-  const savedEditorId = useSpotlightEditorStore((state) => state.nodeId)
+  const { loadNodeProps } = useLoad()
+  const savedEditorNode = useSpotlightEditorStore((state) => state.node)
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       Tab: (event) => {
         event.preventDefault()
-        loadNode(savedEditorId)
+        loadNodeProps(savedEditorNode)
         history.replace('/new')
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [savedEditorId])
+  }, [savedEditorNode])
 }

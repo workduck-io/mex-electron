@@ -20,6 +20,8 @@ export type EditorContextType = {
   content: NodeEditorContent
   readOnly: boolean
 
+  setUid: (uid: string) => void
+
   fetchingContent: boolean
 
   // State transformations
@@ -42,6 +44,12 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
 
   setReadOnly: (isReadOnly: boolean) => {
     set({ readOnly: isReadOnly })
+  },
+
+  setUid: (uid) => {
+    const node = get().node
+    node.uid = uid
+    set({ node })
   },
 
   setFetchingContent: (value) =>

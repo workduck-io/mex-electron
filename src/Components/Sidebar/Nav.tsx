@@ -93,7 +93,7 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
         ))}
       </div>
       <div>
-        {authenticated ? (
+        {/* {authenticated ? (
           <Button onClick={logout}>{GetIcon(logoutCircleLine)}</Button>
         ) : (
           <Link
@@ -109,7 +109,7 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
           >
             {GetIcon(lockPasswordLine)}
           </Link>
-        )}
+        )} */}
         <Link
           exact
           activeClassName="active"

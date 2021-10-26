@@ -19,7 +19,7 @@ export const useGlobalShortcuts = () => {
 
   const removeContent = useContentStore((state) => state.removeContent)
   const { setSelection, setSearch, search, selection } = useSpotlightContext()
-  const savedEditorId = useSpotlightEditorStore((state) => state.nodeId)
+  const savedEditorNode = useSpotlightEditorStore((state) => state.node)
   const setIsPreview = useSpotlightEditorStore((state) => state.setIsPreview)
   const setBackPressed = useSpotlightSettingsStore((state) => state.setBackPressed)
 
@@ -45,7 +45,7 @@ export const useGlobalShortcuts = () => {
           history.replace('/')
         } else if (selection && !search) {
           setSelection(undefined)
-          removeContent(savedEditorId)
+          removeContent(savedEditorNode.uid)
         } else if (search) {
           setIsPreview(false)
           handleCancel()
