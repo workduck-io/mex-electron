@@ -87,7 +87,6 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.on(IpcAction.SYNC_DATA, (_event, arg) => {
-      console.log('SPOTLIGHT_SYNC: ', arg)
       update(arg)
     })
 

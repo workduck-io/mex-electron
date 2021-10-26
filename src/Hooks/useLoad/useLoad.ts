@@ -16,22 +16,22 @@ const useLoad = () => {
   const getNode = (uid: string): NodeProperties => {
     const ilinks = useDataStore.getState().ilinks
     const respectiveLink = ilinks.find((i) => i.uid === uid)
-    // console.log({ uid, ilinks, respectiveLink })
 
     const UID = respectiveLink?.uid ?? uid
     const text = respectiveLink?.text ?? uid
 
-    return {
+    const node = {
       title: text,
       id: text,
       uid: UID,
-      key: UID
+      key: text
     }
+
+    return node
   }
 
   const loadNode = async (uid: string) => {
     const node = getNode(uid)
-    console.log(node)
     loadNodeEditor(node)
     if (USE_API) {
       setFetchingContent(true)
@@ -58,7 +58,6 @@ const useLoad = () => {
 
   const loadNodeAndAppend = async (uid: string, content: NodeEditorContent) => {
     const nodeProps = getNode(uid)
-    console.log(nodeProps)
     const nodeContent = await getContent(uid)
 
     loadNodeAndReplaceContent(nodeProps, [...nodeContent, ...content])

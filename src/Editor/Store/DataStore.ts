@@ -42,14 +42,11 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     const comboTexts = newLinks.map((l, index) => {
       const newILink = generateIlink(l, get().ilinks.length + index)
       if (uid && newILink.text === ilink) {
-        console.log('BEFORE: ', newILink)
         newILink.uid = uid
-        console.log('AFTER: ', newILink)
       }
       return newILink
     })
 
-    // console.log('Link Added', { newLinks, comboTexts })
     const newLink = comboTexts.find((l) => l.text === ilink)
 
     set({
