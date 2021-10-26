@@ -121,6 +121,7 @@
     "react-sortablejs": "^6.0.0",
     "react-spring": "^9.2.4",
     "react-tooltip": "^4.2.19",
+    "react-universal-interface": "^0.6.2",
     "react-vis-network-graph": "^3.0.1",
     "react-window": "^1.8.6",
     "remark-parse": "^9.0.0",

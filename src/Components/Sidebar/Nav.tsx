@@ -124,7 +124,7 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
           >
             {GetIcon(lockPasswordLine)}
           </Link>
-        )}
+        )} */}
         <Link
           exact
           tabIndex={-1}

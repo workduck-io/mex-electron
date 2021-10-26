@@ -12,6 +12,8 @@ import { useSpotlightContext } from '../../utils/context'
 import { useCurrentIndex } from '../../utils/hooks'
 import Preview from '../Preview'
 import SideBar from '../SideBar'
+import { NODE_ID_PREFIX } from '../../../Defaults/idPrefixes'
+import { nanoid } from 'nanoid'
 
 export const StyledContent = styled.section`
   display: flex;
@@ -26,19 +28,30 @@ const initPreview = {
   isSelection: false
 }
 
+export const createNodeWithUid = (key: string) => ({
+  title: key,
+  id: key,
+  uid: `${NODE_ID_PREFIX}${nanoid()}`,
+  key: key
+})
+
 const Content = () => {
-  const previewId = useSpotlightEditorStore((state) => state.nodeId)
+  const previewNode = useSpotlightEditorStore((state) => state.node)
   const backPressed = useSpotlightSettingsStore((state) => state.backPressed)
+  const contents = useContentStore((state) => state.contents)
+
+  console.log(contents)
+
   const { search, selection } = useSpotlightContext()
 
-  const draftKey = useMemo(() => {
-    const key = getNewDraftKey()
+  const draftNode = useMemo(() => {
+    const keyNode = createNodeWithUid(getNewDraftKey())
 
     if (backPressed) {
-      return previewId
+      return previewNode
     }
 
-    return key
+    return keyNode
   }, [backPressed])
 
   const [data, setData] = useState<Array<any>>()
@@ -53,9 +66,9 @@ const Content = () => {
   const ilinks = useDataStore((s) => s.ilinks)
   const getContent = useContentStore((state) => state.getContent)
 
-  const { loadNodeAndAppend, loadNode } = useLoad()
+  const { loadNodeAndAppend, loadNodeProps, loadNode } = useLoad()
 
-  const saveEditorId = useSpotlightEditorStore((state) => state.setNodeId)
+  const saveEditorNode = useSpotlightEditorStore((state) => state.setNode)
   const { setSaved } = useContentStore(({ setSaved }) => ({ setSaved }))
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
   const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
@@ -63,8 +76,8 @@ const Content = () => {
 
   useEffect(() => {
     setSaved(false)
-    loadNode(draftKey)
-    saveEditorId(draftKey)
+    loadNodeProps(draftNode)
+    saveEditorNode(draftNode)
   }, [selection])
 
   useEffect(() => {
@@ -120,9 +133,9 @@ const Content = () => {
         text: null
       })
       if (nodeContent) {
-        loadNodeAndAppend(contentKey.key, nodeContent)
+        loadNodeAndAppend(contentKey.uid, nodeContent)
       } else {
-        loadNode(contentKey.key)
+        loadNode(contentKey.uid)
       }
     }
     setSaved(false)
@@ -130,7 +143,7 @@ const Content = () => {
 
   return (
     <StyledContent>
-      <Preview preview={preview} nodeId={draftKey} />
+      <Preview preview={preview} node={draftNode} />
       <SideBar index={currentIndex} data={data} />
     </StyledContent>
   )
