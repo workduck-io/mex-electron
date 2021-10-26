@@ -45,7 +45,7 @@ const Switch = () => {
       <ReactRouterSwitch location={item}>
         <ProtectedRoute path="/editor" component={EditorView} />
         <ProtectedRoute path="/tasks" component={Tasks} />
-        <ProtectedRoute path="/integrations" component={Integrations} />
+        {/* <ProtectedRoute path="/integrations" component={Integrations} /> // * Sync */}
         <ProtectedRoute exact path="/snippets" component={Snippets} />
         <ProtectedRoute exact path="/snippets/editor" component={SnippetEditor} />
         <ProtectedRoute path="/settings" component={Settings} />

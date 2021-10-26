@@ -19,28 +19,28 @@ const links: NavLinkData[] = [
   {
     title: 'Dashboard',
     path: '/',
-    icon: GetIcon(dashboardLine),
+    icon: GetIcon(dashboardLine)
   },
   {
     title: 'Editor',
     path: '/editor',
-    icon: GetIcon(fileDocument),
+    icon: GetIcon(fileDocument)
   },
   {
     title: 'Tasks',
     path: '/tasks',
-    icon: GetIcon(checkboxLine),
+    icon: GetIcon(checkboxLine)
   },
-  {
-    title: 'Integrations',
-    path: '/integrations',
-    icon: GetIcon(appsLine),
-  },
+  // {
+  //   title: 'Integrations',
+  //   path: '/integrations',
+  //   icon: GetIcon(appsLine),
+  // }, // * Integrations
   {
     title: 'Snippets',
     path: '/snippets',
-    icon: GetIcon(quillPenLine),
-  },
+    icon: GetIcon(quillPenLine)
+  }
 ]
 
 export default links

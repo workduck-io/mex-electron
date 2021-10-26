@@ -18,8 +18,8 @@ export const editorPreviewComponents = createPlateComponents({
   [ELEMENT_TAG]: TagElement as any,
   [ELEMENT_ILINK]: ILinkElement as any,
   [ELEMENT_INLINE_BLOCK]: ILinkElement as any,
-  [ELEMENT_MEDIA_EMBED]: MediaEmbedElement as any,
-  [ELEMENT_SYNC_BLOCK]: SyncBlock as any
+  [ELEMENT_MEDIA_EMBED]: MediaEmbedElement as any
+  // [ELEMENT_SYNC_BLOCK]: SyncBlock as any // * Sync
 })
 
 const components = createPlateComponents({

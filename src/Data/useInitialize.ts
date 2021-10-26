@@ -14,14 +14,14 @@ import { FileData } from '../Types/data'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
-  MEX = 'MEX',
+  MEX = 'MEX'
 }
 
 export const useInitialize = () => {
   const initializeDataStore = useDataStore((state) => state.initializeDataStore)
   const initContents = useContentStore((state) => state.initContents)
   const initSpotlightSettings = useSpotlightSettingsStore((state) => state.initSpotlightSettings)
-  const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
+  // const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks) // * Sync
   const setTheme = useThemeStore((state) => state.setTheme)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
   const { loadNode } = useLoad()
@@ -29,13 +29,13 @@ export const useInitialize = () => {
   const update = (data: FileData) => {
     const { tags, ilinks, linkCache, contents, syncBlocks, snippets, templates, services, intents } = data
     const snippetCommands = extractSnippetCommands(snippets)
-    const syncCommands = extractSyncBlockCommands(templates)
-    const slashCommands = generateComboTexts([...defaultCommands, ...syncCommands, ...snippetCommands])
+    // const syncCommands = extractSyncBlockCommands(templates) // * Sync
+    const slashCommands = generateComboTexts([...defaultCommands, ...snippetCommands]) // * Removed syncCommands from array
 
     initializeDataStore(tags, ilinks, slashCommands, linkCache)
     initSpotlightSettings(data.userSettings.spotlight)
     initContents(contents)
-    initSyncBlocks(syncBlocks, templates, services, intents)
+    // initSyncBlocks(syncBlocks, templates, services, intents) // * Sync
     initSnippets(snippets)
     setTheme(getTheme(data.userSettings.theme))
   }

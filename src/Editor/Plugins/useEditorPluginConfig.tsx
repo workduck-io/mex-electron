@@ -20,11 +20,11 @@ const useEditorPluginConfig = (editorId: string) => {
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
   const { getSnippetsConfigs } = useSnippets()
-  const { getSyncBlockConfigs } = useSyncConfig()
+  // const { getSyncBlockConfigs } = useSyncConfig() // * Sync
 
   // Combobox
   const snippetConfigs = getSnippetsConfigs()
-  const syncBlockConfigs = getSyncBlockConfigs()
+  // const syncBlockConfigs = getSyncBlockConfigs()
 
   const ilinksForCurrentNode = useMemo(() => {
     return ilinks.filter((item) => item.key !== node.id)
@@ -103,8 +103,8 @@ const useEditorPluginConfig = (editorId: string) => {
           //     return nd
           //   },
           // },
-          ...snippetConfigs,
-          ...syncBlockConfigs
+          ...snippetConfigs
+          // ...syncBlockConfigs // * Sync
         }
       )
     }

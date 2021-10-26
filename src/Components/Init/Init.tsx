@@ -95,10 +95,10 @@ const Init = () => {
         event.preventDefault()
         history.push('/snippets')
       },
-      [shortcuts.showIntegrations.keystrokes]: (event) => {
-        event.preventDefault()
-        history.push('/integrations')
-      },
+      // [shortcuts.showIntegrations.keystrokes]: (event) => {
+      //   event.preventDefault()
+      //   history.push('/integrations')
+      // }, // * Integrations
       [shortcuts.showEditor.keystrokes]: (event) => {
         event.preventDefault()
         history.push('/editor')
