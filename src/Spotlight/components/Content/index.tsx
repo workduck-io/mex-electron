@@ -38,9 +38,6 @@ export const createNodeWithUid = (key: string) => ({
 const Content = () => {
   const previewNode = useSpotlightEditorStore((state) => state.node)
   const backPressed = useSpotlightSettingsStore((state) => state.backPressed)
-  const contents = useContentStore((state) => state.contents)
-
-  console.log(contents)
 
   const { search, selection } = useSpotlightContext()
 

@@ -46,7 +46,6 @@ export const useInitialize = () => {
     const keyToLoad = initNodeId || '@'
 
     if (initFor === AppType.SPOTLIGHT) {
-      console.log('Spotlight: ', data)
       loadNodeProps(createNodeWithUid(keyToLoad))
     }
   }

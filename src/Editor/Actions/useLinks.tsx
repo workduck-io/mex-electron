@@ -96,7 +96,6 @@ export const useLinks = () => {
 
   const getUidFromNodeId = (nodeId: string) => {
     const links = useDataStore.getState().ilinks
-
     const link = links.find((l) => l.text === nodeId)
 
     if (link) return link.uid
@@ -106,7 +105,6 @@ export const useLinks = () => {
     const links = useDataStore.getState().ilinks
 
     const link = links.find((l) => l.uid === uid)
-    console.log('LINK: ', link)
     if (link) return link.text
   }
 
