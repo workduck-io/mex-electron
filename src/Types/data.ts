@@ -22,11 +22,35 @@ export interface FileData {
   templates: SyncBlockTemplate[]
   intents: SyncStoreIntents
   services: Service[]
+  snippets: Snippet[]
 
   // Misc
   userSettings: {
     theme: string
-    spotlight: { [key: string]: any }
   }
+  spotlightSettings: { [key: string]: any }
+}
+
+export interface SettingsFileData {
+  theme: string
+}
+export interface SpotlightSettingsFileData {
+  [key: string]: any
+}
+
+export interface NodeFileData {
+  remoteUpdate: boolean
+  ilinks: ILink[]
+  tags: ComboText[]
+  contents: {
+    [key: string]: NodeContent
+  }
+  linkCache: LinkCache
+
+  // Sync
+  syncBlocks: SyncBlockData[]
+  templates: SyncBlockTemplate[]
+  intents: SyncStoreIntents
+  services: Service[]
   snippets: Snippet[]
 }

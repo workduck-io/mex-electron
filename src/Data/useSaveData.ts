@@ -28,10 +28,10 @@ export const useSaveData = () => {
 
       snippets: useSnippetStore.getState().snippets,
       userSettings: {
-        theme: useThemeStore.getState().theme.id,
-        spotlight: {
-          showSource: useSpotlightSettingsStore.getState().showSource
-        }
+        theme: useThemeStore.getState().theme.id
+      },
+      spotlightSettings: {
+        showSource: useSpotlightSettingsStore.getState().showSource
       }
     }
 

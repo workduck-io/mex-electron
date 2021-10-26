@@ -4,13 +4,14 @@ import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, session
 import fs from 'fs'
 import path from 'path'
 import { AppType } from './Data/useInitialize'
-import { DefaultFileData } from './Defaults/baseData'
-import { getSaveLocation } from './Defaults/data'
+import { DefaultNodeData, DefaultSettingsData, DefaultSpotlightSettingsData } from './Defaults/baseData'
+import { getDataSaveLocation, getSettingsSaveLocation, getSpotlightSettingsSaveLocation } from './Defaults/data'
 import MenuBuilder from './menu'
 import { IpcAction } from './Spotlight/utils/constants'
 import { getSelectedText } from './Spotlight/utils/getSelectedText'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
-import { FileData } from './Types/data'
+import { FileData, NodeFileData, SettingsFileData, SpotlightSettingsFileData } from './Types/data'
+import { splitSaveData } from './Lib/parseSaveFileData'
 
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
@@ -37,7 +38,9 @@ if (process.env.NODE_ENV === 'production') {
   sourceMapSupport.install()
 }
 
-const SAVE_LOCATION = getSaveLocation(app)
+const DATA_SAVE_LOCATION = getDataSaveLocation(app)
+const SETTINGS_SAVE_LOCATION = getSettingsSaveLocation(app)
+const SPOTLIGHT_SETTINGS_SAVE_LOCATION = getSpotlightSettingsSaveLocation(app)
 // const RESOURCES_PATH = app.isPackaged ? path.join(process.resourcesPath, 'assets') : path.join(__dirname, '../assets')
 
 // const getAssetPath = (...paths: string[]): string => {
@@ -49,7 +52,8 @@ const MEX_WINDOW_OPTIONS = {
   height: 1500,
   webPreferences: {
     nodeIntegration: true,
-    contextIsolation: false
+    contextIsolation: false,
+    devTools: true
   }
 }
 
@@ -71,19 +75,39 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
 }
 
 export const setFileData = (data: FileData) => {
-  fs.writeFileSync(SAVE_LOCATION, JSON.stringify(data))
+  const { NodeData, SettingsData, SpotlightSettingsData } = splitSaveData(data)
+  fs.writeFileSync(DATA_SAVE_LOCATION, JSON.stringify(NodeData))
+  fs.writeFileSync(SETTINGS_SAVE_LOCATION, JSON.stringify(SettingsData))
+  fs.writeFileSync(SPOTLIGHT_SETTINGS_SAVE_LOCATION, JSON.stringify(SpotlightSettingsData))
 }
 
 export const getFileData = () => {
-  let fileData: FileData
+  let NodeData: NodeFileData = DefaultNodeData
+  let SettingsData: SettingsFileData = DefaultSettingsData
+  let SpotlightSettingsData: SpotlightSettingsFileData = DefaultSpotlightSettingsData
 
-  if (fs.existsSync(SAVE_LOCATION)) {
-    const stringData = fs.readFileSync(SAVE_LOCATION, 'utf-8')
-    fileData = JSON.parse(stringData)
+  if (fs.existsSync(DATA_SAVE_LOCATION)) {
+    const stringData = fs.readFileSync(DATA_SAVE_LOCATION, 'utf-8')
+    NodeData = JSON.parse(stringData)
   } else {
-    fs.writeFileSync(SAVE_LOCATION, JSON.stringify(DefaultFileData))
-    fileData = DefaultFileData
+    fs.writeFileSync(DATA_SAVE_LOCATION, JSON.stringify(NodeData))
   }
+
+  if (fs.existsSync(SETTINGS_SAVE_LOCATION)) {
+    const stringData = fs.readFileSync(SETTINGS_SAVE_LOCATION, 'utf-8')
+    SettingsData = JSON.parse(stringData)
+  } else {
+    fs.writeFileSync(SETTINGS_SAVE_LOCATION, JSON.stringify(SettingsData))
+  }
+
+  if (fs.existsSync(SPOTLIGHT_SETTINGS_SAVE_LOCATION)) {
+    const stringData = fs.readFileSync(SPOTLIGHT_SETTINGS_SAVE_LOCATION, 'utf-8')
+    SpotlightSettingsData = JSON.parse(stringData)
+  } else {
+    fs.writeFileSync(SPOTLIGHT_SETTINGS_SAVE_LOCATION, JSON.stringify(SpotlightSettingsData))
+  }
+
+  const fileData: FileData = { ...NodeData, userSettings: SettingsData, spotlightSettings: SpotlightSettingsData }
   return fileData
 }
 
@@ -170,7 +194,7 @@ const createMexWindow = () => {
     // Send data back if modified externally
 
     chokidar
-      .watch(getSaveLocation(app), {
+      .watch(getDataSaveLocation(app), {
         alwaysStat: true,
         awaitWriteFinish: {
           stabilityThreshold: 2000
@@ -179,8 +203,8 @@ const createMexWindow = () => {
       })
       .on('change', () => {
         let fileData: FileData
-        if (fs.existsSync(getSaveLocation(app))) {
-          const stringData = fs.readFileSync(getSaveLocation(app), 'utf-8')
+        if (fs.existsSync(getDataSaveLocation(app))) {
+          const stringData = fs.readFileSync(getDataSaveLocation(app), 'utf-8')
           fileData = JSON.parse(stringData)
         } else {
           return

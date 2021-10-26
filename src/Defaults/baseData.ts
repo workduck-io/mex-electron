@@ -1,5 +1,5 @@
 import { generateComboTexts, generateILinks } from '../Editor/Store/sampleTags'
-import { FileData } from '../Types/data'
+import { FileData, SettingsFileData, SpotlightSettingsFileData } from '../Types/data'
 
 const links = generateILinks(['doc', 'dev', 'design', '@', 'Draft'])
 
@@ -12,7 +12,7 @@ const contents = links.reduce((prev, cur) => {
   }
 }, {})
 
-export const DefaultFileData: FileData = {
+export const DefaultNodeData: FileData = {
   remoteUpdate: true,
   ilinks: links,
   contents,
@@ -23,10 +23,18 @@ export const DefaultFileData: FileData = {
   intents: {},
   services: [],
   userSettings: {
-    theme: 'dev',
-    spotlight: {
-      showSource: true
-    }
+    theme: 'dev'
+  },
+  spotlightSettings: {
+    showSource: true
   },
   snippets: []
+}
+
+export const DefaultSettingsData: SettingsFileData = {
+  theme: 'dev'
+}
+
+export const DefaultSpotlightSettingsData: SpotlightSettingsFileData = {
+  showSource: true
 }

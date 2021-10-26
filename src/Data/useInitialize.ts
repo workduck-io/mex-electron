@@ -10,11 +10,11 @@ import useLoad from '../Hooks/useLoad/useLoad'
 import { extractSnippetCommands } from '../Snippets/useSnippets'
 import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
 import { getTheme } from '../Styled/themes/defaultThemes'
-import { FileData } from '../Types/data'
+import { FileData, SettingsFileData, SpotlightSettingsFileData } from '../Types/data'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
-  MEX = 'MEX',
+  MEX = 'MEX'
 }
 
 export const useInitialize = () => {
@@ -33,7 +33,7 @@ export const useInitialize = () => {
     const slashCommands = generateComboTexts([...defaultCommands, ...syncCommands, ...snippetCommands])
 
     initializeDataStore(tags, ilinks, slashCommands, linkCache)
-    initSpotlightSettings(data.userSettings.spotlight)
+    initSpotlightSettings(data.spotlightSettings)
     initContents(contents)
     initSyncBlocks(syncBlocks, templates, services, intents)
     initSnippets(snippets)
