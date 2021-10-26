@@ -15,7 +15,7 @@ import { FileData } from '../Types/data'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
-  MEX = 'MEX',
+  MEX = 'MEX'
 }
 
 export const useInitialize = () => {

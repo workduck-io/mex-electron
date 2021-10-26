@@ -18,7 +18,6 @@ import { convertEntryToRawText } from '../../Search/localSearch'
 export const useSaver = () => {
   const setFsContent = useContentStore((state) => state.setContent)
 
-  const uid = useEditorStore((state) => state.node.uid)
   const { updateLinksFromContent, getNodeIdFromUid } = useLinks()
 
   const defaultNode = useEditorStore((state) => state.node)
