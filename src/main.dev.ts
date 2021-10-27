@@ -48,6 +48,7 @@ const SAVE_LOCATION = getSaveLocation(app)
 const MEX_WINDOW_OPTIONS = {
   width: 1600,
   height: 1500,
+  titleBarStyle: 'hidden' as const,
   webPreferences: {
     nodeIntegration: true,
     contextIsolation: false
