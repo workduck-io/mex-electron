@@ -1,5 +1,4 @@
 import lockPasswordLine from '@iconify-icons/ri/lock-password-line'
-import logoutCircleLine from '@iconify-icons/ri/logout-circle-line'
 import user3Line from '@iconify-icons/ri/user-3-line'
 import settings4Line from '@iconify-icons/ri/settings-4-line'
 import { transparentize } from 'polished'
