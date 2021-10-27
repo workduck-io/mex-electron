@@ -1,6 +1,7 @@
 import { clipboard } from 'electron'
 import { keyTap } from 'robotjs'
 import activeWindow from 'active-win'
+import { getKeyFromKeycode } from '../../Lib/keyMap'
 
 export type SelectionType = {
   text: string
@@ -22,4 +23,10 @@ export const getSelectedText = async (): Promise<SelectionType> => {
     text: selectedText,
     metadata: windowDetails
   }
+}
+
+export const getGlobalShortcut = (shortcut: string) => {
+  let sh = shortcut.replace('$mod', 'CommandOrControl')
+  sh = getKeyFromKeycode(sh)
+  return sh
 }
