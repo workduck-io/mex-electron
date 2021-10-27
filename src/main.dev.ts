@@ -1,3 +1,4 @@
+import { getGlobalShortcut, getSelectedText } from './Spotlight/utils/getSelectedText'
 /* eslint-disable @typescript-eslint/no-var-requires */
 import chokidar from 'chokidar'
 import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, session, shell, Tray } from 'electron'
@@ -6,9 +7,9 @@ import path from 'path'
 import { AppType } from './Data/useInitialize'
 import { DefaultFileData } from './Defaults/baseData'
 import { getSaveLocation } from './Defaults/data'
+import { getKeyFromKeycode } from './Lib/keyMap'
 import MenuBuilder from './menu'
 import { IpcAction } from './Spotlight/utils/constants'
-import { getSelectedText } from './Spotlight/utils/getSelectedText'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
 
@@ -312,6 +313,24 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+// * TBD: Save locally
+let SPOTLIGHT_SHORTCUT = 'CommandOrControl+Shift+L'
+
+ipcMain.on(IpcAction.SET_SPOTLIGHT_SHORTCUT, (event, arg) => {
+  const newSpotlightShortcut = getGlobalShortcut(arg.shortcut)
+  if (newSpotlightShortcut !== SPOTLIGHT_SHORTCUT) {
+    globalShortcut.unregister(SPOTLIGHT_SHORTCUT)
+    globalShortcut.register(newSpotlightShortcut, handleToggleMainWindow)
+    SPOTLIGHT_SHORTCUT = newSpotlightShortcut
+  }
+})
+
+ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
+  const { disable } = arg
+  if (disable) globalShortcut.unregisterAll()
+  else globalShortcut.register(SPOTLIGHT_SHORTCUT, handleToggleMainWindow) // * If more than one global listener, use regiterAll
 })
 
 ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {

@@ -3,23 +3,46 @@ import Modal from 'react-modal'
 import { defaultShortcuts } from '../../Defaults/shortcuts'
 import tinykeys from 'tinykeys'
 import create from 'zustand'
-import { Button } from '../../Styled/Buttons'
-import { ModalControls, ModalHeader } from '../Refactor/styles'
 import ShortcutTable from './ShortcutTable'
+import produce from 'immer'
 import { HelpState } from './Help.types'
+import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
+import { ipcRenderer } from 'electron'
+import { IpcAction } from '../../Spotlight/utils/constants'
 
-export const useHelpStore = create<HelpState>((set) => ({
+export const useHelpStore = create<HelpState>((set, get) => ({
   open: false,
   toggleModal: () =>
     set((state) => ({
       open: !state.open
     })),
-
   closeModal: () =>
     set({
       open: false
     }),
+  changeShortcut: (keybinding) => {
+    set(
+      produce((draft) => {
+        Object.keys(draft.shortcuts).map((k) => {
+          // * If key already exists, remove it
 
+          if (draft.shortcuts[k].keystrokes === keybinding.keystrokes) {
+            draft.shortcuts[k].keystrokes = ''
+          }
+
+          // * New shortcut by user
+          if (draft.shortcuts[k].title === keybinding.title) {
+            draft.shortcuts[k].keystrokes = keybinding.keystrokes
+          }
+          if (keybinding.title === draft.shortcuts.showSpotlight.title) {
+            ipcRenderer.send(IpcAction.SET_SPOTLIGHT_SHORTCUT, { shortcut: keybinding.keystrokes })
+          }
+
+          return k
+        })
+      })
+    )
+  },
   shortcuts: defaultShortcuts
 }))
 
@@ -29,18 +52,19 @@ const HelpModal = () => {
   const closeModal = useHelpStore((store) => store.closeModal)
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
+  const { shortcutDisabled } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showHelp.keystrokes]: (event) => {
         event.preventDefault()
-        toggleModal()
+        if (!shortcutDisabled) toggleModal()
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [shortcuts])
+  }, [shortcuts, shortcutDisabled])
 
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>

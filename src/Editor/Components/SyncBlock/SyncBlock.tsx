@@ -6,6 +6,7 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import ReactTooltip from 'react-tooltip'
 import { useSelected } from 'slate-react'
+import useToggleElements from '../../../Hooks/useToggleElements/useToggleElements'
 import { WORKSPACE_ID } from '../../../Defaults/auth'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import useIntents from '../../../Hooks/useIntents/useIntents'
@@ -32,6 +33,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
   const { register, getValues } = useForm<FormValues>()
   const editSyncBlock = useSyncStore((state) => state.editSyncBlock)
   const [synced, setSynced] = useState(false)
+  const { showSyncBlocks } = useToggleElements()
 
   const uid = useEditorStore((store) => store.node.uid)
   const parentNodeId = useEditorStore((store) => store.node.key)
@@ -50,7 +52,9 @@ export const SyncBlock = (props: SyncBlockProps) => {
   let blockData: SyncBlockData
   const blockDataFiltered = blocksData.filter((d) => d.id === element.id)
 
-  console.log({ blockDataFiltered, element })
+  if (showSyncBlocks) {
+    return <div>{children}</div>
+  }
 
   // Editable means whether this
   let fromLocal = true
@@ -63,10 +67,13 @@ export const SyncBlock = (props: SyncBlockProps) => {
       blockData = { id: element.id, ...element.properties }
       fromLocal = false
       service = element.properties.service
-    } else {
-      return new Error('Sync Block data not present in local store and in content as well')
     }
+    // else {
+    //   return new Error('Sync Block data not present in local store and in content as well')
+    // }
   }
+
+  return <RootElement {...attributes}>Sync Block{children}</RootElement>
 
   const { content, templateId, igid } = blockData
 

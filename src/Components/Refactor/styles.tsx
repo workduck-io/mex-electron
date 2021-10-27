@@ -12,7 +12,6 @@ const ModalContent = css`
   border: 1px solid ${({ theme }) => theme.colors.gray[8]};
   outline: none;
   padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
-  min-height: 240px;
   min-width: 400px;
 `
 

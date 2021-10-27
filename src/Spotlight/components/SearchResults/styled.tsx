@@ -28,10 +28,11 @@ export const StyledRow = styled.div<ColorProp>`
 
 export const Description = styled.p`
   margin: 4px 0;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: lighter;
   overflow: hidden;
   white-space: nowrap;
+  color: ${({ theme }) => theme.colors.text.fade};
   text-overflow: ellipsis;
 `
 

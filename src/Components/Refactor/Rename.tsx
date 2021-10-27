@@ -2,6 +2,7 @@ import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
+import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import tinykeys from 'tinykeys'
 import create from 'zustand'
 import { useLinks } from '../../Editor/Actions/useLinks'
@@ -86,18 +87,19 @@ const Rename = () => {
   const setFrom = useRenameStore((store) => store.setFrom)
 
   const { getUidFromNodeId } = useLinks()
+  const { shortcutDisabled } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showRename.keystrokes]: (event) => {
         event.preventDefault()
-        openModal(useEditorStore.getState().node.id)
+        if (!shortcutDisabled) openModal(useEditorStore.getState().node.id)
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [shortcuts])
+  }, [shortcuts, shortcutDisabled])
 
   const handleFromChange = (newValue: string) => {
     if (newValue) {

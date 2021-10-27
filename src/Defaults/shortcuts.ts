@@ -54,6 +54,11 @@ export const defaultShortcuts = {
     keystrokes: '$mod+Backslash',
     category: 'Actions'
   },
+  showSyncBlocks: {
+    title: 'Sync Blocks',
+    keystrokes: '$mod+KeyK KeyS',
+    category: 'Actions'
+  },
   showGraph: {
     title: 'Graph',
     keystrokes: '$mod+KeyK KeyG',
@@ -65,9 +70,10 @@ export const defaultShortcuts = {
     category: 'Actions'
   },
   showSpotlight: {
-    title: 'Open Spotlight Lookup',
+    title: 'Open Spotlight',
     keystrokes: '$mod+Shift+KeyL',
-    category: 'Actions'
+    category: 'Actions',
+    global: true
   },
   showDelete: {
     title: 'Open Delete',
