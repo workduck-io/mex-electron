@@ -56,7 +56,8 @@ const Init = () => {
           }
           return { d, auth: false }
         })
-        .then(({ d, auth }) => auth && loadNode(getUidFromNodeIdBase(d.ilinks, '@')))
+        // .then(({ d, auth }) => auth && loadNode(getUidFromNodeIdBase(d.ilinks, '@')))
+        .then(() => history.push('/user'))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

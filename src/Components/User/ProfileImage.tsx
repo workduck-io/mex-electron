@@ -21,7 +21,7 @@ export const ProfileImage = ({ email, size }: ProfileImageProps) => {
   const [gravState, setGravState] = useState(0)
 
   const theme = useTheme()
-  const colors = [theme.colors.gray[8], theme.colors.secondary, theme.colors.text.fade, theme.colors.primary]
+  const colors = theme.additional.profilePalette
 
   const params = {
     s: size.toString(),
@@ -49,7 +49,6 @@ export const ProfileImage = ({ email, size }: ProfileImageProps) => {
   if (gravState === 1) return <img src={src} alt={email ? `Gravatar for ${formattedEmail}` : 'Gravatar'} />
 
   if (gravState === -1) return <Avatar size={size} square name={email} colors={colors} variant="beam" />
-
   // Rendered if both fail
   return <Icon className="defaultProfileIcon" icon={user3Line} height={size} />
 }

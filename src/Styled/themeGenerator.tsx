@@ -2,7 +2,7 @@ import { getLuminance, lighten, mix, tint } from 'polished'
 import { DefaultTheme } from 'styled-components'
 import { LayoutStyle } from '../styled'
 import merge from 'deepmerge'
-import { ThemeConfig } from 'react-select/src/theme'
+import ColorScheme from 'color-scheme'
 
 const LayoutTheme: LayoutStyle = {
   spacing: {
@@ -84,6 +84,25 @@ export interface ThemePalette {
 
 export const generateTheme = (p: ThemePalette): DefaultTheme => {
   const mp = (c: string) => mix(0.033, p.primary, c)
+  const cc = new ColorScheme()
+  const pP = cc
+    .from_hex(p.primary.slice(1))
+    .scheme('analogic')
+    .distance(0.25)
+    .variation('light')
+    .add_complement(true)
+    .colors()
+    .map((s) => `#${s}`)
+
+  // const pP = cc
+  //   .from_hex(p.primary.slice(1))
+  //   .scheme('analogic')
+  //   .distance(0.25)
+  //   .variation('light')
+  //   .colors()
+  //   .map((s) => `#${s}`)
+
+  console.log({ c: pP })
   return merge(
     {
       ...LayoutTheme,
@@ -134,6 +153,7 @@ export const generateTheme = (p: ThemePalette): DefaultTheme => {
       },
 
       additional: {
+        profilePalette: pP,
         reactSelect: {
           borderRadius: 4,
           colors: {
