@@ -71,6 +71,7 @@ declare module 'styled-components' {
     }
     backgroundImages?: BackgroundImages
     additional: {
+      profilePalette: string[]
       reactSelect: ThemeConfig
     }
   }

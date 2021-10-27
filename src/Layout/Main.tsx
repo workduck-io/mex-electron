@@ -19,13 +19,27 @@ const Content = styled.div`
   overflow: auto;
 `
 
+const Draggable = styled.div`
+  height: 12px;
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0);
+  z-index: 10000;
+`
+
 export type MainProps = { children: React.ReactNode }
 
 const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const theme = useTheme()
+  const styles = {
+    '-webkit-app-region': 'drag'
+  }
 
   return (
     <AppWrapper>
+      <Draggable style={styles as any} /> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
       <GridWrapper>
         <Nav links={links} />
         <Content>{children}</Content>

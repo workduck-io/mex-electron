@@ -83,6 +83,7 @@
     "boring-avatars": "^1.5.8",
     "caniuse-lite": "^1.0.30001228",
     "chokidar": "^3.5.2",
+    "color-scheme": "^1.0.1",
     "dayjs": "^1.10.7",
     "deepmerge": "^4.2.2",
     "downshift": "^6.1.3",
