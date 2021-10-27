@@ -6,8 +6,6 @@ import { useAuthentication } from '../Hooks/useAuth/useAuth'
 import { BackCard } from '../Styled/Card'
 import { CenteredColumn } from '../Styled/Layouts'
 import { Title } from '../Styled/Typography'
-import { Icon } from '@iconify/react'
-import user3Line from '@iconify-icons/ri/user-3-line'
 import { WORKSPACE_ID } from '../Defaults/auth'
 import { Info, InfoData, InfoLabel, ProfileContainer, ProfileIcon } from '../Styled/UserPage'
 import { ProfileImage } from '../Components/User/ProfileImage'
@@ -19,6 +17,7 @@ const UserPage = () => {
 
   const userDetails = getUserDetails()
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onLogout = (e: any) => {
     e.preventDefault()
     logout()

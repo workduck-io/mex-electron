@@ -4,7 +4,6 @@ export const ProfileContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-
   margin-bottom: ${({ theme }) => theme.spacing.small};
 `
 
@@ -12,6 +11,7 @@ export const ProfileIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
   .defaultProfileIcon {
     padding: 1rem;
     background-color: ${({ theme }) => theme.colors.gray[8]};
