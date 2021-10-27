@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { nanoid } from 'nanoid'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import Modal from 'react-modal'
@@ -7,6 +6,7 @@ import create from 'zustand'
 import { useSaveData } from '../../Data/useSaveData'
 import { useUpdater } from '../../Data/useUpdater'
 import { WORKSPACE_ID } from '../../Defaults/auth'
+import { generateSyncTempId } from '../../Defaults/idPrefixes'
 import { SyncBlockTemplate } from '../../Editor/Components/SyncBlock'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
 import { capitalize } from '../../Lib/strings'
@@ -73,7 +73,7 @@ const NewSyncTemplateModal = () => {
     // console.log({ intents, command, title, description })
 
     const template: SyncBlockTemplate = {
-      id: `SYNCTEMP_${nanoid()}`,
+      id: generateSyncTempId(),
       command,
       title,
       intents: [
@@ -98,7 +98,7 @@ const NewSyncTemplateModal = () => {
       description: template.description
     }
 
-    console.log({ reqData })
+    // console.log({ reqData })
 
     axios.post(integrationURLs.createTemplate, reqData).then(() => {
       addTemplate(template)

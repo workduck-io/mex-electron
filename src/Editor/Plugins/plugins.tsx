@@ -15,6 +15,7 @@ import {
   createLinkPlugin,
   createListPlugin,
   createMediaEmbedPlugin,
+  createNodeIdPlugin,
   createParagraphPlugin,
   createReactPlugin,
   createResetNodePlugin,
@@ -36,6 +37,7 @@ import { createTagPlugin } from '../Components/tag/createTagPlugin'
 import { createBlurSelectionPlugin } from './blurSelection'
 import {
   optionsAutoformat,
+  optionsCreateNodeIdPlugin,
   optionsExitBreakPlugin,
   optionsResetBlockTypePlugin,
   optionsSelectOnBackspacePlugin,
@@ -80,6 +82,8 @@ const generatePlugins = () => {
 
     // Autoformat markdown syntax to elements (**, #(n))
     createAutoformatPlugin(optionsAutoformat),
+
+    createNodeIdPlugin(optionsCreateNodeIdPlugin),
 
     // serialization / deseriailization
 

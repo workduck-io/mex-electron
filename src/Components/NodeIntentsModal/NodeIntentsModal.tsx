@@ -51,7 +51,7 @@ const NodeIntentsModal = ({ uid }: NodeIntegrationsModalProps) => {
   const { getNodeIdFromUid } = useLinks()
 
   const onSave = () => {
-    console.log('onSave', intents)
+    // console.log('onSave', intents)
     // Replace intents in intents and specific intent groups
     updateNodeIntents(
       uid,
@@ -63,7 +63,7 @@ const NodeIntentsModal = ({ uid }: NodeIntegrationsModalProps) => {
   }
 
   const onCancel = () => {
-    console.log('onCancel')
+    // console.log('onCancel')
     closeModal()
   }
 

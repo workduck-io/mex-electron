@@ -1,5 +1,4 @@
-import { nanoid } from 'nanoid'
-import { NODE_ID_PREFIX } from '../../Defaults/idPrefixes'
+import { generateNodeId } from '../../Defaults/idPrefixes'
 import { ComboText, ILink } from './Types'
 
 export const generateComboText = (tag: string, value: number): ComboText => ({
@@ -12,7 +11,7 @@ export const generateIlink = (nodeId: string, value: number): ILink => ({
   key: nodeId,
   text: nodeId,
   value: String(value),
-  uid: `${NODE_ID_PREFIX}${nanoid()}`
+  uid: generateNodeId()
 })
 
 export const generateComboTexts = (items: string[]) => items.map(generateComboText)

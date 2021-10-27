@@ -34,8 +34,10 @@ import {
   TEditor,
   toggleList,
   unwrapList,
-  WithAutoformatOptions,
+  WithAutoformatOptions
 } from '@udecode/plate'
+import { generateTempId } from '../../Defaults/idPrefixes'
+import { ELEMENT_SYNC_BLOCK } from '../Components/SyncBlock'
 
 const preFormat = (editor: TEditor<AnyObject>) => unwrapList(editor as SPEditor)
 
@@ -44,32 +46,32 @@ export const optionsAutoformat: WithAutoformatOptions = {
     {
       type: ELEMENT_H1,
       markup: 'h1',
-      preFormat,
+      preFormat
     },
     {
       type: ELEMENT_H2,
       markup: 'h2',
-      preFormat,
+      preFormat
     },
     {
       type: ELEMENT_H3,
       markup: 'h3',
-      preFormat,
+      preFormat
     },
     {
       type: ELEMENT_H4,
       markup: 'h4',
-      preFormat,
+      preFormat
     },
     {
       type: ELEMENT_H5,
       markup: 'h5',
-      preFormat,
+      preFormat
     },
     {
       type: ELEMENT_H6,
       markup: 'h6',
-      preFormat,
+      preFormat
     },
     {
       type: ELEMENT_LI,
@@ -86,11 +88,11 @@ export const optionsAutoformat: WithAutoformatOptions = {
             !isType(editor as SPEditor, node, ELEMENT_CODE_LINE)
           ) {
             toggleList(editor as SPEditor, {
-              type: ELEMENT_UL,
+              type: ELEMENT_UL
             })
           }
         }
-      },
+      }
     },
     {
       type: ELEMENT_LI,
@@ -107,56 +109,56 @@ export const optionsAutoformat: WithAutoformatOptions = {
             !isType(editor as SPEditor, node, ELEMENT_CODE_LINE)
           ) {
             toggleList(editor as SPEditor, {
-              type: ELEMENT_OL,
+              type: ELEMENT_OL
             })
           }
         }
-      },
+      }
     },
     {
       type: ELEMENT_TODO_LI,
-      markup: ['[]'],
+      markup: ['[]']
     },
     {
       type: ELEMENT_BLOCKQUOTE,
       markup: ['>'],
-      preFormat,
+      preFormat
     },
     {
       type: MARK_BOLD,
       between: ['**', '**'],
       mode: 'inline',
-      insertTrigger: true,
+      insertTrigger: true
     },
     {
       type: MARK_BOLD,
       between: ['__', '__'],
       mode: 'inline',
-      insertTrigger: true,
+      insertTrigger: true
     },
     {
       type: MARK_ITALIC,
       between: ['*', '*'],
       mode: 'inline',
-      insertTrigger: true,
+      insertTrigger: true
     },
     {
       type: MARK_ITALIC,
       between: ['_', '_'],
       mode: 'inline',
-      insertTrigger: true,
+      insertTrigger: true
     },
     {
       type: MARK_CODE,
       between: ['`', '`'],
       mode: 'inline',
-      insertTrigger: true,
+      insertTrigger: true
     },
     {
       type: MARK_STRIKETHROUGH,
       between: ['~~', '~~'],
       mode: 'inline',
-      insertTrigger: true,
+      insertTrigger: true
     },
     {
       type: ELEMENT_CODE_BLOCK,
@@ -167,11 +169,11 @@ export const optionsAutoformat: WithAutoformatOptions = {
       format: (editor: TEditor<AnyObject>) => {
         insertEmptyCodeBlock(editor as SPEditor, {
           defaultType: getPlatePluginType(editor as SPEditor, ELEMENT_DEFAULT),
-          insertNodesOptions: { select: true },
+          insertNodesOptions: { select: true }
         })
-      },
-    },
-  ],
+      }
+    }
+  ]
 }
 
 export const optionsSoftBreakPlugin = {
@@ -180,35 +182,35 @@ export const optionsSoftBreakPlugin = {
     {
       hotkey: 'enter',
       query: {
-        allow: [ELEMENT_CODE_BLOCK, ELEMENT_BLOCKQUOTE, ELEMENT_TD],
-      },
-    },
-  ],
+        allow: [ELEMENT_CODE_BLOCK, ELEMENT_BLOCKQUOTE, ELEMENT_TD]
+      }
+    }
+  ]
 }
 
 export const optionsExitBreakPlugin = {
   rules: [
     {
-      hotkey: 'mod+enter',
+      hotkey: 'mod+enter'
     },
     {
       hotkey: 'mod+shift+enter',
-      before: true,
+      before: true
     },
     {
       hotkey: 'enter',
       query: {
         start: true,
         end: true,
-        allow: KEYS_HEADING,
-      },
-    },
-  ],
+        allow: KEYS_HEADING
+      }
+    }
+  ]
 }
 
 const resetBlockTypesCommonRule = {
   types: [ELEMENT_BLOCKQUOTE, ELEMENT_TODO_LI],
-  defaultType: ELEMENT_PARAGRAPH,
+  defaultType: ELEMENT_PARAGRAPH
 }
 
 export const optionsResetBlockTypePlugin = {
@@ -216,14 +218,21 @@ export const optionsResetBlockTypePlugin = {
     {
       ...resetBlockTypesCommonRule,
       hotkey: 'Enter',
-      predicate: isBlockAboveEmpty,
+      predicate: isBlockAboveEmpty
     },
     {
       ...resetBlockTypesCommonRule,
       hotkey: 'Backspace',
-      predicate: isSelectionAtBlockStart,
-    },
-  ],
+      predicate: isSelectionAtBlockStart
+    }
+  ]
 }
 
 export const optionsSelectOnBackspacePlugin = { allow: [ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED] }
+
+export const optionsCreateNodeIdPlugin = {
+  reuseId: true,
+  filterText: false,
+  idCreator: () => generateTempId(),
+  exclude: [ELEMENT_SYNC_BLOCK]
+}

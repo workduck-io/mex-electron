@@ -21,7 +21,7 @@ export interface IntentSelectorProps {
     x: number
     y: number
   }
-  onSelect: (intent: Intent) => void
+  onSelect?: (intent: Intent) => void
 }
 
 interface IntentSelectorState {
@@ -54,14 +54,14 @@ const IntentSelector = ({
   // Workspace ID, service, type
 
   function onIntentSelect (props, intent: Intent) {
-    console.log({ props, intent })
+    // console.log({ props, intent })
     setIntentSelectorState({
       ...intentSelectorState,
       selected: intent
     })
-    console.log('Calling Onselect')
+    // console.log('Calling Onselect')
 
-    onSelect(intent)
+    if (onSelect) onSelect(intent)
   }
 
   function displayMenu (e) {
@@ -81,7 +81,7 @@ const IntentSelector = ({
             name: i.name,
             options: i.options
           }))
-          console.log({ d })
+          // console.log({ d })
           setIntentSelectorState((state) => ({ ...state, intents, loading: false }))
         })
     }

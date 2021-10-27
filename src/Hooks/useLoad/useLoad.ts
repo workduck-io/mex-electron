@@ -30,8 +30,6 @@ const useLoad = () => {
   }
 
   const loadNode = async (uid: string) => {
-    console.log({ uid })
-
     const node = getNode(uid)
     loadNodeEditor(node)
     if (USE_API) {
@@ -39,6 +37,7 @@ const useLoad = () => {
       getDataAPI(uid)
         .then((d) => {
           if (d) {
+            // console.log('Data fetched and changed', d)
             loadNodeAndReplaceContent(node, d)
             setContent(uid, d)
           }

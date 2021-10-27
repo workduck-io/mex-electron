@@ -218,7 +218,6 @@ export const SyncBlock = (props: SyncBlockProps) => {
                             type={intent.type}
                             defaultIntent={intent}
                             readOnly={true}
-                            onSelect={(val) => console.log({ val })}
                           />
                         )
                       } else {

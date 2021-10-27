@@ -1,3 +1,4 @@
+import { defaultContent } from '../../Defaults/baseData'
 import { SourceType } from '../../Spotlight/components/Source/types'
 import { useContentStore } from './ContentStore'
 import { NodeProperties } from './EditorStore'
@@ -20,7 +21,7 @@ export function getContent (uid: string): NodeEditorContent {
     }
   }
 
-  return [{ children: [{ text: '' }] }]
+  return defaultContent
 }
 
 export const isFromSameSource = (oldSource: SourceType, newSource: SourceType): boolean => {

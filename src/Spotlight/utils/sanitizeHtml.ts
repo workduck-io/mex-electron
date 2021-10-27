@@ -26,11 +26,11 @@ const options = {
     'span',
     'code',
     'thead',
-    'tbody',
+    'tbody'
   ],
   enforceHtmlBoundary: true,
   allowedAttributes: {
-    '*': ['style', 'href', 'target', 'rel', 'src'],
+    '*': ['style', 'href', 'target', 'rel', 'src']
   },
   transformTags: {
     hr: (tagName, attribs) => {
@@ -46,8 +46,8 @@ const options = {
           margin: 0.6rem 0;
           background-color: #ccc;
           padding: 0
-          `,
-        },
+          `
+        }
       }
     },
     a: (tagName, attribs) => {
@@ -63,8 +63,8 @@ const options = {
           text-decoration: underline;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
           outline: 0px;
-        `,
-        },
+        `
+        }
       }
     },
     img: (tagName, attribs) => {
@@ -80,8 +80,8 @@ const options = {
           margin-left: auto;
           background-color: #f9f9f9;
           margin-right: auto;
-          `,
-        },
+          `
+        }
       }
     },
     pre: (tagName, attribs) => {
@@ -114,12 +114,12 @@ const options = {
             -webkit-text-stroke-width: 0px;
             text-decoration-style: initial;
             text-decoration-color: initial;
-        `,
-        },
+        `
+        }
       }
     },
     ul: (tagName, attribs) => {
-      console.log(attribs.style)
+      // console.log(attribs.style)
       return {
         tagName,
         attribs: {
@@ -131,8 +131,8 @@ const options = {
           font-weight: 400;
           letter-spacing: normal;
           font-family: Inter, -apple-system, system-ui, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-          `,
-        },
+          `
+        }
       }
     },
     ol: (tagName, attribs) => {
@@ -165,8 +165,8 @@ const options = {
           -webkit-text-stroke-width: 0px;
           text-decoration-style: initial;
           text-decoration-color: initial;
-          `,
-        },
+          `
+        }
       }
     },
     li: (tagName, attribs) => {
@@ -178,8 +178,8 @@ const options = {
           counter-reset: list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0;
           counter-increment: list-0 1;
           padding-left: 0.75em !important;
-          `,
-        },
+          `
+        }
       }
     },
     p: (tagName, attribs) => {
@@ -209,8 +209,8 @@ const options = {
             -webkit-text-stroke-width: 0px;
             text-decoration-style: initial;
             text-decoration-color: initial;
-          `,
-        },
+          `
+        }
       }
     },
     h2: (tagName, attribs) => {
@@ -241,8 +241,8 @@ const options = {
           -webkit-text-stroke-width: 0px;
           text-decoration-style: initial;
           text-decoration-color: initial;
-          `,
-        },
+          `
+        }
       }
     },
     h3: (tagName, attribs) => {
@@ -273,8 +273,8 @@ const options = {
           -webkit-text-stroke-width: 0px;
           text-decoration-style: initial;
           text-decoration-color: initial;
-          `,
-        },
+          `
+        }
       }
     },
     b: (tagName, attribs) => {
@@ -286,8 +286,8 @@ const options = {
             border-radius: 4px;
             color: rgb(34, 34, 34);
             scroll-margin: 75px;
-          `,
-        },
+          `
+        }
       }
     },
     em: (tagName, attribs) => {
@@ -315,8 +315,8 @@ const options = {
           -webkit-text-stroke-width: 0px;
           text-decoration-style: initial;
           text-decoration-color: initial;
-          `,
-        },
+          `
+        }
       }
     },
     strong: (tagName, attribs) => {
@@ -344,8 +344,8 @@ const options = {
           -webkit-text-stroke-width: 0px;
           text-decoration-style: initial;
           text-decoration-color: initial;
-          `,
-        },
+          `
+        }
       }
     },
     div: (tagName, attribs) => {
@@ -372,8 +372,8 @@ const options = {
           text-decoration-thickness: initial;
           text-decoration-style: initial;
           text-decoration-color: initial;
-          `,
-        },
+          `
+        }
       }
     },
     span: (tagName, attribs) => {
@@ -401,8 +401,8 @@ const options = {
           -webkit-text-stroke-width: 0px;
           text-decoration-style: initial;
           text-decoration-color: initial;
-      `,
-        },
+      `
+        }
       }
     },
     code: (tagName, attribs) => {
@@ -433,11 +433,11 @@ const options = {
           -webkit-text-stroke-width: 0px;
           text-decoration-style: initial;
           text-decoration-color: initial;
-          `,
-        },
+          `
+        }
       }
-    },
-  },
+    }
+  }
 }
 
 export const sanitizeHtml = (html: any) => {

@@ -66,26 +66,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
 
   const [state, setState] = useState({
     counter: showLocal ? -graphData.nodes.length : graphData.nodes.length,
-    graph: graphData,
-    events: {
-      select: (selectProps: any): void => {
-        if (selectProps.nodes.length === 1) {
-          const selectId = selectProps.nodes[0]
-          const selectNode = graphData.nodes.filter((n: any) => n.id === selectId)
-
-          // console.log('Selected node', selectNode, selectId);
-
-          if (network) {
-            network._callbacks.$select[0]({ nodes: selectNode })
-          }
-
-          if (selectNode.length > 0) {
-            const uid = getUidFromNodeId(selectNode[0].nodeId)
-            push(uid)
-          }
-        }
-      }
-    }
+    graph: graphData
   })
 
   useEffect(() => {
@@ -100,11 +81,30 @@ export const TreeGraph = (props: TreeGraphProps) => {
     })
   }, [graphData]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const { graph, events } = state
+  const { graph } = state
   // console.log('Graph', { graph });
+  const events = {
+    select: (selectProps: any): void => {
+      if (selectProps.nodes.length === 1) {
+        const selectId = selectProps.nodes[0]
+        const selectNode = graphData.nodes.filter((n: any) => n.id === selectId)
+
+        // console.log('Selected node', selectNode, selectId, graphData)
+
+        if (network) {
+          network._callbacks.$select[0]({ nodes: selectNode })
+        }
+
+        if (selectNode.length > 0) {
+          const uid = getUidFromNodeId(selectNode[0].nodeId)
+          push(uid)
+        }
+      }
+    }
+  }
 
   return (
-    <StyledGraph>
+    <StyledGraph id={`graph_${showLocal ? 'local' : 'global'}`}>
       {showTools ? (
         <GraphTools>
           <IconButton size={24} icon={bubbleChartLine} title="Graph" highlight={showGraph} onClick={toggleGraph} />

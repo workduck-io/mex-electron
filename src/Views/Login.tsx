@@ -1,7 +1,9 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
-import Input from '../Components/Forms/Input'
+import { EMAIL_REG } from '../Defaults/auth'
+import { InputFormError } from '../Components/Forms/Input'
 import { useAuthentication } from '../Hooks/useAuth/useAuth'
 import { Button } from '../Styled/Buttons'
 import { BackCard, FooterCard } from '../Styled/Card'
@@ -22,7 +24,11 @@ const Login = () => {
   const { login } = useAuthentication()
 
   const onSubmit = (data: LoginFormData) => {
-    login(data.email, data.password)
+    login(data.email, data.password).then((s) => {
+      if (s === 'Incorrect username or password.') {
+        toast.error(s)
+      }
+    })
   }
 
   return (
@@ -30,19 +36,20 @@ const Login = () => {
       <BackCard>
         <Title>Login</Title>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Input
+          <InputFormError
             name="email"
             label="Email"
             inputProps={{
               autoFocus: true,
               ...register('email', {
-                required: true
+                required: true,
+                pattern: EMAIL_REG
               })
             }}
-            error={errors.email?.type === 'required' ? 'Email is required' : undefined}
-          ></Input>
+            errors={errors}
+          ></InputFormError>
 
-          <Input
+          <InputFormError
             name="password"
             label="Password"
             inputProps={{
@@ -51,8 +58,9 @@ const Login = () => {
                 required: true
               })
             }}
-            error={errors.password?.type === 'required' ? 'Password is required' : undefined}
-          ></Input>
+            errors={errors}
+          ></InputFormError>
+
           <br />
           <Button size="large" type="submit" primary>
             Login
