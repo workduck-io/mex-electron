@@ -9,7 +9,8 @@ import { Title } from '../Styled/Typography'
 import { Icon } from '@iconify/react'
 import user3Line from '@iconify-icons/ri/user-3-line'
 import { WORKSPACE_ID } from '../Defaults/auth'
-import { ProfileContainer } from '../Styled/UserPage'
+import { Info, InfoData, InfoLabel, ProfileContainer, ProfileIcon } from '../Styled/UserPage'
+import { ProfileImage } from '../Components/User/ProfileImage'
 
 const UserPage = () => {
   const { getUserDetails } = useAuth()
@@ -18,7 +19,7 @@ const UserPage = () => {
 
   const userDetails = getUserDetails()
 
-  const onLogout = (e) => {
+  const onLogout = (e: any) => {
     e.preventDefault()
     logout()
     history.push('/login')
@@ -28,16 +29,24 @@ const UserPage = () => {
     <CenteredColumn>
       <BackCard>
         <ProfileContainer>
+          <ProfileIcon>
+            <ProfileImage email={userDetails.email} size={128} />
+          </ProfileIcon>
           <div>
             <Title>User</Title>
-            <p>Email: {userDetails.email}</p>
-            <p>Workspace: {WORKSPACE_ID}</p>
-          </div>
-          <div>
-            <Icon icon={user3Line} />
+            <Info>
+              <InfoLabel>Email:</InfoLabel>
+              <InfoData>{userDetails.email}</InfoData>
+            </Info>
+            <Info>
+              <InfoLabel>Workspace:</InfoLabel>
+              <InfoData>{WORKSPACE_ID}</InfoData>
+            </Info>
           </div>
         </ProfileContainer>
-        <Button onClick={onLogout}>Logout</Button>
+        <Button size="large" onClick={onLogout}>
+          Logout
+        </Button>
       </BackCard>
     </CenteredColumn>
   )
