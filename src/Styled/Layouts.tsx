@@ -23,6 +23,10 @@ export const CenteredColumn = styled(Centered)`
   flex-direction: column;
 `
 
+export const CenterSpace = styled(CenteredColumn)`
+  padding: 1rem 0;
+`
+
 export const SpaceBetweenHorizontalFlex = styled.div`
   display: flex;
   align-items: center;

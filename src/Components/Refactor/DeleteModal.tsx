@@ -2,6 +2,7 @@ import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
+import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import tinykeys from 'tinykeys'
 import create from 'zustand'
 import { useDelete } from '../../Editor/Actions/useDelete'
@@ -66,17 +67,19 @@ const Delete = () => {
   const open = useDeleteStore((store) => store.open)
   const mockRefactored = useDeleteStore((store) => store.mockRefactored)
 
+  const { shortcutDisabled } = useKeyListener()
+
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showDelete.keystrokes]: (event) => {
         event.preventDefault()
-        openModal(useEditorStore.getState().node.id)
+        if (!shortcutDisabled) openModal(useEditorStore.getState().node.id)
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [shortcuts])
+  }, [shortcuts, shortcutDisabled])
 
   // console.log({ to, from, open });
 

@@ -3,6 +3,7 @@ import { useContentStore } from '../../Editor/Store/ContentStore'
 import { useSpotlightContext } from '../utils/context'
 import tinykeys from 'tinykeys'
 import { useEffect } from 'react'
+import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 
 export const useMexItShortcuts = () => {
   const history = useHistory()
@@ -15,16 +16,20 @@ export const useMexItShortcuts = () => {
     setSelection(undefined)
   }
 
+  const { shortcutDisabled } = useKeyListener()
+
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       Escape: (event) => {
         event.preventDefault()
-        handleCancel()
-        history.replace('/')
+        if (!shortcutDisabled) {
+          handleCancel()
+          history.replace('/')
+        }
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [])
+  }, [shortcutDisabled])
 }

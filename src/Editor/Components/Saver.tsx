@@ -2,6 +2,7 @@ import saveLine from '@iconify-icons/ri/save-line'
 import { useStoreEditorValue } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
+import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
 import { useSaveData } from '../../Data/useSaveData'
@@ -52,6 +53,7 @@ export const SaverButton = ({ callbackAfterSave, callbackBeforeSave, title, noBu
   const { onSave: onSaveFs } = useSaver()
 
   const shortcuts = useHelpStore((state) => state.shortcuts)
+  const { shortcutDisabled } = useKeyListener()
 
   const onSave = () => {
     if (callbackBeforeSave) callbackBeforeSave()
@@ -63,7 +65,7 @@ export const SaverButton = ({ callbackAfterSave, callbackBeforeSave, title, noBu
     const unsubscribe = tinykeys(window, {
       [shortcuts.save.keystrokes]: (event) => {
         event.preventDefault()
-        onSave()
+        if (!shortcutDisabled) onSave()
       }
     })
 

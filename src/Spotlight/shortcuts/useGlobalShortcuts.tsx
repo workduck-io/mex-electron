@@ -6,6 +6,7 @@ import { useContentStore } from '../../Editor/Store/ContentStore'
 import { useSpotlightContext } from '../utils/context'
 import { useSpotlightEditorStore } from '../store/editor'
 import { ipcRenderer } from 'electron'
+import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 
 export const useGlobalShortcuts = () => {
   const history = useHistory()
@@ -28,31 +29,35 @@ export const useGlobalShortcuts = () => {
     setSearch('')
   }
 
+  const { shortcutDisabled } = useKeyListener()
+
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       Alt: (event) => {
         event.preventDefault()
-        history.push('/settings')
+        if (!shortcutDisabled) history.push('/settings')
       },
       Escape: (event) => {
         event.preventDefault()
-        if (location.pathname === '/settings') {
-          setBackPressed(true)
-          history.go(-1)
-        } else if (location.pathname === '/new') {
-          setSelection(undefined)
-          handleCancel()
-          history.replace('/')
-        } else if (selection && !search) {
-          setSelection(undefined)
-          removeContent(savedEditorId)
-        } else if (search) {
-          setIsPreview(false)
-          handleCancel()
-        } else {
-          setIsPreview(false)
-          handleCancel()
-          ipcRenderer.send('close')
+        if (!shortcutDisabled) {
+          if (location.pathname === '/settings') {
+            setBackPressed(true)
+            history.go(-1)
+          } else if (location.pathname === '/new') {
+            setSelection(undefined)
+            handleCancel()
+            history.replace('/')
+          } else if (selection && !search) {
+            setSelection(undefined)
+            removeContent(savedEditorId)
+          } else if (search) {
+            setIsPreview(false)
+            handleCancel()
+          } else {
+            setIsPreview(false)
+            handleCancel()
+            ipcRenderer.send('close')
+          }
         }
       }
       // '$mod+Shift+,': (event) => {
@@ -62,5 +67,5 @@ export const useGlobalShortcuts = () => {
     return () => {
       unsubscribe()
     }
-  }, [showSource, selection, search, location])
+  }, [showSource, selection, search, location, shortcutDisabled])
 }

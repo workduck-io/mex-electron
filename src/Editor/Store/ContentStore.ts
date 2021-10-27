@@ -9,6 +9,8 @@ export interface Contents {
 interface ContentStoreState {
   contents: Contents
   saved: boolean
+  showSyncBlocks: boolean
+  toggleSyncBlocks: () => void
   setSaved: (saved: boolean) => void
   removeContent: (uid: string) => void
   getContent: (uid: string) => NodeContent
@@ -18,8 +20,10 @@ interface ContentStoreState {
 
 export const useContentStore = create<ContentStoreState>((set, get) => ({
   contents: {},
+  showSyncBlocks: false,
   saved: false,
   setSaved: (saved) => set(() => ({ saved })),
+  toggleSyncBlocks: () => set({ showSyncBlocks: !get().showSyncBlocks }),
   setContent: (uid, content) => {
     const oldContent = get().contents
     delete oldContent[uid]

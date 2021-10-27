@@ -2,6 +2,7 @@ import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
 import { useInitialize } from '../../Data/useInitialize'
@@ -80,38 +81,39 @@ const Init = () => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
+  const { shortcutDisabled } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.gotoBackwards.keystrokes]: (event) => {
         event.preventDefault()
-        move(-1)
+        if (!shortcutDisabled) move(-1)
       },
       [shortcuts.gotoForward.keystrokes]: (event) => {
         event.preventDefault()
-        move(+1)
+        if (!shortcutDisabled) move(+1)
       },
       [shortcuts.showSnippets.keystrokes]: (event) => {
         event.preventDefault()
-        history.push('/snippets')
+        if (!shortcutDisabled) history.push('/snippets')
       },
       [shortcuts.showIntegrations.keystrokes]: (event) => {
         event.preventDefault()
-        history.push('/integrations')
+        if (!shortcutDisabled) history.push('/integrations')
       },
       [shortcuts.showEditor.keystrokes]: (event) => {
         event.preventDefault()
-        history.push('/editor')
+        if (!shortcutDisabled) history.push('/editor')
       },
       [shortcuts.showSettings.keystrokes]: (event) => {
         event.preventDefault()
-        history.push('/settings')
+        if (!shortcutDisabled) history.push('/settings')
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [shortcuts]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [shortcuts, shortcutDisabled]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return null
 }
