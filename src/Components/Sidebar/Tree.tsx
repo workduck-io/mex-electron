@@ -22,7 +22,7 @@ const motion = {
   motionAppear: false,
   onAppearStart: (node: any) => {
     // eslint-disable-next-line no-console
-    console.log('Start Motion:', node)
+    // console.log('Start Motion:', node)
     return { height: 0 }
   },
   onAppearActive: (node: any) => ({ height: node.scrollHeight }),
@@ -75,7 +75,7 @@ class Tree extends React.Component<RCTreeProps> {
 
   onDrop (info: any) {
     // eslint-disable-next-line no-console
-    console.log('drop', info)
+    // console.log('drop', info)
     const dropKey = info.node.props.eventKey
     const dragKey = info.dragNode.props.eventKey
     const dropPos = info.node.props.pos.split('-')
@@ -171,7 +171,7 @@ class Tree extends React.Component<RCTreeProps> {
     const { selectedNodes } = info
     const { push } = this.props
 
-    console.log({ selectedNodes })
+    // console.log({ selectedNodes })
 
     if (selectedNodes.length > 0) {
       push(selectedNodes[0].uid)

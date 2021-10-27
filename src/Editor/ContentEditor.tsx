@@ -66,12 +66,11 @@ const ContentEditor = () => {
   }, [shortcuts, toggleFocusMode])
 
   const onSave = () => {
-    console.log('OnSave')
-
+    // console.log('OnSave')
     // Callback after save
   }
 
-  console.log('Content Editor', { uid, content, title })
+  // console.log('Content Editor', { uid, content, title })
 
   return (
     <>

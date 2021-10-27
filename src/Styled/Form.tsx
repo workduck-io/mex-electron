@@ -82,11 +82,12 @@ export const Label = styled.label<LabelProps>`
   color: ${({ theme }) => theme.colors.text.fade};
   margin: ${({ theme: { spacing } }) => `${spacing.medium} 0 3px`};
   display: block;
-  ${({ theme, error }) =>
+  /*${({ theme, error }) =>
     error &&
     css`
       color: ${theme.colors.palette.red};
-    `}
+    `} */
+  max-width: max-content;
 `
 
 export const ReactSelectStyles = (theme: DefaultTheme) => ({

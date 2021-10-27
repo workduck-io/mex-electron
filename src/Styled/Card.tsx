@@ -23,6 +23,7 @@ export const BackCard = styled.div`
   margin: ${({ theme }) => theme.spacing.large};
   /* min-height: 400px; */
   min-width: 300px;
+  max-width: 600px;
 `
 
 export const FooterCard = styled.div`

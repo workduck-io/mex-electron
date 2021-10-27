@@ -1,14 +1,15 @@
 import { generateComboTexts, generateILinks } from '../Editor/Store/sampleTags'
 import { FileData } from '../Types/data'
+import { generateTempId } from './idPrefixes'
 
 const links = generateILinks(['doc', 'dev', 'design', '@', 'Draft'])
 
-export const defaultContent = [{ children: [{ text: '' }] }]
+export const defaultContent = [{ id: generateTempId(), children: [{ text: '' }] }]
 
 const contents = links.reduce((prev, cur) => {
   return {
     ...prev,
-    [cur.uid]: { type: 'init', content: [{ children: [{ text: '' }] }] }
+    [cur.uid]: { type: 'init', content: defaultContent }
   }
 }, {})
 

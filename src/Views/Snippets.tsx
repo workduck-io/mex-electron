@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import Editor from '../Editor/Editor'
@@ -18,6 +17,7 @@ import quillPenLine from '@iconify-icons/ri/quill-pen-line'
 import { Icon } from '@iconify/react'
 import IconButton from '../Styled/Buttons'
 import { Wrapper } from '../Styled/Layouts'
+import { generateSnippetId } from '../Defaults/idPrefixes'
 
 export type SnippetsProps = {
   title?: string
@@ -33,14 +33,14 @@ const Snippets: React.FC<SnippetsProps> = () => {
 
   const onCreateNew = () => {
     // Create a better way.
-    const newId = nanoid()
+    const snippetId = generateSnippetId()
     addSnippet({
-      id: newId,
+      id: snippetId,
       title: 'Untitled',
       content: [{ children: [{ text: '' }] }]
     })
 
-    loadSnippet(newId)
+    loadSnippet(snippetId)
 
     history.push('/snippets/editor')
   }

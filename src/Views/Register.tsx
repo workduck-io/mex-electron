@@ -2,7 +2,9 @@ import { useAuth } from '@workduck-io/dwindle'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useHistory } from 'react-router-dom'
-import Input from '../Components/Forms/Input'
+import { PasswordRequirements } from '../Components/Auth/errorMessages'
+import Input, { InputFormError } from '../Components/Forms/Input'
+import { EMAIL_REG, PASSWORD } from '../Defaults/auth'
 import { useAuthentication, useAuthStore } from '../Hooks/useAuth/useAuth'
 import { Button } from '../Styled/Buttons'
 import { BackCard, FooterCard } from '../Styled/Card'
@@ -29,10 +31,11 @@ const Register = () => {
   const { resendCode } = useAuth()
 
   const onSubmit = (data: RegisterFormData) => {
+    const metadata = { tag: 'mex' }
     if (!registered) {
       registerDetails(data.email, data.password)
     } else {
-      verifySignup(data.code).then((d) => {
+      verifySignup(data.code, metadata).then((d) => {
         if (d === 'SUCCESS') {
           history.push('/login')
         }
@@ -52,28 +55,33 @@ const Register = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           {!registered ? (
             <>
-              <Input
+              <InputFormError
                 name="email"
                 label="Email"
                 inputProps={{
                   autoFocus: true,
                   ...register('email', {
-                    required: true
+                    required: true,
+                    pattern: EMAIL_REG
                   })
                 }}
-                error={errors.email?.type === 'required' ? 'Email is required' : undefined}
-              ></Input>
+                errors={errors}
+              ></InputFormError>
 
-              <Input
+              <InputFormError
                 name="password"
                 label="Password"
                 inputProps={{
+                  type: 'password',
                   ...register('password', {
-                    required: true
+                    required: true,
+                    pattern: PASSWORD
                   })
                 }}
-                error={errors.password?.type === 'required' ? 'Password is required' : undefined}
-              ></Input>
+                errors={errors}
+              ></InputFormError>
+
+              {errors.password?.type === 'pattern' ? <PasswordRequirements /> : undefined}
             </>
           ) : (
             <>

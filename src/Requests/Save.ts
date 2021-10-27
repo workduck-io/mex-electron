@@ -6,12 +6,14 @@ import { deserializeContent, serializeContent } from '../Lib/serialize'
 import initializeAmplify from './amplify/init'
 import { client } from '@workduck-io/dwindle'
 import { apiURLs } from './routes'
+import { useEditorStore } from '../Editor/Store/EditorStore'
 
 initializeAmplify()
 
 export const useApi = () => {
+  const loadNRep = useEditorStore((store) => store.loadNodeAndReplaceContent)
+  const node = useEditorStore((store) => store.node)
   const saveDataAPI = (uid: string, content: any[]) => {
-    if (!USE_API) return
     const reqData = {
       id: uid,
       namespaceIdentifier: 'NAMESPACE1',
@@ -19,11 +21,20 @@ export const useApi = () => {
       data: serializeContent(content ?? defaultContent)
     }
 
+    // const sC = serializeContent(content)
+    // const dC = deserializeContent(sC)
+    // console.log('Serialized', { sC, dC, content })
+
+    // loadNRep(node, dC)
+
+    if (!USE_API) {
+      return
+    }
     client
       .post(apiURLs.saveNode, reqData, {})
-      .then(() => {
-        console.log('Post data', { content, data: reqData.data })
-      })
+      // .then(() => {
+      //   console.log('Post data', { content, data: reqData.data })
+      // })
       .catch((e) => {
         console.error(e)
       })
@@ -31,6 +42,7 @@ export const useApi = () => {
 
   const getDataAPI = async (uid: string) => {
     const data = await client.get(apiURLs.getNode(uid), {}).then((d) => {
+      // console.log('Data fetched', { data: d.data.data })
       return d.data.data
     })
 
@@ -52,7 +64,7 @@ const testPerf = async (uid: string) => {
     })
   )
   const t1 = performance.now()
-  console.log('Parallel Performance', {
+  console.info('Parallel Performance', {
     time: t1 - t0,
     t1,
     t0,
@@ -72,10 +84,10 @@ const testPerf = async (uid: string) => {
           lost++
         })
     }, Promise.resolve())
-    .then(() => console.log('Finished'))
+    .then(() => console.info('Finished'))
 
   const t11 = performance.now()
-  console.log('Linear Performance', {
+  console.info('Linear Performance', {
     time: t11 - t01,
     t11,
     t01,

@@ -10,7 +10,7 @@ const fetchOembed = async (url: string, endpoint: string): Promise<string | unde
     .then((r) => {
       return r.data.html
     })
-    .catch((e) => console.log(e)) // eslint-disable-line no-console
+    .catch((e) => console.error(e)) // eslint-disable-line no-console
 
   return resp
 }
@@ -30,10 +30,12 @@ export const getEmbedData = async (url: string): Promise<string | undefined> => 
       if (foundMarker) return foundMarker
 
       // Schemes provide Supported URLs
-      if (end.schemes)
-        // Traverse which scheme matches
+      // Traverse which scheme matches
+      if (end.schemes) {
         end.schemes.some((s) => {
-          if (foundMarker) return foundMarker
+          if (foundMarker) {
+            return foundMarker
+          }
 
           // Create the regex from provided match string
           const regexString = s
@@ -48,14 +50,15 @@ export const getEmbedData = async (url: string): Promise<string | undefined> => 
 
           // console.log({ s, matchUrl, re, url });
           if (match) {
-            // We save the endpoint where we have to call for oembed data
-            // console.log({ s, matchUrl, re, url });
+          // We save the endpoint where we have to call for oembed data
+          // console.log({ s, matchUrl, re, url });
             matchUrl = end.url
             foundMarker = true
           }
 
           return foundMarker
         })
+      }
       return foundMarker
     })
     return foundMarker

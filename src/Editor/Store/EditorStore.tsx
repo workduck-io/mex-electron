@@ -2,6 +2,7 @@ import React from 'react'
 import create from 'zustand'
 import { getContent, getInitialNode } from './helpers'
 import { NodeEditorContent } from './Types'
+import { defaultContent } from '../../Defaults/baseData'
 
 export interface NodeProperties {
   title: string
@@ -36,7 +37,7 @@ export type EditorContextType = {
 
 export const useEditorStore = create<EditorContextType>((set, get) => ({
   node: getInitialNode(),
-  content: [{ children: [{ text: '' }] }],
+  content: defaultContent,
   readOnly: false,
   fetchingContent: false,
 

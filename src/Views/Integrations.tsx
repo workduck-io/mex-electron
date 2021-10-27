@@ -37,7 +37,7 @@ const Integrations = () => {
   const handleDeleteCancel = () => undefined
   const handleDeleteConfirm = (templateId: string) => {
     deleteTemplate(templateId)
-    console.log('Should delete', { templateId })
+    // console.log('Should delete', { templateId })
   }
 
   useEffect(() => {
@@ -51,7 +51,7 @@ const Integrations = () => {
     connectService(id)
   }
 
-  console.log({ services })
+  // console.log({ services })
 
   return (
     <Wrapper>
