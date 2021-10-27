@@ -1,6 +1,6 @@
-import { WORKSPACE_ID_PREFIX } from './idPrefixes'
+import { ID_SEPARATOR, WORKSPACE_ID_PREFIX } from './idPrefixes'
 
-export const WORKSPACE_ID = `${WORKSPACE_ID_PREFIX}123`
+export const WORKSPACE_ID = `${WORKSPACE_ID_PREFIX}${ID_SEPARATOR}id`
 
 /* eslint-disable no-useless-escape */
 

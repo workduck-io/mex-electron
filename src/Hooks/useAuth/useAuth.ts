@@ -49,7 +49,7 @@ export const useAuthentication = () => {
       .then(updateServices)
       .then(() => 'success')
       .catch((e) => {
-        console.log({ e })
+        console.error({ e })
         return e.toString() as string
       })
   }

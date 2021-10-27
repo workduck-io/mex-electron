@@ -26,7 +26,7 @@ export const useSaver = () => {
   const onSave = () => {
     // setContent then save
     if (editorState) {
-      console.log({ uid, editorState })
+      // console.log('EditorState', { uid, editorState })
       setFsContent(uid, editorState)
       saveDataAPI(uid, editorState)
       updateLinksFromContent(uid, editorState)

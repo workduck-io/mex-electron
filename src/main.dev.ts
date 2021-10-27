@@ -194,7 +194,7 @@ const createMexWindow = () => {
         }
       })
   } catch (e) {
-    console.log(e)
+    console.error(e)
   }
 }
 
@@ -302,7 +302,7 @@ app
     return 0
   })
   .then(createWindow)
-  .catch(console.log)
+  .catch(console.error)
 
 app.on('activate', () => {
   if (spotlight === null) createSpotLighWindow()

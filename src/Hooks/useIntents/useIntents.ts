@@ -1,7 +1,6 @@
 import axios from 'axios'
-import { nanoid } from 'nanoid'
 import { WORKSPACE_ID } from '../../Defaults/auth'
-import { IG_ID_PREFIX } from '../../Defaults/idPrefixes'
+import { generateIgId } from '../../Defaults/idPrefixes'
 import { Intent, IntentGroup, IntentTemplate } from '../../Editor/Components/SyncBlock/SyncBlock.types'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
 import { isIntent } from '../../Lib/intents'
@@ -19,7 +18,7 @@ const useIntents = () => {
     if (template) {
       const blockIntents: (Intent | IntentTemplate | undefined)[] = extractIntentsFromTemplate(template.intents, uid)
 
-      console.log('checkAndGenerateIGID', { template, blockIntents })
+      // console.log('checkAndGenerateIGID', { template, blockIntents })
       if (blockIntents) {
         const areAllIntentsPresent = blockIntents.reduce((prev, cur) => {
           if (isIntent(cur)) return prev && true
@@ -32,12 +31,12 @@ const useIntents = () => {
           if (igid) return igid
           else {
             // return undefined
-            console.log({ areAllIntentsPresent, blockIntents, igid })
+            // console.log({ areAllIntentsPresent, blockIntents, igid })
 
-            const newIgid = `${IG_ID_PREFIX}${nanoid()}`
+            const newIgid = generateIgId()
             apiCreateIntent(blockIntents as Intent[], newIgid, templateId)
             addIgid(uid, newIgid, blockIntents as Intent[], templateId)
-            console.log({ uid, newIgid, blockIntents, templateId })
+            // console.log({ uid, newIgid, blockIntents, templateId })
             return newIgid
           }
         } else {
@@ -187,13 +186,13 @@ const useIntents = () => {
     const template = getTemplate(templateId)
     const igidIntents = findIntentsFromIntentTemplate(template.intents, intents)
 
-    const newIgid = `INTENTGROUP_${nanoid()}`
+    const newIgid = generateIgId()
     groups[newIgid] = {
       intents: igidIntents,
       templateId
     }
 
-    console.log({ groups })
+    // console.log({ groups })
 
     apiCreateIntent(igidIntents, newIgid, templateId)
 

@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid'
+import { generateTempId } from '../Defaults/idPrefixes'
 
 // const ElementsWithProperties = [ELEMENT_PARAGRAPH]
 // const ElementsWithURL = [ELEMENT_LINK, ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED]
@@ -27,7 +27,7 @@ export const serializeContent = (content: any[]) => {
     if (el.id) {
       nl.id = el.id
     } else {
-      nl.id = `TEMP_${nanoid()}`
+      nl.id = generateTempId()
     }
 
     if (el.type) {
@@ -59,13 +59,14 @@ export const serializeContent = (content: any[]) => {
       nl.childrenElements = serializeContent(el.children)
     }
 
+    // console.log('Process: ', nl, el)
+
     return nl
   })
 }
 
 // From API to content
 export const deserializeContent = (sanatizedContent: any[]) => {
-  console.log({ sanatizedContent })
   return sanatizedContent.map((el) => {
     const nl: any = {}
 

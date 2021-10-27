@@ -52,11 +52,11 @@ export const useUpdater = () => {
           const connected = sData.some((cs) => s.id === cs.type)
           return { ...s, connected }
         })
-        console.log({ newServices })
+        // console.log({ newServices })
 
         setServices(newServices)
       })
-      .catch((e) => console.error(e))
+      .catch(console.error)
   }
 
   return { updater, updateServices, updateDefaultServices }

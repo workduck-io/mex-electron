@@ -37,10 +37,10 @@ const Init = () => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
     ;(async () => {
       getLocalData()
-        .then((d) => {
-          console.log('Data here', d)
-          return d
-        })
+        // .then((d) => {
+        //   console.log('Data here', d)
+        //   return d
+        // })
         .then((d) => {
           init(d)
           return d
