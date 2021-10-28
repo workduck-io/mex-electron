@@ -35,6 +35,14 @@ export const convertEntryToRawText = (nodeUID: string, entry: any[]): NodeSearch
   return { nodeUID: nodeUID, text: text.join(' ') }
 }
 
+export const convertEntryToRawText = (nodeUID: string, entry: any[]): NodeSearchData => {
+  const stringsArray: string[] = []
+  entry[0].children.forEach((e) => {
+    if (e.text && e.text !== '') stringsArray.push(e.text)
+  })
+  return { nodeUID: nodeUID, text: stringsArray.join('') }
+}
+
 export const convertDataToRawText = (data: FileData): NodeSearchData[] => {
   const result: NodeSearchData[] = []
   Object.entries(data.contents).forEach(([k, v]) => {
