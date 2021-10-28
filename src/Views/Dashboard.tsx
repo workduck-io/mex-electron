@@ -1,12 +1,14 @@
 import React from 'react'
-import Centered from '../Styled/Layouts'
+import Search from '../Components/Search/Search'
 
 export type DashboardProps = {
   title?: string
 }
 
 const Dashboard: React.FC<DashboardProps> = () => {
-  return <Centered>Dashboard</Centered>
+  return <>
+    <Search />
+    </>
 }
 
 export default Dashboard
