@@ -1,25 +1,6 @@
-import Fuse from 'fuse.js'
 import { FileData, NodeSearchData } from '../Types/data'
 
 import lunr from 'lunr-mutable-indexes'
-
-export function createFuse(initList: NodeSearchData[], overrideOptions?: Fuse.IFuseOptions<NodeSearchData>) {
-  const options: Fuse.IFuseOptions<NodeSearchData> = {
-    minMatchCharLength: 4,
-    threshold: 0.4,
-    keys: ['text'],
-    shouldSort: true,
-    includeScore: true,
-    ignoreLocation: true,
-    includeMatches: true,
-    ignoreFieldNorm: true,
-    ...overrideOptions
-  }
-
-  const fuse = new Fuse(initList, options)
-
-  return fuse
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const createLunrIndex = (initList: NodeSearchData[], indexData: any) => {

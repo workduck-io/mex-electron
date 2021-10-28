@@ -6,7 +6,6 @@ import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
 import { useInitialize } from '../../Data/useInitialize'
 import { useLocalData } from '../../Data/useLocalData'
-import { useLocalSearch } from '../../Data/useLocalSearch'
 import { useSyncData } from '../../Data/useSyncData'
 import { getUidFromNodeIdBase } from '../../Editor/Actions/useLinks'
 import { useRecentsStore } from '../../Editor/Store/RecentsStore'
@@ -30,7 +29,6 @@ const Init = () => {
   const { init } = useInitialize()
   const { loadNode } = useLoad()
   const { initCognito } = useAuth()
-  const { initFuse } = useLocalSearch()
 
   useSaveAndExit()
 
@@ -60,7 +58,6 @@ const Init = () => {
         })
         .then((d) => {
           const initList = convertDataToRawText(d)
-          initFuse(initList)
           console.log(`Fuse initialized with ${initList.length} documents`)
           return d
         })
