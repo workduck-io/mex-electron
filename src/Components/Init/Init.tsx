@@ -2,20 +2,21 @@ import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
-import { convertDataToRawText } from '../../Search/localSearch'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
 import { useInitialize } from '../../Data/useInitialize'
 import { useLocalData } from '../../Data/useLocalData'
+import { useLocalSearch } from '../../Data/useLocalSearch'
 import { useSyncData } from '../../Data/useSyncData'
-import useSearchStore from '../../Search/SearchStore'
 import { getUidFromNodeIdBase } from '../../Editor/Actions/useLinks'
 import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 import { useAuthStore } from '../../Hooks/useAuth/useAuth'
+import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import useLoad from '../../Hooks/useLoad/useLoad'
 import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import config from '../../Requests/config'
+import { convertDataToRawText } from '../../Search/localSearch'
+import useSearchStore from '../../Search/SearchStore'
 import { IpcAction } from '../../Spotlight/utils/constants'
 import { useSaveAndExit } from '../../Spotlight/utils/hooks'
 
@@ -29,6 +30,7 @@ const Init = () => {
   const { init } = useInitialize()
   const { loadNode } = useLoad()
   const { initCognito } = useAuth()
+  const { initFuse } = useLocalSearch()
 
   useSaveAndExit()
 
@@ -55,6 +57,12 @@ const Init = () => {
           initializeSearchIndex(initList, indexData)
           console.log(`Fuse initialized with ${initList.length} documents`)
           return fileData
+        })
+        .then((d) => {
+          const initList = convertDataToRawText(d)
+          initFuse(initList)
+          console.log(`Fuse initialized with ${initList.length} documents`)
+          return d
         })
         .then((d) => {
           const userAuthenticatedEmail = initCognito({
