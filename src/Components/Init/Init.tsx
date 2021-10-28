@@ -57,11 +57,6 @@ const Init = () => {
           return fileData
         })
         .then((d) => {
-          const initList = convertDataToRawText(d)
-          console.log(`Fuse initialized with ${initList.length} documents`)
-          return d
-        })
-        .then((d) => {
           const userAuthenticatedEmail = initCognito({
             UserPoolId: config.cognito.USER_POOL_ID,
             ClientId: config.cognito.APP_CLIENT_ID
