@@ -12,6 +12,8 @@ import { useLinks } from '../Actions/useLinks'
 import { useContentStore } from '../Store/ContentStore'
 import { useEditorStore } from '../Store/EditorStore'
 import { useSnippetStore } from '../Store/SnippetStore'
+import useSearchStore from '../../Search/SearchStore'
+import { convertEntryToRawText } from '../../Search/localSearch'
 
 export const useSaver = () => {
   const setFsContent = useContentStore((state) => state.setContent)
@@ -22,14 +24,15 @@ export const useSaver = () => {
   const saveData = useSaveData()
   const editorState = useStoreEditorValue()
   const { saveDataAPI } = useApi()
+  const updateDoc = useSearchStore((state) => state.updateDoc)
 
   const onSave = () => {
     // setContent then save
     if (editorState) {
-      // console.log('EditorState', { uid, editorState })
       setFsContent(uid, editorState)
       saveDataAPI(uid, editorState)
       updateLinksFromContent(uid, editorState)
+      updateDoc(uid, convertEntryToRawText(uid, editorState))
     }
     saveData()
     toast('Saved!', { duration: 1000 })

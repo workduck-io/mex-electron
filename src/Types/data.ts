@@ -30,3 +30,8 @@ export interface FileData {
   }
   snippets: Snippet[]
 }
+
+export interface NodeSearchData {
+  nodeUID: string
+  text: string
+}
