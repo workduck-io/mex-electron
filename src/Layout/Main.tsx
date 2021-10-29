@@ -9,6 +9,7 @@ import { GridWrapper } from '../Styled/Grid'
 
 const AppWrapper = styled.div`
   min-height: 100%;
+  overflow: auto;
   ${navTooltip};
 `
 

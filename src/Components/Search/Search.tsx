@@ -1,6 +1,11 @@
-import React, { useEffect } from 'react'
-import { testPerfFunc } from '../../Requests/Save'
+import searchLine from '@iconify-icons/ri/search-line'
+import { Icon } from '@iconify/react'
+import React from 'react'
+import { useLinks } from '../../Editor/Actions/useLinks'
+import EditorPreviewRenderer from '../../Editor/EditorPreviewRenderer'
+import { useContentStore } from '../../Editor/Store/ContentStore'
 import useSearchStore from '../../Search/SearchStore'
+import { Result, ResultHeader, Results, SearchContainer, SearchHeader, SearchInput } from '../../Styled/Search'
 import { Title } from '../../Styled/Typography'
 
 interface SearchProps {
@@ -10,6 +15,9 @@ interface SearchProps {
 const Search = (props: SearchProps) => {
   const searchIndex = useSearchStore((store) => store.searchIndex)
   // const fuse = useSearchStore((store) => store.fuse)
+  const contents = useContentStore((store) => store.contents)
+  // const fuse = useFuseStore((store) => store.fuse)
+  const { getNodeIdFromUid } = useLinks()
 
   const onChange = (e: any) => {
     e.preventDefault()
@@ -20,17 +28,36 @@ const Search = (props: SearchProps) => {
     // console.log(JSON.stringify(fuse.getIndex(), null, 2))
   }
 
+  const c = Object.keys(contents).filter((f) => f !== '__null__')
+
   // useEffect(() => {
   //   testPerfFunc(() => {
   //     searchIndex('Dorian')
   //     }, 1000)
   // }, [])
+  //
+  console.log({ contents })
 
   return (
-    <div>
+    <SearchContainer>
       <Title>Search</Title>
-      <input type="text" onChange={onChange} />
-    </div>
+      <SearchHeader>
+        <Icon icon={searchLine} />
+        <SearchInput placeholder="Search Anything...." type="text" onChange={onChange} />
+      </SearchHeader>
+      <Results>
+        {c.map((c) => {
+          const con = contents[c]
+          const nodeId = getNodeIdFromUid(c)
+          return (
+            <Result key={`node_${c}`}>
+              <ResultHeader>{nodeId}</ResultHeader>
+              <EditorPreviewRenderer content={con.content} editorId={`editor_${c}`} />
+            </Result>
+          )
+        })}
+      </Results>
+    </SearchContainer>
   )
 }
 

@@ -19,6 +19,8 @@ const SwitchWrapper = styled(animated.div)`
   position: fixed;
   width: ${({ theme }) => `calc(100% - ${theme.width.nav}px)`};
   height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
 `
 
 const Perspective = '2000px'
