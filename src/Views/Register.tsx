@@ -35,11 +35,12 @@ const Register = () => {
     if (!registered) {
       registerDetails(data.email, data.password)
     } else {
-      verifySignup(data.code, metadata).then((d) => {
-        if (d === 'SUCCESS') {
-          history.push('/login')
-        }
-      })
+      verifySignup(data.code, metadata)
+      //   .then((d) => {
+      //   if (d === 'SUCCESS') {
+      //     history.push('/login')
+      //   }
+      // })
     }
   }
 

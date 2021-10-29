@@ -1,5 +1,8 @@
+import { MEX_TAG } from '../Defaults/auth'
+
 export const BASE_INTEGRATION_URL = 'https://http.workduck.io/integration'
 
+//
 export const integrationURLs = {
   createTemplate: `${BASE_INTEGRATION_URL}/sync/template`,
   getIntentValues: `${BASE_INTEGRATION_URL}/intents/value`,
@@ -10,8 +13,12 @@ export const integrationURLs = {
 }
 
 export const BASE_API_URL = 'https://http.workduck.io/mex'
+export const BASE_USER_URL = 'https://api.workduck.io/user'
 
 export const apiURLs = {
   saveNode: `${BASE_API_URL}/node`,
-  getNode: (uid: string) => `${BASE_API_URL}/node/${uid}`
+  getNode: (uid: string) => `${BASE_API_URL}/node/${uid}`,
+  getUserRecords: (userId: string) => `${BASE_USER_URL}/user/${userId}/${MEX_TAG}`,
+  createWorkspace: `${BASE_API_URL}/workspace`,
+  getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`
 }

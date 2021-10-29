@@ -24,7 +24,7 @@ const Login = () => {
   const { login } = useAuthentication()
 
   const onSubmit = (data: LoginFormData) => {
-    login(data.email, data.password).then((s) => {
+    login(data.email, data.password, true).then((s) => {
       if (s === 'Incorrect username or password.') {
         toast.error(s)
       }

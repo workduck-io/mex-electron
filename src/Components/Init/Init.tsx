@@ -37,7 +37,6 @@ const Init = () => {
   const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
   const fetchIndexJSON = useSearchStore((store) => store.fetchIndexJSON)
 
-  // console.log(`Fuse initialized with`, { fuse })
   /** Initialization of the app details occur here */
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
