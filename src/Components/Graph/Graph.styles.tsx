@@ -14,6 +14,10 @@ export const StyledGraph = styled.div`
     outline-style: none;
   }
 `
+export const StyledSyncBlockInfo = styled(StyledGraph)`
+  overflow-y: auto;
+`
+
 export const GraphTools = styled.div`
   display: flex;
   align-items: center;

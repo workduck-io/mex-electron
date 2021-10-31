@@ -1,25 +1,36 @@
+import { NodeEditorContent } from './../Editor/Store/Types'
+import { ELEMENT_INLINE_BLOCK } from './../Editor/Components/InlineBlock/types'
 import { ELEMENT_SYNC_BLOCK } from './../Editor/Components/SyncBlock/SyncBlock.types'
 import { useEditorStore } from './../Editor/Store/EditorStore'
+import { useMemo } from 'react'
 
-export const isSyncBlock = (type: string) => type === ELEMENT_SYNC_BLOCK
+export type ContentBlockType = typeof ELEMENT_SYNC_BLOCK | typeof ELEMENT_INLINE_BLOCK
 
-export const useFilteredContent = () => {
-  const content = useEditorStore((state) => state.content)
-  const syncBlocks: Array<string> = []
+export type FilterContentType = {
+  filter?: string
+  type: ContentBlockType
+}
 
-  const filteredContent = content.map((el) => {
-    if (isSyncBlock(el.type)) {
-      syncBlocks.push(el.id)
-      return { text: '' }
+export const filterContent = (content: NodeEditorContent, blocks: NodeEditorContent, filter) => {
+  content.forEach((element) => {
+    if (element.type === filter.type) {
+      blocks.push(element)
     }
 
-    const children = el.children.map((item) => {
-      if (isSyncBlock(item.type)) syncBlocks.push(item.id)
-      return { text: '' }
-    })
-
-    return { ...el, children }
+    if (element.children && element.children.length > 0) {
+      filterContent(element.children, blocks, filter)
+    }
   })
+}
 
-  return { syncBlocks }
+export const useFilteredContent = (filter: FilterContentType) => {
+  const content = useEditorStore((state) => state.content)
+
+  const elements = useMemo(() => {
+    const data: NodeEditorContent = []
+    filterContent(content, data, filter)
+    return data
+  }, [content])
+
+  return { elements }
 }

@@ -29,10 +29,11 @@ type FormValues = {
 
 export const SyncBlock = (props: SyncBlockProps) => {
   const { attributes, children, element, info } = props
-  console.log(attributes, children, element)
 
   const { register, getValues } = useForm<FormValues>()
   const editSyncBlock = useSyncStore((state) => state.editSyncBlock)
+  const selectedSyncBlockId = useSyncStore((state) => state.selectedSyncBlock)
+  const setSelected = useSyncStore((state) => state.setSelected)
   const [synced, setSynced] = useState(false)
   const { showSyncBlocks } = useToggleElements()
 
@@ -42,7 +43,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
   const [changedIntents, setChangedIntents] = useState<{ [id: string]: Intent }>({})
 
-  const selected = useSelected()
+  const selected = selectedSyncBlockId === element.id
 
   React.useEffect(() => {
     ReactTooltip.rebuild()
@@ -151,7 +152,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
       <div contentEditable={false}>
         {/* For quick debug {& JSON.stringify(blockData)} */}
 
-        <SyncForm selected={selected}>
+        <SyncForm selected={selected} onClick={() => setSelected(element.id)}>
           <ElementHeader>
             <Widget>
               <Icon icon={refreshFill} height={20} />
