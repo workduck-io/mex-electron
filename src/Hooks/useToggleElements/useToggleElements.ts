@@ -11,6 +11,7 @@ const useToggleElements = () => {
     if (showSyncBlocks) toggleSyncBlockElements()
     toggleGraphElement()
   }
+
   const toggleSyncBlocks = () => {
     if (showGraph) toggleGraphElement()
     toggleSyncBlockElements()

@@ -25,6 +25,8 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
     })
   },
 
+  setSelected: (id) => set({ selectedSyncBlock: id }),
+
   connectService: (id) =>
     set((state) => {
       const service = state.services.find((s) => s.id === id)
