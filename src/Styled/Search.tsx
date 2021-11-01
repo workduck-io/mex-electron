@@ -1,3 +1,4 @@
+import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 import { Input } from './Form'
 import { size } from './responsive'
@@ -5,16 +6,19 @@ import { size } from './responsive'
 interface ResultProps {
   selected?: boolean
 }
+
 export const Result = styled.div<ResultProps>`
   height: 300px;
   overflow-y: auto;
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background-color: ${({ theme }) => theme.colors.gray[9]};
+  transition: all 0.25s ease-in-out;
 
   ${({ theme, selected }) =>
     selected &&
     css`
-      border: 1px solid ${theme.colors.primary};
+      box-shadow: 0px 10px 20px ${transparentize(0.75, theme.colors.primary)};
+      transform: scale(1.025) translateY(-10px);
     `}
 `
 
@@ -39,7 +43,7 @@ export const SearchHeader = styled.div`
 `
 
 export const SearchContainer = styled.div`
-  margin: ${({ theme: { spacing } }) => `${spacing.small} ${spacing.medium}`};
+  margin: ${({ theme: { spacing } }) => `4rem ${spacing.medium}`};
 `
 
 export const ResultHeader = styled.div`

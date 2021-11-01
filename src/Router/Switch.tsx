@@ -14,6 +14,7 @@ import Snippets from '../Views/Snippets'
 import Tasks from '../Views/Tasks'
 import AuthRoute from './AuthRoute'
 import ProtectedRoute from './ProtectedRoute'
+import Search from '../Components/Search/Search'
 
 const SwitchWrapper = styled(animated.div)`
   position: fixed;
@@ -53,6 +54,7 @@ const Switch = () => {
         <ProtectedRoute exact path="/snippets/editor" component={SnippetEditor} />
         <ProtectedRoute path="/user" component={UserPage} />
         <ProtectedRoute path="/settings" component={Settings} />
+        <ProtectedRoute path="/search" component={Search} />
         <ProtectedRoute path="/" exact component={Dashboard} />
         <AuthRoute path="/login" component={Login} />
         <AuthRoute path="/register" component={Register} />

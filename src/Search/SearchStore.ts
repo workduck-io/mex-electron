@@ -32,12 +32,12 @@ const useSearchStore = create<SearchStoreState>((set, get) => ({
   },
   removeDoc: (nodeUID: string) => {
     get().index.remove({
-      id: nodeUID
+      nodeUID
     })
   },
   updateDoc: (nodeUID: string, newDoc: NodeSearchData) => {
     get().index.update({
-      id: nodeUID,
+      nodeUID,
       text: newDoc.text
     })
   },

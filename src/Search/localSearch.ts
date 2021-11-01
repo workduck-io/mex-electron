@@ -13,6 +13,7 @@ export const createLunrIndex = (initList: NodeSearchData[], indexData: any) => {
   const index = lunr(function () {
     this.ref('nodeUID')
     this.field('text')
+    this.metadataWhitelist = ['position']
 
     initList.forEach(function (doc) {
       this.add(doc)

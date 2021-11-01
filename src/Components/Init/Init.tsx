@@ -15,7 +15,7 @@ import useLoad from '../../Hooks/useLoad/useLoad'
 import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import config from '../../Requests/config'
 import { convertDataToRawText } from '../../Search/localSearch'
-import useSearchStore from '../../Search/SearchStore'
+import useSearchPageStore from '../../Search/SearchStore'
 import { IpcAction } from '../../Spotlight/utils/constants'
 import { useSaveAndExit } from '../../Spotlight/utils/hooks'
 
@@ -33,8 +33,8 @@ const Init = () => {
   useSaveAndExit()
 
   const { getLocalData } = useLocalData()
-  const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
-  const fetchIndexJSON = useSearchStore((store) => store.fetchIndexJSON)
+  const initializeSearchIndex = useSearchPageStore((store) => store.initializeSearchIndex)
+  const fetchIndexJSON = useSearchPageStore((store) => store.fetchIndexJSON)
 
   // console.log(`Fuse initialized with`, { fuse })
   /** Initialization of the app details occur here */
@@ -68,7 +68,7 @@ const Init = () => {
           return { d, auth: false }
         })
         .then(({ d, auth }) => auth && loadNode(getUidFromNodeIdBase(d.ilinks, '@')))
-        .then(() => history.push('/user'))
+        .then(() => history.push('/editor'))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -120,6 +120,10 @@ const Init = () => {
       [shortcuts.showEditor.keystrokes]: (event) => {
         event.preventDefault()
         if (!shortcutDisabled) history.push('/editor')
+      },
+      [shortcuts.showSearch.keystrokes]: (event) => {
+        event.preventDefault()
+        if (!shortcutDisabled) history.push('/search')
       },
       [shortcuts.showSettings.keystrokes]: (event) => {
         event.preventDefault()

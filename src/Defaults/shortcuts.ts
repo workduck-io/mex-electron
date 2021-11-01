@@ -10,6 +10,11 @@ export const defaultShortcuts = {
     keystrokes: '$mod+Shift+KeyE',
     category: 'Navigate'
   },
+  showSearch: {
+    title: 'Search',
+    keystrokes: '$mod+f',
+    category: 'Navigate'
+  },
   showIntegrations: {
     title: 'Integrations',
     keystrokes: '$mod+Shift+KeyI',

@@ -1,6 +1,7 @@
 import searchLine from '@iconify-icons/ri/search-line'
 import { Icon } from '@iconify/react'
-import React from 'react'
+import React, { useEffect } from 'react'
+import useLoad from '../../Hooks/useLoad/useLoad'
 import create from 'zustand'
 import { useLinks } from '../../Editor/Actions/useLinks'
 import EditorPreviewRenderer from '../../Editor/EditorPreviewRenderer'
@@ -8,6 +9,9 @@ import { useContentStore } from '../../Editor/Store/ContentStore'
 import useSearchStore from '../../Search/SearchStore'
 import { Result, ResultHeader, Results, SearchContainer, SearchHeader, SearchInput } from '../../Styled/Search'
 import { Title } from '../../Styled/Typography'
+import { useHistory } from 'react-router-dom'
+import { debounce } from 'lodash'
+import { defaultContent } from '../../Defaults/baseData'
 
 interface SearchProps {
   param?: string
@@ -32,36 +36,43 @@ const useSearchPageStore = create<SearchStore>((set) => ({
 const Search = (props: SearchProps) => {
   const searchIndex = useSearchStore((store) => store.searchIndex)
   // const fuse = useSearchStore((store) => store.fuse)
+  const contents = useContentStore((store) => store.contents)
   const selected = useSearchPageStore((store) => store.selected)
   const setSelected = useSearchPageStore((store) => store.setSelected)
-  const result = useSearchPageStore(store => store.result)
-  const setResult = useSearchPageStore(store => store.setResult)
+  const result = useSearchPageStore((store) => store.result)
+  const setResult = useSearchPageStore((store) => store.setResult)
+  const history = useHistory()
+  const { loadNode } = useLoad()
 
-  const contents = useContentStore((store) => store.contents)
-  const c = Object.keys(contents).filter((f) => f !== '__null__')
+  // const contents = useContentStore((store) => store.contents)
+  // const c = Object.keys(contents).filter((f) => f !== '__null__')
 
   // const fuse = useFuseStore((store) => store.fuse)
   const { getNodeIdFromUid } = useLinks()
 
-  // const inputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    const res = searchIndex('')
+    setResult(res)
+    return () => {
+      setSelected(-1)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const selectNext = () => {
-    console.log({ selected })
-    setSelected((selected + 1) % c.length)
+    setSelected((selected + 1) % result.length)
   }
 
   const selectPrev = () => {
-    console.log({ selected })
-    setSelected((c.length + selected - 1) % c.length)
+    setSelected((result.length + selected - 1) % result.length)
   }
 
   const onChange = (e: any) => {
     e.preventDefault()
     const searchTerm = e.target.value
     const res = searchIndex(searchTerm)
-    console.log({ searchTerm, res })
-    // console.log(JSON.stringify(fuse, null, 2))
-    // console.log(JSON.stringify(fuse.getIndex(), null, 2))
+    // Reset selected index on change of input
+    setSelected(-1)
+    setResult(res)
   }
 
   // onKeyDown handler function
@@ -69,7 +80,8 @@ const Search = (props: SearchProps) => {
     const element = event.target as HTMLElement
     if (event.code === 'Tab') {
       event.preventDefault()
-      // Blur the input if necessary if (inputRef.current) inputRef.current.blur()
+      // Blur the input if necessary
+      // if (inputRef.current) inputRef.current.blur()
       if (event.shiftKey) {
         selectPrev()
       } else {
@@ -78,26 +90,13 @@ const Search = (props: SearchProps) => {
     }
     if (event.code === 'Enter') {
       // Only when the selected index is -1
-      // Reset selected index on change of input
       console.log(element.tagName)
+      if (selected > -1) {
+        loadNode(result[selected].ref)
+        history.push('/editor')
+      }
     }
   }
-
-  // onKeyUp handler function
-  // const keyUpHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (event.code === 'Escape') {
-  //     const confirm = window.confirm('Are you sure want to clear this text feild?')
-
-  //     if (confirm) {
-  //       setEnteredText('')
-  //     }
-  //   }
-  // }
-
-  // onKeyPress handler function
-  // const keyPressHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  //   // Do something you like with "event"
-  // }
 
   // useEffect(() => {
   //   testPerfFunc(() => {
@@ -106,23 +105,30 @@ const Search = (props: SearchProps) => {
   // }, [])
   //
 
-  console.log('rerendered', { selected })
+  console.log('rerendered', { selected, result })
 
   return (
     <SearchContainer onKeyDown={keyDownHandler}>
       <Title>Search</Title>
       <SearchHeader>
         <Icon icon={searchLine} />
-        <SearchInput tabIndex={-1} placeholder="Search Anything...." type="text" onChange={onChange} />
+        <SearchInput
+          autoFocus
+          tabIndex={-1}
+          placeholder="Search Anything...."
+          type="text"
+          onChange={debounce((e) => onChange(e), 250)}
+        />
       </SearchHeader>
       <Results>
-        {c.map((c, i) => {
-          const con = contents[c]
-          const nodeId = getNodeIdFromUid(c)
+        {result.map((c, i) => {
+          const con = contents[c.ref]
+          const nodeId = getNodeIdFromUid(c.ref)
+          const content = con ? con.content : defaultContent
           return (
-            <Result selected={i === selected} key={`node_${c}`}>
+            <Result selected={i === selected} key={`node_${c.ref}`}>
               <ResultHeader>{nodeId}</ResultHeader>
-              <EditorPreviewRenderer content={con.content} editorId={`editor_${c}`} />
+              <EditorPreviewRenderer content={content} editorId={`editor_${c.ref}`} />
             </Result>
           )
         })}
