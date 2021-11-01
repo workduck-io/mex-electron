@@ -1,7 +1,7 @@
 import { Service, SyncBlockData, SyncBlockTemplate, SyncStoreIntents } from '../Editor/Components/SyncBlock'
 import { Snippet } from '../Editor/Store/SnippetStore'
 import { ComboText, ILink, LinkCache, NodeEditorContent } from '../Editor/Store/Types'
-
+import lunr from 'lunr-mutable-indexes'
 export interface NodeContent {
   type: string
   content: NodeEditorContent
@@ -33,5 +33,9 @@ export interface FileData {
 
 export interface NodeSearchData {
   nodeUID: string
+  text: string
+}
+
+export interface SearchResult extends lunr.Index.Result {
   text: string
 }

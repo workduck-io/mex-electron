@@ -65,7 +65,7 @@ const Search = (props: SearchProps) => {
   const selectPrev = () => {
     setSelected((result.length + selected - 1) % result.length)
   }
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onChange = (e: any) => {
     e.preventDefault()
     const searchTerm = e.target.value
