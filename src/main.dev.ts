@@ -6,12 +6,13 @@ import fs from 'fs'
 import path from 'path'
 import { AppType } from './Data/useInitialize'
 import { DefaultFileData } from './Defaults/baseData'
-import { getSaveLocation } from './Defaults/data'
+import { getSaveLocation, getSearchIndexLocation } from './Defaults/data'
 import { getKeyFromKeycode } from './Lib/keyMap'
 import MenuBuilder from './menu'
 import { IpcAction } from './Spotlight/utils/constants'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
+import lunr from 'lunr-mutable-indexes'
 
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
@@ -39,6 +40,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const SAVE_LOCATION = getSaveLocation(app)
+const SEARCH_INDEX_LOCATION = getSearchIndexLocation(app)
 // const RESOURCES_PATH = app.isPackaged ? path.join(process.resourcesPath, 'assets') : path.join(__dirname, '../assets')
 
 // const getAssetPath = (...paths: string[]): string => {
@@ -87,6 +89,20 @@ export const getFileData = () => {
     fileData = DefaultFileData
   }
   return fileData
+}
+
+export const getIndexData = () => {
+  if (fs.existsSync(SEARCH_INDEX_LOCATION)) {
+    const stringData = fs.readFileSync(SEARCH_INDEX_LOCATION, 'utf-8')
+    const indexData = JSON.parse(stringData)
+    return indexData
+  }
+  return null
+}
+
+export const setSearchIndexData = (indexJSON) => {
+  const stringData = JSON.stringify(indexJSON)
+  fs.writeFileSync(SEARCH_INDEX_LOCATION, stringData)
 }
 
 const createSpotLighWindow = (show?: boolean) => {
@@ -264,11 +280,13 @@ const handleToggleMainWindow = async () => {
 
 const closeWindow = () => {
   spotlight?.hide()
+  // if (!mex) console.log('Mex window not available')
+  // mex?.webContents.send(IpcAction.GET_LOCAL_INDEX)
 }
 
-app.once('before-quit', () => {
-  mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
-})
+// app.once('before-quit', () => {
+//   mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
+// })
 
 ipcMain.on('close', closeWindow)
 
@@ -277,9 +295,19 @@ ipcMain.on(IpcAction.SPOTLIGHT_BUBBLE, (_event, arg) => {
   spotlightInBubbleMode(isClicked)
 })
 
-app.on('quit', () => {
-  mex?.webContents.send(IpcAction.SAVE_AND_QUIT)
-  spotlight?.webContents.send(IpcAction.SAVE_AND_QUIT)
+app.on('before-quit', () => {
+  console.log('App before quit')
+  mex?.webContents.send(IpcAction.GET_LOCAL_INDEX)
+
+  // mex?.webContents.send(IpcAction.SAVE_AND_QUIT)
+  // spotlight?.webContents.send(IpcAction.SAVE_AND_QUIT)
+})
+app.on('will-quit', (_event) => {
+  console.log('App will quit')
+})
+
+app.on('quit', (_event) => {
+  console.log('App quit')
 })
 
 app
@@ -336,7 +364,13 @@ ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
 
 ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
   const fileData: FileData = getFileData()
-  event.sender.send(IpcAction.RECIEVE_LOCAL_DATA, fileData)
+  const indexData: any = getIndexData() // eslint-disable-line @typescript-eslint/no-explicit-any
+  event.sender.send(IpcAction.RECIEVE_LOCAL_DATA, { fileData, indexData })
+})
+
+ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
+  const { searchIndexJSON } = arg
+  if (searchIndexJSON) setSearchIndexData(searchIndexJSON)
 })
 
 ipcMain.on(IpcAction.SET_LOCAL_DATA, (_event, arg) => {
@@ -358,6 +392,7 @@ ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
   mex?.webContents.send(IpcAction.OPEN_NODE, { nodeId: arg.nodeId })
 })
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) => {
   if (from === AppType.MEX) spotlight?.webContents.send(action, { data })
   else mex?.webContents.send(action, { data })

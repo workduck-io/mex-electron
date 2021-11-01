@@ -3,11 +3,13 @@ import { ipcRenderer } from 'electron'
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
+import { convertDataToRawText } from '../../Search/localSearch'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
 import { useInitialize } from '../../Data/useInitialize'
 import { useLocalData } from '../../Data/useLocalData'
 import { useSyncData } from '../../Data/useSyncData'
+import useSearchStore from '../../Search/SearchStore'
 import { getUidFromNodeIdBase } from '../../Editor/Actions/useLinks'
 import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 import { useAuthStore } from '../../Hooks/useAuth/useAuth'
@@ -31,19 +33,28 @@ const Init = () => {
   useSaveAndExit()
 
   const { getLocalData } = useLocalData()
+  const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
+  const fetchIndexJSON = useSearchStore((store) => store.fetchIndexJSON)
 
+  // console.log(`Fuse initialized with`, { fuse })
   /** Initialization of the app details occur here */
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
     ;(async () => {
       getLocalData()
-        // .then((d) => {
-        //   console.log('Data here', d)
-        //   return d
-        // })
         .then((d) => {
-          init(d)
+          console.log('Data here', d)
           return d
+        })
+        .then(({ fileData, indexData }) => {
+          init(fileData)
+          return { fileData, indexData }
+        })
+        .then(({ fileData, indexData }) => {
+          const initList = convertDataToRawText(fileData)
+          initializeSearchIndex(initList, indexData)
+          console.log(`Fuse initialized with ${initList.length} documents`)
+          return fileData
         })
         .then((d) => {
           const userAuthenticatedEmail = initCognito({
@@ -56,7 +67,7 @@ const Init = () => {
           }
           return { d, auth: false }
         })
-        // .then(({ d, auth }) => auth && loadNode(getUidFromNodeIdBase(d.ilinks, '@')))
+        .then(({ d, auth }) => auth && loadNode(getUidFromNodeIdBase(d.ilinks, '@')))
         .then(() => history.push('/user'))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
@@ -73,7 +84,11 @@ const Init = () => {
       const { data } = arg
       addRecent(data)
     })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, (_event, arg) => {
+      const searchIndexJSON = fetchIndexJSON()
+      ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndexJSON })
+    })
+  }, [fetchIndexJSON]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { setIpc } = useSyncData()
 

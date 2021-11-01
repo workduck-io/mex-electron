@@ -52,6 +52,20 @@ export const useApi = () => {
   return { saveDataAPI, getDataAPI }
 }
 
+export const testPerfFunc = (func: () => any, num = 100) => {
+  const ar = Array.from(Array(num).keys())
+  const t0 = performance.now()
+  const res = ar.map(() => func())
+  const t1 = performance.now()
+  console.log('Performance: ', {
+    time: t1 - t0,
+    t1,
+    t0,
+    avg: (t1 - t0) / ar.length,
+    res: { res }
+  })
+}
+
 const testPerf = async (uid: string) => {
   const ar = Array.from(Array(100).keys())
   const t0 = performance.now()
