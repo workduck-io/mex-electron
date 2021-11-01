@@ -81,6 +81,7 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
         {links.map((l) => (
           <Link
             exact
+            tabIndex={-1}
             activeClassName="active"
             to={l.path}
             key={`nav_${l.title}`}
@@ -96,6 +97,7 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
         {authenticated ? (
           <Link
             exact
+            tabIndex={-1}
             activeClassName="active"
             to="/user"
             key="nav_user"
@@ -109,6 +111,7 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
         ) : (
           <Link
             exact
+            tabIndex={-1}
             activeClassName="active"
             to="/login"
             key="nav_user"
@@ -123,6 +126,7 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
         )}
         <Link
           exact
+          tabIndex={-1}
           activeClassName="active"
           to="/settings"
           key="nav_settings"

@@ -1,12 +1,21 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Input } from './Form'
 import { size } from './responsive'
 
-export const Result = styled.div`
+interface ResultProps {
+  selected?: boolean
+}
+export const Result = styled.div<ResultProps>`
   height: 300px;
   overflow-y: auto;
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background-color: ${({ theme }) => theme.colors.gray[9]};
+
+  ${({ theme, selected }) =>
+    selected &&
+    css`
+      border: 1px solid ${theme.colors.primary};
+    `}
 `
 
 export const SearchInput = styled(Input)`
