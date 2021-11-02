@@ -1,11 +1,14 @@
 import searchLine from '@iconify-icons/ri/search-line'
 import { Icon } from '@iconify/react'
+import { debounce } from 'lodash'
 import React, { useEffect } from 'react'
-import useLoad from '../../Hooks/useLoad/useLoad'
+import { useHistory } from 'react-router-dom'
 import create from 'zustand'
+import { defaultContent } from '../../Defaults/baseData'
 import { useLinks } from '../../Editor/Actions/useLinks'
 import EditorPreviewRenderer from '../../Editor/EditorPreviewRenderer'
 import { useContentStore } from '../../Editor/Store/ContentStore'
+import useLoad from '../../Hooks/useLoad/useLoad'
 import useSearchStore from '../../Search/SearchStore'
 import {
   Highlight,
@@ -23,10 +26,6 @@ import {
   SSearchHighlights
 } from '../../Styled/Search'
 import { Title } from '../../Styled/Typography'
-import { useHistory } from 'react-router-dom'
-import { debounce } from 'lodash'
-import { defaultContent } from '../../Defaults/baseData'
-import { convertEntryToRawText } from '../../Search/localSearch'
 
 interface SearchStore {
   selected: number
@@ -104,7 +103,6 @@ const SearchHighlights = ({ highlights }: SearchHighlightsProps) => {
 
 const Search = () => {
   const searchIndex = useSearchStore((store) => store.searchIndex)
-  // const fuse = useSearchStore((store) => store.fuse)
   const contents = useContentStore((store) => store.contents)
   const selected = useSearchPageStore((store) => store.selected)
   const setSelected = useSearchPageStore((store) => store.setSelected)
@@ -113,10 +111,6 @@ const Search = () => {
   const history = useHistory()
   const { loadNode } = useLoad()
 
-  // const contents = useContentStore((store) => store.contents)
-  // const c = Object.keys(contents).filter((f) => f !== '__null__')
-
-  // const fuse = useFuseStore((store) => store.fuse)
   const { getNodeIdFromUid } = useLinks()
 
   useEffect(() => {
@@ -145,12 +139,9 @@ const Search = () => {
     }
     const res = searchIndex(searchTerm)
     const res2 = res.map((r) => {
-      const con = contents[r.ref]
-      console.log({ r })
-      const content = con ? con.content : defaultContent
       return {
         ref: r.ref,
-        ...highlightText(r.matchData.metadata, convertEntryToRawText(r.ref, content).text)
+        ...highlightText(r.matchData.metadata, r.text)
       }
     })
     // Reset selected index on change of input
@@ -163,7 +154,7 @@ const Search = () => {
     // const element = event.target as HTMLElement
     if (event.code === 'Tab') {
       event.preventDefault()
-      // Blur the input if necessary
+      // Blur the input if necessary (not needed currently)
       // if (inputRef.current) inputRef.current.blur()
       if (event.shiftKey) {
         selectPrev()
@@ -183,13 +174,6 @@ const Search = () => {
       }
     }
   }
-
-  // useEffect(() => {
-  //   testPerfFunc(() => {
-  //     searchIndex('Dorian')
-  //     }, 1000)
-  // }, [])
-  //
 
   // console.log('rerendered', { selected, result })
 
