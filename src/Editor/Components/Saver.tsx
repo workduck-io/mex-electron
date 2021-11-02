@@ -12,7 +12,7 @@ import { useLinks } from '../Actions/useLinks'
 import { useContentStore } from '../Store/ContentStore'
 import { useEditorStore } from '../Store/EditorStore'
 import { useSnippetStore } from '../Store/SnippetStore'
-import useSearchStore from '../../Search/SearchStore'
+import useSearchPageStore from '../../Search/SearchStore'
 import { convertEntryToRawText } from '../../Search/localSearch'
 
 export const useSaver = () => {
@@ -24,7 +24,7 @@ export const useSaver = () => {
   const saveData = useSaveData()
   const editorState = useStoreEditorValue()
   const { saveDataAPI } = useApi()
-  const updateDoc = useSearchStore((state) => state.updateDoc)
+  const updateDoc = useSearchPageStore((state) => state.updateDoc)
 
   const onSave = () => {
     // setContent then save

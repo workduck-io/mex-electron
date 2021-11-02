@@ -26,7 +26,7 @@ export interface FileData {
   // Misc
   userSettings: {
     theme: string
-    spotlight: { [key: string]: any }
+    spotlight: { [key: string]: any } // eslint-disable-line @typescript-eslint/no-explicit-any
   }
   snippets: Snippet[]
 }
@@ -37,5 +37,7 @@ export interface NodeSearchData {
 }
 
 export interface SearchResult extends lunr.Index.Result {
+  ref: string
   text: string
+  matchData: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
