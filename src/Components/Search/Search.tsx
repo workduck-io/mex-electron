@@ -1,7 +1,7 @@
 import searchLine from '@iconify-icons/ri/search-line'
 import { Icon } from '@iconify/react'
 import { debounce } from 'lodash'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import create from 'zustand'
 import { defaultContent } from '../../Defaults/baseData'
@@ -30,17 +30,21 @@ import { Title } from '../../Styled/Typography'
 interface SearchStore {
   selected: number
   size: number
+  searchTerm: string
   result: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
   setSelected: (selected: number) => void
   setResult: (result: any[]) => void // eslint-disable-line @typescript-eslint/no-explicit-any
+  setSearchTerm: (searchTerm: string) => void // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 const useSearchPageStore = create<SearchStore>((set) => ({
   selected: -1,
   size: 0,
+  searchTerm: '',
   result: [],
   setSelected: (selected) => set({ selected }),
-  setResult: (result) => set({ result })
+  setResult: (result) => set({ result }),
+  setSearchTerm: (searchTerm) => set({ searchTerm })
 }))
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -108,14 +112,28 @@ const Search = () => {
   const setSelected = useSearchPageStore((store) => store.setSelected)
   const result = useSearchPageStore((store) => store.result)
   const setResult = useSearchPageStore((store) => store.setResult)
+  const searchTerm = useSearchPageStore((store) => store.searchTerm)
+  const setSearchTerm = useSearchPageStore((store) => store.setSearchTerm)
   const history = useHistory()
   const { loadNode } = useLoad()
+  const inpRef = useRef<HTMLInputElement>(null)
 
   const { getNodeIdFromUid } = useLinks()
 
   useEffect(() => {
-    const res = searchIndex('')
-    setResult(res)
+    if (searchTerm === '') {
+      const res = searchIndex(searchTerm)
+      setResult(res)
+    } else {
+      const res = searchIndex(searchTerm)
+      const res2 = res.map((r) => {
+        return {
+          ref: r.ref,
+          ...highlightText(r.matchData.metadata, r.text)
+        }
+      })
+      setResult(res2)
+    }
     return () => {
       setSelected(-1)
     }
@@ -131,13 +149,14 @@ const Search = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onChange = (e: any) => {
     e.preventDefault()
-    const searchTerm = e.target.value
-    if (searchTerm === '') {
+    const inpSearchTerm = e.target.value
+    if (inpSearchTerm === '') {
       setResult(searchIndex(''))
+      setSearchTerm(inpSearchTerm)
       setSelected(-1)
       return
     }
-    const res = searchIndex(searchTerm)
+    const res = searchIndex(inpSearchTerm)
     const res2 = res.map((r) => {
       return {
         ref: r.ref,
@@ -147,6 +166,7 @@ const Search = () => {
     // Reset selected index on change of input
     setSelected(-1)
     setResult(res2)
+    setSearchTerm(inpSearchTerm)
   }
 
   // onKeyDown handler function
@@ -187,7 +207,12 @@ const Search = () => {
           tabIndex={-1}
           placeholder="Search Anything...."
           type="text"
+          defaultValue={searchTerm}
           onChange={debounce((e) => onChange(e), 250)}
+          onFocus={() => {
+            if (inpRef.current) inpRef.current.select()
+          }}
+          ref={inpRef}
         />
       </SearchHeader>
       <Results>
