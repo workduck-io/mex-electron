@@ -47,6 +47,7 @@ export interface Service {
   authUrl: string
   // Is the service connected
   connected: boolean
+  enabled: boolean // * From backend
 }
 
 export interface IntentTemplate {
