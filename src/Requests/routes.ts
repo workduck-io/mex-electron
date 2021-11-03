@@ -1,5 +1,5 @@
 // export const BASE_URL = 'https://api.workduck.io/integration'
-export const BASE_INTEGRATION_URL = 'https://api.workduck.io/integration'
+export const BASE_INTEGRATION_URL = 'https://http.workduck.io/integration'
 //
 export const integrationURLs = {
   createTemplate: `${BASE_INTEGRATION_URL}/sync/template`,

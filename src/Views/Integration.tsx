@@ -1,31 +1,29 @@
-import { Icon } from '@iconify/react'
-import PlusCircle from '@iconify-icons/bi/plus-circle'
 import Check from '@iconify-icons/bi/check'
+import PlusCircle from '@iconify-icons/bi/plus-circle'
+import { Icon } from '@iconify/react'
+import { shell } from 'electron'
 import React, { useEffect } from 'react'
+import ConfirmationModal from '../Components/ConfirmationModal/ConfirmationModal'
+import NewSyncTemplateModal, { useNewSyncTemplateModalStore } from '../Components/Integrations/NewSyncBlockModal'
+import Template from '../Components/Integrations/Template'
+import { useUpdater } from '../Data/useUpdater'
+import { Service } from '../Editor/Components/SyncBlock'
 import { ServiceIcon } from '../Editor/Components/SyncBlock/SyncIcons'
 import { useSyncStore } from '../Editor/Store/SyncStore'
-
+import { camelCase } from '../Lib/strings'
 import {
+  ActiveStatus,
+  CenteredFlex,
   IntegrationContainer,
-  Title,
+  PlusIcon,
+  RightCut,
   ServiceCard,
+  ServiceName,
   Services,
   TemplateContainer,
   TemplateList,
-  PlusIcon,
-  CenteredFlex,
-  RightCut,
-  ActiveStatus,
-  ServiceName
+  Title
 } from '../Styled/Integration'
-
-import Template from '../Components/Integrations/Template'
-import { Service } from '../Editor/Components/SyncBlock'
-import NewSyncTemplateModal, { useNewSyncTemplateModalStore } from '../Components/Integrations/NewSyncBlockModal'
-import { shell } from 'electron'
-import { camelCase } from '../Lib/strings'
-import ConfirmationModal from '../Components/ConfirmationModal/ConfirmationModal'
-import { useUpdater } from '../Data/useUpdater'
 
 const NewTemplate = () => {
   const openNewTemplateModal = useNewSyncTemplateModalStore((store) => store.openModal)
@@ -40,7 +38,8 @@ const NewTemplate = () => {
   )
 }
 
-const Service: React.FC<{ service: Service }> = ({ service }) => {
+const Service = (props: { service: Service }) => {
+  const { service } = props
   const connectService = useSyncStore((store) => store.connectService)
 
   const onConnectService = (id: string, authUrl: string) => {
@@ -54,7 +53,6 @@ const Service: React.FC<{ service: Service }> = ({ service }) => {
   }
 
   if (service.id === 'MEX') return null
-
   return (
     <ServiceCard onClick={onServiceClick} disabled={!service.enabled} hover={!service.connected}>
       {service.connected && (
