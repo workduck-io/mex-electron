@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { client } from '@workduck-io/dwindle'
 import { WORKSPACE_ID } from '../../Defaults/auth'
 import { generateIgId } from '../../Defaults/idPrefixes'
 import { Intent, IntentGroup, IntentTemplate } from '../../Editor/Components/SyncBlock/SyncBlock.types'
@@ -231,7 +231,7 @@ const apiCreateIntent = (intents: Intent[], igid: string, templateId: string) =>
   }
   // console.log({ reqData })
 
-  axios.post(integrationURLs.intentGroup(true), reqData)
+  client.post(integrationURLs.intentGroup(true), reqData)
 }
 
 const apiUpdateIntent = (intents: Intent[], igid: string) => {
@@ -249,7 +249,7 @@ const apiUpdateIntent = (intents: Intent[], igid: string) => {
   }
   // console.log({ reqData })
 
-  axios.post(integrationURLs.intentGroup(false), reqData)
+  client.post(integrationURLs.intentGroup(false), reqData)
 }
 
 export default useIntents

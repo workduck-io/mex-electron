@@ -1,8 +1,8 @@
+import ColorScheme from 'color-scheme'
+import merge from 'deepmerge'
 import { getLuminance, lighten, mix, tint } from 'polished'
 import { DefaultTheme } from 'styled-components'
 import { LayoutStyle } from '../styled'
-import merge from 'deepmerge'
-import ColorScheme from 'color-scheme'
 
 const LayoutTheme: LayoutStyle = {
   spacing: {
@@ -102,7 +102,6 @@ export const generateTheme = (p: ThemePalette): DefaultTheme => {
   //   .colors()
   //   .map((s) => `#${s}`)
 
-  console.log({ c: pP })
   return merge(
     {
       ...LayoutTheme,

@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react'
-import axios from 'axios'
+import { client } from '@workduck-io/dwindle'
 import React, { useState } from 'react'
 import { Item, useContextMenu } from 'react-contexify'
 import { WORKSPACE_ID } from '../../../Defaults/auth'
@@ -66,7 +66,7 @@ const IntentSelector = ({
 
   function displayMenu (e) {
     if (loading === true) {
-      axios
+      client
         .post(integrationURLs.getIntentValues, {
           serviceType: service.toUpperCase(),
           intentType: type,

@@ -1,15 +1,14 @@
 import refreshFill from '@iconify-icons/ri/refresh-fill'
 import { Icon } from '@iconify/react'
 import Tippy from '@tippyjs/react/headless' // different import path!
-import axios from 'axios'
+import { client } from '@workduck-io/dwindle'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import ReactTooltip from 'react-tooltip'
 import { useSelected } from 'slate-react'
-import useToggleElements from '../../../Hooks/useToggleElements/useToggleElements'
-import { WORKSPACE_ID } from '../../../Defaults/auth'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import useIntents from '../../../Hooks/useIntents/useIntents'
+import useToggleElements from '../../../Hooks/useToggleElements/useToggleElements'
 import { isIntent } from '../../../Lib/intents'
 import { integrationURLs } from '../../../Requests/routes'
 import { Button } from '../../../Styled/Buttons'
@@ -132,17 +131,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
       templateId: templateId
     })
 
-    // Inserted only on send
-    const InsertParams =
-      content === ''
-        ? {
-            igId: igid,
-            templateId: templateId,
-            workspaceId: WORKSPACE_ID
-          }
-        : {}
-
-    axios.post(integrationURLs.listen(param), {
+    client.post(integrationURLs.listen(param), {
       parentNodeId: parentNodeId ?? 'BLOCK_random',
       syncId: element.id,
       text: data.content,
