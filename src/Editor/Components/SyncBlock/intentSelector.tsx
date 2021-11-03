@@ -1,11 +1,11 @@
 import { Icon } from '@iconify/react'
-import axios from 'axios'
+import { client } from '@workduck-io/dwindle'
 import React, { useState } from 'react'
 import { Item, useContextMenu } from 'react-contexify'
 import { WORKSPACE_ID } from '../../../Defaults/auth'
 import { capitalize } from '../../../Lib/strings'
 import { integrationURLs } from '../../../Requests/routes'
-import { MenuTrigger } from '../../../Styled/Integrations'
+import { MenuTrigger } from '../../../Styled/Integration'
 import Loading from '../../../Styled/Loading'
 import { StyledMenu } from '../../../Styled/Menu'
 import { Intent } from './SyncBlock.types'
@@ -66,7 +66,7 @@ const IntentSelector = ({
 
   function displayMenu (e) {
     if (loading === true) {
-      axios
+      client
         .post(integrationURLs.getIntentValues, {
           serviceType: service.toUpperCase(),
           intentType: type,

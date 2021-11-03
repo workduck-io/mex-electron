@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { client } from '@workduck-io/dwindle'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import Modal from 'react-modal'
@@ -100,7 +100,7 @@ const NewSyncTemplateModal = () => {
 
     // console.log({ reqData })
 
-    axios.post(integrationURLs.createTemplate, reqData).then(() => {
+    client.post(integrationURLs.createTemplate, reqData).then(() => {
       addTemplate(template)
       saveData()
       updater()

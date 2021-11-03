@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { client } from '@workduck-io/dwindle'
 import { uniq } from 'lodash'
 import { WORKSPACE_ID } from '../Defaults/auth'
 import { defaultCommands } from '../Defaults/slashCommands'
@@ -26,7 +26,7 @@ export const useUpdater = () => {
   }
 
   const updateDefaultServices = async () => {
-    await axios.get(integrationURLs.getAllServiceData(WORKSPACE_ID)).then((d) => {
+    await client.get(integrationURLs.getAllServiceData(WORKSPACE_ID)).then((d) => {
       const data = d.data
       const services: Service[] = data.map((s) => ({
         id: s.serviceType,
@@ -35,7 +35,8 @@ export const useUpdater = () => {
         imageUrl: s.imageUrl,
         description: s.description,
         authUrl: s.authUrl,
-        connected: false
+        connected: false,
+        enabled: s.enabled
       }))
       // console.log({ services })
       setServices(services)
@@ -43,7 +44,7 @@ export const useUpdater = () => {
   }
 
   const updateServices = async () => {
-    await axios
+    await client
       .get(integrationURLs.getWorkspaceAuth(WORKSPACE_ID))
       .then((d) => {
         const services = useSyncStore.getState().services
