@@ -1,35 +1,31 @@
-const fs = require('fs-extra')
-const path = require('path')
-const { spawn } = require('child_process')
-
 module.exports = {
   packagerConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        name: 'mex',
-      },
+        name: 'mex'
+      }
     },
     {
       name: '@electron-forge/maker-zip',
-      platforms: ['darwin'],
+      platforms: ['darwin']
     },
     {
       name: '@electron-forge/maker-deb',
-      config: {},
+      config: {}
     },
     {
       name: '@electron-forge/maker-rpm',
-      config: {},
+      config: {}
     },
     {
       name: '@electron-forge/maker-dmg',
       config: {
         background: './assets/icon.png',
-        format: 'ULFO',
-      },
-    },
+        format: 'ULFO'
+      }
+    }
   ],
   plugins: [
     [
@@ -42,23 +38,23 @@ module.exports = {
             {
               html: './src/index.html',
               js: './src/index.tsx',
-              name: 'mex_window',
+              name: 'mex_window'
             },
             {
               html: './src/Spotlight/index.html',
               js: './src/Spotlight/index.tsx',
-              name: 'spotlight_window',
-            },
-          ],
-        },
-      },
+              name: 'spotlight_window'
+            }
+          ]
+        }
+      }
     ],
     [
       '@timfish/forge-externals-plugin',
       {
         externals: ['active-win'],
-        includeDeps: true,
-      },
-    ],
-  ],
+        includeDeps: true
+      }
+    ]
+  ]
 }

@@ -6,7 +6,7 @@ import { Intent } from '../../Editor/Components/SyncBlock'
 import IntentSelector from '../../Editor/Components/SyncBlock/intentSelector'
 import useIntents from '../../Hooks/useIntents/useIntents'
 import { Button } from '../../Styled/Buttons'
-import { IntentMapItem } from '../../Styled/Integrations'
+import { IntentMapItem } from '../../Styled/Integration'
 import { Note } from '../../Styled/Typography'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 
