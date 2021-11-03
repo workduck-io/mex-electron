@@ -50,13 +50,13 @@ const Service: React.FC<{ service: Service }> = ({ service }) => {
 
   const onServiceClick = (ev: any) => {
     ev.preventDefault()
-    if (!service.connected && !service.disabled) onConnectService(service.id, service.authUrl)
+    if (!service.connected && service.enabled) onConnectService(service.id, service.authUrl)
   }
 
   if (service.id === 'MEX') return null
 
   return (
-    <ServiceCard onClick={onServiceClick} disabled={service.disabled} hover={!service.connected}>
+    <ServiceCard onClick={onServiceClick} disabled={!service.enabled} hover={!service.connected}>
       {service.connected && (
         <>
           <RightCut />
