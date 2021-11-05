@@ -101,6 +101,10 @@ export const HighlightWrapper = styled.div`
   text-overflow: ellipsis;
 `
 
+export const TitleHighlightWrapper = styled.div`
+  margin-bottom: 0;
+`
+
 export const Highlight = styled.span`
   padding: ${({ theme: { spacing } }) => `${spacing.tiny} ${spacing.small}`};
   border-radius: ${({ theme }) => theme.borderRadius.small};

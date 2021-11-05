@@ -11,8 +11,6 @@ import { useContentStore } from '../../Editor/Store/ContentStore'
 import useLoad from '../../Hooks/useLoad/useLoad'
 import useSearchStore from '../../Search/SearchStore'
 import {
-  Highlight,
-  HighlightWrapper,
   MatchCounter,
   MatchCounterWrapper,
   Result,
@@ -22,10 +20,10 @@ import {
   SearchContainer,
   SearchHeader,
   SearchInput,
-  SearchPreviewWrapper,
-  SSearchHighlights
+  SearchPreviewWrapper
 } from '../../Styled/Search'
 import { Title } from '../../Styled/Typography'
+import { highlightText, SearchHighlights, TitleHighlights } from './Highlights'
 
 interface SearchStore {
   selected: number
@@ -47,64 +45,6 @@ const useSearchPageStore = create<SearchStore>((set) => ({
   setSearchTerm: (searchTerm) => set({ searchTerm })
 }))
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const highlightText = (metadata: any, content: string, startCut = 15, endCut = 80) => {
-  if (content === undefined) return []
-  if (metadata === undefined) return []
-  const totalMatches = Object.keys(metadata).reduce((prev, k) => {
-    // console.log(prev, metadata, metadata[k])
-    return prev + metadata[k].text.position.length
-  }, 0)
-  const highlights = Object.keys(metadata).reduce((prev, k) => {
-    const match = metadata[k]
-    return {
-      ...prev,
-      [k]: match.text.position.map((pos: [number, number]) => {
-        const start = pos[0]
-        const end = pos[0] + pos[1]
-        const preStart = start - startCut < 0 ? 0 : start - startCut
-        const postEnd = end + endCut < content.length ? end + endCut : end
-        return {
-          preMatch: content.slice(preStart, start),
-          match: content.slice(start, end),
-          postMatch: content.slice(end, postEnd)
-        }
-      })
-    }
-  }, {})
-  return { highlights, totalMatches }
-}
-
-interface SearchHighlight {
-  preMatch: string
-  match: string
-  postMatch: string
-}
-
-interface SearchHighlightsProps {
-  highlights: { [key: string]: SearchHighlight[] }
-}
-
-const SearchHighlights = ({ highlights }: SearchHighlightsProps) => {
-  // console.log(highlights)
-  return (
-    <SSearchHighlights>
-      {Object.keys(highlights).map((k, i) => {
-        return highlights[k].map((h, j) => {
-          // console.log(k, h)
-          return (
-            <HighlightWrapper key={`search_highlight_${h.match}${j}${i}`}>
-              ...{h.preMatch}
-              <Highlight>{h.match}</Highlight>
-              {h.postMatch}
-            </HighlightWrapper>
-          )
-        })
-      })}
-    </SSearchHighlights>
-  )
-}
-
 const Search = () => {
   const searchIndex = useSearchStore((store) => store.searchIndex)
   const contents = useContentStore((store) => store.contents)
@@ -120,20 +60,26 @@ const Search = () => {
 
   const { getNodeIdFromUid } = useLinks()
 
-  useEffect(() => {
-    if (searchTerm === '') {
-      const res = searchIndex(searchTerm)
+  const executeSearch = (newSearchTerm: string) => {
+    if (newSearchTerm === '') {
+      const res = searchIndex(newSearchTerm)
       setResult(res)
     } else {
-      const res = searchIndex(searchTerm)
+      const res = searchIndex(newSearchTerm)
+      console.log({ res })
       const res2 = res.map((r) => {
         return {
           ref: r.ref,
-          ...highlightText(r.matchData.metadata, r.text)
+          ...highlightText(r.matchData.metadata, r.text, r.title)
         }
       })
       setResult(res2)
     }
+    setSearchTerm(newSearchTerm)
+  }
+
+  useEffect(() => {
+    executeSearch(searchTerm)
     return () => {
       setSelected(-1)
     }
@@ -150,23 +96,7 @@ const Search = () => {
   const onChange = (e: any) => {
     e.preventDefault()
     const inpSearchTerm = e.target.value
-    if (inpSearchTerm === '') {
-      setResult(searchIndex(''))
-      setSearchTerm(inpSearchTerm)
-      setSelected(-1)
-      return
-    }
-    const res = searchIndex(inpSearchTerm)
-    const res2 = res.map((r) => {
-      return {
-        ref: r.ref,
-        ...highlightText(r.matchData.metadata, r.text)
-      }
-    })
-    // Reset selected index on change of input
-    setSelected(-1)
-    setResult(res2)
-    setSearchTerm(inpSearchTerm)
+    executeSearch(inpSearchTerm)
   }
 
   // onKeyDown handler function
@@ -195,7 +125,7 @@ const Search = () => {
     }
   }
 
-  // console.log('rerendered', { selected, result })
+  console.log('rerendered', { selected, result })
 
   return (
     <SearchContainer onKeyDown={keyDownHandler}>
@@ -230,7 +160,11 @@ const Search = () => {
               key={`node_${c.ref}`}
             >
               <ResultHeader>
-                <ResultTitle>{nodeId}</ResultTitle>
+                {c.titleHighlights !== undefined && c.titleHighlights.length > 0 ? (
+                  <TitleHighlights titleHighlights={c.titleHighlights} />
+                ) : (
+                  <ResultTitle>{nodeId}</ResultTitle>
+                )}
                 {c.totalMatches !== undefined && (
                   <MatchCounterWrapper>
                     Matches:
