@@ -12,6 +12,7 @@ export const createLunrIndex = (initList: NodeSearchData[], indexData: any) => {
 
   const index = lunr(function () {
     this.ref('nodeUID')
+    this.field('title')
     this.field('text')
     this.metadataWhitelist = ['position']
 
@@ -33,14 +34,20 @@ export const convertEntryToRawText = (nodeUID: string, entry: any[]): NodeSearch
       text.push(childText)
     }
   })
-  return { nodeUID: nodeUID, text: text.join(' ') }
+  return { nodeUID: nodeUID, title: '', text: text.join(' ') }
 }
 
 export const convertDataToRawText = (data: FileData): NodeSearchData[] => {
   const result: NodeSearchData[] = []
+  const titleNodeMap = new Map<string, string>()
+  data.ilinks.forEach((entry) => {
+    titleNodeMap.set(entry.uid, entry.text)
+  })
+
   Object.entries(data.contents).forEach(([k, v]) => {
     if (v.type === 'editor' && k !== '__null__') {
       const temp: NodeSearchData = convertEntryToRawText(k, v.content)
+      temp.title = titleNodeMap.get(k)
       result.push(temp)
     }
   })

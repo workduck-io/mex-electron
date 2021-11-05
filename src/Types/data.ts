@@ -33,11 +33,14 @@ export interface FileData {
 
 export interface NodeSearchData {
   nodeUID: string
+  title?: string
   text: string
 }
 
 export interface SearchResult extends lunr.Index.Result {
   ref: string
+  nodeName: string
+  title: string
   text: string
   matchData: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }

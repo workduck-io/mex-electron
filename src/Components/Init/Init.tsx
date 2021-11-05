@@ -15,7 +15,7 @@ import useLoad from '../../Hooks/useLoad/useLoad'
 import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import config from '../../Requests/config'
 import { convertDataToRawText } from '../../Search/localSearch'
-import useSearchPageStore from '../../Search/SearchStore'
+import useSearchStore from '../../Search/SearchStore'
 import { IpcAction } from '../../Spotlight/utils/constants'
 import { useSaveAndExit } from '../../Spotlight/utils/hooks'
 
@@ -33,8 +33,8 @@ const Init = () => {
   useSaveAndExit()
 
   const { getLocalData } = useLocalData()
-  const initializeSearchIndex = useSearchPageStore((store) => store.initializeSearchIndex)
-  const fetchIndexJSON = useSearchPageStore((store) => store.fetchIndexJSON)
+  const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
+  const fetchIndexJSON = useSearchStore((store) => store.fetchIndexJSON)
 
   // console.log(`Fuse initialized with`, { fuse })
   /** Initialization of the app details occur here */
@@ -53,7 +53,7 @@ const Init = () => {
         .then(({ fileData, indexData }) => {
           const initList = convertDataToRawText(fileData)
           initializeSearchIndex(initList, indexData)
-          console.log(`Fuse initialized with ${initList.length} documents`)
+          console.log(`Search Index initialized with ${initList.length} documents`)
           return fileData
         })
         .then((d) => {
