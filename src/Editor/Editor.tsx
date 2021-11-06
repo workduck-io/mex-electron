@@ -48,7 +48,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
 
   useEffect(() => {
     if (editorRef && focusAtBeginning) selectEditor(editorRef, { edge: 'start', focus: true })
-  }, [editorRef])
+  }, [editorRef]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const comboboxRenderConfig: ComboElementProps = {
     keys: {

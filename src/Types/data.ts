@@ -1,7 +1,7 @@
 import { Service, SyncBlockData, SyncBlockTemplate, SyncStoreIntents } from '../Editor/Components/SyncBlock'
 import { Snippet } from '../Editor/Store/SnippetStore'
 import { ComboText, ILink, LinkCache, NodeEditorContent } from '../Editor/Store/Types'
-
+import lunr from 'lunr-mutable-indexes'
 export interface NodeContent {
   type: string
   content: NodeEditorContent
@@ -26,12 +26,22 @@ export interface FileData {
   // Misc
   userSettings: {
     theme: string
-    spotlight: { [key: string]: any }
+    spotlight: { [key: string]: any } // eslint-disable-line @typescript-eslint/no-explicit-any
   }
   snippets: Snippet[]
 }
 
 export interface NodeSearchData {
   nodeUID: string
+  title?: string
   text: string
+}
+
+export interface SearchResult extends lunr.Index.Result {
+  ref: string
+  nodeName: string
+  title: string
+  text: string
+  score: number
+  matchData: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }

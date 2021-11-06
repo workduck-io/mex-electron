@@ -1,25 +1,6 @@
-import Fuse from 'fuse.js'
 import { FileData, NodeSearchData } from '../Types/data'
 
 import lunr from 'lunr-mutable-indexes'
-
-export function createFuse(initList: NodeSearchData[], overrideOptions?: Fuse.IFuseOptions<NodeSearchData>) {
-  const options: Fuse.IFuseOptions<NodeSearchData> = {
-    minMatchCharLength: 4,
-    threshold: 0.4,
-    keys: ['text'],
-    shouldSort: true,
-    includeScore: true,
-    ignoreLocation: true,
-    includeMatches: true,
-    ignoreFieldNorm: true,
-    ...overrideOptions
-  }
-
-  const fuse = new Fuse(initList, options)
-
-  return fuse
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const createLunrIndex = (initList: NodeSearchData[], indexData: any) => {
@@ -31,7 +12,9 @@ export const createLunrIndex = (initList: NodeSearchData[], indexData: any) => {
 
   const index = lunr(function () {
     this.ref('nodeUID')
+    this.field('title')
     this.field('text')
+    this.metadataWhitelist = ['position']
 
     initList.forEach(function (doc) {
       this.add(doc)
@@ -51,14 +34,20 @@ export const convertEntryToRawText = (nodeUID: string, entry: any[]): NodeSearch
       text.push(childText)
     }
   })
-  return { nodeUID: nodeUID, text: text.join(' ') }
+  return { nodeUID: nodeUID, title: '', text: text.join(' ') }
 }
 
 export const convertDataToRawText = (data: FileData): NodeSearchData[] => {
   const result: NodeSearchData[] = []
+  const titleNodeMap = new Map<string, string>()
+  data.ilinks.forEach((entry) => {
+    titleNodeMap.set(entry.uid, entry.text)
+  })
+
   Object.entries(data.contents).forEach(([k, v]) => {
     if (v.type === 'editor' && k !== '__null__') {
       const temp: NodeSearchData = convertEntryToRawText(k, v.content)
+      temp.title = titleNodeMap.get(k)
       result.push(temp)
     }
   })
