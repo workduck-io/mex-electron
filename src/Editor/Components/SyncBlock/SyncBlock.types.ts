@@ -87,12 +87,15 @@ export type SyncContextType = {
   templates: SyncBlockTemplate[]
   services: Service[]
   intents: SyncStoreIntents
+  selectedSyncBlock?: string
+
   // Load a node and its contents in the editor
   addSyncBlock: (block: SyncBlockData) => void
   addTemplate: (template: SyncBlockTemplate) => void
   deleteTemplate: (templateId: string) => void
   connectService: (id: string) => void
   setServices: (services: Service[]) => void
+  setSelected: (id: string) => void
   initSyncBlocks: (
     syncBlocks: SyncBlockData[],
     templates: SyncBlockTemplate[],
