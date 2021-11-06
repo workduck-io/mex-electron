@@ -70,8 +70,6 @@ const ContentEditor = () => {
     // Callback after save
   }
 
-  // console.log('Content Editor', { uid, content, title })
-
   return (
     <>
       <StyledEditor showGraph={showGraph} className="mex_editor">
