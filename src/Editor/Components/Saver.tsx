@@ -19,7 +19,7 @@ export const useSaver = () => {
   const setFsContent = useContentStore((state) => state.setContent)
 
   const uid = useEditorStore((state) => state.node.uid)
-  const { updateLinksFromContent } = useLinks()
+  const { updateLinksFromContent, getNodeIdFromUid } = useLinks()
 
   const saveData = useSaveData()
   const editorState = useStoreEditorValue()
@@ -32,7 +32,9 @@ export const useSaver = () => {
       setFsContent(uid, editorState)
       saveDataAPI(uid, editorState)
       updateLinksFromContent(uid, editorState)
-      updateDoc(uid, convertEntryToRawText(uid, editorState))
+      console.log('Editor State: ', editorState)
+      const title = getNodeIdFromUid(uid)
+      updateDoc(uid, convertEntryToRawText(uid, editorState), title)
     }
     saveData()
     toast('Saved!', { duration: 1000 })

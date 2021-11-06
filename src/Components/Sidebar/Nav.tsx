@@ -1,3 +1,4 @@
+import searchLine from '@iconify-icons/ri/search-line'
 import lockPasswordLine from '@iconify-icons/ri/lock-password-line'
 import user3Line from '@iconify-icons/ri/user-3-line'
 import settings4Line from '@iconify-icons/ri/settings-4-line'
@@ -81,6 +82,7 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
         {links.map((l) => (
           <Link
             exact
+            tabIndex={-1}
             activeClassName="active"
             to={l.path}
             key={`nav_${l.title}`}
@@ -96,6 +98,7 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
         {authenticated ? (
           <Link
             exact
+            tabIndex={-1}
             activeClassName="active"
             to="/user"
             key="nav_user"
@@ -109,6 +112,7 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
         ) : (
           <Link
             exact
+            tabIndex={-1}
             activeClassName="active"
             to="/login"
             key="nav_user"
@@ -123,6 +127,20 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
         )}
         <Link
           exact
+          tabIndex={-1}
+          activeClassName="active"
+          to="/search"
+          key="nav_search"
+          // Tooltip
+          data-tip="Search"
+          data-class="nav-tooltip"
+        >
+          {GetIcon(searchLine)}
+          {/* <Icon icon={settings4Line} /> */}
+        </Link>
+        <Link
+          exact
+          tabIndex={-1}
           activeClassName="active"
           to="/settings"
           key="nav_settings"
