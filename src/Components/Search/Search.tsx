@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react'
 import { debounce } from 'lodash'
 import React, { useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
+import { useTransition } from 'react-spring'
 import create from 'zustand'
 import { defaultContent } from '../../Defaults/baseData'
 import { useLinks } from '../../Editor/Actions/useLinks'
@@ -13,9 +14,11 @@ import useSearchStore from '../../Search/SearchStore'
 import {
   MatchCounter,
   MatchCounterWrapper,
+  NoSearchResults,
   Result,
   ResultHeader,
   Results,
+  ResultsWrapper,
   ResultTitle,
   SearchContainer,
   SearchHeader,
@@ -60,16 +63,32 @@ const Search = () => {
 
   const { getNodeIdFromUid } = useLinks()
 
+  const transition = useTransition(result, {
+    sort: (a, b) => (a.score > b.score ? -1 : 0),
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    // update: { opacity: 1, scale: 1.0 },
+    // leave: { opacity: 0, scale: 0.5 },
+    keys: (item) => item.ref,
+    trail: 50,
+    duration: 200,
+    config: {
+      mass: 1,
+      tension: 200,
+      friction: 16
+    }
+  })
+
   const executeSearch = (newSearchTerm: string) => {
     if (newSearchTerm === '') {
       const res = searchIndex(newSearchTerm)
       setResult(res)
     } else {
       const res = searchIndex(newSearchTerm)
-      console.log({ res })
       const res2 = res.map((r) => {
         return {
           ref: r.ref,
+          score: r.score,
           ...highlightText(r.matchData.metadata, r.text, r.title)
         }
       })
@@ -101,7 +120,6 @@ const Search = () => {
 
   // onKeyDown handler function
   const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    // const element = event.target as HTMLElement
     if (event.code === 'Tab') {
       event.preventDefault()
       // Blur the input if necessary (not needed currently)
@@ -117,7 +135,6 @@ const Search = () => {
     }
     if (event.code === 'Enter') {
       // Only when the selected index is -1
-      // console.log(element.tagName)
       if (selected > -1) {
         loadNode(result[selected].ref)
         history.push('/editor')
@@ -125,7 +142,8 @@ const Search = () => {
     }
   }
 
-  console.log('rerendered', { selected, result })
+  // console.log(element.tagName)
+  // console.log('rerendered', { selected, result })
 
   return (
     <SearchContainer onKeyDown={keyDownHandler}>
@@ -145,45 +163,50 @@ const Search = () => {
           ref={inpRef}
         />
       </SearchHeader>
-      <Results>
-        {result.map((c, i) => {
-          const con = contents[c.ref]
-          const nodeId = getNodeIdFromUid(c.ref)
-          const content = con ? con.content : defaultContent
-          return (
-            <Result
-              onClick={() => {
-                loadNode(c.ref)
-                history.push('/editor')
-              }}
-              selected={i === selected}
-              key={`node_${c.ref}`}
-            >
-              <ResultHeader>
-                {c.titleHighlights !== undefined && c.titleHighlights.length > 0 ? (
-                  <TitleHighlights titleHighlights={c.titleHighlights} />
+      <ResultsWrapper>
+        <Results>
+          {transition((styles, c, _t, i) => {
+            const con = contents[c.ref]
+            const nodeId = getNodeIdFromUid(c.ref)
+            const content = con ? con.content : defaultContent
+            return (
+              <Result
+                onClick={() => {
+                  loadNode(c.ref)
+                  history.push('/editor')
+                }}
+                style={styles}
+                selected={i === selected}
+                key={`${c.ref}`}
+              >
+                <ResultHeader>
+                  {c.titleHighlights !== undefined && c.titleHighlights.length > 0 ? (
+                    <TitleHighlights titleHighlights={c.titleHighlights} />
+                  ) : (
+                    <ResultTitle>{nodeId}</ResultTitle>
+                  )}
+                  {c.totalMatches !== undefined && (
+                    <MatchCounterWrapper>
+                      Matches:
+                      <MatchCounter>{c.totalMatches}</MatchCounter>
+                    </MatchCounterWrapper>
+                  )}
+                </ResultHeader>
+                {c.highlights !== undefined ? (
+                  <SearchHighlights highlights={c.highlights} />
                 ) : (
-                  <ResultTitle>{nodeId}</ResultTitle>
+                  <SearchPreviewWrapper>
+                    <EditorPreviewRenderer content={content} editorId={`editor_${c.ref}`} />
+                  </SearchPreviewWrapper>
                 )}
-                {c.totalMatches !== undefined && (
-                  <MatchCounterWrapper>
-                    Matches:
-                    <MatchCounter>{c.totalMatches}</MatchCounter>
-                  </MatchCounterWrapper>
-                )}
-              </ResultHeader>
-              {c.highlights !== undefined ? (
-                <SearchHighlights highlights={c.highlights} />
-              ) : (
-                <SearchPreviewWrapper>
-                  <EditorPreviewRenderer content={content} editorId={`editor_${c.ref}`} />
-                </SearchPreviewWrapper>
-              )}
-            </Result>
-          )
-        })}
-      </Results>
-      {result.length === 0 && <div>No results found. Try refining the query or search for a different one.</div>}
+              </Result>
+            )
+          })}
+        </Results>
+        {result.length === 0 && (
+          <NoSearchResults>No results found. Try refining the query or search for a different one.</NoSearchResults>
+        )}
+      </ResultsWrapper>
     </SearchContainer>
   )
 }

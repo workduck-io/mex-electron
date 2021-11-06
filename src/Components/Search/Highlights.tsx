@@ -1,20 +1,14 @@
 import React from 'react'
 import { Highlight, HighlightWrapper, SSearchHighlights, TitleHighlightWrapper } from '../../Styled/Search'
 
-const positionToSplit = (pos: [number, number], text: string, startCut = 15, endCut = 80) => {
+// Split text string where pos [startIndex, len]
+const textHighlightSplit = (pos: [number, number], text: string, startPadding = 15, endPadding = 80) => {
+  // Slicing indices: preStart start end postEnd
   const start = pos[0]
   const end = pos[0] + pos[1]
-  const preStart = start - startCut < 0 ? 0 : start - startCut
-  const postEnd = end + endCut < text.length ? end + endCut : text.length
-  // console.log({
-  //   start,
-  //   end,
-  //   preStart,
-  //   postEnd,
-  //   preMatch: text.slice(preStart, start),
-  //   match: text.slice(start, end),
-  //   postMatch: text.slice(end, postEnd)
-  // })
+  const preStart = start - startPadding < 0 ? 0 : start - startPadding
+  const postEnd = end + endPadding < text.length ? end + endPadding : text.length
+  // Slices
   return {
     preMatch: text.slice(preStart, start),
     match: text.slice(start, end),
@@ -24,11 +18,15 @@ const positionToSplit = (pos: [number, number], text: string, startCut = 15, end
 
 const positionsToSplit = (pos: [number, number][], text: string) => {
   const titleHighlights: TitleHighlight[] = []
+  // We are slicing the same text multiple times
+  // and marking the matches as highlighted
   let processedLength = 0
   pos.forEach((p) => {
+    // Slicing Indices
     const start = processedLength + p[0]
     const end = start + p[1]
     processedLength = end
+    // Slices
     titleHighlights.push({
       text: text.slice(processedLength, start),
       highlighted: false
@@ -39,6 +37,7 @@ const positionsToSplit = (pos: [number, number][], text: string) => {
     })
   })
   if (processedLength < text.length) {
+    // End slice, if left
     titleHighlights.push({
       text: text.slice(processedLength),
       highlighted: false
@@ -54,8 +53,8 @@ export const highlightText = (metadata: any, content: string, title: string) => 
 
   let collectedTitleHighlights: TitleHighlight[] = []
 
+  // All matches are either in title or text or both
   const totalMatches = Object.keys(metadata).reduce((prev, k) => {
-    // console.log(prev, metadata, metadata[k])
     let newVal = prev
     if (metadata[k].text) newVal += metadata[k].text.position.length
     if (metadata[k].title) newVal += metadata[k].title.position.length
@@ -68,14 +67,18 @@ export const highlightText = (metadata: any, content: string, title: string) => 
     const textHighlights =
       match.text &&
       match.text.position.map((pos: [number, number]) => {
-        return positionToSplit(pos, content)
+        return textHighlightSplit(pos, content)
       })
 
+    // Title matches are in match.title
     if (match.title !== undefined) {
+      // Split in the same string, with matched text highlighted
+      // Could be several times in the title
       const titleHighlights = positionsToSplit(match.title.position, title)
       collectedTitleHighlights = collectedTitleHighlights.concat(titleHighlights)
     }
 
+    // merge if any text highlight in match
     return textHighlights !== undefined
       ? {
           ...prev,
@@ -86,24 +89,33 @@ export const highlightText = (metadata: any, content: string, title: string) => 
 
   const highlightsCorrected = Object.keys(highlights).length === 0 ? undefined : highlights
 
-  console.log({ highlightsCorrected })
-
   return {
-    highlights: highlightsCorrected,
     totalMatches,
-    titleHighlights: collectedTitleHighlights
+    highlights: highlightsCorrected, // text highlights - separate sliced
+    titleHighlights: collectedTitleHighlights // title highlights - sliced together
   }
-}
-
-export interface SearchHighlight {
-  preMatch: string
-  match: string
-  postMatch: string
 }
 
 export interface TitleHighlight {
   text: string
   highlighted: boolean
+}
+export interface TitleHighlightsProps {
+  titleHighlights: TitleHighlight[]
+}
+
+export const TitleHighlights = ({ titleHighlights }: TitleHighlightsProps) => (
+  <TitleHighlightWrapper>
+    {titleHighlights.map((k, i) => {
+      return k.highlighted ? <Highlight key={`search_highlight_${k}${i}`}>{k.text}</Highlight> : <>{k.text}</>
+    })}
+  </TitleHighlightWrapper>
+)
+
+export interface SearchHighlight {
+  preMatch: string
+  match: string
+  postMatch: string
 }
 
 export interface SearchHighlightsProps {
@@ -114,37 +126,19 @@ export interface SearchHighlightsProps {
   }
 }
 
-export interface TitleHighlightsProps {
-  titleHighlights: TitleHighlight[]
-}
-
-export const TitleHighlights = ({ titleHighlights }: TitleHighlightsProps) => {
-  // console.log(highlights)
-  return (
-    <TitleHighlightWrapper>
-      {titleHighlights.map((k, i) => {
-        return k.highlighted ? <Highlight key={`search_highlight_${k}${i}`}>{k.text}</Highlight> : <>{k.text}</>
-      })}
-    </TitleHighlightWrapper>
-  )
-}
-
-export const SearchHighlights = ({ highlights }: SearchHighlightsProps) => {
-  // console.log(highlights)
-  return (
-    <SSearchHighlights>
-      {Object.keys(highlights).map((k, i) => {
-        return highlights[k].text.map((h, j) => {
-          // console.log(k, h)
-          return (
-            <HighlightWrapper key={`search_highlight_${h.match}${j}${i}`}>
-              ...{h.preMatch}
-              <Highlight>{h.match}</Highlight>
-              {h.postMatch}
-            </HighlightWrapper>
-          )
-        })
-      })}
-    </SSearchHighlights>
-  )
-}
+export const SearchHighlights = ({ highlights }: SearchHighlightsProps) => (
+  <SSearchHighlights>
+    {Object.keys(highlights).map((k, i) => {
+      return highlights[k].text.map((h, j) => {
+        // console.log(k, h)
+        return (
+          <HighlightWrapper key={`search_highlight_${h.match}${j}${i}`}>
+            ...{h.preMatch}
+            <Highlight>{h.match}</Highlight>
+            {h.postMatch}
+          </HighlightWrapper>
+        )
+      })
+    })}
+  </SSearchHighlights>
+)

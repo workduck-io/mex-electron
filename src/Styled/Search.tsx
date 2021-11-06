@@ -1,4 +1,4 @@
-import { transparentize } from 'polished'
+import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { Input } from './Form'
 import { CardShadow } from './helpers'
@@ -30,6 +30,17 @@ export const SearchHeader = styled.div`
 
 export const SearchContainer = styled.div`
   margin: ${({ theme: { spacing } }) => `4rem ${spacing.medium}`};
+  position: relative;
+`
+
+export const NoSearchResults = styled.div`
+  width: 100%;
+  height: 3rem;
+  font-size: 1.2rem;
+  padding: ${({ theme }) => theme.spacing.medium};
+  color: ${({ theme }) => theme.colors.text.fade};
+  position: absolute;
+  top: 0;
 `
 
 export const ResultHeader = styled.div`
@@ -46,7 +57,7 @@ export const ResultTitle = styled.div`
   color: ${({ theme }) => theme.colors.text.default};
 `
 
-export const Result = styled.div<ResultProps>`
+export const Result = styled(animated.div)<{ selected?: boolean }>`
   max-height: 300px;
   overflow-y: auto;
   border-radius: ${({ theme }) => theme.borderRadius.small};
@@ -72,7 +83,6 @@ export const Result = styled.div<ResultProps>`
 `
 
 export const Results = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.large};
   display: grid;
   grid-gap: ${({ theme }) => theme.spacing.large};
   grid-auto-flow: row;
@@ -84,6 +94,11 @@ export const Results = styled.div`
   @media (min-width: ${size.wide}) {
     grid-template-columns: repeat(3, 1fr);
   }
+`
+
+export const ResultsWrapper = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.large};
+  position: relative;
 `
 
 export const SearchPreviewWrapper = styled.div``

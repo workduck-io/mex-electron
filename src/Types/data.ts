@@ -42,5 +42,6 @@ export interface SearchResult extends lunr.Index.Result {
   nodeName: string
   title: string
   text: string
+  score: number
   matchData: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
