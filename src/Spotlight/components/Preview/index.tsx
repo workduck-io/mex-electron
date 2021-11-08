@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { useEditorStore } from '../../../Editor/Store/EditorStore'
+import { NodeProperties, useEditorStore } from '../../../Editor/Store/EditorStore'
 import { useContentStore } from '../../../Editor/Store/ContentStore'
 import Editor from '../../../Editor/Editor'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
@@ -20,10 +20,10 @@ export type PreviewType = {
 
 export type PreviewProps = {
   preview: PreviewType
-  nodeId: string
+  node: NodeProperties
 }
 
-const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
+const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   const { search, selection } = useSpotlightContext()
 
   const ref = useRef<HTMLDivElement>()
@@ -33,13 +33,13 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
   const setFsContent = useContentStore((state) => state.setContent)
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
   const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
-  const { loadNode } = useLoad()
+  const { loadNodeProps } = useLoad()
 
   const handleScrollToBottom = () => {
     ref.current.scrollTop = ref.current.scrollHeight
   }
 
-  const nodes = useDeserializeSelectionToNodes(nodeId, preview)
+  const nodes = useDeserializeSelectionToNodes(node.uid, preview)
 
   useEffect(() => {
     const newNodeContent = [{ children: nodes }]
@@ -47,13 +47,13 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
       const changedContent = showSource ? combineSources(fsContent, newNodeContent) : fsContent
 
       setNodeContent([...changedContent, { children: nodes }])
-      setFsContent(nodeId, [...changedContent, { children: nodes }])
+      setFsContent(node.uid, [...changedContent, { children: nodes }])
     }
   }, [preview.text, showSource])
 
   useEffect(() => {
     if (!search) {
-      loadNode(nodeId)
+      loadNodeProps(node)
     }
   }, [preview.text])
 
@@ -65,7 +65,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
         </SeePreview>
       )}
       <StyledEditorPreview>
-        <Editor focusAtBeginning={false} readOnly content={previewContent} editorId={nodeId} />
+        <Editor focusAtBeginning={false} readOnly content={previewContent} editorId={node.uid} />
       </StyledEditorPreview>
     </StyledPreview>
   )

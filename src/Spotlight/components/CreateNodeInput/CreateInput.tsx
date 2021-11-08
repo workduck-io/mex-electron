@@ -1,5 +1,6 @@
 import { useStoreEditorValue } from '@udecode/plate-core'
 import React from 'react'
+import { useLinks } from '../../../Editor/Actions/useLinks'
 import NodeSelect from '../../../Components/NodeSelect/NodeSelect'
 import { StyledSpotlightInputWrapper } from '../../../Components/NodeSelect/NodeSelect.styles'
 import { AppType } from '../../../Data/useInitialize'
@@ -21,7 +22,7 @@ export type CreateInputType = { value?: string }
 const CreateInput: React.FC<CreateInputType> = () => {
   const { setSelection } = useSpotlightContext()
   const { setSaved } = useContentStore(({ saved, setSaved }) => ({ saved, setSaved }))
-  const nodeId = useEditorStore((state) => state.node.id)
+  const { title, uid: nodeId } = useEditorStore((state) => state.node)
   // const uid = useEditorStore((state) => state.node.uid)
 
   const addILink = useDataStore((s) => s.addILink)
@@ -35,6 +36,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
   const editorState = useStoreEditorValue()
 
   const { loadNodeAndAppend, loadNode } = useLoad()
+  const { getUidFromNodeId } = useLinks()
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
 
   const handleOnCreate = (newNodeId: string) => {
@@ -55,19 +57,20 @@ const CreateInput: React.FC<CreateInputType> = () => {
   }
 
   const handleChange = (nodeIdValue: string) => {
+    const uid = getUidFromNodeId(nodeIdValue)
     if (nodeContent) {
-      loadNodeAndAppend(nodeIdValue, nodeContent)
+      loadNodeAndAppend(uid, nodeContent)
     } else {
-      loadNode(nodeIdValue)
-      pushToHistory(nodeIdValue)
-      addRecent(nodeIdValue)
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeIdValue)
+      loadNode(uid)
+      pushToHistory(uid)
+      addRecent(uid)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, uid)
     }
   }
 
   return (
     <StyledSpotlightInputWrapper>
-      <NodeSelect prefillLast placeholder={nodeId} handleSelectItem={handleChange} handleCreateItem={handleOnCreate} />
+      <NodeSelect prefillLast placeholder={title} handleSelectItem={handleChange} handleCreateItem={handleOnCreate} />
     </StyledSpotlightInputWrapper>
   )
 }

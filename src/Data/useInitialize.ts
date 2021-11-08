@@ -1,3 +1,4 @@
+import { createNodeWithUid } from './../Spotlight/components/Content/index'
 import { defaultCommands } from '../Defaults/slashCommands'
 import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
 import { useContentStore } from '../Editor/Store/ContentStore'
@@ -14,7 +15,7 @@ import { FileData } from '../Types/data'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
-  MEX = 'MEX',
+  MEX = 'MEX'
 }
 
 export const useInitialize = () => {
@@ -24,7 +25,7 @@ export const useInitialize = () => {
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setTheme = useThemeStore((state) => state.setTheme)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
-  const { loadNode } = useLoad()
+  const { loadNodeProps } = useLoad()
 
   const update = (data: FileData) => {
     const { tags, ilinks, linkCache, contents, syncBlocks, snippets, templates, services, intents } = data
@@ -45,7 +46,7 @@ export const useInitialize = () => {
     const keyToLoad = initNodeId || '@'
 
     if (initFor === AppType.SPOTLIGHT) {
-      loadNode(keyToLoad)
+      loadNodeProps(createNodeWithUid(keyToLoad))
     }
   }
 

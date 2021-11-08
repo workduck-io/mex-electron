@@ -16,17 +16,18 @@ const useLoad = () => {
   const getNode = (uid: string): NodeProperties => {
     const ilinks = useDataStore.getState().ilinks
     const respectiveLink = ilinks.find((i) => i.uid === uid)
-    // console.log({ uid, ilinks, respectiveLink })
 
     const UID = respectiveLink?.uid ?? uid
     const text = respectiveLink?.text ?? uid
 
-    return {
+    const node = {
       title: text,
       id: text,
       uid: UID,
-      key: UID
+      key: text
     }
+
+    return node
   }
 
   const loadNode = async (uid: string) => {

@@ -16,7 +16,7 @@ export const isILinkExists = (iLink: string, iLinkList: Array<ComboText>) =>
   iLinkList.filter((item) => item.key === iLink).length !== 0
 
 const NewEditor = () => {
-  const nodeId = useEditorStore(({ node }) => node.id)
+  const { key, uid: nodeId } = useEditorStore((state) => state.node)
   const addILink = useDataStore((s) => s.addILink)
 
   const ilinks = useDataStore((s) => s.ilinks)
@@ -41,14 +41,15 @@ const NewEditor = () => {
   }, [fsContent, nodeId])
 
   const onBeforeSave = () => {
-    addILink(nodeId)
+    console.log(key, nodeId)
+    addILink(key, nodeId)
   }
 
-  const onAfterSave = () => {
+  const onAfterSave = (uid: string) => {
     setSaved(true)
-    addRecent(nodeId)
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeId)
-    openNodeInMex(nodeId)
+    addRecent(uid)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, uid)
+    openNodeInMex(uid)
   }
 
   return (
@@ -57,7 +58,6 @@ const NewEditor = () => {
         <Editor
           focusAtBeginning
           // onSave={onSave}
-
           content={content}
           editorId={nodeId}
         />

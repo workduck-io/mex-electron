@@ -7,8 +7,8 @@ import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListen
 
 export const useRecentsShortcuts = () => {
   const history = useHistory()
-  const { loadNode } = useLoad()
-  const savedEditorId = useSpotlightEditorStore((state) => state.nodeId)
+  const { loadNodeProps } = useLoad()
+  const savedEditorNode = useSpotlightEditorStore((state) => state.node)
 
   const { shortcutDisabled } = useKeyListener()
 
@@ -17,7 +17,7 @@ export const useRecentsShortcuts = () => {
       Tab: (event) => {
         event.preventDefault()
         if (!shortcutDisabled) {
-          loadNode(savedEditorId)
+          loadNodeProps(savedEditorNode)
           history.replace('/new')
         }
       }
@@ -25,5 +25,5 @@ export const useRecentsShortcuts = () => {
     return () => {
       unsubscribe()
     }
-  }, [savedEditorId, shortcutDisabled])
+  }, [savedEditorNode, shortcutDisabled])
 }

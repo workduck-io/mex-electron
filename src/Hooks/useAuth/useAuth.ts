@@ -22,7 +22,7 @@ interface AuthStoreState {
 }
 
 export const useAuthStore = create<AuthStoreState>((set) => ({
-  authenticated: false,
+  authenticated: true,
   registered: false,
   userDetails: undefined,
   workspaceDetails: {
