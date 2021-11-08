@@ -1,11 +1,12 @@
+import { NodeProperties } from './../../Editor/Store/EditorStore'
 import { NodeEditorContent } from '../../Editor/Store/Types'
 import create from 'zustand'
 
 export type SelectionType = { text: string; metadata: string } | undefined
 
 export type SpotlightEditorStoreType = {
-  nodeId: string
-  setNodeId: (nodeId: string) => void
+  node: NodeProperties
+  setNode: (node: NodeProperties) => void
   isPreview: boolean
   setIsPreview?: (val: boolean) => void
   nodeContent: NodeEditorContent
@@ -15,12 +16,12 @@ export type SpotlightEditorStoreType = {
 }
 
 export const useSpotlightEditorStore = create<SpotlightEditorStoreType>((set, get) => ({
-  nodeId: '',
+  node: undefined,
   isPreview: false,
   setIsPreview: (val) => set({ isPreview: val }),
   isSelection: false,
   nodeContent: undefined,
   setNodeContent: (content) => set(() => ({ nodeContent: content })),
-  setNodeId: (id) => set(() => ({ nodeId: id })),
+  setNode: (node) => set(() => ({ node })),
   setIsSelection: (isSelection) => set({ isSelection })
 }))

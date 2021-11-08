@@ -18,23 +18,23 @@ import { convertEntryToRawText } from '../../Search/localSearch'
 export const useSaver = () => {
   const setFsContent = useContentStore((state) => state.setContent)
 
-  const uid = useEditorStore((state) => state.node.uid)
   const { updateLinksFromContent, getNodeIdFromUid } = useLinks()
+
+  const defaultNode = useEditorStore((state) => state.node)
 
   const saveData = useSaveData()
   const editorState = useStoreEditorValue()
   const { saveDataAPI } = useApi()
   const updateDoc = useSearchStore((state) => state.updateDoc)
 
-  const onSave = () => {
+  const onSave = (node = defaultNode) => {
     // setContent then save
     if (editorState) {
-      setFsContent(uid, editorState)
-      saveDataAPI(uid, editorState)
-      updateLinksFromContent(uid, editorState)
-      console.log('Editor State: ', editorState)
-      const title = getNodeIdFromUid(uid)
-      updateDoc(uid, convertEntryToRawText(uid, editorState), title)
+      setFsContent(node.uid, editorState)
+      saveDataAPI(node.uid, editorState)
+      updateLinksFromContent(node.uid, editorState)
+      const title = getNodeIdFromUid(node.uid)
+      updateDoc(node.uid, convertEntryToRawText(node.uid, editorState), title)
     }
     saveData()
     toast('Saved!', { duration: 1000 })
@@ -46,7 +46,7 @@ export const useSaver = () => {
 interface SaverButtonProps {
   title?: string
   noButton?: boolean
-  callbackAfterSave?: () => void
+  callbackAfterSave?: (uid?: string) => void
   callbackBeforeSave?: () => void
 }
 
@@ -59,11 +59,12 @@ export const SaverButton = ({ callbackAfterSave, callbackBeforeSave, title, noBu
 
   const shortcuts = useHelpStore((state) => state.shortcuts)
   const { shortcutDisabled } = useKeyListener()
+  const node = useEditorStore((state) => state.node)
 
   const onSave = () => {
     if (callbackBeforeSave) callbackBeforeSave()
-    onSaveFs()
-    if (callbackAfterSave) callbackAfterSave()
+    onSaveFs(node)
+    if (callbackAfterSave) callbackAfterSave(node.uid)
   }
 
   useEffect(() => {

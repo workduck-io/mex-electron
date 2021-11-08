@@ -34,7 +34,7 @@ const Actions = () => {
           <StyledKey>TAB</StyledKey>
         </CreateMex>
       </Action>
-      {recents.length === 0 ? (
+      {/* {recents.length === 0 ? (
         <Action>
           <ActionTitle>MEX IT</ActionTitle>
           <FlexBetween>
@@ -49,7 +49,19 @@ const Actions = () => {
         </Action>
       ) : (
         <Recent />
-      )}
+      )} */}
+      <Action>
+        <ActionTitle>MEX IT</ActionTitle>
+        <FlexBetween>
+          <ActionDesc>
+            To use Mex It, re-open Spotlight while:
+            <StyledUndordered>
+              <li>visiting a webpage, or </li>
+              <li>you have text selected</li>
+            </StyledUndordered>
+          </ActionDesc>
+        </FlexBetween>
+      </Action>
     </ColumnContainer>
   )
 }

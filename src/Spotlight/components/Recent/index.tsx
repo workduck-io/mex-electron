@@ -34,7 +34,7 @@ export const RecentList: React.FC<RecentListType> = ({ list }) => {
   const { loadNode, loadNodeAndAppend } = useLoad()
 
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
-  const savedEditorId = useSpotlightEditorStore((state) => state.nodeId)
+  const savedEditorNode = useSpotlightEditorStore((state) => state.node)
 
   const [currentIndex, setCurrentIndex] = useState<number>(list.length)
   const reset = useSpotlightAppStore((state) => state.reset)
@@ -47,7 +47,7 @@ export const RecentList: React.FC<RecentListType> = ({ list }) => {
 
   useEffect(() => {
     setCurrentIndex(list.length)
-    loadNode(savedEditorId)
+    loadNode(savedEditorNode.uid)
   }, [reset])
 
   const loadContent = (id: string, content: NodeEditorContent) => {

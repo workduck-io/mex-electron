@@ -29,13 +29,13 @@ const UserPage = () => {
       <BackCard>
         <ProfileContainer>
           <ProfileIcon>
-            <ProfileImage email={userDetails.email} size={128} />
+            <ProfileImage email={userDetails?.email} size={128} />
           </ProfileIcon>
           <div>
             <Title>User</Title>
             <Info>
               <InfoLabel>Email:</InfoLabel>
-              <InfoData>{userDetails.email}</InfoData>
+              <InfoData>{userDetails?.email}</InfoData>
             </Info>
             <Info>
               <InfoLabel>Workspace:</InfoLabel>
