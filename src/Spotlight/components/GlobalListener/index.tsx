@@ -11,6 +11,13 @@ import { useRecentsStore } from '../../../Editor/Store/RecentsStore'
 import { useInitialize, AppType } from '../../../Data/useInitialize'
 import { useSpotlightAppStore } from '../../../Spotlight/store/app'
 import { useHistory, useLocation } from 'react-router'
+import useSearchStore from '../../../Search/SearchStore'
+import { convertDataToRawText } from '../../../Search/localSearch'
+
+interface IndexAndFileData {
+  fileData: FileData
+  indexData: any // eslint-disable-line @typescript-eslint/no-explicit-any
+}
 
 const GlobalListener = memo(() => {
   const location = useLocation()
@@ -23,6 +30,7 @@ const GlobalListener = memo(() => {
   const setReset = useSpotlightAppStore((state) => state.setReset)
 
   const { init, update } = useInitialize()
+  const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
 
   useEffect(() => {
     if (showSource && temp) {
@@ -56,9 +64,14 @@ const GlobalListener = memo(() => {
       setReset()
     })
 
-    ipcRenderer.on(IpcAction.RECIEVE_LOCAL_DATA, (_event, arg: FileData) => {
+    ipcRenderer.on(IpcAction.RECIEVE_LOCAL_DATA, (_event, arg: IndexAndFileData) => {
+      const { fileData, indexData } = arg
       const editorID = getNewDraftKey()
-      init(arg, editorID, AppType.SPOTLIGHT)
+      init(fileData, editorID, AppType.SPOTLIGHT)
+      const initList = convertDataToRawText(fileData)
+      initializeSearchIndex(initList, indexData)
+      console.log(`Search Index initialized with ${initList.length} documents`)
+      console.log('Documents are: ', useSearchStore.getState().docs)
     })
 
     ipcRenderer.on(IpcAction.SPOTLIGHT_BUBBLE, (_event, arg) => {
