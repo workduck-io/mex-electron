@@ -51,7 +51,8 @@ const MEX_WINDOW_OPTIONS = {
   titleBarStyle: 'hidden' as const,
   webPreferences: {
     nodeIntegration: true,
-    contextIsolation: false
+    contextIsolation: false,
+    enableRemoteModule: true
   }
 }
 
@@ -68,7 +69,8 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
   resizable: false,
   webPreferences: {
     nodeIntegration: true,
-    contextIsolation: false
+    contextIsolation: false,
+    enableRemoteModule: true
   }
 }
 
@@ -105,6 +107,7 @@ export const setSearchIndexData = (indexJSON) => {
 
 const createSpotLighWindow = (show?: boolean) => {
   spotlight = new BrowserWindow(SPOTLIGHT_WINDOW_OPTIONS)
+  global.spotlight = spotlight
   spotlight.loadURL(SPOTLIGHT_WINDOW_WEBPACK_ENTRY)
 
   spotlight.setAlwaysOnTop(true, 'modal-panel', 2)
@@ -129,7 +132,7 @@ const createSpotLighWindow = (show?: boolean) => {
     spotlight = null
   })
 
-  // spotlight.webContents.openDevTools()
+  spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -143,7 +146,7 @@ const createMexWindow = () => {
   mex = new BrowserWindow(MEX_WINDOW_OPTIONS)
   mex.loadURL(MEX_WINDOW_WEBPACK_ENTRY)
 
-  mex.once('close', (_event) => {
+  mex.once('close', () => {
     mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
   })
 
@@ -170,7 +173,7 @@ const createMexWindow = () => {
     shell.openExternal(url)
   })
 
-  // mex.webContents.openDevTools()
+  mex.webContents.openDevTools()
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const callbackOptions = {
@@ -300,11 +303,11 @@ app.on('before-quit', () => {
   // mex?.webContents.send(IpcAction.SAVE_AND_QUIT)
   // spotlight?.webContents.send(IpcAction.SAVE_AND_QUIT)
 })
-app.on('will-quit', (_event) => {
+app.on('will-quit', () => {
   console.log('App will quit')
 })
 
-app.on('quit', (_event) => {
+app.on('quit', () => {
   console.log('App quit')
 })
 
@@ -388,6 +391,10 @@ ipcMain.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {
 
 ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
   mex?.webContents.send(IpcAction.OPEN_NODE, { nodeId: arg.nodeId })
+})
+
+ipcMain.on(IpcAction.INIT_HEAP_INSTANCE, (_event, arg) => {
+  spotlight.webContents.send(IpcAction.INIT_HEAP_INSTANCE, { heap: arg.heap })
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -20,7 +20,8 @@ type ComboItem = {
 interface NodeSelectProps {
   handleSelectItem: (nodeId: string) => void
   handleCreateItem?: (nodeId: string) => void
-
+  id?: string
+  name?: string
   inputRef?: any
   prefillLast?: boolean
   menuOpen?: boolean
@@ -36,7 +37,7 @@ interface NodeSelectState {
   selectedItem: ComboItem | null
 }
 
-function NodeSelect ({
+function NodeSelect({
   autoFocus,
   menuOpen,
   defaultValue,
@@ -45,7 +46,9 @@ function NodeSelect ({
   iconHighlight,
   prefillLast,
   handleSelectItem,
-  handleCreateItem
+  handleCreateItem,
+  id,
+  name
 }: NodeSelectProps) {
   const [nodeSelectState, setNodeSelectState] = useState<NodeSelectState>({
     inputItems: [],
@@ -121,7 +124,7 @@ function NodeSelect ({
     }
   })
 
-  function handleSelectedItemChange ({ selectedItem }: any) {
+  function handleSelectedItemChange({ selectedItem }: any) {
     if (selectedItem) {
       setSelectedItem(selectedItem)
       setInputValue(selectedItem.value)
@@ -180,6 +183,8 @@ function NodeSelect ({
           {...getInputProps()}
           autoFocus={autoFocus}
           placeholder={placeholder}
+          id={id}
+          name={name}
           // defaultValue={defaultValue}
           onChange={(e) => {
             getInputProps().onChange(e)
@@ -227,7 +232,7 @@ NodeSelect.defaultProps = {
   prefillLast: false
 }
 
-export function isNew (input: string, items: ComboItem[]): boolean {
+export function isNew(input: string, items: ComboItem[]): boolean {
   return items.filter((item) => item.text === input).length === 0
 }
 

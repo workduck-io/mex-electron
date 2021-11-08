@@ -25,13 +25,15 @@ const Lookup = () => {
     setOpen(false)
   }
 
-  const { shortcutDisabled } = useKeyListener()
+  const { shortcutDisabled, shortcutHandler } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showLookup.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) openModal()
+        shortcutHandler(shortcuts.showLookup, () => {
+          openModal()
+        })
       }
     })
     return () => {
@@ -62,6 +64,8 @@ const Lookup = () => {
       <h1>Lookup</h1>
       <StyledInputWrapper>
         <NodeSelect
+          id="lookup"
+          name="lookup"
           menuOpen
           autoFocus
           prefillLast

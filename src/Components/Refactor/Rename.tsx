@@ -87,19 +87,21 @@ const Rename = () => {
   const setFrom = useRenameStore((store) => store.setFrom)
 
   const { getUidFromNodeId } = useLinks()
-  const { shortcutDisabled } = useKeyListener()
+  const { shortcutHandler } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showRename.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) openModal(useEditorStore.getState().node.id)
+        shortcutHandler(shortcuts.showRename, () => {
+          openModal(useEditorStore.getState().node.id)
+        })
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [shortcuts, shortcutDisabled])
+  }, [shortcuts])
 
   const handleFromChange = (newValue: string) => {
     if (newValue) {

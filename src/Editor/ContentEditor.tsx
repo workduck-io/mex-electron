@@ -47,17 +47,21 @@ const ContentEditor = () => {
   }, [fsContent, uid])
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
-  const { shortcutDisabled } = useKeyListener()
+  const { shortcutHandler } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.toggleFocusMode.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) toggleFocusMode()
+        shortcutHandler(shortcuts.toggleFocusMode, () => {
+          toggleFocusMode()
+        })
       },
       [shortcuts.refreshNode.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) loadNode(uid)
+        shortcutHandler(shortcuts.refreshNode, () => {
+          loadNode(uid)
+        })
       }
     })
     return () => {

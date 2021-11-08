@@ -50,29 +50,29 @@ const InfoBar = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph } = useToggleElements()
-  const { shortcutDisabled } = useKeyListener()
+  const { shortcutHandler } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showGraph.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) {
+        shortcutHandler(shortcuts.showGraph, () => {
           if (showSyncBlocks) toggleSyncBlocks()
           toggleGraph()
-        }
+        })
       },
       [shortcuts.showSyncBlocks.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) {
+        shortcutHandler(shortcuts.showSyncBlocks, () => {
           if (showGraph) toggleGraph()
           toggleSyncBlocks()
-        }
+        })
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [shortcuts, showGraph, showSyncBlocks, shortcutDisabled])
+  }, [shortcuts, showGraph, showSyncBlocks])
 
   return transitions(
     (styles, item) =>
