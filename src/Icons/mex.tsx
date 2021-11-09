@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-type MexIconType = { height: string }
+export type MexIconType = { height: string; width: string }
 
 const MexIcon = styled.span<MexIconType>`
   width: 16px;
@@ -10,8 +10,8 @@ const MexIcon = styled.span<MexIconType>`
   background: ${({ theme }) => theme.colors.primary};
 `
 
-const Mex: React.FC<MexIconType> = ({ height }) => {
-  return <MexIcon height={height} />
+const Mex: React.FC<MexIconType> = ({ height, width }) => {
+  return <MexIcon height={height} width={width} />
 }
 
 export default Mex
