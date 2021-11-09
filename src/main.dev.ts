@@ -153,6 +153,8 @@ const createMexWindow = () => {
     }
     if (process.env.START_MINIMIZED) {
       mex.minimize()
+    } else {
+      mex.show()
     }
   })
 
