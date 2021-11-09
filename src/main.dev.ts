@@ -7,12 +7,10 @@ import path from 'path'
 import { AppType } from './Data/useInitialize'
 import { DefaultFileData } from './Defaults/baseData'
 import { getSaveLocation, getSearchIndexLocation } from './Defaults/data'
-import { getKeyFromKeycode } from './Lib/keyMap'
 import MenuBuilder from './menu'
 import { IpcAction } from './Spotlight/utils/constants'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
-import lunr from 'lunr-mutable-indexes'
 
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
@@ -155,8 +153,6 @@ const createMexWindow = () => {
     }
     if (process.env.START_MINIMIZED) {
       mex.minimize()
-    } else {
-      mex.show()
     }
   })
 

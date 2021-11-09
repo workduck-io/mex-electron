@@ -1,10 +1,17 @@
+import React from 'react'
+
 import githubFill from '@iconify-icons/ri/github-fill'
 import refreshFill from '@iconify-icons/ri/refresh-fill'
 import notionIcon from '@iconify/icons-simple-icons/notion'
 import slackIcon from '@iconify/icons-simple-icons/slack'
 import telegramIcon from '@iconify/icons-simple-icons/telegram'
-import Mex from '../../../../assets/Icons/services/mex'
-import React from 'react'
+
+import Github from '../../../Icons/github'
+import Slack from '../../../Icons/slack'
+import Mex from '../../../Icons/mex'
+import Notion from '../../../Icons/notion'
+import Linear from '../../../Icons/linear'
+import Telegram from '../../../Icons/Telgram'
 
 export const Icons: {
   [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -22,11 +29,11 @@ export const getSyncServiceIcon = (s: string) => {
 }
 
 export const ServiceIcons: Record<string, any> = {
-  GITHUB: 'github',
-  SLACK: 'slack',
-  LINEAR: 'linear',
-  NOTION: 'notion',
-  TELEGRAM: 'telegram'
+  GITHUB: Github,
+  SLACK: Slack,
+  LINEAR: Linear,
+  NOTION: Notion,
+  TELEGRAM: Telegram
 }
 
 export type ServiceIconType = { service: string; height: string; width: string }
@@ -34,6 +41,6 @@ export type ServiceIconType = { service: string; height: string; width: string }
 export const ServiceIcon: React.FC<ServiceIconType> = ({ service, height, width }) => {
   const Icon = ServiceIcons[service]
 
-  if (Icon) return <img src={`mex_window/assets/Icons/services/${Icon}.svg`} height={height} width={width} />
-  return <Mex height={height} />
+  if (Icon) return <Icon height={height} width={width} />
+  return <Mex height={height} width={width} />
 }
