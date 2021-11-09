@@ -2,7 +2,7 @@ import checkboxCircleLine from '@iconify-icons/ri/checkbox-circle-line'
 import errorWarningLine from '@iconify-icons/ri/error-warning-line'
 import { Icon } from '@iconify/react'
 import { useCombobox } from 'downshift'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { useLinks } from '../../Editor/Actions/useLinks'
 import useDataStore from '../../Editor/Store/DataStore'
@@ -51,6 +51,7 @@ function NodeSelect ({
     inputItems: [],
     selectedItem: null
   })
+  const inpRef = useRef<HTMLInputElement>(null)
 
   const setInputItems = (inputItems: ComboItem[]) => setNodeSelectState((state) => ({ ...state, inputItems }))
 
@@ -86,6 +87,7 @@ function NodeSelect ({
   const getNewItems = (inputValue: string) => {
     // const newItems =  ilinks.filter((item) => item.text.toLowerCase().startsWith(inputValue.toLowerCase()))
     if (inputValue !== '') {
+      console.log('Input Value is: ', inputValue)
       const newItems = fuzzySearch(ilinks, inputValue, { keys: ['text'] })
       if (handleCreateItem && inputValue !== '' && isNew(inputValue, ilinks)) {
         newItems.push({ text: `Create new: ${inputValue}`, value: inputValue, type: 'new' })
@@ -185,6 +187,11 @@ function NodeSelect ({
             getInputProps().onChange(e)
             onInpChange(e)
           }}
+          onFocus={() => {
+            if (inpRef.current) inpRef.current.select()
+          }}
+          inputRef={inpRef}
+
           onKeyUp={onKeyUp}
         />
         {highlightWhenSelected &&
@@ -219,7 +226,7 @@ function NodeSelect ({
 
 NodeSelect.defaultProps = {
   menuOpen: false,
-  autoFocus: false,
+  autoFocus: true,
   placeholder: 'Select Node',
   handleCreateItem: undefined,
   highlightWhenSelected: false,

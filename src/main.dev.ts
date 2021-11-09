@@ -1,7 +1,7 @@
-import { getGlobalShortcut, getSelectedText } from './Spotlight/utils/getSelectedText'
+import { getGlobalShortcut, getSelectedText, getSelectedTextSync } from './Spotlight/utils/getSelectedText'
 /* eslint-disable @typescript-eslint/no-var-requires */
 import chokidar from 'chokidar'
-import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, session, shell, Tray } from 'electron'
+import { app, BrowserWindow, clipboard, globalShortcut, ipcMain, Menu, nativeImage, session, shell, Tray } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import { AppType } from './Data/useInitialize'
@@ -13,6 +13,7 @@ import { IpcAction } from './Spotlight/utils/constants'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
 import lunr from 'lunr-mutable-indexes'
+import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
@@ -269,7 +270,8 @@ const syncFileData = (data?: FileData) => {
 }
 
 const handleToggleMainWindow = async () => {
-  const selection = await getSelectedText()
+  console.log('Clipboard had: ', clipboard.readText())
+  const selection = getSelectedTextSync()
   const anyContentPresent = Boolean(selection?.text)
   isSelection = anyContentPresent
   toggleMainWindow(spotlight)
@@ -314,7 +316,9 @@ app
   .whenReady()
   .then(() => {
     globalShortcut.register('CommandOrControl+Shift+L', handleToggleMainWindow)
-
+    // installExtension(REACT_DEVELOPER_TOOLS)
+    // .then((name) => console.log(`Added Extension:  ${name}`))
+    // .catch((err) => console.log('An error occurred: ', err));
     const icon = nativeImage.createFromPath(trayIconSrc)
 
     tray = new Tray(icon)
