@@ -1,7 +1,23 @@
-import { getGlobalShortcut, getSelectedText, getSelectedTextSync } from './Spotlight/utils/getSelectedText'
+import {
+  getGlobalShortcut,
+  getSelectedText,
+  getSelectedTextSync,
+  SelectionType
+} from './Spotlight/utils/getSelectedText'
 /* eslint-disable @typescript-eslint/no-var-requires */
 import chokidar from 'chokidar'
-import { app, BrowserWindow, clipboard, globalShortcut, ipcMain, Menu, nativeImage, session, shell, Tray } from 'electron'
+import {
+  app,
+  BrowserWindow,
+  clipboard,
+  globalShortcut,
+  ipcMain,
+  Menu,
+  nativeImage,
+  session,
+  shell,
+  Tray
+} from 'electron'
 import fs from 'fs'
 import path from 'path'
 import { AppType } from './Data/useInitialize'
@@ -13,7 +29,6 @@ import { IpcAction } from './Spotlight/utils/constants'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
 import lunr from 'lunr-mutable-indexes'
-import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
@@ -270,8 +285,13 @@ const syncFileData = (data?: FileData) => {
 }
 
 const handleToggleMainWindow = async () => {
-  console.log('Clipboard had: ', clipboard.readText())
-  const selection = getSelectedTextSync()
+  let selection: SelectionType
+  if (process.platform === 'win32') {
+    selection = getSelectedTextSync()
+  } else if (process.platform === 'darwin') {
+    selection = await getSelectedText()
+  }
+  console.log('Selection is: ', selection)
   const anyContentPresent = Boolean(selection?.text)
   isSelection = anyContentPresent
   toggleMainWindow(spotlight)

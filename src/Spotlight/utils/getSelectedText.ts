@@ -8,8 +8,6 @@ export type SelectionType = {
   metadata: activeWindow.Result | undefined
 }
 
-export const simulateCopy = () => keyTap('c', process.platform === 'darwin' ? 'command' : 'control')
-
 export const getSelectedTextSync = () => {
   setKeyboardDelay(100)
   const contentBackup = clipboard.readText()
@@ -18,7 +16,7 @@ export const getSelectedTextSync = () => {
   keyToggle('shift', 'down')
   keyTap('c', 'control')
 
-  const selectedText = clipboard.readText()
+  const selectedText = clipboard.readHTML()
   console.log('selected text: ', selectedText)
   clipboard.writeText(contentBackup)
 
@@ -26,33 +24,24 @@ export const getSelectedTextSync = () => {
     text: selectedText,
     metadata: activeWindow.sync()
   }
-  console.log('Text: ', ret.text)
-  console.log('Returning: ', ret)
-  console.log('\n\n')
   return ret
 }
 
-export const getSelectedText = async (): Promise<SelectionType> => {
-  setKeyboardDelay(10000)
-  const windowDetails = await activeWindow()
-  const contentBackup = clipboard.readText()
-  console.log('Read Content as: ', contentBackup)
-  clipboard.clear()
-  keyToggle('shift', 'down')
-  keyTap('c', 'control')
-  // simulateCopy()
+export const simulateCopy = () => keyTap('c', 'command')
 
-  const selectedText = clipboard.readText()
-  console.log('selected text: ', selectedText)
+export const getSelectedText = async (): Promise<SelectionType> => {
+  const contentBackup = clipboard.readText()
+  clipboard.clear()
+  simulateCopy()
+  const windowDetails = await activeWindow()
+
+  const selectedText = clipboard.readHTML()
   clipboard.writeText(contentBackup)
 
-  const ret = {
+  return {
     text: selectedText,
     metadata: windowDetails
   }
-  console.log('Returning: ', ret)
-  console.log('\n\n')
-  return ret
 }
 
 export const getGlobalShortcut = (shortcut: string) => {
