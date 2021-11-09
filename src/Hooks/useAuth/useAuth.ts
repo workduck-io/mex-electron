@@ -5,6 +5,7 @@ import create from 'zustand'
 import { useUpdater } from '../../Data/useUpdater'
 import { WORKSPACE_ID } from '../../Defaults/auth'
 import { useState } from 'react'
+import { UserCred } from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
 
 interface UserDetails {
   email: string
@@ -45,9 +46,13 @@ export const useAuthentication = () => {
   const setRegistered = useAuthStore((store) => store.setRegistered)
   const setWorkspaceDetails = useAuthStore((store) => store.setWorkspaceDetails)
   const { updateDefaultServices, updateServices } = useUpdater()
-  const { signIn, signUp, verifySignUp, signOut } = useAuth()
+  const { signIn, signUp, verifySignUp, signOut, userCred } = useAuth()
 
-  const login = async (email: string, password: string, getWorkspace = false): Promise<string> => {
+  const login = async (
+    email: string,
+    password: string,
+    getWorkspace = false
+  ): Promise<{ data: UserCred; v: string }> => {
     let data: any
     const v = await signIn(email, password)
       .then((d) => {
@@ -74,20 +79,39 @@ export const useAuthentication = () => {
         })
     }
 
-    return v
+    return { data, v }
   }
 
-  const registerDetails = (email: string, password: string) => {
+  const registerDetails = (email: string, password: string): Promise<string> => {
     // tag: mex
-    signUp(email, password).then(() => {
-      setRegistered(true)
-      setSensitiveData({ email, word: password })
-    })
+    const status = signUp(email, password)
+      .then(() => {
+        setRegistered(true)
+        setSensitiveData({ email, word: password })
+        return email
+      })
+      .catch((e) => {
+        if (e.name === 'UsernameExistsException') {
+          setRegistered(true)
+          setSensitiveData({ email, word: password })
+          return e.name
+        }
+      })
+    return status
   }
 
   const verifySignup = async (code: string, metadata: any): Promise<string> => {
     const vSign = await verifySignUp(code, metadata).catch(console.error)
-    await login(sensitiveData.email, sensitiveData.word).catch(console.error)
+    console.log({ vSign })
+
+    const loginData = await login(sensitiveData.email, sensitiveData.word).catch(console.error)
+
+    if (!loginData) {
+      return
+    }
+
+    const uCred = loginData.data
+
     await client
       .post(apiURLs.createWorkspace, { name: nanoid() })
       .then((d) => {
@@ -97,6 +121,21 @@ export const useAuthentication = () => {
     if (vSign) {
       setRegistered(false)
     }
+
+    const workspace_details = await client
+      .post(apiURLs.registerUser, {
+        user: {
+          id: uCred.userId,
+          name: uCred.email,
+          email: uCred.email
+        },
+        workspaceName: `WD_${nanoid()}`
+      })
+      .then((r) => {
+        console.log(r)
+      })
+    console.log({ workspace_details })
+
     return vSign
   }
 

@@ -1,4 +1,5 @@
 import React from 'react'
+import Loading from '../Styled/Loading'
 import Centered from '../Styled/Layouts'
 
 export type TasksProps = {
@@ -6,7 +7,11 @@ export type TasksProps = {
 }
 
 const Tasks: React.FC<TasksProps> = () => {
-  return <Centered>Tasks</Centered>
+  return (
+    <Centered>
+      <Loading dots={6} />
+    </Centered>
+  )
 }
 
 export default Tasks

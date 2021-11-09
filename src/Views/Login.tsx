@@ -9,6 +9,7 @@ import { Button } from '../Styled/Buttons'
 import { BackCard, FooterCard } from '../Styled/Card'
 import { CenteredColumn } from '../Styled/Layouts'
 import { Title } from '../Styled/Typography'
+import { LoadingButton } from '../Components/Buttons/LoadingButton'
 
 interface LoginFormData {
   email: string
@@ -25,8 +26,8 @@ const Login = () => {
 
   const onSubmit = (data: LoginFormData) => {
     login(data.email, data.password, true).then((s) => {
-      if (s === 'Incorrect username or password.') {
-        toast.error(s)
+      if (s.v === 'Incorrect username or password.') {
+        toast.error(s.v)
       }
     })
   }
@@ -62,9 +63,7 @@ const Login = () => {
           ></InputFormError>
 
           <br />
-          <Button size="large" type="submit" primary>
-            Login
-          </Button>
+          <LoadingButton task={async (): Promise<void> => console.log('hello')}>Login</LoadingButton>
         </form>
       </BackCard>
       <FooterCard>

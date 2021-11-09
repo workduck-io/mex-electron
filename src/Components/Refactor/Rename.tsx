@@ -185,7 +185,7 @@ const Rename = () => {
       )}
 
       <ModalControls>
-        <Button primary size="large" onClick={handleRefactor}>
+        <Button primary large onClick={handleRefactor}>
           Apply Rename
         </Button>
       </ModalControls>

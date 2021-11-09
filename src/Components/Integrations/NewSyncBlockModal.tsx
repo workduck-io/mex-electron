@@ -137,10 +137,10 @@ const NewSyncTemplateModal = () => {
       />
 
       <ModalControls>
-        <Button size="large" primary onClick={handleSubmit}>
+        <Button large primary onClick={handleSubmit}>
           Submit
         </Button>
-        <Button size="large" onClick={handleCancel}>
+        <Button large onClick={handleCancel}>
           Cancel
         </Button>
       </ModalControls>

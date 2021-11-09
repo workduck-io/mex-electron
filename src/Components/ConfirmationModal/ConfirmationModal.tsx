@@ -58,10 +58,10 @@ const ConfirmationModal = ({ confirmKeyword, cancelKeyword, onCancel, onConfirm 
       <ModalHeader>{title}</ModalHeader>
       <Note>{description}</Note>
       <ModalControls>
-        <Button size="large" primary onClick={handleConfirm}>
+        <Button large primary onClick={handleConfirm}>
           {confirmKeyword || 'Confirm'}
         </Button>
-        <Button size="large" onClick={handleCancel}>
+        <Button large onClick={handleCancel}>
           {cancelKeyword || 'Cancel'}
         </Button>
       </ModalControls>

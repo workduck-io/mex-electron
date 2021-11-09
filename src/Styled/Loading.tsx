@@ -1,4 +1,5 @@
-import styled, { keyframes } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
+import { range } from 'lodash'
 
 import React from 'react'
 
@@ -19,7 +20,7 @@ const LoadingWrapper = styled.div<LoadingProps>`
   max-width: ${({ dots }) => `${dots * 24}px`};
 `
 
-const LoadingDot = styled.div`
+const LoadingDot = styled.div<{ totalDots: number }>`
   width: 8px;
   height: 8px;
   margin: 0 4px;
@@ -33,21 +34,15 @@ const LoadingDot = styled.div`
 
   animation: ${loadingFade} 1s infinite;
 
-  &:nth-child(1) {
-    animation-delay: 0s;
-  }
-
-  &:nth-child(2) {
-    animation-delay: 0.1s;
-  }
-
-  &:nth-child(3) {
-    animation-delay: 0.2s;
-  }
-
-  &:nth-child(4) {
-    animation-delay: 0.3s;
-  }
+  ${({ totalDots }) =>
+    range(totalDots).reduce((prev, d) => {
+      return css`
+        ${prev};
+        &:nth-child(${d + 1}) {
+          animation-delay: ${d * 0.1}s;
+        }
+      `
+    }, css``)}
 `
 
 export interface LoadingProps {
@@ -60,7 +55,7 @@ const Loading = ({ dots }: LoadingProps) => {
       {Array(dots)
         .fill(0)
         .map((e, i) => (
-          <LoadingDot key={`loadingDot${i}`}></LoadingDot>
+          <LoadingDot totalDots={dots} key={`loadingDot${i}`}></LoadingDot>
         ))}
     </LoadingWrapper>
   )

@@ -4,9 +4,9 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { centeredCss } from './Layouts'
 
-interface ButtonProps {
+export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   primary?: boolean
-  size?: 'large' | 'default'
+  large?: boolean
   highlight?: boolean
 }
 
@@ -20,8 +20,8 @@ export const Button = styled.button<ButtonProps>`
     box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.5, theme.colors.primary)};
   }
 
-  ${({ theme, size }) =>
-    size === 'large'
+  ${({ theme, large }) =>
+    large
       ? css`
           padding: ${({ theme: { spacing } }) => `${spacing.small} ${spacing.medium}`};
           margin: 0 ${({ theme }) => theme.spacing.small};
@@ -76,3 +76,65 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, title, size, onClick, hig
 }
 
 export default IconButton
+
+export interface DivButtonProps {
+  children?: React.ReactNode
+  primary?: boolean
+  large?: boolean
+  highlight?: boolean
+  disabled?: boolean
+}
+
+export const DivButton = styled.div<DivButtonProps>`
+  ${centeredCss};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  color: ${({ theme }) => theme.colors.text.subheading};
+  cursor: pointer;
+  transition: 0.3s ease;
+  &:hover {
+    box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.5, theme.colors.primary)};
+  }
+
+  ${({ theme, large }) =>
+    large
+      ? css`
+          padding: ${`${theme.spacing.small} ${theme.spacing.medium}`};
+          margin: 0 ${({ theme }) => theme.spacing.small};
+          font-size: 1.2rem;
+        `
+      : css`
+          padding: ${({ theme }) => theme.spacing.small};
+          margin: 0 ${({ theme }) => theme.spacing.tiny};
+        `}
+
+  ${({ theme, highlight }) =>
+    highlight
+      ? css`
+          background-color: ${theme.colors.primary};
+          color: ${theme.colors.text.oppositePrimary};
+          box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.primary)};
+        `
+      : ''}
+
+  ${({ theme, disabled }) =>
+    disabled
+      ? css`
+          pointer-events: none;
+          background-color: ${theme.colors.gray[7]};
+          color: ${theme.colors.text.fade};
+          box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.text.fade)};
+        `
+      : ''}
+
+  ${({ theme, primary }) =>
+    primary
+      ? css`
+          background-color: ${theme.colors.primary};
+          color: ${theme.colors.text.oppositePrimary};
+          &:hover {
+            background-color: ${theme.colors.fade.primary};
+            color: ${theme.colors.text.oppositePrimary};
+          }
+        `
+      : ''}
+`

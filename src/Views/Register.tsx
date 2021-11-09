@@ -1,6 +1,7 @@
 import { useAuth } from '@workduck-io/dwindle'
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import { Link, useHistory } from 'react-router-dom'
 import { PasswordRequirements } from '../Components/Auth/errorMessages'
 import Input, { InputFormError } from '../Components/Forms/Input'
@@ -30,11 +31,22 @@ const Register = () => {
   const history = useHistory()
   const { resendCode } = useAuth()
 
+  const onResendRequest = (e) => {
+    e.preventDefault()
+    console.log('we are resending code')
+    resendCode().then((r) => console.log(r))
+  }
+
   const onSubmit = (data: RegisterFormData) => {
     const metadata = { tag: 'mex' }
     if (!registered) {
-      registerDetails(data.email, data.password)
+      registerDetails(data.email, data.password).then((s) => {
+        if (s === 'UsernameExistsException') {
+          toast('You have already registered, please verify code.')
+        }
+      })
     } else {
+      console.log(data.code, metadata)
       verifySignup(data.code, metadata)
       //   .then((d) => {
       //   if (d === 'SUCCESS') {
@@ -97,24 +109,17 @@ const Register = () => {
                 error={errors.code?.type === 'required' ? 'Code is required' : undefined}
               ></Input>
 
-              <Button
-                size="large"
-                onClick={(e) => {
-                  e.preventDefault()
-
-                  resendCode()
-                }}
-              >
+              <Button id="resendCodeButton" large onClick={onResendRequest}>
                 Resend Code
               </Button>
             </>
           )}
           <br />
-          <Button size="large" type="submit" primary>
+          <Button large type="submit" primary>
             {registered ? 'Verify code' : 'Send Verification Code'}
           </Button>
           {registered && (
-            <Button size="large" onClick={onCancelVerification}>
+            <Button large onClick={onCancelVerification}>
               Cancel
             </Button>
           )}

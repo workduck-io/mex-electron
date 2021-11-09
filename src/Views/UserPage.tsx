@@ -43,7 +43,7 @@ const UserPage = () => {
             </Info>
           </div>
         </ProfileContainer>
-        <Button size="large" onClick={onLogout}>
+        <Button large onClick={onLogout}>
           Logout
         </Button>
       </BackCard>
