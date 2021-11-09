@@ -1,8 +1,8 @@
+import React, { useEffect } from 'react'
 import Check from '@iconify-icons/bi/check'
 import PlusCircle from '@iconify-icons/bi/plus-circle'
 import { Icon } from '@iconify/react'
 import { shell } from 'electron'
-import React, { useEffect } from 'react'
 import ConfirmationModal from '../Components/ConfirmationModal/ConfirmationModal'
 import NewSyncTemplateModal, { useNewSyncTemplateModalStore } from '../Components/Integrations/NewSyncBlockModal'
 import Template from '../Components/Integrations/Template'
@@ -64,7 +64,7 @@ const Service = (props: { service: Service }) => {
         </>
       )}
       <CenteredFlex>
-        <ServiceIcon service={service.id} height="56" width="56" />
+        <ServiceIcon service={service.id} height="56px" width="56px" />
       </CenteredFlex>
       <ServiceName>{camelCase(service.id)}</ServiceName>
     </ServiceCard>

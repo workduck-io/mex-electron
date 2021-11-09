@@ -1,9 +1,13 @@
-import { sortBy } from 'lodash'
+import { orderBy } from 'lodash'
+
 import create from 'zustand'
 import { defaultMexIntent, intentsData, templates } from '../../Defaults/Test/intentsData'
 import { Service, SyncContextType } from '../Components/SyncBlock/SyncBlock.types'
 
-const sortServices = (services: Service[]) => sortBy(services, (s) => s.id)
+const sortServices = (services: Service[]) => {
+  const res = orderBy(services, ['enabled', 'connected', 'id'], ['desc', 'desc', 'asc'])
+  return res
+}
 
 export const useSyncStore = create<SyncContextType>((set, get) => ({
   syncBlocks: [],
@@ -27,28 +31,21 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
 
   setSelected: (id) => set({ selectedSyncBlock: id }),
 
-  connectService: (id) =>
-    set((state) => {
-      const service = state.services.find((s) => s.id === id)
-      const newServices = [
-        ...state.services.filter((s) => s.id !== id),
-        {
-          ...service,
-          connected: true
-        }
-      ]
-      return {
-        services: sortServices(newServices)
-      }
-    }),
+  connectService: (id) => {
+    const services = get().services
+    const newServices = services.map((service) => (service.id === id ? { ...service, connected: true } : service))
+    set({
+      services: sortServices(newServices)
+    })
+  },
 
-  setServices: (services) => set({ services }),
+  setServices: (services) => set({ services: sortServices(services) }),
 
   initSyncBlocks: (syncBlocks, templates, services, intents) =>
     set(() => ({
       syncBlocks,
       templates,
-      services,
+      services: sortServices(services),
       intents
     })),
 

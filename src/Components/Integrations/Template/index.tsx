@@ -54,7 +54,7 @@ const Template: React.FC<{ template: SyncBlockTemplate }> = ({ template }) => {
         {intents.map((intent) => (
           <ServiceChip key={intent.service}>
             <IconCircle>
-              <ServiceIcon service={intent.service} height="16" width="16" />
+              <ServiceIcon service={intent.service} height="16px" width="16px" />
             </IconCircle>
             <ServiceType>{capitalize(intent.type)}</ServiceType>
           </ServiceChip>
