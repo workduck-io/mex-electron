@@ -17,20 +17,22 @@ export const Button = styled.button<ButtonProps>`
   color: ${({ theme }) => theme.colors.text.subheading};
   cursor: pointer;
   transition: 0.3s ease;
+  background-color: ${({ theme }) => theme.colors.form.button.bg};
   &:hover {
-    box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.5, theme.colors.primary)};
+    color: ${({ theme }) => theme.colors.primary};
+    box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
   }
 
   ${({ theme: { spacing }, large }) =>
     large
       ? css`
-          padding: ${({ theme: { spacing } }) => `${spacing.small} ${spacing.medium}`};
-          margin: 0 ${({ theme }) => theme.spacing.small};
+          padding: ${`${spacing.small} ${spacing.medium}`};
+          margin: 0 ${spacing.small};
           font-size: 1.2rem;
         `
       : css`
-          padding: ${({ theme }) => theme.spacing.small};
-          margin: 0 ${({ theme }) => theme.spacing.tiny};
+          padding: ${spacing.small};
+          margin: 0 ${spacing.tiny};
         `}
 
   ${({ theme, highlight }) =>
@@ -39,6 +41,10 @@ export const Button = styled.button<ButtonProps>`
           background-color: ${theme.colors.primary};
           color: ${theme.colors.text.oppositePrimary};
           box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.primary)};
+          &:hover {
+            background-color: ${theme.colors.fade.primary};
+            color: ${theme.colors.text.oppositePrimary};
+          }
         `
       : ''}
 
@@ -85,7 +91,7 @@ export interface AsyncButtonProps {
   highlight?: boolean
   disabled?: boolean
   id?: string
-  onClick?: any
+  onClick?: any // eslint-disable-line @typescript-eslint/no-explicit-any
   type?: 'button' | 'submit' | 'reset'
 }
 
@@ -95,6 +101,7 @@ export const AsyncButton = styled.button<AsyncButtonProps>`
   color: ${({ theme }) => theme.colors.text.subheading};
   cursor: pointer;
   transition: 0.3s ease;
+  background-color: ${({ theme }) => theme.colors.form.button.bg};
 
   ${({ theme, large }) =>
     large
