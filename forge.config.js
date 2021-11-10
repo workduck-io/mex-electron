@@ -1,5 +1,16 @@
-module.exports = {
-  packagerConfig: {},
+const config = {
+  packagerConfig: {
+    osxSign: {
+      'hardened-runtime': true,
+      entitlements: 'build/entitlements.plist',
+      'signature-flags': 'library',
+      'gatekeeper-assess': false
+    },
+    osxNotarize: {
+      appleId: process.env.APPLE_ID,
+      appleIdPassword: process.env.APPLE_ID_PASSWORD
+    }
+  },
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
@@ -9,7 +20,8 @@ module.exports = {
     },
     {
       name: '@electron-forge/maker-zip',
-      platforms: ['darwin']
+      platforms: ['darwin'],
+      config: {}
     },
     {
       name: '@electron-forge/maker-deb',
@@ -52,9 +64,11 @@ module.exports = {
     [
       '@timfish/forge-externals-plugin',
       {
-        externals: ['active-win'],
+        externals: ['active-win-universal'],
         includeDeps: true
       }
     ]
   ]
 }
+
+module.exports = config

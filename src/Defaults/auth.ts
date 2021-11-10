@@ -1,7 +1,6 @@
 import { ID_SEPARATOR, WORKSPACE_ID_PREFIX } from './idPrefixes'
 
-export const WORKSPACE_ID = `${WORKSPACE_ID_PREFIX}${ID_SEPARATOR}id`
-
+export const WORKSPACE_ID = `${WORKSPACE_ID_PREFIX}${ID_SEPARATOR}randomworkspace1`
 /* eslint-disable no-useless-escape */
 
 export const EMAIL_REG =
