@@ -9,7 +9,7 @@ const loadingFade = keyframes`
   100% { opacity: 0; }
 `
 
-const LoadingWrapper = styled.div<LoadingProps>`
+export const LoadingWrapper = styled.div<LoadingProps>`
   display: flex;
   justify-content: space-around;
   ${({ theme, transparent }) =>
@@ -24,17 +24,24 @@ const LoadingWrapper = styled.div<LoadingProps>`
   max-width: ${({ dots }) => `${dots * 24}px`};
 `
 
-const LoadingDot = styled.div<{ totalDots: number }>`
+const LoadingDot = styled.div<{ totalDots: number; color?: string }>`
   width: 8px;
   height: 8px;
   margin: 0 4px;
-  background: ${({ theme }) => theme.colors.primary};
+  ${({ theme, color }) =>
+    color
+      ? css`
+          background: ${color};
+          box-shadow: 0 2px 8px ${color};
+        `
+      : css`
+          background: ${theme.colors.primary};
+          box-shadow: 0 2px 8px ${theme.colors.primary};
+        `}
 
   border-radius: 50%;
 
   opacity: 0;
-
-  box-shadow: 0 2px 8px ${({ theme }) => theme.colors.primary};
 
   animation: ${loadingFade} 1s infinite;
 
@@ -52,15 +59,16 @@ const LoadingDot = styled.div<{ totalDots: number }>`
 export interface LoadingProps {
   dots: number
   transparent?: boolean
+  color?: string
 }
 
-const Loading = ({ dots, transparent }: LoadingProps) => {
+const Loading = ({ dots, transparent, color }: LoadingProps) => {
   return (
     <LoadingWrapper transparent={transparent} dots={dots}>
       {Array(dots)
         .fill(0)
         .map((e, i) => (
-          <LoadingDot totalDots={dots} key={`loadingDot${i}`}></LoadingDot>
+          <LoadingDot color={color} totalDots={dots} key={`loadingDot${i}`}></LoadingDot>
         ))}
     </LoadingWrapper>
   )

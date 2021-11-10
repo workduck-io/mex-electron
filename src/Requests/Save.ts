@@ -6,13 +6,11 @@ import { deserializeContent, serializeContent } from '../Lib/serialize'
 import initializeAmplify from './amplify/init'
 import { client } from '@workduck-io/dwindle'
 import { apiURLs } from './routes'
-import { useEditorStore } from '../Editor/Store/EditorStore'
 
 initializeAmplify()
 
 export const useApi = () => {
-  const loadNRep = useEditorStore((store) => store.loadNodeAndReplaceContent)
-  const node = useEditorStore((store) => store.node)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const saveDataAPI = (uid: string, content: any[]) => {
     const reqData = {
       id: uid,
@@ -21,23 +19,12 @@ export const useApi = () => {
       data: serializeContent(content ?? defaultContent)
     }
 
-    // const sC = serializeContent(content)
-    // const dC = deserializeContent(sC)
-    // console.log('Serialized', { sC, dC, content })
-
-    // loadNRep(node, dC)
-
     if (!USE_API) {
       return
     }
-    client
-      .post(apiURLs.saveNode, reqData, {})
-      // .then(() => {
-      //   console.log('Post data', { content, data: reqData.data })
-      // })
-      .catch((e) => {
-        console.error(e)
-      })
+    client.post(apiURLs.saveNode, reqData, {}).catch((e) => {
+      console.error(e)
+    })
   }
 
   const getDataAPI = async (uid: string) => {
@@ -52,6 +39,7 @@ export const useApi = () => {
   return { saveDataAPI, getDataAPI }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const testPerfFunc = (func: () => any, num = 100) => {
   const ar = Array.from(Array(num).keys())
   const t0 = performance.now()
@@ -66,6 +54,7 @@ export const testPerfFunc = (func: () => any, num = 100) => {
   })
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const testPerf = async (uid: string) => {
   const ar = Array.from(Array(100).keys())
   const t0 = performance.now()
@@ -89,7 +78,7 @@ const testPerf = async (uid: string) => {
   const t01 = performance.now()
   lost = 0
   await ar
-    .reduce((seq) => {
+    .reduce(async (seq) => {
       return seq
         .then(async () => {
           await API.get('mex', `/node/${uid}`, {})

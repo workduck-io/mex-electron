@@ -3,6 +3,7 @@ import { transparentize } from 'polished'
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { centeredCss } from './Layouts'
+import { LoadingWrapper } from './Loading'
 
 export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   primary?: boolean
@@ -20,7 +21,7 @@ export const Button = styled.button<ButtonProps>`
     box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.5, theme.colors.primary)};
   }
 
-  ${({ theme, large }) =>
+  ${({ theme: { spacing }, large }) =>
     large
       ? css`
           padding: ${({ theme: { spacing } }) => `${spacing.small} ${spacing.medium}`};
@@ -94,9 +95,6 @@ export const AsyncButton = styled.button<AsyncButtonProps>`
   color: ${({ theme }) => theme.colors.text.subheading};
   cursor: pointer;
   transition: 0.3s ease;
-  &:hover {
-    box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.5, theme.colors.primary)};
-  }
 
   ${({ theme, large }) =>
     large
@@ -108,15 +106,22 @@ export const AsyncButton = styled.button<AsyncButtonProps>`
           padding: ${({ theme }) => theme.spacing.small};
         `}
 
-  ${({ theme, highlight }) =>
+  ${({ theme, highlight, primary }) =>
     highlight
       ? css`
           background-color: ${theme.colors.primary};
           color: ${theme.colors.text.oppositePrimary};
-          box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.primary)};
+          box-shadow: 0px 4px 8px
+            ${({ theme }) => transparentize(0.33, primary ? theme.colors.primary : theme.colors.palette.black)};
         `
       : ''}
 
+
+  ${({ theme, primary }) => css`
+    &:hover {
+      box-shadow: 0px 6px 12px ${transparentize(0.5, primary ? theme.colors.primary : theme.colors.palette.black)};
+    }
+  `}
 
   ${({ theme, primary }) =>
     primary
@@ -134,9 +139,13 @@ export const AsyncButton = styled.button<AsyncButtonProps>`
     disabled
       ? css`
           pointer-events: none;
-          background-color: ${theme.colors.gray[7]};
-          color: ${theme.colors.text.fade};
-          box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.text.fade)};
+          background-color: ${theme.colors.gray[9]};
+          color: ${transparentize(0.75, theme.colors.text.fade)};
         `
       : ''}
+
+  ${LoadingWrapper} {
+    position: absolute;
+    margin: auto;
+  }
 `

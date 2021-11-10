@@ -15,23 +15,28 @@ import { Title } from '../Styled/Typography'
 import { LoadingButton } from '../Components/Buttons/LoadingButton'
 
 interface RegisterFormData {
-  code: string
   email: string
   password: string
 }
 
+interface VerifyFormData {
+  code: string
+}
 const Register = () => {
   const [reqCode, setReqCode] = useState(false)
-  const {
-    handleSubmit,
-    register,
-    formState: { errors, isSubmitting }
-  } = useForm<RegisterFormData>()
+  const registerForm = useForm<RegisterFormData>()
+  const verifyForm = useForm<VerifyFormData>()
 
   const { registerDetails, verifySignup } = useAuthentication()
   const registered = useAuthStore((store) => store.registered)
   const setRegistered = useAuthStore((store) => store.setRegistered)
   const { resendCode } = useAuth()
+
+  const regErrors = registerForm.formState.errors
+  const verErrors = verifyForm.formState.errors
+
+  const regSubmitting = registerForm.formState.isSubmitting
+  const verSubmitting = verifyForm.formState.isSubmitting
 
   const onResendRequest = async (e) => {
     e.preventDefault()
@@ -49,18 +54,17 @@ const Register = () => {
     // }, 20000)
   }
 
-  const onSubmit = async (data: RegisterFormData) => {
+  const onRegisterSubmit = async (data: RegisterFormData) => {
+    await registerDetails(data.email, data.password).then((s) => {
+      if (s === 'UsernameExistsException') {
+        toast('You have already registered, please verify code.')
+      }
+    })
+  }
+
+  const onVerifySubmit = async (data: VerifyFormData) => {
     const metadata = { tag: 'mex' }
-    if (!registered) {
-      await registerDetails(data.email, data.password).then((s) => {
-        if (s === 'UsernameExistsException') {
-          toast('You have already registered, please verify code.')
-        }
-      })
-    } else {
-      // console.log(data.code, metadata)
-      verifySignup(data.code, metadata)
-    }
+    await verifySignup(data.code, metadata)
   }
 
   const onCancelVerification = (e) => {
@@ -72,77 +76,79 @@ const Register = () => {
     <CenteredColumn>
       <BackCard>
         <Title>Register</Title>
-        <AuthForm onSubmit={handleSubmit(onSubmit)}>
-          {!registered ? (
-            <>
-              <InputFormError
-                name="email"
-                label="Email"
-                inputProps={{
-                  autoFocus: true,
-                  ...register('email', {
-                    required: true,
-                    pattern: EMAIL_REG
-                  })
-                }}
-                errors={errors}
-              ></InputFormError>
+        {!registered ? (
+          <AuthForm onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
+            <InputFormError
+              name="email"
+              label="Email"
+              inputProps={{
+                autoFocus: true,
+                ...registerForm.register('email', {
+                  required: true,
+                  pattern: EMAIL_REG
+                })
+              }}
+              errors={regErrors}
+            ></InputFormError>
 
-              <InputFormError
-                name="password"
-                label="Password"
-                inputProps={{
-                  type: 'password',
-                  ...register('password', {
-                    required: true,
-                    pattern: PASSWORD
-                  })
-                }}
-                errors={errors}
-              ></InputFormError>
+            <InputFormError
+              name="password"
+              label="Password"
+              inputProps={{
+                type: 'password',
+                ...registerForm.register('password', {
+                  required: true,
+                  pattern: PASSWORD
+                })
+              }}
+              errors={regErrors}
+            ></InputFormError>
 
-              {errors.password?.type === 'pattern' ? <PasswordRequirements /> : undefined}
-            </>
-          ) : (
-            <>
-              <Input
-                name="code"
-                label="Code"
-                inputProps={{
-                  ...register('code', {
-                    required: true
-                  })
-                }}
-                error={errors.code?.type === 'required' ? 'Code is required' : undefined}
-              ></Input>
+            {regErrors.password?.type === 'pattern' ? <PasswordRequirements /> : undefined}
+            <LoadingButton
+              loading={regSubmitting}
+              alsoDisabled={regErrors.email !== undefined || regErrors.password !== undefined}
+              buttonProps={{ type: 'submit', primary: true, large: true }}
+            >
+              Send Verification Code
+            </LoadingButton>
+          </AuthForm>
+        ) : (
+          <AuthForm onSubmit={verifyForm.handleSubmit(onVerifySubmit)}>
+            <Input
+              name="code"
+              label="Code"
+              inputProps={{
+                ...verifyForm.register('code', {
+                  required: true
+                })
+              }}
+              error={verErrors.code?.type === 'required' ? 'Code is required' : undefined}
+            ></Input>
 
-              <LoadingButton
-                loading={reqCode}
-                buttonProps={{
-                  id: 'resendCodeButton',
-                  primary: true,
-                  onClick: onResendRequest
-                }}
-              >
-                Resend Code
-              </LoadingButton>
-            </>
-          )}
-          <br />
-
-          <LoadingButton
-            loading={isSubmitting}
-            alsoDisabled={errors.email !== undefined || errors.password !== undefined}
-            buttonProps={{ type: 'submit', primary: true, large: true }}
-          >
-            {registered ? 'Verify code' : 'Send Verification Code'}
-          </LoadingButton>
-          {registered && (
+            <LoadingButton
+              loading={reqCode}
+              buttonProps={{
+                id: 'resendCodeButton',
+                primary: true,
+                onClick: onResendRequest
+              }}
+            >
+              Resend Code
+            </LoadingButton>
+            <LoadingButton
+              loading={verSubmitting}
+              alsoDisabled={verErrors.code !== undefined}
+              buttonProps={{ type: 'submit', primary: true, large: true }}
+            >
+              Verify Code
+            </LoadingButton>
             <Button large onClick={onCancelVerification}>
               Cancel
             </Button>
-          )}
-        </AuthForm>
+          </AuthForm>
+        )}
+        <br />
       </BackCard>
       <FooterCard>
         <Link to="/login">Login</Link>
