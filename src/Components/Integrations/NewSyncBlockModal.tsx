@@ -13,6 +13,7 @@ import { capitalize } from '../../Lib/strings'
 import { integrationURLs } from '../../Requests/routes'
 import { Button } from '../../Styled/Buttons'
 import { InputBlock, Label, TextAreaBlock } from '../../Styled/Form'
+import { LoadingButton } from '../Buttons/LoadingButton'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import ServiceSelector from './ServiceSelector'
 
@@ -52,7 +53,12 @@ const NewSyncTemplateModal = () => {
   const services = useSyncStore((store) => store.services)
   const { updater } = useUpdater()
   const saveData = useSaveData()
-  const { control, register, getValues } = useForm()
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { isSubmitting }
+  } = useForm()
 
   // const theme = useTheme()
 
@@ -68,8 +74,7 @@ const NewSyncTemplateModal = () => {
     closeModal()
   }
 
-  const handleSubmit = () => {
-    const { intents, command, title, description } = getValues()
+  const onSubmit = async ({ intents, command, title, description }) => {
     // console.log({ intents, command, title, description })
 
     const template: SyncBlockTemplate = {
@@ -98,9 +103,7 @@ const NewSyncTemplateModal = () => {
       description: template.description
     }
 
-    // console.log({ reqData })
-
-    client.post(integrationURLs.createTemplate, reqData).then(() => {
+    await client.post(integrationURLs.createTemplate, reqData).then(() => {
       addTemplate(template)
       saveData()
       updater()
@@ -113,37 +116,42 @@ const NewSyncTemplateModal = () => {
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>New Sync Template</ModalHeader>
 
-      <Label htmlFor="command">Command</Label>
-      <InputBlock autoFocus placeholder="Ex. notify" {...register('command')} />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Label htmlFor="command">Command</Label>
+        <InputBlock autoFocus placeholder="Ex. notify" {...register('command')} />
 
-      <Label htmlFor="title">Title</Label>
-      <InputBlock placeholder="Ex. Notify Team Members" {...register('title')} />
+        <Label htmlFor="title">Title</Label>
+        <InputBlock placeholder="Ex. Notify Team Members" {...register('title')} />
 
-      <Label htmlFor="description">Description</Label>
-      <TextAreaBlock placeholder="Ex. Notify team members about recent changes in spec" {...register('description')} />
+        <Label htmlFor="description">Description</Label>
+        <TextAreaBlock
+          placeholder="Ex. Notify team members about recent changes in spec"
+          {...register('description')}
+        />
 
-      <Label htmlFor="intents">Services to sync</Label>
-      <Controller
-        name="intents"
-        control={control}
-        render={({ field: { onChange, /* value, */ ref } }) => (
-          <ServiceSelector
-            inputRef={ref}
-            label="Select Services"
-            onChange={(val) => onChange(val.map((c) => c.value))}
-            options={serviceOptions}
-          />
-        )}
-      />
+        <Label htmlFor="intents">Services to sync</Label>
+        <Controller
+          name="intents"
+          control={control}
+          render={({ field: { onChange, /* value, */ ref } }) => (
+            <ServiceSelector
+              inputRef={ref}
+              label="Select Services"
+              onChange={(val) => onChange(val.map((c) => c.value))}
+              options={serviceOptions}
+            />
+          )}
+        />
 
-      <ModalControls>
-        <Button large primary onClick={handleSubmit}>
-          Submit
-        </Button>
-        <Button large onClick={handleCancel}>
-          Cancel
-        </Button>
-      </ModalControls>
+        <ModalControls>
+          <LoadingButton loading={isSubmitting} buttonProps={{ type: 'submit', primary: true, large: true }}>
+            Submit
+          </LoadingButton>
+          <Button large onClick={handleCancel}>
+            Cancel
+          </Button>
+        </ModalControls>
+      </form>
     </Modal>
   )
 }

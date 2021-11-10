@@ -12,8 +12,12 @@ const loadingFade = keyframes`
 const LoadingWrapper = styled.div<LoadingProps>`
   display: flex;
   justify-content: space-around;
-  padding: 10px;
-  background: ${({ theme }) => theme.colors.gray[9]};
+  ${({ theme, transparent }) =>
+    !transparent &&
+    css`
+      padding: 10px;
+      background: ${theme.colors.gray[9]};
+    `}
 
   border-radius: 5px;
 
@@ -47,11 +51,12 @@ const LoadingDot = styled.div<{ totalDots: number }>`
 
 export interface LoadingProps {
   dots: number
+  transparent?: boolean
 }
 
-const Loading = ({ dots }: LoadingProps) => {
+const Loading = ({ dots, transparent }: LoadingProps) => {
   return (
-    <LoadingWrapper dots={dots}>
+    <LoadingWrapper transparent={transparent} dots={dots}>
       {Array(dots)
         .fill(0)
         .map((e, i) => (

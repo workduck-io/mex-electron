@@ -15,13 +15,11 @@ export const BackCard = styled.div`
   justify-content: center;
   background: ${({ theme }) => theme.colors.background.card};
   box-shadow: 0px 20px 100px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
-  /* overflow: visible; */
   border-radius: ${({ theme }) => theme.borderRadius.large};
   border: 1px solid ${({ theme }) => theme.colors.gray[8]};
   outline: none;
   padding: ${({ theme }) => theme.spacing.large};
   margin: ${({ theme }) => theme.spacing.large};
-  /* min-height: 400px; */
   min-width: 300px;
   max-width: 600px;
 `

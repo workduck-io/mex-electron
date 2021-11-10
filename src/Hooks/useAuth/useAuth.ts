@@ -67,7 +67,7 @@ export const useAuthentication = () => {
         return e.toString() as string
       })
 
-    if (getWorkspace) {
+    if (getWorkspace && data !== undefined) {
       await client
         .get(apiURLs.getUserRecords(data.userId))
         .then((d) => {

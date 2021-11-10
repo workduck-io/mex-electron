@@ -1,6 +1,6 @@
 import Tippy from '@tippyjs/react/headless' // different import path!
 import React from 'react'
-import { InputBlock, Label } from '../../Styled/Form'
+import { InputBlock, Label, InputWrapper } from '../../Styled/Form'
 import { ErrorTooltip } from '../../Styled/tippy'
 import { errorMessages } from '../Auth/errorMessages'
 
@@ -16,7 +16,7 @@ const Input = ({ name, label, inputProps, labelProps, error }: LabeledInputProps
   // console.log({ name, label, inputProps, labelProps, error })
 
   return (
-    <div key={`FormInput_${name}_${label}`}>
+    <InputWrapper key={`FormInput_${name}_${label}`}>
       <Tippy
         render={(attrs) => (
           <ErrorTooltip tabIndex={-1} {...attrs}>
@@ -33,7 +33,7 @@ const Input = ({ name, label, inputProps, labelProps, error }: LabeledInputProps
         </Label>
       </Tippy>
       <InputBlock error={error !== undefined} key={`login-form-${name} `} {...inputProps} />
-    </div>
+    </InputWrapper>
   )
 }
 

@@ -68,6 +68,14 @@ export const TextArea = styled.textarea`
   }
 `
 
+export const InputWrapper = styled.div`
+  width: 100%;
+`
+
+export const AuthForm = styled.form`
+  width: 100%;
+`
+
 export const TextAreaBlock = styled(TextArea)`
   width: 100%;
   display: block;

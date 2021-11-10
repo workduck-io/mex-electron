@@ -77,15 +77,18 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, title, size, onClick, hig
 
 export default IconButton
 
-export interface DivButtonProps {
+export interface AsyncButtonProps {
   children?: React.ReactNode
   primary?: boolean
   large?: boolean
   highlight?: boolean
   disabled?: boolean
+  id?: string
+  onClick?: any
+  type?: 'button' | 'submit' | 'reset'
 }
 
-export const DivButton = styled.div<DivButtonProps>`
+export const AsyncButton = styled.button<AsyncButtonProps>`
   ${centeredCss};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   color: ${({ theme }) => theme.colors.text.subheading};
@@ -99,12 +102,10 @@ export const DivButton = styled.div<DivButtonProps>`
     large
       ? css`
           padding: ${`${theme.spacing.small} ${theme.spacing.medium}`};
-          margin: 0 ${({ theme }) => theme.spacing.small};
           font-size: 1.2rem;
         `
       : css`
           padding: ${({ theme }) => theme.spacing.small};
-          margin: 0 ${({ theme }) => theme.spacing.tiny};
         `}
 
   ${({ theme, highlight }) =>
@@ -116,15 +117,6 @@ export const DivButton = styled.div<DivButtonProps>`
         `
       : ''}
 
-  ${({ theme, disabled }) =>
-    disabled
-      ? css`
-          pointer-events: none;
-          background-color: ${theme.colors.gray[7]};
-          color: ${theme.colors.text.fade};
-          box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.text.fade)};
-        `
-      : ''}
 
   ${({ theme, primary }) =>
     primary
@@ -135,6 +127,16 @@ export const DivButton = styled.div<DivButtonProps>`
             background-color: ${theme.colors.fade.primary};
             color: ${theme.colors.text.oppositePrimary};
           }
+        `
+      : ''}
+
+  ${({ theme, disabled }) =>
+    disabled
+      ? css`
+          pointer-events: none;
+          background-color: ${theme.colors.gray[7]};
+          color: ${theme.colors.text.fade};
+          box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.text.fade)};
         `
       : ''}
 `
