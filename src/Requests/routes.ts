@@ -12,7 +12,7 @@ export const integrationURLs = {
 }
 
 export const BASE_API_URL = 'https://http.workduck.io/mex'
-export const BASE_USER_URL = 'https://api.workduck.io/user'
+export const BASE_USER_URL = 'https://http.workduck.io/user'
 
 export const apiURLs = {
   saveNode: `${BASE_API_URL}/node`,

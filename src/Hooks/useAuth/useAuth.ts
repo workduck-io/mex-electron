@@ -3,7 +3,6 @@ import { nanoid } from 'nanoid'
 import { apiURLs } from '../../Requests/routes'
 import create from 'zustand'
 import { useUpdater } from '../../Data/useUpdater'
-import { WORKSPACE_ID } from '../../Defaults/auth'
 import { useState } from 'react'
 import { UserCred } from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
 
@@ -12,6 +11,7 @@ interface UserDetails {
 }
 
 interface WorkspaceDetails {
+  name: string
   id: string
 }
 
@@ -30,9 +30,7 @@ export const useAuthStore = create<AuthStoreState>((set) => ({
   authenticated: true,
   registered: false,
   userDetails: undefined,
-  workspaceDetails: {
-    id: WORKSPACE_ID
-  },
+  workspaceDetails: undefined,
   setAuthenticated: (userDetails) => set({ authenticated: true, userDetails }),
   setUnAuthenticated: () => set({ authenticated: false, userDetails: undefined, workspaceDetails: undefined }),
   setRegistered: (val) => set({ registered: val }),
@@ -72,6 +70,8 @@ export const useAuthentication = () => {
         .get(apiURLs.getUserRecords(data.userId))
         .then((d) => {
           console.log(d.data)
+          // Set workspace details
+          setWorkspaceDetails({ id: d.data.id, name: d.data.name })
         })
         .catch((e) => {
           console.error({ e })
@@ -111,13 +111,8 @@ export const useAuthentication = () => {
     }
 
     const uCred = loginData.data
+    const newWorkspaceName = `WD_${nanoid()}`
 
-    await client
-      .post(apiURLs.createWorkspace, { name: nanoid() })
-      .then((d) => {
-        setWorkspaceDetails({ id: d.data.id })
-      })
-      .catch(console.error)
     if (vSign) {
       setRegistered(false)
     }
@@ -129,10 +124,12 @@ export const useAuthentication = () => {
           name: uCred.email,
           email: uCred.email
         },
-        workspaceName: `WD_${nanoid()}`
+        workspaceName: newWorkspaceName
       })
-      .then((r) => {
-        console.log(r)
+      .then((d) => {
+        console.log(d.data)
+        // Set workspace details
+        setWorkspaceDetails({ id: d.data.id, name: d.data.name })
       })
     console.log({ workspace_details })
 
