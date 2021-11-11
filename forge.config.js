@@ -1,16 +1,5 @@
 module.exports = {
-  packagerConfig: {
-    osxSign: {
-      'hardened-runtime': true,
-      entitlements: 'build/entitlements.plist',
-      'signature-flags': 'library',
-      'gatekeeper-assess': false
-    },
-    osxNotarize: {
-      appleId: process.env.APPLE_ID,
-      appleIdPassword: process.env.APPLE_ID_PASSWORD
-    }
-  },
+  packagerConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
