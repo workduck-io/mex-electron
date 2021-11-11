@@ -1,14 +1,16 @@
 import { transparentize } from 'polished'
+import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { Button } from './Buttons'
-import { Card } from './Card'
 import { GridCss } from './Grid'
 
 export const ThemePreviews = styled.div`
   ${GridCss(3, 5)}
 `
 
-export const Theme = styled(Card)`
+export const Theme = styled(animated.div)`
+  padding: ${({ theme }) => theme.spacing.medium};
+  border-radius: ${({ theme }) => theme.borderRadius.large};
   color: ${({ theme }) => theme.colors.text.default};
   background-color: ${({ theme }) => theme.colors.gray[9]};
   height: inherit;

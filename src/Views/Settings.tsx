@@ -8,6 +8,7 @@ import toast from 'react-hot-toast'
 import { Wrapper } from '../Styled/Layouts'
 import { ButtonWrapper, Theme, ThemeColorDots, ThemeHeader, ThemePreview, ThemePreviews } from '../Styled/Settings'
 import { ThemeProvider } from 'styled-components'
+import { useTransition } from 'react-spring'
 
 const Settings = () => {
   const themes = useThemeStore((state) => state.themes)
@@ -15,6 +16,19 @@ const Settings = () => {
   const setTheme = useThemeStore((state) => state.setTheme)
 
   const saveData = useSaveData()
+
+  const transition = useTransition(themes, {
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    keys: (item) => item.id,
+    trail: 100,
+    duration: 300,
+    config: {
+      mass: 1,
+      tension: 200,
+      friction: 16
+    }
+  })
 
   const onSave = () => {
     // TODO: Only save settings data
@@ -34,10 +48,11 @@ const Settings = () => {
       </FlexBetween>
       <h2>Current theme: {theme.id}</h2>
       <ThemePreviews>
-        {themes.map((t, i) => {
+        {transition((styles, t, _t, i) => {
+          // {themes.map((t, i) => {
           return (
             <ThemeProvider key={`mex_theme_key_${t.id}`} theme={t.themeData}>
-              <Theme>
+              <Theme style={styles}>
                 <ThemeHeader>
                   <h1>{t.id}</h1>
                 </ThemeHeader>

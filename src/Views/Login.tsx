@@ -70,7 +70,7 @@ const Login = () => {
           <LoadingButton
             loading={isSubmitting}
             alsoDisabled={errors.email !== undefined || errors.password !== undefined}
-            buttonProps={{ type: 'submit', primary: true }}
+            buttonProps={{ type: 'submit', primary: true, large: true }}
           >
             Login
           </LoadingButton>
