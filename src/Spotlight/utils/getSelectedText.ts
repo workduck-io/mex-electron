@@ -1,6 +1,6 @@
 import { clipboard } from 'electron'
 import { keyTap } from 'robotjs'
-import activeWindow from 'active-win'
+import activeWindow from 'active-win-universal-release'
 import { getKeyFromKeycode } from '../../Lib/keyMap'
 
 export type SelectionType = {
