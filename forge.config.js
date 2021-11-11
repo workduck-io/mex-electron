@@ -1,5 +1,16 @@
 module.exports = {
-  packagerConfig: {},
+  packagerConfig: {
+    osxSign: {
+      'hardened-runtime': true,
+      entitlements: 'build/entitlements.plist',
+      'signature-flags': 'library',
+      'gatekeeper-assess': false
+    },
+    osxNotarize: {
+      appleId: process.env.APPLE_ID,
+      appleIdPassword: process.env.APPLE_ID_PASSWORD
+    }
+  },
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
@@ -52,7 +63,7 @@ module.exports = {
     [
       '@timfish/forge-externals-plugin',
       {
-        externals: ['active-win'],
+        externals: ['active-win-universal'],
         includeDeps: true
       }
     ]
