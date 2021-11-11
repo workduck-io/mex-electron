@@ -6,12 +6,12 @@ module.exports = {
   entry: './src/main.dev.ts',
   // Put your normal webpack config below here
   module: {
-    rules: require('./webpack.rules'),
+    rules: require('./webpack.rules')
   },
   externals: {
-    'active-win': 'commonjs2 active-win',
+    'active-win-universal': 'commonjs2 active-win-universal'
   },
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
-  },
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json']
+  }
 }
