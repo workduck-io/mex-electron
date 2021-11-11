@@ -9,7 +9,7 @@ module.exports = {
     rules: require('./webpack.rules')
   },
   externals: {
-    'active-win': 'commonjs2 active-win'
+    'active-win-universal-release': 'commonjs2 active-win-universal-release'
   },
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json']
