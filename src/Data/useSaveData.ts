@@ -16,6 +16,7 @@ export const useSaveData = () => {
     // console.log(JSON.stringify(useContentStore.getState().contents, null, 2))
     const fileData: FileData = {
       remoteUpdate: false,
+      baseNodeId: useDataStore.getState().baseNodeId,
       ilinks: useDataStore.getState().ilinks,
       linkCache: useDataStore.getState().linkCache,
       tags: useDataStore.getState().tags,

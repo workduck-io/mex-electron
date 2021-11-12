@@ -7,7 +7,7 @@ import { useHelpStore } from '../../Components/Help/HelpModal'
 import { useInitialize } from '../../Data/useInitialize'
 import { useLocalData } from '../../Data/useLocalData'
 import { useSyncData } from '../../Data/useSyncData'
-import { getUidFromNodeIdBase } from '../../Editor/Actions/useLinks'
+import { getUidFromNodeIdAndLinks } from '../../Editor/Actions/useLinks'
 import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 import { useAuthStore } from '../../Hooks/useAuth/useAuth'
 import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
@@ -70,7 +70,7 @@ const Init = () => {
           setUnAuthenticated()
           return { d, auth: false }
         })
-        .then(({ d, auth }) => auth && loadNode(getUidFromNodeIdBase(d.ilinks, '@')))
+        .then(({ d, auth }) => auth && loadNode(getUidFromNodeIdAndLinks(d.ilinks, d.baseNodeId)))
         .then(() => history.push('/editor'))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()

@@ -111,7 +111,7 @@ export const useLinks = () => {
   return { getAllLinks, getLinks, getBacklinks, updateLinksFromContent, getUidFromNodeId, getNodeIdFromUid }
 }
 
-export const getUidFromNodeIdBase = (links: ILink[], nodeId: string) => {
+export const getUidFromNodeIdAndLinks = (links: ILink[], nodeId: string) => {
   const link = links.find((l) => l.text === nodeId)
   if (link) return link.uid
 }

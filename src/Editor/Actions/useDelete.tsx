@@ -4,7 +4,7 @@ import useDataStore from '../Store/DataStore'
 import { useHistoryStore } from '../Store/HistoryStore'
 import { useRecentsStore } from '../Store/RecentsStore'
 import { ILink } from '../Store/Types'
-import { getUidFromNodeIdBase } from './useLinks'
+import { getUidFromNodeIdAndLinks } from './useLinks'
 
 export const useDelete = () => {
   const ilinks = useDataStore((state) => state.ilinks)
@@ -12,6 +12,7 @@ export const useDelete = () => {
 
   const setILinks = useDataStore((state) => state.setIlinks)
   const initContents = useContentStore((state) => state.initContents)
+  const setBaseNodeId = useDataStore((state) => state.setBaseNodeId)
 
   const historyStack = useHistoryStore((state) => state.stack)
   const currentIndex = useHistoryStore((state) => state.currentNodeIndex)
@@ -44,7 +45,7 @@ export const useDelete = () => {
     // Remap the contents for links that remain
     const newContents: Contents = {}
     newIlinks.forEach((l) => {
-      const uid = getUidFromNodeIdBase(newIlinks, l.text)
+      const uid = getUidFromNodeIdAndLinks(newIlinks, l.text)
       newContents[uid] = contents[uid]
     })
 
@@ -54,6 +55,10 @@ export const useDelete = () => {
     const { newIds: newRecents } = applyDeleteToIds(lastOpened, 0, newIlinks)
     updateLastOpened(newRecents)
 
+    const baseId = deleted.indexOf(useDataStore.getState().baseNodeId)
+    if (baseId !== -1 && newIlinks.length > 0) {
+      setBaseNodeId(newIlinks[0].text)
+    }
     setILinks(newIlinks)
     initContents(newContents)
 
@@ -81,7 +86,8 @@ const applyDeleteToIds = (ids: string[], currentIndex: number, newIlinks: ILink[
 
 // Used to wrap a class component to provide hooks
 export const withDelete = (Component: any) => {
-  return function C2 (props: any) {
+  // eslint-disable-next-line space-before-function-paren
+  return function C2(props: any) {
     const { getMockDelete, execDelete } = useDelete()
 
     return <Component getMockDelete={getMockDelete} execDelete={execDelete} {...props} /> // eslint-disable-line react/jsx-props-no-spreading
