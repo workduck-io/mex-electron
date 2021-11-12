@@ -85,6 +85,7 @@ const Search = () => {
       setResult(res)
     } else {
       const res = searchIndex(newSearchTerm)
+      console.log({ res })
       const res2 = res.map((r) => {
         return {
           ref: r.ref,

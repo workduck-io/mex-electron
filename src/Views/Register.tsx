@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { AuthForm } from '../Styled/Form'
 import { PasswordRequirements } from '../Components/Auth/errorMessages'
 import Input, { InputFormError } from '../Components/Forms/Input'
-import { EMAIL_REG, PASSWORD } from '../Defaults/auth'
+import { EMAIL_REG, MEX_TAG, PASSWORD } from '../Defaults/auth'
 import { useAuthentication, useAuthStore } from '../Hooks/useAuth/useAuth'
 import { Button } from '../Styled/Buttons'
 import { BackCard, FooterCard } from '../Styled/Card'
@@ -63,7 +63,7 @@ const Register = () => {
   }
 
   const onVerifySubmit = async (data: VerifyFormData) => {
-    const metadata = { tag: 'mex' }
+    const metadata = { tag: MEX_TAG }
     await verifySignup(data.code, metadata)
   }
 

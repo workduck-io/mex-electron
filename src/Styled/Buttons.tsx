@@ -74,7 +74,7 @@ export const HeadlessButton = styled.button`
   background: transparent;
 `
 
-const IconButton: React.FC<IconButtonProps> = ({ icon, title, size, onClick, highlight }: IconButtonProps) => {
+const IconButton = ({ icon, title, size, onClick, highlight }: IconButtonProps) => {
   return (
     <Button onClick={onClick} highlight={highlight} data-tip={title} data-place="bottom">
       <Icon icon={icon} height={size} />

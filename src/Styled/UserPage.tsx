@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Button } from './Buttons'
 
 export const ProfileContainer = styled.div`
   display: flex;
@@ -42,6 +43,12 @@ interface InfoDataProps {
 }
 
 export const InfoData = styled.div<InfoDataProps>`
+  word-break: break-all;
   color: ${({ theme }) => theme.colors.text.default};
   font-size: ${({ small }) => (small ? 0.9 : 1.2)}rem;
+  ${Button} {
+    color: ${({ theme }) => theme.colors.primary};
+    float: left;
+    margin: 0 ${({ theme }) => theme.spacing.small} 0 0;
+  }
 `

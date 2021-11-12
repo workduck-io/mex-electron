@@ -1,7 +1,7 @@
 import { ID_SEPARATOR, WORKSPACE_ID_PREFIX } from './idPrefixes'
 
 export const WORKSPACE_ID = `${WORKSPACE_ID_PREFIX}${ID_SEPARATOR}id`
-export const MEX_TAG = 'mex'
+export const MEX_TAG = 'MEX'
 
 /* eslint-disable no-useless-escape */
 

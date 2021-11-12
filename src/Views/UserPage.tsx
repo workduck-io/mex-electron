@@ -8,6 +8,7 @@ import { CenteredColumn } from '../Styled/Layouts'
 import { Title } from '../Styled/Typography'
 import { Info, InfoData, InfoLabel, ProfileContainer, ProfileIcon } from '../Styled/UserPage'
 import { ProfileImage } from '../Components/User/ProfileImage'
+import { CopyButton } from '../Components/Buttons/CopyButton'
 
 const UserPage = () => {
   const { getUserDetails } = useAuth()
@@ -39,7 +40,10 @@ const UserPage = () => {
             </Info>
             <Info>
               <InfoLabel>Workspace:</InfoLabel>
-              <InfoData small>{getWorkspaceId()}</InfoData>
+              <InfoData small>
+                <CopyButton text={getWorkspaceId()}></CopyButton>
+                {getWorkspaceId()}
+              </InfoData>
             </Info>
           </div>
         </ProfileContainer>

@@ -35,7 +35,8 @@ export const useAuthStore = create<AuthStoreState>(
       registered: false,
       userDetails: undefined,
       workspaceDetails: undefined,
-      setAuthenticated: (userDetails, workspaceDetails) => set({ authenticated: true, userDetails, workspaceDetails }),
+      setAuthenticated: (userDetails, workspaceDetails) =>
+        set({ authenticated: true, userDetails, workspaceDetails, registered: false }),
       // setAuthenticatedUserDetails: (userDetails: UserDetails) => set({ authenticated: true, userDetails }),
       setUnAuthenticated: () => set({ authenticated: false, userDetails: undefined, workspaceDetails: undefined }),
       setRegistered: (val) => set({ registered: val }),
@@ -126,10 +127,6 @@ export const useAuthentication = () => {
     const uCred = loginData.data
     const newWorkspaceName = `WD_${nanoid()}`
 
-    if (vSign) {
-      setRegistered(false)
-    }
-
     const workspace_details = await client
       .post(apiURLs.registerUser, {
         user: {
@@ -145,8 +142,10 @@ export const useAuthentication = () => {
         setAuthenticated({ email: sensitiveData.email }, { id: d.data.id, name: d.data.name })
       })
       .catch(console.error)
-    console.log({ workspace_details })
 
+    if (vSign) {
+      setRegistered(false)
+    }
     return vSign
   }
 
