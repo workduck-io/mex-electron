@@ -40,6 +40,7 @@ jobs:
     runs-on: macos-latest
     needs: create_github_release
     env:
+      DEBUG: "*"
       GITHUB_TOKEN: ${{ github.token }}
       YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
       CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
@@ -73,6 +74,7 @@ jobs:
     runs-on: macos-latest
     needs: create_github_release
     env:
+      DEBUG: "*"
       GITHUB_TOKEN: ${{ github.token }}
       YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
       CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
