@@ -19,7 +19,7 @@ function buildDMG(arch) {
         x: 192,
         y: 144,
         type: 'file',
-        path: path.join(cwd, './out/Mex-darwin-arm64/Mex.app')
+        path: path.join(cwd, `out/Mex-darwin-${arch}/Mex.app`)
       }
     ],
     overwrite: true,
