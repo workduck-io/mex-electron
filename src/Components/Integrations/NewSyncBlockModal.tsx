@@ -2,10 +2,10 @@ import { client } from '@workduck-io/dwindle'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import Modal from 'react-modal'
+import { useAuthStore } from '../../Hooks/useAuth/useAuth'
 import create from 'zustand'
 import { useSaveData } from '../../Data/useSaveData'
 import { useUpdater } from '../../Data/useUpdater'
-import { WORKSPACE_ID } from '../../Defaults/auth'
 import { generateSyncTempId } from '../../Defaults/idPrefixes'
 import { SyncBlockTemplate } from '../../Editor/Components/SyncBlock'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
@@ -52,6 +52,7 @@ const NewSyncTemplateModal = () => {
   const addTemplate = useSyncStore((store) => store.addTemplate)
   const services = useSyncStore((store) => store.services)
   const { updater } = useUpdater()
+  const workspaceId = useAuthStore((store) => store.workspaceDetails.id)
   const saveData = useSaveData()
   const {
     control,
@@ -98,7 +99,7 @@ const NewSyncTemplateModal = () => {
     const reqData = {
       intentMap,
       templateId: template.id,
-      workspaceId: WORKSPACE_ID,
+      workspaceId,
       name: template.id,
       description: template.description
     }

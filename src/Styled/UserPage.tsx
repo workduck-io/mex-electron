@@ -36,7 +36,12 @@ export const InfoLabel = styled.div`
   color: ${({ theme }) => theme.colors.gray[6]};
   margin-bottom: ${({ theme }) => theme.spacing.tiny};
 `
-export const InfoData = styled.div`
+
+interface InfoDataProps {
+  small?: boolean
+}
+
+export const InfoData = styled.div<InfoDataProps>`
   color: ${({ theme }) => theme.colors.text.default};
-  font-size: 1.2rem;
+  font-size: ${({ small }) => (small ? 0.9 : 1.2)}rem;
 `

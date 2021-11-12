@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactTooltip from 'react-tooltip'
+import { useAuthStore } from '../Hooks/useAuth/useAuth'
 import styled, { useTheme } from 'styled-components'
 import HelpTooltip from '../Components/Help/HelpTooltip'
 import { Notifications } from '../Components/Notifications/Notifications'
@@ -32,11 +33,14 @@ const Draggable = styled.div`
 
 export type MainProps = { children: React.ReactNode }
 
-const Main: React.FC<MainProps> = ({ children }: MainProps) => {
+const Main = ({ children }: MainProps) => {
   const theme = useTheme()
+  const wd = useAuthStore((store) => store.workspaceDetails)
   const styles = {
     '-webkit-app-region': 'drag'
   }
+
+  console.log({ wd })
 
   return (
     <AppWrapper>

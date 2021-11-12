@@ -2,16 +2,16 @@ import { useAuth } from '@workduck-io/dwindle'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { Button } from '../Styled/Buttons'
-import { useAuthentication } from '../Hooks/useAuth/useAuth'
+import { useAuthentication, useAuthStore } from '../Hooks/useAuth/useAuth'
 import { BackCard } from '../Styled/Card'
 import { CenteredColumn } from '../Styled/Layouts'
 import { Title } from '../Styled/Typography'
-import { WORKSPACE_ID } from '../Defaults/auth'
 import { Info, InfoData, InfoLabel, ProfileContainer, ProfileIcon } from '../Styled/UserPage'
 import { ProfileImage } from '../Components/User/ProfileImage'
 
 const UserPage = () => {
   const { getUserDetails } = useAuth()
+  const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const { logout } = useAuthentication()
   const history = useHistory()
 
@@ -39,7 +39,7 @@ const UserPage = () => {
             </Info>
             <Info>
               <InfoLabel>Workspace:</InfoLabel>
-              <InfoData>{WORKSPACE_ID}</InfoData>
+              <InfoData small>{getWorkspaceId()}</InfoData>
             </Info>
           </div>
         </ProfileContainer>

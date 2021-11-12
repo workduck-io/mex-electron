@@ -1,21 +1,22 @@
 import { RestAPI as API } from '@aws-amplify/api-rest'
-import { WORKSPACE_ID } from '../Defaults/auth'
 import { defaultContent } from '../Defaults/baseData'
 import { USE_API } from '../Defaults/dev_'
 import { deserializeContent, serializeContent } from '../Lib/serialize'
 import initializeAmplify from './amplify/init'
 import { client } from '@workduck-io/dwindle'
 import { apiURLs } from './routes'
+import { useAuthStore } from '../Hooks/useAuth/useAuth'
 
 initializeAmplify()
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const saveDataAPI = (uid: string, content: any[]) => {
     const reqData = {
       id: uid,
       namespaceIdentifier: 'NAMESPACE1',
-      workspaceIdentifier: WORKSPACE_ID,
+      workspaceIdentifier: getWorkspaceId(),
       data: serializeContent(content ?? defaultContent)
     }
 

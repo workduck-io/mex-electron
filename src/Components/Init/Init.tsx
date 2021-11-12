@@ -22,7 +22,7 @@ import { useSaveAndExit } from '../../Spotlight/utils/hooks'
 const Init = () => {
   const history = useHistory()
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
-  const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
+  // const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
 
   const { move, push } = useNavigation()
@@ -62,9 +62,8 @@ const Init = () => {
             ClientId: config.cognito.APP_CLIENT_ID
           })
           if (userAuthenticatedEmail) {
-            console.log(userAuthenticatedEmail)
-
-            setAuthenticated({ email: userAuthenticatedEmail })
+            console.log('Authenticated User email: ', userAuthenticatedEmail)
+            // setAuthenticated({ email: userAuthenticatedEmail })
             return { d, auth: true }
           }
 

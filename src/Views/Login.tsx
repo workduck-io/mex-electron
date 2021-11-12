@@ -27,6 +27,7 @@ const Login = () => {
   const onSubmit = async (data: LoginFormData): Promise<void> => {
     await login(data.email, data.password, true)
       .then((s) => {
+        console.log({ s })
         if (s.v === 'Incorrect username or password.') {
           toast.error(s.v)
         }

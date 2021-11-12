@@ -1,10 +1,10 @@
 import { client } from '@workduck-io/dwindle'
-import { WORKSPACE_ID } from '../../Defaults/auth'
 import { generateIgId } from '../../Defaults/idPrefixes'
 import { Intent, IntentGroup, IntentTemplate } from '../../Editor/Components/SyncBlock/SyncBlock.types'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
 import { isIntent } from '../../Lib/intents'
 import { integrationURLs } from '../../Requests/routes'
+import { useAuthStore } from '../useAuth/useAuth'
 
 const useIntents = () => {
   const addIgid = useSyncStore((store) => store.addIgid)
@@ -225,7 +225,7 @@ const apiCreateIntent = (intents: Intent[], igid: string, templateId: string) =>
   }))
   const reqData = {
     intentGroupId: igid,
-    workspaceId: WORKSPACE_ID,
+    workspaceId: useAuthStore.getState().workspaceDetails.id,
     templateId: templateId,
     syncDetails: syncDetails
   }
@@ -244,7 +244,7 @@ const apiUpdateIntent = (intents: Intent[], igid: string) => {
   }))
   const reqData = {
     intentGroupId: igid,
-    workspaceId: WORKSPACE_ID,
+    workspaceId: useAuthStore.getState().workspaceDetails.id,
     syncDetails: syncDetails
   }
   // console.log({ reqData })
