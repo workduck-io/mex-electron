@@ -65,6 +65,7 @@ const NewSyncTemplateModal = () => {
 
   const serviceOptions = services
     .filter((s) => s.id !== 'MEX')
+    .filter((s) => s.enabled)
     .map((s) => ({
       label: `${capitalize(s.id)} - ${capitalize(s.type)}`,
       value: { service: s.id, type: s.type },

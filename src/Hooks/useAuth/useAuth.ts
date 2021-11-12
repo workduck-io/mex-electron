@@ -80,7 +80,7 @@ export const useAuthentication = () => {
       await client
         .get(apiURLs.getUserRecords(data.userId))
         .then((d) => {
-          // console.log('workspace data', d.data)
+          console.log('workspace data', d.data)
           // Set Authenticated, user and workspace details
           setAuthenticated({ email }, { id: d.data.id, name: d.data.name })
         })
