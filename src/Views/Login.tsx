@@ -9,7 +9,7 @@ import { BackCard, FooterCard } from '../Styled/Card'
 import { CenteredColumn } from '../Styled/Layouts'
 import { Title } from '../Styled/Typography'
 import { LoadingButton } from '../Components/Buttons/LoadingButton'
-import { AuthForm } from '../Styled/Form'
+import { AuthForm, ButtonFields } from '../Styled/Form'
 
 interface LoginFormData {
   email: string
@@ -67,14 +67,15 @@ const Login = () => {
             errors={errors}
           ></InputFormError>
 
-          <br />
-          <LoadingButton
-            loading={isSubmitting}
-            alsoDisabled={errors.email !== undefined || errors.password !== undefined}
-            buttonProps={{ type: 'submit', primary: true, large: true }}
-          >
-            Login
-          </LoadingButton>
+          <ButtonFields>
+            <LoadingButton
+              loading={isSubmitting}
+              alsoDisabled={errors.email !== undefined || errors.password !== undefined}
+              buttonProps={{ type: 'submit', primary: true, large: true }}
+            >
+              Login
+            </LoadingButton>
+          </ButtonFields>
         </AuthForm>
       </BackCard>
       <FooterCard>

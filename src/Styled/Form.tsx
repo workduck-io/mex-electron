@@ -99,13 +99,19 @@ export const Label = styled.label<LabelProps>`
   max-width: max-content;
 `
 
+export const ButtonFields = styled.div`
+  display: flex;
+  align-items: center;
+  margin: ${({ theme }) => theme.spacing.large} 0 ${({ theme }) => theme.spacing.medium};
+`
+
 export const ReactSelectStyles = (theme: DefaultTheme) => ({
   menu: (provided, state) => ({
     ...provided,
     // width: state.selectProps.width,
     color: state.selectProps.menuColor,
     backgroundColor: theme.colors.gray[8],
-    padding: `${theme.spacing.tiny} ${theme.spacing.small}`
+    padding: `${theme.spacing.small} ${theme.spacing.small}`
     // padding: 20,
   }),
 

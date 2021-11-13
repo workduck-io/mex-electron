@@ -6,6 +6,7 @@ import { persist } from 'zustand/middleware'
 import { useUpdater } from '../../Data/useUpdater'
 import { useState } from 'react'
 import { UserCred } from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
+import { RegisterFormData } from '../../Views/Register'
 
 interface UserDetails {
   email: string
@@ -53,7 +54,7 @@ export const useAuthStore = create<AuthStoreState>(
 )
 
 export const useAuthentication = () => {
-  const [sensitiveData, setSensitiveData] = useState({ email: '', word: '' })
+  const [sensitiveData, setSensitiveData] = useState<RegisterFormData | undefined>()
   const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const setRegistered = useAuthStore((store) => store.setRegistered)
@@ -95,18 +96,18 @@ export const useAuthentication = () => {
     return { data, v }
   }
 
-  const registerDetails = (email: string, password: string): Promise<string> => {
+  const registerDetails = (data: RegisterFormData): Promise<string> => {
     // tag: mex
-    const status = signUp(email, password)
+    const status = signUp(data.email, data.password)
       .then(() => {
         setRegistered(true)
-        setSensitiveData({ email, word: password })
-        return email
+        setSensitiveData(data)
+        return data.email
       })
       .catch((e) => {
         if (e.name === 'UsernameExistsException') {
           setRegistered(true)
-          setSensitiveData({ email, word: password })
+          setSensitiveData(data)
           return e.name
         }
       })
@@ -115,10 +116,16 @@ export const useAuthentication = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const verifySignup = async (code: string, metadata: any): Promise<string> => {
-    const vSign = await verifySignUp(code, metadata).catch(console.error)
+    const formMetaData = {
+      ...metadata,
+      name: sensitiveData.name,
+      email: sensitiveData.email,
+      roles: sensitiveData.roles
+    }
+    const vSign = await verifySignUp(code, formMetaData).catch(console.error)
     console.log({ vSign })
 
-    const loginData = await login(sensitiveData.email, sensitiveData.word).catch(console.error)
+    const loginData = await login(sensitiveData.email, sensitiveData.password).catch(console.error)
 
     if (!loginData) {
       return

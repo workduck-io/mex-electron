@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
-import { AuthForm, Label, StyledSelect } from '../Styled/Form'
+import { AuthForm, ButtonFields, Label, StyledCreatatbleSelect } from '../Styled/Form'
 import { PasswordRequirements } from '../Components/Auth/errorMessages'
 import Input, { InputFormError } from '../Components/Forms/Input'
 import { EMAIL_REG, MEX_TAG, PASSWORD } from '../Defaults/auth'
@@ -15,7 +15,7 @@ import { Title } from '../Styled/Typography'
 import { LoadingButton } from '../Components/Buttons/LoadingButton'
 import { StyledRolesSelectComponents } from '../Styled/Select'
 
-interface RegisterFormData {
+export interface RegisterFormData {
   name: string
   roles: string[]
   email: string
@@ -65,8 +65,7 @@ const Register = () => {
   }
 
   const onRegisterSubmit = async (data: RegisterFormData) => {
-    console.log({ data })
-    await registerDetails(data.email, data.password).then((s) => {
+    await registerDetails(data).then((s) => {
       if (s === 'UsernameExistsException') {
         toast('You have already registered, please verify code.')
       }
@@ -117,14 +116,13 @@ const Register = () => {
             <Controller
               control={registerForm.control}
               render={({ field }) => (
-                <StyledSelect
+                <StyledCreatatbleSelect
                   {...field}
                   isMulti
                   isCreatable
-                  className="formItem"
                   options={UserRoleValues}
+                  closeMenuOnSelect={true}
                   closeMenuOnBlur={false}
-                  closeMenuOnSelect={false}
                   components={StyledRolesSelectComponents}
                   placeholder="Ex. Developer, Designer"
                 />
@@ -147,13 +145,16 @@ const Register = () => {
             ></InputFormError>
 
             {regErrors.password?.type === 'pattern' ? <PasswordRequirements /> : undefined}
-            <LoadingButton
-              loading={regSubmitting}
-              alsoDisabled={regErrors.email !== undefined || regErrors.password !== undefined}
-              buttonProps={{ type: 'submit', primary: true, large: true }}
-            >
-              Send Verification Code
-            </LoadingButton>
+
+            <ButtonFields>
+              <LoadingButton
+                loading={regSubmitting}
+                alsoDisabled={regErrors.email !== undefined || regErrors.password !== undefined}
+                buttonProps={{ type: 'submit', primary: true, large: true }}
+              >
+                Send Verification Code
+              </LoadingButton>
+            </ButtonFields>
           </AuthForm>
         ) : (
           <AuthForm onSubmit={verifyForm.handleSubmit(onVerifySubmit)}>
@@ -172,22 +173,23 @@ const Register = () => {
               loading={reqCode}
               buttonProps={{
                 id: 'resendCodeButton',
-                primary: true,
                 onClick: onResendRequest
               }}
             >
               Resend Code
             </LoadingButton>
-            <LoadingButton
-              loading={verSubmitting}
-              alsoDisabled={verErrors.code !== undefined}
-              buttonProps={{ type: 'submit', primary: true, large: true }}
-            >
-              Verify Code
-            </LoadingButton>
-            <Button large onClick={onCancelVerification}>
-              Cancel
-            </Button>
+            <ButtonFields>
+              <Button large onClick={onCancelVerification}>
+                Cancel
+              </Button>
+              <LoadingButton
+                loading={verSubmitting}
+                alsoDisabled={verErrors.code !== undefined}
+                buttonProps={{ type: 'submit', primary: true, large: true }}
+              >
+                Verify Code
+              </LoadingButton>
+            </ButtonFields>
           </AuthForm>
         )}
         <br />
