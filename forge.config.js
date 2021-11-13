@@ -1,5 +1,12 @@
 module.exports = {
-  packagerConfig: {},
+  electronRebuildConfig: {
+    force: true
+  },
+  packagerConfig: {
+    electronRebuildConfig: {
+      force: true
+    },
+  },
   makers: [
     {
       name: '@electron-forge/maker-squirrel',

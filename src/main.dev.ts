@@ -188,7 +188,7 @@ const createMexWindow = () => {
     shell.openExternal(url)
   })
 
-  // mex.webContents.openDevTools()
+  mex.webContents.openDevTools()
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const callbackOptions = {
