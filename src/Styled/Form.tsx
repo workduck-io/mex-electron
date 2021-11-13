@@ -1,5 +1,6 @@
 import React from 'react'
 import Select from 'react-select'
+import Creatable from 'react-select/creatable'
 import styled, { css, DefaultTheme, useTheme } from 'styled-components'
 import { AppType } from '../Data/useInitialize'
 
@@ -111,7 +112,8 @@ export const ReactSelectStyles = (theme: DefaultTheme) => ({
   control: (provided) => ({
     ...provided,
     backgroundColor: theme.colors.form.input.bg,
-    borderColor: theme.colors.form.input.border
+    borderColor: theme.colors.form.input.border,
+    margin: `${theme.spacing.small} 0`
   }),
 
   option: (provided, state) => ({
@@ -124,7 +126,14 @@ export const ReactSelectStyles = (theme: DefaultTheme) => ({
   })
 })
 
-export const StyledSelect = (props) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const StyledSelect = (props: any) => {
   const theme = useTheme()
   return <Select {...props} theme={theme.additional.reactSelect} styles={ReactSelectStyles(theme)}></Select>
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const StyledCreatatbleSelect = (props: any) => {
+  const theme = useTheme()
+  return <Creatable {...props} theme={theme.additional.reactSelect} styles={ReactSelectStyles(theme)}></Creatable>
 }

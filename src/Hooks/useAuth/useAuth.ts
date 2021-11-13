@@ -139,7 +139,7 @@ export const useAuthentication = () => {
       .then((d) => {
         console.log(d.data)
         // Set workspace details
-        setAuthenticated({ email: sensitiveData.email }, { id: d.data.id, name: d.data.name })
+        setAuthenticated({ email: sensitiveData.email }, { id: d.data.group, name: d.data.name })
       })
       .catch(console.error)
 

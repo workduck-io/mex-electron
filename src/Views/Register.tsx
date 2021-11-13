@@ -1,9 +1,9 @@
 import { useAuth } from '@workduck-io/dwindle'
 import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
-import { AuthForm } from '../Styled/Form'
+import { AuthForm, Label, StyledSelect } from '../Styled/Form'
 import { PasswordRequirements } from '../Components/Auth/errorMessages'
 import Input, { InputFormError } from '../Components/Forms/Input'
 import { EMAIL_REG, MEX_TAG, PASSWORD } from '../Defaults/auth'
@@ -13,11 +13,21 @@ import { BackCard, FooterCard } from '../Styled/Card'
 import { CenteredColumn } from '../Styled/Layouts'
 import { Title } from '../Styled/Typography'
 import { LoadingButton } from '../Components/Buttons/LoadingButton'
+import { StyledRolesSelectComponents } from '../Styled/Select'
 
 interface RegisterFormData {
+  name: string
+  roles: string[]
   email: string
   password: string
 }
+
+const UserRoleValues = [
+  { value: 'development', label: 'Development' },
+  { value: 'design', label: 'Design' },
+  { value: 'product', label: 'Product' },
+  { value: 'testing', label: 'Testing' }
+]
 
 interface VerifyFormData {
   code: string
@@ -55,6 +65,7 @@ const Register = () => {
   }
 
   const onRegisterSubmit = async (data: RegisterFormData) => {
+    console.log({ data })
     await registerDetails(data.email, data.password).then((s) => {
       if (s === 'UsernameExistsException') {
         toast('You have already registered, please verify code.')
@@ -79,10 +90,21 @@ const Register = () => {
         {!registered ? (
           <AuthForm onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
             <InputFormError
+              name="name"
+              label="Name"
+              inputProps={{
+                autoFocus: true,
+                ...registerForm.register('name', {
+                  required: true
+                })
+              }}
+              errors={regErrors}
+            ></InputFormError>
+
+            <InputFormError
               name="email"
               label="Email"
               inputProps={{
-                autoFocus: true,
                 ...registerForm.register('email', {
                   required: true,
                   pattern: EMAIL_REG
@@ -90,6 +112,26 @@ const Register = () => {
               }}
               errors={regErrors}
             ></InputFormError>
+
+            <Label htmlFor="roles">What roles are you part of?</Label>
+            <Controller
+              control={registerForm.control}
+              render={({ field }) => (
+                <StyledSelect
+                  {...field}
+                  isMulti
+                  isCreatable
+                  className="formItem"
+                  options={UserRoleValues}
+                  closeMenuOnBlur={false}
+                  closeMenuOnSelect={false}
+                  components={StyledRolesSelectComponents}
+                  placeholder="Ex. Developer, Designer"
+                />
+              )}
+              rules={{ required: true }}
+              name="roles"
+            />
 
             <InputFormError
               name="password"
