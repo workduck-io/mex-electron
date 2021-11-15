@@ -96,7 +96,7 @@ const useIntents = () => {
     const StoreServices = useSyncStore.getState().services
     const nodeIntents = StoreIntents[uid]
 
-    const mappedIntents = StoreServices.map((s) => {
+    const mappedIntents = StoreServices.filter((s) => s.enabled).map((s) => {
       if (nodeIntents) {
         const intent = nodeIntents.intents.find((i) => i.service === s.id)
         return { intent, service: s }
