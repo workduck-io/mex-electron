@@ -179,7 +179,7 @@ const Refactor = () => {
         </MockRefactorMap>
       )}
       <ModalControls>
-        <Button primary autoFocus={!focus} size="large" onClick={handleRefactor}>
+        <Button primary autoFocus={!focus} large onClick={handleRefactor}>
           Apply Refactor
         </Button>
       </ModalControls>

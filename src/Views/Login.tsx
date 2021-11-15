@@ -5,10 +5,11 @@ import { Link } from 'react-router-dom'
 import { EMAIL_REG } from '../Defaults/auth'
 import { InputFormError } from '../Components/Forms/Input'
 import { useAuthentication } from '../Hooks/useAuth/useAuth'
-import { Button } from '../Styled/Buttons'
 import { BackCard, FooterCard } from '../Styled/Card'
 import { CenteredColumn } from '../Styled/Layouts'
 import { Title } from '../Styled/Typography'
+import { LoadingButton } from '../Components/Buttons/LoadingButton'
+import { AuthForm, ButtonFields } from '../Styled/Form'
 
 interface LoginFormData {
   email: string
@@ -19,23 +20,28 @@ const Login = () => {
   const {
     handleSubmit,
     register,
-    formState: { errors }
+    formState: { errors, isSubmitting }
   } = useForm<LoginFormData>()
   const { login } = useAuthentication()
 
-  const onSubmit = (data: LoginFormData) => {
-    login(data.email, data.password).then((s) => {
-      if (s === 'Incorrect username or password.') {
-        toast.error(s)
-      }
-    })
+  const onSubmit = async (data: LoginFormData): Promise<void> => {
+    await login(data.email, data.password, true)
+      .then((s) => {
+        console.log({ s })
+        if (s.v === 'Incorrect username or password.') {
+          toast.error(s.v)
+        }
+      })
+      .catch((e) => {
+        toast.error(e)
+      })
   }
 
   return (
     <CenteredColumn>
       <BackCard>
         <Title>Login</Title>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <AuthForm onSubmit={handleSubmit(onSubmit)}>
           <InputFormError
             name="email"
             label="Email"
@@ -61,11 +67,16 @@ const Login = () => {
             errors={errors}
           ></InputFormError>
 
-          <br />
-          <Button size="large" type="submit" primary>
-            Login
-          </Button>
-        </form>
+          <ButtonFields>
+            <LoadingButton
+              loading={isSubmitting}
+              alsoDisabled={errors.email !== undefined || errors.password !== undefined}
+              buttonProps={{ type: 'submit', primary: true, large: true }}
+            >
+              Login
+            </LoadingButton>
+          </ButtonFields>
+        </AuthForm>
       </BackCard>
       <FooterCard>
         <Link to={'/register'}>Register</Link>

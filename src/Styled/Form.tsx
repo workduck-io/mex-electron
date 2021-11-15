@@ -1,5 +1,6 @@
 import React from 'react'
 import Select from 'react-select'
+import Creatable from 'react-select/creatable'
 import styled, { css, DefaultTheme, useTheme } from 'styled-components'
 import { AppType } from '../Data/useInitialize'
 
@@ -68,6 +69,14 @@ export const TextArea = styled.textarea`
   }
 `
 
+export const InputWrapper = styled.div`
+  width: 100%;
+`
+
+export const AuthForm = styled.form`
+  width: 100%;
+`
+
 export const TextAreaBlock = styled(TextArea)`
   width: 100%;
   display: block;
@@ -90,20 +99,27 @@ export const Label = styled.label<LabelProps>`
   max-width: max-content;
 `
 
+export const ButtonFields = styled.div`
+  display: flex;
+  align-items: center;
+  margin: ${({ theme }) => theme.spacing.large} 0 ${({ theme }) => theme.spacing.medium};
+`
+
 export const ReactSelectStyles = (theme: DefaultTheme) => ({
   menu: (provided, state) => ({
     ...provided,
     // width: state.selectProps.width,
     color: state.selectProps.menuColor,
     backgroundColor: theme.colors.gray[8],
-    padding: `${theme.spacing.tiny} ${theme.spacing.small}`
+    padding: `${theme.spacing.small} ${theme.spacing.small}`
     // padding: 20,
   }),
 
   control: (provided) => ({
     ...provided,
     backgroundColor: theme.colors.form.input.bg,
-    borderColor: theme.colors.form.input.border
+    borderColor: theme.colors.form.input.border,
+    margin: `${theme.spacing.small} 0`
   }),
 
   option: (provided, state) => ({
@@ -116,7 +132,14 @@ export const ReactSelectStyles = (theme: DefaultTheme) => ({
   })
 })
 
-export const StyledSelect = (props) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const StyledSelect = (props: any) => {
   const theme = useTheme()
   return <Select {...props} theme={theme.additional.reactSelect} styles={ReactSelectStyles(theme)}></Select>
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const StyledCreatatbleSelect = (props: any) => {
+  const theme = useTheme()
+  return <Creatable {...props} theme={theme.additional.reactSelect} styles={ReactSelectStyles(theme)}></Creatable>
 }

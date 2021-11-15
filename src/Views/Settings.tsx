@@ -5,6 +5,10 @@ import { FlexBetween } from '../Spotlight/components/Actions/styled'
 import { useSaveData } from '../Data/useSaveData'
 import saveLine from '@iconify-icons/ri/save-line'
 import toast from 'react-hot-toast'
+import { Wrapper } from '../Styled/Layouts'
+import { ButtonWrapper, Theme, ThemeColorDots, ThemeHeader, ThemePreview, ThemePreviews } from '../Styled/Settings'
+import { ThemeProvider } from 'styled-components'
+import { useTransition } from 'react-spring'
 
 const Settings = () => {
   const themes = useThemeStore((state) => state.themes)
@@ -12,6 +16,19 @@ const Settings = () => {
   const setTheme = useThemeStore((state) => state.setTheme)
 
   const saveData = useSaveData()
+
+  const transition = useTransition(themes, {
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    keys: (item) => item.id,
+    trail: 100,
+    duration: 300,
+    config: {
+      mass: 1,
+      tension: 200,
+      friction: 16
+    }
+  })
 
   const onSave = () => {
     // TODO: Only save settings data
@@ -24,25 +41,50 @@ const Settings = () => {
   }
 
   return (
-    <div>
+    <Wrapper>
       <FlexBetween>
-        <h1>Settings</h1>
+        <h1>Themes</h1>
         <IconButton size={24} icon={saveLine} onClick={onSave} title="Save" />
       </FlexBetween>
-      <hr />
       <h2>Current theme: {theme.id}</h2>
-      <hr />
-      <div className="Themes">
-        {themes.map((t, i) => (
-          <div key={`mex_theme_key_${t.id}`}>
-            <h1>{t.id}</h1>
-            <Button onClick={() => onThemeSelect(i)}>Set Theme</Button>
-          </div>
-        ))}
-      </div>
-      <br />
-      <br />
-    </div>
+      <ThemePreviews>
+        {transition((styles, t, _t, i) => {
+          // {themes.map((t, i) => {
+          return (
+            <ThemeProvider key={`mex_theme_key_${t.id}`} theme={t.themeData}>
+              <Theme style={styles}>
+                <ThemeHeader>
+                  <h1>{t.id}</h1>
+                </ThemeHeader>
+                <ThemePreview back={t.themeData.backgroundImages ? t.themeData.backgroundImages.app : undefined}>
+                  <p>
+                    <b>Theme is nice</b>
+                  </p>
+                  <p>This is your theme!</p>
+                  <ThemeColorDots>
+                    <div className="primary"></div>
+                    <div className="secondary"></div>
+                    <div className="text"></div>
+                    <div className="text_fade"></div>
+                    <div className="background"></div>
+                  </ThemeColorDots>
+                  <br />
+                  <ButtonWrapper>
+                    <Button primary={false} onClick={() => onThemeSelect(i)}>
+                      Set
+                    </Button>
+                    <Button primary onClick={() => onThemeSelect(i)}>
+                      Theme
+                    </Button>
+                  </ButtonWrapper>
+                  <br />
+                </ThemePreview>
+              </Theme>
+            </ThemeProvider>
+          )
+        })}
+      </ThemePreviews>
+    </Wrapper>
   )
 }
 

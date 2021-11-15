@@ -1,5 +1,7 @@
 module.exports = {
-  packagerConfig: {},
+  packagerConfig: {
+    icon: 'assets/icon.icns'
+  },
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
@@ -22,7 +24,6 @@ module.exports = {
     {
       name: '@electron-forge/maker-dmg',
       config: {
-        background: './assets/icon.png',
         format: 'ULFO'
       }
     }

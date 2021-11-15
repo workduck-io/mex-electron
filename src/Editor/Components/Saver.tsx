@@ -10,7 +10,7 @@ import { useApi } from '../../Requests/Save'
 import IconButton from '../../Styled/Buttons'
 import { useLinks } from '../Actions/useLinks'
 import { useContentStore } from '../Store/ContentStore'
-import { useEditorStore } from '../Store/EditorStore'
+import { NodeProperties, useEditorStore } from '../Store/EditorStore'
 import { useSnippetStore } from '../Store/SnippetStore'
 import useSearchStore from '../../Search/SearchStore'
 import { convertEntryToRawText } from '../../Search/localSearch'
@@ -20,14 +20,14 @@ export const useSaver = () => {
 
   const { updateLinksFromContent, getNodeIdFromUid } = useLinks()
 
-  const defaultNode = useEditorStore((state) => state.node)
-
   const saveData = useSaveData()
   const editorState = useStoreEditorValue()
   const { saveDataAPI } = useApi()
   const updateDoc = useSearchStore((state) => state.updateDoc)
 
-  const onSave = (node = defaultNode) => {
+  const onSave = (node?: NodeProperties) => {
+    const defaultNode = useEditorStore.getState().node
+    node = node || defaultNode
     // setContent then save
     if (editorState) {
       setFsContent(node.uid, editorState)

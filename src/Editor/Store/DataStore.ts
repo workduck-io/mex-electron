@@ -17,13 +17,16 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
   linkCache: {},
 
+  baseNodeId: '@',
+
   // Load initial data in the store
-  initializeDataStore: (tags, ilinks, slashCommands, linkCache) => {
+  initializeDataStore: (tags, ilinks, slashCommands, linkCache, baseNodeId) => {
     set({
       tags,
       ilinks,
       linkCache,
-      slashCommands
+      slashCommands,
+      baseNodeId
     })
   },
 
@@ -64,6 +67,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   },
 
   setSlashCommands: (slashCommands) => set({ slashCommands }),
+  setBaseNodeId: (baseNodeId) => set({ baseNodeId }),
 
   addInternalLink: (ilink, uid) => {
     let nodeLinks = get().linkCache[uid]

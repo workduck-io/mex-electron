@@ -16,13 +16,21 @@ export interface DataStoreState {
   ilinks: ILink[]
   slashCommands: ComboText[]
   linkCache: LinkCache
+  baseNodeId: string
 
-  initializeDataStore: (tags: ComboText[], ids: ILink[], slash_commands: ComboText[], linkCache: LinkCache) => void
+  initializeDataStore: (
+    tags: ComboText[],
+    ids: ILink[],
+    slash_commands: ComboText[],
+    linkCache: LinkCache,
+    baseNodeId: string
+  ) => void
 
   addTag: (tag: string) => void
   addILink: (ilink: string, uid?: string) => string
   setSlashCommands: (slashCommands: ComboText[]) => void
   setIlinks: (ilinks: ILink[]) => void
+  setBaseNodeId: (baseNodeId: string) => void
 
   addInternalLink: (ilink: CachedILink, uid: string) => void
   removeInternalLink: (ilink: CachedILink, uid: string) => void

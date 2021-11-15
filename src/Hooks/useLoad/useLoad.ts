@@ -1,3 +1,4 @@
+import { useSaver } from '../../Editor/Components/Saver'
 import { USE_API } from '../../Defaults/dev_'
 import { useContentStore } from '../../Editor/Store/ContentStore'
 import useDataStore from '../../Editor/Store/DataStore'
@@ -12,6 +13,7 @@ const useLoad = () => {
   const setFetchingContent = useEditorStore((store) => store.setFetchingContent)
   const setContent = useContentStore((store) => store.setContent)
   const { getDataAPI } = useApi()
+  const { onSave } = useSaver()
 
   const getNode = (uid: string): NodeProperties => {
     const ilinks = useDataStore.getState().ilinks
@@ -30,7 +32,8 @@ const useLoad = () => {
     return node
   }
 
-  const loadNode = async (uid: string) => {
+  const loadNode = async (uid: string, savePrev = true) => {
+    if (savePrev) onSave()
     const node = getNode(uid)
     loadNodeEditor(node)
     if (USE_API) {

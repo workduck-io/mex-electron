@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react'
 import { client } from '@workduck-io/dwindle'
 import React, { useState } from 'react'
 import { Item, useContextMenu } from 'react-contexify'
-import { WORKSPACE_ID } from '../../../Defaults/auth'
+import { useAuthStore } from '../../../Hooks/useAuth/useAuth'
 import { capitalize } from '../../../Lib/strings'
 import { integrationURLs } from '../../../Requests/routes'
 import { MenuTrigger } from '../../../Styled/Integration'
@@ -46,6 +46,7 @@ const IntentSelector = ({
   })
 
   const MENU_ID = `IntentSelectorMenu_${service}_${type}_${id}`
+  const workspaceId = useAuthStore((store) => store.workspaceDetails.id)
   const { show } = useContextMenu({
     id: MENU_ID
   })
@@ -70,7 +71,7 @@ const IntentSelector = ({
         .post(integrationURLs.getIntentValues, {
           serviceType: service.toUpperCase(),
           intentType: type,
-          workspaceId: WORKSPACE_ID
+          workspaceId: workspaceId
         })
         .then((d) => {
           const { data } = d
