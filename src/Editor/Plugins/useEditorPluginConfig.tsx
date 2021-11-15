@@ -1,5 +1,7 @@
 import { ELEMENT_MEDIA_EMBED } from '@udecode/plate'
 import { useMemo } from 'react'
+import useAnalytics from '../../analytics'
+import { CustomEvents } from '../../analytics/events'
 import { useSnippets } from '../../Snippets/useSnippets'
 import { ComboboxKey } from '../Components/combobox/useComboboxStore'
 import { ELEMENT_ILINK } from '../Components/ilink/defaults'
@@ -21,6 +23,7 @@ const useEditorPluginConfig = (editorId: string) => {
   const addILink = useDataStore((state) => state.addILink)
   const { getSnippetsConfigs } = useSnippets()
   const { getSyncBlockConfigs } = useSyncConfig()
+  const { trackEvent } = useAnalytics()
 
   // Combobox
   const snippetConfigs = getSnippetsConfigs()

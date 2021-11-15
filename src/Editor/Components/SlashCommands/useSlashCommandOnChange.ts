@@ -2,6 +2,9 @@ import { getBlockAbove, getPlatePluginType, insertNodes, SPEditor, TElement } fr
 import { useCallback } from 'react'
 import { Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
+import { getEventNameFromElement } from '../../../Lib/strings'
+import useAnalytics from '../../../analytics'
+import { CustomEvents, ActionType } from '../../../analytics/events'
 import { isElder } from '../../../Components/Sidebar/treeUtils'
 import { useSnippets } from '../../../Snippets/useSnippets'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
@@ -13,6 +16,7 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
   const isOpen = useComboboxIsOpen()
   const targetRange = useComboboxStore((state) => state.targetRange)
   const closeMenu = useComboboxStore((state) => state.closeMenu)
+  const { trackEvent } = useAnalytics()
 
   const { getSnippetContent } = useSnippets()
 
@@ -32,6 +36,10 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
         // Snippets are handled differently as the content comes from the snippet and not created
         if (isElder(commandKey, 'snip')) {
           const content = getSnippetContent(commandConfig.command)
+
+          const eventName = getEventNameFromElement('Editor', ActionType.USE, 'Snippet')
+          trackEvent(eventName, { 'mex-content': content })
+
           if (content) {
             Transforms.select(editor, targetRange)
             insertNodes<TElement>(editor, content)
@@ -40,6 +48,11 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
           // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
           const type = getPlatePluginType(editor, commandConfig.slateElementType)
           const data = commandConfig.getBlockData ? commandConfig.getBlockData(item) : {}
+
+          console.log('INSERT: ', { type, data })
+
+          const eventName = getEventNameFromElement('Editor', ActionType.CREATE, type)
+          trackEvent(eventName, { 'mex-type': type, 'mex-data': data })
 
           Transforms.select(editor, targetRange)
           insertNodes<TElement>(editor, {

@@ -2,8 +2,8 @@ import { CustomEvents, Properties } from './events'
 
 export type UserProperties = {
   [Properties.EMAIL]: string
-  [Properties.ROLE]: string
-  [Properties.WORKSPACE_ID]: string
+  [Properties.ROLE]?: string
+  [Properties.WORKSPACE_ID]?: string
 }
 
 export type EventProperties = {
@@ -22,4 +22,11 @@ export type Heap = {
   userId: string
   identity: string | null
   config: any
+  load: any
+}
+
+declare global {
+  interface Window {
+    heap: any
+  }
 }

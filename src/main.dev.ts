@@ -1,7 +1,7 @@
 import { getGlobalShortcut, getSelectedText } from './Spotlight/utils/getSelectedText'
 /* eslint-disable @typescript-eslint/no-var-requires */
 import chokidar from 'chokidar'
-import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, session, shell, Tray } from 'electron'
+import { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, nativeImage, session, shell, Tray } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import { AppType } from './Data/useInitialize'
@@ -11,6 +11,7 @@ import MenuBuilder from './menu'
 import { IpcAction } from './Spotlight/utils/constants'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
+import initErrorHandler, { showDialog } from './Lib/errorHandlers'
 
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
@@ -132,7 +133,7 @@ const createSpotLighWindow = (show?: boolean) => {
     spotlight = null
   })
 
-  spotlight.webContents.openDevTools()
+  // spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -149,6 +150,8 @@ const createMexWindow = () => {
   mex.once('close', () => {
     mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
   })
+
+  global.mex = mex
 
   mex.webContents.on('did-finish-load', () => {
     if (!mex) {
@@ -173,7 +176,7 @@ const createMexWindow = () => {
     shell.openExternal(url)
   })
 
-  mex.webContents.openDevTools()
+  // mex.webContents.openDevTools()
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const callbackOptions = {
@@ -332,6 +335,7 @@ app
     return 0
   })
   .then(createWindow)
+  .then(initErrorHandler)
   .catch(console.error)
 
 app.on('activate', () => {
@@ -393,8 +397,9 @@ ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
   mex?.webContents.send(IpcAction.OPEN_NODE, { nodeId: arg.nodeId })
 })
 
-ipcMain.on(IpcAction.INIT_HEAP_INSTANCE, (_event, arg) => {
-  spotlight.webContents.send(IpcAction.INIT_HEAP_INSTANCE, { heap: arg.heap })
+ipcMain.on(IpcAction.ERROR_OCCURED, (_event, arg) => {
+  showDialog(arg.message, arg.propertes)
+  app.quit()
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -14,6 +14,9 @@ import { NodeProperties, useEditorStore } from '../Store/EditorStore'
 import { useSnippetStore } from '../Store/SnippetStore'
 import useSearchStore from '../../Search/SearchStore'
 import { convertEntryToRawText } from '../../Search/localSearch'
+import { ActionType, CustomEvents } from '../../analytics/events'
+import useAnalytics from '../../analytics'
+import { getEventNameFromElement } from '../../Lib/strings'
 
 export const useSaver = () => {
   const setFsContent = useContentStore((state) => state.setContent)
@@ -107,9 +110,13 @@ interface SnippetSaverButtonProps extends SaverButtonProps {
 export const SnippetSaverButton = ({ callbackAfterSave, title, getSnippetTitle }: SnippetSaverButtonProps) => {
   const { onSave: onSaveFs } = useSnippetSaver()
   const shortcuts = useHelpStore((state) => state.shortcuts)
+  const { trackEvent } = useAnalytics()
 
   const onSave = () => {
     const snippetTitle = getSnippetTitle()
+
+    trackEvent(getEventNameFromElement('Editor', ActionType.CREATE, 'Snippet'), { 'mex-title': snippetTitle })
+
     onSaveFs(snippetTitle)
     if (callbackAfterSave) callbackAfterSave()
   }

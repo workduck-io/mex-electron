@@ -66,8 +66,7 @@ const GlobalListener = memo(() => {
 
     ipcRenderer.on(IpcAction.INIT_HEAP_INSTANCE, (_event, arg) => {
       if (arg.heap) {
-        console.log(arg.heap)
-        global.heap = JSON.parse(arg.heap)
+        window.heap = JSON.parse(arg.heap)
         identifyUser(userDetails?.email)
       }
     })

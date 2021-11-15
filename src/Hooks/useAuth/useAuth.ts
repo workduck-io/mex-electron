@@ -7,6 +7,8 @@ import { useUpdater } from '../../Data/useUpdater'
 import { useState } from 'react'
 import { UserCred } from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
 import { RegisterFormData } from '../../Views/Register'
+import useAnalytics from '../../analytics'
+import { CustomEvents, Properties } from '../../analytics/events'
 
 interface UserDetails {
   email: string
@@ -60,6 +62,7 @@ export const useAuthentication = () => {
   const setRegistered = useAuthStore((store) => store.setRegistered)
   const { updateDefaultServices, updateServices } = useUpdater()
   const { signIn, signUp, verifySignUp, signOut } = useAuth()
+  const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
 
   const login = async (
     email: string,
@@ -81,9 +84,15 @@ export const useAuthentication = () => {
       await client
         .get(apiURLs.getUserRecords(data.userId))
         .then((d) => {
-          // console.log('workspace data', d.data)
+          console.log('workspace data', d.data)
           // Set Authenticated, user and workspace details
           setAuthenticated({ email }, { id: d.data.group, name: 'WORKSPACE_NAME' })
+          identifyUser(email)
+          addUserProperties({
+            [Properties.EMAIL]: email,
+            [Properties.WORKSPACE_ID]: d.data.group
+          })
+          addEventProperties({ [CustomEvents.LOGGED_IN]: true })
         })
         .then(updateDefaultServices)
         .then(updateServices)

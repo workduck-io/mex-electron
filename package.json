@@ -136,6 +136,8 @@
     "sortablejs": "^1.13.0",
     "styled-components": "^5.3.0",
     "tinykeys": "^1.2.0",
+    "tough-cookie": "^2.3.4",
+    "tough-cookie-web-storage-store": "^1.0.0",
     "twin.macro": "^2.6.2",
     "unified": "^9.2.1",
     "use-debounce": "^7.0.0",

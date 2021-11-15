@@ -2,7 +2,6 @@ import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import useAnalytics from '../../analytics'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
 import { useInitialize } from '../../Data/useInitialize'
@@ -19,8 +18,6 @@ import { convertDataToRawText } from '../../Search/localSearch'
 import useSearchStore from '../../Search/SearchStore'
 import { IpcAction } from '../../Spotlight/utils/constants'
 import { useSaveAndExit } from '../../Spotlight/utils/hooks'
-import { WORKSPACE_ID } from '../../Defaults/auth'
-import { Properties } from '../../analytics/events'
 
 const Init = () => {
   const history = useHistory()
@@ -29,8 +26,6 @@ const Init = () => {
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
 
   const { move, push } = useNavigation()
-
-  const { identifyUser, addUserProperties, initAnalytics } = useAnalytics()
 
   const { init } = useInitialize()
   const { loadNode } = useLoad()
@@ -67,15 +62,7 @@ const Init = () => {
             ClientId: config.cognito.APP_CLIENT_ID
           })
           if (userAuthenticatedEmail) {
-            // console.log(userAuthenticatedEmail)
-
             // setAuthenticated({ email: userAuthenticatedEmail })
-            identifyUser(userAuthenticatedEmail)
-            addUserProperties({
-              [Properties.EMAIL]: userAuthenticatedEmail,
-              [Properties.WORKSPACE_ID]: WORKSPACE_ID,
-              [Properties.ROLE]: 'Product Manager'
-            })
             return { d, auth: true }
           }
 
@@ -109,7 +96,6 @@ const Init = () => {
 
   useEffect(() => {
     setIpc()
-    initAnalytics()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const shortcuts = useHelpStore((store) => store.shortcuts)

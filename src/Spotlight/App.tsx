@@ -6,8 +6,6 @@ import { defaultThemes } from '../Styled/themes/defaultThemes'
 import Routes from './Routes'
 import { SpotlightProvider } from './utils/context'
 
-require('electron-cookies')
-
 initializeAmplify()
 
 export default function App() {

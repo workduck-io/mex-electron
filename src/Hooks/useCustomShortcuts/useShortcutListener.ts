@@ -3,8 +3,9 @@ import { useEffect, useCallback, useMemo } from 'react'
 import { KeyBinding, useShortcutStore } from '../../Editor/Store/ShortcutStore'
 import { MiscKeys } from '../../Lib/keyMap'
 import useAnalytics from '../../analytics'
-import { CustomEvents } from '../../analytics/events'
+import { CustomEvents, ActionType } from '../../analytics/events'
 import { Shortcut } from '../../Components/Help/Help.types'
+import { getEventNameFromElement } from '../../Lib/strings'
 
 export type ShortcutListner = {
   shortcut: KeyBinding
@@ -76,7 +77,7 @@ const useShortcutListener = (): ShortcutListner => {
             ...currentShortcut,
             keystrokes: shortcut.key.trim()
           })
-          trackEvent(`${CustomEvents.SHORTCUT_CHANGED} - ${currentShortcut.title}`, {
+          trackEvent(getEventNameFromElement('Shortcut Settings', ActionType.CHANGE, 'Shortcut'), {
             from: currentShortcut.keystrokes,
             to: shortcut.key.trim()
           })
@@ -115,9 +116,9 @@ export const useKeyListener = () => {
   const shortcutDisabled = useShortcutStore((state) => state.editMode)
   const { trackEvent } = useAnalytics()
 
-  const shortcutHandler = (shortcut: Shortcut, callback: () => void) => {
+  const shortcutHandler = (shortcut: Shortcut, callback: any) => {
     if (!shortcutDisabled) {
-      trackEvent(`${CustomEvents.SHORTCUT_PRESSED} - ${shortcut.title}`, shortcut)
+      trackEvent(getEventNameFromElement('Shortcut Settings', ActionType.KEY_PRESS, 'Shortcut'), shortcut)
       callback()
     }
   }

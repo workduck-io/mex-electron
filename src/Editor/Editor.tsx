@@ -1,6 +1,7 @@
 import { createPlateOptions, ELEMENT_MEDIA_EMBED, Plate, selectEditor, useStoreEditorRef } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import ReactTooltip from 'react-tooltip'
+import useAnalytics from '../analytics'
 import { EditorStyles } from '../Styled/Editor'
 import components from './Components/components'
 import BallonToolbarMarks from './Components/EditorToolbar'
