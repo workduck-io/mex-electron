@@ -9,9 +9,8 @@ function buildDMG(arch) {
     appPath: path.join(cwd, `out/Mex-darwin-${arch}/Mex.app`),
     name: 'Mex',
     title: 'Mex',
-    icon: path.join(cwd, './node_modules/electron-installer-dmg/resources/mac/atom.icns'),
+    icon: path.join(cwd, './assets/icon.icns'),
     iconSize: 80,
-    background: path.join(cwd, './assets/icon.png'),
     format: 'ULFO',
     contents: [
       { x: 448, y: 144, type: 'link', path: '/Applications' },
