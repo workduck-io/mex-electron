@@ -29,7 +29,7 @@ export const useUpdater = () => {
     if (useAuthStore.getState().authenticated) {
       await client.get(integrationURLs.getAllServiceData(getWorkspaceId())).then((d) => {
         const data = d.data
-        console.log({ data })
+        // console.log({ data })
         const services: Service[] = data.map((s) => ({
           id: s.serviceType,
           name: s.name,

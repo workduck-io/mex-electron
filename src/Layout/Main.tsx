@@ -40,7 +40,7 @@ const Main = ({ children }: MainProps) => {
     '-webkit-app-region': 'drag'
   }
 
-  console.log({ wd })
+  // console.log({ wd })
 
   return (
     <AppWrapper>

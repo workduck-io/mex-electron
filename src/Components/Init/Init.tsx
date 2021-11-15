@@ -43,7 +43,7 @@ const Init = () => {
     ;(async () => {
       getLocalData()
         .then((d) => {
-          console.log('Data here', d)
+          // console.log('Data here', d)
           return d
         })
         .then(({ fileData, indexData }) => {
@@ -53,7 +53,7 @@ const Init = () => {
         .then(({ fileData, indexData }) => {
           const initList = convertDataToRawText(fileData)
           initializeSearchIndex(initList, indexData)
-          console.log(`Search Index initialized with ${initList.length} documents`)
+          // console.log(`Search Index initialized with ${initList.length} documents`)
           return fileData
         })
         .then((d) => {
@@ -62,7 +62,7 @@ const Init = () => {
             ClientId: config.cognito.APP_CLIENT_ID
           })
           if (userAuthenticatedEmail) {
-            console.log('Authenticated User email: ', userAuthenticatedEmail)
+            // console.log('Authenticated User email: ', userAuthenticatedEmail)
             // setAuthenticated({ email: userAuthenticatedEmail })
             return { d, auth: true }
           }

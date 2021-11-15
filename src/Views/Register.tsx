@@ -15,9 +15,14 @@ import { Title } from '../Styled/Typography'
 import { LoadingButton } from '../Components/Buttons/LoadingButton'
 import { StyledRolesSelectComponents } from '../Styled/Select'
 
+export interface Option {
+  label: string
+  value: string
+}
+
 export interface RegisterFormData {
   name: string
-  roles: string[]
+  roles: Option[]
   email: string
   password: string
 }

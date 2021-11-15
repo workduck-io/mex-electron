@@ -81,9 +81,9 @@ export const useAuthentication = () => {
       await client
         .get(apiURLs.getUserRecords(data.userId))
         .then((d) => {
-          console.log('workspace data', d.data)
+          // console.log('workspace data', d.data)
           // Set Authenticated, user and workspace details
-          setAuthenticated({ email }, { id: d.data.id, name: d.data.name })
+          setAuthenticated({ email }, { id: d.data.group, name: 'WORKSPACE_NAME' })
         })
         .then(updateDefaultServices)
         .then(updateServices)
@@ -120,10 +120,10 @@ export const useAuthentication = () => {
       ...metadata,
       name: sensitiveData.name,
       email: sensitiveData.email,
-      roles: sensitiveData.roles
+      roles: sensitiveData.roles.reduce((prev, cur) => `${prev},${cur.value}`, '').slice(1)
     }
     const vSign = await verifySignUp(code, formMetaData).catch(console.error)
-    console.log({ vSign })
+    // console.log({ vSign })
 
     const loginData = await login(sensitiveData.email, sensitiveData.password).catch(console.error)
 
@@ -144,9 +144,9 @@ export const useAuthentication = () => {
         workspaceName: newWorkspaceName
       })
       .then((d) => {
-        console.log(d.data)
+        // console.log(d.data)
         // Set workspace details
-        setAuthenticated({ email: sensitiveData.email }, { id: d.data.group, name: d.data.name })
+        setAuthenticated({ email: sensitiveData.email }, { id: d.data.id, name: d.data.name })
       })
       .catch(console.error)
 
