@@ -5,7 +5,7 @@ on:
       - mukul-wd-619-task-add-cicd-to-mex-electron
   # release:
   #   types:
-  #     - created
+  #     - published
 
 jobs:
   create_github_release:
@@ -56,10 +56,12 @@ jobs:
         run: npm install -g yarn
       - name: Install dependencies
         run: yarn
+      - name: Upgrade Internal Dependencies
+        run: yarn upgrade @workduck-io/dwindle active-win-universal
       - name: Add certificates to keychain
         run: chmod +x build/osx-add-cert.sh && build/osx-add-cert.sh
       - name: Rebuild Native Dependencies
-        run: ./node_modules/.bin/electron-rebuild
+        run: ./node_modules/.bin/electron-rebuild --force --arch=x64
       - name: Build App
         run: chmod +x build/build-darwin-x64.sh && ./build/build-darwin-x64.sh
       - name: Upload Release Asset
@@ -90,10 +92,12 @@ jobs:
         run: npm install -g yarn
       - name: Install dependencies
         run: yarn
+      - name: Upgrade Internal Dependencies
+        run: yarn upgrade @workduck-io/dwindle active-win-universal
       - name: Add certificates to keychain
         run: chmod +x build/osx-add-cert.sh && build/osx-add-cert.sh
       - name: Rebuild Native Dependencies
-        run: ./node_modules/.bin/electron-rebuild --force --arm64
+        run: ./node_modules/.bin/electron-rebuild --force --arch=arm64
       - name: Build App
         run: chmod +x build/build-darwin-arm64.sh && ./build/build-darwin-arm64.sh
       - name: Upload Release Asset
