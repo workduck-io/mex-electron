@@ -1,4 +1,5 @@
 import React from 'react'
+import { doesLinkRemain, linkInRefactor } from '../../Components/Refactor/doesLinkRemain'
 import { useRefactorStore } from '../../Components/Refactor/Refactor'
 import { SEPARATOR } from '../../Components/Sidebar/treeUtils'
 import { NodeLink } from '../../Types/relations'
@@ -34,6 +35,7 @@ export const useRefactor = () => {
   const setILinks = useDataStore((state) => state.setIlinks)
   const initContents = useContentStore((state) => state.initContents)
   const { getUidFromNodeId } = useLinks()
+  const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
 
   const getMockRefactor = (from: string, to: string): NodeLink[] => {
     const refactorMap = ilinks.filter((i) => {
@@ -72,7 +74,9 @@ export const useRefactor = () => {
     const newContents: Contents = {}
     Object.keys(contents).forEach((key) => {
       const content = contents[key]
-      if (content) { newContents[key] = { type: content.type ?? 'p', content: refactorLinksInContent(refactored, content.content) } }
+      if (content) {
+        newContents[key] = { type: content.type ?? 'p', content: refactorLinksInContent(refactored, content.content) }
+      }
     })
 
     // updateHistory(applyRefactorToIds(historyStack, refactored), 0)
@@ -80,6 +84,11 @@ export const useRefactor = () => {
 
     setILinks(newIlinks)
     initContents(newContents)
+
+    const baseId = linkInRefactor(useDataStore.getState().baseNodeId, refactored)
+    if (baseId !== false) {
+      setBaseNodeId(baseId.to)
+    }
 
     return refactored
   }

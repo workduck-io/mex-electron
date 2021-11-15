@@ -8,9 +8,9 @@ export const reduxTheme = generateTheme({
   // Palettes
   gray: {
     10: '#1d2021', // Darkest
-    9: '#282828aa',
-    8: '#3c3836aa',
-    7: '#504945aa',
+    9: '#282828',
+    8: '#3c3836',
+    7: '#504945',
     6: '#665c54',
     5: '#7c6f64',
     4: '#a89984',

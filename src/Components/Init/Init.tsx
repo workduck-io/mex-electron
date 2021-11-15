@@ -7,7 +7,7 @@ import { useHelpStore } from '../../Components/Help/HelpModal'
 import { useInitialize } from '../../Data/useInitialize'
 import { useLocalData } from '../../Data/useLocalData'
 import { useSyncData } from '../../Data/useSyncData'
-import { getUidFromNodeIdBase } from '../../Editor/Actions/useLinks'
+import { getUidFromNodeIdAndLinks } from '../../Editor/Actions/useLinks'
 import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 import { useAuthStore } from '../../Hooks/useAuth/useAuth'
 import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
@@ -22,7 +22,7 @@ import { useSaveAndExit } from '../../Spotlight/utils/hooks'
 const Init = () => {
   const history = useHistory()
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
-  const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
+  // const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
 
   const { move, push } = useNavigation()
@@ -37,14 +37,13 @@ const Init = () => {
   const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
   const fetchIndexJSON = useSearchStore((store) => store.fetchIndexJSON)
 
-  // console.log(`Fuse initialized with`, { fuse })
   /** Initialization of the app details occur here */
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
     ;(async () => {
       getLocalData()
         .then((d) => {
-          console.log('Data here', d)
+          // console.log('Data here', d)
           return d
         })
         .then(({ fileData, indexData }) => {
@@ -54,7 +53,7 @@ const Init = () => {
         .then(({ fileData, indexData }) => {
           const initList = convertDataToRawText(fileData)
           initializeSearchIndex(initList, indexData)
-          console.log(`Search Index initialized with ${initList.length} documents`)
+          // console.log(`Search Index initialized with ${initList.length} documents`)
           return fileData
         })
         .then((d) => {
@@ -63,16 +62,15 @@ const Init = () => {
             ClientId: config.cognito.APP_CLIENT_ID
           })
           if (userAuthenticatedEmail) {
-            console.log(userAuthenticatedEmail)
-
-            setAuthenticated({ email: userAuthenticatedEmail })
+            // console.log('Authenticated User email: ', userAuthenticatedEmail)
+            // setAuthenticated({ email: userAuthenticatedEmail })
             return { d, auth: true }
           }
 
           setUnAuthenticated()
           return { d, auth: false }
         })
-        .then(({ d, auth }) => auth && loadNode(getUidFromNodeIdBase(d.ilinks, '@')))
+        .then(({ d, auth }) => auth && loadNode(getUidFromNodeIdAndLinks(d.ilinks, d.baseNodeId)))
         .then(() => history.push('/editor'))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()

@@ -1,4 +1,5 @@
-import styled, { keyframes } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
+import { range } from 'lodash'
 
 import React from 'react'
 
@@ -8,59 +9,66 @@ const loadingFade = keyframes`
   100% { opacity: 0; }
 `
 
-const LoadingWrapper = styled.div<LoadingProps>`
+export const LoadingWrapper = styled.div<LoadingProps>`
   display: flex;
   justify-content: space-around;
-  padding: 10px;
-  background: ${({ theme }) => theme.colors.gray[9]};
+  ${({ theme, transparent }) =>
+    !transparent &&
+    css`
+      padding: 10px;
+      background: ${theme.colors.gray[9]};
+    `}
 
   border-radius: 5px;
 
   max-width: ${({ dots }) => `${dots * 24}px`};
 `
 
-const LoadingDot = styled.div`
+const LoadingDot = styled.div<{ totalDots: number; color?: string }>`
   width: 8px;
   height: 8px;
   margin: 0 4px;
-  background: ${({ theme }) => theme.colors.primary};
+  ${({ theme, color }) =>
+    color
+      ? css`
+          background: ${color};
+          box-shadow: 0 2px 8px ${color};
+        `
+      : css`
+          background: ${theme.colors.primary};
+          box-shadow: 0 2px 8px ${theme.colors.primary};
+        `}
 
   border-radius: 50%;
 
   opacity: 0;
 
-  box-shadow: 0 2px 8px ${({ theme }) => theme.colors.primary};
-
   animation: ${loadingFade} 1s infinite;
 
-  &:nth-child(1) {
-    animation-delay: 0s;
-  }
-
-  &:nth-child(2) {
-    animation-delay: 0.1s;
-  }
-
-  &:nth-child(3) {
-    animation-delay: 0.2s;
-  }
-
-  &:nth-child(4) {
-    animation-delay: 0.3s;
-  }
+  ${({ totalDots }) =>
+    range(totalDots).reduce((prev, d) => {
+      return css`
+        ${prev};
+        &:nth-child(${d + 1}) {
+          animation-delay: ${d * 0.1}s;
+        }
+      `
+    }, css``)}
 `
 
 export interface LoadingProps {
   dots: number
+  transparent?: boolean
+  color?: string
 }
 
-const Loading = ({ dots }: LoadingProps) => {
+const Loading = ({ dots, transparent, color }: LoadingProps) => {
   return (
-    <LoadingWrapper dots={dots}>
+    <LoadingWrapper transparent={transparent} dots={dots}>
       {Array(dots)
         .fill(0)
         .map((e, i) => (
-          <LoadingDot key={`loadingDot${i}`}></LoadingDot>
+          <LoadingDot color={color} totalDots={dots} key={`loadingDot${i}`}></LoadingDot>
         ))}
     </LoadingWrapper>
   )

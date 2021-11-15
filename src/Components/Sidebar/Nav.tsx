@@ -9,7 +9,6 @@ import styled, { css } from 'styled-components'
 import { GetIcon } from '../../Conf/links'
 import { useAuthentication, useAuthStore } from '../../Hooks/useAuth/useAuth'
 import { useLayoutStore } from '../../Layout/LayoutStore'
-import { Button } from '../../Styled/Buttons'
 import { NavProps } from './Types'
 
 interface StyledDivProps {
@@ -71,28 +70,58 @@ const Link = styled(NavLink)`
   }
 `
 
+const ComingSoon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${({ theme }) => theme.colors.gray[5]};
+  padding: ${({ theme }) => theme.spacing.small};
+
+  margin-top: ${({ theme }) => theme.spacing.medium};
+  &:first-child {
+    margin-top: 0;
+  }
+
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.background.card};
+  }
+`
+
 const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
-  const { logout } = useAuthentication()
   const authenticated = useAuthStore((store) => store.authenticated)
   const focusMode = useLayoutStore((store) => store.focusMode)
   return (
     <StyledDiv focusMode={focusMode}>
       <div></div>
       <div>
-        {links.map((l) => (
-          <Link
-            exact
-            tabIndex={-1}
-            activeClassName="active"
-            to={l.path}
-            key={`nav_${l.title}`}
-            // Tooltip
-            data-tip={l.title}
-            data-class="nav-tooltip"
-          >
-            {l.icon !== undefined ? l.icon : l.title}
-          </Link>
-        ))}
+        {links.map((l) =>
+          l.isComingSoon ? (
+            <ComingSoon
+              tabIndex={-1}
+              key={`nav_${l.title}`}
+              // Tooltip
+              data-tip="Coming Soon!"
+              data-class="nav-tooltip"
+            >
+              {l.icon !== undefined ? l.icon : l.title}
+            </ComingSoon>
+          ) : (
+            <Link
+              exact
+              tabIndex={-1}
+              activeClassName="active"
+              to={l.path}
+              key={`nav_${l.title}`}
+              // Tooltip
+              data-tip={l.title}
+              data-class="nav-tooltip"
+            >
+              {l.icon !== undefined ? l.icon : l.title}
+            </Link>
+          )
+        )}
       </div>
       <div>
         {authenticated ? (

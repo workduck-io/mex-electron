@@ -1,19 +1,9 @@
 import styled from 'styled-components'
 import { Card } from './Card'
-
-import { size } from './responsive'
+import { GridCss } from './Grid'
 
 export const SSnippets = styled.div`
-  display: grid;
-  grid-gap: ${({ theme }) => theme.spacing.medium};
-
-  @media (max-width: ${size.wide}) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (min-width: ${size.wide}) {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  ${GridCss(2, 3)}
 `
 
 export const SSnippet = styled(Card)`

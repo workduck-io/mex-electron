@@ -41,7 +41,7 @@ const GlobalStyle = createGlobalStyle`
         background: ${({ theme }) => theme.colors.background.app};
       `
     }}
-    
+
     * {
       ${ThinScrollbar};
     }
@@ -60,7 +60,7 @@ const GlobalStyle = createGlobalStyle`
   #root {
     width: 100%;
   }
-  
+
   /* Styles for modals */
   ${ModalStyles}
 
@@ -78,13 +78,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   button {
-    background-color: ${({ theme }) => theme.colors.gray[7]};
-    color: ${({ theme }) => theme.colors.gray[3]};
     border: none;
-    &:hover, &:active {
-      color: ${({ theme }) => theme.colors.primary};
-      background-color: ${({ theme }) => theme.colors.gray[6]};
-    }
   }
 `
 

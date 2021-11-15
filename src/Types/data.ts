@@ -10,6 +10,7 @@ export interface NodeContent {
 export interface FileData {
   // variable to detect whether the data in the file was updated via mex/spotlight or externally
   remoteUpdate: boolean
+  baseNodeId: string
   ilinks: ILink[]
   tags: ComboText[]
   contents: {

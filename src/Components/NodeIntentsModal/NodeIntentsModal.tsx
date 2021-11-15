@@ -90,10 +90,10 @@ const NodeIntentsModal = ({ uid }: NodeIntegrationsModalProps) => {
       ))}
 
       <ModalControls>
-        <Button size="large" primary onClick={onSave}>
+        <Button large primary onClick={onSave}>
           Save
         </Button>
-        <Button size="large" onClick={onCancel}>
+        <Button large onClick={onCancel}>
           Cancel
         </Button>
       </ModalControls>

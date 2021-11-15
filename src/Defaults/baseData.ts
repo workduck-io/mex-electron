@@ -15,6 +15,7 @@ const contents = links.reduce((prev, cur) => {
 
 export const DefaultFileData: FileData = {
   remoteUpdate: true,
+  baseNodeId: '@',
   ilinks: links,
   contents,
   linkCache: {},
