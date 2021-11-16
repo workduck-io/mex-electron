@@ -2,8 +2,9 @@ import { CustomEvents, Properties } from './events'
 
 export type UserProperties = {
   [Properties.EMAIL]: string
-  [Properties.ROLE]?: string
-  [Properties.WORKSPACE_ID]?: string
+  [Properties.ROLE]: string
+  [Properties.NAME]: string
+  [Properties.WORKSPACE_ID]: string
 }
 
 export type EventProperties = {

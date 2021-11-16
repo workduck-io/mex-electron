@@ -90,6 +90,8 @@ export const useAuthentication = () => {
           identifyUser(email)
           addUserProperties({
             [Properties.EMAIL]: email,
+            [Properties.NAME]: d.data.metadata.name,
+            [Properties.ROLE]: d.data.metadata.roles,
             [Properties.WORKSPACE_ID]: d.data.group
           })
           addEventProperties({ [CustomEvents.LOGGED_IN]: true })
