@@ -1,30 +1,31 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useHelpStore } from './HelpModal'
-
+import { Icon } from '@iconify/react'
+import questionMark from '@iconify-icons/ri/question-mark'
+import { GetIcon } from '../../Conf/links'
 const SHelpTooltip = styled.div`
-  position: absolute;
-  padding: ${({ theme: { spacing } }) => `${spacing.small} ${spacing.medium}`};
-  font-weight: 400;
-  font-size: 1.5rem;
-  bottom: ${({ theme }) => theme.spacing.medium};
-  right: ${({ theme }) => theme.spacing.medium};
-  z-index: 100;
-  background-color: ${({ theme }) => theme.colors.gray[8]};
-  color: ${({ theme }) => theme.colors.fade};
-  border: 1px solid ${({ theme }) => theme.colors.gray[7]};
-  border-radius: ${({ theme }) => theme.borderRadius.large};
-  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${({ theme }) => theme.colors.gray[5]};
+  padding: ${({ theme }) => theme.spacing.small};
 
-  :hover {
-    background-color: ${({ theme }) => theme.colors.primary};
-    color: ${({ theme }) => theme.colors.text.oppositePrimary};
+  margin-top: ${({ theme }) => theme.spacing.medium};
+  &:first-child {
+    margin-top: 0;
+  }
+
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.background.card};
   }
 `
 
 const HelpTooltip = () => {
   const toggleModal = useHelpStore((store) => store.toggleModal)
-  return <SHelpTooltip onClick={toggleModal}>?</SHelpTooltip>
+  return <SHelpTooltip onClick={toggleModal}>{GetIcon(questionMark)}</SHelpTooltip>
 }
 
 export default HelpTooltip
