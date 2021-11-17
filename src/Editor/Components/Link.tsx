@@ -7,6 +7,7 @@ import { EditorIcons } from '../../Icons'
 
 const Link = styled.a`
   .LinkIcon {
+    position: relative;
     cursor: pointer;
     background: ${({ theme }) => theme.colors.background.card};
     vertical-align: middle;
@@ -19,12 +20,35 @@ const Link = styled.a`
     }
   }
 
+  .link-tooltip {
+    position: absolute;
+    z-index: 1000;
+    display: none;
+    bottom: -2.5rem;
+    padding: 2px ${({ theme }) => theme.spacing.small};
+    border-radius: ${({ theme }) => theme.borderRadius.tiny};
+    background: ${({ theme }) => theme.colors.gray[8]};
+    box-shadow: 0px 2px 5px #00000080;
+  }
+
   &:hover {
     .LinkIcon svg {
       color: ${({ theme }) => theme.colors.primary};
     }
+
+    .link-tooltip {
+      display: inherit;
+    }
   }
 `
+
+const getSanatizedLink = (raw: string) => {
+  if (raw.includes('://')) {
+    return raw
+  } else {
+    return `https://${raw}`
+  }
+}
 
 /**
  * LinkElement with no default styles.
@@ -41,10 +65,10 @@ const LinkElement = ({ attributes, children, element, nodeProps }: StyledElement
     if (meta) {
       if (e.metaKey) {
         // Only open the link if meta key is pressed
-        window.open(element.url)
+        window.open(getSanatizedLink(element.url))
       }
     } else {
-      window.open(element.url)
+      window.open(getSanatizedLink(element.url))
     }
   }
 
@@ -57,6 +81,9 @@ const LinkElement = ({ attributes, children, element, nodeProps }: StyledElement
       }}
       {...nodeProps}
     >
+      <div className="link-tooltip" contentEditable={false}>
+        {element.url}
+      </div>
       {!isExternal && (
         <button
           className="LinkIcon"
@@ -65,6 +92,8 @@ const LinkElement = ({ attributes, children, element, nodeProps }: StyledElement
           onClick={(e) => {
             openLink(e, false)
           }}
+          data-tip={element.url}
+          data-class="nav-tooltip"
           contentEditable={false}
         >
           <Icon icon={EditorIcons.externalLink} />

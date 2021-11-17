@@ -103,6 +103,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
 
   return (
     <>
+      <ReactTooltip effect="solid" />
       {content && (
         <EditorStyles>
           {showBalloonToolbar && <BallonToolbarMarks />}
