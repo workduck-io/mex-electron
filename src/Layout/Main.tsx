@@ -4,7 +4,6 @@ import styled, { useTheme } from 'styled-components'
 import { Notifications } from '../Components/Notifications/Notifications'
 import Nav, { navTooltip } from '../Components/Sidebar/Nav'
 import links from '../Conf/links'
-import { useAuthStore } from '../Hooks/useAuth/useAuth'
 import { GridWrapper } from '../Styled/Grid'
 
 const AppWrapper = styled.div`
@@ -34,12 +33,9 @@ export type MainProps = { children: React.ReactNode }
 
 const Main = ({ children }: MainProps) => {
   const theme = useTheme()
-  const wd = useAuthStore((store) => store.workspaceDetails)
   const styles = {
     '-webkit-app-region': 'drag'
   }
-
-  // console.log({ wd })
 
   return (
     <AppWrapper>

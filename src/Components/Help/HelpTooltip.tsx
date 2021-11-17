@@ -25,7 +25,17 @@ const SHelpTooltip = styled.div`
 
 const HelpTooltip = () => {
   const toggleModal = useHelpStore((store) => store.toggleModal)
-  return <SHelpTooltip onClick={toggleModal}>{GetIcon(questionMark)}</SHelpTooltip>
+  return (
+    <SHelpTooltip
+      key={`nav_help_modal`}
+      // Tooltip
+      data-tip="Help"
+      data-class="nav-tooltip"
+      onClick={toggleModal}
+    >
+      {GetIcon(questionMark)}
+    </SHelpTooltip>
+  )
 }
 
 export default HelpTooltip
