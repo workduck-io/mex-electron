@@ -1,13 +1,14 @@
 import { client } from '@workduck-io/dwindle'
 import { uniq } from 'lodash'
-import { useAuthStore } from '../Hooks/useAuth/useAuth'
 import { defaultCommands } from '../Defaults/slashCommands'
+import { useSaver } from '../Editor/Components/Saver'
 import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
 import { Service } from '../Editor/Components/SyncBlock'
 import useDataStore from '../Editor/Store/DataStore'
 import { generateComboTexts } from '../Editor/Store/sampleTags'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
 import { useSyncStore } from '../Editor/Store/SyncStore'
+import { useAuthStore } from '../Hooks/useAuth/useAuth'
 import { integrationURLs } from '../Requests/routes'
 import { extractSnippetCommands } from '../Snippets/useSnippets'
 
@@ -15,6 +16,7 @@ export const useUpdater = () => {
   const setSlashCommands = useDataStore((state) => state.setSlashCommands)
   const setServices = useSyncStore((store) => store.setServices)
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
+  const { onSave } = useSaver()
 
   const updater = () => {
     const snippetCommands = extractSnippetCommands(useSnippetStore.getState().snippets)
@@ -27,22 +29,25 @@ export const useUpdater = () => {
 
   const updateDefaultServices = async () => {
     if (useAuthStore.getState().authenticated) {
-      await client.get(integrationURLs.getAllServiceData(getWorkspaceId())).then((d) => {
-        const data = d.data
-        // console.log({ data })
-        const services: Service[] = data.map((s) => ({
-          id: s.serviceType,
-          name: s.name,
-          type: s.intentTypes[0],
-          imageUrl: s.imageUrl,
-          description: s.description,
-          authUrl: s.authUrl,
-          connected: false,
-          enabled: s.enabled
-        }))
-        // console.log({ services })
-        setServices(services)
-      })
+      await client
+        .get(integrationURLs.getAllServiceData(getWorkspaceId()))
+        .then((d) => {
+          const data = d.data
+          // console.log({ data })
+          const services: Service[] = data.map((s) => ({
+            id: s.serviceType,
+            name: s.name,
+            type: s.intentTypes[0],
+            imageUrl: s.imageUrl,
+            description: s.description,
+            authUrl: s.authUrl,
+            connected: false,
+            enabled: s.enabled
+          }))
+          // console.log({ services })
+          setServices(services)
+        })
+        .then(() => onSave())
     } else console.error('Not authenticated, not fetching default services')
   }
 
@@ -61,6 +66,7 @@ export const useUpdater = () => {
 
           setServices(newServices)
         })
+        .then(() => onSave())
         .catch(console.error)
     } else console.error('Not authenticated, not fetching workspace services')
   }
