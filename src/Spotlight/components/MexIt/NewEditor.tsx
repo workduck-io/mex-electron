@@ -41,7 +41,6 @@ const NewEditor = () => {
   }, [fsContent, nodeId])
 
   const onBeforeSave = () => {
-    console.log(key, nodeId)
     addILink(key, nodeId)
   }
 

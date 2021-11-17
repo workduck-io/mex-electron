@@ -33,22 +33,19 @@ const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ curren
 
   return (
     <StyledResults>
-      <ActionTitle>SEARCH RESULTS</ActionTitle>
-      {data.length === 0 && (
-        <>
-          <ActionDesc>No search results found.</ActionDesc>
-          <br />
-          <Action>
-            <ActionTitle>ACTIONS</ActionTitle>
-            <CreateMex showColor>
-              <ActionDescStyled>
-                <Icon style={{ marginRight: '5px' }} color="#888" height={20} width={20} icon={CreateIcon} />
-                Create new Mex
-              </ActionDescStyled>
-              <StyledKey>TAB</StyledKey>
-            </CreateMex>
-          </Action>
-        </>
+      {data.length === 0 ? (
+        <Action>
+          <ActionTitle>ACTIONS</ActionTitle>
+          <CreateMex showColor>
+            <ActionDescStyled>
+              <Icon style={{ marginRight: '5px' }} color="#888" height={20} width={20} icon={CreateIcon} />
+              Create new Mex
+            </ActionDescStyled>
+            <StyledKey>TAB</StyledKey>
+          </CreateMex>
+        </Action>
+      ) : (
+        <ActionTitle>SEARCH RESULTS</ActionTitle>
       )}
       {data?.map((result, index) => (
         <Result
