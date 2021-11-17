@@ -55,11 +55,9 @@ const Register = () => {
 
   const onResendRequest = async (e) => {
     e.preventDefault()
-    console.log('we are resending code')
     setReqCode(true)
     await resendCode()
       .then((r) => {
-        console.log(r)
         toast('Verification code sent!')
       })
       .catch(() => toast.error('Code could not be sent'))

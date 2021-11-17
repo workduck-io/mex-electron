@@ -84,7 +84,7 @@ export const useAuthentication = () => {
       await client
         .get(apiURLs.getUserRecords(data.userId))
         .then((d) => {
-          console.log('workspace data', d.data)
+          // console.log('workspace data', d.data)
           // Set Authenticated, user and workspace details
           setAuthenticated({ email }, { id: d.data.group, name: 'WORKSPACE_NAME' })
           identifyUser(email)
@@ -145,7 +145,7 @@ export const useAuthentication = () => {
     const uCred = loginData.data
     const newWorkspaceName = `WD_${nanoid()}`
 
-    const workspace_details = await client
+    await client
       .post(apiURLs.registerUser, {
         user: {
           id: uCred.userId,
