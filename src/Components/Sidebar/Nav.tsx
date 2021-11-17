@@ -7,9 +7,10 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { GetIcon } from '../../Conf/links'
-import { useAuthentication, useAuthStore } from '../../Hooks/useAuth/useAuth'
+import { useAuthStore } from '../../Hooks/useAuth/useAuth'
 import { useLayoutStore } from '../../Layout/LayoutStore'
 import { NavProps } from './Types'
+import HelpTooltip from '../Help/HelpTooltip'
 
 interface StyledDivProps {
   focusMode?: boolean
@@ -89,7 +90,7 @@ const ComingSoon = styled.div`
   }
 `
 
-const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
+const Nav = ({ links }: NavProps) => {
   const authenticated = useAuthStore((store) => store.authenticated)
   const focusMode = useLayoutStore((store) => store.focusMode)
   return (
@@ -167,6 +168,7 @@ const Nav: React.FC<NavProps> = ({ links }: NavProps) => {
           {GetIcon(searchLine)}
           {/* <Icon icon={settings4Line} /> */}
         </Link>
+        <HelpTooltip />
         <Link
           exact
           tabIndex={-1}
