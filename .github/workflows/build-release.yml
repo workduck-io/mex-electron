@@ -40,7 +40,7 @@ jobs:
     runs-on: macos-latest
     needs: create_github_release
     env:
-      DEBUG: "*"
+      DEBUG: '*'
       GITHUB_TOKEN: ${{ github.token }}
       YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
       CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
@@ -51,7 +51,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@master
         with:
-          node-version: "16.x"
+          node-version: '16.x'
       - name: Install Yarn
         run: npm install -g yarn
       - name: Install dependencies
@@ -59,7 +59,7 @@ jobs:
       - name: Upgrade Internal Dependencies
         run: yarn upgrade @workduck-io/dwindle active-win-universal
       - name: Add certificates to keychain
-        run: chmod +x build/osx-add-cert.sh && build/osx-add-cert.sh
+        run: chmod +x build/osx-add-cert.sh && build/osx-add-cert.sh # Do not run on local machine
       - name: Rebuild Native Dependencies
         run: ./node_modules/.bin/electron-rebuild --force --arch=x64
       - name: Build App
@@ -76,7 +76,7 @@ jobs:
     runs-on: macos-latest
     needs: create_github_release
     env:
-      DEBUG: "*"
+      DEBUG: '*'
       GITHUB_TOKEN: ${{ github.token }}
       YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
       CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
@@ -87,7 +87,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@master
         with:
-          node-version: "16.x"
+          node-version: '16.x'
       - name: Install Yarn
         run: npm install -g yarn
       - name: Install dependencies
@@ -95,7 +95,7 @@ jobs:
       - name: Upgrade Internal Dependencies
         run: yarn upgrade @workduck-io/dwindle active-win-universal
       - name: Add certificates to keychain
-        run: chmod +x build/osx-add-cert.sh && build/osx-add-cert.sh
+        run: chmod +x build/osx-add-cert.sh && build/osx-add-cert.sh # Do not run on local
       - name: Rebuild Native Dependencies
         run: ./node_modules/.bin/electron-rebuild --force --arch=arm64
       - name: Build App
