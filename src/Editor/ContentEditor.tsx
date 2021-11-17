@@ -18,6 +18,7 @@ import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
 import useToggleElements from '../Hooks/useToggleElements/useToggleElements'
 import { useKeyListener } from '../Hooks/useCustomShortcuts/useShortcutListener'
+import { useNavigation } from '../Hooks/useNavigation/useNavigation'
 
 const ContentEditor = () => {
   const title = useEditorStore((state) => state.node.title)
@@ -49,8 +50,22 @@ const ContentEditor = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { shortcutHandler } = useKeyListener()
 
+  const { move } = useNavigation()
+
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
+      [shortcuts.gotoBackwards.keystrokes]: (event) => {
+        event.preventDefault()
+        shortcutHandler(shortcuts.gotoBackwards, () => {
+          move(-1)
+        })
+      },
+      [shortcuts.gotoForward.keystrokes]: (event) => {
+        event.preventDefault()
+        shortcutHandler(shortcuts.gotoForward, () => {
+          move(+1)
+        })
+      },
       [shortcuts.toggleFocusMode.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.toggleFocusMode, () => {

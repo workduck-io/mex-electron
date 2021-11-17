@@ -25,7 +25,7 @@ const Init = () => {
   // const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
 
-  const { move, push } = useNavigation()
+  const { push } = useNavigation()
 
   const { init } = useInitialize()
   const { loadNode } = useLoad()
@@ -103,14 +103,6 @@ const Init = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      [shortcuts.gotoBackwards.keystrokes]: (event) => {
-        event.preventDefault()
-        if (!shortcutDisabled) move(-1)
-      },
-      [shortcuts.gotoForward.keystrokes]: (event) => {
-        event.preventDefault()
-        if (!shortcutDisabled) move(+1)
-      },
       [shortcuts.showSnippets.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSnippets, () => {

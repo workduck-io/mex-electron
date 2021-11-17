@@ -62,10 +62,10 @@ export const useHistoryStore = create<HistoryType>((set, get) => ({
     }),
 
   update: (stack, currentNodeIndex) =>
-    set((state) => ({
+    set({
       stack,
       currentNodeIndex
-    })),
+    }),
 
   getCurrentUId: (): string | undefined => {
     const curIndex = get().currentNodeIndex
