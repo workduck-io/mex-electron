@@ -4,8 +4,6 @@ import { StyledElementProps } from '@udecode/plate-styled-components'
 import React from 'react'
 import styled from 'styled-components'
 import { EditorIcons } from '../../Icons'
-import Tippy from '@tippyjs/react/headless' // different import path!
-import { Tooltip } from '../../Styled/tippy'
 
 const Link = styled.a`
   .LinkIcon {
@@ -44,6 +42,14 @@ const Link = styled.a`
   }
 `
 
+const getSanatizedLink = (raw: string) => {
+  if (raw.includes('://')) {
+    return raw
+  } else {
+    return `https://${raw}`
+  }
+}
+
 /**
  * LinkElement with no default styles.
  * [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling)
@@ -59,10 +65,10 @@ const LinkElement = ({ attributes, children, element, nodeProps }: StyledElement
     if (meta) {
       if (e.metaKey) {
         // Only open the link if meta key is pressed
-        window.open(element.url)
+        window.open(getSanatizedLink(element.url))
       }
     } else {
-      window.open(element.url)
+      window.open(getSanatizedLink(element.url))
     }
   }
 
