@@ -22,7 +22,12 @@ function buildDMG(arch) {
       }
     ],
     overwrite: true,
-    out: path.join(cwd, 'out/make')
+    out: path.join(cwd, 'out/make'),
+    additionalDMGOptions: {
+      window: {
+        size: { width: 600, height: 320 }
+      }
+    }
   })
 }
 
