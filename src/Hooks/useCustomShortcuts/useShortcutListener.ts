@@ -2,6 +2,10 @@ import { useHelpStore } from './../../Components/Help/HelpModal'
 import { useEffect, useCallback, useMemo } from 'react'
 import { KeyBinding, useShortcutStore } from '../../Editor/Store/ShortcutStore'
 import { MiscKeys } from '../../Lib/keyMap'
+import useAnalytics from '../../analytics'
+import { CustomEvents, ActionType } from '../../analytics/events'
+import { Shortcut } from '../../Components/Help/Help.types'
+import { getEventNameFromElement } from '../../Lib/strings'
 
 export type ShortcutListner = {
   shortcut: KeyBinding
@@ -41,6 +45,8 @@ const useShortcutListener = (): ShortcutListner => {
   const changeShortcut = useHelpStore((state) => state.changeShortcut)
   const currentShortcut = useShortcutStore((state) => state.currentShortcut)
 
+  const { trackEvent } = useAnalytics()
+
   const MOD = usePlatformInfo()
 
   const getKeyModifiers = (event: KeyboardEvent): Array<Key> => {
@@ -71,7 +77,10 @@ const useShortcutListener = (): ShortcutListner => {
             ...currentShortcut,
             keystrokes: shortcut.key.trim()
           })
-
+          trackEvent(getEventNameFromElement('Shortcut Settings', ActionType.CHANGE, 'Shortcut'), {
+            from: currentShortcut.keystrokes,
+            to: shortcut.key.trim()
+          })
           setEditMode(false)
         }
         return
@@ -105,8 +114,16 @@ const useShortcutListener = (): ShortcutListner => {
 
 export const useKeyListener = () => {
   const shortcutDisabled = useShortcutStore((state) => state.editMode)
+  const { trackEvent } = useAnalytics()
 
-  return { shortcutDisabled }
+  const shortcutHandler = (shortcut: Shortcut, callback: any) => {
+    if (!shortcutDisabled) {
+      trackEvent(getEventNameFromElement('Shortcut Settings', ActionType.KEY_PRESS, 'Shortcut'), shortcut)
+      callback()
+    }
+  }
+
+  return { shortcutDisabled, shortcutHandler }
 }
 
 export default useShortcutListener

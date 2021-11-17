@@ -1,7 +1,7 @@
 import { getGlobalShortcut, getSelectedText } from './Spotlight/utils/getSelectedText'
 /* eslint-disable @typescript-eslint/no-var-requires */
 import chokidar from 'chokidar'
-import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, session, shell, Tray } from 'electron'
+import { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, nativeImage, session, shell, Tray } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import { AppType } from './Data/useInitialize'
@@ -11,6 +11,7 @@ import MenuBuilder from './menu'
 import { IpcAction } from './Spotlight/utils/constants'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
+import initErrorHandler, { showDialog } from './Lib/errorHandlers'
 
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
@@ -51,7 +52,8 @@ const MEX_WINDOW_OPTIONS = {
   titleBarStyle: 'hidden' as const,
   webPreferences: {
     nodeIntegration: true,
-    contextIsolation: false
+    contextIsolation: false,
+    enableRemoteModule: true
   }
 }
 
@@ -68,7 +70,8 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
   resizable: false,
   webPreferences: {
     nodeIntegration: true,
-    contextIsolation: false
+    contextIsolation: false,
+    enableRemoteModule: true
   }
 }
 
@@ -105,6 +108,7 @@ export const setSearchIndexData = (indexJSON) => {
 
 const createSpotLighWindow = (show?: boolean) => {
   spotlight = new BrowserWindow(SPOTLIGHT_WINDOW_OPTIONS)
+  global.spotlight = spotlight
   spotlight.loadURL(SPOTLIGHT_WINDOW_WEBPACK_ENTRY)
 
   spotlight.setAlwaysOnTop(true, 'modal-panel', 2)
@@ -143,9 +147,11 @@ const createMexWindow = () => {
   mex = new BrowserWindow(MEX_WINDOW_OPTIONS)
   mex.loadURL(MEX_WINDOW_WEBPACK_ENTRY)
 
-  mex.once('close', (_event) => {
+  mex.once('close', () => {
     mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
   })
+
+  global.mex = mex
 
   mex.webContents.on('did-finish-load', () => {
     if (!mex) {
@@ -300,11 +306,11 @@ app.on('before-quit', () => {
   // mex?.webContents.send(IpcAction.SAVE_AND_QUIT)
   // spotlight?.webContents.send(IpcAction.SAVE_AND_QUIT)
 })
-app.on('will-quit', (_event) => {
+app.on('will-quit', () => {
   console.log('App will quit')
 })
 
-app.on('quit', (_event) => {
+app.on('quit', () => {
   console.log('App quit')
 })
 
@@ -329,6 +335,7 @@ app
     return 0
   })
   .then(createWindow)
+  .then(initErrorHandler)
   .catch(console.error)
 
 app.on('activate', () => {
@@ -388,6 +395,11 @@ ipcMain.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {
 
 ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
   mex?.webContents.send(IpcAction.OPEN_NODE, { nodeId: arg.nodeId })
+})
+
+ipcMain.on(IpcAction.ERROR_OCCURED, (_event, arg) => {
+  showDialog(arg.message, arg.propertes)
+  app.quit()
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

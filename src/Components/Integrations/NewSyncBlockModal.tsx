@@ -3,19 +3,21 @@ import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import Modal from 'react-modal'
 import { useAuthStore } from '../../Hooks/useAuth/useAuth'
+import useAnalytics from '../../analytics'
 import create from 'zustand'
 import { useSaveData } from '../../Data/useSaveData'
 import { useUpdater } from '../../Data/useUpdater'
 import { generateSyncTempId } from '../../Defaults/idPrefixes'
 import { SyncBlockTemplate } from '../../Editor/Components/SyncBlock'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
-import { capitalize } from '../../Lib/strings'
+import { capitalize, getEventNameFromElement } from '../../Lib/strings'
 import { integrationURLs } from '../../Requests/routes'
 import { Button } from '../../Styled/Buttons'
 import { InputBlock, Label, TextAreaBlock } from '../../Styled/Form'
 import { LoadingButton } from '../Buttons/LoadingButton'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import ServiceSelector from './ServiceSelector'
+import { ActionType, CustomEvents } from '../../analytics/events'
 
 interface NewSyncTemplateModalState {
   open: boolean
@@ -60,6 +62,7 @@ const NewSyncTemplateModal = () => {
     handleSubmit,
     formState: { isSubmitting }
   } = useForm()
+  const { trackEvent } = useAnalytics()
 
   // const theme = useTheme()
 
@@ -92,6 +95,11 @@ const NewSyncTemplateModal = () => {
       ],
       description
     }
+
+    trackEvent(getEventNameFromElement('Integrations', ActionType.CREATE, 'Template'), {
+      'mex-template': template
+    })
+
     const intentMap = {}
     template.intents.forEach((i) => {
       intentMap[i.service.toUpperCase()] = i.type

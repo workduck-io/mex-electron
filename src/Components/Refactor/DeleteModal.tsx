@@ -67,13 +67,15 @@ const Delete = () => {
   const open = useDeleteStore((store) => store.open)
   const mockRefactored = useDeleteStore((store) => store.mockRefactored)
 
-  const { shortcutDisabled } = useKeyListener()
+  const { shortcutDisabled, shortcutHandler } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showDelete.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) openModal(useEditorStore.getState().node.id)
+        shortcutHandler(shortcuts.showDelete, () => {
+          openModal(useEditorStore.getState().node.id)
+        })
       }
     })
     return () => {

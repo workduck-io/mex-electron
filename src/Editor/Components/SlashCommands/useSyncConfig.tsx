@@ -1,3 +1,5 @@
+import { CustomEvents } from '../../../analytics/events'
+import useAnalytics from '../../../analytics'
 import { SEPARATOR } from '../../../Components/Sidebar/treeUtils'
 import { generateSyncBlockId } from '../../../Defaults/idPrefixes'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
@@ -32,6 +34,7 @@ export const useSyncConfig = () => {
             templateId: cur.id
           }
           // creation of IGID if none found. Don't create until services are linked
+
           addSyncBlock(nd)
           return { id }
         }

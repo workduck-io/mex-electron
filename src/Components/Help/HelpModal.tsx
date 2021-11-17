@@ -52,13 +52,15 @@ const HelpModal = () => {
   const closeModal = useHelpStore((store) => store.closeModal)
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
-  const { shortcutDisabled } = useKeyListener()
+  const { shortcutDisabled, shortcutHandler } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showHelp.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) toggleModal()
+        shortcutHandler(shortcuts.showHelp, () => {
+          toggleModal()
+        })
       }
     })
     return () => {

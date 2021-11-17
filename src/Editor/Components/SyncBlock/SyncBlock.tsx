@@ -6,6 +6,8 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import ReactTooltip from 'react-tooltip'
 import { useSelected } from 'slate-react'
+import { ActionType } from '../../../analytics/events'
+import useAnalytics from '../../../analytics'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import useIntents from '../../../Hooks/useIntents/useIntents'
 import useToggleElements from '../../../Hooks/useToggleElements/useToggleElements'
@@ -19,6 +21,7 @@ import IntentSelector from './intentSelector'
 import { ElementHeader, FormControls, RootElement, SentFrom, SyncForm, SyncTitle, Widget } from './SyncBlock.styles'
 import { Intent, SyncBlockData, SyncBlockProps } from './SyncBlock.types'
 import { getSyncServiceIcon } from './SyncIcons'
+import { getEventNameFromElement } from '../../../Lib/strings'
 
 type FormValues = {
   content: string
@@ -41,6 +44,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
   const parentNodeId = useEditorStore((store) => store.node.key)
   const blocksData = useSyncStore((state) => state.syncBlocks)
 
+  const { trackEvent } = useAnalytics()
   const [changedIntents, setChangedIntents] = useState<{ [id: string]: Intent }>({})
 
   const selected = selectedSyncBlockId === element.id
@@ -113,6 +117,13 @@ export const SyncBlock = (props: SyncBlockProps) => {
       templateId: templateId
     })
 
+    trackEvent(getEventNameFromElement('Sync Block', ActionType.SAVE, 'Intent'), {
+      'mex-sync-block-id': element.id,
+      'mex-content': content,
+      'mex-intent-group-id': newIgid,
+      'mex-template-id': templateId
+    })
+
     // toast('Intents updated successfully')
 
     setChangedIntents({})
@@ -132,6 +143,13 @@ export const SyncBlock = (props: SyncBlockProps) => {
       templateId: templateId
     })
 
+    trackEvent(getEventNameFromElement('Sync Block', ActionType.SYNC, 'sync_block'), {
+      'mex-sync-block-id': element.id,
+      'mex-content': data.content,
+      'mex-intent-group-id': igid,
+      'mex-template-id': templateId
+    })
+
     client.post(integrationURLs.listen(param), {
       parentNodeId: parentNodeId ?? 'BLOCK_random',
       syncId: element.id,
@@ -141,7 +159,9 @@ export const SyncBlock = (props: SyncBlockProps) => {
       // ...InsertParams,
       eventType: content === '' ? 'INSERT' : 'EDIT' // FIXME
     })
+
     setSynced(true)
+
     setTimeout(() => {
       setSynced(false)
     }, 2000)

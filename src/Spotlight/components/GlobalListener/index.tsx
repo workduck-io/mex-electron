@@ -10,10 +10,11 @@ import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlock
 import { useRecentsStore } from '../../../Editor/Store/RecentsStore'
 import { useInitialize, AppType } from '../../../Data/useInitialize'
 import { useSpotlightAppStore } from '../../../Spotlight/store/app'
-import { useHistory, useLocation } from 'react-router'
 import useSearchStore from '../../../Search/SearchStore'
 import { convertDataToRawText } from '../../../Search/localSearch'
-
+import { useLocation } from 'react-router'
+import { useAuthStore } from '../../../Hooks/useAuth/useAuth'
+import useAnalytics from '../../../analytics'
 interface IndexAndFileData {
   fileData: FileData
   indexData: any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -31,6 +32,9 @@ const GlobalListener = memo(() => {
 
   const { init, update } = useInitialize()
   const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
+  const { identifyUser } = useAnalytics()
+
+  const userDetails = useAuthStore((state) => state.userDetails)
 
   useEffect(() => {
     if (showSource && temp) {
@@ -58,6 +62,13 @@ const GlobalListener = memo(() => {
         setSelection(undefined)
         setIsPreview(false)
       } else setTemp(data)
+    })
+
+    ipcRenderer.on(IpcAction.INIT_HEAP_INSTANCE, (_event, arg) => {
+      if (arg.heap) {
+        window.heap = JSON.parse(arg.heap)
+        identifyUser(userDetails?.email)
+      }
     })
 
     ipcRenderer.on(IpcAction.SPOTLIGHT_BLURRED, () => {
