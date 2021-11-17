@@ -12,13 +12,19 @@ const rendererErrorHandler = (logger: LoggerType) => {
   })
 
   window.onerror = (message, source, lineno, colno, error) => {
-    logger(error.message, {
+    const isSuppressedError = error.message.includes('Cannot resolve a Slate node')
+
+    let errorMessage = error.message
+    if (isSuppressedError) errorMessage = null
+
+    logger(errorMessage, {
       'mex-error': error,
       'mex-source': source,
       'mex-message': message,
       'mex-line-number': lineno,
       'mex-column-number': colno
     })
+
     return true
   }
 
