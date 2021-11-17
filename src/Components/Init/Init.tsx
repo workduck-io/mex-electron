@@ -13,7 +13,6 @@ import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 import { useAuthStore } from '../../Hooks/useAuth/useAuth'
 import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import useLoad from '../../Hooks/useLoad/useLoad'
-import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import config from '../../Requests/config'
 import { convertDataToRawText } from '../../Search/localSearch'
 import useSearchStore from '../../Search/SearchStore'
@@ -26,8 +25,6 @@ const Init = () => {
   // const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const pushHs = useHistoryStore((store) => store.push)
-
-  const { push } = useNavigation()
 
   const { init } = useInitialize()
   const { loadNode } = useLoad()

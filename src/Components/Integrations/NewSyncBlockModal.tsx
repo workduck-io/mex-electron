@@ -2,14 +2,15 @@ import { client } from '@workduck-io/dwindle'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import Modal from 'react-modal'
-import { useAuthStore } from '../../Hooks/useAuth/useAuth'
-import useAnalytics from '../../analytics'
 import create from 'zustand'
+import useAnalytics from '../../analytics'
+import { ActionType } from '../../analytics/events'
 import { useSaveData } from '../../Data/useSaveData'
 import { useUpdater } from '../../Data/useUpdater'
 import { generateSyncTempId } from '../../Defaults/idPrefixes'
 import { SyncBlockTemplate } from '../../Editor/Components/SyncBlock'
 import { useSyncStore } from '../../Editor/Store/SyncStore'
+import { useAuthStore } from '../../Hooks/useAuth/useAuth'
 import { capitalize, getEventNameFromElement } from '../../Lib/strings'
 import { integrationURLs } from '../../Requests/routes'
 import { Button } from '../../Styled/Buttons'
@@ -17,7 +18,6 @@ import { InputBlock, Label, TextAreaBlock } from '../../Styled/Form'
 import { LoadingButton } from '../Buttons/LoadingButton'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import ServiceSelector from './ServiceSelector'
-import { ActionType, CustomEvents } from '../../analytics/events'
 
 interface NewSyncTemplateModalState {
   open: boolean
@@ -67,8 +67,7 @@ const NewSyncTemplateModal = () => {
   // const theme = useTheme()
 
   const serviceOptions = services
-    .filter((s) => s.id !== 'MEX')
-    .filter((s) => s.enabled)
+    .filter((s) => s.id !== 'MEX' && s.enabled && s.connected)
     .map((s) => ({
       label: `${capitalize(s.id)} - ${capitalize(s.type)}`,
       value: { service: s.id, type: s.type },

@@ -163,6 +163,8 @@ export const useAuthentication = () => {
         // Set workspace details
         setAuthenticated({ email: sensitiveData.email }, { id: d.data.id, name: d.data.name })
       })
+      .then(updateDefaultServices)
+      .then(updateServices)
       .catch(console.error)
 
     if (vSign) {
