@@ -153,6 +153,8 @@ const Search = () => {
         <Icon icon={searchLine} />
         <SearchInput
           autoFocus
+          id="search_nodes"
+          name="search_nodes"
           tabIndex={-1}
           placeholder="Search Anything...."
           type="text"

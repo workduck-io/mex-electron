@@ -81,13 +81,15 @@ const Refactor = () => {
   const setFrom = useRefactorStore((store) => store.setFrom)
 
   const { push } = useNavigation()
-  const { shortcutDisabled } = useKeyListener()
+  const { shortcutDisabled, shortcutHandler } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showRefactor.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) openModal()
+        shortcutHandler(shortcuts.showRefactor, () => {
+          openModal()
+        })
       }
     })
     return () => {

@@ -2,12 +2,15 @@ import { getBlockAbove, getPlatePluginType, insertNodes, SPEditor, TElement } fr
 import { useCallback } from 'react'
 import { Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
+import { CustomEvents, ActionType } from '../../../analytics/events'
+import useAnalytics from '../../../analytics'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown'
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from '../SlashCommands/Types'
 import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChange'
+import { getEventNameFromElement } from '../../../Lib/strings'
 
 export interface ComboTypeHandlers {
   slateElementType: string
@@ -18,6 +21,7 @@ export const useElementOnChange = (comboType: ComboTypeHandlers) => {
   const isOpen = useComboboxIsOpen()
   const targetRange = useComboboxStore((state) => state.targetRange)
   const closeMenu = useComboboxStore((state) => state.closeMenu)
+  const { trackEvent } = useAnalytics()
 
   return useCallback(
     (editor: SPEditor & ReactEditor, item: IComboboxItem) => {
@@ -43,7 +47,12 @@ export const useElementOnChange = (comboType: ComboTypeHandlers) => {
           value: item.text
         })
 
-        // console.log('Inserted', { item, type });
+        console.log('Inserted', { item, type: CustomEvents[type.toUpperCase()] })
+
+        trackEvent(getEventNameFromElement('Editor', ActionType.CREATE, type), {
+          'mex-element-type': type,
+          'mex-element-text': item.text
+        })
 
         // move the selection after the ilink element
         Transforms.move(editor)

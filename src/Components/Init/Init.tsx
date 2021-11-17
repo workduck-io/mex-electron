@@ -62,7 +62,6 @@ const Init = () => {
             ClientId: config.cognito.APP_CLIENT_ID
           })
           if (userAuthenticatedEmail) {
-            // console.log('Authenticated User email: ', userAuthenticatedEmail)
             // setAuthenticated({ email: userAuthenticatedEmail })
             return { d, auth: true }
           }
@@ -87,7 +86,7 @@ const Init = () => {
       const { data } = arg
       addRecent(data)
     })
-    ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, (_event, arg) => {
+    ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, () => {
       const searchIndexJSON = fetchIndexJSON()
       ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndexJSON })
     })
@@ -100,7 +99,7 @@ const Init = () => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
-  const { shortcutDisabled } = useKeyListener()
+  const { shortcutDisabled, shortcutHandler } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -114,23 +113,33 @@ const Init = () => {
       },
       [shortcuts.showSnippets.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) history.push('/snippets')
+        shortcutHandler(shortcuts.showSnippets, () => {
+          history.push('/snippets')
+        })
       },
       [shortcuts.showIntegrations.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) history.push('/integrations')
+        shortcutHandler(shortcuts.showIntegrations, () => {
+          history.push('/integrations')
+        })
       },
       [shortcuts.showEditor.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) history.push('/editor')
+        shortcutHandler(shortcuts.showEditor, () => {
+          history.push('/editor')
+        })
       },
       [shortcuts.showSearch.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) history.push('/search')
+        shortcutHandler(shortcuts.showSearch, () => {
+          history.push('/search')
+        })
       },
       [shortcuts.showSettings.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) history.push('/settings')
+        shortcutHandler(shortcuts.showSettings, () => {
+          history.push('/settings')
+        })
       }
     })
     return () => {

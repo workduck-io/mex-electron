@@ -36,6 +36,8 @@ const Search: React.FC = () => {
       <StyledInput
         ref={ref}
         autoFocus
+        id="spotlight_search"
+        name="spotlight_search"
         placeholder="Search anything.."
         onChange={({ target: { value } }) => handleSearchInput(value)}
       />

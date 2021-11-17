@@ -9,6 +9,8 @@ import { Title } from '../Styled/Typography'
 import { Info, InfoData, InfoLabel, ProfileContainer, ProfileIcon } from '../Styled/UserPage'
 import { ProfileImage } from '../Components/User/ProfileImage'
 import { CopyButton } from '../Components/Buttons/CopyButton'
+import useAnalytics from '../analytics'
+import { CustomEvents } from '../analytics/events'
 
 const UserPage = () => {
   const { getUserDetails } = useAuth()
@@ -16,12 +18,20 @@ const UserPage = () => {
   const { logout } = useAuthentication()
   const history = useHistory()
 
+  const { identifyUser, addEventProperties } = useAnalytics()
   const userDetails = getUserDetails()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onLogout = (e: any) => {
     e.preventDefault()
     logout()
+    addEventProperties({ [CustomEvents.LOGGED_IN]: false })
+    /**
+     * Sessions ends after 30mins of inactivity
+     *
+     * identifyUser(undefined)
+     * */
+
     history.push('/login')
   }
 

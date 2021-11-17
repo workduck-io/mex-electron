@@ -8,7 +8,7 @@ import { SpotlightProvider } from './utils/context'
 
 initializeAmplify()
 
-export default function App () {
+export default function App() {
   const theme = useThemeStore((state) => state.theme)
 
   return (

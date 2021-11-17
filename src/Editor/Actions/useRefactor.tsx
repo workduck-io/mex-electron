@@ -1,5 +1,7 @@
 import React from 'react'
 import { doesLinkRemain, linkInRefactor } from '../../Components/Refactor/doesLinkRemain'
+import useAnalytics from '../../analytics'
+import { CustomEvents } from '../../analytics/events'
 import { useRefactorStore } from '../../Components/Refactor/Refactor'
 import { SEPARATOR } from '../../Components/Sidebar/treeUtils'
 import { NodeLink } from '../../Types/relations'
@@ -36,6 +38,7 @@ export const useRefactor = () => {
   const initContents = useContentStore((state) => state.initContents)
   const { getUidFromNodeId } = useLinks()
   const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
+  const { trackEvent } = useAnalytics()
 
   const getMockRefactor = (from: string, to: string): NodeLink[] => {
     const refactorMap = ilinks.filter((i) => {
@@ -54,6 +57,7 @@ export const useRefactor = () => {
   }
 
   const execRefactor = (from: string, to: string) => {
+    trackEvent(CustomEvents.REFACTOR, { 'mex-from': from, 'mex-to': to })
     const refactored = getMockRefactor(from, to)
 
     // Generate the new links
@@ -123,7 +127,7 @@ const refactorLinksInContent = (refactored: NodeLink[], content: any[]) => {
 
 // Used to wrap a class component to provide hooks
 export const withRefactor = (Component: any) => {
-  return function C2 (props: any) {
+  return function C2(props: any) {
     const { getMockRefactor, execRefactor } = useRefactor()
 
     const prefillRefactorModal = useRefactorStore((state) => state.prefillModal)

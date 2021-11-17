@@ -29,7 +29,7 @@ export const useGlobalShortcuts = () => {
     setSearch('')
   }
 
-  const { shortcutDisabled } = useKeyListener()
+  const { shortcutDisabled, shortcutHandler } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
