@@ -1,14 +1,15 @@
-import { useAuth, client } from '@workduck-io/dwindle'
+import { client, useAuth } from '@workduck-io/dwindle'
+import { UserCred } from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
 import { nanoid } from 'nanoid'
-import { apiURLs } from '../../Requests/routes'
+import { useState } from 'react'
 import create, { State } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { useUpdater } from '../../Data/useUpdater'
-import { useState } from 'react'
-import { UserCred } from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
-import { RegisterFormData } from '../../Views/Register'
 import useAnalytics from '../../analytics'
 import { CustomEvents, Properties } from '../../analytics/events'
+import { useUpdater } from '../../Data/useUpdater'
+import { apiURLs } from '../../Requests/routes'
+import { useApi } from '../../Requests/Save'
+import { RegisterFormData } from '../../Views/Register'
 
 interface UserDetails {
   email: string
@@ -63,6 +64,7 @@ export const useAuthentication = () => {
   const { updateDefaultServices, updateServices } = useUpdater()
   const { signIn, signUp, verifySignUp, signOut } = useAuth()
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
+  const { getNodesByWorkspace } = useApi()
 
   const login = async (
     email: string,
@@ -86,6 +88,7 @@ export const useAuthentication = () => {
         .then((d) => {
           // console.log('workspace data', d.data)
           // Set Authenticated, user and workspace details
+          getNodesByWorkspace(d.data.group).then((d) => console.log('NODES: ', d))
           setAuthenticated({ email }, { id: d.data.group, name: 'WORKSPACE_NAME' })
           identifyUser(email)
           addUserProperties({
@@ -98,6 +101,7 @@ export const useAuthentication = () => {
         })
         .then(updateDefaultServices)
         .then(updateServices)
+        .then()
         .catch((e) => {
           console.error({ e })
           return e.toString() as string

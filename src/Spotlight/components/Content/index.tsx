@@ -123,6 +123,7 @@ const Content = () => {
         ...prevTemplate,
         text: null
       })
+      loadNodeProps(draftNode)
     } else {
       const contentKey = data[currentIndex]
       setPreview({
@@ -132,11 +133,11 @@ const Content = () => {
       if (nodeContent) {
         loadNodeAndAppend(contentKey.uid, nodeContent)
       } else {
-        loadNode(contentKey.uid)
+        loadNode(contentKey.uid, false, false)
       }
     }
     setSaved(false)
-  }, [data, currentIndex, isPreview, selection])
+  }, [data, currentIndex, isPreview, selection, draftNode])
 
   return (
     <StyledContent>

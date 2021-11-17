@@ -19,7 +19,6 @@ export const StyledRow = styled.div<ColorProp>`
         ${StyledBackground}
       }
     `}
-  cursor: pointer;
   padding: 10px 1rem;
   margin: 5px 0;
   color: ${({ theme }) => theme.colors.text.fade};

@@ -1,10 +1,12 @@
 import styled from 'styled-components'
+import { Draggable } from '../Actions/styled'
 
 type ContentType = {
   justifyContent?: string
 }
 
 export const StyledShortcuts = styled.section<ContentType>`
+  ${Draggable}
   display: flex;
   width: 100%;
   margin-top: 0.5rem;

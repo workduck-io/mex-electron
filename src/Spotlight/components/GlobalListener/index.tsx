@@ -81,8 +81,6 @@ const GlobalListener = memo(() => {
       init(fileData, editorID, AppType.SPOTLIGHT)
       const initList = convertDataToRawText(fileData)
       initializeSearchIndex(initList, indexData)
-      console.log(`Search Index initialized with ${initList.length} documents`)
-      console.log('Documents are: ', useSearchStore.getState().docs)
     })
 
     ipcRenderer.on(IpcAction.SPOTLIGHT_BUBBLE, (_event, arg) => {

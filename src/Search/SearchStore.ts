@@ -30,7 +30,6 @@ const useSearchStore = create<SearchStoreState>((set, get) => ({
     initList.forEach((doc) => {
       get().docs.set(doc.nodeUID, { title: doc.title, text: doc.text })
     })
-    console.log('Docs Initialized: ', get().docs)
     return index
   },
   addDoc: (doc: NodeSearchData) => {

@@ -43,17 +43,16 @@ const CreateInput: React.FC<CreateInputType> = () => {
     const newUid = addILink(newNodeId)
     setSelection(undefined)
 
-    if (editorState) {
-      setFsContent(newUid, editorState)
-    }
+    setFsContent(newUid, editorState)
 
     pushToHistory(newNodeId)
     addRecent(newNodeId)
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, newNodeId)
 
-    openNodeInMex(newNodeId)
     saveData()
     setSaved(true)
+    loadNode(newUid, true, false)
+    openNodeInMex(newUid)
   }
 
   const handleChange = (nodeIdValue: string) => {
@@ -61,7 +60,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
     if (nodeContent) {
       loadNodeAndAppend(uid, nodeContent)
     } else {
-      loadNode(uid)
+      loadNode(uid, true, false)
       pushToHistory(uid)
       addRecent(uid)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, uid)

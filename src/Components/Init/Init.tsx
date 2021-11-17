@@ -8,6 +8,7 @@ import { useInitialize } from '../../Data/useInitialize'
 import { useLocalData } from '../../Data/useLocalData'
 import { useSyncData } from '../../Data/useSyncData'
 import { getUidFromNodeIdAndLinks } from '../../Editor/Actions/useLinks'
+import { useHistoryStore } from '../../Editor/Store/HistoryStore'
 import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 import { useAuthStore } from '../../Hooks/useAuth/useAuth'
 import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
@@ -24,6 +25,7 @@ const Init = () => {
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
   // const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
+  const pushHs = useHistoryStore((store) => store.push)
 
   const { push } = useNavigation()
 
@@ -65,7 +67,6 @@ const Init = () => {
             // setAuthenticated({ email: userAuthenticatedEmail })
             return { d, auth: true }
           }
-
           setUnAuthenticated()
           return { d, auth: false }
         })
@@ -77,7 +78,9 @@ const Init = () => {
 
   useEffect(() => {
     ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { nodeId }) => {
-      push(nodeId)
+      pushHs(nodeId)
+      addRecent(nodeId)
+      loadNode(nodeId, false, false)
     })
     ipcRenderer.on(IpcAction.CLEAR_RECENTS, () => {
       clear()

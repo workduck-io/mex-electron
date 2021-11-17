@@ -20,5 +20,6 @@ export const apiURLs = {
   getUserRecords: (userId: string) => `${BASE_USER_URL}/user/${userId}/${MEX_TAG}`,
   registerUser: `${BASE_API_URL}/user/register`,
   createWorkspace: `${BASE_API_URL}/workspace`,
+  getNodesByWorkspace: (workspaceId: string) => `${BASE_API_URL}/node/workspace/${workspaceId}/namespace/NAMESPACE1`,
   getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`
 }

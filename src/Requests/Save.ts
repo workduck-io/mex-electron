@@ -37,7 +37,16 @@ export const useApi = () => {
     return deserializeContent(data)
   }
 
-  return { saveDataAPI, getDataAPI }
+  const getNodesByWorkspace = async (workspaceId: string) => {
+    const data = await client.get(apiURLs.getNodesByWorkspace(workspaceId), {}).then((d) => {
+      console.log(d.data)
+      return d.data
+    })
+
+    return data
+  }
+
+  return { saveDataAPI, getDataAPI, getNodesByWorkspace }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
