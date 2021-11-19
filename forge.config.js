@@ -40,11 +40,6 @@ module.exports = {
               html: './src/index.html',
               js: './src/index.tsx',
               name: 'mex_window'
-            },
-            {
-              html: './src/Spotlight/index.html',
-              js: './src/Spotlight/index.tsx',
-              name: 'spotlight_window'
             }
           ]
         }
@@ -53,7 +48,7 @@ module.exports = {
     [
       '@timfish/forge-externals-plugin',
       {
-        externals: ['active-win'],
+        externals: ['active-win-universal'],
         includeDeps: true
       }
     ]

@@ -2,16 +2,16 @@ module.exports = [
   // Add support for native node modules
   {
     test: /native_modules\/.+\.node$/,
-    use: 'node-loader',
+    use: 'node-loader'
   },
   {
     test: /\.(m?js|node)$/,
     use: {
       loader: '@vercel/webpack-asset-relocator-loader',
       options: {
-        outputAssetBase: 'native_modules',
-      },
-    },
+        outputAssetBase: 'native_modules'
+      }
+    }
   },
   {
     test: /\.tsx?$/,
@@ -19,8 +19,8 @@ module.exports = [
     use: {
       loader: 'ts-loader',
       options: {
-        transpileOnly: true,
-      },
-    },
-  },
+        transpileOnly: true
+      }
+    }
+  }
 ]
