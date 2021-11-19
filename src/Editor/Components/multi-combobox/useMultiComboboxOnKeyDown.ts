@@ -1,16 +1,16 @@
-import { getBlockAbove, getPlatePluginType, insertNodes, SPEditor, TElement } from '@udecode/plate'
+import { getBlockAbove, getPlatePluginType, insertNodes, PlateEditor, TElement } from '@udecode/plate'
 import { useCallback } from 'react'
 import { Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
-import { CustomEvents, ActionType } from '../../../analytics/events'
 import useAnalytics from '../../../analytics'
+import { ActionType, CustomEvents } from '../../../analytics/events'
+import { getEventNameFromElement } from '../../../Lib/strings'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown'
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from '../SlashCommands/Types'
 import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChange'
-import { getEventNameFromElement } from '../../../Lib/strings'
 
 export interface ComboTypeHandlers {
   slateElementType: string
@@ -24,7 +24,7 @@ export const useElementOnChange = (comboType: ComboTypeHandlers) => {
   const { trackEvent } = useAnalytics()
 
   return useCallback(
-    (editor: SPEditor & ReactEditor, item: IComboboxItem) => {
+    (editor: PlateEditor & ReactEditor, item: IComboboxItem) => {
       const type = getPlatePluginType(editor, comboType.slateElementType)
 
       if (isOpen && targetRange) {
@@ -85,7 +85,7 @@ const useMultiComboboxOnKeyDown = (
 
   // We need to create the select handlers ourselves here
 
-  let elementChangeHandler: (editor: SPEditor & ReactEditor, item: IComboboxItem) => any
+  let elementChangeHandler: (editor: PlateEditor & ReactEditor, item: IComboboxItem) => any
   if (comboboxKey === ComboboxKey.SLASH_COMMAND) {
     elementChangeHandler = slashCommandOnChange
   } else {

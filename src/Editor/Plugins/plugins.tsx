@@ -24,12 +24,12 @@ import {
   createStrikethroughPlugin,
   createTablePlugin,
   createUnderlinePlugin,
-  PlatePlugin,
-  SPEditor
+  PlateEditor,
+  PlatePlugin
 } from '@udecode/plate'
 import { useMemo } from 'react'
-import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
+import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
 import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin'
 import { createTagPlugin } from '../Components/tag/createTagPlugin'
 // import { TagCombobox } from '../Components/tag/components/TagCombobox';
@@ -94,7 +94,7 @@ const generatePlugins = () => {
     createMediaEmbedPlugin(),
 
     // Custom Plugins
-    createBlurSelectionPlugin() as PlatePlugin<SPEditor>,
+    createBlurSelectionPlugin() as PlatePlugin<PlateEditor>,
 
     // Comboboxes
     createTagPlugin(), // Tags

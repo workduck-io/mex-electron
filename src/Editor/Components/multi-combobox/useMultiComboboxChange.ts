@@ -1,4 +1,4 @@
-import { OnChange, useStoreEditorRef } from '@udecode/plate'
+import { OnChange, usePlateEditorRef } from '@udecode/plate'
 import { useCallback } from 'react'
 import { fuzzySearch } from '../../../Lib/fuzzySearch'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
@@ -14,7 +14,7 @@ const useMultiComboboxOnChange = (
     [type: string]: ComboboxType
   }
 ): OnChange => {
-  const editor = useStoreEditorRef(editorId)! // eslint-disable-line @typescript-eslint/no-non-null-assertion
+  const editor = usePlateEditorRef(editorId)! // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
   const isOpen = useComboboxIsOpen()
   const closeMenu = useComboboxStore((state) => state.closeMenu)

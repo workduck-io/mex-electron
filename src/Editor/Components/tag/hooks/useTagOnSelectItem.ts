@@ -1,5 +1,5 @@
+import { getBlockAbove, getPlatePluginType, insertNodes, PlateEditor, TElement } from '@udecode/plate'
 import { useCallback } from 'react'
-import { getBlockAbove, getPlatePluginType, insertNodes, SPEditor, TElement } from '@udecode/plate'
 import { Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
 import { IComboboxItem } from '../../combobox/components/Combobox.types'
@@ -16,7 +16,7 @@ export const useTagOnSelectItem = () => {
   const closeMenu = useComboboxStore((state) => state.closeMenu)
 
   return useCallback(
-    (editor: SPEditor & ReactEditor, item: IComboboxItem) => {
+    (editor: PlateEditor & ReactEditor, item: IComboboxItem) => {
       const type = getPlatePluginType(editor, ELEMENT_TAG)
 
       if (isOpen && targetRange) {
@@ -33,7 +33,7 @@ export const useTagOnSelectItem = () => {
         insertNodes<TElement>(editor, {
           type: type as any,
           children: [{ text: '' }],
-          value: item.text,
+          value: item.text
         })
         // move the selection after the tag element
         Transforms.move(editor)

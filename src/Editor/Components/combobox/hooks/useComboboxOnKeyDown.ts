@@ -1,9 +1,9 @@
-import { useCallback } from 'react'
-import { SPEditor } from '@udecode/plate'
+import { PlateEditor } from '@udecode/plate'
 import { KeyboardHandler } from '@udecode/plate-core'
+import { useCallback } from 'react'
 import { IComboboxItem } from '../components/Combobox.types'
 import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen'
-import { ComboboxKey, useComboboxStore } from '../useComboboxStore'
+import { useComboboxStore } from '../useComboboxStore'
 import { getNextWrappingIndex } from '../utils/getNextWrappingIndex'
 
 const pure = (id: string) => {
@@ -21,7 +21,7 @@ export const useComboboxOnKeyDown = ({
   onNewItem,
   creatable
 }: {
-  onSelectItem: (editor: SPEditor, item: IComboboxItem) => any // eslint-disable-line @typescript-eslint/no-explicit-any
+  onSelectItem: (editor: PlateEditor, item: IComboboxItem) => any // eslint-disable-line @typescript-eslint/no-explicit-any
   onNewItem: (name: string) => void
   creatable?: boolean
 }): KeyboardHandler => {
