@@ -1,4 +1,3 @@
-import { getGlobalShortcut, getSelectedText } from './Spotlight/utils/getSelectedText'
 /* eslint-disable @typescript-eslint/no-var-requires */
 import chokidar from 'chokidar'
 import { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, nativeImage, session, shell, Tray } from 'electron'
@@ -9,6 +8,7 @@ import { DefaultFileData } from './Defaults/baseData'
 import { getSaveLocation, getSearchIndexLocation } from './Defaults/data'
 import MenuBuilder from './menu'
 import { IpcAction } from './Spotlight/utils/constants'
+import { getGlobalShortcut, getSelectedText } from './Spotlight/utils/getSelectedText'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
 import initErrorHandler, { showDialog } from './Lib/errorHandlers'
@@ -194,9 +194,9 @@ const createMexWindow = () => {
     chokidar
       .watch(getSaveLocation(app), {
         alwaysStat: true,
+        useFsEvents: false,
         awaitWriteFinish: {
           stabilityThreshold: 2000
-          // pollInterval: 1000,
         }
       })
       .on('change', () => {
@@ -399,7 +399,6 @@ ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
 
 ipcMain.on(IpcAction.ERROR_OCCURED, (_event, arg) => {
   showDialog(arg.message, arg.propertes)
-  app.quit()
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -12,18 +12,18 @@ export const showDialog = (message: string, properties: Record<string, any>) => 
   else {
     dialog.showMessageBoxSync({
       title: 'Oh Snap! An error occured in Mex',
-      message: 'Failed to load application.',
-      buttons: ['Ok', 'Report'],
-      defaultId: 1
+      message: 'Something went wrong',
+      buttons: ['Report'],
+      defaultId: 0
     })
   }
 }
 
-const logger = debounce((message: string, properties: Record<string, any>) => {
+const logger = debounce((message: string | null, properties: Record<string, any>) => {
   const { trackEvent } = getAnalytics()
 
   if (!IS_DEV) {
-    showDialog(message, properties)
+    if (message) showDialog(message, properties)
     trackEvent(`Mex - ${CustomEvents.ERROR_OCCURED}`, properties)
   } else {
     console.log(message, properties)

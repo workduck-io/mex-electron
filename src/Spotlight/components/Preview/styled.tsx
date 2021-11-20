@@ -1,9 +1,11 @@
 import styled from 'styled-components'
 import { Scroll } from '../../../Spotlight/styles/layout'
+import { Draggable } from '../Actions/styled'
 import { StyledBackground } from '../Spotlight/styled'
 
 export const StyledPreview = styled.div`
   ${StyledBackground}
+  ${Draggable}
   ${Scroll}
 position: relative;
   padding: 1rem;

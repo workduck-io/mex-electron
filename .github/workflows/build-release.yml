@@ -1,0 +1,123 @@
+name: Build and Release on x86_64
+on:
+  push:
+    branches:
+      - mukul-wd-619-task-add-cicd-to-mex-electron
+  # release:
+  #   types:
+  #     - published
+
+jobs:
+  create_github_release:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release Mex ${{ github.ref }}
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+
+  # publish_on_linux:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@master
+  #       with:
+  #         node-version: 14
+  #     - name: install dependencies
+  #       run: npm install
+  #     - name: publish
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       run: npm run publish
+
+  publish_on_mac_x64:
+    runs-on: macos-latest
+    needs: create_github_release
+    env:
+      DEBUG: '*'
+      GITHUB_TOKEN: ${{ github.token }}
+      YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
+      CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
+      CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@master
+        with:
+          node-version: '16.x'
+      - name: Install Yarn
+        run: npm install -g yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Upgrade Internal Dependencies
+        run: yarn upgrade @workduck-io/dwindle active-win-universal
+      - name: Add certificates to keychain
+        run: chmod +x build/osx-add-cert.sh && build/osx-add-cert.sh # Do not run on local machine
+      - name: Rebuild Native Dependencies
+        run: ./node_modules/.bin/electron-rebuild --force --arch=x64
+      - name: Build App
+        run: chmod +x build/build-darwin-x64.sh && ./build/build-darwin-x64.sh
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ needs.create_github_release.outputs.upload_url }}
+          asset_path: ./out/make/Mex-0.1.0-x64.dmg
+          asset_name: Mex-0.1.0-x64.dmg
+          asset_content_type: application/octet-stream
+  publish_on_mac_arm64:
+    runs-on: macos-latest
+    needs: create_github_release
+    env:
+      DEBUG: '*'
+      GITHUB_TOKEN: ${{ github.token }}
+      YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
+      CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
+      CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@master
+        with:
+          node-version: '16.x'
+      - name: Install Yarn
+        run: npm install -g yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Upgrade Internal Dependencies
+        run: yarn upgrade @workduck-io/dwindle active-win-universal
+      - name: Add certificates to keychain
+        run: chmod +x build/osx-add-cert.sh && build/osx-add-cert.sh # Do not run on local
+      - name: Rebuild Native Dependencies
+        run: ./node_modules/.bin/electron-rebuild --force --arch=arm64
+      - name: Build App
+        run: chmod +x build/build-darwin-arm64.sh && ./build/build-darwin-arm64.sh
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ needs.create_github_release.outputs.upload_url }}
+          asset_path: ./out/make/Mex-0.1.0-arm64.dmg
+          asset_name: Mex-0.1.0-arm64.dmg
+          asset_content_type: application/octet-stream
+  # publish_on_win:
+  #   runs-on: windows-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@master
+  #       with:
+  #         node-version: 14
+  #     - name: install dependencies
+  #       run: npm install
+  #     - name: publish
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       run: npm run publish

@@ -19,7 +19,7 @@ export const useSpotlightSettingsStore = create<SpotlightSettingsType>((set, get
   toggleSource: (checked: boolean) => set(() => ({ showSource: checked })),
   initSpotlightSettings: (settings) => {
     set(() => ({
-      showSource: settings.showSource,
+      showSource: settings.showSource
     }))
-  },
+  }
 }))

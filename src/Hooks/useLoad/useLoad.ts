@@ -32,11 +32,11 @@ const useLoad = () => {
     return node
   }
 
-  const loadNode = async (uid: string, savePrev = true) => {
+  const loadNode = async (uid: string, savePrev = true, fetch = USE_API) => {
     if (savePrev) onSave()
     const node = getNode(uid)
     loadNodeEditor(node)
-    if (USE_API) {
+    if (fetch) {
       setFetchingContent(true)
       getDataAPI(uid)
         .then((res) => {

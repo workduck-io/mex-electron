@@ -30,7 +30,8 @@ export const ColumnContainer = styled.div`
   font-variant-ligatures: normal;
   font-variant-caps: normal;
   font-weight: bold;
-  ${Scroll}/* ${Draggable} */
+  ${Scroll}
+  ${Draggable}
 `
 
 export const Action = styled.div`

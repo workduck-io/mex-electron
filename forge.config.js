@@ -53,7 +53,7 @@ module.exports = {
     [
       '@timfish/forge-externals-plugin',
       {
-        externals: ['active-win'],
+        externals: ['active-win-universal'],
         includeDeps: true
       }
     ]

@@ -8,11 +8,11 @@ import { useInitialize } from '../../Data/useInitialize'
 import { useLocalData } from '../../Data/useLocalData'
 import { useSyncData } from '../../Data/useSyncData'
 import { getUidFromNodeIdAndLinks } from '../../Editor/Actions/useLinks'
+import { useHistoryStore } from '../../Editor/Store/HistoryStore'
 import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 import { useAuthStore } from '../../Hooks/useAuth/useAuth'
 import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import useLoad from '../../Hooks/useLoad/useLoad'
-import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import config from '../../Requests/config'
 import { convertDataToRawText } from '../../Search/localSearch'
 import useSearchStore from '../../Search/SearchStore'
@@ -24,8 +24,7 @@ const Init = () => {
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
   // const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
-
-  const { push } = useNavigation()
+  const pushHs = useHistoryStore((store) => store.push)
 
   const { init } = useInitialize()
   const { loadNode } = useLoad()
@@ -65,7 +64,6 @@ const Init = () => {
             // setAuthenticated({ email: userAuthenticatedEmail })
             return { d, auth: true }
           }
-
           setUnAuthenticated()
           return { d, auth: false }
         })
@@ -77,7 +75,9 @@ const Init = () => {
 
   useEffect(() => {
     ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { nodeId }) => {
-      push(nodeId)
+      pushHs(nodeId)
+      addRecent(nodeId)
+      loadNode(nodeId, false, false)
     })
     ipcRenderer.on(IpcAction.CLEAR_RECENTS, () => {
       clear()
