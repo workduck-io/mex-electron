@@ -11,7 +11,7 @@ export interface EditorPreviewProps {
   previewRef: any
 }
 
-const LazyTippy = forwardRef(function LT (props: any, ref) {
+export const LazyTippy = forwardRef(function LT(props: any, ref) {
   const [mounted, setMounted] = useState(false)
 
   const lazyPlugin = {

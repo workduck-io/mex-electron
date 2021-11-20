@@ -142,6 +142,6 @@
     "unified": "^9.2.1",
     "use-debounce": "^7.0.0",
     "util": "^0.12.4",
-    "zustand": "^3.5.8"
+    "zustand": "^3.6.5"
   }
 }

@@ -1,5 +1,5 @@
 import create from 'zustand'
-import { NodeContent } from '../../Types/data'
+import { NodeContent, NodeMetadata } from '../../Types/data'
 import { NodeEditorContent } from './Types'
 
 export interface Contents {
@@ -14,7 +14,8 @@ interface ContentStoreState {
   setSaved: (saved: boolean) => void
   removeContent: (uid: string) => void
   getContent: (uid: string) => NodeContent
-  setContent: (uid: string, content: NodeEditorContent) => void
+  setContent: (uid: string, content: NodeEditorContent, metadata?: NodeMetadata) => void
+  setMetadata: (uid: string, metadata: NodeMetadata) => void
   initContents: (contents: Contents) => void
 }
 
@@ -24,11 +25,26 @@ export const useContentStore = create<ContentStoreState>((set, get) => ({
   saved: false,
   setSaved: (saved) => set(() => ({ saved })),
   toggleSyncBlocks: () => set({ showSyncBlocks: !get().showSyncBlocks }),
-  setContent: (uid, content) => {
+  setContent: (uid, content, metadata) => {
     const oldContent = get().contents
+
+    const oldMetadata = oldContent[uid] && oldContent[uid].metadata ? oldContent[uid].metadata : undefined
     delete oldContent[uid]
+    const nmetadata = { ...oldMetadata, ...metadata }
+    // console.log({ oldMetadata, nmetadata, metadata })
     set({
-      contents: { [uid]: { type: 'editor', content }, ...oldContent }
+      contents: { [uid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
+    })
+  },
+  setMetadata: (uid: string, metadata: NodeMetadata) => {
+    const oldContent = get().contents
+    const oldMetadata = oldContent[uid] && oldContent[uid].metadata ? oldContent[uid].metadata : undefined
+    const content = oldContent[uid] && oldContent[uid].content ? oldContent[uid].content : undefined
+    delete oldContent[uid]
+    const nmetadata = { ...oldMetadata, ...metadata }
+    console.log({ oldMetadata, nmetadata, metadata })
+    set({
+      contents: { [uid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
     })
   },
   getContent: (uid) => {

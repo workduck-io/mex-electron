@@ -8,21 +8,11 @@ import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import { Note } from '../../Styled/Typography'
 
-const BackLinkWrapper = styled.div`
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: ${({ theme }) => `${theme.spacing.medium}`};
-  max-width: 300px;
-`
-
 const SBackLinks = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
+  margin: 3rem 0;
 `
 
 const BackLink = styled.div`
@@ -63,25 +53,23 @@ const Backlinks = () => {
   const { getNodeIdFromUid } = useLinks()
 
   return (
-    <BackLinkWrapper>
-      <SBackLinks>
-        <BackLinksHeader>
-          <Icon icon={arrowGoBackLine}></Icon>
-          Backlinks
-        </BackLinksHeader>
-        {backlinks.length === 0 && (
-          <>
-            <Note>No backlinks found.</Note>
-            <Note>Link from other nodes to view them here.</Note>
-          </>
-        )}
-        {backlinks.map((l) => (
-          <BackLink key={`backlink_${l.uid}`} onClick={() => push(l.uid)}>
-            {getNodeIdFromUid(l.uid)}
-          </BackLink>
-        ))}
-      </SBackLinks>
-    </BackLinkWrapper>
+    <SBackLinks>
+      <BackLinksHeader>
+        <Icon icon={arrowGoBackLine}></Icon>
+        Backlinks
+      </BackLinksHeader>
+      {backlinks.length === 0 && (
+        <>
+          <Note>No backlinks found.</Note>
+          <Note>Link from other nodes to view them here.</Note>
+        </>
+      )}
+      {backlinks.map((l) => (
+        <BackLink key={`backlink_${l.uid}`} onClick={() => push(l.uid)}>
+          {getNodeIdFromUid(l.uid)}
+        </BackLink>
+      ))}
+    </SBackLinks>
   )
 }
 
