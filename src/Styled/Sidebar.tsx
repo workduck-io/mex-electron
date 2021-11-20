@@ -19,6 +19,7 @@ export const SIcon = (props: any) => {
 
 export const SidebarDiv = styled(animated.div)`
   height: 100%;
+  padding-top: ${({ theme }) => theme.spacing.large};
   max-width: ${({ theme }) => PixelToCSS(theme.width.sidebar)};
   width: 100%;
 `
@@ -27,9 +28,12 @@ export const SidebarContent = styled.div`
   ${ThinScrollbar};
   flex-grow: 1;
   overflow-x: hidden;
+  max-height: 95vh;
+  overflow-y: auto;
   padding: ${({ theme }) => theme.spacing.medium};
 `
 export const SectionHeading = styled.div`
+  user-select: none;
   margin: ${({ theme }) => theme.spacing.medium} 0 ${({ theme }) => theme.spacing.small};
   display: flex;
   align-items: center;
@@ -41,6 +45,16 @@ export const SectionHeading = styled.div`
   svg {
     margin-right: ${({ theme }) => theme.spacing.tiny};
   }
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`
+
+export const SidebarDivider = styled.div`
+  height: 2px;
+  background: ${({ theme }) => theme.colors.gray[8]};
+  margin: ${({ theme }) => theme.spacing.large} 0;
 `
 
 export const SidebarSection = styled.div`

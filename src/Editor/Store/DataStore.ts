@@ -19,14 +19,18 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
   baseNodeId: '@',
 
+  bookmarks: [],
+
   // Load initial data in the store
-  initializeDataStore: (tags, ilinks, slashCommands, linkCache, baseNodeId) => {
+  initializeDataStore: (initData) => {
     set({
-      tags,
-      ilinks,
-      linkCache,
-      slashCommands,
-      baseNodeId
+      ...initData
+      // tags: initData.tags,
+      // ilinks: initData.ilinks,
+      // linkCache: initData.linkCache,
+      // slashCommands: initData.slashCommands,
+      // bookmarks: initData.bookmarks,
+      // baseNodeId: initData.baseNodeId
     })
   },
 
@@ -67,6 +71,18 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   },
 
   setSlashCommands: (slashCommands) => set({ slashCommands }),
+
+  removeBookamarks: (bookmarks) => {
+    const ubookmarks = new Set(get().bookmarks.filter((b) => !(bookmarks.indexOf(b) > -1)))
+    set({ bookmarks: Array.from(ubookmarks) })
+  },
+
+  setBookmarks: (bookmarks) => {
+    const ubookmarks = new Set(bookmarks)
+    set({ bookmarks: Array.from(ubookmarks) })
+  },
+  getBookmarks: () => get().bookmarks,
+
   setBaseNodeId: (baseNodeId) => set({ baseNodeId }),
 
   addInternalLink: (ilink, uid) => {
@@ -112,6 +128,11 @@ const useDataStore = create<DataStoreState>((set, get) => ({
         [ilink.uid]: secondNodeLinks
       }
     })
+  },
+
+  addBookmarks: (bookmarks) => {
+    const ubookmarks = new Set([...get().bookmarks, ...bookmarks])
+    set({ bookmarks: Array.from(ubookmarks) })
   },
 
   updateInternalLinks: (links, uid) => {

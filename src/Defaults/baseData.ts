@@ -19,6 +19,7 @@ export const DefaultFileData: FileData = {
   ilinks: links,
   contents,
   linkCache: {},
+  bookmarks: [],
   tags: generateComboTexts(['mex']),
   syncBlocks: [],
   templates: [],

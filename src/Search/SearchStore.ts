@@ -53,7 +53,7 @@ const useSearchStore = create<SearchStoreState>((set, get) => ({
     })
     const docs = get().docs
     docs.set(nodeUID, { title: title, text: newDoc.text })
-    console.log('Docs Updated: ', docs)
+    // console.log('Docs Updated: ', docs)
   },
   searchIndex: (query: string) => {
     const docs = get().docs

@@ -14,11 +14,24 @@ export const integrationURLs = {
 export const BASE_API_URL = 'https://http.workduck.io/mex'
 export const BASE_USER_URL = 'https://http.workduck.io/user'
 
+export const BOOKMARK_URL = BASE_API_URL
+
 export const apiURLs = {
+  //node
   saveNode: `${BASE_API_URL}/node`,
   getNode: (uid: string) => `${BASE_API_URL}/node/${uid}`,
+
+  // Bookmarks
+  // post to add
+  // path to delete
+  bookmark: (userId: string, uid: string) => `${BOOKMARK_URL}/userIdentifierMappingRecord/bookmark/${userId}/${uid}`,
+  getBookmarks: (userId: string) => `${BOOKMARK_URL}/userIdentifierMappingRecord/bookmark/${userId}`,
+
+  // User
   getUserRecords: (userId: string) => `${BASE_USER_URL}/user/${userId}/${MEX_TAG}`,
   registerUser: `${BASE_API_URL}/user/register`,
+
+  // Workspace
   createWorkspace: `${BASE_API_URL}/workspace`,
   getNodesByWorkspace: (workspaceId: string) => `${BASE_API_URL}/node/workspace/${workspaceId}/namespace/NAMESPACE1`,
   getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`

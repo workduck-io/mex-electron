@@ -6,19 +6,20 @@ import Loading from '../../Styled/Loading'
 export interface LoadingButtonProps {
   children?: React.ReactNode
   loading?: boolean
+  dots?: number
   /** Also disable the button with a boolean condition */
   alsoDisabled?: boolean
   buttonProps?: AsyncButtonProps
 }
 
-export const LoadingButton = ({ children, loading, alsoDisabled, buttonProps }: LoadingButtonProps) => {
+export const LoadingButton = ({ children, dots, loading, alsoDisabled, buttonProps }: LoadingButtonProps) => {
   const theme = useTheme()
   return (
     <AsyncButton disabled={alsoDisabled || loading} {...buttonProps}>
       {!loading && children}
       {loading && (
         <>
-          <Loading transparent dots={5} color={theme.colors.primary} />
+          <Loading transparent dots={dots ?? 5} color={theme.colors.primary} />
           {children}
         </>
       )}

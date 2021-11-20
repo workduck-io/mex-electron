@@ -1,12 +1,14 @@
 import gitBranchLine from '@iconify-icons/ri/git-branch-line'
-import starLine from '@iconify-icons/ri/star-line'
 import { Icon } from '@iconify/react'
-import React from 'react'
+import React, { useState } from 'react'
 import { config, useTransition } from 'react-spring'
 import { useLayoutStore } from '../../Layout/LayoutStore'
-import { SectionHeading, SidebarContent, SidebarDiv, SidebarSection } from '../../Styled/Sidebar'
+import { SectionHeading, SidebarContent, SidebarDiv, SidebarDivider, SidebarSection } from '../../Styled/Sidebar'
 import TreeNode from '../../Types/tree'
+import Bookmarks from './Bookmarks'
 import { TreeWithContextMenu } from './TreeWithContextMenu'
+import arrowRightSLine from '@iconify-icons/ri/arrow-right-s-line'
+import bookmark3Line from '@iconify-icons/ri/bookmark-3-line'
 
 export type SideBarProps = { tree: TreeNode[]; starred: TreeNode[] }
 
@@ -43,28 +45,39 @@ export const useFocusTransition = () => {
 
 const SideBar = ({ tree, starred }: SideBarProps) => {
   const { transitions } = useFocusTransition()
+  const [sHide, setShide] = useState(false)
+  const [tHide, setThide] = useState(false)
 
   return transitions(
     (styles, item) =>
       item && (
         <SidebarDiv style={styles}>
           <SidebarContent>
-            <h1>Sidebar</h1>
-
             <SidebarSection className="starred">
-              <SectionHeading>
-                <Icon height={20} icon={starLine} />
-                <h2>Starred</h2>
+              <SectionHeading
+                onClick={() => {
+                  setShide((b) => !b)
+                }}
+              >
+                <Icon height={20} icon={sHide ? arrowRightSLine : bookmark3Line} />
+                <h2>Bookmarks</h2>
               </SectionHeading>
-              <TreeWithContextMenu tree={starred} />
+
+              {!sHide && <Bookmarks />}
             </SidebarSection>
 
+            <SidebarDivider />
+
             <SidebarSection className="tree">
-              <SectionHeading>
-                <Icon height={20} icon={gitBranchLine} />
+              <SectionHeading
+                onClick={() => {
+                  setThide((b) => !b)
+                }}
+              >
+                <Icon height={20} icon={tHide ? arrowRightSLine : gitBranchLine} />
                 <h2>Tree</h2>
               </SectionHeading>
-              <TreeWithContextMenu tree={tree} />
+              {!tHide && <TreeWithContextMenu tree={tree} />}
             </SidebarSection>
           </SidebarContent>
         </SidebarDiv>

@@ -19,6 +19,7 @@ import Loading from '../Styled/Loading'
 import { SaverButton } from './Components/Saver'
 import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
+import BookmarkButton from '../Components/Buttons/BookmarkButton'
 
 const ContentEditor = () => {
   const title = useEditorStore((state) => state.node.title)
@@ -89,6 +90,8 @@ const ContentEditor = () => {
     // Callback after save
   }
 
+  // console.log('CE', { isB: isBookmark(uid) })
+
   return (
     <>
       <StyledEditor showGraph={showGraph} className="mex_editor">
@@ -96,6 +99,7 @@ const ContentEditor = () => {
           <NoteTitle>{title}</NoteTitle>
           {fetchingContent && <Loading dots={3} />}
           <InfoTools>
+            <BookmarkButton uid={uid} />
             <IconButton size={24} icon={focusLine} title="Focus Mode" highlight={focusMode} onClick={toggleFocusMode} />
             <IconButton
               size={24}
