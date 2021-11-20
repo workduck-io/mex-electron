@@ -1,7 +1,8 @@
 #! /usr/bin/env bash
 
-APPLE_ID="tech@workduck.io" APPLE_ID_PASSWORD="team-apple-id-password" yarn package --arch=arm64
+yarn package --arch=arm64
 
-codesign --deep --force --sign "Developer ID Application: Workduck Private Limited (9TGRGUPH6C)" --arch arm64 out/Mex-darwin-arm64/Mex.app
 
-node build/installer-dmg.js arm64
+node build/darwin-sign.js arm64
+node build/darwin-notarize.js arm64
+node build/darwin-build-dmg.js arm64
