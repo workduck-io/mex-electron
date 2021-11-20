@@ -5,16 +5,21 @@ import { deserializeContent, serializeContent } from '../Lib/serialize'
 import initializeAmplify from './amplify/init'
 import { client } from '@workduck-io/dwindle'
 import { apiURLs } from './routes'
+import { removeNulls } from '../Lib/helper'
 import { useAuthStore } from '../Hooks/useAuth/useAuth'
+import { useContentStore } from '../Editor/Store/ContentStore'
 
 initializeAmplify()
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
+  const setMetadata = useContentStore((store) => store.setMetadata)
+
   const saveDataAPI = (uid: string, content: any[]) => {
     const reqData = {
       id: uid,
+      lastEditedBy: useAuthStore.getState().userDetails.email,
       namespaceIdentifier: 'NAMESPACE1',
       workspaceIdentifier: getWorkspaceId(),
       data: serializeContent(content ?? defaultContent)
@@ -23,18 +28,44 @@ export const useApi = () => {
     if (!USE_API) {
       return
     }
-    client.post(apiURLs.saveNode, reqData, {}).catch((e) => {
-      console.error(e)
-    })
+    client
+      .post(apiURLs.saveNode, reqData, {})
+      .then((d) => {
+        // console.log('savedData', d)
+        const metadata: any = {
+          lastEditedBy: d.data.lastEditedBy,
+          updatedAt: d.data.updatedAt
+        }
+        if (d.data.createBy !== null) {
+          metadata.createBy = d.data.createBy
+        }
+        if (d.data.createdAt !== null) {
+          metadata.createdAt = d.data.createdAt
+        }
+        setMetadata(uid, removeNulls(metadata))
+      })
+      .catch((e) => {
+        console.error(e)
+      })
   }
 
   const getDataAPI = async (uid: string) => {
-    const data = await client.get(apiURLs.getNode(uid), {}).then((d) => {
-      // console.log('Data fetched', { data: d.data.data })
-      return d.data.data
-    })
+    const res = await client
+      .get(apiURLs.getNode(uid), {})
+      .then((d) => {
+        const metadata = {
+          createBy: d.data.createBy,
+          createdAt: d.data.createdAt,
+          lastEditedBy: d.data.lastEditedBy,
+          updatedAt: d.data.updatedAt
+        }
+        return { data: d.data.data, metadata: removeNulls(metadata) }
+      })
+      .catch(console.error)
 
-    return deserializeContent(data)
+    if (res) {
+      return { data: deserializeContent(res.data), metadata: res.metadata ? res.metadata : undefined }
+    }
   }
 
   return { saveDataAPI, getDataAPI }

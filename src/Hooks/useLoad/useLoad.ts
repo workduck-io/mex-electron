@@ -39,11 +39,12 @@ const useLoad = () => {
     if (USE_API) {
       setFetchingContent(true)
       getDataAPI(uid)
-        .then((d) => {
-          if (d) {
-            // console.log('Data fetched and changed', d)
-            loadNodeAndReplaceContent(node, d)
-            setContent(uid, d)
+        .then((res) => {
+          const { data, metadata } = res
+          if (data) {
+            console.log('Data fetched and changed', data, metadata)
+            loadNodeAndReplaceContent(node, data)
+            setContent(uid, data, metadata)
           }
         })
         .catch((e) => {

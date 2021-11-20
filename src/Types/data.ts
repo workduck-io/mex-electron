@@ -2,9 +2,18 @@ import { Service, SyncBlockData, SyncBlockTemplate, SyncStoreIntents } from '../
 import { Snippet } from '../Editor/Store/SnippetStore'
 import { ComboText, ILink, LinkCache, NodeEditorContent } from '../Editor/Store/Types'
 import lunr from 'lunr-mutable-indexes'
+
+export interface NodeMetadata {
+  createBy?: string
+  createdAt?: number
+  lastEditedBy?: string
+  updatedAt?: number
+}
 export interface NodeContent {
   type: string
   content: NodeEditorContent
+  // Node Metadata
+  metadata?: NodeMetadata
 }
 
 export interface FileData {

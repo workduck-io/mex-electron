@@ -1,6 +1,15 @@
 import { transparentize } from 'polished'
 import { css } from 'styled-components'
-import { Pixels } from '../styled'
+
+type Pixels = number // Pixels in integer
+
+export const HoverFade = css`
+  opacity: 0.5;
+  transition: opacity 0.25s ease-in-out;
+  &:hover {
+    opacity: 1;
+  }
+`
 
 export const PixelToCSS = (x: Pixels): string => {
   return `${String(x)}px`

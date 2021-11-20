@@ -62,8 +62,12 @@ const useSearchStore = create<SearchStoreState>((set, get) => ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Object.values<any>(results).forEach((result) => {
       const temp = docs.get(result.ref)
-      result.text = temp.text
-      result.title = temp.title
+      if (result.text) {
+        result.text = temp.text
+      }
+      if (result.title) {
+        result.title = temp.title
+      }
     })
     return results
   },
