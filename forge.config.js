@@ -1,11 +1,14 @@
+const { inherits } = require("util")
+
 module.exports = {
   packagerConfig: {
     icon: 'assets/icon.icns',
     osxSign: {
       'hardened-runtime': true,
       entitlements: 'build/entitlements.plist',
+      'entitlements-inherit':'build/entitlements.plist',
       'signature-flags': 'library',
-      'gatekeeper-assess': false
+      'gatekeeper-assess': false,
     },
     osxNotarize: {
       appleId: process.env.APPLE_ID,
@@ -50,11 +53,6 @@ module.exports = {
               html: './src/index.html',
               js: './src/index.tsx',
               name: 'mex_window'
-            },
-            {
-              html: './src/Spotlight/index.html',
-              js: './src/Spotlight/index.tsx',
-              name: 'spotlight_window'
             }
           ]
         }

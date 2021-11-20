@@ -1,39 +1,13 @@
-import React from 'react'
-import Modal from 'react-modal'
-import { HashRouter as Router } from 'react-router-dom'
-import Init from './Components/Init/Init'
-import Contexts from './Context/Contexts'
-import Providers from './Context/Providers'
-import Main from './Layout/Main'
-import Modals from './Layout/Modals'
-import initializeAmplify from './Requests/amplify/init'
-import Switch from './Router/Switch'
-import GlobalStyle from './Styled/Global'
+import React, { useEffect, useState } from 'react'
+import { ipcRenderer } from 'electron'
 
-Modal.setAppElement('#root')
+function App() {
+  const { selection, setSelection } = useState('')
 
-initializeAmplify()
-
-function App () {
-  return (
-    <Router>
-      <Providers>
-        <Contexts>
-          <Init />
-          <Main>
-            {/* Modals */}
-            <Modals />
-
-            {/* Main Content */}
-            <Switch />
-
-            {/* Non-Rendering components */}
-            <GlobalStyle />
-          </Main>
-        </Contexts>
-      </Providers>
-    </Router>
-  )
+  ipcRenderer.on('SEND_SELECTION', (_event, data) => {
+    console.log(data)
+  })
+  return <h1>Hello World!</h1>
 }
 
 export default App
