@@ -26,6 +26,7 @@ export interface FileData {
     [key: string]: NodeContent
   }
   linkCache: LinkCache
+  bookmarks: string[]
 
   // Sync
   syncBlocks: SyncBlockData[]

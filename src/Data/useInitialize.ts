@@ -28,12 +28,32 @@ export const useInitialize = () => {
   const { loadNodeProps } = useLoad()
 
   const update = (data: FileData) => {
-    const { tags, ilinks, linkCache, contents, syncBlocks, snippets, templates, services, intents, baseNodeId } = data
+    const {
+      tags,
+      ilinks,
+      linkCache,
+      bookmarks,
+      contents,
+      syncBlocks,
+      snippets,
+      templates,
+      services,
+      intents,
+      baseNodeId
+    } = data
     const snippetCommands = extractSnippetCommands(snippets)
     const syncCommands = extractSyncBlockCommands(templates)
     const slashCommands = generateComboTexts([...defaultCommands, ...syncCommands, ...snippetCommands])
 
-    initializeDataStore(tags, ilinks, slashCommands, linkCache, baseNodeId)
+    const initData = {
+      tags,
+      ilinks,
+      slashCommands,
+      linkCache,
+      baseNodeId,
+      bookmarks
+    }
+    initializeDataStore(initData)
     initSpotlightSettings(data.userSettings.spotlight)
     initContents(contents)
     initSyncBlocks(syncBlocks, templates, services, intents)

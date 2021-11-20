@@ -15,7 +15,7 @@ const SBackLinks = styled.div`
   margin: 3rem 0;
 `
 
-const BackLink = styled.div`
+export const NodeLink = styled.div`
   cursor: pointer;
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
   margin-bottom: ${({ theme }) => theme.spacing.small};
@@ -28,6 +28,7 @@ const BackLink = styled.div`
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.primary};
+    box-shadow: 0px 2px 6px ${({ theme }) => theme.colors.primary};
     color: ${({ theme }) => theme.colors.text.oppositePrimary};
   }
 `
@@ -65,9 +66,9 @@ const Backlinks = () => {
         </>
       )}
       {backlinks.map((l) => (
-        <BackLink key={`backlink_${l.uid}`} onClick={() => push(l.uid)}>
+        <NodeLink key={`backlink_${l.uid}`} onClick={() => push(l.uid)}>
           {getNodeIdFromUid(l.uid)}
-        </BackLink>
+        </NodeLink>
       ))}
     </SBackLinks>
   )

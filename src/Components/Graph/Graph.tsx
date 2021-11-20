@@ -84,6 +84,9 @@ export const TreeGraph = (props: TreeGraphProps) => {
   const { graph } = state
   // console.log('Graph', { graph });
   const events = {
+    click: (props: any) => {
+      console.log(props)
+    },
     select: (selectProps: any): void => {
       if (selectProps.nodes.length === 1) {
         const selectId = selectProps.nodes[0]

@@ -127,7 +127,7 @@ const Metadata = () => {
     setMetadata(contentMetadata)
   }, [node, content])
 
-  console.log(node.uid, metadata)
+  // console.log(node.uid, metadata)
 
   if (content === undefined || content.metadata === undefined || metadata === undefined) return null
   return (

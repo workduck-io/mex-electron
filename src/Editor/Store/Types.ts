@@ -11,26 +11,34 @@ export interface ILink extends ComboText {
 
 export type LinkCache = Record<string, CachedILink[]>
 
+export interface InitData {
+  tags: ComboText[]
+  ilinks: ILink[]
+  slashCommands: ComboText[]
+  linkCache: LinkCache
+  bookmarks: string[]
+  baseNodeId: string
+}
+
 export interface DataStoreState {
   tags: ComboText[]
   ilinks: ILink[]
   slashCommands: ComboText[]
   linkCache: LinkCache
   baseNodeId: string
+  bookmarks: string[]
 
-  initializeDataStore: (
-    tags: ComboText[],
-    ids: ILink[],
-    slash_commands: ComboText[],
-    linkCache: LinkCache,
-    baseNodeId: string
-  ) => void
+  initializeDataStore: (initData: InitData) => void
 
   addTag: (tag: string) => void
   addILink: (ilink: string, uid?: string) => string
   setSlashCommands: (slashCommands: ComboText[]) => void
   setIlinks: (ilinks: ILink[]) => void
   setBaseNodeId: (baseNodeId: string) => void
+  addBookmarks: (bookmarks: string[]) => void
+  removeBookamarks: (bookmarks: string[]) => void
+  setBookmarks: (bookmarks: string[]) => void
+  getBookmarks: () => string[]
 
   addInternalLink: (ilink: CachedILink, uid: string) => void
   removeInternalLink: (ilink: CachedILink, uid: string) => void
