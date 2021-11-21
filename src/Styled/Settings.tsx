@@ -8,13 +8,27 @@ export const ThemePreviews = styled.div`
   ${GridCss(3, 5)}
 `
 
-export const Theme = styled(animated.div)`
+export const Theme = styled(animated.div)<{ selected: boolean }>`
   padding: ${({ theme }) => theme.spacing.medium};
   border-radius: ${({ theme }) => theme.borderRadius.large};
   color: ${({ theme }) => theme.colors.text.default};
   background-color: ${({ theme }) => theme.colors.gray[9]};
   height: inherit;
   overflow: auto;
+  cursor: pointer;
+
+  ${({ theme, selected }) =>
+    selected
+      ? css`
+          padding: 0.8rem;
+          border: 0.2rem solid ${theme.colors.primary};
+        `
+      : css`
+          :hover {
+            padding: 0.8rem;
+            border: 0.2rem solid ${({ theme }) => theme.colors.background.highlight};
+          }
+        `}
 `
 
 export const ThemeHeader = styled.div`
