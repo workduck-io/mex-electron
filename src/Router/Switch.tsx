@@ -16,6 +16,7 @@ import AuthRoute from './AuthRoute'
 import ProtectedRoute from './ProtectedRoute'
 import Search from '../Components/Search/Search'
 import Tag from '../Views/Tag'
+import Archive from '../Views/Archive'
 
 const SwitchWrapper = styled(animated.div)`
   position: fixed;
@@ -61,6 +62,7 @@ const Switch = () => {
         <ProtectedRoute path="/search" component={Search} />
         <ProtectedRoute path="/tag/:tag" component={Tag} />
         <ProtectedRoute path="/" exact component={Dashboard} />
+        <ProtectedRoute path="/archive" exact component={Archive} />
         <AuthRoute path="/login" component={Login} />
         <AuthRoute path="/register" component={Register} />
       </ReactRouterSwitch>

@@ -9,11 +9,14 @@ export const SILinkRoot = styled.div`
 
 interface SILinkProps {
   focused: boolean
+  archived?: boolean
 }
 
 export const SILink = styled.div<SILinkProps>`
-  display: inline-block;
-  color: ${({ theme }) => theme.colors.secondary};
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  /* color: ${({ theme, archived }) => (archived ? theme.colors.fade : theme.colors.secondary)}; */
   cursor: pointer;
   .ILink_decoration {
     color: ${({ theme }) => theme.colors.gray[6]};

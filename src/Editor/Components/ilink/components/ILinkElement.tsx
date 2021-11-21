@@ -1,7 +1,10 @@
+import { Icon } from '@iconify/react'
 import { useEditorRef } from '@udecode/plate'
 import * as React from 'react'
 import { Transforms } from 'slate'
+import archivedIcon from '@iconify-icons/ri/archive-line'
 import { useFocused, useSelected } from 'slate-react'
+import useArchive from '../../../../Hooks/useArchive'
 import { useNavigation } from '../../../../Hooks/useNavigation/useNavigation'
 import { useLinks } from '../../../Actions/useLinks'
 import EditorPreview from '../../EditorPreview/EditorPreview'
@@ -9,11 +12,16 @@ import { useHotkeys } from '../hooks/useHotkeys'
 import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { SILink, SILinkRoot } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
+import styled from 'styled-components'
 
 /**
  * ILinkElement with no default styles.
  * [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling)
  */
+
+const StyledIcon = styled(Icon)`
+  margin-right: 4px;
+`
 export const ILinkElement = ({ attributes, children, element }: ILinkElementProps) => {
   const editor = useEditorRef()
   const selected = useSelected()
@@ -23,6 +31,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   // console.log('We reached here', { editor }, isPreview(editor.id))
 
   const uid = getUidFromNodeId(element.value)
+  const { archived } = useArchive()
 
   const onClickProps = useOnMouseClick(() => {
     push(uid)
@@ -50,13 +59,22 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
 
   return (
     <SILinkRoot {...attributes} id={`ILINK_${element.value}`} data-slate-value={element.value} contentEditable={false}>
-      <EditorPreview isPreview={isPreview(editor.id)} previewRef={editor} uid={uid}>
-        <SILink focused={selected} {...onClickProps}>
+      {archived(uid) ? (
+        <SILink focused={selected} archived={true}>
+          <StyledIcon icon={archivedIcon} color="#df7777" />
           <span className="ILink_decoration ILink_decoration_left">[[</span>
           {element.value}
           <span className="ILink_decoration ILink_decoration_right">]]</span>
         </SILink>
-      </EditorPreview>
+      ) : (
+        <EditorPreview isPreview={isPreview(editor.id)} previewRef={editor} uid={uid}>
+          <SILink focused={selected} {...onClickProps}>
+            <span className="ILink_decoration ILink_decoration_left">[[</span>
+            {element.value}
+            <span className="ILink_decoration ILink_decoration_right">]]</span>
+          </SILink>
+        </EditorPreview>
+      )}
       {children}
     </SILinkRoot>
   )

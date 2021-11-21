@@ -24,6 +24,8 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
   bookmarks: [],
 
+  archive: [],
+
   // Load initial data in the store
   initializeDataStore: (initData) => {
     set({
@@ -154,7 +156,24 @@ const useDataStore = create<DataStoreState>((set, get) => ({
         [uid]: links
       }
     })
-  }
+  },
+
+  addInArchive: (archive) => {
+    const userArchive = new Set([...get().archive, ...archive])
+    set({ archive: Array.from(userArchive) })
+  },
+
+  removeFromArchive: (removeArchive) => {
+    const userArchive = new Set(get().archive.filter((b) => !(removeArchive.map((i) => i.key).indexOf(b.key) > -1)))
+    set({ archive: Array.from(userArchive) })
+  },
+
+  setArchive: (archive) => {
+    const userArchive = new Set(archive)
+    set({ archive: Array.from(userArchive) })
+  },
+
+  getArchive: () => get().archive
 }))
 
 export const getLevel = (nodeId: string) => nodeId.split(SEPARATOR).length

@@ -35,6 +35,7 @@ export const useInitialize = () => {
       tagsCache,
       bookmarks,
       contents,
+      archive,
       syncBlocks,
       snippets,
       templates,
@@ -52,9 +53,11 @@ export const useInitialize = () => {
       ilinks,
       slashCommands,
       linkCache,
+      archive: archive ?? [],
       baseNodeId,
       bookmarks
     }
+
     initializeDataStore(initData)
     initSpotlightSettings(data.userSettings.spotlight)
     initContents(contents)

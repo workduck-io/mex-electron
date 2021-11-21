@@ -34,6 +34,7 @@
     "@electron-forge/plugin-webpack": "6.0.0-beta.61",
     "@iconify-icons/bi": "^1.1.9",
     "@iconify-icons/bx": "^1.1.0",
+    "@iconify-icons/clarity": "^1.1.2",
     "@iconify-icons/codicon": "^1.1.15",
     "@iconify-icons/gg": "^1.1.0",
     "@iconify-icons/logos": "^1.1.10",

@@ -3,6 +3,7 @@ import appsLine from '@iconify-icons/ri/apps-line'
 import checkboxLine from '@iconify-icons/ri/checkbox-line'
 import dashboardLine from '@iconify-icons/ri/dashboard-line'
 import quillPenLine from '@iconify-icons/ri/quill-pen-line'
+import archiveFill from '@iconify-icons/ri/archive-fill'
 import { Icon } from '@iconify/react'
 import React from 'react'
 import { NavLinkData } from '../Components/Sidebar/Types'
@@ -42,6 +43,11 @@ const links: NavLinkData[] = [
     title: 'Snippets',
     path: '/snippets',
     icon: GetIcon(quillPenLine)
+  },
+  {
+    title: 'Archived',
+    path: '/archive',
+    icon: GetIcon(archiveFill)
   }
 ]
 

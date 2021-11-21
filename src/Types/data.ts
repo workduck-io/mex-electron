@@ -26,6 +26,7 @@ export interface FileData {
   contents: {
     [key: string]: NodeContent
   }
+  archive: ILink[]
   linkCache: LinkCache
   tagsCache: TagsCache
   bookmarks: string[]

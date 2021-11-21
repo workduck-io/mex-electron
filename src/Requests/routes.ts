@@ -13,7 +13,7 @@ export const integrationURLs = {
   getAllTemplates: (workspaceId: string) => `${BASE_INTEGRATION_URL}/workspace/${workspaceId}/templates/all`
 }
 
-export const BASE_API_URL = 'https://http.workduck.io/mex'
+export const BASE_API_URL = 'http://271f-122-172-246-191.ngrok.io'
 export const BASE_USER_URL = 'https://http.workduck.io/user'
 
 export const BOOKMARK_URL = BASE_API_URL
@@ -37,6 +37,12 @@ export const apiURLs = {
   // User
   getUserRecords: (userId: string) => `${BASE_USER_URL}/user/${userId}/${MEX_TAG}`,
   registerUser: `${BASE_API_URL}/user/register`,
+
+  // Archive
+  archiveNodes: () => `${BASE_API_URL}/node/archive`,
+  deleteArchiveNodes: () => `${BASE_API_URL}/node/archive`,
+  getArchivedNodes: (workspaceId: string) => `${BASE_API_URL}/node/archive/${workspaceId}`,
+  unArchiveNodes: () => `${BASE_API_URL}/node/unarchive`,
 
   // Workspace
   createWorkspace: `${BASE_API_URL}/workspace`,
