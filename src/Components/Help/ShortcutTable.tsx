@@ -18,11 +18,11 @@ import {
 import { useShortcutStore } from '../../Editor/Store/ShortcutStore'
 import InputShortcut from './InputShortcut'
 
-function fuzzyTextFilterFn (data: Shortcut[], search: any) {
+function fuzzyTextFilterFn(data: Shortcut[], search: any) {
   return matchSorter(data, search, { keys: ['title', 'keystrokes', 'category'] })
 }
 
-const ShowShortcut = (keybinding: string, mod = '⌘') => {
+export const ShowShortcut = (keybinding: string, mod = '⌘') => {
   return keybinding.replaceAll('$mod', mod).replaceAll('Key', '')
 }
 
@@ -77,7 +77,7 @@ const ShortcutTable = () => {
               return (
                 <StyledRow
                   key={`Row_${row.title}`}
-                  highlight={row.title === currentShortcut?.title}
+                  highlight={row.title === currentShortcut?.title && editMode}
                   onClick={() => onRowClick(row)}
                 >
                   {Object.keys(row).map((cell, index) => {

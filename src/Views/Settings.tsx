@@ -1,91 +1,85 @@
 import React from 'react'
-import useThemeStore from '../Editor/Store/ThemeStore'
-import IconButton, { Button } from '../Styled/Buttons'
-import { FlexBetween } from '../Spotlight/components/Actions/styled'
-import { useSaveData } from '../Data/useSaveData'
-import saveLine from '@iconify-icons/ri/save-line'
-import toast from 'react-hot-toast'
-import { Wrapper } from '../Styled/Layouts'
-import { ButtonWrapper, Theme, ThemeColorDots, ThemeHeader, ThemePreview, ThemePreviews } from '../Styled/Settings'
-import { ThemeProvider } from 'styled-components'
-import { useTransition } from 'react-spring'
+import { Route, Switch, NavLink, useRouteMatch } from 'react-router-dom'
+import Shortcuts from '../Components/Settings/Shortcuts'
+import styled from 'styled-components'
+import { IntegrationContainer, Title } from '../Styled/Integration'
+import Themes from '../Components/Settings/Themes'
+import About from '../Components/Settings/About'
+
+const SettingsContainer = styled.section`
+  display: flex;
+  width: 100%;
+`
+
+const SettingsOptions = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+`
+
+const SettingTitle = styled(NavLink)`
+  padding: 1rem;
+  margin-bottom: 1rem;
+  color: ${({ theme }) => theme.colors.text.default};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.background.card};
+  }
+
+  &.active {
+    background-color: ${({ theme }) => theme.colors.background.card};
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+`
+
+const SettingsContent = styled.div`
+  flex: 4;
+`
 
 const Settings = () => {
-  const themes = useThemeStore((state) => state.themes)
-  const theme = useThemeStore((state) => state.theme)
-  const setTheme = useThemeStore((state) => state.setTheme)
-
-  const saveData = useSaveData()
-
-  const transition = useTransition(themes, {
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    keys: (item) => item.id,
-    trail: 100,
-    duration: 300,
-    config: {
-      mass: 1,
-      tension: 200,
-      friction: 16
-    }
-  })
-
-  const onSave = () => {
-    // TODO: Only save settings data
-    saveData()
-    toast('Saved!', { duration: 1000 })
-  }
-
-  const onThemeSelect = (i: number) => {
-    if (themes[i]) setTheme(themes[i])
-  }
-
+  const { path, url } = useRouteMatch()
   return (
-    <Wrapper>
-      <FlexBetween>
-        <h1>Themes</h1>
-        <IconButton size={24} icon={saveLine} onClick={onSave} title="Save" />
-      </FlexBetween>
-      <h2>Current theme: {theme.id}</h2>
-      <ThemePreviews>
-        {transition((styles, t, _t, i) => {
-          // {themes.map((t, i) => {
-          return (
-            <ThemeProvider key={`mex_theme_key_${t.id}`} theme={t.themeData}>
-              <Theme style={styles}>
-                <ThemeHeader>
-                  <h1>{t.id}</h1>
-                </ThemeHeader>
-                <ThemePreview back={t.themeData.backgroundImages ? t.themeData.backgroundImages.app : undefined}>
-                  <p>
-                    <b>Theme is nice</b>
-                  </p>
-                  <p>This is your theme!</p>
-                  <ThemeColorDots>
-                    <div className="primary"></div>
-                    <div className="secondary"></div>
-                    <div className="text"></div>
-                    <div className="text_fade"></div>
-                    <div className="background"></div>
-                  </ThemeColorDots>
-                  <br />
-                  <ButtonWrapper>
-                    <Button primary={false} onClick={() => onThemeSelect(i)}>
-                      Set
-                    </Button>
-                    <Button primary onClick={() => onThemeSelect(i)}>
-                      Theme
-                    </Button>
-                  </ButtonWrapper>
-                  <br />
-                </ThemePreview>
-              </Theme>
-            </ThemeProvider>
-          )
-        })}
-      </ThemePreviews>
-    </Wrapper>
+    <IntegrationContainer>
+      <Title>Settings</Title>
+      <SettingsContainer>
+        <SettingsOptions>
+          <SettingTitle exact tabIndex={-1} activeClassName="active" to={`${path}`}>
+            Themes
+          </SettingTitle>
+          <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/shortcuts`}>
+            Shortcuts
+          </SettingTitle>
+          <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/about`}>
+            About
+          </SettingTitle>
+        </SettingsOptions>
+        <SettingsContent>
+          <Switch>
+            <Route exact path={path}>
+              <Themes />
+            </Route>
+            <Route path={`${path}/shortcuts`}>
+              <Shortcuts />
+            </Route>
+            <Route path={`${path}/about`}>
+              <About />
+            </Route>
+            {/* <Route path={`${path}/otherpath`}>
+              <OtherPath />
+            </Route> */}
+          </Switch>
+        </SettingsContent>
+      </SettingsContainer>
+    </IntegrationContainer>
   )
 }
+
+// function Topic() {
+//   const { setting } = useParams()
+//   return <h3>Requested topic ID: {setting}</h3>
+// }
 
 export default Settings

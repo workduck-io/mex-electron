@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 
 export const Wrapper = styled.div`
-  margin: ${({ theme }) => theme.spacing.large};
+  margin: 0 ${({ theme }) => theme.spacing.large};
 `
 
 export const centeredCss = css`
