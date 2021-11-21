@@ -2,6 +2,7 @@ import saveLine from '@iconify-icons/ri/save-line'
 import { useStoreEditorValue } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
+import { useTags } from '../../Hooks/useTags/useTags'
 import tinykeys from 'tinykeys'
 import useAnalytics from '../../analytics'
 import { ActionType } from '../../analytics/events'
@@ -22,6 +23,7 @@ export const useSaver = () => {
   const setFsContent = useContentStore((state) => state.setContent)
 
   const { updateLinksFromContent, getNodeIdFromUid } = useLinks()
+  const { updateTagsFromContent } = useTags()
 
   const saveData = useSaveData()
   const editorState = useStoreEditorValue()
@@ -36,6 +38,7 @@ export const useSaver = () => {
       setFsContent(node.uid, editorState)
       saveDataAPI(node.uid, editorState)
       updateLinksFromContent(node.uid, editorState)
+      updateTagsFromContent(node.uid, editorState)
       const title = getNodeIdFromUid(node.uid)
       updateDoc(node.uid, convertEntryToRawText(node.uid, editorState), title)
     }

@@ -39,6 +39,7 @@ const StyledDiv = styled.div<StyledDivProps>`
 
 export const navTooltip = css`
   .nav-tooltip {
+    color: ${({ theme }) => theme.colors.text.oppositePrimary} !important;
     background: ${({ theme }) => theme.colors.primary} !important;
     &::after {
       border-right-color: ${({ theme }) => theme.colors.primary} !important;

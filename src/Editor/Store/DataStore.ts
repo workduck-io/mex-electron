@@ -18,6 +18,8 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
   linkCache: {},
 
+  tagsCache: {},
+
   baseNodeId: '@',
 
   bookmarks: [],
@@ -26,12 +28,6 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   initializeDataStore: (initData) => {
     set({
       ...initData
-      // tags: initData.tags,
-      // ilinks: initData.ilinks,
-      // linkCache: initData.linkCache,
-      // slashCommands: initData.slashCommands,
-      // bookmarks: initData.bookmarks,
-      // baseNodeId: initData.baseNodeId
     })
   },
 
@@ -133,6 +129,17 @@ const useDataStore = create<DataStoreState>((set, get) => ({
         [ilink.uid]: secondNodeLinks
       }
     })
+  },
+
+  updateTagCache: (tag, nodes) => {
+    const tagsCache = get().tagsCache
+    if (tagsCache[tag]) delete tagsCache[tag]
+    tagsCache[tag] = { nodes }
+    set({ tagsCache })
+  },
+
+  updateTagsCache: (tagsCache) => {
+    set({ tagsCache })
   },
 
   addBookmarks: (bookmarks) => {

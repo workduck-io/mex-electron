@@ -16,7 +16,7 @@ export const NodeInfo = styled.div<NodeInfoProps>`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   transition: opacity 0.3s ease-in-out;
 
-  margin: 0 0 3rem;
+  margin: 0 0 ${({ theme }) => theme.spacing.medium};
 
   ${NoteTitle} {
     color: ${({ theme }) => theme.colors.text.subheading};

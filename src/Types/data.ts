@@ -1,6 +1,6 @@
 import { Service, SyncBlockData, SyncBlockTemplate, SyncStoreIntents } from '../Editor/Components/SyncBlock'
 import { Snippet } from '../Editor/Store/SnippetStore'
-import { ComboText, ILink, LinkCache, NodeEditorContent } from '../Editor/Store/Types'
+import { ComboText, ILink, LinkCache, NodeEditorContent, TagsCache } from '../Editor/Store/Types'
 import lunr from 'lunr-mutable-indexes'
 
 export interface NodeMetadata {
@@ -9,6 +9,7 @@ export interface NodeMetadata {
   lastEditedBy?: string
   updatedAt?: number
 }
+
 export interface NodeContent {
   type: string
   content: NodeEditorContent
@@ -26,6 +27,7 @@ export interface FileData {
     [key: string]: NodeContent
   }
   linkCache: LinkCache
+  tagsCache: TagsCache
   bookmarks: string[]
 
   // Sync

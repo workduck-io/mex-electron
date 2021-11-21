@@ -3,7 +3,10 @@ import md5 from 'md5'
 import Avatar from 'boring-avatars'
 import { Icon } from '@iconify/react'
 import user3Line from '@iconify-icons/ri/user-3-line'
-import { useTheme } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
+import Tippy from '@tippyjs/react/headless' // different import path!
+import { CardShadow } from '../../Styled/helpers'
+import Centered from '../../Styled/Layouts'
 
 interface ProfileImageProps {
   email: string
@@ -13,6 +16,20 @@ interface ProfileImageProps {
 const protocol = '//'
 const domain = 'www.gravatar.com'
 const base = `${protocol}${domain}/avatar/`
+
+const ProfileTooptip = styled.div`
+  padding: ${({ theme }) => theme.spacing.small};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  max-height: 400px;
+  max-width: 700px;
+  overflow-y: auto;
+  ${CardShadow}
+  background: ${({ theme }) => theme.colors.gray[8]} !important;
+  color: ${({ theme }) => theme.colors.text.default};
+  &::after {
+    border-right-color: ${({ theme }) => theme.colors.primary} !important;
+  }
+`
 
 export const ProfileImage = ({ email, size }: ProfileImageProps) => {
   // 0 => not fetched yet
@@ -51,4 +68,30 @@ export const ProfileImage = ({ email, size }: ProfileImageProps) => {
   if (gravState === -1) return <Avatar size={size} square name={email} colors={colors} variant="beam" />
   // Rendered if both fail
   return <Icon className="defaultProfileIcon" icon={user3Line} height={size} />
+}
+
+interface ProfileImageWithToolTipProps {
+  props: ProfileImageProps
+  placement?: string
+}
+
+export const ProfileImageWithToolTip = ({ props, placement }: ProfileImageWithToolTipProps) => {
+  const { email } = props // eslint-disable-line react/prop-types
+  return (
+    <Tippy
+      delay={100}
+      interactiveDebounce={100}
+      placement={(placement as any) ?? 'auto'}
+      appendTo={() => document.body}
+      render={(attrs) => (
+        <ProfileTooptip tabIndex={-1} {...attrs}>
+          {email}
+        </ProfileTooptip>
+      )}
+    >
+      <Centered>
+        <ProfileImage {...props} />
+      </Centered>
+    </Tippy>
+  )
 }

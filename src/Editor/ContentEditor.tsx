@@ -20,6 +20,7 @@ import { SaverButton } from './Components/Saver'
 import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
 import BookmarkButton from '../Components/Buttons/BookmarkButton'
+import Metadata from '../Components/Metadata/Metadata'
 
 const ContentEditor = () => {
   const title = useEditorStore((state) => state.node.title)
@@ -119,6 +120,8 @@ const ContentEditor = () => {
             <IconButton size={24} icon={bubbleChartLine} title="Graph" highlight={showGraph} onClick={toggleGraph} />
           </InfoTools>
         </NodeInfo>
+
+        <Metadata />
 
         <Editor showBalloonToolbar readOnly={fetchingContent} content={content} editorId={uid} />
       </StyledEditor>

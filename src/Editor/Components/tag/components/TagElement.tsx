@@ -6,6 +6,7 @@ import { useHotkeys } from '../hooks/useHotkeys'
 import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { TagElementProps } from './TagElement.types'
 import { STag, STagRoot } from './TagElement.styles'
+import { useHistory } from 'react-router-dom'
 
 /**
  * TagElement with no default styles.
@@ -15,8 +16,12 @@ export const TagElement = ({ attributes, children, element }: TagElementProps) =
   const editor = useEditorRef()
   const selected = useSelected()
   const focused = useFocused()
+  const history = useHistory()
 
-  const onClickProps = useOnMouseClick(() => console.info('tag clicked'))
+  const onClickProps = useOnMouseClick(() => {
+    console.info('tag clicked')
+    openTag(element.value)
+  })
 
   useHotkeys(
     'backspace',
@@ -36,6 +41,10 @@ export const TagElement = ({ attributes, children, element }: TagElementProps) =
     },
     [selected, focused]
   )
+
+  const openTag = (tag: string) => {
+    history.push(`/tag/${tag}`)
+  }
 
   return (
     <STagRoot {...attributes} data-slate-value={element.value} contentEditable={false}>

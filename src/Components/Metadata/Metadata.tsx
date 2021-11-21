@@ -10,6 +10,8 @@ import { useRelativeTime } from '../../Hooks/useRelativeTime'
 import { CardShadow, HoverFade } from '../../Styled/helpers'
 import { NodeMetadata } from '../../Types/data'
 import Tippy from '@tippyjs/react/headless' // different import path!
+import { ProfileIcon } from '../../Styled/UserPage'
+import { ProfileImage, ProfileImageWithToolTip } from '../User/ProfileImage'
 
 const Data = styled.div`
   color: ${({ theme }) => theme.colors.text.fade};
@@ -22,6 +24,10 @@ interface DataWrapperProps {
 const DataWrapper = styled.div<DataWrapperProps>`
   display: flex;
   align-items: center;
+
+  ${ProfileIcon} {
+    margin: 0;
+  }
 
   svg {
     color: ${({ theme }) => theme.colors.gray[7]};
@@ -40,18 +46,44 @@ const DataWrapper = styled.div<DataWrapperProps>`
     `}
 `
 
+const DataGroup = styled.div``
+
 const MetadataWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: ${({ theme }) => theme.spacing.small};
+
+  margin-bottom: ${({ theme }) => theme.spacing.large};
+
   ${HoverFade}
+
+  ${ProfileIcon} {
+    filter: grayscale(1);
+    opacity: 0.5;
+  }
+
+  &:hover {
+    ${ProfileIcon} {
+      filter: grayscale(0);
+      opacity: 1;
+    }
+  }
+
   ${Label} {
     color: ${({ theme }) => theme.colors.gray[6]};
-    font-size: 1rem;
-    margin: ${({ theme }) => theme.spacing.large} 0 ${({ theme }) => theme.spacing.small};
-    margin-left: 1.25rem;
+    font-size: 0.9rem;
+    margin: 0 0 0.2rem;
+  }
+
+  ${DataGroup}:first-child {
+    margin-right: calc(2 * ${({ theme }) => theme.spacing.large});
   }
   ${DataWrapper}:not(:first-child) {
     margin-top: ${({ theme }) => theme.spacing.small};
   }
 `
+
 interface RelDateWithPreviewProps {
   n: number
 }
@@ -97,7 +129,7 @@ const RelDateWithPreview = ({ n }: RelDateWithPreviewProps) => {
     <Tippy
       delay={100}
       interactiveDebounce={100}
-      placement="left"
+      placement="bottom"
       appendTo={() => document.body}
       render={(attrs) => (
         <DateTooptip tabIndex={-1} {...attrs}>
@@ -105,12 +137,9 @@ const RelDateWithPreview = ({ n }: RelDateWithPreviewProps) => {
         </DateTooptip>
       )}
     >
-      <DataWrapper interactive>
-        <Icon icon={timeLine}></Icon>
-        <Data>
-          <Relative>{relTime}</Relative>
-        </Data>
-      </DataWrapper>
+      <Data>
+        <Relative>{relTime}</Relative>
+      </Data>
     </Tippy>
   )
 }
@@ -132,23 +161,41 @@ const Metadata = () => {
   if (content === undefined || content.metadata === undefined || metadata === undefined) return null
   return (
     <MetadataWrapper>
-      {metadata.createBy !== undefined || metadata.createdAt !== undefined ? <Label>Created</Label> : null}
-      {metadata.createBy !== undefined && (
-        <DataWrapper>
-          <Icon icon={user3Line}></Icon>
-          <Data>{metadata.createBy}</Data>
-        </DataWrapper>
-      )}
-      {metadata.createdAt !== undefined && <RelDateWithPreview n={metadata.createdAt} />}
+      <DataGroup>
+        {metadata.createBy !== undefined && (
+          <DataWrapper interactive={metadata.createdAt !== undefined}>
+            {metadata.createBy !== undefined ? (
+              <ProfileIcon>
+                <ProfileImageWithToolTip props={{ email: metadata.createBy, size: 32 }} placement="bottom" />
+              </ProfileIcon>
+            ) : (
+              <Icon icon={timeLine}></Icon>
+            )}
+            <div>
+              {metadata.createdAt !== undefined ? <Label>Created</Label> : null}
+              {metadata.createdAt !== undefined && <RelDateWithPreview n={metadata.createdAt} />}
+            </div>
+          </DataWrapper>
+        )}
+      </DataGroup>
 
-      {metadata.updatedAt !== undefined || metadata.lastEditedBy !== undefined ? <Label>Updated</Label> : null}
-      {metadata.lastEditedBy !== undefined && (
-        <DataWrapper>
-          <Icon icon={user3Line}></Icon>
-          <Data>{metadata.lastEditedBy}</Data>
-        </DataWrapper>
-      )}
-      {metadata.updatedAt !== undefined && <RelDateWithPreview n={metadata.updatedAt} />}
+      <DataGroup>
+        {metadata.lastEditedBy !== undefined && (
+          <DataWrapper interactive={metadata.updatedAt !== undefined}>
+            {metadata.lastEditedBy !== undefined ? (
+              <ProfileIcon data-title={metadata.lastEditedBy}>
+                <ProfileImageWithToolTip props={{ email: metadata.lastEditedBy, size: 32 }} placement="bottom" />
+              </ProfileIcon>
+            ) : (
+              <Icon icon={timeLine}></Icon>
+            )}
+            <div>
+              {metadata.updatedAt !== undefined ? <Label>Updated</Label> : null}
+              {metadata.updatedAt !== undefined && <RelDateWithPreview n={metadata.updatedAt} />}
+            </div>
+          </DataWrapper>
+        )}
+      </DataGroup>
     </MetadataWrapper>
   )
 }

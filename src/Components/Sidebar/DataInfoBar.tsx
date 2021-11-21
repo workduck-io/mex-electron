@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import Backlinks from '../Backlinks/Backlinks'
-import Metadata from '../Metadata/Metadata'
+import TagsRelated from '../Tags/TagsRelated'
 
 const DataInfobarWrapper = styled.div`
   display: flex;
@@ -15,8 +15,8 @@ const DataInfobarWrapper = styled.div`
 const DataInfoBar = () => {
   return (
     <DataInfobarWrapper>
-      <Metadata />
       <Backlinks />
+      <TagsRelated />
     </DataInfobarWrapper>
   )
 }

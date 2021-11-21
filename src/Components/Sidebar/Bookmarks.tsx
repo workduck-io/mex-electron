@@ -53,12 +53,15 @@ const Bookmarks = () => {
 
   return (
     <BList>
-      {bookmarks.map((uid) => (
-        <BLink key={`bookmark_link_${uid}`} onClick={() => push(uid)}>
-          <Icon height={16} icon={bookmarkLine} />
-          {getNodeIdFromUid(uid)}
-        </BLink>
-      ))}
+      {bookmarks.map((uid) => {
+        if (getNodeIdFromUid(uid) === undefined) return null
+        return (
+          <BLink key={`bookmark_link_${uid}`} onClick={() => push(uid)}>
+            <Icon height={14} icon={bookmarkLine} />
+            {getNodeIdFromUid(uid)}
+          </BLink>
+        )
+      })}
     </BList>
   )
 }

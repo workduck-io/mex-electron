@@ -3,6 +3,7 @@ import { apiURLs } from '../../Requests/routes'
 import useDataStore from '../../Editor/Store/DataStore'
 import { USE_API } from '../../Defaults/dev_'
 import { useSaver } from '../../Editor/Components/Saver'
+import { useLinks } from '../../Editor/Actions/useLinks'
 
 export const useBookmarks = () => {
   const setBookmarks = useDataStore((state) => state.setBookmarks)
@@ -11,6 +12,7 @@ export const useBookmarks = () => {
   const removeBookmarks = useDataStore((state) => state.removeBookamarks)
   const { onSave } = useSaver()
   const { userCred } = useAuth()
+  const { getNodeIdFromUid } = useLinks()
 
   const isBookmark = (uid: string) => {
     const bookmarks = getBookmarks()
@@ -50,7 +52,11 @@ export const useBookmarks = () => {
       .get(apiURLs.getBookmarks(userCred.userId))
       .then((d) => {
         console.log('Data', d.data)
-        if (d.data) setBookmarks(d.data)
+
+        if (d.data) {
+          const bookmarks = d.data.filter((uid: string) => getNodeIdFromUid(uid) !== undefined)
+          setBookmarks(bookmarks)
+        }
         return d.data
       })
       .catch(console.error)
