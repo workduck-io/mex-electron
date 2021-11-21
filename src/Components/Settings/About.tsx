@@ -40,11 +40,11 @@ const About = () => {
       <Margin>Version: 0.1.0</Margin>
       <Margin>
         <Flex>
-          <Links href="https://workduck.io">
+          <Links href="https://workduck.io" target="_blank" rel="noopener norefer">
             <StyledIcon icon={globeIcon} />
             <h4>Website</h4>
           </Links>
-          <Links href="https://www.linkedin.com/company/workduck-official">
+          <Links href="https://www.linkedin.com/company/workduck-official" target="_blank" rel="noopener norefer">
             <StyledIcon icon={linkedinIcon} />
             <h4>Linkedin</h4>
           </Links>
