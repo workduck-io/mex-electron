@@ -10,6 +10,7 @@ import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import { RelatedNodes, useTags } from '../../Hooks/useTags/useTags'
 import { DataInfoHeader, NodeLink } from '../Backlinks/Backlinks'
+import { Note } from '../../Styled/Typography'
 
 const TagFlex = styled.div`
   cursor: pointer;
@@ -65,37 +66,50 @@ const TagsRelated = () => {
     history.push(`/tag/${tag}`)
   }
 
+  const relLen = Object.keys(relNodes).reduce((p, c) => {
+    return p + relNodes[c].length
+  }, 0)
+
   return (
     <TagsInfoWrapper>
       <DataInfoHeader>
         <Icon icon={hashtagIcon}></Icon>
         Tags
       </DataInfoHeader>
-      <TagsFlex>
-        {tags.map((t) => (
-          <TagFlex
-            key={`info_tags_${uid}_${t}`}
-            onClick={(e) => {
-              e.preventDefault()
-              navigateToTag(t)
-            }}
-          >
-            #{t}
-          </TagFlex>
-        ))}
-      </TagsFlex>
-      <InfoSubHeading>Related Nodes</InfoSubHeading>
-      {Object.keys(relNodes).map((k) => {
-        return (
-          <div key={`info_tag_${k}`}>
-            {relNodes[k].map((n) => (
-              <NodeLink key={`info_tag_related_${uid}_${n}_${k}`} onClick={() => push(n)}>
-                {getNodeIdFromUid(n)}
-              </NodeLink>
+      {tags.length > 0 ? (
+        <>
+          <TagsFlex>
+            {tags.map((t) => (
+              <TagFlex
+                key={`info_tags_${uid}_${t}`}
+                onClick={(e) => {
+                  e.preventDefault()
+                  navigateToTag(t)
+                }}
+              >
+                #{t}
+              </TagFlex>
             ))}
-          </div>
-        )
-      })}
+          </TagsFlex>
+          {relLen > 0 ? <InfoSubHeading>Related Nodes</InfoSubHeading> : null}
+          {Object.keys(relNodes).map((k) => {
+            return (
+              <div key={`info_tag_${k}`}>
+                {relNodes[k].map((n) => (
+                  <NodeLink key={`info_tag_related_${uid}_${n}_${k}`} onClick={() => push(n)}>
+                    {getNodeIdFromUid(n)}
+                  </NodeLink>
+                ))}
+              </div>
+            )
+          })}
+        </>
+      ) : (
+        <>
+          <Note>No Tags found.</Note>
+          <Note>Create tags with # view them and related nodes here.</Note>
+        </>
+      )}
     </TagsInfoWrapper>
   )
 }
