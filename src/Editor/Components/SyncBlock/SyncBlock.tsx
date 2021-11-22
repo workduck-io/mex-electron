@@ -40,7 +40,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
   const { showSyncBlocks } = useToggleElements()
 
   const uid = useEditorStore((store) => store.node.uid)
-  const parentNodeId = useEditorStore((store) => store.node.key)
+  const parentNodeId = useEditorStore((store) => store.node.uid)
   const blocksData = useSyncStore((state) => state.syncBlocks)
 
   const { trackEvent } = useAnalytics()

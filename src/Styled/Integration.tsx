@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react'
 import styled, { css } from 'styled-components'
 import { CenteredColumn } from './Layouts'
 
@@ -6,11 +7,12 @@ export const IntegrationContainer = styled.section`
 `
 
 export const TemplateContainer = styled.section`
-  margin-left: 4rem;
+  margin: 0 4rem;
 `
 
 export const TemplateList = styled.div`
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
 `
 
@@ -40,6 +42,15 @@ export const Title = styled.h1`
   padding: 2.5rem 1rem;
   font-size: 36px;
   line-height: 44px;
+`
+
+export const TemplateTitle = styled.h1`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 36px;
+  line-height: 44px;
+  padding-top: 2.5rem;
 `
 
 export const Services = styled.div`
@@ -112,6 +123,51 @@ export const RightCut = styled.span`
 
 export const CenteredFlex = styled(CenteredColumn)`
   flex: 1;
+`
+
+export const TemplateInfoList = styled.div`
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  margin: 2rem 1rem 0 0;
+  cursor: pointer;
+  padding: 1rem;
+  background-color: ${({ theme }) => theme.colors.background.card};
+  :hover {
+    padding: 0.8rem;
+    border: 0.2rem solid ${({ theme }) => theme.colors.background.highlight};
+    border-radius: ${({ theme }) => theme.borderRadius.small};
+  }
+`
+
+export const Margin = styled.div`
+  margin: 1rem 1rem 0.5rem 0;
+  display: flex;
+  justify-content: space-between;
+`
+
+export const StyledIcon = styled(Icon)`
+  margin-right: 1rem;
+`
+
+export const Text = styled.div`
+  font-size: 0.9rem;
+  color: ${({ theme }) => theme.colors.text.heading};
+`
+
+export const FullHeight = styled.div`
+  height: 100%;
+  width: 100%;
+  flex: 3;
+`
+
+export const TemplateDetails = styled.div`
+  flex: 1;
+`
+
+export const Flex = styled.section`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 `
 
 export const CardTitle = styled.div`

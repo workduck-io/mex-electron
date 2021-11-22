@@ -102,6 +102,7 @@ export type SyncContextType = {
     services: Service[],
     intents: SyncStoreIntents
   ) => void
+  setTemplates: (templates: SyncBlockTemplate[]) => void
   editSyncBlock: (block: SyncBlockData) => void
   addIgid: (uid: string, igid: string, intents: Intent[], templateId: string) => void
   addIntentEmptyMap: (uid: string) => void

@@ -23,13 +23,14 @@ import { SyncBlockTemplate } from '../../../Editor/Components/SyncBlock'
 
 const MAX_SHOW = 3
 
-const Template: React.FC<{ template: SyncBlockTemplate }> = ({ template }) => {
+const Template: React.FC<{ template: SyncBlockTemplate; onClick?: any }> = ({ template, onClick }) => {
   const { intents, more } = useMemo(() => {
     const intents = template.intents.filter((intent) => intent.service !== 'MEX')
+    console.log(intents)
     const more = intents.slice(MAX_SHOW).length
 
     return { intents, more }
-  }, [template.intents])
+  }, [template])
   const openConfirmationModal = useConfirmationModalStore((store) => store.openModal)
 
   const handleDeleteModal = () => {
@@ -37,14 +38,14 @@ const Template: React.FC<{ template: SyncBlockTemplate }> = ({ template }) => {
   }
 
   return (
-    <TemplateCard>
+    <TemplateCard onClick={() => onClick(template)}>
       <TemplateHeader>
         <FullFlex>
           <TemplateCommand>/sync.{template.command}</TemplateCommand>
         </FullFlex>
-        <DeleteIcon onClick={handleDeleteModal}>
+        {/* <DeleteIcon onClick={handleDeleteModal}>
           <Icon height={18} icon={trashIcon} />
-        </DeleteIcon>
+        </DeleteIcon> */}
       </TemplateHeader>
       <TemplateBody>
         <TemplateTitle>{template.title}</TemplateTitle>
