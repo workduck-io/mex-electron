@@ -1,7 +1,6 @@
 import { ELEMENT_MEDIA_EMBED } from '@udecode/plate'
 import { useMemo } from 'react'
 import useAnalytics from '../../analytics'
-import { CustomEvents } from '../../analytics/events'
 import { useSnippets } from '../../Snippets/useSnippets'
 import { ComboboxKey } from '../Components/combobox/useComboboxStore'
 import { ELEMENT_ILINK } from '../Components/ilink/defaults'
@@ -65,14 +64,14 @@ const useEditorPluginConfig = (editorId: string) => {
         {
           ilink: {
             slateElementType: ELEMENT_ILINK,
-            newItemHandler: (newItem) => {
-              addILink(newItem)
+            newItemHandler: (newItem, parentId?) => {
+              addILink(newItem, null, parentId)
             }
           },
           inline_block: {
             slateElementType: ELEMENT_INLINE_BLOCK,
-            newItemHandler: (newItem) => {
-              addILink(newItem)
+            newItemHandler: (newItem, parentId?) => {
+              addILink(newItem, null, parentId)
             }
           },
           tag: {

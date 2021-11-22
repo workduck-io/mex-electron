@@ -1,6 +1,7 @@
 import { FAKE_APP_URI } from './../Defaults/dev_'
 import tough from 'tough-cookie'
 import WebStorageCookieStore from 'tough-cookie-web-storage-store'
+import { SEPARATOR } from '../Components/Sidebar/treeUtils'
 
 export const electronCookies = () => {
   const { Cookie } = tough
@@ -17,6 +18,16 @@ export const electronCookies = () => {
       }
     })
   })(document)
+}
+
+export const withoutContinuousDelimiter = (text: string, delimiter = SEPARATOR) => {
+  const key = text
+    .split(delimiter)
+    .filter((ch) => ch !== '')
+    .join(delimiter)
+
+  if (text.startsWith(delimiter) && key.length > 0) return { key: `.${key}`, isChild: true }
+  return { key, isChild: false }
 }
 
 export const removeNulls = (obj: any): any => {

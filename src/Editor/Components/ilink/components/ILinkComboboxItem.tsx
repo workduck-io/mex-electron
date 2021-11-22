@@ -8,6 +8,7 @@ export type ILinkComboboxItemData =
   | undefined
 
 export const ILinkComboboxItem = ({ item }: ComboboxItemProps) => {
+  console.log({ item })
   return !(item.data as ILinkComboboxItemData)?.isNew ? (
     item.text
   ) : (
