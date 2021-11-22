@@ -78,18 +78,29 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
 export const setFileData = (data: FileData) => {
   fs.writeFileSync(SAVE_LOCATION, JSON.stringify(data))
 }
+// eslint-disable-next-lin @typescript-eslint/no-implicit-any
+export const ensureFieldsOnJSON = (fileData: any) => {
+  let toWriteFile = false
+  Object.keys(DefaultFileData).forEach((value) => {
+    if (!(value in fileData)) {
+      fileData[value] = DefaultFileData[value]
+      toWriteFile = true
+    }
+  })
+  return { fileData, toWriteFile }
+}
 
 export const getFileData = () => {
-  let fileData: FileData
-
   if (fs.existsSync(SAVE_LOCATION)) {
     const stringData = fs.readFileSync(SAVE_LOCATION, 'utf-8')
-    fileData = JSON.parse(stringData)
+
+    const { fileData, toWriteFile } = ensureFieldsOnJSON(JSON.parse(stringData))
+    if (toWriteFile) fs.writeFileSync(SAVE_LOCATION, JSON.stringify(fileData))
+    return fileData
   } else {
     fs.writeFileSync(SAVE_LOCATION, JSON.stringify(DefaultFileData))
-    fileData = DefaultFileData
+    return DefaultFileData
   }
-  return fileData
 }
 
 export const getIndexData = () => {
