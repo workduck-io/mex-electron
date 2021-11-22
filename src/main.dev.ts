@@ -433,7 +433,9 @@ export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) 
 
 if (app.isPackaged || process.env.FORCE_PRODUCTION) {
   const UPDATE_SERVER_URL = 'https://releases.workduck.io'
-  const url = `${UPDATE_SERVER_URL}/update/${process.platform}/${app.getVersion()}`
+  let url: string
+  if (process.arch === 'arm64') url = `${UPDATE_SERVER_URL}/update/${process.platform}_arm64/${app.getVersion()}`
+  else url = `${UPDATE_SERVER_URL}/update/${process.platform}/${app.getVersion()}`
   autoUpdater.setFeedURL({ url })
 
   console.log('App Version is: ', app.getVersion())
