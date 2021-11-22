@@ -10,6 +10,7 @@ import IconButton from '../../Styled/Buttons'
 import Switch from '../Forms/Switch'
 import { GraphTools, StyledGraph } from './Graph.styles'
 import { useGraphStore } from './GraphStore'
+import NodePreview from './NodePreview'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const options = {
@@ -58,6 +59,11 @@ export const TreeGraph = (props: TreeGraphProps) => {
 
   const showTools = useGraphStore((state) => state.showTools)
 
+  const showNodePreview = useGraphStore((state) => state.showNodePreview)
+  const setNodePreview = useGraphStore((state) => state.setNodePreview)
+
+  const [selectedNode, setSelectedNode] = useState('')
+
   const showLocal = useGraphStore((state) => state.showLocal)
   const toggleLocal = useGraphStore((state) => state.toggleLocal)
   const [network, setNetwork] = useState<any>()
@@ -84,26 +90,40 @@ export const TreeGraph = (props: TreeGraphProps) => {
   const { graph } = state
   // console.log('Graph', { graph });
   const events = {
-    click: (props: any) => {
-      console.log(props)
+    click: ({ nodes }: any) => {
+      if (nodes.length === 1) {
+        const node = graphData.nodes.filter((n: any) => n.id === nodes[0])[0]
+        setSelectedNode(node)
+        setNodePreview(true)
+      } else {
+        setNodePreview(false)
+        setSelectedNode(undefined)
+      }
     },
-    select: (selectProps: any): void => {
-      if (selectProps.nodes.length === 1) {
-        const selectId = selectProps.nodes[0]
-        const selectNode = graphData.nodes.filter((n: any) => n.id === selectId)
+    doubleClick: ({ nodes }: any) => {
+      setNodePreview(false)
+      setSelectedNode(undefined)
 
-        // console.log('Selected node', selectNode, selectId, graphData)
-
-        if (network) {
-          network._callbacks.$select[0]({ nodes: selectNode })
-        }
-
-        if (selectNode.length > 0) {
-          const uid = getUidFromNodeId(selectNode[0].nodeId)
-          push(uid)
-        }
+      if (nodes.length === 1) {
+        const node = graphData.nodes.filter((n: any) => n.id === nodes[0])[0]
+        const uid = getUidFromNodeId(node.nodeId)
+        push(uid)
       }
     }
+    // select: (selectProps: any): void => {
+    //   if (selectProps.nodes.length === 1) {
+    //     const selectId = selectProps.nodes[0]
+    //     const selectNode = graphData.nodes.filter((n: any) => n.id === selectId)
+
+    //     // console.log('Selected node', selectNode, selectId, graphData)
+
+    //     // if (network) {
+    //     //   network._callbacks.$select[0]({ nodes: selectNode })
+    //     // }
+
+    //     //
+    //   }
+    // }
   }
 
   return (
@@ -123,6 +143,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
           <IconButton size={24} icon={more2Fill} title="Options" />
         </GraphTools>
       ) : null}
+      {showNodePreview && <NodePreview node={selectedNode} />}
       <Graph
         graph={graph}
         options={options}
