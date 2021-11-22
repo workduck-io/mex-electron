@@ -51,7 +51,16 @@ export default class MenuBuilder {
         { type: 'separator' },
         { label: 'Services', submenu: [] },
         { type: 'separator' },
+        { type: 'separator' },
         {
+          label: 'Check for Updates ¯\\_(ツ)_/¯',
+          click: () => {
+            console.log('Checking for Updates')
+            autoUpdater.checkForUpdates()
+          }
+	},
+	{ type: 'separator'},
+	{
           label: 'Hide ElectronReact',
           accelerator: 'Command+H',
           selector: 'hide:',

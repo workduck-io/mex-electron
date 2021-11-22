@@ -341,7 +341,7 @@ app.on('quit', () => {
 app
   .whenReady()
   .then(() => {
-    globalShortcut.register('CommandOrControl+Shift+Z', handleToggleMainWindow)
+    globalShortcut.register('CommandOrCOntrol+Shift+L', handleToggleMainWindow)
 
     const icon = nativeImage.createFromPath(trayIconSrc)
 
@@ -374,7 +374,7 @@ app.on('window-all-closed', () => {
 })
 
 // * TBD: Save locally
-let SPOTLIGHT_SHORTCUT = 'CommandOrControl+Shift+Z'
+let SPOTLIGHT_SHORTCUT = 'CommandOrCOntrol+Shift+L'
 
 ipcMain.on(IpcAction.SET_SPOTLIGHT_SHORTCUT, (event, arg) => {
   const newSpotlightShortcut = getGlobalShortcut(arg.shortcut)
@@ -430,6 +430,7 @@ export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) 
   if (from === AppType.MEX) spotlight?.webContents.send(action, { data })
   else mex?.webContents.send(action, { data })
 }
+
 if (app.isPackaged || process.env.FORCE_PRODUCTION) {
   const UPDATE_SERVER_URL = 'https://releases.workduck.io'
   const url = `${UPDATE_SERVER_URL}/update/${process.platform}/${app.getVersion()}`
@@ -442,7 +443,7 @@ if (app.isPackaged || process.env.FORCE_PRODUCTION) {
     const dialogOpts = {
       type: 'info',
       buttons: ['Install Update!', 'Later :('],
-      title: 'Mex Update!',
+      title: "Aye Aye Captain: There's a Mex Update!",
       message: process.platform === 'win32' ? releaseNotes : releaseName,
       detail: 'Updates are on thee way'
     }
