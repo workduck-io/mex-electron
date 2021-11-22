@@ -2,6 +2,7 @@ import { getBlockAbove, getPlatePluginType, insertNodes, SPEditor, TElement } fr
 import { useCallback } from 'react'
 import { Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
+import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import useAnalytics from '../../../analytics'
 import { ActionType } from '../../../analytics/events'
 import { getEventNameFromElement } from '../../../Lib/strings'
@@ -11,6 +12,8 @@ import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from '../SlashCommands/Types'
 import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChange'
+import { withoutContinuousDelimiter } from '../../../Lib/helper'
+import { keyframes } from '@uifabric/merge-styles'
 
 export interface ComboTypeHandlers {
   slateElementType: string
@@ -19,7 +22,9 @@ export interface ComboTypeHandlers {
 
 export const useElementOnChange = (comboType: ComboTypeHandlers) => {
   const isOpen = useComboboxIsOpen()
+
   const targetRange = useComboboxStore((state) => state.targetRange)
+  const parentNodeId = useEditorStore((state) => state.node.key)
   const closeMenu = useComboboxStore((state) => state.closeMenu)
   const { trackEvent } = useAnalytics()
 
@@ -39,17 +44,23 @@ export const useElementOnChange = (comboType: ComboTypeHandlers) => {
           Transforms.insertText(editor, ' ')
         }
 
+        const { key, isChild } = withoutContinuousDelimiter(item.text)
+
+        let itemValue
+        if (key) itemValue = isChild ? `${parentNodeId}${key}` : key
+        else itemValue = parentNodeId
+
         // select the ilink text and insert the ilink element
         Transforms.select(editor, targetRange)
         insertNodes<TElement>(editor, {
           type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
           children: [{ text: '' }],
-          value: item.text
+          value: itemValue
         })
 
         trackEvent(getEventNameFromElement('Editor', ActionType.CREATE, type), {
           'mex-element-type': type,
-          'mex-element-text': item.text
+          'mex-element-text': itemValue
         })
 
         // move the selection after the ilink element

@@ -3,6 +3,7 @@ import errorWarningLine from '@iconify-icons/ri/error-warning-line'
 import { Icon } from '@iconify/react'
 import { useCombobox } from 'downshift'
 import React, { useEffect, useState } from 'react'
+import { withoutContinuousDelimiter } from '../../Lib/helper'
 import { useDebouncedCallback } from 'use-debounce'
 import { useLinks } from '../../Editor/Actions/useLinks'
 import useDataStore from '../../Editor/Store/DataStore'
@@ -126,11 +127,14 @@ function NodeSelect({
 
   function handleSelectedItemChange({ selectedItem }: any) {
     if (selectedItem) {
-      setSelectedItem(selectedItem)
-      setInputValue(selectedItem.value)
-      if (selectedItem.type === 'new') {
-        handleCreateItem(selectedItem.value)
+      const { key, isChild } = withoutContinuousDelimiter(selectedItem.value)
+      if (selectedItem.type === 'new' && key && !isChild) {
+        setSelectedItem({ ...selectedItem, text: key, value: key })
+        setInputValue(key)
+        handleCreateItem(key)
       } else {
+        setSelectedItem(selectedItem)
+        setInputValue(selectedItem.value)
         handleSelectItem(selectedItem.value)
       }
     }

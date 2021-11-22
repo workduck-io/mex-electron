@@ -54,6 +54,7 @@ const useMultiComboboxOnChange = (
         text: `Create New ${search}`
       })
     }
+
     setItems(items)
 
     return true
