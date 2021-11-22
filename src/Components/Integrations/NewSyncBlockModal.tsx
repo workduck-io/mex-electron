@@ -108,7 +108,8 @@ const NewSyncTemplateModal = () => {
       intentMap,
       templateId: template.id,
       workspaceId,
-      name: template.id,
+      command: template.command,
+      title: template.title,
       description: template.description
     }
 

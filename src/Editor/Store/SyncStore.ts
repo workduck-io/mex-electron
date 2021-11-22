@@ -20,6 +20,8 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
       syncBlocks: [...state.syncBlocks, block]
     })),
 
+  setTemplates: (templates) => set({ templates }),
+
   editSyncBlock: (block) => {
     let oldBlocks = get().syncBlocks
     oldBlocks = oldBlocks.filter((s) => s.id !== block.id)

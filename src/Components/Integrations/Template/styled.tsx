@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 
 export const TemplateCard = styled.div`
-  margin-left: ${({ theme }) => theme.spacing.medium};
+  margin ${({ theme }) => theme.spacing.medium};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background-color: ${({ theme }) => theme.colors.background.card};
   height: 10rem;

@@ -16,7 +16,7 @@ interface InfoBarWrapperProps {
   wide: boolean
 }
 
-const InfoBarWrapper = styled(animated.div)<InfoBarWrapperProps>`
+export const InfoBarWrapper = styled(animated.div)<InfoBarWrapperProps>`
   overflow: hidden;
 
   @media (max-width: ${size.wide}) {

@@ -67,7 +67,7 @@ const useLoad = () => {
     loadNodeAndReplaceContent(nodeProps, [...nodeContent, ...content])
   }
 
-  return { loadNode, loadNodeAndAppend, loadNodeProps }
+  return { loadNode, loadNodeAndAppend, loadNodeProps, getNode }
 }
 
 export default useLoad
