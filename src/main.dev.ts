@@ -1,6 +1,18 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import chokidar from 'chokidar'
-import { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, nativeImage, session, shell, Tray } from 'electron'
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  globalShortcut,
+  ipcMain,
+  Menu,
+  nativeImage,
+  session,
+  shell,
+  Tray,
+  autoUpdater
+} from 'electron'
 import fs from 'fs'
 import path from 'path'
 import { AppType } from './Data/useInitialize'
@@ -329,7 +341,7 @@ app.on('quit', () => {
 app
   .whenReady()
   .then(() => {
-    globalShortcut.register('CommandOrControl+Shift+L', handleToggleMainWindow)
+    globalShortcut.register('CommandOrControl+Shift+Z', handleToggleMainWindow)
 
     const icon = nativeImage.createFromPath(trayIconSrc)
 
@@ -362,7 +374,7 @@ app.on('window-all-closed', () => {
 })
 
 // * TBD: Save locally
-let SPOTLIGHT_SHORTCUT = 'CommandOrControl+Shift+L'
+let SPOTLIGHT_SHORTCUT = 'CommandOrControl+Shift+Z'
 
 ipcMain.on(IpcAction.SET_SPOTLIGHT_SHORTCUT, (event, arg) => {
   const newSpotlightShortcut = getGlobalShortcut(arg.shortcut)
@@ -417,4 +429,39 @@ ipcMain.on(IpcAction.ERROR_OCCURED, (_event, arg) => {
 export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) => {
   if (from === AppType.MEX) spotlight?.webContents.send(action, { data })
   else mex?.webContents.send(action, { data })
+}
+if (app.isPackaged || process.env.FORCE_PRODUCTION) {
+  const UPDATE_SERVER_URL = 'https://releases.workduck.io'
+  const url = `${UPDATE_SERVER_URL}/update/${process.platform}/${app.getVersion()}`
+  autoUpdater.setFeedURL({ url })
+
+  console.log('App Version is: ', app.getVersion())
+
+  autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+    console.log("Aye Aye Captain: There's an update")
+    const dialogOpts = {
+      type: 'info',
+      buttons: ['Install Update!', 'Later :('],
+      title: 'Mex Update!',
+      message: process.platform === 'win32' ? releaseNotes : releaseName,
+      detail: 'Updates are on thee way'
+    }
+    dialog.showMessageBox(dialogOpts).then((returnValue) => {
+      if (returnValue.response === 0) autoUpdater.quitAndInstall()
+    })
+  })
+
+  autoUpdater.on('update-available', (event) => {
+    console.log('Update aaya')
+  })
+
+  autoUpdater.on('update-not-available', (info) => {
+    console.log('Update nahi aaya | Current app version: ', app.getVersion())
+  })
+
+  const UPDATE_CHECK_INTERVAL = 3 * 60 * 1000
+  setInterval(() => {
+    console.log('Sent a check for updates!')
+    autoUpdater.checkForUpdates()
+  }, UPDATE_CHECK_INTERVAL)
 }
