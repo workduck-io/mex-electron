@@ -42,7 +42,10 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   },
 
   // Add a new ILink to the store
-  addILink: (ilink, uid) => {
+  addILink: (ilink, uid?, parentId?) => {
+    if (ilink.startsWith(SEPARATOR) && parentId) {
+      ilink = `${parentId}${ilink}`
+    }
     const linksStrings = get().ilinks.map((l) => l.text)
     const parents = getAllParentIds(ilink) // includes link of child
     const newLinks = parents.filter((l) => !linksStrings.includes(l)) // only create links for non existing
@@ -53,9 +56,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
       }
       return newILink
     })
-
     const newLink = comboTexts.find((l) => l.text === ilink)
-
     set({
       ilinks: [...get().ilinks, ...comboTexts]
     })

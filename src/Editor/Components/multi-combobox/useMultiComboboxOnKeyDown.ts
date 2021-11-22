@@ -2,19 +2,19 @@ import { getBlockAbove, getPlatePluginType, insertNodes, SPEditor, TElement } fr
 import { useCallback } from 'react'
 import { Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
-import { CustomEvents, ActionType } from '../../../analytics/events'
 import useAnalytics from '../../../analytics'
+import { ActionType } from '../../../analytics/events'
+import { getEventNameFromElement } from '../../../Lib/strings'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown'
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from '../SlashCommands/Types'
 import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChange'
-import { getEventNameFromElement } from '../../../Lib/strings'
 
 export interface ComboTypeHandlers {
   slateElementType: string
-  newItemHandler: (newItem: string) => any // eslint-disable-line @typescript-eslint/no-explicit-any
+  newItemHandler: (newItem: string, parentId?) => any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export const useElementOnChange = (comboType: ComboTypeHandlers) => {
@@ -46,8 +46,6 @@ export const useElementOnChange = (comboType: ComboTypeHandlers) => {
           children: [{ text: '' }],
           value: item.text
         })
-
-        console.log('Inserted', { item, type: CustomEvents[type.toUpperCase()] })
 
         trackEvent(getEventNameFromElement('Editor', ActionType.CREATE, type), {
           'mex-element-type': type,
@@ -95,8 +93,8 @@ const useMultiComboboxOnKeyDown = (
   return useComboboxOnKeyDown({
     // Handle multiple combobox
     onSelectItem: elementChangeHandler,
-    onNewItem: (newItem) => {
-      comboType.newItemHandler(newItem)
+    onNewItem: (newItem, parentId?) => {
+      comboType.newItemHandler(newItem, parentId)
     },
     creatable: comboboxKey !== ComboboxKey.SLASH_COMMAND
   })

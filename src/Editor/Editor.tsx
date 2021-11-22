@@ -1,7 +1,6 @@
 import { createPlateOptions, ELEMENT_MEDIA_EMBED, Plate, selectEditor, useStoreEditorRef } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import ReactTooltip from 'react-tooltip'
-import useAnalytics from '../analytics'
 import { EditorStyles } from '../Styled/Editor'
 import components from './Components/components'
 import BallonToolbarMarks from './Components/EditorToolbar'
@@ -56,8 +55,8 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
       ilink: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_ILINK,
-          newItemHandler: (newItem) => {
-            addILink(newItem)
+          newItemHandler: (newItem, parentId?) => {
+            addILink(newItem, null, parentId)
           }
         },
         renderElement: ILinkComboboxItem
@@ -65,8 +64,8 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
       inline_block: {
         comboTypeHandlers: {
           slateElementType: ELEMENT_INLINE_BLOCK,
-          newItemHandler: (newItem) => {
-            addILink(newItem)
+          newItemHandler: (newItem, parentId?) => {
+            addILink(newItem, null, parentId)
           }
         },
         renderElement: ILinkComboboxItem
