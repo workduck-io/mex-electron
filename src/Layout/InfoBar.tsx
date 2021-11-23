@@ -13,21 +13,21 @@ import useToggleElements from '../Hooks/useToggleElements/useToggleElements'
 import { size } from '../Styled/responsive'
 
 interface InfoBarWrapperProps {
-  wide: boolean
+  wide: string
 }
 
 export const InfoBarWrapper = styled(animated.div)<InfoBarWrapperProps>`
   overflow: hidden;
 
   @media (max-width: ${size.wide}) {
-    min-width: ${({ wide, theme }) => {
-      const mainWidth = wide ? '600px' : '300px'
+    min-width: ${({ wide }) => {
+      const mainWidth = wide === 'true' ? '600px' : '300px'
       return `calc(${mainWidth} )`
     }};
   }
   @media (min-width: ${size.wide}) {
-    min-width: ${({ wide, theme }) => {
-      const mainWidth = wide ? '800px' : '300px'
+    min-width: ${({ wide }) => {
+      const mainWidth = wide === 'true' ? '800px' : '300px'
       return `calc(${mainWidth} )`
     }};
   }
@@ -80,7 +80,7 @@ const InfoBar = () => {
   return transitions(
     (styles, item) =>
       item && (
-        <InfoBarWrapper wide={showGraph || showSyncBlocks} style={styles}>
+        <InfoBarWrapper wide={showGraph || showSyncBlocks ? 'true' : 'false'} style={styles}>
           <InfoBarItems showGraph={showGraph} showSyncBlocks={showSyncBlocks} />
         </InfoBarWrapper>
       )

@@ -48,5 +48,4 @@ const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps
     </>
   )
 }
-
 export default EditorPreviewRenderer

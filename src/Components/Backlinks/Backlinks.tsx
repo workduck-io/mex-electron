@@ -2,6 +2,7 @@ import arrowGoBackLine from '@iconify-icons/ri/arrow-go-back-line'
 import { Icon } from '@iconify/react'
 import { transparentize } from 'polished'
 import React from 'react'
+import { HoverSubtleGlow } from '../../Styled/helpers'
 import styled from 'styled-components'
 import { useLinks } from '../../Editor/Actions/useLinks'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
@@ -19,6 +20,7 @@ export const NodeLink = styled.div`
   cursor: pointer;
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
   margin-bottom: ${({ theme }) => theme.spacing.small};
+  background: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
 
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.medium}`};
 
@@ -26,14 +28,10 @@ export const NodeLink = styled.div`
     background: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
   }
 
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.primary};
-    box-shadow: 0px 2px 6px ${({ theme }) => theme.colors.primary};
-    color: ${({ theme }) => theme.colors.text.oppositePrimary};
-  }
+  ${HoverSubtleGlow}
 `
 
-const BackLinksHeader = styled.div`
+export const DataInfoHeader = styled.div`
   display: flex;
   align-items: center;
   color: ${({ theme }) => theme.colors.text.subheading};
@@ -55,10 +53,10 @@ const Backlinks = () => {
 
   return (
     <SBackLinks>
-      <BackLinksHeader>
+      <DataInfoHeader>
         <Icon icon={arrowGoBackLine}></Icon>
         Backlinks
-      </BackLinksHeader>
+      </DataInfoHeader>
       {backlinks.length === 0 && (
         <>
           <Note>No backlinks found.</Note>

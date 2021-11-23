@@ -11,6 +11,20 @@ export const HoverFade = css`
   }
 `
 
+export const SubtleGlow = css`
+  background-color: ${({ theme }) => theme.colors.primary};
+  box-shadow: 0px 2px 6px ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.text.oppositePrimary};
+`
+
+export const HoverSubtleGlow = css`
+  transition: 0.3s ease;
+  &:hover {
+    transition: 0s ease;
+    ${SubtleGlow}
+  }
+`
+
 export const PixelToCSS = (x: Pixels): string => {
   return `${String(x)}px`
 }

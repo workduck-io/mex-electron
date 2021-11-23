@@ -37,7 +37,7 @@ export const StyledToolbarBase = styled<any>(ToolbarBase)`
   }
 
   ${({ arrow, theme }) =>
-    arrow &&
+    arrow === 'true' &&
     css`
       ::after {
         left: 50%;

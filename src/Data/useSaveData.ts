@@ -13,7 +13,7 @@ export const useSaveData = () => {
   // const { updater } = useUpdater()
   const saveData = () => {
     // console.log('We saved the data for you')
-    const { baseNodeId, ilinks, linkCache, tags, bookmarks } = useDataStore.getState()
+    const { baseNodeId, ilinks, linkCache, tags, tagsCache, bookmarks } = useDataStore.getState()
     const { syncBlocks, templates, intents, services } = useSyncStore.getState()
 
     const fileData: FileData = {
@@ -22,6 +22,7 @@ export const useSaveData = () => {
       ilinks,
       linkCache,
       tags,
+      tagsCache,
       bookmarks,
       contents: useContentStore.getState().contents,
 

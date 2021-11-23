@@ -32,6 +32,7 @@ export const useInitialize = () => {
       tags,
       ilinks,
       linkCache,
+      tagsCache,
       bookmarks,
       contents,
       syncBlocks,
@@ -47,6 +48,7 @@ export const useInitialize = () => {
 
     const initData = {
       tags,
+      tagsCache,
       ilinks,
       slashCommands,
       linkCache,

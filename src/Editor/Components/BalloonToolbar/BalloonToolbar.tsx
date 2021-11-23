@@ -17,7 +17,7 @@ export const BalloonToolbar = (props: BalloonToolbarProps) => {
 
   return (
     <PortalBody>
-      <StyledToolbarBase ref={ref} hidden={hidden} arrow={arrow} className="BalloonToolbar">
+      <StyledToolbarBase ref={ref} hidden={hidden} arrow={arrow ? 'true' : 'false'} className="BalloonToolbar">
         {children}
       </StyledToolbarBase>
     </PortalBody>

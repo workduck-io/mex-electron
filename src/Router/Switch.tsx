@@ -15,6 +15,7 @@ import Tasks from '../Views/Tasks'
 import AuthRoute from './AuthRoute'
 import ProtectedRoute from './ProtectedRoute'
 import Search from '../Components/Search/Search'
+import Tag from '../Views/Tag'
 
 const SwitchWrapper = styled(animated.div)`
   position: fixed;
@@ -28,6 +29,7 @@ const Perspective = '2000px'
 
 const Switch = () => {
   const location = useLocation()
+  console.log({ location })
   const transitions = useTransition(location, {
     from: {
       opacity: 0,
@@ -44,9 +46,12 @@ const Switch = () => {
     delay: 0,
     config: config.default
   })
-  return transitions((props, item) => (
-    <SwitchWrapper style={props}>
-      <ReactRouterSwitch location={item}>
+  // return transitions((props, item) => (
+  return (
+    // <SwitchWrapper style={props}>
+    <SwitchWrapper>
+      {/* <ReactRouterSwitch location={item}> */}
+      <ReactRouterSwitch>
         <ProtectedRoute path="/editor" component={EditorView} />
         <ProtectedRoute path="/tasks" component={Tasks} />
         <ProtectedRoute path="/integrations" component={Integrations} />
@@ -55,12 +60,13 @@ const Switch = () => {
         <ProtectedRoute path="/user" component={UserPage} />
         <ProtectedRoute path="/settings" component={Settings} />
         <ProtectedRoute path="/search" component={Search} />
+        <ProtectedRoute path="/tag/:tag" component={Tag} />
         <ProtectedRoute path="/" exact component={Dashboard} />
         <AuthRoute path="/login" component={Login} />
         <AuthRoute path="/register" component={Register} />
       </ReactRouterSwitch>
     </SwitchWrapper>
-  ))
+  )
 }
 
 export default Switch

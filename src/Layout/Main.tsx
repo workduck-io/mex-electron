@@ -1,3 +1,4 @@
+import { transparentize } from 'polished'
 import React from 'react'
 import ReactTooltip from 'react-tooltip'
 import styled, { useTheme } from 'styled-components'
@@ -27,6 +28,11 @@ const Draggable = styled.div`
   left: 0;
   background-color: rgba(0, 0, 0, 0);
   z-index: 10000;
+
+  &:hover,
+  &:active {
+    background-color: ${({ theme }) => transparentize(0.5, theme.colors.primary)};
+  }
 `
 
 export type MainProps = { children: React.ReactNode }
@@ -34,7 +40,7 @@ export type MainProps = { children: React.ReactNode }
 const Main = ({ children }: MainProps) => {
   const theme = useTheme()
   const styles = {
-    '-webkit-app-region': 'drag'
+    WebkitAppRegion: 'drag'
   }
 
   return (
