@@ -20,6 +20,7 @@ export const NodeLink = styled.div`
   cursor: pointer;
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
   margin-bottom: ${({ theme }) => theme.spacing.small};
+  background: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
 
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.medium}`};
 

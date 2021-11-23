@@ -7,6 +7,7 @@ import { NodeLink } from '../Backlinks/Backlinks'
 import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import { Icon } from '@iconify/react'
 import bookmarkLine from '@iconify-icons/ri/bookmark-line'
+import { BaseLink } from '../../Views/Tag'
 
 const BList = styled.div`
   max-height: 15rem;
@@ -16,7 +17,7 @@ const BList = styled.div`
   padding: ${({ theme }) => theme.spacing.small};
 `
 
-const BLink = styled(NodeLink)`
+const BLink = styled(BaseLink)`
   display: flex;
   align-items: center;
   border-radius: ${({ theme }) => theme.borderRadius.small};
@@ -25,12 +26,6 @@ const BLink = styled(NodeLink)`
   svg {
     margin-right: ${({ theme }) => theme.spacing.tiny};
     color: ${({ theme }) => theme.colors.text.fade};
-  }
-  &:nth-child(2n) {
-    background: inherit;
-    &:hover {
-      background: ${({ theme }) => theme.colors.primary};
-    }
   }
   &:hover {
     svg {

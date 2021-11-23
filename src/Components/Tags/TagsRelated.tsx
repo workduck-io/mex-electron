@@ -70,6 +70,10 @@ const TagsRelated = () => {
     return p + relNodes[c].length
   }, 0)
 
+  const nodes: string[] = Object.keys(relNodes).reduce((p, c) => {
+    return [...p, ...relNodes[c]]
+  }, [])
+
   return (
     <TagsInfoWrapper>
       <DataInfoHeader>
@@ -92,17 +96,11 @@ const TagsRelated = () => {
             ))}
           </TagsFlex>
           {relLen > 0 ? <InfoSubHeading>Related Nodes</InfoSubHeading> : null}
-          {Object.keys(relNodes).map((k) => {
-            return (
-              <div key={`info_tag_${k}`}>
-                {relNodes[k].map((n) => (
-                  <NodeLink key={`info_tag_related_${uid}_${n}_${k}`} onClick={() => push(n)}>
-                    {getNodeIdFromUid(n)}
-                  </NodeLink>
-                ))}
-              </div>
-            )
-          })}
+          {nodes.map((n) => (
+            <NodeLink key={`info_tag_related_${uid}_${n}`} onClick={() => push(n)}>
+              {getNodeIdFromUid(n)}
+            </NodeLink>
+          ))}
         </>
       ) : (
         <>

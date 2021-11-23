@@ -28,7 +28,7 @@ const TagMain = styled.div`
   flex: 4;
 `
 
-const BaseLink = styled.div`
+export const BaseLink = styled.div`
   cursor: pointer;
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
   margin-bottom: ${({ theme }) => theme.spacing.small};
