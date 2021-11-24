@@ -1,11 +1,13 @@
 import { Icon } from '@iconify/react'
 import { LinkNodeData } from '@udecode/plate-link'
 import { StyledElementProps } from '@udecode/plate-styled-components'
-import React from 'react'
-import styled from 'styled-components'
+import React, { useEffect } from 'react'
+import ReactTooltip from 'react-tooltip'
+import styled, { css } from 'styled-components'
 import { EditorIcons } from '../../Icons'
 
 const Link = styled.a`
+  position: relative;
   .LinkIcon {
     position: relative;
     cursor: pointer;
@@ -20,7 +22,7 @@ const Link = styled.a`
     }
   }
 
-  .link-tooltip {
+  .WIPlink-tooltip {
     position: absolute;
     z-index: 1000;
     display: none;
@@ -36,12 +38,21 @@ const Link = styled.a`
       color: ${({ theme }) => theme.colors.primary};
     }
 
-    .link-tooltip {
+    .WIPlink-tooltip {
       display: inherit;
     }
   }
 `
 
+export const linkTooltip = css`
+  .link-tooltip {
+    color: ${({ theme }) => theme.colors.text.oppositePrimary} !important;
+    background: ${({ theme }) => theme.colors.primary} !important;
+    &::after {
+      border-top-color: ${({ theme }) => theme.colors.primary} !important;
+    }
+  }
+`
 const getSanatizedLink = (raw: string) => {
   if (raw.includes('://')) {
     return raw
@@ -56,6 +67,10 @@ const getSanatizedLink = (raw: string) => {
  */
 const LinkElement = ({ attributes, children, element, nodeProps }: StyledElementProps<LinkNodeData>) => {
   const isExternal = element.url.startsWith('#')
+
+  useEffect(() => {
+    ReactTooltip.rebuild()
+  }, [])
 
   const openLink = (e: React.MouseEvent, meta: boolean) => {
     e.preventDefault()
@@ -79,11 +94,13 @@ const LinkElement = ({ attributes, children, element, nodeProps }: StyledElement
       onClick={(e) => {
         openLink(e, true)
       }}
+      data-tip={element.url}
+      data-class="link-tooltip"
       {...nodeProps}
     >
-      <div className="link-tooltip" contentEditable={false}>
+      {/*<div className="link-tooltip" contentEditable={false}>
         {element.url}
-      </div>
+      </div> */}
       {!isExternal && (
         <button
           className="LinkIcon"
@@ -92,8 +109,6 @@ const LinkElement = ({ attributes, children, element, nodeProps }: StyledElement
           onClick={(e) => {
             openLink(e, false)
           }}
-          data-tip={element.url}
-          data-class="nav-tooltip"
           contentEditable={false}
         >
           <Icon icon={EditorIcons.externalLink} />
