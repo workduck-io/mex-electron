@@ -116,7 +116,7 @@ const TemplateInfo = () => {
   }
 
   return (
-    <InfoBarWrapper wide={false}>
+    <InfoBarWrapper wide="false">
       <TemplateTitle>Details</TemplateTitle>
       <TemplateCommand>{`/sync/${template.command}`}</TemplateCommand>
       {templateDetails && (
@@ -195,7 +195,7 @@ const IntegrationPage = () => {
   const template = useIntegrationStore((state) => state.template)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       await updateServices()
     })()
   }, [])

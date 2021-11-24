@@ -34,7 +34,7 @@ export interface DataStoreState {
   initializeDataStore: (initData: InitData) => void
 
   // adds the node
-  addILink: (ilink: string, uid?: string) => string
+  addILink: (ilink: string, uid?: string, parentId?: string) => string
 
   // adds tag for combobox
   addTag: (tag: string) => void

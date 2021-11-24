@@ -39,7 +39,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   },
 
   // Add a new ILink to the store
-  addILink: (ilink, uid?, parentId?) => {
+  addILink: (ilink, uid, parentId) => {
     const { key, isChild } = withoutContinuousDelimiter(ilink)
 
     if (key) {
