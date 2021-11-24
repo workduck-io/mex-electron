@@ -1,24 +1,24 @@
+import Tippy, { TippyProps } from '@tippyjs/react' // optional
 import {
-  ToolbarLinkProps,
-  useStoreEditorState,
-  useEventEditorId,
-  getPlatePluginType,
   ELEMENT_LINK,
-  someNode,
   getAbove,
-  unwrapNodes,
+  getPlatePluginType,
   isCollapsed,
-  upsertLinkAtSelection
+  LinkToolbarButtonProps,
+  someNode,
+  unwrapNodes,
+  upsertLinkAtSelection,
+  usePlateEditorState,
+  usePlateEventId
 } from '@udecode/plate'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
-import { HeadlessButton } from '../../../Styled/Buttons'
 import styled from 'styled-components'
+import { HeadlessButton } from '../../../Styled/Buttons'
 import { Input } from '../../../Styled/Form'
 import { clearBlurSelection } from '../../Plugins/blurSelection'
-import Tippy, { TippyProps } from '@tippyjs/react' // optional
 
 const LinkButtonStyled = styled.div`
   user-select: all;
@@ -49,10 +49,10 @@ const LinkButtonStyled = styled.div`
   }
 `
 
-type LinkButtonProps = ToolbarLinkProps
+type LinkButtonProps = LinkToolbarButtonProps
 
 const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
-  const editor = useStoreEditorState(useEventEditorId('focus'))
+  const editor = usePlateEditorState(usePlateEventId('focus'))
 
   const type = getPlatePluginType(editor, ELEMENT_LINK)
   const isLink = !!editor?.selection && someNode(editor, { match: { type } })

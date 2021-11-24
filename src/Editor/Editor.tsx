@@ -1,9 +1,9 @@
-import { createPlateOptions, ELEMENT_MEDIA_EMBED, Plate, selectEditor, useStoreEditorRef } from '@udecode/plate'
+import { createPlateOptions, ELEMENT_MEDIA_EMBED, Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import ReactTooltip from 'react-tooltip'
 import { EditorStyles } from '../Styled/Editor'
 import components from './Components/components'
-import BallonToolbarMarks from './Components/EditorToolbar'
+import BallonMarkToolbarButtons from './Components/EditorToolbar'
 import { ILinkComboboxItem } from './Components/ilink/components/ILinkComboboxItem'
 import { ELEMENT_ILINK } from './Components/ilink/defaults'
 import { ELEMENT_INLINE_BLOCK } from './Components/InlineBlock/types'
@@ -44,7 +44,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
   const addILink = useDataStore((state) => state.addILink)
 
   const generateEditorId = () => `${editorId}`
-  const editorRef = useStoreEditorRef()
+  const editorRef = usePlateEditorRef()
 
   useEffect(() => {
     if (editorRef && focusAtBeginning) selectEditor(editorRef, { edge: 'start', focus: true })
@@ -105,7 +105,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
       <ReactTooltip effect="solid" />
       {content && (
         <EditorStyles>
-          {showBalloonToolbar && <BallonToolbarMarks />}
+          {showBalloonToolbar && <BallonMarkToolbarButtons />}
           <Plate
             id={generateEditorId()}
             editableProps={editableProps}

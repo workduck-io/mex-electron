@@ -1,6 +1,6 @@
-import { PlatePlugin, SPEditor } from '@udecode/plate'
+import { PEditor, PlatePlugin } from '@udecode/plate'
 
-export interface BlurSelectionEditor extends SPEditor {
+export interface BlurSelectionEditor extends PEditor {
   selection: any
   blurSelection: any
   prevSelection: any

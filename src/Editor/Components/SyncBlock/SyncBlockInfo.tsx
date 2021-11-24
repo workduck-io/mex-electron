@@ -1,14 +1,13 @@
-import React from 'react'
 import messageIcon from '@iconify-icons/ri/message-3-line'
+import React from 'react'
+import styled, { css } from 'styled-components'
+import { ELEMENT_SYNC_BLOCK } from '.'
 import { GraphTools, StyledSyncBlockInfo } from '../../../Components/Graph/Graph.styles'
-import IconButton from '../../../Styled/Buttons'
+import { useSyncStore } from '../../../Editor/Store/SyncStore'
 import useToggleElements from '../../../Hooks/useToggleElements/useToggleElements'
 import { useFilteredContent } from '../../../Lib/filter'
-import styled, { css } from 'styled-components'
-import { ELEMENT_SYNC_BLOCK, SyncBlock } from '.'
+import IconButton from '../../../Styled/Buttons'
 import { EditorStyles } from '../../../Styled/Editor'
-import { useSyncStore } from '../../../Editor/Store/SyncStore'
-import { NodeEditorContent } from '../../../Editor/Store/Types'
 
 const StyledBlockInfo = styled.div`
   width: 100%;
@@ -40,13 +39,14 @@ const SyncBlockInfo = () => {
         <EditorStyles>
           {syncBlocks.map((syncBlock: any) => (
             <MarginVertical key={syncBlock.id} selected={syncBlock.id === selectedBlockId}>
-              <SyncBlock
+              {/* <SyncBlock
+                editor={null as any}
                 info
                 attributes={{ 'data-slate-inline': true, 'data-slate-node': 'element', ref: null }}
                 element={syncBlock}
               >
                 {''}
-              </SyncBlock>
+              </SyncBlock> */}
             </MarginVertical>
           ))}
         </EditorStyles>
