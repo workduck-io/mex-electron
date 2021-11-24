@@ -4,7 +4,7 @@ import {
   createBoldPlugin,
   createCodeBlockPlugin,
   createCodePlugin,
-  createDeserializeHTMLPlugin,
+  createDeserializeHtmlPlugin,
   // createDeserializeMDPlugin,
   createExitBreakPlugin,
   createHeadingPlugin,
@@ -17,30 +17,32 @@ import {
   createMediaEmbedPlugin,
   createNodeIdPlugin,
   createParagraphPlugin,
+  createPlugins,
   createReactPlugin,
   createResetNodePlugin,
-  createSelectOnBackspacePlugin,
   createSoftBreakPlugin,
   createStrikethroughPlugin,
   createTablePlugin,
   createUnderlinePlugin,
+  ELEMENT_LINK,
+  ELEMENT_MEDIA_EMBED,
   PlatePlugin,
-  SPEditor
+  withProps
 } from '@udecode/plate'
 import { useMemo } from 'react'
-import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
-import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
-import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin'
-import { createTagPlugin } from '../Components/tag/createTagPlugin'
-// import { TagCombobox } from '../Components/tag/components/TagCombobox';
-// import { createTagPlugin } from '../Components/tag/createTagPlugin';
-import { createBlurSelectionPlugin } from './blurSelection'
+import { ILinkElement } from '../Components/ilink/components/ILinkElement'
+import { ELEMENT_ILINK } from '../Components/ilink/defaults'
+import { ELEMENT_INLINE_BLOCK } from '../Components/InlineBlock/types'
+import LinkElement from '../Components/Link'
+import { MediaEmbedElement } from '../Components/media-embed-ui/src'
+import { ELEMENT_SYNC_BLOCK, SyncBlock } from '../Components/SyncBlock'
+import { TagElement } from '../Components/tag/components/TagElement'
+import { ELEMENT_TAG } from '../Components/tag/defaults'
 import {
   optionsAutoformat,
   optionsCreateNodeIdPlugin,
   optionsExitBreakPlugin,
   optionsResetBlockTypePlugin,
-  optionsSelectOnBackspacePlugin,
   optionsSoftBreakPlugin
 } from './pluginOptions'
 
@@ -76,7 +78,7 @@ const generatePlugins = () => {
     createTablePlugin(), // Table
 
     // Editing Plugins
-    createSoftBreakPlugin(optionsSoftBreakPlugin),
+    createSoftBreakPlugin(optionsSoftBreakPlugin), // options also exist, not passed
     createExitBreakPlugin(optionsExitBreakPlugin),
     createResetNodePlugin(optionsResetBlockTypePlugin),
 
@@ -91,31 +93,47 @@ const generatePlugins = () => {
     // createDeserializeMDPlugin(),
 
     // Media and link embed
-    createMediaEmbedPlugin(),
+    createMediaEmbedPlugin()
 
     // Custom Plugins
-    createBlurSelectionPlugin() as PlatePlugin<SPEditor>,
+    //
+    // createBlurSelectionPlugin() as PlatePlugin<PlateEditor>,
 
-    // Comboboxes
-    createTagPlugin(), // Tags
-    createILinkPlugin(), // Internal Links ILinks
+    // // Comboboxes
+    // createTagPlugin(), // Tags
+    // createILinkPlugin(), // Internal Links ILinks
 
-    // Sync Blocks
-    createSyncBlockPlugin(),
+    // // Sync Blocks
+    // createSyncBlockPlugin(),
 
-    // For Inline Blocks
-    createInlineBlockPlugin(),
+    // // For Inline Blocks - Embeds of nodes
+    // createInlineBlockPlugin(),
 
-    createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin)
+    // createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin)
   ]
 
-  Plugins.push(createDeserializeHTMLPlugin({ plugins: Plugins }))
+  Plugins.push(createDeserializeHtmlPlugin({ plugins: Plugins }))
 
   return Plugins
 }
 
 const useMemoizedPlugins = () => {
-  return useMemo(() => generatePlugins(), [])
+  return useMemo(
+    () =>
+      createPlugins(generatePlugins(), {
+        components: {
+          [ELEMENT_LINK]: withProps(LinkElement, {
+            as: 'a'
+          }),
+          [ELEMENT_TAG]: TagElement as any,
+          [ELEMENT_ILINK]: ILinkElement as any,
+          [ELEMENT_INLINE_BLOCK]: ILinkElement as any,
+          [ELEMENT_MEDIA_EMBED]: MediaEmbedElement as any,
+          [ELEMENT_SYNC_BLOCK]: SyncBlock as any
+        }
+      }),
+    []
+  )
 }
 
 export default useMemoizedPlugins

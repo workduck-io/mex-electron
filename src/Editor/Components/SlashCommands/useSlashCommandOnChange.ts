@@ -1,11 +1,11 @@
-import { getBlockAbove, getPlatePluginType, insertNodes, SPEditor, TElement } from '@udecode/plate'
+import { getBlockAbove, getPluginType, insertNodes, PlateEditor, TElement } from '@udecode/plate'
 import { useCallback } from 'react'
 import { Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
-import { getEventNameFromElement } from '../../../Lib/strings'
 import useAnalytics from '../../../analytics'
-import { CustomEvents, ActionType } from '../../../analytics/events'
+import { ActionType } from '../../../analytics/events'
 import { isElder } from '../../../Components/Sidebar/treeUtils'
+import { getEventNameFromElement } from '../../../Lib/strings'
 import { useSnippets } from '../../../Snippets/useSnippets'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'
@@ -21,7 +21,7 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
   const { getSnippetContent } = useSnippets()
 
   return useCallback(
-    (editor: SPEditor & ReactEditor, item: IComboboxItem) => {
+    (editor: PlateEditor & ReactEditor, item: IComboboxItem) => {
       const commandKey = Object.keys(keys).filter((k) => keys[k].command === item.text)[0]
 
       const commandConfig = keys[commandKey]
@@ -46,7 +46,7 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
           }
         } else {
           // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
-          const type = getPlatePluginType(editor, commandConfig.slateElementType)
+          const type = getPluginType(editor, commandConfig.slateElementType)
           const data = commandConfig.getBlockData ? commandConfig.getBlockData(item) : {}
 
           console.log('INSERT: ', { type, data })

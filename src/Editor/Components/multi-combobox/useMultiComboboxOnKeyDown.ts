@@ -1,10 +1,11 @@
-import { getBlockAbove, getPlatePluginType, insertNodes, SPEditor, TElement } from '@udecode/plate'
+import { getBlockAbove, getPluginType, insertNodes, PlateEditor, TElement } from '@udecode/plate'
 import { useCallback } from 'react'
 import { Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
-import { useEditorStore } from '../../../Editor/Store/EditorStore'
 import useAnalytics from '../../../analytics'
 import { ActionType } from '../../../analytics/events'
+import { useEditorStore } from '../../../Editor/Store/EditorStore'
+import { withoutContinuousDelimiter } from '../../../Lib/helper'
 import { getEventNameFromElement } from '../../../Lib/strings'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown'
@@ -12,8 +13,6 @@ import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from '../SlashCommands/Types'
 import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChange'
-import { withoutContinuousDelimiter } from '../../../Lib/helper'
-import { keyframes } from '@uifabric/merge-styles'
 
 export interface ComboTypeHandlers {
   slateElementType: string
@@ -29,8 +28,8 @@ export const useElementOnChange = (comboType: ComboTypeHandlers) => {
   const { trackEvent } = useAnalytics()
 
   return useCallback(
-    (editor: SPEditor & ReactEditor, item: IComboboxItem) => {
-      const type = getPlatePluginType(editor, comboType.slateElementType)
+    (editor: PlateEditor & ReactEditor, item: IComboboxItem) => {
+      const type = getPluginType(editor, comboType.slateElementType)
 
       if (isOpen && targetRange) {
         // console.log('useElementOnChange 1', { comboType, type });
@@ -94,7 +93,7 @@ const useMultiComboboxOnKeyDown = (
 
   // We need to create the select handlers ourselves here
 
-  let elementChangeHandler: (editor: SPEditor & ReactEditor, item: IComboboxItem) => any
+  let elementChangeHandler: (editor: PlateEditor & ReactEditor, item: IComboboxItem) => any
   if (comboboxKey === ComboboxKey.SLASH_COMMAND) {
     elementChangeHandler = slashCommandOnChange
   } else {

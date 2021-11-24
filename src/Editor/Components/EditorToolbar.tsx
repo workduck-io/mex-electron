@@ -4,37 +4,38 @@ import h1 from '@iconify-icons/ri/h-1'
 import h2 from '@iconify-icons/ri/h-2'
 import h3 from '@iconify-icons/ri/h-3'
 import italicIcon from '@iconify-icons/ri/italic'
+import linkIcon from '@iconify-icons/ri/link'
 import listOrdered from '@iconify-icons/ri/list-ordered'
 import listUnordered from '@iconify-icons/ri/list-unordered'
-import linkIcon from '@iconify-icons/ri/link'
 import { Icon } from '@iconify/react'
 import {
+  BalloonToolbar,
+  BlockToolbarButton,
   ELEMENT_BLOCKQUOTE,
   ELEMENT_H1,
   ELEMENT_H2,
   ELEMENT_H3,
   ELEMENT_OL,
   ELEMENT_UL,
-  getPlatePluginType,
+  getPluginType,
+  ListToolbarButton,
+  MarkToolbarButton,
   MARK_BOLD,
   MARK_ITALIC,
   ToolbarButtonProps,
-  ToolbarElement,
-  ToolbarList,
-  ToolbarMark,
-  useEventEditorId,
-  useStoreEditorRef
+  usePlateEditorState,
+  usePlateEventId
 } from '@udecode/plate'
-import React, { useState } from 'react'
+import React from 'react'
 import { ButtonSeparator } from '../../Styled/Toolbar'
-import { BalloonToolbar } from './BalloonToolbar'
+// import { BalloonToolbar } from './BalloonToolbar'
 import LinkButton from './BalloonToolbar/LinkButton'
 
-const BallonToolbarMarks = () => {
-  const editor = useStoreEditorRef(useEventEditorId('focus'))
+const BallonMarkToolbarButtons = () => {
+  const editor = usePlateEditorState(usePlateEventId('focus'))
 
   const arrow = true
-  const direction = 'top'
+  // const direction = 'top'
   const hiddenDelay = 0
   const tooltip = {
     arrow: true,
@@ -47,54 +48,54 @@ const BallonToolbarMarks = () => {
   }
 
   return (
-    <BalloonToolbar direction={direction} hiddenDelay={hiddenDelay} arrow={arrow}>
-      <ToolbarElement
-        type={getPlatePluginType(editor, ELEMENT_H1)}
+    <BalloonToolbar arrow={arrow} popperOptions={{ offset: [0, 17] }}>
+      <BlockToolbarButton
+        type={getPluginType(editor, ELEMENT_H1)}
         icon={<Icon height={20} icon={h1} />}
         tooltip={{ content: 'Heading 1', ...tooltip }}
       />
 
-      <ToolbarElement
-        type={getPlatePluginType(editor, ELEMENT_H2)}
+      <BlockToolbarButton
+        type={getPluginType(editor, ELEMENT_H2)}
         icon={<Icon height={20} icon={h2} />}
         tooltip={{ content: 'Heading 2', ...tooltip }}
       />
 
-      <ToolbarElement
-        type={getPlatePluginType(editor, ELEMENT_H3)}
+      <BlockToolbarButton
+        type={getPluginType(editor, ELEMENT_H3)}
         icon={<Icon height={20} icon={h3} />}
         tooltip={{ content: 'Heading 3', ...tooltip }}
       />
 
       <ButtonSeparator />
 
-      <ToolbarElement
-        type={getPlatePluginType(editor, ELEMENT_BLOCKQUOTE)}
+      <BlockToolbarButton
+        type={getPluginType(editor, ELEMENT_BLOCKQUOTE)}
         icon={<Icon height={20} icon={doubleQuotesL} />}
         tooltip={{ content: 'Quote', ...tooltip }}
       />
 
-      <ToolbarList
-        type={getPlatePluginType(editor, ELEMENT_UL)}
+      <ListToolbarButton
+        type={getPluginType(editor, ELEMENT_UL)}
         icon={<Icon height={20} icon={listUnordered} />}
         tooltip={{ content: 'Bullet List', ...tooltip }}
       />
 
-      <ToolbarList
-        type={getPlatePluginType(editor, ELEMENT_OL)}
+      <ListToolbarButton
+        type={getPluginType(editor, ELEMENT_OL)}
         icon={<Icon height={20} icon={listOrdered} />}
         tooltip={{ content: 'Ordered List', ...tooltip }}
       />
 
       <ButtonSeparator />
 
-      <ToolbarMark
-        type={getPlatePluginType(editor, MARK_BOLD)}
+      <MarkToolbarButton
+        type={getPluginType(editor, MARK_BOLD)}
         icon={<Icon height={20} icon={boldIcon} />}
         tooltip={{ content: 'Bold (⌘B)', ...tooltip }}
       />
-      <ToolbarMark
-        type={getPlatePluginType(editor, MARK_ITALIC)}
+      <MarkToolbarButton
+        type={getPluginType(editor, MARK_ITALIC)}
         icon={<Icon height={20} icon={italicIcon} />}
         tooltip={{ content: 'Italic (⌘I)', ...tooltip }}
       />
@@ -112,4 +113,4 @@ export interface ToolbarLinkProps extends ToolbarButtonProps {
   getLinkUrl?: (prevUrl: string | null) => Promise<string | null>
 }
 
-export default BallonToolbarMarks
+export default BallonMarkToolbarButtons

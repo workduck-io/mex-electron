@@ -1,6 +1,6 @@
-import { PlatePlugin, SPEditor } from '@udecode/plate'
+import { PlateEditor, PlatePlugin } from '@udecode/plate'
 
-export interface BlurSelectionEditor extends SPEditor {
+export interface BlurSelectionEditor extends PlateEditor {
   selection: any
   blurSelection: any
   prevSelection: any
@@ -26,8 +26,13 @@ export const isBlurSelection = (editor: BlurSelectionEditor) => {
   return false
 }
 
+export const KEY_BLUR_SELECTION = 'blurSelection'
+
 export const createBlurSelectionPlugin = (): PlatePlugin<BlurSelectionEditor> => ({
-  onBlur: (editor) => () => {
-    setBlurSelection(editor)
+  key: KEY_BLUR_SELECTION,
+  handlers: {
+    onBlur: (editor) => () => {
+      setBlurSelection(editor)
+    }
   }
 })

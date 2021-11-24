@@ -1,5 +1,5 @@
+import { getBlockAbove, getPluginType, insertNodes, PlateEditor, TElement } from '@udecode/plate'
 import { useCallback } from 'react'
-import { getBlockAbove, getPlatePluginType, insertNodes, SPEditor, TElement } from '@udecode/plate'
 import { Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
 import { IComboboxItem } from '../../combobox/components/Combobox.types'
@@ -16,8 +16,8 @@ export const useILinkOnSelectItem = () => {
   const closeMenu = useComboboxStore((state) => state.closeMenu)
 
   return useCallback(
-    (editor: SPEditor & ReactEditor, item: IComboboxItem) => {
-      const type = getPlatePluginType(editor, ELEMENT_ILINK)
+    (editor: PlateEditor & ReactEditor, item: IComboboxItem) => {
+      const type = getPluginType(editor, ELEMENT_ILINK)
 
       if (isOpen && targetRange) {
         const pathAbove = getBlockAbove(editor)?.[1]
@@ -33,7 +33,7 @@ export const useILinkOnSelectItem = () => {
         insertNodes<TElement>(editor, {
           type: type as any,
           children: [{ text: '' }],
-          value: item.text,
+          value: item.text
         })
         // console.log({ type, item });
 

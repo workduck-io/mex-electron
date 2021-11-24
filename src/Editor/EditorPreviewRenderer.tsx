@@ -1,8 +1,7 @@
-import { createPlateOptions, Plate } from '@udecode/plate'
+import { Plate } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import ReactTooltip from 'react-tooltip'
 import { EditorStyles } from '../Styled/Editor'
-import { editorPreviewComponents } from './Components/components'
 import generatePlugins from './Plugins/plugins'
 
 interface EditorPreviewRendererProps {
@@ -10,7 +9,7 @@ interface EditorPreviewRendererProps {
   editorId: string
 }
 
-const options = createPlateOptions()
+// const options = createPlugins()
 
 const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps) => {
   useEffect(() => {
@@ -40,8 +39,8 @@ const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps
             editableProps={editableProps}
             value={content}
             plugins={plugins}
-            components={editorPreviewComponents}
-            options={options}
+            // components={editorPreviewComponents}
+            // options={options}
           ></Plate>
         </EditorStyles>
       )}

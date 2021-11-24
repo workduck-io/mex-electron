@@ -1,14 +1,14 @@
 import saveLine from '@iconify-icons/ri/save-line'
-import { useStoreEditorValue } from '@udecode/plate'
+import { usePlateValue } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
-import { useTags } from '../../Hooks/useTags/useTags'
 import tinykeys from 'tinykeys'
 import useAnalytics from '../../analytics'
 import { ActionType } from '../../analytics/events'
 import { useHelpStore } from '../../Components/Help/HelpModal'
 import { useSaveData } from '../../Data/useSaveData'
 import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
+import { useTags } from '../../Hooks/useTags/useTags'
 import { getEventNameFromElement } from '../../Lib/strings'
 import { useApi } from '../../Requests/Save'
 import { convertEntryToRawText } from '../../Search/localSearch'
@@ -26,7 +26,7 @@ export const useSaver = () => {
   const { updateTagsFromContent } = useTags()
 
   const saveData = useSaveData()
-  const editorState = useStoreEditorValue()
+  const editorState = usePlateValue()
   const { saveDataAPI } = useApi()
   const updateDoc = useSearchStore((state) => state.updateDoc)
 
@@ -94,7 +94,7 @@ export const SaverButton = ({ callbackAfterSave, callbackBeforeSave, title, noBu
 export const useSnippetSaver = () => {
   const snippet = useSnippetStore((store) => store.editor.snippet)
   const updateSnippet = useSnippetStore((state) => state.updateSnippet)
-  const editorState = useStoreEditorValue()
+  const editorState = usePlateValue()
   const saveData = useSaveData()
 
   const onSave = (title: string) => {

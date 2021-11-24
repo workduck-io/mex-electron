@@ -19,63 +19,75 @@ import {
   ELEMENT_TODO_LI,
   ELEMENT_UL,
   getParent,
-  getPlatePluginType,
+  getPluginType,
   insertEmptyCodeBlock,
   isBlockAboveEmpty,
   isElement,
   isSelectionAtBlockStart,
   isType,
   KEYS_HEADING,
+  KEY_AUTOFORMAT,
+  KEY_EXIT_BREAK,
+  KEY_NODE_ID,
+  KEY_RESET_NODE,
+  KEY_SOFT_BREAK,
   MARK_BOLD,
   MARK_CODE,
   MARK_ITALIC,
   MARK_STRIKETHROUGH,
-  SPEditor,
+  PlateEditor,
   TEditor,
   toggleList,
-  unwrapList,
-  WithAutoformatOptions
+  unwrapList
 } from '@udecode/plate'
 import { generateTempId } from '../../Defaults/idPrefixes'
 import { ELEMENT_SYNC_BLOCK } from '../Components/SyncBlock'
 
-const preFormat = (editor: TEditor<AnyObject>) => unwrapList(editor as SPEditor)
+const preFormat = (editor: TEditor<AnyObject>) => unwrapList(editor as PlateEditor)
 
-export const optionsAutoformat: WithAutoformatOptions = {
+export const optionsAutoformat = {
+  key: KEY_AUTOFORMAT,
   rules: [
     {
+      mode: 'block',
       type: ELEMENT_H1,
-      markup: 'h1',
+      match: 'h1',
       preFormat
     },
     {
+      mode: 'block',
       type: ELEMENT_H2,
-      markup: 'h2',
+      match: 'h2',
       preFormat
     },
     {
+      mode: 'block',
       type: ELEMENT_H3,
-      markup: 'h3',
+      match: 'h3',
       preFormat
     },
     {
+      mode: 'block',
       type: ELEMENT_H4,
-      markup: 'h4',
+      match: 'h4',
       preFormat
     },
     {
+      mode: 'block',
       type: ELEMENT_H5,
-      markup: 'h5',
+      match: 'h5',
       preFormat
     },
     {
+      mode: 'block',
       type: ELEMENT_H6,
-      markup: 'h6',
+      match: 'h6',
       preFormat
     },
     {
+      mode: 'block',
       type: ELEMENT_LI,
-      markup: ['*', '-'],
+      match: ['*', '-'],
       preFormat,
       format: (editor: TEditor<AnyObject>) => {
         if (editor.selection) {
@@ -84,10 +96,10 @@ export const optionsAutoformat: WithAutoformatOptions = {
           const [node] = parentEntry
           if (
             isElement(node) &&
-            !isType(editor as SPEditor, node, ELEMENT_CODE_BLOCK) &&
-            !isType(editor as SPEditor, node, ELEMENT_CODE_LINE)
+            !isType(editor as PlateEditor, node, ELEMENT_CODE_BLOCK) &&
+            !isType(editor as PlateEditor, node, ELEMENT_CODE_LINE)
           ) {
-            toggleList(editor as SPEditor, {
+            toggleList(editor as PlateEditor, {
               type: ELEMENT_UL
             })
           }
@@ -95,8 +107,9 @@ export const optionsAutoformat: WithAutoformatOptions = {
       }
     },
     {
+      mode: 'block',
       type: ELEMENT_LI,
-      markup: ['1.', '1)'],
+      match: ['1.', '1)'],
       preFormat,
       format: (editor: TEditor<AnyObject>) => {
         if (editor.selection) {
@@ -105,10 +118,10 @@ export const optionsAutoformat: WithAutoformatOptions = {
           const [node] = parentEntry
           if (
             isElement(node) &&
-            !isType(editor as SPEditor, node, ELEMENT_CODE_BLOCK) &&
-            !isType(editor as SPEditor, node, ELEMENT_CODE_LINE)
+            !isType(editor as PlateEditor, node, ELEMENT_CODE_BLOCK) &&
+            !isType(editor as PlateEditor, node, ELEMENT_CODE_LINE)
           ) {
-            toggleList(editor as SPEditor, {
+            toggleList(editor as PlateEditor, {
               type: ELEMENT_OL
             })
           }
@@ -116,59 +129,62 @@ export const optionsAutoformat: WithAutoformatOptions = {
       }
     },
     {
+      mode: 'block',
       type: ELEMENT_TODO_LI,
-      markup: ['[]']
+      match: ['[]']
     },
     {
+      mode: 'block',
       type: ELEMENT_BLOCKQUOTE,
-      markup: ['>'],
+      match: ['>'],
       preFormat
     },
     {
       type: MARK_BOLD,
-      between: ['**', '**'],
-      mode: 'inline',
+      match: ['**', '**'],
+      mode: 'mark',
       insertTrigger: true
     },
     {
       type: MARK_BOLD,
-      between: ['__', '__'],
-      mode: 'inline',
+      match: ['__', '__'],
+      mode: 'mark',
       insertTrigger: true
     },
     {
       type: MARK_ITALIC,
-      between: ['*', '*'],
-      mode: 'inline',
+      match: ['*', '*'],
+      mode: 'mark',
       insertTrigger: true
     },
     {
       type: MARK_ITALIC,
-      between: ['_', '_'],
-      mode: 'inline',
+      match: ['_', '_'],
+      mode: 'mark',
       insertTrigger: true
     },
     {
       type: MARK_CODE,
-      between: ['`', '`'],
-      mode: 'inline',
+      match: ['`', '`'],
+      mode: 'mark',
       insertTrigger: true
     },
     {
       type: MARK_STRIKETHROUGH,
-      between: ['~~', '~~'],
-      mode: 'inline',
+      match: ['~~', '~~'],
+      mode: 'mark',
       insertTrigger: true
     },
     {
+      mode: 'block',
       type: ELEMENT_CODE_BLOCK,
-      markup: '``',
+      match: '``',
       trigger: '`',
       triggerAtBlockStart: false,
       preFormat,
       format: (editor: TEditor<AnyObject>) => {
-        insertEmptyCodeBlock(editor as SPEditor, {
-          defaultType: getPlatePluginType(editor as SPEditor, ELEMENT_DEFAULT),
+        insertEmptyCodeBlock(editor as PlateEditor, {
+          defaultType: getPluginType(editor as PlateEditor, ELEMENT_DEFAULT),
           insertNodesOptions: { select: true }
         })
       }
@@ -177,6 +193,7 @@ export const optionsAutoformat: WithAutoformatOptions = {
 }
 
 export const optionsSoftBreakPlugin = {
+  key: KEY_SOFT_BREAK,
   rules: [
     { hotkey: 'shift+enter' },
     {
@@ -189,6 +206,7 @@ export const optionsSoftBreakPlugin = {
 }
 
 export const optionsExitBreakPlugin = {
+  key: KEY_EXIT_BREAK,
   rules: [
     {
       hotkey: 'mod+enter'
@@ -214,6 +232,7 @@ const resetBlockTypesCommonRule = {
 }
 
 export const optionsResetBlockTypePlugin = {
+  key: KEY_RESET_NODE,
   rules: [
     {
       ...resetBlockTypesCommonRule,
@@ -231,6 +250,7 @@ export const optionsResetBlockTypePlugin = {
 export const optionsSelectOnBackspacePlugin = { allow: [ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED] }
 
 export const optionsCreateNodeIdPlugin = {
+  key: KEY_NODE_ID,
   reuseId: true,
   filterText: false,
   idCreator: () => generateTempId(),

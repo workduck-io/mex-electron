@@ -1,10 +1,10 @@
-import { useStoreEditorValue } from '@udecode/plate-core'
+import { usePlateValue } from '@udecode/plate-core'
 import React from 'react'
-import { useLinks } from '../../../Editor/Actions/useLinks'
 import NodeSelect from '../../../Components/NodeSelect/NodeSelect'
 import { StyledSpotlightInputWrapper } from '../../../Components/NodeSelect/NodeSelect.styles'
 import { AppType } from '../../../Data/useInitialize'
 import { useSaveData } from '../../../Data/useSaveData'
+import { useLinks } from '../../../Editor/Actions/useLinks'
 import { useContentStore } from '../../../Editor/Store/ContentStore'
 import useDataStore from '../../../Editor/Store/DataStore'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
@@ -33,7 +33,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
 
   const pushToHistory = useHistoryStore((state) => state.push)
   const addRecent = useRecentsStore((state) => state.addRecent)
-  const editorState = useStoreEditorValue()
+  const editorState = usePlateValue()
 
   const { loadNodeAndAppend, loadNode } = useLoad()
   const { getUidFromNodeId } = useLinks()

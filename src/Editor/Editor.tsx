@@ -1,21 +1,19 @@
-import { createPlateOptions, ELEMENT_MEDIA_EMBED, Plate, selectEditor, useStoreEditorRef } from '@udecode/plate'
+import { Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import ReactTooltip from 'react-tooltip'
 import { EditorStyles } from '../Styled/Editor'
-import components from './Components/components'
 import BallonToolbarMarks from './Components/EditorToolbar'
-import { ILinkComboboxItem } from './Components/ilink/components/ILinkComboboxItem'
-import { ELEMENT_ILINK } from './Components/ilink/defaults'
-import { ELEMENT_INLINE_BLOCK } from './Components/InlineBlock/types'
-import { ComboElementProps, MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
-import { SlashComboboxItem } from './Components/SlashCommands/SlashComboboxItem'
-import { TagComboboxItem } from './Components/tag/components/TagComboboxItem'
-import { ELEMENT_TAG } from './Components/tag/defaults'
 import generatePlugins from './Plugins/plugins'
-import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
-import useDataStore from './Store/DataStore'
-
-const options = createPlateOptions()
+// import components from './Components/components'
+// import { ILinkComboboxItem } from './Components/ilink/components/ILinkComboboxItem'
+// import { ELEMENT_ILINK } from './Components/ilink/defaults'
+// import { ELEMENT_INLINE_BLOCK } from './Components/InlineBlock/types'
+// import { ComboElementProps, MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
+// import { SlashComboboxItem } from './Components/SlashCommands/SlashComboboxItem'
+// import { TagComboboxItem } from './Components/tag/components/TagComboboxItem'
+// import { ELEMENT_TAG } from './Components/tag/defaults'
+// import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
+// import useDataStore from './Store/DataStore'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -40,64 +38,64 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
     readOnly
   }
 
-  const addTag = useDataStore((state) => state.addTag)
-  const addILink = useDataStore((state) => state.addILink)
+  // const addTag = useDataStore((state) => state.addTag)
+  // const addILink = useDataStore((state) => state.addILink)
 
   const generateEditorId = () => `${editorId}`
-  const editorRef = useStoreEditorRef()
+  const editorRef = usePlateEditorRef()
 
   useEffect(() => {
     if (editorRef && focusAtBeginning) selectEditor(editorRef, { edge: 'start', focus: true })
   }, [editorRef]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const comboboxRenderConfig: ComboElementProps = {
-    keys: {
-      ilink: {
-        comboTypeHandlers: {
-          slateElementType: ELEMENT_ILINK,
-          newItemHandler: (newItem, parentId?) => {
-            addILink(newItem, null, parentId)
-          }
-        },
-        renderElement: ILinkComboboxItem
-      },
-      inline_block: {
-        comboTypeHandlers: {
-          slateElementType: ELEMENT_INLINE_BLOCK,
-          newItemHandler: (newItem, parentId?) => {
-            addILink(newItem, null, parentId)
-          }
-        },
-        renderElement: ILinkComboboxItem
-      },
-      tag: {
-        comboTypeHandlers: {
-          slateElementType: ELEMENT_TAG,
-          newItemHandler: (newItem) => {
-            addTag(newItem)
-          }
-        },
-        renderElement: TagComboboxItem
-      },
-      slash_command: {
-        comboTypeHandlers: {
-          slateElementType: ELEMENT_MEDIA_EMBED,
-          newItemHandler: () => undefined
-        },
-        renderElement: SlashComboboxItem
-      }
-    }
-  }
-  const pluginConfigs = useEditorPluginConfig(editorId)
+  // const comboboxRenderConfig: ComboElementProps = {
+  //   keys: {
+  //     ilink: {
+  //       comboTypeHandlers: {
+  //         slateElementType: ELEMENT_ILINK,
+  //         newItemHandler: (newItem, parentId?) => {
+  //           addILink(newItem, null, parentId)
+  //         }
+  //       },
+  //       renderElement: ILinkComboboxItem
+  //     },
+  //     inline_block: {
+  //       comboTypeHandlers: {
+  //         slateElementType: ELEMENT_INLINE_BLOCK,
+  //         newItemHandler: (newItem, parentId?) => {
+  //           addILink(newItem, null, parentId)
+  //         }
+  //       },
+  //       renderElement: ILinkComboboxItem
+  //     },
+  //     tag: {
+  //       comboTypeHandlers: {
+  //         slateElementType: ELEMENT_TAG,
+  //         newItemHandler: (newItem) => {
+  //           addTag(newItem)
+  //         }
+  //       },
+  //       renderElement: TagComboboxItem
+  //     },
+  //     slash_command: {
+  //       comboTypeHandlers: {
+  //         slateElementType: ELEMENT_MEDIA_EMBED,
+  //         newItemHandler: () => undefined
+  //       },
+  //       renderElement: SlashComboboxItem
+  //     }
+  //   }
+  // }
+  // const pluginConfigs = useEditorPluginConfig(editorId)
 
   // We get memoized plugins
   const prePlugins = generatePlugins()
   const plugins = [
-    ...prePlugins,
-    {
-      onChange: pluginConfigs.combobox.onChange,
-      onKeyDown: pluginConfigs.combobox.onKeyDown
-    }
+    ...prePlugins
+    // {
+    //   onChange: pluginConfigs.combobox.onChange,
+    //   onKeyDown: pluginConfigs.combobox.onKeyDown
+    // }
   ]
 
   return (
@@ -111,10 +109,10 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
             editableProps={editableProps}
             value={content}
             plugins={plugins}
-            components={components}
-            options={options}
+            // components={components}
+            // options={options}
           >
-            <MultiComboboxContainer keys={comboboxRenderConfig.keys} />
+            {/* <MultiComboboxContainer keys={comboboxRenderConfig.keys} /> */}
           </Plate>
         </EditorStyles>
       )}

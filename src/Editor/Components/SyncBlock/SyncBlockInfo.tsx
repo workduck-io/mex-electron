@@ -42,6 +42,7 @@ const SyncBlockInfo = () => {
             <MarginVertical key={syncBlock.id} selected={syncBlock.id === selectedBlockId}>
               <SyncBlock
                 info
+                editor={null as any} // TODO: figure another way. necessary to compile
                 attributes={{ 'data-slate-inline': true, 'data-slate-node': 'element', ref: null }}
                 element={syncBlock}
               >
