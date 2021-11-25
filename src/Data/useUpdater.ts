@@ -11,6 +11,7 @@ import { useSyncStore } from '../Editor/Store/SyncStore'
 import { useAuthStore } from '../Hooks/useAuth/useAuth'
 import { integrationURLs } from '../Requests/routes'
 import { extractSnippetCommands } from '../Snippets/useSnippets'
+import { useSaveData } from './useSaveData'
 
 export const useUpdater = () => {
   const setSlashCommands = useDataStore((state) => state.setSlashCommands)
@@ -18,7 +19,7 @@ export const useUpdater = () => {
   const setTemplates = useSyncStore((store) => store.setTemplates)
 
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
-  const { onSave } = useSaver()
+  const saveData = useSaveData()
 
   const updater = () => {
     const snippetCommands = extractSnippetCommands(useSnippetStore.getState().snippets)
@@ -49,7 +50,7 @@ export const useUpdater = () => {
           // console.log({ services })
           setServices(services)
         })
-        .then(() => onSave())
+        .then(() => saveData())
     } else console.error('Not authenticated, not fetching default services')
   }
 
@@ -68,7 +69,7 @@ export const useUpdater = () => {
 
           setServices(newServices)
         })
-        .then(() => onSave())
+        .then(() => saveData())
         .catch(console.error)
     } else console.error('Not authenticated, not fetching workspace services')
   }
@@ -93,7 +94,7 @@ export const useUpdater = () => {
 
           setTemplates(templates)
         })
-        .then(() => onSave())
+        .then(() => saveData())
     } else console.error('Not authenticated, not fetching default services')
   }
 

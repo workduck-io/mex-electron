@@ -3,7 +3,7 @@ import { animated } from 'react-spring'
 import styled from 'styled-components'
 import tinykeys from 'tinykeys'
 import Graph from '../Components/Graph/Graph'
-import { useGraphData } from '../Components/Graph/useGraphData'
+import { useGraphData } from '../Components/Graph/hooks/useGraphData'
 import { useHelpStore } from '../Components/Help/HelpModal'
 import { useFocusTransition } from '../Components/Sidebar'
 import DataInfoBar from '../Components/Sidebar/DataInfoBar'
@@ -44,6 +44,7 @@ interface InfoBarProps {
 }
 const InfoBarItems = ({ showGraph, showSyncBlocks }: InfoBarProps) => {
   const graphData = useGraphData()
+
   if (showGraph) {
     return <Graph graphData={graphData} />
   }
