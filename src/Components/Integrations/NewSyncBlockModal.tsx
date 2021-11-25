@@ -154,12 +154,12 @@ const NewSyncTemplateModal = () => {
         />
 
         <ModalControls>
-          <LoadingButton loading={isSubmitting} buttonProps={{ type: 'submit', primary: true, large: true }}>
-            Submit
-          </LoadingButton>
           <Button large onClick={handleCancel}>
             Cancel
           </Button>
+          <LoadingButton loading={isSubmitting} buttonProps={{ type: 'submit', primary: true, large: true }}>
+            Submit
+          </LoadingButton>
         </ModalControls>
       </form>
     </Modal>
