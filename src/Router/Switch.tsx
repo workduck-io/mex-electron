@@ -29,7 +29,6 @@ const Perspective = '2000px'
 
 const Switch = () => {
   const location = useLocation()
-  console.log({ location })
   const transitions = useTransition(location, {
     from: {
       opacity: 0,

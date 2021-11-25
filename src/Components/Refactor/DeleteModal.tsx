@@ -136,11 +136,11 @@ const Delete = () => {
         </MockRefactorMap>
       )}
       <ModalControls>
+        <Button large onClick={handleCancel}>
+          Cancel
+        </Button>
         <Button large primary onClick={handleDelete}>
           Delete
-        </Button>
-        <Button large onClick={handleCancel}>
-          Cancel Culture
         </Button>
       </ModalControls>
     </Modal>
