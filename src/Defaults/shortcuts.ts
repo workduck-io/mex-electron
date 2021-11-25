@@ -66,7 +66,7 @@ export const defaultShortcuts = {
   },
   showGraph: {
     title: 'Graph',
-    keystrokes: '$mod+KeyK KeyG',
+    keystrokes: '$mod+Shift+KeyG',
     category: 'Actions'
   },
   showLookup: {
@@ -82,17 +82,17 @@ export const defaultShortcuts = {
   },
   showDelete: {
     title: 'Open Delete',
-    keystrokes: '$mod+KeyK KeyD',
+    keystrokes: '$mod+Shift+KeyD',
     category: 'Actions'
   },
   showRefactor: {
     title: 'Open Refactor',
-    keystrokes: '$mod+KeyK KeyR',
+    keystrokes: '$mod+Shift+KeyR',
     category: 'Actions'
   },
   showRename: {
     title: 'Open Rename',
-    keystrokes: '$mod+KeyK KeyN',
+    keystrokes: '$mod+Shift+KeyN',
     category: 'Actions'
   }
 }

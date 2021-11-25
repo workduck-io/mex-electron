@@ -48,7 +48,7 @@ const TagsRelated = () => {
   const { getRelatedNodes, getTags } = useTags()
   const uid = useEditorStore((state) => state.node.uid)
   const tagsCache = useDataStore((state) => state.tagsCache)
-  const [relNodes, setRelNodes] = useState<RelatedNodes>({})
+  const [relNodes, setRelNodes] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
   const { getNodeIdFromUid } = useLinks()
   const { push } = useNavigation()
@@ -66,13 +66,7 @@ const TagsRelated = () => {
     history.push(`/tag/${tag}`)
   }
 
-  const relLen = Object.keys(relNodes).reduce((p, c) => {
-    return p + relNodes[c].length
-  }, 0)
-
-  const nodes: string[] = Object.keys(relNodes).reduce((p, c) => {
-    return [...p, ...relNodes[c]]
-  }, [])
+  // console.log({ relNodes })
 
   return (
     <TagsInfoWrapper>
@@ -95,8 +89,8 @@ const TagsRelated = () => {
               </TagFlex>
             ))}
           </TagsFlex>
-          {relLen > 0 ? <InfoSubHeading>Related Nodes</InfoSubHeading> : null}
-          {nodes.map((n) => (
+          {relNodes.length > 0 ? <InfoSubHeading>Related Nodes</InfoSubHeading> : null}
+          {relNodes.map((n) => (
             <NodeLink key={`info_tag_related_${uid}_${n}`} onClick={() => push(n)}>
               {getNodeIdFromUid(n)}
             </NodeLink>
