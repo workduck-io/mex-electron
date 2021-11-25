@@ -278,6 +278,7 @@ const handleToggleMainWindow = async () => {
   isSelection = anyContentPresent
   toggleMainWindow(spotlight)
   if (anyContentPresent) {
+    // console.log({ selection })
     sendToRenderer(selection)
   } else sendToRenderer(undefined)
 }

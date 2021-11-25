@@ -1,6 +1,7 @@
 import { transparentize } from 'polished'
 import React from 'react'
 import ReactTooltip from 'react-tooltip'
+import { linkTooltip } from '../Editor/Components/Link'
 import styled, { useTheme } from 'styled-components'
 import { Notifications } from '../Components/Notifications/Notifications'
 import Nav, { navTooltip } from '../Components/Sidebar/Nav'
@@ -11,6 +12,7 @@ const AppWrapper = styled.div`
   min-height: 100%;
   overflow: auto;
   ${navTooltip};
+  ${linkTooltip};
 `
 
 const Content = styled.div`

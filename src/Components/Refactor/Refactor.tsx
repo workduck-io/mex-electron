@@ -149,6 +149,7 @@ const Refactor = () => {
         placeholder="Refactor From Node..."
         menuOpen={focus}
         autoFocus={focus}
+        defaultValue={from ?? useEditorStore.getState().node.id}
         highlightWhenSelected
         iconHighlight={from !== undefined}
         handleSelectItem={handleFromChange}

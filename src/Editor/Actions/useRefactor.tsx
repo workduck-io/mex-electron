@@ -1,9 +1,10 @@
 import React from 'react'
-import { doesLinkRemain, linkInRefactor } from '../../Components/Refactor/doesLinkRemain'
 import useAnalytics from '../../analytics'
 import { CustomEvents } from '../../analytics/events'
+import { linkInRefactor } from '../../Components/Refactor/doesLinkRemain'
 import { useRefactorStore } from '../../Components/Refactor/Refactor'
-import { SEPARATOR } from '../../Components/Sidebar/treeUtils'
+import { getAllParentIds, SEPARATOR } from '../../Components/Sidebar/treeUtils'
+import { generateNodeId } from '../../Defaults/idPrefixes'
 import { NodeLink } from '../../Types/relations'
 import { Contents, useContentStore } from '../Store/ContentStore'
 import useDataStore from '../Store/DataStore'
@@ -74,6 +75,25 @@ export const useRefactor = () => {
       return i
     })
 
+    const isInNewlinks = (l: string) => {
+      const ft = newIlinks.filter((i) => i.key === l)
+      return ft.length > 0
+    }
+
+    const newParents = refactored
+      .map((r) => getAllParentIds(r.to))
+      .flat()
+      .filter((x) => !isInNewlinks(x))
+
+    const newParentIlinks = newParents.map((p, i) => ({
+      key: p,
+      text: p,
+      value: String(newIlinks.length + i),
+      uid: generateNodeId()
+    }))
+
+    console.log({ newIlinks, newParents, newParentIlinks })
+
     // Remap the contents with changed links
     const newContents: Contents = {}
     Object.keys(contents).forEach((key) => {
@@ -86,7 +106,7 @@ export const useRefactor = () => {
     // updateHistory(applyRefactorToIds(historyStack, refactored), 0)
     // updateLastOpened(applyRefactorToIds(lastOpened, refactored))
 
-    setILinks(newIlinks)
+    setILinks([...newIlinks, ...newParentIlinks])
     initContents(newContents)
 
     const baseId = linkInRefactor(useDataStore.getState().baseNodeId, refactored)
