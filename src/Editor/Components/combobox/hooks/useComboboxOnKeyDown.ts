@@ -1,4 +1,4 @@
-import { SPEditor } from '@udecode/plate'
+import { PEditor } from '@udecode/plate'
 import { KeyboardHandler } from '@udecode/plate-core'
 import { useCallback } from 'react'
 import { useEditorStore } from '../../../Store/EditorStore'
@@ -22,7 +22,7 @@ export const useComboboxOnKeyDown = ({
   onNewItem,
   creatable
 }: {
-  onSelectItem: (editor: SPEditor, item: IComboboxItem) => any // eslint-disable-line @typescript-eslint/no-explicit-any
+  onSelectItem: (editor: PEditor, item: IComboboxItem) => any // eslint-disable-line @typescript-eslint/no-explicit-any
   onNewItem: (name: string, parentId?) => void
   creatable?: boolean
 }): KeyboardHandler => {

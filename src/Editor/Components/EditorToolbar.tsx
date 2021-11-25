@@ -4,11 +4,12 @@ import h1 from '@iconify-icons/ri/h-1'
 import h2 from '@iconify-icons/ri/h-2'
 import h3 from '@iconify-icons/ri/h-3'
 import italicIcon from '@iconify-icons/ri/italic'
+import linkIcon from '@iconify-icons/ri/link'
 import listOrdered from '@iconify-icons/ri/list-ordered'
 import listUnordered from '@iconify-icons/ri/list-unordered'
-import linkIcon from '@iconify-icons/ri/link'
 import { Icon } from '@iconify/react'
 import {
+  BlockToolbarButton,
   ELEMENT_BLOCKQUOTE,
   ELEMENT_H1,
   ELEMENT_H2,
@@ -16,22 +17,21 @@ import {
   ELEMENT_OL,
   ELEMENT_UL,
   getPlatePluginType,
+  ListToolbarButton,
+  MarkToolbarButton,
   MARK_BOLD,
   MARK_ITALIC,
   ToolbarButtonProps,
-  ToolbarElement,
-  ToolbarList,
-  ToolbarMark,
-  useEventEditorId,
-  useStoreEditorRef
+  usePlateEditorRef,
+  usePlateEventId
 } from '@udecode/plate'
-import React, { useState } from 'react'
+import React from 'react'
 import { ButtonSeparator } from '../../Styled/Toolbar'
 import { BalloonToolbar } from './BalloonToolbar'
 import LinkButton from './BalloonToolbar/LinkButton'
 
-const BallonToolbarMarks = () => {
-  const editor = useStoreEditorRef(useEventEditorId('focus'))
+const BallonMarkToolbarButtons = () => {
+  const editor = usePlateEditorRef(usePlateEventId('focus'))
 
   const arrow = true
   const direction = 'top'
@@ -48,19 +48,19 @@ const BallonToolbarMarks = () => {
 
   return (
     <BalloonToolbar direction={direction} hiddenDelay={hiddenDelay} arrow={arrow}>
-      <ToolbarElement
+      <BlockToolbarButton
         type={getPlatePluginType(editor, ELEMENT_H1)}
         icon={<Icon height={20} icon={h1} />}
         tooltip={{ content: 'Heading 1', ...tooltip }}
       />
 
-      <ToolbarElement
+      <BlockToolbarButton
         type={getPlatePluginType(editor, ELEMENT_H2)}
         icon={<Icon height={20} icon={h2} />}
         tooltip={{ content: 'Heading 2', ...tooltip }}
       />
 
-      <ToolbarElement
+      <BlockToolbarButton
         type={getPlatePluginType(editor, ELEMENT_H3)}
         icon={<Icon height={20} icon={h3} />}
         tooltip={{ content: 'Heading 3', ...tooltip }}
@@ -68,19 +68,19 @@ const BallonToolbarMarks = () => {
 
       <ButtonSeparator />
 
-      <ToolbarElement
+      <BlockToolbarButton
         type={getPlatePluginType(editor, ELEMENT_BLOCKQUOTE)}
         icon={<Icon height={20} icon={doubleQuotesL} />}
         tooltip={{ content: 'Quote', ...tooltip }}
       />
 
-      <ToolbarList
+      <ListToolbarButton
         type={getPlatePluginType(editor, ELEMENT_UL)}
         icon={<Icon height={20} icon={listUnordered} />}
         tooltip={{ content: 'Bullet List', ...tooltip }}
       />
 
-      <ToolbarList
+      <ListToolbarButton
         type={getPlatePluginType(editor, ELEMENT_OL)}
         icon={<Icon height={20} icon={listOrdered} />}
         tooltip={{ content: 'Ordered List', ...tooltip }}
@@ -88,12 +88,12 @@ const BallonToolbarMarks = () => {
 
       <ButtonSeparator />
 
-      <ToolbarMark
+      <MarkToolbarButton
         type={getPlatePluginType(editor, MARK_BOLD)}
         icon={<Icon height={20} icon={boldIcon} />}
         tooltip={{ content: 'Bold (⌘B)', ...tooltip }}
       />
-      <ToolbarMark
+      <MarkToolbarButton
         type={getPlatePluginType(editor, MARK_ITALIC)}
         icon={<Icon height={20} icon={italicIcon} />}
         tooltip={{ content: 'Italic (⌘I)', ...tooltip }}
@@ -105,11 +105,11 @@ const BallonToolbarMarks = () => {
   )
 }
 
-export interface ToolbarLinkProps extends ToolbarButtonProps {
+export interface LinkToolbarButtonProps extends ToolbarButtonProps {
   /**
    * Default onMouseDown is getting the link url by calling this promise before inserting the image.
    */
   getLinkUrl?: (prevUrl: string | null) => Promise<string | null>
 }
 
-export default BallonToolbarMarks
+export default BallonMarkToolbarButtons

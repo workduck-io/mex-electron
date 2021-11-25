@@ -18,7 +18,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
 
   const ref = React.useRef<any>(null) // eslint-disable-line @typescript-eslint/no-explicit-any
   const editor = useEditorState()
-  // const _editor = useStoreEditorState(useEventEditorId('focus'));
+  // const _editor = usePlateEditorState(usePlateEventId('focus'));
   // console.log(editor === _editor);
 
   useEffect(() => {
