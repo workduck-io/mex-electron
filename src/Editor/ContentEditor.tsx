@@ -110,20 +110,25 @@ const ContentEditor = () => {
               onClick={nodeIntentsModalToggle}
             />
             <SaverButton callbackAfterSave={onSave} />
-            <IconButton
+            {/*<IconButton
               size={24}
               icon={messageIcon}
               title="Sync Blocks"
               highlight={showSyncBlocks}
               onClick={toggleSyncBlocks}
-            />
+            /> */}
             <IconButton size={24} icon={bubbleChartLine} title="Graph" highlight={showGraph} onClick={toggleGraph} />
           </InfoTools>
         </NodeInfo>
 
         <Metadata />
 
-        <Editor showBalloonToolbar readOnly={fetchingContent} content={content} editorId={uid} />
+        <Editor
+          showBalloonToolbar
+          readOnly={fetchingContent}
+          content={content}
+          editorId={`StandardEditor_${uid}_${fetchingContent ? 'loading' : 'edit'}`}
+        />
       </StyledEditor>
       <NodeIntentsModal uid={uid} />
     </>

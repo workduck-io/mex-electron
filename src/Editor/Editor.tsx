@@ -47,8 +47,10 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
   const editorRef = usePlateEditorRef()
 
   useEffect(() => {
-    if (editorRef && focusAtBeginning) selectEditor(editorRef, { edge: 'start', focus: true })
-  }, [editorRef]) // eslint-disable-line react-hooks/exhaustive-deps
+    if (editorRef && focusAtBeginning) {
+      selectEditor(editorRef, { edge: 'start', focus: true })
+    }
+  }, [editorRef, editorId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const comboboxRenderConfig: ComboElementProps = {
     keys: {
