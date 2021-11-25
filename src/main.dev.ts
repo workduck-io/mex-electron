@@ -462,7 +462,7 @@ if (app.isPackaged || process.env.FORCE_PRODUCTION) {
     console.log('Update nahi aaya | Current app version: ', app.getVersion())
   })
 
-  const UPDATE_CHECK_INTERVAL = 3 * 60 * 1000
+  const UPDATE_CHECK_INTERVAL = 3 * 60 * 60 * 1000
   setInterval(() => {
     console.log('Sent a check for updates!')
     autoUpdater.checkForUpdates()
