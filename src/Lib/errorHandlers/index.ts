@@ -9,14 +9,14 @@ import { mainErrorHandler } from './main'
 
 export const showDialog = (message: string, properties: Record<string, any>) => {
   if (process.type === 'renderer') ipcRenderer.send(IpcAction.ERROR_OCCURED, { message, properties })
-  else {
-    dialog.showMessageBoxSync({
-      title: 'Oh Snap! An error occured in Mex',
-      message: 'Something went wrong',
-      buttons: ['Report'],
-      defaultId: 0
-    })
-  }
+  // else {
+  //   dialog.showMessageBoxSync({
+  //     title: 'Oh Snap! An error occured in Mex',
+  //     message: 'Something went wrong',
+  //     buttons: ['Report'],
+  //     defaultId: 0
+  //   })
+  // }
 }
 
 const logger = debounce((message: string | null, properties: Record<string, any>) => {

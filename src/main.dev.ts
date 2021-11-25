@@ -399,7 +399,7 @@ ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
 })
 
 ipcMain.on(IpcAction.ERROR_OCCURED, (_event, arg) => {
-  showDialog(arg.message, arg.propertes)
+  // showDialog(arg.message, arg.propertes)
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
