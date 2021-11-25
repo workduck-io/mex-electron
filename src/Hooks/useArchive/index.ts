@@ -51,7 +51,7 @@ const useArchive = () => {
 
   const unarchive = async (nodes: ILink[]) => {
     if (!USE_API) {
-      return removeFromArchive(nodes)
+      return removeArchive(nodes)
     }
     await client
       .post(
@@ -60,7 +60,7 @@ const useArchive = () => {
       )
       .then((d) => {
         console.log('Data', d.data)
-        if (d.data) setArchive(d.data)
+        if (d.data) removeArchive(nodes)
         return d.data
       })
       .catch(console.error)
