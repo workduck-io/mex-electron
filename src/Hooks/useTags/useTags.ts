@@ -66,17 +66,43 @@ export const useTags = () => {
     return []
   }
 
+  /**
+   * Produce a list of related nodes that share the same tags with the given node
+   * The list is sorted by the number of common tags between the nodes
+   * */
   const getRelatedNodes = (uid: string) => {
     const tagsCache = useDataStore.getState().tagsCache
     const tags = getTags(uid)
+
+    /** Related nodes per tag **/
     const relatedNodes: RelatedNodes = tags.reduce((p, t) => {
       return {
         ...p,
         [t]: tagsCache[t].nodes.filter((id) => id !== uid)
       }
     }, {})
-    // console.log('Getting relNodes for ', tagsCache, tags, relatedNodes)
-    return relatedNodes
+
+    const flattened: string[] = Object.keys(relatedNodes).reduce((p, c) => {
+      return [...p, ...relatedNodes[c]]
+    }, [])
+
+    const count: { [uid: string]: number } = flattened.reduce((p, c) => {
+      if (Object.keys(p).indexOf(c) > -1) {
+        return {
+          ...p,
+          [c]: p[c] + 1
+        }
+      }
+      return {
+        ...p,
+        [c]: 1
+      }
+    }, {})
+
+    const relatedSorted = Array.from(new Set(flattened)).sort((a, b) => count[a] - count[b])
+
+    // console.log('Getting relNodes for ', tagsCache, tags, ordered, flattened, relatedNodes, relatedSorted)
+    return relatedSorted
   }
 
   const updateTagsFromContent = (uid: string, content: any[]) => {

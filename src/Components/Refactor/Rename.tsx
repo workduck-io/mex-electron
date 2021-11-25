@@ -93,11 +93,14 @@ const Rename = () => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showRename.keystrokes]: (event) => {
         event.preventDefault()
-        shortcutHandler(shortcuts.showRename, () => {
-          openModal(useEditorStore.getState().node.id)
-        })
+        // TODO: Fix the shortcut handler (not working after the shortcut is renamed)
+        // shortcutHandler(shortcuts.showRename, () => {
+        // console.log({ event })
+        openModal(useEditorStore.getState().node.id)
+        // })
       }
     })
+    // console.log(shortcuts.showRename)
     return () => {
       unsubscribe()
     }
