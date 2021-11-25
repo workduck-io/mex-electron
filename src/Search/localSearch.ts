@@ -4,7 +4,7 @@ import lunr from 'lunr-mutable-indexes'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const createLunrIndex = (initList: NodeSearchData[], indexData: any) => {
-  if (indexData) {
+  if (indexData && initList.length > 0) {
     console.log('Using Prebuilt Index!')
     const index = lunr.Index.load(indexData)
     return index
