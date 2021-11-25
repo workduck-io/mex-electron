@@ -18,7 +18,7 @@ const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps
   }, [])
 
   const editableProps = {
-    placeholder: 'Murmuring the mex hype...',
+    placeholder: 'Murmuring the mex hype... This should be part of an update',
     spellCheck: false,
     style: {
       padding: '15px'

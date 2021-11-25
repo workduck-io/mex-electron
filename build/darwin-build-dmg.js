@@ -40,7 +40,7 @@ function main(arch) {
   buildDMG(arch)
     .then(() => {
       const version = getPackageVersion()
-      const newFilename = `Mex-${version}-${arch}.dmg`
+      const newFilename = `Mex-${version}-mac-${arch}.dmg`
       fs.renameSync(path.join(cwd, 'out/make/Mex.dmg'), path.join(cwd, 'out/make', newFilename))
     })
     .catch((err) => console.log(err))

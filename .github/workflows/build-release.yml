@@ -18,7 +18,7 @@ jobs:
         uses: actions/create-release@v1
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release Mex ${{ github.ref }}
+          release_name: ${{ github.ref }}
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
 
@@ -60,18 +60,26 @@ jobs:
         run: yarn upgrade @workduck-io/dwindle active-win-universal
       - name: Add certificates to keychain
         run: chmod +x build/osx-add-cert.sh && build/osx-add-cert.sh # Do not run on local machine
-      - name: Rebuild Native Dependencies
+      - name: Rebuild Native Dependencies for x64
         run: ./node_modules/.bin/electron-rebuild --force --arch=x64
       - name: Build App
-        run: chmod +x build/build-darwin-x64.sh && ./build/build-darwin-x64.sh
+        run: yarn package --arch=x64
+      - name: Codesign Mex.app Bundle
+        run: node build/darwin-sign.js x64
+      - name: Notarize Mex.app Bundle
+        run: node build/darwin-notarize.js x64
+      - name: Build DMG from Mex.app Bundle
+        run: node build/darwin-build-dmg.js x64
+      - name: Create Zip from Mex.app Bundle
+        run: node build/darwin-build-zip.js x64
       - name: Upload Release Asset
         id: upload-release-asset
-        uses: actions/upload-release-asset@v1
+        uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ needs.create_github_release.outputs.upload_url }}
-          asset_path: ./out/make/Mex-0.1.0-x64.dmg
-          asset_name: Mex-0.1.0-x64.dmg
-          asset_content_type: application/octet-stream
+          files: |
+            out/make/*.dmg
+            out/make/*.zip
+
   publish_on_mac_arm64:
     runs-on: macos-latest
     needs: create_github_release
@@ -96,18 +104,25 @@ jobs:
         run: yarn upgrade @workduck-io/dwindle active-win-universal
       - name: Add certificates to keychain
         run: chmod +x build/osx-add-cert.sh && build/osx-add-cert.sh # Do not run on local
-      - name: Rebuild Native Dependencies
+      - name: Rebuild Native Dependencies for arm64
         run: ./node_modules/.bin/electron-rebuild --force --arch=arm64
       - name: Build App
-        run: chmod +x build/build-darwin-arm64.sh && ./build/build-darwin-arm64.sh
+        run: yarn package --arch=arm64
+      - name: Codesign Mex.app Bundle
+        run: node build/darwin-sign.js arm64
+      - name: Notarize Mex.app Bundle
+        run: node build/darwin-notarize.js arm64
+      - name: Build DMG from Mex.app Bundle
+        run: node build/darwin-build-dmg.js arm64
+      - name: Create Zip from Mex.app Bundle
+        run: node build/darwin-build-zip.js arm64
       - name: Upload Release Asset
         id: upload-release-asset
-        uses: actions/upload-release-asset@v1
+        uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ needs.create_github_release.outputs.upload_url }}
-          asset_path: ./out/make/Mex-0.1.0-arm64.dmg
-          asset_name: Mex-0.1.0-arm64.dmg
-          asset_content_type: application/octet-stream
+          files: |
+            out/make/*.dmg
+            out/make/*.zip
   # publish_on_win:
   #   runs-on: windows-latest
   #   steps:
