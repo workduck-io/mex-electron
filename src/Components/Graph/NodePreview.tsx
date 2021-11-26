@@ -69,6 +69,7 @@ const SmallText = styled.div`
 
 const NodePreview = ({ node }) => {
   const { getUidFromNodeId } = useLinks()
+
   const uid = getUidFromNodeId(node.nodeId)
   const getContent = useContentStore((store) => store.getContent)
   const content = getContent(uid)

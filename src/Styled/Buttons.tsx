@@ -90,6 +90,7 @@ export interface AsyncButtonProps {
   large?: boolean
   highlight?: boolean
   disabled?: boolean
+  style?: any
   id?: string
   onClick?: any // eslint-disable-line @typescript-eslint/no-explicit-any
   type?: 'button' | 'submit' | 'reset'

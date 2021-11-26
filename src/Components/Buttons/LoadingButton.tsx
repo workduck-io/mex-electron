@@ -10,12 +10,13 @@ export interface LoadingButtonProps {
   /** Also disable the button with a boolean condition */
   alsoDisabled?: boolean
   buttonProps?: AsyncButtonProps
+  style?: any
 }
 
-export const LoadingButton = ({ children, dots, loading, alsoDisabled, buttonProps }: LoadingButtonProps) => {
+export const LoadingButton = ({ children, dots, loading, alsoDisabled, buttonProps, style }: LoadingButtonProps) => {
   const theme = useTheme()
   return (
-    <AsyncButton disabled={alsoDisabled || loading} {...buttonProps}>
+    <AsyncButton disabled={alsoDisabled || loading} {...buttonProps} style={style}>
       {!loading && children}
       {loading && (
         <>

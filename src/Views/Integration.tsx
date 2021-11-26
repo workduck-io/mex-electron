@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Check from '@iconify-icons/bi/check'
 import PlusCircle from '@iconify-icons/bi/plus-circle'
 import { Icon } from '@iconify/react'
 import { shell } from 'electron'
-import ConfirmationModal from '../Components/ConfirmationModal/ConfirmationModal'
 import NewSyncTemplateModal, { useNewSyncTemplateModalStore } from '../Components/Integrations/NewSyncBlockModal'
 import Template from '../Components/Integrations/Template'
 import { useUpdater } from '../Data/useUpdater'
@@ -30,17 +29,22 @@ import {
   TemplateInfoList,
   StyledIcon,
   Text,
-  Margin
+  Margin,
+  TemplateSubtitle,
+  PrimaryText,
+  Scroll
 } from '../Styled/Integration'
-import { InfoBarWrapper } from '../Layout/InfoBar'
+import { TemplateInfoBar } from '../Layout/InfoBar'
 import { TemplateCommand } from '../Components/Integrations/Template/styled'
-import { FlexBetween } from '../Editor/Components/InlineBlock/styled'
 import { DateFormat, useRelativeTime as getRelativeTime } from '../Hooks/useRelativeTime'
 import { useIntegrationStore } from '../Editor/Store/IntegrationStore'
 import { client } from '@workduck-io/dwindle'
 import { integrationURLs } from '../Requests/routes'
 import useLoad from '../Hooks/useLoad/useLoad'
 import { useHistory } from 'react-router'
+import useDataStore from '../Editor/Store/DataStore'
+import { LoadingButton } from '../Components/Buttons/LoadingButton'
+import { useTheme } from 'styled-components'
 
 const NewTemplate = () => {
   const openNewTemplateModal = useNewSyncTemplateModalStore((store) => store.openModal)
@@ -106,64 +110,110 @@ const Integrations = () => {
 
 const TemplateInfo = () => {
   const template = useIntegrationStore((state) => state.template)
+  const ilinks = useDataStore((store) => store.ilinks)
   const templateDetails = useIntegrationStore((state) => state.templateDetails)
-  const { getNode, loadNode } = useLoad()
+  const isTemplateDetailsLoading = useIntegrationStore((store) => store.isTemplateDetailsLoading)
+
+  const theme = useTheme()
   const history = useHistory()
+  const { getNode, loadNode } = useLoad()
 
   const onClick = (id: string) => {
     loadNode(id)
     history.push('/editor')
   }
 
+  const { localNodes, totalCount, deletedNodes, deletedNodesRunCount } = useMemo(() => {
+    const localNodes = []
+    const deletedNodes = []
+
+    templateDetails?.forEach((info) => {
+      const isPresent = ilinks.filter((ilink) => ilink.uid === info.node).length === 1
+      if (isPresent) localNodes.push(info)
+      else deletedNodes.push(info)
+    })
+
+    const totalCount = templateDetails?.reduce((total, obj) => obj.runCount + total, 0) ?? 0
+    const deletedNodesRunCount = deletedNodes.reduce((total, obj) => obj.runCount + total, 0)
+
+    return {
+      localNodes,
+      deletedNodes,
+      totalCount,
+      deletedNodesRunCount
+    }
+  }, [templateDetails, ilinks])
+
   return (
-    <InfoBarWrapper wide="false">
+    <TemplateInfoBar wide="false">
       <TemplateTitle>Details</TemplateTitle>
-      <TemplateCommand>{`/sync/${template.command}`}</TemplateCommand>
+      <LoadingButton
+        style={{ color: !isTemplateDetailsLoading && theme.colors.text.fade }}
+        alsoDisabled
+        loading={isTemplateDetailsLoading}
+      >{`/sync/${template.command}`}</LoadingButton>
       {templateDetails && (
         <Margin>
-          <Text>{`Total: ${templateDetails.length}`}</Text>
-          <Text>{`Run: ${templateDetails.reduce((total, obj) => obj.runCount + total, 0)}`}</Text>
+          <Text>{`Active count: ${localNodes.length}`}</Text>
+          <Text>{`Run: ${totalCount}`}</Text>
         </Margin>
       )}
-      {templateDetails?.map((info) => (
-        <TemplateInfoList key={'info'} onClick={() => onClick(info.node)}>
-          <Text>{getNode(info.node).key}</Text>
-          <Flex>
-            <Text>{`Run Count: ${info.runCount}`}</Text>
-          </Flex>
-          {info.lastRun > 0 && (
+      <Scroll>
+        {localNodes.map((info) => (
+          <TemplateInfoList key={'info'} onClick={() => onClick(info.node)}>
+            <Text>{getNode(info.node).key}</Text>
             <Flex>
-              <StyledIcon icon={timeIcon} />
-              <Text>{DateFormat(info.lastRun)}</Text>
+              <Text>{`Run Count: ${info.runCount}`}</Text>
             </Flex>
-          )}
-        </TemplateInfoList>
-      ))}
-    </InfoBarWrapper>
+            {info.lastRun > 0 && (
+              <Flex>
+                <StyledIcon icon={timeIcon} />
+                <Text>{DateFormat(info.lastRun)}</Text>
+              </Flex>
+            )}
+          </TemplateInfoList>
+        ))}
+      </Scroll>
+      {deletedNodes.length > 0 && (
+        <>
+          <TemplateInfoList key={'info'}>
+            <TemplateSubtitle>Deleted Nodes</TemplateSubtitle>
+            <Text>
+              Number of deleted nodes:&nbsp;&nbsp;
+              <PrimaryText>{deletedNodes.length}</PrimaryText>
+            </Text>
+            <Text>
+              Run Count:&nbsp;&nbsp;<PrimaryText>{deletedNodesRunCount}</PrimaryText>
+            </Text>
+          </TemplateInfoList>
+        </>
+      )}
+    </TemplateInfoBar>
   )
 }
 
 const Templates = () => {
   const templates = useSyncStore((store) => store.templates)
-  const deleteTemplate = useSyncStore((store) => store.deleteTemplate)
+  const currentTemplate = useIntegrationStore((store) => store.template)
   const selectTemplate = useIntegrationStore((store) => store.selectTemplate)
   const setTemplateDetails = useIntegrationStore((store) => store.setTemplateDetails)
+  const setIsTemplateDetailsLoading = useIntegrationStore((store) => store.setIsTemplateDetailsLoading)
 
-  const handleDeleteCancel = () => undefined
-
-  const handleDeleteConfirm = (ev, templateId: string) => {
-    ev.stopPropagation()
-    // deleteTemplate(templateId)
-  }
-
-  const onSelectTemplate = async (template) => {
+  const onSelectTemplate = (template) => {
     selectTemplate(template)
-    await client.get(integrationURLs.getTemplateDetails(template.id)).then((d) => {
-      const data = d.data
-      if (data) {
-        setTemplateDetails(data)
-      }
-    })
+    setIsTemplateDetailsLoading(true)
+    client
+      .get(integrationURLs.getTemplateDetails(template.id))
+      .then((d) => {
+        const data = d.data
+        if (data) {
+          setTemplateDetails(data)
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
+        setIsTemplateDetailsLoading(false)
+      })
   }
 
   const { getTemplates } = useUpdater()
@@ -177,27 +227,32 @@ const Templates = () => {
       <Title>Templates</Title>
       <TemplateList>
         <NewTemplate />
-        {templates.map((template) => (
-          <Template onClick={onSelectTemplate} key={template.id} template={template} />
-        ))}
+        {templates
+          .filter((template) => template.command !== undefined)
+          .map((template) => (
+            <Template
+              selected={currentTemplate?.id === template.id}
+              onClick={onSelectTemplate}
+              key={template.id}
+              template={template}
+            />
+          ))}
       </TemplateList>
-      {/* <ConfirmationModal
-        confirmKeyword="Delete"
-        onCancel={handleDeleteCancel}
-        onConfirm={(ev) => handleDeleteConfirm(ev, template.id)}
-      /> */}
     </TemplateContainer>
   )
 }
 
 const IntegrationPage = () => {
   const { updateServices } = useUpdater()
+  const selectTemplate = useIntegrationStore((store) => store.selectTemplate)
   const template = useIntegrationStore((state) => state.template)
 
   useEffect(() => {
     ;(async () => {
       await updateServices()
     })()
+
+    return () => selectTemplate(undefined)
   }, [])
 
   return (
