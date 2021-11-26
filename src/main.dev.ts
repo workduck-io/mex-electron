@@ -26,6 +26,8 @@ import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
 import initErrorHandler, { showDialog } from './Lib/errorHandlers'
 import { IS_DEV } from './Defaults/dev_'
+import { truncate } from 'original-fs'
+import { ConsoleLogger } from '@aws-amplify/core'
 
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
@@ -63,6 +65,8 @@ const SEARCH_INDEX_LOCATION = getSearchIndexLocation(app)
 const MEX_WINDOW_OPTIONS = {
   width: 1600,
   height: 1500,
+  fullscreenable: true,
+  maximizable: true,
   titleBarStyle: 'hidden' as const,
   webPreferences: {
     nodeIntegration: true,
@@ -76,10 +80,10 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
   width: 700,
   height: 400,
   maxWidth: 700,
-  fullscreenable: false,
   maxHeight: 400,
   center: false,
   frame: false,
+  maximizable: false,
   alwaysOnTop: true,
   resizable: false,
   webPreferences: {
@@ -133,10 +137,10 @@ export const setSearchIndexData = (indexJSON) => {
 
 const createSpotLighWindow = (show?: boolean) => {
   spotlight = new BrowserWindow(SPOTLIGHT_WINDOW_OPTIONS)
-  global.spotlight = spotlight
+
   spotlight.loadURL(SPOTLIGHT_WINDOW_WEBPACK_ENTRY)
 
-  spotlight.setAlwaysOnTop(true, 'floating', 100)
+  spotlight.setAlwaysOnTop(true, 'modal-panel', 100)
   spotlight.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 
   spotlight.webContents.on('did-finish-load', () => {
@@ -158,7 +162,7 @@ const createSpotLighWindow = (show?: boolean) => {
     spotlight = null
   })
 
-  IS_DEV && spotlight.webContents.openDevTools()
+  // IS_DEV && spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -194,7 +198,13 @@ const createMexWindow = () => {
     shell.openExternal(url)
   })
 
-  IS_DEV && mex.webContents.openDevTools()
+  mex.on('enter-full-screen', () => {
+    spotlight.setFullScreenable(false)
+    spotlight.setFullScreen(false)
+    spotlight.setMaximizable(false)
+  })
+
+  // mex.webContents.openDevTools()
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const callbackOptions = {
