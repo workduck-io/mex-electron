@@ -24,7 +24,7 @@ import { IpcAction } from './Spotlight/utils/constants'
 import { getGlobalShortcut, getSelectedText } from './Spotlight/utils/getSelectedText'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
-import initErrorHandler, from './Lib/errorHandlers'
+import initErrorHandler from './Lib/errorHandlers'
 
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string

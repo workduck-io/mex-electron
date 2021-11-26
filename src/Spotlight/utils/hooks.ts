@@ -91,20 +91,23 @@ export const combineSources = (
 
   const removedContent = areSameSource
     ? oldSourceContent.map((content, index) => {
-      if (index === oldSourceIndex) {
-        const sliceToIndex = isParagraphSource ? oldSourceChildrenIndex : oldSourceChildrenIndex - 2
-        return {
-          children: content.children.slice(0, sliceToIndex)
+        if (index === oldSourceIndex) {
+          const sliceToIndex = isParagraphSource ? oldSourceChildrenIndex : oldSourceChildrenIndex - 2
+          return {
+            children: content.children.slice(0, sliceToIndex)
+          }
         }
-      }
-      return content
-    })
+        return content
+      })
     : oldSourceContent
 
   return removedContent
 }
 
-export const openNodeInMex = (nodeId: string) => ipcRenderer.send(IpcAction.OPEN_NODE_IN_MEX, { nodeId: nodeId })
+export const openNodeInMex = (nodeId: string) => {
+  // * Open saved node in Mex
+  // ipcRenderer.send(IpcAction.OPEN_NODE_IN_MEX, { nodeId: nodeId })
+}
 
 export const useKeyPress = (pressedKey: string): boolean => {
   const [isPressed, setIsPressed] = useState<boolean>(false)
