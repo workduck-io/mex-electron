@@ -93,7 +93,7 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
 export const setFileData = (data: FileData) => {
   fs.writeFileSync(SAVE_LOCATION, JSON.stringify(data))
 }
-// eslint-disable-next-lin @typescript-eslint/no-implicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ensureFieldsOnJSON = (fileData: any) => {
   let toWriteFile = false
   Object.keys(DefaultFileData).forEach((value) => {
@@ -336,9 +336,9 @@ const closeWindow = () => {
   // mex?.webContents.send(IpcAction.GET_LOCAL_INDEX)
 }
 
-// app.once('before-quit', () => {
-//   mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
-// })
+app.once('before-quit', () => {
+  mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
+})
 
 ipcMain.on('close', closeWindow)
 
