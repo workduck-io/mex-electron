@@ -17,7 +17,7 @@ interface InfoBarWrapperProps {
 }
 
 export const InfoBarWrapper = styled(animated.div)<InfoBarWrapperProps>`
-  overflow: hidden;
+  overflow-x: hidden;
 
   @media (max-width: ${size.wide}) {
     min-width: ${({ wide }) => {
@@ -32,6 +32,12 @@ export const InfoBarWrapper = styled(animated.div)<InfoBarWrapperProps>`
     }};
   }
 `
+
+export const TemplateInfoBar = styled(InfoBarWrapper)`
+  /* overflow-y: scroll; */
+  height: 100%;
+`
+
 interface InfoBarProps {
   showGraph: boolean
   showSyncBlocks: boolean

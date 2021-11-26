@@ -10,6 +10,7 @@ import {
   nativeImage,
   session,
   shell,
+  screen,
   Tray,
   autoUpdater
 } from 'electron'
@@ -24,6 +25,7 @@ import { getGlobalShortcut, getSelectedText } from './Spotlight/utils/getSelecte
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
 import initErrorHandler, { showDialog } from './Lib/errorHandlers'
+import { IS_DEV } from './Defaults/dev_'
 
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
@@ -74,11 +76,11 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
   width: 700,
   height: 400,
   maxWidth: 700,
+  fullscreenable: false,
   maxHeight: 400,
   center: false,
-  alwaysOnTop: true,
   frame: false,
-  maximizable: false,
+  alwaysOnTop: true,
   resizable: false,
   webPreferences: {
     nodeIntegration: true,
@@ -134,7 +136,7 @@ const createSpotLighWindow = (show?: boolean) => {
   global.spotlight = spotlight
   spotlight.loadURL(SPOTLIGHT_WINDOW_WEBPACK_ENTRY)
 
-  spotlight.setAlwaysOnTop(true, 'modal-panel', 2)
+  spotlight.setAlwaysOnTop(true, 'floating', 100)
   spotlight.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 
   spotlight.webContents.on('did-finish-load', () => {
@@ -156,7 +158,7 @@ const createSpotLighWindow = (show?: boolean) => {
     spotlight = null
   })
 
-  // spotlight.webContents.openDevTools()
+  IS_DEV && spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -174,16 +176,9 @@ const createMexWindow = () => {
     mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
   })
 
-  global.mex = mex
-
   mex.webContents.on('did-finish-load', () => {
     if (!mex) {
       throw new Error('"mexWindow" is not defined')
-    }
-    if (process.env.START_MINIMIZED) {
-      mex.minimize()
-    } else {
-      mex.show()
     }
   })
 
@@ -199,7 +194,7 @@ const createMexWindow = () => {
     shell.openExternal(url)
   })
 
-  // mex.webContents.openDevTools()
+  IS_DEV && mex.webContents.openDevTools()
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const callbackOptions = {
@@ -247,7 +242,7 @@ const spotlightInBubbleMode = (show?: boolean) => {
     spotlight.setContentSize(48, 48, false)
     spotlightBubble = true
   } else {
-    spotlight.setContentSize(700, 400, true)
+    spotlightCenter()
     spotlightBubble = false
   }
 }
@@ -272,6 +267,28 @@ const sendToRenderer = (selection: any) => {
     text
   }
   spotlight?.webContents.send(IpcAction.SELECTED_TEXT, metaSelection)
+}
+
+const spotlightCenter = () => {
+  if (!spotlight) return
+
+  const primaryDisplay = screen.getPrimaryDisplay()
+  const { width, height } = primaryDisplay.workAreaSize
+
+  const windowBounds = spotlight.getBounds()
+
+  const offWidth = windowBounds.x + windowBounds.width > width
+  const offHeight = windowBounds.y + windowBounds.height > height
+
+  if (offWidth && offHeight) {
+    spotlight.setPosition(width - windowBounds.width, height - windowBounds.height, true)
+  } else if (offWidth) {
+    spotlight.setPosition(width - windowBounds.width, windowBounds.y, true)
+  } else if (offHeight) {
+    spotlight.setPosition(windowBounds.x, height - windowBounds.height, true)
+  } else {
+    spotlight.setContentSize(700, 400)
+  }
 }
 
 const toggleMainWindow = (window) => {

@@ -1,6 +1,7 @@
 import { createPlateOptions, ELEMENT_MEDIA_EMBED, Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import ReactTooltip from 'react-tooltip'
+import { useGraphStore } from '../Components/Graph/GraphStore'
 import { EditorStyles } from '../Styled/Editor'
 import components from './Components/components'
 import BallonMarkToolbarButtons from './Components/EditorToolbar'
@@ -42,6 +43,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
+  const setNodePreview = useGraphStore((store) => store.setNodePreview)
 
   const generateEditorId = () => `${editorId}`
   const editorRef = usePlateEditorRef()
@@ -106,7 +108,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
     <>
       <ReactTooltip effect="solid" type="info" />
       {content && (
-        <EditorStyles>
+        <EditorStyles onClick={() => setNodePreview(false)}>
           {showBalloonToolbar && <BallonMarkToolbarButtons />}
           <Plate
             id={generateEditorId()}

@@ -53,6 +53,19 @@ export const TemplateTitle = styled.h1`
   padding-top: 2.5rem;
 `
 
+export const PrimaryText = styled.span`
+  color: ${({ theme }) => theme.colors.primary};
+`
+
+export const TemplateSubtitle = styled(TemplateTitle)`
+  font-size: 20px;
+  margin: 0;
+  padding: 0.5rem 0;
+  padding-top: 0.25rem;
+  line-height: 1.5;
+  color: #944f4f;
+`
+
 export const Services = styled.div`
   display: flex;
   align-items: center;
@@ -148,6 +161,11 @@ export const StyledIcon = styled(Icon)`
   margin-right: 1rem;
 `
 
+export const Scroll = styled.div`
+  max-height: 66%;
+  overflow-y: scroll;
+`
+
 export const Text = styled.div`
   font-size: 0.9rem;
   color: ${({ theme }) => theme.colors.text.heading};
@@ -168,6 +186,7 @@ export const Flex = styled.section`
   align-items: center;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 `
 
 export const CardTitle = styled.div`

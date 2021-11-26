@@ -2,10 +2,8 @@ import { Icon } from '@iconify/react'
 import React, { useMemo } from 'react'
 import { capitalize } from '../../../Lib/strings'
 import Plus from '@iconify-icons/bi/plus'
-import trashIcon from '@iconify-icons/codicon/trash'
 import { ServiceIcon } from '../../../Editor/Components/SyncBlock/SyncIcons'
 import {
-  DeleteIcon,
   FullFlex,
   IconCircle,
   ServiceChip,
@@ -18,34 +16,28 @@ import {
   TemplateTitle,
   ServiceType
 } from './styled'
-import { useConfirmationModalStore } from '../../ConfirmationModal/ConfirmationModal'
 import { SyncBlockTemplate } from '../../../Editor/Components/SyncBlock'
 
 const MAX_SHOW = 3
 
-const Template: React.FC<{ template: SyncBlockTemplate; onClick?: any }> = ({ template, onClick }) => {
+const Template: React.FC<{ template: SyncBlockTemplate; onClick?: any; selected }> = ({
+  template,
+  selected,
+  onClick
+}) => {
   const { intents, more } = useMemo(() => {
     const intents = template.intents.filter((intent) => intent.service !== 'MEX')
-    console.log(intents)
     const more = intents.slice(MAX_SHOW).length
 
     return { intents, more }
   }, [template])
-  const openConfirmationModal = useConfirmationModalStore((store) => store.openModal)
-
-  const handleDeleteModal = () => {
-    openConfirmationModal(template.id, `Delete: ${template.title}?`, 'Are you sure you want to delete the template?')
-  }
 
   return (
-    <TemplateCard onClick={() => onClick(template)}>
+    <TemplateCard selected={selected} onClick={() => onClick(template)}>
       <TemplateHeader>
         <FullFlex>
           <TemplateCommand>/sync.{template.command}</TemplateCommand>
         </FullFlex>
-        {/* <DeleteIcon onClick={handleDeleteModal}>
-          <Icon height={18} icon={trashIcon} />
-        </DeleteIcon> */}
       </TemplateHeader>
       <TemplateBody>
         <TemplateTitle>{template.title}</TemplateTitle>

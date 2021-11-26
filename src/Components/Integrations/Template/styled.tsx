@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 
-export const TemplateCard = styled.div`
-  margin ${({ theme }) => theme.spacing.medium};
+export const TemplateCard = styled.div<{ selected: boolean }>`
+  margin: ${({ theme }) => theme.spacing.medium};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background-color: ${({ theme }) => theme.colors.background.card};
   height: 10rem;
@@ -13,10 +13,18 @@ export const TemplateCard = styled.div`
   padding: 0.2rem;
   font-weight: bold;
 
-  :hover {
-    border: 0.2rem solid ${({ theme }) => theme.colors.background.highlight};
-    padding: 0;
-  }
+  ${({ theme, selected }) =>
+    selected
+      ? css`
+          border: 0.2rem solid ${theme.colors.primary};
+          padding: 0;
+        `
+      : css`
+          :hover {
+            border: 0.2rem solid ${({ theme }) => theme.colors.background.highlight};
+            padding: 0;
+          }
+        `}
 `
 
 export const Ellipsis = css`

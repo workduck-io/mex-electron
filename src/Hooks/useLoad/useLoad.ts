@@ -6,12 +6,14 @@ import { NodeProperties, useEditorStore } from '../../Editor/Store/EditorStore'
 import { getContent } from '../../Editor/Store/helpers'
 import { NodeEditorContent } from '../../Editor/Store/Types'
 import { useApi } from '../../Requests/Save'
+import toast from 'react-hot-toast'
 
 const useLoad = () => {
   const loadNodeEditor = useEditorStore((store) => store.loadNode)
   const loadNodeAndReplaceContent = useEditorStore((store) => store.loadNodeAndReplaceContent)
   const setFetchingContent = useEditorStore((store) => store.setFetchingContent)
   const setContent = useContentStore((store) => store.setContent)
+  const editorNodeId = useEditorStore((state) => state.node.uid)
   const { getDataAPI } = useApi()
   const { onSave } = useSaver()
 
@@ -32,7 +34,18 @@ const useLoad = () => {
     return node
   }
 
+  const isLocalNode = (uid: string) => {
+    const ilinks = useDataStore.getState().ilinks
+    const node = getNode(uid)
+    return ilinks.find((i) => i.uid === uid) || node.key.startsWith('Draft.') ? true : false
+  }
+
   const loadNode = async (uid: string, savePrev = true, fetch = USE_API) => {
+    if (!isLocalNode(uid)) {
+      toast.error('Selected node does not exist.')
+      uid = editorNodeId
+    }
+
     if (savePrev) onSave()
     const node = getNode(uid)
     loadNodeEditor(node)
