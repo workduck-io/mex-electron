@@ -1,17 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
-import EditorPreviewRenderer from '../../Editor/EditorPreviewRenderer'
-import { useLinks } from '../../Editor/Actions/useLinks'
-import { useContentStore } from '../../Editor/Store/ContentStore'
+import EditorPreviewRenderer from '../../../Editor/EditorPreviewRenderer'
+import { useLinks } from '../../../Editor/Actions/useLinks'
+import { useContentStore } from '../../../Editor/Store/ContentStore'
 import { transparentize } from 'polished'
 import editIcon from '@iconify-icons/bx/bx-edit-alt'
 import timeIcon from '@iconify-icons/bx/bx-time-five'
 import { Icon } from '@iconify/react'
-import { DateFormat, useRelativeTime as getTime } from '../../Hooks/useRelativeTime'
+import { useRelativeTime as getTime } from '../../../Hooks/useRelativeTime'
 
 const Container = styled.section`
   position: absolute;
-  top: 4.5rem;
+  top: 7rem;
   right: 0;
   display: flex;
   z-index: 1000;
@@ -68,32 +68,32 @@ const SmallText = styled.div`
 `
 
 const NodePreview = ({ node }) => {
-  const getContent = useContentStore((store) => store.getContent)
   const { getUidFromNodeId } = useLinks()
-  const uid = getUidFromNodeId(node?.nodeId)
+  const uid = getUidFromNodeId(node.nodeId)
+  const getContent = useContentStore((store) => store.getContent)
   const content = getContent(uid)
 
-  const time = content?.metadata?.updatedAt
+  const time = content.metadata.updatedAt ? getTime(content.metadata.updatedAt) : 'recently'
 
   return (
     <Container>
-      <Header>{node?.nodeId}</Header>
+      <Header>{node.nodeId}</Header>
       <MetaDeta>
-        {content?.metadata?.lastEditedBy && (
+        {content.metadata.lastEditedBy && (
           <Flex>
             <StyledIcon icon={editIcon} />
-            <SmallText>{content?.metadata?.lastEditedBy}</SmallText>
+            <SmallText>{content.metadata.lastEditedBy}</SmallText>
           </Flex>
         )}
         {time && (
           <Flex>
             <StyledIcon icon={timeIcon} />
-            <SmallText>{DateFormat(new Date(time))}</SmallText>
+            <SmallText>{time}</SmallText>
           </Flex>
         )}
       </MetaDeta>
       <Content>
-        {content && <EditorPreviewRenderer content={content && content?.content} editorId={`__preview__${uid}_1`} />}
+        {content && <EditorPreviewRenderer content={content && content.content} editorId={`__preview__${uid}_1`} />}
       </Content>
     </Container>
   )

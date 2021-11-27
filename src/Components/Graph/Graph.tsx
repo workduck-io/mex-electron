@@ -10,6 +10,8 @@ import IconButton from '../../Styled/Buttons'
 import Switch from '../Forms/Switch'
 import { GraphTools, StyledGraph } from './Graph.styles'
 import { useGraphStore } from './GraphStore'
+// import NodePreview from './NodePreview'
+import NodeServices from './elements/NodeServices'
 import NodePreview from './NodePreview'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -37,7 +39,7 @@ const options = {
     barnesHut: {
       theta: 0.5,
       gravitationalConstant: -2000,
-      centralGravity: 0.3,
+      centralGravity: 0.5,
       springLength: 75,
       springConstant: 0.04,
       damping: 0.09,
@@ -60,15 +62,13 @@ export const TreeGraph = (props: TreeGraphProps) => {
   const showTools = useGraphStore((state) => state.showTools)
 
   const showNodePreview = useGraphStore((state) => state.showNodePreview)
+  const selectedNode = useGraphStore((state) => state.selectedNode)
   const setNodePreview = useGraphStore((state) => state.setNodePreview)
-
-  const [selectedNode, setSelectedNode] = useState('')
+  const setSelectedNode = useGraphStore((state) => state.setSelectedNode)
 
   const showLocal = useGraphStore((state) => state.showLocal)
   const toggleLocal = useGraphStore((state) => state.toggleLocal)
   const [network, setNetwork] = useState<any>()
-
-  // console.log('Checking for graph data 12321: ', { graphData })
 
   const [state, setState] = useState({
     counter: showLocal ? -graphData.nodes.length : graphData.nodes.length,
@@ -93,8 +93,10 @@ export const TreeGraph = (props: TreeGraphProps) => {
     click: ({ nodes }: any) => {
       if (nodes.length === 1) {
         const node = graphData.nodes.filter((n: any) => n.id === nodes[0])[0]
-        setSelectedNode(node)
-        setNodePreview(true)
+        if (!node.nodeId.startsWith('SERVICE')) {
+          setSelectedNode(node)
+          setNodePreview(true)
+        }
       } else {
         setNodePreview(false)
         setSelectedNode(undefined)
@@ -106,8 +108,10 @@ export const TreeGraph = (props: TreeGraphProps) => {
 
       if (nodes.length === 1) {
         const node = graphData.nodes.filter((n: any) => n.id === nodes[0])[0]
-        const uid = getUidFromNodeId(node.nodeId)
-        push(uid)
+        if (!node.nodeId.startsWith('SERVICE')) {
+          const uid = getUidFromNodeId(node.nodeId)
+          push(uid)
+        }
       }
     }
     // select: (selectProps: any): void => {
@@ -153,6 +157,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
           setNetwork(p)
         }}
       />
+      {/* <NodeServices /> */}
     </StyledGraph>
   )
 }

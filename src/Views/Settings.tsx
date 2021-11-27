@@ -40,7 +40,7 @@ const SettingsContent = styled.div`
 `
 
 const Settings = () => {
-  const { path, url } = useRouteMatch()
+  const { path } = useRouteMatch()
   return (
     <IntegrationContainer>
       <Title>Settings</Title>
@@ -67,19 +67,11 @@ const Settings = () => {
             <Route path={`${path}/about`}>
               <About />
             </Route>
-            {/* <Route path={`${path}/otherpath`}>
-              <OtherPath />
-            </Route> */}
           </Switch>
         </SettingsContent>
       </SettingsContainer>
     </IntegrationContainer>
   )
 }
-
-// function Topic() {
-//   const { setting } = useParams()
-//   return <h3>Requested topic ID: {setting}</h3>
-// }
 
 export default Settings

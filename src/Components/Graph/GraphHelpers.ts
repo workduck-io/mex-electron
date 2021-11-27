@@ -34,7 +34,6 @@ export const getNodeStyles = (level: number, theme: DefaultTheme) => {
       color: fontColor
     },
     shape: 'box'
-    // size: 16 / (0.66 * (level * 0.75 + 1)),
   }
 }
 

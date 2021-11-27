@@ -7,6 +7,7 @@ import { getContent } from '../../Editor/Store/helpers'
 import { NodeEditorContent } from '../../Editor/Store/Types'
 import { useApi } from '../../Requests/Save'
 import toast from 'react-hot-toast'
+import { useGraphStore } from '../../Components/Graph/GraphStore'
 
 const useLoad = () => {
   const loadNodeEditor = useEditorStore((store) => store.loadNode)
@@ -14,6 +15,8 @@ const useLoad = () => {
   const setFetchingContent = useEditorStore((store) => store.setFetchingContent)
   const setContent = useContentStore((store) => store.setContent)
   const editorNodeId = useEditorStore((state) => state.node.uid)
+  const setNodePreview = useGraphStore((store) => store.setNodePreview)
+  const setSelectedNode = useGraphStore((store) => store.setSelectedNode)
   const { getDataAPI } = useApi()
   const { onSave } = useSaver()
 
@@ -46,6 +49,9 @@ const useLoad = () => {
       uid = editorNodeId
     }
 
+    setNodePreview(false)
+    setSelectedNode(undefined)
+
     if (savePrev) onSave()
     const node = getNode(uid)
     loadNodeEditor(node)
@@ -57,6 +63,7 @@ const useLoad = () => {
           if (data) {
             console.log('Data fetched and changed', data, metadata)
             loadNodeAndReplaceContent(node, data)
+
             setContent(uid, data, metadata)
           }
         })

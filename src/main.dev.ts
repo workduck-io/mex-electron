@@ -24,10 +24,7 @@ import { IpcAction } from './Spotlight/utils/constants'
 import { getGlobalShortcut, getSelectedText } from './Spotlight/utils/getSelectedText'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
-import initErrorHandler, { showDialog } from './Lib/errorHandlers'
-import { IS_DEV } from './Defaults/dev_'
-import { truncate } from 'original-fs'
-import { ConsoleLogger } from '@aws-amplify/core'
+import initErrorHandler from './Lib/errorHandlers'
 
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
@@ -80,6 +77,7 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
   width: 700,
   height: 400,
   maxWidth: 700,
+  fullscreenable: false,
   maxHeight: 400,
   center: false,
   frame: false,
