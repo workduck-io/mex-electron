@@ -26,6 +26,8 @@ import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
 import initErrorHandler from './Lib/errorHandlers'
 
+require('@electron/remote/main').initialize()
+
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
 
@@ -184,6 +186,8 @@ const createMexWindow = () => {
       throw new Error('"mexWindow" is not defined')
     }
   })
+
+  require('@electron/remote/main').enable(mex.webContents)
 
   const menuBuilder = new MenuBuilder(mex)
   menuBuilder.buildMenu()
@@ -367,6 +371,7 @@ app.on('quit', () => {
 app
   .whenReady()
   .then(() => {
+    global.appVersion = app.getVersion()
     globalShortcut.register('CommandOrCOntrol+Shift+L', handleToggleMainWindow)
 
     const icon = nativeImage.createFromPath(trayIconSrc)
