@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { IntegrationContainer, Title } from '../Styled/Integration'
 import Themes from '../Components/Settings/Themes'
 import About from '../Components/Settings/About'
+import AutoUpdate from '../Components/Settings/AutoUpdate'
 
 const SettingsContainer = styled.section`
   display: flex;
@@ -55,6 +56,9 @@ const Settings = () => {
           <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/about`}>
             About
           </SettingTitle>
+          <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/autoupdate`}>
+            Automatic Updates
+          </SettingTitle>
         </SettingsOptions>
         <SettingsContent>
           <Switch>
@@ -66,6 +70,9 @@ const Settings = () => {
             </Route>
             <Route path={`${path}/about`}>
               <About />
+            </Route>
+            <Route path={`${path}/autoupdate`}>
+              <AutoUpdate />
             </Route>
           </Switch>
         </SettingsContent>
