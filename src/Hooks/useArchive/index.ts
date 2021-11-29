@@ -8,8 +8,9 @@ import { ILink } from '../../Editor/Store/Types'
 
 const useArchive = () => {
   const setArchive = useDataStore((state) => state.setArchive)
-  const getAllNodesFromArchive = useDataStore((state) => state.getArchive)
-  const addUidInArchive = useDataStore((state) => state.addInArchive)
+  const getArchive = useDataStore((state) => state.getArchive)
+  const unArchive = useDataStore((state) => state.unArchive)
+  const addInArchive = useDataStore((state) => state.addInArchive)
   const removeArchive = useDataStore((state) => state.removeFromArchive)
 
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
@@ -18,13 +19,13 @@ const useArchive = () => {
   const { userCred } = useAuth()
 
   const archived = (uid: string) => {
-    const archive = getAllNodesFromArchive()
+    const archive = getArchive()
     return archive.map((i) => i.uid).indexOf(uid) > -1
   }
 
-  const addInArchive = async (nodes: ILink[]): Promise<boolean> => {
+  const addArchiveData = async (nodes: ILink[]): Promise<boolean> => {
     if (!USE_API) {
-      addUidInArchive(nodes)
+      addInArchive(nodes)
       return true
     }
     if (userCred) {
@@ -35,7 +36,7 @@ const useArchive = () => {
         )
         // .then(console.log)
         .then(() => {
-          addUidInArchive(nodes)
+          addInArchive(nodes)
         })
         .then(() => onSave())
         .then(() => {
@@ -49,9 +50,9 @@ const useArchive = () => {
     return false
   }
 
-  const unarchive = async (nodes: ILink[]) => {
+  const unArchiveData = async (nodes: ILink[]) => {
     if (!USE_API) {
-      return removeArchive(nodes)
+      return unArchive(nodes[0])
     }
     await client
       .post(
@@ -60,15 +61,15 @@ const useArchive = () => {
       )
       .then((d) => {
         console.log('Data', d.data)
-        if (d.data) removeArchive(nodes)
+        if (d.data) unArchive(nodes[0])
         return d.data
       })
       .catch(console.error)
   }
 
-  const getArchive = async () => {
+  const getArchiveData = async () => {
     if (!USE_API) {
-      return getAllNodesFromArchive()
+      return getArchive()
     }
 
     await client
@@ -81,7 +82,7 @@ const useArchive = () => {
       .catch(console.error)
   }
 
-  const removeFromArchive = async (uids: ILink[]): Promise<boolean> => {
+  const removeArchiveData = async (uids: ILink[]): Promise<boolean> => {
     if (!USE_API) {
       removeArchive(uids)
       return true
@@ -110,7 +111,7 @@ const useArchive = () => {
     return false
   }
 
-  return { archived, addInArchive, removeFromArchive, getArchive, unarchive }
+  return { archived, addArchiveData, removeArchiveData, getArchiveData, unArchiveData }
 }
 
 export default useArchive

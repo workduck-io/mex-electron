@@ -80,7 +80,7 @@ const Init = () => {
     ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { nodeId }) => {
       pushHs(nodeId)
       addRecent(nodeId)
-      loadNode(nodeId, false, false)
+      loadNode(nodeId, {savePrev: false, fetch: false})
     })
     ipcRenderer.on(IpcAction.CLEAR_RECENTS, () => {
       clear()

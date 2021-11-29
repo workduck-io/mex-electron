@@ -38,7 +38,7 @@ export interface DataStoreState {
   initializeDataStore: (initData: InitData) => void
 
   // adds the node
-  addILink: (ilink: string, uid?: string, parentId?: string) => string
+  addILink: (ilink: string, uid?: string, parentId?: string, archived?: boolean) => string
 
   // adds tag for combobox
   addTag: (tag: string) => void
@@ -64,6 +64,7 @@ export interface DataStoreState {
   updateInternalLinks: (links: CachedILink[], uid: string) => void
 
   addInArchive: (archive: ILink[]) => void
+  unArchive: (archive: ILink) => void
   removeFromArchive: (archive: ILink[]) => void
   setArchive: (archive: ILink[]) => void
   getArchive: () => ILink[]

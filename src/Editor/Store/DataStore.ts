@@ -41,26 +41,40 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   },
 
   // Add a new ILink to the store
-  addILink: (ilink, uid, parentId) => {
+  addILink: (ilink, uid, parentId, archived) => {
     const { key, isChild } = withoutContinuousDelimiter(ilink)
 
     if (key) {
       ilink = isChild && parentId ? `${parentId}${key}` : key
     }
 
-    const linksStrings = get().ilinks.map((l) => l.text)
+    const ilinks = get().ilinks
+
+    const linksStrings = ilinks.map((l) => l.text)
     const parents = getAllParentIds(ilink) // includes link of child
+
     const newLinks = parents.filter((l) => !linksStrings.includes(l)) // only create links for non existing
+    console.log({ parents, linksStrings, newLinks })
+
     const comboTexts = newLinks.map((l, index) => {
-      const newILink = generateIlink(l, get().ilinks.length + index)
+      const newILink = generateIlink(l, ilinks.length + index)
+      console.log({ newILink })
+
       if (uid && newILink.text === ilink) {
+        console.log({ uid, newILink })
+
         newILink.uid = uid
       }
+
       return newILink
     })
+
     const newLink = comboTexts.find((l) => l.text === ilink)
+
+    const userILinks = archived ? ilinks.map((val) => (val.key === ilink ? { ...val, uid } : val)) : ilinks
+
     set({
-      ilinks: [...get().ilinks, ...comboTexts]
+      ilinks: [...userILinks, ...comboTexts]
     })
 
     if (newLink) return newLink.uid
@@ -159,18 +173,25 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   },
 
   addInArchive: (archive) => {
-    const userArchive = new Set([...get().archive, ...archive])
-    set({ archive: Array.from(userArchive) })
+    const userArchive = [...get().archive, ...archive]
+    set({ archive: userArchive })
   },
 
   removeFromArchive: (removeArchive) => {
-    const userArchive = new Set(get().archive.filter((b) => !(removeArchive.map((i) => i.key).indexOf(b.key) > -1)))
-    set({ archive: Array.from(userArchive) })
+    const userArchive = get().archive.filter((b) => !(removeArchive.map((i) => i.key).indexOf(b.key) > -1))
+    set({ archive: userArchive })
+  },
+
+  unArchive: (archive) => {
+    const userArchive = get().archive
+    const afterUnArchive = userArchive.filter((ar) => ar.key !== archive.key)
+
+    set({ archive: afterUnArchive })
   },
 
   setArchive: (archive) => {
-    const userArchive = new Set(archive)
-    set({ archive: Array.from(userArchive) })
+    const userArchive = archive
+    set({ archive: userArchive })
   },
 
   getArchive: () => get().archive

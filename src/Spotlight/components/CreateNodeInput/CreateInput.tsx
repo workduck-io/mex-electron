@@ -51,7 +51,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
 
     saveData()
     setSaved(true)
-    loadNode(newUid, true, false)
+    loadNode(newUid, { savePrev: true, fetch: false })
     openNodeInMex(newUid)
   }
 
@@ -60,7 +60,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
     if (nodeContent) {
       loadNodeAndAppend(uid, nodeContent)
     } else {
-      loadNode(uid, true, false)
+      loadNode(uid, { savePrev: true, fetch: false })
       pushToHistory(uid)
       addRecent(uid)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, uid)

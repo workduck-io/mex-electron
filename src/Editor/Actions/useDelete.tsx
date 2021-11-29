@@ -22,7 +22,7 @@ export const useDelete = () => {
 
   const lastOpened = useRecentsStore((state) => state.lastOpened)
   const updateLastOpened = useRecentsStore((state) => state.update)
-  const { addInArchive } = useArchive()
+  const { addArchiveData } = useArchive()
 
   const getMockDelete = (del: string) => {
     const archivedNodes = ilinks.filter((i) => {
@@ -38,7 +38,7 @@ export const useDelete = () => {
   const execDelete = (del: string) => {
     const { archivedNodes, newIlinks } = getMockDelete(del)
 
-    addInArchive(archivedNodes)
+    addArchiveData(archivedNodes)
 
     // Remap the contents for links that remain
 
