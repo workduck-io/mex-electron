@@ -62,9 +62,11 @@ const Init = () => {
           })
           if (userAuthenticatedEmail) {
             // setAuthenticated({ email: userAuthenticatedEmail })
+            ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: true })
             return { d, auth: true }
           }
           setUnAuthenticated()
+          ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: false })
           return { d, auth: false }
         })
         .then(({ d, auth }) => auth && loadNode(getUidFromNodeIdAndLinks(d.ilinks, d.baseNodeId)))
@@ -85,6 +87,11 @@ const Init = () => {
     ipcRenderer.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {
       const { data } = arg
       addRecent(data)
+    })
+    ipcRenderer.on(IpcAction.REDIRECT_TO, (_event, { page }) => {
+      if (page) {
+        history.replace(page)
+      }
     })
     ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, () => {
       const searchIndexJSON = fetchIndexJSON()

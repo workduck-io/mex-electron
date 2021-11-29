@@ -23,6 +23,11 @@ export const apiURLs = {
   saveNode: `${BASE_API_URL}/node`,
   getNode: (uid: string) => `${BASE_API_URL}/node/${uid}`,
 
+  // * User Preference
+  getUserPreferences: (userId: string) => `/userPreference/all/${userId}`,
+  getPreference: (userId: string, preferenceType: string) => `/userPreference/${userId}/${preferenceType}`,
+  saveUserPrefernces: () => `/userPreference`,
+
   // Bookmarks
   // post to add
   // path to delete

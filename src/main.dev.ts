@@ -159,7 +159,7 @@ const createSpotLighWindow = (show?: boolean) => {
     spotlight = null
   })
 
-  // IS_DEV && spotlight.webContents.openDevTools()
+  spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -445,6 +445,15 @@ ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
   mex?.webContents.send(IpcAction.OPEN_NODE, { nodeId: arg.nodeId })
 })
 
+ipcMain.on(IpcAction.LOGGED_IN, (_event, arg) => {
+  spotlight?.webContents.send(IpcAction.LOGGED_IN, arg)
+})
+
+ipcMain.on(IpcAction.REDIRECT_TO, (_event, arg) => {
+  mex?.show()
+  mex?.webContents.send(IpcAction.REDIRECT_TO, { page: arg.page })
+})
+
 ipcMain.on(IpcAction.ERROR_OCCURED, (_event, arg) => {
   // showDialog(arg.message, arg.propertes)
 })
@@ -466,6 +475,7 @@ if (app.isPackaged || process.env.FORCE_PRODUCTION) {
 
   autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
     console.log("Aye Aye Captain: There's an update")
+
     const dialogOpts = {
       type: 'info',
       buttons: ['Install Update!', 'Later :('],
@@ -473,6 +483,7 @@ if (app.isPackaged || process.env.FORCE_PRODUCTION) {
       message: process.platform === 'win32' ? releaseNotes : releaseName,
       detail: 'Updates are on thee way'
     }
+
     dialog.showMessageBox(dialogOpts).then((returnValue) => {
       if (returnValue.response === 0) autoUpdater.quitAndInstall()
     })
