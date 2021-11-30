@@ -19,6 +19,7 @@ export const useApi = () => {
   const saveDataAPI = (uid: string, content: any[]) => {
     const reqData = {
       id: uid,
+      type: 'NodeRequest',
       lastEditedBy: useAuthStore.getState().userDetails.email,
       namespaceIdentifier: 'NAMESPACE1',
       workspaceIdentifier: getWorkspaceId(),
@@ -36,8 +37,8 @@ export const useApi = () => {
           lastEditedBy: d.data.lastEditedBy,
           updatedAt: d.data.updatedAt
         }
-        if (d.data.createBy !== null) {
-          metadata.createBy = d.data.createBy
+        if (d.data.createdBy !== null) {
+          metadata.createdBy = d.data.createdBy
         }
         if (d.data.createdAt !== null) {
           metadata.createdAt = d.data.createdAt
@@ -54,11 +55,13 @@ export const useApi = () => {
       .get(apiURLs.getNode(uid), {})
       .then((d) => {
         const metadata = {
-          createBy: d.data.createBy,
+          createdBy: d.data.createdBy,
           createdAt: d.data.createdAt,
           lastEditedBy: d.data.lastEditedBy,
           updatedAt: d.data.updatedAt
         }
+
+        console.log(metadata, d.data)
         return { data: d.data.data, metadata: removeNulls(metadata) }
       })
       .catch(console.error)

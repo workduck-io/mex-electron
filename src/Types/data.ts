@@ -4,7 +4,7 @@ import { ComboText, ILink, LinkCache, NodeEditorContent, TagsCache } from '../Ed
 import lunr from 'lunr-mutable-indexes'
 
 export interface NodeMetadata {
-  createBy?: string
+  createdBy?: string
   createdAt?: number
   lastEditedBy?: string
   updatedAt?: number
