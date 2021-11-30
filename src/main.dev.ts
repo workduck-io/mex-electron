@@ -77,7 +77,6 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
   width: 700,
   height: 400,
   maxWidth: 700,
-  fullscreenable: false,
   maxHeight: 400,
   center: false,
   frame: false,
