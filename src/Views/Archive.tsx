@@ -77,20 +77,18 @@ const Archive = () => {
   const contents = useContentStore((store) => store.contents)
   const theme = useTheme()
 
-  useEffect(() => {
-    getArchiveData()
-  }, [])
+  // useEffect(() => {
+  //   getArchiveData()
+  // }, [])
 
-  const onUnarchiveClick = (node: ILink) => {
+  const onUnarchiveClick = async (node: ILink) => {
     const present = ilinks.find((link) => link.key === node.key)
 
     if (present) {
       setShowModal(true)
     }
 
-    history.push('/editor')
-    unArchiveData([node])
-
+    await unArchiveData([node])
     addILink(node.key, node.uid, undefined, true)
 
     const archiveNode: NodeProperties = {
@@ -101,6 +99,7 @@ const Archive = () => {
     }
 
     loadNode(node.uid, { savePrev: false, fetch: false, node: archiveNode })
+    history.push('/editor')
   }
 
   const transition = useTransition(archive, {
@@ -117,15 +116,17 @@ const Archive = () => {
     }
   })
 
-  const onDeleteClick = () => {
+  const onDeleteClick = async () => {
     const nodesToDelete = archive.filter((i) => {
       const match = i.key.startsWith(delNode.key)
       return match
     })
 
-    removeArchiveData(nodesToDelete)
+    console.log('CALLED')
 
-    onSave()
+    await removeArchiveData(nodesToDelete)
+
+    // onSave()
 
     setShowModal(false)
   }

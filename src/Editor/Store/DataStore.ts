@@ -192,9 +192,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   setArchive: (archive) => {
     const userArchive = archive
     set({ archive: userArchive })
-  },
-
-  getArchive: () => get().archive
+  }
 }))
 
 export const getLevel = (nodeId: string) => nodeId.split(SEPARATOR).length

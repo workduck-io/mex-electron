@@ -67,7 +67,6 @@ export interface DataStoreState {
   unArchive: (archive: ILink) => void
   removeFromArchive: (archive: ILink[]) => void
   setArchive: (archive: ILink[]) => void
-  getArchive: () => ILink[]
 }
 
 export type NodeEditorContent = any[] // eslint-disable-line @typescript-eslint/no-explicit-any

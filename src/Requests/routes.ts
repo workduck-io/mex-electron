@@ -13,7 +13,7 @@ export const integrationURLs = {
   getAllTemplates: (workspaceId: string) => `${BASE_INTEGRATION_URL}/workspace/${workspaceId}/templates/all`
 }
 
-export const BASE_API_URL = 'http://e21a-122-172-246-191.ngrok.io'
+export const BASE_API_URL = 'http://c659-122-171-116-83.ngrok.io'
 export const BASE_USER_URL = 'https://http.workduck.io/user'
 
 export const BOOKMARK_URL = BASE_API_URL

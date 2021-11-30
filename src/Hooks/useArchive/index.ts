@@ -8,7 +8,7 @@ import { ILink } from '../../Editor/Store/Types'
 
 const useArchive = () => {
   const setArchive = useDataStore((state) => state.setArchive)
-  const getArchive = useDataStore((state) => state.getArchive)
+  const archive = useDataStore((state) => state.archive)
   const unArchive = useDataStore((state) => state.unArchive)
   const addInArchive = useDataStore((state) => state.addInArchive)
   const removeArchive = useDataStore((state) => state.removeFromArchive)
@@ -19,7 +19,6 @@ const useArchive = () => {
   const { userCred } = useAuth()
 
   const archived = (uid: string) => {
-    const archive = getArchive()
     return archive.map((i) => i.uid).indexOf(uid) > -1
   }
 
@@ -30,10 +29,9 @@ const useArchive = () => {
     }
     if (userCred) {
       return await client
-        .post(
-          apiURLs.archiveNodes(),
-          nodes.map((i) => i.uid)
-        )
+        .post(apiURLs.archiveNodes(), {
+          ids: nodes.map((i) => i.uid)
+        })
         // .then(console.log)
         .then(() => {
           addInArchive(nodes)
@@ -55,10 +53,9 @@ const useArchive = () => {
       return unArchive(nodes[0])
     }
     await client
-      .post(
-        apiURLs.unArchiveNodes(),
-        nodes.map((i) => i.uid)
-      )
+      .post(apiURLs.unArchiveNodes(), {
+        ids: nodes.map((i) => i.uid)
+      })
       .then((d) => {
         console.log('Data', d.data)
         if (d.data) unArchive(nodes[0])
@@ -69,14 +66,17 @@ const useArchive = () => {
 
   const getArchiveData = async () => {
     if (!USE_API) {
-      return getArchive()
+      return archive
     }
 
     await client
       .get(apiURLs.getArchivedNodes(getWorkspaceId()))
       .then((d) => {
-        console.log('Data', d.data)
-        if (d.data) setArchive(d.data)
+        if (d.data) {
+          const ids = d.data
+          const links = ids.filter((id) => archive.filter((ar) => ar.uid === id).length === 0)
+          setArchive(links)
+        }
         return d.data
       })
       .catch(console.error)
@@ -90,10 +90,9 @@ const useArchive = () => {
 
     if (userCred) {
       const res = await client
-        .post(
-          apiURLs.deleteArchiveNodes(),
-          uids.map((i) => i.uid)
-        )
+        .post(apiURLs.deleteArchiveNodes(), {
+          ids: uids.map((i) => i.uid)
+        })
         // .then(console.log)
         .then(() => {
           removeArchive(uids)
