@@ -7,7 +7,7 @@ export const getHtmlString = (metadata: any) => {
 }
 
 const Source: React.FC<{ metadata: any }> = ({ metadata }) => {
-  console.log({ metadata })
+  // console.log({ metadata })
   if (!metadata) {
     return null
   }

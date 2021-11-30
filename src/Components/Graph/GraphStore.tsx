@@ -21,7 +21,7 @@ interface GraphStoreState {
 
 export const useGraphStore = create<GraphStoreState>((set, get) => ({
   showTools: true,
-  showGraph: true,
+  showGraph: false,
   showLocal: true,
   serviceNodes: [],
   showServices: true,
