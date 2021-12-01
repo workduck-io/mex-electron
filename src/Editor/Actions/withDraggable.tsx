@@ -31,7 +31,7 @@ const StyledTip = styled.div`
   justify-content: center;
   align-items: center;
   color: ${({ theme }) => theme.colors.fade};
-  /* background-color: ${({ theme }) => theme.colors.background.card}; */
+  background-color: ${({ theme }) => theme.colors.background.card};
   padding: 0.25rem;
   cursor: pointer;
   border-radius: 0.25rem;

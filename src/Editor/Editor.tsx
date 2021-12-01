@@ -40,6 +40,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
   const editableProps = {
     // placeholder: 'Murmuring the mex hype... This should be part of an update',
     spellCheck: false,
+    autoFocus: true,
     style: {
       padding: '15px'
     },
@@ -55,7 +56,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
 
   useEffect(() => {
     if (editorRef && focusAtBeginning) {
-      selectEditor(editorRef, { edge: 'start', focus: true })
+      selectEditor(editorRef, { edge: 'end', focus: true })
     }
   }, [editorRef, editorId]) // eslint-disable-line react-hooks/exhaustive-deps
 

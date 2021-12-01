@@ -17,7 +17,7 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
     width: 300,
     visible: true
   },
-  focusMode: true,
+  focusMode: false,
   toggleSidebar: () => set((state) => ({ sidebar: { ...state.sidebar, visible: !state.sidebar.visible } })),
   toggleFocusMode: () => set((state) => ({ focusMode: !state.focusMode })),
   setSidebarWidth: (width) => set((state) => ({ sidebar: { ...state.sidebar, width } })),
