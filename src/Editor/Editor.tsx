@@ -16,6 +16,11 @@ import generatePlugins from './Plugins/plugins'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 import useDataStore from './Store/DataStore'
 
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { withStyledDraggables } from './Actions/withDraggable'
+import { withStyledPlaceHolders } from './Actions/withPlaceholder'
+
 const options = createPlateOptions()
 
 interface EditorProps {
@@ -33,7 +38,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
   }, [])
 
   const editableProps = {
-    placeholder: 'Murmuring the mex hype... This should be part of an update',
+    // placeholder: 'Murmuring the mex hype... This should be part of an update',
     spellCheck: false,
     style: {
       padding: '15px'
@@ -106,22 +111,24 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
 
   return (
     <>
-      <ReactTooltip effect="solid" type="info" />
-      {content && (
-        <EditorStyles onClick={() => setNodePreview(false)}>
-          {showBalloonToolbar && <BallonMarkToolbarButtons />}
-          <Plate
-            id={generateEditorId()}
-            editableProps={editableProps}
-            value={content}
-            plugins={plugins}
-            components={components}
-            options={options}
-          >
-            <MultiComboboxContainer keys={comboboxRenderConfig.keys} />
-          </Plate>
-        </EditorStyles>
-      )}
+      <DndProvider backend={HTML5Backend}>
+        <ReactTooltip effect="solid" type="info" />
+        {content && (
+          <EditorStyles onClick={() => setNodePreview(false)}>
+            {showBalloonToolbar && <BallonMarkToolbarButtons />}
+            <Plate
+              id={generateEditorId()}
+              editableProps={editableProps}
+              value={content}
+              plugins={plugins}
+              components={withStyledPlaceHolders(withStyledDraggables(components))}
+              options={options}
+            >
+              <MultiComboboxContainer keys={comboboxRenderConfig.keys} />
+            </Plate>
+          </EditorStyles>
+        )}
+      </DndProvider>
     </>
   )
 }

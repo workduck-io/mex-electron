@@ -18,7 +18,7 @@ export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
       z-index: 11;
       background: ${theme.colors.background.modal};
       width: 300px;
-      border-radius: 0 0 2px 2px;
+      border-radius: 8px;
       box-shadow: rgba(0, 0, 0, 0.133) 0 3.2px 7.2px 0, rgba(0, 0, 0, 0.11) 0 0.6px 1.8px 0;
     `}
 `
@@ -27,10 +27,18 @@ export const ComboboxItem = styled.div<{ highlighted: boolean }>`
   display: flex;
   align-items: center;
   font-size: 14px;
+
+  :first-child {
+    border-radius: 6px 6px 0 0;
+  }
+
+  :last-child {
+    border-radius: 0 0 6px 6px;
+  }
+
   font-weight: 400;
   padding: 0 8px;
   // padding: 1px 3px;
-  border-radius: 0;
   // borderRadius: 3px;
   min-height: 36px;
   // lineHeight: "20px";

@@ -8,6 +8,7 @@ import {
   // createDeserializeMDPlugin,
   createExitBreakPlugin,
   createHeadingPlugin,
+  createDndPlugin,
   createHighlightPlugin,
   createHistoryPlugin,
   createImagePlugin,
@@ -82,6 +83,7 @@ const generatePlugins = () => {
 
     // Autoformat markdown syntax to elements (**, #(n))
     createAutoformatPlugin(optionsAutoformat),
+    createDndPlugin(),
 
     createNodeIdPlugin(optionsCreateNodeIdPlugin),
 
