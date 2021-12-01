@@ -91,7 +91,7 @@ export const useAuthentication = () => {
           const userDetails = { email }
           const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
 
-          getNodesByWorkspace(workspaceDetails.id).then((d) => console.log('NODES: ', d))
+          getNodesByWorkspace(workspaceDetails.id)
           // Set Authenticated, user and workspace details
           setAuthenticated(userDetails, workspaceDetails)
 
