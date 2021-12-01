@@ -151,6 +151,7 @@ const Metadata = () => {
   const [metadata, setMetadata] = useState<NodeMetadata | undefined>(undefined)
 
   useEffect(() => {
+    console.log({ content })
     if (content === undefined || content.metadata === undefined) return
     const { metadata: contentMetadata } = content
     setMetadata(contentMetadata)
@@ -162,11 +163,11 @@ const Metadata = () => {
   return (
     <MetadataWrapper>
       <DataGroup>
-        {metadata.createBy !== undefined && (
+        {metadata.createdBy !== undefined && (
           <DataWrapper interactive={metadata.createdAt !== undefined}>
-            {metadata.createBy !== undefined ? (
+            {metadata.createdBy !== undefined ? (
               <ProfileIcon>
-                <ProfileImageWithToolTip props={{ email: metadata.createBy, size: 32 }} placement="bottom" />
+                <ProfileImageWithToolTip props={{ email: metadata.createdBy, size: 32 }} placement="bottom" />
               </ProfileIcon>
             ) : (
               <Icon icon={timeLine}></Icon>

@@ -56,7 +56,7 @@ export const serializeContent = (content: any[]) => {
     }
 
     if (el.children) {
-      nl.childrenElements = serializeContent(el.children)
+      nl.children = serializeContent(el.children)
     }
 
     // console.log('Process: ', nl, el)

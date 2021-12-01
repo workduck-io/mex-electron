@@ -26,7 +26,9 @@ export const useBookmarks = () => {
     }
     if (userCred) {
       return await client
-        .post(apiURLs.bookmark(userCred.userId, uid), {})
+        .post(apiURLs.bookmark(userCred.userId, uid), {
+          type: 'BookmarkRequest'
+        })
         // .then(console.log)
         .then(() => {
           addBookmarks([uid])

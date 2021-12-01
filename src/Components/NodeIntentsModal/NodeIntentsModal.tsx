@@ -76,18 +76,21 @@ const NodeIntentsModal = ({ uid }: NodeIntegrationsModalProps) => {
       <ModalHeader>Node Intents for {getNodeIdFromUid(uid)}</ModalHeader>
       <Note>Node intents are used to sync blocks to specific places of applications.</Note>
 
-      {intentMap.map((i) => (
-        <IntentMapItem key={`intents_selection_in_modal_${i.service.id}_${i.service.type}`}>
-          <IntentSelector
-            id="ModalSelector"
-            service={i.service.id}
-            readOnly={i.service.id === 'MEX'}
-            type={i.service.type}
-            onSelect={onSelectNewIntent}
-            defaultIntent={i.intent}
-          />
-        </IntentMapItem>
-      ))}
+      {intentMap.map(
+        (i) =>
+          i.service.connected && (
+            <IntentMapItem key={`intents_selection_in_modal_${i.service.id}_${i.service.type}`}>
+              <IntentSelector
+                id="ModalSelector"
+                service={i.service.id}
+                readOnly={i.service.id === 'MEX'}
+                type={i.service.type}
+                onSelect={onSelectNewIntent}
+                defaultIntent={i.intent}
+              />
+            </IntentMapItem>
+          )
+      )}
 
       <ModalControls>
         <Button large primary onClick={onSave}>

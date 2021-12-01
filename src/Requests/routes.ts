@@ -31,8 +31,8 @@ export const apiURLs = {
   // Bookmarks
   // post to add
   // path to delete
-  bookmark: (userId: string, uid: string) => `${BOOKMARK_URL}/userIdentifierMappingRecord/bookmark/${userId}/${uid}`,
-  getBookmarks: (userId: string) => `${BOOKMARK_URL}/userIdentifierMappingRecord/bookmark/${userId}`,
+  bookmark: (userId: string, uid: string) => `${BOOKMARK_URL}/userBookmark/${userId}/${uid}`,
+  getBookmarks: (userId: string) => `${BOOKMARK_URL}/userBookmark/${userId}`,
 
   // User
   getUserRecords: (userId: string) => `${BASE_USER_URL}/user/${userId}/${MEX_TAG}`,
