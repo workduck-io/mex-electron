@@ -12,7 +12,7 @@ import { useInitialize, AppType } from '../../../Data/useInitialize'
 import { useSpotlightAppStore } from '../../../Spotlight/store/app'
 import useSearchStore from '../../../Search/SearchStore'
 import { convertDataToRawText } from '../../../Search/localSearch'
-import { useLocation } from 'react-router'
+import { useLocation, useHistory } from 'react-router'
 import { useAuthStore } from '../../../Hooks/useAuth/useAuth'
 import useAnalytics from '../../../analytics'
 interface IndexAndFileData {
@@ -29,10 +29,13 @@ const GlobalListener = memo(() => {
   const setBubble = useSpotlightSettingsStore((state) => state.setBubble)
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
   const setReset = useSpotlightAppStore((state) => state.setReset)
+  const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
+  const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
 
   const { init, update } = useInitialize()
   const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
   const { identifyUser } = useAnalytics()
+  const history = useHistory()
 
   const userDetails = useAuthStore((state) => state.userDetails)
 
@@ -73,6 +76,13 @@ const GlobalListener = memo(() => {
 
     ipcRenderer.on(IpcAction.SPOTLIGHT_BLURRED, () => {
       setReset()
+    })
+
+    ipcRenderer.on(IpcAction.LOGGED_IN, (_event, arg) => {
+      if (arg.loggedIn) {
+        if (arg.userDetails && arg.workspaceDetails) setAuthenticated(arg.userDetails, arg.workspaceDetails)
+        history.replace('/')
+      } else setUnAuthenticated()
     })
 
     ipcRenderer.on(IpcAction.RECIEVE_LOCAL_DATA, (_event, arg: IndexAndFileData) => {

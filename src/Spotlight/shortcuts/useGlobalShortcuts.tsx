@@ -23,6 +23,7 @@ export const useGlobalShortcuts = () => {
   const savedEditorNode = useSpotlightEditorStore((state) => state.node)
   const setIsPreview = useSpotlightEditorStore((state) => state.setIsPreview)
   const setBackPressed = useSpotlightSettingsStore((state) => state.setBackPressed)
+  const setBubble = useSpotlightSettingsStore((state) => state.setBubble)
 
   const handleCancel = () => {
     setSaved(false)
@@ -36,6 +37,10 @@ export const useGlobalShortcuts = () => {
       Alt: (event) => {
         event.preventDefault()
         if (!shortcutDisabled) history.push('/settings')
+      },
+      '$mod+Shift+KeyB': (event) => {
+        event.preventDefault()
+        if (!shortcutDisabled) setBubble()
       },
       Escape: (event) => {
         event.preventDefault()

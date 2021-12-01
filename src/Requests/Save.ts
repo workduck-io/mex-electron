@@ -70,7 +70,6 @@ export const useApi = () => {
 
   const getNodesByWorkspace = async (workspaceId: string) => {
     const data = await client.get(apiURLs.getNodesByWorkspace(workspaceId), {}).then((d) => {
-      console.log(d.data)
       return d.data
     })
 

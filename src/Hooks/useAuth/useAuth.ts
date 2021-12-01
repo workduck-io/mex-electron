@@ -10,6 +10,8 @@ import { useUpdater } from '../../Data/useUpdater'
 import { apiURLs } from '../../Requests/routes'
 import { useApi } from '../../Requests/Save'
 import { RegisterFormData } from '../../Views/Register'
+import { ipcRenderer } from 'electron'
+import { IpcAction } from '../../Spotlight/utils/constants'
 
 interface UserDetails {
   email: string
@@ -86,10 +88,15 @@ export const useAuthentication = () => {
       await client
         .get(apiURLs.getUserRecords(data.userId))
         .then((d) => {
-          // console.log('workspace data', d.data)
+          const userDetails = { email }
+          const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
+
+          getNodesByWorkspace(workspaceDetails.id)
           // Set Authenticated, user and workspace details
-          getNodesByWorkspace(d.data.group).then((d) => console.log('NODES: ', d))
-          setAuthenticated({ email }, { id: d.data.group, name: 'WORKSPACE_NAME' })
+          setAuthenticated(userDetails, workspaceDetails)
+
+          ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
+
           identifyUser(email)
           addUserProperties({
             [Properties.EMAIL]: email,
@@ -174,7 +181,10 @@ export const useAuthentication = () => {
   }
 
   const logout = () => {
-    signOut().then(() => setUnAuthenticated())
+    signOut().then(() => {
+      setUnAuthenticated()
+      ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: false })
+    })
   }
 
   return { login, registerDetails, logout, verifySignup }

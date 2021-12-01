@@ -6,14 +6,17 @@ import GlobalStyle from './styles/global'
 import Bubble from './components/Bubble'
 import Settings from './components/Settings'
 import GlobalListener from './components/GlobalListener'
+import ProtectedRoute from './ProtectedRoute'
+import Login from './components/Login'
 
 const Routes = () => {
   return (
     <Router>
       <Switch>
-        <Route exact path="/" component={Spotlight} />
-        <Route path="/new" component={MexIt} />
-        <Route path="/settings" component={Settings} />
+        <ProtectedRoute exact path="/" component={Spotlight} />
+        <ProtectedRoute path="/new" component={MexIt} />
+        <ProtectedRoute path="/settings" component={Settings} />
+        <Route path="/login" component={Login} />
       </Switch>
       <GlobalListener />
       <Bubble />
