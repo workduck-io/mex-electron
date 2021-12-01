@@ -17,7 +17,8 @@ import config from '../../Requests/config'
 import { convertDataToRawText } from '../../Search/localSearch'
 import useSearchStore from '../../Search/SearchStore'
 import { IpcAction } from '../../Spotlight/utils/constants'
-import { useSaveAndExit } from '../../Spotlight/utils/hooks'
+
+import { useSaveAndExit } from '../../Hooks/useSaveAndExit/useSaveAndExit'
 
 const Init = () => {
   const history = useHistory()

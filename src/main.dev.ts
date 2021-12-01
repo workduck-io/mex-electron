@@ -26,6 +26,8 @@ import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
 import initErrorHandler from './Lib/errorHandlers'
 
+require('@electron/remote/main').initialize()
+
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
 
@@ -38,6 +40,8 @@ let mex: BrowserWindow | null
 let spotlight: BrowserWindow | null
 let spotlightBubble = false
 let isSelection = false
+let updateCheckingFrequency = 3 * 60 * 60 * 1000
+let updateSetInterval: ReturnType<typeof setInterval> | undefined
 
 let trayIconSrc = path.join(__dirname, '..', 'assets/icon.png')
 if (process.platform === 'darwin') {
@@ -93,7 +97,7 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
 export const setFileData = (data: FileData) => {
   fs.writeFileSync(SAVE_LOCATION, JSON.stringify(data))
 }
-// eslint-disable-next-lin @typescript-eslint/no-implicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ensureFieldsOnJSON = (fileData: any) => {
   let toWriteFile = false
   Object.keys(DefaultFileData).forEach((value) => {
@@ -182,6 +186,8 @@ const createMexWindow = () => {
       throw new Error('"mexWindow" is not defined')
     }
   })
+
+  require('@electron/remote/main').enable(mex.webContents)
 
   const menuBuilder = new MenuBuilder(mex)
   menuBuilder.buildMenu()
@@ -336,9 +342,9 @@ const closeWindow = () => {
   // mex?.webContents.send(IpcAction.GET_LOCAL_INDEX)
 }
 
-// app.once('before-quit', () => {
-//   mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
-// })
+app.once('before-quit', () => {
+  mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
+})
 
 ipcMain.on('close', closeWindow)
 
@@ -365,6 +371,7 @@ app.on('quit', () => {
 app
   .whenReady()
   .then(() => {
+    global.appVersion = app.getVersion()
     globalShortcut.register('CommandOrCOntrol+Shift+L', handleToggleMainWindow)
 
     const icon = nativeImage.createFromPath(trayIconSrc)
@@ -464,24 +471,39 @@ export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) 
   else mex?.webContents.send(action, { data })
 }
 
-if (app.isPackaged || process.env.FORCE_PRODUCTION) {
-  const UPDATE_SERVER_URL = 'https://releases.workduck.io'
+export const buildUpdateFeedURL = () => {
+  const version = app.getVersion()
+  const base = 'https://releases.workduck.io'
   let url: string
-  if (process.arch === 'arm64') url = `${UPDATE_SERVER_URL}/update/${process.platform}_arm64/${app.getVersion()}`
-  else url = `${UPDATE_SERVER_URL}/update/${process.platform}/${app.getVersion()}`
-  autoUpdater.setFeedURL({ url })
 
-  console.log('App Version is: ', app.getVersion())
+  if (process.arch == 'arm64') {
+    url = base + `/update/${process.platform}_arm64/${version}`
+  } else {
+    url = base + `/update/${process.platform}/${version}`
+  }
+  return url
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const handleUpdateErrors = (err) => {
+  console.log('There was an error, could not fetch updates: ', err.message)
+}
+
+export const setupAutoUpdates = () => {
+  const feedURL = buildUpdateFeedURL()
+  autoUpdater.setFeedURL({ url: feedURL })
+
+  autoUpdater.on('error', handleUpdateErrors)
 
   autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
     console.log("Aye Aye Captain: There's an update")
 
     const dialogOpts = {
-      type: 'info',
-      buttons: ['Install Update!', 'Later :('],
       title: "Aye Aye Captain: There's a Mex Update!",
-      message: process.platform === 'win32' ? releaseNotes : releaseName,
-      detail: 'Updates are on thee way'
+      type: 'info',
+      buttons: ['Install Update!', 'Later'],
+      message: process.platform === 'win32' ? releaseName : releaseNotes,
+      detail: 'Updates are on the way'
     }
 
     dialog.showMessageBox(dialogOpts).then((returnValue) => {
@@ -489,17 +511,39 @@ if (app.isPackaged || process.env.FORCE_PRODUCTION) {
     })
   })
 
-  autoUpdater.on('update-available', (event) => {
-    console.log('Update aaya')
+  autoUpdater.on('update-available', () => {
+    console.log('Update Available')
   })
 
-  autoUpdater.on('update-not-available', (info) => {
-    console.log('Update nahi aaya | Current app version: ', app.getVersion())
+  autoUpdater.on('update-not-available', () => {
+    console.log('No Update Available!')
   })
 
-  const UPDATE_CHECK_INTERVAL = 3 * 60 * 60 * 1000
-  setInterval(() => {
-    console.log('Sent a check for updates!')
+  autoUpdater.on('before-quit-for-update', () => {
+    mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
+  })
+}
+
+if (app.isPackaged || process.env.FORCE_PRODUCTION) {
+  updateCheckingFrequency = 3 * 60 * 60 * 1000
+  setupAutoUpdates()
+
+  setTimeout(() => {
     autoUpdater.checkForUpdates()
-  }, UPDATE_CHECK_INTERVAL)
+  }, 5 * 60 * 1000)
+
+  updateSetInterval = setInterval(() => {
+    autoUpdater.checkForUpdates()
+  }, updateCheckingFrequency)
+
+  ipcMain.on(IpcAction.SET_UPDATE_FREQ, (_event, arg) => {
+    const { updateFreq } = arg
+
+    clearInterval(updateSetInterval)
+
+    updateSetInterval = setInterval(() => {
+      autoUpdater.checkForUpdates()
+    }, updateFreq * 60 * 60 * 1000)
+    console.log(`Changed Update Freq to ${updateFreq} hours`)
+  })
 }

@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { Header } from './Shortcuts'
 import globeIcon from '@iconify-icons/ph/globe'
 import linkedinIcon from '@iconify-icons/logos/linkedin-icon'
+import { getGlobal } from '@electron/remote'
 
 const Container = styled.section`
   margin: 0 ${({ theme }) => theme.spacing.large};
@@ -34,10 +35,13 @@ const Flex = styled.div`
 `
 
 const About = () => {
+  console.log('Value is: ', getGlobal('appVersion'))
+  const appVersion = getGlobal('appVersion')
+
   return (
     <Container>
       <Header colored>Mex</Header>
-      <Margin>Version: 0.1.0</Margin>
+      <Margin>Version: {appVersion}</Margin>
       <Margin>
         <Flex>
           <Links href="https://workduck.io" target="_blank" rel="noopener norefer">
