@@ -21,10 +21,18 @@ import { DefaultFileData } from './Defaults/baseData'
 import { getSaveLocation, getSearchIndexLocation } from './Defaults/data'
 import MenuBuilder from './menu'
 import { IpcAction } from './Spotlight/utils/constants'
-import { getGlobalShortcut, getSelectedText } from './Spotlight/utils/getSelectedText'
+import {
+  getGlobalShortcut,
+  getSelectedText,
+  SelectionType,
+  getSelectedTextSync
+} from './Spotlight/utils/getSelectedText'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
 import initErrorHandler from './Lib/errorHandlers'
+
+// On windows doesn't work without disabling HW Acceleration
+app.disableHardwareAcceleration()
 
 require('@electron/remote/main').initialize()
 
@@ -326,14 +334,25 @@ const syncFileData = (data?: FileData) => {
 }
 
 const handleToggleMainWindow = async () => {
-  const selection = await getSelectedText()
-  const anyContentPresent = Boolean(selection?.text)
-  isSelection = anyContentPresent
-  toggleMainWindow(spotlight)
-  if (anyContentPresent) {
-    // console.log({ selection })
-    sendToRenderer(selection)
-  } else sendToRenderer(undefined)
+  try {
+    let selection: SelectionType
+    if (process.platform === 'win32') {
+      selection = getSelectedTextSync()
+    } else if (process.platform === 'darwin') {
+      selection = await getSelectedText()
+    }
+    console.log('Selection is: ', selection)
+    const anyContentPresent = Boolean(selection?.text)
+    isSelection = anyContentPresent
+    toggleMainWindow(spotlight)
+    if (anyContentPresent) {
+      sendToRenderer(selection)
+    } else {
+      sendToRenderer(undefined)
+    }
+  } catch (err) {
+    console.log('Error was: ', err)
+  }
 }
 
 const closeWindow = () => {
