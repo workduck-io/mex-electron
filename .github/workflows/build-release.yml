@@ -40,7 +40,7 @@ jobs:
     runs-on: macos-latest
     needs: create_github_release
     env:
-      DEBUG: '*'
+      DEBUG: "*"
       GITHUB_TOKEN: ${{ github.token }}
       YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
       CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
@@ -51,7 +51,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@master
         with:
-          node-version: '16.x'
+          node-version: "16.x"
       - name: Install Yarn
         run: npm install -g yarn
       - name: Install dependencies
@@ -84,7 +84,7 @@ jobs:
     runs-on: macos-latest
     needs: create_github_release
     env:
-      DEBUG: '*'
+      DEBUG: "*"
       GITHUB_TOKEN: ${{ github.token }}
       YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
       CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
@@ -95,7 +95,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@master
         with:
-          node-version: '16.x'
+          node-version: "16.x"
       - name: Install Yarn
         run: npm install -g yarn
       - name: Install dependencies
@@ -123,16 +123,31 @@ jobs:
           files: |
             out/make/*.dmg
             out/make/*.zip
-  # publish_on_win:
-  #   runs-on: windows-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-node@master
-  #       with:
-  #         node-version: 14
-  #     - name: install dependencies
-  #       run: npm install
-  #     - name: publish
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       run: npm run publish
+  publish_on_win:
+    runs-on: windows-latest
+    needs: create_github_release
+    env:
+      DEBUG: "*"
+      GITHUB_TOKEN: ${{ github.token }}
+      YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@master
+        with:
+          node-version: "16.x"
+      - name: Install Yarn
+        run: npm install -g yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Upgrade Internal Dependencies
+        run: yarn upgrade @workduck-io/dwindle active-win-universal
+      - name: Rebuild Native Dependencies for win32
+        run: ./node_modules/.bin/electron-rebuild --force
+      - name: Build App
+        run: yarn make
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            out/make/*.exe
