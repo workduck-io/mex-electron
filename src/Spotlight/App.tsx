@@ -5,10 +5,13 @@ import initializeAmplify from '../Requests/amplify/init'
 import { defaultThemes } from '../Styled/themes/defaultThemes'
 import Routes from './Routes'
 import { SpotlightProvider } from './utils/context'
+import { initializeSentry } from '../sentry'
 
 initializeAmplify()
+initializeSentry()
 
 export default function App() {
+  someRendererUndefinedFunction()
   const theme = useThemeStore((state) => state.theme)
 
   return (

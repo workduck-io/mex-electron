@@ -30,14 +30,9 @@ import {
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
 import initErrorHandler from './Lib/errorHandlers'
-import * as Sentry from '@sentry/electron'
-import { SENTRY_DSN } from './Defaults/dev_'
+import { initializeSentry } from './sentry'
 
-Sentry.init({
-  dsn: SENTRY_DSN
-})
-
-someUndefinedFunction()
+initializeSentry()
 
 // On windows doesn't work without disabling HW Acceleration
 if (process.platform === 'win32') {
