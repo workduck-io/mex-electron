@@ -78,6 +78,7 @@
   },
   "dependencies": {
     "@electron/remote": "^2.0.1",
+    "@sentry/electron": "^2.5.4",
     "@testing-library/react": "^12.0.0",
     "@types/lunr": "^2.3.4",
     "@udecode/plate": "^7.0.2",
