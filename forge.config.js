@@ -1,3 +1,8 @@
+const externalsWin = ['active-win-universal', 'ffi-napi', 'ref-napi', 'iconv']
+const externalsDarwin = ['active-win-universal']
+
+const externals = process.platform === 'darwin' ? externalsDarwin : externalsWin
+
 module.exports = {
   packagerConfig: {
     icon: 'assets/icon.icns'
@@ -53,7 +58,7 @@ module.exports = {
     [
       '@timfish/forge-externals-plugin',
       {
-        externals: ['active-win-universal', 'ffi-napi', 'ref-napi', 'iconv'],
+        externals: externals,
         includeDeps: true
       }
     ]
