@@ -9,7 +9,10 @@ module.exports = {
     rules: require('./webpack.rules')
   },
   externals: {
-    'active-win-universal': 'commonjs2 active-win-universal'
+    'active-win-universal': 'commonjs2 active-win-universal',
+    'ffi-napi': 'commonjs2 ffi-napi',
+    'ref-napi': 'commonjs2 ref-napi',
+    iconv: 'commonjs2 iconv'
   },
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json']

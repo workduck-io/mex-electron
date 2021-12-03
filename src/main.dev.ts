@@ -32,7 +32,9 @@ import { FileData } from './Types/data'
 import initErrorHandler from './Lib/errorHandlers'
 
 // On windows doesn't work without disabling HW Acceleration
-app.disableHardwareAcceleration()
+if (process.platform === 'win32') {
+  app.disableHardwareAcceleration()
+}
 
 require('@electron/remote/main').initialize()
 
