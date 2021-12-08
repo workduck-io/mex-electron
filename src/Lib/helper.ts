@@ -2,6 +2,8 @@ import { FAKE_APP_URI } from './../Defaults/dev_'
 import tough from 'tough-cookie'
 import WebStorageCookieStore from 'tough-cookie-web-storage-store'
 import { SEPARATOR } from '../Components/Sidebar/treeUtils'
+import { NodeEditorContent } from '../Editor/Store/Types'
+import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 
 export const electronCookies = () => {
   const { Cookie } = tough
@@ -40,4 +42,16 @@ export const removeNulls = (obj: any): any => {
     }
   }
   return obj
+}
+
+export const updateEmptyBlockTypes = (content: NodeEditorContent, type: string = ELEMENT_PARAGRAPH) => {
+  content.forEach((element) => {
+    if (!element.type) {
+      element['type'] = type
+    }
+
+    if (element.children && element.children.length > 0) {
+      updateEmptyBlockTypes(element.children, type)
+    }
+  })
 }

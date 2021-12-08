@@ -8,6 +8,9 @@ import { NodeEditorContent } from '../../Editor/Store/Types'
 import { useApi } from '../../Requests/Save'
 import toast from 'react-hot-toast'
 import { useGraphStore } from '../../Components/Graph/GraphStore'
+import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph'
+import { updateEmptyBlockTypes } from '../../Lib/helper'
+import { CONTENT_IS_HERE } from '../../Defaults/baseData'
 
 const useLoad = () => {
   const loadNodeEditor = useEditorStore((store) => store.loadNode)
@@ -61,7 +64,7 @@ const useLoad = () => {
         .then((res) => {
           const { data, metadata } = res
           if (data) {
-            console.log('Data fetched and changed', data, metadata)
+            updateEmptyBlockTypes(data, ELEMENT_PARAGRAPH)
             loadNodeAndReplaceContent(node, data)
 
             setContent(uid, data, metadata)
