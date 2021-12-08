@@ -21,10 +21,12 @@ export const SILink = styled.div<SILinkProps>`
   .ILink_decoration {
     color: ${({ theme }) => theme.colors.gray[6]};
     &_left {
-      margin-right: ${({ theme }) => theme.spacing.tiny};
     }
     &_right {
       margin-left: ${({ theme }) => theme.spacing.tiny};
+    }
+    &_value {
+      color: ${({ theme }) => theme.colors.primary};
     }
   }
 
