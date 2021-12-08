@@ -67,6 +67,12 @@ export const EditorStyles = styled.div`
   /* font-weight: 400; */
   line-height: 1.75;
 
+  .slate-Draggable {
+    > div {
+      overflow: inherit;
+    }
+  }
+
   color: ${({ theme }) => theme.colors.text.default};
 
   b,

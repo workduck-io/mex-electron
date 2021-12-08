@@ -7,11 +7,12 @@ import tinykeys from 'tinykeys'
 import create from 'zustand'
 import { useDelete } from '../../Editor/Actions/useDelete'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
-import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import { Button } from '../../Styled/Buttons'
 import { useHelpStore } from '../Help/HelpModal'
 import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
+import useLoad from '../../Hooks/useLoad/useLoad'
+import { USE_API } from '../../Defaults/dev_'
 
 interface DeleteStoreState {
   open: boolean
@@ -55,7 +56,7 @@ export const useDeleteStore = create<DeleteStoreState>((set) => ({
 
 const Delete = () => {
   const { getMockDelete, execDelete } = useDelete()
-  const { push } = useNavigation()
+  const { loadNode } = useLoad()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const openModal = useDeleteStore((store) => store.openModal)
@@ -102,7 +103,8 @@ const Delete = () => {
     const { newLinks } = execDelete(del)
 
     // Load this node after deletion
-    if (newLinks.length > 0) push(newLinks[0].uid)
+    console.log(newLinks)
+    if (newLinks.length > 0) loadNode(newLinks[0].uid, { savePrev: false, fetch: USE_API })
     closeModal()
   }
 

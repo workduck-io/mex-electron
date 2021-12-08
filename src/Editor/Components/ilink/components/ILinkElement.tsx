@@ -63,14 +63,14 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
         <SILink focused={selected} archived={true}>
           <StyledIcon icon={archivedIcon} color="#df7777" />
           <span className="ILink_decoration ILink_decoration_left">[[</span>
-          {element.value}
+          <span className="ILink_decoration ILink_decoration_value"> {element.value}</span>
           <span className="ILink_decoration ILink_decoration_right">]]</span>
         </SILink>
       ) : (
         <EditorPreview isPreview={isPreview(editor.id)} previewRef={editor} uid={uid}>
           <SILink focused={selected} {...onClickProps}>
             <span className="ILink_decoration ILink_decoration_left">[[</span>
-            {element.value}
+            <span className="ILink_decoration ILink_decoration_value"> {element.value}</span>
             <span className="ILink_decoration ILink_decoration_right">]]</span>
           </SILink>
         </EditorPreview>
