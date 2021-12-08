@@ -71,7 +71,9 @@ export const useBookmarks = () => {
     }
     if (userCred) {
       const res = await client
-        .patch(apiURLs.bookmark(userCred.userId, uid), {})
+        .patch(apiURLs.bookmark(userCred.userId, uid), {
+          type: 'BookmarkRequest'
+        })
         // .then(console.log)
         .then(() => {
           removeBookmarks([uid])

@@ -83,11 +83,11 @@ const Archive = () => {
   // }, [])
 
   const onUnarchiveClick = async (node: ILink) => {
-    const present = ilinks.find((link) => link.key === node.key)
+    // const present = ilinks.find((link) => link.key === node.key)
 
-    if (present) {
-      setShowModal(true)
-    }
+    // if (present) {
+    //   setShowModal(true)
+    // }
 
     await unArchiveData([node])
     addILink(node.key, node.uid, undefined, true)
@@ -100,7 +100,6 @@ const Archive = () => {
     }
 
     loadNode(node.uid, { savePrev: false, fetch: false, node: archiveNode })
-    history.push('/editor')
   }
 
   const transition = useTransition(archive, {
