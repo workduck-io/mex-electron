@@ -62,8 +62,6 @@ const useLoad = () => {
   }
 
   const loadNode = async (uid: string, options: LoadNodeProps = { savePrev: true, fetch: USE_API }) => {
-    console.log({ uid, options })
-
     if (!options.node && !isLocalNode(uid)) {
       toast.error('Selected node does not exist.')
       uid = editorNodeId

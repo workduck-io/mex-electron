@@ -54,15 +54,11 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     const parents = getAllParentIds(ilink) // includes link of child
 
     const newLinks = parents.filter((l) => !linksStrings.includes(l)) // only create links for non existing
-    console.log({ parents, linksStrings, newLinks })
 
     const comboTexts = newLinks.map((l, index) => {
       const newILink = generateIlink(l, ilinks.length + index)
-      console.log({ newILink })
 
       if (uid && newILink.text === ilink) {
-        console.log({ uid, newILink })
-
         newILink.uid = uid
       }
 
