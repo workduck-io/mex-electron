@@ -55,8 +55,11 @@ export const useElementOnChange = (comboType: SingleComboboxConfig) => {
         if (key) itemValue = isChild ? `${parentNodeId}${key}` : key
         else itemValue = parentNodeId
 
-        console.log('I am the one one the onw', { itemValue, type })
+        // console.log('I am the one one the onw', { itemValue, type, key, item })
 
+        if (item.key === '__create_new' && itemValue.startsWith('Create New')) {
+          itemValue = itemValue.substring(11)
+        }
         // select the ilink text and insert the ilink element
         Transforms.select(editor, targetRange)
 
