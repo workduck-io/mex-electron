@@ -21,6 +21,7 @@ export const DefaultFileData: FileData = {
   contents,
   linkCache: {},
   tagsCache: {},
+  archive: [],
   bookmarks: [],
   tags: generateComboTexts(['mex']),
   syncBlocks: [],

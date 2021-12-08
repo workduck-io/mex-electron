@@ -96,9 +96,13 @@ export const useLinks = () => {
 
   const getUidFromNodeId = (nodeId: string) => {
     const links = useDataStore.getState().ilinks
+    const archive = useDataStore.getState().archive
+
     const link = links.find((l) => l.text === nodeId)
+    const archivedLink = archive.find((l) => l.text === nodeId)
 
     if (link) return link.uid
+    if (archivedLink) return archivedLink.uid
   }
 
   const getNodeIdFromUid = (uid: string) => {

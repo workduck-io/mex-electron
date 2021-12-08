@@ -80,8 +80,8 @@ export const defaultShortcuts = {
     category: 'Actions',
     global: true
   },
-  showDelete: {
-    title: 'Open Delete',
+  showArchiveModal: {
+    title: 'Archive Node',
     keystrokes: '$mod+Shift+KeyD',
     category: 'Actions'
   },

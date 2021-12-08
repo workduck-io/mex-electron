@@ -133,7 +133,7 @@ const Content = () => {
       if (nodeContent) {
         loadNodeAndAppend(contentKey.uid, nodeContent)
       } else {
-        loadNode(contentKey.uid, false, false)
+        loadNode(contentKey.uid, { savePrev: false, fetch: false })
       }
     }
     setSaved(false)

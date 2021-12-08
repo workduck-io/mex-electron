@@ -1,4 +1,4 @@
-import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
+import archiveLine from '@iconify-icons/ri/archive-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
@@ -71,9 +71,9 @@ const Delete = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      [shortcuts.showDelete.keystrokes]: (event) => {
+      [shortcuts.showArchiveModal.keystrokes]: (event) => {
         event.preventDefault()
-        shortcutHandler(shortcuts.showDelete, () => {
+        shortcutHandler(shortcuts.showArchiveModal, () => {
           openModal(useEditorStore.getState().node.id)
         })
       }
@@ -94,12 +94,14 @@ const Delete = () => {
   // const { del, mockData, open } = deleteState
   useEffect(() => {
     if (del) {
-      setMockRefactored(getMockDelete(del))
+      setMockRefactored(getMockDelete(del).archivedNodes.map((item) => item.text))
     }
   }, [del])
 
   const handleDelete = () => {
     const { newLinks } = execDelete(del)
+
+    // Load this node after deletion
     if (newLinks.length > 0) push(newLinks[0].uid)
     closeModal()
   }
@@ -110,7 +112,7 @@ const Delete = () => {
 
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
-      <ModalHeader>Delete</ModalHeader>
+      <ModalHeader>Archive</ModalHeader>
 
       <WrappedNodeSelect
         autoFocus
@@ -122,13 +124,13 @@ const Delete = () => {
       {mockRefactored.length > 0 && (
         <MockRefactorMap>
           <MRMHead>
-            <h1>Please confirm deleting the node(s):</h1>
+            <h1>Please confirm archiving the node(s):</h1>
             <p>{mockRefactored.length} changes</p>
           </MRMHead>
           {mockRefactored.map((d) => (
             <MRMRow key={`DelNodeModal_${d}`}>
               <DeleteIcon>
-                <Icon icon={deleteBin2Line}></Icon>
+                <Icon icon={archiveLine}></Icon>
               </DeleteIcon>
               <p>{d}</p>
             </MRMRow>
@@ -140,7 +142,7 @@ const Delete = () => {
           Cancel
         </Button>
         <Button large primary onClick={handleDelete}>
-          Delete
+          Archive
         </Button>
       </ModalControls>
     </Modal>

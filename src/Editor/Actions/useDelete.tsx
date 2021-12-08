@@ -1,6 +1,8 @@
 import React from 'react'
+import useArchive from '../../Hooks/useArchive'
 import { Contents, useContentStore } from '../Store/ContentStore'
 import useDataStore from '../Store/DataStore'
+import { NodeProperties } from '../Store/EditorStore'
 import { useHistoryStore } from '../Store/HistoryStore'
 import { useRecentsStore } from '../Store/RecentsStore'
 import { ILink } from '../Store/Types'
@@ -20,34 +22,25 @@ export const useDelete = () => {
 
   const lastOpened = useRecentsStore((state) => state.lastOpened)
   const updateLastOpened = useRecentsStore((state) => state.update)
+  const { addArchiveData } = useArchive()
 
-  const getMockDelete = (del: string): string[] => {
-    const deleteMap = ilinks.filter((i) => {
+  const getMockDelete = (del: string) => {
+    const archivedNodes = ilinks.filter((i) => {
       const match = i.text.startsWith(del)
       return match
     })
 
-    const deleted = deleteMap.map((f) => {
-      return f.text
-    })
+    const newIlinks = ilinks.filter((i) => archivedNodes.map((i) => i.text).indexOf(i.text) === -1)
 
-    return deleted
+    return { archivedNodes, newIlinks }
   }
 
   const execDelete = (del: string) => {
-    const deleted = getMockDelete(del)
+    const { archivedNodes, newIlinks } = getMockDelete(del)
 
-    // Generate the links without deleted ones
-    const newIlinks = ilinks.filter((i) => {
-      return deleted.indexOf(i.text) === -1
-    })
+    addArchiveData(archivedNodes)
 
     // Remap the contents for links that remain
-    const newContents: Contents = {}
-    newIlinks.forEach((l) => {
-      const uid = getUidFromNodeIdAndLinks(newIlinks, l.text)
-      newContents[uid] = contents[uid]
-    })
 
     const { newIds: newHistory, currentIndex: newCurIndex } = applyDeleteToIds(historyStack, currentIndex, newIlinks)
     updateHistory(newHistory, newCurIndex)
@@ -55,14 +48,16 @@ export const useDelete = () => {
     const { newIds: newRecents } = applyDeleteToIds(lastOpened, 0, newIlinks)
     updateLastOpened(newRecents)
 
-    const baseId = deleted.indexOf(useDataStore.getState().baseNodeId)
+    const baseId = archivedNodes.map((item) => item.text).indexOf(useDataStore.getState().baseNodeId)
+
     if (baseId !== -1 && newIlinks.length > 0) {
       setBaseNodeId(newIlinks[0].text)
     }
-    setILinks(newIlinks)
-    initContents(newContents)
 
-    return { deleted, newLinks: newIlinks }
+    setILinks(newIlinks)
+    // initContents(newContents)
+
+    return { archivedNodes, newLinks: newIlinks }
   }
 
   return { getMockDelete, execDelete }

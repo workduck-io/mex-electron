@@ -11,6 +11,12 @@ import { useGraphStore } from '../../Components/Graph/GraphStore'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph'
 import { updateEmptyBlockTypes } from '../../Lib/helper'
 
+type LoadNodeProps = {
+  savePrev?: boolean
+  fetch?: boolean
+  node?: NodeProperties
+}
+
 const useLoad = () => {
   const loadNodeEditor = useEditorStore((store) => store.loadNode)
   const loadNodeAndReplaceContent = useEditorStore((store) => store.loadNodeAndReplaceContent)
@@ -24,10 +30,13 @@ const useLoad = () => {
 
   const getNode = (uid: string): NodeProperties => {
     const ilinks = useDataStore.getState().ilinks
+    const archive = useDataStore.getState().archive
+
+    const archiveLink = archive.find((i) => i.uid === uid)
     const respectiveLink = ilinks.find((i) => i.uid === uid)
 
-    const UID = respectiveLink?.uid ?? uid
-    const text = respectiveLink?.text ?? uid
+    const UID = respectiveLink?.uid ?? archiveLink?.uid ?? uid
+    const text = respectiveLink?.text ?? archiveLink?.uid ?? uid
 
     const node = {
       title: text,
@@ -41,12 +50,19 @@ const useLoad = () => {
 
   const isLocalNode = (uid: string) => {
     const ilinks = useDataStore.getState().ilinks
+    const archive = useDataStore.getState().archive
+
     const node = getNode(uid)
-    return ilinks.find((i) => i.uid === uid) || node.key.startsWith('Draft.') ? true : false
+
+    const inIlinks = ilinks.find((i) => i.uid === uid)
+    const inArchive = archive.find((i) => i.uid === uid)
+    const isDraftNode = node.key.startsWith('Draft.')
+
+    return inIlinks || inArchive || isDraftNode
   }
 
-  const loadNode = async (uid: string, savePrev = true, fetch = USE_API) => {
-    if (!isLocalNode(uid)) {
+  const loadNode = async (uid: string, options: LoadNodeProps = { savePrev: true, fetch: USE_API }) => {
+    if (!options.node && !isLocalNode(uid)) {
       toast.error('Selected node does not exist.')
       uid = editorNodeId
     }
@@ -54,10 +70,13 @@ const useLoad = () => {
     setNodePreview(false)
     setSelectedNode(undefined)
 
-    if (savePrev) onSave()
-    const node = getNode(uid)
+    if (options.savePrev) onSave()
+
+    const node = options.node ?? getNode(uid)
+
     loadNodeEditor(node)
-    if (fetch) {
+
+    if (options.fetch) {
       setFetchingContent(true)
       getDataAPI(uid)
         .then((res) => {

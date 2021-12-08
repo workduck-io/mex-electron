@@ -15,6 +15,14 @@ import { useNavigation } from '../../../Hooks/useNavigation/useNavigation'
 import { RootElement } from '../SyncBlock'
 import { useSelected } from 'slate-react'
 import { useSaver } from '../Saver'
+import useArchive from '../../../Hooks/useArchive'
+import styled from 'styled-components'
+
+const StyledArchiveText = styled.text`
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  padding: 4px 8px;
+  color: #df7777;
+`
 
 const InlineBlock = (props: any) => {
   const { push } = useNavigation()
@@ -24,6 +32,7 @@ const InlineBlock = (props: any) => {
   const content = getContent(uid)
   const selected = useSelected()
   const { onSave } = useSaver()
+  const { archived } = useArchive()
 
   const openNode = (ev: any) => {
     ev.preventDefault()
@@ -40,11 +49,13 @@ const InlineBlock = (props: any) => {
               <InlineBlockHeading>From:</InlineBlockHeading>
               <InlineBlockText>{props.element.value}</InlineBlockText>
             </InlineFlex>
-            <Chip onClick={openNode}>Open</Chip>
+            {archived(uid) ? <StyledArchiveText>Archived</StyledArchiveText> : <Chip onClick={openNode}>Open</Chip>}
           </FlexBetween>
-          <StyledInlineBlockPreview>
-            {content && <EditorPreviewRenderer content={content && content.content} editorId={`__preview__${uid}`} />}
-          </StyledInlineBlockPreview>
+          {!archived(uid) && (
+            <StyledInlineBlockPreview>
+              {content && <EditorPreviewRenderer content={content && content.content} editorId={`__preview__${uid}`} />}
+            </StyledInlineBlockPreview>
+          )}
         </StyledInlineBlock>
       </div>
       {props.children}

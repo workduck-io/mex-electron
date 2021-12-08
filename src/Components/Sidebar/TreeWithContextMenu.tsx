@@ -1,4 +1,4 @@
-import deleteBin2Line from '@iconify-icons/ri/delete-bin-2-line'
+import archiveLine from '@iconify-icons/ri/archive-line'
 import editLine from '@iconify-icons/ri/edit-line'
 import refreshFill from '@iconify-icons/ri/refresh-fill'
 import shareLine from '@iconify-icons/ri/share-line'
@@ -27,17 +27,17 @@ export const TreeWithContextMenu = ({ tree }: TreeProps) => {
     id: MENU_ID
   })
 
-  function displayMenu ({ event, node }: any) {
+  function displayMenu({ event, node }: any) {
     show(event, { props: { id: node.id } })
   }
 
-  function handleItemClick ({ event, props: p, data, triggerEvent }: ItemParams<ItemProps, any>) {
+  function handleItemClick({ event, props: p, data, triggerEvent }: ItemParams<ItemProps, any>) {
     // console.log({ event, props, data, triggerEvent })
     switch (event.currentTarget.id) {
       case 'rename':
         openRenameModal(p.id)
         break
-      case 'delete':
+      case 'archive':
         openDeleteModal(p.id)
         break
       case 'sync':
@@ -56,9 +56,9 @@ export const TreeWithContextMenu = ({ tree }: TreeProps) => {
           <Icon icon={editLine} />
           Rename
         </Item>
-        <Item id="delete" onClick={handleItemClick}>
-          <Icon icon={deleteBin2Line} />
-          Delete
+        <Item id="archive" onClick={handleItemClick}>
+          <Icon icon={archiveLine} />
+          Archive
         </Item>
         <Separator />
         <Item id="sync" onClick={handleItemClick}>
