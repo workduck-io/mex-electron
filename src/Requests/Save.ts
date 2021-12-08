@@ -61,7 +61,7 @@ export const useApi = () => {
           updatedAt: d.data.updatedAt
         }
 
-        console.log(metadata, d.data)
+        // console.log(metadata, d.data)
         return { data: d.data.data, metadata: removeNulls(metadata) }
       })
       .catch(console.error)
