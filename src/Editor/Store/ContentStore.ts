@@ -42,7 +42,7 @@ export const useContentStore = create<ContentStoreState>((set, get) => ({
     const content = oldContent[uid] && oldContent[uid].content ? oldContent[uid].content : undefined
     delete oldContent[uid]
     const nmetadata = { ...oldMetadata, ...metadata }
-    console.log({ oldMetadata, nmetadata, metadata })
+    // console.log({ oldMetadata, nmetadata, metadata })
     set({
       contents: { [uid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
     })

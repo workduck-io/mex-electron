@@ -3,30 +3,39 @@ import { Combobox } from '../combobox/components/Combobox'
 import { ComboboxItemProps, RenderFunction } from '../combobox/components/Combobox.types'
 import { useComboboxControls } from '../combobox/hooks/useComboboxControls'
 import { useComboboxStore } from '../combobox/useComboboxStore'
+import { SlashCommandConfig } from '../SlashCommands/Types'
+import { useElementOnChange, useOnSelectItem } from './useMultiComboboxOnKeyDown'
 
-import { ComboTypeHandlers, useElementOnChange } from './useMultiComboboxOnKeyDown'
-
-export interface ComboElementProps {
-  keys: {
-    [type: string]: ComboRenderType
-  }
+export interface ComboConfigData {
+  keys: ConfigDataKeys
+  slashCommands: ConfigDataSlashCommands
 }
-interface ComboRenderType {
-  comboTypeHandlers: ComboTypeHandlers
+
+export interface ConfigDataKeys {
+  [type: string]: SingleComboboxConfig
+}
+
+export interface ConfigDataSlashCommands {
+  [type: string]: SlashCommandConfig
+}
+
+export interface SingleComboboxConfig {
+  slateElementType: string
+  newItemHandler: (newItem: string, parentId?: any) => any // eslint-disable-line @typescript-eslint/no-explicit-any
   renderElement: RenderFunction<ComboboxItemProps>
 }
 
-export const ElementComboboxComponent = ({ keys }: ComboElementProps) => {
+export const ElementComboboxComponent = ({ keys, slashCommands }: ComboConfigData) => {
   const comboboxKey: string = useComboboxStore((state) => state.key)
   const comboRenderType = keys[comboboxKey]
-  const onSelectItem = useElementOnChange(comboRenderType.comboTypeHandlers)
+  const onSelectItem = useOnSelectItem(comboboxKey, slashCommands, comboRenderType)
 
   return <Combobox onSelectItem={onSelectItem as any} onRenderItem={comboRenderType.renderElement} />
 }
 
 // Handle multiple combobox
-export const MultiComboboxContainer = ({ keys }: ComboElementProps) => {
+export const MultiComboboxContainer = (props: ComboConfigData) => {
   useComboboxControls(true)
 
-  return <ElementComboboxComponent keys={keys} />
+  return <ElementComboboxComponent {...props} />
 }

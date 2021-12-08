@@ -25,10 +25,10 @@ const BookmarkButton = ({ uid }: BookmarkButtonProps) => {
     e.preventDefault()
     setLoading(true)
     if (isBookmark(uid)) {
-      console.log('Removing')
+      // console.log('Removing')
       await removeBookmark(uid)
     } else {
-      console.log('Adding')
+      // console.log('Adding')
       await addBookmark(uid)
     }
     setLoading(false)

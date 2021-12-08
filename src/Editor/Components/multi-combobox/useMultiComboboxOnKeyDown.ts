@@ -13,13 +13,19 @@ import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from '../SlashCommands/Types'
 import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChange'
+import {
+  ComboConfigData,
+  ConfigDataKeys,
+  ConfigDataSlashCommands,
+  SingleComboboxConfig
+} from './multiComboboxContainer'
 
 export interface ComboTypeHandlers {
   slateElementType: string
   newItemHandler: (newItem: string, parentId?) => any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
-export const useElementOnChange = (comboType: ComboTypeHandlers) => {
+export const useElementOnChange = (comboType: SingleComboboxConfig) => {
   const isOpen = useComboboxIsOpen()
 
   const targetRange = useComboboxStore((state) => state.targetRange)
@@ -48,6 +54,8 @@ export const useElementOnChange = (comboType: ComboTypeHandlers) => {
         let itemValue
         if (key) itemValue = isChild ? `${parentNodeId}${key}` : key
         else itemValue = parentNodeId
+
+        console.log('I am the one one the onw', { itemValue, type })
 
         // select the ilink text and insert the ilink element
         Transforms.select(editor, targetRange)
@@ -79,20 +87,13 @@ export const useElementOnChange = (comboType: ComboTypeHandlers) => {
   )
 }
 
-const useMultiComboboxOnKeyDown = (
-  keys: {
-    [type: string]: ComboTypeHandlers
-  },
-  slashCommands: {
-    [type: string]: SlashCommandConfig
-  }
+export const useOnSelectItem = (
+  comboboxKey: string,
+  slashCommands: ConfigDataSlashCommands,
+  singleComboConfig: SingleComboboxConfig
 ) => {
-  const comboboxKey: string = useComboboxStore((state) => state.key)
-  const comboType = keys[comboboxKey]
   const slashCommandOnChange = useSlashCommandOnChange(slashCommands)
-  const elementOnChange = useElementOnChange(comboType)
-
-  // We need to create the select handlers ourselves here
+  const elementOnChange = useElementOnChange(singleComboConfig)
 
   let elementChangeHandler: (editor: PEditor & ReactEditor, item: IComboboxItem) => any
   if (comboboxKey === ComboboxKey.SLASH_COMMAND) {
@@ -101,9 +102,20 @@ const useMultiComboboxOnKeyDown = (
     elementChangeHandler = elementOnChange
   }
 
+  return elementChangeHandler
+}
+
+const useMultiComboboxOnKeyDown = (config: ComboConfigData) => {
+  const { keys, slashCommands } = config
+  const comboboxKey: string = useComboboxStore((state) => state.key)
+  const comboType = keys[comboboxKey]
+
+  // We need to create the select handlers ourselves here
+  const onSelectItemHandler = useOnSelectItem(comboboxKey, slashCommands, comboType)
+
   return useComboboxOnKeyDown({
     // Handle multiple combobox
-    onSelectItem: elementChangeHandler,
+    onSelectItem: onSelectItemHandler,
     onNewItem: (newItem, parentId?) => {
       comboType.newItemHandler(newItem, parentId)
     },
