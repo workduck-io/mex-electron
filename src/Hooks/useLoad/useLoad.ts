@@ -10,7 +10,6 @@ import toast from 'react-hot-toast'
 import { useGraphStore } from '../../Components/Graph/GraphStore'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph'
 import { updateEmptyBlockTypes } from '../../Lib/helper'
-import { CONTENT_IS_HERE } from '../../Defaults/baseData'
 
 const useLoad = () => {
   const loadNodeEditor = useEditorStore((store) => store.loadNode)
