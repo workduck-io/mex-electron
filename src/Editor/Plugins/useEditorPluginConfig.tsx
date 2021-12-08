@@ -88,7 +88,6 @@ const useEditorPluginConfig = (editorId: string) => {
     }
   }
 
-  // const comboboxConfigData: ComboConfigData = { }
   const pluginConfigs = {
     combobox: {
       onChange: useMultiComboboxOnChange(editorId, {

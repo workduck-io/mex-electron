@@ -50,44 +50,6 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
     }
   }, [editorRef, editorId]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // const comboboxRenderConfig: ComboConfigData = {
-  //   keys: {
-  //     ilink: {
-  //       comboTypeHandlers: {
-  //         slateElementType: ELEMENT_ILINK,
-  //         newItemHandler: (newItem, parentId?) => {
-  //           addILink(newItem, null, parentId)
-  //         }
-  //       },
-  //       renderElement: ILinkComboboxItem
-  //     },
-  //     inline_block: {
-  //       comboTypeHandlers: {
-  //         slateElementType: ELEMENT_INLINE_BLOCK,
-  //         newItemHandler: (newItem, parentId?) => {
-  //           addILink(newItem, null, parentId)
-  //         }
-  //       },
-  //       renderElement: ILinkComboboxItem
-  //     },
-  //     tag: {
-  //       comboTypeHandlers: {
-  //         slateElementType: ELEMENT_TAG,
-  //         newItemHandler: (newItem) => {
-  //           addTag(newItem)
-  //         }
-  //       },
-  //       renderElement: TagComboboxItem
-  //     },
-  //     slash_command: {
-  //       comboTypeHandlers: {
-  //         slateElementType: 'slash_command_comboTypeHandler',
-  //         newItemHandler: () => undefined
-  //       },
-  //       renderElement: SlashComboboxItem
-  //     }
-  //   }
-  // }
   const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId)
 
   // We get memoized plugins
