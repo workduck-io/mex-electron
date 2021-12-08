@@ -77,6 +77,7 @@ const Archive = () => {
   const contents = useContentStore((store) => store.contents)
   const theme = useTheme()
 
+  // * TODO: Uncomment this !important
   // useEffect(() => {
   //   getArchiveData()
   // }, [])
@@ -121,8 +122,6 @@ const Archive = () => {
       const match = i.key.startsWith(delNode.key)
       return match
     })
-
-    console.log('CALLED')
 
     await removeArchiveData(nodesToDelete)
 
@@ -197,7 +196,7 @@ const Archive = () => {
         <ModalHeader>Archive</ModalHeader>
         <MRMHead>
           {!delNode && <h1>Node with same name is present in the workspace.</h1>}
-          <p>Are you sure you want to {delNode ? 'delete' : 'replace'}?`</p>
+          <p>Are you sure you want to {delNode ? 'delete' : 'replace'}?</p>
         </MRMHead>
         <ModalControls>
           <Button large onClick={handleCancel}>
