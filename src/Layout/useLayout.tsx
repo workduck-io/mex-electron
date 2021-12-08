@@ -1,5 +1,3 @@
-import React from 'react'
-import useThemeStore from '../Editor/Store/ThemeStore'
 import { useLayoutStore } from './LayoutStore'
 
 const useLayout = () => {

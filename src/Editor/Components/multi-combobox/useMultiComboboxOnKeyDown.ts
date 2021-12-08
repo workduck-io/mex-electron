@@ -51,6 +51,7 @@ export const useElementOnChange = (comboType: ComboTypeHandlers) => {
 
         // select the ilink text and insert the ilink element
         Transforms.select(editor, targetRange)
+
         insertNodes<TElement>(editor, {
           type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
           children: [{ text: '' }],
