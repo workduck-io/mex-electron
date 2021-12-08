@@ -48,7 +48,7 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
           const type = getPlatePluginType(editor, commandConfig.slateElementType)
           const data = commandConfig.getBlockData ? commandConfig.getBlockData(item) : {}
 
-          console.log('INSERT: ', { type, data })
+          // console.log('INSERT: ', { type, data })
 
           const eventName = getEventNameFromElement('Editor', ActionType.CREATE, type)
           trackEvent(eventName, { 'mex-type': type, 'mex-data': data })

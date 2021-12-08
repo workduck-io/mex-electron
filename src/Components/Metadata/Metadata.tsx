@@ -151,7 +151,7 @@ const Metadata = () => {
   const [metadata, setMetadata] = useState<NodeMetadata | undefined>(undefined)
 
   useEffect(() => {
-    console.log({ content })
+    // console.log({ content })
     if (content === undefined || content.metadata === undefined) return
     const { metadata: contentMetadata } = content
     setMetadata(contentMetadata)

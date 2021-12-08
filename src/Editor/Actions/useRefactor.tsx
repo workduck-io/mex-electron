@@ -92,7 +92,7 @@ export const useRefactor = () => {
       uid: generateNodeId()
     }))
 
-    console.log({ newIlinks, newParents, newParentIlinks })
+    // console.log({ newIlinks, newParents, newParentIlinks })
 
     // Remap the contents with changed links
     const newContents: Contents = {}

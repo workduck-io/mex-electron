@@ -9,7 +9,7 @@ import { useComboboxStore } from '../useComboboxStore'
 import { ComboboxProps } from './Combobox.types'
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
-  // TODO
+  // TODO clear the error-esque warnings for 'type inference'
   const at = useComboboxStore((state) => state.targetRange)
   const items = useComboboxStore((state) => state.items)
   const itemIndex = useComboboxStore((state) => state.itemIndex)

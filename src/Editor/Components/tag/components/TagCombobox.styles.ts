@@ -49,7 +49,6 @@ export const ComboboxItem = styled.div<{ highlighted: boolean }>`
   cursor: pointer;
 
   :hover {
-    background-color: ${({ highlighted, theme }) =>
-      !highlighted ? theme.colors.background.card : theme.colors.background.highlight};
+    background-color: ${({ theme }) => theme.colors.background.highlight};
   }
 `
