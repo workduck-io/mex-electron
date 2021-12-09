@@ -1,5 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
+import { Link } from 'react-router-dom'
 import create from 'zustand'
 import { useLinks } from '../../Editor/Actions/useLinks'
 import { Intent } from '../../Editor/Components/SyncBlock'
@@ -7,8 +8,9 @@ import IntentSelector from '../../Editor/Components/SyncBlock/intentSelector'
 import useIntents from '../../Hooks/useIntents/useIntents'
 import { Button } from '../../Styled/Buttons'
 import { IntentMapItem } from '../../Styled/Integration'
-import { Note } from '../../Styled/Typography'
+import { Para } from '../../Styled/Typography'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
+import { Command } from './styled'
 
 export interface NodeIntegrationsModalProps {
   uid: string
@@ -71,31 +73,44 @@ const NodeIntentsModal = ({ uid }: NodeIntegrationsModalProps) => {
     appendIntent(intent)
   }
 
+  const connectedServices = intentMap.filter((i) => i.service.connected)
+  const isConnnectedToServices = connectedServices.length !== 0
+
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Node Intents for {getNodeIdFromUid(uid)}</ModalHeader>
-      <Note>Node intents are used to sync blocks to specific places of applications.</Note>
+      <Para>
+        Add integrations and use them anywhere using <Command>/sync</Command> command.
+      </Para>
+      {connectedServices.map((i) => (
+        <IntentMapItem key={`intents_selection_in_modal_${i.service.id}_${i.service.type}`}>
+          <IntentSelector
+            id="ModalSelector"
+            service={i.service.id}
+            readOnly={i.service.id === 'MEX'}
+            type={i.service.type}
+            onSelect={onSelectNewIntent}
+            defaultIntent={i.intent}
+          />
+        </IntentMapItem>
+      ))}
 
-      {intentMap.map(
-        (i) =>
-          i.service.connected && (
-            <IntentMapItem key={`intents_selection_in_modal_${i.service.id}_${i.service.type}`}>
-              <IntentSelector
-                id="ModalSelector"
-                service={i.service.id}
-                readOnly={i.service.id === 'MEX'}
-                type={i.service.type}
-                onSelect={onSelectNewIntent}
-                defaultIntent={i.intent}
-              />
-            </IntentMapItem>
-          )
+      {!isConnnectedToServices && (
+        <Para>
+          Go to{' '}
+          <Link to="/integrations" href="/integrations">
+            Integrations
+          </Link>{' '}
+          page
+        </Para>
       )}
 
       <ModalControls>
-        <Button large primary onClick={onSave}>
-          Save
-        </Button>
+        {isConnnectedToServices && (
+          <Button large primary onClick={onSave}>
+            Save
+          </Button>
+        )}
         <Button large onClick={onCancel}>
           Cancel
         </Button>

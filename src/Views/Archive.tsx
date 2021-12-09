@@ -19,7 +19,8 @@ import { defaultContent } from '../Defaults/baseData'
 import EditorPreviewRenderer from '../Editor/EditorPreviewRenderer'
 import { useContentStore } from '../Editor/Store/ContentStore'
 import { NodeProperties } from '../Editor/Store/EditorStore'
-import { useLinks } from '../Editor/Actions/useLinks'
+import { NotFoundText } from '../Styled/Form'
+import archiveFill from '@iconify-icons/ri/archive-fill'
 
 const Nodes = styled.section`
   padding-right: 2rem;
@@ -138,6 +139,12 @@ const Archive = () => {
     <IntegrationContainer>
       <Title>Archived</Title>
       <Nodes>
+        {archive.length === 0 && (
+          <NotFoundText>
+            <Icon color={theme.colors.primary} fontSize={128} icon={archiveFill} />
+            <p>Your archive is empty!</p>
+          </NotFoundText>
+        )}
         <Results>
           {transition((styles, n, _t, _i) => {
             const con = contents[n.uid]

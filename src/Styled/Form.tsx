@@ -50,6 +50,20 @@ export const InputBlock = styled(Input)`
         `}
 `
 
+export const NotFoundText = styled.div`
+  width: 100%;
+  flex-direction: column;
+  height: 65vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+
+  p {
+    color: ${({ theme }) => theme.colors.text.disabled};
+  }
+`
+
 export const TextArea = styled.textarea`
   background-color: ${({ theme }) => theme.colors.form.input.bg};
   color: ${({ theme }) => theme.colors.form.input.fg};

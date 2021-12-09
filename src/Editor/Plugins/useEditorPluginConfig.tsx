@@ -98,7 +98,7 @@ const useEditorPluginConfig = (editorId: string) => {
         },
         inline_block: {
           cbKey: ComboboxKey.INLINE_BLOCK,
-          trigger: '*[[',
+          trigger: '![[',
           data: ilinksForCurrentNode
         },
         tag: {

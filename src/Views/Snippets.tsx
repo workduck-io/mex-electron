@@ -18,6 +18,7 @@ import { Icon } from '@iconify/react'
 import IconButton from '../Styled/Buttons'
 import { Wrapper } from '../Styled/Layouts'
 import { generateSnippetId } from '../Defaults/idPrefixes'
+import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 
 export type SnippetsProps = {
   title?: string
@@ -37,7 +38,7 @@ const Snippets: React.FC<SnippetsProps> = () => {
     addSnippet({
       id: snippetId,
       title: 'Untitled',
-      content: [{ children: [{ text: '' }] }]
+      content: [{ children: [{ text: '' }], type: ELEMENT_PARAGRAPH }]
     })
 
     loadSnippet(snippetId)

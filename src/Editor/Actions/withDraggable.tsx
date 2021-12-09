@@ -71,7 +71,7 @@ export const withStyledDraggables = (components: any) => {
         ELEMENT_OL,
         ELEMENT_UL,
         // ELEMENT_SYNC_BLOCK,
-        ELEMENT_INLINE_BLOCK,
+        // ELEMENT_INLINE_BLOCK,
         // ELEMENT_ILINK,
         ELEMENT_TABLE,
         ELEMENT_MEDIA_EMBED,
