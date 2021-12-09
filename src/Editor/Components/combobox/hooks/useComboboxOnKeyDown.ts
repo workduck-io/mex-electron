@@ -14,6 +14,35 @@ const pure = (id: string) => {
   return id
 }
 
+export type OnSelectItem = (editor: PEditor, item: IComboboxItem) => any // eslint-disable-line @typescript-eslint/no-explicit-any
+export type OnNewItem = (name: string, parentId?) => void
+
+export const useCreatableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnNewItem, creatable?: boolean) => {
+  const itemIndex = useComboboxStore((state) => state.itemIndex)
+  const closeMenu = useComboboxStore((state) => state.closeMenu)
+  const items = useComboboxStore((state) => state.items)
+  const currentNodeKey = useEditorStore((state) => state.node.key)
+
+  const creatableOnSelect = (editor: any, textVal: string) => {
+    // console.log({ textVal })
+    const val = pure(textVal)
+    closeMenu()
+    if (items[itemIndex]) {
+      const item = items[itemIndex]
+      // console.log({ items, item })
+      if (item.key === '__create_new') {
+        onSelectItem(editor, { key: String(items.length), text: val })
+        onNewItem(val, currentNodeKey)
+      } else onSelectItem(editor, item)
+    } else if (val && creatable) {
+      onSelectItem(editor, { key: String(items.length), text: val })
+      onNewItem(val, currentNodeKey)
+    }
+  }
+
+  return creatableOnSelect
+}
+
 /**
  * If the combobox is open, handle keyboard
  */
@@ -22,8 +51,8 @@ export const useComboboxOnKeyDown = ({
   onNewItem,
   creatable
 }: {
-  onSelectItem: (editor: PEditor, item: IComboboxItem) => any // eslint-disable-line @typescript-eslint/no-explicit-any
-  onNewItem: (name: string, parentId?) => void
+  onSelectItem: OnSelectItem
+  onNewItem: OnNewItem
   creatable?: boolean
 }): KeyboardHandler => {
   const itemIndex = useComboboxStore((state) => state.itemIndex)
@@ -31,23 +60,9 @@ export const useComboboxOnKeyDown = ({
   const closeMenu = useComboboxStore((state) => state.closeMenu)
   const search = useComboboxStore((state) => state.search)
   const items = useComboboxStore((state) => state.items)
-  const currentNodeKey = useEditorStore((state) => state.node.key)
   const isOpen = useComboboxIsOpen()
 
-  const createNew = (textVal: string, editor: any) => {
-    closeMenu()
-    if (items[itemIndex]) {
-      const item = items[itemIndex]
-      if (item.key === '__create_new') {
-        onSelectItem(editor, { key: String(items.length), text: textVal })
-        onNewItem(textVal, currentNodeKey)
-      } else onSelectItem(editor, item)
-    } else if (textVal && creatable) {
-      // console.log({ search });
-      onSelectItem(editor, { key: String(items.length), text: textVal })
-      onNewItem(textVal, currentNodeKey)
-    }
-  }
+  const creatabaleOnSelect = useCreatableOnSelect(onSelectItem, onNewItem, creatable)
 
   return useCallback(
     (editor) => (e) => {
@@ -73,7 +88,7 @@ export const useComboboxOnKeyDown = ({
 
         if (['Tab', 'Enter', ' ', ']'].includes(e.key)) {
           e.preventDefault()
-          createNew(pure(search), editor)
+          creatabaleOnSelect(editor, search)
           return false
         }
       }

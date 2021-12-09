@@ -27,7 +27,7 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
       // console.log({ commandConfig })
 
       if (isOpen && targetRange) {
-        // console.log('useElementOnChange 1', { comboType, type });
+        // console.log('useSlashCommandOnChange', { commandConfig, commandKey, keys, item })
 
         const pathAbove = getBlockAbove(editor)?.[1]
         const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)

@@ -2,6 +2,7 @@ import React from 'react'
 import { Combobox } from '../combobox/components/Combobox'
 import { ComboboxItemProps, RenderFunction } from '../combobox/components/Combobox.types'
 import { useComboboxControls } from '../combobox/hooks/useComboboxControls'
+import { useCreatableOnSelect } from '../combobox/hooks/useComboboxOnKeyDown'
 import { useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from '../SlashCommands/Types'
 import { useElementOnChange, useOnSelectItem } from './useMultiComboboxOnKeyDown'
@@ -28,9 +29,20 @@ export interface SingleComboboxConfig {
 export const ElementComboboxComponent = ({ keys, slashCommands }: ComboConfigData) => {
   const comboboxKey: string = useComboboxStore((state) => state.key)
   const comboRenderType = keys[comboboxKey]
-  const onSelectItem = useOnSelectItem(comboboxKey, slashCommands, comboRenderType)
+  const { elementChangeHandler: onSelectItem, isSlash } = useOnSelectItem(comboboxKey, slashCommands, comboRenderType)
+  const onNewItem = (newItem, parentId?) => {
+    comboRenderType.newItemHandler(newItem, parentId)
+  }
 
-  return <Combobox onSelectItem={onSelectItem as any} onRenderItem={comboRenderType.renderElement} />
+  const creatableOnSelectItem = useCreatableOnSelect(onSelectItem, onNewItem)
+
+  return (
+    <Combobox
+      isSlash={isSlash}
+      onSelectItem={isSlash ? (onSelectItem as any) : creatableOnSelectItem}
+      onRenderItem={comboRenderType.renderElement}
+    />
+  )
 }
 
 // Handle multiple combobox

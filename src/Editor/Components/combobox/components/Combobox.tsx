@@ -8,13 +8,14 @@ import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen'
 import { useComboboxStore } from '../useComboboxStore'
 import { ComboboxProps } from './Combobox.types'
 
-export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
+export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'
   const at = useComboboxStore((state) => state.targetRange)
   const items = useComboboxStore((state) => state.items)
   const itemIndex = useComboboxStore((state) => state.itemIndex)
   const combobox = useComboboxControls(true)
   const isOpen = useComboboxIsOpen()
+  const search = useComboboxStore((state) => state.search)
 
   const ref = React.useRef<any>(null) // eslint-disable-line @typescript-eslint/no-explicit-any
   const editor = useEditorState()
@@ -46,13 +47,14 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
         {isOpen &&
           items.map((item, index) => {
             const Item = onRenderItem ? onRenderItem({ item }) : item.text
+            const text = item.text
 
             return (
               <ComboboxItem
                 key={item.key}
                 highlighted={index === itemIndex}
                 {...comboProps(item, index)}
-                onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, item)}
+                onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, isSlash ? item : search)}
               >
                 {Item}
               </ComboboxItem>
