@@ -15,7 +15,7 @@ import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListen
 import useLoad from '../../Hooks/useLoad/useLoad'
 import config from '../../Requests/config'
 import { convertDataToRawText } from '../../Search/localSearch'
-import useSearchStore from '../../Search/SearchStore'
+import useSearchStore, { useNewSearchStore } from '../../Search/SearchStore'
 import { IpcAction } from '../../Spotlight/utils/constants'
 
 import { useSaveAndExit } from '../../Hooks/useSaveAndExit/useSaveAndExit'
@@ -36,6 +36,8 @@ const Init = () => {
   const { getLocalData } = useLocalData()
   const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
   const fetchIndexJSON = useSearchStore((store) => store.fetchIndexJSON)
+  const initFlexSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
+  const searchFlexIndex = useNewSearchStore((store) => store.searchIndex)
 
   /** Initialization of the app details occur here */
   useEffect(() => {
@@ -55,6 +57,14 @@ const Init = () => {
           initializeSearchIndex(initList, indexData)
           // console.log(`Search Index initialized with ${initList.length} documents`)
           return fileData
+        })
+        .then((d) => {
+          const initList = convertDataToRawText(d)
+          initFlexSearchIndex(initList)
+          const results = searchFlexIndex('design')
+          console.log('Results are: ', results)
+
+          return d
         })
         .then((d) => {
           const userAuthenticatedEmail = initCognito({

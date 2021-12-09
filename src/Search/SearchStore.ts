@@ -86,6 +86,7 @@ export interface FlexSearchResult {
 interface NewSearchStoreState {
   docs: Map<string, NodeTitleText>
   index: Document | null
+  indexDump: any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initializeSearchIndex: (initList: NodeSearchData[]) => Document
   addDoc: (doc: NodeSearchData) => void
@@ -99,6 +100,7 @@ interface NewSearchStoreState {
 export const useNewSearchStore = create<NewSearchStoreState>((set, get) => ({
   docs: new Map<string, NodeTitleText>(),
   index: null,
+  indexDump: {},
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initializeSearchIndex: (initList: NodeSearchData[]) => {
     const index = createFlexsearchIndex(initList)

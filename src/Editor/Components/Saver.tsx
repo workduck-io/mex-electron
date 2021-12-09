@@ -13,7 +13,7 @@ import { useTags } from '../../Hooks/useTags/useTags'
 import { getEventNameFromElement } from '../../Lib/strings'
 import { useApi } from '../../Requests/Save'
 import { convertEntryToRawText } from '../../Search/localSearch'
-import useSearchStore from '../../Search/SearchStore'
+import useSearchStore, { useNewSearchStore } from '../../Search/SearchStore'
 import IconButton from '../../Styled/Buttons'
 import { useLinks } from '../Actions/useLinks'
 import { useContentStore } from '../Store/ContentStore'
@@ -30,6 +30,7 @@ export const useSaver = () => {
   const editorState = usePlateValue()
   const { saveDataAPI } = useApi()
   const updateDoc = useSearchStore((state) => state.updateDoc)
+  const updateDocNew = useNewSearchStore((store) => store.updateDoc)
 
   const onSave = (node?: NodeProperties) => {
     const defaultNode = useEditorStore.getState().node
@@ -42,6 +43,7 @@ export const useSaver = () => {
       updateTagsFromContent(node.uid, editorState)
       const title = getNodeIdFromUid(node.uid)
       updateDoc(node.uid, convertEntryToRawText(node.uid, editorState), title)
+      updateDocNew(node.uid, convertEntryToRawText(node.uid, editorState), title)
     }
     saveData()
     toast('Saved!', { duration: 1000 })

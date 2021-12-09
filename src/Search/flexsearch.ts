@@ -15,3 +15,15 @@ export const createFlexsearchIndex = (initList: NodeSearchData[]) => {
 
   return index
 }
+
+export const flexIndexKeys = [
+  'title.cfg.json',
+  'title.ctx.json',
+  'title.map.json',
+  'text.cfg.json',
+  'text.ctx.json',
+  'text.map.json',
+  'reg.json',
+  'store.json',
+  'tag.json'
+]
