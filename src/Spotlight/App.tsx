@@ -11,7 +11,6 @@ initializeAmplify()
 initializeSentry()
 
 export default function App() {
-  someRendererUndefinedFunction()
   const theme = useThemeStore((state) => state.theme)
 
   return (
