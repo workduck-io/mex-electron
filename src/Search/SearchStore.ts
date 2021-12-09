@@ -95,6 +95,7 @@ interface NewSearchStoreState {
   updateDoc: (nodeUID: string, newDoc: NodeSearchData, title: string) => void
   fetchDocByID: (id: string, matchField: string) => FlexSearchResult
   searchIndex: (query: string) => FlexSearchResult[]
+  fetchIndexLocalStorage: () => void
 }
 
 export const useNewSearchStore = create<NewSearchStoreState>((set, get) => ({
@@ -150,6 +151,11 @@ export const useNewSearchStore = create<NewSearchStoreState>((set, get) => ({
       })
     })
     return results
+  },
+  fetchIndexLocalStorage: () => {
+    get().index.export((key, data) => {
+      localStorage.setItem(key, data)
+    })
   }
 }))
 

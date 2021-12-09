@@ -143,17 +143,26 @@ export const getFileData = () => {
 }
 
 export const getIndexData = () => {
-  if (fs.existsSync(SEARCH_INDEX_LOCATION)) {
-    const stringData = fs.readFileSync(SEARCH_INDEX_LOCATION, 'utf-8')
-    const indexData = JSON.parse(stringData)
-    return indexData
-  }
+  // if (fs.existsSync(SEARCH_INDEX_LOCATION)) {
+  //   const stringData = fs.readFileSync(SEARCH_INDEX_LOCATION, 'utf-8')
+  //   const indexData = JSON.parse(stringData)
+  //   return indexData
+  // }
   return null
 }
 
-export const setSearchIndexData = (indexJSON) => {
-  const stringData = JSON.stringify(indexJSON)
-  fs.writeFileSync(SEARCH_INDEX_LOCATION, stringData)
+export const setSearchIndexData = (index) => {
+  if (!fs.existsSync(SEARCH_INDEX_LOCATION)) fs.mkdirSync(SEARCH_INDEX_LOCATION)
+
+  Object.entries(index).forEach(([key, data]) => {
+    try {
+      const t = path.join(SEARCH_INDEX_LOCATION, `${key}.json`)
+      const d: any = data !== undefined ? data : ''
+      fs.writeFileSync(t, d)
+    } catch (err) {
+      console.log('Error is: ', err)
+    }
+  })
 }
 
 const createSpotLighWindow = (show?: boolean) => {
@@ -459,8 +468,9 @@ ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
 })
 
 ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
-  const { searchIndexJSON } = arg
-  if (searchIndexJSON) setSearchIndexData(searchIndexJSON)
+  const { searchIndex } = arg
+
+  if (searchIndex) setSearchIndexData(searchIndex)
 })
 
 ipcMain.on(IpcAction.SET_LOCAL_DATA, (_event, arg) => {

@@ -2,6 +2,7 @@ import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import { flexIndexKeys } from '../../Search/flexsearch'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
 import { useInitialize } from '../../Data/useInitialize'
@@ -38,6 +39,7 @@ const Init = () => {
   const fetchIndexJSON = useSearchStore((store) => store.fetchIndexJSON)
   const initFlexSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
   const searchFlexIndex = useNewSearchStore((store) => store.searchIndex)
+  const fetchIndexLocalStorage = useNewSearchStore((store) => store.fetchIndexLocalStorage)
 
   /** Initialization of the app details occur here */
   useEffect(() => {
@@ -54,7 +56,7 @@ const Init = () => {
         })
         .then(({ fileData, indexData }) => {
           const initList = convertDataToRawText(fileData)
-          initializeSearchIndex(initList, indexData)
+          initializeSearchIndex(initList, null)
           // console.log(`Search Index initialized with ${initList.length} documents`)
           return fileData
         })
@@ -105,8 +107,12 @@ const Init = () => {
       }
     })
     ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, () => {
-      const searchIndexJSON = fetchIndexJSON()
-      ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndexJSON })
+      fetchIndexLocalStorage()
+      const searchIndex = {}
+      flexIndexKeys.forEach((key) => {
+        searchIndex[key] = localStorage.getItem(key)
+      })
+      ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndex })
     })
   }, [fetchIndexJSON]) // eslint-disable-line react-hooks/exhaustive-deps
 
