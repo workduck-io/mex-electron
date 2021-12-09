@@ -23,7 +23,7 @@ export const useCreatableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnNe
   const items = useComboboxStore((state) => state.items)
   const currentNodeKey = useEditorStore((state) => state.node.key)
 
-  const creatableOnSelect = (textVal: string, editor: any) => {
+  const creatableOnSelect = (editor: any, textVal: string) => {
     // console.log({ textVal })
     const val = pure(textVal)
     closeMenu()
@@ -88,7 +88,7 @@ export const useComboboxOnKeyDown = ({
 
         if (['Tab', 'Enter', ' ', ']'].includes(e.key)) {
           e.preventDefault()
-          creatabaleOnSelect(search, editor)
+          creatabaleOnSelect(editor, search)
           return false
         }
       }

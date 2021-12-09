@@ -29,14 +29,20 @@ export interface SingleComboboxConfig {
 export const ElementComboboxComponent = ({ keys, slashCommands }: ComboConfigData) => {
   const comboboxKey: string = useComboboxStore((state) => state.key)
   const comboRenderType = keys[comboboxKey]
-  const onSelectItem = useOnSelectItem(comboboxKey, slashCommands, comboRenderType)
+  const { elementChangeHandler: onSelectItem, isSlash } = useOnSelectItem(comboboxKey, slashCommands, comboRenderType)
   const onNewItem = (newItem, parentId?) => {
     comboRenderType.newItemHandler(newItem, parentId)
   }
 
   const creatableOnSelectItem = useCreatableOnSelect(onSelectItem, onNewItem)
 
-  return <Combobox onSelectItem={creatableOnSelectItem as any} onRenderItem={comboRenderType.renderElement} />
+  return (
+    <Combobox
+      isSlash={isSlash}
+      onSelectItem={isSlash ? (onSelectItem as any) : creatableOnSelectItem}
+      onRenderItem={comboRenderType.renderElement}
+    />
+  )
 }
 
 // Handle multiple combobox

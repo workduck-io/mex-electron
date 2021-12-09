@@ -103,7 +103,7 @@ const Delete = () => {
     const { newLinks } = execDelete(del)
 
     // Load this node after deletion
-    console.log(newLinks)
+    // console.log(newLinks)
     if (newLinks.length > 0) loadNode(newLinks[0].uid, { savePrev: false, fetch: USE_API })
     closeModal()
   }

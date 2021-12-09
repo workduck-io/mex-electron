@@ -97,15 +97,16 @@ export const useOnSelectItem = (
 ) => {
   const slashCommandOnChange = useSlashCommandOnChange(slashCommands)
   const elementOnChange = useElementOnChange(singleComboConfig)
+  const isSlash = comboboxKey === ComboboxKey.SLASH_COMMAND
 
   let elementChangeHandler: (editor: PEditor & ReactEditor, item: IComboboxItem) => any
-  if (comboboxKey === ComboboxKey.SLASH_COMMAND) {
+  if (isSlash) {
     elementChangeHandler = slashCommandOnChange
   } else {
     elementChangeHandler = elementOnChange
   }
 
-  return elementChangeHandler
+  return { elementChangeHandler, isSlash }
 }
 
 const useMultiComboboxOnKeyDown = (config: ComboConfigData) => {
@@ -114,7 +115,7 @@ const useMultiComboboxOnKeyDown = (config: ComboConfigData) => {
   const comboType = keys[comboboxKey]
 
   // We need to create the select handlers ourselves here
-  const onSelectItemHandler = useOnSelectItem(comboboxKey, slashCommands, comboType)
+  const { elementChangeHandler: onSelectItemHandler } = useOnSelectItem(comboboxKey, slashCommands, comboType)
 
   return useComboboxOnKeyDown({
     // Handle multiple combobox

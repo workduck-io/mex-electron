@@ -8,7 +8,7 @@ import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen'
 import { useComboboxStore } from '../useComboboxStore'
 import { ComboboxProps } from './Combobox.types'
 
-export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
+export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'
   const at = useComboboxStore((state) => state.targetRange)
   const items = useComboboxStore((state) => state.items)
@@ -54,7 +54,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
                 key={item.key}
                 highlighted={index === itemIndex}
                 {...comboProps(item, index)}
-                onMouseDown={editor && getPreventDefaultHandler(onSelectItem, search, editor)}
+                onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, isSlash ? item : search)}
               >
                 {Item}
               </ComboboxItem>

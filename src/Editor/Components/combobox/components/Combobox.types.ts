@@ -43,6 +43,7 @@ export interface ComboboxItemProps {
 }
 
 export interface ComboboxProps {
-  onSelectItem: (textVal: string, editor: ReactEditor) => void
+  isSlash?: boolean
+  onSelectItem: (editor: ReactEditor, item: string) => void
   onRenderItem?: RenderFunction<ComboboxItemProps>
 }
