@@ -63,7 +63,7 @@ if (process.platform === 'darwin') {
   trayIconSrc = path.join(__dirname, '..', 'assets/icon.ico')
 }
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   const sourceMapSupport = require('source-map-support')
   sourceMapSupport.install()
 }
