@@ -7,7 +7,7 @@ export interface RenderFunction<P = { [key: string]: any }> {
 export enum ComboboxItemType {
   Normal = 0,
   Divider = 1,
-  Header = 2,
+  Header = 2
 }
 
 export interface IComboboxItem {
@@ -43,6 +43,6 @@ export interface ComboboxItemProps {
 }
 
 export interface ComboboxProps {
-  onSelectItem: (editor: ReactEditor, item: IComboboxItem) => void
+  onSelectItem: (textVal: string, editor: ReactEditor) => void
   onRenderItem?: RenderFunction<ComboboxItemProps>
 }
