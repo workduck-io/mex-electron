@@ -15,6 +15,7 @@ import {
   createItalicPlugin,
   createLinkPlugin,
   createListPlugin,
+  createTodoListPlugin,
   createMediaEmbedPlugin,
   createNodeIdPlugin,
   createParagraphPlugin,
@@ -26,8 +27,20 @@ import {
   createTablePlugin,
   createUnderlinePlugin,
   PEditor,
-  PlatePlugin
+  PlatePlugin,
+  autoformatArrow,
+  autoformatLegal,
+  autoformatLegalHtml,
+  autoformatMath,
+  autoformatPunctuation,
+  autoformatSmartQuotes,
+  ELEMENT_HR,
+  createHorizontalRulePlugin,
+  setNodes,
+  ELEMENT_DEFAULT,
+  insertNodes
 } from '@udecode/plate'
+
 import { useMemo } from 'react'
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
 import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
@@ -69,6 +82,7 @@ const generatePlugins = () => {
     createStrikethroughPlugin(), // strikethrough mark
     createCodePlugin(), // code mark
     createHighlightPlugin(), // highlight mark
+    createTodoListPlugin(),
 
     // Special Elements
     createImagePlugin(), // Image
@@ -80,9 +94,33 @@ const generatePlugins = () => {
     createSoftBreakPlugin(optionsSoftBreakPlugin),
     createExitBreakPlugin(optionsExitBreakPlugin),
     createResetNodePlugin(optionsResetBlockTypePlugin),
+    createHorizontalRulePlugin(),
+    createSelectOnBackspacePlugin({ allow: [ELEMENT_HR] }),
 
     // Autoformat markdown syntax to elements (**, #(n))
-    createAutoformatPlugin(optionsAutoformat),
+    createAutoformatPlugin({
+      rules: [
+        ...autoformatSmartQuotes,
+        ...autoformatPunctuation,
+        ...autoformatLegal,
+        ...autoformatLegalHtml,
+        ...autoformatArrow,
+        ...autoformatMath,
+        ...optionsAutoformat.rules,
+        {
+          mode: 'block',
+          type: ELEMENT_HR,
+          match: ['---', '—-', '___ '],
+          format: (editor) => {
+            setNodes(editor, { type: ELEMENT_HR })
+            insertNodes(editor, {
+              type: ELEMENT_DEFAULT,
+              children: [{ text: '' }]
+            })
+          }
+        }
+      ]
+    }),
     createDndPlugin(),
 
     createNodeIdPlugin(optionsCreateNodeIdPlugin),
