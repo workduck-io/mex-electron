@@ -492,9 +492,14 @@ export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) 
   else mex?.webContents.send(action, { data })
 }
 
+export const checkIfAlpha = (version: string) => {
+  return version.includes('-alpha')
+}
+
 export const buildUpdateFeedURL = () => {
   const version = app.getVersion()
-  const base = 'https://releases.workduck.io'
+  const isAlpha = checkIfAlpha(version)
+  const base = isAlpha ? 'https://alpha.releases.workduck.io' : 'https://releases.workduck.io'
   let url: string
 
   if (process.arch == 'arm64') {
@@ -513,6 +518,8 @@ export const handleUpdateErrors = (err) => {
 export const setupAutoUpdates = () => {
   const feedURL = buildUpdateFeedURL()
   autoUpdater.setFeedURL({ url: feedURL })
+
+  console.log('Update URL is: ', feedURL)
 
   autoUpdater.on('error', handleUpdateErrors)
 
