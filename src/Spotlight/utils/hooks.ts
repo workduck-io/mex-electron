@@ -106,7 +106,7 @@ export const combineSources = (
 
 export const openNodeInMex = (nodeId: string) => {
   // * Open saved node in Mex
-  // ipcRenderer.send(IpcAction.OPEN_NODE_IN_MEX, { nodeId: nodeId })
+  ipcRenderer.send(IpcAction.OPEN_NODE_IN_MEX, { nodeId: nodeId })
 }
 
 export const useKeyPress = (pressedKey: string): boolean => {

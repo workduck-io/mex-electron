@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import Check from '@iconify-icons/bi/check'
 import PlusCircle from '@iconify-icons/bi/plus-circle'
 import { Icon } from '@iconify/react'
@@ -35,8 +35,7 @@ import {
   Scroll
 } from '../Styled/Integration'
 import { TemplateInfoBar } from '../Layout/InfoBar'
-import { TemplateCommand } from '../Components/Integrations/Template/styled'
-import { DateFormat, useRelativeTime as getRelativeTime } from '../Hooks/useRelativeTime'
+import { DateFormat } from '../Hooks/useRelativeTime'
 import { useIntegrationStore } from '../Editor/Store/IntegrationStore'
 import { client } from '@workduck-io/dwindle'
 import { integrationURLs } from '../Requests/routes'
@@ -45,13 +44,15 @@ import { useHistory } from 'react-router'
 import useDataStore from '../Editor/Store/DataStore'
 import { LoadingButton } from '../Components/Buttons/LoadingButton'
 import { useTheme } from 'styled-components'
+import useOnboard from '../Components/Onboarding/store'
+// eslint-disable-next-line import/namespace
 
 const NewTemplate = () => {
   const openNewTemplateModal = useNewSyncTemplateModalStore((store) => store.openModal)
 
   return (
     <>
-      <PlusIcon onClick={() => openNewTemplateModal()}>
+      <PlusIcon data-tour="create-flow-template" onClick={() => openNewTemplateModal()}>
         <Icon height={64} icon={PlusCircle} />
       </PlusIcon>
       <NewSyncTemplateModal />
@@ -62,6 +63,7 @@ const NewTemplate = () => {
 const Service = (props: { service: Service }) => {
   const { service } = props
   const connectService = useSyncStore((store) => store.connectService)
+  const isOnboarding = useOnboard((s) => s.isOnboarding)
 
   const onConnectService = (id: string, authUrl: string) => {
     shell.openExternal(authUrl)
@@ -70,13 +72,18 @@ const Service = (props: { service: Service }) => {
 
   const onServiceClick = (ev: any) => {
     ev.preventDefault()
-    if (!service.connected && service.enabled) onConnectService(service.id, service.authUrl)
+    if (!service.connected && service.enabled && !isOnboarding) onConnectService(service.id, service.authUrl)
   }
 
   if (service.id === 'MEX') return null
 
   return (
-    <ServiceCard onClick={onServiceClick} disabled={!service.enabled} hover={!service.connected}>
+    <ServiceCard
+      data-tour="service-connect"
+      onClick={onServiceClick}
+      disabled={!service.enabled}
+      hover={!service.connected}
+    >
       {service.connected && (
         <>
           <RightCut />
@@ -95,6 +102,8 @@ const Service = (props: { service: Service }) => {
 
 const Integrations = () => {
   const services = useSyncStore((store) => store.services)
+
+  console.log({ services })
 
   return (
     <IntegrationContainer>
@@ -151,7 +160,7 @@ const TemplateInfo = () => {
         style={{ color: !isTemplateDetailsLoading && theme.colors.text.fade }}
         alsoDisabled
         loading={isTemplateDetailsLoading}
-      >{`/sync/${template.command}`}</LoadingButton>
+      >{`/flow/${template.command}`}</LoadingButton>
       {templateDetails && (
         <Margin>
           <Text>{`Active count: ${localNodes.length}`}</Text>

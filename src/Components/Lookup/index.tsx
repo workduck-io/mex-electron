@@ -11,9 +11,22 @@ import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
 import { useHelpStore } from '../Help/HelpModal'
 import NodeSelect from '../NodeSelect/NodeSelect'
 import { StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
+import useOnboard from '../../Components/Onboarding/store'
+
+import toast from 'react-hot-toast'
+import styled from 'styled-components'
+
+const StyledModal = styled(Modal)`
+  z-index: 10010000;
+`
 
 const Lookup = () => {
   const [open, setOpen] = useState(false)
+  const [tempClose, setTempClose] = useState(false)
+  const isOnboarding = useOnboard((s) => s.isOnboarding)
+  const setStep = useOnboard((s) => s.setStep)
+  const changeOnboarding = useOnboard((s) => s.changeOnboarding)
+
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const openModal = () => {
@@ -33,26 +46,44 @@ const Lookup = () => {
         event.preventDefault()
         shortcutHandler(shortcuts.showLookup, () => {
           openModal()
+          if (isOnboarding) {
+            changeOnboarding(false)
+            setTempClose(true)
+            setStep(2) // * Start with Tour node
+          }
         })
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [shortcuts, shortcutDisabled])
+  }, [shortcuts, shortcutDisabled, isOnboarding])
 
   const { getUidFromNodeId } = useLinks()
   const { push } = useNavigation()
   const addILink = useDataStore((s) => s.addILink)
 
-  const handleSelectItem = (inputValue: string) => {
-    const uid = getUidFromNodeId(inputValue)
+  const openNode = (value: string) => {
+    const uid = getUidFromNodeId(value)
     push(uid)
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, inputValue)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, value)
     closeModal()
   }
 
+  const handleSelectItem = (inputValue: string) => {
+    if (tempClose) {
+      if (inputValue === 'tour') {
+        changeOnboarding(true)
+        openNode(inputValue)
+        // performClick()
+      } else toast('Please select "tour" node')
+    } else {
+      openNode(inputValue)
+    }
+  }
+
   const handleCreateItem = (inputValue: string) => {
+    if (tempClose) return
     const uid = addILink(inputValue)
     push(uid)
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, inputValue)
@@ -60,7 +91,7 @@ const Lookup = () => {
   }
 
   return (
-    <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
+    <StyledModal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <h1>Lookup</h1>
       <StyledInputWrapper>
         <NodeSelect
@@ -74,7 +105,7 @@ const Lookup = () => {
         />
       </StyledInputWrapper>
       {/* <LookupInput autoFocus menuOpen handleChange={handleChange} handleCreate={handleCreate} /> */}
-    </Modal>
+    </StyledModal>
   )
 }
 

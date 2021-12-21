@@ -1,16 +1,17 @@
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
+import { tourNodeContent } from '../Components/Onboarding/tourNode'
 import { generateComboTexts, generateILinks } from '../Editor/Store/sampleTags'
 import { FileData } from '../Types/data'
 import { generateTempId } from './idPrefixes'
 
-const links = generateILinks(['doc', 'dev', 'design', '@', 'Draft'])
+const links = generateILinks(['doc', 'dev', 'design', '@', 'tour', 'Draft'])
 
 export const defaultContent = [{ id: generateTempId(), children: [{ text: '' }], type: ELEMENT_PARAGRAPH }]
 
 const contents = links.reduce((prev, cur) => {
   return {
     ...prev,
-    [cur.uid]: { type: 'init', content: defaultContent }
+    [cur.uid]: { type: 'init', content: cur.key === 'tour' ? tourNodeContent : defaultContent }
   }
 }, {})
 

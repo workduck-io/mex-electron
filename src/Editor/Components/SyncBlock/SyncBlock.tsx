@@ -2,7 +2,7 @@ import refreshFill from '@iconify-icons/ri/refresh-fill'
 import { Icon } from '@iconify/react'
 import Tippy from '@tippyjs/react/headless' // different import path!
 import { client } from '@workduck-io/dwindle'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { ActionType } from '../../../analytics/events'
 import useAnalytics from '../../../analytics'
@@ -20,6 +20,8 @@ import { ElementHeader, FormControls, RootElement, SentFrom, SyncForm, SyncTitle
 import { Intent, SyncBlockData, SyncBlockProps } from './SyncBlock.types'
 import { getSyncServiceIcon } from './SyncIcons'
 import { getEventNameFromElement } from '../../../Lib/strings'
+import useOnboard from '../../../Components/Onboarding/store'
+import { performClick } from '../../../Components/Onboarding/steps'
 
 type FormValues = {
   content: string
@@ -34,6 +36,9 @@ export const SyncBlock = (props: SyncBlockProps) => {
   const { register, getValues } = useForm<FormValues>()
   const editSyncBlock = useSyncStore((state) => state.editSyncBlock)
   const selectedSyncBlockId = useSyncStore((state) => state.selectedSyncBlock)
+  const isOnboarding = useOnboard((s) => s.isOnboarding)
+  const flowMessage = useOnboard((s) => s.flowMessage)
+
   const setSelected = useSyncStore((state) => state.setSelected)
   const [synced, setSynced] = useState(false)
   const { showSyncBlocks } = useToggleElements()
@@ -49,7 +54,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
   const { getIntents, getTemplate, updateNodeIntentsAndCreateIGID } = useIntents()
 
-  let blockData: SyncBlockData
+  let blockData: SyncBlockData = {} as SyncBlockData
   const blockDataFiltered = blocksData.filter((d) => d.id === element.id)
 
   if (showSyncBlocks && !info) {
@@ -78,7 +83,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
   const intents = getIntents(uid, templateId)
   const template = getTemplate(templateId)
 
-  const areAllIntentsPresent = intents.reduce((prev, cur) => {
+  const areAllIntentsPresent = intents?.reduce((prev, cur) => {
     if (cur) return prev && isIntent(cur)
     else return false
   }, true)
@@ -132,14 +137,26 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
     editSyncBlock({
       id: element.id,
-      content: data.content,
+      content: data?.content,
       igid: igid,
       templateId: templateId
     })
 
+    if (isOnboarding) {
+      setSynced(true)
+
+      setTimeout(() => {
+        setSynced(false)
+      }, 2000)
+
+      performClick()
+
+      return
+    }
+
     trackEvent(getEventNameFromElement('Sync Block', ActionType.SYNC, 'sync_block'), {
       'mex-sync-block-id': element.id,
-      'mex-content': data.content,
+      'mex-content': data?.content,
       'mex-intent-group-id': igid,
       'mex-template-id': templateId
     })
@@ -166,12 +183,16 @@ export const SyncBlock = (props: SyncBlockProps) => {
       <div contentEditable={false}>
         {/* For quick debug {& JSON.stringify(blockData)} */}
 
-        <SyncForm selected={selected} onClick={() => setSelected(element.id)}>
+        <SyncForm
+          data-tour={flowMessage ? 'mex-flow-block-response' : 'mex-flow-block'}
+          selected={selected || isOnboarding}
+          onClick={() => setSelected(element.id)}
+        >
           <ElementHeader>
             <Widget>
               <Icon icon={refreshFill} height={20} />
-              SyncBlock
-              <SyncTitle>{template.title}</SyncTitle>
+              FlowBlock
+              <SyncTitle>{template?.title}</SyncTitle>
             </Widget>
             {!fromLocal && (
               <Widget>
@@ -182,7 +203,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
             )}
           </ElementHeader>
 
-          {areAllIntentsPresent ? (
+          {areAllIntentsPresent || isOnboarding ? (
             <Tippy
               placement="top-end"
               appendTo={() => document.body}
@@ -197,7 +218,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
                 {...register('content')}
                 placeholder="Your content here..."
                 className="syncTextArea"
-                defaultValue={content}
+                defaultValue={content ?? ''}
                 readOnly={!fromLocal}
                 autoFocus={true}
               />
@@ -243,15 +264,15 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
               {fromLocal ? (
                 <>
-                  {areAllIntentsPresent && (
+                  {(areAllIntentsPresent || isOnboarding) && (
                     <Button primary onClick={onSubmit}>
                       {
-                        content === '' ? 'Submit' : 'Edit' // FIXME
+                        content === '' || isOnboarding ? 'Submit' : 'Edit' // FIXME
                       }
                     </Button>
                   )}
 
-                  {!areAllIntentsPresent && (
+                  {!areAllIntentsPresent && !isOnboarding && (
                     <Button primary onClick={onIntentsSave}>
                       Save Intents
                     </Button>

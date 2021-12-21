@@ -3,6 +3,8 @@ import { useSpotlightEditorStore } from '../store/editor'
 import tinykeys from 'tinykeys'
 import { useEffect } from 'react'
 import useLoad from '../../Hooks/useLoad/useLoad'
+import { performClick } from '../../Components/Onboarding/steps'
+
 import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 
 export const useRecentsShortcuts = () => {
@@ -19,6 +21,7 @@ export const useRecentsShortcuts = () => {
         if (!shortcutDisabled) {
           loadNodeProps(savedEditorNode)
           history.replace('/new')
+          performClick()
         }
       }
     })

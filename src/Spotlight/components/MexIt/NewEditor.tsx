@@ -11,12 +11,15 @@ import { ComboText } from '../../../Editor/Store/Types'
 import { AppType } from '../../../Data/useInitialize'
 import { appNotifierWindow } from '../../../Spotlight/utils/notifiers'
 import { IpcAction } from '../../../Spotlight/utils/constants'
+import useOnboard from '../../../Components/Onboarding/store'
 
 export const isILinkExists = (iLink: string, iLinkList: Array<ComboText>) =>
   iLinkList.filter((item) => item.key === iLink).length !== 0
 
 const NewEditor = () => {
   const { key, uid: nodeId } = useEditorStore((state) => state.node)
+  const isOnboarding = useOnboard((s) => s.isOnboarding)
+  const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const addILink = useDataStore((s) => s.addILink)
 
   const ilinks = useDataStore((s) => s.ilinks)
@@ -48,12 +51,16 @@ const NewEditor = () => {
     setSaved(true)
     addRecent(uid)
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, uid)
-    openNodeInMex(uid)
+
+    if (isOnboarding) {
+      openNodeInMex(uid)
+      changeOnboarding(false)
+    }
   }
 
   return (
     <StyledEditor>
-      <FullEditor>
+      <FullEditor data-tour="mex-edit-content">
         <Editor
           focusAtBeginning
           // onSave={onSave}

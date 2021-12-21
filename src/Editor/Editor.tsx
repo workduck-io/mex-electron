@@ -61,7 +61,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
     <>
       <DndProvider backend={HTML5Backend}>
         {content && (
-          <EditorStyles onClick={() => setNodePreview(false)}>
+          <EditorStyles onClick={() => setNodePreview(false)} data-tour="mex-onboarding-draft-editor">
             {showBalloonToolbar && <BallonMarkToolbarButtons />}
             <Plate
               id={generateEditorId()}

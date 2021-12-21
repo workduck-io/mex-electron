@@ -52,7 +52,7 @@ export const useSyncConfig = () => {
   return { getSyncBlockConfigs }
 }
 
-export const getSyncCommand = (title: string) => `sync${SEPARATOR}${title}`
+export const getSyncCommand = (title: string) => `flow${SEPARATOR}${title}`
 
 export const extractSyncBlockCommands = (templates: SyncBlockTemplate[]): string[] => {
   return templates.filter((temp) => temp.command !== undefined).map((c) => getSyncCommand(c.command))

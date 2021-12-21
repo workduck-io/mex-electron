@@ -58,7 +58,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   }, [preview.text])
 
   return (
-    <StyledPreview ref={ref}>
+    <StyledPreview ref={ref} data-tour="mex-quick-capture-preview">
       {selection && (
         <SeePreview onClick={handleScrollToBottom}>
           <Icon icon={downIcon} />

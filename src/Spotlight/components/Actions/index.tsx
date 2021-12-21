@@ -26,7 +26,7 @@ const Actions = () => {
     <ColumnContainer>
       <Action>
         <ActionTitle>ACTIONS</ActionTitle>
-        <CreateMex>
+        <CreateMex data-tour="mex-create-new-draft">
           <ActionDescStyled>
             <Icon style={{ marginRight: '5px' }} color="#888" height={20} width={20} icon={CreateIcon} />
             Create new Mex

@@ -43,7 +43,7 @@ const InlineBlock = (props: any) => {
   return (
     <RootElement {...props.attributes}>
       <div contentEditable={false}>
-        <StyledInlineBlock selected={selected}>
+        <StyledInlineBlock selected={selected} data-tour="mex-onboarding-inline-block">
           <FlexBetween>
             <InlineFlex>
               <InlineBlockHeading>From:</InlineBlockHeading>

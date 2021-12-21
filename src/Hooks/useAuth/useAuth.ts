@@ -168,6 +168,10 @@ export const useAuthentication = () => {
       .then((d) => {
         // console.log(d.data)
         // Set workspace details
+        const userDetails = { email: uCred.email }
+        const workspaceDetails = { id: newWorkspaceName, name: 'WORKSPACE_NAME' }
+
+        ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
         setAuthenticated({ email: sensitiveData.email }, { id: d.data.id, name: d.data.name })
       })
       .then(updateDefaultServices)
