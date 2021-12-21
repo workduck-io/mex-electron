@@ -60,12 +60,12 @@ export const defaultShortcuts = {
     category: 'Actions'
   },
   showSyncBlocks: {
-    title: 'Sync Blocks',
+    title: 'Flow Blocks',
     keystrokes: '$mod+KeyK KeyS',
     category: 'Actions'
   },
   showGraph: {
-    title: 'Graph',
+    title: 'Context View',
     keystrokes: '$mod+Shift+KeyG',
     category: 'Actions'
   },

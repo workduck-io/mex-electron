@@ -23,6 +23,7 @@ interface NodeSelectProps {
   handleCreateItem?: (nodeId: string) => void
   id?: string
   name?: string
+  disabled?: boolean
   inputRef?: any
   prefillLast?: boolean
   menuOpen?: boolean
@@ -43,6 +44,7 @@ function NodeSelect({
   menuOpen,
   defaultValue,
   placeholder,
+  disabled,
   highlightWhenSelected,
   iconHighlight,
   prefillLast,
@@ -184,6 +186,7 @@ function NodeSelect({
     <>
       <StyledCombobox {...getComboboxProps()}>
         <Input
+          disabled={disabled}
           {...getInputProps()}
           autoFocus={autoFocus}
           placeholder={placeholder}

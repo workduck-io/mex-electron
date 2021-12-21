@@ -1,5 +1,6 @@
 import { usePlateValue } from '@udecode/plate-core'
 import React from 'react'
+import useOnboard from '../../../Components/Onboarding/store'
 import NodeSelect from '../../../Components/NodeSelect/NodeSelect'
 import { StyledSpotlightInputWrapper } from '../../../Components/NodeSelect/NodeSelect.styles'
 import { AppType } from '../../../Data/useInitialize'
@@ -23,6 +24,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
   const { setSelection } = useSpotlightContext()
   const { setSaved } = useContentStore(({ saved, setSaved }) => ({ saved, setSaved }))
   const { title, uid: nodeId } = useEditorStore((state) => state.node)
+  const isOnboarding = useOnboard((s) => s.isOnboarding)
   // const uid = useEditorStore((state) => state.node.uid)
 
   const addILink = useDataStore((s) => s.addILink)
@@ -70,6 +72,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
   return (
     <StyledSpotlightInputWrapper>
       <NodeSelect
+        disabled={isOnboarding}
         id="wd-spotlight-editor-search"
         name="wd-spotlight-editor-search"
         prefillLast

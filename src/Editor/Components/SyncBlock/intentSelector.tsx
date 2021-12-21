@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react'
 import { client } from '@workduck-io/dwindle'
 import React, { useState } from 'react'
 import { Item, useContextMenu } from 'react-contexify'
+import useOnboard from '../../../Components/Onboarding/store'
 import { useAuthStore } from '../../../Hooks/useAuth/useAuth'
 import { capitalize } from '../../../Lib/strings'
 import { integrationURLs } from '../../../Requests/routes'
@@ -47,6 +48,7 @@ const IntentSelector = ({
 
   const MENU_ID = `IntentSelectorMenu_${service}_${type}_${id}`
   const workspaceId = useAuthStore((store) => store.workspaceDetails.id)
+  const isOnboarding = useOnboard((s) => s.isOnboarding)
   const { show } = useContextMenu({
     id: MENU_ID
   })
@@ -54,7 +56,7 @@ const IntentSelector = ({
   // Fetch intents
   // Workspace ID, service, type
 
-  function onIntentSelect (props, intent: Intent) {
+  function onIntentSelect(props, intent: Intent) {
     // console.log({ props, intent })
     setIntentSelectorState({
       ...intentSelectorState,
@@ -65,7 +67,7 @@ const IntentSelector = ({
     if (onSelect) onSelect(intent)
   }
 
-  function displayMenu (e) {
+  function displayMenu(e) {
     if (loading === true) {
       client
         .post(integrationURLs.getIntentValues, {
@@ -105,6 +107,8 @@ const IntentSelector = ({
           <div>
             {selected.name} - {capitalize(type)}
           </div>
+        ) : isOnboarding ? (
+          <div>Onboard user</div>
         ) : (
           <div>Connect {capitalize(type)}</div>
         )}

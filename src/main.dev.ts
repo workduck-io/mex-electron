@@ -173,7 +173,7 @@ const createSpotLighWindow = (show?: boolean) => {
     spotlight = null
   })
 
-  // spotlight.webContents.openDevTools()
+  spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -469,8 +469,20 @@ ipcMain.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {
   notifyOtherWindow(IpcAction.NEW_RECENT_ITEM, from, data)
 })
 
+ipcMain.on(IpcAction.START_ONBOARDING, (_event, arg) => {
+  const { from, data } = arg
+  notifyOtherWindow(IpcAction.START_ONBOARDING, from, data)
+})
+
+ipcMain.on(IpcAction.STOP_ONBOARDING, (_event, arg) => {
+  const { from } = arg
+  notifyOtherWindow(IpcAction.STOP_ONBOARDING, from)
+})
+
 ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
   mex?.webContents.send(IpcAction.OPEN_NODE, { nodeId: arg.nodeId })
+  spotlight.hide()
+  mex.show()
 })
 
 ipcMain.on(IpcAction.LOGGED_IN, (_event, arg) => {

@@ -36,7 +36,7 @@ const Template: React.FC<{ template: SyncBlockTemplate; onClick?: any; selected 
     <TemplateCard selected={selected} onClick={() => onClick(template)}>
       <TemplateHeader>
         <FullFlex>
-          <TemplateCommand>/sync.{template.command}</TemplateCommand>
+          <TemplateCommand>/flow.{template.command}</TemplateCommand>
         </FullFlex>
       </TemplateHeader>
       <TemplateBody>

@@ -4,7 +4,7 @@ import { Shortcut, StyledKey, StyledShortcuts } from './styled'
 
 export enum ShortcutType {
   NEW,
-  HOME,
+  HOME
 }
 
 const Shortcuts: React.FC<{ type: ShortcutType }> = ({ type }) => {
@@ -13,7 +13,7 @@ const Shortcuts: React.FC<{ type: ShortcutType }> = ({ type }) => {
   if (type === ShortcutType.NEW) {
     return (
       <StyledShortcuts justifyContent="space-between">
-        <Shortcut>
+        <Shortcut data-tour="mex-save-draft-node">
           <StyledKey>CMD+S</StyledKey> TO SAVE
         </Shortcut>
         <Shortcut>

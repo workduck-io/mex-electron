@@ -2,7 +2,6 @@ import { client } from '@workduck-io/dwindle'
 import { uniq } from 'lodash'
 import { SyncBlockTemplate, Service } from '../Editor/Components/SyncBlock'
 import { defaultCommands } from '../Defaults/slashCommands'
-import { useSaver } from '../Editor/Components/Saver'
 import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
 import useDataStore from '../Editor/Store/DataStore'
 import { generateComboTexts } from '../Editor/Store/sampleTags'
@@ -12,11 +11,13 @@ import { useAuthStore } from '../Hooks/useAuth/useAuth'
 import { integrationURLs } from '../Requests/routes'
 import { extractSnippetCommands } from '../Snippets/useSnippets'
 import { useSaveData } from './useSaveData'
+import useOnboard from '../Components/Onboarding/store'
 
 export const useUpdater = () => {
   const setSlashCommands = useDataStore((state) => state.setSlashCommands)
   const setServices = useSyncStore((store) => store.setServices)
   const setTemplates = useSyncStore((store) => store.setTemplates)
+  const isOnboarding = useOnboard((s) => s.isOnboarding)
 
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const saveData = useSaveData()
@@ -30,8 +31,97 @@ export const useUpdater = () => {
     setSlashCommands(Array.from(commands))
   }
 
+  const setOnboardData = () => {
+    const services = [
+      {
+        id: 'ONBOARD',
+        name: 'ONBOARD',
+        type: 'medium',
+        imageUrl: 'https://workduck.io',
+        description: 'Onboard users',
+        authUrl: '',
+        connected: true,
+        enabled: true
+      }
+    ]
+    setServices(services)
+
+    const templates = [
+      {
+        id: 'SYNCTEMP_ONBOARD',
+        title: 'Flow Block Tour',
+        command: 'onboard',
+        description: 'This gives you a quick way to connect with mex demo',
+        intents: [
+          {
+            service: 'ONBOARD',
+            type: 'medium'
+          },
+          {
+            service: 'MEX',
+            type: 'node'
+          }
+        ]
+      },
+      {
+        id: 'SYNCTEMP_ISSUETRACKING',
+        title: 'Issue Tracking',
+        command: 'issuetracking',
+        description: 'Track Issues',
+        intents: [
+          {
+            service: 'GITHUB',
+            type: 'issue'
+          },
+          {
+            service: 'SLACK',
+            type: 'channel'
+          },
+          {
+            service: 'MEX',
+            type: 'node'
+          }
+        ]
+      },
+      {
+        id: 'SYNCTEMP_TASK',
+        title: 'Slack Task management',
+        command: 'task',
+        description: 'Manage tasks',
+        intents: [
+          {
+            service: 'GITHUB',
+            type: 'issue'
+          },
+          {
+            service: 'MEX',
+            type: 'node'
+          }
+        ]
+      },
+      {
+        id: 'SYNCTEMP_DEVTASK',
+        title: 'Github tasks',
+        command: 'devtask',
+        description: 'Create tasks using github issues',
+        intents: [
+          {
+            service: 'GITHUB',
+            type: 'issue'
+          },
+          {
+            service: 'MEX',
+            type: 'node'
+          }
+        ]
+      }
+    ]
+
+    setTemplates(templates)
+  }
+
   const updateDefaultServices = async () => {
-    if (useAuthStore.getState().authenticated) {
+    if (useAuthStore.getState().authenticated && !isOnboarding) {
       await client
         .get(integrationURLs.getAllServiceData(getWorkspaceId()))
         .then((d) => {
@@ -47,7 +137,7 @@ export const useUpdater = () => {
             connected: false,
             enabled: s.enabled
           }))
-          // console.log({ services })
+
           setServices(services)
         })
         .then(() => saveData())
@@ -55,17 +145,17 @@ export const useUpdater = () => {
   }
 
   const updateServices = async () => {
-    if (useAuthStore.getState().authenticated) {
+    if (useAuthStore.getState().authenticated && !isOnboarding) {
       await client
         .get(integrationURLs.getWorkspaceAuth(getWorkspaceId()))
         .then((d) => {
           const services = useSyncStore.getState().services
           const sData = d.data
           const newServices = services.map((s) => {
+            if (s.id === 'ONBOARD') return s
             const connected = sData.some((cs) => s.id === cs.type)
             return { ...s, connected }
           })
-          // console.log({ newServices })
 
           setServices(newServices)
         })
@@ -98,5 +188,5 @@ export const useUpdater = () => {
     } else console.error('Not authenticated, not fetching default services')
   }
 
-  return { updater, updateServices, getTemplates, updateDefaultServices }
+  return { updater, updateServices, getTemplates, updateDefaultServices, setOnboardData }
 }

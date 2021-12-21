@@ -14,6 +14,11 @@ import { CenteredColumn } from '../Styled/Layouts'
 import { Title } from '../Styled/Typography'
 import { LoadingButton } from '../Components/Buttons/LoadingButton'
 import { StyledRolesSelectComponents } from '../Styled/Select'
+import useOnboard from '../Components/Onboarding/store'
+import { ipcRenderer } from 'electron'
+import { IpcAction } from '../Spotlight/utils/constants'
+import { AppType } from '../Data/useInitialize'
+import { useUpdater } from '../Data/useUpdater'
 
 export interface Option {
   label: string
@@ -45,7 +50,9 @@ const Register = () => {
   const { registerDetails, verifySignup } = useAuthentication()
   const registered = useAuthStore((store) => store.registered)
   const setRegistered = useAuthStore((store) => store.setRegistered)
+  const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const { resendCode } = useAuth()
+  const { setOnboardData } = useUpdater()
 
   const regErrors = registerForm.formState.errors
   const verErrors = verifyForm.formState.errors
@@ -69,6 +76,7 @@ const Register = () => {
 
   const onRegisterSubmit = async (data: RegisterFormData) => {
     await registerDetails(data).then((s) => {
+      ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails: { email: data.email }, loggedIn: true })
       if (s === 'UsernameExistsException') {
         toast('You have already registered, please verify code.')
       }
@@ -77,7 +85,15 @@ const Register = () => {
 
   const onVerifySubmit = async (data: VerifyFormData) => {
     const metadata = { tag: MEX_TAG }
-    await verifySignup(data.code, metadata)
+    try {
+      await verifySignup(data.code, metadata)
+
+      setOnboardData()
+      changeOnboarding(true)
+      ipcRenderer.send(IpcAction.START_ONBOARDING, { from: AppType.MEX })
+    } catch (err) {
+      toast('Error occured!')
+    }
   }
 
   const onCancelVerification = (e) => {

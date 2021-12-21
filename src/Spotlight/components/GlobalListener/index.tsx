@@ -15,6 +15,7 @@ import { convertDataToRawText } from '../../../Search/localSearch'
 import { useLocation, useHistory } from 'react-router'
 import { useAuthStore } from '../../../Hooks/useAuth/useAuth'
 import useAnalytics from '../../../analytics'
+import useOnboard from '../../../Components/Onboarding/store'
 interface IndexAndFileData {
   fileData: FileData
   indexData: any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -31,6 +32,7 @@ const GlobalListener = memo(() => {
   const setReset = useSpotlightAppStore((state) => state.setReset)
   const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
+  const changeOnboarding = useOnboard((s) => s.changeOnboarding)
 
   const { init, update } = useInitialize()
   const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
@@ -103,6 +105,10 @@ const GlobalListener = memo(() => {
 
     ipcRenderer.on(IpcAction.NEW_RECENT_ITEM, (_event, { data }) => {
       addRecent(data)
+    })
+
+    ipcRenderer.on(IpcAction.START_ONBOARDING, (_event) => {
+      changeOnboarding(true)
     })
 
     ipcRenderer.on(IpcAction.SYNC_DATA, (_event, arg) => {
