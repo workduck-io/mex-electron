@@ -24,6 +24,7 @@ export const useRefactor = () => {
 
   // const lastOpened = useRecentsStore((state) => state.lastOpened)
   // const updateLastOpened = useRecentsStore((state) => state.update)
+
   /*  Notes:
   We need to refactor all ilinks that match with the given regex and replace the initial regex with the refactorId
 

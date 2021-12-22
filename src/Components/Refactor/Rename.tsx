@@ -163,8 +163,9 @@ const Rename = () => {
 
       <WrappedNodeSelect
         placeholder="Rename node to..."
-        autoFocus
-        menuOpen
+        autoFocus={to === undefined}
+        menuOpen={to === undefined}
+        defaultValue={to}
         highlightWhenSelected
         iconHighlight={to !== undefined}
         handleSelectItem={handleToChange}
