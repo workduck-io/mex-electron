@@ -1,4 +1,3 @@
-import initErrorHandler from '../Lib/errorHandlers'
 import { electronCookies } from '../Lib/helper'
 
 const analytics = (url: string, id: string) => {
@@ -6,7 +5,6 @@ const analytics = (url: string, id: string) => {
 
   const onLoad = (appId, heapConfig = {}) => {
     electronCookies()
-    initErrorHandler()
 
     window.heap.appid = appId
     window.heap.config = heapConfig

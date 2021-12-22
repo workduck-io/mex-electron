@@ -30,6 +30,9 @@ import {
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
 import initErrorHandler from './Lib/errorHandlers'
+import { initializeSentry } from './sentry'
+
+initializeSentry()
 
 // On windows doesn't work without disabling HW Acceleration
 if (process.platform === 'win32') {
@@ -60,7 +63,7 @@ if (process.platform === 'darwin') {
   trayIconSrc = path.join(__dirname, '..', 'assets/icon.ico')
 }
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   const sourceMapSupport = require('source-map-support')
   sourceMapSupport.install()
 }
@@ -411,7 +414,6 @@ app
     return 0
   })
   .then(createWindow)
-  .then(initErrorHandler)
   .catch(console.error)
 
 app.on('activate', () => {
