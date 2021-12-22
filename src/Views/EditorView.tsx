@@ -16,7 +16,7 @@ const EditorView = () => {
   const Tree = useTreeFromLinks()
 
   return (
-    <EditorViewWrapper data-tour="onboarding">
+    <EditorViewWrapper>
       <SideBar tree={Tree} starred={Tree} />
       <ContentEditor />
       <InfoBar />

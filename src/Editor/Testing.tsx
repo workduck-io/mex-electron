@@ -13,13 +13,13 @@ export const getHugeDocument = () => {
   for (let h = 0; h < HEADINGS; h++) {
     hugeDocument.push({
       type: ELEMENT_H1,
-      children: [{ text: faker.lorem.sentence() }],
+      children: [{ text: faker.lorem.sentence() }]
     })
 
     for (let p = 0; p < PARAGRAPHS; p++) {
       hugeDocument.push({
         type: ELEMENT_PARAGRAPH,
-        children: [{ text: faker.lorem.paragraph() }],
+        children: [{ text: faker.lorem.paragraph() }]
       })
     }
   }

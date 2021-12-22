@@ -25,7 +25,8 @@ import {
   getGlobalShortcut,
   getSelectedText,
   SelectionType,
-  getSelectedTextSync
+  getSelectedTextSync,
+  getPermissions
 } from './Spotlight/utils/getSelectedText'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
@@ -392,6 +393,10 @@ app.on('quit', () => {
 app
   .whenReady()
   .then(() => {
+    // * permission check
+
+    getPermissions().then((s) => console.log('Hello'))
+
     global.appVersion = app.getVersion()
     globalShortcut.register('CommandOrCOntrol+Shift+L', handleToggleMainWindow)
 

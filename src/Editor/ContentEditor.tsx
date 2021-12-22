@@ -113,11 +113,17 @@ const ContentEditor = () => {
             <IconButton
               size={24}
               icon={messageIcon}
-              title="Sync Blocks"
+              title="Flow Blocks"
               highlight={showSyncBlocks}
               onClick={toggleSyncBlocks}
             />
-            <IconButton size={24} icon={bubbleChartLine} title="Graph" highlight={showGraph} onClick={toggleGraph} />
+            <IconButton
+              size={24}
+              icon={bubbleChartLine}
+              title="Context View"
+              highlight={showGraph}
+              onClick={toggleGraph}
+            />
           </InfoTools>
         </NodeInfo>
 

@@ -46,6 +46,7 @@ const Switch = () => {
     delay: 0,
     config: config.default
   })
+
   // return transitions((props, item) => (
   return (
     // <SwitchWrapper style={props}>

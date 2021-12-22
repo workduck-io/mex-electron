@@ -1,6 +1,5 @@
-import WelcomeSection, { StyledTypography } from './components/Welcome'
+import WelcomeSection, { StyledKeyCap, StyledTypography } from './components/Welcome'
 import React from 'react'
-import { StyledKey } from '../../Spotlight/components/Shortcuts/styled'
 import { Command } from '../NodeIntentsModal/styled'
 import styled from 'styled-components'
 import { CenteredFlex, PrimaryText } from '../../Styled/Integration'
@@ -60,7 +59,7 @@ const FlowMessage = () => {
             performClick()
           }}
         >
-          Submit
+          Send
         </Button>
       </CenteredFlex>
     </>
@@ -146,7 +145,7 @@ export const OnboardingTourConfig = [
           <br />
           <CenteredFlex>
             <div>
-              Press <StyledKey>CMD+L</StyledKey> and <PrimaryText>Lookup</PrimaryText> Tour node
+              Press <StyledKeyCap>CMD + L</StyledKeyCap> and <PrimaryText>Lookup</PrimaryText> Tour node
             </div>
           </CenteredFlex>
         </div>
@@ -244,7 +243,8 @@ export const OnboardingTourConfig = [
   {
     selector: '[data-tour="create-flow-template"]',
     content: <FinishIntegration />,
-    style: toolTipStyle
+    style: toolTipStyle,
+    action: displayNone
   }
 ]
 
@@ -259,7 +259,7 @@ export const SpotlightOnboarding = [
     selector: '[data-tour="mex-create-new-draft"]',
     content: (
       <div>
-        Create new node by pressing <StyledKey>TAB</StyledKey>
+        Create new node by pressing <StyledKeyCap>TAB</StyledKeyCap>
       </div>
     ),
     style: toolTipStyle,
@@ -272,12 +272,11 @@ export const SpotlightOnboarding = [
         <div>Edit your captured content here and hit save.</div>
         <br />
         <div>
-          Save captured content using <StyledKey>CMD+S</StyledKey>
+          Save captured content using <StyledKeyCap>CMD+S</StyledKeyCap>
         </div>
       </>
     ),
     style: toolTipStyle,
-    action: displayNone,
-    stepInteraction: true
+    action: displayNone
   }
 ]

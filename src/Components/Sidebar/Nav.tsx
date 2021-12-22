@@ -17,6 +17,8 @@ interface StyledDivProps {
 }
 
 const StyledDiv = styled.div<StyledDivProps>`
+  overflow: scroll;
+  height: 100%;
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -72,6 +74,10 @@ const Link = styled(NavLink)`
   }
 `
 
+const MainLinkContainer = styled.div`
+  margin: 2rem 0;
+`
+
 const ComingSoon = styled.div`
   display: flex;
   justify-content: center;
@@ -97,7 +103,7 @@ const Nav = ({ links }: NavProps) => {
   return (
     <StyledDiv focusMode={focusMode}>
       <div></div>
-      <div>
+      <MainLinkContainer>
         {links.map((l) =>
           l.isComingSoon ? (
             <ComingSoon
@@ -124,7 +130,7 @@ const Nav = ({ links }: NavProps) => {
             </Link>
           )
         )}
-      </div>
+      </MainLinkContainer>
       <div>
         {authenticated ? (
           <Link

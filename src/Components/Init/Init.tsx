@@ -51,6 +51,7 @@ const Init = () => {
         })
         .then(({ fileData, indexData }) => {
           init(fileData)
+          // setOnboardData()
           return { fileData, indexData }
         })
         .then(({ fileData, indexData }) => {
