@@ -414,7 +414,6 @@ app
     return 0
   })
   .then(createWindow)
-  .then(initErrorHandler)
   .catch(console.error)
 
 app.on('activate', () => {
