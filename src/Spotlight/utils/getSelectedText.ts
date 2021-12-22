@@ -1,5 +1,5 @@
 import { clipboard } from 'electron'
-import { keyTap, typeString, setKeyboardDelay, keyToggle } from 'robotjs'
+import { keyTap, setKeyboardDelay, keyToggle } from 'robotjs'
 import activeWindow from 'active-win-universal'
 import { getKeyFromKeycode } from '../../Lib/keyMap'
 
@@ -40,6 +40,12 @@ export const getSelectedText = async (): Promise<SelectionType> => {
     text: selectedText,
     metadata: windowDetails
   }
+}
+
+export const getPermissions = async () => {
+  simulateCopy()
+  clipboard.clear()
+  await activeWindow()
 }
 
 export const getGlobalShortcut = (shortcut: string) => {

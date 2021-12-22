@@ -18,7 +18,7 @@ import useOnboard from '../Components/Onboarding/store'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../Spotlight/utils/constants'
 import { AppType } from '../Data/useInitialize'
-import { useUpdater } from '../Data/useUpdater'
+import { useTourData } from '../Components/Onboarding/hooks'
 
 export interface Option {
   label: string
@@ -52,7 +52,7 @@ const Register = () => {
   const setRegistered = useAuthStore((store) => store.setRegistered)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const { resendCode } = useAuth()
-  const { setOnboardData } = useUpdater()
+  const { setOnboardData } = useTourData()
 
   const regErrors = registerForm.formState.errors
   const verErrors = verifyForm.formState.errors

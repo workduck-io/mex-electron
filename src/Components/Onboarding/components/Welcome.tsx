@@ -18,6 +18,11 @@ export const Height = styled.section`
   flex-direction: column;
 `
 
+export const StyledKeyCap = styled(StyledKey)`
+  padding: 4px 8px;
+  font-size: 0.8rem;
+`
+
 export const StyledTypography = styled.div<{ margin: string; maxWidth: string; color: string; size: string }>`
   margin: ${({ margin }) => margin};
   max-width: ${({ maxWidth }) => maxWidth};
@@ -68,9 +73,12 @@ const WelcomeSection = () => {
       <StyledTypography size="1.1rem" color={theme.colors.text.fade} margin="2rem 0 0" maxWidth="100%">
         Open the browser to the last thought you wanted to quickly capture.
       </StyledTypography>
-      <StyledTypography size="1.1rem" color={theme.colors.text.fade} margin="0.5rem 0 2rem" maxWidth="100%">
-        Select it and press <StyledKey>CMD+SHIFT+L </StyledKey>
-      </StyledTypography>
+      <br />
+      <Center>
+        <StyledTypography size="1.1rem" color={theme.colors.text.fade} margin="0.5rem 0 2rem" maxWidth="100%">
+          Select it and press <StyledKeyCap>CMD + SHIFT + L </StyledKeyCap>
+        </StyledTypography>
+      </Center>
     </Height>
   )
 }

@@ -31,6 +31,8 @@ interface StyledDivProps {
 }
 
 const StyledDiv = styled.div<StyledDivProps>`
+  overflow: scroll;
+  height: 100%;
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -85,6 +87,10 @@ const Link = styled(NavLink)`
     color: ${({ theme }) => theme.colors.text.oppositePrimary};
     box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.primary)};
   }
+`
+
+const MainLinkContainer = styled.div`
+  margin: 2rem 0;
 `
 
 const ComingSoon = styled.div`
@@ -156,7 +162,8 @@ const Nav = ({ links }: NavProps) => {
           </NavButton>
         </NavTooltip>
       </div>
-      <div>
+      <div></div>
+      <MainLinkContainer>
         {links.map((l) =>
           l.isComingSoon ? (
             <NavTooltip singleton={target} content="Coming Soon!">
@@ -175,7 +182,7 @@ const Nav = ({ links }: NavProps) => {
             </NavTooltip>
           )
         )}
-      </div>
+      </MainLinkContainer>
       <div>
         {authenticated ? (
           <NavTooltip singleton={target} content="User">
