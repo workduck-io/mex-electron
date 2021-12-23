@@ -149,7 +149,9 @@ const Nav = ({ links }: NavProps) => {
       <NavTooltip singleton={source} />
       <div>
         <NavTooltip singleton={target} content="Create New Node">
-          <NavButton onClick={onNewNote}>{GetIcon(addCircleLine)}</NavButton>
+          <NavButton primary onClick={onNewNote}>
+            {GetIcon(addCircleLine)}
+          </NavButton>
         </NavTooltip>
       </div>
       <div>
