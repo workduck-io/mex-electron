@@ -57,8 +57,8 @@ const Init = () => {
           const initList = convertDataToRawText(fileData)
           const index = initFlexSearchIndex(initList, indexData)
 
-          const res = searchIndexNew('design')
-          console.log('Initial Results are: ', res)
+          // const res = searchIndexNew('design')
+          // console.log('Initial Results are: ', res)
 
           return fileData
         })
