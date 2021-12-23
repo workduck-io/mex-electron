@@ -103,7 +103,7 @@ const useLoad = () => {
 
   const loadNodeAndAppend = async (uid: string, content: NodeEditorContent) => {
     const nodeProps = getNode(uid)
-    const nodeContent = await getContent(uid)
+    const nodeContent = getContent(uid)
 
     loadNodeAndReplaceContent(nodeProps, [...nodeContent, ...content])
   }

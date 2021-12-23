@@ -3,12 +3,12 @@ import errorWarningLine from '@iconify-icons/ri/error-warning-line'
 import { Icon } from '@iconify/react'
 import { useCombobox } from 'downshift'
 import React, { useEffect, useState } from 'react'
-import { withoutContinuousDelimiter } from '../../Lib/helper'
 import { useDebouncedCallback } from 'use-debounce'
 import { useLinks } from '../../Editor/Actions/useLinks'
 import useDataStore from '../../Editor/Store/DataStore'
 import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 import { fuzzySearch } from '../../Lib/fuzzySearch'
+import { withoutContinuousDelimiter } from '../../Lib/helper'
 import { Input } from '../../Styled/Form'
 import { StyledCombobox, StyledInputWrapper, StyledMenu, Suggestion } from './NodeSelect.styles'
 
@@ -31,6 +31,8 @@ interface NodeSelectProps {
   placeholder?: string
   highlightWhenSelected?: boolean
   iconHighlight?: boolean
+  onFocus?: React.FocusEventHandler<HTMLInputElement>
+  onBlur?: React.FocusEventHandler<HTMLInputElement>
 }
 
 interface NodeSelectState {
@@ -48,6 +50,8 @@ function NodeSelect({
   prefillLast,
   handleSelectItem,
   handleCreateItem,
+  onFocus,
+  onBlur,
   id,
   name
 }: NodeSelectProps) {
@@ -108,6 +112,7 @@ function NodeSelect({
     highlightedIndex,
     setInputValue,
     getItemProps,
+    closeMenu,
     toggleMenu
   } = useCombobox({
     items: inputItems,
@@ -138,7 +143,7 @@ function NodeSelect({
         handleSelectItem(selectedItem.value)
       }
     }
-    toggleMenu()
+    closeMenu()
   }
 
   const onKeyUp = (event) => {
@@ -153,7 +158,7 @@ function NodeSelect({
           handleSelectItem(defaultItem.value)
         }
       }
-      toggleMenu()
+      closeMenu()
     }
   }
 
@@ -178,7 +183,9 @@ function NodeSelect({
     return () => {
       reset()
     }
-  }, [])
+  }, [defaultValue])
+
+  // console.log({ isOpen, inputItems })
 
   return (
     <>
@@ -195,6 +202,8 @@ function NodeSelect({
             onInpChange(e)
           }}
           onKeyUp={onKeyUp}
+          onFocus={onFocus}
+          onBlur={onBlur}
         />
         {highlightWhenSelected &&
           (iconHighlight ? (
