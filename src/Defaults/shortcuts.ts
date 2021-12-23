@@ -44,6 +44,11 @@ export const defaultShortcuts = {
   },
 
   // Actions
+  newNode: {
+    title: 'Create New Node',
+    keystrokes: '$mod+KeyN',
+    category: 'Actions'
+  },
   save: {
     title: 'Save current document',
     keystrokes: '$mod+KeyS',
