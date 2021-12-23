@@ -133,14 +133,14 @@ const NodeRenameTitle = () => {
     reset()
   }, [nodeFrom])
 
-  console.log({ mockRefactored, to, nodeFrom, editable })
+  // console.log({ mockRefactored, to, nodeFrom, editable })
 
   return (
     <Wrapper>
       {editable ? (
         <WrappedNodeSelect
-          id="titleLookup"
-          name="titleLookup"
+          id="NodeRenameTitleSelect"
+          name="NodeRenameTitleSelect"
           autoFocus
           defaultValue={to ?? nodeFrom}
           handleSelectItem={handleToChange}
