@@ -1,3 +1,4 @@
+import Tippy, { useSingleton } from '@tippyjs/react'
 import searchLine from '@iconify-icons/ri/search-line'
 import lockPasswordLine from '@iconify-icons/ri/lock-password-line'
 import user3Line from '@iconify-icons/ri/user-3-line'
@@ -11,6 +12,7 @@ import { useAuthStore } from '../../Hooks/useAuth/useAuth'
 import { useLayoutStore } from '../../Layout/LayoutStore'
 import { NavProps } from './Types'
 import HelpTooltip from '../Help/HelpTooltip'
+import { NavTooltip } from '../Tooltips'
 
 interface StyledDivProps {
   focusMode?: boolean
@@ -94,95 +96,59 @@ const ComingSoon = styled.div`
 const Nav = ({ links }: NavProps) => {
   const authenticated = useAuthStore((store) => store.authenticated)
   const focusMode = useLayoutStore((store) => store.focusMode)
+
+  const [source, target] = useSingleton()
+
   return (
     <StyledDiv focusMode={focusMode}>
+      <NavTooltip singleton={source} />
       <div></div>
       <div>
         {links.map((l) =>
           l.isComingSoon ? (
-            <ComingSoon
-              tabIndex={-1}
-              key={`nav_${l.title}`}
-              // Tooltip
-              data-tip="Coming Soon!"
-              data-class="nav-tooltip"
-            >
-              {l.icon !== undefined ? l.icon : l.title}
-            </ComingSoon>
+            <NavTooltip singleton={target} content="Coming Soon!">
+              <ComingSoon tabIndex={-1} key={`nav_${l.title}`}>
+                {l.icon !== undefined ? l.icon : l.title}
+              </ComingSoon>
+            </NavTooltip>
           ) : (
-            <Link
-              exact
-              tabIndex={-1}
-              activeClassName="active"
-              to={l.path}
-              key={`nav_${l.title}`}
-              // Tooltip
-              data-tip={l.title}
-              data-class="nav-tooltip"
-            >
-              {l.icon !== undefined ? l.icon : l.title}
-            </Link>
+            <NavTooltip singleton={target} content={l.title}>
+              <Link exact tabIndex={-1} activeClassName="active" to={l.path} key={`nav_${l.title}`}>
+                {l.icon !== undefined ? l.icon : l.title}
+              </Link>
+            </NavTooltip>
           )
         )}
       </div>
       <div>
         {authenticated ? (
-          <Link
-            exact
-            tabIndex={-1}
-            activeClassName="active"
-            to="/user"
-            key="nav_user"
-            // isActive={!authenticated}
-            // Tooltip
-            data-tip="User"
-            data-class="nav-tooltip"
-          >
-            {GetIcon(user3Line)}
-          </Link>
+          <NavTooltip singleton={target} content="User">
+            <Link exact tabIndex={-1} activeClassName="active" to="/user" key="nav_user">
+              {GetIcon(user3Line)}
+            </Link>
+          </NavTooltip>
         ) : (
-          <Link
-            exact
-            tabIndex={-1}
-            activeClassName="active"
-            to="/login"
-            key="nav_user"
-            className="active"
-            // isActive={!authenticated}
-            // Tooltip
-            data-tip="Login"
-            data-class="nav-tooltip"
-          >
-            {GetIcon(lockPasswordLine)}
-          </Link>
+          <NavTooltip singleton={target} content="Login">
+            <Link exact tabIndex={-1} activeClassName="active" to="/login" key="nav_user" className="active">
+              {GetIcon(lockPasswordLine)}
+            </Link>
+          </NavTooltip>
         )}
-        <Link
-          exact
-          tabIndex={-1}
-          activeClassName="active"
-          to="/search"
-          key="nav_search"
-          // Tooltip
-          data-tip="Search"
-          data-class="nav-tooltip"
-        >
-          {GetIcon(searchLine)}
-          {/* <Icon icon={settings4Line} /> */}
-        </Link>
-        <HelpTooltip />
-        <Link
-          exact
-          tabIndex={-1}
-          activeClassName="active"
-          to="/settings"
-          key="nav_settings"
-          // Tooltip
-          data-tip="Settings"
-          data-class="nav-tooltip"
-        >
-          {GetIcon(settings4Line)}
-          {/* <Icon icon={settings4Line} /> */}
-        </Link>
+        <NavTooltip singleton={target} content="Search">
+          <Link exact tabIndex={-1} activeClassName="active" to="/search" key="nav_search">
+            {GetIcon(searchLine)}
+            {/* <Icon icon={settings4Line} /> */}
+          </Link>
+        </NavTooltip>
+        <NavTooltip singleton={target} content="Shortcuts">
+          <HelpTooltip />
+        </NavTooltip>
+        <NavTooltip singleton={target} content="Settings">
+          <Link exact tabIndex={-1} activeClassName="active" to="/settings" key="nav_settings">
+            {GetIcon(settings4Line)}
+            {/* <Icon icon={settings4Line} /> */}
+          </Link>
+        </NavTooltip>
       </div>
     </StyledDiv>
   )

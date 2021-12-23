@@ -4,7 +4,6 @@ import Tippy from '@tippyjs/react/headless' // different import path!
 import { client } from '@workduck-io/dwindle'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import ReactTooltip from 'react-tooltip'
 import { ActionType } from '../../../analytics/events'
 import useAnalytics from '../../../analytics'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'
@@ -47,10 +46,6 @@ export const SyncBlock = (props: SyncBlockProps) => {
   const [changedIntents, setChangedIntents] = useState<{ [id: string]: Intent }>({})
 
   const selected = selectedSyncBlockId === element.id
-
-  React.useEffect(() => {
-    ReactTooltip.rebuild()
-  }, [selected])
 
   const { getIntents, getTemplate, updateNodeIntentsAndCreateIGID } = useIntents()
 

@@ -1,6 +1,5 @@
 import { createPlateOptions, Plate } from '@udecode/plate'
-import React, { useEffect } from 'react'
-import ReactTooltip from 'react-tooltip'
+import React from 'react'
 import { EditorStyles } from '../Styled/Editor'
 import { editorPreviewComponents } from './Components/components'
 import generatePlugins from './Plugins/plugins'
@@ -13,12 +12,8 @@ interface EditorPreviewRendererProps {
 const options = createPlateOptions()
 
 const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps) => {
-  useEffect(() => {
-    ReactTooltip.rebuild()
-  }, [])
-
   const editableProps = {
-    placeholder: 'Murmuring the mex hype... This should be part of an update',
+    placeholder: 'Murmuring the mex hype... ',
     spellCheck: false,
     style: {
       padding: '15px'

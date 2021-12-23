@@ -1,3 +1,4 @@
+import Tippy from '@tippyjs/react'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { WrappedNodeSelect } from '../../Components/NodeSelect/NodeSelect'
@@ -17,6 +18,10 @@ const Wrapper = styled.div`
 
   ${StyledInputWrapper} {
     margin: 0;
+  }
+
+  .smallTooltip {
+    background: ${({ theme }) => theme.colors.gray[7]};
   }
 
   ${Input} {
@@ -55,6 +60,38 @@ const TitleStatic = styled.div`
     background: ${({ theme }) => theme.colors.gray[8]};
   }
 `
+
+// export const TippyTheme = css`
+
+// .tippy-box[data-theme~='mex'] {
+//   background-color: ${({ theme }) => theme.colors.gray[7]}
+//   font-weight: 600;
+
+//   &[data-placement^='top'] > .tippy-arrow::before {
+//     border-top-color: ${({ theme }) => theme.colors.gray[7]};
+//   }
+
+//   &[data-placement^='bottom'] > .tippy-arrow::before {
+//     border-bottom-color: ${({ theme }) => theme.colors.gray[7]};
+//   }
+
+//   &[data-placement^='left'] > .tippy-arrow::before {
+//     border-left-color: ${({ theme }) => theme.colors.gray[7]};
+//   }
+
+//   &[data-placement^='right'] > .tippy-arrow::before {
+//     border-right-color: ${({ theme }) => theme.colors.gray[7]};
+//   }
+
+//   > .tippy-backdrop {
+//     background-color: ${({ theme }) => theme.colors.gray[7]};
+//   }
+
+//   > .tippy-svg-arrow {
+//     fill: ${({ theme }) => theme.colors.gray[7]};
+//   }
+// }
+// `
 
 const NodeRenameTitle = () => {
   const { getUidFromNodeId } = useLinks()
@@ -147,14 +184,16 @@ const NodeRenameTitle = () => {
           handleCreateItem={handleToCreate}
         />
       ) : (
-        <TitleStatic
-          onClick={(e) => {
-            e.preventDefault()
-            setEditable(true)
-          }}
-        >
-          {nodeFrom}
-        </TitleStatic>
+        <Tippy theme="mex" placement="bottom-start" content="Click to Rename">
+          <TitleStatic
+            onClick={(e) => {
+              e.preventDefault()
+              setEditable(true)
+            }}
+          >
+            {nodeFrom}
+          </TitleStatic>
+        </Tippy>
       )}
       {editable && (
         <ButtonWrapper>

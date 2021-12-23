@@ -1,3 +1,4 @@
+import Tippy, { TippyProps } from '@tippyjs/react'
 import saveLine from '@iconify-icons/ri/save-line'
 import { usePlateValue } from '@udecode/plate'
 import React, { useEffect } from 'react'
@@ -54,13 +55,20 @@ interface SaverButtonProps {
   noButton?: boolean
   callbackAfterSave?: (uid?: string) => void
   callbackBeforeSave?: () => void
+  singleton?: TippyProps['singleton']
 }
 
 /** A very special saver button
  *
  * It implements the save action and shortcuts in isolation so that the editor does not rerender on every document save.
  */
-export const SaverButton = ({ callbackAfterSave, callbackBeforeSave, title, noButton }: SaverButtonProps) => {
+export const SaverButton = ({
+  callbackAfterSave,
+  callbackBeforeSave,
+  title,
+  noButton,
+  singleton
+}: SaverButtonProps) => {
   const { onSave: onSaveFs } = useSaver()
 
   const shortcuts = useHelpStore((state) => state.shortcuts)
@@ -88,7 +96,7 @@ export const SaverButton = ({ callbackAfterSave, callbackBeforeSave, title, noBu
 
   if (noButton) return <></>
 
-  return <IconButton size={24} icon={saveLine} onClick={onSave} title={title ?? 'Save'} />
+  return <IconButton size={24} icon={saveLine} singleton={singleton} onClick={onSave} title={title ?? 'Save'} />
 }
 
 export const useSnippetSaver = () => {

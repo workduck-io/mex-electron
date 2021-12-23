@@ -2,7 +2,6 @@ import { createPlateOptions, Plate, selectEditor, usePlateEditorRef } from '@ude
 import React, { useEffect } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import ReactTooltip from 'react-tooltip'
 import { useGraphStore } from '../Components/Graph/GraphStore'
 import { EditorStyles } from '../Styled/Editor'
 import { withStyledDraggables } from './Actions/withDraggable'
@@ -25,10 +24,6 @@ interface EditorProps {
 
 // High performance guaranteed
 const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonToolbar }: EditorProps) => {
-  useEffect(() => {
-    ReactTooltip.rebuild()
-  }, [])
-
   const editableProps = {
     // placeholder: 'Murmuring the mex hype... This should be part of an update',
     spellCheck: false,
@@ -65,7 +60,6 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
   return (
     <>
       <DndProvider backend={HTML5Backend}>
-        <ReactTooltip effect="solid" type="info" />
         {content && (
           <EditorStyles onClick={() => setNodePreview(false)}>
             {showBalloonToolbar && <BallonMarkToolbarButtons />}
