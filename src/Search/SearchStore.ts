@@ -80,7 +80,7 @@ export interface FlexSearchResult {
   nodeUID: string
   title: string
   text: string
-  matchField: string
+  matchField: string[]
 }
 
 interface NewSearchStoreState {
@@ -131,7 +131,7 @@ export const useNewSearchStore = create<NewSearchStoreState>((set, get) => ({
   },
   fetchDocByID: (id: string, matchField: string) => {
     const doc = get().docs.get(id)
-    const result: FlexSearchResult = {
+    const result: any = {
       ...doc,
       nodeUID: id,
       matchField
@@ -140,7 +140,7 @@ export const useNewSearchStore = create<NewSearchStoreState>((set, get) => ({
   },
   searchIndex: (query: string) => {
     const response = get().index.search(query)
-    const results = new Array<FlexSearchResult>()
+    const results = new Array<any>()
     response.forEach((entry) => {
       const matchField = entry.field
       entry.result.forEach((i) => {
@@ -148,7 +148,22 @@ export const useNewSearchStore = create<NewSearchStoreState>((set, get) => ({
         results.push(t)
       })
     })
-    return results
+
+    const combinedResults = new Array<FlexSearchResult>()
+    results.forEach(function (item) {
+      const existing = combinedResults.filter(function (v, i) {
+        return v.nodeUID == item.nodeUID
+      })
+      if (existing.length) {
+        const existingIndex = combinedResults.indexOf(existing[0])
+        combinedResults[existingIndex].matchField = combinedResults[existingIndex].matchField.concat(item.matchField)
+      } else {
+        if (typeof item.matchField == 'string') item.matchField = [item.matchField]
+        combinedResults.push(item)
+      }
+    })
+
+    return combinedResults
   },
   fetchIndexLocalStorage: () => {
     get().index.export((key, data) => {
