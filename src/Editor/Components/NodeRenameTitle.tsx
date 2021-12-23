@@ -35,7 +35,7 @@ const ButtonWrapper = styled.div`
   position: absolute;
   top: 100%;
   display: flex;
-  padding: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.medium} 0;
   z-index: 200;
 
   ${Button} {
@@ -69,11 +69,18 @@ const NodeRenameTitle = () => {
   const openModal = useRenameStore((store) => store.openModal)
   // const closeModal = useRenameStore((store) => store.closeModal)
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
+  const modalReset = useRenameStore((store) => store.closeModal)
   const setTo = useRenameStore((store) => store.setTo)
   const nodeFrom = useEditorStore((store) => store.node.id)
   const setFrom = useRenameStore((store) => store.setFrom)
   const [editable, setEditable] = useState(false)
   // const inpRef = useRef<HTMLInputElement>()
+  //
+
+  const reset = () => {
+    modalReset()
+    setEditable(false)
+  }
 
   const handleToChange = (newValue: string) => {
     if (newValue) {
@@ -113,19 +120,20 @@ const NodeRenameTitle = () => {
 
   const onCancel: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault()
-    setEditable(false)
+    reset()
   }
 
   useEffect(() => {
     if (to) {
       setMockRefactored(getMockRefactor(useEditorStore.getState().node.id, to))
     }
-    return () => {
-      setEditable(false)
-    }
   }, [to, nodeFrom])
 
-  // console.log({ mockRefactored, to, nodeFrom, inpValue })
+  useEffect(() => {
+    reset()
+  }, [nodeFrom])
+
+  console.log({ mockRefactored, to, nodeFrom, editable })
 
   return (
     <Wrapper>
@@ -133,8 +141,8 @@ const NodeRenameTitle = () => {
         <WrappedNodeSelect
           id="titleLookup"
           name="titleLookup"
-          prefillLast
-          defaultValue={nodeFrom}
+          autoFocus
+          defaultValue={to ?? nodeFrom}
           handleSelectItem={handleToChange}
           handleCreateItem={handleToCreate}
         />
