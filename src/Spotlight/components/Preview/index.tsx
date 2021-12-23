@@ -65,7 +65,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
         </SeePreview>
       )}
       <StyledEditorPreview>
-        <Editor focusAtBeginning={false} readOnly content={previewContent} editorId={node.uid} />
+        <Editor focusAtBeginning={false} content={previewContent} editorId={node.uid} />
       </StyledEditorPreview>
     </StyledPreview>
   )

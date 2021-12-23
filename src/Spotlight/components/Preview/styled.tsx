@@ -8,7 +8,7 @@ export const StyledPreview = styled.div`
   ${Draggable}
   ${Scroll}
 position: relative;
-  padding: 1rem;
+  padding: 0.5rem;
   flex: 5;
   border-radius: 1rem;
   white-space: pre-wrap;
@@ -20,7 +20,7 @@ export const StyledEditorPreview = styled.div`
 
 export const SeePreview = styled.div`
   position: fixed;
-  right: 44%;
+  right: 1.2rem;
   cursor: pointer;
   z-index: 3000;
   display: flex;
@@ -30,5 +30,5 @@ export const SeePreview = styled.div`
   color: ${({ theme }) => theme.colors.text.fade};
   box-shadow: 0px 2px 4px ${({ theme }) => theme.colors.background.modal};
   background-color: ${({ theme }) => theme.colors.background.highlight};
-  bottom: 3.1rem;
+  bottom: 3.3rem;
 `

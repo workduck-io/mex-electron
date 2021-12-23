@@ -3,14 +3,16 @@ import Search from '../Search'
 import Content from '../Content'
 import Shortcuts, { ShortcutType } from '../Shortcuts'
 import { StyledLookup } from './styled'
-import useOnboard from '../../../Components/Onboarding/store'
+import { useSpotlightContext } from '../../../Spotlight/utils/context'
+import CreateNodeInput from '../CreateNodeInput'
 
 const Spotlight = () => {
+  const { selection } = useSpotlightContext()
   return (
     <StyledLookup>
-      <Search />
+      {selection ? <CreateNodeInput /> : <Search />}
       <Content />
-      <Shortcuts type={ShortcutType.HOME} />
+      <Shortcuts type={ShortcutType.NEW} />
     </StyledLookup>
   )
 }

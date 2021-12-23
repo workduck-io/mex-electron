@@ -9,6 +9,7 @@ export type SelectionType = {
 }
 export const simulateCopy = () => keyTap('c', process.platform === 'darwin' ? 'command' : 'control')
 
+// * For windows
 export const getSelectedTextSync = () => {
   setKeyboardDelay(100)
   const contentBackup = clipboard.readText()

@@ -12,13 +12,13 @@ const Shortcuts: React.FC<{ type: ShortcutType }> = ({ type }) => {
 
   if (type === ShortcutType.NEW) {
     return (
-      <StyledShortcuts justifyContent="space-between">
+      <StyledShortcuts justifyContent="center">
         <Shortcut data-tour="mex-save-draft-node">
           <StyledKey>CMD+S</StyledKey> TO SAVE
         </Shortcut>
-        <Shortcut>
+        {/* <Shortcut>
           <StyledKey>ESC</StyledKey> TO DISMISS
-        </Shortcut>
+        </Shortcut> */}
       </StyledShortcuts>
     )
   }

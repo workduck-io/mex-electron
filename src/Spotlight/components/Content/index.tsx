@@ -141,8 +141,8 @@ const Content = () => {
 
   return (
     <StyledContent>
-      <Preview preview={preview} node={draftNode} />
       <SideBar index={currentIndex} data={data} />
+      <Preview preview={preview} node={draftNode} />
     </StyledContent>
   )
 }

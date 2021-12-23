@@ -25,7 +25,7 @@ interface EditorProps {
 // High performance guaranteed
 const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonToolbar }: EditorProps) => {
   const editableProps = {
-    // placeholder: 'Murmuring the mex hype... This should be part of an update',
+    placeholder: readOnly ? 'Murmuring the mex hype...' : '',
     spellCheck: false,
     autoFocus: true,
     style: {
