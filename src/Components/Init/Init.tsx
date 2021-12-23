@@ -38,6 +38,7 @@ const Init = () => {
   const fetchIndexJSON = useSearchStore((store) => store.fetchIndexJSON)
   const initFlexSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
   const fetchIndexLocalStorage = useNewSearchStore((store) => store.fetchIndexLocalStorage)
+  const searchIndexNew = useNewSearchStore((store) => store.searchIndex)
 
   /** Initialization of the app details occur here */
   useEffect(() => {
@@ -54,9 +55,12 @@ const Init = () => {
         })
         .then(({ fileData, indexData }) => {
           const initList = convertDataToRawText(fileData)
-          initFlexSearchIndex(initList, indexData)
+          const index = initFlexSearchIndex(initList, indexData)
 
-          return { fileData, indexData }
+          const res = searchIndexNew('design')
+          console.log('Initial Results are: ', res)
+
+          return fileData
         })
         .then((d) => {
           const userAuthenticatedEmail = initCognito({
@@ -82,7 +86,7 @@ const Init = () => {
     ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { nodeId }) => {
       pushHs(nodeId)
       addRecent(nodeId)
-      loadNode(nodeId, {savePrev: false, fetch: false})
+      loadNode(nodeId, { savePrev: false, fetch: false })
     })
     ipcRenderer.on(IpcAction.CLEAR_RECENTS, () => {
       clear()
@@ -101,12 +105,12 @@ const Init = () => {
       const searchIndex = {}
       flexIndexKeys.forEach((key) => {
         const t = localStorage.getItem(key)
-        if (t === undefined) searchIndex[key] = ''
+        if (t === null) searchIndex[key] = ''
         else searchIndex[key] = t
       })
       ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndex })
     })
-  }, [fetchIndexJSON]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetchIndexLocalStorage]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { setIpc } = useSyncData()
 

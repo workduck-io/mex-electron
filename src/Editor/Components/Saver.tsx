@@ -29,8 +29,8 @@ export const useSaver = () => {
   const saveData = useSaveData()
   const editorState = usePlateValue()
   const { saveDataAPI } = useApi()
-  const updateDoc = useSearchStore((state) => state.updateDoc)
   const updateDocNew = useNewSearchStore((store) => store.updateDoc)
+  const searchIndexNew = useNewSearchStore((store) => store.searchIndex)
 
   const onSave = (node?: NodeProperties) => {
     const defaultNode = useEditorStore.getState().node
@@ -42,11 +42,13 @@ export const useSaver = () => {
       updateLinksFromContent(node.uid, editorState)
       updateTagsFromContent(node.uid, editorState)
       const title = getNodeIdFromUid(node.uid)
-      updateDoc(node.uid, convertEntryToRawText(node.uid, editorState), title)
       updateDocNew(node.uid, convertEntryToRawText(node.uid, editorState), title)
     }
     saveData()
     toast('Saved!', { duration: 1000 })
+
+    const res = searchIndexNew('design')
+    console.log('Results are: ', res)
   }
 
   return { onSave }

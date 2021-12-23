@@ -128,8 +128,6 @@ export const useNewSearchStore = create<NewSearchStoreState>((set, get) => ({
       title: title,
       text: newDoc.text
     })
-    console.log('Updated Docs are: ')
-    console.log(get().docs)
   },
   fetchDocByID: (id: string, matchField: string) => {
     const doc = get().docs.get(id)
