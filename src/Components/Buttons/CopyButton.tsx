@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import IconButton from '../../Styled/Buttons'
-import fileCopyLine from '@iconify-icons/ri/file-copy-line'
 import checkboxLine from '@iconify-icons/ri/checkbox-line'
-import ReactTooltip from 'react-tooltip'
+import fileCopyLine from '@iconify-icons/ri/file-copy-line'
+import React, { useState } from 'react'
+import IconButton from '../../Styled/Buttons'
 
 interface CopyButtonProps {
   text: string
@@ -12,9 +11,6 @@ interface CopyButtonProps {
 export const CopyButton = ({ text, size }: CopyButtonProps) => {
   const [isCopied, setIsCopied] = useState(false)
 
-  useEffect(() => {
-    ReactTooltip.rebuild()
-  })
   // This is the function we wrote earlier
   const copyTextToClipboard = async (text: string) => {
     if ('clipboard' in navigator) {

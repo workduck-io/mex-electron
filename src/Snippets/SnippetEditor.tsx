@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import ReactTooltip from 'react-tooltip'
 import { SnippetSaverButton } from '../Editor/Components/Saver'
 import Editor from '../Editor/Editor'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
@@ -19,10 +18,6 @@ const SnippetEditor = () => {
     getValues,
     formState: { errors }
   } = useForm<Inputs>()
-
-  useEffect(() => {
-    ReactTooltip.rebuild()
-  }, [])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [content, setContent] = useState<any[] | undefined>(undefined)

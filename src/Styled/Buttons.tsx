@@ -1,9 +1,11 @@
+import Tippy, { TippyProps } from '@tippyjs/react'
 import { Icon } from '@iconify/react'
 import { transparentize } from 'polished'
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { centeredCss } from './Layouts'
 import { LoadingWrapper } from './Loading'
+import { ToolbarTooltip } from '../Components/Tooltips'
 
 export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   primary?: boolean
@@ -66,6 +68,7 @@ export type IconButtonProps = {
   title: string
   size?: string | number
   onClick?: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  singleton?: TippyProps['singleton']
   highlight?: boolean
 }
 
@@ -74,11 +77,13 @@ export const HeadlessButton = styled.button`
   background: transparent;
 `
 
-const IconButton = ({ icon, title, size, onClick, highlight }: IconButtonProps) => {
+const IconButton = ({ icon, title, size, onClick, highlight, singleton }: IconButtonProps) => {
   return (
-    <Button onClick={onClick} highlight={highlight} data-tip={title} data-place="bottom">
-      <Icon icon={icon} height={size} />
-    </Button>
+    <ToolbarTooltip content={title} singleton={singleton}>
+      <Button onClick={onClick} highlight={highlight}>
+        <Icon icon={icon} height={size} />
+      </Button>
+    </ToolbarTooltip>
   )
 }
 

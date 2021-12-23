@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import ReactTooltip from 'react-tooltip'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../Components/Help/HelpModal'
 import Metadata from '../Components/Metadata/Metadata'
@@ -20,10 +19,6 @@ const ContentEditor = () => {
   const { loadNode } = useLoad()
 
   const { showGraph } = useToggleElements()
-
-  useEffect(() => {
-    ReactTooltip.rebuild()
-  }, [])
 
   const uid = useEditorStore((state) => state.node.uid)
   const fsContent = useEditorStore((state) => state.content)

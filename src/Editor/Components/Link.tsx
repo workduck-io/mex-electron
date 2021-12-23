@@ -1,8 +1,8 @@
 import { Icon } from '@iconify/react'
+import Tippy from '@tippyjs/react'
 import { LinkNodeData } from '@udecode/plate-link'
 import { StyledElementProps } from '@udecode/plate-styled-components'
-import React, { useEffect } from 'react'
-import ReactTooltip from 'react-tooltip'
+import React from 'react'
 import styled, { css } from 'styled-components'
 import { EditorIcons } from '../../Icons'
 
@@ -68,10 +68,6 @@ const getSanatizedLink = (raw: string) => {
 const LinkElement = ({ attributes, children, element, nodeProps }: StyledElementProps<LinkNodeData>) => {
   const isExternal = element.url.startsWith('#')
 
-  useEffect(() => {
-    ReactTooltip.rebuild()
-  }, [])
-
   const openLink = (e: React.MouseEvent, meta: boolean) => {
     e.preventDefault()
     if (isExternal) {
@@ -88,35 +84,35 @@ const LinkElement = ({ attributes, children, element, nodeProps }: StyledElement
   }
 
   return (
-    <Link
-      {...attributes}
-      href={element.url}
-      onClick={(e) => {
-        openLink(e, true)
-      }}
-      data-tip={element.url}
-      data-class="link-tooltip"
-      {...nodeProps}
-    >
-      {/*<div className="link-tooltip" contentEditable={false}>
+    <Tippy content={element.url} theme="mex-bright">
+      <Link
+        {...attributes}
+        href={element.url}
+        onClick={(e) => {
+          openLink(e, true)
+        }}
+        {...nodeProps}
+      >
+        {/*<div className="link-tooltip" contentEditable={false}>
         {element.url}
       </div> */}
-      {!isExternal && (
-        <button
-          className="LinkIcon"
-          type="button"
-          aria-label="Open link"
-          onClick={(e) => {
-            openLink(e, false)
-          }}
-          contentEditable={false}
-        >
-          <Icon icon={EditorIcons.externalLink} />
-        </button>
-      )}
+        {!isExternal && (
+          <button
+            className="LinkIcon"
+            type="button"
+            aria-label="Open link"
+            onClick={(e) => {
+              openLink(e, false)
+            }}
+            contentEditable={false}
+          >
+            <Icon icon={EditorIcons.externalLink} />
+          </button>
+        )}
 
-      {children}
-    </Link>
+        {children}
+      </Link>
+    </Tippy>
   )
 }
 

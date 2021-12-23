@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import styled from 'styled-components'
 import { useHelpStore } from './HelpModal'
-import { Icon } from '@iconify/react'
 import questionMark from '@iconify-icons/ri/question-mark'
 import { GetIcon } from '../../Conf/links'
+
 const SHelpTooltip = styled.div`
   display: flex;
   justify-content: center;
@@ -23,19 +23,20 @@ const SHelpTooltip = styled.div`
   }
 `
 
-const HelpTooltip = () => {
+const HelpTooltip = forwardRef<any>((_props, ref) => {
   const toggleModal = useHelpStore((store) => store.toggleModal)
   return (
     <SHelpTooltip
       key={`nav_help_modal`}
       // Tooltip
-      data-tip="Help"
-      data-class="nav-tooltip"
       onClick={toggleModal}
+      ref={ref}
     >
       {GetIcon(questionMark)}
     </SHelpTooltip>
   )
-}
+})
+
+HelpTooltip.displayName = 'HelpTooltip'
 
 export default HelpTooltip
