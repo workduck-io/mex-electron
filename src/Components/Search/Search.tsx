@@ -177,6 +177,7 @@ const Search = () => {
               const con = contents[c.nodeUID]
               const nodeId = getNodeIdFromUid(c.nodeUID)
               const content = con ? con.content : defaultContent
+              console.log(c.matchField.includes('title'))
               return (
                 <Result
                   onClick={() => {
@@ -186,7 +187,7 @@ const Search = () => {
                   selected={i === selected}
                   key={`ResultForSearch_${c.nodeUID}`}
                 >
-                  <ResultHeader active={c.matchField === 'title'}>
+                  <ResultHeader active={c.matchField.includes('title')}>
                     {c.titleHighlights !== undefined && c.titleHighlights.length > 0 ? (
                       <TitleHighlights titleHighlights={c.titleHighlights} />
                     ) : (
@@ -202,7 +203,7 @@ const Search = () => {
                   {c.highlights !== undefined ? (
                     <SearchHighlights highlights={c.highlights} />
                   ) : (
-                    <SearchPreviewWrapper active={c.matchField === 'text'}>
+                    <SearchPreviewWrapper active={c.matchField.includes('text')}>
                       <EditorPreviewRenderer content={content} editorId={`editor_${c.nodeUID}`} />
                     </SearchPreviewWrapper>
                   )}
