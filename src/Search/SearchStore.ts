@@ -88,7 +88,7 @@ interface NewSearchStoreState {
   index: Document | null
   indexDump: any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  initializeSearchIndex: (initList: NodeSearchData[]) => Document
+  initializeSearchIndex: (initList: NodeSearchData[], indexData: any) => Document
   addDoc: (doc: NodeSearchData) => void
   addMultipleDocs: (docs: NodeSearchData[]) => void
   removeDoc: (nodeUID: string) => void
@@ -103,8 +103,8 @@ export const useNewSearchStore = create<NewSearchStoreState>((set, get) => ({
   index: null,
   indexDump: {},
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  initializeSearchIndex: (initList: NodeSearchData[]) => {
-    const index = createFlexsearchIndex(initList)
+  initializeSearchIndex: (initList: NodeSearchData[], indexData: any) => {
+    const index = createFlexsearchIndex(initList, indexData)
     set({ index })
     initList.forEach((doc) => {
       get().docs.set(doc.nodeUID, { title: doc.title, text: doc.text })

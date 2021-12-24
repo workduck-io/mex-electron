@@ -35,10 +35,8 @@ const Init = () => {
   useSaveAndExit()
 
   const { getLocalData } = useLocalData()
-  const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
   const fetchIndexJSON = useSearchStore((store) => store.fetchIndexJSON)
   const initFlexSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
-  const searchFlexIndex = useNewSearchStore((store) => store.searchIndex)
   const fetchIndexLocalStorage = useNewSearchStore((store) => store.fetchIndexLocalStorage)
 
   /** Initialization of the app details occur here */
@@ -56,17 +54,9 @@ const Init = () => {
         })
         .then(({ fileData, indexData }) => {
           const initList = convertDataToRawText(fileData)
-          initializeSearchIndex(initList, null)
-          // console.log(`Search Index initialized with ${initList.length} documents`)
-          return fileData
-        })
-        .then((d) => {
-          const initList = convertDataToRawText(d)
-          initFlexSearchIndex(initList)
-          const results = searchFlexIndex('design')
-          console.log('Results are: ', results)
+          initFlexSearchIndex(initList, indexData)
 
-          return d
+          return { fileData, indexData }
         })
         .then((d) => {
           const userAuthenticatedEmail = initCognito({
@@ -110,7 +100,9 @@ const Init = () => {
       fetchIndexLocalStorage()
       const searchIndex = {}
       flexIndexKeys.forEach((key) => {
-        searchIndex[key] = localStorage.getItem(key)
+        const t = localStorage.getItem(key)
+        if (t === undefined) searchIndex[key] = ''
+        else searchIndex[key] = t
       })
       ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndex })
     })

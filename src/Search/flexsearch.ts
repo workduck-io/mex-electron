@@ -1,7 +1,7 @@
 import { Document } from 'flexsearch'
 import { NodeSearchData } from '../Types/data'
 
-export const createFlexsearchIndex = (initList: NodeSearchData[]) => {
+export const createFlexsearchIndex = (initList: NodeSearchData[], indexData: any) => {
   const options = {
     document: {
       id: 'nodeUID',
@@ -11,8 +11,17 @@ export const createFlexsearchIndex = (initList: NodeSearchData[]) => {
   }
 
   const index = Document(options)
-  initList.forEach((i) => index.add(i))
 
+  if (indexData) {
+    console.log('Using Prebuilt Index!')
+    Object.entries(indexData).forEach(([key, data]) => {
+      console.log('Key is: ', key)
+      index.import(key, data ?? null)
+    })
+  } else {
+    console.log('Fresh building Index')
+    initList.forEach((i) => index.add(i))
+  }
   return index
 }
 

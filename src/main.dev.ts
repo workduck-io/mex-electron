@@ -29,8 +29,9 @@ import {
 } from './Spotlight/utils/getSelectedText'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
-import initErrorHandler from './Lib/errorHandlers'
 import { initializeSentry } from './sentry'
+import { flexIndexKeys } from './Search/flexsearch'
+import _ from 'lodash'
 
 initializeSentry()
 
@@ -143,12 +144,24 @@ export const getFileData = () => {
 }
 
 export const getIndexData = () => {
-  // if (fs.existsSync(SEARCH_INDEX_LOCATION)) {
-  //   const stringData = fs.readFileSync(SEARCH_INDEX_LOCATION, 'utf-8')
-  //   const indexData = JSON.parse(stringData)
-  //   return indexData
-  // }
-  return null
+  if (!fs.existsSync(SEARCH_INDEX_LOCATION)) return null
+
+  const searchIndex = {}
+  const keys = fs
+    .readdirSync(SEARCH_INDEX_LOCATION, { withFileTypes: true })
+    .filter((item) => !item.isDirectory())
+    .map((item) => item.name.slice(0, -5))
+
+  const areSame = _.isEmpty(_.xor(keys, flexIndexKeys))
+  if (!areSame) return null
+
+  for (let i = 0, key; i < keys.length; i += 1) {
+    key = keys[i]
+    const data = fs.readFileSync(path.join(SEARCH_INDEX_LOCATION, `${key}.json`), 'utf8')
+    searchIndex[key] = data ?? null
+  }
+
+  return searchIndex
 }
 
 export const setSearchIndexData = (index) => {
@@ -157,7 +170,7 @@ export const setSearchIndexData = (index) => {
   Object.entries(index).forEach(([key, data]) => {
     try {
       const t = path.join(SEARCH_INDEX_LOCATION, `${key}.json`)
-      const d: any = data !== undefined ? data : ''
+      const d: any = data !== 'undefined' ? data : ''
       fs.writeFileSync(t, d)
     } catch (err) {
       console.log('Error is: ', err)
@@ -463,7 +476,7 @@ ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
 
 ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
   const fileData: FileData = getFileData()
-  const indexData: any = getIndexData() // eslint-disable-line @typescript-eslint/no-explicit-any
+  const indexData: any = getIndexData()
   event.sender.send(IpcAction.RECIEVE_LOCAL_DATA, { fileData, indexData })
 })
 
