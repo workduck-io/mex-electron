@@ -178,6 +178,7 @@ const NodeRenameTitle = () => {
         <WrappedNodeSelect
           id="NodeRenameTitleSelect"
           name="NodeRenameTitleSelect"
+          createAtTop
           autoFocus
           defaultValue={to ?? nodeFrom}
           handleSelectItem={handleToChange}

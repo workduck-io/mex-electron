@@ -159,6 +159,7 @@ const Refactor = () => {
         // defaultValue={to}
         placeholder="Refactor To Node..."
         highlightWhenSelected
+        createAtTop
         iconHighlight={to !== undefined}
         handleSelectItem={handleToChange}
         handleCreateItem={handleToCreate}
