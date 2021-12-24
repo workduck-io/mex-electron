@@ -1,10 +1,11 @@
+import addCircleLine from '@iconify-icons/ri/add-circle-line'
 import Tippy, { useSingleton } from '@tippyjs/react'
 import searchLine from '@iconify-icons/ri/search-line'
 import lockPasswordLine from '@iconify-icons/ri/lock-password-line'
 import user3Line from '@iconify-icons/ri/user-3-line'
 import settings4Line from '@iconify-icons/ri/settings-4-line'
 import { transparentize } from 'polished'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { GetIcon } from '../../Conf/links'
@@ -13,6 +14,18 @@ import { useLayoutStore } from '../../Layout/LayoutStore'
 import { NavProps } from './Types'
 import HelpTooltip from '../Help/HelpTooltip'
 import { NavTooltip } from '../Tooltips'
+import { NavButton } from '../../Styled/Nav'
+import { Icon } from '@iconify/react'
+import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
+import useLoad from '../../Hooks/useLoad/useLoad'
+import useDataStore from '../../Editor/Store/DataStore'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
+import { AppType } from '../../Data/useInitialize'
+import { IpcAction } from '../../Spotlight/utils/constants'
+import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
+import { useHelpStore } from '../../Components/Help/HelpModal'
+import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
+import tinykeys from 'tinykeys'
 
 interface StyledDivProps {
   focusMode?: boolean
@@ -28,6 +41,7 @@ const StyledDiv = styled.div<StyledDivProps>`
   position: fixed;
   width: ${({ theme }) => theme.width.nav};
   transition: opacity 0.3s ease-in-out;
+  padding-top: 1rem;
 
   ${({ focusMode }) =>
     focusMode &&
@@ -96,13 +110,50 @@ const ComingSoon = styled.div`
 const Nav = ({ links }: NavProps) => {
   const authenticated = useAuthStore((store) => store.authenticated)
   const focusMode = useLayoutStore((store) => store.focusMode)
+  const addILink = useDataStore((store) => store.addILink)
+  const { push } = useNavigation()
 
   const [source, target] = useSingleton()
+
+  const createNewNode = () => {
+    const newNodeId = getNewDraftKey()
+    const uid = addILink(newNodeId)
+    push(uid)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, newNodeId)
+  }
+
+  const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault()
+    createNewNode()
+  }
+
+  const shortcuts = useHelpStore((store) => store.shortcuts)
+  const { shortcutHandler } = useKeyListener()
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      [shortcuts.newNode.keystrokes]: (event) => {
+        event.preventDefault()
+        shortcutHandler(shortcuts.newNode, () => {
+          createNewNode()
+        })
+      }
+    })
+    return () => {
+      unsubscribe()
+    }
+  }, [shortcuts])
 
   return (
     <StyledDiv focusMode={focusMode}>
       <NavTooltip singleton={source} />
-      <div></div>
+      <div>
+        <NavTooltip singleton={target} content="Create New Node">
+          <NavButton primary onClick={onNewNote}>
+            {GetIcon(addCircleLine)}
+          </NavButton>
+        </NavTooltip>
+      </div>
       <div>
         {links.map((l) =>
           l.isComingSoon ? (
@@ -137,7 +188,6 @@ const Nav = ({ links }: NavProps) => {
         <NavTooltip singleton={target} content="Search">
           <Link exact tabIndex={-1} activeClassName="active" to="/search" key="nav_search">
             {GetIcon(searchLine)}
-            {/* <Icon icon={settings4Line} /> */}
           </Link>
         </NavTooltip>
         <NavTooltip singleton={target} content="Shortcuts">
