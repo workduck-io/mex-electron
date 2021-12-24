@@ -195,7 +195,89 @@ export const EditorStyles = styled.div`
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
 
-  // Forms
+  hr {
+    background-color: ${({ theme }) => theme.colors.gray[8]};
+  }
+
+  /* Todo */
+
+  .slate-TodoListElement {
+    margin-left: ${({ theme }) => theme.spacing.tiny};
+    font-size: 1.2rem;
+    font-weight: 500;
+    display: grid;
+    grid-template-columns: 1em auto;
+    gap: 0.5em;
+    & + & {
+      margin-top: 1em;
+    }
+    &--disabled {
+      color: var(--form-control-disabled);
+      cursor: not-allowed;
+    }
+  }
+
+  input[data-testid='TodoListElementCheckbox'],
+  input[type='checkbox'] {
+    /* Add if not using autoprefixer */
+    -webkit-appearance: none;
+    /* Remove most all native input styles */
+    appearance: none;
+    /* For iOS < 15 */
+    background-color: ${({ theme }) => theme.colors.gray[9]};
+    /* Not removed via appearance */
+    margin: 2px 0 0;
+
+    font: inherit;
+    color: currentColor;
+    width: 0.8em;
+    height: 0.8em;
+    border: 1px solid ${({ theme }) => theme.colors.gray[6]};
+
+    border-radius: ${({ theme }) => theme.borderRadius.tiny};
+    transform: translateY(-0.075em);
+
+    display: grid;
+    place-content: center;
+
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.gray[8]};
+      border: 1px solid ${({ theme }) => theme.colors.gray[5]};
+    }
+
+    &::before {
+      content: '';
+      width: 0.65em;
+      height: 0.65em;
+      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+      transform: scale(0);
+      transform-origin: bottom left;
+      transition: 120ms transform ease-in-out;
+      box-shadow: inset 1em 1em ${({ theme }) => theme.colors.primary};
+      /* Windows High Contrast Mode */
+      background-color: CanvasText;
+    }
+    &:checked {
+      border: 1px solid ${({ theme }) => theme.colors.primary};
+    }
+    &:checked::before {
+      transform: scale(1);
+    }
+
+    &:focus {
+      outline: max(1px, 0.1em) solid ${({ theme }) => theme.colors.primary};
+      outline-offset: max(1px, 0.1em);
+    }
+
+    &:disabled {
+      --form-control-color: ${({ theme }) => theme.colors.text.disabled};
+
+      color: ${({ theme }) => theme.colors.text.disabled};
+      cursor: not-allowed;
+    }
+  }
+
+  /* Forms */
   button,
   select,
   input[type='submit'],
@@ -235,7 +317,6 @@ export const EditorStyles = styled.div`
     cursor: pointer;
   }
 
-  input[type='checkbox'],
   input[type='radio'] {
     height: 1em;
     width: 1em;
