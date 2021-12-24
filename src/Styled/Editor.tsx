@@ -195,7 +195,11 @@ export const EditorStyles = styled.div`
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
 
-  // Forms
+  hr {
+    background-color: ${({ theme }) => theme.colors.gray[8]};
+  }
+
+  /* Forms */
   button,
   select,
   input[type='submit'],
