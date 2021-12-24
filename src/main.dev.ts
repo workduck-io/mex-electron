@@ -161,6 +161,8 @@ export const getIndexData = () => {
     searchIndex[key] = data ?? null
   }
 
+  if (searchIndex['title.map'] === '') return null
+
   return searchIndex
 }
 
