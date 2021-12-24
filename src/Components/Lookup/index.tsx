@@ -68,7 +68,7 @@ const Lookup = () => {
           name="lookup"
           menuOpen
           autoFocus
-          prefillLast
+          prefillRecent
           handleSelectItem={handleSelectItem}
           handleCreateItem={handleCreateItem}
         />

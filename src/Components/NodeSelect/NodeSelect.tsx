@@ -24,13 +24,21 @@ interface NodeSelectProps {
   id?: string
   name?: string
   inputRef?: any
-  prefillLast?: boolean
+  prefillRecent?: boolean
   menuOpen?: boolean
   autoFocus?: boolean
   defaultValue?: string | undefined
   placeholder?: string
+
+  /** Show icon highlight for whether an option has been selected */
   highlightWhenSelected?: boolean
+
+  /** Which highlight to show, true for selected (check) */
   iconHighlight?: boolean
+
+  /** Add the create option at the top of the suggestions */
+  createAtTop?: boolean
+
   onFocus?: React.FocusEventHandler<HTMLInputElement>
   onBlur?: React.FocusEventHandler<HTMLInputElement>
 }
@@ -47,9 +55,10 @@ function NodeSelect({
   placeholder,
   highlightWhenSelected,
   iconHighlight,
-  prefillLast,
+  prefillRecent,
   handleSelectItem,
   handleCreateItem,
+  createAtTop,
   onFocus,
   onBlur,
   id,
@@ -96,7 +105,9 @@ function NodeSelect({
     if (inputValue !== '') {
       const newItems = fuzzySearch(ilinks, inputValue, { keys: ['text'] })
       if (handleCreateItem && inputValue !== '' && isNew(inputValue, ilinks)) {
-        newItems.push({ text: `Create new: ${inputValue}`, value: inputValue, type: 'new' })
+        if (createAtTop) {
+          newItems.unshift({ text: `Create new: ${inputValue}`, value: inputValue, type: 'new' })
+        } else newItems.push({ text: `Create new: ${inputValue}`, value: inputValue, type: 'new' })
       }
       return newItems
     } else {
@@ -174,7 +185,7 @@ function NodeSelect({
       setInputValue(defaultValue)
       setSelectedItem({ text: defaultValue, value: defaultValue, type: 'exists' })
     } else {
-      if (prefillLast && lastOpenedItems.length > 0) {
+      if (prefillRecent && lastOpenedItems.length > 0) {
         setInputItems(lastOpenedItems.filter((i) => i.text))
       } else {
         setInputItems(ilinks)
@@ -242,7 +253,7 @@ NodeSelect.defaultProps = {
   handleCreateItem: undefined,
   highlightWhenSelected: false,
   iconHighlight: false,
-  prefillLast: false
+  prefillRecent: false
 }
 
 export function isNew(input: string, items: ComboItem[]): boolean {

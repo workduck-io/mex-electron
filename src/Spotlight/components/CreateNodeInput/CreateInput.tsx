@@ -72,7 +72,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
       <NodeSelect
         id="wd-spotlight-editor-search"
         name="wd-spotlight-editor-search"
-        prefillLast
+        prefillRecent
         placeholder={title}
         handleSelectItem={handleChange}
         handleCreateItem={handleOnCreate}
