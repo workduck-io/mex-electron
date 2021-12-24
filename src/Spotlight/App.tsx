@@ -1,13 +1,11 @@
 import React from 'react'
 import { ThemeProvider } from 'styled-components'
 import useThemeStore from '../Editor/Store/ThemeStore'
-import initializeAmplify from '../Requests/amplify/init'
 import { defaultThemes } from '../Styled/themes/defaultThemes'
 import Routes from './Routes'
 import { SpotlightProvider } from './utils/context'
 import { initializeSentry } from '../sentry'
 
-initializeAmplify()
 initializeSentry()
 
 export default function App() {
