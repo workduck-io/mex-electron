@@ -168,7 +168,7 @@ const Tag = () => {
                 navigateToTag(k)
               }}
             >
-              #{k} = {selected === i}
+              #{k}
             </TagLink>
           )
         })}
