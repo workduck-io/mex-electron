@@ -10,7 +10,7 @@ import getTextFromTriggers from '../../multi-combobox/getMultiTextFromTrigger'
  */
 export const useComboboxOnChange = ({
   editor,
-  keys,
+  keys
 }: {
   editor: TEditor
   keys: {
@@ -21,17 +21,20 @@ export const useComboboxOnChange = ({
   const setSearch = useComboboxStore((state) => state.setSearch)
   const setKey = useComboboxStore((state) => state.setKey)
 
-  return useCallback(() => {
-    const textFromTrigger = getTextFromTriggers(editor, keys)
-    if (textFromTrigger) {
-      const { key, search, range } = textFromTrigger
+  return useCallback(
+    (...args) => {
+      const textFromTrigger = getTextFromTriggers(editor, keys)
+      if (textFromTrigger) {
+        const { key, search, range } = textFromTrigger
 
-      setKey(key)
-      setTargetRange(range)
-      setSearch(search)
-      return { search }
-    }
+        setKey(key)
+        setTargetRange(range)
+        setSearch(search)
+        return { search }
+      }
 
-    return { search: undefined }
-  }, [editor, keys, setKey, setTargetRange, setSearch])
+      return { search: undefined }
+    },
+    [editor, keys, setKey, setTargetRange, setSearch]
+  )
 }

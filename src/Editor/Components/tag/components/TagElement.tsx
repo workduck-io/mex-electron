@@ -19,7 +19,6 @@ export const TagElement = ({ attributes, children, element }: TagElementProps) =
   const history = useHistory()
 
   const onClickProps = useOnMouseClick(() => {
-    console.info('tag clicked')
     openTag(element.value)
   })
 
