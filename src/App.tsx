@@ -6,14 +6,13 @@ import Contexts from './Context/Contexts'
 import Providers from './Context/Providers'
 import Main from './Layout/Main'
 import Modals from './Layout/Modals'
-import initializeAmplify from './Requests/amplify/init'
 import Switch from './Router/Switch'
 import GlobalStyle from './Styled/Global'
 import { initializeSentry } from './sentry'
 
 Modal.setAppElement('#root')
 
-initializeAmplify()
+// initializeAmplify()
 initializeSentry()
 
 function App() {
