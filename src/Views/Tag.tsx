@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
+import { debounce } from 'lodash'
 import useDataStore from '../Editor/Store/DataStore'
 import { useTags } from '../Hooks/useTags/useTags'
 import styled, { css } from 'styled-components'
@@ -11,10 +12,16 @@ import { defaultContent } from '../Defaults/baseData'
 import EditorPreviewRenderer from '../Editor/EditorPreviewRenderer'
 import useLoad from '../Hooks/useLoad/useLoad'
 import { HoverSubtleGlow } from '../Styled/helpers'
+import { Input } from '../Styled/Form'
+import { fuzzySearch } from '../Lib/fuzzySearch'
 
 const TagsWrapper = styled.div`
   display: flex;
   padding: ${({ theme }) => theme.spacing.large} ${({ theme }) => theme.spacing.medium};
+
+  ${Input} {
+    margin-bottom: ${({ theme }) => theme.spacing.medium};
+  }
 `
 
 const TagsSidebar = styled.div`
@@ -43,13 +50,20 @@ export const BaseLink = styled.div`
   ${HoverSubtleGlow}
 `
 
-const TagLink = styled(BaseLink)<{ selected?: boolean }>`
+const TagLink = styled(BaseLink)<{ active?: boolean; selected?: boolean }>`
   color: ${({ theme }) => theme.colors.text.fade};
   background-color: ${({ theme }) => theme.colors.gray[9]};
+  ${({ theme, active }) =>
+    active &&
+    css`
+      background-color: ${theme.colors.gray[8]};
+      color: ${theme.colors.primary};
+    `}
   ${({ theme, selected }) =>
     selected &&
     css`
       background-color: ${theme.colors.gray[8]};
+      box-shadow: 0 0 0px 1px ${({ theme }) => theme.colors.primary};
       color: ${theme.colors.primary};
     `}
 `
@@ -63,6 +77,9 @@ const Tag = () => {
   const nodes = getNodesForTag(tag)
   const history = useHistory()
   const { loadNode } = useLoad()
+  const [search, setSearch] = useState('')
+  const [selected, setSelected] = useState(-1)
+  const [tags, setTags] = useState(Object.keys(tagsCache))
 
   const transition = useTransition(nodes, {
     // sort: (a, b) => (a.score > b.score ? -1 : 0),
@@ -79,17 +96,72 @@ const Tag = () => {
   })
 
   const navigateToTag = (tag: string) => {
+    setSelected(-1)
     history.push(`/tag/${tag}`)
   }
+
+  const onSearchChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    setSearch(e.target.value)
+  }
+
+  const incSelected = () => setSelected((s: number) => (s > -1 ? s - 1 : tags.length - 1))
+  const decSelected = () => setSelected((s: number) => (s < tags.length - 1 ? s + 1 : -1))
+
+  const onKeyDownSearch: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.code === 'Tab') {
+      e.preventDefault()
+      // Blur the input if necessary (not needed currently)
+      // if (inputRef.current) inputRef.current.blur()
+      if (e.shiftKey) {
+        incSelected()
+      } else {
+        decSelected()
+      }
+    }
+
+    if (e.code === 'ArrowUp') {
+      incSelected()
+    }
+    if (e.code === 'ArrowDown') {
+      decSelected()
+    }
+    if (e.code === 'Escape') {
+      setSelected(-1)
+    }
+    if (e.code === 'Enter') {
+      // Only when the selected index is -1
+      if (selected > -1 && selected < tags.length) {
+        navigateToTag(tags[selected])
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (search && search !== '') {
+      const filtered = fuzzySearch(Object.keys(tagsCache), search, {})
+      setTags(filtered)
+    }
+    if (search === '') {
+      setTags(Object.keys(tagsCache))
+    }
+  }, [search])
 
   return (
     <TagsWrapper>
       <TagsSidebar>
         <h1>Tags</h1>
-        {Object.keys(tagsCache).map((k) => {
+
+        <Input
+          placeholder="Filter tags"
+          onChange={debounce((e) => onSearchChange(e), 250)}
+          onKeyUp={debounce(onKeyDownSearch, 250)}
+        />
+
+        {tags.map((k, i) => {
           return (
             <TagLink
-              selected={k === tag}
+              active={k === tag}
+              selected={selected === i}
               key={`tags_sidebar_${tag}_${k}`}
               onClick={(e) => {
                 e.preventDefault()

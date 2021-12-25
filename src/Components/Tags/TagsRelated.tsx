@@ -90,11 +90,14 @@ const TagsRelated = () => {
             ))}
           </TagsFlex>
           {relNodes.length > 0 ? <InfoSubHeading>Related Nodes</InfoSubHeading> : null}
-          {relNodes.map((n) => (
-            <NodeLink key={`info_tag_related_${uid}_${n}`} onClick={() => push(n)}>
-              {getNodeIdFromUid(n)}
-            </NodeLink>
-          ))}
+          {relNodes.map((n) => {
+            const nodeid = getNodeIdFromUid(n)
+            return nodeid !== undefined ? (
+              <NodeLink key={`info_tag_related_${uid}_${n}`} onClick={() => push(n)}>
+                {nodeid}
+              </NodeLink>
+            ) : null
+          })}
         </>
       ) : (
         <>
