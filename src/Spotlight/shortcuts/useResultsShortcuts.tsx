@@ -1,20 +1,22 @@
 import { useEffect } from 'react'
-import { useHistory } from 'react-router'
 import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import tinykeys from 'tinykeys'
+import { useSpotlightContext } from '../utils/context'
 
 export const useResultsShortcuts = () => {
-  const history = useHistory()
-
   const { shortcutDisabled } = useKeyListener()
+  const { setEditSearchedNode, setSearch } = useSpotlightContext()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      Tab: (event) => {
+      Enter: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) history.replace('/new')
+        if (!shortcutDisabled) {
+          // setEditSearchedNode(true)
+        }
       }
     })
+
     return () => {
       unsubscribe()
     }

@@ -14,11 +14,12 @@ import Preview from '../Preview'
 import SideBar from '../SideBar'
 import { NODE_ID_PREFIX } from '../../../Defaults/idPrefixes'
 import { nanoid } from 'nanoid'
+import { ILink } from '../../../Editor/Store/Types'
 
 export const StyledContent = styled.section`
   display: flex;
   flex: 1;
-  max-height: 290px;
+  max-height: 324px;
   margin: 0.5rem 0;
 `
 
@@ -36,40 +37,41 @@ export const createNodeWithUid = (key: string) => ({
 })
 
 const Content = () => {
-  const previewNode = useSpotlightEditorStore((state) => state.node)
-  const backPressed = useSpotlightSettingsStore((state) => state.backPressed)
-
-  const { search, selection } = useSpotlightContext()
-
-  const draftNode = useMemo(() => {
-    const keyNode = createNodeWithUid(getNewDraftKey())
-
-    if (backPressed) {
-      return previewNode
-    }
-
-    return keyNode
-  }, [backPressed])
-
-  const [data, setData] = useState<Array<any>>()
+  // * State
+  const [searchResults, setSearchResults] = useState<Array<any>>()
   const [preview, setPreview] = useState<{
     text: string
     metadata: string | null
     isSelection: boolean
   }>(initPreview)
 
-  const currentIndex = useCurrentIndex(data, search)
+  // * Store
+  const { ilinks } = useDataStore(({ ilinks }) => ({ ilinks }))
+  const { setSaved, getContent } = useContentStore(({ setSaved, getContent }) => ({ setSaved, getContent }))
+  const { editorNode, saveEditorNode, setNodeContent, nodeContent, isPreview } = useSpotlightEditorStore(
+    ({ node, setNode, setNodeContent, nodeContent, isPreview }) => ({
+      editorNode: node,
+      saveEditorNode: setNode,
+      setNodeContent,
+      nodeContent,
+      isPreview
+    })
+  )
 
-  const ilinks = useDataStore((s) => s.ilinks)
-  const getContent = useContentStore((state) => state.getContent)
-
+  // * Custom hooks
+  const { search, selection, setEditSearchedNode } = useSpotlightContext()
+  const currentIndex = useCurrentIndex(searchResults)
   const { loadNodeAndAppend, loadNodeProps, loadNode } = useLoad()
 
-  const saveEditorNode = useSpotlightEditorStore((state) => state.setNode)
-  const { setSaved } = useContentStore(({ setSaved }) => ({ setSaved }))
-  const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
-  const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
-  const isPreview = useSpotlightEditorStore((state) => state.isPreview)
+  const draftNode = useMemo(() => {
+    const keyNode = createNodeWithUid(getNewDraftKey())
+
+    // if (backPressed) {
+    //   return editorNode
+    // }
+
+    return keyNode
+  }, [])
 
   useEffect(() => {
     setSaved(false)
@@ -79,9 +81,10 @@ const Content = () => {
 
   useEffect(() => {
     const results = getSearchResults(search, ilinks, { keySelector: (obj) => obj.key })
+
     if (search) {
-      const resultsWithContent = results.map((result) => {
-        const content = getContent(result.uid)
+      const resultsWithContent: Array<ILink | { desc: string }> = results.map((ilink: ILink) => {
+        const content = getContent(ilink.uid)
         let rawText = ''
 
         content?.content.map((item) => {
@@ -90,13 +93,14 @@ const Content = () => {
         })
 
         return {
-          ...result,
+          ...ilink,
           desc: rawText
         }
       })
-      setData(resultsWithContent)
+      setSearchResults(resultsWithContent)
     } else {
-      setData(undefined)
+      setEditSearchedNode(undefined)
+      setSearchResults(undefined)
     }
     setSaved(false)
   }, [search, ilinks])
@@ -108,40 +112,40 @@ const Content = () => {
       isSelection: false
     }
 
-    if (!data) {
+    if (!searchResults) {
       if (selection) {
         setPreview({
           ...selection,
-          isSelection: isPreview
+          isSelection: true
         })
       } else {
         setNodeContent(undefined)
         setPreview(prevTemplate)
       }
-    } else if (data.length === 0) {
+    } else if (searchResults.length === 0) {
       setPreview({
         ...prevTemplate,
         text: null
       })
       loadNodeProps(draftNode)
     } else {
-      const contentKey = data[currentIndex]
+      const resultNode = searchResults[currentIndex]
       setPreview({
         ...prevTemplate,
         text: null
       })
       if (nodeContent) {
-        loadNodeAndAppend(contentKey.uid, nodeContent)
+        loadNodeAndAppend(resultNode.uid, nodeContent)
       } else {
-        loadNode(contentKey.uid, { savePrev: false, fetch: false })
+        loadNode(resultNode.uid, { savePrev: false, fetch: false })
       }
     }
     setSaved(false)
-  }, [data, currentIndex, isPreview, selection, draftNode])
+  }, [searchResults, currentIndex, isPreview, selection, draftNode])
 
   return (
     <StyledContent>
-      <SideBar index={currentIndex} data={data} />
+      <SideBar index={currentIndex} data={searchResults} />
       <Preview preview={preview} node={draftNode} />
     </StyledContent>
   )

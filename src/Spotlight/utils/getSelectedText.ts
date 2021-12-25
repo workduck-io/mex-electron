@@ -18,7 +18,6 @@ export const getSelectedTextSync = () => {
   keyTap('c', 'control')
 
   const selectedText = clipboard.readHTML()
-  console.log('selected text: ', selectedText)
   clipboard.writeText(contentBackup)
 
   const ret = {

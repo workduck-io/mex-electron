@@ -1,17 +1,16 @@
+import { animated } from 'react-spring'
 import styled from 'styled-components'
 import { Scroll } from '../../../Spotlight/styles/layout'
-import { Draggable } from '../Actions/styled'
 import { StyledBackground } from '../Spotlight/styled'
 
-export const StyledPreview = styled.div`
+export const StyledPreview = styled(animated.div)`
   ${StyledBackground}
-  ${Draggable}
   ${Scroll}
-position: relative;
+  position: relative;
   padding: 0.5rem;
-  flex: 5;
   border-radius: 1rem;
   white-space: pre-wrap;
+  width: 100%;
 `
 
 export const StyledEditorPreview = styled.div`
@@ -30,5 +29,5 @@ export const SeePreview = styled.div`
   color: ${({ theme }) => theme.colors.text.fade};
   box-shadow: 0px 2px 4px ${({ theme }) => theme.colors.background.modal};
   background-color: ${({ theme }) => theme.colors.background.highlight};
-  bottom: 3.3rem;
+  bottom: 1.8rem;
 `

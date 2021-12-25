@@ -61,8 +61,8 @@ const GlobalListener = memo(() => {
     ipcRenderer.on(IpcAction.SELECTED_TEXT, (_event, data) => {
       if (location.pathname === '/') {
         setIsPreview(false)
-        setSearch('')
       }
+
       if (!data) {
         setSelection(undefined)
         setIsPreview(false)

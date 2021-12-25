@@ -5,9 +5,11 @@ import { isFromSameSource } from '../../Editor/Store/helpers'
 import { NodeEditorContent } from '../../Editor/Store/Types'
 import { useSaver } from '../../Editor/Components/Saver'
 import { IpcAction } from './constants'
+import { useSpotlightContext } from './context'
 
-export const useCurrentIndex = (data: Array<any> | undefined, search: string): number => {
+export const useCurrentIndex = (data: Array<any> | undefined): number => {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
+  const { search, setEditSearchedNode } = useSpotlightContext()
 
   useEffect(() => {
     const dataLength = data ? data.length : 0
@@ -24,6 +26,12 @@ export const useCurrentIndex = (data: Array<any> | undefined, search: string): n
           const newValue = (prev - 1) % dataLength
           return newValue < 0 ? newValue + dataLength : newValue
         })
+      }
+
+      if (ev.key === 'Enter') {
+        ev.preventDefault()
+        console.log(data[currentIndex])
+        setEditSearchedNode(data[currentIndex])
       }
     }
 

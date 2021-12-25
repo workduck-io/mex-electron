@@ -18,17 +18,17 @@ export const isILinkExists = (iLink: string, iLinkList: Array<ComboText>) =>
 
 const NewEditor = () => {
   const { key, uid: nodeId } = useEditorStore((state) => state.node)
-  const isOnboarding = useOnboard((s) => s.isOnboarding)
-  const changeOnboarding = useOnboard((s) => s.changeOnboarding)
-  const addILink = useDataStore((s) => s.addILink)
 
   const ilinks = useDataStore((s) => s.ilinks)
 
+  const isOnboarding = useOnboard((s) => s.isOnboarding)
+  const changeOnboarding = useOnboard((s) => s.changeOnboarding)
+  const addILink = useDataStore((s) => s.addILink)
   const setSaved = useContentStore((state) => state.setSaved)
+  const addRecent = useRecentsStore((state) => state.addRecent)
   const fsContent = useEditorStore((state) => state.content)
 
   const [content, setContent] = useState<any[] | undefined>(undefined)
-  const addRecent = useRecentsStore((state) => state.addRecent)
 
   useEffect(() => {
     if (isILinkExists(nodeId, ilinks)) {

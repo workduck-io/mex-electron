@@ -1,20 +1,20 @@
 /* eslint-disable react/prop-types */
-import { Icon } from '@iconify/react'
 import React, { useEffect, useRef, useState } from 'react'
-import { Action, ActionDesc, ActionDescStyled, ActionTitle, CreateMex } from '../Actions/styled'
-import { StyledKey } from '../Shortcuts/styled'
+import { ActionTitle } from '../Actions/styled'
 import { StyledRow, StyledResults, Description } from './styled'
-import CreateIcon from '@iconify-icons/ph/lightning'
-import { useResultsShortcuts } from '../../../Spotlight/shortcuts/useResultsShortcuts'
+import { useSpring, useTransition } from 'react-spring'
+import { useSpotlightContext } from '../../../Spotlight/utils/context'
+import ListenResultShortcut from './ListenResultShortcut'
 
 export const Result: React.FC<{
   result: any
   onClick: () => void
+  style: any
   selected?: boolean
   key?: string
-}> = ({ result, selected, onClick }) => {
+}> = ({ result, selected, onClick, style }) => {
   return (
-    <StyledRow showColor={selected} onClick={onClick} key={`STRING_${result.key}`}>
+    <StyledRow style={style} showColor={selected} onClick={onClick} key={`STRING_${result.key}`}>
       {result?.text}
       <Description>{result?.desc}</Description>
     </StyledRow>
@@ -23,8 +23,25 @@ export const Result: React.FC<{
 
 const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ current, data }) => {
   const ref = useRef<any>(undefined!)
+
+  const { search, editSearchedNode } = useSpotlightContext()
   const [selectedIndex, setSelectedIndex] = useState<number>(current)
-  useResultsShortcuts()
+
+  const props = useSpring({ width: search && !editSearchedNode ? '40%' : '0%', opacity: search ? 1 : 0 })
+
+  const transitions = useTransition(data ?? [], {
+    from: {
+      marginTop: 0,
+      opacity: 0,
+      transform: 'translateY(-4px)'
+    },
+    enter: {
+      marginTop: 0,
+      opacity: 1,
+      transform: 'translateY(0px)'
+    },
+    trail: 100
+  })
 
   useEffect(() => {
     ref?.current?.scrollToItem(current)
@@ -32,31 +49,23 @@ const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ curren
   }, [current])
 
   return (
-    <StyledResults>
-      {data.length === 0 ? (
-        <Action>
-          <ActionTitle>ACTIONS</ActionTitle>
-          <CreateMex showColor>
-            <ActionDescStyled>
-              <Icon style={{ marginRight: '5px' }} color="#888" height={20} width={20} icon={CreateIcon} />
-              Create new Mex
-            </ActionDescStyled>
-            <StyledKey>TAB</StyledKey>
-          </CreateMex>
-        </Action>
-      ) : (
-        <ActionTitle>SEARCH RESULTS</ActionTitle>
-      )}
-      {data?.map((result, index) => (
-        <Result
-          key={`RESULT_${result?.text || String(index)}`}
-          selected={index === selectedIndex}
-          onClick={() => {
-            setSelectedIndex(index)
-          }}
-          result={result}
-        />
-      ))}
+    <StyledResults style={props} margin={search}>
+      {data && data.length !== 0 && <ListenResultShortcut />}
+      {data && <ActionTitle>SEARCH RESULTS</ActionTitle>}
+      {data?.length === 0 && <ActionTitle>There's nothing with that name here...</ActionTitle>}
+      {transitions((props, result, state, index) => {
+        return (
+          <Result
+            style={{ ...props }}
+            key={`RESULT_${result?.text || String(index)}`}
+            selected={index === selectedIndex}
+            onClick={() => {
+              setSelectedIndex(index)
+            }}
+            result={result}
+          />
+        )
+      })}
     </StyledResults>
   )
 }

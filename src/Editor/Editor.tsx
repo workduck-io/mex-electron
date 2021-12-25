@@ -18,16 +18,23 @@ interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
   editorId: string
   readOnly?: boolean
+  autoFocus?: boolean
   focusAtBeginning?: boolean
   showBalloonToolbar?: boolean
 }
 
 // High performance guaranteed
-const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonToolbar }: EditorProps) => {
+const Editor = ({
+  content,
+  editorId,
+  autoFocus = true,
+  readOnly,
+  focusAtBeginning,
+  showBalloonToolbar
+}: EditorProps) => {
   const editableProps = {
-    placeholder: readOnly ? 'Murmuring the mex hype...' : '',
     spellCheck: false,
-    autoFocus: true,
+    autoFocus: autoFocus,
     style: {
       padding: '15px'
     },
@@ -67,6 +74,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
               id={generateEditorId()}
               editableProps={editableProps}
               value={content}
+              onChange={(val) => console.log({ val })}
               plugins={plugins}
               components={withStyledPlaceHolders(withStyledDraggables(components))}
               options={options}

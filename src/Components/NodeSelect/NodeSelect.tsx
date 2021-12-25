@@ -213,8 +213,6 @@ function NodeSelect({
     }
   }, [defaultValue])
 
-  // console.log({ isOpen, inputItems })
-
   return (
     <>
       <StyledCombobox {...getComboboxProps()}>
