@@ -7,10 +7,10 @@ import { ipcRenderer } from 'electron'
 import { IpcAction } from '../../utils/constants'
 import { FileData } from '../../../Types/data'
 import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
+import { useNewSearchStore } from '../../../Search/SearchStore'
 import { useRecentsStore } from '../../../Editor/Store/RecentsStore'
 import { useInitialize, AppType } from '../../../Data/useInitialize'
 import { useSpotlightAppStore } from '../../../Spotlight/store/app'
-import useSearchStore from '../../../Search/SearchStore'
 import { convertDataToRawText } from '../../../Search/localSearch'
 import { useLocation, useHistory } from 'react-router'
 import { useAuthStore } from '../../../Hooks/useAuth/useAuth'
@@ -31,9 +31,9 @@ const GlobalListener = memo(() => {
   const setReset = useSpotlightAppStore((state) => state.setReset)
   const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
+  const initializeSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
 
   const { init, update } = useInitialize()
-  const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
   const { identifyUser } = useAnalytics()
   const history = useHistory()
 

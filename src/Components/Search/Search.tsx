@@ -10,7 +10,7 @@ import { useLinks } from '../../Editor/Actions/useLinks'
 import EditorPreviewRenderer from '../../Editor/EditorPreviewRenderer'
 import { useContentStore } from '../../Editor/Store/ContentStore'
 import useLoad from '../../Hooks/useLoad/useLoad'
-import useSearchStore from '../../Search/SearchStore'
+import { useNewSearchStore } from '../../Search/SearchStore'
 import {
   MatchCounter,
   MatchCounterWrapper,
@@ -49,7 +49,7 @@ const useSearchPageStore = create<SearchStore>((set) => ({
 }))
 
 const Search = () => {
-  const searchIndex = useSearchStore((store) => store.searchIndex)
+  const searchIndex = useNewSearchStore((store) => store.searchIndex)
   const contents = useContentStore((store) => store.contents)
   const selected = useSearchPageStore((store) => store.selected)
   const setSelected = useSearchPageStore((store) => store.setSelected)
@@ -86,17 +86,19 @@ const Search = () => {
     } else {
       const res = searchIndex(newSearchTerm)
       // console.log({ res })
-      const res2 = res.map((r) => {
-        return {
-          ref: r.ref,
-          score: r.score,
-          ...highlightText(r.matchData.metadata, r.text, r.title)
-        }
-      })
-      setResult(res2)
+      // const res2 = res.map((r) => {
+      //   return {
+      //     // ref: r.ref,
+      //     // score: r.score,
+      //     // ...highlightText(r.matchData.metadata, r.text, r.title)
+      //   }
+      // })
+      setResult(res)
     }
     setSearchTerm(newSearchTerm)
   }
+
+  console.log({ result })
 
   useEffect(() => {
     executeSearch(searchTerm)
@@ -168,43 +170,46 @@ const Search = () => {
       </SearchHeader>
       <ResultsWrapper>
         <Results>
-          {transition((styles, c, _t, i) => {
-            const con = contents[c.ref]
-            const nodeId = getNodeIdFromUid(c.ref)
-            const content = con ? con.content : defaultContent
-            return (
-              <Result
-                onClick={() => {
-                  loadNode(c.ref)
-                  history.push('/editor')
-                }}
-                style={styles}
-                selected={i === selected}
-                key={`${c.ref}`}
-              >
-                <ResultHeader>
-                  {c.titleHighlights !== undefined && c.titleHighlights.length > 0 ? (
-                    <TitleHighlights titleHighlights={c.titleHighlights} />
+          {
+            /*transition((styles, c, _t, i) => { */
+            result.map((c, i) => {
+              const con = contents[c.nodeUID]
+              const nodeId = getNodeIdFromUid(c.nodeUID)
+              const content = con ? con.content : defaultContent
+              console.log(c.matchField.includes('title'))
+              return (
+                <Result
+                  onClick={() => {
+                    loadNode(c.nodeUID)
+                    history.push('/editor')
+                  }}
+                  selected={i === selected}
+                  key={`ResultForSearch_${c.nodeUID}`}
+                >
+                  <ResultHeader active={c.matchField.includes('title')}>
+                    {c.titleHighlights !== undefined && c.titleHighlights.length > 0 ? (
+                      <TitleHighlights titleHighlights={c.titleHighlights} />
+                    ) : (
+                      <ResultTitle>{nodeId}</ResultTitle>
+                    )}
+                    {c.totalMatches !== undefined && (
+                      <MatchCounterWrapper>
+                        Matches:
+                        <MatchCounter>{c.totalMatches}</MatchCounter>
+                      </MatchCounterWrapper>
+                    )}
+                  </ResultHeader>
+                  {c.highlights !== undefined ? (
+                    <SearchHighlights highlights={c.highlights} />
                   ) : (
-                    <ResultTitle>{nodeId}</ResultTitle>
+                    <SearchPreviewWrapper active={c.matchField.includes('text')}>
+                      <EditorPreviewRenderer content={content} editorId={`editor_${c.nodeUID}`} />
+                    </SearchPreviewWrapper>
                   )}
-                  {c.totalMatches !== undefined && (
-                    <MatchCounterWrapper>
-                      Matches:
-                      <MatchCounter>{c.totalMatches}</MatchCounter>
-                    </MatchCounterWrapper>
-                  )}
-                </ResultHeader>
-                {c.highlights !== undefined ? (
-                  <SearchHighlights highlights={c.highlights} />
-                ) : (
-                  <SearchPreviewWrapper>
-                    <EditorPreviewRenderer content={content} editorId={`editor_${c.ref}`} />
-                  </SearchPreviewWrapper>
-                )}
-              </Result>
-            )
-          })}
+                </Result>
+              )
+            })
+          }
         </Results>
         {result.length === 0 && (
           <NoSearchResults>No results found. Try refining the query or search for a different one.</NoSearchResults>

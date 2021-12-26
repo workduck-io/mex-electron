@@ -43,7 +43,7 @@ export const NoSearchResults = styled.div`
   top: 0;
 `
 
-export const ResultHeader = styled.div`
+export const ResultHeader = styled.div<{ active?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -51,6 +51,15 @@ export const ResultHeader = styled.div`
   background-color: ${({ theme }) => theme.colors.gray[8]};
   padding: ${({ theme }) => theme.spacing.medium};
   color: ${({ theme }) => theme.colors.text.fade};
+  ${({ theme, active }) =>
+    active &&
+    css`
+      color: ${({ theme }) => theme.colors.primary};
+
+      ${ResultTitle} {
+        color: ${theme.colors.primary};
+      }
+    `}
 `
 
 export const ResultTitle = styled.div`
@@ -101,7 +110,9 @@ export const ResultsWrapper = styled.div`
   position: relative;
 `
 
-export const SearchPreviewWrapper = styled.div``
+export const SearchPreviewWrapper = styled.div<{ active?: boolean }>`
+  ${({ theme, active }) => active && css``}
+`
 
 export const SSearchHighlights = styled.div`
   padding: ${({ theme }) => theme.spacing.medium};

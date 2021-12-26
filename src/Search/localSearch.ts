@@ -1,27 +1,5 @@
 import { FileData, NodeSearchData } from '../Types/data'
 
-import lunr from 'lunr-mutable-indexes'
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const createLunrIndex = (initList: NodeSearchData[], indexData: any) => {
-  if (indexData && initList.length > 0) {
-    const index = lunr.Index.load(indexData)
-    return index
-  }
-
-  const index = lunr(function () {
-    this.ref('nodeUID')
-    this.field('title')
-    this.field('text')
-    this.metadataWhitelist = ['position']
-
-    initList.forEach(function (doc) {
-      this.add(doc)
-    }, this)
-  })
-  return index
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const convertEntryToRawText = (nodeUID: string, entry: any[]): NodeSearchData => {
   const text: string[] = []

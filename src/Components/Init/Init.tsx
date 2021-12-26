@@ -2,6 +2,7 @@ import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import { flexIndexKeys } from '../../Search/flexsearch'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
 import { useInitialize } from '../../Data/useInitialize'
@@ -15,7 +16,7 @@ import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListen
 import useLoad from '../../Hooks/useLoad/useLoad'
 import config from '../../Requests/config'
 import { convertDataToRawText } from '../../Search/localSearch'
-import useSearchStore from '../../Search/SearchStore'
+import { useNewSearchStore } from '../../Search/SearchStore'
 import { IpcAction } from '../../Spotlight/utils/constants'
 
 import { useSaveAndExit } from '../../Hooks/useSaveAndExit/useSaveAndExit'
@@ -34,8 +35,8 @@ const Init = () => {
   useSaveAndExit()
 
   const { getLocalData } = useLocalData()
-  const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
-  const fetchIndexJSON = useSearchStore((store) => store.fetchIndexJSON)
+  const initFlexSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
+  const fetchIndexLocalStorage = useNewSearchStore((store) => store.fetchIndexLocalStorage)
 
   /** Initialization of the app details occur here */
   useEffect(() => {
@@ -52,8 +53,11 @@ const Init = () => {
         })
         .then(({ fileData, indexData }) => {
           const initList = convertDataToRawText(fileData)
-          initializeSearchIndex(initList, indexData)
-          // console.log(`Search Index initialized with ${initList.length} documents`)
+          const index = initFlexSearchIndex(initList, indexData)
+
+          // const res = searchIndexNew('design')
+          // console.log('Initial Results are: ', res)
+
           return fileData
         })
         .then((d) => {
@@ -80,7 +84,7 @@ const Init = () => {
     ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { nodeId }) => {
       pushHs(nodeId)
       addRecent(nodeId)
-      loadNode(nodeId, {savePrev: false, fetch: false})
+      loadNode(nodeId, { savePrev: false, fetch: false })
     })
     ipcRenderer.on(IpcAction.CLEAR_RECENTS, () => {
       clear()
@@ -95,10 +99,16 @@ const Init = () => {
       }
     })
     ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, () => {
-      const searchIndexJSON = fetchIndexJSON()
-      ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndexJSON })
+      fetchIndexLocalStorage()
+      const searchIndex = {}
+      flexIndexKeys.forEach((key) => {
+        const t = localStorage.getItem(key)
+        if (t === null) searchIndex[key] = ''
+        else searchIndex[key] = t
+      })
+      ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndex })
     })
-  }, [fetchIndexJSON]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetchIndexLocalStorage]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { setIpc } = useSyncData()
 

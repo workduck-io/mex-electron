@@ -1,31 +1,41 @@
 import create from 'zustand'
-import { NodeSearchData, SearchResult } from '../Types/data'
-import { createLunrIndex } from './localSearch'
-import lunr from 'lunr-mutable-indexes'
+import { NodeSearchData } from '../Types/data'
+import { Document } from 'flexsearch'
+import { createFlexsearchIndex } from './flexsearch'
 
 interface NodeTitleText {
   title: string
   text: string
 }
-interface SearchStoreState {
+export interface FlexSearchResult {
+  nodeUID: string
+  title: string
+  text: string
+  matchField: string[]
+}
+
+interface NewSearchStoreState {
   docs: Map<string, NodeTitleText>
-  index: lunr.Index | null
+  index: Document | null
+  indexDump: any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  initializeSearchIndex: (initList: NodeSearchData[], indexData: any) => lunr.Index
+  initializeSearchIndex: (initList: NodeSearchData[], indexData: any) => Document
   addDoc: (doc: NodeSearchData) => void
   addMultipleDocs: (docs: NodeSearchData[]) => void
   removeDoc: (nodeUID: string) => void
   updateDoc: (nodeUID: string, newDoc: NodeSearchData, title: string) => void
-  searchIndex: (query: string) => SearchResult[]
-  fetchIndexJSON: () => any // eslint-disable-line @typescript-eslint/no-explicit-any
+  fetchDocByID: (id: string, matchField: string) => FlexSearchResult
+  searchIndex: (query: string) => FlexSearchResult[]
+  fetchIndexLocalStorage: () => void
 }
 
-const useSearchStore = create<SearchStoreState>((set, get) => ({
+export const useNewSearchStore = create<NewSearchStoreState>((set, get) => ({
   docs: new Map<string, NodeTitleText>(),
   index: null,
+  indexDump: {},
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initializeSearchIndex: (initList: NodeSearchData[], indexData: any) => {
-    const index = createLunrIndex(initList, indexData)
+    const index = createFlexsearchIndex(initList, indexData)
     set({ index })
     initList.forEach((doc) => {
       get().docs.set(doc.nodeUID, { title: doc.title, text: doc.text })
@@ -33,46 +43,62 @@ const useSearchStore = create<SearchStoreState>((set, get) => ({
     return index
   },
   addDoc: (doc: NodeSearchData) => {
+    get().docs.set(doc.nodeUID, { title: doc.title, text: doc.text })
     get().index.add(doc)
   },
   addMultipleDocs: (docs: NodeSearchData[]) => {
-    const index = get().index
-    docs.forEach((doc) => index.add(doc))
+    docs.forEach((doc) => get().addDoc(doc))
   },
   removeDoc: (nodeUID: string) => {
-    get().index.remove({
-      nodeUID
-    })
-    get().docs.delete(nodeUID)
+    get().index.remove(nodeUID)
   },
   updateDoc: (nodeUID: string, newDoc: NodeSearchData, title: string) => {
+    get().docs.set(nodeUID, { title: title, text: newDoc.text })
     get().index.update({
-      nodeUID,
-      text: newDoc.text,
-      title: title
+      nodeUID: nodeUID,
+      title: title,
+      text: newDoc.text
     })
-    const docs = get().docs
-    docs.set(nodeUID, { title: title, text: newDoc.text })
-    // console.log('Docs Updated: ', docs)
+  },
+  fetchDocByID: (id: string, matchField: string) => {
+    const doc = get().docs.get(id)
+    const result: any = {
+      ...doc,
+      nodeUID: id,
+      matchField
+    }
+    return result
   },
   searchIndex: (query: string) => {
-    const docs = get().docs
-    const results = get().index.search(query)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Object.values<any>(results).forEach((result) => {
-      const temp = docs.get(result.ref)
-      if (result.text) {
-        result.text = temp.text
-      }
-      if (result.title) {
-        result.title = temp.title
+    const response = get().index.search(query)
+    const results = new Array<any>()
+    response.forEach((entry) => {
+      const matchField = entry.field
+      entry.result.forEach((i) => {
+        const t = get().fetchDocByID(i, matchField)
+        results.push(t)
+      })
+    })
+
+    const combinedResults = new Array<FlexSearchResult>()
+    results.forEach(function (item) {
+      const existing = combinedResults.filter(function (v, i) {
+        return v.nodeUID == item.nodeUID
+      })
+      if (existing.length) {
+        const existingIndex = combinedResults.indexOf(existing[0])
+        combinedResults[existingIndex].matchField = combinedResults[existingIndex].matchField.concat(item.matchField)
+      } else {
+        if (typeof item.matchField == 'string') item.matchField = [item.matchField]
+        combinedResults.push(item)
       }
     })
-    return results
+
+    return combinedResults
   },
-  fetchIndexJSON: () => {
-    return get().index.toJSON()
+  fetchIndexLocalStorage: () => {
+    get().index.export((key, data) => {
+      localStorage.setItem(key, data)
+    })
   }
 }))
-
-export default useSearchStore
