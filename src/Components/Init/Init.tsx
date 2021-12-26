@@ -16,7 +16,7 @@ import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListen
 import useLoad from '../../Hooks/useLoad/useLoad'
 import config from '../../Requests/config'
 import { convertDataToRawText } from '../../Search/localSearch'
-import useSearchStore, { useNewSearchStore } from '../../Search/SearchStore'
+import { useNewSearchStore } from '../../Search/SearchStore'
 import { IpcAction } from '../../Spotlight/utils/constants'
 
 import { useSaveAndExit } from '../../Hooks/useSaveAndExit/useSaveAndExit'
@@ -35,10 +35,8 @@ const Init = () => {
   useSaveAndExit()
 
   const { getLocalData } = useLocalData()
-  const fetchIndexJSON = useSearchStore((store) => store.fetchIndexJSON)
   const initFlexSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
   const fetchIndexLocalStorage = useNewSearchStore((store) => store.fetchIndexLocalStorage)
-  const searchIndexNew = useNewSearchStore((store) => store.searchIndex)
 
   /** Initialization of the app details occur here */
   useEffect(() => {

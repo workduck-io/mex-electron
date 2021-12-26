@@ -10,7 +10,7 @@ import { useLinks } from '../../Editor/Actions/useLinks'
 import EditorPreviewRenderer from '../../Editor/EditorPreviewRenderer'
 import { useContentStore } from '../../Editor/Store/ContentStore'
 import useLoad from '../../Hooks/useLoad/useLoad'
-import useSearchStore, { useNewSearchStore } from '../../Search/SearchStore'
+import { useNewSearchStore } from '../../Search/SearchStore'
 import {
   MatchCounter,
   MatchCounterWrapper,
@@ -49,7 +49,6 @@ const useSearchPageStore = create<SearchStore>((set) => ({
 }))
 
 const Search = () => {
-  // const searchIndex = useSearchStore((store) => store.searchIndex)
   const searchIndex = useNewSearchStore((store) => store.searchIndex)
   const contents = useContentStore((store) => store.contents)
   const selected = useSearchPageStore((store) => store.selected)

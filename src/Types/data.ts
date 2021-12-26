@@ -1,7 +1,6 @@
 import { Service, SyncBlockData, SyncBlockTemplate, SyncStoreIntents } from '../Editor/Components/SyncBlock'
 import { Snippet } from '../Editor/Store/SnippetStore'
 import { ComboText, ILink, LinkCache, NodeEditorContent, TagsCache } from '../Editor/Store/Types'
-import lunr from 'lunr-mutable-indexes'
 
 export interface NodeMetadata {
   createdBy?: string
@@ -49,13 +48,4 @@ export interface NodeSearchData {
   nodeUID: string
   title?: string
   text: string
-}
-
-export interface SearchResult extends lunr.Index.Result {
-  ref: string
-  nodeName: string
-  title: string
-  text: string
-  score: number
-  matchData: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
