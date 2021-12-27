@@ -211,7 +211,7 @@ function NodeSelect({
     }
   }, [defaultValue])
 
-  console.log({ isOpen, inputItems })
+  // console.log({ isOpen, inputItems })
 
   return (
     <>
@@ -253,7 +253,7 @@ function NodeSelect({
               if (content) desc = convertContentToRawText(content.content, ' ')
               if (desc === '') desc = undefined
             }
-            console.log({ desc, item })
+            // console.log({ desc, item })
             return (
               <Suggestion
                 highlight={highlightedIndex === index}

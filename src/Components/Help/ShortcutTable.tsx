@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import useShortcutTableData from './useShortcutTableData'
-import Modal from 'react-modal'
-import { matchSorter } from 'match-sorter'
-import { Shortcut } from './Help.types'
 import { debounce } from 'lodash'
+import { matchSorter } from 'match-sorter'
+import React, { useEffect, useState } from 'react'
+import Modal from 'react-modal'
+import { useShortcutStore } from '../../Editor/Store/ShortcutStore'
 import { Input } from '../../Styled/Form'
+import { DisplayShortcut } from '../Shortcuts'
+import { Shortcut } from './Help.types'
+import InputShortcut from './InputShortcut'
 import {
   StyledRow,
   StyledTable,
@@ -15,15 +17,10 @@ import {
   TableHeader,
   TableWrapperScrollable
 } from './ShortcutTable.styles'
-import { useShortcutStore } from '../../Editor/Store/ShortcutStore'
-import InputShortcut from './InputShortcut'
+import useShortcutTableData from './useShortcutTableData'
 
 function fuzzyTextFilterFn(data: Shortcut[], search: any) {
   return matchSorter(data, search, { keys: ['title', 'keystrokes', 'category'] })
-}
-
-export const ShowShortcut = (keybinding: string, mod = '⌘') => {
-  return keybinding.replaceAll('$mod', mod).replaceAll('Key', '')
 }
 
 const ShortcutTable = () => {
@@ -84,7 +81,11 @@ const ShortcutTable = () => {
                     // console.log(cell)
 
                     if (cell === 'keystrokes') {
-                      return <StyledTD key={`cell_${index}_${row[cell]}`}>{ShowShortcut(row[cell])}</StyledTD>
+                      return (
+                        <StyledTD key={`cell_${index}_${row[cell]}`}>
+                          <DisplayShortcut shortcut={row[cell]} />{' '}
+                        </StyledTD>
+                      )
                     }
                     return <StyledTD key={`cell_${index}_${row[cell]}`}>{row[cell]}</StyledTD>
                   })}

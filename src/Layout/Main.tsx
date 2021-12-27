@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Notifications } from '../Components/Notifications/Notifications'
 import Nav, { navTooltip } from '../Components/Sidebar/Nav'
-import links from '../Conf/links'
+import useNavlinks from '../Conf/links'
 import { linkTooltip } from '../Editor/Components/Link'
 import { GridWrapper } from '../Styled/Grid'
 
@@ -42,12 +42,13 @@ const Main = ({ children }: MainProps) => {
   const styles = {
     WebkitAppRegion: 'drag'
   }
+  const { getLinks } = useNavlinks()
 
   return (
     <AppWrapper>
       <Draggable style={styles as any} /> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
       <GridWrapper>
-        <Nav links={links} />
+        <Nav links={getLinks()} />
         <Content>{children}</Content>
       </GridWrapper>
       <Notifications />

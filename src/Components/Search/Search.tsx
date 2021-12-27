@@ -98,7 +98,7 @@ const Search = () => {
     setSearchTerm(newSearchTerm)
   }
 
-  console.log({ result })
+  // console.log({ result })
 
   useEffect(() => {
     executeSearch(searchTerm)
@@ -176,7 +176,7 @@ const Search = () => {
               const con = contents[c.nodeUID]
               const nodeId = getNodeIdFromUid(c.nodeUID)
               const content = con ? con.content : defaultContent
-              console.log(c.matchField.includes('title'))
+              // console.log(c.matchField.includes('title'))
               return (
                 <Result
                   onClick={() => {
