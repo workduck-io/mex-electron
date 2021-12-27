@@ -434,10 +434,20 @@ app
     tray = new Tray(icon)
 
     const contextMenu = Menu.buildFromTemplate([
-      { label: 'Open Mex', type: 'radio' },
-      { label: 'Toggle Spotlight search ', type: 'radio' },
-      { label: 'Create new Mex', type: 'radio', checked: true },
-      { label: 'Search', type: 'radio' }
+      {
+        label: 'Open Mex',
+        click: () => {
+          mex?.show()
+        }
+      },
+      { type: 'separator' },
+      {
+        label: 'Open Spotlight',
+        accelerator: SPOTLIGHT_SHORTCUT,
+        click: () => {
+          spotlight?.show()
+        }
+      }
     ])
 
     tray.setToolTip('Mex')
