@@ -11,6 +11,7 @@ export const getDisplayShortcut = (keybinding: string) => {
       .replaceAll('Key', '')
       .replaceAll('Shift', '⇧')
       .replaceAll('Enter', '⏎')
+      .replaceAll(' ', ' ... ')
       // .replaceAll('ArrowUp', '⏎')
       // .replaceAll('ArrowDown', '⏎')
       // .replaceAll('ArrowLeft', '˂')
