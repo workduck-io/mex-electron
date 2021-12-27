@@ -1,12 +1,12 @@
-import React from 'react'
 import lodash from 'lodash'
-import useShortcutTableData from '../Help/useShortcutTableData'
-import styled, { css } from 'styled-components'
-import { ShowShortcut } from '../Help/ShortcutTable'
-import Modal from 'react-modal'
 import { transparentize } from 'polished'
+import React from 'react'
+import Modal from 'react-modal'
+import styled, { css } from 'styled-components'
 import { useShortcutStore } from '../../Editor/Store/ShortcutStore'
 import InputShortcut from '../Help/InputShortcut'
+import useShortcutTableData from '../Help/useShortcutTableData'
+import { DisplayShortcut } from '../Shortcuts'
 
 const Shortcut = styled.div<{ highlight: boolean }>`
   width: 100%;
@@ -90,7 +90,9 @@ const Shortcuts = () => {
                   key={shortcut.title}
                 >
                   <ShortcutItem>{shortcut.title}</ShortcutItem>
-                  <ShortcutItem highlight={true}>{ShowShortcut(shortcut.keystrokes)}</ShortcutItem>
+                  <ShortcutItem highlight={true}>
+                    <DisplayShortcut shortcut={shortcut.keystrokes} />
+                  </ShortcutItem>
                 </Shortcut>
               ))}
             </ShortcutContent>

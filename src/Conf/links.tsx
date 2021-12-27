@@ -7,6 +7,7 @@ import archiveFill from '@iconify-icons/ri/archive-fill'
 import { Icon } from '@iconify/react'
 import React from 'react'
 import { NavLinkData } from '../Components/Sidebar/Types'
+import { useHelpStore } from '../Components/Help/HelpModal'
 
 /*
 Sidebar links are defined here
@@ -16,39 +17,50 @@ Sidebar links are defined here
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 export const GetIcon = (icon: any): React.ReactNode => <Icon width="32" icon={icon} />
 
-const links: NavLinkData[] = [
-  {
-    title: 'Dashboard',
-    path: '/',
-    icon: GetIcon(dashboardLine),
-    isComingSoon: true
-  },
-  {
-    title: 'Editor',
-    path: '/editor',
-    icon: GetIcon(fileDocument)
-  },
-  {
-    title: 'Tasks',
-    path: '/tasks',
-    icon: GetIcon(checkboxLine),
-    isComingSoon: true
-  },
-  {
-    title: 'Integrations',
-    path: '/integrations',
-    icon: GetIcon(appsLine)
-  },
-  {
-    title: 'Snippets',
-    path: '/snippets',
-    icon: GetIcon(quillPenLine)
-  },
-  {
-    title: 'Archived',
-    path: '/archive',
-    icon: GetIcon(archiveFill)
+const useNavlinks = () => {
+  const shortcuts = useHelpStore((store) => store.shortcuts)
+  const getLinks = () => {
+    const links: NavLinkData[] = [
+      {
+        title: 'Dashboard',
+        path: '/',
+        icon: GetIcon(dashboardLine),
+        isComingSoon: true
+      },
+      {
+        title: 'Editor',
+        path: '/editor',
+        shortcut: shortcuts.showEditor.keystrokes,
+        icon: GetIcon(fileDocument)
+      },
+      {
+        title: 'Tasks',
+        path: '/tasks',
+        icon: GetIcon(checkboxLine),
+        isComingSoon: true
+      },
+      {
+        title: 'Integrations',
+        path: '/integrations',
+        shortcut: shortcuts.showIntegrations.keystrokes,
+        icon: GetIcon(appsLine)
+      },
+      {
+        title: 'Snippets',
+        path: '/snippets',
+        shortcut: shortcuts.showSnippets.keystrokes,
+        icon: GetIcon(quillPenLine)
+      },
+      {
+        title: 'Archived',
+        path: '/archive',
+        icon: GetIcon(archiveFill)
+      }
+    ]
+    return links
   }
-]
 
-export default links
+  return { getLinks }
+}
+
+export default useNavlinks

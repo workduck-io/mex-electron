@@ -5,6 +5,7 @@ import settings4Line from '@iconify-icons/ri/settings-4-line'
 import { useSingleton } from '@tippyjs/react'
 import React from 'react'
 import BookmarkButton from '../Components/Buttons/BookmarkButton'
+import { useHelpStore } from '../Components/Help/HelpModal'
 import { useNodeIntentsModalStore } from '../Components/NodeIntentsModal/NodeIntentsModal'
 import { ToolbarTooltip } from '../Components/Tooltips'
 import useToggleElements from '../Hooks/useToggleElements/useToggleElements'
@@ -25,6 +26,7 @@ const Toolbar = () => {
   const nodeIntentsModalToggle = useNodeIntentsModalStore((store) => store.toggleModal)
   const uid = useEditorStore((state) => state.node.uid)
   const [source, target] = useSingleton()
+  const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph } = useToggleElements()
 
@@ -50,6 +52,7 @@ const Toolbar = () => {
           size={24}
           icon={focusLine}
           title="Focus Mode"
+          shortcut={shortcuts.toggleFocusMode.keystrokes}
           highlight={focusMode}
           onClick={toggleFocusMode}
         />
@@ -61,12 +64,14 @@ const Toolbar = () => {
           highlight={nodeIntentsModalOpen}
           onClick={nodeIntentsModalToggle}
         />
-        <SaverButton singleton={target} callbackAfterSave={onSave} />
+        <SaverButton shortcut={shortcuts.save.keystrokes} title="Save" singleton={target} callbackAfterSave={onSave} />
         <IconButton
           size={24}
           singleton={target}
           icon={messageIcon}
+          shortcut={shortcuts.showSyncBlocks.keystrokes}
           title="Sync Blocks"
+          // title="Sync Blocks"
           highlight={showSyncBlocks}
           onClick={toggleSyncBlocks}
         />
@@ -74,6 +79,7 @@ const Toolbar = () => {
           singleton={target}
           size={24}
           icon={bubbleChartLine}
+          shortcut={shortcuts.showGraph.keystrokes}
           title="Graph"
           highlight={showGraph}
           onClick={toggleGraph}

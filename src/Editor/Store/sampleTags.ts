@@ -7,6 +7,13 @@ export const generateComboText = (tag: string, value: number): ComboText => ({
   value: String(value)
 })
 
+export const generateIconComboText = (tag: IconComboText, value: number): ComboText => ({
+  key: tag.text,
+  text: tag.text,
+  icon: tag.icon,
+  value: String(value)
+})
+
 export const generateIlink = (nodeId: string, value: number): ILink => ({
   key: nodeId,
   text: nodeId,
@@ -16,3 +23,11 @@ export const generateIlink = (nodeId: string, value: number): ILink => ({
 
 export const generateComboTexts = (items: string[]) => items.map(generateComboText)
 export const generateILinks = (items: string[]) => items.map(generateIlink)
+
+export interface IconComboText {
+  text: string
+  icon: string
+}
+
+export const generateIconComboTexts = (items: IconComboText[]) => items.map(generateIconComboText)
+export const addIconToString = (items: string[], icon: string) => items.map((i) => ({ text: i, icon }))

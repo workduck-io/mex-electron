@@ -1,1 +1,1 @@
-export const defaultCommands = ['webem', 'sync']
+export const defaultCommands = [{ text: 'webem', icon: 'ri:global-line' }]

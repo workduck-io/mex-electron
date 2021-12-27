@@ -12,6 +12,7 @@ import { extractSnippetCommands } from '../Snippets/useSnippets'
 import { useSpotlightSettingsStore } from '../Spotlight/store/settings'
 import { getTheme } from '../Styled/themes/defaultThemes'
 import { FileData } from '../Types/data'
+import { useSlashCommands } from '../Hooks/useSlashCommands'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
@@ -25,6 +26,7 @@ export const useInitialize = () => {
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setTheme = useThemeStore((state) => state.setTheme)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
+  const { generateSlashCommands } = useSlashCommands()
   const { loadNodeProps } = useLoad()
 
   const update = (data: FileData) => {
@@ -43,9 +45,9 @@ export const useInitialize = () => {
       intents,
       baseNodeId
     } = data
-    const snippetCommands = extractSnippetCommands(snippets)
-    const syncCommands = extractSyncBlockCommands(templates)
-    const slashCommands = generateComboTexts([...defaultCommands, ...syncCommands, ...snippetCommands])
+    // const snippetCommands = extractSnippetCommands(snippets)
+    // const syncCommands = extractSyncBlockCommands(templates)
+    const slashCommands = generateSlashCommands(snippets, templates)
 
     const initData = {
       tags,

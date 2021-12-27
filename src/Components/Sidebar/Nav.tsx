@@ -1,31 +1,30 @@
 import addCircleLine from '@iconify-icons/ri/add-circle-line'
-import Tippy, { useSingleton } from '@tippyjs/react'
-import searchLine from '@iconify-icons/ri/search-line'
 import lockPasswordLine from '@iconify-icons/ri/lock-password-line'
-import user3Line from '@iconify-icons/ri/user-3-line'
+import searchLine from '@iconify-icons/ri/search-line'
 import settings4Line from '@iconify-icons/ri/settings-4-line'
+import user3Line from '@iconify-icons/ri/user-3-line'
+import { useSingleton } from '@tippyjs/react'
 import { transparentize } from 'polished'
 import React, { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components'
+import tinykeys from 'tinykeys'
+import { useHelpStore } from '../../Components/Help/HelpModal'
 import { GetIcon } from '../../Conf/links'
-import { useAuthStore } from '../../Hooks/useAuth/useAuth'
-import { useLayoutStore } from '../../Layout/LayoutStore'
-import { NavProps } from './Types'
-import HelpTooltip from '../Help/HelpTooltip'
-import { NavTooltip } from '../Tooltips'
-import { NavButton } from '../../Styled/Nav'
-import { Icon } from '@iconify/react'
-import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
-import useLoad from '../../Hooks/useLoad/useLoad'
-import useDataStore from '../../Editor/Store/DataStore'
-import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import { AppType } from '../../Data/useInitialize'
+import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
+import useDataStore from '../../Editor/Store/DataStore'
+import { useAuthStore } from '../../Hooks/useAuth/useAuth'
+import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
+import { useLayoutStore } from '../../Layout/LayoutStore'
 import { IpcAction } from '../../Spotlight/utils/constants'
 import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
-import { useHelpStore } from '../../Components/Help/HelpModal'
-import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
-import tinykeys from 'tinykeys'
+import { NavButton } from '../../Styled/Nav'
+import HelpTooltip from '../Help/HelpTooltip'
+import { TooltipTitleWithShortcut } from '../Shortcuts'
+import { NavTooltip } from '../Tooltips'
+import { NavProps } from './Types'
 
 interface StyledDivProps {
   focusMode?: boolean
@@ -148,7 +147,10 @@ const Nav = ({ links }: NavProps) => {
     <StyledDiv focusMode={focusMode}>
       <NavTooltip singleton={source} />
       <div>
-        <NavTooltip singleton={target} content="Create New Node">
+        <NavTooltip
+          singleton={target}
+          content={<TooltipTitleWithShortcut title="Create New Node" shortcut={shortcuts.newNode.keystrokes} />}
+        >
           <NavButton primary onClick={onNewNote}>
             {GetIcon(addCircleLine)}
           </NavButton>
@@ -163,7 +165,10 @@ const Nav = ({ links }: NavProps) => {
               </ComingSoon>
             </NavTooltip>
           ) : (
-            <NavTooltip singleton={target} content={l.title}>
+            <NavTooltip
+              singleton={target}
+              content={l.shortcut ? <TooltipTitleWithShortcut title={l.title} shortcut={l.shortcut} /> : l.title}
+            >
               <Link exact tabIndex={-1} activeClassName="active" to={l.path} key={`nav_${l.title}`}>
                 {l.icon !== undefined ? l.icon : l.title}
               </Link>
@@ -185,15 +190,24 @@ const Nav = ({ links }: NavProps) => {
             </Link>
           </NavTooltip>
         )}
-        <NavTooltip singleton={target} content="Search">
+        <NavTooltip
+          singleton={target}
+          content={<TooltipTitleWithShortcut title="Search" shortcut={shortcuts.showSearch.keystrokes} />}
+        >
           <Link exact tabIndex={-1} activeClassName="active" to="/search" key="nav_search">
             {GetIcon(searchLine)}
           </Link>
         </NavTooltip>
-        <NavTooltip singleton={target} content="Shortcuts">
+        <NavTooltip
+          singleton={target}
+          content={<TooltipTitleWithShortcut title="Shortcuts" shortcut={shortcuts.showHelp.keystrokes} />}
+        >
           <HelpTooltip />
         </NavTooltip>
-        <NavTooltip singleton={target} content="Settings">
+        <NavTooltip
+          singleton={target}
+          content={<TooltipTitleWithShortcut title="Settings" shortcut={shortcuts.showSettings.keystrokes} />}
+        >
           <Link exact tabIndex={-1} activeClassName="active" to="/settings" key="nav_settings">
             {GetIcon(settings4Line)}
             {/* <Icon icon={settings4Line} /> */}

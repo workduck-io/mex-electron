@@ -6,6 +6,7 @@ import styled, { css } from 'styled-components'
 import { centeredCss } from './Layouts'
 import { LoadingWrapper } from './Loading'
 import { ToolbarTooltip } from '../Components/Tooltips'
+import { TooltipTitleWithShortcut } from '../Components/Shortcuts'
 
 export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   primary?: boolean
@@ -70,6 +71,7 @@ export type IconButtonProps = {
   onClick?: any // eslint-disable-line @typescript-eslint/no-explicit-any
   singleton?: TippyProps['singleton']
   highlight?: boolean
+  shortcut?: string
 }
 
 export const HeadlessButton = styled.button`
@@ -77,9 +79,14 @@ export const HeadlessButton = styled.button`
   background: transparent;
 `
 
-const IconButton = ({ icon, title, size, onClick, highlight, singleton }: IconButtonProps) => {
+const IconButton = ({ icon, title, size, onClick, shortcut, highlight, singleton }: IconButtonProps) => {
   return (
-    <ToolbarTooltip content={title} singleton={singleton}>
+    <ToolbarTooltip
+      content={
+        shortcut !== undefined ? <TooltipTitleWithShortcut shortcut={shortcut} title={title} /> : <span>{title}</span>
+      }
+      singleton={singleton}
+    >
       <Button onClick={onClick} highlight={highlight}>
         <Icon icon={icon} height={size} />
       </Button>

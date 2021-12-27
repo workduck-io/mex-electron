@@ -94,22 +94,25 @@ const useEditorPluginConfig = (editorId: string) => {
         ilink: {
           cbKey: ComboboxKey.ILINK,
           trigger: '[[',
-          data: ilinks
+          data: ilinks,
+          icon: 'ri:file-list-2-line'
         },
         inline_block: {
           cbKey: ComboboxKey.INLINE_BLOCK,
           trigger: '![[',
-          data: ilinksForCurrentNode
+          data: ilinksForCurrentNode,
+          icon: 'ri:picture-in-picture-line'
         },
         tag: {
           cbKey: ComboboxKey.TAG,
           trigger: '#',
-          data: tags
+          data: tags,
+          icon: 'ri:hashtag'
         },
-
         slash_command: {
           cbKey: ComboboxKey.SLASH_COMMAND,
           trigger: '/',
+          icon: 'ri:flask-line',
           data: slashCommands
         }
       }),

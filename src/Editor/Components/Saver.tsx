@@ -56,6 +56,7 @@ export const useSaver = () => {
 
 interface SaverButtonProps {
   title?: string
+  shortcut?: string
   noButton?: boolean
   callbackAfterSave?: (uid?: string) => void
   callbackBeforeSave?: () => void
@@ -70,6 +71,7 @@ export const SaverButton = ({
   callbackAfterSave,
   callbackBeforeSave,
   title,
+  shortcut,
   noButton,
   singleton
 }: SaverButtonProps) => {
@@ -100,7 +102,16 @@ export const SaverButton = ({
 
   if (noButton) return <></>
 
-  return <IconButton size={24} icon={saveLine} singleton={singleton} onClick={onSave} title={title ?? 'Save'} />
+  return (
+    <IconButton
+      shortcut={shortcut}
+      size={24}
+      icon={saveLine}
+      singleton={singleton}
+      onClick={onSave}
+      title={title ?? 'Save'}
+    />
+  )
 }
 
 export const useSnippetSaver = () => {
