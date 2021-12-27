@@ -377,7 +377,6 @@ const handleToggleMainWindow = async () => {
     } else if (process.platform === 'darwin') {
       selection = await getSelectedText()
     }
-    console.log('Selection is: ', selection)
     const anyContentPresent = Boolean(selection?.text)
     isSelection = anyContentPresent
     toggleMainWindow(spotlight)
@@ -435,17 +434,40 @@ app
 
     const contextMenu = Menu.buildFromTemplate([
       {
+        label: 'Quick Capture',
+        accelerator: SPOTLIGHT_SHORTCUT,
+        click: () => {
+          handleToggleMainWindow()
+        }
+      },
+      { type: 'separator' },
+      {
         label: 'Open Mex',
         click: () => {
           mex?.show()
         }
       },
-      { type: 'separator' },
       {
         label: 'Open Spotlight',
         accelerator: SPOTLIGHT_SHORTCUT,
         click: () => {
           spotlight?.show()
+        }
+      },
+      { type: 'separator' },
+      {
+        enabled: false,
+        label: `Mex Version ${version}`
+      },
+      {
+        label: 'About Mex',
+        role: 'about'
+      },
+      {
+        icon: path.join(__dirname, '../..', 'assets/twitter.png'),
+        label: 'Follow Us!',
+        click: () => {
+          shell.openExternal('https://twitter.com/workduckio')
         }
       }
     ])
