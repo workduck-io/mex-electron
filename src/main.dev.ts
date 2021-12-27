@@ -49,7 +49,7 @@ if (require('electron-squirrel-startup')) {
   app.quit()
 }
 
-let tray
+let tray: Tray | null
 let mex: BrowserWindow | null
 let spotlight: BrowserWindow | null
 let spotlightBubble = false
@@ -64,11 +64,11 @@ export const checkIfAlpha = (version: string) => {
 const version = app.getVersion()
 const isAlpha = checkIfAlpha(version)
 
-let trayIconSrc = path.join(__dirname, '..', 'assets/icon.png')
+let trayIconSrc = path.join(__dirname, '../..', 'assets/icon.png')
 if (process.platform === 'darwin') {
-  trayIconSrc = path.join(__dirname, '..', 'assets/icons/icon16x16.png')
+  trayIconSrc = path.join(__dirname, '../..', 'assets/icons/icon16x16.png')
 } else if (process.platform === 'win32') {
-  trayIconSrc = path.join(__dirname, '..', 'assets/icon.ico')
+  trayIconSrc = path.join(__dirname, '../..', 'assets/icon.ico')
 }
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
