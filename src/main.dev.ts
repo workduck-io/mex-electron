@@ -471,6 +471,13 @@ app
         role: 'about'
       },
       {
+        label: 'Open Preferences',
+        click: () => {
+          mex?.webContents.send(IpcAction.OPEN_PREFERENCES)
+          mex?.show()
+        }
+      },
+      {
         icon: path.join(__dirname, '../..', 'assets/twitter.png'),
         label: 'Follow Us!',
         click: () => {

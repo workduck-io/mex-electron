@@ -120,6 +120,9 @@ const Init = () => {
       push(uid)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, newNodeId)
     })
+    ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
+      history.push('/settings')
+    })
   }, [fetchIndexLocalStorage]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { setIpc } = useSyncData()
