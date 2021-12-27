@@ -30,7 +30,7 @@ const useMultiComboboxOnChange = (
     keys
   })
 
-  const { data } = comboType
+  const { data, icon } = comboType
 
   // Construct the correct change handler
   const changeHandler = useCallback(() => {
@@ -45,12 +45,14 @@ const useMultiComboboxOnChange = (
 
     const items: IComboboxItem[] = searchItems.slice(0, maxSuggestions).map((item) => ({
       key: item.value,
+      icon: item.icon ?? icon ?? undefined,
       text: item.text
     }))
 
     if (comboboxKey !== ComboboxKey.SLASH_COMMAND) {
       items.push({
         key: '__create_new',
+        icon: 'ri:add-circle-line',
         text: `Create New ${search}`
       })
     }

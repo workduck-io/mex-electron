@@ -1,5 +1,6 @@
 import { Input } from '../../Styled/Form'
 import styled, { css } from 'styled-components'
+import { transparentize } from 'polished'
 
 export const StyledInputWrapper = styled.div`
   width: 100%;
@@ -27,21 +28,48 @@ export const StyledCombobox = styled.div`
   }
 `
 
+export const SuggestionContentWrapper = styled.div`
+  width: 90%;
+`
+export const SuggestionText = styled.div``
+export const SuggestionDesc = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.tiny};
+  color: ${({ theme }) => theme.colors.text.fade};
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+
 interface SuggestionProps {
   highlight: boolean
 }
 
 export const Suggestion = styled.li<SuggestionProps>`
-  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  padding: 6px 10px 6px 4px;
   margin: ${({ theme }) => `${theme.spacing.tiny} 0`};
 
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
+
+  & > svg {
+    margin-right: 6px;
+    color: ${({ theme }) => theme.colors.gray[5]};
+    flex-shrink: 0;
+  }
 
   ${({ theme, highlight }) =>
     highlight &&
     css`
       background-color: ${theme.colors.primary};
       color: ${theme.colors.text.oppositePrimary};
+      & > svg {
+        color: ${({ theme }) => theme.colors.text.oppositePrimary};
+      }
+      ${SuggestionDesc} {
+        color: ${({ theme }) => transparentize(0.25, theme.colors.text.oppositePrimary)};
+      }
     `}
 `
 

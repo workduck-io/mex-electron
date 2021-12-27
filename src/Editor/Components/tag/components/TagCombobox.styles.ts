@@ -23,10 +23,29 @@ export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
     `}
 `
 
+export const ItemTitle = styled.div``
+export const ItemRightIcons = styled.div`
+  display: flex;
+  flex-gap: ${({ theme }) => theme.spacing.tiny};
+`
+
+export const ItemDesc = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.tiny};
+  color: ${({ theme }) => theme.colors.text.fade};
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+export const ItemCenterWrapper = styled.div`
+  width: 90%;
+`
+
 export const ComboboxItem = styled.div<{ highlighted: boolean }>`
   display: flex;
   align-items: center;
   font-size: 14px;
+  gap: ${({ theme }) => theme.spacing.tiny};
 
   :first-child {
     border-radius: 6px 6px 0 0;
@@ -38,11 +57,7 @@ export const ComboboxItem = styled.div<{ highlighted: boolean }>`
 
   font-weight: 400;
   padding: 0 8px;
-  // padding: 1px 3px;
-  // borderRadius: 3px;
   min-height: 36px;
-  // lineHeight: "20px";
-  // overflowWrap: "break-word";
   user-select: none;
   color: ${({ theme }) => theme.colors.text.subheading};
   background: ${({ highlighted, theme }) => (!highlighted ? 'transparent' : theme.colors.background.highlight)};
@@ -50,5 +65,9 @@ export const ComboboxItem = styled.div<{ highlighted: boolean }>`
 
   :hover {
     background-color: ${({ theme }) => theme.colors.background.highlight};
+  }
+
+  & > svg {
+    color: ${({ theme }) => theme.colors.gray[4]};
   }
 `

@@ -27,6 +27,21 @@ export interface IComboboxItem {
   itemType?: ComboboxItemType
 
   /**
+   * Icon to be rendered
+   */
+  icon?: string
+
+  /**
+   * Icon to be rendered on the right
+   */
+  rightIcons?: string[]
+
+  /**
+   * description text if any
+   */
+  desc?: string
+
+  /**
    * Whether the option is disabled
    * @defaultvalue false
    */

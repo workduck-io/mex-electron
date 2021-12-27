@@ -1,33 +1,25 @@
 import { client } from '@workduck-io/dwindle'
-import { uniq } from 'lodash'
-import { SyncBlockTemplate, Service } from '../Editor/Components/SyncBlock'
-import { defaultCommands } from '../Defaults/slashCommands'
-import { useSaver } from '../Editor/Components/Saver'
-import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
-import useDataStore from '../Editor/Store/DataStore'
-import { generateComboTexts } from '../Editor/Store/sampleTags'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
+import { Service, SyncBlockTemplate } from '../Editor/Components/SyncBlock'
+import useDataStore from '../Editor/Store/DataStore'
 import { useSyncStore } from '../Editor/Store/SyncStore'
 import { useAuthStore } from '../Hooks/useAuth/useAuth'
+import { useSlashCommands } from '../Hooks/useSlashCommands'
 import { integrationURLs } from '../Requests/routes'
-import { extractSnippetCommands } from '../Snippets/useSnippets'
 import { useSaveData } from './useSaveData'
 
 export const useUpdater = () => {
   const setSlashCommands = useDataStore((state) => state.setSlashCommands)
   const setServices = useSyncStore((store) => store.setServices)
   const setTemplates = useSyncStore((store) => store.setTemplates)
+  const { generateSlashCommands } = useSlashCommands()
 
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const saveData = useSaveData()
 
   const updater = () => {
-    const snippetCommands = extractSnippetCommands(useSnippetStore.getState().snippets)
-    const syncCommands = extractSyncBlockCommands(useSyncStore.getState().templates)
-
-    const commands = generateComboTexts(uniq([...snippetCommands, ...syncCommands, ...defaultCommands]))
-
-    setSlashCommands(Array.from(commands))
+    const slashCommands = generateSlashCommands(useSnippetStore.getState().snippets, useSyncStore.getState().templates)
+    setSlashCommands(slashCommands)
   }
 
   const updateDefaultServices = async () => {

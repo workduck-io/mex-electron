@@ -1,21 +1,34 @@
 import checkboxCircleLine from '@iconify-icons/ri/checkbox-circle-line'
 import errorWarningLine from '@iconify-icons/ri/error-warning-line'
+import fileList2Line from '@iconify-icons/ri/file-list-2-line'
+import addCircleLine from '@iconify-icons/ri/add-circle-line'
 import { Icon } from '@iconify/react'
 import { useCombobox } from 'downshift'
 import React, { useEffect, useState } from 'react'
+import { convertContentToRawText } from '../../Search/localSearch'
 import { useDebouncedCallback } from 'use-debounce'
 import { useLinks } from '../../Editor/Actions/useLinks'
+import { useContentStore } from '../../Editor/Store/ContentStore'
 import useDataStore from '../../Editor/Store/DataStore'
 import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 import { fuzzySearch } from '../../Lib/fuzzySearch'
 import { withoutContinuousDelimiter } from '../../Lib/helper'
 import { Input } from '../../Styled/Form'
-import { StyledCombobox, StyledInputWrapper, StyledMenu, Suggestion } from './NodeSelect.styles'
+import {
+  StyledCombobox,
+  StyledInputWrapper,
+  StyledMenu,
+  Suggestion,
+  SuggestionContentWrapper,
+  SuggestionDesc,
+  SuggestionText
+} from './NodeSelect.styles'
 
 type ComboItem = {
   text: string
   value: string
   type: string
+  uid?: string
 }
 
 interface NodeSelectProps {
@@ -85,7 +98,8 @@ function NodeSelect({
   const ilinks = useDataStore((store) => store.ilinks).map((l) => ({
     text: l.text,
     value: l.text,
-    type: 'exists'
+    type: 'exists',
+    uid: l.uid
   }))
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)
@@ -94,11 +108,12 @@ function NodeSelect({
     .reverse()
     .map((l) => {
       const nodeId = getNodeIdFromUid(l)
-      return { text: nodeId, value: nodeId, type: 'exists' }
+      return { text: nodeId, value: nodeId, type: 'exists', uid: l }
     })
     .filter((i) => i.text)
 
   const { inputItems, selectedItem } = nodeSelectState
+  const contents = useContentStore((store) => store.contents)
 
   const getNewItems = (inputValue: string) => {
     // const newItems =  ilinks.filter((item) => item.text.toLowerCase().startsWith(inputValue.toLowerCase()))
@@ -196,7 +211,7 @@ function NodeSelect({
     }
   }, [defaultValue])
 
-  // console.log({ isOpen, inputItems })
+  console.log({ isOpen, inputItems })
 
   return (
     <>
@@ -231,13 +246,25 @@ function NodeSelect({
       <StyledMenu {...getMenuProps()} isOpen={isOpen}>
         {isOpen &&
           inputItems.map((item, index) => {
+            let desc: undefined | string = undefined
+            if (item.type !== 'new') {
+              // const nodeId = getNodeIdFromUid()
+              const content = contents[item.uid]
+              if (content) desc = convertContentToRawText(content.content, ' ')
+              if (desc === '') desc = undefined
+            }
+            console.log({ desc, item })
             return (
               <Suggestion
                 highlight={highlightedIndex === index}
                 key={`${item.value}${index}`}
                 {...getItemProps({ item, index })}
               >
-                {item.text}
+                <Icon width={24} icon={item.type === 'new' ? addCircleLine : fileList2Line} />
+                <SuggestionContentWrapper>
+                  <SuggestionText>{item.text}</SuggestionText>
+                  {desc !== undefined && <SuggestionDesc>{desc}</SuggestionDesc>}
+                </SuggestionContentWrapper>
               </Suggestion>
             )
           })}

@@ -82,7 +82,7 @@ export const optionsAutoformat: WithAutoformatOptions = {
     {
       mode: 'block',
       type: ELEMENT_LI,
-      match: ['*', '-'],
+      match: ['* ', '- '],
       preFormat,
       format: (editor: TEditor<AnyObject>) => {
         if (editor.selection) {

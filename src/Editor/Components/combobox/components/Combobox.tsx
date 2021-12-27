@@ -1,7 +1,15 @@
+import { Icon } from '@iconify/react'
 import useMergedRef from '@react-hook/merged-ref'
 import { getPreventDefaultHandler, PortalBody, useEditorState } from '@udecode/plate'
 import React, { useEffect } from 'react'
-import { ComboboxItem, ComboboxRoot } from '../../tag/components/TagCombobox.styles'
+import {
+  ComboboxItem,
+  ComboboxRoot,
+  ItemCenterWrapper,
+  ItemDesc,
+  ItemRightIcons,
+  ItemTitle
+} from '../../tag/components/TagCombobox.styles'
 import { setElementPositionByRange } from '../../tag/utils/setElementPositionByRange'
 import { useComboboxControls } from '../hooks/useComboboxControls'
 import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen'
@@ -56,7 +64,18 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
                 {...comboProps(item, index)}
                 onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, isSlash ? item : search)}
               >
-                {Item}
+                {item.icon && <Icon height={18} icon={item.icon} />}
+                <ItemCenterWrapper>
+                  <ItemTitle>{Item}</ItemTitle>
+                  {item.desc && <ItemDesc>{item.desc}</ItemDesc>}
+                </ItemCenterWrapper>
+                {item.rightIcons && (
+                  <ItemRightIcons>
+                    {item.rightIcons.map((i: string) => (
+                      <Icon key={item.key + i} icon={i} />
+                    ))}
+                  </ItemRightIcons>
+                )}
               </ComboboxItem>
             )
           })}

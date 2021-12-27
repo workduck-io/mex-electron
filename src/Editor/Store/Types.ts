@@ -5,6 +5,7 @@ export interface ComboText {
   key: string
   text: string
   value: string
+  icon?: string
 }
 
 export interface ILink extends ComboText {
