@@ -32,6 +32,7 @@ import { FileData } from './Types/data'
 import { initializeSentry } from './sentry'
 import { flexIndexKeys } from './Search/flexsearch'
 import _ from 'lodash'
+import { backupMexJSON } from './backup'
 
 initializeSentry()
 
@@ -580,6 +581,7 @@ export const setupAutoUpdates = () => {
   })
 
   autoUpdater.on('before-quit-for-update', () => {
+    backupMexJSON()
     mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
   })
 }
