@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { flexIndexKeys } from '../../Search/flexsearch'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
-import { useInitialize } from '../../Data/useInitialize'
+import { useInitialize, AppType } from '../../Data/useInitialize'
 import { useLocalData } from '../../Data/useLocalData'
 import { useSyncData } from '../../Data/useSyncData'
 import { getUidFromNodeIdAndLinks } from '../../Editor/Actions/useLinks'
@@ -20,6 +20,10 @@ import { useNewSearchStore } from '../../Search/SearchStore'
 import { IpcAction } from '../../Spotlight/utils/constants'
 
 import { useSaveAndExit } from '../../Hooks/useSaveAndExit/useSaveAndExit'
+import useDataStore from '../../Editor/Store/DataStore'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
+import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
+import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
 
 const Init = () => {
   const history = useHistory()
@@ -37,6 +41,8 @@ const Init = () => {
   const { getLocalData } = useLocalData()
   const initFlexSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
   const fetchIndexLocalStorage = useNewSearchStore((store) => store.fetchIndexLocalStorage)
+  const addILink = useDataStore((store) => store.addILink)
+  const { push } = useNavigation()
 
   /** Initialization of the app details occur here */
   useEffect(() => {
@@ -107,6 +113,15 @@ const Init = () => {
         else searchIndex[key] = t
       })
       ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndex })
+    })
+    ipcRenderer.on(IpcAction.CREATE_NEW_NODE, () => {
+      const newNodeId = getNewDraftKey()
+      const uid = addILink(newNodeId)
+      push(uid)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, newNodeId)
+    })
+    ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
+      history.push('/settings')
     })
   }, [fetchIndexLocalStorage]) // eslint-disable-line react-hooks/exhaustive-deps
 

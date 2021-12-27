@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react'
 import React from 'react'
 import styled from 'styled-components'
 import { Header } from './Shortcuts'
+import twitterIcon from '@iconify-icons/logos/twitter'
 import globeIcon from '@iconify-icons/ph/globe'
 import linkedinIcon from '@iconify-icons/logos/linkedin-icon'
 import { getGlobal } from '@electron/remote'
@@ -51,6 +52,10 @@ const About = () => {
           <Links href="https://www.linkedin.com/company/workduck-official" target="_blank" rel="noopener norefer">
             <StyledIcon icon={linkedinIcon} />
             <h4>Linkedin</h4>
+          </Links>
+          <Links href="https://twitter.com/workduckio" target="_blank" rel="noopener norefer">
+            <StyledIcon icon={twitterIcon} />
+            <h4>Twitter</h4>
           </Links>
         </Flex>
       </Margin>

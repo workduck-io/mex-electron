@@ -50,7 +50,7 @@ if (require('electron-squirrel-startup')) {
   app.quit()
 }
 
-let tray
+let tray: Tray | null
 let mex: BrowserWindow | null
 let spotlight: BrowserWindow | null
 let spotlightBubble = false
@@ -65,11 +65,11 @@ export const checkIfAlpha = (version: string) => {
 const version = app.getVersion()
 const isAlpha = checkIfAlpha(version)
 
-let trayIconSrc = path.join(__dirname, '..', 'assets/icon.png')
+let trayIconSrc = path.join(__dirname, '../..', 'assets/icon.png')
 if (process.platform === 'darwin') {
-  trayIconSrc = path.join(__dirname, '..', 'assets/icons/icon16x16.png')
+  trayIconSrc = path.join(__dirname, '../..', 'assets/icons/icon16x16.png')
 } else if (process.platform === 'win32') {
-  trayIconSrc = path.join(__dirname, '..', 'assets/icon.ico')
+  trayIconSrc = path.join(__dirname, '../..', 'assets/icon.ico')
 }
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
@@ -378,7 +378,6 @@ const handleToggleMainWindow = async () => {
     } else if (process.platform === 'darwin') {
       selection = await getSelectedText()
     }
-    console.log('Selection is: ', selection)
     const anyContentPresent = Boolean(selection?.text)
     isSelection = anyContentPresent
     toggleMainWindow(spotlight)
@@ -435,10 +434,57 @@ app
     tray = new Tray(icon)
 
     const contextMenu = Menu.buildFromTemplate([
-      { label: 'Open Mex', type: 'radio' },
-      { label: 'Toggle Spotlight search ', type: 'radio' },
-      { label: 'Create new Mex', type: 'radio', checked: true },
-      { label: 'Search', type: 'radio' }
+      {
+        label: 'Quick Capture',
+        accelerator: SPOTLIGHT_SHORTCUT,
+        click: () => {
+          handleToggleMainWindow()
+        }
+      },
+      {
+        label: 'New Node',
+        click: () => {
+          mex?.webContents.send(IpcAction.CREATE_NEW_NODE)
+          mex?.show()
+        }
+      },
+      { type: 'separator' },
+      {
+        label: 'Open Mex',
+        click: () => {
+          mex?.show()
+        }
+      },
+      {
+        label: 'Open Spotlight',
+        accelerator: SPOTLIGHT_SHORTCUT,
+        click: () => {
+          spotlight?.show()
+        }
+      },
+      { type: 'separator' },
+      {
+        enabled: false,
+        label: `Mex Version ${version}`
+      },
+      {
+        label: 'About Mex',
+        role: 'about'
+      },
+      {
+        label: 'Open Preferences',
+        click: () => {
+          mex?.webContents.send(IpcAction.OPEN_PREFERENCES)
+          mex?.show()
+        }
+      },
+      {
+        icon: path.join(__dirname, '../..', 'assets/twitter.png'),
+        label: 'Follow Us!',
+        click: () => {
+          shell.openExternal('https://twitter.com/workduckio')
+        }
+      }
     ])
 
     tray.setToolTip('Mex')
