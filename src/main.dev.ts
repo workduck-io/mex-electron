@@ -440,6 +440,13 @@ app
           handleToggleMainWindow()
         }
       },
+      {
+        label: 'New Node',
+        click: () => {
+          mex?.webContents.send(IpcAction.CREATE_NEW_NODE)
+          mex?.show()
+        }
+      },
       { type: 'separator' },
       {
         label: 'Open Mex',
