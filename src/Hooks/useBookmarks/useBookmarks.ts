@@ -53,7 +53,7 @@ export const useBookmarks = () => {
     await client
       .get(apiURLs.getBookmarks(userCred.userId))
       .then((d) => {
-        console.log('Data', d.data)
+        // console.log('Data', d.data)
 
         if (d.data) {
           const bookmarks = d.data.filter((uid: string) => getNodeIdFromUid(uid) !== undefined)

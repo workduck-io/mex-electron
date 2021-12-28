@@ -103,7 +103,7 @@ const Service = (props: { service: Service }) => {
 const Integrations = () => {
   const services = useSyncStore((store) => store.services)
 
-  console.log({ services })
+  // console.log({ services })
 
   return (
     <IntegrationContainer>

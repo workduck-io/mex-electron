@@ -144,7 +144,6 @@ const Content = () => {
         text: null
       })
       if (nodeContent) {
-        console.log(nodeContent.length)
         loadNodeAndAppend(resultNode.uid, nodeContent)
       } else {
         loadNode(resultNode.uid, { savePrev: false, fetch: false })
