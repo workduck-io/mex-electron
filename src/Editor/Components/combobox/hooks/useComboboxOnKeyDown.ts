@@ -30,7 +30,7 @@ export const useCreatableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnNe
     if (items[itemIndex]) {
       const item = items[itemIndex]
       // console.log({ items, item })
-      if (item.key === '__create_new') {
+      if (item.key === '__create_new' && val !== '') {
         onSelectItem(editor, { key: String(items.length), text: val })
         onNewItem(val, currentNodeKey)
       } else onSelectItem(editor, item)

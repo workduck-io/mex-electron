@@ -152,7 +152,7 @@ const Search = () => {
     if (event.code === 'Enter') {
       // Only when the selected index is -1
       if (selected > -1) {
-        console.log({ load: result[selected].nodeUID, res: result, sel: result[selected], selected })
+        // console.log({ load: result[selected].nodeUID, res: result, sel: result[selected], selected })
         loadNode(result[selected].nodeUID)
         history.push('/editor')
       }

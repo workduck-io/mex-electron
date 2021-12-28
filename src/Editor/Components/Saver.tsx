@@ -31,21 +31,26 @@ export const useSaver = () => {
   const { saveDataAPI } = useApi()
   const updateDocNew = useNewSearchStore((store) => store.updateDoc)
   // const searchIndexNew = useNewSearchStore((store) => store.searchIndex)
+  //
 
-  const onSave = (node?: NodeProperties) => {
+  const onSave = (
+    node?: NodeProperties,
+    writeToFile?: boolean, // Saved to file unless explicitly set to false
+    notification?: boolean // Shown notification unless explicitly set to false
+  ) => {
     const defaultNode = useEditorStore.getState().node
-    node = node || defaultNode
+    const cnode = node || defaultNode
     // setContent then save
     if (editorState) {
-      setFsContent(node.uid, editorState)
-      saveDataAPI(node.uid, editorState)
-      updateLinksFromContent(node.uid, editorState)
-      updateTagsFromContent(node.uid, editorState)
-      const title = getNodeIdFromUid(node.uid)
-      updateDocNew(node.uid, convertEntryToRawText(node.uid, editorState), title)
+      setFsContent(cnode.uid, editorState)
+      saveDataAPI(cnode.uid, editorState)
+      updateLinksFromContent(cnode.uid, editorState)
+      updateTagsFromContent(cnode.uid, editorState)
+      const title = getNodeIdFromUid(cnode.uid)
+      updateDocNew(cnode.uid, convertEntryToRawText(cnode.uid, editorState), title)
     }
-    saveData()
-    toast('Saved!', { duration: 1000 })
+    if (writeToFile !== false) saveData()
+    if (notification !== false) toast('Saved!', { duration: 1000 })
 
     // const res = searchIndexNew('design')
     // console.log('Results are: ', res)
@@ -58,6 +63,8 @@ interface SaverButtonProps {
   title?: string
   shortcut?: string
   noButton?: boolean
+  // Warning doesn't get the current node in the editor
+  saveOnUnmount?: boolean
   callbackAfterSave?: (uid?: string) => void
   callbackBeforeSave?: () => void
   singleton?: TippyProps['singleton']
@@ -72,6 +79,7 @@ export const SaverButton = ({
   callbackBeforeSave,
   title,
   shortcut,
+  saveOnUnmount,
   noButton,
   singleton
 }: SaverButtonProps) => {
@@ -86,6 +94,14 @@ export const SaverButton = ({
     onSaveFs(node)
     if (callbackAfterSave) callbackAfterSave(node.uid)
   }
+
+  useEffect(() => {
+    if (saveOnUnmount) {
+      return () => {
+        onSave()
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {

@@ -39,17 +39,23 @@ const useMultiComboboxOnChange = (
 
     const { search } = res
 
-    if (!search || !data) return false
+    if ((!search && search !== '') || !data) return false
 
+    const key = useComboboxStore.getState().key
+    const ct = keys[key]
     const searchItems = fuzzySearch(data, search, { keys: ['text'] })
+    // console.log({ data, search, comboType, key: useComboboxStore.getState().key })
 
-    const items: IComboboxItem[] = searchItems.slice(0, maxSuggestions).map((item) => ({
+    const items: IComboboxItem[] = (
+      search !== '' ? searchItems.slice(0, maxSuggestions) : keys[key].data.slice(0, maxSuggestions)
+    ).map((item) => ({
       key: item.value,
-      icon: item.icon ?? icon ?? undefined,
+      icon: item.icon ?? ct.icon ?? undefined,
       text: item.text
     }))
 
-    if (comboboxKey !== ComboboxKey.SLASH_COMMAND) {
+    // TODO: Disable new item if key exists.
+    if (comboboxKey !== ComboboxKey.SLASH_COMMAND && search !== '') {
       items.push({
         key: '__create_new',
         icon: 'ri:add-circle-line',
