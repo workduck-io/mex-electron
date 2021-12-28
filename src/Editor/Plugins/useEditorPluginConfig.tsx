@@ -25,6 +25,7 @@ const useEditorPluginConfig = (editorId: string) => {
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
   const setKeys = useComboboxStore((state) => state.setKeys)
+  const setComboConfig = useComboboxStore((state) => state.setComboConfig)
   const { getSnippetsConfigs } = useSnippets()
   const { getSyncBlockConfigs } = useSyncConfig()
   // const { trackEvent } = useAnalytics()
@@ -37,57 +38,66 @@ const useEditorPluginConfig = (editorId: string) => {
     return ilinks.filter((item) => item.key !== node.id)
   }, [node, ilinks])
 
-  const comboConfigData: ComboConfigData = {
-    keys: {
-      ilink: {
-        slateElementType: ELEMENT_ILINK,
-        newItemHandler: (newItem, parentId?) => {
-          addILink(newItem, null, parentId)
+  // const comboConfigData: ComboConfigData = useMemo(
+  //   () => (),
+  //   [snippetConfigs, syncBlockConfigs]
+  // )
+
+  useEffect(
+    () =>
+      setComboConfig({
+        keys: {
+          ilink: {
+            slateElementType: ELEMENT_ILINK,
+            newItemHandler: (newItem, parentId?) => {
+              addILink(newItem, null, parentId)
+            },
+            renderElement: ILinkComboboxItem
+          },
+          inline_block: {
+            slateElementType: ELEMENT_INLINE_BLOCK,
+            newItemHandler: (newItem, parentId?) => {
+              addILink(newItem, null, parentId)
+            },
+            renderElement: ILinkComboboxItem
+          },
+          tag: {
+            slateElementType: ELEMENT_TAG,
+            newItemHandler: (newItem) => {
+              addTag(newItem)
+            },
+            renderElement: TagComboboxItem
+          },
+          slash_command: {
+            slateElementType: 'slash_command_comboTypeHandler',
+            newItemHandler: () => undefined,
+            renderElement: SlashComboboxItem
+          }
         },
-        renderElement: ILinkComboboxItem
-      },
-      inline_block: {
-        slateElementType: ELEMENT_INLINE_BLOCK,
-        newItemHandler: (newItem, parentId?) => {
-          addILink(newItem, null, parentId)
-        },
-        renderElement: ILinkComboboxItem
-      },
-      tag: {
-        slateElementType: ELEMENT_TAG,
-        newItemHandler: (newItem) => {
-          addTag(newItem)
-        },
-        renderElement: TagComboboxItem
-      },
-      slash_command: {
-        slateElementType: 'slash_command_comboTypeHandler',
-        newItemHandler: () => undefined,
-        renderElement: SlashComboboxItem
-      }
-    },
-    slashCommands: {
-      webem: {
-        slateElementType: ELEMENT_MEDIA_EMBED,
-        command: 'webem',
-        options: {
-          url: 'http://example.com/'
+        slashCommands: {
+          webem: {
+            slateElementType: ELEMENT_MEDIA_EMBED,
+            command: 'webem',
+            options: {
+              url: 'http://example.com/'
+            }
+          },
+          // For `/sync`
+          // sync_block: {
+          //   slateElementType: ELEMENT_SYNC_BLOCK,
+          //   command: 'sync',
+          //   getBlockData: () => {
+          //     const nd = getNewBlockData()
+          //     addSyncBlock(nd) // Also need to add the newly created block to the sync store
+          //     return nd
+          //   },
+          // },
+          ...snippetConfigs,
+          ...syncBlockConfigs
         }
-      },
-      // For `/sync`
-      // sync_block: {
-      //   slateElementType: ELEMENT_SYNC_BLOCK,
-      //   command: 'sync',
-      //   getBlockData: () => {
-      //     const nd = getNewBlockData()
-      //     addSyncBlock(nd) // Also need to add the newly created block to the sync store
-      //     return nd
-      //   },
-      // },
-      ...snippetConfigs,
-      ...syncBlockConfigs
-    }
-  }
+      }),
+    []
+  )
 
   useEffect(() => {
     console.log({})
@@ -119,14 +129,13 @@ const useEditorPluginConfig = (editorId: string) => {
     })
   }, [ilinks, ilinksForCurrentNode, tags, slashCommands])
 
-  const pluginConfigs = {
-    combobox: {
-      onChange: useMultiComboboxOnChange(editorId),
-      onKeyDown: useMultiComboboxOnKeyDown(comboConfigData)
-    }
-  }
+  // const pluginConfigs = {
+  // }
 
-  return { pluginConfigs, comboConfigData }
+  return {
+    onChange: useMultiComboboxOnChange(editorId),
+    onKeyDown: useMultiComboboxOnKeyDown()
+  }
 }
 
 export default useEditorPluginConfig

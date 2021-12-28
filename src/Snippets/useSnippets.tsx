@@ -2,6 +2,7 @@ import { SlashCommandConfig } from '../Editor/Components/SlashCommands/Types'
 import { SEPARATOR } from '../Components/Sidebar/treeUtils'
 
 import { Snippet, useSnippetStore } from '../Editor/Store/SnippetStore'
+import { useMemo } from 'react'
 
 export const useSnippets = () => {
   const getSnippets = () => {
@@ -10,7 +11,10 @@ export const useSnippets = () => {
 
   const getSnippetsConfigs = (): { [key: string]: SlashCommandConfig } => {
     const snippets = useSnippetStore.getState().snippets
-    return snippets.reduce((prev, cur) => {
+    return
+    // useMemo(
+    //   () =>
+    snippets.reduce((prev, cur) => {
       const snipCommand = getSnippetCommand(cur.title)
       return {
         ...prev,
@@ -20,6 +24,8 @@ export const useSnippets = () => {
         }
       }
     }, {})
+    //     , [snippets]
+    // )
   }
 
   // Replacer that will provide new fresh and different content each time

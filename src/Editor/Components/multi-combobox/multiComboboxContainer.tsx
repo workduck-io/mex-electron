@@ -26,7 +26,9 @@ export interface SingleComboboxConfig {
   renderElement: RenderFunction<ComboboxItemProps>
 }
 
-export const ElementComboboxComponent = ({ keys, slashCommands }: ComboConfigData) => {
+export const ElementComboboxComponent = () => {
+  const config = useComboboxStore((store) => store.comboConfig)
+  const { keys, slashCommands } = config
   const comboboxKey: string = useComboboxStore.getState().key
   const comboRenderType = keys[comboboxKey]
   const { elementChangeHandler: onSelectItem, isSlash } = useOnSelectItem(comboboxKey, slashCommands, comboRenderType)
@@ -46,8 +48,8 @@ export const ElementComboboxComponent = ({ keys, slashCommands }: ComboConfigDat
 }
 
 // Handle multiple combobox
-export const MultiComboboxContainer = (props: ComboConfigData) => {
+export const MultiComboboxContainer = () => {
   useComboboxControls(true)
 
-  return <ElementComboboxComponent {...props} />
+  return <ElementComboboxComponent />
 }

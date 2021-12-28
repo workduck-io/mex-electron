@@ -12,6 +12,9 @@ import BallonMarkToolbarButtons from './Components/EditorToolbar'
 import { MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
 import generatePlugins from './Plugins/plugins'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
+import { useSnippetStore } from './Store/SnippetStore'
+import { useIntegrationStore } from './Store/IntegrationStore'
+import { useSyncStore } from './Store/SyncStore'
 
 const options = createPlateOptions()
 
@@ -43,6 +46,8 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
   const slashCommands = useDataStore((state) => state.slashCommands)
+  const snippets = useSnippetStore((state) => state.snippets)
+  const templates = useSyncStore((state) => state.templates)
 
   const generateEditorId = () => `${editorId}`
   const editorRef = usePlateEditorRef()
@@ -55,7 +60,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
 
   const prePlugins = generatePlugins() // this is memoized
 
-  const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId)
+  const { onChange, onKeyDown } = useEditorPluginConfig(editorId)
   const plugins =
     // Usememo removes rerendering but combobox does not work
     // The box is shown empty with a create new option.
@@ -63,11 +68,11 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
       () => [
         ...prePlugins,
         {
-          onChange: pluginConfigs.combobox.onChange,
-          onKeyDown: pluginConfigs.combobox.onKeyDown
+          onChange,
+          onKeyDown
         }
       ],
-      [tags, ilinks, slashCommands]
+      [tags, ilinks, slashCommands, snippets, templates]
     )
 
   return (
@@ -84,7 +89,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
               components={withStyledPlaceHolders(withStyledDraggables(components))}
               options={options}
             >
-              <MultiComboboxContainer keys={comboConfigData.keys} slashCommands={comboConfigData.slashCommands} />
+              <MultiComboboxContainer />
             </Plate>
           </EditorStyles>
         )}

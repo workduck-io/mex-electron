@@ -109,22 +109,15 @@ export const useOnSelectItem = (
   return { elementChangeHandler, isSlash }
 }
 
-const useMultiComboboxOnKeyDown = (config: ComboConfigData) => {
-  const { keys, slashCommands } = config
-  const comboboxKey: string = useComboboxStore((state) => state.key)
-  const comboType = keys[comboboxKey]
+const useMultiComboboxOnKeyDown = () => {
+  // const { keys, slashCommands } = config
+  // const comboboxKey: string = useComboboxStore((state) => state.key)
+  // const comboType = keys[comboboxKey]
 
   // We need to create the select handlers ourselves here
-  const { elementChangeHandler: onSelectItemHandler } = useOnSelectItem(comboboxKey, slashCommands, comboType)
+  // const { elementChangeHandler: onSelectItemHandler } = useOnSelectItem(comboboxKey, slashCommands, comboType)
 
-  return useComboboxOnKeyDown({
-    // Handle multiple combobox
-    onSelectItem: onSelectItemHandler,
-    onNewItem: (newItem, parentId?) => {
-      comboType.newItemHandler(newItem, parentId)
-    },
-    creatable: comboboxKey !== ComboboxKey.SLASH_COMMAND
-  })
+  return useComboboxOnKeyDown()
 }
 
 export default useMultiComboboxOnKeyDown
