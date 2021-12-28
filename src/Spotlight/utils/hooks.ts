@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { ipcRenderer } from 'electron'
 import { useEffect, useState } from 'react'
-import { isFromSameSource } from '../../Editor/Store/helpers'
+import { getContent, isFromSameSource } from '../../Editor/Store/helpers'
 import { NodeEditorContent } from '../../Editor/Store/Types'
 import { useSaver } from '../../Editor/Components/Saver'
 import { IpcAction } from './constants'
@@ -12,14 +12,30 @@ import { useSpotlightAppStore } from '../store/app'
 import { createNodeWithUid } from '../../Lib/helper'
 import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
 import useDataStore from '../../Editor/Store/DataStore'
+import { useContentStore } from '../../Editor/Store/ContentStore'
+import { AppType } from '../../Data/useInitialize'
+import { appNotifierWindow } from './notifiers'
+import { convertContentToRawText } from '../../Search/localSearch'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
+import { useSaveData } from '../../Data/useSaveData'
 
 export const useCurrentIndex = (data: Array<any> | undefined): number => {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
-  const { search } = useSpotlightContext()
+  const { search, setSearch, selection, setSelection } = useSpotlightContext()
   const setNode = useSpotlightEditorStore((s) => s.setNode)
+  const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
+  const setFsContent = useContentStore((state) => state.setContent)
+
+  const node = useSpotlightEditorStore((s) => s.node)
+  const setNodeContent = useSpotlightEditorStore((s) => s.setNodeContent)
+
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
-  const { getNode } = useLoad()
+
+  const saveData = useSaveData()
+
+  const { getNode, loadNode } = useLoad()
   const addILink = useDataStore((s) => s.addILink)
+  const setIsPreview = useSpotlightEditorStore((s) => s.setIsPreview)
 
   useEffect(() => {
     const dataLength = data ? data.length : 0
@@ -27,7 +43,11 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
     const changeSelection = (ev: any) => {
       if (ev.key === 'ArrowDown') {
         ev.preventDefault()
-        setCurrentIndex((prev) => (prev + 1) % dataLength)
+        setCurrentIndex((prev) => {
+          const current = (prev + 1) % dataLength
+          if (data[current].new) setIsPreview(false)
+          return current
+        })
       }
 
       if (ev.key === 'ArrowUp') {
@@ -40,18 +60,33 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
 
       if (ev.key === 'Enter') {
         ev.preventDefault()
-        setCurrentIndex((i) => {
+        if (currentIndex >= 0) {
           let newNode
-          if (i === 0) {
-            const uid = addILink(search)
-            newNode = getNode(uid)
+          if (data[currentIndex].new) {
+            const d = addILink(search, node.uid)
+            newNode = getNode(node.uid)
           } else {
-            newNode = getNode(data[i].uid)
+            newNode = getNode(data[currentIndex].uid)
           }
-          setNode(newNode)
-          setNormalMode(false)
-          return i
-        })
+
+          setSearch('')
+          if (selection) {
+            setFsContent(newNode.uid, [...getContent(newNode.uid), ...nodeContent])
+            saveData()
+
+            appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
+
+            setNode(createNodeWithUid(getNewDraftKey()))
+            setNodeContent(undefined)
+
+            setNormalMode(true)
+            setSelection(undefined)
+          } else {
+            setNode(newNode)
+            // loadNode(newNode)
+            setNormalMode(false)
+          }
+        }
       }
     }
 
@@ -62,7 +97,7 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
     }
 
     return () => document.removeEventListener('keydown', changeSelection)
-  }, [data])
+  }, [data, node, currentIndex, selection])
 
   useEffect(() => {
     if (search) {

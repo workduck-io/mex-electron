@@ -50,7 +50,7 @@ const Editor = ({
     if (editorRef && focusAtBeginning) {
       selectEditor(editorRef, { edge: 'end', focus: true })
     }
-  }, [editorRef, editorId]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [editorRef, editorId, focusAtBeginning]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId)
 
@@ -74,7 +74,6 @@ const Editor = ({
               id={generateEditorId()}
               editableProps={editableProps}
               value={content}
-              onChange={(val) => console.log({ val })}
               plugins={plugins}
               components={withStyledPlaceHolders(withStyledDraggables(components))}
               options={options}

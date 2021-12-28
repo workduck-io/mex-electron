@@ -16,6 +16,8 @@ import { useLocation, useHistory } from 'react-router'
 import { useAuthStore } from '../../../Hooks/useAuth/useAuth'
 import useAnalytics from '../../../analytics'
 import useOnboard from '../../../Components/Onboarding/store'
+import { createNodeWithUid } from '../../../Lib/helper'
+import useLoad from '../../../Hooks/useLoad/useLoad'
 interface IndexAndFileData {
   fileData: FileData
   indexData: any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -34,6 +36,7 @@ const GlobalListener = memo(() => {
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const initializeSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
+  const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
 
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()

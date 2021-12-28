@@ -16,7 +16,7 @@ import { initializeSentry } from './sentry'
 
 Modal.setAppElement('#root')
 
-initializeSentry()
+// initializeSentry()
 
 function App() {
   return (

@@ -196,6 +196,7 @@ const createSpotLighWindow = (show?: boolean) => {
       throw new Error('Main Window is not initialized!')
     }
     if (show) {
+      spotlight.focus()
       spotlight.show()
     } else {
       spotlight.hide()
@@ -363,6 +364,7 @@ const toggleMainWindow = (window) => {
   } else if (window.isFocused()) {
     window.hide()
   } else {
+    window.focus()
     window.show()
   }
 }

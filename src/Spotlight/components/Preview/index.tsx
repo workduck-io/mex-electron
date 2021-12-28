@@ -56,7 +56,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   const { search, selection, setSelection, setSearch } = useSpotlightContext()
   const nodes = useDeserializeSelectionToNodes(node.uid, preview)
 
-  const animationProps = useSpring({ width: search && normalMode ? '60%' : '100%' })
+  const animationProps = useSpring({ width: search ? '60%' : '100%' })
 
   useEffect(() => {
     const newNodeContent = [{ children: nodes }]
@@ -88,9 +88,11 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
 
   const onAfterSave = (uid: string) => {
     setSaved(true)
+
     setSelection(undefined)
     setSearch('')
     setNormalMode(true)
+
     const nNode = createNodeWithUid(getNewDraftKey())
     saveEditorNode(nNode)
     loadNodeProps(nNode)
@@ -118,9 +120,9 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
       <StyledEditorPreview>
         {previewContent && (
           <Editor
-            autoFocus={selection || !normalMode}
-            focusAtBeginning={false}
-            readOnly={!search || selection ? false : true}
+            autoFocus={!normalMode}
+            focusAtBeginning={!normalMode}
+            readOnly={search ? true : false}
             content={previewContent}
             editorId={node.uid}
           />

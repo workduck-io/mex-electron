@@ -27,7 +27,7 @@ export const Result: React.FC<{
 }> = ({ result, selected, onClick, style }) => {
   const theme = useTheme()
   return (
-    <StyledRow style={style} showColor={selected} onClick={onClick} key={`STRING_${result.key}`}>
+    <StyledRow style={style} showColor={selected} onClick={onClick} key={`STRING_${result.text}`}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Icon color={theme.colors.primary} style={{ marginRight: '8px' }} height={16} width={16} icon={Document} />
         <div>{result?.text}</div>
@@ -49,7 +49,7 @@ const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ curren
   const setNode = useSpotlightEditorStore((s) => s.setNode)
   const { getNode } = useLoad()
 
-  const props = useSpring({ width: search && normalMode ? '40%' : '0%', opacity: search ? 1 : 0 })
+  const props = useSpring({ width: search ? '40%' : '0%', opacity: search ? 1 : 0 })
 
   const transitions = useTransition(data ?? [], {
     from: {
@@ -77,38 +77,40 @@ const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ curren
     setNormalMode(false)
   }
 
+  const withNew = data?.length > 0 && data[0].new
+
   return (
     <StyledResults style={props} margin={search}>
       {data && data.length !== 0 && <ListenResultShortcut />}
       {transitions((props, result, state, index) => {
         if (result.new) {
           return (
-            <>
-              <StyledRow showColor={index === selectedIndex} onClick={handleCreateItem} key="wd-mex-create-new-node">
-                <NoWrap>
-                  <Icon style={{ marginRight: '8px' }} height={16} width={16} icon={PlusCircle} />
-                  <div>
-                    Create new <PrimaryText>{search}</PrimaryText>
-                  </div>
-                </NoWrap>
-              </StyledRow>
-              <ActionTitle>SEARCH RESULTS</ActionTitle>
-            </>
+            <StyledRow showColor={index === selectedIndex} onClick={handleCreateItem} key="wd-mex-create-new-node">
+              <NoWrap>
+                <Icon style={{ marginRight: '8px' }} height={16} width={16} icon={PlusCircle} />
+                <div>
+                  Create new <PrimaryText>{search}</PrimaryText>
+                </div>
+              </NoWrap>
+            </StyledRow>
           )
         }
         return (
-          <Result
-            style={{ ...props }}
-            key={`RESULT_${result?.text || String(index)}`}
-            selected={index === selectedIndex}
-            onClick={() => {
-              setSelectedIndex(index)
-            }}
-            result={result}
-          />
+          <>
+            {((withNew && index === 1) || (!withNew && index === 0)) && <ActionTitle>SEARCH RESULTS</ActionTitle>}
+            <Result
+              style={{ ...props }}
+              key={`RESULT_${result?.desc || String(index)}`}
+              selected={index === selectedIndex}
+              onClick={() => {
+                setSelectedIndex(index)
+              }}
+              result={result}
+            />
+          </>
         )
       })}
-      {data?.length === 1 && <ActionTitle>There&apos;s nothing with that name here...</ActionTitle>}
+      {data?.length === 0 && <ActionTitle>There&apos;s nothing with that name here...</ActionTitle>}
     </StyledResults>
   )
 }

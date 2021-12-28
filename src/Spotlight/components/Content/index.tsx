@@ -14,6 +14,7 @@ import { ILink } from '../../../Editor/Store/Types'
 import { useSpotlightAppStore } from '../../../Spotlight/store/app'
 import { createNodeWithUid } from '../../../Lib/helper'
 import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
+import { isNew } from '../../../Components/NodeSelect/NodeSelect'
 
 export const StyledContent = styled.section`
   display: flex;
@@ -98,7 +99,14 @@ const Content = () => {
           }
         }
       )
-      setSearchResults([{ new: true }, ...resultsWithContent])
+
+      const isNew = ilinks.filter((item) => item.text === search).length === 0
+
+      if (isNew) {
+        setSearchResults([{ new: true }, ...resultsWithContent])
+      } else {
+        setSearchResults(resultsWithContent)
+      }
     } else {
       setNormalMode(true)
       setSearchResults(undefined)
@@ -136,6 +144,7 @@ const Content = () => {
         text: null
       })
       if (nodeContent) {
+        console.log(nodeContent.length)
         loadNodeAndAppend(resultNode.uid, nodeContent)
       } else {
         loadNode(resultNode.uid, { savePrev: false, fetch: false })

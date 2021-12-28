@@ -17,6 +17,7 @@ const Search: React.FC = () => {
   const theme = useTheme()
   const ref = useRef<HTMLInputElement>()
   const { setSearch, search, selection } = useSpotlightContext()
+
   const { normalMode, setNormalMode } = useSpotlightAppStore(({ normalMode, setNormalMode }) => ({
     normalMode,
     setNormalMode
@@ -32,7 +33,9 @@ const Search: React.FC = () => {
   }, 400)
 
   useEffect(() => {
-    if (search === '' || !normalMode) ref.current.value = ''
+    if (search === '') ref.current.value = ''
+    ref.current.focus()
+    // if (normalMode) ref.current.value = ''
   }, [search, normalMode])
 
   return (

@@ -10,6 +10,7 @@ import toast from 'react-hot-toast'
 import { useGraphStore } from '../../Components/Graph/GraphStore'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph'
 import { updateEmptyBlockTypes } from '../../Lib/helper'
+import { convertContentToRawText } from '../../Search/localSearch'
 
 type LoadNodeProps = {
   savePrev?: boolean
@@ -56,7 +57,9 @@ const useLoad = () => {
 
     const inIlinks = ilinks.find((i) => i.uid === uid)
     const inArchive = archive.find((i) => i.uid === uid)
-    const isDraftNode = node.key.startsWith('Draft.')
+    console.log(JSON.stringify(node), null, 2)
+
+    const isDraftNode = node && node.key.startsWith('Draft.')
 
     return inIlinks || inArchive || isDraftNode
   }
