@@ -33,6 +33,7 @@ import { initializeSentry } from './sentry'
 import { flexIndexKeys } from './Search/flexsearch'
 import _ from 'lodash'
 import { backupMexJSON } from './backup'
+import { twitterIconBase64, trayIconBase64 } from './Defaults/images'
 
 initializeSentry()
 
@@ -429,7 +430,8 @@ app
     global.appVersion = app.getVersion()
     globalShortcut.register('CommandOrCOntrol+Shift+L', handleToggleMainWindow)
 
-    const icon = nativeImage.createFromPath(trayIconSrc)
+    const icon = nativeImage.createFromDataURL(trayIconBase64)
+    const twitterIcon = nativeImage.createFromDataURL(twitterIconBase64)
 
     tray = new Tray(icon)
 
@@ -479,7 +481,7 @@ app
         }
       },
       {
-        icon: path.join(__dirname, '../..', 'assets/twitter.png'),
+        icon: twitterIcon,
         label: 'Follow Us!',
         click: () => {
           shell.openExternal('https://twitter.com/workduckio')
