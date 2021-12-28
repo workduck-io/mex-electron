@@ -6,10 +6,20 @@ import { NodeEditorContent } from '../../Editor/Store/Types'
 import { useSaver } from '../../Editor/Components/Saver'
 import { IpcAction } from './constants'
 import { useSpotlightContext } from './context'
+import { useSpotlightEditorStore } from '../store/editor'
+import useLoad from '../../Hooks/useLoad/useLoad'
+import { useSpotlightAppStore } from '../store/app'
+import { createNodeWithUid } from '../../Lib/helper'
+import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
+import useDataStore from '../../Editor/Store/DataStore'
 
 export const useCurrentIndex = (data: Array<any> | undefined): number => {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
-  const { search, setEditSearchedNode } = useSpotlightContext()
+  const { search } = useSpotlightContext()
+  const setNode = useSpotlightEditorStore((s) => s.setNode)
+  const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
+  const { getNode } = useLoad()
+  const addILink = useDataStore((s) => s.addILink)
 
   useEffect(() => {
     const dataLength = data ? data.length : 0
@@ -30,13 +40,25 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
 
       if (ev.key === 'Enter') {
         ev.preventDefault()
-        console.log(data[currentIndex])
-        setEditSearchedNode(data[currentIndex])
+        setCurrentIndex((i) => {
+          let newNode
+          if (i === 0) {
+            const uid = addILink(search)
+            newNode = getNode(uid)
+          } else {
+            newNode = getNode(data[i].uid)
+          }
+          setNode(newNode)
+          setNormalMode(false)
+          return i
+        })
       }
     }
 
     if (data) {
       document.addEventListener('keydown', changeSelection)
+    } else {
+      document.removeEventListener('keydown', changeSelection)
     }
 
     return () => document.removeEventListener('keydown', changeSelection)

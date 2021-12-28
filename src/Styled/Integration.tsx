@@ -189,6 +189,10 @@ export const Flex = styled.section`
   overflow: hidden;
 `
 
+export const NoWrap = styled(Flex)`
+  white-space: nowrap;
+`
+
 export const CardTitle = styled.div`
   font-size: 1rem;
   line-height: 1.2rem;

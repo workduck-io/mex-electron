@@ -8,7 +8,6 @@ import { OnboardingTourConfig } from './Components/Onboarding/steps'
 import useOnboard from './Components/Onboarding/store'
 import Contexts from './Context/Contexts'
 import Providers from './Context/Providers'
-import { AppType } from './Data/useInitialize'
 import Main from './Layout/Main'
 import Modals from './Layout/Modals'
 import Switch from './Router/Switch'
@@ -17,7 +16,6 @@ import { initializeSentry } from './sentry'
 
 Modal.setAppElement('#root')
 
-// initializeAmplify()
 initializeSentry()
 
 function App() {

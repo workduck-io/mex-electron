@@ -4,6 +4,8 @@ import WebStorageCookieStore from 'tough-cookie-web-storage-store'
 import { SEPARATOR } from '../Components/Sidebar/treeUtils'
 import { NodeEditorContent } from '../Editor/Store/Types'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
+import { NODE_ID_PREFIX } from '../Defaults/idPrefixes'
+import { nanoid } from 'nanoid'
 
 export const electronCookies = () => {
   const { Cookie } = tough
@@ -21,6 +23,13 @@ export const electronCookies = () => {
     })
   })(document)
 }
+
+export const createNodeWithUid = (key: string) => ({
+  title: key,
+  id: key,
+  uid: `${NODE_ID_PREFIX}${nanoid()}`,
+  key: key
+})
 
 export const withoutContinuousDelimiter = (text: string, delimiter = SEPARATOR) => {
   const key = text

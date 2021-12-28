@@ -5,7 +5,7 @@ import { useSpotlightContext } from '../utils/context'
 
 export const useResultsShortcuts = () => {
   const { shortcutDisabled } = useKeyListener()
-  const { setEditSearchedNode, setSearch } = useSpotlightContext()
+  const { setSearch } = useSpotlightContext()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {

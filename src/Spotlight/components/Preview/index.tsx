@@ -19,6 +19,9 @@ import { useRecentsStore } from '../../../Editor/Store/RecentsStore'
 import { appNotifierWindow } from '../../../Spotlight/utils/notifiers'
 import { IpcAction } from '../../../Spotlight/utils/constants'
 import { AppType } from '../../../Data/useInitialize'
+import { useSpotlightAppStore } from '../../../Spotlight/store/app'
+import { createNodeWithUid } from '../../../Lib/helper'
+import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
 
 export type PreviewType = {
   text: string
@@ -43,14 +46,17 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   const addILink = useDataStore((s) => s.addILink)
   const setSaved = useContentStore((state) => state.setSaved)
   const addRecent = useRecentsStore((state) => state.addRecent)
+  const normalMode = useSpotlightAppStore((s) => s.normalMode)
+  const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
+  const saveEditorNode = useSpotlightEditorStore((s) => s.setNode)
 
   // * Custom hooks
   const { loadNodeProps } = useLoad()
   const ref = useRef<HTMLDivElement>()
-  const { search, selection, editSearchedNode } = useSpotlightContext()
+  const { search, selection, setSelection, setSearch } = useSpotlightContext()
   const nodes = useDeserializeSelectionToNodes(node.uid, preview)
 
-  const animationProps = useSpring({ width: search && !editSearchedNode ? '60%' : '100%' })
+  const animationProps = useSpring({ width: search && normalMode ? '60%' : '100%' })
 
   useEffect(() => {
     const newNodeContent = [{ children: nodes }]
@@ -82,8 +88,19 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
 
   const onAfterSave = (uid: string) => {
     setSaved(true)
+    setSelection(undefined)
+    setSearch('')
+    setNormalMode(true)
+    const nNode = createNodeWithUid(getNewDraftKey())
+    saveEditorNode(nNode)
+    loadNodeProps(nNode)
+
+    // * Add this item in recents list of Mex
     addRecent(uid)
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, uid)
+
+    // * Hide spotlight after save
+    appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
     if (isOnboarding) {
       openNodeInMex(uid)
@@ -99,13 +116,15 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
         </SeePreview>
       )}
       <StyledEditorPreview>
-        <Editor
-          autoFocus={selection}
-          focusAtBeginning={false}
-          readOnly={search || selection ? false : true}
-          content={previewContent}
-          editorId={node.uid}
-        />
+        {previewContent && (
+          <Editor
+            autoFocus={selection || !normalMode}
+            focusAtBeginning={false}
+            readOnly={!search || selection ? false : true}
+            content={previewContent}
+            editorId={node.uid}
+          />
+        )}
       </StyledEditorPreview>
       <SaverButton callbackAfterSave={onAfterSave} callbackBeforeSave={onBeforeSave} noButton />
     </StyledPreview>

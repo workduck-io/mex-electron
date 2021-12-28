@@ -11,13 +11,18 @@ import { CenterIcon } from '../../styles/layout'
 import WDLogo from './Logo'
 import { useTheme } from 'styled-components'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
+import { useSpotlightAppStore } from '../../../Spotlight/store/app'
 
 const Search: React.FC = () => {
   const theme = useTheme()
   const ref = useRef<HTMLInputElement>()
-  const { setSearch, search, editSearchedNode, selection } = useSpotlightContext()
+  const { setSearch, search, selection } = useSpotlightContext()
+  const { normalMode, setNormalMode } = useSpotlightAppStore(({ normalMode, setNormalMode }) => ({
+    normalMode,
+    setNormalMode
+  }))
 
-  const setIsPreview = useSpotlightEditorStore((state) => state.setIsPreview)
+  const node = useSpotlightEditorStore((s) => s.node)
 
   const handleSearchInput = useDebouncedCallback((value: string) => {
     setSearch(value)
@@ -27,8 +32,8 @@ const Search: React.FC = () => {
   }, 400)
 
   useEffect(() => {
-    if (search === '' || editSearchedNode) ref.current.value = ''
-  }, [search, editSearchedNode])
+    if (search === '' || !normalMode) ref.current.value = ''
+  }, [search, normalMode])
 
   return (
     <StyledSearch>
@@ -37,7 +42,7 @@ const Search: React.FC = () => {
           color={theme.colors.primary}
           height={24}
           width={24}
-          icon={editSearchedNode || selection ? Document : SearchIcon}
+          icon={!normalMode || selection ? Document : SearchIcon}
         />
       </CenterIcon>
       <StyledInput
@@ -45,7 +50,7 @@ const Search: React.FC = () => {
         autoFocus
         id="spotlight_search"
         name="spotlight_search"
-        placeholder={editSearchedNode || selection ? editSearchedNode?.text : 'Search anything...'}
+        placeholder={!normalMode || selection ? node?.key : 'Search anything...'}
         onChange={({ target: { value } }) => {
           handleSearchInput(value)
         }}

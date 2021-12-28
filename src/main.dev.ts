@@ -587,6 +587,11 @@ ipcMain.on(IpcAction.ERROR_OCCURED, (_event, arg) => {
   // showDialog(arg.message, arg.propertes)
 })
 
+ipcMain.on(IpcAction.CLOSE_SPOTLIGHT, (_event, arg) => {
+  const { data } = arg
+  if (data?.hide) spotlight.hide()
+})
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) => {
   if (from === AppType.MEX) spotlight?.webContents.send(action, { data })
