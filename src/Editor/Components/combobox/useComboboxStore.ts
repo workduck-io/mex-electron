@@ -15,6 +15,10 @@ export type ComboboxState = {
   key: string
   setKey: (value: string) => void
 
+  // Keys
+  keys: any
+  setKeys: (value: any) => void
+
   // Maximum number of suggestions
   maxSuggestions: number
   setMaxSuggestions: (value: number) => void
@@ -44,6 +48,9 @@ export type ComboboxState = {
 export const useComboboxStore = createStore()<ComboboxState>((set) => ({
   key: ComboboxKey.ILINK,
   setKey: setStoreValue(set, 'key', 'setKey'),
+
+  keys: { null: 'start' },
+  setKeys: setStoreValue(set, 'keys', 'setKeys'),
 
   maxSuggestions: 10,
   setMaxSuggestions: setStoreValue(set, 'maxSuggestions', 'setMaxSuggestions'),

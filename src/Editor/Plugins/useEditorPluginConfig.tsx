@@ -1,8 +1,8 @@
 import { ELEMENT_MEDIA_EMBED } from '@udecode/plate'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import useAnalytics from '../../analytics'
 import { useSnippets } from '../../Snippets/useSnippets'
-import { ComboboxKey } from '../Components/combobox/useComboboxStore'
+import { ComboboxKey, useComboboxStore } from '../Components/combobox/useComboboxStore'
 import { ILinkComboboxItem } from '../Components/ilink/components/ILinkComboboxItem'
 import { ELEMENT_ILINK } from '../Components/ilink/defaults'
 import { ELEMENT_INLINE_BLOCK } from '../Components/InlineBlock/types'
@@ -24,9 +24,10 @@ const useEditorPluginConfig = (editorId: string) => {
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
+  const setKeys = useComboboxStore((state) => state.setKeys)
   const { getSnippetsConfigs } = useSnippets()
   const { getSyncBlockConfigs } = useSyncConfig()
-  const { trackEvent } = useAnalytics()
+  // const { trackEvent } = useAnalytics()
 
   // Combobox
   const snippetConfigs = getSnippetsConfigs()
@@ -88,35 +89,39 @@ const useEditorPluginConfig = (editorId: string) => {
     }
   }
 
+  useEffect(() => {
+    console.log({})
+    setKeys({
+      ilink: {
+        cbKey: ComboboxKey.ILINK,
+        trigger: '[[',
+        data: ilinks,
+        icon: 'ri:file-list-2-line'
+      },
+      inline_block: {
+        cbKey: ComboboxKey.INLINE_BLOCK,
+        trigger: '![[',
+        data: ilinksForCurrentNode,
+        icon: 'ri:picture-in-picture-line'
+      },
+      tag: {
+        cbKey: ComboboxKey.TAG,
+        trigger: '#',
+        data: tags,
+        icon: 'ri:hashtag'
+      },
+      slash_command: {
+        cbKey: ComboboxKey.SLASH_COMMAND,
+        trigger: '/',
+        icon: 'ri:flask-line',
+        data: slashCommands
+      }
+    })
+  }, [ilinks, ilinksForCurrentNode, tags, slashCommands])
+
   const pluginConfigs = {
     combobox: {
-      onChange: useMultiComboboxOnChange(editorId, {
-        ilink: {
-          cbKey: ComboboxKey.ILINK,
-          trigger: '[[',
-          data: ilinks,
-          icon: 'ri:file-list-2-line'
-        },
-        inline_block: {
-          cbKey: ComboboxKey.INLINE_BLOCK,
-          trigger: '![[',
-          data: ilinksForCurrentNode,
-          icon: 'ri:picture-in-picture-line'
-        },
-        tag: {
-          cbKey: ComboboxKey.TAG,
-          trigger: '#',
-          data: tags,
-          icon: 'ri:hashtag'
-        },
-        slash_command: {
-          cbKey: ComboboxKey.SLASH_COMMAND,
-          trigger: '/',
-          icon: 'ri:flask-line',
-          data: slashCommands
-        }
-      }),
-
+      onChange: useMultiComboboxOnChange(editorId),
       onKeyDown: useMultiComboboxOnKeyDown(comboConfigData)
     }
   }

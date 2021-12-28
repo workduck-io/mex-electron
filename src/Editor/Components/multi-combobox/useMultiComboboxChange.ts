@@ -8,75 +8,70 @@ import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { ComboboxType } from './types'
 
 // Handle multiple combobox
-const useMultiComboboxOnChange = (
-  editorId: string,
-  keys: {
-    [type: string]: ComboboxType
-  }
-): OnChange => {
-  const editor = usePlateEditorRef(editorId)! // eslint-disable-line @typescript-eslint/no-non-null-assertion
+const useMultiComboboxOnChange = (editorId: string): OnChange => {
+  // const editor = usePlateEditorRef(editorId)! // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
   const isOpen = useComboboxIsOpen()
   const closeMenu = useComboboxStore((state) => state.closeMenu)
 
   const maxSuggestions = useComboboxStore((state) => state.maxSuggestions)
   const setItems = useComboboxStore((state) => state.setItems)
+  const keys = useComboboxStore((state) => state.keys)
 
-  const comboboxKey = useComboboxStore((state) => state.key)
-  const comboType = keys[comboboxKey]
+  const comboboxOnChange = useComboboxOnChange()
 
-  const comboboxOnChange = useComboboxOnChange({
-    editor,
-    keys
-  })
+  console.log('out', { keys })
+  const changeHandler = useCallback(
+    (editor) => {
+      const res = comboboxOnChange(editor)
+      console.log('in', { keys })
+      if (!res) return false
 
-  const { data, icon } = comboType
+      const { search } = res
+      const key = useComboboxStore.getState().key
+      const ct = keys[key]
+      const { data } = ct
 
-  // Construct the correct change handler
-  const changeHandler = useCallback(() => {
-    const res = comboboxOnChange()
-    if (!res) return false
+      if ((!search && search !== '') || !data) return false
 
-    const { search } = res
+      const searchItems = fuzzySearch(data, search, { keys: ['text'] })
+      // console.log({ data, search, comboType, key: useComboboxStore.getState().key })
 
-    if ((!search && search !== '') || !data) return false
+      /** If the search is not empty, use the searchItems
+       * otherwise use the default items */
+      const items: IComboboxItem[] = (
+        search !== '' ? searchItems.slice(0, maxSuggestions) : keys[key].data.slice(0, maxSuggestions)
+      ).map((item) => ({
+        key: item.value,
+        icon: item.icon ?? ct.icon ?? undefined,
+        text: item.text
+      }))
 
-    const key = useComboboxStore.getState().key
-    const ct = keys[key]
-    const searchItems = fuzzySearch(data, search, { keys: ['text'] })
-    // console.log({ data, search, comboType, key: useComboboxStore.getState().key })
+      // TODO: Disable new item if key exists.
+      if (key !== ComboboxKey.SLASH_COMMAND && search !== '') {
+        items.push({
+          key: '__create_new',
+          icon: 'ri:add-circle-line',
+          text: `Create New ${search}`
+        })
+      }
 
-    const items: IComboboxItem[] = (
-      search !== '' ? searchItems.slice(0, maxSuggestions) : keys[key].data.slice(0, maxSuggestions)
-    ).map((item) => ({
-      key: item.value,
-      icon: item.icon ?? ct.icon ?? undefined,
-      text: item.text
-    }))
+      setItems(items)
 
-    // TODO: Disable new item if key exists.
-    if (comboboxKey !== ComboboxKey.SLASH_COMMAND && search !== '') {
-      items.push({
-        key: '__create_new',
-        icon: 'ri:add-circle-line',
-        text: `Create New ${search}`
-      })
-    }
-
-    setItems(items)
-
-    return true
-  }, [comboboxOnChange, maxSuggestions, setItems, data])
+      return true
+    },
+    [maxSuggestions, keys]
+  )
 
   return useCallback(
-    () => () => {
+    (editor) => () => {
       let changed: boolean | undefined = false
-      changed = changeHandler !== undefined ? changeHandler() : false
+      changed = changeHandler !== undefined ? changeHandler(editor) : false
       if (changed) return
 
       if (!changed && isOpen) closeMenu()
     },
-    [closeMenu, isOpen, changeHandler]
+    [isOpen, changeHandler]
   )
 }
 

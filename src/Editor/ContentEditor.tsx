@@ -16,7 +16,7 @@ import Toolbar from './Toolbar'
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const { toggleFocusMode } = useLayout()
-  const { loadNode } = useLoad()
+  // const { loadNode } = useLoad()
 
   const { showGraph } = useToggleElements()
 
@@ -60,7 +60,7 @@ const ContentEditor = () => {
       [shortcuts.refreshNode.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.refreshNode, () => {
-          loadNode(uid)
+          // loadNode(uid)
         })
       }
     })
