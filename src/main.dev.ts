@@ -99,6 +99,10 @@ const MEX_WINDOW_OPTIONS = {
   }
 }
 
+if (process.platform === 'win32') {
+  delete MEX_WINDOW_OPTIONS.titleBarStyle
+}
+
 const SPOTLIGHT_WINDOW_OPTIONS = {
   show: false,
   width: 700,

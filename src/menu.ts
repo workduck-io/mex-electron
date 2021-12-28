@@ -1,4 +1,5 @@
-import { app, Menu, shell, BrowserWindow, MenuItemConstructorOptions, autoUpdater } from 'electron'
+import { app, Menu, shell, BrowserWindow, MenuItemConstructorOptions, autoUpdater, nativeImage } from 'electron'
+import { twitterIconBase64 } from './Defaults/images'
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string
@@ -185,13 +186,17 @@ export default class MenuBuilder {
   }
 
   buildDefaultTemplate() {
+    const twitterIcon = nativeImage.createFromDataURL(twitterIconBase64)
     const templateDefault = [
       {
         label: '&File',
         submenu: [
           {
-            label: '&Open',
-            accelerator: 'Ctrl+O'
+            label: 'Check for Updates ¯\\_(ツ)_/¯',
+            click: () => {
+              console.log('Checking for Updates')
+              autoUpdater.checkForUpdates()
+            }
           },
           {
             label: '&Close',
@@ -243,9 +248,17 @@ export default class MenuBuilder {
         label: 'Help',
         submenu: [
           {
-            label: 'Learn More',
-            click() {
-              shell.openExternal('https://electronjs.org')
+            icon: twitterIcon,
+            label: 'Follow Us!',
+            click: () => {
+              shell.openExternal('https://twitter.com/workduckio')
+            }
+          },
+          {
+            label: 'Check for Updates ¯\\_(ツ)_/¯',
+            click: () => {
+              console.log('Checking for Updates')
+              autoUpdater.checkForUpdates()
             }
           },
           {
