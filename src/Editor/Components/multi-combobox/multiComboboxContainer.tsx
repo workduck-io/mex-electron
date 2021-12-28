@@ -27,7 +27,7 @@ export interface SingleComboboxConfig {
 }
 
 export const ElementComboboxComponent = ({ keys, slashCommands }: ComboConfigData) => {
-  const comboboxKey: string = useComboboxStore((state) => state.key)
+  const comboboxKey: string = useComboboxStore.getState().key
   const comboRenderType = keys[comboboxKey]
   const { elementChangeHandler: onSelectItem, isSlash } = useOnSelectItem(comboboxKey, slashCommands, comboRenderType)
   const onNewItem = (newItem, parentId?) => {

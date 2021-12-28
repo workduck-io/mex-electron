@@ -38,7 +38,6 @@ const Toolbar = () => {
   return (
     <NodeInfo focusMode={focusMode}>
       <NodeRenameTitle />
-      {/* <NoteTitle>{title}</NoteTitle> */}
       {fetchingContent && <Loading dots={3} />}
       <InfoTools>
         <ToolbarTooltip singleton={source} />
@@ -64,7 +63,13 @@ const Toolbar = () => {
           highlight={nodeIntentsModalOpen}
           onClick={nodeIntentsModalToggle}
         />
-        <SaverButton shortcut={shortcuts.save.keystrokes} title="Save" singleton={target} callbackAfterSave={onSave} />
+        <SaverButton
+          // saveOnUnmount
+          shortcut={shortcuts.save.keystrokes}
+          title="Save"
+          singleton={target}
+          callbackAfterSave={onSave}
+        />
         <IconButton
           size={24}
           singleton={target}

@@ -24,6 +24,7 @@ import useDataStore from '../../Editor/Store/DataStore'
 import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
 import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
+import { useSaver } from '../../Editor/Components/Saver'
 
 const Init = () => {
   const history = useHistory()
@@ -133,18 +134,21 @@ const Init = () => {
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { shortcutDisabled, shortcutHandler } = useKeyListener()
+  // const { onSave } = useSaver()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.showSnippets.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSnippets, () => {
+          // onSave(undefined, false, false)
           history.push('/snippets')
         })
       },
       [shortcuts.showIntegrations.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showIntegrations, () => {
+          // onSave(undefined, false, false)
           history.push('/integrations')
         })
       },
@@ -157,12 +161,14 @@ const Init = () => {
       [shortcuts.showSearch.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSearch, () => {
+          // onSave(undefined, false, false)
           history.push('/search')
         })
       },
       [shortcuts.showSettings.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSettings, () => {
+          // onSave(undefined, false, false)
           history.push('/settings')
         })
       }

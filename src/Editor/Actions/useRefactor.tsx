@@ -6,6 +6,7 @@ import { useRefactorStore } from '../../Components/Refactor/Refactor'
 import { getAllParentIds, SEPARATOR } from '../../Components/Sidebar/treeUtils'
 import { generateNodeId } from '../../Defaults/idPrefixes'
 import { NodeLink } from '../../Types/relations'
+import { useSaver } from '../Components/Saver'
 import { Contents, useContentStore } from '../Store/ContentStore'
 import useDataStore from '../Store/DataStore'
 import { useLinks } from './useLinks'
@@ -42,6 +43,8 @@ export const useRefactor = () => {
   const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
   const { trackEvent } = useAnalytics()
 
+  const { onSave } = useSaver()
+
   const getMockRefactor = (from: string, to: string): NodeLink[] => {
     const refactorMap = ilinks.filter((i) => {
       const match = isMatch(i.text, from)
@@ -61,6 +64,8 @@ export const useRefactor = () => {
   const execRefactor = (from: string, to: string) => {
     trackEvent(CustomEvents.REFACTOR, { 'mex-from': from, 'mex-to': to })
     const refactored = getMockRefactor(from, to)
+
+    onSave(undefined, false)
 
     // Generate the new links
     const newIlinks = ilinks.map((i) => {

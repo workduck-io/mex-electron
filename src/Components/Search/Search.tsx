@@ -26,7 +26,7 @@ import {
   SearchPreviewWrapper
 } from '../../Styled/Search'
 import { Title } from '../../Styled/Typography'
-import { highlightText, SearchHighlights, TitleHighlights } from './Highlights'
+import { SearchHighlights, TitleHighlights } from './Highlights'
 
 interface SearchStore {
   selected: number
@@ -60,6 +60,7 @@ const Search = () => {
   const history = useHistory()
   const { loadNode } = useLoad()
   const inpRef = useRef<HTMLInputElement>(null)
+  const selectedRef = useRef<HTMLDivElement>(null)
 
   const { getNodeIdFromUid } = useLinks()
 
@@ -109,10 +110,12 @@ const Search = () => {
 
   const selectNext = () => {
     setSelected((selected + 1) % result.length)
+    if (selectedRef.current) selectedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
   const selectPrev = () => {
     setSelected((result.length + selected - 1) % result.length)
+    if (selectedRef.current) selectedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onChange = (e: any) => {
@@ -134,12 +137,23 @@ const Search = () => {
       }
     }
     if (event.code === 'Escape') {
-      setSelected(-1)
+      // setInput()
+      if (inpRef.current) {
+        if (inpRef.current.value !== '') {
+          inpRef.current.value = ''
+          if (selected > -1) {
+            setSelected(-1)
+          }
+        } else {
+          history.push('/editor')
+        }
+      }
     }
     if (event.code === 'Enter') {
       // Only when the selected index is -1
       if (selected > -1) {
-        loadNode(result[selected].ref)
+        // console.log({ load: result[selected].nodeUID, res: result, sel: result[selected], selected })
+        loadNode(result[selected].nodeUID)
         history.push('/editor')
       }
     }
@@ -184,6 +198,7 @@ const Search = () => {
                     history.push('/editor')
                   }}
                   selected={i === selected}
+                  ref={i === (selected + 1) % result.length ? selectedRef : null}
                   key={`ResultForSearch_${c.nodeUID}`}
                 >
                   <ResultHeader active={c.matchField.includes('title')}>

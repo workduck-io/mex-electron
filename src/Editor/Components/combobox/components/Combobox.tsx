@@ -49,6 +49,8 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
     }
   }
 
+  // console.log({ items })
+
   return (
     <PortalBody>
       <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
@@ -64,7 +66,7 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
                 {...comboProps(item, index)}
                 onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, isSlash ? item : search)}
               >
-                {item.icon && <Icon height={18} icon={item.icon} />}
+                {item.icon && <Icon height={18} key={`${item.key}_${item.icon}`} icon={item.icon} />}
                 <ItemCenterWrapper>
                   <ItemTitle>{Item}</ItemTitle>
                   {item.desc && <ItemDesc>{item.desc}</ItemDesc>}
