@@ -14,11 +14,10 @@ export const StyledShortcuts = styled.section<ContentType>`
   align-items: center;
 `
 
-export const Shortcut = styled.div`
+export const Shortcut = styled.span`
   font-size: 10px;
   color: ${({ theme }) => theme.colors.text.fade};
   font-weight: bold;
-  margin-right: 2rem;
 `
 
 export const StyledKey = styled.span`

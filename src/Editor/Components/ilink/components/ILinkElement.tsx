@@ -58,7 +58,13 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   )
 
   return (
-    <SILinkRoot {...attributes} id={`ILINK_${element.value}`} data-slate-value={element.value} contentEditable={false}>
+    <SILinkRoot
+      {...attributes}
+      id={`ILINK_${element.value}`}
+      data-tour="mex-onboarding-ilink"
+      data-slate-value={element.value}
+      contentEditable={false}
+    >
       {archived(uid) ? (
         <SILink focused={selected} archived={true}>
           <StyledIcon icon={archivedIcon} color="#df7777" />

@@ -6,6 +6,12 @@ import twitterIcon from '@iconify-icons/logos/twitter'
 import globeIcon from '@iconify-icons/ph/globe'
 import linkedinIcon from '@iconify-icons/logos/linkedin-icon'
 import { getGlobal } from '@electron/remote'
+import { Button } from '../../Styled/Buttons'
+import useOnboard from '../Onboarding/store'
+import { useHistory } from 'react-router-dom'
+import { ipcRenderer } from 'electron'
+import { IpcAction } from '../../Spotlight/utils/constants'
+import { AppType } from '../../Data/useInitialize'
 
 const Container = styled.section`
   margin: 0 ${({ theme }) => theme.spacing.large};
@@ -36,8 +42,17 @@ const Flex = styled.div`
 `
 
 const About = () => {
-  console.log('Value is: ', getGlobal('appVersion'))
   const appVersion = getGlobal('appVersion')
+  const router = useHistory()
+  const changeOnboarding = useOnboard((s) => s.changeOnboarding)
+  const setStep = useOnboard((s) => s.setStep)
+
+  const onBeginTourClick = () => {
+    router.replace('/editor')
+    setStep(0)
+    changeOnboarding(true)
+    ipcRenderer.send(IpcAction.START_ONBOARDING, { from: AppType.MEX })
+  }
 
   return (
     <Container>
@@ -59,6 +74,10 @@ const About = () => {
           </Links>
         </Flex>
       </Margin>
+      <br />
+      {/* <div>
+        <Button onClick={onBeginTourClick}>Begin Tour</Button>
+      </div> */}
     </Container>
   )
 }

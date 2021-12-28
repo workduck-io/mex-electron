@@ -25,7 +25,8 @@ import {
   getGlobalShortcut,
   getSelectedText,
   SelectionType,
-  getSelectedTextSync
+  getSelectedTextSync,
+  getPermissions
 } from './Spotlight/utils/getSelectedText'
 import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
 import { FileData } from './Types/data'
@@ -195,6 +196,7 @@ const createSpotLighWindow = (show?: boolean) => {
       throw new Error('Main Window is not initialized!')
     }
     if (show) {
+      spotlight.focus()
       spotlight.show()
     } else {
       spotlight.hide()
@@ -202,6 +204,7 @@ const createSpotLighWindow = (show?: boolean) => {
   })
 
   spotlight.on('blur', () => {
+    spotlight.hide()
     spotlight.webContents.send(IpcAction.SPOTLIGHT_BLURRED)
   })
 
@@ -361,6 +364,7 @@ const toggleMainWindow = (window) => {
   } else if (window.isFocused()) {
     window.hide()
   } else {
+    window.focus()
     window.show()
   }
 }
@@ -427,6 +431,10 @@ app.on('quit', () => {
 app
   .whenReady()
   .then(() => {
+    // * permission check
+
+    getPermissions().then((s) => console.log('Hello'))
+
     global.appVersion = app.getVersion()
     globalShortcut.register('CommandOrCOntrol+Shift+L', handleToggleMainWindow)
 
@@ -552,8 +560,20 @@ ipcMain.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {
   notifyOtherWindow(IpcAction.NEW_RECENT_ITEM, from, data)
 })
 
+ipcMain.on(IpcAction.START_ONBOARDING, (_event, arg) => {
+  const { from, data } = arg
+  notifyOtherWindow(IpcAction.START_ONBOARDING, from, data)
+})
+
+ipcMain.on(IpcAction.STOP_ONBOARDING, (_event, arg) => {
+  const { from } = arg
+  notifyOtherWindow(IpcAction.STOP_ONBOARDING, from)
+})
+
 ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
   mex?.webContents.send(IpcAction.OPEN_NODE, { nodeId: arg.nodeId })
+  spotlight.hide()
+  mex.show()
 })
 
 ipcMain.on(IpcAction.LOGGED_IN, (_event, arg) => {
@@ -567,6 +587,11 @@ ipcMain.on(IpcAction.REDIRECT_TO, (_event, arg) => {
 
 ipcMain.on(IpcAction.ERROR_OCCURED, (_event, arg) => {
   // showDialog(arg.message, arg.propertes)
+})
+
+ipcMain.on(IpcAction.CLOSE_SPOTLIGHT, (_event, arg) => {
+  const { data } = arg
+  if (data?.hide) spotlight.hide()
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

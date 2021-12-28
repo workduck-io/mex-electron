@@ -1,16 +1,18 @@
+import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { ColorProp, ColumnContainer } from '../Actions/styled'
 import { StyledBackground } from '../Spotlight/styled'
 
-export const StyledResults = styled(ColumnContainer)`
-  flex: 4;
+export const StyledResults = styled(ColumnContainer)<{ margin: string }>`
+  width: 0;
   margin-top: 4px;
+  margin-right: ${({ margin }) => margin && '0.5rem'};
   :focus {
     outline: none;
   }
 `
 
-export const StyledRow = styled.div<ColorProp>`
+export const StyledRow = styled(animated.div)<ColorProp>`
   ${({ showColor }) =>
     showColor &&
     css`

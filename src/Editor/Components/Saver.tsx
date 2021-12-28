@@ -12,7 +12,7 @@ import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListen
 import { useTags } from '../../Hooks/useTags/useTags'
 import { getEventNameFromElement } from '../../Lib/strings'
 import { useApi } from '../../Requests/Save'
-import { convertEntryToRawText } from '../../Search/localSearch'
+import { convertContentToRawText, convertEntryToRawText } from '../../Search/localSearch'
 import { useNewSearchStore } from '../../Search/SearchStore'
 import IconButton from '../../Styled/Buttons'
 import { useLinks } from '../Actions/useLinks'

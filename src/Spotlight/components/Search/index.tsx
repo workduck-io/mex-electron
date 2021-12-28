@@ -3,6 +3,7 @@ import React, { useRef, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 
 import SearchIcon from '@iconify-icons/ph/magnifying-glass-bold'
+import Document from '@iconify-icons/gg/file-document'
 import { Icon } from '@iconify/react'
 import { useSpotlightContext } from '../../utils/context'
 import { StyledSearch, StyledInput } from './styled'
@@ -10,36 +11,52 @@ import { CenterIcon } from '../../styles/layout'
 import WDLogo from './Logo'
 import { useTheme } from 'styled-components'
 import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
+import { useSpotlightAppStore } from '../../../Spotlight/store/app'
 
 const Search: React.FC = () => {
   const theme = useTheme()
   const ref = useRef<HTMLInputElement>()
-  const { setSearch, search } = useSpotlightContext()
-  const setIsPreview = useSpotlightEditorStore((state) => state.setIsPreview)
+  const { setSearch, search, selection } = useSpotlightContext()
+
+  const { normalMode, setNormalMode } = useSpotlightAppStore(({ normalMode, setNormalMode }) => ({
+    normalMode,
+    setNormalMode
+  }))
+
+  const node = useSpotlightEditorStore((s) => s.node)
 
   const handleSearchInput = useDebouncedCallback((value: string) => {
     setSearch(value)
-    if (!value) {
-      setIsPreview(false)
-    }
+    // if (!value) {
+    //   setIsPreview(false)
+    // }
   }, 400)
 
   useEffect(() => {
     if (search === '') ref.current.value = ''
-  }, [search])
+    ref.current.focus()
+    // if (normalMode) ref.current.value = ''
+  }, [search, normalMode])
 
   return (
     <StyledSearch>
       <CenterIcon>
-        <Icon color={theme.colors.primary} height={24} width={24} icon={SearchIcon} />
+        <Icon
+          color={theme.colors.primary}
+          height={24}
+          width={24}
+          icon={!normalMode || selection ? Document : SearchIcon}
+        />
       </CenterIcon>
       <StyledInput
         ref={ref}
         autoFocus
         id="spotlight_search"
         name="spotlight_search"
-        placeholder="Search anything.."
-        onChange={({ target: { value } }) => handleSearchInput(value)}
+        placeholder={!normalMode || selection ? node?.key : 'Search anything...'}
+        onChange={({ target: { value } }) => {
+          handleSearchInput(value)
+        }}
       />
       <CenterIcon>
         <WDLogo />

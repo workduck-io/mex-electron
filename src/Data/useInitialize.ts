@@ -1,4 +1,4 @@
-import { createNodeWithUid } from './../Spotlight/components/Content/index'
+import { createNodeWithUid } from '../Lib/helper'
 import { defaultCommands } from '../Defaults/slashCommands'
 import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
 import { useContentStore } from '../Editor/Store/ContentStore'

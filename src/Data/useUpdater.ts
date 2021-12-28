@@ -7,12 +7,14 @@ import { useAuthStore } from '../Hooks/useAuth/useAuth'
 import { useSlashCommands } from '../Hooks/useSlashCommands'
 import { integrationURLs } from '../Requests/routes'
 import { useSaveData } from './useSaveData'
+import useOnboard from '../Components/Onboarding/store'
 
 export const useUpdater = () => {
   const setSlashCommands = useDataStore((state) => state.setSlashCommands)
   const setServices = useSyncStore((store) => store.setServices)
   const setTemplates = useSyncStore((store) => store.setTemplates)
   const { generateSlashCommands } = useSlashCommands()
+  const isOnboarding = useOnboard((s) => s.isOnboarding)
 
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const saveData = useSaveData()
@@ -23,7 +25,7 @@ export const useUpdater = () => {
   }
 
   const updateDefaultServices = async () => {
-    if (useAuthStore.getState().authenticated) {
+    if (useAuthStore.getState().authenticated && !isOnboarding) {
       await client
         .get(integrationURLs.getAllServiceData(getWorkspaceId()))
         .then((d) => {
@@ -39,7 +41,7 @@ export const useUpdater = () => {
             connected: false,
             enabled: s.enabled
           }))
-          // console.log({ services })
+
           setServices(services)
         })
         .then(() => saveData())
@@ -47,17 +49,17 @@ export const useUpdater = () => {
   }
 
   const updateServices = async () => {
-    if (useAuthStore.getState().authenticated) {
+    if (useAuthStore.getState().authenticated && !isOnboarding) {
       await client
         .get(integrationURLs.getWorkspaceAuth(getWorkspaceId()))
         .then((d) => {
           const services = useSyncStore.getState().services
           const sData = d.data
           const newServices = services.map((s) => {
+            if (s.id === 'ONBOARD') return s
             const connected = sData.some((cs) => s.id === cs.type)
             return { ...s, connected }
           })
-          // console.log({ newServices })
 
           setServices(newServices)
         })

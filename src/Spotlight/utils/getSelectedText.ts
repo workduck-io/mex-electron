@@ -1,5 +1,5 @@
 import { clipboard } from 'electron'
-import { keyTap, typeString, setKeyboardDelay, keyToggle } from 'robotjs'
+import { keyTap, setKeyboardDelay, keyToggle } from 'robotjs'
 import activeWindow from 'active-win-universal'
 import { getKeyFromKeycode } from '../../Lib/keyMap'
 
@@ -9,6 +9,7 @@ export type SelectionType = {
 }
 export const simulateCopy = () => keyTap('c', process.platform === 'darwin' ? 'command' : 'control')
 
+// * For windows
 export const getSelectedTextSync = () => {
   setKeyboardDelay(100)
   const contentBackup = clipboard.readText()
@@ -17,7 +18,6 @@ export const getSelectedTextSync = () => {
   keyTap('c', 'control')
 
   const selectedText = clipboard.readHTML()
-  console.log('selected text: ', selectedText)
   clipboard.writeText(contentBackup)
 
   const ret = {
@@ -40,6 +40,12 @@ export const getSelectedText = async (): Promise<SelectionType> => {
     text: selectedText,
     metadata: windowDetails
   }
+}
+
+export const getPermissions = async () => {
+  simulateCopy()
+  clipboard.clear()
+  await activeWindow()
 }
 
 export const getGlobalShortcut = (shortcut: string) => {

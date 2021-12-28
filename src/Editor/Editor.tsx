@@ -18,16 +18,23 @@ interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
   editorId: string
   readOnly?: boolean
+  autoFocus?: boolean
   focusAtBeginning?: boolean
   showBalloonToolbar?: boolean
 }
 
 // High performance guaranteed
-const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonToolbar }: EditorProps) => {
+const Editor = ({
+  content,
+  editorId,
+  autoFocus = true,
+  readOnly,
+  focusAtBeginning,
+  showBalloonToolbar
+}: EditorProps) => {
   const editableProps = {
-    // placeholder: 'Murmuring the mex hype... This should be part of an update',
     spellCheck: false,
-    autoFocus: true,
+    autoFocus: autoFocus,
     style: {
       padding: '15px'
     },
@@ -43,7 +50,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
     if (editorRef && focusAtBeginning) {
       selectEditor(editorRef, { edge: 'end', focus: true })
     }
-  }, [editorRef, editorId]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [editorRef, editorId, focusAtBeginning]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId)
 
@@ -61,7 +68,7 @@ const Editor = ({ content, editorId, readOnly, focusAtBeginning, showBalloonTool
     <>
       <DndProvider backend={HTML5Backend}>
         {content && (
-          <EditorStyles onClick={() => setNodePreview(false)}>
+          <EditorStyles onClick={() => setNodePreview(false)} data-tour="mex-onboarding-draft-editor">
             {showBalloonToolbar && <BallonMarkToolbarButtons />}
             <Plate
               id={generateEditorId()}

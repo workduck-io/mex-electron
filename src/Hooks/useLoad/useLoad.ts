@@ -56,7 +56,8 @@ const useLoad = () => {
 
     const inIlinks = ilinks.find((i) => i.uid === uid)
     const inArchive = archive.find((i) => i.uid === uid)
-    const isDraftNode = node.key.startsWith('Draft.')
+
+    const isDraftNode = node && node.key.startsWith('Draft.')
 
     return inIlinks || inArchive || isDraftNode
   }

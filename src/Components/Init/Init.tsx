@@ -24,7 +24,8 @@ import useDataStore from '../../Editor/Store/DataStore'
 import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
 import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
-import { useSaver } from '../../Editor/Components/Saver'
+import useOnboard from '../Onboarding/store'
+import { performClick } from '../Onboarding/steps'
 
 const Init = () => {
   const history = useHistory()
@@ -32,6 +33,7 @@ const Init = () => {
   // const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const pushHs = useHistoryStore((store) => store.push)
+  const isOnboarding = useOnboard((s) => s.isOnboarding)
 
   const { init } = useInitialize()
   const { loadNode } = useLoad()
@@ -56,6 +58,7 @@ const Init = () => {
         })
         .then(({ fileData, indexData }) => {
           init(fileData)
+          // setOnboardData()
           return { fileData, indexData }
         })
         .then(({ fileData, indexData }) => {
@@ -89,9 +92,12 @@ const Init = () => {
 
   useEffect(() => {
     ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { nodeId }) => {
-      pushHs(nodeId)
-      addRecent(nodeId)
-      loadNode(nodeId, { savePrev: false, fetch: false })
+      if (isOnboarding) {
+        pushHs(nodeId)
+        addRecent(nodeId)
+        loadNode(nodeId, { savePrev: false, fetch: false })
+        performClick(false)
+      }
     })
     ipcRenderer.on(IpcAction.CLEAR_RECENTS, () => {
       clear()
@@ -124,7 +130,7 @@ const Init = () => {
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
       history.push('/settings')
     })
-  }, [fetchIndexLocalStorage]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetchIndexLocalStorage, isOnboarding]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { setIpc } = useSyncData()
 

@@ -8,8 +8,8 @@ export const StyledEditor = styled.div`
   margin-bottom: 0.8rem;
   margin-top: 5px;
   border-radius: 5px;
-  max-height: 290px;
-  overflow-y: scroll;
+  overflow-y: auto;
+  max-height: 324px;
   background-color: ${({ theme }) => theme.colors.background.modal};
 `
 

@@ -1,3 +1,4 @@
+import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { Scroll } from '../../styles/layout'
 import { StyledBackground } from '../Spotlight/styled'
@@ -16,10 +17,9 @@ export const StyledUndordered = styled.ul`
   margin-block-end: 0 !important;
 `
 
-export const ColumnContainer = styled.div`
+export const ColumnContainer = styled(animated.div)`
   flex: 4;
   display: flex;
-  margin-left: 0.5rem;
   flex-direction: column;
   color: rgb(51, 51, 51);
   height: 100%;
@@ -40,7 +40,8 @@ export const Action = styled.div`
 
 export const ActionTitle = styled.div`
   font-size: 0.8rem;
-  margin-bottom: 4px;
+  margin: 8px;
+  white-space: nowrap;
   color: ${({ theme }) => theme.colors.text.heading};
 `
 

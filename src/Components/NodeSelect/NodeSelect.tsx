@@ -23,8 +23,9 @@ import {
   SuggestionDesc,
   SuggestionText
 } from './NodeSelect.styles'
+import { ILink } from '../../Editor/Store/Types'
 
-type ComboItem = {
+export type ComboItem = {
   text: string
   value: string
   type: string
@@ -36,6 +37,7 @@ interface NodeSelectProps {
   handleCreateItem?: (nodeId: string) => void
   id?: string
   name?: string
+  disabled?: boolean
   inputRef?: any
   prefillRecent?: boolean
   menuOpen?: boolean
@@ -66,6 +68,7 @@ function NodeSelect({
   menuOpen,
   defaultValue,
   placeholder,
+  disabled,
   highlightWhenSelected,
   iconHighlight,
   prefillRecent,
@@ -211,12 +214,11 @@ function NodeSelect({
     }
   }, [defaultValue])
 
-  // console.log({ isOpen, inputItems })
-
   return (
     <>
       <StyledCombobox {...getComboboxProps()}>
         <Input
+          disabled={disabled}
           {...getInputProps()}
           autoFocus={autoFocus}
           placeholder={placeholder}
@@ -283,7 +285,7 @@ NodeSelect.defaultProps = {
   prefillRecent: false
 }
 
-export function isNew(input: string, items: ComboItem[]): boolean {
+export function isNew(input: string, items: Array<ComboItem>): boolean {
   return items.filter((item) => item.text === input).length === 0
 }
 
