@@ -576,19 +576,20 @@ export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) 
 }
 
 export const buildUpdateFeedURL = () => {
+  const base = 'https://reserv.workduck.io'
+  let url: string
   if (process.platform === 'darwin') {
-    const base = 'https://reserv.workduck.io'
-    let url: string
-
     if (process.arch == 'arm64') {
       url = base + `/update/osx_arm64/${version}`
     } else {
       url = base + `/update/osx_x64/${version}`
     }
-
-    if (isAlpha) url = url + '/alpha'
-    return url
+  } else if (process.platform === 'win32') {
+    url = base + `/update/win32/${version}`
   }
+
+  if (isAlpha) url = url + '/alpha'
+  return url
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
