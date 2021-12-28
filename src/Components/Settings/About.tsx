@@ -75,9 +75,9 @@ const About = () => {
         </Flex>
       </Margin>
       <br />
-      <div>
+      {/* <div>
         <Button onClick={onBeginTourClick}>Begin Tour</Button>
-      </div>
+      </div> */}
     </Container>
   )
 }
