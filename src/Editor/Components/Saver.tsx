@@ -1,8 +1,9 @@
-import Tippy, { TippyProps } from '@tippyjs/react'
 import saveLine from '@iconify-icons/ri/save-line'
+import { TippyProps } from '@tippyjs/react'
 import { usePlateValue } from '@udecode/plate'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import toast from 'react-hot-toast'
+import { useUpdater } from '../../Data/useUpdater'
 import tinykeys from 'tinykeys'
 import useAnalytics from '../../analytics'
 import { ActionType } from '../../analytics/events'
@@ -12,7 +13,7 @@ import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListen
 import { useTags } from '../../Hooks/useTags/useTags'
 import { getEventNameFromElement } from '../../Lib/strings'
 import { useApi } from '../../Requests/Save'
-import { convertContentToRawText, convertEntryToRawText } from '../../Search/localSearch'
+import { convertEntryToRawText } from '../../Search/localSearch'
 import { useNewSearchStore } from '../../Search/SearchStore'
 import IconButton from '../../Styled/Buttons'
 import { useLinks } from '../Actions/useLinks'
@@ -20,18 +21,41 @@ import { useContentStore } from '../Store/ContentStore'
 import { NodeProperties, useEditorStore } from '../Store/EditorStore'
 import { useSnippetStore } from '../Store/SnippetStore'
 
-export const useSaver = () => {
+export const useDataSaverFromContent = () => {
   const setFsContent = useContentStore((state) => state.setContent)
-
+  const getContent = useContentStore((state) => state.getContent)
   const { updateLinksFromContent, getNodeIdFromUid } = useLinks()
   const { updateTagsFromContent } = useTags()
-
-  const saveData = useSaveData()
-  const editorState = usePlateValue()
   const { saveDataAPI } = useApi()
   const updateDocNew = useNewSearchStore((store) => store.updateDoc)
-  // const searchIndexNew = useNewSearchStore((store) => store.searchIndex)
-  //
+  const saveData = useSaveData()
+
+  // By default saves to API use false to not save
+  const saveEditorAndUpdateStates = useCallback((node: NodeProperties, editorState: any[], saveApi?: boolean) => {
+    if (editorState) {
+      setFsContent(node.uid, editorState)
+      if (saveApi !== false) saveDataAPI(node.uid, editorState)
+      updateLinksFromContent(node.uid, editorState)
+      updateTagsFromContent(node.uid, editorState)
+      const title = getNodeIdFromUid(node.uid)
+      updateDocNew(node.uid, convertEntryToRawText(node.uid, editorState), title)
+    }
+  }, [])
+
+  const saveNodeAPIandFs = (node: NodeProperties) => {
+    const content = getContent(node.uid)
+    saveDataAPI(node.uid, content.content)
+    saveData()
+  }
+
+  return { saveEditorAndUpdateStates, saveNodeAPIandFs }
+}
+
+export const useSaver = () => {
+  const saveData = useSaveData()
+  const editorState = usePlateValue()
+
+  const { saveEditorAndUpdateStates } = useDataSaverFromContent()
 
   const onSave = (
     node?: NodeProperties,
@@ -41,22 +65,12 @@ export const useSaver = () => {
     const defaultNode = useEditorStore.getState().node
     const cnode = node || defaultNode
     // setContent then save
-    if (editorState) {
-      setFsContent(cnode.uid, editorState)
-      saveDataAPI(cnode.uid, editorState)
-      updateLinksFromContent(cnode.uid, editorState)
-      updateTagsFromContent(cnode.uid, editorState)
-      const title = getNodeIdFromUid(cnode.uid)
-      updateDocNew(cnode.uid, convertEntryToRawText(cnode.uid, editorState), title)
-    }
+    saveEditorAndUpdateStates(cnode, editorState)
     if (writeToFile !== false) saveData()
     if (notification !== false) toast('Saved!', { duration: 1000 })
-
-    // const res = searchIndexNew('design')
-    // console.log('Results are: ', res)
   }
 
-  return { onSave }
+  return { onSave, saveEditorAndUpdateStates }
 }
 
 interface SaverButtonProps {
@@ -135,9 +149,11 @@ export const useSnippetSaver = () => {
   const updateSnippet = useSnippetStore((state) => state.updateSnippet)
   const editorState = usePlateValue()
   const saveData = useSaveData()
+  const { updater } = useUpdater()
 
   const onSave = (title: string) => {
     if (editorState) updateSnippet(snippet.id, { ...snippet, title, content: editorState })
+    updater()
     saveData()
     toast('Snippet Saved!', { duration: 1000 })
   }

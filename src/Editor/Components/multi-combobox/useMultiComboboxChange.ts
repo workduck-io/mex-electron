@@ -22,15 +22,12 @@ const useMultiComboboxOnChange = (
   const maxSuggestions = useComboboxStore((state) => state.maxSuggestions)
   const setItems = useComboboxStore((state) => state.setItems)
 
-  const comboboxKey = useComboboxStore((state) => state.key)
-  const comboType = keys[comboboxKey]
-
   const comboboxOnChange = useComboboxOnChange({
     editor,
     keys
   })
 
-  const { data, icon } = comboType
+  // const { icon } = comboType
 
   // Construct the correct change handler
   const changeHandler = useCallback(() => {
@@ -39,12 +36,16 @@ const useMultiComboboxOnChange = (
 
     const { search } = res
 
-    if ((!search && search !== '') || !data) return false
+    if (!search && search !== '') return false
 
     const key = useComboboxStore.getState().key
     const ct = keys[key]
+    const data = ct.data
+
+    if (!data) return false
+
     const searchItems = fuzzySearch(data, search, { keys: ['text'] })
-    // console.log({ data, search, comboType, key: useComboboxStore.getState().key })
+    // console.log({ data, search, ct, keys, key })
 
     const items: IComboboxItem[] = (
       search !== '' ? searchItems.slice(0, maxSuggestions) : keys[key].data.slice(0, maxSuggestions)
@@ -55,7 +56,7 @@ const useMultiComboboxOnChange = (
     }))
 
     // TODO: Disable new item if key exists.
-    if (comboboxKey !== ComboboxKey.SLASH_COMMAND && search !== '') {
+    if (key !== ComboboxKey.SLASH_COMMAND && search !== '') {
       items.push({
         key: '__create_new',
         icon: 'ri:add-circle-line',
@@ -66,7 +67,7 @@ const useMultiComboboxOnChange = (
     setItems(items)
 
     return true
-  }, [comboboxOnChange, maxSuggestions, setItems, data])
+  }, [comboboxOnChange, maxSuggestions, setItems, keys])
 
   return useCallback(
     () => () => {
@@ -76,7 +77,7 @@ const useMultiComboboxOnChange = (
 
       if (!changed && isOpen) closeMenu()
     },
-    [closeMenu, isOpen, changeHandler]
+    [closeMenu, isOpen, changeHandler, keys]
   )
 }
 

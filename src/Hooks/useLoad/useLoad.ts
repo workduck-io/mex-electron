@@ -1,4 +1,4 @@
-import { useSaver } from '../../Editor/Components/Saver'
+import { useDataSaverFromContent, useSaver } from '../../Editor/Components/Saver'
 import { USE_API } from '../../Defaults/dev_'
 import { useContentStore } from '../../Editor/Store/ContentStore'
 import useDataStore from '../../Editor/Store/DataStore'
@@ -10,6 +10,8 @@ import toast from 'react-hot-toast'
 import { useGraphStore } from '../../Components/Graph/GraphStore'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph'
 import { updateEmptyBlockTypes } from '../../Lib/helper'
+import { useCallback } from 'react'
+import { debounce } from 'lodash'
 
 type LoadNodeProps = {
   savePrev?: boolean
@@ -26,7 +28,7 @@ const useLoad = () => {
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
   const setSelectedNode = useGraphStore((store) => store.setSelectedNode)
   const { getDataAPI } = useApi()
-  const { onSave } = useSaver()
+  const { saveNodeAPIandFs } = useDataSaverFromContent()
 
   const getNode = (uid: string): NodeProperties => {
     const ilinks = useDataStore.getState().ilinks
@@ -62,7 +64,12 @@ const useLoad = () => {
     return inIlinks || inArchive || isDraftNode
   }
 
-  const loadNode = async (uid: string, options: LoadNodeProps = { savePrev: true, fetch: USE_API }) => {
+  const saveDebouncedAPIfs = () => {
+    const oldNode = useEditorStore.getState().node
+    if (oldNode && oldNode.uid !== '__null__') saveNodeAPIandFs(oldNode)
+  }
+
+  const loadNode = async (uid: string, options: LoadNodeProps = { savePrev: true, fetch: USE_API() }) => {
     if (!options.node && !isLocalNode(uid)) {
       toast.error('Selected node does not exist.')
       uid = editorNodeId
@@ -71,7 +78,9 @@ const useLoad = () => {
     setNodePreview(false)
     setSelectedNode(undefined)
 
-    if (options.savePrev) onSave()
+    if (options.savePrev) {
+      saveDebouncedAPIfs()
+    }
 
     const node = options.node ?? getNode(uid)
 

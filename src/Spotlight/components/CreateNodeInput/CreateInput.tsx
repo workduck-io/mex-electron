@@ -23,7 +23,7 @@ export type CreateInputType = { value?: string }
 const CreateInput: React.FC<CreateInputType> = () => {
   const { setSelection } = useSpotlightContext()
   const { setSaved } = useContentStore(({ saved, setSaved }) => ({ saved, setSaved }))
-  const { title, uid: nodeId } = useEditorStore((state) => state.node)
+  const { title } = useEditorStore((state) => state.node)
   const isOnboarding = useOnboard((s) => s.isOnboarding)
   // const uid = useEditorStore((state) => state.node.uid)
 

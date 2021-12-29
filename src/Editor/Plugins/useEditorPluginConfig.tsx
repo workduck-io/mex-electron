@@ -88,34 +88,40 @@ const useEditorPluginConfig = (editorId: string) => {
     }
   }
 
+  const OnChangeConf = useMemo(
+    () => ({
+      ilink: {
+        cbKey: ComboboxKey.ILINK,
+        trigger: '[[',
+        data: ilinks,
+        icon: 'ri:file-list-2-line'
+      },
+      inline_block: {
+        cbKey: ComboboxKey.INLINE_BLOCK,
+        trigger: '![[',
+        data: ilinksForCurrentNode,
+        icon: 'ri:picture-in-picture-line'
+      },
+      tag: {
+        cbKey: ComboboxKey.TAG,
+        trigger: '#',
+        data: tags,
+        icon: 'ri:hashtag'
+      },
+      slash_command: {
+        cbKey: ComboboxKey.SLASH_COMMAND,
+        trigger: '/',
+        icon: 'ri:flask-line',
+        data: slashCommands
+      }
+    }),
+    [slashCommands, tags, ilinks, ilinksForCurrentNode]
+  )
+  // console.log({ slashCommands, OnChangeConf })
+
   const pluginConfigs = {
     combobox: {
-      onChange: useMultiComboboxOnChange(editorId, {
-        ilink: {
-          cbKey: ComboboxKey.ILINK,
-          trigger: '[[',
-          data: ilinks,
-          icon: 'ri:file-list-2-line'
-        },
-        inline_block: {
-          cbKey: ComboboxKey.INLINE_BLOCK,
-          trigger: '![[',
-          data: ilinksForCurrentNode,
-          icon: 'ri:picture-in-picture-line'
-        },
-        tag: {
-          cbKey: ComboboxKey.TAG,
-          trigger: '#',
-          data: tags,
-          icon: 'ri:hashtag'
-        },
-        slash_command: {
-          cbKey: ComboboxKey.SLASH_COMMAND,
-          trigger: '/',
-          icon: 'ri:flask-line',
-          data: slashCommands
-        }
-      }),
+      onChange: useMultiComboboxOnChange(editorId, OnChangeConf),
 
       onKeyDown: useMultiComboboxOnKeyDown(comboConfigData)
     }

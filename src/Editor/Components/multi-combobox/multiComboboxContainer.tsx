@@ -30,6 +30,7 @@ export const ElementComboboxComponent = ({ keys, slashCommands }: ComboConfigDat
   const comboboxKey: string = useComboboxStore.getState().key
   const comboRenderType = keys[comboboxKey]
   const { elementChangeHandler: onSelectItem, isSlash } = useOnSelectItem(comboboxKey, slashCommands, comboRenderType)
+  // console.log({ slashCommands })
   const onNewItem = (newItem, parentId?) => {
     comboRenderType.newItemHandler(newItem, parentId)
   }

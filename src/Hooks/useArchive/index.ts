@@ -23,7 +23,7 @@ const useArchive = () => {
   }
 
   const addArchiveData = async (nodes: ILink[]): Promise<boolean> => {
-    if (!USE_API) {
+    if (!USE_API()) {
       addInArchive(nodes)
       return true
     }
@@ -49,7 +49,7 @@ const useArchive = () => {
   }
 
   const unArchiveData = async (nodes: ILink[]) => {
-    if (!USE_API) {
+    if (!USE_API()) {
       return unArchive(nodes[0])
     }
     await client
@@ -65,7 +65,7 @@ const useArchive = () => {
   }
 
   const getArchiveData = async () => {
-    if (!USE_API) {
+    if (!USE_API()) {
       return archive
     }
 
@@ -83,7 +83,7 @@ const useArchive = () => {
   }
 
   const removeArchiveData = async (uids: ILink[]): Promise<boolean> => {
-    if (!USE_API) {
+    if (!USE_API()) {
       removeArchive(uids)
       return true
     }

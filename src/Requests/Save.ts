@@ -22,7 +22,7 @@ export const useApi = () => {
       data: serializeContent(content ?? defaultContent)
     }
 
-    if (!USE_API) {
+    if (!USE_API()) {
       return
     }
     client

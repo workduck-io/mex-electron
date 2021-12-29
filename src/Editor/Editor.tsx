@@ -10,6 +10,7 @@ import components from './Components/components'
 import BallonMarkToolbarButtons from './Components/EditorToolbar'
 import { MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
 import generatePlugins from './Plugins/plugins'
+import { debounce } from 'lodash'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 
 const options = createPlateOptions()
@@ -18,6 +19,7 @@ interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
   editorId: string
   readOnly?: boolean
+  onChange?: any
   autoFocus?: boolean
   focusAtBeginning?: boolean
   showBalloonToolbar?: boolean
@@ -29,6 +31,7 @@ const Editor = ({
   editorId,
   autoFocus = true,
   readOnly,
+  onChange,
   focusAtBeginning,
   showBalloonToolbar
 }: EditorProps) => {
@@ -75,6 +78,7 @@ const Editor = ({
               editableProps={editableProps}
               value={content}
               plugins={plugins}
+              onChange={debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 1000)}
               components={withStyledPlaceHolders(withStyledDraggables(components))}
               options={options}
             >
