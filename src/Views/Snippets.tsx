@@ -19,6 +19,8 @@ import IconButton from '../Styled/Buttons'
 import { Wrapper } from '../Styled/Layouts'
 import { generateSnippetId } from '../Defaults/idPrefixes'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
+import { nanoid } from 'nanoid'
+import { useUpdater } from '../Data/useUpdater'
 
 export type SnippetsProps = {
   title?: string
@@ -31,17 +33,19 @@ const Snippets: React.FC<SnippetsProps> = () => {
   const deleteSnippet = useSnippetStore((store) => store.deleteSnippet)
 
   const history = useHistory()
+  const { updater } = useUpdater()
 
   const onCreateNew = () => {
     // Create a better way.
     const snippetId = generateSnippetId()
     addSnippet({
       id: snippetId,
-      title: 'Untitled',
+      title: `Untitled_${nanoid(5)}`,
       content: [{ children: [{ text: '' }], type: ELEMENT_PARAGRAPH }]
     })
 
     loadSnippet(snippetId)
+    updater()
 
     history.push('/snippets/editor')
   }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useUpdater } from '../Data/useUpdater'
 import { SnippetSaverButton } from '../Editor/Components/Saver'
 import Editor from '../Editor/Editor'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
@@ -22,6 +23,8 @@ const SnippetEditor = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [content, setContent] = useState<any[] | undefined>(undefined)
 
+  const { updater } = useUpdater()
+
   useEffect(() => {
     if (snippet) {
       setContent(snippet.content)
@@ -33,7 +36,10 @@ const SnippetEditor = () => {
   const getSnippetTitle = () => getValues().title
 
   const onChangeSave = (val: any[]) => {
-    if (val) updateSnippet(snippet.id, { ...snippet, content: val })
+    if (val) {
+      updateSnippet(snippet.id, { ...snippet, content: val })
+      updater()
+    }
   }
 
   return (

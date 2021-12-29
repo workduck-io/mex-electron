@@ -3,6 +3,7 @@ import { TippyProps } from '@tippyjs/react'
 import { usePlateValue } from '@udecode/plate'
 import React, { useCallback, useEffect } from 'react'
 import toast from 'react-hot-toast'
+import { useUpdater } from '../../Data/useUpdater'
 import tinykeys from 'tinykeys'
 import useAnalytics from '../../analytics'
 import { ActionType } from '../../analytics/events'
@@ -148,9 +149,11 @@ export const useSnippetSaver = () => {
   const updateSnippet = useSnippetStore((state) => state.updateSnippet)
   const editorState = usePlateValue()
   const saveData = useSaveData()
+  const { updater } = useUpdater()
 
   const onSave = (title: string) => {
     if (editorState) updateSnippet(snippet.id, { ...snippet, title, content: editorState })
+    updater()
     saveData()
     toast('Snippet Saved!', { duration: 1000 })
   }
