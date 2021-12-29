@@ -1,8 +1,15 @@
+import deleteBin6Line from '@iconify-icons/ri/delete-bin-6-line'
+import quillPenLine from '@iconify-icons/ri/quill-pen-line'
+import { Icon } from '@iconify/react'
+import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
+import { useUpdater } from '../Data/useUpdater'
+import { generateSnippetId } from '../Defaults/idPrefixes'
 import Editor from '../Editor/Editor'
 import { useSnippetStore } from '../Editor/Store/SnippetStore'
-import deleteBin6Line from '@iconify-icons/ri/delete-bin-6-line'
+import IconButton from '../Styled/Buttons'
+import { Wrapper } from '../Styled/Layouts'
 import {
   CreateSnippet,
   SnippetCommand,
@@ -13,14 +20,7 @@ import {
   StyledSnippetPreview
 } from '../Styled/Snippets'
 import { Title } from '../Styled/Typography'
-import quillPenLine from '@iconify-icons/ri/quill-pen-line'
-import { Icon } from '@iconify/react'
-import IconButton from '../Styled/Buttons'
-import { Wrapper } from '../Styled/Layouts'
-import { generateSnippetId } from '../Defaults/idPrefixes'
-import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import { nanoid } from 'nanoid'
-import { useUpdater } from '../Data/useUpdater'
+import genereateName from 'project-name-generator'
 
 export type SnippetsProps = {
   title?: string
@@ -40,7 +40,7 @@ const Snippets: React.FC<SnippetsProps> = () => {
     const snippetId = generateSnippetId()
     addSnippet({
       id: snippetId,
-      title: `Untitled_${nanoid(5)}`,
+      title: genereateName().dashed,
       content: [{ children: [{ text: '' }], type: ELEMENT_PARAGRAPH }]
     })
 
