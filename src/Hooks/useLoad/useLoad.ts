@@ -66,7 +66,6 @@ const useLoad = () => {
 
   const saveDebouncedAPIfs = () => {
     const oldNode = useEditorStore.getState().node
-    console.log('trynna save')
     if (oldNode && oldNode.uid !== '__null__') saveNodeAPIandFs(oldNode)
   }
 

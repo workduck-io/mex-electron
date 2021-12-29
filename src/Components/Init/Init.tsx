@@ -17,6 +17,7 @@ import useLoad from '../../Hooks/useLoad/useLoad'
 import config from '../../Requests/config'
 import { convertDataToRawText } from '../../Search/localSearch'
 import { useNewSearchStore } from '../../Search/SearchStore'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { IpcAction } from '../../Spotlight/utils/constants'
 
 import { useSaveAndExit } from '../../Hooks/useSaveAndExit/useSaveAndExit'
@@ -139,6 +140,7 @@ const Init = () => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
+  const node = useEditorStore((store) => store.node)
   const { shortcutDisabled, shortcutHandler } = useKeyListener()
   // const { onSave } = useSaver()
 
@@ -161,6 +163,7 @@ const Init = () => {
       [shortcuts.showEditor.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showEditor, () => {
+          loadNode(node.uid)
           history.push('/editor')
         })
       },
@@ -182,7 +185,7 @@ const Init = () => {
     return () => {
       unsubscribe()
     }
-  }, [shortcuts, shortcutDisabled]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [shortcuts, shortcutDisabled, node.uid]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return null
 }
