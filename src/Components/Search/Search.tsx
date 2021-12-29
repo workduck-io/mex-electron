@@ -4,11 +4,14 @@ import { debounce } from 'lodash'
 import React, { useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useTransition } from 'react-spring'
+import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 import create from 'zustand'
 import { defaultContent } from '../../Defaults/baseData'
 import { useLinks } from '../../Editor/Actions/useLinks'
 import EditorPreviewRenderer from '../../Editor/EditorPreviewRenderer'
 import { useContentStore } from '../../Editor/Store/ContentStore'
+import useDataStore from '../../Editor/Store/DataStore'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
 import useLoad from '../../Hooks/useLoad/useLoad'
 import { useNewSearchStore } from '../../Search/SearchStore'
 import {
@@ -99,6 +102,10 @@ const Search = () => {
     setSearchTerm(newSearchTerm)
   }
 
+  const lastOpened = useRecentsStore((store) => store.lastOpened)
+  const nodeUID = useEditorStore((store) => store.node.uid)
+  const baseNodeId = useDataStore((store) => store.baseNodeId)
+
   // console.log({ result })
 
   useEffect(() => {
@@ -145,6 +152,7 @@ const Search = () => {
             setSelected(-1)
           }
         } else {
+          loadNode(nodeUID ?? lastOpened[0] ?? baseNodeId)
           history.push('/editor')
         }
       }

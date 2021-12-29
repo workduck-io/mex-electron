@@ -9,6 +9,7 @@ import { useNavigation } from '../Hooks/useNavigation/useNavigation'
 import useToggleElements from '../Hooks/useToggleElements/useToggleElements'
 import useLayout from '../Layout/useLayout'
 import { StyledEditor } from '../Styled/Editor'
+import { useDataSaverFromContent } from './Components/Saver'
 import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
 import Toolbar from './Toolbar'
@@ -21,6 +22,7 @@ const ContentEditor = () => {
   const { showGraph } = useToggleElements()
 
   const uid = useEditorStore((state) => state.node.uid)
+  const node = useEditorStore((state) => state.node)
   const fsContent = useEditorStore((state) => state.content)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,6 +38,13 @@ const ContentEditor = () => {
   const { shortcutHandler } = useKeyListener()
 
   const { move } = useNavigation()
+
+  const { saveEditorAndUpdateStates } = useDataSaverFromContent()
+
+  const onChangeSave = (val: any[]) => {
+    // console.log('onchange', { val, node })
+    if (val && node && node.uid !== '__null__') saveEditorAndUpdateStates(node, val, false)
+  }
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -81,6 +90,7 @@ const ContentEditor = () => {
           showBalloonToolbar
           readOnly={fetchingContent}
           content={content}
+          onChange={onChangeSave}
           editorId={`StandardEditor_${uid}_${fetchingContent ? 'loading' : 'edit'}`}
         />
       </StyledEditor>

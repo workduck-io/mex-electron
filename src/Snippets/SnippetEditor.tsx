@@ -28,7 +28,13 @@ const SnippetEditor = () => {
     }
   }, [snippet])
 
+  const updateSnippet = useSnippetStore((state) => state.updateSnippet)
+
   const getSnippetTitle = () => getValues().title
+
+  const onChangeSave = (val: any[]) => {
+    if (val) updateSnippet(snippet.id, { ...snippet, content: val })
+  }
 
   return (
     <>
@@ -43,7 +49,7 @@ const SnippetEditor = () => {
           </InfoTools>
         </NodeInfo>
 
-        <Editor content={content} editorId={snippet.id} />
+        <Editor onChange={onChangeSave} content={content} editorId={snippet.id} />
       </StyledEditor>
     </>
   )
