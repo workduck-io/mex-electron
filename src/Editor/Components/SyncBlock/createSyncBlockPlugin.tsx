@@ -19,7 +19,6 @@ export const createSyncBlockPlugin = (): PlatePlugin => ({
         }
       ],
       getNode: (el: HTMLElement) => {
-
         const properties = el.getAttribute('data-slate-value')
         const id = el.id
         // const properties = el.getAttribute()
