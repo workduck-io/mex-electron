@@ -1,4 +1,4 @@
-import { usePlateEditorState, usePlateEventId } from '@udecode/plate-core'
+import { usePlateEditorState, getPlateId } from '@udecode/plate-core'
 import { PortalBody } from '@udecode/plate-styled-components'
 import * as React from 'react'
 import { StyledToolbarBase } from './BalloonToolbar.styles'
@@ -10,7 +10,7 @@ export const BalloonToolbar = (props: BalloonToolbarProps) => {
   const { children, hiddenDelay = 0, direction = 'top', theme = 'dark', arrow = false } = props
 
   const ref = React.useRef<HTMLDivElement>(null)
-  const editor = usePlateEditorState(usePlateEventId('focus'))
+  const editor = usePlateEditorState(getPlateId())
 
   const [hidden] = useBalloonShow({ editor, ref, hiddenDelay })
   useBalloonMove({ editor, ref, direction })
