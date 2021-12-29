@@ -1,6 +1,6 @@
 import saveLine from '@iconify-icons/ri/save-line'
 import { TippyProps } from '@tippyjs/react'
-import { usePlateValue } from '@udecode/plate'
+import { getPlateSelectors, getPlateId } from '@udecode/plate'
 import React, { useCallback, useEffect } from 'react'
 import toast from 'react-hot-toast'
 import { useUpdater } from '../../Data/useUpdater'
@@ -54,7 +54,7 @@ export const useDataSaverFromContent = () => {
 
 export const useSaver = () => {
   const saveData = useSaveData()
-  const editorState = usePlateValue()
+  const editorState = getPlateSelectors(getPlateId()).value();
 
   const { saveEditorAndUpdateStates } = useDataSaverFromContent()
 
@@ -148,7 +148,7 @@ export const SaverButton = ({
 export const useSnippetSaver = () => {
   const snippet = useSnippetStore((store) => store.editor.snippet)
   const updateSnippet = useSnippetStore((state) => state.updateSnippet)
-  const editorState = usePlateValue()
+  const editorState = getPlateSelectors(getPlateId()).value();
   const saveData = useSaveData()
   const { updater } = useUpdater()
 

@@ -1,4 +1,4 @@
-import { getBlockAbove, getPlatePluginType, insertNodes, PEditor, PlateEditor, TElement } from '@udecode/plate'
+import { getBlockAbove, getPluginType, insertNodes, PEditor, PlateEditor, TElement } from '@udecode/plate'
 import { useCallback } from 'react'
 import { Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
@@ -35,7 +35,7 @@ export const useElementOnChange = (comboType: SingleComboboxConfig) => {
 
   return useCallback(
     (editor: PlateEditor, item: IComboboxItem) => {
-      const type = getPlatePluginType(editor, comboType.slateElementType)
+      const type = getPluginType(editor, comboType.slateElementType)
 
       if (isOpen && targetRange) {
         // console.log('useElementOnChange 1', { comboType, type });

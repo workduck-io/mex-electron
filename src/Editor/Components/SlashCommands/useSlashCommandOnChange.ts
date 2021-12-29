@@ -1,4 +1,4 @@
-import { getBlockAbove, getPlatePluginType, insertNodes, PlateEditor, TElement } from '@udecode/plate'
+import { getBlockAbove, getPluginType, insertNodes, PlateEditor, TElement } from '@udecode/plate'
 import { useCallback } from 'react'
 import { Editor, Transforms } from 'slate'
 import useAnalytics from '../../../analytics'
@@ -45,7 +45,7 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
           }
         } else {
           // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
-          const type = getPlatePluginType(editor, commandConfig.slateElementType)
+          const type = getPluginType(editor, commandConfig.slateElementType)
           const data = commandConfig.getBlockData ? commandConfig.getBlockData(item) : {}
 
           // console.log('INSERT: ', { type, data })

@@ -5,7 +5,6 @@ import { HashRouter as Router } from 'react-router-dom'
 import Init from './Components/Init/Init'
 import OnBoardingTour from './Components/Onboarding'
 import { OnboardingTourConfig } from './Components/Onboarding/steps'
-import useOnboard from './Components/Onboarding/store'
 import Contexts from './Context/Contexts'
 import Providers from './Context/Providers'
 import Main from './Layout/Main'
@@ -16,7 +15,7 @@ import { initializeSentry } from './sentry'
 
 Modal.setAppElement('#root')
 
-// initializeSentry()
+initializeSentry()
 
 function App() {
   return (

@@ -4,7 +4,7 @@ import {
   createBoldPlugin,
   createCodeBlockPlugin,
   createCodePlugin,
-  createDeserializeHTMLPlugin,
+  createDeserializeHtmlPlugin,
   // createDeserializeMDPlugin,
   createExitBreakPlugin,
   createHeadingPlugin,
@@ -50,7 +50,7 @@ import { createTagPlugin } from '../Components/tag/createTagPlugin'
 // import { createTagPlugin } from '../Components/tag/createTagPlugin';
 import { createBlurSelectionPlugin } from './blurSelection'
 import {
-  optionsAutoformat,
+  optionsAutoFormatRule,
   optionsCreateNodeIdPlugin,
   optionsExitBreakPlugin,
   optionsResetBlockTypePlugin,
@@ -66,8 +66,6 @@ import {
 const generatePlugins = () => {
   const Plugins: PlatePlugin[] = [
     // editor
-    createReactPlugin(), // withReact
-    createHistoryPlugin(), // withHistory
 
     // elements
     createParagraphPlugin(), // paragraph element
@@ -95,31 +93,33 @@ const generatePlugins = () => {
     createExitBreakPlugin(optionsExitBreakPlugin),
     createResetNodePlugin(optionsResetBlockTypePlugin),
     createHorizontalRulePlugin(),
-    createSelectOnBackspacePlugin({ allow: [ELEMENT_HR] }),
+    createSelectOnBackspacePlugin({ options: { query: { allow: [ELEMENT_HR] } } }),
 
     // Autoformat markdown syntax to elements (**, #(n))
     createAutoformatPlugin({
-      rules: [
-        ...autoformatSmartQuotes,
-        ...autoformatPunctuation,
-        ...autoformatLegal,
-        ...autoformatLegalHtml,
-        ...autoformatArrow,
-        ...autoformatMath,
-        ...optionsAutoformat.rules,
-        {
-          mode: 'block',
-          type: ELEMENT_HR,
-          match: ['---', '—-', '___ '],
-          format: (editor) => {
-            setNodes(editor, { type: ELEMENT_HR })
-            insertNodes(editor, {
-              type: ELEMENT_DEFAULT,
-              children: [{ text: '' }]
-            })
+      options: {
+        rules: [
+          ...autoformatSmartQuotes,
+          ...autoformatPunctuation,
+          ...autoformatLegal,
+          ...autoformatLegalHtml,
+          ...autoformatArrow,
+          ...autoformatMath,
+          ...optionsAutoFormatRule,
+          {
+            mode: 'block',
+            type: ELEMENT_HR,
+            match: ['---', '—-', '___ '],
+            format: (editor) => {
+              setNodes(editor, { type: ELEMENT_HR })
+              insertNodes(editor, {
+                type: ELEMENT_DEFAULT,
+                children: [{ text: '' }]
+              })
+            }
           }
-        }
-      ]
+        ]
+      }
     }),
     createDndPlugin(),
 
@@ -148,8 +148,6 @@ const generatePlugins = () => {
 
     createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin)
   ]
-
-  Plugins.push(createDeserializeHTMLPlugin({ plugins: Plugins }))
 
   return Plugins
 }

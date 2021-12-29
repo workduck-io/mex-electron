@@ -2,14 +2,14 @@ import Tippy, { TippyProps } from '@tippyjs/react' // optional
 import {
   ELEMENT_LINK,
   getAbove,
-  getPlatePluginType,
+  getPluginType,
   isCollapsed,
   LinkToolbarButtonProps,
   someNode,
   unwrapNodes,
   upsertLinkAtSelection,
   usePlateEditorState,
-  usePlateEventId
+  usePlateId
 } from '@udecode/plate'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -52,9 +52,9 @@ const LinkButtonStyled = styled.div`
 type LinkButtonProps = LinkToolbarButtonProps
 
 const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
-  const editor = usePlateEditorState(usePlateEventId('focus'))
+  const editor = usePlateEditorState(usePlateId())
 
-  const type = getPlatePluginType(editor, ELEMENT_LINK)
+  const type = getPluginType(editor, ELEMENT_LINK)
   const isLink = !!editor?.selection && someNode(editor, { match: { type } })
   const [inp, setInp] = useState({
     prev: ''
@@ -124,7 +124,7 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
       if (linkNode && editor.selection) {
         unwrapNodes(editor, {
           at: editor.selection,
-          match: { type: getPlatePluginType(editor, ELEMENT_LINK) }
+          match: { type: getPluginType(editor, ELEMENT_LINK) }
         })
       }
 

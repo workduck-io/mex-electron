@@ -1,5 +1,4 @@
-import { usePlateEditorRef } from '@udecode/plate-core'
-import { deserializeHTMLToDocumentFragment } from '@udecode/plate-html-serializer'
+import { usePlateEditorRef, deserializeHtml } from '@udecode/plate-core'
 import generatePlugins from '../../Editor/Plugins/plugins'
 import { NodeEditorContent } from '../../Editor/Store/Types'
 
@@ -11,7 +10,7 @@ export const useDeserializeSelectionToNodes = (
   const plugins = generatePlugins()
 
   const nodes = editor
-    ? deserializeHTMLToDocumentFragment(editor, {
+    ? deserializeHtml(editor, {
         plugins,
         element: selection?.text || ''
       })

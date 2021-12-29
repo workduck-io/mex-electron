@@ -8,7 +8,7 @@ import { SpotlightProvider } from './utils/context'
 import { initializeSentry } from '../sentry'
 import { SpotlightOnboarding } from '../Components/Onboarding/steps'
 
-initializeSentry()
+// initializeSentry()
 
 export default function App() {
   const theme = useThemeStore((state) => state.theme)
