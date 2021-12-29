@@ -16,14 +16,14 @@ import {
   ELEMENT_H3,
   ELEMENT_OL,
   ELEMENT_UL,
-  getPlatePluginType,
+  getPluginType,
   ListToolbarButton,
   MarkToolbarButton,
   MARK_BOLD,
   MARK_ITALIC,
   ToolbarButtonProps,
   usePlateEditorRef,
-  usePlateEventId
+  usePlateId
 } from '@udecode/plate'
 import React from 'react'
 import { ButtonSeparator } from '../../Styled/Toolbar'
@@ -31,7 +31,7 @@ import { BalloonToolbar } from './BalloonToolbar'
 import LinkButton from './BalloonToolbar/LinkButton'
 
 const BallonMarkToolbarButtons = () => {
-  const editor = usePlateEditorRef(usePlateEventId('focus'))
+  const editor = usePlateEditorRef(usePlateId())
 
   const arrow = true
   const direction = 'top'
@@ -49,19 +49,19 @@ const BallonMarkToolbarButtons = () => {
   return (
     <BalloonToolbar direction={direction} hiddenDelay={hiddenDelay} arrow={arrow}>
       <BlockToolbarButton
-        type={getPlatePluginType(editor, ELEMENT_H1)}
+        type={getPluginType(editor, ELEMENT_H1)}
         icon={<Icon height={20} icon={h1} />}
         tooltip={{ content: 'Heading 1', ...tooltip }}
       />
 
       <BlockToolbarButton
-        type={getPlatePluginType(editor, ELEMENT_H2)}
+        type={getPluginType(editor, ELEMENT_H2)}
         icon={<Icon height={20} icon={h2} />}
         tooltip={{ content: 'Heading 2', ...tooltip }}
       />
 
       <BlockToolbarButton
-        type={getPlatePluginType(editor, ELEMENT_H3)}
+        type={getPluginType(editor, ELEMENT_H3)}
         icon={<Icon height={20} icon={h3} />}
         tooltip={{ content: 'Heading 3', ...tooltip }}
       />
@@ -69,19 +69,19 @@ const BallonMarkToolbarButtons = () => {
       <ButtonSeparator />
 
       <BlockToolbarButton
-        type={getPlatePluginType(editor, ELEMENT_BLOCKQUOTE)}
+        type={getPluginType(editor, ELEMENT_BLOCKQUOTE)}
         icon={<Icon height={20} icon={doubleQuotesL} />}
         tooltip={{ content: 'Quote', ...tooltip }}
       />
 
       <ListToolbarButton
-        type={getPlatePluginType(editor, ELEMENT_UL)}
+        type={getPluginType(editor, ELEMENT_UL)}
         icon={<Icon height={20} icon={listUnordered} />}
         tooltip={{ content: 'Bullet List', ...tooltip }}
       />
 
       <ListToolbarButton
-        type={getPlatePluginType(editor, ELEMENT_OL)}
+        type={getPluginType(editor, ELEMENT_OL)}
         icon={<Icon height={20} icon={listOrdered} />}
         tooltip={{ content: 'Ordered List', ...tooltip }}
       />
@@ -89,12 +89,12 @@ const BallonMarkToolbarButtons = () => {
       <ButtonSeparator />
 
       <MarkToolbarButton
-        type={getPlatePluginType(editor, MARK_BOLD)}
+        type={getPluginType(editor, MARK_BOLD)}
         icon={<Icon height={20} icon={boldIcon} />}
         tooltip={{ content: 'Bold (⌘B)', ...tooltip }}
       />
       <MarkToolbarButton
-        type={getPlatePluginType(editor, MARK_ITALIC)}
+        type={getPluginType(editor, MARK_ITALIC)}
         icon={<Icon height={20} icon={italicIcon} />}
         tooltip={{ content: 'Italic (⌘I)', ...tooltip }}
       />

@@ -1,18 +1,18 @@
-import { Deserialize, getNodeDeserializer, getSlateClass, getPlatePluginOptions } from '@udecode/plate'
+import { DeserializeHtml, getNodeDeserializer, getSlateClass, getPlugin } from '@udecode/plate'
 import { ELEMENT_TAG } from './defaults'
 
-export const getTagDeserialize = (): Deserialize => (editor) => {
-  const options = getPlatePluginOptions(editor, ELEMENT_TAG)
+export const getTagDeserialize = (): DeserializeHtml => (editor) => {
+  const options = getPlugin(editor, ELEMENT_TAG)
 
   return {
     element: getNodeDeserializer({
       type: options.type,
       getNode: (el) => ({
         type: options.type,
-        value: el.getAttribute('data-slate-value'),
+        value: el.getAttribute('data-slate-value')
       }),
       rules: [{ className: getSlateClass(options.type) }],
-      ...options.deserialize,
-    }),
+      ...options.deserializeHtml
+    })
   }
 }

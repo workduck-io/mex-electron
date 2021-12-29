@@ -1,5 +1,4 @@
-import { setNodes } from '@udecode/plate-common'
-import { TElement, useEditorRef } from '@udecode/plate-core'
+import { TElement, useEditorRef, setNodes } from '@udecode/plate-core'
 import { MediaEmbedNodeData } from '@udecode/plate-media-embed'
 import { debounce } from 'lodash'
 import * as React from 'react'
