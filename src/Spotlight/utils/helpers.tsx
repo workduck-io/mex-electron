@@ -17,8 +17,7 @@ export const useDeserializeSelectionToNodes = (
 
 export const getMexHTMLDeserializer = (HTMLContent: string, editor: any, plugins: any) => {
   const nodes = editor
-    ? deserializeHTMLToDocumentFragment(editor, {
-        plugins,
+    ? deserializeHtml(editor, {
         element: HTMLContent || ''
       })
     : undefined

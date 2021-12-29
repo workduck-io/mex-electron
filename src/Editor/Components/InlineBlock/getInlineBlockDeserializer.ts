@@ -9,6 +9,6 @@ export const getInlineBlockDeserializer = (): DeserializeHtml => {
       type: ELEMENT_INLINE_BLOCK,
       value: el.getAttribute('data-slate-value')
     }),
-    rules: [{ validClassName: getSlateClass(ELEMENT_INLINE_BLOCK) }],
+    rules: [{ validClassName: getSlateClass(ELEMENT_INLINE_BLOCK) }]
   }
 }
