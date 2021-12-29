@@ -12,7 +12,6 @@ import { MultiComboboxContainer } from './Components/multi-combobox/multiCombobo
 import generatePlugins from './Plugins/plugins'
 import { debounce } from 'lodash'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
-import { useEditorStore } from './Store/EditorStore'
 
 const options = createPlateOptions()
 
