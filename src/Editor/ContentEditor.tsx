@@ -6,6 +6,7 @@ import NodeIntentsModal from '../Components/NodeIntentsModal/NodeIntentsModal'
 import { useKeyListener } from '../Hooks/useCustomShortcuts/useShortcutListener'
 import useLoad from '../Hooks/useLoad/useLoad'
 import { useNavigation } from '../Hooks/useNavigation/useNavigation'
+import { useQStore } from '../Hooks/useQ'
 import useToggleElements from '../Hooks/useToggleElements/useToggleElements'
 import useLayout from '../Layout/useLayout'
 import { StyledEditor } from '../Styled/Editor'
@@ -40,10 +41,14 @@ const ContentEditor = () => {
   const { move } = useNavigation()
 
   const { saveEditorAndUpdateStates } = useDataSaverFromContent()
+  const add2Q = useQStore((s) => s.add2Q)
 
   const onChangeSave = (val: any[]) => {
     // console.log('onchange', { val, node })
-    if (val && node && node.uid !== '__null__') saveEditorAndUpdateStates(node, val, false)
+    if (val && node && node.uid !== '__null__') {
+      add2Q(node.uid)
+      saveEditorAndUpdateStates(node, val, false)
+    }
   }
 
   useEffect(() => {
@@ -78,7 +83,7 @@ const ContentEditor = () => {
     }
   }, [shortcuts, toggleFocusMode])
 
-  // console.log('CE', { isB: isBookmark(uid) })
+  // console.log('CE', { q })
 
   return (
     <>
