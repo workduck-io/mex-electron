@@ -1,7 +1,7 @@
 import { DeserializeHtml, getNodeDeserializer, getSlateClass, getPlugin } from '@udecode/plate'
 import { ELEMENT_TAG } from './defaults'
 
-export const getTagDeserialize = (): DeserializeHtml => (editor) => {
+export const getTagDeserialize = (): DeserializeHtml => {
   const options = getPlugin(editor, ELEMENT_TAG)
 
   return {
