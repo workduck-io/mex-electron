@@ -1,7 +1,7 @@
 import { DeserializeHtml, getNodeDeserializer, getSlateClass, getPlugin } from '@udecode/plate'
 import { ELEMENT_SYNC_BLOCK } from '.'
 
-export const getSyncBlockDeserialize = (): DeserializeHtml => (editor) => {
+export const getSyncBlockDeserialize = (): DeserializeHtml => {
   const options = getPlugin(editor, ELEMENT_SYNC_BLOCK)
   return {
     element: getNodeDeserializer({
