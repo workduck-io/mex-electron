@@ -33,7 +33,7 @@ const useMultiComboboxOnChange = (
   const changeHandler = useCallback(() => {
     const res = comboboxOnChange()
     if (!res) return false
-
+    console.log('ON CHANNGE')
     const { search } = res
 
     if (!search && search !== '') return false

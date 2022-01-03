@@ -59,9 +59,13 @@ const Editor = ({
   const prePlugins = generatePlugins()
   const plugins = [
     ...prePlugins,
+
     {
-      onChange: pluginConfigs.combobox.onChange,
-      onKeyDown: pluginConfigs.combobox.onKeyDown
+        key: 'MULTI_COMBOBOX',
+        handlers: {
+          onChange: pluginConfigs.combobox.onChange,
+          onKeyDown: pluginConfigs.combobox.onKeyDown
+        }
     }
   ]
 
@@ -79,7 +83,8 @@ const Editor = ({
               value={content}
               plugins={plugins}
               onChange={debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 1000)}
-              components={withStyledPlaceHolders(withStyledDraggables(components))}
+              // components={withStyledPlaceHolders(withStyledDraggables(components))}
+              // components={withStyledPlaceHolders(withStyledDraggables(components))}
             >
               <MultiComboboxContainer keys={comboConfigData.keys} slashCommands={comboConfigData.slashCommands} />
             </Plate>

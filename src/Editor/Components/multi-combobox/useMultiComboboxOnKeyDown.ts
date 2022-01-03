@@ -114,6 +114,8 @@ const useMultiComboboxOnKeyDown = (config: ComboConfigData) => {
   const comboboxKey: string = useComboboxStore((state) => state.key)
   const comboType = keys[comboboxKey]
 
+  console.log(comboboxKey)
+  
   // We need to create the select handlers ourselves here
   const { elementChangeHandler: onSelectItemHandler } = useOnSelectItem(comboboxKey, slashCommands, comboType)
 

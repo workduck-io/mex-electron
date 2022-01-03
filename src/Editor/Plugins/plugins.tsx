@@ -4,13 +4,11 @@ import {
   createBoldPlugin,
   createCodeBlockPlugin,
   createCodePlugin,
-  createDeserializeHtmlPlugin,
   // createDeserializeMDPlugin,
   createExitBreakPlugin,
   createHeadingPlugin,
   createDndPlugin,
   createHighlightPlugin,
-  createHistoryPlugin,
   createImagePlugin,
   createItalicPlugin,
   createLinkPlugin,
@@ -19,7 +17,6 @@ import {
   createMediaEmbedPlugin,
   createNodeIdPlugin,
   createParagraphPlugin,
-  createReactPlugin,
   createResetNodePlugin,
   createSelectOnBackspacePlugin,
   createSoftBreakPlugin,
@@ -38,10 +35,12 @@ import {
   createHorizontalRulePlugin,
   setNodes,
   ELEMENT_DEFAULT,
-  insertNodes
+  insertNodes,
+  createPlugins
 } from '@udecode/plate'
 
 import { useMemo } from 'react'
+import components from '../Components/components'
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
 import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
 import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin'
@@ -149,11 +148,14 @@ const generatePlugins = () => {
     createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin)
   ]
 
+
   return Plugins
 }
 
 const useMemoizedPlugins = () => {
-  return useMemo(() => generatePlugins(), [])
+  return useMemo(() => createPlugins(generatePlugins(), { components: components}), [])
 }
+
+
 
 export default useMemoizedPlugins
