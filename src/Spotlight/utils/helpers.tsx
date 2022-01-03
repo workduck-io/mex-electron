@@ -6,7 +6,6 @@ export const useDeserializeSelectionToNodes = (
   selection: { text: string; metadata: string }
 ): NodeEditorContent => {
   const editor = usePlateEditorRef(nodeId)
-
   const nodes = editor
     ? deserializeHtml(editor, {
         element: selection?.text || ''
