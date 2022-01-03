@@ -1,17 +1,12 @@
-import { DeserializeHtml, getNodeDeserializer, getSlateClass, getPlugin } from '@udecode/plate'
+import { DeserializeHtml, getSlateClass } from '@udecode/plate'
 import { ELEMENT_SYNC_BLOCK } from '.'
 
 export const getSyncBlockDeserialize = (): DeserializeHtml => {
-  const options = getPlugin(editor, ELEMENT_SYNC_BLOCK)
   return {
-    element: getNodeDeserializer({
-      type: options.type,
       getNode: (el) => ({
-        type: options.type,
+        type: ELEMENT_SYNC_BLOCK,
         value: el.getAttribute('data-slate-value')
       }),
-      rules: [{ className: getSlateClass(options.type) }],
-      ...options.deserializeHtml
-    })
+      rules: [{ validClassName: getSlateClass(ELEMENT_SYNC_BLOCK) }],
   }
 }
