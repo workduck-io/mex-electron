@@ -56,6 +56,7 @@ const Editor = ({
   const prePlugins = generatePlugins()
   const plugins = [
     ...prePlugins,
+
     {
       key: 'MULTI_COMBOBOX',
       handlers: {
