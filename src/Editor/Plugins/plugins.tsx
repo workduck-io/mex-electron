@@ -154,10 +154,7 @@ const generatePlugins = () => {
 }
 
 const useMemoizedPlugins = () => {
-  return useMemo(
-    () => createPlugins(generatePlugins(), { components: withStyledPlaceHolders(withStyledDraggables(components)) }),
-    []
-  )
+  return createPlugins(generatePlugins(), { components: withStyledPlaceHolders(withStyledDraggables(components)) })
 }
 
 export default useMemoizedPlugins

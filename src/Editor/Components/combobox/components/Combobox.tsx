@@ -49,8 +49,6 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
     }
   }
 
-  // console.log({ items })
-
   return (
     <PortalBody>
       <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>

@@ -2,7 +2,7 @@ import React from 'react'
 import { Combobox } from '../combobox/components/Combobox'
 import { ComboboxItemProps, RenderFunction } from '../combobox/components/Combobox.types'
 import { useComboboxControls } from '../combobox/hooks/useComboboxControls'
-import { useCreatableOnSelect } from '../combobox/hooks/useComboboxOnKeyDown'
+import { getCreateableOnSelect } from '../combobox/hooks/useComboboxOnKeyDown'
 import { useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from '../SlashCommands/Types'
 import { useOnSelectItem } from './useMultiComboboxOnKeyDown'
@@ -35,7 +35,7 @@ export const ElementComboboxComponent = ({ keys, slashCommands }: ComboConfigDat
     comboRenderType.newItemHandler(newItem, parentId)
   }
 
-  const creatableOnSelectItem = useCreatableOnSelect(onSelectItem, onNewItem)
+  const creatableOnSelectItem = getCreateableOnSelect(onSelectItem, onNewItem)
 
   return (
     <Combobox
