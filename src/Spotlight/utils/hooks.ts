@@ -14,12 +14,14 @@ import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockDat
 import useDataStore from '../../Editor/Store/DataStore'
 import { AppType } from '../../Data/useInitialize'
 import { appNotifierWindow } from './notifiers'
+import { useSaveData } from '../../Data/useSaveData'
 
 export const useCurrentIndex = (data: Array<any> | undefined): number => {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const { search, setSearch, selection, setSelection } = useSpotlightContext()
   const setNode = useSpotlightEditorStore((s) => s.setNode)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
+  const saveData = useSaveData()
   const { saveEditorAndUpdateStates } = useDataSaverFromContent()
 
   const node = useSpotlightEditorStore((s) => s.node)
@@ -57,16 +59,20 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
         if (currentIndex >= 0) {
           let newNode
           if (data[currentIndex].new) {
-            const d = addILink(search, node.uid)
-            newNode = getNode(node.uid)
+            const isDraftNode = node && node.key.startsWith('Draft.')
+            newNode = isDraftNode ? node : createNodeWithUid(getNewDraftKey())
+            const d = addILink(search, newNode.uid)
+            newNode = getNode(newNode.uid)
           } else {
             newNode = getNode(data[currentIndex].uid)
           }
 
           setSearch('')
+
           if (selection) {
             const data = [...getContent(newNode.uid), ...nodeContent]
             saveEditorAndUpdateStates(newNode, data, true)
+            saveData()
 
             appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 

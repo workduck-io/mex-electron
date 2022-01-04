@@ -59,7 +59,7 @@ const useLoad = () => {
     const inIlinks = ilinks.find((i) => i.uid === uid)
     const inArchive = archive.find((i) => i.uid === uid)
 
-    const isDraftNode = node && node.key.startsWith('Draft.')
+    const isDraftNode = node && node.key?.startsWith('Draft.')
 
     return inIlinks || inArchive || isDraftNode
   }
@@ -90,12 +90,15 @@ const useLoad = () => {
       setFetchingContent(true)
       getDataAPI(uid)
         .then((res) => {
-          const { data, metadata } = res
-          if (data) {
-            updateEmptyBlockTypes(data, ELEMENT_PARAGRAPH)
-            loadNodeAndReplaceContent(node, data)
+          if (res) {
+            const { data, metadata } = res
 
-            setContent(uid, data, metadata)
+            if (data) {
+              updateEmptyBlockTypes(data, ELEMENT_PARAGRAPH)
+              loadNodeAndReplaceContent(node, data)
+
+              setContent(uid, data, metadata)
+            }
           }
         })
         .catch((e) => {

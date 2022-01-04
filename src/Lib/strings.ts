@@ -1,6 +1,7 @@
 import { CustomEvents } from '../analytics/events'
 
 export const capitalize = (str: string) => {
+  if (!str) return ''
   return str[0].toUpperCase() + str.slice(1)
 }
 
