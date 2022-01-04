@@ -40,6 +40,8 @@ import {
 } from '@udecode/plate'
 
 import { useMemo } from 'react'
+import { withStyledDraggables } from '../Actions/withDraggable'
+import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
 import components from '../Components/components'
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
 import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
@@ -148,14 +150,14 @@ const generatePlugins = () => {
     createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin)
   ]
 
-
   return Plugins
 }
 
 const useMemoizedPlugins = () => {
-  return useMemo(() => createPlugins(generatePlugins(), { components: components}), [])
+  return useMemo(
+    () => createPlugins(generatePlugins(), { components: withStyledPlaceHolders(withStyledDraggables(components)) }),
+    []
+  )
 }
-
-
 
 export default useMemoizedPlugins
