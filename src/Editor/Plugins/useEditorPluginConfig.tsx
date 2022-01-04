@@ -60,7 +60,7 @@ const useEditorPluginConfig = (editorId: string) => {
         renderElement: TagComboboxItem
       },
       slash_command: {
-        slateElementType: 'slash_command_comboTypeHandler',
+        slateElementType: 'slash_command',
         newItemHandler: () => undefined,
         renderElement: SlashComboboxItem
       }
@@ -88,35 +88,32 @@ const useEditorPluginConfig = (editorId: string) => {
     }
   }
 
-  const OnChangeConf = useMemo(
-    () => ({
-      ilink: {
-        cbKey: ComboboxKey.ILINK,
-        trigger: '[[',
-        data: ilinks,
-        icon: 'ri:file-list-2-line'
-      },
-      inline_block: {
-        cbKey: ComboboxKey.INLINE_BLOCK,
-        trigger: '![[',
-        data: ilinksForCurrentNode,
-        icon: 'ri:picture-in-picture-line'
-      },
-      tag: {
-        cbKey: ComboboxKey.TAG,
-        trigger: '#',
-        data: tags,
-        icon: 'ri:hashtag'
-      },
-      slash_command: {
-        cbKey: ComboboxKey.SLASH_COMMAND,
-        trigger: '/',
-        icon: 'ri:flask-line',
-        data: slashCommands
-      }
-    }),
-    [slashCommands, tags, ilinks, ilinksForCurrentNode]
-  )
+  const OnChangeConf = {
+    ilink: {
+      cbKey: ComboboxKey.ILINK,
+      trigger: '[[',
+      data: ilinks,
+      icon: 'ri:file-list-2-line'
+    },
+    inline_block: {
+      cbKey: ComboboxKey.INLINE_BLOCK,
+      trigger: '![[',
+      data: ilinksForCurrentNode,
+      icon: 'ri:picture-in-picture-line'
+    },
+    tag: {
+      cbKey: ComboboxKey.TAG,
+      trigger: '#',
+      data: tags,
+      icon: 'ri:hashtag'
+    },
+    slash_command: {
+      cbKey: ComboboxKey.SLASH_COMMAND,
+      trigger: '/',
+      icon: 'ri:flask-line',
+      data: slashCommands
+    }
+  }
   // console.log({ slashCommands, OnChangeConf })
 
   const pluginConfigs = {
