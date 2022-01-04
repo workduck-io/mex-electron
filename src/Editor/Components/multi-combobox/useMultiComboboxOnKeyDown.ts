@@ -26,18 +26,17 @@ export interface ComboTypeHandlers {
 }
 
 export const useElementOnChange = (comboType: SingleComboboxConfig) => {
-  const isOpen = useComboboxIsOpen()
-
-  const targetRange = useComboboxStore((state) => state.targetRange)
-  const parentNodeId = useEditorStore((state) => state.node.key)
   const closeMenu = useComboboxStore((state) => state.closeMenu)
   const { trackEvent } = useAnalytics()
 
   return useCallback(
     (editor: PlateEditor, item: IComboboxItem) => {
+      const targetRange = useComboboxStore.getState().targetRange
+      const parentNodeId = useEditorStore.getState().node.key
+
       const type = getPluginType(editor, comboType.slateElementType)
 
-      if (isOpen && targetRange) {
+      if (targetRange) {
         // console.log('useElementOnChange 1', { comboType, type });
 
         const pathAbove = getBlockAbove(editor)?.[1]
@@ -82,11 +81,12 @@ export const useElementOnChange = (comboType: SingleComboboxConfig) => {
           Transforms.delete(editor)
         }
 
+        // return true
         return closeMenu()
       }
       return undefined
     },
-    [closeMenu, isOpen, targetRange, comboType]
+    [closeMenu, comboType]
   )
 }
 
@@ -114,8 +114,6 @@ const useMultiComboboxOnKeyDown = (config: ComboConfigData) => {
   const comboboxKey: string = useComboboxStore((state) => state.key)
   const comboType = keys[comboboxKey]
 
-  console.log(comboboxKey)
-  
   // We need to create the select handlers ourselves here
   const { elementChangeHandler: onSelectItemHandler } = useOnSelectItem(comboboxKey, slashCommands, comboType)
 
