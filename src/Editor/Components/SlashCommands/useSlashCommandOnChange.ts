@@ -17,58 +17,59 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
 
   const { getSnippetContent } = useSnippets()
 
-  return useCallback(
-    (editor: PlateEditor, item: IComboboxItem) => {
-      const targetRange = useComboboxStore.getState().targetRange
+  return (editor: PlateEditor, item: IComboboxItem) => {
+    const targetRange = useComboboxStore.getState().targetRange
+    console.log('Inside slash')
 
-      const commandKey = Object.keys(keys).filter((k) => keys[k].command === item.text)[0]
+    console.log({ item })
 
-      const commandConfig = keys[commandKey]
-      // console.log({ commandConfig })
+    const commandKey = Object.keys(keys).filter((k) => keys[k].command === item.text)[0]
 
-      if (targetRange) {
-        // console.log('useSlashCommandOnChange', { commandConfig, commandKey, keys, item })
+    const commandConfig = keys[commandKey]
+    // console.log({ commandConfig })
 
-        const pathAbove = getBlockAbove(editor)?.[1]
-        const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
+    if (targetRange) {
+      // console.log('useSlashCommandOnChange', { commandConfig, commandKey, keys, item })
 
-        // Snippets are handled differently as the content comes from the snippet and not created
-        if (isElder(commandKey, 'snip')) {
-          const content = getSnippetContent(commandConfig.command)
+      const pathAbove = getBlockAbove(editor)?.[1]
+      const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
 
-          const eventName = getEventNameFromElement('Editor', ActionType.USE, 'Snippet')
-          trackEvent(eventName, { 'mex-content': content })
+      // Snippets are handled differently as the content comes from the snippet and not created
+      if (isElder(commandKey, 'snip')) {
+        const content = getSnippetContent(commandConfig.command)
 
-          if (content) {
-            Transforms.select(editor, targetRange)
-            insertNodes<TElement>(editor, content)
-          }
-        } else {
-          // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
-          const type = getPluginType(editor, commandConfig.slateElementType)
-          const data = commandConfig.getBlockData ? commandConfig.getBlockData(item) : {}
+        const eventName = getEventNameFromElement('Editor', ActionType.USE, 'Snippet')
+        trackEvent(eventName, { 'mex-content': content })
 
-          // console.log('INSERT: ', { type, data })
-
-          const eventName = getEventNameFromElement('Editor', ActionType.CREATE, type)
-          trackEvent(eventName, { 'mex-type': type, 'mex-data': data })
-
+        if (content) {
           Transforms.select(editor, targetRange)
-          insertNodes<TElement>(editor, {
-            type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
-            children: [{ text: '' }],
-            ...commandConfig.options,
-            ...data
-          })
-
-          // move the selection after the inserted content
-          Transforms.move(editor)
+          insertNodes<TElement>(editor, content)
         }
+      } else {
+        // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
+        const type = getPluginType(editor, commandConfig.slateElementType)
+        const data = commandConfig.getBlockData ? commandConfig.getBlockData(item) : {}
 
-        return closeMenu()
+        // console.log('INSERT: ', { type, data })
+
+        const eventName = getEventNameFromElement('Editor', ActionType.CREATE, type)
+        trackEvent(eventName, { 'mex-type': type, 'mex-data': data })
+
+        Transforms.select(editor, targetRange)
+        insertNodes<TElement>(editor, {
+          type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+          children: [{ text: '' }],
+          ...commandConfig.options,
+          ...data
+        })
+
+        // move the selection after the inserted content
+        Transforms.move(editor)
       }
-      return undefined
-    },
-    [closeMenu, keys]
-  )
+
+      return closeMenu()
+    }
+
+    return undefined
+  }
 }
