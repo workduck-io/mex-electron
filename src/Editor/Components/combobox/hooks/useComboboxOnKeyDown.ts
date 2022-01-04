@@ -18,15 +18,12 @@ export type OnSelectItem = (editor: PEditor, item: IComboboxItem) => any // esli
 export type OnNewItem = (name: string, parentId?) => void
 
 export const useCreatableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnNewItem, creatable?: boolean) => {
-  const itemIndex = useComboboxStore((state) => state.itemIndex)
-  const closeMenu = useComboboxStore((state) => state.closeMenu)
-  const items = useComboboxStore((state) => state.items)
-  const currentNodeKey = useEditorStore((state) => state.node.key)
-
   const creatableOnSelect = (editor: any, textVal: string) => {
-    // console.log({ textVal })
+    const items = useComboboxStore.getState().items
+    const currentNodeKey = useEditorStore.getState().node.key
+    const itemIndex = useComboboxStore.getState().itemIndex
+
     const val = pure(textVal)
-    closeMenu()
     if (items[itemIndex]) {
       const item = items[itemIndex]
       // console.log({ items, item })
@@ -55,18 +52,18 @@ export const useComboboxOnKeyDown = ({
   onNewItem: OnNewItem
   creatable?: boolean
 }): KeyboardHandler => {
-  const itemIndex = useComboboxStore((state) => state.itemIndex)
   const setItemIndex = useComboboxStore((state) => state.setItemIndex)
   const closeMenu = useComboboxStore((state) => state.closeMenu)
-  const search = useComboboxStore((state) => state.search)
-  const items = useComboboxStore((state) => state.items)
-  const isOpen = useComboboxIsOpen()
 
   const creatabaleOnSelect = useCreatableOnSelect(onSelectItem, onNewItem, creatable)
 
   return useCallback(
     (editor) => (e) => {
       // if (!combobox) return false;
+      const itemIndex = useComboboxStore.getState().itemIndex
+      const search = useComboboxStore.getState().search
+      const items = useComboboxStore.getState().items
+      const isOpen = !!useComboboxStore.getState().targetRange
 
       if (isOpen) {
         if (e.key === 'ArrowDown') {
@@ -94,6 +91,6 @@ export const useComboboxOnKeyDown = ({
       }
       return false
     },
-    [isOpen, itemIndex, items, creatable, setItemIndex, closeMenu, onSelectItem, onNewItem]
+    [creatable, setItemIndex, closeMenu, onSelectItem, onNewItem]
   )
 }

@@ -12,8 +12,6 @@ import { useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from './Types'
 
 export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConfig }) => {
-  const isOpen = useComboboxIsOpen()
-  const targetRange = useComboboxStore((state) => state.targetRange)
   const closeMenu = useComboboxStore((state) => state.closeMenu)
   const { trackEvent } = useAnalytics()
 
@@ -21,12 +19,14 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
 
   return useCallback(
     (editor: PlateEditor, item: IComboboxItem) => {
+      const targetRange = useComboboxStore.getState().targetRange
+
       const commandKey = Object.keys(keys).filter((k) => keys[k].command === item.text)[0]
 
       const commandConfig = keys[commandKey]
       // console.log({ commandConfig })
 
-      if (isOpen && targetRange) {
+      if (targetRange) {
         // console.log('useSlashCommandOnChange', { commandConfig, commandKey, keys, item })
 
         const pathAbove = getBlockAbove(editor)?.[1]
@@ -69,6 +69,6 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
       }
       return undefined
     },
-    [closeMenu, isOpen, targetRange, keys]
+    [closeMenu, keys]
   )
 }

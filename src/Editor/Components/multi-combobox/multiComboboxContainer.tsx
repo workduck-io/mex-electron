@@ -5,7 +5,7 @@ import { useComboboxControls } from '../combobox/hooks/useComboboxControls'
 import { useCreatableOnSelect } from '../combobox/hooks/useComboboxOnKeyDown'
 import { useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from '../SlashCommands/Types'
-import { useElementOnChange, useOnSelectItem } from './useMultiComboboxOnKeyDown'
+import { useOnSelectItem } from './useMultiComboboxOnKeyDown'
 
 export interface ComboConfigData {
   keys: ConfigDataKeys
