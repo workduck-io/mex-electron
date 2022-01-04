@@ -3,7 +3,7 @@ import { ipcRenderer } from 'electron'
 import { useEffect, useState } from 'react'
 import { getContent, isFromSameSource } from '../../Editor/Store/helpers'
 import { NodeEditorContent } from '../../Editor/Store/Types'
-import { useSaver } from '../../Editor/Components/Saver'
+import { useDataSaverFromContent, useSaver } from '../../Editor/Components/Saver'
 import { IpcAction } from './constants'
 import { useSpotlightContext } from './context'
 import { useSpotlightEditorStore } from '../store/editor'
@@ -12,28 +12,22 @@ import { useSpotlightAppStore } from '../store/app'
 import { createNodeWithUid } from '../../Lib/helper'
 import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
 import useDataStore from '../../Editor/Store/DataStore'
-import { useContentStore } from '../../Editor/Store/ContentStore'
 import { AppType } from '../../Data/useInitialize'
 import { appNotifierWindow } from './notifiers'
-import { convertContentToRawText } from '../../Search/localSearch'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
-import { useSaveData } from '../../Data/useSaveData'
 
 export const useCurrentIndex = (data: Array<any> | undefined): number => {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const { search, setSearch, selection, setSelection } = useSpotlightContext()
   const setNode = useSpotlightEditorStore((s) => s.setNode)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
-  const setFsContent = useContentStore((state) => state.setContent)
+  const { saveEditorAndUpdateStates } = useDataSaverFromContent()
 
   const node = useSpotlightEditorStore((s) => s.node)
   const setNodeContent = useSpotlightEditorStore((s) => s.setNodeContent)
 
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
 
-  const saveData = useSaveData()
-
-  const { getNode, loadNode } = useLoad()
+  const { getNode } = useLoad()
   const addILink = useDataStore((s) => s.addILink)
   const setIsPreview = useSpotlightEditorStore((s) => s.setIsPreview)
 
@@ -71,8 +65,8 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
 
           setSearch('')
           if (selection) {
-            setFsContent(newNode.uid, [...getContent(newNode.uid), ...nodeContent])
-            saveData()
+            const data = [...getContent(newNode.uid), ...nodeContent]
+            saveEditorAndUpdateStates(newNode, data, true)
 
             appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
