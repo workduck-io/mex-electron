@@ -1,5 +1,6 @@
 import { transparentize } from 'polished'
 import React from 'react'
+// import AutoSave from '../Components/AutoSave'
 import styled from 'styled-components'
 import { Notifications } from '../Components/Notifications/Notifications'
 import Nav, { navTooltip } from '../Components/Sidebar/Nav'
@@ -47,6 +48,7 @@ const Main = ({ children }: MainProps) => {
   return (
     <AppWrapper>
       <Draggable style={styles as any} /> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
+      {/* <AutoSave /> */}
       <GridWrapper>
         <Nav links={getLinks()} />
         <Content>{children}</Content>

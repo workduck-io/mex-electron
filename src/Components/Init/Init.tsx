@@ -2,31 +2,30 @@ import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { flexIndexKeys } from '../../Search/flexsearch'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
-import { useInitialize, AppType } from '../../Data/useInitialize'
+import { AppType, useInitialize } from '../../Data/useInitialize'
 import { useLocalData } from '../../Data/useLocalData'
 import { useSyncData } from '../../Data/useSyncData'
 import { getUidFromNodeIdAndLinks } from '../../Editor/Actions/useLinks'
+import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
+import useDataStore from '../../Editor/Store/DataStore'
+import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { useHistoryStore } from '../../Editor/Store/HistoryStore'
 import { useRecentsStore } from '../../Editor/Store/RecentsStore'
 import { useAuthStore } from '../../Hooks/useAuth/useAuth'
 import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import useLoad from '../../Hooks/useLoad/useLoad'
+import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
+import { useSaveAndExit } from '../../Hooks/useSaveAndExit/useSaveAndExit'
 import config from '../../Requests/config'
+import { flexIndexKeys } from '../../Search/flexsearch'
 import { convertDataToRawText } from '../../Search/localSearch'
 import { useNewSearchStore } from '../../Search/SearchStore'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
 import { IpcAction } from '../../Spotlight/utils/constants'
-
-import { useSaveAndExit } from '../../Hooks/useSaveAndExit/useSaveAndExit'
-import useDataStore from '../../Editor/Store/DataStore'
-import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
-import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
 import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
-import useOnboard from '../Onboarding/store'
 import { performClick } from '../Onboarding/steps'
+import useOnboard from '../Onboarding/store'
 
 const Init = () => {
   const history = useHistory()
@@ -40,15 +39,21 @@ const Init = () => {
   const { loadNode } = useLoad()
   const { initCognito } = useAuth()
 
-  useSaveAndExit()
-
   const { getLocalData } = useLocalData()
   const initFlexSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
   const fetchIndexLocalStorage = useNewSearchStore((store) => store.fetchIndexLocalStorage)
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
 
-  /** Initialization of the app details occur here */
+  /**
+   * Setup save
+   * */
+  useSaveAndExit()
+
+  /**
+   * Initialization of the app data, search index and auth,
+   * also sends the auth details to the other processess
+   * */
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
     ;(async () => {
@@ -91,6 +96,9 @@ const Init = () => {
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  /**
+   * Sets handlers for IPC Calls
+   * */
   useEffect(() => {
     ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { nodeId }) => {
       if (isOnboarding) {
@@ -139,6 +147,7 @@ const Init = () => {
     setIpc()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  /** Set shortcuts */
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const node = useEditorStore((store) => store.node)
   const { shortcutDisabled, shortcutHandler } = useKeyListener()
@@ -187,6 +196,7 @@ const Init = () => {
     }
   }, [shortcuts, shortcutDisabled, node.uid]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // As this is a non-rendering component
   return null
 }
 

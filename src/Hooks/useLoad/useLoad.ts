@@ -10,7 +10,7 @@ import { getContent } from '../../Editor/Store/helpers'
 import { NodeEditorContent } from '../../Editor/Store/Types'
 import { updateEmptyBlockTypes } from '../../Lib/helper'
 import { useApi } from '../../Requests/Save'
-import { useSaveQ } from '../useQ'
+import { useQStore, useSaveQ } from '../useQ'
 
 type LoadNodeProps = {
   savePrev?: boolean
@@ -28,7 +28,7 @@ const useLoad = () => {
   const setSelectedNode = useGraphStore((store) => store.setSelectedNode)
   const { getDataAPI } = useApi()
   const { saveNodeAPIandFs } = useDataSaverFromContent()
-  const { q, saveQ } = useSaveQ()
+  const { saveQ } = useSaveQ()
 
   const getNode = (uid: string): NodeProperties => {
     const ilinks = useDataStore.getState().ilinks
@@ -70,6 +70,7 @@ const useLoad = () => {
   // }
 
   const loadNode = async (uid: string, options: LoadNodeProps = { savePrev: true, fetch: USE_API() }) => {
+    let hasBeenLoaded = false
     if (!options.node && !isLocalNode(uid)) {
       toast.error('Selected node does not exist.')
       uid = editorNodeId
@@ -78,16 +79,21 @@ const useLoad = () => {
     setNodePreview(false)
     setSelectedNode(undefined)
 
+    const q = useQStore.getState().q
     if (options.savePrev) {
-      if (q.length > 0) saveQ()
-      // saveDebouncedAPIfs()
+      if (q.includes(uid)) {
+        hasBeenLoaded = true
+      }
+      if (q.length > 0) {
+        saveQ()
+      }
     }
 
     const node = options.node ?? getNode(uid)
 
     loadNodeEditor(node)
 
-    if (options.fetch) {
+    if (options.fetch && !hasBeenLoaded) {
       setFetchingContent(true)
       getDataAPI(uid)
         .then((res) => {
