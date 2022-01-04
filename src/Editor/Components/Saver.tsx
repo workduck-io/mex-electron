@@ -58,6 +58,7 @@ export const useSaver = () => {
   // const editorState = usePlateSelectors(usePlateId()).value(
 
   const { saveEditorAndUpdateStates } = useDataSaverFromContent()
+  const editorState = usePlateSelectors(getPlateId())?.value()
 
   /**
    * Should be run on explicit save as it saves the current editor state
