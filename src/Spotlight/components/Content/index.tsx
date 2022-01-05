@@ -12,9 +12,6 @@ import Preview from '../Preview'
 import SideBar from '../SideBar'
 import { ILink } from '../../../Editor/Store/Types'
 import { useSpotlightAppStore } from '../../../Spotlight/store/app'
-import { createNodeWithUid } from '../../../Lib/helper'
-import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
-import { isNew } from '../../../Components/NodeSelect/NodeSelect'
 
 export const StyledContent = styled.section`
   display: flex;
@@ -77,7 +74,7 @@ const Content = () => {
       setSearch('')
       setSearchResults(undefined)
     }
-  }, [selection, setSearchResults])
+  }, [selection, editorNode, setSearchResults])
 
   useEffect(() => {
     const results = getSearchResults(search, ilinks, { keySelector: (obj) => obj.key })

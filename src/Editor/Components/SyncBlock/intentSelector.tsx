@@ -71,7 +71,7 @@ const IntentSelector = ({
     if (loading === true) {
       client
         .post(integrationURLs.getIntentValues, {
-          serviceType: service.toUpperCase(),
+          serviceType: service?.toUpperCase(),
           intentType: type,
           workspaceId: workspaceId
         })

@@ -103,7 +103,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
     const newIgid = updateNodeIntentsAndCreateIGID(
       uid,
-      Object.keys(changedIntents).map((s) => {
+      Object.keys(changedIntents)?.map((s) => {
         return changedIntents[s]
       }),
       template.id
@@ -231,16 +231,16 @@ export const SyncBlock = (props: SyncBlockProps) => {
             <FormControls float={areAllIntentsPresent}>
               <SyncIntentsWrapper>
                 {intents &&
-                  intents.map((intent) => {
-                    if (intent.service !== 'MEX') {
-                      if (isIntent(intent)) {
+                  intents?.map((intent) => {
+                    if (intent?.service !== 'MEX') {
+                      if (intent && isIntent(intent)) {
                         return (
                           <IntentSelector
                             id={`SyncBlocksIntentSelector${blockData.id}`}
-                            key={`SyncBlocksIntentSelector${blockData.id}${intent.service}`}
+                            key={`SyncBlocksIntentSelector${blockData.id}${intent?.service}`}
                             // showPosition={{ x: 0, y: 64 }}
-                            service={intent.service}
-                            type={intent.type}
+                            service={intent?.service}
+                            type={intent?.type}
                             defaultIntent={intent}
                             readOnly={true}
                           />
@@ -249,10 +249,10 @@ export const SyncBlock = (props: SyncBlockProps) => {
                         return (
                           <IntentSelector
                             id={`SyncBlocksIntentPreview${blockData.id}`}
-                            key={`SyncBlocksIntentPreview${blockData.id}${intent.service}`}
+                            key={`SyncBlocksIntentPreview${blockData.id}${intent?.service}`}
                             // showPosition={{ x: 0, y: 64 }}
-                            service={intent.service}
-                            type={intent.type}
+                            service={intent?.service}
+                            type={intent?.type}
                             readOnly={false}
                             onSelect={onSelectIntent}
                           />
