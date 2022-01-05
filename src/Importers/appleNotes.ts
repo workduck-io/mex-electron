@@ -21,7 +21,6 @@ const downloadAppleScript = (scriptSaveLocation: string) => {
 }
 
 const fixEncodingHTML = (filename: string) => {
-  console.log('Filename: ', filename)
   const buff = fs.readFileSync(filename)
 
   fs.rmSync(filename)
@@ -43,8 +42,15 @@ const saveNotesHTML = async (scriptSaveLocation: string) => {
 }
 
 const parseAppleNotesTitle = (filepath: string) => {
-  const filename = path.basename(filepath)
+  const filename = path.basename(filepath).trim()
   console.log('Filename: ', filename)
+
+  const splitName = filename.split(']')
+
+  const APID = splitName[0].replace('[', '') // Apple Notes ID
+  const nodeTitle = splitName[1].trim().replace('.html', '')
+
+  return { APID, nodeTitle }
 }
 
 export const getAppleNotes = async (scriptSaveLocation: string) => {
@@ -53,17 +59,21 @@ export const getAppleNotes = async (scriptSaveLocation: string) => {
   if (!fs.existsSync(notesPath)) fs.mkdirSync(notesPath)
   await saveNotesHTML(scriptSaveLocation)
 
-  // const selectedFilesRet = await dialog.showOpenDialog({
-  //   defaultPath: notesPath,
-  //   properties: ['openFile', 'multiSelections'],
-  //   filters: [
-  //     {
-  //       name: 'HTML Files',
-  //       extensions: ['html']
-  //     }
-  //   ],
-  //   message: 'Choose the Notes You Would Like to Import'
-  // })
-  // if (selectedFilesRet.canceled) return
-  // const selectedFilePaths = selectedFilesRet.filePaths
+  const selectedFilesRet = await dialog.showOpenDialog({
+    defaultPath: notesPath,
+    properties: ['openFile', 'multiSelections'],
+    filters: [
+      {
+        name: 'HTML Files',
+        extensions: ['html']
+      }
+    ],
+    message: 'Choose the Notes You Would Like to Import'
+  })
+  if (selectedFilesRet.canceled) return
+  const selectedFilePaths = selectedFilesRet.filePaths
+
+  selectedFilePaths.forEach((path) => {
+    const { APID, nodeTitle } = parseAppleNotesTitle(path)
+  })
 }
