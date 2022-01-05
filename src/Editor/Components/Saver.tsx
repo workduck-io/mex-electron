@@ -42,9 +42,10 @@ export const useDataSaverFromContent = () => {
     }
   }, [])
 
-  const saveNodeAPIandFs = (node: NodeProperties) => {
-    const content = getContent(node.uid)
-    saveDataAPI(node.uid, content.content)
+  const saveNodeAPIandFs = (uid: string) => {
+    console.log('saving to api for uid: ', { uid })
+    const content = getContent(uid)
+    saveDataAPI(uid, content.content)
     saveData()
   }
 

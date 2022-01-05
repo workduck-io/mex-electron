@@ -11,6 +11,7 @@ export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const setMetadata = useContentStore((store) => store.setMetadata)
+  const setContent = useContentStore((store) => store.setContent)
 
   const saveDataAPI = (uid: string, content: any[]) => {
     const reqData = {
@@ -28,7 +29,7 @@ export const useApi = () => {
     client
       .post(apiURLs.saveNode, reqData, {})
       .then((d) => {
-        // console.log('savedData', d)
+        console.log('savedData', d)
         const metadata: any = {
           lastEditedBy: d.data.lastEditedBy,
           updatedAt: d.data.updatedAt
@@ -40,6 +41,7 @@ export const useApi = () => {
           metadata.createdAt = d.data.createdAt
         }
         setMetadata(uid, removeNulls(metadata))
+        setContent(uid, deserializeContent(d.data.data))
       })
       .catch((e) => {
         console.error(e)
