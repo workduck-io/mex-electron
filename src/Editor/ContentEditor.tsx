@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { SAVE_WAIT_TIME } from '../Conf/times'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../Components/Help/HelpModal'
 import Metadata from '../Components/Metadata/Metadata'
@@ -7,7 +6,7 @@ import NodeIntentsModal from '../Components/NodeIntentsModal/NodeIntentsModal'
 import { useKeyListener } from '../Hooks/useCustomShortcuts/useShortcutListener'
 import useLoad from '../Hooks/useLoad/useLoad'
 import { useNavigation } from '../Hooks/useNavigation/useNavigation'
-import { useQStore, useSaveQ } from '../Hooks/useQ'
+import { useQStore } from '../Hooks/useQ'
 import useToggleElements from '../Hooks/useToggleElements/useToggleElements'
 import useLayout from '../Layout/useLayout'
 import { StyledEditor } from '../Styled/Editor'
@@ -45,31 +44,11 @@ const ContentEditor = () => {
   const { saveEditorAndUpdateStates } = useDataSaverFromContent()
   const add2Q = useQStore((s) => s.add2Q)
 
-  // const { saveQ } = useSaveQ()
-
   const onChangeSave = (val: any[]) => {
-    // console.log('onchange', { val, node })
     if (val && node && node.uid !== '__null__') {
       add2Q(node.uid)
       saveEditorAndUpdateStates(node, val, false)
     }
-    // console.log('Q saving on lastChanged', {
-    //   lc: lastChanged.current,
-    //   dw: Date.now() + SAVE_WAIT_TIME,
-    //   SAVE_WAIT_TIME
-    // })
-    // if (lastChanged.current !== -1 && lastChanged.current > Date.now() + SAVE_WAIT_TIME) {
-    //   console.log('Q saving on lastChanged')
-    //   const q = useQStore.getState().q
-    //   if (q.length > 0) {
-    //     console.log('Saving Q')
-    //     saveQ()
-    //   }
-    //   // saveEditorAndUpdateStates(node, val, false)
-    // }
-    // lastChanged.current = Date.now()
-
-    // console.log('lastChanged', { lc: lastChanged.current })
   }
 
   useEffect(() => {
