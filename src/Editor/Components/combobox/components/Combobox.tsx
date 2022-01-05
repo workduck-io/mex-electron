@@ -59,7 +59,7 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
 
             return (
               <ComboboxItem
-                key={item.key}
+                key={`${item.key}-${String(index)}`}
                 highlighted={index === itemIndex}
                 {...comboProps(item, index)}
                 onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, isSlash ? item : search)}
