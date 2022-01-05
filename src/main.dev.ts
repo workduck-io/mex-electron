@@ -496,6 +496,15 @@ app
         click: () => {
           shell.openExternal('https://twitter.com/workduckio')
         }
+      },
+      { type: 'separator' },
+      {
+        label: 'Quit Mex',
+        accelerator: 'Command+Q',
+        click: () => {
+          mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
+          app.quit()
+        }
       }
     ])
 

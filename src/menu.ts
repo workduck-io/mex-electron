@@ -1,4 +1,4 @@
-import { app, Menu, shell, BrowserWindow, MenuItemConstructorOptions, autoUpdater } from 'electron'
+import { app, Menu, shell, BrowserWindow, MenuItemConstructorOptions, autoUpdater, dialog } from 'electron'
 import { getAppleNotes } from './Importers/appleNotes'
 import path from 'path'
 
