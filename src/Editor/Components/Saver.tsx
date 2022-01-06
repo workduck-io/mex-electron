@@ -61,12 +61,14 @@ export const useSaver = () => {
   const onSave = (
     node?: NodeProperties,
     writeToFile?: boolean, // Saved to file unless explicitly set to false
-    notification?: boolean // Shown notification unless explicitly set to false
+    notification?: boolean, // Shown notification unless explicitly set to false
+    content?: any[] //  Replace content with given content instead of fetching from plate value
   ) => {
     const defaultNode = useEditorStore.getState().node
     const cnode = node || defaultNode
+    const nodeContent = content ?? editorState
     // setContent then save
-    saveEditorAndUpdateStates(cnode, editorState)
+    saveEditorAndUpdateStates(cnode, nodeContent)
     if (writeToFile !== false) saveData()
     if (notification !== false) toast('Saved!', { duration: 1000 })
   }

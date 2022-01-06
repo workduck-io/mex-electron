@@ -7,6 +7,13 @@ import { app, dialog } from 'electron'
 import { globby } from 'globby'
 import { Iconv } from 'iconv'
 
+export interface AppleNote {
+  APID: string
+  NoteTitle: string
+  HTMLContent: string
+  nodeUID?: string
+}
+
 const iconv = new Iconv('UTF-16', 'UTF-8')
 const notesPath = path.join(app.getPath('userData'), 'AppleNotes')
 
@@ -43,18 +50,19 @@ const saveNotesHTML = async (scriptSaveLocation: string) => {
 
 const parseAppleNotesTitle = (filepath: string) => {
   const filename = path.basename(filepath).trim()
-  console.log('Filename: ', filename)
 
   const splitName = filename.split(']')
 
   const APID = splitName[0].replace('[', '') // Apple Notes ID
-  const nodeTitle = splitName[1].trim().replace('.html', '')
+  const NoteTitle = splitName[1].trim().replace('.html', '').replace('.', '')
 
-  return { APID, nodeTitle }
+  return { APID, NoteTitle }
 }
 
 export const getAppleNotes = async (scriptSaveLocation: string) => {
-  // downloadAppleScript(scriptSaveLocation)
+  if (!fs.existsSync(scriptSaveLocation)) return null
+
+  downloadAppleScript(scriptSaveLocation)
 
   if (!fs.existsSync(notesPath)) fs.mkdirSync(notesPath)
   await saveNotesHTML(scriptSaveLocation)
@@ -70,10 +78,22 @@ export const getAppleNotes = async (scriptSaveLocation: string) => {
     ],
     message: 'Choose the Notes You Would Like to Import'
   })
-  if (selectedFilesRet.canceled) return
+  if (selectedFilesRet.canceled) return null
   const selectedFilePaths = selectedFilesRet.filePaths
 
+  const ret = new Array<AppleNote>()
+
   selectedFilePaths.forEach((path) => {
-    const { APID, nodeTitle } = parseAppleNotesTitle(path)
+    const { APID, NoteTitle } = parseAppleNotesTitle(path)
+    const HTMLContent = fs.readFileSync(path, 'utf-8')
+    const t: AppleNote = {
+      APID,
+      NoteTitle,
+      HTMLContent
+    }
+
+    ret.push(t)
   })
+
+  return ret
 }
