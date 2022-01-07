@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { Switch as ReactRouterSwitch, useLocation } from 'react-router-dom'
 import { animated } from 'react-spring'
+import { useInitOlvy } from '../Olvy'
 import styled from 'styled-components'
 import Search from '../Components/Search/Search'
 import { useQStore, useSaveQ } from '../Hooks/useQ'
@@ -31,6 +32,7 @@ const Switch = () => {
   const location = useLocation()
   const q = useQStore((s) => s.q)
   const { saveQ } = useSaveQ()
+  useInitOlvy()
   // const Perspective = '2000px'
   // const transitions = useTransition(location, {
   //   from: {

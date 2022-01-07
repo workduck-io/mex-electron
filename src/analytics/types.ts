@@ -29,5 +29,6 @@ export type Heap = {
 declare global {
   interface Window {
     heap: any
+    Olvy: any
   }
 }
