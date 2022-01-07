@@ -1,6 +1,6 @@
 import saveLine from '@iconify-icons/ri/save-line'
 import { TippyProps } from '@tippyjs/react'
-import { getPlateSelectors, usePlateSelectors, usePlateId, getPlateId } from '@udecode/plate'
+import { getPlateSelectors, usePlateSelectors, usePlateId, getPlateId, platesStore } from '@udecode/plate'
 import React, { useCallback, useEffect } from 'react'
 import toast from 'react-hot-toast'
 import { useUpdater } from '../../Data/useUpdater'
@@ -43,7 +43,7 @@ export const useDataSaverFromContent = () => {
   }, [])
 
   const saveNodeAPIandFs = (uid: string) => {
-    console.log('saving to api for uid: ', { uid })
+    // console.log('saving to api for uid: ', { uid })
     const content = getContent(uid)
     saveDataAPI(uid, content.content)
     saveData()
@@ -58,18 +58,32 @@ export const useSaver = () => {
   // const editorState = usePlateSelectors(usePlateId()).value(
 
   const { saveEditorAndUpdateStates } = useDataSaverFromContent()
-  const editorState = usePlateSelectors(getPlateId())?.value()
+  // const editorState = usePlateSelectors(getPlateId())?.value()
 
+  /**
+   * Should be run on explicit save as it saves the current editor state
+   * and everything else in the api and file system
+   */
   const onSave = (
     node?: NodeProperties,
     writeToFile?: boolean, // Saved to file unless explicitly set to false
     notification?: boolean // Shown notification unless explicitly set to false
   ) => {
+    const state = platesStore.get.state()
+
+    console.log({ state, id: state.main.get.id(), pid: getPlateId() })
     const defaultNode = useEditorStore.getState().node
     const cnode = node || defaultNode
     // setContent then save
 
-    if (editorState) saveEditorAndUpdateStates(cnode, editorState)
+    // if (editorState) saveEditorAndUpdateStates(cnode, editorState)
+    const editorId = getPlateId()
+    const hasState = !!state[editorId]
+    if (hasState) {
+      const editorState = state[editorId].get.value()
+      // console.log('NEW, ', { editorState })
+      saveEditorAndUpdateStates(cnode, editorState)
+    }
 
     if (writeToFile !== false) {
       console.log('CALLED')
