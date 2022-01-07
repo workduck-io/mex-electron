@@ -6,6 +6,7 @@ import { IntegrationContainer, Title } from '../Styled/Integration'
 import Themes from '../Components/Settings/Themes'
 import About from '../Components/Settings/About'
 import AutoUpdate from '../Components/Settings/AutoUpdate'
+import { Button } from '../Styled/Buttons'
 
 const SettingsContainer = styled.section`
   display: flex;
@@ -59,6 +60,7 @@ const Settings = () => {
           <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/autoupdate`}>
             Automatic Updates
           </SettingTitle>
+          <Button id="olvy-target">What&apos;s new</Button>
         </SettingsOptions>
         <SettingsContent>
           <Switch>
