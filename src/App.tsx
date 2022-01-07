@@ -1,5 +1,4 @@
-import { ipcRenderer } from 'electron'
-import React, { useEffect } from 'react'
+import React from 'react'
 import Modal from 'react-modal'
 import { HashRouter as Router } from 'react-router-dom'
 import Init from './Components/Init/Init'

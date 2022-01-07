@@ -39,10 +39,12 @@ import {
   createPlugins
 } from '@udecode/plate'
 
-import { useMemo } from 'react'
 import { withStyledDraggables } from '../Actions/withDraggable'
 import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
 import components from '../Components/components'
+
+import { createExcalidrawPlugin, ExcalidrawElement, ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
+
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
 import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
 import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin'
@@ -74,6 +76,10 @@ const generatePlugins = () => {
     createCodeBlockPlugin(), // code block element
     createHeadingPlugin(), // heading elements
 
+    createExcalidrawPlugin({
+      component: ExcalidrawElement
+    }),
+
     // Marks
     createBoldPlugin(), // bold mark
     createItalicPlugin(), // italic mark
@@ -94,7 +100,7 @@ const generatePlugins = () => {
     createExitBreakPlugin(optionsExitBreakPlugin),
     createResetNodePlugin(optionsResetBlockTypePlugin),
     createHorizontalRulePlugin(),
-    createSelectOnBackspacePlugin({ options: { query: { allow: [ELEMENT_HR] } } }),
+    createSelectOnBackspacePlugin({ options: { query: { allow: [ELEMENT_HR, ELEMENT_EXCALIDRAW] } } }),
 
     // Autoformat markdown syntax to elements (**, #(n))
     createAutoformatPlugin({

@@ -1,4 +1,4 @@
-import { PEditor } from '@udecode/plate'
+import { PEditor, overridePluginsByKey } from '@udecode/plate'
 import { KeyboardHandler } from '@udecode/plate-core'
 import { useEditorStore } from '../../../Store/EditorStore'
 import { useElementOnChange as getElementOnChange } from '../../multi-combobox/useMultiComboboxOnKeyDown'

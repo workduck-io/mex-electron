@@ -5,6 +5,7 @@ import useAnalytics from '../../../analytics'
 import { ActionType } from '../../../analytics/events'
 import { isElder } from '../../../Components/Sidebar/treeUtils'
 import { getEventNameFromElement } from '../../../Lib/strings'
+
 import { useSnippets } from '../../../Snippets/useSnippets'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'
@@ -30,7 +31,6 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
       const pathAbove = getBlockAbove(editor)?.[1]
       const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
 
-      // Snippets are handled differently as the content comes from the snippet and not created
       if (isElder(commandKey, 'snip')) {
         const content = getSnippetContent(commandConfig.command)
 
@@ -52,6 +52,8 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
         trackEvent(eventName, { 'mex-type': type, 'mex-data': data })
 
         Transforms.select(editor, targetRange)
+        console.log(type, data)
+
         insertNodes<TElement>(editor, {
           type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
           children: [{ text: '' }],
