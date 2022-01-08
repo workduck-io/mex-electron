@@ -152,6 +152,8 @@ const Init = () => {
     ipcRenderer.on(IpcAction.SET_APPLE_NOTES_DATA, (_event, arg: AppleNote[]) => {
       setAppleNotes(arg)
       history.push('/editor')
+      const appleNotesUID = getUidFromNodeId('Apple Notes')
+      loadNode(appleNotesUID)
     })
   }, [fetchIndexLocalStorage, isOnboarding]) // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -79,9 +79,6 @@ const About = () => {
         </Flex>
       </Margin>
       <br />
-      <div>
-        <Button onClick={importAppleNotes}>Import Apple Notes</Button>
-      </div>
     </Container>
   )
 }
