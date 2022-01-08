@@ -1,7 +1,7 @@
 {
   "name": "mex",
   "productName": "Mex",
-  "version": "0.6.1-alpha.1",
+  "version": "0.6.0-alpha.5",
   "description": "Mex it to flex it",
   "main": ".webpack/main",
   "scripts": {
@@ -104,6 +104,7 @@
     "history": "^5.0.1",
     "hotkeys-js": "^3.8.7",
     "iconv": "^3.0.1",
+    "iconv-lite": "^0.6.3",
     "match-sorter": "^6.3.0",
     "md5": "^2.3.0",
     "nanoid": "^3.1.23",

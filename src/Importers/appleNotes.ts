@@ -5,7 +5,7 @@ import fs from 'fs'
 import path from 'path'
 import { app, dialog } from 'electron'
 import { globby } from 'globby'
-import { Iconv } from 'iconv'
+import iconv from 'iconv-lite'
 
 export interface AppleNote {
   APID: string
@@ -14,7 +14,6 @@ export interface AppleNote {
   nodeUID?: string
 }
 
-const iconv = new Iconv('UTF-16', 'UTF-8')
 const notesPath = path.join(app.getPath('userData'), 'AppleNotes')
 
 const downloadAppleScript = (scriptSaveLocation: string) => {
@@ -31,8 +30,7 @@ const fixEncodingHTML = (filename: string) => {
   const buff = fs.readFileSync(filename)
 
   fs.rmSync(filename)
-
-  const result = iconv.convert(buff).toString('utf-8')
+  const result = iconv.decode(buff, 'UTF-16')
 
   fs.writeFileSync(filename, result, 'utf-8')
 }
