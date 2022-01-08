@@ -6,6 +6,7 @@ import path from 'path'
 import { app, dialog } from 'electron'
 import { globby } from 'globby'
 import iconv from 'iconv-lite'
+import { script } from './fetchAppleNotes.applescript'
 
 export interface AppleNote {
   APID: string
@@ -16,16 +17,6 @@ export interface AppleNote {
 
 const notesPath = path.join(app.getPath('userData'), 'AppleNotes')
 
-const downloadAppleScript = (scriptSaveLocation: string) => {
-  const file = fs.createWriteStream(scriptSaveLocation)
-  https.get(AppleNotesImporterScriptURL, (res) => {
-    res.pipe(file)
-    file.on('finish', () => {
-      file.close()
-    })
-  })
-}
-
 const fixEncodingHTML = (filename: string) => {
   const buff = fs.readFileSync(filename)
 
@@ -35,8 +26,7 @@ const fixEncodingHTML = (filename: string) => {
   fs.writeFileSync(filename, result, 'utf-8')
 }
 
-const saveNotesHTML = async (scriptSaveLocation: string) => {
-  const script = fs.readFileSync(scriptSaveLocation, 'utf-8')
+const saveNotesHTML = async () => {
   await runAppleScript(script)
 
   const files = await globby(notesPath + '/*.html')
@@ -57,13 +47,9 @@ const parseAppleNotesTitle = (filepath: string) => {
   return { APID, NoteTitle }
 }
 
-export const getAppleNotes = async (scriptSaveLocation: string) => {
-  if (!fs.existsSync(scriptSaveLocation)) return null
-
-  downloadAppleScript(scriptSaveLocation)
-
+export const getAppleNotes = async () => {
   if (!fs.existsSync(notesPath)) fs.mkdirSync(notesPath)
-  await saveNotesHTML(scriptSaveLocation)
+  await saveNotesHTML()
 
   const selectedFilesRet = await dialog.showOpenDialog({
     defaultPath: notesPath,

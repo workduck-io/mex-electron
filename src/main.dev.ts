@@ -607,8 +607,7 @@ ipcMain.on(IpcAction.CLOSE_SPOTLIGHT, (_event, arg) => {
 })
 
 ipcMain.on(IpcAction.IMPORT_APPLE_NOTES, async () => {
-  const scriptSaveLocation = path.join(app.getPath('userData'), 'fetchAppleNotes.applescript')
-  const selectedAppleNotes = await getAppleNotes(scriptSaveLocation)
+  const selectedAppleNotes = await getAppleNotes()
 
   if (selectedAppleNotes) mex?.webContents.send(IpcAction.SET_APPLE_NOTES_DATA, selectedAppleNotes)
 })

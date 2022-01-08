@@ -1,6 +1,4 @@
-import { app, Menu, shell, BrowserWindow, MenuItemConstructorOptions, autoUpdater, dialog } from 'electron'
-import { getAppleNotes } from './Importers/appleNotes'
-import path from 'path'
+import { app, Menu, shell, BrowserWindow, MenuItemConstructorOptions, autoUpdater } from 'electron'
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string
@@ -53,13 +51,6 @@ export default class MenuBuilder {
         { type: 'separator' },
         { label: 'Services', submenu: [] },
         { type: 'separator' },
-        {
-          label: 'Import from Apple Notes',
-          click: () => {
-            const scriptSaveLocation = path.join(app.getPath('userData'), 'fetchAppleNotes.applescript')
-            getAppleNotes(scriptSaveLocation)
-          }
-        },
         { type: 'separator' },
         {
           label: 'Check for Updates ¯\\_(ツ)_/¯',
