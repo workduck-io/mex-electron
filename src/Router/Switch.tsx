@@ -32,7 +32,6 @@ const Switch = () => {
   const location = useLocation()
   const q = useQStore((s) => s.q)
   const { saveQ } = useSaveQ()
-  useInitOlvy()
   // const Perspective = '2000px'
   // const transitions = useTransition(location, {
   //   from: {
@@ -60,7 +59,6 @@ const Switch = () => {
 
   // return transitions((props, item) => (
   return (
-    // <SwitchWrapper style={props}>
     <SwitchWrapper>
       {/* <ReactRouterSwitch location={item}> */}
       <ReactRouterSwitch>
@@ -69,7 +67,6 @@ const Switch = () => {
         <ProtectedRoute path="/integrations" component={Integrations} />
         <ProtectedRoute exact path="/snippets" component={Snippets} />
         <ProtectedRoute exact path="/snippets/editor" component={SnippetEditor} />
-        <ProtectedRoute path="/user" component={UserPage} />
         <ProtectedRoute path="/settings" component={Settings} />
         <ProtectedRoute path="/search" component={Search} />
         <ProtectedRoute path="/tag/:tag" component={Tag} />

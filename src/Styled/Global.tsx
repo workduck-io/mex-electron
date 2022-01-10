@@ -3,6 +3,7 @@ import { ThinScrollbar } from './helpers'
 import normalize from './normalize'
 import { ModalStyles } from '../Components/Refactor/styles'
 import { TippyBalloonStyles } from './Toolbar'
+import { OlvyModal } from '../Olvy/styled'
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}; // NormalizeCSS normalization
@@ -66,6 +67,9 @@ const GlobalStyle = createGlobalStyle`
 
   /* Tippy Balloon styles */
   ${TippyBalloonStyles}
+
+  /* Olvy styles */
+  ${OlvyModal}
 
   body > ul[role="listbox"]{
     display: block;

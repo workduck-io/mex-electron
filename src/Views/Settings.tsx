@@ -1,11 +1,15 @@
 import React from 'react'
-import { Route, Switch, NavLink, useRouteMatch } from 'react-router-dom'
+import { Route, Switch, NavLink, useRouteMatch, useHistory } from 'react-router-dom'
 import Shortcuts from '../Components/Settings/Shortcuts'
 import styled from 'styled-components'
-import { IntegrationContainer, Title } from '../Styled/Integration'
+import { IntegrationContainer, Margin, Title } from '../Styled/Integration'
 import Themes from '../Components/Settings/Themes'
 import About from '../Components/Settings/About'
 import AutoUpdate from '../Components/Settings/AutoUpdate'
+import UserPage from './UserPage'
+import { CustomEvents } from '../analytics/events'
+import { useAuthentication } from '../Hooks/useAuth/useAuth'
+import useAnalytics from '../analytics'
 import { Button } from '../Styled/Buttons'
 
 const SettingsContainer = styled.section`
@@ -43,6 +47,24 @@ const SettingsContent = styled.div`
 
 const Settings = () => {
   const { path } = useRouteMatch()
+  const { logout } = useAuthentication()
+  const history = useHistory()
+
+  const { addEventProperties } = useAnalytics()
+
+  const onLogout = (e: any) => {
+    e.preventDefault()
+    logout()
+    addEventProperties({ [CustomEvents.LOGGED_IN]: false })
+    /**
+     * Sessions ends after 30mins of inactivity
+     *
+     * identifyUser(undefined)
+     * */
+
+    history.push('/login')
+  }
+
   return (
     <IntegrationContainer>
       <Title>Settings</Title>
@@ -50,6 +72,9 @@ const Settings = () => {
         <SettingsOptions>
           <SettingTitle exact tabIndex={-1} activeClassName="active" to={`${path}`}>
             Themes
+          </SettingTitle>
+          <SettingTitle exact tabIndex={-1} activeClassName="active" to={`${path}/user`}>
+            Profile
           </SettingTitle>
           <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/shortcuts`}>
             Shortcuts
@@ -60,13 +85,15 @@ const Settings = () => {
           <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/autoupdate`}>
             Automatic Updates
           </SettingTitle>
-          <Button id="olvy-target">What&apos;s new</Button>
+          <Margin />
+          <Button onClick={onLogout}>Logout</Button>
         </SettingsOptions>
         <SettingsContent>
           <Switch>
             <Route exact path={path}>
               <Themes />
             </Route>
+            <Route path={`${path}/user`} component={UserPage} />
             <Route path={`${path}/shortcuts`}>
               <Shortcuts />
             </Route>

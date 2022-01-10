@@ -12,6 +12,7 @@ import Modals from './Layout/Modals'
 import Switch from './Router/Switch'
 import GlobalStyle from './Styled/Global'
 import { initializeSentry } from './sentry'
+import FloatingButton from './Components/FloatingButton'
 
 Modal.setAppElement('#root')
 
@@ -35,6 +36,8 @@ function App() {
 
             {/* Non-Rendering components */}
             <GlobalStyle />
+            {/* Floating help modal button */}
+            <FloatingButton />
           </Main>
         </Contexts>
       </Providers>

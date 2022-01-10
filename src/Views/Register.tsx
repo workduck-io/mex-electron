@@ -88,8 +88,10 @@ const Register = () => {
     try {
       await verifySignup(data.code, metadata)
 
-      setOnboardData()
-      changeOnboarding(true)
+      // TODO: Uncomment this when we've new flow for onboarding
+      // setOnboardData()
+      // changeOnboarding(true)
+
       ipcRenderer.send(IpcAction.START_ONBOARDING, { from: AppType.MEX })
     } catch (err) {
       toast('Error occured!')
