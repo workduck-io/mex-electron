@@ -1,3 +1,4 @@
+import { getPlateStore, usePlateStore } from '@udecode/plate'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph'
 import toast from 'react-hot-toast'
 import { useGraphStore } from '../../Components/Graph/GraphStore'
@@ -64,6 +65,34 @@ const useLoad = () => {
     return inIlinks || inArchive || isDraftNode
   }
 
+  const fetchAndSaveNode = (node: NodeProperties) => {
+    console.log('Fetch and save', { node })
+    // const node = getNode(uid)
+    setFetchingContent(true)
+    getDataAPI(node.uid)
+      .then((res) => {
+        if (res) {
+          const { data, metadata } = res
+
+          if (data) {
+            updateEmptyBlockTypes(data, ELEMENT_PARAGRAPH)
+            loadNodeAndReplaceContent(node, data)
+            // getPlateStore(`StandardEditor_${node.uid}`).set.value(data)
+            getPlateStore(`StandardEditor_${node.uid}`).set.editableProps({ readOnly: false })
+            getPlateStore(`StandardEditor_${node.uid}`).set.resetEditor()
+            setContent(node.uid, data, metadata)
+            // setFetchingContent(false)
+          }
+        }
+      })
+      .catch((e) => {
+        console.error(e)
+      })
+      .finally(() => {
+        setFetchingContent(false)
+      })
+  }
+
   // const saveDebouncedAPIfs = () => {
   // const oldNode = useEditorStore.getState().node
   // if (oldNode && oldNode.uid !== '__null__') saveNodeAPIandFs(oldNode.uid)
@@ -98,26 +127,7 @@ const useLoad = () => {
     loadNodeEditor(node)
 
     if (options.fetch && !hasBeenLoaded) {
-      setFetchingContent(true)
-      getDataAPI(uid)
-        .then((res) => {
-          if (res) {
-            const { data, metadata } = res
-
-            if (data) {
-              updateEmptyBlockTypes(data, ELEMENT_PARAGRAPH)
-              loadNodeAndReplaceContent(node, data)
-
-              setContent(uid, data, metadata)
-            }
-          }
-        })
-        .catch((e) => {
-          console.error(e)
-        })
-        .finally(() => {
-          setFetchingContent(false)
-        })
+      fetchAndSaveNode(node)
     }
   }
 
@@ -132,7 +142,7 @@ const useLoad = () => {
     loadNodeAndReplaceContent(nodeProps, [...nodeContent, ...content])
   }
 
-  return { loadNode, loadNodeAndAppend, loadNodeProps, getNode }
+  return { loadNode, fetchAndSaveNode, loadNodeAndAppend, loadNodeProps, getNode }
 }
 
 export default useLoad
