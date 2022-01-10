@@ -20,6 +20,11 @@ import { useEditorStore } from './Store/EditorStore'
 import { useContentStore } from './Store/ContentStore'
 import Toolbar from './Toolbar'
 
+interface ContentEditorState {
+  uid: string
+  content: any[] | undefined
+}
+
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const { toggleFocusMode } = useLayout()
@@ -43,6 +48,7 @@ const ContentEditor = () => {
   const getContent = useContentStore((state) => state.getContent)
 
   const onChangeSave = (val: any[]) => {
+    console.log('Trigger onChange', { node, val })
     if (val && node && node.uid !== '__null__') {
       // console.log('Saving onChange', { node, val })
 

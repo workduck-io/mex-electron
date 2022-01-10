@@ -106,7 +106,6 @@ const useDataStore = create<DataStoreState>((set, get) => ({
    */
   addInternalLink: (ilink, uid) => {
     console.log('Creating links', { ilink, uid })
-
     // No self links will be added
     if (uid === ilink.uid) return
 
