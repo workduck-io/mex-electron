@@ -59,9 +59,11 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
     }),
 
   loadNode: (node: NodeProperties) => {
+    const content = getContent(node.uid)
+    console.log('Loading the node', { node, content })
     set({
       node,
-      content: getContent(node.uid)
+      content
     })
   },
 

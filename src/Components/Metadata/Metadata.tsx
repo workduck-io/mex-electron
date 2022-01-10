@@ -157,11 +157,12 @@ const Metadata = () => {
     setMetadata(contentMetadata)
   }, [node, content])
 
-  // console.log(node.uid, metadata)
+  // console.log({ node, metadata })
 
   if (content === undefined || content.metadata === undefined || metadata === undefined) return null
   return (
     <MetadataWrapper>
+      {node.uid}
       <DataGroup>
         {metadata.createdBy !== undefined && (
           <DataWrapper interactive={metadata.createdAt !== undefined}>
