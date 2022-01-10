@@ -24,38 +24,14 @@ interface ContentEditorState {
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const { toggleFocusMode } = useLayout()
-  const { loadNode } = useLoad()
+  const { loadNode, fetchAndSaveNode } = useLoad()
 
   const { showGraph } = useToggleElements()
 
-  // const uid = useEditorStore((state) => state.node.uid)
-  // const node = useEditorStore((state) => state.node)
-  // const fsContent = useEditorStore((state) => state.content)
   const { uid, node, fsContent } = useEditorStore(
     (state) => ({ uid: state.node.uid, node: state.node, fsContent: state.content }),
     shallow
   )
-  // const { nuts, honey } = useStore(state => ({ nuts: state.nuts, honey: state.honey }), shallow)
-  // const lastChanged = useRef<number>(-1)
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const [state, setState] = useState<ContentEditorState>({ uid, content: undefined })
-
-  // useEffect(() => {
-  //   if (fsContent) {
-  //     console.log('Setting content from uid change', { fsContent, uid })
-  //     // Setting content
-  //     setState({ uid, content: fsContent })
-  //   }
-  // }, [uid])
-
-  // useEffect(() => {
-  //   if (fsContent) {
-  //     console.log('Setting content from fs change', { fsContent, uid })
-  //     // Setting content
-  //     setState({ uid, content: fsContent })
-  //   }
-  // }, [])
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { shortcutHandler } = useKeyListener()
@@ -98,7 +74,8 @@ const ContentEditor = () => {
       [shortcuts.refreshNode.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.refreshNode, () => {
-          loadNode(uid)
+          fetchAndSaveNode(useEditorStore.getState().node)
+          // loadNode(uid, { fetch: true, savePrev: false })
         })
       }
     })
@@ -120,7 +97,7 @@ const ContentEditor = () => {
           readOnly={fetchingContent}
           content={fsContent}
           onChange={onChangeSave}
-          editorId={`StandardEditor_${uid}_${fetchingContent ? 'loading' : 'edit'}`}
+          editorId={`StandardEditor_${uid}`}
         />
       </StyledEditor>
       <NodeIntentsModal uid={uid} />
