@@ -4,9 +4,6 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useGraphStore } from '../Components/Graph/GraphStore'
 import { EditorStyles } from '../Styled/Editor'
-import { withStyledDraggables } from './Actions/withDraggable'
-import { withStyledPlaceHolders } from './Actions/withPlaceholder'
-import components from './Components/components'
 import BallonMarkToolbarButtons from './Components/EditorToolbar'
 import { MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
 import generatePlugins from './Plugins/plugins'
@@ -44,7 +41,7 @@ const Editor = ({
 
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
 
-  const generateEditorId = () => `${editorId}`
+  // const generateEditorId = () => `${editorId}`
   const editorRef = usePlateEditorRef()
 
   useEffect(() => {
@@ -68,7 +65,7 @@ const Editor = ({
     }
   ]
 
-  // console.log('rendering editor', {})
+  console.log('rendering editor', { editorId, content })
 
   return (
     <>
@@ -77,7 +74,7 @@ const Editor = ({
           <EditorStyles onClick={() => setNodePreview(false)} data-tour="mex-onboarding-draft-editor">
             {showBalloonToolbar && <BallonMarkToolbarButtons />}
             <Plate
-              id={generateEditorId()}
+              id={editorId}
               editableProps={editableProps}
               value={content}
               plugins={plugins}

@@ -5,13 +5,13 @@ import { NodeProperties } from './EditorStore'
 import { NodeEditorContent } from './Types'
 
 /** Get the contents of the node with id */
-export function getContent (uid: string): NodeEditorContent {
-  // console.log('Loading ID', id);
+export function getContent(uid: string): NodeEditorContent {
   // create a hashmap with id vs content
   // load the content from hashmap
 
   const { contents } = useContentStore.getState()
 
+  console.log('Loading content', { uid, contents, uidCon: contents[uid] })
   if (contents[uid]) {
     const { content } = contents[uid]
 

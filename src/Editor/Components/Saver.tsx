@@ -58,7 +58,6 @@ export const useSaver = () => {
   // const editorState = usePlateSelectors(usePlateId()).value(
 
   const { saveEditorAndUpdateStates } = useDataSaverFromContent()
-  // const editorState = usePlateSelectors(getPlateId())?.value()
 
   /**
    * Should be run on explicit save as it saves the current editor state
@@ -71,22 +70,19 @@ export const useSaver = () => {
   ) => {
     const state = platesStore.get.state()
 
-    console.log({ state, id: state.main.get.id(), pid: getPlateId() })
     const defaultNode = useEditorStore.getState().node
     const cnode = node || defaultNode
     // setContent then save
 
-    // if (editorState) saveEditorAndUpdateStates(cnode, editorState)
     const editorId = getPlateId()
     const hasState = !!state[editorId]
     if (hasState) {
       const editorState = state[editorId].get.value()
-      // console.log('NEW, ', { editorState })
       saveEditorAndUpdateStates(cnode, editorState)
     }
 
     if (writeToFile !== false) {
-      console.log('CALLED')
+      // console.log('CALLED')
       saveData()
     }
     if (notification !== false) toast('Saved!', { duration: 1000 })
