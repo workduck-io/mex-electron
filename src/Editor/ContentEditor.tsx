@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import tinykeys from 'tinykeys'
+import shallow from 'zustand/shallow'
 import { useHelpStore } from '../Components/Help/HelpModal'
 import Metadata from '../Components/Metadata/Metadata'
 import NodeIntentsModal from '../Components/NodeIntentsModal/NodeIntentsModal'
@@ -15,6 +16,11 @@ import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
 import Toolbar from './Toolbar'
 
+interface ContentEditorState {
+  uid: string
+  content: any[] | undefined
+}
+
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const { toggleFocusMode } = useLayout()
@@ -22,19 +28,34 @@ const ContentEditor = () => {
 
   const { showGraph } = useToggleElements()
 
-  const uid = useEditorStore((state) => state.node.uid)
-  const node = useEditorStore((state) => state.node)
-  const fsContent = useEditorStore((state) => state.content)
-  const lastChanged = useRef<number>(-1)
+  // const uid = useEditorStore((state) => state.node.uid)
+  // const node = useEditorStore((state) => state.node)
+  // const fsContent = useEditorStore((state) => state.content)
+  const { uid, node, fsContent } = useEditorStore(
+    (state) => ({ uid: state.node.uid, node: state.node, fsContent: state.content }),
+    shallow
+  )
+  // const { nuts, honey } = useStore(state => ({ nuts: state.nuts, honey: state.honey }), shallow)
+  // const lastChanged = useRef<number>(-1)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [content, setContent] = useState<any[] | undefined>(undefined)
+  // const [state, setState] = useState<ContentEditorState>({ uid, content: undefined })
 
-  useEffect(() => {
-    if (fsContent) {
-      setContent(fsContent)
-    }
-  }, [fsContent, uid])
+  // useEffect(() => {
+  //   if (fsContent) {
+  //     console.log('Setting content from uid change', { fsContent, uid })
+  //     // Setting content
+  //     setState({ uid, content: fsContent })
+  //   }
+  // }, [uid])
+
+  // useEffect(() => {
+  //   if (fsContent) {
+  //     console.log('Setting content from fs change', { fsContent, uid })
+  //     // Setting content
+  //     setState({ uid, content: fsContent })
+  //   }
+  // }, [])
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { shortcutHandler } = useKeyListener()
@@ -45,7 +66,10 @@ const ContentEditor = () => {
   const add2Q = useQStore((s) => s.add2Q)
 
   const onChangeSave = (val: any[]) => {
+    console.log('Trigger onChange', { node, val })
     if (val && node && node.uid !== '__null__') {
+      console.log('Saving onChange', { node, val })
+
       add2Q(node.uid)
       saveEditorAndUpdateStates(node, val, false)
     }
@@ -83,7 +107,7 @@ const ContentEditor = () => {
     }
   }, [shortcuts, toggleFocusMode])
 
-  // console.log('CE', { q })
+  console.log('CE', { ce: `StandardEditor_${uid}_${fetchingContent ? 'loading' : 'edit'}`, fsContent, uid })
 
   return (
     <>
@@ -94,7 +118,7 @@ const ContentEditor = () => {
         <Editor
           showBalloonToolbar
           readOnly={fetchingContent}
-          content={content}
+          content={fsContent}
           onChange={onChangeSave}
           editorId={`StandardEditor_${uid}_${fetchingContent ? 'loading' : 'edit'}`}
         />

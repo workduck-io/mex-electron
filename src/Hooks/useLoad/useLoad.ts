@@ -69,7 +69,11 @@ const useLoad = () => {
   // if (oldNode && oldNode.uid !== '__null__') saveNodeAPIandFs(oldNode.uid)
   // }
 
+  /**
+   * Loads a node in the editor. This does not navigate to editor.
+   */
   const loadNode = async (uid: string, options: LoadNodeProps = { savePrev: true, fetch: USE_API() }) => {
+    console.log('Loading Node', { uid, options })
     let hasBeenLoaded = false
     if (!options.node && !isLocalNode(uid)) {
       toast.error('Selected node does not exist.')

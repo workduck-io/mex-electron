@@ -98,7 +98,12 @@ const Init = () => {
           ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: false })
           return { d, auth: false }
         })
-        .then(({ d, auth }) => auth && loadNode(getUidFromNodeIdAndLinks(d.ilinks, d.baseNodeId)))
+        .then(({ d, auth }) => {
+          if (auth) {
+            // TODO: Fix loading of the __null__ node on first start of a fresh install
+            loadNode(getUidFromNodeIdAndLinks(d.ilinks, d.baseNodeId))
+          }
+        })
         .then(() => history.push('/editor'))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()

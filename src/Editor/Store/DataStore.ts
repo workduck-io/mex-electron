@@ -42,6 +42,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
   // Add a new ILink to the store
   addILink: (ilink, uid, parentId, archived) => {
+    // console.log('Adding ILink', { ilink, uid, parentId, archived })
     const { key, isChild } = withoutContinuousDelimiter(ilink)
 
     if (key) {
@@ -99,6 +100,10 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   setBaseNodeId: (baseNodeId) => set({ baseNodeId }),
 
   addInternalLink: (ilink, uid) => {
+    console.log('Creating links', { ilink, uid })
+    // No self links will be added
+    if (uid === ilink.uid) return
+
     let nodeLinks = get().linkCache[uid]
     let secondNodeLinks = get().linkCache[ilink.uid]
 
