@@ -68,13 +68,13 @@ const useLoad = () => {
   }
 
   const fetchAndSaveNode = (node: NodeProperties) => {
-    console.log('Fetch and save', { node })
+    // console.log('Fetch and save', { node })
     // const node = getNode(uid)
     setFetchingContent(true)
     getDataAPI(node.uid)
       .then((res) => {
         if (res) {
-          console.log(res)
+          // console.log(res)
           const { data, metadata, version } = res
 
           if (data) {
@@ -87,7 +87,7 @@ const useLoad = () => {
             }
             loadNodeAndReplaceContent(node, nodeContent)
             // getPlateStore(`StandardEditor_${node.uid}`).set.value(data)
-            console.log({ nodeContent, data, res })
+            // console.log({ nodeContent, data, res })
             // const editorId = getEditorId(node.uid, version, false)
             // getPlateStore(editorId).set.editableProps({ readOnly: false })
             // getPlateStore(editorId).set.resetEditor()
@@ -113,7 +113,7 @@ const useLoad = () => {
    * Loads a node in the editor. This does not navigate to editor.
    */
   const loadNode = async (uid: string, options: LoadNodeProps = { savePrev: true, fetch: USE_API() }) => {
-    console.log('Loading Node', { uid, options })
+    // console.log('Loading Node', { uid, options })
     let hasBeenLoaded = false
     if (!options.node && !isLocalNode(uid)) {
       toast.error('Selected node does not exist.')
