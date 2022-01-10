@@ -184,7 +184,7 @@ const Nav = ({ links }: NavProps) => {
         )}
       </MainLinkContainer>
       <div>
-        {authenticated ? (
+        {/* {authenticated ? (
           <NavTooltip singleton={target} content="User">
             <Link exact tabIndex={-1} activeClassName="active" to="/user" key="nav_user">
               {GetIcon(user3Line)}
@@ -196,7 +196,7 @@ const Nav = ({ links }: NavProps) => {
               {GetIcon(lockPasswordLine)}
             </Link>
           </NavTooltip>
-        )}
+        )} */}
         <NavTooltip
           singleton={target}
           content={<TooltipTitleWithShortcut title="Search" shortcut={shortcuts.showSearch.keystrokes} />}
@@ -205,12 +205,12 @@ const Nav = ({ links }: NavProps) => {
             {GetIcon(searchLine)}
           </Link>
         </NavTooltip>
-        <NavTooltip
+        {/* <NavTooltip
           singleton={target}
           content={<TooltipTitleWithShortcut title="Shortcuts" shortcut={shortcuts.showHelp.keystrokes} />}
         >
           <HelpTooltip />
-        </NavTooltip>
+        </NavTooltip> */}
         <NavTooltip
           singleton={target}
           content={<TooltipTitleWithShortcut title="Settings" shortcut={shortcuts.showSettings.keystrokes} />}

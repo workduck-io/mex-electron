@@ -52,8 +52,9 @@ const useNavlinks = () => {
         icon: GetIcon(quillPenLine)
       },
       {
-        title: 'Archived',
+        title: 'Archive',
         path: '/archive',
+        shortcut: shortcuts.showArchive.keystrokes,
         icon: GetIcon(archiveFill)
       }
     ]

@@ -14,6 +14,7 @@ import Switch from './Router/Switch'
 import GlobalStyle from './Styled/Global'
 import { initializeSentry } from './sentry'
 import { IS_DEV } from './Defaults/dev_'
+import FloatingButton from './Components/FloatingButton'
 
 if (!IS_DEV) initializeSentry()
 
@@ -37,6 +38,8 @@ function App() {
 
             {/* Non-Rendering components */}
             <GlobalStyle />
+            {/* Floating help modal button */}
+            <FloatingButton />
           </Main>
         </Contexts>
       </Providers>

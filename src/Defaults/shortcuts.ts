@@ -74,6 +74,11 @@ export const defaultShortcuts = {
     keystrokes: '$mod+Shift+KeyG',
     category: 'Actions'
   },
+  showArchive: {
+    title: 'Archive',
+    keystrokes: '$mod+Shift+KeyA',
+    category: 'Actions'
+  },
   showLookup: {
     title: 'Open Lookup',
     keystrokes: '$mod+KeyL',

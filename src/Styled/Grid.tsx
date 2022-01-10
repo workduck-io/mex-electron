@@ -4,7 +4,7 @@ import { size } from './responsive'
 
 export const GridCss = (smCol = 2, lgCol = 3, spacing?: string) => css`
   display: grid;
-  grid-gap: ${({ theme }) => (spacing || theme.spacing.medium)};
+  grid-gap: ${({ theme }) => spacing || theme.spacing.medium};
 
   @media (max-width: ${size.wide}) {
     grid-template-columns: repeat(${smCol}, 1fr);
