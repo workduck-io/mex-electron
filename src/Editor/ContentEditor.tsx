@@ -92,7 +92,7 @@ const ContentEditor = () => {
         shortcutHandler(shortcuts.refreshNode, () => {
           const node = useEditorStore.getState().node
           const content = getContent(node.uid)
-          console.log('Refreshing: ', { node, content })
+          // console.log('Refreshing: ', { node, content })
           saveApiAndUpdate(useEditorStore.getState().node, content.content)
           // fetchAndSaveNode(useEditorStore.getState().node)
           // loadNode(uid, { fetch: true, savePrev: false })
