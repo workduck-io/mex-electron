@@ -1,4 +1,4 @@
-import { ELEMENT_H1, ELEMENT_PARAGRAPH, withPlaceholders } from '@udecode/plate'
+import { ELEMENT_H1, ELEMENT_PARAGRAPH, ELEMENT_TH, withPlaceholders } from '@udecode/plate'
 
 export const withStyledPlaceHolders = (components: any) =>
   withPlaceholders(components, [
@@ -11,5 +11,10 @@ export const withStyledPlaceHolders = (components: any) =>
       key: ELEMENT_H1,
       placeholder: 'Untitled',
       hideOnBlur: false
+    },
+    {
+      key: ELEMENT_TH,
+      placeholder: 'Header',
+      hideOnBlur: true
     }
   ])

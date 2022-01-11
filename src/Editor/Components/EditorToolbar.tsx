@@ -6,10 +6,23 @@ import h3 from '@iconify-icons/ri/h-3'
 import italicIcon from '@iconify-icons/ri/italic'
 import linkIcon from '@iconify-icons/ri/link'
 import listOrdered from '@iconify-icons/ri/list-ordered'
+
+import NewTableIcon from '@iconify-icons/fluent/table-add-20-filled'
+import AddRowIcon from '@iconify-icons/fluent/table-stack-down-20-filled'
+import DeleteTableIcon from '@iconify-icons/fluent/table-dismiss-20-filled'
+import DeleteRowIcon from '@iconify-icons/fluent/table-delete-row-20-filled'
+import AddColumnIcon from '@iconify-icons/fluent/table-stack-right-20-filled'
+import DeleteColumnIcon from '@iconify-icons/fluent/table-delete-column-20-filled'
+
 import listUnordered from '@iconify-icons/ri/list-unordered'
 import { Icon } from '@iconify/react'
 import {
+  addColumn,
+  addRow,
   BlockToolbarButton,
+  deleteColumn,
+  deleteRow,
+  deleteTable,
   ELEMENT_BLOCKQUOTE,
   ELEMENT_H1,
   ELEMENT_H2,
@@ -17,10 +30,12 @@ import {
   ELEMENT_OL,
   ELEMENT_UL,
   getPluginType,
+  insertTable,
   ListToolbarButton,
   MarkToolbarButton,
   MARK_BOLD,
   MARK_ITALIC,
+  TableToolbarButton,
   ToolbarButtonProps,
   usePlateEditorRef,
   usePlateId
@@ -65,6 +80,14 @@ const BallonMarkToolbarButtons = () => {
         icon={<Icon height={20} icon={h3} />}
         tooltip={{ content: 'Heading 3', ...tooltip }}
       />
+      <ButtonSeparator />
+
+      <TableToolbarButton icon={<Icon icon={NewTableIcon} />} transform={insertTable} />
+      <TableToolbarButton icon={<Icon icon={AddRowIcon} />} transform={addRow} />
+      <TableToolbarButton icon={<Icon icon={AddColumnIcon} />} transform={addColumn} />
+      <TableToolbarButton icon={<Icon icon={DeleteRowIcon} />} transform={deleteRow} />
+      <TableToolbarButton icon={<Icon icon={DeleteColumnIcon} />} transform={deleteColumn} />
+      <TableToolbarButton icon={<Icon icon={DeleteTableIcon} />} transform={deleteTable} />
 
       <ButtonSeparator />
 

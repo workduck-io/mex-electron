@@ -78,6 +78,10 @@ const useEditorPluginConfig = (editorId: string) => {
         slateElementType: ELEMENT_EXCALIDRAW,
         command: 'canvas'
       },
+      table: {
+        slateElementType: ELEMENT_TABLE,
+        command: 'table'
+      },
       // For `/sync`
       // sync_block: {
       //   slateElementType: ELEMENT_SYNC_BLOCK,

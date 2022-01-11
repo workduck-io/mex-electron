@@ -1,4 +1,4 @@
-import { getBlockAbove, getPluginType, insertNodes, PlateEditor, TElement } from '@udecode/plate'
+import { getBlockAbove, getPluginType, insertNodes, insertTable, PlateEditor, TElement } from '@udecode/plate'
 import { useCallback } from 'react'
 import { Editor, Transforms } from 'slate'
 import useAnalytics from '../../../analytics'
@@ -24,7 +24,6 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
 
     const commandConfig = keys[commandKey]
     // console.log({ commandConfig })
-
     if (targetRange) {
       // console.log('useSlashCommandOnChange', { commandConfig, commandKey, keys, item })
 
@@ -41,6 +40,9 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
           Transforms.select(editor, targetRange)
           insertNodes<TElement>(editor, content)
         }
+      } else if (item.text === 'table') {
+        Transforms.select(editor, targetRange)
+        insertTable(editor, { header: true })
       } else {
         // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
         const type = getPluginType(editor, commandConfig.slateElementType)
@@ -52,7 +54,6 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
         trackEvent(eventName, { 'mex-type': type, 'mex-data': data })
 
         Transforms.select(editor, targetRange)
-        console.log(type, data)
 
         insertNodes<TElement>(editor, {
           type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
