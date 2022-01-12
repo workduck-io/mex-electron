@@ -305,6 +305,20 @@ export const EditorStyles = styled.div`
     outline: none;
   }
 
+  .slate-Popover {
+    background: ${({ theme }) => theme.colors.background.highlight};
+  }
+
+  .slate-Popover .slate-Button {
+    padding: inherit;
+    background: ${({ theme }) => theme.colors.background.highlight};
+    svg {
+      margin: -7px;
+      color: ${({ theme }) => theme.colors.primary};
+      height: inherit;
+    }
+  }
+
   input,
   textarea {
     color: ${({ theme }) => theme.colors.form.input.fg};

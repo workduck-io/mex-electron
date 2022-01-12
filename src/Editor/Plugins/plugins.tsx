@@ -34,16 +34,25 @@ import {
   ELEMENT_HR,
   createHorizontalRulePlugin,
   setNodes,
+  createAlignPlugin,
   ELEMENT_DEFAULT,
   insertNodes,
-  createPlugins
+  createPlugins,
+  ELEMENT_H1,
+  ELEMENT_H2,
+  ELEMENT_H3,
+  ELEMENT_H4,
+  ELEMENT_H5,
+  ELEMENT_H6,
+  ELEMENT_PARAGRAPH
 } from '@udecode/plate'
 
 import { withStyledDraggables } from '../Actions/withDraggable'
 import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
 import components from '../Components/components'
 
-import { createExcalidrawPlugin, ExcalidrawElement, ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
+import { createExcalidrawPlugin, ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
+import { ExcalidrawElement } from '@udecode/plate-ui-excalidraw'
 
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
 import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
@@ -60,6 +69,7 @@ import {
   optionsSelectOnBackspacePlugin,
   optionsSoftBreakPlugin
 } from './pluginOptions'
+import TableWrapper from '../Components/TableWrapper'
 
 /**
  * Plugin generator
@@ -93,7 +103,7 @@ const generatePlugins = () => {
     createImagePlugin(), // Image
     createLinkPlugin(), // Link
     createListPlugin(), // List
-    createTablePlugin(), // Table
+    createTablePlugin({ component: TableWrapper }), // Table
 
     // Editing Plugins
     createSoftBreakPlugin(optionsSoftBreakPlugin),
@@ -101,7 +111,13 @@ const generatePlugins = () => {
     createResetNodePlugin(optionsResetBlockTypePlugin),
     createHorizontalRulePlugin(),
     createSelectOnBackspacePlugin({ options: { query: { allow: [ELEMENT_HR, ELEMENT_EXCALIDRAW] } } }),
-
+    createAlignPlugin({
+      inject: {
+        props: {
+          validTypes: [ELEMENT_PARAGRAPH, ELEMENT_H1, ELEMENT_H2, ELEMENT_H3, ELEMENT_H4, ELEMENT_H5, ELEMENT_H6]
+        }
+      }
+    }),
     // Autoformat markdown syntax to elements (**, #(n))
     createAutoformatPlugin({
       options: {

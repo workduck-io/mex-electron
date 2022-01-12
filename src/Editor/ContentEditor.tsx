@@ -108,6 +108,8 @@ const ContentEditor = () => {
     <>
       <StyledEditor showGraph={showGraph} className="mex_editor">
         <Toolbar />
+
+        
         <Metadata />
 
         <Editor
