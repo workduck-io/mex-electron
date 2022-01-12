@@ -26,7 +26,7 @@ const Importers = () => {
             <li>Pick the notes you would like to see in Mex</li>
             <li>The Notes will be imported under the &#34;Apple Notes&#34; Hierarchy</li>
           </ul>
-          <h4>Please close the Apple Notes if it is open before importing your notes</h4>
+          <h4>Please close the Apple Notes app if it is open before importing your notes</h4>
         </ImporterCard>
       </Button>
     </Wrapper>

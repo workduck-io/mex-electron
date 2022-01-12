@@ -47,6 +47,11 @@ const parseAppleNotesTitle = (filepath: string) => {
   return { APID, NoteTitle }
 }
 
+const removeImagesHTML = (HTMLContent: string) => {
+  const content = HTMLContent.replace(/<img[^>]*>/g, '')
+  return content
+}
+
 export const getAppleNotes = async () => {
   if (!fs.existsSync(notesPath)) fs.mkdirSync(notesPath)
   await saveNotesHTML()
@@ -69,7 +74,8 @@ export const getAppleNotes = async () => {
 
   selectedFilePaths.forEach((path) => {
     const { APID, NoteTitle } = parseAppleNotesTitle(path)
-    const HTMLContent = fs.readFileSync(path, 'utf-8')
+    const rawHTML = fs.readFileSync(path, 'utf-8')
+    const HTMLContent = removeImagesHTML(rawHTML)
     const t: AppleNote = {
       APID,
       NoteTitle,
