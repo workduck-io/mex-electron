@@ -7,8 +7,9 @@ import Routes from './Routes'
 import { SpotlightProvider } from './utils/context'
 import { initializeSentry } from '../sentry'
 import { SpotlightOnboarding } from '../Components/Onboarding/steps'
+import { IS_DEV } from '../Defaults/dev_'
 
-initializeSentry()
+if (!IS_DEV) initializeSentry()
 
 export default function App() {
   const theme = useThemeStore((state) => state.theme)

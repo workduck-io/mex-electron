@@ -36,7 +36,9 @@ import _ from 'lodash'
 import { backupMexJSON } from './backup'
 import { twitterIconBase64, trayIconBase64 } from './Defaults/images'
 
-initializeSentry()
+if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
+  initializeSentry()
+}
 
 // On windows doesn't work without disabling HW Acceleration
 if (process.platform === 'win32') {
