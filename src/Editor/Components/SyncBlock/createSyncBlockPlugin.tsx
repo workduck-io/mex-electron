@@ -8,7 +8,35 @@ import { getSyncBlockDeserialize } from './getSyncBlockDeserialize'
 export const createSyncBlockPlugin = (): PlatePlugin => ({
   key: ELEMENT_SYNC_BLOCK,
   isElement: true,
-  deserializeHtml: getSyncBlockDeserialize(),
-  isInline: true,
-  isVoid: true
+  isVoid: true,
+  // deserializeHtml: getSyncBlockDeserialize(),
+  then: (editor, { type }) => ({
+    deserializeHtml: {
+      rules: [
+        {
+          validNodeName: '*'
+        }
+      ],
+      getNode: (el: HTMLElement) => {
+        const properties = el.getAttribute('data-slate-value')
+        const id = el.id
+        // const properties = el.getAttribute()
+
+        if (properties) {
+          return {
+            type,
+            id,
+            properties
+          }
+        } else {
+          return {
+            type,
+            id
+          }
+        }
+      }
+    }
+  }),
+
+  isInline: true
 })
