@@ -50,7 +50,7 @@ const ContentEditor = () => {
   }
 
   const editorId = useMemo(
-    () => getEditorId(node.uid, fsContent.version ?? 0, fetchingContent),
+    () => getEditorId(node.uid, fsContent.metadata?.updatedAt?.toString() ?? 'not_updated', fetchingContent),
     [node, fetchingContent, fsContent.version]
   )
 
