@@ -1,30 +1,28 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import tinykeys from 'tinykeys'
 import shallow from 'zustand/shallow'
 import { useHelpStore } from '../Components/Help/HelpModal'
 import Metadata from '../Components/Metadata/Metadata'
 import NodeIntentsModal from '../Components/NodeIntentsModal/NodeIntentsModal'
+import { defaultContent } from '../Defaults/baseData'
 import { useKeyListener } from '../Hooks/useCustomShortcuts/useShortcutListener'
 import useLoad from '../Hooks/useLoad/useLoad'
 import { useNavigation } from '../Hooks/useNavigation/useNavigation'
 import { useQStore } from '../Hooks/useQ'
 import useToggleElements from '../Hooks/useToggleElements/useToggleElements'
 import useLayout from '../Layout/useLayout'
+import { getEditorId } from '../Lib/EditorId'
 import { StyledEditor } from '../Styled/Editor'
+import { NodeContent } from '../Types/data'
 import { useDataSaverFromContent } from './Components/Saver'
 import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
 import Toolbar from './Toolbar'
 
-interface ContentEditorState {
-  uid: string
-  content: any[] | undefined
-}
-
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const { toggleFocusMode } = useLayout()
-  const { loadNode, fetchAndSaveNode } = useLoad()
+  const { fetchAndSaveNode } = useLoad()
 
   const { showGraph } = useToggleElements()
 
@@ -44,12 +42,17 @@ const ContentEditor = () => {
   const onChangeSave = (val: any[]) => {
     console.log('Trigger onChange', { node, val })
     if (val && node && node.uid !== '__null__') {
-      console.log('Saving onChange', { node, val })
+      // console.log('Saving onChange', { node, val })
 
       add2Q(node.uid)
       saveEditorAndUpdateStates(node, val, false)
     }
   }
+
+  const editorId = useMemo(
+    () => getEditorId(node.uid, fsContent.version ?? 0, fetchingContent),
+    [node, fetchingContent, fsContent.version]
+  )
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -95,9 +98,9 @@ const ContentEditor = () => {
         <Editor
           showBalloonToolbar
           readOnly={fetchingContent}
-          content={fsContent}
+          content={fsContent?.content ?? defaultContent.content}
           onChange={onChangeSave}
-          editorId={`StandardEditor_${uid}`}
+          editorId={editorId}
         />
       </StyledEditor>
       <NodeIntentsModal uid={uid} />

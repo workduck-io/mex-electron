@@ -1,6 +1,7 @@
 import { getPlateStore, usePlateStore } from '@udecode/plate'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph'
 import toast from 'react-hot-toast'
+import { extractMetadata } from '../../Lib/metadata'
 import { useGraphStore } from '../../Components/Graph/GraphStore'
 import { USE_API } from '../../Defaults/dev_'
 import { useDataSaverFromContent } from '../../Editor/Components/Saver'
@@ -12,6 +13,7 @@ import { NodeEditorContent } from '../../Editor/Store/Types'
 import { updateEmptyBlockTypes } from '../../Lib/helper'
 import { useApi } from '../../Requests/Save'
 import { useQStore, useSaveQ } from '../useQ'
+import { getEditorId } from '../../Lib/EditorId'
 
 type LoadNodeProps = {
   savePrev?: boolean
@@ -72,16 +74,25 @@ const useLoad = () => {
     getDataAPI(node.uid)
       .then((res) => {
         if (res) {
-          const { data, metadata } = res
+          console.log(res)
+          const { data, metadata, version } = res
 
           if (data) {
             updateEmptyBlockTypes(data, ELEMENT_PARAGRAPH)
-            loadNodeAndReplaceContent(node, data)
+            const nodeContent = {
+              type: 'editor',
+              content: data,
+              version,
+              metadata
+            }
+            loadNodeAndReplaceContent(node, nodeContent)
             // getPlateStore(`StandardEditor_${node.uid}`).set.value(data)
-            getPlateStore(`StandardEditor_${node.uid}`).set.editableProps({ readOnly: false })
-            getPlateStore(`StandardEditor_${node.uid}`).set.resetEditor()
+            console.log({ nodeContent, data, res })
+            // const editorId = getEditorId(node.uid, version, false)
+            // getPlateStore(editorId).set.editableProps({ readOnly: false })
+            // getPlateStore(editorId).set.resetEditor()
             setContent(node.uid, data, metadata)
-            // setFetchingContent(false)
+            setFetchingContent(false)
           }
         }
       })
@@ -139,7 +150,7 @@ const useLoad = () => {
     const nodeProps = getNode(uid)
     const nodeContent = getContent(uid)
 
-    loadNodeAndReplaceContent(nodeProps, [...nodeContent, ...content])
+    loadNodeAndReplaceContent(nodeProps, { ...nodeContent, content: [...nodeContent.content, ...content] })
   }
 
   return { loadNode, fetchAndSaveNode, loadNodeAndAppend, loadNodeProps, getNode }

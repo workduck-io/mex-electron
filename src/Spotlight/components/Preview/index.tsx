@@ -61,7 +61,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   useEffect(() => {
     const newNodeContent = [{ children: nodes }]
     if (preview.isSelection && nodes) {
-      const changedContent = showSource ? combineSources(fsContent, newNodeContent) : fsContent
+      const changedContent = showSource ? combineSources(fsContent.content, newNodeContent) : fsContent
 
       setNodeContent([{ children: nodes }])
       setFsContent(node.uid, [{ children: nodes }])
@@ -123,7 +123,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
             autoFocus={!normalMode}
             focusAtBeginning={!normalMode}
             readOnly={search ? true : false}
-            content={previewContent}
+            content={previewContent.content}
             editorId={node.uid}
           />
         )}

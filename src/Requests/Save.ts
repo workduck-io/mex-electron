@@ -6,6 +6,7 @@ import { apiURLs } from './routes'
 import { removeNulls } from '../Lib/helper'
 import { useAuthStore } from '../Hooks/useAuth/useAuth'
 import { useContentStore } from '../Editor/Store/ContentStore'
+import { extractMetadata } from '../Lib/metadata'
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,7 +21,7 @@ export const useApi = () => {
       lastEditedBy: useAuthStore.getState().userDetails.email,
       namespaceIdentifier: 'NAMESPACE1',
       workspaceIdentifier: getWorkspaceId(),
-      data: serializeContent(content ?? defaultContent)
+      data: serializeContent(content ?? defaultContent.content)
     }
 
     if (!USE_API()) {
@@ -30,17 +31,7 @@ export const useApi = () => {
       .post(apiURLs.saveNode, reqData, {})
       .then((d) => {
         console.log('savedData', d)
-        const metadata: any = {
-          lastEditedBy: d.data.lastEditedBy,
-          updatedAt: d.data.updatedAt
-        }
-        if (d.data.createdBy !== null) {
-          metadata.createdBy = d.data.createdBy
-        }
-        if (d.data.createdAt !== null) {
-          metadata.createdAt = d.data.createdAt
-        }
-        setMetadata(uid, removeNulls(metadata))
+        setMetadata(uid, extractMetadata(d.data))
         setContent(uid, deserializeContent(d.data.data))
       })
       .catch((e) => {
@@ -60,12 +51,12 @@ export const useApi = () => {
         }
 
         // console.log(metadata, d.data)
-        return { data: d.data.data, metadata: removeNulls(metadata) }
+        return { data: d.data.data, metadata: removeNulls(metadata), version: d.data.version ?? undefined }
       })
       .catch(console.error)
 
     if (res) {
-      return { data: deserializeContent(res.data), metadata: res.metadata ? res.metadata : undefined }
+      return { data: deserializeContent(res.data), metadata: res.metadata ?? undefined, version: res.version }
     }
   }
 

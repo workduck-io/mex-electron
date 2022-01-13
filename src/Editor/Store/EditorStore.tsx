@@ -3,6 +3,8 @@ import create from 'zustand'
 import { getContent, getInitialNode } from './helpers'
 import { NodeEditorContent } from './Types'
 import { defaultContent } from '../../Defaults/baseData'
+import { Contents } from './ContentStore'
+import { NodeContent } from '../../Types/data'
 
 export interface NodeProperties {
   title: string
@@ -18,7 +20,7 @@ export type EditorContextType = {
   node: NodeProperties
   // Contents of the current node
   // These are loaded internally from ID
-  content: NodeEditorContent
+  content: NodeContent
   readOnly: boolean
 
   setUid: (uid: string) => void
@@ -32,7 +34,7 @@ export type EditorContextType = {
 
   setFetchingContent: (value: boolean) => void
 
-  loadNodeAndReplaceContent: (node: NodeProperties, content: NodeEditorContent) => void
+  loadNodeAndReplaceContent: (node: NodeProperties, content: NodeContent) => void
 
   setReadOnly: (isReadOnly: boolean) => void
 }
@@ -68,6 +70,7 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
   },
 
   loadNodeAndReplaceContent: (node, content) => {
+    console.log('loading node and replacing content', { node, content })
     set({ node, content })
   }
 }))

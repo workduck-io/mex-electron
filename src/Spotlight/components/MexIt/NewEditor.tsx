@@ -39,7 +39,7 @@ const NewEditor = () => {
 
   useEffect(() => {
     if (fsContent) {
-      setContent(fsContent)
+      setContent(fsContent.content)
     }
   }, [fsContent, nodeId])
 
