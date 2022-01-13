@@ -180,7 +180,7 @@ const Tag = () => {
           {transition((styles, n, _t, _i) => {
             const con = contents[n]
             const nodeId = getNodeIdFromUid(n)
-            const content = con ? con.content : defaultContent
+            const content = con ? con.content : defaultContent.content
             return (
               <Result
                 onClick={() => {

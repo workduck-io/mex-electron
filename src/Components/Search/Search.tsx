@@ -197,7 +197,7 @@ const Search = () => {
             result.map((c, i) => {
               const con = contents[c.nodeUID]
               const nodeId = getNodeIdFromUid(c.nodeUID)
-              const content = con ? con.content : defaultContent
+              const content = con ? con.content : defaultContent.content
               // console.log(c.matchField.includes('title'))
               return (
                 <Result

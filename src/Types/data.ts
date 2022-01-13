@@ -10,9 +10,19 @@ export interface NodeMetadata {
 }
 
 export interface NodeContent {
+  /** Type of content */
+  // Usually init when created
+  // editor when it has been updated
+  // TODO: Check where this is necessary and try to remove it
   type: string
+
+  /** Version */
   content: NodeEditorContent
-  // Node Metadata
+
+  /** Version */
+  version?: number
+
+  /** Node Metadata */
   metadata?: NodeMetadata
 }
 

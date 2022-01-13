@@ -37,7 +37,7 @@ export const withoutContinuousDelimiter = (text: string, delimiter = SEPARATOR) 
     .filter((ch) => ch !== '')
     .join(delimiter)
 
-  if (text.startsWith(delimiter) && key.length > 0) return { key: `.${key}`, isChild: true }
+  if (text?.startsWith(delimiter) && key.length > 0) return { key: `.${key}`, isChild: true }
   return { key, isChild: false }
 }
 

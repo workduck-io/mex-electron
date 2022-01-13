@@ -70,7 +70,7 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
           setSearch('')
 
           if (selection) {
-            const data = [...getContent(newNode.uid), ...nodeContent]
+            const data = [...getContent(newNode.uid)?.content, ...nodeContent]
             saveEditorAndUpdateStates(newNode, data, true)
             saveData()
 
