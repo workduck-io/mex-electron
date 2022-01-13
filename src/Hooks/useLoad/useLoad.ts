@@ -115,15 +115,18 @@ const useLoad = () => {
   const loadNode = async (uid: string, options: LoadNodeProps = { savePrev: true, fetch: USE_API() }) => {
     console.log('Loading Node', { uid, options })
     let hasBeenLoaded = false
+
     if (!options.node && !isLocalNode(uid)) {
       toast.error('Selected node does not exist.')
       uid = editorNodeId
     }
 
+    // * App graph Node Content Preview
     setNodePreview(false)
     setSelectedNode(undefined)
 
     const q = useQStore.getState().q
+
     if (options.savePrev) {
       if (q.includes(uid)) {
         hasBeenLoaded = true

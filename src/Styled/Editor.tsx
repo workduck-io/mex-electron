@@ -332,7 +332,6 @@ export const EditorStyles = styled.div`
 
   label {
     vertical-align: middle;
-    margin-bottom: 4px;
     display: inline-block;
   }
 

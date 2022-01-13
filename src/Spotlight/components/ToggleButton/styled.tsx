@@ -27,6 +27,7 @@ export const Label = styled.label<{ size: string; disabled: boolean }>`
     width: 0;
     height: 0;
   }
+  margin-bottom: 0;
 `
 
 export const Slider = styled.span`

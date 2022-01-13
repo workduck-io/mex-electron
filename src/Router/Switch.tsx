@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
-import { Switch as ReactRouterSwitch, useLocation } from 'react-router-dom'
+import { Route, Switch as ReactRouterSwitch, useLocation } from 'react-router-dom'
 import { animated } from 'react-spring'
+import Collab from '../Editor/Collab'
 import styled from 'styled-components'
 import Search from '../Components/Search/Search'
 import { useQStore, useSaveQ } from '../Hooks/useQ'
@@ -73,6 +74,8 @@ const Switch = () => {
         <ProtectedRoute path="/tag/:tag" component={Tag} />
         <ProtectedRoute path="/" exact component={Dashboard} />
         <ProtectedRoute path="/archive" exact component={Archive} />
+        {/* For testing use Collaboration without ProtectedRoute */}
+        <Route path="/collab" component={Collab} />
         <AuthRoute path="/login" component={Login} />
         <AuthRoute path="/register" component={Register} />
       </ReactRouterSwitch>

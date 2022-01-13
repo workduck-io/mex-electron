@@ -8,7 +8,7 @@ import { Icon } from '@iconify/react'
 import React from 'react'
 import { NavLinkData } from '../Components/Sidebar/Types'
 import { useHelpStore } from '../Components/Help/HelpModal'
-
+import CollabIcon from '@iconify-icons/ri/team-line'
 /*
 Sidebar links are defined here
 */
@@ -55,6 +55,11 @@ const useNavlinks = () => {
         title: 'Archived',
         path: '/archive',
         icon: GetIcon(archiveFill)
+      },
+      {
+        title: 'Collab',
+        path: '/collab',
+        icon: GetIcon(CollabIcon)
       }
     ]
     return links
