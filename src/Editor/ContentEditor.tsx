@@ -19,11 +19,6 @@ import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
 import Toolbar from './Toolbar'
 
-interface ContentEditorState {
-  uid: string
-  content: any[] | undefined
-}
-
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const { toggleFocusMode } = useLayout()
