@@ -1,5 +1,5 @@
-import { Plate } from '@udecode/plate'
-import React, { useState } from 'react'
+import { Plate , withPlate } from '@udecode/plate'
+import React, { useMemo, useState } from 'react'
 import { IS_DEV } from '../../Defaults/dev_'
 import useEditorPluginConfig from '../Plugins/useEditorPluginConfig'
 import useCollabMode from './useCollabMode'
@@ -11,6 +11,10 @@ import { Heading } from '../../Spotlight/components/SearchResults/styled'
 import { FullEditor } from '../../Spotlight/components/MexIt/styled'
 import { MarginHorizontal } from '../../Spotlight/components/SpotlightSettings/styled'
 import { NodeEditorContent } from '../Store/Types'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { MultiComboboxContainer } from '../Components/multi-combobox/multiComboboxContainer'
+
 
 const WEBSOCKET_ENDPOINT = !IS_DEV ? 'wss://collab.workduck.io/mex' : 'ws://localhost:1234'
 
@@ -19,17 +23,8 @@ type CollabEditorProps = {
 }
 
 const CollabEditor: React.FC<CollabEditorProps> = ({ nodeId }) => {
-  const [editorContent, setEditorContent] = useState<NodeEditorContent>([])
+  const [editorContent, setEditorContent] = useState<NodeEditorContent>([{ children: [{ text: '' }] }])
 
-  // * Collab hook
-  const { editor, connected, toggleConnection } = useCollabMode({
-    onlineMode: {
-      documentID: 'SOME_NODE_ID',
-      userName: 'mex',
-      color: '#333',
-      webSocketEndpoint: WEBSOCKET_ENDPOINT
-    }
-  })
 
   // * Editor Plugins
   const { pluginConfigs, comboConfigData } = useEditorPluginConfig(nodeId)
@@ -38,6 +33,7 @@ const CollabEditor: React.FC<CollabEditorProps> = ({ nodeId }) => {
   const prePlugins = generatePlugins()
   const plugins = [
     ...prePlugins,
+    // createCollabPlugin,
     {
       key: 'MULTI_COMBOBOX',
       handlers: {
@@ -46,6 +42,22 @@ const CollabEditor: React.FC<CollabEditorProps> = ({ nodeId }) => {
       }
     }
   ]
+
+
+  // * Collab hook
+  const { editor, connected, toggleConnection } = useCollabMode({
+    plateEditor: {
+      id: nodeId,
+      plugins
+    },
+    onlineMode: {
+      documentID: 'SOME_NODE_ID',
+      userName: 'mex',
+      color: '#333',
+      webSocketEndpoint: WEBSOCKET_ENDPOINT
+    }
+  })
+
 
   return (
     <Margin>
@@ -58,14 +70,17 @@ const CollabEditor: React.FC<CollabEditorProps> = ({ nodeId }) => {
         </Services>
 
         <FullEditor>
-          <Plate
-            value={editorContent}
-            editableProps={{ placeholder: 'Write something...' }}
-            onChange={(content) => setEditorContent(content)}
-            editor={editor}
-            id={nodeId}
-            plugins={plugins}
-          />
+          <DndProvider backend={HTML5Backend}>
+            <Plate
+              value={editorContent}
+              onChange={(content) => setEditorContent(content)}
+              editor={editor}
+              id={nodeId}
+              plugins={plugins}
+            >
+              <MultiComboboxContainer keys={comboConfigData.keys} slashCommands={comboConfigData.slashCommands} />
+            </Plate>
+          </DndProvider>
         </FullEditor>
       </EditorStyles>
     </Margin>

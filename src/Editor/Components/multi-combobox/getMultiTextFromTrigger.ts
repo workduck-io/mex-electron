@@ -7,7 +7,7 @@ import { getTextFromTrigger } from '../combobox/utils/getTextFromTrigger'
 // Returns the search and key
 // Trigger should not be prefixes of other triggers
 export default function getTextFromTriggers(editor: TEditor, keys: { [type: string]: ComboboxType }) {
-  const { selection } = editor
+  const selection = editor?.selection
 
   if (selection && isCollapsed(selection)) {
     const cursor = Range.start(selection)
@@ -18,7 +18,7 @@ export default function getTextFromTriggers(editor: TEditor, keys: { [type: stri
 
       const isCursorAfterTrigger = getTextFromTrigger(editor, {
         at: cursor,
-        trigger: comboType.trigger,
+        trigger: comboType.trigger
       })
 
       if (isCursorAfterTrigger) {
@@ -27,7 +27,7 @@ export default function getTextFromTriggers(editor: TEditor, keys: { [type: stri
         return {
           range,
           key: comboType.cbKey,
-          search: textAfterTrigger,
+          search: textAfterTrigger
         }
       }
       return undefined

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import * as Y from 'yjs'
 import { WebsocketProvider } from 'y-websocket'
-import { SyncElement, toSharedType, withYjs } from 'slate-yjs'
-import { createPlateEditor, PlateEditor } from '@udecode/plate'
+import { SyncElement, toSharedType, useCursors, withCursor, withYjs } from 'slate-yjs'
+import { createPlateEditor, createPluginFactory, PlateEditor, PlatePlugin } from '@udecode/plate'
 import { withReact } from 'slate-react'
+
 
 interface UseCollabModeProps {
   onlineMode?: {
@@ -11,18 +12,23 @@ interface UseCollabModeProps {
     documentID: string
     userName: string
     color: string // * rgba string
+  },
+  plateEditor: {
+    id: string,
+    plugins: Array<PlatePlugin>
   }
 }
 
 type CollabMode = {
-  editor: PlateEditor
+  editor: PlateEditor,
+  createCollabPlugin: any
   connected: boolean
   toggleConnection: () => void
 }
 
-const useCollabMode = ({ onlineMode }: UseCollabModeProps): CollabMode => {
+const useCollabMode = ({ onlineMode, plateEditor }: UseCollabModeProps): CollabMode => {
   //  Destruct props helps to avoid memoizing object in parent component
-  const { webSocketEndpoint, documentID, userName, color } = onlineMode || {}
+  const { webSocketEndpoint, documentID } = onlineMode || {}
   const [connected, setConnected] = useState(false)
 
   const doc = useMemo(() => new Y.Doc(), [])
@@ -64,7 +70,7 @@ const useCollabMode = ({ onlineMode }: UseCollabModeProps): CollabMode => {
   }, [provider, sharedType])
 
   const editor = useMemo(() => {
-    return withReact(withYjs(createPlateEditor(), sharedType))
+    return withYjs(withReact(createPlateEditor({ id: plateEditor.id, plugins: plateEditor.plugins })), sharedType)
   }, [sharedType])
 
   const toggleConnection = useCallback(() => {
@@ -75,8 +81,19 @@ const useCollabMode = ({ onlineMode }: UseCollabModeProps): CollabMode => {
     provider.connect()
   }, [provider, connected])
 
+  // const decorate = useCursors({ sharedType, awareness: (provider && provider.awareness) } as any)
+
   return {
     editor,
+    createCollabPlugin: createPluginFactory({
+      key: 'MEX_COLLAB',
+      withOverrides: editor => {
+        console.log('Im here', editor)
+        const wrapped = withYjs(editor, sharedType)
+        // if (provider) { wrapped = withCursor(wrapped, provider.awareness) }
+        return wrapped
+      }
+    }),
     connected,
     toggleConnection
   }
