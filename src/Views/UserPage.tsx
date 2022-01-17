@@ -15,25 +15,11 @@ import { CustomEvents } from '../analytics/events'
 const UserPage = () => {
   const { getUserDetails } = useAuth()
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
-  const { logout } = useAuthentication()
-  const history = useHistory()
 
-  const { identifyUser, addEventProperties } = useAnalytics()
   const userDetails = getUserDetails()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onLogout = (e: any) => {
-    e.preventDefault()
-    logout()
-    addEventProperties({ [CustomEvents.LOGGED_IN]: false })
-    /**
-     * Sessions ends after 30mins of inactivity
-     *
-     * identifyUser(undefined)
-     * */
-
-    history.push('/login')
-  }
+  
 
   return (
     <CenteredColumn>
@@ -57,9 +43,7 @@ const UserPage = () => {
             </Info>
           </div>
         </ProfileContainer>
-        <Button large onClick={onLogout}>
-          Logout
-        </Button>
+       
       </BackCard>
     </CenteredColumn>
   )

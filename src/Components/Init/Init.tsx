@@ -212,6 +212,12 @@ const Init = () => {
           history.push('/editor')
         })
       },
+      [shortcuts.showArchive.keystrokes]: (event) => {
+        event.preventDefault()
+        shortcutHandler(shortcuts.showArchive, () => {
+          history.push('/archive')
+        })
+      },
       [shortcuts.showSearch.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSearch, () => {

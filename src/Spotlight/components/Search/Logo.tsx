@@ -7,7 +7,7 @@ import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
 const StyledLogo = styled.svg<{ bubble?: boolean }>`
   padding-right: 8px;
   -webkit-app-region: no-drag;
-  cursor: pointer;
+  /* cursor: pointer; */
 
   & path {
     fill: ${({ theme }) => theme.colors.primary};
@@ -17,12 +17,10 @@ const StyledLogo = styled.svg<{ bubble?: boolean }>`
 const WDLogo = () => {
   const { bubble, setBubble } = useSpotlightSettingsStore(({ bubble, setBubble }) => ({ bubble, setBubble }))
 
-  useEffect(() => {
-    ipcRenderer.send(IpcAction.SPOTLIGHT_BUBBLE, { isClicked: bubble })
-  }, [bubble])
+  // useEffect(() => { //   ipcRenderer.send(IpcAction.SPOTLIGHT_BUBBLE, { isClicked: bubble }) // }, [bubble])
 
   const onClick = () => {
-    setBubble()
+    // setBubble()
   }
 
   return (

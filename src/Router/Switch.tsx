@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { Switch as ReactRouterSwitch, useLocation } from 'react-router-dom'
 import { animated } from 'react-spring'
+import { useInitOlvy } from '../Olvy'
 import styled from 'styled-components'
 import Search from '../Components/Search/Search'
 import { useQStore, useSaveQ } from '../Hooks/useQ'
@@ -58,7 +59,6 @@ const Switch = () => {
 
   // return transitions((props, item) => (
   return (
-    // <SwitchWrapper style={props}>
     <SwitchWrapper>
       {/* <ReactRouterSwitch location={item}> */}
       <ReactRouterSwitch>
@@ -67,7 +67,6 @@ const Switch = () => {
         <ProtectedRoute path="/integrations" component={Integrations} />
         <ProtectedRoute exact path="/snippets" component={Snippets} />
         <ProtectedRoute exact path="/snippets/editor" component={SnippetEditor} />
-        <ProtectedRoute path="/user" component={UserPage} />
         <ProtectedRoute path="/settings" component={Settings} />
         <ProtectedRoute path="/search" component={Search} />
         <ProtectedRoute path="/tag/:tag" component={Tag} />

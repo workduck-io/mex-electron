@@ -40,10 +40,10 @@ export const useGlobalShortcuts = () => {
       //   event.preventDefault()
       //   if (!shortcutDisabled) history.push('/settings')
       // },
-      '$mod+Shift+KeyB': (event) => {
-        event.preventDefault()
-        if (!shortcutDisabled) setBubble()
-      },
+      // '$mod+Shift+KeyB': (event) => {
+      //   event.preventDefault()
+      //   if (!shortcutDisabled) setBubble()
+      // },
       Escape: (event) => {
         event.preventDefault()
         if (!shortcutDisabled) {
