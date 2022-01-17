@@ -13,10 +13,11 @@ import Modals from './Layout/Modals'
 import Switch from './Router/Switch'
 import GlobalStyle from './Styled/Global'
 import { initializeSentry } from './sentry'
+import { IS_DEV } from './Defaults/dev_'
+
+if (!IS_DEV) initializeSentry()
 
 Modal.setAppElement('#root')
-
-// initializeSentry()
 
 function App() {
   return (
