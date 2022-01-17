@@ -411,10 +411,10 @@ app.once('before-quit', () => {
 
 ipcMain.on('close', closeWindow)
 
-ipcMain.on(IpcAction.SPOTLIGHT_BUBBLE, (_event, arg) => {
-  const { isClicked } = arg
-  spotlightInBubbleMode(isClicked)
-})
+// ipcMain.on(IpcAction.SPOTLIGHT_BUBBLE, (_event, arg) => {
+//   const { isClicked } = arg
+//   spotlightInBubbleMode(isClicked)
+// })
 
 app.on('before-quit', () => {
   console.log('App before quit')

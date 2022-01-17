@@ -70,8 +70,9 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
           setSearch('')
 
           if (selection) {
-            const data = [...getContent(newNode.uid), ...nodeContent]
-            saveEditorAndUpdateStates(newNode, data, true)
+            const newNodeContent = getContent(newNode.uid)
+            const newContentData = !data[currentIndex].new ? [...newNodeContent, ...nodeContent] : nodeContent
+            saveEditorAndUpdateStates(newNode, newContentData, true)
             saveData()
 
             appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
