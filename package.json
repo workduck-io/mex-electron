@@ -1,7 +1,7 @@
 {
   "name": "mex",
   "productName": "Mex",
-  "version": "0.6.1-alpha.1",
+  "version": "0.6.0-alpha.5",
   "description": "Mex it to flex it",
   "main": ".webpack/main",
   "scripts": {
@@ -100,9 +100,11 @@
     "ffi-napi": "^4.0.3",
     "flexsearch": "^0.7.21",
     "fuse.js": "^6.4.6",
+    "globby": "^12.0.2",
     "history": "^5.0.1",
     "hotkeys-js": "^3.8.7",
     "iconv": "^3.0.1",
+    "iconv-lite": "^0.6.3",
     "match-sorter": "^6.3.0",
     "md5": "^2.3.0",
     "nanoid": "^3.1.23",
@@ -130,6 +132,7 @@
     "remark-parse": "^9.0.0",
     "remark-slate": "^1.8.0",
     "robotjs": "^0.6.0",
+    "run-applescript": "^6.0.0",
     "sanitize-html": "^2.4.0",
     "slate": "^0.65.3",
     "slate-history": "^0.62.0",

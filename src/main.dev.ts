@@ -35,6 +35,7 @@ import { flexIndexKeys } from './Search/flexsearch'
 import _ from 'lodash'
 import { backupMexJSON } from './backup'
 import { twitterIconBase64, trayIconBase64 } from './Defaults/images'
+import { getAppleNotes } from './Importers/appleNotes'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -496,6 +497,15 @@ app
         click: () => {
           shell.openExternal('https://twitter.com/workduckio')
         }
+      },
+      { type: 'separator' },
+      {
+        label: 'Quit Mex',
+        accelerator: 'Command+Q',
+        click: () => {
+          mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
+          app.quit()
+        }
       }
     ])
 
@@ -594,6 +604,12 @@ ipcMain.on(IpcAction.ERROR_OCCURED, (_event, arg) => {
 ipcMain.on(IpcAction.CLOSE_SPOTLIGHT, (_event, arg) => {
   const { data } = arg
   if (data?.hide) spotlight.hide()
+})
+
+ipcMain.on(IpcAction.IMPORT_APPLE_NOTES, async () => {
+  const selectedAppleNotes = await getAppleNotes()
+
+  if (selectedAppleNotes) mex?.webContents.send(IpcAction.SET_APPLE_NOTES_DATA, selectedAppleNotes)
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

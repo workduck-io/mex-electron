@@ -42,7 +42,7 @@ export default class MenuBuilder {
 
   buildDarwinTemplate(): MenuItemConstructorOptions[] {
     const subMenuAbout: DarwinMenuItemConstructorOptions = {
-      label: 'Electron',
+      label: 'Mex',
       submenu: [
         {
           label: 'About Mex',
@@ -61,7 +61,7 @@ export default class MenuBuilder {
         },
         { type: 'separator' },
         {
-          label: 'Hide ElectronReact',
+          label: 'Hide Mex',
           accelerator: 'Command+H',
           selector: 'hide:'
         },

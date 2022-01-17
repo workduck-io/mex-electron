@@ -19,3 +19,14 @@ export const useDeserializeSelectionToNodes = (
 
   return nodes
 }
+
+export const getMexHTMLDeserializer = (HTMLContent: string, editor: any, plugins: any) => {
+  const nodes = editor
+    ? deserializeHTMLToDocumentFragment(editor, {
+        plugins,
+        element: HTMLContent || ''
+      })
+    : undefined
+
+  return nodes
+}

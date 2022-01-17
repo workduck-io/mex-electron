@@ -1,13 +1,13 @@
 import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import tinykeys from 'tinykeys'
 import { useHelpStore } from '../../Components/Help/HelpModal'
 import { AppType, useInitialize } from '../../Data/useInitialize'
 import { useLocalData } from '../../Data/useLocalData'
 import { useSyncData } from '../../Data/useSyncData'
-import { getUidFromNodeIdAndLinks } from '../../Editor/Actions/useLinks'
+import { getUidFromNodeIdAndLinks, useLinks } from '../../Editor/Actions/useLinks'
 import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
 import useDataStore from '../../Editor/Store/DataStore'
 import { useEditorStore } from '../../Editor/Store/EditorStore'
@@ -26,8 +26,14 @@ import { IpcAction } from '../../Spotlight/utils/constants'
 import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
 import { performClick } from '../Onboarding/steps'
 import useOnboard from '../Onboarding/store'
+import { AppleNote } from '../../Importers/appleNotes'
+import { getMexHTMLDeserializer } from '../../Spotlight/utils/helpers'
+import { usePlateEditorRef } from '@udecode/plate'
+import generatePlugins from '../../Editor/Plugins/plugins'
+import { useSaver } from '../../Editor/Components/Saver'
 
 const Init = () => {
+  const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
   const history = useHistory()
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
   // const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
@@ -36,7 +42,7 @@ const Init = () => {
   const isOnboarding = useOnboard((s) => s.isOnboarding)
 
   const { init } = useInitialize()
-  const { loadNode } = useLoad()
+  const { loadNode, getNode } = useLoad()
   const { initCognito } = useAuth()
 
   const { getLocalData } = useLocalData()
@@ -44,6 +50,8 @@ const Init = () => {
   const fetchIndexLocalStorage = useNewSearchStore((store) => store.fetchIndexLocalStorage)
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
+  const { getUidFromNodeId } = useLinks()
+  const { onSave } = useSaver()
 
   /**
    * Setup save
@@ -95,6 +103,8 @@ const Init = () => {
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  const editor = usePlateEditorRef()
+  const plugins = generatePlugins()
 
   /**
    * Sets handlers for IPC Calls
@@ -139,7 +149,33 @@ const Init = () => {
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
       history.push('/settings')
     })
+    ipcRenderer.on(IpcAction.SET_APPLE_NOTES_DATA, (_event, arg: AppleNote[]) => {
+      setAppleNotes(arg)
+      history.push('/editor')
+      const appleNotesUID = getUidFromNodeId('Apple Notes')
+      loadNode(appleNotesUID)
+    })
   }, [fetchIndexLocalStorage, isOnboarding]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (editor && appleNotes.length > 0) {
+      const appleNotesParentKey = 'Apple Notes'
+
+      appleNotes.forEach((note) => {
+        const title = note.NoteTitle
+        const nodeKey = `${appleNotesParentKey}.${title}`
+        let nodeUID = addILink(nodeKey)
+
+        const newNodeContent = getMexHTMLDeserializer(note.HTMLContent, editor, plugins)
+        if (!nodeUID) nodeUID = getUidFromNodeId(nodeKey)
+
+        const newNode = getNode(nodeUID)
+        onSave(newNode, true, false, [{ children: newNodeContent }])
+      })
+
+      setAppleNotes([])
+    }
+  }, [appleNotes, editor])
 
   const { setIpc } = useSyncData()
 

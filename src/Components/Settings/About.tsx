@@ -54,6 +54,10 @@ const About = () => {
     ipcRenderer.send(IpcAction.START_ONBOARDING, { from: AppType.MEX })
   }
 
+  const importAppleNotes = () => {
+    ipcRenderer.send(IpcAction.IMPORT_APPLE_NOTES)
+  }
+
   return (
     <Container>
       <Header colored>Mex</Header>
@@ -75,9 +79,6 @@ const About = () => {
         </Flex>
       </Margin>
       <br />
-      {/* <div>
-        <Button onClick={onBeginTourClick}>Begin Tour</Button>
-      </div> */}
     </Container>
   )
 }

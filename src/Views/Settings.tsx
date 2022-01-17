@@ -6,6 +6,7 @@ import { IntegrationContainer, Title } from '../Styled/Integration'
 import Themes from '../Components/Settings/Themes'
 import About from '../Components/Settings/About'
 import AutoUpdate from '../Components/Settings/AutoUpdate'
+import Importers from '../Components/Settings/Importers'
 
 const SettingsContainer = styled.section`
   display: flex;
@@ -59,6 +60,9 @@ const Settings = () => {
           <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/autoupdate`}>
             Automatic Updates
           </SettingTitle>
+          <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/import`}>
+            Import Notes
+          </SettingTitle>
         </SettingsOptions>
         <SettingsContent>
           <Switch>
@@ -73,6 +77,9 @@ const Settings = () => {
             </Route>
             <Route path={`${path}/autoupdate`}>
               <AutoUpdate />
+            </Route>
+            <Route path={`${path}/import`}>
+              <Importers />
             </Route>
           </Switch>
         </SettingsContent>
