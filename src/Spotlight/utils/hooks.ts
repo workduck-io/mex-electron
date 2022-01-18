@@ -71,7 +71,7 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
 
           if (selection) {
             const newNodeContent = getContent(newNode.uid)
-            const newContentData = !data[currentIndex].new ? [...newNodeContent, ...nodeContent] : nodeContent
+            const newContentData = !data[currentIndex].new ? [...newNodeContent.content, ...nodeContent] : nodeContent
             saveEditorAndUpdateStates(newNode, newContentData, true)
             saveData()
 
