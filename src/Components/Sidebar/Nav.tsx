@@ -152,16 +152,19 @@ const Nav = ({ links }: NavProps) => {
   return (
     <StyledDiv focusMode={focusMode}>
       <NavTooltip singleton={source} />
-      <div>
-        <NavTooltip
-          singleton={target}
-          content={<TooltipTitleWithShortcut title="Create New Node" shortcut={shortcuts.newNode.keystrokes} />}
-        >
-          <NavButton primary onClick={onNewNote}>
-            {GetIcon(addCircleLine)}
-          </NavButton>
-        </NavTooltip>
-      </div>
+      {
+        authenticated && <div>
+          <NavTooltip
+            singleton={target}
+            content={<TooltipTitleWithShortcut title="Create New Node" shortcut={shortcuts.newNode.keystrokes} />}
+          >
+            <NavButton primary onClick={onNewNote}>
+              {GetIcon(addCircleLine)}
+            </NavButton>
+          </NavTooltip>
+        </div>
+
+      }
       <div></div>
       <MainLinkContainer>
         {links.map((l) =>
