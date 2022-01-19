@@ -52,7 +52,7 @@ import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
 import components from '../Components/components'
 
 import { createExcalidrawPlugin, ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
-import { ExcalidrawElement } from '@udecode/plate-ui-excalidraw'
+import { ExcalidrawElement } from '../Components/Excalidraw'
 
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
 import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
