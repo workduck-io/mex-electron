@@ -14,7 +14,11 @@ export const useApi = () => {
   const setMetadata = useContentStore((store) => store.setMetadata)
   const setContent = useContentStore((store) => store.setContent)
 
-  const saveDataAPI = (uid: string, content: any[]) => {
+  /*
+   * Saves data in the backend
+   * Also updates the incoming data in the store
+   */
+  const saveDataAPI = async (uid: string, content: any[]) => {
     const reqData = {
       id: uid,
       type: 'NodeRequest',
@@ -27,16 +31,18 @@ export const useApi = () => {
     if (!USE_API()) {
       return
     }
-    client
+    const data = await client
       .post(apiURLs.saveNode, reqData, {})
       .then((d) => {
         console.log('savedData', d)
         setMetadata(uid, extractMetadata(d.data))
         setContent(uid, deserializeContent(d.data.data))
+        return d.data
       })
       .catch((e) => {
         console.error(e)
       })
+    return data
   }
 
   const getDataAPI = async (uid: string) => {

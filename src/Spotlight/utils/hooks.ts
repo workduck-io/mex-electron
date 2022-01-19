@@ -15,12 +15,14 @@ import useDataStore from '../../Editor/Store/DataStore'
 import { AppType } from '../../Data/useInitialize'
 import { appNotifierWindow } from './notifiers'
 import { useSaveData } from '../../Data/useSaveData'
+import { defaultContent } from '../../Defaults/baseData'
 
 export const useCurrentIndex = (data: Array<any> | undefined): number => {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const { search, setSearch, selection, setSelection } = useSpotlightContext()
   const setNode = useSpotlightEditorStore((s) => s.setNode)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
+  const loadNode = useSpotlightEditorStore((s) => s.loadNode)
   const saveData = useSaveData()
   const { saveEditorAndUpdateStates } = useDataSaverFromContent()
 
@@ -77,8 +79,9 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
 
             // appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
-            setNode(createNodeWithUid(getNewDraftKey()))
-            setNodeContent(undefined)
+            loadNode(createNodeWithUid(getNewDraftKey()), defaultContent.content)
+            // setNode(createNodeWithUid(getNewDraftKey()))
+            // setNodeContent(undefined)
 
             setNormalMode(true)
             setSelection(undefined)

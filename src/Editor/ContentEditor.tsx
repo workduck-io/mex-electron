@@ -17,12 +17,13 @@ import { NodeContent } from '../Types/data'
 import { useDataSaverFromContent } from './Components/Saver'
 import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
+import { useContentStore } from './Store/ContentStore'
 import Toolbar from './Toolbar'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const { toggleFocusMode } = useLayout()
-  const { fetchAndSaveNode } = useLoad()
+  const { saveApiAndUpdate } = useLoad()
 
   const { showGraph } = useToggleElements()
 
@@ -39,6 +40,8 @@ const ContentEditor = () => {
   const { saveEditorAndUpdateStates } = useDataSaverFromContent()
   const add2Q = useQStore((s) => s.add2Q)
 
+  const getContent = useContentStore((state) => state.getContent)
+
   const onChangeSave = (val: any[]) => {
     if (val && node && node.uid !== '__null__') {
       // console.log('Saving onChange', { node, val })
@@ -49,8 +52,13 @@ const ContentEditor = () => {
   }
 
   const editorId = useMemo(
-    () => getEditorId(node.uid, fsContent.metadata?.updatedAt?.toString() ?? 'not_updated', fetchingContent),
-    [node, fetchingContent, fsContent.version]
+    () =>
+      getEditorId(
+        node.uid,
+        // fsContent.metadata?.updatedAt?.toString() ?? 'not_updated',
+        fetchingContent
+      ),
+    [node, fetchingContent]
   )
 
   useEffect(() => {
@@ -76,7 +84,11 @@ const ContentEditor = () => {
       [shortcuts.refreshNode.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.refreshNode, () => {
-          fetchAndSaveNode(useEditorStore.getState().node)
+          const node = useEditorStore.getState().node
+          const content = getContent(node.uid)
+          console.log('Refreshing: ', { node, content })
+          saveApiAndUpdate(useEditorStore.getState().node, content.content)
+          // fetchAndSaveNode(useEditorStore.getState().node)
           // loadNode(uid, { fetch: true, savePrev: false })
         })
       }

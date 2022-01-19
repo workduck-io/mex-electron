@@ -112,7 +112,12 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   }
 
   return (
-    <StyledPreview style={animationProps} ref={ref} data-tour="mex-quick-capture-preview">
+    <StyledPreview
+      key={`PreviewSpotlightEditor${node.uid}`}
+      style={animationProps}
+      ref={ref}
+      data-tour="mex-quick-capture-preview"
+    >
       {selection && (
         <SeePreview onClick={handleScrollToBottom}>
           <Icon icon={downIcon} />
