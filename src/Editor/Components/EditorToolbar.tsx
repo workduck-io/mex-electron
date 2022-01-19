@@ -6,9 +6,16 @@ import h3 from '@iconify-icons/ri/h-3'
 import italicIcon from '@iconify-icons/ri/italic'
 import linkIcon from '@iconify-icons/ri/link'
 import listOrdered from '@iconify-icons/ri/list-ordered'
+
+import AlignLeftIcon from '@iconify-icons/bx/bx-align-left'
+import AlignRightIcon from '@iconify-icons/bx/bx-align-right'
+import AlignCenterIcon from '@iconify-icons/bx/bx-align-middle'
+import AlignJustifyIcon from '@iconify-icons/bx/bx-align-justify'
+
 import listUnordered from '@iconify-icons/ri/list-unordered'
 import { Icon } from '@iconify/react'
 import {
+  AlignToolbarButton,
   BlockToolbarButton,
   ELEMENT_BLOCKQUOTE,
   ELEMENT_H1,
@@ -65,6 +72,12 @@ const BallonMarkToolbarButtons = () => {
         icon={<Icon height={20} icon={h3} />}
         tooltip={{ content: 'Heading 3', ...tooltip }}
       />
+      <ButtonSeparator />
+
+      <AlignToolbarButton value="left" icon={<Icon icon={AlignLeftIcon} />} />
+      <AlignToolbarButton value="center" icon={<Icon icon={AlignCenterIcon} />} />
+      <AlignToolbarButton value="right" icon={<Icon icon={AlignRightIcon} />} />
+      {/* <AlignToolbarButton value="justify" icon={<Icon icon={AlignJustifyIcon} />} /> */}
 
       <ButtonSeparator />
 

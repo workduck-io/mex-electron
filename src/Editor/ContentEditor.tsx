@@ -19,6 +19,12 @@ import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
 import { useContentStore } from './Store/ContentStore'
 import Toolbar from './Toolbar'
+import { mog } from '../Lib/helper'
+
+interface ContentEditorState {
+  uid: string
+  content: any[] | undefined
+}
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -43,6 +49,7 @@ const ContentEditor = () => {
   const getContent = useContentStore((state) => state.getContent)
 
   const onChangeSave = (val: any[]) => {
+    mog('Trigger onChange', { node, val })
     if (val && node && node.uid !== '__null__') {
       // console.log('Saving onChange', { node, val })
 
@@ -86,7 +93,7 @@ const ContentEditor = () => {
         shortcutHandler(shortcuts.refreshNode, () => {
           const node = useEditorStore.getState().node
           const content = getContent(node.uid)
-          console.log('Refreshing: ', { node, content })
+          // console.log('Refreshing: ', { node, content })
           saveApiAndUpdate(useEditorStore.getState().node, content.content)
           // fetchAndSaveNode(useEditorStore.getState().node)
           // loadNode(uid, { fetch: true, savePrev: false })
@@ -102,6 +109,7 @@ const ContentEditor = () => {
     <>
       <StyledEditor showGraph={showGraph} className="mex_editor">
         <Toolbar />
+
         <Metadata />
 
         <Editor

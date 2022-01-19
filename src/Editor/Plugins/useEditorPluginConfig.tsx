@@ -1,4 +1,5 @@
-import { ELEMENT_MEDIA_EMBED } from '@udecode/plate'
+import { ELEMENT_MEDIA_EMBED, ELEMENT_TABLE } from '@udecode/plate'
+import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { useMemo } from 'react'
 import useAnalytics from '../../analytics'
 import { useSnippets } from '../../Snippets/useSnippets'
@@ -72,6 +73,14 @@ const useEditorPluginConfig = (editorId: string) => {
         options: {
           url: 'http://example.com/'
         }
+      },
+      excalidraw: {
+        slateElementType: ELEMENT_EXCALIDRAW,
+        command: 'canvas'
+      },
+      table: {
+        slateElementType: ELEMENT_TABLE,
+        command: 'table'
       },
       // For `/sync`
       // sync_block: {

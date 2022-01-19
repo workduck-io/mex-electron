@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { createPlateUI, ELEMENT_LINK, ELEMENT_MEDIA_EMBED, ELEMENT_PARAGRAPH, withProps } from '@udecode/plate'
+import {
+  createPlateUI,
+  ELEMENT_LINK,
+  ELEMENT_MEDIA_EMBED,
+  ELEMENT_PARAGRAPH,
+  ELEMENT_TABLE,
+  withProps
+} from '@udecode/plate'
 import { ILinkElement } from './ilink/components/ILinkElement'
 import { ELEMENT_ILINK } from './ilink/defaults'
 import InlineBlock from './InlineBlock'
@@ -11,6 +18,7 @@ import { SyncBlock, ELEMENT_SYNC_BLOCK } from './SyncBlock'
 import { TagElement } from './tag/components/TagElement'
 import { ELEMENT_TAG } from './tag/defaults'
 import { StyledElement } from '@udecode/plate-styled-components'
+import TableWrapper from './TableWrapper'
 
 export const editorPreviewComponents = createPlateUI({
   [ELEMENT_LINK]: withProps(LinkElement, {
@@ -27,7 +35,8 @@ export const editorPreviewComponents = createPlateUI({
   [ELEMENT_ILINK]: ILinkElement as any,
   [ELEMENT_INLINE_BLOCK]: ILinkElement as any,
   [ELEMENT_MEDIA_EMBED]: MediaEmbedElement as any,
-  [ELEMENT_SYNC_BLOCK]: SyncBlock as any
+  [ELEMENT_SYNC_BLOCK]: SyncBlock as any,
+  [ELEMENT_TABLE]: TableWrapper
 })
 
 const components = createPlateUI({

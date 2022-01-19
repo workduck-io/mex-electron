@@ -6,11 +6,10 @@ export const useDeserializeSelectionToNodes = (
   selection: { text: string; metadata: string }
 ): NodeEditorContent => {
   const editor = usePlateEditorRef(nodeId)
-
   const nodes = editor
     ? deserializeHtml(editor, {
-      element: selection?.text || ''
-    })
+        element: selection?.text || ''
+      })
     : undefined
 
   return nodes
@@ -18,11 +17,7 @@ export const useDeserializeSelectionToNodes = (
 
 export const getMexHTMLDeserializer = (HTMLContent: string, editor: any, plugins: any) => {
   const element = htmlStringToDOMNode(HTMLContent ?? '')
-  const nodes = editor
-    ? htmlBodyToFragment(editor,
-      element
-    )
-    : undefined
+  const nodes = editor ? htmlBodyToFragment(editor, element) : undefined
 
   return nodes
 }

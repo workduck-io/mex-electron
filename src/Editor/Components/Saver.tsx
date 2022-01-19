@@ -167,7 +167,7 @@ export const SaverButton = ({
 export const useSnippetSaver = () => {
   const snippet = useSnippetStore((store) => store.editor.snippet)
   const updateSnippet = useSnippetStore((state) => state.updateSnippet)
-  const editorState = getPlateSelectors(getPlateId()).value()
+  const editorState = usePlateSelectors(usePlateId()).value()
   const saveData = useSaveData()
   const { updater } = useUpdater()
 
