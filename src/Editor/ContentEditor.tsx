@@ -19,6 +19,7 @@ import Editor from './Editor'
 import { useEditorStore } from './Store/EditorStore'
 import { useContentStore } from './Store/ContentStore'
 import Toolbar from './Toolbar'
+import { mog } from '../Lib/helper'
 
 interface ContentEditorState {
   uid: string
@@ -48,7 +49,7 @@ const ContentEditor = () => {
   const getContent = useContentStore((state) => state.getContent)
 
   const onChangeSave = (val: any[]) => {
-    console.log('Trigger onChange', { node, val })
+    mog('Trigger onChange', { node, val })
     if (val && node && node.uid !== '__null__') {
       // console.log('Saving onChange', { node, val })
 
@@ -109,7 +110,6 @@ const ContentEditor = () => {
       <StyledEditor showGraph={showGraph} className="mex_editor">
         <Toolbar />
 
-        
         <Metadata />
 
         <Editor
