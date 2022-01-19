@@ -65,8 +65,6 @@ const Editor = ({
     }
   ]
 
-  console.log('rendering editor', { editorId, content })
-
   return (
     <>
       <DndProvider backend={HTML5Backend}>

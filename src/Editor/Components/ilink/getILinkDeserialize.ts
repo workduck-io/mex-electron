@@ -5,6 +5,7 @@ export const getILinkDeserialize = (): DeserializeHtml => {
   return {
     getNode: (el) => ({
       value: el.getAttribute('data-slate-value')
-    })
+    }),
+    rules: [{ validClassName: getSlateClass(ELEMENT_ILINK) }]
   }
 }

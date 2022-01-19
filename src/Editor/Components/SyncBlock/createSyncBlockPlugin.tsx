@@ -1,4 +1,4 @@
-import { PlatePlugin } from '@udecode/plate-core'
+import { PlatePlugin, getSlateClass } from '@udecode/plate-core'
 import { ELEMENT_SYNC_BLOCK } from '.'
 import { getSyncBlockDeserialize } from './getSyncBlockDeserialize'
 
@@ -14,10 +14,12 @@ export const createSyncBlockPlugin = (): PlatePlugin => ({
     deserializeHtml: {
       rules: [
         {
-          validNodeName: '*'
+          validNodeName: '*',
+          validClassName: getSlateClass(ELEMENT_SYNC_BLOCK)
         }
       ],
       getNode: (el: HTMLElement) => {
+
         const properties = el.getAttribute('data-slate-value')
         const id = el.id
         // const properties = el.getAttribute()
