@@ -5,6 +5,7 @@ import getFlatTree from '../../Lib/flatTree'
 import { removeLink } from '../../Lib/links'
 import { generateComboText, generateIlink } from './sampleTags'
 import { CachedILink, DataStoreState } from './Types'
+import { typeInvert } from './helpers'
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   // Tags
@@ -99,8 +100,13 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
   setBaseNodeId: (baseNodeId) => set({ baseNodeId }),
 
+  /*
+   * Adds InternalLink between two nodes
+   * Should not add duplicate links
+   */
   addInternalLink: (ilink, uid) => {
     console.log('Creating links', { ilink, uid })
+
     // No self links will be added
     if (uid === ilink.uid) return
 
@@ -110,11 +116,18 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     if (!nodeLinks) nodeLinks = []
     if (!secondNodeLinks) secondNodeLinks = []
 
-    nodeLinks.push(ilink)
-    secondNodeLinks.push({
-      type: ilink.type === 'from' ? 'to' : 'from',
-      uid: uid
-    })
+    // Add internallink if not already present
+    const isInNode = nodeLinks.filter((n) => n.uid === ilink.uid && n.type === ilink.type).length > 0
+    if (!isInNode) nodeLinks.push(ilink)
+
+    // Add internallink if not already present
+    const isInSecondNode = secondNodeLinks.filter((n) => n.uid === uid && n.type === typeInvert(ilink.type)).length > 0
+    if (!isInSecondNode) {
+      secondNodeLinks.push({
+        type: typeInvert(ilink.type),
+        uid: uid
+      })
+    }
 
     set({
       linkCache: {

@@ -44,3 +44,5 @@ export const getInitialNode = (): NodeProperties => ({
   key: '@',
   uid: '__null__'
 })
+
+export const typeInvert = (type: string) => (type === 'from' ? 'to' : 'from')
