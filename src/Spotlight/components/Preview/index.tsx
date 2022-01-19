@@ -22,7 +22,6 @@ import { AppType } from '../../../Data/useInitialize'
 import { useSpotlightAppStore } from '../../../Spotlight/store/app'
 import { createNodeWithUid } from '../../../Lib/helper'
 import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
-import { useEditorChange } from '../Content'
 
 export type PreviewType = {
   text: string

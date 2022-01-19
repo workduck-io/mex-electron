@@ -7,7 +7,6 @@ import { Title } from '../../Styled/Typography'
 import { transparentize } from 'polished'
 
 const ErrorWrapper = styled.div`
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;

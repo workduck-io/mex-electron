@@ -3,8 +3,9 @@ import styled, { css } from 'styled-components'
 import { ColorProp, ColumnContainer } from '../Actions/styled'
 import { StyledBackground } from '../Spotlight/styled'
 
-export const StyledResults = styled(ColumnContainer)<{ margin: string }>`
+export const StyledResults = styled(ColumnContainer) <{ margin: string }>`
   width: 0;
+  display: none;
   margin-top: 4px;
   margin-right: ${({ margin }) => margin && '0.5rem'};
   :focus {
@@ -12,7 +13,7 @@ export const StyledResults = styled(ColumnContainer)<{ margin: string }>`
   }
 `
 
-export const StyledRow = styled(animated.div)<ColorProp>`
+export const StyledRow = styled(animated.div) <ColorProp>`
   ${({ showColor }) =>
     showColor &&
     css`

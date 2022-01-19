@@ -79,7 +79,7 @@ export const useSaver = () => {
     const editorId = getPlateId()
     const hasState = !!state[editorId]
     if (hasState) {
-      const editorState = state[editorId].get.value()
+      const editorState = content ?? state[editorId].get.value()
       saveEditorAndUpdateStates(cnode, editorState)
     }
 

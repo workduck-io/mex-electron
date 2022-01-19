@@ -49,7 +49,7 @@ const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ curren
   const setNode = useSpotlightEditorStore((s) => s.setNode)
   const { getNode } = useLoad()
 
-  const props = useSpring({ width: search ? '40%' : '0%', opacity: search ? 1 : 0 })
+  const props = useSpring({ width: search ? '40%' : '0%', display: 'block', opacity: search ? 1 : 0 })
 
   const transitions = useTransition(data ?? [], {
     from: {
