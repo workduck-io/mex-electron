@@ -220,7 +220,6 @@ export const SyncBlock = (props: SyncBlockProps) => {
                 className="syncTextArea"
                 defaultValue={content ?? ''}
                 readOnly={!fromLocal}
-                autoFocus={true}
               />
             </Tippy>
           ) : (

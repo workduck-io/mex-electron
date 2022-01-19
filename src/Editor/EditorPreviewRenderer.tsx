@@ -1,4 +1,4 @@
-import { createPlateOptions, Plate } from '@udecode/plate'
+import { Plate } from '@udecode/plate'
 import React from 'react'
 import { EditorStyles } from '../Styled/Editor'
 import { editorPreviewComponents } from './Components/components'
@@ -8,8 +8,6 @@ interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
   editorId: string
 }
-
-const options = createPlateOptions()
 
 const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps) => {
   const editableProps = {
@@ -35,8 +33,7 @@ const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps
             editableProps={editableProps}
             value={content}
             plugins={plugins}
-            components={editorPreviewComponents}
-            options={options}
+            // components={editorPreviewComponents}
           ></Plate>
         </EditorStyles>
       )}

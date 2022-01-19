@@ -1,10 +1,10 @@
 import { PEditor } from '@udecode/plate'
 import { KeyboardHandler } from '@udecode/plate-core'
-import { useCallback } from 'react'
 import { useEditorStore } from '../../../Store/EditorStore'
+import { useElementOnChange as getElementOnChange } from '../../multi-combobox/useMultiComboboxOnKeyDown'
+import { useSlashCommandOnChange } from '../../SlashCommands/useSlashCommandOnChange'
 import { IComboboxItem } from '../components/Combobox.types'
-import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen'
-import { useComboboxStore } from '../useComboboxStore'
+import { ComboboxKey, useComboboxStore } from '../useComboboxStore'
 import { getNextWrappingIndex } from '../utils/getNextWrappingIndex'
 
 const pure = (id: string) => {
@@ -17,19 +17,16 @@ const pure = (id: string) => {
 export type OnSelectItem = (editor: PEditor, item: IComboboxItem) => any // eslint-disable-line @typescript-eslint/no-explicit-any
 export type OnNewItem = (name: string, parentId?) => void
 
-export const useCreatableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnNewItem, creatable?: boolean) => {
-  const itemIndex = useComboboxStore((state) => state.itemIndex)
-  const closeMenu = useComboboxStore((state) => state.closeMenu)
-  const items = useComboboxStore((state) => state.items)
-  const currentNodeKey = useEditorStore((state) => state.node.key)
-
+export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnNewItem, creatable?: boolean) => {
   const creatableOnSelect = (editor: any, textVal: string) => {
-    // console.log({ textVal })
+    const items = useComboboxStore.getState().items
+    const currentNodeKey = useEditorStore.getState().node.key
+    const itemIndex = useComboboxStore.getState().itemIndex
+
     const val = pure(textVal)
-    closeMenu()
     if (items[itemIndex]) {
       const item = items[itemIndex]
-      // console.log({ items, item })
+
       if (item.key === '__create_new' && val !== '') {
         onSelectItem(editor, { key: String(items.length), text: val })
         onNewItem(val, currentNodeKey)
@@ -46,54 +43,62 @@ export const useCreatableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnNe
 /**
  * If the combobox is open, handle keyboard
  */
-export const useComboboxOnKeyDown = ({
-  onSelectItem,
-  onNewItem,
-  creatable
-}: {
-  onSelectItem: OnSelectItem
-  onNewItem: OnNewItem
-  creatable?: boolean
-}): KeyboardHandler => {
-  const itemIndex = useComboboxStore((state) => state.itemIndex)
+export const useComboboxOnKeyDown = (config: any): KeyboardHandler => {
   const setItemIndex = useComboboxStore((state) => state.setItemIndex)
   const closeMenu = useComboboxStore((state) => state.closeMenu)
-  const search = useComboboxStore((state) => state.search)
-  const items = useComboboxStore((state) => state.items)
-  const isOpen = useComboboxIsOpen()
 
-  const creatabaleOnSelect = useCreatableOnSelect(onSelectItem, onNewItem, creatable)
+  // We need to create the select handlers ourselves here
 
-  return useCallback(
-    (editor) => (e) => {
-      // if (!combobox) return false;
+  const { keys, slashCommands } = config
+  const slashCommandOnChange = useSlashCommandOnChange(slashCommands)
+  const comboboxKey: string = useComboboxStore.getState().key
 
-      if (isOpen) {
-        if (e.key === 'ArrowDown') {
-          e.preventDefault()
+  const elementOnChange = getElementOnChange(keys[comboboxKey], keys)
 
-          const newIndex = getNextWrappingIndex(1, itemIndex, items.length, () => undefined, true)
-          return setItemIndex(newIndex)
-        }
-        if (e.key === 'ArrowUp') {
-          e.preventDefault()
+  return (editor) => (e) => {
+    const comboboxKey: string = useComboboxStore.getState().key
+    const comboType = keys[comboboxKey]
 
-          const newIndex = getNextWrappingIndex(-1, itemIndex, items.length, () => undefined, true)
-          return setItemIndex(newIndex)
-        }
-        if (e.key === 'Escape') {
-          e.preventDefault()
-          return closeMenu()
-        }
+    const onSelectItemHandler =
+      comboType.slateElementType === ComboboxKey.SLASH_COMMAND ? slashCommandOnChange : elementOnChange
 
-        if (['Tab', 'Enter', ' ', ']'].includes(e.key)) {
-          e.preventDefault()
-          creatabaleOnSelect(editor, search)
-          return false
-        }
+    const creatabaleOnSelect = getCreateableOnSelect(
+      onSelectItemHandler,
+      (newItem, parentId?) => {
+        comboType.newItemHandler(newItem, parentId)
+      },
+      comboboxKey !== ComboboxKey.SLASH_COMMAND
+    )
+
+    const itemIndex = useComboboxStore.getState().itemIndex
+    const search = useComboboxStore.getState().search
+    const items = useComboboxStore.getState().items
+    const isOpen = !!useComboboxStore.getState().targetRange
+
+    if (isOpen) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+
+        const newIndex = getNextWrappingIndex(1, itemIndex, items.length, () => undefined, true)
+        return setItemIndex(newIndex)
       }
-      return false
-    },
-    [isOpen, itemIndex, items, creatable, setItemIndex, closeMenu, onSelectItem, onNewItem]
-  )
+      if (e.key === 'ArrowUp') {
+        e.preventDefault()
+
+        const newIndex = getNextWrappingIndex(-1, itemIndex, items.length, () => undefined, true)
+        return setItemIndex(newIndex)
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        return closeMenu()
+      }
+
+      if (['Tab', 'Enter', ' ', ']'].includes(e.key)) {
+        e.preventDefault()
+        creatabaleOnSelect(editor, search)
+        return false
+      }
+    }
+    return false
+  }
 }

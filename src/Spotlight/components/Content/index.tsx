@@ -12,9 +12,13 @@ import Preview from '../Preview'
 import SideBar from '../SideBar'
 import { ILink } from '../../../Editor/Store/Types'
 import { useSpotlightAppStore } from '../../../Spotlight/store/app'
+import { ErrorBoundary } from 'react-error-boundary'
+import EditorErrorFallback from '../../../Components/Error/EditorErrorFallback'
+import useEditorActions from '../../../Hooks/useEditorActions'
 
 export const StyledContent = styled.section`
   display: flex;
+  justify-content: center;
   flex: 1;
   max-height: 324px;
   margin: 0.5rem 0;
@@ -34,6 +38,8 @@ const Content = () => {
     metadata: string | null
     isSelection: boolean
   }>(initPreview)
+
+  const { resetEditor } = useEditorActions()
 
   // * Store
   const { ilinks } = useDataStore(({ ilinks }) => ({ ilinks }))
@@ -152,7 +158,9 @@ const Content = () => {
   return (
     <StyledContent>
       <SideBar index={currentIndex} data={searchResults} />
-      <Preview preview={preview} node={editorNode} />
+      <ErrorBoundary onReset={resetEditor} FallbackComponent={EditorErrorFallback}>
+        <Preview preview={preview} node={editorNode} />
+      </ErrorBoundary>
     </StyledContent>
   )
 }

@@ -11,6 +11,7 @@ export type SpotlightEditorStoreType = {
   setNode: (node: NodeProperties) => void
   isPreview: boolean
   setIsPreview?: (val: boolean) => void
+  loadNode: (node: NodeProperties, content: NodeEditorContent) => void
   nodeContent: NodeEditorContent
   setNodeContent: (content: NodeEditorContent) => void
   isSelection: boolean
@@ -25,5 +26,6 @@ export const useSpotlightEditorStore = create<SpotlightEditorStoreType>((set, ge
   nodeContent: undefined,
   setNodeContent: (content) => set(() => ({ nodeContent: content })),
   setNode: (node) => set(() => ({ node })),
+  loadNode: (node: NodeProperties, content: NodeEditorContent) => set({ node, nodeContent: content }),
   setIsSelection: (isSelection) => set({ isSelection })
 }))

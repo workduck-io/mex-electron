@@ -17,7 +17,6 @@ const AutoUpdate = () => {
 
   const handleChange = (value) => {
     setUpdateFreq(value)
-    console.log('Update Frequency Set to: ', value)
     ipcRenderer.send(IpcAction.SET_UPDATE_FREQ, { updateFreq: value })
   }
 

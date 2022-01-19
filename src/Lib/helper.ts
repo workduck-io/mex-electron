@@ -1,4 +1,4 @@
-import { FAKE_APP_URI } from './../Defaults/dev_'
+import { FAKE_APP_URI, IS_DEV } from './../Defaults/dev_'
 import tough from 'tough-cookie'
 import WebStorageCookieStore from 'tough-cookie-web-storage-store'
 import { SEPARATOR } from '../Components/Sidebar/treeUtils'
@@ -6,6 +6,16 @@ import { NodeEditorContent } from '../Editor/Store/Types'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 import { NODE_ID_PREFIX } from '../Defaults/idPrefixes'
 import { nanoid } from 'nanoid'
+
+export const mog = (title: string, propertiesToLog: Record<string, any>) => {
+  if (IS_DEV) {
+    console.group(title)
+    Object.entries(propertiesToLog).forEach(([key, value]) => {
+      console.info(`${key}: ${JSON.stringify(value, null, 2)}`)
+    })
+    console.groupEnd()
+  }
+}
 
 export const electronCookies = () => {
   const { Cookie } = tough
@@ -37,7 +47,7 @@ export const withoutContinuousDelimiter = (text: string, delimiter = SEPARATOR) 
     .filter((ch) => ch !== '')
     .join(delimiter)
 
-  if (text.startsWith(delimiter) && key.length > 0) return { key: `.${key}`, isChild: true }
+  if (text?.startsWith(delimiter) && key.length > 0) return { key: `.${key}`, isChild: true }
   return { key, isChild: false }
 }
 

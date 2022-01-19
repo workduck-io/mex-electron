@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTimeoutFn } from 'react-use'
-import { getSelectionText, isSelectionExpanded } from '@udecode/plate-common'
-import { TEditor } from '@udecode/plate-core'
+import { TEditor, getSelectionText, isSelectionExpanded } from '@udecode/plate-core'
 import { clearBlurSelection, isBlurSelection } from '../../../Editor/Plugins/blurSelection'
 
 /**

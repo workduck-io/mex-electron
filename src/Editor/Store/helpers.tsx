@@ -1,23 +1,22 @@
-import { defaultContent } from '../../Defaults/baseData'
+import { NodeContent } from '../../Types/data'
 import { SourceType } from '../../Spotlight/components/Source/types'
 import { useContentStore } from './ContentStore'
 import { NodeProperties } from './EditorStore'
-import { NodeEditorContent } from './Types'
+import { defaultContent } from '../../Defaults/baseData'
 
 /** Get the contents of the node with id */
-export function getContent (uid: string): NodeEditorContent {
-  // console.log('Loading ID', id);
+export function getContent(uid: string): NodeContent {
   // create a hashmap with id vs content
   // load the content from hashmap
 
   const { contents } = useContentStore.getState()
 
   if (contents[uid]) {
-    const { content } = contents[uid]
+    // const { content } = contents[uid]
 
-    if (content) {
+    if (contents[uid]) {
       // console.log(JSON.stringify(apiData, null, 2), JSON.stringify(content, null, 2))
-      return content
+      return contents[uid]
     }
   }
 
@@ -45,3 +44,5 @@ export const getInitialNode = (): NodeProperties => ({
   key: '@',
   uid: '__null__'
 })
+
+export const typeInvert = (type: string) => (type === 'from' ? 'to' : 'from')

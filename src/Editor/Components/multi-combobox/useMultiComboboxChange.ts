@@ -16,10 +16,8 @@ const useMultiComboboxOnChange = (
 ): OnChange => {
   const editor = usePlateEditorRef(editorId)! // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
-  const isOpen = useComboboxIsOpen()
   const closeMenu = useComboboxStore((state) => state.closeMenu)
 
-  const maxSuggestions = useComboboxStore((state) => state.maxSuggestions)
   const setItems = useComboboxStore((state) => state.setItems)
 
   const comboboxOnChange = useComboboxOnChange({
@@ -33,12 +31,13 @@ const useMultiComboboxOnChange = (
   const changeHandler = useCallback(() => {
     const res = comboboxOnChange()
     if (!res) return false
-
     const { search } = res
 
     if (!search && search !== '') return false
 
     const key = useComboboxStore.getState().key
+    const maxSuggestions = useComboboxStore.getState().maxSuggestions
+
     const ct = keys[key]
     const data = ct.data
 
@@ -46,7 +45,6 @@ const useMultiComboboxOnChange = (
 
     const searchItems = fuzzySearch(data, search, { keys: ['text'] })
     // console.log({ data, search, ct, keys, key })
-
     const items: IComboboxItem[] = (
       search !== '' ? searchItems.slice(0, maxSuggestions) : keys[key].data.slice(0, maxSuggestions)
     ).map((item) => ({
@@ -63,21 +61,24 @@ const useMultiComboboxOnChange = (
         text: `Create New ${search}`
       })
     }
-
     setItems(items)
 
     return true
-  }, [comboboxOnChange, maxSuggestions, setItems, keys])
+  }, [comboboxOnChange, setItems, keys])
 
   return useCallback(
     () => () => {
+      const isOpen = !!useComboboxStore.getState().targetRange
+
       let changed: boolean | undefined = false
       changed = changeHandler !== undefined ? changeHandler() : false
       if (changed) return
 
-      if (!changed && isOpen) closeMenu()
+      if (!changed && isOpen) {
+        closeMenu()
+      }
     },
-    [closeMenu, isOpen, changeHandler, keys]
+    [closeMenu, changeHandler, keys]
   )
 }
 

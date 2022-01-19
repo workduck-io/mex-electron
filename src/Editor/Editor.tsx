@@ -1,19 +1,15 @@
-import { createPlateOptions, Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
+import { Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useGraphStore } from '../Components/Graph/GraphStore'
 import { EditorStyles } from '../Styled/Editor'
-import { withStyledDraggables } from './Actions/withDraggable'
-import { withStyledPlaceHolders } from './Actions/withPlaceholder'
-import components from './Components/components'
 import BallonMarkToolbarButtons from './Components/EditorToolbar'
 import { MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
 import generatePlugins from './Plugins/plugins'
 import { debounce } from 'lodash'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
-
-const options = createPlateOptions()
+import { useEditorChange } from '../Hooks/useEditorActions'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -46,7 +42,7 @@ const Editor = ({
 
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
 
-  const generateEditorId = () => `${editorId}`
+  // const generateEditorId = () => `${editorId}`
   const editorRef = usePlateEditorRef()
 
   useEffect(() => {
@@ -62,12 +58,15 @@ const Editor = ({
   const plugins = [
     ...prePlugins,
     {
-      onChange: pluginConfigs.combobox.onChange,
-      onKeyDown: pluginConfigs.combobox.onKeyDown
+      key: 'MULTI_COMBOBOX',
+      handlers: {
+        onChange: pluginConfigs.combobox.onChange,
+        onKeyDown: pluginConfigs.combobox.onKeyDown
+      }
     }
   ]
 
-  // console.log('rendering editor', {})
+  useEditorChange(editorId, content)
 
   return (
     <>
@@ -76,13 +75,11 @@ const Editor = ({
           <EditorStyles onClick={() => setNodePreview(false)} data-tour="mex-onboarding-draft-editor">
             {showBalloonToolbar && <BallonMarkToolbarButtons />}
             <Plate
-              id={generateEditorId()}
+              id={editorId}
               editableProps={editableProps}
               value={content}
               plugins={plugins}
               onChange={debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 1000)}
-              components={withStyledPlaceHolders(withStyledDraggables(components))}
-              options={options}
             >
               <MultiComboboxContainer keys={comboConfigData.keys} slashCommands={comboConfigData.slashCommands} />
             </Plate>

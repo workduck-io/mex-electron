@@ -3,7 +3,12 @@ import styled from 'styled-components'
 import SideBar from '../Components/Sidebar'
 import ContentEditor from '../Editor/ContentEditor'
 import { useTreeFromLinks } from '../Editor/Store/DataStore'
+import { useEditorStore } from '../Editor/Store/EditorStore'
 import InfoBar from '../Layout/InfoBar'
+import { ErrorBoundary } from 'react-error-boundary'
+import useLoad from '../Hooks/useLoad/useLoad'
+import EditorErrorFallback from '../Components/Error/EditorErrorFallback'
+import useEditorActions from '../Hooks/useEditorActions'
 
 const EditorViewWrapper = styled.div`
   display: flex;
@@ -15,10 +20,14 @@ const EditorViewWrapper = styled.div`
 const EditorView = () => {
   const Tree = useTreeFromLinks()
 
+  const { resetEditor } = useEditorActions()
+
   return (
     <EditorViewWrapper>
       <SideBar tree={Tree} starred={Tree} />
-      <ContentEditor />
+      <ErrorBoundary onReset={resetEditor} FallbackComponent={EditorErrorFallback}>
+        <ContentEditor />
+      </ErrorBoundary>
       <InfoBar />
     </EditorViewWrapper>
   )

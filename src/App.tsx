@@ -5,7 +5,6 @@ import { HashRouter as Router } from 'react-router-dom'
 import Init from './Components/Init/Init'
 import OnBoardingTour from './Components/Onboarding'
 import { OnboardingTourConfig } from './Components/Onboarding/steps'
-import useOnboard from './Components/Onboarding/store'
 import Contexts from './Context/Contexts'
 import Providers from './Context/Providers'
 import Main from './Layout/Main'
@@ -19,6 +18,7 @@ import FloatingButton from './Components/FloatingButton'
 if (!IS_DEV) initializeSentry()
 
 Modal.setAppElement('#root')
+initializeSentry()
 
 function App() {
   return (

@@ -63,8 +63,8 @@ const Backlinks = () => {
           <Note>Link from other nodes to view them here.</Note>
         </>
       )}
-      {backlinks.map((l) => (
-        <NodeLink key={`backlink_${l.uid}`} onClick={() => push(l.uid)}>
+      {backlinks.map((l, i) => (
+        <NodeLink key={`backlink_${l.uid}_${i}`} onClick={() => push(l.uid)}>
           {getNodeIdFromUid(l.uid)}
         </NodeLink>
       ))}

@@ -1,6 +1,6 @@
 import saveLine from '@iconify-icons/ri/save-line'
 import { TippyProps } from '@tippyjs/react'
-import { usePlateValue } from '@udecode/plate'
+import { getPlateSelectors, usePlateSelectors, usePlateId, getPlateId, platesStore } from '@udecode/plate'
 import React, { useCallback, useEffect } from 'react'
 import toast from 'react-hot-toast'
 import { useUpdater } from '../../Data/useUpdater'
@@ -43,7 +43,7 @@ export const useDataSaverFromContent = () => {
   }, [])
 
   const saveNodeAPIandFs = (uid: string) => {
-    console.log('saving to api for uid: ', { uid })
+    // console.log('saving to api for uid: ', { uid })
     const content = getContent(uid)
     saveDataAPI(uid, content.content)
     saveData()
@@ -54,22 +54,39 @@ export const useDataSaverFromContent = () => {
 
 export const useSaver = () => {
   const saveData = useSaveData()
-  const editorState = usePlateValue()
+
+  // const editorState = usePlateSelectors(usePlateId()).value(
 
   const { saveEditorAndUpdateStates } = useDataSaverFromContent()
 
+  /**
+   * Should be run on explicit save as it saves the current editor state
+   * and everything else in the api and file system
+   */
   const onSave = (
     node?: NodeProperties,
     writeToFile?: boolean, // Saved to file unless explicitly set to false
     notification?: boolean, // Shown notification unless explicitly set to false
     content?: any[] //  Replace content with given content instead of fetching from plate value
   ) => {
+    const state = platesStore.get.state()
+
     const defaultNode = useEditorStore.getState().node
     const cnode = node || defaultNode
-    const nodeContent = content ?? editorState
+    // const nodeContent = content ?? editorState
     // setContent then save
-    saveEditorAndUpdateStates(cnode, nodeContent)
-    if (writeToFile !== false) saveData()
+
+    const editorId = getPlateId()
+    const hasState = !!state[editorId]
+    if (hasState) {
+      const editorState = content ?? state[editorId].get.value()
+      saveEditorAndUpdateStates(cnode, editorState)
+    }
+
+    if (writeToFile !== false) {
+      // console.log('CALLED')
+      saveData()
+    }
     if (notification !== false) toast('Saved!', { duration: 1000 })
   }
 
@@ -150,7 +167,7 @@ export const SaverButton = ({
 export const useSnippetSaver = () => {
   const snippet = useSnippetStore((store) => store.editor.snippet)
   const updateSnippet = useSnippetStore((state) => state.updateSnippet)
-  const editorState = usePlateValue()
+  const editorState = getPlateSelectors(getPlateId()).value()
   const saveData = useSaveData()
   const { updater } = useUpdater()
 

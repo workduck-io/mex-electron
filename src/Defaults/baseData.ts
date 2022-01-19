@@ -1,16 +1,21 @@
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
+import { Contents } from '../Editor/Store/ContentStore'
 import { generateComboTexts, generateILinks } from '../Editor/Store/sampleTags'
-import { FileData } from '../Types/data'
-import { generateTempId } from './idPrefixes'
+import { FileData, NodeContent } from '../Types/data'
+// import { generateTempId } from './idPrefixes'
 
 const links = generateILinks(['doc', 'dev', 'design', '@', 'Draft'])
 
-export const defaultContent = [{ id: generateTempId(), children: [{ text: '' }], type: ELEMENT_PARAGRAPH }]
+export const defaultContent: NodeContent = {
+  type: 'init',
+  content: [{ type: ELEMENT_PARAGRAPH, children: [{ text: '' }] }],
+  version: -1
+}
 
-const contents = links.reduce((prev, cur) => {
+const contents: Contents = links.reduce((prev, cur) => {
   return {
     ...prev,
-    [cur.uid]: { type: 'init', content: defaultContent }
+    [cur.uid]: { type: 'init', content: defaultContent.content, version: -1 }
   }
 }, {})
 

@@ -59,6 +59,40 @@ export const useLinks = () => {
     return []
   }
 
+  /**
+   * Creates a new internal link
+   * The link should be unique between two nodes
+   * No self links are allowed
+   * Returns true if the link is created or false otherwise
+   * */
+  const createLink = (uid: string, nodeLink: NodeLink): boolean => {
+    if (nodeLink.to === nodeLink.from) return false
+
+    // console.log('Creating links', { nodeLink })
+    // No self links will be added
+
+    let nodeLinks = useDataStore.getState().linkCache[uid]
+    let secondNodeLinks = useDataStore.getState().linkCache[nodeLink.to]
+
+    if (!nodeLinks) nodeLinks = []
+    if (!secondNodeLinks) secondNodeLinks = []
+
+    nodeLinks.push({ type: 'from', uid: '' })
+    secondNodeLinks.push({
+      type: 'to',
+      uid: uid
+    })
+
+    // set({
+    //   linkCache: {
+    //     ...get().linkCache,
+    //     [uid]: nodeLinks,
+    //     [ilink.uid]: secondNodeLinks
+    //   }
+    // })
+    return true
+  }
+
   const getBacklinks = (uid: string) => {
     const links = linkCache[uid]
     if (links) {
@@ -68,7 +102,7 @@ export const useLinks = () => {
   }
 
   const updateLinksFromContent = (uid: string, content: any[]) => {
-    // console.log('We are updating', uid, content, linkCache)
+    // console.log('We are updating links from content', { uid, content, linkCache })
 
     if (content) {
       const links: CachedILink[] = getLinksFromContent(content).map((l) => ({
@@ -112,7 +146,7 @@ export const useLinks = () => {
     if (link) return link.text
   }
 
-  return { getAllLinks, getLinks, getBacklinks, updateLinksFromContent, getUidFromNodeId, getNodeIdFromUid }
+  return { getAllLinks, getLinks, getBacklinks, updateLinksFromContent, getUidFromNodeId, getNodeIdFromUid, createLink }
 }
 
 export const getUidFromNodeIdAndLinks = (links: ILink[], nodeId: string) => {

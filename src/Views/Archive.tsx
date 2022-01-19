@@ -149,7 +149,7 @@ const Archive = () => {
           {transition((styles, n, _t, _i) => {
             const con = contents[n.uid]
             const nodeId = n.key
-            const content = con ? con.content : defaultContent
+            const content = con ? con.content : defaultContent.content
             return (
               <Result style={styles} key={`tag_res_prev_archive_${n.uid}${_i}`}>
                 <ResultHeader>
