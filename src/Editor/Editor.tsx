@@ -9,6 +9,7 @@ import { MultiComboboxContainer } from './Components/multi-combobox/multiCombobo
 import generatePlugins from './Plugins/plugins'
 import { debounce } from 'lodash'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
+import { useEditorChange } from '../Spotlight/components/Content'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -64,6 +65,8 @@ const Editor = ({
       }
     }
   ]
+
+  useEditorChange(editorId, content)
 
   return (
     <>

@@ -22,6 +22,7 @@ import { AppType } from '../../../Data/useInitialize'
 import { useSpotlightAppStore } from '../../../Spotlight/store/app'
 import { createNodeWithUid } from '../../../Lib/helper'
 import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
+import { useEditorChange } from '../Content'
 
 export type PreviewType = {
   text: string
@@ -54,17 +55,17 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   const { loadNodeProps } = useLoad()
   const ref = useRef<HTMLDivElement>()
   const { search, selection, setSelection, setSearch } = useSpotlightContext()
-  const nodes = useDeserializeSelectionToNodes(node.uid, preview)
+  const deserializedContentNodes = useDeserializeSelectionToNodes(node.uid, preview)
 
   const animationProps = useSpring({ width: search ? '60%' : '100%' })
 
   useEffect(() => {
-    const newNodeContent = [{ children: nodes }]
-    if (preview.isSelection && nodes) {
-      const changedContent = showSource ? combineSources(fsContent.content, newNodeContent) : fsContent
+    if (preview.isSelection && deserializedContentNodes) {
+      const deserializedContent = [{ children: deserializedContentNodes }]
+      const changedContent = showSource ? combineSources(fsContent.content, deserializedContent) : fsContent
 
-      setNodeContent([{ children: nodes }])
-      setFsContent(node.uid, [{ children: nodes }])
+      setNodeContent(deserializedContent)
+      setFsContent(node.uid, deserializedContent)
 
       // * FIX: For BUBBLE MODE
       // setNodeContent([...changedContent, { children: nodes }])

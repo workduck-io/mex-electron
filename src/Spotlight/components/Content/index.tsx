@@ -10,8 +10,20 @@ import { useSpotlightContext } from '../../utils/context'
 import { useCurrentIndex } from '../../utils/hooks'
 import Preview from '../Preview'
 import SideBar from '../SideBar'
-import { ILink } from '../../../Editor/Store/Types'
+import { ILink, NodeEditorContent } from '../../../Editor/Store/Types'
 import { useSpotlightAppStore } from '../../../Spotlight/store/app'
+import { usePlateEditorRef } from '@udecode/plate'
+
+export const useEditorChange = (editorId: string, content: NodeEditorContent) => {
+  const editor = usePlateEditorRef(editorId)
+  useEffect(() => {
+    console.log('useEditorChange', editorId, content)
+
+    if (editor && content) {
+      editor.children = content
+    }
+  }, [editorId, content])
+}
 
 export const StyledContent = styled.section`
   display: flex;

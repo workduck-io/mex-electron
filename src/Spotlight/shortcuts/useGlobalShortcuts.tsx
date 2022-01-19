@@ -8,6 +8,7 @@ import { useSpotlightEditorStore } from '../store/editor'
 import { ipcRenderer } from 'electron'
 import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import { useSpotlightAppStore } from '../store/app'
+import { getPlateActions } from '@udecode/plate'
 
 export const useGlobalShortcuts = () => {
   const history = useHistory()
@@ -47,9 +48,11 @@ export const useGlobalShortcuts = () => {
       Escape: (event) => {
         event.preventDefault()
         if (!shortcutDisabled) {
+          getPlateActions(savedEditorNode.uid).resetEditor()
           setNormalMode(true)
           if (selection && !search) {
             setSelection(undefined)
+
             removeContent(savedEditorNode.uid)
           } else if (search) {
             setIsPreview(false)

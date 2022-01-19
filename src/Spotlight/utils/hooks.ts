@@ -75,7 +75,7 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
             saveEditorAndUpdateStates(newNode, newContentData, true)
             saveData()
 
-            appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
+            // appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
             setNode(createNodeWithUid(getNewDraftKey()))
             setNodeContent(undefined)

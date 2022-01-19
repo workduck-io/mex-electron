@@ -62,7 +62,6 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
 
   loadNode: (node: NodeProperties) => {
     const content = getContent(node.uid)
-    console.log('Loading the node', { node, content })
     set({
       node,
       content
@@ -70,7 +69,6 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
   },
 
   loadNodeAndReplaceContent: (node, content) => {
-    console.log('loading node and replacing content', { node, content })
     set({ node, content })
   }
 }))

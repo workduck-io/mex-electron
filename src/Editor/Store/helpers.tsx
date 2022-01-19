@@ -11,7 +11,6 @@ export function getContent(uid: string): NodeContent {
 
   const { contents } = useContentStore.getState()
 
-  console.log('Loading content', { uid, contents, uidCon: contents[uid] })
   if (contents[uid]) {
     // const { content } = contents[uid]
 

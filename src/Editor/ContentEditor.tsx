@@ -40,7 +40,6 @@ const ContentEditor = () => {
   const add2Q = useQStore((s) => s.add2Q)
 
   const onChangeSave = (val: any[]) => {
-    console.log('Trigger onChange', { node, val })
     if (val && node && node.uid !== '__null__') {
       // console.log('Saving onChange', { node, val })
 
@@ -86,8 +85,6 @@ const ContentEditor = () => {
       unsubscribe()
     }
   }, [shortcuts, toggleFocusMode])
-
-  console.log('CE', { ce: `StandardEditor_${uid}_${fetchingContent ? 'loading' : 'edit'}`, fsContent, uid })
 
   return (
     <>
