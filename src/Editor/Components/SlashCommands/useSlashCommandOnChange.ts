@@ -19,10 +19,6 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
 
   return (editor: PlateEditor, item: IComboboxItem) => {
     const targetRange = useComboboxStore.getState().targetRange
-    console.log('Inside slash')
-
-    console.log({ item })
-
     const commandKey = Object.keys(keys).filter((k) => keys[k].command === item.text)[0]
 
     const commandConfig = keys[commandKey]

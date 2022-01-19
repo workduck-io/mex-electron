@@ -10,10 +10,9 @@ import useDataStore from '../../Editor/Store/DataStore'
 import { NodeProperties, useEditorStore } from '../../Editor/Store/EditorStore'
 import { getContent } from '../../Editor/Store/helpers'
 import { NodeEditorContent } from '../../Editor/Store/Types'
-import { updateEmptyBlockTypes } from '../../Lib/helper'
+import { mog, updateEmptyBlockTypes } from '../../Lib/helper'
 import { useApi } from '../../Requests/Save'
 import { useQStore, useSaveQ } from '../useQ'
-import { getEditorId } from '../../Lib/EditorId'
 
 type LoadNodeProps = {
   savePrev?: boolean
@@ -78,7 +77,7 @@ const useLoad = () => {
         if (data) {
           // const { data, metadata, version } = res
 
-          console.log({ data })
+          mog('SAVED DATA', { data })
           // if (data) {
           //   updateEmptyBlockTypes(data, ELEMENT_PARAGRAPH)
           //   const nodeContent = {

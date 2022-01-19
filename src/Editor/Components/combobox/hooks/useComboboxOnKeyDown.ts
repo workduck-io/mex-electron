@@ -65,7 +65,6 @@ export const useComboboxOnKeyDown = (config: any): KeyboardHandler => {
     const creatabaleOnSelect = getCreateableOnSelect(
       onSelectItemHandler,
       (newItem, parentId?) => {
-        console.log(comboType)
         comboType.newItemHandler(newItem, parentId)
       },
       comboboxKey !== ComboboxKey.SLASH_COMMAND
