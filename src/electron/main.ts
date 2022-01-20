@@ -27,7 +27,7 @@ import { AppType } from '../hooks/useInitialize'
 import { initializeSentry } from '../services/sentry'
 import { FileData } from '../types/data'
 
-import { getAppleNotes } from '../utils/Importers/appleNotes'
+import { getAppleNotes } from '../utils/importers/appleNotes'
 import { sanitizeHtml } from '../utils/sanitizeHtml'
 import { flexIndexKeys } from '../utils/search/flexsearch'
 import { getGlobalShortcut, getSelectedText, getSelectedTextSync, SelectionType } from './utils/getSelectedText'

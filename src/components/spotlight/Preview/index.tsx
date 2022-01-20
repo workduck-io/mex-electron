@@ -12,7 +12,7 @@ import { SeePreview, StyledEditorPreview, StyledPreview } from './styled'
 import { useDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import useLoad from '../../../hooks/useLoad'
 import { useSpring } from 'react-spring'
-import { SaverButton } from '../../../Editor/Components/Saver'
+import { SaverButton } from '../../../editor/Components/Saver'
 import useOnboard from '../../../store/useOnboarding'
 import useDataStore from '../../../store/useDataStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
@@ -21,7 +21,7 @@ import { IpcAction } from '../../../data/IpcAction'
 import { AppType } from '../../../hooks/useInitialize'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { createNodeWithUid } from '../../../utils/Lib/helper'
-import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
+import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 
 export type PreviewType = {
   text: string

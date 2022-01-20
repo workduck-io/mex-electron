@@ -10,7 +10,7 @@ import useOnboard from '../../../store/useOnboarding'
 import { useAuthStore } from '../../../services/auth/useAuth'
 import { GetIcon } from '../../../data/links'
 import { FlexBetween } from '../../spotlight/Actions/styled'
-import { useInitOlvy } from '../../../services/olvy'
+import { useInitOlvy } from '../../../services/Olvy'
 
 export const Float = styled.div`
   position: fixed;
@@ -102,7 +102,7 @@ const FloatingButton = () => {
           </FlexBetween>
 
           <div>
-            {/* TODO: Uncomment this when we have onboarding 
+            {/* TODO: Uncomment this when we have onboarding
               <MenuItem key="wd-mex-getting-started-button" onClick={onGettingStartedClick}>
               Getting Started
             </MenuItem> */}

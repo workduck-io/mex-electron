@@ -1,4 +1,4 @@
-import { IntentTemplate } from '../Editor/Components/SyncBlock'
+import { IntentTemplate } from '../../editor/Components/SyncBlock'
 
 export const DefaultSyncBlockTemplates: {
   [id: string]: {
