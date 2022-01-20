@@ -1,9 +1,9 @@
 import { uniq } from 'lodash'
-import { SyncBlockTemplate } from '../Editor/Components/SyncBlock'
+import { SyncBlockTemplate } from '../editor/Components/SyncBlock'
 import { defaultCommands } from '../Defaults/slashCommands'
-import { extractSyncBlockCommands } from '../Editor/Components/SlashCommands/useSyncConfig'
-import { addIconToString, generateIconComboTexts } from '../Editor/Store/sampleTags'
-import { Snippet } from '../Editor/Store/SnippetStore'
+import { extractSyncBlockCommands } from '../editor/Components/SlashCommands/useSyncConfig'
+import { addIconToString, generateIconComboTexts } from '../editor/Store/sampleTags'
+import { Snippet } from '../editor/Store/SnippetStore'
 import { extractSnippetCommands } from '../Snippets/useSnippets'
 
 export const useSlashCommands = () => {

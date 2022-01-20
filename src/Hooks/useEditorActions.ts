@@ -1,7 +1,7 @@
 import { usePlateEditorRef } from '@udecode/plate'
 import { useEffect } from 'react'
-import { NodeEditorContent } from '../Editor/Store/Types'
-import { useEditorStore } from '../Editor/Store/EditorStore'
+import { NodeEditorContent } from '../editor/Store/Types'
+import { useEditorStore } from '../editor/Store/EditorStore'
 import useLoad from './useLoad/useLoad'
 
 const useEditorActions = () => {

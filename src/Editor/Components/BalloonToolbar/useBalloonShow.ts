@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTimeoutFn } from 'react-use'
 import { TEditor, getSelectionText, isSelectionExpanded } from '@udecode/plate-core'
-import { clearBlurSelection, isBlurSelection } from '../../../Editor/Plugins/blurSelection'
+import { clearBlurSelection, isBlurSelection } from '../../Plugins/blurSelection'
 
 /**
  * Hide if not selecting.

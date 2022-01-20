@@ -14,12 +14,12 @@ import { useTags } from '../../Hooks/useTags/useTags'
 import { getEventNameFromElement } from '../../Lib/strings'
 import { useApi } from '../../Requests/Save'
 import { convertEntryToRawText } from '../../Search/localSearch'
-import { useNewSearchStore } from '../../Search/SearchStore'
+import { useNewSearchStore } from '../../Search/useSearchStore'
 import IconButton from '../../Styled/Buttons'
 import { useLinks } from '../Actions/useLinks'
-import { useContentStore } from '../Store/ContentStore'
-import { NodeProperties, useEditorStore } from '../Store/EditorStore'
-import { useSnippetStore } from '../Store/SnippetStore'
+import { useContentStore } from '../Store/useContentStore'
+import { NodeProperties, useEditorStore } from '../Store/useEditorStore'
+import { useSnippetStore } from '../Store/useSnippetStore'
 
 export const useDataSaverFromContent = () => {
   const setFsContent = useContentStore((state) => state.setContent)

@@ -1,6 +1,6 @@
-import { Service, SyncBlockData, SyncBlockTemplate, SyncStoreIntents } from '../Editor/Components/SyncBlock'
-import { Snippet } from '../Editor/Store/SnippetStore'
-import { ComboText, ILink, LinkCache, NodeEditorContent, TagsCache } from '../Editor/Store/Types'
+import { Service, SyncBlockData, SyncBlockTemplate, SyncStoreIntents } from '../editor/Components/SyncBlock'
+import { Snippet } from '../editor/Store/useSnippetStore'
+import { ComboText, ILink, LinkCache, NodeEditorContent, TagsCache } from '../editor/Store/Types'
 
 export interface NodeMetadata {
   createdBy?: string
