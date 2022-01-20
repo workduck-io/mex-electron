@@ -1,12 +1,12 @@
-import { defaultContent } from '../Defaults/baseData'
-import { USE_API } from '../Defaults/dev_'
-import { deserializeContent, serializeContent } from '../Lib/serialize'
+import { defaultContent } from '../data/Defaults/baseData'
+import { USE_API } from '../data/Defaults/dev_'
+import { deserializeContent, serializeContent } from '../utils/Lib/serialize'
 import { client } from '@workduck-io/dwindle'
 import { apiURLs } from './routes'
-import { removeNulls } from '../Lib/helper'
-import { useAuthStore } from '../Hooks/useAuth/useAuth'
-import { useContentStore } from '../editor/Store/useContentStore'
-import { extractMetadata } from '../Lib/metadata'
+import { removeNulls } from '../utils/Lib/helper'
+import { useAuthStore } from '../services/auth/useAuth'
+import { useContentStore } from '../store/useContentStore'
+import { extractMetadata } from '../utils/Lib/metadata'
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,4 +1,4 @@
-import { MEX_TAG } from '../Defaults/auth'
+import { MEX_TAG } from '../data/Defaults/auth'
 
 export const BASE_INTEGRATION_URL = 'https://http.workduck.io/integration'
 
