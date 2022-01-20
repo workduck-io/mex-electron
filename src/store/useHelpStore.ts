@@ -1,7 +1,7 @@
 import { HelpState } from '../components/mex/Help/Help.types'
 import create from 'zustand'
 import produce from 'immer'
-import { ipcRenderer } from 'electron/renderer'
+import { ipcRenderer } from 'electron'
 import { IpcAction } from '../data/IpcAction'
 import { defaultShortcuts } from '../data/Defaults/shortcuts'
 

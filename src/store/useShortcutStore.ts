@@ -1,8 +1,8 @@
-import { getKey, Key } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import create from 'zustand'
-import { EXCLUDED_KEYS_MODIFIERS, getKeyFromKeycode, KEY_MODIFIERS, MiscKeys } from '../../Lib/keyMap'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../data/IpcAction'
+import { Key, getKey } from '../hooks/useShortcutListener'
+import { EXCLUDED_KEYS_MODIFIERS, getKeyFromKeycode, KEY_MODIFIERS, MiscKeys } from '../utils/lib/keyMap'
 
 export type KeyBinding = {
   key: string

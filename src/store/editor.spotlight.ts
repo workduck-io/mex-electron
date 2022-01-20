@@ -2,7 +2,7 @@ import { NodeProperties } from '../store/useEditorStore'
 import { NodeEditorContent } from '../types/Types'
 import create from 'zustand'
 import { getNewDraftKey } from '../editor/Components/SyncBlock/getNewBlockData'
-import { createNodeWithUid } from '../utils/Lib/helper'
+import { createNodeWithUid } from '../utils/lib/helper'
 
 export type SelectionType = { text: string; metadata: string } | undefined
 

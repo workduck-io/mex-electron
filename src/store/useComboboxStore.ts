@@ -1,7 +1,7 @@
 import { UseComboboxReturnValue } from 'downshift'
 import { Range } from 'slate'
+import { IComboboxItem } from '../editor/Components/combobox/components/Combobox.types'
 import { createStore, setStoreValue } from '../editor/Components/store/createStore'
-import { IComboboxItem } from '../editor/components/combobox/components/Combobox.types'
 
 export enum ComboboxKey {
   TAG = 'tag',
