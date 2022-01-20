@@ -1,5 +1,5 @@
-import { useContentStore } from './../../Editor/Store/ContentStore'
-import { useGraphStore } from '../../Components/Graph/GraphStore'
+import { useContentStore } from '../store/useContentStore'
+import { useGraphStore } from '../store/useGraphStore'
 
 const useToggleElements = () => {
   const showGraph = useGraphStore((state) => state.showGraph)

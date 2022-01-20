@@ -1,10 +1,10 @@
 import { uniq } from 'lodash'
-import { SyncBlockTemplate } from '../editor/Components/SyncBlock'
-import { defaultCommands } from '../Defaults/slashCommands'
+import { defaultCommands } from '../data/Defaults/slashCommands'
 import { extractSyncBlockCommands } from '../editor/Components/SlashCommands/useSyncConfig'
-import { addIconToString, generateIconComboTexts } from '../editor/Store/sampleTags'
-import { Snippet } from '../editor/Store/SnippetStore'
-import { extractSnippetCommands } from '../Snippets/useSnippets'
+import { Snippet } from '../store/useSnippetStore'
+import { generateIconComboTexts, addIconToString } from '../utils/generateComboItem'
+import { SyncBlockTemplate } from '../editor/Components/SyncBlock'
+import { extractSnippetCommands } from './useSnippets'
 
 export const useSlashCommands = () => {
   const generateSlashCommands = (snippets: Snippet[], templates: SyncBlockTemplate[]) => {

@@ -1,11 +1,11 @@
-import { useHelpStore } from './../../Components/Help/HelpModal'
 import { useEffect, useCallback, useMemo } from 'react'
-import { KeyBinding, useShortcutStore } from '../../Editor/Store/ShortcutStore'
-import { MiscKeys } from '../../Lib/keyMap'
-import useAnalytics from '../../analytics'
-import { CustomEvents, ActionType } from '../../analytics/events'
-import { Shortcut } from '../../Components/Help/Help.types'
-import { getEventNameFromElement } from '../../Lib/strings'
+import { Shortcut } from '../components/mex/Help/Help.types'
+import useAnalytics from '../services/analytics'
+import { ActionType } from '../services/analytics/events'
+import { useHelpStore } from '../store/useHelpStore'
+import { KeyBinding, useShortcutStore } from '../store/useShortcutStore'
+import { MiscKeys } from '../utils/lib/keyMap'
+import { getEventNameFromElement } from '../utils/lib/strings'
 
 export type ShortcutListner = {
   shortcut: KeyBinding

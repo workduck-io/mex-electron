@@ -1,10 +1,10 @@
 import { uniq } from 'lodash'
-import { hasLink } from '../../Lib/links'
-import { NodeLink } from '../../Types/relations'
-import { ELEMENT_INLINE_BLOCK } from '../components/InlineBlock/types'
-import { useContentStore } from '../Store/useContentStore'
-import useDataStore from '../Store/useDataStore'
-import { CachedILink, ILink } from '../Store/Types'
+import { ELEMENT_INLINE_BLOCK } from '../editor/Components/InlineBlock/types'
+import { useContentStore } from '../store/useContentStore'
+import useDataStore from '../store/useDataStore'
+import { NodeLink } from '../types/relations'
+import { CachedILink, ILink } from '../types/Types'
+import { hasLink } from '../utils/lib/links'
 
 const getLinksFromContent = (content: any[]): string[] => {
   let links: string[] = []

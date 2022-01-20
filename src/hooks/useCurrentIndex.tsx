@@ -1,3 +1,19 @@
+import { useState, useEffect } from 'react'
+import { defaultContent } from '../data/Defaults/baseData'
+import { IpcAction } from '../data/IpcAction'
+import { useDataSaverFromContent } from '../editor/Components/Saver'
+import { getNewDraftKey } from '../editor/Components/SyncBlock/getNewBlockData'
+import { appNotifierWindow } from '../electron/utils/notifiers'
+import { useSpotlightAppStore } from '../store/app.spotlight'
+import { useSpotlightContext } from '../store/Context/context.spotlight'
+import { useSpotlightEditorStore } from '../store/editor.spotlight'
+import useDataStore from '../store/useDataStore'
+import { getContent } from '../utils/helpers'
+import { createNodeWithUid } from '../utils/lib/helper'
+import { AppType } from './useInitialize'
+import useLoad from './useLoad'
+import { useSaveData } from './useSaveData'
+
 export const useCurrentIndex = (data: Array<any> | undefined): number => {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const { search, setSearch, selection, setSelection } = useSpotlightContext()

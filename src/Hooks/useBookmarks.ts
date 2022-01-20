@@ -1,9 +1,9 @@
 import { client, useAuth } from '@workduck-io/dwindle'
-import { apiURLs } from '../../Requests/routes'
-import useDataStore from '../../Editor/Store/DataStore'
-import { USE_API } from '../../Defaults/dev_'
-import { useSaver } from '../../Editor/Components/Saver'
-import { useLinks } from '../../Editor/Actions/useLinks'
+import { apiURLs } from '../apis/routes'
+import { USE_API } from '../data/Defaults/dev_'
+import { useSaver } from '../editor/Components/Saver'
+import useDataStore from '../store/useDataStore'
+import { useLinks } from './useLinks'
 
 export const useBookmarks = () => {
   const setBookmarks = useDataStore((state) => state.setBookmarks)

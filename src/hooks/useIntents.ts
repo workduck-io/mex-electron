@@ -1,10 +1,10 @@
 import { client } from '@workduck-io/dwindle'
-import { generateIgId } from '../../Defaults/idPrefixes'
-import { Intent, IntentGroup, IntentTemplate } from '../../Editor/Components/SyncBlock/SyncBlock.types'
-import { useSyncStore } from '../../Editor/Store/SyncStore'
-import { isIntent } from '../../Lib/intents'
-import { integrationURLs } from '../../Requests/routes'
-import { useAuthStore } from '../useAuth/useAuth'
+import { useAuthStore } from '../services/auth/useAuth'
+import { integrationURLs } from '../apis/routes'
+import { generateIgId } from '../data/Defaults/idPrefixes'
+import { Intent, IntentTemplate, IntentGroup } from '../editor/Components/SyncBlock'
+import { useSyncStore } from '../store/useSyncStore'
+import { isIntent } from '../utils/lib/intents'
 
 const useIntents = () => {
   const addIgid = useSyncStore((store) => store.addIgid)

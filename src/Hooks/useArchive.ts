@@ -1,10 +1,11 @@
 import { client, useAuth } from '@workduck-io/dwindle'
-import { apiURLs } from '../../Requests/routes'
-import useDataStore from '../../Editor/Store/DataStore'
-import { USE_API } from '../../Defaults/dev_'
-import { useSaver } from '../../Editor/Components/Saver'
-import { useAuthStore } from '../useAuth/useAuth'
-import { ILink } from '../../Editor/Store/Types'
+import { useAuthStore } from '../services/auth/useAuth'
+import { apiURLs } from '../apis/routes'
+import { USE_API } from '../data/Defaults/dev_'
+import { useSaver } from '../editor/Components/Saver'
+import useDataStore from '../store/useDataStore'
+import { ILink } from '../types/Types'
+// import { apiURLs } from '.../Editor/Store/Types'
 
 const useArchive = () => {
   const setArchive = useDataStore((state) => state.setArchive)

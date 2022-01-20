@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useCombobox } from 'downshift'
-import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen'
-import { useComboboxStore } from '../useComboboxStore'
+import { useComboboxIsOpen } from '../editor/Components/combobox/selectors/useComboboxIsOpen'
+import { useComboboxStore } from '../store/useComboboxStore'
 
 export const useComboboxControls = (withNew: boolean) => {
   const isOpen = useComboboxIsOpen()
@@ -13,7 +13,7 @@ export const useComboboxControls = (withNew: boolean) => {
     isOpen,
     highlightedIndex: itemIndex,
     items,
-    circularNavigation: true,
+    circularNavigation: true
     // onInputValueChange: ({inputValue}) => {
     //   setInputItems(
     //     items.filter(item =>
@@ -33,7 +33,7 @@ export const useComboboxControls = (withNew: boolean) => {
     () => ({
       closeMenu,
       getMenuProps,
-      getItemProps,
+      getItemProps
     }),
     [closeMenu, getItemProps, getMenuProps]
   )

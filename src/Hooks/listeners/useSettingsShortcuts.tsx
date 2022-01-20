@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
-import { useContentStore } from '../../editor/Store/ContentStore'
+import { useContentStore } from '../../store/useContentStore'
 import tinykeys from 'tinykeys'
-import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
+import { useKeyListener } from '../useShortcutListener'
 
 export const useSettingsShortcuts = () => {
   const setSaved = useContentStore((state) => state.setSaved)

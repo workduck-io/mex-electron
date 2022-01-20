@@ -1,14 +1,14 @@
 import { useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router'
-import { useSpotlightSettingsStore } from '../store/settings'
-import tinykeys from 'tinykeys'
-import { useContentStore } from '../../editor/Store/ContentStore'
-import { useSpotlightContext } from '../utils/context'
-import { useSpotlightEditorStore } from '../store/editor'
 import { ipcRenderer } from 'electron'
-import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
-import { useSpotlightAppStore } from '../store/app'
+import tinykeys from 'tinykeys'
 import { getPlateActions } from '@udecode/plate'
+import { useSpotlightAppStore } from '../../store/app.spotlight'
+import { useSpotlightContext } from '../../store/Context/context.spotlight'
+import { useSpotlightEditorStore } from '../../store/editor.spotlight'
+import { useSpotlightSettingsStore } from '../../store/settings.spotlight'
+import { useContentStore } from '../../store/useContentStore'
+import { useKeyListener } from '../useShortcutListener'
 
 export const useGlobalShortcuts = () => {
   const history = useHistory()

@@ -1,13 +1,13 @@
 import { client } from '@workduck-io/dwindle'
-import { useSnippetStore } from '../editor/Store/useSnippetStore'
+import { integrationURLs } from '../apis/routes'
+import useDataStore from '../store/useDataStore'
+import useOnboard from '../store/useOnboarding'
+import { useSnippetStore } from '../store/useSnippetStore'
+import { useSyncStore } from '../store/useSyncStore'
 import { Service, SyncBlockTemplate } from '../editor/Components/SyncBlock'
-import useDataStore from '../editor/Store/useDataStore'
-import { useSyncStore } from '../editor/Store/useSyncStore'
-import { useAuthStore } from '../Hooks/useAuth/useAuth'
-import { useSlashCommands } from '../Hooks/useSlashCommands'
-import { integrationURLs } from '../Requests/routes'
 import { useSaveData } from './useSaveData'
-import useOnboard from '../components/Onboarding/useOnboarding'
+import { useSlashCommands } from './useSlashCommands'
+import { useAuthStore } from '../services/auth/useAuth'
 
 export const useUpdater = () => {
   const setSlashCommands = useDataStore((state) => state.setSlashCommands)

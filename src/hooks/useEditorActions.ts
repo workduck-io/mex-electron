@@ -1,8 +1,11 @@
 import { usePlateEditorRef } from '@udecode/plate'
 import { useEffect } from 'react'
-import { NodeEditorContent } from '../editor/Store/Types'
-import { useEditorStore } from '../editor/Store/EditorStore'
-import useLoad from './useLoad/useLoad'
+import { useEditorStore } from '../store/useEditorStore'
+import { NodeEditorContent } from '../types/Types'
+import useLoad from './useLoad'
+// import { NodeEditorContent } from '../editor/Store/Types'
+// import { useEditorStore } from '../editor/Store/EditorStore'
+// import useLoad from './useLoad/useLoad'
 
 const useEditorActions = () => {
   const { loadNode } = useLoad()

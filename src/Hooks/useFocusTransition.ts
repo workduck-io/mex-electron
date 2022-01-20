@@ -1,5 +1,5 @@
 import { config, useTransition } from 'react-spring'
-import { useLayoutStore } from '../../Layout/LayoutStore'
+import { useLayoutStore } from '../store/useLayoutStore'
 
 export const useFocusTransition = () => {
   const focusMode = useLayoutStore((store) => store.focusMode)

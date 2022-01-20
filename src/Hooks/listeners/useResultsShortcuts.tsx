@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
-import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
+import { useSpotlightContext } from '../../store/Context/context.spotlight'
 import tinykeys from 'tinykeys'
-import { useSpotlightContext } from '../utils/context'
+import { useKeyListener } from '../useShortcutListener'
 
 export const useResultsShortcuts = () => {
   const { shortcutDisabled } = useKeyListener()

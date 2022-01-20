@@ -1,8 +1,7 @@
-import { useHistoryStore } from '../../Editor/Store/HistoryStore'
-import { useRecentsStore } from '../../Editor/Store/RecentsStore'
-import useLoad from '../useLoad/useLoad'
-import React from 'react';
-
+import React from 'react'
+import { useHistoryStore } from '../store/useHistoryStore'
+import { useRecentsStore } from '../store/useRecentsStore'
+import useLoad from './useLoad'
 
 export const useNavigation = () => {
   // const loadNodeFromId = useEditorStore((store) => store.loadNodeFromId)
@@ -40,10 +39,9 @@ export const useNavigation = () => {
 
 // Used to wrap a class component to provide hooks
 export const withNavigation = (Component: any) => {
-  return function C2 (props: any) {
+  return function C2(props: any) {
     const { push, move } = useNavigation()
 
     return <Component push={push} move={move} {...props} /> // eslint-disable-line react/jsx-props-no-spreading
   }
 }
-

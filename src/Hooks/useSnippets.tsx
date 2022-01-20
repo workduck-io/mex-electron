@@ -1,7 +1,6 @@
+import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
+import { useSnippetStore, Snippet } from '../store/useSnippetStore'
 import { SlashCommandConfig } from '../editor/Components/SlashCommands/Types'
-import { SEPARATOR } from '../components/Sidebar/treeUtils'
-
-import { Snippet, useSnippetStore } from '../editor/Store/useSnippetStore'
 
 export const useSnippets = () => {
   const getSnippets = () => {

@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron'
-import { IpcAction } from '../Spotlight/utils/constants'
-import { FileData } from '../Types/data'
+import { IpcAction } from '../data/IpcAction'
+import { FileData } from '../types/data'
 
 interface IndexAndFileData {
   fileData: FileData

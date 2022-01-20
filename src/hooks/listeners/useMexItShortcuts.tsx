@@ -1,9 +1,9 @@
 import { useHistory } from 'react-router'
-import { useContentStore } from '../../editor/Store/ContentStore'
-import { useSpotlightContext } from '../utils/context'
 import tinykeys from 'tinykeys'
 import { useEffect } from 'react'
-import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
+import { useSpotlightContext } from '../../store/Context/context.spotlight'
+import { useContentStore } from '../../store/useContentStore'
+import { useKeyListener } from '../useShortcutListener'
 
 export const useMexItShortcuts = () => {
   const history = useHistory()

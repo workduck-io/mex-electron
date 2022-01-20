@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useSaver } from '../../Editor/Components/Saver'
 
 import { ipcRenderer } from 'electron'
-
-import { IpcAction } from '../../Spotlight/utils/constants'
+import { IpcAction } from '../data/IpcAction'
+import { useSaver } from '../editor/Components/Saver'
 
 export const useSaveAndExit = () => {
   const [saved, setSaved] = useState(true)

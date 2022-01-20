@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron'
-import { IpcAction } from '../Spotlight/utils/constants'
-import { useEditorStore } from '../editor/Store/EditorStore'
+import { IpcAction } from '../data/IpcAction'
+import { useEditorStore } from '../store/useEditorStore'
 import { useInitialize } from './useInitialize'
 
 // Save the data in the local file database

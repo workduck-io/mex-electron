@@ -1,11 +1,10 @@
 import { useHistory } from 'react-router'
-import { useSpotlightEditorStore } from '../store/editor'
 import tinykeys from 'tinykeys'
 import { useEffect } from 'react'
-import useLoad from '../../Hooks/useLoad/useLoad'
-import { performClick } from '../../components/Onboarding/steps'
-
-import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
+import { performClick } from '../../components/mex/Onboarding/steps'
+import { useSpotlightEditorStore } from '../../store/editor.spotlight'
+import useLoad from '../useLoad'
+import { useKeyListener } from '../useShortcutListener'
 
 export const useRecentsShortcuts = () => {
   const history = useHistory()

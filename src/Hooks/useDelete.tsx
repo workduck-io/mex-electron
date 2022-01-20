@@ -1,12 +1,10 @@
 import React from 'react'
-import useArchive from '../../Hooks/useArchive'
-import { Contents, useContentStore } from '../Store/ContentStore'
-import useDataStore from '../Store/DataStore'
-import { NodeProperties } from '../Store/EditorStore'
-import { useHistoryStore } from '../Store/HistoryStore'
-import { useRecentsStore } from '../Store/RecentsStore'
-import { ILink } from '../Store/Types'
-import { getUidFromNodeIdAndLinks } from './useLinks'
+import { useContentStore } from '../store/useContentStore'
+import useDataStore from '../store/useDataStore'
+import { useHistoryStore } from '../store/useHistoryStore'
+import { useRecentsStore } from '../store/useRecentsStore'
+import { ILink } from '../types/Types'
+import useArchive from './useArchive'
 
 export const useDelete = () => {
   const ilinks = useDataStore((state) => state.ilinks)

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useHelpStore } from './HelpModal'
+import { useHelpStore } from '../store/useHelpStore'
 
 const useShortcutTableData = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)

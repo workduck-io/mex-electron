@@ -1,11 +1,11 @@
 import { PEditor, overridePluginsByKey } from '@udecode/plate'
 import { KeyboardHandler } from '@udecode/plate-core'
-import { useEditorStore } from '../../../Store/EditorStore'
-import { useElementOnChange as getElementOnChange } from '../../multi-combobox/useMultiComboboxOnKeyDown'
-import { useSlashCommandOnChange } from '../../SlashCommands/useSlashCommandOnChange'
-import { IComboboxItem } from '../components/Combobox.types'
-import { ComboboxKey, useComboboxStore } from '../useComboboxStore'
-import { getNextWrappingIndex } from '../utils/getNextWrappingIndex'
+import { getNextWrappingIndex } from '../editor/Components/combobox/utils/getNextWrappingIndex'
+import { useElementOnChange as getElementOnChange } from '../editor/Components/multi-combobox/useMultiComboboxOnKeyDown'
+import { IComboboxItem } from '../editor/Components/combobox/components/Combobox.types'
+import { useSlashCommandOnChange } from '../editor/Components/SlashCommands/useSlashCommandOnChange'
+import { useComboboxStore, ComboboxKey } from '../store/useComboboxStore'
+import { useEditorStore } from '../store/useEditorStore'
 
 const pure = (id: string) => {
   if (id.endsWith(']]')) {

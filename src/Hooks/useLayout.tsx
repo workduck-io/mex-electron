@@ -1,4 +1,4 @@
-import { useLayoutStore } from './LayoutStore'
+import { useLayoutStore } from '../store/useLayoutStore'
 
 const useLayout = () => {
   const toggleFocusModeBool = useLayoutStore((store) => store.toggleFocusMode)

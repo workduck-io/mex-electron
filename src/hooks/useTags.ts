@@ -1,7 +1,7 @@
 import { uniq } from 'lodash'
-import useDataStore from '../../Editor/Store/DataStore'
-import { TagsCache } from '../../Editor/Store/Types'
-import { ELEMENT_TAG } from '../../Editor/Components/tag/defaults'
+import { ELEMENT_TAG } from '../editor/Components/tag/defaults'
+import useDataStore from '../store/useDataStore'
+import { TagsCache } from '../types/Types'
 
 const getTagsFromContent = (content: any[]): string[] => {
   let tags: string[] = []
