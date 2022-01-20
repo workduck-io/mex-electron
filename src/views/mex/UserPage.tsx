@@ -1,16 +1,12 @@
 import { useAuth } from '@workduck-io/dwindle'
 import React from 'react'
-import { useHistory } from 'react-router-dom'
-import { Button } from '../Styled/Buttons'
-import { useAuthentication, useAuthStore } from '../Hooks/useAuth/useAuth'
-import { BackCard } from '../Styled/Card'
-import { CenteredColumn } from '../Styled/Layouts'
-import { Title } from '../Styled/Typography'
-import { Info, InfoData, InfoLabel, ProfileContainer, ProfileIcon } from '../Styled/UserPage'
-import { ProfileImage } from '../Components/User/ProfileImage'
-import { CopyButton } from '../Components/Buttons/CopyButton'
-import useAnalytics from '../analytics'
-import { CustomEvents } from '../analytics/events'
+import { CopyButton } from '../../Components/mex/Buttons/CopyButton'
+import { ProfileImage } from '../../components/mex/User/ProfileImage'
+import { useAuthStore } from '../../services/auth/useAuth'
+import { BackCard } from '../../style/Card'
+import { CenteredColumn } from '../../style/Layouts'
+import { Title } from '../../style/Typography'
+import { Info, InfoData, InfoLabel, ProfileContainer, ProfileIcon } from '../../style/UserPage'
 
 const UserPage = () => {
   const { getUserDetails } = useAuth()
@@ -19,7 +15,6 @@ const UserPage = () => {
   const userDetails = getUserDetails()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  
 
   return (
     <CenteredColumn>
@@ -43,7 +38,6 @@ const UserPage = () => {
             </Info>
           </div>
         </ProfileContainer>
-       
       </BackCard>
     </CenteredColumn>
   )

@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import SideBar from '../Components/Sidebar'
-import ContentEditor from '../Editor/ContentEditor'
-import { useTreeFromLinks } from '../Editor/Store/DataStore'
-import InfoBar from '../Layout/InfoBar'
+import SideBar from '../../Components/mex/Sidebar'
+import ContentEditor from '../../editor/ContentEditor'
+import { useTreeFromLinks } from '../../Store/useDataStore'
+import InfoBar from '../../components/layouts/InfoBar'
 import { ErrorBoundary } from 'react-error-boundary'
-import EditorErrorFallback from '../Components/Error/EditorErrorFallback'
-import useEditorActions from '../Hooks/useEditorActions'
+import EditorErrorFallback from '../../components/mex/Error/EditorErrorFallback'
+import useEditorActions from '../../hooks/useEditorActions'
 
 const EditorViewWrapper = styled.div`
   display: flex;

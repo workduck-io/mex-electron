@@ -12,7 +12,7 @@ import tinykeys from 'tinykeys'
 import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
-import { useRenameStore } from './useRenameStore'
+import { useRenameStore } from '../../../store/useRenameStore'
 import { Button } from '../../../style/Buttons'
 
 const Rename = () => {

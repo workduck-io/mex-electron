@@ -4,12 +4,12 @@ import { Icon } from '@iconify/react'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { useUpdater } from '../Data/useUpdater'
-import { generateSnippetId } from '../Defaults/idPrefixes'
-import Editor from '../Editor/Editor'
-import { useSnippetStore } from '../Editor/Store/SnippetStore'
-import IconButton from '../Styled/Buttons'
-import { Wrapper } from '../Styled/Layouts'
+import { useUpdater } from '../../hooks/useUpdater'
+import { generateSnippetId } from '../../data/Defaults/idPrefixes'
+import Editor from '../../editor/Editor'
+import { useSnippetStore } from '../../store/useSnippetStore'
+import IconButton from '../../style/Buttons'
+import { Wrapper } from '../../style/Layouts'
 import {
   CreateSnippet,
   SnippetCommand,
@@ -18,8 +18,8 @@ import {
   SSnippet,
   SSnippets,
   StyledSnippetPreview
-} from '../Styled/Snippets'
-import { Title } from '../Styled/Typography'
+} from '../../style/Snippets'
+import { Title } from '../../style/Typography'
 import genereateName from 'project-name-generator'
 
 export type SnippetsProps = {

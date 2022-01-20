@@ -6,7 +6,7 @@ import useDataStore from '../../../store/useDataStore'
 import useLoad from '../../../hooks/useLoad'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
-import { useSpotlightContext } from '../../../store/context/context.spotlight'
+import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useCurrentIndex } from '../../../hooks/useCurrentIndex'
 import Preview from '../Preview'
 import SideBar from '../SideBar'

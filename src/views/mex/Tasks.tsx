@@ -1,7 +1,7 @@
 import React from 'react'
-import Loading from '../Styled/Loading'
-import Centered from '../Styled/Layouts'
-import { LoadingButton } from '../Components/Buttons/LoadingButton'
+import Loading from '../../style/Loading'
+import Centered from '../../style/Layouts'
+import { LoadingButton } from '../../components/mex/Buttons/LoadingButton'
 
 export type TasksProps = {
   title?: string

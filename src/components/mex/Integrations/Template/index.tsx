@@ -1,8 +1,8 @@
 import { Icon } from '@iconify/react'
 import React, { useMemo } from 'react'
-import { capitalize } from '../../../Lib/strings'
+import { capitalize } from '../../../../utils/Lib/strings'
 import Plus from '@iconify-icons/bi/plus'
-import { ServiceIcon } from '../../../Editor/Components/SyncBlock/SyncIcons'
+import { ServiceIcon } from '../../../../editor/Components/SyncBlock/SyncIcons'
 import {
   FullFlex,
   IconCircle,
@@ -16,7 +16,7 @@ import {
   TemplateTitle,
   ServiceType
 } from './styled'
-import { SyncBlockTemplate } from '../../../Editor/Components/SyncBlock'
+import { SyncBlockTemplate } from '../../../../editor/Components/SyncBlock'
 
 const MAX_SHOW = 3
 

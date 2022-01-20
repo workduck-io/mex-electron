@@ -1,13 +1,13 @@
 import React from 'react'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
-import Spotlight from './components/Spotlight'
-import MexIt from './components/MexIt'
-import GlobalStyle from './styles/global'
-import Bubble from './components/Bubble'
-import Settings from './components/Settings'
-import GlobalListener from './components/GlobalListener'
+import Spotlight from '../../components/spotlight/Spotlight'
+import MexIt from '../../components/spotlight/MexIt'
+import GlobalStyle from '../../style/spotlight/global'
+import Bubble from '../../components/spotlight/Bubble'
+import Settings from '../../components/spotlight/Settings'
+import GlobalListener from '../../components/spotlight/GlobalListener'
 import ProtectedRoute from './ProtectedRoute'
-import Login from './components/Login'
+import Login from '../../components/spotlight/Login'
 
 const Routes = () => {
   return (

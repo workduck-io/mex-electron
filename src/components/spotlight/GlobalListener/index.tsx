@@ -5,7 +5,7 @@ import { getHtmlString } from '../../../components/spotlight/Source'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../../../data/IpcAction'
-import { FileData } from '../../../Types/data'
+import { FileData } from '../../../types/data'
 import { getNewDraftKey } from '../../../Editor/Components/SyncBlock/getNewBlockData'
 import { useNewSearchStore } from '../../../store/useSearchStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
@@ -16,8 +16,6 @@ import { useLocation, useHistory } from 'react-router'
 import { useAuthStore } from '../../../services/auth/useAuth'
 import useAnalytics from '../../../services/analytics'
 import useOnboard from '../../../store/useOnboarding'
-import { createNodeWithUid } from '../../../Lib/helper'
-import useLoad from '../../../Hooks/useLoad/useLoad'
 interface IndexAndFileData {
   fileData: FileData
   indexData: any // eslint-disable-line @typescript-eslint/no-explicit-any

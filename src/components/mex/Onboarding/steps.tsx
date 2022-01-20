@@ -4,7 +4,7 @@ import { Command } from '../NodeIntentsModal/styled'
 import styled from 'styled-components'
 import { useFlowMessage } from './tourNode'
 import { useHistory } from 'react-router-dom'
-import { CenteredFlex } from '../../../style/Integration'
+import { CenteredFlex, PrimaryText } from '../../../style/Integration'
 import { Button } from '../../../style/Buttons'
 import useOnboard from '../../../store/useOnboarding'
 

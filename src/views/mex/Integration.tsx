@@ -3,13 +3,13 @@ import Check from '@iconify-icons/bi/check'
 import PlusCircle from '@iconify-icons/bi/plus-circle'
 import { Icon } from '@iconify/react'
 import { shell } from 'electron'
-import NewSyncTemplateModal, { useNewSyncTemplateModalStore } from '../Components/Integrations/NewSyncBlockModal'
-import Template from '../Components/Integrations/Template'
-import { useUpdater } from '../Data/useUpdater'
-import { Service } from '../Editor/Components/SyncBlock'
-import { ServiceIcon } from '../Editor/Components/SyncBlock/SyncIcons'
-import { useSyncStore } from '../Editor/Store/SyncStore'
-import { camelCase } from '../Lib/strings'
+import NewSyncTemplateModal, { useNewSyncTemplateModalStore } from '../../components/mex/Integrations/NewSyncBlockModal'
+import Template from '../../components/mex/Integrations/Template'
+import { useUpdater } from '../../hooks/useUpdater'
+import { Service } from '../../editor/Components/SyncBlock'
+import { ServiceIcon } from '../../editor/Components/SyncBlock/SyncIcons'
+import { useSyncStore } from '../../store/useSyncStore'
+import { camelCase } from '../../utils/Lib/strings'
 import timeIcon from '@iconify-icons/bx/bx-time-five'
 import {
   ActiveStatus,
@@ -33,18 +33,18 @@ import {
   TemplateSubtitle,
   PrimaryText,
   Scroll
-} from '../Styled/Integration'
-import { TemplateInfoBar } from '../Layout/InfoBar'
-import { DateFormat } from '../Hooks/useRelativeTime'
-import { useIntegrationStore } from '../Editor/Store/IntegrationStore'
+} from '../../style/Integration'
+import { TemplateInfoBar } from '../../components/layouts/InfoBar'
+import { DateFormat } from '../../hooks/useRelativeTime'
+import { useIntegrationStore } from '../../store/useIntegrationStore'
 import { client } from '@workduck-io/dwindle'
-import { integrationURLs } from '../Requests/routes'
-import useLoad from '../Hooks/useLoad/useLoad'
+import { integrationURLs } from '../../apis/routes'
+import useLoad from '../../Hooks/useLoad'
 import { useHistory } from 'react-router'
-import useDataStore from '../Editor/Store/DataStore'
-import { LoadingButton } from '../Components/Buttons/LoadingButton'
+import useDataStore from '../../store/useDataStore'
+import { LoadingButton } from '../../components/mex/Buttons/LoadingButton'
 import { useTheme } from 'styled-components'
-import useOnboard from '../Components/Onboarding/store'
+import useOnboard from '../../store/useOnboarding'
 // eslint-disable-next-line import/namespace
 
 const NewTemplate = () => {
