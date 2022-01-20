@@ -12,6 +12,7 @@ import { CustomEvents } from '../analytics/events'
 import { useAuthentication } from '../Hooks/useAuth/useAuth'
 import useAnalytics from '../analytics'
 import { Button } from '../Styled/Buttons'
+import { transparentize } from 'polished'
 
 const SettingsContainer = styled.section`
   display: flex;
@@ -29,9 +30,11 @@ const SettingTitle = styled(NavLink)`
   padding: 1rem;
   margin-bottom: 1rem;
   color: ${({ theme }) => theme.colors.text.default};
+  text-decoration: none;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.background.card};
+    text-decoration: none;
+    background-color: ${({ theme }) => transparentize(0.5, theme.colors.background.card)};
   }
 
   &.active {
