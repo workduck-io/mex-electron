@@ -1,8 +1,8 @@
 import { orderBy } from 'lodash'
 
 import create from 'zustand'
-import { defaultMexIntent, intentsData, templates } from '../../Defaults/Test/intentsData'
-import { Service, SyncContextType } from '../Components/SyncBlock/SyncBlock.types'
+import { defaultMexIntent, intentsData, templates } from '../data/Defaults/Test/intentsData'
+import { Service, SyncContextType } from '../editor/Components/SyncBlock/SyncBlock.types'
 
 const sortServices = (services: Service[]) => {
   const res = orderBy(services, ['enabled', 'connected', 'id'], ['desc', 'desc', 'asc'])

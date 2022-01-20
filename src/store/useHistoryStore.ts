@@ -1,5 +1,5 @@
 import create from 'zustand'
-import { MAX_HISTORY_SIZE } from '../../Defaults/navigation'
+import { MAX_HISTORY_SIZE } from '../data/Defaults/navigation'
 
 export type HistoryType = {
   stack: string[]

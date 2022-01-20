@@ -2,7 +2,7 @@ import { getKey, Key } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 import create from 'zustand'
 import { EXCLUDED_KEYS_MODIFIERS, getKeyFromKeycode, KEY_MODIFIERS, MiscKeys } from '../../Lib/keyMap'
 import { ipcRenderer } from 'electron'
-import { IpcAction } from '../../Spotlight/utils/constants'
+import { IpcAction } from '../data/IpcAction'
 
 export type KeyBinding = {
   key: string

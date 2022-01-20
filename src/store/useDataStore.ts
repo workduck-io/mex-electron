@@ -1,11 +1,11 @@
-import { withoutContinuousDelimiter } from '../../Lib/helper'
+import { withoutContinuousDelimiter } from '../utils/Lib/helper'
 import create from 'zustand'
-import { generateTree, getAllParentIds, SEPARATOR } from '../../Components/Sidebar/treeUtils'
-import getFlatTree from '../../Lib/flatTree'
-import { removeLink } from '../../Lib/links'
-import { generateComboText, generateIlink } from './sampleTags'
-import { CachedILink, DataStoreState } from './Types'
-import { typeInvert } from './helpers'
+import { generateTree, getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
+import getFlatTree from '../utils/Lib/flatTree'
+import { removeLink } from '../utils/Lib/links'
+import { generateComboText, generateIlink } from '../utils/generateComboItem'
+import { CachedILink, DataStoreState } from '../types/Types'
+import { typeInvert } from '../utils/helpers'
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   // Tags

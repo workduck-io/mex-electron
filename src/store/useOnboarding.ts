@@ -1,4 +1,4 @@
-import { OnBoardStore } from './types'
+import { OnBoardStore } from '../components/mex/Onboarding/types'
 import create from 'zustand'
 
 const useOnboard = create<OnBoardStore>((set, get) => ({

@@ -1,7 +1,7 @@
 import React from 'react'
-import { defaultThemes } from '../Styled/themes/defaultThemes'
+import { defaultThemes } from '../../style/themes/defaultThemes'
 import { ThemeProvider } from 'styled-components'
-import useThemeStore from '../Editor/Store/ThemeStore'
+import useThemeStore from '../../store/useThemeStore'
 
 const Providers: React.FC = ({ children }) => {
   const theme = useThemeStore((state) => state.theme)

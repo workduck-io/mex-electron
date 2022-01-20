@@ -1,6 +1,6 @@
 import create from 'zustand'
-import { NodeContent, NodeMetadata } from '../../Types/data'
-import { NodeEditorContent } from './Types'
+import { NodeContent, NodeMetadata } from '../types/data'
+import { NodeEditorContent } from '../types/Types'
 
 export interface Contents {
   [key: string]: NodeContent

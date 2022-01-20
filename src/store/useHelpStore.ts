@@ -1,9 +1,9 @@
-import { HelpState } from './Help.types'
+import { HelpState } from '../components/mex/Help/Help.types'
 import create from 'zustand'
 import produce from 'immer'
 import { ipcRenderer } from 'electron/renderer'
-import { IpcAction } from '../../Spotlight/utils/constants'
-import { defaultShortcuts } from '../../Defaults/shortcuts'
+import { IpcAction } from '../data/IpcAction'
+import { defaultShortcuts } from '../data/Defaults/shortcuts'
 
 export const useHelpStore = create<HelpState>((set, get) => ({
   open: false,

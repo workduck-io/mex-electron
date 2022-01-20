@@ -1,10 +1,10 @@
 import React from 'react'
 import create from 'zustand'
-import { getContent, getInitialNode } from './helpers'
-import { NodeEditorContent } from './Types'
-import { defaultContent } from '../../Defaults/baseData'
-import { Contents } from './useContentStore'
-import { NodeContent } from '../../Types/data'
+import { getContent, getInitialNode } from '../utils/helpers'
+import { NodeEditorContent } from '../types/Types'
+import { defaultContent } from '../data/Defaults/baseData'
+import { Contents } from '../store/useContentStore'
+import { NodeContent } from '../types/data'
 
 export interface NodeProperties {
   title: string

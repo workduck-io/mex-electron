@@ -1,5 +1,5 @@
 import create from 'zustand'
-import { SyncBlockTemplate } from '../Components/SyncBlock'
+import { SyncBlockTemplate } from '../editor/components/SyncBlock'
 
 export type IntegrationStore = {
   template?: SyncBlockTemplate

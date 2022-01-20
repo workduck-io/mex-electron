@@ -1,7 +1,7 @@
 import { remove } from 'lodash'
 import create from 'zustand'
 import { persist } from 'zustand/middleware'
-import { MAX_RECENT_SIZE } from '../../Defaults/navigation'
+import { MAX_RECENT_SIZE } from '../data/Defaults/navigation'
 
 export type RecentsType = {
   lastOpened: string[]

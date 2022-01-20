@@ -1,4 +1,4 @@
-import { NodeLink } from '../../Types/relations'
+import { NodeLink } from '../types/relations'
 import create from 'zustand'
 
 interface RenameStoreState {

@@ -1,7 +1,7 @@
 import create from 'zustand'
-import { NodeSearchData } from '../Types/data'
+import { NodeSearchData } from '../types/data'
 import { Document } from 'flexsearch'
-import { createFlexsearchIndex } from './flexsearch'
+import { createFlexsearchIndex } from '../utils/search/flexsearch'
 
 interface NodeTitleText {
   title: string

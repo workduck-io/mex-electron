@@ -1,7 +1,6 @@
-import { devTheme } from '../../Styled/themes/devTheme'
 import { DefaultTheme } from 'styled-components'
 import create from 'zustand'
-import { defaultThemes } from '../../Styled/themes/defaultThemes'
+import { defaultThemes } from '../style/themes/defaultThemes'
 
 interface Theme {
   id: string
