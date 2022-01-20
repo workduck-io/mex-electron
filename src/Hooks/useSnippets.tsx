@@ -1,5 +1,5 @@
 import { SlashCommandConfig } from '../editor/Components/SlashCommands/Types'
-import { SEPARATOR } from '../Components/Sidebar/treeUtils'
+import { SEPARATOR } from '../components/Sidebar/treeUtils'
 
 import { Snippet, useSnippetStore } from '../editor/Store/useSnippetStore'
 

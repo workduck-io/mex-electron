@@ -7,7 +7,7 @@ import { useAuthStore } from '../Hooks/useAuth/useAuth'
 import { useSlashCommands } from '../Hooks/useSlashCommands'
 import { integrationURLs } from '../Requests/routes'
 import { useSaveData } from './useSaveData'
-import useOnboard from '../Components/Onboarding/useOnboarding'
+import useOnboard from '../components/Onboarding/useOnboarding'
 
 export const useUpdater = () => {
   const setSlashCommands = useDataStore((state) => state.setSlashCommands)

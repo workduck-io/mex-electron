@@ -8,7 +8,7 @@ import telegramIcon from '@iconify/icons-simple-icons/telegram'
 
 import Github from '../../../components/Icons/github'
 import Slack from '../../../components/Icons/slack'
-import Mex from '../../../components/Icons/mex'
+import Mex from '../../../components/icons/mex'
 import Notion from '../../../components/Icons/notion'
 import Linear from '../../../components/Icons/linear'
 import Telegram from '../../../components/Icons/Telgram'

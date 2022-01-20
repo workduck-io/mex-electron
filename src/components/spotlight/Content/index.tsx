@@ -13,7 +13,7 @@ import SideBar from '../SideBar'
 import { ILink } from '../../../Editor/Store/Types'
 import { useSpotlightAppStore } from '../../../Spotlight/store/app'
 import { ErrorBoundary } from 'react-error-boundary'
-import EditorErrorFallback from '../../../Components/Error/EditorErrorFallback'
+import EditorErrorFallback from '../../Error/EditorErrorFallback'
 import useEditorActions from '../../../Hooks/useEditorActions'
 
 export const StyledContent = styled.section`

@@ -1,7 +1,7 @@
 import { uniq } from 'lodash'
 import { hasLink } from '../../Lib/links'
 import { NodeLink } from '../../Types/relations'
-import { ELEMENT_INLINE_BLOCK } from '../Components/InlineBlock/types'
+import { ELEMENT_INLINE_BLOCK } from '../components/InlineBlock/types'
 import { useContentStore } from '../Store/useContentStore'
 import useDataStore from '../Store/useDataStore'
 import { CachedILink, ILink } from '../Store/Types'

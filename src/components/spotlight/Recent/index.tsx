@@ -1,6 +1,6 @@
 import { useRecentsStore } from '../../../Editor/Store/RecentsStore'
 import { appNotifierWindow } from '../../../Spotlight/utils/notifiers'
-import { AppType } from '../../../Data/useInitialize'
+import { AppType } from '../../../data/useInitialize'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useHistory } from 'react-router'
 import { useEditorStore } from '../../../Editor/Store/EditorStore'

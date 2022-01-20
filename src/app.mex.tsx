@@ -1,9 +1,9 @@
 import React from 'react'
 import Modal from 'react-modal'
 import { HashRouter as Router } from 'react-router-dom'
-import Init from './Components/Init/Init'
-import OnBoardingTour from './Components/Onboarding'
-import { OnboardingTourConfig } from './Components/Onboarding/steps'
+import Init from './components/Init/Init'
+import OnBoardingTour from './components/Onboarding'
+import { OnboardingTourConfig } from './components/Onboarding/steps'
 import Contexts from './Context/Contexts'
 import Providers from './Context/Providers'
 import Main from './Layout/Main'
@@ -12,7 +12,7 @@ import Switch from './Router/Switch'
 import GlobalStyle from './Styled/Global'
 import { initializeSentry } from './sentry'
 import { IS_DEV } from './Defaults/dev_'
-import FloatingButton from './Components/FloatingButton'
+import FloatingButton from './components/FloatingButton'
 
 if (!IS_DEV) initializeSentry()
 

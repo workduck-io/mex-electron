@@ -12,7 +12,7 @@ import { useDelete } from '../../../hooks/useDelete'
 import useLoad from '../../../hooks/useLoad'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useEditorStore } from '../../../store/useEditorStore'
-import { USE_API } from '../../../Data/Defaults/dev_'
+import { USE_API } from '../../../data/Defaults/dev_'
 
 interface DeleteStoreState {
   open: boolean

@@ -8,8 +8,8 @@ import { Button } from '../../../style/Buttons'
 import { useHelpStore } from '../../../store/useHelpStore'
 import useOnboard from '../../../store/useOnboarding'
 import { useAuthStore } from '../../../services/auth/useAuth'
-import { GetIcon } from '../../../Data/links'
-import { FlexBetween } from '../../../Components/spotlight/Actions/styled'
+import { GetIcon } from '../../../data/links'
+import { FlexBetween } from '../../spotlight/Actions/styled'
 import { useInitOlvy } from '../../../services/olvy'
 
 export const Float = styled.div`

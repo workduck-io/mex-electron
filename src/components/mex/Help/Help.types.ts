@@ -1,4 +1,4 @@
-import { defaultShortcuts } from '../../../Data/Defaults/shortcuts'
+import { defaultShortcuts } from '../../../data/Defaults/shortcuts'
 
 export interface Shortcut {
   title: string

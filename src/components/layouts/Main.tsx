@@ -6,7 +6,7 @@ import { Notifications } from '../mex/Notifications/Notifications'
 import Nav, { navTooltip } from '../mex/Sidebar/Nav'
 import { linkTooltip } from '../../editor/Components/Link'
 import { GridWrapper } from '../../style/Grid'
-import useNavlinks from '../../Data/links'
+import useNavlinks from '../../data/links'
 
 const AppWrapper = styled.div`
   min-height: 100%;

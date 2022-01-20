@@ -5,8 +5,8 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { centeredCss } from './Layouts'
 import { LoadingWrapper } from './Loading'
-import { ToolbarTooltip } from '../Components/Tooltips'
-import { TooltipTitleWithShortcut } from '../Components/Shortcuts'
+import { ToolbarTooltip } from '../components/Tooltips'
+import { TooltipTitleWithShortcut } from '../components/Shortcuts'
 
 export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   primary?: boolean

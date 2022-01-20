@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import questionMark from '@iconify-icons/ri/question-mark'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { NavButton } from '../../../style/Nav'
-import { GetIcon } from '../../../Data/links'
+import { GetIcon } from '../../../data/links'
 
 const HelpTooltip = forwardRef<any>((_props, ref) => {
   const toggleModal = useHelpStore((store) => store.toggleModal)

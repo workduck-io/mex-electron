@@ -6,7 +6,7 @@ import { useBookmarks } from '../../../hooks/useBookmarks'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
-import { BaseLink } from '../../../Views/mex/Tag'
+import { BaseLink } from '../../../views/mex/Tag'
 
 const BList = styled.div`
   max-height: 15rem;

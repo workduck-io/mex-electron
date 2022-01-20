@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyledKey } from '../../../../Components/spotlight/Shortcuts/styled'
+import { StyledKey } from '../../../spotlight/Shortcuts/styled'
 
 import styled, { keyframes, useTheme } from 'styled-components'
 import { Center } from '../../../../style/spotlight/layout'

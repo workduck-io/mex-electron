@@ -8,10 +8,10 @@ import { openNodeInMex } from '../../utils/hooks'
 import { SaverButton } from '../../../Editor/Components/Saver'
 import { useRecentsStore } from '../../../Editor/Store/RecentsStore'
 import { ComboText } from '../../../Editor/Store/Types'
-import { AppType } from '../../../Data/useInitialize'
+import { AppType } from '../../../data/useInitialize'
 import { appNotifierWindow } from '../../../Spotlight/utils/notifiers'
 import { IpcAction } from '../../../Spotlight/utils/constants'
-import useOnboard from '../../../Components/Onboarding/store'
+import useOnboard from '../../Onboarding/store'
 
 export const isILinkExists = (iLink: string, iLinkList: Array<ComboText>) =>
   iLinkList.filter((item) => item.key === iLink).length !== 0

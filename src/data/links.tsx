@@ -6,8 +6,8 @@ import quillPenLine from '@iconify-icons/ri/quill-pen-line'
 import archiveFill from '@iconify-icons/ri/archive-fill'
 import { Icon } from '@iconify/react'
 import React from 'react'
-import { NavLinkData } from '../Components/Sidebar/Types'
-import { useHelpStore } from '../Components/Help/HelpModal'
+import { NavLinkData } from '../components/Sidebar/Types'
+import { useHelpStore } from '../components/Help/HelpModal'
 
 /*
 Sidebar links are defined here

@@ -3,7 +3,7 @@ import { useSpotlightEditorStore } from '../store/editor'
 import tinykeys from 'tinykeys'
 import { useEffect } from 'react'
 import useLoad from '../../Hooks/useLoad/useLoad'
-import { performClick } from '../../Components/Onboarding/steps'
+import { performClick } from '../../components/Onboarding/steps'
 
 import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
 

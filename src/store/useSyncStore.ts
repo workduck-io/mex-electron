@@ -2,7 +2,7 @@ import { orderBy } from 'lodash'
 
 import create from 'zustand'
 import { defaultMexIntent, intentsData, templates } from '../data/Defaults/Test/intentsData'
-import { Service, SyncContextType } from '../editor/Components/SyncBlock/SyncBlock.types'
+import { Service, SyncContextType } from '../components/SyncBlock/SyncBlock.typesk.types'
 
 const sortServices = (services: Service[]) => {
   const res = orderBy(services, ['enabled', 'connected', 'id'], ['desc', 'desc', 'asc'])

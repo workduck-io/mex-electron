@@ -6,7 +6,7 @@ import { StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
 
 import toast from 'react-hot-toast'
 import styled from 'styled-components'
-import { IpcAction } from '../../../Data/IpcAction'
+import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
 import { useLinks } from '../../../hooks/useLinks'

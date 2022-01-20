@@ -9,7 +9,7 @@ import { getGlobal } from '@electron/remote'
 import { useHistory } from 'react-router-dom'
 import { AppType } from '../../../hooks/useInitialize'
 import { ipcRenderer } from 'electron'
-import { IpcAction } from '../../../Data/IpcAction'
+import { IpcAction } from '../../../data/IpcAction'
 import useOnboard from '../../../store/useOnboarding'
 
 const Container = styled.section`

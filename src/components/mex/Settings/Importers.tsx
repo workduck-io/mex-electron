@@ -6,7 +6,7 @@ import { transparentize } from 'polished'
 import { Wrapper } from '../../../style/Layouts'
 import { Title } from '../../../style/Typography'
 import { Button } from '../../../style/Buttons'
-import { IpcAction } from '../../../Data/IpcAction'
+import { IpcAction } from '../../../data/IpcAction'
 import { CardShadow } from '../../../style/helpers'
 
 const ComingSoonImporters = [

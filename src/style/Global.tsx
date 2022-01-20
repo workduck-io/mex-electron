@@ -1,7 +1,7 @@
 import { createGlobalStyle, css } from 'styled-components'
 import { ThinScrollbar } from './helpers'
 import normalize from './normalize'
-import { ModalStyles } from '../Components/Refactor/styles'
+import { ModalStyles } from '../components/Refactor/styles'
 import { TippyBalloonStyles } from './Toolbar'
 import { OlvyModal } from '../Olvy/styled'
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Header } from './Shortcuts'
 import { ipcRenderer } from 'electron'
-import { IpcAction } from '../../../Data/IpcAction'
+import { IpcAction } from '../../../data/IpcAction'
 
 const Container = styled.section`
   margin: 0 ${({ theme }) => theme.spacing.large};
