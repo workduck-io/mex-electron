@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { Switch as ReactRouterSwitch, useLocation } from 'react-router-dom'
 import { animated } from 'react-spring'
-import { useInitOlvy } from '../../services/Olvy'
 import styled from 'styled-components'
 import Search from '../../components/mex/Search/Search'
 import { useQStore, useSaveQ } from '../../store/useQStore'

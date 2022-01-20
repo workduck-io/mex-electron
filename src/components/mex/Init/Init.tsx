@@ -20,7 +20,7 @@ import { useLinks, getUidFromNodeIdAndLinks } from '../../../hooks/useLinks'
 import generatePlugins from '../../../editor/Plugins/plugins'
 import { useSaver } from '../../../editor/Components/Saver'
 import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
-import { convertDataToRawText } from '../../../utils/Search/localSearch'
+// import { convertDataToRawText } from '../../../utils/Search/localSearch'
 import { IpcAction } from '../../../data/IpcAction'
 import config from '../../../apis/config'
 import { performClick } from '../Onboarding/steps'
@@ -32,6 +32,7 @@ import { useSyncData } from '../../../hooks/useSyncData'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useEditorStore } from '../../../store/useEditorStore'
+import { convertDataToRawText } from '../../../utils/search/localSearch'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])

@@ -1,6 +1,6 @@
 import { useAuth } from '@workduck-io/dwindle'
 import React from 'react'
-import { CopyButton } from '../../Components/mex/Buttons/CopyButton'
+import { CopyButton } from '../../components/mex/Buttons/CopyButton'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
 import { useAuthStore } from '../../services/auth/useAuth'
 import { BackCard } from '../../style/Card'

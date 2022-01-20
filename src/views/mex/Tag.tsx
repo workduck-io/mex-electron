@@ -13,7 +13,7 @@ import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import useLoad from '../../hooks/useLoad'
 import { HoverSubtleGlow } from '../../style/helpers'
 import { Input } from '../../style/Form'
-import { fuzzySearch } from '../../utils/Lib/fuzzySearch'
+import { fuzzySearch } from '../../utils/lib/fuzzySearch'
 
 const TagsWrapper = styled.div`
   display: flex;
