@@ -1,4 +1,4 @@
-import { NodeLink } from '../../Types/relations'
+import { NodeLink } from '../../../types/relations'
 
 export const doesLinkRemain = (id: string, refactored: NodeLink[]): boolean => {
   return refactored.map((r) => r.from).indexOf(id) === -1

@@ -2,11 +2,11 @@ import WelcomeSection, { StyledKeyCap, StyledTypography } from './components/Wel
 import React from 'react'
 import { Command } from '../NodeIntentsModal/styled'
 import styled from 'styled-components'
-import { CenteredFlex, PrimaryText } from '../../Styled/Integration'
-import { Button } from '../../Styled/Buttons'
-import useOnboard from './useOnboarding'
 import { useFlowMessage } from './tourNode'
 import { useHistory } from 'react-router-dom'
+import { CenteredFlex } from '../../../style/Integration'
+import { Button } from '../../../style/Buttons'
+import useOnboard from '../../../store/useOnboarding'
 
 export const toolTipStyle = {
   padding: '2rem',

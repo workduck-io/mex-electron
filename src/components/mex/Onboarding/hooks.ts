@@ -1,4 +1,6 @@
-import { useSyncStore } from '../../Editor/Store/useSyncStore'
+// import { useSyncStore } from '../../Editor/Store/useSyncStore'
+
+import { useSyncStore } from '../../../store/useSyncStore'
 
 export const useTourData = () => {
   const templates = useSyncStore((store) => store.templates)

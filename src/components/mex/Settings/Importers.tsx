@@ -1,15 +1,13 @@
 import React from 'react'
-import { Button } from '../../Styled/Buttons'
 import toast from 'react-hot-toast'
-import { Wrapper } from '../../Styled/Layouts'
 import { ipcRenderer } from 'electron'
-import { IpcAction } from '../../Spotlight/utils/constants'
-import { Card } from '../../Styled/Card'
 import styled, { css } from 'styled-components'
-import { Icon } from '@iconify/react'
-import { Title } from '../../Styled/Typography'
-import { CardShadow } from '../../Styled/helpers'
 import { transparentize } from 'polished'
+import { Wrapper } from '../../../style/Layouts'
+import { Title } from '../../../style/Typography'
+import { Button } from '../../../style/Buttons'
+import { IpcAction } from '../../../Data/IpcAction'
+import { CardShadow } from '../../../style/helpers'
 
 const ComingSoonImporters = [
   { name: 'Docs', icon: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Google_Docs_logo_%282014-2020%29.svg' },

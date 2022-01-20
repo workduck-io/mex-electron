@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import useShortcutListener from '../../Hooks/useCustomShortcuts/useShortcutListener'
-import { useShortcutStore } from '../../Editor/Store/useShortcutStore'
-import { Heading, Description } from '../../Spotlight/components/SearchResults/styled'
-import { InputBlock } from '../../Styled/Form'
-import { CenterSpace } from '../../Styled/Layouts'
+import { CenterSpace } from '../../../style/Layouts'
+import useShortcutListener from '../../../hooks/useShortcutListener'
+import { useShortcutStore } from '../../../store/useShortcutStore'
+import { Heading, Description } from '../../../Components/spotlight/SearchResults/styled'
+import { InputBlock } from '../../../style/Form'
 
 const InputShortcut = () => {
   const keybinding = useShortcutStore((state) => state.keybinding)

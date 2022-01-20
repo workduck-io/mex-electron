@@ -2,11 +2,11 @@ import { transparentize } from 'polished'
 import React from 'react'
 // import AutoSave from '../Components/AutoSave'
 import styled from 'styled-components'
-import { Notifications } from '../Components/Notifications/Notifications'
-import Nav, { navTooltip } from '../Components/Sidebar/Nav'
-import useNavlinks from '../Conf/links'
-import { linkTooltip } from '../Editor/Components/Link'
-import { GridWrapper } from '../Styled/Grid'
+import { Notifications } from '../mex/Notifications/Notifications'
+import Nav, { navTooltip } from '../mex/Sidebar/Nav'
+import { linkTooltip } from '../../editor/Components/Link'
+import { GridWrapper } from '../../style/Grid'
+import useNavlinks from '../../Data/links'
 
 const AppWrapper = styled.div`
   min-height: 100%;

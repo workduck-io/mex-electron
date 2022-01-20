@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useUpdater } from '../Data/useUpdater'
-import { SnippetSaverButton } from '../Editor/Components/Saver'
-import Editor from '../Editor/Editor'
-import { useSnippetStore } from '../Editor/Store/SnippetStore'
-import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../Styled/Editor'
-import { Input } from '../Styled/Form'
+import { SnippetSaverButton } from '../../editor/Components/Saver'
+import Editor from '../../editor/Editor'
+import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../../style/Editor'
+import { Input } from '../../style/Form'
+import { useSnippetStore } from '../../store/useSnippetStore'
+import { useUpdater } from '../../hooks/useUpdater'
 
 type Inputs = {
   title: string

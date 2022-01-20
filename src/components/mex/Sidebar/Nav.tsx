@@ -1,27 +1,24 @@
 import addCircleLine from '@iconify-icons/ri/add-circle-line'
-import lockPasswordLine from '@iconify-icons/ri/lock-password-line'
 import searchLine from '@iconify-icons/ri/search-line'
 import settings4Line from '@iconify-icons/ri/settings-4-line'
-import user3Line from '@iconify-icons/ri/user-3-line'
 import { useSingleton } from '@tippyjs/react'
+import useAuthStore from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
 import { transparentize } from 'polished'
 import React, { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
+import { IpcAction } from '../../../Data/IpcAction'
+import { GetIcon } from '../../../Data/links'
+import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { AppType } from '../../../hooks/useInitialize'
+import { useNavigation } from '../../../hooks/useNavigation'
+import { useKeyListener } from '../../../hooks/useShortcutListener'
+import useDataStore from '../../../store/useDataStore'
+import { useHelpStore } from '../../../store/useHelpStore'
+import { useLayoutStore } from '../../../store/useLayoutStore'
+import { NavButton } from '../../../style/Nav'
 import styled, { css } from 'styled-components'
 import tinykeys from 'tinykeys'
-import { useHelpStore } from '../../Components/Help/HelpModal'
-import { GetIcon } from '../../Conf/links'
-import { AppType } from '../../Data/useInitialize'
-import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
-import useDataStore from '../../Editor/Store/DataStore'
-import { useAuthStore } from '../../Hooks/useAuth/useAuth'
-import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
-import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
-import { useLayoutStore } from '../../Layout/LayoutStore'
-import { IpcAction } from '../../Spotlight/utils/constants'
-import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
-import { NavButton } from '../../Styled/Nav'
-import HelpTooltip from '../Help/HelpTooltip'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
 import { NavProps } from './Types'
@@ -152,8 +149,8 @@ const Nav = ({ links }: NavProps) => {
   return (
     <StyledDiv focusMode={focusMode}>
       <NavTooltip singleton={source} />
-      {
-        authenticated && <div>
+      {authenticated && (
+        <div>
           <NavTooltip
             singleton={target}
             content={<TooltipTitleWithShortcut title="Create New Node" shortcut={shortcuts.newNode.keystrokes} />}
@@ -163,8 +160,7 @@ const Nav = ({ links }: NavProps) => {
             </NavButton>
           </NavTooltip>
         </div>
-
-      }
+      )}
       <div></div>
       <MainLinkContainer>
         {links.map((l) =>

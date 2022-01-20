@@ -1,5 +1,5 @@
 import React from 'react'
-import { Highlight, HighlightWrapper, SSearchHighlights, TitleHighlightWrapper } from '../../Styled/Search'
+import { Highlight, HighlightWrapper, SSearchHighlights, TitleHighlightWrapper } from '../../../style/Search'
 
 // Split text string where pos [startIndex, len]
 const textHighlightSplit = (pos: [number, number], text: string, startPadding = 15, endPadding = 80) => {

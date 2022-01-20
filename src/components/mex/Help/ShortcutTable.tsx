@@ -2,8 +2,9 @@ import { debounce } from 'lodash'
 import { matchSorter } from 'match-sorter'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
-import { useShortcutStore } from '../../Editor/Store/useShortcutStore'
-import { Input } from '../../Styled/Form'
+import useShortcutTableData from '../../../hooks/useShortcutTableData'
+import { useShortcutStore } from '../../../store/useShortcutStore'
+import { Input } from '../../../style/Form'
 import { DisplayShortcut } from '../Shortcuts'
 import { Shortcut } from './Help.types'
 import InputShortcut from './InputShortcut'
@@ -17,7 +18,6 @@ import {
   TableHeader,
   TableWrapperScrollable
 } from './ShortcutTable.styles'
-import useShortcutTableData from './useShortcutTableData'
 
 function fuzzyTextFilterFn(data: Shortcut[], search: any) {
   return matchSorter(data, search, { keys: ['title', 'keystrokes', 'category'] })

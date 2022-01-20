@@ -1,8 +1,8 @@
 import React from 'react'
-import { Center } from '../../../Spotlight/styles/layout'
+import { StyledKey } from '../../../../Components/spotlight/Shortcuts/styled'
 
 import styled, { keyframes, useTheme } from 'styled-components'
-import { StyledKey } from '../../../Spotlight/components/Shortcuts/styled'
+import { Center } from '../../../../style/spotlight/layout'
 
 const WelcomeHeader = styled.section`
   display: flex;

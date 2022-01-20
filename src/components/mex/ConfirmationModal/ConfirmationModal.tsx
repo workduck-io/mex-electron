@@ -2,8 +2,8 @@ import React from 'react'
 import create from 'zustand'
 import Modal from 'react-modal'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
-import { Button } from '../../Styled/Buttons'
-import { Note } from '../../Styled/Typography'
+import { Button } from '../../../style/Buttons'
+import { Note } from '../../../style/Typography'
 
 export interface ConfirmationModalProps {
   confirmKeyword?: string

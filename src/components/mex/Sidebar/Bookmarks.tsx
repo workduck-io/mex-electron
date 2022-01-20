@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react'
-import { useBookmarks } from '../../Hooks/useBookmarks/useBookmarks'
-import useDataStore from '../../Editor/Store/DataStore'
-import { useLinks } from '../../Editor/Actions/useLinks'
 import styled from 'styled-components'
-import { NodeLink } from '../Backlinks/Backlinks'
-import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
 import { Icon } from '@iconify/react'
 import bookmarkLine from '@iconify-icons/ri/bookmark-line'
-import { BaseLink } from '../../Views/Tag'
+import { useBookmarks } from '../../../hooks/useBookmarks'
+import { useLinks } from '../../../hooks/useLinks'
+import { useNavigation } from '../../../hooks/useNavigation'
+import useDataStore from '../../../store/useDataStore'
+import { BaseLink } from '../../../Views/mex/Tag'
 
 const BList = styled.div`
   max-height: 15rem;

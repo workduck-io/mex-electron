@@ -1,5 +1,5 @@
-import useLoad from '../../Hooks/useLoad/useLoad'
-import { useEditorStore } from '../../Editor/Store/useEditorStore'
+import useLoad from '../../../hooks/useLoad'
+import { useEditorStore } from '../../../store/useEditorStore'
 
 export const useFlowMessage = () => {
   const { loadNodeAndAppend } = useLoad()

@@ -1,6 +1,6 @@
 import React from 'react'
-import { StyledServiceSelectComponents } from '../../Styled/Select'
-import { StyledSelect } from '../../Styled/Form'
+import { StyledSelect } from '../../../style/Form'
+import { StyledServiceSelectComponents } from '../../../style/Select'
 
 export interface ServiceSelectorProps {
   options: { label: string; value: any }[]

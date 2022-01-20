@@ -5,8 +5,8 @@ import { Icon } from '@iconify/react'
 import user3Line from '@iconify-icons/ri/user-3-line'
 import styled, { useTheme } from 'styled-components'
 import Tippy from '@tippyjs/react/headless' // different import path!
-import { CardShadow } from '../../Styled/helpers'
-import Centered from '../../Styled/Layouts'
+import { CardShadow } from '../../../style/helpers'
+import Centered from '../../../style/Layouts'
 
 interface ProfileImageProps {
   email: string

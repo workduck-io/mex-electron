@@ -2,12 +2,12 @@ import arrowGoBackLine from '@iconify-icons/ri/arrow-go-back-line'
 import { Icon } from '@iconify/react'
 import { transparentize } from 'polished'
 import React from 'react'
-import { HoverSubtleGlow } from '../../Styled/helpers'
+import { HoverSubtleGlow } from '../../../style/helpers'
 import styled from 'styled-components'
-import { useLinks } from '../../Editor/Actions/useLinks'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
-import { useNavigation } from '../../Hooks/useNavigation/useNavigation'
-import { Note } from '../../Styled/Typography'
+import { useLinks } from '../../../hooks/useLinks'
+import { useNavigation } from '../../../hooks/useNavigation'
+import { useEditorStore } from '../../../store/useEditorStore'
+import { Note } from '../../../style/Typography'
 
 const SBackLinks = styled.div`
   width: 100%;

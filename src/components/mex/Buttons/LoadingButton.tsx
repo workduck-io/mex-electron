@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTheme } from 'styled-components'
-import { AsyncButton, AsyncButtonProps } from '../../Styled/Buttons'
-import Loading from '../../Styled/Loading'
+import { AsyncButton, AsyncButtonProps } from '../../../style/Buttons'
+import Loading from '../../../style/Loading'
 
 export interface LoadingButtonProps {
   children?: React.ReactNode

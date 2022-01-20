@@ -1,10 +1,10 @@
 import React from 'react'
-import { useAuthStore } from '../Hooks/useAuth/useAuth'
-import HelpModal from '../Components/Help/HelpModal'
-import Lookup from '../Components/Lookup'
-import Delete from '../Components/Refactor/DeleteModal'
-import Refactor from '../Components/Refactor/Refactor'
-import Rename from '../Components/Refactor/Rename'
+import { useAuthStore } from '../../services/auth/useAuth'
+import HelpModal from '../mex/Help/HelpModal'
+import Lookup from '../mex/Lookup'
+import Delete from '../mex/Refactor/DeleteModal'
+import Refactor from '../mex/Refactor/Refactor'
+import Rename from '../mex/Refactor/Rename'
 
 const Modals = () => {
   const isAuthenticated = useAuthStore((store) => store.authenticated)

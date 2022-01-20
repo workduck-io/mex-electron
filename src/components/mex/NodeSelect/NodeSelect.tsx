@@ -5,25 +5,24 @@ import addCircleLine from '@iconify-icons/ri/add-circle-line'
 import { Icon } from '@iconify/react'
 import { useCombobox } from 'downshift'
 import React, { useEffect, useState } from 'react'
-import { convertContentToRawText } from '../../Search/localSearch'
 import { useDebouncedCallback } from 'use-debounce'
-import { useLinks } from '../../Editor/Actions/useLinks'
-import { useContentStore } from '../../Editor/Store/ContentStore'
-import useDataStore from '../../Editor/Store/DataStore'
-import { useRecentsStore } from '../../Editor/Store/RecentsStore'
-import { fuzzySearch } from '../../Lib/fuzzySearch'
-import { withoutContinuousDelimiter } from '../../Lib/helper'
-import { Input } from '../../Styled/Form'
+import { useLinks } from '../../../hooks/useLinks'
+import { useContentStore } from '../../../store/useContentStore'
+import useDataStore from '../../../store/useDataStore'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
+import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { convertContentToRawText } from '../../../utils/search/localSearch'
+import { Input } from '../../../style/Form'
 import {
   StyledCombobox,
-  StyledInputWrapper,
   StyledMenu,
   Suggestion,
   SuggestionContentWrapper,
+  SuggestionText,
   SuggestionDesc,
-  SuggestionText
+  StyledInputWrapper
 } from './NodeSelect.styles'
-import { ILink } from '../../Editor/Store/Types'
 
 export type ComboItem = {
   text: string

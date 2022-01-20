@@ -1,12 +1,11 @@
 import React from 'react'
-import useThemeStore from '../../Editor/Store/ThemeStore'
-import { Button } from '../../Styled/Buttons'
-import { useSaveData } from '../../Data/useSaveData'
 import toast from 'react-hot-toast'
-import { Wrapper } from '../../Styled/Layouts'
-import { ButtonWrapper, Theme, ThemeColorDots, ThemeHeader, ThemePreview, ThemePreviews } from '../../Styled/Settings'
 import { ThemeProvider } from 'styled-components'
 import { useTransition } from 'react-spring'
+import useThemeStore from '../../../store/useThemeStore'
+import { useSaveData } from '../../../hooks/useSaveData'
+import { ThemePreviews, ThemeColorDots, Theme, ThemeHeader, ThemePreview } from '../../../style/Settings'
+import { Wrapper } from '../../../style/Layouts'
 
 const Themes = () => {
   const themes = useThemeStore((state) => state.themes)
@@ -40,14 +39,8 @@ const Themes = () => {
 
   return (
     <Wrapper>
-      {/* <FlexBetween>
-        <h1>Themes</h1>
-        <IconButton size={24} icon={saveLine} onClick={onSave} title="Save" />
-      </FlexBetween> */}
-      {/* <h2>Current theme: {theme.id}</h2> */}
       <ThemePreviews>
         {transition((styles, t, _t, i) => {
-          // {themes.map((t, i) => {
           return (
             <ThemeProvider key={`mex_theme_key_${t.id}`} theme={t.themeData}>
               <Theme selected={t.id === theme.id} onClick={() => onThemeSelect(i)} style={styles}>
@@ -60,12 +53,6 @@ const Themes = () => {
                     <div className="background"></div>
                   </ThemeColorDots>
                   <br />
-                  {/* <ButtonWrapper>
-                    <Button primary={false} onClick={() => onThemeSelect(i)}>
-                      Set
-                    </Button>
-                  </ButtonWrapper>
-                  <br /> */}
                 </ThemePreview>
                 <ThemeHeader>
                   <h4>{t.id}</h4>

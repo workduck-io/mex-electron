@@ -1,9 +1,9 @@
 import React, { forwardRef } from 'react'
 import styled from 'styled-components'
-import { useHelpStore } from './HelpModal'
 import questionMark from '@iconify-icons/ri/question-mark'
-import { GetIcon } from '../../Conf/links'
-import { NavButton } from '../../Styled/Nav'
+import { useHelpStore } from '../../../store/useHelpStore'
+import { NavButton } from '../../../style/Nav'
+import { GetIcon } from '../../../Data/links'
 
 const HelpTooltip = forwardRef<any>((_props, ref) => {
   const toggleModal = useHelpStore((store) => store.toggleModal)

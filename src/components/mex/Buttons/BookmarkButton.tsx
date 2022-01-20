@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react'
 // import IconButton from '../../Styled/Buttons'
-import { useBookmarks } from '../../Hooks/useBookmarks/useBookmarks'
-import useDataStore from '../../Editor/Store/DataStore'
+
 import { LoadingButton } from './LoadingButton'
 import { Icon } from '@iconify/react'
 import bookmarkLine from '@iconify-icons/ri/bookmark-line'
 import bookmarkFill from '@iconify-icons/ri/bookmark-fill'
+import { useBookmarks } from '../../../hooks/useBookmarks'
+import useDataStore from '../../../store/useDataStore'
 
 interface BookmarkButtonProps {
   uid: string

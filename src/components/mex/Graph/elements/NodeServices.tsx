@@ -1,6 +1,6 @@
 import React from 'react'
-import { ServiceIcon } from '../../../Editor/Components/SyncBlock/SyncIcons'
-import { useGraphStore } from '../GraphStore'
+import { useGraphStore } from '../../../../store/useGraphStore'
+import { ServiceIcon } from '../../../../editor/Components/SyncBlock/SyncIcons'
 import { NodeServiceContainer, ServiceIconMargin } from '../styled/NodeService.styled'
 
 const NodeServices = () => {

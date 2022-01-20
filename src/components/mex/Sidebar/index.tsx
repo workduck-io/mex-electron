@@ -1,14 +1,13 @@
 import gitBranchLine from '@iconify-icons/ri/git-branch-line'
 import { Icon } from '@iconify/react'
 import React, { useState } from 'react'
-import { config, useTransition } from 'react-spring'
-import { useLayoutStore } from '../../Layout/LayoutStore'
-import { SectionHeading, SidebarContent, SidebarDiv, SidebarDivider, SidebarSection } from '../../Styled/Sidebar'
-import TreeNode from '../../Types/tree'
 import Bookmarks from './Bookmarks'
 import { TreeWithContextMenu } from './TreeWithContextMenu'
 import arrowRightSLine from '@iconify-icons/ri/arrow-right-s-line'
 import bookmark3Line from '@iconify-icons/ri/bookmark-3-line'
+import { useFocusTransition } from '../../../hooks/useFocusTransition'
+import TreeNode from '../../../types/tree'
+import { SidebarDiv, SidebarContent, SidebarSection, SectionHeading, SidebarDivider } from '../../../style/Sidebar'
 
 export type SideBarProps = { tree: TreeNode[]; starred: TreeNode[] }
 

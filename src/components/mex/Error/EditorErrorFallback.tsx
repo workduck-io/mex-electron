@@ -1,9 +1,9 @@
 import React from 'react'
 import { FallbackProps } from 'react-error-boundary'
-import { CardShadow } from '../../Styled/helpers'
+import { CardShadow } from '../../../style/helpers'
 import styled from 'styled-components'
-import { Button } from '../../Styled/Buttons'
-import { Title } from '../../Styled/Typography'
+import { Button } from '../../../style/Buttons'
+import { Title } from '../../../style/Typography'
 import { transparentize } from 'polished'
 
 const ErrorWrapper = styled.div`

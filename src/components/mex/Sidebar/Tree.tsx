@@ -7,13 +7,13 @@ import equal from 'fast-deep-equal'
 import RCTree from 'rc-tree'
 import { Key } from 'rc-tree/lib/interface'
 import React from 'react'
-import { AppType } from '../../Data/useInitialize'
-import { withRefactor } from '../../Editor/Actions/useRefactor'
-import { withNodeOps } from '../../Editor/Store/EditorStore'
-import { withNavigation } from '../../Hooks/useNavigation/withNavigation'
-import { IpcAction } from '../../Spotlight/utils/constants'
-import { appNotifierWindow } from '../../Spotlight/utils/notifiers'
-import { StyledTree } from '../../Styled/Sidebar'
+import { IpcAction } from '../../../Data/IpcAction'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { AppType } from '../../../hooks/useInitialize'
+import { withNavigation } from '../../../hooks/useNavigation'
+import { withRefactor } from '../../../hooks/useRefactor'
+import { withNodeOps } from '../../../store/useEditorStore'
+import { StyledTree } from '../../../style/Sidebar'
 import TreeExpandIcon from './Icon'
 import { getNodeIdLast, SEPARATOR } from './treeUtils'
 
@@ -42,7 +42,7 @@ interface RCTreeProps {
 
 /* Renders a draggable tree with custom collapse-able icon */
 class Tree extends React.Component<RCTreeProps> {
-  constructor (props: RCTreeProps) {
+  constructor(props: RCTreeProps) {
     super(props)
     this.state = {
       gData: props.tree,
@@ -56,7 +56,7 @@ class Tree extends React.Component<RCTreeProps> {
     this.onSelect = this.onSelect.bind(this)
   }
 
-  componentDidUpdate (prevProps: RCTreeProps) {
+  componentDidUpdate(prevProps: RCTreeProps) {
     const { tree } = this.props
 
     if (!equal(prevProps, this.props)) {
@@ -65,7 +65,7 @@ class Tree extends React.Component<RCTreeProps> {
     }
   }
 
-  onDragEnter ({ expandedKeys }: any) {
+  onDragEnter({ expandedKeys }: any) {
     // eslint-disable-next-line no-console
     // console.log('enter', expandedKeys)
     this.setState({
@@ -73,7 +73,7 @@ class Tree extends React.Component<RCTreeProps> {
     })
   }
 
-  onDrop (info: any) {
+  onDrop(info: any) {
     // eslint-disable-next-line no-console
     // console.log('drop', info)
     const dropKey = info.node.props.eventKey
@@ -151,7 +151,7 @@ class Tree extends React.Component<RCTreeProps> {
     // });
   }
 
-  onExpand (expandedKeys: any) {
+  onExpand(expandedKeys: any) {
     // eslint-disable-next-line no-console
     // console.log('onExpand', expandedKeys)
     if (expandedKeys) {
@@ -167,7 +167,7 @@ class Tree extends React.Component<RCTreeProps> {
     }
   }
 
-  onSelect (_selectedKeys: Key[], info: any) {
+  onSelect(_selectedKeys: Key[], info: any) {
     const { selectedNodes } = info
     const { push } = this.props
 
@@ -179,7 +179,7 @@ class Tree extends React.Component<RCTreeProps> {
     }
   }
 
-  render () {
+  render() {
     const { expandedKeys, autoExpandParent }: any = this.state
     const { tree, currentNode, displayMenu } = this.props
 

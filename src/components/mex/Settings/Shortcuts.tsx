@@ -2,10 +2,10 @@ import lodash from 'lodash'
 import { transparentize } from 'polished'
 import React from 'react'
 import Modal from 'react-modal'
+import useShortcutTableData from '../../../hooks/useShortcutTableData'
+import { useShortcutStore } from '../../../store/useShortcutStore'
 import styled, { css } from 'styled-components'
-import { useShortcutStore } from '../../Editor/Store/ShortcutStore'
 import InputShortcut from '../Help/InputShortcut'
-import useShortcutTableData from '../Help/useShortcutTableData'
 import { DisplayShortcut } from '../Shortcuts'
 
 const Shortcut = styled.div<{ highlight: boolean }>`

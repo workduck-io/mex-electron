@@ -1,4 +1,4 @@
-import { Input } from '../../Styled/Form'
+import { Input } from '../../../style/Form'
 import styled, { css } from 'styled-components'
 import { transparentize } from 'polished'
 

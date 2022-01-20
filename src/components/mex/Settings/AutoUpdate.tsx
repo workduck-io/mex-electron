@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Header } from './Shortcuts'
 import { ipcRenderer } from 'electron'
-import { IpcAction } from '../../Spotlight/utils/constants'
+import { IpcAction } from '../../../Data/IpcAction'
 
 const Container = styled.section`
   margin: 0 ${({ theme }) => theme.spacing.large};
@@ -41,18 +41,3 @@ const AutoUpdate = () => {
 }
 
 export default AutoUpdate
-
-/*
-<form onSubmit={(e) => handleSubmit(e.target.value)}>
-            <label>
-              Pick your favorite flavor:
-              <select value={updateFreq} onChange={(e) => setUpdateFreq(e.target.value)}>
-                <option value=(3 * 60 * 60 * 1000)>Grapefruit</option>
-                <option value="lime">Lime</option>
-                <option value="coconut">Coconut</option>
-                <option value="mango">Mango</option>
-              </select>
-            </label>
-            <input type="submit" value="Submit" />
-          </form>
-*/

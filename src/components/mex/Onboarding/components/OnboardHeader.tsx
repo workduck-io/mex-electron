@@ -1,5 +1,5 @@
 import React from 'react'
-import { SpaceBetweenHorizontalFlex } from '../../../Styled/Layouts'
+import { SpaceBetweenHorizontalFlex } from '../../../../style/Layouts'
 
 const OnboardHeader = ({ heading, closeTour }: { heading?: string; closeTour: any }) => {
   return (

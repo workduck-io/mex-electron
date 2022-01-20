@@ -1,4 +1,4 @@
-import TreeNode from '../../Types/tree'
+import TreeNode from '../../../types/tree'
 
 export const sampleFlatTree = [
   '@',

@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
-import { GetIcon } from '../../Conf/links'
 import styled from 'styled-components'
-import { Button } from '../../Styled/Buttons'
 import QuestionMarkIcon from '@iconify-icons/ri/question-mark'
 import CloseIcon from '@iconify-icons/ri/close-line'
-import { FlexBetween } from '../../Spotlight/components/Actions/styled'
 import { Icon } from '@iconify/react'
-import { useInitOlvy } from '../../Olvy'
-import { useHelpStore } from '../Help/HelpModal'
 import { useTourData } from '../Onboarding/hooks'
-import useOnboard from '../Onboarding/store'
-import { useAuthStore } from '../../Hooks/useAuth/useAuth'
+import { Button } from '../../../style/Buttons'
+import { useHelpStore } from '../../../store/useHelpStore'
+import useOnboard from '../../../store/useOnboarding'
+import { useAuthStore } from '../../../services/auth/useAuth'
+import { GetIcon } from '../../../Data/links'
+import { FlexBetween } from '../../../Components/spotlight/Actions/styled'
+import { useInitOlvy } from '../../../services/olvy'
 
 export const Float = styled.div`
   position: fixed;

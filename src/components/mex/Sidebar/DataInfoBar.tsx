@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import Backlinks from '../Backlinks/Backlinks'
+import Backlinks from '../Backlinks'
 import TagsRelated from '../Tags/TagsRelated'
 
 const DataInfobarWrapper = styled.div`

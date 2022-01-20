@@ -4,32 +4,32 @@ import { debounce } from 'lodash'
 import React, { useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useTransition } from 'react-spring'
-import { useRecentsStore } from '../../Editor/Store/RecentsStore'
-import create from 'zustand'
-import { defaultContent } from '../../Defaults/baseData'
-import { useLinks } from '../../Editor/Actions/useLinks'
-import EditorPreviewRenderer from '../../Editor/EditorPreviewRenderer'
-import { useContentStore } from '../../Editor/Store/ContentStore'
-import useDataStore from '../../Editor/Store/DataStore'
-import { useEditorStore } from '../../Editor/Store/EditorStore'
-import useLoad from '../../Hooks/useLoad/useLoad'
-import { useNewSearchStore } from '../../Search/SearchStore'
+import { defaultContent } from '../../../Data/Defaults/baseData'
+import { useLinks } from '../../../hooks/useLinks'
+import useLoad from '../../../hooks/useLoad'
+import { useContentStore } from '../../../store/useContentStore'
+import useDataStore from '../../../store/useDataStore'
+import { useEditorStore } from '../../../store/useEditorStore'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { useNewSearchStore } from '../../../store/useSearchStore'
 import {
+  SearchInput,
+  ResultsWrapper,
+  ResultHeader,
+  ResultTitle,
+  Result,
+  Results,
+  NoSearchResults,
   MatchCounter,
   MatchCounterWrapper,
-  NoSearchResults,
-  Result,
-  ResultHeader,
-  Results,
-  ResultsWrapper,
-  ResultTitle,
-  SearchContainer,
+  SearchPreviewWrapper,
   SearchHeader,
-  SearchInput,
-  SearchPreviewWrapper
-} from '../../Styled/Search'
-import { Title } from '../../Styled/Typography'
+  SearchContainer
+} from '../../../style/Search'
+import { Title } from '../../../style/Typography'
+import create from 'zustand'
 import { SearchHighlights, TitleHighlights } from './Highlights'
+import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 
 interface SearchStore {
   selected: number

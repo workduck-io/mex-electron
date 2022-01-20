@@ -6,10 +6,10 @@ import { Icon } from '@iconify/react'
 import React from 'react'
 import { Item, ItemParams, Separator, useContextMenu } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.css'
-import { StyledMenu } from '../../Styled/Menu'
-import TreeNode from '../../Types/tree'
+import { StyledMenu } from '../../../style/Menu'
+import { useRenameStore } from '../../../store/useRenameStore'
+import TreeNode from '../../../types/tree'
 import { useDeleteStore } from '../Refactor/DeleteModal'
-import { useRenameStore } from '../Refactor/Rename'
 import Tree from './Tree'
 
 interface TreeProps {

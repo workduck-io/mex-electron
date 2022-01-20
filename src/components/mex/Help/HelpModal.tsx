@@ -1,15 +1,9 @@
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
-import { defaultShortcuts } from '../../Defaults/shortcuts'
+import { useKeyListener } from '../../../hooks/useShortcutListener'
+import { useHelpStore } from '../../../store/useHelpStore'
 import tinykeys from 'tinykeys'
-import create from 'zustand'
 import ShortcutTable from './ShortcutTable'
-import produce from 'immer'
-import { HelpState } from './Help.types'
-import { useKeyListener } from '../../Hooks/useCustomShortcuts/useShortcutListener'
-import { ipcRenderer } from 'electron'
-import { IpcAction } from '../../Spotlight/utils/constants'
-
 
 const HelpModal = () => {
   const open = useHelpStore((store) => store.open)

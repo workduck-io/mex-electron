@@ -1,16 +1,16 @@
 import React from 'react'
 import Modal from 'react-modal'
 import { Link } from 'react-router-dom'
+import { Intent } from '../../../editor/Components/SyncBlock'
+import IntentSelector from '../../../editor/Components/SyncBlock/intentSelector'
+import useIntents from '../../../hooks/useIntents'
+import { useLinks } from '../../../hooks/useLinks'
+import { IntentMapItem } from '../../../style/Integration'
+import { Para } from '../../../style/Typography'
 import create from 'zustand'
-import { useLinks } from '../../Editor/Actions/useLinks'
-import { Intent } from '../../Editor/Components/SyncBlock'
-import IntentSelector from '../../Editor/Components/SyncBlock/intentSelector'
-import useIntents from '../../Hooks/useIntents/useIntents'
-import { Button } from '../../Styled/Buttons'
-import { IntentMapItem } from '../../Styled/Integration'
-import { Para } from '../../Styled/Typography'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { Command } from './styled'
+import { Button } from '../../../style/Buttons'
 
 export interface NodeIntegrationsModalProps {
   uid: string

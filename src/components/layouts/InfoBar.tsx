@@ -1,16 +1,17 @@
 import React, { useEffect } from 'react'
 import { animated } from 'react-spring'
+import { useGraphData } from '../../hooks/useGraphData'
 import styled from 'styled-components'
 import tinykeys from 'tinykeys'
-import Graph from '../Components/Graph/Graph'
-import { useGraphData } from '../Components/Graph/hooks/useGraphData'
-import { useHelpStore } from '../Components/Help/HelpModal'
-import { useFocusTransition } from '../Components/Sidebar'
-import DataInfoBar from '../Components/Sidebar/DataInfoBar'
-import SyncBlockInfo from '../Editor/Components/SyncBlock/SyncBlockInfo'
-import { useKeyListener } from '../Hooks/useCustomShortcuts/useShortcutListener'
-import useToggleElements from '../Hooks/useToggleElements/useToggleElements'
-import { size } from '../Styled/responsive'
+import SyncBlockInfo from '../../editor/Components/SyncBlock/SyncBlockInfo'
+import DataInfoBar from '../mex/Sidebar/DataInfoBar'
+
+import Graph from '../mex/Graph/Graph'
+import { useFocusTransition } from '../../hooks/useFocusTransition'
+import useToggleElements from '../../hooks/useToggleElements'
+import { useKeyListener } from '../../hooks/useShortcutListener'
+import { useHelpStore } from '../../store/useHelpStore'
+import { size } from '../../style/responsive'
 
 interface InfoBarWrapperProps {
   wide: string

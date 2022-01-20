@@ -1,7 +1,7 @@
 import Tippy from '@tippyjs/react/headless' // different import path!
 import React from 'react'
-import { InputBlock, Label, InputWrapper } from '../../Styled/Form'
-import { ErrorTooltip } from '../../Styled/tippy'
+import { InputBlock, Label, InputWrapper } from '../../../style/Form'
+import { ErrorTooltip } from '../../../style/tippy'
 import { errorMessages } from '../Auth/errorMessages'
 
 export interface LabeledInputProps {

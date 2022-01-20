@@ -1,13 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
-import EditorPreviewRenderer from '../../../Editor/EditorPreviewRenderer'
-import { useLinks } from '../../../Editor/Actions/useLinks'
-import { useContentStore } from '../../../Editor/Store/ContentStore'
 import { transparentize } from 'polished'
 import editIcon from '@iconify-icons/bx/bx-edit-alt'
 import timeIcon from '@iconify-icons/bx/bx-time-five'
 import { Icon } from '@iconify/react'
-import { useRelativeTime as getTime } from '../../../Hooks/useRelativeTime'
+import EditorPreviewRenderer from '../../../../editor/EditorPreviewRenderer'
+import { useRelativeTime as getTime } from '../../../../hooks/useRelativeTime'
+import { useContentStore } from '../../../../store/useContentStore'
+import { useLinks } from '../../../../hooks/useLinks'
 
 const Container = styled.section`
   position: absolute;
