@@ -2,39 +2,38 @@
 import chokidar from 'chokidar'
 import {
   app,
+  autoUpdater,
   BrowserWindow,
   dialog,
   globalShortcut,
   ipcMain,
   Menu,
   nativeImage,
+  screen,
   session,
   shell,
-  screen,
-  Tray,
-  autoUpdater
+  Tray
 } from 'electron'
 import fs from 'fs'
-import path from 'path'
-import { AppType } from './Data/useInitialize'
-import { DefaultFileData } from './Defaults/baseData'
-import { getSaveLocation, getSearchIndexLocation } from './Defaults/data'
-import MenuBuilder from './menu'
-import { IpcAction } from './Spotlight/utils/constants'
-import {
-  getGlobalShortcut,
-  getSelectedText,
-  SelectionType,
-  getSelectedTextSync
-} from './Spotlight/utils/getSelectedText'
-import { sanitizeHtml } from './Spotlight/utils/sanitizeHtml'
-import { FileData } from './Types/data'
-import { initializeSentry } from './sentry'
-import { flexIndexKeys } from './Search/flexsearch'
 import _ from 'lodash'
+import path from 'path'
+
+import { DefaultFileData } from '../data/Defaults/baseData'
+import { getSaveLocation, getSearchIndexLocation } from '../data/Defaults/data'
+import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
+import { IpcAction } from '../data/IpcAction'
+
+import { AppType } from '../hooks/useInitialize'
+import { initializeSentry } from '../services/sentry'
+import { FileData } from '../types/data'
+
+import { getAppleNotes } from '../utils/Importers/appleNotes'
+import { sanitizeHtml } from '../utils/sanitizeHtml'
+import { flexIndexKeys } from '../utils/search/flexsearch'
+import { getGlobalShortcut, getSelectedText, getSelectedTextSync, SelectionType } from './utils/getSelectedText'
+
 import { backupMexJSON } from './backup'
-import { twitterIconBase64, trayIconBase64 } from './Defaults/images'
-import { getAppleNotes } from './Importers/appleNotes'
+import MenuBuilder from './menu'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()

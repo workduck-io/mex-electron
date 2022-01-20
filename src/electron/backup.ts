@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { getBackupLocation, getSaveLocation } from './Defaults/data'
+import { getBackupLocation, getSaveLocation } from '../data/Defaults/data'
 import { app } from 'electron'
 
 export const backupMexJSON = () => {
