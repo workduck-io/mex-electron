@@ -1,4 +1,4 @@
-import { CustomEvents } from '../analytics/events'
+import { CustomEvents } from '../../services/analytics/events'
 
 export const capitalize = (str: string) => {
   if (!str) return ''

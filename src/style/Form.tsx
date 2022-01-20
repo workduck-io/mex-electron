@@ -1,8 +1,8 @@
 import React from 'react'
 import Select from 'react-select'
 import Creatable from 'react-select/creatable'
+import { AppType } from '../hooks/useInitialize'
 import styled, { css, DefaultTheme, useTheme } from 'styled-components'
-import { AppType } from '../data/useInitialize'
 
 interface InputProps {
   isSelected?: boolean

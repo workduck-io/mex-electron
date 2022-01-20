@@ -1,11 +1,11 @@
-import { CustomEvents } from '../../analytics/events'
-import getAnalytics from '../../analytics'
 import { rendererErrorHandler } from './renderer'
-import { IS_DEV } from '../../Defaults/dev_'
 import { ipcRenderer } from 'electron'
-import { IpcAction } from '../../Spotlight/utils/constants'
 import { debounce } from 'lodash'
 import { mainErrorHandler } from './main'
+import { IpcAction } from '../../../data/IpcAction'
+import getAnalytics from '../../../services/analytics'
+import { IS_DEV } from '../../../data/Defaults/dev_'
+import { CustomEvents } from '../../../services/analytics/events'
 
 export const showDialog = (message: string, properties: Record<string, any>) => {
   if (process.type === 'renderer') ipcRenderer.send(IpcAction.ERROR_OCCURED, { message, properties })

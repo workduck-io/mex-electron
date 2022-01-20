@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron'
-import { IpcAction } from '../../Spotlight/utils/constants'
-import getAnalytics from '../../analytics'
-import { CustomEvents } from '../../analytics/events'
+import { IpcAction } from '../../../data/IpcAction'
+import getAnalytics from '../../../services/analytics'
+import { CustomEvents } from '../../../services/analytics/events'
 import { LoggerType } from './types'
 
 const rendererErrorHandler = (logger: LoggerType) => {

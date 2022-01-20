@@ -1,4 +1,5 @@
-import { NodeMetadata } from '../Types/data'
+// import { NodeMetadata } from '../Types/data'
+import { NodeMetadata } from '../../types/data'
 import { removeNulls } from './helper'
 
 export const extractMetadata = (data: any): NodeMetadata => {

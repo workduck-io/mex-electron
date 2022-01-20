@@ -1,7 +1,6 @@
 // import original module declarations
 import { ThemeConfig } from 'react-select/src/theme'
 import 'styled-components'
-import { ShadePalette, ColorPalette, BackgroundImages } from '../style/themeGenerator'
 
 type Pixels = number // Pixels in integer
 

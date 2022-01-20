@@ -1,4 +1,6 @@
-import { IS_DEV } from '../Defaults/dev_'
+// import { IS_DEV } from '../Defaults/dev_'
+
+import { IS_DEV } from '../../data/Defaults/dev_'
 
 export default {
   heap: {

@@ -1,6 +1,4 @@
 import { runAppleScript } from 'run-applescript'
-import { AppleNotesImporterScriptURL } from '../Defaults/data'
-import https from 'https'
 import fs from 'fs'
 import path from 'path'
 import { app, dialog } from 'electron'

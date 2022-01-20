@@ -1,9 +1,10 @@
 import React from 'react'
-import App from './App'
+import App from './app.spotlight'
 import { render } from 'react-dom'
-import config from '../analytics/config'
-import analytics from '../analytics/analaytics'
+import analytics from './services/analytics/analaytics'
+import config from './services/analytics/config'
 
+// import analytics from '../analytics/analaytics'
 analytics(config.heap.HEAP_PREFIX, config.heap.APP_ID)
 
 render(<App />, document.getElementById('root'))

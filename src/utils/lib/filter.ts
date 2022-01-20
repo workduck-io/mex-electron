@@ -1,8 +1,12 @@
-import { NodeEditorContent } from './../Editor/Store/Types'
-import { ELEMENT_INLINE_BLOCK } from './../Editor/Components/InlineBlock/types'
-import { ELEMENT_SYNC_BLOCK } from './../Editor/Components/SyncBlock/SyncBlock.types'
-import { useEditorStore } from './../Editor/Store/EditorStore'
+// import { NodeEditorContent } from './../Editor/Store/Types'
+// import { ELEMENT_INLINE_BLOCK } from './../Editor/Components/InlineBlock/types'
+// import { ELEMENT_SYNC_BLOCK } from './../Editor/Components/SyncBlock/SyncBlock.types'
+// import { useEditorStore } from './../Editor/Store/EditorStore'
 import { useMemo } from 'react'
+import { ELEMENT_INLINE_BLOCK } from '../../editor/Components/InlineBlock/types'
+import { NodeEditorContent } from '../../types/Types'
+import { ELEMENT_SYNC_BLOCK } from '../../editor/Components/SyncBlock'
+import { useEditorStore } from '../../store/useEditorStore'
 
 export type ContentBlockType = typeof ELEMENT_SYNC_BLOCK | typeof ELEMENT_INLINE_BLOCK
 
