@@ -1,4 +1,4 @@
-import MexIcons from '../Icons'
+import MexIcons from '../components/icons/Icons'
 
 export default interface TreeNode {
   title: string

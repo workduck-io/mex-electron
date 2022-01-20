@@ -1,4 +1,4 @@
-import { NodeProperties } from './useEditorStore'
+import { NodeProperties } from '../store/useEditorStore'
 
 export interface ComboText {
   // This interface is used to store tags in a combobox friendly way.

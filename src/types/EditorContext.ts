@@ -1,5 +1,5 @@
-import { NodeProperties } from '../editor/Store/EditorStore'
-import { NodeEditorContent } from '../editor/Store/Types'
+import { NodeProperties } from '../store/useEditorStore'
+import { NodeEditorContent } from '../types/Types'
 import TreeNode from './tree'
 
 export interface EditorStateProps {
