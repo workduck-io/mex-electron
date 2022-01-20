@@ -1,13 +1,13 @@
 import React from 'react'
-import OnBoardingTour from '../Components/Onboarding'
+import OnBoardingTour from './components/mex/Onboarding'
 import { ThemeProvider } from 'styled-components'
-import useThemeStore from '../Editor/Store/ThemeStore'
-import { defaultThemes } from '../Styled/themes/defaultThemes'
-import Routes from './Routes'
-import { SpotlightProvider } from './utils/context'
-import { initializeSentry } from '../sentry'
-import { SpotlightOnboarding } from '../Components/Onboarding/steps'
-import { IS_DEV } from '../Defaults/dev_'
+import useThemeStore from './store/useThemeStore'
+import { defaultThemes } from './style/themes/defaultThemes'
+import Routes from './views/spotlight/Routes'
+import { SpotlightProvider } from './store/Context/context.spotlight'
+import { initializeSentry } from './services/sentry'
+import { SpotlightOnboarding } from './components/mex/Onboarding/steps'
+import { IS_DEV } from './data/Defaults/dev_'
 
 if (!IS_DEV) initializeSentry()
 
