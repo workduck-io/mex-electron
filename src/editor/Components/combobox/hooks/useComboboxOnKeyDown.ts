@@ -1,6 +1,6 @@
 import { PEditor, overridePluginsByKey } from '@udecode/plate'
 import { KeyboardHandler } from '@udecode/plate-core'
-import { useEditorStore } from '../../../Store/EditorStore'
+import { useEditorStore } from '../../../../store/useEditorStore'
 import { useElementOnChange as getElementOnChange } from '../../multi-combobox/useMultiComboboxOnKeyDown'
 import { useSlashCommandOnChange } from '../../SlashCommands/useSlashCommandOnChange'
 import { IComboboxItem } from '../components/Combobox.types'

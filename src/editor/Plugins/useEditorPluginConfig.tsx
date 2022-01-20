@@ -1,8 +1,8 @@
 import { ELEMENT_MEDIA_EMBED, ELEMENT_TABLE } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { useMemo } from 'react'
-import useAnalytics from '../../analytics'
-import { useSnippets } from '../../Snippets/useSnippets'
+import useAnalytics from '../../services/analytics'
+import { useSnippets } from '../../hooks/useSnippets'
 import { ComboboxKey } from '../Components/combobox/useComboboxStore'
 import { ILinkComboboxItem } from '../Components/ilink/components/ILinkComboboxItem'
 import { ELEMENT_ILINK } from '../Components/ilink/defaults'
@@ -14,8 +14,8 @@ import { SlashComboboxItem } from '../Components/SlashCommands/SlashComboboxItem
 import { useSyncConfig } from '../Components/SlashCommands/useSyncConfig'
 import { TagComboboxItem } from '../Components/tag/components/TagComboboxItem'
 import { ELEMENT_TAG } from '../Components/tag/defaults'
-import useDataStore from '../Store/DataStore'
-import { useEditorStore } from '../Store/EditorStore'
+import useDataStore from '../../store/useDataStore'
+import { useEditorStore } from '../../store/useEditorStore'
 
 const useEditorPluginConfig = (editorId: string) => {
   const tags = useDataStore((state) => state.tags)

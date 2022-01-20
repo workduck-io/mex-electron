@@ -4,7 +4,7 @@ import { LinkNodeData } from '@udecode/plate-link'
 import { StyledElementProps } from '@udecode/plate-styled-components'
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { EditorIcons } from '../../Icons'
+import { EditorIcons } from '../../components/icons/Icons'
 
 const Link = styled.a`
   position: relative;

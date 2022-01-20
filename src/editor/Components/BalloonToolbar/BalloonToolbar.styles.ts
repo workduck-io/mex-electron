@@ -1,8 +1,7 @@
 import { ToolbarBase } from '@udecode/plate'
 import { createStyles } from '@udecode/plate-styled-components'
-import { transparentize } from 'polished'
-import { CardShadow } from '../../../Styled/helpers'
 import styled, { css, CSSProp } from 'styled-components'
+import { CardShadow } from '../../../style/helpers'
 import { getToolbarStyles } from '../Toolbar/Toolbar.styles'
 import { BalloonToolbarStyleProps } from './BalloonToolbar.types'
 

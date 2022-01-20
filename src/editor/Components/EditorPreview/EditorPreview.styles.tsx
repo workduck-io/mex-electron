@@ -1,6 +1,6 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components'
-import { CardShadow } from '../../../Styled/helpers'
+import { CardShadow } from '../../../style/helpers'
 
 export const EditorPreviewWrapper = styled.div`
   padding: ${({ theme }) => theme.spacing.small};

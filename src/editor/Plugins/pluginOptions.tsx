@@ -36,7 +36,7 @@ import {
   unwrapList,
   AutoformatRule
 } from '@udecode/plate'
-import { generateTempId } from '../../Defaults/idPrefixes'
+import { generateTempId } from '../../data/Defaults/idPrefixes'
 import { ELEMENT_SYNC_BLOCK } from '../Components/SyncBlock'
 
 const preFormat = (editor: TEditor<AnyObject>) => unwrapList(editor as PlateEditor)

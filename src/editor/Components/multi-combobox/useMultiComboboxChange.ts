@@ -1,6 +1,6 @@
 import { OnChange, usePlateEditorRef } from '@udecode/plate'
 import { useCallback } from 'react'
-import { fuzzySearch } from '../../../Lib/fuzzySearch'
+import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange'
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'

@@ -1,6 +1,6 @@
 import React from 'react'
-import { useContentStore } from '../../Store/ContentStore'
-import { useLinks } from '../../Actions/useLinks'
+import { useContentStore } from '../../../store/useContentStore'
+import { useLinks } from '../../../hooks/useLinks'
 import {
   FlexBetween,
   InlineBlockHeading,
@@ -11,7 +11,7 @@ import {
   StyledInlineBlockPreview
 } from './styled'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
-import { useNavigation } from '../../../Hooks/useNavigation/useNavigation'
+import { useNavigation } from '../../../hooks/useNavigation'
 import { RootElement } from '../SyncBlock'
 import { useSelected } from 'slate-react'
 import { useSaver } from '../Saver'

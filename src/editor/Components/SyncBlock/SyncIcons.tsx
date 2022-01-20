@@ -6,12 +6,12 @@ import notionIcon from '@iconify/icons-simple-icons/notion'
 import slackIcon from '@iconify/icons-simple-icons/slack'
 import telegramIcon from '@iconify/icons-simple-icons/telegram'
 
-import Github from '../../../Icons/github'
-import Slack from '../../../Icons/slack'
-import Mex from '../../../Icons/mex'
-import Notion from '../../../Icons/notion'
-import Linear from '../../../Icons/linear'
-import Telegram from '../../../Icons/Telgram'
+import Github from '../../../components/Icons/github'
+import Slack from '../../../components/Icons/slack'
+import Mex from '../../../components/Icons/mex'
+import Notion from '../../../components/Icons/notion'
+import Linear from '../../../components/Icons/linear'
+import Telegram from '../../../components/Icons/Telgram'
 
 export const Icons: {
   [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any

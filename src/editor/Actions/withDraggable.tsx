@@ -22,9 +22,6 @@ import {
 
 import Tippy, { TippyProps } from '@tippyjs/react'
 import styled from 'styled-components'
-import { ELEMENT_SYNC_BLOCK } from '../Components/SyncBlock'
-import { ELEMENT_INLINE_BLOCK } from '../Components/InlineBlock/types'
-import { ELEMENT_ILINK } from '../Components/ilink/defaults'
 
 const StyledTip = styled.div`
   display: flex;

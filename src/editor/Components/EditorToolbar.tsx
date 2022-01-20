@@ -33,7 +33,7 @@ import {
   usePlateId
 } from '@udecode/plate'
 import React from 'react'
-import { ButtonSeparator } from '../../Styled/Toolbar'
+import { ButtonSeparator } from '../../style/Toolbar'
 import { BalloonToolbar } from './BalloonToolbar'
 import LinkButton from './BalloonToolbar/LinkButton'
 

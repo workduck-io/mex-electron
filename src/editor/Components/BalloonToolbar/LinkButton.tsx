@@ -16,8 +16,8 @@ import { useForm } from 'react-hook-form'
 import { Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
 import styled from 'styled-components'
-import { HeadlessButton } from '../../../Styled/Buttons'
-import { Input } from '../../../Styled/Form'
+import { HeadlessButton } from '../../../style/Buttons'
+import { Input } from '../../../style/Form'
 import { clearBlurSelection } from '../../Plugins/blurSelection'
 
 const LinkButtonStyled = styled.div`

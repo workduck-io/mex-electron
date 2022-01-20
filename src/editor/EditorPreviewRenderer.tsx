@@ -1,6 +1,6 @@
 import { Plate } from '@udecode/plate'
 import React from 'react'
-import { EditorStyles } from '../Styled/Editor'
+import { EditorStyles } from '../style/Editor'
 import { editorPreviewComponents } from './Components/components'
 import generatePlugins from './Plugins/plugins'
 

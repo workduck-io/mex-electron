@@ -18,9 +18,9 @@ import DeleteRowIcon from '@iconify-icons/fluent/table-delete-row-20-filled'
 import AddColumnIcon from '@iconify-icons/fluent/table-stack-right-20-filled'
 import DeleteColumnIcon from '@iconify-icons/fluent/table-delete-column-20-filled'
 
-import { ButtonSeparator } from '../../Styled/Toolbar'
+import { ButtonSeparator } from '../../style/Toolbar'
 import styled, { useTheme } from 'styled-components'
-import { MexIcon } from '../../Styled/Layouts'
+import { MexIcon } from '../../style/Layouts'
 
 const JustifyCenter = styled.div<{ width: string; height: string }>`
   display: flex;

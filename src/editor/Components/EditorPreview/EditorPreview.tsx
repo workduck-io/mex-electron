@@ -1,7 +1,7 @@
 import Tippy from '@tippyjs/react/headless' // different import path!
 import React, { forwardRef, useState } from 'react'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
-import { useContentStore } from '../../Store/ContentStore'
+import { useContentStore } from '../../../store/useContentStore'
 import { EditorPreviewWrapper } from './EditorPreview.styles'
 
 export interface EditorPreviewProps {

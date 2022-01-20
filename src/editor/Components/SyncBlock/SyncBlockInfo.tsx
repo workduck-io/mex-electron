@@ -2,12 +2,12 @@ import messageIcon from '@iconify-icons/ri/message-3-line'
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { ELEMENT_SYNC_BLOCK, SyncBlock } from '.'
-import { GraphTools, StyledSyncBlockInfo } from '../../../Components/Graph/Graph.styles'
-import { useSyncStore } from '../../Store/SyncStore'
-import useToggleElements from '../../../Hooks/useToggleElements/useToggleElements'
-import { useFilteredContent } from '../../../Lib/filter'
-import IconButton from '../../../Styled/Buttons'
-import { EditorStyles } from '../../../Styled/Editor'
+import { GraphTools, StyledSyncBlockInfo } from '../../../components/mex/Graph/Graph.styles'
+import { useSyncStore } from '../../../store/useSyncStore'
+import useToggleElements from '../../../hooks/useToggleElements'
+import { useFilteredContent } from '../../../utils/Lib/filter'
+import IconButton from '../../../style/Buttons'
+import { EditorStyles } from '../../../style/Editor'
 
 const StyledBlockInfo = styled.div`
   width: 100%;
