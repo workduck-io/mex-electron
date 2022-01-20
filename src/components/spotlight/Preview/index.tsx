@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { NodeProperties, useEditorStore } from '../../../Store/useEditorStore'
+import { NodeProperties, useEditorStore } from '../../../store/useEditorStore'
 import { useContentStore } from '../../../store/useContentStore'
 import Editor from '../../../editor/Editor'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
@@ -20,7 +20,7 @@ import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { IpcAction } from '../../../data/IpcAction'
 import { AppType } from '../../../hooks/useInitialize'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { createNodeWithUid } from '../../../utils/Lib/helper'
+import { createNodeWithUid } from '../../../utils/lib/helper'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 
 export type PreviewType = {

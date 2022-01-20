@@ -10,7 +10,7 @@ import useOnboard from '../../../store/useOnboarding'
 import { useAuthStore } from '../../../services/auth/useAuth'
 import { GetIcon } from '../../../data/links'
 import { FlexBetween } from '../../spotlight/Actions/styled'
-import { useInitOlvy } from '../../../services/Olvy'
+import { useInitOlvy } from '../../../services/olvy'
 
 export const Float = styled.div`
   position: fixed;

@@ -9,7 +9,7 @@ import { getExcalidrawElementStyles } from './ExcalidrawElement.styles'
 import { ExcalidrawElementProps } from './ExcalidrawElement.types'
 import { debounce } from 'lodash'
 import { serializeAsJSON } from '@excalidraw/excalidraw-next'
-import { mog } from '../../../../../utils/Lib/helper'
+import { mog } from '../../../../../utils/lib/helper'
 
 export const ExcalidrawElement = (props: any) => {
   const {

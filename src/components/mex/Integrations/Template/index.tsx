@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react'
 import React, { useMemo } from 'react'
-import { capitalize } from '../../../../utils/Lib/strings'
+import { capitalize } from '../../../../utils/lib/strings'
 import Plus from '@iconify-icons/bi/plus'
 import { ServiceIcon } from '../../../../editor/Components/SyncBlock/SyncIcons'
 import {

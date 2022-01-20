@@ -4,7 +4,7 @@ import { Editor, Transforms } from 'slate'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
 import { isElder } from '../../../components/mex/Sidebar/treeUtils'
-import { getEventNameFromElement } from '../../../utils/Lib/strings'
+import { getEventNameFromElement } from '../../../utils/lib/strings'
 
 import { useSnippets } from '../../../hooks/useSnippets'
 import { IComboboxItem } from '../combobox/components/Combobox.types'

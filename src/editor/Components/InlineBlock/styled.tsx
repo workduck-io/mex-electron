@@ -1,4 +1,4 @@
-import { StyledMessage } from '../../../components/Spotlight/Message/styled'
+import { StyledMessage } from '../../../components/spotlight/Message/styled'
 import styled from 'styled-components'
 
 export type InlineBlockType = {

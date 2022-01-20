@@ -1,7 +1,7 @@
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import { Contents } from '../Editor/Store/useContentStore'
-import { generateComboTexts, generateILinks } from '../Editor/Store/generateComboItem'
-import { FileData, NodeContent } from '../Types/data'
+import { Contents } from '../../store/useContentStore'
+import { generateComboTexts, generateILinks } from '../../utils/generateComboItem'
+import { FileData, NodeContent } from '../../types/data'
 // import { generateTempId } from './idPrefixes'
 
 const links = generateILinks(['doc', 'dev', 'design', '@', 'Draft'])

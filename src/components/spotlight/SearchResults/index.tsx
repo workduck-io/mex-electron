@@ -15,7 +15,7 @@ import { AppType } from '../../../hooks/useInitialize'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
-import useLoad from '../../../Hooks/useLoad'
+import useLoad from '../../../hooks/useLoad'
 import useDataStore from '../../../store/useDataStore'
 
 export const Result: React.FC<{

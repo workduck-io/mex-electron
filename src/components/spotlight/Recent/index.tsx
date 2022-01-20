@@ -11,7 +11,7 @@ import { IpcAction } from '../../../data/IpcAction'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { NodeEditorContent } from '../../../types/Types'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import useLoad from '../../../Hooks/useLoad'
+import useLoad from '../../../hooks/useLoad'
 
 export type RecentType = { recents: Array<string>; onClearClick?: () => void }
 export type RecentRowType = { text: string; highlight?: boolean; onClick: () => void }

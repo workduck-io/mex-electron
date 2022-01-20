@@ -1,4 +1,4 @@
-import { SyncBlockTemplate, SyncStoreIntents } from '../../Editor/Components/SyncBlock'
+import { SyncBlockTemplate, SyncStoreIntents } from '../../../editor/Components/SyncBlock'
 
 export const intentsData: SyncStoreIntents = {
   '@': {

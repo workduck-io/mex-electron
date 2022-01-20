@@ -14,7 +14,7 @@ import { ILink } from '../../../types/Types'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { ErrorBoundary } from 'react-error-boundary'
 import EditorErrorFallback from '../../../components/mex/Error/EditorErrorFallback'
-import useEditorActions from '../../../Hooks/useEditorActions'
+import useEditorActions from '../../../hooks/useEditorActions'
 
 export const StyledContent = styled.section`
   display: flex;

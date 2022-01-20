@@ -43,12 +43,12 @@ module.exports = {
           config: './webpack.renderer.config.js',
           entryPoints: [
             {
-              html: './src/index.mex.html',
+              html: './src/mex.html',
               js: './src/index.mex.tsx',
               name: 'mex_window'
             },
             {
-              html: './src/index.spotlight.html',
+              html: './src/spotlight.html',
               js: './src/index.spotlight.tsx',
               name: 'spotlight_window'
             }

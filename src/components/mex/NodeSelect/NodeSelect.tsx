@@ -12,7 +12,7 @@ import useDataStore from '../../../store/useDataStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
-import { convertContentToRawText } from '../../../utils/Search/localSearch'
+import { convertContentToRawText } from '../../../utils/search/localSearch'
 import { Input } from '../../../style/Form'
 import {
   StyledCombobox,

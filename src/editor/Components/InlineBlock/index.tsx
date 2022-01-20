@@ -15,7 +15,7 @@ import { useNavigation } from '../../../hooks/useNavigation'
 import { RootElement } from '../SyncBlock'
 import { useSelected } from 'slate-react'
 import { useSaver } from '../Saver'
-import useArchive from '../../../Hooks/useArchive'
+import useArchive from '../../../hooks/useArchive'
 import styled from 'styled-components'
 
 const StyledArchiveText = styled.text`
