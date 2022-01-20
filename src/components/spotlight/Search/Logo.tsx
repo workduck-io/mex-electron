@@ -1,8 +1,6 @@
-import { ipcRenderer } from 'electron'
-import React, { useEffect } from 'react'
-import { IpcAction } from '../../../Spotlight/utils/constants'
+import React from 'react'
 import styled from 'styled-components'
-import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
+import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
 
 const StyledLogo = styled.svg<{ bubble?: boolean }>`
   padding-right: 8px;

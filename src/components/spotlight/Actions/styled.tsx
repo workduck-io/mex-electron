@@ -1,6 +1,6 @@
 import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
-import { Scroll } from '../../styles/layout'
+import { Scroll } from '../../../style/spotlight/layout'
 import { StyledBackground } from '../Spotlight/styled'
 
 export interface ColorProp {

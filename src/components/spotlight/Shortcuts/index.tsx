@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSpotlightContext } from '../../../Spotlight/utils/context'
+import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { Shortcut, StyledKey, StyledShortcuts } from './styled'
 
 export enum ShortcutType {

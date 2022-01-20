@@ -5,13 +5,13 @@ import { useDebouncedCallback } from 'use-debounce'
 import SearchIcon from '@iconify-icons/ph/magnifying-glass-bold'
 import Document from '@iconify-icons/gg/file-document'
 import { Icon } from '@iconify/react'
-import { useSpotlightContext } from '../../utils/context'
+import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { StyledSearch, StyledInput } from './styled'
-import { CenterIcon } from '../../styles/layout'
+import { CenterIcon } from '../../../style/spotlight/layout'
 import WDLogo from './Logo'
 import { useTheme } from 'styled-components'
-import { useSpotlightEditorStore } from '../../../Spotlight/store/editor'
-import { useSpotlightAppStore } from '../../../Spotlight/store/app'
+import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
 
 const Search: React.FC = () => {
   const theme = useTheme()

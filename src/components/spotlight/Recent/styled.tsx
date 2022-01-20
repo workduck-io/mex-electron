@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { Scroll } from '../../../Spotlight/styles/layout'
+import { Scroll } from '../../../style/spotlight/layout'
 
 export const StyledRecent = styled.div`
   padding: 0 0.5rem;

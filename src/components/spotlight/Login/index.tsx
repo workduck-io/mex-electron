@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron'
 import React from 'react'
-import { IpcAction } from '../../../Spotlight/utils/constants'
-import { PrimaryText } from '../../../Styled/Integration'
+import { IpcAction } from '../../../data/IpcAction'
+import { PrimaryText } from '../../../style/Integration'
 import { StyledLoginContainer, MexLogin } from './styled'
 
 const Login = () => {

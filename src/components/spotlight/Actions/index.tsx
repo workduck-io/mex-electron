@@ -13,8 +13,8 @@ import {
   StyledUndordered
 } from './styled'
 import Recent from '../Recent'
-import { useRecentsStore } from '../../../Editor/Store/RecentsStore'
-import { useRecentsShortcuts } from '../../../Spotlight/shortcuts/useRecentsShortcuts'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { useRecentsShortcuts } from '../../../hooks/listeners/useRecentsShortcuts'
 import { StyledKey } from '../Shortcuts/styled'
 
 const Actions = () => {

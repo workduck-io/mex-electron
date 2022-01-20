@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useContentStore } from '../../../Editor/Store/ContentStore'
+import { useContentStore } from '../../../store/useContentStore'
 import { StyledMessage } from './styled'
 
 const Message: React.FC<{ text: string }> = ({ text }) => {

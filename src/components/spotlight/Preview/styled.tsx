@@ -1,6 +1,6 @@
 import { animated } from 'react-spring'
 import styled from 'styled-components'
-import { Scroll } from '../../../Spotlight/styles/layout'
+import { Scroll } from '../../../style/spotlight/layout'
 import { StyledBackground } from '../Spotlight/styled'
 
 export const StyledPreview = styled(animated.div)`

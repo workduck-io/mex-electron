@@ -1,7 +1,7 @@
 import React from 'react'
-import { useContentStore } from '../../../Editor/Store/ContentStore'
+import { useContentStore } from '../../../store/useContentStore'
 import { StyledSearch } from '../Search/styled'
-import { CenterIcon } from '../../../Spotlight/styles/layout'
+import { CenterIcon } from '../../../style/spotlight/layout'
 import WDLogo from '../Search/Logo'
 import Message from '../Message'
 

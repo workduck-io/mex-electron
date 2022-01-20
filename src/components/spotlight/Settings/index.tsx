@@ -1,11 +1,11 @@
 import React from 'react'
 import Shortcuts, { ShortcutType } from '../Shortcuts'
-import { useSettingsShortcuts } from '../../../Spotlight/shortcuts/useSettingsShortcuts'
+import { useSettingsShortcuts } from '../../../hooks/listeners/useSettingsShortcuts'
 import { StyledLookup } from '../Spotlight/styled'
-import { CenterIcon } from '../../styles/layout'
+import { CenterIcon } from '../../../style/spotlight/layout'
 import WDLogo from '../Search/Logo'
 import ToggleButton from '../ToggleButton'
-import { useSpotlightSettingsStore } from '../../../Spotlight/store/settings'
+import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
 import { SettingsContainer, StyledHeadingContainer, SettingOption, Title } from './styled'
 
 const Settings = () => {
@@ -13,7 +13,7 @@ const Settings = () => {
 
   const { showSource, toggleSource } = useSpotlightSettingsStore(({ showSource, toggleSource }) => ({
     showSource,
-    toggleSource,
+    toggleSource
   }))
 
   const onChange = () => {

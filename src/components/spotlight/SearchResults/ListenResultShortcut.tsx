@@ -1,4 +1,4 @@
-import { useResultsShortcuts } from '../../../Spotlight/shortcuts/useResultsShortcuts'
+import { useResultsShortcuts } from '../../../hooks/listeners/useResultsShortcuts'
 import React from 'react'
 
 const ListenResultShortcut = () => {
