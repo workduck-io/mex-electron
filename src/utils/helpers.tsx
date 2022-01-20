@@ -1,8 +1,8 @@
-import { NodeContent } from '../../Types/data'
-import { SourceType } from '../../Spotlight/components/Source/types'
-import { useContentStore } from './useContentStore'
-import { NodeProperties } from './useEditorStore'
-import { defaultContent } from '../../Defaults/baseData'
+import { SourceType } from '../components/spotlight/Source/types'
+import { defaultContent } from '../data/Defaults/baseData'
+import { useContentStore } from '../store/useContentStore'
+import { NodeProperties } from '../store/useEditorStore'
+import { NodeContent } from '../types/data'
 
 /** Get the contents of the node with id */
 export function getContent(uid: string): NodeContent {

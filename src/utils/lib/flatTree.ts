@@ -1,4 +1,4 @@
-import TreeNode from '../Types/tree'
+import TreeNode from '../../types/tree'
 
 const getFlatTree = (nestedTree: TreeNode[]) => {
   let newTree: TreeNode[] = []

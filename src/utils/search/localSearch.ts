@@ -1,4 +1,6 @@
-import { FileData, NodeSearchData } from '../Types/data'
+// import { FileData, NodeSearchData } from '../Types/data'
+
+import { NodeSearchData, FileData } from '../../types/data'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const convertContentToRawText = (content: any[], join?: string): string => {

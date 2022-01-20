@@ -1,5 +1,5 @@
-import { generateNodeId } from '../../Defaults/idPrefixes'
-import { ComboText, ILink } from './Types'
+import { generateNodeId } from '../data/Defaults/idPrefixes'
+import { ComboText, ILink } from '../types/Types'
 
 export const generateComboText = (tag: string, value: number): ComboText => ({
   key: tag,

@@ -1,4 +1,6 @@
-import { generateTempId } from '../Defaults/idPrefixes'
+// import { generateTempId } from '../Defaults/idPrefixes'
+
+import { generateTempId } from '../../data/Defaults/idPrefixes'
 
 // const ElementsWithProperties = [ELEMENT_PARAGRAPH]
 // const ElementsWithURL = [ELEMENT_LINK, ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED]

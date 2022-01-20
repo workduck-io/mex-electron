@@ -1,21 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import { ipcRenderer } from 'electron'
-import { useEffect, useState } from 'react'
-import { getContent, isFromSameSource } from '../../Editor/Store/helpers'
-import { NodeEditorContent } from '../../Editor/Store/Types'
-import { useDataSaverFromContent, useSaver } from '../../Editor/Components/Saver'
-import { IpcAction } from './IpcAction'
-import { useSpotlightContext } from './context'
-import { useSpotlightEditorStore } from '../store/editor'
-import useLoad from '../../Hooks/useLoad/useLoad'
-import { useSpotlightAppStore } from '../store/app'
-import { createNodeWithUid } from '../../Lib/helper'
-import { getNewDraftKey } from '../../Editor/Components/SyncBlock/getNewBlockData'
-import useDataStore from '../../Editor/Store/useDataStore'
-import { AppType } from '../../Data/useInitialize'
-import { appNotifierWindow } from './notifiers'
-import { useSaveData } from '../../Data/useSaveData'
-import { defaultContent } from '../../Defaults/baseData'
+import { IpcAction } from '../data/IpcAction'
+import { NodeEditorContent } from '../types/Types'
+import { isFromSameSource } from './helpers'
 
 export const combineSources = (
   oldSourceContent: NodeEditorContent,

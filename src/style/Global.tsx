@@ -1,9 +1,9 @@
+import { ModalStyles } from '../components/mex/Refactor/styles'
+import { OlvyModal } from '../services/olvy/styled'
 import { createGlobalStyle, css } from 'styled-components'
 import { ThinScrollbar } from './helpers'
 import normalize from './normalize'
-import { ModalStyles } from '../components/Refactor/styles'
 import { TippyBalloonStyles } from './Toolbar'
-import { OlvyModal } from '../Olvy/styled'
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}; // NormalizeCSS normalization

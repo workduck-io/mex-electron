@@ -1,8 +1,8 @@
 import ColorScheme from 'color-scheme'
 import merge from 'deepmerge'
 import { getLuminance, lighten, mix, tint } from 'polished'
+import { LayoutStyle } from '../types/styled'
 import { DefaultTheme } from 'styled-components'
-import { LayoutStyle } from '.'
 
 const LayoutTheme: LayoutStyle = {
   spacing: {

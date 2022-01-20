@@ -1,6 +1,6 @@
-import { TippyBalloonStyles } from '../../Styled/Toolbar'
-import { ThinScrollbar } from '../../Styled/helpers'
 import { createGlobalStyle } from 'styled-components'
+import { ThinScrollbar } from '../helpers'
+import { TippyBalloonStyles } from '../Toolbar'
 import normalize from './normalize'
 
 const GlobalStyle = createGlobalStyle`

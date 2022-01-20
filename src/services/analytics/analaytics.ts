@@ -1,4 +1,6 @@
-import { electronCookies } from '../Lib/helper'
+// import { electronCookies } from '../Lib/helper'
+
+import { electronCookies } from '../../utils/lib/helper'
 
 const analytics = (url: string, id: string) => {
   window.heap = window.heap || []
