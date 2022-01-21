@@ -12,10 +12,10 @@ export const useNavigation = () => {
   const addRecent = useRecentsStore((store) => store.addRecent)
   const getCurrentUID = useHistoryStore((store) => store.getCurrentUId)
 
-  const push = (uid: string) => {
+  const push = (uid: string, options?: { withLoading?: boolean }) => {
     pushHs(uid)
     addRecent(uid)
-    loadNode(uid)
+    loadNode(uid, { withLoading: options?.withLoading })
   }
 
   const replace = (uid: string) => {

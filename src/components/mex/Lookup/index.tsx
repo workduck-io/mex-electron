@@ -15,6 +15,7 @@ import { useKeyListener } from '../../../hooks/useShortcutListener'
 import useDataStore from '../../../store/useDataStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import useOnboard from '../../../store/useOnboarding'
+import { useApi } from '../../../apis/useSaveApi'
 
 const StyledModal = styled(Modal)`
   z-index: 10010000;
@@ -26,6 +27,7 @@ const Lookup = () => {
   const isOnboarding = useOnboard((s) => s.isOnboarding)
   const setStep = useOnboard((s) => s.setStep)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
+  const { saveNewNodeAPI } = useApi()
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
@@ -85,7 +87,8 @@ const Lookup = () => {
   const handleCreateItem = (inputValue: string) => {
     if (tempClose) return
     const uid = addILink(inputValue)
-    push(uid)
+    saveNewNodeAPI(uid)
+    push(uid, { withLoading: false })
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, inputValue)
     closeModal()
   }

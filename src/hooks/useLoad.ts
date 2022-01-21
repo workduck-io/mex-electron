@@ -16,6 +16,7 @@ type LoadNodeProps = {
   savePrev?: boolean
   fetch?: boolean
   node?: NodeProperties
+  withLoading?: boolean
 }
 
 const useLoad = () => {
@@ -98,10 +99,10 @@ const useLoad = () => {
    * Fetches the node and saves it to local state
    * Should be used when current editor content is irrelevant to the node
    */
-  const fetchAndSaveNode = (node: NodeProperties) => {
+  const fetchAndSaveNode = (node: NodeProperties, withLoading = true) => {
     // console.log('Fetch and save', { node })
     // const node = getNode(uid)
-    setFetchingContent(true)
+    if (withLoading) setFetchingContent(true)
     getDataAPI(node.uid)
       .then((res) => {
         if (res) {
@@ -123,7 +124,7 @@ const useLoad = () => {
             // getPlateStore(editorId).set.editableProps({ readOnly: false })
             // getPlateStore(editorId).set.resetEditor()
             setContent(node.uid, data, metadata)
-            setFetchingContent(false)
+            if (withLoading) setFetchingContent(false)
           }
         }
       })
@@ -131,7 +132,7 @@ const useLoad = () => {
         console.error(e)
       })
       .finally(() => {
-        setFetchingContent(false)
+        if (withLoading) setFetchingContent(false)
       })
   }
 
@@ -144,7 +145,10 @@ const useLoad = () => {
    * Loads a node in the editor.
    * This does not navigate to editor.
    */
-  const loadNode = async (uid: string, options: LoadNodeProps = { savePrev: true, fetch: USE_API() }) => {
+  const loadNode = async (
+    uid: string,
+    options: LoadNodeProps = { savePrev: true, fetch: USE_API(), withLoading: true }
+  ) => {
     // console.log('Loading Node', { uid, options })
     let hasBeenLoaded = false
     if (!options.node && !isLocalNode(uid)) {
@@ -170,7 +174,7 @@ const useLoad = () => {
     loadNodeEditor(node)
 
     if (options.fetch && !hasBeenLoaded) {
-      fetchAndSaveNode(node)
+      fetchAndSaveNode(node, options.withLoading)
     }
   }
 

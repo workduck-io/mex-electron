@@ -18,6 +18,37 @@ export const useApi = () => {
    * Saves data in the backend
    * Also updates the incoming data in the store
    */
+  const saveNewNodeAPI = async (uid: string) => {
+    const reqData = {
+      id: uid,
+      type: 'NodeRequest',
+      lastEditedBy: useAuthStore.getState().userDetails.email,
+      namespaceIdentifier: 'NAMESPACE1',
+      workspaceIdentifier: getWorkspaceId(),
+      data: serializeContent(defaultContent.content)
+    }
+
+    if (!USE_API()) {
+      return
+    }
+
+    setContent(uid, defaultContent.content)
+    const data = await client
+      .post(apiURLs.saveNode, reqData, {})
+      .then((d) => {
+        console.log('newNodeCreated', d)
+        setMetadata(uid, extractMetadata(d.data))
+        return d.data
+      })
+      .catch((e) => {
+        console.error(e)
+      })
+    return data
+  }
+  /*
+   * Saves data in the backend
+   * Also updates the incoming data in the store
+   */
   const saveDataAPI = async (uid: string, content: any[]) => {
     const reqData = {
       id: uid,
@@ -74,7 +105,7 @@ export const useApi = () => {
     return data
   }
 
-  return { saveDataAPI, getDataAPI, getNodesByWorkspace }
+  return { saveDataAPI, getDataAPI, saveNewNodeAPI, getNodesByWorkspace }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

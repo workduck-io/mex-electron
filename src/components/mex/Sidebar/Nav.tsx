@@ -22,6 +22,7 @@ import tinykeys from 'tinykeys'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
 import { NavProps } from './Types'
+import { useApi } from '../../../apis/useSaveApi'
 
 interface StyledDivProps {
   focusMode?: boolean
@@ -114,13 +115,16 @@ const Nav = ({ links }: NavProps) => {
   const focusMode = useLayoutStore((store) => store.focusMode)
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
+  const { saveNewNodeAPI } = useApi()
 
   const [source, target] = useSingleton()
 
   const createNewNode = () => {
     const newNodeId = getNewDraftKey()
     const uid = addILink(newNodeId)
-    push(uid)
+
+    saveNewNodeAPI(uid)
+    push(uid, { withLoading: false })
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, newNodeId)
   }
 

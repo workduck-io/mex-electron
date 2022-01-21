@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSaveQ, useQStore } from '../store/useQStore'
 import { linkInRefactor } from '../components/mex/Refactor/doesLinkRemain'
 import { SEPARATOR, getAllParentIds } from '../components/mex/Sidebar/treeUtils'
 import { generateNodeId } from '../data/Defaults/idPrefixes'
@@ -43,6 +44,7 @@ export const useRefactor = () => {
   const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
   const { trackEvent } = useAnalytics()
 
+  const { q, saveQ } = useSaveQ()
   const { onSave } = useSaver()
 
   const getMockRefactor = (from: string, to: string): NodeLink[] => {
@@ -64,7 +66,8 @@ export const useRefactor = () => {
   const execRefactor = (from: string, to: string) => {
     trackEvent(CustomEvents.REFACTOR, { 'mex-from': from, 'mex-to': to })
     const refactored = getMockRefactor(from, to)
-
+    console.log({ q, d: useQStore.getState().q })
+    saveQ()
     onSave(undefined, false)
 
     // Generate the new links

@@ -41,8 +41,8 @@ export const useBalloonShow = ({ editor, ref, hiddenDelay }: { editor?: TEditor;
   useEffect(() => {
     if (!hidden && !selectionExpanded && !isBlurSelected) {
       setHidden(true)
-      if (ref.current) {
-        ref.current.removeAttribute('style')
+      if (ref?.current) {
+        ref.current?.removeAttribute('style')
       }
     }
   }, [hidden, hiddenDelay, reset, selectionExpanded, show, selectionText?.length, ref, isBlurSelected])
