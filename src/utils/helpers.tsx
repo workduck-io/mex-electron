@@ -13,12 +13,7 @@ export function getContent(uid: string): NodeContent {
 
   console.log('Loading content', { uid, contents, uidCon: contents[uid] })
   if (contents[uid]) {
-    // const { content } = contents[uid]
-
-    if (contents[uid]) {
-      // console.log(JSON.stringify(apiData, null, 2), JSON.stringify(content, null, 2))
-      return contents[uid]
-    }
+    return contents[uid]
   }
 
   return defaultContent
