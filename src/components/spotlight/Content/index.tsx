@@ -39,8 +39,6 @@ const Content = () => {
     isSelection: boolean
   }>(initPreview)
 
-  const { resetEditor } = useEditorActions()
-
   // * Store
   const { ilinks } = useDataStore(({ ilinks }) => ({ ilinks }))
   const { setSaved, getContent } = useContentStore(({ setSaved, getContent }) => ({ setSaved, getContent }))
@@ -158,9 +156,7 @@ const Content = () => {
   return (
     <StyledContent>
       <SideBar index={currentIndex} data={searchResults} />
-      <ErrorBoundary onReset={resetEditor} FallbackComponent={EditorErrorFallback}>
-        <Preview preview={preview} node={editorNode} />
-      </ErrorBoundary>
+      <Preview preview={preview} node={editorNode} />
     </StyledContent>
   )
 }

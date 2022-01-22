@@ -1,5 +1,4 @@
 import React from 'react'
-import { useSaveQ, useQStore } from '../store/useQStore'
 import { linkInRefactor } from '../components/mex/Refactor/doesLinkRemain'
 import { SEPARATOR, getAllParentIds } from '../components/mex/Sidebar/treeUtils'
 import { generateNodeId } from '../data/Defaults/idPrefixes'
@@ -41,7 +40,6 @@ export const useRefactor = () => {
 
   const setILinks = useDataStore((state) => state.setIlinks)
   const initContents = useContentStore((state) => state.initContents)
-  const { getUidFromNodeId } = useLinks()
   const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
   const { trackEvent } = useAnalytics()
 

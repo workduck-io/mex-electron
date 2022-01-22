@@ -1,4 +1,4 @@
-import { withoutContinuousDelimiter } from '../utils/lib/helper'
+import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
 import create from 'zustand'
 import { generateTree, getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import getFlatTree from '../utils/lib/flatTree'
@@ -105,7 +105,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
    * Should not add duplicate links
    */
   addInternalLink: (ilink, uid) => {
-    console.log('Creating links', { ilink, uid })
+    mog('Creating links', { ilink, uid })
     // No self links will be added
     if (uid === ilink.uid) return
 
