@@ -11,13 +11,16 @@ import { useSaveQ, useQStore } from '../store/useQStore'
 import { NodeEditorContent } from '../types/Types'
 import { getContent } from '../utils/helpers'
 import { mog, updateEmptyBlockTypes } from '../utils/lib/helper'
+import { useEditorBuffer } from './useEditorBuffer'
 
-type LoadNodeProps = {
+export interface LoadNodeOptions {
   savePrev?: boolean
   fetch?: boolean
   node?: NodeProperties
   withLoading?: boolean
 }
+
+export type LoadNodeFn = (uid: string, options?: LoadNodeOptions) => void
 
 const useLoad = () => {
   const loadNodeEditor = useEditorStore((store) => store.loadNode)
@@ -29,7 +32,8 @@ const useLoad = () => {
   const setSelectedNode = useGraphStore((store) => store.setSelectedNode)
   const { getDataAPI, saveDataAPI } = useApi()
   const { saveNodeAPIandFs } = useDataSaverFromContent()
-  const { saveQ } = useSaveQ()
+  const { saveAndClearBuffer } = useEditorBuffer()
+  // const { saveQ } = useSaveQ()
 
   const getNode = (uid: string): NodeProperties => {
     const ilinks = useDataStore.getState().ilinks
@@ -145,12 +149,9 @@ const useLoad = () => {
    * Loads a node in the editor.
    * This does not navigate to editor.
    */
-  const loadNode = async (
-    uid: string,
-    options: LoadNodeProps = { savePrev: true, fetch: USE_API(), withLoading: true }
-  ) => {
+  const loadNode: LoadNodeFn = (uid, options = { savePrev: true, fetch: USE_API(), withLoading: true }) => {
     // console.log('Loading Node', { uid, options })
-    let hasBeenLoaded = false
+    const hasBeenLoaded = false
     if (!options.node && !isLocalNode(uid)) {
       toast.error('Selected node does not exist.')
       uid = editorNodeId
@@ -159,23 +160,24 @@ const useLoad = () => {
     setNodePreview(false)
     setSelectedNode(undefined)
 
-    const q = useQStore.getState().q
+    // const q = useQStore.getState().q
     if (options.savePrev) {
-      if (q.includes(uid)) {
-        hasBeenLoaded = true
-      }
-      if (q.length > 0) {
-        saveQ()
-      }
+      // if (q.includes(uid)) {
+      //   hasBeenLoaded = true
+      // }
+      saveAndClearBuffer()
+      // if (q.length > 0) {
+      // saveQ()
+      // }
     }
 
     const node = options.node ?? getNode(uid)
 
-    loadNodeEditor(node)
-
     if (options.fetch && !hasBeenLoaded) {
       fetchAndSaveNode(node, options.withLoading)
     }
+
+    loadNodeEditor(node)
   }
 
   const loadNodeProps = (nodeProps: NodeProperties) => {

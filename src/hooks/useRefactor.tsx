@@ -11,6 +11,7 @@ import useDataStore from '../store/useDataStore'
 import { useRefactorStore } from '../store/useRefactorStore'
 import { NodeLink } from '../types/relations'
 import { useLinks } from './useLinks'
+import { useEditorBuffer } from './useEditorBuffer'
 
 const isMatch = (id: string, from: string) => {
   if (from === id) return true
@@ -44,10 +45,15 @@ export const useRefactor = () => {
   const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
   const { trackEvent } = useAnalytics()
 
-  const { q, saveQ } = useSaveQ()
+  // const { q, saveQ } = useSaveQ()
   const { onSave } = useSaver()
+  const { saveAndClearBuffer } = useEditorBuffer()
 
   const getMockRefactor = (from: string, to: string): NodeLink[] => {
+    // console.log({ q, d: useQStore.getState().q })
+
+    saveAndClearBuffer()
+    // saveQ()
     const refactorMap = ilinks.filter((i) => {
       const match = isMatch(i.text, from)
       return match
@@ -66,9 +72,7 @@ export const useRefactor = () => {
   const execRefactor = (from: string, to: string) => {
     trackEvent(CustomEvents.REFACTOR, { 'mex-from': from, 'mex-to': to })
     const refactored = getMockRefactor(from, to)
-    console.log({ q, d: useQStore.getState().q })
-    saveQ()
-    onSave(undefined, false)
+    onSave(undefined, false, false)
 
     // Generate the new links
     const newIlinks = ilinks.map((i) => {

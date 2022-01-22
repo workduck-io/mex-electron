@@ -20,9 +20,10 @@ import { useLinks } from '../../hooks/useLinks'
 import { useContentStore } from '../../store/useContentStore'
 import { NodeProperties, useEditorStore } from '../../store/useEditorStore'
 import { useSnippetStore } from '../../store/useSnippetStore'
+import { NodeEditorContent } from '../../types/Types'
 
 export const useDataSaverFromContent = () => {
-  const setFsContent = useContentStore((state) => state.setContent)
+  const setContent = useContentStore((state) => state.setContent)
   const getContent = useContentStore((state) => state.getContent)
   const { updateLinksFromContent, getNodeIdFromUid } = useLinks()
   const { updateTagsFromContent } = useTags()
@@ -31,25 +32,33 @@ export const useDataSaverFromContent = () => {
   const saveData = useSaveData()
 
   // By default saves to API use false to not save
-  const saveEditorAndUpdateStates = useCallback((node: NodeProperties, editorState: any[], saveApi?: boolean) => {
-    if (editorState) {
-      setFsContent(node.uid, editorState)
-      if (saveApi !== false) saveDataAPI(node.uid, editorState)
-      updateLinksFromContent(node.uid, editorState)
-      updateTagsFromContent(node.uid, editorState)
-      const title = getNodeIdFromUid(node.uid)
-      updateDocNew(node.uid, convertEntryToRawText(node.uid, editorState), title)
+  const saveEditorValueAndUpdateStores = useCallback((uid: string, editorValue: any[], saveApi?: boolean) => {
+    if (editorValue) {
+      setContent(uid, editorValue)
+      if (saveApi !== false) saveDataAPI(uid, editorValue)
+      updateLinksFromContent(uid, editorValue)
+      updateTagsFromContent(uid, editorValue)
+      const title = getNodeIdFromUid(uid)
+      updateDocNew(uid, convertEntryToRawText(uid, editorValue), title)
     }
   }, [])
 
   const saveNodeAPIandFs = (uid: string) => {
-    // console.log('saving to api for uid: ', { uid })
     const content = getContent(uid)
+    console.log('saving to api for uid: ', { uid, content })
     saveDataAPI(uid, content.content)
     saveData()
   }
 
-  return { saveEditorAndUpdateStates, saveNodeAPIandFs }
+  const saveNodeWithValue = (uid: string, value: NodeEditorContent) => {
+    const content = getContent(uid)
+    console.log('saving to api for uid: ', { uid, content })
+    // saveDataAPI(uid, content.content)
+    saveEditorValueAndUpdateStores(uid, value, true)
+    saveData()
+  }
+
+  return { saveEditorValueAndUpdateStores, saveNodeAPIandFs, saveNodeWithValue }
 }
 
 export const useSaver = () => {
@@ -57,7 +66,7 @@ export const useSaver = () => {
 
   // const editorState = usePlateSelectors(usePlateId()).value(
 
-  const { saveEditorAndUpdateStates } = useDataSaverFromContent()
+  const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
 
   /**
    * Should be run on explicit save as it saves the current editor state
@@ -80,7 +89,7 @@ export const useSaver = () => {
     const hasState = !!state[editorId]
     if (hasState) {
       const editorState = content ?? state[editorId].get.value()
-      saveEditorAndUpdateStates(cnode, editorState)
+      saveEditorValueAndUpdateStores(cnode.uid, editorState)
     }
 
     if (writeToFile !== false) {
@@ -90,7 +99,7 @@ export const useSaver = () => {
     if (notification !== false) toast('Saved!', { duration: 1000 })
   }
 
-  return { onSave, saveEditorAndUpdateStates }
+  return { onSave, saveEditorValueAndUpdateStores }
 }
 
 interface SaverButtonProps {

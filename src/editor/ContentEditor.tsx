@@ -8,23 +8,19 @@ import { defaultContent } from '../data/Defaults/baseData'
 import { useKeyListener } from '../hooks/useShortcutListener'
 import useLoad from '../hooks/useLoad'
 import { useNavigation } from '../hooks/useNavigation'
-import { useQStore } from '../store/useQStore'
+// import { useQStore } from '../store/useQStore'
 import useToggleElements from '../hooks/useToggleElements'
 import useLayout from '../hooks/useLayout'
 import { getEditorId } from '../utils/lib/EditorId'
 import { StyledEditor } from '../style/Editor'
-import { NodeContent } from '../types/data'
-import { useDataSaverFromContent } from './Components/Saver'
+// import { NodeContent } from '../types/data'
+// import { useDataSaverFromContent } from './Components/Saver'
 import Editor from './Editor'
 import { useEditorStore } from '../store/useEditorStore'
 import { useContentStore } from '../store/useContentStore'
 import Toolbar from './Toolbar'
 import { mog } from '../utils/lib/helper'
-
-interface ContentEditorState {
-  uid: string
-  content: any[] | undefined
-}
+import { useEditorBuffer } from '../hooks/useEditorBuffer'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -43,18 +39,21 @@ const ContentEditor = () => {
 
   const { move } = useNavigation()
 
-  const { saveEditorAndUpdateStates } = useDataSaverFromContent()
-  const add2Q = useQStore((s) => s.add2Q)
+  // const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
+  // const add2Q = useQStore((s) => s.add2Q)
 
   const getContent = useContentStore((state) => state.getContent)
+
+  const { addOrUpdateValBuffer, getBufferVal } = useEditorBuffer()
 
   const onChangeSave = (val: any[]) => {
     mog('Trigger onChange', { node, val })
     if (val && node && node.uid !== '__null__') {
       // console.log('Saving onChange', { node, val })
 
-      add2Q(node.uid)
-      saveEditorAndUpdateStates(node, val, false)
+      // add2Q(node.uid)
+      addOrUpdateValBuffer(node.uid, val)
+      // saveEditorValueAndUpdateStores(node, val, false)
     }
   }
 
@@ -92,9 +91,9 @@ const ContentEditor = () => {
         event.preventDefault()
         shortcutHandler(shortcuts.refreshNode, () => {
           const node = useEditorStore.getState().node
-          const content = getContent(node.uid)
-          // console.log('Refreshing: ', { node, content })
-          saveApiAndUpdate(useEditorStore.getState().node, content.content)
+          const val = getBufferVal(node.uid)
+          console.log('Refreshing: ', { node, val })
+          saveApiAndUpdate(node, val)
           // fetchAndSaveNode(useEditorStore.getState().node)
           // loadNode(uid, { fetch: true, savePrev: false })
         })

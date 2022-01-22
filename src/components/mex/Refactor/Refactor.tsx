@@ -132,10 +132,10 @@ const Refactor = () => {
     const nodeId = useEditorStore.getState().node.id
     const uid = useEditorStore.getState().node.uid
     if (doesLinkRemain(nodeId, res)) {
-      push(uid)
+      push(uid, { savePrev: false })
     } else if (res.length > 0) {
       const uid = getUidFromNodeId(res[0].to)
-      push(uid)
+      push(uid, { savePrev: false })
     }
     closeModal()
   }

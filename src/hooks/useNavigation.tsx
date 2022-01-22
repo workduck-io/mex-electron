@@ -1,7 +1,7 @@
 import React from 'react'
 import { useHistoryStore } from '../store/useHistoryStore'
 import { useRecentsStore } from '../store/useRecentsStore'
-import useLoad from './useLoad'
+import useLoad, { LoadNodeOptions } from './useLoad'
 
 export const useNavigation = () => {
   // const loadNodeFromId = useEditorStore((store) => store.loadNodeFromId)
@@ -12,10 +12,10 @@ export const useNavigation = () => {
   const addRecent = useRecentsStore((store) => store.addRecent)
   const getCurrentUID = useHistoryStore((store) => store.getCurrentUId)
 
-  const push = (uid: string, options?: { withLoading?: boolean }) => {
+  const push = (uid: string, options?: LoadNodeOptions) => {
     pushHs(uid)
     addRecent(uid)
-    loadNode(uid, { withLoading: options?.withLoading })
+    loadNode(uid, options)
   }
 
   const replace = (uid: string) => {
