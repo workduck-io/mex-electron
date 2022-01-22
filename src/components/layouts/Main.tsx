@@ -1,12 +1,13 @@
 import { transparentize } from 'polished'
 import React from 'react'
 // import AutoSave from '../Components/AutoSave'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Notifications } from '../mex/Notifications/Notifications'
 import Nav, { navTooltip } from '../mex/Sidebar/Nav'
 import { linkTooltip } from '../../editor/Components/Link'
 import { GridWrapper } from '../../style/Grid'
 import useNavlinks from '../../data/links'
+import { useAuthStore } from '../../services/auth/useAuth'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -15,11 +16,13 @@ const AppWrapper = styled.div`
   ${linkTooltip};
 `
 
-const Content = styled.div`
+const Content = styled.div<{ grid?: boolean }>`
   display: flex;
   flex-grow: 1;
-  grid-column-start: 2;
   overflow: auto;
+  ${({ grid }) => grid && css`
+    grid-column-start: 2;
+  `}
 `
 
 const Draggable = styled.div`
@@ -44,14 +47,15 @@ const Main = ({ children }: MainProps) => {
     WebkitAppRegion: 'drag'
   }
   const { getLinks } = useNavlinks()
+  const authenticated = useAuthStore(state => state.authenticated)
 
   return (
     <AppWrapper>
       <Draggable style={styles as any} /> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
       {/* <AutoSave /> */}
-      <GridWrapper>
-        <Nav links={getLinks()} />
-        <Content>{children}</Content>
+      <GridWrapper grid={authenticated}>
+        {authenticated && <Nav links={getLinks()} />}
+        <Content id="wd-mex-content-view" grid={authenticated}>{children}</Content>
       </GridWrapper>
       <Notifications />
     </AppWrapper>

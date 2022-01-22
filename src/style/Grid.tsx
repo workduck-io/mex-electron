@@ -14,13 +14,16 @@ export const GridCss = (smCol = 2, lgCol = 3, spacing?: string) => css`
     grid-template-columns: repeat(${lgCol}, 1fr);
   }
 `
-export const GridWrapper = styled(animated.div)`
+
+export const GridWrapper = styled(animated.div) <{ grid?: boolean }>`
   height: 100vh;
   width: 100vw;
+  overflow: auto; 
   display: grid;
-  grid-template-columns: ${({ theme }) => theme.width.nav}px 2fr auto;
-  overflow: auto;
-  /* grid-gap: ${({ theme }) => theme.spacing.tiny}; */
+  ${({ grid }) => grid && css`
+    grid-template-columns: ${({ theme }) => theme.width.nav}px 2fr auto;
+  `}
+/* grid-gap: ${({ theme }) => theme.spacing.tiny}; */
 
   /* Columns conditions
     - Small - no graph

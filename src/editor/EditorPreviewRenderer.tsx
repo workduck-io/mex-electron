@@ -1,8 +1,8 @@
 import { Plate } from '@udecode/plate'
 import React from 'react'
 import { EditorStyles } from '../style/Editor'
-import { editorPreviewComponents } from './Components/components'
 import generatePlugins from './Plugins/plugins'
+import { editorPreviewComponents } from './Components/components'
 
 interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -22,7 +22,7 @@ const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps
   const generateEditorId = () => `${editorId}`
 
   // We get memoized plugins
-  const plugins = generatePlugins()
+  const plugins = generatePlugins(editorPreviewComponents)
 
   return (
     <>
@@ -33,7 +33,6 @@ const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps
             editableProps={editableProps}
             value={content}
             plugins={plugins}
-            // components={editorPreviewComponents}
           ></Plate>
         </EditorStyles>
       )}

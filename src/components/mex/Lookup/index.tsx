@@ -16,6 +16,7 @@ import useDataStore from '../../../store/useDataStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import useOnboard from '../../../store/useOnboarding'
 import { useApi } from '../../../apis/useSaveApi'
+import { useHistory } from 'react-router-dom'
 
 const StyledModal = styled(Modal)`
   z-index: 10010000;
@@ -29,6 +30,7 @@ const Lookup = () => {
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const { saveNewNodeAPI } = useApi()
 
+  const history = useHistory()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const openModal = () => {
@@ -70,6 +72,10 @@ const Lookup = () => {
     push(uid)
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, value)
     closeModal()
+
+    if (location.pathname !== '/editor') {
+      history.push('/editor')
+    }
   }
 
   const handleSelectItem = (inputValue: string) => {

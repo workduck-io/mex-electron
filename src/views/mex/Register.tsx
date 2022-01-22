@@ -76,9 +76,12 @@ const Register = () => {
 
   const onRegisterSubmit = async (data: RegisterFormData) => {
     await registerDetails(data).then((s) => {
-      ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails: { email: data.email }, loggedIn: true })
+
       if (s === 'UsernameExistsException') {
         toast('You have already registered, please verify code.')
+      }
+      else {
+        ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails: { email: data.email }, loggedIn: true })
       }
     })
   }
@@ -92,7 +95,7 @@ const Register = () => {
       // setOnboardData()
       // changeOnboarding(true)
 
-      ipcRenderer.send(IpcAction.START_ONBOARDING, { from: AppType.MEX })
+      // ipcRenderer.send(IpcAction.START_ONBOARDING, { from: AppType.MEX })
     } catch (err) {
       toast('Error occured!')
     }

@@ -3,7 +3,6 @@ import { Switch as ReactRouterSwitch, useLocation } from 'react-router-dom'
 import { animated } from 'react-spring'
 import styled from 'styled-components'
 import Search from '../../components/mex/Search/Search'
-import { useQStore, useSaveQ } from '../../store/useQStore'
 import SnippetEditor from '../../components/Snippets/SnippetEditor'
 import Archive from '../mex/Archive'
 import Dashboard from '../mex/Dashboard'
@@ -15,14 +14,14 @@ import Settings from '../mex/Settings'
 import Snippets from '../mex/Snippets'
 import Tag from '../mex/Tag'
 import Tasks from '../mex/Tasks'
-import UserPage from '../mex/UserPage'
 import AuthRoute from './AuthRoute'
 import ProtectedRoute from './ProtectedRoute'
 import { useEditorBuffer } from '../../hooks/useEditorBuffer'
+import { useAuthStore } from '../../services/auth/useAuth'
 
-const SwitchWrapper = styled(animated.div)`
+const SwitchWrapper = styled(animated.div)<{ isAuth?: boolean }>`
   position: fixed;
-  width: ${({ theme }) => `calc(100% - ${theme.width.nav}px)`};
+  width: ${({ theme, isAuth }) => (!isAuth ? '100%' : `calc(100% - ${theme.width.nav}px)`)};
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
@@ -32,6 +31,7 @@ const Switch = () => {
   const location = useLocation()
   // const { saveQ } = useSaveQ()
   const { saveAndClearBuffer } = useEditorBuffer()
+  const authenticated = useAuthStore((s) => s.authenticated)
   // const Perspective = '2000px'
   // const transitions = useTransition(location, {
   //   from: {
@@ -60,7 +60,7 @@ const Switch = () => {
 
   // return transitions((props, item) => (
   return (
-    <SwitchWrapper>
+    <SwitchWrapper isAuth={authenticated}>
       {/* <ReactRouterSwitch location={item}> */}
       <ReactRouterSwitch>
         <ProtectedRoute path="/editor" component={EditorView} />

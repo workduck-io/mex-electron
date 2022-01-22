@@ -4,7 +4,7 @@ export type UserProperties = {
   [Properties.EMAIL]: string
   [Properties.ROLE]: string
   [Properties.NAME]: string
-  [Properties.WORKSPACE_ID]: string
+  [Properties.WORKSPACE_ID]?: string
 }
 
 export type EventProperties = {
