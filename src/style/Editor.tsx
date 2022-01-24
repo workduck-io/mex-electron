@@ -203,8 +203,7 @@ export const EditorStyles = styled.div`
 
   .slate-TodoListElement {
     margin-left: ${({ theme }) => theme.spacing.tiny};
-    font-size: 1.2rem;
-    font-weight: 500;
+    font-size: 1rem;
     display: grid;
     grid-template-columns: 1em auto;
     gap: 0.5em;
@@ -230,8 +229,9 @@ export const EditorStyles = styled.div`
 
     font: inherit;
     color: currentColor;
-    width: 0.8em;
-    height: 0.8em;
+    width: 0.6em;
+    height: 0.6em;
+    padding: 0.5em;
     border: 1px solid ${({ theme }) => theme.colors.gray[6]};
 
     border-radius: ${({ theme }) => theme.borderRadius.tiny};
@@ -247,8 +247,8 @@ export const EditorStyles = styled.div`
 
     &::before {
       content: '';
-      width: 0.65em;
-      height: 0.65em;
+      width: 0.5em;
+      height: 0.5em;
       clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
       transform: scale(0);
       transform-origin: bottom left;
