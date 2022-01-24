@@ -33,6 +33,7 @@ import { useHelpStore } from '../../../store/useHelpStore'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { convertDataToRawText } from '../../../utils/search/localSearch'
+import { useUpdater } from '../../../hooks/useUpdater'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -60,13 +61,15 @@ const Init = () => {
    * */
   useSaveAndExit()
 
+  const { getTemplates } = useUpdater()
+
   /**
    * Initialization of the app data, search index and auth,
    * also sends the auth details to the other processess
    * */
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
-    ;(async () => {
+    ; (async () => {
       getLocalData()
         .then((d) => {
           // console.log('Data here', d)
@@ -104,6 +107,9 @@ const Init = () => {
           if (auth) {
             // TODO: Fix loading of the __null__ node on first start of a fresh install
             loadNode(getUidFromNodeIdAndLinks(d.ilinks, d.baseNodeId))
+
+            // Fetch quick flow templates
+            getTemplates()
           }
         })
         .then(() => history.push('/editor'))
@@ -111,7 +117,6 @@ const Init = () => {
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const editor = usePlateEditorRef()
-  const plugins = generatePlugins()
 
   /**
    * Sets handlers for IPC Calls
@@ -173,7 +178,7 @@ const Init = () => {
         const nodeKey = `${appleNotesParentKey}.${title}`
         let nodeUID = addILink(nodeKey)
 
-        const newNodeContent = getMexHTMLDeserializer(note.HTMLContent, editor, plugins)
+        const newNodeContent = getMexHTMLDeserializer(note.HTMLContent, editor, [])
         if (!nodeUID) nodeUID = getUidFromNodeId(nodeKey)
 
         const newNode = getNode(nodeUID)

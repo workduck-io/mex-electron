@@ -96,7 +96,6 @@ export const useAuthentication = () => {
           setAuthenticated(userDetails, workspaceDetails)
 
           ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
-
           identifyUser(email)
           addUserProperties({
             [Properties.EMAIL]: email,
@@ -119,10 +118,21 @@ export const useAuthentication = () => {
   }
 
   const registerDetails = (data: RegisterFormData): Promise<string> => {
-    // tag: mex
-    const status = signUp(data.email, data.password)
+    const { email, password, roles, name } = data
+    const userRole = roles.map(r => r.value).join(', ') ?? ''
+
+    const status = signUp(email, password)
       .then(() => {
         setRegistered(true)
+        // * Identify user        
+        identifyUser(email)
+
+        // * Add extra user related properties
+        addUserProperties({
+          [Properties.EMAIL]: email,
+          [Properties.NAME]: name,
+          [Properties.ROLE]: userRole,
+        })
         setSensitiveData(data)
         return data.email
       })

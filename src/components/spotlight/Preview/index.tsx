@@ -20,8 +20,12 @@ import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { IpcAction } from '../../../data/IpcAction'
 import { AppType } from '../../../hooks/useInitialize'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { createNodeWithUid } from '../../../utils/lib/helper'
+import { createNodeWithUid, mog } from '../../../utils/lib/helper'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import { defaultContent } from '../../../data/Defaults/baseData'
+import { ErrorBoundary } from 'react-error-boundary'
+import EditorErrorFallback from '../../../components/mex/Error/EditorErrorFallback'
+import useEditorActions from '../../../hooks/useEditorActions'
 
 export type PreviewType = {
   text: string
@@ -49,6 +53,8 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
   const saveEditorNode = useSpotlightEditorStore((s) => s.setNode)
+
+  const { resetEditor } = useEditorActions()
 
   // * Custom hooks
   const { loadNodeProps } = useLoad()
@@ -110,6 +116,8 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
     }
   }
 
+  mog(node.uid, previewContent)
+
   return (
     <StyledPreview
       key={`PreviewSpotlightEditor${node.uid}`}
@@ -123,15 +131,17 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
         </SeePreview>
       )}
       <StyledEditorPreview>
-        {previewContent && (
-          <Editor
-            autoFocus={!normalMode}
-            focusAtBeginning={!normalMode}
-            readOnly={search ? true : false}
-            content={previewContent.content}
-            editorId={node.uid}
-          />
-        )}
+        <ErrorBoundary onReset={resetEditor} FallbackComponent={EditorErrorFallback}>
+          {(
+            <Editor
+              autoFocus={!normalMode}
+              focusAtBeginning={!normalMode}
+              readOnly={search ? true : false}
+              content={previewContent?.content ?? defaultContent.content}
+              editorId={node.uid}
+            />
+          )}
+        </ErrorBoundary>
       </StyledEditorPreview>
       <SaverButton callbackAfterSave={onAfterSave} callbackBeforeSave={onBeforeSave} noButton />
     </StyledPreview>

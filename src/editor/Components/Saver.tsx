@@ -21,6 +21,7 @@ import { useContentStore } from '../../store/useContentStore'
 import { NodeProperties, useEditorStore } from '../../store/useEditorStore'
 import { useSnippetStore } from '../../store/useSnippetStore'
 import { NodeEditorContent } from '../../types/Types'
+import { mog } from '../../utils/lib/helper'
 
 export const useDataSaverFromContent = () => {
   const setContent = useContentStore((state) => state.setContent)
@@ -45,14 +46,14 @@ export const useDataSaverFromContent = () => {
 
   const saveNodeAPIandFs = (uid: string) => {
     const content = getContent(uid)
-    console.log('saving to api for uid: ', { uid, content })
+    mog('saving to api for uid: ', { uid, content })
     saveDataAPI(uid, content.content)
     saveData()
   }
 
   const saveNodeWithValue = (uid: string, value: NodeEditorContent) => {
     const content = getContent(uid)
-    console.log('saving to api for uid: ', { uid, content })
+    mog('saving to api for uid: ', { uid, content })
     // saveDataAPI(uid, content.content)
     saveEditorValueAndUpdateStores(uid, value, true)
     saveData()
@@ -93,7 +94,6 @@ export const useSaver = () => {
     }
 
     if (writeToFile !== false) {
-      // console.log('CALLED')
       saveData()
     }
     if (notification !== false) toast('Saved!', { duration: 1000 })

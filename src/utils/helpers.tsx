@@ -3,6 +3,7 @@ import { defaultContent } from '../data/Defaults/baseData'
 import { useContentStore } from '../store/useContentStore'
 import { NodeProperties } from '../store/useEditorStore'
 import { NodeContent } from '../types/data'
+import { mog } from './lib/helper'
 
 /** Get the contents of the node with id */
 export function getContent(uid: string): NodeContent {
@@ -11,11 +12,10 @@ export function getContent(uid: string): NodeContent {
 
   const { contents } = useContentStore.getState()
 
-  console.log('Loading content', { uid, contents, uidCon: contents[uid] })
+  mog('getContent', { uid, contents, uidCon: contents[uid] })
   if (contents[uid]) {
     return contents[uid]
   }
-
   return defaultContent
 }
 

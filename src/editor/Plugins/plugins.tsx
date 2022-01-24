@@ -49,7 +49,6 @@ import {
 
 import { withStyledDraggables } from '../Actions/withDraggable'
 import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
-import components from '../Components/components'
 
 import { createExcalidrawPlugin, ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { ExcalidrawElement } from '../Components/Excalidraw'
@@ -175,7 +174,7 @@ const generatePlugins = () => {
   return Plugins
 }
 
-const useMemoizedPlugins = () => {
+const useMemoizedPlugins = (components: any) => {
   return createPlugins(generatePlugins(), { components: withStyledPlaceHolders(withStyledDraggables(components)) })
 }
 

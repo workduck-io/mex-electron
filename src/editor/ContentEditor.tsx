@@ -49,7 +49,7 @@ const ContentEditor = () => {
   const onChangeSave = (val: any[]) => {
     mog('Trigger onChange', { node, val })
     if (val && node && node.uid !== '__null__') {
-      // console.log('Saving onChange', { node, val })
+      // mog('Saving onChange', { node, val })
 
       // add2Q(node.uid)
       addOrUpdateValBuffer(node.uid, val)
@@ -92,7 +92,7 @@ const ContentEditor = () => {
         shortcutHandler(shortcuts.refreshNode, () => {
           const node = useEditorStore.getState().node
           const val = getBufferVal(node.uid)
-          console.log('Refreshing: ', { node, val })
+          mog('RefreshingNode', { node, val })
           saveApiAndUpdate(node, val)
           // fetchAndSaveNode(useEditorStore.getState().node)
           // loadNode(uid, { fetch: true, savePrev: false })

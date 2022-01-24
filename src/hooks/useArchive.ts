@@ -5,6 +5,7 @@ import { USE_API } from '../data/Defaults/dev_'
 import { useSaver } from '../editor/Components/Saver'
 import useDataStore from '../store/useDataStore'
 import { ILink } from '../types/Types'
+import { mog } from '../utils/lib/helper'
 // import { apiURLs } from '.../Editor/Store/Types'
 
 const useArchive = () => {
@@ -58,7 +59,7 @@ const useArchive = () => {
         ids: nodes.map((i) => i.uid)
       })
       .then((d) => {
-        console.log('Data', d.data)
+        mog('Unarchive Data', d.data)
         if (d.data) unArchive(nodes[0])
         return d.data
       })

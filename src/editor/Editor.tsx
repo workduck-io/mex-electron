@@ -10,6 +10,7 @@ import generatePlugins from './Plugins/plugins'
 import { debounce } from 'lodash'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 import { useEditorChange } from '../hooks/useEditorActions'
+import components from './Components/components'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -54,7 +55,7 @@ const Editor = ({
   const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId)
 
   // We get memoized plugins
-  const prePlugins = generatePlugins()
+  const prePlugins = generatePlugins(components)
   const plugins = [
     ...prePlugins,
     {

@@ -3,7 +3,7 @@ import { USE_API } from '../data/Defaults/dev_'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { client } from '@workduck-io/dwindle'
 import { apiURLs } from './routes'
-import { removeNulls } from '../utils/lib/helper'
+import { mog, removeNulls } from '../utils/lib/helper'
 import { useAuthStore } from '../services/auth/useAuth'
 import { useContentStore } from '../store/useContentStore'
 import { extractMetadata } from '../utils/lib/metadata'
@@ -36,7 +36,7 @@ export const useApi = () => {
     const data = await client
       .post(apiURLs.saveNode, reqData, {})
       .then((d) => {
-        console.log('newNodeCreated', d)
+        mog('saveNewNodeAPI response', d)
         setMetadata(uid, extractMetadata(d.data))
         return d.data
       })
@@ -65,7 +65,7 @@ export const useApi = () => {
     const data = await client
       .post(apiURLs.saveNode, reqData, {})
       .then((d) => {
-        console.log('savedData', d)
+        mog('savedData', { d })
         setMetadata(uid, extractMetadata(d.data))
         setContent(uid, deserializeContent(d.data.data))
         return d.data

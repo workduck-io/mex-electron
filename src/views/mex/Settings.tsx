@@ -86,11 +86,11 @@ const Settings = () => {
           <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/about`}>
             About
           </SettingTitle>
-          <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/autoupdate`}>
-            Automatic Updates
-          </SettingTitle>
           <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/import`}>
             Import Notes
+          </SettingTitle>
+          <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/autoupdate`}>
+            Automatic Updates
           </SettingTitle>
           <Margin />
           <Button onClick={onLogout}>Logout</Button>
