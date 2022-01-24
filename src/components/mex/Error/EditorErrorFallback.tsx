@@ -12,6 +12,7 @@ const ErrorWrapper = styled.div`
   justify-content: center;
   padding: ${({ theme }) => theme.spacing.large};
 `
+
 const ErrorCard = styled.div`
   ${CardShadow}
   padding: ${({ theme: { spacing } }) => spacing.large};

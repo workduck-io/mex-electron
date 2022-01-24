@@ -108,26 +108,22 @@ const useLoad = () => {
     // const node = getNode(uid)
     if (withLoading) setFetchingContent(true)
     getDataAPI(node.uid)
-      .then((res) => {
-        if (res) {
+      .then((nodeData) => {
+        if (nodeData) {
           // console.log(res)
-          const { data, metadata, version } = res
+          const { content, metadata, version } = nodeData
 
-          if (data) {
-            updateEmptyBlockTypes(data, ELEMENT_PARAGRAPH)
+          if (content) {
+            updateEmptyBlockTypes(content, ELEMENT_PARAGRAPH)
             const nodeContent = {
               type: 'editor',
-              content: data,
+              content,
               version,
               metadata
             }
+            // mog('Fetch and load data', { data, metadata, version })
             loadNodeAndReplaceContent(node, nodeContent)
-            // getPlateStore(`StandardEditor_${node.uid}`).set.value(data)
-            // console.log({ nodeContent, data, res })
-            // const editorId = getEditorId(node.uid, version, false)
-            // getPlateStore(editorId).set.editableProps({ readOnly: false })
-            // getPlateStore(editorId).set.resetEditor()
-            setContent(node.uid, data, metadata)
+            setContent(node.uid, content, metadata)
             if (withLoading) setFetchingContent(false)
           }
         }

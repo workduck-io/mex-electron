@@ -1,4 +1,3 @@
-// import { airTheme } from './airTheme'
 import { devTheme } from './devTheme'
 import { gruvboxTheme } from './gruvboxTheme'
 import { lightTheme } from './lightTheme'
@@ -16,7 +15,6 @@ export const defaultThemes = [
   { id: 'Amethyst', themeData: vvkTheme },
   { id: 'Light', themeData: lightTheme },
   { id: 'Sapphire', themeData: sapphireTheme },
-  // { id: '', themeData: airTheme },
   { id: 'Clean', themeData: spotlightTheme }
 ]
 

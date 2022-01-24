@@ -13,7 +13,6 @@ export const useApi = () => {
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const setMetadata = useContentStore((store) => store.setMetadata)
   const setContent = useContentStore((store) => store.setContent)
-
   /*
    * Saves data in the backend
    * Also updates the incoming data in the store
@@ -93,7 +92,7 @@ export const useApi = () => {
       .catch(console.error)
 
     if (res) {
-      return { data: deserializeContent(res.data), metadata: res.metadata ?? undefined, version: res.version }
+      return { content: deserializeContent(res.data), metadata: res.metadata ?? undefined, version: res.version }
     }
   }
 
