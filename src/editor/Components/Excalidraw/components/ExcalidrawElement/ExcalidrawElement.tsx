@@ -50,14 +50,18 @@ export const ExcalidrawElement = (props: any) => {
     },
     autoFocus: false,
     onChange: debounce((elements: readonly any[], state: AppState) => {
-      const path = ReactEditor.findPath(props.editor, element)
+      try {
+        const path = ReactEditor.findPath(props.editor, element)
 
-      if (props.editor) {
-        const serializedData = serializeAsJSON(elements, state)
-        setNodes(props.editor, {
-          value: serializedData,
-          at: path
-        })
+        if (props.editor) {
+          const serializedData = serializeAsJSON(elements, state)
+          setNodes(props.editor, {
+            value: serializedData,
+            at: path
+          })
+        }
+      } catch (e) {
+        console.error(e)
       }
     }, 1000),
     ...excProps

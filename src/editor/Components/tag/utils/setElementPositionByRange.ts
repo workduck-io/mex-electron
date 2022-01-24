@@ -3,6 +3,7 @@ import { ReactEditor } from 'slate-react'
 
 /**
  * Set element position below a range.
+ * This function has been put in try catch so editor errors will not be thrown up
  */
 export const setElementPositionByRange = (editor: ReactEditor, { ref, at }: { ref: any; at: Range | null }) => {
   if (!at) return

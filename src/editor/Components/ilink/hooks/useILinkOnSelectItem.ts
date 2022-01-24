@@ -19,29 +19,33 @@ export const useILinkOnSelectItem = () => {
       const type = getPluginType(editor, ELEMENT_ILINK)
 
       if (isOpen && targetRange) {
-        const pathAbove = getBlockAbove(editor)?.[1]
-        const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
+        try {
+          const pathAbove = getBlockAbove(editor)?.[1]
+          const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
 
-        // insert a space to fix the bug
-        if (isBlockEnd) {
-          Transforms.insertText(editor, ' ')
-        }
+          // insert a space to fix the bug
+          if (isBlockEnd) {
+            Transforms.insertText(editor, ' ')
+          }
 
-        // select the ilink text and insert the ilink element
-        Transforms.select(editor, targetRange)
-        insertNodes<TElement>(editor, {
-          type: type as any,
-          children: [{ text: '' }],
-          value: item.text
-        })
-        // console.log({ type, item });
+          // select the ilink text and insert the ilink element
+          Transforms.select(editor, targetRange)
+          insertNodes<TElement>(editor, {
+            type: type as any,
+            children: [{ text: '' }],
+            value: item.text
+          })
+          // console.log({ type, item });
 
-        // move the selection after the ilink element
-        Transforms.move(editor)
+          // move the selection after the ilink element
+          Transforms.move(editor)
 
-        // delete the inserted space
-        if (isBlockEnd) {
-          Transforms.delete(editor)
+          // delete the inserted space
+          if (isBlockEnd) {
+            Transforms.delete(editor)
+          }
+        } catch (e) {
+          console.error(e)
         }
 
         return closeMenu()

@@ -20,31 +20,35 @@ export const getTextFromTrigger = (
 
   // console.log({ start, end, at, trigger });
 
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    end = start
+  try {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      end = start
 
-    if (!start) break
+      if (!start) break
 
-    start = Editor.before(editor, start)
-    const charRange = start && Editor.range(editor, start, end)
-    const charText = getText(editor, charRange)
+      start = Editor.before(editor, start)
+      const charRange = start && Editor.range(editor, start, end)
+      const charText = getText(editor, charRange)
 
-    // Match non-whitespace character on before text
-    if (!charText.match(noWhiteSpaceRegex)) {
-      start = end
-      break
+      // Match non-whitespace character on before text
+      if (!charText.match(noWhiteSpaceRegex)) {
+        start = end
+        break
+      }
     }
-  }
 
-  // Range from start to cursor
-  const range = start && Editor.range(editor, start, at)
-  const text = getText(editor, range)
+    // Range from start to cursor
+    const range = start && Editor.range(editor, start, at)
+    const text = getText(editor, range)
 
-  if (!range || !text.match(triggerRegex)) return undefined
-
-  return {
-    range,
-    textAfterTrigger: text.substring(trigger.length),
+    if (!range || !text.match(triggerRegex)) return undefined
+    return {
+      range,
+      textAfterTrigger: text.substring(trigger.length)
+    }
+  } catch (e) {
+    console.error(e)
+    return undefined
   }
 }
