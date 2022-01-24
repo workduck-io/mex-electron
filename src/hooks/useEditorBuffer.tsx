@@ -1,7 +1,8 @@
 import create from 'zustand'
-import { useDataSaverFromContent, useSaver } from '../editor/Components/Saver'
+import { useDataSaverFromContent } from '../editor/Components/Saver'
 import { useContentStore } from '../store/useContentStore'
 import { NodeEditorContent } from '../types/Types'
+import { useSaveData } from './useSaveData'
 
 interface BufferStore {
   buffer: Record<string, NodeEditorContent>
@@ -23,10 +24,9 @@ const useBufferStore = create<BufferStore>((set, get) => ({
 
 export const useEditorBuffer = () => {
   const add2Buffer = useBufferStore((s) => s.add)
-  // const remove2Buffer = useBufferStore((s) => s.remove)
   const clearBuffer = useBufferStore((s) => s.clear)
   const setContent = useContentStore((s) => s.setContent)
-  const { onSave } = useSaver()
+  const saveData = useSaveData()
   const { saveNodeAPIandFs } = useDataSaverFromContent()
 
   const addOrUpdateValBuffer = (uid: string, val: NodeEditorContent) => {
@@ -43,7 +43,7 @@ export const useEditorBuffer = () => {
         setContent(uid, val)
         saveNodeAPIandFs(uid)
       })
-      onSave(undefined, undefined, false) // Don't show notification
+      saveData()
       clearBuffer()
     }
   }

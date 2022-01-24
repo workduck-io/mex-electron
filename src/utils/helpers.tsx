@@ -12,7 +12,7 @@ export function getContent(uid: string): NodeContent {
 
   const { contents } = useContentStore.getState()
 
-  mog('Loading content', { uid, contents, uidCon: contents[uid] })
+  mog('getContent', { uid, contents, uidCon: contents[uid] })
   if (contents[uid]) {
     return contents[uid]
   }

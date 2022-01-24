@@ -11,7 +11,7 @@ export const mog = (title: string, propertiesToLog: Record<string, any>) => {
   if (IS_DEV) {
     console.group(title)
     Object.entries(propertiesToLog).forEach(([key, value]) => {
-      console.info(`${key}: ${JSON.stringify(value, null, 2)}`)
+      console.info(`${key}`, value)
     })
     console.groupEnd()
   }

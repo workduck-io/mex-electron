@@ -49,5 +49,6 @@ export const useSaveData = () => {
   //   saveData(contents);
   // });
 
+  // FIXME return an object
   return saveData
 }
