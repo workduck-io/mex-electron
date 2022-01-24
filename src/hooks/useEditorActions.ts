@@ -2,6 +2,7 @@ import { usePlateEditorRef } from '@udecode/plate'
 import { useEffect } from 'react'
 import { useEditorStore } from '../store/useEditorStore'
 import { NodeEditorContent } from '../types/Types'
+import { useEditorBuffer } from './useEditorBuffer'
 import useLoad from './useLoad'
 // import { NodeEditorContent } from '../editor/Store/Types'
 // import { useEditorStore } from '../editor/Store/EditorStore'
@@ -10,8 +11,10 @@ import useLoad from './useLoad'
 const useEditorActions = () => {
   const { loadNode } = useLoad()
   const node = useEditorStore((s) => s.node)
+  const { clearBuffer } = useEditorBuffer()
 
   const resetEditor = () => {
+    clearBuffer()
     loadNode(node.uid, { fetch: false, savePrev: false })
   }
 

@@ -31,7 +31,12 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
   // console.log(editor === _editor);
 
   useEffect(() => {
-    if (editor) setElementPositionByRange(editor, { ref, at })
+    // Throws error when the combobox is open and editor is switched or removed
+    try {
+      if (editor) setElementPositionByRange(editor, { ref, at })
+    } catch (e) {
+      console.error(e)
+    }
   }, [at, editor])
 
   const menuProps = combobox ? combobox.getMenuProps() : { ref: null }
