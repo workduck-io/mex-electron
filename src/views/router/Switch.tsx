@@ -18,6 +18,7 @@ import Tasks from '../mex/Tasks'
 import UserPage from '../mex/UserPage'
 import AuthRoute from './AuthRoute'
 import ProtectedRoute from './ProtectedRoute'
+import { useEditorBuffer } from '../../hooks/useEditorBuffer'
 
 const SwitchWrapper = styled(animated.div)`
   position: fixed;
@@ -29,8 +30,8 @@ const SwitchWrapper = styled(animated.div)`
 
 const Switch = () => {
   const location = useLocation()
-  const q = useQStore((s) => s.q)
-  const { saveQ } = useSaveQ()
+  // const { saveQ } = useSaveQ()
+  const { saveAndClearBuffer } = useEditorBuffer()
   // const Perspective = '2000px'
   // const transitions = useTransition(location, {
   //   from: {
@@ -51,9 +52,10 @@ const Switch = () => {
 
   useEffect(() => {
     // console.error({ q })
-    if (q.length > 0) {
-      saveQ()
-    }
+    // if (q.length > 0) {
+    saveAndClearBuffer()
+
+    // }
   }, [location])
 
   // return transitions((props, item) => (

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { NodeProperties } from '../store/useEditorStore'
 import { defaultContent } from '../data/Defaults/baseData'
 import { IpcAction } from '../data/IpcAction'
 import { useDataSaverFromContent } from '../editor/Components/Saver'
@@ -21,7 +22,7 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
   const loadNode = useSpotlightEditorStore((s) => s.loadNode)
   const saveData = useSaveData()
-  const { saveEditorAndUpdateStates } = useDataSaverFromContent()
+  const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
 
   const node = useSpotlightEditorStore((s) => s.node)
   const setNodeContent = useSpotlightEditorStore((s) => s.setNodeContent)
@@ -56,7 +57,7 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
       if (ev.key === 'Enter') {
         ev.preventDefault()
         if (currentIndex >= 0) {
-          let newNode
+          let newNode: NodeProperties
           if (data[currentIndex].new) {
             const isDraftNode = node && node.key.startsWith('Draft.')
             newNode = isDraftNode ? node : createNodeWithUid(getNewDraftKey())
@@ -71,7 +72,7 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
           if (selection) {
             const newNodeContent = getContent(newNode.uid)
             const newContentData = !data[currentIndex].new ? [...newNodeContent.content, ...nodeContent] : nodeContent
-            saveEditorAndUpdateStates(newNode, newContentData, true)
+            saveEditorValueAndUpdateStores(newNode.uid, newContentData, true)
             saveData()
 
             appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
