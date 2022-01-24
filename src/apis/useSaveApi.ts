@@ -36,7 +36,7 @@ export const useApi = () => {
     const data = await client
       .post(apiURLs.saveNode, reqData, {})
       .then((d) => {
-        console.log('newNodeCreated', d)
+        mog('saveNewNodeAPI response', d)
         setMetadata(uid, extractMetadata(d.data))
         return d.data
       })

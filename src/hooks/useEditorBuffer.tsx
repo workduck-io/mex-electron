@@ -1,3 +1,4 @@
+import { mog } from '../utils/lib/helper'
 import create from 'zustand'
 import { useDataSaverFromContent } from '../editor/Components/Saver'
 import { useContentStore } from '../store/useContentStore'
@@ -37,7 +38,7 @@ export const useEditorBuffer = () => {
   const getBufferVal = (uid: string) => useBufferStore.getState().buffer[uid] ?? undefined
   const saveAndClearBuffer = () => {
     const buffer = useBufferStore.getState().buffer
-    console.log('Saving and Clearing Buffer', { buffer })
+    mog('Save And Clear Buffer', { buffer })
     if (Object.keys(buffer).length > 0) {
       Object.entries(buffer).map(([uid, val]) => {
         setContent(uid, val)
