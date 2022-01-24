@@ -28,6 +28,7 @@ export const useEditorBuffer = () => {
   const clearBuffer = useBufferStore((s) => s.clear)
   const setContent = useContentStore((s) => s.setContent)
   const saveData = useSaveData()
+
   const { saveNodeAPIandFs } = useDataSaverFromContent()
 
   const addOrUpdateValBuffer = (uid: string, val: NodeEditorContent) => {
@@ -49,5 +50,5 @@ export const useEditorBuffer = () => {
     }
   }
 
-  return { addOrUpdateValBuffer, saveAndClearBuffer, getBuffer, getBufferVal }
+  return { addOrUpdateValBuffer, saveAndClearBuffer, getBuffer, getBufferVal, clearBuffer }
 }

@@ -19,30 +19,34 @@ export const useTagOnSelectItem = () => {
       const type = getPluginType(editor, ELEMENT_TAG)
 
       if (isOpen && targetRange) {
-        const pathAbove = getBlockAbove(editor)?.[1]
-        const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
+        try {
+          const pathAbove = getBlockAbove(editor)?.[1]
+          const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
 
-        // insert a space to fix the bug
-        if (isBlockEnd) {
-          Transforms.insertText(editor, ' ')
+          // insert a space to fix the bug
+          if (isBlockEnd) {
+            Transforms.insertText(editor, ' ')
+          }
+
+          // select the tag text and insert the tag element
+          Transforms.select(editor, targetRange)
+          insertNodes<TElement>(editor, {
+            type: type as any,
+            children: [{ text: '' }],
+            value: item.text
+          })
+          // move the selection after the tag element
+          Transforms.move(editor)
+
+          // delete the inserted space
+          if (isBlockEnd) {
+            Transforms.delete(editor)
+          }
+
+          return closeMenu()
+        } catch (e) {
+          console.error(e)
         }
-
-        // select the tag text and insert the tag element
-        Transforms.select(editor, targetRange)
-        insertNodes<TElement>(editor, {
-          type: type as any,
-          children: [{ text: '' }],
-          value: item.text
-        })
-        // move the selection after the tag element
-        Transforms.move(editor)
-
-        // delete the inserted space
-        if (isBlockEnd) {
-          Transforms.delete(editor)
-        }
-
-        return closeMenu()
       }
       return undefined
     },

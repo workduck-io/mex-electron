@@ -159,7 +159,7 @@ export const withStyledDraggables = (components: any) => {
       key: ELEMENT_TODO_LI,
       styles: {
         gutterLeft: {
-          padding: '8px 4px 0'
+          padding: '6px 4px 0'
         }
       }
     }

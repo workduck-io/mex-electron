@@ -20,6 +20,7 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
   // TODO clear the error-esque warnings for 'type inference'
   const at = useComboboxStore((state) => state.targetRange)
   const items = useComboboxStore((state) => state.items)
+  const closeMenu = useComboboxStore((state) => state.closeMenu)
   const itemIndex = useComboboxStore((state) => state.itemIndex)
   const combobox = useComboboxControls(true)
   const isOpen = useComboboxIsOpen()
@@ -31,7 +32,13 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
   // console.log(editor === _editor);
 
   useEffect(() => {
-    if (editor) setElementPositionByRange(editor, { ref, at })
+    // Throws error when the combobox is open and editor is switched or removed
+    try {
+      if (editor) setElementPositionByRange(editor, { ref, at })
+    } catch (e) {
+      closeMenu()
+      console.error(e)
+    }
   }, [at, editor])
 
   const menuProps = combobox ? combobox.getMenuProps() : { ref: null }

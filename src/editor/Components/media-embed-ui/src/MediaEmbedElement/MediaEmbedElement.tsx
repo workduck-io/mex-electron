@@ -56,8 +56,12 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
           onChange={debounce((val: string) => {
             // console.log(val)
 
-            const path = ReactEditor.findPath(editor, element)
-            setNodes<TElement<MediaEmbedNodeData>>(editor, { url: val }, { at: path })
+            try {
+              const path = ReactEditor.findPath(editor, element)
+              setNodes<TElement<MediaEmbedNodeData>>(editor, { url: val }, { at: path })
+            } catch (e) {
+              console.error(e)
+            }
           }, 500)}
         />
       </div>

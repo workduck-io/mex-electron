@@ -22,63 +22,67 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
   const { trackEvent } = useAnalytics()
 
   return (editor: PlateEditor, item: IComboboxItem) => {
-    let comboType = elementComboType
-    if (keys) {
-      const comboboxKey: string = useComboboxStore.getState().key
-      comboType = keys[comboboxKey]
-    }
-
-    const targetRange = useComboboxStore.getState().targetRange
-    const parentNodeId = useEditorStore.getState().node.key
-    const type = getPluginType(editor, comboType.slateElementType)
-
-    if (targetRange) {
-      // console.log('useElementOnChange 1', { comboType, type });
-
-      const pathAbove = getBlockAbove(editor)?.[1]
-      const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
-
-      // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
-      // insert a space to fix the bug
-      if (isBlockEnd) {
-        Transforms.insertText(editor, ' ')
+    try {
+      let comboType = elementComboType
+      if (keys) {
+        const comboboxKey: string = useComboboxStore.getState().key
+        comboType = keys[comboboxKey]
       }
 
-      const { key, isChild } = withoutContinuousDelimiter(item.text)
+      const targetRange = useComboboxStore.getState().targetRange
+      const parentNodeId = useEditorStore.getState().node.key
+      const type = getPluginType(editor, comboType.slateElementType)
 
-      let itemValue
-      if (key) itemValue = isChild ? `${parentNodeId}${key}` : key
-      else itemValue = parentNodeId
+      if (targetRange) {
+        // console.log('useElementOnChange 1', { comboType, type });
 
-      // console.log('I am the one one the onw', { itemValue, type, key, item })
+        const pathAbove = getBlockAbove(editor)?.[1]
+        const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
 
-      // if (item.key === '__create_new' && itemValue.startsWith('Create New')) {
-      //   itemValue = itemValue.substring(11)
-      // }
-      // select the ilink text and insert the ilink element
-      Transforms.select(editor, targetRange)
+        // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
+        // insert a space to fix the bug
+        if (isBlockEnd) {
+          Transforms.insertText(editor, ' ')
+        }
 
-      insertNodes<TElement>(editor, {
-        type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
-        children: [{ text: '' }],
-        value: itemValue
-      })
+        const { key, isChild } = withoutContinuousDelimiter(item.text)
 
-      trackEvent(getEventNameFromElement('Editor', ActionType.CREATE, type), {
-        'mex-element-type': type,
-        'mex-element-text': itemValue
-      })
+        let itemValue
+        if (key) itemValue = isChild ? `${parentNodeId}${key}` : key
+        else itemValue = parentNodeId
 
-      // move the selection after the ilink element
-      Transforms.move(editor)
+        // console.log('I am the one one the onw', { itemValue, type, key, item })
 
-      // delete the inserted space
-      if (isBlockEnd) {
-        Transforms.delete(editor)
+        // if (item.key === '__create_new' && itemValue.startsWith('Create New')) {
+        //   itemValue = itemValue.substring(11)
+        // }
+        // select the ilink text and insert the ilink element
+        Transforms.select(editor, targetRange)
+
+        insertNodes<TElement>(editor, {
+          type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+          children: [{ text: '' }],
+          value: itemValue
+        })
+
+        trackEvent(getEventNameFromElement('Editor', ActionType.CREATE, type), {
+          'mex-element-type': type,
+          'mex-element-text': itemValue
+        })
+
+        // move the selection after the ilink element
+        Transforms.move(editor)
+
+        // delete the inserted space
+        if (isBlockEnd) {
+          Transforms.delete(editor)
+        }
+
+        // return true
+        return closeMenu()
       }
-
-      // return true
-      return closeMenu()
+    } catch (e) {
+      console.error(e)
     }
     return undefined
   }

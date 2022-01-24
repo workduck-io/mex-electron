@@ -26,46 +26,48 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
     // console.log({ commandConfig })
     if (targetRange) {
       // console.log('useSlashCommandOnChange', { commandConfig, commandKey, keys, item })
+      try {
+        const pathAbove = getBlockAbove(editor)?.[1]
+        const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
 
-      const pathAbove = getBlockAbove(editor)?.[1]
-      const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
+        if (isElder(commandKey, 'snip')) {
+          const content = getSnippetContent(commandConfig.command)
 
-      if (isElder(commandKey, 'snip')) {
-        const content = getSnippetContent(commandConfig.command)
+          const eventName = getEventNameFromElement('Editor', ActionType.USE, 'Snippet')
+          trackEvent(eventName, { 'mex-content': content })
 
-        const eventName = getEventNameFromElement('Editor', ActionType.USE, 'Snippet')
-        trackEvent(eventName, { 'mex-content': content })
-
-        if (content) {
+          if (content) {
+            Transforms.select(editor, targetRange)
+            insertNodes<TElement>(editor, content)
+          }
+        } else if (item.text === 'table') {
           Transforms.select(editor, targetRange)
-          insertNodes<TElement>(editor, content)
+          insertTable(editor, { header: true })
+        } else {
+          // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
+          const type = getPluginType(editor, commandConfig.slateElementType)
+          const data = commandConfig.getBlockData ? commandConfig.getBlockData(item) : {}
+
+          // console.log('INSERT: ', { type, data })
+
+          const eventName = getEventNameFromElement('Editor', ActionType.CREATE, type)
+          trackEvent(eventName, { 'mex-type': type, 'mex-data': data })
+
+          Transforms.select(editor, targetRange)
+
+          insertNodes<TElement>(editor, {
+            type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+            children: [{ text: '' }],
+            ...commandConfig.options,
+            ...data
+          })
+
+          // move the selection after the inserted content
+          Transforms.move(editor)
         }
-      } else if (item.text === 'table') {
-        Transforms.select(editor, targetRange)
-        insertTable(editor, { header: true })
-      } else {
-        // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
-        const type = getPluginType(editor, commandConfig.slateElementType)
-        const data = commandConfig.getBlockData ? commandConfig.getBlockData(item) : {}
-
-        // console.log('INSERT: ', { type, data })
-
-        const eventName = getEventNameFromElement('Editor', ActionType.CREATE, type)
-        trackEvent(eventName, { 'mex-type': type, 'mex-data': data })
-
-        Transforms.select(editor, targetRange)
-
-        insertNodes<TElement>(editor, {
-          type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
-          children: [{ text: '' }],
-          ...commandConfig.options,
-          ...data
-        })
-
-        // move the selection after the inserted content
-        Transforms.move(editor)
+      } catch (e) {
+        console.error(e)
       }
-
       return closeMenu()
     }
 
