@@ -1,34 +1,33 @@
-import { GraphNode, GraphEdge } from '../components/mex/Graph/Graph.types'
+import { useTheme } from 'styled-components'
+import { GraphEdge, GraphNode } from '../components/mex/Graph/Graph.types'
 import { ServiceImg } from '../components/mex/Graph/icons'
 import { getNodeIdLast, isParent, isTopNode } from '../components/mex/Sidebar/treeUtils'
-import { Intent, Service } from '../editor/Components/SyncBlock'
 import useDataStore, { getLevel } from '../store/useDataStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { useGraphStore } from '../store/useGraphStore'
 import { NodeLink } from '../types/relations'
-import { getNodeStyles, getEdgeGlobalStyles, getEdgeLocalStyles } from '../utils/GraphHelpers'
-import { useTheme } from 'styled-components'
+import { getEdgeGlobalStyles, getEdgeLocalStyles, getNodeStyles } from '../utils/GraphHelpers'
 import useIntents from './useIntents'
 import { useLinks } from './useLinks'
 
-const addServiceNodes = (
-  selectedNode: any,
-  theme: any,
-  nodes: GraphNode[],
-  edges: GraphEdge[],
-  nodeIntents: { intent: Intent; service: Service }[]
-) => {}
+// const addServiceNodes = (
+//   selectedNode: any,
+//   theme: any,
+//   nodes: GraphNode[],
+//   edges: GraphEdge[],
+//   nodeIntents: { intent: Intent; service: Service }[]
+// ) => {}
 
 export const useGraphData = () => {
   const ilinks = useDataStore((store) => store.ilinks)
-  const links = ilinks.map((i) => i.text)
+  const links = ilinks.map((i) => i.nodeId)
   const nodeId = useEditorStore((store) => store.node.id)
   const uid = useEditorStore((store) => store.node.uid)
   const selectedNode = useGraphStore((state) => state.selectedNode)
 
   // * Service Nodes
-  const serviceNodes = useGraphStore((store) => store.serviceNodes)
-  const showServices = useGraphStore((store) => store.showServices)
+  // const serviceNodes = useGraphStore((store) => store.serviceNodes)
+  // const showServices = useGraphStore((store) => store.showServices)
   const { getNodeIntents } = useIntents()
 
   const showLocal = useGraphStore((state) => state.showLocal)

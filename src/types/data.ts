@@ -1,6 +1,6 @@
 import { Service, SyncBlockData, SyncBlockTemplate, SyncStoreIntents } from '../editor/Components/SyncBlock'
 import { Snippet } from '../store/useSnippetStore'
-import { ComboText, ILink, LinkCache, NodeEditorContent, TagsCache } from '../types/Types'
+import { ILink, LinkCache, NodeEditorContent, Tag, TagsCache } from '../types/Types'
 
 export interface NodeMetadata {
   createdBy?: string
@@ -31,7 +31,7 @@ export interface FileData {
   remoteUpdate: boolean
   baseNodeId: string
   ilinks: ILink[]
-  tags: ComboText[]
+  tags: Tag[]
   contents: {
     [key: string]: NodeContent
   }

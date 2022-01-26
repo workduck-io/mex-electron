@@ -1,7 +1,7 @@
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 import { Contents } from '../../store/useContentStore'
-import { generateComboTexts, generateILinks } from '../../utils/generateComboItem'
 import { FileData, NodeContent } from '../../types/data'
+import { generateILinks } from '../../utils/generateComboItem'
 // import { generateTempId } from './idPrefixes'
 
 const links = generateILinks(['doc', 'dev', 'design', '@', 'Draft'])
@@ -28,7 +28,7 @@ export const DefaultFileData: FileData = {
   tagsCache: {},
   archive: [],
   bookmarks: [],
-  tags: generateComboTexts(['mex']),
+  tags: [{ value: 'mex' }],
   syncBlocks: [],
   templates: [],
   intents: {},

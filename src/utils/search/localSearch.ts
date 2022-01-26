@@ -24,7 +24,7 @@ export const convertDataToRawText = (data: FileData): NodeSearchData[] => {
   const result: NodeSearchData[] = []
   const titleNodeMap = new Map<string, string>()
   data.ilinks.forEach((entry) => {
-    titleNodeMap.set(entry.uid, entry.text)
+    titleNodeMap.set(entry.uid, entry.nodeId)
   })
 
   Object.entries(data.contents).forEach(([k, v]) => {

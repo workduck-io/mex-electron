@@ -1,3 +1,4 @@
+import { mog } from '../utils/lib/helper'
 import create from 'zustand'
 import { NodeContent, NodeMetadata } from '../types/data'
 import { NodeEditorContent } from '../types/Types'
@@ -26,6 +27,8 @@ export const useContentStore = create<ContentStoreState>((set, get) => ({
   setSaved: (saved) => set(() => ({ saved })),
   toggleSyncBlocks: () => set({ showSyncBlocks: !get().showSyncBlocks }),
   setContent: (uid, content, metadata) => {
+    console.log('Hello', console.trace())
+    mog('SetContent', { uid, content, metadata })
     const oldContent = get().contents
 
     const oldMetadata = oldContent[uid] && oldContent[uid].metadata ? oldContent[uid].metadata : undefined

@@ -1,5 +1,6 @@
-import { NodeProperties } from '../store/useEditorStore'
-
+/*
+ * Specific to comboboxes
+ */
 export interface ComboText {
   // This interface is used to store tags in a combobox friendly way.
   key: string
@@ -8,17 +9,40 @@ export interface ComboText {
   icon?: string
 }
 
-export interface ILink extends ComboText {
+export interface ILink {
+  /*
+   * Unique Identifier
+   */
   uid: string
+
+  /*
+   * The title of the node.
+   * Uses separator for heirarchy
+   */
+  nodeId: string
+
+  /*
+   * Iconify Icon string
+   */
+  icon?: string
+}
+
+export interface Tag {
+  value: string
+}
+
+export interface SlashCommand {
+  command: string
+  icon?: string
 }
 
 export type LinkCache = Record<string, CachedILink[]>
 export type TagsCache = Record<string, CacheTag>
 
 export interface InitData {
-  tags: ComboText[]
+  tags: Tag[]
   ilinks: ILink[]
-  slashCommands: ComboText[]
+  slashCommands: SlashCommand[]
   linkCache: LinkCache
   tagsCache: TagsCache
   bookmarks: string[]
@@ -27,9 +51,9 @@ export interface InitData {
 }
 
 export interface DataStoreState {
-  tags: ComboText[]
+  tags: Tag[]
   ilinks: ILink[]
-  slashCommands: ComboText[]
+  slashCommands: SlashCommand[]
   linkCache: LinkCache
   tagsCache: TagsCache
   baseNodeId: string
@@ -44,7 +68,7 @@ export interface DataStoreState {
   // adds tag for combobox
   addTag: (tag: string) => void
 
-  setSlashCommands: (slashCommands: ComboText[]) => void
+  setSlashCommands: (slashCommands: SlashCommand[]) => void
   setIlinks: (ilinks: ILink[]) => void
   setBaseNodeId: (baseNodeId: string) => void
 

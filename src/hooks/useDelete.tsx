@@ -1,5 +1,4 @@
 import React from 'react'
-import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
 import { useHistoryStore } from '../store/useHistoryStore'
 import { useRecentsStore } from '../store/useRecentsStore'
@@ -8,10 +7,8 @@ import useArchive from './useArchive'
 
 export const useDelete = () => {
   const ilinks = useDataStore((state) => state.ilinks)
-  const contents = useContentStore((state) => state.contents)
 
   const setILinks = useDataStore((state) => state.setIlinks)
-  const initContents = useContentStore((state) => state.initContents)
   const setBaseNodeId = useDataStore((state) => state.setBaseNodeId)
 
   const historyStack = useHistoryStore((state) => state.stack)
@@ -24,11 +21,11 @@ export const useDelete = () => {
 
   const getMockDelete = (del: string) => {
     const archivedNodes = ilinks.filter((i) => {
-      const match = i.text.startsWith(del)
+      const match = i.nodeId.startsWith(del)
       return match
     })
 
-    const newIlinks = ilinks.filter((i) => archivedNodes.map((i) => i.text).indexOf(i.text) === -1)
+    const newIlinks = ilinks.filter((i) => archivedNodes.map((i) => i.nodeId).indexOf(i.nodeId) === -1)
 
     return { archivedNodes, newIlinks }
   }
@@ -46,10 +43,10 @@ export const useDelete = () => {
     const { newIds: newRecents } = applyDeleteToIds(lastOpened, 0, newIlinks)
     updateLastOpened(newRecents)
 
-    const baseId = archivedNodes.map((item) => item.text).indexOf(useDataStore.getState().baseNodeId)
+    const baseId = archivedNodes.map((item) => item.nodeId).indexOf(useDataStore.getState().baseNodeId)
 
     if (baseId !== -1 && newIlinks.length > 0) {
-      setBaseNodeId(newIlinks[0].text)
+      setBaseNodeId(newIlinks[0].nodeId)
     }
 
     setILinks(newIlinks)

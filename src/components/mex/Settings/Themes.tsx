@@ -1,18 +1,17 @@
 import React from 'react'
-import toast from 'react-hot-toast'
-import { ThemeProvider } from 'styled-components'
 import { useTransition } from 'react-spring'
-import useThemeStore from '../../../store/useThemeStore'
+import { ThemeProvider } from 'styled-components'
 import { useSaveData } from '../../../hooks/useSaveData'
-import { ThemePreviews, ThemeColorDots, Theme, ThemeHeader, ThemePreview } from '../../../style/Settings'
+import useThemeStore from '../../../store/useThemeStore'
 import { Wrapper } from '../../../style/Layouts'
+import { Theme, ThemeColorDots, ThemeHeader, ThemePreview, ThemePreviews } from '../../../style/Settings'
 
 const Themes = () => {
   const themes = useThemeStore((state) => state.themes)
   const theme = useThemeStore((state) => state.theme)
   const setTheme = useThemeStore((state) => state.setTheme)
 
-  const saveData = useSaveData()
+  const { saveData } = useSaveData()
 
   const transition = useTransition(themes, {
     from: { opacity: 0 },
@@ -26,11 +25,6 @@ const Themes = () => {
       friction: 16
     }
   })
-
-  const onSave = () => {
-    // TODO: Only save settings data
-    saveData()
-  }
 
   const onThemeSelect = (i: number) => {
     if (themes[i]) setTheme(themes[i])

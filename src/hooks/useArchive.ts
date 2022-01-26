@@ -6,6 +6,7 @@ import { useSaver } from '../editor/Components/Saver'
 import useDataStore from '../store/useDataStore'
 import { ILink } from '../types/Types'
 import { mog } from '../utils/lib/helper'
+import { useSaveData } from './useSaveData'
 // import { apiURLs } from '.../Editor/Store/Types'
 
 const useArchive = () => {
@@ -18,6 +19,7 @@ const useArchive = () => {
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
 
   const { onSave } = useSaver()
+  const { saveData } = useSaveData()
   const { userCred } = useAuth()
 
   const archived = (uid: string) => {
@@ -99,7 +101,7 @@ const useArchive = () => {
         .then(() => {
           removeArchive(uids)
         })
-        .then(() => onSave())
+        .then(() => saveData())
         .then(() => {
           return true
         })

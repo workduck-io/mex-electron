@@ -21,7 +21,7 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
   const setNode = useSpotlightEditorStore((s) => s.setNode)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
   const loadNode = useSpotlightEditorStore((s) => s.loadNode)
-  const saveData = useSaveData()
+  const { saveData } = useSaveData()
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
 
   const node = useSpotlightEditorStore((s) => s.node)

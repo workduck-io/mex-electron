@@ -41,6 +41,10 @@ export const createNodeWithUid = (key: string) => ({
   key: key
 })
 
+/*
+ * Checks for links that start with  the separator (.) and returns key and whether it is a child node i.e. starting with the separator
+ * Also removes multiple separator invocations like "a.b....c..d"
+ */
 export const withoutContinuousDelimiter = (text: string, delimiter = SEPARATOR) => {
   const key = text
     .split(delimiter)

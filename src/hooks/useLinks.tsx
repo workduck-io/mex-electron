@@ -132,8 +132,8 @@ export const useLinks = () => {
     const links = useDataStore.getState().ilinks
     const archive = useDataStore.getState().archive
 
-    const link = links.find((l) => l.text === nodeId)
-    const archivedLink = archive.find((l) => l.text === nodeId)
+    const link = links.find((l) => l.nodeId === nodeId)
+    const archivedLink = archive.find((l) => l.nodeId === nodeId)
 
     if (link) return link.uid
     if (archivedLink) return archivedLink.uid
@@ -143,13 +143,13 @@ export const useLinks = () => {
     const links = useDataStore.getState().ilinks
 
     const link = links.find((l) => l.uid === uid)
-    if (link) return link.text
+    if (link) return link.nodeId
   }
 
   return { getAllLinks, getLinks, getBacklinks, updateLinksFromContent, getUidFromNodeId, getNodeIdFromUid, createLink }
 }
 
 export const getUidFromNodeIdAndLinks = (links: ILink[], nodeId: string) => {
-  const link = links.find((l) => l.text === nodeId)
+  const link = links.find((l) => l.nodeId === nodeId)
   if (link) return link.uid
 }

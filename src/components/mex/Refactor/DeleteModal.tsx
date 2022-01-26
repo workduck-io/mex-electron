@@ -13,6 +13,8 @@ import useLoad from '../../../hooks/useLoad'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { USE_API } from '../../../data/Defaults/dev_'
+import { mog } from '../../../utils/lib/helper'
+import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
 
 interface DeleteStoreState {
   open: boolean
@@ -68,6 +70,7 @@ const Delete = () => {
   const open = useDeleteStore((store) => store.open)
   const mockRefactored = useDeleteStore((store) => store.mockRefactored)
 
+  const { saveAndClearBuffer } = useEditorBuffer()
   const { shortcutDisabled, shortcutHandler } = useKeyListener()
 
   useEffect(() => {
@@ -87,6 +90,7 @@ const Delete = () => {
   // console.log({ to, from, open });
 
   const handleDeleteChange = (newValue: string) => {
+    saveAndClearBuffer()
     if (newValue) {
       setDel(newValue)
     }
@@ -95,7 +99,7 @@ const Delete = () => {
   // const { del, mockData, open } = deleteState
   useEffect(() => {
     if (del) {
-      setMockRefactored(getMockDelete(del).archivedNodes.map((item) => item.text))
+      setMockRefactored(getMockDelete(del).archivedNodes.map((item) => item.nodeId))
     }
   }, [del])
 
@@ -103,7 +107,7 @@ const Delete = () => {
     const { newLinks } = execDelete(del)
 
     // Load this node after deletion
-    // console.log(newLinks)
+    mog('handling delete', { newLinks, del })
     if (newLinks.length > 0) loadNode(newLinks[0].uid, { savePrev: false, fetch: USE_API() })
     closeModal()
   }

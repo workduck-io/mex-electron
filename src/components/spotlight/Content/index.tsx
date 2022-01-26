@@ -1,20 +1,17 @@
 import { search as getSearchResults } from 'fast-fuzzy'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
+import { useCurrentIndex } from '../../../hooks/useCurrentIndex'
+import useLoad from '../../../hooks/useLoad'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import { useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
-import useLoad from '../../../hooks/useLoad'
-import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
-import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
-import { useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { useCurrentIndex } from '../../../hooks/useCurrentIndex'
+import { ILink } from '../../../types/Types'
 import Preview from '../Preview'
 import SideBar from '../SideBar'
-import { ILink } from '../../../types/Types'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { ErrorBoundary } from 'react-error-boundary'
-import EditorErrorFallback from '../../../components/mex/Error/EditorErrorFallback'
-import useEditorActions from '../../../hooks/useEditorActions'
 
 export const StyledContent = styled.section`
   display: flex;
@@ -40,7 +37,7 @@ const Content = () => {
   }>(initPreview)
 
   // * Store
-  const { ilinks } = useDataStore(({ ilinks }) => ({ ilinks }))
+  const ilinks = useDataStore((s) => s.ilinks)
   const { setSaved, getContent } = useContentStore(({ setSaved, getContent }) => ({ setSaved, getContent }))
   const { editorNode, saveEditorNode, setNodeContent, nodeContent, isPreview } = useSpotlightEditorStore(
     ({ node, setNode, setNodeContent, nodeContent, isPreview }) => ({
@@ -81,7 +78,7 @@ const Content = () => {
   }, [selection, editorNode, setSearchResults])
 
   useEffect(() => {
-    const results = getSearchResults(search, ilinks, { keySelector: (obj) => obj.key })
+    const results = getSearchResults(search, ilinks, { keySelector: (obj) => obj.nodeId })
 
     if (search) {
       const resultsWithContent: Array<Partial<ILink> | { desc: string; new?: boolean }> = results.map(
@@ -101,7 +98,7 @@ const Content = () => {
         }
       )
 
-      const isNew = ilinks.filter((item) => item.text === search).length === 0
+      const isNew = ilinks.filter((item) => item.nodeId === search).length === 0
 
       if (isNew) {
         setSearchResults([{ new: true }, ...resultsWithContent])

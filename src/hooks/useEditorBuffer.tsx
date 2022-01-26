@@ -27,7 +27,7 @@ export const useEditorBuffer = () => {
   const add2Buffer = useBufferStore((s) => s.add)
   const clearBuffer = useBufferStore((s) => s.clear)
   const setContent = useContentStore((s) => s.setContent)
-  const saveData = useSaveData()
+  const { saveData } = useSaveData()
 
   const { saveNodeAPIandFs } = useDataSaverFromContent()
 

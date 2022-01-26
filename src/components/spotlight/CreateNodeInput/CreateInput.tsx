@@ -29,7 +29,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
 
   const addILink = useDataStore((s) => s.addILink)
 
-  const saveData = useSaveData()
+  const { saveData } = useSaveData()
 
   const setFsContent = useContentStore((state) => state.setContent)
 

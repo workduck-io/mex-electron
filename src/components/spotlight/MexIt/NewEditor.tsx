@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import { FullEditor, StyledEditor } from './styled'
-import Editor from '../../../editor/Editor'
-import { useEditorStore } from '../../../store/useEditorStore'
-import useDataStore from '../../../store/useDataStore'
-import { useContentStore } from '../../../store/useContentStore'
-import { openNodeInMex } from '../../../utils/combineSources'
-import { SaverButton } from '../../../editor/Components/Saver'
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { ComboText } from '../../../types/Types'
-import { AppType } from '../../../hooks/useInitialize'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { IpcAction } from '../../../data/IpcAction'
+import { SaverButton } from '../../../editor/Components/Saver'
+import Editor from '../../../editor/Editor'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { AppType } from '../../../hooks/useInitialize'
+import { useContentStore } from '../../../store/useContentStore'
+import useDataStore from '../../../store/useDataStore'
+import { useEditorStore } from '../../../store/useEditorStore'
 import useOnboard from '../../../store/useOnboarding'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { ILink } from '../../../types/Types'
+import { openNodeInMex } from '../../../utils/combineSources'
+import { FullEditor, StyledEditor } from './styled'
 
-export const isILinkExists = (iLink: string, iLinkList: Array<ComboText>) =>
-  iLinkList.filter((item) => item.key === iLink).length !== 0
+export const isILinkExists = (iLink: string, iLinkList: Array<ILink>) =>
+  iLinkList.filter((item) => item.nodeId === iLink).length !== 0
 
 const NewEditor = () => {
   const { key, uid: nodeId } = useEditorStore((state) => state.node)

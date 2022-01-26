@@ -55,7 +55,7 @@ const NewSyncTemplateModal = () => {
   const services = useSyncStore((store) => store.services)
   const { updater } = useUpdater()
   const workspaceId = useAuthStore((store) => store.workspaceDetails.id)
-  const saveData = useSaveData()
+  const { saveData } = useSaveData()
   const {
     control,
     register,

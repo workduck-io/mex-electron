@@ -1,24 +1,22 @@
-import { generateNodeId } from '../data/Defaults/idPrefixes'
-import { ComboText, ILink } from '../types/Types'
+import { generateNodeUID } from '../data/Defaults/idPrefixes'
+import { ComboText, ILink, SlashCommand } from '../types/Types'
 
-export const generateComboText = (tag: string, value: number): ComboText => ({
-  key: tag,
-  text: tag,
+export const generateComboText = (item: string, value: number): ComboText => ({
+  key: item,
+  text: item,
   value: String(value)
 })
 
-export const generateIconComboText = (tag: IconComboText, value: number): ComboText => ({
-  key: tag.text,
-  text: tag.text,
-  icon: tag.icon,
+export const generateIconComboText = (item: IconComboText, value: number): ComboText => ({
+  key: item.text,
+  text: item.text,
+  icon: item.icon,
   value: String(value)
 })
 
-export const generateIlink = (nodeId: string, value: number): ILink => ({
-  key: nodeId,
-  text: nodeId,
-  value: String(value),
-  uid: generateNodeId()
+export const generateIlink = (nodeId: string): ILink => ({
+  nodeId,
+  uid: generateNodeUID()
 })
 
 export const generateComboTexts = (items: string[]) => items.map(generateComboText)
@@ -31,3 +29,20 @@ export interface IconComboText {
 
 export const generateIconComboTexts = (items: IconComboText[]) => items.map(generateIconComboText)
 export const addIconToString = (items: string[], icon: string) => items.map((i) => ({ text: i, icon }))
+
+export const addIconToSlashCommand = (items: SlashCommand[], icon: string) =>
+  items.map((i: SlashCommand): SlashCommand => ({ ...i, icon }))
+
+/*
+ * Function to generate combotexts with value as the number in string.
+ */
+export const generatorCombo = <T, K>(
+  vals: T[],
+  transform: (i: T) => K | T = (i) => i,
+  addIndexAsValue: boolean | undefined = true
+) => {
+  return vals.map(transform).map((k, i) => {
+    if (addIndexAsValue) return { ...k, value: String(i) }
+    return k
+  })
+}

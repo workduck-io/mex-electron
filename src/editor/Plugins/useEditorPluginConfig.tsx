@@ -34,7 +34,7 @@ const useEditorPluginConfig = (editorId: string) => {
   const syncBlockConfigs = getSyncBlockConfigs()
 
   const ilinksForCurrentNode = useMemo(() => {
-    return ilinks.filter((item) => item.key !== node.id)
+    return ilinks.filter((item) => item.nodeId !== node.id)
   }, [node, ilinks])
 
   const comboConfigData: ComboConfigData = {
@@ -101,26 +101,26 @@ const useEditorPluginConfig = (editorId: string) => {
     ilink: {
       cbKey: ComboboxKey.ILINK,
       trigger: '[[',
-      data: ilinks,
+      data: ilinks.map((l) => ({ ...l, value: l.nodeId, text: l.nodeId })),
       icon: 'ri:file-list-2-line'
     },
     inline_block: {
       cbKey: ComboboxKey.INLINE_BLOCK,
       trigger: '![[',
-      data: ilinksForCurrentNode,
+      data: ilinksForCurrentNode.map((l) => ({ ...l, value: l.nodeId, text: l.nodeId })),
       icon: 'ri:picture-in-picture-line'
     },
     tag: {
       cbKey: ComboboxKey.TAG,
       trigger: '#',
-      data: tags,
+      data: tags.map((t) => ({ ...t, text: t.value })),
       icon: 'ri:hashtag'
     },
     slash_command: {
       cbKey: ComboboxKey.SLASH_COMMAND,
       trigger: '/',
       icon: 'ri:flask-line',
-      data: slashCommands
+      data: slashCommands.map((l) => ({ ...l, value: l.command, text: l.command }))
     }
   }
   // console.log({ slashCommands, OnChangeConf })

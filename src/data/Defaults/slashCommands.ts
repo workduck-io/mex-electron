@@ -1,6 +1,6 @@
 export const defaultCommands = [
-  { text: 'webem', icon: 'ri:global-line' },
-  { text: 'flow', icon: 'ri:refresh-fill' },
-  { text: 'table', icon: 'ri:table-line' },
-  { text: 'canvas', icon: 'ri:markup-line' }
+  { command: 'webem', icon: 'ri:global-line' },
+  { command: 'flow', icon: 'ri:refresh-fill' },
+  { command: 'table', icon: 'ri:table-line' },
+  { command: 'canvas', icon: 'ri:markup-line' }
 ]

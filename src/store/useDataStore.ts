@@ -1,11 +1,12 @@
-import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
 import create from 'zustand'
 import { generateTree, getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
-import getFlatTree from '../utils/lib/flatTree'
-import { removeLink } from '../utils/lib/links'
-import { generateComboText, generateIlink } from '../utils/generateComboItem'
+import { generateNodeUID } from '../data/Defaults/idPrefixes'
 import { CachedILink, DataStoreState } from '../types/Types'
+import { generateComboText } from '../utils/generateComboItem'
 import { typeInvert } from '../utils/helpers'
+import getFlatTree from '../utils/lib/flatTree'
+import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
+import { removeLink } from '../utils/lib/links'
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   // Tags
@@ -43,7 +44,6 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
   // Add a new ILink to the store
   addILink: (ilink, uid, parentId, archived) => {
-    // console.log('Adding ILink', { ilink, uid, parentId, archived })
     const { key, isChild } = withoutContinuousDelimiter(ilink)
 
     if (key) {
@@ -52,27 +52,23 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
     const ilinks = get().ilinks
 
-    const linksStrings = ilinks.map((l) => l.text)
+    const linksStrings = ilinks.map((l) => l.nodeId)
     const parents = getAllParentIds(ilink) // includes link of child
 
     const newLinks = parents.filter((l) => !linksStrings.includes(l)) // only create links for non existing
 
-    const comboTexts = newLinks.map((l, index) => {
-      const newILink = generateIlink(l, ilinks.length + index)
+    const newILinks = newLinks.map((l) => ({
+      uid: uid && l === ilink ? uid : generateNodeUID(),
+      nodeId: l
+    }))
 
-      if (uid && newILink.text === ilink) {
-        newILink.uid = uid
-      }
+    const newLink = newILinks.find((l) => l.nodeId === ilink)
 
-      return newILink
-    })
+    const userILinks = archived ? ilinks.map((val) => (val.nodeId === ilink ? { ...val, uid } : val)) : ilinks
 
-    const newLink = comboTexts.find((l) => l.text === ilink)
-
-    const userILinks = archived ? ilinks.map((val) => (val.key === ilink ? { ...val, uid } : val)) : ilinks
-
+    mog('Adding ILink', { ilink, uid, parentId, archived, newLink, newLinks, userILinks, parents })
     set({
-      ilinks: [...userILinks, ...comboTexts]
+      ilinks: [...userILinks, ...newILinks]
     })
 
     if (newLink) return newLink.uid
@@ -191,13 +187,13 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   },
 
   removeFromArchive: (removeArchive) => {
-    const userArchive = get().archive.filter((b) => !(removeArchive.map((i) => i.key).indexOf(b.key) > -1))
+    const userArchive = get().archive.filter((b) => !(removeArchive.map((i) => i.nodeId).indexOf(b.nodeId) > -1))
     set({ archive: userArchive })
   },
 
   unArchive: (archive) => {
     const userArchive = get().archive
-    const afterUnArchive = userArchive.filter((ar) => ar.key !== archive.key)
+    const afterUnArchive = userArchive.filter((ar) => ar.nodeId !== archive.nodeId)
 
     set({ archive: afterUnArchive })
   },
@@ -238,7 +234,7 @@ export const sanatizeLinks = (links: treeMap): treeMap => {
 
 export const useTreeFromLinks = () => {
   const ilinks = useDataStore((store) => store.ilinks)
-  const links = ilinks.map((i) => ({ id: i.text, uid: i.uid }))
+  const links = ilinks.map((i) => ({ id: i.nodeId, uid: i.uid }))
   const sanatizedLinks = sanatizeLinks(links)
   const tree = generateTree(sanatizedLinks)
 

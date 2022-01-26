@@ -17,7 +17,7 @@ export const useUpdater = () => {
   const isOnboarding = useOnboard((s) => s.isOnboarding)
 
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
-  const saveData = useSaveData()
+  const { saveData } = useSaveData()
 
   const updater = () => {
     const slashCommands = generateSlashCommands(useSnippetStore.getState().snippets, useSyncStore.getState().templates)

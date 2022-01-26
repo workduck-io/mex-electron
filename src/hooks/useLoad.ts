@@ -2,12 +2,10 @@ import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph'
 import toast from 'react-hot-toast'
 import { useApi } from '../apis/useSaveApi'
 import { USE_API } from '../data/Defaults/dev_'
-import { useDataSaverFromContent } from '../editor/Components/Saver'
 import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
 import { NodeProperties, useEditorStore } from '../store/useEditorStore'
 import { useGraphStore } from '../store/useGraphStore'
-import { useSaveQ, useQStore } from '../store/useQStore'
 import { NodeEditorContent } from '../types/Types'
 import { getContent } from '../utils/helpers'
 import { mog, updateEmptyBlockTypes } from '../utils/lib/helper'
@@ -31,7 +29,7 @@ const useLoad = () => {
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
   const setSelectedNode = useGraphStore((store) => store.setSelectedNode)
   const { getDataAPI, saveDataAPI } = useApi()
-  const { saveNodeAPIandFs } = useDataSaverFromContent()
+  // const { saveNodeAPIandFs } = useDataSaverFromContent()
   const { saveAndClearBuffer } = useEditorBuffer()
   // const { saveQ } = useSaveQ()
 
@@ -43,7 +41,7 @@ const useLoad = () => {
     const respectiveLink = ilinks.find((i) => i.uid === uid)
 
     const UID = respectiveLink?.uid ?? archiveLink?.uid ?? uid
-    const text = respectiveLink?.text ?? archiveLink?.uid ?? uid
+    const text = respectiveLink?.nodeId ?? archiveLink?.nodeId
 
     const node = {
       title: text,

@@ -65,8 +65,8 @@ export const useApi = () => {
       .post(apiURLs.saveNode, reqData, {})
       .then((d) => {
         mog('savedData', { d })
-        setMetadata(uid, extractMetadata(d.data))
-        setContent(uid, deserializeContent(d.data.data))
+        // setMetadata(uid, extractMetadata(d.data))
+        setContent(uid, deserializeContent(d.data.data), extractMetadata(d.data))
         return d.data
       })
       .catch((e) => {

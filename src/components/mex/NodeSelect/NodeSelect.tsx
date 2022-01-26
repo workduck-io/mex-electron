@@ -25,11 +25,32 @@ import {
 } from './NodeSelect.styles'
 
 export type ComboItem = {
+  // Text to be shown in the combobox list
   text: string
+
+  // Value of the item. In this case NodeId
   value: string
+
+  // Does it 'exist' or is it 'new'
   type: string
+
+  // Unique identifier
+  // Not present if the node is not yet created i.e. 'new'
   uid?: string
 }
+
+export const createComboItem = (nodeId: string, uid: string): ComboItem => ({
+  text: nodeId,
+  value: nodeId,
+  type: 'exists',
+  uid
+})
+
+export const createNewComboItem = (nodeId: string): ComboItem => ({
+  text: `Create new: ${nodeId}`,
+  value: nodeId,
+  type: 'new'
+})
 
 interface NodeSelectProps {
   handleSelectItem: (nodeId: string) => void
@@ -89,7 +110,7 @@ function NodeSelect({
   const setSelectedItem = (selectedItem: ComboItem | null) =>
     setNodeSelectState((state) => ({ ...state, selectedItem }))
 
-  const { getNodeIdFromUid } = useLinks()
+  const { getNodeIdFromUid, getUidFromNodeId } = useLinks()
 
   const reset = () =>
     setNodeSelectState({
@@ -97,20 +118,15 @@ function NodeSelect({
       selectedItem: null
     })
 
-  const ilinks = useDataStore((store) => store.ilinks).map((l) => ({
-    text: l.text,
-    value: l.text,
-    type: 'exists',
-    uid: l.uid
-  }))
+  const ilinks = useDataStore((store) => store.ilinks).map((l) => createComboItem(l.nodeId, l.uid))
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)
 
   const lastOpenedItems = Array.from(lastOpened)
     .reverse()
-    .map((l) => {
-      const nodeId = getNodeIdFromUid(l)
-      return { text: nodeId, value: nodeId, type: 'exists', uid: l }
+    .map((uid) => {
+      const nodeId = getNodeIdFromUid(uid)
+      return createComboItem(nodeId, uid)
     })
     .filter((i) => i.text)
 
@@ -122,9 +138,10 @@ function NodeSelect({
     if (inputValue !== '') {
       const newItems = fuzzySearch(ilinks, inputValue, { keys: ['text'] })
       if (handleCreateItem && inputValue !== '' && isNew(inputValue, ilinks)) {
+        const comboItem = createNewComboItem(inputValue)
         if (createAtTop) {
-          newItems.unshift({ text: `Create new: ${inputValue}`, value: inputValue, type: 'new' })
-        } else newItems.push({ text: `Create new: ${inputValue}`, value: inputValue, type: 'new' })
+          newItems.unshift(comboItem)
+        } else newItems.push(comboItem)
       }
       return newItems
     } else {
@@ -141,7 +158,7 @@ function NodeSelect({
     setInputValue,
     getItemProps,
     closeMenu,
-    toggleMenu
+    // toggleMenu
   } = useCombobox({
     items: inputItems,
     selectedItem,
@@ -198,9 +215,10 @@ function NodeSelect({
   useEffect(() => {
     if (defaultValue) {
       const newItems = getNewItems(defaultValue)
+      const uid = getUidFromNodeId(defaultValue)
       setInputItems(newItems)
       setInputValue(defaultValue)
-      setSelectedItem({ text: defaultValue, value: defaultValue, type: 'exists' })
+      setSelectedItem(createComboItem(defaultValue, uid))
     } else {
       if (prefillRecent && lastOpenedItems.length > 0) {
         setInputItems(lastOpenedItems.filter((i) => i.text))

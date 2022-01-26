@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from 'react'
 import unarchiveLine from '@iconify-icons/clarity/unarchive-line'
 import trashIcon from '@iconify-icons/codicon/trash'
-import useArchive from '../../hooks/useArchive'
-import styled, { useTheme } from 'styled-components'
-import { IntegrationContainer, Title } from '../../style/Integration'
-import useDataStore from '../../store/useDataStore'
-import { ILink } from '../../types/Types'
-import { Icon } from '@iconify/react'
-import useLoad from '../../hooks/useLoad'
-import { useHistory } from 'react-router'
-import { Button } from '../../style/Buttons'
-import { useSaver } from '../../editor/Components/Saver' // FIXME move useSaver to hooks
-import Modal from 'react-modal'
-import { ModalControls, ModalHeader, MRMHead } from '../../components/mex/Refactor/styles'
-import { useTransition } from 'react-spring'
-import { Results, Result, ResultHeader, ResultTitle, SearchPreviewWrapper } from '../../style/Search'
-import { defaultContent } from '../../data/Defaults/baseData'
-import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
-import { useContentStore } from '../../store/useContentStore'
-import { NodeProperties } from '../../store/useEditorStore'
-import { NotFoundText } from '../../style/Form'
 import archiveFill from '@iconify-icons/ri/archive-fill'
+import { Icon } from '@iconify/react'
+import React, { useState } from 'react'
+import Modal from 'react-modal'
+import { useHistory } from 'react-router'
+import { useTransition } from 'react-spring'
+import styled, { useTheme } from 'styled-components'
+import { ModalControls, ModalHeader, MRMHead } from '../../components/mex/Refactor/styles'
+import { defaultContent } from '../../data/Defaults/baseData'
+import { useSaver } from '../../editor/Components/Saver' // FIXME move useSaver to hooks
+import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
+import useArchive from '../../hooks/useArchive'
+import useLoad from '../../hooks/useLoad'
+import { useContentStore } from '../../store/useContentStore'
+import useDataStore from '../../store/useDataStore'
+import { NodeProperties } from '../../store/useEditorStore'
+import { Button } from '../../style/Buttons'
+import { NotFoundText } from '../../style/Form'
+import { IntegrationContainer, Title } from '../../style/Integration'
+import { Result, ResultHeader, Results, ResultTitle, SearchPreviewWrapper } from '../../style/Search'
+import { ILink } from '../../types/Types'
 
 const Nodes = styled.section`
   padding-right: 2rem;
@@ -66,7 +66,6 @@ const ActionContainer = styled.div`
 
 const Archive = () => {
   const archive = useDataStore((store) => store.archive)
-  const ilinks = useDataStore((state) => state.ilinks)
   const addILink = useDataStore((state) => state.addILink)
 
   const { unArchiveData, removeArchiveData, getArchiveData } = useArchive()
@@ -91,12 +90,12 @@ const Archive = () => {
     // }
 
     await unArchiveData([node])
-    addILink(node.key, node.uid, undefined, true)
+    addILink(node.nodeId, node.uid, undefined, true)
 
     const archiveNode: NodeProperties = {
-      id: node.key,
-      key: node.key,
-      title: node.text,
+      id: node.uid,
+      key: node.uid,
+      title: node.nodeId,
       uid: node.uid
     }
 
@@ -119,7 +118,7 @@ const Archive = () => {
 
   const onDeleteClick = async () => {
     const nodesToDelete = archive.filter((i) => {
-      const match = i.key.startsWith(delNode.key)
+      const match = i.nodeId.startsWith(delNode.nodeId)
       return match
     })
 
@@ -148,7 +147,7 @@ const Archive = () => {
         <Results>
           {transition((styles, n, _t, _i) => {
             const con = contents[n.uid]
-            const nodeId = n.key
+            const nodeId = n.nodeId
             const content = con ? con.content : defaultContent.content
             return (
               <Result style={styles} key={`tag_res_prev_archive_${n.uid}${_i}`}>

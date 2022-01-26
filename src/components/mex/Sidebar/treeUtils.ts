@@ -24,23 +24,30 @@ export const getParentId = (id: string) => {
 }
 
 /** Also includes the ID of the final node */
-export const getAllParentIds = (id: string) => {
-  const allParents: string[] = []
-  let past = ''
-  id.split(SEPARATOR).forEach((s) => {
-    const link = past === '' ? s : `${past}${SEPARATOR}${s}`
-    allParents.push(link)
-    past = link
-  })
-  return allParents
-  /*
+/**
     id = a.b.c
     link = [a b c]
-    a
-    a.b
-    a.b.c
+    a, a.b, a.b.c
   */
-}
+export const getAllParentIds = (
+  id: string // const allParents: string[] = []
+) =>
+  id
+    .split(SEPARATOR) // split by `.`
+    .reduce(
+      // Use prefix of last element when the array has elements
+      (p, c) => [...p, p.length > 0 ? `${p[p.length - 1]}${SEPARATOR}${c}` : c],
+      []
+    )
+
+//
+// let past = ''
+// id.split(SEPARATOR).forEach((s) => {
+//   const link = past === '' ? s : `${past}${SEPARATOR}${s}`
+//   allParents.push(link)
+//   past = link
+// })
+// return allParents
 
 export const isElder = (id: string, xparent: string) => {
   return id.startsWith(xparent + SEPARATOR)
