@@ -51,7 +51,6 @@ const Register = () => {
   const setRegistered = useAuthStore((store) => store.setRegistered)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const { resendCode } = useAuth()
-  const { setOnboardData } = useOnboardingData()
 
   const regErrors = registerForm.formState.errors
   const verErrors = verifyForm.formState.errors
@@ -75,11 +74,9 @@ const Register = () => {
 
   const onRegisterSubmit = async (data: RegisterFormData) => {
     await registerDetails(data).then((s) => {
-
       if (s === 'UsernameExistsException') {
         toast('You have already registered, please verify code.')
-      }
-      else {
+      } else {
         ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails: { email: data.email }, loggedIn: true })
       }
     })

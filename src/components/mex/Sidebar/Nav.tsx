@@ -167,7 +167,7 @@ const Nav = ({ links }: NavProps) => {
       <MainLinkContainer>
         {links.map((l) =>
           l.isComingSoon ? (
-            <NavTooltip singleton={target} content={`${l.title} (Coming Soon!)`}>
+            <NavTooltip key={l.title} singleton={target} content={`${l.title} (Coming Soon!)`}>
               <ComingSoon tabIndex={-1} key={`nav_${l.title}`}>
                 {l.icon !== undefined ? l.icon : l.title}
               </ComingSoon>
@@ -175,6 +175,7 @@ const Nav = ({ links }: NavProps) => {
           ) : (
             <NavTooltip
               singleton={target}
+              key={l.title}
               content={l.shortcut ? <TooltipTitleWithShortcut title={l.title} shortcut={l.shortcut} /> : l.title}
             >
               <Link exact tabIndex={-1} activeClassName="active" to={l.path} key={`nav_${l.title}`}>

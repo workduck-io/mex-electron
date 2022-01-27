@@ -49,6 +49,19 @@ export const useFlowMessage = () => {
   }
 }
 
+export const snippetTourContent = [
+  {
+    id: 'TEMP_CcPFY9NRNDenbUy6pcool',
+    type: 'p',
+    children: [
+      {
+        id: 'TEMP_MijDnKGtkMretRLzKtaaa',
+        text: "Let's get started with a quick tour of mex"
+      }
+    ]
+  }
+]
+
 export const tourNodeContent = [
   {
     id: 'TEMP_pfgMWhHAyUidBcTV9d4XN',

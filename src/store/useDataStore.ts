@@ -173,6 +173,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
   addBookmarks: (bookmarks) => {
     const ubookmarks = new Set([...get().bookmarks, ...bookmarks])
+    mog('Bookmarks: ', { ubookmarks, bookmarks }, { pretty: true })
     set({ bookmarks: Array.from(ubookmarks) })
   },
 

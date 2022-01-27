@@ -10,9 +10,6 @@ import { GetIcon } from '../../../data/links'
 import { FlexBetween } from '../../spotlight/Actions/styled'
 import { useInitOlvy } from '../../../services/olvy'
 import { Float, FloatingMenu, FloatButton, ClickableIcon, MenuItem } from './styled'
-import { useEditorStore } from '../../../store/useEditorStore'
-import { tourNodeContent } from '../Onboarding/tourNode'
-import useLoad from '../../../hooks/useLoad'
 import { useLocation, useHistory } from 'react-router-dom'
 import { MexIcon } from '../../../style/Layouts'
 
@@ -33,7 +30,7 @@ const FloatingMenuActions: React.FC<{
     document.addEventListener('mousedown', handleOutsideClick)
 
     return () => document.removeEventListener('mousedown', handleOutsideClick)
-  }, [menuRef])
+  }, [])
 
   return (
     <FloatingMenu ref={menuRef}>
@@ -64,23 +61,17 @@ const FloatingButton = () => {
   const focusMode = useLayoutStore((store) => store.focusMode)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const authenticated = useAuthStore((store) => store.authenticated)
-  const loadTourNode = useEditorStore((s) => s.loadNodeAndReplaceContent)
   const { setOnboardData } = useOnboardingData()
-  const { getNode } = useLoad()
 
   const history = useHistory()
   const location = useLocation()
 
-  useInitOlvy()
+  useInitOlvy(showMenu)
 
   const onGettingStartedClick = () => {
     // * Set Integration data (Like tour flow block)
     setOnboardData()
     // * Load Tour node
-    loadTourNode(getNode('Product tour'), {
-      type: 'something',
-      content: tourNodeContent
-    })
 
     // * If not on editor page
     if (location.pathname !== '/editor') {

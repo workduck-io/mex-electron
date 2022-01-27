@@ -21,6 +21,7 @@ import {
 } from '../../style/Snippets'
 import { Title } from '../../style/Typography'
 import genereateName from 'project-name-generator'
+import { OnboardElements } from '../../components/mex/Onboarding/types'
 
 export type SnippetsProps = {
   title?: string
@@ -68,7 +69,7 @@ const Snippets: React.FC<SnippetsProps> = () => {
           <p>Create New Snippet</p>
         </CreateSnippet>
         {snippets.map((s) => (
-          <SSnippet key={`SnippetPreview_${s.id}`}>
+          <SSnippet key={`SnippetPreview_${s.id}`} data-tour={OnboardElements.SNIPPET}>
             <SnippetHeader>
               <SnippetCommand onClick={() => onOpenSnippet(s.id)}>
                 <SnippetCommandPrefix>/snip.</SnippetCommandPrefix>

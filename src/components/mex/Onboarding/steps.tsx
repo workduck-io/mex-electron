@@ -1,14 +1,15 @@
-import WelcomeSection from './components/Welcome'
 import { StyledKeyCap, StyledTypography } from './components/welcome.style'
 import React from 'react'
 import { Command } from '../NodeIntentsModal/styled'
 import styled from 'styled-components'
 import { useFlowMessage } from './tourNode'
 import { useHistory } from 'react-router-dom'
-import { CenteredFlex, PrimaryText } from '../../../style/Integration'
+import { CenteredFlex } from '../../../style/Integration'
 import { Button } from '../../../style/Buttons'
 import useOnboard from '../../../store/useOnboarding'
 import { OnboardElements } from './types'
+import useLoad from '../../../hooks/useLoad'
+import { useLinks } from '../../../hooks/useLinks'
 
 export const toolTipStyle = {
   padding: '2rem',
@@ -70,6 +71,33 @@ const FlowMessage = () => {
   )
 }
 
+const LoadQuickLink = () => {
+  const { loadNode } = useLoad()
+  const { getUidFromNodeId } = useLinks()
+  const onLoad = () => {
+    loadNode(getUidFromNodeId('doc'))
+    performClick()
+  }
+
+  return (
+    <>
+      <div>
+        Create quick links using{' '}
+        <Command>
+          <strong> [[ </strong>
+        </Command>
+        command
+      </div>
+      <StyledTypography margin="0.5rem 0" size="0.8rem" color="#aaa" maxWidth="100%">
+        Incase you want to link your thoughts together
+      </StyledTypography>
+      <CenteredFlex>
+        <Button onClick={onLoad}>Send</Button>
+      </CenteredFlex>
+    </>
+  )
+}
+
 const MoveToIntegrationpage = () => {
   const router = useHistory()
 
@@ -121,20 +149,14 @@ export const performClick = (showButton = true) => {
 
 export const quickLinkTour = {
   selector: `[data-tour="${OnboardElements.QUICK_LINK}"]`,
-  content: (
-    <>
-      <div>
-        Create quick links using{' '}
-        <Command>
-          <strong> [[ </strong>
-        </Command>
-        command
-      </div>
-      <StyledTypography margin="0.5rem 0" size="0.8rem" color="#aaa" maxWidth="100%">
-        Incase you want to link your thoughts together
-      </StyledTypography>
-    </>
-  ),
+  content: <LoadQuickLink />,
+  style: toolTipStyle,
+  action: displayNone
+}
+
+export const snippetTour = {
+  selector: `[data-tour="${OnboardElements.SNIPPET}"]`,
+  content: 'Something is here',
   style: toolTipStyle
 }
 
