@@ -14,6 +14,7 @@ import { useEditorStore } from '../../../store/useEditorStore'
 import { tourNodeContent } from '../Onboarding/tourNode'
 import useLoad from '../../../hooks/useLoad'
 import { useLocation, useHistory } from 'react-router-dom'
+import { MexIcon } from '../../../style/Layouts'
 
 const FloatingMenuActions: React.FC<{
   onTourClick: () => void
@@ -43,13 +44,13 @@ const FloatingMenuActions: React.FC<{
 
       <div>
         <MenuItem key="wd-mex-getting-started-button" onClick={onTourClick}>
-          Getting Started
+          <MexIcon fontSize={20} margin="0 1rem 0 0" icon="fluent:book-24-filled" /> Getting Started
         </MenuItem>
         <MenuItem key="wd-mex-what-is-new-button" id="olvy-target">
-          What&apos;s New
+          <MexIcon fontSize={20} margin="0 1rem 0 0" icon="fluent:gift-24-filled" /> What&apos;s New
         </MenuItem>
         <MenuItem key="wd-mex-shortcuts-button" onClick={onShortcutClick}>
-          Keyboard Shortcuts
+          <MexIcon fontSize={20} margin="0 1rem 0 0" icon="fluent:keyboard-24-filled" /> Keyboard Shortcuts
         </MenuItem>
       </div>
     </FloatingMenu>

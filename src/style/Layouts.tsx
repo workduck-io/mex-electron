@@ -5,8 +5,9 @@ export const Wrapper = styled.div`
   margin: 0 ${({ theme }) => theme.spacing.large};
 `
 
-export const MexIcon = styled(Icon)`
+export const MexIcon = styled(Icon)<{ margin?: string }>`
   padding: 1px;
+  margin: ${({ margin }) => margin};
   :hover {
     background-color: ${(props) => props.theme.colors.background.card};
     border-radius: 5px;

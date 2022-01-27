@@ -51,22 +51,12 @@ export const useFlowMessage = () => {
 
 export const tourNodeContent = [
   {
-    id: 'TEMP_kqBg6XxrH6Ay4yxecQHwc',
-    children: [
-      {
-        text: '',
-        id: 'TEMP_bLQybqXdj4n9TkGKa73nH'
-      }
-    ],
-    type: 'p'
-  },
-  {
     id: 'TEMP_pfgMWhHAyUidBcTV9d4XN',
     type: 'h2',
     children: [
       {
         id: 'TEMP_de3bx4MhRhn4VmHDrmMzf',
-        text: 'Tour'
+        text: 'Welcome to Mex'
       }
     ]
   },

@@ -29,9 +29,7 @@ const useLoad = () => {
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
   const setSelectedNode = useGraphStore((store) => store.setSelectedNode)
   const { getDataAPI, saveDataAPI } = useApi()
-  // const { saveNodeAPIandFs } = useDataSaverFromContent()
   const { saveAndClearBuffer } = useEditorBuffer()
-  // const { saveQ } = useSaveQ()
 
   const getNode = (nodeid: string): NodeProperties => {
     const ilinks = useDataStore.getState().ilinks

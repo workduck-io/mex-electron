@@ -42,8 +42,8 @@ export const TreeWithContextMenu = ({ tree }: TreeProps) => {
         break
       case 'sync':
         break
-      case 'share':
-        break
+      // case 'share':
+      //   break
     }
   }
 

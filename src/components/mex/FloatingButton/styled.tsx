@@ -25,8 +25,9 @@ export const FloatButton = styled(Button)`
   cursor: pointer;
   width: 3.2rem;
   padding: 0.8rem;
+  background: ${(props) => props.theme.colors.primary};
   :hover {
-    border-color: ${({ theme }) => theme.colors.primary};
+    background: ${(props) => props.theme.colors.primary};
   }
 `
 
@@ -34,7 +35,7 @@ export const FloatingMenu = styled.div`
   height: fit-content;
   max-height: 400px;
   width: 250px;
-
+  user-select: none;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   background-color: ${({ theme }) => theme.colors.background.card};
@@ -42,7 +43,8 @@ export const FloatingMenu = styled.div`
 
 export const MenuItem = styled.button`
   width: 100%;
-  display: block;
+  display: flex;
+  align-items: center;
   padding: 10px;
   text-align: left;
   color: ${({ theme }) => theme.colors.text.default};

@@ -143,22 +143,15 @@ class Tree extends React.Component<RCTreeProps> {
 
     const { prefillRefactorModal: prefillModal } = this.props
 
-    // console.log(getMockRefactor(from, to));
     prefillModal(from, to)
-
-    // this.setState({
-    //   gData: data,
-    // });
   }
 
   onExpand(expandedKeys: any) {
     // eslint-disable-next-line no-console
-    // console.log('onExpand', expandedKeys)
     if (expandedKeys) {
       const { currentNode } = this.props
       const newExp = expandedKeys.filter((k) => k)
       const expKeys = Array.from(new Set([...newExp, currentNode.id]))
-      // console.log({ currentNode, expandedKeys, expKeys, newExp })
 
       this.setState({
         expandedKeys: expKeys,
@@ -171,8 +164,6 @@ class Tree extends React.Component<RCTreeProps> {
     const { selectedNodes } = info
     const { push } = this.props
 
-    // console.log({ selectedNodes })
-
     if (selectedNodes.length > 0) {
       push(selectedNodes[0].nodeid)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, selectedNodes[0].key)
@@ -182,8 +173,6 @@ class Tree extends React.Component<RCTreeProps> {
   render() {
     const { expandedKeys, autoExpandParent }: any = this.state
     const { tree, currentNode, displayMenu } = this.props
-
-    // let newExpKeys = expandedKeys !== undefined ? [...expandedKeys, currentNode.key] : [currentNode.key]
 
     return (
       <StyledTree className="draggable-demo">
