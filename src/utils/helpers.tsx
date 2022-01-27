@@ -42,3 +42,6 @@ export const getInitialNode = (): NodeProperties => ({
 })
 
 export const typeInvert = (type: string) => (type === 'from' ? 'to' : 'from')
+
+// Returns an array of unique values via Set
+export const Settify = <T,>(arr: T[]): T[] => Array.from(new Set(arr))

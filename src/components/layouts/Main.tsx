@@ -2,7 +2,6 @@ import { transparentize } from 'polished'
 import React from 'react'
 // import AutoSave from '../Components/AutoSave'
 import styled, { css } from 'styled-components'
-import { Notifications } from '../mex/Notifications/Notifications'
 import Nav, { navTooltip } from '../mex/Sidebar/Nav'
 import { linkTooltip } from '../../editor/Components/Link'
 import { GridWrapper } from '../../style/Grid'
@@ -20,9 +19,11 @@ const Content = styled.div<{ grid?: boolean }>`
   display: flex;
   flex-grow: 1;
   overflow: auto;
-  ${({ grid }) => grid && css`
-    grid-column-start: 2;
-  `}
+  ${({ grid }) =>
+    grid &&
+    css`
+      grid-column-start: 2;
+    `}
 `
 
 const Draggable = styled.div`
@@ -47,7 +48,7 @@ const Main = ({ children }: MainProps) => {
     WebkitAppRegion: 'drag'
   }
   const { getLinks } = useNavlinks()
-  const authenticated = useAuthStore(state => state.authenticated)
+  const authenticated = useAuthStore((state) => state.authenticated)
 
   return (
     <AppWrapper>
@@ -55,9 +56,10 @@ const Main = ({ children }: MainProps) => {
       {/* <AutoSave /> */}
       <GridWrapper grid={authenticated}>
         {authenticated && <Nav links={getLinks()} />}
-        <Content id="wd-mex-content-view" grid={authenticated}>{children}</Content>
+        <Content id="wd-mex-content-view" grid={authenticated}>
+          {children}
+        </Content>
       </GridWrapper>
-      <Notifications />
     </AppWrapper>
   )
 }

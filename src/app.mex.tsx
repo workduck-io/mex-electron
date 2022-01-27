@@ -13,6 +13,7 @@ import GlobalStyle from './style/Global'
 import { initializeSentry } from './services/sentry'
 import { IS_DEV } from './data/Defaults/dev_'
 import FloatingButton from './components/mex/FloatingButton'
+import { Notifications } from './components/mex/Notifications/Notifications'
 
 if (!IS_DEV) initializeSentry()
 
@@ -39,6 +40,7 @@ function App() {
             <GlobalStyle />
             {/* Floating help modal button */}
             <FloatingButton />
+            <Notifications />
           </Main>
         </Contexts>
       </Providers>

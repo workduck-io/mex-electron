@@ -9,24 +9,21 @@ export interface ComboText {
   icon?: string
 }
 
+/**  ~~ILinks~~ (Node)
+ * Map of nodeid -> heirarchal id, with uid -> Unique nanoid */
 export interface ILink {
-  /*
-   * Unique Identifier
-   */
+  /** Unique Identifier */
   uid: string
 
-  /*
-   * The title of the node.
-   * Uses separator for heirarchy
-   */
+  /** The title of the node.
+   * Uses separator for heirarchy */
   nodeId: string
 
-  /*
-   * Iconify Icon string
-   */
+  /** Iconify Icon string */
   icon?: string
 }
 
+/**  Tags */
 export interface Tag {
   value: string
 }

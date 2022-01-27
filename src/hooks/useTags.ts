@@ -1,4 +1,5 @@
 import { uniq } from 'lodash'
+import { Settify } from '../utils/helpers'
 import { ELEMENT_TAG } from '../editor/Components/tag/defaults'
 import useDataStore from '../store/useDataStore'
 import { TagsCache } from '../types/Types'
@@ -127,15 +128,20 @@ export const useTags = () => {
         const tag = tagsCache[t]
         // If it is included in tags found in content, add it
         if (tags.includes(t)) {
-          const set = new Set([...tag.nodes, uid])
+          const set = Settify([...tag.nodes, uid])
           return {
             ...p,
-            [t]: { nodes: Array.from(set) }
+            [t]: { nodes: set }
           }
         }
         // If it a tag was removed, remove it from tagCache nodes
         if (removedFromTags.includes(t)) {
           const nodes = tag.nodes.filter((n) => n !== uid)
+          // Remove t if nodes are empty
+          if (nodes.length === 0) {
+            delete p[t]
+            return p
+          }
           return {
             ...p,
             [t]: { nodes }

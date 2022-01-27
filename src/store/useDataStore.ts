@@ -2,8 +2,8 @@ import create from 'zustand'
 import { generateTree, getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import { generateNodeUID } from '../data/Defaults/idPrefixes'
 import { CachedILink, DataStoreState } from '../types/Types'
-import { generateComboText } from '../utils/generateComboItem'
-import { typeInvert } from '../utils/helpers'
+import { generateTag } from '../utils/generateComboItem'
+import { Settify, typeInvert } from '../utils/helpers'
 import getFlatTree from '../utils/lib/flatTree'
 import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
 import { removeLink } from '../utils/lib/links'
@@ -37,8 +37,9 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
   // Add a new tag to the store
   addTag: (tag) => {
+    const Tags = Settify([...get().tags.map((t) => t.value), tag])
     set({
-      tags: [...get().tags, generateComboText(tag, get().tags.length)]
+      tags: Tags.map(generateTag)
     })
   },
 

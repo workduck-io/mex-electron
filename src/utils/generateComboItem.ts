@@ -1,17 +1,8 @@
 import { generateNodeUID } from '../data/Defaults/idPrefixes'
-import { ComboText, ILink, SlashCommand } from '../types/Types'
+import { ILink, SlashCommand, Tag } from '../types/Types'
 
-export const generateComboText = (item: string, value: number): ComboText => ({
-  key: item,
-  text: item,
-  value: String(value)
-})
-
-export const generateIconComboText = (item: IconComboText, value: number): ComboText => ({
-  key: item.text,
-  text: item.text,
-  icon: item.icon,
-  value: String(value)
+export const generateTag = (item: string): Tag => ({
+  value: item
 })
 
 export const generateIlink = (nodeId: string): ILink => ({
@@ -19,16 +10,7 @@ export const generateIlink = (nodeId: string): ILink => ({
   uid: generateNodeUID()
 })
 
-export const generateComboTexts = (items: string[]) => items.map(generateComboText)
 export const generateILinks = (items: string[]) => items.map(generateIlink)
-
-export interface IconComboText {
-  text: string
-  icon: string
-}
-
-export const generateIconComboTexts = (items: IconComboText[]) => items.map(generateIconComboText)
-export const addIconToString = (items: string[], icon: string) => items.map((i) => ({ text: i, icon }))
 
 export const addIconToSlashCommand = (items: SlashCommand[], icon: string) =>
   items.map((i: SlashCommand): SlashCommand => ({ ...i, icon }))

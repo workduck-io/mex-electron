@@ -34,6 +34,7 @@ import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { convertDataToRawText } from '../../../utils/search/localSearch'
 import { useUpdater } from '../../../hooks/useUpdater'
+import { mog } from '../../../utils/lib/helper'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -63,16 +64,18 @@ const Init = () => {
 
   const { getTemplates } = useUpdater()
 
+  const auth = useAuthStore((store) => store.authenticated)
+
   /**
    * Initialization of the app data, search index and auth,
    * also sends the auth details to the other processess
    * */
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
-    ; (async () => {
+    ;(async () => {
       getLocalData()
         .then((d) => {
-          // console.log('Data here', d)
+          mog('Initializaing', { d })
           return d
         })
         .then(({ fileData, indexData }) => {
@@ -83,10 +86,6 @@ const Init = () => {
         .then(({ fileData, indexData }) => {
           const initList = convertDataToRawText(fileData)
           const index = initFlexSearchIndex(initList, indexData)
-
-          // const res = searchIndexNew('design')
-          // console.log('Initial Results are: ', res)
-
           return fileData
         })
         .then((d) => {
@@ -94,6 +93,7 @@ const Init = () => {
             UserPoolId: config.cognito.USER_POOL_ID,
             ClientId: config.cognito.APP_CLIENT_ID
           })
+          mog('Authorizing', { userAuthenticatedEmail })
           if (userAuthenticatedEmail) {
             // setAuthenticated({ email: userAuthenticatedEmail })
             ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: true })
@@ -106,7 +106,12 @@ const Init = () => {
         .then(({ d, auth }) => {
           if (auth) {
             // TODO: Fix loading of the __null__ node on first start of a fresh install
-            loadNode(getUidFromNodeIdAndLinks(d.ilinks, d.baseNodeId))
+            mog('Loading Initial Node', { d, auth })
+            loadNode(getUidFromNodeIdAndLinks(d.ilinks, d.baseNodeId), {
+              fetch: false,
+              savePrev: false,
+              withLoading: false
+            })
 
             // Fetch quick flow templates
             getTemplates()
@@ -115,7 +120,7 @@ const Init = () => {
         .then(() => history.push('/editor'))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [auth]) // eslint-disable-line react-hooks/exhaustive-deps
   const editor = usePlateEditorRef()
 
   /**

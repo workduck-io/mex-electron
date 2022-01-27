@@ -24,9 +24,10 @@ export const apiURLs = {
   getNode: (uid: string) => `${BASE_API_URL}/node/${uid}`,
 
   // * User Preference
-  getUserPreferences: (userId: string) => `/userPreference/all/${userId}`,
-  getPreference: (userId: string, preferenceType: string) => `/userPreference/${userId}/${preferenceType}`,
-  saveUserPrefernces: () => `/userPreference`,
+  getUserPreferences: (userId: string) => `${BASE_API_URL}/userPreference/all/${userId}`,
+  getPreference: (userId: string, preferenceType: string) =>
+    `${BASE_API_URL}/userPreference/${userId}/${preferenceType}`,
+  saveUserPrefernces: () => `${BASE_API_URL}/userPreference`,
 
   // Bookmarks
   // post to add
@@ -46,6 +47,6 @@ export const apiURLs = {
 
   // Workspace
   createWorkspace: `${BASE_API_URL}/workspace`,
-  getNodesByWorkspace: (workspaceId: string) => `${BASE_API_URL}/node/workspace/${workspaceId}/namespace/NAMESPACE1`,
+  getNodesByWorkspace: (workspaceId: string) => `${BASE_API_URL}/workspace/${workspaceId}/namespace/NAMESPACE1`,
   getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`
 }
