@@ -1,80 +1,60 @@
-import React, { useState } from 'react'
-import styled, { css } from 'styled-components'
+import React, { useEffect, useRef, useState } from 'react'
+import { useLayoutStore } from '../../../store/useLayoutStore'
 import QuestionMarkIcon from '@iconify-icons/ri/question-mark'
 import CloseIcon from '@iconify-icons/ri/close-line'
-import { Icon } from '@iconify/react'
-import { useTourData } from '../Onboarding/hooks'
-import { Button } from '../../../style/Buttons'
+import { useOnboardingData } from '../Onboarding/hooks'
 import { useHelpStore } from '../../../store/useHelpStore'
 import useOnboard from '../../../store/useOnboarding'
 import { useAuthStore } from '../../../services/auth/useAuth'
 import { GetIcon } from '../../../data/links'
 import { FlexBetween } from '../../spotlight/Actions/styled'
 import { useInitOlvy } from '../../../services/olvy'
-import { useLayoutStore } from '../../../store/useLayoutStore'
-import { FocusModeProp } from '../../../style/props'
-import { FOCUS_MODE_OPACITY } from '../../../style/consts'
+import { Float, FloatingMenu, FloatButton, ClickableIcon, MenuItem } from './styled'
+import { useEditorStore } from '../../../store/useEditorStore'
+import { tourNodeContent } from '../Onboarding/tourNode'
+import useLoad from '../../../hooks/useLoad'
+import { useLocation, useHistory } from 'react-router-dom'
 
-export const Float = styled.div<FocusModeProp>`
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  z-index: 1000;
-  ${({ focusMode }) =>
-    focusMode &&
-    css`
-      opacity: ${FOCUS_MODE_OPACITY};
-      &:hover {
-        opacity: 1;
-      }
-    `}
-`
+const FloatingMenuActions: React.FC<{
+  onTourClick: () => void
+  onShortcutClick: () => void
+  setMenu: (val: boolean) => void
+}> = ({ onTourClick, onShortcutClick, setMenu }) => {
+  const menuRef = useRef(null)
 
-export const FloatButton = styled(Button)`
-  border-radius: 50%;
-  height: 3.2rem;
-  cursor: pointer;
-  width: 3.2rem;
-  padding: 0.8rem;
-  :hover {
-    border-color: ${({ theme }) => theme.colors.primary};
+  const handleOutsideClick = (event) => {
+    if (menuRef?.current && !menuRef?.current?.contains(event.target)) {
+      setMenu(false)
+    }
   }
-`
 
-export const FloatingMenu = styled.div`
-  height: fit-content;
-  max-height: 400px;
-  width: 250px;
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick)
 
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  background-color: ${({ theme }) => theme.colors.background.card};
-`
+    return () => document.removeEventListener('mousedown', handleOutsideClick)
+  }, [menuRef])
 
-export const MenuItem = styled.button`
-  width: 100%;
-  display: block;
-  padding: 10px;
-  text-align: left;
-  color: ${({ theme }) => theme.colors.text.default};
-  margin-bottom: 0.5rem;
-  background-color: ${({ theme }) => theme.colors.background.card};
+  return (
+    <FloatingMenu ref={menuRef}>
+      <FlexBetween>
+        <h3>Help</h3>
+        <ClickableIcon onClick={() => setMenu(false)} width="24" icon={CloseIcon} />
+      </FlexBetween>
 
-  :hover {
-    cursor: pointer;
-    border-radius: 0.5rem;
-    color: ${({ theme }) => theme.colors.primary};
-    background-color: ${({ theme }) => theme.colors.background.highlight};
-  }
-`
-
-export const ClickableIcon = styled(Icon)`
-  cursor: pointer;
-  border-radius: 50%;
-  :hover {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-`
+      <div>
+        <MenuItem key="wd-mex-getting-started-button" onClick={onTourClick}>
+          Getting Started
+        </MenuItem>
+        <MenuItem key="wd-mex-what-is-new-button" id="olvy-target">
+          What&apos;s New
+        </MenuItem>
+        <MenuItem key="wd-mex-shortcuts-button" onClick={onShortcutClick}>
+          Keyboard Shortcuts
+        </MenuItem>
+      </div>
+    </FloatingMenu>
+  )
+}
 
 const FloatingButton = () => {
   const [showMenu, setMenu] = useState<boolean>(false)
@@ -83,13 +63,30 @@ const FloatingButton = () => {
   const focusMode = useLayoutStore((store) => store.focusMode)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const authenticated = useAuthStore((store) => store.authenticated)
+  const loadTourNode = useEditorStore((s) => s.loadNodeAndReplaceContent)
+  const { setOnboardData } = useOnboardingData()
+  const { getNode } = useLoad()
 
-  const { setOnboardData } = useTourData()
+  const history = useHistory()
+  const location = useLocation()
 
   useInitOlvy()
 
   const onGettingStartedClick = () => {
+    // * Set Integration data (Like tour flow block)
     setOnboardData()
+    // * Load Tour node
+    loadTourNode(getNode('Product tour'), {
+      type: 'something',
+      content: tourNodeContent
+    })
+
+    // * If not on editor page
+    if (location.pathname !== '/editor') {
+      history.push('/editor')
+    }
+
+    // * Start Product Tour
     changeOnboarding(true)
   }
 
@@ -107,25 +104,7 @@ const FloatingButton = () => {
           {GetIcon(QuestionMarkIcon)}
         </FloatButton>
       ) : (
-        <FloatingMenu>
-          <FlexBetween>
-            <h3>Help</h3>
-            <ClickableIcon onClick={() => setMenu(false)} width="24" icon={CloseIcon} />
-          </FlexBetween>
-
-          <div>
-            {/* TODO: Uncomment this when we have onboarding
-              <MenuItem key="wd-mex-getting-started-button" onClick={onGettingStartedClick}>
-              Getting Started
-            </MenuItem> */}
-            <MenuItem key="wd-mex-what-is-new-button" id="olvy-target">
-              What&apos;s New
-            </MenuItem>
-            <MenuItem key="wd-mex-shortcuts-button" onClick={onShortcutClick}>
-              Shortcuts
-            </MenuItem>
-          </div>
-        </FloatingMenu>
+        <FloatingMenuActions onTourClick={onGettingStartedClick} onShortcutClick={onShortcutClick} setMenu={setMenu} />
       )}
     </Float>
   )

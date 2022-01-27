@@ -45,7 +45,7 @@ export const DataInfoHeader = styled.div`
   }
 `
 
-const Backlinks = () => {
+const QuickLinks = () => {
   const { getBacklinks } = useLinks()
   const { push } = useNavigation()
   const backlinks = getBacklinks(useEditorStore.getState().node.nodeid)
@@ -55,11 +55,11 @@ const Backlinks = () => {
     <SBackLinks>
       <DataInfoHeader>
         <Icon icon={arrowGoBackLine}></Icon>
-        Backlinks
+        Quick Links
       </DataInfoHeader>
       {backlinks.length === 0 && (
         <>
-          <Note>No backlinks found.</Note>
+          <Note>No quick links found.</Note>
           <Note>Link from other nodes to view them here.</Note>
         </>
       )}
@@ -72,4 +72,4 @@ const Backlinks = () => {
   )
 }
 
-export default Backlinks
+export default QuickLinks 

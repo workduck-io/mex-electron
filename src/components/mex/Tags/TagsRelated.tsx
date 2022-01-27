@@ -2,7 +2,6 @@ import hashtagIcon from '@iconify-icons/ri/hashtag'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import styled from 'styled-components'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useTags } from '../../../hooks/useTags'
@@ -10,7 +9,8 @@ import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { HoverSubtleGlow } from '../../../style/helpers'
 import { Note } from '../../../style/Typography'
-import { DataInfoHeader, NodeLink } from '../Backlinks'
+import styled from 'styled-components'
+import { DataInfoHeader, NodeLink } from '../QuickLinks'
 
 const TagFlex = styled.div`
   cursor: pointer;

@@ -13,6 +13,7 @@ import { useHotkeys } from '../hooks/useHotkeys'
 import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { SILink, SILinkRoot } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
+import { OnboardElements } from '../../../../components/mex/Onboarding/types'
 
 /**
  * ILinkElement with no default styles.
@@ -61,7 +62,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
     <SILinkRoot
       {...attributes}
       id={`ILINK_${element.value}`}
-      data-tour="mex-onboarding-ilink"
+      data-tour={OnboardElements.QUICK_LINK}
       data-slate-value={element.value}
       contentEditable={false}
     >

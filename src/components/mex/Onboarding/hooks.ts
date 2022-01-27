@@ -1,10 +1,15 @@
 // import { useSyncStore } from '../../Editor/Store/useSyncStore'
 
+import useDataStore from '../../../store/useDataStore'
 import { useSyncStore } from '../../../store/useSyncStore'
 
-export const useTourData = () => {
+export const useOnboardingData = () => {
   const templates = useSyncStore((store) => store.templates)
   const services = useSyncStore((store) => store.services)
+  const ilinks = useDataStore((s) => s.ilinks)
+
+  const addILink = useDataStore((store) => store.addILink)
+  const addTag = useDataStore((store) => store.addTag)
 
   const setServices = useSyncStore((store) => store.setServices)
   const setTemplates = useSyncStore((store) => store.setTemplates)
@@ -93,9 +98,12 @@ export const useTourData = () => {
     }
   ]
 
+  // * Integration dummy data
   const setOnboardData = () => {
     setServices(onBoardServices)
     setTemplates(onBoardTempaltes)
+    addTag('onboard')
+    addILink('Product Tour')
   }
 
   const removeOnboardData = () => {

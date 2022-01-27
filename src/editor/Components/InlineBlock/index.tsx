@@ -18,6 +18,8 @@ import {
   StyledInlineBlockPreview
 } from './styled'
 
+import { OnboardElements } from '../../../components/mex/Onboarding/types'
+
 const StyledArchiveText = styled.text`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   padding: 4px 8px;
@@ -43,7 +45,7 @@ const InlineBlock = (props: any) => {
   return (
     <RootElement {...props.attributes}>
       <div contentEditable={false}>
-        <StyledInlineBlock selected={selected} data-tour="mex-onboarding-inline-block">
+        <StyledInlineBlock selected={selected} data-tour={OnboardElements.INLINE_BLOCK}>
           <FlexBetween>
             <InlineFlex>
               <InlineBlockHeading>From:</InlineBlockHeading>

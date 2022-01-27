@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import Backlinks from '../Backlinks'
+import QuickLinks from '../QuickLinks'
 import TagsRelated from '../Tags/TagsRelated'
 
 const DataInfobarWrapper = styled.div`
@@ -15,7 +15,7 @@ const DataInfobarWrapper = styled.div`
 const DataInfoBar = () => {
   return (
     <DataInfobarWrapper>
-      <Backlinks />
+      <QuickLinks />
       <TagsRelated />
     </DataInfobarWrapper>
   )

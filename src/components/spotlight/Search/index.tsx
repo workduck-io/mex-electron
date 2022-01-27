@@ -32,11 +32,11 @@ const Search: React.FC = () => {
     // }
   }, 400)
 
-  useEffect(() => {
-    if (search === '') ref.current.value = ''
-    ref.current.focus()
-    // if (normalMode) ref.current.value = ''
-  }, [search, normalMode])
+  // useEffect(() => {
+  //   if (search === '') ref.current.value = ''
+  //   // ref.current.focus()
+  //   // if (normalMode) ref.current.value = ''
+  // }, [search, normalMode])
 
   return (
     <StyledSearch>
@@ -50,7 +50,7 @@ const Search: React.FC = () => {
       </CenterIcon>
       <StyledInput
         ref={ref}
-        autoFocus
+        autoFocus={true}
         id="spotlight_search"
         name="spotlight_search"
         placeholder={!normalMode || selection ? node?.title : 'Search anything...'}

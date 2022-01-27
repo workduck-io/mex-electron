@@ -1,5 +1,4 @@
 import addCircleLine from '@iconify-icons/ri/add-circle-line'
-import searchLine from '@iconify-icons/ri/search-line'
 import settings4Line from '@iconify-icons/ri/settings-4-line'
 import { useSingleton } from '@tippyjs/react'
 import { transparentize } from 'polished'
@@ -25,6 +24,7 @@ import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
 import { NavProps } from './Types'
 import { FocusModeProp } from '../../../style/props'
+import archiveFill from '@iconify-icons/ri/archive-fill'
 
 const StyledDiv = styled.div<FocusModeProp>`
   overflow: scroll;
@@ -167,7 +167,7 @@ const Nav = ({ links }: NavProps) => {
       <MainLinkContainer>
         {links.map((l) =>
           l.isComingSoon ? (
-            <NavTooltip singleton={target} content="Coming Soon!">
+            <NavTooltip singleton={target} content={`${l.title} (Coming Soon!)`}>
               <ComingSoon tabIndex={-1} key={`nav_${l.title}`}>
                 {l.icon !== undefined ? l.icon : l.title}
               </ComingSoon>
@@ -200,10 +200,10 @@ const Nav = ({ links }: NavProps) => {
         )} */}
         <NavTooltip
           singleton={target}
-          content={<TooltipTitleWithShortcut title="Search" shortcut={shortcuts.showSearch.keystrokes} />}
+          content={<TooltipTitleWithShortcut title="Archive" shortcut={shortcuts.showArchive.keystrokes} />}
         >
-          <Link exact tabIndex={-1} activeClassName="active" to="/search" key="nav_search">
-            {GetIcon(searchLine)}
+          <Link exact tabIndex={-1} activeClassName="active" to="/archive" key="archive-nodes">
+            {GetIcon(archiveFill)}
           </Link>
         </NavTooltip>
         {/* <NavTooltip

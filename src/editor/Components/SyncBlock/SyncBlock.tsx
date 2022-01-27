@@ -23,6 +23,8 @@ import { ElementHeader, FormControls, RootElement, SentFrom, SyncForm, SyncTitle
 import { Intent, SyncBlockData, SyncBlockProps } from './SyncBlock.types'
 import { getSyncServiceIcon } from './SyncIcons'
 
+import { OnboardElements } from '../../../components/mex/Onboarding/types'
+
 type FormValues = {
   content: string
   connections: {
@@ -184,7 +186,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
         {/* For quick debug {& JSON.stringify(blockData)} */}
 
         <SyncForm
-          data-tour={flowMessage ? 'mex-flow-block-response' : 'mex-flow-block'}
+          data-tour={flowMessage ? OnboardElements.FLOW_LINK_RESPONSE : OnboardElements.FLOW_LINK}
           selected={selected || isOnboarding}
           onClick={() => setSelected(element.id)}
         >

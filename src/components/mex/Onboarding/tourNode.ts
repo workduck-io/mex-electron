@@ -90,7 +90,7 @@ export const tourNodeContent = [
       },
       {
         id: 'TEMP_PiYG8mcFEhkeMJPebhrCU',
-        text: 'backlink',
+        text: 'Quick link',
         bold: true,
         italic: true
       }
@@ -112,7 +112,7 @@ export const tourNodeContent = [
             id: 'TEMP_J69kjz8kjKdVqVxnjKdX8'
           }
         ],
-        value: 'Draft.Dec 20, 2021 8:41:47 PM',
+        value: 'doc',
         id: 'TEMP_xmqLMQbJhVy64WXtdhe4j'
       },
       {
@@ -140,7 +140,7 @@ export const tourNodeContent = [
       },
       {
         id: 'TEMP_AArhiMRzNmzDRL6pALjPg',
-        text: 'Inline block',
+        text: 'Inline Block',
         bold: true,
         italic: true
       }
@@ -162,7 +162,7 @@ export const tourNodeContent = [
             id: 'TEMP_Ji4t6QyJ7htQzNPWEi6tA'
           }
         ],
-        value: 'Draft.Dec 20, 2021 8:41:47 PM',
+        value: 'doc',
         id: 'TEMP_Uk8cU3tQ3hmtktAXMXttd'
       },
       {
@@ -172,29 +172,29 @@ export const tourNodeContent = [
         text: ''
       }
     ]
-  },
-  {
-    id: 'TEMP_MRyHTtTNcCbLmDWWeXCjc',
-    type: 'p',
-    children: [
-      {
-        id: 'TEMP_GrfznizUdipLTdqLbtMh6',
-        text: ''
-      },
-      {
-        type: 'sync_block',
-        children: [
-          {
-            text: '',
-            id: 'TEMP_4yDCTyG9LnKBb8MGzAGhV'
-          }
-        ],
-        id: 'SYNC_FLOW'
-      },
-      {
-        text: '',
-        id: 'TEMP_8wgPkCGVrWT7ahVeixGBw'
-      }
-    ]
   }
+  // {
+  //   id: 'TEMP_MRyHTtTNcCbLmDWWeXCjc',
+  //   type: 'p',
+  //   children: [
+  //     {
+  //       id: 'TEMP_GrfznizUdipLTdqLbtMh6',
+  //       text: ''
+  //     },
+  //     {
+  //       type: 'sync_block',
+  //       children: [
+  //         {
+  //           text: '',
+  //           id: 'TEMP_4yDCTyG9LnKBb8MGzAGhV'
+  //         }
+  //       ],
+  //       id: 'SYNC_FLOW'
+  //     },
+  //     {
+  //       text: '',
+  //       id: 'TEMP_8wgPkCGVrWT7ahVeixGBw'
+  //     }
+  //   ]
+  // }
 ]

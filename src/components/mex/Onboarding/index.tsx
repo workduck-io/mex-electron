@@ -26,7 +26,7 @@ const OnBoardingTour = ({ steps }: { steps: Array<any> }) => {
       disableInteraction
       onRequestClose={() => changeOnboarding(false)}
       steps={steps}
-      isOpen={false}
+      isOpen={isOnboarding}
     />
   )
 }

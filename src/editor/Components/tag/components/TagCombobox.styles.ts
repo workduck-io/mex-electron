@@ -1,11 +1,5 @@
 import styled, { css } from 'styled-components'
 
-// const classNames = {
-//   root: 'slate-TagCombobox',
-//   tagItem: 'slate-TagCombobox-tagItem',
-//   tagItemHighlighted: 'slate-TagCombobox-tagItemHighlighted',
-// };
-
 export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
   ${({ isOpen, theme }) =>
     isOpen &&

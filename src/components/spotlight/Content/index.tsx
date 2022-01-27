@@ -1,25 +1,18 @@
 import { search as getSearchResults } from 'fast-fuzzy'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
-import { useCurrentIndex } from '../../../hooks/useCurrentIndex'
-import useLoad from '../../../hooks/useLoad'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
+import useLoad from '../../../hooks/useLoad'
+import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
+import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
+import { useCurrentIndex } from '../../../hooks/useCurrentIndex'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { ILink } from '../../../types/Types'
 import Preview from '../Preview'
 import SideBar from '../SideBar'
-
-export const StyledContent = styled.section`
-  display: flex;
-  justify-content: center;
-  flex: 1;
-  max-height: 324px;
-  margin: 0.5rem 0;
-`
+import { StyledContent } from './styled'
 
 const initPreview = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -49,17 +42,7 @@ const Content = () => {
     })
   )
 
-  const { normalMode, setNormalMode } = useSpotlightAppStore(({ normalMode, setNormalMode }) => ({
-    normalMode,
-    setNormalMode
-  }))
-
-  // useEffect(() => {
-  //   if (!normalMode) {
-  //     setNormalMode(true)
-  //     saveEditorNode(createNodeWithUid(getNewDraftKey()))
-  //   }
-  // }, [])
+  const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
 
   // * Custom hooks
   const { search, selection, setSearch } = useSpotlightContext()

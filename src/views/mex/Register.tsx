@@ -17,8 +17,7 @@ import { StyledRolesSelectComponents } from '../../style/Select'
 import useOnboard from '../../store/useOnboarding'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../../data/IpcAction'
-import { AppType } from '../../hooks/useInitialize'
-import { useTourData } from '../../components/mex/Onboarding/hooks'
+import { useOnboardingData } from '../../components/mex/Onboarding/hooks'
 
 export interface Option {
   label: string
@@ -52,7 +51,7 @@ const Register = () => {
   const setRegistered = useAuthStore((store) => store.setRegistered)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const { resendCode } = useAuth()
-  const { setOnboardData } = useTourData()
+  const { setOnboardData } = useOnboardingData()
 
   const regErrors = registerForm.formState.errors
   const verErrors = verifyForm.formState.errors
