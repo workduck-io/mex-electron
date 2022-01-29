@@ -16,6 +16,7 @@ import listUnordered from '@iconify-icons/ri/list-unordered'
 import { Icon } from '@iconify/react'
 import {
   AlignToolbarButton,
+  BalloonToolbar,
   BlockToolbarButton,
   ELEMENT_BLOCKQUOTE,
   ELEMENT_H1,
@@ -34,27 +35,44 @@ import {
 } from '@udecode/plate'
 import React from 'react'
 import { ButtonSeparator } from '../../style/Toolbar'
-import { BalloonToolbar } from './BalloonToolbar'
 import LinkButton from './BalloonToolbar/LinkButton'
+// import { BalloonToolbar } from './BalloonToolbar'
+// import LinkButton from './BalloonToolbar/LinkButton'
 
 const BallonMarkToolbarButtons = () => {
-  const editor = usePlateEditorRef(usePlateId())
+  const plateId = usePlateId()
+  const editor = usePlateEditorRef(plateId)
 
-  const arrow = true
-  const direction = 'top'
-  const hiddenDelay = 0
+  // const arrow = true
+  // const direction = 'top'
+  // const hiddenDelay = 0
+  // const tooltip = {
+  //   arrow: true,
+  //   delay: 0,
+  //   theme: 'mex',
+  //   duration: [200, 0] as [number, number],
+  //   // hideOnClick: false,
+  //   offset: [0, 17] as [number, number],
+  //   placement: 'top' as const
+  // }
+  const arrow = false
+  const theme = 'dark'
+  const top = 'top' as const
+  const popperOptions = {
+    placement: top
+  }
   const tooltip = {
     arrow: true,
     delay: 0,
+    duration: [200, 0],
     theme: 'mex',
-    duration: [200, 0] as [number, number],
-    // hideOnClick: false,
-    offset: [0, 17] as [number, number],
-    placement: 'top' as const
-  }
+    hideOnClick: false,
+    offset: [0, 17],
+    placement: top
+  } as any
 
   return (
-    <BalloonToolbar direction={direction} hiddenDelay={hiddenDelay} arrow={arrow}>
+    <BalloonToolbar popperOptions={popperOptions} theme={theme} arrow={arrow}>
       <BlockToolbarButton
         type={getPluginType(editor, ELEMENT_H1)}
         icon={<Icon height={20} icon={h1} />}
@@ -77,7 +95,6 @@ const BallonMarkToolbarButtons = () => {
       <AlignToolbarButton value="left" icon={<Icon icon={AlignLeftIcon} />} />
       <AlignToolbarButton value="center" icon={<Icon icon={AlignCenterIcon} />} />
       <AlignToolbarButton value="right" icon={<Icon icon={AlignRightIcon} />} />
-      {/* <AlignToolbarButton value="justify" icon={<Icon icon={AlignJustifyIcon} />} /> */}
 
       <ButtonSeparator />
 
@@ -112,8 +129,9 @@ const BallonMarkToolbarButtons = () => {
         tooltip={{ content: 'Italic (⌘I)', ...tooltip }}
       />
 
-      {/* Looses focus when used. */}
       <LinkButton tooltip={{ content: 'Link', ...tooltip }} icon={<Icon height={20} icon={linkIcon} />} />
+      {/* Looses focus when used.
+       */}
     </BalloonToolbar>
   )
 }

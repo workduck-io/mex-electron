@@ -3,7 +3,7 @@ import { OlvyModal } from '../services/olvy/styled'
 import { createGlobalStyle, css } from 'styled-components'
 import { ThinScrollbar } from './helpers'
 import normalize from './normalize'
-import { TippyBalloonStyles } from './Toolbar'
+import { EditorBalloonStyles, TippyBalloonStyles } from './Toolbar'
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}; // NormalizeCSS normalization
@@ -67,6 +67,9 @@ const GlobalStyle = createGlobalStyle`
 
   /* Tippy Balloon styles */
   ${TippyBalloonStyles}
+
+  /* Editor Balloon styles */
+  ${EditorBalloonStyles}
 
   /* Olvy styles */
   ${OlvyModal}
