@@ -5,9 +5,9 @@ export const generateTag = (item: string): Tag => ({
   value: item
 })
 
-export const generateIlink = (nodeId: string): ILink => ({
-  nodeId,
-  uid: generateNodeUID()
+export const generateIlink = (path: string): ILink => ({
+  path,
+  nodeid: generateNodeUID()
 })
 
 export const generateILinks = (items: string[]) => items.map(generateIlink)

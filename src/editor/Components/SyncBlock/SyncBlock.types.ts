@@ -104,7 +104,7 @@ export type SyncContextType = {
   ) => void
   setTemplates: (templates: SyncBlockTemplate[]) => void
   editSyncBlock: (block: SyncBlockData) => void
-  addIgid: (uid: string, igid: string, intents: Intent[], templateId: string) => void
-  addIntentEmptyMap: (uid: string) => void
-  updateIntentsAndIGIDs: (uid: string, nodeIntentConfig: NodeIntentConfig) => void
+  addIgid: (nodeid: string, igid: string, intents: Intent[], templateId: string) => void
+  addIntentEmptyMap: (nodeid: string) => void
+  updateIntentsAndIGIDs: (nodeid: string, nodeIntentConfig: NodeIntentConfig) => void
 }

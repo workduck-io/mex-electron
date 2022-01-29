@@ -2,18 +2,18 @@ import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
+import tinykeys from 'tinykeys'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
-import tinykeys from 'tinykeys'
+import { useRenameStore } from '../../../store/useRenameStore'
+import { Button } from '../../../style/Buttons'
 import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
-import { useRenameStore } from '../../../store/useRenameStore'
-import { Button } from '../../../style/Buttons'
 
 const Rename = () => {
   const { execRefactor, getMockRefactor } = useRefactor()
@@ -82,13 +82,13 @@ const Rename = () => {
     if (to && from) {
       const res = execRefactor(from, to)
 
-      const nodeId = useEditorStore.getState().node.id
-      const uid = useEditorStore.getState().node.uid
-      if (doesLinkRemain(nodeId, res)) {
-        push(uid)
+      const path = useEditorStore.getState().node.id
+      const nodeid = useEditorStore.getState().node.nodeid
+      if (doesLinkRemain(path, res)) {
+        push(nodeid)
       } else if (res.length > 0) {
-        const uid = getUidFromNodeId(res[0].to)
-        push(uid)
+        const nodeid = getUidFromNodeId(res[0].to)
+        push(nodeid)
       }
     }
 

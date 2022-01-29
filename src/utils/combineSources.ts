@@ -45,7 +45,7 @@ export const combineSources = (
   return removedContent
 }
 
-export const openNodeInMex = (nodeId: string) => {
+export const openNodeInMex = (path: string) => {
   // * Open saved node in Mex
-  ipcRenderer.send(IpcAction.OPEN_NODE_IN_MEX, { nodeId: nodeId })
+  ipcRenderer.send(IpcAction.OPEN_NODE_IN_MEX, { path: path })
 }

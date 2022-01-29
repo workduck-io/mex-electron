@@ -1,8 +1,10 @@
 import { ELEMENT_MEDIA_EMBED, ELEMENT_TABLE } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { useMemo } from 'react'
-import useAnalytics from '../../services/analytics'
 import { useSnippets } from '../../hooks/useSnippets'
+import useAnalytics from '../../services/analytics'
+import useDataStore from '../../store/useDataStore'
+import { useEditorStore } from '../../store/useEditorStore'
 import { ComboboxKey } from '../Components/combobox/useComboboxStore'
 import { ILinkComboboxItem } from '../Components/ilink/components/ILinkComboboxItem'
 import { ELEMENT_ILINK } from '../Components/ilink/defaults'
@@ -14,8 +16,6 @@ import { SlashComboboxItem } from '../Components/SlashCommands/SlashComboboxItem
 import { useSyncConfig } from '../Components/SlashCommands/useSyncConfig'
 import { TagComboboxItem } from '../Components/tag/components/TagComboboxItem'
 import { ELEMENT_TAG } from '../Components/tag/defaults'
-import useDataStore from '../../store/useDataStore'
-import { useEditorStore } from '../../store/useEditorStore'
 
 const useEditorPluginConfig = (editorId: string) => {
   const tags = useDataStore((state) => state.tags)
@@ -34,7 +34,7 @@ const useEditorPluginConfig = (editorId: string) => {
   const syncBlockConfigs = getSyncBlockConfigs()
 
   const ilinksForCurrentNode = useMemo(() => {
-    return ilinks.filter((item) => item.nodeId !== node.id)
+    return ilinks.filter((item) => item.path !== node.id)
   }, [node, ilinks])
 
   const comboConfigData: ComboConfigData = {
@@ -101,13 +101,13 @@ const useEditorPluginConfig = (editorId: string) => {
     ilink: {
       cbKey: ComboboxKey.ILINK,
       trigger: '[[',
-      data: ilinks.map((l) => ({ ...l, value: l.nodeId, text: l.nodeId })),
+      data: ilinks.map((l) => ({ ...l, value: l.path, text: l.path })),
       icon: 'ri:file-list-2-line'
     },
     inline_block: {
       cbKey: ComboboxKey.INLINE_BLOCK,
       trigger: '![[',
-      data: ilinksForCurrentNode.map((l) => ({ ...l, value: l.nodeId, text: l.nodeId })),
+      data: ilinksForCurrentNode.map((l) => ({ ...l, value: l.path, text: l.path })),
       icon: 'ri:picture-in-picture-line'
     },
     tag: {

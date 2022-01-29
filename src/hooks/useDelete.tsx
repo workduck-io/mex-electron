@@ -21,11 +21,11 @@ export const useDelete = () => {
 
   const getMockDelete = (del: string) => {
     const archivedNodes = ilinks.filter((i) => {
-      const match = i.nodeId.startsWith(del)
+      const match = i.path.startsWith(del)
       return match
     })
 
-    const newIlinks = ilinks.filter((i) => archivedNodes.map((i) => i.nodeId).indexOf(i.nodeId) === -1)
+    const newIlinks = ilinks.filter((i) => archivedNodes.map((i) => i.path).indexOf(i.path) === -1)
 
     return { archivedNodes, newIlinks }
   }
@@ -43,10 +43,10 @@ export const useDelete = () => {
     const { newIds: newRecents } = applyDeleteToIds(lastOpened, 0, newIlinks)
     updateLastOpened(newRecents)
 
-    const baseId = archivedNodes.map((item) => item.nodeId).indexOf(useDataStore.getState().baseNodeId)
+    const baseId = archivedNodes.map((item) => item.path).indexOf(useDataStore.getState().baseNodeId)
 
     if (baseId !== -1 && newIlinks.length > 0) {
-      setBaseNodeId(newIlinks[0].nodeId)
+      setBaseNodeId(newIlinks[0].path)
     }
 
     setILinks(newIlinks)
@@ -62,10 +62,10 @@ const applyDeleteToIds = (ids: string[], currentIndex: number, newIlinks: ILink[
   const curIndexOffset = 0
   const newIds: string[] = []
 
-  ids.forEach((uid) => {
-    const isPresent = newIlinks.some((l) => l.uid === uid)
+  ids.forEach((nodeid) => {
+    const isPresent = newIlinks.some((l) => l.nodeid === nodeid)
     if (!isPresent) {
-      newIds.push(uid)
+      newIds.push(nodeid)
     }
   })
 

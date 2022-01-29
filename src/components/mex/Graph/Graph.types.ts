@@ -1,6 +1,6 @@
 export interface GraphNode {
   id: number
-  nodeId: string
+  path: string
   label: string
   color: {
     border: string

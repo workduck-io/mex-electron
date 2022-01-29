@@ -17,23 +17,19 @@ import {
 import fs from 'fs'
 import _ from 'lodash'
 import path from 'path'
-
 import { DefaultFileData } from '../data/Defaults/baseData'
 import { getSaveLocation, getSearchIndexLocation } from '../data/Defaults/data'
 import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
 import { IpcAction } from '../data/IpcAction'
-
 import { AppType } from '../hooks/useInitialize'
 import { initializeSentry } from '../services/sentry'
 import { FileData } from '../types/data'
-
 import { getAppleNotes } from '../utils/importers/appleNotes'
 import { sanitizeHtml } from '../utils/sanitizeHtml'
 import { flexIndexKeys } from '../utils/search/flexsearch'
-import { getGlobalShortcut, getSelectedText, getSelectedTextSync, SelectionType } from './utils/getSelectedText'
-
 import { backupMexJSON } from './backup'
 import MenuBuilder from './menu'
+import { getGlobalShortcut, getSelectedText, getSelectedTextSync, SelectionType } from './utils/getSelectedText'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -581,7 +577,7 @@ ipcMain.on(IpcAction.STOP_ONBOARDING, (_event, arg) => {
 })
 
 ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
-  mex?.webContents.send(IpcAction.OPEN_NODE, { nodeId: arg.nodeId })
+  mex?.webContents.send(IpcAction.OPEN_NODE, { path: arg.path })
   spotlight.hide()
   mex.show()
 })

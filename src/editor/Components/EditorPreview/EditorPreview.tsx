@@ -1,11 +1,11 @@
 import Tippy from '@tippyjs/react/headless' // different import path!
 import React, { forwardRef, useState } from 'react'
-import EditorPreviewRenderer from '../../EditorPreviewRenderer'
 import { useContentStore } from '../../../store/useContentStore'
+import EditorPreviewRenderer from '../../EditorPreviewRenderer'
 import { EditorPreviewWrapper } from './EditorPreview.styles'
 
 export interface EditorPreviewProps {
-  uid: string
+  nodeid: string
   children: React.ReactElement
   isPreview: boolean
   previewRef: any
@@ -38,9 +38,9 @@ export const LazyTippy = forwardRef(function LT(props: any, ref) {
   return <Tippy {...computedProps} ref={ref} />
 })
 
-const EditorPreview = ({ uid, isPreview, children, previewRef }: EditorPreviewProps) => {
+const EditorPreview = ({ nodeid, isPreview, children, previewRef }: EditorPreviewProps) => {
   const getContent = useContentStore((store) => store.getContent)
-  const content = getContent(uid)
+  const content = getContent(nodeid)
   const cc = content && content.content
 
   if (cc) {
@@ -53,7 +53,7 @@ const EditorPreview = ({ uid, isPreview, children, previewRef }: EditorPreviewPr
         appendTo={() => document.body}
         render={(attrs) => (
           <EditorPreviewWrapper className="__editor__preview" tabIndex={-1} {...attrs}>
-            {cc && <EditorPreviewRenderer content={cc} editorId={`__preview__${uid}`} />}
+            {cc && <EditorPreviewRenderer content={cc} editorId={`__preview__${nodeid}`} />}
           </EditorPreviewWrapper>
         )}
       >

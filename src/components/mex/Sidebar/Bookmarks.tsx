@@ -1,7 +1,7 @@
+import bookmarkLine from '@iconify-icons/ri/bookmark-line'
+import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { Icon } from '@iconify/react'
-import bookmarkLine from '@iconify-icons/ri/bookmark-line'
 import { useBookmarks } from '../../../hooks/useBookmarks'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
@@ -47,12 +47,12 @@ const Bookmarks = () => {
 
   return (
     <BList>
-      {bookmarks.map((uid) => {
-        if (getNodeIdFromUid(uid) === undefined) return null
+      {bookmarks.map((nodeid) => {
+        if (getNodeIdFromUid(nodeid) === undefined) return null
         return (
-          <BLink key={`bookmark_link_${uid}`} onClick={() => push(uid)}>
+          <BLink key={`bookmark_link_${nodeid}`} onClick={() => push(nodeid)}>
             <Icon height={14} icon={bookmarkLine} />
-            {getNodeIdFromUid(uid)}
+            {getNodeIdFromUid(nodeid)}
           </BLink>
         )
       })}

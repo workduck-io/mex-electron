@@ -4,13 +4,13 @@ import styled from 'styled-components'
 import { WrappedNodeSelect } from '../../components/mex/NodeSelect/NodeSelect'
 import { StyledInputWrapper } from '../../components/mex/NodeSelect/NodeSelect.styles'
 import { doesLinkRemain } from '../../components/mex/Refactor/doesLinkRemain'
-import { useRenameStore } from '../../store/useRenameStore'
-import { useNavigation } from '../../hooks/useNavigation'
-import { Button } from '../../style/Buttons'
-import { Input } from '../../style/Form'
 import { useLinks } from '../../hooks/useLinks'
+import { useNavigation } from '../../hooks/useNavigation'
 import { useRefactor } from '../../hooks/useRefactor'
 import { useEditorStore } from '../../store/useEditorStore'
+import { useRenameStore } from '../../store/useRenameStore'
+import { Button } from '../../style/Buttons'
+import { Input } from '../../style/Form'
 
 const Wrapper = styled.div`
   position: relative;
@@ -143,14 +143,14 @@ const NodeRenameTitle = () => {
     if (to && nodeFrom) {
       const res = execRefactor(nodeFrom, to)
 
-      const nodeId = useEditorStore.getState().node.id
-      const uid = useEditorStore.getState().node.uid
+      const path = useEditorStore.getState().node.id
+      const nodeid = useEditorStore.getState().node.nodeid
       setEditable(false)
-      if (doesLinkRemain(nodeId, res)) {
-        push(uid)
+      if (doesLinkRemain(path, res)) {
+        push(nodeid)
       } else if (res.length > 0) {
-        const uid = getUidFromNodeId(res[0].to)
-        push(uid)
+        const nodeid = getUidFromNodeId(res[0].to)
+        push(nodeid)
       }
     }
   }

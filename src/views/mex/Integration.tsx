@@ -1,50 +1,50 @@
-import React, { useEffect, useMemo } from 'react'
 import Check from '@iconify-icons/bi/check'
 import PlusCircle from '@iconify-icons/bi/plus-circle'
+import timeIcon from '@iconify-icons/bx/bx-time-five'
 import { Icon } from '@iconify/react'
+import { client } from '@workduck-io/dwindle'
 import { shell } from 'electron'
+import React, { useEffect, useMemo } from 'react'
+import { useHistory } from 'react-router'
+import { useTheme } from 'styled-components'
+import { integrationURLs } from '../../apis/routes'
+import { TemplateInfoBar } from '../../components/layouts/InfoBar'
+import { LoadingButton } from '../../components/mex/Buttons/LoadingButton'
 import NewSyncTemplateModal, { useNewSyncTemplateModalStore } from '../../components/mex/Integrations/NewSyncBlockModal'
 import Template from '../../components/mex/Integrations/Template'
-import { useUpdater } from '../../hooks/useUpdater'
 import { Service } from '../../editor/Components/SyncBlock'
 import { ServiceIcon } from '../../editor/Components/SyncBlock/SyncIcons'
+import useLoad from '../../hooks/useLoad'
+import { DateFormat } from '../../hooks/useRelativeTime'
+import { useUpdater } from '../../hooks/useUpdater'
+import useDataStore from '../../store/useDataStore'
+import { useIntegrationStore } from '../../store/useIntegrationStore'
+import useOnboard from '../../store/useOnboarding'
 import { useSyncStore } from '../../store/useSyncStore'
-import { camelCase } from '../../utils/lib/strings'
-import timeIcon from '@iconify-icons/bx/bx-time-five'
 import {
   ActiveStatus,
   CenteredFlex,
   Flex,
   FullHeight,
   IntegrationContainer,
+  Margin,
   PlusIcon,
+  PrimaryText,
   RightCut,
+  Scroll,
   ServiceCard,
   ServiceName,
   Services,
-  TemplateTitle,
-  TemplateContainer,
-  TemplateList,
-  Title,
-  TemplateInfoList,
   StyledIcon,
-  Text,
-  Margin,
+  TemplateContainer,
+  TemplateInfoList,
+  TemplateList,
   TemplateSubtitle,
-  PrimaryText,
-  Scroll
+  TemplateTitle,
+  Text,
+  Title
 } from '../../style/Integration'
-import { TemplateInfoBar } from '../../components/layouts/InfoBar'
-import { DateFormat } from '../../hooks/useRelativeTime'
-import { useIntegrationStore } from '../../store/useIntegrationStore'
-import { client } from '@workduck-io/dwindle'
-import { integrationURLs } from '../../apis/routes'
-import useLoad from '../../hooks/useLoad'
-import { useHistory } from 'react-router'
-import useDataStore from '../../store/useDataStore'
-import { LoadingButton } from '../../components/mex/Buttons/LoadingButton'
-import { useTheme } from 'styled-components'
-import useOnboard from '../../store/useOnboarding'
+import { camelCase } from '../../utils/lib/strings'
 // eslint-disable-next-line import/namespace
 
 const NewTemplate = () => {
@@ -137,7 +137,7 @@ const TemplateInfo = () => {
     const deletedNodes = []
 
     templateDetails?.forEach((info) => {
-      const isPresent = ilinks.filter((ilink) => ilink.uid === info.node).length === 1
+      const isPresent = ilinks.filter((ilink) => ilink.nodeid === info.node).length === 1
       if (isPresent) localNodes.push(info)
       else deletedNodes.push(info)
     })
@@ -257,7 +257,7 @@ const IntegrationPage = () => {
   const template = useIntegrationStore((state) => state.template)
 
   useEffect(() => {
-     (async () => {
+    (async () => {
       await updateServices()
     })()
 

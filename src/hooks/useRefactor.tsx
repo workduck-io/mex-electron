@@ -45,10 +45,10 @@ export const useRefactor = () => {
   const { saveAndClearBuffer } = useEditorBuffer()
 
   /*
-   * Returns a mock array of refactored nodeIds
+   * Returns a mock array of refactored paths
    * Also refactors children
-   * from: the current nodeId
-   * to: the new changed nodeId
+   * from: the current path
+   * to: the new changed path
    */
   const getMockRefactor = (from: string, to: string): NodeLink[] => {
     // console.log({ q, d: useQStore.getState().q })
@@ -56,14 +56,14 @@ export const useRefactor = () => {
     saveAndClearBuffer()
     // saveQ()
     const refactorMap = ilinks.filter((i) => {
-      const match = isMatch(i.nodeId, from)
+      const match = isMatch(i.path, from)
       return match
     })
 
     const refactored = refactorMap.map((f) => {
       return {
-        from: f.nodeId,
-        to: f.nodeId.replace(from, to)
+        from: f.path,
+        to: f.path.replace(from, to)
       }
     })
 
@@ -77,10 +77,10 @@ export const useRefactor = () => {
     // Generate the new links
     const newIlinks = ilinks.map((i) => {
       for (const ref of refactored) {
-        if (ref.from === i.nodeId) {
+        if (ref.from === i.path) {
           return {
             ...i,
-            nodeId: ref.to
+            path: ref.to
           }
         }
       }
@@ -88,7 +88,7 @@ export const useRefactor = () => {
     })
 
     const isInNewlinks = (l: string) => {
-      const ft = newIlinks.filter((i) => i.nodeId === l)
+      const ft = newIlinks.filter((i) => i.path === l)
       return ft.length > 0
     }
 
@@ -98,8 +98,8 @@ export const useRefactor = () => {
       .filter((x) => !isInNewlinks(x))
 
     const newParentIlinks = newParents.map((p) => ({
-      nodeId: p,
-      uid: generateNodeUID()
+      path: p,
+      nodeid: generateNodeUID()
     }))
 
     // console.log({ newIlinks, newParents, newParentIlinks })

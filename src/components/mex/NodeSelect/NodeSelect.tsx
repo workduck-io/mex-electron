@@ -1,7 +1,7 @@
+import addCircleLine from '@iconify-icons/ri/add-circle-line'
 import checkboxCircleLine from '@iconify-icons/ri/checkbox-circle-line'
 import errorWarningLine from '@iconify-icons/ri/error-warning-line'
 import fileList2Line from '@iconify-icons/ri/file-list-2-line'
-import addCircleLine from '@iconify-icons/ri/add-circle-line'
 import { Icon } from '@iconify/react'
 import { useCombobox } from 'downshift'
 import React, { useEffect, useState } from 'react'
@@ -10,18 +10,18 @@ import { useLinks } from '../../../hooks/useLinks'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
+import { Input } from '../../../style/Form'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { convertContentToRawText } from '../../../utils/search/localSearch'
-import { Input } from '../../../style/Form'
 import {
   StyledCombobox,
+  StyledInputWrapper,
   StyledMenu,
   Suggestion,
   SuggestionContentWrapper,
-  SuggestionText,
   SuggestionDesc,
-  StyledInputWrapper
+  SuggestionText
 } from './NodeSelect.styles'
 
 export type ComboItem = {
@@ -36,25 +36,25 @@ export type ComboItem = {
 
   // Unique identifier
   // Not present if the node is not yet created i.e. 'new'
-  uid?: string
+  nodeid?: string
 }
 
-export const createComboItem = (nodeId: string, uid: string): ComboItem => ({
-  text: nodeId,
-  value: nodeId,
+export const createComboItem = (path: string, nodeid: string): ComboItem => ({
+  text: path,
+  value: path,
   type: 'exists',
-  uid
+  nodeid
 })
 
-export const createNewComboItem = (nodeId: string): ComboItem => ({
-  text: `Create new: ${nodeId}`,
-  value: nodeId,
+export const createNewComboItem = (path: string): ComboItem => ({
+  text: `Create new: ${path}`,
+  value: path,
   type: 'new'
 })
 
 interface NodeSelectProps {
-  handleSelectItem: (nodeId: string) => void
-  handleCreateItem?: (nodeId: string) => void
+  handleSelectItem: (path: string) => void
+  handleCreateItem?: (path: string) => void
   id?: string
   name?: string
   disabled?: boolean
@@ -118,15 +118,15 @@ function NodeSelect({
       selectedItem: null
     })
 
-  const ilinks = useDataStore((store) => store.ilinks).map((l) => createComboItem(l.nodeId, l.uid))
+  const ilinks = useDataStore((store) => store.ilinks).map((l) => createComboItem(l.path, l.nodeid))
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)
 
   const lastOpenedItems = Array.from(lastOpened)
     .reverse()
-    .map((uid) => {
-      const nodeId = getNodeIdFromUid(uid)
-      return createComboItem(nodeId, uid)
+    .map((nodeid) => {
+      const path = getNodeIdFromUid(nodeid)
+      return createComboItem(path, nodeid)
     })
     .filter((i) => i.text)
 
@@ -157,7 +157,7 @@ function NodeSelect({
     highlightedIndex,
     setInputValue,
     getItemProps,
-    closeMenu,
+    closeMenu
     // toggleMenu
   } = useCombobox({
     items: inputItems,
@@ -215,10 +215,10 @@ function NodeSelect({
   useEffect(() => {
     if (defaultValue) {
       const newItems = getNewItems(defaultValue)
-      const uid = getUidFromNodeId(defaultValue)
+      const nodeid = getUidFromNodeId(defaultValue)
       setInputItems(newItems)
       setInputValue(defaultValue)
-      setSelectedItem(createComboItem(defaultValue, uid))
+      setSelectedItem(createComboItem(defaultValue, nodeid))
     } else {
       if (prefillRecent && lastOpenedItems.length > 0) {
         setInputItems(lastOpenedItems.filter((i) => i.text))
@@ -267,8 +267,8 @@ function NodeSelect({
           inputItems.map((item, index) => {
             let desc: undefined | string = undefined
             if (item.type !== 'new') {
-              // const nodeId = getNodeIdFromUid()
-              const content = contents[item.uid]
+              // const path = getNodeIdFromUid()
+              const content = contents[item.nodeid]
               if (content) desc = convertContentToRawText(content.content, ' ')
               if (desc === '') desc = undefined
             }

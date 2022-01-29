@@ -1,7 +1,7 @@
-import { mog } from '../utils/lib/helper'
 import create from 'zustand'
 import { NodeContent, NodeMetadata } from '../types/data'
 import { NodeEditorContent } from '../types/Types'
+import { mog } from '../utils/lib/helper'
 
 export interface Contents {
   [key: string]: NodeContent
@@ -13,10 +13,10 @@ interface ContentStoreState {
   showSyncBlocks: boolean
   toggleSyncBlocks: () => void
   setSaved: (saved: boolean) => void
-  removeContent: (uid: string) => void
-  getContent: (uid: string) => NodeContent
-  setContent: (uid: string, content: NodeEditorContent, metadata?: NodeMetadata) => void
-  setMetadata: (uid: string, metadata: NodeMetadata) => void
+  removeContent: (nodeid: string) => void
+  getContent: (nodeid: string) => NodeContent
+  setContent: (nodeid: string, content: NodeEditorContent, metadata?: NodeMetadata) => void
+  setMetadata: (nodeid: string, metadata: NodeMetadata) => void
   initContents: (contents: Contents) => void
 }
 
@@ -26,36 +26,36 @@ export const useContentStore = create<ContentStoreState>((set, get) => ({
   saved: false,
   setSaved: (saved) => set(() => ({ saved })),
   toggleSyncBlocks: () => set({ showSyncBlocks: !get().showSyncBlocks }),
-  setContent: (uid, content, metadata) => {
+  setContent: (nodeid, content, metadata) => {
     console.log('Hello', console.trace())
-    mog('SetContent', { uid, content, metadata })
+    mog('SetContent', { nodeid, content, metadata })
     const oldContent = get().contents
 
-    const oldMetadata = oldContent[uid] && oldContent[uid].metadata ? oldContent[uid].metadata : undefined
-    delete oldContent[uid]
+    const oldMetadata = oldContent[nodeid] && oldContent[nodeid].metadata ? oldContent[nodeid].metadata : undefined
+    delete oldContent[nodeid]
     const nmetadata = { ...oldMetadata, ...metadata }
     // console.log({ oldMetadata, nmetadata, metadata })
     set({
-      contents: { [uid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
+      contents: { [nodeid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
     })
   },
-  setMetadata: (uid: string, metadata: NodeMetadata) => {
+  setMetadata: (nodeid: string, metadata: NodeMetadata) => {
     const oldContent = get().contents
-    const oldMetadata = oldContent[uid] && oldContent[uid].metadata ? oldContent[uid].metadata : undefined
-    const content = oldContent[uid] && oldContent[uid].content ? oldContent[uid].content : undefined
-    delete oldContent[uid]
+    const oldMetadata = oldContent[nodeid] && oldContent[nodeid].metadata ? oldContent[nodeid].metadata : undefined
+    const content = oldContent[nodeid] && oldContent[nodeid].content ? oldContent[nodeid].content : undefined
+    delete oldContent[nodeid]
     const nmetadata = { ...oldMetadata, ...metadata }
     // console.log({ oldMetadata, nmetadata, metadata })
     set({
-      contents: { [uid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
+      contents: { [nodeid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
     })
   },
-  getContent: (uid) => {
-    return get().contents[uid]
+  getContent: (nodeid) => {
+    return get().contents[nodeid]
   },
-  removeContent: (uid) => {
+  removeContent: (nodeid) => {
     const oldContent = get().contents
-    delete oldContent[uid]
+    delete oldContent[nodeid]
   },
   initContents: (contents) => {
     set({

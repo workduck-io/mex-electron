@@ -1,8 +1,8 @@
 import { client, useAuth } from '@workduck-io/dwindle'
-import { useAuthStore } from '../services/auth/useAuth'
 import { apiURLs } from '../apis/routes'
 import { USE_API } from '../data/Defaults/dev_'
 import { useSaver } from '../editor/Components/Saver'
+import { useAuthStore } from '../services/auth/useAuth'
 import useDataStore from '../store/useDataStore'
 import { ILink } from '../types/Types'
 import { mog } from '../utils/lib/helper'
@@ -22,8 +22,8 @@ const useArchive = () => {
   const { saveData } = useSaveData()
   const { userCred } = useAuth()
 
-  const archived = (uid: string) => {
-    return archive.map((i) => i.uid).indexOf(uid) > -1
+  const archived = (nodeid: string) => {
+    return archive.map((i) => i.nodeid).indexOf(nodeid) > -1
   }
 
   const addArchiveData = async (nodes: ILink[]): Promise<boolean> => {
@@ -34,7 +34,7 @@ const useArchive = () => {
     if (userCred) {
       return await client
         .post(apiURLs.archiveNodes(), {
-          ids: nodes.map((i) => i.uid)
+          ids: nodes.map((i) => i.nodeid)
         })
         // .then(console.log)
         .then(() => {
@@ -58,7 +58,7 @@ const useArchive = () => {
     }
     await client
       .post(apiURLs.unArchiveNodes(), {
-        ids: nodes.map((i) => i.uid)
+        ids: nodes.map((i) => i.nodeid)
       })
       .then((d) => {
         mog('Unarchive Data', d.data)
@@ -78,7 +78,7 @@ const useArchive = () => {
       .then((d) => {
         if (d.data) {
           const ids = d.data
-          const links = ids.filter((id) => archive.filter((ar) => ar.uid === id).length === 0)
+          const links = ids.filter((id) => archive.filter((ar) => ar.nodeid === id).length === 0)
           setArchive(links)
         }
         return d.data
@@ -86,20 +86,20 @@ const useArchive = () => {
       .catch(console.error)
   }
 
-  const removeArchiveData = async (uids: ILink[]): Promise<boolean> => {
+  const removeArchiveData = async (nodeids: ILink[]): Promise<boolean> => {
     if (!USE_API()) {
-      removeArchive(uids)
+      removeArchive(nodeids)
       return true
     }
 
     if (userCred) {
       const res = await client
         .post(apiURLs.deleteArchiveNodes(), {
-          ids: uids.map((i) => i.uid)
+          ids: nodeids.map((i) => i.nodeid)
         })
         // .then(console.log)
         .then(() => {
-          removeArchive(uids)
+          removeArchive(nodeids)
         })
         .then(() => saveData())
         .then(() => {

@@ -6,15 +6,15 @@ import { NodeContent } from '../types/data'
 import { mog } from './lib/helper'
 
 /** Get the contents of the node with id */
-export function getContent(uid: string): NodeContent {
+export function getContent(nodeid: string): NodeContent {
   // create a hashmap with id vs content
   // load the content from hashmap
 
   const { contents } = useContentStore.getState()
 
-  mog('getContent', { uid, contents, uidCon: contents[uid] })
-  if (contents[uid]) {
-    return contents[uid]
+  mog('getContent', { nodeid, contents, nodeidCon: contents[nodeid] })
+  if (contents[nodeid]) {
+    return contents[nodeid]
   }
   return defaultContent
 }
@@ -38,7 +38,7 @@ export const getInitialNode = (): NodeProperties => ({
   title: '@',
   id: '@',
   key: '@',
-  uid: '__null__'
+  nodeid: '__null__'
 })
 
 export const typeInvert = (type: string) => (type === 'from' ? 'to' : 'from')

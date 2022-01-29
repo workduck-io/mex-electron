@@ -1,19 +1,19 @@
 import React from 'react'
 import Modal from 'react-modal'
 import { Link } from 'react-router-dom'
+import create from 'zustand'
 import { Intent } from '../../../editor/Components/SyncBlock'
 import IntentSelector from '../../../editor/Components/SyncBlock/intentSelector'
 import useIntents from '../../../hooks/useIntents'
 import { useLinks } from '../../../hooks/useLinks'
+import { Button } from '../../../style/Buttons'
 import { IntentMapItem } from '../../../style/Integration'
 import { Para } from '../../../style/Typography'
-import create from 'zustand'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { Command } from './styled'
-import { Button } from '../../../style/Buttons'
 
 export interface NodeIntegrationsModalProps {
-  uid: string
+  nodeid: string
 }
 
 interface NodeIntentsModalProps {
@@ -43,9 +43,9 @@ export const useNodeIntentsModalStore = create<NodeIntentsModalProps>((set) => (
     }))
 }))
 
-const NodeIntentsModal = ({ uid }: NodeIntegrationsModalProps) => {
+const NodeIntentsModal = ({ nodeid }: NodeIntegrationsModalProps) => {
   const { getNodeIntents, updateNodeIntents } = useIntents()
-  const intentMap = getNodeIntents(uid)
+  const intentMap = getNodeIntents(nodeid)
   const closeModal = useNodeIntentsModalStore((store) => store.closeModal)
   const open = useNodeIntentsModalStore((store) => store.open)
   const intents = useNodeIntentsModalStore((store) => store.intents)
@@ -56,7 +56,7 @@ const NodeIntentsModal = ({ uid }: NodeIntegrationsModalProps) => {
     // console.log('onSave', intents)
     // Replace intents in intents and specific intent groups
     updateNodeIntents(
-      uid,
+      nodeid,
       Object.keys(intents).map((s) => {
         return intents[s]
       })
@@ -78,7 +78,7 @@ const NodeIntentsModal = ({ uid }: NodeIntegrationsModalProps) => {
 
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
-      <ModalHeader>Node Intents for {getNodeIdFromUid(uid)}</ModalHeader>
+      <ModalHeader>Node Intents for {getNodeIdFromUid(nodeid)}</ModalHeader>
       <Para>
         Add integrations and use them anywhere using <Command>/sync</Command> command.
       </Para>

@@ -3,15 +3,13 @@ import more2Fill from '@iconify-icons/ri/more-2-fill'
 import equal from 'fast-deep-equal'
 import React, { useEffect, useState } from 'react'
 import Graph from 'react-vis-network-graph'
-import useToggleElements from '../../../hooks/useToggleElements'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
+import useToggleElements from '../../../hooks/useToggleElements'
+import { useGraphStore } from '../../../store/useGraphStore'
 import IconButton from '../../../style/Buttons'
 import Switch from '../Forms/Switch'
 import { GraphTools, StyledGraph } from './Graph.styles'
-import { useGraphStore } from '../../../store/useGraphStore'
-// import NodePreview from './NodePreview'
-import NodeServices from './elements/NodeServices'
 import NodePreview from './NodePreview'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -93,7 +91,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
     click: ({ nodes }: any) => {
       if (nodes.length === 1) {
         const node = graphData.nodes.filter((n: any) => n.id === nodes[0])[0]
-        if (!node.nodeId.startsWith('SERVICE')) {
+        if (!node.path.startsWith('SERVICE')) {
           setSelectedNode(node)
           setNodePreview(true)
         }
@@ -108,9 +106,9 @@ export const TreeGraph = (props: TreeGraphProps) => {
 
       if (nodes.length === 1) {
         const node = graphData.nodes.filter((n: any) => n.id === nodes[0])[0]
-        if (!node.nodeId.startsWith('SERVICE')) {
-          const uid = getUidFromNodeId(node.nodeId)
-          push(uid)
+        if (!node.path.startsWith('SERVICE')) {
+          const nodeid = getUidFromNodeId(node.path)
+          push(nodeid)
         }
       }
     }

@@ -14,10 +14,10 @@ import { openNodeInMex } from '../../../utils/combineSources'
 import { FullEditor, StyledEditor } from './styled'
 
 export const isILinkExists = (iLink: string, iLinkList: Array<ILink>) =>
-  iLinkList.filter((item) => item.nodeId === iLink).length !== 0
+  iLinkList.filter((item) => item.path === iLink).length !== 0
 
 const NewEditor = () => {
-  const { key, uid: nodeId } = useEditorStore((state) => state.node)
+  const { key, nodeid: path } = useEditorStore((state) => state.node)
 
   const ilinks = useDataStore((s) => s.ilinks)
 
@@ -31,9 +31,9 @@ const NewEditor = () => {
   const [content, setContent] = useState<any[] | undefined>(undefined)
 
   useEffect(() => {
-    if (isILinkExists(nodeId, ilinks)) {
-      addRecent(nodeId)
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeId)
+    if (isILinkExists(path, ilinks)) {
+      addRecent(path)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, path)
     }
   }, [])
 
@@ -41,19 +41,19 @@ const NewEditor = () => {
     if (fsContent) {
       setContent(fsContent.content)
     }
-  }, [fsContent, nodeId])
+  }, [fsContent, path])
 
   const onBeforeSave = () => {
-    addILink(key, nodeId)
+    addILink(key, path)
   }
 
-  const onAfterSave = (uid: string) => {
+  const onAfterSave = (nodeid: string) => {
     setSaved(true)
-    addRecent(uid)
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, uid)
+    addRecent(nodeid)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeid)
 
     if (isOnboarding) {
-      openNodeInMex(uid)
+      openNodeInMex(nodeid)
       changeOnboarding(false)
     }
   }
@@ -65,7 +65,7 @@ const NewEditor = () => {
           focusAtBeginning
           // onSave={onSave}
           content={content}
-          editorId={nodeId}
+          editorId={path}
         />
         <SaverButton callbackAfterSave={onAfterSave} callbackBeforeSave={onBeforeSave} noButton />
       </FullEditor>

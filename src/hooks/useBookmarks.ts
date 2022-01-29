@@ -14,24 +14,24 @@ export const useBookmarks = () => {
   const { userCred } = useAuth()
   const { getNodeIdFromUid } = useLinks()
 
-  const isBookmark = (uid: string) => {
+  const isBookmark = (nodeid: string) => {
     const bookmarks = getBookmarks()
-    return bookmarks.indexOf(uid) > -1
+    return bookmarks.indexOf(nodeid) > -1
   }
 
-  const addBookmark = async (uid: string): Promise<boolean> => {
+  const addBookmark = async (nodeid: string): Promise<boolean> => {
     if (!USE_API()) {
-      addBookmarks([uid])
+      addBookmarks([nodeid])
       return true
     }
     if (userCred) {
       return await client
-        .post(apiURLs.bookmark(userCred.userId, uid), {
+        .post(apiURLs.bookmark(userCred.userId, nodeid), {
           type: 'BookmarkRequest'
         })
         // .then(console.log)
         .then(() => {
-          addBookmarks([uid])
+          addBookmarks([nodeid])
         })
         .then(() => onSave())
         .then(() => {
@@ -56,7 +56,7 @@ export const useBookmarks = () => {
         // console.log('Data', d.data)
 
         if (d.data) {
-          const bookmarks = d.data.filter((uid: string) => getNodeIdFromUid(uid) !== undefined)
+          const bookmarks = d.data.filter((nodeid: string) => getNodeIdFromUid(nodeid) !== undefined)
           setBookmarks(bookmarks)
         }
         return d.data
@@ -64,19 +64,19 @@ export const useBookmarks = () => {
       .catch(console.error)
   }
 
-  const removeBookmark = async (uid: string): Promise<boolean> => {
+  const removeBookmark = async (nodeid: string): Promise<boolean> => {
     if (!USE_API()) {
-      removeBookmarks([uid])
+      removeBookmarks([nodeid])
       return true
     }
     if (userCred) {
       const res = await client
-        .patch(apiURLs.bookmark(userCred.userId, uid), {
+        .patch(apiURLs.bookmark(userCred.userId, nodeid), {
           type: 'BookmarkRequest'
         })
         // .then(console.log)
         .then(() => {
-          removeBookmarks([uid])
+          removeBookmarks([nodeid])
         })
         .then(() => onSave())
         .then(() => {

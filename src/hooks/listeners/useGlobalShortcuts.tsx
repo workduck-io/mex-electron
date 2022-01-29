@@ -1,8 +1,8 @@
+import { getPlateActions } from '@udecode/plate'
+import { ipcRenderer } from 'electron'
 import { useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router'
-import { ipcRenderer } from 'electron'
 import tinykeys from 'tinykeys'
-import { getPlateActions } from '@udecode/plate'
 import { useSpotlightAppStore } from '../../store/app.spotlight'
 import { useSpotlightContext } from '../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../store/editor.spotlight'
@@ -48,12 +48,12 @@ export const useGlobalShortcuts = () => {
       Escape: (event) => {
         event.preventDefault()
         if (!shortcutDisabled) {
-          getPlateActions(savedEditorNode.uid).resetEditor()
+          getPlateActions(savedEditorNode.nodeid).resetEditor()
           setNormalMode(true)
           if (selection && !search) {
             setSelection(undefined)
 
-            removeContent(savedEditorNode.uid)
+            removeContent(savedEditorNode.nodeid)
           } else if (search) {
             setIsPreview(false)
             handleCancel()

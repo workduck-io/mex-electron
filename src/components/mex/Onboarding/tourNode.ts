@@ -41,7 +41,7 @@ export const useFlowMessage = () => {
         type: 'p'
       }
     ]
-    loadNodeAndAppend(node.uid, content)
+    loadNodeAndAppend(node.nodeid, content)
   }
 
   return {

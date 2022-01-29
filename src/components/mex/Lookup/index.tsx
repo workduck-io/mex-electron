@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import Modal from 'react-modal'
-import tinykeys from 'tinykeys'
-import NodeSelect from '../NodeSelect/NodeSelect'
-import { StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
-
 import toast from 'react-hot-toast'
+import Modal from 'react-modal'
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
+import tinykeys from 'tinykeys'
+import { useApi } from '../../../apis/useSaveApi'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
@@ -15,8 +14,8 @@ import { useKeyListener } from '../../../hooks/useShortcutListener'
 import useDataStore from '../../../store/useDataStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import useOnboard from '../../../store/useOnboarding'
-import { useApi } from '../../../apis/useSaveApi'
-import { useHistory } from 'react-router-dom'
+import NodeSelect from '../NodeSelect/NodeSelect'
+import { StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
 
 const StyledModal = styled(Modal)`
   z-index: 10010000;
@@ -68,8 +67,8 @@ const Lookup = () => {
   const addILink = useDataStore((s) => s.addILink)
 
   const openNode = (value: string) => {
-    const uid = getUidFromNodeId(value)
-    push(uid)
+    const nodeid = getUidFromNodeId(value)
+    push(nodeid)
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, value)
     closeModal()
 
@@ -92,9 +91,9 @@ const Lookup = () => {
 
   const handleCreateItem = (inputValue: string) => {
     if (tempClose) return
-    const uid = addILink(inputValue)
-    saveNewNodeAPI(uid)
-    push(uid, { withLoading: false })
+    const nodeid = addILink(inputValue)
+    saveNewNodeAPI(nodeid)
+    push(nodeid, { withLoading: false })
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, inputValue)
     closeModal()
   }

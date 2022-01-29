@@ -21,7 +21,7 @@ export const BOOKMARK_URL = BASE_API_URL
 export const apiURLs = {
   //node
   saveNode: `${BASE_API_URL}/node`,
-  getNode: (uid: string) => `${BASE_API_URL}/node/${uid}`,
+  getNode: (nodeid: string) => `${BASE_API_URL}/node/${nodeid}`,
 
   // * User Preference
   getUserPreferences: (userId: string) => `${BASE_API_URL}/userPreference/all/${userId}`,
@@ -32,7 +32,7 @@ export const apiURLs = {
   // Bookmarks
   // post to add
   // path to delete
-  bookmark: (userId: string, uid: string) => `${BOOKMARK_URL}/userBookmark/${userId}/${uid}`,
+  bookmark: (userId: string, nodeid: string) => `${BOOKMARK_URL}/userBookmark/${userId}/${nodeid}`,
   getBookmarks: (userId: string) => `${BOOKMARK_URL}/userBookmark/${userId}`,
 
   // User

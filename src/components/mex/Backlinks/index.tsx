@@ -2,11 +2,11 @@ import arrowGoBackLine from '@iconify-icons/ri/arrow-go-back-line'
 import { Icon } from '@iconify/react'
 import { transparentize } from 'polished'
 import React from 'react'
-import { HoverSubtleGlow } from '../../../style/helpers'
 import styled from 'styled-components'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useEditorStore } from '../../../store/useEditorStore'
+import { HoverSubtleGlow } from '../../../style/helpers'
 import { Note } from '../../../style/Typography'
 
 const SBackLinks = styled.div`
@@ -48,7 +48,7 @@ export const DataInfoHeader = styled.div`
 const Backlinks = () => {
   const { getBacklinks } = useLinks()
   const { push } = useNavigation()
-  const backlinks = getBacklinks(useEditorStore.getState().node.uid)
+  const backlinks = getBacklinks(useEditorStore.getState().node.nodeid)
   const { getNodeIdFromUid } = useLinks()
 
   return (
@@ -64,8 +64,8 @@ const Backlinks = () => {
         </>
       )}
       {backlinks.map((l, i) => (
-        <NodeLink key={`backlink_${l.uid}_${i}`} onClick={() => push(l.uid)}>
-          {getNodeIdFromUid(l.uid)}
+        <NodeLink key={`backlink_${l.nodeid}_${i}`} onClick={() => push(l.nodeid)}>
+          {getNodeIdFromUid(l.nodeid)}
         </NodeLink>
       ))}
     </SBackLinks>

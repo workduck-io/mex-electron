@@ -1,18 +1,18 @@
+import { debounce } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { debounce } from 'lodash'
-import useDataStore from '../../store/useDataStore'
-import { useTags } from '../../hooks/useTags'
-import styled, { css } from 'styled-components'
-import { useLinks } from '../../hooks/useLinks'
 import { useTransition } from 'react-spring'
-import { useContentStore } from '../../store/useContentStore'
-import { Result, ResultHeader, Results, ResultTitle, SearchPreviewWrapper } from '../../style/Search'
+import styled, { css } from 'styled-components'
 import { defaultContent } from '../../data/Defaults/baseData'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
+import { useLinks } from '../../hooks/useLinks'
 import useLoad from '../../hooks/useLoad'
-import { HoverSubtleGlow } from '../../style/helpers'
+import { useTags } from '../../hooks/useTags'
+import { useContentStore } from '../../store/useContentStore'
+import useDataStore from '../../store/useDataStore'
 import { Input } from '../../style/Form'
+import { HoverSubtleGlow } from '../../style/helpers'
+import { Result, ResultHeader, Results, ResultTitle, SearchPreviewWrapper } from '../../style/Search'
 import { fuzzySearch } from '../../utils/lib/fuzzySearch'
 
 const TagsWrapper = styled.div`
@@ -179,7 +179,7 @@ const Tag = () => {
         <Results>
           {transition((styles, n, _t, _i) => {
             const con = contents[n]
-            const nodeId = getNodeIdFromUid(n)
+            const path = getNodeIdFromUid(n)
             const content = con ? con.content : defaultContent.content
             return (
               <Result
@@ -191,7 +191,7 @@ const Tag = () => {
                 key={`tag_res_prev_${tag}_${n}${_i}`}
               >
                 <ResultHeader>
-                  <ResultTitle>{nodeId}</ResultTitle>
+                  <ResultTitle>{path}</ResultTitle>
                 </ResultHeader>
                 <SearchPreviewWrapper>
                   <EditorPreviewRenderer content={content} editorId={`editor_${tag}_preview_${n}`} />

@@ -1,36 +1,35 @@
-import React, { useEffect, useMemo, useState } from 'react'
-// import IconButton from '../../Styled/Buttons'
-
-import { LoadingButton } from './LoadingButton'
-import { Icon } from '@iconify/react'
-import bookmarkLine from '@iconify-icons/ri/bookmark-line'
 import bookmarkFill from '@iconify-icons/ri/bookmark-fill'
+import bookmarkLine from '@iconify-icons/ri/bookmark-line'
+import { Icon } from '@iconify/react'
+import React, { useEffect, useState } from 'react'
 import { useBookmarks } from '../../../hooks/useBookmarks'
 import useDataStore from '../../../store/useDataStore'
+// import IconButton from '../../Styled/Buttons'
+import { LoadingButton } from './LoadingButton'
 
 interface BookmarkButtonProps {
-  uid: string
+  nodeid: string
 }
 
-const BookmarkButton = ({ uid }: BookmarkButtonProps) => {
+const BookmarkButton = ({ nodeid }: BookmarkButtonProps) => {
   const { isBookmark, addBookmark, removeBookmark } = useBookmarks()
   const bookmarks = useDataStore((store) => store.bookmarks)
   const [bmed, setBmed] = useState(false)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    setBmed(isBookmark(uid))
+    setBmed(isBookmark(nodeid))
   }, [bookmarks])
 
   const onBookmark = async (e: any) => {
     e.preventDefault()
     setLoading(true)
-    if (isBookmark(uid)) {
+    if (isBookmark(nodeid)) {
       // console.log('Removing')
-      await removeBookmark(uid)
+      await removeBookmark(nodeid)
     } else {
       // console.log('Adding')
-      await addBookmark(uid)
+      await addBookmark(nodeid)
     }
     setLoading(false)
   }

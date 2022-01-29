@@ -10,14 +10,14 @@ export interface ComboText {
 }
 
 /**  ~~ILinks~~ (Node)
- * Map of nodeid -> heirarchal id, with uid -> Unique nanoid */
+ * Map of path -> heirarchal id, with nodeid -> Unique nanoid */
 export interface ILink {
   /** Unique Identifier */
-  uid: string
+  nodeid: string
 
   /** The title of the node.
    * Uses separator for heirarchy */
-  nodeId: string
+  path: string
 
   /** Iconify Icon string */
   icon?: string
@@ -60,7 +60,7 @@ export interface DataStoreState {
   initializeDataStore: (initData: InitData) => void
 
   // adds the node
-  addILink: (ilink: string, uid?: string, parentId?: string, archived?: boolean) => string
+  addILink: (ilink: string, nodeid?: string, parentId?: string, archived?: boolean) => string
 
   // adds tag for combobox
   addTag: (tag: string) => void
@@ -81,9 +81,9 @@ export interface DataStoreState {
 
   // Internal Links Cache
   // adds the link between nodes
-  addInternalLink: (ilink: CachedILink, uid: string) => void
-  removeInternalLink: (ilink: CachedILink, uid: string) => void
-  updateInternalLinks: (links: CachedILink[], uid: string) => void
+  addInternalLink: (ilink: CachedILink, nodeid: string) => void
+  removeInternalLink: (ilink: CachedILink, nodeid: string) => void
+  updateInternalLinks: (links: CachedILink[], nodeid: string) => void
 
   addInArchive: (archive: ILink[]) => void
   unArchive: (archive: ILink) => void
@@ -94,9 +94,9 @@ export interface DataStoreState {
 export type NodeEditorContent = any[] // eslint-disable-line @typescript-eslint/no-explicit-any
 
 export interface CachedILink {
-  // ILink from/to nodeId
+  // ILink from/to path
   type: 'from' | 'to'
-  uid: string
+  nodeid: string
 }
 
 export interface CacheTag {

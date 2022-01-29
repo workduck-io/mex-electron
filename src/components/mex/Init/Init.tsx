@@ -1,40 +1,38 @@
+import { usePlateEditorRef } from '@udecode/plate'
 import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import tinykeys from 'tinykeys'
-import { usePlateEditorRef } from '@udecode/plate'
-
-import { AppleNote } from '../../../utils/importers/appleNotes'
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { useAuthStore } from '../../../services/auth/useAuth'
-import { useHistoryStore } from '../../../store/useHistoryStore'
-import useOnboard from '../../../store/useOnboarding'
-import { useInitialize, AppType } from '../../../hooks/useInitialize'
-import useLoad from '../../../hooks/useLoad'
-import { useLocalData } from '../../../hooks/useLocalData'
-import { useNewSearchStore } from '../../../store/useSearchStore'
-import useDataStore from '../../../store/useDataStore'
-import { useNavigation } from '../../../hooks/useNavigation'
-import { useLinks, getUidFromNodeIdAndLinks } from '../../../hooks/useLinks'
-import generatePlugins from '../../../editor/Plugins/plugins'
-import { useSaver } from '../../../editor/Components/Saver'
-import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
+import config from '../../../apis/config'
 // import { convertDataToRawText } from '../../../utils/Search/localSearch'
 import { IpcAction } from '../../../data/IpcAction'
-import config from '../../../apis/config'
-import { performClick } from '../Onboarding/steps'
-import { flexIndexKeys } from '../../../utils/search/flexsearch'
+import { useSaver } from '../../../editor/Components/Saver'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
-import { useSyncData } from '../../../hooks/useSyncData'
-import { useHelpStore } from '../../../store/useHelpStore'
+import { AppType, useInitialize } from '../../../hooks/useInitialize'
+import { getUidFromNodeIdAndLinks, useLinks } from '../../../hooks/useLinks'
+import useLoad from '../../../hooks/useLoad'
+import { useLocalData } from '../../../hooks/useLocalData'
+import { useNavigation } from '../../../hooks/useNavigation'
+import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
-import { useEditorStore } from '../../../store/useEditorStore'
-import { convertDataToRawText } from '../../../utils/search/localSearch'
+import { useSyncData } from '../../../hooks/useSyncData'
 import { useUpdater } from '../../../hooks/useUpdater'
+import { useAuthStore } from '../../../services/auth/useAuth'
+import useDataStore from '../../../store/useDataStore'
+import { useEditorStore } from '../../../store/useEditorStore'
+import { useHelpStore } from '../../../store/useHelpStore'
+import { useHistoryStore } from '../../../store/useHistoryStore'
+import useOnboard from '../../../store/useOnboarding'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { useNewSearchStore } from '../../../store/useSearchStore'
+import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
+import { AppleNote } from '../../../utils/importers/appleNotes'
 import { mog } from '../../../utils/lib/helper'
+import { flexIndexKeys } from '../../../utils/search/flexsearch'
+import { convertDataToRawText } from '../../../utils/search/localSearch'
+import { performClick } from '../Onboarding/steps'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -127,11 +125,11 @@ const Init = () => {
    * Sets handlers for IPC Calls
    * */
   useEffect(() => {
-    ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { nodeId }) => {
+    ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { path }) => {
       if (isOnboarding) {
-        pushHs(nodeId)
-        addRecent(nodeId)
-        loadNode(nodeId, { savePrev: false, fetch: false })
+        pushHs(path)
+        addRecent(path)
+        loadNode(path, { savePrev: false, fetch: false })
         performClick(false)
       }
     })
@@ -159,8 +157,8 @@ const Init = () => {
     })
     ipcRenderer.on(IpcAction.CREATE_NEW_NODE, () => {
       const newNodeId = getNewDraftKey()
-      const uid = addILink(newNodeId)
-      push(uid)
+      const nodeid = addILink(newNodeId)
+      push(nodeid)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, newNodeId)
     })
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
@@ -225,7 +223,7 @@ const Init = () => {
       [shortcuts.showEditor.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showEditor, () => {
-          loadNode(node.uid)
+          loadNode(node.nodeid)
           history.push('/editor')
         })
       },
@@ -253,7 +251,7 @@ const Init = () => {
     return () => {
       unsubscribe()
     }
-  }, [shortcuts, shortcutDisabled, node.uid]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [shortcuts, shortcutDisabled, node.nodeid]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // As this is a non-rendering component
   return null

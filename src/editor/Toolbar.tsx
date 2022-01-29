@@ -5,18 +5,18 @@ import settings4Line from '@iconify-icons/ri/settings-4-line'
 import { useSingleton } from '@tippyjs/react'
 import React from 'react'
 import BookmarkButton from '../components/mex/Buttons/BookmarkButton'
-import { useHelpStore } from '../store/useHelpStore'
 import { useNodeIntentsModalStore } from '../components/mex/NodeIntentsModal/NodeIntentsModal'
 import { ToolbarTooltip } from '../components/mex/Tooltips'
-import useToggleElements from '../hooks/useToggleElements'
-import { useLayoutStore } from '../store/useLayoutStore'
 import useLayout from '../hooks/useLayout'
+import useToggleElements from '../hooks/useToggleElements'
+import { useEditorStore } from '../store/useEditorStore'
+import { useHelpStore } from '../store/useHelpStore'
+import { useLayoutStore } from '../store/useLayoutStore'
 import IconButton from '../style/Buttons'
 import { InfoTools, NodeInfo } from '../style/Editor'
 import Loading from '../style/Loading'
 import NodeRenameTitle from './Components/NodeRenameTitle'
 import { SaverButton } from './Components/Saver'
-import { useEditorStore } from '../store/useEditorStore'
 
 const Toolbar = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -24,7 +24,7 @@ const Toolbar = () => {
   const focusMode = useLayoutStore((store) => store.focusMode)
   const nodeIntentsModalOpen = useNodeIntentsModalStore((store) => store.open)
   const nodeIntentsModalToggle = useNodeIntentsModalStore((store) => store.toggleModal)
-  const uid = useEditorStore((state) => state.node.uid)
+  const nodeid = useEditorStore((state) => state.node.nodeid)
   const [source, target] = useSingleton()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
@@ -43,7 +43,7 @@ const Toolbar = () => {
         <ToolbarTooltip singleton={source} />
         <ToolbarTooltip singleton={target} content="Bookmark">
           <span tabIndex={0}>
-            <BookmarkButton uid={uid} />
+            <BookmarkButton nodeid={nodeid} />
           </span>
         </ToolbarTooltip>
         <IconButton

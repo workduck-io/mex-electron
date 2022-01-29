@@ -15,7 +15,7 @@ const useEditorActions = () => {
 
   const resetEditor = () => {
     clearBuffer()
-    loadNode(node.uid, { fetch: false, savePrev: false })
+    loadNode(node.nodeid, { fetch: false, savePrev: false })
   }
 
   return {

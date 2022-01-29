@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { NodeProperties } from '../store/useEditorStore'
+import { useEffect, useState } from 'react'
 import { defaultContent } from '../data/Defaults/baseData'
 import { IpcAction } from '../data/IpcAction'
 import { useDataSaverFromContent } from '../editor/Components/Saver'
@@ -9,6 +8,7 @@ import { useSpotlightAppStore } from '../store/app.spotlight'
 import { useSpotlightContext } from '../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../store/editor.spotlight'
 import useDataStore from '../store/useDataStore'
+import { NodeProperties } from '../store/useEditorStore'
 import { getContent } from '../utils/helpers'
 import { createNodeWithUid } from '../utils/lib/helper'
 import { AppType } from './useInitialize'
@@ -61,18 +61,18 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
           if (data[currentIndex].new) {
             const isDraftNode = node && node.key.startsWith('Draft.')
             newNode = isDraftNode ? node : createNodeWithUid(getNewDraftKey())
-            const d = addILink(search, newNode.uid)
-            newNode = getNode(newNode.uid)
+            const d = addILink(search, newNode.nodeid)
+            newNode = getNode(newNode.nodeid)
           } else {
-            newNode = getNode(data[currentIndex].uid)
+            newNode = getNode(data[currentIndex].nodeid)
           }
 
           setSearch('')
 
           if (selection) {
-            const newNodeContent = getContent(newNode.uid)
+            const newNodeContent = getContent(newNode.nodeid)
             const newContentData = !data[currentIndex].new ? [...newNodeContent.content, ...nodeContent] : nodeContent
-            saveEditorValueAndUpdateStores(newNode.uid, newContentData, true)
+            saveEditorValueAndUpdateStores(newNode.nodeid, newContentData, true)
             saveData()
 
             appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })

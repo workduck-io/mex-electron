@@ -2,6 +2,8 @@ import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
+import tinykeys from 'tinykeys'
+import create from 'zustand'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
@@ -10,8 +12,6 @@ import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { Button } from '../../../style/Buttons'
 import { NodeLink } from '../../../types/relations'
-import tinykeys from 'tinykeys'
-import create from 'zustand'
 import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
@@ -129,13 +129,13 @@ const Refactor = () => {
 
   const handleRefactor = () => {
     const res = execRefactor(from, to)
-    const nodeId = useEditorStore.getState().node.id
-    const uid = useEditorStore.getState().node.uid
-    if (doesLinkRemain(nodeId, res)) {
-      push(uid, { savePrev: false })
+    const path = useEditorStore.getState().node.id
+    const nodeid = useEditorStore.getState().node.nodeid
+    if (doesLinkRemain(path, res)) {
+      push(nodeid, { savePrev: false })
     } else if (res.length > 0) {
-      const uid = getUidFromNodeId(res[0].to)
-      push(uid, { savePrev: false })
+      const nodeid = getUidFromNodeId(res[0].to)
+      push(nodeid, { savePrev: false })
     }
     closeModal()
   }

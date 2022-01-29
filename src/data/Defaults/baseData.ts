@@ -15,7 +15,7 @@ export const defaultContent: NodeContent = {
 const contents: Contents = links.reduce((prev, cur) => {
   return {
     ...prev,
-    [cur.uid]: { type: 'init', content: defaultContent.content, version: -1 }
+    [cur.nodeid]: { type: 'init', content: defaultContent.content, version: -1 }
   }
 }, {})
 

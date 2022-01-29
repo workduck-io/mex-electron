@@ -1,8 +1,8 @@
 import { uniq } from 'lodash'
-import { Settify } from '../utils/helpers'
 import { ELEMENT_TAG } from '../editor/Components/tag/defaults'
 import useDataStore from '../store/useDataStore'
 import { TagsCache } from '../types/Types'
+import { Settify } from '../utils/helpers'
 
 const getTagsFromContent = (content: any[]): string[] => {
   let tags: string[] = []
@@ -21,7 +21,7 @@ const getTagsFromContent = (content: any[]): string[] => {
 
 /**
   Tags req
-  - getTags(uid: string) => string[]
+  - getTags(nodeid: string) => string[]
   - getNodesForTag(tag: string) => string[]
  **/
 
@@ -53,12 +53,12 @@ export const useTags = () => {
   // }
   //
 
-  const _getTags = (uid: string, tagsCache: TagsCache): string[] =>
-    Object.keys(tagsCache).filter((t) => tagsCache[t].nodes.includes(uid))
+  const _getTags = (nodeid: string, tagsCache: TagsCache): string[] =>
+    Object.keys(tagsCache).filter((t) => tagsCache[t].nodes.includes(nodeid))
 
-  const getTags = (uid: string): string[] => {
+  const getTags = (nodeid: string): string[] => {
     const tagsCache = useDataStore.getState().tagsCache
-    return _getTags(uid, tagsCache)
+    return _getTags(nodeid, tagsCache)
   }
 
   const getNodesForTag = (tag: string): string[] => {
@@ -71,15 +71,15 @@ export const useTags = () => {
    * Produce a list of related nodes that share the same tags with the given node
    * The list is sorted by the number of common tags between the nodes
    * */
-  const getRelatedNodes = (uid: string) => {
+  const getRelatedNodes = (nodeid: string) => {
     const tagsCache = useDataStore.getState().tagsCache
-    const tags = getTags(uid)
+    const tags = getTags(nodeid)
 
     /** Related nodes per tag **/
     const relatedNodes: RelatedNodes = tags.reduce((p, t) => {
       return {
         ...p,
-        [t]: tagsCache[t].nodes.filter((id) => id !== uid)
+        [t]: tagsCache[t].nodes.filter((id) => id !== nodeid)
       }
     }, {})
 
@@ -87,7 +87,7 @@ export const useTags = () => {
       return [...p, ...relatedNodes[c]]
     }, [])
 
-    const count: { [uid: string]: number } = flattened.reduce((p, c) => {
+    const count: { [nodeid: string]: number } = flattened.reduce((p, c) => {
       if (Object.keys(p).indexOf(c) > -1) {
         return {
           ...p,
@@ -106,16 +106,16 @@ export const useTags = () => {
     return relatedSorted
   }
 
-  const updateTagsFromContent = (uid: string, content: any[]) => {
+  const updateTagsFromContent = (nodeid: string, content: any[]) => {
     const tagsCache = useDataStore.getState().tagsCache
 
     if (content) {
       const tags: string[] = getTagsFromContent(content)
       /*
-         Here we need to remove uid from tags that are not present
+         Here we need to remove nodeid from tags that are not present
          and add it to those that have been added
       * */
-      const currentTags = _getTags(uid, tagsCache)
+      const currentTags = _getTags(nodeid, tagsCache)
       const removedFromTags = currentTags.filter((t) => {
         return !tags.includes(t)
       })
@@ -128,7 +128,7 @@ export const useTags = () => {
         const tag = tagsCache[t]
         // If it is included in tags found in content, add it
         if (tags.includes(t)) {
-          const set = Settify([...tag.nodes, uid])
+          const set = Settify([...tag.nodes, nodeid])
           return {
             ...p,
             [t]: { nodes: set }
@@ -136,7 +136,7 @@ export const useTags = () => {
         }
         // If it a tag was removed, remove it from tagCache nodes
         if (removedFromTags.includes(t)) {
-          const nodes = tag.nodes.filter((n) => n !== uid)
+          const nodes = tag.nodes.filter((n) => n !== nodeid)
           // Remove t if nodes are empty
           if (nodes.length === 0) {
             delete p[t]
@@ -157,11 +157,11 @@ export const useTags = () => {
       const newCacheTags: TagsCache = newTags.reduce((p, t) => {
         return {
           ...p,
-          [t]: { nodes: [uid] }
+          [t]: { nodes: [nodeid] }
         }
       }, {})
 
-      // console.log('We are updating', { uid, content, tagsCache, updatedTags, newCacheTags })
+      // console.log('We are updating', { nodeid, content, tagsCache, updatedTags, newCacheTags })
       updateTagsCache({ ...updatedTags, ...newCacheTags })
     }
   }

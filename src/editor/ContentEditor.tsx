@@ -1,26 +1,26 @@
 import React, { useEffect, useMemo } from 'react'
 import tinykeys from 'tinykeys'
 import shallow from 'zustand/shallow'
-import { useHelpStore } from '../store/useHelpStore'
 import Metadata from '../components/mex/Metadata/Metadata'
 import NodeIntentsModal from '../components/mex/NodeIntentsModal/NodeIntentsModal'
 import { defaultContent } from '../data/Defaults/baseData'
-import { useKeyListener } from '../hooks/useShortcutListener'
+import { useEditorBuffer } from '../hooks/useEditorBuffer'
+import useLayout from '../hooks/useLayout'
 import useLoad from '../hooks/useLoad'
 import { useNavigation } from '../hooks/useNavigation'
+import { useKeyListener } from '../hooks/useShortcutListener'
 // import { useQStore } from '../store/useQStore'
 import useToggleElements from '../hooks/useToggleElements'
-import useLayout from '../hooks/useLayout'
-import { getEditorId } from '../utils/lib/EditorId'
+import { useContentStore } from '../store/useContentStore'
+import { useEditorStore } from '../store/useEditorStore'
+import { useHelpStore } from '../store/useHelpStore'
 import { StyledEditor } from '../style/Editor'
+import { getEditorId } from '../utils/lib/EditorId'
+import { mog } from '../utils/lib/helper'
 // import { NodeContent } from '../types/data'
 // import { useDataSaverFromContent } from './Components/Saver'
 import Editor from './Editor'
-import { useEditorStore } from '../store/useEditorStore'
-import { useContentStore } from '../store/useContentStore'
 import Toolbar from './Toolbar'
-import { mog } from '../utils/lib/helper'
-import { useEditorBuffer } from '../hooks/useEditorBuffer'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -29,8 +29,8 @@ const ContentEditor = () => {
 
   const { showGraph } = useToggleElements()
 
-  const { uid, node, fsContent } = useEditorStore(
-    (state) => ({ uid: state.node.uid, node: state.node, fsContent: state.content }),
+  const { nodeid, node, fsContent } = useEditorStore(
+    (state) => ({ nodeid: state.node.nodeid, node: state.node, fsContent: state.content }),
     shallow
   )
 
@@ -48,11 +48,11 @@ const ContentEditor = () => {
 
   const onChangeSave = (val: any[]) => {
     mog('Trigger onChange', { node, val })
-    if (val && node && node.uid !== '__null__') {
+    if (val && node && node.nodeid !== '__null__') {
       // mog('Saving onChange', { node, val })
 
-      // add2Q(node.uid)
-      addOrUpdateValBuffer(node.uid, val)
+      // add2Q(node.nodeid)
+      addOrUpdateValBuffer(node.nodeid, val)
       // saveEditorValueAndUpdateStores(node, val, false)
     }
   }
@@ -60,7 +60,7 @@ const ContentEditor = () => {
   const editorId = useMemo(
     () =>
       getEditorId(
-        node.uid,
+        node.nodeid,
         // fsContent.metadata?.updatedAt?.toString() ?? 'not_updated',
         fetchingContent
       ),
@@ -91,11 +91,11 @@ const ContentEditor = () => {
         event.preventDefault()
         shortcutHandler(shortcuts.refreshNode, () => {
           const node = useEditorStore.getState().node
-          const val = getBufferVal(node.uid)
+          const val = getBufferVal(node.nodeid)
           mog('RefreshingNode', { node, val })
           saveApiAndUpdate(node, val)
           // fetchAndSaveNode(useEditorStore.getState().node)
-          // loadNode(uid, { fetch: true, savePrev: false })
+          // loadNode(nodeid, { fetch: true, savePrev: false })
         })
       }
     })
@@ -119,7 +119,7 @@ const ContentEditor = () => {
           editorId={editorId}
         />
       </StyledEditor>
-      <NodeIntentsModal uid={uid} />
+      <NodeIntentsModal nodeid={nodeid} />
     </>
   )
 }

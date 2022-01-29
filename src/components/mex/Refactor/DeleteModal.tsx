@@ -2,19 +2,19 @@ import archiveLine from '@iconify-icons/ri/archive-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
-import { Button } from '../../../style/Buttons'
 import tinykeys from 'tinykeys'
 import create from 'zustand'
-import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
-import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
-import { useHelpStore } from '../../../store/useHelpStore'
+import { USE_API } from '../../../data/Defaults/dev_'
 import { useDelete } from '../../../hooks/useDelete'
+import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
 import useLoad from '../../../hooks/useLoad'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useEditorStore } from '../../../store/useEditorStore'
-import { USE_API } from '../../../data/Defaults/dev_'
+import { useHelpStore } from '../../../store/useHelpStore'
+import { Button } from '../../../style/Buttons'
 import { mog } from '../../../utils/lib/helper'
-import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
+import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
+import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
 interface DeleteStoreState {
   open: boolean
@@ -99,7 +99,7 @@ const Delete = () => {
   // const { del, mockData, open } = deleteState
   useEffect(() => {
     if (del) {
-      setMockRefactored(getMockDelete(del).archivedNodes.map((item) => item.nodeId))
+      setMockRefactored(getMockDelete(del).archivedNodes.map((item) => item.path))
     }
   }, [del])
 
@@ -108,7 +108,7 @@ const Delete = () => {
 
     // Load this node after deletion
     mog('handling delete', { newLinks, del })
-    if (newLinks.length > 0) loadNode(newLinks[0].uid, { savePrev: false, fetch: USE_API() })
+    if (newLinks.length > 0) loadNode(newLinks[0].nodeid, { savePrev: false, fetch: USE_API() })
     closeModal()
   }
 

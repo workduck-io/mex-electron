@@ -90,21 +90,21 @@ const Archive = () => {
     // }
 
     await unArchiveData([node])
-    addILink(node.nodeId, node.uid, undefined, true)
+    addILink(node.path, node.nodeid, undefined, true)
 
     const archiveNode: NodeProperties = {
-      id: node.uid,
-      key: node.uid,
-      title: node.nodeId,
-      uid: node.uid
+      id: node.nodeid,
+      key: node.nodeid,
+      title: node.path,
+      nodeid: node.nodeid
     }
 
-    loadNode(node.uid, { savePrev: false, fetch: false, node: archiveNode })
+    loadNode(node.nodeid, { savePrev: false, fetch: false, node: archiveNode })
   }
 
   const transition = useTransition(archive, {
     // sort: (a, b) => (a.score > b.score ? -1 : 0),
-    keys: (item) => `archive_${item.uid}`,
+    keys: (item) => `archive_${item.nodeid}`,
     from: { opacity: 0 },
     enter: { opacity: 1 },
     trail: 50,
@@ -118,7 +118,7 @@ const Archive = () => {
 
   const onDeleteClick = async () => {
     const nodesToDelete = archive.filter((i) => {
-      const match = i.nodeId.startsWith(delNode.nodeId)
+      const match = i.path.startsWith(delNode.path)
       return match
     })
 
@@ -146,13 +146,13 @@ const Archive = () => {
         )}
         <Results>
           {transition((styles, n, _t, _i) => {
-            const con = contents[n.uid]
-            const nodeId = n.nodeId
+            const con = contents[n.nodeid]
+            const path = n.path
             const content = con ? con.content : defaultContent.content
             return (
-              <Result style={styles} key={`tag_res_prev_archive_${n.uid}${_i}`}>
+              <Result style={styles} key={`tag_res_prev_archive_${n.nodeid}${_i}`}>
                 <ResultHeader>
-                  <ResultTitle>{nodeId}</ResultTitle>
+                  <ResultTitle>{path}</ResultTitle>
                   <ActionContainer>
                     <StyledIcon
                       fontSize={32}
@@ -176,14 +176,14 @@ const Archive = () => {
                   </ActionContainer>
                 </ResultHeader>
                 <SearchPreviewWrapper>
-                  <EditorPreviewRenderer content={content} editorId={`editor_archive_preview_${n.uid}`} />
+                  <EditorPreviewRenderer content={content} editorId={`editor_archive_preview_${n.nodeid}`} />
                 </SearchPreviewWrapper>
               </Result>
             )
           })}
         </Results>
         {/* {archive.map((node: ILink) => (
-          <ArchivedNode key={node.uid}>
+          <ArchivedNode key={node.nodeid}>
             <ArchiveHeader>{node.text}</ArchiveHeader>
             <ActionContainer>
               <StyledIcon fontSize={28} onClick={() => onUnarchiveClick(node)} icon={unarchiveLine} />

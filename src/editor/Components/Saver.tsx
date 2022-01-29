@@ -1,7 +1,7 @@
 import saveLine from '@iconify-icons/ri/save-line'
 import { TippyProps } from '@tippyjs/react'
 import { getPlateId, platesStore, usePlateId, usePlateSelectors } from '@udecode/plate'
-import React, { useCallback, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import tinykeys from 'tinykeys'
 import { useApi } from '../../apis/useSaveApi'
@@ -33,30 +33,31 @@ export const useDataSaverFromContent = () => {
   const { saveData } = useSaveData()
 
   // By default saves to API use false to not save
-  const saveEditorValueAndUpdateStores = useCallback((uid: string, editorValue: any[], saveApi?: boolean) => {
+  const saveEditorValueAndUpdateStores = (nodeid: string, editorValue: any[], saveApi?: boolean) => {
+    //useCallback(
     if (editorValue) {
-      setContent(uid, editorValue)
-      mog('saveEditorValueAndUpdateStores', { uid, editorValue, saveApi })
-      if (saveApi !== false) saveDataAPI(uid, editorValue)
-      updateLinksFromContent(uid, editorValue)
-      updateTagsFromContent(uid, editorValue)
-      const title = getNodeIdFromUid(uid)
-      updateDocNew(uid, convertEntryToRawText(uid, editorValue), title)
+      setContent(nodeid, editorValue)
+      mog('saveEditorValueAndUpdateStores', { nodeid, editorValue, saveApi })
+      if (saveApi !== false) saveDataAPI(nodeid, editorValue)
+      updateLinksFromContent(nodeid, editorValue)
+      updateTagsFromContent(nodeid, editorValue)
+      const title = getNodeIdFromUid(nodeid)
+      updateDocNew(nodeid, convertEntryToRawText(nodeid, editorValue), title)
     }
-  }, [])
+  } //, [])
 
-  const saveNodeAPIandFs = (uid: string) => {
-    const content = getContent(uid)
-    mog('saving to api for uid: ', { uid, content })
-    saveDataAPI(uid, content.content)
+  const saveNodeAPIandFs = (nodeid: string) => {
+    const content = getContent(nodeid)
+    mog('saving to api for nodeid: ', { nodeid, content })
+    saveDataAPI(nodeid, content.content)
     saveData()
   }
 
-  const saveNodeWithValue = (uid: string, value: NodeEditorContent) => {
-    const content = getContent(uid)
-    mog('saving to api for uid: ', { uid, content })
-    // saveDataAPI(uid, content.content)
-    saveEditorValueAndUpdateStores(uid, value, true)
+  const saveNodeWithValue = (nodeid: string, value: NodeEditorContent) => {
+    // const content = getContent(nodeid)
+    mog('saving to api for nodeid: ', { nodeid, value })
+    // saveDataAPI(nodeid, content.content)
+    saveEditorValueAndUpdateStores(nodeid, value, true)
     saveData()
   }
 
@@ -91,7 +92,7 @@ export const useSaver = () => {
     const hasState = !!state[editorId]
     if (hasState) {
       const editorState = content ?? state[editorId].get.value()
-      saveEditorValueAndUpdateStores(cnode.uid, editorState)
+      saveEditorValueAndUpdateStores(cnode.nodeid, editorState)
     }
 
     if (writeToFile !== false) {
@@ -109,7 +110,7 @@ interface SaverButtonProps {
   noButton?: boolean
   // Warning doesn't get the current node in the editor
   saveOnUnmount?: boolean
-  callbackAfterSave?: (uid?: string) => void
+  callbackAfterSave?: (nodeid?: string) => void
   callbackBeforeSave?: () => void
   singleton?: TippyProps['singleton']
 }
@@ -136,7 +137,7 @@ export const SaverButton = ({
   const onSave = () => {
     if (callbackBeforeSave) callbackBeforeSave()
     onSaveFs(node)
-    if (callbackAfterSave) callbackAfterSave(node.uid)
+    if (callbackAfterSave) callbackAfterSave(node.nodeid)
   }
 
   useEffect(() => {

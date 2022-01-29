@@ -78,12 +78,12 @@ const Content = () => {
   }, [selection, editorNode, setSearchResults])
 
   useEffect(() => {
-    const results = getSearchResults(search, ilinks, { keySelector: (obj) => obj.nodeId })
+    const results = getSearchResults(search, ilinks, { keySelector: (obj) => obj.path })
 
     if (search) {
       const resultsWithContent: Array<Partial<ILink> | { desc: string; new?: boolean }> = results.map(
         (ilink: ILink) => {
-          const content = getContent(ilink.uid)
+          const content = getContent(ilink.nodeid)
           let rawText = ''
 
           content?.content.map((item) => {
@@ -98,7 +98,7 @@ const Content = () => {
         }
       )
 
-      const isNew = ilinks.filter((item) => item.nodeId === search).length === 0
+      const isNew = ilinks.filter((item) => item.path === search).length === 0
 
       if (isNew) {
         setSearchResults([{ new: true }, ...resultsWithContent])
@@ -142,9 +142,9 @@ const Content = () => {
         text: null
       })
       if (nodeContent) {
-        loadNodeAndAppend(resultNode.uid, nodeContent)
+        loadNodeAndAppend(resultNode.nodeid, nodeContent)
       } else {
-        loadNode(resultNode.uid, { savePrev: false, fetch: false })
+        loadNode(resultNode.nodeid, { savePrev: false, fetch: false })
       }
     }
     setSaved(false)
