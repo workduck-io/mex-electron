@@ -4,7 +4,7 @@ import tough from 'tough-cookie'
 import WebStorageCookieStore from 'tough-cookie-web-storage-store'
 import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
 import { FAKE_APP_URI, IS_DEV } from '../../data/Defaults/dev_'
-import { NODE_ID_PREFIX } from '../../data/Defaults/idPrefixes'
+import { ID_SEPARATOR, NODE_ID_PREFIX } from '../../data/Defaults/idPrefixes'
 import { NodeEditorContent } from '../../types/Types'
 
 export const mog = (title: string, propertiesToLog: Record<string, any>) => {
@@ -37,7 +37,7 @@ export const electronCookies = () => {
 export const createNodeWithUid = (key: string) => ({
   title: key,
   id: key,
-  nodeid: `${NODE_ID_PREFIX}${nanoid()}`,
+  nodeid: `${NODE_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`,
   key: key
 })
 

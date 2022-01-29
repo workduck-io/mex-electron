@@ -90,6 +90,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
 
   const onBeforeSave = () => {
     addILink(node.key, node.nodeid)
+    mog(node.nodeid, { node })
   }
 
   const onAfterSave = (nodeid: string) => {
