@@ -93,8 +93,8 @@ const Archive = () => {
     addILink(node.path, node.nodeid, undefined, true)
 
     const archiveNode: NodeProperties = {
-      id: node.nodeid,
-      key: node.nodeid,
+      id: node.path,
+      key: node.path,
       title: node.path,
       nodeid: node.nodeid
     }
