@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import QuestionMarkIcon from '@iconify-icons/ri/question-mark'
 import CloseIcon from '@iconify-icons/ri/close-line'
-import { useOnboardingData } from '../Onboarding/hooks'
 import { useHelpStore } from '../../../store/useHelpStore'
 import useOnboard from '../../../store/useOnboarding'
 import { useAuthStore } from '../../../services/auth/useAuth'
@@ -10,7 +9,6 @@ import { GetIcon } from '../../../data/links'
 import { FlexBetween } from '../../spotlight/Actions/styled'
 import { useInitOlvy } from '../../../services/olvy'
 import { Float, FloatingMenu, FloatButton, ClickableIcon, MenuItem } from './styled'
-import { useLocation, useHistory } from 'react-router-dom'
 import { MexIcon } from '../../../style/Layouts'
 
 const FloatingMenuActions: React.FC<{
@@ -56,30 +54,18 @@ const FloatingMenuActions: React.FC<{
 
 const FloatingButton = () => {
   const [showMenu, setMenu] = useState<boolean>(false)
+  const setModal = useOnboard((store) => store.setModal)
 
   const toggleModal = useHelpStore((store) => store.toggleModal)
   const focusMode = useLayoutStore((store) => store.focusMode)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const authenticated = useAuthStore((store) => store.authenticated)
-  const { setOnboardData } = useOnboardingData()
-
-  const history = useHistory()
-  const location = useLocation()
 
   useInitOlvy(showMenu)
 
   const onGettingStartedClick = () => {
-    // * Set Integration data (Like tour flow block)
-    setOnboardData()
-    // * Load Tour node
-
-    // * If not on editor page
-    if (location.pathname !== '/editor') {
-      history.push('/editor')
-    }
-
-    // * Start Product Tour
-    changeOnboarding(true)
+    setModal(true)
+    setMenu(false)
   }
 
   const onShortcutClick = () => {

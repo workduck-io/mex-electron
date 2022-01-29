@@ -1,17 +1,22 @@
 import React from 'react'
+import { ReactourStep } from 'reactour'
 import useOnboard from '../../../store/useOnboarding'
 import { Button } from '../../../style/Buttons'
-// import { Button } from '../../Styled/Buttons'
-// import useOnboard from './store'
 import { ReactTour } from './styled'
 
-const OnBoardingTour = ({ steps }: { steps: Array<any> }) => {
-  const isOnboarding = useOnboard((s) => s.isOnboarding)
+type OnboardingProps = {
+  steps: Array<ReactourStep>
+}
+
+const OnBoardingTour: React.FC<OnboardingProps> = ({ steps }) => {
   const step = useOnboard((s) => s.step)
+
+  const isOnboarding = useOnboard((s) => s.isOnboarding)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
 
   return (
     <ReactTour
+      closeWithMask={false}
       showCloseButton={false}
       prevButton={<></>}
       nextButton={
@@ -21,6 +26,7 @@ const OnBoardingTour = ({ steps }: { steps: Array<any> }) => {
       }
       startAt={step}
       disableDotsNavigation
+      showNavigation={false}
       rounded={5}
       disableFocusLock
       disableInteraction

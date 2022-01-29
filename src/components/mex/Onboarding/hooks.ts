@@ -8,15 +8,21 @@ import useLoad from '../../../hooks/useLoad'
 import { ID_SEPARATOR, SNIPPET_PREFIX } from '../../../data/Defaults/idPrefixes'
 import { useSnippetStore } from '../../../store/useSnippetStore'
 import { useUpdater } from '../../../hooks/useUpdater'
-import { mog } from '../../../utils/lib/helper'
+import useOnboard from '../../../store/useOnboarding'
+
+import { GettingStartedListProps } from './sections/GettingStarted'
+import { useDelete } from '../../../hooks/useDelete'
 
 export const useOnboardingData = () => {
   const templates = useSyncStore((store) => store.templates)
   const services = useSyncStore((store) => store.services)
   const ilinks = useDataStore((store) => store.ilinks)
   const snippets = useSnippetStore((store) => store.snippets)
-  const { getNode } = useLoad()
 
+  const setStep = useOnboard((store) => store.setStep)
+  const changeOnboarding = useOnboard((store) => store.changeOnboarding)
+
+  const { getNode } = useLoad()
   const getBookmarks = useDataStore((state) => state.getBookmarks)
   const addBookmarks = useDataStore((state) => state.addBookmarks)
 
@@ -29,6 +35,7 @@ export const useOnboardingData = () => {
   const setTemplates = useSyncStore((store) => store.setTemplates)
 
   const { updater } = useUpdater()
+  const { execDelete } = useDelete()
 
   const isBookmark = (uid: string) => {
     const bookmarks = getBookmarks()
@@ -120,6 +127,41 @@ export const useOnboardingData = () => {
   ]
 
   const TOUR_SNIPPET_ID = `${SNIPPET_PREFIX}${ID_SEPARATOR}PRD`
+
+  const createNode = (name: string) => {
+    // * Create Quick link for Product Tour node
+    const uid = addILink(name)
+    const node = getNode(uid)
+
+    loadTourNode(node, {
+      type: 'something',
+      content: tourNodeContent
+    })
+
+    return uid
+  }
+
+  const createTourNodes = (item: GettingStartedListProps) => {
+    const productTourNode = ilinks.find((i) => i.text === 'Tour')
+
+    if (!productTourNode?.uid) {
+      // * Create nodes
+      // * Create Quick link for Product Tour node
+      addILink('Tour')
+      /*
+        - Tour
+          - Quick Link
+          - Snippet
+          - Flow Link
+      */
+    }
+
+    const uid = createNode(`Tour.${item.title}`)
+
+    // * Create a Bookmark for the Product Road map node
+    if (!isBookmark(uid)) addBookmarks([uid])
+  }
+
   const createNewSnippet = () => {
     addSnippet({
       id: TOUR_SNIPPET_ID,
@@ -131,7 +173,7 @@ export const useOnboardingData = () => {
   }
 
   // * Integration dummy data
-  const setOnboardData = () => {
+  const setOnboardData = (item: GettingStartedListProps) => {
     // * Template and services
     // * Uncomment this if you want this in tour
     // setServices(onBoardServices)
@@ -140,21 +182,8 @@ export const useOnboardingData = () => {
     // * One tag called 'onboard'
     addTag('onboard')
 
-    const productTourNode = ilinks.find((i) => i.text === 'Product Tour')
-
-    // * Create Quick link for Product Tour node
-    const uid = productTourNode?.uid ?? addILink('Product Tour')
-    const node = getNode(uid)
-
-    mog(node.uid, { uid, node })
-
-    // * Create a Bookmark for the Product Road map node
-    addBookmarks([uid])
-
-    loadTourNode(node, {
-      type: 'something',
-      content: tourNodeContent
-    })
+    // * Create node
+    createTourNodes(item)
 
     // * Create a new snippet with some content
     const isTourSnippetPresent = snippets.find((s) => s.id === TOUR_SNIPPET_ID)
@@ -167,7 +196,15 @@ export const useOnboardingData = () => {
 
     setTemplates(remainingTemplates)
     setServices(remainingServices)
+
+    execDelete('Tour', { permanent: true })
   }
 
-  return { setOnboardData, removeOnboardData }
+  const closeOnboarding = () => {
+    setStep(0)
+    removeOnboardData()
+    changeOnboarding(false)
+  }
+
+  return { setOnboardData, removeOnboardData, closeOnboarding }
 }

@@ -30,10 +30,12 @@ export const useDelete = () => {
     return { archivedNodes, newIlinks }
   }
 
-  const execDelete = (del: string) => {
+  const execDelete = (del: string, options?: { permanent: boolean }) => {
     const { archivedNodes, newIlinks } = getMockDelete(del)
 
-    addArchiveData(archivedNodes)
+    if (!options?.permanent) {
+      addArchiveData(archivedNodes)
+    }
 
     // Remap the contents for links that remain
 

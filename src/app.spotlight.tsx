@@ -6,7 +6,7 @@ import { defaultThemes } from './style/themes/defaultThemes'
 import Routes from './views/spotlight/routes'
 import { SpotlightProvider } from './store/Context/context.spotlight'
 import { initializeSentry } from './services/sentry'
-import { SpotlightOnboarding } from './components/mex/Onboarding/steps'
+import { SpotlightOnboarding } from './components/mex/Onboarding/sections/Spotlight/steps'
 import { IS_DEV } from './data/Defaults/dev_'
 
 if (!IS_DEV) initializeSentry()

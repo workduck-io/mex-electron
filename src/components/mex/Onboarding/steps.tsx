@@ -1,4 +1,4 @@
-import { StyledKeyCap, StyledTypography } from './components/welcome.style'
+import { StyledTypography } from './components/welcome.style'
 import React from 'react'
 import { Command } from '../NodeIntentsModal/styled'
 import styled from 'styled-components'
@@ -8,8 +8,9 @@ import { CenteredFlex } from '../../../style/Integration'
 import { Button } from '../../../style/Buttons'
 import useOnboard from '../../../store/useOnboarding'
 import { OnboardElements } from './types'
-import useLoad from '../../../hooks/useLoad'
-import { useLinks } from '../../../hooks/useLinks'
+import QuickLinkTour from './sections/QuickLinks'
+import SnippetTour from './sections/Snippets'
+import { useOnboardingData } from './hooks'
 
 export const toolTipStyle = {
   padding: '2rem',
@@ -71,33 +72,6 @@ const FlowMessage = () => {
   )
 }
 
-const LoadQuickLink = () => {
-  const { loadNode } = useLoad()
-  const { getUidFromNodeId } = useLinks()
-  const onLoad = () => {
-    loadNode(getUidFromNodeId('doc'))
-    performClick()
-  }
-
-  return (
-    <>
-      <div>
-        Create quick links using{' '}
-        <Command>
-          <strong> [[ </strong>
-        </Command>
-        command
-      </div>
-      <StyledTypography margin="0.5rem 0" size="0.8rem" color="#aaa" maxWidth="100%">
-        Incase you want to link your thoughts together
-      </StyledTypography>
-      <CenteredFlex>
-        <Button onClick={onLoad}>Send</Button>
-      </CenteredFlex>
-    </>
-  )
-}
-
 const MoveToIntegrationpage = () => {
   const router = useHistory()
 
@@ -136,7 +110,7 @@ const FinishIntegration = () => {
   )
 }
 
-const displayNone = (node) => {
+export const displayNone = (node) => {
   const nextBtn = document.getElementById('tour-next-button')
   if (nextBtn) nextBtn.style.display = 'none'
 }
@@ -147,18 +121,82 @@ export const performClick = (showButton = true) => {
   if (showButton) nextBtn.style.display = 'inline-block'
 }
 
-export const quickLinkTour = {
-  selector: `[data-tour="${OnboardElements.QUICK_LINK}"]`,
-  content: <LoadQuickLink />,
-  style: toolTipStyle,
-  action: displayNone
+export const FinishQuickLink = () => {
+  const history = useHistory()
+
+  const { closeOnboarding } = useOnboardingData()
+
+  const onClick = () => {
+    history.push('/snippets')
+    performClick()
+  }
+
+  return (
+    <>
+      <div>This is a quick link section. Here you&apos;ll see all othere nodes where this node is referenced.</div>
+      <br />
+      <br />
+      <CenteredFlex>
+        <Button onClick={closeOnboarding}>Finish</Button>
+        <Button onClick={onClick}>Continue</Button>
+      </CenteredFlex>
+    </>
+  )
 }
 
-export const snippetTour = {
-  selector: `[data-tour="${OnboardElements.SNIPPET}"]`,
-  content: 'Something is here',
-  style: toolTipStyle
-}
+export const quickLinkTour = [
+  {
+    selector: `[data-tour="${OnboardElements.QUICK_LINK}"]`,
+    content: <QuickLinkTour />,
+    style: toolTipStyle,
+    action: displayNone
+  },
+  {
+    selector: '[data-tour="mex-onboarding-draft-editor"]',
+    content: <div>Now, let&apos;s try to make a quick link of Product Tour in doc</div>,
+    style: toolTipStyle,
+    stepInteraction: true
+  },
+  {
+    selector: `[data-tour="${OnboardElements.QUICK_LINK_LIST}"]`,
+    content: <FinishQuickLink />,
+    style: toolTipStyle,
+    action: displayNone
+  }
+]
+
+export const snippetTour = [
+  {
+    selector: `[data-tour="${OnboardElements.SNIPPET}"]`,
+    content: <SnippetTour />,
+    style: toolTipStyle,
+    action: displayNone
+  },
+  {
+    selector: '[data-tour="mex-onboarding-draft-editor"]',
+    content: (
+      <>
+        <div>Now, let&apos;s try to use the created snippet inside doc node</div>
+        <br />
+        <div>
+          Write{' '}
+          <Command>
+            <strong> /PRD </strong>
+          </Command>{' '}
+          and hit enter to insert PRD.
+        </div>
+      </>
+    ),
+    style: toolTipStyle,
+    stepInteraction: true
+  },
+  {
+    selector: `[data-tour="${OnboardElements.QUICK_LINK_LIST}"]`,
+    content: <FinishQuickLink />,
+    style: toolTipStyle,
+    action: displayNone
+  }
+]
 
 export const inlineBlockTour = {
   selector: `[data-tour="${OnboardElements.INLINE_BLOCK}"]`,
@@ -183,7 +221,7 @@ export const inlineBlockTour = {
   style: toolTipStyle
 }
 
-export const OnboardingTourConfig = [quickLinkTour, inlineBlockTour]
+export const OnboardingTourConfig = [...quickLinkTour, ...snippetTour, inlineBlockTour]
 
 // export const OnboardingTourConfig = [
 //   {
@@ -317,36 +355,3 @@ export const OnboardingTourConfig = [quickLinkTour, inlineBlockTour]
 //     action: displayNone
 //   }
 // ]
-
-export const SpotlightOnboarding = [
-  {
-    selector: '[data-tour="mex-quick-capture-preview"]',
-    content: <div>Anything you capture would be visible here.</div>,
-    style: toolTipStyle,
-    position: 'right'
-  },
-  {
-    selector: '[data-tour="mex-create-new-draft"]',
-    content: (
-      <div>
-        Create new node by pressing <StyledKeyCap>TAB</StyledKeyCap>
-      </div>
-    ),
-    style: toolTipStyle,
-    action: displayNone
-  },
-  {
-    selector: '[data-tour="mex-edit-content"]',
-    content: (
-      <>
-        <div>Edit your captured content here and hit save.</div>
-        <br />
-        <div>
-          Save captured content using <StyledKeyCap>CMD+S</StyledKeyCap>
-        </div>
-      </>
-    ),
-    style: toolTipStyle,
-    action: displayNone
-  }
-]

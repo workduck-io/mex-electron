@@ -18,12 +18,8 @@ const Search: React.FC = () => {
   const ref = useRef<HTMLInputElement>()
   const { setSearch, search, selection } = useSpotlightContext()
 
-  const { normalMode, setNormalMode } = useSpotlightAppStore(({ normalMode, setNormalMode }) => ({
-    normalMode,
-    setNormalMode
-  }))
-
   const node = useSpotlightEditorStore((s) => s.node)
+  const normalMode = useSpotlightAppStore((store) => store.normalMode)
 
   const handleSearchInput = useDebouncedCallback((value: string) => {
     setSearch(value)
@@ -32,11 +28,11 @@ const Search: React.FC = () => {
     // }
   }, 400)
 
-  // useEffect(() => {
-  //   if (search === '') ref.current.value = ''
-  //   // ref.current.focus()
-  //   // if (normalMode) ref.current.value = ''
-  // }, [search, normalMode])
+  useEffect(() => {
+    if (search === '') ref.current.value = ''
+    // ref.current.focus()
+    // if (normalMode) ref.current.value = ''
+  }, [search, normalMode])
 
   return (
     <StyledSearch>

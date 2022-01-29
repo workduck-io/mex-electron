@@ -18,7 +18,7 @@ import useOnboard from '../../../store/useOnboarding'
 import NodeSelect from '../NodeSelect/NodeSelect'
 import { StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
 
-const StyledModal = styled(Modal)`
+export const StyledModal = styled(Modal)`
   z-index: 10010000;
 `
 

@@ -8,6 +8,8 @@ import { useNavigation } from '../../../hooks/useNavigation'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { HoverSubtleGlow } from '../../../style/helpers'
 import { Note } from '../../../style/Typography'
+import { useEditorSelection } from '../../../hooks/useEditorSelection'
+import { OnboardElements } from '../Onboarding/types'
 
 const SBackLinks = styled.div`
   width: 100%;
@@ -51,8 +53,10 @@ const QuickLinks = () => {
   const backlinks = getBacklinks(useEditorStore.getState().node.nodeid)
   const { getNodeIdFromUid } = useLinks()
 
+  useEditorSelection()
+
   return (
-    <SBackLinks>
+    <SBackLinks data-tour={OnboardElements.QUICK_LINK_LIST}>
       <DataInfoHeader>
         <Icon icon={arrowGoBackLine}></Icon>
         Quick Links
@@ -72,4 +76,4 @@ const QuickLinks = () => {
   )
 }
 
-export default QuickLinks 
+export default QuickLinks

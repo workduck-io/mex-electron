@@ -195,15 +195,14 @@ const createSpotLighWindow = (show?: boolean) => {
     if (show) {
       spotlight.focus()
       spotlight.show()
+    } else {
+      spotlight.hide()
     }
-    // else {
-    //   spotlight.hide()
-    // }
   })
 
   spotlight.on('blur', () => {
     // * UNCOMMENT THIS !!!
-    // spotlight.hide()
+    spotlight.hide()
     spotlight.webContents.send(IpcAction.SPOTLIGHT_BLURRED)
   })
 

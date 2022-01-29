@@ -18,7 +18,6 @@ import { Notifications } from './components/mex/Notifications/Notifications'
 if (!IS_DEV) initializeSentry()
 
 Modal.setAppElement('#root')
-initializeSentry()
 
 function App() {
   return (
