@@ -53,7 +53,7 @@ const Search: React.FC = () => {
         autoFocus
         id="spotlight_search"
         name="spotlight_search"
-        placeholder={!normalMode || selection ? node?.nodeid : 'Search anything...'}
+        placeholder={!normalMode || selection ? node?.title : 'Search anything...'}
         onChange={({ target: { value } }) => {
           handleSearchInput(value)
         }}
