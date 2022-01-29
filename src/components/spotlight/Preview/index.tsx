@@ -89,6 +89,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   }
 
   const onBeforeSave = () => {
+    mog(node.id, { node })
     addILink(node.key, node.uid)
   }
 
@@ -132,7 +133,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
       )}
       <StyledEditorPreview>
         <ErrorBoundary onReset={resetEditor} FallbackComponent={EditorErrorFallback}>
-          {(
+          {
             <Editor
               autoFocus={!normalMode}
               focusAtBeginning={!normalMode}
@@ -140,7 +141,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
               content={previewContent?.content ?? defaultContent.content}
               editorId={node.uid}
             />
-          )}
+          }
         </ErrorBoundary>
       </StyledEditorPreview>
       <SaverButton callbackAfterSave={onAfterSave} callbackBeforeSave={onBeforeSave} noButton />

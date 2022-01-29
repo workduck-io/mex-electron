@@ -1,10 +1,9 @@
-import { nanoid } from 'nanoid'
 import tough from 'tough-cookie'
 import WebStorageCookieStore from 'tough-cookie-web-storage-store'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 import { FAKE_APP_URI, IS_DEV } from '../../data/Defaults/dev_'
 import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
-import { NODE_ID_PREFIX } from '../../data/Defaults/idPrefixes'
+import { generateNodeUID } from '../../data/Defaults/idPrefixes'
 import { NodeEditorContent } from '../../types/Types'
 
 export const mog = (title: string, propertiesToLog: Record<string, any>) => {
@@ -37,7 +36,7 @@ export const electronCookies = () => {
 export const createNodeWithUid = (key: string) => ({
   title: key,
   id: key,
-  uid: `${NODE_ID_PREFIX}${nanoid()}`,
+  uid: generateNodeUID(),
   key: key
 })
 
