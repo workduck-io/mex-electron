@@ -4,6 +4,7 @@ import Document from '@iconify-icons/gg/file-document'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useRef, useState } from 'react'
 import { useSpring, useTransition } from 'react-spring'
+import { mog } from '../../../utils/lib/helper'
 import { useTheme } from 'styled-components'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
@@ -19,7 +20,7 @@ import ListenResultShortcut from './ListenResultShortcut'
 import { Description, StyledResults, StyledRow } from './styled'
 
 export const Result: React.FC<{
-  result: any
+  result: any // FIXME
   onClick: () => void
   style: any
   selected?: boolean
@@ -30,7 +31,7 @@ export const Result: React.FC<{
     <StyledRow style={style} showColor={selected} onClick={onClick} key={`STRING_${result.text}`}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Icon color={theme.colors.primary} style={{ marginRight: '8px' }} height={16} width={16} icon={Document} />
-        <div>{result?.text}</div>
+        <div>{result?.path}</div>
       </div>
       <Description>{result?.desc}</Description>
     </StyledRow>
@@ -78,6 +79,8 @@ const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ curren
   }
 
   const withNew = data?.length > 0 && data[0].new
+
+  mog('', { search, data })
 
   return (
     <StyledResults style={props} margin={search}>
