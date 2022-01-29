@@ -1,11 +1,12 @@
-import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
 import create from 'zustand'
 import { generateTree, getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
-import getFlatTree from '../utils/lib/flatTree'
-import { removeLink } from '../utils/lib/links'
-import { generateComboText, generateIlink } from '../utils/generateComboItem'
+import { generateNodeUID } from '../data/Defaults/idPrefixes'
 import { CachedILink, DataStoreState } from '../types/Types'
-import { typeInvert } from '../utils/helpers'
+import { generateTag } from '../utils/generateComboItem'
+import { Settify, typeInvert } from '../utils/helpers'
+import getFlatTree from '../utils/lib/flatTree'
+import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
+import { removeLink } from '../utils/lib/links'
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   // Tags
@@ -36,14 +37,14 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
   // Add a new tag to the store
   addTag: (tag) => {
+    const Tags = Settify([...get().tags.map((t) => t.value), tag])
     set({
-      tags: [...get().tags, generateComboText(tag, get().tags.length)]
+      tags: Tags.map(generateTag)
     })
   },
 
   // Add a new ILink to the store
-  addILink: (ilink, uid, parentId, archived) => {
-    // console.log('Adding ILink', { ilink, uid, parentId, archived })
+  addILink: (ilink, nodeid, parentId, archived) => {
     const { key, isChild } = withoutContinuousDelimiter(ilink)
 
     if (key) {
@@ -52,30 +53,26 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
     const ilinks = get().ilinks
 
-    const linksStrings = ilinks.map((l) => l.text)
+    const linksStrings = ilinks.map((l) => l.path)
     const parents = getAllParentIds(ilink) // includes link of child
 
     const newLinks = parents.filter((l) => !linksStrings.includes(l)) // only create links for non existing
 
-    const comboTexts = newLinks.map((l, index) => {
-      const newILink = generateIlink(l, ilinks.length + index)
+    const newILinks = newLinks.map((l) => ({
+      nodeid: nodeid && l === ilink ? nodeid : generateNodeUID(),
+      path: l
+    }))
 
-      if (uid && newILink.text === ilink) {
-        newILink.uid = uid
-      }
+    const newLink = newILinks.find((l) => l.path === ilink)
 
-      return newILink
-    })
+    const userILinks = archived ? ilinks.map((val) => (val.path === ilink ? { ...val, nodeid } : val)) : ilinks
 
-    const newLink = comboTexts.find((l) => l.text === ilink)
-
-    const userILinks = archived ? ilinks.map((val) => (val.key === ilink ? { ...val, uid } : val)) : ilinks
-
+    mog('Adding ILink', { ilink, nodeid, parentId, archived, newLink, newLinks, userILinks, parents })
     set({
-      ilinks: [...userILinks, ...comboTexts]
+      ilinks: [...userILinks, ...newILinks]
     })
 
-    if (newLink) return newLink.uid
+    if (newLink) return newLink.nodeid
     return ''
   },
 
@@ -104,42 +101,43 @@ const useDataStore = create<DataStoreState>((set, get) => ({
    * Adds InternalLink between two nodes
    * Should not add duplicate links
    */
-  addInternalLink: (ilink, uid) => {
-    mog('Creating links', { ilink, uid })
+  addInternalLink: (ilink, nodeid) => {
+    mog('Creating links', { ilink, nodeid })
     // No self links will be added
-    if (uid === ilink.uid) return
+    if (nodeid === ilink.nodeid) return
 
-    let nodeLinks = get().linkCache[uid]
-    let secondNodeLinks = get().linkCache[ilink.uid]
+    let nodeLinks = get().linkCache[nodeid]
+    let secondNodeLinks = get().linkCache[ilink.nodeid]
 
     if (!nodeLinks) nodeLinks = []
     if (!secondNodeLinks) secondNodeLinks = []
 
     // Add internallink if not already present
-    const isInNode = nodeLinks.filter((n) => n.uid === ilink.uid && n.type === ilink.type).length > 0
+    const isInNode = nodeLinks.filter((n) => n.nodeid === ilink.nodeid && n.type === ilink.type).length > 0
     if (!isInNode) nodeLinks.push(ilink)
 
     // Add internallink if not already present
-    const isInSecondNode = secondNodeLinks.filter((n) => n.uid === uid && n.type === typeInvert(ilink.type)).length > 0
+    const isInSecondNode =
+      secondNodeLinks.filter((n) => n.nodeid === nodeid && n.type === typeInvert(ilink.type)).length > 0
     if (!isInSecondNode) {
       secondNodeLinks.push({
         type: typeInvert(ilink.type),
-        uid: uid
+        nodeid: nodeid
       })
     }
 
     set({
       linkCache: {
         ...get().linkCache,
-        [uid]: nodeLinks,
-        [ilink.uid]: secondNodeLinks
+        [nodeid]: nodeLinks,
+        [ilink.nodeid]: secondNodeLinks
       }
     })
   },
 
-  removeInternalLink: (ilink, uid) => {
-    let nodeLinks = get().linkCache[uid]
-    let secondNodeLinks = get().linkCache[ilink.uid]
+  removeInternalLink: (ilink, nodeid) => {
+    let nodeLinks = get().linkCache[nodeid]
+    let secondNodeLinks = get().linkCache[ilink.nodeid]
 
     if (!nodeLinks) nodeLinks = []
     if (!secondNodeLinks) secondNodeLinks = []
@@ -147,15 +145,15 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     nodeLinks = removeLink(ilink, nodeLinks)
     const secondLinkToDelete: CachedILink = {
       type: ilink.type === 'from' ? 'to' : 'from',
-      uid: uid
+      nodeid: nodeid
     }
     secondNodeLinks = removeLink(secondLinkToDelete, secondNodeLinks)
 
     set({
       linkCache: {
         ...get().linkCache,
-        [uid]: nodeLinks,
-        [ilink.uid]: secondNodeLinks
+        [nodeid]: nodeLinks,
+        [ilink.nodeid]: secondNodeLinks
       }
     })
   },
@@ -176,11 +174,11 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     set({ bookmarks: Array.from(ubookmarks) })
   },
 
-  updateInternalLinks: (links, uid) => {
+  updateInternalLinks: (links, nodeid) => {
     set({
       linkCache: {
         ...get().linkCache,
-        [uid]: links
+        [nodeid]: links
       }
     })
   },
@@ -191,13 +189,13 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   },
 
   removeFromArchive: (removeArchive) => {
-    const userArchive = get().archive.filter((b) => !(removeArchive.map((i) => i.key).indexOf(b.key) > -1))
+    const userArchive = get().archive.filter((b) => !(removeArchive.map((i) => i.path).indexOf(b.path) > -1))
     set({ archive: userArchive })
   },
 
   unArchive: (archive) => {
     const userArchive = get().archive
-    const afterUnArchive = userArchive.filter((ar) => ar.key !== archive.key)
+    const afterUnArchive = userArchive.filter((ar) => ar.path !== archive.path)
 
     set({ archive: afterUnArchive })
   },
@@ -208,7 +206,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   }
 }))
 
-export const getLevel = (nodeId: string) => nodeId.split(SEPARATOR).length
+export const getLevel = (path: string) => path.split(SEPARATOR).length
 
 /** Link sanatization
  *
@@ -216,7 +214,7 @@ export const getLevel = (nodeId: string) => nodeId.split(SEPARATOR).length
  * Guarantees parent is before child -> Condition required for correct tree
  */
 
-type treeMap = { id: string; uid: string }[]
+type treeMap = { id: string; nodeid: string }[]
 
 export const sanatizeLinks = (links: treeMap): treeMap => {
   let oldLinks = links
@@ -238,7 +236,7 @@ export const sanatizeLinks = (links: treeMap): treeMap => {
 
 export const useTreeFromLinks = () => {
   const ilinks = useDataStore((store) => store.ilinks)
-  const links = ilinks.map((i) => ({ id: i.text, uid: i.uid }))
+  const links = ilinks.map((i) => ({ id: i.path, nodeid: i.nodeid }))
   const sanatizedLinks = sanatizeLinks(links)
   const tree = generateTree(sanatizedLinks)
 

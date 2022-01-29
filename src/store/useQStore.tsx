@@ -4,14 +4,14 @@ import { useDataSaverFromContent } from '../editor/Components/Saver'
 interface QStoreProps {
   q: string[]
   setQ: (q: string[]) => void
-  add2Q: (uid: string) => void
+  add2Q: (nodeid: string) => void
   clearQ: () => void
 }
 
 export const useQStore = create<QStoreProps>((set, get) => ({
   q: [],
   setQ: (q) => set({ q }),
-  add2Q: (uid) => set({ q: Array.from(new Set([...get().q, uid])) }),
+  add2Q: (nodeid) => set({ q: Array.from(new Set([...get().q, nodeid])) }),
   clearQ: () => set({ q: [] })
 }))
 
@@ -23,8 +23,8 @@ export const useSaveQ = () => {
   const { saveNodeAPIandFs } = useDataSaverFromContent()
 
   const saveQ = () => {
-    ;[...q].map((uid) => {
-      saveNodeAPIandFs(uid)
+    [...q].map((nodeid) => {
+      saveNodeAPIandFs(nodeid)
     })
     // console.log('saving q', { q })
     clearQ()

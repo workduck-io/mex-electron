@@ -1,25 +1,26 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useRef, useState } from 'react'
-import { ActionTitle } from '../Actions/styled'
 import PlusCircle from '@iconify-icons/bi/plus-circle'
-import { StyledRow, StyledResults, Description } from './styled'
-import { useSpring, useTransition } from 'react-spring'
-import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import Document from '@iconify-icons/gg/file-document'
-import ListenResultShortcut from './ListenResultShortcut'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { PrimaryText, Flex, NoWrap } from '../../../style/Integration'
 import { Icon } from '@iconify/react'
+import React, { useEffect, useRef, useState } from 'react'
+import { useSpring, useTransition } from 'react-spring'
+import { mog } from '../../../utils/lib/helper'
 import { useTheme } from 'styled-components'
-import { AppType } from '../../../hooks/useInitialize'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
+import { AppType } from '../../../hooks/useInitialize'
 import useLoad from '../../../hooks/useLoad'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import { useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import useDataStore from '../../../store/useDataStore'
+import { NoWrap, PrimaryText } from '../../../style/Integration'
+import { ActionTitle } from '../Actions/styled'
+import ListenResultShortcut from './ListenResultShortcut'
+import { Description, StyledResults, StyledRow } from './styled'
 
 export const Result: React.FC<{
-  result: any
+  result: any // FIXME
   onClick: () => void
   style: any
   selected?: boolean
@@ -30,7 +31,7 @@ export const Result: React.FC<{
     <StyledRow style={style} showColor={selected} onClick={onClick} key={`STRING_${result.text}`}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Icon color={theme.colors.primary} style={{ marginRight: '8px' }} height={16} width={16} icon={Document} />
-        <div>{result?.text}</div>
+        <div>{result?.path}</div>
       </div>
       <Description>{result?.desc}</Description>
     </StyledRow>
@@ -71,13 +72,15 @@ const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ curren
   }, [current])
 
   const handleCreateItem = () => {
-    const uid = addILink(search)
-    setNode(getNode(uid))
+    const nodeid = addILink(search)
+    setNode(getNode(nodeid))
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, search)
     setNormalMode(false)
   }
 
   const withNew = data?.length > 0 && data[0].new
+
+  mog('', { search, data })
 
   return (
     <StyledResults style={props} margin={search}>

@@ -4,7 +4,9 @@ import { debounce } from 'lodash'
 import React, { useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useTransition } from 'react-spring'
+import create from 'zustand'
 import { defaultContent } from '../../../data/Defaults/baseData'
+import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
 import { useContentStore } from '../../../store/useContentStore'
@@ -13,23 +15,21 @@ import { useEditorStore } from '../../../store/useEditorStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { useNewSearchStore } from '../../../store/useSearchStore'
 import {
-  SearchInput,
-  ResultsWrapper,
-  ResultHeader,
-  ResultTitle,
-  Result,
-  Results,
-  NoSearchResults,
   MatchCounter,
   MatchCounterWrapper,
-  SearchPreviewWrapper,
+  NoSearchResults,
+  Result,
+  ResultHeader,
+  Results,
+  ResultsWrapper,
+  ResultTitle,
+  SearchContainer,
   SearchHeader,
-  SearchContainer
+  SearchInput,
+  SearchPreviewWrapper
 } from '../../../style/Search'
 import { Title } from '../../../style/Typography'
-import create from 'zustand'
 import { SearchHighlights, TitleHighlights } from './Highlights'
-import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 
 interface SearchStore {
   selected: number
@@ -103,7 +103,7 @@ const Search = () => {
   }
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)
-  const nodeUID = useEditorStore((store) => store.node.uid)
+  const nodeUID = useEditorStore((store) => store.node.nodeid)
   const baseNodeId = useDataStore((store) => store.baseNodeId)
 
   // console.log({ result })
@@ -196,7 +196,7 @@ const Search = () => {
             /*transition((styles, c, _t, i) => { */
             result.map((c, i) => {
               const con = contents[c.nodeUID]
-              const nodeId = getNodeIdFromUid(c.nodeUID)
+              const path = getNodeIdFromUid(c.nodeUID)
               const content = con ? con.content : defaultContent.content
               // console.log(c.matchField.includes('title'))
               return (
@@ -213,7 +213,7 @@ const Search = () => {
                     {c.titleHighlights !== undefined && c.titleHighlights.length > 0 ? (
                       <TitleHighlights titleHighlights={c.titleHighlights} />
                     ) : (
-                      <ResultTitle>{nodeId}</ResultTitle>
+                      <ResultTitle>{path}</ResultTitle>
                     )}
                     {c.totalMatches !== undefined && (
                       <MatchCounterWrapper>

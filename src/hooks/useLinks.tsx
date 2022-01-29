@@ -46,13 +46,13 @@ export const useLinks = () => {
     return allLinks
   }
 
-  const getLinks = (uid: string): NodeLink[] => {
-    const links = linkCache[uid]
+  const getLinks = (nodeid: string): NodeLink[] => {
+    const links = linkCache[nodeid]
     if (links) {
       return links.map((l) => {
         return {
-          [l.type]: l.uid,
-          [l.type === 'from' ? 'to' : 'from']: uid
+          [l.type]: l.nodeid,
+          [l.type === 'from' ? 'to' : 'from']: nodeid
         } as unknown as NodeLink
       })
     }
@@ -65,52 +65,52 @@ export const useLinks = () => {
    * No self links are allowed
    * Returns true if the link is created or false otherwise
    * */
-  const createLink = (uid: string, nodeLink: NodeLink): boolean => {
+  const createLink = (nodeid: string, nodeLink: NodeLink): boolean => {
     if (nodeLink.to === nodeLink.from) return false
 
     // console.log('Creating links', { nodeLink })
     // No self links will be added
 
-    let nodeLinks = useDataStore.getState().linkCache[uid]
+    let nodeLinks = useDataStore.getState().linkCache[nodeid]
     let secondNodeLinks = useDataStore.getState().linkCache[nodeLink.to]
 
     if (!nodeLinks) nodeLinks = []
     if (!secondNodeLinks) secondNodeLinks = []
 
-    nodeLinks.push({ type: 'from', uid: '' })
+    nodeLinks.push({ type: 'from', nodeid: '' })
     secondNodeLinks.push({
       type: 'to',
-      uid: uid
+      nodeid: nodeid
     })
 
     // set({
     //   linkCache: {
     //     ...get().linkCache,
-    //     [uid]: nodeLinks,
-    //     [ilink.uid]: secondNodeLinks
+    //     [nodeid]: nodeLinks,
+    //     [ilink.nodeid]: secondNodeLinks
     //   }
     // })
     return true
   }
 
-  const getBacklinks = (uid: string) => {
-    const links = linkCache[uid]
+  const getBacklinks = (nodeid: string) => {
+    const links = linkCache[nodeid]
     if (links) {
       return links.filter((l) => l.type === 'from')
     }
     return []
   }
 
-  const updateLinksFromContent = (uid: string, content: any[]) => {
-    // console.log('We are updating links from content', { uid, content, linkCache })
+  const updateLinksFromContent = (nodeid: string, content: any[]) => {
+    // console.log('We are updating links from content', { nodeid, content, linkCache })
 
     if (content) {
       const links: CachedILink[] = getLinksFromContent(content).map((l) => ({
         type: 'to',
-        uid: getUidFromNodeId(l)
+        nodeid: getUidFromNodeId(l)
       }))
 
-      let currentLinks = linkCache[uid]
+      let currentLinks = linkCache[nodeid]
       if (!currentLinks) currentLinks = []
 
       const currentToLinks = currentLinks.filter((l) => l.type === 'to')
@@ -123,33 +123,33 @@ export const useLinks = () => {
         return !hasLink(l, currentLinks)
       })
 
-      toLinkstoDelete.map((l) => removeInternalLink(l, uid))
-      toLinkstoAdd.map((l) => addInternalLink(l, uid))
+      toLinkstoDelete.map((l) => removeInternalLink(l, nodeid))
+      toLinkstoAdd.map((l) => addInternalLink(l, nodeid))
     }
   }
 
-  const getUidFromNodeId = (nodeId: string) => {
+  const getUidFromNodeId = (path: string) => {
     const links = useDataStore.getState().ilinks
     const archive = useDataStore.getState().archive
 
-    const link = links.find((l) => l.text === nodeId)
-    const archivedLink = archive.find((l) => l.text === nodeId)
+    const link = links.find((l) => l.path === path)
+    const archivedLink = archive.find((l) => l.path === path)
 
-    if (link) return link.uid
-    if (archivedLink) return archivedLink.uid
+    if (link) return link.nodeid
+    if (archivedLink) return archivedLink.nodeid
   }
 
-  const getNodeIdFromUid = (uid: string) => {
+  const getNodeIdFromUid = (nodeid: string) => {
     const links = useDataStore.getState().ilinks
 
-    const link = links.find((l) => l.uid === uid)
-    if (link) return link.text
+    const link = links.find((l) => l.nodeid === nodeid)
+    if (link) return link.path
   }
 
   return { getAllLinks, getLinks, getBacklinks, updateLinksFromContent, getUidFromNodeId, getNodeIdFromUid, createLink }
 }
 
-export const getUidFromNodeIdAndLinks = (links: ILink[], nodeId: string) => {
-  const link = links.find((l) => l.text === nodeId)
-  if (link) return link.uid
+export const getUidFromNodeIdAndLinks = (links: ILink[], path: string) => {
+  const link = links.find((l) => l.path === path)
+  if (link) return link.nodeid
 }

@@ -1,6 +1,6 @@
 // import { FileData, NodeSearchData } from '../Types/data'
 
-import { NodeSearchData, FileData } from '../../types/data'
+import { FileData, NodeSearchData } from '../../types/data'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const convertContentToRawText = (content: any[], join?: string): string => {
@@ -24,7 +24,7 @@ export const convertDataToRawText = (data: FileData): NodeSearchData[] => {
   const result: NodeSearchData[] = []
   const titleNodeMap = new Map<string, string>()
   data.ilinks.forEach((entry) => {
-    titleNodeMap.set(entry.uid, entry.text)
+    titleNodeMap.set(entry.nodeid, entry.path)
   })
 
   Object.entries(data.contents).forEach(([k, v]) => {

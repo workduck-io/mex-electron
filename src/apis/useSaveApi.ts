@@ -1,12 +1,12 @@
+import { client } from '@workduck-io/dwindle'
 import { defaultContent } from '../data/Defaults/baseData'
 import { USE_API } from '../data/Defaults/dev_'
-import { deserializeContent, serializeContent } from '../utils/lib/serialize'
-import { client } from '@workduck-io/dwindle'
-import { apiURLs } from './routes'
-import { mog, removeNulls } from '../utils/lib/helper'
 import { useAuthStore } from '../services/auth/useAuth'
 import { useContentStore } from '../store/useContentStore'
+import { mog, removeNulls } from '../utils/lib/helper'
 import { extractMetadata } from '../utils/lib/metadata'
+import { deserializeContent, serializeContent } from '../utils/lib/serialize'
+import { apiURLs } from './routes'
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,9 +17,9 @@ export const useApi = () => {
    * Saves data in the backend
    * Also updates the incoming data in the store
    */
-  const saveNewNodeAPI = async (uid: string) => {
+  const saveNewNodeAPI = async (nodeid: string) => {
     const reqData = {
-      id: uid,
+      id: nodeid,
       type: 'NodeRequest',
       lastEditedBy: useAuthStore.getState().userDetails.email,
       namespaceIdentifier: 'NAMESPACE1',
@@ -31,12 +31,12 @@ export const useApi = () => {
       return
     }
 
-    setContent(uid, defaultContent.content)
+    setContent(nodeid, defaultContent.content)
     const data = await client
       .post(apiURLs.saveNode, reqData, {})
       .then((d) => {
         mog('saveNewNodeAPI response', d)
-        setMetadata(uid, extractMetadata(d.data))
+        setMetadata(nodeid, extractMetadata(d.data))
         return d.data
       })
       .catch((e) => {
@@ -48,9 +48,9 @@ export const useApi = () => {
    * Saves data in the backend
    * Also updates the incoming data in the store
    */
-  const saveDataAPI = async (uid: string, content: any[]) => {
+  const saveDataAPI = async (nodeid: string, content: any[]) => {
     const reqData = {
-      id: uid,
+      id: nodeid,
       type: 'NodeRequest',
       lastEditedBy: useAuthStore.getState().userDetails.email,
       namespaceIdentifier: 'NAMESPACE1',
@@ -65,8 +65,8 @@ export const useApi = () => {
       .post(apiURLs.saveNode, reqData, {})
       .then((d) => {
         mog('savedData', { d })
-        setMetadata(uid, extractMetadata(d.data))
-        setContent(uid, deserializeContent(d.data.data))
+        // setMetadata(nodeid, extractMetadata(d.data))
+        setContent(nodeid, deserializeContent(d.data.data), extractMetadata(d.data))
         return d.data
       })
       .catch((e) => {
@@ -75,9 +75,9 @@ export const useApi = () => {
     return data
   }
 
-  const getDataAPI = async (uid: string) => {
+  const getDataAPI = async (nodeid: string) => {
     const res = await client
-      .get(apiURLs.getNode(uid), {})
+      .get(apiURLs.getNode(nodeid), {})
       .then((d) => {
         const metadata = {
           createdBy: d.data.createdBy,
@@ -123,13 +123,13 @@ export const testPerfFunc = (func: () => any, num = 100) => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-// const testPerf = async (uid: string) => {
+// const testPerf = async (nodeid: string) => {
 //   const ar = Array.from(Array(100).keys())
 //   const t0 = performance.now()
 //   let lost = 0
 //   await Promise.all(
 //     ar.map(async () => {
-//       await API.get('mex', `/node/${uid}`, {}).catch(() => {
+//       await API.get('mex', `/node/${nodeid}`, {}).catch(() => {
 //         lost++
 //       })
 //     })
@@ -149,7 +149,7 @@ export const testPerfFunc = (func: () => any, num = 100) => {
 //     .reduce(async (seq) => {
 //       return seq
 //         .then(async () => {
-//           await API.get('mex', `/node/${uid}`, {})
+//           await API.get('mex', `/node/${nodeid}`, {})
 //         })
 //         .catch(() => {
 //           lost++

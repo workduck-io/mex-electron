@@ -1,18 +1,18 @@
+import archivedIcon from '@iconify-icons/ri/archive-line'
 import { Icon } from '@iconify/react'
 import { useEditorRef } from '@udecode/plate'
 import * as React from 'react'
 import { Transforms } from 'slate'
-import archivedIcon from '@iconify-icons/ri/archive-line'
 import { useFocused, useSelected } from 'slate-react'
+import styled from 'styled-components'
 import useArchive from '../../../../hooks/useArchive'
-import { useNavigation } from '../../../../hooks/useNavigation'
 import { useLinks } from '../../../../hooks/useLinks'
+import { useNavigation } from '../../../../hooks/useNavigation'
 import EditorPreview from '../../EditorPreview/EditorPreview'
 import { useHotkeys } from '../hooks/useHotkeys'
 import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { SILink, SILinkRoot } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
-import styled from 'styled-components'
 
 /**
  * ILinkElement with no default styles.
@@ -30,11 +30,11 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const { getUidFromNodeId } = useLinks()
   // console.log('We reached here', { editor }, isPreview(editor.id))
 
-  const uid = getUidFromNodeId(element.value)
+  const nodeid = getUidFromNodeId(element.value)
   const { archived } = useArchive()
 
   const onClickProps = useOnMouseClick(() => {
-    push(uid)
+    push(nodeid)
   })
 
   useHotkeys(
@@ -65,7 +65,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
       data-slate-value={element.value}
       contentEditable={false}
     >
-      {archived(uid) ? (
+      {archived(nodeid) ? (
         <SILink focused={selected} archived={true}>
           <StyledIcon icon={archivedIcon} color="#df7777" />
           <span className="ILink_decoration ILink_decoration_left">[[</span>
@@ -73,7 +73,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
           <span className="ILink_decoration ILink_decoration_right">]]</span>
         </SILink>
       ) : (
-        <EditorPreview isPreview={isPreview(editor.id)} previewRef={editor} uid={uid}>
+        <EditorPreview isPreview={isPreview(editor.id)} previewRef={editor} nodeid={nodeid}>
           <SILink focused={selected} {...onClickProps}>
             <span className="ILink_decoration ILink_decoration_left">[[</span>
             <span className="ILink_decoration ILink_decoration_value"> {element.value}</span>

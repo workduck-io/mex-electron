@@ -1,22 +1,20 @@
-import { htmlStringToDOMNode, usePlateEditorRef, deserializeHtml, htmlBodyToFragment } from '@udecode/plate-core'
+import { deserializeHtml, htmlBodyToFragment, htmlStringToDOMNode, usePlateEditorRef } from '@udecode/plate-core'
 import { NodeEditorContent } from '../types/Types'
-import { mog } from './lib/helper';
+import { mog } from './lib/helper'
 
 export const useDeserializeSelectionToNodes = (
-  nodeId: string,
+  path: string,
   selection: { text: string; metadata: string }
 ): NodeEditorContent => {
-
-  let nodes;
-  const editor = usePlateEditorRef(nodeId)
+  let nodes
+  const editor = usePlateEditorRef(path)
   const element = htmlStringToDOMNode(selection?.text ?? '<p></p>')
 
   mog('dom elements: ', { element })
 
   try {
     nodes = editor ? deserializeHtml(editor, { element }) : undefined
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err)
   }
 

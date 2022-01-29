@@ -5,7 +5,7 @@ import { MAX_RECENT_SIZE } from '../data/Defaults/navigation'
 
 export type RecentsType = {
   lastOpened: string[]
-  addRecent: (uid: string) => void
+  addRecent: (nodeid: string) => void
   update: (lastOpened: string[]) => void
   clear: () => void
   initRecents: (recentList: Array<string>) => void
@@ -18,14 +18,14 @@ export const useRecentsStore = create<RecentsType>(
       clear: () => {
         set({ lastOpened: [] })
       },
-      addRecent: (uid: string) => {
+      addRecent: (nodeid: string) => {
         const oldLast10 = Array.from(new Set(get().lastOpened))
-        if (oldLast10.includes(uid)) {
-          remove(oldLast10, (item) => item === uid)
+        if (oldLast10.includes(nodeid)) {
+          remove(oldLast10, (item) => item === nodeid)
         }
 
         set({
-          lastOpened: [...oldLast10.slice(-MAX_RECENT_SIZE + 1), uid]
+          lastOpened: [...oldLast10.slice(-MAX_RECENT_SIZE + 1), nodeid]
         })
       },
       update: (lastOpened: string[]) =>

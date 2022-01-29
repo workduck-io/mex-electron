@@ -1,15 +1,13 @@
 import React from 'react'
 import create from 'zustand'
-import { getContent, getInitialNode } from '../utils/helpers'
-import { NodeEditorContent } from '../types/Types'
 import { defaultContent } from '../data/Defaults/baseData'
-import { Contents } from '../store/useContentStore'
 import { NodeContent } from '../types/data'
+import { getContent, getInitialNode } from '../utils/helpers'
 
 export interface NodeProperties {
   title: string
   id: string
-  uid: string
+  nodeid: string
   key: string
 }
 
@@ -23,7 +21,7 @@ export type EditorContextType = {
   content: NodeContent
   readOnly: boolean
 
-  setUid: (uid: string) => void
+  setUid: (nodeid: string) => void
 
   fetchingContent: boolean
 
@@ -49,9 +47,9 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
     set({ readOnly: isReadOnly })
   },
 
-  setUid: (uid) => {
+  setUid: (nodeid) => {
     const node = get().node
-    node.uid = uid
+    node.nodeid = nodeid
     set({ node })
   },
 
@@ -61,7 +59,7 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
     }),
 
   loadNode: (node: NodeProperties) => {
-    const content = getContent(node.uid)
+    const content = getContent(node.nodeid)
     set({
       node,
       content

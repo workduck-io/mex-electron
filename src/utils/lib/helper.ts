@@ -1,10 +1,9 @@
-import { nanoid } from 'nanoid'
+import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 import tough from 'tough-cookie'
 import WebStorageCookieStore from 'tough-cookie-web-storage-store'
-import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import { FAKE_APP_URI, IS_DEV } from '../../data/Defaults/dev_'
 import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
-import { NODE_ID_PREFIX } from '../../data/Defaults/idPrefixes'
+import { FAKE_APP_URI, IS_DEV } from '../../data/Defaults/dev_'
+import { generateNodeUID } from '../../data/Defaults/idPrefixes'
 import { NodeEditorContent } from '../../types/Types'
 
 export const mog = (title: string, propertiesToLog: Record<string, any>) => {
@@ -37,10 +36,14 @@ export const electronCookies = () => {
 export const createNodeWithUid = (key: string) => ({
   title: key,
   id: key,
-  uid: `${NODE_ID_PREFIX}${nanoid()}`,
+  nodeid: generateNodeUID(),
   key: key
 })
 
+/*
+ * Checks for links that start with  the separator (.) and returns key and whether it is a child node i.e. starting with the separator
+ * Also removes multiple separator invocations like "a.b....c..d"
+ */
 export const withoutContinuousDelimiter = (text: string, delimiter = SEPARATOR) => {
   const key = text
     .split(delimiter)

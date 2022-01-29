@@ -1,9 +1,10 @@
 import { uniq } from 'lodash'
 import { defaultCommands } from '../data/Defaults/slashCommands'
 import { extractSyncBlockCommands } from '../editor/Components/SlashCommands/useSyncConfig'
-import { Snippet } from '../store/useSnippetStore'
-import { generateIconComboTexts, addIconToString } from '../utils/generateComboItem'
 import { SyncBlockTemplate } from '../editor/Components/SyncBlock'
+import { Snippet } from '../store/useSnippetStore'
+import { SlashCommand } from '../types/Types'
+import { addIconToSlashCommand, generatorCombo } from '../utils/generateComboItem'
 import { extractSnippetCommands } from './useSnippets'
 
 export const useSlashCommands = () => {
@@ -11,10 +12,16 @@ export const useSlashCommands = () => {
     const snippetCommands = extractSnippetCommands(snippets)
     const syncCommands = extractSyncBlockCommands(templates)
 
-    const commands = generateIconComboTexts(
+    const commands: SlashCommand[] = generatorCombo(
       uniq([
-        ...addIconToString(snippetCommands, 'ri:quill-pen-line'),
-        ...addIconToString(syncCommands, 'ri:refresh-fill'),
+        ...addIconToSlashCommand(
+          snippetCommands.map((command) => ({ command })),
+          'ri:quill-pen-line'
+        ),
+        ...addIconToSlashCommand(
+          syncCommands.map((command) => ({ command })),
+          'ri:refresh-fill'
+        ),
         ...defaultCommands
       ])
     )

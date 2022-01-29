@@ -2,26 +2,26 @@ import refreshFill from '@iconify-icons/ri/refresh-fill'
 import { Icon } from '@iconify/react'
 import Tippy from '@tippyjs/react/headless' // different import path!
 import { client } from '@workduck-io/dwindle'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { ActionType } from '../../../services/analytics/events'
-import useAnalytics from '../../../services/analytics'
-import { useEditorStore } from '../../../store/useEditorStore'
+import { integrationURLs } from '../../../apis/routes'
+import { performClick } from '../../../components/mex/Onboarding/steps'
 import useIntents from '../../../hooks/useIntents'
 import useToggleElements from '../../../hooks/useToggleElements'
-import { isIntent } from '../../../utils/lib/intents'
-import { integrationURLs } from '../../../apis/routes'
+import useAnalytics from '../../../services/analytics'
+import { ActionType } from '../../../services/analytics/events'
+import { useEditorStore } from '../../../store/useEditorStore'
+import useOnboard from '../../../store/useOnboarding'
+import { useSyncStore } from '../../../store/useSyncStore'
 import { Button } from '../../../style/Buttons'
 import { SyncIntentsWrapper } from '../../../style/Integration'
 import { TooltipBase } from '../../../style/tippy'
-import { useSyncStore } from '../../../store/useSyncStore'
+import { isIntent } from '../../../utils/lib/intents'
+import { getEventNameFromElement } from '../../../utils/lib/strings'
 import IntentSelector from './intentSelector'
 import { ElementHeader, FormControls, RootElement, SentFrom, SyncForm, SyncTitle, Widget } from './SyncBlock.styles'
 import { Intent, SyncBlockData, SyncBlockProps } from './SyncBlock.types'
 import { getSyncServiceIcon } from './SyncIcons'
-import { getEventNameFromElement } from '../../../utils/lib/strings'
-import useOnboard from '../../../store/useOnboarding'
-import { performClick } from '../../../components/mex/Onboarding/steps'
 
 type FormValues = {
   content: string
@@ -43,8 +43,8 @@ export const SyncBlock = (props: SyncBlockProps) => {
   const [synced, setSynced] = useState(false)
   const { showSyncBlocks } = useToggleElements()
 
-  const uid = useEditorStore((store) => store.node.uid)
-  const parentNodeId = useEditorStore((store) => store.node.uid)
+  const nodeid = useEditorStore((store) => store.node.nodeid)
+  const parentNodeId = useEditorStore((store) => store.node.nodeid)
   const blocksData = useSyncStore((state) => state.syncBlocks)
 
   const { trackEvent } = useAnalytics()
@@ -80,7 +80,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
   const { content, templateId, igid } = blockData
 
-  const intents = getIntents(uid, templateId)
+  const intents = getIntents(nodeid, templateId)
   const template = getTemplate(templateId)
 
   const areAllIntentsPresent = intents?.reduce((prev, cur) => {
@@ -102,7 +102,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
     // console.log('Saving Intents', { changedIntents })
 
     const newIgid = updateNodeIntentsAndCreateIGID(
-      uid,
+      nodeid,
       Object.keys(changedIntents)?.map((s) => {
         return changedIntents[s]
       }),

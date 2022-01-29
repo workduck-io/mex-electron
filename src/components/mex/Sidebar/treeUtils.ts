@@ -24,23 +24,30 @@ export const getParentId = (id: string) => {
 }
 
 /** Also includes the ID of the final node */
-export const getAllParentIds = (id: string) => {
-  const allParents: string[] = []
-  let past = ''
-  id.split(SEPARATOR).forEach((s) => {
-    const link = past === '' ? s : `${past}${SEPARATOR}${s}`
-    allParents.push(link)
-    past = link
-  })
-  return allParents
-  /*
+/**
     id = a.b.c
     link = [a b c]
-    a
-    a.b
-    a.b.c
+    a, a.b, a.b.c
   */
-}
+export const getAllParentIds = (
+  id: string // const allParents: string[] = []
+) =>
+  id
+    .split(SEPARATOR) // split by `.`
+    .reduce(
+      // Use prefix of last element when the array has elements
+      (p, c) => [...p, p.length > 0 ? `${p[p.length - 1]}${SEPARATOR}${c}` : c],
+      []
+    )
+
+//
+// let past = ''
+// id.split(SEPARATOR).forEach((s) => {
+//   const link = past === '' ? s : `${past}${SEPARATOR}${s}`
+//   allParents.push(link)
+//   past = link
+// })
+// return allParents
 
 export const isElder = (id: string, xparent: string) => {
   return id.startsWith(xparent + SEPARATOR)
@@ -60,11 +67,11 @@ export const getNodeIdLast = (id: string) => {
   return id
 }
 
-const createChildLess = (n: string, uid: string): TreeNode => ({
+const createChildLess = (n: string, nodeid: string): TreeNode => ({
   id: n,
   title: getNodeIdLast(n),
   key: n,
-  uid,
+  nodeid,
   mex_icon: undefined,
   children: []
 })
@@ -96,17 +103,17 @@ const insertInNested = (iNode: TreeNode, nestedTree: TreeNode[]) => {
 }
 
 // Generate nested node tree from a list of ordered id strings
-export const generateTree = (tree: { id: string; uid: string }[]) => {
+export const generateTree = (tree: { id: string; nodeid: string }[]) => {
   // tree should be sorted
   let nestedTree: TreeNode[] = []
   tree.forEach((n) => {
     const parentId = getParentId(n.id)
     if (parentId === null) {
       // add to tree first level
-      nestedTree.push(createChildLess(n.id, n.uid))
+      nestedTree.push(createChildLess(n.id, n.nodeid))
     } else {
       // Will have a parent
-      nestedTree = insertInNested(createChildLess(n.id, n.uid), nestedTree)
+      nestedTree = insertInNested(createChildLess(n.id, n.nodeid), nestedTree)
     }
   })
   return nestedTree

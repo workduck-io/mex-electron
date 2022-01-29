@@ -2,6 +2,7 @@ import hashtagIcon from '@iconify-icons/ri/hashtag'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
+import styled from 'styled-components'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useTags } from '../../../hooks/useTags'
@@ -9,7 +10,6 @@ import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { HoverSubtleGlow } from '../../../style/helpers'
 import { Note } from '../../../style/Typography'
-import styled from 'styled-components'
 import { DataInfoHeader, NodeLink } from '../Backlinks'
 
 const TagFlex = styled.div`
@@ -46,7 +46,7 @@ const InfoSubHeading = styled.h2`
 
 const TagsRelated = () => {
   const { getRelatedNodes, getTags } = useTags()
-  const uid = useEditorStore((state) => state.node.uid)
+  const nodeid = useEditorStore((state) => state.node.nodeid)
   const tagsCache = useDataStore((state) => state.tagsCache)
   const [relNodes, setRelNodes] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
@@ -55,12 +55,12 @@ const TagsRelated = () => {
   const history = useHistory()
 
   useEffect(() => {
-    setRelNodes(getRelatedNodes(uid))
-  }, [uid, tagsCache])
+    setRelNodes(getRelatedNodes(nodeid))
+  }, [nodeid, tagsCache])
 
   useEffect(() => {
-    setTags(getTags(uid))
-  }, [uid, tagsCache])
+    setTags(getTags(nodeid))
+  }, [nodeid, tagsCache])
 
   const navigateToTag = (tag: string) => {
     history.push(`/tag/${tag}`)
@@ -79,7 +79,7 @@ const TagsRelated = () => {
           <TagsFlex>
             {tags.map((t) => (
               <TagFlex
-                key={`info_tags_${uid}_${t}`}
+                key={`info_tags_${nodeid}_${t}`}
                 onClick={(e) => {
                   e.preventDefault()
                   navigateToTag(t)
@@ -91,10 +91,10 @@ const TagsRelated = () => {
           </TagsFlex>
           {relNodes.length > 0 ? <InfoSubHeading>Related Nodes</InfoSubHeading> : null}
           {relNodes.map((n) => {
-            const nodeid = getNodeIdFromUid(n)
-            return nodeid !== undefined ? (
-              <NodeLink key={`info_tag_related_${uid}_${n}`} onClick={() => push(n)}>
-                {nodeid}
+            const path = getNodeIdFromUid(n)
+            return path !== undefined ? (
+              <NodeLink key={`info_tag_related_${nodeid}_${n}`} onClick={() => push(n)}>
+                {path}
               </NodeLink>
             ) : null
           })}

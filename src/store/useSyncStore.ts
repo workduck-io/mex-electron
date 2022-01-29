@@ -1,8 +1,7 @@
 import { orderBy } from 'lodash'
-import { Service, SyncContextType } from '../editor/Components/SyncBlock'
-
 import create from 'zustand'
 import { defaultMexIntent, intentsData, templates } from '../data/Defaults/Test/intentsData'
+import { Service, SyncContextType } from '../editor/Components/SyncBlock'
 
 const sortServices = (services: Service[]) => {
   const res = orderBy(services, ['enabled', 'connected', 'id'], ['desc', 'desc', 'asc'])
@@ -63,25 +62,25 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
       }
     }),
 
-  addIntentEmptyMap: (uid) =>
+  addIntentEmptyMap: (nodeid) =>
     set((state) => ({
       intents: {
         ...state.intents,
-        [uid]: {
-          intents: [defaultMexIntent(uid)],
+        [nodeid]: {
+          intents: [defaultMexIntent(nodeid)],
           intentGroups: {}
         }
       }
     })),
 
-  addIgid: (uid, igid, intents, templateId) =>
+  addIgid: (nodeid, igid, intents, templateId) =>
     set((state) => ({
       intents: {
         ...state.intents,
-        [uid]: {
-          ...state.intents[uid],
+        [nodeid]: {
+          ...state.intents[nodeid],
           intentGroups: {
-            ...state.intents[uid].intentGroups,
+            ...state.intents[nodeid].intentGroups,
             [igid]: {
               templateId,
               intents
@@ -91,11 +90,11 @@ export const useSyncStore = create<SyncContextType>((set, get) => ({
       }
     })),
 
-  updateIntentsAndIGIDs: (uid, nodeIntentConfig) =>
+  updateIntentsAndIGIDs: (nodeid, nodeIntentConfig) =>
     set((state) => ({
       intents: {
         ...state.intents,
-        [uid]: nodeIntentConfig
+        [nodeid]: nodeIntentConfig
       }
     }))
 }))

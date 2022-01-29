@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import { FullEditor, StyledEditor } from './styled'
-import Editor from '../../../editor/Editor'
-import { useEditorStore } from '../../../store/useEditorStore'
-import useDataStore from '../../../store/useDataStore'
-import { useContentStore } from '../../../store/useContentStore'
-import { openNodeInMex } from '../../../utils/combineSources'
-import { SaverButton } from '../../../editor/Components/Saver'
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { ComboText } from '../../../types/Types'
-import { AppType } from '../../../hooks/useInitialize'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { IpcAction } from '../../../data/IpcAction'
+import { SaverButton } from '../../../editor/Components/Saver'
+import Editor from '../../../editor/Editor'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { AppType } from '../../../hooks/useInitialize'
+import { useContentStore } from '../../../store/useContentStore'
+import useDataStore from '../../../store/useDataStore'
+import { useEditorStore } from '../../../store/useEditorStore'
 import useOnboard from '../../../store/useOnboarding'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { ILink } from '../../../types/Types'
+import { openNodeInMex } from '../../../utils/combineSources'
+import { FullEditor, StyledEditor } from './styled'
 
-export const isILinkExists = (iLink: string, iLinkList: Array<ComboText>) =>
-  iLinkList.filter((item) => item.key === iLink).length !== 0
+export const isILinkExists = (iLink: string, iLinkList: Array<ILink>) =>
+  iLinkList.filter((item) => item.path === iLink).length !== 0
 
 const NewEditor = () => {
-  const { key, uid: nodeId } = useEditorStore((state) => state.node)
+  const { key, nodeid: path } = useEditorStore((state) => state.node)
 
   const ilinks = useDataStore((s) => s.ilinks)
 
@@ -31,9 +31,9 @@ const NewEditor = () => {
   const [content, setContent] = useState<any[] | undefined>(undefined)
 
   useEffect(() => {
-    if (isILinkExists(nodeId, ilinks)) {
-      addRecent(nodeId)
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeId)
+    if (isILinkExists(path, ilinks)) {
+      addRecent(path)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, path)
     }
   }, [])
 
@@ -41,19 +41,19 @@ const NewEditor = () => {
     if (fsContent) {
       setContent(fsContent.content)
     }
-  }, [fsContent, nodeId])
+  }, [fsContent, path])
 
   const onBeforeSave = () => {
-    addILink(key, nodeId)
+    addILink(key, path)
   }
 
-  const onAfterSave = (uid: string) => {
+  const onAfterSave = (nodeid: string) => {
     setSaved(true)
-    addRecent(uid)
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, uid)
+    addRecent(nodeid)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeid)
 
     if (isOnboarding) {
-      openNodeInMex(uid)
+      openNodeInMex(nodeid)
       changeOnboarding(false)
     }
   }
@@ -65,7 +65,7 @@ const NewEditor = () => {
           focusAtBeginning
           // onSave={onSave}
           content={content}
-          editorId={nodeId}
+          editorId={path}
         />
         <SaverButton callbackAfterSave={onAfterSave} callbackBeforeSave={onBeforeSave} noButton />
       </FullEditor>

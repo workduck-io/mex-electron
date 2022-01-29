@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { Icon } from '@iconify/react'
 import timeLine from '@iconify-icons/ri/time-line'
+import { Icon } from '@iconify/react'
 import Tippy from '@tippyjs/react/headless' // different import path!
-import { ProfileImage, ProfileImageWithToolTip } from '../User/ProfileImage'
+import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { ProfileIcon } from '../../../style/UserPage'
 import { useRelativeTime } from '../../../hooks/useRelativeTime'
 import { useContentStore } from '../../../store/useContentStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { Label } from '../../../style/Form'
-import { HoverFade, CardShadow } from '../../../style/helpers'
+import { CardShadow, HoverFade } from '../../../style/helpers'
+import { ProfileIcon } from '../../../style/UserPage'
 import { NodeMetadata } from '../../../types/data'
+import { ProfileImageWithToolTip } from '../User/ProfileImage'
 
 // import user3Line from '@iconify-icons/ri/user-3-line'
 // import { useRelativeTime } from '../../Hooks/useRelativeTime'
@@ -156,7 +156,7 @@ const RelDateWithPreview = ({ n }: RelDateWithPreviewProps) => {
 const Metadata = () => {
   const node = useEditorStore((state) => state.node)
   const getContent = useContentStore((state) => state.getContent)
-  const content = getContent(node.uid)
+  const content = getContent(node.nodeid)
   const [metadata, setMetadata] = useState<NodeMetadata | undefined>(undefined)
 
   useEffect(() => {

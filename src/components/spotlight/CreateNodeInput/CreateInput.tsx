@@ -1,41 +1,41 @@
 import { getPlateSelectors } from '@udecode/plate-core'
 import React from 'react'
-import useOnboard from '../../../store/useOnboarding'
 import NodeSelect from '../../../components/mex/NodeSelect/NodeSelect'
 import { StyledSpotlightInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
+import { IpcAction } from '../../../data/IpcAction'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
-import { useSaveData } from '../../../hooks/useSaveData'
 import { useLinks } from '../../../hooks/useLinks'
+import useLoad from '../../../hooks/useLoad'
+import { useSaveData } from '../../../hooks/useSaveData'
+import { useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHistoryStore } from '../../../store/useHistoryStore'
+import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
-import useLoad from '../../../hooks/useLoad'
-import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
-import { IpcAction } from '../../../data/IpcAction'
-import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { openNodeInMex } from '../../../utils/combineSources'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
 
 export type CreateInputType = { value?: string }
 
 const CreateInput: React.FC<CreateInputType> = () => {
   const { setSelection } = useSpotlightContext()
   const { setSaved } = useContentStore(({ saved, setSaved }) => ({ saved, setSaved }))
-  const { title, uid: nodeId } = useEditorStore((state) => state.node)
+  const { title, nodeid: path } = useEditorStore((state) => state.node)
   const isOnboarding = useOnboard((s) => s.isOnboarding)
-  // const uid = useEditorStore((state) => state.node.uid)
+  // const nodeid = useEditorStore((state) => state.node.nodeid)
 
   const addILink = useDataStore((s) => s.addILink)
 
-  const saveData = useSaveData()
+  const { saveData } = useSaveData()
 
   const setFsContent = useContentStore((state) => state.setContent)
 
   const pushToHistory = useHistoryStore((state) => state.push)
   const addRecent = useRecentsStore((state) => state.addRecent)
-  const editorState = getPlateSelectors(nodeId).value()
+  const editorState = getPlateSelectors(path).value()
 
   const { loadNodeAndAppend, loadNode } = useLoad()
   const { getUidFromNodeId } = useLinks()
@@ -57,15 +57,15 @@ const CreateInput: React.FC<CreateInputType> = () => {
     openNodeInMex(newUid)
   }
 
-  const handleChange = (nodeIdValue: string) => {
-    const uid = getUidFromNodeId(nodeIdValue)
+  const handleChange = (pathValue: string) => {
+    const nodeid = getUidFromNodeId(pathValue)
     if (nodeContent) {
-      loadNodeAndAppend(uid, nodeContent)
+      loadNodeAndAppend(nodeid, nodeContent)
     } else {
-      loadNode(uid, { savePrev: true, fetch: false })
-      pushToHistory(uid)
-      addRecent(uid)
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, uid)
+      loadNode(nodeid, { savePrev: true, fetch: false })
+      pushToHistory(nodeid)
+      addRecent(nodeid)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeid)
     }
   }
 

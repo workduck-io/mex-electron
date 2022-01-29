@@ -1,31 +1,31 @@
-import React, { useEffect, useRef } from 'react'
-import { NodeProperties, useEditorStore } from '../../../store/useEditorStore'
-import { useContentStore } from '../../../store/useContentStore'
-import Editor from '../../../editor/Editor'
-import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
-import { useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { combineSources, openNodeInMex } from '../../../utils/combineSources'
 import downIcon from '@iconify-icons/ph/arrow-down-bold'
 import { Icon } from '@iconify/react'
-import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
-import { SeePreview, StyledEditorPreview, StyledPreview } from './styled'
-import { useDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
-import useLoad from '../../../hooks/useLoad'
-import { useSpring } from 'react-spring'
-import { SaverButton } from '../../../editor/Components/Saver'
-import useOnboard from '../../../store/useOnboarding'
-import useDataStore from '../../../store/useDataStore'
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { IpcAction } from '../../../data/IpcAction'
-import { AppType } from '../../../hooks/useInitialize'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { createNodeWithUid, mog } from '../../../utils/lib/helper'
-import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
-import { defaultContent } from '../../../data/Defaults/baseData'
+import React, { useEffect, useRef } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
+import { useSpring } from 'react-spring'
 import EditorErrorFallback from '../../../components/mex/Error/EditorErrorFallback'
+import { defaultContent } from '../../../data/Defaults/baseData'
+import { IpcAction } from '../../../data/IpcAction'
+import { SaverButton } from '../../../editor/Components/Saver'
+import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import Editor from '../../../editor/Editor'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import useEditorActions from '../../../hooks/useEditorActions'
+import { AppType } from '../../../hooks/useInitialize'
+import useLoad from '../../../hooks/useLoad'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import { useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
+import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
+import { useContentStore } from '../../../store/useContentStore'
+import useDataStore from '../../../store/useDataStore'
+import { NodeProperties, useEditorStore } from '../../../store/useEditorStore'
+import useOnboard from '../../../store/useOnboarding'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { combineSources, openNodeInMex } from '../../../utils/combineSources'
+import { useDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
+import { createNodeWithUid, mog } from '../../../utils/lib/helper'
+import { SeePreview, StyledEditorPreview, StyledPreview } from './styled'
 
 export type PreviewType = {
   text: string
@@ -60,7 +60,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   const { loadNodeProps } = useLoad()
   const ref = useRef<HTMLDivElement>()
   const { search, selection, setSelection, setSearch } = useSpotlightContext()
-  const deserializedContentNodes = useDeserializeSelectionToNodes(node.uid, preview)
+  const deserializedContentNodes = useDeserializeSelectionToNodes(node.nodeid, preview)
 
   const animationProps = useSpring({ width: search ? '60%' : '100%' })
 
@@ -70,11 +70,11 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
       const changedContent = showSource ? combineSources(fsContent.content, deserializedContent) : fsContent
 
       setNodeContent(deserializedContent)
-      setFsContent(node.uid, deserializedContent)
+      setFsContent(node.nodeid, deserializedContent)
 
       // * FIX: For BUBBLE MODE
       // setNodeContent([...changedContent, { children: nodes }])
-      // setFsContent(node.uid, [...changedContent, { children: nodes }])
+      // setFsContent(node.nodeid, [...changedContent, { children: nodes }])
     }
   }, [preview.text, showSource])
 
@@ -89,10 +89,11 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   }
 
   const onBeforeSave = () => {
-    addILink(node.key, node.uid)
+    addILink(node.key, node.nodeid)
+    mog(node.nodeid, { node })
   }
 
-  const onAfterSave = (uid: string) => {
+  const onAfterSave = (nodeid: string) => {
     setSaved(true)
 
     setSelection(undefined)
@@ -104,23 +105,23 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
     loadNodeProps(nNode)
 
     // * Add this item in recents list of Mex
-    addRecent(uid)
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, uid)
+    addRecent(nodeid)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeid)
 
     // * Hide spotlight after save
     appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
     if (isOnboarding) {
-      openNodeInMex(uid)
+      openNodeInMex(nodeid)
       changeOnboarding(false)
     }
   }
 
-  mog(node.uid, previewContent)
+  mog(node.nodeid, previewContent)
 
   return (
     <StyledPreview
-      key={`PreviewSpotlightEditor${node.uid}`}
+      key={`PreviewSpotlightEditor${node.nodeid}`}
       style={animationProps}
       ref={ref}
       data-tour="mex-quick-capture-preview"
@@ -132,15 +133,15 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
       )}
       <StyledEditorPreview>
         <ErrorBoundary onReset={resetEditor} FallbackComponent={EditorErrorFallback}>
-          {(
+          {
             <Editor
               autoFocus={!normalMode}
               focusAtBeginning={!normalMode}
               readOnly={search ? true : false}
               content={previewContent?.content ?? defaultContent.content}
-              editorId={node.uid}
+              editorId={node.nodeid}
             />
-          )}
+          }
         </ErrorBoundary>
       </StyledEditorPreview>
       <SaverButton callbackAfterSave={onAfterSave} callbackBeforeSave={onBeforeSave} noButton />

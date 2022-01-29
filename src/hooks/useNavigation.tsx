@@ -12,16 +12,16 @@ export const useNavigation = () => {
   const addRecent = useRecentsStore((store) => store.addRecent)
   const getCurrentUID = useHistoryStore((store) => store.getCurrentUId)
 
-  const push = (uid: string, options?: LoadNodeOptions) => {
-    pushHs(uid)
-    addRecent(uid)
-    loadNode(uid, options)
+  const push = (nodeid: string, options?: LoadNodeOptions) => {
+    pushHs(nodeid)
+    addRecent(nodeid)
+    loadNode(nodeid, options)
   }
 
-  const replace = (uid: string) => {
-    replaceHs(uid)
-    addRecent(uid)
-    loadNode(uid)
+  const replace = (nodeid: string) => {
+    replaceHs(nodeid)
+    addRecent(nodeid)
+    loadNode(nodeid)
   }
 
   const move = (dist: number) => {

@@ -1,15 +1,13 @@
 import React from 'react'
 import { linkInRefactor } from '../components/mex/Refactor/doesLinkRemain'
-import { SEPARATOR, getAllParentIds } from '../components/mex/Sidebar/treeUtils'
-import { generateNodeId } from '../data/Defaults/idPrefixes'
-import { useSaver } from '../editor/Components/Saver'
+import { getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
+import { generateNodeUID } from '../data/Defaults/idPrefixes'
 import useAnalytics from '../services/analytics'
 import { CustomEvents } from '../services/analytics/events'
-import { useContentStore, Contents } from '../store/useContentStore'
+import { Contents, useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
 import { useRefactorStore } from '../store/useRefactorStore'
 import { NodeLink } from '../types/relations'
-import { useLinks } from './useLinks'
 import { useEditorBuffer } from './useEditorBuffer'
 
 const isMatch = (id: string, from: string) => {
@@ -44,23 +42,28 @@ export const useRefactor = () => {
   const { trackEvent } = useAnalytics()
 
   // const { q, saveQ } = useSaveQ()
-  const { onSave } = useSaver()
   const { saveAndClearBuffer } = useEditorBuffer()
 
+  /*
+   * Returns a mock array of refactored paths
+   * Also refactors children
+   * from: the current path
+   * to: the new changed path
+   */
   const getMockRefactor = (from: string, to: string): NodeLink[] => {
     // console.log({ q, d: useQStore.getState().q })
 
     saveAndClearBuffer()
     // saveQ()
     const refactorMap = ilinks.filter((i) => {
-      const match = isMatch(i.text, from)
+      const match = isMatch(i.path, from)
       return match
     })
 
     const refactored = refactorMap.map((f) => {
       return {
-        from: f.text,
-        to: f.text.replace(from, to)
+        from: f.path,
+        to: f.path.replace(from, to)
       }
     })
 
@@ -70,16 +73,14 @@ export const useRefactor = () => {
   const execRefactor = (from: string, to: string) => {
     trackEvent(CustomEvents.REFACTOR, { 'mex-from': from, 'mex-to': to })
     const refactored = getMockRefactor(from, to)
-    onSave(undefined, false, false)
 
     // Generate the new links
     const newIlinks = ilinks.map((i) => {
       for (const ref of refactored) {
-        if (ref.from === i.text) {
+        if (ref.from === i.path) {
           return {
             ...i,
-            text: ref.to,
-            key: ref.to
+            path: ref.to
           }
         }
       }
@@ -87,7 +88,7 @@ export const useRefactor = () => {
     })
 
     const isInNewlinks = (l: string) => {
-      const ft = newIlinks.filter((i) => i.key === l)
+      const ft = newIlinks.filter((i) => i.path === l)
       return ft.length > 0
     }
 
@@ -96,11 +97,9 @@ export const useRefactor = () => {
       .flat()
       .filter((x) => !isInNewlinks(x))
 
-    const newParentIlinks = newParents.map((p, i) => ({
-      key: p,
-      text: p,
-      value: String(newIlinks.length + i),
-      uid: generateNodeId()
+    const newParentIlinks = newParents.map((p) => ({
+      path: p,
+      nodeid: generateNodeUID()
     }))
 
     // console.log({ newIlinks, newParents, newParentIlinks })

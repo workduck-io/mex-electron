@@ -1,10 +1,8 @@
-import { CustomEvents } from '../../../services/analytics/events'
-import useAnalytics from '../../../services/analytics'
 import { SEPARATOR } from '../../../components/mex/Sidebar/treeUtils'
 import { generateSyncBlockId } from '../../../data/Defaults/idPrefixes'
+import useIntents from '../../../hooks/useIntents'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useSyncStore } from '../../../store/useSyncStore'
-import useIntents from '../../../hooks/useIntents'
 import { ELEMENT_SYNC_BLOCK, SyncBlockTemplate } from '../SyncBlock'
 import { SlashCommandConfig } from './Types'
 
@@ -19,7 +17,7 @@ export const useSyncConfig = () => {
   } => {
     const configs = templates.reduce((prev, cur) => {
       // Current Template
-      const curUid = useEditorStore.getState().node.uid
+      const curUid = useEditorStore.getState().node.nodeid
       const command = getSyncCommand(cur.command)
       const config = {
         slateElementType: ELEMENT_SYNC_BLOCK,

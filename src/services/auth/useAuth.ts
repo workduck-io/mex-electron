@@ -4,7 +4,7 @@ import { ipcRenderer } from 'electron'
 import { nanoid } from 'nanoid'
 import { useState } from 'react'
 import { apiURLs } from '../../apis/routes'
-import { useApi } from '../../apis/useSaveApi'
+// import { useApi } from '../../apis/useSaveApi'
 import { IpcAction } from '../../data/IpcAction'
 import { useUpdater } from '../../hooks/useUpdater'
 import { RegisterFormData } from '../../views/mex/Register'
@@ -12,6 +12,7 @@ import create, { State } from 'zustand'
 import { persist } from 'zustand/middleware'
 import useAnalytics from '../analytics'
 import { Properties, CustomEvents } from '../analytics/events'
+import { mog } from '../../utils/lib/helper'
 
 interface UserDetails {
   email: string
@@ -66,14 +67,20 @@ export const useAuthentication = () => {
   const { updateDefaultServices, updateServices } = useUpdater()
   const { signIn, signUp, verifySignUp, signOut } = useAuth()
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
-  const { getNodesByWorkspace } = useApi()
+  // const { getNodesByWorkspace } = useApi()
+
+  interface AuthDetails {
+    userDetails: UserDetails
+    workspaceDetails: WorkspaceDetails
+  }
 
   const login = async (
     email: string,
     password: string,
     getWorkspace = false
-  ): Promise<{ data: UserCred; v: string }> => {
+  ): Promise<{ data: UserCred; v: string; authDetails: AuthDetails }> => {
     let data: any // eslint-disable-line @typescript-eslint/no-explicit-any
+    let authDetails: any // eslint-disable-line @typescript-eslint/no-explicit-any
     const v = await signIn(email, password)
       .then((d) => {
         data = d
@@ -85,15 +92,14 @@ export const useAuthentication = () => {
       })
 
     if (getWorkspace && data !== undefined) {
-      await client
+      authDetails = await client
         .get(apiURLs.getUserRecords(data.userId))
-        .then((d) => {
+        .then((d): AuthDetails => {
           const userDetails = { email }
           const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
 
-          getNodesByWorkspace(workspaceDetails.id)
+          // getNodesByWorkspace(workspaceDetails.id)
           // Set Authenticated, user and workspace details
-          setAuthenticated(userDetails, workspaceDetails)
 
           ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
           identifyUser(email)
@@ -104,34 +110,36 @@ export const useAuthentication = () => {
             [Properties.WORKSPACE_ID]: d.data.group
           })
           addEventProperties({ [CustomEvents.LOGGED_IN]: true })
+          mog('Login BIG success', { userDetails, workspaceDetails })
+          return { userDetails, workspaceDetails }
         })
-        .then(updateDefaultServices)
-        .then(updateServices)
-        .then()
+        // .then(updateDefaultServices)
+        // .then(updateServices)
+        // .then()
         .catch((e) => {
           console.error({ e })
           return e.toString() as string
         })
     }
 
-    return { data, v }
+    return { data, v, authDetails }
   }
 
   const registerDetails = (data: RegisterFormData): Promise<string> => {
     const { email, password, roles, name } = data
-    const userRole = roles.map(r => r.value).join(', ') ?? ''
+    const userRole = roles.map((r) => r.value).join(', ') ?? ''
 
     const status = signUp(email, password)
       .then(() => {
         setRegistered(true)
-        // * Identify user        
+        // * Identify user
         identifyUser(email)
 
         // * Add extra user related properties
         addUserProperties({
           [Properties.EMAIL]: email,
           [Properties.NAME]: name,
-          [Properties.ROLE]: userRole,
+          [Properties.ROLE]: userRole
         })
         setSensitiveData(data)
         return data.email

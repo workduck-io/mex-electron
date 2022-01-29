@@ -2,10 +2,12 @@ import addCircleLine from '@iconify-icons/ri/add-circle-line'
 import searchLine from '@iconify-icons/ri/search-line'
 import settings4Line from '@iconify-icons/ri/settings-4-line'
 import { useSingleton } from '@tippyjs/react'
-import { useAuthStore } from '../../../services/auth/useAuth'
 import { transparentize } from 'polished'
 import React, { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
+import styled, { css } from 'styled-components'
+import tinykeys from 'tinykeys'
+import { useApi } from '../../../apis/useSaveApi'
 import { IpcAction } from '../../../data/IpcAction'
 import { GetIcon } from '../../../data/links'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
@@ -13,16 +15,14 @@ import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
+import { useAuthStore } from '../../../services/auth/useAuth'
 import useDataStore from '../../../store/useDataStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import { NavButton } from '../../../style/Nav'
-import styled, { css } from 'styled-components'
-import tinykeys from 'tinykeys'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
 import { NavProps } from './Types'
-import { useApi } from '../../../apis/useSaveApi'
 
 interface StyledDivProps {
   focusMode?: boolean
@@ -121,10 +121,10 @@ const Nav = ({ links }: NavProps) => {
 
   const createNewNode = () => {
     const newNodeId = getNewDraftKey()
-    const uid = addILink(newNodeId)
+    const nodeid = addILink(newNodeId)
 
-    saveNewNodeAPI(uid)
-    push(uid, { withLoading: false })
+    saveNewNodeAPI(nodeid)
+    push(nodeid, { withLoading: false })
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, newNodeId)
   }
 

@@ -1,13 +1,14 @@
-import React from 'react'
-import styled from 'styled-components'
-import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
-import { useLinks } from '../../../hooks/useLinks'
-import { useContentStore } from '../../../store/useContentStore'
-import { transparentize } from 'polished'
 import editIcon from '@iconify-icons/bx/bx-edit-alt'
 import timeIcon from '@iconify-icons/bx/bx-time-five'
 import { Icon } from '@iconify/react'
+import { transparentize } from 'polished'
+import React from 'react'
+import { ILink } from '../../../types/Types'
+import styled from 'styled-components'
+import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
+import { useLinks } from '../../../hooks/useLinks'
 import { DateFormat } from '../../../hooks/useRelativeTime'
+import { useContentStore } from '../../../store/useContentStore'
 
 const Container = styled.section`
   position: absolute;
@@ -67,17 +68,17 @@ const SmallText = styled.div`
   color: ${({ theme }) => theme.colors.text.disabled};
 `
 
-const NodePreview = ({ node }) => {
+const NodePreview = ({ node }: { node: ILink }) => {
   const getContent = useContentStore((store) => store.getContent)
   const { getUidFromNodeId } = useLinks()
-  const uid = getUidFromNodeId(node?.nodeId)
-  const content = getContent(uid)
+  const nodeid = getUidFromNodeId(node?.path)
+  const content = getContent(nodeid)
 
   const time = content?.metadata?.updatedAt
 
   return (
     <Container>
-      <Header>{node?.nodeId}</Header>
+      <Header>{node?.path}</Header>
       <MetaDeta>
         {content?.metadata?.lastEditedBy && (
           <Flex>
@@ -93,7 +94,7 @@ const NodePreview = ({ node }) => {
         )}
       </MetaDeta>
       <Content>
-        {content && <EditorPreviewRenderer content={content && content?.content} editorId={`__preview__${uid}_1`} />}
+        {content && <EditorPreviewRenderer content={content && content?.content} editorId={`__preview__${nodeid}_1`} />}
       </Content>
     </Container>
   )

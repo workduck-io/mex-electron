@@ -3,7 +3,7 @@ import { CachedILink } from '../../types/Types'
 
 export const hasLink = (link: CachedILink, links: CachedILink[]): boolean => {
   const filtered = links.filter((l) => {
-    return link.uid === l.uid && link.type === l.type
+    return link.nodeid === l.nodeid && link.type === l.type
   })
   return filtered.length > 0
 }

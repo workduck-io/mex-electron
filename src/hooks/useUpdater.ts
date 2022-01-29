@@ -17,14 +17,14 @@ export const useUpdater = () => {
   const isOnboarding = useOnboard((s) => s.isOnboarding)
 
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
-  const saveData = useSaveData()
+  const { saveData } = useSaveData()
 
   const updater = () => {
     const slashCommands = generateSlashCommands(useSnippetStore.getState().snippets, useSyncStore.getState().templates)
     setSlashCommands(slashCommands)
   }
 
-  const updateDefaultServices = async () => {
+  const updateDefaultServices = async <T>(d?: T): Promise<T | undefined> => {
     if (useAuthStore.getState().authenticated && !isOnboarding) {
       await client
         .get(integrationURLs.getAllServiceData(getWorkspaceId()))
@@ -46,9 +46,10 @@ export const useUpdater = () => {
         })
         .then(() => saveData())
     } else console.error('Not authenticated, not fetching default services')
+    return d
   }
 
-  const updateServices = async () => {
+  const updateServices = async <T>(d?: T): Promise<T | undefined> => {
     if (useAuthStore.getState().authenticated && !isOnboarding) {
       await client
         .get(integrationURLs.getWorkspaceAuth(getWorkspaceId()))
@@ -66,6 +67,7 @@ export const useUpdater = () => {
         .then(() => saveData())
         .catch(console.error)
     } else console.error('Not authenticated, not fetching workspace services')
+    return d
   }
 
   const getTemplates = async () => {

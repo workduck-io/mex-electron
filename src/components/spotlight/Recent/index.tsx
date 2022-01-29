@@ -1,17 +1,16 @@
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { AppType } from '../../../hooks/useInitialize'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useHistory } from 'react-router'
-import { useEditorStore } from '../../../store/useEditorStore'
-import { useKeyPress } from '../../../hooks/useKeyPress'
-import { Action, ActionTitle } from '../Actions/styled'
-import { Faded, RecentBetween, StyledRecent, StyledRecentRow, StyledRecentList } from './styled'
 import { IpcAction } from '../../../data/IpcAction'
-import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
-import { NodeEditorContent } from '../../../types/Types'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { AppType } from '../../../hooks/useInitialize'
+import { useKeyPress } from '../../../hooks/useKeyPress'
 import useLoad from '../../../hooks/useLoad'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { NodeEditorContent } from '../../../types/Types'
+import { Action, ActionTitle } from '../Actions/styled'
+import { Faded, RecentBetween, StyledRecent, StyledRecentList, StyledRecentRow } from './styled'
 
 export type RecentType = { recents: Array<string>; onClearClick?: () => void }
 export type RecentRowType = { text: string; highlight?: boolean; onClick: () => void }
@@ -47,7 +46,7 @@ export const RecentList: React.FC<RecentListType> = ({ list }) => {
 
   useEffect(() => {
     setCurrentIndex(list.length)
-    loadNode(savedEditorNode.uid)
+    loadNode(savedEditorNode.nodeid)
   }, [reset])
 
   const loadContent = (id: string, content: NodeEditorContent) => {

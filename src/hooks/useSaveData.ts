@@ -50,5 +50,5 @@ export const useSaveData = () => {
   // });
 
   // FIXME return an object
-  return saveData
+  return { saveData }
 }

@@ -1227,7 +1227,7 @@ export const oembedProviders: OembedProvider[] = [
     provider_url: 'http://www.iFixit.com',
     endpoints: [
       {
-        schemes: ['http://www.ifixit.com/Guide/View/*'],
+        schemes: ['http://www.ifixit.com/Gnodeide/View/*'],
         url: 'http://www.ifixit.com/Embed'
       }
     ]
@@ -3405,8 +3405,8 @@ export const oembedProviders: OembedProvider[] = [
         schemes: [
           'https://app.zeplin.io/project/*/screen/*',
           'https://app.zeplin.io/project/*/screen/*/version/*',
-          'https://app.zeplin.io/project/*/styleguide/components?coid=*',
-          'https://app.zeplin.io/styleguide/*/components?coid=*'
+          'https://app.zeplin.io/project/*/stylegnodeide/components?coid=*',
+          'https://app.zeplin.io/stylegnodeide/*/components?coid=*'
         ],
         url: 'https://app.zeplin.io/embed',
         discovery: true

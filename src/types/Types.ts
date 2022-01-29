@@ -1,5 +1,6 @@
-import { NodeProperties } from '../store/useEditorStore'
-
+/*
+ * Specific to comboboxes
+ */
 export interface ComboText {
   // This interface is used to store tags in a combobox friendly way.
   key: string
@@ -8,17 +9,37 @@ export interface ComboText {
   icon?: string
 }
 
-export interface ILink extends ComboText {
-  uid: string
+/**  ~~ILinks~~ (Node)
+ * Map of path -> heirarchal id, with nodeid -> Unique nanoid */
+export interface ILink {
+  /** Unique Identifier */
+  nodeid: string
+
+  /** The title of the node.
+   * Uses separator for heirarchy */
+  path: string
+
+  /** Iconify Icon string */
+  icon?: string
+}
+
+/**  Tags */
+export interface Tag {
+  value: string
+}
+
+export interface SlashCommand {
+  command: string
+  icon?: string
 }
 
 export type LinkCache = Record<string, CachedILink[]>
 export type TagsCache = Record<string, CacheTag>
 
 export interface InitData {
-  tags: ComboText[]
+  tags: Tag[]
   ilinks: ILink[]
-  slashCommands: ComboText[]
+  slashCommands: SlashCommand[]
   linkCache: LinkCache
   tagsCache: TagsCache
   bookmarks: string[]
@@ -27,9 +48,9 @@ export interface InitData {
 }
 
 export interface DataStoreState {
-  tags: ComboText[]
+  tags: Tag[]
   ilinks: ILink[]
-  slashCommands: ComboText[]
+  slashCommands: SlashCommand[]
   linkCache: LinkCache
   tagsCache: TagsCache
   baseNodeId: string
@@ -39,12 +60,12 @@ export interface DataStoreState {
   initializeDataStore: (initData: InitData) => void
 
   // adds the node
-  addILink: (ilink: string, uid?: string, parentId?: string, archived?: boolean) => string
+  addILink: (ilink: string, nodeid?: string, parentId?: string, archived?: boolean) => string
 
   // adds tag for combobox
   addTag: (tag: string) => void
 
-  setSlashCommands: (slashCommands: ComboText[]) => void
+  setSlashCommands: (slashCommands: SlashCommand[]) => void
   setIlinks: (ilinks: ILink[]) => void
   setBaseNodeId: (baseNodeId: string) => void
 
@@ -60,9 +81,9 @@ export interface DataStoreState {
 
   // Internal Links Cache
   // adds the link between nodes
-  addInternalLink: (ilink: CachedILink, uid: string) => void
-  removeInternalLink: (ilink: CachedILink, uid: string) => void
-  updateInternalLinks: (links: CachedILink[], uid: string) => void
+  addInternalLink: (ilink: CachedILink, nodeid: string) => void
+  removeInternalLink: (ilink: CachedILink, nodeid: string) => void
+  updateInternalLinks: (links: CachedILink[], nodeid: string) => void
 
   addInArchive: (archive: ILink[]) => void
   unArchive: (archive: ILink) => void
@@ -73,9 +94,9 @@ export interface DataStoreState {
 export type NodeEditorContent = any[] // eslint-disable-line @typescript-eslint/no-explicit-any
 
 export interface CachedILink {
-  // ILink from/to nodeId
+  // ILink from/to path
   type: 'from' | 'to'
-  uid: string
+  nodeid: string
 }
 
 export interface CacheTag {
