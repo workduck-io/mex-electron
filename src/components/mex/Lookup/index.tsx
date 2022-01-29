@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import Modal from 'react-modal'
 import { useHistory } from 'react-router-dom'
+import { useEditorStore } from '../../../store/useEditorStore'
 import styled from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useApi } from '../../../apis/useSaveApi'
@@ -85,6 +86,11 @@ const Lookup = () => {
         // performClick()
       } else toast('Please select "tour" node')
     } else {
+      const path = useEditorStore.getState().node.title
+      if (inputValue === path) {
+        closeModal()
+        return
+      }
       openNode(inputValue)
     }
   }
