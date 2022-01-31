@@ -1,3 +1,7 @@
+import AlignLeftIcon from '@iconify-icons/bx/bx-align-left'
+import AlignCenterIcon from '@iconify-icons/bx/bx-align-middle'
+import AlignRightIcon from '@iconify-icons/bx/bx-align-right'
+import addLine from '@iconify-icons/ri/add-line'
 import boldIcon from '@iconify-icons/ri/bold'
 import doubleQuotesL from '@iconify-icons/ri/double-quotes-l'
 import h1 from '@iconify-icons/ri/h-1'
@@ -6,12 +10,6 @@ import h3 from '@iconify-icons/ri/h-3'
 import italicIcon from '@iconify-icons/ri/italic'
 import linkIcon from '@iconify-icons/ri/link'
 import listOrdered from '@iconify-icons/ri/list-ordered'
-
-import AlignLeftIcon from '@iconify-icons/bx/bx-align-left'
-import AlignRightIcon from '@iconify-icons/bx/bx-align-right'
-import AlignCenterIcon from '@iconify-icons/bx/bx-align-middle'
-import AlignJustifyIcon from '@iconify-icons/bx/bx-align-justify'
-
 import listUnordered from '@iconify-icons/ri/list-unordered'
 import { Icon } from '@iconify/react'
 import {
@@ -36,6 +34,8 @@ import {
 import React from 'react'
 import { ButtonSeparator } from '../../style/Toolbar'
 import LinkButton from './BalloonToolbar/LinkButton'
+import { SelectionToNode } from './BalloonToolbar/SelectionToNode'
+
 // import { BalloonToolbar } from './BalloonToolbar'
 // import LinkButton from './BalloonToolbar/LinkButton'
 
@@ -129,6 +129,14 @@ const BallonMarkToolbarButtons = () => {
         tooltip={{ content: 'Italic (⌘I)', ...tooltip }}
       />
 
+      <ButtonSeparator />
+
+      <SelectionToNode
+        icon={<Icon height={20} icon={addLine} />}
+        tooltip={{ content: 'Convert Blocks to New Node', ...tooltip }}
+      />
+
+      <ButtonSeparator />
       <LinkButton tooltip={{ content: 'Link', ...tooltip }} icon={<Icon height={20} icon={linkIcon} />} />
       {/* Looses focus when used.
        */}
