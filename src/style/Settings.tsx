@@ -51,7 +51,7 @@ export const ThemePreview = styled.div<{ back?: string }>`
     css`
       background-image: url(${back});
       background-size: cover;
-    `}}
+    `}
 `
 
 export const ButtonWrapper = styled.div`

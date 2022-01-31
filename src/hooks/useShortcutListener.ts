@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useMemo } from 'react'
+import useOnboard from '../store/useOnboarding'
 import { Shortcut } from '../components/mex/Help/Help.types'
 import useAnalytics from '../services/analytics'
 import { ActionType } from '../services/analytics/events'
@@ -114,10 +115,12 @@ const useShortcutListener = (): ShortcutListner => {
 
 export const useKeyListener = () => {
   const shortcutDisabled = useShortcutStore((state) => state.editMode)
+  const isOnboarding = useOnboard((store) => store.isOnboarding)
+
   const { trackEvent } = useAnalytics()
 
   const shortcutHandler = (shortcut: Shortcut, callback: any) => {
-    if (!shortcutDisabled) {
+    if (!shortcutDisabled && !isOnboarding) {
       trackEvent(getEventNameFromElement('Shortcut Settings', ActionType.KEY_PRESS, 'Shortcut'), shortcut)
       callback()
     }

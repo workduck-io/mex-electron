@@ -1,36 +1,37 @@
 import React from 'react'
 import { ReactourStep } from 'reactour'
-import { StyledKeyCap } from '../../components/welcome.style'
+import SpotlightFinishTour from '.'
+import { PrimaryText } from '../../../../../style/Integration'
 import { displayNone, toolTipStyle } from '../../steps'
+import { OnboardElements } from '../../types'
 
 export const SpotlightOnboarding: Array<ReactourStep> = [
   {
-    selector: '[data-tour="mex-quick-capture-preview"]',
-    content: <div>Anything you capture would be visible here.</div>,
-    style: toolTipStyle,
-    position: 'right'
-  },
-  {
-    selector: '[data-tour="mex-create-new-draft"]',
-    content: (
-      <div>
-        Create new node by pressing <StyledKeyCap>TAB</StyledKeyCap>
-      </div>
-    ),
-    style: toolTipStyle,
-    action: displayNone
-  },
-  {
-    selector: '[data-tour="mex-edit-content"]',
+    selector: `[data-tour="${OnboardElements.MEX_EDITOR}"]`,
     content: (
       <>
-        <div>Edit your captured content here and hit save.</div>
+        <div>Anything you capture would be visible here.</div>
         <br />
-        <div>
-          Save captured content using <StyledKeyCap>CMD+S</StyledKeyCap>
-        </div>
+        <div>Now, there are a host of things you can do from here</div>
+        <ul>
+          <li>
+            Save this particular node to a (place of your choice) for easy discovery (Like my first Mex Date :eyes:)
+          </li>
+          <li>Reference this node in other nodes you create in future.</li>
+          <li>Embed this node in other nodes</li>
+        </ul>
+        <br />
+        <div>..... the possibilities are endless.</div>
+        <br />
       </>
     ),
+    style: toolTipStyle
+  },
+  {
+    selector: '[data-tour="mex-quick-capture-search"]',
+    content: <SpotlightFinishTour />,
+    stepInteraction: true,
+    position: 'center',
     style: toolTipStyle,
     action: displayNone
   }

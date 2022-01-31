@@ -11,6 +11,7 @@ import { debounce } from 'lodash'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 import { useEditorChange } from '../hooks/useEditorActions'
 import components from './Components/components'
+import { OnboardElements } from '../components/mex/Onboarding/types'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -73,7 +74,7 @@ const Editor = ({
     <>
       <DndProvider backend={HTML5Backend}>
         {content && (
-          <EditorStyles onClick={() => setNodePreview(false)} data-tour="mex-onboarding-draft-editor">
+          <EditorStyles onClick={() => setNodePreview(false)}>
             {showBalloonToolbar && <BallonMarkToolbarButtons />}
             <Plate
               id={editorId}

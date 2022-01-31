@@ -35,7 +35,7 @@ const Search: React.FC = () => {
   }, [search, normalMode])
 
   return (
-    <StyledSearch>
+    <StyledSearch data-tour="mex-quick-capture-search">
       <CenterIcon>
         <Icon
           color={theme.colors.primary}

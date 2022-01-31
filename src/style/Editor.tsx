@@ -176,6 +176,10 @@ export const EditorStyles = styled.div`
     color: ${({ theme }) => theme.colors.text.subheading};
   }
 
+  span.wd-source-without-url {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
   pre,
   pre code {
     font-family: 'JetBrains Mono', monospace;

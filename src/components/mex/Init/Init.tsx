@@ -34,6 +34,7 @@ import { mog } from '../../../utils/lib/helper'
 import { flexIndexKeys } from '../../../utils/search/flexsearch'
 import { convertDataToRawText } from '../../../utils/search/localSearch'
 import { performClick } from '../Onboarding/steps'
+import { useOnboardingData } from '../Onboarding/hooks'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -62,6 +63,8 @@ const Init = () => {
    * Setup save
    * */
   useSaveAndExit()
+
+  const { closeOnboarding } = useOnboardingData()
 
   const { getTemplates } = useUpdater()
 
@@ -138,6 +141,9 @@ const Init = () => {
     })
     ipcRenderer.on(IpcAction.CLEAR_RECENTS, () => {
       clear()
+    })
+    ipcRenderer.on(IpcAction.STOP_ONBOARDING, () => {
+      closeOnboarding()
     })
     ipcRenderer.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {
       const { data } = arg

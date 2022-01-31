@@ -21,6 +21,7 @@ import { mog } from '../utils/lib/helper'
 // import { useDataSaverFromContent } from './Components/Saver'
 import Editor from './Editor'
 import Toolbar from './Toolbar'
+import { OnboardElements } from '../components/mex/Onboarding/types'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -106,7 +107,7 @@ const ContentEditor = () => {
 
   return (
     <>
-      <StyledEditor showGraph={showGraph} className="mex_editor">
+      <StyledEditor showGraph={showGraph} className="mex_editor" data-tour={OnboardElements.MEX_EDITOR}>
         <Toolbar />
 
         <Metadata />

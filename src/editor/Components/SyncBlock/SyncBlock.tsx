@@ -220,7 +220,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
                 {...register('content')}
                 placeholder="Your content here..."
                 className="syncTextArea"
-                defaultValue={content ?? ''}
+                defaultValue={isOnboarding ? "Hey, what's up ?" : content ?? ''}
                 readOnly={!fromLocal}
               />
             </Tippy>

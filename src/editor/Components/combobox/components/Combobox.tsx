@@ -57,7 +57,7 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
   }
 
   return (
-    <PortalBody>
+    <PortalBody data-tour="wd-mex-combobox">
       <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
         {isOpen &&
           items.map((item, index) => {

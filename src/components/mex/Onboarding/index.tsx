@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ReactourStep } from 'reactour'
+import { mog } from '../../../utils/lib/helper'
 import useOnboard from '../../../store/useOnboarding'
 import { Button } from '../../../style/Buttons'
 import { ReactTour } from './styled'
+import { useOnboardingData } from './hooks'
+import { useTheme } from 'styled-components'
 
 type OnboardingProps = {
   steps: Array<ReactourStep>
@@ -10,13 +13,18 @@ type OnboardingProps = {
 
 const OnBoardingTour: React.FC<OnboardingProps> = ({ steps }) => {
   const step = useOnboard((s) => s.step)
-
   const isOnboarding = useOnboard((s) => s.isOnboarding)
-  const changeOnboarding = useOnboard((s) => s.changeOnboarding)
+
+  const theme = useTheme()
+
+  const { closeOnboarding } = useOnboardingData()
+
+  useEffect(() => mog('Onboarding stats', { step, isOnboarding }), [step, isOnboarding])
 
   return (
     <ReactTour
       closeWithMask={false}
+      accentColor={theme.colors.primary}
       showCloseButton={false}
       prevButton={<></>}
       nextButton={
@@ -30,7 +38,7 @@ const OnBoardingTour: React.FC<OnboardingProps> = ({ steps }) => {
       rounded={5}
       disableFocusLock
       disableInteraction
-      onRequestClose={() => changeOnboarding(false)}
+      onRequestClose={closeOnboarding}
       steps={steps}
       isOpen={isOnboarding}
     />

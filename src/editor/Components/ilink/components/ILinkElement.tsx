@@ -14,6 +14,9 @@ import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { SILink, SILinkRoot } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
 import { OnboardElements } from '../../../../components/mex/Onboarding/types'
+import useOnboard from '../../../../store/useOnboarding'
+import { useTourStepper } from '../../../../components/mex/Onboarding/sections/QuickLinks'
+import { performClick } from '../../../../components/mex/Onboarding/steps'
 
 /**
  * ILinkElement with no default styles.
@@ -34,8 +37,14 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const nodeid = getUidFromNodeId(element.value)
   const { archived } = useArchive()
 
+  const isOnboarding = useOnboard((store) => store.isOnboarding)
+  const { step } = useTourStepper()
+
   const onClickProps = useOnMouseClick(() => {
-    push(nodeid)
+    push(uid)
+    if (isOnboarding && step === 0) {
+      performClick()
+    }
   })
 
   useHotkeys(

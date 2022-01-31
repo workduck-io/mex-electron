@@ -14,6 +14,9 @@ import { createNodeWithUid } from '../utils/lib/helper'
 import { AppType } from './useInitialize'
 import useLoad from './useLoad'
 import { useSaveData } from './useSaveData'
+import { ipcRenderer } from 'electron'
+import { useOnboardingData } from '../components/mex/Onboarding/hooks'
+import useOnboard from '../store/useOnboarding'
 
 export const useCurrentIndex = (data: Array<any> | undefined): number => {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
@@ -22,7 +25,17 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
   const loadNode = useSpotlightEditorStore((s) => s.loadNode)
   const { saveData } = useSaveData()
+  const isOnboarding = useOnboard((s) => s.isOnboarding)
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
+
+  const { closeOnboarding } = useOnboardingData()
+
+  const onClick = () => {
+    if (isOnboarding) {
+      ipcRenderer.send(IpcAction.STOP_ONBOARDING, { from: AppType.SPOTLIGHT, data: { isOnboarding: false } })
+      closeOnboarding()
+    }
+  }
 
   const node = useSpotlightEditorStore((s) => s.node)
   const setNodeContent = useSpotlightEditorStore((s) => s.setNodeContent)
@@ -56,6 +69,7 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
 
       if (ev.key === 'Enter') {
         ev.preventDefault()
+        onClick()
         if (currentIndex >= 0) {
           let newNode: NodeProperties
           if (data[currentIndex].new) {

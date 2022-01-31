@@ -26,6 +26,7 @@ import { combineSources, openNodeInMex } from '../../../utils/combineSources'
 import { useDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import { createNodeWithUid, mog } from '../../../utils/lib/helper'
 import { SeePreview, StyledEditorPreview, StyledPreview } from './styled'
+import { OnboardElements } from '../../../components/mex/Onboarding/types'
 
 export type PreviewType = {
   text: string
@@ -131,7 +132,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
           <Icon icon={downIcon} />
         </SeePreview>
       )}
-      <StyledEditorPreview>
+      <StyledEditorPreview data-tour={OnboardElements.MEX_EDITOR}>
         <ErrorBoundary onReset={resetEditor} FallbackComponent={EditorErrorFallback}>
           {
             <Editor

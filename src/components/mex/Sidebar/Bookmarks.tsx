@@ -46,7 +46,7 @@ const Bookmarks = () => {
   }, [])
 
   return (
-    <BList>
+    <BList data-tour="wd-mex-bookmark">
       {bookmarks.map((nodeid) => {
         if (getNodeIdFromUid(nodeid) === undefined) return null
         return (

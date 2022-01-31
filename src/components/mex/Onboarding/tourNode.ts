@@ -49,6 +49,90 @@ export const useFlowMessage = () => {
   }
 }
 
+export const onBoardServices = [
+  {
+    id: 'ONBOARD',
+    name: 'ONBOARD',
+    type: 'medium',
+    imageUrl: 'https://workduck.io',
+    description: 'Onboard users',
+    authUrl: '',
+    connected: true,
+    enabled: true
+  }
+]
+
+export const onBoardTempaltes = [
+  {
+    id: 'SYNCTEMP_ONBOARD',
+    title: 'Flow Block Tour',
+    command: 'onboard',
+    description: 'This gives you a quick way to connect with mex demo',
+    intents: [
+      {
+        service: 'ONBOARD',
+        type: 'medium'
+      },
+      {
+        service: 'MEX',
+        type: 'node'
+      }
+    ]
+  },
+  {
+    id: 'SYNCTEMP_ISSUETRACKING',
+    title: 'Issue Tracking',
+    command: 'issuetracking',
+    description: 'Track Issues',
+    intents: [
+      {
+        service: 'GITHUB',
+        type: 'issue'
+      },
+      {
+        service: 'SLACK',
+        type: 'channel'
+      },
+      {
+        service: 'MEX',
+        type: 'node'
+      }
+    ]
+  },
+  {
+    id: 'SYNCTEMP_TASK',
+    title: 'Slack Task management',
+    command: 'task',
+    description: 'Manage tasks',
+    intents: [
+      {
+        service: 'SLACK',
+        type: 'channel'
+      },
+      {
+        service: 'MEX',
+        type: 'node'
+      }
+    ]
+  },
+  {
+    id: 'SYNCTEMP_DEVTASK',
+    title: 'Github tasks',
+    command: 'devtask',
+    description: 'Create tasks using github issues',
+    intents: [
+      {
+        service: 'GITHUB',
+        type: 'issue'
+      },
+      {
+        service: 'MEX',
+        type: 'node'
+      }
+    ]
+  }
+]
+
 export const snippetTourContent = [
   {
     id: 'TEMP_CcPFY9NRNDenbUy6pcool',
@@ -62,7 +146,34 @@ export const snippetTourContent = [
   }
 ]
 
-export const tourNodeContent = [
+export const flowLinkNodeContent = [
+  {
+    id: 'TEMP_MRyHTtTNcCbLmDWWeXCjc',
+    type: 'p',
+    children: [
+      {
+        id: 'TEMP_GrfznizUdipLTdqLbtMh6',
+        text: ''
+      },
+      {
+        type: 'sync_block',
+        children: [
+          {
+            text: '',
+            id: 'TEMP_4yDCTyG9LnKBb8MGzAGhV'
+          }
+        ],
+        id: 'SYNC_FLOW'
+      },
+      {
+        text: '',
+        id: 'TEMP_8wgPkCGVrWT7ahVeixGBw'
+      }
+    ]
+  }
+]
+
+export const quickLinkNodeContent = [
   {
     id: 'TEMP_pfgMWhHAyUidBcTV9d4XN',
     type: 'h2',
@@ -132,7 +243,10 @@ export const tourNodeContent = [
         text: ''
       }
     ]
-  },
+  }
+]
+
+export const inlinkBlockNodeContent = [
   {
     id: 'TEMP_WwBGzGc3ij7pxpCWdjgm4',
     type: 'p',
@@ -176,28 +290,4 @@ export const tourNodeContent = [
       }
     ]
   }
-  // {
-  //   id: 'TEMP_MRyHTtTNcCbLmDWWeXCjc',
-  //   type: 'p',
-  //   children: [
-  //     {
-  //       id: 'TEMP_GrfznizUdipLTdqLbtMh6',
-  //       text: ''
-  //     },
-  //     {
-  //       type: 'sync_block',
-  //       children: [
-  //         {
-  //           text: '',
-  //           id: 'TEMP_4yDCTyG9LnKBb8MGzAGhV'
-  //         }
-  //       ],
-  //       id: 'SYNC_FLOW'
-  //     },
-  //     {
-  //       text: '',
-  //       id: 'TEMP_8wgPkCGVrWT7ahVeixGBw'
-  //     }
-  //   ]
-  // }
 ]

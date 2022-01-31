@@ -6,7 +6,6 @@ import { StyledModal } from '../../../Lookup'
 import { useOnboardingData } from '../../hooks'
 import { Container, StyledHeading, StyledList } from './styled'
 import { MexIcon } from '../../../../../style/Layouts'
-import { quickLinkTour } from '../../steps'
 
 export type GettingStartedListProps = {
   title: string
@@ -16,35 +15,35 @@ export type GettingStartedListProps = {
 
 const GettingStartedList: Array<GettingStartedListProps> = [
   {
-    title: 'Quick Link',
+    title: 'Quick Links',
     icon: 'ri:file-list-2-line',
     step: 0
   },
   {
     title: 'Snippets',
     icon: 'ri:quill-pen-line',
-    step: quickLinkTour.length
+    step: 3
   },
   {
     title: 'Flow Links',
     icon: 'ri:refresh-fill',
-    step: 7
-  },
-  {
-    title: 'Inline Block',
-    icon: 'ri:picture-in-picture-line',
-    step: 10
-  },
-  {
-    title: 'Tags',
-    icon: 'ri:hashtag',
-    step: 14
+    step: 6
   },
   {
     title: 'Quick Capture',
     icon: 'ri:checkbox-multiple-blank-fill',
-    step: 18
+    step: 12
   }
+  // {
+  //   title: 'Inline Block',
+  //   icon: 'ri:picture-in-picture-line',
+  //   step: 13
+  // },
+  // {
+  //   title: 'Tags',
+  //   icon: 'ri:hashtag',
+  //   step: 15
+  // },
 ]
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -79,8 +78,6 @@ const GettingStarted: React.FC<GettingStartedProps> = () => {
     // * Start Product Tour
     changeOnboarding(true)
   }
-
-  mog('Getting started', { isOpen })
 
   return (
     <StyledModal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={handleClose} isOpen={isOpen}>

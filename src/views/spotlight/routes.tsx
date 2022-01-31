@@ -8,6 +8,8 @@ import Settings from '../../components/spotlight/Settings'
 import GlobalListener from '../../components/spotlight/GlobalListener'
 import ProtectedRoute from './ProtectedRoute'
 import Login from '../../components/spotlight/Login'
+import OnBoardingTour from '../../components/mex/Onboarding'
+import { SpotlightOnboarding } from '../../components/mex/Onboarding/sections/Spotlight/steps'
 
 const Routes = () => {
   return (
@@ -20,6 +22,7 @@ const Routes = () => {
       </Switch>
       <GlobalListener />
       <Bubble />
+      <OnBoardingTour steps={SpotlightOnboarding} />
       <GlobalStyle />
     </Router>
   )
