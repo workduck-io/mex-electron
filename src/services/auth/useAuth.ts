@@ -84,6 +84,7 @@ export const useAuthentication = () => {
     const v = await signIn(email, password)
       .then((d) => {
         data = d
+        mog('Successful signin', { data, d })
         return 'success'
       })
       .catch((e) => {
@@ -98,6 +99,8 @@ export const useAuthentication = () => {
           const userDetails = { email }
           const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
 
+          mog('Workspace Check', { d, userDetails, workspaceDetails })
+
           // getNodesByWorkspace(workspaceDetails.id)
           // Set Authenticated, user and workspace details
 
@@ -110,7 +113,7 @@ export const useAuthentication = () => {
             [Properties.WORKSPACE_ID]: d.data.group
           })
           addEventProperties({ [CustomEvents.LOGGED_IN]: true })
-          mog('Login BIG success', { userDetails, workspaceDetails })
+
           return { userDetails, workspaceDetails }
         })
         // .then(updateDefaultServices)

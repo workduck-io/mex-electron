@@ -1,7 +1,7 @@
 import React from 'react'
 import { Command } from '../../../NodeIntentsModal/styled'
 import SnippetTour from '.'
-import { toolTipStyle, displayNone } from '../../steps'
+import { displayNone, toolTipStyle } from '../../steps'
 import { OnboardElements } from '../../types'
 import { FinishQuickLink } from '../QuickLinks'
 

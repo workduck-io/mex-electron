@@ -1,12 +1,21 @@
+import { SyncBlockTemplate, Service } from '../../../editor/Components/SyncBlock'
+
 export type OnBoardStore = {
   isOnboarding: boolean
   changeOnboarding: (isOpen: boolean) => void
+  onboardBackup: OnboardBackup | undefined
+  setOnboardBackup: (backup: OnboardBackup) => void
   step: number
   setStep: (step: number) => void
   flowMessage: string
   setFlowMessage: (msg: string) => void
   isModalOpen: boolean
   setModal: (isOpen: boolean) => void
+}
+
+type OnboardBackup = {
+  services: Array<Service>
+  templates: Array<SyncBlockTemplate>
 }
 
 export enum OnboardElements {

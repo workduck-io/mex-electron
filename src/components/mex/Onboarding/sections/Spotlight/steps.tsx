@@ -1,8 +1,7 @@
 import React from 'react'
 import { ReactourStep } from 'reactour'
 import SpotlightFinishTour from '.'
-import { PrimaryText } from '../../../../../style/Integration'
-import { displayNone, toolTipStyle } from '../../steps'
+import { toolTipStyle, displayNone } from '../../steps'
 import { OnboardElements } from '../../types'
 
 export const SpotlightOnboarding: Array<ReactourStep> = [

@@ -14,7 +14,6 @@ export const useUpdater = () => {
   const setServices = useSyncStore((store) => store.setServices)
   const setTemplates = useSyncStore((store) => store.setTemplates)
   const { generateSlashCommands } = useSlashCommands()
-  const isOnboarding = useOnboard((s) => s.isOnboarding)
 
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const { saveData } = useSaveData()
@@ -25,7 +24,7 @@ export const useUpdater = () => {
   }
 
   const updateDefaultServices = async <T>(d?: T): Promise<T | undefined> => {
-    if (useAuthStore.getState().authenticated && !isOnboarding) {
+    if (useAuthStore.getState().authenticated && !useOnboard.getState().isOnboarding) {
       await client
         .get(integrationURLs.getAllServiceData(getWorkspaceId()))
         .then((d) => {
@@ -50,7 +49,7 @@ export const useUpdater = () => {
   }
 
   const updateServices = async <T>(d?: T): Promise<T | undefined> => {
-    if (useAuthStore.getState().authenticated && !isOnboarding) {
+    if (useAuthStore.getState().authenticated && !useOnboard.getState().isOnboarding) {
       await client
         .get(integrationURLs.getWorkspaceAuth(getWorkspaceId()))
         .then((d) => {
@@ -71,7 +70,7 @@ export const useUpdater = () => {
   }
 
   const getTemplates = async () => {
-    if (useAuthStore.getState().authenticated) {
+    if (useAuthStore.getState().authenticated && !useOnboard.getState().isOnboarding) {
       await client
         .get(integrationURLs.getAllTemplates(getWorkspaceId()))
         .then((d) => {

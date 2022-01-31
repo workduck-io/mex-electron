@@ -1,11 +1,11 @@
 import React from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-import { mog } from '../../../../../utils/lib/helper'
 import useOnboard from '../../../../../store/useOnboarding'
 import { StyledModal } from '../../../Lookup'
 import { useOnboardingData } from '../../hooks'
 import { Container, StyledHeading, StyledList } from './styled'
 import { MexIcon } from '../../../../../style/Layouts'
+import { useSyncStore } from '../../../../../store/useSyncStore'
 
 export type GettingStartedListProps = {
   title: string
@@ -61,12 +61,17 @@ const GettingStarted: React.FC<GettingStartedProps> = () => {
   }
 
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
+  const setOnboardBackup = useOnboard((s) => s.setOnboardBackup)
+
   const { setOnboardData } = useOnboardingData()
 
   const history = useHistory()
   const location = useLocation()
 
   const onTourClick = (item: GettingStartedListProps) => {
+    const { services, templates } = useSyncStore.getState()
+    setOnboardBackup({ services, templates })
+
     // * Set Integration data (Like tour flow block)
     setOnboardData(item)
 

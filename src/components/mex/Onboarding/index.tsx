@@ -5,11 +5,18 @@ import useOnboard from '../../../store/useOnboarding'
 import { Button } from '../../../style/Buttons'
 import { ReactTour } from './styled'
 import { useOnboardingData } from './hooks'
-import { useTheme } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 type OnboardingProps = {
   steps: Array<ReactourStep>
 }
+
+export const FlexEnd = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+`
 
 const OnBoardingTour: React.FC<OnboardingProps> = ({ steps }) => {
   const step = useOnboard((s) => s.step)

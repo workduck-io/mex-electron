@@ -180,13 +180,20 @@ export const SyncBlock = (props: SyncBlockProps) => {
     }, 2000)
   } // eslint-disable-line no-console
 
+  let textAreaDefaultValue = content ?? ''
+  const isFromMex = element?.properties && flowMessage
+
+  if (isOnboarding) {
+    textAreaDefaultValue = isFromMex ?? "Hey, what's up ?"
+  }
+
   return (
     <RootElement {...attributes}>
       <div contentEditable={false}>
         {/* For quick debug {& JSON.stringify(blockData)} */}
 
         <SyncForm
-          data-tour={flowMessage ? OnboardElements.FLOW_LINK_RESPONSE : OnboardElements.FLOW_LINK}
+          data-tour={isFromMex ? OnboardElements.FLOW_LINK_RESPONSE : OnboardElements.FLOW_LINK}
           selected={selected || isOnboarding}
           onClick={() => setSelected(element.id)}
         >
@@ -220,7 +227,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
                 {...register('content')}
                 placeholder="Your content here..."
                 className="syncTextArea"
-                defaultValue={isOnboarding ? "Hey, what's up ?" : content ?? ''}
+                defaultValue={textAreaDefaultValue}
                 readOnly={!fromLocal}
               />
             </Tippy>

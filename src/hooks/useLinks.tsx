@@ -1,4 +1,5 @@
 import { uniq } from 'lodash'
+import { mog } from '../utils/lib/helper'
 import { ELEMENT_INLINE_BLOCK } from '../editor/Components/InlineBlock/types'
 import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
@@ -26,6 +27,7 @@ export const useLinks = () => {
   const addInternalLink = useDataStore((state) => state.addInternalLink)
   const removeInternalLink = useDataStore((state) => state.removeInternalLink)
   const linkCache = useDataStore((state) => state.linkCache)
+  const ilinks = useDataStore((state) => state.ilinks)
 
   const getAllLinks = () => {
     // We assume that all links exist
@@ -95,9 +97,12 @@ export const useLinks = () => {
 
   const getBacklinks = (nodeid: string) => {
     const links = linkCache[nodeid]
+
     if (links) {
-      return links.filter((l) => l.type === 'from')
+      const backLinks = links.filter((l) => l.type === 'from' && ilinks.find((i) => i.nodeid === l.nodeid))
+      return backLinks
     }
+
     return []
   }
 

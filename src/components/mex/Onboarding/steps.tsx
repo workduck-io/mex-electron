@@ -1,17 +1,12 @@
-import styled, { useTheme } from 'styled-components'
-import { snippetTour } from './sections/Snippets/steps'
-import { inlineBlockTour } from './sections/InlineBlocks/steps'
 import React from 'react'
 import { OnboardElements } from './types'
 import { FinishQuickLink, QuickLinkTour } from './sections/QuickLinks'
-import SnippetTour, { FinishSnippetTour } from './sections/Snippets'
+import SnippetTour, { BookmarkTour, FinishSnippetTour } from './sections/Snippets'
 import { Command } from '../NodeIntentsModal/styled'
-import FlowMessage, { MoveToIntegrationpage, FinishIntegration } from './sections/FlowLinks'
-import { PrimaryText } from '../../../style/Integration'
+import FlowMessage, { MoveToIntegrationpage, FinishIntegration, FlowLinkTour } from './sections/FlowLinks'
+import { CenteredFlex, PrimaryText } from '../../../style/Integration'
 import WelcomeSection from './components/Welcome'
-import { useHistory } from 'react-router-dom'
-import { Button } from '../../../style/Buttons'
-import { WelcomeHeader, StyledTypography } from './components/welcome.style'
+import styled from 'styled-components'
 
 export const toolTipStyle = {
   padding: '2rem',
@@ -52,44 +47,6 @@ export const performClick = (showButton = true) => {
   if (showButton) nextBtn.style.display = 'inline-block'
 }
 
-const BookmarkTour = () => {
-  const history = useHistory()
-
-  const onClick = () => {
-    history.push('/snippets')
-    performClick()
-  }
-  return (
-    <>
-      <div>If you use a document frequently, bookmark it and those would be visible here</div>
-      <Button onClick={onClick}>Go to</Button>
-    </>
-  )
-}
-
-const FlowLinkTour = () => {
-  const theme = useTheme()
-  return (
-    <>
-      <WelcomeHeader>
-        <StyledTypography size="2rem" color={theme.colors.primary} margin="0" maxWidth="100%">
-          Quick Links
-        </StyledTypography>
-      </WelcomeHeader>
-      <br />
-      <br />
-      <div>
-        Putting the flow in your workflows with{' '}
-        <Command>
-          <strong>/flow</strong>
-        </Command>{' '}
-      </div>
-      <br />
-      <div>Whatever you put here stays in sync across all integrated services.</div>
-    </>
-  )
-}
-
 export const OnboardingTourConfig = [
   {
     selector: `[data-tour="${OnboardElements.QUICK_LINK}"]`,
@@ -101,14 +58,18 @@ export const OnboardingTourConfig = [
   {
     selector: `[data-tour="${OnboardElements.MEX_EDITOR}"]`,
     content: (
-      <div>
-        Now, let&apos;s say you want link your <PrimaryText>&quot;Quick Links&quot;</PrimaryText> node here.
+      <>
         <div>
-          You can do it by typing <Command>[[Tour.Quick Links]]</Command> command anywhere in the editor.
+          Now, let&apos;s say you want link your <PrimaryText>&quot;Snippets&quot;</PrimaryText> node here.
         </div>
         <br />
-        <div>Give it a try!!</div>
-      </div>
+        <div>
+          You can do it by typing <Command>[[Tour.Snippets]]</Command> command anywhere in the editor.
+        </div>
+        <br />
+        <br />
+        <CenteredFlex>Give it a try !!</CenteredFlex>
+      </>
     ),
     stepInteraction: true,
     style: toolTipStyle

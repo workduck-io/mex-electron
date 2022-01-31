@@ -1,4 +1,3 @@
-import { Button } from '@udecode/plate'
 import React from 'react'
 import { FlexBetween } from '../../../../../components/spotlight/Actions/styled'
 import { useTheme } from 'styled-components'
@@ -6,10 +5,11 @@ import { Command } from '../../../../../components/mex/NodeIntentsModal/styled'
 import { StyledTypography, WelcomeHeader } from '../../components/welcome.style'
 import { useOnboardingData } from '../../hooks'
 import { performClick } from '../../steps'
-import { PrimaryText } from '../../../../../style/Integration'
+import { CenteredFlex, PrimaryText } from '../../../../../style/Integration'
 import { useLinks } from '../../../../../hooks/useLinks'
 import useLoad from '../../../../../hooks/useLoad'
 import { useHistory, useLocation } from 'react-router-dom'
+import { Button } from '../../../../../style/Buttons'
 
 const SnippetTour = () => {
   const theme = useTheme()
@@ -33,6 +33,24 @@ const SnippetTour = () => {
         </Command>{' '}
         with your snippet name anywhere in editor. It&apos;ll insert your snippet into the editor.
       </div>
+    </>
+  )
+}
+
+export const BookmarkTour = () => {
+  const history = useHistory()
+
+  const onClick = () => {
+    history.push('/snippets')
+    performClick()
+  }
+  return (
+    <>
+      <div>If you use a document frequently, bookmark it and those would be visible here</div>
+      <br />
+      <CenteredFlex>
+        <Button onClick={onClick}>Next</Button>
+      </CenteredFlex>
     </>
   )
 }
@@ -64,6 +82,8 @@ export const FinishSnippetTour = () => {
           and snippet name in the editor
         </div>
       </>
+      <br />
+      <br />
       <FlexBetween>
         <Button onClick={closeOnboarding}>Finish</Button>
         <Button onClick={onClick}>

@@ -1,7 +1,7 @@
 import arrowGoBackLine from '@iconify-icons/ri/arrow-go-back-line'
 import { Icon } from '@iconify/react'
 import { transparentize } from 'polished'
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
@@ -10,6 +10,7 @@ import { HoverSubtleGlow } from '../../../style/helpers'
 import { Note } from '../../../style/Typography'
 import { useEditorSelection } from '../../../hooks/useEditorSelection'
 import { OnboardElements } from '../Onboarding/types'
+import useDataStore from '../../../store/useDataStore'
 
 const SBackLinks = styled.div`
   width: 100%;
@@ -48,10 +49,13 @@ export const DataInfoHeader = styled.div`
 `
 
 const QuickLinks = () => {
-  const { getBacklinks } = useLinks()
   const { push } = useNavigation()
-  const backlinks = getBacklinks(useEditorStore.getState().node.nodeid)
+  const { getBacklinks } = useLinks()
   const { getNodeIdFromUid } = useLinks()
+
+  const ilinks = useDataStore((store) => store.ilinks)
+  const nodeid = useEditorStore((store) => store.node.nodeid)
+  const backlinks = useMemo(() => getBacklinks(nodeid), [nodeid, ilinks])
 
   useEditorSelection()
 

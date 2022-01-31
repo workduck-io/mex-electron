@@ -1,10 +1,5 @@
-import { ipcRenderer } from 'electron'
 import React from 'react'
 import { PrimaryText } from '../../../../../style/Integration'
-import { IpcAction } from '../../../../../data/IpcAction'
-import { AppType } from '../../../../../hooks/useInitialize'
-import { useOnboardingData } from '../../hooks'
-import { Button } from '../../../../../style/Buttons'
 
 const SpotlightFinishTour = () => {
   return (

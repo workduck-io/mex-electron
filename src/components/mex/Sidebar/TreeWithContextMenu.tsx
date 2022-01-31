@@ -65,10 +65,10 @@ export const TreeWithContextMenu = ({ tree }: TreeProps) => {
           <Icon icon={refreshFill} />
           Sync
         </Item>
-        <Item id="share" onClick={handleItemClick}>
+        {/* <Item id="share" onClick={handleItemClick}>
           <Icon icon={shareLine} />
           Share
-        </Item>
+        </Item> */}
       </StyledMenu>
     </>
   )

@@ -1,14 +1,17 @@
-import { Button } from '@udecode/plate'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
+import { Command } from '../../../NodeIntentsModal/styled'
+import { useTheme } from 'styled-components'
 import { USE_API } from '../../../../../data/Defaults/dev_'
 import useLoad from '../../../../../hooks/useLoad'
 import useDataStore from '../../../../../store/useDataStore'
 import useOnboard from '../../../../../store/useOnboarding'
 import { CenteredFlex } from '../../../../../style/Integration'
+import { WelcomeHeader, StyledTypography } from '../../components/welcome.style'
 import { useOnboardingData } from '../../hooks'
-import { TextArea, performClick } from '../../steps'
+import { performClick, TextArea } from '../../steps'
 import { useFlowMessage } from '../../tourNode'
+import { Button } from '../../../../../style/Buttons'
 
 const FlowMessage = () => {
   const setFlowMessage = useOnboard((s) => s.setFlowMessage)
@@ -38,6 +41,29 @@ const FlowMessage = () => {
           Send
         </Button>
       </CenteredFlex>
+    </>
+  )
+}
+
+export const FlowLinkTour = () => {
+  const theme = useTheme()
+  return (
+    <>
+      <WelcomeHeader>
+        <StyledTypography size="2rem" color={theme.colors.primary} margin="0" maxWidth="100%">
+          Quick Links
+        </StyledTypography>
+      </WelcomeHeader>
+      <br />
+      <br />
+      <div>
+        Putting the flow in your workflows with{' '}
+        <Command>
+          <strong>/flow</strong>
+        </Command>{' '}
+      </div>
+      <br />
+      <div>Whatever you put here stays in sync across all integrated services.</div>
     </>
   )
 }

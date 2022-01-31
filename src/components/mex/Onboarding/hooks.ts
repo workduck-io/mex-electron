@@ -1,6 +1,5 @@
 // import { useSyncStore } from '../../Editor/Store/useSyncStore'
 
-import { useEditorStore } from '../../../store/useEditorStore'
 import useDataStore from '../../../store/useDataStore'
 import { useSyncStore } from '../../../store/useSyncStore'
 import {
@@ -20,9 +19,7 @@ import { GettingStartedListProps } from './components/GettingStarted'
 import { useDelete } from '../../../hooks/useDelete'
 import { USE_API } from '../../../data/Defaults/dev_'
 import { mog } from '../../../utils/lib/helper'
-import { NodeEditorContent } from '../../../types/Types'
 import { useContentStore } from '../../../store/useContentStore'
-import { useLocation, useHistory } from 'react-router-dom'
 import { useLinks } from '../../../hooks/useLinks'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../../../data/IpcAction'
@@ -31,11 +28,6 @@ import { AppType } from '../../../hooks/useInitialize'
 const TOUR_SNIPPET_ID = `${SNIPPET_PREFIX}${ID_SEPARATOR}PRD`
 
 export const useOnboardingData = () => {
-  const history = useHistory()
-  const location = useLocation()
-
-  const templates = useSyncStore((store) => store.templates)
-  const services = useSyncStore((store) => store.services)
   const ilinks = useDataStore((store) => store.ilinks)
   const snippets = useSnippetStore((store) => store.snippets)
 
@@ -51,6 +43,7 @@ export const useOnboardingData = () => {
   const addTag = useDataStore((store) => store.addTag)
   const addSnippet = useSnippetStore((s) => s.addSnippet)
   const deleteSnippet = useSnippetStore((s) => s.deleteSnippet)
+  const setOnboardBackup = useOnboard((s) => s.setOnboardBackup)
 
   const setServices = useSyncStore((store) => store.setServices)
   const setTemplates = useSyncStore((store) => store.setTemplates)
@@ -97,7 +90,6 @@ export const useOnboardingData = () => {
           break
 
         case 'Quick Capture':
-          mog('quick', {})
           ipcRenderer.send(IpcAction.START_ONBOARDING, { from: AppType.MEX, data: { isOnboarding: true } })
           break
         default:
@@ -105,7 +97,7 @@ export const useOnboardingData = () => {
       }
     }
 
-    loadTourNode(`Tour.${item.title}`)
+    if (item.title !== 'Quick Capture') loadTourNode(`Tour.${item.title}`)
   }
 
   const createNewSnippet = () => {
@@ -122,8 +114,6 @@ export const useOnboardingData = () => {
   const setOnboardData = (item: GettingStartedListProps) => {
     // * Template and services
     // * Uncomment this if you want this in tour
-    setServices(onBoardServices)
-    setTemplates(onBoardTempaltes)
 
     // * One tag called 'onboard'
     addTag('onboard')
@@ -134,14 +124,17 @@ export const useOnboardingData = () => {
     // * Create a new snippet with some content
     const isTourSnippetPresent = snippets.find((s) => s.id === TOUR_SNIPPET_ID)
     if (!isTourSnippetPresent) createNewSnippet()
+
+    setServices(onBoardServices)
+    setTemplates(onBoardTempaltes)
   }
 
   const removeOnboardData = () => {
-    const remainingTemplates = onBoardTempaltes.filter((item) => !templates.includes(item))
-    const remainingServices = onBoardServices.filter((item) => !services.includes(item))
+    const onboardBackup = useOnboard.getState().onboardBackup
+    setServices(onboardBackup.services)
+    setTemplates(onboardBackup.templates)
 
-    setTemplates(remainingTemplates)
-    setServices(remainingServices)
+    setOnboardBackup(undefined)
 
     deleteSnippet(TOUR_SNIPPET_ID)
     updater()

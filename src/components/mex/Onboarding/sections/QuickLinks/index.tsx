@@ -1,4 +1,3 @@
-import { Button } from '@udecode/plate'
 import React from 'react'
 import { Command } from '../../../../../components/mex/NodeIntentsModal/styled'
 import { PrimaryText } from '../../../../../style/Integration'
@@ -11,6 +10,7 @@ import { useHistory } from 'react-router-dom'
 import { useOnboardingData } from '../../hooks'
 import { FlexBetween } from '../../../../../editor/Components/InlineBlock/styled'
 import { useTheme } from 'styled-components'
+import { Button } from '../../../../../style/Buttons'
 
 export const useTourStepper = () => {
   const step = useOnboard((store) => store.step)
@@ -37,7 +37,7 @@ export const QuickLinkTour = () => {
         <Command>
           <strong> [[ </strong>
         </Command>
-        command
+        &nbsp;command
       </div>
       <StyledTypography margin="0.5rem 0" size="0.8rem" color="#aaa" maxWidth="100%">
         Incase you want to link your thoughts together
@@ -51,8 +51,6 @@ export const QuickLinkTour = () => {
 }
 
 export const FinishQuickLink = () => {
-  const history = useHistory()
-
   const { closeOnboarding } = useOnboardingData()
   const { loadNode } = useLoad()
   const { getUidFromNodeId } = useLinks()
@@ -65,14 +63,18 @@ export const FinishQuickLink = () => {
 
   return (
     <>
-      <div>This is a quick link section. </div>
-      <div>Here you&apos;ll see all othere nodes where this node is referenced.</div>
+      <div>This is a Quick links section. </div>
+      <div>It shows all the nodes where current node is referenced.</div>
       <br />
+      <div>
+        For example, <PrimaryText>Tour.Quick Links</PrimaryText> is using <PrimaryText>doc</PrimaryText> somewhere in
+        it&apos;s content.
+      </div>
       <br />
       <FlexBetween>
         <Button onClick={closeOnboarding}>Finish</Button>
         <Button onClick={onClick}>
-          Next <PrimaryText>&quot;Snippets&quot;</PrimaryText>
+          Next&nbsp;&nbsp;<PrimaryText>&quot;Snippets&quot;</PrimaryText>
         </Button>
       </FlexBetween>
     </>

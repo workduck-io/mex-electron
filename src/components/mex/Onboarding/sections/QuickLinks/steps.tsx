@@ -1,6 +1,6 @@
 import React from 'react'
 import { QuickLinkTour, FinishQuickLink } from '.'
-import { toolTipStyle, displayNone } from '../../steps'
+import { displayNone, toolTipStyle } from '../../steps'
 import { OnboardElements } from '../../types'
 
 export const quickLinkTour = [
