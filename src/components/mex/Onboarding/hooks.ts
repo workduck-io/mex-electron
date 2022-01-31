@@ -70,9 +70,9 @@ export const useOnboardingData = () => {
   }
 
   const createTourNodes = (item: GettingStartedListProps) => {
-    const productTourNode = ilinks.find((i) => i.text === 'Tour')
+    const productTourNode = ilinks.find((i) => i.path === 'Tour')
 
-    if (!productTourNode?.uid) {
+    if (!productTourNode?.nodeid) {
       // * Create Quick link for Product Tour node
       let uid
 
@@ -148,7 +148,7 @@ export const useOnboardingData = () => {
 
     const { newLinks } = execDelete('Tour', { permanent: true })
 
-    if (newLinks.length > 0) loadNode(newLinks[0].uid, { savePrev: false, fetch: USE_API() })
+    if (newLinks.length > 0) loadNode(newLinks[0].nodeid, { savePrev: false, fetch: USE_API() })
 
     ipcRenderer.send(IpcAction.STOP_ONBOARDING, { from: AppType.MEX, data: { isOnboarding: false } })
   }

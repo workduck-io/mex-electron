@@ -41,7 +41,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const { step } = useTourStepper()
 
   const onClickProps = useOnMouseClick(() => {
-    push(uid)
+    push(nodeid)
     if (isOnboarding && step === 0) {
       performClick()
     }

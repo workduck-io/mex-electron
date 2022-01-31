@@ -55,7 +55,7 @@ export const MoveToIntegrationpage = () => {
       <CenteredFlex>
         <Button
           onClick={() => {
-            if (ilinks.length > 0) loadNode(ilinks[0].uid, { savePrev: false, fetch: USE_API() })
+            if (ilinks.length > 0) loadNode(ilinks[0].nodeid, { savePrev: false, fetch: USE_API() })
             router.push('/integrations')
             performClick()
           }}
