@@ -4,6 +4,7 @@ import AlignRightIcon from '@iconify-icons/bx/bx-align-right'
 import addLine from '@iconify-icons/ri/add-line'
 import boldIcon from '@iconify-icons/ri/bold'
 import doubleQuotesL from '@iconify-icons/ri/double-quotes-l'
+import fileAddLine from '@iconify-icons/ri/file-add-line'
 import h1 from '@iconify-icons/ri/h-1'
 import h2 from '@iconify-icons/ri/h-2'
 import h3 from '@iconify-icons/ri/h-3'
@@ -35,6 +36,7 @@ import React from 'react'
 import { ButtonSeparator } from '../../style/Toolbar'
 import LinkButton from './BalloonToolbar/LinkButton'
 import { SelectionToNode } from './BalloonToolbar/SelectionToNode'
+import { SelectionToSnippet } from './BalloonToolbar/SelectionToSnippet'
 
 // import { BalloonToolbar } from './BalloonToolbar'
 // import LinkButton from './BalloonToolbar/LinkButton'
@@ -136,10 +138,13 @@ const BallonMarkToolbarButtons = () => {
         tooltip={{ content: 'Convert Blocks to New Node', ...tooltip }}
       />
 
+      <SelectionToSnippet
+        icon={<Icon height={20} icon={fileAddLine} />}
+        tooltip={{ content: 'Convert Blocks to New Snippet', ...tooltip }}
+      />
       <ButtonSeparator />
       <LinkButton tooltip={{ content: 'Link', ...tooltip }} icon={<Icon height={20} icon={linkIcon} />} />
-      {/* Looses focus when used.
-       */}
+      {/* Looses focus when used. */}
     </BalloonToolbar>
   )
 }
