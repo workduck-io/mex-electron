@@ -18,6 +18,7 @@ import { NoWrap, PrimaryText } from '../../../style/Integration'
 import { ActionTitle } from '../Actions/styled'
 import ListenResultShortcut from './ListenResultShortcut'
 import { Description, StyledResults, StyledRow } from './styled'
+import { OnboardElements } from '../../../components/mex/Onboarding/types'
 
 export const Result: React.FC<{
   result: any // FIXME
@@ -83,7 +84,7 @@ const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ curren
   mog('', { search, data })
 
   return (
-    <StyledResults style={props} margin={search}>
+    <StyledResults style={props} margin={search} data-tour={OnboardElements.SPOTLIGHT_SEARCH_RESULTS}>
       {data && data.length !== 0 && <ListenResultShortcut />}
       {transitions((props, result, state, index) => {
         if (result.new) {

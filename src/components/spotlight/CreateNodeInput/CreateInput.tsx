@@ -1,5 +1,6 @@
 import { getPlateSelectors } from '@udecode/plate-core'
 import React from 'react'
+import { OnboardElements } from '../../../components/mex/Onboarding/types'
 import NodeSelect from '../../../components/mex/NodeSelect/NodeSelect'
 import { StyledSpotlightInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
 import { IpcAction } from '../../../data/IpcAction'
@@ -73,8 +74,8 @@ const CreateInput: React.FC<CreateInputType> = () => {
     <StyledSpotlightInputWrapper>
       <NodeSelect
         disabled={isOnboarding}
-        id="wd-spotlight-editor-search"
-        name="wd-spotlight-editor-search"
+        id={OnboardElements.SPOTLIGHT_SEARCH}
+        name={OnboardElements.SPOTLIGHT_SEARCH}
         prefillRecent
         placeholder={title}
         handleSelectItem={handleChange}

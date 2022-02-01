@@ -1,4 +1,5 @@
 import React from 'react'
+import { mog } from '../utils/lib/helper'
 import useDataStore from '../store/useDataStore'
 import { useHistoryStore } from '../store/useHistoryStore'
 import { useRecentsStore } from '../store/useRecentsStore'
@@ -50,7 +51,7 @@ export const useDelete = () => {
     if (baseId !== -1 && newIlinks.length > 0) {
       setBaseNodeId(newIlinks[0].path)
     }
-
+    mog('Executing delete: ', { newIlinks })
     setILinks(newIlinks)
     // initContents(newContents)
 

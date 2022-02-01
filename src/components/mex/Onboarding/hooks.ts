@@ -131,10 +131,15 @@ export const useOnboardingData = () => {
 
   const removeOnboardData = () => {
     const onboardBackup = useOnboard.getState().onboardBackup
-    setServices(onboardBackup.services)
-    setTemplates(onboardBackup.templates)
 
-    setOnboardBackup(undefined)
+    mog('removeOnboardData', { onboardBackup })
+
+    if (onboardBackup) {
+      setServices(onboardBackup.services)
+      setTemplates(onboardBackup.templates)
+
+      setOnboardBackup(undefined)
+    }
 
     deleteSnippet(TOUR_SNIPPET_ID)
     updater()

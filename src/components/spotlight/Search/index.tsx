@@ -12,6 +12,7 @@ import WDLogo from './Logo'
 import { useTheme } from 'styled-components'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import { OnboardElements } from '../../../components/mex/Onboarding/types'
 
 const Search: React.FC = () => {
   const theme = useTheme()
@@ -35,7 +36,7 @@ const Search: React.FC = () => {
   }, [search, normalMode])
 
   return (
-    <StyledSearch data-tour="mex-quick-capture-search">
+    <StyledSearch data-tour={OnboardElements.SPOTLIGHT_SEARCH}>
       <CenterIcon>
         <Icon
           color={theme.colors.primary}

@@ -10,7 +10,17 @@ export const SpotlightOnboarding: Array<ReactourStep> = [
     content: (
       <>
         <div>Anything you capture would be visible here.</div>
-        <br />
+      </>
+    ),
+    style: {
+      marginTop: '1rem',
+      ...toolTipStyle
+    }
+  },
+  {
+    selector: `[data-tour="something"]`,
+    content: (
+      <>
         <div>Now, there are a host of things you can do from here</div>
         <ul>
           <li>
@@ -27,11 +37,15 @@ export const SpotlightOnboarding: Array<ReactourStep> = [
     style: toolTipStyle
   },
   {
-    selector: '[data-tour="mex-quick-capture-search"]',
+    selector: `[data-tour="${OnboardElements.SPOTLIGHT_SEARCH}"]`,
     content: <SpotlightFinishTour />,
     stepInteraction: true,
-    position: 'center',
-    style: toolTipStyle,
-    action: displayNone
+    resizeObservables: [OnboardElements.SPOTLIGHT_SEARCH_RESULTS],
+    style: {
+      marginTop: '1rem',
+      ...toolTipStyle
+    },
+    action: displayNone,
+    highlightedSelectors: [`[data-tour="${OnboardElements.SPOTLIGHT_SEARCH_RESULTS}"]`]
   }
 ]

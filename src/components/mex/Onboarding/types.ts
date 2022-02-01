@@ -25,5 +25,7 @@ export enum OnboardElements {
   MEX_EDITOR = 'wd-mex-editor',
   INLINE_BLOCK = 'wd-mex-inline-block',
   SNIPPET = 'wd-mex-snippet',
-  QUICK_LINK_LIST = 'wd-mex-quick-link-list'
+  QUICK_LINK_LIST = 'wd-mex-quick-link-list',
+  SPOTLIGHT_SEARCH = 'wd-mex-spotlight-search',
+  SPOTLIGHT_SEARCH_RESULTS = 'wd-mex-spotlight-search-results'
 }

@@ -51,7 +51,7 @@ export const FlowLinkTour = () => {
     <>
       <WelcomeHeader>
         <StyledTypography size="2rem" color={theme.colors.primary} margin="0" maxWidth="100%">
-          Quick Links
+          Flow Links
         </StyledTypography>
       </WelcomeHeader>
       <br />
