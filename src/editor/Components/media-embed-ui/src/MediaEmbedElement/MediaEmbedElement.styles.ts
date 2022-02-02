@@ -1,6 +1,10 @@
-import styled from 'styled-components'
+import { CardShadow } from '../../../../../style/helpers'
+import styled, { css } from 'styled-components'
 
-interface IFrameWrapperProps {
+interface MaximizeProp {
+  max: boolean
+}
+interface IFrameWrapperProps extends MaximizeProp {
   expand: boolean
 }
 
@@ -8,11 +12,33 @@ export const IFrameWrapper = styled.div<IFrameWrapperProps>`
   position: relative;
   transition: padding 0.2s ease-in-out;
 
-  padding: ${({ expand }) => (expand ? '100% 0 0 0' : '50% 0 0 0')};
+  ${({ max, expand }) =>
+    max
+      ? css`
+          padding: calc(90vh - 48px) 0 0 0;
+        `
+      : css`
+          padding: ${expand ? '100% 0 0 0' : '50% 0 0 0'};
+        `}
 `
 
-export const RootElement = styled.div`
-  position: relative;
+export const RootElement = styled.div<MaximizeProp>`
+  ${({ max }) =>
+    max
+      ? css`
+          position: fixed;
+          z-index: 200000;
+          width: 90vw;
+          height: 90vh;
+          top: 5vh;
+          left: 5vw;
+          background-color: ${({ theme }) => theme.colors.gray[8]};
+          ${CardShadow};
+          border-radius: ${({ theme }) => theme.borderRadius.small};
+        `
+      : css`
+          position: relative;
+        `}
 `
 
 export const IFrame = styled.iframe`

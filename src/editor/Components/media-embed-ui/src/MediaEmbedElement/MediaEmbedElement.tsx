@@ -13,6 +13,7 @@ import { MediaEmbedUrlInput } from './MediaEmbedUrlInput'
 export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
   const { attributes, children, element, nodeProps } = props
   const [expand, setExpand] = React.useState(false)
+  const [max, setMax] = React.useState(false)
 
   const editor = useEditorRef()
   const { url } = element
@@ -34,7 +35,7 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
   }, [url])
 
   return (
-    <RootElement {...attributes}>
+    <RootElement max={max} {...attributes}>
       <div contentEditable={false}>
         {htmlData ? (
           <EmbedContainer markup={htmlData}>
@@ -44,7 +45,7 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
             </MediaHtml>
           </EmbedContainer>
         ) : (
-          <IFrameWrapper expand={expand}>
+          <IFrameWrapper expand={expand} max={max}>
             <IFrame title="embed" src={`${url}`} frameBorder="0" {...nodeProps} />
           </IFrameWrapper>
         )}
@@ -53,6 +54,8 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
           url={url}
           setExpand={setExpand}
           htmlData={htmlData}
+          max={max}
+          setMax={setMax}
           onChange={debounce((val: string) => {
             // console.log(val)
 
