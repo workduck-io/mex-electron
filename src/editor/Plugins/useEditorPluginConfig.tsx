@@ -39,13 +39,6 @@ const useEditorPluginConfig = (editorId: string) => {
 
   const comboConfigData: ComboConfigData = {
     keys: {
-      ilink: {
-        slateElementType: ELEMENT_ILINK,
-        newItemHandler: (newItem, parentId?) => {
-          addILink(newItem, null, parentId)
-        },
-        renderElement: ILinkComboboxItem
-      },
       inline_block: {
         slateElementType: ELEMENT_INLINE_BLOCK,
         newItemHandler: (newItem, parentId?) => {
@@ -66,6 +59,19 @@ const useEditorPluginConfig = (editorId: string) => {
         renderElement: SlashComboboxItem
       }
     },
+    internal: {
+      ilink: {
+        slateElementType: ELEMENT_ILINK,
+        newItemHandler: (newItem, parentId?) => {
+          addILink(newItem, null, parentId)
+        },
+        renderElement: ILinkComboboxItem
+      },
+      commands: {
+        ...snippetConfigs,
+        ...syncBlockConfigs
+      }
+    },
     slashCommands: {
       webem: {
         slateElementType: ELEMENT_MEDIA_EMBED,
@@ -81,7 +87,7 @@ const useEditorPluginConfig = (editorId: string) => {
       table: {
         slateElementType: ELEMENT_TABLE,
         command: 'table'
-      },
+      }
       // For `/sync`
       // sync_block: {
       //   slateElementType: ELEMENT_SYNC_BLOCK,
@@ -92,18 +98,16 @@ const useEditorPluginConfig = (editorId: string) => {
       //     return nd
       //   },
       // },
-      ...snippetConfigs,
-      ...syncBlockConfigs
     }
   }
 
   const OnChangeConf = {
-    ilink: {
-      cbKey: ComboboxKey.ILINK,
-      trigger: '[[',
-      data: ilinks.map((l) => ({ ...l, value: l.path, text: l.path })),
-      icon: 'ri:file-list-2-line'
-    },
+    // ilink: {
+    //   cbKey: ComboboxKey.ILINK,
+    //   trigger: '[[',
+    //   data: ilinks.map((l) => ({ ...l, value: l.path, text: l.path })),
+    //   icon: 'ri:file-list-2-line'
+    // },
     inline_block: {
       cbKey: ComboboxKey.INLINE_BLOCK,
       trigger: '![[',

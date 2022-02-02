@@ -10,6 +10,10 @@ import { useOnSelectItem } from './useMultiComboboxOnKeyDown'
 export interface ComboConfigData {
   keys: ConfigDataKeys
   slashCommands: ConfigDataSlashCommands
+  internal: {
+    ilink: SingleComboboxConfig
+    commands: ConfigDataSlashCommands
+  }
 }
 
 export interface ConfigDataKeys {
@@ -47,8 +51,8 @@ export const ElementComboboxComponent = ({ keys, slashCommands }: ComboConfigDat
 }
 
 // Handle multiple combobox
-export const MultiComboboxContainer = (props: ComboConfigData) => {
+export const MultiComboboxContainer = ({ config }: { config: ComboConfigData }) => {
   useComboboxControls(true)
 
-  return <ElementComboboxComponent {...props} />
+  return <ElementComboboxComponent {...config} />
 }

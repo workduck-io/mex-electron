@@ -49,7 +49,7 @@ export const useComboboxOnKeyDown = (config: any): KeyboardHandler => {
 
   // We need to create the select handlers ourselves here
 
-  const { keys, slashCommands } = config
+  const { keys, slashCommands, internal } = config
   const slashCommandOnChange = useSlashCommandOnChange(slashCommands)
   const comboboxKey: string = useComboboxStore.getState().key
 

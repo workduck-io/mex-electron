@@ -42,7 +42,7 @@ export type ComboboxState = {
 }
 
 export const useComboboxStore = createStore()<ComboboxState>((set) => ({
-  key: ComboboxKey.ILINK,
+  key: ComboboxKey.TAG,
   setKey: setStoreValue(set, 'key', 'setKey'),
 
   maxSuggestions: 10,
