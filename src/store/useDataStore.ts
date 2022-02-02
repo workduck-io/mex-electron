@@ -1,3 +1,4 @@
+import { getNodeIcon } from '../utils/lib/icons'
 import create from 'zustand'
 import { generateTree, getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import { generateNodeUID } from '../data/Defaults/idPrefixes'
@@ -60,7 +61,8 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
     const newILinks = newLinks.map((l) => ({
       nodeid: nodeid && l === ilink ? nodeid : generateNodeUID(),
-      path: l
+      path: l,
+      icon: getNodeIcon(l)
     }))
 
     const newLink = newILinks.find((l) => l.path === ilink)

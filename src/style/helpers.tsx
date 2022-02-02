@@ -1,5 +1,5 @@
 import { transparentize } from 'polished'
-import MexIcons from '../components/icons/Icons'
+import MexIcons, { MexNodeIcons } from '../components/icons/Icons'
 import { css } from 'styled-components'
 
 type Pixels = number // Pixels in integer
@@ -61,4 +61,8 @@ export const CardShadow = css`
 
 export const getLineIcons = (icon: string) => {
   if (MexIcons[icon]) return MexIcons[icon]
+}
+
+export const getLineIconsIconify = (icon: string) => {
+  if (MexNodeIcons[icon]) return MexNodeIcons[icon]
 }
