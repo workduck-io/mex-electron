@@ -214,7 +214,7 @@ export const getLevel = (path: string) => path.split(SEPARATOR).length
  * Guarantees parent is before child -> Condition required for correct tree
  */
 
-type treeMap = { id: string; nodeid: string }[]
+type treeMap = { id: string; nodeid: string; icon?: string }[]
 
 export const sanatizeLinks = (links: treeMap): treeMap => {
   let oldLinks = links
@@ -236,7 +236,7 @@ export const sanatizeLinks = (links: treeMap): treeMap => {
 
 export const useTreeFromLinks = () => {
   const ilinks = useDataStore((store) => store.ilinks)
-  const links = ilinks.map((i) => ({ id: i.path, nodeid: i.nodeid }))
+  const links = ilinks.map((i) => ({ id: i.path, nodeid: i.nodeid, icon: i.icon }))
   const sanatizedLinks = sanatizeLinks(links)
   const tree = generateTree(sanatizedLinks)
 

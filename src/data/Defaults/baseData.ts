@@ -2,9 +2,22 @@ import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 import { Contents } from '../../store/useContentStore'
 import { FileData, NodeContent } from '../../types/data'
 import { generateILinks } from '../../utils/generateComboItem'
+import { generateNodeUID } from './idPrefixes'
 // import { generateTempId } from './idPrefixes'
 
-const links = generateILinks(['doc', 'dev', 'design', '@', 'Draft'])
+const links = [
+  ...generateILinks(['doc', 'dev', 'design', '@']),
+  {
+    path: 'Draft',
+    nodeid: generateNodeUID(),
+    icon: 'ri:draft-line'
+  },
+  {
+    path: 'Tasks',
+    nodeid: generateNodeUID(),
+    icon: 'ri:task-line'
+  }
+]
 
 export const defaultContent: NodeContent = {
   type: 'init',

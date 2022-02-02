@@ -1,4 +1,5 @@
 import { transparentize } from 'polished'
+import MexIcons from '../components/icons/Icons'
 import { css } from 'styled-components'
 
 type Pixels = number // Pixels in integer
@@ -57,3 +58,7 @@ export const ThinScrollbar = css`
 export const CardShadow = css`
   box-shadow: 0px 3px 9px ${({ theme }) => transparentize(0.5, theme.colors.palette.black)};
 `
+
+export const getLineIcons = (icon: string) => {
+  if (MexIcons[icon]) return MexIcons[icon]
+}
