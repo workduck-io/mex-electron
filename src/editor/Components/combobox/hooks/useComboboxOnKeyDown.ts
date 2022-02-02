@@ -89,12 +89,14 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
     const search = useComboboxStore.getState().search
     const items = useComboboxStore.getState().items
     const isOpen = !!useComboboxStore.getState().targetRange
+    const item = items[itemIndex]
 
     const isSlashCommand =
       comboType.slateElementType === ComboboxKey.SLASH_COMMAND ||
-      (comboType.slateElementType === ComboboxKey.INTERNAL && isInternalCommand(search))
+      (comboType.slateElementType === ComboboxKey.INTERNAL && isInternalCommand(item ? item.key : search))
 
     // mog('useComboOnKeyDown', {
+    //   k: e.key,
     //   config,
     //   isSlashCommand,
     //   c1: comboType.slateElementType === ComboboxKey.SLASH_COMMAND,
