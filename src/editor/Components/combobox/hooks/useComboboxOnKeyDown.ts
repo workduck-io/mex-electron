@@ -20,14 +20,14 @@ const pure = (id: string) => {
 }
 
 export const isInternalCommand = (search?: string) => {
-  mog('mog', {
-    search,
-    FlowCommandPrefix,
-    n: isElder(search, FlowCommandPrefix),
-    n1: isElder(search, SnippetCommandPrefix),
-    n2: FlowCommandPrefix.startsWith(search),
-    n3: SnippetCommandPrefix.startsWith(search)
-  })
+  // mog('mog', {
+  //   search,
+  //   FlowCommandPrefix,
+  //   n: isElder(search, FlowCommandPrefix),
+  //   n1: isElder(search, SnippetCommandPrefix),
+  //   n2: FlowCommandPrefix.startsWith(search),
+  //   n3: SnippetCommandPrefix.startsWith(search)
+  // })
   if (search !== undefined && search !== '')
     return (
       isElder(search, FlowCommandPrefix) ||
@@ -51,6 +51,7 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
     if (items[itemIndex]) {
       const item = items[itemIndex]
 
+      // mog('getCreatableInSelect', { item, val, creatable })
       if (item.key === '__create_new' && val !== '') {
         onSelectItem(editor, { key: String(items.length), text: val })
         onNewItem(val, currentNodeKey)
@@ -93,23 +94,26 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
       comboType.slateElementType === ComboboxKey.SLASH_COMMAND ||
       (comboType.slateElementType === ComboboxKey.INTERNAL && isInternalCommand(search))
 
-    mog('useComboOnKeyDown', {
-      config,
-      isSlashCommand,
-      c1: comboType.slateElementType === ComboboxKey.SLASH_COMMAND,
-      c2: isInternalCommand(search),
-      search,
-      items,
-      isOpen,
-      itemIndex
-    })
+    // mog('useComboOnKeyDown', {
+    //   config,
+    //   isSlashCommand,
+    //   c1: comboType.slateElementType === ComboboxKey.SLASH_COMMAND,
+    //   c2: isInternalCommand(search),
+    //   search,
+    //   items,
+    //   isOpen,
+    //   itemIndex
+    // })
 
     const onSelectItemHandler = isSlashCommand ? slashCommandOnChange : elementOnChange
 
     const creatabaleOnSelect = getCreateableOnSelect(
       onSelectItemHandler,
       (newItem, parentId?) => {
-        comboType.newItemHandler(newItem, parentId)
+        if (comboType) comboType.newItemHandler(newItem, parentId)
+        if (comboboxKey === ComboboxKey.INTERNAL && !isInternalCommand(search)) {
+          internal.ilink.newItemHandler(newItem, parentId)
+        }
       },
       comboboxKey !== ComboboxKey.SLASH_COMMAND
     )

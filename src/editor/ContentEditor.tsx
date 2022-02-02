@@ -47,7 +47,7 @@ const ContentEditor = () => {
   const { addOrUpdateValBuffer, getBufferVal } = useEditorBuffer()
 
   const onChangeSave = (val: any[]) => {
-    mog('Trigger onChange', { node, val })
+    // mog('Trigger onChange', { node, val })
     if (val && node && node.nodeid !== '__null__') {
       // mog('Saving onChange', { node, val })
 

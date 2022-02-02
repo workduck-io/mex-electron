@@ -37,7 +37,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
       )
 
       if (targetRange) {
-        mog('useElementOnChange 1', { comboType, type })
+        // mog('useElementOnChange 1', { comboType, type })
 
         const pathAbove = getBlockAbove(editor)?.[1]
         const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
@@ -106,12 +106,12 @@ export const useOnSelectItem = (
 
   let elementChangeHandler: (editor: PEditor & ReactEditor, item: IComboboxItem) => any
 
-  mog('useOnSelectItem', {
-    isSlash,
-    search,
-    con1: comboboxKey === ComboboxKey.SLASH_COMMAND,
-    con2: comboboxKey === ComboboxKey.INTERNAL && isInternalCommand(search)
-  })
+  // mog('useOnSelectItem', {
+  //   isSlash,
+  //   search,
+  //   con1: comboboxKey === ComboboxKey.SLASH_COMMAND,
+  //   con2: comboboxKey === ComboboxKey.INTERNAL && isInternalCommand(search)
+  // })
   if (isSlash) {
     elementChangeHandler = slashCommandOnChange
   } else {
