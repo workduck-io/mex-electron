@@ -5,6 +5,7 @@ import fileList2Line from '@iconify-icons/ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import { useCombobox } from 'downshift'
 import React, { useEffect, useState } from 'react'
+// import { MexIcon } from '../../../style/Layouts'
 import { useDebouncedCallback } from 'use-debounce'
 import { useLinks } from '../../../hooks/useLinks'
 import { useContentStore } from '../../../store/useContentStore'
@@ -23,6 +24,7 @@ import {
   SuggestionDesc,
   SuggestionText
 } from './NodeSelect.styles'
+import MexIcons from '../../../components/icons/Icons'
 
 export type ComboItem = {
   // Text to be shown in the combobox list
@@ -37,13 +39,16 @@ export type ComboItem = {
   // Unique identifier
   // Not present if the node is not yet created i.e. 'new'
   nodeid?: string
+
+  icon?: string
 }
 
-export const createComboItem = (path: string, nodeid: string): ComboItem => ({
+export const createComboItem = (path: string, nodeid: string, icon?: string): ComboItem => ({
   text: path,
   value: path,
   type: 'exists',
-  nodeid
+  nodeid,
+  icon
 })
 
 export const createNewComboItem = (path: string): ComboItem => ({
@@ -118,7 +123,7 @@ function NodeSelect({
       selectedItem: null
     })
 
-  const ilinks = useDataStore((store) => store.ilinks).map((l) => createComboItem(l.path, l.nodeid))
+  const ilinks = useDataStore((store) => store.ilinks).map((l) => createComboItem(l.path, l.nodeid, l.icon))
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)
 
@@ -273,13 +278,14 @@ function NodeSelect({
               if (desc === '') desc = undefined
             }
             // console.log({ desc, item })
+            const icon = item.icon ? item.icon : fileList2Line
             return (
               <Suggestion
                 highlight={highlightedIndex === index}
                 key={`${item.value}${index}`}
                 {...getItemProps({ item, index })}
               >
-                <Icon width={24} icon={item.type === 'new' ? addCircleLine : fileList2Line} />
+                <Icon width={24} icon={item.type === 'new' ? addCircleLine : icon} />
                 <SuggestionContentWrapper>
                   <SuggestionText>{item.text}</SuggestionText>
                   {desc !== undefined && <SuggestionDesc>{desc}</SuggestionDesc>}

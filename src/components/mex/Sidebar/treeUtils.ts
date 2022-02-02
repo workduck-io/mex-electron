@@ -1,3 +1,5 @@
+import MexIcons from '../../../components/icons/Icons'
+import { GetIcon } from '../../../data/links'
 import TreeNode from '../../../types/tree'
 
 export const sampleFlatTree = [
@@ -67,12 +69,12 @@ export const getNodeIdLast = (id: string) => {
   return id
 }
 
-const createChildLess = (n: string, nodeid: string): TreeNode => ({
+const createChildLess = (n: string, nodeid: string, icon?: string): TreeNode => ({
   id: n,
   title: getNodeIdLast(n),
   key: n,
   nodeid,
-  mex_icon: undefined,
+  mex_icon: icon,
   children: []
 })
 
@@ -103,17 +105,17 @@ const insertInNested = (iNode: TreeNode, nestedTree: TreeNode[]) => {
 }
 
 // Generate nested node tree from a list of ordered id strings
-export const generateTree = (tree: { id: string; nodeid: string }[]) => {
+export const generateTree = (tree: { id: string; nodeid: string; icon?: string }[]) => {
   // tree should be sorted
   let nestedTree: TreeNode[] = []
   tree.forEach((n) => {
     const parentId = getParentId(n.id)
     if (parentId === null) {
       // add to tree first level
-      nestedTree.push(createChildLess(n.id, n.nodeid))
+      nestedTree.push(createChildLess(n.id, n.nodeid, n.icon))
     } else {
       // Will have a parent
-      nestedTree = insertInNested(createChildLess(n.id, n.nodeid), nestedTree)
+      nestedTree = insertInNested(createChildLess(n.id, n.nodeid, n.icon), nestedTree)
     }
   })
   return nestedTree

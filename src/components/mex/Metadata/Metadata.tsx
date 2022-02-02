@@ -2,6 +2,7 @@ import timeLine from '@iconify-icons/ri/time-line'
 import { Icon } from '@iconify/react'
 import Tippy from '@tippyjs/react/headless' // different import path!
 import React, { useEffect, useState } from 'react'
+import { useLayoutStore } from '../../../store/useLayoutStore'
 import styled, { css } from 'styled-components'
 import { useRelativeTime } from '../../../hooks/useRelativeTime'
 import { useContentStore } from '../../../store/useContentStore'
@@ -11,6 +12,8 @@ import { CardShadow, HoverFade } from '../../../style/helpers'
 import { ProfileIcon } from '../../../style/UserPage'
 import { NodeMetadata } from '../../../types/data'
 import { ProfileImageWithToolTip } from '../User/ProfileImage'
+import { FOCUS_MODE_OPACITY } from '../../../style/consts'
+import { FocusModeProp } from '../../../style/props'
 
 // import user3Line from '@iconify-icons/ri/user-3-line'
 // import { useRelativeTime } from '../../Hooks/useRelativeTime'
@@ -57,14 +60,13 @@ const DataWrapper = styled.div<DataWrapperProps>`
 
 const DataGroup = styled.div``
 
-const MetadataWrapper = styled.div`
+const MetadataWrapper = styled.div<FocusModeProp>`
   display: flex;
   align-items: center;
   justify-content: flex-end;
   padding: ${({ theme }) => theme.spacing.small};
 
   margin-bottom: ${({ theme }) => theme.spacing.large};
-
   ${HoverFade}
 
   ${ProfileIcon} {
@@ -78,6 +80,16 @@ const MetadataWrapper = styled.div`
       opacity: 1;
     }
   }
+
+  ${({ focusMode }) =>
+    focusMode &&
+    css`
+      display: none;
+      opacity: ${FOCUS_MODE_OPACITY};
+      &:hover {
+        opacity: 1;
+      }
+    `}
 
   ${Label} {
     color: ${({ theme }) => theme.colors.gray[6]};
@@ -155,6 +167,7 @@ const RelDateWithPreview = ({ n }: RelDateWithPreviewProps) => {
 
 const Metadata = () => {
   const node = useEditorStore((state) => state.node)
+  const focusMode = useLayoutStore((s) => s.focusMode)
   const getContent = useContentStore((state) => state.getContent)
   const content = getContent(node.nodeid)
   const [metadata, setMetadata] = useState<NodeMetadata | undefined>(undefined)
@@ -170,7 +183,7 @@ const Metadata = () => {
 
   if (content === undefined || content.metadata === undefined || metadata === undefined) return null
   return (
-    <MetadataWrapper>
+    <MetadataWrapper focusMode={focusMode}>
       <DataGroup>
         {metadata.createdBy !== undefined && (
           <DataWrapper interactive={metadata.createdAt !== undefined}>
