@@ -379,30 +379,7 @@ const options = {
     span: (tagName, attribs) => {
       return {
         tagName: 'span',
-        attribs: {
-          style: `
-          box-sizing: border-box;
-          border-radius: 4px;
-          color: rgb(34, 34, 34);
-          scroll-margin: 75px;
-          font-family: Inter, -apple-system, system-ui, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-          font-size: 14px;
-          font-style: normal;
-          font-variant-ligatures: normal;
-          font-variant-caps: normal;
-          font-weight: 400;
-          letter-spacing: normal;
-          orphans: 2;
-          text-align: left;
-          text-transform: none;
-          white-space: pre-wrap;
-          widows: 2;
-          word-spacing: 0px;
-          -webkit-text-stroke-width: 0px;
-          text-decoration-style: initial;
-          text-decoration-color: initial;
-      `
-        }
+        attribs
       }
     },
     code: (tagName, attribs) => {
