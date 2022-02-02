@@ -37,4 +37,6 @@ export const extractSnippetCommands = (snippets: Snippet[]): string[] => {
   return snippets.map((c) => getSnippetCommand(c.title))
 }
 
-export const getSnippetCommand = (title: string) => `snip${SEPARATOR}${title}`
+export const SnippetCommandPrefix = `snip`
+export const getSnippetCommand = (title: string) => `${SnippetCommandPrefix}${SEPARATOR}${title}`
+

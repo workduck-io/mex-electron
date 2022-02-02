@@ -44,7 +44,7 @@ const useMultiComboboxOnChange = (
     if (!data) return false
 
     const searchItems = fuzzySearch(data, search, { keys: ['text'] })
-    // console.log({ data, search, ct, keys, key })
+    console.log({ data, search, ct, keys, key })
     const items: IComboboxItem[] = (
       search !== '' ? searchItems.slice(0, maxSuggestions) : keys[key].data.slice(0, maxSuggestions)
     ).map((item) => ({

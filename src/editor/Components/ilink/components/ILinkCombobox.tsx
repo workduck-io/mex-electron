@@ -14,7 +14,7 @@ export const ILinkCombobox = () => {
   const key = useComboboxStore((state) => state.key)
 
   return (
-    <div style={key !== ComboboxKey.ILINK ? { display: 'none' } : {}}>
+    <div style={key !== ComboboxKey.INTERNAL ? { display: 'none' } : {}}>
       <ILinkComboboxComponent />
     </div>
   )

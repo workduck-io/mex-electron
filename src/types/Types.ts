@@ -39,18 +39,22 @@ export type TagsCache = Record<string, CacheTag>
 export interface InitData {
   tags: Tag[]
   ilinks: ILink[]
-  slashCommands: SlashCommand[]
+  slashCommands: SlashCommands
   linkCache: LinkCache
   tagsCache: TagsCache
   bookmarks: string[]
   archive: ILink[]
   baseNodeId: string
 }
+interface SlashCommands {
+  default: SlashCommand[]
+  internal: SlashCommand[]
+}
 
 export interface DataStoreState {
   tags: Tag[]
   ilinks: ILink[]
-  slashCommands: SlashCommand[]
+  slashCommands: SlashCommands
   linkCache: LinkCache
   tagsCache: TagsCache
   baseNodeId: string
@@ -65,7 +69,7 @@ export interface DataStoreState {
   // adds tag for combobox
   addTag: (tag: string) => void
 
-  setSlashCommands: (slashCommands: SlashCommand[]) => void
+  setSlashCommands: (slashCommands: SlashCommands) => void
   setIlinks: (ilinks: ILink[]) => void
   setBaseNodeId: (baseNodeId: string) => void
 

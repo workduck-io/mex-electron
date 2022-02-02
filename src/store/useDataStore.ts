@@ -17,7 +17,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   ilinks: [],
 
   // Slash commands
-  slashCommands: [],
+  slashCommands: { default: [], internal: [] },
 
   linkCache: {},
 

@@ -27,8 +27,7 @@ export const useContentStore = create<ContentStoreState>((set, get) => ({
   setSaved: (saved) => set(() => ({ saved })),
   toggleSyncBlocks: () => set({ showSyncBlocks: !get().showSyncBlocks }),
   setContent: (nodeid, content, metadata) => {
-    console.log('Hello', console.trace())
-    mog('SetContent', { nodeid, content, metadata })
+    // mog('SetContent', { nodeid, content, metadata })
     const oldContent = get().contents
 
     const oldMetadata = oldContent[nodeid] && oldContent[nodeid].metadata ? oldContent[nodeid].metadata : undefined

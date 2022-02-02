@@ -37,6 +37,11 @@ const useEditorPluginConfig = (editorId: string) => {
     return ilinks.filter((item) => item.path !== node.id)
   }, [node, ilinks])
 
+  const internals = [
+    ...ilinks.map((l) => ({ ...l, value: l.path, text: l.path, icon: l.icon ?? 'ri:file-list-2-line' })),
+    ...slashCommands.internal.map((l) => ({ ...l, value: l.command, text: l.command }))
+  ]
+
   const comboConfigData: ComboConfigData = {
     keys: {
       inline_block: {
@@ -55,6 +60,11 @@ const useEditorPluginConfig = (editorId: string) => {
       },
       slash_command: {
         slateElementType: 'slash_command',
+        newItemHandler: () => undefined,
+        renderElement: SlashComboboxItem
+      },
+      internal: {
+        slateElementType: 'internal',
         newItemHandler: () => undefined,
         renderElement: SlashComboboxItem
       }
@@ -102,12 +112,12 @@ const useEditorPluginConfig = (editorId: string) => {
   }
 
   const OnChangeConf = {
-    // ilink: {
-    //   cbKey: ComboboxKey.ILINK,
-    //   trigger: '[[',
-    //   data: ilinks.map((l) => ({ ...l, value: l.path, text: l.path })),
-    //   icon: 'ri:file-list-2-line'
-    // },
+    internal: {
+      cbKey: ComboboxKey.INTERNAL,
+      trigger: '[[',
+      data: internals,
+      icon: 'ri:file-list-2-line'
+    },
     inline_block: {
       cbKey: ComboboxKey.INLINE_BLOCK,
       trigger: '![[',
@@ -124,7 +134,7 @@ const useEditorPluginConfig = (editorId: string) => {
       cbKey: ComboboxKey.SLASH_COMMAND,
       trigger: '/',
       icon: 'ri:flask-line',
-      data: slashCommands.map((l) => ({ ...l, value: l.command, text: l.command }))
+      data: slashCommands.default.map((l) => ({ ...l, value: l.command, text: l.command }))
     }
   }
   // console.log({ slashCommands, OnChangeConf })

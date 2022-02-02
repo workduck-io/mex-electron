@@ -8,7 +8,7 @@ import { addIconToSlashCommand, generatorCombo } from '../utils/generateComboIte
 import { extractSnippetCommands } from './useSnippets'
 
 export const useSlashCommands = () => {
-  const generateSlashCommands = (snippets: Snippet[], templates: SyncBlockTemplate[]) => {
+  const generateInternalSlashCommands = (snippets: Snippet[], templates: SyncBlockTemplate[]) => {
     const snippetCommands = extractSnippetCommands(snippets)
     const syncCommands = extractSyncBlockCommands(templates)
 
@@ -21,13 +21,23 @@ export const useSlashCommands = () => {
         ...addIconToSlashCommand(
           syncCommands.map((command) => ({ command })),
           'ri:refresh-fill'
-        ),
-        ...defaultCommands
+        )
       ])
     )
 
     return Array.from(commands)
   }
+  const generateDefaultSlashCommands = () => {
+    const commands: SlashCommand[] = generatorCombo([...defaultCommands])
 
-  return { generateSlashCommands }
+    return Array.from(commands)
+  }
+
+  const generateSlashCommands = (snippets: Snippet[], templates: SyncBlockTemplate[]) => {
+    return {
+      internal: generateInternalSlashCommands(snippets, templates),
+      default: generateDefaultSlashCommands()
+    }
+  }
+  return { generateInternalSlashCommands, generateSlashCommands, generateDefaultSlashCommands }
 }
