@@ -1,3 +1,6 @@
+import Tippy from '@tippyjs/react'
+import fullscreenLine from '@iconify-icons/ri/fullscreen-line'
+import fullscreenExitLine from '@iconify-icons/ri/fullscreen-exit-line'
 import magicLine from '@iconify-icons/ri/magic-line'
 import globalLine from '@iconify-icons/ri/global-line'
 // npm install --save-dev @iconify/react @iconify-icons/ri
@@ -10,10 +13,14 @@ export const MediaEmbedUrlInput = ({
   onChange,
   setExpand,
   htmlData,
+  max,
+  setMax
 }: {
   url: string
   onChange: any // eslint-disable-line @typescript-eslint/no-explicit-any
   setExpand: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  max: boolean
+  setMax: any // eslint-disable-line @typescript-eslint/no-explicit-any
   htmlData: string | undefined
 }) => {
   const [value, setValue] = React.useState(url)
@@ -37,6 +44,20 @@ export const MediaEmbedUrlInput = ({
           onChange(newUrl)
         }}
       />
+      <Tippy
+        theme="mex-bright"
+        moveTransition="transform 0.25s ease-out"
+        placement="right"
+        content={max ? 'Minimize' : 'Maximize'}
+      >
+        <InputPrompt
+          onClick={() => {
+            setMax((i: boolean) => !i)
+          }}
+        >
+          {max ? <Icon icon={fullscreenExitLine} height={18} /> : <Icon icon={fullscreenLine} height={18} />}
+        </InputPrompt>
+      </Tippy>
     </InputWrapper>
   )
 }

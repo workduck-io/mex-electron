@@ -1,15 +1,25 @@
 /* eslint-disable import/no-unresolved */
+import Tippy from '@tippyjs/react'
+import fullscreenLine from '@iconify-icons/ri/fullscreen-line'
+import markupLine from '@iconify-icons/ri/markup-line'
+import fullscreenExitLine from '@iconify-icons/ri/fullscreen-exit-line'
 import React, { useEffect, useRef, useState } from 'react'
 import { AppState, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw-next/types/types'
 import { setNodes } from '@udecode/plate-core'
 import { getRootProps } from '@udecode/plate-styled-components'
 import { ReactEditor } from 'slate-react'
 import { TExcalidrawProps } from '../../types'
-import { getExcalidrawElementStyles } from './ExcalidrawElement.styles'
+import { CanvasText, getExcalidrawElementStyles } from './ExcalidrawElement.styles'
 import { ExcalidrawElementProps } from './ExcalidrawElement.types'
 import { debounce } from 'lodash'
 import { serializeAsJSON } from '@excalidraw/excalidraw-next'
 import { mog } from '../../../../../utils/lib/helper'
+import {
+  InputPrompt,
+  InputWrapper,
+  RootElement
+} from '../../../media-embed-ui/src/MediaEmbedElement/MediaEmbedElement.styles'
+import { Icon } from '@iconify/react'
 
 export const ExcalidrawElement = (props: any) => {
   const {
@@ -25,6 +35,7 @@ export const ExcalidrawElement = (props: any) => {
   const rootProps = getRootProps(props)
 
   const [Excalidraw, setExcalidraw] = useState<any>(null)
+  const [max, setMax] = useState(false)
 
   useEffect(() => {
     import('@excalidraw/excalidraw-next').then((comp) => setExcalidraw(comp.default))
@@ -68,17 +79,37 @@ export const ExcalidrawElement = (props: any) => {
   }
 
   return (
-    <div {...attributes} {...rootProps}>
+    <RootElement max={max} {...attributes} {...rootProps}>
       <div contentEditable={false}>
         <div
-          style={{ height: '600px' }}
+          style={{ height: max ? '86.5vh' : '600px' }}
           css={styles.excalidrawWrapper?.css}
           className={styles.excalidrawWrapper?.className}
         >
           {Excalidraw && <Excalidraw {...nodeProps} {...(excalidrawProps as any)} />}
         </div>
+        <InputWrapper>
+          <CanvasText>
+            <Icon icon={markupLine} width={18} />
+            Canvas
+          </CanvasText>
+          <Tippy
+            theme="mex-bright"
+            moveTransition="transform 0.25s ease-out"
+            placement="right"
+            content={max ? 'Minimize' : 'Maximize'}
+          >
+            <InputPrompt
+              onClick={() => {
+                setMax((i: boolean) => !i)
+              }}
+            >
+              {max ? <Icon icon={fullscreenExitLine} height={18} /> : <Icon icon={fullscreenLine} height={18} />}
+            </InputPrompt>
+          </Tippy>
+        </InputWrapper>
       </div>
       {children}
-    </div>
+    </RootElement>
   )
 }
