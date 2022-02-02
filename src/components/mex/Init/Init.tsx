@@ -3,6 +3,7 @@ import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
+import { useLayoutStore } from '../../../store/useLayoutStore'
 import tinykeys from 'tinykeys'
 import config from '../../../apis/config'
 // import { convertDataToRawText } from '../../../utils/Search/localSearch'
@@ -42,6 +43,8 @@ const Init = () => {
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const pushHs = useHistoryStore((store) => store.push)
   const isOnboarding = useOnboard((s) => s.isOnboarding)
+  const focusMode = useLayoutStore((s) => s.focusMode)
+  const toggleFocusMode = useLayoutStore((s) => s.toggleFocusMode)
 
   const { init } = useInitialize()
   const { loadNode, getNode } = useLoad()
@@ -253,6 +256,22 @@ const Init = () => {
     }
   }, [shortcuts, shortcutDisabled, node.nodeid]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (focusMode) {
+      const unsubscribe = tinykeys(window, {
+        Escape: (event) => {
+          event.preventDefault()
+          // shortcutHandler(shortcuts.showSnippets, () => {
+          // onSave(undefined, false, false)
+          toggleFocusMode()
+          // })
+        }
+      })
+      return () => {
+        unsubscribe()
+      }
+    }
+  }, [focusMode]) // eslint-disable-line react-hooks/exhaustive-deps
   // As this is a non-rendering component
   return null
 }

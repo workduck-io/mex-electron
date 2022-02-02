@@ -5,6 +5,7 @@ import { useSingleton } from '@tippyjs/react'
 import { transparentize } from 'polished'
 import React, { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
+import { FOCUS_MODE_OPACITY } from '../../../style/consts'
 import styled, { css } from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useApi } from '../../../apis/useSaveApi'
@@ -23,12 +24,9 @@ import { NavButton } from '../../../style/Nav'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
 import { NavProps } from './Types'
+import { FocusModeProp } from '../../../style/props'
 
-interface StyledDivProps {
-  focusMode?: boolean
-}
-
-const StyledDiv = styled.div<StyledDivProps>`
+const StyledDiv = styled.div<FocusModeProp>`
   overflow: scroll;
   height: 100%;
   z-index: 10;
@@ -45,7 +43,7 @@ const StyledDiv = styled.div<StyledDivProps>`
   ${({ focusMode }) =>
     focusMode &&
     css`
-      opacity: 0.2;
+      opacity: ${FOCUS_MODE_OPACITY};
       &:hover {
         opacity: 1;
       }

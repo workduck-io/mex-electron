@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import QuestionMarkIcon from '@iconify-icons/ri/question-mark'
 import CloseIcon from '@iconify-icons/ri/close-line'
 import { Icon } from '@iconify/react'
@@ -11,12 +11,23 @@ import { useAuthStore } from '../../../services/auth/useAuth'
 import { GetIcon } from '../../../data/links'
 import { FlexBetween } from '../../spotlight/Actions/styled'
 import { useInitOlvy } from '../../../services/olvy'
+import { useLayoutStore } from '../../../store/useLayoutStore'
+import { FocusModeProp } from '../../../style/props'
+import { FOCUS_MODE_OPACITY } from '../../../style/consts'
 
-export const Float = styled.div`
+export const Float = styled.div<FocusModeProp>`
   position: fixed;
   bottom: 10px;
   right: 10px;
   z-index: 1000;
+  ${({ focusMode }) =>
+    focusMode &&
+    css`
+      opacity: ${FOCUS_MODE_OPACITY};
+      &:hover {
+        opacity: 1;
+      }
+    `}
 `
 
 export const FloatButton = styled(Button)`
@@ -69,6 +80,7 @@ const FloatingButton = () => {
   const [showMenu, setMenu] = useState<boolean>(false)
 
   const toggleModal = useHelpStore((store) => store.toggleModal)
+  const focusMode = useLayoutStore((store) => store.focusMode)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const authenticated = useAuthStore((store) => store.authenticated)
 
@@ -89,7 +101,7 @@ const FloatingButton = () => {
   if (!authenticated) return null
 
   return (
-    <Float>
+    <Float focusMode={focusMode}>
       {!showMenu ? (
         <FloatButton id="wd-mex-floating-button" key="wd-mex-floating-button" onClick={() => setMenu(true)}>
           {GetIcon(QuestionMarkIcon)}

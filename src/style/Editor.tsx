@@ -1,13 +1,11 @@
 import { mix } from 'polished'
 import styled, { css } from 'styled-components'
+import { FOCUS_MODE_OPACITY } from './consts'
+import { FocusModeProp } from './props'
 
 export const NoteTitle = styled.h1``
 
-interface NodeInfoProps {
-  focusMode?: boolean
-}
-
-export const NodeInfo = styled.div<NodeInfoProps>`
+export const NodeInfo = styled.div<FocusModeProp>`
   background-color: ${({ theme }) => theme.colors.gray[9]};
   display: flex;
   justify-content: space-between;
@@ -28,7 +26,7 @@ export const NodeInfo = styled.div<NodeInfoProps>`
   ${({ focusMode }) =>
     focusMode &&
     css`
-      opacity: 0.2;
+      opacity: ${FOCUS_MODE_OPACITY};
       &:hover {
         opacity: 1;
       }
