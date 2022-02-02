@@ -82,7 +82,7 @@ const Editor = ({
               plugins={plugins}
               onChange={debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 1000)}
             >
-              <MultiComboboxContainer keys={comboConfigData.keys} slashCommands={comboConfigData.slashCommands} />
+              <MultiComboboxContainer config={comboConfigData} />
             </Plate>
           </EditorStyles>
         )}

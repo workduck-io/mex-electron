@@ -21,6 +21,7 @@ export const useUpdater = () => {
 
   const updater = () => {
     const slashCommands = generateSlashCommands(useSnippetStore.getState().snippets, useSyncStore.getState().templates)
+
     setSlashCommands(slashCommands)
   }
 

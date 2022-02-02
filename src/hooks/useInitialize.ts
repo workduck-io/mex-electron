@@ -9,6 +9,7 @@ import { FileData } from '../types/data'
 import { createNodeWithUid } from '../utils/lib/helper'
 import useLoad from './useLoad'
 import { useSlashCommands } from './useSlashCommands'
+import { extractSnippetCommands } from './useSnippets'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',

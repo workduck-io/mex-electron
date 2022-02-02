@@ -11,8 +11,14 @@ import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'
 import { useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from './Types'
+import { mog } from '../../../utils/lib/helper'
 
-export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConfig }) => {
+export const useSlashCommandOnChange = (
+  keys: { [type: string]: SlashCommandConfig }
+  // internal: {
+  //   [type: string]: SlashCommandConfig
+  // }
+) => {
   const closeMenu = useComboboxStore((state) => state.closeMenu)
   const { trackEvent } = useAnalytics()
 
@@ -25,7 +31,7 @@ export const useSlashCommandOnChange = (keys: { [type: string]: SlashCommandConf
     const commandConfig = keys[commandKey]
     // console.log({ commandConfig })
     if (targetRange) {
-      // console.log('useSlashCommandOnChange', { commandConfig, commandKey, keys, item })
+      mog('useSlashCommandOnChange', { commandConfig, commandKey, keys, item })
       try {
         const pathAbove = getBlockAbove(editor)?.[1]
         const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)

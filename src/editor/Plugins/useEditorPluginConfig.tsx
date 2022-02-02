@@ -37,15 +37,13 @@ const useEditorPluginConfig = (editorId: string) => {
     return ilinks.filter((item) => item.path !== node.id)
   }, [node, ilinks])
 
+  const internals = [
+    ...ilinks.map((l) => ({ ...l, value: l.path, text: l.path, icon: l.icon ?? 'ri:file-list-2-line' })),
+    ...slashCommands.internal.map((l) => ({ ...l, value: l.command, text: l.command }))
+  ]
+
   const comboConfigData: ComboConfigData = {
     keys: {
-      ilink: {
-        slateElementType: ELEMENT_ILINK,
-        newItemHandler: (newItem, parentId?) => {
-          addILink(newItem, null, parentId)
-        },
-        renderElement: ILinkComboboxItem
-      },
       inline_block: {
         slateElementType: ELEMENT_INLINE_BLOCK,
         newItemHandler: (newItem, parentId?) => {
@@ -64,6 +62,24 @@ const useEditorPluginConfig = (editorId: string) => {
         slateElementType: 'slash_command',
         newItemHandler: () => undefined,
         renderElement: SlashComboboxItem
+      },
+      internal: {
+        slateElementType: 'internal',
+        newItemHandler: () => undefined,
+        renderElement: SlashComboboxItem
+      }
+    },
+    internal: {
+      ilink: {
+        slateElementType: ELEMENT_ILINK,
+        newItemHandler: (newItem, parentId?) => {
+          addILink(newItem, null, parentId)
+        },
+        renderElement: ILinkComboboxItem
+      },
+      commands: {
+        ...snippetConfigs,
+        ...syncBlockConfigs
       }
     },
     slashCommands: {
@@ -81,7 +97,7 @@ const useEditorPluginConfig = (editorId: string) => {
       table: {
         slateElementType: ELEMENT_TABLE,
         command: 'table'
-      },
+      }
       // For `/sync`
       // sync_block: {
       //   slateElementType: ELEMENT_SYNC_BLOCK,
@@ -92,16 +108,14 @@ const useEditorPluginConfig = (editorId: string) => {
       //     return nd
       //   },
       // },
-      ...snippetConfigs,
-      ...syncBlockConfigs
     }
   }
 
   const OnChangeConf = {
-    ilink: {
-      cbKey: ComboboxKey.ILINK,
+    internal: {
+      cbKey: ComboboxKey.INTERNAL,
       trigger: '[[',
-      data: ilinks.map((l) => ({ ...l, value: l.path, text: l.path })),
+      data: internals,
       icon: 'ri:file-list-2-line'
     },
     inline_block: {
@@ -120,7 +134,7 @@ const useEditorPluginConfig = (editorId: string) => {
       cbKey: ComboboxKey.SLASH_COMMAND,
       trigger: '/',
       icon: 'ri:flask-line',
-      data: slashCommands.map((l) => ({ ...l, value: l.command, text: l.command }))
+      data: slashCommands.default.map((l) => ({ ...l, value: l.command, text: l.command }))
     }
   }
   // console.log({ slashCommands, OnChangeConf })

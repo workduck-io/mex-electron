@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange'
+import { isInternalCommand } from '../combobox/hooks/useComboboxOnKeyDown'
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { ComboboxType } from './types'
@@ -54,7 +55,7 @@ const useMultiComboboxOnChange = (
     }))
 
     // TODO: Disable new item if key exists.
-    if (key !== ComboboxKey.SLASH_COMMAND && search !== '') {
+    if (key !== ComboboxKey.SLASH_COMMAND && search !== '' && !isInternalCommand(search)) {
       items.push({
         key: '__create_new',
         icon: 'ri:add-circle-line',

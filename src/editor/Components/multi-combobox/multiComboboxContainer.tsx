@@ -1,4 +1,5 @@
 import React from 'react'
+import { mog } from '../../../utils/lib/helper'
 import { Combobox } from '../combobox/components/Combobox'
 import { ComboboxItemProps, RenderFunction } from '../combobox/components/Combobox.types'
 import { useComboboxControls } from '../combobox/hooks/useComboboxControls'
@@ -10,6 +11,10 @@ import { useOnSelectItem } from './useMultiComboboxOnKeyDown'
 export interface ComboConfigData {
   keys: ConfigDataKeys
   slashCommands: ConfigDataSlashCommands
+  internal: {
+    ilink: SingleComboboxConfig
+    commands: ConfigDataSlashCommands
+  }
 }
 
 export interface ConfigDataKeys {
@@ -26,11 +31,16 @@ export interface SingleComboboxConfig {
   renderElement: RenderFunction<ComboboxItemProps>
 }
 
-export const ElementComboboxComponent = ({ keys, slashCommands }: ComboConfigData) => {
+export const ElementComboboxComponent = ({ keys, slashCommands, internal }: ComboConfigData) => {
   const comboboxKey: string = useComboboxStore.getState().key
   const comboRenderType = keys[comboboxKey]
-  const { elementChangeHandler: onSelectItem, isSlash } = useOnSelectItem(comboboxKey, slashCommands, comboRenderType)
-  // console.log({ slashCommands })
+  const { elementChangeHandler: onSelectItem, isSlash } = useOnSelectItem(
+    comboboxKey,
+    slashCommands,
+    comboRenderType,
+    internal.commands
+  )
+  // mog('ElementComboboxComponent ', { slashCommands, comboRenderType, comboboxKey, keys, internal })
   const onNewItem = (newItem, parentId?) => {
     comboRenderType.newItemHandler(newItem, parentId)
   }
@@ -47,8 +57,8 @@ export const ElementComboboxComponent = ({ keys, slashCommands }: ComboConfigDat
 }
 
 // Handle multiple combobox
-export const MultiComboboxContainer = (props: ComboConfigData) => {
+export const MultiComboboxContainer = ({ config }: { config: ComboConfigData }) => {
   useComboboxControls(true)
 
-  return <ElementComboboxComponent {...props} />
+  return <ElementComboboxComponent {...config} />
 }

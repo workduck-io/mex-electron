@@ -4,10 +4,10 @@ import { ReactEditor } from 'slate-react'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
 import { useEditorStore } from '../../../store/useEditorStore'
-import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { getEventNameFromElement } from '../../../utils/lib/strings'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
-import { useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown'
+import { isInternalCommand, useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChange'
 import { ComboConfigData, ConfigDataSlashCommands, SingleComboboxConfig } from './multiComboboxContainer'
@@ -17,7 +17,7 @@ export interface ComboTypeHandlers {
   newItemHandler: (newItem: string, parentId?) => any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
-export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?: Array<any>) => {
+export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?: any) => {
   const closeMenu = useComboboxStore((state) => state.closeMenu)
   const { trackEvent } = useAnalytics()
 
@@ -31,10 +31,13 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
 
       const targetRange = useComboboxStore.getState().targetRange
       const parentNodeId = useEditorStore.getState().node.key
-      const type = getPluginType(editor, comboType.slateElementType)
+      const type = getPluginType(
+        editor,
+        comboType.slateElementType === 'internal' ? 'ilink' : comboType.slateElementType
+      )
 
       if (targetRange) {
-        // console.log('useElementOnChange 1', { comboType, type });
+        // mog('useElementOnChange 1', { comboType, type })
 
         const pathAbove = getBlockAbove(editor)?.[1]
         const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
@@ -91,15 +94,24 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
 export const useOnSelectItem = (
   comboboxKey: string,
   slashCommands: ConfigDataSlashCommands,
-  singleComboConfig: SingleComboboxConfig
+  singleComboConfig: SingleComboboxConfig,
+  internal: ConfigDataSlashCommands
 ) => {
-  const slashCommandOnChange = useSlashCommandOnChange(slashCommands)
+  const slashCommandOnChange = useSlashCommandOnChange({ ...slashCommands, ...internal })
   const elementOnChange = useElementOnChange(singleComboConfig)
 
-  const isSlash = comboboxKey === ComboboxKey.SLASH_COMMAND
+  const search = useComboboxStore.getState().search
+  const isSlash =
+    comboboxKey === ComboboxKey.SLASH_COMMAND || (comboboxKey === ComboboxKey.INTERNAL && isInternalCommand(search))
 
   let elementChangeHandler: (editor: PEditor & ReactEditor, item: IComboboxItem) => any
 
+  // mog('useOnSelectItem', {
+  //   isSlash,
+  //   search,
+  //   con1: comboboxKey === ComboboxKey.SLASH_COMMAND,
+  //   con2: comboboxKey === ComboboxKey.INTERNAL && isInternalCommand(search)
+  // })
   if (isSlash) {
     elementChangeHandler = slashCommandOnChange
   } else {
