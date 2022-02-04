@@ -25,7 +25,7 @@ export const NODE_PATH_SPACER = '-'
 export const NODE_PATH_WORD_LENGTH = 5
 export const NODE_PATH_CHAR_LENGTH = 40
 
-export const getSlug = (text: string) =>
+export const getSlug = (text: string, charLength = NODE_PATH_CHAR_LENGTH, wordLength = NODE_PATH_WORD_LENGTH) =>
   // trims leading and trailing spacers
   trim(
     text
@@ -36,9 +36,9 @@ export const getSlug = (text: string) =>
       // Remove empty texts and repeated uses of spacer
       .filter((t) => t !== '')
       // Slice till the allowed limit
-      .slice(0, NODE_PATH_WORD_LENGTH)
+      .slice(0, wordLength)
       // Join
       .join(NODE_PATH_SPACER),
     NODE_PATH_SPACER
     // Slice till the allowed limit
-  ).slice(0, NODE_PATH_CHAR_LENGTH)
+  ).slice(0, charLength)

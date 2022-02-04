@@ -1,4 +1,4 @@
-import { getNodes, insertNodes, TEditor } from '@udecode/plate'
+import { getNodes, getSelectionText, insertNodes, TEditor, upsertLinkAtSelection } from '@udecode/plate'
 import { Editor, Transforms } from 'slate'
 import { useSnippetStore } from '../../../store/useSnippetStore'
 import { SEPARATOR } from '../../../components/mex/Sidebar/treeUtils'
@@ -15,6 +15,7 @@ import { ELEMENT_SYNC_BLOCK } from '../SyncBlock'
 import { generateSnippetId } from '../../../data/Defaults/idPrefixes'
 import genereateName from 'project-name-generator'
 import toast from 'react-hot-toast'
+import { defaultContent } from '../../../data/Defaults/baseData'
 
 export const useTransform = () => {
   const addILink = useDataStore((s) => s.addILink)
@@ -46,18 +47,22 @@ export const useTransform = () => {
     }, false)
   }
 
-  const replaceSelectionWithLink = (editor: TEditor, ilink: string) => {
+  const replaceSelectionWithLink = (editor: TEditor, ilink: string, inline: boolean) => {
     try {
       const selectionPath = Editor.path(editor, editor.selection)
-      mog('replaceSelectionWithLink  selPath', { selectionPath })
 
-      Transforms.removeNodes(editor, { at: editor.selection, mode: 'highest', hanging: true })
-      mog('replaceSelectionWithLink  detFrag', { selectionPath })
+      // mog('replaceSelectionWithLink  selPath', { selectionPath })
+
+      if (inline) Transforms.delete(editor)
+      else Transforms.removeNodes(editor, { at: editor.selection, hanging: false })
+      // Transforms.liftNodes(editor, { at: editor.selection, mode: 'lowest' })
+
+      // mog('replaceSelectionWithLink  detFrag', { selectionPath })
 
       insertNodes<ILinkNode>(editor, [{ type: ELEMENT_ILINK, value: ilink, children: [] }], {
         at: editor.selection
       })
-      mog('replaceSelectionWithLink  insNode', { selectionPath })
+      // mog('replaceSelectionWithLink  insNode', { sel: editor.selection })
     } catch (e) {
       console.error(e)
       return e
@@ -82,20 +87,30 @@ export const useTransform = () => {
           at: editor.selection
         })
       )
+      const lowest = Array.from(
+        getNodes(editor, {
+          mode: 'lowest',
+          block: true,
+          at: editor.selection
+        })
+      )
+
+      const selText = getSelectionText(editor)
 
       const value = nodes.map(([node, _path]) => {
         return node
       })
+      const isInline = lowest.length === 1 && selText.length < 80
+
       const text = convertContentToRawText(value, NODE_PATH_SPACER)
       const parentPath = useEditorStore.getState().node.title
-      const path = parentPath + SEPARATOR + getSlug(text)
+      const path = parentPath + SEPARATOR + (isInline ? getSlug(selText) : getSlug(text))
 
       const nodeid = addILink(path)
 
-      // setNodes(editor, { type: ELEMENT_LINK, value: nodeid }, { at: selectionPath })
-      replaceSelectionWithLink(editor, path)
-      mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path, nodeid })
-      setContent(nodeid, value)
+      replaceSelectionWithLink(editor, path, isInline)
+      // mog('We are here', { lowest, selText, esl: editor.selection, selectionPath, nodes, value, text, path, nodeid })
+      setContent(nodeid, isInline ? defaultContent.content : value)
       // saveData()
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path })
     })
@@ -136,7 +151,7 @@ export const useTransform = () => {
         content: value
       })
 
-      mog('We are here', { esl: editor.selection, selectionPath, nodes, value })
+      // mog('We are here', { esl: editor.selection, selectionPath, nodes, value })
 
       toast(`Snippet created '/snip.${snippetTitle}'`, { duration: 5000 })
       // setContent(nodeid, value)
