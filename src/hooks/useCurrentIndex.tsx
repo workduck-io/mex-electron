@@ -78,8 +78,6 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
             appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
             loadNode(createNodeWithUid(getNewDraftKey()), defaultContent.content)
-            // setNode(createNodeWithUid(getNewDraftKey()))
-            // setNodeContent(undefined)
 
             setNormalMode(true)
             setSelection(undefined)

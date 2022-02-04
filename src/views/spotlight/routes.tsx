@@ -1,10 +1,10 @@
 import React from 'react'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
-import Spotlight from '../../components/spotlight/Spotlight'
-import MexIt from '../../components/spotlight/MexIt'
+import Spotlight from '../../components/spotlight'
+// import MexIt from '../../components/spotlight/MexIt'
 import GlobalStyle from '../../style/spotlight/global'
 import Bubble from '../../components/spotlight/Bubble'
-import Settings from '../../components/spotlight/Settings'
+// import Settings from '../../components/spotlight/Settings'
 import GlobalListener from '../../components/spotlight/GlobalListener'
 import ProtectedRoute from './ProtectedRoute'
 import Login from '../../components/spotlight/Login'
@@ -14,8 +14,6 @@ const Routes = () => {
     <Router>
       <Switch>
         <ProtectedRoute exact path="/" component={Spotlight} />
-        <ProtectedRoute path="/new" component={MexIt} />
-        <ProtectedRoute path="/settings" component={Settings} />
         <Route path="/login" component={Login} />
       </Switch>
       <GlobalListener />

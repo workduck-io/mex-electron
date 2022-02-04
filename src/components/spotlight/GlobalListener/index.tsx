@@ -16,6 +16,7 @@ import { useLocation, useHistory } from 'react-router'
 import { useAuthStore } from '../../../services/auth/useAuth'
 import useAnalytics from '../../../services/analytics'
 import useOnboard from '../../../store/useOnboarding'
+import { mog } from '../../../utils/lib/helper'
 interface IndexAndFileData {
   fileData: FileData
   indexData: any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -105,6 +106,7 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.on(IpcAction.NEW_RECENT_ITEM, (_event, { data }) => {
+      mog('Data is coming ', { data })
       addRecent(data)
     })
 

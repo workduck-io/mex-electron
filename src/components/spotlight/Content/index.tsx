@@ -1,6 +1,6 @@
 import { search as getSearchResults } from 'fast-fuzzy'
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { convertContentToRawText } from '../../../utils/search/localSearch'
 import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
 import { useCurrentIndex } from '../../../hooks/useCurrentIndex'
 import useLoad from '../../../hooks/useLoad'
@@ -10,18 +10,12 @@ import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { ILink } from '../../../types/Types'
-import Preview from '../Preview'
+import Preview, { PreviewType } from '../Preview'
 import SideBar from '../SideBar'
+import { ListItemType } from '../SearchResults/types'
+import { StyledContent } from './styled'
 
-export const StyledContent = styled.section`
-  display: flex;
-  justify-content: center;
-  flex: 1;
-  max-height: 324px;
-  margin: 0.5rem 0;
-`
-
-const initPreview = {
+const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
   metadata: null,
   isSelection: false
@@ -29,41 +23,30 @@ const initPreview = {
 
 const Content = () => {
   // * State
-  const [searchResults, setSearchResults] = useState<Array<any>>()
-  const [preview, setPreview] = useState<{
-    text: string
-    metadata: string | null
-    isSelection: boolean
-  }>(initPreview)
+  const [preview, setPreview] = useState<PreviewType>(INIT_PREVIEW)
+  const [searchResults, setSearchResults] = useState<Array<Partial<ListItemType>>>()
 
   // * Store
   const ilinks = useDataStore((s) => s.ilinks)
-  const { setSaved, getContent } = useContentStore(({ setSaved, getContent }) => ({ setSaved, getContent }))
-  const { editorNode, saveEditorNode, setNodeContent, nodeContent, isPreview } = useSpotlightEditorStore(
-    ({ node, setNode, setNodeContent, nodeContent, isPreview }) => ({
-      editorNode: node,
-      saveEditorNode: setNode,
-      setNodeContent,
-      nodeContent,
-      isPreview
-    })
-  )
 
-  const { normalMode, setNormalMode } = useSpotlightAppStore(({ normalMode, setNormalMode }) => ({
-    normalMode,
-    setNormalMode
+  const { setSaved, getContent } = useContentStore((store) => ({
+    setSaved: store.setSaved,
+    getContent: store.getContent
   }))
 
-  // useEffect(() => {
-  //   if (!normalMode) {
-  //     setNormalMode(true)
-  //     saveEditorNode(createNodeWithUid(getNewDraftKey()))
-  //   }
-  // }, [])
+  const { editorNode, saveEditorNode, setNodeContent, nodeContent, isPreview } = useSpotlightEditorStore((store) => ({
+    editorNode: store.node,
+    saveEditorNode: store.setNode,
+    setNodeContent: store.setNodeContent,
+    nodeContent: store.nodeContent,
+    isPreview: store.isPreview
+  }))
+
+  const setNormalMode = useSpotlightAppStore((store) => store.setNormalMode)
 
   // * Custom hooks
-  const { search, selection, setSearch } = useSpotlightContext()
   const currentIndex = useCurrentIndex(searchResults)
+  const { search, selection, setSearch } = useSpotlightContext()
   const { loadNodeAndAppend, loadNodeProps, loadNode } = useLoad()
 
   useEffect(() => {
@@ -78,47 +61,43 @@ const Content = () => {
   }, [selection, editorNode, setSearchResults])
 
   useEffect(() => {
-    const results = getSearchResults(search, ilinks, { keySelector: (obj) => obj.path })
+    // * Search in
+    const listToSearch = ilinks
+    const resultList = getSearchResults(search, listToSearch, { keySelector: (obj) => obj.path })
 
     if (search) {
-      const resultsWithContent: Array<Partial<ILink> | { desc: string; new?: boolean }> = results.map(
-        (ilink: ILink) => {
-          const content = getContent(ilink.nodeid)
-          let rawText = ''
+      const result: Array<ListItemType> = resultList.map((ilink: ILink) => {
+        const content = getContent(ilink.nodeid)
+        const rawText = convertContentToRawText(content?.content ?? [], ' ')
 
-          content?.content.map((item) => {
-            rawText += item?.children?.[0]?.text || ''
-            return item
-          })
-
-          return {
-            ...ilink,
-            desc: rawText
-          }
+        const listItem: ListItemType = {
+          icon: ilink.icon,
+          title: ilink.path,
+          description: rawText,
+          type: 'ilink',
+          extras: {
+            nodeid: ilink.nodeid,
+            path: ilink.path
+          },
+          new: false,
+          shortcut: ['Enter']
         }
-      )
+
+        return listItem
+      })
 
       const isNew = ilinks.filter((item) => item.path === search).length === 0
-
-      if (isNew) {
-        setSearchResults([{ new: true }, ...resultsWithContent])
-      } else {
-        setSearchResults(resultsWithContent)
-      }
+      const listWithNew = isNew ? [{ new: true }, ...result] : result
+      setSearchResults(listWithNew)
     } else {
       setNormalMode(true)
       setSearchResults(undefined)
     }
+
     setSaved(false)
   }, [search, ilinks])
 
   useEffect(() => {
-    const prevTemplate = {
-      text: DEFAULT_PREVIEW_TEXT,
-      metadata: null,
-      isSelection: false
-    }
-
     if (!searchResults) {
       if (selection) {
         setPreview({
@@ -127,24 +106,24 @@ const Content = () => {
         })
       } else {
         setNodeContent(undefined)
-        setPreview(prevTemplate)
+        setPreview(INIT_PREVIEW)
       }
     } else if (searchResults.length === 0) {
       setPreview({
-        ...prevTemplate,
+        ...INIT_PREVIEW,
         text: null
       })
       loadNodeProps(editorNode)
     } else {
       const resultNode = searchResults[currentIndex]
       setPreview({
-        ...prevTemplate,
+        ...INIT_PREVIEW,
         text: null
       })
       if (nodeContent) {
-        loadNodeAndAppend(resultNode.nodeid, nodeContent)
+        loadNodeAndAppend(resultNode?.extras?.nodeid, nodeContent)
       } else {
-        loadNode(resultNode.nodeid, { savePrev: false, fetch: false })
+        loadNode(resultNode?.extras?.nodeid, { savePrev: false, fetch: false })
       }
     }
     setSaved(false)
@@ -153,7 +132,7 @@ const Content = () => {
   return (
     <StyledContent>
       <SideBar index={currentIndex} data={searchResults} />
-      <Preview preview={preview} node={editorNode} />
+      {/* <Preview preview={preview} node={editorNode} /> */}
     </StyledContent>
   )
 }

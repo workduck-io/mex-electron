@@ -1,7 +1,7 @@
 import React from 'react'
 import Shortcuts, { ShortcutType } from '../Shortcuts'
 import { useSettingsShortcuts } from '../../../hooks/listeners/useSettingsShortcuts'
-import { StyledLookup } from '../Spotlight/styled'
+import { StyledLookup } from '../styled'
 import { CenterIcon } from '../../../style/spotlight/layout'
 import WDLogo from '../Search/Logo'
 import ToggleButton from '../ToggleButton'

@@ -1,7 +1,6 @@
 import create from 'zustand'
 import { NodeContent, NodeMetadata } from '../types/data'
 import { NodeEditorContent } from '../types/Types'
-import { mog } from '../utils/lib/helper'
 
 export interface Contents {
   [key: string]: NodeContent

@@ -1,10 +1,11 @@
 import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { Scroll } from '../../../style/spotlight/layout'
-import { StyledBackground } from '../Spotlight/styled'
+import { StyledBackground } from '../styled'
 
 export interface ColorProp {
   showColor?: boolean
+  start?: number
 }
 
 export const Draggable = css`
@@ -18,11 +19,10 @@ export const StyledUndordered = styled.ul`
 `
 
 export const ColumnContainer = styled(animated.div)`
-  flex: 4;
   display: flex;
   flex-direction: column;
+  width: 100%;
   color: rgb(51, 51, 51);
-  height: 100%;
   font-size: 14px;
   line-height: 1.65;
   letter-spacing: 0.1px;
@@ -54,6 +54,7 @@ export const ActionDescStyled = styled.div`
 
 export const FlexBetween = styled.div`
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
 `

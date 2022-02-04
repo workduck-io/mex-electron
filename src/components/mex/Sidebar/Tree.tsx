@@ -175,7 +175,7 @@ class Tree extends React.Component<RCTreeProps> {
 
     if (selectedNodes.length > 0) {
       push(selectedNodes[0].nodeid)
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, selectedNodes[0].key)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, selectedNodes[0].nodeid)
     }
   }
 

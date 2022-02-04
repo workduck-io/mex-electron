@@ -1,6 +1,6 @@
 import React from 'react'
 import Shortcuts, { ShortcutType } from '../Shortcuts'
-import { StyledLookup } from '../Spotlight/styled'
+import { StyledLookup } from '../styled'
 
 import NewEditor from './NewEditor'
 import CreateNodeInput from '../CreateNodeInput'

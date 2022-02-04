@@ -17,6 +17,7 @@ import { useHelpStore } from '../../../store/useHelpStore'
 import useOnboard from '../../../store/useOnboarding'
 import NodeSelect from '../NodeSelect/NodeSelect'
 import { StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
+import { mog } from '../../../utils/lib/helper'
 
 const StyledModal = styled(Modal)`
   z-index: 10010000;
@@ -70,7 +71,8 @@ const Lookup = () => {
   const openNode = (value: string) => {
     const nodeid = getUidFromNodeId(value)
     push(nodeid)
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, value)
+    mog('HElo there', { nodeid })
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
     closeModal()
 
     if (location.pathname !== '/editor') {
@@ -100,7 +102,7 @@ const Lookup = () => {
     const nodeid = addILink(inputValue)
     saveNewNodeAPI(nodeid)
     push(nodeid, { withLoading: false })
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, inputValue)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
     closeModal()
   }
 

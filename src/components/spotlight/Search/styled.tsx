@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Draggable } from '../Actions/styled'
-import { StyledBackground } from '../Spotlight/styled'
+import { StyledBackground } from '../styled'
 import CreatableSelect from 'react-select/creatable'
 
 export const StyledInput = styled.input<{ disabled?: boolean }>`

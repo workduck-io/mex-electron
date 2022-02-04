@@ -2,17 +2,32 @@ import styled, { css } from 'styled-components'
 import { Scroll } from '../../../style/spotlight/layout'
 
 export const StyledRecent = styled.div`
-  padding: 0 0.5rem;
-  flex: 5;
-  ${Scroll}
   font-weight: bold;
+  height: 100%;
+  height: fit-content;
   border-radius: 1rem;
   line-height: 1.65;
   letter-spacing: 0.1px;
 `
 
+export const StyledList = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  color: rgb(51, 51, 51);
+  font-size: 14px;
+  line-height: 1.65;
+  letter-spacing: 0.1px;
+  font-style: normal;
+  font-variant-ligatures: normal;
+  font-variant-caps: normal;
+  font-weight: bold;
+  ${Scroll}
+`
+
 export const StyledRecentList = styled.div`
   display: flex;
+  height: 100%;
   flex-direction: column-reverse;
 `
 

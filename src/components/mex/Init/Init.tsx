@@ -162,7 +162,7 @@ const Init = () => {
       const newNodeId = getNewDraftKey()
       const nodeid = addILink(newNodeId)
       push(nodeid)
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, newNodeId)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
     })
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
       history.push('/settings')
