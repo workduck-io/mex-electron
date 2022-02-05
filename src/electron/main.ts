@@ -1,23 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import chokidar from 'chokidar'
-import {
-  app,
-  autoUpdater,
-  BrowserWindow,
-  dialog,
-  globalShortcut,
-  ipcMain,
-  Menu,
-  nativeImage,
-  screen,
-  session,
-  shell,
-  Tray
-} from 'electron'
+import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, screen, session, shell, Tray } from 'electron'
 import fs from 'fs'
 import _ from 'lodash'
 import path from 'path'
-import { DefaultFileData } from '../data/Defaults/baseData'
 import { getSaveLocation, getSearchIndexLocation } from '../data/Defaults/data'
 import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
 import { IpcAction } from '../data/IpcAction'
@@ -27,9 +13,11 @@ import { FileData } from '../types/data'
 import { getAppleNotes } from '../utils/importers/appleNotes'
 import { sanitizeHtml } from '../utils/sanitizeHtml'
 import { flexIndexKeys } from '../utils/search/flexsearch'
-import { backupMexJSON } from './backup'
 import MenuBuilder from './menu'
+import { setupUpdateService } from './update'
+import { getFileData, setFileData } from './utils/filedata'
 import { getGlobalShortcut, getSelectedText, getSelectedTextSync, SelectionType } from './utils/getSelectedText'
+import { checkIfAlpha } from './utils/version'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -54,12 +42,8 @@ let mex: BrowserWindow | null
 let spotlight: BrowserWindow | null
 let spotlightBubble = false
 let isSelection = false
-let updateCheckingFrequency = 3 * 60 * 60 * 1000
-let updateSetInterval: ReturnType<typeof setInterval> | undefined
-
-export const checkIfAlpha = (version: string) => {
-  return version.includes('-alpha')
-}
+// let updateCheckingFrequency = 3 * 60 * 60 * 1000
+// let updateSetInterval: ReturnType<typeof setInterval> | undefined
 
 const version = app.getVersion()
 const isAlpha = checkIfAlpha(version)
@@ -112,34 +96,6 @@ const SPOTLIGHT_WINDOW_OPTIONS = {
     nodeIntegration: true,
     contextIsolation: false,
     enableRemoteModule: true
-  }
-}
-
-export const setFileData = (data: FileData) => {
-  fs.writeFileSync(SAVE_LOCATION, JSON.stringify(data))
-}
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const ensureFieldsOnJSON = (fileData: any) => {
-  let toWriteFile = false
-  Object.keys(DefaultFileData).forEach((value) => {
-    if (!(value in fileData)) {
-      fileData[value] = DefaultFileData[value]
-      toWriteFile = true
-    }
-  })
-  return { fileData, toWriteFile }
-}
-
-export const getFileData = () => {
-  if (fs.existsSync(SAVE_LOCATION)) {
-    const stringData = fs.readFileSync(SAVE_LOCATION, 'utf-8')
-
-    const { fileData, toWriteFile } = ensureFieldsOnJSON(JSON.parse(stringData))
-    if (toWriteFile) fs.writeFileSync(SAVE_LOCATION, JSON.stringify(fileData))
-    return fileData
-  } else {
-    fs.writeFileSync(SAVE_LOCATION, JSON.stringify(DefaultFileData))
-    return DefaultFileData
   }
 }
 
@@ -367,7 +323,7 @@ const toggleMainWindow = (window) => {
 }
 
 const syncFileData = (data?: FileData) => {
-  const fileData = data || getFileData()
+  const fileData = data || getFileData(SAVE_LOCATION)
   mex?.webContents.send(IpcAction.SYNC_DATA, fileData)
   spotlight?.webContents.send(IpcAction.SYNC_DATA, fileData)
 }
@@ -540,7 +496,7 @@ ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
 })
 
 ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
-  const fileData: FileData = getFileData()
+  const fileData: FileData = getFileData(SAVE_LOCATION)
   const indexData: any = getIndexData()
   event.sender.send(IpcAction.RECIEVE_LOCAL_DATA, { fileData, indexData })
 })
@@ -552,7 +508,7 @@ ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
 })
 
 ipcMain.on(IpcAction.SET_LOCAL_DATA, (_event, arg) => {
-  setFileData(arg)
+  setFileData(arg, SAVE_LOCATION)
   syncFileData(arg)
 })
 
@@ -612,85 +568,9 @@ export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) 
   else mex?.webContents.send(action, { data })
 }
 
-export const buildUpdateFeedURL = () => {
-  if (process.platform === 'darwin') {
-    const base = 'https://reserv.workduck.io'
-    let url: string
-
-    if (process.arch == 'arm64') {
-      url = base + `/update/osx_arm64/${version}`
-    } else {
-      url = base + `/update/osx_x64/${version}`
-    }
-
-    if (isAlpha) url = url + '/alpha'
-    return url
-  }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const handleUpdateErrors = (err) => {
-  console.log('There was an error, could not fetch updates: ', err.message)
-}
-
-export const setupAutoUpdates = () => {
-  const feedURL = buildUpdateFeedURL()
-  autoUpdater.setFeedURL({ url: feedURL })
-
-  console.log('Update URL is: ', feedURL)
-
-  autoUpdater.on('error', handleUpdateErrors)
-
-  autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
-    console.log("Aye Aye Captain: There's an update")
-
-    const dialogOpts = {
-      title: "Aye Aye Captain: There's a Mex Update!",
-      type: 'info',
-      buttons: ['Install Update!', 'Later'],
-      message: process.platform === 'win32' ? releaseName : releaseNotes,
-      detail: 'Updates are on the way'
-    }
-
-    dialog.showMessageBox(dialogOpts).then((returnValue) => {
-      if (returnValue.response === 0) autoUpdater.quitAndInstall()
-    })
-  })
-
-  autoUpdater.on('update-available', () => {
-    console.log('Update Available')
-  })
-
-  autoUpdater.on('update-not-available', () => {
-    console.log('No Update Available!')
-  })
-
-  autoUpdater.on('before-quit-for-update', () => {
-    backupMexJSON()
-    mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
-  })
-}
-
-if (app.isPackaged || process.env.FORCE_PRODUCTION) {
-  updateCheckingFrequency = 3 * 60 * 60 * 1000
-  setupAutoUpdates()
-
-  setTimeout(() => {
-    autoUpdater.checkForUpdates()
-  }, 5 * 60 * 1000)
-
-  updateSetInterval = setInterval(() => {
-    autoUpdater.checkForUpdates()
-  }, updateCheckingFrequency)
-
-  ipcMain.on(IpcAction.SET_UPDATE_FREQ, (_event, arg) => {
-    const { updateFreq } = arg
-
-    clearInterval(updateSetInterval)
-
-    updateSetInterval = setInterval(() => {
-      autoUpdater.checkForUpdates()
-    }, updateFreq * 60 * 60 * 1000)
-    console.log(`Changed Update Freq to ${updateFreq} hours`)
-  })
+/*
+ * Setup updates
+ */
+if (mex) {
+  setupUpdateService(mex)
 }
