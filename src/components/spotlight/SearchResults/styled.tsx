@@ -32,9 +32,9 @@ export const StyledRow = styled(animated.div)<ColorProp>`
 `
 
 export const Description = styled.p`
-  margin: 4px 0;
+  margin: 6px 0 4px;
   font-size: 12px;
-  font-weight: lighter;
+  font-weight: 300;
   overflow: hidden;
   white-space: nowrap;
   color: ${({ theme }) => theme.colors.text.fade};

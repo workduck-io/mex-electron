@@ -5,7 +5,7 @@ import { useDataSaverFromContent } from '../editor/Components/Saver'
 import { getNewDraftKey } from '../editor/Components/SyncBlock/getNewBlockData'
 import { appNotifierWindow } from '../electron/utils/notifiers'
 import { useSpotlightAppStore } from '../store/app.spotlight'
-import { useSpotlightContext } from '../store/Context/context.spotlight'
+import { SearchType, useSpotlightContext } from '../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../store/editor.spotlight'
 import useDataStore from '../store/useDataStore'
 import { NodeProperties } from '../store/useEditorStore'
@@ -61,13 +61,13 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
           if (data[currentIndex].new) {
             const isDraftNode = node && node.key.startsWith('Draft.')
             newNode = isDraftNode ? node : createNodeWithUid(getNewDraftKey())
-            const d = addILink(search, newNode.nodeid)
+            const d = addILink(search.value, newNode.nodeid)
             newNode = getNode(newNode.nodeid)
           } else {
             newNode = getNode(data[currentIndex].nodeid)
           }
 
-          setSearch('')
+          setSearch({ value: '', type: SearchType.search })
 
           if (selection) {
             const newNodeContent = getContent(newNode.nodeid)

@@ -12,7 +12,7 @@ import { ActionTitle } from '../Actions/styled'
 import { StyledRow } from '../SearchResults/styled'
 import { Faded, RecentBetween, StyledList, StyledRecent } from './styled'
 import useDataStore from '../../../store/useDataStore'
-import { ListItemType } from '../SearchResults/types'
+import { ItemActionType, ListItemType } from '../SearchResults/types'
 import { useVirtual } from 'react-virtual'
 
 export type RecentType = { recents: Array<string>; onClearClick?: () => void }
@@ -133,15 +133,16 @@ const Recent = () => {
   const recentList = recents.map((nodeid: string) => {
     const item = ilinks.find((link) => link.nodeid === nodeid)
     const listItem: ListItemType = {
+      id: item?.nodeid,
       icon: item?.icon ?? 'gg:file-document',
       title: item?.path,
       description: '',
-      type: 'ilink',
+      type: ItemActionType.ilink,
       extras: {
         nodeid: item?.nodeid,
-        path: item?.path
-      },
-      new: false
+        path: item?.path,
+        new: false
+      }
     }
 
     return listItem

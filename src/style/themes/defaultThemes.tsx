@@ -6,6 +6,7 @@ import { reduxTheme } from './reduxTheme'
 import { sapphireTheme } from './sapphireTheme'
 import { spotlightTheme } from './spotlightTheme'
 import { vvkTheme } from './vvkTheme'
+import { yellowyTheme } from './yellowyTheme'
 
 export const defaultThemes = [
   { id: 'Gruvbox', themeData: gruvboxTheme },
@@ -15,7 +16,8 @@ export const defaultThemes = [
   { id: 'Amethyst', themeData: vvkTheme },
   { id: 'Light', themeData: lightTheme },
   { id: 'Sapphire', themeData: sapphireTheme },
-  { id: 'Clean', themeData: spotlightTheme }
+  { id: 'Clean', themeData: spotlightTheme },
+  { id: 'Yellowy', themeData: yellowyTheme }
 ]
 
 export const getTheme = (themeId: string) => {

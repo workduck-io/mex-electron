@@ -36,8 +36,8 @@ export const Result: React.FC<{
           <Icon
             color={theme.colors.primary}
             style={{ marginRight: '8px' }}
-            height={24}
-            width={24}
+            height={18}
+            width={18}
             icon={result.icon ?? 'gg:file-document'}
           />
           <div>{result?.title}</div>
@@ -113,28 +113,26 @@ const SearchResults: React.FC<{ current: number; data: Array<ListItemType> }> = 
   }, [current, scrollToIndex])
 
   const handleCreateItem = () => {
-    const nodeid = addILink(search)
+    const nodeid = addILink(search.value)
     setNode(getNode(nodeid))
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeid)
     setNormalMode(false)
   }
 
-  const withNew = data?.length > 0 && data[0].new
-
-  mog('', { search, data })
+  const withNew = data?.length > 0 && data[0]?.extras.new
 
   return (
-    <StyledResults ref={listContainerRef} margin={search}>
+    <StyledResults ref={listContainerRef} margin={search.value}>
       {rowVirtualizer.virtualItems.map((item) => {
         const result = data[item.index]
         const index = item.index
-        if (result?.new) {
+        if (result?.extras?.new) {
           return (
             <StyledRow showColor={index === selectedIndex} onClick={handleCreateItem} key="wd-mex-create-new-node">
               <NoWrap>
                 <Icon style={{ marginRight: '8px' }} height={24} width={24} icon={PlusCircle} />
                 <div>
-                  Create new <PrimaryText>{search}</PrimaryText>
+                  Create new <PrimaryText>{search.value}</PrimaryText>
                 </div>
               </NoWrap>
             </StyledRow>

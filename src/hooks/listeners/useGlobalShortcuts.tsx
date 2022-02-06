@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import tinykeys from 'tinykeys'
 import { useSpotlightAppStore } from '../../store/app.spotlight'
-import { useSpotlightContext } from '../../store/Context/context.spotlight'
+import { SearchType, useSpotlightContext } from '../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../store/settings.spotlight'
 import { useContentStore } from '../../store/useContentStore'
@@ -27,10 +27,11 @@ export const useGlobalShortcuts = () => {
   const setIsPreview = useSpotlightEditorStore((state) => state.setIsPreview)
   const setBubble = useSpotlightSettingsStore((state) => state.setBubble)
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
+  const setCurrentListItem = useSpotlightEditorStore((s) => s.setCurrentListItem)
 
   const handleCancel = () => {
     setSaved(false)
-    setSearch('')
+    setSearch({ value: '', type: SearchType.search })
   }
 
   const { shortcutDisabled } = useKeyListener()
@@ -50,11 +51,11 @@ export const useGlobalShortcuts = () => {
         if (!shortcutDisabled) {
           getPlateActions(savedEditorNode.nodeid).resetEditor()
           setNormalMode(true)
-          if (selection && !search) {
+          if (selection && !search.value) {
             setSelection(undefined)
 
             removeContent(savedEditorNode.nodeid)
-          } else if (search) {
+          } else if (search.value) {
             setIsPreview(false)
             handleCancel()
           } else {
@@ -62,6 +63,7 @@ export const useGlobalShortcuts = () => {
             handleCancel()
             ipcRenderer.send('close')
           }
+          setCurrentListItem(undefined)
         }
       }
     })

@@ -11,7 +11,7 @@ export const StyledList = styled.div`
 
 export const ListItem = styled.div<{ start: number }>`
   position: absolute;
-  top: 0;
+  top: 2;
   left: 0;
   transform: translateY(${(props) => props.start}px);
   width: 100%;

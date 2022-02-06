@@ -1,25 +1,35 @@
-import data from '@iconify-icons/ri/save-line'
 import React, { useEffect, useRef, useState } from 'react'
 import { useVirtual } from 'react-virtual'
 import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
-import { actionExec, ActionType, MexitAction } from '../actionExecutor'
+import { ActionTitle } from '../../Actions/styled'
+import useItemExecutor from '../actionExecutor'
 import { usePointerMovedSinceMount, StyledList, ListItem } from '../styled'
 import Item from './Item'
+import { ItemActionType, ListItemType } from '../../SearchResults/types'
+import { mog } from '../../../../utils/lib/helper'
+import { useSpotlightEditorStore } from '../../../../store/editor.spotlight'
+
+export const MAX_RECENT_ITEMS = 3
 
 const List = ({
   data,
-  currentAction,
-  setCurrentAction
+  selectedItem,
+  setSelectedItem,
+  limit
 }: {
-  data: MexitAction[]
-  currentAction: MexitAction
-  setCurrentAction: (action: MexitAction) => void
+  limit: number
+  data: ListItemType[]
+  selectedItem: ListItemType
+  setSelectedItem: (action: ListItemType) => void
 }) => {
   const { search } = useSpotlightContext()
   const parentRef = useRef(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const [first, setFirst] = useState(false)
   const pointerMoved = usePointerMovedSinceMount()
+  const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
+
+  const { itemActionExecutor } = useItemExecutor()
 
   const virtualizer = useVirtual({
     size: 10,
@@ -29,11 +39,8 @@ const List = ({
   const { scrollToIndex } = virtualizer
 
   React.useEffect(() => {
-    scrollToIndex(activeIndex, {
-      // To ensure that we don't move past the first item
-      align: activeIndex < 1 ? 'start' : 'auto'
-    })
-  }, [activeIndex, scrollToIndex])
+    scrollToIndex(activeIndex)
+  }, [activeIndex])
 
   useEffect(() => {
     const handler = (event) => {
@@ -44,9 +51,10 @@ const List = ({
 
           // avoid setting active index on a group
           if (typeof data[nextIndex] === 'string') {
-            if (nextIndex === 0) return index
-            nextIndex -= 1
+            if (nextIndex === 0) nextIndex = index
+            else nextIndex -= 1
           }
+
           return nextIndex
         })
       } else if (event.key === 'ArrowDown') {
@@ -54,75 +62,84 @@ const List = ({
         setActiveIndex((index) => {
           let nextIndex = index < data.length - 1 ? index + 1 : index
 
-          // avoid setting active index on a group
+          // * avoid setting active index on a group
           if (typeof data[nextIndex] === 'string') {
-            if (nextIndex === data.length - 1) return index
-            nextIndex += 1
+            if (nextIndex === data.length - 1) nextIndex = index
+            else nextIndex += 1
           }
+
           return nextIndex
         })
-        // TODO: improve the code below for the love of anything
       } else if (
         event.key === 'Enter' &&
-        data[activeIndex]?.type !== ActionType.search &&
-        currentAction?.type !== ActionType.search
+        data[activeIndex]?.type !== ItemActionType.search &&
+        selectedItem?.type !== ItemActionType.search
       ) {
         event.preventDefault()
-        setCurrentAction(data[activeIndex])
-        actionExec(data[activeIndex])
+        setSelectedItem(data[activeIndex])
+        itemActionExecutor(data[activeIndex])
         // if (data[activeIndex].type === ActionType.render) {
         //   setShowResults(false)
         // }
+        mog('WHAT', { activeIndex, d: data[activeIndex] })
       } else if (event.key === 'Enter') {
         event.preventDefault()
         if (!first) {
-          setCurrentAction(data[activeIndex])
+          setSelectedItem(data[activeIndex])
+          setCurrentListItem(data[activeIndex])
           setFirst(true)
         } else {
-          actionExec(currentAction, search)
+          itemActionExecutor(selectedItem, search.value)
+          setFirst(false)
+          setSelectedItem(null)
         }
       }
     }
+
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [data, activeIndex, currentAction])
+  }, [data, activeIndex, selectedItem, search.value])
 
   useEffect(() => {
     setActiveIndex(0)
   }, [data])
 
-  // function handleClick(id: number) {
-  //   if (data[id]?.type !== ActionType.search && selectedAction?.type !== ActionType.search) {
-  //     setSelectedAction(data[id])
-  //     actionExec(data[id])
-  //     if (data[id].type === ActionType.render) {
-  //       setShowResults(false)
-  //     }
-  //   } else {
-  //     if (!first) {
-  //       setSelectedAction(data[id])
-  //       setFirst(true)
-  //       setQuery('')
-  //       setShowResults(false)
-  //     } else {
-  //       actionExec(selectedAction, query)
-  //     }
-  //   }
-  // }
+  function handleClick(id: number) {
+    if (data[id]?.type !== ItemActionType.search && selectedItem?.type !== ItemActionType.search) {
+      setSelectedItem(data[id])
+      itemActionExecutor(data[id])
+      if (data[id].type === ItemActionType.render) {
+        // setShowResults(false)
+      }
+    } else {
+      if (!first) {
+        setSelectedItem(data[id])
+        setFirst(true)
+      } else {
+        itemActionExecutor(selectedItem, search.value)
+      }
+    }
+  }
 
   return (
     <StyledList ref={parentRef}>
+      <ActionTitle>Recents</ActionTitle>
       <div style={{ height: virtualizer.totalSize }}>
         {virtualizer.virtualItems.map((virtualRow) => {
           const item = data[virtualRow.index]
           const handlers = {
-            onPointerMove: () => pointerMoved && setActiveIndex(virtualRow.index)
-            // onClick: () => handleClick(virtualRow.index)
+            onPointerMove: () => pointerMoved && setActiveIndex(virtualRow.index),
+            onClick: () => handleClick(virtualRow.index)
           }
           const active = virtualRow.index === activeIndex
 
           return (
             <ListItem key={virtualRow.index} ref={virtualRow.measureRef} start={virtualRow.start} {...handlers}>
+              {virtualRow.index === limit && (
+                <>
+                  <ActionTitle>Quick Actions</ActionTitle>
+                </>
+              )}
               <Item item={item} active={active} />
             </ListItem>
           )

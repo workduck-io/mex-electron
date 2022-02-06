@@ -157,12 +157,12 @@ export const StyledTree = styled.div`
         }
       }
       .rc-tree-node-selected {
-        background-color: ${({ theme }) => theme.colors.gray[7]};
+        background-color: ${({ theme }) => theme.colors.primary};
         /* box-shadow: 0 0 0 1px #ffb951; */
         border-radius: ${({ theme }) => theme.borderRadius.small};
         /* opacity: 0.8; */
         .rc-tree-title {
-          color: ${({ theme }) => theme.colors.primary};
+          color: ${({ theme }) => theme.colors.text.oppositePrimary};
         }
       }
       span {

@@ -14,7 +14,7 @@ import useEditorActions from '../../../hooks/useEditorActions'
 import { AppType } from '../../../hooks/useInitialize'
 import useLoad from '../../../hooks/useLoad'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { SearchType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
@@ -97,7 +97,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
     setSaved(true)
 
     setSelection(undefined)
-    setSearch('')
+    setSearch({ value: '', type: SearchType.search })
     setNormalMode(true)
 
     const nNode = createNodeWithUid(getNewDraftKey())
