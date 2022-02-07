@@ -26,13 +26,13 @@ export const StyledRow = styled(animated.div)<ColorProp>`
   flex-direction: row;
   justify-content: space-between;
   padding: 10px 1rem 10px 0;
-  margin: 5px 0;
+  /* margin: 5px 0; */
   color: ${({ theme }) => theme.colors.text.fade};
   border-radius: 10px;
 `
 
 export const Description = styled.p`
-  margin: 6px 0 4px;
+  /* margin: 6px 0 4px; */
   font-size: 12px;
   font-weight: 300;
   overflow: hidden;

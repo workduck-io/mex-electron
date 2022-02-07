@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useVirtual } from 'react-virtual'
-import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
+import { SearchType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { ActionTitle } from '../../Actions/styled'
 import useItemExecutor from '../actionExecutor'
 import { usePointerMovedSinceMount, StyledList, ListItem } from '../styled'
@@ -8,7 +8,18 @@ import Item from './Item'
 import { ItemActionType, ListItemType } from '../../SearchResults/types'
 import { useSpotlightEditorStore } from '../../../../store/editor.spotlight'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
-import { useSpring } from 'react-spring'
+import { defaultContent } from '../../../../data/Defaults/baseData'
+import { IpcAction } from '../../../../data/IpcAction'
+import { getNewDraftKey } from '../../../../editor/Components/SyncBlock/getNewBlockData'
+import { appNotifierWindow } from '../../../../electron/utils/notifiers'
+import { AppType } from '../../../../hooks/useInitialize'
+import { NodeProperties } from '../../../../store/useEditorStore'
+import { getContent } from '../../../../utils/helpers'
+import { createNodeWithUid } from '../../../../utils/lib/helper'
+import { useSaveData } from '../../../../hooks/useSaveData'
+import { useDataSaverFromContent } from '../../../../editor/Components/Saver'
+import useLoad from '../../../../hooks/useLoad'
+import useDataStore from '../../../../store/useDataStore'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -23,14 +34,52 @@ const List = ({
   selectedItem: ListItemType
   setSelectedItem: (action: ListItemType) => void
 }) => {
-  const { search, activeIndex, setActiveIndex } = useSpotlightContext()
+  const { search, setSelection, activeIndex, setSearch, selection, setActiveIndex } = useSpotlightContext()
   const parentRef = useRef(null)
   const [first, setFirst] = useState(false)
   const pointerMoved = usePointerMovedSinceMount()
+
+  const setNode = useSpotlightEditorStore((s) => s.setNode)
+  const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
+  const loadNode = useSpotlightEditorStore((s) => s.loadNode)
+  const { saveData } = useSaveData()
+  const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
+
+  const node = useSpotlightEditorStore((s) => s.node)
+
+  const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
+
+  const { getNode } = useLoad()
+  const addILink = useDataStore((s) => s.addILink)
+  const setIsPreview = useSpotlightEditorStore((s) => s.setIsPreview)
+
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
 
-  const props = useSpring({ width: search.value ? '50%' : '100%' })
+  const springProps = useMemo(() => {
+    const style = { width: '100%', opacity: 1, marginRight: '0' }
+
+    if (selection) {
+      if (!search.value) style.width = '0%'
+      else {
+        if (search.type === SearchType.action) style.width = '100%'
+        else style.width = '50%'
+      }
+    } else {
+      if (!search.value) style.width = '100%'
+      else {
+        if (search.type === SearchType.action) style.width = '100%'
+        else style.width = '50%'
+      }
+    }
+
+    if (style.width === '0%') style.opacity = 0
+    else if (style.width === '50%') style.marginRight = '0.5rem'
+    else style.opacity = 1
+
+    return style
+  }, [selection, search.value])
+
   const { itemActionExecutor } = useItemExecutor()
 
   const virtualizer = useVirtual({
@@ -59,6 +108,8 @@ const List = ({
 
           return nextIndex
         })
+
+        // if (data[activeIndex]?.extras?.new) setIsPreview(false)
       } else if (event.key === 'ArrowDown') {
         event.preventDefault()
         setActiveIndex((index) => {
@@ -72,29 +123,58 @@ const List = ({
 
           return nextIndex
         })
-      } else if (
-        event.key === 'Enter' &&
-        data[activeIndex]?.type !== ItemActionType.search &&
-        selectedItem?.type !== ItemActionType.search
-      ) {
-        event.preventDefault()
-        setSelectedItem(data[activeIndex])
-        itemActionExecutor(data[activeIndex])
-        // if (data[activeIndex].type === ActionType.render) {
-        //   setShowResults(false)
-        // }
       } else if (event.key === 'Enter') {
-        event.preventDefault()
-        if (!first) {
-          setSelectedItem(data[activeIndex])
-          setCurrentListItem(data[activeIndex])
-          setFirst(true)
+        if (data[activeIndex].type === ItemActionType.ilink) {
+          let newNode: NodeProperties
+          if (data[activeIndex]?.extras.new) {
+            const isDraftNode = node && node.key.startsWith('Draft.')
+            newNode = isDraftNode ? node : createNodeWithUid(getNewDraftKey())
+
+            const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : search.value
+
+            const d = addILink(nodeName, newNode.nodeid)
+            newNode = getNode(newNode.nodeid)
+          } else {
+            newNode = getNode(data[activeIndex]?.extras?.nodeid)
+          }
+
+          setSearch({ value: '', type: SearchType.search })
+
+          if (selection) {
+            const newNodeContent = getContent(newNode.nodeid)
+            const newContentData = !data[activeIndex]?.extras?.new
+              ? [...newNodeContent.content, ...nodeContent]
+              : nodeContent
+            saveEditorValueAndUpdateStores(newNode.nodeid, newContentData, true)
+            saveData()
+
+            appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
+
+            loadNode(createNodeWithUid(getNewDraftKey()), defaultContent.content)
+
+            setNormalMode(true)
+            setSelection(undefined)
+          } else {
+            setNode(newNode)
+            setNormalMode(false)
+          }
         } else {
-          itemActionExecutor(selectedItem, search.value)
-          setFirst(false)
-          setSelectedItem(null)
+          if (data[activeIndex]?.type !== ItemActionType.search && selectedItem?.type !== ItemActionType.search) {
+            setSelectedItem(data[activeIndex])
+            itemActionExecutor(data[activeIndex])
+          } else {
+            if (!first) {
+              setSelectedItem(data[activeIndex])
+              setCurrentListItem(data[activeIndex])
+              setFirst(true)
+            } else {
+              itemActionExecutor(selectedItem, search.value)
+              setFirst(false)
+              setSelectedItem(null)
+            }
+            setInput('')
+          }
         }
-        setInput('')
       }
     }
 
@@ -110,9 +190,6 @@ const List = ({
     if (data[id]?.type !== ItemActionType.search && selectedItem?.type !== ItemActionType.search) {
       setSelectedItem(data[id])
       itemActionExecutor(data[id])
-      if (data[id].type === ItemActionType.render) {
-        // setShowResults(false)
-      }
     } else {
       if (!first) {
         setSelectedItem(data[id])
@@ -124,7 +201,7 @@ const List = ({
   }
 
   return (
-    <StyledList style={props} ref={parentRef}>
+    <StyledList style={springProps} ref={parentRef}>
       <ActionTitle>Recents</ActionTitle>
       <div style={{ height: virtualizer.totalSize }}>
         {virtualizer.virtualItems.map((virtualRow) => {

@@ -128,7 +128,7 @@ const Content = () => {
   return (
     <StyledContent>
       <SideBar recentLimit={recentLimit} index={activeIndex} data={searchResults} />
-      {/* <Preview preview={preview} node={editorNode} /> */}
+      <Preview preview={preview} node={editorNode} />
     </StyledContent>
   )
 }

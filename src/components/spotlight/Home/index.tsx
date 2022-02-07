@@ -9,22 +9,6 @@ import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 
 const Home = ({ data, limit }: { data: Array<ListItemType>; limit: number }) => {
   const [selectedItem, setSelectedItem] = useState<ListItemType>()
-  const { selection, search } = useSpotlightContext()
-
-  // const ilinks = useDataStore((state) => state.ilinks)
-  // const recents = useRecentsStore((state) => state.lastOpened)
-
-  // const recentList = recents.map((nodeid: string) => {
-  //   const item = ilinks.find((link) => link?.nodeid === nodeid)
-
-  //   const listItem: ListItemType = getListItemFromNode(item)
-  //   return listItem
-  // })
-
-  // const recentLimit = recentList.length < MAX_RECENT_ITEMS ? recentList.length : MAX_RECENT_ITEMS
-  // const data = [...recentList.slice(0, recentLimit), ...initActions]
-
-  if (selection && !search.value) return null
 
   return <List data={data} limit={limit} selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
 }

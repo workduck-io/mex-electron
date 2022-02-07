@@ -4,6 +4,8 @@ import { StyledRow, Description } from '../../SearchResults/styled'
 import { Icon } from '@iconify/react'
 import { StyledKey } from '../../Shortcuts/styled'
 import { ListItemType } from '../../SearchResults/types'
+import { PrimaryText } from '../../../../style/Integration'
+import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
 
 export const ActionIcon = styled.div`
   display: flex;
@@ -36,6 +38,7 @@ export const Dot = styled.span<{ active: boolean }>`
 
 function Item({ item, active, onClick }: { item: ListItemType; active?: boolean; onClick?: () => void }) {
   const theme = useTheme()
+  const { search } = useSpotlightContext()
   return (
     <StyledRow showColor={active} onClick={onClick} key={`STRING_${item?.title}`}>
       <div>
@@ -49,7 +52,13 @@ function Item({ item, active, onClick }: { item: ListItemType; active?: boolean;
               width={18}
               icon={item?.icon}
             />
-            <div>{item?.title}</div>
+            {item?.extras?.new ? (
+              <div>
+                Create new <PrimaryText>{search.value.slice(2)}</PrimaryText>
+              </div>
+            ) : (
+              <div>{item?.title}</div>
+            )}
           </div>
           <Description>{item?.description}</Description>
         </div>

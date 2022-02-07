@@ -63,13 +63,32 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   const deserializedContentNodes = useDeserializeSelectionToNodes(node.nodeid, preview)
 
   const springProps = useMemo(() => {
-    const style = { width: '100%' }
-    if (search.value) {
-      style.width = search.type === SearchType.action ? '100%' : '50%'
+    const style = { width: '0%', opacity: 0, padding: '0' }
+
+    if (selection) {
+      if (!search.value) style.width = '100%'
+      else {
+        if (search.type === SearchType.action) style.width = '0%'
+        else style.width = '50%'
+      }
+    } else {
+      if (!search.value) style.width = '0%'
+      else {
+        if (search.type === SearchType.action) style.width = '0%'
+        else style.width = '50%'
+      }
+    }
+
+    if (style.width === '0%') {
+      style.opacity = 0
+      style.padding = '0'
+    } else {
+      style.opacity = 1
+      style.padding = '0.5rem'
     }
 
     return style
-  }, [search.value])
+  }, [selection, search.value])
 
   const animationProps = useSpring(springProps)
 
