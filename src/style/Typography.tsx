@@ -1,6 +1,12 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
-export const Title = styled.h1``
+export const Title = styled.h1<{ colored?: boolean }>`
+  ${({ theme, colored }) =>
+    colored &&
+    css`
+      color: ${theme.colors.primary};
+    `}
+`
 export const Subtitle = styled.h2``
 
 export const Para = styled.p`

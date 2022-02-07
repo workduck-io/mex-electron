@@ -14,38 +14,59 @@ import useAnalytics from '../../services/analytics'
 import { Button } from '../../style/Buttons'
 import { transparentize } from 'polished'
 
-const SettingsContainer = styled.section`
+import informationLine from '@iconify-icons/ri/information-line'
+import refreshLine from '@iconify-icons/ri/refresh-line'
+import paintBrushFill from '@iconify-icons/ri/paint-brush-fill'
+import keyboardBoxLine from '@iconify-icons/ri/keyboard-box-line'
+import installLine from '@iconify-icons/ri/install-line'
+import user3Line from '@iconify-icons/ri/user-3-line'
+import { Icon } from '@iconify/react'
+
+export const SettingsContainer = styled.section`
   display: flex;
   width: 100%;
 `
 
-const SettingsOptions = styled.div`
+export const SettingsOptions = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
   flex: 1;
 `
 
-const SettingTitle = styled(NavLink)`
+export const SettingTitle = styled(NavLink)`
+  display: flex;
+  align-items: center;
   padding: 1rem;
   margin-bottom: 1rem;
   color: ${({ theme }) => theme.colors.text.default};
+  gap: ${({ theme }) => theme.spacing.small};
   text-decoration: none;
 
   &:hover {
     text-decoration: none;
+    color: ${({ theme }) => theme.colors.primary};
     background-color: ${({ theme }) => transparentize(0.5, theme.colors.background.card)};
   }
 
   &.active {
-    background-color: ${({ theme }) => theme.colors.background.card};
-    color: ${({ theme }) => theme.colors.primary};
+    background-color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.text.oppositePrimary};
+    svg {
+      color: ${({ theme }) => theme.colors.text.oppositePrimary};
+    }
   }
 
   border-radius: ${({ theme }) => theme.borderRadius.small};
+
+  svg {
+    height: 1.5rem;
+    width: 1.5rem;
+    color: ${({ theme }) => theme.colors.secondary};
+  }
 `
 
-const SettingsContent = styled.div`
+export const SettingsContent = styled.div`
   flex: 4;
 `
 
@@ -75,21 +96,27 @@ const Settings = () => {
       <SettingsContainer>
         <SettingsOptions>
           <SettingTitle exact tabIndex={-1} activeClassName="active" to={`${path}`}>
+            <Icon icon={paintBrushFill} />
             Themes
           </SettingTitle>
           <SettingTitle exact tabIndex={-1} activeClassName="active" to={`${path}/user`}>
+            <Icon icon={user3Line} />
             Profile
           </SettingTitle>
           <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/shortcuts`}>
+            <Icon icon={keyboardBoxLine} />
             Shortcuts
           </SettingTitle>
           <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/about`}>
+            <Icon icon={informationLine} />
             About
           </SettingTitle>
           <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/import`}>
+            <Icon icon={refreshLine} />
             Import Notes
           </SettingTitle>
           <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/autoupdate`}>
+            <Icon icon={installLine} />
             Automatic Updates
           </SettingTitle>
           <Margin />

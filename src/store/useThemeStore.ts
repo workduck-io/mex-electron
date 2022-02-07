@@ -15,7 +15,6 @@ interface ThemeStoreState {
   setThemes: (theme: Theme[]) => void
 }
 
-console.log({ defaultThemes })
 const useThemeStore = create<ThemeStoreState>((set) => ({
   theme: { id: 'Dev', themeData: devTheme },
 

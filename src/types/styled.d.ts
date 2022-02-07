@@ -73,6 +73,6 @@ declare module 'styled-components' {
       profilePalette: string[]
       reactSelect: ThemeConfig
     }
-    custom?: FlattenInterpolation<any>
+    custom?: string
   }
 }

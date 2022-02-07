@@ -21,13 +21,13 @@ const ServiceImgIcon = styled.img`
   object-fit: contain;
 `
 
-const CardStyles = css`
+export const CardStyles = css`
   padding: ${({ theme }) => theme.spacing.medium};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background-color: ${({ theme }) => theme.colors.gray[8]};
 `
 
-const ComingSoonCard = styled.div`
+export const ComingSoonCard = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;

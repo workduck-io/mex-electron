@@ -28,7 +28,7 @@ const Nodes = styled.section`
   width: 100%;
 `
 
-const ArchivedNode = styled.div`
+export const ArchivedNode = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;

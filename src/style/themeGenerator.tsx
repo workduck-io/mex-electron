@@ -101,7 +101,7 @@ export interface ThemePalette {
 
   text?: TextPalette
 
-  custom?: FlattenInterpolation<any>
+  custom?: string
 }
 
 export const generateTheme = (p: ThemePalette): DefaultTheme => {

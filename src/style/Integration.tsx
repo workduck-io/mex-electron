@@ -108,7 +108,7 @@ export const ServiceCard = styled.div<{ hover: boolean; disabled: boolean }>`
         `
       : css`
            {
-            border: 0.2rem solid ${theme.colors.background.highlight};
+            border: 0.2rem solid ${theme.colors.primary};
           }
         `}
 `
