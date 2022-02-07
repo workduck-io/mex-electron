@@ -193,21 +193,65 @@ const List = ({
   }, [data])
 
   function handleClick(id: number) {
-    if (data[id]?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
-      setSelectedItem({ item: data[id], active: false })
-      itemActionExecutor(data[id])
-    } else {
-      if (!selectedItem?.active) {
-        setSelectedItem({ item: data[id], active: true })
+    if (data[id]?.type === ItemActionType.ilink) {
+      let newNode: NodeProperties
+      if (data[id]?.extras.new) {
+        const isDraftNode = node && node.key.startsWith('Draft.')
+        newNode = isDraftNode ? node : createNodeWithUid(getNewDraftKey())
+
+        const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : search.value
+
+        const d = addILink(nodeName, newNode.nodeid)
+        newNode = getNode(newNode.nodeid)
       } else {
-        itemActionExecutor(selectedItem?.item, search.value)
+        newNode = getNode(data[id]?.extras?.nodeid)
+      }
+
+      setSearch({ value: '', type: SearchType.search })
+
+      if (selection) {
+        const newNodeContent = getContent(newNode.nodeid)
+        const newContentData = !data[id]?.extras?.new ? [...newNodeContent.content, ...nodeContent] : nodeContent
+        saveEditorValueAndUpdateStores(newNode.nodeid, newContentData, true)
+        saveData()
+
+        appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
+
+        loadNode(createNodeWithUid(getNewDraftKey()), defaultContent.content)
+
+        setNormalMode(true)
+        setSelection(undefined)
+      } else {
+        setNode(newNode)
+        setNormalMode(false)
+        setSelection(undefined)
+      }
+    } else {
+      if (data[id]?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
+        setSelectedItem({ item: data[id], active: false })
+        itemActionExecutor(data[id])
+      } else {
+        if (!selectedItem?.active) {
+          setCurrentListItem(data[id])
+          setSelectedItem({ item: data[id], active: true })
+        } else {
+          itemActionExecutor(selectedItem?.item, search.value)
+          setSelectedItem({ item: null, active: false })
+        }
+        setInput('')
       }
     }
   }
 
+  let heading = 'Quick Links'
+
+  if (search.type === SearchType.action) heading = 'Quick Actions'
+  else if (search.type === SearchType.search)
+    heading = search.value && !selectedItem?.item ? 'Search Results' : 'Recents'
+
   return (
     <StyledList style={springProps} ref={parentRef}>
-      <ActionTitle>Recents</ActionTitle>
+      <ActionTitle>{heading}</ActionTitle>
       <div style={{ height: virtualizer.totalSize }}>
         {virtualizer.virtualItems.map((virtualRow) => {
           const item = data[virtualRow.index]
@@ -219,10 +263,10 @@ const List = ({
 
           return (
             <ListItem key={virtualRow.index} ref={virtualRow.measureRef} start={virtualRow.start} {...handlers}>
-              {virtualRow.index === limit && (
-                <>
+              {virtualRow.index === limit && !search.value && (
+                <div style={{ marginTop: '8px' }}>
                   <ActionTitle>Quick Actions</ActionTitle>
-                </>
+                </div>
               )}
               <Item item={item} active={active} />
             </ListItem>
