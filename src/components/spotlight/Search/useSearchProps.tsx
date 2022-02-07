@@ -15,7 +15,7 @@ export const useSearchProps = () => {
   mog('ITEM', { currentListItem })
 
   const icon = !normalMode || selection ? Document : LensIcon
-  const placeholder = !normalMode || selection ? node.nodeid : 'Search for anything...'
+  const placeholder = !normalMode || selection ? node.key : 'Search for anything...'
 
   return {
     icon: currentListItem?.icon ?? icon,

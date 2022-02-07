@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useVirtual } from 'react-virtual'
-import { SearchType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
+import { ActiveItem, SearchType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { ActionTitle } from '../../Actions/styled'
 import useItemExecutor from '../actionExecutor'
 import { usePointerMovedSinceMount, StyledList, ListItem } from '../styled'
@@ -20,6 +20,7 @@ import { useSaveData } from '../../../../hooks/useSaveData'
 import { useDataSaverFromContent } from '../../../../editor/Components/Saver'
 import useLoad from '../../../../hooks/useLoad'
 import useDataStore from '../../../../store/useDataStore'
+import { useSpring } from 'react-spring'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -31,16 +32,16 @@ const List = ({
 }: {
   limit: number
   data: ListItemType[]
-  selectedItem: ListItemType
-  setSelectedItem: (action: ListItemType) => void
+  selectedItem: ActiveItem
+  setSelectedItem: (action: ActiveItem) => void
 }) => {
-  const { search, setSelection, activeIndex, setSearch, selection, setActiveIndex } = useSpotlightContext()
+  const { search, setSelection, activeIndex, activeItem, setSearch, selection, setActiveIndex } = useSpotlightContext()
   const parentRef = useRef(null)
-  const [first, setFirst] = useState(false)
   const pointerMoved = usePointerMovedSinceMount()
 
   const setNode = useSpotlightEditorStore((s) => s.setNode)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
+  const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const loadNode = useSpotlightEditorStore((s) => s.loadNode)
   const { saveData } = useSaveData()
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
@@ -56,10 +57,11 @@ const List = ({
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
 
-  const springProps = useMemo(() => {
+  const listStyle = useMemo(() => {
     const style = { width: '100%', opacity: 1, marginRight: '0' }
+    if (activeItem?.item) return style
 
-    if (selection) {
+    if (selection || !normalMode) {
       if (!search.value) style.width = '0%'
       else {
         if (search.type === SearchType.action) style.width = '100%'
@@ -78,7 +80,9 @@ const List = ({
     else style.opacity = 1
 
     return style
-  }, [selection, search.value])
+  }, [selection, search.value, normalMode, activeItem.item])
+
+  const springProps = useSpring(listStyle)
 
   const { itemActionExecutor } = useItemExecutor()
 
@@ -109,7 +113,7 @@ const List = ({
           return nextIndex
         })
 
-        // if (data[activeIndex]?.extras?.new) setIsPreview(false)
+        if (data[activeIndex]?.extras?.new) setIsPreview(false)
       } else if (event.key === 'ArrowDown') {
         event.preventDefault()
         setActiveIndex((index) => {
@@ -124,7 +128,7 @@ const List = ({
           return nextIndex
         })
       } else if (event.key === 'Enter') {
-        if (data[activeIndex].type === ItemActionType.ilink) {
+        if (data[activeIndex]?.type === ItemActionType.ilink) {
           let newNode: NodeProperties
           if (data[activeIndex]?.extras.new) {
             const isDraftNode = node && node.key.startsWith('Draft.')
@@ -157,20 +161,19 @@ const List = ({
           } else {
             setNode(newNode)
             setNormalMode(false)
+            setSelection(undefined)
           }
         } else {
-          if (data[activeIndex]?.type !== ItemActionType.search && selectedItem?.type !== ItemActionType.search) {
-            setSelectedItem(data[activeIndex])
+          if (data[activeIndex]?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
+            setSelectedItem({ item: data[activeIndex], active: false })
             itemActionExecutor(data[activeIndex])
           } else {
-            if (!first) {
-              setSelectedItem(data[activeIndex])
+            if (!selectedItem?.active) {
               setCurrentListItem(data[activeIndex])
-              setFirst(true)
+              setSelectedItem({ item: data[activeIndex], active: true })
             } else {
-              itemActionExecutor(selectedItem, search.value)
-              setFirst(false)
-              setSelectedItem(null)
+              itemActionExecutor(selectedItem?.item, search.value)
+              setSelectedItem({ item: null, active: false })
             }
             setInput('')
           }
@@ -178,24 +181,26 @@ const List = ({
       }
     }
 
-    window.addEventListener('keydown', handler)
+    if ((!selection && normalMode) || search.value) {
+      window.addEventListener('keydown', handler)
+    }
+
     return () => window.removeEventListener('keydown', handler)
-  }, [data, activeIndex, selectedItem, search.value])
+  }, [data, activeIndex, normalMode, selection, selectedItem?.item, search.value])
 
   useEffect(() => {
     setActiveIndex(0)
   }, [data])
 
   function handleClick(id: number) {
-    if (data[id]?.type !== ItemActionType.search && selectedItem?.type !== ItemActionType.search) {
-      setSelectedItem(data[id])
+    if (data[id]?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
+      setSelectedItem({ item: data[id], active: false })
       itemActionExecutor(data[id])
     } else {
-      if (!first) {
-        setSelectedItem(data[id])
-        setFirst(true)
+      if (!selectedItem?.active) {
+        setSelectedItem({ item: data[id], active: true })
       } else {
-        itemActionExecutor(selectedItem, search.value)
+        itemActionExecutor(selectedItem?.item, search.value)
       }
     }
   }

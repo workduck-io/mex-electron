@@ -1,16 +1,12 @@
-import React, { useState } from 'react'
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { initActions } from '../../../data/Actions'
-import List, { MAX_RECENT_ITEMS } from './components/List'
-import useDataStore from '../../../store/useDataStore'
+import React from 'react'
+import List from './components/List'
 import { ListItemType } from '../SearchResults/types'
-import { getListItemFromNode } from './helper'
 import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 
 const Home = ({ data, limit }: { data: Array<ListItemType>; limit: number }) => {
-  const [selectedItem, setSelectedItem] = useState<ListItemType>()
+  const { setActiveItem, activeItem } = useSpotlightContext()
 
-  return <List data={data} limit={limit} selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
+  return <List data={data} limit={limit} selectedItem={activeItem} setSelectedItem={setActiveItem} />
 }
 
 export default Home

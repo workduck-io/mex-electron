@@ -50,20 +50,6 @@ export const Result: React.FC<{
         </Shortcut>
       )}
     </StyledRow>
-
-    // <StyledRow style={style} showColor={selected} onClick={onClick} key={`STRING_${result.title}`}>
-    //   <div style={{ display: 'flex', alignItems: 'center' }}>
-    //     <Icon
-    //       color={theme.colors.primary}
-    //       style={{ marginRight: '8px' }}
-    //       height={16}
-    //       width={16}
-    //       icon={result.icon ?? Document}
-    //     />
-    //     <div>{result?.title}</div>
-    //   </div>
-    //   <Description>{result?.description}</Description>
-    // </StyledRow>
   )
 }
 

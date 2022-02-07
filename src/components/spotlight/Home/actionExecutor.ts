@@ -3,17 +3,21 @@ import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { IpcAction } from '../../../data/IpcAction'
 import { ListItemType, ItemActionType } from '../SearchResults/types'
 import { SearchType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
 
 const useItemExecutor = () => {
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
-  const { setSearch } = useSpotlightContext()
-
+  const { setSearch, setActiveItem } = useSpotlightContext()
+  const setInput = useSpotlightAppStore((store) => store.setInput)
   const closeSpotlight = () => {
+    setInput('')
+    setSearch({ value: '', type: SearchType.search })
     ipcRenderer.send(IpcAction.CLOSE_SPOTLIGHT, {
       data: {
         hide: true
       }
     })
+    setActiveItem({ item: undefined, active: false })
   }
 
   function itemActionExecutor(item: ListItemType, query?: string) {
@@ -32,7 +36,7 @@ const useItemExecutor = () => {
         const url = encodeURI(item.extras.base_url + query)
         window.open(url, '_blank').focus()
         setCurrentListItem(undefined)
-        setSearch({ value: '', type: SearchType.search })
+
         closeSpotlight()
 
         break

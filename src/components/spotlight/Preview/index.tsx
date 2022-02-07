@@ -59,13 +59,14 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   // * Custom hooks
   const { loadNodeProps } = useLoad()
   const ref = useRef<HTMLDivElement>()
-  const { search, selection, setSelection, setSearch } = useSpotlightContext()
+  const { search, selection, setSelection, activeItem, setSearch } = useSpotlightContext()
   const deserializedContentNodes = useDeserializeSelectionToNodes(node.nodeid, preview)
 
   const springProps = useMemo(() => {
     const style = { width: '0%', opacity: 0, padding: '0' }
+    if (activeItem?.item) return style
 
-    if (selection) {
+    if (selection || !normalMode) {
       if (!search.value) style.width = '100%'
       else {
         if (search.type === SearchType.action) style.width = '0%'
@@ -88,7 +89,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
     }
 
     return style
-  }, [selection, search.value])
+  }, [selection, search.value, normalMode])
 
   const animationProps = useSpring(springProps)
 

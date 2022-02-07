@@ -56,6 +56,7 @@ const GlobalListener = memo(() => {
     } else {
       setSelection(temp)
     }
+    setNormalMode(false)
     setIsPreview(true)
   }, [showSource, temp])
 
@@ -68,7 +69,9 @@ const GlobalListener = memo(() => {
       if (!data) {
         setSelection(undefined)
         setIsPreview(false)
-      } else setTemp(data)
+      } else {
+        setTemp(data)
+      }
     })
 
     ipcRenderer.on(IpcAction.INIT_HEAP_INSTANCE, (_event, arg) => {

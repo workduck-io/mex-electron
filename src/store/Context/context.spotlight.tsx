@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react'
+import { ListItemType } from '../../components/spotlight/SearchResults/types'
 
 export enum SearchType {
   quicklink,
@@ -11,6 +12,8 @@ export type Search = {
   type: SearchType
 }
 
+export type ActiveItem = { item: ListItemType; active: boolean }
+
 type SpotlightContextType = {
   search: Search
   setSearch: (val: Search) => void
@@ -18,6 +21,8 @@ type SpotlightContextType = {
   setSelection: (val: any) => void
   activeIndex: number
   setActiveIndex: any
+  setActiveItem: any
+  activeItem: ActiveItem
 }
 
 const SpotlightContext = createContext<SpotlightContextType>(undefined!)
@@ -27,6 +32,7 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
   const [search, setSearch] = useState<Search>({ value: '', type: SearchType.search })
   const [selection, setSelection] = useState<any>()
   const [activeIndex, setActiveIndex] = useState<number>(0)
+  const [activeItem, setActiveItem] = useState<ActiveItem>({ item: undefined, active: false })
 
   const value = {
     search,
@@ -34,7 +40,9 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
     selection,
     setSelection,
     activeIndex,
-    setActiveIndex
+    setActiveIndex,
+    activeItem,
+    setActiveItem
   }
 
   return <SpotlightContext.Provider value={value}>{children}</SpotlightContext.Provider>

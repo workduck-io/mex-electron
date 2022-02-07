@@ -14,7 +14,7 @@ export const useGlobalShortcuts = () => {
   const history = useHistory()
   const location = useLocation()
 
-  const { setSelection, setSearch, search, selection } = useSpotlightContext()
+  const { setSelection, setSearch, setActiveItem, search, selection } = useSpotlightContext()
 
   const { showSource, toggleSource } = useSpotlightSettingsStore(({ showSource, toggleSource }) => ({
     showSource,
@@ -32,20 +32,13 @@ export const useGlobalShortcuts = () => {
   const handleCancel = () => {
     setSaved(false)
     setSearch({ value: '', type: SearchType.search })
+    setActiveItem({ item: null, active: false })
   }
 
   const { shortcutDisabled } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      // Alt: (event) => {
-      //   event.preventDefault()
-      //   if (!shortcutDisabled) history.push('/settings')
-      // },
-      // '$mod+Shift+KeyB': (event) => {
-      //   event.preventDefault()
-      //   if (!shortcutDisabled) setBubble()
-      // },
       Escape: (event) => {
         event.preventDefault()
         if (!shortcutDisabled) {

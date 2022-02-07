@@ -4,7 +4,7 @@ import { StyledRow, Description } from '../../SearchResults/styled'
 import { Icon } from '@iconify/react'
 import { StyledKey } from '../../Shortcuts/styled'
 import { ListItemType } from '../../SearchResults/types'
-import { PrimaryText } from '../../../../style/Integration'
+import { NoWrap, PrimaryText } from '../../../../style/Integration'
 import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
 
 export const ActionIcon = styled.div`
@@ -52,13 +52,15 @@ function Item({ item, active, onClick }: { item: ListItemType; active?: boolean;
               width={18}
               icon={item?.icon}
             />
-            {item?.extras?.new ? (
-              <div>
-                Create new <PrimaryText>{search.value.slice(2)}</PrimaryText>
-              </div>
-            ) : (
-              <div>{item?.title}</div>
-            )}
+            <div style={{ whiteSpace: 'nowrap' }}>
+              {item?.extras?.new ? (
+                <div>
+                  Create new <PrimaryText>{search.value.slice(2)}</PrimaryText>
+                </div>
+              ) : (
+                <div>{item?.title}</div>
+              )}
+            </div>
           </div>
           <Description>{item?.description}</Description>
         </div>

@@ -1,25 +1,20 @@
-import { search as getSearchResults } from 'fast-fuzzy'
 import React, { useEffect, useState } from 'react'
 import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
-import { useCurrentIndex } from '../../../hooks/useCurrentIndex'
 import useLoad from '../../../hooks/useLoad'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { SearchType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
-import { ILink } from '../../../types/Types'
 import Preview, { PreviewType } from '../Preview'
 import SideBar from '../SideBar'
 import { ListItemType } from '../SearchResults/types'
 import { StyledContent } from './styled'
 import { getListItemFromNode } from '../Home/helper'
-import { isNewILink } from '../../../components/mex/NodeSelect/NodeSelect'
 import { useSearch } from '../Home/useSearch'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { MAX_RECENT_ITEMS } from '../Home/components/List'
 import { initActions } from '../../../data/Actions'
-import { mog } from '../../../utils/lib/helper'
 
 const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -51,11 +46,11 @@ const Content = () => {
   const { searchInList } = useSearch()
   const [recentLimit, setRecentLimit] = useState(0)
   const setNormalMode = useSpotlightAppStore((store) => store.setNormalMode)
-  const currentListItem = useSpotlightEditorStore((store) => currentListItem)
+  const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
 
   // * Custom hooks
   // const currentIndex = 0 // useCurrentIndex(searchResults)
-  const { search, selection, setSearch, activeIndex } = useSpotlightContext()
+  const { search, selection, setSearch, activeItem, activeIndex } = useSpotlightContext()
   const { loadNodeAndAppend, loadNodeProps, loadNode } = useLoad()
 
   useEffect(() => {
@@ -70,7 +65,7 @@ const Content = () => {
   }, [selection, editorNode, setSearchResults])
 
   useEffect(() => {
-    if (!currentListItem) {
+    if (!activeItem?.item) {
       if (search.value) {
         const listWithNew = searchInList()
         setSearchResults(listWithNew)
@@ -91,7 +86,7 @@ const Content = () => {
     }
 
     setSaved(false)
-  }, [search.value, currentListItem, ilinks])
+  }, [search.value, activeItem.item, ilinks])
 
   useEffect(() => {
     if (!search.value) {

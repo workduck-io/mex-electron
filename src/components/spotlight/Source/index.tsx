@@ -31,7 +31,7 @@ const Source: React.FC<{ metadata: any }> = ({ metadata }) => {
       <br />
       <br />
       <strong>Source: </strong>
-      <a href="#">{`${metadata?.title} ( ${metadata?.owner?.name} )`}</a>
+      <span>{`${metadata?.title} ( ${metadata?.owner?.name} )`}</span>
     </>
   )
 }
