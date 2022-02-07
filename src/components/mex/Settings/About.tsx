@@ -11,6 +11,9 @@ import { AppType } from '../../../hooks/useInitialize'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../../../data/IpcAction'
 import useOnboard from '../../../store/useOnboarding'
+import { CenteredColumn } from '../../../style/Layouts'
+import { BackCard } from '../../../style/Card'
+import { Title } from '../../../style/Typography'
 
 const Container = styled.section`
   margin: 0 ${({ theme }) => theme.spacing.large};
@@ -58,27 +61,29 @@ const About = () => {
   }
 
   return (
-    <Container>
-      <Header colored>Mex</Header>
-      <Margin>Version: {appVersion}</Margin>
-      <Margin>
-        <Flex>
-          <Links href="https://workduck.io" target="_blank" rel="noopener norefer">
-            <StyledIcon icon={globeIcon} />
-            <h4>Website</h4>
-          </Links>
-          <Links href="https://www.linkedin.com/company/workduck-official" target="_blank" rel="noopener norefer">
-            <StyledIcon icon={linkedinIcon} />
-            <h4>Linkedin</h4>
-          </Links>
-          <Links href="https://twitter.com/workduckio" target="_blank" rel="noopener norefer">
-            <StyledIcon icon={twitterIcon} />
-            <h4>Twitter</h4>
-          </Links>
-        </Flex>
-      </Margin>
-      <br />
-    </Container>
+    <CenteredColumn>
+      <BackCard>
+        <Title colored>Mex</Title>
+        <Margin>Version: {appVersion}</Margin>
+        <Margin>
+          <Flex>
+            <Links href="https://workduck.io" target="_blank" rel="noopener norefer">
+              <StyledIcon icon={globeIcon} />
+              <h4>Website</h4>
+            </Links>
+            <Links href="https://www.linkedin.com/company/workduck-official" target="_blank" rel="noopener norefer">
+              <StyledIcon icon={linkedinIcon} />
+              <h4>Linkedin</h4>
+            </Links>
+            <Links href="https://twitter.com/workduckio" target="_blank" rel="noopener norefer">
+              <StyledIcon icon={twitterIcon} />
+              <h4>Twitter</h4>
+            </Links>
+          </Flex>
+        </Margin>
+        <br />
+      </BackCard>
+    </CenteredColumn>
   )
 }
 

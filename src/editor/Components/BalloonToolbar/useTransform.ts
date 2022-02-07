@@ -7,7 +7,7 @@ import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { mog } from '../../../utils/lib/helper'
-import { getSlug, NODE_PATH_SPACER } from '../../../utils/lib/strings'
+import { getSlug, NODE_PATH_CHAR_LENGTH, NODE_PATH_SPACER } from '../../../utils/lib/strings'
 import { convertContentToRawText } from '../../../utils/search/localSearch'
 import { ELEMENT_ILINK } from '../ilink/defaults'
 import { ILinkNode } from '../ilink/types'
@@ -100,7 +100,8 @@ export const useTransform = () => {
       const value = nodes.map(([node, _path]) => {
         return node
       })
-      const isInline = lowest.length === 1 && selText.length < 80
+      const isInline = lowest.length === 1
+      const putContent = selText.length > NODE_PATH_CHAR_LENGTH
 
       const text = convertContentToRawText(value, NODE_PATH_SPACER)
       const parentPath = useEditorStore.getState().node.title
@@ -110,7 +111,7 @@ export const useTransform = () => {
 
       replaceSelectionWithLink(editor, path, isInline)
       // mog('We are here', { lowest, selText, esl: editor.selection, selectionPath, nodes, value, text, path, nodeid })
-      setContent(nodeid, isInline ? defaultContent.content : value)
+      setContent(nodeid, putContent ? value : defaultContent.content)
       // saveData()
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path })
     })

@@ -1,5 +1,6 @@
 import { mix } from 'polished'
 import styled, { css } from 'styled-components'
+import { AsyncButton, Button } from './Buttons'
 import { FOCUS_MODE_OPACITY } from './consts'
 import { FocusModeProp } from './props'
 
@@ -35,6 +36,11 @@ export const NodeInfo = styled.div<FocusModeProp>`
 
 export const InfoTools = styled.div`
   display: flex;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.small};
+  ${Button}, ${AsyncButton} {
+    margin: 0;
+  }
 `
 
 interface StyledEditorProps {
@@ -205,6 +211,10 @@ export const EditorStyles = styled.div`
     display: grid;
     grid-template-columns: 1em auto;
     gap: 0.5em;
+    .slate-TodoListElement-checkboxWrapper {
+      align-items: flex-start;
+      margin-top: ${({ theme }) => theme.spacing.tiny};
+    }
     & + & {
       margin-top: 1em;
     }

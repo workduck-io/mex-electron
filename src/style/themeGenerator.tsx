@@ -1,8 +1,28 @@
 import ColorScheme from 'color-scheme'
 import merge from 'deepmerge'
 import { getLuminance, lighten, mix, tint } from 'polished'
-import { LayoutStyle } from '../types/styled'
-import { DefaultTheme } from 'styled-components'
+import { DefaultTheme, FlattenInterpolation } from 'styled-components'
+
+type Pixels = number // Pixels in integer
+
+interface LayoutStyle {
+  spacing: {
+    large: string
+    medium: string
+    small: string
+    tiny: string
+  }
+  borderRadius: {
+    large: string
+    small: string
+    tiny: string
+  }
+  width: {
+    nav: Pixels
+    sidebar: Pixels
+  }
+  indent: { sidebar: Pixels }
+}
 
 const LayoutTheme: LayoutStyle = {
   spacing: {
@@ -80,6 +100,8 @@ export interface ThemePalette {
   backgroundImages?: BackgroundImages
 
   text?: TextPalette
+
+  custom?: string
 }
 
 export const generateTheme = (p: ThemePalette): DefaultTheme => {
@@ -180,7 +202,8 @@ export const generateTheme = (p: ThemePalette): DefaultTheme => {
             menuGutter: 8
           }
         }
-      }
+      },
+      custom: p.custom
     },
     p
   )

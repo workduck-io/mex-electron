@@ -26,7 +26,7 @@ import { NavTooltip } from '../Tooltips'
 import { NavProps } from './Types'
 import { FocusModeProp } from '../../../style/props'
 
-const StyledDiv = styled.div<FocusModeProp>`
+export const NavWrapper = styled.div<FocusModeProp>`
   overflow: scroll;
   height: 100%;
   z-index: 10;
@@ -149,7 +149,7 @@ const Nav = ({ links }: NavProps) => {
   }, [shortcuts])
 
   return (
-    <StyledDiv focusMode={focusMode}>
+    <NavWrapper focusMode={focusMode}>
       <NavTooltip singleton={source} />
       {authenticated && (
         <div>
@@ -222,7 +222,7 @@ const Nav = ({ links }: NavProps) => {
           </Link>
         </NavTooltip>
       </div>
-    </StyledDiv>
+    </NavWrapper>
   )
 }
 

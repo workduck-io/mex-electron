@@ -1,3 +1,4 @@
+import { devTheme } from '../style/themes/devTheme'
 import { DefaultTheme } from 'styled-components'
 import create from 'zustand'
 import { defaultThemes } from '../style/themes/defaultThemes'
@@ -15,7 +16,7 @@ interface ThemeStoreState {
 }
 
 const useThemeStore = create<ThemeStoreState>((set) => ({
-  theme: defaultThemes[3],
+  theme: { id: 'Dev', themeData: devTheme },
 
   themes: defaultThemes,
 

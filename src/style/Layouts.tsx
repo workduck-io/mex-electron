@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react'
 
 export const Wrapper = styled.div`
   margin: 0 ${({ theme }) => theme.spacing.large};
+  margin-right: 3rem;
 `
 
 export const MexIcon = styled(Icon)`

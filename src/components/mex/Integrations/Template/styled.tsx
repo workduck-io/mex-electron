@@ -28,7 +28,7 @@ export const TemplateCard = styled.div<{ selected: boolean }>`
 `
 
 export const Ellipsis = css`
-  overflow-x: hidden;
+  overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 `
