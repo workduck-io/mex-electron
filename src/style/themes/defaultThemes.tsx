@@ -1,5 +1,6 @@
 import { devTheme } from './devTheme'
 import { gruvboxTheme } from './gruvboxTheme'
+import { imperialTheme } from './imperialTheme'
 import { lightTheme } from './lightTheme'
 import { matrixTheme } from './matrixTheme'
 import { reduxTheme } from './reduxTheme'
@@ -17,7 +18,8 @@ export const defaultThemes = [
   { id: 'Light', themeData: lightTheme },
   { id: 'Sapphire', themeData: sapphireTheme },
   { id: 'Clean', themeData: spotlightTheme },
-  { id: 'Yellowy', themeData: yellowyTheme }
+  { id: 'Yellowy', themeData: yellowyTheme },
+  { id: 'Imperial', themeData: imperialTheme }
 ]
 
 export const getTheme = (themeId: string) => {

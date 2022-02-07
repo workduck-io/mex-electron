@@ -51,7 +51,6 @@ export const SyncForm = styled.form<SyncFormProps>`
   margin: ${({ theme }) => theme.spacing.small} 0;
   padding: 0;
 
-  /* background: ${({ theme }) => theme.colors.background.card}; */
   border-radius: ${({ theme: { borderRadius } }) => `${borderRadius.small}`};
 
   textarea.syncTextArea {

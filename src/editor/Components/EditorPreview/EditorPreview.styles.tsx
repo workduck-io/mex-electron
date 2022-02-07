@@ -6,7 +6,7 @@ export const EditorPreviewWrapper = styled.div`
   padding: ${({ theme }) => theme.spacing.small};
   background: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])} !important;
 
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
 
   border-radius: ${({ theme }) => theme.borderRadius.small};
   color: ${({ theme }) => theme.colors.fade};

@@ -87,6 +87,8 @@ const GlobalStyle = createGlobalStyle`
   button {
     border: none;
   }
+
+  ${({ theme }) => theme.custom && theme.custom}
 `
 
 export default GlobalStyle

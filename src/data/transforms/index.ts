@@ -22,8 +22,8 @@ const v070_alpha_3 = (): KeysTransformation => {
       },
       tags: {
         type: 'ArrayTransform',
-        delete: ['key', 'text'],
-        update: [{ key: 'value', value: (tag) => tag.key }]
+        delete: ['value', 'key'],
+        update: [{ key: 'text', value: (tag) => tag.key }]
       },
 
       archive: ilinks

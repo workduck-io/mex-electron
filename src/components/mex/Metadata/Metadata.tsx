@@ -33,7 +33,7 @@ interface DataWrapperProps {
   interactive?: boolean
 }
 
-const DataWrapper = styled.div<DataWrapperProps>`
+export const DataWrapper = styled.div<DataWrapperProps>`
   display: flex;
   align-items: center;
 
@@ -60,7 +60,7 @@ const DataWrapper = styled.div<DataWrapperProps>`
 
 const DataGroup = styled.div``
 
-const MetadataWrapper = styled.div<FocusModeProp>`
+export const MetadataWrapper = styled.div<FocusModeProp>`
   display: flex;
   align-items: center;
   justify-content: flex-end;

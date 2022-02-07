@@ -23,13 +23,13 @@ export const InfoBarWrapper = styled(animated.div)<InfoBarWrapperProps>`
   @media (max-width: ${size.wide}) {
     min-width: ${({ wide }) => {
       const mainWidth = wide === 'true' ? '600px' : '300px'
-      return `calc(${mainWidth} )`
+      return `calc(${mainWidth})`
     }};
   }
   @media (min-width: ${size.wide}) {
     min-width: ${({ wide }) => {
       const mainWidth = wide === 'true' ? '800px' : '300px'
-      return `calc(${mainWidth} )`
+      return `calc(${mainWidth})`
     }};
   }
 `

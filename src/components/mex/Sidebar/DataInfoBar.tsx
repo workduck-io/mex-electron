@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import Backlinks from '../Backlinks'
 import TagsRelated from '../Tags/TagsRelated'
 
-const DataInfobarWrapper = styled.div`
+export const DataInfobarWrapper = styled.div`
   display: flex;
   height: 100%;
   flex-direction: column;

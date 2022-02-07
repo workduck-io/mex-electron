@@ -9,7 +9,7 @@ import useToggleElements from '../../../hooks/useToggleElements'
 import { useGraphStore } from '../../../store/useGraphStore'
 import IconButton from '../../../style/Buttons'
 import Switch from '../Forms/Switch'
-import { GraphTools, StyledGraph } from './Graph.styles'
+import { GraphTools, GraphWrapper, StyledGraph } from './Graph.styles'
 import NodePreview from './NodePreview'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -146,15 +146,18 @@ export const TreeGraph = (props: TreeGraphProps) => {
         </GraphTools>
       ) : null}
       {showNodePreview && <NodePreview node={selectedNode} />}
-      <Graph
-        graph={graph}
-        options={options}
-        events={events}
-        style={{ height: '100vh' }}
-        getNetwork={(p: any) => {
-          setNetwork(p)
-        }}
-      />
+      <GraphWrapper>
+        <Graph
+          graph={graph}
+          options={options}
+          events={events}
+          className="MEXnodeGraphSide"
+          style={{ height: '100vh' }}
+          getNetwork={(p: any) => {
+            setNetwork(p)
+          }}
+        />
+      </GraphWrapper>
       {/* <NodeServices /> */}
     </StyledGraph>
   )

@@ -1,6 +1,6 @@
 // import original module declarations
 import { ThemeConfig } from 'react-select/src/theme'
-import 'styled-components'
+import { css } from 'styled-components'
 
 type Pixels = number // Pixels in integer
 
@@ -73,5 +73,6 @@ declare module 'styled-components' {
       profilePalette: string[]
       reactSelect: ThemeConfig
     }
+    custom?: FlattenInterpolation<any>
   }
 }

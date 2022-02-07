@@ -10,6 +10,7 @@ import useEditorActions from '../../hooks/useEditorActions'
 
 const EditorViewWrapper = styled.div`
   display: flex;
+  align-items: center;
   justify-content: space-between;
   width: 100%;
   height: 100%;

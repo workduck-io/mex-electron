@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
 export const StyledGraph = styled.div`
-  /* width: 100%; */
   max-height: 100vh;
   width: 100%;
   position: relative;
@@ -19,6 +18,9 @@ export const StyledSyncBlockInfo = styled(StyledGraph)`
   overflow-y: auto;
 `
 
+export const GraphWrapper = styled.div`
+  height: 100vh;
+`
 export const GraphTools = styled.div`
   display: flex;
   align-items: center;
