@@ -43,6 +43,7 @@ export const useDataSaverFromContent = () => {
       updateTagsFromContent(nodeid, editorValue)
       const title = getNodeIdFromUid(nodeid)
       updateDocNew(nodeid, convertEntryToRawText(nodeid, editorValue), title)
+      saveData()
     }
   } //, [])
 
@@ -93,6 +94,7 @@ export const useSaver = () => {
     if (hasState) {
       const editorState = content ?? state[editorId].get.value()
       saveEditorValueAndUpdateStores(cnode.nodeid, editorState)
+      saveData()
     }
 
     if (writeToFile !== false) {

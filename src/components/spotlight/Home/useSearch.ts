@@ -6,9 +6,10 @@ import { SearchType, useSpotlightContext } from '../../../store/Context/context.
 import { isNewILink } from '../../../components/mex/NodeSelect/NodeSelect'
 import { getListItemFromNode } from './helper'
 import { ILink } from '../../../types/Types'
-import { ListItemType } from '../SearchResults/types'
+import { ListItemType, ItemActionType } from '../SearchResults/types'
 import { initActions } from '../../../data/Actions'
 import { useNewSearchStore } from '../../../store/useSearchStore'
+import { mog } from '../../../utils/lib/helper'
 
 export const useSearch = () => {
   const { search } = useSpotlightContext()
@@ -16,22 +17,37 @@ export const useSearch = () => {
   const searchIndex = useNewSearchStore((store) => store.searchIndex)
 
   const searchInList = () => {
-    let searchList = []
+    let searchList: Array<ListItemType> = []
 
     switch (search.type) {
       // * Search quick links using [[
       case SearchType.quicklink:
         const query = search.value.substring(2)
-        const results = getSearchResults(query, ilinks, { keySelector: (obj) => obj.path })
+        if (query) {
+          const results = getSearchResults(query, ilinks, { keySelector: (obj) => obj.path })
 
-        const result: Array<ListItemType> = results.map((ilink: ILink) => {
-          const item: ListItemType = getListItemFromNode(ilink)
-          return item
-        })
+          const result: Array<ListItemType> = results.map((ilink: ILink) => {
+            const item: ListItemType = getListItemFromNode(ilink)
+            return item
+          })
 
-        const isNew = isNewILink(query, ilinks)
+          const isNew = isNewILink(query, ilinks)
 
-        searchList = isNew ? [{ new: true }, ...result] : result
+          searchList = isNew
+            ? [
+                {
+                  title: 'Create new ',
+                  id: 'create-new-node',
+                  icon: 'bi:plus-circle',
+                  type: ItemActionType.ilink,
+                  extras: {
+                    new: true
+                  }
+                },
+                ...result
+              ]
+            : result
+        }
         break
 
       // * Search actions using "/"
@@ -43,6 +59,7 @@ export const useSearch = () => {
 
       case SearchType.search:
         const items = searchIndex(search.value)
+        mog('normal search', { items, search: search.value })
         const res = items.map((item) => {
           const ilink = ilinks.find((link) => link.nodeid === item.nodeUID)
           const listItem = getListItemFromNode(ilink)

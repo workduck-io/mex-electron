@@ -15,6 +15,10 @@ import { ListItemType } from '../SearchResults/types'
 import { StyledContent } from './styled'
 import { getListItemFromNode } from '../Home/helper'
 import { isNewILink } from '../../../components/mex/NodeSelect/NodeSelect'
+import { useSearch } from '../Home/useSearch'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { MAX_RECENT_ITEMS } from '../Home/components/List'
+import { initActions } from '../../../data/Actions'
 
 const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -25,7 +29,8 @@ const INIT_PREVIEW: PreviewType = {
 const Content = () => {
   // * State
   const [preview, setPreview] = useState<PreviewType>(INIT_PREVIEW)
-  const [searchResults, setSearchResults] = useState<Array<Partial<ListItemType>>>()
+  const [searchResults, setSearchResults] = useState<Array<ListItemType>>([])
+  const recents = useRecentsStore((store) => store.lastOpened)
 
   // * Store
   const ilinks = useDataStore((s) => s.ilinks)
@@ -42,11 +47,14 @@ const Content = () => {
     isPreview: store.isPreview
   }))
 
+  const { searchInList } = useSearch()
+  const [recentLimit, setRecentLimit] = useState(0)
   const setNormalMode = useSpotlightAppStore((store) => store.setNormalMode)
+  const currentListItem = useSpotlightEditorStore((store) => currentListItem)
 
   // * Custom hooks
-  const currentIndex = 0 // useCurrentIndex(searchResults)
-  const { search, selection, setSearch } = useSpotlightContext()
+  // const currentIndex = 0 // useCurrentIndex(searchResults)
+  const { search, selection, setSearch, activeIndex } = useSpotlightContext()
   const { loadNodeAndAppend, loadNodeProps, loadNode } = useLoad()
 
   useEffect(() => {
@@ -54,70 +62,71 @@ const Content = () => {
     loadNodeProps(editorNode)
     saveEditorNode(editorNode)
 
-    if (search) {
+    if (search.value) {
       setSearch({ value: '', type: SearchType.search })
-      setSearchResults(undefined)
+      setSearchResults([])
     }
   }, [selection, editorNode, setSearchResults])
 
   useEffect(() => {
-    // * Search in
-    const list = ilinks
-    const resultList = getSearchResults(search.value, list, { keySelector: (obj) => obj.path })
+    if (!currentListItem) {
+      if (search.value) {
+        const listWithNew = searchInList()
+        setSearchResults(listWithNew)
+      } else {
+        setNormalMode(true)
+        const recentList = recents.map((nodeid: string) => {
+          const item = ilinks.find((link) => link?.nodeid === nodeid)
 
-    if (search.value) {
-      const result: Array<ListItemType> = resultList.map((ilink: ILink) => {
-        const item: ListItemType = getListItemFromNode(ilink)
-        return item
-      })
-
-      const isNew = isNewILink(search.value, ilinks)
-      const listWithNew = isNew ? [{ id: 'create-new-ilink', extras: { new: true } }, ...result] : result
-
-      setSearchResults(listWithNew)
-    } else {
-      setNormalMode(true)
-      setSearchResults(undefined)
-    }
-
-    setSaved(false)
-  }, [search.value, ilinks])
-
-  useEffect(() => {
-    if (!searchResults) {
-      if (selection) {
-        setPreview({
-          ...selection,
-          isSelection: true
+          const listItem: ListItemType = getListItemFromNode(item)
+          return listItem
         })
-      } else {
-        setNodeContent(undefined)
-        setPreview(INIT_PREVIEW)
-      }
-    } else if (searchResults.length === 0) {
-      setPreview({
-        ...INIT_PREVIEW,
-        text: null
-      })
-      loadNodeProps(editorNode)
-    } else {
-      const resultNode = searchResults[currentIndex]
-      setPreview({
-        ...INIT_PREVIEW,
-        text: null
-      })
-      if (nodeContent) {
-        loadNodeAndAppend(resultNode?.extras?.nodeid, nodeContent)
-      } else {
-        loadNode(resultNode?.extras?.nodeid, { savePrev: false, fetch: false })
+
+        const recentLimit = recentList.length < MAX_RECENT_ITEMS ? recentList.length : MAX_RECENT_ITEMS
+        setRecentLimit(recentLimit)
+        const data = [...recentList.slice(0, recentLimit), ...initActions]
+        setSearchResults(data)
       }
     }
+
     setSaved(false)
-  }, [searchResults, currentIndex, isPreview, selection, editorNode])
+  }, [search.value, currentListItem, ilinks])
+
+  // useEffect(() => {
+  //   if (!searchResults) {
+  //     if (selection) {
+  //       setPreview({
+  //         ...selection,
+  //         isSelection: true
+  //       })
+  //     } else {
+  //       setNodeContent(undefined)
+  //       setPreview(INIT_PREVIEW)
+  //     }
+  //   } else if (searchResults.length === 0) {
+  //     setPreview({
+  //       ...INIT_PREVIEW,
+  //       text: null
+  //     })
+  //     loadNodeProps(editorNode)
+  //   } else {
+  //     const resultNode = searchResults[activeIndex]
+  //     setPreview({
+  //       ...INIT_PREVIEW,
+  //       text: null
+  //     })
+  //     if (nodeContent) {
+  //       loadNodeAndAppend(resultNode?.extras?.nodeid, nodeContent)
+  //     } else {
+  //       loadNode(resultNode?.extras?.nodeid, { savePrev: false, fetch: false })
+  //     }
+  //   }
+  //   setSaved(false)
+  // }, [searchResults, activeIndex, isPreview, selection, editorNode])
 
   return (
     <StyledContent>
-      <SideBar index={currentIndex} data={searchResults} />
+      <SideBar recentLimit={recentLimit} index={activeIndex} data={searchResults} />
       {/* <Preview preview={preview} node={editorNode} /> */}
     </StyledContent>
   )

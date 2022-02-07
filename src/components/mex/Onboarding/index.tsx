@@ -1,12 +1,9 @@
 import React from 'react'
 import useOnboard from '../../../store/useOnboarding'
 import { Button } from '../../../style/Buttons'
-// import { Button } from '../../Styled/Buttons'
-// import useOnboard from './store'
 import { ReactTour } from './styled'
 
 const OnBoardingTour = ({ steps }: { steps: Array<any> }) => {
-  const isOnboarding = useOnboard((s) => s.isOnboarding)
   const step = useOnboard((s) => s.step)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
 

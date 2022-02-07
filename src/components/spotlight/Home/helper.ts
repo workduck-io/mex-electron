@@ -8,7 +8,7 @@ export const getListItemFromNode = (node: ILink) => {
   const rawText = convertContentToRawText(content?.content ?? [], ' ')
 
   const listItem: ListItemType = {
-    icon: node?.icon ?? 'gg:',
+    icon: node?.icon ?? 'gg:file-document',
     title: node?.path,
     id: node?.nodeid,
     description: rawText,

@@ -24,17 +24,17 @@ export const Shortcut = styled.div`
 function Item({ item, active, onClick }: { item: ListItemType; active?: boolean; onClick?: () => void }) {
   const theme = useTheme()
   return (
-    <StyledRow showColor={active} onClick={onClick} key={`STRING_${item.title}`}>
+    <StyledRow showColor={active} onClick={onClick} key={`STRING_${item?.title}`}>
       <div>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Icon color={theme.colors.primary} style={{ marginRight: '8px' }} height={18} width={18} icon={item.icon} />
+          <Icon color={theme.colors.primary} style={{ marginRight: '8px' }} height={18} width={18} icon={item?.icon} />
           <div>{item?.title}</div>
         </div>
         <Description>{item?.description}</Description>
       </div>
       {active && (
         <Shortcut>
-          {item.shortcut && item.shortcut.map((shortcutKey, id) => <StyledKey key={id}>{shortcutKey}</StyledKey>)}
+          {item?.shortcut && item?.shortcut?.map((shortcutKey, id) => <StyledKey key={id}>{shortcutKey}</StyledKey>)}
         </Shortcut>
       )}
     </StyledRow>

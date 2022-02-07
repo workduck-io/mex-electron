@@ -8,6 +8,7 @@ import Item from './Item'
 import { ItemActionType, ListItemType } from '../../SearchResults/types'
 import { mog } from '../../../../utils/lib/helper'
 import { useSpotlightEditorStore } from '../../../../store/editor.spotlight'
+import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -22,17 +23,17 @@ const List = ({
   selectedItem: ListItemType
   setSelectedItem: (action: ListItemType) => void
 }) => {
-  const { search } = useSpotlightContext()
+  const { search, activeIndex, setActiveIndex } = useSpotlightContext()
   const parentRef = useRef(null)
-  const [activeIndex, setActiveIndex] = useState(0)
   const [first, setFirst] = useState(false)
   const pointerMoved = usePointerMovedSinceMount()
+  const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
 
   const { itemActionExecutor } = useItemExecutor()
 
   const virtualizer = useVirtual({
-    size: 10,
+    size: data?.length ?? 0,
     parentRef
   })
 
@@ -46,7 +47,7 @@ const List = ({
     const handler = (event) => {
       if (event.key === 'ArrowUp') {
         event.preventDefault()
-        setActiveIndex((index) => {
+        setActiveIndex((index: number) => {
           let nextIndex = index > 0 ? index - 1 : index
 
           // avoid setting active index on a group
@@ -93,6 +94,7 @@ const List = ({
           setFirst(false)
           setSelectedItem(null)
         }
+        setInput('')
       }
     }
 
@@ -127,6 +129,7 @@ const List = ({
       <div style={{ height: virtualizer.totalSize }}>
         {virtualizer.virtualItems.map((virtualRow) => {
           const item = data[virtualRow.index]
+          mog('item', { item })
           const handlers = {
             onPointerMove: () => pointerMoved && setActiveIndex(virtualRow.index),
             onClick: () => handleClick(virtualRow.index)

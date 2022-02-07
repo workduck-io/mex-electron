@@ -16,6 +16,7 @@ const Search: React.FC = () => {
   const ref = useRef<HTMLInputElement>()
   const theme = useTheme()
   const { setSearch, search } = useSpotlightContext()
+  const input = useSpotlightAppStore((store) => store.input)
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
@@ -55,6 +56,7 @@ const Search: React.FC = () => {
       <StyledInput
         ref={ref}
         autoFocus
+        value={input}
         id="spotlight_search"
         name="spotlight_search"
         placeholder={placeholder}

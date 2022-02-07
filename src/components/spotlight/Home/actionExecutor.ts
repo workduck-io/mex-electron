@@ -8,12 +8,13 @@ const useItemExecutor = () => {
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
   const { setSearch } = useSpotlightContext()
 
-  const closeSpotlight = () =>
+  const closeSpotlight = () => {
     ipcRenderer.send(IpcAction.CLOSE_SPOTLIGHT, {
       data: {
         hide: true
       }
     })
+  }
 
   function itemActionExecutor(item: ListItemType, query?: string) {
     switch (item.type) {
