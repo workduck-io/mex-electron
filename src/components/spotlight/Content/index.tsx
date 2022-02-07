@@ -1,27 +1,22 @@
-import { search as getSearchResults } from 'fast-fuzzy'
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
 import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
-import { useCurrentIndex } from '../../../hooks/useCurrentIndex'
 import useLoad from '../../../hooks/useLoad'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
-import { ILink } from '../../../types/Types'
-import Preview from '../Preview'
+import Preview, { PreviewType } from '../Preview'
 import SideBar from '../SideBar'
+import { ListItemType } from '../SearchResults/types'
+import { StyledContent } from './styled'
+import { getListItemFromNode } from '../Home/helper'
+import { useSearch } from '../Home/useSearch'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { MAX_RECENT_ITEMS } from '../Home/components/List'
+import { initActions } from '../../../data/Actions'
 
-export const StyledContent = styled.section`
-  display: flex;
-  justify-content: center;
-  flex: 1;
-  max-height: 324px;
-  margin: 0.5rem 0;
-`
-
-const initPreview = {
+const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
   metadata: null,
   isSelection: false
@@ -29,41 +24,33 @@ const initPreview = {
 
 const Content = () => {
   // * State
-  const [searchResults, setSearchResults] = useState<Array<any>>()
-  const [preview, setPreview] = useState<{
-    text: string
-    metadata: string | null
-    isSelection: boolean
-  }>(initPreview)
+  const [preview, setPreview] = useState<PreviewType>(INIT_PREVIEW)
+  const [searchResults, setSearchResults] = useState<Array<ListItemType>>([])
+  const recents = useRecentsStore((store) => store.lastOpened)
 
   // * Store
   const ilinks = useDataStore((s) => s.ilinks)
-  const { setSaved, getContent } = useContentStore(({ setSaved, getContent }) => ({ setSaved, getContent }))
-  const { editorNode, saveEditorNode, setNodeContent, nodeContent, isPreview } = useSpotlightEditorStore(
-    ({ node, setNode, setNodeContent, nodeContent, isPreview }) => ({
-      editorNode: node,
-      saveEditorNode: setNode,
-      setNodeContent,
-      nodeContent,
-      isPreview
-    })
-  )
 
-  const { normalMode, setNormalMode } = useSpotlightAppStore(({ normalMode, setNormalMode }) => ({
-    normalMode,
-    setNormalMode
+  const { setSaved } = useContentStore((store) => ({
+    setSaved: store.setSaved
   }))
 
-  // useEffect(() => {
-  //   if (!normalMode) {
-  //     setNormalMode(true)
-  //     saveEditorNode(createNodeWithUid(getNewDraftKey()))
-  //   }
-  // }, [])
+  const { editorNode, saveEditorNode, setNodeContent, nodeContent, isPreview } = useSpotlightEditorStore((store) => ({
+    editorNode: store.node,
+    saveEditorNode: store.setNode,
+    setNodeContent: store.setNodeContent,
+    nodeContent: store.nodeContent,
+    isPreview: store.isPreview
+  }))
+
+  const { searchInList } = useSearch()
+  const [recentLimit, setRecentLimit] = useState(0)
+  const setNormalMode = useSpotlightAppStore((store) => store.setNormalMode)
+  const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
 
   // * Custom hooks
-  const { search, selection, setSearch } = useSpotlightContext()
-  const currentIndex = useCurrentIndex(searchResults)
+  // const currentIndex = 0 // useCurrentIndex(searchResults)
+  const { search, selection, setSearch, activeItem, activeIndex } = useSpotlightContext()
   const { loadNodeAndAppend, loadNodeProps, loadNode } = useLoad()
 
   useEffect(() => {
@@ -71,55 +58,38 @@ const Content = () => {
     loadNodeProps(editorNode)
     saveEditorNode(editorNode)
 
-    if (search) {
-      setSearch('')
-      setSearchResults(undefined)
-    }
+    // if (search.value) {
+    //   setSearch({ value: '', type: SearchType.search })
+    //   setSearchResults([])
+    // }
   }, [selection, editorNode, setSearchResults])
 
   useEffect(() => {
-    const results = getSearchResults(search, ilinks, { keySelector: (obj) => obj.path })
-
-    if (search) {
-      const resultsWithContent: Array<Partial<ILink> | { desc: string; new?: boolean }> = results.map(
-        (ilink: ILink) => {
-          const content = getContent(ilink.nodeid)
-          let rawText = ''
-
-          content?.content.map((item) => {
-            rawText += item?.children?.[0]?.text || ''
-            return item
-          })
-
-          return {
-            ...ilink,
-            desc: rawText
-          }
-        }
-      )
-
-      const isNew = ilinks.filter((item) => item.path === search).length === 0
-
-      if (isNew) {
-        setSearchResults([{ new: true }, ...resultsWithContent])
+    if (!activeItem?.item) {
+      if (search.value) {
+        const listWithNew = searchInList()
+        setSearchResults(listWithNew)
       } else {
-        setSearchResults(resultsWithContent)
+        setNormalMode(true)
+        const recentList = recents.map((nodeid: string) => {
+          const item = ilinks.find((link) => link?.nodeid === nodeid)
+
+          const listItem: ListItemType = getListItemFromNode(item)
+          return listItem
+        })
+
+        const recentLimit = recentList.length < MAX_RECENT_ITEMS ? recentList.length : MAX_RECENT_ITEMS
+        setRecentLimit(recentLimit)
+        const data = [...recentList.slice(0, recentLimit), ...initActions]
+        setSearchResults(data)
       }
-    } else {
-      setNormalMode(true)
-      setSearchResults(undefined)
     }
+
     setSaved(false)
-  }, [search, ilinks])
+  }, [search.value, activeItem.item, ilinks])
 
   useEffect(() => {
-    const prevTemplate = {
-      text: DEFAULT_PREVIEW_TEXT,
-      metadata: null,
-      isSelection: false
-    }
-
-    if (!searchResults) {
+    if (!search.value) {
       if (selection) {
         setPreview({
           ...selection,
@@ -127,32 +97,32 @@ const Content = () => {
         })
       } else {
         setNodeContent(undefined)
-        setPreview(prevTemplate)
+        setPreview(INIT_PREVIEW)
       }
     } else if (searchResults.length === 0) {
       setPreview({
-        ...prevTemplate,
+        ...INIT_PREVIEW,
         text: null
       })
       loadNodeProps(editorNode)
     } else {
-      const resultNode = searchResults[currentIndex]
+      const resultNode = searchResults[activeIndex]
       setPreview({
-        ...prevTemplate,
+        ...INIT_PREVIEW,
         text: null
       })
       if (nodeContent) {
-        loadNodeAndAppend(resultNode.nodeid, nodeContent)
+        loadNodeAndAppend(resultNode?.extras?.nodeid, nodeContent)
       } else {
-        loadNode(resultNode.nodeid, { savePrev: false, fetch: false })
+        loadNode(resultNode?.extras?.nodeid, { savePrev: false, fetch: false })
       }
     }
     setSaved(false)
-  }, [searchResults, currentIndex, isPreview, selection, editorNode])
+  }, [searchResults, search.value, activeIndex, isPreview, selection, editorNode])
 
   return (
     <StyledContent>
-      <SideBar index={currentIndex} data={searchResults} />
+      <SideBar recentLimit={recentLimit} index={activeIndex} data={searchResults} />
       <Preview preview={preview} node={editorNode} />
     </StyledContent>
   )

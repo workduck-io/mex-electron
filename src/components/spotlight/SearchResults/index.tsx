@@ -2,8 +2,7 @@
 import PlusCircle from '@iconify-icons/bi/plus-circle'
 import Document from '@iconify-icons/gg/file-document'
 import { Icon } from '@iconify/react'
-import React, { useEffect, useRef, useState } from 'react'
-import { useSpring, useTransition } from 'react-spring'
+import React, { useRef, useState } from 'react'
 import { mog } from '../../../utils/lib/helper'
 import { useTheme } from 'styled-components'
 import { IpcAction } from '../../../data/IpcAction'
@@ -16,83 +15,110 @@ import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import useDataStore from '../../../store/useDataStore'
 import { NoWrap, PrimaryText } from '../../../style/Integration'
 import { ActionTitle } from '../Actions/styled'
-import ListenResultShortcut from './ListenResultShortcut'
 import { Description, StyledResults, StyledRow } from './styled'
+import { ListItemType } from './types'
+import { useVirtual } from 'react-virtual'
+import { StyledKey } from '../Shortcuts/styled'
+import { Shortcut } from '../Home/components/Item'
 
 export const Result: React.FC<{
-  result: any // FIXME
+  result: ListItemType
   onClick: () => void
-  style: any
+  style?: any
   selected?: boolean
   key?: string
 }> = ({ result, selected, onClick, style }) => {
   const theme = useTheme()
   return (
-    <StyledRow style={style} showColor={selected} onClick={onClick} key={`STRING_${result.text}`}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Icon color={theme.colors.primary} style={{ marginRight: '8px' }} height={16} width={16} icon={Document} />
-        <div>{result?.path}</div>
+    <StyledRow showColor={selected} onClick={onClick} key={`STRING_${result.title}`}>
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Icon
+            color={theme.colors.primary}
+            style={{ marginRight: '8px' }}
+            height={18}
+            width={18}
+            icon={result.icon ?? 'gg:file-document'}
+          />
+          <div>{result?.title}</div>
+        </div>
+        <Description>{result?.description}</Description>
       </div>
-      <Description>{result?.desc}</Description>
+      {selected && (
+        <Shortcut>
+          {result.shortcut && result.shortcut.map((shortcutKey, id) => <StyledKey key={id}>{shortcutKey}</StyledKey>)}
+        </Shortcut>
+      )}
     </StyledRow>
   )
 }
 
-const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ current, data }) => {
+const SearchResults: React.FC<{ current: number; data: Array<ListItemType> }> = ({ current, data }) => {
   const ref = useRef<any>(undefined!)
+  const listContainerRef = useRef(null)
+
+  const rowVirtualizer = useVirtual({
+    size: data.length,
+    parentRef: listContainerRef
+  })
+
+  // destructuring here to prevent linter warning to pass
+  // entire rowVirtualizer in the dependencies array.
+  const { scrollToIndex } = rowVirtualizer
 
   const { search } = useSpotlightContext()
   const [selectedIndex, setSelectedIndex] = useState<number>(current)
-  const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const { addILink } = useDataStore()
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
 
   const setNode = useSpotlightEditorStore((s) => s.setNode)
   const { getNode } = useLoad()
 
-  const props = useSpring({ width: search ? '40%' : '0%', display: 'block', opacity: search ? 1 : 0 })
+  // const props = useSpring({ width: search ? '40%' : '100%', display: 'block', opacity: search ? 1 : 0 })
 
-  const transitions = useTransition(data ?? [], {
-    from: {
-      marginTop: 0,
-      opacity: 0,
-      transform: 'translateY(-4px)'
-    },
-    enter: {
-      marginTop: 0,
-      opacity: 1,
-      transform: 'translateY(0px)'
-    },
-    trail: 100
-  })
+  // const transitions = useTransition(rowVirtualizer.virtualItems, {
+  //   from: {
+  //     marginTop: 0,
+  //     opacity: 0,
+  //     transform: 'translateY(-4px)'
+  //   },
+  //   enter: {
+  //     marginTop: 0,
+  //     opacity: 1,
+  //     transform: 'translateY(0px)'
+  //   },
+  //   trail: 100
+  // })
 
-  useEffect(() => {
-    ref?.current?.scrollToItem(current)
+  React.useEffect(() => {
+    scrollToIndex(current, {
+      // To ensure that we don't move past the first item
+      align: current < 1 ? 'start' : 'auto'
+    })
     setSelectedIndex(current)
-  }, [current])
+  }, [current, scrollToIndex])
 
   const handleCreateItem = () => {
-    const nodeid = addILink(search)
+    const nodeid = addILink(search.value)
     setNode(getNode(nodeid))
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, search)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeid)
     setNormalMode(false)
   }
 
-  const withNew = data?.length > 0 && data[0].new
-
-  mog('', { search, data })
+  const withNew = data?.length > 0 && data[0]?.extras.new
 
   return (
-    <StyledResults style={props} margin={search}>
-      {data && data.length !== 0 && <ListenResultShortcut />}
-      {transitions((props, result, state, index) => {
-        if (result.new) {
+    <StyledResults ref={listContainerRef} margin={search.value}>
+      {rowVirtualizer.virtualItems.map((item) => {
+        const result = data[item.index]
+        const index = item.index
+        if (result?.extras?.new) {
           return (
             <StyledRow showColor={index === selectedIndex} onClick={handleCreateItem} key="wd-mex-create-new-node">
               <NoWrap>
-                <Icon style={{ marginRight: '8px' }} height={16} width={16} icon={PlusCircle} />
+                <Icon style={{ marginRight: '8px' }} height={24} width={24} icon={PlusCircle} />
                 <div>
-                  Create new <PrimaryText>{search}</PrimaryText>
+                  Create new <PrimaryText>{search.value}</PrimaryText>
                 </div>
               </NoWrap>
             </StyledRow>
@@ -102,8 +128,7 @@ const SearchResults: React.FC<{ current: number; data: Array<any> }> = ({ curren
           <>
             {((withNew && index === 1) || (!withNew && index === 0)) && <ActionTitle>SEARCH RESULTS</ActionTitle>}
             <Result
-              style={{ ...props }}
-              key={`RESULT_${result?.desc || String(index)}`}
+              key={`RESULT_${result?.description || String(index)}`}
               selected={index === selectedIndex}
               onClick={() => {
                 setSelectedIndex(index)

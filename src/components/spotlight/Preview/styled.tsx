@@ -1,14 +1,14 @@
 import { animated } from 'react-spring'
 import styled from 'styled-components'
 import { Scroll } from '../../../style/spotlight/layout'
-import { StyledBackground } from '../Spotlight/styled'
+import { StyledBackground } from '../styled'
 
 export const StyledPreview = styled(animated.div)`
   ${StyledBackground}
   ${Scroll}
   position: relative;
   padding: 0.5rem;
-  border-radius: 1rem;
+  border-radius: 10px;
   white-space: pre-wrap;
   width: 100%;
 `

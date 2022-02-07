@@ -123,7 +123,7 @@ const Nav = ({ links }: NavProps) => {
 
     saveNewNodeAPI(nodeid)
     push(nodeid, { withLoading: false })
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, newNodeId)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
   }
 
   const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {

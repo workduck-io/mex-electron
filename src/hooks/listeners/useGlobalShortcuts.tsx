@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import tinykeys from 'tinykeys'
 import { useSpotlightAppStore } from '../../store/app.spotlight'
-import { useSpotlightContext } from '../../store/Context/context.spotlight'
+import { SearchType, useSpotlightContext } from '../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../store/settings.spotlight'
 import { useContentStore } from '../../store/useContentStore'
@@ -14,7 +14,7 @@ export const useGlobalShortcuts = () => {
   const history = useHistory()
   const location = useLocation()
 
-  const { setSelection, setSearch, search, selection } = useSpotlightContext()
+  const { setSelection, setSearch, setActiveItem, search, selection } = useSpotlightContext()
 
   const { showSource, toggleSource } = useSpotlightSettingsStore(({ showSource, toggleSource }) => ({
     showSource,
@@ -27,34 +27,28 @@ export const useGlobalShortcuts = () => {
   const setIsPreview = useSpotlightEditorStore((state) => state.setIsPreview)
   const setBubble = useSpotlightSettingsStore((state) => state.setBubble)
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
+  const setCurrentListItem = useSpotlightEditorStore((s) => s.setCurrentListItem)
 
   const handleCancel = () => {
     setSaved(false)
-    setSearch('')
+    setSearch({ value: '', type: SearchType.search })
+    setActiveItem({ item: null, active: false })
   }
 
   const { shortcutDisabled } = useKeyListener()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      // Alt: (event) => {
-      //   event.preventDefault()
-      //   if (!shortcutDisabled) history.push('/settings')
-      // },
-      // '$mod+Shift+KeyB': (event) => {
-      //   event.preventDefault()
-      //   if (!shortcutDisabled) setBubble()
-      // },
       Escape: (event) => {
         event.preventDefault()
         if (!shortcutDisabled) {
           getPlateActions(savedEditorNode.nodeid).resetEditor()
           setNormalMode(true)
-          if (selection && !search) {
+          if (selection && !search.value) {
             setSelection(undefined)
 
             removeContent(savedEditorNode.nodeid)
-          } else if (search) {
+          } else if (search.value) {
             setIsPreview(false)
             handleCancel()
           } else {
@@ -62,6 +56,7 @@ export const useGlobalShortcuts = () => {
             handleCancel()
             ipcRenderer.send('close')
           }
+          setCurrentListItem(undefined)
         }
       }
     })

@@ -25,6 +25,7 @@ import {
   SuggestionText
 } from './NodeSelect.styles'
 import MexIcons from '../../../components/icons/Icons'
+import { ILink } from '../../../types/Types'
 
 export type ComboItem = {
   // Text to be shown in the combobox list
@@ -310,6 +311,10 @@ NodeSelect.defaultProps = {
 
 export function isNew(input: string, items: Array<ComboItem>): boolean {
   return items.filter((item) => item.text === input).length === 0
+}
+
+export const isNewILink = (input: string, items: Array<ILink>): boolean => {
+  return items.filter((item) => item.path == input).length === 0
 }
 
 export default NodeSelect

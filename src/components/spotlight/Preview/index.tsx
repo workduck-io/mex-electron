@@ -1,6 +1,6 @@
 import downIcon from '@iconify-icons/ph/arrow-down-bold'
 import { Icon } from '@iconify/react'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useSpring } from 'react-spring'
 import EditorErrorFallback from '../../../components/mex/Error/EditorErrorFallback'
@@ -14,7 +14,7 @@ import useEditorActions from '../../../hooks/useEditorActions'
 import { AppType } from '../../../hooks/useInitialize'
 import useLoad from '../../../hooks/useLoad'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { SearchType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
@@ -59,10 +59,39 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   // * Custom hooks
   const { loadNodeProps } = useLoad()
   const ref = useRef<HTMLDivElement>()
-  const { search, selection, setSelection, setSearch } = useSpotlightContext()
+  const { search, selection, setSelection, activeItem, setSearch } = useSpotlightContext()
   const deserializedContentNodes = useDeserializeSelectionToNodes(node.nodeid, preview)
 
-  const animationProps = useSpring({ width: search ? '60%' : '100%' })
+  const springProps = useMemo(() => {
+    const style = { width: '0%', opacity: 0, padding: '0' }
+    if (activeItem?.item) return style
+
+    if (selection || !normalMode) {
+      if (!search.value) style.width = '100%'
+      else {
+        if (search.type === SearchType.action) style.width = '0%'
+        else style.width = '50%'
+      }
+    } else {
+      if (!search.value) style.width = '0%'
+      else {
+        if (search.type === SearchType.action) style.width = '0%'
+        else style.width = '50%'
+      }
+    }
+
+    if (style.width === '0%') {
+      style.opacity = 0
+      style.padding = '0'
+    } else {
+      style.opacity = 1
+      style.padding = '0.5rem'
+    }
+
+    return style
+  }, [selection, search.value, normalMode])
+
+  const animationProps = useSpring(springProps)
 
   useEffect(() => {
     if (preview.isSelection && deserializedContentNodes) {
@@ -72,14 +101,13 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
       setNodeContent(deserializedContent)
       setFsContent(node.nodeid, deserializedContent)
 
-      // * FIX: For BUBBLE MODE
       // setNodeContent([...changedContent, { children: nodes }])
       // setFsContent(node.nodeid, [...changedContent, { children: nodes }])
     }
   }, [preview.text, showSource])
 
   useEffect(() => {
-    if (!search) {
+    if (!search.value) {
       loadNodeProps(node)
     }
   }, [preview.text])
@@ -90,14 +118,13 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
 
   const onBeforeSave = () => {
     addILink(node.key, node.nodeid)
-    mog(node.nodeid, { node })
   }
 
   const onAfterSave = (nodeid: string) => {
     setSaved(true)
 
     setSelection(undefined)
-    setSearch('')
+    setSearch({ value: '', type: SearchType.search })
     setNormalMode(true)
 
     const nNode = createNodeWithUid(getNewDraftKey())
@@ -137,7 +164,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
             <Editor
               autoFocus={!normalMode}
               focusAtBeginning={!normalMode}
-              readOnly={search ? true : false}
+              readOnly={search.value ? true : false}
               content={previewContent?.content ?? defaultContent.content}
               editorId={node.nodeid}
             />

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { ActionTitle, Draggable } from '../Actions/styled'
-import { StyledContent } from '../Content'
+import { StyledContent } from '../Content/styled'
 import { StyledSearch } from '../Search/styled'
 
 export const StyledHeadingContainer = styled(StyledSearch)`

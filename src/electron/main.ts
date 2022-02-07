@@ -4,6 +4,7 @@ import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, screen,
 import fs from 'fs'
 import _ from 'lodash'
 import path from 'path'
+import { mog } from '../utils/lib/helper'
 import { getSaveLocation, getSearchIndexLocation } from '../data/Defaults/data'
 import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
 import { IpcAction } from '../data/IpcAction'
@@ -521,6 +522,7 @@ ipcMain.on(IpcAction.CLEAR_RECENTS, (_event, arg) => {
 
 ipcMain.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {
   const { from, data } = arg
+  mog('Add new recent item', { from, data })
   notifyOtherWindow(IpcAction.NEW_RECENT_ITEM, from, data)
 })
 
