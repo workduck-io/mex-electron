@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../data/IpcAction'
+import { useVersionStore } from '../store/useAppDataStore'
 import { useSpotlightSettingsStore } from '../store/settings.spotlight'
 import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
@@ -7,16 +8,18 @@ import { useSnippetStore } from '../store/useSnippetStore'
 import { useSyncStore } from '../store/useSyncStore'
 import useThemeStore from '../store/useThemeStore'
 import { FileData } from '../types/data'
+import { mog } from '../utils/lib/helper'
 
 // Save the data in the local file database
 export const useSaveData = () => {
   // const { updater } = useUpdater()
   const saveData = () => {
-    // console.log('We saved the data for you')
     const { baseNodeId, ilinks, linkCache, tags, tagsCache, archive, bookmarks } = useDataStore.getState()
     const { syncBlocks, templates, intents, services } = useSyncStore.getState()
+    const { version } = useVersionStore.getState()
 
     const fileData: FileData = {
+      version,
       remoteUpdate: false,
       baseNodeId,
       ilinks,
@@ -40,6 +43,7 @@ export const useSaveData = () => {
         }
       }
     }
+    mog('We saved the data for you', { version, fileData })
 
     ipcRenderer.send(IpcAction.SET_LOCAL_DATA, fileData)
     // updater()

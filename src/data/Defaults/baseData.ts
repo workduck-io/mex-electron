@@ -35,7 +35,8 @@ const contents: Contents = links.reduce((prev, cur) => {
   }
 }, {})
 
-export const DefaultFileData: FileData = {
+export const DefaultFileData = (version: string): FileData => ({
+  version,
   remoteUpdate: true,
   baseNodeId: '@',
   ilinks: links,
@@ -56,4 +57,4 @@ export const DefaultFileData: FileData = {
     }
   },
   snippets: []
-}
+})

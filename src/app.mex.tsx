@@ -14,6 +14,7 @@ import { initializeSentry } from './services/sentry'
 import { IS_DEV } from './data/Defaults/dev_'
 import FloatingButton from './components/mex/FloatingButton'
 import { Notifications } from './components/mex/Notifications/Notifications'
+import { VersionSetter } from './components/mex/Init/VersionSetter'
 
 if (!IS_DEV) initializeSentry()
 
@@ -25,6 +26,7 @@ function App() {
     <Router>
       <Providers>
         <Contexts>
+          <VersionSetter />
           <Init />
           <Main>
             {/* Modals */}

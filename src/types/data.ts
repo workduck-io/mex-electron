@@ -27,6 +27,9 @@ export interface NodeContent {
 }
 
 export interface FileData {
+  // Version. Should be same as Mex. Lower versions will be updated.
+  version: string
+
   // variable to detect whether the data in the file was updated via mex/spotlight or externally
   remoteUpdate: boolean
   baseNodeId: string

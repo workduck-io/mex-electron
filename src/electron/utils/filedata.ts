@@ -1,29 +1,29 @@
+import { app } from 'electron'
 import fs from 'fs'
 import { FileData } from '../../types/data'
 import { DefaultFileData } from '../../data/Defaults/baseData'
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const ensureFieldsOnJSON = (fileData: any) => {
-  let toWriteFile = false
-  Object.keys(DefaultFileData).forEach((value) => {
-    if (!(value in fileData)) {
-      fileData[value] = DefaultFileData[value]
-      toWriteFile = true
-    }
-  })
-  return { fileData, toWriteFile }
-}
+import { applyTransforms, requiresTransform } from '../../utils/dataTransform'
+import { UpdateVersionTransforms } from '../../data/transforms'
 
 export const getFileData = (location: string) => {
   if (fs.existsSync(location)) {
     const stringData = fs.readFileSync(location, 'utf-8')
+    const data = JSON.parse(stringData)
+    const writeToFile = requiresTransform(data)
 
-    const { fileData, toWriteFile } = ensureFieldsOnJSON(JSON.parse(stringData))
-    if (toWriteFile) fs.writeFileSync(location, JSON.stringify(fileData))
+    if (!writeToFile) return data
+
+    const fileData = applyTransforms(data, UpdateVersionTransforms)
+    fs.writeFileSync(location, JSON.stringify(fileData))
+
+    console.log('Getting data', { fileData, data })
+
     return fileData
   } else {
-    fs.writeFileSync(location, JSON.stringify(DefaultFileData))
-    return DefaultFileData
+    const version = app.getVersion()
+    fs.writeFileSync(location, JSON.stringify(DefaultFileData(version)))
+    console.log('Getting data', { version })
+    return DefaultFileData(version)
   }
 }
 
