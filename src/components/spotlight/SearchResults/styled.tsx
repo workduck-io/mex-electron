@@ -12,7 +12,7 @@ export const StyledResults = styled(ColumnContainer)<{ margin: string }>`
 `
 
 export const StyledRow = styled(animated.div)<ColorProp>`
-  transform: translateY(${(props) => props.start}px);
+  /* transform: translateY(${(props) => props.start}px); */
 
   ${({ showColor }) =>
     showColor &&
@@ -25,7 +25,7 @@ export const StyledRow = styled(animated.div)<ColorProp>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 10px 1rem;
+  padding: 10px 1rem 10px 0;
   margin: 5px 0;
   color: ${({ theme }) => theme.colors.text.fade};
   border-radius: 10px;
@@ -38,6 +38,7 @@ export const Description = styled.p`
   overflow: hidden;
   white-space: nowrap;
   color: ${({ theme }) => theme.colors.text.fade};
+  opacity: 0.7;
   text-overflow: ellipsis;
 `
 

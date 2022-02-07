@@ -1,6 +1,6 @@
 import downIcon from '@iconify-icons/ph/arrow-down-bold'
 import { Icon } from '@iconify/react'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useSpring } from 'react-spring'
 import EditorErrorFallback from '../../../components/mex/Error/EditorErrorFallback'
@@ -62,7 +62,16 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   const { search, selection, setSelection, setSearch } = useSpotlightContext()
   const deserializedContentNodes = useDeserializeSelectionToNodes(node.nodeid, preview)
 
-  const animationProps = useSpring({ width: search ? '60%' : '100%' })
+  const springProps = useMemo(() => {
+    const style = { width: '100%' }
+    if (search.value) {
+      style.width = search.type === SearchType.action ? '100%' : '50%'
+    }
+
+    return style
+  }, [search.value])
+
+  const animationProps = useSpring(springProps)
 
   useEffect(() => {
     if (preview.isSelection && deserializedContentNodes) {
@@ -72,14 +81,13 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
       setNodeContent(deserializedContent)
       setFsContent(node.nodeid, deserializedContent)
 
-      // * FIX: For BUBBLE MODE
       // setNodeContent([...changedContent, { children: nodes }])
       // setFsContent(node.nodeid, [...changedContent, { children: nodes }])
     }
   }, [preview.text, showSource])
 
   useEffect(() => {
-    if (!search) {
+    if (!search.value) {
       loadNodeProps(node)
     }
   }, [preview.text])
@@ -90,7 +98,6 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
 
   const onBeforeSave = () => {
     addILink(node.key, node.nodeid)
-    mog(node.nodeid, { node })
   }
 
   const onAfterSave = (nodeid: string) => {
@@ -137,7 +144,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
             <Editor
               autoFocus={!normalMode}
               focusAtBeginning={!normalMode}
-              readOnly={search ? true : false}
+              readOnly={search.value ? true : false}
               content={previewContent?.content ?? defaultContent.content}
               editorId={node.nodeid}
             />

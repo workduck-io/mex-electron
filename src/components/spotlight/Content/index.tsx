@@ -19,6 +19,7 @@ import { useSearch } from '../Home/useSearch'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { MAX_RECENT_ITEMS } from '../Home/components/List'
 import { initActions } from '../../../data/Actions'
+import { mog } from '../../../utils/lib/helper'
 
 const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -62,10 +63,10 @@ const Content = () => {
     loadNodeProps(editorNode)
     saveEditorNode(editorNode)
 
-    if (search.value) {
-      setSearch({ value: '', type: SearchType.search })
-      setSearchResults([])
-    }
+    // if (search.value) {
+    //   setSearch({ value: '', type: SearchType.search })
+    //   setSearchResults([])
+    // }
   }, [selection, editorNode, setSearchResults])
 
   useEffect(() => {
@@ -92,37 +93,37 @@ const Content = () => {
     setSaved(false)
   }, [search.value, currentListItem, ilinks])
 
-  // useEffect(() => {
-  //   if (!searchResults) {
-  //     if (selection) {
-  //       setPreview({
-  //         ...selection,
-  //         isSelection: true
-  //       })
-  //     } else {
-  //       setNodeContent(undefined)
-  //       setPreview(INIT_PREVIEW)
-  //     }
-  //   } else if (searchResults.length === 0) {
-  //     setPreview({
-  //       ...INIT_PREVIEW,
-  //       text: null
-  //     })
-  //     loadNodeProps(editorNode)
-  //   } else {
-  //     const resultNode = searchResults[activeIndex]
-  //     setPreview({
-  //       ...INIT_PREVIEW,
-  //       text: null
-  //     })
-  //     if (nodeContent) {
-  //       loadNodeAndAppend(resultNode?.extras?.nodeid, nodeContent)
-  //     } else {
-  //       loadNode(resultNode?.extras?.nodeid, { savePrev: false, fetch: false })
-  //     }
-  //   }
-  //   setSaved(false)
-  // }, [searchResults, activeIndex, isPreview, selection, editorNode])
+  useEffect(() => {
+    if (!search.value) {
+      if (selection) {
+        setPreview({
+          ...selection,
+          isSelection: true
+        })
+      } else {
+        setNodeContent(undefined)
+        setPreview(INIT_PREVIEW)
+      }
+    } else if (searchResults.length === 0) {
+      setPreview({
+        ...INIT_PREVIEW,
+        text: null
+      })
+      loadNodeProps(editorNode)
+    } else {
+      const resultNode = searchResults[activeIndex]
+      setPreview({
+        ...INIT_PREVIEW,
+        text: null
+      })
+      if (nodeContent) {
+        loadNodeAndAppend(resultNode?.extras?.nodeid, nodeContent)
+      } else {
+        loadNode(resultNode?.extras?.nodeid, { savePrev: false, fetch: false })
+      }
+    }
+    setSaved(false)
+  }, [searchResults, search.value, activeIndex, isPreview, selection, editorNode])
 
   return (
     <StyledContent>

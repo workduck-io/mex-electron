@@ -2,7 +2,7 @@ import { generateTheme } from '../themeGenerator'
 
 export const sapphireTheme = generateTheme({
   // Colors
-  primary: '#5b94ff',
+  primary: '#333333',
   secondary: '#3eac94',
 
   // Palettes

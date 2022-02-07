@@ -8,7 +8,7 @@ export const StyledPreview = styled(animated.div)`
   ${Scroll}
   position: relative;
   padding: 0.5rem;
-  border-radius: 1rem;
+  border-radius: 5px;
   white-space: pre-wrap;
   width: 100%;
 `

@@ -1,8 +1,8 @@
 import React from 'react'
+import { animated } from 'react-spring'
 import styled from 'styled-components'
 
-export const StyledList = styled.div`
-  width: 100%;
+export const StyledList = styled(animated.div)`
   overflow: auto;
   position: relative;
   scroll-behavior: smooth;

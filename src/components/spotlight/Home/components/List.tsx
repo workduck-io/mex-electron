@@ -6,9 +6,9 @@ import useItemExecutor from '../actionExecutor'
 import { usePointerMovedSinceMount, StyledList, ListItem } from '../styled'
 import Item from './Item'
 import { ItemActionType, ListItemType } from '../../SearchResults/types'
-import { mog } from '../../../../utils/lib/helper'
 import { useSpotlightEditorStore } from '../../../../store/editor.spotlight'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
+import { useSpring } from 'react-spring'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -30,6 +30,7 @@ const List = ({
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
 
+  const props = useSpring({ width: search.value ? '50%' : '100%' })
   const { itemActionExecutor } = useItemExecutor()
 
   const virtualizer = useVirtual({
@@ -82,7 +83,6 @@ const List = ({
         // if (data[activeIndex].type === ActionType.render) {
         //   setShowResults(false)
         // }
-        mog('WHAT', { activeIndex, d: data[activeIndex] })
       } else if (event.key === 'Enter') {
         event.preventDefault()
         if (!first) {
@@ -124,12 +124,11 @@ const List = ({
   }
 
   return (
-    <StyledList ref={parentRef}>
+    <StyledList style={props} ref={parentRef}>
       <ActionTitle>Recents</ActionTitle>
       <div style={{ height: virtualizer.totalSize }}>
         {virtualizer.virtualItems.map((virtualRow) => {
           const item = data[virtualRow.index]
-          mog('item', { item })
           const handlers = {
             onPointerMove: () => pointerMoved && setActiveIndex(virtualRow.index),
             onClick: () => handleClick(virtualRow.index)
