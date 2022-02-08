@@ -163,6 +163,8 @@ const Init = () => {
       const nodeid = addILink(newNodeId)
       push(nodeid)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
+
+      if (location.pathname !== '/editor') history.push('/editor')
     })
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
       history.push('/settings')

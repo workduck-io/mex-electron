@@ -1,9 +1,8 @@
 import fileDocument from '@iconify-icons/gg/file-document'
 import appsLine from '@iconify-icons/ri/apps-line'
-import checkboxLine from '@iconify-icons/ri/checkbox-line'
+import searchLine from '@iconify-icons/ri/search-line'
 import dashboardLine from '@iconify-icons/ri/dashboard-line'
 import quillPenLine from '@iconify-icons/ri/quill-pen-line'
-import archiveFill from '@iconify-icons/ri/archive-fill'
 import { Icon } from '@iconify/react'
 import React from 'react'
 import { NavLinkData } from '../components/mex/Sidebar/Types'
@@ -22,6 +21,12 @@ const useNavlinks = () => {
   const getLinks = () => {
     const links: NavLinkData[] = [
       {
+        title: 'Search',
+        path: '/search',
+        shortcut: shortcuts.showArchive.keystrokes,
+        icon: GetIcon(searchLine)
+      },
+      {
         title: 'Dashboard',
         path: '/',
         icon: GetIcon(dashboardLine),
@@ -33,12 +38,12 @@ const useNavlinks = () => {
         shortcut: shortcuts.showEditor.keystrokes,
         icon: GetIcon(fileDocument)
       },
-      {
-        title: 'Tasks',
-        path: '/tasks',
-        icon: GetIcon(checkboxLine),
-        isComingSoon: true
-      },
+      // {
+      //   title: 'Tasks',
+      //   path: '/tasks',
+      //   icon: GetIcon(checkboxLine),
+      //   isComingSoon: true
+      // },
       {
         title: 'Integrations',
         path: '/integrations',
@@ -50,12 +55,6 @@ const useNavlinks = () => {
         path: '/snippets',
         shortcut: shortcuts.showSnippets.keystrokes,
         icon: GetIcon(quillPenLine)
-      },
-      {
-        title: 'Archive',
-        path: '/archive',
-        shortcut: shortcuts.showArchive.keystrokes,
-        icon: GetIcon(archiveFill)
       }
     ]
     return links

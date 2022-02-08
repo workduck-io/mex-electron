@@ -75,7 +75,7 @@ const Toolbar = () => {
           singleton={target}
           icon={messageIcon}
           shortcut={shortcuts.showSyncBlocks.keystrokes}
-          title="Sync Blocks"
+          title="Flow Links"
           // title="Sync Blocks"
           highlight={showSyncBlocks}
           onClick={toggleSyncBlocks}

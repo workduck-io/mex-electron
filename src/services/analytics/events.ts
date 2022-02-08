@@ -5,7 +5,7 @@ export enum CustomEvents {
   FORGOT_PASSWORD = 'Forgot Password',
   SHORTCUT_KEYPRESS = 'KeyPress - Shortcut',
   SHORTCUT_CHANGE = 'Change - Shortcut',
-  SYNC_BLOCK_CREATE = 'Create - Sync Block',
+  SYNC_BLOCK_CREATE = 'Create - Flow Link',
   TAG_CREATE = 'Create - Tag',
   REFACTOR = 'Refactored',
   ILINK_CREATE = 'Create - ILink',

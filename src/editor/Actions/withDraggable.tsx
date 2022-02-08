@@ -28,7 +28,6 @@ import Tippy, { TippyProps } from '@tippyjs/react'
 import styled from 'styled-components'
 import { mog } from '../../utils/lib/helper'
 import { DateFormat } from '../../hooks/useRelativeTime'
-import { ProfileIcon } from '../../style/UserPage'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
 // import { NodeMetadata } from '../../types/data'
 
@@ -38,6 +37,8 @@ const StyledTip = styled.div`
   align-items: center;
   gap: ${({ theme }) => theme.spacing.small};
   padding: ${({ theme }) => theme.spacing.tiny} 0;
+  color: ${({ theme }) => theme.colors.fade};
+  background-color: transparent;
   cursor: pointer;
   border-radius: 0.25rem;
 `

@@ -12,7 +12,7 @@ export const defaultShortcuts = {
   },
   showSearch: {
     title: 'Search',
-    keystrokes: '$mod+f',
+    keystrokes: '$mod+F',
     category: 'Navigate'
   },
   showIntegrations: {
@@ -65,7 +65,7 @@ export const defaultShortcuts = {
     category: 'Actions'
   },
   showSyncBlocks: {
-    title: 'Flow Blocks',
+    title: 'Flow Links',
     keystrokes: '$mod+KeyK KeyS',
     category: 'Actions'
   },
