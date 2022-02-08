@@ -20,6 +20,7 @@ import { ArchivedNode } from '../../views/mex/Archive'
 import { Result, ResultHeader, SearchContainer } from '../Search'
 import { CreateSnippet, SSnippet } from '../Snippets'
 import { ComboboxRoot, ComboboxItem } from '../../editor/Components/tag/components/TagCombobox.styles'
+import { ActionDraggableIcon } from '../../editor/Actions/withDraggable'
 
 const grayMixerTrans = (n: number) => css`
   ${({ theme }) => transparentize(0.33, theme.colors.gray[n])}
@@ -93,6 +94,10 @@ const edStyles = css`
     & > svg {
       color: ${({ theme }) => theme.colors.secondary};
     }
+  }
+
+  ${ActionDraggableIcon} {
+    background-color: ${grayMixerTrans(9)};
   }
 `
 
