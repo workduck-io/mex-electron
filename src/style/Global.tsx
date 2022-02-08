@@ -4,7 +4,7 @@ import { createGlobalStyle, css } from 'styled-components'
 import { ThinScrollbar } from './helpers'
 import normalize from './normalize'
 import { EditorBalloonStyles, TippyBalloonStyles } from './Toolbar'
-import { customStyles } from './themes/imperialTheme.custom'
+import { customStyles } from './themes/customStyles'
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}; // NormalizeCSS normalization

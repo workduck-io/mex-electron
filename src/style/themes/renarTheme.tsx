@@ -1,5 +1,5 @@
 import { generateTheme } from '../themeGenerator'
-export const imperialTheme = generateTheme({
+export const renarTheme = generateTheme({
   // Colors
   primary: '#c31575',
   secondary: '#748EFF',
@@ -35,7 +35,7 @@ export const imperialTheme = generateTheme({
     oppositePrimary: '#ffffff'
   },
   backgroundImages: {
-    app: 'https://i.imgur.com/Z2iNoSC.jpg'
+    app: 'https://i.imgur.com/MExxqeL.jpg'
   },
-  custom: 'ImperialStyles'
+  custom: 'RenarStyles'
 })

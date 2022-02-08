@@ -40,6 +40,7 @@ const graphStyles = css`
     gap: ${({ theme }) => theme.spacing.medium};
   }
   ${GraphTools} {
+    backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
     margin: 2rem 0 0;
   }
@@ -48,6 +49,7 @@ const graphStyles = css`
     overflow: hidden;
   }
   ${GraphWrapper} {
+    backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
@@ -56,9 +58,11 @@ const graphStyles = css`
 const edStyles = css`
   ${EditorStyles} {
     border-radius: ${({ theme }) => theme.borderRadius.small};
+    backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
   }
   ${NodeInfo} {
+    backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
     ${Button}, ${AsyncButton} {
       background-color: ${grayMixerTrans(9)};
@@ -69,11 +73,13 @@ const edStyles = css`
   }
   ${DataInfobarWrapper} {
     height: ${heightMain};
+    backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
     margin-top: 2rem;
   }
   ${EditorPreviewWrapper} {
+    backdrop-filter: blur(10px);
     background: ${grayMainColor} !important;
     ${EditorStyles} {
       background: transparent;
@@ -93,6 +99,7 @@ const edStyles = css`
 const settingsStyles = css`
   ${SettingsOptions} {
     padding: ${({ theme }) => theme.spacing.medium};
+    backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
@@ -103,6 +110,7 @@ const settingsStyles = css`
   }
   ${BackCard}, ${ComingSoonCard}, ${ImporterCard} {
     border: none;
+    backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
@@ -110,17 +118,21 @@ const settingsStyles = css`
 
 const gridCardStyles = css`
   ${ArchivedNode}, ${Result} {
+    backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
     overflow: hidden;
   }
   ${ResultHeader} {
+    backdrop-filter: blur(10px);
     background-color: ${grayMixerTrans(9)};
   }
   ${SSnippet} {
+    backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
   }
   ${CreateSnippet} {
+    backdrop-filter: blur(10px);
     background-color: ${grayMixerTrans(8)};
   }
   ${SearchContainer} {
@@ -130,6 +142,7 @@ const gridCardStyles = css`
 
 const integrationStyles = css`
   ${TemplateCard}, ${ServiceCard} {
+    backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
     &:hover {
@@ -146,6 +159,7 @@ const integrationStyles = css`
 const navStyles = css`
   ${SidebarDiv} {
     height: ${heightMain};
+    backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
     padding: 0 ${({ theme }) => theme.spacing.medium};
@@ -164,6 +178,7 @@ const navStyles = css`
     height: ${heightMain};
     min-height: ${heightMain};
     border-radius: ${({ theme }) => theme.borderRadius.small};
+    backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
   }
   ${GridWrapper} {
@@ -177,7 +192,7 @@ const navStyles = css`
   }
 `
 
-export const ImperialStyles = css`
+export const RenarStyles = css`
   .ModalContent {
     background-color: ${grayMainColor};
     border: none;

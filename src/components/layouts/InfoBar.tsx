@@ -19,6 +19,7 @@ interface InfoBarWrapperProps {
 
 export const InfoBarWrapper = styled(animated.div)<InfoBarWrapperProps>`
   overflow-x: hidden;
+  height: 100vh;
 
   @media (max-width: ${size.wide}) {
     min-width: ${({ wide }) => {
