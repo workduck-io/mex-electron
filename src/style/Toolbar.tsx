@@ -2,6 +2,38 @@ import styled, { css } from 'styled-components'
 import { transparentize } from 'polished'
 
 export const TippyBalloonStyles = css`
+  .tippy-box[data-theme~='transparent'] {
+    background: transparent;
+
+    .tippy-content {
+      padding: 0;
+    }
+
+    &[data-placement^='top'] > .tippy-arrow::before {
+      border-top-color: none;
+    }
+
+    &[data-placement^='bottom'] > .tippy-arrow::before {
+      border-bottom-color: none;
+    }
+
+    &[data-placement^='left'] > .tippy-arrow::before {
+      border-left-color: none;
+    }
+
+    &[data-placement^='right'] > .tippy-arrow::before {
+      border-right-color: none;
+    }
+
+    & > .tippy-backdrop {
+      background-color: none;
+    }
+
+    & > .tippy-svg-arrow {
+      fill: none;
+    }
+  }
+
   .tippy-box[data-theme~='mex'] {
     background-color: ${({ theme }) => theme.colors.gray[8]};
     color: ${({ theme }) => theme.colors.text.fade};

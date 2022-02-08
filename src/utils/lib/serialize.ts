@@ -1,6 +1,7 @@
 // import { generateTempId } from '../Defaults/idPrefixes'
 
 import { generateTempId } from '../../data/Defaults/idPrefixes'
+import { extractMetadata } from './metadata'
 
 // const ElementsWithProperties = [ELEMENT_PARAGRAPH]
 // const ElementsWithURL = [ELEMENT_LINK, ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED]
@@ -79,6 +80,8 @@ export const deserializeContent = (sanatizedContent: any[]) => {
     if (el.id !== undefined) {
       nl.id = el.id
     }
+
+    nl.metadata = extractMetadata(el)
 
     // Properties
     if (el.properties) {

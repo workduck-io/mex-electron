@@ -1,6 +1,10 @@
 import React from 'react'
 import { Icon } from '@iconify/react'
 import checkboxBlankCircleLine from '@iconify-icons/radix-icons/drag-handle-dots-2'
+import timeLine from '@iconify-icons/ri/time-line'
+import addCircleLine from '@iconify-icons/ri/add-circle-line'
+import refreshLine from '@iconify-icons/ri/refresh-line'
+// import addLine from '@iconify-icons/ri/add-line'
 import {
   ELEMENT_BLOCKQUOTE,
   ELEMENT_CODE_BLOCK,
@@ -22,29 +26,134 @@ import {
 
 import Tippy, { TippyProps } from '@tippyjs/react'
 import styled from 'styled-components'
+import { mog } from '../../utils/lib/helper'
+import { DateFormat } from '../../hooks/useRelativeTime'
+import { ProfileIcon } from '../../style/UserPage'
+import { ProfileImage } from '../../components/mex/User/ProfileImage'
+// import { NodeMetadata } from '../../types/data'
 
 const StyledTip = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${({ theme }) => theme.colors.fade};
-  background-color: ${({ theme }) => theme.colors.background.card};
-  padding: 0.25rem;
+  gap: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.tiny} 0;
   cursor: pointer;
   border-radius: 0.25rem;
 `
 
-const GrabberTooltipContent = () => <StyledTip>Drag to move</StyledTip>
+export const StyledDraggable = styled(StyledTip)`
+  padding: ${({ theme }) => theme.spacing.tiny};
+  background-color: ${({ theme }) => theme.colors.gray[8]};
+`
+
+export const ActionDraggableIcon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${({ theme }) => theme.colors.gray[9]};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  padding: ${({ theme }) => theme.spacing.tiny};
+  svg {
+    height: 1.2rem;
+    width: 1.2rem;
+    color: ${({ theme }) => theme.colors.secondary};
+  }
+`
+
+const MetadataWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-width: 9rem;
+  background-color: ${({ theme }) => theme.colors.gray[8]};
+  padding: ${({ theme }) => theme.spacing.small};
+  border-radius: ${({ theme }) => theme.borderRadius.tiny};
+  gap: ${({ theme }) => theme.spacing.small};
+`
+
+const MetadataRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
+  svg {
+    color: ${({ theme }) => theme.colors.secondary};
+  }
+  svg:nth-child(2) {
+    border-radius: ${({ theme }) => theme.borderRadius.tiny};
+  }
+`
+
+const MetadataText = styled.div`
+  color: ${({ theme }) => theme.colors.text.fade};
+  flex-grow: 1;
+`
+
+const MetadataViewSmall = ({ m }: any) => {
+  return (
+    <MetadataWrap>
+      <MetadataRow>
+        <Icon icon={addCircleLine} width={16} />
+        {m.createdBy !== undefined ? <ProfileImage email={m.createdBy} size={16} /> : null}
+        <MetadataText>{DateFormat(m.createdAt)}</MetadataText>
+      </MetadataRow>
+      <MetadataRow>
+        <Icon icon={refreshLine} width={16} />
+
+        {m.lastEditedBy !== undefined ? <ProfileImage email={m.lastEditedBy} size={16} /> : null}
+        <MetadataText>{DateFormat(m.updatedAt)}</MetadataText>
+      </MetadataRow>
+    </MetadataWrap>
+  )
+}
+
+const GrabberTooltipContent = (props: any) => {
+  mog('GrabberTooltipContent Props', { props })
+
+  const MetadataTooltipProps: TippyProps = {
+    placement: 'top',
+    inertia: true,
+    arrow: false,
+    delay: [100, 0],
+    followCursor: true,
+    // duration: [0, 0],
+    // appendTo: () => document.body,
+    hideOnClick: false,
+    interactive: true,
+    theme: 'transparent'
+  }
+
+  return (
+    <StyledTip>
+      {/*
+      <Tippy content="Plus">
+        <ActionDraggableIcon>
+          <Icon icon={addLine} />
+        </ActionDraggableIcon>
+      </Tippy>
+      */}
+
+      {props.element && props.element.metadata ? (
+        <Tippy {...MetadataTooltipProps} content={<MetadataViewSmall m={props.element.metadata} />}>
+          <ActionDraggableIcon>
+            <Icon icon={timeLine} />
+          </ActionDraggableIcon>
+        </Tippy>
+      ) : null}
+    </StyledTip>
+  )
+}
 
 export const grabberTooltipProps: TippyProps = {
-  content: <GrabberTooltipContent />,
   placement: 'left',
+  inertia: true,
   arrow: false,
-  delay: [300, 0],
+  delay: [100, 0],
   followCursor: true,
-  duration: [0, 0],
-  hideOnClick: true,
-  theme: 'small'
+  // duration: [0, 0],
+  appendTo: () => document.body,
+  hideOnClick: false,
+  interactive: true,
+  theme: 'transparent'
 }
 
 export const withStyledDraggables = (components: any) => {
@@ -74,12 +183,15 @@ export const withStyledDraggables = (components: any) => {
         ELEMENT_MEDIA_EMBED,
         ELEMENT_CODE_BLOCK
       ],
-      onRenderDragHandle: ({ className, styles }) => {
+      onRenderDragHandle: ({ className, styles, element }) => {
+        mog('RenderDraggable', { styles, element })
         return (
-          <Tippy {...grabberTooltipProps}>
-            <StyledTip className={className} css={styles}>
-              <Icon icon={checkboxBlankCircleLine} />
-            </StyledTip>
+          <Tippy {...grabberTooltipProps} content={<GrabberTooltipContent element={element} />}>
+            <Tippy theme="mex" placement="top" content="Drag to Move">
+              <StyledDraggable className={className} css={styles}>
+                <Icon icon={checkboxBlankCircleLine} />
+              </StyledDraggable>
+            </Tippy>
           </Tippy>
         )
       }
