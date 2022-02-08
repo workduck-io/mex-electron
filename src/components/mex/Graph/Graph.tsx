@@ -3,6 +3,7 @@ import more2Fill from '@iconify-icons/ri/more-2-fill'
 import equal from 'fast-deep-equal'
 import React, { useEffect, useState } from 'react'
 import Graph from 'react-vis-network-graph'
+import { useHelpStore } from '../../../store/useHelpStore'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useToggleElements from '../../../hooks/useToggleElements'
@@ -64,6 +65,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
   const setNodePreview = useGraphStore((state) => state.setNodePreview)
   const setSelectedNode = useGraphStore((state) => state.setSelectedNode)
 
+  const shortcuts = useHelpStore((store) => store.shortcuts)
   const showLocal = useGraphStore((state) => state.showLocal)
   const toggleLocal = useGraphStore((state) => state.toggleLocal)
   const [network, setNetwork] = useState<any>()
@@ -132,8 +134,15 @@ export const TreeGraph = (props: TreeGraphProps) => {
     <StyledGraph id={`graph_${showLocal ? 'local' : 'global'}`}>
       {showTools ? (
         <GraphTools>
-          <IconButton size={24} icon={bubbleChartLine} title="Graph" highlight={showGraph} onClick={toggleGraph} />
-
+          {/* <IconButton size={24} icon={bubbleChartLine} title="Graph" highlight={showGraph} onClick={toggleGraph} /> */}
+          <IconButton
+            size={24}
+            icon={bubbleChartLine}
+            shortcut={shortcuts.showGraph.keystrokes}
+            title="Graph"
+            highlight={showGraph}
+            onClick={toggleGraph}
+          />
           <Switch
             showLabel
             id="LocalGraphSwitch"

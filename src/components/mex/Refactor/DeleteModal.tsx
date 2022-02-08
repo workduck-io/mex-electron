@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import Modal from 'react-modal'
 import tinykeys from 'tinykeys'
 import create from 'zustand'
+import { useLocation, useHistory } from 'react-router-dom'
 import { USE_API } from '../../../data/Defaults/dev_'
 import { useDelete } from '../../../hooks/useDelete'
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
@@ -61,6 +62,9 @@ const Delete = () => {
   const { loadNode } = useLoad()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
+  const location = useLocation()
+  const history = useHistory()
+
   const openModal = useDeleteStore((store) => store.openModal)
   const closeModal = useDeleteStore((store) => store.closeModal)
   const setDel = useDeleteStore((store) => store.setDel)
@@ -78,6 +82,7 @@ const Delete = () => {
       [shortcuts.showArchiveModal.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showArchiveModal, () => {
+          if (location.pathname !== '/editor') history.push('/editor')
           openModal(useEditorStore.getState().node.id)
         })
       }
@@ -85,7 +90,7 @@ const Delete = () => {
     return () => {
       unsubscribe()
     }
-  }, [shortcuts, shortcutDisabled])
+  }, [shortcuts, shortcutDisabled, location.pathname])
 
   // console.log({ to, from, open });
 

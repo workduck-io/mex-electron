@@ -14,6 +14,7 @@ import { useInitOlvy } from '../../../services/olvy'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import { FocusModeProp } from '../../../style/props'
 import { FOCUS_MODE_OPACITY } from '../../../style/consts'
+import { MexIcon } from '../../../style/Layouts'
 
 export const Float = styled.div<FocusModeProp>`
   position: fixed;
@@ -53,13 +54,13 @@ export const FloatingMenu = styled.div`
 
 export const MenuItem = styled.button`
   width: 100%;
-  display: block;
+  display: flex;
+  align-items: center;
   padding: 10px;
   text-align: left;
   color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: 0.5rem;
   background-color: ${({ theme }) => theme.colors.background.card};
-
   :hover {
     cursor: pointer;
     border-radius: 0.5rem;
@@ -119,10 +120,10 @@ const FloatingButton = () => {
               Getting Started
             </MenuItem> */}
             <MenuItem key="wd-mex-what-is-new-button" id="olvy-target">
-              What&apos;s New
+              <MexIcon fontSize={20} margin="0 1rem 0 0" icon="fluent:gift-24-filled" /> What&apos;s New
             </MenuItem>
             <MenuItem key="wd-mex-shortcuts-button" onClick={onShortcutClick}>
-              Shortcuts
+              <MexIcon fontSize={20} margin="0 1rem 0 0" icon="fluent:keyboard-24-filled" /> Keyboard Shortcuts
             </MenuItem>
           </div>
         </FloatingMenu>
