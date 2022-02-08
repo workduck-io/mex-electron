@@ -23,7 +23,7 @@ const useNavlinks = () => {
       {
         title: 'Search',
         path: '/search',
-        shortcut: shortcuts.showArchive.keystrokes,
+        shortcut: shortcuts.showSearch.keystrokes,
         icon: GetIcon(searchLine)
       },
       {

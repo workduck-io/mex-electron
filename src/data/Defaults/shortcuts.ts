@@ -66,7 +66,7 @@ export const defaultShortcuts = {
   },
   showSyncBlocks: {
     title: 'Flow Links',
-    keystrokes: '$mod+KeyK KeyS',
+    keystrokes: '$mod+Shift+KeyF',
     category: 'Actions'
   },
   showGraph: {
