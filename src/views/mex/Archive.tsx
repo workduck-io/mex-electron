@@ -136,7 +136,7 @@ const Archive = () => {
 
   return (
     <IntegrationContainer>
-      <Title>Archived</Title>
+      <Title>Archive</Title>
       <Nodes>
         {archive.length === 0 && (
           <NotFoundText>

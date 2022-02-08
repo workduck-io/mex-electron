@@ -4,7 +4,7 @@ export const withStyledPlaceHolders = (components: any) =>
   withPlaceholders(components, [
     {
       key: ELEMENT_PARAGRAPH,
-      placeholder: 'Type  /  to see options',
+      placeholder: 'Type  `[[`  to see links or type  `/`  to see actions',
       hideOnBlur: true
     },
     {

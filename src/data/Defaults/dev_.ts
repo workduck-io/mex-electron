@@ -2,6 +2,7 @@ export const IS_DEV = process.env.NODE_ENV === 'development'
 export const USE_API = () => {
   /** Useful for tracking stopped API calls */
   // if (IS_DEV) console.info('API is set to false')
+  return true
   return !IS_DEV
 }
 export const FAKE_APP_URI = 'https://localhost'

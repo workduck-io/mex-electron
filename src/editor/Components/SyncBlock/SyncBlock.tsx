@@ -116,7 +116,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
       templateId: templateId
     })
 
-    trackEvent(getEventNameFromElement('Sync Block', ActionType.SAVE, 'Intent'), {
+    trackEvent(getEventNameFromElement('Flow Links', ActionType.SAVE, 'Intent'), {
       'mex-sync-block-id': element.id,
       'mex-content': content,
       'mex-intent-group-id': newIgid,

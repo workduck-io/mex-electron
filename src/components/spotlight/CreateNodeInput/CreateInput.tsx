@@ -25,7 +25,6 @@ const CreateInput: React.FC<CreateInputType> = () => {
   const { setSaved } = useContentStore(({ saved, setSaved }) => ({ saved, setSaved }))
   const { title, nodeid: path } = useEditorStore((state) => state.node)
   const isOnboarding = useOnboard((s) => s.isOnboarding)
-  // const nodeid = useEditorStore((state) => state.node.nodeid)
 
   const addILink = useDataStore((s) => s.addILink)
 

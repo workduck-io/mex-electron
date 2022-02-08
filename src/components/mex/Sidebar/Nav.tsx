@@ -1,10 +1,10 @@
 import addCircleLine from '@iconify-icons/ri/add-circle-line'
-import searchLine from '@iconify-icons/ri/search-line'
 import settings4Line from '@iconify-icons/ri/settings-4-line'
 import { useSingleton } from '@tippyjs/react'
 import { transparentize } from 'polished'
 import React, { useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useHistory, useLocation } from 'react-router-dom'
+import archiveFill from '@iconify-icons/ri/archive-fill'
 import { FOCUS_MODE_OPACITY } from '../../../style/consts'
 import styled, { css } from 'styled-components'
 import tinykeys from 'tinykeys'
@@ -115,6 +115,9 @@ const Nav = ({ links }: NavProps) => {
   const { push } = useNavigation()
   const { saveNewNodeAPI } = useApi()
 
+  const history = useHistory()
+  const location = useLocation()
+
   const [source, target] = useSingleton()
 
   const createNewNode = () => {
@@ -129,6 +132,8 @@ const Nav = ({ links }: NavProps) => {
   const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault()
     createNewNode()
+
+    if (location.pathname !== '/editor') history.push('/editor')
   }
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
@@ -200,10 +205,10 @@ const Nav = ({ links }: NavProps) => {
         )} */}
         <NavTooltip
           singleton={target}
-          content={<TooltipTitleWithShortcut title="Search" shortcut={shortcuts.showSearch.keystrokes} />}
+          content={<TooltipTitleWithShortcut title="Archive" shortcut={shortcuts.showArchive.keystrokes} />}
         >
-          <Link exact tabIndex={-1} activeClassName="active" to="/search" key="nav_search">
-            {GetIcon(searchLine)}
+          <Link exact tabIndex={-1} activeClassName="active" to="/archive" key="nav_search">
+            {GetIcon(archiveFill)}
           </Link>
         </NavTooltip>
         {/* <NavTooltip

@@ -15,6 +15,7 @@ import { useSearch } from '../Home/useSearch'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { MAX_RECENT_ITEMS } from '../Home/components/List'
 import { initActions } from '../../../data/Actions'
+import { mog } from '../../../utils/lib/helper'
 
 const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -71,7 +72,11 @@ const Content = () => {
         setSearchResults(listWithNew)
       } else {
         setNormalMode(true)
-        const recentList = recents.map((nodeid: string) => {
+        const items = recents.filter((recent: string) => ilinks.find((ilink) => ilink.nodeid === recent))
+
+        mog('ITEMS', items)
+
+        const recentList = items.map((nodeid: string) => {
           const item = ilinks.find((link) => link?.nodeid === nodeid)
 
           const listItem: ListItemType = getListItemFromNode(item)
