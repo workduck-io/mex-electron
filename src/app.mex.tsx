@@ -15,6 +15,8 @@ import { IS_DEV } from './data/Defaults/dev_'
 import FloatingButton from './components/mex/FloatingButton'
 import { Notifications } from './components/mex/Notifications/Notifications'
 import { VersionSetter } from './components/mex/Init/VersionSetter'
+import { ErrorBoundary } from 'react-error-boundary'
+import MexErrorFallback from './components/mex/Error/MexErrorFallback'
 
 if (!IS_DEV) initializeSentry()
 
@@ -26,24 +28,26 @@ function App() {
     <Router>
       <Providers>
         <Contexts>
-          <VersionSetter />
-          <Init />
-          <Main>
-            {/* Modals */}
-            <Modals />
+          <ErrorBoundary FallbackComponent={MexErrorFallback}>
+            <VersionSetter />
+            <Init />
+            <Main>
+              {/* Modals */}
+              <Modals />
 
-            {/* Main Content */}
-            <Switch />
+              {/* Main Content */}
+              <Switch />
 
-            {/* Onboard User */}
-            <OnBoardingTour steps={OnboardingTourConfig} />
+              {/* Onboard User */}
+              <OnBoardingTour steps={OnboardingTourConfig} />
 
-            {/* Non-Rendering components */}
-            <GlobalStyle />
-            {/* Floating help modal button */}
-            <FloatingButton />
-            <Notifications />
-          </Main>
+              {/* Non-Rendering components */}
+              <GlobalStyle />
+              {/* Floating help modal button */}
+              <FloatingButton />
+              <Notifications />
+            </Main>
+          </ErrorBoundary>
         </Contexts>
       </Providers>
     </Router>
