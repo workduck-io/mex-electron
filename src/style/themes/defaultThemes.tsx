@@ -4,6 +4,7 @@ import { imperialTheme } from './imperialTheme'
 import { lightTheme } from './lightTheme'
 import { matrixTheme } from './matrixTheme'
 import { reduxTheme } from './reduxTheme'
+import { renarTheme } from './renarTheme'
 import { sapphireTheme } from './sapphireTheme'
 import { spotlightTheme } from './spotlightTheme'
 import { vvkTheme } from './vvkTheme'
@@ -19,7 +20,8 @@ export const defaultThemes = [
   { id: 'Sapphire', themeData: sapphireTheme },
   { id: 'Clean', themeData: spotlightTheme },
   { id: 'Yellowy', themeData: yellowyTheme },
-  { id: 'Imperial', themeData: imperialTheme }
+  { id: 'Imperial', themeData: imperialTheme },
+  { id: 'Renar', themeData: renarTheme }
 ]
 
 export const getTheme = (themeId: string) => {
