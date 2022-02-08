@@ -1,6 +1,6 @@
 import { ArrayTransform, DataTransformation, KeysTransformation } from '../../utils/dataTransform'
 
-const v080_alpha_1 = (): KeysTransformation => {
+const v080_alpha_2 = (): KeysTransformation => {
   const ilinks: ArrayTransform = {
     type: 'ArrayTransform',
     delete: ['text', 'value'],
@@ -12,7 +12,7 @@ const v080_alpha_1 = (): KeysTransformation => {
 
   return {
     type: 'KeysTransformation',
-    version: 'v0.8.0-alpha.1',
+    version: 'v0.8.0-alpha.2',
     keys: {
       ilinks,
       linkCache: {
@@ -37,5 +37,5 @@ export const UpdateVersionTransforms: Array<DataTransformation> = [
   // For a quick one, use CustomTransformation
   //
 
-  v080_alpha_1()
+  v080_alpha_2()
 ]
