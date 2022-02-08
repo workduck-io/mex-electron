@@ -60,7 +60,7 @@ export const navTooltip = css`
   }
 `
 
-const Link = styled(NavLink)`
+export const Link = styled(NavLink)`
   display: flex;
   justify-content: center;
   align-items: center;

@@ -1,5 +1,6 @@
 import { devTheme } from './devTheme'
 import { gruvboxTheme } from './gruvboxTheme'
+import { hackerTheme } from './hackerTheme'
 import { imperialTheme } from './imperialTheme'
 import { lightTheme } from './lightTheme'
 import { matrixTheme } from './matrixTheme'
@@ -21,7 +22,8 @@ export const defaultThemes = [
   { id: 'Clean', themeData: spotlightTheme },
   { id: 'Yellowy', themeData: yellowyTheme },
   { id: 'Imperial', themeData: imperialTheme },
-  { id: 'Renar', themeData: renarTheme }
+  { id: 'Renar', themeData: renarTheme },
+  { id: 'Hacker', themeData: hackerTheme }
 ]
 
 export const getTheme = (themeId: string) => {
