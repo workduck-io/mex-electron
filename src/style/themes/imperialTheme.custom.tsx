@@ -41,7 +41,7 @@ const graphStyles = css`
   }
   ${GraphTools} {
     background-color: ${grayMainColor};
-    margin: 0;
+    margin: 2rem 0 0;
   }
   ${InfoBarWrapper} {
     margin-right: 3rem;
@@ -71,6 +71,7 @@ const edStyles = css`
     height: ${heightMain};
     background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
+    margin-top: 2rem;
   }
   ${EditorPreviewWrapper} {
     background: ${grayMainColor} !important;

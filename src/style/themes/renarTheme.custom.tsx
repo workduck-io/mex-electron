@@ -42,7 +42,7 @@ const graphStyles = css`
   ${GraphTools} {
     backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
-    margin: 0;
+    margin: 2rem 0 0;
   }
   ${InfoBarWrapper} {
     margin-right: 3rem;
@@ -60,12 +60,6 @@ const edStyles = css`
     border-radius: ${({ theme }) => theme.borderRadius.small};
     backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
-    select {
-      background-color: ${grayMainColor};
-      font-size: 0.8rem;
-      border-radius: ${({ theme }) => theme.borderRadius.tiny};
-      color: ${({ theme }) => theme.colors.secondary};
-    }
   }
   ${NodeInfo} {
     backdrop-filter: blur(10px);
@@ -82,6 +76,7 @@ const edStyles = css`
     backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
+    margin-top: 2rem;
   }
   ${EditorPreviewWrapper} {
     backdrop-filter: blur(10px);

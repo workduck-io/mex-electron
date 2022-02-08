@@ -285,6 +285,17 @@ export const EditorStyles = styled.div`
     }
   }
 
+  /* Slate Code Block */
+
+  .slate-code_block {
+    select {
+      background-color: ${({ theme }) => theme.colors.gray[8]};
+      font-size: 0.8rem;
+      border-radius: ${({ theme }) => theme.borderRadius.tiny};
+      color: ${({ theme }) => theme.colors.secondary};
+    }
+  }
+
   /* Forms */
   button,
   select,

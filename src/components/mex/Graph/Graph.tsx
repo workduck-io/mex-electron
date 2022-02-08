@@ -152,7 +152,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
           options={options}
           events={events}
           className="MEXnodeGraphSide"
-          style={{ height: '100vh' }}
+          style={{ height: '100%' }}
           getNetwork={(p: any) => {
             setNetwork(p)
           }}
