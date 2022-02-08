@@ -12,7 +12,7 @@ const v080_alpha_2 = (): KeysTransformation => {
 
   return {
     type: 'KeysTransformation',
-    version: 'v0.8.0-alpha.2',
+    version: 'v0.8.0-alpha.1',
     keys: {
       ilinks,
       linkCache: {
