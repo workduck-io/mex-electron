@@ -15,7 +15,6 @@ import listUnordered from '@iconify-icons/ri/list-unordered'
 import { Icon } from '@iconify/react'
 import {
   AlignToolbarButton,
-  BalloonToolbar,
   BlockToolbarButton,
   ELEMENT_BLOCKQUOTE,
   ELEMENT_H1,
@@ -34,6 +33,7 @@ import {
 } from '@udecode/plate'
 import React from 'react'
 import { ButtonSeparator } from '../../style/Toolbar'
+import { BalloonToolbar } from './BalloonToolbar'
 import LinkButton from './BalloonToolbar/LinkButton'
 import { SelectionToNode } from './BalloonToolbar/SelectionToNode'
 import { SelectionToSnippet } from './BalloonToolbar/SelectionToSnippet'
