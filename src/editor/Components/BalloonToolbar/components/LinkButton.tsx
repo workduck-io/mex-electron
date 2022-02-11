@@ -15,10 +15,11 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
+import { mog } from '../../../../utils/lib/helper'
 import styled from 'styled-components'
-import { HeadlessButton } from '../../../style/Buttons'
-import { Input } from '../../../style/Form'
-import { clearBlurSelection } from '../../Plugins/blurSelection'
+import { HeadlessButton } from '../../../../style/Buttons'
+import { Input } from '../../../../style/Form'
+import { clearBlurSelection } from '../../../Plugins/blurSelection'
 
 const LinkButtonStyled = styled.div`
   user-select: all;
@@ -57,7 +58,8 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
   const type = getPluginType(editor, ELEMENT_LINK)
   const isLink = !!editor?.selection && someNode(editor, { match: { type } })
   const [inp, setInp] = useState({
-    prev: ''
+    prev: '',
+    visible: false
   })
 
   const {
@@ -74,18 +76,22 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
     const linkNode = getAbove(editor, {
       match: { type }
     })
-    if (inp.prev === '' && linkNode) {
-      setInp({
-        prev: linkNode[0].url as string
-      })
+    try {
+      if (inp.prev === '' && linkNode) {
+        setInp({
+          prev: linkNode[0].url as string,
+          visible: true
+        })
+      }
+    } catch (e) {
+      mog("useEffect couldn't get the input from linkNode", { e })
     }
   }, [editor, inp.prev, type])
 
-  const onSubmitLink = async () => {
-    if (!editor) return
-
+  const extractLinkUrl = async (): Promise<{ url: string; linkNode: any }> => {
     // Blur focus returns
     if (!editor || ReactEditor.isFocused(editor)) return
+
     try {
       ReactEditor.focus(editor)
       if (!editor.selection && editor.prevSelection) {
@@ -100,11 +106,6 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
     const linkNode = getAbove(editor, {
       match: { type }
     })
-    if (linkNode) {
-      setInp({
-        prev: linkNode[0].url as string
-      })
-    }
 
     let url = ''
     if (getLinkUrl) {
@@ -120,22 +121,40 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
       if (val['link-input']) url = val['link-input']
     }
 
+    return { url, linkNode: linkNode }
+  }
+
+  const onSubmitLink = async () => {
+    if (!editor) return
+    const d = await extractLinkUrl()
+    if (d === undefined) return
+    const { url, linkNode } = d
+
+    if (!inp.visible) {
+      setInp({
+        prev: url,
+        visible: true
+      })
+      // }
+      console.log('Herehere')
+      return
+    }
+
+    // Inserting of the link
     if (inp.prev) {
       if (linkNode && editor.selection) {
         unwrapNodes(editor, {
           at: editor.selection,
           match: { type: getPluginType(editor, ELEMENT_LINK) }
         })
+      } else {
+        const shouldWrap: boolean = linkNode !== undefined && isCollapsed(editor.selection)
+        upsertLinkAtSelection(editor, { url, wrap: shouldWrap })
       }
-
-      return
     }
 
     // If our cursor is in middle of a link, then we don't want to inser it inline
-    const shouldWrap: boolean = linkNode !== undefined && isCollapsed(editor.selection)
-    upsertLinkAtSelection(editor, { url, wrap: shouldWrap })
-
-    setInp({ prev: '' })
+    setInp({ prev: '', visible: false })
     reset()
   }
 
@@ -169,7 +188,9 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
         >
           {icon}
         </HeadlessButton>
-        <Input placeholder="Paste link here..." defaultValue={inp.prev} type="text" {...register('link-input')} />
+        {inp.visible && (
+          <Input placeholder="Paste link here..." defaultValue={inp.prev} type="text" {...register('link-input')} />
+        )}
       </form>
     </LinkButtonStyled>
   )

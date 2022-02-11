@@ -1,51 +1,56 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react'
 import {
   getSelectionText,
   isSelectionExpanded,
   useEventEditorSelectors,
-  usePlateEditorState,
-} from '@udecode/plate-core';
-import {
-  getSelectionBoundingClientRect,
-  usePopperPosition,
-  UsePopperPositionOptions,
-} from '@udecode/plate-ui-popper';
+  usePlateEditorState
+} from '@udecode/plate-core'
+import { getSelectionBoundingClientRect, usePopperPosition, UsePopperPositionOptions } from '@udecode/plate-ui-popper'
+import { clearBlurSelection, isBlurSelection } from '../../../editor/Plugins/blurSelection'
+import { mog } from '../../../utils/lib/helper'
 
 export const useBalloonToolbarPopper = (options: UsePopperPositionOptions) => {
-  const focusId = useEventEditorSelectors.focus();
-  const editor = usePlateEditorState(focusId!)!;
+  const focusId = useEventEditorSelectors.focus()
+  const editor = usePlateEditorState(focusId!)!
 
-  const [isHidden, setIsHidden] = useState(true);
+  const [isHidden, setIsHidden] = useState(true)
 
-  const selectionExpanded = editor && isSelectionExpanded(editor);
-  const selectionText = editor && getSelectionText(editor);
+  const selectionExpanded = editor && isSelectionExpanded(editor)
+  const selectionText = editor && getSelectionText(editor)
+  const isBlurSelected = editor && isBlurSelection(editor as any)
 
   const show = useCallback(() => {
+    mog('Balloon show laddies', { selectionText, selectionExpanded, isBlurSelected })
     if (isHidden && selectionExpanded) {
-      setIsHidden(false);
+      setIsHidden(false)
     }
-  }, [isHidden, selectionExpanded]);
+  }, [isHidden, selectionExpanded])
+
+  // useEffect(() => {
+  //   clearBlurSelection(editor as any)
+  // }, [selectionText?.length])
 
   useEffect(() => {
+    mog('Balloon show gentlemen', { selectionText, selectionExpanded, isBlurSelected })
     if (!selectionText) {
-      setIsHidden(true);
+      setIsHidden(true)
     } else if (selectionText && selectionExpanded) {
-      setIsHidden(false);
+      setIsHidden(false)
     }
-  }, [selectionExpanded, selectionText, show]);
+  }, [selectionExpanded, selectionText, show, isBlurSelected])
 
   const popperResult = usePopperPosition({
     isHidden,
     getBoundingClientRect: getSelectionBoundingClientRect,
-    ...options,
-  });
+    ...options
+  })
 
-  const selectionTextLength = selectionText?.length ?? 0;
-  const { update } = popperResult;
+  const selectionTextLength = selectionText?.length ?? 0
+  const { update } = popperResult
 
   useEffect(() => {
-    selectionTextLength > 0 && update?.();
-  }, [selectionTextLength, update]);
+    selectionTextLength > 0 && update?.()
+  }, [selectionTextLength, update])
 
-  return popperResult;
-};
+  return popperResult
+}

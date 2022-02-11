@@ -34,9 +34,10 @@ import {
 import React from 'react'
 import { ButtonSeparator } from '../../style/Toolbar'
 import { BalloonToolbar } from './BalloonToolbar'
-import LinkButton from './BalloonToolbar/LinkButton'
-import { SelectionToNode } from './BalloonToolbar/SelectionToNode'
-import { SelectionToSnippet } from './BalloonToolbar/SelectionToSnippet'
+
+import LinkButton from './BalloonToolbar/components/LinkButton'
+import { SelectionToNode } from './BalloonToolbar/components/SelectionToNode'
+import { SelectionToSnippet } from './BalloonToolbar/components/SelectionToSnippet'
 
 // import { BalloonToolbar } from './BalloonToolbar'
 // import LinkButton from './BalloonToolbar/LinkButton'
