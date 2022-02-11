@@ -176,16 +176,5 @@ export const ButtonSeparator = styled.div`
 
 export const EditorBalloonStyles = css`
   .slate-BalloonToolbar {
-    background-color: ${({ theme }) => theme.colors.gray[8]};
-    color: ${({ theme }) => theme.colors.text.default};
-    padding: ${({ theme: { spacing } }) => `0 ${spacing.tiny}`};
-
-    .slate-ToolbarButton-active,
-    .slate-ToolbarButton:hover {
-      padding: ${({ theme: { spacing } }) => `${spacing.tiny}`};
-      color: ${({ theme }) => theme.colors.primary};
-      background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};
-      border-radius: ${({ theme }) => theme.borderRadius.tiny};
-    }
   }
 `

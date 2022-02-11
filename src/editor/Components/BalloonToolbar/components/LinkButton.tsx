@@ -3,11 +3,11 @@ import {
   ELEMENT_LINK,
   getAbove,
   getPluginType,
+  getText,
   isCollapsed,
   LinkToolbarButtonProps,
   someNode,
   unwrapNodes,
-  upsertLinkAtSelection,
   usePlateEditorState,
   usePlateId
 } from '@udecode/plate'
@@ -16,39 +16,12 @@ import { useForm } from 'react-hook-form'
 import { Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
 import { mog } from '../../../../utils/lib/helper'
-import styled from 'styled-components'
 import { HeadlessButton } from '../../../../style/Buttons'
-import { Input } from '../../../../style/Form'
-import { clearBlurSelection } from '../../../Plugins/blurSelection'
-
-const LinkButtonStyled = styled.div`
-  user-select: all;
-  form {
-    display: flex;
-    align-items: center;
-    ${HeadlessButton} {
-      color: inherit;
-      color: ${({ theme }) => theme.colors.text.default};
-      padding: ${({ theme: { spacing } }) => `${spacing.tiny}`};
-      border-radius: ${({ theme }) => theme.borderRadius.tiny};
-      margin-right: ${({ theme }) => theme.spacing.tiny};
-      &:hover {
-        color: ${({ theme }) => theme.colors.primary};
-        background-color: ${({ theme }) => theme.colors.gray[9]};
-      }
-    }
-    input {
-      background: ${({ theme }) => theme.colors.gray[9]};
-      color: ${({ theme }) => theme.colors.text.subheading};
-      border-radius: ${({ theme }) => theme.borderRadius.tiny};
-      border: 1px solid transparent;
-    }
-  }
-  input::placeholder {
-    color: ${({ theme }) => theme.colors.text.fade};
-    opacity: 0.5;
-  }
-`
+// import { Input } from '../../../../style/Form'
+import { clearAllSelection, clearBlurSelection } from '../../../Plugins/blurSelection'
+import { LinkButtonStyled } from './LinkButton.styles'
+import { upsertLinkAtSelection } from '../upsertLinkAtSelection'
+import { useBalloonToolbarStore } from '..'
 
 type LinkButtonProps = LinkToolbarButtonProps
 
@@ -56,10 +29,13 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
   const editor = usePlateEditorState(usePlateId())
 
   const type = getPluginType(editor, ELEMENT_LINK)
+  const isFocused = useBalloonToolbarStore((s) => s.isFocused)
+  const setIsHidden = useBalloonToolbarStore((s) => s.setIsHidden)
+  const setIsFocused = useBalloonToolbarStore((s) => s.setIsFocused)
+
   const isLink = !!editor?.selection && someNode(editor, { match: { type } })
   const [inp, setInp] = useState({
-    prev: '',
-    visible: false
+    prev: ''
   })
 
   const {
@@ -79,8 +55,7 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
     try {
       if (inp.prev === '' && linkNode) {
         setInp({
-          prev: linkNode[0].url as string,
-          visible: true
+          prev: linkNode[0].url as string
         })
       }
     } catch (e) {
@@ -92,16 +67,15 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
     // Blur focus returns
     if (!editor || ReactEditor.isFocused(editor)) return
 
-    try {
-      ReactEditor.focus(editor)
-      if (!editor.selection && editor.prevSelection) {
-        Transforms.select(editor, editor.prevSelection)
-      }
-    } catch (err) {
-      console.error(err) // eslint-disable-line no-console
-    }
-
-    clearBlurSelection(editor as any)
+    // try {
+    //   ReactEditor.focus(editor)
+    //   const getSelText = editor && getText(editor, editor.blurSelection)
+    //   if (!editor.selection && editor.blurSelection && getSelText) {
+    //     Transforms.select(editor, editor.prevSelection)
+    //   }
+    // } catch (err) {
+    //   console.error(err) // eslint-disable-line no-console
+    // }
 
     const linkNode = getAbove(editor, {
       match: { type }
@@ -130,37 +104,27 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
     if (d === undefined) return
     const { url, linkNode } = d
 
-    if (!inp.visible) {
-      setInp({
-        prev: url,
-        visible: true
-      })
-      // }
-      console.log('Herehere')
-      return
-    }
-
+    console.log('Insertion Insterion', { url, linkNode })
     // Inserting of the link
-    if (inp.prev) {
-      if (linkNode && editor.selection) {
+    const sel = editor.prevSelection
+    if (url) {
+      console.log('Insertion Insterion 2', { url, linkNode, sel })
+      if (linkNode && sel) {
+        console.log('Insertion Insterion 3', { url, linkNode, sel })
         unwrapNodes(editor, {
-          at: editor.selection,
+          at: sel,
           match: { type: getPluginType(editor, ELEMENT_LINK) }
         })
       } else {
-        const shouldWrap: boolean = linkNode !== undefined && isCollapsed(editor.selection)
-        upsertLinkAtSelection(editor, { url, wrap: shouldWrap })
+        const shouldWrap: boolean = linkNode !== undefined && isCollapsed(sel)
+        console.log('Insertion Insterion 4', { url, linkNode, sel, shouldWrap })
+        upsertLinkAtSelection(editor, { url, wrap: shouldWrap, at: sel })
       }
     }
 
-    // If our cursor is in middle of a link, then we don't want to inser it inline
-    setInp({ prev: '', visible: false })
+    clearAllSelection(editor as any)
+    setInp({ prev: '' })
     reset()
-  }
-
-  const onSubmit = async (data: any) => {
-    // console.log(data)
-    await onSubmitLink()
   }
 
   const { icon, tooltip } = props
@@ -176,8 +140,24 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
   }
 
   const linkInput = (
-    <LinkButtonStyled className="button_of_link">
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <LinkButtonStyled focused={isFocused} className="button_of_link">
+      <form
+        onSubmit={handleSubmit(onSubmitLink)}
+        onMouseOver={() => {
+          // setIsFocused(true)
+          // console.log('Clearing selections')
+          // clearAllSelection(editor as any)
+          // setIsHidden(false)
+        }}
+        onBlur={() => {
+          clearAllSelection(editor as any)
+          setIsFocused(false)
+          setIsHidden(true)
+        }}
+        // onBlur={() => {
+        //   console.log('Clearing selections')
+        // }}
+      >
         <HeadlessButton
           active={isLink.toString()}
           as={undefined as any}
@@ -188,9 +168,15 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
         >
           {icon}
         </HeadlessButton>
-        {inp.visible && (
-          <Input placeholder="Paste link here..." defaultValue={inp.prev} type="text" {...register('link-input')} />
-        )}
+        <input
+          onMouseOver={() => {
+            setIsFocused(true)
+          }}
+          placeholder="Paste link here..."
+          defaultValue={inp.prev}
+          type="text"
+          {...register('link-input')}
+        />
       </form>
     </LinkButtonStyled>
   )

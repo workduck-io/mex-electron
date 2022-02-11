@@ -1,5 +1,6 @@
-import { getToolbarStyles, ToolbarBase } from '@udecode/plate'
+import { BalloonToolbarProps, getToolbarStyles, ToolbarBase } from '@udecode/plate'
 import { createStyles } from '@udecode/plate-styled-components'
+import { transparentize } from 'polished'
 import styled, { css, CSSProp } from 'styled-components'
 // import tw from 'twin.macro'
 // import { getToolbarStyles } from '../Toolbar/Toolbar.styles';
@@ -110,11 +111,28 @@ export const getBalloonToolbarStyles = (props: BalloonToolbarStyleProps) => {
   )
 }
 
-export const BalloonToolbarBase = styled(ToolbarBase)`
+export const BalloonToolbarBase = styled(ToolbarBase)<BalloonToolbarProps>`
   display: flex;
-  place-items: center;
   user-select: none;
   box-sizing: content-box;
-  color: rgb(68, 68, 68);
-  min-height: 40px;
+  align-items: center;
+
+  position: absolute;
+  white-space: nowrap;
+  opacity: 100;
+  transition: opacity 0.2s ease-in-out;
+  color: ${({ theme }) => theme.colors.text.default};
+  background: ${({ theme }) => theme.colors.gray[8]};
+  z-index: 500;
+  border: 1px solid transparent;
+  border-radius: ${({ theme }) => theme.borderRadius.tiny};
+  padding: 0 ${({ theme }) => theme.spacing.tiny};
+
+  .slate-ToolbarButton-active,
+  .slate-ToolbarButton:hover {
+    padding: ${({ theme: { spacing } }) => `${spacing.tiny}`};
+    color: ${({ theme }) => theme.colors.primary};
+    background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};
+    border-radius: ${({ theme }) => theme.borderRadius.tiny};
+  }
 `

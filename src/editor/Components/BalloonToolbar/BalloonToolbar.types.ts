@@ -6,20 +6,21 @@ import { ToolbarProps } from '@udecode/plate'
 
 export type BalloonToolbarStyleProps = BalloonToolbarProps
 
-export interface BalloonToolbarProps extends StyledProps<ToolbarProps> {
-  children: ReactNode
-
-  /**
-   * Color theme for the background/foreground.
-   */
-  theme?: 'dark' | 'light'
+export interface BalloonToolbarStyling {
+  popperOptions?: Partial<UsePopperPositionOptions>
 
   /**
    * Show an arrow pointing to up or down depending on the direction.
    */
   arrow?: boolean
+}
+
+export interface BalloonToolbarProps extends StyledProps<ToolbarProps>, BalloonToolbarStyling {
+  children: ReactNode
+  /**
+   * Color theme for the background/foreground.
+   */
+  theme?: 'dark' | 'light'
 
   portalElement?: Element
-
-  popperOptions?: Partial<UsePopperPositionOptions>
 }
