@@ -16,7 +16,7 @@ import { useLocation, useHistory } from 'react-router'
 import { useAuthStore } from '../../../services/auth/useAuth'
 import useAnalytics from '../../../services/analytics'
 import useOnboard from '../../../store/useOnboarding'
-import { mog } from '../../../utils/lib/helper'
+import { createNodeWithUid, mog } from '../../../utils/lib/helper'
 interface IndexAndFileData {
   fileData: FileData
   indexData: any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -25,7 +25,7 @@ interface IndexAndFileData {
 const GlobalListener = memo(() => {
   const location = useLocation()
   const [temp, setTemp] = useState<any>()
-  const { setSelection, setSearch } = useSpotlightContext()
+  const { setSelection } = useSpotlightContext()
   const setIsPreview = useSpotlightEditorStore((state) => state.setIsPreview)
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
   const setBubble = useSpotlightSettingsStore((state) => state.setBubble)
@@ -36,6 +36,7 @@ const GlobalListener = memo(() => {
   const initializeSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
+  const setNode = useSpotlightEditorStore((s) => s.setNode)
 
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()
@@ -70,6 +71,8 @@ const GlobalListener = memo(() => {
         setSelection(undefined)
         setIsPreview(false)
       } else {
+        const nNode = createNodeWithUid(getNewDraftKey())
+        setNode(nNode)
         setTemp(data)
       }
     })

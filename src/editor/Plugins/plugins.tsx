@@ -44,7 +44,7 @@ import {
   ELEMENT_H4,
   ELEMENT_H5,
   ELEMENT_H6,
-  ELEMENT_PARAGRAPH
+  ELEMENT_PARAGRAPH,
 } from '@udecode/plate'
 
 import { withStyledDraggables } from '../Actions/withDraggable'
@@ -119,6 +119,7 @@ const generatePlugins = () => {
     }),
     // Autoformat markdown syntax to elements (**, #(n))
     createAutoformatPlugin({
+
       options: {
         rules: [
           ...autoformatSmartQuotes,
@@ -126,7 +127,7 @@ const generatePlugins = () => {
           ...autoformatLegal,
           ...autoformatLegalHtml,
           ...autoformatArrow,
-          ...autoformatMath,
+          // ...autoformatMath,
           ...optionsAutoFormatRule,
           {
             mode: 'block',
