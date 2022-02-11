@@ -10,7 +10,6 @@ export const VersionSetter = () => {
   useEffect(() => {
     const version = getGlobal('appVersion')
     if (version) {
-      mog('Version', { version })
       setVersion(version)
     }
   })

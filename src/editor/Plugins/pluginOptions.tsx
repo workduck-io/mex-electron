@@ -34,7 +34,14 @@ import {
   TEditor,
   toggleList,
   unwrapList,
-  AutoformatRule
+  AutoformatRule,
+  autoformatComparison,
+  autoformatEquality,
+  autoformatFraction,
+  autoformatSubscriptNumbers,
+  autoformatSubscriptSymbols,
+  autoformatSuperscriptNumbers,
+  autoformatSuperscriptSymbols
 } from '@udecode/plate'
 import { generateTempId } from '../../data/Defaults/idPrefixes'
 import { ELEMENT_SYNC_BLOCK } from '../Components/SyncBlock'
@@ -169,6 +176,28 @@ export const optionsAutoFormatRule: Array<AutoformatRule> = [
     match: ['~~', '~~'],
     mode: 'mark',
     insertTrigger: true
+  },
+  ...autoformatComparison,
+  ...autoformatEquality,
+  ...autoformatFraction,
+  ...autoformatSuperscriptSymbols,
+  ...autoformatSubscriptSymbols,
+  ...autoformatSuperscriptNumbers,
+  ...autoformatSubscriptNumbers,
+  {
+    mode: 'text',
+    match: '+-',
+    format: '±',
+  },
+  {
+    mode: 'text',
+    match: '%%',
+    format: '‰',
+  },
+  {
+    mode: 'text',
+    match: ['%%%', '‰%'],
+    format: '‱',
   },
   {
     mode: 'block',
