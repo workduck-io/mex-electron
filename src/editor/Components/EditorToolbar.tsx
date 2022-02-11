@@ -42,8 +42,7 @@ import { SelectionToSnippet } from './BalloonToolbar/SelectionToSnippet'
 // import LinkButton from './BalloonToolbar/LinkButton'
 
 const BallonMarkToolbarButtons = () => {
-  const plateId = usePlateId()
-  const editor = usePlateEditorRef(plateId)
+  const editor = usePlateEditorRef()
 
   // const arrow = true
   // const direction = 'top'

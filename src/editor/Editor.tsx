@@ -74,7 +74,6 @@ const Editor = ({
       <DndProvider backend={HTML5Backend}>
         {content && (
           <EditorStyles onClick={() => setNodePreview(false)} data-tour="mex-onboarding-draft-editor">
-            {showBalloonToolbar && <BallonMarkToolbarButtons />}
             <Plate
               id={editorId}
               editableProps={editableProps}
@@ -82,6 +81,7 @@ const Editor = ({
               plugins={plugins}
               onChange={debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 1000)}
             >
+              {showBalloonToolbar && <BallonMarkToolbarButtons />}
               <MultiComboboxContainer config={comboConfigData} />
             </Plate>
           </EditorStyles>
