@@ -16,6 +16,7 @@ import { convertContentToRawText } from '../utils/search/localSearch'
 import { useDebouncedCallback } from 'use-debounce'
 import useToggleElements from '../hooks/useToggleElements'
 import { mog } from '../utils/lib/helper'
+import keywordExtractor from 'keyword-extractor'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -56,11 +57,19 @@ const Editor = ({
 
   const debuncedOnChange = useDebouncedCallback((value) => {
     if (showSuggestedNodes) {
-      const rawText = convertContentToRawText(value.slice(-2))
-      const results = searchIndex(rawText)
-      const withoutCurrentNode = results.filter((item) => item.nodeUID !== editorId)
+      const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
 
-      mog('Nodes', { withoutCurrentNode })
+      const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
+      const rawText = convertContentToRawText(value.slice(lastTwoParagraphs, cursorPosition + 1))
+      const res = keywordExtractor
+        .extract(rawText, {
+          language: 'english',
+          remove_duplicates: true
+        })
+        .join(' ')
+
+      const results = searchIndex(res)
+      const withoutCurrentNode = results.filter((item) => item.nodeUID !== editorId)
 
       setSuggestions(withoutCurrentNode)
     }
@@ -69,7 +78,7 @@ const Editor = ({
 
   useEffect(() => {
     if (editorRef && focusAtBeginning) {
-      selectEditor(editorRef, { edge: 'end', focus: true })
+      selectEditor(editorRef, { edge: 'start', focus: true })
     }
   }, [editorRef, editorId, focusAtBeginning]) // eslint-disable-line react-hooks/exhaustive-deps
 

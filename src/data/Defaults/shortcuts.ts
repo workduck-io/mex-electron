@@ -20,6 +20,11 @@ export const defaultShortcuts = {
     keystrokes: '$mod+Shift+KeyI',
     category: 'Navigate'
   },
+  showSuggestedNodes: {
+    title: 'Suggest Nodes',
+    keystrokes: '$mod+/',
+    category: 'Actions'
+  },
   showSnippets: {
     title: 'Snippets',
     keystrokes: '$mod+Shift+KeyS',
