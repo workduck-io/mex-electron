@@ -1,11 +1,10 @@
 import more2Fill from '@iconify-icons/ri/more-2-fill'
 import React from 'react'
 import IconButton from '../../../style/Buttons'
-import messageIcon from '@iconify-icons/ri/message-3-line'
-import { StyledSyncBlockInfo, GraphTools } from '../Graph/Graph.styles'
+import lightbulbFlashLine from '@iconify-icons/ri/lightbulb-flash-line'
+import { StyledGraph, GraphTools } from '../Graph/Graph.styles'
 import { useHelpStore } from '../../../store/useHelpStore'
 import useToggleElements from '../../../hooks/useToggleElements'
-import { StyledBlockInfo } from '../../../editor/Components/SyncBlock/SyncBlockInfo'
 import useSuggestionStore from '../../../store/useSuggestions'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
@@ -14,7 +13,11 @@ import { useContentStore } from '../../../store/useContentStore'
 import { useLinks } from '../../../hooks/useLinks'
 import { usePlateEditorRef, insertNodes, TElement } from '@udecode/plate'
 import { ELEMENT_ILINK } from '../../../editor/Components/ilink/defaults'
-import { Margin } from '../../../style/Integration'
+import styled from 'styled-components'
+
+const Margin = styled.div`
+  margin: 1rem 1rem 0;
+`
 
 const SuggestionInfoBar = () => {
   const { showSuggestedNodes, toggleSuggestedNodes } = useToggleElements()
@@ -33,13 +36,13 @@ const SuggestionInfoBar = () => {
   }
 
   return (
-    <StyledSyncBlockInfo>
+    <StyledGraph>
       <GraphTools>
         <IconButton
           size={24}
-          icon={messageIcon}
-          shortcut={shortcuts.showSyncBlocks.keystrokes}
-          title="Suggest Nodes"
+          icon={lightbulbFlashLine}
+          shortcut={shortcuts.showSuggestedNodes.keystrokes}
+          title="Suggestions"
           highlight={showSuggestedNodes}
           onClick={toggleSuggestedNodes}
         />
@@ -47,7 +50,7 @@ const SuggestionInfoBar = () => {
         <IconButton size={24} icon={more2Fill} title="Options" />
       </GraphTools>
 
-      <StyledBlockInfo>
+      <>
         {suggestions.map((suggestion) => {
           const con = contents[suggestion.nodeUID]
           const path = getNodeIdFromUid(suggestion.nodeUID)
@@ -64,8 +67,8 @@ const SuggestionInfoBar = () => {
             </Margin>
           )
         })}
-      </StyledBlockInfo>
-    </StyledSyncBlockInfo>
+      </>
+    </StyledGraph>
   )
 }
 

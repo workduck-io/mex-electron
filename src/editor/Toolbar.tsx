@@ -85,7 +85,7 @@ const Toolbar = () => {
           size={24}
           singleton={target}
           icon={lightbulbFlashLine}
-          shortcut={shortcuts.showSyncBlocks.keystrokes}
+          shortcut={shortcuts.showSuggestedNodes.keystrokes}
           title="Suggestions"
           highlight={showSuggestedNodes}
           onClick={toggleSuggestedNodes}

@@ -32,7 +32,7 @@ const useLoad = () => {
   const setSelectedNode = useGraphStore((store) => store.setSelectedNode)
   const { getDataAPI, saveDataAPI } = useApi()
   const setSuggestions = useSuggestionStore((store) => store.setSuggestions)
-  const { toggleSuggestedNodes } = useToggleElements()
+  const { toggleSuggestedNodes, showSuggestedNodes } = useToggleElements()
 
   // const { saveNodeAPIandFs } = useDataSaverFromContent()
   const { saveAndClearBuffer } = useEditorBuffer()
@@ -157,7 +157,7 @@ const useLoad = () => {
 
     setNodePreview(false)
     setSuggestions([])
-    toggleSuggestedNodes()
+    if (showSuggestedNodes) toggleSuggestedNodes()
 
     setSelectedNode(undefined)
 
