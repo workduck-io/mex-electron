@@ -11,6 +11,8 @@ interface ContentStoreState {
   saved: boolean
   showSyncBlocks: boolean
   toggleSyncBlocks: () => void
+  showSuggestedNodes: boolean
+  toggleSuggestedNodes: () => void
   setSaved: (saved: boolean) => void
   removeContent: (nodeid: string) => void
   getContent: (nodeid: string) => NodeContent
@@ -22,6 +24,8 @@ interface ContentStoreState {
 export const useContentStore = create<ContentStoreState>((set, get) => ({
   contents: {},
   showSyncBlocks: false,
+  showSuggestedNodes: false,
+  toggleSuggestedNodes: () => set({ showSuggestedNodes: !get().showSuggestedNodes }),
   saved: false,
   setSaved: (saved) => set(() => ({ saved })),
   toggleSyncBlocks: () => set({ showSyncBlocks: !get().showSyncBlocks }),

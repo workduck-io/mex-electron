@@ -108,7 +108,7 @@ const Init = () => {
         .then(({ d, auth }) => {
           if (auth) {
             // TODO: Fix loading of the __null__ node on first start of a fresh install
-            mog('Loading Initial Node', { d, auth })
+            // mog('Loading Initial Node', { d, auth })
             loadNode(getUidFromNodeIdAndLinks(d.ilinks, d.baseNodeId), {
               fetch: false,
               savePrev: false,
