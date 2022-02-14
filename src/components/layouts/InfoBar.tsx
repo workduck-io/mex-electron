@@ -12,6 +12,7 @@ import useToggleElements from '../../hooks/useToggleElements'
 import { useKeyListener } from '../../hooks/useShortcutListener'
 import { useHelpStore } from '../../store/useHelpStore'
 import { size } from '../../style/responsive'
+import SuggestionInfoBar from '../mex/Suggestions'
 
 interface InfoBarWrapperProps {
   wide: string
@@ -40,18 +41,19 @@ export const TemplateInfoBar = styled(InfoBarWrapper)`
   height: 100%;
 `
 
-interface InfoBarProps {
-  showGraph: boolean
-  showSyncBlocks: boolean
-}
-const InfoBarItems = ({ showGraph, showSyncBlocks }: InfoBarProps) => {
+const InfoBarItems = () => {
   const graphData = useGraphData()
+  const { showGraph, showSyncBlocks, showSuggestedNodes } = useToggleElements()
 
   if (showGraph) {
     return <Graph graphData={graphData} />
   }
   if (showSyncBlocks) {
     return <SyncBlockInfo />
+  }
+
+  if (showSuggestedNodes) {
+    return <SuggestionInfoBar />
   }
 
   return <DataInfoBar />
@@ -90,7 +92,7 @@ const InfoBar = () => {
     (styles, item) =>
       item && (
         <InfoBarWrapper wide={showGraph || showSyncBlocks ? 'true' : 'false'} style={styles}>
-          <InfoBarItems showGraph={showGraph} showSyncBlocks={showSyncBlocks} />
+          <InfoBarItems />
         </InfoBarWrapper>
       )
   )

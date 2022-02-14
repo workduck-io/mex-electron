@@ -11,7 +11,7 @@ import { EditorStyles } from '../../../style/Editor'
 import { useHelpStore } from '../../../store/useHelpStore'
 import more2Fill from '@iconify-icons/ri/more-2-fill'
 
-const StyledBlockInfo = styled.div`
+export const StyledBlockInfo = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
