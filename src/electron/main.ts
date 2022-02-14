@@ -189,6 +189,9 @@ const createMexWindow = () => {
   mex.webContents.on('did-finish-load', () => {
     if (!mex) {
       throw new Error('"mexWindow" is not defined')
+    } else {
+      mex.focus()
+      mex.show()
     }
   })
 
