@@ -69,6 +69,32 @@ export const useTransform = () => {
   }
 
   /**
+   * Converts selection to new snippet
+   * Shows notification of snippet creation
+   * @param editor
+   */
+  const selectionToValue = (editor: TEditor) => {
+    if (!editor.selection) return
+    if (!isConvertable(editor)) return
+
+    Editor.withoutNormalizing(editor, () => {
+      const nodes = Array.from(
+        getNodes(editor, {
+          mode: 'highest',
+          block: true,
+          at: editor.selection
+        })
+      )
+
+      const value = nodes.map(([node, _path]) => {
+        return node
+      })
+
+      return value
+    })
+  }
+
+  /**
    * Converts selection to new node
    * Inserts the link of new node in place of the selection
    * @param editor
@@ -160,5 +186,5 @@ export const useTransform = () => {
     })
   }
 
-  return { selectionToNode, isConvertable, selectionToSnippet }
+  return { selectionToNode, isConvertable, selectionToSnippet, selectionToValue }
 }

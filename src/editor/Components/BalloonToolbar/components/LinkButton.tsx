@@ -3,7 +3,6 @@ import {
   ELEMENT_LINK,
   getAbove,
   getPluginType,
-  getText,
   isCollapsed,
   LinkToolbarButtonProps,
   someNode,
@@ -13,12 +12,11 @@ import {
 } from '@udecode/plate'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
 import { mog } from '../../../../utils/lib/helper'
 import { HeadlessButton } from '../../../../style/Buttons'
 // import { Input } from '../../../../style/Form'
-import { clearAllSelection, clearBlurSelection } from '../../../Plugins/blurSelection'
+import { clearAllSelection } from '../../../Plugins/blurSelection'
 import { LinkButtonStyled } from './LinkButton.styles'
 import { upsertLinkAtSelection } from '../upsertLinkAtSelection'
 import { useBalloonToolbarStore } from '..'
