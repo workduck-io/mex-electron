@@ -18,6 +18,12 @@ export interface LoadNodeOptions {
   withLoading?: boolean
 }
 
+export interface IsLocalType {
+  isLocal: boolean
+  nodeid?: string
+  path?: string
+}
+
 export type LoadNodeFn = (nodeid: string, options?: LoadNodeOptions) => void
 
 const useLoad = () => {
@@ -53,7 +59,7 @@ const useLoad = () => {
     return node
   }
 
-  const isLocalNode = (nodeid: string) => {
+  const isLocalNode = (nodeid: string): IsLocalType => {
     const ilinks = useDataStore.getState().ilinks
     const archive = useDataStore.getState().archive
 
@@ -64,7 +70,15 @@ const useLoad = () => {
 
     const isDraftNode = node && node.key?.startsWith('Draft.')
 
-    return inIlinks || inArchive || isDraftNode
+    const res = {
+      isLocal: !!inIlinks || !!inArchive || !!isDraftNode,
+      nodeid: node.nodeid,
+      path: node.key
+    }
+
+    return res
+
+    // return inIlinks || inArchive || isDraftNode
   }
 
   /*
