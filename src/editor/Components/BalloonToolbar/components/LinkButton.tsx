@@ -65,16 +65,6 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
     // Blur focus returns
     if (!editor || ReactEditor.isFocused(editor)) return
 
-    // try {
-    //   ReactEditor.focus(editor)
-    //   const getSelText = editor && getText(editor, editor.blurSelection)
-    //   if (!editor.selection && editor.blurSelection && getSelText) {
-    //     Transforms.select(editor, editor.prevSelection)
-    //   }
-    // } catch (err) {
-    //   console.error(err) // eslint-disable-line no-console
-    // }
-
     const linkNode = getAbove(editor, {
       match: { type }
     })
@@ -102,20 +92,20 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
     if (d === undefined) return
     const { url, linkNode } = d
 
-    console.log('Insertion Insterion', { url, linkNode })
+    // mog('Insertion Insterion', { url, linkNode })
     // Inserting of the link
     const sel = editor.prevSelection
     if (url) {
-      console.log('Insertion Insterion 2', { url, linkNode, sel })
+      // mog('Insertion Insterion 2', { url, linkNode, sel })
       if (linkNode && sel) {
-        console.log('Insertion Insterion 3', { url, linkNode, sel })
+        // mog('Insertion Insterion 3', { url, linkNode, sel })
         unwrapNodes(editor, {
           at: sel,
           match: { type: getPluginType(editor, ELEMENT_LINK) }
         })
       } else {
         const shouldWrap: boolean = linkNode !== undefined && isCollapsed(sel)
-        console.log('Insertion Insterion 4', { url, linkNode, sel, shouldWrap })
+        // mog('Insertion Insterion 4', { url, linkNode, sel, shouldWrap })
         upsertLinkAtSelection(editor, { url, wrap: shouldWrap, at: sel })
       }
     }
@@ -140,34 +130,21 @@ const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
   const linkInput = (
     <LinkButtonStyled focused={isFocused} className="button_of_link">
       <form
+        // Handle submit on Enter
         onSubmit={handleSubmit(onSubmitLink)}
-        onMouseOver={() => {
-          // setIsFocused(true)
-          // console.log('Clearing selections')
-          // clearAllSelection(editor as any)
-          // setIsHidden(false)
-        }}
         onBlur={() => {
+          // When focus is lost, reset the state, hide toolbar
           clearAllSelection(editor as any)
           setIsFocused(false)
           setIsHidden(true)
         }}
-        // onBlur={() => {
-        //   console.log('Clearing selections')
-        // }}
       >
-        <HeadlessButton
-          active={isLink.toString()}
-          as={undefined as any}
-          // onMouseDown={handleMouseDownLink}
-          type="submit"
-          // tooltip={{ interactive: true }}
-          {...props}
-        >
+        <HeadlessButton active={isLink.toString()} as={undefined as any} type="submit" {...props}>
           {icon}
         </HeadlessButton>
         <input
-          onMouseOver={() => {
+          onMouseDownCapture={() => {
+            // When mouse click is captured, don't hide the toolbar
             setIsFocused(true)
           }}
           placeholder="Paste link here..."
