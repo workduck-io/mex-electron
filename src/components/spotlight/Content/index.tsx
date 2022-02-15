@@ -15,7 +15,6 @@ import { useSearch } from '../Home/useSearch'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { MAX_RECENT_ITEMS } from '../Home/components/List'
 import { initActions } from '../../../data/Actions'
-import { mog } from '../../../utils/lib/helper'
 
 const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -47,11 +46,9 @@ const Content = () => {
   const { searchInList } = useSearch()
   const [recentLimit, setRecentLimit] = useState(0)
   const setNormalMode = useSpotlightAppStore((store) => store.setNormalMode)
-  const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
 
   // * Custom hooks
-  // const currentIndex = 0 // useCurrentIndex(searchResults)
-  const { search, selection, setSearch, activeItem, activeIndex } = useSpotlightContext()
+  const { search, selection, activeItem, activeIndex } = useSpotlightContext()
   const { loadNodeAndAppend, loadNodeProps, loadNode } = useLoad()
 
   useEffect(() => {
@@ -71,10 +68,8 @@ const Content = () => {
         const listWithNew = searchInList()
         setSearchResults(listWithNew)
       } else {
-        setNormalMode(true)
+        // setNormalMode(true)
         const items = recents.filter((recent: string) => ilinks.find((ilink) => ilink.nodeid === recent))
-
-        mog('ITEMS', items)
 
         const recentList = items.map((nodeid: string) => {
           const item = ilinks.find((link) => link?.nodeid === nodeid)

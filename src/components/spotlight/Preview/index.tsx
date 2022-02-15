@@ -150,8 +150,6 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
     }
   }
 
-  mog(node.nodeid, previewContent)
-
   return (
     <StyledPreview
       key={`PreviewSpotlightEditor${node.nodeid}`}

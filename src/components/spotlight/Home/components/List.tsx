@@ -15,7 +15,7 @@ import { appNotifierWindow } from '../../../../electron/utils/notifiers'
 import { AppType } from '../../../../hooks/useInitialize'
 import { NodeProperties } from '../../../../store/useEditorStore'
 import { getContent } from '../../../../utils/helpers'
-import { createNodeWithUid } from '../../../../utils/lib/helper'
+import { createNodeWithUid, mog } from '../../../../utils/lib/helper'
 import { useSaveData } from '../../../../hooks/useSaveData'
 import { useDataSaverFromContent } from '../../../../editor/Components/Saver'
 import useLoad from '../../../../hooks/useLoad'
@@ -59,6 +59,7 @@ const List = ({
 
   const listStyle = useMemo(() => {
     const style = { width: '100%', opacity: 1, marginRight: '0' }
+    mog('LIST', { activeItem, search, normalMode })
     if (activeItem?.item) return style
 
     if (selection || !normalMode) {

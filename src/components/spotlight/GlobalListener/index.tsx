@@ -25,7 +25,7 @@ interface IndexAndFileData {
 const GlobalListener = memo(() => {
   const location = useLocation()
   const [temp, setTemp] = useState<any>()
-  const { setSelection, setSearch } = useSpotlightContext()
+  const { setSelection } = useSpotlightContext()
   const setIsPreview = useSpotlightEditorStore((state) => state.setIsPreview)
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
   const setBubble = useSpotlightSettingsStore((state) => state.setBubble)
@@ -65,7 +65,6 @@ const GlobalListener = memo(() => {
       if (location.pathname === '/') {
         setIsPreview(false)
       }
-      mog('data', { data })
       if (!data) {
         setSelection(undefined)
         setIsPreview(false)
