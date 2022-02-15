@@ -1,4 +1,4 @@
-import { AnyObject, Plate, selectEditor, TNode, usePlateEditorRef } from '@udecode/plate'
+import { Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -7,16 +7,10 @@ import { EditorStyles } from '../style/Editor'
 import BallonMarkToolbarButtons from './Components/EditorToolbar'
 import { MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
 import generatePlugins from './Plugins/plugins'
+import { debounce } from 'lodash'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 import { useEditorChange } from '../hooks/useEditorActions'
 import components from './Components/components'
-import { useNewSearchStore } from '../store/useSearchStore'
-import useSuggestionStore from '../store/useSuggestions'
-import { convertContentToRawText } from '../utils/search/localSearch'
-import { useDebouncedCallback } from 'use-debounce'
-import useToggleElements from '../hooks/useToggleElements'
-import { mog } from '../utils/lib/helper'
-import keywordExtractor from 'keyword-extractor'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -47,38 +41,14 @@ const Editor = ({
     readOnly
   }
 
-  const { showSuggestedNodes } = useToggleElements()
-  const { setSuggestions } = useSuggestionStore()
-  const searchIndex = useNewSearchStore((store) => store.searchIndex)
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
 
   // const generateEditorId = () => `${editorId}`
   const editorRef = usePlateEditorRef()
 
-  const debuncedOnChange = useDebouncedCallback((value) => {
-    if (showSuggestedNodes) {
-      const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
-
-      const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
-      const rawText = convertContentToRawText(value.slice(lastTwoParagraphs, cursorPosition + 1))
-      const res = keywordExtractor
-        .extract(rawText, {
-          language: 'english',
-          remove_duplicates: true
-        })
-        .join(' ')
-
-      const results = searchIndex(res)
-      const withoutCurrentNode = results.filter((item) => item.nodeUID !== editorId)
-
-      setSuggestions(withoutCurrentNode)
-    }
-    onChange()
-  }, 1000)
-
   useEffect(() => {
     if (editorRef && focusAtBeginning) {
-      selectEditor(editorRef, { edge: 'start', focus: true })
+      selectEditor(editorRef, { edge: 'end', focus: true })
     }
   }, [editorRef, editorId, focusAtBeginning]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -99,10 +69,6 @@ const Editor = ({
 
   useEditorChange(editorId, content)
 
-  const handleOnChange = (value: TNode<AnyObject>[]) => {
-    debuncedOnChange(value)
-  }
-
   return (
     <>
       <DndProvider backend={HTML5Backend}>
@@ -113,7 +79,7 @@ const Editor = ({
               editableProps={editableProps}
               value={content}
               plugins={plugins}
-              onChange={handleOnChange}
+              onChange={debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 1000)}
             >
               {showBalloonToolbar && <BallonMarkToolbarButtons />}
               <MultiComboboxContainer config={comboConfigData} />
