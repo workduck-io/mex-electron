@@ -25,12 +25,32 @@ export const initActions: Array<ListItemType> = [
   {
     id: '2',
     type: ItemActionType.open,
+    title: 'Create JIRA issue',
+    description: 'Create a new JIRA issue',
+    extras: {
+      base_url: 'https://work-duck.atlassian.net/secure/CreateIssue.jspa'
+    },
+    icon: 'logos:jira'
+  },
+  {
+    id: '18',
+    type: ItemActionType.open,
     title: 'Open Gmail',
     description: 'Open your default Gmail Account',
     extras: {
       base_url: 'https://gmail.com'
     },
     icon: 'logos:google-gmail'
+  },
+  {
+    id: '19',
+    type: ItemActionType.open,
+    title: 'New Confluence page',
+    description: 'Create new page in Confluence',
+    extras: {
+      base_url: 'https://confluence.new'
+    },
+    icon: 'logos:confluence'
   },
   {
     id: '7',

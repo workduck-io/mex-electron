@@ -192,7 +192,7 @@ const useLoad = () => {
     loadNodeAndReplaceContent(nodeProps, { ...nodeContent, content: [...nodeContent.content, ...content] })
   }
 
-  return { loadNode, fetchAndSaveNode, loadNodeAndAppend, loadNodeProps, getNode, saveApiAndUpdate }
+  return { loadNode, fetchAndSaveNode, loadNodeAndAppend, isLocalNode, loadNodeProps, getNode, saveApiAndUpdate }
 }
 
 export default useLoad

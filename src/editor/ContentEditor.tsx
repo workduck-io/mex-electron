@@ -29,7 +29,7 @@ import Toolbar from './Toolbar'
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const { toggleFocusMode } = useLayout()
-  const { saveApiAndUpdate } = useLoad()
+  const { saveApiAndUpdate, isLocalNode } = useLoad()
 
   const { showGraph, showSuggestedNodes } = useToggleElements()
   const searchIndex = useNewSearchStore((store) => store.searchIndex)
@@ -63,7 +63,7 @@ const ContentEditor = () => {
         const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
 
         const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
-        const rawText = convertContentToRawText(val.slice(lastTwoParagraphs, cursorPosition + 1))
+        const rawText = convertContentToRawText(val.slice(lastTwoParagraphs, cursorPosition + 1), ' ')
 
         const res = keywordExtractor
           .extract(rawText, {
@@ -75,7 +75,7 @@ const ContentEditor = () => {
         const results = searchIndex(res)
         mog('RAW', { cursorPosition, rawText, lastTwoParagraphs, res, results })
 
-        const withoutCurrentNode = results.filter((item) => item.nodeUID !== node.nodeid)
+        const withoutCurrentNode = results.filter((item) => item.nodeUID !== node.nodeid && isLocalNode(item.nodeUID))
 
         setSuggestions(withoutCurrentNode)
       }
