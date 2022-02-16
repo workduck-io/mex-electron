@@ -1,21 +1,20 @@
-import { getNodes, getSelectionText, insertNodes, TEditor, upsertLinkAtSelection } from '@udecode/plate'
-import { Editor, Transforms } from 'slate'
-import { useSnippetStore } from '../../../store/useSnippetStore'
-import { SEPARATOR } from '../../../components/mex/Sidebar/treeUtils'
-import { useSaveData } from '../../../hooks/useSaveData'
-import { useContentStore } from '../../../store/useContentStore'
-import useDataStore from '../../../store/useDataStore'
-import { useEditorStore } from '../../../store/useEditorStore'
-import { mog } from '../../../utils/lib/helper'
-import { getSlug, NODE_PATH_CHAR_LENGTH, NODE_PATH_SPACER } from '../../../utils/lib/strings'
-import { convertContentToRawText } from '../../../utils/search/localSearch'
-import { ELEMENT_ILINK } from '../ilink/defaults'
-import { ILinkNode } from '../ilink/types'
-import { ELEMENT_SYNC_BLOCK } from '../SyncBlock'
-import { generateSnippetId } from '../../../data/Defaults/idPrefixes'
+import { getNodes, getSelectionText, insertNodes, TEditor } from '@udecode/plate'
 import genereateName from 'project-name-generator'
 import toast from 'react-hot-toast'
-import { defaultContent } from '../../../data/Defaults/baseData'
+import { Editor, Transforms } from 'slate'
+import { SEPARATOR } from '../../../../components/mex/Sidebar/treeUtils'
+import { defaultContent } from '../../../../data/Defaults/baseData'
+import { generateSnippetId } from '../../../../data/Defaults/idPrefixes'
+import { useSaveData } from '../../../../hooks/useSaveData'
+import { useContentStore } from '../../../../store/useContentStore'
+import useDataStore from '../../../../store/useDataStore'
+import { useEditorStore } from '../../../../store/useEditorStore'
+import { useSnippetStore } from '../../../../store/useSnippetStore'
+import { getSlug, NODE_PATH_CHAR_LENGTH, NODE_PATH_SPACER } from '../../../../utils/lib/strings'
+import { convertContentToRawText } from '../../../../utils/search/localSearch'
+import { ELEMENT_ILINK } from '../../ilink/defaults'
+import { ILinkNode } from '../../ilink/types'
+import { ELEMENT_SYNC_BLOCK } from '../../SyncBlock'
 
 export const useTransform = () => {
   const addILink = useDataStore((s) => s.addILink)
@@ -67,6 +66,32 @@ export const useTransform = () => {
       console.error(e)
       return e
     }
+  }
+
+  /**
+   * Converts selection to new snippet
+   * Shows notification of snippet creation
+   * @param editor
+   */
+  const selectionToValue = (editor: TEditor) => {
+    if (!editor.selection) return
+    if (!isConvertable(editor)) return
+
+    Editor.withoutNormalizing(editor, () => {
+      const nodes = Array.from(
+        getNodes(editor, {
+          mode: 'highest',
+          block: true,
+          at: editor.selection
+        })
+      )
+
+      const value = nodes.map(([node, _path]) => {
+        return node
+      })
+
+      return value
+    })
   }
 
   /**
@@ -161,5 +186,5 @@ export const useTransform = () => {
     })
   }
 
-  return { selectionToNode, isConvertable, selectionToSnippet }
+  return { selectionToNode, isConvertable, selectionToSnippet, selectionToValue }
 }

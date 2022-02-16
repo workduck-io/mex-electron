@@ -108,7 +108,7 @@ const MetadataViewSmall = ({ m }: any) => {
 }
 
 const GrabberTooltipContent = (props: any) => {
-  mog('GrabberTooltipContent Props', { props })
+  // mog('GrabberTooltipContent Props', { props })
 
   const MetadataTooltipProps: TippyProps = {
     placement: 'top',
@@ -185,7 +185,7 @@ export const withStyledDraggables = (components: any) => {
         ELEMENT_CODE_BLOCK
       ],
       onRenderDragHandle: ({ className, styles, element }) => {
-        mog('RenderDraggable', { styles, element })
+        // mog('RenderDraggable', { styles, element })
         return (
           <Tippy {...grabberTooltipProps} content={<GrabberTooltipContent element={element} />}>
             <Tippy theme="mex" placement="top" content="Drag to Move">

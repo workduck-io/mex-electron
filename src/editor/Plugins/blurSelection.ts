@@ -18,6 +18,12 @@ export const clearBlurSelection = (editor: BlurSelectionEditor) => {
     editor.blurSelection = undefined
   }
 }
+export const clearAllSelection = (editor: BlurSelectionEditor) => {
+  if (editor && editor.blurSelection) {
+    editor.blurSelection = undefined
+    editor.selection = undefined
+  }
+}
 
 export const isBlurSelection = (editor: BlurSelectionEditor) => {
   if (editor && editor.blurSelection !== undefined) {
