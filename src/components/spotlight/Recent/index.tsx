@@ -14,6 +14,7 @@ import { Faded, RecentBetween, StyledList, StyledRecent } from './styled'
 import useDataStore from '../../../store/useDataStore'
 import { ItemActionType, ListItemType } from '../SearchResults/types'
 import { useVirtual } from 'react-virtual'
+import { CategoryType } from '../../../store/Context/context.spotlight'
 
 export type RecentType = { recents: Array<string>; onClearClick?: () => void }
 export type RecentRowType = { text: string; highlight?: boolean; onClick: () => void; start: any }
@@ -137,6 +138,7 @@ const Recent = () => {
       icon: item?.icon ?? 'gg:file-document',
       title: item?.path,
       description: '',
+      category: CategoryType.quicklink,
       type: ItemActionType.ilink,
       extras: {
         nodeid: item?.nodeid,

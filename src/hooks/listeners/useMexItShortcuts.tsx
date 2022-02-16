@@ -1,7 +1,7 @@
 import { useHistory } from 'react-router'
 import tinykeys from 'tinykeys'
 import { useEffect } from 'react'
-import { SearchType, useSpotlightContext } from '../../store/Context/context.spotlight'
+import { CategoryType, useSpotlightContext } from '../../store/Context/context.spotlight'
 import { useContentStore } from '../../store/useContentStore'
 import { useKeyListener } from '../useShortcutListener'
 
@@ -12,7 +12,7 @@ export const useMexItShortcuts = () => {
 
   const handleCancel = () => {
     setSaved(false)
-    setSearch({ value: '', type: SearchType.search })
+    setSearch({ value: '', type: CategoryType.search })
     setSelection(undefined)
   }
 

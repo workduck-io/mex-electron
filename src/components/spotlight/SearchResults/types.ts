@@ -1,9 +1,12 @@
+import { CategoryType } from '../../../store/Context/context.spotlight'
+
 export interface ListItemType {
   id: string
   icon: string
   title: string
   description?: string
   type: ItemActionType
+  category: CategoryType
   shortcut?: string[]
   extras?: Partial<ItemExtraType>
 }

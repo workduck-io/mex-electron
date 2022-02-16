@@ -6,6 +6,7 @@ import { StyledKey } from '../../Shortcuts/styled'
 import { ListItemType } from '../../SearchResults/types'
 import { NoWrap, PrimaryText } from '../../../../style/Integration'
 import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
+import { mog } from '../../../../utils/lib/helper'
 
 export const ActionIcon = styled.div`
   display: flex;
@@ -41,29 +42,27 @@ function Item({ item, active, onClick }: { item: ListItemType; active?: boolean;
   const { search } = useSpotlightContext()
   return (
     <StyledRow showColor={active} onClick={onClick} key={`STRING_${item?.title}`}>
-      <div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Dot active={active} />
-          <div style={{ display: 'flex', alignItems: 'center', marginRight: '1rem' }}>
-            <Icon
-              color={theme.colors.primary}
-              style={{ marginRight: '0.75rem' }}
-              height={18}
-              width={18}
-              icon={item?.icon}
-            />
-            <div style={{ whiteSpace: 'nowrap' }}>
-              {item?.extras?.new ? (
-                <div>
-                  Create new <PrimaryText>{search.value.slice(2)}</PrimaryText>
-                </div>
-              ) : (
-                <div>{item?.title}</div>
-              )}
-            </div>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Dot active={active} />
+        <div style={{ display: 'flex', alignItems: 'center', marginRight: '1rem' }}>
+          <Icon
+            color={theme.colors.primary}
+            style={{ marginRight: '0.75rem' }}
+            height={18}
+            width={18}
+            icon={item?.icon}
+          />
+          <div style={{ whiteSpace: 'nowrap' }}>
+            {item?.extras?.new ? (
+              <div>
+                Create new <PrimaryText>{search.value.slice(2)}</PrimaryText>
+              </div>
+            ) : (
+              <div>{item?.title}</div>
+            )}
           </div>
-          <Description>{item?.description}</Description>
         </div>
+        <Description>{item?.description ?? ''}</Description>
       </div>
       {active && (
         <Shortcut>

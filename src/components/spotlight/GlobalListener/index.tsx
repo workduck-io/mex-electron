@@ -66,7 +66,6 @@ const GlobalListener = memo(() => {
       if (location.pathname === '/') {
         setIsPreview(false)
       }
-      mog('data', { data })
       if (!data) {
         setSelection(undefined)
         setIsPreview(false)

@@ -71,7 +71,6 @@ const Lookup = () => {
   const openNode = (value: string) => {
     const nodeid = getUidFromNodeId(value)
     push(nodeid)
-    mog('HElo there', { nodeid })
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
     closeModal()
 

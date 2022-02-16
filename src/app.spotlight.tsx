@@ -15,8 +15,10 @@ if (!IS_DEV) initializeSentry()
 export default function App() {
   const theme = useThemeStore((state) => state.theme)
 
+  const currentTheme = theme?.themeData ?? defaultThemes[0].themeData
+
   return (
-    <ThemeProvider theme={theme?.themeData ?? defaultThemes[0].themeData}>
+    <ThemeProvider theme={currentTheme}>
       <SpotlightProvider>
         <Routes />
         <OnBoardingTour steps={SpotlightOnboarding} />

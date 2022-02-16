@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useVirtual } from 'react-virtual'
-import { ActiveItem, SearchType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
-import { ActionTitle } from '../../Actions/styled'
+import { ActiveItem, CategoryType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
+import { Action, ActionTitle } from '../../Actions/styled'
 import useItemExecutor from '../actionExecutor'
 import { usePointerMovedSinceMount, StyledList, ListItem } from '../styled'
 import Item from './Item'
@@ -15,7 +15,7 @@ import { appNotifierWindow } from '../../../../electron/utils/notifiers'
 import { AppType } from '../../../../hooks/useInitialize'
 import { NodeProperties } from '../../../../store/useEditorStore'
 import { getContent } from '../../../../utils/helpers'
-import { createNodeWithUid } from '../../../../utils/lib/helper'
+import { createNodeWithUid, mog } from '../../../../utils/lib/helper'
 import { useSaveData } from '../../../../hooks/useSaveData'
 import { useDataSaverFromContent } from '../../../../editor/Components/Saver'
 import useLoad from '../../../../hooks/useLoad'
@@ -27,10 +27,8 @@ export const MAX_RECENT_ITEMS = 3
 const List = ({
   data,
   selectedItem,
-  setSelectedItem,
-  limit
+  setSelectedItem
 }: {
-  limit: number
   data: ListItemType[]
   selectedItem: ActiveItem
   setSelectedItem: (action: ActiveItem) => void
@@ -59,18 +57,19 @@ const List = ({
 
   const listStyle = useMemo(() => {
     const style = { width: '100%', opacity: 1, marginRight: '0' }
+    mog('LIST', { activeItem, search, normalMode })
     if (activeItem?.item) return style
 
     if (selection || !normalMode) {
       if (!search.value) style.width = '0%'
       else {
-        if (search.type === SearchType.action) style.width = '100%'
+        if (search.type === CategoryType.action) style.width = '100%'
         else style.width = '50%'
       }
     } else {
       if (!search.value) style.width = '100%'
       else {
-        if (search.type === SearchType.action) style.width = '100%'
+        if (search.type === CategoryType.action) style.width = '100%'
         else style.width = '50%'
       }
     }
@@ -142,7 +141,7 @@ const List = ({
             newNode = getNode(data[activeIndex]?.extras?.nodeid)
           }
 
-          setSearch({ value: '', type: SearchType.search })
+          setSearch({ value: '', type: CategoryType.search })
 
           if (selection) {
             const newNodeContent = getContent(newNode.nodeid)
@@ -207,7 +206,7 @@ const List = ({
         newNode = getNode(data[id]?.extras?.nodeid)
       }
 
-      setSearch({ value: '', type: SearchType.search })
+      setSearch({ value: '', type: CategoryType.search })
 
       if (selection) {
         const newNodeContent = getContent(newNode.nodeid)
@@ -243,15 +242,9 @@ const List = ({
     }
   }
 
-  let heading = 'Quick Links'
-
-  if (search.type === SearchType.action) heading = 'Quick Actions'
-  else if (search.type === SearchType.search)
-    heading = search.value && !selectedItem?.item ? 'Search Results' : 'Recents'
-
   return (
     <StyledList style={springProps} ref={parentRef}>
-      <ActionTitle>{heading}</ActionTitle>
+      {!data.length && <ActionTitle>{search.type}</ActionTitle>}
       <div style={{ height: virtualizer.totalSize }}>
         {virtualizer.virtualItems.map((virtualRow) => {
           const item = data[virtualRow.index]
@@ -259,13 +252,16 @@ const List = ({
             onPointerMove: () => pointerMoved && setActiveIndex(virtualRow.index),
             onClick: () => handleClick(virtualRow.index)
           }
-          const active = virtualRow.index === activeIndex
+
+          const index = virtualRow.index
+          const active = index === activeIndex
+          const lastItem = index > 0 ? data[index - 1] : undefined
 
           return (
             <ListItem key={virtualRow.index} ref={virtualRow.measureRef} start={virtualRow.start} {...handlers}>
-              {virtualRow.index === limit && !search.value && (
+              {item.category !== lastItem?.category && (
                 <div style={{ marginTop: '8px' }}>
-                  <ActionTitle>Quick Actions</ActionTitle>
+                  <ActionTitle>{item.category}</ActionTitle>
                 </div>
               )}
               <Item item={item} active={active} />

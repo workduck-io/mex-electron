@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { Button } from '../../../style/Buttons'
 import { Title } from '../../../style/Typography'
 import { transparentize } from 'polished'
+import { IS_DEV } from '../../../data/Defaults/dev_'
 
 const ErrorWrapper = styled.div`
   display: flex;
@@ -26,8 +27,8 @@ const EditorErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
   return (
     <ErrorWrapper role="alert">
       <ErrorCard>
-        <Title>Ooops Something went wrong</Title>
-        <pre>Error: {error.message}</pre>
+        <Title>Ooops! Something went wrong</Title>
+        {IS_DEV && <pre>Error: {error.message}</pre>}
         <p>You can reset the editor to the last state.</p>
         <Button onClick={resetErrorBoundary}>Reset Editor</Button>
       </ErrorCard>
