@@ -163,6 +163,7 @@ const Refactor = () => {
         placeholder="Refactor To Node..."
         highlightWhenSelected
         createAtTop
+        disallowClash
         iconHighlight={to !== undefined}
         handleSelectItem={handleToChange}
         handleCreateItem={handleToCreate}

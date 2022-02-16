@@ -32,8 +32,10 @@ export const isReserved = (path: string) =>
     } else return p || false
   }, false)
 
+export const isClash = (path: string, paths: string[]) => paths.includes(path)
+
 export const isReservedOrClash = (path: string, paths: string[]) => {
-  return isReserved(path) || paths.includes(path)
+  return isReserved(path) || isClash(path, paths)
 }
 /*
  * Given a path and a set of pre existing paths, and pre defined reserved paths,

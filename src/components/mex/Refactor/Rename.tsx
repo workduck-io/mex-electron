@@ -114,6 +114,7 @@ const Rename = () => {
       <WrappedNodeSelect
         placeholder="Rename node from..."
         defaultValue={from ?? useEditorStore.getState().node.id}
+        disallowReserved
         highlightWhenSelected
         iconHighlight={from !== undefined}
         handleSelectItem={handleFromChange}
@@ -124,7 +125,7 @@ const Rename = () => {
         autoFocus={to === undefined}
         menuOpen={to === undefined}
         defaultValue={to}
-        disallowReserved
+        disallowClash
         createAtTop
         highlightWhenSelected
         iconHighlight={to !== undefined}
