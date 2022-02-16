@@ -1,9 +1,11 @@
+import { CategoryType } from '../store/Context/context.spotlight'
 import { ItemActionType, ListItemType } from '../components/spotlight/SearchResults/types'
 
 // TODO: change shortcut keys based on user's OS
 export const initActions: Array<ListItemType> = [
   // {
   //   id: '5',
+  // category: CategoryType.action,
   //   title: 'Shorten URL',
   //   description: 'Share this URL as an alias',
   //   type: ItemActionType.render,
@@ -14,6 +16,7 @@ export const initActions: Array<ListItemType> = [
   // },
   {
     id: '1',
+    category: CategoryType.action,
     type: ItemActionType.search,
     title: 'Search Twitter',
     description: 'Search on Twitter',
@@ -24,6 +27,7 @@ export const initActions: Array<ListItemType> = [
   },
   {
     id: '2',
+    category: CategoryType.action,
     type: ItemActionType.open,
     title: 'Open Gmail',
     description: 'Open your default Gmail Account',
@@ -34,6 +38,7 @@ export const initActions: Array<ListItemType> = [
   },
   {
     id: '7',
+    category: CategoryType.action,
     title: 'New Google Doc',
     description: 'Create new empty Google Doc with default Google Account',
     type: ItemActionType.open,
@@ -44,6 +49,7 @@ export const initActions: Array<ListItemType> = [
   },
   {
     id: '8',
+    category: CategoryType.action,
     title: 'New Google Sheet',
     description: 'Create new empty Google Sheet with default Google Account',
     type: ItemActionType.open,
@@ -54,6 +60,7 @@ export const initActions: Array<ListItemType> = [
   },
   {
     id: '9',
+    category: CategoryType.action,
     title: 'New Google Slides',
     description: 'Create new empty Google Slides with default Google Account',
     type: ItemActionType.open,
@@ -64,6 +71,7 @@ export const initActions: Array<ListItemType> = [
   },
   {
     id: '10',
+    category: CategoryType.action,
     title: 'New GitHub Gist',
     description: 'Create new GitHub Gist',
     type: ItemActionType.open,
@@ -74,6 +82,7 @@ export const initActions: Array<ListItemType> = [
   },
   {
     id: '11',
+    category: CategoryType.action,
     title: 'New GitHub Repo',
     description: 'Create new GitHub Repository',
     type: ItemActionType.open,
@@ -84,6 +93,7 @@ export const initActions: Array<ListItemType> = [
   },
   {
     id: '12',
+    category: CategoryType.action,
     title: 'New Figma File',
     description: 'Create new empty Figma File',
     type: ItemActionType.open,
@@ -94,6 +104,7 @@ export const initActions: Array<ListItemType> = [
   },
   {
     id: '13',
+    category: CategoryType.action,
     title: 'Search Gmail',
     description: 'Search within your default Gmail Account',
     type: ItemActionType.search,
@@ -104,6 +115,7 @@ export const initActions: Array<ListItemType> = [
   },
   {
     id: '14',
+    category: CategoryType.action,
     title: 'Search Wikipedia',
     description: 'Search on Wikipedia',
     type: ItemActionType.search,
@@ -114,6 +126,7 @@ export const initActions: Array<ListItemType> = [
   },
   {
     id: '15',
+    category: CategoryType.action,
     title: 'Search YouTube',
     description: 'Search on YouTube',
     type: ItemActionType.search,
@@ -125,6 +138,7 @@ export const initActions: Array<ListItemType> = [
   },
   {
     id: '16',
+    category: CategoryType.action,
     title: 'Search Google Drive',
     description: 'Search Google Drive on default Google Account',
     type: ItemActionType.search,
@@ -135,6 +149,7 @@ export const initActions: Array<ListItemType> = [
   },
   {
     id: '17',
+    category: CategoryType.action,
     title: 'Search GitHub',
     description: 'Search on GitHub',
     type: ItemActionType.search,
@@ -145,6 +160,7 @@ export const initActions: Array<ListItemType> = [
   },
   {
     id: '4',
+    category: CategoryType.action,
     title: 'About Us',
     description: 'Get to know more about Workduck.io',
     type: ItemActionType.open,
@@ -160,6 +176,7 @@ export const defaultActions: ListItemType[] = initActions
 export const searchBrowserAction = (query: string) => {
   return {
     id: '0',
+    category: CategoryType.action,
     title: 'Search in Browser Search Bar',
     description: "Perform a search in your browser's URL Bar!",
     type: ItemActionType.browser_search,

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
 import useLoad from '../../../hooks/useLoad'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
@@ -15,6 +14,10 @@ import { useSearch } from '../Home/useSearch'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { MAX_RECENT_ITEMS } from '../Home/components/List'
 import { initActions } from '../../../data/Actions'
+import { mog } from '../../../utils/lib/helper'
+import { ErrorBoundary } from 'react-error-boundary'
+import useEditorActions from '../../../hooks/useEditorActions'
+import EditorErrorFallback from '../../../components/mex/Error/EditorErrorFallback'
 
 const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -27,6 +30,8 @@ const Content = () => {
   const [preview, setPreview] = useState<PreviewType>(INIT_PREVIEW)
   const [searchResults, setSearchResults] = useState<Array<ListItemType>>([])
   const recents = useRecentsStore((store) => store.lastOpened)
+
+  const { resetEditor } = useEditorActions()
 
   // * Store
   const ilinks = useDataStore((s) => s.ilinks)
@@ -44,8 +49,6 @@ const Content = () => {
   }))
 
   const { searchInList } = useSearch()
-  const [recentLimit, setRecentLimit] = useState(0)
-  const setNormalMode = useSpotlightAppStore((store) => store.setNormalMode)
 
   // * Custom hooks
   const { search, selection, activeItem, activeIndex } = useSpotlightContext()
@@ -57,7 +60,7 @@ const Content = () => {
     saveEditorNode(editorNode)
 
     // if (search.value) {
-    //   setSearch({ value: '', type: SearchType.search })
+    //   setSearch({ value: '', type: CategoryType.search })
     //   setSearchResults([])
     // }
   }, [selection, editorNode, setSearchResults])
@@ -65,6 +68,7 @@ const Content = () => {
   useEffect(() => {
     if (!activeItem?.item) {
       if (search.value) {
+        mog('something', { search })
         const listWithNew = searchInList()
         setSearchResults(listWithNew)
       } else {
@@ -79,7 +83,7 @@ const Content = () => {
         })
 
         const recentLimit = recentList.length < MAX_RECENT_ITEMS ? recentList.length : MAX_RECENT_ITEMS
-        setRecentLimit(recentLimit)
+        // setRecentLimit(recentLimit)
         const data = [...recentList.slice(0, recentLimit), ...initActions]
         setSearchResults(data)
       }
@@ -122,8 +126,10 @@ const Content = () => {
 
   return (
     <StyledContent>
-      <SideBar recentLimit={recentLimit} index={activeIndex} data={searchResults} />
-      <Preview preview={preview} node={editorNode} />
+      <SideBar index={activeIndex} data={searchResults} />
+      <ErrorBoundary onReset={resetEditor} FallbackComponent={EditorErrorFallback}>
+        <Preview preview={preview} node={editorNode} />
+      </ErrorBoundary>
     </StyledContent>
   )
 }

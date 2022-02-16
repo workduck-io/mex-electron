@@ -2,7 +2,7 @@
 import React, { useRef, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 
-import { SearchType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { StyledSearch, StyledInput } from './styled'
 import { CenterIcon } from '../../../style/spotlight/layout'
 import WDLogo from './Logo'
@@ -24,15 +24,15 @@ const Search: React.FC = () => {
   const handleSearchInput = useDebouncedCallback((value: string) => {
     const query = {
       value: value.trim(),
-      type: SearchType.search
+      type: CategoryType.search
     }
 
     if (value.startsWith('[[')) {
-      query.type = SearchType.quicklink
+      query.type = CategoryType.quicklink
     }
 
     if (value.startsWith('/')) {
-      query.type = SearchType.action
+      query.type = CategoryType.action
     }
 
     if (value === '') setCurrentListItem(null)

@@ -6,5 +6,5 @@ export const StyledContent = styled.section`
   flex: 1;
   height: fit-content;
   max-height: 324px;
-  margin: 0.5rem 0;
+  margin: 0.5rem 0 0;
 `
