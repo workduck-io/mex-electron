@@ -51,6 +51,8 @@ interface SlashCommands {
   internal: SlashCommand[]
 }
 
+export interface AddILinkProps {ilink: string, nodeid?: string, parentId?: string, archived?: boolean, showAlert?: boolean}
+
 export interface DataStoreState {
   tags: Tag[]
   ilinks: ILink[]
@@ -64,7 +66,7 @@ export interface DataStoreState {
   initializeDataStore: (initData: InitData) => void
 
   // adds the node
-  addILink: (ilink: string, nodeid?: string, parentId?: string, archived?: boolean) => string
+  addILink: (props: AddILinkProps) => ILink | undefined
 
   // adds tag for combobox
   addTag: (tag: string) => void

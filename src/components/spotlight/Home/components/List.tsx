@@ -131,13 +131,13 @@ const List = ({
         if (data[activeIndex]?.type === ItemActionType.ilink) {
           let newNode: NodeProperties
           if (data[activeIndex]?.extras.new) {
-            const isDraftNode = node && node.key.startsWith('Draft.')
+            const isDraftNode = node && node.path.startsWith('Draft.')
             newNode = isDraftNode ? node : createNodeWithUid(getNewDraftKey())
 
             const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : search.value
 
-            const d = addILink(nodeName, newNode.nodeid)
-            newNode = getNode(newNode.nodeid)
+            const nnode = addILink({ ilink: nodeName, nodeid: newNode.nodeid })
+            newNode = getNode(nnode.nodeid)
           } else {
             newNode = getNode(data[activeIndex]?.extras?.nodeid)
           }
@@ -196,12 +196,12 @@ const List = ({
     if (data[id]?.type === ItemActionType.ilink) {
       let newNode: NodeProperties
       if (data[id]?.extras.new) {
-        const isDraftNode = node && node.key.startsWith('Draft.')
+        const isDraftNode = node && node.path.startsWith('Draft.')
         newNode = isDraftNode ? node : createNodeWithUid(getNewDraftKey())
 
         const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : search.value
 
-        const d = addILink(nodeName, newNode.nodeid)
+        const d = addILink({ ilink: nodeName, nodeid: newNode.nodeid })
         newNode = getNode(newNode.nodeid)
       } else {
         newNode = getNode(data[id]?.extras?.nodeid)

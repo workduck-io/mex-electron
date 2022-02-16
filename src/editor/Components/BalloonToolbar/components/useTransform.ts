@@ -132,11 +132,11 @@ export const useTransform = () => {
       const parentPath = useEditorStore.getState().node.title
       const path = parentPath + SEPARATOR + (isInline ? getSlug(selText) : getSlug(text))
 
-      const nodeid = addILink(path)
+      const node = addILink({ ilink: path })
 
-      replaceSelectionWithLink(editor, path, isInline)
+      replaceSelectionWithLink(editor, node.path, isInline)
       // mog('We are here', { lowest, selText, esl: editor.selection, selectionPath, nodes, value, text, path, nodeid })
-      setContent(nodeid, putContent ? value : defaultContent.content)
+      setContent(node.nodeid, putContent ? value : defaultContent.content)
       // saveData()
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path })
     })
@@ -164,11 +164,7 @@ export const useTransform = () => {
       const value = nodes.map(([node, _path]) => {
         return node
       })
-      // const text = convertContentToRawText(value, NODE_PATH_SPACER)
-      // const parentPath = useEditorStore.getState().node.title
-      // const path = parentPath + SEPARATOR + getSlug(text)
 
-      // const nodeid = addILink(path)
       const snippetId = generateSnippetId()
       const snippetTitle = genereateName().dashed
       addSnippet({

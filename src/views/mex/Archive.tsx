@@ -90,11 +90,11 @@ const Archive = () => {
     // }
 
     await unArchiveData([node])
-    addILink(node.path, node.nodeid, undefined, true)
+    addILink({ ilink: node.path, nodeid: node.nodeid, archived: true })
 
     const archiveNode: NodeProperties = {
       id: node.path,
-      key: node.path,
+      path: node.path,
       title: node.path,
       nodeid: node.nodeid
     }

@@ -18,6 +18,7 @@ import useOnboard from '../../../store/useOnboarding'
 import NodeSelect from '../NodeSelect/NodeSelect'
 import { StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
 import { mog } from '../../../utils/lib/helper'
+import { useNodes } from '../../../hooks/useNodes'
 
 const StyledModal = styled(Modal)`
   z-index: 10010000;
@@ -99,10 +100,10 @@ const Lookup = () => {
 
   const handleCreateItem = (inputValue: string) => {
     if (tempClose) return
-    const nodeid = addILink(inputValue)
-    saveNewNodeAPI(nodeid)
-    push(nodeid, { withLoading: false })
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
+    const node = addILink({ ilink: inputValue, showAlert: true })
+    saveNewNodeAPI(node.nodeid)
+    push(node.nodeid, { withLoading: false })
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
     closeModal()
   }
 

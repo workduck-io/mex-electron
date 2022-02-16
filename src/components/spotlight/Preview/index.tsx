@@ -117,7 +117,8 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   }
 
   const onBeforeSave = () => {
-    addILink(node.key, node.nodeid)
+    // Used in saver button. node is not polluted by user
+    addILink({ ilink: node.path, nodeid: node.nodeid })
   }
 
   const onAfterSave = (nodeid: string) => {

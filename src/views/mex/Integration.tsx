@@ -170,7 +170,7 @@ const TemplateInfo = () => {
       <Scroll>
         {localNodes.map((info) => (
           <TemplateInfoList key={'info'} onClick={() => onClick(info.node)}>
-            <Text>{getNode(info.node).key}</Text>
+            <Text>{getNode(info.node).path}</Text>
             <Flex>
               <Text>{`Run Count: ${info.runCount}`}</Text>
             </Flex>

@@ -1,5 +1,6 @@
 import { OnChange, usePlateEditorRef } from '@udecode/plate'
 import { useCallback } from 'react'
+import { mog } from '../../../utils/lib/helper'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange'
@@ -7,6 +8,7 @@ import { isInternalCommand } from '../combobox/hooks/useComboboxOnKeyDown'
 import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { ComboboxType } from './types'
+import { isReservedOrClash } from '../../../utils/lib/paths'
 
 // Handle multiple combobox
 const useMultiComboboxOnChange = (
@@ -42,7 +44,6 @@ const useMultiComboboxOnChange = (
     const ct = keys[key]
     const data = ct.data
 
-    console.log({ data, search, ct, keys, key })
     if (!data) return false
 
     const searchItems = fuzzySearch(data, search, { keys: ['text'] })
@@ -54,9 +55,25 @@ const useMultiComboboxOnChange = (
       text: item.text
     }))
 
-    // TODO: Disable new item if key exists.
-    if (key !== ComboboxKey.SLASH_COMMAND && search !== '' && !isInternalCommand(search)) {
-      items.push({
+    // mog('Change in Combobox', {
+    //   data,
+    //   dataKeys,
+    //   log: !isReservedOrClash(search, dataKeys),
+    //   search,
+    //   ct,
+    //   keys,
+    //   key
+    // })
+
+    const dataKeys = items.map((i) => i.text)
+    // Insert new item conditionally
+    if (
+      key !== ComboboxKey.SLASH_COMMAND &&
+      search !== '' &&
+      !isInternalCommand(search) &&
+      !isReservedOrClash(search, dataKeys)
+    ) {
+      items.unshift({
         key: '__create_new',
         icon: 'ri:add-circle-line',
         text: `Create New ${search}`

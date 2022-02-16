@@ -42,7 +42,7 @@ export const ElementComboboxComponent = ({ keys, slashCommands, internal }: Comb
   )
   // mog('ElementComboboxComponent ', { slashCommands, comboRenderType, comboboxKey, keys, internal })
   const onNewItem = (newItem, parentId?) => {
-    comboRenderType.newItemHandler(newItem, parentId)
+    return comboRenderType.newItemHandler(newItem, parentId)
   }
 
   const creatableOnSelectItem = getCreateableOnSelect(onSelectItem, onNewItem)
