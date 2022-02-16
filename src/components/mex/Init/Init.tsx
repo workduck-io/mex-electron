@@ -34,11 +34,11 @@ import { mog } from '../../../utils/lib/helper'
 import { flexIndexKeys } from '../../../utils/search/flexsearch'
 import { convertDataToRawText } from '../../../utils/search/localSearch'
 import { performClick } from '../Onboarding/steps'
-import { testing } from '../../../utils/lib/paths'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
-  const history = useHistory()
+  const { goTo } = useRouting()
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
   // const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
@@ -95,9 +95,7 @@ const Init = () => {
             UserPoolId: config.cognito.USER_POOL_ID,
             ClientId: config.cognito.APP_CLIENT_ID
           })
-          mog('Authorizing', { userAuthenticatedEmail })
           if (userAuthenticatedEmail) {
-            // setAuthenticated({ email: userAuthenticatedEmail })
             ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: true })
             return { d, auth: true }
           }
@@ -108,24 +106,19 @@ const Init = () => {
         .then(({ d, auth }) => {
           if (auth) {
             // TODO: Fix loading of the __null__ node on first start of a fresh install
-            // mog('Loading Initial Node', { d, auth })
             loadNode(getUidFromNodeIdAndLinks(d.ilinks, d.baseNodeId), {
               fetch: false,
               savePrev: false,
               withLoading: false
             })
 
-            // Fetch quick flow templates
+            // * Fetch quick flow templates
             getTemplates()
+
+            return { nodeid: d.baseNodeId }
           }
         })
-        .then(() => history.push('/editor'))
-        /*
-           .then(() => {
-           mog('Tests', {})
-           testing()
-           })
-           */
+        .then(({ nodeid }) => goTo(ROUTE_PATHS.node, nodeid, NavigationType.push))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -174,7 +167,7 @@ const Init = () => {
       if (location.pathname !== '/editor') history.push('/editor')
     })
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
-      history.push('/settings')
+      history.push(ROUTE_PATHS)
     })
     ipcRenderer.on(IpcAction.SET_APPLE_NOTES_DATA, (_event, arg: AppleNote[]) => {
       setAppleNotes(arg)

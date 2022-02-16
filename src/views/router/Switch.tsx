@@ -18,6 +18,7 @@ import AuthRoute from './AuthRoute'
 import ProtectedRoute from './ProtectedRoute'
 import { useEditorBuffer } from '../../hooks/useEditorBuffer'
 import { useAuthStore } from '../../services/auth/useAuth'
+import { ROUTE_PATHS } from '../routes/urls'
 
 const SwitchWrapper = styled(animated.div)<{ isAuth?: boolean }>`
   position: fixed;
@@ -61,20 +62,21 @@ const Switch = () => {
   // return transitions((props, item) => (
   return (
     <SwitchWrapper isAuth={authenticated}>
-      {/* <ReactRouterSwitch location={item}> */}
       <ReactRouterSwitch>
-        <ProtectedRoute path="/editor" component={EditorView} />
-        <ProtectedRoute path="/tasks" component={Tasks} />
-        <ProtectedRoute path="/integrations" component={Integrations} />
-        <ProtectedRoute exact path="/snippets" component={Snippets} />
-        <ProtectedRoute exact path="/snippets/editor" component={SnippetEditor} />
-        <ProtectedRoute path="/settings" component={Settings} />
-        <ProtectedRoute path="/search" component={Search} />
-        <ProtectedRoute path="/tag/:tag" component={Tag} />
-        <ProtectedRoute path="/" exact component={Dashboard} />
-        <ProtectedRoute path="/archive" exact component={Archive} />
-        <AuthRoute path="/login" component={Login} />
-        <AuthRoute path="/register" component={Register} />
+        <AuthRoute path={ROUTE_PATHS.login} component={Login} />
+        <AuthRoute path={ROUTE_PATHS.register} component={Register} />
+        <ProtectedRoute path={ROUTE_PATHS.tasks} component={Tasks} />
+        <ProtectedRoute path={ROUTE_PATHS.search} component={Search} />
+        <ProtectedRoute path={ROUTE_PATHS.settings} component={Settings} />
+        <ProtectedRoute path={ROUTE_PATHS.archive} exact component={Archive} />
+        <ProtectedRoute exact path={ROUTE_PATHS.snippets} component={Snippets} />
+        <ProtectedRoute path={ROUTE_PATHS.dashborad} exact component={Dashboard} />
+        <ProtectedRoute path={ROUTE_PATHS.integrations} component={Integrations} />
+
+        {/* Dynamic routes */}
+        <ProtectedRoute path={`${ROUTE_PATHS.tag}/:tag`} component={Tag} />
+        <ProtectedRoute path={`${ROUTE_PATHS.node}/:nodeid`} component={EditorView} />
+        <ProtectedRoute exact path={`${ROUTE_PATHS}/:snippetid`} component={SnippetEditor} />
       </ReactRouterSwitch>
     </SwitchWrapper>
   )
