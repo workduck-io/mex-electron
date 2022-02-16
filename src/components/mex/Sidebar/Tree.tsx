@@ -6,7 +6,7 @@
 import equal from 'fast-deep-equal'
 import RCTree from 'rc-tree'
 import { Key } from 'rc-tree/lib/interface'
-import React from 'react'
+import React, { memo } from 'react'
 import { useRouting as getRouting, ROUTE_PATHS, NavigationType } from '../../../views/routes/urls'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
@@ -17,6 +17,7 @@ import { withNodeOps } from '../../../store/useEditorStore'
 import { StyledTree } from '../../../style/Sidebar'
 import TreeExpandIcon from './Icon'
 import { getNodeIdLast, SEPARATOR } from './treeUtils'
+import { mog } from '../../../utils/lib/helper'
 
 const motion = {
   motionName: 'node-motion',
@@ -175,13 +176,13 @@ class Tree extends React.Component<RCTreeProps> {
     if (selectedNodes.length > 0) {
       const nodeid = selectedNodes[0].nodeid
       push(nodeid)
-      getRouting().goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
     }
   }
 
   render() {
     const { expandedKeys, autoExpandParent }: any = this.state
+    mog('CURRENT NODE', { node: this.props.currentNode, tree: this.props.tree })
     const { tree, currentNode, displayMenu } = this.props
 
     // let newExpKeys = expandedKeys !== undefined ? [...expandedKeys, currentNode.key] : [currentNode.key]
@@ -210,4 +211,4 @@ class Tree extends React.Component<RCTreeProps> {
   }
 }
 
-export default withNavigation(withRefactor(withNodeOps(Tree)))
+export default memo(withNavigation(withRefactor(withNodeOps(Tree))))

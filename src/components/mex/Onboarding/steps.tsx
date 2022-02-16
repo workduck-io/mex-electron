@@ -3,10 +3,10 @@ import React from 'react'
 import { Command } from '../NodeIntentsModal/styled'
 import styled from 'styled-components'
 import { useFlowMessage } from './tourNode'
-import { useHistory } from 'react-router-dom'
 import { CenteredFlex, PrimaryText } from '../../../style/Integration'
 import { Button } from '../../../style/Buttons'
 import useOnboard from '../../../store/useOnboarding'
+import { useRouting, NavigationType, ROUTE_PATHS } from '../../../views/routes/urls'
 
 export const toolTipStyle = {
   padding: '2rem',
@@ -44,7 +44,9 @@ const FlowMessage = () => {
 
   return (
     <>
-      <div>Now let's send something back from your integrated service. Write the message you want to send to Mex.</div>
+      <div>
+        Now let&apos;s send something back from your integrated service. Write the message you want to send to Mex.
+      </div>
       <TextArea
         placeholder="Your content here..."
         className="syncTextArea"
@@ -67,16 +69,15 @@ const FlowMessage = () => {
 }
 
 const MoveToIntegrationpage = () => {
-  const router = useHistory()
-
+  const { goTo } = useRouting()
   return (
     <>
-      <div>Now, why don't we show you how to create a flow block</div>
+      <div>Now, why don&apos;t we show you how to create a flow block</div>
       <br />
       <CenteredFlex>
         <Button
           onClick={() => {
-            router.push('/integrations')
+            goTo(ROUTE_PATHS.integrations, NavigationType.push)
             performClick()
           }}
         >

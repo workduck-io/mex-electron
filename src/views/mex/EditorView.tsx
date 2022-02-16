@@ -7,6 +7,7 @@ import InfoBar from '../../components/layouts/InfoBar'
 import { ErrorBoundary } from 'react-error-boundary'
 import EditorErrorFallback from '../../components/mex/Error/EditorErrorFallback'
 import useEditorActions from '../../hooks/useEditorActions'
+import { Outlet } from 'react-router-dom'
 
 const EditorViewWrapper = styled.div`
   display: flex;
@@ -25,7 +26,7 @@ const EditorView = () => {
     <EditorViewWrapper>
       <SideBar tree={Tree} starred={Tree} />
       <ErrorBoundary onReset={resetEditor} FallbackComponent={EditorErrorFallback}>
-        <ContentEditor />
+        <Outlet />
       </ErrorBoundary>
       <InfoBar />
     </EditorViewWrapper>

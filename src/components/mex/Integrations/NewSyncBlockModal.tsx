@@ -18,6 +18,7 @@ import { LoadingButton } from '../Buttons/LoadingButton'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import ServiceSelector from './ServiceSelector'
 import { useAuthStore } from '../../../services/auth/useAuth'
+import { mog } from '../../../utils/lib/helper'
 
 interface NewSyncTemplateModalState {
   open: boolean
@@ -54,7 +55,7 @@ const NewSyncTemplateModal = () => {
   const addTemplate = useSyncStore((store) => store.addTemplate)
   const services = useSyncStore((store) => store.services)
   const { updater } = useUpdater()
-  const workspaceId = useAuthStore((store) => store.workspaceDetails.id)
+  const workspaceId = useAuthStore((store) => store.workspaceDetails?.id)
   const { saveData } = useSaveData()
   const {
     control,
@@ -65,7 +66,7 @@ const NewSyncTemplateModal = () => {
   const { trackEvent } = useAnalytics()
 
   // const theme = useTheme()
-
+  mog('SERvices', { services })
   const serviceOptions = services
     .filter((s) => s.id !== 'MEX' && s.enabled && s.connected)
     .map((s) => ({
@@ -106,7 +107,7 @@ const NewSyncTemplateModal = () => {
 
     const reqData = {
       intentMap,
-      templateId: template.id,
+      templateId: template?.id,
       workspaceId,
       command: template.command,
       title: template.title,

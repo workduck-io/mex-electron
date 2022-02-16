@@ -96,11 +96,7 @@ const NodeIntentsModal = ({ nodeid }: NodeIntegrationsModalProps) => {
 
       {!isConnnectedToServices && (
         <Para>
-          Go to{' '}
-          <Link to={ROUTE_PATHS.integrations} href={ROUTE_PATHS.integrations}>
-            Integrations
-          </Link>{' '}
-          page
+          Go to <Link to={ROUTE_PATHS.integrations}>Integrations</Link> page
         </Para>
       )}
 

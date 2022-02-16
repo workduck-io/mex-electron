@@ -27,8 +27,9 @@ const Content = styled.div<{ grid?: boolean }>`
 `
 
 const Draggable = styled.div`
-  height: 12px;
+  height: 24px;
   width: 100vw;
+  cursor: pointer;
   position: absolute;
   top: 0;
   left: 0;
@@ -37,7 +38,7 @@ const Draggable = styled.div`
 
   &:hover,
   &:active {
-    background-color: ${({ theme }) => transparentize(0.5, theme.colors.primary)};
+    background-color: ${({ theme }) => transparentize(0.85, theme.colors.primary)};
   }
 `
 

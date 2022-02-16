@@ -1,16 +1,17 @@
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export const ROUTE_PATHS = {
-  dashborad: '/',
+  home: '/',
+  dashborad: '/dashboard',
   login: '/login',
   register: '/register',
   archive: '/archive',
   tag: '/tag', // * /tag/:tag
   node: '/node', // * /node/:nodeid
-  search: '/search',
-  settings: '/settings',
-  tasks: '/tasks',
-  integrations: '/integrations',
+  search: 'search',
+  settings: 'settings',
+  tasks: 'tasks',
+  integrations: 'integrations',
   snippets: '/snippets',
   snippet: '/snippets/node' // * /snippets/node/:snippetid
 }
@@ -21,14 +22,14 @@ export enum NavigationType {
 }
 
 export const useRouting = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const goTo = (basePath: string, type: NavigationType, id?: string) => {
     const path = id ? `${basePath}/${id}` : basePath
 
-    if (type === NavigationType.push) history.push(path)
+    if (type === NavigationType.push) navigate(path)
 
-    if (type === NavigationType.replace) history.replace(path)
+    if (type === NavigationType.replace) navigate(path, { replace: true })
   }
 
   return { goTo }

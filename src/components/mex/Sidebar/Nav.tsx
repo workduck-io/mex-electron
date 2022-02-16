@@ -3,7 +3,7 @@ import settings4Line from '@iconify-icons/ri/settings-4-line'
 import { useSingleton } from '@tippyjs/react'
 import { transparentize } from 'polished'
 import React, { useEffect } from 'react'
-import { NavLink, useHistory, useLocation } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import archiveFill from '@iconify-icons/ri/archive-fill'
 import { FOCUS_MODE_OPACITY } from '../../../style/consts'
 import styled, { css } from 'styled-components'
@@ -180,17 +180,18 @@ const Nav = ({ links }: NavProps) => {
       <MainLinkContainer>
         {links.map((l) =>
           l.isComingSoon ? (
-            <NavTooltip singleton={target} content="Coming Soon!">
+            <NavTooltip key={l.path} singleton={target} content="Coming Soon!">
               <ComingSoon tabIndex={-1} key={`nav_${l.title}`}>
                 {l.icon !== undefined ? l.icon : l.title}
               </ComingSoon>
             </NavTooltip>
           ) : (
             <NavTooltip
+              key={l.path}
               singleton={target}
               content={l.shortcut ? <TooltipTitleWithShortcut title={l.title} shortcut={l.shortcut} /> : l.title}
             >
-              <Link exact tabIndex={-1} activeClassName="active" to={l.path} key={`nav_${l.title}`}>
+              <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={l.path} key={`nav_${l.title}`}>
                 {l.icon !== undefined ? l.icon : l.title}
               </Link>
             </NavTooltip>
@@ -200,13 +201,13 @@ const Nav = ({ links }: NavProps) => {
       <div>
         {/* {authenticated ? (
           <NavTooltip singleton={target} content="User">
-            <Link exact tabIndex={-1} activeClassName="active" to="/user" key="nav_user">
+            <Link  tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to="/user" key="nav_user">
               {GetIcon(user3Line)}
             </Link>
           </NavTooltip>
         ) : (
           <NavTooltip singleton={target} content="Login">
-            <Link exact tabIndex={-1} activeClassName="active" to={ROUTE_PATHS.login} key="nav_user" className="active">
+            <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={ROUTE_PATHS.login} key="nav_user" className="active">
               {GetIcon(lockPasswordLine)}
             </Link>
           </NavTooltip>
@@ -215,7 +216,7 @@ const Nav = ({ links }: NavProps) => {
           singleton={target}
           content={<TooltipTitleWithShortcut title="Archive" shortcut={shortcuts.showArchive.keystrokes} />}
         >
-          <Link exact tabIndex={-1} activeClassName="active" to={ROUTE_PATHS.archive} key="nav_search">
+          <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={ROUTE_PATHS.archive} key="nav_search">
             {GetIcon(archiveFill)}
           </Link>
         </NavTooltip>
@@ -229,7 +230,12 @@ const Nav = ({ links }: NavProps) => {
           singleton={target}
           content={<TooltipTitleWithShortcut title="Settings" shortcut={shortcuts.showSettings.keystrokes} />}
         >
-          <Link exact tabIndex={-1} activeClassName="active" to={ROUTE_PATHS.settings} key="nav_settings">
+          <Link
+            tabIndex={-1}
+            className={(s) => (s.isActive ? 'active' : '')}
+            to={`${ROUTE_PATHS.settings}/themes`}
+            key="nav_settings"
+          >
             {GetIcon(settings4Line)}
             {/* <Icon icon={settings4Line} /> */}
           </Link>

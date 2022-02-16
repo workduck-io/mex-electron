@@ -1,15 +1,20 @@
 import React from 'react'
-import { Redirect, Route, RouteProps } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { useAuthStore } from '../../services/auth/useAuth'
 import { ROUTE_PATHS } from '../routes/urls'
 
-const AuthRoute = ({ component: Component, path }: RouteProps) => {
+export interface MexRouteProps {
+  component: React.ComponentType
+}
+
+const AuthRoute: React.FC<MexRouteProps> = ({ component: Component }) => {
   const authenticated = useAuthStore((store) => store.authenticated)
+
   if (authenticated) {
-    return <Redirect to={ROUTE_PATHS.node} />
+    return <Navigate to={ROUTE_PATHS.node} />
   }
 
-  return <Route component={Component} path={path} />
+  return <Component />
 }
 
 export default AuthRoute

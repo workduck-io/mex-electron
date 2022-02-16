@@ -1,12 +1,10 @@
 import { Icon } from '@iconify/react'
 import React from 'react'
 import styled from 'styled-components'
-import { Header } from './Shortcuts'
 import twitterIcon from '@iconify-icons/logos/twitter'
 import globeIcon from '@iconify-icons/ph/globe'
 import linkedinIcon from '@iconify-icons/logos/linkedin-icon'
 import { getGlobal } from '@electron/remote'
-import { useHistory } from 'react-router-dom'
 import { AppType } from '../../../hooks/useInitialize'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../../../data/IpcAction'
@@ -14,6 +12,7 @@ import useOnboard from '../../../store/useOnboarding'
 import { CenteredColumn } from '../../../style/Layouts'
 import { BackCard } from '../../../style/Card'
 import { Title } from '../../../style/Typography'
+import { useRouting, ROUTE_PATHS, NavigationType } from '../../../views/routes/urls'
 
 const Container = styled.section`
   margin: 0 ${({ theme }) => theme.spacing.large};
@@ -45,12 +44,12 @@ const Flex = styled.div`
 
 const About = () => {
   const appVersion = getGlobal('appVersion')
-  const router = useHistory()
+  const { goTo } = useRouting()
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const setStep = useOnboard((s) => s.setStep)
 
   const onBeginTourClick = () => {
-    router.replace('/editor')
+    goTo(ROUTE_PATHS.node, NavigationType.replace)
     setStep(0)
     changeOnboarding(true)
     ipcRenderer.send(IpcAction.START_ONBOARDING, { from: AppType.MEX })
