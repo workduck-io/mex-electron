@@ -1,9 +1,6 @@
-import {
-    ToolbarButton,
-    ToolbarButtonProps
-} from '@udecode/plate'
+import { ToolbarButton, ToolbarButtonProps } from '@udecode/plate'
 import { getPreventDefaultHandler, usePlateEditorState } from '@udecode/plate-core'
-import { default as React } from 'react'
+import React from 'react'
 import { useTransform } from './useTransform'
 
 /**
