@@ -7,6 +7,7 @@ import { Icon } from '@iconify/react'
 import React from 'react'
 import { NavLinkData } from '../components/mex/Sidebar/Types'
 import { useHelpStore } from '../store/useHelpStore'
+import { ROUTE_PATHS } from '../views/routes/urls'
 
 /*
 Sidebar links are defined here
@@ -22,37 +23,37 @@ const useNavlinks = () => {
     const links: NavLinkData[] = [
       {
         title: 'Search',
-        path: '/search',
+        path: ROUTE_PATHS.search,
         shortcut: shortcuts.showSearch.keystrokes,
         icon: GetIcon(searchLine)
       },
       {
         title: 'Dashboard',
-        path: '/',
+        path: ROUTE_PATHS.dashborad,
         icon: GetIcon(dashboardLine),
         isComingSoon: true
       },
       {
         title: 'Editor',
-        path: '/editor',
+        path: ROUTE_PATHS.node,
         shortcut: shortcuts.showEditor.keystrokes,
         icon: GetIcon(fileDocument)
       },
       // {
       //   title: 'Tasks',
-      //   path: '/tasks',
+      //   path: ROUTE_PATHS.tasks,
       //   icon: GetIcon(checkboxLine),
       //   isComingSoon: true
       // },
       {
         title: 'Integrations',
-        path: '/integrations',
+        path: ROUTE_PATHS.integrations,
         shortcut: shortcuts.showIntegrations.keystrokes,
         icon: GetIcon(appsLine)
       },
       {
         title: 'Snippets',
-        path: '/snippets',
+        path: ROUTE_PATHS.snippets,
         shortcut: shortcuts.showSnippets.keystrokes,
         icon: GetIcon(quillPenLine)
       }

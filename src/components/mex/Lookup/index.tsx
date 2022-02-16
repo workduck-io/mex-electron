@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import Modal from 'react-modal'
-import { useHistory } from 'react-router-dom'
 import { useEditorStore } from '../../../store/useEditorStore'
 import styled from 'styled-components'
 import tinykeys from 'tinykeys'
@@ -19,6 +18,7 @@ import NodeSelect from '../NodeSelect/NodeSelect'
 import { StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
 import { mog } from '../../../utils/lib/helper'
 import { useNodes } from '../../../hooks/useNodes'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 
 const StyledModal = styled(Modal)`
   z-index: 10010000;
@@ -33,7 +33,7 @@ const Lookup = () => {
   const { saveNewNodeAPI } = useApi()
   const { addNode } = useNodes()
 
-  const history = useHistory()
+  const { goTo } = useRouting()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const openModal = () => {
@@ -77,7 +77,7 @@ const Lookup = () => {
     closeModal()
 
     if (location.pathname !== '/editor') {
-      history.push('/editor')
+      goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
     }
   }
 

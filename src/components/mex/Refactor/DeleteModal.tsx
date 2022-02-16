@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import Modal from 'react-modal'
 import tinykeys from 'tinykeys'
 import create from 'zustand'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { USE_API } from '../../../data/Defaults/dev_'
 import { useDelete } from '../../../hooks/useDelete'
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
@@ -17,6 +17,7 @@ import { mog } from '../../../utils/lib/helper'
 import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 import { isReserved } from '../../../utils/lib/paths'
+import { useRouting, ROUTE_PATHS, NavigationType } from '../../../views/routes/urls'
 
 interface DeleteStoreState {
   open: boolean
@@ -64,7 +65,7 @@ const Delete = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const location = useLocation()
-  const history = useHistory()
+  const { goTo } = useRouting()
 
   const openModal = useDeleteStore((store) => store.openModal)
   const closeModal = useDeleteStore((store) => store.closeModal)
@@ -83,7 +84,8 @@ const Delete = () => {
       [shortcuts.showArchiveModal.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showArchiveModal, () => {
-          if (location.pathname !== '/editor') history.push('/editor')
+          const node = useEditorStore.getState().node
+          if (location.pathname !== '/editor') goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
           openModal(useEditorStore.getState().node.id)
         })
       }

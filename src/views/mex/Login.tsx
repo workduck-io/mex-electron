@@ -15,6 +15,7 @@ import { useEditorStore } from '../../store/useEditorStore'
 import useDataStore from '../../store/useDataStore'
 import useLoad from '../../hooks/useLoad'
 import { useUpdater } from '../../hooks/useUpdater'
+import { ROUTE_PATHS } from '../routes/urls'
 
 interface LoginFormData {
   email: string
@@ -99,7 +100,7 @@ const Login = () => {
         </AuthForm>
       </BackCard>
       <FooterCard>
-        <Link to={'/register'}>Register</Link>
+        <Link to={ROUTE_PATHS.register}>Register</Link>
       </FooterCard>
     </CenteredColumn>
   )

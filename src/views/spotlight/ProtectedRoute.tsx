@@ -1,12 +1,13 @@
 import React from 'react'
 import { Redirect, Route, RouteProps } from 'react-router-dom'
 import { useAuthStore } from '../../services/auth/useAuth'
+import { ROUTE_PATHS } from '../routes/urls'
 
 const ProtectedRoute = ({ component: Component, path }: RouteProps) => {
   const authenticated = useAuthStore((store) => store.authenticated)
 
   if (!authenticated) {
-    return <Redirect to="/login" />
+    return <Redirect to={ROUTE_PATHS.login} />
   }
 
   return <Route component={Component} path={path} />

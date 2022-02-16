@@ -2,7 +2,6 @@ import { usePlateEditorRef } from '@udecode/plate'
 import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
 import { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import tinykeys from 'tinykeys'
 import config from '../../../apis/config'
@@ -118,7 +117,7 @@ const Init = () => {
             return { nodeid: d.baseNodeId }
           }
         })
-        .then(({ nodeid }) => goTo(ROUTE_PATHS.node, nodeid, NavigationType.push))
+        .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.push, nodeid))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -145,7 +144,7 @@ const Init = () => {
     })
     ipcRenderer.on(IpcAction.REDIRECT_TO, (_event, { page }) => {
       if (page) {
-        history.replace(page)
+        goTo(page, NavigationType.replace)
       }
     })
     ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, () => {
@@ -164,16 +163,16 @@ const Init = () => {
       push(node.nodeid)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
 
-      if (location.pathname !== '/editor') history.push('/editor')
+      if (location.pathname !== '/editor') goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
     })
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
-      history.push(ROUTE_PATHS)
+      goTo(ROUTE_PATHS.settings, NavigationType.push)
     })
     ipcRenderer.on(IpcAction.SET_APPLE_NOTES_DATA, (_event, arg: AppleNote[]) => {
       setAppleNotes(arg)
-      history.push('/editor')
       const appleNotesUID = getUidFromNodeId('Apple Notes')
       loadNode(appleNotesUID)
+      goTo(ROUTE_PATHS.node, NavigationType.push, appleNotesUID)
     })
   }, [fetchIndexLocalStorage, isOnboarding]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -215,41 +214,41 @@ const Init = () => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSnippets, () => {
           // onSave(undefined, false, false)
-          history.push('/snippets')
+          goTo(ROUTE_PATHS.snippets, NavigationType.push)
         })
       },
       [shortcuts.showIntegrations.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showIntegrations, () => {
           // onSave(undefined, false, false)
-          history.push('/integrations')
+          goTo(ROUTE_PATHS.integrations, NavigationType.push)
         })
       },
       [shortcuts.showEditor.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showEditor, () => {
           loadNode(node.nodeid)
-          history.push('/editor')
+          goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
         })
       },
       [shortcuts.showArchive.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showArchive, () => {
-          history.push('/archive')
+          goTo(ROUTE_PATHS.archive, NavigationType.push)
         })
       },
       [shortcuts.showSearch.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSearch, () => {
           // onSave(undefined, false, false)
-          history.push('/search')
+          goTo(ROUTE_PATHS.search, NavigationType.push)
         })
       },
       [shortcuts.showSettings.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSettings, () => {
           // onSave(undefined, false, false)
-          history.push('/settings')
+          goTo(ROUTE_PATHS.settings, NavigationType.push)
         })
       }
     })

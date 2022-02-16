@@ -1,6 +1,6 @@
 import { debounce } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useTransition } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { defaultContent } from '../../data/Defaults/baseData'
@@ -14,6 +14,7 @@ import { Input } from '../../style/Form'
 import { HoverSubtleGlow } from '../../style/helpers'
 import { Result, ResultHeader, Results, ResultTitle, SearchPreviewWrapper } from '../../style/Search'
 import { fuzzySearch } from '../../utils/lib/fuzzySearch'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 
 const TagsWrapper = styled.div`
   display: flex;
@@ -75,7 +76,7 @@ const Tag = () => {
   const { getNodesForTag } = useTags()
   const { getNodeIdFromUid } = useLinks()
   const nodes = getNodesForTag(tag)
-  const history = useHistory()
+  const { goTo } = useRouting()
   const { loadNode } = useLoad()
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState(-1)
@@ -97,7 +98,7 @@ const Tag = () => {
 
   const navigateToTag = (tag: string) => {
     setSelected(-1)
-    history.push(`/tag/${tag}`)
+    goTo(ROUTE_PATHS.tag, NavigationType.push, tag)
   }
 
   const onSearchChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -177,24 +178,24 @@ const Tag = () => {
         <h1>#{tag}</h1>
         <p>Nodes with tag</p>
         <Results>
-          {transition((styles, n, _t, _i) => {
-            const con = contents[n]
-            const path = getNodeIdFromUid(n)
+          {transition((styles, nodeid, _t, _i) => {
+            const con = contents[nodeid]
+            const path = getNodeIdFromUid(nodeid)
             const content = con ? con.content : defaultContent.content
             return (
               <Result
                 onClick={() => {
-                  loadNode(n)
-                  history.push('/editor')
+                  loadNode(nodeid)
+                  goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
                 }}
                 style={styles}
-                key={`tag_res_prev_${tag}_${n}${_i}`}
+                key={`tag_res_prev_${tag}_${nodeid}${_i}`}
               >
                 <ResultHeader>
                   <ResultTitle>{path}</ResultTitle>
                 </ResultHeader>
                 <SearchPreviewWrapper>
-                  <EditorPreviewRenderer content={content} editorId={`editor_${tag}_preview_${n}`} />
+                  <EditorPreviewRenderer content={content} editorId={`editor_${tag}_preview_${nodeid}`} />
                 </SearchPreviewWrapper>
               </Result>
             )

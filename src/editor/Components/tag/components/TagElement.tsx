@@ -6,7 +6,7 @@ import { useHotkeys } from '../hooks/useHotkeys'
 import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { TagElementProps } from './TagElement.types'
 import { STag, STagRoot } from './TagElement.styles'
-import { useHistory } from 'react-router-dom'
+import { useRouting, NavigationType, ROUTE_PATHS } from '../../../../views/routes/urls'
 
 /**
  * TagElement with no default styles.
@@ -16,7 +16,7 @@ export const TagElement = ({ attributes, children, element }: TagElementProps) =
   const editor = useEditorRef()
   const selected = useSelected()
   const focused = useFocused()
-  const history = useHistory()
+  const { goTo } = useRouting()
 
   const onClickProps = useOnMouseClick(() => {
     openTag(element.value)
@@ -42,7 +42,7 @@ export const TagElement = ({ attributes, children, element }: TagElementProps) =
   )
 
   const openTag = (tag: string) => {
-    history.push(`/tag/${tag}`)
+    goTo(ROUTE_PATHS.tag, NavigationType.push, tag)
   }
 
   return (

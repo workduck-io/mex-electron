@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Switch, NavLink, useRouteMatch, useHistory } from 'react-router-dom'
+import { Route, Switch, NavLink, useRouteMatch } from 'react-router-dom'
 import Shortcuts from '../../components/mex/Settings/Shortcuts'
 import styled from 'styled-components'
 import { IntegrationContainer, Margin, Title } from '../../style/Integration'
@@ -21,6 +21,7 @@ import keyboardBoxLine from '@iconify-icons/fluent/keyboard-24-regular'
 import installLine from '@iconify-icons/ri/install-line'
 import user3Line from '@iconify-icons/ri/user-3-line'
 import { Icon } from '@iconify/react'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 
 export const SettingsContainer = styled.section`
   display: flex;
@@ -73,7 +74,7 @@ export const SettingsContent = styled.div`
 const Settings = () => {
   const { path } = useRouteMatch()
   const { logout } = useAuthentication()
-  const history = useHistory()
+  const { goTo } = useRouting()
 
   const { addEventProperties } = useAnalytics()
 
@@ -87,7 +88,7 @@ const Settings = () => {
      * identifyUser(undefined)
      * */
 
-    history.push('/login')
+    goTo(ROUTE_PATHS.login, NavigationType.push)
   }
 
   return (

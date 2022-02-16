@@ -3,7 +3,6 @@ import quillPenLine from '@iconify-icons/ri/quill-pen-line'
 import { Icon } from '@iconify/react'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 import React from 'react'
-import { useHistory } from 'react-router-dom'
 import { useUpdater } from '../../hooks/useUpdater'
 import { generateSnippetId } from '../../data/Defaults/idPrefixes'
 import Editor from '../../editor/Editor'
@@ -21,6 +20,7 @@ import {
 } from '../../style/Snippets'
 import { Title } from '../../style/Typography'
 import genereateName from 'project-name-generator'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 
 export type SnippetsProps = {
   title?: string
@@ -32,7 +32,7 @@ const Snippets: React.FC<SnippetsProps> = () => {
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const deleteSnippet = useSnippetStore((store) => store.deleteSnippet)
 
-  const history = useHistory()
+  const { goTo } = useRouting()
   const { updater } = useUpdater()
 
   const onCreateNew = () => {
@@ -47,12 +47,12 @@ const Snippets: React.FC<SnippetsProps> = () => {
     loadSnippet(snippetId)
     updater()
 
-    history.push('/snippets/editor')
+    goTo(ROUTE_PATHS.snippet, NavigationType.push, snippetId)
   }
 
   const onOpenSnippet = (id: string) => {
     loadSnippet(id)
-    history.push('/snippets/editor')
+    goTo(ROUTE_PATHS.snippet, NavigationType.push, id)
   }
 
   const onDeleteSnippet = (id: string) => {

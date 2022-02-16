@@ -23,8 +23,8 @@ export enum NavigationType {
 export const useRouting = () => {
   const history = useHistory()
 
-  const goTo = (basePath: string, id: string, type: NavigationType) => {
-    const path = `${basePath}/${id}`
+  const goTo = (basePath: string, type: NavigationType, id?: string) => {
+    const path = id ? `${basePath}/${id}` : basePath
 
     if (type === NavigationType.push) history.push(path)
 

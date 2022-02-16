@@ -7,6 +7,7 @@ import equal from 'fast-deep-equal'
 import RCTree from 'rc-tree'
 import { Key } from 'rc-tree/lib/interface'
 import React from 'react'
+import { useRouting as getRouting, ROUTE_PATHS, NavigationType } from '../../../views/routes/urls'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
@@ -171,11 +172,11 @@ class Tree extends React.Component<RCTreeProps> {
     const { selectedNodes } = info
     const { push } = this.props
 
-    // console.log({ selectedNodes })
-
     if (selectedNodes.length > 0) {
-      push(selectedNodes[0].nodeid)
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, selectedNodes[0].nodeid)
+      const nodeid = selectedNodes[0].nodeid
+      push(nodeid)
+      getRouting().goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
     }
   }
 

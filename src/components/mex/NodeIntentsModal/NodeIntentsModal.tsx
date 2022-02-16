@@ -1,6 +1,7 @@
 import React from 'react'
 import Modal from 'react-modal'
 import { Link } from 'react-router-dom'
+import { ROUTE_PATHS } from '../../../views/routes/urls'
 import create from 'zustand'
 import { Intent } from '../../../editor/Components/SyncBlock'
 import IntentSelector from '../../../editor/Components/SyncBlock/intentSelector'
@@ -53,8 +54,6 @@ const NodeIntentsModal = ({ nodeid }: NodeIntegrationsModalProps) => {
   const { getNodeIdFromUid } = useLinks()
 
   const onSave = () => {
-    // console.log('onSave', intents)
-    // Replace intents in intents and specific intent groups
     updateNodeIntents(
       nodeid,
       Object.keys(intents).map((s) => {
@@ -98,7 +97,7 @@ const NodeIntentsModal = ({ nodeid }: NodeIntegrationsModalProps) => {
       {!isConnnectedToServices && (
         <Para>
           Go to{' '}
-          <Link to="/integrations" href="/integrations">
+          <Link to={ROUTE_PATHS.integrations} href={ROUTE_PATHS.integrations}>
             Integrations
           </Link>{' '}
           page

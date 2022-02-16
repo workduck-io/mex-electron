@@ -26,6 +26,7 @@ import { NavTooltip } from '../Tooltips'
 import { NavProps } from './Types'
 import { FocusModeProp } from '../../../style/props'
 import toast from 'react-hot-toast'
+import { useRouting, ROUTE_PATHS, NavigationType } from '../../../views/routes/urls'
 
 export const NavWrapper = styled.div<FocusModeProp>`
   overflow: scroll;
@@ -116,7 +117,7 @@ const Nav = ({ links }: NavProps) => {
   const { push } = useNavigation()
   const { saveNewNodeAPI } = useApi()
 
-  const history = useHistory()
+  const { goTo } = useRouting()
   const location = useLocation()
 
   const [source, target] = useSingleton()
@@ -132,13 +133,15 @@ const Nav = ({ links }: NavProps) => {
     saveNewNodeAPI(node.nodeid)
     push(node.nodeid, { withLoading: false })
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
+
+    return node.nodeid
   }
 
   const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault()
-    createNewNode()
+    const nodeid = createNewNode()
 
-    if (location.pathname !== '/editor') history.push('/editor')
+    if (location.pathname !== '/editor') goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
@@ -203,7 +206,7 @@ const Nav = ({ links }: NavProps) => {
           </NavTooltip>
         ) : (
           <NavTooltip singleton={target} content="Login">
-            <Link exact tabIndex={-1} activeClassName="active" to="/login" key="nav_user" className="active">
+            <Link exact tabIndex={-1} activeClassName="active" to={ROUTE_PATHS.login} key="nav_user" className="active">
               {GetIcon(lockPasswordLine)}
             </Link>
           </NavTooltip>
@@ -212,7 +215,7 @@ const Nav = ({ links }: NavProps) => {
           singleton={target}
           content={<TooltipTitleWithShortcut title="Archive" shortcut={shortcuts.showArchive.keystrokes} />}
         >
-          <Link exact tabIndex={-1} activeClassName="active" to="/archive" key="nav_search">
+          <Link exact tabIndex={-1} activeClassName="active" to={ROUTE_PATHS.archive} key="nav_search">
             {GetIcon(archiveFill)}
           </Link>
         </NavTooltip>
@@ -226,7 +229,7 @@ const Nav = ({ links }: NavProps) => {
           singleton={target}
           content={<TooltipTitleWithShortcut title="Settings" shortcut={shortcuts.showSettings.keystrokes} />}
         >
-          <Link exact tabIndex={-1} activeClassName="active" to="/settings" key="nav_settings">
+          <Link exact tabIndex={-1} activeClassName="active" to={ROUTE_PATHS.settings} key="nav_settings">
             {GetIcon(settings4Line)}
             {/* <Icon icon={settings4Line} /> */}
           </Link>

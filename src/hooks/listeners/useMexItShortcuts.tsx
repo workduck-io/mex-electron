@@ -1,12 +1,12 @@
-import { useHistory } from 'react-router'
 import tinykeys from 'tinykeys'
 import { useEffect } from 'react'
 import { CategoryType, useSpotlightContext } from '../../store/Context/context.spotlight'
 import { useContentStore } from '../../store/useContentStore'
 import { useKeyListener } from '../useShortcutListener'
+import { useRouting, ROUTE_PATHS, NavigationType } from '../../views/routes/urls'
 
 export const useMexItShortcuts = () => {
-  const history = useHistory()
+  const { goTo } = useRouting()
   const { setSelection, setSearch } = useSpotlightContext()
   const setSaved = useContentStore((state) => state.setSaved)
 
@@ -24,7 +24,7 @@ export const useMexItShortcuts = () => {
         event.preventDefault()
         if (!shortcutDisabled) {
           handleCancel()
-          history.replace('/')
+          goTo(ROUTE_PATHS.dashborad, NavigationType.push)
         }
       }
     })

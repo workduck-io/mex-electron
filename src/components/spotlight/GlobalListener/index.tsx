@@ -12,11 +12,12 @@ import { useRecentsStore } from '../../../store/useRecentsStore'
 import { useInitialize, AppType } from '../../../hooks/useInitialize'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { convertDataToRawText } from '../../../utils/search/localSearch'
-import { useLocation, useHistory } from 'react-router'
+import { useLocation } from 'react-router'
 import { useAuthStore } from '../../../services/auth/useAuth'
 import useAnalytics from '../../../services/analytics'
 import useOnboard from '../../../store/useOnboarding'
 import { mog } from '../../../utils/lib/helper'
+import { useRouting, ROUTE_PATHS, NavigationType } from '../../../views/routes/urls'
 interface IndexAndFileData {
   fileData: FileData
   indexData: any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -39,7 +40,7 @@ const GlobalListener = memo(() => {
 
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()
-  const history = useHistory()
+  const { goTo } = useRouting()
 
   const userDetails = useAuthStore((state) => state.userDetails)
 
@@ -87,7 +88,7 @@ const GlobalListener = memo(() => {
     ipcRenderer.on(IpcAction.LOGGED_IN, (_event, arg) => {
       if (arg.loggedIn) {
         if (arg.userDetails && arg.workspaceDetails) setAuthenticated(arg.userDetails, arg.workspaceDetails)
-        history.replace('/')
+        goTo(ROUTE_PATHS.dashborad, NavigationType.push)
       } else setUnAuthenticated()
     })
 
