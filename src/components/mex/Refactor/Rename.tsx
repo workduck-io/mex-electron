@@ -2,6 +2,7 @@ import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
+import { isReserved } from '../../../utils/lib/paths'
 import tinykeys from 'tinykeys'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
@@ -73,7 +74,7 @@ const Rename = () => {
   // const { from, to, open, mockRefactor } = renameState
 
   useEffect(() => {
-    if (to && from) {
+    if (to && from && !isReserved(to)) {
       setMockRefactored(getMockRefactor(from, to))
     }
   }, [to, from])

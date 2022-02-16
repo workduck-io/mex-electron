@@ -6,11 +6,13 @@ import { Icon } from '@iconify/react'
 import React from 'react'
 import { Item, ItemParams, Separator, useContextMenu } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.css'
-import { StyledMenu } from '../../../style/Menu'
+import { mog } from '../../../utils/lib/helper'
 import { useRenameStore } from '../../../store/useRenameStore'
+import { StyledMenu } from '../../../style/Menu'
 import TreeNode from '../../../types/tree'
 import { useDeleteStore } from '../Refactor/DeleteModal'
 import Tree from './Tree'
+import { isReserved } from '../../../utils/lib/paths'
 
 interface TreeProps {
   tree: TreeNode[]
@@ -28,6 +30,7 @@ export const TreeWithContextMenu = ({ tree }: TreeProps) => {
   })
 
   function displayMenu({ event, node }: any) {
+    mog('DisplayTreeContextMenu', { event, node })
     show(event, { props: { id: node.id } })
   }
 
@@ -52,11 +55,25 @@ export const TreeWithContextMenu = ({ tree }: TreeProps) => {
       <Tree tree={tree} displayMenu={displayMenu} />
 
       <StyledMenu id={MENU_ID}>
-        <Item id="rename" onClick={handleItemClick}>
+        <Item
+          id="rename"
+          disabled={(args) => {
+            // mog('isDisabled', { args })
+            return isReserved(args.props.id)
+          }}
+          onClick={handleItemClick}
+        >
           <Icon icon={editLine} />
           Rename
         </Item>
-        <Item id="archive" onClick={handleItemClick}>
+        <Item
+          disabled={(args) => {
+            // mog('isDisabled', { args })
+            return isReserved(args.props.id)
+          }}
+          id="archive"
+          onClick={handleItemClick}
+        >
           <Icon icon={archiveLine} />
           Archive
         </Item>

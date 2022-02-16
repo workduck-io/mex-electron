@@ -76,8 +76,8 @@ export const Suggestion = styled.li<SuggestionProps>`
 export const SuggestionError = styled.div`
   display: flex;
   align-items: center;
-  padding: 6px 10px 6px 4px;
-  margin: ${({ theme }) => `${theme.spacing.tiny} 0`};
+  padding: 10px 10px 6px 4px;
+  margin: ${({ theme }) => `${theme.spacing.small} 0`};
   gap: ${({ theme }) => theme.spacing.small};
 
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
@@ -87,6 +87,7 @@ export const SuggestionError = styled.div`
     color: ${({ theme }) => theme.colors.palette.red};
   }
   ${SuggestionDesc} {
+    white-space: initial;
     margin: ${({ theme }) => theme.spacing.small} 0;
   }
 `

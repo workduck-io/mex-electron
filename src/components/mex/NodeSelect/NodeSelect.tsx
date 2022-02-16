@@ -232,24 +232,30 @@ function NodeSelect({
 
   const onInpChange = useDebouncedCallback((e) => {
     const search = e.target.value
-    if (disallowReserved) {
-      const reserved = isReserved(search)
-      // Update if search is reserved/clash, or when reserved is true
-      if (reserved || nodeSelectState.reserved) {
-        setNodeSelectState({ ...nodeSelectState, reserved })
-      }
-    }
     const newItems = getNewItems(e.target.value)
-    setInputItems(newItems)
+    const reserved = isReserved(search)
+    // Update if search is reserved/clash, or when reserved is true
+    if (reserved || nodeSelectState.reserved) {
+      setNodeSelectState({ ...nodeSelectState, inputItems, reserved })
+    } else {
+      setInputItems(newItems)
+    }
   }, 150)
 
   useEffect(() => {
     if (defaultValue) {
       const newItems = getNewItems(defaultValue)
       const nodeid = getUidFromNodeId(defaultValue)
-      setInputItems(newItems)
-      setInputValue(defaultValue)
-      setSelectedItem(createComboItem(defaultValue, nodeid))
+      const reserved = isReserved(defaultValue)
+      // Update if search is reserved/clash, or when reserved is true
+      if (reserved || nodeSelectState.reserved) {
+        setNodeSelectState({ ...nodeSelectState, inputItems, reserved })
+        setInputValue(defaultValue)
+      } else {
+        setInputItems(newItems)
+        setInputValue(defaultValue)
+        setSelectedItem(createComboItem(defaultValue, nodeid))
+      }
     } else {
       if (prefillRecent && lastOpenedItems.length > 0) {
         setInputItems(lastOpenedItems.filter((i) => i.text))
@@ -294,7 +300,7 @@ function NodeSelect({
         </button> */}
       </StyledCombobox>
       <StyledMenu {...getMenuProps()} isOpen={isOpen}>
-        {nodeSelectState.reserved ? (
+        {disallowReserved && nodeSelectState.reserved ? (
           <SuggestionError>
             <Icon width={24} icon={lock2Line} />
             <SuggestionContentWrapper>

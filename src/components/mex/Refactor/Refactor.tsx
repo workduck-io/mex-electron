@@ -2,6 +2,7 @@ import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
+import { isReserved } from '../../../utils/lib/paths'
 import tinykeys from 'tinykeys'
 import create from 'zustand'
 import { useLinks } from '../../../hooks/useLinks'
@@ -120,7 +121,7 @@ const Refactor = () => {
 
   useEffect(() => {
     // console.log({ to, from });
-    if (to && from) {
+    if (to && from && !isReserved(to)) {
       setMockRefactored(getMockRefactor(from, to))
     }
   }, [to, from])
