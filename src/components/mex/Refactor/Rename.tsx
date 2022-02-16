@@ -15,11 +15,16 @@ import { Button } from '../../../style/Buttons'
 import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
+import { mog } from '../../../utils/lib/helper'
+import { useQStore } from '../../../store/useQStore'
+import useDataStore from '../../../store/useDataStore'
+import { useSaveData } from '../../../hooks/useSaveData'
 
 const Rename = () => {
   const { execRefactor, getMockRefactor } = useRefactor()
   const { push } = useNavigation()
   const shortcuts = useHelpStore((store) => store.shortcuts)
+  const { saveData } = useSaveData()
 
   const open = useRenameStore((store) => store.open)
   const focus = useRenameStore((store) => store.focus)
@@ -35,6 +40,7 @@ const Rename = () => {
 
   const { getUidFromNodeId } = useLinks()
   const { shortcutHandler } = useKeyListener()
+  const q = useQStore((s) => s.q)
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -74,27 +80,32 @@ const Rename = () => {
   // const { from, to, open, mockRefactor } = renameState
 
   useEffect(() => {
-    if (to && from && !isReserved(to)) {
+    if (to && from && !isReserved(from) && !isReserved(from)) {
+      // mog('To, from in rename', { to, from })
       setMockRefactored(getMockRefactor(from, to))
     }
-  }, [to, from])
+  }, [to, from, q])
 
   const handleRefactor = () => {
     if (to && from) {
+      // mog('To, from in rename exec', { to, from })
       const res = execRefactor(from, to)
 
+      saveData()
       const path = useEditorStore.getState().node.id
       const nodeid = useEditorStore.getState().node.nodeid
       if (doesLinkRemain(path, res)) {
-        push(nodeid)
+        push(nodeid, { savePrev: false })
       } else if (res.length > 0) {
         const nodeid = getUidFromNodeId(res[0].to)
-        push(nodeid)
+        push(nodeid, { savePrev: false })
       }
     }
 
     closeModal()
   }
+
+  // mog('RenameComponent', { mockRefactored, to, from, ilinks: useDataStore.getState().ilinks })
 
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>

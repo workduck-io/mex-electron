@@ -128,7 +128,7 @@ const Init = () => {
            */
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
-  }, [auth]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const editor = usePlateEditorRef()
 
   /**
@@ -167,7 +167,7 @@ const Init = () => {
     })
     ipcRenderer.on(IpcAction.CREATE_NEW_NODE, () => {
       const newNodeId = getNewDraftKey()
-      const node = addILink({ilink: newNodeId })
+      const node = addILink({ ilink: newNodeId })
       push(node.nodeid)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
 
@@ -191,7 +191,7 @@ const Init = () => {
       appleNotes.forEach((note) => {
         const title = note.NoteTitle
         const nodeKey = `${appleNotesParentKey}.${title}`
-        let nodeUID = addILink({ilink: nodeKey }).nodeid
+        let nodeUID = addILink({ ilink: nodeKey }).nodeid
 
         const newNodeContent = getMexHTMLDeserializer(note.HTMLContent, editor, [])
         if (!nodeUID) nodeUID = getUidFromNodeId(nodeKey)

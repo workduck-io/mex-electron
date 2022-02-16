@@ -16,6 +16,7 @@ import { NodeLink } from '../../../types/relations'
 import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
+import { mog } from '../../../utils/lib/helper'
 
 // Prefill modal has been added to the Tree via withRefactor from useRefactor
 
@@ -120,8 +121,8 @@ const Refactor = () => {
   const { getUidFromNodeId } = useLinks()
 
   useEffect(() => {
-    // console.log({ to, from });
-    if (to && from && !isReserved(to)) {
+    if (to && from && !isReserved(from) && !isReserved(to)) {
+      // mog('To, from in refactor', { to, from })
       setMockRefactored(getMockRefactor(from, to))
     }
   }, [to, from])

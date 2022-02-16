@@ -1,5 +1,6 @@
 import Tippy from '@tippyjs/react'
 import React, { useEffect, useState } from 'react'
+import { mog } from '../../utils/lib/helper'
 import styled from 'styled-components'
 import { WrappedNodeSelect } from '../../components/mex/NodeSelect/NodeSelect'
 import { StyledInputWrapper } from '../../components/mex/NodeSelect/NodeSelect.styles'
@@ -115,7 +116,7 @@ const NodeRenameTitle = () => {
   //
 
   const reset = () => {
-    modalReset()
+    if (editable) modalReset()
     setEditable(false)
   }
 
@@ -161,10 +162,11 @@ const NodeRenameTitle = () => {
   }
 
   useEffect(() => {
-    if (to) {
+    if (to && editable) {
+      mog('RenameInput', { id: useEditorStore.getState().node.id, to })
       setMockRefactored(getMockRefactor(useEditorStore.getState().node.id, to))
     }
-  }, [to, nodeFrom])
+  }, [to, nodeFrom, editable])
 
   useEffect(() => {
     reset()

@@ -35,7 +35,7 @@ export const TreeWithContextMenu = ({ tree }: TreeProps) => {
   }
 
   function handleItemClick({ event, props: p, data, triggerEvent }: ItemParams<ItemProps, any>) {
-    // console.log({ event, props, data, triggerEvent })
+    mog("handleItemClick", { event, p, data, triggerEvent })
     switch (event.currentTarget.id) {
       case 'rename':
         openRenameModal(p.id)

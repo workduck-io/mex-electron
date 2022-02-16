@@ -32,6 +32,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
   // Load initial data in the store
   initializeDataStore: (initData) => {
+    // mog('Initializing Data store', { initData })
     set({
       ...initData
     })
@@ -52,7 +53,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
         - with existing add numeric suffix
         - not allowed with reserved keywords
    */
-  addILink: ({ilink, nodeid, parentId, archived, showAlert}) => {
+  addILink: ({ ilink, nodeid, parentId, archived, showAlert }) => {
     const { key, isChild } = withoutContinuousDelimiter(ilink)
 
     if (key) {
@@ -93,6 +94,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   },
 
   setIlinks: (ilinks) => {
+    mog('Setting ILinks', { ilinks })
     set({
       ilinks
     })
