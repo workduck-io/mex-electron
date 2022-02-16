@@ -2,16 +2,18 @@
 import useDataStore from '../../../store/useDataStore'
 import { search as getSearchResults } from 'fast-fuzzy'
 
-import { SearchType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { isNewILink } from '../../../components/mex/NodeSelect/NodeSelect'
 import { getListItemFromNode } from './helper'
 import { ILink } from '../../../types/Types'
 import { ListItemType, ItemActionType } from '../SearchResults/types'
 import { initActions } from '../../../data/Actions'
 import { useNewSearchStore } from '../../../store/useSearchStore'
+import useLoad from '../../../hooks/useLoad'
 import { mog } from '../../../utils/lib/helper'
 
 export const useSearch = () => {
+  const { isLocalNode } = useLoad()
   const { search } = useSpotlightContext()
   const ilinks = useDataStore((store) => store.ilinks)
   const searchIndex = useNewSearchStore((store) => store.searchIndex)
@@ -19,11 +21,21 @@ export const useSearch = () => {
   const searchInList = () => {
     let searchList: Array<ListItemType> = []
 
-    switch (search.type) {
+    switch (search?.type) {
       // * Search quick links using [[
-      case SearchType.quicklink:
+      case CategoryType.quicklink:
         const query = search.value.substring(2)
         if (query) {
+          const localNodes = []
+
+          ilinks.forEach((ilink) => {
+            const localNode = isLocalNode(ilink.nodeid)
+
+            if (localNode.isLocal) {
+              localNodes.push(ilink)
+            }
+          })
+
           const results = getSearchResults(query, ilinks, { keySelector: (obj) => obj.path })
 
           const result: Array<ListItemType> = results.map((ilink: ILink) => {
@@ -40,6 +52,7 @@ export const useSearch = () => {
                   id: 'create-new-node',
                   icon: 'bi:plus-circle',
                   type: ItemActionType.ilink,
+                  category: CategoryType.quicklink,
                   extras: {
                     new: true
                   }
@@ -51,23 +64,27 @@ export const useSearch = () => {
         break
 
       // * Search actions using "/"
-      case SearchType.action:
+      case CategoryType.action:
         const val = search.value.substring(1)
         const actions = getSearchResults(val, initActions, { keySelector: (obj) => obj.title })
         searchList = actions
         break
 
-      case SearchType.search:
+      case CategoryType.search:
         const items = searchIndex(search.value)
-        mog('normal search', { items, search: search.value })
-        const res = items.map((item) => {
-          const ilink = ilinks.find((link) => link.nodeid === item.nodeUID)
-          const listItem = getListItemFromNode(ilink)
+        const actionItems = getSearchResults(search.value, initActions, { keySelector: (obj) => obj.title })
+        const localNodes = []
 
-          return listItem
+        items.forEach((item) => {
+          const localNode = isLocalNode(item.nodeUID)
+
+          if (localNode.isLocal) {
+            const listItem = getListItemFromNode(localNode.ilink)
+            localNodes.push(listItem)
+          }
         })
 
-        searchList = res
+        searchList = [...localNodes, ...actionItems]
         break
 
       default:

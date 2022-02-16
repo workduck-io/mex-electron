@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useLocation } from 'react-router'
 import tinykeys from 'tinykeys'
 import { useSpotlightAppStore } from '../../store/app.spotlight'
-import { SearchType, useSpotlightContext } from '../../store/Context/context.spotlight'
+import { CategoryType, useSpotlightContext } from '../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../store/settings.spotlight'
 import { useContentStore } from '../../store/useContentStore'
@@ -31,7 +31,7 @@ export const useGlobalShortcuts = () => {
 
   const handleCancel = () => {
     setSaved(false)
-    setSearch({ value: '', type: SearchType.search })
+    setSearch({ value: '', type: CategoryType.search })
     setActiveItem({ item: null, active: false })
   }
 
