@@ -31,6 +31,7 @@ const Lookup = () => {
   const setStep = useOnboard((s) => s.setStep)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const { saveNewNodeAPI } = useApi()
+  const { addNode } = useNodes()
 
   const history = useHistory()
   const shortcuts = useHelpStore((store) => store.shortcuts)
@@ -100,10 +101,11 @@ const Lookup = () => {
 
   const handleCreateItem = (inputValue: string) => {
     if (tempClose) return
-    const node = addILink({ ilink: inputValue, showAlert: true })
-    saveNewNodeAPI(node.nodeid)
-    push(node.nodeid, { withLoading: false })
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
+    addNode({ ilink: inputValue, showAlert: true }, (node) => {
+      saveNewNodeAPI(node.nodeid)
+      push(node.nodeid, { withLoading: false })
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
+    })
     closeModal()
   }
 

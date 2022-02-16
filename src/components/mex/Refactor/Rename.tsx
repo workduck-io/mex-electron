@@ -112,6 +112,7 @@ const Rename = () => {
         autoFocus={to === undefined}
         menuOpen={to === undefined}
         defaultValue={to}
+        disallowReserved
         createAtTop
         highlightWhenSelected
         iconHighlight={to !== undefined}

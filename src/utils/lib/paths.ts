@@ -1,7 +1,18 @@
 import toast from 'react-hot-toast'
+import { BASE_TASKS_PATH, BASE_DRAFT_PATH } from '../../data/Defaults/baseData'
+import { FlowCommandPrefix } from '../../editor/Components/SlashCommands/useSyncConfig'
+import { SnippetCommandPrefix } from '../../hooks/useSnippets'
 import { mog } from './helper'
 
-const RESERVED_PATHS: string[] = ['draft', 'tasks', 'flow', 'mex', 'sync']
+const RESERVED_PATHS: string[] = [
+  BASE_DRAFT_PATH,
+  BASE_TASKS_PATH,
+  FlowCommandPrefix,
+  'mex',
+  SnippetCommandPrefix,
+  'sync',
+  'root'
+]
 
 export const getPathNum = (path: string) => {
   const numMatch = path.match(/\d+$/)

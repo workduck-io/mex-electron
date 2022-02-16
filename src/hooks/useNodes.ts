@@ -15,8 +15,8 @@ export const useNodes = () => {
       if (node) onSuccess(node)
     } catch (e) {
       mog('Error while creating node', { e })
-      if (e.startsWith('ERROR-RESERVED:'))
-        if (showAlert) toast.error('Path clashed with a ReservedKeyword, incremented a numeric suffix')
+      // if (e.startsWith('ERROR-RESERVED:'))
+      if (showAlert) toast.error('Path clashed with a ReservedKeyword')
     }
   }
 

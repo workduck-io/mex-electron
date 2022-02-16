@@ -15,6 +15,7 @@ import { Input } from '../../../style/Form'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { convertContentToRawText } from '../../../utils/search/localSearch'
+import lock2Line from '@iconify-icons/ri/lock-2-line'
 import {
   StyledCombobox,
   StyledInputWrapper,
@@ -22,10 +23,12 @@ import {
   Suggestion,
   SuggestionContentWrapper,
   SuggestionDesc,
+  SuggestionError,
   SuggestionText
 } from './NodeSelect.styles'
 import MexIcons from '../../../components/icons/Icons'
 import { ILink } from '../../../types/Types'
+import { isReserved } from '../../../utils/lib/paths'
 
 export type ComboItem = {
   // Text to be shown in the combobox list
@@ -74,6 +77,9 @@ interface NodeSelectProps {
   /** Show icon highlight for whether an option has been selected */
   highlightWhenSelected?: boolean
 
+  /** disallow input if reserved */
+  disallowReserved?: boolean
+
   /** Which highlight to show, true for selected (check) */
   iconHighlight?: boolean
 
@@ -87,6 +93,7 @@ interface NodeSelectProps {
 interface NodeSelectState {
   inputItems: ComboItem[]
   selectedItem: ComboItem | null
+  reserved: boolean
 }
 
 function NodeSelect({
@@ -98,6 +105,7 @@ function NodeSelect({
   highlightWhenSelected,
   iconHighlight,
   prefillRecent,
+  disallowReserved,
   handleSelectItem,
   handleCreateItem,
   createAtTop,
@@ -108,7 +116,8 @@ function NodeSelect({
 }: NodeSelectProps) {
   const [nodeSelectState, setNodeSelectState] = useState<NodeSelectState>({
     inputItems: [],
-    selectedItem: null
+    selectedItem: null,
+    reserved: false
   })
 
   const setInputItems = (inputItems: ComboItem[]) => setNodeSelectState((state) => ({ ...state, inputItems }))
@@ -118,13 +127,21 @@ function NodeSelect({
 
   const { getNodeIdFromUid, getUidFromNodeId } = useLinks()
 
+  const getILinks = () => {
+    const rawLinks = useDataStore.getState().ilinks
+    if (!disallowReserved) return rawLinks.map((l) => createComboItem(l.path, l.nodeid, l.icon))
+    const fLinks = rawLinks.filter((l) => !isReserved(l.path))
+    return fLinks.map((l) => createComboItem(l.path, l.nodeid, l.icon))
+  }
+
   const reset = () =>
     setNodeSelectState({
       inputItems: [],
-      selectedItem: null
+      selectedItem: null,
+      reserved: false
     })
 
-  const ilinks = useDataStore((store) => store.ilinks).map((l) => createComboItem(l.path, l.nodeid, l.icon))
+  const ilinks = getILinks()
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)
 
@@ -143,7 +160,7 @@ function NodeSelect({
     // const newItems =  ilinks.filter((item) => item.text.toLowerCase().startsWith(inputValue.toLowerCase()))
     if (inputValue !== '') {
       const newItems = fuzzySearch(ilinks, inputValue, { keys: ['text'] })
-      if (handleCreateItem && inputValue !== '' && isNew(inputValue, ilinks)) {
+      if (handleCreateItem && inputValue !== '' && isNew(inputValue, ilinks) && !isReserved(inputValue)) {
         const comboItem = createNewComboItem(inputValue)
         if (createAtTop) {
           newItems.unshift(comboItem)
@@ -214,6 +231,14 @@ function NodeSelect({
   }
 
   const onInpChange = useDebouncedCallback((e) => {
+    const search = e.target.value
+    if (disallowReserved) {
+      const reserved = isReserved(search)
+      // Update if search is reserved/clash, or when reserved is true
+      if (reserved || nodeSelectState.reserved) {
+        setNodeSelectState({ ...nodeSelectState, reserved })
+      }
+    }
     const newItems = getNewItems(e.target.value)
     setInputItems(newItems)
   }, 150)
@@ -269,7 +294,17 @@ function NodeSelect({
         </button> */}
       </StyledCombobox>
       <StyledMenu {...getMenuProps()} isOpen={isOpen}>
-        {isOpen &&
+        {nodeSelectState.reserved ? (
+          <SuggestionError>
+            <Icon width={24} icon={lock2Line} />
+            <SuggestionContentWrapper>
+              <SuggestionText>Warning: Reserved Node</SuggestionText>
+              <SuggestionDesc>Reserved Nodes cannot be used!</SuggestionDesc>
+              <SuggestionDesc>However, Children inside reserved nodes can be used.</SuggestionDesc>
+            </SuggestionContentWrapper>
+          </SuggestionError>
+        ) : (
+          isOpen &&
           inputItems.map((item, index) => {
             let desc: undefined | string = undefined
             if (item.type !== 'new') {
@@ -293,7 +328,8 @@ function NodeSelect({
                 </SuggestionContentWrapper>
               </Suggestion>
             )
-          })}
+          })
+        )}
       </StyledMenu>
     </>
   )

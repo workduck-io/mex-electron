@@ -179,6 +179,7 @@ const NodeRenameTitle = () => {
           id="NodeRenameTitleSelect"
           name="NodeRenameTitleSelect"
           createAtTop
+          disallowReserved
           autoFocus
           defaultValue={to ?? nodeFrom}
           handleSelectItem={handleToChange}

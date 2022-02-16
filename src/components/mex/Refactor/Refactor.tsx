@@ -151,6 +151,7 @@ const Refactor = () => {
         autoFocus={focus}
         defaultValue={from ?? useEditorStore.getState().node.id}
         highlightWhenSelected
+        disallowReserved
         iconHighlight={from !== undefined}
         handleSelectItem={handleFromChange}
       />

@@ -128,6 +128,7 @@ const Delete = () => {
       <WrappedNodeSelect
         autoFocus
         // menuOpen
+        disallowReserved
         defaultValue={del ?? useEditorStore.getState().node.id}
         handleSelectItem={handleDeleteChange}
       />
