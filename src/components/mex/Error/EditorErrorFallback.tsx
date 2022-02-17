@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FallbackProps } from 'react-error-boundary'
 import { CardShadow } from '../../../style/helpers'
 import styled from 'styled-components'
@@ -6,6 +6,8 @@ import { Button } from '../../../style/Buttons'
 import { Title } from '../../../style/Typography'
 import { transparentize } from 'polished'
 import { IS_DEV } from '../../../data/Defaults/dev_'
+import { useEditorErrorStore } from '../../../hooks/useEditorActions'
+import { mog } from '../../../utils/lib/helper'
 
 const ErrorWrapper = styled.div`
   display: flex;
@@ -24,11 +26,27 @@ const ErrorCard = styled.div`
 `
 
 const EditorErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
+  const alreadyErrored = useEditorErrorStore((s) => s.alreadyErrored)
+  const setErrorState = useEditorErrorStore((s) => s.setErrorState)
+  const prevNode = useEditorErrorStore((s) => s.prevNode)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (!useEditorErrorStore.getState().alreadyErrored) {
+        mog('Resetting the editor store', { alreadyErrored, prevNode })
+        setErrorState('', false)
+      }
+    }, 1000)
+
+    return () => clearTimeout(timeoutId)
+  }, [])
   return (
     <ErrorWrapper role="alert">
       <ErrorCard>
         <Title>Ooops! Something went wrong</Title>
         {IS_DEV && <pre>Error: {error.message}</pre>}
+        {alreadyErrored && (
+          <p>Looks like the node {prevNode} has corrupted contents. Next reset will open the base node. </p>
+        )}
         <p>You can reset the editor to the last state.</p>
         <Button onClick={resetErrorBoundary}>Reset Editor</Button>
       </ErrorCard>
