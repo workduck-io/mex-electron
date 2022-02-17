@@ -12,8 +12,6 @@ export const useSearchProps = () => {
 
   const { selection } = useSpotlightContext()
 
-  mog('ITEM', { currentListItem })
-
   const icon = !normalMode || selection ? Document : LensIcon
   const placeholder = !normalMode || selection ? node.path : '[[  for links or / for actions'
 

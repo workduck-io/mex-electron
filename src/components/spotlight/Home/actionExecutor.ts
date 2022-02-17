@@ -2,7 +2,7 @@ import { ipcRenderer } from 'electron'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { IpcAction } from '../../../data/IpcAction'
 import { ListItemType, ItemActionType } from '../SearchResults/types'
-import { SearchType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 
 const useItemExecutor = () => {
@@ -11,7 +11,7 @@ const useItemExecutor = () => {
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const closeSpotlight = () => {
     setInput('')
-    setSearch({ value: '', type: SearchType.search })
+    setSearch({ value: '', type: CategoryType.search })
     ipcRenderer.send(IpcAction.CLOSE_SPOTLIGHT, {
       data: {
         hide: true

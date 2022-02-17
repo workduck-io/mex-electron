@@ -8,14 +8,13 @@
     "lib": ["es2021", "dom"],
     "noImplicitAny": false,
     "sourceMap": true,
-    "baseUrl": ".",
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "paths": {
-      "*": ["node_modules/*"]
+      "*": ["./node_modules/*"]
     }
     // "strictNullChecks": true
   },
-  "include": ["src/**/*"]
+  "include": ["./src/**/*"]
 }

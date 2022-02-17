@@ -1,20 +1,17 @@
 import downIcon from '@iconify-icons/ph/arrow-down-bold'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useMemo, useRef } from 'react'
-import { ErrorBoundary } from 'react-error-boundary'
 import { useSpring } from 'react-spring'
-import EditorErrorFallback from '../../../components/mex/Error/EditorErrorFallback'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import { IpcAction } from '../../../data/IpcAction'
 import { SaverButton } from '../../../editor/Components/Saver'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import Editor from '../../../editor/Editor'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import useEditorActions from '../../../hooks/useEditorActions'
 import { AppType } from '../../../hooks/useInitialize'
 import useLoad from '../../../hooks/useLoad'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { SearchType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
@@ -24,8 +21,8 @@ import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { combineSources, openNodeInMex } from '../../../utils/combineSources'
 import { useDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
-import { createNodeWithUid, mog } from '../../../utils/lib/helper'
-import { SeePreview, StyledEditorPreview, StyledPreview } from './styled'
+import { createNodeWithUid } from '../../../utils/lib/helper'
+import { SeePreview, StyledPreview } from './styled'
 
 export type PreviewType = {
   text: string
@@ -56,8 +53,6 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
   const saveEditorNode = useSpotlightEditorStore((s) => s.setNode)
 
-  const { resetEditor } = useEditorActions()
-
   // * Custom hooks
   const { loadNodeProps } = useLoad()
   const ref = useRef<HTMLDivElement>()
@@ -71,13 +66,13 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
     if (selection || !normalMode) {
       if (!search.value) style.width = '100%'
       else {
-        if (search.type === SearchType.action) style.width = '0%'
+        if (search.type === CategoryType.action) style.width = '0%'
         else style.width = '50%'
       }
     } else {
       if (!search.value) style.width = '0%'
       else {
-        if (search.type === SearchType.action) style.width = '0%'
+        if (search.type === CategoryType.action) style.width = '0%'
         else style.width = '50%'
       }
     }
@@ -130,7 +125,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
     setSaved(true)
 
     setSelection(undefined)
-    setSearch({ value: '', type: SearchType.search })
+    setSearch({ value: '', type: CategoryType.search })
     setNormalMode(true)
 
     const nNode = createNodeWithUid(getNewDraftKey())
@@ -150,8 +145,6 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
     }
   }
 
-  mog(node.nodeid, previewContent)
-
   return (
     <StyledPreview
       key={`PreviewSpotlightEditor${node.nodeid}`}
@@ -164,19 +157,13 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
           <Icon icon={downIcon} />
         </SeePreview>
       )}
-      <StyledEditorPreview>
-        <ErrorBoundary onReset={resetEditor} FallbackComponent={EditorErrorFallback}>
-          {
-            <Editor
-              autoFocus={!normalMode}
-              focusAtBeginning={!normalMode}
-              readOnly={search.value ? true : false}
-              content={previewContent?.content ?? defaultContent.content}
-              editorId={node.nodeid}
-            />
-          }
-        </ErrorBoundary>
-      </StyledEditorPreview>
+      <Editor
+        autoFocus={!normalMode}
+        focusAtBeginning={!normalMode}
+        readOnly={search.value ? true : false}
+        content={previewContent?.content ?? defaultContent.content}
+        editorId={node.nodeid}
+      />
       <SaverButton callbackAfterSave={onAfterSave} callbackBeforeSave={onBeforeSave} noButton />
     </StyledPreview>
   )

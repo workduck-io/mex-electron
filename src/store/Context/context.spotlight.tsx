@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useState } from 'react'
 import { ListItemType } from '../../components/spotlight/SearchResults/types'
 
-export enum SearchType {
-  quicklink,
-  action,
-  search
+export enum CategoryType {
+  quicklink = 'Quick Links',
+  action = 'Quick Actions',
+  search = 'Search Results'
 }
 
 export type Search = {
   value: string
-  type: SearchType
+  type: CategoryType
 }
 
 export type ActiveItem = { item: ListItemType; active: boolean }
@@ -29,7 +29,7 @@ const SpotlightContext = createContext<SpotlightContextType>(undefined!)
 export const useSpotlightContext = () => useContext(SpotlightContext)
 
 export const SpotlightProvider: React.FC = ({ children }: any) => {
-  const [search, setSearch] = useState<Search>({ value: '', type: SearchType.search })
+  const [search, setSearch] = useState<Search>({ value: '', type: CategoryType.search })
   const [selection, setSelection] = useState<any>()
   const [activeIndex, setActiveIndex] = useState<number>(0)
   const [activeItem, setActiveItem] = useState<ActiveItem>({ item: undefined, active: false })

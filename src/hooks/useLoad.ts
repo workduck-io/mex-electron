@@ -6,7 +6,7 @@ import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
 import { NodeProperties, useEditorStore } from '../store/useEditorStore'
 import { useGraphStore } from '../store/useGraphStore'
-import { NodeEditorContent } from '../types/Types'
+import { ILink, NodeEditorContent } from '../types/Types'
 import { getContent } from '../utils/helpers'
 import { mog, updateEmptyBlockTypes } from '../utils/lib/helper'
 import { useEditorBuffer } from './useEditorBuffer'
@@ -16,6 +16,11 @@ export interface LoadNodeOptions {
   fetch?: boolean
   node?: NodeProperties
   withLoading?: boolean
+}
+
+export interface IsLocalType {
+  isLocal: boolean
+  ilink?: ILink
 }
 
 export type LoadNodeFn = (nodeid: string, options?: LoadNodeOptions) => void
@@ -53,7 +58,7 @@ const useLoad = () => {
     return node
   }
 
-  const isLocalNode = (nodeid: string) => {
+  const isLocalNode = (nodeid: string): IsLocalType => {
     const ilinks = useDataStore.getState().ilinks
     const archive = useDataStore.getState().archive
 
@@ -64,7 +69,14 @@ const useLoad = () => {
 
     const isDraftNode = node && node.path?.startsWith('Draft.')
 
-    return inIlinks || inArchive || isDraftNode
+    const res = {
+      isLocal: !!inIlinks || !!inArchive || !!isDraftNode,
+      ilink: inIlinks ?? inArchive
+    }
+
+    return res
+
+    // return inIlinks || inArchive || isDraftNode
   }
 
   /*
@@ -146,7 +158,7 @@ const useLoad = () => {
   const loadNode: LoadNodeFn = (nodeid, options = { savePrev: true, fetch: USE_API(), withLoading: true }) => {
     mog('Loading Node', { nodeid, options })
     const hasBeenLoaded = false
-    if (!options.node && !isLocalNode(nodeid)) {
+    if (!options.node && !isLocalNode(nodeid).isLocal) {
       toast.error('Selected node does not exist.')
       nodeid = editorNodeId
     }
@@ -185,7 +197,7 @@ const useLoad = () => {
     loadNodeAndReplaceContent(nodeProps, { ...nodeContent, content: [...nodeContent.content, ...content] })
   }
 
-  return { loadNode, fetchAndSaveNode, loadNodeAndAppend, loadNodeProps, getNode, saveApiAndUpdate }
+  return { loadNode, fetchAndSaveNode, loadNodeAndAppend, isLocalNode, loadNodeProps, getNode, saveApiAndUpdate }
 }
 
 export default useLoad
