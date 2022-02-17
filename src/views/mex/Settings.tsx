@@ -70,7 +70,6 @@ export const SettingsContent = styled.div`
 const Settings = () => {
   const { logout } = useAuthentication()
   const { goTo } = useRouting()
-  const { pathname } = useLocation()
 
   const { addEventProperties } = useAnalytics()
 
@@ -85,15 +84,6 @@ const Settings = () => {
      * */
 
     goTo(ROUTE_PATHS.login, NavigationType.push)
-  }
-
-  mog('classname', { pathname })
-  const handleActiveClassName = (item: { isActive: boolean }): string => {
-    if (item.isActive && pathname === '/settings') {
-      return 'active'
-    }
-
-    return ''
   }
 
   return (

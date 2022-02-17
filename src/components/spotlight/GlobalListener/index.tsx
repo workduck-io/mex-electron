@@ -63,7 +63,7 @@ const GlobalListener = memo(() => {
 
   useEffect(() => {
     ipcRenderer.on(IpcAction.SELECTED_TEXT, (_event, data) => {
-      if (location.pathname === '/') {
+      if (location.pathname === ROUTE_PATHS.home) {
         setIsPreview(false)
       }
       if (!data) {
@@ -88,7 +88,7 @@ const GlobalListener = memo(() => {
     ipcRenderer.on(IpcAction.LOGGED_IN, (_event, arg) => {
       if (arg.loggedIn) {
         if (arg.userDetails && arg.workspaceDetails) setAuthenticated(arg.userDetails, arg.workspaceDetails)
-        goTo(ROUTE_PATHS.dashborad, NavigationType.push)
+        goTo(ROUTE_PATHS.home, NavigationType.replace)
       } else setUnAuthenticated()
     })
 

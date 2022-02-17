@@ -76,9 +76,7 @@ const Lookup = () => {
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
     closeModal()
 
-    if (location.pathname !== '/editor') {
-      goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-    }
+    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
   const handleSelectItem = (inputValue: string) => {

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Outlet, Route, Routes, useLocation } from 'react-router-dom'
+import { Outlet, Route, Routes, useLocation, useMatch } from 'react-router-dom'
 import styled from 'styled-components'
 import Search from '../../components/mex/Search/Search'
 import SnippetEditor from '../../components/Snippets/SnippetEditor'
@@ -25,6 +25,7 @@ import { ROUTE_PATHS } from '../routes/urls'
 import UserPage from '../mex/UserPage'
 import Shortcuts from '../../components/mex/Settings/Shortcuts'
 import ContentEditor from '../../editor/ContentEditor'
+import { mog } from '../../utils/lib/helper'
 
 const SwitchWrapper = styled.div<{ isAuth?: boolean }>`
   position: fixed;

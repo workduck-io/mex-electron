@@ -3,7 +3,7 @@ import settings4Line from '@iconify-icons/ri/settings-4-line'
 import { useSingleton } from '@tippyjs/react'
 import { transparentize } from 'polished'
 import React, { useEffect } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useMatch } from 'react-router-dom'
 import archiveFill from '@iconify-icons/ri/archive-fill'
 import { FOCUS_MODE_OPACITY } from '../../../style/consts'
 import styled, { css } from 'styled-components'
@@ -111,6 +111,7 @@ const ComingSoon = styled.div`
 `
 
 const Nav = ({ links }: NavProps) => {
+  // const match = useMatch(`/${ROUTE_PATHS.node}/:nodeid`)
   const authenticated = useAuthStore((store) => store.authenticated)
   const focusMode = useLayoutStore((store) => store.focusMode)
   const addILink = useDataStore((store) => store.addILink)
@@ -141,7 +142,7 @@ const Nav = ({ links }: NavProps) => {
     e.preventDefault()
     const nodeid = createNewNode()
 
-    if (location.pathname !== '/editor') goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
   const shortcuts = useHelpStore((store) => store.shortcuts)

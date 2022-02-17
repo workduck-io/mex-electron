@@ -3,6 +3,7 @@ import { TEditor } from '@udecode/plate'
 import { useComboboxStore } from '../useComboboxStore'
 import { ComboboxType } from '../../multi-combobox/types'
 import getTextFromTriggers from '../../multi-combobox/getMultiTextFromTrigger'
+import { mog } from '../../../../utils/lib/helper'
 
 /**
  * If the cursor is after the trigger and at the end of the word:
@@ -21,20 +22,18 @@ export const useComboboxOnChange = ({
   const setSearch = useComboboxStore((state) => state.setSearch)
   const setKey = useComboboxStore((state) => state.setKey)
 
-  return useCallback(
-    (...args) => {
-      const textFromTrigger = getTextFromTriggers(editor, keys)
-      if (textFromTrigger) {
-        const { key, search, range } = textFromTrigger
+  return (...args) => {
+    const textFromTrigger = getTextFromTriggers(editor, keys)
+    mog('Text from trigger', { textFromTrigger, editor, keys })
+    if (textFromTrigger) {
+      const { key, search, range } = textFromTrigger
 
-        setKey(key)
-        setTargetRange(range)
-        setSearch(search)
-        return { search }
-      }
+      setKey(key)
+      setTargetRange(range)
+      setSearch(search)
+      return { search }
+    }
 
-      return { search: undefined }
-    },
-    [editor, keys, setKey, setTargetRange, setSearch]
-  )
+    return { search: undefined }
+  }
 }

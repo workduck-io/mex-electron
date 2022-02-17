@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import Modal from 'react-modal'
 import tinykeys from 'tinykeys'
 import create from 'zustand'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useMatch } from 'react-router-dom'
 import { USE_API } from '../../../data/Defaults/dev_'
 import { useDelete } from '../../../hooks/useDelete'
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
@@ -85,7 +85,7 @@ const Delete = () => {
         event.preventDefault()
         shortcutHandler(shortcuts.showArchiveModal, () => {
           const node = useEditorStore.getState().node
-          if (location.pathname !== '/editor') goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
+          goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
           openModal(useEditorStore.getState().node.id)
         })
       }

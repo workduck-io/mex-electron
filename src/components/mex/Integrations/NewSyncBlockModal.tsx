@@ -18,7 +18,6 @@ import { LoadingButton } from '../Buttons/LoadingButton'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import ServiceSelector from './ServiceSelector'
 import { useAuthStore } from '../../../services/auth/useAuth'
-import { mog } from '../../../utils/lib/helper'
 
 interface NewSyncTemplateModalState {
   open: boolean
@@ -66,7 +65,6 @@ const NewSyncTemplateModal = () => {
   const { trackEvent } = useAnalytics()
 
   // const theme = useTheme()
-  mog('SERvices', { services })
   const serviceOptions = services
     .filter((s) => s.id !== 'MEX' && s.enabled && s.connected)
     .map((s) => ({

@@ -182,7 +182,6 @@ class Tree extends React.Component<RCTreeProps> {
 
   render() {
     const { expandedKeys, autoExpandParent }: any = this.state
-    mog('CURRENT NODE', { node: this.props.currentNode, tree: this.props.tree })
     const { tree, currentNode, displayMenu } = this.props
 
     // let newExpKeys = expandedKeys !== undefined ? [...expandedKeys, currentNode.key] : [currentNode.key]
@@ -211,4 +210,4 @@ class Tree extends React.Component<RCTreeProps> {
   }
 }
 
-export default memo(withNavigation(withRefactor(withNodeOps(Tree))))
+export default withNavigation(withRefactor(withNodeOps(Tree)))

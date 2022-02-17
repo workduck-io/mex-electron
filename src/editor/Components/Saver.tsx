@@ -30,7 +30,6 @@ export const useDataSaverFromContent = () => {
   const { updateTagsFromContent } = useTags()
   const { saveDataAPI } = useApi()
   const updateDocNew = useNewSearchStore((store) => store.updateDoc)
-  const { saveData } = useSaveData()
 
   // By default saves to API use false to not save
   const saveEditorValueAndUpdateStores = (nodeid: string, editorValue: any[], saveApi?: boolean) => {
@@ -43,7 +42,7 @@ export const useDataSaverFromContent = () => {
       updateTagsFromContent(nodeid, editorValue)
       const title = getNodeIdFromUid(nodeid)
       updateDocNew(nodeid, convertEntryToRawText(nodeid, editorValue), title)
-      saveData()
+      // saveData()
     }
   } //, [])
 
@@ -51,7 +50,7 @@ export const useDataSaverFromContent = () => {
     const content = getContent(nodeid)
     mog('saving to api for nodeid: ', { nodeid, content })
     saveDataAPI(nodeid, content.content)
-    saveData()
+    // saveData()
   }
 
   const saveNodeWithValue = (nodeid: string, value: NodeEditorContent) => {
@@ -59,7 +58,7 @@ export const useDataSaverFromContent = () => {
     mog('saving to api for nodeid: ', { nodeid, value })
     // saveDataAPI(nodeid, content.content)
     saveEditorValueAndUpdateStores(nodeid, value, true)
-    saveData()
+    // saveData()
   }
 
   return { saveEditorValueAndUpdateStores, saveNodeAPIandFs, saveNodeWithValue }
@@ -86,20 +85,20 @@ export const useSaver = () => {
 
     const defaultNode = useEditorStore.getState().node
     const cnode = node || defaultNode
-    // const nodeContent = content ?? editorState
-    // setContent then save
 
+    // * Editor Id is different from nodeid
     const editorId = getPlateId()
     const hasState = !!state[editorId]
+
     if (hasState) {
       const editorState = content ?? state[editorId].get.value()
       saveEditorValueAndUpdateStores(cnode.nodeid, editorState)
-      saveData()
     }
 
     if (writeToFile !== false) {
       saveData()
     }
+
     if (notification !== false) toast('Saved!', { duration: 1000 })
   }
 

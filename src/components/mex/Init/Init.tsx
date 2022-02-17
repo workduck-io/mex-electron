@@ -34,12 +34,12 @@ import { flexIndexKeys } from '../../../utils/search/flexsearch'
 import { convertDataToRawText } from '../../../utils/search/localSearch'
 import { performClick } from '../Onboarding/steps'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import { useLocation, useMatch, useResolvedPath } from 'react-router-dom'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
   const { goTo } = useRouting()
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
-  // const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const pushHs = useHistoryStore((store) => store.push)
   const isOnboarding = useOnboard((s) => s.isOnboarding)
@@ -50,6 +50,7 @@ const Init = () => {
   const { loadNode, getNode } = useLoad()
   const { initCognito } = useAuth()
 
+  const location = useLocation()
   const { getLocalData } = useLocalData()
   const initFlexSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
   const fetchIndexLocalStorage = useNewSearchStore((store) => store.fetchIndexLocalStorage)
@@ -163,7 +164,8 @@ const Init = () => {
       push(node.nodeid)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
 
-      if (location.pathname !== '/editor') goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+      mog('LCOATION', { location })
+      if (location.pathname !== `/${ROUTE_PATHS.node}`) goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
     })
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
       goTo(ROUTE_PATHS.settings, NavigationType.push)

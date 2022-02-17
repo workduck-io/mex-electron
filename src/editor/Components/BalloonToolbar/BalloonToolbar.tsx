@@ -32,7 +32,6 @@ export const BalloonToolbar = withPlateProvider((props: BalloonToolbarProps) => 
     <PortalBody element={portalElement}>
       <BalloonToolbarBase
         ref={popperRef}
-        // css={styles.root.css}
         className={styles.root.className}
         style={popperStyles.popper}
         popperOptions={popperOptions}

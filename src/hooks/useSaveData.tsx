@@ -29,7 +29,6 @@ export const useSaveData = () => {
       archive,
       bookmarks,
       contents: useContentStore.getState().contents,
-
       syncBlocks,
       templates,
       intents,
