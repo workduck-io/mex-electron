@@ -17,7 +17,7 @@ export const isILinkExists = (iLink: string, iLinkList: Array<ILink>) =>
   iLinkList.filter((item) => item.path === iLink).length !== 0
 
 const NewEditor = () => {
-  const { key, nodeid: path } = useEditorStore((state) => state.node)
+  const { path, nodeid } = useEditorStore((state) => state.node)
 
   const ilinks = useDataStore((s) => s.ilinks)
 
@@ -32,8 +32,8 @@ const NewEditor = () => {
 
   useEffect(() => {
     if (isILinkExists(path, ilinks)) {
-      addRecent(path)
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, path)
+      addRecent(nodeid)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeid)
     }
   }, [])
 
@@ -41,10 +41,11 @@ const NewEditor = () => {
     if (fsContent) {
       setContent(fsContent.content)
     }
-  }, [fsContent, path])
+  }, [fsContent, nodeid])
 
   const onBeforeSave = () => {
-    addILink(key, path)
+    // Used in saver button. key, path is not polluted by user
+    addILink({ nodeid, ilink: path })
   }
 
   const onAfterSave = (nodeid: string) => {
@@ -65,7 +66,7 @@ const NewEditor = () => {
           focusAtBeginning
           // onSave={onSave}
           content={content}
-          editorId={path}
+          editorId={nodeid}
         />
         <SaverButton callbackAfterSave={onAfterSave} callbackBeforeSave={onBeforeSave} noButton />
       </FullEditor>

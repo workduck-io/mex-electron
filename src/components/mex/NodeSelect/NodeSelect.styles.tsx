@@ -73,6 +73,25 @@ export const Suggestion = styled.li<SuggestionProps>`
     `}
 `
 
+export const SuggestionError = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 10px 10px 6px 4px;
+  margin: ${({ theme }) => `${theme.spacing.small} 0`};
+  gap: ${({ theme }) => theme.spacing.small};
+
+  border-radius: ${({ theme }) => theme.borderRadius.tiny};
+  border: 1px dashed ${({ theme }) => theme.colors.palette.red};
+  background-color: ${({ theme }) => transparentize(0.9, theme.colors.palette.red)};
+  svg {
+    color: ${({ theme }) => theme.colors.palette.red};
+  }
+  ${SuggestionDesc} {
+    white-space: initial;
+    margin: ${({ theme }) => theme.spacing.small} 0;
+  }
+`
+
 interface MenuProps {
   isOpen: boolean
   highlightFirst: boolean

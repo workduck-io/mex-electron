@@ -48,7 +48,7 @@ export const ExcalidrawElement = (props: any) => {
 
   const desData = JSON.parse(element?.value ?? '{}')
 
-  mog('Excali props; ', { desData, element })
+  // mog('Excali props; ', { desData, element })
 
   const excalidrawProps: TExcalidrawProps = {
     excalidrawRef: _excalidrawRef,

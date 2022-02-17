@@ -1,4 +1,5 @@
 import React from 'react'
+import { mog } from '../utils/lib/helper'
 import { linkInRefactor } from '../components/mex/Refactor/doesLinkRemain'
 import { getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import { generateNodeUID } from '../data/Defaults/idPrefixes'
@@ -51,8 +52,6 @@ export const useRefactor = () => {
    * to: the new changed path
    */
   const getMockRefactor = (from: string, to: string): NodeLink[] => {
-    // console.log({ q, d: useQStore.getState().q })
-
     saveAndClearBuffer()
     // saveQ()
     const refactorMap = ilinks.filter((i) => {
@@ -67,12 +66,15 @@ export const useRefactor = () => {
       }
     })
 
+    console.log({ from, to, refactorMap, refactored })
     return refactored
   }
 
   const execRefactor = (from: string, to: string) => {
     trackEvent(CustomEvents.REFACTOR, { 'mex-from': from, 'mex-to': to })
     const refactored = getMockRefactor(from, to)
+
+    mog('execRefactor', { from, to, refactored })
 
     // Generate the new links
     const newIlinks = ilinks.map((i) => {
@@ -87,6 +89,7 @@ export const useRefactor = () => {
       return i
     })
 
+    // mog('execRefactor', { from, to, newIlinks })
     const isInNewlinks = (l: string) => {
       const ft = newIlinks.filter((i) => i.path === l)
       return ft.length > 0
@@ -116,6 +119,7 @@ export const useRefactor = () => {
     // updateHistory(applyRefactorToIds(historyStack, refactored), 0)
     // updateLastOpened(applyRefactorToIds(lastOpened, refactored))
 
+    // mog('execRefactor', { from, to, newIlinks: [...newIlinks, ...newParentIlinks], newContents })
     setILinks([...newIlinks, ...newParentIlinks])
     initContents(newContents)
 
@@ -124,6 +128,7 @@ export const useRefactor = () => {
       setBaseNodeId(baseId.to)
     }
 
+    // mog('baseId', { from, to, baseId, refactored })
     return refactored
   }
 

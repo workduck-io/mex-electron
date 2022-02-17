@@ -41,7 +41,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
 
   const handleOnCreate = (newNodeId: string) => {
-    const newUid = addILink(newNodeId)
+    const newUid = addILink({ ilink: newNodeId }).nodeid
     setSelection(undefined)
 
     setFsContent(newUid, editorState)

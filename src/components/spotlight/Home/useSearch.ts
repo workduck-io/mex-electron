@@ -10,6 +10,7 @@ import { ListItemType, ItemActionType } from '../SearchResults/types'
 import { initActions } from '../../../data/Actions'
 import { useNewSearchStore } from '../../../store/useSearchStore'
 import { mog } from '../../../utils/lib/helper'
+import { isReservedOrClash } from '../../../utils/lib/paths'
 
 export const useSearch = () => {
   const { search } = useSpotlightContext()
@@ -31,7 +32,11 @@ export const useSearch = () => {
             return item
           })
 
-          const isNew = isNewILink(query, ilinks)
+          const isNew = !isReservedOrClash(
+            query,
+            ilinks.map((i) => i.path)
+          )
+          // mog('Here are the details', { isNew, query, ilinks, results })
 
           searchList = isNew
             ? [

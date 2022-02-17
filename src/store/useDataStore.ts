@@ -8,6 +8,7 @@ import { Settify, typeInvert } from '../utils/helpers'
 import getFlatTree from '../utils/lib/flatTree'
 import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
 import { removeLink } from '../utils/lib/links'
+import { getUniquePath } from '../utils/lib/paths'
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   // Tags
@@ -31,6 +32,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
   // Load initial data in the store
   initializeDataStore: (initData) => {
+    // mog('Initializing Data store', { initData })
     set({
       ...initData
     })
@@ -44,8 +46,14 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     })
   },
 
-  // Add a new ILink to the store
-  addILink: (ilink, nodeid, parentId, archived) => {
+  /*
+   * Add a new ILink to the store
+   * ## Rules
+      - When new node / rename and clash
+        - with existing add numeric suffix
+        - not allowed with reserved keywords
+   */
+  addILink: ({ ilink, nodeid, parentId, archived, showAlert }) => {
     const { key, isChild } = withoutContinuousDelimiter(ilink)
 
     if (key) {
@@ -55,30 +63,38 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     const ilinks = get().ilinks
 
     const linksStrings = ilinks.map((l) => l.path)
-    const parents = getAllParentIds(ilink) // includes link of child
+    const reservedOrUnique = getUniquePath(ilink, linksStrings, showAlert)
 
+    if (!reservedOrUnique) {
+      throw Error(`ERROR-RESERVED: PATH (${ilink}) IS RESERVED. YOU DUMB`)
+    }
+
+    const uniquePath = reservedOrUnique.unique
+
+    const parents = getAllParentIds(uniquePath) // includes link of child
     const newLinks = parents.filter((l) => !linksStrings.includes(l)) // only create links for non existing
 
     const newILinks = newLinks.map((l) => ({
-      nodeid: nodeid && l === ilink ? nodeid : generateNodeUID(),
+      nodeid: nodeid && l === uniquePath ? nodeid : generateNodeUID(),
       path: l,
       icon: getNodeIcon(l)
     }))
 
-    const newLink = newILinks.find((l) => l.path === ilink)
+    const newLink = newILinks.find((l) => l.path === uniquePath)
 
-    const userILinks = archived ? ilinks.map((val) => (val.path === ilink ? { ...val, nodeid } : val)) : ilinks
+    const userILinks = archived ? ilinks.map((val) => (val.path === uniquePath ? { ...val, nodeid } : val)) : ilinks
 
-    mog('Adding ILink', { ilink, nodeid, parentId, archived, newLink, newLinks, userILinks, parents })
+    mog('Adding ILink', { ilink, uniquePath, nodeid, parentId, archived, newLink, newLinks, userILinks, parents })
     set({
       ilinks: [...userILinks, ...newILinks]
     })
 
-    if (newLink) return newLink.nodeid
-    return ''
+    if (newLink) return newLink
+    return
   },
 
   setIlinks: (ilinks) => {
+    mog('Setting ILinks', { ilinks })
     set({
       ilinks
     })

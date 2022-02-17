@@ -47,7 +47,7 @@ const useLoad = () => {
       title: text,
       id: text,
       nodeid: UID,
-      key: text
+      path: text
     }
 
     return node
@@ -62,7 +62,7 @@ const useLoad = () => {
     const inIlinks = ilinks.find((i) => i.nodeid === nodeid)
     const inArchive = archive.find((i) => i.nodeid === nodeid)
 
-    const isDraftNode = node && node.key?.startsWith('Draft.')
+    const isDraftNode = node && node.path?.startsWith('Draft.')
 
     return inIlinks || inArchive || isDraftNode
   }

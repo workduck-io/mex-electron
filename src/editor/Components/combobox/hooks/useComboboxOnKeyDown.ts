@@ -39,12 +39,12 @@ export const isInternalCommand = (search?: string) => {
 }
 
 export type OnSelectItem = (editor: PEditor, item: IComboboxItem) => any // eslint-disable-line @typescript-eslint/no-explicit-any
-export type OnNewItem = (name: string, parentId?) => void
+export type OnNewItem = (name: string, parentId?) => string | undefined
 
 export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnNewItem, creatable?: boolean) => {
   const creatableOnSelect = (editor: any, textVal: string) => {
     const items = useComboboxStore.getState().items
-    const currentNodeKey = useEditorStore.getState().node.key
+    const currentNodeKey = useEditorStore.getState().node.path
     const itemIndex = useComboboxStore.getState().itemIndex
 
     const val = pure(textVal)
@@ -53,8 +53,8 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
 
       // mog('getCreatableInSelect', { item, val, creatable })
       if (item.key === '__create_new' && val !== '') {
-        onSelectItem(editor, { key: String(items.length), text: val })
-        onNewItem(val, currentNodeKey)
+        const res = onNewItem(val, currentNodeKey)
+        onSelectItem(editor, { key: String(items.length), text: res ?? val })
       } else onSelectItem(editor, item)
     } else if (val && creatable) {
       onSelectItem(editor, { key: String(items.length), text: val })
@@ -112,9 +112,9 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
     const creatabaleOnSelect = getCreateableOnSelect(
       onSelectItemHandler,
       (newItem, parentId?) => {
-        if (comboType) comboType.newItemHandler(newItem, parentId)
+        if (comboType) return comboType.newItemHandler(newItem, parentId)
         if (comboboxKey === ComboboxKey.INTERNAL && !isInternalCommand(search)) {
-          internal.ilink.newItemHandler(newItem, parentId)
+          return internal.ilink.newItemHandler(newItem, parentId)
         }
       },
       comboboxKey !== ComboboxKey.SLASH_COMMAND

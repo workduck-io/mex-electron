@@ -34,6 +34,7 @@ import { mog } from '../../../utils/lib/helper'
 import { flexIndexKeys } from '../../../utils/search/flexsearch'
 import { convertDataToRawText } from '../../../utils/search/localSearch'
 import { performClick } from '../Onboarding/steps'
+import { testing } from '../../../utils/lib/paths'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -119,9 +120,15 @@ const Init = () => {
           }
         })
         .then(() => history.push('/editor'))
+        /*
+           .then(() => {
+           mog('Tests', {})
+           testing()
+           })
+           */
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
-  }, [auth]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const editor = usePlateEditorRef()
 
   /**
@@ -160,9 +167,9 @@ const Init = () => {
     })
     ipcRenderer.on(IpcAction.CREATE_NEW_NODE, () => {
       const newNodeId = getNewDraftKey()
-      const nodeid = addILink(newNodeId)
-      push(nodeid)
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
+      const node = addILink({ ilink: newNodeId })
+      push(node.nodeid)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
 
       if (location.pathname !== '/editor') history.push('/editor')
     })
@@ -184,7 +191,7 @@ const Init = () => {
       appleNotes.forEach((note) => {
         const title = note.NoteTitle
         const nodeKey = `${appleNotesParentKey}.${title}`
-        let nodeUID = addILink(nodeKey)
+        let nodeUID = addILink({ ilink: nodeKey }).nodeid
 
         const newNodeContent = getMexHTMLDeserializer(note.HTMLContent, editor, [])
         if (!nodeUID) nodeUID = getUidFromNodeId(nodeKey)

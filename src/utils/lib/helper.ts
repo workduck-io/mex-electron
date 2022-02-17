@@ -1,4 +1,5 @@
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
+import { NodeProperties } from '../../store/useEditorStore'
 import tough from 'tough-cookie'
 import WebStorageCookieStore from 'tough-cookie-web-storage-store'
 import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
@@ -33,11 +34,11 @@ export const electronCookies = () => {
   })(document)
 }
 
-export const createNodeWithUid = (key: string) => ({
+export const createNodeWithUid = (key: string): NodeProperties => ({
   title: key,
   id: key,
   nodeid: generateNodeUID(),
-  key: key
+  path: key
 })
 
 /*

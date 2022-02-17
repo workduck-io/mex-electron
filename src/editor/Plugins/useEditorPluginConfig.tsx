@@ -47,7 +47,7 @@ const useEditorPluginConfig = (editorId: string) => {
       inline_block: {
         slateElementType: ELEMENT_INLINE_BLOCK,
         newItemHandler: (newItem, parentId?) => {
-          addILink(newItem, null, parentId)
+          addILink({ ilink: newItem, parentId })
         },
         renderElement: ILinkComboboxItem
       },
@@ -73,7 +73,7 @@ const useEditorPluginConfig = (editorId: string) => {
       ilink: {
         slateElementType: ELEMENT_ILINK,
         newItemHandler: (newItem, parentId?) => {
-          addILink(newItem, null, parentId)
+          addILink({ ilink: newItem, parentId })
         },
         renderElement: ILinkComboboxItem
       },

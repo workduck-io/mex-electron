@@ -30,7 +30,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
       }
 
       const targetRange = useComboboxStore.getState().targetRange
-      const parentNodeId = useEditorStore.getState().node.key
+      const parentNodeId = useEditorStore.getState().node.path
       const type = getPluginType(
         editor,
         comboType.slateElementType === 'internal' ? 'ilink' : comboType.slateElementType

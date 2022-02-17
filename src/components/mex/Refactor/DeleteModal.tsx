@@ -16,6 +16,7 @@ import { Button } from '../../../style/Buttons'
 import { mog } from '../../../utils/lib/helper'
 import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
+import { isReserved } from '../../../utils/lib/paths'
 
 interface DeleteStoreState {
   open: boolean
@@ -103,7 +104,7 @@ const Delete = () => {
 
   // const { del, mockData, open } = deleteState
   useEffect(() => {
-    if (del) {
+    if (del && !isReserved(del)) {
       setMockRefactored(getMockDelete(del).archivedNodes.map((item) => item.path))
     }
   }, [del])
@@ -128,7 +129,8 @@ const Delete = () => {
       <WrappedNodeSelect
         autoFocus
         // menuOpen
-        defaultValue={del ?? useEditorStore.getState().node.id}
+        disallowReserved
+        defaultValue={del ?? useEditorStore.getState().node.path}
         handleSelectItem={handleDeleteChange}
       />
 
@@ -152,7 +154,7 @@ const Delete = () => {
         <Button large onClick={handleCancel}>
           Cancel
         </Button>
-        <Button large primary onClick={handleDelete}>
+        <Button large primary disabled={mockRefactored.length < 1} onClick={handleDelete}>
           Archive
         </Button>
       </ModalControls>

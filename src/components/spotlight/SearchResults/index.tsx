@@ -99,7 +99,7 @@ const SearchResults: React.FC<{ current: number; data: Array<ListItemType> }> = 
   }, [current, scrollToIndex])
 
   const handleCreateItem = () => {
-    const nodeid = addILink(search.value)
+    const nodeid = addILink({ ilink: search.value }).nodeid
     setNode(getNode(nodeid))
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeid)
     setNormalMode(false)

@@ -48,6 +48,8 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   const isOnboarding = useOnboard((s) => s.isOnboarding)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const addILink = useDataStore((s) => s.addILink)
+  const ilinks = useDataStore((s) => s.ilinks)
+
   const setSaved = useContentStore((state) => state.setSaved)
   const addRecent = useRecentsStore((state) => state.addRecent)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
@@ -117,7 +119,11 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   }
 
   const onBeforeSave = () => {
-    addILink(node.key, node.nodeid)
+    // Used in saver button. node is not polluted by user
+    const isNodePresent = ilinks.find((ilink) => ilink.nodeid === node.nodeid)
+    if (!isNodePresent) {
+      addILink({ ilink: node.path, nodeid: node.nodeid })
+    }
   }
 
   const onAfterSave = (nodeid: string) => {

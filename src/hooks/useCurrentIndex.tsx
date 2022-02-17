@@ -59,9 +59,10 @@ export const useCurrentIndex = (data: Array<any> | undefined): number => {
         if (currentIndex >= 0) {
           let newNode: NodeProperties
           if (data[currentIndex].new) {
-            const isDraftNode = node && node.key.startsWith('Draft.')
+            const isDraftNode = node && node.path.startsWith('Draft.')
             newNode = isDraftNode ? node : createNodeWithUid(getNewDraftKey())
-            const d = addILink(search.value, newNode.nodeid)
+            // FIXME: STALE USE OF ADDILINK. USE CALLBACK (not updated as useCurrentIndex not used)
+            // addILink(search.value, newNode.nodeid)
             newNode = getNode(newNode.nodeid)
           } else {
             newNode = getNode(data[currentIndex].nodeid)

@@ -2,6 +2,7 @@ import arrowRightLine from '@iconify-icons/ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
+import { isReserved } from '../../../utils/lib/paths'
 import tinykeys from 'tinykeys'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
@@ -14,11 +15,16 @@ import { Button } from '../../../style/Buttons'
 import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
+import { mog } from '../../../utils/lib/helper'
+import { useQStore } from '../../../store/useQStore'
+import useDataStore from '../../../store/useDataStore'
+import { useSaveData } from '../../../hooks/useSaveData'
 
 const Rename = () => {
   const { execRefactor, getMockRefactor } = useRefactor()
   const { push } = useNavigation()
   const shortcuts = useHelpStore((store) => store.shortcuts)
+  const { saveData } = useSaveData()
 
   const open = useRenameStore((store) => store.open)
   const focus = useRenameStore((store) => store.focus)
@@ -34,6 +40,7 @@ const Rename = () => {
 
   const { getUidFromNodeId } = useLinks()
   const { shortcutHandler } = useKeyListener()
+  const q = useQStore((s) => s.q)
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -73,27 +80,32 @@ const Rename = () => {
   // const { from, to, open, mockRefactor } = renameState
 
   useEffect(() => {
-    if (to && from) {
+    if (to && from && !isReserved(from) && !isReserved(from)) {
+      // mog('To, from in rename', { to, from })
       setMockRefactored(getMockRefactor(from, to))
     }
-  }, [to, from])
+  }, [to, from, q])
 
   const handleRefactor = () => {
     if (to && from) {
+      // mog('To, from in rename exec', { to, from })
       const res = execRefactor(from, to)
 
+      saveData()
       const path = useEditorStore.getState().node.id
       const nodeid = useEditorStore.getState().node.nodeid
       if (doesLinkRemain(path, res)) {
-        push(nodeid)
+        push(nodeid, { savePrev: false })
       } else if (res.length > 0) {
         const nodeid = getUidFromNodeId(res[0].to)
-        push(nodeid)
+        push(nodeid, { savePrev: false })
       }
     }
 
     closeModal()
   }
+
+  // mog('RenameComponent', { mockRefactored, to, from, ilinks: useDataStore.getState().ilinks })
 
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
@@ -102,6 +114,7 @@ const Rename = () => {
       <WrappedNodeSelect
         placeholder="Rename node from..."
         defaultValue={from ?? useEditorStore.getState().node.id}
+        disallowReserved
         highlightWhenSelected
         iconHighlight={from !== undefined}
         handleSelectItem={handleFromChange}
@@ -112,6 +125,7 @@ const Rename = () => {
         autoFocus={to === undefined}
         menuOpen={to === undefined}
         defaultValue={to}
+        disallowClash
         createAtTop
         highlightWhenSelected
         iconHighlight={to !== undefined}

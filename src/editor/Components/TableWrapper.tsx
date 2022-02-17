@@ -57,7 +57,7 @@ export const TableModal = ({ element, popoverProps, children }: TableElementProp
 )
 
 const TableWrapper = (props: any) => {
-  console.log('hey bro')
+  // console.log('hey bro')
   return <TableElement {...props} onRenderContainer={TableModal} id="hello" />
 }
 

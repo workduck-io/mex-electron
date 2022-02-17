@@ -25,6 +25,7 @@ import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
 import { NavProps } from './Types'
 import { FocusModeProp } from '../../../style/props'
+import toast from 'react-hot-toast'
 
 export const NavWrapper = styled.div<FocusModeProp>`
   overflow: scroll;
@@ -122,11 +123,15 @@ const Nav = ({ links }: NavProps) => {
 
   const createNewNode = () => {
     const newNodeId = getNewDraftKey()
-    const nodeid = addILink(newNodeId)
+    const node = addILink({ ilink: newNodeId })
+    if (node === undefined) {
+      toast.error('The node clashed')
+      return
+    }
 
-    saveNewNodeAPI(nodeid)
-    push(nodeid, { withLoading: false })
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
+    saveNewNodeAPI(node.nodeid)
+    push(node.nodeid, { withLoading: false })
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
   }
 
   const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {
