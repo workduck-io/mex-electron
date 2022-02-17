@@ -136,8 +136,8 @@ const List = ({
 
             const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : search.value
 
-            const nnode = addILink({ilink: nodeName, nodeid: newNode.nodeid} )
-            newNode = getNode(nnode.nodeid)
+            const d = addILink({ ilink: nodeName, nodeid: newNode.nodeid })
+            newNode = getNode(newNode.nodeid)
           } else {
             newNode = getNode(data[activeIndex]?.extras?.nodeid)
           }
@@ -201,7 +201,7 @@ const List = ({
 
         const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : search.value
 
-        const d = addILink({ilink: nodeName,  nodeid: newNode.nodeid})
+        const d = addILink({ ilink: nodeName, nodeid: newNode.nodeid })
         newNode = getNode(newNode.nodeid)
       } else {
         newNode = getNode(data[id]?.extras?.nodeid)
