@@ -5,6 +5,7 @@ import { useSnippets } from '../../hooks/useSnippets'
 import useAnalytics from '../../services/analytics'
 import useDataStore from '../../store/useDataStore'
 import { useEditorStore } from '../../store/useEditorStore'
+import { mog } from '../../utils/lib/helper'
 import { ComboboxKey } from '../Components/combobox/useComboboxStore'
 import { ILinkComboboxItem } from '../Components/ilink/components/ILinkComboboxItem'
 import { ELEMENT_ILINK } from '../Components/ilink/defaults'
@@ -47,7 +48,8 @@ const useEditorPluginConfig = (editorId: string) => {
       inline_block: {
         slateElementType: ELEMENT_INLINE_BLOCK,
         newItemHandler: (newItem, parentId?) => {
-          addILink({ ilink: newItem, parentId })
+          const link = addILink({ ilink: newItem, parentId })
+          mog('Link', { link, newItem, parentId })
         },
         renderElement: ILinkComboboxItem
       },
@@ -73,7 +75,8 @@ const useEditorPluginConfig = (editorId: string) => {
       ilink: {
         slateElementType: ELEMENT_ILINK,
         newItemHandler: (newItem, parentId?) => {
-          addILink({ ilink: newItem, parentId })
+          const link = addILink({ ilink: newItem, parentId })
+          mog('Link', { link, newItem, parentId })
         },
         renderElement: ILinkComboboxItem
       },

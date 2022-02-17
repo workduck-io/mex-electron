@@ -54,6 +54,7 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
       // mog('getCreatableInSelect', { item, val, creatable })
       if (item.key === '__create_new' && val !== '') {
         const res = onNewItem(val, currentNodeKey)
+        // mog('getCreatableInSelect', { item, val, creatable, res })
         onSelectItem(editor, { key: String(items.length), text: res ?? val })
       } else onSelectItem(editor, item)
     } else if (val && creatable) {
@@ -112,10 +113,12 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
     const creatabaleOnSelect = getCreateableOnSelect(
       onSelectItemHandler,
       (newItem, parentId?) => {
-        if (comboType) return comboType.newItemHandler(newItem, parentId)
+        // mog('CreatableOnSelect', { comboType, comboboxKey, il: internal.ilink })
         if (comboboxKey === ComboboxKey.INTERNAL && !isInternalCommand(search)) {
+          // mog('CreatableOnSelect', { comboType, comboboxKey })
           return internal.ilink.newItemHandler(newItem, parentId)
         }
+        if (comboType) return comboType.newItemHandler(newItem, parentId)
       },
       comboboxKey !== ComboboxKey.SLASH_COMMAND
     )
