@@ -1,5 +1,6 @@
 import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph'
 import toast from 'react-hot-toast'
+import useSuggestionStore from '../store/useSuggestions'
 import { useApi } from '../apis/useSaveApi'
 import { USE_API } from '../data/Defaults/dev_'
 import { useContentStore } from '../store/useContentStore'
@@ -10,6 +11,7 @@ import { ILink, NodeEditorContent } from '../types/Types'
 import { getContent } from '../utils/helpers'
 import { mog, updateEmptyBlockTypes } from '../utils/lib/helper'
 import { useEditorBuffer } from './useEditorBuffer'
+import useToggleElements from './useToggleElements'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -34,6 +36,9 @@ const useLoad = () => {
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
   const setSelectedNode = useGraphStore((store) => store.setSelectedNode)
   const { getDataAPI, saveDataAPI } = useApi()
+  const setSuggestions = useSuggestionStore((store) => store.setSuggestions)
+  const { toggleSuggestedNodes, showSuggestedNodes } = useToggleElements()
+
   // const { saveNodeAPIandFs } = useDataSaverFromContent()
   const { saveAndClearBuffer } = useEditorBuffer()
   // const { saveQ } = useSaveQ()
@@ -156,7 +161,6 @@ const useLoad = () => {
    * This does not navigate to editor.
    */
   const loadNode: LoadNodeFn = (nodeid, options = { savePrev: true, fetch: USE_API(), withLoading: true }) => {
-    mog('Loading Node', { nodeid, options })
     const hasBeenLoaded = false
     if (!options.node && !isLocalNode(nodeid).isLocal) {
       toast.error('Selected node does not exist.')
@@ -164,6 +168,9 @@ const useLoad = () => {
     }
 
     setNodePreview(false)
+    setSuggestions([])
+    if (showSuggestedNodes) toggleSuggestedNodes()
+
     setSelectedNode(undefined)
 
     // const q = useQStore.getState().q

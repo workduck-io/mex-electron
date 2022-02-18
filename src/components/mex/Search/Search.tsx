@@ -52,6 +52,8 @@ const useSearchPageStore = create<SearchStore>((set) => ({
 }))
 
 const Search = () => {
+  const history = useHistory()
+  const { loadNode } = useLoad()
   const searchIndex = useNewSearchStore((store) => store.searchIndex)
   const contents = useContentStore((store) => store.contents)
   const selected = useSearchPageStore((store) => store.selected)
@@ -60,8 +62,6 @@ const Search = () => {
   const setResult = useSearchPageStore((store) => store.setResult)
   const searchTerm = useSearchPageStore((store) => store.searchTerm)
   const setSearchTerm = useSearchPageStore((store) => store.setSearchTerm)
-  const history = useHistory()
-  const { loadNode } = useLoad()
   const inpRef = useRef<HTMLInputElement>(null)
   const selectedRef = useRef<HTMLDivElement>(null)
 

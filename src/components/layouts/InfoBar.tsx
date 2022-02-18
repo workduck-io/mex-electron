@@ -12,6 +12,8 @@ import useToggleElements from '../../hooks/useToggleElements'
 import { useKeyListener } from '../../hooks/useShortcutListener'
 import { useHelpStore } from '../../store/useHelpStore'
 import { size } from '../../style/responsive'
+import SuggestionInfoBar from '../mex/Suggestions'
+import { mog } from '../../utils/lib/helper'
 
 interface InfoBarWrapperProps {
   wide: string
@@ -40,18 +42,22 @@ export const TemplateInfoBar = styled(InfoBarWrapper)`
   height: 100%;
 `
 
-interface InfoBarProps {
-  showGraph: boolean
-  showSyncBlocks: boolean
-}
-const InfoBarItems = ({ showGraph, showSyncBlocks }: InfoBarProps) => {
+const InfoBarItems = () => {
   const graphData = useGraphData()
+  const { showGraph, showSyncBlocks, showSuggestedNodes } = useToggleElements()
 
   if (showGraph) {
     return <Graph graphData={graphData} />
   }
+
   if (showSyncBlocks) {
     return <SyncBlockInfo />
+  }
+
+  mog('Show Suggestions', { showSuggestedNodes, showGraph, showSyncBlocks })
+
+  if (showSuggestedNodes) {
+    return <SuggestionInfoBar />
   }
 
   return <DataInfoBar />
@@ -61,7 +67,8 @@ const InfoBar = () => {
   const { transitions } = useFocusTransition()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
-  const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph } = useToggleElements()
+  const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph, showSuggestedNodes, toggleSuggestedNodes } =
+    useToggleElements()
   const { shortcutHandler } = useKeyListener()
 
   useEffect(() => {
@@ -69,28 +76,33 @@ const InfoBar = () => {
       [shortcuts.showGraph.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showGraph, () => {
-          if (showSyncBlocks) toggleSyncBlocks()
           toggleGraph()
         })
       },
       [shortcuts.showSyncBlocks.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSyncBlocks, () => {
-          if (showGraph) toggleGraph()
           toggleSyncBlocks()
+        })
+      },
+      [shortcuts.showSuggestedNodes.keystrokes]: (event) => {
+        event.preventDefault()
+        shortcutHandler(shortcuts.showSuggestedNodes, () => {
+          toggleSuggestedNodes()
         })
       }
     })
+
     return () => {
       unsubscribe()
     }
-  }, [shortcuts, showGraph, showSyncBlocks])
+  }, [shortcuts])
 
   return transitions(
     (styles, item) =>
       item && (
-        <InfoBarWrapper wide={showGraph || showSyncBlocks ? 'true' : 'false'} style={styles}>
-          <InfoBarItems showGraph={showGraph} showSyncBlocks={showSyncBlocks} />
+        <InfoBarWrapper wide={showGraph || showSyncBlocks || showSuggestedNodes ? 'true' : 'false'} style={styles}>
+          <InfoBarItems />
         </InfoBarWrapper>
       )
   )

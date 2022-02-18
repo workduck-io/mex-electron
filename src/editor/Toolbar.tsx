@@ -2,6 +2,7 @@ import bubbleChartLine from '@iconify-icons/ri/bubble-chart-line'
 import focusLine from '@iconify-icons/ri/focus-line'
 import messageIcon from '@iconify-icons/ri/message-3-line'
 import settings4Line from '@iconify-icons/ri/settings-4-line'
+import lightbulbFlashLine from '@iconify-icons/ri/lightbulb-flash-line'
 import { useSingleton } from '@tippyjs/react'
 import React from 'react'
 import BookmarkButton from '../components/mex/Buttons/BookmarkButton'
@@ -28,7 +29,8 @@ const Toolbar = () => {
   const [source, target] = useSingleton()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
-  const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph } = useToggleElements()
+  const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph, showSuggestedNodes, toggleSuggestedNodes } =
+    useToggleElements()
 
   const onSave = () => {
     // console.log('onsave')
@@ -78,6 +80,15 @@ const Toolbar = () => {
           title="Flow Links"
           highlight={showSyncBlocks}
           onClick={toggleSyncBlocks}
+        />
+        <IconButton
+          size={24}
+          singleton={target}
+          icon={lightbulbFlashLine}
+          shortcut={shortcuts.showSuggestedNodes.keystrokes}
+          title="Suggestions"
+          highlight={showSuggestedNodes}
+          onClick={toggleSuggestedNodes}
         />
         <IconButton
           singleton={target}

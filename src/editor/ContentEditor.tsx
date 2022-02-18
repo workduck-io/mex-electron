@@ -1,4 +1,6 @@
+import { usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect, useMemo } from 'react'
+import { convertContentToRawText } from '../utils/search/localSearch'
 import tinykeys from 'tinykeys'
 import shallow from 'zustand/shallow'
 import Metadata from '../components/mex/Metadata/Metadata'
@@ -9,16 +11,20 @@ import useLayout from '../hooks/useLayout'
 import useLoad from '../hooks/useLoad'
 import { useNavigation } from '../hooks/useNavigation'
 import { useKeyListener } from '../hooks/useShortcutListener'
+import { useNewSearchStore } from '../store/useSearchStore'
 // import { useQStore } from '../store/useQStore'
 import useToggleElements from '../hooks/useToggleElements'
-import { useContentStore } from '../store/useContentStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
 import { StyledEditor } from '../style/Editor'
+import useSuggestionStore from '../store/useSuggestions'
 import { getEditorId } from '../utils/lib/EditorId'
 import { mog } from '../utils/lib/helper'
+import sw from 'stopword'
+
 // import { NodeContent } from '../types/data'
 // import { useDataSaverFromContent } from './Components/Saver'
+
 import Editor from './Editor'
 import Toolbar from './Toolbar'
 
@@ -27,7 +33,8 @@ const ContentEditor = () => {
   const { toggleFocusMode } = useLayout()
   const { saveApiAndUpdate } = useLoad()
 
-  const { showGraph } = useToggleElements()
+  const { showGraph, showSuggestedNodes } = useToggleElements()
+  const searchIndex = useNewSearchStore((store) => store.searchIndex)
 
   const { nodeid, node, fsContent } = useEditorStore(
     (state) => ({ nodeid: state.node.nodeid, node: state.node, fsContent: state.content }),
@@ -36,13 +43,14 @@ const ContentEditor = () => {
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { shortcutHandler } = useKeyListener()
+  const { setSuggestions } = useSuggestionStore()
 
   const { move } = useNavigation()
 
   // const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
   // const add2Q = useQStore((s) => s.add2Q)
 
-  const getContent = useContentStore((state) => state.getContent)
+  const editorRef = usePlateEditorRef()
 
   const { addOrUpdateValBuffer, getBufferVal } = useEditorBuffer()
 
@@ -50,6 +58,22 @@ const ContentEditor = () => {
     // mog('Trigger onChange', { node, val })
     if (val && node && node.nodeid !== '__null__') {
       // mog('Saving onChange', { node, val })
+
+      if (showSuggestedNodes) {
+        const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
+
+        const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
+        const rawText = convertContentToRawText(val.slice(lastTwoParagraphs, cursorPosition + 1), ' ')
+
+        const keywords = sw.removeStopwords(rawText.split(' ').filter(Boolean))
+
+        mog('keywords', { keywords })
+        const results = searchIndex(keywords.join(' '))
+
+        const withoutCurrentNode = results.filter((item) => item.nodeUID !== node.nodeid)
+
+        setSuggestions(withoutCurrentNode)
+      }
 
       // add2Q(node.nodeid)
       addOrUpdateValBuffer(node.nodeid, val)

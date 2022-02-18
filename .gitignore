@@ -28,6 +28,7 @@ coverage
 
 # node-waf configuration
 .lock-wscript
+out.json
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
