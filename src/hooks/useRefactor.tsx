@@ -10,6 +10,7 @@ import useDataStore from '../store/useDataStore'
 import { useRefactorStore } from '../store/useRefactorStore'
 import { NodeLink } from '../types/relations'
 import { useEditorBuffer } from './useEditorBuffer'
+import { getNodeIcon } from '../utils/lib/icons'
 
 const isMatch = (id: string, from: string) => {
   if (from === id) return true
@@ -82,7 +83,8 @@ export const useRefactor = () => {
         if (ref.from === i.path) {
           return {
             ...i,
-            path: ref.to
+            path: ref.to,
+            icon: getNodeIcon(ref.to)
           }
         }
       }
@@ -102,7 +104,8 @@ export const useRefactor = () => {
 
     const newParentIlinks = newParents.map((p) => ({
       path: p,
-      nodeid: generateNodeUID()
+      nodeid: generateNodeUID(),
+      icon: getNodeIcon(p)
     }))
 
     // console.log({ newIlinks, newParents, newParentIlinks })
