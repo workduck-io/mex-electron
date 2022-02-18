@@ -4,9 +4,8 @@ import { StyledRow, Description } from '../../SearchResults/styled'
 import { Icon } from '@iconify/react'
 import { StyledKey } from '../../Shortcuts/styled'
 import { ListItemType } from '../../SearchResults/types'
-import { NoWrap, PrimaryText } from '../../../../style/Integration'
+import { PrimaryText } from '../../../../style/Integration'
 import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
-import { mog } from '../../../../utils/lib/helper'
 
 export const ActionIcon = styled.div`
   display: flex;

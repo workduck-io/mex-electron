@@ -6,7 +6,7 @@ export const ROUTE_PATHS = {
   login: '/login',
   register: '/register',
   archive: '/archive',
-  tag: 'tag', // * /tag/:tag
+  tag: '/tag', // * /tag/:tag
   node: '/node', // * /node/:nodeid
   search: '/search',
   settings: '/settings',

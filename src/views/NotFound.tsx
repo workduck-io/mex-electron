@@ -19,7 +19,7 @@ const NotFound = () => {
   const { goTo } = useRouting()
 
   const handleHomeClick = () => {
-    goTo(ROUTE_PATHS.settings, NavigationType.replace)
+    goTo(`${ROUTE_PATHS.settings}/themes`, NavigationType.replace)
   }
 
   return (

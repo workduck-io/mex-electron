@@ -166,7 +166,7 @@ const Init = () => {
       goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
     })
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
-      goTo(ROUTE_PATHS.settings, NavigationType.push)
+      goTo(`${ROUTE_PATHS.settings}/themes`, NavigationType.push)
     })
     ipcRenderer.on(IpcAction.SET_APPLE_NOTES_DATA, (_event, arg: AppleNote[]) => {
       setAppleNotes(arg)
@@ -248,7 +248,7 @@ const Init = () => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSettings, () => {
           // onSave(undefined, false, false)
-          goTo(ROUTE_PATHS.settings, NavigationType.push)
+          goTo(`${ROUTE_PATHS.settings}/themes`, NavigationType.push)
         })
       }
     })

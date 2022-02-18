@@ -11,6 +11,7 @@ export const useNavigation = () => {
   const replaceHs = useHistoryStore((store) => store.replace)
   const moveHs = useHistoryStore((store) => store.move)
   const addRecent = useRecentsStore((store) => store.addRecent)
+  const { goTo } = useRouting()
   const getCurrentUID = useHistoryStore((store) => store.getCurrentUId)
 
   const push = (nodeid: string, options?: LoadNodeOptions) => {
@@ -29,6 +30,7 @@ export const useNavigation = () => {
     moveHs(dist)
     const newId = getCurrentUID()
     if (newId) {
+      goTo(ROUTE_PATHS.node, NavigationType.push, newId)
       loadNode(newId)
       addRecent(newId)
     }

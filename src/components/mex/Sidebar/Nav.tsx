@@ -153,7 +153,9 @@ const Nav = ({ links }: NavProps) => {
       [shortcuts.newNode.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.newNode, () => {
-          createNewNode()
+          const nodeid = createNewNode()
+
+          goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
         })
       }
     })
