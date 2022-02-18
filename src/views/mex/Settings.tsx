@@ -1,13 +1,7 @@
 import React from 'react'
-import { Route, Switch, NavLink, useRouteMatch, useHistory } from 'react-router-dom'
-import Shortcuts from '../../components/mex/Settings/Shortcuts'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { IntegrationContainer, Margin, Title } from '../../style/Integration'
-import Themes from '../../components/mex/Settings/Themes'
-import About from '../../components/mex/Settings/About'
-import AutoUpdate from '../../components/mex/Settings/AutoUpdate'
-import Importers from '../../components/mex/Settings/Importers'
-import UserPage from './UserPage'
 import { CustomEvents } from '../../services/analytics/events'
 import { useAuthentication } from '../../services/auth/useAuth'
 import useAnalytics from '../../services/analytics'
@@ -21,10 +15,13 @@ import keyboardBoxLine from '@iconify-icons/fluent/keyboard-24-regular'
 import installLine from '@iconify-icons/ri/install-line'
 import user3Line from '@iconify-icons/ri/user-3-line'
 import { Icon } from '@iconify/react'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
+import { mog } from '../../utils/lib/helper'
 
 export const SettingsContainer = styled.section`
   display: flex;
   width: 100%;
+  user-select: none;
 `
 
 export const SettingsOptions = styled.div`
@@ -71,9 +68,8 @@ export const SettingsContent = styled.div`
 `
 
 const Settings = () => {
-  const { path } = useRouteMatch()
   const { logout } = useAuthentication()
-  const history = useHistory()
+  const { goTo } = useRouting()
 
   const { addEventProperties } = useAnalytics()
 
@@ -87,7 +83,7 @@ const Settings = () => {
      * identifyUser(undefined)
      * */
 
-    history.push('/login')
+    goTo(ROUTE_PATHS.login, NavigationType.push)
   }
 
   return (
@@ -95,27 +91,27 @@ const Settings = () => {
       <Title>Settings</Title>
       <SettingsContainer>
         <SettingsOptions>
-          <SettingTitle exact tabIndex={-1} activeClassName="active" to={`${path}`}>
+          <SettingTitle tabIndex={-1} to="themes">
             <Icon icon={paintBrushFill} />
             Themes
           </SettingTitle>
-          <SettingTitle exact tabIndex={-1} activeClassName="active" to={`${path}/user`}>
+          <SettingTitle tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to="user">
             <Icon icon={user3Line} />
             Profile
           </SettingTitle>
-          <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/shortcuts`}>
+          <SettingTitle tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to="shortcuts">
             <Icon icon={keyboardBoxLine} />
             Shortcuts
           </SettingTitle>
-          <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/about`}>
+          <SettingTitle tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to="about">
             <Icon icon={informationLine} />
             About
           </SettingTitle>
-          <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/import`}>
+          <SettingTitle tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to="import">
             <Icon icon={refreshLine} />
             Import Notes
           </SettingTitle>
-          <SettingTitle tabIndex={-1} activeClassName="active" to={`${path}/autoupdate`}>
+          <SettingTitle tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to="autoupdate">
             <Icon icon={installLine} />
             Automatic Updates
           </SettingTitle>
@@ -123,24 +119,7 @@ const Settings = () => {
           <Button onClick={onLogout}>Logout</Button>
         </SettingsOptions>
         <SettingsContent>
-          <Switch>
-            <Route exact path={path}>
-              <Themes />
-            </Route>
-            <Route path={`${path}/user`} component={UserPage} />
-            <Route path={`${path}/shortcuts`}>
-              <Shortcuts />
-            </Route>
-            <Route path={`${path}/about`}>
-              <About />
-            </Route>
-            <Route path={`${path}/autoupdate`}>
-              <AutoUpdate />
-            </Route>
-            <Route path={`${path}/import`}>
-              <Importers />
-            </Route>
-          </Switch>
+          <Outlet />
         </SettingsContent>
       </SettingsContainer>
     </IntegrationContainer>

@@ -3,7 +3,7 @@ import settings4Line from '@iconify-icons/ri/settings-4-line'
 import { useSingleton } from '@tippyjs/react'
 import { transparentize } from 'polished'
 import React, { useEffect } from 'react'
-import { NavLink, useHistory, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useMatch } from 'react-router-dom'
 import archiveFill from '@iconify-icons/ri/archive-fill'
 import { FOCUS_MODE_OPACITY } from '../../../style/consts'
 import styled, { css } from 'styled-components'
@@ -26,6 +26,7 @@ import { NavTooltip } from '../Tooltips'
 import { NavProps } from './Types'
 import { FocusModeProp } from '../../../style/props'
 import toast from 'react-hot-toast'
+import { useRouting, ROUTE_PATHS, NavigationType } from '../../../views/routes/urls'
 
 export const NavWrapper = styled.div<FocusModeProp>`
   overflow: scroll;
@@ -110,13 +111,14 @@ const ComingSoon = styled.div`
 `
 
 const Nav = ({ links }: NavProps) => {
+  // const match = useMatch(`/${ROUTE_PATHS.node}/:nodeid`)
   const authenticated = useAuthStore((store) => store.authenticated)
   const focusMode = useLayoutStore((store) => store.focusMode)
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
   const { saveNewNodeAPI } = useApi()
 
-  const history = useHistory()
+  const { goTo } = useRouting()
   const location = useLocation()
 
   const [source, target] = useSingleton()
@@ -132,13 +134,15 @@ const Nav = ({ links }: NavProps) => {
     saveNewNodeAPI(node.nodeid)
     push(node.nodeid, { withLoading: false })
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
+
+    return node.nodeid
   }
 
   const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault()
-    createNewNode()
+    const nodeid = createNewNode()
 
-    if (location.pathname !== '/editor') history.push('/editor')
+    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
@@ -149,7 +153,9 @@ const Nav = ({ links }: NavProps) => {
       [shortcuts.newNode.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.newNode, () => {
-          createNewNode()
+          const nodeid = createNewNode()
+
+          goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
         })
       }
     })
@@ -164,6 +170,7 @@ const Nav = ({ links }: NavProps) => {
       {authenticated && (
         <div>
           <NavTooltip
+            key={shortcuts.newNode.title}
             singleton={target}
             content={<TooltipTitleWithShortcut title="Create New Node" shortcut={shortcuts.newNode.keystrokes} />}
           >
@@ -177,17 +184,18 @@ const Nav = ({ links }: NavProps) => {
       <MainLinkContainer>
         {links.map((l) =>
           l.isComingSoon ? (
-            <NavTooltip singleton={target} content="Coming Soon!">
+            <NavTooltip key={l.path} singleton={target} content="Coming Soon!">
               <ComingSoon tabIndex={-1} key={`nav_${l.title}`}>
                 {l.icon !== undefined ? l.icon : l.title}
               </ComingSoon>
             </NavTooltip>
           ) : (
             <NavTooltip
+              key={l.path}
               singleton={target}
               content={l.shortcut ? <TooltipTitleWithShortcut title={l.title} shortcut={l.shortcut} /> : l.title}
             >
-              <Link exact tabIndex={-1} activeClassName="active" to={l.path} key={`nav_${l.title}`}>
+              <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={l.path} key={`nav_${l.title}`}>
                 {l.icon !== undefined ? l.icon : l.title}
               </Link>
             </NavTooltip>
@@ -197,22 +205,23 @@ const Nav = ({ links }: NavProps) => {
       <div>
         {/* {authenticated ? (
           <NavTooltip singleton={target} content="User">
-            <Link exact tabIndex={-1} activeClassName="active" to="/user" key="nav_user">
+            <Link  tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to="/user" key="nav_user">
               {GetIcon(user3Line)}
             </Link>
           </NavTooltip>
         ) : (
           <NavTooltip singleton={target} content="Login">
-            <Link exact tabIndex={-1} activeClassName="active" to="/login" key="nav_user" className="active">
+            <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={ROUTE_PATHS.login} key="nav_user" className="active">
               {GetIcon(lockPasswordLine)}
             </Link>
           </NavTooltip>
         )} */}
         <NavTooltip
+          key={shortcuts.showArchive.title}
           singleton={target}
           content={<TooltipTitleWithShortcut title="Archive" shortcut={shortcuts.showArchive.keystrokes} />}
         >
-          <Link exact tabIndex={-1} activeClassName="active" to="/archive" key="nav_search">
+          <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={ROUTE_PATHS.archive} key="nav_search">
             {GetIcon(archiveFill)}
           </Link>
         </NavTooltip>
@@ -223,10 +232,16 @@ const Nav = ({ links }: NavProps) => {
           <HelpTooltip />
         </NavTooltip> */}
         <NavTooltip
+          key={shortcuts.showSettings.title}
           singleton={target}
           content={<TooltipTitleWithShortcut title="Settings" shortcut={shortcuts.showSettings.keystrokes} />}
         >
-          <Link exact tabIndex={-1} activeClassName="active" to="/settings" key="nav_settings">
+          <Link
+            tabIndex={-1}
+            className={(s) => (s.isActive ? 'active' : '')}
+            to={`${ROUTE_PATHS.settings}/themes`}
+            key="nav_settings"
+          >
             {GetIcon(settings4Line)}
             {/* <Icon icon={settings4Line} /> */}
           </Link>

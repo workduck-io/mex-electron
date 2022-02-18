@@ -42,6 +42,7 @@ export const Title = styled.h1`
   padding: 2.5rem 1rem;
   font-size: 36px;
   line-height: 44px;
+  user-select: none;
 `
 
 export const TemplateTitle = styled.h1`

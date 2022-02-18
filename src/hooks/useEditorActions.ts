@@ -1,11 +1,12 @@
 import { usePlateEditorRef } from '@udecode/plate'
-import { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import create from 'zustand'
 import useDataStore from '../store/useDataStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { NodeEditorContent } from '../types/Types'
 import { mog } from '../utils/lib/helper'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../views/routes/urls'
 import { useEditorBuffer } from './useEditorBuffer'
 import { useLinks } from './useLinks'
 import useLoad from './useLoad'
@@ -32,7 +33,7 @@ const useEditorActions = () => {
   const { loadNode } = useLoad()
   const node = useEditorStore((s) => s.node)
   const { clearBuffer } = useEditorBuffer()
-  const history = useHistory()
+  const { goTo } = useRouting()
   const baseNodePath = useDataStore((s) => s.baseNodeId)
   const prevNode = useEditorErrorStore((s) => s.prevNode)
   const alreadyErrored = useEditorErrorStore((s) => s.alreadyErrored)
@@ -64,7 +65,7 @@ const useEditorActions = () => {
       loadNodeL(nodeIdToLoad)
       setErrorState(node.nodeid, true)
     }
-    history.push('/editor')
+    goTo(ROUTE_PATHS.node, NavigationType.push, nodeIdToLoad)
   }
 
   return {

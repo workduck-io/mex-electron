@@ -10,6 +10,7 @@ import { useGraphStore } from '../store/useGraphStore'
 import { ILink, NodeEditorContent } from '../types/Types'
 import { getContent } from '../utils/helpers'
 import { mog, updateEmptyBlockTypes } from '../utils/lib/helper'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../views/routes/urls'
 import { useEditorBuffer } from './useEditorBuffer'
 import useToggleElements from './useToggleElements'
 
@@ -41,6 +42,7 @@ const useLoad = () => {
 
   // const { saveNodeAPIandFs } = useDataSaverFromContent()
   const { saveAndClearBuffer } = useEditorBuffer()
+  const { goTo } = useRouting()
   // const { saveQ } = useSaveQ()
 
   const getNode = (nodeid: string): NodeProperties => {
@@ -94,7 +96,7 @@ const useLoad = () => {
       .then((data) => {
         if (data) {
           // const { data, metadata, version } = res
-
+          // goTo(ROUTE_PATHS.node, NavigationType.replace, node.nodeid)
           mog('SAVED DATA', { data })
           // if (data) {
           //   updateEmptyBlockTypes(data, ELEMENT_PARAGRAPH)

@@ -4,7 +4,6 @@ import archiveFill from '@iconify-icons/ri/archive-fill'
 import { Icon } from '@iconify/react'
 import React, { useState } from 'react'
 import Modal from 'react-modal'
-import { useHistory } from 'react-router'
 import { useTransition } from 'react-spring'
 import styled, { useTheme } from 'styled-components'
 import { ModalControls, ModalHeader, MRMHead } from '../../components/mex/Refactor/styles'
@@ -68,12 +67,11 @@ const Archive = () => {
   const archive = useDataStore((store) => store.archive)
   const addILink = useDataStore((state) => state.addILink)
 
-  const { unArchiveData, removeArchiveData, getArchiveData } = useArchive()
+  const { unArchiveData, removeArchiveData } = useArchive()
   const [delNode, setDelNode] = useState(undefined)
   const [showModal, setShowModal] = useState(false)
   const { loadNode } = useLoad()
   const { onSave } = useSaver()
-  const history = useHistory()
   const contents = useContentStore((store) => store.contents)
   const theme = useTheme()
 

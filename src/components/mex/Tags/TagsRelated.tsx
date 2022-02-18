@@ -1,8 +1,8 @@
 import hashtagIcon from '@iconify-icons/ri/hashtag'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
+import { useRouting, ROUTE_PATHS, NavigationType } from '../../../views/routes/urls'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useTags } from '../../../hooks/useTags'
@@ -52,7 +52,7 @@ const TagsRelated = () => {
   const [tags, setTags] = useState<string[]>([])
   const { getNodeIdFromUid } = useLinks()
   const { push } = useNavigation()
-  const history = useHistory()
+  const { goTo } = useRouting()
 
   useEffect(() => {
     setRelNodes(getRelatedNodes(nodeid))
@@ -63,7 +63,7 @@ const TagsRelated = () => {
   }, [nodeid, tagsCache])
 
   const navigateToTag = (tag: string) => {
-    history.push(`/tag/${tag}`)
+    goTo(ROUTE_PATHS.tag, NavigationType.push, tag)
   }
 
   // console.log({ relNodes })

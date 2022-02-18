@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
-import { Switch as ReactRouterSwitch, useLocation } from 'react-router-dom'
-import { animated } from 'react-spring'
+import { Outlet, Route, Routes, useLocation, useMatch } from 'react-router-dom'
 import styled from 'styled-components'
 import Search from '../../components/mex/Search/Search'
 import SnippetEditor from '../../components/Snippets/SnippetEditor'
@@ -16,10 +15,20 @@ import Tag from '../mex/Tag'
 import Tasks from '../mex/Tasks'
 import AuthRoute from './AuthRoute'
 import ProtectedRoute from './ProtectedRoute'
+import Themes from '../../components/mex/Settings/Themes'
+import About from '../../components/mex/Settings/About'
+import AutoUpdate from '../../components/mex/Settings/AutoUpdate'
+import Importers from '../../components/mex/Settings/Importers'
 import { useEditorBuffer } from '../../hooks/useEditorBuffer'
 import { useAuthStore } from '../../services/auth/useAuth'
+import { ROUTE_PATHS } from '../routes/urls'
+import UserPage from '../mex/UserPage'
+import Shortcuts from '../../components/mex/Settings/Shortcuts'
+import ContentEditor from '../../editor/ContentEditor'
+import { mog } from '../../utils/lib/helper'
+import NotFound from '../NotFound'
 
-const SwitchWrapper = styled(animated.div)<{ isAuth?: boolean }>`
+const SwitchWrapper = styled.div<{ isAuth?: boolean }>`
   position: fixed;
   width: ${({ theme, isAuth }) => (!isAuth ? '100%' : `calc(100% - ${theme.width.nav}px)`)};
   height: 100%;
@@ -27,55 +36,73 @@ const SwitchWrapper = styled(animated.div)<{ isAuth?: boolean }>`
   overflow-y: auto;
 `
 
+const Home = () => (
+  <>
+    <Outlet />
+  </>
+)
+
 const Switch = () => {
   const location = useLocation()
-  // const { saveQ } = useSaveQ()
   const { saveAndClearBuffer } = useEditorBuffer()
   const authenticated = useAuthStore((s) => s.authenticated)
-  // const Perspective = '2000px'
-  // const transitions = useTransition(location, {
-  //   from: {
-  //     opacity: 0,
-  //     transform: `scale(0.75) perspective(${Perspective}) rotateX(20deg) translate(-15%, -15%)`
-  //   },
-  //   enter: {
-  //     opacity: 1,
-  //     transform: `scale(1.0) perspective(${Perspective}) rotateX(0deg) translate(0%, 0%)`
-  //   },
-  //   leave: {
-  //     opacity: 0,
-  //     transform: `scale(0.75) perspective(${Perspective}) rotateX(-20deg) translate(15%, 15%)`
-  //   },
-  //   delay: 0,
-  //   config: config.default
-  // })
-
   useEffect(() => {
-    // console.error({ q })
-    // if (q.length > 0) {
-    saveAndClearBuffer()
-
-    // }
+    // ? Do we need to save data locally on every route change?
+    if (authenticated) {
+      mog(`location ${location.pathname}`, {})
+      saveAndClearBuffer()
+    }
   }, [location])
 
-  // return transitions((props, item) => (
+  /* Hierarchy:
+    - login
+    - register
+    - home (layout with navbar)  
+      - settings (layout with settings sidebar)
+        - profile
+        - auto updates
+        - about
+        - theme
+        - import
+      - snippets
+      - snippet
+      - tags
+      - node (layout with tree, editor and sidebar)
+        - editor
+  */
+
   return (
     <SwitchWrapper isAuth={authenticated}>
-      {/* <ReactRouterSwitch location={item}> */}
-      <ReactRouterSwitch>
-        <ProtectedRoute path="/editor" component={EditorView} />
-        <ProtectedRoute path="/tasks" component={Tasks} />
-        <ProtectedRoute path="/integrations" component={Integrations} />
-        <ProtectedRoute exact path="/snippets" component={Snippets} />
-        <ProtectedRoute exact path="/snippets/editor" component={SnippetEditor} />
-        <ProtectedRoute path="/settings" component={Settings} />
-        <ProtectedRoute path="/search" component={Search} />
-        <ProtectedRoute path="/tag/:tag" component={Tag} />
-        <ProtectedRoute path="/" exact component={Dashboard} />
-        <ProtectedRoute path="/archive" exact component={Archive} />
-        <AuthRoute path="/login" component={Login} />
-        <AuthRoute path="/register" component={Register} />
-      </ReactRouterSwitch>
+      <Routes>
+        <Route path={ROUTE_PATHS.login} element={<AuthRoute component={Login} />} />
+        <Route path={ROUTE_PATHS.register} element={<AuthRoute component={Register} />} />
+
+        <Route path={ROUTE_PATHS.home} element={<Home />}>
+          <Route index element={<ProtectedRoute component={Dashboard} />} />
+          <Route path={ROUTE_PATHS.integrations} element={<ProtectedRoute component={Integrations} />} />
+          <Route path={ROUTE_PATHS.archive} element={<ProtectedRoute component={Archive} />} />
+          <Route path={ROUTE_PATHS.snippets} element={<ProtectedRoute component={Snippets} />} />
+          <Route path={ROUTE_PATHS.search} element={<ProtectedRoute component={Search} />} />
+          <Route path={ROUTE_PATHS.tasks} element={<ProtectedRoute component={Tasks} />} />
+
+          {/* Dynamic routes */}
+          <Route path={`${ROUTE_PATHS.snippet}/:snippetid`} element={<ProtectedRoute component={SnippetEditor} />} />
+          <Route path={ROUTE_PATHS.settings} element={<ProtectedRoute component={Settings} />}>
+            <Route path="themes" element={<ProtectedRoute component={Themes} />} />
+            <Route path="user" element={<ProtectedRoute component={UserPage} />} />
+            <Route path="shortcuts" element={<ProtectedRoute component={Shortcuts} />} />
+            <Route path="about" element={<ProtectedRoute component={About} />} />
+            <Route path="autoupdate" element={<ProtectedRoute component={AutoUpdate} />} />
+            <Route path="import" element={<ProtectedRoute component={Importers} />} />
+          </Route>
+          <Route path={ROUTE_PATHS.node} element={<ProtectedRoute component={EditorView} />}>
+            <Route path=":nodeid" element={<ProtectedRoute component={ContentEditor} />} />
+          </Route>
+          <Route path={`${ROUTE_PATHS.tag}/:tag`} element={<ProtectedRoute component={Tag} />} />
+        </Route>
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </SwitchWrapper>
   )
 }

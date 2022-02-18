@@ -54,7 +54,7 @@ const NewSyncTemplateModal = () => {
   const addTemplate = useSyncStore((store) => store.addTemplate)
   const services = useSyncStore((store) => store.services)
   const { updater } = useUpdater()
-  const workspaceId = useAuthStore((store) => store.workspaceDetails.id)
+  const workspaceId = useAuthStore((store) => store.workspaceDetails?.id)
   const { saveData } = useSaveData()
   const {
     control,
@@ -65,7 +65,6 @@ const NewSyncTemplateModal = () => {
   const { trackEvent } = useAnalytics()
 
   // const theme = useTheme()
-
   const serviceOptions = services
     .filter((s) => s.id !== 'MEX' && s.enabled && s.connected)
     .map((s) => ({
@@ -106,7 +105,7 @@ const NewSyncTemplateModal = () => {
 
     const reqData = {
       intentMap,
-      templateId: template.id,
+      templateId: template?.id,
       workspaceId,
       command: template.command,
       title: template.title,

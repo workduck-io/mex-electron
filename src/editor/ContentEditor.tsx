@@ -22,6 +22,7 @@ import { getEditorId } from '../utils/lib/EditorId'
 import { mog } from '../utils/lib/helper'
 import sw from 'stopword'
 
+import { NavigationType, ROUTE_PATHS, useRouting } from '../views/routes/urls'
 // import { NodeContent } from '../types/data'
 // import { useDataSaverFromContent } from './Components/Saver'
 
@@ -86,7 +87,7 @@ const ContentEditor = () => {
       getEditorId(
         node.nodeid,
         // fsContent.metadata?.updatedAt?.toString() ?? 'not_updated',
-        fetchingContent
+        false
       ),
     [node, fetchingContent]
   )
@@ -116,10 +117,8 @@ const ContentEditor = () => {
         shortcutHandler(shortcuts.refreshNode, () => {
           const node = useEditorStore.getState().node
           const val = getBufferVal(node.nodeid)
-          mog('RefreshingNode', { node, val })
+          mog('Buffer value for node', { node, val })
           saveApiAndUpdate(node, val)
-          // fetchAndSaveNode(useEditorStore.getState().node)
-          // loadNode(nodeid, { fetch: true, savePrev: false })
         })
       }
     })

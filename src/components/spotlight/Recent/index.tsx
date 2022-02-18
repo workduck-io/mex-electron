@@ -1,5 +1,4 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react'
-import { useHistory } from 'react-router'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
@@ -35,7 +34,6 @@ export const RecentRow = forwardRef<HTMLDivElement, RecentRowType>((props, ref) 
 RecentRow.displayName = 'RecentRow'
 
 export const RecentList: React.FC<RecentListType> = ({ list }) => {
-  const history = useHistory()
   const { loadNode, loadNodeAndAppend } = useLoad()
 
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
@@ -90,7 +88,6 @@ export const RecentList: React.FC<RecentListType> = ({ list }) => {
   //   if (onEnter) {
   //     const item = list[currentIndex]
   //     loadContent(item.extras.nodeid, nodeContent)
-  //     history.replace('/new')
   //   }
   // }, [keyDown, keyUp, onEnter, isPreview])
 

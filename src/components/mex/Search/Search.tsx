@@ -2,8 +2,8 @@ import searchLine from '@iconify-icons/ri/search-line'
 import { Icon } from '@iconify/react'
 import { debounce } from 'lodash'
 import React, { useEffect, useRef } from 'react'
-import { useHistory } from 'react-router-dom'
 import { useTransition } from 'react-spring'
+import { NavigationType, useRouting, ROUTE_PATHS } from '../../../views/routes/urls'
 import create from 'zustand'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
@@ -52,7 +52,6 @@ const useSearchPageStore = create<SearchStore>((set) => ({
 }))
 
 const Search = () => {
-  const history = useHistory()
   const { loadNode } = useLoad()
   const searchIndex = useNewSearchStore((store) => store.searchIndex)
   const contents = useContentStore((store) => store.contents)
@@ -62,6 +61,7 @@ const Search = () => {
   const setResult = useSearchPageStore((store) => store.setResult)
   const searchTerm = useSearchPageStore((store) => store.searchTerm)
   const setSearchTerm = useSearchPageStore((store) => store.setSearchTerm)
+  const { goTo } = useRouting()
   const inpRef = useRef<HTMLInputElement>(null)
   const selectedRef = useRef<HTMLDivElement>(null)
 
@@ -152,8 +152,9 @@ const Search = () => {
             setSelected(-1)
           }
         } else {
-          loadNode(nodeUID ?? lastOpened[0] ?? baseNodeId)
-          history.push('/editor')
+          const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
+          loadNode(nodeid)
+          goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
         }
       }
     }
@@ -161,14 +162,12 @@ const Search = () => {
       // Only when the selected index is -1
       if (selected > -1) {
         // console.log({ load: result[selected].nodeUID, res: result, sel: result[selected], selected })
-        loadNode(result[selected].nodeUID)
-        history.push('/editor')
+        const nodeid = result[selected].nodeUID
+        loadNode(nodeid)
+        goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
       }
     }
   }
-
-  // console.log(element.tagName)
-  // console.log('rerendered', { selected, result })
 
   return (
     <SearchContainer onKeyDown={keyDownHandler}>
@@ -203,7 +202,7 @@ const Search = () => {
                 <Result
                   onClick={() => {
                     loadNode(c.nodeUID)
-                    history.push('/editor')
+                    goTo(ROUTE_PATHS.node, NavigationType.push, c.nodeUID)
                   }}
                   selected={i === selected}
                   ref={i === (selected + 1) % result.length ? selectedRef : null}

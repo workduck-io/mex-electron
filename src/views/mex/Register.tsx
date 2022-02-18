@@ -19,6 +19,7 @@ import { ipcRenderer } from 'electron'
 import { IpcAction } from '../../data/IpcAction'
 import { AppType } from '../../hooks/useInitialize'
 import { useTourData } from '../../components/mex/Onboarding/hooks'
+import { ROUTE_PATHS } from '../routes/urls'
 
 export interface Option {
   label: string
@@ -76,11 +77,9 @@ const Register = () => {
 
   const onRegisterSubmit = async (data: RegisterFormData) => {
     await registerDetails(data).then((s) => {
-
       if (s === 'UsernameExistsException') {
         toast('You have already registered, please verify code.')
-      }
-      else {
+      } else {
         ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails: { email: data.email }, loggedIn: true })
       }
     })
@@ -219,7 +218,7 @@ const Register = () => {
         <br />
       </BackCard>
       <FooterCard>
-        <Link to="/login">Login</Link>
+        <Link to={ROUTE_PATHS.login}>Login</Link>
       </FooterCard>
     </CenteredColumn>
   )

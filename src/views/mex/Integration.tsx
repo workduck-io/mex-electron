@@ -5,7 +5,6 @@ import { Icon } from '@iconify/react'
 import { client } from '@workduck-io/dwindle'
 import { shell } from 'electron'
 import React, { useEffect, useMemo } from 'react'
-import { useHistory } from 'react-router'
 import { useTheme } from 'styled-components'
 import { integrationURLs } from '../../apis/routes'
 import { TemplateInfoBar } from '../../components/layouts/InfoBar'
@@ -45,6 +44,7 @@ import {
   Title
 } from '../../style/Integration'
 import { camelCase } from '../../utils/lib/strings'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 // eslint-disable-next-line import/namespace
 
 const NewTemplate = () => {
@@ -124,12 +124,12 @@ const TemplateInfo = () => {
   const isTemplateDetailsLoading = useIntegrationStore((store) => store.isTemplateDetailsLoading)
 
   const theme = useTheme()
-  const history = useHistory()
+  const { goTo } = useRouting()
   const { getNode, loadNode } = useLoad()
 
   const onClick = (id: string) => {
     loadNode(id)
-    history.push('/editor')
+    goTo(ROUTE_PATHS.node, NavigationType.push, id)
   }
 
   const { localNodes, totalCount, deletedNodes, deletedNodesRunCount } = useMemo(() => {

@@ -4,9 +4,8 @@ import { StyledRow, Description } from '../../SearchResults/styled'
 import { Icon } from '@iconify/react'
 import { StyledKey } from '../../Shortcuts/styled'
 import { ListItemType } from '../../SearchResults/types'
-import { NoWrap, PrimaryText } from '../../../../style/Integration'
+import { PrimaryText } from '../../../../style/Integration'
 import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
-import { mog } from '../../../../utils/lib/helper'
 
 export const ActionIcon = styled.div`
   display: flex;
@@ -24,7 +23,7 @@ export const Shortcut = styled.div`
   margin: 0.5rem;
 `
 
-export const Dot = styled.span<{ active: boolean }>`
+export const Dot = styled.span<{ active: string }>`
   /* padding: 2px; */
   height: 5px;
   width: 5px;
@@ -43,7 +42,7 @@ function Item({ item, active, onClick }: { item: ListItemType; active?: boolean;
   return (
     <StyledRow showColor={active} onClick={onClick} key={`STRING_${item?.title}`}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Dot active={active} />
+        <Dot active={active ? 'true' : ''} />
         <div style={{ display: 'flex', alignItems: 'center', marginRight: '1rem' }}>
           <Icon
             color={theme.colors.primary}

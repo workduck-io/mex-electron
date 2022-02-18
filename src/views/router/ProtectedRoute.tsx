@@ -1,14 +1,17 @@
 import React from 'react'
-import { Redirect, Route, RouteProps } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { useAuthStore } from '../../services/auth/useAuth'
+import { ROUTE_PATHS } from '../routes/urls'
+import { MexRouteProps } from './AuthRoute'
 
-const ProtectedRoute = ({ component: Component, path }: RouteProps) => {
+const ProtectedRoute: React.FC<MexRouteProps> = ({ component: Component }) => {
   const authenticated = useAuthStore((store) => store.authenticated)
+
   if (!authenticated) {
-    return <Redirect to="/register" />
+    return <Navigate to={ROUTE_PATHS.register} />
   }
 
-  return <Route component={Component} path={path} />
+  return <Component />
 }
 
 export default ProtectedRoute

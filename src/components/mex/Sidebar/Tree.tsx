@@ -6,7 +6,8 @@
 import equal from 'fast-deep-equal'
 import RCTree from 'rc-tree'
 import { Key } from 'rc-tree/lib/interface'
-import React from 'react'
+import React, { memo } from 'react'
+import { useRouting as getRouting, ROUTE_PATHS, NavigationType } from '../../../views/routes/urls'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
@@ -16,6 +17,7 @@ import { withNodeOps } from '../../../store/useEditorStore'
 import { StyledTree } from '../../../style/Sidebar'
 import TreeExpandIcon from './Icon'
 import { getNodeIdLast, SEPARATOR } from './treeUtils'
+import { mog } from '../../../utils/lib/helper'
 
 const motion = {
   motionName: 'node-motion',
@@ -171,11 +173,10 @@ class Tree extends React.Component<RCTreeProps> {
     const { selectedNodes } = info
     const { push } = this.props
 
-    // console.log({ selectedNodes })
-
     if (selectedNodes.length > 0) {
-      push(selectedNodes[0].nodeid)
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, selectedNodes[0].nodeid)
+      const nodeid = selectedNodes[0].nodeid
+      push(nodeid)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
     }
   }
 
