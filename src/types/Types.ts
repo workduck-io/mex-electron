@@ -51,7 +51,13 @@ interface SlashCommands {
   internal: SlashCommand[]
 }
 
-export interface AddILinkProps {ilink: string, nodeid?: string, parentId?: string, archived?: boolean, showAlert?: boolean}
+export interface AddILinkProps {
+  ilink: string
+  nodeid?: string
+  parentId?: string
+  archived?: boolean
+  showAlert?: boolean
+}
 
 export interface DataStoreState {
   tags: Tag[]
@@ -89,7 +95,8 @@ export interface DataStoreState {
   // adds the link between nodes
   addInternalLink: (ilink: CachedILink, nodeid: string) => void
   removeInternalLink: (ilink: CachedILink, nodeid: string) => void
-  updateInternalLinks: (links: CachedILink[], nodeid: string) => void
+  updateInternalLinksForNode: (links: CachedILink[], nodeid: string) => void
+  updateInternalLinks: (linkCache: LinkCache) => void
 
   addInArchive: (archive: ILink[]) => void
   unArchive: (archive: ILink) => void

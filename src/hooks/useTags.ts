@@ -3,6 +3,7 @@ import { ELEMENT_TAG } from '../editor/Components/tag/defaults'
 import useDataStore from '../store/useDataStore'
 import { TagsCache } from '../types/Types'
 import { Settify } from '../utils/helpers'
+import { useNodes } from './useNodes'
 
 const getTagsFromContent = (content: any[]): string[] => {
   let tags: string[] = []
@@ -32,6 +33,7 @@ export interface RelatedNodes {
 export const useTags = () => {
   // const contents = useContentStore((state) => state.contents)
   const updateTagsCache = useDataStore((state) => state.updateTagsCache)
+  const { isInArchive } = useNodes()
 
   // const getAllLinks = () => {
   //   // We assume that all links exist
@@ -61,10 +63,13 @@ export const useTags = () => {
     return _getTags(nodeid, tagsCache)
   }
 
-  const getNodesForTag = (tag: string): string[] => {
+  const getNodesAndCleanCacheForTag = (tag: string): { nodes: string[]; cleanCache: TagsCache } => {
     const tagsCache = useDataStore.getState().tagsCache
-    if (tagsCache[tag]) return tagsCache[tag].nodes
-    return []
+    const cleanCache = Object.entries(tagsCache).reduce((p, [k, v]) => {
+      return { ...p, [k]: { nodes: v.nodes.filter((n) => !isInArchive(n)) } }
+    }, {})
+    if (cleanCache[tag]) return { nodes: cleanCache[tag].nodes, cleanCache }
+    return { nodes: [], cleanCache }
   }
 
   /**
@@ -79,7 +84,7 @@ export const useTags = () => {
     const relatedNodes: RelatedNodes = tags.reduce((p, t) => {
       return {
         ...p,
-        [t]: tagsCache[t].nodes.filter((id) => id !== nodeid)
+        [t]: tagsCache[t].nodes.filter((id) => id !== nodeid && !isInArchive(id))
       }
     }, {})
 
@@ -166,5 +171,5 @@ export const useTags = () => {
     }
   }
 
-  return { getRelatedNodes, getNodesForTag, updateTagsFromContent, getTags }
+  return { getRelatedNodes, getNodesAndCleanCacheForTag, updateTagsFromContent, getTags }
 }

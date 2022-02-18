@@ -192,7 +192,8 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     set({ bookmarks: Array.from(ubookmarks) })
   },
 
-  updateInternalLinks: (links, nodeid) => {
+  updateInternalLinks: (linkCache) => set({ linkCache }),
+  updateInternalLinksForNode: (links, nodeid) => {
     set({
       linkCache: {
         ...get().linkCache,

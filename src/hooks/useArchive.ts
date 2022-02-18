@@ -18,6 +18,9 @@ const useArchive = () => {
 
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
 
+  const updateTagsCache = useDataStore((state) => state.updateTagsCache)
+  const updateInternalLinks = useDataStore((state) => state.updateInternalLinks)
+
   const { onSave } = useSaver()
   const { saveData } = useSaveData()
   const { userCred } = useAuth()
@@ -86,6 +89,22 @@ const useArchive = () => {
       .catch(console.error)
   }
 
+  const cleanCachesAfterDelete = (nodes: ILink[]) => {
+    const linkCache = useDataStore.getState().linkCache
+    const tagsCache = useDataStore.getState().tagsCache
+    const removedPaths = nodes.map((n) => n.nodeid)
+    const cleanTagCache = Object.entries(tagsCache).reduce((p, [k, v]) => {
+      return { ...p, [k]: { nodes: v.nodes.filter((n) => !removedPaths.includes(n)) } }
+    }, {})
+    const cleanLinkCache = Object.entries(linkCache).reduce((p, [k, v]) => {
+      if (removedPaths.includes(k)) return p
+      return { ...p, [k]: v.filter((n) => !removedPaths.includes(n.nodeid)) }
+    }, {})
+    mog('Cleaning Caches', { nodes, linkCache, tagsCache, removedPaths, cleanTagCache, cleanLinkCache })
+    updateTagsCache(cleanTagCache)
+    updateInternalLinks(cleanLinkCache)
+  }
+
   const removeArchiveData = async (nodeids: ILink[]): Promise<boolean> => {
     if (!USE_API()) {
       removeArchive(nodeids)
@@ -100,6 +119,9 @@ const useArchive = () => {
         // .then(console.log)
         .then(() => {
           removeArchive(nodeids)
+        })
+        .then(() => {
+          cleanCachesAfterDelete(nodeids)
         })
         .then(() => saveData())
         .then(() => {

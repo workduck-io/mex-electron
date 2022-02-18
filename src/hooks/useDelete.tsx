@@ -8,10 +8,6 @@ import useArchive from './useArchive'
 
 export const useDelete = () => {
   const ilinks = useDataStore((state) => state.ilinks)
-  const linkCache = useDataStore((state) => state.linkCache)
-  const tagsCache = useDataStore((state) => state.tagsCache)
-  const updateTagsCache = useDataStore((state) => state.updateTagsCache)
-  const updateInternalLinks = useDataStore((state) => state.updateInternalLinks)
 
   const setILinks = useDataStore((state) => state.setIlinks)
   const setBaseNodeId = useDataStore((state) => state.setBaseNodeId)
@@ -48,8 +44,8 @@ export const useDelete = () => {
     const { newIds: newRecents } = applyDeleteToIds(lastOpened, 0, newIlinks)
     updateLastOpened(newRecents)
 
+    // Update BaseNodeId
     const baseId = archivedNodes.map((item) => item.path).indexOf(useDataStore.getState().baseNodeId)
-
     if (baseId !== -1 && newIlinks.length > 0) {
       setBaseNodeId(newIlinks[0].path)
     }

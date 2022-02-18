@@ -20,5 +20,11 @@ export const useNodes = () => {
     }
   }
 
-  return { addNode }
+  const isInArchive = (nodeid: string): boolean => {
+    const archive = useDataStore.getState().archive
+    const res = archive.map((l) => l.nodeid).includes(nodeid)
+    return res
+  }
+
+  return { addNode, isInArchive }
 }
