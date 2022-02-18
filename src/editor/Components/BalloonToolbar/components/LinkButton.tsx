@@ -1,30 +1,29 @@
 import Tippy, { TippyProps } from '@tippyjs/react' // optional
 import {
-  ELEMENT_LINK,
-  getAbove,
-  getPluginType,
-  isCollapsed,
-  LinkToolbarButtonProps,
-  someNode,
-  unwrapNodes,
-  usePlateEditorState,
-  usePlateId
+    ELEMENT_LINK,
+    getAbove,
+    getPlateEditorRef,
+    getPluginType,
+    isCollapsed,
+    LinkToolbarButtonProps,
+    someNode,
+    unwrapNodes
 } from '@udecode/plate'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { ReactEditor } from 'slate-react'
-import { mog } from '../../../../utils/lib/helper'
+import { useBalloonToolbarStore } from '..'
 import { HeadlessButton } from '../../../../style/Buttons'
+import { mog } from '../../../../utils/lib/helper'
 // import { Input } from '../../../../style/Form'
 import { clearAllSelection } from '../../../Plugins/blurSelection'
-import { LinkButtonStyled } from './LinkButton.styles'
 import { upsertLinkAtSelection } from '../upsertLinkAtSelection'
-import { useBalloonToolbarStore } from '..'
+import { LinkButtonStyled } from './LinkButton.styles'
 
 type LinkButtonProps = LinkToolbarButtonProps
 
 const LinkButton = ({ getLinkUrl, ...props }: LinkButtonProps) => {
-  const editor = usePlateEditorState(usePlateId())
+  const editor = getPlateEditorRef()
 
   const type = getPluginType(editor, ELEMENT_LINK)
   const isFocused = useBalloonToolbarStore((s) => s.isFocused)
