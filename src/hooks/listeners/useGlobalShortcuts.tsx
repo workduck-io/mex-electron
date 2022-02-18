@@ -41,12 +41,11 @@ export const useGlobalShortcuts = () => {
     const unsubscribe = tinykeys(window, {
       Escape: (event) => {
         event.preventDefault()
-        mog('Shortcut disabled', { shortcutDisabled })
+        setNormalMode(true)
         if (!shortcutDisabled) {
           getPlateActions(savedEditorNode.nodeid).resetEditor()
           if (selection && !search.value) {
             setSelection(undefined)
-
             removeContent(savedEditorNode.nodeid)
           } else if (search.value) {
             setIsPreview(false)
@@ -56,7 +55,7 @@ export const useGlobalShortcuts = () => {
             handleCancel()
             if (normalMode) ipcRenderer.send('close')
           }
-          setNormalMode(true)
+
           setCurrentListItem(undefined)
         }
       }

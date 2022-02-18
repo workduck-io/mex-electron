@@ -8,7 +8,7 @@ export const convertContentToRawText = (content: any[], join?: string): string =
   content.forEach((n) => {
     if (n.text && n.text !== '') text.push(n.text)
     if (n.children && n.children.length > 0) {
-      const childText = convertContentToRawText(n.children)
+      const childText = convertContentToRawText(n.children, join ?? '')
       text.push(childText)
     }
   })
@@ -34,5 +34,6 @@ export const convertDataToRawText = (data: FileData): NodeSearchData[] => {
       result.push(temp)
     }
   })
+
   return result
 }

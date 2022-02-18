@@ -20,9 +20,11 @@ import { StyledEditor } from '../style/Editor'
 import useSuggestionStore from '../store/useSuggestions'
 import { getEditorId } from '../utils/lib/EditorId'
 import { mog } from '../utils/lib/helper'
-import keywordExtractor from 'keyword-extractor'
+import sw from 'stopword'
+
 // import { NodeContent } from '../types/data'
 // import { useDataSaverFromContent } from './Components/Saver'
+
 import Editor from './Editor'
 import Toolbar from './Toolbar'
 
@@ -54,8 +56,6 @@ const ContentEditor = () => {
 
   const onChangeSave = (val: any[]) => {
     // mog('Trigger onChange', { node, val })
-    console.log('----------------- something is happening -----------------')
-
     if (val && node && node.nodeid !== '__null__') {
       // mog('Saving onChange', { node, val })
 
@@ -63,17 +63,12 @@ const ContentEditor = () => {
         const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
 
         const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
-        const rawText = convertContentToRawText(val.slice(lastTwoParagraphs, cursorPosition + 1))
+        const rawText = convertContentToRawText(val.slice(lastTwoParagraphs, cursorPosition + 1), ' ')
 
-        const res = keywordExtractor
-          .extract(rawText, {
-            language: 'english',
-            remove_duplicates: true
-          })
-          .join(' ')
+        const keywords = sw.removeStopwords(rawText.split(' ').filter(Boolean))
 
-        const results = searchIndex(res)
-        mog('RAW', { cursorPosition, rawText, lastTwoParagraphs, res, results })
+        mog('keywords', { keywords })
+        const results = searchIndex(keywords.join(' '))
 
         const withoutCurrentNode = results.filter((item) => item.nodeUID !== node.nodeid)
 
