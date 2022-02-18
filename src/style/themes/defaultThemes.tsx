@@ -4,6 +4,7 @@ import { hackerTheme } from './hackerTheme'
 import { imperialTheme } from './imperialTheme'
 import { lightTheme } from './lightTheme'
 import { matrixTheme } from './matrixTheme'
+import { neoLight } from './neoLightTheme'
 import { reduxTheme } from './reduxTheme'
 import { renarTheme } from './renarTheme'
 import { sapphireTheme } from './sapphireTheme'
@@ -21,6 +22,7 @@ export const defaultThemes = [
   { id: 'Sapphire', themeData: sapphireTheme },
   { id: 'Clean', themeData: spotlightTheme },
   { id: 'Yellowy', themeData: yellowyTheme },
+  { id: 'Neo Light', themeData: neoLight },
   { id: 'Imperial', themeData: imperialTheme },
   { id: 'Renar', themeData: renarTheme },
   { id: 'Hacker', themeData: hackerTheme }
