@@ -14,7 +14,6 @@ const SpotlightRoute = () => {
       <Routes>
         <Route path={ROUTE_PATHS.home} element={<ProtectedRoute component={Spotlight} />} />
         <Route path={ROUTE_PATHS.login} element={<Login />} />
-        <Route path="*" element={<div>Hello world</div>} />
       </Routes>
       <GlobalListener />
       <Bubble />

@@ -55,7 +55,6 @@ export const useGlobalShortcuts = () => {
             handleCancel()
             if (normalMode) ipcRenderer.send('close')
           }
-
           setCurrentListItem(undefined)
         }
       }

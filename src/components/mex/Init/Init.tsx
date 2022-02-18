@@ -50,7 +50,6 @@ const Init = () => {
   const { loadNode, getNode } = useLoad()
   const { initCognito } = useAuth()
 
-  const location = useLocation()
   const { getLocalData } = useLocalData()
   const initFlexSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
   const fetchIndexLocalStorage = useNewSearchStore((store) => store.fetchIndexLocalStorage)

@@ -22,9 +22,8 @@ export const useComboboxOnChange = ({
   const setSearch = useComboboxStore((state) => state.setSearch)
   const setKey = useComboboxStore((state) => state.setKey)
 
-  return (...args) => {
+  return useCallback(() => {
     const textFromTrigger = getTextFromTriggers(editor, keys)
-    mog('Text from trigger', { textFromTrigger, editor, keys })
     if (textFromTrigger) {
       const { key, search, range } = textFromTrigger
 
@@ -35,5 +34,5 @@ export const useComboboxOnChange = ({
     }
 
     return { search: undefined }
-  }
+  }, [editor, keys, setKey, setTargetRange, setSearch])
 }

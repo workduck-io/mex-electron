@@ -26,6 +26,7 @@ import UserPage from '../mex/UserPage'
 import Shortcuts from '../../components/mex/Settings/Shortcuts'
 import ContentEditor from '../../editor/ContentEditor'
 import { mog } from '../../utils/lib/helper'
+import NotFound from '../NotFound'
 
 const SwitchWrapper = styled.div<{ isAuth?: boolean }>`
   position: fixed;
@@ -45,10 +46,11 @@ const Switch = () => {
   const location = useLocation()
   const { saveAndClearBuffer } = useEditorBuffer()
   const authenticated = useAuthStore((s) => s.authenticated)
-
   useEffect(() => {
     // ? Do we need to save data locally on every route change?
-    saveAndClearBuffer()
+    if (authenticated) {
+      saveAndClearBuffer()
+    }
   }, [location])
 
   /* Hierarchy:
@@ -63,6 +65,7 @@ const Switch = () => {
         - import
       - snippets
       - snippet
+      - tags
       - node (layout with tree, editor and sidebar)
         - editor
   */
@@ -73,50 +76,31 @@ const Switch = () => {
         <Route path={ROUTE_PATHS.login} element={<AuthRoute component={Login} />} />
         <Route path={ROUTE_PATHS.register} element={<AuthRoute component={Register} />} />
 
-        {/* Home */}
         <Route path={ROUTE_PATHS.home} element={<Home />}>
           <Route index element={<ProtectedRoute component={Dashboard} />} />
-          <Route path={ROUTE_PATHS.integrations} element={<Integrations />} />
-          <Route path={ROUTE_PATHS.archive} element={<Archive />} />
-          <Route path={ROUTE_PATHS.snippets} element={<Snippets />} />
-          <Route path={ROUTE_PATHS.search} element={<Search />} />
-          <Route path={ROUTE_PATHS.tasks} element={<Tasks />} />
-
-          {/* Dynamic routes */}
-          <Route path={`${ROUTE_PATHS.snippet}/:snippetid`} element={<SnippetEditor />} />
-          <Route path={ROUTE_PATHS.settings} element={<Settings />}>
-            <Route path="themes" element={<Themes />} />
-            <Route path="user" element={<UserPage />} />
-            <Route path="shortcuts" element={<Shortcuts />} />
-            <Route path="about" element={<About />} />
-            <Route path="autoupdate" element={<AutoUpdate />} />
-            <Route path="import" element={<Importers />} />
-          </Route>
-          <Route path={ROUTE_PATHS.node} element={<EditorView />}>
-            <Route path=":nodeid" element={<ContentEditor />} />
-          </Route>
-
-          {/* <Route path={ROUTE_PATHS.tasks} element={<ProtectedRoute component={Tasks} />} />
-          <Route path={ROUTE_PATHS.search} element={<ProtectedRoute component={Search} />} />
-          <Route path={ROUTE_PATHS.settings} element={<ProtectedRoute component={Settings} />} />
+          <Route path={ROUTE_PATHS.integrations} element={<ProtectedRoute component={Integrations} />} />
           <Route path={ROUTE_PATHS.archive} element={<ProtectedRoute component={Archive} />} />
           <Route path={ROUTE_PATHS.snippets} element={<ProtectedRoute component={Snippets} />} />
-          <Route path={ROUTE_PATHS.dashborad} element={<ProtectedRoute component={Dashboard} />} />
-          <Route path={ROUTE_PATHS.integrations} element={<ProtectedRoute component={Integrations} />} />
+          <Route path={ROUTE_PATHS.search} element={<ProtectedRoute component={Search} />} />
+          <Route path={ROUTE_PATHS.tasks} element={<ProtectedRoute component={Tasks} />} />
 
+          {/* Dynamic routes */}
+          <Route path={`${ROUTE_PATHS.snippet}/:snippetid`} element={<ProtectedRoute component={SnippetEditor} />} />
+          <Route path={ROUTE_PATHS.settings} element={<ProtectedRoute component={Settings} />}>
+            <Route path="themes" element={<ProtectedRoute component={Themes} />} />
+            <Route path="user" element={<ProtectedRoute component={UserPage} />} />
+            <Route path="shortcuts" element={<ProtectedRoute component={Shortcuts} />} />
+            <Route path="about" element={<ProtectedRoute component={About} />} />
+            <Route path="autoupdate" element={<ProtectedRoute component={AutoUpdate} />} />
+            <Route path="import" element={<ProtectedRoute component={Importers} />} />
+          </Route>
+          <Route path={ROUTE_PATHS.node} element={<ProtectedRoute component={EditorView} />}>
+            <Route path=":nodeid" element={<ProtectedRoute component={ContentEditor} />} />
+          </Route>
           <Route path={`${ROUTE_PATHS.tag}/:tag`} element={<ProtectedRoute component={Tag} />} />
-          <Route path={`${ROUTE_PATHS.node}/:nodeid`} element={<ProtectedRoute component={EditorView} />} />
-          <Route path={`${ROUTE_PATHS}/:snippetid`} element={<ProtectedRoute component={SnippetEditor} />} /> */}
         </Route>
 
-        <Route
-          path="*"
-          element={
-            <main style={{ padding: '1rem' }}>
-              <p>There&apos;s nothing here!</p>
-            </main>
-          }
-        />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </SwitchWrapper>
   )

@@ -26,19 +26,19 @@ const useNavlinks = () => {
     const links: NavLinkData[] = [
       {
         title: 'Search',
-        path: `/${ROUTE_PATHS.search}`,
+        path: ROUTE_PATHS.search,
         shortcut: shortcuts.showSearch.keystrokes,
         icon: GetIcon(searchLine)
       },
       {
         title: 'Dashboard',
-        path: `/${ROUTE_PATHS.dashborad}`,
+        path: ROUTE_PATHS.dashborad,
         icon: GetIcon(dashboardLine),
         isComingSoon: true
       },
       {
         title: 'Editor',
-        path: `/${ROUTE_PATHS.node}/${nodeid}`,
+        path: `${ROUTE_PATHS.node}/${nodeid}`,
         shortcut: shortcuts.showEditor.keystrokes,
         icon: GetIcon(fileDocument)
       },
@@ -50,13 +50,13 @@ const useNavlinks = () => {
       // },
       {
         title: 'Integrations',
-        path: `/${ROUTE_PATHS.integrations}`,
+        path: ROUTE_PATHS.integrations,
         shortcut: shortcuts.showIntegrations.keystrokes,
         icon: GetIcon(appsLine)
       },
       {
         title: 'Snippets',
-        path: `/${ROUTE_PATHS.snippets}`,
+        path: ROUTE_PATHS.snippets,
         shortcut: shortcuts.showSnippets.keystrokes,
         icon: GetIcon(quillPenLine)
       }
