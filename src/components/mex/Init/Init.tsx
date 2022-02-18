@@ -34,7 +34,7 @@ import { flexIndexKeys } from '../../../utils/search/flexsearch'
 import { convertDataToRawText } from '../../../utils/search/localSearch'
 import { performClick } from '../Onboarding/steps'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
-import { useLocation, useMatch, useResolvedPath } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -164,8 +164,7 @@ const Init = () => {
       push(node.nodeid)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
 
-      mog('LCOATION', { location })
-      if (location.pathname !== `/${ROUTE_PATHS.node}`) goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+      goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
     })
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
       goTo(ROUTE_PATHS.settings, NavigationType.push)
