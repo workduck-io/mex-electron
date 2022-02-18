@@ -1,4 +1,5 @@
 import toast from 'react-hot-toast'
+import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
 import { BASE_TASKS_PATH, BASE_DRAFT_PATH } from '../../data/Defaults/baseData'
 import { FlowCommandPrefix } from '../../editor/Components/SlashCommands/useSyncConfig'
 import { SnippetCommandPrefix } from '../../hooks/useSnippets'
@@ -76,4 +77,12 @@ export const testing = () => {
     const res2 = getPathNum(p)
     mog(`For path: ${p}`, { res, res2 })
   })
+}
+
+/*
+ * Checks if a path is same or a child of given testPath
+ */
+export const isMatch = (path: string, testPath: string) => {
+  if (testPath === path) return true
+  if (path.startsWith(testPath + SEPARATOR)) return true
 }

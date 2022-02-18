@@ -25,10 +25,12 @@ import {
 } from '@udecode/plate'
 
 import Tippy, { TippyProps } from '@tippyjs/react'
+import { default as TippyHeadless, TippyProps as TippyHeadlessProps } from '@tippyjs/react/headless'
 import styled from 'styled-components'
 import { mog } from '../../utils/lib/helper'
 import { DateFormat } from '../../hooks/useRelativeTime'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
+import { RelativeTime } from '../../components/mex/RelativeTime'
 // import { NodeMetadata } from '../../types/data'
 
 const StyledTip = styled.div`
@@ -65,7 +67,7 @@ export const ActionDraggableIcon = styled.div`
 const MetadataWrap = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 9rem;
+  width: max-content;
   background-color: ${({ theme }) => theme.colors.gray[8]};
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
@@ -90,35 +92,41 @@ const MetadataText = styled.div`
 `
 
 const MetadataViewSmall = ({ m }: any) => {
+  const tippyProps: TippyProps = {
+    theme: 'mex-bright',
+    placement: 'right'
+  }
   return (
     <MetadataWrap>
       <MetadataRow>
         <Icon icon={addCircleLine} width={16} />
         {m.createdBy !== undefined ? <ProfileImage email={m.createdBy} size={16} /> : null}
-        <MetadataText>{DateFormat(m.createdAt)}</MetadataText>
+        <MetadataText>
+          <RelativeTime dateNum={m.createdAt} tippy tippyProps={tippyProps} />
+        </MetadataText>
       </MetadataRow>
       <MetadataRow>
         <Icon icon={refreshLine} width={16} />
 
         {m.lastEditedBy !== undefined ? <ProfileImage email={m.lastEditedBy} size={16} /> : null}
-        <MetadataText>{DateFormat(m.updatedAt)}</MetadataText>
+        <MetadataText>
+          <RelativeTime dateNum={m.updatedAt} tippy tippyProps={tippyProps} />
+        </MetadataText>
       </MetadataRow>
     </MetadataWrap>
   )
 }
 
 const GrabberTooltipContent = (props: any) => {
-  const MetadataTooltipProps: TippyProps = {
+  const MetadataTooltipProps: TippyHeadlessProps = {
     placement: 'top',
     inertia: true,
     arrow: false,
     delay: [100, 0],
     followCursor: true,
-    // duration: [0, 0],
-    // appendTo: () => document.body,
+    // duration: [0, 10000000000],
     hideOnClick: false,
-    interactive: true,
-    theme: 'transparent'
+    interactive: true
   }
 
   return (
@@ -132,11 +140,11 @@ const GrabberTooltipContent = (props: any) => {
       */}
 
       {props.element && props.element.metadata ? (
-        <Tippy {...MetadataTooltipProps} content={<MetadataViewSmall m={props.element.metadata} />}>
+        <TippyHeadless {...MetadataTooltipProps} render={(attrs) => <MetadataViewSmall m={props.element.metadata} />}>
           <ActionDraggableIcon>
             <Icon icon={timeLine} />
           </ActionDraggableIcon>
-        </Tippy>
+        </TippyHeadless>
       ) : null}
     </StyledTip>
   )
@@ -148,7 +156,7 @@ export const grabberTooltipProps: TippyProps = {
   arrow: false,
   delay: [100, 0],
   followCursor: true,
-  // duration: [0, 0],
+  // duration: [0, 10000000],
   appendTo: () => document.body,
   hideOnClick: false,
   interactive: true,

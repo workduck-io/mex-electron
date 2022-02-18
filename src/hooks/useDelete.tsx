@@ -3,6 +3,7 @@ import useDataStore from '../store/useDataStore'
 import { useHistoryStore } from '../store/useHistoryStore'
 import { useRecentsStore } from '../store/useRecentsStore'
 import { ILink } from '../types/Types'
+import { isMatch } from '../utils/lib/paths'
 import useArchive from './useArchive'
 
 export const useDelete = () => {
@@ -21,7 +22,7 @@ export const useDelete = () => {
 
   const getMockDelete = (del: string) => {
     const archivedNodes = ilinks.filter((i) => {
-      const match = i.path.startsWith(del)
+      const match = isMatch(i.path, del)
       return match
     })
 
@@ -35,16 +36,16 @@ export const useDelete = () => {
 
     addArchiveData(archivedNodes)
 
-    // Remap the contents for links that remain
-
+    // Update history
     const { newIds: newHistory, currentIndex: newCurIndex } = applyDeleteToIds(historyStack, currentIndex, newIlinks)
     updateHistory(newHistory, newCurIndex)
 
+    // Update Recents
     const { newIds: newRecents } = applyDeleteToIds(lastOpened, 0, newIlinks)
     updateLastOpened(newRecents)
 
+    // Update BaseNodeId
     const baseId = archivedNodes.map((item) => item.path).indexOf(useDataStore.getState().baseNodeId)
-
     if (baseId !== -1 && newIlinks.length > 0) {
       setBaseNodeId(newIlinks[0].path)
     }

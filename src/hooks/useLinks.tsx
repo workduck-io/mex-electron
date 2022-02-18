@@ -5,6 +5,7 @@ import useDataStore from '../store/useDataStore'
 import { NodeLink } from '../types/relations'
 import { CachedILink, ILink } from '../types/Types'
 import { hasLink } from '../utils/lib/links'
+import { useNodes } from './useNodes'
 
 const getLinksFromContent = (content: any[]): string[] => {
   let links: string[] = []
@@ -26,6 +27,7 @@ export const useLinks = () => {
   const addInternalLink = useDataStore((state) => state.addInternalLink)
   const removeInternalLink = useDataStore((state) => state.removeInternalLink)
   const linkCache = useDataStore((state) => state.linkCache)
+  const { isInArchive } = useNodes()
 
   const getAllLinks = () => {
     // We assume that all links exist
@@ -96,7 +98,7 @@ export const useLinks = () => {
   const getBacklinks = (nodeid: string) => {
     const links = linkCache[nodeid]
     if (links) {
-      return links.filter((l) => l.type === 'from')
+      return links.filter((l) => l.type === 'from' && !isInArchive(l.nodeid))
     }
     return []
   }

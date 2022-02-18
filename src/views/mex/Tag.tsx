@@ -7,6 +7,7 @@ import { defaultContent } from '../../data/Defaults/baseData'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import { useLinks } from '../../hooks/useLinks'
 import useLoad from '../../hooks/useLoad'
+import { useNodes } from '../../hooks/useNodes'
 import { useTags } from '../../hooks/useTags'
 import { useContentStore } from '../../store/useContentStore'
 import useDataStore from '../../store/useDataStore'
@@ -73,14 +74,15 @@ const Tag = () => {
   const contents = useContentStore((store) => store.contents)
   const { tag } = useParams<{ tag: string }>()
   const tagsCache = useDataStore((store) => store.tagsCache)
-  const { getNodesForTag } = useTags()
+  const { getNodesAndCleanCacheForTag } = useTags()
   const { getNodeIdFromUid } = useLinks()
-  const nodes = getNodesForTag(tag)
+  const { nodes, cleanCache } = getNodesAndCleanCacheForTag(tag)
   const { goTo } = useRouting()
   const { loadNode } = useLoad()
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState(-1)
-  const [tags, setTags] = useState(Object.keys(tagsCache))
+  const { isInArchive } = useNodes()
+  const [tags, setTags] = useState(Object.keys(cleanCache))
 
   const transition = useTransition(nodes, {
     // sort: (a, b) => (a.score > b.score ? -1 : 0),
@@ -139,11 +141,11 @@ const Tag = () => {
 
   useEffect(() => {
     if (search && search !== '') {
-      const filtered = fuzzySearch(Object.keys(tagsCache), search, {})
+      const filtered = fuzzySearch(Object.keys(cleanCache), search, {})
       setTags(filtered)
     }
     if (search === '') {
-      setTags(Object.keys(tagsCache))
+      setTags(Object.keys(cleanCache))
     }
   }, [search])
 
