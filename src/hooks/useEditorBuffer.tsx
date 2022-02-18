@@ -42,9 +42,9 @@ export const useEditorBuffer = () => {
       Object.entries(buffer).map(([nodeid, val]) => {
         saveNodeWithValue(nodeid, val)
       })
+      saveData()
       clearBuffer()
     }
-    saveData()
   }
 
   return { addOrUpdateValBuffer, saveAndClearBuffer, getBuffer, getBufferVal, clearBuffer }
