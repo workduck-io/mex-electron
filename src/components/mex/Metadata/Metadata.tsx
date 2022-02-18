@@ -4,7 +4,7 @@ import Tippy from '@tippyjs/react/headless' // different import path!
 import React, { useEffect, useState } from 'react'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import styled, { css } from 'styled-components'
-import { useRelativeTime } from '../../../hooks/useRelativeTime'
+import { RelativeTime } from '../RelativeTime'
 import { useContentStore } from '../../../store/useContentStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { Label } from '../../../style/Form'
@@ -128,43 +128,6 @@ const DateTooptip = styled.div`
   }
 `
 
-const RelDateWithPreview = ({ n }: RelDateWithPreviewProps) => {
-  const [date, setDate] = useState(new Date(n))
-  const options = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric'
-  } as const
-
-  useEffect(() => {
-    setDate(new Date(n))
-  }, [n])
-
-  const relTime = useRelativeTime(date)
-  const localDateString = date.toLocaleString('en-US', options)
-
-  return (
-    <Tippy
-      delay={100}
-      interactiveDebounce={100}
-      placement="bottom"
-      appendTo={() => document.body}
-      render={(attrs) => (
-        <DateTooptip tabIndex={-1} {...attrs}>
-          {localDateString}
-        </DateTooptip>
-      )}
-    >
-      <Data>
-        <Relative>{relTime}</Relative>
-      </Data>
-    </Tippy>
-  )
-}
-
 const Metadata = () => {
   const node = useEditorStore((state) => state.node)
   const focusMode = useLayoutStore((s) => s.focusMode)
@@ -196,7 +159,11 @@ const Metadata = () => {
             )}
             <div>
               {metadata.createdAt !== undefined ? <Label>Created</Label> : null}
-              {metadata.createdAt !== undefined && <RelDateWithPreview n={metadata.createdAt} />}
+              {metadata.createdAt !== undefined && (
+                <Data>
+                  <RelativeTime dateNum={metadata.createdAt} />
+                </Data>
+              )}
             </div>
           </DataWrapper>
         )}
@@ -214,7 +181,11 @@ const Metadata = () => {
             )}
             <div>
               {metadata.updatedAt !== undefined ? <Label>Updated</Label> : null}
-              {metadata.updatedAt !== undefined && <RelDateWithPreview n={metadata.updatedAt} />}
+              {metadata.updatedAt !== undefined && (
+                <Data>
+                  <RelativeTime dateNum={metadata.updatedAt} />
+                </Data>
+              )}
             </div>
           </DataWrapper>
         )}

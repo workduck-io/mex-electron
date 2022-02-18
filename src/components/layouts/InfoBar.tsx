@@ -54,6 +54,8 @@ const InfoBarItems = () => {
     return <SyncBlockInfo />
   }
 
+  // mog('Show Suggestions', { showSuggestedNodes, showGraph, showSyncBlocks })
+
   if (showSuggestedNodes) {
     return <SuggestionInfoBar />
   }

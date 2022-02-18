@@ -29,6 +29,7 @@ import styled from 'styled-components'
 import { mog } from '../../utils/lib/helper'
 import { DateFormat } from '../../hooks/useRelativeTime'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
+import { RelativeTime } from '../../components/mex/RelativeTime'
 // import { NodeMetadata } from '../../types/data'
 
 const StyledTip = styled.div`
@@ -90,18 +91,26 @@ const MetadataText = styled.div`
 `
 
 const MetadataViewSmall = ({ m }: any) => {
+  const tippyProps: TippyProps = {
+    theme: 'mex-bright',
+    placement: 'right'
+  }
   return (
     <MetadataWrap>
       <MetadataRow>
         <Icon icon={addCircleLine} width={16} />
         {m.createdBy !== undefined ? <ProfileImage email={m.createdBy} size={16} /> : null}
-        <MetadataText>{DateFormat(m.createdAt)}</MetadataText>
+        <MetadataText>
+          <RelativeTime dateNum={m.createdAt} tippy tippyProps={tippyProps} />
+        </MetadataText>
       </MetadataRow>
       <MetadataRow>
         <Icon icon={refreshLine} width={16} />
 
         {m.lastEditedBy !== undefined ? <ProfileImage email={m.lastEditedBy} size={16} /> : null}
-        <MetadataText>{DateFormat(m.updatedAt)}</MetadataText>
+        <MetadataText>
+          <RelativeTime dateNum={m.updatedAt} tippy tippyProps={tippyProps} />
+        </MetadataText>
       </MetadataRow>
     </MetadataWrap>
   )
