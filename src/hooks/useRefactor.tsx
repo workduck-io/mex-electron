@@ -11,11 +11,7 @@ import { useRefactorStore } from '../store/useRefactorStore'
 import { NodeLink } from '../types/relations'
 import { useEditorBuffer } from './useEditorBuffer'
 import { getNodeIcon } from '../utils/lib/icons'
-
-const isMatch = (id: string, from: string) => {
-  if (from === id) return true
-  if (id.startsWith(from + SEPARATOR)) return true
-}
+import { isMatch } from '../utils/lib/paths'
 
 export const useRefactor = () => {
   const ilinks = useDataStore((state) => state.ilinks)

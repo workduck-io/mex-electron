@@ -3,10 +3,15 @@ import useDataStore from '../store/useDataStore'
 import { useHistoryStore } from '../store/useHistoryStore'
 import { useRecentsStore } from '../store/useRecentsStore'
 import { ILink } from '../types/Types'
+import { isMatch } from '../utils/lib/paths'
 import useArchive from './useArchive'
 
 export const useDelete = () => {
   const ilinks = useDataStore((state) => state.ilinks)
+  const linkCache = useDataStore((state) => state.linkCache)
+  const tagsCache = useDataStore((state) => state.tagsCache)
+  const updateTagsCache = useDataStore((state) => state.updateTagsCache)
+  const updateInternalLinks = useDataStore((state) => state.updateInternalLinks)
 
   const setILinks = useDataStore((state) => state.setIlinks)
   const setBaseNodeId = useDataStore((state) => state.setBaseNodeId)
@@ -21,7 +26,7 @@ export const useDelete = () => {
 
   const getMockDelete = (del: string) => {
     const archivedNodes = ilinks.filter((i) => {
-      const match = i.path.startsWith(del)
+      const match = isMatch(i.path, del)
       return match
     })
 
@@ -35,11 +40,11 @@ export const useDelete = () => {
 
     addArchiveData(archivedNodes)
 
-    // Remap the contents for links that remain
-
+    // Update history
     const { newIds: newHistory, currentIndex: newCurIndex } = applyDeleteToIds(historyStack, currentIndex, newIlinks)
     updateHistory(newHistory, newCurIndex)
 
+    // Update Recents
     const { newIds: newRecents } = applyDeleteToIds(lastOpened, 0, newIlinks)
     updateLastOpened(newRecents)
 
