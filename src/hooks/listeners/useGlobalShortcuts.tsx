@@ -9,7 +9,6 @@ import { useSpotlightEditorStore } from '../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../store/settings.spotlight'
 import { useContentStore } from '../../store/useContentStore'
 import { useKeyListener } from '../useShortcutListener'
-import { mog } from '../../utils/lib/helper'
 
 export const useGlobalShortcuts = () => {
   const location = useLocation()

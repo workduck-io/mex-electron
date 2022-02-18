@@ -36,7 +36,6 @@ const ContentEditor = () => {
 
   const { showGraph, showSuggestedNodes } = useToggleElements()
   const searchIndex = useNewSearchStore((store) => store.searchIndex)
-  const { goTo } = useRouting()
 
   const { nodeid, node, fsContent } = useEditorStore(
     (state) => ({ nodeid: state.node.nodeid, node: state.node, fsContent: state.content }),

@@ -168,6 +168,7 @@ const Nav = ({ links }: NavProps) => {
       {authenticated && (
         <div>
           <NavTooltip
+            key={shortcuts.newNode.title}
             singleton={target}
             content={<TooltipTitleWithShortcut title="Create New Node" shortcut={shortcuts.newNode.keystrokes} />}
           >
@@ -214,6 +215,7 @@ const Nav = ({ links }: NavProps) => {
           </NavTooltip>
         )} */}
         <NavTooltip
+          key={shortcuts.showArchive.title}
           singleton={target}
           content={<TooltipTitleWithShortcut title="Archive" shortcut={shortcuts.showArchive.keystrokes} />}
         >
@@ -228,6 +230,7 @@ const Nav = ({ links }: NavProps) => {
           <HelpTooltip />
         </NavTooltip> */}
         <NavTooltip
+          key={shortcuts.showSettings.title}
           singleton={target}
           content={<TooltipTitleWithShortcut title="Settings" shortcut={shortcuts.showSettings.keystrokes} />}
         >

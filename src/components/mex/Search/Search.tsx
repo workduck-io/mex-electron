@@ -52,7 +52,6 @@ const useSearchPageStore = create<SearchStore>((set) => ({
 }))
 
 const Search = () => {
-  const history = useHistory()
   const { loadNode } = useLoad()
   const searchIndex = useNewSearchStore((store) => store.searchIndex)
   const contents = useContentStore((store) => store.contents)

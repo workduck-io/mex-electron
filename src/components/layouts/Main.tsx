@@ -55,7 +55,7 @@ const Main = ({ children }: MainProps) => {
     <AppWrapper>
       <Draggable style={styles as any} /> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
       {/* <AutoSave /> */}
-      <GridWrapper grid={authenticated}>
+      <GridWrapper grid={authenticated ? 'true' : ''}>
         {authenticated && <Nav links={getLinks()} />}
         <Content id="wd-mex-content-view" grid={authenticated}>
           {children}

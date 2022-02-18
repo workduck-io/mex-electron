@@ -51,6 +51,7 @@
     "@types/react-modal": "^3.13.1",
     "@types/react-select": "^4.0.17",
     "@types/reactour": "^1.18.2",
+    "@types/stopword": "^1.0.2",
     "@types/styled-components": "^5.1.12",
     "@typescript-eslint/eslint-plugin": "^4.29.2",
     "@typescript-eslint/parser": "^4.29.2",

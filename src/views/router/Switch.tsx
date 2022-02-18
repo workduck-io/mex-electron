@@ -49,6 +49,7 @@ const Switch = () => {
   useEffect(() => {
     // ? Do we need to save data locally on every route change?
     if (authenticated) {
+      mog(`location ${location.pathname}`, {})
       saveAndClearBuffer()
     }
   }, [location])

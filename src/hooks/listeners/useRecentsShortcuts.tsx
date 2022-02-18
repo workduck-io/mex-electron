@@ -6,7 +6,6 @@ import useLoad from '../useLoad'
 import { useKeyListener } from '../useShortcutListener'
 
 export const useRecentsShortcuts = () => {
-  // const history = useHistory()
   const { loadNodeProps } = useLoad()
   const savedEditorNode = useSpotlightEditorStore((state) => state.node)
 
@@ -18,7 +17,6 @@ export const useRecentsShortcuts = () => {
         event.preventDefault()
         if (!shortcutDisabled) {
           loadNodeProps(savedEditorNode)
-          // history.replace('/new')
           performClick()
         }
       }
