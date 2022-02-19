@@ -28,7 +28,7 @@ import ContentEditor from '../../editor/ContentEditor'
 import { mog } from '../../utils/lib/helper'
 import NotFound from '../NotFound'
 
-const SwitchWrapper = styled.div<{ isAuth?: boolean }>`
+export const SwitchWrapper = styled.div<{ isAuth?: boolean }>`
   position: fixed;
   width: ${({ theme, isAuth }) => (!isAuth ? '100%' : `calc(100% - ${theme.width.nav}px)`)};
   height: 100%;
@@ -57,7 +57,7 @@ const Switch = () => {
   /* Hierarchy:
     - login
     - register
-    - home (layout with navbar)  
+    - home (layout with navbar)
       - settings (layout with settings sidebar)
         - profile
         - auto updates

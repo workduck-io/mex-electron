@@ -1,21 +1,25 @@
 import { generateTheme } from '../themeGenerator'
 export const neoLight = generateTheme({
+  // border-radius: 43px;
+  // background: #c4cce0;
+  // box-shadow:  13px 13px 26px #acb4c5,
+  //              -13px -13px 26px #dce4fb;
   // Colors
-  primary: '#c31575',
-  secondary: '#748EFF',
+  primary: '#4293F2',
+  secondary: '#c31575',
 
   // Palettes
   gray: {
-    10: '#0f111a', // Darkest
-    9: '#212537',
-    8: '#323954',
-    7: '#5e6480',
-    6: '#8289a8',
-    5: '#858db5',
-    4: '#9ca3c4',
-    3: '#b3b7d3',
-    2: '#dcdfef',
-    1: '#e9ebf8' // Lightest
+    10: '#E1E7F7', // Lightest for Light theme
+    9: '#D9E0F1',
+    8: '#B2BCD6',
+    7: '#C4CCE0',
+    6: '#A0ADCC',
+    5: '#8997BA',
+    4: '#606E8F',
+    3: '#495571',
+    2: '#415075',
+    1: '#263458' // Darkest for light theme
   },
 
   palette: {
@@ -26,16 +30,16 @@ export const neoLight = generateTheme({
     red: '#fb4934'
   },
   text: {
-    heading: '#ffffff',
-    default: '#b0b8db',
-    subheading: '#D0D4E7',
-    fade: '#b3b7d3',
+    heading: '#415075',
+    default: '#495571',
+    subheading: '#415075',
+    fade: '#415075',
     disabled: '#9CA2BA',
-    accent: '#BCC7FF',
+    accent: '#CC7796',
     oppositePrimary: '#ffffff'
   },
-  backgroundImages: {
-    app: 'https://i.imgur.com/Z2iNoSC.jpg'
-  },
-  custom: 'ImperialStyles'
+  // backgroundImages: {
+  //   app: 'https://i.imgur.com/Z2iNoSC.jpg'
+  // },
+  custom: 'NeoLightStyles'
 })
