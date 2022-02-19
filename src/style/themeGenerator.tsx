@@ -102,6 +102,7 @@ export interface ThemePalette {
   text?: TextPalette
 
   custom?: string
+  additionalTheme?: Partial<DefaultTheme>
 }
 
 export const generateTheme = (p: ThemePalette): DefaultTheme => {
@@ -203,7 +204,8 @@ export const generateTheme = (p: ThemePalette): DefaultTheme => {
           }
         }
       },
-      custom: p.custom
+      custom: p.custom,
+      ...p.additionalTheme
     },
     p
   )
