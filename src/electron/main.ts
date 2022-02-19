@@ -467,6 +467,7 @@ app
     return 0
   })
   .then(createWindow)
+  .then(() => setupUpdateService(mex))
   .catch(console.error)
 
 app.on('activate', () => {
@@ -570,11 +571,4 @@ ipcMain.on(IpcAction.IMPORT_APPLE_NOTES, async () => {
 export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) => {
   if (from === AppType.MEX) spotlight?.webContents.send(action, { data })
   else mex?.webContents.send(action, { data })
-}
-
-/*
- * Setup updates
- */
-if (mex) {
-  setupUpdateService(mex)
 }
