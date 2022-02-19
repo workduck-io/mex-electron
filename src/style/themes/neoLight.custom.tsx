@@ -53,7 +53,7 @@ const graphStyles = css`
   }
   ${InfoBarWrapper} {
     margin-right: 3rem;
-    overflow: unset;
+    overflow: auto;
   }
   ${GraphWrapper} {
     ${NeoContainer}

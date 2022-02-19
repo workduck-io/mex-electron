@@ -47,7 +47,7 @@ const graphStyles = css`
   }
   ${InfoBarWrapper} {
     margin-right: 3rem;
-    overflow: hidden;
+    overflow: auto;
   }
   ${GraphWrapper} {
     backdrop-filter: blur(10px);
