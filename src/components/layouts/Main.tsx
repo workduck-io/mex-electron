@@ -7,6 +7,7 @@ import { linkTooltip } from '../../editor/Components/Link'
 import { GridWrapper } from '../../style/Grid'
 import useNavlinks from '../../data/links'
 import { useAuthStore } from '../../services/auth/useAuth'
+import { useLayoutStore } from '../../store/useLayoutStore'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -50,9 +51,10 @@ const Main = ({ children }: MainProps) => {
   }
   const { getLinks } = useNavlinks()
   const authenticated = useAuthStore((state) => state.authenticated)
+  const focusMode = useLayoutStore((s) => s.focusMode)
 
   return (
-    <AppWrapper>
+    <AppWrapper className={focusMode ? 'focus_mode' : ''}>
       <Draggable style={styles as any} /> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
       {/* <AutoSave /> */}
       <GridWrapper grid={authenticated ? 'true' : ''}>

@@ -38,12 +38,11 @@ export const Button = styled.button<ButtonProps>`
           margin: 0 ${spacing.tiny};
         `}
 
-  ${({ theme, highlight }) =>
-    highlight
+  ${({ theme, primary }) =>
+    primary
       ? css`
           background-color: ${theme.colors.primary};
           color: ${theme.colors.text.oppositePrimary};
-          box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.primary)};
           &:hover {
             background-color: ${theme.colors.fade.primary};
             color: ${theme.colors.text.oppositePrimary};
@@ -51,11 +50,12 @@ export const Button = styled.button<ButtonProps>`
         `
       : ''}
 
-  ${({ theme, primary }) =>
-    primary
+  ${({ theme, highlight }) =>
+    highlight
       ? css`
           background-color: ${theme.colors.primary};
           color: ${theme.colors.text.oppositePrimary};
+          box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.primary)};
           &:hover {
             background-color: ${theme.colors.fade.primary};
             color: ${theme.colors.text.oppositePrimary};

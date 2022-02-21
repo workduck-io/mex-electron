@@ -19,6 +19,7 @@ const ModalOverlay = css`
   position: fixed;
   inset: 0px;
   display: flex;
+  z-index: 100;
   background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};
 `
 

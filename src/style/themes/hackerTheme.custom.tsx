@@ -56,7 +56,7 @@ const graphStyles = css`
   }
   ${InfoBarWrapper} {
     margin-right: 3rem;
-    overflow: hidden;
+    overflow: auto;
   }
   ${GraphWrapper} {
     background-color: ${grayMainColor};

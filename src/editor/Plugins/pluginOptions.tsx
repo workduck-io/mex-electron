@@ -137,38 +137,32 @@ export const optionsAutoFormatRule: Array<AutoformatRule> = [
   {
     type: MARK_BOLD,
     match: ['**', '**'],
-    mode: 'mark',
-    insertTrigger: true
+    mode: 'mark'
   },
   {
     type: MARK_BOLD,
     match: ['__', '__'],
-    mode: 'mark',
-    insertTrigger: true
+    mode: 'mark'
   },
   {
     type: MARK_ITALIC,
     match: ['*', '*'],
-    mode: 'mark',
-    insertTrigger: true
+    mode: 'mark'
   },
   {
     type: MARK_ITALIC,
     match: ['_', '_'],
-    mode: 'mark',
-    insertTrigger: true
+    mode: 'mark'
   },
   {
     type: MARK_CODE,
     match: ['`', '`'],
-    mode: 'mark',
-    insertTrigger: true
+    mode: 'mark'
   },
   {
     type: MARK_STRIKETHROUGH,
     match: ['~~', '~~'],
-    mode: 'mark',
-    insertTrigger: true
+    mode: 'mark'
   },
   {
     mode: 'block',

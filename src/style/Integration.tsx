@@ -187,7 +187,7 @@ export const Flex = styled.section`
   align-items: center;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
 `
 
 export const NoWrap = styled(Flex)`
