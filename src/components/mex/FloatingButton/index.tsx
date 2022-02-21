@@ -87,7 +87,7 @@ const FloatingButton = () => {
 
   const { setOnboardData } = useTourData()
 
-  useInitOlvy()
+  useInitOlvy(showMenu)
 
   const onGettingStartedClick = () => {
     setOnboardData()

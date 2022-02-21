@@ -10,6 +10,8 @@ export const useDeserializeSelectionToNodes = (
   const editor = usePlateEditorRef(path)
   const element = htmlStringToDOMNode(selection?.text ?? '<p></p>')
 
+  mog('ELEMENT', { element })
+
   try {
     nodes = editor ? deserializeHtml(editor, { element }) : undefined
   } catch (err) {

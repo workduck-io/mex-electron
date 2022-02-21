@@ -3,10 +3,11 @@ import { Icon } from '@iconify/react'
 import React, { useEffect, useMemo, useRef } from 'react'
 import { useSpring } from 'react-spring'
 import { defaultContent } from '../../../data/Defaults/baseData'
+import { generateTempId } from '../../../data/Defaults/idPrefixes'
 import { IpcAction } from '../../../data/IpcAction'
 import { SaverButton } from '../../../editor/Components/Saver'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
-import Editor from '../../../editor/Editor'
+import { Editor } from '../../../editor/Editor'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
 import useLoad from '../../../hooks/useLoad'
@@ -34,6 +35,8 @@ export type PreviewProps = {
   preview: PreviewType
   node: NodeProperties
 }
+
+export const getDefaultContent = () => ({ ...defaultContent.content, id: generateTempId() })
 
 const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   // * Store
@@ -160,8 +163,9 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
       <Editor
         autoFocus={!normalMode}
         focusAtBeginning={!normalMode}
+        options={{ exclude: { dnd: true } }}
         readOnly={search.value ? true : false}
-        content={previewContent?.content ?? defaultContent.content}
+        content={previewContent?.content ?? getDefaultContent()}
         editorId={node.nodeid}
       />
       <SaverButton callbackAfterSave={onAfterSave} callbackBeforeSave={onBeforeSave} noButton />

@@ -1,11 +1,14 @@
-import { DeserializeHtml, getSlateClass, getPlugin } from '@udecode/plate'
+import { DeserializeHtml } from '@udecode/plate'
 import { ELEMENT_ILINK } from './defaults'
 
 export const getILinkDeserialize = (): DeserializeHtml => {
   return {
-    getNode: (el) => ({
-      value: el.getAttribute('data-slate-value')
-    }),
-    rules: [{ validClassName: getSlateClass(ELEMENT_ILINK) }]
+    getNode: (el: HTMLElement, node) => {
+      if (node.type !== ELEMENT_ILINK) return
+
+      return {
+        value: el.getAttribute('data-slate-value')
+      }
+    }
   }
 }

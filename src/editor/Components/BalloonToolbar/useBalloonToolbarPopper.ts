@@ -31,7 +31,7 @@ export const useBalloonToolbarPopper = (options: UsePopperPositionOptions) => {
   const selectionExpanded = editor && isSelectionExpanded(editor)
   const selectionText = editor && getSelectionText(editor)
   const blurSelection = editor && isBlurSelection(editor as any)
-  const blurSelectionText = editor && getText(editor, editor.blurSelection)
+  // const blurSelectionText = editor && getText(editor, editor.blurSelection)
 
   const show = useCallback(() => {
     // mog('Balloon show laddies', { selectionText, selectionExpanded, blurSelection })
@@ -50,19 +50,19 @@ export const useBalloonToolbarPopper = (options: UsePopperPositionOptions) => {
     // })
     if (!focused && !isBalloonFocused) {
       setIsHidden(true)
-    } else if (!blurSelectionText && !selectionText) {
+    } else if (!selectionText) {
       setIsHidden(true)
-    } else if ((selectionText && selectionExpanded) || (blurSelectionText && blurSelection)) {
+    } else if ((selectionText && selectionExpanded) || blurSelection) {
       setIsHidden(false)
     }
-  }, [focused, selectionExpanded, selectionText, blurSelection, blurSelectionText, show])
+  }, [focused, selectionExpanded, selectionText, blurSelection, show])
 
   useEffect(() => {
     clearBlurSelection(editor as any)
   }, [selectionText?.length])
 
   useEffect(() => {
-    if (!isHidden && blurSelectionText) {
+    if (!isHidden) {
       const unsubscribe = tinykeys(window, {
         Escape: (event) => {
           event.preventDefault()

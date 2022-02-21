@@ -19,24 +19,13 @@ const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps
     readOnly: true
   }
 
-  const generateEditorId = () => `${editorId}`
-
   // We get memoized plugins
   const plugins = generatePlugins(editorPreviewComponents)
 
   return (
-    <>
-      {content && (
-        <EditorStyles>
-          <Plate
-            id={generateEditorId()}
-            editableProps={editableProps}
-            value={content}
-            plugins={plugins}
-          ></Plate>
-        </EditorStyles>
-      )}
-    </>
+    <EditorStyles>
+      <Plate id={editorId} editableProps={editableProps} value={content} plugins={plugins}></Plate>
+    </EditorStyles>
   )
 }
 export default EditorPreviewRenderer

@@ -2,7 +2,7 @@ import { StyledMessage } from '../../../components/spotlight/Message/styled'
 import styled from 'styled-components'
 
 export type InlineBlockType = {
-  selected: boolean
+  selected?: boolean
 }
 
 export const StyledInlineBlockPreview = styled.div`
