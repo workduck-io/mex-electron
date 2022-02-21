@@ -20,7 +20,7 @@ const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps
   }
 
   // We get memoized plugins
-  const plugins = generatePlugins(editorPreviewComponents)
+  const plugins = generatePlugins(editorPreviewComponents, { exclude: { dnd: true } })
 
   return (
     <EditorStyles>

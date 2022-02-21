@@ -4,7 +4,15 @@ import Modal from 'react-modal'
 import { WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
 import useBlockStore, { ContextMenuActionType } from '../../../store/useBlockStore'
 import { useLinks } from '../../../hooks/useLinks'
-import { AnyObject, findNode, getNodes, TNode, usePlateEditorRef } from '@udecode/plate'
+import {
+  AnyObject,
+  ELEMENT_PARAGRAPH,
+  getNodes,
+  getPlateSelectors,
+  insertNodes,
+  TNode,
+  usePlateEditorRef
+} from '@udecode/plate'
 import { NodeEntry, Transforms } from 'slate'
 import { useContentStore } from '../../../store/useContentStore'
 import { IpcAction } from '../../../data/IpcAction'
@@ -15,6 +23,7 @@ import { useApi } from '../../../apis/useSaveApi'
 import { NodeEditorContent } from '../../../types/Types'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import { mog } from '../../../utils/lib/helper'
+import { generateTempId } from '../../../data/Defaults/idPrefixes'
 
 const BlockModal = () => {
   const blocksFromStore = useBlockStore((store) => store.blocks)
@@ -58,18 +67,21 @@ const BlockModal = () => {
   const deleteContentBlocks = (blocks: NodeEntry<TNode<AnyObject>>[]): void => {
     const selection = editor?.selection
     const moveAction = isModalOpen === ContextMenuActionType.move // * Move content blocks
-    mog('Blocks', { blocks, moveAction, selection })
 
     if (moveAction) {
       if (selection && blocks.length === 1) Transforms.removeNodes(editor, { at: selection })
       else {
         blocks.forEach(([block, path], index) => {
-          mog('Deleting', { block, path, index })
           const at = path[0] - index === -1 ? 0 : path[0] - index
           Transforms.delete(editor, { at: [at] })
         })
       }
     }
+
+    const isEmpty = editor.children.length === 0
+
+    if (isEmpty)
+      insertNodes(editor, { type: ELEMENT_PARAGRAPH, id: generateTempId(), children: [{ text: '' }] }, { at: [0] })
   }
 
   const onNodeCreate = (path: string): void => {
@@ -96,6 +108,7 @@ const BlockModal = () => {
     setIsBlockMode(false)
 
     saveDataAPI(nodeid, content)
+    mog('content length', { content: getPlateSelectors().value(), len: getPlateSelectors().value() })
   }
 
   const length = Object.values(blocksFromStore).length
@@ -105,7 +118,13 @@ const BlockModal = () => {
       {length ? (
         <>
           <h1>{`${isModalOpen}  to`}</h1>
-          <WrappedNodeSelect autoFocus menuOpen handleCreateItem={onNodeCreate} handleSelectItem={onNodeSelect} />
+          <WrappedNodeSelect
+            disallowReserved
+            autoFocus
+            menuOpen
+            handleCreateItem={onNodeCreate}
+            handleSelectItem={onNodeSelect}
+          />
         </>
       ) : (
         <h1>Select Blocks</h1>

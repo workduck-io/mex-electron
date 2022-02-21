@@ -35,6 +35,7 @@ import { convertDataToRawText } from '../../../utils/search/localSearch'
 import { performClick } from '../Onboarding/steps'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { useLocation } from 'react-router-dom'
+import useBlockStore from '../../../store/useBlockStore'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -51,6 +52,9 @@ const Init = () => {
   const { initCognito } = useAuth()
 
   const { getLocalData } = useLocalData()
+  const isBlockMode = useBlockStore((store) => store.isBlockMode)
+  const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
+
   const initFlexSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
   const fetchIndexLocalStorage = useNewSearchStore((store) => store.fetchIndexLocalStorage)
   const addILink = useDataStore((store) => store.addILink)
@@ -264,6 +268,7 @@ const Init = () => {
           event.preventDefault()
           // shortcutHandler(shortcuts.showSnippets, () => {
           // onSave(undefined, false, false)
+
           toggleFocusMode()
           // })
         }
@@ -274,6 +279,25 @@ const Init = () => {
     }
   }, [focusMode]) // eslint-disable-line react-hooks/exhaustive-deps
   // As this is a non-rendering component
+
+  useEffect(() => {
+    if (isBlockMode) {
+      const unsubscribe = tinykeys(window, {
+        Escape: (event) => {
+          event.preventDefault()
+          // shortcutHandler(shortcuts.showSnippets, () => {
+          // onSave(undefined, false, false)
+
+          setIsBlockMode(false)
+          // })
+        }
+      })
+      return () => {
+        unsubscribe()
+      }
+    }
+  }, [isBlockMode])
+
   return null
 }
 
