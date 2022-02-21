@@ -5,7 +5,10 @@ const externals = process.platform === 'darwin' ? externalsDarwin : externalsWin
 
 module.exports = {
   packagerConfig: {
-    icon: 'assets/icon.icns'
+    icon: 'assets/icon.icns',
+    extendInfo: {
+      NSAppleEventsUsageDescription: 'Mex can control other applications with AppleScript.'
+    }
   },
   makers: [
     {
