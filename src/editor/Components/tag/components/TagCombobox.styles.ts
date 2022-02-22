@@ -49,6 +49,12 @@ export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
       }
     }
   }
+  &.reversed {
+    transform: rotate(180deg);
+    ${ComboboxItem} {
+      transform: rotate(-180deg);
+    }
+  }
   ${({ isOpen, theme }) =>
     isOpen &&
     css`

@@ -13,6 +13,25 @@ export const setElementPositionByRange = (editor: ReactEditor, { ref, at }: { re
 
   const domRange = ReactEditor.toDOMRange(editor, at)
   const rect = domRange.getBoundingClientRect()
-  el.style.top = `${rect.top + window.pageYOffset + 24}px`
-  el.style.left = `${rect.left + window.pageXOffset}px`
+  const top = rect.top + window.pageYOffset + 24
+  const left = rect.left + window.pageXOffset
+  const shouldFlip = window.innerHeight < top + el.offsetHeight
+  // mog('ElementposByRange', {
+  //   rect,
+  //   domRange,
+  //   top,
+  //   left,
+  //   shouldFlip,
+  //   oH: el.offsetHeight,
+  //   wH: window.innerHeight
+  // })
+  if (shouldFlip) {
+    el.classList.add('reversed')
+    el.style.top = `${top - el.offsetHeight - 24}px`
+    el.style.left = `${left}px`
+  } else {
+    el.classList.remove('reversed')
+    el.style.top = `${top}px`
+    el.style.left = `${left}px`
+  }
 }
