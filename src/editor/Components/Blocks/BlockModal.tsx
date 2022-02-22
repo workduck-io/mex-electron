@@ -74,12 +74,13 @@ const BlockModal = () => {
     const moveAction = isModalOpen === ContextMenuActionType.move // * Move content blocks
 
     if (moveAction) {
-      if (selection && blocks.length === 1) Transforms.removeNodes(editor, { at: selection })
-      else {
+      if (blocks.length) {
         blocks.forEach(([block, path], index) => {
           const at = path[0] - index === -1 ? 0 : path[0] - index
           Transforms.delete(editor, { at: [at] })
         })
+      } else if (selection) {
+        Transforms.removeNodes(editor, { at: selection })
       }
     }
 
