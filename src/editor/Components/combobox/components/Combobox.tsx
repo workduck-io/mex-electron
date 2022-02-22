@@ -22,6 +22,7 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
   const items = useComboboxStore((state) => state.items)
   const closeMenu = useComboboxStore((state) => state.closeMenu)
   const itemIndex = useComboboxStore((state) => state.itemIndex)
+  const setItemIndex = useComboboxStore((state) => state.setItemIndex)
   const combobox = useComboboxControls(true)
   const isOpen = useComboboxIsOpen()
   const search = useComboboxStore((state) => state.search)
@@ -67,9 +68,19 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
             return (
               <ComboboxItem
                 key={`${item.key}-${String(index)}`}
-                highlighted={index === itemIndex}
+                className={index === itemIndex ? 'highlight' : ''}
                 {...comboProps(item, index)}
-                onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, isSlash ? item : search)}
+                onMouseDown={
+                  editor &&
+                  getPreventDefaultHandler(
+                    (editor, item) => {
+                      setItemIndex(index)
+                      onSelectItem(editor, item)
+                    },
+                    editor,
+                    item
+                  )
+                }
               >
                 {item.icon && <Icon height={18} key={`${item.key}_${item.icon}`} icon={item.icon} />}
                 <ItemCenterWrapper>
