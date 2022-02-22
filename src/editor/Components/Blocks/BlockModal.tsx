@@ -19,11 +19,12 @@ import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
 import { useNodes } from '../../../hooks/useNodes'
-import { useApi } from '../../../apis/useSaveApi'
 import { NodeEditorContent } from '../../../types/Types'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import { mog } from '../../../utils/lib/helper'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
+import { useDataSaverFromContent } from '../Saver'
+import { updateIds } from '../../../utils/dataTransform'
 
 const BlockModal = () => {
   const blocksFromStore = useBlockStore((store) => store.blocks)
@@ -32,7 +33,7 @@ const BlockModal = () => {
   const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
 
   const { addNode } = useNodes()
-  const { saveDataAPI } = useApi()
+  const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
   const editor = usePlateEditorRef()
   const { getUidFromNodeId } = useLinks()
 
@@ -42,13 +43,17 @@ const BlockModal = () => {
 
   const getEditorBlocks = (): Array<NodeEntry<TNode<AnyObject>>> => {
     const blocks = Object.values(blocksFromStore)
-    const editorBlockEntries = getNodes(editor, {
+    const blockIter = getNodes(editor, {
       at: [],
       match: (node) => blocks.find((block) => block.id === node.id),
       block: true
     })
 
-    return Array.from(editorBlockEntries)
+    const blockEnteries = Array.from(blockIter).map(([block, _path]) => {
+      return [updateIds(block), _path]
+    })
+
+    return blockEnteries as NodeEntry<TNode<AnyObject>>[]
   }
 
   const getContentFromBlocks = (
@@ -93,7 +98,7 @@ const BlockModal = () => {
     setIsBlockMode(false)
 
     addNode({ ilink: path, showAlert: true }, (node) => {
-      saveDataAPI(node.nodeid, blocksContent)
+      saveEditorValueAndUpdateStores(node.nodeid, blocksContent)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
     })
   }
@@ -107,7 +112,7 @@ const BlockModal = () => {
     setIsModalOpen(undefined)
     setIsBlockMode(false)
 
-    saveDataAPI(nodeid, content)
+    saveEditorValueAndUpdateStores(nodeid, content)
     mog('content length', { content: getPlateSelectors().value(), len: getPlateSelectors().value() })
   }
 

@@ -8,6 +8,7 @@ export const Element = styled.span<{ show: boolean }>`
 `
 
 export const BlockElement = styled.div`
+  user-select: none;
   background-color: ${(props) => props.theme.colors.background.highlight};
   border-radius: ${(props) => props.theme.borderRadius.small};
   margin-bottom: ${(props) => props.theme.spacing.small};

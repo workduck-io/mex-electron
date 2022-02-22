@@ -1,5 +1,7 @@
 import { app } from 'electron'
 import compareVersions from 'compare-versions'
+import { BlockType } from '../store/useBlockStore'
+import { generateTempId } from '../data/Defaults/idPrefixes'
 
 export type getValuefn = (obj?: any) => string
 export type getDatafn = (data?: any) => any
@@ -125,6 +127,21 @@ export const applyGeneralTransform = (ob: any, t: GeneralTransform) => {
 export const applyArrayTransformation = (a: any[], t: ArrayTransform): any[] => {
   const newa = a.map((ob) => applyGeneralTransform(ob, t))
   return newa
+}
+
+export const updateIds = (blockToUpdate: any, idGenerator: () => string = generateTempId) => {
+  const block = Object.assign({}, blockToUpdate)
+
+  if (block.id) {
+    const newId = idGenerator()
+    block.id = newId
+  }
+  if (block.children) {
+    block.children = block.children.map((bl) => {
+      return updateIds(bl)
+    })
+  }
+  return block
 }
 
 export const applyObjectTransform = (rec: Record<string, any>, t: ObjectTransform) => {
