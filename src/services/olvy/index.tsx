@@ -1,28 +1,30 @@
 import { useEffect } from 'react'
 import { useTheme } from 'styled-components'
 
-const useInitOlvy = () => {
+const useInitOlvy = (showMenu: boolean) => {
   const theme = useTheme()
 
   useEffect(() => {
-    window.Olvy.init({
-      organisation: 'workduck',
-      target: '#olvy-target',
-      type: 'modal',
-      view: {
-        showSearch: false,
-        compact: false,
-        showHeader: true,
-        showUnreadIndicator: true,
-        unreadIndicatorColor: theme.colors.primary,
-        unreadIndicatorPosition: 'top-right'
-      }
-    })
+    if (showMenu) {
+      window.Olvy.init({
+        organisation: 'workduck',
+        target: '#olvy-target',
+        type: 'modal',
+        view: {
+          showSearch: false,
+          compact: false,
+          showHeader: true,
+          showUnreadIndicator: true,
+          unreadIndicatorColor: theme.colors.primary,
+          unreadIndicatorPosition: 'top-right'
+        }
+      })
 
-    return function cleanup() {
-      window.Olvy.teardown()
+      return function cleanup() {
+        window.Olvy.teardown()
+      }
     }
-  })
+  }, [showMenu])
 }
 
 const identifyOlvyUser = (name: string, email: string, identifier: string, meta: any) => {

@@ -27,6 +27,7 @@ import Shortcuts from '../../components/mex/Settings/Shortcuts'
 import ContentEditor from '../../editor/ContentEditor'
 import { mog } from '../../utils/lib/helper'
 import NotFound from '../NotFound'
+import useBlockStore from '../../store/useBlockStore'
 
 export const SwitchWrapper = styled.div<{ isAuth?: boolean }>`
   position: fixed;
@@ -44,12 +45,15 @@ const Home = () => (
 
 const Switch = () => {
   const location = useLocation()
+  const isBlockMode = useBlockStore((store) => store.isBlockMode)
+  const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
+
   const { saveAndClearBuffer } = useEditorBuffer()
   const authenticated = useAuthStore((s) => s.authenticated)
   useEffect(() => {
     // ? Do we need to save data locally on every route change?
     if (authenticated) {
-      mog(`location ${location.pathname}`, {})
+      if (isBlockMode) setIsBlockMode(false)
       saveAndClearBuffer()
     }
   }, [location])

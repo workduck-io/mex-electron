@@ -1,38 +1,38 @@
-import { usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect, useMemo } from 'react'
-import { convertContentToRawText } from '../utils/search/localSearch'
-import tinykeys from 'tinykeys'
-import shallow from 'zustand/shallow'
+
+import { BlockOptionsMenu } from './Components/EditorContextMenu'
+import Editor from './Editor'
 import Metadata from '../components/mex/Metadata/Metadata'
 import NodeIntentsModal from '../components/mex/NodeIntentsModal/NodeIntentsModal'
+import { StyledEditor } from '../style/Editor'
+import Toolbar from './Toolbar'
+import { convertContentToRawText } from '../utils/search/localSearch'
 import { defaultContent } from '../data/Defaults/baseData'
+import { getEditorId } from '../utils/lib/EditorId'
+import { mog } from '../utils/lib/helper'
+import shallow from 'zustand/shallow'
+import sw from 'stopword'
+import tinykeys from 'tinykeys'
 import { useEditorBuffer } from '../hooks/useEditorBuffer'
+import { useEditorStore } from '../store/useEditorStore'
+import { useHelpStore } from '../store/useHelpStore'
+import { useKeyListener } from '../hooks/useShortcutListener'
 import useLayout from '../hooks/useLayout'
 import useLoad from '../hooks/useLoad'
 import { useNavigation } from '../hooks/useNavigation'
-import { useKeyListener } from '../hooks/useShortcutListener'
 import { useNewSearchStore } from '../store/useSearchStore'
+import { usePlateEditorRef } from '@udecode/plate'
+import useSuggestionStore from '../store/useSuggestions'
 // import { useQStore } from '../store/useQStore'
 import useToggleElements from '../hooks/useToggleElements'
-import { useEditorStore } from '../store/useEditorStore'
-import { useHelpStore } from '../store/useHelpStore'
-import { StyledEditor } from '../style/Editor'
-import useSuggestionStore from '../store/useSuggestions'
-import { getEditorId } from '../utils/lib/EditorId'
-import { mog } from '../utils/lib/helper'
-import sw from 'stopword'
-
-import { NavigationType, ROUTE_PATHS, useRouting } from '../views/routes/urls'
-// import { NodeContent } from '../types/data'
-// import { useDataSaverFromContent } from './Components/Saver'
-
-import Editor from './Editor'
-import Toolbar from './Toolbar'
+import useBlockStore from '../store/useBlockStore'
+import BlockInfoBar from './Components/Blocks/BlockInfoBar'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const { toggleFocusMode } = useLayout()
   const { saveApiAndUpdate } = useLoad()
+  const isBlockMode = useBlockStore((store) => store.isBlockMode)
 
   const { showGraph, showSuggestedNodes } = useToggleElements()
   const searchIndex = useNewSearchStore((store) => store.searchIndex)
@@ -132,7 +132,7 @@ const ContentEditor = () => {
       <StyledEditor showGraph={showGraph} className="mex_editor">
         <Toolbar />
 
-        <Metadata />
+        {isBlockMode ? <BlockInfoBar /> : <Metadata />}
 
         <Editor
           showBalloonToolbar
@@ -142,6 +142,7 @@ const ContentEditor = () => {
           editorId={editorId}
         />
       </StyledEditor>
+      <BlockOptionsMenu blockId="one" />
       <NodeIntentsModal nodeid={nodeid} />
     </>
   )

@@ -1,9 +1,3 @@
-import React from 'react'
-import { Icon } from '@iconify/react'
-import checkboxBlankCircleLine from '@iconify-icons/radix-icons/drag-handle-dots-2'
-import timeLine from '@iconify-icons/ri/time-line'
-import addCircleLine from '@iconify-icons/ri/add-circle-line'
-import refreshLine from '@iconify-icons/ri/refresh-line'
 // import addLine from '@iconify-icons/ri/add-line'
 import {
   ELEMENT_BLOCKQUOTE,
@@ -23,15 +17,20 @@ import {
   ELEMENT_UL,
   withDraggables
 } from '@udecode/plate'
-
 import Tippy, { TippyProps } from '@tippyjs/react'
 import { default as TippyHeadless, TippyProps as TippyHeadlessProps } from '@tippyjs/react/headless'
-import styled from 'styled-components'
-import { mog } from '../../utils/lib/helper'
-import { DateFormat } from '../../hooks/useRelativeTime'
+
+import { Icon } from '@iconify/react'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
+import React from 'react'
 import { RelativeTime } from '../../components/mex/RelativeTime'
-// import { NodeMetadata } from '../../types/data'
+import addCircleLine from '@iconify-icons/ri/add-circle-line'
+import addLine from '@iconify-icons/ri/add-line'
+import checkboxBlankCircleLine from '@iconify-icons/radix-icons/drag-handle-dots-2'
+import refreshLine from '@iconify-icons/ri/refresh-line'
+import styled from 'styled-components'
+import timeLine from '@iconify-icons/ri/time-line'
+import useBlockStore from '../../store/useBlockStore'
 
 const StyledTip = styled.div`
   display: flex;
@@ -131,14 +130,11 @@ const GrabberTooltipContent = (props: any) => {
 
   return (
     <StyledTip>
-      {/*
-      <Tippy content="Plus">
-        <ActionDraggableIcon>
+      {/* <Tippy content={`BLOCK: ${props.element.id}`}>
+        <ActionDraggableIcon onClick={(ev) => show(ev, { props: { blockId: props.element.id } })}>
           <Icon icon={addLine} />
         </ActionDraggableIcon>
-      </Tippy>
-      */}
-
+      </Tippy> */}
       {props.element && props.element.metadata ? (
         <TippyHeadless {...MetadataTooltipProps} render={(attrs) => <MetadataViewSmall m={props.element.metadata} />}>
           <ActionDraggableIcon>
@@ -163,7 +159,18 @@ export const grabberTooltipProps: TippyProps = {
   theme: 'transparent'
 }
 
+export const DraggerContent = () => {
+  return (
+    <>
+      <div>Drag to move</div>
+      <div>Click to select</div>
+    </>
+  )
+}
+
 export const withStyledDraggables = (components: any) => {
+  if (useBlockStore.getState().isBlockMode) return components
+
   return withDraggables(components, [
     {
       keys: [ELEMENT_PARAGRAPH, ELEMENT_UL, ELEMENT_OL],
@@ -191,10 +198,12 @@ export const withStyledDraggables = (components: any) => {
         ELEMENT_CODE_BLOCK
       ],
       onRenderDragHandle: ({ className, styles, element }) => {
+        const setIsBlockMode = useBlockStore.getState().setIsBlockMode
+
         return (
           <Tippy {...grabberTooltipProps} content={<GrabberTooltipContent element={element} />}>
-            <Tippy theme="mex" placement="top" content="Drag to Move">
-              <StyledDraggable className={className} css={styles}>
+            <Tippy theme="mex" placement="top" content={<DraggerContent />}>
+              <StyledDraggable onClick={() => setIsBlockMode(true)} className={className} css={styles}>
                 <Icon icon={checkboxBlankCircleLine} />
               </StyledDraggable>
             </Tippy>

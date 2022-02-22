@@ -68,7 +68,6 @@ const Lookup = () => {
 
   const { getUidFromNodeId } = useLinks()
   const { push } = useNavigation()
-  const addILink = useDataStore((s) => s.addILink)
 
   const openNode = (value: string) => {
     const nodeid = getUidFromNodeId(value)

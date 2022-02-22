@@ -1,28 +1,13 @@
 import {
-  createAutoformatPlugin,
-  createBlockquotePlugin,
-  createBoldPlugin,
-  createCodeBlockPlugin,
-  createCodePlugin,
-  // createDeserializeMDPlugin,
-  createExitBreakPlugin,
-  createHeadingPlugin,
-  createDndPlugin,
-  createHighlightPlugin,
-  createImagePlugin,
-  createItalicPlugin,
-  createLinkPlugin,
-  createListPlugin,
-  createTodoListPlugin,
-  createMediaEmbedPlugin,
-  createNodeIdPlugin,
-  createParagraphPlugin,
-  createResetNodePlugin,
-  createSelectOnBackspacePlugin,
-  createSoftBreakPlugin,
-  createStrikethroughPlugin,
-  createTablePlugin,
-  createUnderlinePlugin,
+  ELEMENT_DEFAULT,
+  ELEMENT_H1,
+  ELEMENT_H2,
+  ELEMENT_H3,
+  ELEMENT_H4,
+  ELEMENT_H5,
+  ELEMENT_H6,
+  ELEMENT_HR,
+  ELEMENT_PARAGRAPH,
   PEditor,
   PlatePlugin,
   autoformatArrow,
@@ -31,35 +16,37 @@ import {
   autoformatMath,
   autoformatPunctuation,
   autoformatSmartQuotes,
-  ELEMENT_HR,
-  createHorizontalRulePlugin,
-  setNodes,
   createAlignPlugin,
-  ELEMENT_DEFAULT,
-  insertNodes,
+  createAutoformatPlugin,
+  createBlockquotePlugin,
+  createBoldPlugin,
+  createCodeBlockPlugin,
+  createCodePlugin,
+  createDndPlugin,
+  createExitBreakPlugin,
+  createHeadingPlugin,
+  createHighlightPlugin,
+  createHorizontalRulePlugin,
+  createImagePlugin,
+  createItalicPlugin,
+  createLinkPlugin,
+  createListPlugin,
+  createMediaEmbedPlugin,
+  createNodeIdPlugin,
+  createParagraphPlugin,
   createPlugins,
-  ELEMENT_H1,
-  ELEMENT_H2,
-  ELEMENT_H3,
-  ELEMENT_H4,
-  ELEMENT_H5,
-  ELEMENT_H6,
-  ELEMENT_PARAGRAPH
+  createResetNodePlugin,
+  createSelectOnBackspacePlugin,
+  createSoftBreakPlugin,
+  createStrikethroughPlugin,
+  createTablePlugin,
+  createTodoListPlugin,
+  createUnderlinePlugin,
+  insertNodes,
+  setNodes,
+  createDeserializeHtmlPlugin
 } from '@udecode/plate'
-
-import { withStyledDraggables } from '../Actions/withDraggable'
-import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
-
-import { createExcalidrawPlugin, ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
-import { ExcalidrawElement } from '../Components/Excalidraw'
-
-import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
-import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
-import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin'
-import { createTagPlugin } from '../Components/tag/createTagPlugin'
-// import { TagCombobox } from '../Components/tag/components/TagCombobox';
-// import { createTagPlugin } from '../Components/tag/createTagPlugin';
-import { createBlurSelectionPlugin } from './blurSelection'
+import { ELEMENT_EXCALIDRAW, createExcalidrawPlugin } from '@udecode/plate-excalidraw'
 import {
   optionsAutoFormatRule,
   optionsCreateNodeIdPlugin,
@@ -68,14 +55,33 @@ import {
   optionsSelectOnBackspacePlugin,
   optionsSoftBreakPlugin
 } from './pluginOptions'
+
+import { ExcalidrawElement } from '../Components/Excalidraw'
 import TableWrapper from '../Components/TableWrapper'
+// import { TagCombobox } from '../Components/tag/components/TagCombobox';
+// import { createTagPlugin } from '../Components/tag/createTagPlugin';
+import { createBlurSelectionPlugin } from './blurSelection'
+import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
+import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
+import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin'
+import { createTagPlugin } from '../Components/tag/createTagPlugin'
+import { withBlockOptions } from '../Components/Blocks'
+import { withStyledDraggables } from '../Actions/withDraggable'
+import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
+
+export type PluginOptionType = {
+  exclude: {
+    dnd: boolean
+  }
+}
 
 /**
  * Plugin generator
  * @param config Configurations for the plugins, event handlers etc.
  * @returns Array of PlatePlugin
  */
-const generatePlugins = () => {
+
+export const generatePlugins = (options: PluginOptionType) => {
   const Plugins: PlatePlugin[] = [
     // editor
 
@@ -143,8 +149,6 @@ const generatePlugins = () => {
         ]
       }
     }),
-    createDndPlugin(),
-
     createNodeIdPlugin(optionsCreateNodeIdPlugin),
 
     // serialization / deseriailization
@@ -165,17 +169,25 @@ const generatePlugins = () => {
     // Sync Blocks
     createSyncBlockPlugin(),
 
-    // For Inline Blocks
+    // // For Inline Blocks
     createInlineBlockPlugin(),
 
     createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin)
   ]
 
-  return Plugins
+  const withPlugins = !options?.exclude?.dnd ? [...Plugins, createDndPlugin()] : Plugins
+
+  return withPlugins
 }
 
-const useMemoizedPlugins = (components: any) => {
-  return createPlugins(generatePlugins(), { components: withStyledPlaceHolders(withStyledDraggables(components)) })
+const useMemoizedPlugins = (components: Record<string, any>, options?: PluginOptionType) => {
+  const wrappedComponents = options?.exclude
+    ? components
+    : withStyledPlaceHolders(withStyledDraggables(withBlockOptions(components, {})))
+
+  return createPlugins(generatePlugins(options), {
+    components: wrappedComponents
+  })
 }
 
 export default useMemoizedPlugins

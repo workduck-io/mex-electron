@@ -1,10 +1,11 @@
-import React from 'react'
-import { useAuthStore } from '../../services/auth/useAuth'
+import BlockModal from '../../editor/Components/Blocks/BlockModal'
+import Delete from '../mex/Refactor/DeleteModal'
 import HelpModal from '../mex/Help/HelpModal'
 import Lookup from '../mex/Lookup'
-import Delete from '../mex/Refactor/DeleteModal'
+import React from 'react'
 import Refactor from '../mex/Refactor/Refactor'
 import Rename from '../mex/Refactor/Rename'
+import { useAuthStore } from '../../services/auth/useAuth'
 
 const Modals = () => {
   const isAuthenticated = useAuthStore((store) => store.authenticated)
@@ -16,6 +17,7 @@ const Modals = () => {
       <Rename />
       <Delete />
       <HelpModal />
+      <BlockModal />
     </>
   )
 }

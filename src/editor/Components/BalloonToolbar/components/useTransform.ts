@@ -182,5 +182,5 @@ export const useTransform = () => {
     })
   }
 
-  return { selectionToNode, isConvertable, selectionToSnippet, selectionToValue }
+  return { selectionToNode, isConvertable, isFlowBlock, selectionToSnippet, selectionToValue }
 }

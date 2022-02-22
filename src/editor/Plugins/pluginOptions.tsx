@@ -1,5 +1,6 @@
 import {
   AnyObject,
+  AutoformatRule,
   ELEMENT_BLOCKQUOTE,
   ELEMENT_CODE_BLOCK,
   ELEMENT_CODE_LINE,
@@ -18,13 +19,6 @@ import {
   ELEMENT_TD,
   ELEMENT_TODO_LI,
   ELEMENT_UL,
-  getParent,
-  getPluginType,
-  insertEmptyCodeBlock,
-  isBlockAboveEmpty,
-  isElement,
-  isSelectionAtBlockStart,
-  isType,
   KEYS_HEADING,
   MARK_BOLD,
   MARK_CODE,
@@ -32,12 +26,19 @@ import {
   MARK_STRIKETHROUGH,
   PlateEditor,
   TEditor,
+  getParent,
+  getPluginType,
+  insertEmptyCodeBlock,
+  isBlockAboveEmpty,
+  isElement,
+  isSelectionAtBlockStart,
+  isType,
   toggleList,
-  unwrapList,
-  AutoformatRule
+  unwrapList
 } from '@udecode/plate'
-import { generateTempId } from '../../data/Defaults/idPrefixes'
+
 import { ELEMENT_SYNC_BLOCK } from '../Components/SyncBlock'
+import { generateTempId } from '../../data/Defaults/idPrefixes'
 
 const preFormat = (editor: TEditor<AnyObject>) => unwrapList(editor as PlateEditor)
 
