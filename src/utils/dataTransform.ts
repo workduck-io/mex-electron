@@ -1,7 +1,7 @@
 import { app } from 'electron'
-import compareVersions from 'compare-versions'
 import { BlockType } from '../store/useBlockStore'
 import { generateTempId } from '../data/Defaults/idPrefixes'
+import semver from 'semver'
 
 export type getValuefn = (obj?: any) => string
 export type getDatafn = (data?: any) => any
@@ -195,10 +195,11 @@ export const applyKeysTransform = (d: any, t: KeysTransformation): any => {
 
 export const addBaseVersionIfNeeded = (d: any): any => {
   if (d.version !== undefined) return d
-  return { ...d, version: 'v0' }
+  return { ...d, version: '0.0.0' }
 }
 
 export const requiresTransform = (d: any): boolean => {
+  // console.log(d.version, app.getVersion())
   if (d.version) {
     if (d.version !== app.getVersion()) return true
     return false
@@ -206,13 +207,13 @@ export const requiresTransform = (d: any): boolean => {
   return true
 }
 
-export const applyTransforms = (d: any, transforms: DataTransformation[]) => {
+export const applyTransforms = (d: any, transforms: DataTransformation[]): { data: any; toWrite: boolean } => {
   // const fromTransformIndex = transforms.map(t => t.version)
 
   // Only apply transforms that are a version up of the data
   const toApplyTransform = transforms
-    .filter((t) => compareVersions(addBaseVersionIfNeeded(d).version, t.version))
-    .sort((a, b) => compareVersions(a.version, b.version))
+    .filter((t) => semver.gt(t.version, addBaseVersionIfNeeded(d).version, true))
+    .sort((a, b) => semver.compareLoose(a.version, b.version))
 
   const transformedData = toApplyTransform.reduce((pd, t) => {
     if (t.type === 'KeysTransformation') {
@@ -222,7 +223,7 @@ export const applyTransforms = (d: any, transforms: DataTransformation[]) => {
     }
   }, d)
 
-  console.log('BigBrainDataTransform', JSON.stringify({ transformedData }, null, 2))
+  console.log('BigBrainDataTransform', { v: transformedData.version, toApplyTransform, transforms })
 
-  return transformedData
+  return { data: transformedData, toWrite: toApplyTransform.length > 0 }
 }

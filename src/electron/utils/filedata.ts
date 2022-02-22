@@ -13,7 +13,7 @@ export const getFileData = (location: string) => {
 
     if (!writeToFile) return data
 
-    const fileData = applyTransforms(data, UpdateVersionTransforms)
+    const { data: fileData } = applyTransforms(data, UpdateVersionTransforms)
     fs.writeFileSync(location, JSON.stringify(fileData))
 
     console.log('MEX: Applied Transforms to data')
