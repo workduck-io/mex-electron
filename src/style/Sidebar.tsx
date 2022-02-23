@@ -1,6 +1,5 @@
 import { Icon } from '@iconify/react'
 import React from 'react'
-import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { FOCUS_MODE_OPACITY } from './consts'
 import { PixelToCSS, ThinScrollbar } from './helpers'

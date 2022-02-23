@@ -1,29 +1,18 @@
 import timeLine from '@iconify-icons/ri/time-line'
 import { Icon } from '@iconify/react'
-import Tippy from '@tippyjs/react/headless' // different import path!
 import React, { useEffect, useState } from 'react'
-import { useLayoutStore } from '../../../store/useLayoutStore'
 import styled, { css } from 'styled-components'
-import { RelativeTime } from '../RelativeTime'
 import { useContentStore } from '../../../store/useContentStore'
 import { useEditorStore } from '../../../store/useEditorStore'
+import { useLayoutStore } from '../../../store/useLayoutStore'
+import { FOCUS_MODE_OPACITY } from '../../../style/consts'
 import { Label } from '../../../style/Form'
 import { CardShadow, HoverFade } from '../../../style/helpers'
+import { FocusModeProp } from '../../../style/props'
 import { ProfileIcon } from '../../../style/UserPage'
 import { NodeMetadata } from '../../../types/data'
+import { RelativeTime } from '../RelativeTime'
 import { ProfileImageWithToolTip } from '../User/ProfileImage'
-import { FOCUS_MODE_OPACITY } from '../../../style/consts'
-import { FocusModeProp } from '../../../style/props'
-
-// import user3Line from '@iconify-icons/ri/user-3-line'
-// import { useRelativeTime } from '../../Hooks/useRelativeTime'
-// import { CardShadow, HoverFade } from '../../Styled/helpers'
-// import { NodeMetadata } from '../../Types/data'
-// import { ProfileIcon } from '../../Styled/UserPage'
-// import { useEditorStore } from '../../Editor/Store/EditorStore'
-// import { useContentStore } from '../../Editor/Store/ContentStore'
-// import styled, { css } from 'styled-components'
-// import { Label } from '../../Styled/Form'
 
 const Data = styled.div`
   color: ${({ theme }) => theme.colors.text.fade};
