@@ -19,7 +19,7 @@ export const createILinkPlugin = (): PlatePlugin => ({
 /**
  *
  * On DeleteBackward:
- * Check if the node above is a Tag and if so, delete it and insert the tag value to be edited by the user
+ * Check if the node above is a ILink and if so, delete it and insert the Ilink value to be edited by the user
  *
  */
 export const withILink: WithOverride<any, PlatePlugin> = (editor, { type, options }) => {
