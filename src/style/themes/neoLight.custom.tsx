@@ -69,7 +69,7 @@ const edStyles = css`
     padding: ${({ theme }) => theme.spacing.large} 3rem;
   }
   ${EditorStyles} {
-    border-radius: 2rem;
+    border-radius: 1rem;
     ${NeoContainer}
     padding: 1.25rem;
     transition: all 0.25s ease-in-out;
@@ -82,6 +82,7 @@ const edStyles = css`
       padding: ${({ theme }) => theme.spacing.large} 80px;
     }
     ${EditorStyles} {
+      border-radius: 2rem;
       box-shadow: 20px 20px 60px #b3b8c9, -20px -20px 60px #f2faff;
     }
   }

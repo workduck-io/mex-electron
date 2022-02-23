@@ -7,15 +7,15 @@ export const useFocusTransition = () => {
   const transitions = useTransition(!focusMode, {
     from: {
       opacity: 0
-      // width: '0%',
+      // width: '0%'
     },
     enter: {
       opacity: 1
-      // width: '100%',
+      // width: 'inherit'
     },
     leave: {
       opacity: 0
-      // width: '0%',
+      // width: '0%'
     },
     reverse: !focusMode,
     delay: 0,
