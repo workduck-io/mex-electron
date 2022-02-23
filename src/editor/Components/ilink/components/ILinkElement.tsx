@@ -1,8 +1,9 @@
+import { mog } from '../../../../utils/lib/helper'
 import archivedIcon from '@iconify-icons/ri/archive-line'
 import { Icon } from '@iconify/react'
-import { useEditorRef } from '@udecode/plate'
+import { insertNodes, useEditorRef } from '@udecode/plate'
 import * as React from 'react'
-import { Transforms } from 'slate'
+import { Editor, Transforms } from 'slate'
 import { useFocused, useSelected } from 'slate-react'
 import styled from 'styled-components'
 import useArchive from '../../../../hooks/useArchive'
@@ -13,6 +14,7 @@ import { useHotkeys } from '../hooks/useHotkeys'
 import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { SILink, SILinkRoot } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
+import { ELEMENT_ILINK } from '../defaults'
 
 /**
  * ILinkElement with no default styles.
@@ -44,7 +46,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
         Transforms.move(editor)
       }
     },
-    [selected, focused]
+    [element]
   )
 
   useHotkeys(
@@ -66,7 +68,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
       contentEditable={false}
     >
       {archived(nodeid) ? (
-        <SILink focused={selected} archived={true}>
+        <SILink selected={selected} archived={true}>
           <StyledIcon icon={archivedIcon} color="#df7777" />
           <span className="ILink_decoration ILink_decoration_left">[[</span>
           <span className="ILink_decoration ILink_decoration_value"> {element.value}</span>
@@ -74,7 +76,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
         </SILink>
       ) : (
         <EditorPreview isPreview={isPreview(editor.id)} previewRef={editor} nodeid={nodeid}>
-          <SILink focused={selected} {...onClickProps}>
+          <SILink selected={selected} {...onClickProps}>
             <span className="ILink_decoration ILink_decoration_left">[[</span>
             <span className="ILink_decoration ILink_decoration_value"> {element.value}</span>
             <span className="ILink_decoration ILink_decoration_right">]]</span>
