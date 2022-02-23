@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { animated } from 'react-spring'
 import { useGraphData } from '../../hooks/useGraphData'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import tinykeys from 'tinykeys'
 import SyncBlockInfo from '../../editor/Components/SyncBlock/SyncBlockInfo'
 import DataInfoBar from '../mex/Sidebar/DataInfoBar'
@@ -14,12 +14,15 @@ import { useHelpStore } from '../../store/useHelpStore'
 import { size } from '../../style/responsive'
 import SuggestionInfoBar from '../mex/Suggestions'
 import { mog } from '../../utils/lib/helper'
+import { FocusModeProp } from '../../style/props'
+import { FOCUS_MODE_OPACITY } from '../../style/consts'
+import { useLayoutStore } from '../../store/useLayoutStore'
 
-interface InfoBarWrapperProps {
+interface InfoBarWrapperProps extends FocusModeProp {
   wide: string
 }
 
-export const InfoBarWrapper = styled(animated.div)<InfoBarWrapperProps>`
+export const InfoBarWrapper = styled.div<InfoBarWrapperProps>`
   overflow-x: hidden;
   height: 100vh;
 
@@ -35,6 +38,15 @@ export const InfoBarWrapper = styled(animated.div)<InfoBarWrapperProps>`
       return `calc(${mainWidth})`
     }};
   }
+  transition: opacity 0.3s ease-in-out;
+  ${({ focusMode }) =>
+    focusMode &&
+    css`
+      opacity: ${FOCUS_MODE_OPACITY};
+      &:hover {
+        opacity: 1;
+      }
+    `}
 `
 
 export const TemplateInfoBar = styled(InfoBarWrapper)`
@@ -64,7 +76,7 @@ const InfoBarItems = () => {
 }
 
 const InfoBar = () => {
-  const { transitions } = useFocusTransition()
+  const focusMode = useLayoutStore((s) => s.focusMode)
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph, showSuggestedNodes, toggleSuggestedNodes } =
@@ -98,13 +110,10 @@ const InfoBar = () => {
     }
   }, [shortcuts])
 
-  return transitions(
-    (styles, item) =>
-      item && (
-        <InfoBarWrapper wide={showGraph || showSyncBlocks || showSuggestedNodes ? 'true' : 'false'} style={styles}>
-          <InfoBarItems />
-        </InfoBarWrapper>
-      )
+  return (
+    <InfoBarWrapper wide={showGraph || showSyncBlocks || showSuggestedNodes ? 'true' : 'false'} focusMode={focusMode}>
+      <InfoBarItems />
+    </InfoBarWrapper>
   )
 }
 

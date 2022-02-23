@@ -1,8 +1,10 @@
 import { Icon } from '@iconify/react'
 import React from 'react'
 import { animated } from 'react-spring'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import { FOCUS_MODE_OPACITY } from './consts'
 import { PixelToCSS, ThinScrollbar } from './helpers'
+import { FocusModeProp } from './props'
 
 export const Sicon = styled(Icon)`
   height: 26px;
@@ -17,11 +19,20 @@ export const SIcon = (props: any) => {
   return <Sicon {...props} />
 }
 
-export const SidebarDiv = styled(animated.div)`
+export const SidebarDiv = styled.div<FocusModeProp>`
   height: 100%;
   padding-top: ${({ theme }) => theme.spacing.large};
   max-width: ${({ theme }) => PixelToCSS(theme.width.sidebar)};
   width: 100%;
+  transition: opacity 0.3s ease-in-out;
+  ${({ focusMode }) =>
+    focusMode &&
+    css`
+      opacity: ${FOCUS_MODE_OPACITY};
+      &:hover {
+        opacity: 1;
+      }
+    `}
 `
 
 export const SidebarContent = styled.div`

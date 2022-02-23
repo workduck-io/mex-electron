@@ -84,7 +84,7 @@ export const MetadataWrapper = styled.div<FocusModeProp>`
   ${({ focusMode }) =>
     focusMode &&
     css`
-      display: none;
+      /* display: none; */
       opacity: ${FOCUS_MODE_OPACITY};
       &:hover {
         opacity: 1;
