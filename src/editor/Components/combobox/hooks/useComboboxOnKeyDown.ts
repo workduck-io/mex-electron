@@ -47,7 +47,7 @@ export type OnSelectItem = (editor: PEditor, item: IComboboxItem) => any // esli
 export type OnNewItem = (name: string, parentId?) => string | undefined
 
 export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnNewItem, creatable?: boolean) => {
-  const creatableOnSelect = (editor: any, selectVal: IComboboxItem) => {
+  const creatableOnSelect = (editor: any, selectVal: IComboboxItem | string) => {
     const items = useComboboxStore.getState().items
     const currentNodeKey = useEditorStore.getState().node.path
     const itemIndex = useComboboxStore.getState().itemIndex
@@ -56,16 +56,15 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
 
     if (items[itemIndex]) {
       const item = items[itemIndex]
-
       // mog('getCreatableInSelect', { item, selectVal, creatable })
       if (item.key === '__create_new' && selectVal) {
-        const val = pure(selectVal.text)
+        const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
         const res = onNewItem(val, currentNodeKey)
         // mog('getCreatableInSelect', { item, val, selectVal, creatable, res })
         onSelectItem(editor, { key: String(items.length), text: res ?? val })
       } else onSelectItem(editor, item)
     } else if (selectVal && creatable) {
-      const val = pure(selectVal.text)
+      const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
       onSelectItem(editor, { key: String(items.length), text: val })
       onNewItem(val, currentNodeKey)
     }

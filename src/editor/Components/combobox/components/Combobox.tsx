@@ -70,17 +70,10 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
                 key={`${item.key}-${String(index)}`}
                 className={index === itemIndex ? 'highlight' : ''}
                 {...comboProps(item, index)}
-                onMouseDown={
-                  editor &&
-                  getPreventDefaultHandler(
-                    (editor, item) => {
-                      setItemIndex(index)
-                      onSelectItem(editor, item)
-                    },
-                    editor,
-                    item
-                  )
-                }
+                onMouseEnter={() => {
+                  setItemIndex(index)
+                }}
+                onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, item)}
               >
                 {item.icon && <Icon height={18} key={`${item.key}_${item.icon}`} icon={item.icon} />}
                 <ItemCenterWrapper>

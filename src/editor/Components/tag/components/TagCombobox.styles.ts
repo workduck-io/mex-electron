@@ -42,9 +42,7 @@ export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
   :hover {
     ${ComboboxItem} {
       &.highlight {
-        background: transparent;
         &:hover {
-          background: ${({ theme }) => theme.colors.background.highlight};
         }
       }
     }
