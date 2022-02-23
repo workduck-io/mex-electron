@@ -1,12 +1,12 @@
-import * as React from 'react'
 import { useEditorRef } from '@udecode/plate'
+import * as React from 'react'
 import { Transforms } from 'slate'
 import { useFocused, useSelected } from 'slate-react'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../../views/routes/urls'
 import { useHotkeys } from '../hooks/useHotkeys'
 import { useOnMouseClick } from '../hooks/useOnMouseClick'
-import { TagElementProps } from './TagElement.types'
 import { STag, STagRoot } from './TagElement.styles'
-import { useRouting, NavigationType, ROUTE_PATHS } from '../../../../views/routes/urls'
+import { TagElementProps } from './TagElement.types'
 
 /**
  * TagElement with no default styles.
@@ -35,6 +35,7 @@ export const TagElement = ({ attributes, children, element }: TagElementProps) =
     'delete',
     () => {
       if (selected && focused && editor.selection) {
+        // mog('delete', { selected, focused, sel: editor.selection })
         Transforms.move(editor, { reverse: true })
       }
     },
@@ -47,7 +48,9 @@ export const TagElement = ({ attributes, children, element }: TagElementProps) =
 
   return (
     <STagRoot {...attributes} data-slate-value={element.value} contentEditable={false}>
-      <STag {...onClickProps}>#{element.value}</STag>
+      <STag {...onClickProps} selected={selected}>
+        #{element.value}
+      </STag>
       {children}
     </STagRoot>
   )

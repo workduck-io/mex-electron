@@ -1,3 +1,4 @@
+import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 
 export const SILinkRoot = styled.div`
@@ -8,7 +9,7 @@ export const SILinkRoot = styled.div`
 `
 
 interface SILinkProps {
-  focused: boolean
+  selected: boolean
   archived?: boolean
 }
 
@@ -30,14 +31,14 @@ export const SILink = styled.div<SILinkProps>`
     }
   }
 
-  ${({ theme, focused }) =>
-    focused
+  ${({ theme, selected }) =>
+    selected
       ? css`
           color: ${theme.colors.primary};
-          background-color: ${theme.colors.gray[8]};
-          border-radius: ${({ theme }) => theme.borderRadius.tiny};
+          background-color: ${transparentize(0.75, theme.colors.primary)};
+          border-radius: ${theme.borderRadius.tiny};
           .ILink_decoration {
-            color: ${({ theme }) => theme.colors.gray[4]};
+            color: ${theme.colors.gray[4]};
           }
         `
       : ''}
