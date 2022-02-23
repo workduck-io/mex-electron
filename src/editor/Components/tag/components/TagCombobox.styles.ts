@@ -6,7 +6,53 @@ import styled, { css } from 'styled-components'
 //   tagItemHighlighted: 'slate-TagCombobox-tagItemHighlighted',
 // };
 
+export const ComboboxItem = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  gap: ${({ theme }) => theme.spacing.tiny};
+
+  :first-child {
+    border-radius: 6px 6px 0 0;
+  }
+
+  :last-child {
+    border-radius: 0 0 6px 6px;
+  }
+
+  font-weight: 400;
+  padding: 0 8px;
+  min-height: 36px;
+  user-select: none;
+  color: ${({ theme }) => theme.colors.text.subheading};
+  &.highlight {
+    background: ${({ theme }) => theme.colors.background.highlight};
+  }
+  cursor: pointer;
+
+  :hover {
+    background-color: ${({ theme }) => theme.colors.background.highlight};
+  }
+
+  & > svg {
+    color: ${({ theme }) => theme.colors.gray[4]};
+  }
+`
 export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
+  :hover {
+    ${ComboboxItem} {
+      &.highlight {
+        &:hover {
+        }
+      }
+    }
+  }
+  &.reversed {
+    transform: rotate(180deg);
+    ${ComboboxItem} {
+      transform: rotate(-180deg);
+    }
+  }
   ${({ isOpen, theme }) =>
     isOpen &&
     css`
@@ -39,35 +85,4 @@ export const ItemDesc = styled.div`
 `
 export const ItemCenterWrapper = styled.div`
   width: 90%;
-`
-
-export const ComboboxItem = styled.div<{ highlighted: boolean }>`
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  gap: ${({ theme }) => theme.spacing.tiny};
-
-  :first-child {
-    border-radius: 6px 6px 0 0;
-  }
-
-  :last-child {
-    border-radius: 0 0 6px 6px;
-  }
-
-  font-weight: 400;
-  padding: 0 8px;
-  min-height: 36px;
-  user-select: none;
-  color: ${({ theme }) => theme.colors.text.subheading};
-  background: ${({ highlighted, theme }) => (!highlighted ? 'transparent' : theme.colors.background.highlight)};
-  cursor: pointer;
-
-  :hover {
-    background-color: ${({ theme }) => theme.colors.background.highlight};
-  }
-
-  & > svg {
-    color: ${({ theme }) => theme.colors.gray[4]};
-  }
 `

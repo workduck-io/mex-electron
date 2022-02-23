@@ -10,6 +10,7 @@ import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { ComboboxType } from './types'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 
+export const CreateNewPrefix = `Create New `
 // Handle multiple combobox
 const useMultiComboboxOnChange = (
   editorId: string,
@@ -76,7 +77,7 @@ const useMultiComboboxOnChange = (
       items.unshift({
         key: '__create_new',
         icon: 'ri:add-circle-line',
-        text: `Create New ${search}`
+        text: `${CreateNewPrefix}${search}`
       })
     }
     setItems(items)

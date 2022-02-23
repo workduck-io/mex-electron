@@ -11,12 +11,17 @@ import { getNextWrappingIndex } from '../utils/getNextWrappingIndex'
 import { isElder } from '../../../../components/mex/Sidebar/treeUtils'
 import { FlowCommandPrefix } from '../../SlashCommands/useSyncConfig'
 import { SnippetCommandPrefix } from '../../../../hooks/useSnippets'
+import { CreateNewPrefix } from '../../multi-combobox/useMultiComboboxChange'
 
 const pure = (id: string) => {
-  if (id.endsWith(']]')) {
-    return id.substr(0, id.length - 2)
+  let newId = id
+  if (newId.endsWith(']]')) {
+    newId = newId.slice(0, newId.length - 2)
   }
-  return id
+  if (newId.startsWith(CreateNewPrefix)) {
+    newId = newId.slice(CreateNewPrefix.length)
+  }
+  return newId
 }
 
 export const isInternalCommand = (search?: string) => {
@@ -42,22 +47,24 @@ export type OnSelectItem = (editor: PEditor, item: IComboboxItem) => any // esli
 export type OnNewItem = (name: string, parentId?) => string | undefined
 
 export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnNewItem, creatable?: boolean) => {
-  const creatableOnSelect = (editor: any, textVal: string) => {
+  const creatableOnSelect = (editor: any, selectVal: IComboboxItem | string) => {
     const items = useComboboxStore.getState().items
     const currentNodeKey = useEditorStore.getState().node.path
     const itemIndex = useComboboxStore.getState().itemIndex
 
-    const val = pure(textVal)
+    // mog('getCreatableInSelect', { items, selectVal, creatable })
+
     if (items[itemIndex]) {
       const item = items[itemIndex]
-
-      // mog('getCreatableInSelect', { item, val, creatable })
-      if (item.key === '__create_new' && val !== '') {
+      // mog('getCreatableInSelect', { item, selectVal, creatable })
+      if (item.key === '__create_new' && selectVal) {
+        const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
         const res = onNewItem(val, currentNodeKey)
-        // mog('getCreatableInSelect', { item, val, creatable, res })
+        // mog('getCreatableInSelect', { item, val, selectVal, creatable, res })
         onSelectItem(editor, { key: String(items.length), text: res ?? val })
       } else onSelectItem(editor, item)
-    } else if (val && creatable) {
+    } else if (selectVal && creatable) {
+      const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
       onSelectItem(editor, { key: String(items.length), text: val })
       onNewItem(val, currentNodeKey)
     }

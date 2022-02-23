@@ -67,7 +67,10 @@ const useEditorPluginConfig = (editorId: string) => {
       },
       internal: {
         slateElementType: 'internal',
-        newItemHandler: () => undefined,
+        newItemHandler: (newItem, parentId?) => {
+          const link = addILink({ ilink: newItem, parentId })
+          mog('Link', { link, newItem, parentId })
+        },
         renderElement: SlashComboboxItem
       }
     },
