@@ -155,3 +155,14 @@ export const getUidFromNodeIdAndLinks = (links: ILink[], path: string) => {
   const link = links.find((l) => l.path === path)
   if (link) return link.nodeid
 }
+
+export const getPathFromNodeIdHookless = (nodeid: string) => {
+  const links = useDataStore.getState().ilinks
+  const archive = useDataStore.getState().archive
+
+  const link = links.find((l) => l.nodeid === nodeid)
+  const archivedLink = archive.find((l) => l.nodeid === nodeid)
+
+  if (link) return link.path
+  if (archivedLink) return archivedLink.path
+}

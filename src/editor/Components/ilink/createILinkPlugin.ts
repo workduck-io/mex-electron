@@ -1,5 +1,6 @@
 import { deleteFragment, isCollapsed, PlatePlugin, WithOverride } from '@udecode/plate-core'
 import { Editor } from 'slate'
+import { getPathFromNodeIdHookless } from '../../../hooks/useLinks'
 import { mog } from '../../../utils/lib/helper'
 import { ELEMENT_ILINK } from './defaults'
 import { getILinkDeserialize } from './getILinkDeserialize'
@@ -31,9 +32,10 @@ export const withILink: WithOverride<any, PlatePlugin> = (editor, { type, option
     if (prev[0]) {
       const node = prev[0] as any
       if (node.type && node.type === ELEMENT_ILINK && node.value) {
-        mog('DeleteForILink', { type, options })
+        const val = getPathFromNodeIdHookless(node.value)
+        mog('DeleteForILink', { type, options, val })
         deleteFragment(editor, { at: prev[1], unit: 'block' })
-        Editor.insertText(editor, `[[${node.value}`)
+        Editor.insertText(editor, `[[${val}`)
       }
     }
     deleteBackward(options)

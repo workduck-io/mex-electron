@@ -29,14 +29,15 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const selected = useSelected()
   const focused = useFocused()
   const { push } = useNavigation()
-  const { getUidFromNodeId } = useLinks()
+  const { getUidFromNodeId, getNodeIdFromUid } = useLinks()
   // console.log('We reached here', { editor }, isPreview(editor.id))
 
-  const nodeid = getUidFromNodeId(element.value)
+  // const nodeid = getUidFromNodeId(element.value)
+  const path = getNodeIdFromUid(element.value)
   const { archived } = useArchive()
 
   const onClickProps = useOnMouseClick(() => {
-    push(nodeid)
+    push(element.value)
   })
 
   useHotkeys(
@@ -67,7 +68,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
       data-slate-value={element.value}
       contentEditable={false}
     >
-      {archived(nodeid) ? (
+      {archived(element.value) ? (
         <SILink selected={selected} archived={true}>
           <StyledIcon icon={archivedIcon} color="#df7777" />
           <span className="ILink_decoration ILink_decoration_left">[[</span>
@@ -75,10 +76,10 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
           <span className="ILink_decoration ILink_decoration_right">]]</span>
         </SILink>
       ) : (
-        <EditorPreview isPreview={isPreview(editor.id)} previewRef={editor} nodeid={nodeid}>
+        <EditorPreview isPreview={isPreview(editor.id)} previewRef={editor} nodeid={element.value}>
           <SILink selected={selected} {...onClickProps}>
             <span className="ILink_decoration ILink_decoration_left">[[</span>
-            <span className="ILink_decoration ILink_decoration_value"> {element.value}</span>
+            <span className="ILink_decoration ILink_decoration_value"> {path}</span>
             <span className="ILink_decoration ILink_decoration_right">]]</span>
           </SILink>
         </EditorPreview>

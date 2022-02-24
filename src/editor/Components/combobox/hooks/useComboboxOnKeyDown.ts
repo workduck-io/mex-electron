@@ -61,12 +61,15 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
         const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
         const res = onNewItem(val, currentNodeKey)
         // mog('getCreatableInSelect', { item, val, selectVal, creatable, res })
-        onSelectItem(editor, { key: String(items.length), text: res ?? val })
+        mog('Select__CN clause', { val, selectVal, creatable, res })
+        if (res) onSelectItem(editor, { key: String(items.length), text: res })
       } else onSelectItem(editor, item)
     } else if (selectVal && creatable) {
       const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
-      onSelectItem(editor, { key: String(items.length), text: val })
-      onNewItem(val, currentNodeKey)
+      const res = onNewItem(val, currentNodeKey)
+      mog('SelectElse clause', { val, selectVal, creatable, res })
+      // onSelectItem(editor, { key: String(items.length), text: res ?? val })
+      if (res) onSelectItem(editor, { key: String(items.length), text: val })
     }
   }
 
