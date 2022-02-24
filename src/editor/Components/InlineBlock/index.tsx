@@ -6,6 +6,7 @@ import useArchive from '../../../hooks/useArchive'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useContentStore } from '../../../store/useContentStore'
+import { mog } from '../../../utils/lib/helper'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
 import { useSaver } from '../Saver'
 import { RootElement } from '../SyncBlock'
@@ -27,9 +28,10 @@ const StyledArchiveText = styled.text`
 
 const InlineBlock = (props: any) => {
   const { push } = useNavigation()
-  const { getUidFromNodeId } = useLinks()
+  const { getNodeIdFromUid } = useLinks()
   const getContent = useContentStore((store) => store.getContent)
-  const nodeid = useMemo(() => getUidFromNodeId(props.element.value), [props.element.value])
+  const path = useMemo(() => getNodeIdFromUid(props.element.value), [props.element.value])
+  const nodeid = props.element.value
   const content = useMemo(() => getContent(nodeid), [nodeid])
   const { onSave } = useSaver()
   const { archived } = useArchive()
@@ -40,6 +42,8 @@ const InlineBlock = (props: any) => {
     push(nodeid)
   }
 
+  // mog('INLINE_BLOCK', { el: props.element, path })
+
   return (
     <RootElement {...props.attributes}>
       <div contentEditable={false}>
@@ -47,7 +51,7 @@ const InlineBlock = (props: any) => {
           <FlexBetween>
             <InlineFlex>
               <InlineBlockHeading>From:</InlineBlockHeading>
-              <InlineBlockText>{props.element.value}</InlineBlockText>
+              <InlineBlockText>{path}</InlineBlockText>
             </InlineFlex>
             {archived(nodeid) ? <StyledArchiveText>Archived</StyledArchiveText> : <Chip onClick={openNode}>Open</Chip>}
           </FlexBetween>

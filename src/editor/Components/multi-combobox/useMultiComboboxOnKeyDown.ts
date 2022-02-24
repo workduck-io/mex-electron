@@ -1,16 +1,18 @@
 import { getBlockAbove, getPluginType, insertNodes, PEditor, PlateEditor, TElement } from '@udecode/plate'
 import { Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
+import { NODE_ID_PREFIX } from '../../../data/Defaults/idPrefixes'
 import { useLinks } from '../../../hooks/useLinks'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
 import { useEditorStore } from '../../../store/useEditorStore'
-import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { mog } from '../../../utils/lib/helper'
 import { getEventNameFromElement } from '../../../utils/lib/strings'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { isInternalCommand, useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { ELEMENT_ILINK } from '../ilink/defaults'
+import { ELEMENT_INLINE_BLOCK } from '../InlineBlock/types'
 import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChange'
 import { ComboConfigData, ConfigDataSlashCommands, SingleComboboxConfig } from './multiComboboxContainer'
 
@@ -52,7 +54,9 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
 
         let itemValue = item.text
 
-        if (type === ELEMENT_ILINK && !itemValue.startsWith('NODE_')) {
+        if ((type === ELEMENT_ILINK || type === ELEMENT_INLINE_BLOCK) && !itemValue.startsWith(`${NODE_ID_PREFIX}_`)) {
+          mog('Replacing itemValue', { comboType, type, itemValue, item })
+
           const nodeId = getUidFromNodeId(itemValue)
           itemValue = nodeId
         }
@@ -62,6 +66,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         // }
         // select the ilink text and insert the ilink element
         Transforms.select(editor, targetRange)
+        mog('Inserting Element', { comboType, type, itemValue, item })
 
         insertNodes<TElement>(editor, {
           type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any

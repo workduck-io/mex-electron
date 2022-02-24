@@ -24,7 +24,7 @@ export const createILinkPlugin = (): PlatePlugin => ({
  *
  */
 export const withILink: WithOverride<any, PlatePlugin> = (editor, { type, options }) => {
-  mog('Setup Plugin with ILink', { type, options })
+  // mog('Setup Plugin with ILink', { type, options })
   const { deleteBackward } = editor
 
   editor.deleteBackward = (options) => {
