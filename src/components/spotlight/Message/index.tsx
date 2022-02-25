@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { useContentStore } from '../../../store/useContentStore'
+
+import { AppType } from '../../../hooks/useInitialize'
+import { IpcAction } from '../../../data/IpcAction'
 import { StyledMessage } from './styled'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { useContentStore } from '../../../store/useContentStore'
 
 const Message: React.FC<{ text: string }> = ({ text }) => {
   const [show, setShow] = useState<boolean>(true)
@@ -9,8 +13,9 @@ const Message: React.FC<{ text: string }> = ({ text }) => {
   useEffect(() => {
     const timeId = setTimeout(() => {
       setShow(false)
+      appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
       setSaved(false)
-    }, 2500)
+    }, 1500)
 
     return () => clearTimeout(timeId)
   }, [])

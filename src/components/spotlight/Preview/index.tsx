@@ -1,10 +1,6 @@
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { NodeProperties, useEditorStore } from '../../../store/useEditorStore'
 import React, { useEffect, useMemo, useRef } from 'react'
-import { SaverButton, useSaver } from '../../../editor/Components/Saver'
 import { SeePreview, StyledPreview } from './styled'
-import { createNodeWithUid, mog } from '../../../utils/lib/helper'
-import { getPlateActions, getPlateSelectors } from '@udecode/plate'
 
 import { ActionTitle } from '../Actions/styled'
 import { AppType } from '../../../hooks/useInitialize'
@@ -12,11 +8,12 @@ import { Editor } from '../../../editor/Editor'
 import { Icon } from '@iconify/react'
 import { IpcAction } from '../../../data/IpcAction'
 import { ItemActionType } from '../SearchResults/types'
+import { NodeProperties } from '../../../store/useEditorStore'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import downIcon from '@iconify-icons/ph/arrow-down-bold'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
-import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import { getPlateSelectors } from '@udecode/plate'
 import { openNodeInMex } from '../../../utils/combineSources'
 import tinykeys from 'tinykeys'
 import { useContentStore } from '../../../store/useContentStore'
@@ -27,6 +24,7 @@ import { useKeyListener } from '../../../hooks/useShortcutListener'
 import useLoad from '../../../hooks/useLoad'
 import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
+import { useSaver } from '../../../editor/Components/Saver'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
@@ -70,7 +68,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   const ref = useRef<HTMLDivElement>()
   const { onSave } = useSaver()
   const { selection, setSelection, setSearch, searchResults, activeIndex } = useSpotlightContext()
-  const deserializedContentNodes = useDeserializeSelectionToNodes(node.nodeid, preview)
+  const deserializedContentNodes = useDeserializeSelectionToNodes(node.nodeid, preview, normalMode)
 
   const springProps = useMemo(() => {
     const style = { width: '45%', padding: '0' }
@@ -89,7 +87,6 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   const animationProps = useSpring(springProps)
 
   useEffect(() => {
-    mog('NODEEEEEEE', { node, preview, deserializedContentNodes }, { pretty: true, collapsed: false })
     if (preview.isSelection && deserializedContentNodes) {
       const deserializedContent = [{ children: deserializedContentNodes }]
       const activeNodeContent = getContent(node.nodeid)?.content ?? []
@@ -99,7 +96,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
       setNodeContent([...activeNodeContent, ...deserializedContent])
       // setFsContent(node.nodeid, [...changedContent, ...deserializedContent])
     }
-  }, [preview, showSource, node])
+  }, [preview, showSource, node, normalMode])
 
   const handleScrollToBottom = () => {
     ref.current.scrollTop = ref.current.scrollHeight
@@ -125,7 +122,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, { nodeid: node.nodeid })
 
     // * Hide spotlight after save
-    appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
+    // appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
     if (isOnboarding) {
       openNodeInMex(node.nodeid)
@@ -148,6 +145,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
 
   return (
     <StyledPreview
+      // onClick={() => setNormalMode(false)}
       key={`PreviewSpotlightEditor${node.nodeid}`}
       style={animationProps}
       ref={ref}

@@ -1,5 +1,6 @@
 import { deserializeHtml, htmlBodyToFragment, htmlStringToDOMNode, usePlateEditorRef } from '@udecode/plate-core'
 
+import { BlockType } from '../store/useBlockStore'
 import { NodeEditorContent } from '../types/Types'
 import components from '../editor/Components/components'
 import { createPlateUIEditor } from '@udecode/plate'
@@ -13,7 +14,8 @@ export const plateEditor = () => {
 
 export const useDeserializeSelectionToNodes = (
   path: string,
-  selection: { text: string; metadata: string }
+  selection: { text: string; metadata: string },
+  highlight?: boolean
 ): NodeEditorContent => {
   let nodes
   const editor = usePlateEditorRef() ?? plateEditor()
@@ -22,11 +24,29 @@ export const useDeserializeSelectionToNodes = (
   try {
     nodes = editor ? deserializeHtml(editor, { element, stripWhitespace: true }) : undefined
     if (nodes) nodes = nodes.map((block) => updateIds(block, true))
+    // if (nodes) nodes = nodes.map((node) => highlightNodes(node, highlight))
   } catch (err) {
     console.log(err)
   }
 
   return nodes
+}
+
+export const highlightNodes = (blockToHighlight: BlockType, highlight?: boolean) => {
+  // * if show is true add highlight else remove highlight from nested obj
+  const block = Object.assign({}, blockToHighlight)
+
+  if (highlight) {
+    block['highlight'] = true
+  } else delete block['highlight']
+
+  if (block.children) {
+    block.children = block.children.map((bl) => {
+      return highlightNodes(bl, highlight)
+    })
+  }
+
+  return block
 }
 
 export const getMexHTMLDeserializer = (HTMLContent: string, editor: any, plugins: any) => {

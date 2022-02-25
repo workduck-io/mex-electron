@@ -13,6 +13,7 @@ import { appNotifierWindow } from '../../../../electron/utils/notifiers'
 import { getContent } from '../../../../utils/helpers'
 import { mog } from '../../../../utils/lib/helper'
 import { openNodeInMex } from '../../../../utils/combineSources'
+import { useContentStore } from '../../../../store/useContentStore'
 import { useDataSaverFromContent } from '../../../../editor/Components/Saver'
 import useDataStore from '../../../../store/useDataStore'
 import useItemExecutor from '../actionExecutor'
@@ -53,6 +54,7 @@ const List = ({
   const { getNode } = useLoad()
   const addILink = useDataStore((s) => s.addILink)
 
+  const setSaved = useContentStore((store) => store.setSaved)
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
 
@@ -120,7 +122,6 @@ const List = ({
 
             return nextIndex
           })
-        // if (data[activeIndex]?.extras?.new) setIsPreview(false)
       } else if (event.key === 'ArrowDown') {
         event.preventDefault()
 
@@ -148,9 +149,11 @@ const List = ({
       } else if (event.key === 'Enter') {
         const currentActiveItem = data[activeIndex]
         if (currentActiveItem?.type === ItemActionType.ilink) {
+          if (!selection) return
+
           let newNode: NodeProperties = node
 
-          if (currentActiveItem?.extras.new) {
+          if (currentActiveItem?.extras.new && !activeItem.active) {
             const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : node.path
 
             const d = addILink({ ilink: nodeName, nodeid: node.nodeid })
@@ -162,7 +165,7 @@ const List = ({
             saveEditorValueAndUpdateStores(newNode.nodeid, nodeContent, true)
             saveData()
 
-            appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
+            setSaved(true)
 
             setNormalMode(true)
             setSelection(undefined)
@@ -204,10 +207,12 @@ const List = ({
 
   function handleClick(id: number) {
     const currentActiveItem = data[activeIndex]
+    if (!selection) return
+
     if (currentActiveItem?.type === ItemActionType.ilink) {
       let newNode: NodeProperties = node
 
-      if (currentActiveItem?.extras.new) {
+      if (currentActiveItem?.extras.new && !activeItem.active) {
         const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : node.path
 
         const d = addILink({ ilink: nodeName, nodeid: node.nodeid })
@@ -216,7 +221,6 @@ const List = ({
 
       if (selection) {
         addInRecentResearchNodes(newNode.nodeid)
-        mog('CONTENT', { nodeContent }, { pretty: true, collapsed: false })
         saveEditorValueAndUpdateStores(newNode.nodeid, nodeContent, true)
         saveData()
 

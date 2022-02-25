@@ -5,6 +5,7 @@ import Preview, { PreviewType } from '../Preview'
 import React, { useEffect, useState } from 'react'
 import { createNodeWithUid, insertItemInArray, mog } from '../../../utils/lib/helper'
 
+import { AppType } from '../../../hooks/useInitialize'
 import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
 import EditorErrorFallback from '../../../components/mex/Error/EditorErrorFallback'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -87,8 +88,6 @@ const Content = () => {
         setSearchResults(data)
       }
     }
-
-    setSaved(false)
   }, [search.value, selection, activeItem.item, ilinks])
 
   useEffect(() => {
@@ -114,14 +113,12 @@ const Content = () => {
       setNodeContent(content)
       setPreview(INIT_PREVIEW)
     }
-
-    setSaved(false)
   }, [search.value, activeIndex, selection, normalMode, searchResults])
 
   return (
     <StyledContent>
       <SideBar index={activeIndex} data={searchResults} />
-      <ErrorBoundary onReset={resetEditor} FallbackComponent={EditorErrorFallback}>
+      <ErrorBoundary onReset={() => resetEditor(AppType.SPOTLIGHT)} FallbackComponent={EditorErrorFallback}>
         <Preview preview={preview} node={editorNode} />
       </ErrorBoundary>
     </StyledContent>

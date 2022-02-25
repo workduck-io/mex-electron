@@ -50,7 +50,7 @@ const ShortcutText = styled.div`
 
 function Item({ item, active, onClick }: { item: ListItemType; active?: boolean; onClick?: () => void }) {
   const theme = useTheme()
-  const { search, selection } = useSpotlightContext()
+  const { search, selection, activeItem } = useSpotlightContext()
 
   const newNodeName = cleanString(search.type === CategoryType.quicklink ? search.value.slice(2) : search.value)
 
@@ -69,7 +69,7 @@ function Item({ item, active, onClick }: { item: ListItemType; active?: boolean;
           <div style={{ whiteSpace: 'nowrap', maxWidth: '200px', textOverflow: 'ellipsis', overflowX: 'hidden' }}>
             {item?.extras?.new ? (
               <div>
-                Create a <PrimaryText>{search.value ? newNodeName : 'Quick note'}</PrimaryText>
+                Create a <PrimaryText>{search.value && !activeItem.active ? newNodeName : 'Quick note'}</PrimaryText>
               </div>
             ) : (
               <div>{item?.type === ItemActionType.ilink ? cleanString(item?.title) : item?.title}</div>
@@ -83,9 +83,17 @@ function Item({ item, active, onClick }: { item: ListItemType; active?: boolean;
           <ShortcutText>
             <StyledKey>Tab</StyledKey> <div>to edit</div>
           </ShortcutText>
-          <ShortcutText>
-            <StyledKey>Enter</StyledKey> <div>{`${selection ? 'to save' : 'to open'}`}</div>
-          </ShortcutText>
+          {item?.extras?.new ? (
+            selection && (
+              <ShortcutText>
+                <StyledKey>Enter</StyledKey> <div>to save</div>
+              </ShortcutText>
+            )
+          ) : (
+            <ShortcutText>
+              <StyledKey>Enter</StyledKey> <div>{`${selection ? 'to save' : 'to open'}`}</div>
+            </ShortcutText>
+          )}
         </div>
       )}
     </StyledRow>

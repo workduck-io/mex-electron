@@ -46,6 +46,7 @@ const Search: React.FC = () => {
     if (search.value === '') {
       ref.current.value = ''
     }
+    if (!normalMode) setInput('')
     ref.current.focus()
   }, [search, normalMode])
 
