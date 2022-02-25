@@ -1,24 +1,25 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-import chokidar from 'chokidar'
-import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, screen, session, shell, Tray } from 'electron'
-import fs from 'fs'
-import _ from 'lodash'
-import path from 'path'
-import { mog } from '../utils/lib/helper'
+import { BrowserWindow, Menu, Tray, app, globalShortcut, ipcMain, nativeImage, screen, session, shell } from 'electron'
+import { SelectionType, getGlobalShortcut, getSelectedText, getSelectedTextSync } from './utils/getSelectedText'
+import { getFileData, setFileData } from './utils/filedata'
 import { getSaveLocation, getSearchIndexLocation } from '../data/Defaults/data'
 import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
-import { IpcAction } from '../data/IpcAction'
+
 import { AppType } from '../hooks/useInitialize'
-import { initializeSentry } from '../services/sentry'
 import { FileData } from '../types/data'
-import { getAppleNotes } from '../utils/importers/appleNotes'
-import { sanitizeHtml } from '../utils/sanitizeHtml'
-import { flexIndexKeys } from '../utils/search/flexsearch'
+import { IpcAction } from '../data/IpcAction'
 import MenuBuilder from './menu'
-import { setupUpdateService } from './update'
-import { getFileData, setFileData } from './utils/filedata'
-import { getGlobalShortcut, getSelectedText, getSelectedTextSync, SelectionType } from './utils/getSelectedText'
+import _ from 'lodash'
 import { checkIfAlpha } from './utils/version'
+/* eslint-disable @typescript-eslint/no-var-requires */
+import chokidar from 'chokidar'
+import { flexIndexKeys } from '../utils/search/flexsearch'
+import fs from 'fs'
+import { getAppleNotes } from '../utils/importers/appleNotes'
+import { initializeSentry } from '../services/sentry'
+import { mog } from '../utils/lib/helper'
+import path from 'path'
+import { sanitizeHtml } from '../utils/sanitizeHtml'
+import { setupUpdateService } from './update'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -43,8 +44,6 @@ let mex: BrowserWindow | null
 let spotlight: BrowserWindow | null
 let spotlightBubble = false
 let isSelection = false
-// let updateCheckingFrequency = 3 * 60 * 60 * 1000
-// let updateSetInterval: ReturnType<typeof setInterval> | undefined
 
 const version = app.getVersion()
 const isAlpha = checkIfAlpha(version)
@@ -84,10 +83,10 @@ const MEX_WINDOW_OPTIONS = {
 
 const SPOTLIGHT_WINDOW_OPTIONS = {
   show: false,
-  width: 700,
-  height: 400,
-  maxWidth: 700,
-  maxHeight: 400,
+  width: 800,
+  height: 500,
+  maxWidth: 800,
+  maxHeight: 500,
   center: false,
   frame: false,
   maximizable: false,
@@ -189,6 +188,11 @@ const createMexWindow = () => {
   mex.webContents.on('did-finish-load', () => {
     if (!mex) {
       throw new Error('"mexWindow" is not defined')
+    }
+
+    if (mex.isFocused()) {
+      spotlight.focus()
+      spotlight.show()
     }
   })
 
@@ -538,7 +542,7 @@ ipcMain.on(IpcAction.STOP_ONBOARDING, (_event, arg) => {
 })
 
 ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
-  mex?.webContents.send(IpcAction.OPEN_NODE, { path: arg.path })
+  mex?.webContents.send(IpcAction.OPEN_NODE, { nodeid: arg.nodeid })
   spotlight.hide()
   mex.show()
 })

@@ -1,7 +1,7 @@
-/* eslint-disable import/prefer-default-export */
-import { ipcRenderer } from 'electron'
 import { IpcAction } from '../data/IpcAction'
 import { NodeEditorContent } from '../types/Types'
+/* eslint-disable import/prefer-default-export */
+import { ipcRenderer } from 'electron'
 import { isFromSameSource } from './helpers'
 
 export const combineSources = (
@@ -45,7 +45,7 @@ export const combineSources = (
   return removedContent
 }
 
-export const openNodeInMex = (path: string) => {
+export const openNodeInMex = (nodeid: string) => {
   // * Open saved node in Mex
-  ipcRenderer.send(IpcAction.OPEN_NODE_IN_MEX, { path: path })
+  ipcRenderer.send(IpcAction.OPEN_NODE_IN_MEX, { nodeid })
 }

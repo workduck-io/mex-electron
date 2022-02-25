@@ -1,41 +1,42 @@
-import { usePlateEditorRef } from '@udecode/plate'
-import { useAuth } from '@workduck-io/dwindle'
-import { ipcRenderer } from 'electron'
+import { AppType, useInitialize } from '../../../hooks/useInitialize'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import { getUidFromNodeIdAndLinks, useLinks } from '../../../hooks/useLinks'
 import { useEffect, useState } from 'react'
-import { useLayoutStore } from '../../../store/useLayoutStore'
-import tinykeys from 'tinykeys'
-import config from '../../../apis/config'
+
+import { AppleNote } from '../../../utils/importers/appleNotes'
 // import { convertDataToRawText } from '../../../utils/Search/localSearch'
 import { IpcAction } from '../../../data/IpcAction'
-import { useSaver } from '../../../editor/Components/Saver'
-import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { AppType, useInitialize } from '../../../hooks/useInitialize'
-import { getUidFromNodeIdAndLinks, useLinks } from '../../../hooks/useLinks'
-import useLoad from '../../../hooks/useLoad'
-import { useLocalData } from '../../../hooks/useLocalData'
-import { useNavigation } from '../../../hooks/useNavigation'
-import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
-import { useKeyListener } from '../../../hooks/useShortcutListener'
-import { useSyncData } from '../../../hooks/useSyncData'
-import { useUpdater } from '../../../hooks/useUpdater'
+import config from '../../../apis/config'
+import { convertDataToRawText } from '../../../utils/search/localSearch'
+import { flexIndexKeys } from '../../../utils/search/flexsearch'
+import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
+import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import { ipcRenderer } from 'electron'
+import { mog } from '../../../utils/lib/helper'
+import { performClick } from '../Onboarding/steps'
+import tinykeys from 'tinykeys'
+import { useAuth } from '@workduck-io/dwindle'
 import { useAuthStore } from '../../../services/auth/useAuth'
+import useBlockStore from '../../../store/useBlockStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useHistoryStore } from '../../../store/useHistoryStore'
-import useOnboard from '../../../store/useOnboarding'
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { useNewSearchStore } from '../../../store/useSearchStore'
-import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
-import { AppleNote } from '../../../utils/importers/appleNotes'
-import { mog } from '../../../utils/lib/helper'
-import { flexIndexKeys } from '../../../utils/search/flexsearch'
-import { convertDataToRawText } from '../../../utils/search/localSearch'
-import { performClick } from '../Onboarding/steps'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import { useKeyListener } from '../../../hooks/useShortcutListener'
+import { useLayoutStore } from '../../../store/useLayoutStore'
+import useLoad from '../../../hooks/useLoad'
+import { useLocalData } from '../../../hooks/useLocalData'
 import { useLocation } from 'react-router-dom'
-import useBlockStore from '../../../store/useBlockStore'
+import { useNavigation } from '../../../hooks/useNavigation'
+import { useNewSearchStore } from '../../../store/useSearchStore'
+import useOnboard from '../../../store/useOnboarding'
+import { usePlateEditorRef } from '@udecode/plate'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
+import { useSaver } from '../../../editor/Components/Saver'
+import { useSyncData } from '../../../hooks/useSyncData'
+import { useUpdater } from '../../../hooks/useUpdater'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -131,13 +132,13 @@ const Init = () => {
    * Sets handlers for IPC Calls
    * */
   useEffect(() => {
-    ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { path }) => {
-      if (isOnboarding) {
-        pushHs(path)
-        addRecent(path)
-        loadNode(path, { savePrev: false, fetch: false })
-        performClick(false)
-      }
+    ipcRenderer.on(IpcAction.OPEN_NODE, (_event, { nodeid }) => {
+      // if (isOnboarding) {
+      pushHs(nodeid)
+      addRecent(nodeid)
+      loadNode(nodeid)
+      // performClick(false)
+      // }
     })
     ipcRenderer.on(IpcAction.CLEAR_RECENTS, () => {
       clear()

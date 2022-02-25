@@ -1,11 +1,13 @@
-import React from 'react'
+import { CategoryType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
+import { Description, StyledRow } from '../../SearchResults/styled'
+import { ItemActionType, ListItemType } from '../../SearchResults/types'
 import styled, { css, useTheme } from 'styled-components'
-import { StyledRow, Description } from '../../SearchResults/styled'
+
 import { Icon } from '@iconify/react'
-import { StyledKey } from '../../Shortcuts/styled'
-import { ListItemType } from '../../SearchResults/types'
 import { PrimaryText } from '../../../../style/Integration'
-import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
+import React from 'react'
+import { StyledKey } from '../../Shortcuts/styled'
+import { cleanString } from '../../../../data/Defaults/idPrefixes'
 
 export const ActionIcon = styled.div`
   display: flex;
@@ -36,9 +38,22 @@ export const Dot = styled.span<{ active: string }>`
     `};
 `
 
+const ShortcutText = styled.div`
+  display: flex;
+  align-content: center;
+  margin: 4px 0;
+  div {
+    font-size: 0.8rem;
+    color: ${({ theme }) => theme.colors.text.fade};
+  }
+`
+
 function Item({ item, active, onClick }: { item: ListItemType; active?: boolean; onClick?: () => void }) {
   const theme = useTheme()
-  const { search } = useSpotlightContext()
+  const { search, selection } = useSpotlightContext()
+
+  const newNodeName = cleanString(search.type === CategoryType.quicklink ? search.value.slice(2) : search.value)
+
   return (
     <StyledRow showColor={active} onClick={onClick} key={`STRING_${item?.title}`}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -51,22 +66,27 @@ function Item({ item, active, onClick }: { item: ListItemType; active?: boolean;
             width={18}
             icon={item?.icon}
           />
-          <div style={{ whiteSpace: 'nowrap' }}>
+          <div style={{ whiteSpace: 'nowrap', maxWidth: '200px', textOverflow: 'ellipsis', overflowX: 'hidden' }}>
             {item?.extras?.new ? (
               <div>
-                Create new <PrimaryText>{search.value.slice(2)}</PrimaryText>
+                Create a <PrimaryText>{search.value ? newNodeName : 'Quick note'}</PrimaryText>
               </div>
             ) : (
-              <div>{item?.title}</div>
+              <div>{item?.type === ItemActionType.ilink ? cleanString(item?.title) : item?.title}</div>
             )}
+            <Description>{item?.description ?? 'some content'}</Description>
           </div>
         </div>
-        <Description>{item?.description ?? ''}</Description>
       </div>
-      {active && (
-        <Shortcut>
-          {item?.shortcut && item?.shortcut?.map((shortcutKey, id) => <StyledKey key={id}>{shortcutKey}</StyledKey>)}
-        </Shortcut>
+      {active && item?.type === ItemActionType.ilink && (
+        <div style={{ margin: '0 0.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <ShortcutText>
+            <StyledKey>Tab</StyledKey> <div>to edit</div>
+          </ShortcutText>
+          <ShortcutText>
+            <StyledKey>Enter</StyledKey> <div>{`${selection ? 'to save' : 'to open'}`}</div>
+          </ShortcutText>
+        </div>
       )}
     </StyledRow>
   )

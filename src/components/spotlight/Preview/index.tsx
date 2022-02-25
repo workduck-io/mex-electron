@@ -1,29 +1,36 @@
-import downIcon from '@iconify-icons/ph/arrow-down-bold'
-import { Icon } from '@iconify/react'
-import React, { useEffect, useMemo, useRef } from 'react'
-import { useSpring } from 'react-spring'
-import { defaultContent } from '../../../data/Defaults/baseData'
-import { generateTempId } from '../../../data/Defaults/idPrefixes'
-import { IpcAction } from '../../../data/IpcAction'
-import { SaverButton } from '../../../editor/Components/Saver'
-import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
-import { Editor } from '../../../editor/Editor'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { AppType } from '../../../hooks/useInitialize'
-import useLoad from '../../../hooks/useLoad'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
-import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
+import { NodeProperties, useEditorStore } from '../../../store/useEditorStore'
+import React, { useEffect, useMemo, useRef } from 'react'
+import { SaverButton, useSaver } from '../../../editor/Components/Saver'
+import { SeePreview, StyledPreview } from './styled'
+import { createNodeWithUid, mog } from '../../../utils/lib/helper'
+import { getPlateActions, getPlateSelectors } from '@udecode/plate'
+
+import { ActionTitle } from '../Actions/styled'
+import { AppType } from '../../../hooks/useInitialize'
+import { Editor } from '../../../editor/Editor'
+import { Icon } from '@iconify/react'
+import { IpcAction } from '../../../data/IpcAction'
+import { ItemActionType } from '../SearchResults/types'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { defaultContent } from '../../../data/Defaults/baseData'
+import downIcon from '@iconify-icons/ph/arrow-down-bold'
+import { generateTempId } from '../../../data/Defaults/idPrefixes'
+import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import { openNodeInMex } from '../../../utils/combineSources'
+import tinykeys from 'tinykeys'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
-import { NodeProperties, useEditorStore } from '../../../store/useEditorStore'
+import { useDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
+import { useHelpStore } from '../../../store/useHelpStore'
+import { useKeyListener } from '../../../hooks/useShortcutListener'
+import useLoad from '../../../hooks/useLoad'
 import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
-import { combineSources, openNodeInMex } from '../../../utils/combineSources'
-import { useDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
-import { createNodeWithUid } from '../../../utils/lib/helper'
-import { SeePreview, StyledPreview } from './styled'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
+import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
+import { useSpring } from 'react-spring'
 
 export type PreviewType = {
   text: string
@@ -40,113 +47,104 @@ export const getDefaultContent = () => ({ ...defaultContent.content, id: generat
 
 const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   // * Store
-  const fsContent = useEditorStore((state) => state.content)
-  const previewContent = useEditorStore((state) => state.content)
-  const setFsContent = useContentStore((state) => state.setContent)
+  const getContent = useContentStore((state) => state.getContent)
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
   const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
+  const previewContent = useSpotlightEditorStore((state) => state.nodeContent)
+
   const isOnboarding = useOnboard((s) => s.isOnboarding)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const addILink = useDataStore((s) => s.addILink)
   const ilinks = useDataStore((s) => s.ilinks)
+  const shortcuts = useHelpStore((state) => state.shortcuts)
+  const { shortcutDisabled } = useKeyListener()
 
   const setSaved = useContentStore((state) => state.setSaved)
   const addRecent = useRecentsStore((state) => state.addRecent)
+  const addInRecentResearchNodes = useRecentsStore((state) => state.addInResearchNodes)
+
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
-  const saveEditorNode = useSpotlightEditorStore((s) => s.setNode)
 
   // * Custom hooks
-  const { loadNodeProps } = useLoad()
   const ref = useRef<HTMLDivElement>()
-  const { search, selection, setSelection, activeItem, setSearch } = useSpotlightContext()
+  const { onSave } = useSaver()
+  const { selection, setSelection, setSearch, searchResults, activeIndex } = useSpotlightContext()
   const deserializedContentNodes = useDeserializeSelectionToNodes(node.nodeid, preview)
 
   const springProps = useMemo(() => {
-    const style = { width: '0%', opacity: 0, padding: '0' }
-    if (activeItem?.item) return style
+    const style = { width: '45%', padding: '0' }
 
-    if (selection || !normalMode) {
-      if (!search.value) style.width = '100%'
-      else {
-        if (search.type === CategoryType.action) style.width = '0%'
-        else style.width = '50%'
-      }
-    } else {
-      if (!search.value) style.width = '0%'
-      else {
-        if (search.type === CategoryType.action) style.width = '0%'
-        else style.width = '50%'
-      }
+    if (!normalMode) {
+      style.width = '100%'
     }
 
-    if (style.width === '0%') {
-      style.opacity = 0
-      style.padding = '0'
-    } else {
-      style.opacity = 1
-      style.padding = '0.5rem'
+    if (searchResults[activeIndex]?.type !== ItemActionType.ilink) {
+      style.width = '0%'
     }
 
     return style
-  }, [selection, search.value, normalMode])
+  }, [normalMode, activeIndex, searchResults])
 
   const animationProps = useSpring(springProps)
 
   useEffect(() => {
+    mog('NODEEEEEEE', { node, preview, deserializedContentNodes }, { pretty: true, collapsed: false })
     if (preview.isSelection && deserializedContentNodes) {
       const deserializedContent = [{ children: deserializedContentNodes }]
-      const changedContent = showSource ? combineSources(fsContent.content, deserializedContent) : fsContent
+      const activeNodeContent = getContent(node.nodeid)?.content ?? []
+      // const changedContent = showSource ? combineSources(fsContent.content, deserializedContent) : fsContent.content
+      // setNodeContent(deserializedContent)
 
-      setNodeContent(deserializedContent)
-      setFsContent(node.nodeid, deserializedContent)
-
-      // setNodeContent([...changedContent, { children: nodes }])
-      // setFsContent(node.nodeid, [...changedContent, { children: nodes }])
+      setNodeContent([...activeNodeContent, ...deserializedContent])
+      // setFsContent(node.nodeid, [...changedContent, ...deserializedContent])
     }
-  }, [preview.text, showSource])
-
-  useEffect(() => {
-    if (!search.value) {
-      loadNodeProps(node)
-    }
-  }, [preview.text])
+  }, [preview, showSource, node])
 
   const handleScrollToBottom = () => {
     ref.current.scrollTop = ref.current.scrollHeight
   }
 
-  const onBeforeSave = () => {
-    // Used in saver button. node is not polluted by user
+  const handleSaveContent = () => {
     const isNodePresent = ilinks.find((ilink) => ilink.nodeid === node.nodeid)
     if (!isNodePresent) {
       addILink({ ilink: node.path, nodeid: node.nodeid })
     }
-  }
 
-  const onAfterSave = (nodeid: string) => {
+    onSave(node, true, false, getPlateSelectors(node.nodeid).value())
+
     setSaved(true)
 
     setSelection(undefined)
     setSearch({ value: '', type: CategoryType.search })
     setNormalMode(true)
 
-    const nNode = createNodeWithUid(getNewDraftKey())
-    saveEditorNode(nNode)
-    loadNodeProps(nNode)
-
     // * Add this item in recents list of Mex
-    addRecent(nodeid)
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, nodeid)
+    addRecent(node.nodeid)
+    addInRecentResearchNodes(node.nodeid)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, { nodeid: node.nodeid })
 
     // * Hide spotlight after save
     appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
     if (isOnboarding) {
-      openNodeInMex(nodeid)
+      openNodeInMex(node.nodeid)
       changeOnboarding(false)
     }
   }
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      [shortcuts.save.keystrokes]: (event) => {
+        event.preventDefault()
+        if (!shortcutDisabled && !normalMode) handleSaveContent()
+      }
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [normalMode, handleSaveContent])
 
   return (
     <StyledPreview
@@ -160,15 +158,16 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
           <Icon icon={downIcon} />
         </SeePreview>
       )}
+      <ActionTitle>{node.path}</ActionTitle>
       <Editor
         autoFocus={!normalMode}
         focusAtBeginning={!normalMode}
         options={{ exclude: { dnd: true } }}
-        readOnly={search.value ? true : false}
-        content={previewContent?.content ?? getDefaultContent()}
+        readOnly={normalMode}
+        content={previewContent ?? getDefaultContent()}
         editorId={node.nodeid}
       />
-      <SaverButton callbackAfterSave={onAfterSave} callbackBeforeSave={onBeforeSave} noButton />
+      {/* {!normalMode && <SaverButton callbackAfterSave={onAfterSave} callbackBeforeSave={onBeforeSave} noButton />} */}
     </StyledPreview>
   )
 }

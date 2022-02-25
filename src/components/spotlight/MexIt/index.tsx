@@ -1,11 +1,11 @@
-import React from 'react'
 import Shortcuts, { ShortcutType } from '../Shortcuts'
+
+import CreateNodeInput from '../CreateNodeInput'
+import NewEditor from './NewEditor'
+import React from 'react'
 import { StyledLookup } from '../styled'
 
-import NewEditor from './NewEditor'
-import CreateNodeInput from '../CreateNodeInput'
-
-const New = () => {
+const MexIt = () => {
   return (
     <StyledLookup>
       <CreateNodeInput />
@@ -15,4 +15,4 @@ const New = () => {
   )
 }
 
-export default New
+export default MexIt

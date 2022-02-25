@@ -1,18 +1,20 @@
-import React from 'react'
-import { HashRouter, Routes, Route } from 'react-router-dom'
-import Spotlight from '../../components/spotlight'
-import GlobalStyle from '../../style/spotlight/global'
+import { HashRouter, Route, Routes, useLocation } from 'react-router-dom'
+
 import Bubble from '../../components/spotlight/Bubble'
 import GlobalListener from '../../components/spotlight/GlobalListener'
-import ProtectedRoute from './ProtectedRoute'
+import GlobalStyle from '../../style/spotlight/global'
 import Login from '../../components/spotlight/Login'
+import ProtectedRoute from './ProtectedRoute'
 import { ROUTE_PATHS } from '../routes/urls'
+import React from 'react'
+import Spotlight from '../../components/spotlight'
 
 const SpotlightRoute = () => {
   return (
     <HashRouter>
       <Routes>
         <Route path={ROUTE_PATHS.home} element={<ProtectedRoute component={Spotlight} />} />
+
         <Route path={ROUTE_PATHS.login} element={<Login />} />
       </Routes>
       <GlobalListener />

@@ -7,7 +7,6 @@ import equal from 'fast-deep-equal'
 import RCTree from 'rc-tree'
 import { Key } from 'rc-tree/lib/interface'
 import React, { memo } from 'react'
-import { useRouting as getRouting, ROUTE_PATHS, NavigationType } from '../../../views/routes/urls'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
@@ -136,8 +135,6 @@ class Tree extends React.Component<RCTreeProps> {
       }
     }
 
-    // console.log('We be dropping stuff here', { dropPos, dragObj, dragKey, dropKey });
-
     const singleId = getNodeIdLast(dragKey)
 
     const from = dragKey
@@ -145,17 +142,10 @@ class Tree extends React.Component<RCTreeProps> {
 
     const { prefillRefactorModal: prefillModal } = this.props
 
-    // console.log(getMockRefactor(from, to));
     prefillModal(from, to)
-
-    // this.setState({
-    //   gData: data,
-    // });
   }
 
   onExpand(expandedKeys: any) {
-    // eslint-disable-next-line no-console
-    // console.log('onExpand', expandedKeys)
     if (expandedKeys) {
       const { currentNode } = this.props
       const newExp = expandedKeys.filter((k) => k)

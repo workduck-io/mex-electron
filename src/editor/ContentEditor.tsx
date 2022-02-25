@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 
+import BlockInfoBar from './Components/Blocks/BlockInfoBar'
 import { BlockOptionsMenu } from './Components/EditorContextMenu'
 import Editor from './Editor'
 import Metadata from '../components/mex/Metadata/Metadata'
@@ -13,6 +14,7 @@ import { mog } from '../utils/lib/helper'
 import shallow from 'zustand/shallow'
 import sw from 'stopword'
 import tinykeys from 'tinykeys'
+import useBlockStore from '../store/useBlockStore'
 import { useEditorBuffer } from '../hooks/useEditorBuffer'
 import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
@@ -23,15 +25,13 @@ import { useNavigation } from '../hooks/useNavigation'
 import { useNewSearchStore } from '../store/useSearchStore'
 import { usePlateEditorRef } from '@udecode/plate'
 import useSuggestionStore from '../store/useSuggestions'
-// import { useQStore } from '../store/useQStore'
 import useToggleElements from '../hooks/useToggleElements'
-import useBlockStore from '../store/useBlockStore'
-import BlockInfoBar from './Components/Blocks/BlockInfoBar'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const { toggleFocusMode } = useLayout()
   const { saveApiAndUpdate } = useLoad()
+
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
 
   const { showGraph, showSuggestedNodes } = useToggleElements()
@@ -42,24 +42,18 @@ const ContentEditor = () => {
     shallow
   )
 
-  const shortcuts = useHelpStore((store) => store.shortcuts)
   const { shortcutHandler } = useKeyListener()
   const { setSuggestions } = useSuggestionStore()
+  const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const { move } = useNavigation()
-
-  // const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
-  // const add2Q = useQStore((s) => s.add2Q)
 
   const editorRef = usePlateEditorRef()
 
   const { addOrUpdateValBuffer, getBufferVal } = useEditorBuffer()
 
   const onChangeSave = (val: any[]) => {
-    // mog('Trigger onChange', { node, val })
     if (val && node && node.nodeid !== '__null__') {
-      // mog('Saving onChange', { node, val })
-
       if (showSuggestedNodes) {
         const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
 
@@ -76,21 +70,11 @@ const ContentEditor = () => {
         setSuggestions(withoutCurrentNode)
       }
 
-      // add2Q(node.nodeid)
       addOrUpdateValBuffer(node.nodeid, val)
-      // saveEditorValueAndUpdateStores(node, val, false)
     }
   }
 
-  const editorId = useMemo(
-    () =>
-      getEditorId(
-        node.nodeid,
-        // fsContent.metadata?.updatedAt?.toString() ?? 'not_updated',
-        false
-      ),
-    [node, fetchingContent]
-  )
+  const editorId = useMemo(() => getEditorId(node.nodeid, false), [node, fetchingContent])
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {

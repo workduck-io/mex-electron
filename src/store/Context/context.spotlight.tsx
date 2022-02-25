@@ -19,6 +19,8 @@ type SpotlightContextType = {
   setSearch: (val: Search) => void
   selection: any
   setSelection: (val: any) => void
+  searchResults: Array<ListItemType>
+  setSearchResults: (val: Array<ListItemType>) => void
   activeIndex: number
   setActiveIndex: any
   setActiveItem: any
@@ -31,6 +33,7 @@ export const useSpotlightContext = () => useContext(SpotlightContext)
 export const SpotlightProvider: React.FC = ({ children }: any) => {
   const [search, setSearch] = useState<Search>({ value: '', type: CategoryType.search })
   const [selection, setSelection] = useState<any>()
+  const [searchResults, setSearchResults] = useState<Array<ListItemType>>([])
   const [activeIndex, setActiveIndex] = useState<number>(0)
   const [activeItem, setActiveItem] = useState<ActiveItem>({ item: undefined, active: false })
 
@@ -42,6 +45,8 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
     activeIndex,
     setActiveIndex,
     activeItem,
+    searchResults,
+    setSearchResults,
     setActiveItem
   }
 

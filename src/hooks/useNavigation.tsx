@@ -47,8 +47,8 @@ export const withNavigation = (Component: any) => {
     const { goTo } = useRouting()
 
     const onPush = useCallback((nodeid: string, options?: LoadNodeOptions) => {
+      goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
       push(nodeid, options)
-      goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid)
     }, [])
 
     return <Component push={onPush} move={move} {...props} /> // eslint-disable-line react/jsx-props-no-spreading

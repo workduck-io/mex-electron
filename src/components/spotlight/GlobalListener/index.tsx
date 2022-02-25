@@ -1,23 +1,25 @@
+import { AppType, useInitialize } from '../../../hooks/useInitialize'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import React, { memo, useEffect, useState } from 'react'
+
+import { FileData } from '../../../types/data'
+import { IpcAction } from '../../../data/IpcAction'
+import { convertDataToRawText } from '../../../utils/search/localSearch'
+import { getHtmlString } from '../../../components/spotlight/Source'
+import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import { ipcRenderer } from 'electron'
+import { mog } from '../../../utils/lib/helper'
+import useAnalytics from '../../../services/analytics'
+import { useAuthStore } from '../../../services/auth/useAuth'
+import { useLocation } from 'react-router'
+import { useNewSearchStore } from '../../../store/useSearchStore'
+import useOnboard from '../../../store/useOnboarding'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
-import { getHtmlString } from '../../../components/spotlight/Source'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
-import { ipcRenderer } from 'electron'
-import { IpcAction } from '../../../data/IpcAction'
-import { FileData } from '../../../types/data'
-import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
-import { useNewSearchStore } from '../../../store/useSearchStore'
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { useInitialize, AppType } from '../../../hooks/useInitialize'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { convertDataToRawText } from '../../../utils/search/localSearch'
-import { useLocation } from 'react-router'
-import { useAuthStore } from '../../../services/auth/useAuth'
-import useAnalytics from '../../../services/analytics'
-import useOnboard from '../../../store/useOnboarding'
-import { mog } from '../../../utils/lib/helper'
-import { useRouting, ROUTE_PATHS, NavigationType } from '../../../views/routes/urls'
+
 interface IndexAndFileData {
   fileData: FileData
   indexData: any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -36,7 +38,6 @@ const GlobalListener = memo(() => {
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const initializeSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
-  const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
 
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()
@@ -57,15 +58,12 @@ const GlobalListener = memo(() => {
     } else {
       setSelection(temp)
     }
-    setNormalMode(false)
+    // setNormalMode(false)
     setIsPreview(true)
   }, [showSource, temp])
 
   useEffect(() => {
     ipcRenderer.on(IpcAction.SELECTED_TEXT, (_event, data) => {
-      if (location.pathname === ROUTE_PATHS.home) {
-        setIsPreview(false)
-      }
       if (!data) {
         setSelection(undefined)
         setIsPreview(false)

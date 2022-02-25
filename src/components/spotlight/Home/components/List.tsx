@@ -1,26 +1,28 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useVirtual } from 'react-virtual'
 import { ActiveItem, CategoryType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
-import { Action, ActionTitle } from '../../Actions/styled'
-import useItemExecutor from '../actionExecutor'
-import { usePointerMovedSinceMount, StyledList, ListItem } from '../styled'
-import Item from './Item'
 import { ItemActionType, ListItemType } from '../../SearchResults/types'
-import { useSpotlightEditorStore } from '../../../../store/editor.spotlight'
-import { useSpotlightAppStore } from '../../../../store/app.spotlight'
-import { defaultContent } from '../../../../data/Defaults/baseData'
-import { IpcAction } from '../../../../data/IpcAction'
-import { getNewDraftKey } from '../../../../editor/Components/SyncBlock/getNewBlockData'
-import { appNotifierWindow } from '../../../../electron/utils/notifiers'
+import { ListItem, StyledList, usePointerMovedSinceMount } from '../styled'
+import React, { useEffect, useMemo, useRef } from 'react'
+import { findIndex, groupBy } from 'lodash'
+
+import { ActionTitle } from '../../Actions/styled'
 import { AppType } from '../../../../hooks/useInitialize'
+import { IpcAction } from '../../../../data/IpcAction'
+import Item from './Item'
 import { NodeProperties } from '../../../../store/useEditorStore'
+import { appNotifierWindow } from '../../../../electron/utils/notifiers'
 import { getContent } from '../../../../utils/helpers'
-import { createNodeWithUid, mog } from '../../../../utils/lib/helper'
-import { useSaveData } from '../../../../hooks/useSaveData'
+import { mog } from '../../../../utils/lib/helper'
+import { openNodeInMex } from '../../../../utils/combineSources'
 import { useDataSaverFromContent } from '../../../../editor/Components/Saver'
-import useLoad from '../../../../hooks/useLoad'
 import useDataStore from '../../../../store/useDataStore'
+import useItemExecutor from '../actionExecutor'
+import useLoad from '../../../../hooks/useLoad'
+import { useRecentsStore } from '../../../../store/useRecentsStore'
+import { useSaveData } from '../../../../hooks/useSaveData'
+import { useSpotlightAppStore } from '../../../../store/app.spotlight'
+import { useSpotlightEditorStore } from '../../../../store/editor.spotlight'
 import { useSpring } from 'react-spring'
+import { useVirtual } from 'react-virtual'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -33,137 +35,146 @@ const List = ({
   selectedItem: ActiveItem
   setSelectedItem: (action: ActiveItem) => void
 }) => {
-  const { search, setSelection, activeIndex, activeItem, setSearch, selection, setActiveIndex } = useSpotlightContext()
+  const { search, setSelection, activeIndex, searchResults, activeItem, setSearch, selection, setActiveIndex } =
+    useSpotlightContext()
   const parentRef = useRef(null)
   const pointerMoved = usePointerMovedSinceMount()
 
-  const setNode = useSpotlightEditorStore((s) => s.setNode)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
-  const loadNode = useSpotlightEditorStore((s) => s.loadNode)
   const { saveData } = useSaveData()
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
 
   const node = useSpotlightEditorStore((s) => s.node)
 
+  const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
 
   const { getNode } = useLoad()
   const addILink = useDataStore((s) => s.addILink)
-  const setIsPreview = useSpotlightEditorStore((s) => s.setIsPreview)
 
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
 
   const listStyle = useMemo(() => {
-    const style = { width: '100%', opacity: 1, marginRight: '0' }
-    mog('LIST', { activeItem, search, normalMode })
-    if (activeItem?.item) return style
+    const style = { width: '55%', marginRight: '0.5rem' }
 
-    if (selection || !normalMode) {
-      if (!search.value) style.width = '0%'
-      else {
-        if (search.type === CategoryType.action) style.width = '100%'
-        else style.width = '50%'
-      }
-    } else {
-      if (!search.value) style.width = '100%'
-      else {
-        if (search.type === CategoryType.action) style.width = '100%'
-        else style.width = '50%'
-      }
+    if (!normalMode) {
+      style.width = '0%'
+      style.marginRight = '0'
+    }
+    if (searchResults[activeIndex]?.type !== ItemActionType.ilink) {
+      style.width = '100%'
     }
 
-    if (style.width === '0%') style.opacity = 0
-    else if (style.width === '50%') style.marginRight = '0.5rem'
-    else style.opacity = 1
-
     return style
-  }, [selection, search.value, normalMode, activeItem.item])
+  }, [normalMode, activeIndex, searchResults])
 
   const springProps = useSpring(listStyle)
 
   const { itemActionExecutor } = useItemExecutor()
+  const groups = Object.keys(groupBy(data, (n) => n.category))
+
+  const indexes = React.useMemo(() => groups.map((gn) => findIndex(data, (n) => n.category === gn)), [groups])
 
   const virtualizer = useVirtual({
     size: data?.length ?? 0,
     parentRef
   })
 
-  const { scrollToIndex } = virtualizer
+  const { scrollToIndex, scrollToOffset } = virtualizer
 
   React.useEffect(() => {
     scrollToIndex(activeIndex)
   }, [activeIndex])
 
+  React.useEffect(() => {
+    if (activeItem) {
+      scrollToOffset(0)
+    }
+  }, [activeItem])
+
   useEffect(() => {
     const handler = (event) => {
       if (event.key === 'ArrowUp') {
         event.preventDefault()
-        setActiveIndex((index: number) => {
-          let nextIndex = index > 0 ? index - 1 : index
 
-          // avoid setting active index on a group
-          if (typeof data[nextIndex] === 'string') {
-            if (nextIndex === 0) nextIndex = index
-            else nextIndex -= 1
+        // * check if cmd + arrow up is pressed
+        if (event.metaKey) {
+          for (let i = indexes[indexes.length - 1]; i > -1; i--) {
+            const categoryIndex = indexes[i]
+            if (categoryIndex < activeIndex && data[categoryIndex].category !== data[activeIndex].category) {
+              setActiveIndex(categoryIndex)
+              break
+            }
           }
+        } else
+          setActiveIndex((index: number) => {
+            let nextIndex = index > 0 ? index - 1 : index
 
-          return nextIndex
-        })
+            // avoid setting active index on a group
+            if (typeof data[nextIndex] === 'string') {
+              if (nextIndex === 0) nextIndex = index
+              else nextIndex -= 1
+            }
 
-        if (data[activeIndex]?.extras?.new) setIsPreview(false)
+            return nextIndex
+          })
+        // if (data[activeIndex]?.extras?.new) setIsPreview(false)
       } else if (event.key === 'ArrowDown') {
         event.preventDefault()
-        setActiveIndex((index) => {
-          let nextIndex = index < data.length - 1 ? index + 1 : index
 
-          // * avoid setting active index on a group
-          if (typeof data[nextIndex] === 'string') {
-            if (nextIndex === data.length - 1) nextIndex = index
-            else nextIndex += 1
+        // * check if cmd + arrow down is pressed
+        if (event.metaKey) {
+          for (let i = 0; i < indexes.length; i++) {
+            const categoryIndex = indexes[i]
+            if (categoryIndex > activeIndex && data[categoryIndex].category !== data[activeIndex].category) {
+              setActiveIndex(categoryIndex)
+              break
+            }
           }
+        } else
+          setActiveIndex((index) => {
+            let nextIndex = index < data.length - 1 ? index + 1 : index
 
-          return nextIndex
-        })
+            // * avoid setting active index on a group
+            if (typeof data[nextIndex] === 'string') {
+              if (nextIndex === data.length - 1) nextIndex = index
+              else nextIndex += 1
+            }
+
+            return nextIndex
+          })
       } else if (event.key === 'Enter') {
-        if (data[activeIndex]?.type === ItemActionType.ilink) {
-          let newNode: NodeProperties
-          if (data[activeIndex]?.extras.new) {
-            const isDraftNode = node && node.path.startsWith('Draft.')
-            newNode = isDraftNode ? node : createNodeWithUid(getNewDraftKey())
+        const currentActiveItem = data[activeIndex]
+        if (currentActiveItem?.type === ItemActionType.ilink) {
+          let newNode: NodeProperties = node
 
-            const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : search.value
+          if (currentActiveItem?.extras.new) {
+            const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : node.path
 
-            const d = addILink({ ilink: nodeName, nodeid: newNode.nodeid })
+            const d = addILink({ ilink: nodeName, nodeid: node.nodeid })
             newNode = getNode(newNode.nodeid)
-          } else {
-            newNode = getNode(data[activeIndex]?.extras?.nodeid)
           }
-
-          setSearch({ value: '', type: CategoryType.search })
 
           if (selection) {
-            const newNodeContent = getContent(newNode.nodeid)
-            const newContentData = !data[activeIndex]?.extras?.new
-              ? [...newNodeContent.content, ...nodeContent]
-              : nodeContent
-            saveEditorValueAndUpdateStores(newNode.nodeid, newContentData, true)
+            addInRecentResearchNodes(newNode.nodeid)
+            saveEditorValueAndUpdateStores(newNode.nodeid, nodeContent, true)
             saveData()
 
             appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
-            loadNode(createNodeWithUid(getNewDraftKey()), defaultContent.content)
-
             setNormalMode(true)
             setSelection(undefined)
           } else {
-            setNode(newNode)
-            setNormalMode(false)
-            setSelection(undefined)
+            if (!currentActiveItem?.extras?.new) {
+              openNodeInMex(newNode.nodeid)
+              setNormalMode(false)
+            }
           }
+          setSearch({ value: '', type: CategoryType.search })
         } else {
-          if (data[activeIndex]?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
+          if (currentActiveItem?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
             setSelectedItem({ item: data[activeIndex], active: false })
             itemActionExecutor(data[activeIndex])
           } else {
@@ -180,51 +191,46 @@ const List = ({
       }
     }
 
-    if ((!selection && normalMode) || search.value) {
+    if (normalMode) {
       window.addEventListener('keydown', handler)
     }
 
     return () => window.removeEventListener('keydown', handler)
-  }, [data, activeIndex, normalMode, selection, selectedItem?.item, search.value])
+  }, [data, activeIndex, node, nodeContent, normalMode, selection, selectedItem?.item, search.value])
 
   useEffect(() => {
     setActiveIndex(0)
   }, [data])
 
   function handleClick(id: number) {
-    if (data[id]?.type === ItemActionType.ilink) {
-      let newNode: NodeProperties
-      if (data[id]?.extras.new) {
-        const isDraftNode = node && node.path.startsWith('Draft.')
-        newNode = isDraftNode ? node : createNodeWithUid(getNewDraftKey())
+    const currentActiveItem = data[activeIndex]
+    if (currentActiveItem?.type === ItemActionType.ilink) {
+      let newNode: NodeProperties = node
 
-        const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : search.value
+      if (currentActiveItem?.extras.new) {
+        const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : node.path
 
-        const d = addILink({ ilink: nodeName, nodeid: newNode.nodeid })
+        const d = addILink({ ilink: nodeName, nodeid: node.nodeid })
         newNode = getNode(newNode.nodeid)
-      } else {
-        newNode = getNode(data[id]?.extras?.nodeid)
       }
 
-      setSearch({ value: '', type: CategoryType.search })
-
       if (selection) {
-        const newNodeContent = getContent(newNode.nodeid)
-        const newContentData = !data[id]?.extras?.new ? [...newNodeContent.content, ...nodeContent] : nodeContent
-        saveEditorValueAndUpdateStores(newNode.nodeid, newContentData, true)
+        addInRecentResearchNodes(newNode.nodeid)
+        mog('CONTENT', { nodeContent }, { pretty: true, collapsed: false })
+        saveEditorValueAndUpdateStores(newNode.nodeid, nodeContent, true)
         saveData()
 
         appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
-        loadNode(createNodeWithUid(getNewDraftKey()), defaultContent.content)
-
         setNormalMode(true)
         setSelection(undefined)
       } else {
-        setNode(newNode)
-        setNormalMode(false)
-        setSelection(undefined)
+        if (!currentActiveItem?.extras.new) {
+          openNodeInMex(newNode.nodeid)
+          setNormalMode(false)
+        }
       }
+      setSearch({ value: '', type: CategoryType.search })
     } else {
       if (data[id]?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
         setSelectedItem({ item: data[id], active: false })
@@ -259,11 +265,7 @@ const List = ({
 
           return (
             <ListItem key={virtualRow.index} ref={virtualRow.measureRef} start={virtualRow.start} {...handlers}>
-              {item.category !== lastItem?.category && (
-                <div style={{ marginTop: '8px' }}>
-                  <ActionTitle>{item.category}</ActionTitle>
-                </div>
-              )}
+              {item.category !== lastItem?.category && <ActionTitle>{item.category}</ActionTitle>}
               <Item item={item} active={active} />
             </ListItem>
           )

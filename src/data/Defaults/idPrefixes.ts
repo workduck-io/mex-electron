@@ -19,3 +19,5 @@ export const generateSyncBlockId = () => `${SYNC_BLOCK_ID_PREFIX}${ID_SEPARATOR}
 export const generateTempId = () => `${TEMP_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`
 export const generateSnippetId = () => `${SNIPPET_PREFIX}${ID_SEPARATOR}${nanoid()}`
 export const generateSyncTempId = () => `${SYNCTEMP_PREFIX}${ID_SEPARATOR}${nanoid()}`
+
+export const cleanString = (str: string) => (str.startsWith('Draft.') ? str.replace('Draft.', '') : str)

@@ -6,13 +6,11 @@ export const StyledList = styled(animated.div)`
   overflow: hidden;
   position: relative;
   scroll-behavior: smooth;
-  max-height: 400px;
+  max-height: 422px;
 `
 
 export const ListItem = styled.div<{ start: number }>`
   position: absolute;
-  /* top: 2; */
-  /* left: 0; */
   transform: translateY(${(props) => props.start}px);
   width: 100%;
   cursor: pointer;

@@ -1,23 +1,26 @@
-/* eslint-disable react/prop-types */
-import React, { useRef, useEffect } from 'react'
-import { useDebouncedCallback } from 'use-debounce'
-
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { StyledSearch, StyledInput } from './styled'
+/* eslint-disable react/prop-types */
+import React, { useEffect, useRef } from 'react'
+import { StyledInput, StyledSearch } from './styled'
+
 import { CenterIcon } from '../../../style/spotlight/layout'
-import WDLogo from './Logo'
-import { useTheme } from 'styled-components'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { useSearchProps } from './useSearchProps'
 import { Icon } from '@iconify/react'
+import Message from '../Message'
+import WDLogo from './Logo'
+import { useContentStore } from '../../../store/useContentStore'
+import { useDebouncedCallback } from 'use-debounce'
+import { useSearchProps } from './useSearchProps'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
+import { useTheme } from 'styled-components'
 
 const Search: React.FC = () => {
-  const ref = useRef<HTMLInputElement>()
   const theme = useTheme()
+  const ref = useRef<HTMLInputElement>()
   const { setSearch, search } = useSpotlightContext()
   const input = useSpotlightAppStore((store) => store.input)
   const setInput = useSpotlightAppStore((store) => store.setInput)
+  const saved = useContentStore((store) => store.saved)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
 
@@ -42,7 +45,6 @@ const Search: React.FC = () => {
   useEffect(() => {
     if (search.value === '') {
       ref.current.value = ''
-      setInput('')
     }
     ref.current.focus()
   }, [search, normalMode])
@@ -56,16 +58,19 @@ const Search: React.FC = () => {
       </CenterIcon>
       <StyledInput
         ref={ref}
-        autoFocus
+        autoFocus={normalMode}
         value={input}
+        disabled={!normalMode}
         id="spotlight_search"
         name="spotlight_search"
         placeholder={placeholder}
         onChange={({ target: { value } }) => {
+          const val = value.replace(/^\.|\.$/g, '')
           setInput(value)
-          handleSearchInput(value)
+          handleSearchInput(val)
         }}
       />
+      {saved && <Message text="Saved" />}
       <CenterIcon>
         <WDLogo />
       </CenterIcon>
