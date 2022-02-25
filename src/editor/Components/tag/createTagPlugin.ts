@@ -23,7 +23,7 @@ export const createTagPlugin = (): PlatePlugin => ({
  *
  */
 export const withTag: WithOverride<any, PlatePlugin> = (editor, { type, options }) => {
-  mog('Setup Plugin with Tag', { type, options })
+  // mog('Setup Plugin with Tag', { type, options })
   const { deleteBackward } = editor
 
   editor.deleteBackward = (options) => {

@@ -1,21 +1,19 @@
 import React from 'react'
-import { mog } from '../utils/lib/helper'
 import { linkInRefactor } from '../components/mex/Refactor/doesLinkRemain'
-import { getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
+import { getAllParentIds } from '../components/mex/Sidebar/treeUtils'
 import { generateNodeUID } from '../data/Defaults/idPrefixes'
 import useAnalytics from '../services/analytics'
 import { CustomEvents } from '../services/analytics/events'
-import { Contents, useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
 import { useRefactorStore } from '../store/useRefactorStore'
 import { NodeLink } from '../types/relations'
-import { useEditorBuffer } from './useEditorBuffer'
+import { mog } from '../utils/lib/helper'
 import { getNodeIcon } from '../utils/lib/icons'
 import { isMatch } from '../utils/lib/paths'
+import { useEditorBuffer } from './useEditorBuffer'
 
 export const useRefactor = () => {
   const ilinks = useDataStore((state) => state.ilinks)
-  const contents = useContentStore((state) => state.contents)
 
   // const historyStack = useHistoryStore((state) => state.stack)
   // const updateHistory = useHistoryStore((state) => state.update)
@@ -35,7 +33,6 @@ export const useRefactor = () => {
   */
 
   const setILinks = useDataStore((state) => state.setIlinks)
-  const initContents = useContentStore((state) => state.initContents)
   const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
   const { trackEvent } = useAnalytics()
 
@@ -104,23 +101,7 @@ export const useRefactor = () => {
       icon: getNodeIcon(p)
     }))
 
-    // console.log({ newIlinks, newParents, newParentIlinks })
-
-    // Remap the contents with changed links
-    const newContents: Contents = {}
-    Object.keys(contents).forEach((key) => {
-      const content = contents[key]
-      if (content) {
-        newContents[key] = { type: content.type ?? 'p', content: refactorLinksInContent(refactored, content.content) }
-      }
-    })
-
-    // updateHistory(applyRefactorToIds(historyStack, refactored), 0)
-    // updateLastOpened(applyRefactorToIds(lastOpened, refactored))
-
-    // mog('execRefactor', { from, to, newIlinks: [...newIlinks, ...newParentIlinks], newContents })
     setILinks([...newIlinks, ...newParentIlinks])
-    initContents(newContents)
 
     const baseId = linkInRefactor(useDataStore.getState().baseNodeId, refactored)
     if (baseId !== false) {
@@ -132,29 +113,6 @@ export const useRefactor = () => {
   }
 
   return { getMockRefactor, execRefactor }
-}
-
-const refactorLinksInContent = (refactored: NodeLink[], content: any[]) => {
-  const refMap: Record<string, string> = {}
-  refactored.forEach((n) => (refMap[n.from] = n.to))
-
-  if (!content) return []
-
-  const newCont = content.map((n) => {
-    if (n.type && n.type === 'ilink') {
-      if (Object.keys(refMap).indexOf(n.value) !== -1) {
-        return {
-          ...n,
-          value: refMap[n.value]
-        }
-      }
-    }
-    if (n.children && n.children.length > 0) {
-      return { ...n, children: refactorLinksInContent(refactored, n.children) }
-    }
-    return n
-  })
-  return newCont
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -175,15 +133,4 @@ export const withRefactor = (Component: any) => {
       />
     ) // eslint-disable-line react/jsx-props-no-spreading
   }
-}
-
-const applyRefactorToIds = (ids: string[], refactored: NodeLink[]) => {
-  return ids.map((id) => {
-    for (const ref of refactored) {
-      if (ref.from === id) {
-        return ref.to
-      }
-    }
-    return id
-  })
 }
