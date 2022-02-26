@@ -26,7 +26,6 @@ export const Shortcut = styled.div`
 `
 
 export const Dot = styled.span<{ active: string }>`
-  /* padding: 2px; */
   height: 5px;
   width: 5px;
   border-radius: 50%;
@@ -70,14 +69,16 @@ function Item({ item, active, onClick }: { item: ListItemType; active?: boolean;
             width={18}
             icon={item?.icon}
           />
-          <div style={{ whiteSpace: 'nowrap', maxWidth: '200px', textOverflow: 'ellipsis', overflowX: 'hidden' }}>
-            {item?.extras?.new ? (
-              <div>
-                Create a <PrimaryText>{search.value && !activeItem.active ? newNodeName : 'Quick note'}</PrimaryText>
-              </div>
-            ) : (
-              <div>{item?.type === ItemActionType.ilink ? cleanString(item?.title) : item?.title}</div>
-            )}
+          <div style={{ maxWidth: '200px' }}>
+            <div style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflowX: 'hidden' }}>
+              {item?.extras?.new ? (
+                <>
+                  Create a <PrimaryText>{search.value && !activeItem.active ? newNodeName : 'Quick note'}</PrimaryText>
+                </>
+              ) : (
+                <>{item?.type === ItemActionType.ilink ? cleanString(item?.title) : item?.title}</>
+              )}
+            </div>
             <Description>{item?.description ?? 'some content'}</Description>
           </div>
         </div>

@@ -14,11 +14,9 @@ import { mog } from '../../../utils/lib/helper'
 import useAnalytics from '../../../services/analytics'
 import { useAuthStore } from '../../../services/auth/useAuth'
 import useDataStore from '../../../store/useDataStore'
-import { useLocation } from 'react-router'
 import { useNewSearchStore } from '../../../store/useSearchStore'
 import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
-import { useSaveData } from '../../../hooks/useSaveData'
 import { useSaver } from '../../../editor/Components/Saver'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightContext } from '../../../store/Context/context.spotlight'
@@ -31,7 +29,6 @@ interface IndexAndFileData {
 }
 
 const GlobalListener = memo(() => {
-  const location = useLocation()
   const [temp, setTemp] = useState<any>()
   const { setSelection } = useSpotlightContext()
   const setIsPreview = useSpotlightEditorStore((state) => state.setIsPreview)
@@ -104,8 +101,8 @@ const GlobalListener = memo(() => {
         addInRecentResearchNodes(node.nodeid)
         onSave(node, true, false, content)
         appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, { nodeid: node.nodeid })
+        setReset()
       }
-      setReset()
     })
 
     ipcRenderer.on(IpcAction.LOGGED_IN, (_event, arg) => {

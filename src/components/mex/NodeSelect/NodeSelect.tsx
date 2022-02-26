@@ -1,24 +1,4 @@
-import addCircleLine from '@iconify-icons/ri/add-circle-line'
-import checkboxCircleLine from '@iconify-icons/ri/checkbox-circle-line'
-import errorWarningLine from '@iconify-icons/ri/error-warning-line'
-import fileList2Line from '@iconify-icons/ri/file-list-2-line'
-import lock2Line from '@iconify-icons/ri/lock-2-line'
-import { Icon } from '@iconify/react'
-import { useCombobox } from 'downshift'
 import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-// import { MexIcon } from '../../../style/Layouts'
-import { useDebouncedCallback } from 'use-debounce'
-import { useLinks } from '../../../hooks/useLinks'
-import { useContentStore } from '../../../store/useContentStore'
-import useDataStore from '../../../store/useDataStore'
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { Input } from '../../../style/Form'
-import { ILink } from '../../../types/Types'
-import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
-import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
-import { isClash, isReserved } from '../../../utils/lib/paths'
-import { convertContentToRawText } from '../../../utils/search/localSearch'
 import {
   StyledCombobox,
   StyledInputWrapper,
@@ -29,6 +9,27 @@ import {
   SuggestionError,
   SuggestionText
 } from './NodeSelect.styles'
+import { isClash, isReserved } from '../../../utils/lib/paths'
+import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
+
+import { ILink } from '../../../types/Types'
+import { Icon } from '@iconify/react'
+import { Input } from '../../../style/Form'
+import addCircleLine from '@iconify-icons/ri/add-circle-line'
+import checkboxCircleLine from '@iconify-icons/ri/checkbox-circle-line'
+import { convertContentToRawText } from '../../../utils/search/localSearch'
+import errorWarningLine from '@iconify-icons/ri/error-warning-line'
+import fileList2Line from '@iconify-icons/ri/file-list-2-line'
+import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
+import lock2Line from '@iconify-icons/ri/lock-2-line'
+import toast from 'react-hot-toast'
+import { useCombobox } from 'downshift'
+import { useContentStore } from '../../../store/useContentStore'
+import useDataStore from '../../../store/useDataStore'
+// import { MexIcon } from '../../../style/Layouts'
+import { useDebouncedCallback } from 'use-debounce'
+import { useLinks } from '../../../hooks/useLinks'
+import { useRecentsStore } from '../../../store/useRecentsStore'
 
 export type ComboItem = {
   // Text to be shown in the combobox list
@@ -171,7 +172,7 @@ function NodeSelect({
 
   const getNewItems = (inputValue: string) => {
     // const newItems =  ilinks.filter((item) => item.text.toLowerCase().startsWith(inputValue.toLowerCase()))
-      // mog('Slelected', { inputValue })
+    // mog('Slelected', { inputValue })
     if (inputValue !== '') {
       const newItems = fuzzySearch(ilinks, inputValue, { keys: ['text'] })
       if (
@@ -361,7 +362,6 @@ function NodeSelect({
           placeholder={placeholder}
           id={id}
           name={name}
-          // defaultValue={defaultValue}
           onChange={(e) => {
             getInputProps().onChange(e)
             onInpChange(e)
@@ -376,11 +376,6 @@ function NodeSelect({
           ) : (
             <Icon className="errorIcon" icon={errorWarningLine}></Icon>
           ))}
-        {/*
-        Open lookup button
-        <button type="button" {...getToggleButtonProps()} aria-label="toggle menu">
-          &#8595;
-        </button> */}
       </StyledCombobox>
       <StyledMenu {...getMenuProps()} isOpen={isOpen}>
         {disallowReserved && nodeSelectState.reserved ? (
@@ -400,12 +395,10 @@ function NodeSelect({
               inputItems.map((item, index) => {
                 let desc: undefined | string = undefined
                 if (item.type !== 'new') {
-                  // const path = getNodeIdFromUid()
                   const content = contents[item.nodeid]
                   if (content) desc = convertContentToRawText(content.content, ' ')
                   if (desc === '') desc = undefined
                 }
-                // console.log({ desc, item })
                 const icon = item.icon ? item.icon : fileList2Line
                 if (nodeSelectState.clash && disallowClash && item.type === 'new') return null
                 return (

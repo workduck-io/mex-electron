@@ -13,6 +13,7 @@ import { useSearchProps } from './useSearchProps'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useTheme } from 'styled-components'
+import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 
 const Search: React.FC = () => {
   const theme = useTheme()
@@ -66,9 +67,13 @@ const Search: React.FC = () => {
         name="spotlight_search"
         placeholder={placeholder}
         onChange={({ target: { value } }) => {
-          const val = value.replace(/^\.|\.$/g, '')
-          setInput(value)
-          handleSearchInput(val)
+          const { key: what } = withoutContinuousDelimiter(value)
+
+          const dots = new RegExp(/\.{2,}/g)
+          const replaceContinousDots = value.replace(dots, '.') // * replace two or more dots with one dot
+
+          setInput(replaceContinousDots)
+          handleSearchInput(what)
         }}
       />
       {saved && <Message text="Saved" />}
