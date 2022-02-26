@@ -1,27 +1,28 @@
-import saveLine from '@iconify-icons/ri/save-line'
-import { TippyProps } from '@tippyjs/react'
-import { getPlateId, platesStore, usePlateId, usePlateSelectors } from '@udecode/plate'
-import React, { useEffect } from 'react'
-import toast from 'react-hot-toast'
-import tinykeys from 'tinykeys'
-import { useApi } from '../../apis/useSaveApi'
-import { useLinks } from '../../hooks/useLinks'
-import { useSaveData } from '../../hooks/useSaveData'
-import { useKeyListener } from '../../hooks/useShortcutListener'
-import { useTags } from '../../hooks/useTags'
-import { useUpdater } from '../../hooks/useUpdater'
-import useAnalytics from '../../services/analytics'
-import { ActionType } from '../../services/analytics/events'
-import { useContentStore } from '../../store/useContentStore'
 import { NodeProperties, useEditorStore } from '../../store/useEditorStore'
-import { useHelpStore } from '../../store/useHelpStore'
-import { useNewSearchStore } from '../../store/useSearchStore'
-import { useSnippetStore } from '../../store/useSnippetStore'
+import React, { useEffect } from 'react'
+import { getPlateId, platesStore, usePlateId, usePlateSelectors } from '@udecode/plate'
+
+import { ActionType } from '../../services/analytics/events'
 import IconButton from '../../style/Buttons'
 import { NodeEditorContent } from '../../types/Types'
-import { mog } from '../../utils/lib/helper'
-import { getEventNameFromElement } from '../../utils/lib/strings'
+import { TippyProps } from '@tippyjs/react'
 import { convertEntryToRawText } from '../../utils/search/localSearch'
+import { getEventNameFromElement } from '../../utils/lib/strings'
+import { mog } from '../../utils/lib/helper'
+import saveLine from '@iconify-icons/ri/save-line'
+import tinykeys from 'tinykeys'
+import toast from 'react-hot-toast'
+import useAnalytics from '../../services/analytics'
+import { useApi } from '../../apis/useSaveApi'
+import { useContentStore } from '../../store/useContentStore'
+import { useHelpStore } from '../../store/useHelpStore'
+import { useKeyListener } from '../../hooks/useShortcutListener'
+import { useLinks } from '../../hooks/useLinks'
+import { useNewSearchStore } from '../../store/useSearchStore'
+import { useSaveData } from '../../hooks/useSaveData'
+import { useSnippetStore } from '../../store/useSnippetStore'
+import { useTags } from '../../hooks/useTags'
+import { useUpdater } from '../../hooks/useUpdater'
 
 export const useDataSaverFromContent = () => {
   const setContent = useContentStore((state) => state.setContent)
@@ -90,7 +91,7 @@ export const useSaver = () => {
     const editorId = getPlateId()
     const hasState = !!state[editorId]
 
-    if (hasState) {
+    if (hasState || content) {
       const editorState = content ?? state[editorId].get.value()
       saveEditorValueAndUpdateStores(cnode.nodeid, editorState)
     }

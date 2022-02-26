@@ -1,18 +1,19 @@
 import React, { useEffect } from 'react'
 import styled, { css } from 'styled-components'
-import tinykeys from 'tinykeys'
-import SyncBlockInfo from '../../editor/Components/SyncBlock/SyncBlockInfo'
-import { useGraphData } from '../../hooks/useGraphData'
-import { useKeyListener } from '../../hooks/useShortcutListener'
-import useToggleElements from '../../hooks/useToggleElements'
-import { useHelpStore } from '../../store/useHelpStore'
-import { useLayoutStore } from '../../store/useLayoutStore'
+
+import DataInfoBar from '../mex/Sidebar/DataInfoBar'
 import { FOCUS_MODE_OPACITY } from '../../style/consts'
 import { FocusModeProp } from '../../style/props'
-import { size } from '../../style/responsive'
 import Graph from '../mex/Graph/Graph'
-import DataInfoBar from '../mex/Sidebar/DataInfoBar'
 import SuggestionInfoBar from '../mex/Suggestions'
+import SyncBlockInfo from '../../editor/Components/SyncBlock/SyncBlockInfo'
+import { size } from '../../style/responsive'
+import tinykeys from 'tinykeys'
+import { useGraphData } from '../../hooks/useGraphData'
+import { useHelpStore } from '../../store/useHelpStore'
+import { useKeyListener } from '../../hooks/useShortcutListener'
+import { useLayoutStore } from '../../store/useLayoutStore'
+import useToggleElements from '../../hooks/useToggleElements'
 
 interface InfoBarWrapperProps extends FocusModeProp {
   wide: string

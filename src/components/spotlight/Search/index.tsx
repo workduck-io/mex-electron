@@ -1,26 +1,31 @@
-/* eslint-disable react/prop-types */
-import React, { useRef, useEffect } from 'react'
-import { useDebouncedCallback } from 'use-debounce'
-
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { StyledSearch, StyledInput } from './styled'
+/* eslint-disable react/prop-types */
+import React, { useEffect, useRef } from 'react'
+import { StyledInput, StyledSearch } from './styled'
+import { useSaveChanges, useSearchProps } from './useSearchProps'
+
 import { CenterIcon } from '../../../style/spotlight/layout'
-import WDLogo from './Logo'
-import { useTheme } from 'styled-components'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { useSearchProps } from './useSearchProps'
 import { Icon } from '@iconify/react'
+import Message from '../Message'
+import WDLogo from './Logo'
+import { useContentStore } from '../../../store/useContentStore'
+import { useDebouncedCallback } from 'use-debounce'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
+import { useTheme } from 'styled-components'
+import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 
 const Search: React.FC = () => {
-  const ref = useRef<HTMLInputElement>()
   const theme = useTheme()
+  const ref = useRef<HTMLInputElement>()
   const { setSearch, search } = useSpotlightContext()
   const input = useSpotlightAppStore((store) => store.input)
   const setInput = useSpotlightAppStore((store) => store.setInput)
+  const saved = useContentStore((store) => store.saved)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
 
+  const { saveIt } = useSaveChanges()
   const handleSearchInput = useDebouncedCallback((value: string) => {
     const query = {
       value: value.trim(),
@@ -42,30 +47,43 @@ const Search: React.FC = () => {
   useEffect(() => {
     if (search.value === '') {
       ref.current.value = ''
-      setInput('')
     }
+    if (!normalMode) setInput('')
     ref.current.focus()
   }, [search, normalMode])
 
   const { icon, placeholder } = useSearchProps()
 
+  const onBackClick = () => {
+    if (!normalMode) {
+      saveIt()
+    }
+  }
+
   return (
     <StyledSearch>
-      <CenterIcon>
+      <CenterIcon cursor={!normalMode} onClick={onBackClick}>
         <Icon color={theme.colors.primary} height={24} width={24} icon={icon} />
       </CenterIcon>
       <StyledInput
         ref={ref}
-        autoFocus
+        disabled={!normalMode}
+        autoFocus={normalMode}
         value={input}
         id="spotlight_search"
         name="spotlight_search"
         placeholder={placeholder}
         onChange={({ target: { value } }) => {
-          setInput(value)
-          handleSearchInput(value)
+          const { key: what } = withoutContinuousDelimiter(value)
+
+          const dots = new RegExp(/\.{2,}/g)
+          const replaceContinousDots = value.replace(dots, '.') // * replace two or more dots with one dot
+
+          setInput(replaceContinousDots)
+          handleSearchInput(what)
         }}
       />
+      {saved && <Message text="Saved" />}
       <CenterIcon>
         <WDLogo />
       </CenterIcon>

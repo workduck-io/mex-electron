@@ -22,6 +22,7 @@ import {
   createBoldPlugin,
   createCodeBlockPlugin,
   createCodePlugin,
+  createDeserializeHtmlPlugin,
   createDndPlugin,
   createExitBreakPlugin,
   createHeadingPlugin,
@@ -43,8 +44,7 @@ import {
   createTodoListPlugin,
   createUnderlinePlugin,
   insertNodes,
-  setNodes,
-  createDeserializeHtmlPlugin
+  setNodes
 } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW, createExcalidrawPlugin } from '@udecode/plate-excalidraw'
 import {
@@ -128,7 +128,6 @@ export const generatePlugins = (options: PluginOptionType) => {
       options: {
         rules: [
           ...autoformatSmartQuotes,
-          ...autoformatPunctuation,
           ...autoformatLegal,
           ...autoformatLegalHtml,
           ...autoformatArrow,

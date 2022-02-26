@@ -1,15 +1,18 @@
-import { usePlateEditorRef } from '@udecode/plate'
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import create from 'zustand'
-import useDataStore from '../store/useDataStore'
-import { useEditorStore } from '../store/useEditorStore'
-import { NodeEditorContent } from '../types/Types'
-import { mog } from '../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../views/routes/urls'
+
+import { AppType } from './useInitialize'
+import { NodeEditorContent } from '../types/Types'
+import create from 'zustand'
+import { mog } from '../utils/lib/helper'
+import useDataStore from '../store/useDataStore'
 import { useEditorBuffer } from './useEditorBuffer'
+import { useEditorStore } from '../store/useEditorStore'
+import { useEffect } from 'react'
 import { useLinks } from './useLinks'
 import useLoad from './useLoad'
+import { useNavigate } from 'react-router-dom'
+import { usePlateEditorRef } from '@udecode/plate'
+
 // import { NodeEditorContent } from '../editor/Store/Types'
 // import { useEditorStore } from '../editor/Store/EditorStore'
 // import useLoad from './useLoad/useLoad'
@@ -41,7 +44,7 @@ const useEditorActions = () => {
   const setErrorState = useEditorErrorStore((s) => s.setErrorState)
   const { getUidFromNodeId } = useLinks()
 
-  const resetEditor = () => {
+  const resetEditor = (appType: AppType = AppType.MEX) => {
     let nodeIdToLoad = node.nodeid
     const basenode_nodeId = getUidFromNodeId(baseNodePath)
     // mog('resetEditor', { nodeIdToLoad, node, prevNode })
@@ -65,7 +68,7 @@ const useEditorActions = () => {
       loadNodeL(nodeIdToLoad)
       setErrorState(node.nodeid, true)
     }
-    goTo(ROUTE_PATHS.node, NavigationType.push, nodeIdToLoad)
+    if (appType !== AppType.SPOTLIGHT) goTo(ROUTE_PATHS.node, NavigationType.push, nodeIdToLoad)
   }
 
   return {

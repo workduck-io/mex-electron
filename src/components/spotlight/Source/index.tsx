@@ -7,7 +7,6 @@ export const getHtmlString = (metadata: any) => {
 }
 
 const Source: React.FC<{ metadata: any }> = ({ metadata }) => {
-  // console.log({ metadata })
   if (!metadata) {
     return null
   }
@@ -15,25 +14,16 @@ const Source: React.FC<{ metadata: any }> = ({ metadata }) => {
   if (metadata?.url) {
     return (
       <>
-        <br />
-        <br />
-        <strong>Source: </strong>
+        {'  ['}
         <a href={metadata.url} target="_blank" rel="noopener noreferrer">
-          {metadata?.title}
+          Ref
         </a>
-        {/* <AppName>{metadata?.owner?.name}</AppName> */}
+        {' ]'}
       </>
     )
   }
 
-  return (
-    <>
-      <br />
-      <br />
-      <strong>Source: </strong>
-      <span>{`${metadata?.title} ( ${metadata?.owner?.name} )`}</span>
-    </>
-  )
+  return <></>
 }
 
 export default Source

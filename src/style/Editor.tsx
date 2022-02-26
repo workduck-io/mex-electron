@@ -1,6 +1,7 @@
-import { mix } from 'polished'
-import styled, { css } from 'styled-components'
 import { AsyncButton, Button } from './Buttons'
+import { mix, transparentize } from 'polished'
+import styled, { css } from 'styled-components'
+
 import { FOCUS_MODE_OPACITY } from './consts'
 import { FocusModeProp } from './props'
 
@@ -82,6 +83,10 @@ export const EditorStyles = styled.div`
   b,
   strong {
     color: ${({ theme }) => theme.colors.text.heading};
+  }
+
+  mark {
+    background-color: ${(props) => transparentize(0.5, props.theme.colors.secondary)};
   }
 
   p,

@@ -1,17 +1,27 @@
-import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import { NodeProperties } from '../../store/useEditorStore'
-import tough from 'tough-cookie'
-import WebStorageCookieStore from 'tough-cookie-web-storage-store'
-import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
 import { FAKE_APP_URI, IS_DEV } from '../../data/Defaults/dev_'
-import { generateNodeUID } from '../../data/Defaults/idPrefixes'
-import { NodeEditorContent } from '../../types/Types'
 
-export const mog = (title: string, propertiesToLog: Record<string, any>) => {
+import { ELEMENT_PARAGRAPH } from '@udecode/plate'
+import { NodeEditorContent } from '../../types/Types'
+import { NodeProperties } from '../../store/useEditorStore'
+import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
+import WebStorageCookieStore from 'tough-cookie-web-storage-store'
+import { generateNodeUID } from '../../data/Defaults/idPrefixes'
+import tough from 'tough-cookie'
+
+type MogOptions = {
+  pretty: boolean
+  collapsed: boolean
+}
+
+export const mog = (
+  title: string,
+  propertiesToLog: Record<string, any>,
+  options: Partial<MogOptions> = { pretty: false, collapsed: false }
+) => {
   if (IS_DEV) {
-    console.group(title)
+    options.collapsed ? console.groupCollapsed(title) : console.group(title)
     Object.entries(propertiesToLog).forEach(([key, value]) => {
-      console.info(`${key}`, value)
+      console.info(`${key}: `, options?.pretty ? JSON.stringify(value, null, 2) : value)
     })
     console.groupEnd()
   }
@@ -48,7 +58,8 @@ export const createNodeWithUid = (key: string): NodeProperties => ({
 export const withoutContinuousDelimiter = (text: string, delimiter = SEPARATOR) => {
   const key = text
     .split(delimiter)
-    .filter((ch) => ch !== '')
+    .filter((ch) => ch.trim() !== '')
+    .map((ch) => ch.trim())
     .join(delimiter)
 
   if (text?.startsWith(delimiter) && key.length > 0) return { key: `.${key}`, isChild: true }
@@ -66,6 +77,12 @@ export const removeNulls = (obj: any): any => {
   }
   return obj
 }
+
+export const insertItemInArray = <T>(array: T[], item: T, index: number): Array<T> => [
+  ...array.slice(0, index),
+  item,
+  ...array.slice(index)
+]
 
 export const updateEmptyBlockTypes = (content: NodeEditorContent, type: string = ELEMENT_PARAGRAPH) => {
   content.forEach((element) => {

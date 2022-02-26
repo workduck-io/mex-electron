@@ -1,9 +1,15 @@
-import { animated } from 'react-spring'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+
 import { Scroll } from '../../../style/spotlight/layout'
 import { StyledBackground } from '../styled'
+import { animated } from 'react-spring'
 
-export const StyledPreview = styled(animated.div)`
+export const StyledPreview = styled(animated.div)<{ preview?: boolean }>`
+  ${(props) =>
+    props.preview &&
+    css`
+      cursor: pointer;
+    `}
   ${StyledBackground}
   ${Scroll}
   position: relative;

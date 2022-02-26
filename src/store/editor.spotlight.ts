@@ -1,9 +1,10 @@
-import { NodeProperties } from '../store/useEditorStore'
-import { NodeEditorContent } from '../types/Types'
-import create from 'zustand'
-import { getNewDraftKey } from '../editor/Components/SyncBlock/getNewBlockData'
-import { createNodeWithUid } from '../utils/lib/helper'
 import { ListItemType } from '../components/spotlight/SearchResults/types'
+import { NodeEditorContent } from '../types/Types'
+import { NodeProperties } from '../store/useEditorStore'
+import create from 'zustand'
+import { createNodeWithUid } from '../utils/lib/helper'
+import { defaultContent } from '../data/Defaults/baseData'
+import { getNewDraftKey } from '../editor/Components/SyncBlock/getNewBlockData'
 
 export type SelectionType = { text: string; metadata: string } | undefined
 
@@ -23,10 +24,10 @@ export type SpotlightEditorStoreType = {
 
 export const useSpotlightEditorStore = create<SpotlightEditorStoreType>((set, get) => ({
   node: createNodeWithUid(getNewDraftKey()),
-  isPreview: false,
+  isPreview: true,
   setIsPreview: (val) => set({ isPreview: val }),
   isSelection: false,
-  nodeContent: undefined,
+  nodeContent: defaultContent.content,
   currentListItem: undefined,
   setCurrentListItem: (item) => set({ currentListItem: item }),
   setNodeContent: (content) => set(() => ({ nodeContent: content })),

@@ -1,11 +1,13 @@
-import React from 'react'
+import { CategoryType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
+import { Description, StyledRow } from '../../SearchResults/styled'
+import { ItemActionType, ListItemType } from '../../SearchResults/types'
 import styled, { css, useTheme } from 'styled-components'
-import { StyledRow, Description } from '../../SearchResults/styled'
+
+import { DisplayShortcut } from '../../../mex/Shortcuts'
 import { Icon } from '@iconify/react'
-import { StyledKey } from '../../Shortcuts/styled'
-import { ListItemType } from '../../SearchResults/types'
 import { PrimaryText } from '../../../../style/Integration'
-import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
+import React from 'react'
+import { cleanString } from '../../../../data/Defaults/idPrefixes'
 
 export const ActionIcon = styled.div`
   display: flex;
@@ -24,7 +26,6 @@ export const Shortcut = styled.div`
 `
 
 export const Dot = styled.span<{ active: string }>`
-  /* padding: 2px; */
   height: 5px;
   width: 5px;
   border-radius: 50%;
@@ -36,9 +37,26 @@ export const Dot = styled.span<{ active: string }>`
     `};
 `
 
+const ShortcutText = styled.div`
+  margin-bottom: 2px;
+  display: flex;
+  justify-content: flex-end;
+
+  .text {
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    margin-left: 4px;
+    color: ${({ theme }) => theme.colors.text.fade};
+  }
+`
+
 function Item({ item, active, onClick }: { item: ListItemType; active?: boolean; onClick?: () => void }) {
   const theme = useTheme()
-  const { search } = useSpotlightContext()
+  const { search, selection, activeItem } = useSpotlightContext()
+
+  const newNodeName = cleanString(search.type === CategoryType.quicklink ? search.value.slice(2) : search.value)
+
   return (
     <StyledRow showColor={active} onClick={onClick} key={`STRING_${item?.title}`}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -51,22 +69,46 @@ function Item({ item, active, onClick }: { item: ListItemType; active?: boolean;
             width={18}
             icon={item?.icon}
           />
-          <div style={{ whiteSpace: 'nowrap' }}>
-            {item?.extras?.new ? (
-              <div>
-                Create new <PrimaryText>{search.value.slice(2)}</PrimaryText>
-              </div>
-            ) : (
-              <div>{item?.title}</div>
-            )}
+          <div style={{ maxWidth: '200px' }}>
+            <div style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflowX: 'hidden' }}>
+              {item?.extras?.new ? (
+                <>
+                  Create a <PrimaryText>{search.value && !activeItem.active ? newNodeName : 'Quick note'}</PrimaryText>
+                </>
+              ) : (
+                <>{item?.type === ItemActionType.ilink ? cleanString(item?.title) : item?.title}</>
+              )}
+            </div>
+            <Description>{item?.description ?? 'some content'}</Description>
           </div>
         </div>
-        <Description>{item?.description ?? ''}</Description>
       </div>
       {active && (
-        <Shortcut>
-          {item?.shortcut && item?.shortcut?.map((shortcutKey, id) => <StyledKey key={id}>{shortcutKey}</StyledKey>)}
-        </Shortcut>
+        <div
+          style={{
+            margin: '0 0.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center'
+          }}
+        >
+          {item?.type === ItemActionType.ilink ? (
+            <>
+              {selection && (
+                <ShortcutText>
+                  <DisplayShortcut shortcut="$mod+Enter" /> <div className="text">to save</div>
+                </ShortcutText>
+              )}
+              <ShortcutText>
+                <DisplayShortcut shortcut="Enter" /> <span className="text">to edit</span>
+              </ShortcutText>
+            </>
+          ) : (
+            <ShortcutText>
+              <DisplayShortcut shortcut="Enter" />
+            </ShortcutText>
+          )}
+        </div>
       )}
     </StyledRow>
   )

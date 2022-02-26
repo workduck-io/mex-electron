@@ -1,17 +1,29 @@
+import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { ItemActionType, ListItemType } from '../SearchResults/types'
+
+import { ILink } from '../../../types/Types'
+import { getListItemFromNode } from './helper'
+import { search as getSearchResults } from 'fast-fuzzy'
+import { initActions } from '../../../data/Actions'
+import { isNewILink } from '../../../components/mex/NodeSelect/NodeSelect'
+import { isReservedOrClash } from '../../../utils/lib/paths'
+import { mog } from '../../../utils/lib/helper'
 /* eslint-disable no-case-declarations */
 import useDataStore from '../../../store/useDataStore'
-import { search as getSearchResults } from 'fast-fuzzy'
-
-import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { isNewILink } from '../../../components/mex/NodeSelect/NodeSelect'
-import { getListItemFromNode } from './helper'
-import { ILink } from '../../../types/Types'
-import { ListItemType, ItemActionType } from '../SearchResults/types'
-import { initActions } from '../../../data/Actions'
-import { useNewSearchStore } from '../../../store/useSearchStore'
 import useLoad from '../../../hooks/useLoad'
-import { mog } from '../../../utils/lib/helper'
-import { isReservedOrClash } from '../../../utils/lib/paths'
+import { useNewSearchStore } from '../../../store/useSearchStore'
+
+export const CREATE_NEW_ITEM: ListItemType = {
+  title: 'Create new ',
+  id: 'create-new-node',
+  icon: 'bi:plus-circle',
+  type: ItemActionType.ilink,
+  category: CategoryType.quicklink,
+  description: 'Quick note',
+  extras: {
+    new: true
+  }
+}
 
 export const useSearch = () => {
   const { isLocalNode } = useLoad()
@@ -48,23 +60,8 @@ export const useSearch = () => {
             query,
             ilinks.map((i) => i.path)
           )
-          // mog('Here are the details', { isNew, query, ilinks, results })
 
-          searchList = isNew
-            ? [
-                {
-                  title: 'Create new ',
-                  id: 'create-new-node',
-                  icon: 'bi:plus-circle',
-                  type: ItemActionType.ilink,
-                  category: CategoryType.quicklink,
-                  extras: {
-                    new: true
-                  }
-                },
-                ...result
-              ]
-            : result
+          searchList = isNew ? [CREATE_NEW_ITEM, ...result] : result
         }
         break
 
@@ -89,7 +86,13 @@ export const useSearch = () => {
           }
         })
 
-        searchList = [...localNodes, ...actionItems]
+        const isNew = !isReservedOrClash(
+          search.value,
+          ilinks.map((i) => i.path)
+        )
+
+        searchList = isNew ? [CREATE_NEW_ITEM, ...localNodes, ...actionItems] : [...localNodes, ...actionItems]
+
         break
 
       default:

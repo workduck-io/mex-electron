@@ -19,5 +19,5 @@ export const useSpotlightAppStore = create<SpotlightAppStore>((set, get) => ({
   setInput: (value: string) => set({ input: value }),
   setNormalMode: (value: boolean) => set(() => ({ normalMode: value })),
   setSearch: (value) => set({ search: value }),
-  setReset: () => set({ reset: !get().reset })
+  setReset: () => set({ reset: !get().reset, normalMode: true })
 }))

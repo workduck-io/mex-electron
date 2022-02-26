@@ -1,9 +1,11 @@
-import tinykeys from 'tinykeys'
-import { useEffect } from 'react'
 import { CategoryType, useSpotlightContext } from '../../store/Context/context.spotlight'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
+
+import { spotlightShortcuts } from '../../components/spotlight/Shortcuts/list'
+import tinykeys from 'tinykeys'
 import { useContentStore } from '../../store/useContentStore'
+import { useEffect } from 'react'
 import { useKeyListener } from '../useShortcutListener'
-import { useRouting, ROUTE_PATHS, NavigationType } from '../../views/routes/urls'
 
 export const useMexItShortcuts = () => {
   const { goTo } = useRouting()
@@ -20,7 +22,7 @@ export const useMexItShortcuts = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      Escape: (event) => {
+      [spotlightShortcuts.escape.keystrokes]: (event) => {
         event.preventDefault()
         if (!shortcutDisabled) {
           handleCancel()
