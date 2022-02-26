@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import { useBookmarks } from '../../../hooks/useBookmarks'
 import useDataStore from '../../../store/useDataStore'
+import { mog } from '../../../utils/lib/helper'
 // import IconButton from '../../Styled/Buttons'
 import { LoadingButton } from './LoadingButton'
 
@@ -18,8 +19,11 @@ const BookmarkButton = ({ nodeid }: BookmarkButtonProps) => {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    setBmed(isBookmark(nodeid))
-  }, [bookmarks])
+    const con = isBookmark(nodeid)
+
+    // mog('Bookmarked?', { con })
+    setBmed(con)
+  }, [nodeid])
 
   const onBookmark = async (e: any) => {
     e.preventDefault()
@@ -27,12 +31,16 @@ const BookmarkButton = ({ nodeid }: BookmarkButtonProps) => {
     if (isBookmark(nodeid)) {
       // console.log('Removing')
       await removeBookmark(nodeid)
+      setBmed(false)
     } else {
       // console.log('Adding')
       await addBookmark(nodeid)
+      setBmed(true)
     }
     setLoading(false)
   }
+
+  // mog('BookmarkButton', { bmed, bookmarks, loading, nodeid })
 
   return (
     <LoadingButton dots={2} loading={loading} buttonProps={{ highlight: bmed, onClick: onBookmark }}>

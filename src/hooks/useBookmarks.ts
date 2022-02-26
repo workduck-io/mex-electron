@@ -15,7 +15,7 @@ export const useBookmarks = () => {
   const { getNodeIdFromUid } = useLinks()
 
   const isBookmark = (nodeid: string) => {
-    const bookmarks = getBookmarks()
+    const bookmarks = useDataStore.getState().bookmarks
     return bookmarks.indexOf(nodeid) > -1
   }
 
