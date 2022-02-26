@@ -48,7 +48,7 @@ export const useGlobalShortcuts = () => {
           if (selection && normalMode && !search.value) {
             ipcRenderer.send('close') // * TO be continued when flow are introd
             setSelection(undefined) // * this will do something
-          } else if (search.value) {
+          } else if (search.value && normalMode) {
             setInput('')
             handleCancel()
           } else {
