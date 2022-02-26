@@ -40,7 +40,6 @@ const GlobalListener = memo(() => {
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const initializeSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
-  const ilinks = useDataStore((store) => store.ilinks)
   const addILink = useDataStore((store) => store.addILink)
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
 
@@ -88,6 +87,7 @@ const GlobalListener = memo(() => {
     ipcRenderer.on(IpcAction.SPOTLIGHT_BLURRED, () => {
       const normalMode = useSpotlightAppStore.getState().normalMode
       const node = useSpotlightEditorStore.getState().node
+      const ilinks = useDataStore.getState().ilinks
 
       if (!normalMode) {
         const content = getPlateSelectors().value()
