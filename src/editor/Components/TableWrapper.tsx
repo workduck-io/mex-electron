@@ -7,8 +7,7 @@ import {
   addRow,
   deleteColumn,
   deleteRow,
-  deleteTable,
-  insertTable
+  deleteTable
 } from '@udecode/plate'
 import styled, { useTheme } from 'styled-components'
 

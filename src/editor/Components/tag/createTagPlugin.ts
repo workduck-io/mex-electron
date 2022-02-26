@@ -1,8 +1,9 @@
-import { deleteFragment, isCollapsed, PlatePlugin, WithOverride } from '@udecode/plate-core'
-import { Editor } from 'slate'
-import { mog } from '../../../utils/lib/helper'
+import { PlatePlugin, WithOverride, deleteFragment } from '@udecode/plate-core'
+
 import { ELEMENT_TAG } from './defaults'
+import { Editor } from 'slate'
 import { getTagDeserialize } from './getTagDeserialize'
+import { mog } from '../../../utils/lib/helper'
 
 /**
  * Enables support for hypertags.

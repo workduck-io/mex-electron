@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { setNodes, TElement } from '@udecode/plate-core'
+import { ReactEditor, useReadOnly } from 'slate-react'
+import { TElement, setNodes } from '@udecode/plate-core'
+import styled, { useTheme } from 'styled-components'
+
+import { MexIcon } from '../../../style/Layouts'
 import { TodoListItemNodeData } from '@udecode/plate-list'
 import { getRootProps } from '@udecode/plate-styled-components'
-import { ReactEditor, useReadOnly } from 'slate-react'
-import styled, { useTheme } from 'styled-components'
-import { MexIcon } from '../../../style/Layouts'
 import { transparentize } from 'polished'
 
 const TodoContainer = styled.div`
@@ -61,8 +62,8 @@ const TodoText = styled.span`
 
 const Todo = (props: any) => {
   const { attributes, children, nodeProps, element, editor } = props
-  const [showOptions, setShowOptions] = useState(false)
-  const theme = useTheme()
+  // const [showOptions, setShowOptions] = useState(false)
+  // const theme = useTheme()
 
   const rootProps = getRootProps(props)
 
@@ -74,8 +75,8 @@ const Todo = (props: any) => {
     <TodoContainer
       {...attributes}
       {...rootProps}
-      onMouseEnter={() => setShowOptions(true)}
-      onMouseLeave={() => setShowOptions(false)}
+      // onMouseEnter={() => setShowOptions(true)}
+      // onMouseLeave={() => setShowOptions(false)}
     >
       <CheckBoxWrapper contentEditable={false}>
         <input
@@ -99,7 +100,7 @@ const Todo = (props: any) => {
       <TodoText contentEditable={!readOnly} suppressContentEditableWarning>
         {children}
       </TodoText>
-      {showOptions && (
+      {/* {showOptions && (
         <TodoOptions contentEditable={false}>
           <TaskPriority background={theme.colors.secondary} transparent={0.8}>
             high
@@ -109,7 +110,7 @@ const Todo = (props: any) => {
           </TaskPriority>
           <MexIcon icon="codicon:trash" margin="0" fontSize={24} color={theme.colors.primary} />
         </TodoOptions>
-      )}
+      )} */}
     </TodoContainer>
   )
 }
