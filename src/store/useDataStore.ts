@@ -1,14 +1,15 @@
-import { getNodeIcon } from '../utils/lib/icons'
-import create from 'zustand'
-import { generateTree, getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
-import { generateNodeUID } from '../data/Defaults/idPrefixes'
 import { CachedILink, DataStoreState } from '../types/Types'
-import { generateTag } from '../utils/generateComboItem'
+import { SEPARATOR, generateTree, getAllParentIds } from '../components/mex/Sidebar/treeUtils'
 import { Settify, typeInvert } from '../utils/helpers'
-import getFlatTree from '../utils/lib/flatTree'
 import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
-import { removeLink } from '../utils/lib/links'
+
+import create from 'zustand'
+import { generateNodeUID } from '../data/Defaults/idPrefixes'
+import { generateTag } from '../utils/generateComboItem'
+import getFlatTree from '../utils/lib/flatTree'
+import { getNodeIcon } from '../utils/lib/icons'
 import { getUniquePath } from '../utils/lib/paths'
+import { removeLink } from '../utils/lib/links'
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   // Tags

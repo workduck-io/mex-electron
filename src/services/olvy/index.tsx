@@ -19,10 +19,9 @@ const useInitOlvy = (showMenu: boolean) => {
           unreadIndicatorPosition: 'top-right'
         }
       })
-
-      return function cleanup() {
-        window.Olvy.teardown()
-      }
+    }
+    return function cleanup() {
+      if (showMenu) window.Olvy.teardown()
     }
   }, [showMenu])
 }

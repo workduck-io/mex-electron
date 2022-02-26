@@ -8,6 +8,7 @@ import {
   ELEMENT_H6,
   ELEMENT_HR,
   ELEMENT_PARAGRAPH,
+  ELEMENT_TODO_LI,
   PEditor,
   PlatePlugin,
   autoformatArrow,
@@ -58,8 +59,8 @@ import {
 
 import { ExcalidrawElement } from '../Components/Excalidraw'
 import TableWrapper from '../Components/TableWrapper'
+import Todo from '../Components/Todo'
 // import { TagCombobox } from '../Components/tag/components/TagCombobox';
-// import { createTagPlugin } from '../Components/tag/createTagPlugin';
 import { createBlurSelectionPlugin } from './blurSelection'
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
 import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'

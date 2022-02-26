@@ -6,6 +6,7 @@ import {
   ELEMENT_MEDIA_EMBED,
   ELEMENT_PARAGRAPH,
   ELEMENT_TABLE,
+  ELEMENT_TODO_LI,
   withProps
 } from '@udecode/plate'
 import { ILinkElement } from './ilink/components/ILinkElement'
@@ -19,6 +20,7 @@ import { TagElement } from './tag/components/TagElement'
 import { ELEMENT_TAG } from './tag/defaults'
 import { StyledElement } from '@udecode/plate-styled-components'
 import TableWrapper from './TableWrapper'
+import Todo from './Todo'
 
 export const editorPreviewComponents = createPlateUI({
   [ELEMENT_LINK]: withProps(LinkElement, {
@@ -31,6 +33,7 @@ export const editorPreviewComponents = createPlateUI({
       }
     }
   }),
+  [ELEMENT_TODO_LI]: Todo as any,
   [ELEMENT_TAG]: TagElement as any,
   [ELEMENT_ILINK]: ILinkElement as any,
   [ELEMENT_INLINE_BLOCK]: ILinkElement as any,

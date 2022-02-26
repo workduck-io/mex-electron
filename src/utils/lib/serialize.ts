@@ -1,14 +1,14 @@
 // import { generateTempId } from '../Defaults/idPrefixes'
 
-import { generateTempId } from '../../data/Defaults/idPrefixes'
 import { extractMetadata } from './metadata'
+import { generateTempId } from '../../data/Defaults/idPrefixes'
 
 // const ElementsWithProperties = [ELEMENT_PARAGRAPH]
 // const ElementsWithURL = [ELEMENT_LINK, ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED]
 
 // Direct properties are collated in the properties for api
 // and then unfurled when converting back to editor content
-const directPropertyKeys = ['bold', 'italic', 'underline', 'highlight', 'code', 'url', 'value', 'body']
+const directPropertyKeys = ['bold', 'italic', 'underline', 'highlight', 'code', 'url', 'value', 'checked', 'body']
 const PropKeysArray = [...directPropertyKeys] as const
 type PropKeys = typeof PropKeysArray[number]
 type DirectProperties = Record<PropKeys, boolean | string>
