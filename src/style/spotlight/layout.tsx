@@ -18,7 +18,7 @@ export const CenterIcon = styled(Center)`
 `
 
 export const Scroll = css`
-  overflow-y: auto;
+  overflow-y: scroll;
   overflow-x: hidden;
 
   ::-webkit-scrollbar {

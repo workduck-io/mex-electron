@@ -1,7 +1,7 @@
 import { ActiveItem, CategoryType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { ItemActionType, ListItemType } from '../../SearchResults/types'
 import { ListItem, StyledList, usePointerMovedSinceMount } from '../styled'
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import { findIndex, groupBy } from 'lodash'
 
 import { ActionTitle } from '../../Actions/styled'
@@ -54,7 +54,6 @@ const List = ({
   const { getNode } = useLoad()
   const addILink = useDataStore((s) => s.addILink)
 
-  const setSaved = useContentStore((store) => store.setSaved)
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
 
@@ -80,6 +79,7 @@ const List = ({
   const indexes = React.useMemo(() => groups.map((gn) => findIndex(data, (n) => n.category === gn)), [groups])
 
   const virtualizer = useVirtual({
+    // estimateSize: useCallback(() => 120, []),
     size: data?.length ?? 0,
     parentRef
   })
@@ -148,34 +148,37 @@ const List = ({
           })
       } else if (event.key === 'Enter') {
         const currentActiveItem = data[activeIndex]
-        if (currentActiveItem?.type === ItemActionType.ilink) {
-          if (!selection) return
+        if (currentActiveItem?.type === ItemActionType.ilink && !activeItem.active) {
+          // if (!selection) return
 
-          let newNode: NodeProperties = node
+          if (event.metaKey) {
+            let newNode: NodeProperties = node
 
-          if (currentActiveItem?.extras.new && !activeItem.active) {
-            const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : node.path
+            if (currentActiveItem?.extras.new && !activeItem.active) {
+              const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : node.path
 
-            const d = addILink({ ilink: nodeName, nodeid: node.nodeid })
-            newNode = getNode(newNode.nodeid)
-          }
-
-          if (selection) {
-            addInRecentResearchNodes(newNode.nodeid)
-            saveEditorValueAndUpdateStores(newNode.nodeid, nodeContent, true)
-            saveData()
-
-            setSaved(true)
-
-            setNormalMode(true)
-            setSelection(undefined)
-          } else {
-            if (!currentActiveItem?.extras?.new) {
-              openNodeInMex(newNode.nodeid)
-              setNormalMode(false)
+              const d = addILink({ ilink: nodeName, nodeid: node.nodeid })
+              newNode = getNode(newNode.nodeid)
             }
+
+            if (selection) {
+              addInRecentResearchNodes(newNode.nodeid)
+              saveEditorValueAndUpdateStores(newNode.nodeid, nodeContent, true)
+              saveData()
+
+              appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
+
+              setNormalMode(true)
+              setSelection(undefined)
+            } else {
+              if (!currentActiveItem?.extras?.new) {
+                openNodeInMex(newNode.nodeid)
+              }
+            }
+            setSearch({ value: '', type: CategoryType.search })
+          } else {
+            setNormalMode(false)
           }
-          setSearch({ value: '', type: CategoryType.search })
         } else {
           if (currentActiveItem?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
             setSelectedItem({ item: data[activeIndex], active: false })

@@ -14,19 +14,21 @@ export const StyledResults = styled(ColumnContainer)<{ margin: string }>`
 
 export const StyledRow = styled(animated.div)<ColorProp>`
   /* transform: translateY(${(props) => props.start}px); */
-
+  padding: 12px 1rem 12px 0;
   ${({ showColor }) =>
     showColor &&
     css`
       ${StyledBackground}
+      padding: 10px 1rem 10px 0;
       :hover {
         ${StyledBackground}
+        padding: 10px 1rem 10px 0;
       }
     `}
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 10px 1rem 10px 0;
+
   /* margin: 5px 0; */
   user-select: none;
   color: ${({ theme }) => theme.colors.text.fade};

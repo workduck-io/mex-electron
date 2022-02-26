@@ -189,11 +189,6 @@ const createMexWindow = () => {
     if (!mex) {
       throw new Error('"mexWindow" is not defined')
     }
-
-    if (mex.isFocused()) {
-      spotlight.focus()
-      spotlight.show()
-    }
   })
 
   require('@electron/remote/main').enable(mex.webContents)

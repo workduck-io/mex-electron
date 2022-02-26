@@ -94,7 +94,7 @@ const Content = () => {
     const resultNode = searchResults[activeIndex]
     const isNode = resultNode?.type === ItemActionType.ilink
 
-    if (isNode) {
+    if (isNode && !activeItem.active) {
       const isNew = resultNode?.extras?.new
       const val = search.type === CategoryType.quicklink ? search.value.slice(2) : search.value
 
@@ -113,7 +113,7 @@ const Content = () => {
       setNodeContent(content)
       setPreview(INIT_PREVIEW)
     }
-  }, [search.value, activeIndex, selection, normalMode, searchResults])
+  }, [search.value, activeIndex, activeItem, selection, normalMode, searchResults])
 
   return (
     <StyledContent>

@@ -3,10 +3,10 @@ import { Description, StyledRow } from '../../SearchResults/styled'
 import { ItemActionType, ListItemType } from '../../SearchResults/types'
 import styled, { css, useTheme } from 'styled-components'
 
+import { DisplayShortcut } from '../../../mex/Shortcuts'
 import { Icon } from '@iconify/react'
 import { PrimaryText } from '../../../../style/Integration'
 import React from 'react'
-import { StyledKey } from '../../Shortcuts/styled'
 import { cleanString } from '../../../../data/Defaults/idPrefixes'
 
 export const ActionIcon = styled.div`
@@ -39,11 +39,15 @@ export const Dot = styled.span<{ active: string }>`
 `
 
 const ShortcutText = styled.div`
+  margin-bottom: 2px;
   display: flex;
-  align-content: center;
-  margin: 4px 0;
-  div {
+  justify-content: flex-end;
+
+  .text {
+    display: flex;
+    align-items: center;
     font-size: 0.8rem;
+    margin-left: 4px;
     color: ${({ theme }) => theme.colors.text.fade};
   }
 `
@@ -78,20 +82,29 @@ function Item({ item, active, onClick }: { item: ListItemType; active?: boolean;
           </div>
         </div>
       </div>
-      {active && item?.type === ItemActionType.ilink && (
-        <div style={{ margin: '0 0.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <ShortcutText>
-            <StyledKey>Tab</StyledKey> <div>to edit</div>
-          </ShortcutText>
-          {item?.extras?.new ? (
-            selection && (
+      {active && (
+        <div
+          style={{
+            margin: '0 0.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center'
+          }}
+        >
+          {item?.type === ItemActionType.ilink ? (
+            <>
+              {selection && (
+                <ShortcutText>
+                  <DisplayShortcut shortcut="$mod+Enter" /> <div className="text">to save</div>
+                </ShortcutText>
+              )}
               <ShortcutText>
-                <StyledKey>Enter</StyledKey> <div>to save</div>
+                <DisplayShortcut shortcut="Enter" /> <span className="text">to edit</span>
               </ShortcutText>
-            )
+            </>
           ) : (
             <ShortcutText>
-              <StyledKey>Enter</StyledKey> <div>{`${selection ? 'to save' : 'to open'}`}</div>
+              <DisplayShortcut shortcut="Enter" />
             </ShortcutText>
           )}
         </div>

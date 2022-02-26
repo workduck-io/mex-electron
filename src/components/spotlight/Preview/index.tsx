@@ -21,7 +21,6 @@ import useDataStore from '../../../store/useDataStore'
 import { useDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
-import useLoad from '../../../hooks/useLoad'
 import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { useSaver } from '../../../editor/Components/Saver'
@@ -90,11 +89,8 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
     if (preview.isSelection && deserializedContentNodes) {
       const deserializedContent = [{ children: deserializedContentNodes }]
       const activeNodeContent = getContent(node.nodeid)?.content ?? []
-      // const changedContent = showSource ? combineSources(fsContent.content, deserializedContent) : fsContent.content
-      // setNodeContent(deserializedContent)
 
       setNodeContent([...activeNodeContent, ...deserializedContent])
-      // setFsContent(node.nodeid, [...changedContent, ...deserializedContent])
     }
   }, [preview, showSource, node, normalMode])
 
@@ -110,7 +106,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
 
     onSave(node, true, false, getPlateSelectors(node.nodeid).value())
 
-    setSaved(true)
+    appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
     setSelection(undefined)
     setSearch({ value: '', type: CategoryType.search })
@@ -120,9 +116,6 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
     addRecent(node.nodeid)
     addInRecentResearchNodes(node.nodeid)
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, { nodeid: node.nodeid })
-
-    // * Hide spotlight after save
-    // appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
     if (isOnboarding) {
       openNodeInMex(node.nodeid)
@@ -135,6 +128,10 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
       [shortcuts.save.keystrokes]: (event) => {
         event.preventDefault()
         if (!shortcutDisabled && !normalMode) handleSaveContent()
+      },
+      '$cmd+Enter': (event) => {
+        event.preventDefault()
+        if (!shortcutDisabled && !normalMode) handleSaveContent()
       }
     })
 
@@ -145,10 +142,11 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
 
   return (
     <StyledPreview
-      // onClick={() => setNormalMode(false)}
       key={`PreviewSpotlightEditor${node.nodeid}`}
       style={animationProps}
       ref={ref}
+      preview={normalMode}
+      onClick={() => setNormalMode(false)}
       data-tour="mex-quick-capture-preview"
     >
       {selection && (
@@ -156,7 +154,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
           <Icon icon={downIcon} />
         </SeePreview>
       )}
-      <ActionTitle>{node.path}</ActionTitle>
+      {/* <ActionTitle>{node.path}</ActionTitle> */}
       <Editor
         autoFocus={!normalMode}
         focusAtBeginning={!normalMode}

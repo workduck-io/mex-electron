@@ -4,17 +4,22 @@ import React, { memo, useEffect, useState } from 'react'
 
 import { FileData } from '../../../types/data'
 import { IpcAction } from '../../../data/IpcAction'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { convertDataToRawText } from '../../../utils/search/localSearch'
 import { getHtmlString } from '../../../components/spotlight/Source'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import { getPlateSelectors } from '@udecode/plate'
 import { ipcRenderer } from 'electron'
 import { mog } from '../../../utils/lib/helper'
 import useAnalytics from '../../../services/analytics'
 import { useAuthStore } from '../../../services/auth/useAuth'
+import useDataStore from '../../../store/useDataStore'
 import { useLocation } from 'react-router'
 import { useNewSearchStore } from '../../../store/useSearchStore'
 import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
+import { useSaveData } from '../../../hooks/useSaveData'
+import { useSaver } from '../../../editor/Components/Saver'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
@@ -38,7 +43,11 @@ const GlobalListener = memo(() => {
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const initializeSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
+  const ilinks = useDataStore((store) => store.ilinks)
+  const addILink = useDataStore((store) => store.addILink)
+  const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
 
+  const { onSave } = useSaver()
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()
   const { goTo } = useRouting()
@@ -80,6 +89,22 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.on(IpcAction.SPOTLIGHT_BLURRED, () => {
+      const normalMode = useSpotlightAppStore.getState().normalMode
+      const node = useSpotlightEditorStore.getState().node
+
+      if (!normalMode) {
+        const content = getPlateSelectors().value()
+
+        const isNodePresent = ilinks.find((ilink) => ilink.nodeid === node.nodeid)
+        if (!isNodePresent) {
+          addILink({ ilink: node.path, nodeid: node.nodeid })
+        }
+
+        addRecent(node.nodeid)
+        addInRecentResearchNodes(node.nodeid)
+        onSave(node, true, false, content)
+        appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, { nodeid: node.nodeid })
+      }
       setReset()
     })
 
