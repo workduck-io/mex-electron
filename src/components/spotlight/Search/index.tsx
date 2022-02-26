@@ -2,6 +2,7 @@ import { CategoryType, useSpotlightContext } from '../../../store/Context/contex
 /* eslint-disable react/prop-types */
 import React, { useEffect, useRef } from 'react'
 import { StyledInput, StyledSearch } from './styled'
+import { useSaveChanges, useSearchProps } from './useSearchProps'
 
 import { CenterIcon } from '../../../style/spotlight/layout'
 import { Icon } from '@iconify/react'
@@ -9,7 +10,6 @@ import Message from '../Message'
 import WDLogo from './Logo'
 import { useContentStore } from '../../../store/useContentStore'
 import { useDebouncedCallback } from 'use-debounce'
-import { useSearchProps } from './useSearchProps'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useTheme } from 'styled-components'
@@ -25,6 +25,7 @@ const Search: React.FC = () => {
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
 
+  const { saveIt } = useSaveChanges()
   const handleSearchInput = useDebouncedCallback((value: string) => {
     const query = {
       value: value.trim(),
@@ -53,16 +54,22 @@ const Search: React.FC = () => {
 
   const { icon, placeholder } = useSearchProps()
 
+  const onBackClick = () => {
+    if (!normalMode) {
+      saveIt()
+    }
+  }
+
   return (
     <StyledSearch>
-      <CenterIcon>
+      <CenterIcon cursor={!normalMode} onClick={onBackClick}>
         <Icon color={theme.colors.primary} height={24} width={24} icon={icon} />
       </CenterIcon>
       <StyledInput
         ref={ref}
+        disabled={!normalMode}
         autoFocus={normalMode}
         value={input}
-        disabled={!normalMode}
         id="spotlight_search"
         name="spotlight_search"
         placeholder={placeholder}

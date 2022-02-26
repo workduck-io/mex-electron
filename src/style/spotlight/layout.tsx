@@ -11,7 +11,12 @@ export const Centered = styled(Center)`
   height: 100%;
 `
 
-export const CenterIcon = styled(Center)`
+export const CenterIcon = styled(Center)<{ cursor?: boolean }>`
+  ${({ cursor }) =>
+    cursor &&
+    css`
+      cursor: pointer;
+    `}
   height: 100%;
   color: #888;
   padding-left: 8px;

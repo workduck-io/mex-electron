@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react'
-
 import Content from './Content'
+import React from 'react'
 import Search from './Search'
 import { StyledLookup } from './styled'
 

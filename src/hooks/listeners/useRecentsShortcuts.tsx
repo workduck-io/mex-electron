@@ -1,9 +1,10 @@
+import { performClick } from '../../components/mex/Onboarding/steps'
+import { spotlightShortcuts } from '../../components/spotlight/Shortcuts/list'
 import tinykeys from 'tinykeys'
 import { useEffect } from 'react'
-import { performClick } from '../../components/mex/Onboarding/steps'
-import { useSpotlightEditorStore } from '../../store/editor.spotlight'
-import useLoad from '../useLoad'
 import { useKeyListener } from '../useShortcutListener'
+import useLoad from '../useLoad'
+import { useSpotlightEditorStore } from '../../store/editor.spotlight'
 
 export const useRecentsShortcuts = () => {
   const { loadNodeProps } = useLoad()
@@ -13,7 +14,7 @@ export const useRecentsShortcuts = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      Tab: (event) => {
+      [spotlightShortcuts.Tab.keystrokes]: (event) => {
         event.preventDefault()
         if (!shortcutDisabled) {
           loadNodeProps(savedEditorNode)

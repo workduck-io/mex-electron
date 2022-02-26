@@ -1,4 +1,4 @@
-import { HashRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { HashRouter, Route, Routes } from 'react-router-dom'
 
 import Bubble from '../../components/spotlight/Bubble'
 import GlobalListener from '../../components/spotlight/GlobalListener'
@@ -14,7 +14,6 @@ const SpotlightRoute = () => {
     <HashRouter>
       <Routes>
         <Route path={ROUTE_PATHS.home} element={<ProtectedRoute component={Spotlight} />} />
-
         <Route path={ROUTE_PATHS.login} element={<Login />} />
       </Routes>
       <GlobalListener />

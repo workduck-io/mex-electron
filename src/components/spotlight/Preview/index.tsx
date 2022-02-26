@@ -1,30 +1,24 @@
-import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import React, { useEffect, useMemo, useRef } from 'react'
 import { SeePreview, StyledPreview } from './styled'
 
-import { ActionTitle } from '../Actions/styled'
-import { AppType } from '../../../hooks/useInitialize'
 import { Editor } from '../../../editor/Editor'
 import { Icon } from '@iconify/react'
-import { IpcAction } from '../../../data/IpcAction'
 import { ItemActionType } from '../SearchResults/types'
 import { NodeProperties } from '../../../store/useEditorStore'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import downIcon from '@iconify-icons/ph/arrow-down-bold'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
-import { getPlateSelectors } from '@udecode/plate'
 import { openNodeInMex } from '../../../utils/combineSources'
+import { spotlightShortcuts } from '../Shortcuts/list'
 import tinykeys from 'tinykeys'
 import { useContentStore } from '../../../store/useContentStore'
-import useDataStore from '../../../store/useDataStore'
 import { useDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import useOnboard from '../../../store/useOnboarding'
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { useSaver } from '../../../editor/Components/Saver'
+import { useSaveChanges } from '../Search/useSearchProps'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
 import { useSpring } from 'react-spring'
@@ -51,22 +45,16 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
 
   const isOnboarding = useOnboard((s) => s.isOnboarding)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
-  const addILink = useDataStore((s) => s.addILink)
-  const ilinks = useDataStore((s) => s.ilinks)
   const shortcuts = useHelpStore((state) => state.shortcuts)
   const { shortcutDisabled } = useKeyListener()
 
-  const setSaved = useContentStore((state) => state.setSaved)
-  const addRecent = useRecentsStore((state) => state.addRecent)
-  const addInRecentResearchNodes = useRecentsStore((state) => state.addInResearchNodes)
-
+  const { saveIt } = useSaveChanges()
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
 
   // * Custom hooks
   const ref = useRef<HTMLDivElement>()
-  const { onSave } = useSaver()
-  const { selection, setSelection, setSearch, searchResults, activeIndex } = useSpotlightContext()
+  const { selection, searchResults, activeIndex } = useSpotlightContext()
   const deserializedContentNodes = useDeserializeSelectionToNodes(node.nodeid, preview, normalMode)
 
   const springProps = useMemo(() => {
@@ -99,23 +87,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   }
 
   const handleSaveContent = () => {
-    const isNodePresent = ilinks.find((ilink) => ilink.nodeid === node.nodeid)
-    if (!isNodePresent) {
-      addILink({ ilink: node.path, nodeid: node.nodeid })
-    }
-
-    onSave(node, true, false, getPlateSelectors(node.nodeid).value())
-
-    appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
-
-    setSelection(undefined)
-    setSearch({ value: '', type: CategoryType.search })
-    setNormalMode(true)
-
-    // * Add this item in recents list of Mex
-    addRecent(node.nodeid)
-    addInRecentResearchNodes(node.nodeid)
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, { nodeid: node.nodeid })
+    saveIt({ saveAndClose: true })
 
     if (isOnboarding) {
       openNodeInMex(node.nodeid)
@@ -129,7 +101,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
         event.preventDefault()
         if (!shortcutDisabled && !normalMode) handleSaveContent()
       },
-      '$cmd+Enter': (event) => {
+      [spotlightShortcuts.save.keystrokes]: (event) => {
         event.preventDefault()
         if (!shortcutDisabled && !normalMode) handleSaveContent()
       }
@@ -154,7 +126,6 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
           <Icon icon={downIcon} />
         </SeePreview>
       )}
-      {/* <ActionTitle>{node.path}</ActionTitle> */}
       <Editor
         autoFocus={!normalMode}
         focusAtBeginning={!normalMode}
@@ -163,7 +134,6 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
         content={previewContent ?? getDefaultContent()}
         editorId={node.nodeid}
       />
-      {/* {!normalMode && <SaverButton callbackAfterSave={onAfterSave} callbackBeforeSave={onBeforeSave} noButton />} */}
     </StyledPreview>
   )
 }
