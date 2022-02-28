@@ -40,7 +40,6 @@ const Search: React.FC = () => {
       query.type = CategoryType.action
     }
 
-    if (value === '') setCurrentListItem(null)
     setSearch(query)
   }, 200)
 

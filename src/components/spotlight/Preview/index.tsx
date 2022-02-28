@@ -8,11 +8,11 @@ import { NodeProperties } from '../../../store/useEditorStore'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import downIcon from '@iconify-icons/ph/arrow-down-bold'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
+import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import { openNodeInMex } from '../../../utils/combineSources'
 import { spotlightShortcuts } from '../Shortcuts/list'
 import tinykeys from 'tinykeys'
 import { useContentStore } from '../../../store/useContentStore'
-import { useDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import useOnboard from '../../../store/useOnboarding'
@@ -55,7 +55,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
   // * Custom hooks
   const ref = useRef<HTMLDivElement>()
   const { selection, searchResults, activeIndex } = useSpotlightContext()
-  const deserializedContentNodes = useDeserializeSelectionToNodes(node.nodeid, preview, normalMode)
+  const deserializedContentNodes = getDeserializeSelectionToNodes(preview, normalMode)
 
   const springProps = useMemo(() => {
     const style = { width: '45%', padding: '0' }
@@ -86,8 +86,8 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
     ref.current.scrollTop = ref.current.scrollHeight
   }
 
-  const handleSaveContent = () => {
-    saveIt({ saveAndClose: true })
+  const handleSaveContent = (saveAndClose: boolean, removeHighlight?: boolean) => {
+    saveIt({ saveAndClose, removeHighlight })
 
     if (isOnboarding) {
       openNodeInMex(node.nodeid)
@@ -99,11 +99,11 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.save.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled && !normalMode) handleSaveContent()
+        if (!shortcutDisabled && !normalMode) handleSaveContent(true)
       },
       [spotlightShortcuts.save.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled && !normalMode) handleSaveContent()
+        if (!shortcutDisabled && !normalMode) handleSaveContent(true, true)
       }
     })
 

@@ -15,7 +15,7 @@ import { useSpotlightSettingsStore } from '../../store/settings.spotlight'
 export const useGlobalShortcuts = () => {
   const location = useLocation()
 
-  const { setSelection, setSearch, setActiveItem, search, selection } = useSpotlightContext()
+  const { setSelection, setSearch, setActiveItem, activeItem, search, selection } = useSpotlightContext()
 
   const { showSource } = useSpotlightSettingsStore(({ showSource, toggleSource }) => ({
     showSource,
@@ -24,14 +24,12 @@ export const useGlobalShortcuts = () => {
   const setSaved = useContentStore((state) => state.setSaved)
   const setInput = useSpotlightAppStore((store) => store.setInput)
 
-  const setIsPreview = useSpotlightEditorStore((state) => state.setIsPreview)
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const setCurrentListItem = useSpotlightEditorStore((s) => s.setCurrentListItem)
 
   const handleCancel = () => {
     setNormalMode(true)
-    setIsPreview(false)
     setSaved(false)
     setSearch({ value: '', type: CategoryType.search })
     setActiveItem({ item: null, active: false })
@@ -45,10 +43,10 @@ export const useGlobalShortcuts = () => {
       [spotlightShortcuts.escape.keystrokes]: (event) => {
         event.preventDefault()
         if (!shortcutDisabled) {
-          if (selection && normalMode && !search.value) {
+          if (selection && normalMode && !search.value && !activeItem.active) {
             ipcRenderer.send('close') // * TO be continued when flow are introd
             setSelection(undefined) // * this will do something
-          } else if (search.value && normalMode) {
+          } else if ((search.value && normalMode) || activeItem.active) {
             setInput('')
             handleCancel()
           } else {
@@ -69,5 +67,5 @@ export const useGlobalShortcuts = () => {
     return () => {
       unsubscribe()
     }
-  }, [showSource, selection, normalMode, search, location, shortcutDisabled])
+  }, [showSource, activeItem.active, selection, normalMode, search, location, shortcutDisabled])
 }

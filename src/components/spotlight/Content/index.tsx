@@ -24,7 +24,7 @@ import { useRecentsStore } from '../../../store/useRecentsStore'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 
-const INIT_PREVIEW: PreviewType = {
+export const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
   metadata: null,
   isSelection: false
@@ -32,7 +32,6 @@ const INIT_PREVIEW: PreviewType = {
 
 const Content = () => {
   // * State
-  const [preview, setPreview] = useState<PreviewType>(INIT_PREVIEW)
   const lastOpenedNodes = useRecentsStore((store) => store.lastOpened)
   const recentResearchNodes = useRecentsStore((store) => store.recentResearchNodes)
 
@@ -42,18 +41,17 @@ const Content = () => {
   // * Store
   const ilinks = useDataStore((s) => s.ilinks)
 
-  const { setSaved } = useContentStore((store) => ({
-    setSaved: store.setSaved
-  }))
-
-  const { editorNode, setNodeContent, setPreviewEditorNode } = useSpotlightEditorStore((store) => ({
-    editorNode: store.node,
-    saveEditorNode: store.setNode,
-    setNodeContent: store.setNodeContent,
-    loadNode: store.loadNode,
-    isPreview: store.isPreview,
-    setPreviewEditorNode: store.setNode
-  }))
+  const { editorNode, setNodeContent, setPreviewEditorNode, preview, setPreview } = useSpotlightEditorStore(
+    (store) => ({
+      editorNode: store.node,
+      saveEditorNode: store.setNode,
+      setNodeContent: store.setNodeContent,
+      loadNode: store.loadNode,
+      preview: store.preview,
+      setPreview: store.setPreview,
+      setPreviewEditorNode: store.setNode
+    })
+  )
 
   const { searchInList } = useSearch()
 
@@ -87,6 +85,8 @@ const Content = () => {
         const data = [...list, ...initActions]
         setSearchResults(data)
       }
+    } else {
+      setSearchResults([activeItem.item])
     }
   }, [search.value, selection, activeItem.item, ilinks])
 

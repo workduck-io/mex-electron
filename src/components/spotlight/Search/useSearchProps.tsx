@@ -6,7 +6,10 @@ import { IpcAction } from '../../../data/IpcAction'
 import LensIcon from '@iconify-icons/ph/magnifying-glass-bold'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { cleanString } from '../../../data/Defaults/idPrefixes'
+import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import { getPlateSelectors } from '@udecode/plate'
+import { mog } from '../../../utils/lib/helper'
+import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { useSaver } from '../../../editor/Components/Saver'
@@ -31,15 +34,18 @@ export const useSearchProps = () => {
 
 type SaveItProps = {
   saveAndClose?: boolean
+  removeHighlight?: boolean
 }
 
 export const useSaveChanges = () => {
   const ilinks = useDataStore((store) => store.ilinks)
+  const getContent = useContentStore((store) => store.getContent)
   const addILink = useDataStore((store) => store.addILink)
   const node = useSpotlightEditorStore((store) => store.node)
   const addRecent = useRecentsStore((store) => store.addRecent)
   const addInResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
   const setNormalMode = useSpotlightAppStore((store) => store.setNormalMode)
+  const preview = useSpotlightEditorStore((store) => store.preview)
   const { onSave } = useSaver()
 
   const { setSearch } = useSpotlightContext()
@@ -50,11 +56,22 @@ export const useSaveChanges = () => {
       addILink({ ilink: node.path, nodeid: node.nodeid })
     }
 
-    onSave(node, true, false, getPlateSelectors().value())
+    let editorContent = getPlateSelectors().value()
+
+    if (options?.removeHighlight) {
+      const deserializedContent = getDeserializeSelectionToNodes(preview, false)
+      if (deserializedContent && preview.isSelection) {
+        const previewContent = [{ children: deserializedContent }]
+        const activeNodeContent = getContent(node.nodeid)?.content ?? []
+
+        editorContent = [...activeNodeContent, ...previewContent]
+      }
+    }
+
+    onSave(node, true, false, editorContent)
 
     if (options?.saveAndClose) appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
-    // setSelection(undefined)
     setSearch({ value: '', type: CategoryType.search })
     setNormalMode(true)
 
