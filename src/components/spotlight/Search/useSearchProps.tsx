@@ -35,6 +35,7 @@ export const useSearchProps = () => {
 type SaveItProps = {
   saveAndClose?: boolean
   removeHighlight?: boolean
+  path?: string
 }
 
 export const useSaveChanges = () => {
@@ -45,6 +46,7 @@ export const useSaveChanges = () => {
   const addRecent = useRecentsStore((store) => store.addRecent)
   const addInResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
   const setNormalMode = useSpotlightAppStore((store) => store.setNormalMode)
+  const setInput = useSpotlightAppStore((store) => store.setInput)
   const preview = useSpotlightEditorStore((store) => store.preview)
   const { onSave } = useSaver()
 
@@ -53,7 +55,8 @@ export const useSaveChanges = () => {
   const saveIt = (options?: SaveItProps) => {
     const isNodePresent = ilinks.find((ilink) => ilink.nodeid === node.nodeid)
     if (!isNodePresent) {
-      addILink({ ilink: node.path, nodeid: node.nodeid })
+      const path = options?.path ?? node.path
+      addILink({ ilink: path, nodeid: node.nodeid })
     }
 
     let editorContent = getPlateSelectors().value()
@@ -73,6 +76,7 @@ export const useSaveChanges = () => {
     if (options?.saveAndClose) appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
     setSearch({ value: '', type: CategoryType.search })
+    setInput('')
     setNormalMode(true)
 
     // * Add this item in recents list of Mex
