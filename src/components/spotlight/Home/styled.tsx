@@ -3,7 +3,7 @@ import { animated } from 'react-spring'
 import styled from 'styled-components'
 
 export const StyledList = styled(animated.div)`
-  overflow: hidden;
+  overflow: scroll;
   position: relative;
   scroll-behavior: smooth;
   max-height: 422px;
