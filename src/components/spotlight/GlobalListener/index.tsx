@@ -31,7 +31,6 @@ interface IndexAndFileData {
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
   const { setSelection } = useSpotlightContext()
-  const setIsPreview = useSpotlightEditorStore((state) => state.setIsPreview)
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
   const setBubble = useSpotlightSettingsStore((state) => state.setBubble)
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
@@ -64,14 +63,12 @@ const GlobalListener = memo(() => {
       setSelection(temp)
     }
     // setNormalMode(false)
-    setIsPreview(true)
   }, [showSource, temp])
 
   useEffect(() => {
     ipcRenderer.on(IpcAction.SELECTED_TEXT, (_event, data) => {
       if (!data) {
         setSelection(undefined)
-        setIsPreview(false)
       } else {
         setTemp(data)
       }

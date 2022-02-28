@@ -17,6 +17,7 @@ import useDataStore from '../../../../store/useDataStore'
 import useItemExecutor from '../actionExecutor'
 import useLoad from '../../../../hooks/useLoad'
 import { useRecentsStore } from '../../../../store/useRecentsStore'
+import { useSaveChanges } from '../../Search/useSearchProps'
 import { useSaveData } from '../../../../hooks/useSaveData'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../../store/editor.spotlight'
@@ -73,6 +74,7 @@ const List = ({
   const { itemActionExecutor } = useItemExecutor()
   const groups = Object.keys(groupBy(data, (n) => n.category))
 
+  const { saveIt } = useSaveChanges()
   const indexes = React.useMemo(() => groups.map((gn) => findIndex(data, (n) => n.category === gn)), [groups])
 
   const virtualizer = useVirtual({
@@ -137,7 +139,7 @@ const List = ({
 
             return nextIndex
           })
-      } else if (event.key === 'Enter') {
+      } else if (event.key === 'Enter' && normalMode) {
         const currentActiveItem = data[activeIndex]
         if (currentActiveItem?.type === ItemActionType.ilink && !activeItem.active) {
           // if (!selection) return
@@ -153,13 +155,14 @@ const List = ({
             }
 
             if (selection) {
-              addInRecentResearchNodes(newNode.nodeid)
-              saveEditorValueAndUpdateStores(newNode.nodeid, nodeContent, true)
-              saveData()
+              // addInRecentResearchNodes(newNode.nodeid)
+              // saveEditorValueAndUpdateStores(newNode.nodeid, nodeContent, true)
+              // saveData()
 
-              appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
+              // appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
-              setNormalMode(true)
+              // setNormalMode(true)
+              saveIt({ saveAndClose: true, removeHighlight: true })
               setSelection(undefined)
             } else {
               if (!currentActiveItem?.extras?.new) {

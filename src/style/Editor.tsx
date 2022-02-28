@@ -86,7 +86,8 @@ export const EditorStyles = styled.div`
   }
 
   mark {
-    background-color: ${(props) => transparentize(0.5, props.theme.colors.secondary)};
+    background-color: ${(props) => transparentize(0.75, props.theme.colors.primary)};
+    color: ${(props) => props.theme.colors.text.default};
   }
 
   p,
@@ -159,9 +160,10 @@ export const EditorStyles = styled.div`
     font-size: 1.2rem;
   }
 
-  a {
+  a * {
     cursor: pointer;
-    color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.primary} !important;
+    text-decoration: inherit;
   }
 
   small,
@@ -452,5 +454,9 @@ export const EditorStyles = styled.div`
   input[type='text'],
   textarea {
     border: 1px solid ${({ theme }) => theme.colors.form.input.border};
+  }
+
+  .LinkIcon > * {
+    color: ${({ theme }) => theme.colors.primary};
   }
 `

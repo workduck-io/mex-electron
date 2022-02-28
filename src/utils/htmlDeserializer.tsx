@@ -1,4 +1,4 @@
-import { deserializeHtml, htmlBodyToFragment, htmlStringToDOMNode, usePlateEditorRef } from '@udecode/plate-core'
+import { deserializeHtml, getPlateEditorRef, htmlBodyToFragment, htmlStringToDOMNode } from '@udecode/plate-core'
 
 import { BlockType } from '../store/useBlockStore'
 import { NodeEditorContent } from '../types/Types'
@@ -12,19 +12,18 @@ export const plateEditor = () => {
   return createPlateUIEditor({ plugins })
 }
 
-export const useDeserializeSelectionToNodes = (
-  path: string,
+export const getDeserializeSelectionToNodes = (
   selection: { text: string; metadata: string },
   highlight?: boolean
 ): NodeEditorContent => {
   let nodes
-  const editor = usePlateEditorRef() ?? plateEditor()
+  const editor = getPlateEditorRef() ?? plateEditor()
   const element = htmlStringToDOMNode(selection?.text ?? '<p></p>')
 
   try {
     nodes = editor ? deserializeHtml(editor, { element, stripWhitespace: true }) : undefined
     if (nodes) nodes = nodes.map((block) => updateIds(block, true))
-    // if (nodes) nodes = nodes.map((node) => highlightNodes(node, highlight))
+    if (nodes) nodes = nodes.map((node) => highlightNodes(node, highlight))
   } catch (err) {
     console.log(err)
   }

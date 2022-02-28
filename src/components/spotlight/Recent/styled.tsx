@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components'
+
 import { Scroll } from '../../../style/spotlight/layout'
 
 export const StyledRecent = styled.div`
