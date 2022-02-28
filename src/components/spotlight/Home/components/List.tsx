@@ -10,6 +10,7 @@ import { IpcAction } from '../../../../data/IpcAction'
 import Item from './Item'
 import { NodeProperties } from '../../../../store/useEditorStore'
 import { appNotifierWindow } from '../../../../electron/utils/notifiers'
+import { mog } from '../../../../utils/lib/helper'
 import { openNodeInMex } from '../../../../utils/combineSources'
 import { useDataSaverFromContent } from '../../../../editor/Components/Saver'
 import useDataStore from '../../../../store/useDataStore'
@@ -55,11 +56,10 @@ const List = ({
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
 
   const listStyle = useMemo(() => {
-    const style = { width: '55%', marginRight: '0.5rem' }
+    const style = { width: '55%' }
 
     if (!normalMode) {
       style.width = '0%'
-      style.marginRight = '0'
     }
     if (searchResults[activeIndex]?.type !== ItemActionType.ilink) {
       style.width = '100%'
@@ -86,12 +86,6 @@ const List = ({
   React.useEffect(() => {
     scrollToIndex(activeIndex)
   }, [activeIndex])
-
-  React.useEffect(() => {
-    if (activeItem) {
-      scrollToOffset(0)
-    }
-  }, [activeItem])
 
   useEffect(() => {
     const handler = (event) => {
@@ -205,50 +199,19 @@ const List = ({
     setActiveIndex(0)
   }, [data])
 
-  function handleClick(id: number) {
-    const currentActiveItem = data[activeIndex]
-    if (!selection) return
-
-    if (currentActiveItem?.type === ItemActionType.ilink) {
-      let newNode: NodeProperties = node
-
-      if (currentActiveItem?.extras.new && !activeItem.active) {
-        const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : node.path
-
-        const d = addILink({ ilink: nodeName, nodeid: node.nodeid })
-        newNode = getNode(newNode.nodeid)
-      }
-
-      if (selection) {
-        addInRecentResearchNodes(newNode.nodeid)
-        saveEditorValueAndUpdateStores(newNode.nodeid, nodeContent, true)
-        saveData()
-
-        appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
-
-        setNormalMode(true)
-        setSelection(undefined)
-      } else {
-        if (!currentActiveItem?.extras.new) {
-          openNodeInMex(newNode.nodeid)
-          setNormalMode(false)
-        }
-      }
-      setSearch({ value: '', type: CategoryType.search })
+  function handleDoubleClick(id: number) {
+    const currentActiveItem = data[id]
+    if (currentActiveItem?.type === ItemActionType.ilink && !activeItem.active) {
+      setNormalMode(false)
     } else {
-      if (data[id]?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
-        setSelectedItem({ item: data[id], active: false })
-        itemActionExecutor(data[id])
-      } else {
-        if (!selectedItem?.active) {
-          setCurrentListItem(data[id])
-          setSelectedItem({ item: data[id], active: true })
-        } else {
-          itemActionExecutor(selectedItem?.item, search.value)
-          setSelectedItem({ item: null, active: false })
-        }
-        setInput('')
+      if (currentActiveItem?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
+        setSelectedItem({ item: currentActiveItem, active: false })
+        itemActionExecutor(currentActiveItem)
+      } else if (selectedItem.active) {
+        itemActionExecutor(selectedItem?.item, search.value)
+        setSelectedItem({ item: null, active: false })
       }
+      setInput('')
     }
   }
 
@@ -259,8 +222,21 @@ const List = ({
         {virtualizer.virtualItems.map((virtualRow) => {
           const item = data[virtualRow.index]
           const handlers = {
-            onPointerMove: () => pointerMoved && setActiveIndex(virtualRow.index),
-            onClick: () => handleClick(virtualRow.index)
+            // onPointerMove: () => pointerMoved && setActiveIndex(virtualRow.index),
+            // onClick: () => handleClick(virtualRow.index)
+            onClick: () => {
+              setActiveIndex(virtualRow.index)
+              const currentActiveItem = data[virtualRow.index]
+
+              if (currentActiveItem?.type === ItemActionType.search) {
+                setCurrentListItem(currentActiveItem)
+                setSelectedItem({ item: currentActiveItem, active: true })
+              }
+            },
+            onDoubleClick: () => {
+              handleDoubleClick(virtualRow.index)
+              setInput('')
+            }
           }
 
           const index = virtualRow.index

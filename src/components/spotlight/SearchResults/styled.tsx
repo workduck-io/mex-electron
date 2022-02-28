@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components'
 
 import { StyledBackground } from '../styled'
 import { animated } from 'react-spring'
+import { transparentize } from 'polished'
 
 export const StyledResults = styled(ColumnContainer)<{ margin: string }>`
   margin-top: 4px;
@@ -15,15 +16,14 @@ export const StyledResults = styled(ColumnContainer)<{ margin: string }>`
 export const StyledRow = styled(animated.div)<ColorProp>`
   /* transform: translateY(${(props) => props.start}px); */
   padding: 12px 1rem 12px 0;
+  :hover {
+    background-color: ${({ theme }) => transparentize(0.65, theme.colors.background.modal)};
+    /* padding: 10px 1rem 10px 0; */
+  }
   ${({ showColor }) =>
     showColor &&
     css`
-      ${StyledBackground}
-      padding: 10px 1rem 10px 0;
-      :hover {
-        ${StyledBackground}
-        padding: 10px 1rem 10px 0;
-      }
+      ${StyledBackground}/* padding: 10px 1rem 10px 0; */
     `}
   display: flex;
   flex-direction: row;

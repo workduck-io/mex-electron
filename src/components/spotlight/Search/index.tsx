@@ -18,7 +18,7 @@ import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 const Search: React.FC = () => {
   const theme = useTheme()
   const ref = useRef<HTMLInputElement>()
-  const { setSearch, search } = useSpotlightContext()
+  const { setSearch, search, activeIndex } = useSpotlightContext()
   const input = useSpotlightAppStore((store) => store.input)
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const saved = useContentStore((store) => store.saved)
@@ -49,8 +49,9 @@ const Search: React.FC = () => {
       ref.current.value = ''
     }
     if (!normalMode) setInput('')
+
     ref.current.focus()
-  }, [search, normalMode])
+  }, [search, normalMode, activeIndex])
 
   const { icon, placeholder } = useSearchProps()
 
