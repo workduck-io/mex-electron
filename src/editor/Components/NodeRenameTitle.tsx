@@ -12,6 +12,7 @@ import { useEditorStore } from '../../store/useEditorStore'
 import { useRenameStore } from '../../store/useRenameStore'
 import { Button } from '../../style/Buttons'
 import { Input } from '../../style/Form'
+import { isReserved } from '../../utils/lib/paths'
 
 const Wrapper = styled.div`
   position: relative;
@@ -115,6 +116,11 @@ const NodeRenameTitle = () => {
   // const inpRef = useRef<HTMLInputElement>()
   //
 
+  useEffect(() => {
+    if (isReserved(nodeFrom)) {
+      mog('ISRESERVED', { nodeFrom })
+    }
+  }, [nodeFrom])
   const reset = () => {
     if (editable) modalReset()
     setEditable(false)
@@ -176,12 +182,17 @@ const NodeRenameTitle = () => {
 
   return (
     <Wrapper>
-      {editable ? (
+      {isReserved(nodeFrom) ? (
+        <Tippy theme="mex" placement="bottom-start" content="Reserved Node">
+          <TitleStatic>{nodeFrom}</TitleStatic>
+        </Tippy>
+      ) : editable ? (
         <WrappedNodeSelect
           id="NodeRenameTitleSelect"
           name="NodeRenameTitleSelect"
           createAtTop
           disallowReserved
+          disallowClash
           autoFocus
           defaultValue={to ?? nodeFrom}
           handleSelectItem={handleToChange}

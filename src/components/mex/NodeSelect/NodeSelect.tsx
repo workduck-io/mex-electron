@@ -268,9 +268,11 @@ function NodeSelect({
           },
           onReserve: () => {
             toast('Reserve node cannot be used')
+            setInputValue('')
           },
           onClash: () => {
             toast('Existing node cannot be used')
+            setInputValue('')
           }
         })
       }
