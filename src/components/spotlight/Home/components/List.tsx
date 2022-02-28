@@ -1,24 +1,13 @@
 import { ActiveItem, CategoryType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { ItemActionType, ListItemType } from '../../SearchResults/types'
-import { ListItem, StyledList, usePointerMovedSinceMount } from '../styled'
+import { ListItem, StyledList } from '../styled'
 import React, { useEffect, useMemo, useRef } from 'react'
 import { findIndex, groupBy } from 'lodash'
 
 import { ActionTitle } from '../../Actions/styled'
-import { AppType } from '../../../../hooks/useInitialize'
-import { IpcAction } from '../../../../data/IpcAction'
 import Item from './Item'
-import { NodeProperties } from '../../../../store/useEditorStore'
-import { appNotifierWindow } from '../../../../electron/utils/notifiers'
-import { mog } from '../../../../utils/lib/helper'
-import { openNodeInMex } from '../../../../utils/combineSources'
-import { useDataSaverFromContent } from '../../../../editor/Components/Saver'
-import useDataStore from '../../../../store/useDataStore'
 import useItemExecutor from '../actionExecutor'
-import useLoad from '../../../../hooks/useLoad'
-import { useRecentsStore } from '../../../../store/useRecentsStore'
 import { useSaveChanges } from '../../Search/useSearchProps'
-import { useSaveData } from '../../../../hooks/useSaveData'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../../store/editor.spotlight'
 import { useSpring } from 'react-spring'
@@ -38,20 +27,13 @@ const List = ({
   const { search, setSelection, activeIndex, searchResults, activeItem, setSearch, selection, setActiveIndex } =
     useSpotlightContext()
   const parentRef = useRef(null)
-  const pointerMoved = usePointerMovedSinceMount()
 
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
-  const { saveData } = useSaveData()
-  const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
 
   const node = useSpotlightEditorStore((s) => s.node)
 
-  const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
-
-  const { getNode } = useLoad()
-  const addILink = useDataStore((s) => s.addILink)
 
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
@@ -83,7 +65,7 @@ const List = ({
     parentRef
   })
 
-  const { scrollToIndex, scrollToOffset } = virtualizer
+  const { scrollToIndex } = virtualizer
 
   React.useEffect(() => {
     scrollToIndex(activeIndex)
@@ -142,32 +124,15 @@ const List = ({
       } else if (event.key === 'Enter' && normalMode) {
         const currentActiveItem = data[activeIndex]
         if (currentActiveItem?.type === ItemActionType.ilink && !activeItem.active) {
-          // if (!selection) return
-
           if (event.metaKey) {
-            let newNode: NodeProperties = node
-
+            let nodePath = node.path
             if (currentActiveItem?.extras.new && !activeItem.active) {
-              const nodeName = search.value.startsWith('[[') ? search.value.slice(2) : node.path
-
-              const d = addILink({ ilink: nodeName, nodeid: node.nodeid })
-              newNode = getNode(newNode.nodeid)
+              nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
             }
 
             if (selection) {
-              // addInRecentResearchNodes(newNode.nodeid)
-              // saveEditorValueAndUpdateStores(newNode.nodeid, nodeContent, true)
-              // saveData()
-
-              // appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
-
-              // setNormalMode(true)
-              saveIt({ saveAndClose: true, removeHighlight: true })
+              saveIt({ path: nodePath, saveAndClose: true, removeHighlight: true })
               setSelection(undefined)
-            } else {
-              if (!currentActiveItem?.extras?.new) {
-                openNodeInMex(newNode.nodeid)
-              }
             }
             setSearch({ value: '', type: CategoryType.search })
           } else {
@@ -225,8 +190,6 @@ const List = ({
         {virtualizer.virtualItems.map((virtualRow) => {
           const item = data[virtualRow.index]
           const handlers = {
-            // onPointerMove: () => pointerMoved && setActiveIndex(virtualRow.index),
-            // onClick: () => handleClick(virtualRow.index)
             onClick: () => {
               setActiveIndex(virtualRow.index)
               const currentActiveItem = data[virtualRow.index]
