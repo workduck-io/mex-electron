@@ -49,7 +49,7 @@ const useEditorPluginConfig = (editorId: string) => {
         slateElementType: ELEMENT_INLINE_BLOCK,
         newItemHandler: (newItem, parentId?) => {
           const link = addILink({ ilink: newItem, parentId })
-          mog('Link', { link, newItem, parentId })
+          // mog('Link', { link, newItem, parentId })
           return link.nodeid
         },
         renderElement: ILinkComboboxItem
@@ -58,6 +58,8 @@ const useEditorPluginConfig = (editorId: string) => {
         slateElementType: ELEMENT_TAG,
         newItemHandler: (newItem) => {
           addTag(newItem)
+          // mog('Tag', { newItem })
+          return newItem
         },
         renderElement: TagComboboxItem
       },

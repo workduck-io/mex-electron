@@ -109,7 +109,7 @@ export const useLinks = () => {
     if (content) {
       const links: CachedILink[] = getLinksFromContent(content).map((l) => ({
         type: 'to',
-        nodeid: getUidFromNodeId(l)
+        nodeid: l
       }))
 
       let currentLinks = linkCache[nodeid]
