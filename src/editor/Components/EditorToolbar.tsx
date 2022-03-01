@@ -93,9 +93,21 @@ const BallonMarkToolbarButtons = () => {
       />
       <ButtonSeparator />
 
-      <AlignToolbarButton value="left" icon={<Icon icon={AlignLeftIcon} />} />
-      <AlignToolbarButton value="center" icon={<Icon icon={AlignCenterIcon} />} />
-      <AlignToolbarButton value="right" icon={<Icon icon={AlignRightIcon} />} />
+      <AlignToolbarButton
+        value="left"
+        tooltip={{ content: 'Align Left', ...tooltip }}
+        icon={<Icon icon={AlignLeftIcon} />}
+      />
+      <AlignToolbarButton
+        value="center"
+        tooltip={{ content: 'Align Center', ...tooltip }}
+        icon={<Icon icon={AlignCenterIcon} />}
+      />
+      <AlignToolbarButton
+        value="right"
+        tooltip={{ content: 'Align Right', ...tooltip }}
+        icon={<Icon icon={AlignRightIcon} />}
+      />
 
       <ButtonSeparator />
 
@@ -141,8 +153,8 @@ const BallonMarkToolbarButtons = () => {
         icon={<Icon height={20} icon={fileAddLine} />}
         tooltip={{ content: 'Convert Blocks to New Snippet', ...tooltip }}
       />
-      <ButtonSeparator />
-      {/* <LinkButton tooltip={{ content: 'Link', ...tooltip }} icon={<Icon height={20} icon={linkIcon} />} /> */}
+      {/* <ButtonSeparator />
+      <LinkButton tooltip={{ content: 'Link', ...tooltip }} icon={<Icon height={20} icon={linkIcon} />} /> */}
       {/* Looses focus when used. */}
     </BalloonToolbar>
   )

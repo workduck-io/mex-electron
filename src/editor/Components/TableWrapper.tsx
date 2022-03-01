@@ -31,18 +31,44 @@ const JustifyCenter = styled.div<{ width: string; height: string }>`
 
 const TableToolbarButtons = () => {
   const theme = useTheme()
+  const tooltip = {
+    arrow: true,
+    delay: 0,
+    duration: [200, 0],
+    theme: 'mex',
+    hideOnClick: false,
+    offset: [0, 17],
+    placement: 'bottom'
+  } as any
   return (
     <>
-      <TableToolbarButton icon={<MexIcon icon={AddRowIcon} />} transform={addRow} />
-      <TableToolbarButton icon={<MexIcon icon={AddColumnIcon} />} transform={addColumn} />
-      <TableToolbarButton icon={<MexIcon icon={DeleteRowIcon} />} transform={deleteRow} />
-      <TableToolbarButton icon={<MexIcon icon={DeleteColumnIcon} />} transform={deleteColumn} />
+      <TableToolbarButton
+        tooltip={{ content: 'Add Row', ...tooltip }}
+        icon={<MexIcon icon={AddRowIcon} />}
+        transform={addRow}
+      />
+      <TableToolbarButton
+        tooltip={{ content: 'Add Column', ...tooltip }}
+        icon={<MexIcon icon={AddColumnIcon} />}
+        transform={addColumn}
+      />
+      <TableToolbarButton
+        tooltip={{ content: 'Delete Row', ...tooltip }}
+        icon={<MexIcon icon={DeleteRowIcon} />}
+        transform={deleteRow}
+      />
+      <TableToolbarButton
+        tooltip={{ content: 'Delete Column', ...tooltip }}
+        icon={<MexIcon icon={DeleteColumnIcon} />}
+        transform={deleteColumn}
+      />
       <JustifyCenter width="1rem" height="inherit">
         <ButtonSeparator />
       </JustifyCenter>
       <TableToolbarButton
         icon={<MexIcon color={theme.colors.primary} icon={DeleteTableIcon} />}
         transform={deleteTable}
+        tooltip={{ content: 'Delete Table', ...tooltip }}
       />
     </>
   )
