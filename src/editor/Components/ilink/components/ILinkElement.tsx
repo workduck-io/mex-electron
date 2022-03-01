@@ -15,6 +15,7 @@ import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { SILink, SILinkRoot } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
 import { ELEMENT_ILINK } from '../defaults'
+import { useEffect, useState } from 'react'
 
 /**
  * ILinkElement with no default styles.
@@ -28,17 +29,23 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const editor = useEditorRef()
   const selected = useSelected()
   const focused = useFocused()
+  const [preview, setPreview] = useState(false)
   const { push } = useNavigation()
   const { getUidFromNodeId, getNodeIdFromUid } = useLinks()
-  // console.log('We reached here', { editor }, isPreview(editor.id))
+  // mog('We reached here', { selected, focused })
 
   // const nodeid = getUidFromNodeId(element.value)
   const path = getNodeIdFromUid(element.value)
   const { archived } = useArchive()
 
   const onClickProps = useOnMouseClick(() => {
-    push(element.value)
+    if (!preview) setPreview(true)
+    else push(element.value)
   })
+
+  useEffect(() => {
+    if (preview && !selected) setPreview(false)
+  }, [selected])
 
   useHotkeys(
     'backspace',
@@ -50,6 +57,17 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
     [element]
   )
 
+  useHotkeys(
+    'enter',
+    () => {
+      // mog('Enter the dragon', { selected, preview, focused, esl: editor.selection })
+      if (selected && focused && editor.selection) {
+        if (!preview) setPreview(true)
+      }
+      if (preview) push(element.value)
+    },
+    [selected, preview]
+  )
   useHotkeys(
     'delete',
     () => {
@@ -76,7 +94,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
           <span className="ILink_decoration ILink_decoration_right">]]</span>
         </SILink>
       ) : (
-        <EditorPreview isPreview={isPreview(editor.id)} previewRef={editor} nodeid={element.value}>
+        <EditorPreview isPreview={isPreview(editor.id)} preview={preview} previewRef={editor} nodeid={element.value}>
           <SILink selected={selected} {...onClickProps}>
             <span className="ILink_decoration ILink_decoration_left">[[</span>
             <span className="ILink_decoration ILink_decoration_value"> {path}</span>
