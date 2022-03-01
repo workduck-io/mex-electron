@@ -110,13 +110,13 @@ export const EditorStyles = styled.div`
       margin: 0.25rem 0;
     }
     th {
-      border: 1px solid ${({ theme }) => theme.colors.gray[8]};
+      border: 1px solid ${({ theme }) => theme.colors.gray[7]};
       background-color: ${({ theme }) => theme.colors.gray[9]};
       border-bottom: 1px solid ${({ theme }) => theme.colors.primary};
     }
     td {
       background-color: ${({ theme }) => theme.colors.gray[9]};
-      border: 1px solid ${({ theme }) => theme.colors.gray[8]};
+      border: 1px solid ${({ theme }) => theme.colors.gray[7]};
     }
   }
 
