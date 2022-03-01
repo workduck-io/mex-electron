@@ -2,10 +2,12 @@ import timeLine from '@iconify-icons/ri/time-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
+import useLayout from '../../../hooks/useLayout'
 import { useContentStore } from '../../../store/useContentStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import { FOCUS_MODE_OPACITY } from '../../../style/consts'
+import { focusStyles } from '../../../style/focus'
 import { Label } from '../../../style/Form'
 import { CardShadow, HoverFade } from '../../../style/helpers'
 import { FocusModeProp } from '../../../style/props'
@@ -70,15 +72,7 @@ export const MetadataWrapper = styled.div<FocusModeProp>`
     }
   }
 
-  ${({ focusMode }) =>
-    focusMode &&
-    css`
-      /* display: none; */
-      opacity: ${FOCUS_MODE_OPACITY};
-      &:hover {
-        opacity: 1;
-      }
-    `}
+  ${(props) => focusStyles(props)}
 
   ${Label} {
     color: ${({ theme }) => theme.colors.gray[6]};
@@ -122,6 +116,7 @@ const Metadata = () => {
   const focusMode = useLayoutStore((s) => s.focusMode)
   const getContent = useContentStore((state) => state.getContent)
   const content = getContent(node.nodeid)
+  const { getFocusProps } = useLayout()
   const [metadata, setMetadata] = useState<NodeMetadata | undefined>(undefined)
 
   useEffect(() => {
@@ -135,7 +130,7 @@ const Metadata = () => {
 
   if (content === undefined || content.metadata === undefined || metadata === undefined) return null
   return (
-    <MetadataWrapper focusMode={focusMode}>
+    <MetadataWrapper {...getFocusProps(focusMode)}>
       <DataGroup>
         {metadata.createdBy !== undefined && (
           <DataWrapper interactive={metadata.createdAt !== undefined}>

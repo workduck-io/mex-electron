@@ -2,8 +2,8 @@ import { AsyncButton, Button } from './Buttons'
 import { mix, transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 
-import { FOCUS_MODE_OPACITY } from './consts'
 import { FocusModeProp } from './props'
+import { focusStyles } from './focus'
 
 export const NoteTitle = styled.h1``
 
@@ -25,14 +25,7 @@ export const NodeInfo = styled.div<FocusModeProp>`
     margin: 0 0 0 ${({ theme }) => theme.spacing.small};
   }
 
-  ${({ focusMode }) =>
-    focusMode &&
-    css`
-      opacity: ${FOCUS_MODE_OPACITY};
-      &:hover {
-        opacity: 1;
-      }
-    `}
+  ${(props) => focusStyles(props)}
 `
 
 export const InfoTools = styled.div`
@@ -117,13 +110,13 @@ export const EditorStyles = styled.div`
       margin: 0.25rem 0;
     }
     th {
-      border: 1px solid ${({ theme }) => theme.colors.gray[8]};
+      border: 1px solid ${({ theme }) => theme.colors.gray[7]};
       background-color: ${({ theme }) => theme.colors.gray[9]};
       border-bottom: 1px solid ${({ theme }) => theme.colors.primary};
     }
     td {
       background-color: ${({ theme }) => theme.colors.gray[9]};
-      border: 1px solid ${({ theme }) => theme.colors.gray[8]};
+      border: 1px solid ${({ theme }) => theme.colors.gray[7]};
     }
   }
 

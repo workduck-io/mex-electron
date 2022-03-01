@@ -27,6 +27,8 @@ import { NavProps } from './Types'
 import { FocusModeProp } from '../../../style/props'
 import toast from 'react-hot-toast'
 import { useRouting, ROUTE_PATHS, NavigationType } from '../../../views/routes/urls'
+import useLayout from '../../../hooks/useLayout'
+import { focusStyles } from '../../../style/focus'
 
 export const NavWrapper = styled.div<FocusModeProp>`
   overflow: scroll;
@@ -42,14 +44,7 @@ export const NavWrapper = styled.div<FocusModeProp>`
   transition: opacity 0.3s ease-in-out;
   padding-top: 1rem;
 
-  ${({ focusMode }) =>
-    focusMode &&
-    css`
-      opacity: ${FOCUS_MODE_OPACITY};
-      &:hover {
-        opacity: 1;
-      }
-    `}
+  ${(props) => focusStyles(props)}
 `
 
 export const navTooltip = css`
@@ -117,6 +112,7 @@ const Nav = ({ links }: NavProps) => {
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
   const { saveNewNodeAPI } = useApi()
+  const { getFocusProps } = useLayout()
 
   const { goTo } = useRouting()
   const location = useLocation()
@@ -165,7 +161,7 @@ const Nav = ({ links }: NavProps) => {
   }, [shortcuts])
 
   return (
-    <NavWrapper focusMode={focusMode}>
+    <NavWrapper {...getFocusProps(focusMode)}>
       <NavTooltip singleton={source} />
       {authenticated && (
         <div>
