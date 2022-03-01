@@ -263,7 +263,7 @@ const Init = () => {
   }, [shortcuts, shortcutDisabled, node.nodeid]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (focusMode) {
+    if (focusMode.on) {
       const unsubscribe = tinykeys(window, {
         Escape: (event) => {
           event.preventDefault()

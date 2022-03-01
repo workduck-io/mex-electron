@@ -14,6 +14,8 @@ import { useHelpStore } from '../../store/useHelpStore'
 import { useKeyListener } from '../../hooks/useShortcutListener'
 import { useLayoutStore } from '../../store/useLayoutStore'
 import useToggleElements from '../../hooks/useToggleElements'
+import useLayout from '../../hooks/useLayout'
+import { focusStyles } from '../../style/focus'
 
 interface InfoBarWrapperProps extends FocusModeProp {
   wide: string
@@ -36,14 +38,7 @@ export const InfoBarWrapper = styled.div<InfoBarWrapperProps>`
     }};
   }
   transition: opacity 0.3s ease-in-out;
-  ${({ focusMode }) =>
-    focusMode &&
-    css`
-      opacity: ${FOCUS_MODE_OPACITY};
-      &:hover {
-        opacity: 1;
-      }
-    `}
+  ${focusStyles}
 `
 
 export const TemplateInfoBar = styled(InfoBarWrapper)`
@@ -75,6 +70,7 @@ const InfoBarItems = () => {
 const InfoBar = () => {
   const focusMode = useLayoutStore((s) => s.focusMode)
   const shortcuts = useHelpStore((store) => store.shortcuts)
+  const { getFocusProps } = useLayout()
 
   const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph, showSuggestedNodes, toggleSuggestedNodes } =
     useToggleElements()
@@ -108,7 +104,10 @@ const InfoBar = () => {
   }, [shortcuts])
 
   return (
-    <InfoBarWrapper wide={showGraph || showSyncBlocks || showSuggestedNodes ? 'true' : 'false'} focusMode={focusMode}>
+    <InfoBarWrapper
+      wide={showGraph || showSyncBlocks || showSuggestedNodes ? 'true' : 'false'}
+      {...getFocusProps(focusMode)}
+    >
       <InfoBarItems />
     </InfoBarWrapper>
   )

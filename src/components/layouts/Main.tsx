@@ -54,7 +54,7 @@ const Main = ({ children }: MainProps) => {
   const focusMode = useLayoutStore((s) => s.focusMode)
 
   return (
-    <AppWrapper className={focusMode ? 'focus_mode' : ''}>
+    <AppWrapper className={focusMode.on ? 'focus_mode' : ''}>
       <Draggable style={styles as any} /> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
       {/* <AutoSave /> */}
       <GridWrapper grid={authenticated ? 'true' : ''}>

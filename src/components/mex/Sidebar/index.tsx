@@ -8,6 +8,7 @@ import bookmark3Line from '@iconify-icons/ri/bookmark-3-line'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import TreeNode from '../../../types/tree'
 import { SidebarDiv, SidebarContent, SidebarSection, SectionHeading, SidebarDivider } from '../../../style/Sidebar'
+import useLayout from '../../../hooks/useLayout'
 
 export type SideBarProps = { tree: TreeNode[]; starred: TreeNode[] }
 
@@ -16,9 +17,10 @@ const SideBar = ({ tree, starred }: SideBarProps) => {
   const [sHide, setShide] = useState(false)
   const [tHide, setThide] = useState(false)
   const focusMode = useLayoutStore((s) => s.focusMode)
+  const { getFocusProps } = useLayout()
 
   return (
-    <SidebarDiv focusMode={focusMode}>
+    <SidebarDiv {...getFocusProps(focusMode)}>
       <SidebarContent>
         <SidebarSection className="starred">
           <SectionHeading

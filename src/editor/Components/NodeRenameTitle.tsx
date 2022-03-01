@@ -63,38 +63,6 @@ const TitleStatic = styled.div`
   }
 `
 
-// export const TippyTheme = css`
-
-// .tippy-box[data-theme~='mex'] {
-//   background-color: ${({ theme }) => theme.colors.gray[7]}
-//   font-weight: 600;
-
-//   &[data-placement^='top'] > .tippy-arrow::before {
-//     border-top-color: ${({ theme }) => theme.colors.gray[7]};
-//   }
-
-//   &[data-placement^='bottom'] > .tippy-arrow::before {
-//     border-bottom-color: ${({ theme }) => theme.colors.gray[7]};
-//   }
-
-//   &[data-placement^='left'] > .tippy-arrow::before {
-//     border-left-color: ${({ theme }) => theme.colors.gray[7]};
-//   }
-
-//   &[data-placement^='right'] > .tippy-arrow::before {
-//     border-right-color: ${({ theme }) => theme.colors.gray[7]};
-//   }
-
-//   > .tippy-backdrop {
-//     background-color: ${({ theme }) => theme.colors.gray[7]};
-//   }
-
-//   > .tippy-svg-arrow {
-//     fill: ${({ theme }) => theme.colors.gray[7]};
-//   }
-// }
-// `
-
 const NodeRenameTitle = () => {
   const { getUidFromNodeId } = useLinks()
   const { execRefactor, getMockRefactor } = useRefactor()

@@ -102,7 +102,7 @@ const FloatingButton = () => {
   if (!authenticated) return null
 
   return (
-    <Float focusMode={focusMode}>
+    <Float focusMode={focusMode.on}>
       {!showMenu ? (
         <FloatButton id="wd-mex-floating-button" key="wd-mex-floating-button" onClick={() => setMenu(true)}>
           {GetIcon(QuestionMarkIcon)}

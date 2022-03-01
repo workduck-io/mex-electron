@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react'
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { FOCUS_MODE_OPACITY } from './consts'
+import { focusStyles } from './focus'
 import { PixelToCSS, ThinScrollbar } from './helpers'
 import { FocusModeProp } from './props'
 
@@ -24,14 +25,7 @@ export const SidebarDiv = styled.div<FocusModeProp>`
   max-width: ${({ theme }) => PixelToCSS(theme.width.sidebar)};
   width: 100%;
   transition: opacity 0.3s ease-in-out;
-  ${({ focusMode }) =>
-    focusMode &&
-    css`
-      opacity: ${FOCUS_MODE_OPACITY};
-      &:hover {
-        opacity: 1;
-      }
-    `}
+  ${focusStyles}
 `
 
 export const SidebarContent = styled.div`

@@ -21,7 +21,7 @@ import { SaverButton } from './Components/Saver'
 
 const Toolbar = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
-  const { toggleFocusMode } = useLayout()
+  const { toggleFocusMode, setFocusHover, getFocusProps } = useLayout()
   const focusMode = useLayoutStore((store) => store.focusMode)
   const nodeIntentsModalOpen = useNodeIntentsModalStore((store) => store.open)
   const nodeIntentsModalToggle = useNodeIntentsModalStore((store) => store.toggleModal)
@@ -38,7 +38,7 @@ const Toolbar = () => {
   }
 
   return (
-    <NodeInfo focusMode={focusMode}>
+    <NodeInfo {...getFocusProps(focusMode)}>
       <NodeRenameTitle />
       {fetchingContent && <Loading dots={3} />}
       <InfoTools>
@@ -54,7 +54,7 @@ const Toolbar = () => {
           icon={focusLine}
           title="Focus Mode"
           shortcut={shortcuts.toggleFocusMode.keystrokes}
-          highlight={focusMode}
+          highlight={focusMode.on}
           onClick={toggleFocusMode}
         />
         <IconButton
