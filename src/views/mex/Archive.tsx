@@ -7,6 +7,7 @@ import Modal from 'react-modal'
 import { useTransition } from 'react-spring'
 import styled, { useTheme } from 'styled-components'
 import { ModalControls, ModalHeader, MRMHead } from '../../components/mex/Refactor/styles'
+import SearchView from '../../components/mex/Search/SearchView'
 import { defaultContent } from '../../data/Defaults/baseData'
 import { useSaver } from '../../editor/Components/Saver' // FIXME move useSaver to hooks
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
@@ -100,20 +101,6 @@ const Archive = () => {
     loadNode(node.nodeid, { savePrev: false, fetch: false, node: archiveNode })
   }
 
-  const transition = useTransition(archive, {
-    // sort: (a, b) => (a.score > b.score ? -1 : 0),
-    keys: (item) => `archive_${item.nodeid}`,
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    trail: 50,
-    duration: 200,
-    config: {
-      mass: 1,
-      tension: 200,
-      friction: 16
-    }
-  })
-
   const onDeleteClick = async () => {
     const nodesToDelete = archive.filter((i) => {
       const match = i.path.startsWith(delNode.path)
@@ -135,61 +122,68 @@ const Archive = () => {
   return (
     <IntegrationContainer>
       <Title>Archive</Title>
-      <Nodes>
-        {archive.length === 0 && (
-          <NotFoundText>
-            <Icon color={theme.colors.primary} fontSize={128} icon={archiveFill} />
-            <p>Your archive is empty!</p>
-          </NotFoundText>
-        )}
-        <Results>
-          {transition((styles, n, _t, _i) => {
-            const con = contents[n.nodeid]
-            const path = n.path
-            const content = con ? con.content : defaultContent.content
-            return (
-              <Result style={styles} key={`tag_res_prev_archive_${n.nodeid}${_i}`}>
-                <ResultHeader>
-                  <ResultTitle>{path}</ResultTitle>
-                  <ActionContainer>
-                    <StyledIcon
-                      fontSize={32}
-                      color={theme.colors.primary}
-                      onClick={(ev) => {
-                        ev.preventDefault()
-                        onUnarchiveClick(n)
-                      }}
-                      icon={unarchiveLine}
-                    />
-                    <StyledIcon
-                      fontSize={32}
-                      color="#df7777"
-                      onClick={(ev) => {
-                        ev.preventDefault()
-                        setDelNode(n)
-                        setShowModal(true)
-                      }}
-                      icon={trashIcon}
-                    />
-                  </ActionContainer>
-                </ResultHeader>
-                <SearchPreviewWrapper>
-                  <EditorPreviewRenderer content={content} editorId={`editor_archive_preview_${n.nodeid}`} />
-                </SearchPreviewWrapper>
-              </Result>
-            )
-          })}
-        </Results>
-        {/* {archive.map((node: ILink) => (
-          <ArchivedNode key={node.nodeid}>
-            <ArchiveHeader>{node.text}</ArchiveHeader>
-            <ActionContainer>
-              <StyledIcon fontSize={28} onClick={() => onUnarchiveClick(node)} icon={unarchiveLine} />
-              <StyledIcon fontSize={28} color="#df7777" onClick={() => setDelNode(node)} icon={trashIcon} />
-            </ActionContainer>
-          </ArchivedNode>
-        ))} */}
-      </Nodes>
+
+      <SearchView
+        id="ArchiveSearch"
+        initialItems={archive}
+        onSearch={(search) => {
+          const searchResults = archive.filter((i) => {
+            const match = i.path.toLowerCase().includes(search.toLowerCase())
+            return match
+          })
+          return searchResults
+        }}
+        getItemKey={(item) => `archive_${item.nodeid}`}
+        onSelect={(node) => {
+          const archiveNode: NodeProperties = {
+            id: node.path,
+            path: node.path,
+            title: node.path,
+            nodeid: node.nodeid
+          }
+
+          loadNode(node.nodeid, { savePrev: false, fetch: false, node: archiveNode })
+        }}
+        onEscapeExit={() => {
+          setShowModal(false)
+          setDelNode(undefined)
+        }}
+        RenderItem={({ item, ...props }) => {
+          const con = contents[item.nodeid]
+          const content = con ? con.content : defaultContent.content
+          return (
+            <Result {...props}>
+              <ResultHeader>
+                <ResultTitle>{item.path}</ResultTitle>
+                <ActionContainer>
+                  <StyledIcon
+                    fontSize={32}
+                    color={theme.colors.primary}
+                    onClick={(ev) => {
+                      ev.preventDefault()
+                      onUnarchiveClick(item)
+                    }}
+                    icon={unarchiveLine}
+                  />
+                  <StyledIcon
+                    fontSize={32}
+                    color="#df7777"
+                    onClick={(ev) => {
+                      ev.preventDefault()
+                      setDelNode(item)
+                      setShowModal(true)
+                    }}
+                    icon={trashIcon}
+                  />
+                </ActionContainer>
+              </ResultHeader>
+              <SearchPreviewWrapper>
+                <EditorPreviewRenderer content={content} editorId={`editor_archive_preview_${item.nodeid}`} />
+              </SearchPreviewWrapper>
+            </Result>
+          )
+        }}
+      />
       <Modal
         className="ModalContent"
         overlayClassName="ModalOverlay"

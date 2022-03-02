@@ -2,7 +2,7 @@ import { Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import generatePlugins, { PluginOptionType } from './Plugins/plugins'
 
-import BallonMarkToolbarButtons from './Components/EditorToolbar'
+import BallonMarkToolbarButtons from './Components/EditorBalloonToolbar'
 import { DndProvider } from 'react-dnd'
 import { EditorStyles } from '../style/Editor'
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -60,7 +60,8 @@ export const Editor = ({
 
   const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId)
 
-  // We get memoized plugins
+  // function to add two numbers
+
   const prePlugins = generatePlugins(components, options)
   const plugins = [
     ...prePlugins,
@@ -97,11 +98,12 @@ export const Editor = ({
 }
 
 const withDndProvider = (Component: any) => {
-  return (props: EditorProps) => (
+  const DndDefaultEditor = (props: EditorProps) => (
     <DndProvider backend={HTML5Backend}>
       <Component {...props} />
     </DndProvider>
   )
+  return DndDefaultEditor
 }
 
 withDndProvider.displayName = 'DefaultEditor'
