@@ -39,11 +39,14 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const { archived } = useArchive()
 
   const onClickProps = useOnMouseClick(() => {
+    // Show preview on click, if preview is shown, navigate to link
     if (!preview) setPreview(true)
     else push(element.value)
   })
 
   useEffect(() => {
+    // If the preview is shown and the element losses focus --> Editor focus is moved
+    // Hide the preview
     if (preview && !selected) setPreview(false)
   }, [selected])
 
@@ -61,9 +64,11 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
     'enter',
     () => {
       // mog('Enter the dragon', { selected, preview, focused, esl: editor.selection })
+      // Show preview on Enter, if preview is shown, navigate to link
       if (selected && focused && editor.selection) {
         if (!preview) setPreview(true)
       }
+      // Once preview is shown the link looses focus
       if (preview) push(element.value)
     },
     [selected, preview]
