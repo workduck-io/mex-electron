@@ -1,10 +1,4 @@
-import searchLine from '@iconify-icons/ri/search-line'
-import { Icon } from '@iconify/react'
-import { debounce } from 'lodash'
-import React, { useEffect, useRef } from 'react'
-import { useTransition } from 'react-spring'
-import { NavigationType, useRouting, ROUTE_PATHS } from '../../../views/routes/urls'
-import create from 'zustand'
+import React from 'react'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useLinks } from '../../../hooks/useLinks'
@@ -13,93 +7,23 @@ import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
-import { useNewSearchStore } from '../../../store/useSearchStore'
-import {
-  MatchCounter,
-  MatchCounterWrapper,
-  NoSearchResults,
-  Result,
-  ResultHeader,
-  Results,
-  ResultsWrapper,
-  ResultTitle,
-  SearchContainer,
-  SearchHeader,
-  SearchInput,
-  SearchPreviewWrapper
-} from '../../../style/Search'
+import { FlexSearchResult, useNewSearchStore } from '../../../store/useSearchStore'
+import { Result, ResultHeader, ResultTitle, SearchContainer, SearchPreviewWrapper } from '../../../style/Search'
 import { Title } from '../../../style/Typography'
-import { SearchHighlights, TitleHighlights } from './Highlights'
-
-interface SearchStore {
-  selected: number
-  size: number
-  searchTerm: string
-  result: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
-  setSelected: (selected: number) => void
-  setResult: (result: any[]) => void // eslint-disable-line @typescript-eslint/no-explicit-any
-  setSearchTerm: (searchTerm: string) => void // eslint-disable-line @typescript-eslint/no-explicit-any
-}
-
-const useSearchPageStore = create<SearchStore>((set) => ({
-  selected: -1,
-  size: 0,
-  searchTerm: '',
-  result: [],
-  setSelected: (selected) => set({ selected }),
-  setResult: (result) => set({ result }),
-  setSearchTerm: (searchTerm) => set({ searchTerm })
-}))
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import SearchView, { RenderItemProps } from './SearchView'
 
 const Search = () => {
   const { loadNode } = useLoad()
   const searchIndex = useNewSearchStore((store) => store.searchIndex)
   const contents = useContentStore((store) => store.contents)
-  const selected = useSearchPageStore((store) => store.selected)
-  const setSelected = useSearchPageStore((store) => store.setSelected)
-  const result = useSearchPageStore((store) => store.result)
-  const setResult = useSearchPageStore((store) => store.setResult)
-  const searchTerm = useSearchPageStore((store) => store.searchTerm)
-  const setSearchTerm = useSearchPageStore((store) => store.setSearchTerm)
   const { goTo } = useRouting()
-  const inpRef = useRef<HTMLInputElement>(null)
-  const selectedRef = useRef<HTMLDivElement>(null)
 
   const { getNodeIdFromUid } = useLinks()
 
-  const transition = useTransition(result, {
-    sort: (a, b) => (a.score > b.score ? -1 : 0),
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    // update: { opacity: 1, scale: 1.0 },
-    // leave: { opacity: 0, scale: 0.5 },
-    keys: (item) => item.ref,
-    trail: 50,
-    duration: 200,
-    config: {
-      mass: 1,
-      tension: 200,
-      friction: 16
-    }
-  })
-
-  const executeSearch = (newSearchTerm: string) => {
-    if (newSearchTerm === '') {
-      const res = searchIndex(newSearchTerm)
-      setResult(res)
-    } else {
-      const res = searchIndex(newSearchTerm)
-      // console.log({ res })
-      // const res2 = res.map((r) => {
-      //   return {
-      //     // ref: r.ref,
-      //     // score: r.score,
-      //     // ...highlightText(r.matchData.metadata, r.text, r.title)
-      //   }
-      // })
-      setResult(res)
-    }
-    setSearchTerm(newSearchTerm)
+  const onSearch = (newSearchTerm: string) => {
+    const res = searchIndex(newSearchTerm)
+    return res
   }
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)
@@ -107,136 +31,46 @@ const Search = () => {
   const baseNodeId = useDataStore((store) => store.baseNodeId)
 
   // console.log({ result })
-
-  useEffect(() => {
-    executeSearch(searchTerm)
-    return () => {
-      setSelected(-1)
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const selectNext = () => {
-    setSelected((selected + 1) % result.length)
-    if (selectedRef.current) selectedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  const onSelect = (item: FlexSearchResult) => {
+    const nodeid = item.nodeUID
+    loadNode(nodeid)
+    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
-  const selectPrev = () => {
-    setSelected((result.length + selected - 1) % result.length)
-    if (selectedRef.current) selectedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onChange = (e: any) => {
-    e.preventDefault()
-    const inpSearchTerm = e.target.value
-    executeSearch(inpSearchTerm)
+  const onEscapeExit = () => {
+    const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
+    loadNode(nodeid)
+    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
-  // onKeyDown handler function
-  const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.code === 'Tab') {
-      event.preventDefault()
-      // Blur the input if necessary (not needed currently)
-      // if (inputRef.current) inputRef.current.blur()
-      if (event.shiftKey) {
-        selectPrev()
-      } else {
-        selectNext()
-      }
-    }
-    if (event.code === 'Escape') {
-      // setInput()
-      if (inpRef.current) {
-        if (inpRef.current.value !== '') {
-          inpRef.current.value = ''
-          if (selected > -1) {
-            setSelected(-1)
-          }
-        } else {
-          const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
-          loadNode(nodeid)
-          goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-        }
-      }
-    }
-    if (event.code === 'Enter') {
-      // Only when the selected index is -1
-      if (selected > -1) {
-        // console.log({ load: result[selected].nodeUID, res: result, sel: result[selected], selected })
-        const nodeid = result[selected].nodeUID
-        loadNode(nodeid)
-        goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-      }
-    }
+  const RenderItem = ({ item, ...props }: RenderItemProps<FlexSearchResult>) => {
+    const con = contents[item.nodeUID]
+    const path = getNodeIdFromUid(item.nodeUID)
+    const content = con ? con.content : defaultContent.content
+    return (
+      <Result {...props}>
+        <ResultHeader active={item.matchField.includes('title')}>
+          <ResultTitle>{path}</ResultTitle>
+        </ResultHeader>
+        <SearchPreviewWrapper active={item.matchField.includes('text')}>
+          <EditorPreviewRenderer content={content} editorId={`editor_${item.nodeUID}`} />
+        </SearchPreviewWrapper>
+      </Result>
+    )
   }
 
   return (
-    <SearchContainer onKeyDown={keyDownHandler}>
+    <SearchContainer>
       <Title>Search</Title>
-      <SearchHeader>
-        <Icon icon={searchLine} />
-        <SearchInput
-          autoFocus
-          id="search_nodes"
-          name="search_nodes"
-          tabIndex={-1}
-          placeholder="Search Anything...."
-          type="text"
-          defaultValue={searchTerm}
-          onChange={debounce((e) => onChange(e), 250)}
-          onFocus={() => {
-            if (inpRef.current) inpRef.current.select()
-          }}
-          ref={inpRef}
-        />
-      </SearchHeader>
-      <ResultsWrapper>
-        <Results>
-          {
-            /*transition((styles, c, _t, i) => { */
-            result.map((c, i) => {
-              const con = contents[c.nodeUID]
-              const path = getNodeIdFromUid(c.nodeUID)
-              const content = con ? con.content : defaultContent.content
-              // console.log(c.matchField.includes('title'))
-              return (
-                <Result
-                  onClick={() => {
-                    loadNode(c.nodeUID)
-                    goTo(ROUTE_PATHS.node, NavigationType.push, c.nodeUID)
-                  }}
-                  selected={i === selected}
-                  ref={i === (selected + 1) % result.length ? selectedRef : null}
-                  key={`ResultForSearch_${c.nodeUID}`}
-                >
-                  <ResultHeader active={c.matchField.includes('title')}>
-                    {c.titleHighlights !== undefined && c.titleHighlights.length > 0 ? (
-                      <TitleHighlights titleHighlights={c.titleHighlights} />
-                    ) : (
-                      <ResultTitle>{path}</ResultTitle>
-                    )}
-                    {c.totalMatches !== undefined && (
-                      <MatchCounterWrapper>
-                        Matches:
-                        <MatchCounter>{c.totalMatches}</MatchCounter>
-                      </MatchCounterWrapper>
-                    )}
-                  </ResultHeader>
-                  {c.highlights !== undefined ? (
-                    <SearchHighlights highlights={c.highlights} />
-                  ) : (
-                    <SearchPreviewWrapper active={c.matchField.includes('text')}>
-                      <EditorPreviewRenderer content={content} editorId={`editor_${c.nodeUID}`} />
-                    </SearchPreviewWrapper>
-                  )}
-                </Result>
-              )
-            })
-          }
-        </Results>
-        {result.length === 0 && (
-          <NoSearchResults>No results found. Try refining the query or search for a different one.</NoSearchResults>
-        )}
-      </ResultsWrapper>
+      <SearchView
+        id="searchStandard"
+        initialItems={[]}
+        getItemKey={(i) => i.nodeUID}
+        onSelect={onSelect}
+        onEscapeExit={onEscapeExit}
+        onSearch={onSearch}
+        RenderItem={RenderItem}
+      />
     </SearchContainer>
   )
 }

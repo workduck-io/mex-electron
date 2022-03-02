@@ -22,7 +22,7 @@ interface SearchViewState<Item> {
 
 type View = 'list' | 'card'
 
-interface RenderItemProps<Item> {
+export interface RenderItemProps<Item> {
   item: Item
   selected: boolean
 

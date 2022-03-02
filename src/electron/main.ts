@@ -33,6 +33,7 @@ import { mog } from '../utils/lib/helper'
 import path from 'path'
 import { sanitizeHtml } from '../utils/sanitizeHtml'
 import { setupUpdateService } from './update'
+import { getIndexData, setSearchIndexData } from './utils/indexData'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -111,43 +112,6 @@ export const SPOTLIGHT_WINDOW_OPTIONS = {
     contextIsolation: false,
     enableRemoteModule: true
   }
-}
-
-export const getIndexData = () => {
-  if (!fs.existsSync(SEARCH_INDEX_LOCATION)) return null
-
-  const searchIndex = {}
-  const keys = fs
-    .readdirSync(SEARCH_INDEX_LOCATION, { withFileTypes: true })
-    .filter((item) => !item.isDirectory())
-    .map((item) => item.name.slice(0, -5))
-
-  const areSame = _.isEmpty(_.xor(keys, flexIndexKeys))
-  if (!areSame) return null
-
-  for (let i = 0, key; i < keys.length; i += 1) {
-    key = keys[i]
-    const data = fs.readFileSync(path.join(SEARCH_INDEX_LOCATION, `${key}.json`), 'utf8')
-    searchIndex[key] = data ?? null
-  }
-
-  if (searchIndex['title.map'] === '') return null
-
-  return searchIndex
-}
-
-export const setSearchIndexData = (index) => {
-  if (!fs.existsSync(SEARCH_INDEX_LOCATION)) fs.mkdirSync(SEARCH_INDEX_LOCATION)
-
-  Object.entries(index).forEach(([key, data]) => {
-    try {
-      const t = path.join(SEARCH_INDEX_LOCATION, `${key}.json`)
-      const d: any = data !== 'undefined' ? data : ''
-      fs.writeFileSync(t, d)
-    } catch (err) {
-      console.log('Error is: ', err)
-    }
-  })
 }
 
 const createSpotLighWindow = (show?: boolean) => {
@@ -518,7 +482,7 @@ ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
 
 ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
   const fileData: FileData = getFileData(SAVE_LOCATION)
-  const indexData: any = getIndexData()
+  const indexData: any = getIndexData(SEARCH_INDEX_LOCATION)
   event.sender.send(IpcAction.RECIEVE_LOCAL_DATA, { fileData, indexData })
 })
 
@@ -529,8 +493,7 @@ ipcMain.on(IpcAction.SET_THEME, (ev, arg) => {
 
 ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
   const { searchIndex } = arg
-
-  if (searchIndex) setSearchIndexData(searchIndex)
+  if (searchIndex) setSearchIndexData(searchIndex, SEARCH_INDEX_LOCATION)
 })
 
 ipcMain.on(IpcAction.SET_LOCAL_DATA, (_event, arg) => {

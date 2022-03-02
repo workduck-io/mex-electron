@@ -90,6 +90,7 @@ const Init = () => {
         })
         .then(({ fileData, indexData }) => {
           const initList = convertDataToRawText(fileData)
+          mog('Initializaing Search Index', { indexData, initList })
           const index = initFlexSearchIndex(initList, indexData)
           return fileData
         })
