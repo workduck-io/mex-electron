@@ -15,29 +15,41 @@ export enum ToastStatus {
 
 export type ToastType = {
   status: ToastStatus
-  text: string
+  title: string
+  description?: string
   independent?: boolean // if true, toast will not be closed when parent is closed
+}
+
+export const TOAST_DIMENSIONS = {
+  height: 50,
+  width: 240,
+  offset: 15,
+  delta: 15
 }
 
 /* Toast for showing custom notifications in the app */
 class Toast {
   private window: BrowserWindow | null
+  private timeoutId: NodeJS.Timeout | null = null
 
   constructor(spotlightWindow: BrowserWindow) {
     const options: BrowserWindowConstructorOptions = {
       ...SPOTLIGHT_WINDOW_OPTIONS,
-      height: 40,
-      width: 120,
+      height: TOAST_DIMENSIONS.height,
+      width: TOAST_DIMENSIONS.width,
       center: false
     }
 
     this.window = new BrowserWindow(options)
-    this.window.setParentWindow(spotlightWindow)
-    this.window.webContents.openDevTools()
-    this.window.setVisibleOnAllWorkspaces(true)
+
     this.window.loadURL(TOAST_WINDOW_WEBPACK_ENTRY)
-    this.window.setIgnoreMouseEvents(true, { forward: true })
-    this.window.showInactive()
+    this.window.setParentWindow(spotlightWindow)
+    this.window.setVisibleOnAllWorkspaces(true)
+    // this.window.setIgnoreMouseEvents(true, { forward: true })
+
+    this.window.webContents.openDevTools({
+      mode: 'detach'
+    })
 
     this.window.webContents.on('did-finish-load', () => {
       if (!this.window) {
@@ -53,24 +65,50 @@ class Toast {
     // parent.setHasShadow(false)
 
     const bounds = parent.getBounds()
-    this.window.setPosition(bounds.x + bounds.width - 120, bounds.y + bounds.height + 10)
+    this.window.setPosition(
+      bounds.x + bounds.width - TOAST_DIMENSIONS.width,
+      bounds.y + bounds.height + TOAST_DIMENSIONS.offset
+    )
   }
 
-  public open(independent: boolean) {
+  public open(independent?: boolean, center?: boolean) {
+    if (center) this.window.center()
     if (independent) this.window.setParentWindow(null)
-    this.window.showInactive()
 
-    setTimeout(() => {
+    this.window.showInactive()
+    this.window.setHasShadow(true)
+
+    if (this.timeoutId) clearTimeout(this.timeoutId)
+
+    this.timeoutId = setTimeout(() => {
       this.hide()
     }, 2000)
   }
 
   public send(action: IpcAction, data: any) {
-    this.window.webContents.send(action, data)
+    this.window && this.window.webContents.send(action, data)
   }
 
   public hide() {
+    this.window.setSize(TOAST_DIMENSIONS.width, TOAST_DIMENSIONS.height)
     this.window && this.window.hide()
+  }
+
+  public showMessageAfterDelay(action: IpcAction, data: any) {
+    if (this.timeoutId) clearTimeout(this.timeoutId)
+
+    this.timeoutId = setTimeout(() => {
+      this?.send(action, data)
+
+      if (data?.description) {
+        this.window.setSize(TOAST_DIMENSIONS.width, TOAST_DIMENSIONS.height + TOAST_DIMENSIONS.delta, true)
+      }
+
+      if (!data?.dontHide)
+        setTimeout(() => {
+          this.window.hide()
+        }, 1000)
+    }, 1000)
   }
 
   public destroy() {

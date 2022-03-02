@@ -1,8 +1,11 @@
 import { BrowserWindow, app, autoUpdater, dialog, ipcMain } from 'electron'
 
+import { AppType } from '../hooks/useInitialize'
 import { IpcAction } from '../data/IpcAction'
+import { ToastStatus } from './Toast'
 import { backupMexJSON } from './backup'
 import { checkIfAlpha } from './utils/version'
+import { toast } from './main'
 
 export const buildUpdateFeedURL = (version: string, isAlpha: boolean) => {
   if (process.platform === 'darwin') {
@@ -35,6 +38,7 @@ export const setupAutoUpdates = (version: string, isAlpha: boolean, beforeQuit: 
 
   autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
     console.log("Aye Aye Captain: There's an update")
+    toast?.hide()
 
     const dialogOpts = {
       title: "Aye Aye Captain: There's a Mex Update!",
@@ -49,12 +53,23 @@ export const setupAutoUpdates = (version: string, isAlpha: boolean, beforeQuit: 
     })
   })
 
+  autoUpdater.on('checking-for-update', () => {
+    console.log('Checking for update...')
+  })
+
   autoUpdater.on('update-available', () => {
-    console.log('Update Available')
+    toast?.showMessageAfterDelay(IpcAction.TOAST_MESSAGE, {
+      status: ToastStatus.SUCCESS,
+      title: 'Update available!',
+      description: 'Getting update..',
+      dontHide: true
+    })
   })
 
   autoUpdater.on('update-not-available', () => {
     console.log('No Update Available!')
+
+    toast?.showMessageAfterDelay(IpcAction.TOAST_MESSAGE, { status: ToastStatus.SUCCESS, title: 'You are up to date!' })
   })
 
   autoUpdater.on('before-quit-for-update', () => {
@@ -63,7 +78,7 @@ export const setupAutoUpdates = (version: string, isAlpha: boolean, beforeQuit: 
 }
 
 export const setupUpdateService = (mex: BrowserWindow) => {
-  if (app.isPackaged || process.env.FORCE_PRODUCTION) {
+  if (app.isPackaged || process.env.FORCE_PRODUCTION || true) {
     const updateCheckingFrequency = 3 * 60 * 60 * 1000
     let updateSetInterval: ReturnType<typeof setInterval> | undefined
     const version = app.getVersion()

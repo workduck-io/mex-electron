@@ -33,6 +33,9 @@ export enum IpcAction {
   SET_APPLE_NOTES_DATA = 'SET_APPLE_NOTES_DATA',
   SET_THEME = 'SET_THEME',
 
+  // * Updates
+  CHECK_FOR_UPDATES = 'CHECK_FOR_UPDATES',
+
   // * Toast
   SHOW_TOAST = 'SHOW_TOAST',
   HIDE_TOAST = 'HIDE_TOAST',

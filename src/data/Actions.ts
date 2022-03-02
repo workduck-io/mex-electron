@@ -1,6 +1,7 @@
 import { ItemActionType, ListItemType } from '../components/spotlight/SearchResults/types'
 
 import { CategoryType } from '../store/Context/context.spotlight'
+import { IpcAction } from './IpcAction'
 
 // TODO: change shortcut keys based on user's OS
 export const initActions: Array<ListItemType> = [
@@ -18,9 +19,12 @@ export const initActions: Array<ListItemType> = [
   {
     id: '21',
     category: CategoryType.action,
-    type: ItemActionType.action,
+    type: ItemActionType.ipc,
     title: 'Check for updates!',
     description: 'Check updates for Mex',
+    extras: {
+      ipcAction: IpcAction.CHECK_FOR_UPDATES
+    },
     icon: 'eva:refresh-outline'
   },
   {

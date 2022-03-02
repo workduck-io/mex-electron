@@ -1,6 +1,18 @@
-import { BrowserWindow, Menu, Tray, app, globalShortcut, ipcMain, nativeImage, screen, session, shell } from 'electron'
+import {
+  BrowserWindow,
+  Menu,
+  Tray,
+  app,
+  autoUpdater,
+  globalShortcut,
+  ipcMain,
+  nativeImage,
+  screen,
+  session,
+  shell
+} from 'electron'
 import { SelectionType, getGlobalShortcut, getSelectedText, getSelectedTextSync } from './utils/getSelectedText'
-import Toast, { ToastType } from './Toast'
+import Toast, { ToastStatus, ToastType } from './Toast'
 import { getFileData, setFileData } from './utils/filedata'
 import { getSaveLocation, getSearchIndexLocation } from '../data/Defaults/data'
 import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
@@ -43,7 +55,7 @@ if (require('electron-squirrel-startup')) {
 let tray: Tray | null
 let mex: BrowserWindow | null
 let spotlight: BrowserWindow | null
-let toast: Toast
+export let toast: Toast
 let spotlightBubble = false
 let isSelection = false
 
@@ -159,7 +171,7 @@ const createSpotLighWindow = (show?: boolean) => {
   })
 
   spotlight.on('blur', () => {
-    spotlight.hide()
+    // spotlight.hide()
     spotlight.webContents.send(IpcAction.SPOTLIGHT_BLURRED)
   })
 
@@ -511,7 +523,7 @@ ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
 
 ipcMain.on(IpcAction.SET_THEME, (ev, arg) => {
   const { data } = arg
-  toast?.send(IpcAction.SET_THEME, data.theme)
+  // toast?.send(IpcAction.SET_THEME, data.theme)
 })
 
 ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
@@ -523,6 +535,15 @@ ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
 ipcMain.on(IpcAction.SET_LOCAL_DATA, (_event, arg) => {
   setFileData(arg, SAVE_LOCATION)
   syncFileData(arg)
+})
+
+ipcMain.on(IpcAction.CHECK_FOR_UPDATES, (_event, arg) => {
+  if (arg.from === AppType.SPOTLIGHT) {
+    toast?.setParent(spotlight)
+    toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.LOADING, title: 'Checking for updates..' })
+    toast?.open()
+    autoUpdater.checkForUpdates()
+  }
 })
 
 ipcMain.on(IpcAction.CLEAR_RECENTS, (_event, arg) => {
@@ -571,14 +592,10 @@ ipcMain.on(IpcAction.SHOW_TOAST, (ev, { from, data }: { from: AppType; data: Toa
   toast?.send(IpcAction.TOAST_MESSAGE, data)
 
   toast?.open(data.independent)
-
-  setTimeout(() => {
-    toast?.hide()
-  }, 2000)
 })
 
 ipcMain.on(IpcAction.HIDE_TOAST, () => {
-  toast.hide()
+  toast?.hide()
 })
 
 ipcMain.on(IpcAction.ERROR_OCCURED, (_event, arg) => {

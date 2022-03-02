@@ -1,4 +1,5 @@
 import { CategoryType } from '../../../store/Context/context.spotlight'
+import { IpcAction } from '../../../data/IpcAction'
 
 export interface ListItemType {
   id: string
@@ -17,6 +18,7 @@ export interface ItemExtraType {
   new: boolean
   componentName: string
   base_url: string
+  ipcAction: IpcAction
 }
 
 export enum ItemActionType {
@@ -25,5 +27,6 @@ export enum ItemActionType {
   'render',
   'ilink',
   'action',
+  'ipc',
   'browser_search'
 }
