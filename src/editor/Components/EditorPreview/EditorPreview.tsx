@@ -8,6 +8,7 @@ export interface EditorPreviewProps {
   nodeid: string
   children: React.ReactElement
   isPreview: boolean
+  preview: boolean
   previewRef: any
 }
 
@@ -38,7 +39,7 @@ export const LazyTippy = forwardRef(function LT(props: any, ref) {
   return <Tippy {...computedProps} ref={ref} />
 })
 
-const EditorPreview = ({ nodeid, isPreview, children, previewRef }: EditorPreviewProps) => {
+const EditorPreview = ({ nodeid, isPreview, preview, children, previewRef }: EditorPreviewProps) => {
   const getContent = useContentStore((store) => store.getContent)
   const content = getContent(nodeid)
   const cc = content && content.content
@@ -50,6 +51,7 @@ const EditorPreview = ({ nodeid, isPreview, children, previewRef }: EditorPrevie
         delay={100}
         interactiveDebounce={100}
         placement="bottom"
+        visible={preview}
         appendTo={() => document.body}
         render={(attrs) => (
           <EditorPreviewWrapper className="__editor__preview" tabIndex={-1} {...attrs}>

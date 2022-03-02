@@ -134,7 +134,7 @@ export const useTransform = () => {
 
       const node = addILink({ ilink: path })
 
-      replaceSelectionWithLink(editor, node.path, isInline)
+      replaceSelectionWithLink(editor, node.nodeid, isInline)
       // mog('We are here', { lowest, selText, esl: editor.selection, selectionPath, nodes, value, text, path, nodeid })
       setContent(node.nodeid, putContent ? value : defaultContent.content)
       // saveData()
