@@ -168,6 +168,7 @@ const SearchView = <Item,>({
   }
 
   const selectPrev = () => {
+    mog('selectPrev', { selected, result, ref: selectedRef.current })
     setSelected((result.length + selected - 1) % result.length)
     if (selectedRef.current) selectedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
@@ -234,7 +235,6 @@ const SearchView = <Item,>({
         {result.length > 0 ? (
           <Results>
             {result.map((c, i) => {
-              // console.log(c.matchField.includes('title'))
               return (
                 <RenderItem
                   item={c}

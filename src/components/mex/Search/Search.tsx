@@ -43,12 +43,13 @@ const Search = () => {
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
-  const RenderItem = ({ item, ...props }: RenderItemProps<FlexSearchResult>) => {
+  // Forwarding ref to focus on the selected result
+  const BaseItem = ({ item, ...props }: RenderItemProps<FlexSearchResult>, ref: React.Ref<HTMLDivElement>) => {
     const con = contents[item.nodeUID]
     const path = getNodeIdFromUid(item.nodeUID)
     const content = con ? con.content : defaultContent.content
     return (
-      <Result {...props}>
+      <Result {...props} ref={ref}>
         <ResultHeader active={item.matchField.includes('title')}>
           <ResultTitle>{path}</ResultTitle>
         </ResultHeader>
@@ -58,6 +59,7 @@ const Search = () => {
       </Result>
     )
   }
+  const RenderItem = React.forwardRef(BaseItem)
 
   return (
     <SearchContainer>

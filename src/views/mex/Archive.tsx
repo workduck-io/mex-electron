@@ -7,7 +7,7 @@ import Modal from 'react-modal'
 import { useTransition } from 'react-spring'
 import styled, { useTheme } from 'styled-components'
 import { ModalControls, ModalHeader, MRMHead } from '../../components/mex/Refactor/styles'
-import SearchView from '../../components/mex/Search/SearchView'
+import SearchView, { RenderItemProps } from '../../components/mex/Search/SearchView'
 import { defaultContent } from '../../data/Defaults/baseData'
 import { useSaver } from '../../editor/Components/Saver' // FIXME move useSaver to hooks
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
@@ -119,6 +119,42 @@ const Archive = () => {
     setDelNode(undefined)
   }
 
+  const BaseItem = ({ item, ...props }: RenderItemProps<ILink>, ref: React.Ref<HTMLDivElement>) => {
+    const con = contents[item.nodeid]
+    const content = con ? con.content : defaultContent.content
+    return (
+      <Result {...props} ref={ref}>
+        <ResultHeader>
+          <ResultTitle>{item.path}</ResultTitle>
+          <ActionContainer>
+            <StyledIcon
+              fontSize={32}
+              color={theme.colors.primary}
+              onClick={(ev) => {
+                ev.preventDefault()
+                onUnarchiveClick(item)
+              }}
+              icon={unarchiveLine}
+            />
+            <StyledIcon
+              fontSize={32}
+              color="#df7777"
+              onClick={(ev) => {
+                ev.preventDefault()
+                setDelNode(item)
+                setShowModal(true)
+              }}
+              icon={trashIcon}
+            />
+          </ActionContainer>
+        </ResultHeader>
+        <SearchPreviewWrapper>
+          <EditorPreviewRenderer content={content} editorId={`editor_archive_preview_${item.nodeid}`} />
+        </SearchPreviewWrapper>
+      </Result>
+    )
+  }
+
   return (
     <IntegrationContainer>
       <Title>Archive</Title>
@@ -148,41 +184,7 @@ const Archive = () => {
           setShowModal(false)
           setDelNode(undefined)
         }}
-        RenderItem={({ item, ...props }) => {
-          const con = contents[item.nodeid]
-          const content = con ? con.content : defaultContent.content
-          return (
-            <Result {...props}>
-              <ResultHeader>
-                <ResultTitle>{item.path}</ResultTitle>
-                <ActionContainer>
-                  <StyledIcon
-                    fontSize={32}
-                    color={theme.colors.primary}
-                    onClick={(ev) => {
-                      ev.preventDefault()
-                      onUnarchiveClick(item)
-                    }}
-                    icon={unarchiveLine}
-                  />
-                  <StyledIcon
-                    fontSize={32}
-                    color="#df7777"
-                    onClick={(ev) => {
-                      ev.preventDefault()
-                      setDelNode(item)
-                      setShowModal(true)
-                    }}
-                    icon={trashIcon}
-                  />
-                </ActionContainer>
-              </ResultHeader>
-              <SearchPreviewWrapper>
-                <EditorPreviewRenderer content={content} editorId={`editor_archive_preview_${item.nodeid}`} />
-              </SearchPreviewWrapper>
-            </Result>
-          )
-        }}
+        RenderItem={React.forwardRef(BaseItem)}
       />
       <Modal
         className="ModalContent"
