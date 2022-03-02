@@ -524,7 +524,6 @@ ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
 
 ipcMain.on(IpcAction.SET_THEME, (ev, arg) => {
   const { data } = arg
-  console.log(data)
   toast?.send(IpcAction.SET_THEME, data.theme)
 })
 

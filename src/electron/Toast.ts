@@ -47,9 +47,9 @@ class Toast {
     this.window.setVisibleOnAllWorkspaces(true)
     // this.window.setIgnoreMouseEvents(true, { forward: true })
 
-    this.window.webContents.openDevTools({
-      mode: 'detach'
-    })
+    // this.window.webContents.openDevTools({
+    //   mode: 'detach'
+    // })
 
     this.window.webContents.on('did-finish-load', () => {
       if (!this.window) {
