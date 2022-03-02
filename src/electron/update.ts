@@ -78,7 +78,7 @@ export const setupAutoUpdates = (version: string, isAlpha: boolean, beforeQuit: 
 }
 
 export const setupUpdateService = (mex: BrowserWindow) => {
-  if (app.isPackaged || process.env.FORCE_PRODUCTION || true) {
+  if (app.isPackaged || process.env.FORCE_PRODUCTION) {
     const updateCheckingFrequency = 3 * 60 * 60 * 1000
     let updateSetInterval: ReturnType<typeof setInterval> | undefined
     const version = app.getVersion()

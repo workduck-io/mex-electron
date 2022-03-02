@@ -86,7 +86,7 @@ class Toast {
   }
 
   public send(action: IpcAction, data: any) {
-    this.window && this.window.webContents.send(action, data)
+    this.window && this.window.webContents?.send(action, data)
   }
 
   public hide() {
@@ -112,7 +112,7 @@ class Toast {
   }
 
   public destroy() {
-    this.window && this.window.close()
+    this.window && this.window.destroy()
   }
 
   public getWindow() {

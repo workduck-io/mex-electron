@@ -171,7 +171,7 @@ const createSpotLighWindow = (show?: boolean) => {
   })
 
   spotlight.on('blur', () => {
-    // spotlight.hide()
+    spotlight.hide()
     spotlight.webContents.send(IpcAction.SPOTLIGHT_BLURRED)
   })
 
@@ -387,6 +387,7 @@ ipcMain.on('close', closeWindow)
 
 app.on('before-quit', () => {
   console.log('App before quit')
+  toast?.destroy()
   mex?.webContents.send(IpcAction.GET_LOCAL_INDEX)
 
   // mex?.webContents.send(IpcAction.SAVE_AND_QUIT)
@@ -523,7 +524,8 @@ ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
 
 ipcMain.on(IpcAction.SET_THEME, (ev, arg) => {
   const { data } = arg
-  // toast?.send(IpcAction.SET_THEME, data.theme)
+  console.log(data)
+  toast?.send(IpcAction.SET_THEME, data.theme)
 })
 
 ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
