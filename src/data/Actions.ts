@@ -1,19 +1,9 @@
-import { CategoryType } from '../store/Context/context.spotlight'
 import { ItemActionType, ListItemType } from '../components/spotlight/SearchResults/types'
+
+import { CategoryType } from '../store/Context/context.spotlight'
 
 // TODO: change shortcut keys based on user's OS
 export const initActions: Array<ListItemType> = [
-  // {
-  //   id: '5',
-  // category: CategoryType.action,
-  //   title: 'Shorten URL',
-  //   description: 'Share this URL as an alias',
-  //   type: ItemActionType.render,
-  //   extras: {
-  //     componentName: 'AliasWrapper'
-  //   },
-  //   icon: ''
-  // },
   {
     id: '1',
     category: CategoryType.action,
@@ -24,6 +14,14 @@ export const initActions: Array<ListItemType> = [
       base_url: 'https://twitter.com/search?q='
     },
     icon: 'logos:twitter'
+  },
+  {
+    id: '21',
+    category: CategoryType.action,
+    type: ItemActionType.action,
+    title: 'Check for updates!',
+    description: 'Check updates for Mex',
+    icon: 'eva:refresh-outline'
   },
   {
     id: '2',

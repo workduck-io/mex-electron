@@ -85,9 +85,10 @@ const Content = () => {
         const data = [...list, ...initActions]
         setSearchResults(data)
       }
-    } else {
-      setSearchResults([activeItem.item])
     }
+    // else {
+    //   setSearchResults([activeItem.item])
+    // }
   }, [search.value, selection, activeItem.item, ilinks])
 
   useEffect(() => {

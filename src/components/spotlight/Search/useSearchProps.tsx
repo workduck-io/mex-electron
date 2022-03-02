@@ -75,6 +75,12 @@ export const useSaveChanges = () => {
 
     if (options?.saveAndClose) appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
+    appNotifierWindow(IpcAction.SHOW_TOAST, AppType.SPOTLIGHT, {
+      status: 'success',
+      text: 'Saved',
+      independent: options?.saveAndClose
+    })
+
     setSearch({ value: '', type: CategoryType.search })
     setInput('')
     setNormalMode(true)

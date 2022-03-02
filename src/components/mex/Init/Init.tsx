@@ -4,7 +4,6 @@ import { getUidFromNodeIdAndLinks, useLinks } from '../../../hooks/useLinks'
 import { useEffect, useState } from 'react'
 
 import { AppleNote } from '../../../utils/importers/appleNotes'
-// import { convertDataToRawText } from '../../../utils/Search/localSearch'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import config from '../../../apis/config'

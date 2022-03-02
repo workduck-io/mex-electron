@@ -1,5 +1,6 @@
 import { BrowserWindow, Menu, Tray, app, globalShortcut, ipcMain, nativeImage, screen, session, shell } from 'electron'
 import { SelectionType, getGlobalShortcut, getSelectedText, getSelectedTextSync } from './utils/getSelectedText'
+import Toast, { ToastType } from './Toast'
 import { getFileData, setFileData } from './utils/filedata'
 import { getSaveLocation, getSearchIndexLocation } from '../data/Defaults/data'
 import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
@@ -42,6 +43,7 @@ if (require('electron-squirrel-startup')) {
 let tray: Tray | null
 let mex: BrowserWindow | null
 let spotlight: BrowserWindow | null
+let toast: Toast
 let spotlightBubble = false
 let isSelection = false
 
@@ -81,7 +83,7 @@ const MEX_WINDOW_OPTIONS = {
   }
 }
 
-const SPOTLIGHT_WINDOW_OPTIONS = {
+export const SPOTLIGHT_WINDOW_OPTIONS = {
   show: false,
   width: 800,
   height: 500,
@@ -244,7 +246,6 @@ const createMexWindow = () => {
         }
 
         if (fileData.remoteUpdate) {
-          // console.log('\n \n Sending chokidar data \n \n')
           spotlight?.webContents.send(IpcAction.SYNC_DATA, fileData)
           mex?.webContents.send(IpcAction.SYNC_DATA, fileData)
         }
@@ -267,6 +268,9 @@ const spotlightInBubbleMode = (show?: boolean) => {
 const createWindow = () => {
   createMexWindow()
   createSpotLighWindow()
+
+  toast = new Toast(spotlight)
+
   if (process.platform === 'darwin') {
     app.dock.show()
   }
@@ -341,6 +345,7 @@ const handleToggleMainWindow = async () => {
     const anyContentPresent = Boolean(selection?.text)
     isSelection = anyContentPresent
     toggleMainWindow(spotlight)
+
     if (anyContentPresent) {
       sendToRenderer(selection)
     } else {
@@ -504,6 +509,11 @@ ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
   event.sender.send(IpcAction.RECIEVE_LOCAL_DATA, { fileData, indexData })
 })
 
+ipcMain.on(IpcAction.SET_THEME, (ev, arg) => {
+  const { data } = arg
+  toast?.send(IpcAction.SET_THEME, data.theme)
+})
+
 ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
   const { searchIndex } = arg
 
@@ -549,6 +559,26 @@ ipcMain.on(IpcAction.LOGGED_IN, (_event, arg) => {
 ipcMain.on(IpcAction.REDIRECT_TO, (_event, arg) => {
   mex?.show()
   mex?.webContents.send(IpcAction.REDIRECT_TO, { page: arg.page })
+})
+
+ipcMain.on(IpcAction.SHOW_TOAST, (ev, { from, data }: { from: AppType; data: ToastType }) => {
+  if (from === AppType.SPOTLIGHT) {
+    toast?.setParent(spotlight)
+  } else if (from === AppType.MEX) {
+    toast?.setParent(mex)
+  }
+
+  toast?.send(IpcAction.TOAST_MESSAGE, data)
+
+  toast?.open(data.independent)
+
+  setTimeout(() => {
+    toast?.hide()
+  }, 2000)
+})
+
+ipcMain.on(IpcAction.HIDE_TOAST, () => {
+  toast.hide()
 })
 
 ipcMain.on(IpcAction.ERROR_OCCURED, (_event, arg) => {
