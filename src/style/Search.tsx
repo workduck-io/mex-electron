@@ -1,5 +1,7 @@
 import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
+import { Ellipsis } from '../components/mex/Integrations/Template/styled'
+import { View } from '../components/mex/Search/ViewSelector'
 import { Input } from './Form'
 import { CardShadow } from './helpers'
 import { size } from './responsive'
@@ -7,6 +9,10 @@ import { size } from './responsive'
 interface ResultProps {
   selected?: boolean
 }
+
+const SearchTransition = css`
+  transition: all 0.2s ease-in-out;
+`
 
 export const SearchInput = styled(Input)`
   width: 100%;
@@ -62,47 +68,125 @@ export const ResultHeader = styled.div<{ active?: boolean }>`
     `}
 `
 
-export const ResultTitle = styled.div`
-  color: ${({ theme }) => theme.colors.text.default};
-`
+export const ResultRow = styled.div<{ active?: boolean; selected?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => `0.5rem ${theme.spacing.medium}`};
+  color: ${({ theme }) => theme.colors.text.fade};
+  width: 100%;
+  ${SearchTransition}
 
-export const Result = styled(animated.div)<{ selected?: boolean }>`
-  max-height: 300px;
-  overflow-y: auto;
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-  background-color: ${({ theme }) => theme.colors.gray[9]};
-  transition: all 0.25s ease-in-out;
-
-  :hover {
-    cursor: pointer;
-    ${CardShadow}
-    transform: scale(1.025) translateY(-10px);
+  & > svg {
+    ${SearchTransition}
+    height: 1.35rem;
+    width: 1.35rem;
+    color: ${({ theme }) => theme.colors.gray[5]};
   }
-
   ${({ theme, selected }) =>
     selected &&
     css`
-      ${CardShadow}
-      transform: scale(1.025) translateY(-10px);
-      ${ResultTitle} {
-        font-weight: bold;
+      & > svg {
         color: ${theme.colors.primary};
       }
     `}
 `
 
-export const Results = styled.div`
-  display: grid;
-  grid-gap: ${({ theme }) => theme.spacing.large};
-  grid-auto-flow: row;
+export const ResultMain = styled.div`
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.tiny};
+`
 
-  @media (max-width: ${size.wide}) {
-    grid-template-columns: repeat(2, 1fr);
-  }
+export const ResultTitle = styled.div`
+  ${SearchTransition}
+  color: ${({ theme }) => theme.colors.text.default};
+`
 
-  @media (min-width: ${size.wide}) {
-    grid-template-columns: repeat(3, 1fr);
-  }
+export const ResultDesc = styled.div`
+  flex-shrink: 1;
+  color: ${({ theme }) => theme.colors.gray[5]};
+  font-size: 0.8rem;
+  max-width: 20rem;
+
+  ${Ellipsis}
+`
+export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
+  background-color: ${({ theme }) => theme.colors.gray[9]};
+  ${({ theme, selected, view }) => {
+    if (view === View.Card) {
+      return css`
+        max-height: 300px;
+        overflow-y: auto;
+        ${selected &&
+        css`
+          ${CardShadow}
+          transform: scale(1.025) translateY(-10px);
+          ${ResultTitle} {
+            font-weight: bold;
+            color: ${theme.colors.primary};
+          }
+        `}
+        :hover {
+          cursor: pointer;
+          ${CardShadow}
+          transform: scale(1.025) translateY(-10px);
+        }
+      `
+    } else if (view === View.List) {
+      return css`
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        width: 100%;
+        border: 1px solid transparent;
+        ${selected &&
+        css`
+          background-color: ${theme.colors.gray[8]};
+          border: 1px solid ${theme.colors.primary};
+          ${ResultTitle} {
+            font-weight: bold;
+            color: ${theme.colors.primary};
+          }
+        `}
+        :hover {
+          cursor: pointer;
+          transform: translateX(-10px);
+        }
+      `
+    }
+  }}
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  ${SearchTransition}
+`
+
+export const Results = styled.div<{ view: View }>`
+  ${({ theme, view }) => {
+    if (view === View.Card) {
+      return css`
+        display: grid;
+        grid-gap: ${theme.spacing.large};
+        grid-auto-flow: row;
+
+        @media (max-width: ${size.wide}) {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (min-width: ${size.wide}) {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      `
+    } else if (view === View.List) {
+      return css`
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: ${theme.spacing.tiny};
+      `
+    }
+  }}
 `
 
 export const ResultsWrapper = styled.div`

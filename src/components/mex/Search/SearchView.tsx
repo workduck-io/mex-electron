@@ -3,28 +3,36 @@ import { Icon } from '@iconify/react'
 import { debounce } from 'lodash'
 import React, { RefObject, useEffect, useRef, useState } from 'react'
 import create from 'zustand'
+import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import {
   NoSearchResults,
   Results,
   ResultsWrapper,
   SearchContainer,
   SearchHeader,
-  SearchInput
+  SearchInput,
+  SearchPreviewWrapper
 } from '../../../style/Search'
 import { Title } from '../../../style/Typography'
 import { mog } from '../../../utils/lib/helper'
-import ViewSelector from './ViewSelector'
+import ViewSelector, { View } from './ViewSelector'
 
 interface SearchViewState<Item> {
   selected: number
   searchTerm: string
   result: Item[]
+  view: View
+}
+
+export interface RenderPreviewProps<Item> {
+  item: Item
 }
 
 export interface RenderItemProps<Item> {
   item: Item
   selected: boolean
 
+  view: View
   ref: RefObject<HTMLDivElement>
   key: string
   onClick: React.MouseEventHandler
@@ -33,13 +41,16 @@ export interface RenderItemProps<Item> {
 export interface SearchViewStoreState<Item> extends SearchViewState<Item> {
   setSelected: (selected: number) => void
   setResult: (result: Item[], searchTerm: string) => void
+  setView: (view: View) => void
 }
 
 const useSearchStoreBase = create<SearchViewStoreState<any>>((set) => ({
   selected: -1,
   searchTerm: '',
   result: [],
+  view: View.List,
   setSelected: (selected: number) => set({ selected }),
+  setView: (view: View) => set({ view }),
   setResult: (result, searchTerm) => set({ result, searchTerm })
 }))
 
@@ -106,9 +117,15 @@ interface SearchViewProps<Item> {
 
   /**
    * Render a single item
-   * @param item Item to render
+   * @param item - Item to render
    */
   RenderItem: (props: RenderItemProps<Item>) => JSX.Element
+
+  /**
+   * Render Preview of the selected item in list view
+   * @param item - Selected Item
+   */
+  RenderPreview?: (props: RenderPreviewProps<Item>) => JSX.Element
 
   /**
    * Render a single item
@@ -134,14 +151,17 @@ const SearchView = <Item,>({
   onEscapeExit,
   getItemKey,
   RenderItem,
+  RenderPreview,
   RenderNotFound,
   options
 }: SearchViewProps<Item>) => {
   const selected = useSearchStore((s) => s.selected)
   const searchTerm = useSearchStore((s) => s.searchTerm)
   const result = useSearchStore((s) => s.result) as Item[]
+  const view = useSearchStore((s) => s.view)
   const setSelected = useSearchStore((s) => s.setSelected)
   const setResult = useSearchStore((s) => s.setResult)
+  const setView = useSearchStore((s) => s.setView)
   const inpRef = useRef<HTMLInputElement>(null)
   const selectedRef = useRef<HTMLDivElement>(null)
 
@@ -242,16 +262,18 @@ const SearchView = <Item,>({
         <ViewSelector
           onChangeView={(view) => {
             mog('onChangeView', { view })
+            setView(view)
           }}
         />
       </SearchHeader>
       <ResultsWrapper>
         {result.length > 0 ? (
-          <Results>
+          <Results view={view}>
             {result.map((c, i) => {
               // if (i === selected) mog('selected', { c, i })
               return (
                 <RenderItem
+                  view={view}
                   item={c}
                   onClick={() => {
                     onSelect(c)
@@ -262,6 +284,7 @@ const SearchView = <Item,>({
                 />
               )
             })}
+            {view === View.List && RenderPreview && selected > -1 && <RenderPreview item={result[selected]} />}
           </Results>
         ) : RenderNotFound ? (
           <RenderNotFound />

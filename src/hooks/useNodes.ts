@@ -26,5 +26,10 @@ export const useNodes = () => {
     return res
   }
 
-  return { addNode, isInArchive }
+  const getIcon = (nodeid: string): string => {
+    const nodes = useDataStore.getState().ilinks
+    const node = nodes.find((l) => l.nodeid === nodeid)
+    if (node) return node.icon
+  }
+  return { addNode, isInArchive, getIcon }
 }
