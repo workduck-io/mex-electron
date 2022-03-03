@@ -1,7 +1,3 @@
-import { Icon } from '@iconify/react'
-import useMergedRef from '@react-hook/merged-ref'
-import { getPreventDefaultHandler, PortalBody, useEditorState } from '@udecode/plate'
-import React, { useEffect } from 'react'
 import {
   ComboboxItem,
   ComboboxRoot,
@@ -10,11 +6,16 @@ import {
   ItemRightIcons,
   ItemTitle
 } from '../../tag/components/TagCombobox.styles'
+import { PortalBody, getPreventDefaultHandler, useEditorState } from '@udecode/plate'
+import React, { useEffect } from 'react'
+
+import { ComboboxProps } from './Combobox.types'
+import { Icon } from '@iconify/react'
 import { setElementPositionByRange } from '../../tag/utils/setElementPositionByRange'
 import { useComboboxControls } from '../hooks/useComboboxControls'
 import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen'
 import { useComboboxStore } from '../useComboboxStore'
-import { ComboboxProps } from './Combobox.types'
+import useMergedRef from '@react-hook/merged-ref'
 
 export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'

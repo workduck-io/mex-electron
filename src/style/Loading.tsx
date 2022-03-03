@@ -1,7 +1,7 @@
 import styled, { css, keyframes } from 'styled-components'
-import { range } from 'lodash'
 
 import React from 'react'
+import { range } from 'lodash'
 
 const loadingFade = keyframes`
   0% { opacity: 0; }
@@ -24,9 +24,9 @@ export const LoadingWrapper = styled.div<LoadingProps>`
   max-width: ${({ dots }) => `${dots * 24}px`};
 `
 
-const LoadingDot = styled.div<{ totalDots: number; color?: string }>`
-  width: 8px;
-  height: 8px;
+const LoadingDot = styled.div<{ totalDots: number; color?: string; size?: string }>`
+  width: ${({ size }) => size ?? '8px'};
+  height: ${({ size }) => size ?? '8px'};
   margin: 0 4px;
   ${({ theme, color }) =>
     color
@@ -60,15 +60,16 @@ export interface LoadingProps {
   dots: number
   transparent?: boolean
   color?: string
+  size?: string
 }
 
-const Loading = ({ dots, transparent, color }: LoadingProps) => {
+const Loading = ({ dots, transparent, color, size }: LoadingProps) => {
   return (
     <LoadingWrapper transparent={transparent} dots={dots}>
       {Array(dots)
         .fill(0)
         .map((e, i) => (
-          <LoadingDot color={color} totalDots={dots} key={`loadingDot${i}`}></LoadingDot>
+          <LoadingDot color={color} size={size} totalDots={dots} key={`loadingDot${i}`}></LoadingDot>
         ))}
     </LoadingWrapper>
   )

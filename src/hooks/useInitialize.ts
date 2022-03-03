@@ -1,15 +1,16 @@
+import { FileData } from '../types/data'
+import { IpcAction } from '../data/IpcAction'
+import { appNotifierWindow } from '../electron/utils/notifiers'
+import { createNodeWithUid } from '../utils/lib/helper'
 import { getTheme } from '../style/themes/defaultThemes'
-import { useSpotlightSettingsStore } from '../store/settings.spotlight'
 import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
-import { useSnippetStore } from '../store/useSnippetStore'
-import { useSyncStore } from '../store/useSyncStore'
-import useThemeStore from '../store/useThemeStore'
-import { FileData } from '../types/data'
-import { createNodeWithUid } from '../utils/lib/helper'
 import useLoad from './useLoad'
 import { useSlashCommands } from './useSlashCommands'
-import { extractSnippetCommands } from './useSnippets'
+import { useSnippetStore } from '../store/useSnippetStore'
+import { useSpotlightSettingsStore } from '../store/settings.spotlight'
+import { useSyncStore } from '../store/useSyncStore'
+import useThemeStore from '../store/useThemeStore'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
@@ -62,7 +63,9 @@ export const useInitialize = () => {
     initContents(contents)
     initSyncBlocks(syncBlocks, templates, services, intents)
     initSnippets(snippets)
-    setTheme(getTheme(data.userSettings.theme))
+    const currentTheme = getTheme(data.userSettings.theme)
+    appNotifierWindow(IpcAction.SET_THEME, AppType.MEX, { theme: currentTheme })
+    setTheme(currentTheme)
   }
 
   const init = (data: FileData, initNodeId?: string, initFor?: AppType) => {

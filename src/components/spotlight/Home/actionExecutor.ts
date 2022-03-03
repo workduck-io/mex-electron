@@ -1,9 +1,11 @@
-import { ipcRenderer } from 'electron'
-import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
-import { IpcAction } from '../../../data/IpcAction'
-import { ListItemType, ItemActionType } from '../SearchResults/types'
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { ItemActionType, ListItemType } from '../SearchResults/types'
+
+import { AppType } from '../../../hooks/useInitialize'
+import { IpcAction } from '../../../data/IpcAction'
+import { ipcRenderer } from 'electron'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 
 const useItemExecutor = () => {
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
@@ -31,6 +33,9 @@ const useItemExecutor = () => {
         break
       case ItemActionType.render:
         // render the component present in the item
+        break
+      case ItemActionType.ipc:
+        ipcRenderer.send(item.extras.ipcAction, { from: AppType.SPOTLIGHT })
         break
       case ItemActionType.search: {
         const url = encodeURI(item.extras.base_url + query)

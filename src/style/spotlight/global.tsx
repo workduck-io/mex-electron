@@ -1,6 +1,6 @@
-import { createGlobalStyle } from 'styled-components'
 import { ThinScrollbar } from '../helpers'
 import { TippyBalloonStyles } from '../Toolbar'
+import { createGlobalStyle } from 'styled-components'
 import normalize from './normalize'
 
 const GlobalStyle = createGlobalStyle`
@@ -8,7 +8,7 @@ const GlobalStyle = createGlobalStyle`
 
   html {
     height: 100vh;
-    overflow: hidden;
+    /* overflow: hidden; */
   }
 
   body {

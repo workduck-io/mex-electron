@@ -1,4 +1,8 @@
-import { app, Menu, shell, BrowserWindow, MenuItemConstructorOptions, autoUpdater } from 'electron'
+import { BrowserWindow, Menu, MenuItemConstructorOptions, app, autoUpdater, shell } from 'electron'
+
+import { IpcAction } from '../data/IpcAction'
+import { ToastStatus } from './Toast'
+import { toast } from './main'
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string
@@ -53,9 +57,10 @@ export default class MenuBuilder {
         { type: 'separator' },
         { type: 'separator' },
         {
-          label: 'Check for Updates ¯\\_(ツ)_/¯',
+          label: 'Check for Updates',
           click: () => {
-            console.log('Checking for Updates')
+            toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.LOADING, title: 'Checking for updates..' })
+            toast?.open(true, true)
             autoUpdater.checkForUpdates()
           }
         },

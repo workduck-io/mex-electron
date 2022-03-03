@@ -54,6 +54,11 @@ module.exports = {
               html: './src/spotlight.html',
               js: './src/index.spotlight.tsx',
               name: 'spotlight_window'
+            },
+            {
+              html: './src/toast.html',
+              js: './src/index.toast.tsx',
+              name: 'toast_window'
             }
           ]
         }
