@@ -1,22 +1,23 @@
-import { getPlateSelectors } from '@udecode/plate-core'
-import React from 'react'
-import NodeSelect from '../../../components/mex/NodeSelect/NodeSelect'
-import { StyledSpotlightInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
-import { IpcAction } from '../../../data/IpcAction'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import NodeSelect, { QuickLink } from '../../../components/mex/NodeSelect/NodeSelect'
+
 import { AppType } from '../../../hooks/useInitialize'
-import { useLinks } from '../../../hooks/useLinks'
-import useLoad from '../../../hooks/useLoad'
-import { useSaveData } from '../../../hooks/useSaveData'
-import { useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
+import { IpcAction } from '../../../data/IpcAction'
+import React from 'react'
+import { StyledSpotlightInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { getPlateSelectors } from '@udecode/plate-core'
+import { openNodeInMex } from '../../../utils/combineSources'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHistoryStore } from '../../../store/useHistoryStore'
+import { useLinks } from '../../../hooks/useLinks'
+import useLoad from '../../../hooks/useLoad'
 import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
-import { openNodeInMex } from '../../../utils/combineSources'
+import { useSaveData } from '../../../hooks/useSaveData'
+import { useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 
 export type CreateInputType = { value?: string }
 
@@ -40,7 +41,8 @@ const CreateInput: React.FC<CreateInputType> = () => {
   const { getUidFromNodeId } = useLinks()
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
 
-  const handleOnCreate = (newNodeId: string) => {
+  const handleOnCreate = (quickLink: QuickLink) => {
+    const newNodeId = quickLink.value
     const newUid = addILink({ ilink: newNodeId }).nodeid
     setSelection(undefined)
 
@@ -56,7 +58,8 @@ const CreateInput: React.FC<CreateInputType> = () => {
     openNodeInMex(newUid)
   }
 
-  const handleChange = (pathValue: string) => {
+  const handleChange = (quickLink: QuickLink) => {
+    const pathValue = quickLink.value
     const nodeid = getUidFromNodeId(pathValue)
     if (nodeContent) {
       loadNodeAndAppend(nodeid, nodeContent)

@@ -1,27 +1,42 @@
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import NodeSelect, { QuickLink, QuickLinkType } from '../NodeSelect/NodeSelect'
 import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+
+import { AppType } from '../../../hooks/useInitialize'
+import { IpcAction } from '../../../data/IpcAction'
 import Modal from 'react-modal'
-import { useEditorStore } from '../../../store/useEditorStore'
+import { StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { mog } from '../../../utils/lib/helper'
 import styled from 'styled-components'
 import tinykeys from 'tinykeys'
+import toast from 'react-hot-toast'
 import { useApi } from '../../../apis/useSaveApi'
-import { IpcAction } from '../../../data/IpcAction'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { AppType } from '../../../hooks/useInitialize'
-import { useLinks } from '../../../hooks/useLinks'
-import { useNavigation } from '../../../hooks/useNavigation'
-import { useKeyListener } from '../../../hooks/useShortcutListener'
-import useDataStore from '../../../store/useDataStore'
+import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
-import useOnboard from '../../../store/useOnboarding'
-import NodeSelect from '../NodeSelect/NodeSelect'
-import { StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
-import { mog } from '../../../utils/lib/helper'
+import { useKeyListener } from '../../../hooks/useShortcutListener'
+import { useNavigation } from '../../../hooks/useNavigation'
 import { useNodes } from '../../../hooks/useNodes'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import useOnboard from '../../../store/useOnboarding'
+import { useSnippetStore } from '../../../store/useSnippetStore'
 
 const StyledModal = styled(Modal)`
   z-index: 10010000;
+`
+
+const Brackets = styled.span`
+  font-size: 3.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0 0.5rem;
+  color: ${(props) => props.theme.colors.text.disabled};
+  opacity: 0.3;
+  font-weight: 600;
+`
+
+const InputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
 `
 
 const Lookup = () => {
@@ -31,6 +46,7 @@ const Lookup = () => {
   const setStep = useOnboard((s) => s.setStep)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const { saveNewNodeAPI } = useApi()
+  const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const { addNode } = useNodes()
 
   const { goTo } = useRouting()
@@ -66,38 +82,44 @@ const Lookup = () => {
     }
   }, [shortcuts, shortcutDisabled, isOnboarding])
 
-  const { getUidFromNodeId } = useLinks()
   const { push } = useNavigation()
 
-  const openNode = (value: string) => {
-    const nodeid = getUidFromNodeId(value)
-    push(nodeid)
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
-    closeModal()
+  const openNode = (quickLink: QuickLink) => {
+    if (quickLink.type === QuickLinkType.snippet) {
+      loadSnippet(quickLink.nodeid)
+      goTo(ROUTE_PATHS.snippet, NavigationType.push, quickLink.nodeid)
+    } else {
+      const nodeid = quickLink.nodeid
 
-    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+      push(nodeid)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
+
+      goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+    }
+    closeModal()
   }
 
-  const handleSelectItem = (inputValue: string) => {
+  const handleSelectItem = (quickLink: QuickLink) => {
     if (tempClose) {
-      if (inputValue === 'tour') {
+      if (quickLink.value === 'tour') {
         changeOnboarding(true)
-        openNode(inputValue)
+        openNode(quickLink)
         // performClick()
       } else toast('Please select "tour" node')
     } else {
-      const path = useEditorStore.getState().node.title
-      if (inputValue === path) {
+      const nodeid = useEditorStore.getState().node.nodeid
+      if (quickLink.nodeid === nodeid) {
+        mog('This value is already opened', {})
         closeModal()
         return
       }
-      openNode(inputValue)
+      openNode(quickLink)
     }
   }
 
-  const handleCreateItem = (inputValue: string) => {
+  const handleCreateItem = (inputValue: QuickLink) => {
     if (tempClose) return
-    addNode({ ilink: inputValue, showAlert: true }, (node) => {
+    addNode({ ilink: inputValue.value, showAlert: true }, (node) => {
       saveNewNodeAPI(node.nodeid)
       push(node.nodeid, { withLoading: false })
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
@@ -107,18 +129,23 @@ const Lookup = () => {
 
   return (
     <StyledModal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
-      <h1>Lookup</h1>
-      <StyledInputWrapper>
-        <NodeSelect
-          id="lookup"
-          name="lookup"
-          menuOpen
-          autoFocus
-          prefillRecent
-          handleSelectItem={handleSelectItem}
-          handleCreateItem={handleCreateItem}
-        />
-      </StyledInputWrapper>
+      <h1 style={{ textAlign: 'center' }}>Lookup</h1>
+      <InputWrapper>
+        <Brackets>[[</Brackets>
+        <StyledInputWrapper>
+          <NodeSelect
+            id="lookup"
+            name="lookup"
+            menuOpen
+            showAll
+            autoFocus
+            prefillRecent
+            handleSelectItem={handleSelectItem}
+            handleCreateItem={handleCreateItem}
+          />
+        </StyledInputWrapper>
+        <Brackets>]]</Brackets>
+      </InputWrapper>
       {/* <LookupInput autoFocus menuOpen handleChange={handleChange} handleCreate={handleCreate} /> */}
     </StyledModal>
   )

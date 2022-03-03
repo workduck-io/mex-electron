@@ -5,7 +5,6 @@ import { ILink } from '../../../types/Types'
 import { getListItemFromNode } from './helper'
 import { search as getSearchResults } from 'fast-fuzzy'
 import { initActions } from '../../../data/Actions'
-import { isNewILink } from '../../../components/mex/NodeSelect/NodeSelect'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { mog } from '../../../utils/lib/helper'
 /* eslint-disable no-case-declarations */

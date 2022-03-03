@@ -1,8 +1,9 @@
+import styled, { DefaultTheme, css, useTheme } from 'styled-components'
+
+import { AppType } from '../hooks/useInitialize'
+import Creatable from 'react-select/creatable'
 import React from 'react'
 import Select from 'react-select'
-import Creatable from 'react-select/creatable'
-import { AppType } from '../hooks/useInitialize'
-import styled, { css, DefaultTheme, useTheme } from 'styled-components'
 
 interface InputProps {
   isSelected?: boolean
@@ -17,6 +18,7 @@ export const Input = styled.input<InputProps>`
   border: 1px solid ${({ theme }) => theme.colors.form.input.border};
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
   padding: ${({ theme: { spacing } }) => `${spacing.small} 8px`};
+  border: none;
 
   &:focus-visible {
     border-color: ${({ theme }) => theme.colors.primary};
