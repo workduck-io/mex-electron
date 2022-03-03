@@ -21,6 +21,7 @@ import { NotFoundText } from '../../style/Form'
 import { IntegrationContainer, Title } from '../../style/Integration'
 import { Result, ResultHeader, Results, ResultTitle, SearchPreviewWrapper } from '../../style/Search'
 import { ILink } from '../../types/Types'
+import { mog } from '../../utils/lib/helper'
 
 const Nodes = styled.section`
   padding-right: 2rem;

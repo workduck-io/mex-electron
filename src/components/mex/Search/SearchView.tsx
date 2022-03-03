@@ -2,6 +2,7 @@ import searchLine from '@iconify-icons/ri/search-line'
 import { Icon } from '@iconify/react'
 import { debounce } from 'lodash'
 import React, { RefObject, useEffect, useRef, useState } from 'react'
+import create from 'zustand'
 import {
   NoSearchResults,
   Results,
@@ -12,15 +13,13 @@ import {
 } from '../../../style/Search'
 import { Title } from '../../../style/Typography'
 import { mog } from '../../../utils/lib/helper'
+import ViewSelector from './ViewSelector'
 
 interface SearchViewState<Item> {
   selected: number
-  size: number
   searchTerm: string
   result: Item[]
 }
-
-type View = 'list' | 'card'
 
 export interface RenderItemProps<Item> {
   item: Item
@@ -30,6 +29,22 @@ export interface RenderItemProps<Item> {
   key: string
   onClick: React.MouseEventHandler
 }
+
+export interface SearchViewStoreState<Item> extends SearchViewState<Item> {
+  setSelected: (selected: number) => void
+  setResult: (result: Item[], searchTerm: string) => void
+}
+
+const useSearchStoreBase = create<SearchViewStoreState<any>>((set) => ({
+  selected: -1,
+  searchTerm: '',
+  result: [],
+  setSelected: (selected: number) => set({ selected }),
+  setResult: (result, searchTerm) => set({ result, searchTerm })
+}))
+
+export const useSearchStore = <Item, Slice>(selector: (state: SearchViewStoreState<Item>) => Slice) =>
+  useSearchStoreBase(selector)
 
 interface SearchOptions {
   /**
@@ -122,26 +137,17 @@ const SearchView = <Item,>({
   RenderNotFound,
   options
 }: SearchViewProps<Item>) => {
-  mog('SearchView', { initialItems, RenderItem, options })
-
-  const [searchState, setSearchState] = useState<SearchViewState<Item>>({
-    selected: -1,
-    size: 0,
-    searchTerm: '',
-    result: []
-  })
-
-  const { searchTerm, result, selected } = searchState
-
-  const setSelected = (n: number) => {
-    setSearchState({ ...searchState, selected: n })
-  }
-
-  const setResult = (result: Item[], searchTerm: string) => {
-    setSearchState({ ...searchState, result, searchTerm })
-  }
+  const selected = useSearchStore((s) => s.selected)
+  const searchTerm = useSearchStore((s) => s.searchTerm)
+  const result = useSearchStore((s) => s.result) as Item[]
+  const setSelected = useSearchStore((s) => s.setSelected)
+  const setResult = useSearchStore((s) => s.setResult)
   const inpRef = useRef<HTMLInputElement>(null)
   const selectedRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setResult(initialItems, '')
+  }, [])
 
   const executeSearch = (newSearchTerm: string) => {
     if (newSearchTerm === '') {
@@ -210,7 +216,7 @@ const SearchView = <Item,>({
     if (event.code === 'Enter') {
       // Only when the selected index is -1
       if (selected > -1) {
-        onSelect(result[selected])
+        onSelect(result[selected] as Item)
       }
     }
   }
@@ -233,12 +239,17 @@ const SearchView = <Item,>({
           }}
           ref={inpRef}
         />
+        <ViewSelector
+          onChangeView={(view) => {
+            mog('onChangeView', { view })
+          }}
+        />
       </SearchHeader>
       <ResultsWrapper>
         {result.length > 0 ? (
           <Results>
             {result.map((c, i) => {
-              if (i === selected) mog('selected', { c, i })
+              // if (i === selected) mog('selected', { c, i })
               return (
                 <RenderItem
                   item={c}

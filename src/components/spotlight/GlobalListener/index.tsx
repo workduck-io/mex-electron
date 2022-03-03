@@ -14,7 +14,7 @@ import { mog } from '../../../utils/lib/helper'
 import useAnalytics from '../../../services/analytics'
 import { useAuthStore } from '../../../services/auth/useAuth'
 import useDataStore from '../../../store/useDataStore'
-import { useNewSearchStore } from '../../../store/useSearchStore'
+import { useSearchStore } from '../../../store/useSearchStore'
 import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { useSaver } from '../../../editor/Components/Saver'
@@ -22,6 +22,7 @@ import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
+import { CreateSearchIndexData } from '../../../utils/search/flexsearch'
 
 interface IndexAndFileData {
   fileData: FileData
@@ -37,7 +38,7 @@ const GlobalListener = memo(() => {
   const setReset = useSpotlightAppStore((state) => state.setReset)
   const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
-  const initializeSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
+  const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const addILink = useDataStore((store) => store.addILink)
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
@@ -114,7 +115,14 @@ const GlobalListener = memo(() => {
       const editorID = getNewDraftKey()
       init(fileData, editorID, AppType.SPOTLIGHT)
       const initList = convertDataToRawText(fileData)
-      initializeSearchIndex(initList, indexData)
+      mog('Initializaing Search Index', { indexData, initList })
+      const initIndexData: CreateSearchIndexData = {
+        node: initList,
+        snippet: null,
+        archive: null
+      }
+      // const index = initFlexSearchIndex(initIndexData, indexData)
+      initializeSearchIndex(initIndexData, indexData)
     })
 
     ipcRenderer.on(IpcAction.SPOTLIGHT_BUBBLE, (_event, arg) => {

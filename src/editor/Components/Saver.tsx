@@ -18,7 +18,7 @@ import { useContentStore } from '../../store/useContentStore'
 import { useHelpStore } from '../../store/useHelpStore'
 import { useKeyListener } from '../../hooks/useShortcutListener'
 import { useLinks } from '../../hooks/useLinks'
-import { useNewSearchStore } from '../../store/useSearchStore'
+import { useSearchStore } from '../../store/useSearchStore'
 import { useSaveData } from '../../hooks/useSaveData'
 import { useSnippetStore } from '../../store/useSnippetStore'
 import { useTags } from '../../hooks/useTags'
@@ -30,7 +30,7 @@ export const useDataSaverFromContent = () => {
   const { updateLinksFromContent, getNodeIdFromUid } = useLinks()
   const { updateTagsFromContent } = useTags()
   const { saveDataAPI } = useApi()
-  const updateDocNew = useNewSearchStore((store) => store.updateDoc)
+  const updateDoc = useSearchStore((store) => store.updateDoc)
 
   // By default saves to API use false to not save
   const saveEditorValueAndUpdateStores = (nodeid: string, editorValue: any[], saveApi?: boolean) => {
@@ -42,7 +42,7 @@ export const useDataSaverFromContent = () => {
       updateLinksFromContent(nodeid, editorValue)
       updateTagsFromContent(nodeid, editorValue)
       const title = getNodeIdFromUid(nodeid)
-      updateDocNew(nodeid, convertEntryToRawText(nodeid, editorValue), title)
+      updateDoc('node', convertEntryToRawText(nodeid, editorValue, title))
       // saveData()
     }
   } //, [])

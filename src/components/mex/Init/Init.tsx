@@ -8,7 +8,7 @@ import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import config from '../../../apis/config'
 import { convertDataToRawText } from '../../../utils/search/localSearch'
-import { flexIndexKeys } from '../../../utils/search/flexsearch'
+import { CreateSearchIndexData, flexIndexKeys } from '../../../utils/search/flexsearch'
 import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { ipcRenderer } from 'electron'
@@ -28,7 +28,7 @@ import useLoad from '../../../hooks/useLoad'
 import { useLocalData } from '../../../hooks/useLocalData'
 import { useLocation } from 'react-router-dom'
 import { useNavigation } from '../../../hooks/useNavigation'
-import { useNewSearchStore } from '../../../store/useSearchStore'
+import { useSearchStore } from '../../../store/useSearchStore'
 import useOnboard from '../../../store/useOnboarding'
 import { usePlateEditorRef } from '@udecode/plate'
 import { useRecentsStore } from '../../../store/useRecentsStore'
@@ -55,8 +55,8 @@ const Init = () => {
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
   const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
 
-  const initFlexSearchIndex = useNewSearchStore((store) => store.initializeSearchIndex)
-  const fetchIndexLocalStorage = useNewSearchStore((store) => store.fetchIndexLocalStorage)
+  const initFlexSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
+  const fetchIndexLocalStorage = useSearchStore((store) => store.fetchIndexLocalStorage)
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
   const { getUidFromNodeId } = useLinks()
@@ -91,7 +91,12 @@ const Init = () => {
         .then(({ fileData, indexData }) => {
           const initList = convertDataToRawText(fileData)
           mog('Initializaing Search Index', { indexData, initList })
-          const index = initFlexSearchIndex(initList, indexData)
+          const initIndexData: CreateSearchIndexData = {
+            node: initList,
+            snippet: null,
+            archive: null
+          }
+          const index = initFlexSearchIndex(initIndexData, indexData)
           return fileData
         })
         .then((d) => {
@@ -122,7 +127,9 @@ const Init = () => {
             return { nodeid: d.baseNodeId }
           }
         })
-        .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.push, nodeid))
+        // For development
+        .then(() => goTo(ROUTE_PATHS.search, NavigationType.push))
+        // .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.push, nodeid))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

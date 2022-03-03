@@ -52,17 +52,17 @@ const SuggestionInfoBar = () => {
 
       <>
         {suggestions.map((suggestion) => {
-          const con = contents[suggestion.nodeUID]
-          const path = getNodeIdFromUid(suggestion.nodeUID)
+          const con = contents[suggestion.id]
+          const path = getNodeIdFromUid(suggestion.id)
           const content = con ? con.content : defaultContent.content
 
           return (
-            <Margin key={`ResultForSearch_${suggestion.nodeUID}`} onClick={() => onClick(path)}>
+            <Margin key={`ResultForSearch_${suggestion.id}`} onClick={() => onClick(path)}>
               <Result>
                 <ResultHeader>
                   <ResultTitle>{path}</ResultTitle>
                 </ResultHeader>
-                <EditorPreviewRenderer content={content} editorId={`editor_${suggestion.nodeUID}`} />
+                <EditorPreviewRenderer content={content} editorId={`editor_${suggestion.id}`} />
               </Result>
             </Margin>
           )
