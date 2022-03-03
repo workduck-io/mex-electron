@@ -21,6 +21,7 @@ import { NotFoundText } from '../../style/Form'
 import { IntegrationContainer, Title } from '../../style/Integration'
 import { Result, ResultHeader, Results, ResultTitle, SearchPreviewWrapper } from '../../style/Search'
 import { ILink } from '../../types/Types'
+import { SplitType } from '../../ui/layout/splitView'
 import { mog } from '../../utils/lib/helper'
 
 const Nodes = styled.section`
@@ -170,6 +171,7 @@ const Archive = () => {
           })
           return searchResults
         }}
+        options={{ splitOptions: { type: SplitType.NONE } }}
         getItemKey={(item) => `archive_${item.nodeid}`}
         onSelect={(node) => {
           const archiveNode: NodeProperties = {

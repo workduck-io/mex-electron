@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import useLayout from '../../../hooks/useLayout'
 import { useContentStore } from '../../../store/useContentStore'
-import { useEditorStore } from '../../../store/useEditorStore'
+import { NodeProperties, useEditorStore } from '../../../store/useEditorStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import { FOCUS_MODE_OPACITY } from '../../../style/consts'
 import { focusStyles } from '../../../style/focus'
@@ -111,8 +111,11 @@ const DateTooptip = styled.div`
   }
 `
 
-const Metadata = () => {
-  const node = useEditorStore((state) => state.node)
+interface MetadataProps {
+  node: NodeProperties
+}
+const Metadata = ({node}: MetadataProps) => {
+  // const node = useEditorStore((state) => state.node)
   const focusMode = useLayoutStore((s) => s.focusMode)
   const getContent = useContentStore((state) => state.getContent)
   const content = getContent(node.nodeid)

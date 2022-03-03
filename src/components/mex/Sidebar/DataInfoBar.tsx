@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useEditorStore } from '../../../store/useEditorStore'
 import Backlinks from '../Backlinks'
 import TagsRelated from '../Tags/TagsRelated'
 
@@ -13,10 +14,12 @@ export const DataInfobarWrapper = styled.div`
 `
 
 const DataInfoBar = () => {
+  const node = useEditorStore((state) => state.node)
+
   return (
     <DataInfobarWrapper>
-      <Backlinks />
-      <TagsRelated />
+      <Backlinks nodeid={node.nodeid} />
+      <TagsRelated nodeid={node.nodeid} />
     </DataInfobarWrapper>
   )
 }

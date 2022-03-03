@@ -19,12 +19,17 @@ import {
   ResultRow,
   ResultTitle,
   SearchContainer,
-  SearchPreviewWrapper
+  SearchPreviewWrapper,
+  SplitSearchPreviewWrapper
 } from '../../../style/Search'
 import { Title } from '../../../style/Typography'
 import { mog } from '../../../utils/lib/helper'
 import { convertContentToRawText } from '../../../utils/search/localSearch'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import Backlinks from '../Backlinks'
+import Metadata from '../Metadata/Metadata'
+import DataInfoBar from '../Sidebar/DataInfoBar'
+import TagsRelated from '../Tags/TagsRelated'
 import SearchView, { RenderItemProps, RenderPreviewProps } from './SearchView'
 import { View } from './ViewSelector'
 
@@ -32,7 +37,7 @@ const Search = () => {
   const { loadNode } = useLoad()
   const searchIndex = useSearchStore((store) => store.searchIndex)
   const contents = useContentStore((store) => store.contents)
-  const { getIcon } = useNodes()
+  const { getNode } = useNodes()
   const { goTo } = useRouting()
 
   const { getNodeIdFromUid } = useLinks()
@@ -68,14 +73,14 @@ const Search = () => {
   // Forwarding ref to focus on the selected result
   const BaseItem = ({ item, ...props }: RenderItemProps<GenericSearchResult>, ref: React.Ref<HTMLDivElement>) => {
     const con = contents[item.id]
-    const path = getNodeIdFromUid(item.id)
+    const node = getNode(item.id)
     const content = con ? con.content : defaultContent.content
-    const icon = getIcon(item.id) ?? fileList2Line
+    const icon = node.icon ?? fileList2Line
     if (props.view === View.Card) {
       return (
         <Result {...props} ref={ref}>
           <ResultHeader active={item.matchField.includes('title')}>
-            <ResultTitle>{path}</ResultTitle>
+            <ResultTitle>{node.path}</ResultTitle>
           </ResultHeader>
           <SearchPreviewWrapper active={item.matchField.includes('text')}>
             <EditorPreviewRenderer content={content} editorId={`editor_${item.id}`} />
@@ -88,7 +93,7 @@ const Search = () => {
           <ResultRow active={item.matchField.includes('title')} selected={props.selected}>
             <Icon icon={icon} />
             <ResultMain>
-              <ResultTitle>{path}</ResultTitle>
+              <ResultTitle>{node.path}</ResultTitle>
               <ResultDesc>{convertContentToRawText(content, ' ')}</ResultDesc>
             </ResultMain>
           </ResultRow>
@@ -100,15 +105,22 @@ const Search = () => {
 
   const RenderPreview = ({ item }: RenderPreviewProps<GenericSearchResult>) => {
     console.log('RenderPreview', { item })
-    const con = contents[item.id]
-    const path = getNodeIdFromUid(item.id)
-    const content = con ? con.content : defaultContent.content
-    const icon = getIcon(item.id) ?? fileList2Line
-    return (
-      <SearchPreviewWrapper>
-        <EditorPreviewRenderer content={content} editorId={`SearchPreview_editor_${item.id}`} />
-      </SearchPreviewWrapper>
-    )
+    if (item) {
+      const con = contents[item.id]
+      const content = con ? con.content : defaultContent.content
+      const node = getNode(item.id)
+      const icon = node.icon ?? fileList2Line
+      const edNode = { ...node, title: node.path, id: node.nodeid }
+      return (
+        <SplitSearchPreviewWrapper>
+          <Title>{node.path}</Title>
+          <Metadata node={edNode} />
+          <EditorPreviewRenderer content={content} editorId={`SearchPreview_editor_${item.id}`} />
+          <Backlinks nodeid={node.nodeid} />
+          <TagsRelated nodeid={node.nodeid} />
+        </SplitSearchPreviewWrapper>
+      )
+    } else return null
   }
 
   return (

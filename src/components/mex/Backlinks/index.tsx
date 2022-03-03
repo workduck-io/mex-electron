@@ -8,47 +8,15 @@ import { useNavigation } from '../../../hooks/useNavigation'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { HoverSubtleGlow } from '../../../style/helpers'
 import { Note } from '../../../style/Typography'
+import { DataInfoHeader, NodeLink, SBackLinks } from './Backlinks.style'
 
-const SBackLinks = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  margin: 3rem 0;
-`
-
-export const NodeLink = styled.div`
-  cursor: pointer;
-  border-radius: ${({ theme }) => theme.borderRadius.tiny};
-  margin-bottom: ${({ theme }) => theme.spacing.small};
-  background: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
-
-  padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.medium}`};
-
-  &:nth-child(2n) {
-    background: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
-  }
-
-  ${HoverSubtleGlow}
-`
-
-export const DataInfoHeader = styled.div`
-  display: flex;
-  align-items: center;
-  color: ${({ theme }) => theme.colors.text.subheading};
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: ${({ theme }) => theme.spacing.medium};
-
-  svg {
-    margin-right: ${({ theme }) => theme.spacing.small};
-    color: ${({ theme }) => theme.colors.primary};
-  }
-`
-
-const Backlinks = () => {
+interface BackLinkProps {
+  nodeid: string
+}
+const Backlinks = ({ nodeid }: BackLinkProps) => {
   const { getBacklinks } = useLinks()
   const { push } = useNavigation()
-  const backlinks = getBacklinks(useEditorStore.getState().node.nodeid)
+  const backlinks = getBacklinks(nodeid)
   const { getNodeIdFromUid } = useLinks()
 
   return (

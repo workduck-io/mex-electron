@@ -1,7 +1,9 @@
+import { transparentize } from 'polished'
 import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { Ellipsis } from '../components/mex/Integrations/Template/styled'
 import { View } from '../components/mex/Search/ViewSelector'
+import { EditorStyles } from './Editor'
 import { Input } from './Form'
 import { CardShadow } from './helpers'
 import { size } from './responsive'
@@ -12,6 +14,18 @@ interface ResultProps {
 
 const SearchTransition = css`
   transition: all 0.2s ease-in-out;
+`
+
+export const InputWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
+  svg {
+    height: 1.5rem;
+    width: 1.5rem;
+    color: ${({ theme }) => theme.colors.primary};
+  }
 `
 
 export const SearchInput = styled(Input)`
@@ -26,12 +40,11 @@ export const SearchInput = styled(Input)`
 export const SearchHeader = styled.div`
   display: flex;
   align-items: center;
-  svg {
-    height: 1.5rem;
-    width: 1.5rem;
-    margin-right: ${({ theme }) => theme.spacing.small};
-    color: ${({ theme }) => theme.colors.primary};
-  }
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.small};
+  background-color: ${({ theme }) => theme.colors.gray[9]};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  padding: ${({ theme }) => theme.spacing.small};
 `
 
 export const SearchContainer = styled.div`
@@ -184,6 +197,7 @@ export const Results = styled.div<{ view: View }>`
         flex-direction: column;
         align-items: flex-start;
         gap: ${theme.spacing.tiny};
+        flex-grow: 1;
       `
     }
   }}
@@ -196,6 +210,17 @@ export const ResultsWrapper = styled.div`
 
 export const SearchPreviewWrapper = styled.div<{ active?: boolean }>`
   ${({ theme, active }) => active && css``}
+`
+
+export const SplitSearchPreviewWrapper = styled.div`
+  border-radius: ${({ theme }) => theme.borderRadius.large};
+  background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};
+  padding: ${({ theme }) => theme.spacing.medium};
+
+  ${EditorStyles} {
+    max-height: 40vh;
+    overflow-y: auto;
+  }
 `
 
 export const SSearchHighlights = styled.div`

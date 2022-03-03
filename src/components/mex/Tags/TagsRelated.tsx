@@ -10,7 +10,7 @@ import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { HoverSubtleGlow } from '../../../style/helpers'
 import { Note } from '../../../style/Typography'
-import { DataInfoHeader, NodeLink } from '../Backlinks'
+import { DataInfoHeader, NodeLink } from '../Backlinks/Backlinks.style'
 
 const TagFlex = styled.div`
   cursor: pointer;
@@ -44,9 +44,12 @@ const InfoSubHeading = styled.h2`
   color: ${({ theme }) => theme.colors.text.fade};
 `
 
-const TagsRelated = () => {
+interface TagsRelated {
+  nodeid: string
+}
+
+const TagsRelated = ({ nodeid }: TagsRelated) => {
   const { getRelatedNodes, getTags } = useTags()
-  const nodeid = useEditorStore((state) => state.node.nodeid)
   const tagsCache = useDataStore((state) => state.tagsCache)
   const [relNodes, setRelNodes] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])

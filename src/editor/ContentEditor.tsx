@@ -116,7 +116,7 @@ const ContentEditor = () => {
       <StyledEditor showGraph={showGraph} className="mex_editor">
         <Toolbar />
 
-        {isBlockMode ? <BlockInfoBar /> : <Metadata />}
+        {isBlockMode ? <BlockInfoBar /> : <Metadata node={node} />}
 
         <Editor
           showBalloonToolbar
