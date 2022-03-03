@@ -162,15 +162,18 @@ const SearchView = <Item,>({
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (selectedRef.current) selectedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [selected])
+
   const selectNext = () => {
     setSelected((selected + 1) % result.length)
-    if (selectedRef.current) selectedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
   const selectPrev = () => {
-    mog('selectPrev', { selected, result, ref: selectedRef.current })
-    setSelected((result.length + selected - 1) % result.length)
-    if (selectedRef.current) selectedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    const newSelected = (result.length + selected - 1) % result.length
+    // mog('selectPrev', { selected, result, newSelected })
+    setSelected(newSelected)
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onChange = (e: any) => {
@@ -235,6 +238,7 @@ const SearchView = <Item,>({
         {result.length > 0 ? (
           <Results>
             {result.map((c, i) => {
+              if (i === selected) mog('selected', { c, i })
               return (
                 <RenderItem
                   item={c}
@@ -242,7 +246,7 @@ const SearchView = <Item,>({
                     onSelect(c)
                   }}
                   selected={i === selected}
-                  ref={i === (selected + 1) % result.length ? selectedRef : null}
+                  ref={i === selected ? selectedRef : null}
                   key={`ResultForSearch_${getItemKey(c)}`}
                 />
               )

@@ -10,6 +10,7 @@ import { useRecentsStore } from '../../../store/useRecentsStore'
 import { FlexSearchResult, useNewSearchStore } from '../../../store/useSearchStore'
 import { Result, ResultHeader, ResultTitle, SearchContainer, SearchPreviewWrapper } from '../../../style/Search'
 import { Title } from '../../../style/Typography'
+import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import SearchView, { RenderItemProps } from './SearchView'
 
@@ -22,8 +23,13 @@ const Search = () => {
   const { getNodeIdFromUid } = useLinks()
 
   const onSearch = (newSearchTerm: string) => {
-    const res = searchIndex(newSearchTerm)
-    return res
+    try {
+      const res = searchIndex(newSearchTerm)
+      return res
+    } catch (e) {
+      mog('Search broke', { e })
+      return []
+    }
   }
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)
