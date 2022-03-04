@@ -49,28 +49,31 @@ export const DataWrapper = styled.div<DataWrapperProps>`
     `}
 `
 
-const DataGroup = styled.div``
+export const DataGroup = styled.div``
 
-export const MetadataWrapper = styled.div<FocusModeProp>`
+interface MetaDataWrapperProps extends FocusModeProp {
+  fadeOnHover?: boolean
+}
+export const MetadataWrapper = styled.div<MetaDataWrapperProps>`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: ${({ theme }) => theme.spacing.small};
 
-  margin-bottom: ${({ theme }) => theme.spacing.large};
-  ${HoverFade}
-
-  ${ProfileIcon} {
-    filter: grayscale(1);
-    opacity: 0.5;
-  }
-
-  &:hover {
-    ${ProfileIcon} {
-      filter: grayscale(0);
-      opacity: 1;
-    }
-  }
+  ${({ theme, fadeOnHover }) =>
+    fadeOnHover &&
+    css`
+      ${HoverFade}
+      ${ProfileIcon} {
+        filter: grayscale(1);
+        opacity: 0.5;
+      }
+      &:hover {
+        ${ProfileIcon} {
+          filter: grayscale(0);
+          opacity: 1;
+        }
+      }
+    `}
 
   ${(props) => focusStyles(props)}
 
@@ -113,8 +116,9 @@ const DateTooptip = styled.div`
 
 interface MetadataProps {
   node: NodeProperties
+  fadeOnHover?: boolean
 }
-const Metadata = ({node}: MetadataProps) => {
+const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
   // const node = useEditorStore((state) => state.node)
   const focusMode = useLayoutStore((s) => s.focusMode)
   const getContent = useContentStore((state) => state.getContent)
@@ -129,11 +133,11 @@ const Metadata = ({node}: MetadataProps) => {
     setMetadata(contentMetadata)
   }, [node, content])
 
-  // console.log({ node, metadata })
+  console.log({ node, metadata })
 
   if (content === undefined || content.metadata === undefined || metadata === undefined) return null
   return (
-    <MetadataWrapper {...getFocusProps(focusMode)}>
+    <MetadataWrapper {...getFocusProps(focusMode)} fadeOnHover={fadeOnHover}>
       <DataGroup>
         {metadata.createdBy !== undefined && (
           <DataWrapper interactive={metadata.createdAt !== undefined}>

@@ -16,6 +16,7 @@ export interface SplitOptions {
   /** percentage for preview */
   percent?: number
 }
+
 export interface RenderSplitProps {
   splitOptions: SplitOptions
 }
@@ -49,10 +50,6 @@ const SplitView = ({ RenderSplitPreview, children, splitOptions }: SplitViewProp
   }, [splitOptions])
 
   const animationProps = useSpring(springProps)
-
-  const handleScrollToBottom = () => {
-    ref.current.scrollTop = ref.current.scrollHeight
-  }
 
   return (
     <SplitWrapper>

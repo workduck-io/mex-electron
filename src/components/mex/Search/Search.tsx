@@ -16,6 +16,7 @@ import {
   ResultDesc,
   ResultHeader,
   ResultMain,
+  ResultMetaData,
   ResultRow,
   ResultTitle,
   SearchContainer,
@@ -23,6 +24,7 @@ import {
   SplitSearchPreviewWrapper
 } from '../../../style/Search'
 import { Title } from '../../../style/Typography'
+import { SplitType } from '../../../ui/layout/splitView'
 import { mog } from '../../../utils/lib/helper'
 import { convertContentToRawText } from '../../../utils/search/localSearch'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
@@ -71,11 +73,15 @@ const Search = () => {
   }
 
   // Forwarding ref to focus on the selected result
-  const BaseItem = ({ item, ...props }: RenderItemProps<GenericSearchResult>, ref: React.Ref<HTMLDivElement>) => {
+  const BaseItem = (
+    { item, splitOptions, ...props }: RenderItemProps<GenericSearchResult>,
+    ref: React.Ref<HTMLDivElement>
+  ) => {
     const con = contents[item.id]
     const node = getNode(item.id)
     const content = con ? con.content : defaultContent.content
     const icon = node.icon ?? fileList2Line
+    const edNode = { ...node, title: node.path, id: node.nodeid }
     if (props.view === View.Card) {
       return (
         <Result {...props} ref={ref}>
@@ -96,6 +102,11 @@ const Search = () => {
               <ResultTitle>{node.path}</ResultTitle>
               <ResultDesc>{convertContentToRawText(content, ' ')}</ResultDesc>
             </ResultMain>
+            {(!splitOptions || splitOptions.type === SplitType.NONE) && (
+              <ResultMetaData>
+                <Metadata fadeOnHover={false} node={edNode} />
+              </ResultMetaData>
+            )}
           </ResultRow>
         </Result>
       )
@@ -113,8 +124,11 @@ const Search = () => {
       const edNode = { ...node, title: node.path, id: node.nodeid }
       return (
         <SplitSearchPreviewWrapper>
-          <Title>{node.path}</Title>
-          <Metadata node={edNode} />
+          <Title>
+            {node.path}
+            <Icon icon={icon} />
+          </Title>
+          <Metadata fadeOnHover={false} node={edNode} />
           <EditorPreviewRenderer content={content} editorId={`SearchPreview_editor_${item.id}`} />
           <Backlinks nodeid={node.nodeid} />
           <TagsRelated nodeid={node.nodeid} />

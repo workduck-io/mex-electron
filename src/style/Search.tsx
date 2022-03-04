@@ -2,11 +2,14 @@ import { transparentize } from 'polished'
 import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { Ellipsis } from '../components/mex/Integrations/Template/styled'
+import { MetadataWrapper } from '../components/mex/Metadata/Metadata'
 import { View } from '../components/mex/Search/ViewSelector'
 import { EditorStyles } from './Editor'
 import { Input } from './Form'
 import { CardShadow } from './helpers'
 import { size } from './responsive'
+import { Title } from './Typography'
+import { ProfileIcon } from './UserPage'
 
 interface ResultProps {
   selected?: boolean
@@ -107,8 +110,9 @@ export const ResultRow = styled.div<{ active?: boolean; selected?: boolean }>`
 `
 
 export const ResultMain = styled.div`
-  align-self: flex-start;
+  justify-self: flex-start;
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.tiny};
 `
@@ -126,6 +130,17 @@ export const ResultDesc = styled.div`
 
   ${Ellipsis}
 `
+export const ResultMetaData = styled.div`
+  display: flex;
+  flex-shrink: 1;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 0.9rem;
+  ${ProfileIcon} {
+    opacity: 0.66;
+  }
+`
+
 export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
   background-color: ${({ theme }) => theme.colors.gray[9]};
   ${({ theme, selected, view }) => {
@@ -213,6 +228,8 @@ export const SearchPreviewWrapper = styled.div<{ active?: boolean }>`
 `
 
 export const SplitSearchPreviewWrapper = styled.div`
+  height: calc(100vh - 18rem);
+  overflow-y: auto;
   border-radius: ${({ theme }) => theme.borderRadius.large};
   background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};
   padding: ${({ theme }) => theme.spacing.medium};
@@ -220,6 +237,17 @@ export const SplitSearchPreviewWrapper = styled.div`
   ${EditorStyles} {
     max-height: 40vh;
     overflow-y: auto;
+  }
+
+  ${MetadataWrapper} {
+    font-size: 0.9rem;
+    margin: ${({ theme }) => theme.spacing.large} 0;
+  }
+
+  ${Title} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 `
 

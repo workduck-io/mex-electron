@@ -30,7 +30,7 @@ export interface RenderPreviewProps<Item> extends RenderSplitProps {
   item?: Item
 }
 
-export interface RenderItemProps<Item> {
+export interface RenderItemProps<Item> extends Partial<RenderSplitProps> {
   item: Item
   selected: boolean
 
@@ -253,6 +253,11 @@ const SearchView = <Item,>({
     }
   }
 
+  const splitOptions = options?.splitOptions ?? {
+    type: selected > -1 ? SplitType.SIDE : SplitType.NONE,
+    percent: 50
+  }
+
   const ResultsView = (
     <Results view={view}>
       {result.map((c, i) => {
@@ -264,6 +269,7 @@ const SearchView = <Item,>({
             onClick={() => {
               onSelect(c)
             }}
+            splitOptions={splitOptions}
             selected={i === selected}
             ref={i === selected ? selectedRef : null}
             key={`ResultForSearch_${getItemKey(c)}`}
@@ -308,12 +314,7 @@ const SearchView = <Item,>({
               RenderSplitPreview={(props) => (
                 <RenderPreview {...props} item={selected > -1 ? result[selected] : undefined} />
               )}
-              splitOptions={
-                options?.splitOptions ?? {
-                  type: selected > -1 ? SplitType.SIDE : SplitType.NONE,
-                  percent: 50
-                }
-              }
+              splitOptions={splitOptions}
             >
               {ResultsView}
             </SplitView>
