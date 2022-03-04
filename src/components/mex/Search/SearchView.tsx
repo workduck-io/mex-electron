@@ -12,7 +12,8 @@ import {
   SearchHeader,
   SearchInput,
   SearchPreviewWrapper,
-  InputWrapper
+  InputWrapper,
+  SearchViewContainer
 } from '../../../style/Search'
 import { Title } from '../../../style/Typography'
 import SplitView, { RenderSplitProps, SplitOptions, SplitType } from '../../../ui/layout/splitView'
@@ -42,26 +43,15 @@ export interface RenderItemProps<Item> extends Partial<RenderSplitProps> {
   onMouseEnter?: React.MouseEventHandler
 }
 
-export interface SearchViewStoreState<Item> extends SearchViewState<Item> {
-  setSelected: (selected: number) => void
-  setResult: (result: Item[], searchTerm: string) => void
-  setView: (view: View) => void
-  clearSearch: () => void
-}
+// export interface SearchViewStoreState<Item> extends SearchViewState<Item> {
+//   setSelected: (selected: number) => void
+//   setResult: (result: Item[], searchTerm: string) => void
+//   setView: (view: View) => void
+//   clearSearch: () => void
+// }
 
-const useSearchStoreBase = create<SearchViewStoreState<unknown>>((set) => ({
-  selected: -1,
-  searchTerm: '',
-  result: [],
-  view: View.List,
-  setSelected: (selected: number) => set({ selected }),
-  setView: (view: View) => set({ view }),
-  setResult: (result, searchTerm) => set({ result, searchTerm }),
-  clearSearch: () => set({ result: [], searchTerm: '', selected: -1, view: View.List })
-}))
-
-export const useSearchStore = <Item, Slice>(selector: (state: SearchViewStoreState<Item>) => Slice) =>
-  useSearchStoreBase(selector)
+// export const useSearchStore = <Item, Slice>(selector: (state: SearchViewStoreState<Item>) => Slice) =>
+//   useSearchStoreBase(selector)
 
 interface SearchOptions {
   /**
@@ -162,22 +152,30 @@ const SearchView = <Item,>({
   RenderNotFound,
   options
 }: SearchViewProps<Item>) => {
-  const selected = useSearchStore((s) => s.selected)
-  const searchTerm = useSearchStore((s) => s.searchTerm)
-  const result = useSearchStore((s) => s.result) as Item[]
-  const view = useSearchStore((s) => s.view)
-  const setSelected = useSearchStore((s) => s.setSelected)
-  const setResult = useSearchStore((s) => s.setResult)
-  const setView = useSearchStore((s) => s.setView)
-  const clearSearch = useSearchStore((s) => s.clearSearch)
+  const [searchState, setSS] = useState<SearchViewState<Item>>({
+    selected: -1,
+    searchTerm: '',
+    result: [],
+    view: options?.view ?? View.List
+  })
+  const setSelected = (selected: number) => setSS((s) => ({ ...s, selected }))
+  const setView = (view: View) => {
+    mog('setview', { view })
+    setSS((s) => ({ ...s, view }))
+  }
+  const setResult = (result: Item[], searchTerm: string) => setSS((s) => ({ ...s, result, searchTerm }))
+  const clearSearch = () => setSS((s) => ({ ...s, result: [], searchTerm: '', selected: -1 }))
+  const { selected, searchTerm, result, view } = searchState
+
   const inpRef = useRef<HTMLInputElement>(null)
   const selectedRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    mog('Setting View', { view, id })
     if (options?.view) {
       setView(options.view)
     }
-  }, [])
+  }, [options?.view])
 
   useEffect(() => {
     mog('clearing search on ID change', { searchTerm, id })
@@ -299,9 +297,9 @@ const SearchView = <Item,>({
     </Results>
   )
 
-  mog('SearchContainer', { result, id, selected, view })
+  // mog('SearchContainer', { options, result, id, selected, view })
   return (
-    <SearchContainer key={id} onKeyDown={keyDownHandler}>
+    <SearchViewContainer key={id} id={id} onKeyDown={keyDownHandler}>
       <SearchHeader>
         <InputWrapper>
           <Icon icon={searchLine} />
@@ -353,7 +351,7 @@ const SearchView = <Item,>({
           </NoSearchResults>
         )}
       </ResultsWrapper>
-    </SearchContainer>
+    </SearchViewContainer>
   )
 }
 

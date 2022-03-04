@@ -20,11 +20,12 @@ import { EditorStyles, NodeInfo, StyledEditor } from '../Editor'
 import { GridWrapper } from '../Grid'
 import { MenuTrigger, RightCut, ServiceCard } from '../Integration'
 import { NavButton } from '../Nav'
-import { Result, ResultHeader, SearchContainer } from '../Search'
+import { Result, ResultHeader, SearchContainer, SplitSearchPreviewWrapper } from '../Search'
 import { SidebarDiv, StyledTree } from '../Sidebar'
 import { CreateSnippet, SSnippet } from '../Snippets'
+import { Title } from '../Typography'
 
-const palette = { body: '#C4CCE0', background: '#D2D9EC', shadow: '#576BA4', primDark: '#4263B6' }
+const palette = { body: '#1B1F3D' }
 
 const headingColors = css`
   h1 {
@@ -47,6 +48,11 @@ const headingColors = css`
   }
 `
 
+const listColors = css`
+  li::marker {
+    color: ${({ theme }) => transparentize(0.5, theme.colors.secondary)};
+  }
+`
 const grayMixerTrans = (n: number) => css`
   ${({ theme }) => transparentize(0.33, theme.colors.gray[n])}
 `
@@ -55,7 +61,7 @@ const grayMainColor = css`
 `
 
 const NeoContainer = css`
-  background-color: ${({ theme }) => theme.colors.gray[9]};
+  background-color: ${palette.body};
   box-shadow: 0px 15px 40px ${({ theme }) => transparentize(0.9, theme.colors.palette.black)};
 `
 
@@ -100,15 +106,7 @@ const edStyles = css`
       background-color: ${({ theme }) => theme.colors.gray[9]};
     }
     ${headingColors}
-  }
-  .focus_mode {
-    ${StyledEditor} {
-      padding: ${({ theme }) => theme.spacing.large} 80px;
-    }
-    ${EditorStyles} {
-      border-radius: 2rem;
-      box-shadow: 20px 20px 60px #b3b8c9, -20px -20px 60px #f2faff;
-    }
+    ${listColors}
   }
   ${SILink} {
     .ILink_decoration {
@@ -197,8 +195,16 @@ const gridCardStyles = css`
     ${NeoContainer}
     background-color: ${grayMixerTrans(10)};
   }
+`
+
+const searchStyles = css`
   ${SearchContainer} {
     margin-right: 3rem;
+  }
+  ${SplitSearchPreviewWrapper} {
+    ${Title} {
+      color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `
 
@@ -281,11 +287,10 @@ const modalStyles = css`
     border: none;
   }
   .ModalOverlay {
-    backdrop-filter: blur(10px);
   }
 
   ${StyledMenu} {
-    box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.5, theme.colors.gray[6])};
+    box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.5, theme.colors.palette.black)};
     background-color: ${({ theme }) => theme.colors.gray[9]};
   }
 `
@@ -294,8 +299,6 @@ const globalStyles = css`
   body {
     background-color: ${({ theme }) => theme.colors.gray[10]};
   }
-
-  ${headingColors}
 `
 
 export const NeoDarkStyles = css`
@@ -304,8 +307,9 @@ export const NeoDarkStyles = css`
   ${navStyles}
   ${sidebarStyles}
   ${settingsStyles}
-    ${integrationStyles}
-    ${gridCardStyles}
-    ${edStyles}
+  ${searchStyles}
+  ${integrationStyles}
+  ${gridCardStyles}
+  ${edStyles}
   ${graphStyles}
 `

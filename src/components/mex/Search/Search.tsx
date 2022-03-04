@@ -48,8 +48,10 @@ const Search = () => {
   const onSearch = (newSearchTerm: string) => {
     try {
       const res = searchIndex('node', newSearchTerm)
-      mog('search', { res })
-      return res
+      const nodeids = useDataStore.getState().ilinks.map((l) => l.nodeid)
+      const filRes = res.filter((r) => nodeids.includes(r.id))
+      // mog('search', { res, filRes })
+      return filRes
     } catch (e) {
       mog('Search broke', { e })
       return []
@@ -78,11 +80,12 @@ const Search = () => {
     { item, splitOptions, ...props }: RenderItemProps<GenericSearchResult>,
     ref: React.Ref<HTMLDivElement>
   ) => {
-    if (!item) {
-      return null
+    const node = getNode(item.id)
+    // mog('Baseitem', { item, node })
+    if (!item || !node) {
+      return <Result {...props} ref={ref}></Result>
     }
     const con = contents[item.id]
-    const node = getNode(item.id)
     const content = con ? con.content : defaultContent.content
     const icon = node?.icon ?? fileList2Line
     const edNode = node ? { ...node, title: node.path, id: node.nodeid } : getInitialNode()
@@ -120,7 +123,7 @@ const Search = () => {
   const RenderItem = React.forwardRef(BaseItem)
 
   const RenderPreview = ({ item }: RenderPreviewProps<GenericSearchResult>) => {
-    console.log('RenderPreview', { item })
+    // mog('RenderPreview', { item })
     if (item) {
       const con = contents[item.id]
       const content = con ? con.content : defaultContent.content
@@ -152,6 +155,7 @@ const Search = () => {
       <Title>Search</Title>
       <SearchView
         id="searchStandard"
+        key="searchStandard"
         initialItems={[]}
         getItemKey={(i) => i.id}
         onSelect={onSelect}

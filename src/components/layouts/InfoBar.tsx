@@ -30,9 +30,17 @@ export const InfoBarWrapper = styled.div<InfoBarWrapperProps>`
       const mainWidth = wide === 'true' ? '600px' : '300px'
       return `calc(${mainWidth})`
     }};
+    max-width: ${({ wide }) => {
+      const mainWidth = wide === 'true' ? '600px' : '300px'
+      return `calc(${mainWidth})`
+    }};
   }
   @media (min-width: ${size.wide}) {
     min-width: ${({ wide }) => {
+      const mainWidth = wide === 'true' ? '800px' : '300px'
+      return `calc(${mainWidth})`
+    }};
+    max-width: ${({ wide }) => {
       const mainWidth = wide === 'true' ? '800px' : '300px'
       return `calc(${mainWidth})`
     }};

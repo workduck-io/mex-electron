@@ -16,6 +16,7 @@ import { SILink, SILinkRoot } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
 import { ELEMENT_ILINK } from '../defaults'
 import { useEffect, useState } from 'react'
+import { useNodes } from '../../../../hooks/useNodes'
 
 /**
  * ILinkElement with no default styles.
@@ -32,6 +33,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const [preview, setPreview] = useState(false)
   const { push } = useNavigation()
   const { getUidFromNodeId, getNodeIdFromUid } = useLinks()
+  const { getArchiveNode } = useNodes()
   // mog('We reached here', { selected, focused })
 
   // const nodeid = getUidFromNodeId(element.value)
@@ -82,6 +84,8 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
     },
     [selected, focused]
   )
+  const isArchived = archived(element.value)
+  const archivedNode = isArchived ? getArchiveNode(element.value) : undefined
 
   return (
     <SILinkRoot
@@ -91,11 +95,11 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
       data-slate-value={element.value}
       contentEditable={false}
     >
-      {archived(element.value) ? (
+      {isArchived ? (
         <SILink selected={selected} archived={true}>
           <StyledIcon icon={archivedIcon} color="#df7777" />
           <span className="ILink_decoration ILink_decoration_left">[[</span>
-          <span className="ILink_decoration ILink_decoration_value"> {path}</span>
+          <span className="ILink_decoration ILink_decoration_value"> {archivedNode?.path}</span>
           <span className="ILink_decoration ILink_decoration_right">]]</span>
         </SILink>
       ) : (

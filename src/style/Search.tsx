@@ -44,14 +44,21 @@ export const SearchHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: ${({ theme }) => theme.spacing.small};
+  gap: ${({ theme }) => theme.spacing.medium};
   background-color: ${({ theme }) => theme.colors.gray[9]};
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  padding: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.medium}`};
 `
 
+export const SearchViewContainer = styled.div`
+  position: relative;
+  margin: ${({ theme: { spacing } }) => `${spacing.large}`};
+`
 export const SearchContainer = styled.div`
-  margin: ${({ theme: { spacing } }) => `4rem ${spacing.medium}`};
+  margin: ${({ theme: { spacing } }) => `calc(2 * ${spacing.large}) ${spacing.large} ${spacing.medium}`};
+  ${Title} {
+    margin: ${({ theme: { spacing } }) => `${spacing.large} ${spacing.medium} ${spacing.medium} ${spacing.large}`};
+  }
   position: relative;
 `
 
@@ -88,7 +95,7 @@ export const ResultRow = styled.div<{ active?: boolean; selected?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: ${({ theme }) => theme.spacing.small};
+  gap: ${({ theme }) => theme.spacing.medium};
   padding: ${({ theme }) => `0.5rem ${theme.spacing.medium}`};
   color: ${({ theme }) => theme.colors.text.fade};
   width: 100%;
@@ -224,15 +231,18 @@ export const SearchPreviewWrapper = styled.div<{ active?: boolean }>`
 `
 
 export const SplitSearchPreviewWrapper = styled.div`
-  height: calc(100vh - 18rem);
+  height: calc(100vh - 14rem);
   overflow-y: auto;
   border-radius: ${({ theme }) => theme.borderRadius.large};
   background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};
   padding: ${({ theme }) => theme.spacing.medium};
 
   ${EditorStyles} {
+    border-radius: ${({ theme }) => theme.borderRadius.small};
     max-height: 40vh;
     overflow-y: auto;
+
+    background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
   }
 
   ${MetadataWrapper} {

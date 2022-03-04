@@ -20,6 +20,7 @@ const ModalOverlay = css`
   inset: 0px;
   display: flex;
   z-index: 100;
+  backdrop-filter: blur(8px);
   background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};
 `
 

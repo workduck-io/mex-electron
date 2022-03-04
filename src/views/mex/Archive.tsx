@@ -19,8 +19,8 @@ import useDataStore from '../../store/useDataStore'
 import { NodeProperties } from '../../store/useEditorStore'
 import { Button } from '../../style/Buttons'
 import { NotFoundText } from '../../style/Form'
-import { IntegrationContainer, Title } from '../../style/Integration'
-import { Result, ResultHeader, Results, ResultTitle, SearchPreviewWrapper } from '../../style/Search'
+import { Result, ResultHeader, Results, ResultTitle, SearchContainer, SearchPreviewWrapper } from '../../style/Search'
+import { Title } from '../../style/Typography'
 import { ILink } from '../../types/Types'
 import { SplitType } from '../../ui/layout/splitView'
 import { mog } from '../../utils/lib/helper'
@@ -123,10 +123,13 @@ const Archive = () => {
   }
 
   const BaseItem = ({ item, ...props }: RenderItemProps<ILink>, ref: React.Ref<HTMLDivElement>) => {
+    mog('BaseItem', item)
     const con = contents[item.nodeid]
     const content = con ? con.content : defaultContent.content
+    const id = `${item.nodeid}_ResultFor_ArchiveSearch`
+    if (!item) return null
     return (
-      <Result {...props} ref={ref}>
+      <Result {...props} key={id} ref={ref}>
         <ResultHeader>
           <ResultTitle>{item.path}</ResultTitle>
           <ActionContainer>
@@ -161,11 +164,12 @@ const Archive = () => {
   mog('Archive', { archive })
 
   return (
-    <IntegrationContainer>
+    <SearchContainer>
       <Title>Archive</Title>
 
       <SearchView
         id="ArchiveSearch"
+        key="ArchiveSearch"
         initialItems={archive}
         onSearch={(search) => {
           const searchResults = archive.filter((i) => {
@@ -215,7 +219,7 @@ const Archive = () => {
           </Button>
         </ModalControls>
       </Modal>
-    </IntegrationContainer>
+    </SearchContainer>
   )
 }
 

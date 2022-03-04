@@ -10,15 +10,15 @@ export const neoDark = generateTheme({
 
   // Palettes
   gray: {
-    1: '#E1E7F7', // Lightest for Light theme
-    2: '#D9E0F1',
-    3: '#B2BCD6',
-    4: '#C4CCE0',
-    5: '#A0ADCC',
-    6: '#8997BA',
-    7: '#606E8F',
-    8: '#495571',
-    9: '#1B1F3D',
+    1: '#C4CAF8', // Lightest for Light theme
+    2: '#A7AEEA',
+    3: '#868DC5',
+    4: '#6E75AC',
+    5: '#555C90',
+    6: '#4A4F7C',
+    7: '#3D426C',
+    8: '#2E335B',
+    9: '#212647',
     10: '#13162E' // Darkest for light theme
   },
 
@@ -30,17 +30,14 @@ export const neoDark = generateTheme({
     red: '#fb4934'
   },
   text: {
-    heading: '#E1E7F7',
-    default: '#B2BCD6',
-    subheading: '#D9E0F1',
-    fade: '#A0ADCC',
+    heading: '#CDD6EC',
+    default: '#909EC4',
+    subheading: '#909EC4',
+    fade: '#7580A6',
     disabled: '#9CA2BA',
     accent: '#CC7796',
     oppositePrimary: '#ffffff'
   },
-  // backgroundImages: {
-  //   app: 'https://i.imgur.com/Z2iNoSC.jpg'
-  // },
   custom: 'NeoDarkStyles'
 })
 

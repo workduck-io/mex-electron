@@ -38,5 +38,10 @@ export const useNodes = () => {
     const node = nodes.find((l) => l.nodeid === nodeid)
     if (node) return node
   }
-  return { addNode, isInArchive, getIcon, getNode }
+  const getArchiveNode = (nodeid: string): ILink => {
+    const nodes = useDataStore.getState().archive
+    const node = nodes.find((l) => l.nodeid === nodeid)
+    if (node) return node
+  }
+  return { addNode, isInArchive, getIcon, getNode, getArchiveNode }
 }
