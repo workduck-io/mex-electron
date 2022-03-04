@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-./node_modules/.bin/electron-rebuild --force --arch=arm64
+./node_modules/.bin/electron-rebuild --force --arch=arm64 --force-abi=101
 yarn package --arch=arm64
 
 

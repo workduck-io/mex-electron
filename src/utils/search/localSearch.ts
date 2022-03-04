@@ -58,8 +58,8 @@ export const convertDataToIndexable = (data: FileData): Record<indexNames, Gener
 
     if (c[0] === indexNames.archive || c[0] === indexNames.node) {
       Object.entries(data.contents).forEach(([k, v]) => {
-        if (v.type === 'editor' && k !== '__null__') {
-          const temp: GenericSearchData = titleNodeMap.has(k) && convertEntryToRawText(k, v.content)
+        if (v.type === 'editor' && k !== '__null__' && titleNodeMap.has(k)) {
+          const temp: GenericSearchData = convertEntryToRawText(k, v.content)
           temp.title = titleNodeMap.get(k)
           idxResult.push(temp)
         }

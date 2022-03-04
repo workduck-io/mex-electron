@@ -48,7 +48,7 @@ const InputWrapper = styled.div`
 `
 
 const Lookup = () => {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const [tempClose, setTempClose] = useState(false)
   const isOnboarding = useOnboard((s) => s.isOnboarding)
   const setStep = useOnboard((s) => s.setStep)
