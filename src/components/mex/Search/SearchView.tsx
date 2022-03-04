@@ -33,17 +33,20 @@ export interface RenderPreviewProps<Item> extends RenderSplitProps {
 export interface RenderItemProps<Item> extends Partial<RenderSplitProps> {
   item: Item
   selected: boolean
-
-  view: View
   ref: RefObject<HTMLDivElement>
   key: string
-  onClick: React.MouseEventHandler
+  id: string
+
+  view?: View
+  onClick?: React.MouseEventHandler
+  onMouseEnter?: React.MouseEventHandler
 }
 
 export interface SearchViewStoreState<Item> extends SearchViewState<Item> {
   setSelected: (selected: number) => void
   setResult: (result: Item[], searchTerm: string) => void
   setView: (view: View) => void
+  clearSearch: () => void
 }
 
 const useSearchStoreBase = create<SearchViewStoreState<unknown>>((set) => ({
@@ -53,7 +56,8 @@ const useSearchStoreBase = create<SearchViewStoreState<unknown>>((set) => ({
   view: View.List,
   setSelected: (selected: number) => set({ selected }),
   setView: (view: View) => set({ view }),
-  setResult: (result, searchTerm) => set({ result, searchTerm })
+  setResult: (result, searchTerm) => set({ result, searchTerm }),
+  clearSearch: () => set({ result: [], searchTerm: '', selected: -1, view: View.List })
 }))
 
 export const useSearchStore = <Item, Slice>(selector: (state: SearchViewStoreState<Item>) => Slice) =>
@@ -76,6 +80,10 @@ interface SearchOptions {
   // preview: boolean
   /** animation enabled/disabled */
   // animation: boolean
+
+  /** View to show in search */
+  /** If none specified all are used */
+  view: View
 }
 
 interface SearchViewProps<Item> {
@@ -87,10 +95,6 @@ interface SearchViewProps<Item> {
    * The initial items to display
    */
   initialItems: Item[]
-
-  /** Views to show in search */
-  /** If none specified all are used */
-  // views?: View[]
 
   /**
    * Get next resut for current search term
@@ -165,12 +169,25 @@ const SearchView = <Item,>({
   const setSelected = useSearchStore((s) => s.setSelected)
   const setResult = useSearchStore((s) => s.setResult)
   const setView = useSearchStore((s) => s.setView)
+  const clearSearch = useSearchStore((s) => s.clearSearch)
   const inpRef = useRef<HTMLInputElement>(null)
   const selectedRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    setResult(initialItems, '')
+    if (options?.view) {
+      setView(options.view)
+    }
   }, [])
+
+  useEffect(() => {
+    mog('clearing search on ID change', { searchTerm, id })
+    clearSearch()
+  }, [id])
+
+  useEffect(() => {
+    setResult(initialItems, '')
+    selectedRef.current = null
+  }, [initialItems])
 
   const executeSearch = (newSearchTerm: string) => {
     if (newSearchTerm === '') {
@@ -187,7 +204,8 @@ const SearchView = <Item,>({
   useEffect(() => {
     executeSearch(searchTerm)
     return () => {
-      setSelected(-1)
+      mog('clearing search', { searchTerm })
+      clearSearch()
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -259,19 +277,21 @@ const SearchView = <Item,>({
   }
 
   const ResultsView = (
-    <Results view={view}>
+    <Results key={`ResultForSearch_${id}`} view={view}>
       {result.map((c, i) => {
         // if (i === selected) mog('selected', { c, i })
         return (
           <RenderItem
             view={view}
             item={c}
+            onMouseEnter={() => setSelected(i)}
             onClick={() => {
               onSelect(c)
             }}
             splitOptions={splitOptions}
             selected={i === selected}
             ref={i === selected ? selectedRef : null}
+            id={`ResultForSearch_${getItemKey(c)}`}
             key={`ResultForSearch_${getItemKey(c)}`}
           />
         )
@@ -279,8 +299,9 @@ const SearchView = <Item,>({
     </Results>
   )
 
+  mog('SearchContainer', { result, id, selected, view })
   return (
-    <SearchContainer onKeyDown={keyDownHandler}>
+    <SearchContainer key={id} onKeyDown={keyDownHandler}>
       <SearchHeader>
         <InputWrapper>
           <Icon icon={searchLine} />
@@ -299,18 +320,21 @@ const SearchView = <Item,>({
             ref={inpRef}
           />
         </InputWrapper>
-        <ViewSelector
-          currentView={view}
-          onChangeView={(view) => {
-            mog('onChangeView', { view })
-            setView(view)
-          }}
-        />
+        {!options?.view && (
+          <ViewSelector
+            currentView={view}
+            onChangeView={(view) => {
+              mog('onChangeView', { view })
+              setView(view)
+            }}
+          />
+        )}
       </SearchHeader>
       <ResultsWrapper>
         {result.length > 0 ? (
-          view === View.List ? (
+          view === View.List && RenderPreview && options?.splitOptions?.type !== SplitType.NONE ? (
             <SplitView
+              id={`SplitViewForSearch_${id}`}
               RenderSplitPreview={(props) => (
                 <RenderPreview {...props} item={selected > -1 ? result[selected] : undefined} />
               )}

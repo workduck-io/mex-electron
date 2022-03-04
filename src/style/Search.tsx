@@ -179,10 +179,6 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
             color: ${theme.colors.primary};
           }
         `}
-        :hover {
-          cursor: pointer;
-          transform: translateX(-10px);
-        }
       `
     }
   }}

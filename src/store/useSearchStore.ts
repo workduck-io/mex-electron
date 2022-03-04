@@ -29,7 +29,7 @@ export interface GenericSearchResult {
   id:         string
   title?:     string
   text?:      string
-  matchField: string[]
+  matchField?: string[]
 }
 
 // prettier-ignore

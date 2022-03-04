@@ -95,7 +95,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
         <SILink selected={selected} archived={true}>
           <StyledIcon icon={archivedIcon} color="#df7777" />
           <span className="ILink_decoration ILink_decoration_left">[[</span>
-          <span className="ILink_decoration ILink_decoration_value"> {element.value}</span>
+          <span className="ILink_decoration ILink_decoration_value"> {path}</span>
           <span className="ILink_decoration ILink_decoration_right">]]</span>
         </SILink>
       ) : (

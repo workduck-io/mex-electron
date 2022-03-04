@@ -8,6 +8,7 @@ import { useTransition } from 'react-spring'
 import styled, { useTheme } from 'styled-components'
 import { ModalControls, ModalHeader, MRMHead } from '../../components/mex/Refactor/styles'
 import SearchView, { RenderItemProps } from '../../components/mex/Search/SearchView'
+import { View } from '../../components/mex/Search/ViewSelector'
 import { defaultContent } from '../../data/Defaults/baseData'
 import { useSaver } from '../../editor/Components/Saver' // FIXME move useSaver to hooks
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
@@ -157,6 +158,8 @@ const Archive = () => {
     )
   }
 
+  mog('Archive', { archive })
+
   return (
     <IntegrationContainer>
       <Title>Archive</Title>
@@ -171,7 +174,10 @@ const Archive = () => {
           })
           return searchResults
         }}
-        options={{ splitOptions: { type: SplitType.NONE } }}
+        options={{
+          splitOptions: { type: SplitType.NONE },
+          view: View.Card
+        }}
         getItemKey={(item) => `archive_${item.nodeid}`}
         onSelect={(node) => {
           const archiveNode: NodeProperties = {

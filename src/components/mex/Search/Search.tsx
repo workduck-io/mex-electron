@@ -25,6 +25,7 @@ import {
 } from '../../../style/Search'
 import { Title } from '../../../style/Typography'
 import { SplitType } from '../../../ui/layout/splitView'
+import { getInitialNode } from '../../../utils/helpers'
 import { mog } from '../../../utils/lib/helper'
 import { convertContentToRawText } from '../../../utils/search/localSearch'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
@@ -77,26 +78,30 @@ const Search = () => {
     { item, splitOptions, ...props }: RenderItemProps<GenericSearchResult>,
     ref: React.Ref<HTMLDivElement>
   ) => {
+    if (!item) {
+      return null
+    }
     const con = contents[item.id]
     const node = getNode(item.id)
     const content = con ? con.content : defaultContent.content
-    const icon = node.icon ?? fileList2Line
-    const edNode = { ...node, title: node.path, id: node.nodeid }
+    const icon = node?.icon ?? fileList2Line
+    const edNode = node ? { ...node, title: node.path, id: node.nodeid } : getInitialNode()
+    const id = `${item.id}_ResultFor_Search`
     if (props.view === View.Card) {
       return (
-        <Result {...props} ref={ref}>
-          <ResultHeader active={item.matchField.includes('title')}>
+        <Result {...props} key={id} ref={ref}>
+          <ResultHeader active={item.matchField?.includes('title')}>
             <ResultTitle>{node.path}</ResultTitle>
           </ResultHeader>
-          <SearchPreviewWrapper active={item.matchField.includes('text')}>
+          <SearchPreviewWrapper active={item.matchField?.includes('text')}>
             <EditorPreviewRenderer content={content} editorId={`editor_${item.id}`} />
           </SearchPreviewWrapper>
         </Result>
       )
     } else if (props.view === View.List) {
       return (
-        <Result {...props} ref={ref}>
-          <ResultRow active={item.matchField.includes('title')} selected={props.selected}>
+        <Result {...props} key={id} ref={ref}>
+          <ResultRow active={item.matchField?.includes('title')} selected={props.selected}>
             <Icon icon={icon} />
             <ResultMain>
               <ResultTitle>{node.path}</ResultTitle>
@@ -120,10 +125,10 @@ const Search = () => {
       const con = contents[item.id]
       const content = con ? con.content : defaultContent.content
       const node = getNode(item.id)
-      const icon = node.icon ?? fileList2Line
+      const icon = node?.icon ?? fileList2Line
       const edNode = { ...node, title: node.path, id: node.nodeid }
       return (
-        <SplitSearchPreviewWrapper>
+        <SplitSearchPreviewWrapper id={`splitSearchPreview_for_${item.id}`}>
           <Title>
             {node.path}
             <Icon icon={icon} />
@@ -134,7 +139,12 @@ const Search = () => {
           <TagsRelated nodeid={node.nodeid} />
         </SplitSearchPreviewWrapper>
       )
-    } else return null
+    } else
+      return (
+        <SplitSearchPreviewWrapper>
+          <Title></Title>
+        </SplitSearchPreviewWrapper>
+      )
   }
 
   return (

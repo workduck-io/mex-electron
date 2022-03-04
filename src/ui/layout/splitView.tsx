@@ -21,6 +21,7 @@ export interface RenderSplitProps {
   splitOptions: SplitOptions
 }
 export interface SplitViewProps {
+  id: string
   children: React.ReactNode
   // Show Preview
   splitOptions: SplitOptions
@@ -30,10 +31,9 @@ export interface SplitViewProps {
   RenderSplitPreview: (props: RenderSplitProps) => JSX.Element
 }
 
-const SplitView = ({ RenderSplitPreview, children, splitOptions }: SplitViewProps) => {
-  mog('Split View', { splitOptions })
+const SplitView = ({ RenderSplitPreview, children, splitOptions, id }: SplitViewProps) => {
+  mog('Split View', { splitOptions, id })
   // * Custom hooks
-  const ref = useRef<HTMLDivElement>()
 
   const springProps = useMemo(() => {
     const style = { width: '0%' }
@@ -52,11 +52,13 @@ const SplitView = ({ RenderSplitPreview, children, splitOptions }: SplitViewProp
   const animationProps = useSpring(springProps)
 
   return (
-    <SplitWrapper>
+    <SplitWrapper id={`SplitWrapperFor_${id}`}>
       {children}
-      <SplitPreviewWrapper style={animationProps} ref={ref}>
-        <RenderSplitPreview splitOptions={splitOptions} />
-      </SplitPreviewWrapper>
+      {splitOptions.type !== SplitType.NONE && (
+        <SplitPreviewWrapper id={`SplitPreviewWrapperFor_${id}`} style={animationProps}>
+          <RenderSplitPreview splitOptions={splitOptions} />
+        </SplitPreviewWrapper>
+      )}
     </SplitWrapper>
   )
 }
