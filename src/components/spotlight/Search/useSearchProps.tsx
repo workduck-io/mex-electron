@@ -77,7 +77,7 @@ export const useSaveChanges = () => {
 
     appNotifierWindow(IpcAction.SHOW_TOAST, AppType.SPOTLIGHT, {
       status: 'success',
-      text: 'Saved',
+      title: 'Saved successfully!',
       independent: options?.saveAndClose
     })
 

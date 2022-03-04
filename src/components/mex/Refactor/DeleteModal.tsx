@@ -1,23 +1,24 @@
-import archiveLine from '@iconify-icons/ri/archive-line'
-import { Icon } from '@iconify/react'
+import { DeleteIcon, MRMHead, MRMRow, MockRefactorMap, ModalControls, ModalHeader } from './styles'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import React, { useEffect } from 'react'
+
+import { Button } from '../../../style/Buttons'
+import { Icon } from '@iconify/react'
 import Modal from 'react-modal'
-import tinykeys from 'tinykeys'
-import create from 'zustand'
-import { useLocation, useMatch } from 'react-router-dom'
 import { USE_API } from '../../../data/Defaults/dev_'
+import archiveLine from '@iconify-icons/ri/archive-line'
+import create from 'zustand'
+import { isReserved } from '../../../utils/lib/paths'
+import { mog } from '../../../utils/lib/helper'
+import tinykeys from 'tinykeys'
 import { useDelete } from '../../../hooks/useDelete'
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
-import useLoad from '../../../hooks/useLoad'
-import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
-import { Button } from '../../../style/Buttons'
-import { mog } from '../../../utils/lib/helper'
-import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
-import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
-import { isReserved } from '../../../utils/lib/paths'
-import { useRouting, ROUTE_PATHS, NavigationType } from '../../../views/routes/urls'
+import { useKeyListener } from '../../../hooks/useShortcutListener'
+import useLoad from '../../../hooks/useLoad'
+import { useLocation } from 'react-router-dom'
 
 interface DeleteStoreState {
   open: boolean
@@ -97,7 +98,8 @@ const Delete = () => {
 
   // console.log({ to, from, open });
 
-  const handleDeleteChange = (newValue: string) => {
+  const handleDeleteChange = (quickLink: QuickLink) => {
+    const newValue = quickLink.value
     saveAndClearBuffer()
     if (newValue) {
       setDel(newValue)

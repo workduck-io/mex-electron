@@ -1,5 +1,6 @@
-import { Input } from '../../../style/Form'
 import styled, { css } from 'styled-components'
+
+import { Input } from '../../../style/Form'
 import { transparentize } from 'polished'
 
 export const StyledInputWrapper = styled.div`

@@ -1,30 +1,30 @@
-import React from 'react'
-
-import Modal from 'react-modal'
-import { WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
-import useBlockStore, { ContextMenuActionType } from '../../../store/useBlockStore'
-import { useLinks } from '../../../hooks/useLinks'
 import {
   AnyObject,
   ELEMENT_PARAGRAPH,
+  TNode,
   getNodes,
   getPlateSelectors,
   insertNodes,
-  TNode,
   usePlateEditorRef
 } from '@udecode/plate'
 import { NodeEntry, Transforms } from 'slate'
-import { useContentStore } from '../../../store/useContentStore'
-import { IpcAction } from '../../../data/IpcAction'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { QuickLink, WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
+import useBlockStore, { ContextMenuActionType } from '../../../store/useBlockStore'
+
 import { AppType } from '../../../hooks/useInitialize'
-import { useNodes } from '../../../hooks/useNodes'
+import { IpcAction } from '../../../data/IpcAction'
+import Modal from 'react-modal'
 import { NodeEditorContent } from '../../../types/Types'
+import React from 'react'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { defaultContent } from '../../../data/Defaults/baseData'
-import { mog } from '../../../utils/lib/helper'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
-import { useDataSaverFromContent } from '../Saver'
+import { mog } from '../../../utils/lib/helper'
 import { updateIds } from '../../../utils/dataTransform'
+import { useContentStore } from '../../../store/useContentStore'
+import { useDataSaverFromContent } from '../Saver'
+import { useLinks } from '../../../hooks/useLinks'
+import { useNodes } from '../../../hooks/useNodes'
 
 const BlockModal = () => {
   const blocksFromStore = useBlockStore((store) => store.blocks)
@@ -90,22 +90,22 @@ const BlockModal = () => {
       insertNodes(editor, { type: ELEMENT_PARAGRAPH, id: generateTempId(), children: [{ text: '' }] }, { at: [0] })
   }
 
-  const onNodeCreate = (path: string): void => {
+  const onNodeCreate = (quickLink: QuickLink): void => {
     const editorBlocks = getEditorBlocks()
-    const blocksContent = getContentFromBlocks(path, editorBlocks, false)
+    const blocksContent = getContentFromBlocks(quickLink.value, editorBlocks, false)
 
     deleteContentBlocks(editorBlocks)
     setIsModalOpen(undefined)
     setIsBlockMode(false)
 
-    addNode({ ilink: path, showAlert: true }, (node) => {
+    addNode({ ilink: quickLink.value, showAlert: true }, (node) => {
       saveEditorValueAndUpdateStores(node.nodeid, blocksContent)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
     })
   }
 
-  const onNodeSelect = (path: string) => {
-    const nodeid = getUidFromNodeId(path)
+  const onNodeSelect = (quickLink: QuickLink) => {
+    const nodeid = getUidFromNodeId(quickLink.value)
     const editorBlocks = getEditorBlocks()
     const content = getContentFromBlocks(nodeid, editorBlocks)
 

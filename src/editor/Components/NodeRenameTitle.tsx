@@ -1,18 +1,19 @@
-import Tippy from '@tippyjs/react'
+import { QuickLink, WrappedNodeSelect } from '../../components/mex/NodeSelect/NodeSelect'
 import React, { useEffect, useState } from 'react'
+
+import { Button } from '../../style/Buttons'
+import { Input } from '../../style/Form'
+import { StyledInputWrapper } from '../../components/mex/NodeSelect/NodeSelect.styles'
+import Tippy from '@tippyjs/react'
+import { doesLinkRemain } from '../../components/mex/Refactor/doesLinkRemain'
+import { isReserved } from '../../utils/lib/paths'
 import { mog } from '../../utils/lib/helper'
 import styled from 'styled-components'
-import { WrappedNodeSelect } from '../../components/mex/NodeSelect/NodeSelect'
-import { StyledInputWrapper } from '../../components/mex/NodeSelect/NodeSelect.styles'
-import { doesLinkRemain } from '../../components/mex/Refactor/doesLinkRemain'
+import { useEditorStore } from '../../store/useEditorStore'
 import { useLinks } from '../../hooks/useLinks'
 import { useNavigation } from '../../hooks/useNavigation'
 import { useRefactor } from '../../hooks/useRefactor'
-import { useEditorStore } from '../../store/useEditorStore'
 import { useRenameStore } from '../../store/useRenameStore'
-import { Button } from '../../style/Buttons'
-import { Input } from '../../style/Form'
-import { isReserved } from '../../utils/lib/paths'
 
 const Wrapper = styled.div`
   position: relative;
@@ -94,15 +95,15 @@ const NodeRenameTitle = () => {
     setEditable(false)
   }
 
-  const handleToChange = (newValue: string) => {
-    if (newValue) {
-      setTo(newValue)
+  const handleToChange = (newValue: QuickLink) => {
+    if (newValue.value) {
+      setTo(newValue.value)
     }
   }
 
-  const handleToCreate = (inputValue: string) => {
-    if (inputValue) {
-      setTo(inputValue)
+  const handleToCreate = (inputValue: QuickLink) => {
+    if (inputValue.value) {
+      setTo(inputValue.value)
     }
   }
 

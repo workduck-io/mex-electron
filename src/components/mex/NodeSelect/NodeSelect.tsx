@@ -30,52 +30,72 @@ import useDataStore from '../../../store/useDataStore'
 import { useDebouncedCallback } from 'use-debounce'
 import { useLinks } from '../../../hooks/useLinks'
 import { useRecentsStore } from '../../../store/useRecentsStore'
+import { useSnippetStore } from '../../../store/useSnippetStore'
 
-export type ComboItem = {
+export type QuickLink = {
   // Text to be shown in the combobox list
   text: string
 
   // Value of the item. In this case NodeId
   value: string
 
-  // Does it 'exist' or is it 'new'
-  type: string
+  // Does it 'exist' or is it QuickLinkStatus.new
+  status: QuickLinkStatus
+
+  type?: QuickLinkType
 
   // Unique identifier
-  // Not present if the node is not yet created i.e. 'new'
+  // Not present if the node is not yet created i.e. QuickLinkStatus.new
   nodeid?: string
 
   icon?: string
 }
 
-export const createComboItem = (path: string, nodeid: string, icon?: string): ComboItem => ({
-  text: path,
-  value: path,
-  type: 'exists',
-  nodeid,
-  icon
+export enum QuickLinkType {
+  ilink,
+  snippet,
+  flow
+}
+
+enum QuickLinkStatus {
+  new,
+  exists
+}
+
+export const makeQuickLink = (
+  title: string,
+  options: { nodeid: string; type?: QuickLinkType; icon?: string }
+): QuickLink => ({
+  text: title,
+  value: title,
+  type: options.type ?? QuickLinkType.ilink,
+  status: QuickLinkStatus.exists,
+  nodeid: options.nodeid,
+  icon: options.icon
 })
 
-export const createNewComboItem = (path: string): ComboItem => ({
+export const createNewQuickLink = (path: string, type: QuickLinkType = QuickLinkType.ilink): QuickLink => ({
   text: `Create new: ${path}`,
   value: path,
-  type: 'new'
+  type,
+  status: QuickLinkStatus.new
 })
 
 interface NodeSelectProps {
-  handleSelectItem: (path: string) => void
-  handleCreateItem?: (path: string) => void
+  handleSelectItem: (item: QuickLink) => void
+  handleCreateItem?: (item: QuickLink) => void
   id?: string
   name?: string
   disabled?: boolean
   inputRef?: any
+  showAll?: boolean
   prefillRecent?: boolean
   menuOpen?: boolean
   autoFocus?: boolean
   defaultValue?: string | undefined
   placeholder?: string
 
-  /** Show icon highlight for whether an option has been selected */
+  /** Show icon highlig‸ht for whether an option has been selected */
   highlightWhenSelected?: boolean
 
   /** disallow input if reserved */
@@ -95,8 +115,8 @@ interface NodeSelectProps {
 }
 
 interface NodeSelectState {
-  inputItems: ComboItem[]
-  selectedItem: ComboItem | null
+  inputItems: QuickLink[]
+  selectedItem: QuickLink | null
   reserved: boolean
   clash: boolean
 }
@@ -112,6 +132,7 @@ function NodeSelect({
   menuOpen,
   defaultValue,
   placeholder,
+  showAll,
   disabled,
   highlightWhenSelected,
   iconHighlight,
@@ -133,18 +154,32 @@ function NodeSelect({
     clash: false
   })
 
-  const setInputItems = (inputItems: ComboItem[]) => setNodeSelectState((state) => ({ ...state, inputItems }))
+  const setInputItems = (inputItems: QuickLink[]) => setNodeSelectState((state) => ({ ...state, inputItems }))
 
-  const setSelectedItem = (selectedItem: ComboItem | null) =>
+  const setSelectedItem = (selectedItem: QuickLink | null) =>
     setNodeSelectState((state) => ({ ...state, selectedItem }))
 
   const { getNodeIdFromUid, getUidFromNodeId } = useLinks()
 
-  const getILinks = () => {
-    const rawLinks = useDataStore.getState().ilinks
-    if (!disallowReserved) return rawLinks.map((l) => createComboItem(l.path, l.nodeid, l.icon))
-    const fLinks = rawLinks.filter((l) => !isReserved(l.path))
-    return fLinks.map((l) => createComboItem(l.path, l.nodeid, l.icon))
+  const getQuickLinks = () => {
+    const ilinks = useDataStore.getState().ilinks
+    const snippets = useSnippetStore.getState().snippets
+
+    // if (!disallowReserved) {
+    //   return ilinks.map((l) => makeQuickLink(l.path, { nodeid: l.nodeid, icon: l.icon }))
+    // }
+
+    const fLinks = disallowReserved ? ilinks.filter((l) => !isReserved(l.path)) : ilinks
+
+    const mLinks = fLinks.map((l) => makeQuickLink(l.path, { nodeid: l.nodeid, icon: l.icon }))
+
+    if (!showAll) return mLinks
+
+    const mSnippets = snippets.map((s) =>
+      makeQuickLink(s.title, { nodeid: s.id, type: QuickLinkType.snippet, icon: 'ri:quill-pen-line' })
+    )
+
+    return [...mLinks, ...mSnippets]
   }
 
   const reset = () =>
@@ -155,7 +190,7 @@ function NodeSelect({
       clash: false
     })
 
-  const ilinks = getILinks()
+  const quickLinks = getQuickLinks()
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)
 
@@ -163,7 +198,7 @@ function NodeSelect({
     .reverse()
     .map((nodeid) => {
       const path = getNodeIdFromUid(nodeid)
-      return createComboItem(path, nodeid)
+      return makeQuickLink(path, { nodeid })
     })
     .filter((i) => i.text)
 
@@ -173,16 +208,17 @@ function NodeSelect({
   const getNewItems = (inputValue: string) => {
     // const newItems =  ilinks.filter((item) => item.text.toLowerCase().startsWith(inputValue.toLowerCase()))
     // mog('Slelected', { inputValue })
+
     if (inputValue !== '') {
-      const newItems = fuzzySearch(ilinks, inputValue, { keys: ['text'] })
+      const newItems = fuzzySearch(quickLinks, inputValue, { keys: ['text'] })
       if (
         !isClash(
           inputValue,
-          ilinks.map((l) => l.value)
+          quickLinks.map((l) => l.value)
         )
       ) {
-        if (handleCreateItem && isNew(inputValue, ilinks) && !isReserved(inputValue)) {
-          const comboItem = createNewComboItem(inputValue)
+        if (handleCreateItem && isNew(inputValue, quickLinks) && !isReserved(inputValue)) {
+          const comboItem = createNewQuickLink(inputValue)
           if (createAtTop) {
             newItems.unshift(comboItem)
           } else newItems.push(comboItem)
@@ -190,7 +226,7 @@ function NodeSelect({
       }
       return newItems
     } else {
-      return ilinks
+      return quickLinks
     }
   }
 
@@ -220,21 +256,22 @@ function NodeSelect({
     }
   })
 
-  function handleSelectedItemChange({ selectedItem }: any) {
+  function handleSelectedItemChange({ selectedItem }: { selectedItem?: QuickLink }) {
     if (selectedItem) {
       const { key, isChild } = withoutContinuousDelimiter(selectedItem.value)
       mog('Handling the selected item change', { selectedItem, key, isChild })
+
       onReverseClashAction({
         path: key,
         onSuccess: () => {
-          if (selectedItem.type === 'new' && key && !isChild) {
+          if (selectedItem.status === QuickLinkStatus.new && key && !isChild) {
             setSelectedItem({ ...selectedItem, text: key, value: key })
             setInputValue(key)
-            handleCreateItem(key)
+            handleCreateItem({ ...selectedItem, text: key, value: key })
           } else {
             setSelectedItem(selectedItem)
             setInputValue(selectedItem.value)
-            handleSelectItem(selectedItem.value)
+            handleSelectItem(selectedItem)
           }
           closeMenu()
         },
@@ -253,16 +290,16 @@ function NodeSelect({
   const onKeyUp = (event) => {
     if (event.key === 'Enter') {
       if (inputItems[0] && highlightedIndex < 0 && selectedItem === null && isOpen) {
-        const defaultItem = inputItems[0]
+        const quickLink: QuickLink = inputItems[0]
         onReverseClashAction({
-          path: defaultItem.value,
+          path: quickLink.value,
           onSuccess: () => {
-            setInputValue(defaultItem.value)
-            setSelectedItem(defaultItem)
-            if (defaultItem.type === 'new') {
-              handleCreateItem(defaultItem.value)
+            setInputValue(quickLink.value)
+            setSelectedItem(quickLink)
+            if (quickLink.status === QuickLinkStatus.new) {
+              handleCreateItem(quickLink)
             } else {
-              handleSelectItem(defaultItem.value)
+              handleSelectItem(quickLink)
             }
             closeMenu()
           },
@@ -283,7 +320,7 @@ function NodeSelect({
     const reserved = isReserved(path)
     const clash = isClash(
       path,
-      ilinks.map((i) => i.value)
+      quickLinks.map((i) => i.value)
     )
 
     // Update if search is reserved/clash, or when reserved/clash is true
@@ -331,7 +368,7 @@ function NodeSelect({
         onSuccess: () => {
           setInputItems(newItems)
           setInputValue(defaultValue)
-          setSelectedItem(createComboItem(defaultValue, nodeid))
+          setSelectedItem(makeQuickLink(defaultValue, { nodeid }))
         },
         onReserve: (reserved) => {
           setNodeSelectState({ ...nodeSelectState, inputItems, reserved })
@@ -346,7 +383,7 @@ function NodeSelect({
       if (prefillRecent && lastOpenedItems.length > 0) {
         setInputItems(lastOpenedItems.filter((i) => i.text))
       } else {
-        setInputItems(ilinks)
+        setInputItems(quickLinks)
       }
     }
     return () => {
@@ -396,20 +433,20 @@ function NodeSelect({
             {isOpen &&
               inputItems.map((item, index) => {
                 let desc: undefined | string = undefined
-                if (item.type !== 'new') {
+                if (item.status !== QuickLinkStatus.new) {
                   const content = contents[item.nodeid]
                   if (content) desc = convertContentToRawText(content.content, ' ')
                   if (desc === '') desc = undefined
                 }
                 const icon = item.icon ? item.icon : fileList2Line
-                if (nodeSelectState.clash && disallowClash && item.type === 'new') return null
+                if (nodeSelectState.clash && disallowClash && item.status === QuickLinkStatus.new) return null
                 return (
                   <Suggestion
                     highlight={highlightedIndex === index}
                     key={`${item.value}${index}`}
                     {...getItemProps({ item, index })}
                   >
-                    <Icon width={24} icon={item.type === 'new' ? addCircleLine : icon} />
+                    <Icon width={24} icon={item.status === QuickLinkStatus.new ? addCircleLine : icon} />
                     <SuggestionContentWrapper>
                       <SuggestionText>{item.text}</SuggestionText>
                       {desc !== undefined && <SuggestionDesc>{desc}</SuggestionDesc>}
@@ -434,7 +471,7 @@ NodeSelect.defaultProps = {
   prefillRecent: false
 }
 
-export function isNew(input: string, items: Array<ComboItem>): boolean {
+export function isNew(input: string, items: Array<QuickLink>): boolean {
   return items.filter((item) => item.text === input).length === 0
 }
 
