@@ -1,14 +1,15 @@
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import NodeSelect, { QuickLink, QuickLinkType } from '../NodeSelect/NodeSelect'
 import React, { useEffect, useState } from 'react'
+import { StyledCombobox, StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
+import styled, { css } from 'styled-components'
 
 import { AppType } from '../../../hooks/useInitialize'
+import { Input } from '../../../style/Form'
 import { IpcAction } from '../../../data/IpcAction'
 import Modal from 'react-modal'
-import { StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { mog } from '../../../utils/lib/helper'
-import styled from 'styled-components'
 import tinykeys from 'tinykeys'
 import toast from 'react-hot-toast'
 import { useApi } from '../../../apis/useSaveApi'
@@ -25,22 +26,29 @@ const StyledModal = styled(Modal)`
 `
 
 const Brackets = styled.span`
-  font-size: 3.5rem;
-  margin-bottom: 0.5rem;
-  padding: 0 0.5rem;
+  padding: 0.6rem;
+  font-size: 1.6rem;
+  background-color: ${(props) => props.theme.colors.form.input.bg};
   color: ${(props) => props.theme.colors.text.disabled};
-  opacity: 0.3;
-  font-weight: 600;
+  font-weight: 500;
+  opacity: 0.4;
 `
 
 const InputWrapper = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
+
+  ${StyledCombobox} {
+    ${Input} {
+      border-radius: 0;
+      padding: ${(props) => props.theme.spacing.medium} 8px;
+    }
+  }
 `
 
 const Lookup = () => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const [tempClose, setTempClose] = useState(false)
   const isOnboarding = useOnboard((s) => s.isOnboarding)
   const setStep = useOnboard((s) => s.setStep)
