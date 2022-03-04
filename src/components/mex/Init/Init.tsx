@@ -7,7 +7,7 @@ import { AppleNote } from '../../../utils/importers/appleNotes'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import config from '../../../apis/config'
-import { convertDataToRawText } from '../../../utils/search/localSearch'
+import { convertDataToIndexable } from '../../../utils/search/localSearch'
 import { CreateSearchIndexData, flexIndexKeys } from '../../../utils/search/flexsearch'
 import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
@@ -36,6 +36,7 @@ import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
 import { useSaver } from '../../../editor/Components/Saver'
 import { useSyncData } from '../../../hooks/useSyncData'
 import { useUpdater } from '../../../hooks/useUpdater'
+import { diskIndex, indexNames, indexKeys } from '../../../data/search'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -89,14 +90,9 @@ const Init = () => {
           return { fileData, indexData }
         })
         .then(({ fileData, indexData }) => {
-          const initList = convertDataToRawText(fileData)
+          const initList = convertDataToIndexable(fileData)
           mog('Initializaing Search Index', { indexData, initList })
-          const initIndexData: CreateSearchIndexData = {
-            node: initList,
-            snippet: null,
-            archive: null
-          }
-          const index = initFlexSearchIndex(initIndexData, indexData)
+          const index = initFlexSearchIndex(initList, indexData)
           return fileData
         })
         .then((d) => {
@@ -161,12 +157,16 @@ const Init = () => {
     })
     ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, () => {
       fetchIndexLocalStorage()
-      const searchIndex = {}
-      flexIndexKeys.forEach((key) => {
-        const t = localStorage.getItem(key)
-        if (t === null) searchIndex[key] = ''
-        else searchIndex[key] = t
-      })
+      const searchIndex = Object.entries(indexNames).reduce((p, c) => {
+        const currIdx = null
+        indexKeys[c[0]].forEach((key) => {
+          const t = localStorage.getItem(`${c[0]}.${key}`)
+          if (t === null) currIdx[key] = ''
+          else currIdx[key] = t
+        })
+
+        return { ...p, [c[0]]: currIdx }
+      }, diskIndex)
       ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndex })
     })
     ipcRenderer.on(IpcAction.CREATE_NEW_NODE, () => {

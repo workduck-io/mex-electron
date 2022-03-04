@@ -1,6 +1,8 @@
 import { Document } from 'flexsearch'
+
 import { GenericSearchResult, SearchIndex } from '../../store/useSearchStore'
 import { GenericSearchData, NodeSearchData } from '../../types/data'
+import { indexNames } from '../../data/search'
 
 export interface CreateSearchIndexData {
   node: GenericSearchData[] | null
@@ -8,11 +10,12 @@ export interface CreateSearchIndexData {
   archive: GenericSearchData[] | null
 }
 
-export const createSearchIndex = (data: CreateSearchIndexData, indexData: any): SearchIndex => {
+export const createSearchIndex = (data: CreateSearchIndexData, indexData: Record<indexNames, any>): SearchIndex => {
+  // Pass options corrwectly depending on what fields are indexed ([title, text] for now)
   return {
-    node: data.node ? createGenricSearchIndex(data.node, indexData) : null,
-    snippet: data.snippet ? createGenricSearchIndex(data.snippet, indexData) : null,
-    archive: data.archive ? createGenricSearchIndex(data.snippet, indexData) : null
+    node: createGenricSearchIndex(data.node, indexData.node),
+    snippet: createGenricSearchIndex(data.snippet, indexData.snippet),
+    archive: createGenricSearchIndex(data.snippet, indexData.archive)
   }
 }
 
@@ -43,6 +46,7 @@ export const createGenricSearchIndex = (
   const index = Document(options)
 
   if (indexData) {
+    // When using a prebuilt index read from disk present in the indexData parameter
     // console.log('Using Prebuilt Index!')
     Object.entries(indexData).forEach(([key, data]) => {
       // console.log('Key is: ', key)

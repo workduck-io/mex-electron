@@ -1,6 +1,7 @@
 // import { FileData, NodeSearchData } from '../Types/data'
 
-import { FileData, GenericSearchData, NodeSearchData } from '../../types/data'
+import { indexNames, diskIndex } from '../../data/search'
+import { FileData, GenericSearchData } from '../../types/data'
 import { mog } from '../lib/helper'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,20 +24,58 @@ export const convertEntryToRawText = (nodeUID: string, entry: any[], title = '')
   return { id: nodeUID, title, text: convertContentToRawText(entry, ' ') }
 }
 
-export const convertDataToRawText = (data: FileData): GenericSearchData[] => {
-  const result: GenericSearchData[] = []
-  const titleNodeMap = new Map<string, string>()
-  data.ilinks.forEach((entry) => {
-    titleNodeMap.set(entry.nodeid, entry.path)
-  })
+export const convertDataToIndexable = (data: FileData): Record<indexNames, GenericSearchData[]> => {
+  const result: Record<indexNames, GenericSearchData[]> = Object.entries(indexNames).reduce((p, c) => {
+    const idxResult = []
+    const titleNodeMap = new Map<string, string>()
 
-  Object.entries(data.contents).forEach(([k, v]) => {
-    if (v.type === 'editor' && k !== '__null__') {
-      const temp: GenericSearchData = convertEntryToRawText(k, v.content)
-      temp.title = titleNodeMap.get(k)
-      result.push(temp)
+    switch (c[0]) {
+      case indexNames.node: {
+        data.ilinks.forEach((entry) => {
+          titleNodeMap.set(entry.nodeid, entry.path)
+        })
+        break
+      }
+
+      case indexNames.archive: {
+        data.archive.forEach((entry) => {
+          titleNodeMap.set(entry.nodeid, entry.path)
+        })
+        break
+      }
+
+      case indexNames.snippet: {
+        data.snippets.forEach((snippet) => {
+          titleNodeMap.set(snippet.id, snippet.title)
+        })
+        break
+      }
+
+      default: {
+        throw new Error('No corresponding index name found')
+      }
     }
-  })
+
+    if (c[0] === indexNames.archive || c[0] === indexNames.node) {
+      Object.entries(data.contents).forEach(([k, v]) => {
+        if (v.type === 'editor' && k !== '__null__') {
+          const temp: GenericSearchData = titleNodeMap.has(k) && convertEntryToRawText(k, v.content)
+          temp.title = titleNodeMap.get(k)
+          idxResult.push(temp)
+        }
+      })
+    } else if (c[0] === indexNames.snippet) {
+      Object.entries(data.snippets).forEach(([k, v]) => {
+        const temp: GenericSearchData = convertEntryToRawText(k, v.content)
+        temp.title = titleNodeMap.get(k)
+        idxResult.push(temp)
+      })
+    } else {
+      throw new Error('No corresponding index name found')
+    }
+
+    return { ...p, [c[0]]: idxResult }
+  }, diskIndex)
 
   return result
 }

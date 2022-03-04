@@ -5,7 +5,7 @@ import React, { memo, useEffect, useState } from 'react'
 import { FileData } from '../../../types/data'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { convertDataToRawText } from '../../../utils/search/localSearch'
+import { convertDataToIndexable } from '../../../utils/search/localSearch'
 import { getHtmlString } from '../../../components/spotlight/Source'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { getPlateSelectors } from '@udecode/plate'
@@ -26,7 +26,7 @@ import { CreateSearchIndexData } from '../../../utils/search/flexsearch'
 
 interface IndexAndFileData {
   fileData: FileData
-  indexData: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  indexData: Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 const GlobalListener = memo(() => {
@@ -114,15 +114,9 @@ const GlobalListener = memo(() => {
       const { fileData, indexData } = arg
       const editorID = getNewDraftKey()
       init(fileData, editorID, AppType.SPOTLIGHT)
-      const initList = convertDataToRawText(fileData)
+      const initList = convertDataToIndexable(fileData)
       mog('Initializaing Search Index', { indexData, initList })
-      const initIndexData: CreateSearchIndexData = {
-        node: initList,
-        snippet: null,
-        archive: null
-      }
-      // const index = initFlexSearchIndex(initIndexData, indexData)
-      initializeSearchIndex(initIndexData, indexData)
+      initializeSearchIndex(initList, indexData)
     })
 
     ipcRenderer.on(IpcAction.SPOTLIGHT_BUBBLE, (_event, arg) => {
