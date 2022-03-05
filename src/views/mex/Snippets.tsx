@@ -152,9 +152,9 @@ const Snippets = () => {
 
   const RenderPreview = ({ item }: RenderPreviewProps<GenericSearchResult>) => {
     // mog('RenderPreview', { item })
-    const snip = getSnippet(item.id)
-    const icon = quillPenLine
     if (item) {
+      const snip = getSnippet(item.id)
+      const icon = quillPenLine
       // const edNode = { ...node, title: node.path, id: node.nodeid }
       return (
         <SplitSearchPreviewWrapper id={`splitSnippetSearchPreview_for_${item.id}`}>
