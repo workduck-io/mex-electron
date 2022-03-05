@@ -31,6 +31,8 @@ export interface RenderPreviewProps<Item> extends RenderSplitProps {
   item?: Item
 }
 
+// export interface RenderStartCard extends RenderSplitProps {}
+
 export interface RenderItemProps<Item> extends Partial<RenderSplitProps> {
   item: Item
   selected: boolean
@@ -131,6 +133,12 @@ interface SearchViewProps<Item> {
   RenderNotFound?: () => JSX.Element
 
   /**
+   * Render Preview of the selected item in list view
+   * @param item - Selected Item
+   */
+  RenderStartCard?: () => JSX.Element
+
+  /**
    * Search Options
    */
   options?: Partial<SearchOptions>
@@ -150,6 +158,7 @@ const SearchView = <Item,>({
   RenderItem,
   RenderPreview,
   RenderNotFound,
+  RenderStartCard,
   options
 }: SearchViewProps<Item>) => {
   const [searchState, setSS] = useState<SearchViewState<Item>>({
@@ -276,6 +285,7 @@ const SearchView = <Item,>({
 
   const ResultsView = (
     <Results key={`ResultForSearch_${id}`} view={view}>
+      {view === View.Card && <RenderStartCard />}
       {result.map((c, i) => {
         // if (i === selected) mog('selected', { c, i })
         return (

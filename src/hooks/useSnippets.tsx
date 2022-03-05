@@ -28,6 +28,14 @@ export const useSnippets = () => {
     }, {})
   }
 
+  const getSnippet = (id: string) => {
+    const snippets = useSnippetStore.getState().snippets
+    const snippet = snippets.filter((c) => c.id === id)
+
+    if (snippet.length > 0) return snippet[0]
+    return undefined
+  }
+
   // Replacer that will provide new fresh and different content each time
   const getSnippetContent = (command: string) => {
     const snippets = useSnippetStore.getState().snippets
@@ -50,7 +58,7 @@ export const useSnippets = () => {
     updateDoc('snippet', convertEntryToRawText(snippet.id, snippet.content, snippet.title))
   }
 
-  return { getSnippets, getSnippetContent, getSnippetsConfigs, addSnippet, updateSnippet, deleteSnippet }
+  return { getSnippets, getSnippet, getSnippetContent, getSnippetsConfigs, addSnippet, updateSnippet, deleteSnippet }
 }
 
 export const extractSnippetCommands = (snippets: Snippet[]): string[] => {
