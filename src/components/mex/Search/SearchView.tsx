@@ -172,7 +172,7 @@ const SearchView = <Item,>({
     mog('setview', { view })
     setSS((s) => ({ ...s, view }))
   }
-  const setResult = (result: Item[], searchTerm: string) => setSS((s) => ({ ...s, result, searchTerm }))
+  const setResult = (result: Item[], searchTerm: string) => setSS((s) => ({ ...s, result, searchTerm, selected: -1 }))
   const clearSearch = () => setSS((s) => ({ ...s, result: [], searchTerm: '', selected: -1 }))
   const { selected, searchTerm, result, view } = searchState
 
@@ -221,11 +221,14 @@ const SearchView = <Item,>({
   }, [selected])
 
   const selectNext = () => {
-    setSelected((selected + 1) % result.length)
+    const newSelected = (selected + 1) % result.length
+    if (result.length === 0 || (result.length === 1 && selected === newSelected)) return
+    setSelected(newSelected)
   }
 
   const selectPrev = () => {
     const newSelected = (result.length + selected - 1) % result.length
+    if (result.length === 0 || (result.length === 1 && selected === newSelected)) return
     // mog('selectPrev', { selected, result, newSelected })
     setSelected(newSelected)
   }
@@ -292,7 +295,9 @@ const SearchView = <Item,>({
           <RenderItem
             view={view}
             item={c}
-            onMouseEnter={() => setSelected(i)}
+            onMouseEnter={() => {
+              if (selected !== i) setSelected(i)
+            }}
             onClick={() => {
               onSelect(c)
             }}

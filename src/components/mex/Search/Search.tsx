@@ -119,13 +119,14 @@ const Search = () => {
   const RenderItem = React.forwardRef(BaseItem)
 
   const RenderPreview = ({ item }: RenderPreviewProps<GenericSearchResult>) => {
-    // mog('RenderPreview', { item })
+    mog('RenderPreview', { item })
     if (item) {
       const con = contents[item.id]
       const content = con ? con.content : defaultContent.content
       const node = getNode(item.id)
       const icon = node?.icon ?? fileList2Line
       const edNode = { ...node, title: node.path, id: node.nodeid }
+      mog('RenderPreview', { item, content, node })
       return (
         <SplitSearchPreviewWrapper id={`splitSearchPreview_for_${item.id}`}>
           <Title>
@@ -142,6 +143,7 @@ const Search = () => {
       return (
         <SplitSearchPreviewWrapper>
           <Title></Title>
+          <EditorPreviewRenderer content={defaultContent.content} editorId={`SearchPreview_editor_EMPTY`} />
         </SplitSearchPreviewWrapper>
       )
   }
