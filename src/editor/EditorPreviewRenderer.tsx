@@ -1,8 +1,9 @@
 import { Plate } from '@udecode/plate'
-import React from 'react'
+import React, { useState } from 'react'
 import { EditorStyles } from '../style/Editor'
 import generatePlugins from './Plugins/plugins'
 import { editorPreviewComponents } from './Components/components'
+import { mog } from '../utils/lib/helper'
 
 interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -22,9 +23,11 @@ const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps
   // We get memoized plugins
   const plugins = generatePlugins(editorPreviewComponents, { exclude: { dnd: true } })
 
+  mog('content rendering ', { content, editorId })
+
   return (
     <EditorStyles>
-      <Plate id={editorId} editableProps={editableProps} value={content} plugins={plugins}></Plate>
+      <Plate id={editorId} editableProps={editableProps} value={content} plugins={plugins} />
     </EditorStyles>
   )
 }

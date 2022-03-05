@@ -1,27 +1,18 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import { SeePreview, StyledPreview } from './styled'
 
-import { Editor } from '../../../editor/Editor'
 import { Icon } from '@iconify/react'
 import { ItemActionType } from '../SearchResults/types'
-import { NodeProperties } from '../../../store/useEditorStore'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import downIcon from '@iconify-icons/ph/arrow-down-bold'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
-import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
-import { openNodeInMex } from '../../../utils/combineSources'
-import { spotlightShortcuts } from '../Shortcuts/list'
-import tinykeys from 'tinykeys'
-import { useContentStore } from '../../../store/useContentStore'
-import { useHelpStore } from '../../../store/useHelpStore'
-import { useKeyListener } from '../../../hooks/useShortcutListener'
-import useOnboard from '../../../store/useOnboarding'
-import { useSaveChanges } from '../Search/useSearchProps'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
-import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
+import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpring } from 'react-spring'
+import PreviewContainer from './PreviewContainer'
+import { useSnippetStore } from '../../../store/useSnippetStore'
+import { mog } from '../../../utils/lib/helper'
+import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 
 export type PreviewType = {
   text: string
@@ -31,31 +22,23 @@ export type PreviewType = {
 
 export type PreviewProps = {
   preview: PreviewType
-  node: NodeProperties
+  nodeId: string
 }
 
 export const getDefaultContent = () => ({ ...defaultContent.content, id: generateTempId() })
 
-const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
-  // * Store
-  const getContent = useContentStore((state) => state.getContent)
-  const showSource = useSpotlightSettingsStore((state) => state.showSource)
-  const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
-  const previewContent = useSpotlightEditorStore((state) => state.nodeContent)
-
-  const isOnboarding = useOnboard((s) => s.isOnboarding)
-  const changeOnboarding = useOnboard((s) => s.changeOnboarding)
-  const shortcuts = useHelpStore((state) => state.shortcuts)
-  const { shortcutDisabled } = useKeyListener()
-
-  const { saveIt } = useSaveChanges()
+const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
-  const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
 
   // * Custom hooks
   const ref = useRef<HTMLDivElement>()
   const { selection, searchResults, activeIndex } = useSpotlightContext()
-  const deserializedContentNodes = getDeserializeSelectionToNodes(preview, normalMode)
+  const isSnippet = searchResults[activeIndex]?.id?.startsWith('SNIPPET_')
+  const snippets = useSnippetStore((store) => store.snippets)
+
+  const snippet = useMemo(() => {
+    return snippets.find((s) => s.id === searchResults[activeIndex]?.id)
+  }, [activeIndex, searchResults])
 
   const springProps = useMemo(() => {
     const style = { width: '45%', padding: '0' }
@@ -64,7 +47,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
       style.width = '100%'
     }
 
-    if (searchResults[activeIndex]?.type !== ItemActionType.ilink) {
+    if (searchResults[activeIndex]?.category !== CategoryType.quicklink) {
       style.width = '0%'
     }
 
@@ -73,52 +56,16 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
 
   const animationProps = useSpring(springProps)
 
-  useEffect(() => {
-    if (preview.isSelection && deserializedContentNodes) {
-      const deserializedContent = [{ children: deserializedContentNodes }]
-      const activeNodeContent = getContent(node.nodeid)?.content ?? []
-
-      setNodeContent([...activeNodeContent, ...deserializedContent])
-    }
-  }, [preview, showSource, node, normalMode])
-
   const handleScrollToBottom = () => {
     ref.current.scrollTop = ref.current.scrollHeight
   }
 
-  const handleSaveContent = (saveAndClose: boolean, removeHighlight?: boolean) => {
-    saveIt({ saveAndClose, removeHighlight })
-
-    if (isOnboarding) {
-      openNodeInMex(node.nodeid)
-      changeOnboarding(false)
-    }
-  }
-
-  useEffect(() => {
-    const unsubscribe = tinykeys(window, {
-      [shortcuts.save.keystrokes]: (event) => {
-        event.preventDefault()
-        if (!shortcutDisabled && !normalMode) handleSaveContent(true)
-      },
-      [spotlightShortcuts.save.keystrokes]: (event) => {
-        event.preventDefault()
-        if (!shortcutDisabled && !normalMode) handleSaveContent(true, true)
-      }
-    })
-
-    return () => {
-      unsubscribe()
-    }
-  }, [normalMode, handleSaveContent])
-
   return (
     <StyledPreview
-      key={`PreviewSpotlightEditor${node.nodeid}`}
+      key={`PreviewSpotlightEditor${!isSnippet ? nodeId : snippet.id}`}
       style={animationProps}
       ref={ref}
       preview={normalMode}
-      onClick={() => setNormalMode(false)}
       data-tour="mex-quick-capture-preview"
     >
       {selection && (
@@ -126,14 +73,11 @@ const Preview: React.FC<PreviewProps> = ({ preview, node }) => {
           <Icon icon={downIcon} />
         </SeePreview>
       )}
-      <Editor
-        autoFocus={!normalMode}
-        focusAtBeginning={!normalMode}
-        options={{ exclude: { dnd: true } }}
-        readOnly={normalMode}
-        content={previewContent ?? getDefaultContent()}
-        editorId={node.nodeid}
-      />
+      {isSnippet ? (
+        <EditorPreviewRenderer content={snippet.content} editorId={snippet.id} />
+      ) : (
+        <PreviewContainer nodeId={nodeId} preview={preview} />
+      )}
     </StyledPreview>
   )
 }

@@ -9,6 +9,13 @@ export const initActions: Array<ListItemType> = [
     id: '1',
     category: CategoryType.action,
     type: ItemActionType.search,
+    shortcut: {
+      search: {
+        category: 'action',
+        title: 'to search',
+        keystrokes: 'Enter'
+      }
+    },
     title: 'Search Twitter',
     description: 'Search on Twitter',
     extras: {
@@ -31,6 +38,13 @@ export const initActions: Array<ListItemType> = [
     id: '2',
     category: CategoryType.action,
     type: ItemActionType.open,
+    shortcut: {
+      open: {
+        title: 'to open',
+        category: 'action',
+        keystrokes: 'Enter'
+      }
+    },
     title: 'Open Gmail',
     description: 'Open your default Gmail Account',
     extras: {
@@ -44,6 +58,13 @@ export const initActions: Array<ListItemType> = [
     title: 'New Google Doc',
     description: 'Create new empty Google Doc with default Google Account',
     type: ItemActionType.open,
+    shortcut: {
+      open: {
+        title: 'to open',
+        category: 'action',
+        keystrokes: 'Enter'
+      }
+    },
     icon: 'logos:google-drive',
     extras: {
       base_url: 'https://docs.new'
@@ -55,6 +76,13 @@ export const initActions: Array<ListItemType> = [
     title: 'New Google Sheet',
     description: 'Create new empty Google Sheet with default Google Account',
     type: ItemActionType.open,
+    shortcut: {
+      open: {
+        title: 'to open',
+        category: 'action',
+        keystrokes: 'Enter'
+      }
+    },
     icon: 'logos:google-drive',
     extras: {
       base_url: 'https://sheets.new'
@@ -66,6 +94,13 @@ export const initActions: Array<ListItemType> = [
     title: 'New Google Slides',
     description: 'Create new empty Google Slides with default Google Account',
     type: ItemActionType.open,
+    shortcut: {
+      open: {
+        title: 'to open',
+        category: 'action',
+        keystrokes: 'Enter'
+      }
+    },
     icon: 'logos:google-drive',
     extras: {
       base_url: 'https://slides.new'
@@ -77,6 +112,13 @@ export const initActions: Array<ListItemType> = [
     title: 'New GitHub Gist',
     description: 'Create new GitHub Gist',
     type: ItemActionType.open,
+    shortcut: {
+      open: {
+        title: 'to open',
+        category: 'action',
+        keystrokes: 'Enter'
+      }
+    },
     icon: 'logos:github-icon',
     extras: {
       base_url: 'https://gist.new'
@@ -88,6 +130,13 @@ export const initActions: Array<ListItemType> = [
     title: 'New GitHub Repo',
     description: 'Create new GitHub Repository',
     type: ItemActionType.open,
+    shortcut: {
+      open: {
+        title: 'to open',
+        category: 'action',
+        keystrokes: 'Enter'
+      }
+    },
     icon: 'logos:github-icon',
     extras: {
       base_url: 'https://repo.new'
@@ -99,6 +148,13 @@ export const initActions: Array<ListItemType> = [
     title: 'New Figma File',
     description: 'Create new empty Figma File',
     type: ItemActionType.open,
+    shortcut: {
+      open: {
+        title: 'to open',
+        category: 'action',
+        keystrokes: 'Enter'
+      }
+    },
     icon: 'logos:figma',
     extras: {
       base_url: 'https://figma.new'
@@ -110,6 +166,13 @@ export const initActions: Array<ListItemType> = [
     title: 'Search Gmail',
     description: 'Search within your default Gmail Account',
     type: ItemActionType.search,
+    shortcut: {
+      search: {
+        category: 'action',
+        title: 'to search',
+        keystrokes: 'Enter'
+      }
+    },
     icon: 'logos:google-drive',
     extras: {
       base_url: 'https://mail.google.com/mail/#search/'
@@ -121,6 +184,13 @@ export const initActions: Array<ListItemType> = [
     title: 'Search Wikipedia',
     description: 'Search on Wikipedia',
     type: ItemActionType.search,
+    shortcut: {
+      search: {
+        category: 'action',
+        title: 'to search',
+        keystrokes: 'Enter'
+      }
+    },
     icon: 'logos:xwiki',
     extras: {
       base_url: 'http://en.wikipedia.org/?search='
@@ -132,6 +202,13 @@ export const initActions: Array<ListItemType> = [
     title: 'Search YouTube',
     description: 'Search on YouTube',
     type: ItemActionType.search,
+    shortcut: {
+      search: {
+        category: 'action',
+        title: 'to search',
+        keystrokes: 'Enter'
+      }
+    },
     icon: 'logos:youtube-icon',
     extras: {
       base_url:
@@ -144,6 +221,13 @@ export const initActions: Array<ListItemType> = [
     title: 'Search Google Drive',
     description: 'Search Google Drive on default Google Account',
     type: ItemActionType.search,
+    shortcut: {
+      search: {
+        category: 'action',
+        title: 'to search',
+        keystrokes: 'Enter'
+      }
+    },
     icon: 'logos:google-drive',
     extras: {
       base_url: 'https://drive.google.com/drive/search?q='
@@ -155,6 +239,13 @@ export const initActions: Array<ListItemType> = [
     title: 'Search GitHub',
     description: 'Search on GitHub',
     type: ItemActionType.search,
+    shortcut: {
+      search: {
+        category: 'action',
+        title: 'to search',
+        keystrokes: 'Enter'
+      }
+    },
     icon: 'logos:github-icon',
     extras: {
       base_url: 'https://github.com/search?ref=opensearch&q='
@@ -166,6 +257,13 @@ export const initActions: Array<ListItemType> = [
     title: 'About Us',
     description: 'Get to know more about Workduck.io',
     type: ItemActionType.open,
+    shortcut: {
+      open: {
+        title: 'to open',
+        category: 'action',
+        keystrokes: 'Enter'
+      }
+    },
     icon: 'workduck.svg',
     extras: {
       base_url: 'https://workduck.io'

@@ -176,7 +176,7 @@ function NodeSelect({
     if (!showAll) return mLinks
 
     const mSnippets = snippets.map((s) =>
-      makeQuickLink(s.title, { nodeid: s.id, type: QuickLinkType.snippet, icon: 'ri:quill-pen-line' })
+      makeQuickLink(s.title, { nodeid: s.id, type: QuickLinkType.snippet, icon: s.icon })
     )
 
     return [...mLinks, ...mSnippets]

@@ -1,16 +1,16 @@
-import editIcon from '@iconify-icons/bx/bx-edit-alt'
-import timeIcon from '@iconify-icons/bx/bx-time-five'
-import { Icon } from '@iconify/react'
-import { transparentize } from 'polished'
-import React from 'react'
-import { ILink } from '../../../types/Types'
-import styled from 'styled-components'
-import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
-import { useLinks } from '../../../hooks/useLinks'
 import { DateFormat } from '../../../hooks/useRelativeTime'
+import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
+import { ILink } from '../../../types/Types'
+import { Icon } from '@iconify/react'
+import React from 'react'
+import editIcon from '@iconify-icons/bx/bx-edit-alt'
+import styled from 'styled-components'
+import timeIcon from '@iconify-icons/bx/bx-time-five'
+import { transparentize } from 'polished'
 import { useContentStore } from '../../../store/useContentStore'
+import { useLinks } from '../../../hooks/useLinks'
 
-const Container = styled.section`
+export const Container = styled.section`
   position: absolute;
   top: 4.5rem;
   right: 0;

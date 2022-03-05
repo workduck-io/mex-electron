@@ -3,6 +3,7 @@ import create from 'zustand'
 export interface Snippet {
   id: string
   title: string
+  icon: string
   content: any[]
 }
 

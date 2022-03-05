@@ -2,8 +2,8 @@ import { CREATE_NEW_ITEM, useSearch } from '../Home/useSearch'
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { ItemActionType, ListItemType } from '../SearchResults/types'
 import Preview, { PreviewType } from '../Preview'
-import React, { useEffect, useState } from 'react'
-import { createNodeWithUid, insertItemInArray, mog } from '../../../utils/lib/helper'
+import React, { useEffect } from 'react'
+import { createNodeWithUid, insertItemInArray } from '../../../utils/lib/helper'
 
 import { AppType } from '../../../hooks/useInitialize'
 import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
@@ -23,6 +23,7 @@ import useLoad from '../../../hooks/useLoad'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
+import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 
 export const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -31,16 +32,11 @@ export const INIT_PREVIEW: PreviewType = {
 }
 
 const Content = () => {
-  // * State
-  const lastOpenedNodes = useRecentsStore((store) => store.lastOpened)
-  const recentResearchNodes = useRecentsStore((store) => store.recentResearchNodes)
-
-  const normalMode = useSpotlightAppStore((store) => store.normalMode)
-  const { resetEditor } = useEditorActions()
-
   // * Store
   const ilinks = useDataStore((s) => s.ilinks)
-
+  const lastOpenedNodes = useRecentsStore((store) => store.lastOpened)
+  const normalMode = useSpotlightAppStore((store) => store.normalMode)
+  const recentResearchNodes = useRecentsStore((store) => store.recentResearchNodes)
   const { editorNode, setNodeContent, setPreviewEditorNode, preview, setPreview } = useSpotlightEditorStore(
     (store) => ({
       editorNode: store.node,
@@ -53,12 +49,13 @@ const Content = () => {
     })
   )
 
-  const { searchInList } = useSearch()
-
   // * Custom hooks
-  const { search, selection, activeItem, activeIndex, searchResults, setSearchResults } = useSpotlightContext()
   const { getNode } = useLoad()
+  const { searchInList } = useSearch()
+  const { resetEditor } = useEditorActions()
+  const { search, selection, activeItem, activeIndex, searchResults, setSearchResults } = useSpotlightContext()
 
+  // * For setting the results
   useEffect(() => {
     if (!activeItem?.item) {
       if (search.value) {
@@ -91,9 +88,10 @@ const Content = () => {
     // }
   }, [search.value, selection, activeItem.item, ilinks])
 
+  // * For setting the preview
   useEffect(() => {
     const resultNode = searchResults[activeIndex]
-    const isNode = resultNode?.type === ItemActionType.ilink
+    const isNode = resultNode?.type === QuickLinkType.ilink
 
     if (isNode && !activeItem.active) {
       const isNew = resultNode?.extras?.new
@@ -118,9 +116,10 @@ const Content = () => {
 
   return (
     <StyledContent>
-      <SideBar index={activeIndex} data={searchResults} />
+      <SideBar data={searchResults} />
       <ErrorBoundary onReset={() => resetEditor(AppType.SPOTLIGHT)} FallbackComponent={EditorErrorFallback}>
-        <Preview preview={preview} node={editorNode} />
+        {/* <PreviewRenderer /> */}
+        <Preview preview={preview} nodeId={editorNode.nodeid} />
       </ErrorBoundary>
     </StyledContent>
   )

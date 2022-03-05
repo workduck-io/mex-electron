@@ -12,8 +12,22 @@ import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../../store/editor.spotlight'
 import { useSpring } from 'react-spring'
 import { useVirtual } from 'react-virtual'
+import { QuickLinkType } from '../../../mex/NodeSelect/NodeSelect'
+import { appNotifierWindow } from '../../../../electron/utils/notifiers'
+import { IpcAction } from '../../../../data/IpcAction'
+import { AppType } from '../../../../hooks/useInitialize'
+import { convertContentToRawText } from '../../../../utils/search/localSearch'
+import { useSnippetStore } from '../../../../store/useSnippetStore'
+import { useContentStore } from '../../../../store/useContentStore'
+import { getPlateEditorRef, serializeHtml } from '@udecode/plate'
+import { mog } from '../../../../utils/lib/helper'
 
 export const MAX_RECENT_ITEMS = 3
+enum KEYBOARD_KEYS {
+  Enter = 'Enter',
+  ArrowUp = 'ArrowUp',
+  ArrowDown = 'ArrowDown'
+}
 
 const List = ({
   data,
@@ -44,7 +58,7 @@ const List = ({
     if (!normalMode) {
       style.width = '0%'
     }
-    if (searchResults[activeIndex]?.type !== ItemActionType.ilink) {
+    if (searchResults[activeIndex]?.category !== CategoryType.quicklink) {
       style.width = '100%'
     }
 
@@ -60,7 +74,6 @@ const List = ({
   const indexes = React.useMemo(() => groups.map((gn) => findIndex(data, (n) => n.category === gn)), [groups])
 
   const virtualizer = useVirtual({
-    // estimateSize: useCallback(() => 120, []),
     size: data?.length ?? 0,
     parentRef
   })
@@ -73,10 +86,10 @@ const List = ({
 
   useEffect(() => {
     const handler = (event) => {
-      if (event.key === 'ArrowUp') {
+      if (event.key === KEYBOARD_KEYS.ArrowUp) {
         event.preventDefault()
 
-        // * check if cmd + arrow up is pressed
+        // * check if CMD + ARROW_UP is pressed
         if (event.metaKey) {
           for (let i = indexes[indexes.length - 1]; i > -1; i--) {
             const categoryIndex = indexes[i]
@@ -97,10 +110,10 @@ const List = ({
 
             return nextIndex
           })
-      } else if (event.key === 'ArrowDown') {
+      } else if (event.key === KEYBOARD_KEYS.ArrowDown) {
         event.preventDefault()
 
-        // * check if cmd + arrow down is pressed
+        // * check if CMD + ARROW_DOWN is pressed
         if (event.metaKey) {
           for (let i = 0; i < indexes.length; i++) {
             const categoryIndex = indexes[i]
@@ -121,24 +134,50 @@ const List = ({
 
             return nextIndex
           })
-      } else if (event.key === 'Enter' && normalMode) {
+      } else if (event.key === KEYBOARD_KEYS.Enter && normalMode) {
         const currentActiveItem = data[activeIndex]
-        if (currentActiveItem?.type === ItemActionType.ilink && !activeItem.active) {
+
+        // * If current item is ILINK
+        if (currentActiveItem?.category === CategoryType.quicklink && !activeItem.active) {
           if (event.metaKey) {
-            let nodePath = node.path
-            if (currentActiveItem?.extras.new && !activeItem.active) {
-              nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
+            if (currentActiveItem?.type === QuickLinkType.ilink) {
+              let nodePath = node.path
+              if (currentActiveItem?.extras.new && !activeItem.active) {
+                nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
+              }
+
+              if (selection) {
+                saveIt({ path: nodePath, saveAndClose: true, removeHighlight: true })
+                setSelection(undefined)
+              }
+
+              setSearch({ value: '', type: CategoryType.search })
             }
 
-            if (selection) {
-              saveIt({ path: nodePath, saveAndClose: true, removeHighlight: true })
-              setSelection(undefined)
+            if (currentActiveItem?.type === QuickLinkType.snippet) {
+              const text = convertContentToRawText(
+                useSnippetStore.getState().snippets.find((s) => s.id === currentActiveItem?.id).content,
+                '\n'
+              )
+              const html = serializeHtml(getPlateEditorRef(), {
+                nodes: useSnippetStore.getState().snippets.find((s) => s.id === currentActiveItem?.id).content
+              })
+              appNotifierWindow(IpcAction.USE_SNIPPET, AppType.SPOTLIGHT, { text, html })
             }
-            setSearch({ value: '', type: CategoryType.search })
           } else {
-            setNormalMode(false)
+            if (currentActiveItem.type === QuickLinkType.snippet) {
+              const text = convertContentToRawText(
+                useSnippetStore.getState().snippets.find((s) => s.id === currentActiveItem?.id).content,
+                '\n'
+              )
+              const html = serializeHtml(getPlateEditorRef(), {
+                nodes: useSnippetStore.getState().snippets.find((s) => s.id === currentActiveItem?.id).content
+              })
+              appNotifierWindow(IpcAction.COPY_TO_CLIPBOARD, AppType.SPOTLIGHT, { text, html })
+              setInput('')
+            } else setNormalMode(false)
           }
-        } else {
+        } else if (currentActiveItem.category === CategoryType.action) {
           if (currentActiveItem?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
             setSelectedItem({ item: data[activeIndex], active: false })
             itemActionExecutor(data[activeIndex])
@@ -167,9 +206,10 @@ const List = ({
     setActiveIndex(0)
   }, [data])
 
+  // * handles double click on a list item
   function handleDoubleClick(id: number) {
     const currentActiveItem = data[id]
-    if (currentActiveItem?.type === ItemActionType.ilink && !activeItem.active) {
+    if (currentActiveItem?.type === QuickLinkType.ilink && !activeItem.active) {
       setNormalMode(false)
     } else {
       if (currentActiveItem?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {

@@ -49,11 +49,12 @@ class Toast {
     this.window.loadURL(TOAST_WINDOW_WEBPACK_ENTRY)
     this.window.setParentWindow(spotlightWindow)
     this.window.setVisibleOnAllWorkspaces(true)
-    // this.window.setIgnoreMouseEvents(true, { forward: true })
 
-    // this.window.webContents.openDevTools({
-    //   mode: 'detach'
-    // })
+    this.setParent(spotlightWindow)
+
+    this.window.on('close', () => {
+      this.window = null
+    })
 
     this.window.webContents.on('did-finish-load', () => {
       if (!this.window) {
@@ -75,7 +76,7 @@ class Toast {
     )
   }
 
-  public open(independent?: boolean, center?: boolean) {
+  public open(independent?: boolean, center?: boolean, noHide?: boolean) {
     if (center) this.window.center()
     if (independent) this.window.setParentWindow(null)
 
@@ -84,13 +85,21 @@ class Toast {
 
     if (this.timeoutId) clearTimeout(this.timeoutId)
 
-    this.timeoutId = setTimeout(() => {
-      this.hide()
-    }, 2000)
+    if (!noHide) {
+      this.timeoutId = setTimeout(() => {
+        this.hide()
+      }, 2000)
+    }
+  }
+
+  public setOnFullScreen() {
+    this.window.setFullScreenable(false)
+    this.window.setFullScreen(false)
+    this.window.setMaximizable(false)
   }
 
   public send(action: IpcAction, data: any) {
-    this.window && this.window.webContents?.send(action, data)
+    this.window && this.window?.webContents?.send(action, data)
   }
 
   public hide() {

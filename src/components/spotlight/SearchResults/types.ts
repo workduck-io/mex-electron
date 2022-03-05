@@ -1,14 +1,16 @@
 import { CategoryType } from '../../../store/Context/context.spotlight'
 import { IpcAction } from '../../../data/IpcAction'
+import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
+import { Shortcut } from '../../mex/Help/Help.types'
 
 export interface ListItemType {
   id: string
   icon: string
   title: string
   description?: string
-  type: ItemActionType
+  type: ItemActionType | QuickLinkType
   category: CategoryType
-  shortcut?: string[]
+  shortcut?: Record<string, Shortcut>
   extras?: Partial<ItemExtraType>
 }
 
@@ -22,11 +24,10 @@ export interface ItemExtraType {
 }
 
 export enum ItemActionType {
-  'search',
-  'open',
-  'render',
-  'ilink',
-  'action',
-  'ipc',
-  'browser_search'
+  search,
+  open,
+  render,
+  action,
+  ipc,
+  browser_search
 }

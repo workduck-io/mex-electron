@@ -11,7 +11,14 @@ import {
   session,
   shell
 } from 'electron'
-import { SelectionType, getGlobalShortcut, getSelectedText, getSelectedTextSync } from './utils/getSelectedText'
+import {
+  SelectionType,
+  copyToClipboard,
+  getGlobalShortcut,
+  getSelectedText,
+  getSelectedTextSync,
+  useSnippetFromClipboard
+} from './utils/getSelectedText'
 import Toast, { ToastStatus, ToastType } from './Toast'
 import { getFileData, setFileData } from './utils/filedata'
 import { getSaveLocation, getSearchIndexLocation } from '../data/Defaults/data'
@@ -133,10 +140,10 @@ const createSpotLighWindow = (show?: boolean) => {
     }
   })
 
-  spotlight.on('blur', () => {
-    spotlight.hide()
-    spotlight.webContents.send(IpcAction.SPOTLIGHT_BLURRED)
-  })
+  // spotlight.on('blur', () => {
+  //   spotlight.hide()
+  //   spotlight.webContents.send(IpcAction.SPOTLIGHT_BLURRED)
+  // })
 
   spotlight.on('closed', () => {
     spotlight = null
@@ -166,6 +173,11 @@ const createMexWindow = () => {
     if (!mex) {
       throw new Error('"mexWindow" is not defined')
     }
+
+    if (mex && !mex?.isVisible()) {
+      mex.focus()
+      mex.show()
+    }
   })
 
   require('@electron/remote/main').enable(mex.webContents)
@@ -186,6 +198,8 @@ const createMexWindow = () => {
     spotlight.setFullScreenable(false)
     spotlight.setFullScreen(false)
     spotlight.setMaximizable(false)
+
+    toast?.setOnFullScreen()
   })
 
   if (isAlpha) mex.webContents.openDevTools()
@@ -286,15 +300,18 @@ const spotlightCenter = () => {
   }
 }
 
-const toggleMainWindow = (window) => {
+const toggleMainWindow = (window: BrowserWindow) => {
   if (!window) {
     createSpotLighWindow(true)
-  } else if (spotlightBubble) {
-    if (!isSelection) {
-      spotlight?.webContents.send(IpcAction.SPOTLIGHT_BUBBLE, { isChecked: false })
-      spotlightInBubbleMode(false)
-    }
-  } else if (window.isFocused()) {
+  }
+  // * AFTER BUBBLE MODE
+  //  else if (spotlightBubble) {
+  //   if (!isSelection) {
+  //     spotlight?.webContents.send(IpcAction.SPOTLIGHT_BUBBLE, { isChecked: false })
+  //     spotlightInBubbleMode(false)
+  //   }
+  // }
+  else if (window.isFocused()) {
     window.hide()
   } else {
     window.focus()
@@ -356,6 +373,7 @@ app.on('before-quit', () => {
   // mex?.webContents.send(IpcAction.SAVE_AND_QUIT)
   // spotlight?.webContents.send(IpcAction.SAVE_AND_QUIT)
 })
+
 app.on('will-quit', () => {
   console.log('App will quit')
 })
@@ -451,8 +469,8 @@ app
   .catch(console.error)
 
 app.on('activate', () => {
-  if (spotlight === null) createSpotLighWindow()
   if (mex === null) createMexWindow()
+  if (spotlight === null) createSpotLighWindow()
 })
 
 app.on('window-all-closed', () => {
@@ -471,6 +489,21 @@ ipcMain.on(IpcAction.SET_SPOTLIGHT_SHORTCUT, (event, arg) => {
     globalShortcut.register(newSpotlightShortcut, handleToggleMainWindow)
     SPOTLIGHT_SHORTCUT = newSpotlightShortcut
   }
+})
+
+ipcMain.on(IpcAction.USE_SNIPPET, (event, arg) => {
+  const { from, data } = arg
+  spotlight?.hide()
+  app.hide()
+  useSnippetFromClipboard(data.text, data.html)
+})
+
+ipcMain.on(IpcAction.COPY_TO_CLIPBOARD, (event, arg) => {
+  const { from, data } = arg
+  copyToClipboard(data.text, data.html)
+  toast?.setParent(spotlight)
+  toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.SUCCESS, title: 'Snippet Copied!' })
+  toast?.open()
 })
 
 ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
@@ -505,7 +538,7 @@ ipcMain.on(IpcAction.CHECK_FOR_UPDATES, (_event, arg) => {
   if (arg.from === AppType.SPOTLIGHT) {
     toast?.setParent(spotlight)
     toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.LOADING, title: 'Checking for updates..' })
-    toast?.open()
+    toast?.open(false, false, true)
     autoUpdater.checkForUpdates()
   }
 })
@@ -534,6 +567,7 @@ ipcMain.on(IpcAction.STOP_ONBOARDING, (_event, arg) => {
 ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
   mex?.webContents.send(IpcAction.OPEN_NODE, { nodeid: arg.nodeid })
   spotlight.hide()
+  mex.focus()
   mex.show()
 })
 
@@ -542,6 +576,7 @@ ipcMain.on(IpcAction.LOGGED_IN, (_event, arg) => {
 })
 
 ipcMain.on(IpcAction.REDIRECT_TO, (_event, arg) => {
+  mex?.focus()
   mex?.show()
   mex?.webContents.send(IpcAction.REDIRECT_TO, { page: arg.page })
 })
@@ -568,7 +603,9 @@ ipcMain.on(IpcAction.ERROR_OCCURED, (_event, arg) => {
 
 ipcMain.on(IpcAction.CLOSE_SPOTLIGHT, (_event, arg) => {
   const { data } = arg
-  if (data?.hide) spotlight.hide()
+  if (data?.hide) {
+    spotlight.hide()
+  }
 })
 
 ipcMain.on(IpcAction.IMPORT_APPLE_NOTES, async () => {

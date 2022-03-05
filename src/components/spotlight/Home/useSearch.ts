@@ -1,24 +1,36 @@
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { ItemActionType, ListItemType } from '../SearchResults/types'
+import { ListItemType } from '../SearchResults/types'
 
-import { ILink } from '../../../types/Types'
 import { getListItemFromNode } from './helper'
 import { search as getSearchResults } from 'fast-fuzzy'
 import { initActions } from '../../../data/Actions'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { mog } from '../../../utils/lib/helper'
 /* eslint-disable no-case-declarations */
-import useDataStore from '../../../store/useDataStore'
 import useLoad from '../../../hooks/useLoad'
 import { useSearchStore } from '../../../store/useSearchStore'
+import { useQuickLinks } from '../../../hooks/useQuickLinks'
+import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 
 export const CREATE_NEW_ITEM: ListItemType = {
   title: 'Create new ',
   id: 'create-new-node',
   icon: 'bi:plus-circle',
-  type: ItemActionType.ilink,
+  type: QuickLinkType.ilink,
   category: CategoryType.quicklink,
   description: 'Quick note',
+  shortcut: {
+    edit: {
+      category: 'action',
+      keystrokes: 'Enter',
+      title: 'to create'
+    },
+    save: {
+      category: 'action',
+      keystrokes: '$mod+Enter',
+      title: 'to save'
+    }
+  },
   extras: {
     new: true
   }
@@ -27,40 +39,27 @@ export const CREATE_NEW_ITEM: ListItemType = {
 export const useSearch = () => {
   const { isLocalNode } = useLoad()
   const { search } = useSpotlightContext()
-  const ilinks = useDataStore((store) => store.ilinks)
   const searchIndex = useSearchStore((store) => store.searchIndex)
+  const { getQuickLinks } = useQuickLinks()
 
   const searchInList = () => {
     let searchList: Array<ListItemType> = []
+    const quickLinks = getQuickLinks()
 
     switch (search?.type) {
       // * Search quick links using [[
       case CategoryType.quicklink:
         const query = search.value.substring(2)
         if (query) {
-          const localNodes = []
-
-          ilinks.forEach((ilink) => {
-            const localNode = isLocalNode(ilink.nodeid)
-
-            if (localNode.isLocal) {
-              localNodes.push(ilink)
-            }
-          })
-
-          const results = getSearchResults(query, ilinks, { keySelector: (obj) => obj.path })
-
-          const result: Array<ListItemType> = results.map((ilink: ILink) => {
-            const item: ListItemType = getListItemFromNode(ilink)
-            return item
-          })
+          const results = getSearchResults(query, quickLinks, { keySelector: (obj) => obj.title })
+          mog('Searching', { results, quickLinks })
 
           const isNew = !isReservedOrClash(
             query,
-            ilinks.map((i) => i.path)
+            quickLinks.map((i) => i.title)
           )
 
-          searchList = isNew ? [CREATE_NEW_ITEM, ...result] : result
+          searchList = isNew ? [CREATE_NEW_ITEM, ...results] : results
         }
         break
 
@@ -87,7 +86,7 @@ export const useSearch = () => {
 
         const isNew = !isReservedOrClash(
           search.value,
-          ilinks.map((i) => i.path)
+          quickLinks.map((i) => i.title)
         )
 
         searchList = isNew ? [CREATE_NEW_ITEM, ...localNodes, ...actionItems] : [...localNodes, ...actionItems]
