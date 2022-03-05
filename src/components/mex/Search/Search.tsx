@@ -46,16 +46,11 @@ const Search = () => {
   const { getNodeIdFromUid } = useLinks()
 
   const onSearch = (newSearchTerm: string) => {
-    try {
-      const res = searchIndex('node', newSearchTerm)
-      const nodeids = useDataStore.getState().ilinks.map((l) => l.nodeid)
-      const filRes = res.filter((r) => nodeids.includes(r.id))
-      mog('search', { res, filRes })
-      return filRes
-    } catch (e) {
-      mog('Search broke', { e })
-      return []
-    }
+    const res = searchIndex('node', newSearchTerm)
+    const nodeids = useDataStore.getState().ilinks.map((l) => l.nodeid)
+    const filRes = res.filter((r) => nodeids.includes(r.id))
+    mog('search', { res, filRes })
+    return filRes
   }
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)

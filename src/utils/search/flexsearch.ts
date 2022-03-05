@@ -54,7 +54,7 @@ export const createGenricSearchIndex = (
     mog('Using Prebuilt Index!', {})
     Object.entries(indexData).forEach(([key, data]) => {
       const parsedData = JSON.parse((data as string) ?? '') ?? null
-      mog('We have data is: ', { key, parsedData })
+      mog('We have data is: ', { key, parsedData, data })
       index.import(key, parsedData)
     })
   } else {

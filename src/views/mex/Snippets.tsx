@@ -2,7 +2,7 @@ import deleteBin6Line from '@iconify-icons/ri/delete-bin-6-line'
 import quillPenLine from '@iconify-icons/ri/quill-pen-line'
 import { Icon } from '@iconify/react'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useUpdater } from '../../hooks/useUpdater'
 import { generateSnippetId } from '../../data/Defaults/idPrefixes'
 import Editor from '../../editor/Editor'
@@ -21,6 +21,9 @@ import {
 import { Title } from '../../style/Typography'
 import genereateName from 'project-name-generator'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
+import { useSnippets } from '../../hooks/useSnippets'
+import { useSearchStore } from '../../store/useSearchStore'
+import { mog } from '../../utils/lib/helper'
 
 export type SnippetsProps = {
   title?: string
@@ -28,12 +31,17 @@ export type SnippetsProps = {
 
 const Snippets: React.FC<SnippetsProps> = () => {
   const snippets = useSnippetStore((store) => store.snippets)
-  const addSnippet = useSnippetStore((store) => store.addSnippet)
+  const { addSnippet, deleteSnippet } = useSnippets()
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
-  const deleteSnippet = useSnippetStore((store) => store.deleteSnippet)
+  const searchIndex = useSearchStore((store) => store.searchIndex)
 
   const { goTo } = useRouting()
   const { updater } = useUpdater()
+
+  useEffect(() => {
+    const res = searchIndex('snippet', 'ligma')
+    mog('SnippetSearch', { res })
+  }, [snippets])
 
   const onCreateNew = () => {
     // Create a better way.

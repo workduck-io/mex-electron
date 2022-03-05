@@ -68,9 +68,9 @@ export const convertDataToIndexable = (data: FileData): Record<indexNames, Gener
         }
       })
     } else if (idxName === indexNames.snippet) {
-      Object.entries(data.snippets).forEach(([k, v]) => {
-        const temp: GenericSearchData = convertEntryToRawText(k, v.content)
-        temp.title = titleNodeMap.get(k)
+      data.snippets.map((snip) => {
+        const temp: GenericSearchData = convertEntryToRawText(snip.id, snip.content)
+        temp.title = titleNodeMap.get(snip.id)
         idxResult.push(temp)
       })
     } else {

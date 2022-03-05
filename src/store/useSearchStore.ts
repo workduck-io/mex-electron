@@ -48,7 +48,7 @@ interface SearchStoreState {
   indexDump: any
   initializeSearchIndex: (fileData: FileData, indexData: any) => Document
   addDoc: (index: keyof SearchIndex, doc: NodeSearchData) => void
-  removeDoc: (index: keyof SearchIndex, nodeUID: string) => void
+  removeDoc: (index: keyof SearchIndex, id: string) => void
   updateDoc: (index: keyof SearchIndex, newDoc: GenericSearchData) => void
   // fetchDocByID: (index: keyof SearchIndex, id: string, matchField: string[]) => GenericSearchResult
   searchIndex: (index: keyof SearchIndex, query: string) => GenericSearchResult[]
@@ -95,32 +95,37 @@ export const useSearchStore = create<SearchStoreState>((set, get) => ({
   // },
 
   searchIndex: (key, query: string) => {
-    const response = get().index[key].search(query)
-    const results = new Array<any>()
-    response.forEach((entry) => {
-      const matchField = entry.field
-      entry.result.forEach((i) => {
-        // mog('ResultEntry', i)
-        // const t = get().fetchDocByID(i, matchField)
-        results.push({ id: i, matchField })
+    try {
+      const response = get().index[key].search(query)
+      const results = new Array<any>()
+      response.forEach((entry) => {
+        const matchField = entry.field
+        entry.result.forEach((i) => {
+          // mog('ResultEntry', i)
+          // const t = get().fetchDocByID(i, matchField)
+          results.push({ id: i, matchField })
+        })
       })
-    })
 
-    const combinedResults = new Array<GenericSearchResult>()
-    results.forEach(function (item) {
-      const existing = combinedResults.filter(function (v, i) {
-        return v.id == item.id
+      const combinedResults = new Array<GenericSearchResult>()
+      results.forEach(function (item) {
+        const existing = combinedResults.filter(function (v, i) {
+          return v.id == item.id
+        })
+        if (existing.length) {
+          const existingIndex = combinedResults.indexOf(existing[0])
+          combinedResults[existingIndex].matchField = combinedResults[existingIndex].matchField.concat(item.matchField)
+        } else {
+          if (typeof item.matchField == 'string') item.matchField = [item.matchField]
+          combinedResults.push(item)
+        }
       })
-      if (existing.length) {
-        const existingIndex = combinedResults.indexOf(existing[0])
-        combinedResults[existingIndex].matchField = combinedResults[existingIndex].matchField.concat(item.matchField)
-      } else {
-        if (typeof item.matchField == 'string') item.matchField = [item.matchField]
-        combinedResults.push(item)
-      }
-    })
 
-    return combinedResults
+      return combinedResults
+    } catch (e) {
+      mog('Searching Broke:', { e })
+      return []
+    }
   },
 
   fetchIndexLocalStorage: () => {
