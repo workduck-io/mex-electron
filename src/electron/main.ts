@@ -245,7 +245,6 @@ const createWindow = () => {
   createSpotLighWindow()
 
   toast = new Toast(spotlight)
-
   if (process.platform === 'darwin') {
     app.dock.show()
   }
@@ -351,6 +350,7 @@ ipcMain.on('close', closeWindow)
 app.on('before-quit', () => {
   console.log('App before quit')
   mex?.webContents.send(IpcAction.GET_LOCAL_INDEX)
+  console.log('Sent IPC Action to fetch index')
   // toast?.destroy()
 
   // mex?.webContents.send(IpcAction.SAVE_AND_QUIT)
@@ -476,7 +476,7 @@ ipcMain.on(IpcAction.SET_SPOTLIGHT_SHORTCUT, (event, arg) => {
 ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
   const { disable } = arg
   if (disable) globalShortcut.unregisterAll()
-  else globalShortcut.register(SPOTLIGHT_SHORTCUT, handleToggleMainWindow) // * If more than one global listener, use regiterAll
+  else globalShortcut.register(SPOTLIGHT_SHORTCUT, handleToggleMainWindow) // * If more than one global listener, use registerAll
 })
 
 ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {

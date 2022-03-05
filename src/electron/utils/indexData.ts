@@ -36,6 +36,7 @@ export const getIndexData = (location: string) => {
 }
 
 export const setSearchIndexData = (index: Record<indexNames, any>, location: string) => {
+  console.log('got here?')
   if (!fs.existsSync(location)) fs.mkdirSync(location)
 
   Object.entries(indexKeys).forEach(([idxName, idxKeys]) => {

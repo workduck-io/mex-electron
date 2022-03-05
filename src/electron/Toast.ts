@@ -42,6 +42,10 @@ class Toast {
 
     this.window = new BrowserWindow(options)
 
+    this.window.on('close', () => {
+      this.window = null
+    })
+
     this.window.loadURL(TOAST_WINDOW_WEBPACK_ENTRY)
     this.window.setParentWindow(spotlightWindow)
     this.window.setVisibleOnAllWorkspaces(true)
