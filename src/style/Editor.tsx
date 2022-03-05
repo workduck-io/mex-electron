@@ -16,8 +16,6 @@ export const NodeInfo = styled.div<FocusModeProp>`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   transition: opacity 0.3s ease-in-out;
 
-  margin: 0 0 ${({ theme }) => theme.spacing.medium};
-
   ${NoteTitle} {
     color: ${({ theme }) => theme.colors.text.subheading};
     font-size: 1.25rem;
@@ -35,29 +33,6 @@ export const InfoTools = styled.div`
   ${Button}, ${AsyncButton} {
     margin: 0;
   }
-`
-
-interface StyledEditorProps {
-  showGraph?: boolean
-}
-
-export const StyledEditor = styled.div<StyledEditorProps>`
-  padding: ${({ theme }) => theme.spacing.large} ${({ theme }) => theme.spacing.medium};
-  margin: auto;
-  margin-bottom: 0;
-  width: 100%;
-  max-width: 1000px;
-  min-width: 400px;
-  height: 100%;
-  overflow-y: auto;
-  /* ${({ showGraph }) =>
-    showGraph
-      ? css`
-          max-width: 600px;
-        `
-      : css`
-          max-width: 800px;
-        `} */
 `
 
 export const EditorStyles = styled.div`
@@ -451,5 +426,37 @@ export const EditorStyles = styled.div`
 
   .LinkIcon > * {
     color: ${({ theme }) => theme.colors.primary};
+  }
+`
+
+interface StyledEditorProps {
+  showGraph?: boolean
+}
+
+export const StyledEditor = styled.div<StyledEditorProps>`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.spacing.large};
+  padding: ${({ theme }) => theme.spacing.large} ${({ theme }) => theme.spacing.medium};
+  margin: auto;
+  margin-bottom: 0;
+  width: 100%;
+  max-width: 1000px;
+  min-width: 400px;
+  height: 100%;
+  flex: 1;
+  overflow-y: auto;
+  /* ${({ showGraph }) =>
+    showGraph
+      ? css`
+          max-width: 600px;
+        `
+      : css`
+          max-width: 800px;
+        `} */
+
+  && > div {
+    width: 100%;
   }
 `

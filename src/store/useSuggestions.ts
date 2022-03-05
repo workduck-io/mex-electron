@@ -1,17 +1,18 @@
-import { FlexSearchResult } from './useSearchStore'
+// import { NodeSearchResult } from './useSearchStore'
 import create from 'zustand'
 import { AnyObject, TNode } from '@udecode/plate'
+import { GenericSearchResult } from './useSearchStore'
 
 type SuggestionStoreType = {
-  suggestions: FlexSearchResult[]
-  setSuggestions: (suggestions: FlexSearchResult[]) => void
+  suggestions: GenericSearchResult[]
+  setSuggestions: (suggestions: GenericSearchResult[]) => void
   query?: TNode<AnyObject>[]
   setQuery?: (query: TNode<AnyObject>[]) => void
 }
 
 const useSuggestionStore = create<SuggestionStoreType>((set) => ({
   suggestions: [],
-  setSuggestions: (suggestions: FlexSearchResult[]) => set({ suggestions })
+  setSuggestions: (suggestions: GenericSearchResult[]) => set({ suggestions })
 }))
 
 export default useSuggestionStore

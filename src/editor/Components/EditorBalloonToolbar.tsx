@@ -1,3 +1,18 @@
+import AlignLeftIcon from '@iconify-icons/bx/bx-align-left'
+import AlignCenterIcon from '@iconify-icons/bx/bx-align-middle'
+import AlignRightIcon from '@iconify-icons/bx/bx-align-right'
+import addLine from '@iconify-icons/ri/add-line'
+import boldIcon from '@iconify-icons/ri/bold'
+import codeLine from '@iconify-icons/ri/code-line'
+import doubleQuotesL from '@iconify-icons/ri/double-quotes-l'
+import fileAddLine from '@iconify-icons/ri/file-add-line'
+import h1 from '@iconify-icons/ri/h-1'
+import h2 from '@iconify-icons/ri/h-2'
+import h3 from '@iconify-icons/ri/h-3'
+import italicIcon from '@iconify-icons/ri/italic'
+import listOrdered from '@iconify-icons/ri/list-ordered'
+import listUnordered from '@iconify-icons/ri/list-unordered'
+import { Icon } from '@iconify/react'
 import {
   AlignToolbarButton,
   BlockToolbarButton,
@@ -7,55 +22,24 @@ import {
   ELEMENT_H3,
   ELEMENT_OL,
   ELEMENT_UL,
-  ListToolbarButton,
-  MARK_BOLD,
-  MARK_ITALIC,
-  MarkToolbarButton,
-  ToolbarButtonProps,
   getPluginType,
+  ListToolbarButton,
+  MarkToolbarButton,
+  MARK_BOLD,
+  MARK_CODE,
+  MARK_ITALIC,
+  ToolbarButtonProps,
   usePlateEditorRef
 } from '@udecode/plate'
-
-import AlignCenterIcon from '@iconify-icons/bx/bx-align-middle'
-import AlignLeftIcon from '@iconify-icons/bx/bx-align-left'
-import AlignRightIcon from '@iconify-icons/bx/bx-align-right'
-import { BalloonToolbar } from './BalloonToolbar'
-import { ButtonSeparator } from '../../style/Toolbar'
-import { Icon } from '@iconify/react'
-import LinkButton from './BalloonToolbar/components/LinkButton'
 import React from 'react'
+import { ButtonSeparator } from '../../style/Toolbar'
+import { BalloonToolbar } from './BalloonToolbar'
 import { SelectionToNode } from './BalloonToolbar/components/SelectionToNode'
 import { SelectionToSnippet } from './BalloonToolbar/components/SelectionToSnippet'
-import addLine from '@iconify-icons/ri/add-line'
-import boldIcon from '@iconify-icons/ri/bold'
-import doubleQuotesL from '@iconify-icons/ri/double-quotes-l'
-import fileAddLine from '@iconify-icons/ri/file-add-line'
-import h1 from '@iconify-icons/ri/h-1'
-import h2 from '@iconify-icons/ri/h-2'
-import h3 from '@iconify-icons/ri/h-3'
-import italicIcon from '@iconify-icons/ri/italic'
-import linkIcon from '@iconify-icons/ri/link-m'
-import listOrdered from '@iconify-icons/ri/list-ordered'
-import listUnordered from '@iconify-icons/ri/list-unordered'
-
-// import { BalloonToolbar } from './BalloonToolbar'
-// import LinkButton from './BalloonToolbar/LinkButton'
 
 const BallonMarkToolbarButtons = () => {
   const editor = usePlateEditorRef()
 
-  // const arrow = true
-  // const direction = 'top'
-  // const hiddenDelay = 0
-  // const tooltip = {
-  //   arrow: true,
-  //   delay: 0,
-  //   theme: 'mex',
-  //   duration: [200, 0] as [number, number],
-  //   // hideOnClick: false,
-  //   offset: [0, 17] as [number, number],
-  //   placement: 'top' as const
-  // }
   const arrow = false
   const theme = 'dark'
   const top = 'top' as const
@@ -141,6 +125,7 @@ const BallonMarkToolbarButtons = () => {
         icon={<Icon height={20} icon={italicIcon} />}
         tooltip={{ content: 'Italic (⌘I)', ...tooltip }}
       />
+      <MarkToolbarButton type={getPluginType(editor, MARK_CODE)} icon={<Icon height={20} icon={codeLine} />} />
 
       <ButtonSeparator />
 

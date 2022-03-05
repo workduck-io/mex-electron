@@ -4,6 +4,9 @@ const externalsDarwin = ['active-win-universal']
 const externals = process.platform === 'darwin' ? externalsDarwin : externalsWin
 
 module.exports = {
+  electronRebuildConfig: {
+    forceABI: 101
+  },
   packagerConfig: {
     icon: 'assets/icon.icns',
     extendInfo: {

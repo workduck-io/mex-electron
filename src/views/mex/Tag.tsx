@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useTransition } from 'react-spring'
 import styled, { css } from 'styled-components'
+import { View } from '../../components/mex/Search/ViewSelector'
 import { defaultContent } from '../../data/Defaults/baseData'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import { useLinks } from '../../hooks/useLinks'
@@ -179,7 +180,7 @@ const Tag = () => {
       <TagMain>
         <h1>#{tag}</h1>
         <p>Nodes with tag</p>
-        <Results>
+        <Results view={View.Card}>
           {transition((styles, nodeid, _t, _i) => {
             const con = contents[nodeid]
             const path = getNodeIdFromUid(nodeid)

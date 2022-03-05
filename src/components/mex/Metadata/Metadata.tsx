@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import useLayout from '../../../hooks/useLayout'
 import { useContentStore } from '../../../store/useContentStore'
-import { useEditorStore } from '../../../store/useEditorStore'
+import { NodeProperties, useEditorStore } from '../../../store/useEditorStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import { FOCUS_MODE_OPACITY } from '../../../style/consts'
 import { focusStyles } from '../../../style/focus'
@@ -49,28 +49,31 @@ export const DataWrapper = styled.div<DataWrapperProps>`
     `}
 `
 
-const DataGroup = styled.div``
+export const DataGroup = styled.div``
 
-export const MetadataWrapper = styled.div<FocusModeProp>`
+interface MetaDataWrapperProps extends FocusModeProp {
+  fadeOnHover?: boolean
+}
+export const MetadataWrapper = styled.div<MetaDataWrapperProps>`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: ${({ theme }) => theme.spacing.small};
 
-  margin-bottom: ${({ theme }) => theme.spacing.large};
-  ${HoverFade}
-
-  ${ProfileIcon} {
-    filter: grayscale(1);
-    opacity: 0.5;
-  }
-
-  &:hover {
-    ${ProfileIcon} {
-      filter: grayscale(0);
-      opacity: 1;
-    }
-  }
+  ${({ theme, fadeOnHover }) =>
+    fadeOnHover &&
+    css`
+      ${HoverFade}
+      ${ProfileIcon} {
+        filter: grayscale(1);
+        opacity: 0.5;
+      }
+      &:hover {
+        ${ProfileIcon} {
+          filter: grayscale(0);
+          opacity: 1;
+        }
+      }
+    `}
 
   ${(props) => focusStyles(props)}
 
@@ -111,8 +114,12 @@ const DateTooptip = styled.div`
   }
 `
 
-const Metadata = () => {
-  const node = useEditorStore((state) => state.node)
+interface MetadataProps {
+  node: NodeProperties
+  fadeOnHover?: boolean
+}
+const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
+  // const node = useEditorStore((state) => state.node)
   const focusMode = useLayoutStore((s) => s.focusMode)
   const getContent = useContentStore((state) => state.getContent)
   const content = getContent(node.nodeid)
@@ -120,17 +127,17 @@ const Metadata = () => {
   const [metadata, setMetadata] = useState<NodeMetadata | undefined>(undefined)
 
   useEffect(() => {
-    // console.log({ content })
+    // mog({ content })
     if (content === undefined || content.metadata === undefined) return
     const { metadata: contentMetadata } = content
     setMetadata(contentMetadata)
   }, [node, content])
 
-  // console.log({ node, metadata })
+  // mog({ node, metadata })
 
   if (content === undefined || content.metadata === undefined || metadata === undefined) return null
   return (
-    <MetadataWrapper {...getFocusProps(focusMode)}>
+    <MetadataWrapper {...getFocusProps(focusMode)} fadeOnHover={fadeOnHover}>
       <DataGroup>
         {metadata.createdBy !== undefined && (
           <DataWrapper interactive={metadata.createdAt !== undefined}>

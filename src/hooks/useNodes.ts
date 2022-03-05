@@ -2,6 +2,7 @@ import { mog } from '../utils/lib/helper'
 import useDataStore from '../store/useDataStore'
 import { AddILinkProps, ILink } from '../types/Types'
 import toast from 'react-hot-toast'
+import { NodeProperties } from '../store/useEditorStore'
 
 // Used to ensure no path clashes while adding ILink.
 // path functions to check wether clash is happening can be also used
@@ -26,5 +27,21 @@ export const useNodes = () => {
     return res
   }
 
-  return { addNode, isInArchive }
+  const getIcon = (nodeid: string): string => {
+    const nodes = useDataStore.getState().ilinks
+    const node = nodes.find((l) => l.nodeid === nodeid)
+    if (node) return node.icon
+  }
+
+  const getNode = (nodeid: string): ILink => {
+    const nodes = useDataStore.getState().ilinks
+    const node = nodes.find((l) => l.nodeid === nodeid)
+    if (node) return node
+  }
+  const getArchiveNode = (nodeid: string): ILink => {
+    const nodes = useDataStore.getState().archive
+    const node = nodes.find((l) => l.nodeid === nodeid)
+    if (node) return node
+  }
+  return { addNode, isInArchive, getIcon, getNode, getArchiveNode }
 }

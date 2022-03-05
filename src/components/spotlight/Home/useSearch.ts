@@ -10,7 +10,7 @@ import { mog } from '../../../utils/lib/helper'
 /* eslint-disable no-case-declarations */
 import useDataStore from '../../../store/useDataStore'
 import useLoad from '../../../hooks/useLoad'
-import { useNewSearchStore } from '../../../store/useSearchStore'
+import { useSearchStore } from '../../../store/useSearchStore'
 
 export const CREATE_NEW_ITEM: ListItemType = {
   title: 'Create new ',
@@ -28,7 +28,7 @@ export const useSearch = () => {
   const { isLocalNode } = useLoad()
   const { search } = useSpotlightContext()
   const ilinks = useDataStore((store) => store.ilinks)
-  const searchIndex = useNewSearchStore((store) => store.searchIndex)
+  const searchIndex = useSearchStore((store) => store.searchIndex)
 
   const searchInList = () => {
     let searchList: Array<ListItemType> = []
@@ -72,12 +72,12 @@ export const useSearch = () => {
         break
 
       case CategoryType.search:
-        const items = searchIndex(search.value)
+        const items = searchIndex('node', search.value)
         const actionItems = getSearchResults(search.value, initActions, { keySelector: (obj) => obj.title })
         const localNodes = []
 
         items.forEach((item) => {
-          const localNode = isLocalNode(item.nodeUID)
+          const localNode = isLocalNode(item.id)
 
           if (localNode.isLocal) {
             const listItem = getListItemFromNode(localNode.ilink)

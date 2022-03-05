@@ -1,8 +1,15 @@
 import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import { useSnippetStore, Snippet } from '../store/useSnippetStore'
 import { SlashCommandConfig } from '../editor/Components/SlashCommands/Types'
+import { useSearchStore } from '../store/useSearchStore'
+import { convertEntryToRawText } from '../utils/search/localSearch'
 
 export const useSnippets = () => {
+  const addSnippetZus = useSnippetStore((state) => state.addSnippet)
+  const updateSnippetZus = useSnippetStore((state) => state.updateSnippet)
+  const deleteSnippetZus = useSnippetStore((state) => state.deleteSnippet)
+  const updateDoc = useSearchStore((store) => store.updateDoc)
+  const removeDoc = useSearchStore((store) => store.removeDoc)
   const getSnippets = () => {
     return useSnippetStore.getState().snippets
   }
@@ -21,6 +28,14 @@ export const useSnippets = () => {
     }, {})
   }
 
+  const getSnippet = (id: string) => {
+    const snippets = useSnippetStore.getState().snippets
+    const snippet = snippets.filter((c) => c.id === id)
+
+    if (snippet.length > 0) return snippet[0]
+    return undefined
+  }
+
   // Replacer that will provide new fresh and different content each time
   const getSnippetContent = (command: string) => {
     const snippets = useSnippetStore.getState().snippets
@@ -30,7 +45,20 @@ export const useSnippets = () => {
     return undefined
   }
 
-  return { getSnippets, getSnippetContent, getSnippetsConfigs }
+  const updateSnippet = (snippet: Snippet) => {
+    updateSnippetZus(snippet.id, snippet)
+    updateDoc('snippet', convertEntryToRawText(snippet.id, snippet.content, snippet.title))
+  }
+  const deleteSnippet = (id: string) => {
+    deleteSnippetZus(id)
+    removeDoc('snippet', id)
+  }
+  const addSnippet = (snippet: Snippet) => {
+    addSnippetZus(snippet)
+    updateDoc('snippet', convertEntryToRawText(snippet.id, snippet.content, snippet.title))
+  }
+
+  return { getSnippets, getSnippet, getSnippetContent, getSnippetsConfigs, addSnippet, updateSnippet, deleteSnippet }
 }
 
 export const extractSnippetCommands = (snippets: Snippet[]): string[] => {
@@ -39,4 +67,3 @@ export const extractSnippetCommands = (snippets: Snippet[]): string[] => {
 
 export const SnippetCommandPrefix = `snip`
 export const getSnippetCommand = (title: string) => `${SnippetCommandPrefix}${SEPARATOR}${title}`
-

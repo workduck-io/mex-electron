@@ -1,18 +1,25 @@
 import React, { useState } from 'react'
 import { ReactEditor, useReadOnly } from 'slate-react'
 import { TElement, setNodes } from '@udecode/plate-core'
-import styled, { useTheme } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 
 import { MexIcon } from '../../../style/Layouts'
 import { TodoListItemNodeData } from '@udecode/plate-list'
 import { getRootProps } from '@udecode/plate-styled-components'
 import { transparentize } from 'polished'
 
-const TodoContainer = styled.div`
+const TodoContainer = styled.div<{ checked?: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
   position: relative;
+
+  ${({ theme, checked }) =>
+    checked &&
+    css`
+      color: ${theme.colors.gray[5]};
+      text-decoration: line-through;
+    `}
 `
 
 const TaskPriority = styled.span<{ background: string; color?: string; transparent?: number }>`
@@ -73,6 +80,7 @@ const Todo = (props: any) => {
 
   return (
     <TodoContainer
+      checked={!!checked}
       {...attributes}
       {...rootProps}
       // onMouseEnter={() => setShowOptions(true)}

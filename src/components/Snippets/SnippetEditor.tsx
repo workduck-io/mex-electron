@@ -6,6 +6,7 @@ import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../../style/Editor
 import { Input } from '../../style/Form'
 import { useSnippetStore } from '../../store/useSnippetStore'
 import { useUpdater } from '../../hooks/useUpdater'
+import { useSnippets } from '../../hooks/useSnippets'
 
 type Inputs = {
   title: string
@@ -31,13 +32,13 @@ const SnippetEditor = () => {
     }
   }, [snippet])
 
-  const updateSnippet = useSnippetStore((state) => state.updateSnippet)
+  const { updateSnippet } = useSnippets()
 
   const getSnippetTitle = () => getValues().title
 
   const onChangeSave = (val: any[]) => {
     if (val) {
-      updateSnippet(snippet.id, { ...snippet, content: val })
+      updateSnippet({ ...snippet, content: val })
       updater()
     }
   }

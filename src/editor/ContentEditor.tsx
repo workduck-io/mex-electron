@@ -22,7 +22,7 @@ import { useKeyListener } from '../hooks/useShortcutListener'
 import useLayout from '../hooks/useLayout'
 import useLoad from '../hooks/useLoad'
 import { useNavigation } from '../hooks/useNavigation'
-import { useNewSearchStore } from '../store/useSearchStore'
+import { useSearchStore } from '../store/useSearchStore'
 import { usePlateEditorRef } from '@udecode/plate'
 import useSuggestionStore from '../store/useSuggestions'
 import useToggleElements from '../hooks/useToggleElements'
@@ -35,7 +35,7 @@ const ContentEditor = () => {
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
 
   const { showGraph, showSuggestedNodes } = useToggleElements()
-  const searchIndex = useNewSearchStore((store) => store.searchIndex)
+  const searchIndex = useSearchStore((store) => store.searchIndex)
 
   const { nodeid, node, fsContent } = useEditorStore(
     (state) => ({ nodeid: state.node.nodeid, node: state.node, fsContent: state.content }),
@@ -62,11 +62,11 @@ const ContentEditor = () => {
 
         const keywords = sw.removeStopwords(rawText.split(' ').filter(Boolean))
 
-        mog('keywords', { keywords })
-        const results = searchIndex(keywords.join(' '))
+        const results = searchIndex('node', keywords.join(' '))
 
-        const withoutCurrentNode = results.filter((item) => item.nodeUID !== node.nodeid)
+        const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
 
+        mog('keywords', { keywords, results, withoutCurrentNode })
         setSuggestions(withoutCurrentNode)
       }
 
@@ -74,7 +74,7 @@ const ContentEditor = () => {
     }
   }
 
-  const editorId = useMemo(() => getEditorId(node.nodeid, false), [node, fetchingContent])
+  const editorId = useMemo(() => getEditorId(node.id, false), [node, fetchingContent])
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -116,7 +116,7 @@ const ContentEditor = () => {
       <StyledEditor showGraph={showGraph} className="mex_editor">
         <Toolbar />
 
-        {isBlockMode ? <BlockInfoBar /> : <Metadata />}
+        {isBlockMode ? <BlockInfoBar /> : <Metadata node={node} />}
 
         <Editor
           showBalloonToolbar

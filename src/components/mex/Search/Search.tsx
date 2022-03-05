@@ -1,105 +1,57 @@
-import searchLine from '@iconify-icons/ri/search-line'
+import fileList2Line from '@iconify-icons/ri/file-list-2-line'
 import { Icon } from '@iconify/react'
-import { debounce } from 'lodash'
-import React, { useEffect, useRef } from 'react'
-import { useTransition } from 'react-spring'
-import { NavigationType, useRouting, ROUTE_PATHS } from '../../../views/routes/urls'
-import create from 'zustand'
+import React from 'react'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
+import { useNodes } from '../../../hooks/useNodes'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
-import { useNewSearchStore } from '../../../store/useSearchStore'
+import { GenericSearchResult, useSearchStore } from '../../../store/useSearchStore'
+import { MainHeader } from '../../../style/Layouts'
 import {
-  MatchCounter,
-  MatchCounterWrapper,
-  NoSearchResults,
   Result,
+  ResultDesc,
   ResultHeader,
-  Results,
-  ResultsWrapper,
+  ResultMain,
+  ResultMetaData,
+  ResultRow,
   ResultTitle,
   SearchContainer,
-  SearchHeader,
-  SearchInput,
-  SearchPreviewWrapper
+  SearchPreviewWrapper,
+  SplitSearchPreviewWrapper
 } from '../../../style/Search'
 import { Title } from '../../../style/Typography'
-import { SearchHighlights, TitleHighlights } from './Highlights'
-
-interface SearchStore {
-  selected: number
-  size: number
-  searchTerm: string
-  result: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
-  setSelected: (selected: number) => void
-  setResult: (result: any[]) => void // eslint-disable-line @typescript-eslint/no-explicit-any
-  setSearchTerm: (searchTerm: string) => void // eslint-disable-line @typescript-eslint/no-explicit-any
-}
-
-const useSearchPageStore = create<SearchStore>((set) => ({
-  selected: -1,
-  size: 0,
-  searchTerm: '',
-  result: [],
-  setSelected: (selected) => set({ selected }),
-  setResult: (result) => set({ result }),
-  setSearchTerm: (searchTerm) => set({ searchTerm })
-}))
+import { SplitType } from '../../../ui/layout/splitView'
+import { getInitialNode } from '../../../utils/helpers'
+import { mog } from '../../../utils/lib/helper'
+import { convertContentToRawText } from '../../../utils/search/localSearch'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import Backlinks from '../Backlinks'
+import Metadata from '../Metadata/Metadata'
+import DataInfoBar from '../Sidebar/DataInfoBar'
+import TagsRelated from '../Tags/TagsRelated'
+import SearchView, { RenderItemProps, RenderPreviewProps } from './SearchView'
+import { View } from './ViewSelector'
 
 const Search = () => {
   const { loadNode } = useLoad()
-  const searchIndex = useNewSearchStore((store) => store.searchIndex)
+  const searchIndex = useSearchStore((store) => store.searchIndex)
   const contents = useContentStore((store) => store.contents)
-  const selected = useSearchPageStore((store) => store.selected)
-  const setSelected = useSearchPageStore((store) => store.setSelected)
-  const result = useSearchPageStore((store) => store.result)
-  const setResult = useSearchPageStore((store) => store.setResult)
-  const searchTerm = useSearchPageStore((store) => store.searchTerm)
-  const setSearchTerm = useSearchPageStore((store) => store.setSearchTerm)
+  const { getNode } = useNodes()
   const { goTo } = useRouting()
-  const inpRef = useRef<HTMLInputElement>(null)
-  const selectedRef = useRef<HTMLDivElement>(null)
 
   const { getNodeIdFromUid } = useLinks()
 
-  const transition = useTransition(result, {
-    sort: (a, b) => (a.score > b.score ? -1 : 0),
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    // update: { opacity: 1, scale: 1.0 },
-    // leave: { opacity: 0, scale: 0.5 },
-    keys: (item) => item.ref,
-    trail: 50,
-    duration: 200,
-    config: {
-      mass: 1,
-      tension: 200,
-      friction: 16
-    }
-  })
-
-  const executeSearch = (newSearchTerm: string) => {
-    if (newSearchTerm === '') {
-      const res = searchIndex(newSearchTerm)
-      setResult(res)
-    } else {
-      const res = searchIndex(newSearchTerm)
-      // console.log({ res })
-      // const res2 = res.map((r) => {
-      //   return {
-      //     // ref: r.ref,
-      //     // score: r.score,
-      //     // ...highlightText(r.matchData.metadata, r.text, r.title)
-      //   }
-      // })
-      setResult(res)
-    }
-    setSearchTerm(newSearchTerm)
+  const onSearch = (newSearchTerm: string) => {
+    const res = searchIndex('node', newSearchTerm)
+    const nodeids = useDataStore.getState().ilinks.map((l) => l.nodeid)
+    const filRes = res.filter((r) => nodeids.includes(r.id))
+    mog('search', { res, filRes })
+    return filRes
   }
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)
@@ -107,136 +59,111 @@ const Search = () => {
   const baseNodeId = useDataStore((store) => store.baseNodeId)
 
   // console.log({ result })
-
-  useEffect(() => {
-    executeSearch(searchTerm)
-    return () => {
-      setSelected(-1)
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const selectNext = () => {
-    setSelected((selected + 1) % result.length)
-    if (selectedRef.current) selectedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  const onSelect = (item: GenericSearchResult) => {
+    const nodeid = item.id
+    loadNode(nodeid)
+    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
-  const selectPrev = () => {
-    setSelected((result.length + selected - 1) % result.length)
-    if (selectedRef.current) selectedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onChange = (e: any) => {
-    e.preventDefault()
-    const inpSearchTerm = e.target.value
-    executeSearch(inpSearchTerm)
+  const onEscapeExit = () => {
+    const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
+    loadNode(nodeid)
+    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
-  // onKeyDown handler function
-  const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.code === 'Tab') {
-      event.preventDefault()
-      // Blur the input if necessary (not needed currently)
-      // if (inputRef.current) inputRef.current.blur()
-      if (event.shiftKey) {
-        selectPrev()
-      } else {
-        selectNext()
-      }
+  // Forwarding ref to focus on the selected result
+  const BaseItem = (
+    { item, splitOptions, ...props }: RenderItemProps<GenericSearchResult>,
+    ref: React.Ref<HTMLDivElement>
+  ) => {
+    const node = getNode(item.id)
+    // mog('Baseitem', { item, node })
+    if (!item || !node) {
+      return <Result {...props} ref={ref}></Result>
     }
-    if (event.code === 'Escape') {
-      // setInput()
-      if (inpRef.current) {
-        if (inpRef.current.value !== '') {
-          inpRef.current.value = ''
-          if (selected > -1) {
-            setSelected(-1)
-          }
-        } else {
-          const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
-          loadNode(nodeid)
-          goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-        }
-      }
+    const con = contents[item.id]
+    const content = con ? con.content : defaultContent.content
+    const icon = node?.icon ?? fileList2Line
+    const edNode = node ? { ...node, title: node.path, id: node.nodeid } : getInitialNode()
+    const id = `${item.id}_ResultFor_Search`
+    if (props.view === View.Card) {
+      return (
+        <Result {...props} key={id} ref={ref}>
+          <ResultHeader active={item.matchField?.includes('title')}>
+            <ResultTitle>{node.path}</ResultTitle>
+          </ResultHeader>
+          <SearchPreviewWrapper active={item.matchField?.includes('text')}>
+            <EditorPreviewRenderer content={content} editorId={`editor_${item.id}`} />
+          </SearchPreviewWrapper>
+        </Result>
+      )
+    } else if (props.view === View.List) {
+      return (
+        <Result {...props} key={id} ref={ref}>
+          <ResultRow active={item.matchField?.includes('title')} selected={props.selected}>
+            <Icon icon={icon} />
+            <ResultMain>
+              <ResultTitle>{node.path}</ResultTitle>
+              <ResultDesc>{convertContentToRawText(content, ' ')}</ResultDesc>
+            </ResultMain>
+            {(!splitOptions || splitOptions.type === SplitType.NONE) && (
+              <ResultMetaData>
+                <Metadata fadeOnHover={false} node={edNode} />
+              </ResultMetaData>
+            )}
+          </ResultRow>
+        </Result>
+      )
     }
-    if (event.code === 'Enter') {
-      // Only when the selected index is -1
-      if (selected > -1) {
-        // console.log({ load: result[selected].nodeUID, res: result, sel: result[selected], selected })
-        const nodeid = result[selected].nodeUID
-        loadNode(nodeid)
-        goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-      }
-    }
+  }
+  const RenderItem = React.forwardRef(BaseItem)
+
+  const RenderPreview = ({ item }: RenderPreviewProps<GenericSearchResult>) => {
+    mog('RenderPreview', { item })
+    if (item) {
+      const con = contents[item.id]
+      const content = con ? con.content : defaultContent.content
+      const node = getNode(item.id)
+      const icon = node?.icon ?? fileList2Line
+      const edNode = { ...node, title: node.path, id: node.nodeid }
+      mog('RenderPreview', { item, content, node })
+      return (
+        <SplitSearchPreviewWrapper id={`splitSearchPreview_for_${item.id}`}>
+          <Title>
+            {node.path}
+            <Icon icon={icon} />
+          </Title>
+          <Metadata fadeOnHover={false} node={edNode} />
+          <EditorPreviewRenderer content={content} editorId={`SearchPreview_editor_${item.id}`} />
+          <Backlinks nodeid={node.nodeid} />
+          <TagsRelated nodeid={node.nodeid} />
+        </SplitSearchPreviewWrapper>
+      )
+    } else
+      return (
+        <SplitSearchPreviewWrapper>
+          <Title></Title>
+          <EditorPreviewRenderer content={defaultContent.content} editorId={`SearchPreview_editor_EMPTY`} />
+        </SplitSearchPreviewWrapper>
+      )
   }
 
   return (
-    <SearchContainer onKeyDown={keyDownHandler}>
-      <Title>Search</Title>
-      <SearchHeader>
-        <Icon icon={searchLine} />
-        <SearchInput
-          autoFocus
-          id="search_nodes"
-          name="search_nodes"
-          tabIndex={-1}
-          placeholder="Search Anything...."
-          type="text"
-          defaultValue={searchTerm}
-          onChange={debounce((e) => onChange(e), 250)}
-          onFocus={() => {
-            if (inpRef.current) inpRef.current.select()
-          }}
-          ref={inpRef}
-        />
-      </SearchHeader>
-      <ResultsWrapper>
-        <Results>
-          {
-            /*transition((styles, c, _t, i) => { */
-            result.map((c, i) => {
-              const con = contents[c.nodeUID]
-              const path = getNodeIdFromUid(c.nodeUID)
-              const content = con ? con.content : defaultContent.content
-              // console.log(c.matchField.includes('title'))
-              return (
-                <Result
-                  onClick={() => {
-                    loadNode(c.nodeUID)
-                    goTo(ROUTE_PATHS.node, NavigationType.push, c.nodeUID)
-                  }}
-                  selected={i === selected}
-                  ref={i === (selected + 1) % result.length ? selectedRef : null}
-                  key={`ResultForSearch_${c.nodeUID}`}
-                >
-                  <ResultHeader active={c.matchField.includes('title')}>
-                    {c.titleHighlights !== undefined && c.titleHighlights.length > 0 ? (
-                      <TitleHighlights titleHighlights={c.titleHighlights} />
-                    ) : (
-                      <ResultTitle>{path}</ResultTitle>
-                    )}
-                    {c.totalMatches !== undefined && (
-                      <MatchCounterWrapper>
-                        Matches:
-                        <MatchCounter>{c.totalMatches}</MatchCounter>
-                      </MatchCounterWrapper>
-                    )}
-                  </ResultHeader>
-                  {c.highlights !== undefined ? (
-                    <SearchHighlights highlights={c.highlights} />
-                  ) : (
-                    <SearchPreviewWrapper active={c.matchField.includes('text')}>
-                      <EditorPreviewRenderer content={content} editorId={`editor_${c.nodeUID}`} />
-                    </SearchPreviewWrapper>
-                  )}
-                </Result>
-              )
-            })
-          }
-        </Results>
-        {result.length === 0 && (
-          <NoSearchResults>No results found. Try refining the query or search for a different one.</NoSearchResults>
-        )}
-      </ResultsWrapper>
+    <SearchContainer>
+      <MainHeader>
+        <Title>Search</Title>
+      </MainHeader>
+      <SearchView
+        id="searchStandard"
+        key="searchStandard"
+        initialItems={[]}
+        getItemKey={(i) => i.id}
+        onSelect={onSelect}
+        onEscapeExit={onEscapeExit}
+        onSearch={onSearch}
+        RenderItem={RenderItem}
+        RenderPreview={RenderPreview}
+      />
     </SearchContainer>
   )
 }
