@@ -25,7 +25,6 @@ import _ from 'lodash'
 import { checkIfAlpha } from './utils/version'
 /* eslint-disable @typescript-eslint/no-var-requires */
 import chokidar from 'chokidar'
-import { flexIndexKeys } from '../utils/search/flexsearch'
 import fs from 'fs'
 import { getAppleNotes } from '../utils/importers/appleNotes'
 import { initializeSentry } from '../services/sentry'
@@ -351,8 +350,8 @@ ipcMain.on('close', closeWindow)
 
 app.on('before-quit', () => {
   console.log('App before quit')
-  toast?.destroy()
   mex?.webContents.send(IpcAction.GET_LOCAL_INDEX)
+  // toast?.destroy()
 
   // mex?.webContents.send(IpcAction.SAVE_AND_QUIT)
   // spotlight?.webContents.send(IpcAction.SAVE_AND_QUIT)
@@ -493,6 +492,7 @@ ipcMain.on(IpcAction.SET_THEME, (ev, arg) => {
 
 ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
   const { searchIndex } = arg
+  console.log('Got here with index: ', searchIndex)
   if (searchIndex) setSearchIndexData(searchIndex, SEARCH_INDEX_LOCATION)
 })
 

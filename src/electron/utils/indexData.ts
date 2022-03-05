@@ -2,14 +2,16 @@ import fs from 'fs'
 import { isEmpty, xor } from 'lodash'
 import path from 'path'
 
-import { flexIndexKeys } from '../../utils/search/flexsearch'
-import { SearchIndex } from './../../store/useSearchStore'
-import { indexKeys, diskIndex } from '../../data/search'
+import { indexKeys, indexNames } from '../../data/search'
 
 export const getIndexData = (location: string) => {
-  if (!fs.existsSync(location)) return null
+  const searchIndex = {
+    node: null,
+    snippet: null,
+    archive: null
+  }
 
-  const searchIndex = diskIndex
+  if (!fs.existsSync(location)) return searchIndex
 
   Object.entries(indexKeys).forEach(([idxName, idxKeys]) => {
     const keys = fs
@@ -33,16 +35,19 @@ export const getIndexData = (location: string) => {
   return searchIndex
 }
 
-export const setSearchIndexData = (index, location: string) => {
+export const setSearchIndexData = (index: Record<indexNames, any>, location: string) => {
   if (!fs.existsSync(location)) fs.mkdirSync(location)
 
-  Object.entries(index).forEach(([key, data]) => {
-    try {
-      const t = path.join(location, `${key}.json`)
-      const d: any = data !== 'undefined' ? data : ''
-      fs.writeFileSync(t, d)
-    } catch (err) {
-      console.log('Error is: ', err)
-    }
+  Object.entries(indexKeys).forEach(([idxName, idxKeys]) => {
+    idxKeys.forEach((key) => {
+      try {
+        const t = path.join(location, `${idxName}.${key}.json`)
+        const idxData = index[idxName]
+        const d: any = idxData !== 'undefined' ? idxData : '' // This is not by mistake
+        fs.writeFileSync(t, d)
+      } catch (err) {
+        console.log('Error is: ', err)
+      }
+    })
   })
 }

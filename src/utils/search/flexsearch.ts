@@ -15,7 +15,7 @@ export const createSearchIndex = (data: CreateSearchIndexData, indexData: Record
   return {
     node: createGenricSearchIndex(data.node, indexData.node),
     snippet: createGenricSearchIndex(data.snippet, indexData.snippet),
-    archive: createGenricSearchIndex(data.snippet, indexData.archive)
+    archive: createGenricSearchIndex(data.archive, indexData.archive)
   }
 }
 
@@ -53,7 +53,6 @@ export const createGenricSearchIndex = (
       index.import(key, data ?? null)
     })
   } else {
-    // console.log('Fresh building Index')
     initList.forEach((i) => index.add(i))
   }
   return index
