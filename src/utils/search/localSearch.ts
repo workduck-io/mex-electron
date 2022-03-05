@@ -27,9 +27,11 @@ export const convertEntryToRawText = (nodeUID: string, entry: any[], title = '')
 export const convertDataToIndexable = (data: FileData): Record<indexNames, GenericSearchData[]> => {
   const result: Record<indexNames, GenericSearchData[]> = Object.entries(indexNames).reduce((p, c) => {
     const idxResult = []
+    const idxName = c[0]
     const titleNodeMap = new Map<string, string>()
 
-    switch (c[0]) {
+    // Pre-process the data to get the title node map
+    switch (idxName) {
       case indexNames.node: {
         data.ilinks.forEach((entry) => {
           titleNodeMap.set(entry.nodeid, entry.path)
@@ -56,7 +58,8 @@ export const convertDataToIndexable = (data: FileData): Record<indexNames, Gener
       }
     }
 
-    if (c[0] === indexNames.archive || c[0] === indexNames.node) {
+    // Process the filedata to get the indexable data
+    if (idxName === indexNames.archive || idxName === indexNames.node) {
       Object.entries(data.contents).forEach(([k, v]) => {
         if (v.type === 'editor' && k !== '__null__' && titleNodeMap.has(k)) {
           const temp: GenericSearchData = convertEntryToRawText(k, v.content)
@@ -64,7 +67,7 @@ export const convertDataToIndexable = (data: FileData): Record<indexNames, Gener
           idxResult.push(temp)
         }
       })
-    } else if (c[0] === indexNames.snippet) {
+    } else if (idxName === indexNames.snippet) {
       Object.entries(data.snippets).forEach(([k, v]) => {
         const temp: GenericSearchData = convertEntryToRawText(k, v.content)
         temp.title = titleNodeMap.get(k)
@@ -74,8 +77,10 @@ export const convertDataToIndexable = (data: FileData): Record<indexNames, Gener
       throw new Error('No corresponding index name found')
     }
 
-    return { ...p, [c[0]]: idxResult }
+    return { ...p, [idxName]: idxResult }
   }, diskIndex)
+
+  mog('ConvertDataToIndexable', { data, result })
 
   return result
 }

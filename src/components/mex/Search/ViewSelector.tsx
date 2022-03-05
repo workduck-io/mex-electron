@@ -40,7 +40,7 @@ export const ViewSelectorButton = styled.div<{ selected: boolean }>`
 `
 
 const ViewSelector = ({ onChangeView, currentView }: { onChangeView: (view: View) => void; currentView: View }) => {
-  mog('ViewSelector', { currentView, entries: Object.entries(View) })
+  // mog('ViewSelector', { currentView, entries: Object.entries(View) })
   return (
     <ViewSelectorWrapper>
       <div>View: </div>

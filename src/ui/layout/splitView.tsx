@@ -32,7 +32,7 @@ export interface SplitViewProps {
 }
 
 const SplitView = ({ RenderSplitPreview, children, splitOptions, id }: SplitViewProps) => {
-  mog('Split View', { splitOptions, id })
+  // mog('Split View', { splitOptions, id })
   // * Custom hooks
 
   const springProps = useMemo(() => {

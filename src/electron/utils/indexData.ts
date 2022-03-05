@@ -36,16 +36,19 @@ export const getIndexData = (location: string) => {
 }
 
 export const setSearchIndexData = (index: Record<indexNames, any>, location: string) => {
-  console.log('got here?')
+  // console.log('got here?')
   if (!fs.existsSync(location)) fs.mkdirSync(location)
 
   Object.entries(indexKeys).forEach(([idxName, idxKeys]) => {
+    // console.log('got here? tooo')
     idxKeys.forEach((key) => {
       try {
         const t = path.join(location, `${idxName}.${key}.json`)
         const idxData = index[idxName]
         const d: any = idxData !== 'undefined' ? idxData : '' // This is not by mistake
-        fs.writeFileSync(t, d)
+        // console.log('got here?', { idxData, idxName, d })
+        // console.log('got here?')
+        fs.writeFileSync(t, JSON.stringify(d))
       } catch (err) {
         console.log('Error is: ', err)
       }

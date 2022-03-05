@@ -127,13 +127,13 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
   const [metadata, setMetadata] = useState<NodeMetadata | undefined>(undefined)
 
   useEffect(() => {
-    // console.log({ content })
+    // mog({ content })
     if (content === undefined || content.metadata === undefined) return
     const { metadata: contentMetadata } = content
     setMetadata(contentMetadata)
   }, [node, content])
 
-  console.log({ node, metadata })
+  // mog({ node, metadata })
 
   if (content === undefined || content.metadata === undefined || metadata === undefined) return null
   return (

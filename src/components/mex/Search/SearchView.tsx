@@ -229,7 +229,7 @@ const SearchView = <Item,>({
 
   // onKeyDown handler function
   const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    mog('keyDownHandler', { code: event.code })
+    // mog('keyDownHandler', { code: event.code })
     if (event.code === 'Tab') {
       event.preventDefault()
       // Blur the input if necessary (not needed currently)

@@ -124,14 +124,14 @@ export const useSearchStore = create<SearchStoreState>((set, get) => ({
   },
 
   fetchIndexLocalStorage: () => {
-    get().index['node'].export((key, data) => {
-      mog('fetchIndexLocalStorage', { key, data })
-      localStorage.setItem(key, data)
-    })
+    // get().index['node'].export((key, data) => {
+    //   mog('fetchIndexLocalStorage', { key, data })
+    //   localStorage.setItem(key, data)
+    // })
 
     Object.entries(get().index).forEach(([idxName, idxValue]) => {
       idxValue.export((key, data) => {
-        mog('fetchIndexLocalStorage', { key, data })
+        mog('fetchIndexLocalStorage', { idxName, key, data })
         localStorage.setItem(`${idxName}.${key}`, data)
       })
     })

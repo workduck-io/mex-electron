@@ -1,42 +1,38 @@
-import { AppType, useInitialize } from '../../../hooks/useInitialize'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
-import { getUidFromNodeIdAndLinks, useLinks } from '../../../hooks/useLinks'
-import { useEffect, useState } from 'react'
-
-import { AppleNote } from '../../../utils/importers/appleNotes'
-import { IpcAction } from '../../../data/IpcAction'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import config from '../../../apis/config'
-import { convertDataToIndexable } from '../../../utils/search/localSearch'
-import { CreateSearchIndexData, flexIndexKeys } from '../../../utils/search/flexsearch'
-import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
-import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
-import { ipcRenderer } from 'electron'
-import { mog } from '../../../utils/lib/helper'
-import { performClick } from '../Onboarding/steps'
-import tinykeys from 'tinykeys'
+import { usePlateEditorRef } from '@udecode/plate'
 import { useAuth } from '@workduck-io/dwindle'
+import { ipcRenderer } from 'electron'
+import { useEffect, useState } from 'react'
+import tinykeys from 'tinykeys'
+import config from '../../../apis/config'
+import { IpcAction } from '../../../data/IpcAction'
+import { diskIndex, indexKeys, indexNames } from '../../../data/search'
+import { useSaver } from '../../../editor/Components/Saver'
+import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { AppType, useInitialize } from '../../../hooks/useInitialize'
+import { getUidFromNodeIdAndLinks, useLinks } from '../../../hooks/useLinks'
+import useLoad from '../../../hooks/useLoad'
+import { useLocalData } from '../../../hooks/useLocalData'
+import { useNavigation } from '../../../hooks/useNavigation'
+import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
+import { useKeyListener } from '../../../hooks/useShortcutListener'
+import { useSyncData } from '../../../hooks/useSyncData'
+import { useUpdater } from '../../../hooks/useUpdater'
 import { useAuthStore } from '../../../services/auth/useAuth'
 import useBlockStore from '../../../store/useBlockStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useHistoryStore } from '../../../store/useHistoryStore'
-import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useLayoutStore } from '../../../store/useLayoutStore'
-import useLoad from '../../../hooks/useLoad'
-import { useLocalData } from '../../../hooks/useLocalData'
-import { useLocation } from 'react-router-dom'
-import { useNavigation } from '../../../hooks/useNavigation'
-import { useSearchStore } from '../../../store/useSearchStore'
 import useOnboard from '../../../store/useOnboarding'
-import { usePlateEditorRef } from '@udecode/plate'
 import { useRecentsStore } from '../../../store/useRecentsStore'
-import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
-import { useSaver } from '../../../editor/Components/Saver'
-import { useSyncData } from '../../../hooks/useSyncData'
-import { useUpdater } from '../../../hooks/useUpdater'
-import { diskIndex, indexNames, indexKeys } from '../../../data/search'
+import { useSearchStore } from '../../../store/useSearchStore'
+import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
+import { AppleNote } from '../../../utils/importers/appleNotes'
+import { mog } from '../../../utils/lib/helper'
+import { convertDataToIndexable } from '../../../utils/search/localSearch'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -158,7 +154,7 @@ const Init = () => {
     ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, () => {
       fetchIndexLocalStorage()
       const searchIndex = Object.entries(indexNames).reduce((p, c) => {
-        const currIdx = null
+        const currIdx = {}
         indexKeys[c[0]].forEach((key) => {
           const t = localStorage.getItem(`${c[0]}.${key}`)
           if (t === null) currIdx[key] = ''
@@ -167,6 +163,7 @@ const Init = () => {
 
         return { ...p, [c[0]]: currIdx }
       }, diskIndex)
+      mog('SearchIndexForLocal', { searchIndex })
       ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndex })
     })
     ipcRenderer.on(IpcAction.CREATE_NEW_NODE, () => {
