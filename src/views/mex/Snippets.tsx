@@ -1,36 +1,23 @@
-import useLoad from '../../hooks/useLoad'
-import { useNodes } from '../../hooks/useNodes'
 import deleteBin6Line from '@iconify-icons/ri/delete-bin-6-line'
 import quillPenLine from '@iconify-icons/ri/quill-pen-line'
 import { Icon } from '@iconify/react'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import React, { useEffect } from 'react'
-import { useUpdater } from '../../hooks/useUpdater'
-import { generateSnippetId } from '../../data/Defaults/idPrefixes'
-import Editor from '../../editor/Editor'
-import { useSnippetStore } from '../../store/useSnippetStore'
-import IconButton from '../../style/Buttons'
-import { Wrapper } from '../../style/Layouts'
-import {
-  CreateSnippet,
-  SnippetCommand,
-  SnippetCommandPrefix,
-  SnippetHeader,
-  SSnippet,
-  SSnippets,
-  StyledSnippetPreview
-} from '../../style/Snippets'
-import { Title } from '../../style/Typography'
 import genereateName from 'project-name-generator'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
-import { useSnippets } from '../../hooks/useSnippets'
-import { GenericSearchResult, useSearchStore } from '../../store/useSearchStore'
-import { mog } from '../../utils/lib/helper'
+import React from 'react'
 import SearchView, { RenderItemProps, RenderPreviewProps } from '../../components/mex/Search/SearchView'
+import { View } from '../../components/mex/Search/ViewSelector'
+import { generateSnippetId } from '../../data/Defaults/idPrefixes'
+import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
+import { useNodes } from '../../hooks/useNodes'
+import { useSnippets } from '../../hooks/useSnippets'
+import { useUpdater } from '../../hooks/useUpdater'
+import { GenericSearchResult, useSearchStore } from '../../store/useSearchStore'
+import { useSnippetStore } from '../../store/useSnippetStore'
+import IconButton, { Button } from '../../style/Buttons'
+import { MainHeader } from '../../style/Layouts'
 import {
   Result,
   ResultDesc,
-  ResultHeader,
   ResultMain,
   ResultRow,
   ResultTitle,
@@ -38,13 +25,11 @@ import {
   SearchPreviewWrapper,
   SplitSearchPreviewWrapper
 } from '../../style/Search'
-import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
-import Backlinks from '../../components/mex/Backlinks'
-import TagsRelated from '../../components/mex/Tags/TagsRelated'
-import { defaultContent } from '../../data/Defaults/baseData'
-import fileList2Line from '@iconify-icons/ri/file-list-2-line'
+import { CreateSnippet, SnippetCommand, SnippetCommandPrefix, SnippetHeader } from '../../style/Snippets'
+import { Title } from '../../style/Typography'
+import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText } from '../../utils/search/localSearch'
-import { View } from '../../components/mex/Search/ViewSelector'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 
 export type SnippetsProps = {
   title?: string
@@ -116,7 +101,7 @@ const Snippets = () => {
   ) => {
     const snip = getSnippet(item.id)
     if (!item || !snip) {
-      return <Result {...props} ref={ref}></Result>
+      return null
     }
     const icon = quillPenLine
     const id = `${item.id}_ResultFor_SearchSnippet`
@@ -150,8 +135,20 @@ const Snippets = () => {
         </Result>
       )
     }
+
+    return null
   }
   const RenderItem = React.forwardRef(BaseItem)
+
+  const RenderStartCard = () => {
+    // mog('RenderPreview', { item })
+    return (
+      <CreateSnippet onClick={onCreateNew}>
+        <Icon icon={quillPenLine} height={100} />
+        <p>Create New Snippet</p>
+      </CreateSnippet>
+    )
+  }
 
   const RenderPreview = ({ item }: RenderPreviewProps<GenericSearchResult>) => {
     // mog('RenderPreview', { item })
@@ -160,12 +157,12 @@ const Snippets = () => {
     if (item) {
       // const edNode = { ...node, title: node.path, id: node.nodeid }
       return (
-        <SplitSearchPreviewWrapper id={`splitSearchPreview_for_${item.id}`}>
+        <SplitSearchPreviewWrapper id={`splitSnippetSearchPreview_for_${item.id}`}>
           <Title>
             {snip.title}
             <Icon icon={icon} />
           </Title>
-          <EditorPreviewRenderer content={snip.content} editorId={`SearchPreview_editor_${item.id}`} />
+          <EditorPreviewRenderer content={snip.content} editorId={`SnippetSearchPreview_editor_${item.id}`} />
         </SplitSearchPreviewWrapper>
       )
     } else
@@ -178,10 +175,16 @@ const Snippets = () => {
 
   return (
     <SearchContainer>
-      <Title>Snippets</Title>
+      <MainHeader>
+        <Title>Snippets</Title>
+        <Button primary large onClick={onCreateNew}>
+          <Icon icon={quillPenLine} height={24} />
+          Create New Snippet
+        </Button>
+      </MainHeader>
       <SearchView
-        id="searchStandard"
-        key="searchStandard"
+        id="searchSnippet"
+        key="searchSnippet"
         initialItems={initialSnippets}
         getItemKey={(i) => i.id}
         onSelect={onSelect}
@@ -189,6 +192,7 @@ const Snippets = () => {
         onSearch={onSearch}
         RenderItem={RenderItem}
         RenderPreview={RenderPreview}
+        RenderStartCard={RenderStartCard}
       />
     </SearchContainer>
   )

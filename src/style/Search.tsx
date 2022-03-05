@@ -56,9 +56,6 @@ export const SearchViewContainer = styled.div`
 `
 export const SearchContainer = styled.div`
   margin: ${({ theme: { spacing } }) => `calc(2 * ${spacing.large}) ${spacing.large} ${spacing.medium}`};
-  ${Title} {
-    margin: ${({ theme: { spacing } }) => `${spacing.large} ${spacing.medium} ${spacing.medium} ${spacing.large}`};
-  }
   position: relative;
 `
 
@@ -150,6 +147,9 @@ export const ResultMetaData = styled.div`
 
 export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
   background-color: ${({ theme }) => theme.colors.gray[9]};
+  :hover {
+    cursor: pointer;
+  }
   ${({ theme, selected, view }) => {
     if (view === View.Card) {
       return css`
@@ -189,6 +189,7 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
       `
     }
   }}
+
   border-radius: ${({ theme }) => theme.borderRadius.small};
   ${SearchTransition}
 `
@@ -231,7 +232,7 @@ export const SearchPreviewWrapper = styled.div<{ active?: boolean }>`
 `
 
 export const SplitSearchPreviewWrapper = styled.div`
-  height: calc(100vh - 14rem);
+  height: calc(100vh - 16rem);
   overflow-y: auto;
   border-radius: ${({ theme }) => theme.borderRadius.large};
   background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};

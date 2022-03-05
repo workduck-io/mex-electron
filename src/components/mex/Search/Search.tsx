@@ -11,6 +11,7 @@ import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { GenericSearchResult, useSearchStore } from '../../../store/useSearchStore'
+import { MainHeader } from '../../../style/Layouts'
 import {
   Result,
   ResultDesc,
@@ -147,7 +148,9 @@ const Search = () => {
 
   return (
     <SearchContainer>
-      <Title>Search</Title>
+      <MainHeader>
+        <Title>Search</Title>
+      </MainHeader>
       <SearchView
         id="searchStandard"
         key="searchStandard"

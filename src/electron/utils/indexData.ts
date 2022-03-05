@@ -42,7 +42,7 @@ export const setSearchIndexData = (index: Record<indexNames, any>, location: str
         const t = path.join(location, `${idxName}.${key}.json`)
         const idxData = index[idxName][key]
         const d: any = idxData !== 'undefined' ? idxData : '' // This is not by mistake
-        console.log('Setting here:', { idxName, idxData, d })
+        // console.log('Setting here:', { idxName, idxData, d })
         // console.log('got here?')
         fs.writeFileSync(t, JSON.stringify(d))
       } catch (err) {

@@ -1,13 +1,14 @@
 import unarchiveLine from '@iconify-icons/clarity/unarchive-line'
 import trashIcon from '@iconify-icons/codicon/trash'
 import archiveFill from '@iconify-icons/ri/archive-fill'
+import fileList2Line from '@iconify-icons/ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import React, { useState } from 'react'
 import Modal from 'react-modal'
 import { useTransition } from 'react-spring'
 import styled, { useTheme } from 'styled-components'
 import { ModalControls, ModalHeader, MRMHead } from '../../components/mex/Refactor/styles'
-import SearchView, { RenderItemProps } from '../../components/mex/Search/SearchView'
+import SearchView, { RenderItemProps, RenderPreviewProps } from '../../components/mex/Search/SearchView'
 import { View } from '../../components/mex/Search/ViewSelector'
 import { defaultContent } from '../../data/Defaults/baseData'
 import { useSaver } from '../../editor/Components/Saver' // FIXME move useSaver to hooks
@@ -17,13 +18,28 @@ import useLoad from '../../hooks/useLoad'
 import { useContentStore } from '../../store/useContentStore'
 import useDataStore from '../../store/useDataStore'
 import { NodeProperties } from '../../store/useEditorStore'
+import { GenericSearchResult, useSearchStore } from '../../store/useSearchStore'
 import { Button } from '../../style/Buttons'
 import { NotFoundText } from '../../style/Form'
-import { Result, ResultHeader, Results, ResultTitle, SearchContainer, SearchPreviewWrapper } from '../../style/Search'
+import { MainHeader } from '../../style/Layouts'
+import {
+  Result,
+  ResultDesc,
+  ResultHeader,
+  ResultMain,
+  ResultRow,
+  Results,
+  ResultTitle,
+  SearchContainer,
+  SearchPreviewWrapper,
+  SplitSearchPreviewWrapper
+} from '../../style/Search'
 import { Title } from '../../style/Typography'
 import { ILink } from '../../types/Types'
 import { SplitType } from '../../ui/layout/splitView'
+import { getContent } from '../../utils/helpers'
 import { mog } from '../../utils/lib/helper'
+import { convertContentToRawText, convertEntryToRawText } from '../../utils/search/localSearch'
 
 const Nodes = styled.section`
   padding-right: 2rem;
@@ -78,12 +94,34 @@ const Archive = () => {
   const { onSave } = useSaver()
   const contents = useContentStore((store) => store.contents)
   const theme = useTheme()
+  const searchIndex = useSearchStore((store) => store.searchIndex)
+  const updateDoc = useSearchStore((store) => store.updateDoc)
+  const removeDoc = useSearchStore((store) => store.removeDoc)
 
   // * TODO: Uncomment this !important
   // useEffect(() => {
   //   getArchiveData()
   // }, [])
+  const getArchiveResult = (nodeid: string): GenericSearchResult => {
+    const node = archive.find((node) => node.nodeid === nodeid)
+    const content = getContent(nodeid)
 
+    return {
+      id: nodeid,
+      title: node.path,
+      text: convertContentToRawText(content.content)
+    }
+  }
+  const onSearch = (newSearchTerm: string) => {
+    const res = searchIndex('archive', newSearchTerm)
+    mog('ArchiveSearch', { newSearchTerm, res })
+    if (newSearchTerm === '' && res.length === 0) {
+      return initialArchive
+    }
+    return res
+  }
+
+  const initialArchive: GenericSearchResult[] = archive.map((n) => getArchiveResult(n.nodeid))
   const onUnarchiveClick = async (node: ILink) => {
     // const present = ilinks.find((link) => link.key === node.key)
 
@@ -93,6 +131,10 @@ const Archive = () => {
 
     await unArchiveData([node])
     addILink({ ilink: node.path, nodeid: node.nodeid, archived: true })
+
+    const content = getContent(node.nodeid)
+    removeDoc('archive', node.nodeid)
+    updateDoc('node', convertEntryToRawText(node.nodeid, content.content, node.path))
 
     const archiveNode: NodeProperties = {
       id: node.path,
@@ -112,6 +154,10 @@ const Archive = () => {
 
     await removeArchiveData(nodesToDelete)
 
+    nodesToDelete.forEach((node) => {
+      removeDoc('archive', node.nodeid)
+    })
+
     // onSave()
 
     setShowModal(false)
@@ -122,82 +168,140 @@ const Archive = () => {
     setDelNode(undefined)
   }
 
-  const BaseItem = ({ item, ...props }: RenderItemProps<ILink>, ref: React.Ref<HTMLDivElement>) => {
+  // Forwarding ref to focus on the selected result
+  const BaseItem = (
+    { item, splitOptions, ...props }: RenderItemProps<GenericSearchResult>,
+    ref: React.Ref<HTMLDivElement>
+  ) => {
     mog('BaseItem', item)
-    const con = contents[item.nodeid]
+    const con = contents[item.id]
     const content = con ? con.content : defaultContent.content
-    const id = `${item.nodeid}_ResultFor_ArchiveSearch`
-    if (!item) return null
-    return (
-      <Result {...props} key={id} ref={ref}>
-        <ResultHeader>
-          <ResultTitle>{item.path}</ResultTitle>
-          <ActionContainer>
-            <StyledIcon
-              fontSize={32}
-              color={theme.colors.primary}
-              onClick={(ev) => {
-                ev.preventDefault()
-                onUnarchiveClick(item)
-              }}
-              icon={unarchiveLine}
-            />
-            <StyledIcon
-              fontSize={32}
-              color="#df7777"
-              onClick={(ev) => {
-                ev.preventDefault()
-                setDelNode(item)
-                setShowModal(true)
-              }}
-              icon={trashIcon}
-            />
-          </ActionContainer>
-        </ResultHeader>
-        <SearchPreviewWrapper>
-          <EditorPreviewRenderer content={content} editorId={`editor_archive_preview_${item.nodeid}`} />
-        </SearchPreviewWrapper>
-      </Result>
-    )
-  }
+    const node = archive.find((node) => node.nodeid === item.id)
+    const id = `${item.id}_ResultFor_ArchiveSearch`
+    const icon = fileList2Line
+    if (!item || !node) return null
 
-  mog('Archive', { archive })
+    if (props.view === View.Card) {
+      return (
+        <Result {...props} key={id} ref={ref}>
+          <ResultHeader>
+            <ResultTitle>{node.path}</ResultTitle>
+            <ActionContainer>
+              <StyledIcon
+                fontSize={32}
+                color={theme.colors.primary}
+                onClick={(ev) => {
+                  ev.preventDefault()
+                  onUnarchiveClick(node)
+                }}
+                icon={unarchiveLine}
+              />
+              <StyledIcon
+                fontSize={32}
+                color="#df7777"
+                onClick={(ev) => {
+                  ev.preventDefault()
+                  setDelNode(item)
+                  setShowModal(true)
+                }}
+                icon={trashIcon}
+              />
+            </ActionContainer>
+          </ResultHeader>
+          <SearchPreviewWrapper>
+            <EditorPreviewRenderer content={content} editorId={`editor_archive_preview_${item.id}`} />
+          </SearchPreviewWrapper>
+        </Result>
+      )
+    } else if (props.view === View.List) {
+      return (
+        <Result {...props} key={id} ref={ref}>
+          <ResultRow active={item.matchField?.includes('title')} selected={props.selected}>
+            <Icon icon={icon} />
+            <ResultMain>
+              <ResultTitle>{node.path}</ResultTitle>
+              <ResultDesc>{convertContentToRawText(content, ' ')}</ResultDesc>
+            </ResultMain>
+          </ResultRow>
+        </Result>
+      )
+    }
+
+    return null
+  }
+  const RenderItem = React.forwardRef(BaseItem)
+
+  const RenderPreview = ({ item }: RenderPreviewProps<GenericSearchResult>) => {
+    // mog('BaseItem', item)
+    if (!item) return null
+    const node = archive.find((node) => node.nodeid === item.id)
+    if (!node) return null
+    const con = contents[item.id]
+    const content = con ? con.content : defaultContent.content
+    const icon = fileList2Line
+    // mog('RenderPreview', { item })
+    if (item) {
+      // const edNode = { ...node, title: node.path, id: node.nodeid }
+      return (
+        <SplitSearchPreviewWrapper id={`splitArchiveSearchPreview_for_${item.id}`}>
+          <Title>
+            {node.path}
+
+            <ActionContainer>
+              <StyledIcon
+                fontSize={32}
+                color={theme.colors.primary}
+                onClick={(ev) => {
+                  ev.preventDefault()
+                  onUnarchiveClick(node)
+                }}
+                icon={unarchiveLine}
+              />
+              <StyledIcon
+                fontSize={32}
+                color="#df7777"
+                onClick={(ev) => {
+                  ev.preventDefault()
+                  setDelNode(item)
+                  setShowModal(true)
+                }}
+                icon={trashIcon}
+              />
+            </ActionContainer>
+          </Title>
+          <EditorPreviewRenderer content={content} editorId={`SnippetSearchPreview_editor_${item.id}`} />
+        </SplitSearchPreviewWrapper>
+      )
+    } else
+      return (
+        <SplitSearchPreviewWrapper>
+          <Title></Title>
+        </SplitSearchPreviewWrapper>
+      )
+  }
+  // mog('Archive', { archive })
 
   return (
     <SearchContainer>
-      <Title>Archive</Title>
+      <MainHeader>
+        <Title>Archive</Title>
+      </MainHeader>
 
       <SearchView
         id="ArchiveSearch"
         key="ArchiveSearch"
-        initialItems={archive}
-        onSearch={(search) => {
-          const searchResults = archive.filter((i) => {
-            const match = i.path.toLowerCase().includes(search.toLowerCase())
-            return match
-          })
-          return searchResults
-        }}
-        options={{
-          splitOptions: { type: SplitType.NONE },
-          view: View.Card
-        }}
-        getItemKey={(item) => `archive_${item.nodeid}`}
+        initialItems={initialArchive}
+        onSearch={onSearch}
+        getItemKey={(item) => `archive_${item.id}`}
         onSelect={(node) => {
-          const archiveNode: NodeProperties = {
-            id: node.path,
-            path: node.path,
-            title: node.path,
-            nodeid: node.nodeid
-          }
-
-          loadNode(node.nodeid, { savePrev: false, fetch: false, node: archiveNode })
+          mog('onSelect: NodeSelected', { node })
         }}
         onEscapeExit={() => {
           setShowModal(false)
           setDelNode(undefined)
         }}
         RenderItem={React.forwardRef(BaseItem)}
+        RenderPreview={RenderPreview}
       />
       <Modal
         className="ModalContent"

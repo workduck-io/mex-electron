@@ -16,6 +16,7 @@ export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
 
 export const Button = styled.button<ButtonProps>`
   ${centeredCss};
+  gap: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   color: ${({ theme }) => theme.colors.text.subheading};
   cursor: pointer;

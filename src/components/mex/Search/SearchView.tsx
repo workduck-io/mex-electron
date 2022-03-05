@@ -285,7 +285,7 @@ const SearchView = <Item,>({
 
   const ResultsView = (
     <Results key={`ResultForSearch_${id}`} view={view}>
-      {view === View.Card && <RenderStartCard />}
+      {view === View.Card && RenderStartCard && <RenderStartCard />}
       {result.map((c, i) => {
         // if (i === selected) mog('selected', { c, i })
         return (

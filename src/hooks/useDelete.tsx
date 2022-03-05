@@ -2,8 +2,12 @@ import React from 'react'
 import useDataStore from '../store/useDataStore'
 import { useHistoryStore } from '../store/useHistoryStore'
 import { useRecentsStore } from '../store/useRecentsStore'
+import { useSearchStore } from '../store/useSearchStore'
 import { ILink } from '../types/Types'
+import { getContent } from '../utils/helpers'
+import { mog } from '../utils/lib/helper'
 import { isMatch } from '../utils/lib/paths'
+import { convertEntryToRawText } from '../utils/search/localSearch'
 import useArchive from './useArchive'
 
 export const useDelete = () => {
@@ -15,6 +19,9 @@ export const useDelete = () => {
   const historyStack = useHistoryStore((state) => state.stack)
   const currentIndex = useHistoryStore((state) => state.currentNodeIndex)
   const updateHistory = useHistoryStore((state) => state.update)
+
+  const updateDoc = useSearchStore((store) => store.updateDoc)
+  const removeDoc = useSearchStore((store) => store.removeDoc)
 
   const lastOpened = useRecentsStore((state) => state.lastOpened)
   const updateLastOpened = useRecentsStore((state) => state.update)
@@ -49,6 +56,17 @@ export const useDelete = () => {
     if (baseId !== -1 && newIlinks.length > 0) {
       setBaseNodeId(newIlinks[0].path)
     }
+    archivedNodes.map((item) => {
+      mog('Archiving', { item })
+      const { path, nodeid } = item
+      const content = getContent(nodeid)
+      removeDoc('node', nodeid)
+      updateDoc('archive', convertEntryToRawText(nodeid, content.content, path))
+    })
+
+    // const archContent = getContent(del.)
+    // // Update Search
+    // updateDoc(newIlinks)
 
     setILinks(newIlinks)
     // initContents(newContents)
