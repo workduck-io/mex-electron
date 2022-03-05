@@ -2,15 +2,10 @@ import fs from 'fs'
 import { isEmpty, xor } from 'lodash'
 import path from 'path'
 
-import { indexKeys, indexNames } from '../../data/search'
+import { diskIndex, indexKeys, indexNames } from '../../data/search'
 
 export const getIndexData = (location: string) => {
-  const searchIndex = {
-    node: null,
-    snippet: null,
-    archive: null
-  }
-
+  const searchIndex = diskIndex
   if (!fs.existsSync(location)) return searchIndex
 
   Object.entries(indexKeys).forEach(([idxName, idxKeys]) => {
@@ -29,6 +24,7 @@ export const getIndexData = (location: string) => {
       searchIndex[idxName][key] = data ?? null
     }
 
+    // console.log(`\n====\n Indexing ${location} Positive \n====\n`, { keys, idxKeys })
     if (searchIndex[idxName]['title.map'] === '') searchIndex[idxName] = null
   })
 
@@ -44,7 +40,7 @@ export const setSearchIndexData = (index: Record<indexNames, any>, location: str
     idxKeys.forEach((key) => {
       try {
         const t = path.join(location, `${idxName}.${key}.json`)
-        const idxData = index[idxName]
+        const idxData = index[idxName][key]
         const d: any = idxData !== 'undefined' ? idxData : '' // This is not by mistake
         // console.log('got here?', { idxData, idxName, d })
         // console.log('got here?')

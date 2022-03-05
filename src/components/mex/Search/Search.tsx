@@ -50,7 +50,7 @@ const Search = () => {
       const res = searchIndex('node', newSearchTerm)
       const nodeids = useDataStore.getState().ilinks.map((l) => l.nodeid)
       const filRes = res.filter((r) => nodeids.includes(r.id))
-      // mog('search', { res, filRes })
+      mog('search', { res, filRes })
       return filRes
     } catch (e) {
       mog('Search broke', { e })

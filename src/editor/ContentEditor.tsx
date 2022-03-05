@@ -62,11 +62,11 @@ const ContentEditor = () => {
 
         const keywords = sw.removeStopwords(rawText.split(' ').filter(Boolean))
 
-        mog('keywords', { keywords })
         const results = searchIndex('node', keywords.join(' '))
 
         const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
 
+        mog('keywords', { keywords, results, withoutCurrentNode })
         setSuggestions(withoutCurrentNode)
       }
 

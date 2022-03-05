@@ -1,5 +1,5 @@
 import create from 'zustand'
-import { GenericSearchData, NodeSearchData } from '../types/data'
+import { FileData, GenericSearchData, NodeSearchData } from '../types/data'
 import { Document } from 'flexsearch'
 
 import { createSearchIndex, CreateSearchIndexData } from '../utils/search/flexsearch'
@@ -46,7 +46,7 @@ interface SearchStoreState {
   index: SearchIndex
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   indexDump: any
-  initializeSearchIndex: (initList: Record<indexNames, GenericSearchData[]>, indexData: any) => Document
+  initializeSearchIndex: (fileData: FileData, indexData: any) => Document
   addDoc: (index: keyof SearchIndex, doc: NodeSearchData) => void
   removeDoc: (index: keyof SearchIndex, nodeUID: string) => void
   updateDoc: (index: keyof SearchIndex, newDoc: GenericSearchData) => void
@@ -60,8 +60,8 @@ export const useSearchStore = create<SearchStoreState>((set, get) => ({
   index: diskIndex,
   indexDump: {},
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  initializeSearchIndex: (searchData, indexData: any) => {
-    const index = createSearchIndex(searchData, indexData)
+  initializeSearchIndex: (fileData, indexData: any) => {
+    const index = createSearchIndex(fileData, indexData)
     set({ index })
     // initList.forEach((doc) => {
     //   get().docs.set(doc.nodeUID, { title: doc.title, text: doc.text })
@@ -131,7 +131,7 @@ export const useSearchStore = create<SearchStoreState>((set, get) => ({
 
     Object.entries(get().index).forEach(([idxName, idxValue]) => {
       idxValue.export((key, data) => {
-        mog('fetchIndexLocalStorage', { idxName, key, data })
+        // mog('fetchIndexLocalStorage', { idxName, key, data })
         localStorage.setItem(`${idxName}.${key}`, data)
       })
     })

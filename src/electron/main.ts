@@ -492,7 +492,7 @@ ipcMain.on(IpcAction.SET_THEME, (ev, arg) => {
 
 ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
   const { searchIndex } = arg
-  console.log('Got here with index: ', searchIndex)
+  console.log('Got here with index')
   if (searchIndex) setSearchIndexData(searchIndex, SEARCH_INDEX_LOCATION)
 })
 

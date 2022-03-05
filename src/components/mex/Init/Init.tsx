@@ -52,7 +52,7 @@ const Init = () => {
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
   const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
 
-  const initFlexSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
+  const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
   const fetchIndexLocalStorage = useSearchStore((store) => store.fetchIndexLocalStorage)
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
@@ -86,9 +86,9 @@ const Init = () => {
           return { fileData, indexData }
         })
         .then(({ fileData, indexData }) => {
-          const initList = convertDataToIndexable(fileData)
-          mog('Initializaing Search Index', { indexData, initList })
-          const index = initFlexSearchIndex(initList, indexData)
+          // const initList = convertDataToIndexable(fileData)
+          // mog('Initializaing Search Index', { indexData, initList })
+          const index = initializeSearchIndex(fileData, indexData)
           return fileData
         })
         .then((d) => {

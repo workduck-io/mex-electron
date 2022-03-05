@@ -114,9 +114,7 @@ const GlobalListener = memo(() => {
       const { fileData, indexData } = arg
       const editorID = getNewDraftKey()
       init(fileData, editorID, AppType.SPOTLIGHT)
-      const initList = convertDataToIndexable(fileData)
-      mog('Initializaing Search Index', { indexData, initList })
-      initializeSearchIndex(initList, indexData)
+      initializeSearchIndex(fileData, indexData)
     })
 
     ipcRenderer.on(IpcAction.SPOTLIGHT_BUBBLE, (_event, arg) => {
