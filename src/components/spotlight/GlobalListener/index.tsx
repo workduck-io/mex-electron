@@ -42,6 +42,7 @@ const GlobalListener = memo(() => {
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const addILink = useDataStore((store) => store.addILink)
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
+  const updateDoc = useSearchStore((store) => store.updateDoc)
 
   const { onSave } = useSaver()
   const { init, update } = useInitialize()
@@ -139,6 +140,12 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.send(IpcAction.GET_LOCAL_DATA)
+
+    ipcRenderer.on(IpcAction.SYNC_INDEX, (event, arg) => {
+      const { parsedDoc } = arg
+      mog('SpotlightUpdateDoc: ', parsedDoc)
+      updateDoc('node', parsedDoc)
+    })
   }, [])
 
   return <></>

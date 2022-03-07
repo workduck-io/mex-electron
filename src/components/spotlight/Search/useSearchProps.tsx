@@ -16,6 +16,9 @@ import { useSaver } from '../../../editor/Components/Saver'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 
+import { useSearchStore } from '../../../store/useSearchStore'
+import { convertEntryToRawText } from '../../../utils/search/localSearch'
+
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
   const normalMode = useSpotlightAppStore((store) => store.normalMode)
@@ -52,6 +55,8 @@ export const useSaveChanges = () => {
 
   const { setSearch } = useSpotlightContext()
 
+  const updateDoc = useSearchStore((store) => store.updateDoc)
+
   const saveIt = (options?: SaveItProps) => {
     const isNodePresent = ilinks.find((ilink) => ilink.nodeid === node.nodeid)
     if (!isNodePresent) {
@@ -80,6 +85,10 @@ export const useSaveChanges = () => {
       title: 'Saved successfully!',
       independent: options?.saveAndClose
     })
+
+    const parsedDoc = convertEntryToRawText(node.nodeid, editorContent, node.title)
+    updateDoc('node', parsedDoc)
+    appNotifierWindow(IpcAction.SYNC_INDEX, AppType.SPOTLIGHT, { parsedDoc })
 
     setSearch({ value: '', type: CategoryType.search })
     setInput('')

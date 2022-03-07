@@ -56,6 +56,7 @@ const Init = () => {
   const { push } = useNavigation()
   const { getUidFromNodeId } = useLinks()
   const { onSave } = useSaver()
+  const updateDoc = useSearchStore((store) => store.updateDoc)
 
   /**
    * Setup save
@@ -179,6 +180,11 @@ const Init = () => {
       const appleNotesUID = getUidFromNodeId('Apple Notes')
       loadNode(appleNotesUID)
       goTo(ROUTE_PATHS.node, NavigationType.push, appleNotesUID)
+    })
+    ipcRenderer.on(IpcAction.SYNC_INDEX, (event, arg) => {
+      const { parsedDoc } = arg
+      mog('MexUpdateDoc: ', parsedDoc)
+      updateDoc('node', parsedDoc)
     })
   }, [fetchIndexLocalStorage, isOnboarding]) // eslint-disable-line react-hooks/exhaustive-deps
 
