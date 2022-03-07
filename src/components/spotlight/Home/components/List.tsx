@@ -18,7 +18,7 @@ import { IpcAction } from '../../../../data/IpcAction'
 import { AppType } from '../../../../hooks/useInitialize'
 import { convertContentToRawText } from '../../../../utils/search/localSearch'
 import { useSnippetStore } from '../../../../store/useSnippetStore'
-import { useContentStore } from '../../../../store/useContentStore'
+import { useSnippets } from '../../../../hooks/useSnippets'
 import { getPlateEditorRef, serializeHtml } from '@udecode/plate'
 import { mog } from '../../../../utils/lib/helper'
 
@@ -48,6 +48,8 @@ const List = ({
   const node = useSpotlightEditorStore((s) => s.node)
 
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
+
+  const { getSnippet } = useSnippets()
 
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
@@ -155,25 +157,11 @@ const List = ({
             }
 
             if (currentActiveItem?.type === QuickLinkType.snippet) {
-              const text = convertContentToRawText(
-                useSnippetStore.getState().snippets.find((s) => s.id === currentActiveItem?.id).content,
-                '\n'
-              )
-              const html = serializeHtml(getPlateEditorRef(), {
-                nodes: useSnippetStore.getState().snippets.find((s) => s.id === currentActiveItem?.id).content
-              })
-              appNotifierWindow(IpcAction.USE_SNIPPET, AppType.SPOTLIGHT, { text, html })
+              handleCopySnippet(currentActiveItem.id, true)
             }
           } else {
             if (currentActiveItem.type === QuickLinkType.snippet) {
-              const text = convertContentToRawText(
-                useSnippetStore.getState().snippets.find((s) => s.id === currentActiveItem?.id).content,
-                '\n'
-              )
-              const html = serializeHtml(getPlateEditorRef(), {
-                nodes: useSnippetStore.getState().snippets.find((s) => s.id === currentActiveItem?.id).content
-              })
-              appNotifierWindow(IpcAction.COPY_TO_CLIPBOARD, AppType.SPOTLIGHT, { text, html })
+              handleCopySnippet(currentActiveItem.id, false)
               setInput('')
             } else setNormalMode(false)
           }
@@ -211,6 +199,8 @@ const List = ({
     const currentActiveItem = data[id]
     if (currentActiveItem?.type === QuickLinkType.ilink && !activeItem.active) {
       setNormalMode(false)
+    } else if (currentActiveItem?.type === QuickLinkType.snippet && !activeItem.active) {
+      handleCopySnippet(currentActiveItem.id, true)
     } else {
       if (currentActiveItem?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
         setSelectedItem({ item: currentActiveItem, active: false })
@@ -221,6 +211,18 @@ const List = ({
       }
       setInput('')
     }
+  }
+
+  const handleCopySnippet = (id: string, isUse?: boolean) => {
+    const snippet = getSnippet(id)
+    const text = convertContentToRawText(snippet.content, '\n')
+    const html = serializeHtml(getPlateEditorRef(), {
+      nodes: snippet.content
+    })
+
+    const action = isUse ? IpcAction.USE_SNIPPET : IpcAction.COPY_TO_CLIPBOARD
+
+    appNotifierWindow(action, AppType.SPOTLIGHT, { text, html })
   }
 
   return (
@@ -237,6 +239,10 @@ const List = ({
               if (currentActiveItem?.type === ItemActionType.search) {
                 setCurrentListItem(currentActiveItem)
                 setSelectedItem({ item: currentActiveItem, active: true })
+              }
+
+              if (currentActiveItem?.type === QuickLinkType.snippet) {
+                handleCopySnippet(currentActiveItem.id)
               }
             },
             onDoubleClick: () => {
