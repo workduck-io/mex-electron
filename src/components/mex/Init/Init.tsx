@@ -18,6 +18,7 @@ import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useSyncData } from '../../../hooks/useSyncData'
 import { useUpdater } from '../../../hooks/useUpdater'
 import { useAuthStore } from '../../../services/auth/useAuth'
+import { useAnalysis, useAnalysisStore } from '../../../store/useAnalysis'
 import useBlockStore from '../../../store/useBlockStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
@@ -209,6 +210,7 @@ const Init = () => {
   }, [appleNotes, editor]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { setIpc } = useSyncData()
+  const { setIpc: setAnalysisIpc } = useAnalysis()
 
   // useEffect(() => {
   //   ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, async () => {
@@ -221,6 +223,7 @@ const Init = () => {
 
   useEffect(() => {
     setIpc()
+    setAnalysisIpc()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   /** Set shortcuts */
