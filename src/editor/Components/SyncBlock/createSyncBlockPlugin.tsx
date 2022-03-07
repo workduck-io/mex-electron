@@ -1,7 +1,5 @@
-import { PlatePlugin, getSlateClass } from '@udecode/plate-core'
+import { PlatePlugin } from '@udecode/plate-core'
 import { ELEMENT_SYNC_BLOCK } from '.'
-import { mog } from '../../../utils/lib/helper'
-import { getSyncBlockDeserialize } from './getSyncBlockDeserialize'
 
 /**
  * Enables support for Internal links.

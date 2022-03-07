@@ -59,7 +59,6 @@ import {
 
 import { ExcalidrawElement } from '../Components/Excalidraw'
 import TableWrapper from '../Components/TableWrapper'
-import Todo from '../Components/Todo'
 // import { TagCombobox } from '../Components/tag/components/TagCombobox';
 import { createBlurSelectionPlugin } from './blurSelection'
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
@@ -69,6 +68,7 @@ import { createTagPlugin } from '../Components/tag/createTagPlugin'
 import { withBlockOptions } from '../Components/Blocks'
 import { withStyledDraggables } from '../Actions/withDraggable'
 import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
+import createTodoPlugin from '../Components/Todo/createTodoPlugin'
 
 export type PluginOptionType = {
   exclude: {
@@ -103,12 +103,13 @@ export const generatePlugins = (options: PluginOptionType) => {
     createStrikethroughPlugin(), // strikethrough mark
     createCodePlugin(), // code mark
     createHighlightPlugin(), // highlight mark
-    createTodoListPlugin(),
+    // createTodoListPlugin(),
 
     // Special Elements
     createImagePlugin(), // Image
     createLinkPlugin(), // Link
     createListPlugin(), // List
+    createTodoPlugin(),
     createTablePlugin({ component: TableWrapper }), // Table
 
     // Editing Plugins
@@ -185,9 +186,11 @@ const useMemoizedPlugins = (components: Record<string, any>, options?: PluginOpt
     ? components
     : withStyledPlaceHolders(withStyledDraggables(withBlockOptions(components, {})))
 
-  return createPlugins(generatePlugins(options), {
+  const plugins = createPlugins(generatePlugins(options), {
     components: wrappedComponents
   })
+
+  return plugins
 }
 
 export default useMemoizedPlugins

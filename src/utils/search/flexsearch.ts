@@ -51,10 +51,9 @@ export const createGenricSearchIndex = (
 
   if (indexData && Object.keys(indexData).length > 0) {
     // When using a prebuilt index read from disk present in the indexData parameter
-    mog('Using Prebuilt Index!', {})
+    // mog('Using Prebuilt Index!', {})
     Object.entries(indexData).forEach(([key, data]) => {
       const parsedData = JSON.parse((data as string) ?? '') ?? null
-      mog('We have data is: ', { key, parsedData, data })
       index.import(key, parsedData)
     })
   } else {
