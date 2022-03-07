@@ -13,10 +13,13 @@ export const getIndexData = (location: string) => {
       .readdirSync(location, { withFileTypes: true })
       .filter((item) => !item.isDirectory())
       .filter((item) => item.name.startsWith(idxName))
-      .map((item) => item.name.slice(idxName.length + 1, -5)) // for the .json file extension
+      // -5 in the end for the JSON file extension and idxName.length + 1 for the idxName property in the beginning of filename
+      .map((item) => item.name.slice(idxName.length + 1, -5))
+
+    console.log(`IdxName: ${idxName} | Keys: ${keys}`)
 
     const areSame = isEmpty(xor(keys, idxKeys))
-    if (!areSame) return null
+    if (!areSame) searchIndex[idxName] = null
 
     for (let i = 0, key; i < keys.length; i += 1) {
       key = keys[i]

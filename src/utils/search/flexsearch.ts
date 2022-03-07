@@ -49,7 +49,7 @@ export const createGenricSearchIndex = (
 ): Document<GenericSearchData> => {
   const index = Document(options)
 
-  if (indexData) {
+  if (indexData && Object.keys(indexData).length > 0) {
     // When using a prebuilt index read from disk present in the indexData parameter
     mog('Using Prebuilt Index!', {})
     Object.entries(indexData).forEach(([key, data]) => {
@@ -58,7 +58,7 @@ export const createGenricSearchIndex = (
       index.import(key, parsedData)
     })
   } else {
-    mog('Adding from FileData', {})
+    mog('Adding from FileData', { initList })
     initList.forEach((i) => index.add(i))
   }
   return index

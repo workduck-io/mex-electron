@@ -482,6 +482,7 @@ ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
 ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
   const fileData: FileData = getFileData(SAVE_LOCATION)
   const indexData: any = getIndexData(SEARCH_INDEX_LOCATION)
+  console.log('Received Index Data: ', indexData)
   event.sender.send(IpcAction.RECIEVE_LOCAL_DATA, { fileData, indexData })
 })
 

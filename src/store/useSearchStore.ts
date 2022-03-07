@@ -46,7 +46,7 @@ interface SearchStoreState {
   index: SearchIndex
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   indexDump: any
-  initializeSearchIndex: (fileData: FileData, indexData: any) => Document
+  initializeSearchIndex: (fileData: FileData, indexData: any) => SearchIndex
   addDoc: (index: keyof SearchIndex, doc: NodeSearchData) => void
   removeDoc: (index: keyof SearchIndex, id: string) => void
   updateDoc: (index: keyof SearchIndex, newDoc: GenericSearchData) => void
@@ -101,8 +101,7 @@ export const useSearchStore = create<SearchStoreState>((set, get) => ({
       response.forEach((entry) => {
         const matchField = entry.field
         entry.result.forEach((i) => {
-          // mog('ResultEntry', i)
-          // const t = get().fetchDocByID(i, matchField)
+          mog('ResultEntry', { i })
           results.push({ id: i, matchField })
         })
       })
@@ -135,6 +134,7 @@ export const useSearchStore = create<SearchStoreState>((set, get) => ({
     // })
 
     Object.entries(get().index).forEach(([idxName, idxValue]) => {
+      // mog('IndexVal: ', { idxValue })
       idxValue.export((key, data) => {
         // mog('fetchIndexLocalStorage', { idxName, key, data })
         localStorage.setItem(`${idxName}.${key}`, data)
