@@ -140,10 +140,10 @@ const createSpotLighWindow = (show?: boolean) => {
     }
   })
 
-  // spotlight.on('blur', () => {
-  //   spotlight.hide()
-  //   spotlight.webContents.send(IpcAction.SPOTLIGHT_BLURRED)
-  // })
+  spotlight.on('blur', () => {
+    spotlight.hide()
+    spotlight.webContents.send(IpcAction.SPOTLIGHT_BLURRED)
+  })
 
   spotlight.on('closed', () => {
     spotlight = null

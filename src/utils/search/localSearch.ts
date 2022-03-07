@@ -4,8 +4,6 @@ import { indexNames, diskIndex } from '../../data/search'
 import { FileData, GenericSearchData } from '../../types/data'
 import { mog } from '../lib/helper'
 
-import { mog } from '../lib/helper'
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const convertContentToRawText = (content: any[], join?: string): string => {
   const text: string[] = []
@@ -83,12 +81,6 @@ export const convertDataToIndexable = (data: FileData): Record<indexNames, Gener
   }, diskIndex)
 
   mog('ConvertDataToIndexable', { data, result })
-
-  data?.snippets.map((snippet) => {
-    const temp: NodeSearchData = convertEntryToRawText(snippet.id, snippet.content)
-    temp.title = snippet.title
-    result.push(temp)
-  })
 
   return result
 }
