@@ -34,11 +34,15 @@ import {
   isSelectionAtBlockStart,
   isType,
   toggleList,
-  unwrapList
+  unwrapList,
+  setNodes,
+  TElement,
+  TodoListItemNodeData
 } from '@udecode/plate'
 
 import { ELEMENT_SYNC_BLOCK } from '../Components/SyncBlock'
 import { generateTempId } from '../../data/Defaults/idPrefixes'
+import { Editor } from 'slate'
 
 const preFormat = (editor: TEditor<AnyObject>) => unwrapList(editor as PlateEditor)
 
@@ -127,7 +131,20 @@ export const optionsAutoFormatRule: Array<AutoformatRule> = [
   {
     mode: 'block',
     type: ELEMENT_TODO_LI,
-    match: ['[]']
+    match: '[] '
+  },
+  {
+    mode: 'block',
+    type: ELEMENT_TODO_LI,
+    match: '[x] ',
+    format: (editor) =>
+      setNodes<TElement<TodoListItemNodeData>>(
+        editor,
+        { type: ELEMENT_TODO_LI, checked: true },
+        {
+          match: (n) => Editor.isBlock(editor, n)
+        }
+      )
   },
   {
     mode: 'block',

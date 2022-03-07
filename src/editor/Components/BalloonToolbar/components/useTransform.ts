@@ -1,20 +1,21 @@
-import { getNodes, getSelectionText, insertNodes, TEditor } from '@udecode/plate'
-import genereateName from 'project-name-generator'
-import toast from 'react-hot-toast'
 import { Editor, Transforms } from 'slate'
+import { NODE_PATH_CHAR_LENGTH, NODE_PATH_SPACER, getSlug } from '../../../../utils/lib/strings'
+import { TEditor, getNodes, getSelectionText, insertNodes } from '@udecode/plate'
+
+import { ELEMENT_ILINK } from '../../ilink/defaults'
+import { ELEMENT_SYNC_BLOCK } from '../../SyncBlock'
+import { ILinkNode } from '../../ilink/types'
 import { SEPARATOR } from '../../../../components/mex/Sidebar/treeUtils'
+import { convertContentToRawText } from '../../../../utils/search/localSearch'
 import { defaultContent } from '../../../../data/Defaults/baseData'
 import { generateSnippetId } from '../../../../data/Defaults/idPrefixes'
-import { useSaveData } from '../../../../hooks/useSaveData'
+import genereateName from 'project-name-generator'
+import toast from 'react-hot-toast'
 import { useContentStore } from '../../../../store/useContentStore'
 import useDataStore from '../../../../store/useDataStore'
 import { useEditorStore } from '../../../../store/useEditorStore'
+import { useSaveData } from '../../../../hooks/useSaveData'
 import { useSnippetStore } from '../../../../store/useSnippetStore'
-import { getSlug, NODE_PATH_CHAR_LENGTH, NODE_PATH_SPACER } from '../../../../utils/lib/strings'
-import { convertContentToRawText } from '../../../../utils/search/localSearch'
-import { ELEMENT_ILINK } from '../../ilink/defaults'
-import { ILinkNode } from '../../ilink/types'
-import { ELEMENT_SYNC_BLOCK } from '../../SyncBlock'
 
 export const useTransform = () => {
   const addILink = useDataStore((s) => s.addILink)
@@ -170,7 +171,8 @@ export const useTransform = () => {
       addSnippet({
         id: snippetId,
         title: snippetTitle,
-        content: value
+        content: value,
+        icon: 'ri:quill-pen-line'
       })
 
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value })

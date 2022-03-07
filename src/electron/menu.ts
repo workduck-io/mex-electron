@@ -60,7 +60,7 @@ export default class MenuBuilder {
           label: 'Check for Updates',
           click: () => {
             toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.LOADING, title: 'Checking for updates..' })
-            toast?.open(true, true)
+            toast?.open(true, true, false)
             autoUpdater.checkForUpdates()
           }
         },

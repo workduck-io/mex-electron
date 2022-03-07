@@ -64,6 +64,7 @@ const Snippets = () => {
     addSnippet({
       id: snippetId,
       title: genereateName().dashed,
+      icon: 'ri:quill-pen-line',
       content: [{ children: [{ text: '' }], type: ELEMENT_PARAGRAPH }]
     })
 

@@ -3,26 +3,24 @@ import { ItemActionType, ListItemType } from '../SearchResults/types'
 
 import { AppType } from '../../../hooks/useInitialize'
 import { IpcAction } from '../../../data/IpcAction'
-import { ipcRenderer } from 'electron'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
 
 const useItemExecutor = () => {
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
   const { setSearch, setActiveItem } = useSpotlightContext()
   const setInput = useSpotlightAppStore((store) => store.setInput)
+
   const closeSpotlight = () => {
     setInput('')
     setSearch({ value: '', type: CategoryType.search })
-    ipcRenderer.send(IpcAction.CLOSE_SPOTLIGHT, {
-      data: {
-        hide: true
-      }
-    })
+    appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
+
     setActiveItem({ item: undefined, active: false })
   }
 
-  function itemActionExecutor(item: ListItemType, query?: string) {
+  const itemActionExecutor = (item: ListItemType, query?: string) => {
     switch (item.type) {
       case ItemActionType.action:
         break
@@ -35,7 +33,7 @@ const useItemExecutor = () => {
         // render the component present in the item
         break
       case ItemActionType.ipc:
-        ipcRenderer.send(item.extras.ipcAction, { from: AppType.SPOTLIGHT })
+        appNotifierWindow(item.extras.ipcAction, AppType.SPOTLIGHT)
         break
       case ItemActionType.search: {
         const url = encodeURI(item.extras.base_url + query)

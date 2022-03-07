@@ -16,7 +16,6 @@ import installLine from '@iconify-icons/ri/install-line'
 import user3Line from '@iconify-icons/ri/user-3-line'
 import { Icon } from '@iconify/react'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
-import { mog } from '../../utils/lib/helper'
 
 export const SettingsContainer = styled.section`
   display: flex;

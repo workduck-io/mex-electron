@@ -1,6 +1,6 @@
 import { CategoryType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { Description, StyledRow } from '../../SearchResults/styled'
-import { ItemActionType, ListItemType } from '../../SearchResults/types'
+import { ListItemType } from '../../SearchResults/types'
 import styled, { css, useTheme } from 'styled-components'
 
 import { DisplayShortcut } from '../../../mex/Shortcuts'
@@ -8,6 +8,8 @@ import { Icon } from '@iconify/react'
 import { PrimaryText } from '../../../../style/Integration'
 import React from 'react'
 import { cleanString } from '../../../../data/Defaults/idPrefixes'
+import { QuickLinkType } from '../../../mex/NodeSelect/NodeSelect'
+import { mog } from '../../../../utils/lib/helper'
 
 export const ActionIcon = styled.div`
   display: flex;
@@ -76,14 +78,14 @@ function Item({ item, active, onClick }: { item: ListItemType; active?: boolean;
                   Create a <PrimaryText>{search.value && !activeItem.active ? newNodeName : 'Quick note'}</PrimaryText>
                 </>
               ) : (
-                <>{item?.type === ItemActionType.ilink ? cleanString(item?.title) : item?.title}</>
+                <>{item?.type === QuickLinkType.ilink ? cleanString(item?.title) : item?.title}</>
               )}
             </div>
             <Description>{item?.description ?? 'some content'}</Description>
           </div>
         </div>
       </div>
-      {active && (
+      {active && item.shortcut && (
         <div
           style={{
             margin: '0 0.5rem',
@@ -92,22 +94,17 @@ function Item({ item, active, onClick }: { item: ListItemType; active?: boolean;
             justifyContent: 'center'
           }}
         >
-          {item?.type === ItemActionType.ilink ? (
-            <>
-              {selection && (
-                <ShortcutText>
-                  <DisplayShortcut shortcut="$mod+Enter" /> <div className="text">to save</div>
-                </ShortcutText>
-              )}
-              <ShortcutText>
-                <DisplayShortcut shortcut="Enter" /> <span className="text">to edit</span>
+          {Object.entries(item.shortcut).map(([key, shortcut]) => {
+            if (item.type === QuickLinkType.ilink && key === 'save') {
+              if (!selection) return <></>
+            }
+
+            return (
+              <ShortcutText key={shortcut.title}>
+                <DisplayShortcut shortcut={shortcut.keystrokes} /> <div className="text">{shortcut.title}</div>
               </ShortcutText>
-            </>
-          ) : (
-            <ShortcutText>
-              <DisplayShortcut shortcut="Enter" />
-            </ShortcutText>
-          )}
+            )
+          })}
         </div>
       )}
     </StyledRow>
