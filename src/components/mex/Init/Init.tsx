@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import tinykeys from 'tinykeys'
 import config from '../../../apis/config'
 import { IpcAction } from '../../../data/IpcAction'
-import { diskIndex, indexKeys, indexNames } from '../../../data/search'
 import { useSaver } from '../../../editor/Components/Saver'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
@@ -31,7 +30,6 @@ import { useSearchStore } from '../../../store/useSearchStore'
 import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
 import { AppleNote } from '../../../utils/importers/appleNotes'
 import { mog } from '../../../utils/lib/helper'
-import { convertDataToIndexable } from '../../../utils/search/localSearch'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 
 const Init = () => {
@@ -86,8 +84,6 @@ const Init = () => {
           return { fileData, indexData }
         })
         .then(({ fileData, indexData }) => {
-          // const initList = convertDataToIndexable(fileData)
-          // mog('Initializaing Search Index', { indexData, initList })
           const index = initializeSearchIndex(fileData, indexData)
           return fileData
         })
@@ -151,20 +147,21 @@ const Init = () => {
         goTo(page, NavigationType.replace)
       }
     })
+    // TODO: THIS DOESN'T WORK. INDEX IS RELOADED ON EVERY APP OPEN`
     ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, () => {
-      fetchIndexLocalStorage()
-      const searchIndex = Object.entries(indexNames).reduce((p, c) => {
-        const currIdx = {}
-        indexKeys[c[0]].forEach((key) => {
-          const t = localStorage.getItem(`${c[0]}.${key}`)
-          if (t === null) currIdx[key] = ''
-          else currIdx[key] = t
-        })
-
-        return { ...p, [c[0]]: currIdx }
-      }, diskIndex)
-      mog('SearchIndexForLocal', { searchIndex })
-      ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndex })
+      // setSearchIndexData(searchIndex, '.')
+      // const searchIndex = await fetch('https://google.com`')
+      // fetchIndexLocalStorage().then((searchIndex) => {
+      // })
+      // const searchIndex = Object.entries(indexNames).reduce((p, c) => {
+      //   const currIdx = {}
+      //   indexKeys[c[0]].forEach((key) => {
+      //     const t = localStorage.getItem(`${c[0]}.${key}`)
+      //     if (t === null) currIdx[key] = ''
+      //     else currIdx[key] = t
+      //   })
+      //   return { ...p, [c[0]]: currIdx }
+      // }, diskIndex)
     })
     ipcRenderer.on(IpcAction.CREATE_NEW_NODE, () => {
       const newNodeId = getNewDraftKey()
@@ -203,9 +200,18 @@ const Init = () => {
 
       setAppleNotes([])
     }
-  }, [appleNotes, editor])
+  }, [appleNotes, editor]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { setIpc } = useSyncData()
+
+  // useEffect(() => {
+  //   ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, async () => {
+  //     const searchIndex = await fetchIndexLocalStorage()
+  //     mog('SearchIndexForLocal', { searchIndex })
+  //     alert('YOOOO')
+  //     ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndex })
+  //   })
+  // }, [fetchIndexLocalStorage])
 
   useEffect(() => {
     setIpc()

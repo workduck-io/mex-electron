@@ -2,7 +2,7 @@ import { Document } from 'flexsearch'
 
 import { GenericSearchResult, SearchIndex } from '../../store/useSearchStore'
 import { FileData, GenericSearchData, NodeSearchData } from '../../types/data'
-import { indexNames } from '../../data/search'
+import { diskIndex, indexNames } from '../../data/search'
 import { mog } from '../lib/helper'
 import { convertDataToIndexable } from './localSearch'
 
@@ -47,7 +47,7 @@ export const createGenricSearchIndex = (
     tokenize: 'full'
   }
 ): Document<GenericSearchData> => {
-  const index = Document(options)
+  const index = new Document<GenericSearchData>(options)
 
   if (indexData && Object.keys(indexData).length > 0) {
     // When using a prebuilt index read from disk present in the indexData parameter
@@ -62,4 +62,33 @@ export const createGenricSearchIndex = (
     initList.forEach((i) => index.add(i))
   }
   return index
+}
+
+export const exportAsync = (index) => {
+  const idxResult = {}
+  return new Promise<any>((resolve, reject) => {
+    try {
+      return index.export(async (key, data) => {
+        try {
+          idxResult[key] = data
+          if (key === 'store') {
+            // Hacky Fix: store is the last key that is exported so we resolve when store finishes exporting
+            resolve(idxResult)
+          }
+        } catch (err) {
+          reject(err)
+        }
+      })
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+
+export const exportIndex = async (indexEntries) => {
+  const result = diskIndex
+  for (const [idxName, idxVal] of indexEntries) {
+    result[idxName] = await exportAsync(idxVal)
+  }
+  return result
 }

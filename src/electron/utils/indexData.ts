@@ -16,8 +16,6 @@ export const getIndexData = (location: string) => {
       // -5 in the end for the JSON file extension and idxName.length + 1 for the idxName property in the beginning of filename
       .map((item) => item.name.slice(idxName.length + 1, -5))
 
-    console.log(`IdxName: ${idxName} | Keys: ${keys}`)
-
     const areSame = isEmpty(xor(keys, idxKeys))
     if (!areSame) searchIndex[idxName] = null
 
@@ -35,18 +33,14 @@ export const getIndexData = (location: string) => {
 }
 
 export const setSearchIndexData = (index: Record<indexNames, any>, location: string) => {
-  // console.log('got here?')
   if (!fs.existsSync(location)) fs.mkdirSync(location)
 
   Object.entries(indexKeys).forEach(([idxName, idxKeys]) => {
-    // console.log('got here? tooo')
     idxKeys.forEach((key) => {
       try {
         const t = path.join(location, `${idxName}.${key}.json`)
         const idxData = index[idxName][key]
-        const d: any = idxData !== 'undefined' ? idxData : '' // This is not by mistake
-        // console.log('Setting here:', { idxName, idxData, d })
-        // console.log('got here?')
+        const d: any = idxData !== undefined ? idxData : '' // This is not by mistake
         fs.writeFileSync(t, JSON.stringify(d))
       } catch (err) {
         console.log('Error is: ', err)

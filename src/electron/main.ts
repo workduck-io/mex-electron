@@ -349,7 +349,7 @@ ipcMain.on('close', closeWindow)
 
 app.on('before-quit', () => {
   console.log('App before quit')
-  mex?.webContents.send(IpcAction.GET_LOCAL_INDEX)
+  // mex?.webContents.send(IpcAction.GET_LOCAL_INDEX)
   console.log('Sent IPC Action to fetch index')
   // toast?.destroy()
 
@@ -493,7 +493,6 @@ ipcMain.on(IpcAction.SET_THEME, (ev, arg) => {
 
 ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
   const { searchIndex } = arg
-  console.log('Got here with index', searchIndex)
   if (searchIndex) setSearchIndexData(searchIndex, SEARCH_INDEX_LOCATION)
 })
 
