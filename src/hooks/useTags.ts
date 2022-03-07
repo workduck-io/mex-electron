@@ -1,24 +1,10 @@
-import { uniq } from 'lodash'
-import { ELEMENT_TAG } from '../editor/Components/tag/defaults'
+import { useAnalysisStore } from '../store/useAnalysis'
 import useDataStore from '../store/useDataStore'
 import { TagsCache } from '../types/Types'
 import { Settify } from '../utils/helpers'
+import { getTagsFromContent } from '../utils/lib/content'
+import { mog } from '../utils/lib/helper'
 import { useNodes } from './useNodes'
-
-const getTagsFromContent = (content: any[]): string[] => {
-  let tags: string[] = []
-
-  content.forEach((n) => {
-    if (n.type === 'tag' || n.type === ELEMENT_TAG) {
-      tags.push(n.value)
-    }
-    if (n.children && n.children.length > 0) {
-      tags = tags.concat(getTagsFromContent(n.children))
-    }
-  })
-
-  return uniq(tags)
-}
 
 /**
   Tags req
@@ -58,9 +44,16 @@ export const useTags = () => {
   const _getTags = (nodeid: string, tagsCache: TagsCache): string[] =>
     Object.keys(tagsCache).filter((t) => tagsCache[t].nodes.includes(nodeid))
 
-  const getTags = (nodeid: string): string[] => {
+  const getTags = (nodeid: string, fromAnalysis = false): string[] => {
     const tagsCache = useDataStore.getState().tagsCache
-    return _getTags(nodeid, tagsCache)
+    if (!fromAnalysis) {
+      return _getTags(nodeid, tagsCache)
+    }
+    const analTags = useAnalysisStore.getState().tags
+
+    mog('getTags', { analTags })
+
+    return analTags
   }
 
   const getNodesAndCleanCacheForTag = (tag: string): { nodes: string[]; cleanCache: TagsCache } => {
@@ -76,12 +69,13 @@ export const useTags = () => {
    * Produce a list of related nodes that share the same tags with the given node
    * The list is sorted by the number of common tags between the nodes
    * */
-  const getRelatedNodes = (nodeid: string) => {
+  const getRelatedNodes = (nodeid: string, fromAnalysis = false) => {
     const tagsCache = useDataStore.getState().tagsCache
-    const tags = getTags(nodeid)
+    const tags = getTags(nodeid, fromAnalysis)
 
     /** Related nodes per tag **/
     const relatedNodes: RelatedNodes = tags.reduce((p, t) => {
+      if (!tagsCache[t]) return p
       return {
         ...p,
         [t]: tagsCache[t].nodes.filter((id) => id !== nodeid && !isInArchive(id))

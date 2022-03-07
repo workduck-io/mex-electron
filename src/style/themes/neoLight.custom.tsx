@@ -9,7 +9,6 @@ import { Widget } from '../../editor/Components/SyncBlock'
 import { AsyncButton, Button } from '../Buttons'
 import { DataInfobarWrapper } from '../../components/mex/Sidebar/DataInfoBar'
 import { StyledGraph, GraphTools, GraphWrapper } from '../../components/mex/Graph/Graph.styles'
-import { InfoBarWrapper } from '../../components/layouts/InfoBar'
 import { EditorPreviewWrapper } from '../../editor/Components/EditorPreview/EditorPreview.styles'
 import { SettingsOptions, SettingTitle } from '../../views/mex/Settings'
 import { BackCard } from '../Card'
@@ -24,6 +23,7 @@ import { SwitchWrapper } from '../../views/router/Switch'
 import { BalloonToolbarBase } from '../../editor/Components/BalloonToolbar'
 import { StyledMenu } from '../../components/mex/NodeSelect/NodeSelect.styles'
 import { SILink } from '../../editor/Components/ilink/components/ILinkElement.styles'
+import { InfoBarWrapper } from '../infobar'
 
 const palette = { body: '#C4CCE0', background: '#D2D9EC', shadow: '#576BA4', primDark: '#4263B6' }
 const grayMixerTrans = (n: number) => css`

@@ -74,7 +74,7 @@ const TagLink = styled(BaseLink)<{ active?: boolean; selected?: boolean }>`
 const Tag = () => {
   const contents = useContentStore((store) => store.contents)
   const { tag } = useParams<{ tag: string }>()
-  const tagsCache = useDataStore((store) => store.tagsCache)
+  // const tagsCache = useDataStore((store) => store.tagsCache)
   const { getNodesAndCleanCacheForTag } = useTags()
   const { getNodeIdFromUid } = useLinks()
   const { nodes, cleanCache } = getNodesAndCleanCacheForTag(tag)

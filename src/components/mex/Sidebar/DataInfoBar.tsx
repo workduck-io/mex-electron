@@ -10,6 +10,7 @@ export const DataInfobarWrapper = styled.div`
   height: 100%;
   flex-direction: column;
   justify-content: center;
+  gap: ${({ theme }) => theme.spacing.large};
   padding: ${({ theme }) => `${theme.spacing.medium}`};
   max-width: 300px;
 `

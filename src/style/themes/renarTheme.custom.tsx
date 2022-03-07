@@ -9,7 +9,6 @@ import { Widget } from '../../editor/Components/SyncBlock'
 import { AsyncButton, Button } from '../Buttons'
 import { DataInfobarWrapper } from '../../components/mex/Sidebar/DataInfoBar'
 import { StyledGraph, GraphTools, GraphWrapper } from '../../components/mex/Graph/Graph.styles'
-import { InfoBarWrapper } from '../../components/layouts/InfoBar'
 import { EditorPreviewWrapper } from '../../editor/Components/EditorPreview/EditorPreview.styles'
 import { SettingsOptions, SettingTitle } from '../../views/mex/Settings'
 import { BackCard } from '../Card'
@@ -21,6 +20,7 @@ import { Result, ResultHeader, SearchContainer } from '../Search'
 import { CreateSnippet, SSnippet } from '../Snippets'
 import { ComboboxRoot, ComboboxItem } from '../../editor/Components/tag/components/TagCombobox.styles'
 import { ActionDraggableIcon } from '../../editor/Actions/withDraggable'
+import { InfoBarWrapper } from '../infobar'
 
 const grayMixerTrans = (n: number) => css`
   ${({ theme }) => transparentize(0.33, theme.colors.gray[n])}

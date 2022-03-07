@@ -32,33 +32,39 @@ export const useAnalysisStore = create<AnalysisStore>((set, get) => ({
   }
 }))
 
-export const useAnalysis = () => {
+export const useAnalysisIPC = () => {
   const setAnalysis = useAnalysisStore((s) => s.setAnalysis)
-
   const node = useEditorStore((s) => s.node)
-  const { getBufferVal } = useEditorBuffer()
-  const buffer = useBufferStore((s) => s.buffer)
 
   const setIpc = () => {
     mog('Setting up IPC for analysis', { node })
     ipcRenderer.on(IpcAction.RECIEVE_ANALYIS, (_event, analysis: any) => {
-      mog('analysisRecieved', { analysis })
+      // mog('analysisRecieved', { analysis })
       if (analysis) setAnalysis(analysis)
     })
   }
 
+  return setIpc
+}
+
+export const useAnalysis = () => {
+  const node = useEditorStore((s) => s.node)
+  const { getBufferVal } = useEditorBuffer()
+  const buffer = useBufferStore((s) => s.buffer)
+
+  // mog('Setting up IPC for Buffer', { node })
   useEffect(() => {
     const bufferContent = getBufferVal(node.nodeid)
     mog('sending for calc', { node, buffer })
     if (bufferContent) {
-      mog('Buffer for calc', { bufferContent })
+      // mog('Buffer for calc', { bufferContent })
       ipcRenderer.send(IpcAction.ANALYSE_CONTENT, bufferContent)
     } else {
       const content = getContent(node.nodeid)
-      mog('Content for calc', { content })
+      // mog('Content for calc', { content })
       if (content && content.content) ipcRenderer.send(IpcAction.ANALYSE_CONTENT, content.content)
     }
   }, [node.nodeid, buffer])
 
-  return { setIpc }
+  return {}
 }
