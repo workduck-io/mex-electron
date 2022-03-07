@@ -1,7 +1,7 @@
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { ListItemType } from '../SearchResults/types'
 
-import { getListItemFromNode } from './helper'
+import { getListItemFromNode, getListItemFromSnippet } from './helper'
 import { search as getSearchResults } from 'fast-fuzzy'
 import { initActions } from '../../../data/Actions'
 import { isReservedOrClash } from '../../../utils/lib/paths'
@@ -11,6 +11,7 @@ import useLoad from '../../../hooks/useLoad'
 import { useSearchStore } from '../../../store/useSearchStore'
 import { useQuickLinks } from '../../../hooks/useQuickLinks'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
+import { useSnippets } from '../../../hooks/useSnippets'
 
 export const CREATE_NEW_ITEM: ListItemType = {
   title: 'Create new ',
@@ -41,6 +42,7 @@ export const useSearch = () => {
   const { search } = useSpotlightContext()
   const searchIndex = useSearchStore((store) => store.searchIndex)
   const { getQuickLinks } = useQuickLinks()
+  const { getSnippet } = useSnippets()
 
   const searchInList = () => {
     let searchList: Array<ListItemType> = []
@@ -71,17 +73,28 @@ export const useSearch = () => {
         break
 
       case CategoryType.search:
-        const items = searchIndex('node', search.value)
+        const nodeItems = searchIndex('node', search.value)
+        const snippetItems = searchIndex('snippet', search.value)
+
         const actionItems = getSearchResults(search.value, initActions, { keySelector: (obj) => obj.title })
         const localNodes = []
 
-        items.forEach((item) => {
+        nodeItems.forEach((item) => {
           const localNode = isLocalNode(item.id)
 
           if (localNode.isLocal) {
             const listItem = getListItemFromNode(localNode.ilink)
             localNodes.push(listItem)
           }
+        })
+
+        mog('snippets', { snippetItems })
+
+        snippetItems.forEach((snippet) => {
+          const snip = getSnippet(snippet.id)
+          const item = getListItemFromSnippet(snip)
+          mog('item', { item })
+          localNodes.push(item)
         })
 
         const isNew = !isReservedOrClash(

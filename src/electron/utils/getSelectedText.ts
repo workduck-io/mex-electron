@@ -35,14 +35,7 @@ export const getSelectedText = async (): Promise<SelectionType> => {
 
   clipboard.clear()
   simulateCopy()
-  mog('CLIPBOARD', {
-    bookmark: clipboard.readBookmark(),
-    text: clipboard.readText(),
-    findText: clipboard.readFindText(),
-    formats: clipboard.availableFormats(),
-    read: clipboard.readRTF(),
-    html: clipboard.readHTML()
-  })
+
   const windowDetails = await activeWindow()
 
   const selectedText = clipboard.readHTML()

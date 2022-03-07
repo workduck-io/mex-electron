@@ -1,4 +1,4 @@
-import { ItemActionType, ListItemType } from '../SearchResults/types'
+import { ListItemType } from '../SearchResults/types'
 
 import { CategoryType } from '../../../store/Context/context.spotlight'
 import { ILink } from '../../../types/Types'
@@ -43,7 +43,7 @@ export const getListItemFromNode = (node: ILink) => {
 export const getListItemFromSnippet = (snippet: Snippet) => {
   const rawText = convertContentToRawText(snippet?.content ?? [], ' ')
   const listItem: ListItemType = {
-    icon: snippet.icon,
+    icon: snippet.icon ?? 'ri:quill-pen-line',
     title: snippet.title,
     id: snippet.id,
     description: rawText,
