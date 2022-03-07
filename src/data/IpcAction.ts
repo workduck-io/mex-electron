@@ -39,5 +39,8 @@ export enum IpcAction {
   // * Toast
   SHOW_TOAST = 'SHOW_TOAST',
   HIDE_TOAST = 'HIDE_TOAST',
-  TOAST_MESSAGE = 'TOAST_MESSAGE'
+  TOAST_MESSAGE = 'TOAST_MESSAGE',
+
+  // Sync Index
+  SYNC_INDEX = 'SYNC_INDEX'
 }

@@ -45,6 +45,7 @@
     "@iconify/icons-simple-icons": "^1.1.36",
     "@iconify/react": "^3.0.1",
     "@timfish/forge-externals-plugin": "^0.1.2",
+    "@types/flexsearch": "^0.7.2",
     "@types/md5": "^2.3.1",
     "@types/react": "^17.0.18",
     "@types/react-dom": "^17.0.9",

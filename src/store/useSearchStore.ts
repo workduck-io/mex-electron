@@ -2,7 +2,7 @@ import create from 'zustand'
 import { FileData, GenericSearchData, NodeSearchData } from '../types/data'
 import { Document } from 'flexsearch'
 
-import { createSearchIndex, CreateSearchIndexData } from '../utils/search/flexsearch'
+import { createSearchIndex, exportAsync } from '../utils/search/flexsearch'
 import { mog } from '../utils/lib/helper'
 import { indexNames, diskIndex } from './../data/search'
 
@@ -11,48 +11,48 @@ interface NodeTitleText {
   text: string
 }
 
-interface NewSearchStoreState {
-  docs: Map<string, NodeTitleText>
-  index: Document | null
-  indexDump: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  initializeSearchIndex: (initList: NodeSearchData[], indexData: any) => Document
-  addDoc: (doc: NodeSearchData) => void
-  addMultipleDocs: (docs: NodeSearchData[]) => void
-  removeDoc: (nodeUID: string) => void
-  updateDoc: (nodeUID: string, newDoc: NodeSearchData, title: string) => void
-  // fetchDocByID: (id: string, matchField: string) => NodeSearchResult
-  // searchIndex: (query: string) => NodeSearchResult[]
-  fetchIndexLocalStorage: () => void
-}
+// interface NewSearchStoreState {
+//   docs: Map<string, NodeTitleText>
+//   index: Document<GenericSearchData> | null
+//   indexDump: any
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   initializeSearchIndex: (initList: NodeSearchData[], indexData: any) => Document<GenericSearchData>
+//   addDoc: (doc: NodeSearchData) => void
+//   addMultipleDocs: (docs: NodeSearchData[]) => void
+//   removeDoc: (nodeUID: string) => void
+//   updateDoc: (nodeUID: string, newDoc: NodeSearchData, title: string) => void
+//   // fetchDocByID: (id: string, matchField: string) => NodeSearchResult
+//   // searchIndex: (query: string) => NodeSearchResult[]
+//   fetchIndexLocalStorage: () => void
+// }
 
 // prettier-ignore
 export interface GenericSearchResult {
-  id:         string
-  title?:     string
-  text?:      string
-  matchField?: string[]
-}
+    id:         string
+    title?:     string
+    text?:      string
+    matchField?: string[]
+  }
 
 // prettier-ignore
 export interface SearchIndex {
-  node:    Document<GenericSearchData> | null
-  snippet: Document<GenericSearchData> | null
-  archive: Document<GenericSearchData> | null
-}
+    node:    Document<GenericSearchData> | null
+    snippet: Document<GenericSearchData> | null
+    archive: Document<GenericSearchData> | null
+  }
 
 interface SearchStoreState {
   // docs: Map<string, NodeTitleText>
   index: SearchIndex
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   indexDump: any
-  initializeSearchIndex: (fileData: FileData, indexData: any) => Document
-  addDoc: (index: keyof SearchIndex, doc: NodeSearchData) => void
+  initializeSearchIndex: (fileData: FileData, indexData: any) => SearchIndex
+  addDoc: (index: keyof SearchIndex, doc: GenericSearchData) => void
   removeDoc: (index: keyof SearchIndex, id: string) => void
   updateDoc: (index: keyof SearchIndex, newDoc: GenericSearchData) => void
   // fetchDocByID: (index: keyof SearchIndex, id: string, matchField: string[]) => GenericSearchResult
   searchIndex: (index: keyof SearchIndex, query: string) => GenericSearchResult[]
-  fetchIndexLocalStorage: () => void
+  fetchIndexLocalStorage: () => any
 }
 
 export const useSearchStore = create<SearchStoreState>((set, get) => ({
@@ -69,7 +69,7 @@ export const useSearchStore = create<SearchStoreState>((set, get) => ({
     return index
   },
 
-  addDoc: (key, doc: NodeSearchData) => {
+  addDoc: (key, doc: GenericSearchData) => {
     // get().docs.set(doc.nodeUID, { title: doc.title, text: doc.text })
     if (get().index[key]) {
       get().index[key].add(doc)
@@ -101,8 +101,7 @@ export const useSearchStore = create<SearchStoreState>((set, get) => ({
       response.forEach((entry) => {
         const matchField = entry.field
         entry.result.forEach((i) => {
-          // mog('ResultEntry', i)
-          // const t = get().fetchDocByID(i, matchField)
+          mog('ResultEntry', { i })
           results.push({ id: i, matchField })
         })
       })
@@ -128,17 +127,13 @@ export const useSearchStore = create<SearchStoreState>((set, get) => ({
     }
   },
 
-  fetchIndexLocalStorage: () => {
-    // get().index['node'].export((key, data) => {
-    //   mog('fetchIndexLocalStorage', { key, data })
-    //   localStorage.setItem(key, data)
-    // })
+  fetchIndexLocalStorage: async () => {
+    const indexEntries = Object.entries(get().index)
+    const result = diskIndex
 
-    Object.entries(get().index).forEach(([idxName, idxValue]) => {
-      idxValue.export((key, data) => {
-        // mog('fetchIndexLocalStorage', { idxName, key, data })
-        localStorage.setItem(`${idxName}.${key}`, data)
-      })
-    })
+    for (const [idxName, idxVal] of indexEntries) {
+      result[idxName] = await exportAsync(idxVal)
+    }
+    return result
   }
 }))

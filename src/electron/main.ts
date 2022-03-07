@@ -349,7 +349,7 @@ ipcMain.on('close', closeWindow)
 
 app.on('before-quit', () => {
   console.log('App before quit')
-  mex?.webContents.send(IpcAction.GET_LOCAL_INDEX)
+  // mex?.webContents.send(IpcAction.GET_LOCAL_INDEX)
   console.log('Sent IPC Action to fetch index')
   // toast?.destroy()
 
@@ -482,6 +482,7 @@ ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
 ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
   const fileData: FileData = getFileData(SAVE_LOCATION)
   const indexData: any = getIndexData(SEARCH_INDEX_LOCATION)
+  console.log('Received Index Data: ', indexData)
   event.sender.send(IpcAction.RECIEVE_LOCAL_DATA, { fileData, indexData })
 })
 
@@ -492,7 +493,6 @@ ipcMain.on(IpcAction.SET_THEME, (ev, arg) => {
 
 ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
   const { searchIndex } = arg
-  console.log('Got here with index', searchIndex)
   if (searchIndex) setSearchIndexData(searchIndex, SEARCH_INDEX_LOCATION)
 })
 
@@ -575,6 +575,13 @@ ipcMain.on(IpcAction.IMPORT_APPLE_NOTES, async () => {
   const selectedAppleNotes = await getAppleNotes()
 
   if (selectedAppleNotes) mex?.webContents.send(IpcAction.SET_APPLE_NOTES_DATA, selectedAppleNotes)
+})
+
+ipcMain.on(IpcAction.SYNC_INDEX, (event, arg) => {
+  const { from, data } = arg
+
+  if (from === AppType.MEX) spotlight?.webContents.send(IpcAction.SYNC_INDEX, data)
+  else if (from === AppType.SPOTLIGHT) mex?.webContents.send(IpcAction.SYNC_INDEX, data)
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

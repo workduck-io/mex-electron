@@ -23,6 +23,10 @@ import { useSaveData } from '../../hooks/useSaveData'
 import { useSnippetStore } from '../../store/useSnippetStore'
 import { useTags } from '../../hooks/useTags'
 import { useUpdater } from '../../hooks/useUpdater'
+import { ipcRenderer } from 'electron'
+import { appNotifierWindow } from '../../electron/utils/notifiers'
+import { IpcAction } from '../../data/IpcAction'
+import { AppType } from '../../hooks/useInitialize'
 
 export const useDataSaverFromContent = () => {
   const setContent = useContentStore((state) => state.setContent)
@@ -42,7 +46,9 @@ export const useDataSaverFromContent = () => {
       updateLinksFromContent(nodeid, editorValue)
       updateTagsFromContent(nodeid, editorValue)
       const title = getNodeIdFromUid(nodeid)
-      updateDoc('node', convertEntryToRawText(nodeid, editorValue, title))
+      const parsedDoc = convertEntryToRawText(nodeid, editorValue, title)
+      updateDoc('node', parsedDoc)
+      appNotifierWindow(IpcAction.SYNC_INDEX, AppType.MEX, { parsedDoc })
       // saveData()
     }
   } //, [])
