@@ -2,7 +2,6 @@ import arrowGoBackLine from '@iconify-icons/ri/arrow-go-back-line'
 import { Icon } from '@iconify/react'
 import React from 'react'
 import { useLinks } from '../../../hooks/useLinks'
-import { useNavigation } from '../../../hooks/useNavigation'
 import { InfoWidgetScroll, InfoWidgetWrapper } from '../../../style/infobar'
 import { Note } from '../../../style/Typography'
 import NodeLink from '../NodeLink/NodeLink'
@@ -13,9 +12,7 @@ interface BackLinkProps {
 }
 const Backlinks = ({ nodeid }: BackLinkProps) => {
   const { getBacklinks } = useLinks()
-  const { push } = useNavigation()
   const backlinks = getBacklinks(nodeid)
-  const { getNodeIdFromUid } = useLinks()
 
   return (
     <InfoWidgetWrapper>
