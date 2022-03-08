@@ -9,7 +9,7 @@ export const SBackLinks = styled.div`
   margin: 3rem 0;
 `
 
-export const NodeLink = styled.div`
+export const NodeLinkStyled = styled.div`
   cursor: pointer;
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
   margin-bottom: ${({ theme }) => theme.spacing.small};

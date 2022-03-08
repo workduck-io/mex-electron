@@ -98,7 +98,7 @@ export const useLinks = () => {
   const getBacklinks = (nodeid: string) => {
     const links = linkCache[nodeid]
     if (links) {
-      return links.filter((l) => l.type === 'from' && !isInArchive(l.nodeid))
+      return links.filter((l) => l.type === 'from' && !isInArchive(l.nodeid) && getNodeIdFromUid(l.nodeid))
     }
     return []
   }
