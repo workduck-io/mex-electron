@@ -14,7 +14,12 @@ export const startAnalysisWorkerService = async () => {
 }
 
 export const analyseContent = async (content: NodeEditorContent, callback: (data: any) => void) => {
-  if (!worker) await startAnalysisWorkerService()
-  const analysis = await worker.analyseContent(content)
-  callback(analysis)
+  try {
+    if (!worker) await startAnalysisWorkerService()
+    const analysis = await worker.analyseContent(content)
+    callback(analysis)
+  } catch (error) {
+    console.log(error)
+    callback({ outline: [], tags: [] })
+  }
 }

@@ -13,13 +13,15 @@ const getOutline = (content: NodeEditorContent): OutlineItem[] => {
   if (!content) return []
   const outline: OutlineItem[] = []
   content.forEach((item) => {
-    if (ELEMENTS_IN_OUTLINE.includes(item.type.toLowerCase())) {
-      outline.push({
-        type: item.type,
-        title: convertContentToRawText(item.children, ' '),
-        id: item.id,
-        level: ELEMENTS_IN_OUTLINE.indexOf(item.type) + 1
-      })
+    if (item && item.type && ELEMENTS_IN_OUTLINE.includes(item.type.toLowerCase())) {
+      const title = convertContentToRawText(item.children, ' ')
+      if (title.trim() !== '')
+        outline.push({
+          type: item.type,
+          title: title,
+          id: item.id,
+          level: ELEMENTS_IN_OUTLINE.indexOf(item.type) + 1
+        })
     }
   })
   return outline
