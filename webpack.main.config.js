@@ -1,3 +1,5 @@
+const ThreadsPlugin = require('threads-plugin')
+
 const externalsWin = {
   'active-win-universal': 'commonjs2 active-win-universal',
   'ffi-napi': 'commonjs2 ffi-napi',
@@ -22,6 +24,12 @@ module.exports = {
     rules: require('./webpack.rules')
   },
   externals: externals,
+  plugins: [
+    // Don't refactor Necessary here, doesn't work in webpack.plugins.js
+    new ThreadsPlugin({
+      target: 'electron-node-worker'
+    })
+  ],
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json']
   }

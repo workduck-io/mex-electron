@@ -7,6 +7,7 @@ import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { HoverSubtleGlow } from '../../../style/helpers'
+import { InfoWidgetScroll, InfoWidgetWrapper } from '../../../style/infobar'
 import { Note } from '../../../style/Typography'
 import { DataInfoHeader, NodeLink, SBackLinks } from './Backlinks.style'
 
@@ -20,23 +21,25 @@ const Backlinks = ({ nodeid }: BackLinkProps) => {
   const { getNodeIdFromUid } = useLinks()
 
   return (
-    <SBackLinks>
+    <InfoWidgetWrapper>
       <DataInfoHeader>
         <Icon icon={arrowGoBackLine}></Icon>
         Backlinks
       </DataInfoHeader>
-      {backlinks.length === 0 && (
-        <>
-          <Note>No backlinks found.</Note>
-          <Note>Link from other nodes to view them here.</Note>
-        </>
-      )}
-      {backlinks.map((l, i) => (
-        <NodeLink key={`backlink_${l.nodeid}_${i}`} onClick={() => push(l.nodeid)}>
-          {getNodeIdFromUid(l.nodeid)}
-        </NodeLink>
-      ))}
-    </SBackLinks>
+      <InfoWidgetScroll>
+        {backlinks.length === 0 && (
+          <>
+            <Note>No backlinks found.</Note>
+            <Note>Link from other nodes to view them here.</Note>
+          </>
+        )}
+        {backlinks.map((l, i) => (
+          <NodeLink key={`backlink_${l.nodeid}_${i}`} onClick={() => push(l.nodeid)}>
+            {getNodeIdFromUid(l.nodeid)}
+          </NodeLink>
+        ))}
+      </InfoWidgetScroll>
+    </InfoWidgetWrapper>
   )
 }
 
