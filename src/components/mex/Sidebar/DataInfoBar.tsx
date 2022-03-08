@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useEditorStore } from '../../../store/useEditorStore'
 import Backlinks from '../Backlinks'
+import Outline from '../Outline/Outline'
 import TagsRelated from '../Tags/TagsRelated'
 
 export const DataInfobarWrapper = styled.div`
@@ -9,6 +10,7 @@ export const DataInfobarWrapper = styled.div`
   height: 100%;
   flex-direction: column;
   justify-content: center;
+  gap: calc(2 * ${({ theme }) => theme.spacing.large});
   padding: ${({ theme }) => `${theme.spacing.medium}`};
   max-width: 300px;
 `
@@ -18,6 +20,7 @@ const DataInfoBar = () => {
 
   return (
     <DataInfobarWrapper>
+      <Outline />
       <Backlinks nodeid={node.nodeid} />
       <TagsRelated nodeid={node.nodeid} />
     </DataInfobarWrapper>

@@ -7,7 +7,6 @@ import { shell } from 'electron'
 import React, { useEffect, useMemo } from 'react'
 import { useTheme } from 'styled-components'
 import { integrationURLs } from '../../apis/routes'
-import { TemplateInfoBar } from '../../components/layouts/InfoBar'
 import { LoadingButton } from '../../components/mex/Buttons/LoadingButton'
 import NewSyncTemplateModal, { useNewSyncTemplateModalStore } from '../../components/mex/Integrations/NewSyncBlockModal'
 import Template from '../../components/mex/Integrations/Template'
@@ -20,6 +19,7 @@ import useDataStore from '../../store/useDataStore'
 import { useIntegrationStore } from '../../store/useIntegrationStore'
 import useOnboard from '../../store/useOnboarding'
 import { useSyncStore } from '../../store/useSyncStore'
+import { TemplateInfoBar } from '../../style/infobar'
 import {
   ActiveStatus,
   CenteredFlex,

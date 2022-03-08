@@ -1,45 +1,44 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+import chokidar from 'chokidar'
 import {
-  BrowserWindow,
-  Menu,
-  Tray,
   app,
   autoUpdater,
+  BrowserWindow,
   globalShortcut,
   ipcMain,
+  Menu,
   nativeImage,
   screen,
   session,
-  shell
+  shell,
+  Tray
 } from 'electron'
+import fs from 'fs'
+import path from 'path'
+import { getSaveLocation, getSearchIndexLocation } from '../data/Defaults/data'
+import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
+import { IpcAction } from '../data/IpcAction'
+import { AppType } from '../hooks/useInitialize'
+import { initializeSentry } from '../services/sentry'
+import { FileData } from '../types/data'
+import { getAppleNotes } from '../utils/importers/appleNotes'
+import { mog } from '../utils/lib/helper'
+import { sanitizeHtml } from '../utils/sanitizeHtml'
+import MenuBuilder from './menu'
+import Toast, { ToastStatus, ToastType } from './Toast'
+import { setupUpdateService } from './update'
+import { getFileData, setFileData } from './utils/filedata'
 import {
-  SelectionType,
   copyToClipboard,
   getGlobalShortcut,
   getSelectedText,
   getSelectedTextSync,
+  SelectionType,
   useSnippetFromClipboard
 } from './utils/getSelectedText'
-import Toast, { ToastStatus, ToastType } from './Toast'
-import { getFileData, setFileData } from './utils/filedata'
-import { getSaveLocation, getSearchIndexLocation } from '../data/Defaults/data'
-import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
-
-import { AppType } from '../hooks/useInitialize'
-import { FileData } from '../types/data'
-import { IpcAction } from '../data/IpcAction'
-import MenuBuilder from './menu'
-import _ from 'lodash'
-import { checkIfAlpha } from './utils/version'
-/* eslint-disable @typescript-eslint/no-var-requires */
-import chokidar from 'chokidar'
-import fs from 'fs'
-import { getAppleNotes } from '../utils/importers/appleNotes'
-import { initializeSentry } from '../services/sentry'
-import { mog } from '../utils/lib/helper'
-import path from 'path'
-import { sanitizeHtml } from '../utils/sanitizeHtml'
-import { setupUpdateService } from './update'
 import { getIndexData, setSearchIndexData } from './utils/indexData'
+import { checkIfAlpha } from './utils/version'
+import { analyseContent } from './worker/controler'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -532,6 +531,14 @@ ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
 ipcMain.on(IpcAction.SET_LOCAL_DATA, (_event, arg) => {
   setFileData(arg, SAVE_LOCATION)
   syncFileData(arg)
+})
+
+ipcMain.on(IpcAction.ANALYSE_CONTENT, async (event, arg) => {
+  if (!arg) return
+  await analyseContent(arg, (analysis) => {
+    console.log('Analysis', { analysis })
+    event.sender.send(IpcAction.RECIEVE_ANALYIS, analysis)
+  })
 })
 
 ipcMain.on(IpcAction.CHECK_FOR_UPDATES, (_event, arg) => {

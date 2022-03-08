@@ -7,10 +7,12 @@ import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useTags } from '../../../hooks/useTags'
 import useDataStore from '../../../store/useDataStore'
-import { useEditorStore } from '../../../store/useEditorStore'
 import { HoverSubtleGlow } from '../../../style/helpers'
 import { Note } from '../../../style/Typography'
 import { DataInfoHeader, NodeLink } from '../Backlinks/Backlinks.style'
+import { useAnalysisStore } from '../../../store/useAnalysis'
+import { mog } from '../../../utils/lib/helper'
+import { InfoWidgetScroll, InfoWidgetWrapper } from '../../../style/infobar'
 
 const TagFlex = styled.div`
   cursor: pointer;
@@ -29,13 +31,6 @@ const TagsFlex = styled.div`
   flex-wrap: wrap;
 `
 
-const TagsInfoWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  margin: 3rem 0;
-`
-
 const InfoSubHeading = styled.h2`
   margin: ${({ theme }) => theme.spacing.large} 0 ${({ theme }) => theme.spacing.medium}
     ${({ theme }) => theme.spacing.medium};
@@ -51,6 +46,7 @@ interface TagsRelated {
 const TagsRelated = ({ nodeid }: TagsRelated) => {
   const { getRelatedNodes, getTags } = useTags()
   const tagsCache = useDataStore((state) => state.tagsCache)
+  const analysisTags = useAnalysisStore((state) => state.tags)
   const [relNodes, setRelNodes] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
   const { getNodeIdFromUid } = useLinks()
@@ -58,57 +54,59 @@ const TagsRelated = ({ nodeid }: TagsRelated) => {
   const { goTo } = useRouting()
 
   useEffect(() => {
-    setRelNodes(getRelatedNodes(nodeid))
-  }, [nodeid, tagsCache])
+    setRelNodes(getRelatedNodes(nodeid, true))
+  }, [nodeid, tagsCache, analysisTags])
 
   useEffect(() => {
-    setTags(getTags(nodeid))
-  }, [nodeid, tagsCache])
+    setTags(getTags(nodeid, true))
+  }, [nodeid, tagsCache, analysisTags])
 
   const navigateToTag = (tag: string) => {
     goTo(ROUTE_PATHS.tag, NavigationType.push, tag)
   }
 
-  // console.log({ relNodes })
+  // mog('TagsRelated', { nodeid, relNodes, tags, analysisTags })
 
   return (
-    <TagsInfoWrapper>
+    <InfoWidgetWrapper>
       <DataInfoHeader>
         <Icon icon={hashtagIcon}></Icon>
         Tags
       </DataInfoHeader>
-      {tags.length > 0 ? (
-        <>
-          <TagsFlex>
-            {tags.map((t) => (
-              <TagFlex
-                key={`info_tags_${nodeid}_${t}`}
-                onClick={(e) => {
-                  e.preventDefault()
-                  navigateToTag(t)
-                }}
-              >
-                #{t}
-              </TagFlex>
-            ))}
-          </TagsFlex>
-          {relNodes.length > 0 ? <InfoSubHeading>Related Nodes</InfoSubHeading> : null}
-          {relNodes.map((n) => {
-            const path = getNodeIdFromUid(n)
-            return path !== undefined ? (
-              <NodeLink key={`info_tag_related_${nodeid}_${n}`} onClick={() => push(n)}>
-                {path}
-              </NodeLink>
-            ) : null
-          })}
-        </>
-      ) : (
-        <>
-          <Note>No Tags found.</Note>
-          <Note>Create tags with # view them and related nodes here.</Note>
-        </>
-      )}
-    </TagsInfoWrapper>
+      <InfoWidgetScroll>
+        {tags.length > 0 ? (
+          <>
+            <TagsFlex>
+              {tags.map((t) => (
+                <TagFlex
+                  key={`info_tags_${nodeid}_${t}`}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    navigateToTag(t)
+                  }}
+                >
+                  #{t}
+                </TagFlex>
+              ))}
+            </TagsFlex>
+            {relNodes.length > 0 ? <InfoSubHeading>Related Nodes</InfoSubHeading> : null}
+            {relNodes.map((n) => {
+              const path = getNodeIdFromUid(n)
+              return path !== undefined ? (
+                <NodeLink key={`info_tag_related_${nodeid}_${n}`} onClick={() => push(n)}>
+                  {path}
+                </NodeLink>
+              ) : null
+            })}
+          </>
+        ) : (
+          <>
+            <Note>No Tags found.</Note>
+            <Note>Create tags with # view them and related nodes here.</Note>
+          </>
+        )}
+      </InfoWidgetScroll>
+    </InfoWidgetWrapper>
   )
 }
 

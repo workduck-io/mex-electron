@@ -11,7 +11,7 @@ interface BufferStore {
   clear: () => void
 }
 
-const useBufferStore = create<BufferStore>((set, get) => ({
+export const useBufferStore = create<BufferStore>((set, get) => ({
   buffer: {},
   add: (nodeid, val) => set({ buffer: { ...get().buffer, [nodeid]: val } }),
   remove: (nodeid) => {
