@@ -43,12 +43,14 @@ const Search = () => {
   const searchIndex = useSearchStore((store) => store.searchIndex)
   const contents = useContentStore((store) => store.contents)
   const ilinks = useDataStore((store) => store.ilinks)
-  const initialResults = ilinks.map(
-    (link): GenericSearchResult => ({
-      id: link.nodeid,
-      title: link.path
-    })
-  )
+  const initialResults = ilinks
+    .map(
+      (link): GenericSearchResult => ({
+        id: link.nodeid,
+        title: link.path
+      })
+    )
+    .slice(0, 12)
   const { getNode } = useNodes()
   const { goTo } = useRouting()
   const {
