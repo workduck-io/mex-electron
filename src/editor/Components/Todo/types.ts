@@ -2,9 +2,10 @@ import { Shortcut } from '../../../components/mex/Help/Help.types'
 import { NodeEditorContent } from '../../../types/Types'
 
 export enum PriorityType {
-  high = 'high',
   low = 'low',
-  medium = 'medium'
+  high = 'high',
+  medium = 'medium',
+  noPriority = 'noPriority'
 }
 
 export type PriorityDataType = {
@@ -36,15 +37,25 @@ export type TodoType = {
 
 // * Get priority data from PriorityType
 export const Priority: Record<keyof typeof PriorityType, PriorityDataType> = {
-  high: {
-    title: 'High',
+  noPriority: {
+    title: 'No Priority',
     shortcut: {
       category: 'action',
-      keystrokes: '$mod+1',
-      title: 'Highest priority'
+      keystrokes: '$mod+4',
+      title: 'No priority'
     },
-    icon: 'ph:cell-signal-full-fill',
-    type: PriorityType.high
+    icon: 'ph:cell-signal-none-fill',
+    type: PriorityType.noPriority
+  },
+  low: {
+    title: 'Low',
+    shortcut: {
+      category: 'action',
+      keystrokes: '$mod+3',
+      title: 'Low priority'
+    },
+    icon: 'ph:cell-signal-low-fill',
+    type: PriorityType.low
   },
   medium: {
     title: 'Medium',
@@ -56,14 +67,14 @@ export const Priority: Record<keyof typeof PriorityType, PriorityDataType> = {
     icon: 'ph:cell-signal-medium-fill',
     type: PriorityType.medium
   },
-  low: {
-    title: 'Low',
+  high: {
+    title: 'High',
     shortcut: {
       category: 'action',
-      keystrokes: '$mod+3',
-      title: 'Low priority'
+      keystrokes: '$mod+1',
+      title: 'Highest priority'
     },
-    icon: 'ph:cell-signal-low-fill',
-    type: PriorityType.low
+    icon: 'ph:cell-signal-full-fill',
+    type: PriorityType.high
   }
 }

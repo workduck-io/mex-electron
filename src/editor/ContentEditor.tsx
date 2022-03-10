@@ -66,7 +66,6 @@ const ContentEditor = () => {
 
         const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
 
-        mog('keywords', { keywords, results, withoutCurrentNode })
         setSuggestions(withoutCurrentNode)
       }
 

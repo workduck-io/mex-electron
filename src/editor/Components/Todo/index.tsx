@@ -15,6 +15,8 @@ import { getNodes, getPlateEditorRef } from '@udecode/plate'
 import { Transforms } from 'slate'
 import toast from 'react-hot-toast'
 
+import { mog } from '../../../utils/lib/helper'
+
 const TodoContainer = styled.div<{ checked?: boolean }>`
   display: flex;
   flex-direction: row;
@@ -150,6 +152,7 @@ const Todo = (props: any) => {
   const updateTodo = useTodoStore((store) => store.updateTodoOfNode)
 
   const todo = getTodo(nodeid, element.id)
+  mog('todo', { element, todo })
 
   const { show } = useContextMenu({ id: todo.id })
 
@@ -200,7 +203,7 @@ const Todo = (props: any) => {
       {...attributes}
       {...rootProps}
       key={todo?.id}
-      checked={todo?.metadata.status !== TodoStatus.todo}
+      checked={todo?.metadata.status === TodoStatus.completed}
       onMouseEnter={() => setShowOptions(true)}
       onMouseLeave={() => setShowOptions(false)}
     >
@@ -222,7 +225,7 @@ const Todo = (props: any) => {
                 cursor="pointer"
                 color={theme.colors.primary}
               />
-              <div>{todo?.metadata.priority.toUpperCase()}</div>
+              <div>{Priority[todo?.metadata.priority]?.title}</div>
             </PriorityButton>
           </TaskPriority>
           {/* <TaskPriority background="#114a9e" transparent={0.25}>

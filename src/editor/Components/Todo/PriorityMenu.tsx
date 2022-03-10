@@ -23,16 +23,16 @@ const Text = styled.span`
 
 const PriorityMenu: React.FC<PriorityMenuType> = ({ onClick, id }) => {
   return (
-    <StyledMenu id={id}>
+    <StyledMenu contentEditable={false} id={id}>
       {Object.values(Priority).map((priority) => {
         return (
           <Item key={priority.title} id={priority.title} onClick={() => onClick(priority)}>
             <StyledItem>
-              <Icon icon={priority.icon} fontSize={12} />
+              <Icon icon={priority.icon} fontSize={16} />
               <Text>{priority.title}</Text>
             </StyledItem>
 
-            <DisplayShortcut shortcut={priority.shortcut.keystrokes} />
+            {/* <DisplayShortcut shortcut={priority.shortcut.keystrokes} /> */}
           </Item>
         )
       })}

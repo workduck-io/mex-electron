@@ -2,7 +2,7 @@ import { getNodes, usePlateEditorRef } from '@udecode/plate'
 import useBlockStore, { BlockType, ContextMenuActionType } from '../../../store/useBlockStore'
 
 import { Icon } from '@iconify/react'
-import { Item, Separator } from 'react-contexify'
+import { Item } from 'react-contexify'
 import React from 'react'
 import { StyledMenu } from '../../../style/Menu'
 import toast from 'react-hot-toast'

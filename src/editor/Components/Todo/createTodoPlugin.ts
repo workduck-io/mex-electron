@@ -9,7 +9,6 @@ import {
 import { useEditorStore } from '../../../store/useEditorStore'
 import useTodoStore from '../../../store/useTodoStore'
 import { getTodosFromContent } from '../../../utils/lib/content'
-import { mog } from '../../../utils/lib/helper'
 
 export const ELEMENT_TODO_LI = 'action_item'
 
@@ -19,7 +18,7 @@ export const withTodos: WithOverride<any, HotkeyPlugin> = (editor: PlateEditor) 
 
   const nodeid = useEditorStore.getState().node.nodeid
 
-  const { onChange } = editor
+  const { onChange, deleteBackward } = editor
 
   const updateTodosFromContent = debounce(() => {
     const editorTodoBlocks = getTodosFromContent(editor.children)

@@ -2,7 +2,6 @@ import create from 'zustand'
 import { defaultContent } from '../data/Defaults/baseData'
 import { TodoType, TodoStatus, PriorityType, TodosType } from '../editor/Components/Todo/types'
 import { NodeEditorContent } from '../types/Types'
-import { mog } from '../utils/lib/helper'
 
 const createTodo = (nodeid: string, todoId: string, content: NodeEditorContent = defaultContent.content) => ({
   id: todoId,
@@ -10,7 +9,7 @@ const createTodo = (nodeid: string, todoId: string, content: NodeEditorContent =
   content,
   metadata: {
     status: TodoStatus.todo,
-    priority: PriorityType.low
+    priority: PriorityType.noPriority
   },
   createdAt: Date.now(),
   updatedAt: Date.now()
