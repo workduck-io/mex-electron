@@ -125,6 +125,13 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
   const { getFocusProps } = useLayout()
   const [metadata, setMetadata] = useState<NodeMetadata | undefined>(undefined)
 
+  const isEmpty =
+    metadata &&
+    metadata.createdAt === undefined &&
+    metadata.createdBy === undefined &&
+    metadata.updatedAt === undefined &&
+    metadata.lastEditedBy === undefined
+
   useEffect(() => {
     // mog({ content })
     if (content === undefined || content.metadata === undefined) return
@@ -134,7 +141,7 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
 
   // mog({ node, metadata })
 
-  if (content === undefined || content.metadata === undefined || metadata === undefined) return null
+  if (content === undefined || content.metadata === undefined || metadata === undefined || isEmpty) return null
   return (
     <MetadataWrapper {...getFocusProps(focusMode)} fadeOnHover={fadeOnHover}>
       <DataGroup>

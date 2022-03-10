@@ -22,6 +22,7 @@ export interface SearchFilter<Item> {
   id: string
   label: string
   filter: (item: Item) => boolean | number
+  icon?: string
   // sort: 'asc' | 'desc'
 }
 
@@ -105,6 +106,7 @@ export const useFilters = <Item>() => {
             ...p,
             {
               key: 'tag',
+              icon: 'ri:hashtag',
               id: `tag_filter_${tag}`,
               label: tag,
               filter: (item: GenericSearchResult) => {
@@ -145,6 +147,7 @@ export const useFilters = <Item>() => {
         acc.push({
           key: 'node',
           id: `node_${path}`,
+          icon: 'ri:file-list-2-line',
           label: path,
           filter: (item: GenericSearchResult) => {
             const itemPath = getNodeIdFromUid(item.id)

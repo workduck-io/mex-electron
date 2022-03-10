@@ -383,11 +383,7 @@ const SearchView = <Item,>({
         )}
       </SearchHeader>
 
-      {RenderFilters && filters.length > 0 ? (
-        <SearchFilterWrapper key={`SearchFilterWrapperForSearch`}>
-          <RenderFilters result={result} />
-        </SearchFilterWrapper>
-      ) : null}
+      {RenderFilters && filters.length > 0 ? <RenderFilters result={result} /> : null}
 
       <ResultsWrapper>
         {result.length > 0 ? (

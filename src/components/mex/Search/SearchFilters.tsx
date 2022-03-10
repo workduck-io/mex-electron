@@ -1,7 +1,18 @@
+import fileList2Line from '@iconify/icons-ri/file-list-2-line'
+import filterOffLine from '@iconify/icons-ri/filter-off-line'
+import filter2Line from '@iconify/icons-ri/filter-2-line'
 import React, { useMemo } from 'react'
 import { FilterKey, SearchFilter, useFilters } from '../../../hooks/useFilters'
-import { SearchFilterList, SearchFilterStyled } from '../../../style/Search'
+import {
+  SearchFilterCategoryLabel,
+  SearchFilterLabel,
+  SearchFilterList,
+  SearchFilterStyled,
+  SearchFilterWrapper
+} from '../../../style/Search'
 import { mog } from '../../../utils/lib/helper'
+import { startCase } from 'lodash'
+import { Icon } from '@iconify/react'
 
 interface SearchFiltersProps<Item> {
   result: Item[]
@@ -62,39 +73,52 @@ const SearchFilters = <Item,>({
   mog('SearchFilters', { filters, currentFilters, filtersByKey })
 
   return (
-    <SearchFilterList>
-      {Object.entries(filtersByKey).map(([k, filter]) => {
-        return (
-          <SearchFilterList key={`filter_options${k}`}>
-            <p>{k}</p>
-            {filter.current.map((f) => (
-              <SearchFilterStyled
-                selected
-                key={`current_f_${f.id}`}
-                onClick={() => {
-                  removeCurrentFilter(f)
-                  // updateResults()
-                }}
-              >
-                {f.label}
-              </SearchFilterStyled>
-            ))}
-            {filter.suggested.map((f) => (
-              <SearchFilterStyled
-                key={`suggested_f_${f.id}`}
-                onClick={() => {
-                  addCurrentFilter(f)
-                  // updateResults()
-                }}
-              >
-                {f.label}
-              </SearchFilterStyled>
-            ))}
-          </SearchFilterList>
-        )
-      })}
-      {currentFilters.length > 0 && <button onClick={() => resetCurrentFilters()}>Reset</button>}
-    </SearchFilterList>
+    <SearchFilterWrapper>
+      <SearchFilterLabel>
+        <Icon icon={filter2Line} />
+        Filter By
+      </SearchFilterLabel>
+      {Object.entries(filtersByKey)
+        .sort(([key1], [key2]) => startCase(key1).localeCompare(startCase(key2)))
+        .map(([k, filter]) => {
+          return (
+            <SearchFilterList key={`filter_options${k}`}>
+              <SearchFilterCategoryLabel>{startCase(k)}:</SearchFilterCategoryLabel>
+              {filter.current.map((f) => (
+                <SearchFilterStyled
+                  selected
+                  key={`current_f_${f.id}`}
+                  onClick={() => {
+                    removeCurrentFilter(f)
+                    // updateResults()
+                  }}
+                >
+                  {f.icon ? <Icon icon={f.icon} /> : null}
+                  {f.label}
+                </SearchFilterStyled>
+              ))}
+              {filter.suggested.map((f) => (
+                <SearchFilterStyled
+                  key={`suggested_f_${f.id}`}
+                  onClick={() => {
+                    addCurrentFilter(f)
+                    // updateResults()
+                  }}
+                >
+                  {f.icon ? <Icon icon={f.icon} /> : null}
+                  {f.label}
+                </SearchFilterStyled>
+              ))}
+            </SearchFilterList>
+          )
+        })}
+      {currentFilters.length > 0 && (
+        <button onClick={() => resetCurrentFilters()}>
+          <Icon icon={filterOffLine} />
+          Reset
+        </button>
+      )}
+    </SearchFilterWrapper>
   )
 }
 
