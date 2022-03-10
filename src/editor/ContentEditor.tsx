@@ -120,7 +120,7 @@ const ContentEditor = () => {
 
         <Editor
           showBalloonToolbar
-          readOnly={fetchingContent}
+          // readOnly={fetchingContent}
           content={fsContent?.content ?? defaultContent.content}
           onChange={onChangeSave}
           editorId={editorId}

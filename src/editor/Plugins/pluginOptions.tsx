@@ -131,15 +131,7 @@ export const optionsAutoFormatRule: Array<AutoformatRule> = [
   {
     mode: 'block',
     type: ELEMENT_TODO_LI,
-    match: '[]',
-    format: (editor) =>
-      setNodes<TElement<TodoListItemNodeData>>(
-        editor,
-        { type: ELEMENT_TODO_LI, checked: false },
-        {
-          match: (n) => Editor.isBlock(editor, n)
-        }
-      )
+    match: '[]'
   },
   {
     mode: 'block',

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import tinykeys from 'tinykeys'
 import { getDefaultContent, PreviewProps } from '.'
-import Editor from '../../../editor/Editor'
+import { Editor } from '../../../editor/Editor'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightContext } from '../../../store/Context/context.spotlight'
@@ -59,7 +59,7 @@ const PreviewContainer: React.FC<PreviewProps> = ({ nodeId, preview }) => {
       },
       [spotlightShortcuts.save.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled && !normalMode) handleSaveContent(true, true)
+        if (!shortcutDisabled && !normalMode) handleSaveContent(true)
       }
     })
 

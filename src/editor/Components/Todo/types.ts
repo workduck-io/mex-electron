@@ -20,6 +20,8 @@ export enum TodoStatus {
   completed
 }
 
+export type TodosType = Record<string, Array<TodoType>> // * nodeid, todos
+
 export type TodoType = {
   id: string
   nodeid: string

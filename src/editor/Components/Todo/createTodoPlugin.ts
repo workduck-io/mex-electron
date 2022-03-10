@@ -1,4 +1,4 @@
-import { getBlockAbove } from '@udecode/plate'
+import { debounce } from 'lodash'
 import {
   createPluginFactory,
   HotkeyPlugin,
@@ -6,26 +6,29 @@ import {
   PlateEditor,
   WithOverride
 } from '@udecode/plate-core'
+import { useEditorStore } from '../../../store/useEditorStore'
 import useTodoStore from '../../../store/useTodoStore'
+import { getTodosFromContent } from '../../../utils/lib/content'
+import { mog } from '../../../utils/lib/helper'
 
 export const ELEMENT_TODO_LI = 'action_item'
 
 // * override TODOs
 export const withTodos: WithOverride<any, HotkeyPlugin> = (editor: PlateEditor) => {
-  const updateContent = useTodoStore.getState().updateContent
+  const updateTodos = useTodoStore.getState().replaceContentOfTodos
+
+  const nodeid = useEditorStore.getState().node.nodeid
+
   const { onChange } = editor
 
+  const updateTodosFromContent = debounce(() => {
+    const editorTodoBlocks = getTodosFromContent(editor.children)
+    updateTodos(nodeid, editorTodoBlocks)
+  }, 1000)
+
   editor.onChange = () => {
-    const entry = getBlockAbove(editor)
-    if (!entry) return
-
-    const block = entry[0]
-
-    if (block.type === ELEMENT_TODO_LI) {
-      updateContent(block.id, [block])
-    }
-
     onChange()
+    updateTodosFromContent()
   }
 
   return editor

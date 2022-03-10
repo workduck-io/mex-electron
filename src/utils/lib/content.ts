@@ -1,5 +1,7 @@
+import { ELEMENT_TODO_LI } from '@udecode/plate'
 import { uniq } from 'lodash'
 import { ELEMENT_TAG } from '../../editor/Components/tag/defaults'
+import { NodeEditorContent } from '../../types/Types'
 
 export const getTagsFromContent = (content: any[]): string[] => {
   let tags: string[] = []
@@ -14,4 +16,16 @@ export const getTagsFromContent = (content: any[]): string[] => {
   })
 
   return uniq(tags)
+}
+
+export const getTodosFromContent = (content: NodeEditorContent): NodeEditorContent => {
+  const todos: NodeEditorContent = []
+
+  content.forEach((n) => {
+    if (n.type === ELEMENT_TODO_LI) {
+      todos.push(n)
+    }
+  })
+
+  return todos
 }

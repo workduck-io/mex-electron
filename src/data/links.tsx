@@ -46,7 +46,8 @@ const useNavlinks = () => {
       {
         title: 'Tasks',
         path: ROUTE_PATHS.tasks,
-        icon: GetIcon(checkboxLine)
+        icon: GetIcon(checkboxLine),
+        isComingSoon: true
       },
       {
         title: 'Integrations',

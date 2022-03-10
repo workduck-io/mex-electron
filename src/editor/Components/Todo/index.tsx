@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import { ReactEditor, useReadOnly } from 'slate-react'
-import { TElement, setNodes } from '@udecode/plate-core'
+import React, { useState } from 'react'
+import { useReadOnly } from 'slate-react'
 import styled, { css, useTheme } from 'styled-components'
 
 import { MexIcon } from '../../../style/Layouts'
-import { TodoListItemNodeData } from '@udecode/plate-list'
 import { getRootProps } from '@udecode/plate-styled-components'
 import { transparentize } from 'polished'
 import useTodoStore from '../../../store/useTodoStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { Priority, PriorityDataType, TodoStatus } from './types'
-import { mog } from '../../../utils/lib/helper'
 import PriorityMenu from './PriorityMenu'
 import { useContextMenu } from 'react-contexify'
+import { WaterWave } from '../../../components/mex/Onboarding/components/Welcome'
+import { getNodes, getPlateEditorRef } from '@udecode/plate'
+import { Transforms } from 'slate'
+import toast from 'react-hot-toast'
 
 const TodoContainer = styled.div<{ checked?: boolean }>`
   display: flex;
@@ -50,6 +51,35 @@ const PriorityButton = styled.div<{ background: string }>`
   }
 `
 
+const StyledTodoStatus = styled.div<{ status: TodoStatus }>`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 1.25rem;
+  width: 1.25rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  border-radius: ${({ theme }) => theme.borderRadius.tiny};
+  background-color: ${(props) => props.theme.colors.background.highlight};
+  overflow: hidden;
+
+  ::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    border-radius: 40%;
+    background-color: ${({ theme }) => theme.colors.primary};
+    animation: ${WaterWave} 7s linear;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+    /* animation-iteration-count: infinite; */
+    animation-fill-mode: forwards;
+  }
+`
+
 const TodoOptions = styled.span`
   position: absolute;
   right: 0;
@@ -82,7 +112,7 @@ const TodoText = styled.span`
 `
 
 const Todo = (props: any) => {
-  const { attributes, children, element, editor } = props
+  const { attributes, children, element } = props
   const [showOptions, setShowOptions] = useState(false)
   const theme = useTheme()
 
@@ -91,15 +121,48 @@ const Todo = (props: any) => {
   const readOnly = useReadOnly()
   const nodeid = useEditorStore((store) => store.node.nodeid)
 
-  const getTodo = useTodoStore((store) => store.getTodo)
-  const updateTodo = useTodoStore((store) => store.updateTodo)
+  const getTodo = useTodoStore((store) => store.getTodoOfNode)
+  const updateTodo = useTodoStore((store) => store.updateTodoOfNode)
 
-  const todo = getTodo(element.id, nodeid)
+  const todo = getTodo(nodeid, element.id)
 
   const { show } = useContextMenu({ id: todo.id })
 
   const onPriorityChange = (priority: PriorityDataType) => {
-    updateTodo({ ...todo, metadata: { ...todo.metadata, priority: priority.type } })
+    updateTodo(nodeid, { ...todo, metadata: { ...todo.metadata, priority: priority.type } })
+  }
+
+  const onDeleteClick = () => {
+    const editor = getPlateEditorRef()
+    const blockNode = getNodes(editor, {
+      at: [],
+      match: (node) => todo.id === node.id,
+      block: true
+    })
+    try {
+      const [_, path] = Array.from(blockNode)[0]
+      Transforms.delete(editor, { at: [path[0]] })
+      editor.insertText('')
+    } catch (error) {
+      toast('Unable to delete this todo')
+    }
+  }
+
+  const changeStatus = () => {
+    let status = todo.metadata.status
+    switch (todo.metadata.status) {
+      case TodoStatus.todo:
+        status = TodoStatus.pending
+        break
+      case TodoStatus.pending:
+        status = TodoStatus.completed
+        break
+      default:
+        status = TodoStatus.todo
+        break
+    }
+
+    updateTodo(nodeid, { ...todo, metadata: { ...todo.metadata, status } })
   }
 
   return (
@@ -111,35 +174,27 @@ const Todo = (props: any) => {
       onMouseEnter={() => setShowOptions(true)}
       onMouseLeave={() => setShowOptions(false)}
     >
-      <CheckBoxWrapper contentEditable={false}>
-        <input
+      {/* <CheckBoxWrapper contentEditable={false}> */}
+      <StyledTodoStatus contentEditable={false} status={todo.metadata.status} onClick={changeStatus} />
+      {/* <input
           id={todo?.id}
           key={todo?.id}
           data-testid="TodoListElementCheckbox"
           type="checkbox"
           checked={todo?.metadata.status !== TodoStatus.todo}
           onChange={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            const path = ReactEditor.findPath(editor, element)
-
             if (todo) {
-              updateTodo({
+              updateTodo(nodeid, {
                 ...todo,
-                metadata: { ...todo.metadata, status: e.target.checked ? TodoStatus.completed : TodoStatus.todo }
+                metadata: {
+                  ...todo.metadata,
+                  status: todo.metadata.status === TodoStatus.todo ? TodoStatus.completed : TodoStatus.todo
+                }
               })
             }
-
-            setNodes<TElement<TodoListItemNodeData>>(
-              editor,
-              { checked: e.target.checked },
-              {
-                at: path
-              }
-            )
           }}
-        />
-      </CheckBoxWrapper>
+        /> */}
+      {/* </CheckBoxWrapper> */}
       <TodoText contentEditable={!readOnly} suppressContentEditableWarning>
         {children}
       </TodoText>
@@ -161,7 +216,14 @@ const Todo = (props: any) => {
           {/* <TaskPriority background="#114a9e" transparent={0.25}>
             assignee
           </TaskPriority> */}
-          <MexIcon icon="codicon:trash" cursor="pointer" margin="0" fontSize={24} color={theme.colors.primary} />
+          <MexIcon
+            onClick={onDeleteClick}
+            icon="codicon:trash"
+            cursor="pointer"
+            margin="0"
+            fontSize={24}
+            color={theme.colors.primary}
+          />
         </TodoOptions>
       )}
       <PriorityMenu id={todo.id} onClick={onPriorityChange} />

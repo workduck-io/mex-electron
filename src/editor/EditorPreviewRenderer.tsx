@@ -1,5 +1,5 @@
 import { Plate } from '@udecode/plate'
-import React, { useState } from 'react'
+import React from 'react'
 import { EditorStyles } from '../style/Editor'
 import generatePlugins from './Plugins/plugins'
 import { editorPreviewComponents } from './Components/components'
@@ -22,8 +22,6 @@ const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps
 
   // We get memoized plugins
   const plugins = generatePlugins(editorPreviewComponents, { exclude: { dnd: true } })
-
-  mog('content rendering ', { content, editorId })
 
   return (
     <EditorStyles>
