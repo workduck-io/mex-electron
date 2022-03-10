@@ -1,22 +1,22 @@
+import Plus from '@iconify/icons-bi/plus'
 import { Icon } from '@iconify/react'
 import React, { useMemo } from 'react'
-import { capitalize } from '../../../../utils/lib/strings'
-import Plus from '@iconify-icons/bi/plus'
+import { SyncBlockTemplate } from '../../../../editor/Components/SyncBlock'
 import { ServiceIcon } from '../../../../editor/Components/SyncBlock/SyncIcons'
+import { capitalize } from '../../../../utils/lib/strings'
 import {
   FullFlex,
   IconCircle,
   ServiceChip,
+  ServiceType,
   SyncedServices,
   TemplateBody,
   TemplateCard,
   TemplateCommand,
   TemplateDesc,
   TemplateHeader,
-  TemplateTitle,
-  ServiceType
+  TemplateTitle
 } from './styled'
-import { SyncBlockTemplate } from '../../../../editor/Components/SyncBlock'
 
 const MAX_SHOW = 3
 

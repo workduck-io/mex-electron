@@ -1,14 +1,14 @@
-import gitBranchLine from '@iconify-icons/ri/git-branch-line'
+import arrowRightSLine from '@iconify/icons-ri/arrow-right-s-line'
+import bookmark3Line from '@iconify/icons-ri/bookmark-3-line'
+import gitBranchLine from '@iconify/icons-ri/git-branch-line'
 import { Icon } from '@iconify/react'
 import React, { useState } from 'react'
+import useLayout from '../../../hooks/useLayout'
+import { useLayoutStore } from '../../../store/useLayoutStore'
+import { SectionHeading, SidebarContent, SidebarDiv, SidebarDivider, SidebarSection } from '../../../style/Sidebar'
+import TreeNode from '../../../types/tree'
 import Bookmarks from './Bookmarks'
 import { TreeWithContextMenu } from './TreeWithContextMenu'
-import arrowRightSLine from '@iconify-icons/ri/arrow-right-s-line'
-import bookmark3Line from '@iconify-icons/ri/bookmark-3-line'
-import { useLayoutStore } from '../../../store/useLayoutStore'
-import TreeNode from '../../../types/tree'
-import { SidebarDiv, SidebarContent, SidebarSection, SectionHeading, SidebarDivider } from '../../../style/Sidebar'
-import useLayout from '../../../hooks/useLayout'
 
 export type SideBarProps = { tree: TreeNode[]; starred: TreeNode[] }
 

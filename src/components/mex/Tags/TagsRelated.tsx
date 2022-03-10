@@ -1,4 +1,4 @@
-import hashtagIcon from '@iconify-icons/ri/hashtag'
+import hashtagIcon from '@iconify/icons-ri/hashtag'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
@@ -87,7 +87,7 @@ const TagsRelated = ({ nodeid }: TagsRelated) => {
             </TagsFlex>
             {relNodes.length > 0 ? <InfoSubHeading>Related Nodes</InfoSubHeading> : null}
             {relNodes.map((n) => (
-              <NodeLink key={`info_tag_related_${nodeid}_${n}`} nodeid={n} />
+              <NodeLink key={`info_tag_related_${nodeid}_${n}`} keyStr={`info_tag_related_${nodeid}_${n}`} nodeid={n} />
             ))}
           </>
         ) : (

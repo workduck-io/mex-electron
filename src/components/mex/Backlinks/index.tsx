@@ -1,4 +1,4 @@
-import arrowGoBackLine from '@iconify-icons/ri/arrow-go-back-line'
+import arrowGoBackLine from '@iconify/icons-ri/arrow-go-back-line'
 import { Icon } from '@iconify/react'
 import React from 'react'
 import { useLinks } from '../../../hooks/useLinks'
@@ -28,7 +28,7 @@ const Backlinks = ({ nodeid }: BackLinkProps) => {
           </>
         )}
         {backlinks.map((l, i) => (
-          <NodeLink key={`backlink_${l.nodeid}_${i}`} nodeid={l.nodeid} />
+          <NodeLink key={`backlink_${l.nodeid}_${i}`} keyStr={`backlink_${l.nodeid}_${i}`} nodeid={l.nodeid} />
         ))}
       </InfoWidgetScroll>
     </InfoWidgetWrapper>

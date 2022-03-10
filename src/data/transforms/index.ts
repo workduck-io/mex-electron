@@ -1,5 +1,14 @@
-import { ArrayTransform, DataTransformation, KeysTransformation } from '../../utils/dataTransform'
+import { ArrayTransform, CustomTransformation, DataTransformation, KeysTransformation } from '../../utils/dataTransform'
 
+const v081 = (): CustomTransformation => {
+  return {
+    type: 'CustomTransformation',
+    version: '0.8.1',
+    custom: (data) => {
+      return { ...data, todo: {} }
+    }
+  }
+}
 const v080_alpha_2 = (): KeysTransformation => {
   const ilinks: ArrayTransform = {
     type: 'ArrayTransform',
@@ -37,5 +46,6 @@ export const UpdateVersionTransforms: Array<DataTransformation> = [
   // For a quick one, use CustomTransformation
   //
 
-  v080_alpha_2()
+  v080_alpha_2(),
+  v081()
 ]

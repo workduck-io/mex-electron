@@ -1,11 +1,9 @@
-import unarchiveLine from '@iconify-icons/clarity/unarchive-line'
-import trashIcon from '@iconify-icons/codicon/trash'
-import archiveFill from '@iconify-icons/ri/archive-fill'
-import fileList2Line from '@iconify-icons/ri/file-list-2-line'
+import unarchiveLine from '@iconify/icons-clarity/unarchive-line'
+import trashIcon from '@iconify/icons-codicon/trash'
+import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import React, { useState } from 'react'
 import Modal from 'react-modal'
-import { useTransition } from 'react-spring'
 import styled, { useTheme } from 'styled-components'
 import { ModalControls, ModalHeader, MRMHead } from '../../components/mex/Refactor/styles'
 import SearchView, { RenderItemProps, RenderPreviewProps } from '../../components/mex/Search/SearchView'
@@ -20,7 +18,6 @@ import useDataStore from '../../store/useDataStore'
 import { NodeProperties } from '../../store/useEditorStore'
 import { GenericSearchResult, useSearchStore } from '../../store/useSearchStore'
 import { Button } from '../../style/Buttons'
-import { NotFoundText } from '../../style/Form'
 import { MainHeader } from '../../style/Layouts'
 import {
   Result,
@@ -28,7 +25,6 @@ import {
   ResultHeader,
   ResultMain,
   ResultRow,
-  Results,
   ResultTitle,
   SearchContainer,
   SearchPreviewWrapper,
@@ -36,7 +32,6 @@ import {
 } from '../../style/Search'
 import { Title } from '../../style/Typography'
 import { ILink } from '../../types/Types'
-import { SplitType } from '../../ui/layout/splitView'
 import { getContent } from '../../utils/helpers'
 import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText, convertEntryToRawText } from '../../utils/search/localSearch'

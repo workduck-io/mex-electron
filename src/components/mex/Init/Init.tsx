@@ -120,6 +120,7 @@ const Init = () => {
         // For development
         // .then(() => goTo(ROUTE_PATHS.search, NavigationType.push))
         .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid))
+        // .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.push, nodeid))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

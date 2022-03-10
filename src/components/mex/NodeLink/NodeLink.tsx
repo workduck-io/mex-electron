@@ -6,20 +6,21 @@ import { mog } from '../../../utils/lib/helper'
 import { NodeLinkStyled } from '../Backlinks/Backlinks.style'
 
 interface NodeLinkProps {
-  key: string
+  keyStr: string
   nodeid: string
+
   // Show preview (default true)
   preview?: boolean
   icon?: boolean
 }
 
-const NodeLink = ({ nodeid, preview = true, icon, key }: NodeLinkProps) => {
+const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
   const { getNodeIdFromUid } = useLinks()
   const { push } = useNavigation()
-  mog('NodeLink', { nodeid, preview, icon })
+  // mog('NodeLink', { nodeid, preview, icon })
   return (
-    <EditorPreview nodeid={nodeid} placement="left">
-      <NodeLinkStyled key={key} onClick={() => push(nodeid)}>
+    <EditorPreview key={keyStr} nodeid={nodeid} placement="left">
+      <NodeLinkStyled key={`NodeLink_${keyStr}`} onClick={() => push(nodeid)}>
         {getNodeIdFromUid(nodeid)}
       </NodeLinkStyled>
     </EditorPreview>

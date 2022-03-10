@@ -53,7 +53,7 @@ export const useTags = () => {
     }
     const analTags = useAnalysisStore.getState().tags
 
-    mog('getTags', { analTags })
+    // mog('getTags', { analTags })
 
     return analTags
   }

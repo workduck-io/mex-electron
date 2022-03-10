@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { ToastStatus, ToastType } from '../../electron/Toast'
-
-import { AppType } from '../../hooks/useInitialize'
-import { Description } from '../spotlight/SearchResults/styled'
-import { Icon } from '@iconify/react'
-import { IpcAction } from '../../data/IpcAction'
-import { appNotifierWindow } from '../../electron/utils/notifiers'
-import closeIcon from '@iconify-icons/codicon/chrome-close'
 import { ipcRenderer } from 'electron'
-import { mog } from '../../utils/lib/helper'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { IpcAction } from '../../data/IpcAction'
+import { ToastStatus, ToastType } from '../../electron/Toast'
+import { appNotifierWindow } from '../../electron/utils/notifiers'
+import { AppType } from '../../hooks/useInitialize'
 import useThemeStore from '../../store/useThemeStore'
+import { mog } from '../../utils/lib/helper'
+import { Description } from '../spotlight/SearchResults/styled'
 
 const StyledNotifier = styled.div`
   box-sizing: border-box;

@@ -1,4 +1,4 @@
-import bookmarkLine from '@iconify-icons/ri/bookmark-line'
+import bookmarkLine from '@iconify/icons-ri/bookmark-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import styled from 'styled-components'

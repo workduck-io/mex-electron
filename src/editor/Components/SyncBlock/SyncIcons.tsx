@@ -1,16 +1,14 @@
-import React from 'react'
-
-import githubFill from '@iconify-icons/ri/github-fill'
-import refreshFill from '@iconify-icons/ri/refresh-fill'
+import githubFill from '@iconify/icons-ri/github-fill'
+import refreshFill from '@iconify/icons-ri/refresh-fill'
 import notionIcon from '@iconify/icons-simple-icons/notion'
 import slackIcon from '@iconify/icons-simple-icons/slack'
 import telegramIcon from '@iconify/icons-simple-icons/telegram'
-
+import React from 'react'
 import Github from '../../../components/icons/github'
-import Slack from '../../../components/icons/slack'
+import Linear from '../../../components/icons/linear'
 import Mex from '../../../components/icons/mex'
 import Notion from '../../../components/icons/notion'
-import Linear from '../../../components/icons/linear'
+import Slack from '../../../components/icons/slack'
 import Telegram from '../../../components/icons/Telgram'
 
 export const Icons: {

@@ -1,4 +1,4 @@
-import fileList3Line from '@iconify-icons/ri/file-list-3-line'
+import fileList3Line from '@iconify/icons-ri/file-list-3-line'
 import { Icon } from '@iconify/react'
 import { findNode, getPlateEditorRef } from '@udecode/plate'
 import React from 'react'

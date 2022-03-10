@@ -1,10 +1,8 @@
-import React from 'react'
-import styled, { css } from 'styled-components'
-
-import listCheck2 from '@iconify-icons/ri/list-check-2'
-import layoutGridFill from '@iconify-icons/ri/layout-grid-fill'
+import layoutGridFill from '@iconify/icons-ri/layout-grid-fill'
+import listCheck2 from '@iconify/icons-ri/list-check-2'
 import { Icon } from '@iconify/react'
-import { mog } from '../../../utils/lib/helper'
+import React from 'react'
+import styled from 'styled-components'
 
 export enum View {
   List = 'list',

@@ -1,12 +1,11 @@
-import timeLine from '@iconify-icons/ri/time-line'
+import timeLine from '@iconify/icons-ri/time-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import useLayout from '../../../hooks/useLayout'
 import { useContentStore } from '../../../store/useContentStore'
-import { NodeProperties, useEditorStore } from '../../../store/useEditorStore'
+import { NodeProperties } from '../../../store/useEditorStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
-import { FOCUS_MODE_OPACITY } from '../../../style/consts'
 import { focusStyles } from '../../../style/focus'
 import { Label } from '../../../style/Form'
 import { CardShadow, HoverFade } from '../../../style/helpers'
@@ -126,6 +125,13 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
   const { getFocusProps } = useLayout()
   const [metadata, setMetadata] = useState<NodeMetadata | undefined>(undefined)
 
+  const isEmpty =
+    metadata &&
+    metadata.createdAt === undefined &&
+    metadata.createdBy === undefined &&
+    metadata.updatedAt === undefined &&
+    metadata.lastEditedBy === undefined
+
   useEffect(() => {
     // mog({ content })
     if (content === undefined || content.metadata === undefined) return
@@ -135,7 +141,7 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
 
   // mog({ node, metadata })
 
-  if (content === undefined || content.metadata === undefined || metadata === undefined) return null
+  if (content === undefined || content.metadata === undefined || metadata === undefined || isEmpty) return null
   return (
     <MetadataWrapper {...getFocusProps(focusMode)} fadeOnHover={fadeOnHover}>
       <DataGroup>

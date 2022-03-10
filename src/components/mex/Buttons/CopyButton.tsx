@@ -1,5 +1,5 @@
-import checkboxLine from '@iconify-icons/ri/checkbox-line'
-import fileCopyLine from '@iconify-icons/ri/file-copy-line'
+import checkboxLine from '@iconify/icons-ri/checkbox-line'
+import fileCopyLine from '@iconify/icons-ri/file-copy-line'
 import React, { useState } from 'react'
 import IconButton from '../../../style/Buttons'
 

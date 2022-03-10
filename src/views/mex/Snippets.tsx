@@ -1,5 +1,5 @@
-import deleteBin6Line from '@iconify-icons/ri/delete-bin-6-line'
-import quillPenLine from '@iconify-icons/ri/quill-pen-line'
+import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
+import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import { Icon } from '@iconify/react'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 import genereateName from 'project-name-generator'

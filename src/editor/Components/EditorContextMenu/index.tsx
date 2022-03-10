@@ -1,14 +1,12 @@
-import { getNodes, usePlateEditorRef } from '@udecode/plate'
-import useBlockStore, { BlockType, ContextMenuActionType } from '../../../store/useBlockStore'
-
+import sendToIcon from '@iconify/icons-fluent/slide-multiple-arrow-right-24-regular'
+import moveToIcon from '@iconify/icons-ri/anticlockwise-2-fill'
 import { Icon } from '@iconify/react'
-import { Item } from 'react-contexify'
+import { getNodes, usePlateEditorRef } from '@udecode/plate'
 import React from 'react'
-import { StyledMenu } from '../../../style/Menu'
+import { Item } from 'react-contexify'
 import toast from 'react-hot-toast'
-import moveToIcon from '@iconify-icons/ri/anticlockwise-2-fill'
-import sendToIcon from '@iconify-icons/fluent/slide-multiple-arrow-right-24-regular'
-
+import useBlockStore, { BlockType, ContextMenuActionType } from '../../../store/useBlockStore'
+import { StyledMenu } from '../../../style/Menu'
 import { useTransform } from '../BalloonToolbar/components/useTransform'
 
 type BlockOptionsProps = {
