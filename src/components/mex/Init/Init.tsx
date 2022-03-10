@@ -18,7 +18,7 @@ import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useSyncData } from '../../../hooks/useSyncData'
 import { useUpdater } from '../../../hooks/useUpdater'
 import { useAuthStore } from '../../../services/auth/useAuth'
-import { useAnalysis, useAnalysisIPC, useAnalysisStore } from '../../../store/useAnalysis'
+import { useAnalysis, useAnalysisIPC } from '../../../store/useAnalysis'
 import useBlockStore from '../../../store/useBlockStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
@@ -119,7 +119,7 @@ const Init = () => {
         })
         // For development
         // .then(() => goTo(ROUTE_PATHS.search, NavigationType.push))
-        .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.push, nodeid))
+        .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

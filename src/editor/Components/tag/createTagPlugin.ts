@@ -29,10 +29,9 @@ export const withTag: WithOverride<any, PlatePlugin> = (editor, { type, options 
 
   editor.deleteBackward = (options) => {
     const prev = Editor.previous(editor)
-    if (prev[0]) {
+    if (prev && prev[0]) {
       const node = prev[0] as any
       if (node.type && node.type === ELEMENT_TAG && node.value) {
-        mog('DeleteForTag', { type, options })
         deleteFragment(editor, { at: prev[1], unit: 'block' })
         Editor.insertText(editor, `#${node.value}`)
       }

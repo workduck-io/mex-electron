@@ -23,15 +23,17 @@ import { useSaveData } from '../../hooks/useSaveData'
 import { useSnippetStore } from '../../store/useSnippetStore'
 import { useTags } from '../../hooks/useTags'
 import { useUpdater } from '../../hooks/useUpdater'
-import { ipcRenderer } from 'electron'
 import { appNotifierWindow } from '../../electron/utils/notifiers'
 import { IpcAction } from '../../data/IpcAction'
 import { AppType } from '../../hooks/useInitialize'
+import useTodoStore from '../../store/useTodoStore'
+import { getTodosFromContent } from '../../utils/lib/content'
 
 export const useDataSaverFromContent = () => {
   const setContent = useContentStore((state) => state.setContent)
   const getContent = useContentStore((state) => state.getContent)
   const { updateLinksFromContent, getNodeIdFromUid } = useLinks()
+  const updateNodeTodos = useTodoStore((store) => store.replaceContentOfTodos)
   const { updateTagsFromContent } = useTags()
   const { saveDataAPI } = useApi()
   const updateDoc = useSearchStore((store) => store.updateDoc)
@@ -45,6 +47,8 @@ export const useDataSaverFromContent = () => {
       if (saveApi !== false) saveDataAPI(nodeid, editorValue)
       updateLinksFromContent(nodeid, editorValue)
       updateTagsFromContent(nodeid, editorValue)
+      updateNodeTodos(nodeid, getTodosFromContent(editorValue))
+
       const title = getNodeIdFromUid(nodeid)
       const parsedDoc = convertEntryToRawText(nodeid, editorValue, title)
       updateDoc('node', parsedDoc)

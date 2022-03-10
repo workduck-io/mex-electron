@@ -8,6 +8,7 @@ import React from 'react'
 import { NavLinkData } from '../components/mex/Sidebar/Types'
 import { useHelpStore } from '../store/useHelpStore'
 import { ROUTE_PATHS } from '../views/routes/urls'
+import checkboxLine from '@iconify-icons/ri/checkbox-line'
 import { useEditorStore } from '../store/useEditorStore'
 
 /*
@@ -42,12 +43,12 @@ const useNavlinks = () => {
         shortcut: shortcuts.showEditor.keystrokes,
         icon: GetIcon(fileDocument)
       },
-      // {
-      //   title: 'Tasks',
-      //   path: ROUTE_PATHS.tasks,
-      //   icon: GetIcon(checkboxLine),
-      //   isComingSoon: true
-      // },
+      {
+        title: 'Tasks',
+        path: ROUTE_PATHS.tasks,
+        icon: GetIcon(checkboxLine),
+        isComingSoon: true
+      },
       {
         title: 'Integrations',
         path: ROUTE_PATHS.integrations,

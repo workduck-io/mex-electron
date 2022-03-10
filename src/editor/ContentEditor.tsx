@@ -66,7 +66,6 @@ const ContentEditor = () => {
 
         const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
 
-        mog('keywords', { keywords, results, withoutCurrentNode })
         setSuggestions(withoutCurrentNode)
       }
 
@@ -120,7 +119,7 @@ const ContentEditor = () => {
 
         <Editor
           showBalloonToolbar
-          readOnly={fetchingContent}
+          // readOnly={fetchingContent}
           content={fsContent?.content ?? defaultContent.content}
           onChange={onChangeSave}
           editorId={editorId}

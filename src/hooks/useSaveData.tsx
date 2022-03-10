@@ -9,6 +9,7 @@ import { useSyncStore } from '../store/useSyncStore'
 import useThemeStore from '../store/useThemeStore'
 import { FileData } from '../types/data'
 import { mog } from '../utils/lib/helper'
+import useTodoStore from '../store/useTodoStore'
 
 // Save the data in the local file database
 export const useSaveData = () => {
@@ -24,6 +25,7 @@ export const useSaveData = () => {
       baseNodeId,
       ilinks,
       linkCache,
+      todos: useTodoStore.getState().todos,
       tags,
       tagsCache,
       archive,

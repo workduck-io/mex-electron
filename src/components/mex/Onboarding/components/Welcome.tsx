@@ -41,6 +41,18 @@ const waveAnimation = keyframes`
   100% { transform: rotate(0.0deg) }
 `
 
+export const WaterWave = keyframes`
+  0% { transform: translateY(1.2rem) rotateZ(0deg)}
+  50% {transform: translateY(0.8rem) rotateZ(180deg)}
+  100% {transform: translateY(0.6rem) rotateZ(360deg)}
+`
+
+export const CompleteWave = keyframes`
+  0% { transform: translateY(0.6rem) rotateZ(0deg)}
+  50% {transform: translateY(0.3rem) rotateZ(180deg)}
+  100% { transform: translateY(0rem) rotateZ(360deg)}
+
+`
 const Wave = styled.span`
   display: inline-block;
   animation: ${waveAnimation} 2.5s infinite;

@@ -11,6 +11,7 @@ import { useSnippetStore } from '../store/useSnippetStore'
 import { useSpotlightSettingsStore } from '../store/settings.spotlight'
 import { useSyncStore } from '../store/useSyncStore'
 import useThemeStore from '../store/useThemeStore'
+import useTodoStore from '../store/useTodoStore'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
@@ -19,6 +20,7 @@ export enum AppType {
 
 export const useInitialize = () => {
   const initializeDataStore = useDataStore((state) => state.initializeDataStore)
+  const initTodos = useTodoStore((store) => store.initTodos)
   const initContents = useContentStore((state) => state.initContents)
   const initSpotlightSettings = useSpotlightSettingsStore((state) => state.initSpotlightSettings)
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
@@ -30,6 +32,7 @@ export const useInitialize = () => {
   const update = (data: FileData) => {
     const {
       tags,
+      todos,
       ilinks,
       linkCache,
       tagsCache,
@@ -63,6 +66,7 @@ export const useInitialize = () => {
     initContents(contents)
     initSyncBlocks(syncBlocks, templates, services, intents)
     initSnippets(snippets)
+    initTodos(todos)
     const currentTheme = getTheme(data.userSettings.theme)
     appNotifierWindow(IpcAction.SET_THEME, AppType.MEX, { theme: currentTheme })
     setTheme(currentTheme)

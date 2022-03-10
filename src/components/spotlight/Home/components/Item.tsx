@@ -39,7 +39,7 @@ export const Dot = styled.span<{ active: string }>`
     `};
 `
 
-const ShortcutText = styled.div`
+export const ShortcutText = styled.div`
   margin-bottom: 2px;
   display: flex;
   justify-content: flex-end;

@@ -56,7 +56,6 @@ const Main = ({ children }: MainProps) => {
   return (
     <AppWrapper className={focusMode.on ? 'focus_mode' : ''}>
       <Draggable style={styles as any} /> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
-      {/* <AutoSave /> */}
       <GridWrapper grid={authenticated ? 'true' : ''}>
         {authenticated && <Nav links={getLinks()} />}
         <Content id="wd-mex-content-view" grid={authenticated}>
