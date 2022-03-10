@@ -1,24 +1,18 @@
 import arrowGoBackLine from '@iconify-icons/ri/arrow-go-back-line'
 import { Icon } from '@iconify/react'
-import { transparentize } from 'polished'
 import React from 'react'
-import styled from 'styled-components'
 import { useLinks } from '../../../hooks/useLinks'
-import { useNavigation } from '../../../hooks/useNavigation'
-import { useEditorStore } from '../../../store/useEditorStore'
-import { HoverSubtleGlow } from '../../../style/helpers'
 import { InfoWidgetScroll, InfoWidgetWrapper } from '../../../style/infobar'
 import { Note } from '../../../style/Typography'
-import { DataInfoHeader, NodeLink, SBackLinks } from './Backlinks.style'
+import NodeLink from '../NodeLink/NodeLink'
+import { DataInfoHeader } from './Backlinks.style'
 
 interface BackLinkProps {
   nodeid: string
 }
 const Backlinks = ({ nodeid }: BackLinkProps) => {
   const { getBacklinks } = useLinks()
-  const { push } = useNavigation()
   const backlinks = getBacklinks(nodeid)
-  const { getNodeIdFromUid } = useLinks()
 
   return (
     <InfoWidgetWrapper>
@@ -34,9 +28,7 @@ const Backlinks = ({ nodeid }: BackLinkProps) => {
           </>
         )}
         {backlinks.map((l, i) => (
-          <NodeLink key={`backlink_${l.nodeid}_${i}`} onClick={() => push(l.nodeid)}>
-            {getNodeIdFromUid(l.nodeid)}
-          </NodeLink>
+          <NodeLink key={`backlink_${l.nodeid}_${i}`} nodeid={l.nodeid} />
         ))}
       </InfoWidgetScroll>
     </InfoWidgetWrapper>

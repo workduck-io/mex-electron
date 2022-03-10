@@ -4,6 +4,7 @@ import { TagsCache } from '../types/Types'
 import { Settify } from '../utils/helpers'
 import { getTagsFromContent } from '../utils/lib/content'
 import { mog } from '../utils/lib/helper'
+import { useLinks } from './useLinks'
 import { useNodes } from './useNodes'
 
 /**
@@ -19,6 +20,7 @@ export interface RelatedNodes {
 export const useTags = () => {
   // const contents = useContentStore((state) => state.contents)
   const updateTagsCache = useDataStore((state) => state.updateTagsCache)
+  const { getNodeIdFromUid } = useLinks()
   const { isInArchive } = useNodes()
 
   // const getAllLinks = () => {
@@ -78,7 +80,7 @@ export const useTags = () => {
       if (!tagsCache[t]) return p
       return {
         ...p,
-        [t]: tagsCache[t].nodes.filter((id) => id !== nodeid && !isInArchive(id))
+        [t]: tagsCache[t].nodes.filter((id) => id !== nodeid && !isInArchive(id) && getNodeIdFromUid(id))
       }
     }, {})
 

@@ -7,9 +7,11 @@ import { EditorPreviewWrapper } from './EditorPreview.styles'
 export interface EditorPreviewProps {
   nodeid: string
   children: React.ReactElement
-  isPreview: boolean
-  preview: boolean
-  previewRef: any
+  placement?: string
+  delay?: number
+  isPreview?: boolean
+  preview?: boolean
+  previewRef?: any
 }
 
 export const LazyTippy = forwardRef(function LT(props: any, ref) {
@@ -39,7 +41,7 @@ export const LazyTippy = forwardRef(function LT(props: any, ref) {
   return <Tippy {...computedProps} ref={ref} />
 })
 
-const EditorPreview = ({ nodeid, isPreview, preview, children, previewRef }: EditorPreviewProps) => {
+const EditorPreview = ({ nodeid, placement, isPreview, preview, children, previewRef, delay }: EditorPreviewProps) => {
   const getContent = useContentStore((store) => store.getContent)
   const content = getContent(nodeid)
   const cc = content && content.content
@@ -48,9 +50,9 @@ const EditorPreview = ({ nodeid, isPreview, preview, children, previewRef }: Edi
     return (
       <LazyTippy
         interactive
-        delay={100}
+        delay={delay ?? 250}
         interactiveDebounce={100}
-        placement="bottom"
+        placement={placement ?? 'bottom'}
         visible={preview}
         appendTo={() => document.body}
         render={(attrs) => (

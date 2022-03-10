@@ -2,17 +2,15 @@ import hashtagIcon from '@iconify-icons/ri/hashtag'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { useRouting, ROUTE_PATHS, NavigationType } from '../../../views/routes/urls'
-import { useLinks } from '../../../hooks/useLinks'
-import { useNavigation } from '../../../hooks/useNavigation'
 import { useTags } from '../../../hooks/useTags'
+import { useAnalysisStore } from '../../../store/useAnalysis'
 import useDataStore from '../../../store/useDataStore'
 import { HoverSubtleGlow } from '../../../style/helpers'
-import { Note } from '../../../style/Typography'
-import { DataInfoHeader, NodeLink } from '../Backlinks/Backlinks.style'
-import { useAnalysisStore } from '../../../store/useAnalysis'
-import { mog } from '../../../utils/lib/helper'
 import { InfoWidgetScroll, InfoWidgetWrapper } from '../../../style/infobar'
+import { Note } from '../../../style/Typography'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import { DataInfoHeader } from '../Backlinks/Backlinks.style'
+import NodeLink from '../NodeLink/NodeLink'
 
 const TagFlex = styled.div`
   cursor: pointer;
@@ -49,8 +47,6 @@ const TagsRelated = ({ nodeid }: TagsRelated) => {
   const analysisTags = useAnalysisStore((state) => state.tags)
   const [relNodes, setRelNodes] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
-  const { getNodeIdFromUid } = useLinks()
-  const { push } = useNavigation()
   const { goTo } = useRouting()
 
   useEffect(() => {
@@ -90,14 +86,9 @@ const TagsRelated = ({ nodeid }: TagsRelated) => {
               ))}
             </TagsFlex>
             {relNodes.length > 0 ? <InfoSubHeading>Related Nodes</InfoSubHeading> : null}
-            {relNodes.map((n) => {
-              const path = getNodeIdFromUid(n)
-              return path !== undefined ? (
-                <NodeLink key={`info_tag_related_${nodeid}_${n}`} onClick={() => push(n)}>
-                  {path}
-                </NodeLink>
-              ) : null
-            })}
+            {relNodes.map((n) => (
+              <NodeLink key={`info_tag_related_${nodeid}_${n}`} nodeid={n} />
+            ))}
           </>
         ) : (
           <>
