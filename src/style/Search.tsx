@@ -19,6 +19,10 @@ const SearchTransition = css`
   transition: all 0.2s ease-in-out;
 `
 
+const SearchHeight = css`
+  height: calc(100vh - 22rem);
+`
+
 const iconStyle = (primary?: boolean) => css`
   display: flex;
   align-items: center;
@@ -82,6 +86,7 @@ export const SearchFilterCancel = styled.div`
   transition: all 0.25s ease-in-out;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
+  margin-left: ${({ theme }) => theme.spacing.large};
 
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
 
@@ -93,6 +98,7 @@ export const SearchFilterCancel = styled.div`
   }
 
   &:hover {
+    color: ${({ theme }) => theme.colors.palette.black};
     background-color: ${({ theme }) => theme.colors.palette.red};
     svg {
       opacity: 1;
@@ -265,10 +271,13 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
         display: flex;
         flex-direction: row;
         align-items: flex-start;
+        flex-shrink: 0;
         width: 100%;
         border: 1px solid transparent;
+        transition: 0.3s ease;
         ${selected &&
         css`
+          transition: 0s ease;
           background-color: ${theme.colors.gray[8]};
           border: 1px solid ${theme.colors.primary};
           ${ResultTitle} {
@@ -285,6 +294,8 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
 `
 
 export const Results = styled.div<{ view: View }>`
+  ${SearchHeight}
+  overflow-y: auto;
   ${({ theme, view }) => {
     if (view === View.Card) {
       return css`
@@ -321,7 +332,7 @@ export const SearchPreviewWrapper = styled.div<{ active?: boolean }>`
 `
 
 export const SplitSearchPreviewWrapper = styled.div`
-  height: calc(100vh - 18rem);
+  height: calc(100vh - 22rem);
   overflow-y: auto;
   border-radius: ${({ theme }) => theme.borderRadius.large};
   background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};

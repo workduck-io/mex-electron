@@ -28,7 +28,7 @@ const Backlinks = ({ nodeid }: BackLinkProps) => {
           </>
         )}
         {backlinks.map((l, i) => (
-          <NodeLink key={`backlink_${l.nodeid}_${i}`} nodeid={l.nodeid} />
+          <NodeLink key={`backlink_${l.nodeid}_${i}`} keyStr={`backlink_${l.nodeid}_${i}`} nodeid={l.nodeid} />
         ))}
       </InfoWidgetScroll>
     </InfoWidgetWrapper>

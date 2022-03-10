@@ -182,7 +182,7 @@ const SearchView = <Item,>({
     result: [],
     view: options?.view ?? View.List
   })
-  const { applyCurrentFilters } = useFilters<Item>()
+  const { applyCurrentFilters, resetCurrentFilters } = useFilters<Item>()
   const currentFilters = useFilterStore((store) => store.currentFilters) as SearchFilter<Item>[]
   const filters = useFilterStore((store) => store.filters) as SearchFilter<Item>[]
   const setSelected = (selected: number) => setSS((s) => ({ ...s, selected }))
@@ -256,7 +256,21 @@ const SearchView = <Item,>({
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (selectedRef.current) selectedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    if (selectedRef.current) {
+      const el = selectedRef.current
+      // is element in viewport
+      const rect = el.getBoundingClientRect()
+      const isInViewport =
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+
+      // mog('scroll to selected', { selected, top, isInViewport, rect })
+      if (!isInViewport) {
+        selectedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }
   }, [selected])
 
   const selectNext = () => {
@@ -301,6 +315,7 @@ const SearchView = <Item,>({
     }
     if (event.code === 'Escape') {
       // setInput()
+      resetCurrentFilters()
       if (inpRef.current) {
         if (inpRef.current.value !== '') {
           inpRef.current.value = ''
@@ -334,7 +349,8 @@ const SearchView = <Item,>({
           <RenderItem
             view={view}
             item={c}
-            onMouseEnter={() => {
+            onMouseEnter={(e) => {
+              e.preventDefault()
               if (selected !== i) setSelected(i)
             }}
             onClick={() => {
@@ -351,7 +367,7 @@ const SearchView = <Item,>({
     </Results>
   )
 
-  mog('SearchContainer', { options, result, id, selected, view })
+  // mog('SearchContainer', { options, result, id, selected, view })
   return (
     <SearchViewContainer key={id} id={id} onKeyDown={keyDownHandler}>
       <SearchHeader>

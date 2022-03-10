@@ -4,6 +4,7 @@ import filter2Line from '@iconify/icons-ri/filter-2-line'
 import React, { useMemo } from 'react'
 import { FilterKey, SearchFilter, useFilters } from '../../../hooks/useFilters'
 import {
+  SearchFilterCancel,
   SearchFilterCategoryLabel,
   SearchFilterLabel,
   SearchFilterList,
@@ -58,6 +59,12 @@ const getGroupedFilters = <Item,>(filters: SearchFilter<Item>[], currentFilters:
     filtersByKey[key].current.push(filter)
   })
 
+  Object.entries(filtersByKey).forEach(([key, { current, suggested }]) => {
+    if (suggested.length > 5) {
+      filtersByKey[key].suggested = suggested.slice(0, 5)
+    }
+  })
+
   return { filtersByKey }
 }
 
@@ -70,7 +77,7 @@ const SearchFilters = <Item,>({
   resetCurrentFilters
 }: SearchFiltersProps<Item>) => {
   const { filtersByKey } = useMemo(() => getGroupedFilters(filters, currentFilters), [filters, currentFilters, result])
-  mog('SearchFilters', { filters, currentFilters, filtersByKey })
+  // mog('SearchFilters', { filters, currentFilters, filtersByKey })
 
   return (
     <SearchFilterWrapper>
@@ -113,10 +120,10 @@ const SearchFilters = <Item,>({
           )
         })}
       {currentFilters.length > 0 && (
-        <button onClick={() => resetCurrentFilters()}>
+        <SearchFilterCancel onClick={() => resetCurrentFilters()}>
           <Icon icon={filterOffLine} />
           Reset
-        </button>
+        </SearchFilterCancel>
       )}
     </SearchFilterWrapper>
   )

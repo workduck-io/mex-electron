@@ -42,6 +42,13 @@ const Search = () => {
   const { loadNode } = useLoad()
   const searchIndex = useSearchStore((store) => store.searchIndex)
   const contents = useContentStore((store) => store.contents)
+  const ilinks = useDataStore((store) => store.ilinks)
+  const initialResults = ilinks.map(
+    (link): GenericSearchResult => ({
+      id: link.nodeid,
+      title: link.path
+    })
+  )
   const { getNode } = useNodes()
   const { goTo } = useRouting()
   const {
@@ -189,7 +196,7 @@ const Search = () => {
       <SearchView
         id="searchStandard"
         key="searchStandard"
-        initialItems={[]}
+        initialItems={initialResults}
         getItemKey={(i) => i.id}
         onSelect={onSelect}
         onEscapeExit={onEscapeExit}

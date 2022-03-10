@@ -114,11 +114,12 @@ export const useFilters = <Item>() => {
               }
             }
           ]
+        else return p
       },
       []
     )
 
-    mog('tagsFilter', { tagsCache, currentFilters_, rankedTags, tagsFilter })
+    // mog('tagsFilter', { tagsCache, currentFilters_, rankedTags, tagsFilter })
     return tagsFilter
   }
 
@@ -159,7 +160,7 @@ export const useFilters = <Item>() => {
       return acc
     }, [] as SearchFilter<GenericSearchResult>[])
 
-    mog('nodeFilters', { nodeFilters })
+    // mog('nodeFilters', { nodeFilters })
     return nodeFilters
   }
 
