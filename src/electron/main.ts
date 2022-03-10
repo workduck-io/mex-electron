@@ -1,3 +1,4 @@
+import { diskIndex } from './../data/search'
 /* eslint-disable @typescript-eslint/no-var-requires */
 import chokidar from 'chokidar'
 import {
@@ -513,8 +514,11 @@ ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
 
 ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
   const fileData: FileData = getFileData(SAVE_LOCATION)
-  const indexData: any = getIndexData(SEARCH_INDEX_LOCATION)
-  console.log('Received Index Data: ', indexData)
+  // For now we're not loading the search index from disk and rebuild it on app start
+  // const indexData: any = getIndexData(SEARCH_INDEX_LOCATION)
+
+  // Set index to map of indexNames and an empty object. The empty object forces rebuilding index
+  const indexData: any = diskIndex
   event.sender.send(IpcAction.RECIEVE_LOCAL_DATA, { fileData, indexData })
 })
 
