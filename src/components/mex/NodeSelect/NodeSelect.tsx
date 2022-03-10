@@ -1,4 +1,25 @@
+import addCircleLine from '@iconify/icons-ri/add-circle-line'
+import checkboxCircleLine from '@iconify/icons-ri/checkbox-circle-line'
+import errorWarningLine from '@iconify/icons-ri/error-warning-line'
+import fileList2Line from '@iconify/icons-ri/file-list-2-line'
+import lock2Line from '@iconify/icons-ri/lock-2-line'
+import { Icon } from '@iconify/react'
+import { useCombobox } from 'downshift'
 import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+// import { MexIcon } from '../../../style/Layouts'
+import { useDebouncedCallback } from 'use-debounce'
+import { useLinks } from '../../../hooks/useLinks'
+import { useContentStore } from '../../../store/useContentStore'
+import useDataStore from '../../../store/useDataStore'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { useSnippetStore } from '../../../store/useSnippetStore'
+import { Input } from '../../../style/Form'
+import { ILink } from '../../../types/Types'
+import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
+import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { isClash, isReserved } from '../../../utils/lib/paths'
+import { convertContentToRawText } from '../../../utils/search/localSearch'
 import {
   StyledCombobox,
   StyledInputWrapper,
@@ -9,28 +30,6 @@ import {
   SuggestionError,
   SuggestionText
 } from './NodeSelect.styles'
-import { isClash, isReserved } from '../../../utils/lib/paths'
-import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
-
-import { ILink } from '../../../types/Types'
-import { Icon } from '@iconify/react'
-import { Input } from '../../../style/Form'
-import addCircleLine from '@iconify-icons/ri/add-circle-line'
-import checkboxCircleLine from '@iconify-icons/ri/checkbox-circle-line'
-import { convertContentToRawText } from '../../../utils/search/localSearch'
-import errorWarningLine from '@iconify-icons/ri/error-warning-line'
-import fileList2Line from '@iconify-icons/ri/file-list-2-line'
-import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
-import lock2Line from '@iconify-icons/ri/lock-2-line'
-import toast from 'react-hot-toast'
-import { useCombobox } from 'downshift'
-import { useContentStore } from '../../../store/useContentStore'
-import useDataStore from '../../../store/useDataStore'
-// import { MexIcon } from '../../../style/Layouts'
-import { useDebouncedCallback } from 'use-debounce'
-import { useLinks } from '../../../hooks/useLinks'
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { useSnippetStore } from '../../../store/useSnippetStore'
 
 export type QuickLink = {
   // Text to be shown in the combobox list

@@ -1,4 +1,11 @@
-// import addLine from '@iconify-icons/ri/add-line'
+// import addLine from '@iconify/icons-ri/add-line'
+import checkboxBlankCircleLine from '@iconify/icons-radix-icons/drag-handle-dots-2'
+import addCircleLine from '@iconify/icons-ri/add-circle-line'
+import refreshLine from '@iconify/icons-ri/refresh-line'
+import timeLine from '@iconify/icons-ri/time-line'
+import { Icon } from '@iconify/react'
+import Tippy, { TippyProps } from '@tippyjs/react'
+import { default as TippyHeadless, TippyProps as TippyHeadlessProps } from '@tippyjs/react/headless'
 import {
   ELEMENT_BLOCKQUOTE,
   ELEMENT_CODE_BLOCK,
@@ -17,19 +24,10 @@ import {
   ELEMENT_UL,
   withDraggables
 } from '@udecode/plate'
-import Tippy, { TippyProps } from '@tippyjs/react'
-import { default as TippyHeadless, TippyProps as TippyHeadlessProps } from '@tippyjs/react/headless'
-
-import { Icon } from '@iconify/react'
-import { ProfileImage } from '../../components/mex/User/ProfileImage'
 import React from 'react'
-import { RelativeTime } from '../../components/mex/RelativeTime'
-import addCircleLine from '@iconify-icons/ri/add-circle-line'
-import addLine from '@iconify-icons/ri/add-line'
-import checkboxBlankCircleLine from '@iconify-icons/radix-icons/drag-handle-dots-2'
-import refreshLine from '@iconify-icons/ri/refresh-line'
 import styled from 'styled-components'
-import timeLine from '@iconify-icons/ri/time-line'
+import { RelativeTime } from '../../components/mex/RelativeTime'
+import { ProfileImage } from '../../components/mex/User/ProfileImage'
 import useBlockStore from '../../store/useBlockStore'
 
 const StyledTip = styled.div`

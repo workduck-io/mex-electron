@@ -1,4 +1,4 @@
-import hashtagIcon from '@iconify-icons/ri/hashtag'
+import hashtagIcon from '@iconify/icons-ri/hashtag'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'

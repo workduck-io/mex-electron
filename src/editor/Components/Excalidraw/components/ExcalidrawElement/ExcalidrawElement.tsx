@@ -1,25 +1,23 @@
 /* eslint-disable import/no-unresolved */
-import Tippy from '@tippyjs/react'
-import fullscreenLine from '@iconify-icons/ri/fullscreen-line'
-import markupLine from '@iconify-icons/ri/markup-line'
-import fullscreenExitLine from '@iconify-icons/ri/fullscreen-exit-line'
-import React, { useEffect, useRef, useState } from 'react'
+import { serializeAsJSON } from '@excalidraw/excalidraw-next'
 import { AppState, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw-next/types/types'
+import fullscreenExitLine from '@iconify/icons-ri/fullscreen-exit-line'
+import fullscreenLine from '@iconify/icons-ri/fullscreen-line'
+import markupLine from '@iconify/icons-ri/markup-line'
+import { Icon } from '@iconify/react'
+import Tippy from '@tippyjs/react'
 import { setNodes } from '@udecode/plate-core'
 import { getRootProps } from '@udecode/plate-styled-components'
-import { ReactEditor } from 'slate-react'
-import { TExcalidrawProps } from '../../types'
-import { CanvasText, getExcalidrawElementStyles } from './ExcalidrawElement.styles'
-import { ExcalidrawElementProps } from './ExcalidrawElement.types'
 import { debounce } from 'lodash'
-import { serializeAsJSON } from '@excalidraw/excalidraw-next'
-import { mog } from '../../../../../utils/lib/helper'
+import React, { useEffect, useRef, useState } from 'react'
+import { ReactEditor } from 'slate-react'
 import {
   InputPrompt,
   InputWrapper,
   RootElement
 } from '../../../media-embed-ui/src/MediaEmbedElement/MediaEmbedElement.styles'
-import { Icon } from '@iconify/react'
+import { TExcalidrawProps } from '../../types'
+import { CanvasText, getExcalidrawElementStyles } from './ExcalidrawElement.styles'
 
 export const ExcalidrawElement = (props: any) => {
   const {

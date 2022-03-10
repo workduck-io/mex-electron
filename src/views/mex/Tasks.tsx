@@ -1,7 +1,7 @@
 import React from 'react'
 import { ColumnContainer } from '../../components/spotlight/Actions/styled'
 import useTodoStore from '../../store/useTodoStore'
-import taskFill from '@iconify-icons/ri/task-fill'
+import taskFill from '@iconify/icons-ri/task-fill'
 import { IntegrationContainer, Text, Title } from '../../style/Integration'
 import styled, { useTheme } from 'styled-components'
 import { useNavigation } from '../../hooks/useNavigation'

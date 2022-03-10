@@ -1,16 +1,15 @@
 // Icons for sidebar and UI
-import starLine from '@iconify-icons/ri/star-line'
-import bxChevronDownCircle from '@iconify-icons/bx/bx-chevron-down-circle'
-import checkboxBlankCircleLine from '@iconify-icons/ri/checkbox-blank-circle-line'
-import checkboxBlankCircleFill from '@iconify-icons/ri/checkbox-blank-circle-fill'
-import starFill from '@iconify-icons/ri/star-fill'
-import draftLine from '@iconify-icons/ri/draft-line'
-import draftFill from '@iconify-icons/ri/draft-fill'
-import taskLine from '@iconify-icons/ri/task-line'
-import taskFill from '@iconify-icons/ri/task-fill'
-
+import bxChevronDownCircle from '@iconify/icons-bx/bx-chevron-down-circle'
+import checkboxBlankCircleFill from '@iconify/icons-ri/checkbox-blank-circle-fill'
+import checkboxBlankCircleLine from '@iconify/icons-ri/checkbox-blank-circle-line'
+import draftFill from '@iconify/icons-ri/draft-fill'
+import draftLine from '@iconify/icons-ri/draft-line'
 // Icons for Editor
-import externalLinkLine from '@iconify-icons/ri/external-link-line'
+import externalLinkLine from '@iconify/icons-ri/external-link-line'
+import starFill from '@iconify/icons-ri/star-fill'
+import starLine from '@iconify/icons-ri/star-line'
+import taskFill from '@iconify/icons-ri/task-fill'
+import taskLine from '@iconify/icons-ri/task-line'
 
 // `any` is used in type signature as `IconifyIcon` type doesn't work
 

@@ -1,10 +1,9 @@
-import bookmarkFill from '@iconify-icons/ri/bookmark-fill'
-import bookmarkLine from '@iconify-icons/ri/bookmark-line'
+import bookmarkFill from '@iconify/icons-ri/bookmark-fill'
+import bookmarkLine from '@iconify/icons-ri/bookmark-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import { useBookmarks } from '../../../hooks/useBookmarks'
 import useDataStore from '../../../store/useDataStore'
-import { mog } from '../../../utils/lib/helper'
 // import IconButton from '../../Styled/Buttons'
 import { LoadingButton } from './LoadingButton'
 

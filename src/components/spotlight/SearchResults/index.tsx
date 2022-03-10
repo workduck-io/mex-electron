@@ -1,6 +1,6 @@
 // /* eslint-disable react/prop-types */
-// import PlusCircle from '@iconify-icons/bi/plus-circle'
-// import Document from '@iconify-icons/gg/file-document'
+// import PlusCircle from '@iconify/icons-bi/plus-circle'
+// import Document from '@iconify/icons-gg/file-document'
 // import { Icon } from '@iconify/react'
 // import React, { useRef, useState } from 'react'
 // import { mog } from '../../../utils/lib/helper'

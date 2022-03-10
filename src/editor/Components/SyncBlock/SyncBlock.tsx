@@ -1,4 +1,4 @@
-import refreshFill from '@iconify-icons/ri/refresh-fill'
+import refreshFill from '@iconify/icons-ri/refresh-fill'
 import { Icon } from '@iconify/react'
 import Tippy from '@tippyjs/react/headless' // different import path!
 import { client } from '@workduck-io/dwindle'

@@ -1,7 +1,7 @@
+import CheckCircleIcon from '@iconify/icons-ph/check-circle-bold'
+import ProhibitIcon from '@iconify/icons-ph/prohibit-bold'
 import React from 'react'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
-import CheckCircleIcon from '@iconify-icons/ph/check-circle-bold'
-import ProhibitIcon from '@iconify-icons/ph/prohibit-bold'
 import { MarginHorizontal, StyledContainer, StyledIcon, StyledSetting } from './styled'
 
 const SpotlightSettings = () => {

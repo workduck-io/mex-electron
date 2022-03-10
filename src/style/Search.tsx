@@ -50,9 +50,37 @@ export const SearchHeader = styled.div`
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.medium}`};
 `
 
+export const SearchFilterWrapper = styled(SearchHeader)``
+
+export const SearchFilterList = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: ${({ theme }) => theme.spacing.small};
+`
+
+export const SearchFilterStyled = styled.div<{ selected?: boolean }>`
+  display: flex;
+  padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.medium}`};
+
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+
+  background-color: ${({ theme }) => theme.colors.gray[8]};
+
+  ${({ selected }) =>
+    selected &&
+    css`
+      background-color: ${({ theme }) => theme.colors.primary};
+      color: ${({ theme }) => theme.colors.text.oppositePrimary};
+    `}
+`
+
 export const SearchViewContainer = styled.div`
   position: relative;
   margin: ${({ theme: { spacing } }) => `${spacing.large}`};
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.medium};
+  flex-direction: column;
 `
 export const SearchContainer = styled.div`
   margin: ${({ theme: { spacing } }) => `calc(2 * ${spacing.large}) ${spacing.large} ${spacing.medium}`};

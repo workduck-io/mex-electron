@@ -1,10 +1,10 @@
-import Tippy from '@tippyjs/react'
-import fullscreenLine from '@iconify-icons/ri/fullscreen-line'
-import fullscreenExitLine from '@iconify-icons/ri/fullscreen-exit-line'
-import magicLine from '@iconify-icons/ri/magic-line'
-import globalLine from '@iconify-icons/ri/global-line'
-// npm install --save-dev @iconify/react @iconify-icons/ri
+import fullscreenExitLine from '@iconify/icons-ri/fullscreen-exit-line'
+import fullscreenLine from '@iconify/icons-ri/fullscreen-line'
+import globalLine from '@iconify/icons-ri/global-line'
+import magicLine from '@iconify/icons-ri/magic-line'
+// npm install --save-dev @iconify/react @iconify/icons-ri
 import { Icon } from '@iconify/react'
+import Tippy from '@tippyjs/react'
 import * as React from 'react'
 import { InputPrompt, InputWrapper, MediaInput } from './MediaEmbedElement.styles'
 

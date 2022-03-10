@@ -1,18 +1,15 @@
-import React, { useMemo, useRef } from 'react'
-import { SeePreview, StyledPreview } from './styled'
-
+import downIcon from '@iconify/icons-ph/arrow-down-bold'
 import { Icon } from '@iconify/react'
-import { ItemActionType } from '../SearchResults/types'
+import React, { useMemo, useRef } from 'react'
+import { useSpring } from 'react-spring'
 import { defaultContent } from '../../../data/Defaults/baseData'
-import downIcon from '@iconify-icons/ph/arrow-down-bold'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
+import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { useSpring } from 'react-spring'
-import PreviewContainer from './PreviewContainer'
 import { useSnippetStore } from '../../../store/useSnippetStore'
-import { mog } from '../../../utils/lib/helper'
-import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
+import PreviewContainer from './PreviewContainer'
+import { SeePreview, StyledPreview } from './styled'
 
 export type PreviewType = {
   text: string

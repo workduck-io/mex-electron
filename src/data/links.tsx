@@ -1,15 +1,15 @@
-import fileDocument from '@iconify-icons/gg/file-document'
-import appsLine from '@iconify-icons/ri/apps-line'
-import searchLine from '@iconify-icons/ri/search-line'
-import dashboardLine from '@iconify-icons/ri/dashboard-line'
-import quillPenLine from '@iconify-icons/ri/quill-pen-line'
+import checkboxLine from '@iconify/icons-ri/checkbox-line'
+import fileDocument from '@iconify/icons-gg/file-document'
+import appsLine from '@iconify/icons-ri/apps-line'
+import dashboardLine from '@iconify/icons-ri/dashboard-line'
+import quillPenLine from '@iconify/icons-ri/quill-pen-line'
+import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
 import React from 'react'
 import { NavLinkData } from '../components/mex/Sidebar/Types'
+import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
 import { ROUTE_PATHS } from '../views/routes/urls'
-import checkboxLine from '@iconify-icons/ri/checkbox-line'
-import { useEditorStore } from '../store/useEditorStore'
 
 /*
 Sidebar links are defined here

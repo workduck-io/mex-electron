@@ -1,8 +1,9 @@
-import fileList2Line from '@iconify-icons/ri/file-list-2-line'
+import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import React from 'react'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
+import { useFilters } from '../../../hooks/useFilters'
 import { useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
 import { useNodes } from '../../../hooks/useNodes'
@@ -32,9 +33,9 @@ import { convertContentToRawText } from '../../../utils/search/localSearch'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import Backlinks from '../Backlinks'
 import Metadata from '../Metadata/Metadata'
-import DataInfoBar from '../Sidebar/DataInfoBar'
 import TagsRelated from '../Tags/TagsRelated'
-import SearchView, { RenderItemProps, RenderPreviewProps } from './SearchView'
+import SearchFilters from './SearchFilters'
+import SearchView, { RenderFilterProps, RenderItemProps, RenderPreviewProps } from './SearchView'
 import { View } from './ViewSelector'
 
 const Search = () => {
@@ -43,6 +44,17 @@ const Search = () => {
   const contents = useContentStore((store) => store.contents)
   const { getNode } = useNodes()
   const { goTo } = useRouting()
+  const {
+    applyCurrentFilters,
+    resetFilters,
+    addCurrentFilter,
+    setFilters,
+    generateNodeSearchFilters,
+    removeCurrentFilter,
+    filters,
+    currentFilters,
+    resetCurrentFilters
+  } = useFilters<GenericSearchResult>()
 
   const { getNodeIdFromUid } = useLinks()
 
@@ -50,7 +62,7 @@ const Search = () => {
     const res = searchIndex('node', newSearchTerm)
     const nodeids = useDataStore.getState().ilinks.map((l) => l.nodeid)
     const filRes = res.filter((r) => nodeids.includes(r.id))
-    mog('search', { res, filRes })
+    // mog('search', { res, filRes })
     return filRes
   }
 
@@ -118,8 +130,29 @@ const Search = () => {
   }
   const RenderItem = React.forwardRef(BaseItem)
 
+  const filterResults = (results: GenericSearchResult[]): GenericSearchResult[] => {
+    const nFilters = generateNodeSearchFilters(results)
+    setFilters(nFilters)
+    const filtered = applyCurrentFilters(results)
+    mog('filtered', { filtered, nFilters, currentFilters, results })
+    return filtered
+  }
+
+  const RenderFilters = (props: RenderFilterProps<GenericSearchResult>) => {
+    return (
+      <SearchFilters
+        {...props}
+        addCurrentFilter={addCurrentFilter}
+        removeCurrentFilter={removeCurrentFilter}
+        resetCurrentFilters={resetCurrentFilters}
+        filters={filters}
+        currentFilters={currentFilters}
+      />
+    )
+  }
+
   const RenderPreview = ({ item }: RenderPreviewProps<GenericSearchResult>) => {
-    mog('RenderPreview', { item })
+    // mog('RenderPreview', { item })
     if (item) {
       const con = contents[item.id]
       const content = con ? con.content : defaultContent.content
@@ -161,6 +194,8 @@ const Search = () => {
         onSelect={onSelect}
         onEscapeExit={onEscapeExit}
         onSearch={onSearch}
+        filterResults={filterResults}
+        RenderFilters={RenderFilters}
         RenderItem={RenderItem}
         RenderPreview={RenderPreview}
       />

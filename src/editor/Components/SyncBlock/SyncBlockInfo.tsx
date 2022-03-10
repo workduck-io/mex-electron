@@ -1,15 +1,15 @@
-import messageIcon from '@iconify-icons/ri/message-3-line'
+import messageIcon from '@iconify/icons-ri/message-3-line'
+import more2Fill from '@iconify/icons-ri/more-2-fill'
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { ELEMENT_SYNC_BLOCK, SyncBlock } from '.'
 import { GraphTools, StyledSyncBlockInfo } from '../../../components/mex/Graph/Graph.styles'
-import { useSyncStore } from '../../../store/useSyncStore'
 import useToggleElements from '../../../hooks/useToggleElements'
-import { useFilteredContent } from '../../../utils/lib/filter'
+import { useHelpStore } from '../../../store/useHelpStore'
+import { useSyncStore } from '../../../store/useSyncStore'
 import IconButton from '../../../style/Buttons'
 import { EditorStyles } from '../../../style/Editor'
-import { useHelpStore } from '../../../store/useHelpStore'
-import more2Fill from '@iconify-icons/ri/more-2-fill'
+import { useFilteredContent } from '../../../utils/lib/filter'
 
 export const StyledBlockInfo = styled.div`
   width: 100%;

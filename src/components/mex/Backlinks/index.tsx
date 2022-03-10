@@ -1,4 +1,4 @@
-import arrowGoBackLine from '@iconify-icons/ri/arrow-go-back-line'
+import arrowGoBackLine from '@iconify/icons-ri/arrow-go-back-line'
 import { Icon } from '@iconify/react'
 import React from 'react'
 import { useLinks } from '../../../hooks/useLinks'

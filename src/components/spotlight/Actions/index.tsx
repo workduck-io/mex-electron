@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
-import React from 'react'
+import CreateIcon from '@iconify/icons-ph/lightning'
 import { Icon } from '@iconify/react'
-import CreateIcon from '@iconify-icons/ph/lightning'
-import { Action, ActionDesc, ActionDescStyled, ActionTitle, CreateMex, FlexBetween, StyledUndordered } from './styled'
+import React from 'react'
 import { useRecentsShortcuts } from '../../../hooks/listeners/useRecentsShortcuts'
 import { StyledKey } from '../Shortcuts/styled'
+import { Action, ActionDesc, ActionDescStyled, ActionTitle, CreateMex, FlexBetween, StyledUndordered } from './styled'
 
 const Actions = () => {
   useRecentsShortcuts()

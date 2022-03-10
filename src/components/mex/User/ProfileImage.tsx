@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import md5 from 'md5'
-import Avatar from 'boring-avatars'
+import user3Line from '@iconify/icons-ri/user-3-line'
 import { Icon } from '@iconify/react'
-import user3Line from '@iconify-icons/ri/user-3-line'
-import styled, { useTheme } from 'styled-components'
 import Tippy from '@tippyjs/react/headless' // different import path!
+import Avatar from 'boring-avatars'
+import md5 from 'md5'
+import React, { useEffect, useState } from 'react'
+import styled, { useTheme } from 'styled-components'
 import { CardShadow } from '../../../style/helpers'
 import Centered from '../../../style/Layouts'
 
