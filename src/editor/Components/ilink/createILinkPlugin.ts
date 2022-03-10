@@ -29,11 +29,10 @@ export const withILink: WithOverride<any, PlatePlugin> = (editor, { type, option
 
   editor.deleteBackward = (options) => {
     const prev = Editor.previous(editor)
-    if (prev[0]) {
+    if (prev && prev[0]) {
       const node = prev[0] as any
       if (node.type && node.type === ELEMENT_ILINK && node.value) {
         const val = getPathFromNodeIdHookless(node.value)
-        mog('DeleteForILink', { type, options, val })
         deleteFragment(editor, { at: prev[1], unit: 'block' })
         Editor.insertText(editor, `[[${val}`)
       }
