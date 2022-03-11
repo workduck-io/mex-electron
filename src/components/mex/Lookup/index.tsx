@@ -57,7 +57,7 @@ const Lookup = () => {
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const { addNode } = useNodes()
 
-  const { goTo } = useRouting()
+  const { goTo, location } = useRouting()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const openModal = () => {
@@ -115,8 +115,8 @@ const Lookup = () => {
         // performClick()
       } else toast('Please select "tour" node')
     } else {
-      const nodeid = useEditorStore.getState().node.nodeid
-      if (quickLink.nodeid === nodeid) {
+      const path = location.pathname
+      if (`${ROUTE_PATHS.node}/${quickLink.nodeid}` === path) {
         mog('This value is already opened', {})
         closeModal()
         return
