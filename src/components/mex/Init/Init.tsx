@@ -105,7 +105,8 @@ const Init = () => {
         .then(({ d, auth }) => {
           if (auth) {
             // TODO: Fix loading of the __null__ node on first start of a fresh install
-            loadNode(getNodeidFromPathAndLinks(d.ilinks, d.baseNodeId), {
+            const baseNodeId = getNodeidFromPathAndLinks(d.ilinks, d.baseNodeId)
+            loadNode(baseNodeId, {
               fetch: false,
               savePrev: false,
               withLoading: false
@@ -114,12 +115,18 @@ const Init = () => {
             // * Fetch quick flow templates
             getTemplates()
 
-            return { nodeid: d.baseNodeId }
+            // mog('Initialization complete', { d, auth })
+
+            return { nodeid: baseNodeId }
           }
         })
         // For development
         // .then(() => goTo(ROUTE_PATHS.search, NavigationType.push))
-        .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid))
+        .then(({ nodeid }) => {
+          // mog('Navigating to ', { nodeid })
+
+          goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid)
+        })
         // .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.push, nodeid))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
