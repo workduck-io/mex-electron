@@ -233,5 +233,13 @@ export const SnippetSaverButton = ({ callbackAfterSave, title, getSnippetTitle }
     }
   })
 
-  return <IconButton size={24} icon={saveLine} onClick={onSave} title={title ?? 'Save'} />
+  return (
+    <IconButton
+      size={24}
+      shortcut={shortcuts.save.keystrokes}
+      icon={saveLine}
+      onClick={onSave}
+      title={title ?? 'Save'}
+    />
+  )
 }
