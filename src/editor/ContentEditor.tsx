@@ -126,7 +126,7 @@ const ContentEditor = () => {
         />
       </StyledEditor>
       <BlockOptionsMenu blockId="one" />
-      <NodeIntentsModal nodeid={nodeid} />
+      {/* <NodeIntentsModal nodeid={nodeid} /> */}
     </>
   )
 }

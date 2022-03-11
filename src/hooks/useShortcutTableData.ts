@@ -24,11 +24,15 @@ const useShortcutTableData = () => {
   )
 
   const data = React.useMemo(() => {
-    const shortcutData = Object.keys(shortcuts).map((k) => ({
-      title: shortcuts[k].title,
-      keystrokes: shortcuts[k].keystrokes,
-      category: shortcuts[k].category ?? 'General'
-    }))
+    const shortcutData = Object.keys(shortcuts)
+      .filter((key) => {
+        return shortcuts[key].disabled !== true
+      })
+      .map((k) => ({
+        title: shortcuts[k].title,
+        keystrokes: shortcuts[k].keystrokes,
+        category: shortcuts[k].category ?? 'General'
+      }))
 
     return shortcutData
   }, [shortcuts])

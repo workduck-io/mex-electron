@@ -4,6 +4,7 @@ import useAnalytics from '../services/analytics'
 import { ActionType } from '../services/analytics/events'
 import { useHelpStore } from '../store/useHelpStore'
 import { KeyBinding, useShortcutStore } from '../store/useShortcutStore'
+import { mog } from '../utils/lib/helper'
 import { MiscKeys } from '../utils/lib/keyMap'
 import { getEventNameFromElement } from '../utils/lib/strings'
 
@@ -117,7 +118,8 @@ export const useKeyListener = () => {
   const { trackEvent } = useAnalytics()
 
   const shortcutHandler = (shortcut: Shortcut, callback: any) => {
-    if (!shortcutDisabled) {
+    mog('shortcutHandler', { shortcut })
+    if (!shortcutDisabled && !shortcut.disabled) {
       trackEvent(getEventNameFromElement('Shortcut Settings', ActionType.KEY_PRESS, 'Shortcut'), shortcut)
       callback()
     }

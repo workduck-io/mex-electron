@@ -27,12 +27,12 @@ const useEditorPluginConfig = (editorId: string) => {
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
   const { getSnippetsConfigs } = useSnippets()
-  const { getSyncBlockConfigs } = useSyncConfig()
+  // const { getSyncBlockConfigs } = useSyncConfig()
   const { trackEvent } = useAnalytics()
 
   // Combobox
   const snippetConfigs = getSnippetsConfigs()
-  const syncBlockConfigs = getSyncBlockConfigs()
+  // const syncBlockConfigs = getSyncBlockConfigs()
 
   const ilinksForCurrentNode = useMemo(() => {
     return ilinks.filter((item) => item.path !== node.id)
@@ -89,8 +89,8 @@ const useEditorPluginConfig = (editorId: string) => {
         renderElement: ILinkComboboxItem
       },
       commands: {
-        ...snippetConfigs,
-        ...syncBlockConfigs
+        ...snippetConfigs
+        // ...syncBlockConfigs
       }
     },
     slashCommands: {

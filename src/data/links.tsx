@@ -49,12 +49,14 @@ const useNavlinks = () => {
         icon: GetIcon(checkboxLine),
         isComingSoon: true
       },
+      /*
       {
         title: 'Integrations',
         path: ROUTE_PATHS.integrations,
         shortcut: shortcuts.showIntegrations.keystrokes,
         icon: GetIcon(appsLine)
       },
+      */
       {
         title: 'Snippets',
         path: ROUTE_PATHS.snippets,

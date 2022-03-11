@@ -83,7 +83,7 @@ const Switch = () => {
 
         <Route path={ROUTE_PATHS.home} element={<Home />}>
           <Route index element={<ProtectedRoute component={Dashboard} />} />
-          <Route path={ROUTE_PATHS.integrations} element={<ProtectedRoute component={Integrations} />} />
+          {/*<Route path={ROUTE_PATHS.integrations} element={<ProtectedRoute component={Integrations} />} />*/}
           <Route path={ROUTE_PATHS.archive} element={<ProtectedRoute component={Archive} />} />
           <Route path={ROUTE_PATHS.snippets} element={<ProtectedRoute component={Snippets} />} />
           <Route path={ROUTE_PATHS.search} element={<ProtectedRoute component={Search} />} />
