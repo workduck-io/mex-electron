@@ -98,7 +98,7 @@ export const useLinks = () => {
   const getBacklinks = (nodeid: string) => {
     const links = linkCache[nodeid]
     if (links) {
-      return links.filter((l) => l.type === 'from' && !isInArchive(l.nodeid) && getNodeIdFromUid(l.nodeid))
+      return links.filter((l) => l.type === 'from' && !isInArchive(l.nodeid) && getPathFromNodeid(l.nodeid))
     }
     return []
   }
@@ -130,7 +130,7 @@ export const useLinks = () => {
     }
   }
 
-  const getUidFromNodeId = (path: string) => {
+  const getNodeidFromPath = (path: string) => {
     const links = useDataStore.getState().ilinks
     const archive = useDataStore.getState().archive
 
@@ -141,17 +141,17 @@ export const useLinks = () => {
     if (archivedLink) return archivedLink.nodeid
   }
 
-  const getNodeIdFromUid = (nodeid: string) => {
+  const getPathFromNodeid = (nodeid: string) => {
     const links = useDataStore.getState().ilinks
 
     const link = links.find((l) => l.nodeid === nodeid)
     if (link) return link.path
   }
 
-  return { getAllLinks, getLinks, getBacklinks, updateLinksFromContent, getUidFromNodeId, getNodeIdFromUid, createLink }
+  return { getAllLinks, getLinks, getBacklinks, updateLinksFromContent, getNodeidFromPath, getPathFromNodeid, createLink }
 }
 
-export const getUidFromNodeIdAndLinks = (links: ILink[], path: string) => {
+export const getNodeidFromPathAndLinks = (links: ILink[], path: string) => {
   const link = links.find((l) => l.path === path)
   if (link) return link.nodeid
 }

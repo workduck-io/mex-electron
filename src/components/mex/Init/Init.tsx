@@ -9,7 +9,7 @@ import { useSaver } from '../../../editor/Components/Saver'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType, useInitialize } from '../../../hooks/useInitialize'
-import { getUidFromNodeIdAndLinks, useLinks } from '../../../hooks/useLinks'
+import { getNodeidFromPathAndLinks, useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
 import { useLocalData } from '../../../hooks/useLocalData'
 import { useNavigation } from '../../../hooks/useNavigation'
@@ -55,7 +55,7 @@ const Init = () => {
   const fetchIndexLocalStorage = useSearchStore((store) => store.fetchIndexLocalStorage)
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
-  const { getUidFromNodeId } = useLinks()
+  const { getNodeidFromPath } = useLinks()
   const { onSave } = useSaver()
   const updateDoc = useSearchStore((store) => store.updateDoc)
 
@@ -105,7 +105,7 @@ const Init = () => {
         .then(({ d, auth }) => {
           if (auth) {
             // TODO: Fix loading of the __null__ node on first start of a fresh install
-            loadNode(getUidFromNodeIdAndLinks(d.ilinks, d.baseNodeId), {
+            loadNode(getNodeidFromPathAndLinks(d.ilinks, d.baseNodeId), {
               fetch: false,
               savePrev: false,
               withLoading: false
@@ -179,7 +179,7 @@ const Init = () => {
     })
     ipcRenderer.on(IpcAction.SET_APPLE_NOTES_DATA, (_event, arg: AppleNote[]) => {
       setAppleNotes(arg)
-      const appleNotesUID = getUidFromNodeId('Apple Notes')
+      const appleNotesUID = getNodeidFromPath('Apple Notes')
       loadNode(appleNotesUID)
       goTo(ROUTE_PATHS.node, NavigationType.push, appleNotesUID)
     })
@@ -200,7 +200,7 @@ const Init = () => {
         let nodeUID = addILink({ ilink: nodeKey }).nodeid
 
         const newNodeContent = getMexHTMLDeserializer(note.HTMLContent, editor, [])
-        if (!nodeUID) nodeUID = getUidFromNodeId(nodeKey)
+        if (!nodeUID) nodeUID = getNodeidFromPath(nodeKey)
 
         const newNode = getNode(nodeUID)
         onSave(newNode, true, false, [{ children: newNodeContent }])

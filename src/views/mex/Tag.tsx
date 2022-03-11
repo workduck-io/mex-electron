@@ -76,7 +76,7 @@ const Tag = () => {
   const { tag } = useParams<{ tag: string }>()
   // const tagsCache = useDataStore((store) => store.tagsCache)
   const { getNodesAndCleanCacheForTag } = useTags()
-  const { getNodeIdFromUid } = useLinks()
+  const { getPathFromNodeid } = useLinks()
   const { nodes, cleanCache } = getNodesAndCleanCacheForTag(tag)
   const { goTo } = useRouting()
   const { loadNode } = useLoad()
@@ -183,7 +183,7 @@ const Tag = () => {
         <Results view={View.Card}>
           {transition((styles, nodeid, _t, _i) => {
             const con = contents[nodeid]
-            const path = getNodeIdFromUid(nodeid)
+            const path = getPathFromNodeid(nodeid)
             const content = con ? con.content : defaultContent.content
             return (
               <Result

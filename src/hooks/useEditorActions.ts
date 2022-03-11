@@ -42,11 +42,11 @@ const useEditorActions = () => {
   const alreadyErrored = useEditorErrorStore((s) => s.alreadyErrored)
   const setAlreadyErrored = useEditorErrorStore((s) => s.setAlreadyErrored)
   const setErrorState = useEditorErrorStore((s) => s.setErrorState)
-  const { getUidFromNodeId } = useLinks()
+  const { getNodeidFromPath } = useLinks()
 
   const resetEditor = (appType: AppType = AppType.MEX) => {
     let nodeIdToLoad = node.nodeid
-    const basenode_nodeId = getUidFromNodeId(baseNodePath)
+    const basenode_nodeId = getNodeidFromPath(baseNodePath)
     // mog('resetEditor', { nodeIdToLoad, node, prevNode })
     const loadNodeL = (nodeIdToLoad: string) => {
       clearBuffer()

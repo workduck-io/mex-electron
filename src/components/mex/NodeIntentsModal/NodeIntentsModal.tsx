@@ -51,7 +51,7 @@ const NodeIntentsModal = ({ nodeid }: NodeIntegrationsModalProps) => {
   const open = useNodeIntentsModalStore((store) => store.open)
   const intents = useNodeIntentsModalStore((store) => store.intents)
   const appendIntent = useNodeIntentsModalStore((store) => store.appendIntent)
-  const { getNodeIdFromUid } = useLinks()
+  const { getPathFromNodeid } = useLinks()
 
   const onSave = () => {
     updateNodeIntents(
@@ -77,7 +77,7 @@ const NodeIntentsModal = ({ nodeid }: NodeIntegrationsModalProps) => {
 
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
-      <ModalHeader>Node Intents for {getNodeIdFromUid(nodeid)}</ModalHeader>
+      <ModalHeader>Node Intents for {getPathFromNodeid(nodeid)}</ModalHeader>
       <Para>
         Add integrations and use them anywhere using <Command>/sync</Command> command.
       </Para>

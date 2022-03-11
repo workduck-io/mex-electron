@@ -63,7 +63,7 @@ const TaskContainer = styled.section`
 `
 
 const TaskGroup: React.FC<TaskGroupProp> = ({ nodeid, todos }) => {
-  const { getNodeIdFromUid } = useLinks()
+  const { getPathFromNodeid } = useLinks()
   const { push } = useNavigation()
   const { goTo } = useRouting()
 
@@ -78,7 +78,7 @@ const TaskGroup: React.FC<TaskGroupProp> = ({ nodeid, todos }) => {
 
   return (
     <TaskContainer>
-      <NodeHeading>{getNodeIdFromUid(nodeid) ?? nodeid}</NodeHeading>
+      <NodeHeading>{getPathFromNodeid(nodeid) ?? nodeid}</NodeHeading>
       {todos.map((todo) => (
         <Task key={todo.id} onClick={() => onClick(todo.nodeid)}>
           <FlexIt>

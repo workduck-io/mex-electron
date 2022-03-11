@@ -163,6 +163,7 @@ const useLoad = () => {
    * This does not navigate to editor.
    */
   const loadNode: LoadNodeFn = (nodeid, options = { savePrev: true, fetch: USE_API(), withLoading: true }) => {
+    mog('loadNode', { nodeid, options })
     const hasBeenLoaded = false
     if (!options.node && !isLocalNode(nodeid).isLocal) {
       toast.error('Selected node does not exist.')

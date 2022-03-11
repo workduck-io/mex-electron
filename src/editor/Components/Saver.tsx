@@ -31,7 +31,7 @@ import { convertEntryToRawText } from '../../utils/search/localSearch'
 export const useDataSaverFromContent = () => {
   const setContent = useContentStore((state) => state.setContent)
   const getContent = useContentStore((state) => state.getContent)
-  const { updateLinksFromContent, getNodeIdFromUid } = useLinks()
+  const { updateLinksFromContent, getPathFromNodeid } = useLinks()
   const updateNodeTodos = useTodoStore((store) => store.replaceContentOfTodos)
   const { updateTagsFromContent } = useTags()
   const { saveDataAPI } = useApi()
@@ -48,7 +48,7 @@ export const useDataSaverFromContent = () => {
       updateTagsFromContent(nodeid, editorValue)
       updateNodeTodos(nodeid, getTodosFromContent(editorValue))
 
-      const title = getNodeIdFromUid(nodeid)
+      const title = getPathFromNodeid(nodeid)
       const parsedDoc = convertEntryToRawText(nodeid, editorValue, title)
       updateDoc('node', parsedDoc)
       appNotifierWindow(IpcAction.SYNC_INDEX, AppType.MEX, { parsedDoc })

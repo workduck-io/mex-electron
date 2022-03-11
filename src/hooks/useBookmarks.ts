@@ -12,7 +12,7 @@ export const useBookmarks = () => {
   const removeBookmarks = useDataStore((state) => state.removeBookamarks)
   const { onSave } = useSaver()
   const { userCred } = useAuth()
-  const { getNodeIdFromUid } = useLinks()
+  const { getPathFromNodeid } = useLinks()
 
   const isBookmark = (nodeid: string) => {
     const bookmarks = useDataStore.getState().bookmarks
@@ -56,7 +56,7 @@ export const useBookmarks = () => {
         // console.log('Data', d.data)
 
         if (d.data) {
-          const bookmarks = d.data.filter((nodeid: string) => getNodeIdFromUid(nodeid) !== undefined)
+          const bookmarks = d.data.filter((nodeid: string) => getPathFromNodeid(nodeid) !== undefined)
           setBookmarks(bookmarks)
         }
         return d.data

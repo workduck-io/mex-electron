@@ -121,7 +121,7 @@ const Refactor = () => {
   }
 
   const { getMockRefactor, execRefactor } = useRefactor()
-  const { getUidFromNodeId } = useLinks()
+  const { getNodeidFromPath } = useLinks()
 
   useEffect(() => {
     mog('Refactor', { open, to, from })
@@ -140,13 +140,13 @@ const Refactor = () => {
     if (doesLinkRemain(path, res)) {
       push(nodeid, { savePrev: false })
     } else if (res.length > 0) {
-      const nodeid = getUidFromNodeId(res[0].to)
+      const nodeid = getNodeidFromPath(res[0].to)
       push(nodeid, { savePrev: false })
     }
     closeModal()
   }
 
-  mog('Refactor', { open, focus, to, from, mockRefactored })
+  // mog('Refactor', { open, focus, to, from, mockRefactored })
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Refactor</ModalHeader>

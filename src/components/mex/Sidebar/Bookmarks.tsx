@@ -36,7 +36,7 @@ const BLink = styled(BaseLink)`
 const Bookmarks = () => {
   const bookmarks = useDataStore((store) => store.bookmarks)
   const { getAllBookmarks } = useBookmarks()
-  const { getNodeIdFromUid } = useLinks()
+  const { getPathFromNodeid } = useLinks()
   const { push } = useNavigation()
   // const [ bookmarks, setBookmarks ] = useState<string[]>([])
 
@@ -48,11 +48,11 @@ const Bookmarks = () => {
   return (
     <BList>
       {bookmarks.map((nodeid) => {
-        if (getNodeIdFromUid(nodeid) === undefined) return null
+        if (getPathFromNodeid(nodeid) === undefined) return null
         return (
           <BLink key={`bookmark_link_${nodeid}`} onClick={() => push(nodeid)}>
             <Icon height={14} icon={bookmarkLine} />
-            {getNodeIdFromUid(nodeid)}
+            {getPathFromNodeid(nodeid)}
           </BLink>
         )
       })}

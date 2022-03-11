@@ -65,7 +65,7 @@ const Search = () => {
     resetCurrentFilters
   } = useFilters<GenericSearchResult>()
 
-  const { getNodeIdFromUid } = useLinks()
+  const { getPathFromNodeid } = useLinks()
 
   const onSearch = (newSearchTerm: string) => {
     const res = searchIndex('node', newSearchTerm)

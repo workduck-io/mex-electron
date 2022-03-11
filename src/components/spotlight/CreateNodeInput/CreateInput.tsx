@@ -38,7 +38,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
   const editorState = getPlateSelectors(path).value()
 
   const { loadNodeAndAppend, loadNode } = useLoad()
-  const { getUidFromNodeId } = useLinks()
+  const { getNodeidFromPath } = useLinks()
   const nodeContent = useSpotlightEditorStore((state) => state.nodeContent)
 
   const handleOnCreate = (quickLink: QuickLink) => {
@@ -60,7 +60,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
 
   const handleChange = (quickLink: QuickLink) => {
     const pathValue = quickLink.value
-    const nodeid = getUidFromNodeId(pathValue)
+    const nodeid = getNodeidFromPath(pathValue)
     if (nodeContent) {
       loadNodeAndAppend(nodeid, nodeContent)
     } else {

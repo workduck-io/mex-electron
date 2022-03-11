@@ -54,7 +54,7 @@ interface TreeGraphProps {
 export const TreeGraph = (props: TreeGraphProps) => {
   const { graphData } = props
   const { push } = useNavigation()
-  const { getUidFromNodeId } = useLinks()
+  const { getNodeidFromPath } = useLinks()
 
   const { showGraph, toggleGraph } = useToggleElements()
 
@@ -109,7 +109,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
       if (nodes.length === 1) {
         const node = graphData.nodes.filter((n: any) => n.id === nodes[0])[0]
         if (!node.path.startsWith('SERVICE')) {
-          const nodeid = getUidFromNodeId(node.path)
+          const nodeid = getNodeidFromPath(node.path)
           push(nodeid)
         }
       }
