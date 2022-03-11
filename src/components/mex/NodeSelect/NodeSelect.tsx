@@ -51,9 +51,9 @@ export type QuickLink = {
 }
 
 export enum QuickLinkType {
-  ilink,
-  snippet,
-  flow
+  ilink = 'ilink',
+  snippet = 'snippet',
+  flow = 'flow'
 }
 
 enum QuickLinkStatus {
