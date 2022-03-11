@@ -32,7 +32,7 @@ export const useGraphData = () => {
 
   const showLocal = useGraphStore((state) => state.showLocal)
 
-  const { getLinks, getNodeIdFromUid, getUidFromNodeId } = useLinks()
+  const { getLinks, getPathFromNodeid, getNodeidFromPath } = useLinks()
 
   const theme = useTheme()
 
@@ -86,8 +86,8 @@ export const useGraphData = () => {
 
   // Filter for the local graph here
   const nodeLinks = getLinks(nodeid).map((l) => ({
-    from: getNodeIdFromUid(l.from),
-    to: getNodeIdFromUid(l.to)
+    from: getPathFromNodeid(l.from),
+    to: getPathFromNodeid(l.to)
   }))
 
   const newNodes = filterNodeInLinks(path, nodes, nodeLinks)
@@ -102,7 +102,7 @@ export const useGraphData = () => {
   }
 
   if (selectedNode) {
-    const nodeid = getUidFromNodeId(selectedNode.path)
+    const nodeid = getNodeidFromPath(selectedNode.path)
     if (nodeid) {
       const nodeIntents = getNodeIntents(nodeid) ?? []
       nodeIntents.forEach((nodeIntent, index) => {

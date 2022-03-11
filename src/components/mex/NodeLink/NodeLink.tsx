@@ -15,13 +15,13 @@ interface NodeLinkProps {
 }
 
 const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
-  const { getNodeIdFromUid } = useLinks()
+  const { getPathFromNodeid } = useLinks()
   const { push } = useNavigation()
   // mog('NodeLink', { nodeid, preview, icon })
   return (
     <EditorPreview key={keyStr} nodeid={nodeid} placement="left">
       <NodeLinkStyled key={`NodeLink_${keyStr}`} onClick={() => push(nodeid)}>
-        {getNodeIdFromUid(nodeid)}
+        {getPathFromNodeid(nodeid)}
       </NodeLinkStyled>
     </EditorPreview>
   )

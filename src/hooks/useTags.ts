@@ -20,7 +20,7 @@ export interface RelatedNodes {
 export const useTags = () => {
   // const contents = useContentStore((state) => state.contents)
   const updateTagsCache = useDataStore((state) => state.updateTagsCache)
-  const { getNodeIdFromUid } = useLinks()
+  const { getPathFromNodeid } = useLinks()
   const { isInArchive } = useNodes()
 
   // const getAllLinks = () => {
@@ -80,7 +80,7 @@ export const useTags = () => {
       if (!tagsCache[t]) return p
       return {
         ...p,
-        [t]: tagsCache[t].nodes.filter((id) => id !== nodeid && !isInArchive(id) && getNodeIdFromUid(id))
+        [t]: tagsCache[t].nodes.filter((id) => id !== nodeid && !isInArchive(id) && getPathFromNodeid(id))
       }
     }, {})
 

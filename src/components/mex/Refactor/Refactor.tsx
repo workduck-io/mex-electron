@@ -12,6 +12,7 @@ import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { Button } from '../../../style/Buttons'
 import { NodeLink } from '../../../types/relations'
+import { mog } from '../../../utils/lib/helper'
 import { isReserved } from '../../../utils/lib/paths'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
@@ -120,14 +121,15 @@ const Refactor = () => {
   }
 
   const { getMockRefactor, execRefactor } = useRefactor()
-  const { getUidFromNodeId } = useLinks()
+  const { getNodeidFromPath } = useLinks()
 
   useEffect(() => {
+    mog('Refactor', { open, to, from })
     if (to && from && !isReserved(from) && !isReserved(to)) {
       // mog('To, from in refactor', { to, from })
       setMockRefactored(getMockRefactor(from, to))
     }
-  }, [to, from])
+  }, [to, from, open])
 
   // console.log({ mockRefactored });
 
@@ -138,12 +140,13 @@ const Refactor = () => {
     if (doesLinkRemain(path, res)) {
       push(nodeid, { savePrev: false })
     } else if (res.length > 0) {
-      const nodeid = getUidFromNodeId(res[0].to)
+      const nodeid = getNodeidFromPath(res[0].to)
       push(nodeid, { savePrev: false })
     }
     closeModal()
   }
 
+  // mog('Refactor', { open, focus, to, from, mockRefactored })
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Refactor</ModalHeader>
@@ -167,6 +170,7 @@ const Refactor = () => {
         createAtTop
         disallowClash
         iconHighlight={to !== undefined}
+        defaultValue={to ?? ''}
         handleSelectItem={handleToChange}
         handleCreateItem={handleToCreate}
       />

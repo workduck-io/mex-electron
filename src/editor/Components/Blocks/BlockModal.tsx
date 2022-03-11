@@ -35,7 +35,7 @@ const BlockModal = () => {
   const { addNode } = useNodes()
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
   const editor = usePlateEditorRef()
-  const { getUidFromNodeId } = useLinks()
+  const { getNodeidFromPath } = useLinks()
 
   const toggleModal = () => {
     setIsModalOpen(undefined)
@@ -105,7 +105,7 @@ const BlockModal = () => {
   }
 
   const onNodeSelect = (quickLink: QuickLink) => {
-    const nodeid = getUidFromNodeId(quickLink.value)
+    const nodeid = getNodeidFromPath(quickLink.value)
     const editorBlocks = getEditorBlocks()
     const content = getContentFromBlocks(nodeid, editorBlocks)
 

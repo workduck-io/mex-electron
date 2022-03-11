@@ -51,9 +51,9 @@ export type QuickLink = {
 }
 
 export enum QuickLinkType {
-  ilink,
-  snippet,
-  flow
+  ilink = 'ilink',
+  snippet = 'snippet',
+  flow = 'flow'
 }
 
 enum QuickLinkStatus {
@@ -158,7 +158,7 @@ function NodeSelect({
   const setSelectedItem = (selectedItem: QuickLink | null) =>
     setNodeSelectState((state) => ({ ...state, selectedItem }))
 
-  const { getNodeIdFromUid, getUidFromNodeId } = useLinks()
+  const { getPathFromNodeid, getNodeidFromPath } = useLinks()
 
   const getQuickLinks = () => {
     const ilinks = useDataStore.getState().ilinks
@@ -196,7 +196,7 @@ function NodeSelect({
   const lastOpenedItems = Array.from(lastOpened)
     .reverse()
     .map((nodeid) => {
-      const path = getNodeIdFromUid(nodeid)
+      const path = getPathFromNodeid(nodeid)
       return makeQuickLink(path, { nodeid })
     })
     .filter((i) => i.text)
@@ -361,7 +361,7 @@ function NodeSelect({
   useEffect(() => {
     if (defaultValue) {
       const newItems = getNewItems(defaultValue)
-      const nodeid = getUidFromNodeId(defaultValue)
+      const nodeid = getNodeidFromPath(defaultValue)
       onReverseClashAction({
         path: defaultValue,
         onSuccess: () => {

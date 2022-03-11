@@ -70,8 +70,8 @@ const SmallText = styled.div`
 
 const NodePreview = ({ node }: { node: ILink }) => {
   const getContent = useContentStore((store) => store.getContent)
-  const { getUidFromNodeId } = useLinks()
-  const nodeid = getUidFromNodeId(node?.path)
+  const { getNodeidFromPath } = useLinks()
+  const nodeid = getNodeidFromPath(node?.path)
   const content = getContent(nodeid)
 
   const time = content?.metadata?.updatedAt

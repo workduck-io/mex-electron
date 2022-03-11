@@ -28,9 +28,9 @@ const StyledArchiveText = styled.text`
 
 const InlineBlock = (props: any) => {
   const { push } = useNavigation()
-  const { getNodeIdFromUid } = useLinks()
+  const { getPathFromNodeid } = useLinks()
   const getContent = useContentStore((store) => store.getContent)
-  const path = useMemo(() => getNodeIdFromUid(props.element.value), [props.element.value])
+  const path = useMemo(() => getPathFromNodeid(props.element.value), [props.element.value])
   const nodeid = props.element.value
   const content = useMemo(() => getContent(nodeid), [nodeid])
   const { onSave } = useSaver()

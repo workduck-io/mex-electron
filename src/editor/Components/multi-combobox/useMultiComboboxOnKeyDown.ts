@@ -24,7 +24,7 @@ export interface ComboTypeHandlers {
 export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?: any) => {
   const closeMenu = useComboboxStore((state) => state.closeMenu)
   const { trackEvent } = useAnalytics()
-  const { getUidFromNodeId } = useLinks()
+  const { getNodeidFromPath } = useLinks()
 
   return (editor: PlateEditor, item: IComboboxItem) => {
     try {
@@ -57,7 +57,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         if ((type === ELEMENT_ILINK || type === ELEMENT_INLINE_BLOCK) && !itemValue.startsWith(`${NODE_ID_PREFIX}_`)) {
           mog('Replacing itemValue', { comboType, type, itemValue, item })
 
-          const nodeId = getUidFromNodeId(itemValue)
+          const nodeId = getNodeidFromPath(itemValue)
           itemValue = nodeId
         }
 

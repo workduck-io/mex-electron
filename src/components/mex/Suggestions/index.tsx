@@ -25,7 +25,7 @@ const SuggestionInfoBar = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { suggestions } = useSuggestionStore()
   const contents = useContentStore((store) => store.contents)
-  const { getNodeIdFromUid } = useLinks()
+  const { getPathFromNodeid } = useLinks()
   const editor = usePlateEditorRef()
 
   const onClick = (id: string) => {
@@ -54,7 +54,7 @@ const SuggestionInfoBar = () => {
       <>
         {suggestions.map((suggestion) => {
           const con = contents[suggestion.id]
-          const path = getNodeIdFromUid(suggestion.id)
+          const path = getPathFromNodeid(suggestion.id)
           const content = con ? con.content : defaultContent.content
           // mog('SuggestionInfoBar', { content, con, path, suggestion })
 

@@ -52,7 +52,7 @@ export const useFilters = <Item>() => {
   ) => void
   const { getTags } = useTags()
 
-  const { getNodeIdFromUid } = useLinks()
+  const { getPathFromNodeid } = useLinks()
   // setFilters: (filters: SearchFilter<any>[]) => void
   const addFilter = (filter: SearchFilter<Item>) => {
     setFilters([...filters, filter])
@@ -128,7 +128,7 @@ export const useFilters = <Item>() => {
     const currentFilters_ = currentFilters as unknown as SearchFilter<GenericSearchResult>[]
     const filteredItems = currentFilters_.length > 0 ? applyFilters(items, currentFilters_) : items
     const rankedPaths = filteredItems.reduce((acc, item) => {
-      const path = getNodeIdFromUid(item.id)
+      const path = getPathFromNodeid(item.id)
       const allPaths = getAllParentIds(path)
       // const allPaths =
       allPaths.forEach((path) => {
@@ -151,7 +151,7 @@ export const useFilters = <Item>() => {
           icon: 'ri:file-list-2-line',
           label: path,
           filter: (item: GenericSearchResult) => {
-            const itemPath = getNodeIdFromUid(item.id)
+            const itemPath = getPathFromNodeid(item.id)
             mog('itemPath being filtered', { item, itemPath, path })
             return isElder(itemPath, path) || itemPath === path
           }

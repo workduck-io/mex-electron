@@ -65,7 +65,7 @@ const TitleStatic = styled.div`
 `
 
 const NodeRenameTitle = () => {
-  const { getUidFromNodeId } = useLinks()
+  const { getNodeidFromPath } = useLinks()
   const { execRefactor, getMockRefactor } = useRefactor()
 
   // const focus = useRenameStore((store) => store.focus)
@@ -79,14 +79,14 @@ const NodeRenameTitle = () => {
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
   const modalReset = useRenameStore((store) => store.closeModal)
   const setTo = useRenameStore((store) => store.setTo)
-  const nodeFrom = useEditorStore((store) => store.node.id)
+  const nodeFrom = useEditorStore((store) => store.node.id ?? '')
   const setFrom = useRenameStore((store) => store.setFrom)
   const [editable, setEditable] = useState(false)
   // const inpRef = useRef<HTMLInputElement>()
   //
 
   useEffect(() => {
-    if (isReserved(nodeFrom)) {
+    if (nodeFrom && isReserved(nodeFrom)) {
       mog('ISRESERVED', { nodeFrom })
     }
   }, [nodeFrom])
@@ -125,7 +125,7 @@ const NodeRenameTitle = () => {
       if (doesLinkRemain(path, res)) {
         push(nodeid)
       } else if (res.length > 0) {
-        const nodeid = getUidFromNodeId(res[0].to)
+        const nodeid = getNodeidFromPath(res[0].to)
         push(nodeid)
       }
     }

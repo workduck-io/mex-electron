@@ -36,7 +36,7 @@ const Rename = () => {
   const setTo = useRenameStore((store) => store.setTo)
   const setFrom = useRenameStore((store) => store.setFrom)
 
-  const { getUidFromNodeId } = useLinks()
+  const { getNodeidFromPath } = useLinks()
   const { shortcutHandler } = useKeyListener()
   const q = useQStore((s) => s.q)
 
@@ -98,7 +98,7 @@ const Rename = () => {
       if (doesLinkRemain(path, res)) {
         push(nodeid, { savePrev: false })
       } else if (res.length > 0) {
-        const nodeid = getUidFromNodeId(res[0].to)
+        const nodeid = getNodeidFromPath(res[0].to)
         push(nodeid, { savePrev: false })
       }
     }

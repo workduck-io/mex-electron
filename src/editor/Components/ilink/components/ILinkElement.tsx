@@ -30,12 +30,12 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const focused = useFocused()
   const [preview, setPreview] = useState(false)
   const { push } = useNavigation()
-  const { getUidFromNodeId, getNodeIdFromUid } = useLinks()
+  const { getNodeidFromPath, getPathFromNodeid } = useLinks()
   const { getArchiveNode } = useNodes()
   // mog('We reached here', { selected, focused })
 
-  // const nodeid = getUidFromNodeId(element.value)
-  const path = getNodeIdFromUid(element.value)
+  // const nodeid = getNodeidFromPath(element.value)
+  const path = getPathFromNodeid(element.value)
   const { archived } = useArchive()
 
   const onClickProps = useOnMouseClick(() => {
