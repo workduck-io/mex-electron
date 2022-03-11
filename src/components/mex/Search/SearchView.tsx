@@ -2,6 +2,7 @@ import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
 import { debounce } from 'lodash'
 import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react'
+import tinykeys from 'tinykeys'
 import { SearchFilter, useFilters, useFilterStore } from '../../../hooks/useFilters'
 import {
   InputWrapper,
@@ -292,46 +293,60 @@ const SearchView = <Item,>({
     executeSearch(inpSearchTerm)
   }
 
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      Escape: (event) => {
+        event.preventDefault()
+
+        resetCurrentFilters()
+        if (inpRef.current) {
+          if (inpRef.current.value !== '') {
+            inpRef.current.value = ''
+            if (selected > -1) {
+              setSelected(-1)
+            }
+          } else {
+            onEscapeExit()
+          }
+        }
+      },
+      Tab: (event) => {
+        event.preventDefault()
+        // Blur the input if necessary (not needed currently)
+        // if (inputRef.current) inputRef.current.blur()
+        if (event.shiftKey) {
+          selectPrev()
+        } else {
+          selectNext()
+        }
+      },
+      ArrowDown: (event) => {
+        event.preventDefault()
+        selectNext()
+      },
+
+      ArrowUp: (event) => {
+        event.preventDefault()
+        selectPrev()
+      },
+
+      Enter: (event) => {
+        // Only when the selected index is -1
+        if (selected > -1) {
+          onSelect(result[selected] as Item)
+        }
+      }
+    })
+    return () => {
+      unsubscribe()
+    }
+  }, [result, selected])
+
   // onKeyDown handler function
   const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
     // mog('keyDownHandler', { code: event.code })
-    if (event.code === 'Tab') {
-      event.preventDefault()
-      // Blur the input if necessary (not needed currently)
-      // if (inputRef.current) inputRef.current.blur()
-      if (event.shiftKey) {
-        selectPrev()
-      } else {
-        selectNext()
-      }
-    }
-    if (event.code === 'ArrowDown') {
-      event.preventDefault()
-      selectNext()
-    }
-    if (event.code === 'ArrowUp') {
-      event.preventDefault()
-      selectPrev()
-    }
     if (event.code === 'Escape') {
       // setInput()
-      resetCurrentFilters()
-      if (inpRef.current) {
-        if (inpRef.current.value !== '') {
-          inpRef.current.value = ''
-          if (selected > -1) {
-            setSelected(-1)
-          }
-        } else {
-          onEscapeExit()
-        }
-      }
-    }
-    if (event.code === 'Enter') {
-      // Only when the selected index is -1
-      if (selected > -1) {
-        onSelect(result[selected] as Item)
-      }
     }
   }
 
