@@ -152,7 +152,6 @@ const Todo = (props: any) => {
   const updateTodo = useTodoStore((store) => store.updateTodoOfNode)
 
   const todo = getTodo(nodeid, element.id)
-  mog('todo', { element, todo })
 
   const { show } = useContextMenu({ id: todo.id })
 
