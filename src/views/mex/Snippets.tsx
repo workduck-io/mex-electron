@@ -100,8 +100,11 @@ const Snippets = () => {
     { item, splitOptions, ...props }: RenderItemProps<GenericSearchResult>,
     ref: React.Ref<HTMLDivElement>
   ) => {
+    if (!item) {
+      return null
+    }
     const snip = getSnippet(item.id)
-    if (!item || !snip) {
+    if (!snip) {
       return null
     }
     const icon = quillPenLine

@@ -18,7 +18,8 @@ export const defaultShortcuts = {
   showIntegrations: {
     title: 'Integrations',
     keystrokes: '$mod+Shift+KeyI',
-    category: 'Navigate'
+    category: 'Navigate',
+    disabled: true
   },
   showSuggestedNodes: {
     title: 'Suggest Nodes',
@@ -55,7 +56,7 @@ export const defaultShortcuts = {
     category: 'Actions'
   },
   save: {
-    title: 'Save current document',
+    title: 'Save current Node',
     keystrokes: '$mod+KeyS',
     category: 'Actions'
   },
@@ -72,7 +73,8 @@ export const defaultShortcuts = {
   showSyncBlocks: {
     title: 'Flow Links',
     keystrokes: '$mod+Shift+KeyF',
-    category: 'Actions'
+    category: 'Actions',
+    disabled: true
   },
   showGraph: {
     title: 'Context View',

@@ -5,6 +5,7 @@ export interface Shortcut {
   keystrokes: string
   category: string
   global?: boolean
+  disabled?: boolean
 }
 
 export interface HelpState {

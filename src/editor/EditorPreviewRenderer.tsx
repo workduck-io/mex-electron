@@ -3,7 +3,6 @@ import React from 'react'
 import { EditorStyles } from '../style/Editor'
 import generatePlugins from './Plugins/plugins'
 import { editorPreviewComponents } from './Components/components'
-import { mog } from '../utils/lib/helper'
 
 interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any

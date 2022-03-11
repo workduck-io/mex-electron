@@ -23,8 +23,8 @@ const Toolbar = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const { toggleFocusMode, setFocusHover, getFocusProps } = useLayout()
   const focusMode = useLayoutStore((store) => store.focusMode)
-  const nodeIntentsModalOpen = useNodeIntentsModalStore((store) => store.open)
-  const nodeIntentsModalToggle = useNodeIntentsModalStore((store) => store.toggleModal)
+  // const nodeIntentsModalOpen = useNodeIntentsModalStore((store) => store.open)
+  // const nodeIntentsModalToggle = useNodeIntentsModalStore((store) => store.toggleModal)
   const nodeid = useEditorStore((state) => state.node.nodeid)
   const [source, target] = useSingleton()
   const shortcuts = useHelpStore((store) => store.shortcuts)
@@ -57,6 +57,7 @@ const Toolbar = () => {
           highlight={focusMode.on}
           onClick={toggleFocusMode}
         />
+        {/*
         <IconButton
           size={24}
           singleton={target}
@@ -65,6 +66,7 @@ const Toolbar = () => {
           highlight={nodeIntentsModalOpen}
           onClick={nodeIntentsModalToggle}
         />
+        */}
         <SaverButton
           // saveOnUnmount
           shortcut={shortcuts.save.keystrokes}
@@ -72,6 +74,7 @@ const Toolbar = () => {
           singleton={target}
           callbackAfterSave={onSave}
         />
+        {/*
         <IconButton
           size={24}
           singleton={target}
@@ -81,6 +84,7 @@ const Toolbar = () => {
           highlight={showSyncBlocks}
           onClick={toggleSyncBlocks}
         />
+        */}
         <IconButton
           size={24}
           singleton={target}

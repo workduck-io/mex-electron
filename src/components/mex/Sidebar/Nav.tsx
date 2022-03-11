@@ -99,7 +99,7 @@ const ComingSoon = styled.div`
 
   border-radius: ${({ theme }) => theme.borderRadius.small};
 
-  &:hover {
+ &:hover {
     background-color: ${({ theme }) => theme.colors.background.card};
   }
 `

@@ -35,11 +35,13 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
   clearTodos: () => set({ todos: {} }),
 
   addTodoInNode: (nodeid, todo) => {
-    const nodeTodos = get().todos[nodeid] ?? []
-    set({ todos: { ...get().todos, [nodeid]: [todo, ...nodeTodos] } })
+    const todos = get().todos ?? {}
+
+    const nodeTodos = todos?.[nodeid] ?? []
+    set({ todos: { ...todos, [nodeid]: [todo, ...nodeTodos] } })
   },
   getTodoOfNode: (nodeid, todoId) => {
-    const todo = get().todos[nodeid]?.find((todo) => todo.id === todoId && nodeid === todo.nodeid)
+    const todo = get().todos?.[nodeid]?.find((todo) => todo.id === todoId && nodeid === todo.nodeid)
 
     if (!todo) {
       const newTodo = createTodo(nodeid, todoId)
@@ -52,18 +54,21 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
   },
 
   setNodeTodos: (nodeid, todos) => {
-    const newTodos = { ...get().todos, [nodeid]: todos }
+    const currentTodos = get().todos ?? {}
+    const newTodos = { ...currentTodos, [nodeid]: todos }
     set({ todos: newTodos })
   },
   updateTodoOfNode: (nodeid, todo) => {
-    const todos = get().todos[nodeid] ?? []
+    const currentTodos = get().todos ?? {}
+
+    const todos = currentTodos?.[nodeid] ?? []
     const newTodos = todos.map((t) =>
       t.id === todo.id && todo.nodeid === nodeid ? { ...todo, updatedAt: Date.now() } : t
     )
-    set({ todos: { ...get().todos, [nodeid]: newTodos } })
+    set({ todos: { ...currentTodos, [nodeid]: newTodos } })
   },
   replaceContentOfTodos: (nodeid, todosContent) => {
-    const todos = get().todos
+    const todos = get().todos ?? {}
 
     if (todosContent.length === 0) {
       if (!todos[nodeid]) return
