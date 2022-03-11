@@ -1,7 +1,6 @@
 import checkboxLine from '@iconify/icons-ri/checkbox-line'
 import fileDocument from '@iconify/icons-gg/file-document'
 import appsLine from '@iconify/icons-ri/apps-line'
-import dashboardLine from '@iconify/icons-ri/dashboard-line'
 import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
@@ -31,17 +30,24 @@ const useNavlinks = () => {
         shortcut: shortcuts.showSearch.keystrokes,
         icon: GetIcon(searchLine)
       },
-      {
-        title: 'Dashboard',
-        path: ROUTE_PATHS.dashborad,
-        icon: GetIcon(dashboardLine),
-        isComingSoon: true
-      },
+      // {
+      //   title: 'Dashboard',
+      //   path: ROUTE_PATHS.dashborad,
+      //   icon: GetIcon(dashboardLine),
+      //   isComingSoon: true
+      // },
       {
         title: 'Editor',
         path: `${ROUTE_PATHS.node}/${nodeid}`,
         shortcut: shortcuts.showEditor.keystrokes,
         icon: GetIcon(fileDocument)
+      },
+
+      {
+        title: 'Snippets',
+        path: ROUTE_PATHS.snippets,
+        shortcut: shortcuts.showSnippets.keystrokes,
+        icon: GetIcon(quillPenLine)
       },
       {
         title: 'Tasks',
@@ -49,19 +55,13 @@ const useNavlinks = () => {
         icon: GetIcon(checkboxLine),
         isComingSoon: true
       },
-      /*
+
       {
         title: 'Integrations',
         path: ROUTE_PATHS.integrations,
-        shortcut: shortcuts.showIntegrations.keystrokes,
-        icon: GetIcon(appsLine)
-      },
-      */
-      {
-        title: 'Snippets',
-        path: ROUTE_PATHS.snippets,
-        shortcut: shortcuts.showSnippets.keystrokes,
-        icon: GetIcon(quillPenLine)
+        // shortcut: shortcuts.showIntegrations.keystrokes,
+        icon: GetIcon(appsLine),
+        isComingSoon: true
       }
     ]
     return links

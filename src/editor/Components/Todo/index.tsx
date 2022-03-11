@@ -61,7 +61,6 @@ const StyledTodoStatus = styled.div<{ animate?: boolean; status: TodoStatus }>`
   flex-direction: column;
   height: 1rem;
   width: 1rem;
-  padding: 0.5rem;
   cursor: pointer;
   margin-right: 0.5rem;
   border: 1px solid ${({ theme }) => theme.colors.text.fade};

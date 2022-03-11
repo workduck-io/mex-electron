@@ -99,7 +99,7 @@ const ComingSoon = styled.div`
 
   border-radius: ${({ theme }) => theme.borderRadius.small};
 
- &:hover {
+  &:hover {
     background-color: ${({ theme }) => theme.colors.background.card};
   }
 `
@@ -179,7 +179,7 @@ const Nav = ({ links }: NavProps) => {
       <MainLinkContainer>
         {links.map((l) =>
           l.isComingSoon ? (
-            <NavTooltip key={l.path} singleton={target} content="Coming Soon!">
+            <NavTooltip key={l.path} singleton={target} content={`${l.title} (Coming Soon!)`}>
               <ComingSoon tabIndex={-1} key={`nav_${l.title}`}>
                 {l.icon !== undefined ? l.icon : l.title}
               </ComingSoon>
