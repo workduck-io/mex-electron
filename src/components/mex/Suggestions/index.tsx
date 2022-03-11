@@ -13,6 +13,7 @@ import { useHelpStore } from '../../../store/useHelpStore'
 import useSuggestionStore from '../../../store/useSuggestions'
 import IconButton from '../../../style/Buttons'
 import { Result, ResultHeader, ResultTitle } from '../../../style/Search'
+import { mog } from '../../../utils/lib/helper'
 import { GraphTools, StyledGraph } from '../Graph/Graph.styles'
 
 const Margin = styled.div`
@@ -27,11 +28,11 @@ const SuggestionInfoBar = () => {
   const { getNodeIdFromUid } = useLinks()
   const editor = usePlateEditorRef()
 
-  const onClick = (path: string) => {
+  const onClick = (id: string) => {
     insertNodes<TElement>(editor, {
       type: ELEMENT_ILINK as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       children: [{ text: '' }],
-      value: path
+      value: id
     })
   }
 
@@ -55,9 +56,10 @@ const SuggestionInfoBar = () => {
           const con = contents[suggestion.id]
           const path = getNodeIdFromUid(suggestion.id)
           const content = con ? con.content : defaultContent.content
+          // mog('SuggestionInfoBar', { content, con, path, suggestion })
 
           return (
-            <Margin key={`ResultForSearch_${suggestion.id}`} onClick={() => onClick(path)}>
+            <Margin key={`ResultForSearch_${suggestion.id}`} onClick={() => onClick(suggestion.id)}>
               <Result>
                 <ResultHeader>
                   <ResultTitle>{path}</ResultTitle>
