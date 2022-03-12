@@ -7,7 +7,7 @@ import { getRootProps } from '@udecode/plate-styled-components'
 import { transparentize } from 'polished'
 import useTodoStore from '../../../store/useTodoStore'
 import { useEditorStore } from '../../../store/useEditorStore'
-import { Priority, PriorityDataType, TodoStatus } from './types'
+import { Priority, PriorityDataType, PriorityType, TodoStatus } from './types'
 import PriorityMenu from './PriorityMenu'
 import { useContextMenu } from 'react-contexify'
 import { CompleteWave, WaterWave } from '../../../components/mex/Onboarding/components/Welcome'
@@ -15,12 +15,10 @@ import { getNodes, getPlateEditorRef } from '@udecode/plate'
 import { Transforms } from 'slate'
 import toast from 'react-hot-toast'
 
-import { mog } from '../../../utils/lib/helper'
-
 const TodoContainer = styled.div<{ checked?: boolean }>`
   display: flex;
   flex-direction: row;
-  align-items: center;
+  /* align-items: center; */
   position: relative;
 
   ${({ theme, checked }) =>
@@ -115,7 +113,7 @@ const TodoOptions = styled.span`
   border-radius: 5px;
 `
 
-const CheckBoxWrapper = styled.div`
+const CheckBoxWrapper = styled.span`
   display: flex;
   margin-right: 0.5rem;
   user-select: none;
@@ -123,13 +121,14 @@ const CheckBoxWrapper = styled.div`
   align-items: center;
 
   input {
-    margin: 0;
     width: 1rem;
     height: 1rem;
+    margin: 0;
   }
 `
 
 const TodoText = styled.span`
+  max-width: 94%;
   flex: 1;
   :focus {
     outline: none;
@@ -139,6 +138,7 @@ const TodoText = styled.span`
 const Todo = (props: any) => {
   const { attributes, children, element } = props
   const [showOptions, setShowOptions] = useState(false)
+
   const theme = useTheme()
 
   const rootProps = getRootProps(props)
@@ -155,11 +155,12 @@ const Todo = (props: any) => {
   const { show } = useContextMenu({ id: todo.id })
 
   useEffect(() => {
-    setAnimate(false)
-  }, [])
+    if (animate) setAnimate(false)
+  }, [animate])
 
   const onPriorityChange = (priority: PriorityDataType) => {
     updateTodo(nodeid, { ...todo, metadata: { ...todo.metadata, priority: priority.type } })
+    setAnimate(true)
   }
 
   const onDeleteClick = () => {
@@ -180,7 +181,7 @@ const Todo = (props: any) => {
 
   const changeStatus = () => {
     let status = todo.metadata.status
-    setAnimate(true)
+
     switch (todo.metadata.status) {
       case TodoStatus.todo:
         status = TodoStatus.pending
@@ -192,17 +193,19 @@ const Todo = (props: any) => {
         status = TodoStatus.todo
         break
     }
-
     updateTodo(nodeid, { ...todo, metadata: { ...todo.metadata, status } })
+    setAnimate(true)
   }
 
   return (
     <TodoContainer
       {...attributes}
       {...rootProps}
-      key={todo?.id}
+      key={todo.id}
       checked={todo?.metadata.status === TodoStatus.completed}
-      onMouseEnter={() => setShowOptions(true)}
+      onMouseEnter={() => {
+        setShowOptions(true)
+      }}
       onMouseLeave={() => setShowOptions(false)}
     >
       <CheckBoxWrapper contentEditable={false}>
@@ -211,7 +214,7 @@ const Todo = (props: any) => {
       <TodoText contentEditable={!readOnly} suppressContentEditableWarning>
         {children}
       </TodoText>
-      {showOptions && (
+      {(showOptions || todo.metadata.priority !== PriorityType.noPriority) && (
         <TodoOptions contentEditable={false}>
           <TaskPriority onClick={show} background={theme.colors.secondary} transparent={0.8}>
             <PriorityButton background={theme.colors.background.card}>
@@ -229,14 +232,16 @@ const Todo = (props: any) => {
           {/* <TaskPriority background="#114a9e" transparent={0.25}>
             assignee
           </TaskPriority> */}
-          <MexIcon
-            onClick={onDeleteClick}
-            icon="codicon:trash"
-            cursor="pointer"
-            margin="0"
-            fontSize={20}
-            color={theme.colors.primary}
-          />
+          {showOptions && (
+            <MexIcon
+              onClick={onDeleteClick}
+              icon="codicon:trash"
+              cursor="pointer"
+              margin="0"
+              fontSize={20}
+              color={theme.colors.primary}
+            />
+          )}
         </TodoOptions>
       )}
       <PriorityMenu id={todo.id} onClick={onPriorityChange} />

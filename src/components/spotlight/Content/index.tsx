@@ -24,6 +24,7 @@ import { useRecentsStore } from '../../../store/useRecentsStore'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
+import 'react-contexify/dist/ReactContexify.css'
 
 export const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
