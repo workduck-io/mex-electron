@@ -1,4 +1,4 @@
-import sendToIcon from '@iconify/icons-fluent/slide-multiple-arrow-right-24-regular'
+import sendToIcon from '@iconify/icons-ph/arrow-bend-up-right-bold'
 import moveToIcon from '@iconify/icons-ri/anticlockwise-2-fill'
 import { Icon } from '@iconify/react'
 import { getNodes, usePlateEditorRef } from '@udecode/plate'
@@ -62,22 +62,13 @@ export const BlockOptionsMenu: React.FC<BlockOptionsProps> = () => {
 
   return (
     <StyledMenu id={MENU_ID}>
-      {/* <Item id="send-to" onClick={onSendToClick}>
-        <Icon icon={sendToIcon} />
-        Copy
-      </Item>
-      <Item id="move-to" onClick={onMoveToClick}>
-        <Icon icon={moveToIcon} />
-        Paste
-      </Item>
-      <Separator /> */}
       <Item id="send-to" onClick={onSendToClick}>
         <Icon icon={sendToIcon} />
-        Send To
+        Send
       </Item>
       <Item id="move-to" onClick={onMoveToClick}>
         <Icon icon={moveToIcon} />
-        Move To
+        Move
       </Item>
     </StyledMenu>
   )
