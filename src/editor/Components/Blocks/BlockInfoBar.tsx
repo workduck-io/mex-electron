@@ -1,15 +1,25 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import useBlockStore, { ContextMenuActionType } from '../../../store/useBlockStore'
 import { Button } from '../../../style/Buttons'
 import { ButtonWrapper } from '../../../style/Settings'
+import xBold from '@iconify/icons-ph/x-bold'
+import sendToIcon from '@iconify/icons-ph/arrow-bend-up-right-bold'
+import moveToIcon from '@iconify/icons-ri/anticlockwise-2-fill'
+import { MexIcon } from '../../../style/Layouts'
+import { PrimaryText } from '../../../style/Integration'
 
 const BlockMenu = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem;
-  margin-bottom: ${({ theme }) => theme.spacing.large};
+
+  margin: 2px 0;
+
+  p {
+    margin: 0;
+    color: ${(props) => props.theme.colors.text.fade};
+  }
 `
 
 const BlockInfoBar = () => {
@@ -18,16 +28,27 @@ const BlockInfoBar = () => {
   const blocks = useBlockStore((store) => store.blocks)
   const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
 
+  const theme = useTheme()
   const length = Object.values(blocks).length
-  const blockHeading = length === 0 ? 'Select Blocks' : `${length} block${length > 1 ? 's' : ''} selected`
+  const blockHeading = length === 0 ? 'Select Blocks' : `Block${length > 1 ? 's' : ''} selected:`
 
   return (
     <BlockMenu>
-      <Button onClick={() => setIsBlockMode(!isBlockMode)}>Cancel</Button>
-      <p>{blockHeading}</p>
+      <Button onClick={() => setIsBlockMode(!isBlockMode)}>
+        <MexIcon fontSize={20} noHover color={theme.colors.primary} icon={xBold} /> Cancel
+      </Button>
+      <p>
+        {blockHeading}
+        {length > 0 && <PrimaryText>&#32;{length}</PrimaryText>}
+      </p>
       <ButtonWrapper>
-        <Button onClick={() => setIsModalOpen(ContextMenuActionType.send)}>Send to</Button>
-        <Button onClick={() => setIsModalOpen(ContextMenuActionType.move)}>Move to</Button>
+        <Button onClick={() => setIsModalOpen(ContextMenuActionType.move)}>
+          <MexIcon fontSize={20} noHover color={theme.colors.primary} icon={moveToIcon} />
+          Move
+        </Button>
+        <Button onClick={() => setIsModalOpen(ContextMenuActionType.send)}>
+          <MexIcon fontSize={20} noHover color={theme.colors.primary} icon={sendToIcon} /> Send
+        </Button>
       </ButtonWrapper>
     </BlockMenu>
   )
