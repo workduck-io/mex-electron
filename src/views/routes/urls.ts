@@ -34,5 +34,5 @@ export const useRouting = () => {
     if (type === NavigationType.replace) navigate(path, { replace: true, state })
   }
 
-  return { goTo }
+  return { goTo, location }
 }
