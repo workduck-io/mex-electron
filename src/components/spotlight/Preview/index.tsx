@@ -10,6 +10,7 @@ import { CategoryType, useSpotlightContext } from '../../../store/Context/contex
 import { useSnippetStore } from '../../../store/useSnippetStore'
 import PreviewContainer from './PreviewContainer'
 import { SeePreview, StyledPreview } from './styled'
+import 'react-contexify/dist/ReactContexify.css'
 
 export type PreviewType = {
   text: string
@@ -24,14 +25,14 @@ export type PreviewProps = {
 
 export const getDefaultContent = () => ({ ...defaultContent.content, id: generateTempId() })
 
-const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
+const Preview = () => {
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
 
   // * Custom hooks
   const ref = useRef<HTMLDivElement>()
+  const snippets = useSnippetStore((store) => store.snippets)
   const { selection, searchResults, activeIndex } = useSpotlightContext()
   const isSnippet = searchResults[activeIndex]?.id?.startsWith('SNIPPET_')
-  const snippets = useSnippetStore((store) => store.snippets)
 
   const snippet = useMemo(() => {
     return snippets.find((s) => s.id === searchResults[activeIndex]?.id)
@@ -58,23 +59,13 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
   }
 
   return (
-    <StyledPreview
-      key={`PreviewSpotlightEditor${!isSnippet ? nodeId : snippet.id}`}
-      style={animationProps}
-      ref={ref}
-      preview={normalMode}
-      data-tour="mex-quick-capture-preview"
-    >
+    <StyledPreview style={animationProps} ref={ref} preview={normalMode} data-tour="mex-spotlight-preview">
       {selection && (
         <SeePreview onClick={handleScrollToBottom}>
           <Icon icon={downIcon} />
         </SeePreview>
       )}
-      {isSnippet ? (
-        <EditorPreviewRenderer content={snippet.content} editorId={snippet.id} />
-      ) : (
-        <PreviewContainer nodeId={nodeId} preview={preview} />
-      )}
+      {isSnippet ? <EditorPreviewRenderer content={snippet.content} editorId={snippet.id} /> : <PreviewContainer />}
     </StyledPreview>
   )
 }

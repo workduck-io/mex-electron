@@ -251,7 +251,7 @@ export const OnboardingTourConfig = [
 
 export const SpotlightOnboarding = [
   {
-    selector: '[data-tour="mex-quick-capture-preview"]',
+    selector: '[data-tour="mex-spotlight-preview"]',
     content: <div>Anything you capture would be visible here.</div>,
     style: toolTipStyle,
     position: 'right'
