@@ -55,12 +55,6 @@ export const useSaveChanges = () => {
   const updateDoc = useSearchStore((store) => store.updateDoc)
 
   const saveIt = (options?: SaveItProps) => {
-    const isNodePresent = ilinks.find((ilink) => ilink.nodeid === node.nodeid)
-    if (!isNodePresent) {
-      const path = options?.path ?? node.path
-      addILink({ ilink: path, nodeid: node.nodeid })
-    }
-
     let editorContent = getPlateSelectors().value()
 
     if (options?.removeHighlight) {

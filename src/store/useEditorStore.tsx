@@ -22,6 +22,7 @@ export type EditorContextType = {
   readOnly: boolean
 
   setUid: (nodeid: string) => void
+  setNode: (node: NodeProperties) => void
 
   fetchingContent: boolean
 
@@ -52,6 +53,8 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
     node.nodeid = nodeid
     set({ node })
   },
+
+  setNode: (node: NodeProperties) => set({ node }),
 
   setFetchingContent: (value) =>
     set({

@@ -1,4 +1,5 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { mog } from '../../utils/lib/helper'
 
 export const ROUTE_PATHS = {
   home: '/',
@@ -24,6 +25,7 @@ export enum NavigationType {
 export const useRouting = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const params = useParams()
 
   const goTo = (basePath: string, type: NavigationType, id?: string) => {
     const path = id ? `${basePath}/${id}` : basePath
@@ -34,5 +36,5 @@ export const useRouting = () => {
     if (type === NavigationType.replace) navigate(path, { replace: true, state })
   }
 
-  return { goTo, location }
+  return { goTo, location, params }
 }

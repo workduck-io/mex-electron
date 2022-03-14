@@ -87,13 +87,15 @@ const Search: React.FC = () => {
           name="spotlight_search"
           placeholder={placeholder}
           onChange={({ target: { value } }) => {
-            const { key: what } = withoutContinuousDelimiter(value)
+            const { key } = withoutContinuousDelimiter(value)
+
+            const query = key.startsWith('.') ? key.substring(1) : key
 
             const dots = new RegExp(/\.{2,}/g)
             const replaceContinousDots = value.replace(dots, '.') // * replace two or more dots with one dot
 
             setInput(replaceContinousDots)
-            handleSearchInput(what)
+            handleSearchInput(query)
           }}
         />
       </Before>

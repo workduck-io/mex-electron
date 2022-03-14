@@ -18,7 +18,7 @@ export const withTodos: WithOverride<any, HotkeyPlugin> = (editor: PlateEditor) 
 
   const nodeid = useEditorStore.getState().node.nodeid
 
-  const { onChange, deleteBackward } = editor
+  const { onChange } = editor
 
   const updateTodosFromContent = debounce(() => {
     const editorTodoBlocks = getTodosFromContent(editor.children)

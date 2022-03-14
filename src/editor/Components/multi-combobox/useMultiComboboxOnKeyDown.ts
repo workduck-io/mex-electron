@@ -5,7 +5,6 @@ import { NODE_ID_PREFIX } from '../../../data/Defaults/idPrefixes'
 import { useLinks } from '../../../hooks/useLinks'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
-import { useEditorStore } from '../../../store/useEditorStore'
 import { mog } from '../../../utils/lib/helper'
 import { getEventNameFromElement } from '../../../utils/lib/strings'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
@@ -35,7 +34,6 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
       }
 
       const targetRange = useComboboxStore.getState().targetRange
-      const parentNodeId = useEditorStore.getState().node.path
       const type = getPluginType(
         editor,
         comboType.slateElementType === 'internal' ? 'ilink' : comboType.slateElementType
