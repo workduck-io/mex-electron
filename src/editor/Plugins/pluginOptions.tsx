@@ -37,7 +37,9 @@ import {
   unwrapList,
   setNodes,
   TElement,
-  TodoListItemNodeData
+  TodoListItemNodeData,
+  insertNodes,
+  AutoformatQueryOptions
 } from '@udecode/plate'
 
 import { ELEMENT_SYNC_BLOCK } from '../Components/SyncBlock'
@@ -46,47 +48,75 @@ import { Editor } from 'slate'
 
 const preFormat = (editor: TEditor<AnyObject>) => unwrapList(editor as PlateEditor)
 
+/*
+ * Returns true if the autoformat can be applied:
+ * Is outside of code
+ */
+const formatQuery = (editor: TEditor<AnyObject>, options: AutoformatQueryOptions) => {
+  const parentEntry = getParent(editor, editor.selection.focus)
+  if (!parentEntry) return
+  const [node] = parentEntry
+
+  // mog('formatQuery', { editor, options, node })
+
+  if (isElement(node) && node.type !== ELEMENT_CODE_LINE && node.type !== ELEMENT_CODE_BLOCK) {
+    // mog('formatNodeConversion', {
+    //   node,
+    //   parentEntry
+    // })
+    return true
+  }
+  return false
+}
+
 export const optionsAutoFormatRule: Array<AutoformatRule> = [
   {
     mode: 'block',
     type: ELEMENT_H1,
     match: 'h1',
+    query: formatQuery,
     preFormat
   },
   {
     mode: 'block',
     type: ELEMENT_H2,
     match: 'h2',
+    query: formatQuery,
     preFormat
   },
   {
     mode: 'block',
     type: ELEMENT_H3,
     match: 'h3',
+    query: formatQuery,
     preFormat
   },
   {
     mode: 'block',
     type: ELEMENT_H4,
     match: 'h4',
+    query: formatQuery,
     preFormat
   },
   {
     mode: 'block',
     type: ELEMENT_H5,
     match: 'h5',
+    query: formatQuery,
     preFormat
   },
   {
     mode: 'block',
     type: ELEMENT_H6,
     match: 'h6',
+    query: formatQuery,
     preFormat
   },
   {
     mode: 'block',
     type: ELEMENT_LI,
     match: ['* ', '- '],
+    query: formatQuery,
     preFormat,
     format: (editor: TEditor<AnyObject>) => {
       if (editor.selection) {
@@ -107,10 +137,10 @@ export const optionsAutoFormatRule: Array<AutoformatRule> = [
   },
   {
     mode: 'block',
-
     type: ELEMENT_LI,
     match: ['1.', '1)'],
     preFormat,
+    query: formatQuery,
     format: (editor: TEditor<AnyObject>) => {
       if (editor.selection) {
         const parentEntry = getParent(editor, editor.selection)
@@ -131,43 +161,51 @@ export const optionsAutoFormatRule: Array<AutoformatRule> = [
   {
     mode: 'block',
     type: ELEMENT_TODO_LI,
-    match: '[]'
+    match: '[]',
+    query: formatQuery
   },
   {
     mode: 'block',
     type: ELEMENT_BLOCKQUOTE,
     match: ['>'],
+    query: formatQuery,
     preFormat
   },
   {
     type: MARK_BOLD,
     match: ['**', '**'],
-    mode: 'mark'
+    mode: 'mark',
+    query: formatQuery
   },
   {
     type: MARK_BOLD,
     match: ['__', '__'],
-    mode: 'mark'
+    mode: 'mark',
+    query: formatQuery
   },
   {
     type: MARK_ITALIC,
     match: ['*', '*'],
-    mode: 'mark'
+    mode: 'mark',
+    query: formatQuery
   },
   {
     type: MARK_ITALIC,
     match: ['_', '_'],
-    mode: 'mark'
+    mode: 'mark',
+    query: formatQuery
   },
   {
     type: MARK_CODE,
     match: ['`', '`'],
-    mode: 'mark'
+    mode: 'mark',
+    query: formatQuery
   },
   {
     type: MARK_STRIKETHROUGH,
     match: ['~~', '~~'],
-    mode: 'mark'
+    mode: 'mark',
+    query: formatQuery
   },
   {
     mode: 'block',
