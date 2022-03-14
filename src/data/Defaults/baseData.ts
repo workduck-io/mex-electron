@@ -2,7 +2,7 @@ import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 import { Contents } from '../../store/useContentStore'
 import { FileData, NodeContent } from '../../types/data'
 import { generateILinks } from '../../utils/generateComboItem'
-import { generateNodeUID } from './idPrefixes'
+import { generateNodeUID, generateTempId } from './idPrefixes'
 // import { generateTempId } from './idPrefixes'
 //
 export const BASE_DRAFT_PATH = 'Draft'
@@ -24,7 +24,7 @@ const links = [
 
 export const defaultContent: NodeContent = {
   type: 'init',
-  content: [{ type: ELEMENT_PARAGRAPH, children: [{ text: '' }] }],
+  content: [{ id: generateTempId(), type: ELEMENT_PARAGRAPH, children: [{ text: '' }] }],
   version: -1
 }
 

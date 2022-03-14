@@ -14,6 +14,7 @@ import { CompleteWave, WaterWave } from '../../../components/mex/Onboarding/comp
 import { getNodes, getPlateEditorRef } from '@udecode/plate'
 import { Transforms } from 'slate'
 import toast from 'react-hot-toast'
+import { useRouting } from '../../../views/routes/urls'
 
 const TodoContainer = styled.div<{ checked?: boolean }>`
   display: flex;
@@ -140,6 +141,7 @@ const Todo = (props: any) => {
   const [showOptions, setShowOptions] = useState(false)
 
   const theme = useTheme()
+  const { params } = useRouting()
 
   const rootProps = getRootProps(props)
 
@@ -150,7 +152,9 @@ const Todo = (props: any) => {
   const getTodo = useTodoStore((store) => store.getTodoOfNode)
   const updateTodo = useTodoStore((store) => store.updateTodoOfNode)
 
-  const todo = getTodo(nodeid, element.id)
+  const nodeidOfTodo = params?.snippetid ?? nodeid
+
+  const todo = getTodo(nodeidOfTodo, element.id)
 
   const { show } = useContextMenu({ id: todo.id })
 
@@ -159,7 +163,7 @@ const Todo = (props: any) => {
   }, [animate])
 
   const onPriorityChange = (priority: PriorityDataType) => {
-    updateTodo(nodeid, { ...todo, metadata: { ...todo.metadata, priority: priority.type } })
+    updateTodo(nodeidOfTodo, { ...todo, metadata: { ...todo.metadata, priority: priority.type } })
     setAnimate(true)
   }
 
@@ -193,7 +197,7 @@ const Todo = (props: any) => {
         status = TodoStatus.todo
         break
     }
-    updateTodo(nodeid, { ...todo, metadata: { ...todo.metadata, status } })
+    updateTodo(nodeidOfTodo, { ...todo, metadata: { ...todo.metadata, status } })
     setAnimate(true)
   }
 

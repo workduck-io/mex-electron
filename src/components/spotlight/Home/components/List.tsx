@@ -16,8 +16,7 @@ import { QuickLinkType } from '../../../mex/NodeSelect/NodeSelect'
 import { appNotifierWindow } from '../../../../electron/utils/notifiers'
 import { IpcAction } from '../../../../data/IpcAction'
 import { AppType } from '../../../../hooks/useInitialize'
-import { convertContentBeforeCopy, convertContentToRawText } from '../../../../utils/search/localSearch'
-import { useSnippetStore } from '../../../../store/useSnippetStore'
+import { convertContentToRawText } from '../../../../utils/search/localSearch'
 import { useSnippets } from '../../../../hooks/useSnippets'
 import { getPlateEditorRef, serializeHtml } from '@udecode/plate'
 import { mog } from '../../../../utils/lib/helper'
@@ -228,7 +227,6 @@ const List = ({
   const handleCopySnippet = (id: string, isUse?: boolean) => {
     const snippet = getSnippet(id)
     const text = convertContentToRawText(snippet.content, '\n')
-    mog('text', { text: convertContentBeforeCopy(snippet.content) })
 
     const html = serializeHtml(getPlateEditorRef(), {
       nodes: snippet.content
