@@ -117,7 +117,23 @@ export const optionsAutoFormatRule: Array<AutoformatRule> = [
     type: ELEMENT_LI,
     match: ['* ', '- '],
     query: formatQuery,
-    preFormat
+    preFormat,
+    format: (editor: TEditor<AnyObject>) => {
+      if (editor.selection) {
+        const parentEntry = getParent(editor, editor.selection)
+        if (!parentEntry) return
+        const [node] = parentEntry
+        if (
+          isElement(node) &&
+          !isType(editor as PlateEditor, node, ELEMENT_CODE_BLOCK) &&
+          !isType(editor as PlateEditor, node, ELEMENT_CODE_LINE)
+        ) {
+          toggleList(editor as PlateEditor, {
+            type: ELEMENT_UL
+          })
+        }
+      }
+    }
   },
   {
     mode: 'block',

@@ -1,5 +1,5 @@
 import { Range } from 'slate'
-import { isCollapsed, TEditor } from '@udecode/plate'
+import { getParent, isCollapsed, TEditor, isElement, ELEMENT_CODE_BLOCK, ELEMENT_CODE_LINE } from '@udecode/plate'
 import { ComboboxType } from './types'
 import { getTextFromTrigger } from '../combobox/utils/getTextFromTrigger'
 
@@ -11,6 +11,20 @@ export default function getTextFromTriggers(editor: TEditor, keys: { [type: stri
 
   if (selection && isCollapsed(selection)) {
     const cursor = Range.start(selection)
+
+    const parentEntry = getParent(editor, editor.selection.focus)
+    if (!parentEntry) return
+    const [node] = parentEntry
+
+    // mog('formatQuery', { editor, options, node })
+
+    if (isElement(node) && (node.type === ELEMENT_CODE_LINE || node.type === ELEMENT_CODE_BLOCK)) {
+      // mog('formatNodeConversion', {
+      //   node,
+      //   parentEntry
+      // })
+      return undefined
+    }
 
     // Check within keys
     const selections = Object.keys(keys).map((k) => {
