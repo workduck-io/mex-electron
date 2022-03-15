@@ -7,6 +7,11 @@ export const Wrapper = styled.div`
   margin-right: 3rem;
 `
 
+export const PageContainer = styled.div`
+  margin: ${({ theme: { spacing } }) => `calc(2 * ${spacing.large}) ${spacing.large} ${spacing.medium}`};
+  position: relative;
+`
+
 export const MexIcon = styled(Icon)<{ margin?: string; noHover?: boolean }>`
   padding: 1px;
   margin: ${({ margin }) => margin};

@@ -31,6 +31,11 @@ export const defaultShortcuts = {
     keystrokes: '$mod+Shift+KeyS',
     category: 'Navigate'
   },
+  showTasks: {
+    title: 'Tasks',
+    keystrokes: '$mod+Shift+KeyT',
+    category: 'Navigate'
+  },
   showHelp: {
     title: 'Help',
     keystrokes: '$mod+Shift+KeyH',

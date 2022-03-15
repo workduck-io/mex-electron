@@ -1,56 +1,31 @@
-import React from 'react'
-import { ColumnContainer } from '../../components/spotlight/Actions/styled'
-import useTodoStore from '../../store/useTodoStore'
-import taskFill from '@iconify/icons-ri/task-fill'
-import { IntegrationContainer, Text, Title } from '../../style/Integration'
-import styled, { useTheme } from 'styled-components'
-import { useNavigation } from '../../hooks/useNavigation'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
-import { IpcAction } from '../../data/IpcAction'
-import { appNotifierWindow } from '../../electron/utils/notifiers'
-import { AppType } from '../../hooks/useInitialize'
-import { TodoStatus, TodoType } from '../../editor/Components/Todo/types'
-import { useLinks } from '../../hooks/useLinks'
-import { transparentize } from 'polished'
-import { MexIcon } from '../../style/Layouts'
+import Board from '@asseinfo/react-kanban'
+import trashIcon from '@iconify/icons-codicon/trash'
+import { Icon } from '@iconify/react'
+import React, { useMemo } from 'react'
+import styled from 'styled-components'
 import { Heading } from '../../components/spotlight/SearchResults/styled'
-import { DateFormat } from '../../hooks/useRelativeTime'
+import { SNIPPET_PREFIX } from '../../data/Defaults/idPrefixes'
+import { TodoType } from '../../editor/Components/Todo/types'
+import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
+import { useLinks } from '../../hooks/useLinks'
+import { useTodoKanban } from '../../hooks/useTodoKanban'
+import useTodoStore from '../../store/useTodoStore'
+import { Button } from '../../style/Buttons'
+import { Title } from '../../style/Integration'
+import { MainHeader, PageContainer } from '../../style/Layouts'
+import { StyledTasksKanban } from '../../style/Todo'
+import Todo from '../../ui/components/Todo'
+import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText } from '../../utils/search/localSearch'
 
 export type TasksProps = {
   title?: string
 }
 
-const Task = styled.div`
-  display: flex;
-  padding: 1rem 2rem;
-  cursor: pointer;
-  margin: 0.5rem 1rem;
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-  background-color: ${({ theme }) => theme.colors.background.card};
-`
-
 type TaskGroupProp = {
   nodeid: string
   todos: Array<TodoType>
 }
-
-const FlexIt = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  span {
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.25rem;
-    margin-right: 2rem;
-    font-size: 1.1rem;
-    background-color: ${({ theme }) => theme.colors.background.card};
-    :hover {
-      background-color: ${({ theme }) => transparentize(0.2, theme.colors.primary)};
-    }
-  }
-`
 
 const NodeHeading = styled.div`
   font-size: 1.4rem;
@@ -64,35 +39,29 @@ const TaskContainer = styled.section`
 
 const TaskGroup: React.FC<TaskGroupProp> = ({ nodeid, todos }) => {
   const { getPathFromNodeid } = useLinks()
-  const { push } = useNavigation()
-  const { goTo } = useRouting()
+  // const { push } = useNavigation()
+  // const { goTo } = useRouting()
 
-  const onClick = (nodeid: string) => {
-    push(nodeid)
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
+  // const onClick = (nodeid: string) => {
+  //   push(nodeid)
+  //   appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
 
-    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-  }
+  //   goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+  // }
 
-  const theme = useTheme()
-
+  // mog('TaskGroup', { nodeid, todos })
   return (
     <TaskContainer>
       <NodeHeading>{getPathFromNodeid(nodeid) ?? nodeid}</NodeHeading>
       {todos.map((todo) => (
-        <Task key={todo.id} onClick={() => onClick(todo.nodeid)}>
-          <FlexIt>
-            <>
-              <MexIcon
-                margin="0 1rem 0 0"
-                color={todo.metadata.status === TodoStatus.completed ? theme.colors.primary : theme.colors.secondary}
-                fontSize={24}
-                icon={taskFill}
-              />
-              <Text>{convertContentToRawText(todo.content, '\n')}</Text>
-            </>
-          </FlexIt>
-        </Task>
+        <Todo key={`${nodeid}_${todo.id}`} todoid={todo.id} readOnly parentNodeId={nodeid}>
+          {convertContentToRawText(todo.content, '\n')}
+          <p>
+            Nodeid: {todo.nodeid}
+            todo: {todo.id}
+            status: {todo.metadata.status}
+          </p>
+        </Todo>
       ))}
     </TaskContainer>
   )
@@ -102,22 +71,82 @@ const Tasks: React.FC<TasksProps> = () => {
   const nodesTodo = useTodoStore((store) => store.todos)
   const clearTodos = useTodoStore((store) => store.clearTodos)
 
+  const todos = useMemo(() => Object.entries(nodesTodo), [nodesTodo])
+
+  const { getTodoBoard, changeStatus, getPureContent } = useTodoKanban()
+
+  const board = useMemo(() => getTodoBoard(), [nodesTodo])
+
+  const handleCardMove = (card, source, destination) => {
+    mog('card moved', { card, source, destination })
+    changeStatus(card.todo, destination.toColumnId)
+    // const updatedBoard = moveCard(controlledBoard, source, destination);
+    // setBoard(updatedBoard);
+  }
+
   const onClearClick = () => {
     clearTodos()
   }
 
+  mog('Tasks', { nodesTodo, board })
+
   return (
-    <IntegrationContainer>
-      <FlexIt>
+    <PageContainer>
+      <MainHeader>
         <Title>Todos</Title>
-        <span onClick={onClearClick}>Clear</span>
-      </FlexIt>
-      <ColumnContainer>
-        {Object.entries(nodesTodo).map(([nodeid, todos]) => {
-          return <TaskGroup key={nodeid} nodeid={nodeid} todos={todos} />
-        })}
-      </ColumnContainer>
-    </IntegrationContainer>
+        <Button onClick={onClearClick}>
+          <Icon icon={trashIcon} height={24} />
+          Clear Todos
+        </Button>
+      </MainHeader>
+      <StyledTasksKanban>
+        <Board
+          renderColumnHeader={({ title }) => <div>{title}</div>}
+          disableColumnDrag
+          onCardDragEnd={handleCardMove}
+          renderCard={({ id, todo }) => {
+            const pC = getPureContent(todo)
+            // mog('RenderTodo', { id, todo })
+            return (
+              <div>
+                <Todo
+                  key={`TODO_PREVIEW_${todo.nodeid}_${todo.id}`}
+                  todoid={todo.id}
+                  readOnly
+                  parentNodeId={todo.nodeid}
+                >
+                  <EditorPreviewRenderer
+                    noStyle
+                    content={pC}
+                    editorId={`NodeTodoPreview_${todo.nodeid}_${todo.id}_${todo.metadata.status}`}
+                  />
+                </Todo>
+              </div>
+            )
+          }}
+        >
+          {board}
+        </Board>
+      </StyledTasksKanban>
+      <div>
+        {todos.length > 0 ? (
+          todos.map(([nodeid, todos]) => {
+            if (nodeid.startsWith(SNIPPET_PREFIX)) return null
+            return <TaskGroup key={nodeid} nodeid={nodeid} todos={todos} />
+          })
+        ) : (
+          <div>
+            <Heading>No Todos</Heading>
+            <p>Use the Editor to add Todos to your nodes. All todos will show up here.</p>
+            <p>
+              You can add todos with
+              <kbd>[]</kbd>
+            </p>
+            {/* HTML element for keyboard shortcut */}
+          </div>
+        )}
+      </div>
+    </PageContainer>
   )
 }
 

@@ -150,6 +150,7 @@ export const SearchViewContainer = styled.div`
   gap: ${({ theme }) => theme.spacing.medium};
   flex-direction: column;
 `
+
 export const SearchContainer = styled.div`
   margin: ${({ theme: { spacing } }) => `calc(2 * ${spacing.large}) ${spacing.large} ${spacing.medium}`};
   position: relative;

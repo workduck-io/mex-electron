@@ -7,15 +7,18 @@ import { editorPreviewComponents } from './Components/components'
 interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
   editorId: string
+  noStyle?: boolean
 }
 
-const EditorPreviewRenderer = ({ content, editorId }: EditorPreviewRendererProps) => {
+const EditorPreviewRenderer = ({ content, editorId, noStyle }: EditorPreviewRendererProps) => {
   const editableProps = {
     placeholder: 'Murmuring the mex hype... ',
     spellCheck: false,
-    style: {
-      padding: '15px'
-    },
+    style: noStyle
+      ? {}
+      : {
+          padding: '15px'
+        },
     readOnly: true
   }
 

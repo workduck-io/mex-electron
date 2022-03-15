@@ -53,7 +53,8 @@ const useNavlinks = () => {
         title: 'Tasks',
         path: ROUTE_PATHS.tasks,
         icon: GetIcon(checkboxLine),
-        isComingSoon: true
+        shortcut: shortcuts.showTasks.keystrokes
+        // isComingSoon: true
       },
 
       {

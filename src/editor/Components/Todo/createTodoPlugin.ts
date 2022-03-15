@@ -44,12 +44,14 @@ const createTodoPlugin = createPluginFactory<HotkeyPlugin>({
   },
   withOverrides: withTodos,
   deserializeHtml: {
+    attributeNames: ['data-nodeid'],
     getNode: (el, node) => {
       if (node.type !== ELEMENT_TODO_LI) return
 
       return {
         id: el.id,
         type: node.type,
+        nodeid: el.getAttribute('data-nodeid'),
         checked: el.getAttribute('data-slate-value')
       }
     }

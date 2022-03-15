@@ -1,10 +1,10 @@
+import { useReadOnly , useFocused, useSelected } from 'slate-react'
 import archivedIcon from '@iconify/icons-ri/archive-line'
 import { Icon } from '@iconify/react'
 import { useEditorRef } from '@udecode/plate'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Transforms } from 'slate'
-import { useFocused, useSelected } from 'slate-react'
 import styled from 'styled-components'
 import useArchive from '../../../../hooks/useArchive'
 import { useLinks } from '../../../../hooks/useLinks'
@@ -35,6 +35,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   // mog('We reached here', { selected, focused })
 
   // const nodeid = getNodeidFromPath(element.value)
+  const readOnly = useReadOnly()
   const path = getPathFromNodeid(element.value)
   const { archived } = useArchive()
 
@@ -101,7 +102,14 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
           <span className="ILink_decoration ILink_decoration_right">]]</span>
         </SILink>
       ) : (
-        <EditorPreview isPreview={isPreview(editor.id)} preview={preview} previewRef={editor} nodeid={element.value}>
+        <EditorPreview
+          allowClosePreview={readOnly}
+          isPreview={isPreview(editor.id)}
+          preview={preview}
+          previewRef={editor}
+          nodeid={element.value}
+          closePreview={() => setPreview(false)}
+        >
           <SILink selected={selected} {...onClickProps}>
             <span className="ILink_decoration ILink_decoration_left">[[</span>
             <span className="ILink_decoration ILink_decoration_value"> {path}</span>

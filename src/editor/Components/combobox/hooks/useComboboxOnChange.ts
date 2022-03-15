@@ -4,6 +4,7 @@ import { useComboboxStore } from '../useComboboxStore'
 import { ComboboxType } from '../../multi-combobox/types'
 import getTextFromTriggers from '../../multi-combobox/getMultiTextFromTrigger'
 import { mog } from '../../../../utils/lib/helper'
+import {debounce} from 'lodash'
 
 /**
  * If the cursor is after the trigger and at the end of the word:
