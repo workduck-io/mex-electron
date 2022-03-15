@@ -1,14 +1,15 @@
 import { OnChange, usePlateEditorRef } from '@udecode/plate'
 import { useCallback } from 'react'
-import { mog } from '../../../utils/lib/helper'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange'
 import { isInternalCommand } from '../combobox/hooks/useComboboxOnKeyDown'
-import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { ComboboxType } from './types'
 import { isReservedOrClash } from '../../../utils/lib/paths'
+import { useRouting } from '../../../views/routes/urls'
+import { useLinks } from '../../../hooks/useLinks'
+import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
 
 export const CreateNewPrefix = `Create New `
 // Handle multiple combobox
@@ -21,6 +22,8 @@ const useMultiComboboxOnChange = (
   const editor = usePlateEditorRef(editorId)! // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
   const closeMenu = useComboboxStore((state) => state.closeMenu)
+  const { params } = useRouting()
+  const { getPathFromNodeid } = useLinks()
 
   const setItems = useComboboxStore((state) => state.setItems)
 
@@ -47,9 +50,14 @@ const useMultiComboboxOnChange = (
 
     if (!data) return false
 
-    const searchItems = fuzzySearch(data, search, { keys: ['text'] })
+    if (params.snippetid && search.startsWith('.')) return
+
+    const { isChild, key: pathKey } = withoutContinuousDelimiter(search)
+    const searchTerm = isChild ? `${getPathFromNodeid(editorId)}${pathKey}` : pathKey
+
+    const searchItems = fuzzySearch(data, searchTerm, { keys: ['text'] })
     const items: IComboboxItem[] = (
-      search !== '' ? searchItems.slice(0, maxSuggestions) : keys[key].data.slice(0, maxSuggestions)
+      searchTerm !== '' ? searchItems.slice(0, maxSuggestions) : keys[key].data.slice(0, maxSuggestions)
     ).map((item) => ({
       key: item.value,
       icon: item.icon ?? ct.icon ?? undefined,
@@ -68,18 +76,21 @@ const useMultiComboboxOnChange = (
 
     const dataKeys = items.map((i) => i.text)
     // Insert new item conditionally
+
     if (
       key !== ComboboxKey.SLASH_COMMAND &&
-      search !== '' &&
-      !isInternalCommand(search) &&
-      !isReservedOrClash(search, dataKeys)
+      searchTerm !== '' &&
+      searchTerm !== '.' &&
+      !isInternalCommand(searchTerm) &&
+      !isReservedOrClash(searchTerm, dataKeys)
     ) {
       items.unshift({
         key: '__create_new',
         icon: 'ri:add-circle-line',
-        text: `${CreateNewPrefix}${search}`
+        text: `${CreateNewPrefix}${searchTerm}`
       })
     }
+
     setItems(items)
 
     return true

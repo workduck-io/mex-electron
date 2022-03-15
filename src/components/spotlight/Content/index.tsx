@@ -3,7 +3,7 @@ import { CategoryType, useSpotlightContext } from '../../../store/Context/contex
 import { ItemActionType, ListItemType } from '../SearchResults/types'
 import Preview, { PreviewType } from '../Preview'
 import React, { useEffect } from 'react'
-import { createNodeWithUid, insertItemInArray } from '../../../utils/lib/helper'
+import { createNodeWithUid, insertItemInArray, mog } from '../../../utils/lib/helper'
 
 import { AppType } from '../../../hooks/useInitialize'
 import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
@@ -24,6 +24,7 @@ import { useRecentsStore } from '../../../store/useRecentsStore'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
+import 'react-contexify/dist/ReactContexify.css'
 
 export const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -63,6 +64,9 @@ const Content = () => {
         setSearchResults(listWithNew)
       } else {
         // * Get those recent node links which exists locally
+
+        if (!useSpotlightAppStore.getState().normalMode) return
+
         const recents = selection ? recentResearchNodes : lastOpenedNodes
         const items = recents.filter((recent: string) => ilinks.find((ilink) => ilink.nodeid === recent))
 
@@ -112,7 +116,7 @@ const Content = () => {
       setNodeContent(content)
       setPreview(INIT_PREVIEW)
     }
-  }, [search.value, activeIndex, activeItem, selection, normalMode, searchResults])
+  }, [search.value, activeIndex, activeItem, selection, searchResults])
 
   return (
     <StyledContent>

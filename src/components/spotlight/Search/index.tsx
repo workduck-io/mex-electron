@@ -12,7 +12,7 @@ import { useContentStore } from '../../../store/useContentStore'
 import { useDebouncedCallback } from 'use-debounce'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useTheme } from 'styled-components'
-import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
 
 type QueryType = {
   value: string
@@ -87,13 +87,15 @@ const Search: React.FC = () => {
           name="spotlight_search"
           placeholder={placeholder}
           onChange={({ target: { value } }) => {
-            const { key: what } = withoutContinuousDelimiter(value)
-
             const dots = new RegExp(/\.{2,}/g)
             const replaceContinousDots = value.replace(dots, '.') // * replace two or more dots with one dot
 
+            const key = withoutContinuousDelimiter(replaceContinousDots).key
+
+            const query = key.startsWith('.') || key.startsWith('[[.') ? key.replace('.', '') : key
+
             setInput(replaceContinousDots)
-            handleSearchInput(what)
+            handleSearchInput(query)
           }}
         />
       </Before>

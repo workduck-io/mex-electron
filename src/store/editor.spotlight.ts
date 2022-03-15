@@ -1,7 +1,7 @@
 import { INIT_PREVIEW } from '../components/spotlight/Content'
 import { ListItemType } from '../components/spotlight/SearchResults/types'
 import { NodeEditorContent } from '../types/Types'
-import { NodeProperties } from '../store/useEditorStore'
+import { NodeProperties, useEditorStore } from '../store/useEditorStore'
 import { PreviewType } from '../components/spotlight/Preview'
 import create from 'zustand'
 import { createNodeWithUid } from '../utils/lib/helper'
@@ -33,7 +33,10 @@ export const useSpotlightEditorStore = create<SpotlightEditorStoreType>((set, ge
   currentListItem: undefined,
   setCurrentListItem: (item) => set({ currentListItem: item }),
   setNodeContent: (content) => set(() => ({ nodeContent: content })),
-  setNode: (node) => set(() => ({ node })),
+  setNode: (node) => {
+    useEditorStore.getState().setNode(node)
+    set(() => ({ node }))
+  },
   loadNode: (node: NodeProperties, content: NodeEditorContent) => set({ node, nodeContent: content }),
   setIsSelection: (isSelection) => set({ isSelection })
 }))

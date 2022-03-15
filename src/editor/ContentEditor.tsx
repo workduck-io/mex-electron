@@ -73,7 +73,7 @@ const ContentEditor = () => {
     }
   }
 
-  const editorId = useMemo(() => getEditorId(node.id, false), [node, fetchingContent])
+  const editorId = useMemo(() => getEditorId(node.nodeid, false), [node, fetchingContent])
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {

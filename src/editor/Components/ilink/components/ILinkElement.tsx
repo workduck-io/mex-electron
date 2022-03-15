@@ -30,7 +30,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const focused = useFocused()
   const [preview, setPreview] = useState(false)
   const { push } = useNavigation()
-  const { getNodeidFromPath, getPathFromNodeid } = useLinks()
+  const { getPathFromNodeid } = useLinks()
   const { getArchiveNode } = useNodes()
   // mog('We reached here', { selected, focused })
 

@@ -16,9 +16,9 @@ export type PriorityDataType = {
 }
 
 export enum TodoStatus {
-  todo,
-  pending,
-  completed
+  todo = 'todo',
+  pending = 'pending',
+  completed = 'completed'
 }
 
 export type TodosType = Record<string, Array<TodoType>> // * nodeid, todos

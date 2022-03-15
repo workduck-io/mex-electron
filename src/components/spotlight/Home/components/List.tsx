@@ -17,10 +17,10 @@ import { appNotifierWindow } from '../../../../electron/utils/notifiers'
 import { IpcAction } from '../../../../data/IpcAction'
 import { AppType } from '../../../../hooks/useInitialize'
 import { convertContentToRawText } from '../../../../utils/search/localSearch'
-import { useSnippetStore } from '../../../../store/useSnippetStore'
 import { useSnippets } from '../../../../hooks/useSnippets'
 import { getPlateEditorRef, serializeHtml } from '@udecode/plate'
 import { mog } from '../../../../utils/lib/helper'
+import useDataStore from '../../../../store/useDataStore'
 
 export const MAX_RECENT_ITEMS = 3
 enum KEYBOARD_KEYS {
@@ -42,6 +42,7 @@ const List = ({
     useSpotlightContext()
   const parentRef = useRef(null)
 
+  const addILink = useDataStore((store) => store.addILink)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
 
@@ -60,7 +61,8 @@ const List = ({
     if (!normalMode) {
       style.width = '0%'
     }
-    if (searchResults[activeIndex]?.category !== CategoryType.quicklink) {
+
+    if (searchResults[activeIndex] && searchResults[activeIndex]?.category !== CategoryType.quicklink) {
       style.width = '100%'
     }
 
@@ -163,7 +165,16 @@ const List = ({
             if (currentActiveItem.type === QuickLinkType.snippet) {
               handleCopySnippet(currentActiveItem.id, false)
               setInput('')
-            } else setNormalMode(false)
+            } else {
+              let nodePath = node.path
+              mog('im here', { node, activeItem })
+              setNormalMode(false)
+
+              if (currentActiveItem?.extras.new && !activeItem.active) {
+                nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
+                addILink({ ilink: nodePath, nodeid: node.nodeid })
+              }
+            }
           }
         } else if (currentActiveItem.category === CategoryType.action) {
           if (currentActiveItem?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
@@ -216,6 +227,7 @@ const List = ({
   const handleCopySnippet = (id: string, isUse?: boolean) => {
     const snippet = getSnippet(id)
     const text = convertContentToRawText(snippet.content, '\n')
+
     const html = serializeHtml(getPlateEditorRef(), {
       nodes: snippet.content
     })
