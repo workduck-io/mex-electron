@@ -2,8 +2,12 @@ import Board from '@asseinfo/react-kanban'
 import trashIcon from '@iconify/icons-codicon/trash'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useMemo } from 'react'
+import arrowEnterLeft20Filled from '@iconify/icons-fluent/arrow-enter-left-20-filled'
+import arrowLeftRightLine from '@iconify/icons-ri/arrow-left-right-line'
 import styled from 'styled-components'
+import dragMove2Fill from '@iconify/icons-ri/drag-move-2-fill'
 import tinykeys from 'tinykeys'
+import { DisplayShortcut, ShortcutMid } from '../../components/mex/Shortcuts'
 import { Heading } from '../../components/spotlight/SearchResults/styled'
 import { IpcAction } from '../../data/IpcAction'
 import { getNextStatus, getPrevStatus, PriorityType, TodoType } from '../../editor/Components/Todo/types'
@@ -19,13 +23,20 @@ import { useEditorStore } from '../../store/useEditorStore'
 import { useRecentsStore } from '../../store/useRecentsStore'
 import useTodoStore from '../../store/useTodoStore'
 import { Button } from '../../style/Buttons'
-import { Title } from '../../style/Integration'
 import { MainHeader, PageContainer } from '../../style/Layouts'
-import { StyledTasksKanban, TaskCard, TaskColumnHeader } from '../../style/Todo'
+import {
+  ShortcutToken,
+  ShortcutTokens,
+  StyledTasksKanban,
+  TaskCard,
+  TaskColumnHeader,
+  TaskHeader
+} from '../../style/Todo'
 import Todo from '../../ui/components/Todo'
 import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText } from '../../utils/search/localSearch'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
+import { Title } from '../../style/Typography'
 
 const Tasks = () => {
   const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
@@ -229,7 +240,7 @@ const Tasks = () => {
         changeSelectedPriority(PriorityType.noPriority)
       },
 
-      'Shift+Enter': (event) => {
+      '$mod+Enter': (event) => {
         event.preventDefault()
         onNavigateToNode()
       },
@@ -268,13 +279,43 @@ const Tasks = () => {
 
   return (
     <PageContainer>
-      <MainHeader>
+      <TaskHeader>
         <Title>Todos</Title>
+        <ShortcutTokens>
+          <ShortcutToken>
+            Select:
+            <Icon icon={dragMove2Fill} />
+          </ShortcutToken>
+          {selectedCard && (
+            <>
+              <ShortcutToken>
+                Navigate:
+                <DisplayShortcut shortcut="$mod+Enter" />
+              </ShortcutToken>
+              <ShortcutToken>
+                Move:
+                <DisplayShortcut shortcut="Shift" />
+                <ShortcutMid>+</ShortcutMid>
+                <Icon icon={arrowLeftRightLine} />
+                or
+                <DisplayShortcut shortcut="Enter" />
+              </ShortcutToken>
+              <ShortcutToken>
+                Change Priority:
+                <DisplayShortcut shortcut="$mod+0-3" />
+              </ShortcutToken>
+            </>
+          )}
+          <ShortcutToken>
+            {selectedCard ? 'Clear selection: ' : 'Navigate to Editor:'}
+            <DisplayShortcut shortcut="Esc" />
+          </ShortcutToken>
+        </ShortcutTokens>
         <Button onClick={onClearClick}>
           <Icon icon={trashIcon} height={24} />
           Clear Todos
         </Button>
-      </MainHeader>
+      </TaskHeader>
       <StyledTasksKanban>
         <Board
           renderColumnHeader={({ title }) => <TaskColumnHeader>{title}</TaskColumnHeader>}

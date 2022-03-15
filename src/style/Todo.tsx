@@ -1,6 +1,8 @@
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 import { TodoContainer } from '../ui/components/Todo.style'
+import { MainHeader } from './Layouts'
+import { Title } from './Typography'
 
 /*
  * Todos
@@ -32,6 +34,41 @@ export const StyledTasksKanban = styled.div`
     padding: ${({ theme }) => theme.spacing.small};
     margin: ${({ theme }) => theme.spacing.small};
     border-radius: ${({ theme }) => theme.borderRadius.small};
+  }
+`
+
+export const TaskHeader = styled(MainHeader)`
+  ${Title} {
+    flex-grow: 1;
+  }
+`
+
+export const ShortcutTokens = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.large}`};
+  max-width: 600px;
+  justify-content: end;
+`
+
+export const ShortcutToken = styled.div`
+  display: flex;
+  align-items: center;
+  color: ${({ theme }) => theme.colors.gray[4]};
+  gap: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
+  background: ${({ theme }) => theme.colors.gray[9]};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  font-size: 0.9rem;
+
+  svg {
+    width: 1.3rem;
+    height: 1.3rem;
+    padding: 4px ${({ theme }) => theme.spacing.tiny};
+    border-radius: 4px;
+    background-color: ${({ theme }) => theme.colors.gray[8]};
+    color: ${({ theme }) => theme.colors.primary};
   }
 `
 
