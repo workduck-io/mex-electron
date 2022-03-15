@@ -4,6 +4,7 @@ import React, { useEffect, useMemo } from 'react'
 import toast from 'react-hot-toast'
 import { Transforms } from 'slate'
 import { useReadOnly } from 'slate-react'
+import { NODE_ID_PREFIX, SNIPPET_PREFIX } from '../../../data/Defaults/idPrefixes'
 import { useEditorStore } from '../../../store/useEditorStore'
 import useTodoStore from '../../../store/useTodoStore'
 import { default as TodoBase } from '../../../ui/components/Todo'
@@ -14,16 +15,18 @@ const cleanEditorId = (editorId: string) => {
   /*
    * Find substring of form NODE_{} in editorid
    */
-  const nodeIdReg = editorId.match(/NODE_[A-Za-z0-9]+/)
-  // mog('nodeId', { nodeIdReg, editorId })
+  const nodeReg = new RegExp(`${NODE_ID_PREFIX}_[A-Za-z0-9]+`)
+  const nodeIdReg = editorId.match(nodeReg)
+  mog('nodeId', { nodeIdReg, editorId })
   if (nodeIdReg) {
     return nodeIdReg[0]
   }
 
-  const snippetReg = editorId.match(/SNIPPET_[A-Za-z0-9]+/)
-  // mog('nodeId', { snippetReg, editorId })
-  if (snippetReg) {
-    return snippetReg[0]
+  const snippetReg = new RegExp(`${SNIPPET_PREFIX}_[A-Za-z0-9]+`)
+  const snippetnodeidReg = editorId.match(snippetReg)
+  mog('nodeId', { snippetReg, snippetnodeidReg })
+  if (snippetnodeidReg) {
+    return snippetnodeidReg[0]
   }
 }
 

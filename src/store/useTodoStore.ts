@@ -67,7 +67,7 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
     const newTodos = todos.map((t) =>
       t.id === todo.id && todo.nodeid === nodeid ? { ...todo, updatedAt: Date.now() } : t
     )
-    mog('currentTodos', { newTodos, nodeid, todos })
+    // mog('currentTodos', { newTodos, nodeid, todos })
     set({ todos: { ...currentTodos, [nodeid]: newTodos } })
   },
   replaceContentOfTodos: (nodeid, todosContent) => {
@@ -85,11 +85,11 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
 
     const nodeTodos = todosContent.map((content) => {
       const todo = todos[nodeid]?.find((todo) => todo.id === content.id && nodeid === todo.nodeid)
-      mog('replaceContent', { nodeid, todosContent, nodeTodos, todo, content })
+      // mog('replaceContent', { nodeid, todosContent, nodeTodos, todo, content })
       return todo ? { ...todo, content: [content] } : createTodo(nodeid, content.id, [content])
     })
     const newtodos = { ...todos, [nodeid]: nodeTodos }
-    mog('newTodos', { newtodos })
+    // mog('newTodos', { newtodos })
     set({ todos: newtodos })
   }
 }))

@@ -5,17 +5,14 @@ import React, { useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import tinykeys from 'tinykeys'
 import { Heading } from '../../components/spotlight/SearchResults/styled'
-import { SNIPPET_PREFIX } from '../../data/Defaults/idPrefixes'
-import {
-  getNextStatus,
-  getPrevStatus,
-  PriorityDataType,
-  PriorityType,
-  TodoType
-} from '../../editor/Components/Todo/types'
+import { IpcAction } from '../../data/IpcAction'
+import { getNextStatus, getPrevStatus, PriorityType, TodoType } from '../../editor/Components/Todo/types'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
+import { appNotifierWindow } from '../../electron/utils/notifiers'
+import { AppType } from '../../hooks/useInitialize'
 import { useLinks } from '../../hooks/useLinks'
 import useLoad from '../../hooks/useLoad'
+import { useNavigation } from '../../hooks/useNavigation'
 import { KanbanBoardColumn, TodoKanbanCard, useTodoKanban } from '../../hooks/useTodoKanban'
 import useDataStore from '../../store/useDataStore'
 import { useEditorStore } from '../../store/useEditorStore'
@@ -30,51 +27,7 @@ import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText } from '../../utils/search/localSearch'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 
-export type TasksProps = {
-  title?: string
-}
-
-type TaskGroupProp = {
-  nodeid: string
-  todos: Array<TodoType>
-}
-
-const NodeHeading = styled.div`
-  font-size: 1.4rem;
-  color: ${({ theme }) => theme.colors.primary};
-`
-
-const TaskContainer = styled.section`
-  padding: 2rem;
-  margin-bottom: 1rem;
-`
-
-const TaskGroup: React.FC<TaskGroupProp> = ({ nodeid, todos }) => {
-  const { getPathFromNodeid } = useLinks()
-  // const { push } = useNavigation()
-  // const { goTo } = useRouting()
-
-  // const onClick = (nodeid: string) => {
-  //   push(nodeid)
-  //   appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
-
-  //   goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-  // }
-
-  // mog('TaskGroup', { nodeid, todos })
-  return (
-    <TaskContainer>
-      <NodeHeading>{getPathFromNodeid(nodeid) ?? nodeid}</NodeHeading>
-      {todos.map((todo) => (
-        <Todo key={`${nodeid}_${todo.id}`} todoid={todo.id} readOnly parentNodeId={nodeid}>
-          {convertContentToRawText(todo.content, '\n')}
-        </Todo>
-      ))}
-    </TaskContainer>
-  )
-}
-
-const Tasks: React.FC<TasksProps> = () => {
+const Tasks = () => {
   const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
   const nodesTodo = useTodoStore((store) => store.todos)
   const clearTodos = useTodoStore((store) => store.clearTodos)
@@ -85,6 +38,8 @@ const Tasks: React.FC<TasksProps> = () => {
   const lastOpened = useRecentsStore((store) => store.lastOpened)
   const nodeUID = useEditorStore((store) => store.node.nodeid)
   const baseNodeId = useDataStore((store) => store.baseNodeId)
+
+  const { push } = useNavigation()
 
   const todos = useMemo(() => Object.entries(nodesTodo), [nodesTodo])
 
@@ -101,9 +56,18 @@ const Tasks: React.FC<TasksProps> = () => {
     clearTodos()
   }
 
+  const onNavigateToNode = () => {
+    if (!selectedCard) {
+      return
+    }
+    const nodeid = selectedCard.todo.nodeid
+    push(nodeid)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
+    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+  }
+
   const selectFirst = () => {
     const firstCardColumn = board.columns.find((column) => column.cards.length > 0)
-    // mog('firstCard', { selectedCard, board, firstCardColumn })
     if (firstCardColumn) {
       const firstCard = firstCardColumn.cards[0]
       setSelectedCard(firstCard)
@@ -140,7 +104,7 @@ const Tasks: React.FC<TasksProps> = () => {
     })
   }
 
-  const selectDown = () => {
+  const selectNewCard = (direction: 'up' | 'down' | 'left' | 'right') => {
     if (!selectedCard) {
       selectFirst()
       return
@@ -150,76 +114,63 @@ const Tasks: React.FC<TasksProps> = () => {
     ) as KanbanBoardColumn
     const selectedColumnLength = selectedColumn.cards.length
     const selectedIndex = selectedColumn.cards.findIndex((card) => card.id === selectedCard.id)
-    const nextCard = selectedColumn.cards[(selectedIndex + 1) % selectedColumnLength]
-    // mog('nextCard', { nextCard, selectedColumn, selectedColumnLength, selectedIndex })
-    if (nextCard) {
-      setSelectedCard(nextCard)
-    }
-  }
 
-  const selectUp = () => {
-    if (!selectedCard) {
-      selectFirst()
-      return
-    }
-    const selectedColumn = board.columns.find(
-      (column) => column.id === selectedCard.todo.metadata.status
-    ) as KanbanBoardColumn
-    const selectedColumnLength = selectedColumn.cards.length
-    const selectedIndex = selectedColumn.cards.findIndex((card) => card.id === selectedCard.id)
-    const prevCard = selectedColumn.cards[(selectedIndex - 1 + selectedColumnLength) % selectedColumnLength]
-    // mog('prevCard', { prevCard })
+    // mog('selected card', { selectedCard, selectedColumn, selectedColumnLength, selectedIndex, direction })
 
-    if (prevCard) {
-      setSelectedCard(prevCard)
-    }
-  }
-  const selectRight = () => {
-    if (!selectedCard) {
-      selectFirst()
-      return
-    }
-    const selectedColumn = board.columns.find(
-      (column) => column.id === selectedCard.todo.metadata.status
-    ) as KanbanBoardColumn
-    let selectedColumnStatus = selectedColumn.id
-    const selectedIndex = selectedColumn.cards.findIndex((card) => card.id === selectedCard.id)
-    let nextCard = undefined
-    // mog('nextCardRight', { nextCard, selectedColumn, selectedColumnStatus, selectedIndex })
-    while (!nextCard) {
-      const nextColumn = board.columns.find(
-        (column) => column.id === getNextStatus(selectedColumnStatus)
-      ) as KanbanBoardColumn
-      if (!nextColumn) break
-      nextCard = nextColumn.cards[selectedIndex % nextColumn.cards.length]
-      selectedColumnStatus = nextColumn.id
-    }
-    if (nextCard) {
-      setSelectedCard(nextCard)
-    }
-  }
+    switch (direction) {
+      case 'up': {
+        const prevCard = selectedColumn.cards[(selectedIndex - 1 + selectedColumnLength) % selectedColumnLength]
+        // mog('prevCard', { prevCard })
 
-  const selectLeft = () => {
-    if (!selectedCard) {
-      selectFirst()
-      return
-    }
-    const selectedColumn = board.columns.find(
-      (column) => column.id === selectedCard.todo.metadata.status
-    ) as KanbanBoardColumn
-    let selectedColumnStatus = selectedColumn.id
-    const selectedIndex = selectedColumn.cards.findIndex((card) => card.id === selectedCard.id)
-    let prevCard = undefined
-    while (!prevCard) {
-      const prevColumn = board.columns.find(
-        (column) => column.id === getPrevStatus(selectedColumnStatus)
-      ) as KanbanBoardColumn
-      if (!prevColumn || prevColumn.id === selectedColumn.id) break
-      prevCard = prevColumn.cards[selectedIndex % prevColumn.cards.length]
-      selectedColumnStatus = prevColumn.id
-    }
-    if (prevCard) {
-      setSelectedCard(prevCard)
+        if (prevCard) {
+          // mog('selected card', { selectedCard, prevCard })
+          setSelectedCard(prevCard)
+        }
+        break
+      }
+      case 'down': {
+        const nextCard = selectedColumn.cards[(selectedIndex + 1) % selectedColumnLength]
+        // mog('nextCard', { nextCard, selectedColumn, selectedColumnLength, selectedIndex })
+        if (nextCard) {
+          // mog('selected card', { selectedCard, nextCard })
+          setSelectedCard(nextCard)
+        }
+        break
+      }
+      case 'left': {
+        let selectedColumnStatus = selectedColumn.id
+        let prevCard = undefined
+        while (!prevCard) {
+          const prevColumn = board.columns.find(
+            (column) => column.id === getPrevStatus(selectedColumnStatus)
+          ) as KanbanBoardColumn
+          if (!prevColumn || prevColumn.id === selectedColumn.id) break
+          prevCard = prevColumn.cards[selectedIndex % prevColumn.cards.length]
+          selectedColumnStatus = prevColumn.id
+        }
+        if (prevCard) {
+          // mog('selected card', { selectedCard, prevCard })
+          setSelectedCard(prevCard)
+        }
+        break
+      }
+      case 'right': {
+        let selectedColumnStatus = selectedColumn.id
+        let nextCard = undefined
+        while (!nextCard) {
+          const nextColumn = board.columns.find(
+            (column) => column.id === getNextStatus(selectedColumnStatus)
+          ) as KanbanBoardColumn
+          if (!nextColumn || nextColumn.id === selectedColumn.id) break
+          nextCard = nextColumn.cards[selectedIndex % nextColumn.cards.length]
+          selectedColumnStatus = nextColumn.id
+        }
+        if (nextCard) {
+          // mog('selected card', { selectedCard, nextCard })
+          setSelectedCard(nextCard)
+        }
+        break
+      }
     }
   }
 
@@ -235,16 +186,6 @@ const Tasks: React.FC<TasksProps> = () => {
           goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
         }
       },
-      Tab: (event) => {
-        event.preventDefault()
-        // Blur the input if necessary (not needed currently)
-        // if (inputRef.current) inputRef.current.blur()
-        if (event.shiftKey) {
-          selectUp()
-        } else {
-          selectDown()
-        }
-      },
       'Shift+ArrowRight': (event) => {
         event.preventDefault()
         handleCardMoveNext()
@@ -255,24 +196,20 @@ const Tasks: React.FC<TasksProps> = () => {
       },
       ArrowRight: (event) => {
         event.preventDefault()
-        selectRight()
+        selectNewCard('right')
       },
       ArrowLeft: (event) => {
         event.preventDefault()
-        if (event.shiftKey) {
-          handleCardMovePrev()
-        } else {
-          selectLeft()
-        }
+        selectNewCard('left')
       },
       ArrowDown: (event) => {
         event.preventDefault()
-        selectDown()
+        selectNewCard('down')
       },
 
       ArrowUp: (event) => {
         event.preventDefault()
-        selectUp()
+        selectNewCard('up')
       },
 
       '$mod+1': (event) => {
@@ -290,6 +227,11 @@ const Tasks: React.FC<TasksProps> = () => {
       '$mod+0': (event) => {
         event.preventDefault()
         changeSelectedPriority(PriorityType.noPriority)
+      },
+
+      'Shift+Enter': (event) => {
+        event.preventDefault()
+        onNavigateToNode()
       },
 
       Enter: (event) => {
@@ -343,24 +285,17 @@ const Tasks: React.FC<TasksProps> = () => {
           {board}
         </Board>
       </StyledTasksKanban>
-      <div>
-        {todos.length > 0 ? (
-          todos.map(([nodeid, todos]) => {
-            if (nodeid.startsWith(SNIPPET_PREFIX)) return null
-            return <TaskGroup key={nodeid} nodeid={nodeid} todos={todos} />
-          })
-        ) : (
-          <div>
-            <Heading>No Todos</Heading>
-            <p>Use the Editor to add Todos to your nodes. All todos will show up here.</p>
-            <p>
-              You can add todos with
-              <kbd>[]</kbd>
-            </p>
-            {/* HTML element for keyboard shortcut */}
-          </div>
-        )}
-      </div>
+      {todos.length < 1 && (
+        <div>
+          <Heading>No Todos</Heading>
+          <p>Use the Editor to add Todos to your nodes. All todos will show up here.</p>
+          <p>
+            You can add todos with
+            <kbd>[]</kbd>
+          </p>
+          {/* HTML element for keyboard shortcut */}
+        </div>
+      )}
     </PageContainer>
   )
 }
