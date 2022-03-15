@@ -66,7 +66,9 @@ export const useApi = () => {
       .then((d) => {
         mog('savedData', { d })
         // setMetadata(nodeid, extractMetadata(d.data))
-        setContent(nodeid, deserializeContent(d.data.data), extractMetadata(d.data))
+        const deserializedContent = deserializeContent(d.data.data)
+        mog('DeserializedContent: ', deserializedContent)
+        setContent(nodeid, deserializedContent, extractMetadata(d.data))
         return d.data
       })
       .catch((e) => {
@@ -83,8 +85,11 @@ export const useApi = () => {
           createdBy: d.data.createdBy,
           createdAt: d.data.createdAt,
           lastEditedBy: d.data.lastEditedBy,
-          updatedAt: d.data.updatedAt
+          updatedAt: d.data.updatedAt,
+          publicAccess: d.data.publicAccess ?? false
         }
+
+        mog("Recv Metadata", {metadata})
 
         // console.log(metadata, d.data)
         return { data: d.data.data, metadata: removeNulls(metadata), version: d.data.version ?? undefined }

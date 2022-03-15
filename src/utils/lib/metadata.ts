@@ -7,7 +7,8 @@ export const extractMetadata = (data: any): NodeMetadata => {
     lastEditedBy: data.lastEditedBy,
     updatedAt: data.updatedAt,
     createdBy: data.createdBy,
-    createdAt: data.createdAt
+    createdAt: data.createdAt,
+    publicAccess: data.publicAccess ?? false
   }
   return removeNulls(metadata)
 }
