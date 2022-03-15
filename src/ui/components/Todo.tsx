@@ -3,7 +3,14 @@ import { useContextMenu } from 'react-contexify'
 import { useReadOnly } from 'slate-react'
 import { useTheme } from 'styled-components'
 import PriorityMenu from '../../editor/Components/Todo/PriorityMenu'
-import { Priority, PriorityDataType, PriorityType, TodoStatus, TodoType } from '../../editor/Components/Todo/types'
+import {
+  getNextStatus,
+  Priority,
+  PriorityDataType,
+  PriorityType,
+  TodoStatus,
+  TodoType
+} from '../../editor/Components/Todo/types'
 import useTodoStore from '../../store/useTodoStore'
 import { MexIcon } from '../../style/Layouts'
 import { mog } from '../../utils/lib/helper'
@@ -49,31 +56,13 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, onDeleteClick }: TodoP
   }
 
   const changeStatus = () => {
-    let status = todo.metadata.status
-
-    switch (todo.metadata.status) {
-      case TodoStatus.todo:
-        status = TodoStatus.pending
-        break
-      case TodoStatus.pending:
-        status = TodoStatus.completed
-        break
-      default:
-        status = TodoStatus.todo
-        break
-    }
-    updateTodo(parentNodeId, { ...todo, metadata: { ...todo.metadata, status } })
+    updateTodo(parentNodeId, { ...todo, metadata: { ...todo.metadata, status: getNextStatus(todo.metadata.status) } })
     mog('TodoUpdate', {
       ...todo,
-      metadata: { ...todo.metadata, status }
+      metadata: { ...todo.metadata, status: getNextStatus(todo.metadata.status) }
     })
     setAnimate(true)
   }
-
-  mog('Todo', {
-    todo,
-    readOnly
-  })
 
   return (
     <TodoContainer

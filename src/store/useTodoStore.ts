@@ -44,7 +44,7 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
   getTodoOfNode: (nodeid, todoId) => {
     const todo = get().todos?.[nodeid]?.find((todo) => todo.id === todoId && nodeid === todo.nodeid)
 
-    mog('getTodoOfNode', { nodeid, todoId, todo })
+    // mog('getTodoOfNode', { nodeid, todoId, todo })
     if (!todo) {
       const newTodo = createTodo(nodeid, todoId)
       get().addTodoInNode(nodeid, newTodo)

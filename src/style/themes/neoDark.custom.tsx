@@ -11,6 +11,7 @@ import { EditorPreviewWrapper } from '../../editor/Components/EditorPreview/Edit
 import { SILink } from '../../editor/Components/ilink/components/ILinkElement.styles'
 import { Widget } from '../../editor/Components/SyncBlock'
 import { ComboboxItem, ComboboxRoot } from '../../editor/Components/tag/components/TagCombobox.styles'
+import { TodoContainer } from '../../ui/components/Todo.style'
 import { ArchivedNode } from '../../views/mex/Archive'
 import { SettingsOptions, SettingTitle } from '../../views/mex/Settings'
 import { SwitchWrapper } from '../../views/router/Switch'
@@ -65,6 +66,10 @@ const NeoContainer = css`
   box-shadow: 0px 15px 40px ${({ theme }) => transparentize(0.9, theme.colors.palette.black)};
 `
 
+const NeoContainerUnset = css`
+  background-color: transparent;
+  box-shadow: none;
+`
 const heightMain = css`
   calc(100vh - 4rem)
 `
@@ -157,6 +162,15 @@ const edStyles = css`
   ${ComboboxItem} {
     & > svg {
       color: ${({ theme }) => theme.colors.secondary};
+    }
+  }
+`
+
+const todoStyles = css`
+  ${TodoContainer} {
+    ${EditorStyles} {
+      padding: 0;
+      ${NeoContainerUnset}
     }
   }
 `
@@ -312,4 +326,5 @@ export const NeoDarkStyles = css`
   ${gridCardStyles}
   ${edStyles}
   ${graphStyles}
+  ${todoStyles}
 `
