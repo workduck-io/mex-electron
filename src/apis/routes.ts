@@ -1,4 +1,5 @@
 import { MEX_TAG } from '../data/Defaults/auth'
+import { IS_DEV } from '../data/Defaults/dev_'
 
 export const BASE_INTEGRATION_URL = 'https://http.workduck.io/integration'
 
@@ -17,6 +18,10 @@ export const BASE_API_URL = 'https://http.workduck.io/mex'
 export const BASE_USER_URL = 'https://http.workduck.io/user'
 
 export const BOOKMARK_URL = BASE_API_URL
+export const MEXIT_BASE_URL = IS_DEV ? 'http://localhost:3000' : 'https://mexit.workduck.io'
+
+// Changes on mex-backend are deployed on test for now, so we need to use test instead of sending a request to the BASE API URL
+export const TEST_API_URL = 'https://qp5qf0k5sg.execute-api.us-east-1.amazonaws.com'
 
 export const apiURLs = {
   //node
@@ -48,5 +53,10 @@ export const apiURLs = {
   // Workspace
   createWorkspace: `${BASE_API_URL}/workspace`,
   getNodesByWorkspace: (workspaceId: string) => `${BASE_API_URL}/workspace/${workspaceId}/namespace/NAMESPACE1`,
-  getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`
+  getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`,
+
+  // Node Public Settings
+  makeNodePublic: (nodeId: string) => `${TEST_API_URL}/node/makePublic/${nodeId}`,
+  makeNodePrivate: (nodeId: string) => `${TEST_API_URL}/node/makePrivate/${nodeId}`,
+  getNodePublicURL: (nodeId: string) => `${MEXIT_BASE_URL}/share/${nodeId}`
 }

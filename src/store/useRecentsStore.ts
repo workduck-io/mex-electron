@@ -13,11 +13,18 @@ export type RecentsType = {
   clearResearchNodes: () => void
   addInResearchNodes: (nodeid: string) => void
   initRecents: (recentList: Array<string>) => void
+
+  // Public Node Data. Does not really belong in recents store but did not want to create a store just for this
+  publicNodes: Record<string, string>
+  setNodePublic: (nodeId: string, publicURL: string) => void
+  setNodePrivate: (nodeId: string) => void
+  checkNodePublic: (nodeId) => boolean
 }
 
 export const useRecentsStore = create<RecentsType>(
   persist(
     (set, get) => ({
+      publicNodes: {},
       lastOpened: [],
       recentResearchNodes: [],
       setRecentResearchNodes: (nodes: Array<string>) => {
@@ -53,10 +60,24 @@ export const useRecentsStore = create<RecentsType>(
         set({
           lastOpened
         }),
-      initRecents: (recentList) => set({ lastOpened: recentList })
+      initRecents: (recentList) => set({ lastOpened: recentList }),
+      setNodePublic: (nodeId, publicURL) => {
+        if (get().publicNodes[nodeId]) return
+        set({ publicNodes: { ...get().publicNodes, [nodeId]: publicURL } })
+      },
+      setNodePrivate: (nodeId) => {
+        if (get().publicNodes[nodeId]) {
+          const newNodes = get().publicNodes
+          delete newNodes[nodeId]
+          set({ publicNodes: newNodes })
+        }
+      },
+      checkNodePublic: (nodeId) => {
+        return !!get().publicNodes[nodeId]
+      }
     }),
     {
-      name: 'recents'
+      name: 'mex-recents-store'
     }
   )
 )

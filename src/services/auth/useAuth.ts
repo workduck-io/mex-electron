@@ -55,7 +55,7 @@ export const useAuthStore = create<AuthStoreState>(
         return undefined
       }
     }),
-    { name: 'auth-mex' }
+    { name: 'mex-auth-store' }
   )
 )
 
