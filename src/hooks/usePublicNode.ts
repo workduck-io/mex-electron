@@ -16,20 +16,18 @@ const usePublicNode = () => {
     const URL = apiURLs.makeNodePublic(nodeId)
 
     return await client
-      .patch(
-        URL,
-        {},
-        {
-          headers: {
-            'workspace-id': getWorkspaceId()
-          }
+      .patch(URL, null, {
+        withCredentials: false,
+        headers: {
+          'workspace-id': getWorkspaceId(),
+          Accept: 'application/json, text/plain, */*'
         }
-      )
+      })
       .then((resp) => resp.data)
-      .then((data) => {
-        if (data.nodeUID === nodeId) {
-          const publicURL = apiURLs.getNodePublicURL(data.nodeUID)
-          setNodePublic(data.nodeUID, publicURL)
+      .then((nodeUID) => {
+        if (nodeUID === nodeId) {
+          const publicURL = apiURLs.getNodePublicURL(nodeUID)
+          setNodePublic(nodeUID, publicURL)
           return publicURL
         } else throw new Error('Error making node public')
       })
@@ -42,15 +40,12 @@ const usePublicNode = () => {
     const URL = apiURLs.makeNodePrivate(nodeId)
 
     return await client
-      .patch(
-        URL,
-        {},
-        {
-          headers: {
-            'workspace-id': getWorkspaceId()
-          }
+      .patch(URL, null, {
+        withCredentials: false,
+        headers: {
+          'workspace-id': getWorkspaceId()
         }
-      )
+      })
       .then((resp) => resp.data)
       .then((data) => {
         if (data.nodeUID === nodeId) {
