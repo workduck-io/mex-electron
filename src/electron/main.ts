@@ -38,7 +38,7 @@ import {
 } from './utils/getSelectedText'
 import { getIndexData, setSearchIndexData } from './utils/indexData'
 import { checkIfAlpha } from './utils/version'
-import { analyseContent } from './worker/controller'
+import { analyseContent, initSearchIndex } from './worker/controller'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -511,10 +511,11 @@ ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
   else globalShortcut.register(SPOTLIGHT_SHORTCUT, handleToggleMainWindow) // * If more than one global listener, use registerAll
 })
 
-ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
+ipcMain.on(IpcAction.GET_LOCAL_DATA, async (event) => {
   const fileData: FileData = getFileData(SAVE_LOCATION)
   const indexData: any = getIndexData(SEARCH_INDEX_LOCATION)
   console.log('Received Index Data: ', indexData)
+  await initSearchIndex(fileData)
   event.sender.send(IpcAction.RECEIVE_LOCAL_DATA, { fileData, indexData })
 })
 
