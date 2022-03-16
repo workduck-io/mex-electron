@@ -2,6 +2,7 @@ import create from 'zustand'
 import { defaultContent } from '../data/Defaults/baseData'
 import { TodoType, TodoStatus, PriorityType, TodosType } from '../editor/Components/Todo/types'
 import { NodeEditorContent } from '../types/Types'
+import { mog } from '../utils/lib/helper'
 
 const createTodo = (nodeid: string, todoId: string, content: NodeEditorContent = defaultContent.content) => ({
   id: todoId,
@@ -31,7 +32,11 @@ type TodoStoreType = {
 
 const useTodoStore = create<TodoStoreType>((set, get) => ({
   todos: {},
-  initTodos: (todos) => set({ todos }),
+  initTodos: (todos) => {
+    if (todos) {
+      set({ todos })
+    }
+  },
   clearTodos: () => set({ todos: {} }),
 
   addTodoInNode: (nodeid, todo) => {
@@ -43,6 +48,7 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
   getTodoOfNode: (nodeid, todoId) => {
     const todo = get().todos?.[nodeid]?.find((todo) => todo.id === todoId && nodeid === todo.nodeid)
 
+    // mog('getTodoOfNode', { nodeid, todoId, todo })
     if (!todo) {
       const newTodo = createTodo(nodeid, todoId)
       get().addTodoInNode(nodeid, newTodo)
@@ -65,9 +71,11 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
     const newTodos = todos.map((t) =>
       t.id === todo.id && todo.nodeid === nodeid ? { ...todo, updatedAt: Date.now() } : t
     )
+    // mog('currentTodos', { newTodos, nodeid, todos })
     set({ todos: { ...currentTodos, [nodeid]: newTodos } })
   },
   replaceContentOfTodos: (nodeid, todosContent) => {
+    if (!nodeid) return
     const todos = get().todos ?? {}
 
     if (todosContent.length === 0) {
@@ -81,9 +89,12 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
 
     const nodeTodos = todosContent.map((content) => {
       const todo = todos[nodeid]?.find((todo) => todo.id === content.id && nodeid === todo.nodeid)
+      // mog('replaceContent', { nodeid, todosContent, nodeTodos, todo, content })
       return todo ? { ...todo, content: [content] } : createTodo(nodeid, content.id, [content])
     })
-    set({ todos: { ...todos, [nodeid]: nodeTodos } })
+    const newtodos = { ...todos, [nodeid]: nodeTodos }
+    // mog('newTodos', { newtodos })
+    set({ todos: newtodos })
   }
 }))
 

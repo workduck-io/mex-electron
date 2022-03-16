@@ -3,6 +3,7 @@ import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { Ellipsis } from '../components/mex/Integrations/Template/styled'
 import { MetadataWrapper } from '../components/mex/Metadata/Metadata'
+import { StyledInputWrapper, StyledMenu } from '../components/mex/NodeSelect/NodeSelect.styles'
 import { View } from '../components/mex/Search/ViewSelector'
 import { EditorStyles } from './Editor'
 import { Input } from './Form'
@@ -58,6 +59,7 @@ export const SearchHeader = styled.div`
 `
 
 export const SearchFilterWrapper = styled(SearchHeader)`
+  flex-grow: 1;
   justify-content: flex-start;
   gap: ${({ theme }) => theme.spacing.large};
 `
@@ -76,6 +78,7 @@ export const SearchFilterList = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  flex-grow: 1;
   gap: ${({ theme }) => theme.spacing.small};
 `
 
@@ -150,6 +153,7 @@ export const SearchViewContainer = styled.div`
   gap: ${({ theme }) => theme.spacing.medium};
   flex-direction: column;
 `
+
 export const SearchContainer = styled.div`
   margin: ${({ theme: { spacing } }) => `calc(2 * ${spacing.large}) ${spacing.large} ${spacing.medium}`};
   position: relative;
@@ -329,6 +333,10 @@ export const ResultsWrapper = styled.div`
 
 export const SearchPreviewWrapper = styled.div<{ active?: boolean }>`
   ${({ theme, active }) => active && css``}
+`
+
+export const SearchFilterInputWrapper = styled(StyledInputWrapper)`
+  max-width: 20rem;
 `
 
 export const SplitSearchPreviewWrapper = styled.div`

@@ -21,6 +21,19 @@ export enum TodoStatus {
   completed = 'completed'
 }
 
+export const TodoRanks: Record<PriorityType, number> = {
+  noPriority: 0,
+  low: 1,
+  medium: 2,
+  high: 3
+}
+
+export const TodoStatusRanks: Record<TodoStatus, number> = {
+  todo: 0,
+  pending: 1,
+  completed: 2
+}
+
 export type TodosType = Record<string, Array<TodoType>> // * nodeid, todos
 
 export type TodoType = {
@@ -33,6 +46,32 @@ export type TodoType = {
   }
   createdAt: number
   updatedAt: number
+}
+
+export const getNextStatus = (status: TodoStatus): TodoStatus => {
+  switch (status) {
+    case TodoStatus.todo:
+      return TodoStatus.pending
+    case TodoStatus.pending:
+      return TodoStatus.completed
+    case TodoStatus.completed:
+      return TodoStatus.todo
+    default:
+      return TodoStatus.todo
+  }
+}
+
+export const getPrevStatus = (status: TodoStatus): TodoStatus => {
+  switch (status) {
+    case TodoStatus.todo:
+      return TodoStatus.completed
+    case TodoStatus.pending:
+      return TodoStatus.todo
+    case TodoStatus.completed:
+      return TodoStatus.pending
+    default:
+      return TodoStatus.todo
+  }
 }
 
 // * Get priority data from PriorityType

@@ -14,9 +14,11 @@ import {
 import { mog } from '../../../utils/lib/helper'
 import { startCase } from 'lodash'
 import { Icon } from '@iconify/react'
+import SearchFilterInput from './SearchFilterInput'
+import { nanoid } from 'nanoid'
 
 interface SearchFiltersProps<Item> {
-  result: Item[]
+  result?: any
   filters: SearchFilter<Item>[]
   currentFilters: SearchFilter<Item>[]
   addCurrentFilter: (filter: SearchFilter<Item>) => void
@@ -25,6 +27,7 @@ interface SearchFiltersProps<Item> {
 }
 
 const getGroupedFilters = <Item,>(filters: SearchFilter<Item>[], currentFilters: SearchFilter<Item>[]) => {
+  const randomId = nanoid()
   // Remove current filters from filters
   const suggestedFilters = filters.filter(
     (filter) => !currentFilters.find((currentFilter) => currentFilter.id === filter.id)
@@ -59,13 +62,13 @@ const getGroupedFilters = <Item,>(filters: SearchFilter<Item>[], currentFilters:
     filtersByKey[key].current.push(filter)
   })
 
-  Object.entries(filtersByKey).forEach(([key, { current, suggested }]) => {
-    if (suggested.length > 5) {
-      filtersByKey[key].suggested = suggested.slice(0, 5)
-    }
-  })
+  // Object.entries(filtersByKey).forEach(([key, { current, suggested }]) => {
+  //   if (suggested.length > 5) {
+  //     filtersByKey[key].suggested = suggested.slice(0, 5)
+  //   }
+  // })
 
-  return { filtersByKey }
+  return { filtersByKey, randomId }
 }
 
 const SearchFilters = <Item,>({
@@ -76,8 +79,22 @@ const SearchFilters = <Item,>({
   removeCurrentFilter,
   resetCurrentFilters
 }: SearchFiltersProps<Item>) => {
-  const { filtersByKey } = useMemo(() => getGroupedFilters(filters, currentFilters), [filters, currentFilters, result])
+  const { filtersByKey, randomId } = useMemo(
+    () => getGroupedFilters(filters, currentFilters),
+    [filters, currentFilters, result]
+  )
+
   // mog('SearchFilters', { filters, currentFilters, filtersByKey })
+
+  const toggleForFilter = (filter: SearchFilter<Item>) => {
+    if (currentFilters.find((currentFilter) => currentFilter.id === filter.id)) {
+      // mog('removeCurrentFilter', { filter })
+      removeCurrentFilter(filter)
+    } else {
+      // mog('addCurrentFilter', { filter })
+      addCurrentFilter(filter)
+    }
+  }
 
   return (
     <SearchFilterWrapper>
@@ -104,7 +121,7 @@ const SearchFilters = <Item,>({
                   {f.label}
                 </SearchFilterStyled>
               ))}
-              {filter.suggested.map((f) => (
+              {filter.suggested.slice(0, 5).map((f) => (
                 <SearchFilterStyled
                   key={`suggested_f_${f.id}`}
                   onClick={() => {
@@ -116,6 +133,14 @@ const SearchFilters = <Item,>({
                   {f.label}
                 </SearchFilterStyled>
               ))}
+
+              <SearchFilterInput
+                key={`filter_input_${randomId}`}
+                items={[...filter.current, ...filter.suggested]}
+                onChange={(value) => {
+                  toggleForFilter(value)
+                }}
+              />
             </SearchFilterList>
           )
         })}

@@ -123,7 +123,7 @@ export const useFilters = <Item>() => {
     return tagsFilter
   }
 
-  const generateNodeFilters = (items: GenericSearchResult[]) => {
+  const generateNodeFilters = <T extends { id: string }>(items: T[]) => {
     // Known
     const currentFilters_ = currentFilters as unknown as SearchFilter<GenericSearchResult>[]
     const filteredItems = currentFilters_.length > 0 ? applyFilters(items, currentFilters_) : items

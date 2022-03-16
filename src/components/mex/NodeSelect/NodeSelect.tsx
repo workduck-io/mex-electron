@@ -20,6 +20,7 @@ import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { isClash, isReserved } from '../../../utils/lib/paths'
 import { convertContentToRawText } from '../../../utils/search/localSearch'
+import { SEPARATOR } from '../Sidebar/treeUtils'
 import {
   StyledCombobox,
   StyledInputWrapper,
@@ -258,6 +259,10 @@ function NodeSelect({
   function handleSelectedItemChange({ selectedItem }: { selectedItem?: QuickLink }) {
     if (selectedItem) {
       const { key, isChild } = withoutContinuousDelimiter(selectedItem.value)
+
+      if (key === '') return
+      if (isChild) return
+
       mog('Handling the selected item change', { selectedItem, key, isChild })
 
       onReverseClashAction({
@@ -471,7 +476,8 @@ NodeSelect.defaultProps = {
 }
 
 export function isNew(input: string, items: Array<QuickLink>): boolean {
-  return items.filter((item) => item.text === input).length === 0
+  const ti = input.trim()
+  return items.filter((item) => item.text === ti).length === 0 && ti !== '' && !ti.startsWith(SEPARATOR)
 }
 
 export const isNewILink = (input: string, items: Array<ILink>): boolean => {

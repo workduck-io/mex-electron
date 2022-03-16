@@ -267,6 +267,12 @@ const Init = () => {
           goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
         })
       },
+      [shortcuts.showTasks.keystrokes]: (event) => {
+        event.preventDefault()
+        shortcutHandler(shortcuts.showEditor, () => {
+          goTo(ROUTE_PATHS.tasks, NavigationType.push)
+        })
+      },
       [shortcuts.showArchive.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showArchive, () => {

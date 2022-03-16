@@ -1,123 +1,410 @@
-import React from 'react'
-import { ColumnContainer } from '../../components/spotlight/Actions/styled'
-import useTodoStore from '../../store/useTodoStore'
-import taskFill from '@iconify/icons-ri/task-fill'
-import { IntegrationContainer, Text, Title } from '../../style/Integration'
-import styled, { useTheme } from 'styled-components'
-import { useNavigation } from '../../hooks/useNavigation'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
+import Board from '@asseinfo/react-kanban'
+import trashIcon from '@iconify/icons-codicon/trash'
+import { Icon } from '@iconify/react'
+import React, { useEffect, useMemo, useRef } from 'react'
+import arrowEnterLeft20Filled from '@iconify/icons-fluent/arrow-enter-left-20-filled'
+import arrowLeftRightLine from '@iconify/icons-ri/arrow-left-right-line'
+import styled from 'styled-components'
+import dragMove2Fill from '@iconify/icons-ri/drag-move-2-fill'
+import tinykeys from 'tinykeys'
+import { DisplayShortcut, ShortcutMid } from '../../components/mex/Shortcuts'
+import { Heading } from '../../components/spotlight/SearchResults/styled'
 import { IpcAction } from '../../data/IpcAction'
+import { getNextStatus, getPrevStatus, PriorityType, TodoType } from '../../editor/Components/Todo/types'
+import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import { appNotifierWindow } from '../../electron/utils/notifiers'
 import { AppType } from '../../hooks/useInitialize'
-import { TodoStatus, TodoType } from '../../editor/Components/Todo/types'
 import { useLinks } from '../../hooks/useLinks'
-import { transparentize } from 'polished'
-import { MexIcon } from '../../style/Layouts'
-import { Heading } from '../../components/spotlight/SearchResults/styled'
-import { DateFormat } from '../../hooks/useRelativeTime'
+import useLoad from '../../hooks/useLoad'
+import { useNavigation } from '../../hooks/useNavigation'
+import { KanbanBoardColumn, TodoKanbanCard, useTodoKanban } from '../../hooks/useTodoKanban'
+import useDataStore from '../../store/useDataStore'
+import { useEditorStore } from '../../store/useEditorStore'
+import { useRecentsStore } from '../../store/useRecentsStore'
+import useTodoStore from '../../store/useTodoStore'
+import { Button } from '../../style/Buttons'
+import { MainHeader, PageContainer } from '../../style/Layouts'
+import {
+  ShortcutToken,
+  ShortcutTokens,
+  StyledTasksKanban,
+  TaskCard,
+  TaskColumnHeader,
+  TaskHeader
+} from '../../style/Todo'
+import Todo from '../../ui/components/Todo'
+import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText } from '../../utils/search/localSearch'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
+import { Title } from '../../style/Typography'
+import SearchFilters from '../../components/mex/Search/SearchFilters'
 
-export type TasksProps = {
-  title?: string
-}
-
-const Task = styled.div`
-  display: flex;
-  padding: 1rem 2rem;
-  cursor: pointer;
-  margin: 0.5rem 1rem;
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-  background-color: ${({ theme }) => theme.colors.background.card};
-`
-
-type TaskGroupProp = {
-  nodeid: string
-  todos: Array<TodoType>
-}
-
-const FlexIt = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  span {
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.25rem;
-    margin-right: 2rem;
-    font-size: 1.1rem;
-    background-color: ${({ theme }) => theme.colors.background.card};
-    :hover {
-      background-color: ${({ theme }) => transparentize(0.2, theme.colors.primary)};
-    }
-  }
-`
-
-const NodeHeading = styled.div`
-  font-size: 1.4rem;
-  color: ${({ theme }) => theme.colors.primary};
-`
-
-const TaskContainer = styled.section`
-  padding: 2rem;
-  margin-bottom: 1rem;
-`
-
-const TaskGroup: React.FC<TaskGroupProp> = ({ nodeid, todos }) => {
-  const { getPathFromNodeid } = useLinks()
-  const { push } = useNavigation()
-  const { goTo } = useRouting()
-
-  const onClick = (nodeid: string) => {
-    push(nodeid)
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
-
-    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-  }
-
-  const theme = useTheme()
-
-  return (
-    <TaskContainer>
-      <NodeHeading>{getPathFromNodeid(nodeid) ?? nodeid}</NodeHeading>
-      {todos.map((todo) => (
-        <Task key={todo.id} onClick={() => onClick(todo.nodeid)}>
-          <FlexIt>
-            <>
-              <MexIcon
-                margin="0 1rem 0 0"
-                color={todo.metadata.status === TodoStatus.completed ? theme.colors.primary : theme.colors.secondary}
-                fontSize={24}
-                icon={taskFill}
-              />
-              <Text>{convertContentToRawText(todo.content, '\n')}</Text>
-            </>
-          </FlexIt>
-        </Task>
-      ))}
-    </TaskContainer>
-  )
-}
-
-const Tasks: React.FC<TasksProps> = () => {
+const Tasks = () => {
+  const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
   const nodesTodo = useTodoStore((store) => store.todos)
   const clearTodos = useTodoStore((store) => store.clearTodos)
+
+  const { loadNode } = useLoad()
+  const { goTo } = useRouting()
+
+  const lastOpened = useRecentsStore((store) => store.lastOpened)
+  const nodeUID = useEditorStore((store) => store.node.nodeid)
+  const baseNodeId = useDataStore((store) => store.baseNodeId)
+
+  const { push } = useNavigation()
+
+  console.log('Tasks', { nodesTodo })
+
+  const todos = useMemo(() => Object.entries(nodesTodo), [nodesTodo])
+
+  const {
+    getTodoBoard,
+    changeStatus,
+    changePriority,
+    getPureContent,
+
+    addCurrentFilter,
+    removeCurrentFilter,
+    resetCurrentFilters,
+    resetFilters,
+    filters,
+    currentFilters
+  } = useTodoKanban()
+
+  const board = useMemo(() => getTodoBoard(), [nodesTodo, currentFilters])
+
+  const selectedRef = useRef<HTMLDivElement>(null)
+  const handleCardMove = (card, source, destination) => {
+    // mog('card moved', { card, source, destination })
+    changeStatus(card.todo, destination.toColumnId)
+  }
 
   const onClearClick = () => {
     clearTodos()
   }
 
+  const onNavigateToNode = () => {
+    if (!selectedCard) {
+      return
+    }
+    const nodeid = selectedCard.todo.nodeid
+    push(nodeid)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
+    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+  }
+
+  const selectFirst = () => {
+    const firstCardColumn = board.columns.find((column) => column.cards.length > 0)
+    if (firstCardColumn) {
+      const firstCard = firstCardColumn.cards[0]
+      setSelectedCard(firstCard)
+    }
+  }
+
+  const handleCardMoveNext = () => {
+    if (!selectedCard) return
+    const newStatus = getNextStatus(selectedCard.todo.metadata.status)
+    changeStatus(selectedCard.todo, newStatus)
+    setSelectedCard({
+      ...selectedCard,
+      todo: { ...selectedCard.todo, metadata: { ...selectedCard.todo.metadata, status: newStatus } }
+    })
+  }
+
+  const handleCardMovePrev = () => {
+    if (!selectedCard) return
+    const newStatus = getPrevStatus(selectedCard.todo.metadata.status)
+    // mog('new status', { newStatus, selectedCard })
+    changeStatus(selectedCard.todo, newStatus)
+    setSelectedCard({
+      ...selectedCard,
+      todo: { ...selectedCard.todo, metadata: { ...selectedCard.todo.metadata, status: newStatus } }
+    })
+  }
+
+  const changeSelectedPriority = (priority: PriorityType) => {
+    if (!selectedCard) return
+    changePriority(selectedCard.todo, priority)
+    setSelectedCard({
+      ...selectedCard,
+      todo: { ...selectedCard.todo, metadata: { ...selectedCard.todo.metadata, priority } }
+    })
+  }
+
+  const selectNewCard = (direction: 'up' | 'down' | 'left' | 'right') => {
+    if (!selectedCard) {
+      selectFirst()
+      return
+    }
+    const selectedColumn = board.columns.find(
+      (column) => column.id === selectedCard.todo.metadata.status
+    ) as KanbanBoardColumn
+    const selectedColumnLength = selectedColumn.cards.length
+    const selectedIndex = selectedColumn.cards.findIndex((card) => card.id === selectedCard.id)
+
+    // mog('selected card', { selectedCard, selectedColumn, selectedColumnLength, selectedIndex, direction })
+
+    switch (direction) {
+      case 'up': {
+        const prevCard = selectedColumn.cards[(selectedIndex - 1 + selectedColumnLength) % selectedColumnLength]
+        // mog('prevCard', { prevCard })
+
+        if (prevCard) {
+          // mog('selected card', { selectedCard, prevCard })
+          setSelectedCard(prevCard)
+        }
+        break
+      }
+      case 'down': {
+        const nextCard = selectedColumn.cards[(selectedIndex + 1) % selectedColumnLength]
+        // mog('nextCard', { nextCard, selectedColumn, selectedColumnLength, selectedIndex })
+        if (nextCard) {
+          // mog('selected card', { selectedCard, nextCard })
+          setSelectedCard(nextCard)
+        }
+        break
+      }
+      case 'left': {
+        let selectedColumnStatus = selectedColumn.id
+        let prevCard = undefined
+        while (!prevCard) {
+          const prevColumn = board.columns.find(
+            (column) => column.id === getPrevStatus(selectedColumnStatus)
+          ) as KanbanBoardColumn
+          if (!prevColumn || prevColumn.id === selectedColumn.id) break
+          prevCard = prevColumn.cards[selectedIndex % prevColumn.cards.length]
+          selectedColumnStatus = prevColumn.id
+        }
+        if (prevCard) {
+          // mog('selected card', { selectedCard, prevCard })
+          setSelectedCard(prevCard)
+        }
+        break
+      }
+      case 'right': {
+        let selectedColumnStatus = selectedColumn.id
+        let nextCard = undefined
+        while (!nextCard) {
+          const nextColumn = board.columns.find(
+            (column) => column.id === getNextStatus(selectedColumnStatus)
+          ) as KanbanBoardColumn
+          if (!nextColumn || nextColumn.id === selectedColumn.id) break
+          nextCard = nextColumn.cards[selectedIndex % nextColumn.cards.length]
+          selectedColumnStatus = nextColumn.id
+        }
+        if (nextCard) {
+          // mog('selected card', { selectedCard, nextCard })
+          setSelectedCard(nextCard)
+        }
+        break
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (selectedRef.current) {
+      const el = selectedRef.current
+      // is element in viewport
+      const rect = el.getBoundingClientRect()
+      const isInViewport =
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+
+      // mog('scroll to selected', { selected, top, isInViewport, rect })
+      if (!isInViewport) {
+        selectedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }
+  }, [selectedCard])
+
+  const isOnSearchFilter = () => {
+    const fElement = document.activeElement as HTMLElement
+    // mog('fElement', { hasClass: fElement.classList.contains('FilterInput') })
+    return fElement && fElement.tagName === 'INPUT' && fElement.classList.contains('FilterInput')
+  }
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      Escape: (event) => {
+        event.preventDefault()
+        if (selectedCard || currentFilters.length > 0) {
+          setSelectedCard(null)
+          resetCurrentFilters()
+        } else {
+          const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
+          loadNode(nodeid)
+          goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+        }
+      },
+      'Shift+ArrowRight': (event) => {
+        event.preventDefault()
+        handleCardMoveNext()
+      },
+      'Shift+ArrowLeft': (event) => {
+        event.preventDefault()
+        handleCardMovePrev()
+      },
+      ArrowRight: (event) => {
+        event.preventDefault()
+        if (isOnSearchFilter()) return
+        selectNewCard('right')
+      },
+      ArrowLeft: (event) => {
+        event.preventDefault()
+        if (isOnSearchFilter()) return
+        selectNewCard('left')
+      },
+      ArrowDown: (event) => {
+        event.preventDefault()
+        if (isOnSearchFilter()) return
+        selectNewCard('down')
+      },
+
+      ArrowUp: (event) => {
+        event.preventDefault()
+        if (isOnSearchFilter()) return
+        selectNewCard('up')
+      },
+
+      '$mod+1': (event) => {
+        event.preventDefault()
+        changeSelectedPriority(PriorityType.low)
+      },
+      '$mod+2': (event) => {
+        event.preventDefault()
+        changeSelectedPriority(PriorityType.medium)
+      },
+      '$mod+3': (event) => {
+        event.preventDefault()
+        changeSelectedPriority(PriorityType.high)
+      },
+      '$mod+0': (event) => {
+        event.preventDefault()
+        changeSelectedPriority(PriorityType.noPriority)
+      },
+
+      '$mod+Enter': (event) => {
+        event.preventDefault()
+        onNavigateToNode()
+      }
+    })
+    return () => {
+      unsubscribe()
+    }
+  }, [board, selectedCard])
+
+  const onDoubleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, nodeid: string) => {
+    event.preventDefault()
+    //double click
+    mog('double click', { event })
+    if (event.detail === 2) {
+      push(nodeid)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
+      goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+    }
+  }
+
+  // mog('Tasks', { nodesTodo, board, selectedCard })
+
+  const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
+    const pC = getPureContent(todo)
+    // mog('RenderTodo', { id, todo, dragging })
+    return (
+      <TaskCard
+        ref={selectedCard && id === selectedCard.id ? selectedRef : null}
+        selected={selectedCard && selectedCard.id === id}
+        dragging={dragging}
+        onMouseDown={(event) => {
+          event.preventDefault()
+          onDoubleClick(event, todo.nodeid)
+        }}
+      >
+        <Todo
+          showDelete={false}
+          key={`TODO_PREVIEW_${todo.nodeid}_${todo.id}`}
+          todoid={todo.id}
+          readOnly
+          parentNodeId={todo.nodeid}
+        >
+          <EditorPreviewRenderer
+            noStyle
+            content={pC}
+            editorId={`NodeTodoPreview_${todo.nodeid}_${todo.id}_${todo.metadata.status}`}
+          />
+        </Todo>
+      </TaskCard>
+    )
+  }
+
   return (
-    <IntegrationContainer>
-      <FlexIt>
+    <PageContainer>
+      <TaskHeader>
         <Title>Todos</Title>
-        <span onClick={onClearClick}>Clear</span>
-      </FlexIt>
-      <ColumnContainer>
-        {Object.entries(nodesTodo).map(([nodeid, todos]) => {
-          return <TaskGroup key={nodeid} nodeid={nodeid} todos={todos} />
-        })}
-      </ColumnContainer>
-    </IntegrationContainer>
+        <ShortcutTokens>
+          <ShortcutToken>
+            Select:
+            <Icon icon={dragMove2Fill} />
+          </ShortcutToken>
+          {selectedCard && (
+            <>
+              <ShortcutToken>
+                Navigate:
+                <DisplayShortcut shortcut="$mod+Enter" />
+              </ShortcutToken>
+              <ShortcutToken>
+                Move:
+                <DisplayShortcut shortcut="Shift" />
+                <ShortcutMid>+</ShortcutMid>
+                <Icon icon={arrowLeftRightLine} />
+              </ShortcutToken>
+              <ShortcutToken>
+                Change Priority:
+                <DisplayShortcut shortcut="$mod+0-3" />
+              </ShortcutToken>
+            </>
+          )}
+          <ShortcutToken>
+            {selectedCard || currentFilters.length > 0 ? 'Clear Filters:' : 'Navigate to Editor:'}
+            <DisplayShortcut shortcut="Esc" />
+          </ShortcutToken>
+        </ShortcutTokens>
+        <Button onClick={onClearClick}>
+          <Icon icon={trashIcon} height={24} />
+          Clear Todos
+        </Button>
+      </TaskHeader>
+      <StyledTasksKanban>
+        <SearchFilters
+          result={board}
+          addCurrentFilter={addCurrentFilter}
+          removeCurrentFilter={removeCurrentFilter}
+          resetCurrentFilters={resetCurrentFilters}
+          filters={filters}
+          currentFilters={currentFilters}
+        />
+        <Board
+          renderColumnHeader={({ title }) => <TaskColumnHeader>{title}</TaskColumnHeader>}
+          disableColumnDrag
+          onCardDragEnd={handleCardMove}
+          renderCard={RenderCard}
+        >
+          {board}
+        </Board>
+      </StyledTasksKanban>
+      {todos.length < 1 && (
+        <div>
+          <Heading>No Todos</Heading>
+          <p>Use the Editor to add Todos to your nodes. All todos will show up here.</p>
+          <p>
+            You can add todos with
+            <kbd>[]</kbd>
+          </p>
+          {/* HTML element for keyboard shortcut */}
+        </div>
+      )}
+    </PageContainer>
   )
 }
 

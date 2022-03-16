@@ -8,7 +8,7 @@ const ShortcutWrapper = styled.div`
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
 `
-const ShortcutMid = styled.div`
+export const ShortcutMid = styled.div`
   opacity: 0.66;
 `
 const ShortcutBox = styled.div`

@@ -1,6 +1,7 @@
 import Tippy from '@tippyjs/react/headless' // different import path!
 import React, { forwardRef, useState } from 'react'
 import { useContentStore } from '../../../store/useContentStore'
+import { Button } from '../../../style/Buttons'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
 import { EditorPreviewWrapper } from './EditorPreview.styles'
 
@@ -12,6 +13,8 @@ export interface EditorPreviewProps {
   isPreview?: boolean
   preview?: boolean
   previewRef?: any
+  allowClosePreview?: boolean
+  closePreview?: () => void
 }
 
 export const LazyTippy = forwardRef(function LT(props: any, ref) {
@@ -41,7 +44,17 @@ export const LazyTippy = forwardRef(function LT(props: any, ref) {
   return <Tippy {...computedProps} ref={ref} />
 })
 
-const EditorPreview = ({ nodeid, placement, isPreview, preview, children, previewRef, delay }: EditorPreviewProps) => {
+const EditorPreview = ({
+  nodeid,
+  placement,
+  allowClosePreview,
+  isPreview,
+  closePreview,
+  preview,
+  children,
+  previewRef,
+  delay
+}: EditorPreviewProps) => {
   const getContent = useContentStore((store) => store.getContent)
   const content = getContent(nodeid)
   const cc = content && content.content
@@ -57,6 +70,11 @@ const EditorPreview = ({ nodeid, placement, isPreview, preview, children, previe
         appendTo={() => document.body}
         render={(attrs) => (
           <EditorPreviewWrapper className="__editor__preview" tabIndex={-1} {...attrs}>
+            {allowClosePreview && (
+              <Button className="close" onClick={() => closePreview && closePreview()}>
+                &times;
+              </Button>
+            )}
             {cc && <EditorPreviewRenderer content={cc} editorId={`__preview__${nodeid}`} />}
           </EditorPreviewWrapper>
         )}
