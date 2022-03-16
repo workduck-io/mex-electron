@@ -8,8 +8,9 @@ import { StyledCombobox, Suggestion, StyledMenu, StyledInputWrapper } from '../N
 interface SearchFilterInputProps<Item> {
   items: SearchFilter<Item>[]
   onChange: (item: SearchFilter<Item>) => void
+  placeholder?: string
 }
-const SearchFilterInput = <Item,>({ items, onChange }: SearchFilterInputProps<Item>) => {
+const SearchFilterInput = <Item,>({ items, onChange, placeholder }: SearchFilterInputProps<Item>) => {
   const [inputItems, setInputItems] = useState(items)
   const {
     isOpen,
@@ -36,7 +37,7 @@ const SearchFilterInput = <Item,>({ items, onChange }: SearchFilterInputProps<It
   return (
     <SearchFilterInputWrapper>
       <StyledCombobox {...getComboboxProps()}>
-        <Input {...getInputProps()} className={`FilterInput`} />
+        <Input {...getInputProps()} placeholder={`Apply Filter...`} className={`FilterInput`} />
       </StyledCombobox>
       <StyledMenu {...getMenuProps()} isOpen={isOpen}>
         {isOpen &&
