@@ -81,6 +81,11 @@ export const defaultShortcuts = {
     category: 'Actions',
     disabled: true
   },
+  showReminder: {
+    title: 'Reminders',
+    keystrokes: '$mod+Shift+KeyM',
+    category: 'Actions'
+  },
   showGraph: {
     title: 'Context View',
     keystrokes: '$mod+Shift+KeyG',

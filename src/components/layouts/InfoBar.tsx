@@ -9,6 +9,7 @@ import { useHelpStore } from '../../store/useHelpStore'
 import { useLayoutStore } from '../../store/useLayoutStore'
 import { InfoBarWrapper } from '../../style/infobar'
 import Graph from '../mex/Graph/Graph'
+import RemindersInfobar from '../mex/Reminders/Reminders'
 import DataInfoBar from '../mex/Sidebar/DataInfoBar'
 import SuggestionInfoBar from '../mex/Suggestions'
 
@@ -21,10 +22,12 @@ const InfoBarItems = () => {
       return <Graph graphData={graphData} />
     case 'flow':
       return <SyncBlockInfo />
-    case 'default':
-      return <DataInfoBar />
     case 'suggestions':
       return <SuggestionInfoBar />
+    case 'reminders':
+      return <RemindersInfobar />
+    case 'default':
+      return <DataInfoBar />
     default:
       return <DataInfoBar />
   }
@@ -36,7 +39,7 @@ const InfoBar = () => {
   const { getFocusProps } = useLayout()
 
   const infobar = useLayoutStore((s) => s.infobar)
-  const { toggleSyncBlocks, toggleGraph, toggleSuggestedNodes } = useToggleElements()
+  const { toggleSyncBlocks, toggleGraph, toggleSuggestedNodes, toggleReminder } = useToggleElements()
   const { shortcutHandler } = useKeyListener()
 
   useEffect(() => {
@@ -57,6 +60,12 @@ const InfoBar = () => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSuggestedNodes, () => {
           toggleSuggestedNodes()
+        })
+      },
+      [shortcuts.showReminder.keystrokes]: (event) => {
+        event.preventDefault()
+        shortcutHandler(shortcuts.showReminder, () => {
+          toggleReminder()
         })
       }
     })

@@ -1,10 +1,10 @@
 import { InfobarMode, useLayoutStore } from '../store/useLayoutStore'
 
 const useToggleElements = () => {
-  const infobar = useLayoutStore((state) => state.infobar)
   const setInfobarMode = useLayoutStore((store) => store.setInfobarMode)
 
   const toggleMode = (mode: InfobarMode) => {
+    const infobar = useLayoutStore.getState().infobar
     if (infobar.mode === mode) {
       setInfobarMode('default')
     } else {
