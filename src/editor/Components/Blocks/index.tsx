@@ -9,11 +9,12 @@ import React, { useMemo } from 'react'
 import { useTheme } from 'styled-components'
 import { transparentize } from 'polished'
 import { useTransform } from '../BalloonToolbar/components/useTransform'
+import useInfoBarStore from '../../../store/useInfoBarStore'
 
 const BlockOptions = (props: BlockOptionProps) => {
   const { children, element } = props
 
-  const isBlockMode = useBlockStore((store) => store.isBlockMode)
+  const isBlockMode = useInfoBarStore((store) => store.showBlockView)
 
   const theme = useTheme()
   const focused = useFocused()

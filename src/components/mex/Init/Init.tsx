@@ -16,10 +16,10 @@ import { useNavigation } from '../../../hooks/useNavigation'
 import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useSyncData } from '../../../hooks/useSyncData'
+import useToggleElements from '../../../hooks/useToggleElements'
 import { useUpdater } from '../../../hooks/useUpdater'
 import { useAuthStore } from '../../../services/auth/useAuth'
 import { useAnalysis, useAnalysisIPC } from '../../../store/useAnalysis'
-import useBlockStore from '../../../store/useBlockStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
@@ -48,8 +48,7 @@ const Init = () => {
   const { initCognito } = useAuth()
 
   const { getLocalData } = useLocalData()
-  const isBlockMode = useBlockStore((store) => store.isBlockMode)
-  const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
+  const { isBlockView, setBlockView } = useToggleElements()
 
   const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
   const fetchIndexLocalStorage = useSearchStore((store) => store.fetchIndexLocalStorage)
@@ -313,14 +312,14 @@ const Init = () => {
   // As this is a non-rendering component
 
   useEffect(() => {
-    if (isBlockMode) {
+    if (isBlockView) {
       const unsubscribe = tinykeys(window, {
         Escape: (event) => {
           event.preventDefault()
           // shortcutHandler(shortcuts.showSnippets, () => {
           // onSave(undefined, false, false)
 
-          setIsBlockMode(false)
+          setBlockView(false)
           // })
         }
       })
@@ -328,7 +327,7 @@ const Init = () => {
         unsubscribe()
       }
     }
-  }, [isBlockMode])
+  }, [isBlockView])
 
   return null
 }

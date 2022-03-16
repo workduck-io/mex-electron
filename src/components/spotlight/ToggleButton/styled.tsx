@@ -36,7 +36,8 @@ export const Slider = styled.span`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: ${({ theme }) => theme.colors.background.modal};
+  border: 1px solid ${(props) => props.theme.colors.background.highlight};
+  background-color: ${({ theme }) => theme.colors.background.app};
   -webkit-transition: 0.4s;
   transition: 0.4s;
   border-radius: 3.4em;
@@ -48,6 +49,7 @@ export const Slider = styled.span`
     width: 2.6em;
     left: 0.4em;
     bottom: 0.4em;
+    box-shadow: inset 0px 0px 2px ${(props) => props.theme.colors.primary};
     background-color: ${({ theme }) => theme.colors.background.highlight};
     -webkit-transition: 0.4s;
     transition: 0.4s;

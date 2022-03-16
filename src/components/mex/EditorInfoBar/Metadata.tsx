@@ -14,9 +14,8 @@ import { ProfileIcon } from '../../../style/UserPage'
 import { NodeMetadata } from '../../../types/data'
 import { RelativeTime } from '../RelativeTime'
 import { ProfileImageWithToolTip } from '../User/ProfileImage'
-import ToggleButton from '../../spotlight/ToggleButton'
-import usePublicNode from '../../../hooks/usePublicNode'
-import { mog } from '../../../utils/lib/helper'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { apiURLs } from '../../../apis/routes'
 
 const Data = styled.div`
   color: ${({ theme }) => theme.colors.text.fade};
@@ -127,9 +126,7 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
   const content = getContent(node.nodeid)
   const { getFocusProps } = useLayout()
   const [metadata, setMetadata] = useState<NodeMetadata | undefined>(undefined)
-  const [nodePublic, setNodePublic] = useState<boolean>(false)
-
-  const { makeNodePrivate, makeNodePublic } = usePublicNode()
+  const setNodePublic = useRecentsStore((store) => store.setNodePublic)
 
   const isEmpty =
     metadata &&
@@ -143,34 +140,11 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
     if (content === undefined || content.metadata === undefined) return
     const { metadata: contentMetadata } = content
     setMetadata(contentMetadata)
-    setNodePublic(contentMetadata.publicAccess)
-  }, [node, content])
-
-  const flipPublicAccess = async () => {
-    console.log('Flipping State from: ', nodePublic)
-
-    // Go from public -> private
-    if (nodePublic) {
-      setNodePublic(false)
-      try {
-        const resp = await makeNodePrivate(node.nodeid)
-        mog('SettingNodePrivateSuccess', { resp })
-      } catch (error) {
-        setNodePublic(true)
-        mog('ErrorMakingNodePrivate', { error })
-      }
-    } else {
-      // Private to Public
-      setNodePublic(true)
-      try {
-        const resp = await makeNodePublic(node.nodeid)
-        mog('SettingNodePublicSuccess', { resp })
-      } catch (error) {
-        setNodePublic(false)
-        mog('ErrorMakingNodePublic', { error })
-      }
+    if (contentMetadata.publicAccess) {
+      const publicURL = apiURLs.getNodePublicURL(node.nodeid)
+      setNodePublic(node.nodeid, publicURL)
     }
-  }
+  }, [node, content])
 
   // mog({ node, metadata })
 
@@ -220,8 +194,6 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
           </DataWrapper>
         )}
       </DataGroup>
-
-      <ToggleButton id="toggle-public" value={nodePublic} onChange={flipPublicAccess} checked={nodePublic} />
     </MetadataWrapper>
   )
 }

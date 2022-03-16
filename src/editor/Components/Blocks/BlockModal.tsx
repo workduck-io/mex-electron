@@ -25,12 +25,13 @@ import { useContentStore } from '../../../store/useContentStore'
 import { useDataSaverFromContent } from '../Saver'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNodes } from '../../../hooks/useNodes'
+import useInfoBarStore from '../../../store/useInfoBarStore'
 
 const BlockModal = () => {
   const blocksFromStore = useBlockStore((store) => store.blocks)
   const isModalOpen = useBlockStore((store) => store.isModalOpen)
   const setIsModalOpen = useBlockStore((store) => store.setIsModalOpen)
-  const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
+  const setIsBlockMode = useInfoBarStore((store) => store.setBlockView)
 
   const { addNode } = useNodes()
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()

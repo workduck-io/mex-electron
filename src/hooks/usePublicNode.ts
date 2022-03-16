@@ -7,10 +7,13 @@ import { useRecentsStore } from '../store/useRecentsStore'
 
 const usePublicNode = () => {
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
-  const { setNodePublic, setNodePrivate } = useRecentsStore(({ setNodePublic, setNodePrivate }) => ({
-    setNodePublic,
-    setNodePrivate
-  }))
+  const { setNodePublic, setNodePrivate, checkNodePublic } = useRecentsStore(
+    ({ setNodePublic, setNodePrivate, checkNodePublic }) => ({
+      setNodePublic,
+      setNodePrivate,
+      checkNodePublic
+    })
+  )
 
   const makeNodePublic = async (nodeId: string) => {
     const URL = apiURLs.makeNodePublic(nodeId)
@@ -47,10 +50,10 @@ const usePublicNode = () => {
         }
       })
       .then((resp) => resp.data)
-      .then((data) => {
-        if (data.nodeUID === nodeId) {
-          setNodePrivate(data.nodeUID)
-          return data.nodeUID
+      .then((nodeUID) => {
+        if (nodeUID === nodeId) {
+          setNodePrivate(nodeUID)
+          return nodeUID
         } else throw new Error('Error making node private')
       })
       .catch((error) => {
@@ -58,7 +61,11 @@ const usePublicNode = () => {
       })
   }
 
-  return { makeNodePublic, makeNodePrivate }
+  const isPublic = (nodeid: string) => {
+    return checkNodePublic(nodeid)
+  }
+
+  return { makeNodePublic, makeNodePrivate, isPublic }
 }
 
 export default usePublicNode

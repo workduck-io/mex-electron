@@ -22,8 +22,6 @@ export type BlockMode = {
   getBlocks: () => Array<BlockType>
   isModalOpen: ModalOpenType
   setIsModalOpen: (isModalOpen: ModalOpenType) => void
-  isBlockMode: boolean
-  setIsBlockMode: (isBlockMode: boolean) => void
 }
 
 const useBlockStore = create<BlockMode>((set, get) => ({
@@ -44,12 +42,7 @@ const useBlockStore = create<BlockMode>((set, get) => ({
     set({ blocks: newBlocks })
   },
   isModalOpen: undefined,
-  setIsModalOpen: (isModalOpen: ModalOpenType) => set({ isModalOpen }),
-  isBlockMode: false,
-  setIsBlockMode: (isBlockMode: boolean) => {
-    if (!isBlockMode) set({ blocks: {}, isBlockMode })
-    else set({ isBlockMode })
-  }
+  setIsModalOpen: (isModalOpen: ModalOpenType) => set({ isModalOpen })
 }))
 
 export default useBlockStore

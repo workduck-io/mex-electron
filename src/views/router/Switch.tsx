@@ -28,6 +28,7 @@ import ContentEditor from '../../editor/ContentEditor'
 import { mog } from '../../utils/lib/helper'
 import NotFound from '../NotFound'
 import useBlockStore from '../../store/useBlockStore'
+import useInfoBarStore from '../../store/useInfoBarStore'
 
 export const SwitchWrapper = styled.div<{ isAuth?: boolean }>`
   position: fixed;
@@ -45,8 +46,8 @@ const Home = () => (
 
 const Switch = () => {
   const location = useLocation()
-  const isBlockMode = useBlockStore((store) => store.isBlockMode)
-  const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
+  const isBlockMode = useInfoBarStore((store) => store.showBlockView)
+  const setIsBlockMode = useInfoBarStore((store) => store.setBlockView)
 
   const { saveAndClearBuffer } = useEditorBuffer()
   const authenticated = useAuthStore((s) => s.authenticated)

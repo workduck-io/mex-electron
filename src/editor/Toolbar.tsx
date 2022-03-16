@@ -1,4 +1,6 @@
 import bubbleChartLine from '@iconify/icons-ri/bubble-chart-line'
+import shareNode from '@iconify/icons-ri/share-forward-line'
+
 import focusLine from '@iconify/icons-ri/focus-line'
 import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
 import messageIcon from '@iconify/icons-ri/message-3-line'
@@ -21,7 +23,7 @@ import { SaverButton } from './Components/Saver'
 
 const Toolbar = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
-  const { toggleFocusMode, setFocusHover, getFocusProps } = useLayout()
+  const { toggleFocusMode, getFocusProps } = useLayout()
   const focusMode = useLayoutStore((store) => store.focusMode)
   // const nodeIntentsModalOpen = useNodeIntentsModalStore((store) => store.open)
   // const nodeIntentsModalToggle = useNodeIntentsModalStore((store) => store.toggleModal)
@@ -29,7 +31,7 @@ const Toolbar = () => {
   const [source, target] = useSingleton()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
-  const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph, showSuggestedNodes, toggleSuggestedNodes } =
+  const { showGraph, toggleGraph, showShare, toggleShare, showSuggestedNodes, toggleSuggestedNodes } =
     useToggleElements()
 
   const onSave = () => {
@@ -57,16 +59,6 @@ const Toolbar = () => {
           highlight={focusMode.on}
           onClick={toggleFocusMode}
         />
-        {/*
-        <IconButton
-          size={24}
-          singleton={target}
-          icon={settings4Line}
-          title="Node Intents"
-          highlight={nodeIntentsModalOpen}
-          onClick={nodeIntentsModalToggle}
-        />
-        */}
         <SaverButton
           // saveOnUnmount
           shortcut={shortcuts.save.keystrokes}
@@ -102,6 +94,14 @@ const Toolbar = () => {
           title="Graph"
           highlight={showGraph}
           onClick={toggleGraph}
+        />
+        <IconButton
+          singleton={target}
+          size={24}
+          icon={shareNode}
+          highlight={showShare}
+          title="Share"
+          onClick={toggleShare}
         />
       </InfoTools>
     </NodeInfo>

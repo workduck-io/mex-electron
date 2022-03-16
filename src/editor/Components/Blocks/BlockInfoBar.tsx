@@ -8,6 +8,7 @@ import sendToIcon from '@iconify/icons-ph/arrow-bend-up-right-bold'
 import moveToIcon from '@iconify/icons-ri/anticlockwise-2-fill'
 import { MexIcon } from '../../../style/Layouts'
 import { PrimaryText } from '../../../style/Integration'
+import useInfoBarStore from '../../../store/useInfoBarStore'
 
 const BlockMenu = styled.div`
   display: flex;
@@ -24,9 +25,9 @@ const BlockMenu = styled.div`
 
 const BlockInfoBar = () => {
   const setIsModalOpen = useBlockStore((store) => store.setIsModalOpen)
-  const isBlockMode = useBlockStore((store) => store.isBlockMode)
+  const isBlockMode = useInfoBarStore((store) => store.showBlockView)
   const blocks = useBlockStore((store) => store.blocks)
-  const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
+  const setIsBlockMode = useInfoBarStore((store) => store.setBlockView)
 
   const theme = useTheme()
   const length = Object.values(blocks).length

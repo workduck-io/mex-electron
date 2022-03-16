@@ -18,7 +18,7 @@ export type RecentsType = {
   publicNodes: Record<string, string>
   setNodePublic: (nodeId: string, publicURL: string) => void
   setNodePrivate: (nodeId: string) => void
-  checkNodePublic: (nodeId) => boolean
+  checkNodePublic: (nodeId) => string | undefined
 }
 
 export const useRecentsStore = create<RecentsType>(
@@ -73,7 +73,7 @@ export const useRecentsStore = create<RecentsType>(
         }
       },
       checkNodePublic: (nodeId) => {
-        return !!get().publicNodes[nodeId]
+        return get().publicNodes?.[nodeId]
       }
     }),
     {

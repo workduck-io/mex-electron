@@ -6,9 +6,11 @@ import IconButton from '../../../style/Buttons'
 interface CopyButtonProps {
   text: string
   size?: string
+  beforeCopyTooltip?: string
+  afterCopyTooltip?: string
 }
 
-export const CopyButton = ({ text, size }: CopyButtonProps) => {
+export const CopyButton = ({ text, size, beforeCopyTooltip, afterCopyTooltip }: CopyButtonProps) => {
   const [isCopied, setIsCopied] = useState(false)
 
   // This is the function we wrote earlier
@@ -36,12 +38,9 @@ export const CopyButton = ({ text, size }: CopyButtonProps) => {
       })
   }
 
+  const copyText = isCopied ? afterCopyTooltip ?? 'Copied to Clipboard' : beforeCopyTooltip ?? 'Copy'
+
   return (
-    <IconButton
-      onClick={handleCopyClick}
-      icon={isCopied ? checkboxLine : fileCopyLine}
-      size={size}
-      title={isCopied ? 'Copied to Clipboard' : 'Copy'}
-    ></IconButton>
+    <IconButton onClick={handleCopyClick} icon={isCopied ? checkboxLine : fileCopyLine} size={size} title={copyText} />
   )
 }

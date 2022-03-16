@@ -3,7 +3,7 @@ import React, { useEffect, useMemo } from 'react'
 import BlockInfoBar from './Components/Blocks/BlockInfoBar'
 import { BlockOptionsMenu } from './Components/EditorContextMenu'
 import Editor from './Editor'
-import Metadata from '../components/mex/Metadata/Metadata'
+import Metadata from '../components/mex/EditorInfoBar/Metadata'
 import NodeIntentsModal from '../components/mex/NodeIntentsModal/NodeIntentsModal'
 import { StyledEditor } from '../style/Editor'
 import Toolbar from './Toolbar'
@@ -26,21 +26,17 @@ import { useSearchStore } from '../store/useSearchStore'
 import { usePlateEditorRef } from '@udecode/plate'
 import useSuggestionStore from '../store/useSuggestions'
 import useToggleElements from '../hooks/useToggleElements'
+import EditorInfoBar from '../components/mex/EditorInfoBar'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const { toggleFocusMode } = useLayout()
   const { saveApiAndUpdate } = useLoad()
 
-  const isBlockMode = useBlockStore((store) => store.isBlockMode)
-
   const { showGraph, showSuggestedNodes } = useToggleElements()
   const searchIndex = useSearchStore((store) => store.searchIndex)
 
-  const { nodeid, node, fsContent } = useEditorStore(
-    (state) => ({ nodeid: state.node.nodeid, node: state.node, fsContent: state.content }),
-    shallow
-  )
+  const { node, fsContent } = useEditorStore((state) => ({ node: state.node, fsContent: state.content }), shallow)
 
   const { shortcutHandler } = useKeyListener()
   const { setSuggestions } = useSuggestionStore()
@@ -73,7 +69,7 @@ const ContentEditor = () => {
     }
   }
 
-  const editorId = useMemo(() => getEditorId(node.nodeid, false), [node, fetchingContent])
+  const editorId = useMemo(() => getEditorId(node.nodeid, false), [node])
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -114,9 +110,7 @@ const ContentEditor = () => {
     <>
       <StyledEditor showGraph={showGraph} className="mex_editor">
         <Toolbar />
-
-        {isBlockMode ? <BlockInfoBar /> : <Metadata node={node} />}
-
+        <EditorInfoBar />
         <Editor
           showBalloonToolbar
           // readOnly={fetchingContent}

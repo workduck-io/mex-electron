@@ -28,7 +28,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { RelativeTime } from '../../components/mex/RelativeTime'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
-import useBlockStore from '../../store/useBlockStore'
+import useInfoBarStore from '../../store/useInfoBarStore'
 
 const StyledTip = styled.div`
   display: flex;
@@ -167,7 +167,7 @@ export const DraggerContent = () => {
 }
 
 export const withStyledDraggables = (components: any) => {
-  if (useBlockStore.getState().isBlockMode) return components
+  if (useInfoBarStore.getState().showBlockView) return components
 
   return withDraggables(components, [
     {
@@ -196,7 +196,7 @@ export const withStyledDraggables = (components: any) => {
         ELEMENT_CODE_BLOCK
       ],
       onRenderDragHandle: ({ className, styles, element }) => {
-        const setIsBlockMode = useBlockStore.getState().setIsBlockMode
+        const setIsBlockMode = useInfoBarStore.getState().setBlockView
 
         return (
           <Tippy {...grabberTooltipProps} content={<GrabberTooltipContent element={element} />}>
