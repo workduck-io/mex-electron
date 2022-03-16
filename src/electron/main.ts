@@ -38,7 +38,7 @@ import {
 } from './utils/getSelectedText'
 import { getIndexData, setSearchIndexData } from './utils/indexData'
 import { checkIfAlpha } from './utils/version'
-import { analyseContent } from './worker/controler'
+import { analyseContent } from './worker/controller'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
