@@ -53,6 +53,8 @@ const Tasks = () => {
 
   const { push } = useNavigation()
 
+  console.log('Tasks', { nodesTodo })
+
   const todos = useMemo(() => Object.entries(nodesTodo), [nodesTodo])
 
   const {
@@ -293,6 +295,17 @@ const Tasks = () => {
     }
   }, [board, selectedCard])
 
+  const onDoubleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, nodeid: string) => {
+    event.preventDefault()
+    //double click
+    mog('double click', { event })
+    if (event.detail === 2) {
+      push(nodeid)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
+      goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+    }
+  }
+
   // mog('Tasks', { nodesTodo, board, selectedCard })
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
@@ -303,6 +316,10 @@ const Tasks = () => {
         ref={selectedCard && id === selectedCard.id ? selectedRef : null}
         selected={selectedCard && selectedCard.id === id}
         dragging={dragging}
+        onMouseDown={(event) => {
+          event.preventDefault()
+          onDoubleClick(event, todo.nodeid)
+        }}
       >
         <Todo
           showDelete={false}

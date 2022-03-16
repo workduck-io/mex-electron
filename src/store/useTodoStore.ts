@@ -32,7 +32,11 @@ type TodoStoreType = {
 
 const useTodoStore = create<TodoStoreType>((set, get) => ({
   todos: {},
-  initTodos: (todos) => set({ todos }),
+  initTodos: (todos) => {
+    if (todos) {
+      set({ todos })
+    }
+  },
   clearTodos: () => set({ todos: {} }),
 
   addTodoInNode: (nodeid, todo) => {

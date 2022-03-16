@@ -62,7 +62,7 @@ export const withoutContinuousDelimiter = (text: string, delimiter = SEPARATOR) 
     .map((ch) => ch.trim())
     .join(delimiter)
 
-  if (text?.startsWith(delimiter) && key.length > 0) return { key: `.${key}`, isChild: true }
+  if (text?.startsWith(delimiter) && key.length > 0) return { key: `${delimiter}${key}`, isChild: true }
   return { key, isChild: false }
 }
 
