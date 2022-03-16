@@ -1,3 +1,6 @@
+import { QuickLinkType } from '../components/mex/NodeSelect/NodeSelect'
+import { SlashType } from '../editor/Components/multi-combobox/types'
+
 /*
  * Specific to comboboxes
  */
@@ -31,6 +34,7 @@ export interface Tag {
 export interface SlashCommand {
   command: string
   icon?: string
+  type?: QuickLinkType | SlashType
 }
 
 export type LinkCache = Record<string, CachedILink[]>

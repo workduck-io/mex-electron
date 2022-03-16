@@ -2,33 +2,40 @@ import { Range } from 'slate'
 import { getParent, isCollapsed, TEditor, isElement, ELEMENT_CODE_BLOCK, ELEMENT_CODE_LINE } from '@udecode/plate'
 import { ComboboxType } from './types'
 import { getTextFromTrigger } from '../combobox/utils/getTextFromTrigger'
+import { mog } from '../../../utils/lib/helper'
 
 // Gets an object with different keys
 // Returns the search and key
 // Trigger should not be prefixes of other triggers
-export default function getTextFromTriggers(editor: TEditor, keys: { [type: string]: ComboboxType }) {
+export default function getTextFromTriggers(editor: TEditor, keys: Record<string, ComboboxType>) {
   const selection = editor?.selection
 
   if (selection && isCollapsed(selection)) {
     const cursor = Range.start(selection)
 
     const parentEntry = getParent(editor, editor.selection.focus)
+
     if (!parentEntry) return
     const [node] = parentEntry
 
-    // mog('formatQuery', { editor, options, node })
-
     if (isElement(node) && (node.type === ELEMENT_CODE_LINE || node.type === ELEMENT_CODE_BLOCK)) {
-      // mog('formatNodeConversion', {
-      //   node,
-      //   parentEntry
-      // })
       return undefined
     }
 
     // Check within keys
     const selections = Object.keys(keys).map((k) => {
       const comboType = keys[k]
+
+      // const isBlockReferenceTrigger = getTextFromTrigger(editor, {
+      //   at: cursor,
+      //   trigger: ':'
+      // })
+
+      // mog('Cursor', { cursor })
+
+      // if (isBlockReferenceTrigger) {
+      //   mog('BLOCK REFERENCE TRIGGERED', { isBlockReferenceTrigger })
+      // }
 
       const isCursorAfterTrigger = getTextFromTrigger(editor, {
         at: cursor,
@@ -44,6 +51,7 @@ export default function getTextFromTriggers(editor: TEditor, keys: { [type: stri
           search: textAfterTrigger
         }
       }
+
       return undefined
     })
 

@@ -56,29 +56,22 @@ const useMultiComboboxOnChange = (
     const searchTerm = isChild ? `${getPathFromNodeid(editorId)}${pathKey}` : pathKey
 
     const searchItems = fuzzySearch(data, searchTerm, { keys: ['text'] })
+
     const items: IComboboxItem[] = (
       searchTerm !== '' ? searchItems.slice(0, maxSuggestions) : keys[key].data.slice(0, maxSuggestions)
     ).map((item) => ({
       key: item.value,
       icon: item.icon ?? ct.icon ?? undefined,
-      text: item.text
+      text: item.text,
+      type: item.type
     }))
-
-    // mog('Change in Combobox', {
-    //   data,
-    //   dataKeys,
-    //   log: !isReservedOrClash(search, dataKeys),
-    //   search,
-    //   ct,
-    //   keys,
-    //   key
-    // })
 
     const dataKeys = items.map((i) => i.text)
     // Insert new item conditionally
 
     if (
       key !== ComboboxKey.SLASH_COMMAND &&
+      key !== ComboboxKey.BLOCK &&
       searchTerm !== '' &&
       searchTerm !== '.' &&
       !isInternalCommand(searchTerm) &&

@@ -1,5 +1,5 @@
-import { PEditor, overridePluginsByKey } from '@udecode/plate'
-import { KeyboardHandler } from '@udecode/plate-core'
+import { PEditor, overridePluginsByKey, deleteFragment } from '@udecode/plate'
+import { KeyboardHandler, setNodes } from '@udecode/plate-core'
 import { mog } from '../../../../utils/lib/helper'
 import { useEditorStore } from '../../../../store/useEditorStore'
 import { ComboConfigData } from '../../multi-combobox/multiComboboxContainer'
@@ -12,6 +12,7 @@ import { isElder } from '../../../../components/mex/Sidebar/treeUtils'
 import { FlowCommandPrefix } from '../../SlashCommands/useSyncConfig'
 import { SnippetCommandPrefix } from '../../../../hooks/useSnippets'
 import { CreateNewPrefix } from '../../multi-combobox/useMultiComboboxChange'
+import { Editor, Transforms } from 'slate'
 
 const pure = (id: string) => {
   let newId = id
@@ -91,6 +92,16 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
 
   const elementOnChange = getElementOnChange(keys[comboboxKey], keys)
 
+  const replaceFragment = (editor: any, text: string) => {
+    const sel = editor.selection
+    const targetRange = useComboboxStore.getState().targetRange
+
+    if (sel) {
+      Transforms.select(editor, targetRange)
+      Editor.insertText(editor, `[[${text}`)
+    }
+  }
+
   return (editor) => (e) => {
     const comboboxKey: string = useComboboxStore.getState().key
 
@@ -105,18 +116,6 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
     const isSlashCommand =
       comboType.slateElementType === ComboboxKey.SLASH_COMMAND ||
       (comboType.slateElementType === ComboboxKey.INTERNAL && isInternalCommand(item ? item.key : search))
-
-    // mog('useComboOnKeyDown', {
-    //   k: e.key,
-    //   config,
-    //   isSlashCommand,
-    //   c1: comboType.slateElementType === ComboboxKey.SLASH_COMMAND,
-    //   c2: isInternalCommand(search),
-    //   search,
-    //   items,
-    //   isOpen,
-    //   itemIndex
-    // })
 
     const onSelectItemHandler = isSlashCommand ? slashCommandOnChange : elementOnChange
 
@@ -138,12 +137,15 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
         e.preventDefault()
 
         const newIndex = getNextWrappingIndex(1, itemIndex, items.length, () => undefined, true)
+        // replaceFragment(editor, items[newIndex].text)
         return setItemIndex(newIndex)
       }
       if (e.key === 'ArrowUp') {
         e.preventDefault()
 
         const newIndex = getNextWrappingIndex(-1, itemIndex, items.length, () => undefined, true)
+        // replaceFragment(editor, items[newIndex].text)
+
         return setItemIndex(newIndex)
       }
       if (e.key === 'Escape') {
@@ -151,7 +153,7 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
         return closeMenu()
       }
 
-      if (['Tab', 'Enter', ' ', ']'].includes(e.key)) {
+      if (['Tab', 'Enter', ']'].includes(e.key)) {
         e.preventDefault()
         creatabaleOnSelect(editor, search)
         return false

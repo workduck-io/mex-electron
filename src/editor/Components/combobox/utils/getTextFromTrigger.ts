@@ -1,54 +1,43 @@
-import { escapeRegExp, getText } from '@udecode/plate'
-import { TEditor } from '@udecode/plate-core'
-import { BaseRange, Editor, Point } from 'slate'
+import { escapeRegExp, getText } from '@udecode/plate-core'
+import { Editor, Point } from 'slate'
+import { mog } from '../../../../utils/lib/helper'
 
 /**
  * Get text and range from trigger to cursor.
  * Starts with trigger and ends with non-whitespace character.
- * TODO: move to plugins
  */
 export const getTextFromTrigger = (
-  editor: TEditor,
-  { at, trigger }: { at: Point; trigger: string }
-): { range: BaseRange; textAfterTrigger: string } | undefined => {
+  editor: Editor,
+  { at, trigger, searchPattern = `\\D+` }: { at: Point; trigger: string; searchPattern?: string }
+) => {
   const escapedTrigger = escapeRegExp(trigger)
-  const triggerRegex = new RegExp(`^${escapedTrigger}`)
-  const noWhiteSpaceRegex = new RegExp(`\\S+`)
+  const triggerRegex = new RegExp(`(?:^)${escapedTrigger}`)
 
   let start: Point | undefined = at
   let end: Point | undefined
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    end = start
+    if (!start) break
 
-  // console.log({ start, end, at, trigger });
+    start = Editor.before(editor, start)
+    const charRange = start && Editor.range(editor, start, end)
+    const charText = getText(editor, charRange)
 
-  try {
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      end = start
-
-      if (!start) break
-
-      start = Editor.before(editor, start)
-      const charRange = start && Editor.range(editor, start, end)
-      const charText = getText(editor, charRange)
-
-      // Match non-whitespace character on before text
-      if (!charText.match(noWhiteSpaceRegex)) {
-        start = end
-        break
-      }
+    if (!charText.match(searchPattern)) {
+      start = end
+      break
     }
+  }
 
-    // Range from start to cursor
-    const range = start && Editor.range(editor, start, at)
-    const text = getText(editor, range)
+  // Range from start to cursor
+  const range = start && Editor.range(editor, start, at)
+  const text = getText(editor, range)
 
-    if (!range || !text.match(triggerRegex)) return undefined
-    return {
-      range,
-      textAfterTrigger: text.substring(trigger.length)
-    }
-  } catch (e) {
-    console.error(e)
-    return undefined
+  if (!range || !text.match(triggerRegex)) return
+
+  return {
+    range,
+    textAfterTrigger: text.substring(trigger.length)
   }
 }

@@ -25,12 +25,14 @@ export const useComboboxOnChange = ({
 
   return useCallback(() => {
     const textFromTrigger = getTextFromTriggers(editor, keys)
+
     if (textFromTrigger) {
       const { key, search, range } = textFromTrigger
 
       setKey(key)
       setTargetRange(range)
       setSearch(search)
+
       return { search }
     }
 

@@ -1,4 +1,5 @@
 import { uniq } from 'lodash'
+import { QuickLinkType } from '../components/mex/NodeSelect/NodeSelect'
 import { defaultCommands } from '../data/Defaults/slashCommands'
 import { extractSyncBlockCommands } from '../editor/Components/SlashCommands/useSyncConfig'
 import { SyncBlockTemplate } from '../editor/Components/SyncBlock'
@@ -15,11 +16,11 @@ export const useSlashCommands = () => {
     const commands: SlashCommand[] = generatorCombo(
       uniq([
         ...addIconToSlashCommand(
-          snippetCommands.map((command) => ({ command })),
+          snippetCommands.map((command) => ({ command, type: QuickLinkType.snippet })),
           'ri:quill-pen-line'
         ),
         ...addIconToSlashCommand(
-          syncCommands.map((command) => ({ command })),
+          syncCommands.map((command) => ({ command, type: QuickLinkType.flow })),
           'ri:refresh-fill'
         )
       ])

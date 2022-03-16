@@ -1,6 +1,7 @@
 import { ELEMENT_MEDIA_EMBED, ELEMENT_TABLE } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { useMemo } from 'react'
+import { QuickLinkType } from '../../components/mex/NodeSelect/NodeSelect'
 import { useSnippets } from '../../hooks/useSnippets'
 import useAnalytics from '../../services/analytics'
 import useDataStore from '../../store/useDataStore'
@@ -35,12 +36,18 @@ const useEditorPluginConfig = (editorId: string) => {
   // const syncBlockConfigs = getSyncBlockConfigs()
 
   const ilinksForCurrentNode = useMemo(() => {
-    return ilinks.filter((item) => item.path !== node.id)
+    return ilinks.filter((item) => item.nodeid !== node.nodeid)
   }, [node, ilinks])
 
   const internals = [
-    ...ilinks.map((l) => ({ ...l, value: l.path, text: l.path, icon: l.icon ?? 'ri:file-list-2-line' })),
-    ...slashCommands.internal.map((l) => ({ ...l, value: l.command, text: l.command }))
+    ...ilinks.map((l) => ({
+      ...l,
+      value: l.nodeid,
+      text: l.path,
+      icon: l.icon ?? 'ri:file-list-2-line',
+      type: QuickLinkType.ilink
+    })),
+    ...slashCommands.internal.map((l) => ({ ...l, value: l.command, text: l.command, type: l.type }))
   ]
 
   const comboConfigData: ComboConfigData = {
@@ -132,7 +139,7 @@ const useEditorPluginConfig = (editorId: string) => {
     inline_block: {
       cbKey: ComboboxKey.INLINE_BLOCK,
       trigger: '![[',
-      data: ilinksForCurrentNode.map((l) => ({ ...l, value: l.path, text: l.path })),
+      data: ilinksForCurrentNode.map((l) => ({ ...l, value: l.path, text: l.path, type: QuickLinkType.ilink })),
       icon: 'ri:picture-in-picture-line'
     },
     tag: {

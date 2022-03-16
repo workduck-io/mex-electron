@@ -7,7 +7,8 @@ export enum ComboboxKey {
   TAG = 'tag',
   INTERNAL = 'internal',
   INLINE_BLOCK = 'inline_block',
-  SLASH_COMMAND = 'slash_command'
+  SLASH_COMMAND = 'slash_command',
+  BLOCK = 'block'
 }
 
 export type ComboboxState = {
@@ -34,6 +35,9 @@ export type ComboboxState = {
   // Highlighted index
   itemIndex: number
   setItemIndex: (value: number) => void
+
+  showPreview: boolean
+  setShowPreview: (value: boolean) => void
 
   combobox: UseComboboxReturnValue<IComboboxItem> | null
   setCombobox: (value: UseComboboxReturnValue<IComboboxItem>) => void

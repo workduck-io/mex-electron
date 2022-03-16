@@ -24,7 +24,6 @@ export interface ConfigDataKeys {
 export interface ConfigDataSlashCommands {
   [type: string]: SlashCommandConfig
 }
-
 export interface SingleComboboxConfig {
   slateElementType: string
   newItemHandler: (newItem: string, parentId?: any) => any // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -34,6 +33,7 @@ export interface SingleComboboxConfig {
 export const ElementComboboxComponent = ({ keys, slashCommands, internal }: ComboConfigData) => {
   const comboboxKey: string = useComboboxStore.getState().key
   const comboRenderType = keys[comboboxKey]
+
   const { elementChangeHandler: onSelectItem, isSlash } = useOnSelectItem(
     comboboxKey,
     slashCommands,

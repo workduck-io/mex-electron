@@ -10,6 +10,7 @@ export const ComboboxItem = styled.div`
   display: flex;
   align-items: center;
   font-size: 14px;
+  max-width: 180px;
   gap: ${({ theme }) => theme.spacing.tiny};
 
   :first-child {
@@ -38,7 +39,7 @@ export const ComboboxItem = styled.div`
     color: ${({ theme }) => theme.colors.gray[4]};
   }
 `
-export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
+export const ComboboxRoot = styled.div<{ isOpen: boolean }>`
   :hover {
     ${ComboboxItem} {
       &.highlight {
@@ -60,16 +61,23 @@ export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
       left: -9999px;
       position: absolute;
       padding: 0;
+      display: flex;
       margin: 0;
       z-index: 11;
       background: ${theme.colors.background.modal};
-      width: 300px;
+      width: 440px;
       border-radius: 8px;
       box-shadow: rgba(0, 0, 0, 0.133) 0 3.2px 7.2px 0, rgba(0, 0, 0, 0.11) 0 0.6px 1.8px 0;
     `}
 `
 
-export const ItemTitle = styled.div``
+export const ItemTitle = styled.div`
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 140px;
+`
+
 export const ItemRightIcons = styled.div`
   display: flex;
   flex-gap: ${({ theme }) => theme.spacing.tiny};
