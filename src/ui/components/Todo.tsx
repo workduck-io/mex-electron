@@ -31,9 +31,10 @@ interface TodoProps {
   onDeleteClick?: (todoid: string) => void
   children?: React.ReactNode
   readOnly?: boolean
+  showDelete?: boolean
 }
 
-const Todo = ({ parentNodeId, todoid, children, readOnly, onDeleteClick }: TodoProps) => {
+const Todo = ({ parentNodeId, todoid, children, readOnly, onDeleteClick, showDelete = true }: TodoProps) => {
   const [showOptions, setShowOptions] = useState(false)
 
   const theme = useTheme()
@@ -105,7 +106,7 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, onDeleteClick }: TodoP
           {/* <TaskPriority background="#114a9e" transparent={0.25}>
             assignee
           </TaskPriority> */}
-          {showOptions && (
+          {showOptions && showDelete && (
             <MexIcon
               onClick={() => onDeleteClick(todo.id)}
               icon="codicon:trash"

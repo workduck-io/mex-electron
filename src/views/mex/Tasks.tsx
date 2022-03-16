@@ -304,7 +304,13 @@ const Tasks = () => {
         selected={selectedCard && selectedCard.id === id}
         dragging={dragging}
       >
-        <Todo key={`TODO_PREVIEW_${todo.nodeid}_${todo.id}`} todoid={todo.id} readOnly parentNodeId={todo.nodeid}>
+        <Todo
+          showDelete={false}
+          key={`TODO_PREVIEW_${todo.nodeid}_${todo.id}`}
+          todoid={todo.id}
+          readOnly
+          parentNodeId={todo.nodeid}
+        >
           <EditorPreviewRenderer
             noStyle
             content={pC}
