@@ -1,7 +1,7 @@
 import Board from '@asseinfo/react-kanban'
 import trashIcon from '@iconify/icons-codicon/trash'
 import { Icon } from '@iconify/react'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import arrowEnterLeft20Filled from '@iconify/icons-fluent/arrow-enter-left-20-filled'
 import arrowLeftRightLine from '@iconify/icons-ri/arrow-left-right-line'
 import styled from 'styled-components'
@@ -37,6 +37,7 @@ import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText } from '../../utils/search/localSearch'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 import { Title } from '../../style/Typography'
+import SearchFilters from '../../components/mex/Search/SearchFilters'
 
 const Tasks = () => {
   const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
@@ -54,10 +55,23 @@ const Tasks = () => {
 
   const todos = useMemo(() => Object.entries(nodesTodo), [nodesTodo])
 
-  const { getTodoBoard, changeStatus, changePriority, getPureContent } = useTodoKanban()
+  const {
+    getTodoBoard,
+    changeStatus,
+    changePriority,
+    getPureContent,
 
-  const board = useMemo(() => getTodoBoard(), [nodesTodo])
+    addCurrentFilter,
+    removeCurrentFilter,
+    resetCurrentFilters,
+    resetFilters,
+    filters,
+    currentFilters
+  } = useTodoKanban()
 
+  const board = useMemo(() => getTodoBoard(), [nodesTodo, currentFilters])
+
+  const selectedRef = useRef<HTMLDivElement>(null)
   const handleCardMove = (card, source, destination) => {
     // mog('card moved', { card, source, destination })
     changeStatus(card.todo, destination.toColumnId)
@@ -186,11 +200,36 @@ const Tasks = () => {
   }
 
   useEffect(() => {
+    if (selectedRef.current) {
+      const el = selectedRef.current
+      // is element in viewport
+      const rect = el.getBoundingClientRect()
+      const isInViewport =
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+
+      // mog('scroll to selected', { selected, top, isInViewport, rect })
+      if (!isInViewport) {
+        selectedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }
+  }, [selectedCard])
+
+  const isOnSearchFilter = () => {
+    const fElement = document.activeElement as HTMLElement
+    // mog('fElement', { hasClass: fElement.classList.contains('FilterInput') })
+    return fElement && fElement.tagName === 'INPUT' && fElement.classList.contains('FilterInput')
+  }
+
+  useEffect(() => {
     const unsubscribe = tinykeys(window, {
       Escape: (event) => {
         event.preventDefault()
-        if (selectedCard) {
+        if (selectedCard || currentFilters.length > 0) {
           setSelectedCard(null)
+          resetCurrentFilters()
         } else {
           const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
           loadNode(nodeid)
@@ -207,19 +246,23 @@ const Tasks = () => {
       },
       ArrowRight: (event) => {
         event.preventDefault()
+        if (isOnSearchFilter()) return
         selectNewCard('right')
       },
       ArrowLeft: (event) => {
         event.preventDefault()
+        if (isOnSearchFilter()) return
         selectNewCard('left')
       },
       ArrowDown: (event) => {
         event.preventDefault()
+        if (isOnSearchFilter()) return
         selectNewCard('down')
       },
 
       ArrowUp: (event) => {
         event.preventDefault()
+        if (isOnSearchFilter()) return
         selectNewCard('up')
       },
 
@@ -243,15 +286,6 @@ const Tasks = () => {
       '$mod+Enter': (event) => {
         event.preventDefault()
         onNavigateToNode()
-      },
-
-      Enter: (event) => {
-        // Only when the selected index is -1
-        if (selectedCard !== null) {
-          event.preventDefault()
-          handleCardMoveNext()
-          mog('enter', { selectedCard })
-        }
       }
     })
     return () => {
@@ -265,7 +299,11 @@ const Tasks = () => {
     const pC = getPureContent(todo)
     // mog('RenderTodo', { id, todo, dragging })
     return (
-      <TaskCard selected={selectedCard && selectedCard.id === id} dragging={dragging}>
+      <TaskCard
+        ref={selectedCard && id === selectedCard.id ? selectedRef : null}
+        selected={selectedCard && selectedCard.id === id}
+        dragging={dragging}
+      >
         <Todo key={`TODO_PREVIEW_${todo.nodeid}_${todo.id}`} todoid={todo.id} readOnly parentNodeId={todo.nodeid}>
           <EditorPreviewRenderer
             noStyle
@@ -297,8 +335,6 @@ const Tasks = () => {
                 <DisplayShortcut shortcut="Shift" />
                 <ShortcutMid>+</ShortcutMid>
                 <Icon icon={arrowLeftRightLine} />
-                or
-                <DisplayShortcut shortcut="Enter" />
               </ShortcutToken>
               <ShortcutToken>
                 Change Priority:
@@ -307,7 +343,7 @@ const Tasks = () => {
             </>
           )}
           <ShortcutToken>
-            {selectedCard ? 'Clear selection: ' : 'Navigate to Editor:'}
+            {selectedCard || currentFilters.length > 0 ? 'Clear Filters:' : 'Navigate to Editor:'}
             <DisplayShortcut shortcut="Esc" />
           </ShortcutToken>
         </ShortcutTokens>
@@ -317,6 +353,14 @@ const Tasks = () => {
         </Button>
       </TaskHeader>
       <StyledTasksKanban>
+        <SearchFilters
+          result={board}
+          addCurrentFilter={addCurrentFilter}
+          removeCurrentFilter={removeCurrentFilter}
+          resetCurrentFilters={resetCurrentFilters}
+          filters={filters}
+          currentFilters={currentFilters}
+        />
         <Board
           renderColumnHeader={({ title }) => <TaskColumnHeader>{title}</TaskColumnHeader>}
           disableColumnDrag

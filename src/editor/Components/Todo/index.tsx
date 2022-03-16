@@ -17,14 +17,14 @@ const cleanEditorId = (editorId: string) => {
    */
   const nodeReg = new RegExp(`${NODE_ID_PREFIX}_[A-Za-z0-9]+`)
   const nodeIdReg = editorId.match(nodeReg)
-  mog('nodeId', { nodeIdReg, editorId })
+  // mog('nodeId', { nodeIdReg, editorId })
   if (nodeIdReg) {
     return nodeIdReg[0]
   }
 
   const snippetReg = new RegExp(`${SNIPPET_PREFIX}_[A-Za-z0-9]+`)
   const snippetnodeidReg = editorId.match(snippetReg)
-  mog('nodeId', { snippetReg, snippetnodeidReg })
+  // mog('nodeId', { snippetReg, snippetnodeidReg })
   if (snippetnodeidReg) {
     return snippetnodeidReg[0]
   }
@@ -55,11 +55,6 @@ const Todo = (props: any) => {
       toast('Unable to delete this todo')
     }
   }
-
-  mog('TodoEditor', {
-    // attributes,
-    editorId
-  })
 
   return (
     <TodoBase

@@ -1,3 +1,4 @@
+import Tippy, { TippyProps } from '@tippyjs/react'
 import React, { useEffect, useState } from 'react'
 import { useContextMenu } from 'react-contexify'
 import { useReadOnly } from 'slate-react'
@@ -82,17 +83,24 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, onDeleteClick }: TodoP
       {(showOptions || todo.metadata.priority !== PriorityType.noPriority) && (
         <TodoOptions contentEditable={false}>
           <TaskPriority onClick={show} background={theme.colors.secondary} transparent={0.8}>
-            <PriorityButton background={theme.colors.background.card}>
-              <MexIcon
-                onClick={show}
-                icon={Priority[todo?.metadata?.priority]?.icon}
-                margin="0 0.5rem 0 0"
-                fontSize={20}
-                cursor="pointer"
-                color={theme.colors.primary}
-              />
-              <div>{Priority[todo?.metadata.priority]?.title}</div>
-            </PriorityButton>
+            <Tippy
+              delay={100}
+              interactiveDebounce={100}
+              placement="bottom"
+              appendTo={() => document.body}
+              theme="mex"
+              content={Priority[todo?.metadata.priority]?.title}
+            >
+              <PriorityButton background={theme.colors.background.card}>
+                <MexIcon
+                  onClick={show}
+                  icon={Priority[todo?.metadata?.priority]?.icon}
+                  fontSize={20}
+                  cursor="pointer"
+                  color={theme.colors.primary}
+                />
+              </PriorityButton>
+            </Tippy>
           </TaskPriority>
           {/* <TaskPriority background="#114a9e" transparent={0.25}>
             assignee

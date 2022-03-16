@@ -293,6 +293,12 @@ const SearchView = <Item,>({
     executeSearch(inpSearchTerm)
   }
 
+  const isOnSearchFilter = () => {
+    const fElement = document.activeElement as HTMLElement
+    // mog('fElement', { hasClass: fElement.classList.contains('FilterInput') })
+    return fElement && fElement.tagName === 'INPUT' && fElement.classList.contains('FilterInput')
+  }
+
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       Escape: (event) => {
@@ -312,6 +318,7 @@ const SearchView = <Item,>({
       },
       Tab: (event) => {
         event.preventDefault()
+        if (isOnSearchFilter()) return
         // Blur the input if necessary (not needed currently)
         // if (inputRef.current) inputRef.current.blur()
         if (event.shiftKey) {
@@ -322,16 +329,19 @@ const SearchView = <Item,>({
       },
       ArrowDown: (event) => {
         event.preventDefault()
+        if (isOnSearchFilter()) return
         selectNext()
       },
 
       ArrowUp: (event) => {
         event.preventDefault()
+        if (isOnSearchFilter()) return
         selectPrev()
       },
 
       Enter: (event) => {
         // Only when the selected index is -1
+        if (isOnSearchFilter()) return
         if (selected > -1) {
           onSelect(result[selected] as Item)
         }

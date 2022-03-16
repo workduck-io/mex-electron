@@ -25,11 +25,18 @@ react-kanban-column-adder-button
  */
 
 const KANBAN_WIDTH = `calc(( 100vw - 12rem ) / 3)`
+const KANBAN_HEIGHT = `calc( 100vh - 18rem )`
 const KANBAN_CARD_WIDTH = `calc(( 100vw - 15rem ) / 3)`
 
 export const StyledTasksKanban = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.medium};
   .react-kanban-column {
     width: ${KANBAN_WIDTH};
+    max-height: ${KANBAN_HEIGHT};
+    overflow-y: scroll;
+    overflow-x: hidden;
     background: ${({ theme }) => theme.colors.gray[9]};
     padding: ${({ theme }) => theme.spacing.small};
     margin: ${({ theme }) => theme.spacing.small};

@@ -116,7 +116,7 @@ export const CheckBoxWrapper = styled.span`
 `
 
 export const TodoText = styled.span`
-  max-width: 94%;
+  max-width: calc(100% - 6rem);
   flex: 1;
   :focus {
     outline: none;
