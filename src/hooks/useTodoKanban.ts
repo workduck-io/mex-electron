@@ -96,7 +96,7 @@ export const useTodoKanban = () => {
       return acc
     }, [] as SearchFilter<TodoType>[])
 
-    mog('nodeFilters', { rankedPaths, nodeFilters })
+    // mog('nodeFilters', { rankedPaths, nodeFilters })
     return nodeFilters
   }
 
