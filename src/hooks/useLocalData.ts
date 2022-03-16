@@ -9,7 +9,7 @@ interface IndexAndFileData {
 export const useLocalData = () => {
   const getLocalData = async () => {
     const prom = new Promise<IndexAndFileData>((resolve) => {
-      ipcRenderer.on(IpcAction.RECIEVE_LOCAL_DATA, (_event, arg: IndexAndFileData) => {
+      ipcRenderer.on(IpcAction.RECEIVE_LOCAL_DATA, (_event, arg: IndexAndFileData) => {
         resolve(arg)
       })
     })

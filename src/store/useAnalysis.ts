@@ -38,8 +38,8 @@ export const useAnalysisIPC = () => {
 
   const setIpc = () => {
     mog('Setting up IPC for analysis', { node })
-    ipcRenderer.on(IpcAction.RECIEVE_ANALYIS, (_event, analysis: any) => {
-      // mog('analysisRecieved', { analysis })
+    ipcRenderer.on(IpcAction.RECEIVE_ANALYSIS, (_event, analysis: any) => {
+      // mog('analysisRECEIVEd', { analysis })
       if (analysis) setAnalysis(analysis)
     })
   }

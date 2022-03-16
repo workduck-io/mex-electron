@@ -111,7 +111,7 @@ const GlobalListener = memo(() => {
       } else setUnAuthenticated()
     })
 
-    ipcRenderer.on(IpcAction.RECIEVE_LOCAL_DATA, (_event, arg: IndexAndFileData) => {
+    ipcRenderer.on(IpcAction.RECEIVE_LOCAL_DATA, (_event, arg: IndexAndFileData) => {
       const { fileData, indexData } = arg
       const editorID = getNewDraftKey()
       init(fileData, editorID, AppType.SPOTLIGHT)

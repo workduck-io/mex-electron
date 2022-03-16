@@ -515,7 +515,7 @@ ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
   const fileData: FileData = getFileData(SAVE_LOCATION)
   const indexData: any = getIndexData(SEARCH_INDEX_LOCATION)
   console.log('Received Index Data: ', indexData)
-  event.sender.send(IpcAction.RECIEVE_LOCAL_DATA, { fileData, indexData })
+  event.sender.send(IpcAction.RECEIVE_LOCAL_DATA, { fileData, indexData })
 })
 
 ipcMain.on(IpcAction.SET_THEME, (ev, arg) => {
@@ -537,7 +537,7 @@ ipcMain.on(IpcAction.ANALYSE_CONTENT, async (event, arg) => {
   if (!arg) return
   await analyseContent(arg, (analysis) => {
     console.log('Analysis', { analysis })
-    event.sender.send(IpcAction.RECIEVE_ANALYIS, analysis)
+    event.sender.send(IpcAction.RECEIVE_ANALYSIS, analysis)
   })
 })
 
