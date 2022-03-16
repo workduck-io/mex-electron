@@ -14,23 +14,20 @@ import SuggestionInfoBar from '../mex/Suggestions'
 
 const InfoBarItems = () => {
   const graphData = useGraphData()
-  const { showGraph, showSyncBlocks, showSuggestedNodes } = useToggleElements()
+  const infobar = useLayoutStore((s) => s.infobar)
 
-  if (showGraph) {
-    return <Graph graphData={graphData} />
+  switch (infobar.mode) {
+    case 'graph':
+      return <Graph graphData={graphData} />
+    case 'flow':
+      return <SyncBlockInfo />
+    case 'default':
+      return <DataInfoBar />
+    case 'suggestions':
+      return <SuggestionInfoBar />
+    default:
+      return <DataInfoBar />
   }
-
-  if (showSyncBlocks) {
-    return <SyncBlockInfo />
-  }
-
-  // mog('Show Suggestions', { showSuggestedNodes, showGraph, showSyncBlocks })
-
-  if (showSuggestedNodes) {
-    return <SuggestionInfoBar />
-  }
-
-  return <DataInfoBar />
 }
 
 const InfoBar = () => {
@@ -38,8 +35,8 @@ const InfoBar = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { getFocusProps } = useLayout()
 
-  const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph, showSuggestedNodes, toggleSuggestedNodes } =
-    useToggleElements()
+  const infobar = useLayoutStore((s) => s.infobar)
+  const { toggleSyncBlocks, toggleGraph, toggleSuggestedNodes } = useToggleElements()
   const { shortcutHandler } = useKeyListener()
 
   useEffect(() => {
@@ -70,10 +67,7 @@ const InfoBar = () => {
   }, [shortcuts])
 
   return (
-    <InfoBarWrapper
-      wide={showGraph || showSyncBlocks || showSuggestedNodes ? 'true' : 'false'}
-      {...getFocusProps(focusMode)}
-    >
+    <InfoBarWrapper wide={infobar.mode === 'default' ? 'false' : 'true'} {...getFocusProps(focusMode)}>
       <InfoBarItems />
     </InfoBarWrapper>
   )
