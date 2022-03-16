@@ -11,6 +11,7 @@ import useToggleElements from '../../../hooks/useToggleElements'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
 import { useEditorStore } from '../../../store/useEditorStore'
+import { useLayoutStore } from '../../../store/useLayoutStore'
 import useOnboard from '../../../store/useOnboarding'
 import { useSyncStore } from '../../../store/useSyncStore'
 import { Button } from '../../../style/Buttons'
@@ -41,7 +42,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
 
   const setSelected = useSyncStore((state) => state.setSelected)
   const [synced, setSynced] = useState(false)
-  const { showSyncBlocks } = useToggleElements()
+  const infobar = useLayoutStore((state) => state.infobar)
 
   const nodeid = useEditorStore((store) => store.node.nodeid)
   const parentNodeId = useEditorStore((store) => store.node.nodeid)
@@ -57,7 +58,7 @@ export const SyncBlock = (props: SyncBlockProps) => {
   let blockData: SyncBlockData = {} as SyncBlockData
   const blockDataFiltered = blocksData.filter((d) => d.id === element.id)
 
-  if (showSyncBlocks && !info) {
+  if (infobar.mode === 'flow' && !info) {
     return <div>{children}</div>
   }
 

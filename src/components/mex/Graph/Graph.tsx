@@ -8,6 +8,7 @@ import { useNavigation } from '../../../hooks/useNavigation'
 import useToggleElements from '../../../hooks/useToggleElements'
 import { useGraphStore } from '../../../store/useGraphStore'
 import { useHelpStore } from '../../../store/useHelpStore'
+import { useLayoutStore } from '../../../store/useLayoutStore'
 import IconButton from '../../../style/Buttons'
 import Switch from '../Forms/Switch'
 import { GraphTools, GraphWrapper, StyledGraph } from './Graph.styles'
@@ -56,7 +57,8 @@ export const TreeGraph = (props: TreeGraphProps) => {
   const { push } = useNavigation()
   const { getNodeidFromPath } = useLinks()
 
-  const { showGraph, toggleGraph } = useToggleElements()
+  const infobar = useLayoutStore((state) => state.infobar)
+  const { toggleGraph } = useToggleElements()
 
   const showTools = useGraphStore((state) => state.showTools)
 
@@ -140,7 +142,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
             icon={bubbleChartLine}
             shortcut={shortcuts.showGraph.keystrokes}
             title="Graph"
-            highlight={showGraph}
+            highlight={infobar.mode === 'graph'}
             onClick={toggleGraph}
           />
           <Switch

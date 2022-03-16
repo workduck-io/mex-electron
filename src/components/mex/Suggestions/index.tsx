@@ -10,6 +10,7 @@ import { useLinks } from '../../../hooks/useLinks'
 import useToggleElements from '../../../hooks/useToggleElements'
 import { useContentStore } from '../../../store/useContentStore'
 import { useHelpStore } from '../../../store/useHelpStore'
+import { useLayoutStore } from '../../../store/useLayoutStore'
 import useSuggestionStore from '../../../store/useSuggestions'
 import IconButton from '../../../style/Buttons'
 import { Result, ResultHeader, ResultTitle } from '../../../style/Search'
@@ -21,7 +22,8 @@ const Margin = styled.div`
 `
 
 const SuggestionInfoBar = () => {
-  const { showSuggestedNodes, toggleSuggestedNodes } = useToggleElements()
+  const infobar = useLayoutStore((s) => s.infobar)
+  const { toggleSuggestedNodes } = useToggleElements()
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { suggestions } = useSuggestionStore()
   const contents = useContentStore((store) => store.contents)
@@ -44,7 +46,7 @@ const SuggestionInfoBar = () => {
           icon={lightbulbFlashLine}
           shortcut={shortcuts.showSuggestedNodes.keystrokes}
           title="Suggestions"
-          highlight={showSuggestedNodes}
+          highlight={infobar.mode === 'suggestions'}
           onClick={toggleSuggestedNodes}
         />
         <label htmlFor="flow-links">Suggestions</label>

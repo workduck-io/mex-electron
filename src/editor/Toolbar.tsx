@@ -29,8 +29,8 @@ const Toolbar = () => {
   const [source, target] = useSingleton()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
-  const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph, showSuggestedNodes, toggleSuggestedNodes } =
-    useToggleElements()
+  const infobar = useLayoutStore((store) => store.infobar)
+  const { toggleGraph, toggleSuggestedNodes } = useToggleElements()
 
   const onSave = () => {
     // console.log('onsave')
@@ -91,7 +91,7 @@ const Toolbar = () => {
           icon={lightbulbFlashLine}
           shortcut={shortcuts.showSuggestedNodes.keystrokes}
           title="Suggestions"
-          highlight={showSuggestedNodes}
+          highlight={infobar.mode === 'suggestions'}
           onClick={toggleSuggestedNodes}
         />
         <IconButton
@@ -100,7 +100,7 @@ const Toolbar = () => {
           icon={bubbleChartLine}
           shortcut={shortcuts.showGraph.keystrokes}
           title="Graph"
-          highlight={showGraph}
+          highlight={infobar.mode === 'graph'}
           onClick={toggleGraph}
         />
       </InfoTools>
