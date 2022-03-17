@@ -47,3 +47,10 @@ export interface Reminder {
 }
 
 export type ReminderActions = 'snooze' | 'open' | 'dismiss' | 'delete'
+
+export interface NodeReminderGroup {
+  type: 'upcoming' | 'past'
+  label: string
+
+  reminders: Reminder[]
+}

@@ -1,5 +1,5 @@
 import create from 'zustand'
-import { Reminder } from '../types/reminders'
+import { NodeReminderGroup, Reminder } from '../types/reminders'
 import { SearchFilter } from './useFilters'
 
 interface ReminderState {
@@ -36,6 +36,7 @@ export const useReminderStore = create<ReminderState>((set) => ({
 
 export const useReminders = () => {
   const reminders = useReminderStore((state) => state.reminders)
+  const setReminders = useReminderStore((state) => state.setReminders)
   const addReminder = useReminderStore((state) => state.addReminder)
   const deleteReminder = useReminderStore((state) => state.deleteReminder)
   const updateReminder = useReminderStore((state) => state.updateReminder)
@@ -60,8 +61,52 @@ export const useReminders = () => {
     })
   }
 
-  const getNodeReminders = (nodeid: string) => {
-    return reminders.filter((reminder) => reminder.nodeid === nodeid)
+  const getNodeReminders = (nodeid: string): NodeReminderGroup[] => {
+    const allNodeReminders = reminders.filter((reminder) => reminder.nodeid === nodeid)
+
+    const upcomingReminders = allNodeReminders
+      .filter((reminder) => {
+        const today = new Date()
+        const reminderDate = new Date(reminder.time)
+        return today.getTime() <= reminderDate.getTime()
+      })
+      .sort((a, b) => {
+        return a.time - b.time
+      })
+
+    const pastReminders = allNodeReminders
+      .filter((reminder) => {
+        const today = new Date()
+        const reminderDate = new Date(reminder.time)
+        return today.getTime() > reminderDate.getTime()
+      })
+      .sort((a, b) => {
+        return b.time - a.time
+      })
+
+    const res = []
+
+    if (upcomingReminders.length > 0) {
+      res.push({
+        type: 'upcoming',
+        label: 'Upcoming Reminders',
+        reminders: upcomingReminders
+      })
+    }
+    if (pastReminders.length > 0) {
+      res.push({
+        type: 'past',
+        label: 'Past Reminders',
+        reminders: pastReminders
+      })
+    }
+
+    return res
+  }
+
+  const clearNodeReminders = (nodeid: string) => {
+    const newReminders = reminders.filter((reminder) => reminder.nodeid !== nodeid)
+    setReminders(newReminders)
   }
 
   const getRemindersForNextNMinutes = (minutes: number) => {
@@ -82,6 +127,7 @@ export const useReminders = () => {
     getTodayReminders,
     getFilteredReminders,
     getNodeReminders,
+    clearNodeReminders,
     getRemindersForNextNMinutes
   }
 }

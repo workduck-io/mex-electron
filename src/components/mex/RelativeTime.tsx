@@ -2,6 +2,7 @@ import Tippy, { TippyProps } from '@tippyjs/react'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useRelativeTime } from '../../hooks/useRelativeTime'
+import { toLocaleString } from '../../utils/time'
 
 interface RelativeTimeProps {
   dateNum: number
@@ -15,22 +16,13 @@ export const Relative = styled.div``
 export const RelativeTime = ({ dateNum, tippy = true, tippyProps, refreshMs }: RelativeTimeProps) => {
   const [date, setDate] = useState(new Date(dateNum))
 
-  const options = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric'
-  } as const
-
   useEffect(() => {
     const d = new Date(dateNum)
     setDate(d)
   }, [dateNum])
 
   const relTime = useRelativeTime(date, refreshMs)
-  const localDateString = date.toLocaleString('en-US', options)
+  const localDateString = toLocaleString(date)
 
   if (tippy)
     return (

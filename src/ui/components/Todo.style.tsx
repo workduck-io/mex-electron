@@ -18,25 +18,27 @@ export const TodoContainer = styled.div<{ checked?: boolean }>`
     `}
 `
 
-export const TaskPriority = styled.span<{ background: string; color?: string; transparent?: number }>`
+export const TaskPriority = styled.span`
   padding: 2px;
   border-radius: 1rem;
   cursor: pointer;
   font-size: 0.75rem;
   font-weight: 400;
-  background-color: ${({ transparent, background }) =>
-    transparent ? transparentize(transparent, background) : background};
-  color: ${({ color, theme }) => color ?? theme.colors.text.default};
+  background-color: ${({ theme }) => transparentize(0.8, theme.colors.secondary)};
+  color: ${({ theme }) => theme.colors.secondary};
   margin-right: 0.5rem;
 `
 
-export const PriorityButton = styled.div<{ background: string }>`
+export const PriorityButton = styled.button`
   padding: 1px 0.4rem;
   display: flex;
   align-items: center;
   border-radius: 1rem;
+  border: none;
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.secondary};
   :hover {
-    background-color: ${({ background }) => background};
+    background-color: ${({ theme }) => theme.colors.background.card};
   }
 `
 

@@ -25,6 +25,7 @@ import { Result, ResultHeader, SearchContainer, SplitSearchPreviewWrapper } from
 import { SidebarDiv, StyledTree } from '../Sidebar'
 import { CreateSnippet, SSnippet } from '../Snippets'
 import { Title } from '../Typography'
+import { SpaceBlocksCss } from './spaceBlocks'
 
 const palette = { body: '#1B1F3D' }
 
@@ -61,19 +62,7 @@ const grayMainColor = css`
   ${({ theme }) => theme.colors.gray[10]}
 `
 
-const NeoContainer = css`
-  background-color: ${palette.body};
-  box-shadow: 0px 15px 40px ${({ theme }) => transparentize(0.9, theme.colors.palette.black)};
-`
-
-const NeoContainerUnset = css`
-  background-color: transparent;
-  box-shadow: none;
-`
-
-const heightMain = css`
-  calc(100vh - 4rem)
-`
+const heightMain = `calc(100vh - 4rem)`
 
 const graphStyles = css`
   ${StyledGraph} {
@@ -83,7 +72,6 @@ const graphStyles = css`
     gap: ${({ theme }) => theme.spacing.medium};
   }
   ${InfobarTools} {
-    ${NeoContainer}
     margin: 2rem 0 0;
   }
   ${InfoBarWrapper} {
@@ -91,7 +79,6 @@ const graphStyles = css`
     overflow: auto;
   }
   ${GraphWrapper} {
-    ${NeoContainer}
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
 `
@@ -105,7 +92,6 @@ const edStyles = css`
   }
   ${EditorStyles} {
     border-radius: 1rem;
-    ${NeoContainer}
     padding: 1.25rem;
     transition: all 0.25s ease-in-out;
     blockquote {
@@ -128,15 +114,11 @@ const edStyles = css`
       }
     }
   }
-  ${NodeInfo} {
-    ${NeoContainer}
-  }
   ${Widget} {
     background-color: ${grayMixerTrans(9)};
   }
   ${DataInfobarWrapper} {
     height: ${heightMain};
-    ${NeoContainer}
     border-radius: ${({ theme }) => theme.borderRadius.small};
     margin-top: 2rem;
   }
@@ -150,7 +132,6 @@ const edStyles = css`
     }
   }
   ${EditorPreviewWrapper} {
-    ${NeoContainer}
     background: ${grayMainColor} !important;
     ${EditorStyles} {
       background: transparent;
@@ -171,7 +152,6 @@ const todoStyles = css`
   ${TodoContainer} {
     ${EditorStyles} {
       padding: 0;
-      ${NeoContainerUnset}
     }
   }
 `
@@ -179,7 +159,6 @@ const todoStyles = css`
 const settingsStyles = css`
   ${SettingsOptions} {
     padding: ${({ theme }) => theme.spacing.medium};
-    ${NeoContainer}
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
   ${SettingTitle} {
@@ -189,25 +168,19 @@ const settingsStyles = css`
   }
   ${BackCard}, ${ComingSoonCard}, ${ImporterCard} {
     border: none;
-    ${NeoContainer}
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
 `
 
 const gridCardStyles = css`
   ${ArchivedNode}, ${Result} {
-    ${NeoContainer}
     border-radius: ${({ theme }) => theme.borderRadius.small};
     overflow: hidden;
   }
   ${ResultHeader} {
     background-color: ${grayMixerTrans(9)};
   }
-  ${SSnippet} {
-    ${NeoContainer}
-  }
   ${CreateSnippet} {
-    ${NeoContainer}
     background-color: ${grayMixerTrans(10)};
   }
 `
@@ -225,7 +198,6 @@ const searchStyles = css`
 
 const integrationStyles = css`
   ${TemplateCard}, ${ServiceCard} {
-    ${NeoContainer}
     border-radius: ${({ theme }) => theme.borderRadius.small};
     &:hover {
       border: 0.2rem solid ${({ theme }) => theme.colors.primary};
@@ -254,7 +226,6 @@ const navStyles = css`
     height: ${heightMain};
     min-height: ${heightMain};
     border-radius: ${({ theme }) => theme.borderRadius.small};
-    ${NeoContainer}
   }
   ${GridWrapper} {
     margin: 1rem;
@@ -270,7 +241,6 @@ const navStyles = css`
 const sidebarStyles = css`
   ${SidebarDiv} {
     height: ${heightMain};
-    ${NeoContainer}
     border-radius: ${({ theme }) => theme.borderRadius.small};
     padding: 0 ${({ theme }) => theme.spacing.medium};
     ${StyledTree} {
@@ -298,7 +268,6 @@ const sidebarStyles = css`
 
 const modalStyles = css`
   .ModalContent {
-    ${NeoContainer}
     border: none;
   }
   .ModalOverlay {
@@ -316,7 +285,20 @@ const globalStyles = css`
   }
 `
 
+const containerStyle = css`
+  background-color: ${palette.body};
+  box-shadow: 0px 15px 40px ${({ theme }) => transparentize(0.9, theme.colors.palette.black)};
+`
+
+const containerStyleReset = css`
+  background-color: transparent;
+  box-shadow: none;
+`
+
+const spaceBlocks = SpaceBlocksCss({ containerStyle, containerStyleReset, heightMain })
+
 export const NeoDarkStyles = css`
+  ${spaceBlocks}
   ${globalStyles}
   ${modalStyles}
   ${navStyles}

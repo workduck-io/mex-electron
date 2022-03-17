@@ -9,6 +9,11 @@ export const Title = styled.h1<{ colored?: boolean }>`
 `
 export const Subtitle = styled.h2``
 
+export const Description = styled.div`
+  font-size: 1rem;
+  color: ${({ theme }) => theme.colors.text.fade};
+`
+
 export const Para = styled.p`
   margin-top: 1rem;
   font-size: 1.2rem;

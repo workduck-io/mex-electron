@@ -3,6 +3,7 @@ import focusLine from '@iconify/icons-ri/focus-line'
 import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
 import messageIcon from '@iconify/icons-ri/message-3-line'
 import settings4Line from '@iconify/icons-ri/settings-4-line'
+import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
 import { useSingleton } from '@tippyjs/react'
 import React from 'react'
 import BookmarkButton from '../components/mex/Buttons/BookmarkButton'
@@ -80,7 +81,7 @@ const Toolbar = () => {
         <IconButton
           size={24}
           singleton={target}
-          icon={lightbulbFlashLine}
+          icon={timerFlashLine}
           shortcut={shortcuts.showReminder.keystrokes}
           title="Reminders"
           highlight={infobar.mode === 'reminders'}

@@ -72,4 +72,9 @@ export const InfobarTools = styled.div`
   background-color: ${({ theme }) => theme.colors.gray[9]};
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.small}`};
   border-radius: ${({ theme }) => theme.borderRadius.small};
+
+  label {
+    flex-grow: 1;
+    text-align: center;
+  }
 `

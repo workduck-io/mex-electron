@@ -1,111 +1,133 @@
-import React from 'react'
-import tinykeys from 'tinykeys'
-import { useLinks } from '../../../hooks/useLinks'
-import { useReminderStore } from '../../../hooks/useReminders'
-import { useSaveData } from '../../../hooks/useSaveData'
-import { useKeyListener } from '../../../hooks/useShortcutListener'
-import { useEditorStore } from '../../../store/useEditorStore'
-import { useHelpStore } from '../../../store/useHelpStore'
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
-import { ModalControls, ModalHeader } from '../Refactor/styles'
+import { nanoid } from 'nanoid'
+import React, { useEffect } from 'react'
+import ReactDatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import { useForm } from 'react-hook-form'
 import Modal from 'react-modal'
-import { Button } from '../../../style/Buttons'
 import create from 'zustand'
-import { Controller, useForm } from 'react-hook-form'
-import { getEventNameFromElement } from '../../../utils/lib/strings'
+import { useLinks } from '../../../hooks/useLinks'
+import { useReminders } from '../../../hooks/useReminders'
+import { useSaveData } from '../../../hooks/useSaveData'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
+import { useEditorStore } from '../../../store/useEditorStore'
+import { Button } from '../../../style/Buttons'
+import { DatePickerStyles, InputBlock, Label, TextAreaBlock } from '../../../style/Form'
 import { Reminder, REMINDER_PREFIX } from '../../../types/reminders'
-import { nanoid } from 'nanoid'
 import { mog } from '../../../utils/lib/helper'
-import { InputBlock, Label, TextAreaBlock } from '../../../style/Form'
+import { getEventNameFromElement } from '../../../utils/lib/strings'
+import { getNextReminderTime, getRelativeDate } from '../../../utils/time'
 import { LoadingButton } from '../Buttons/LoadingButton'
+import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
+import { ModalControls, ModalHeader } from '../Refactor/styles'
+import { SelectedDate } from './Reminders.style'
+
+interface ModalValue {
+  time?: number
+  nodeid?: string
+}
 
 interface CreateReminderModalState {
   open: boolean
   focus: boolean
-  nodeid: string | undefined
 
+  modalValue: ModalValue
   toggleModal: () => void
-  openModal: (nodeid?: string) => void
+  openModal: (modalValue?: ModalValue) => void
   setFocus: (focus: boolean) => void
   closeModal: () => void
-  setNodeid: (nodeid: string | undefined) => void
+  setModalValue: (modalValue: ModalValue) => void
+  setTime: (time: number) => void
+  setNodeId: (nodeid: string) => void
 }
 
 export const useCreateReminderModal = create<CreateReminderModalState>((set) => ({
   open: false,
   focus: false,
-  nodeid: undefined,
-
-  openModal: (nodeid) => {
-    set({
-      open: true,
-      focus: true,
-      nodeid
-    })
+  modalValue: {
+    nodeid: undefined,
+    time: undefined
   },
 
-  toggleModal: () => set((state) => ({ open: !state.open })),
-
-  setFocus: (focus: boolean) => {
-    set({
-      focus
-    })
+  toggleModal: () => {
+    set((state) => ({ open: !state.open }))
   },
-
+  openModal: (modalValue) => {
+    set({ open: true, modalValue })
+  },
+  setFocus: (focus) => {
+    set({ focus })
+  },
   closeModal: () => {
     set({
       open: false,
-      focus: false,
-      nodeid: undefined
+      modalValue: {
+        time: undefined
+      }
     })
   },
-  setNodeid: (nodeid: string | undefined) => {
-    set({
-      nodeid
-    })
+  setNodeId: (nodeid) => {
+    set((state) => ({
+      modalValue: { ...state.modalValue, nodeid }
+    }))
+  },
+  setTime: (time) => {
+    set((state) => ({
+      modalValue: { ...state.modalValue, time }
+    }))
+  },
+  setModalValue: (modalValue) => {
+    set({ modalValue })
   }
 }))
 
 const CreateReminderModal = () => {
   const modalOpen = useCreateReminderModal((state) => state.open)
   const closeModal = useCreateReminderModal((state) => state.closeModal)
-  const remNodeid = useCreateReminderModal((state) => state.nodeid)
+  const modalValue = useCreateReminderModal((state) => state.modalValue)
+  const setTime = useCreateReminderModal((state) => state.setTime)
+  const setNodeId = useCreateReminderModal((state) => state.setNodeId)
+  const node = useEditorStore((state) => state.node)
   const { saveData } = useSaveData()
-  const [nodepath, setNodepath] = React.useState('')
+  const { addReminder } = useReminders()
 
   const { getNodeidFromPath } = useLinks()
 
   const {
-    control,
+    // control,
     register,
     handleSubmit,
     formState: { isSubmitting }
   } = useForm()
 
-  const handleFromChange = (quickLink: QuickLink) => {
+  useEffect(() => {
+    if (node) {
+      setNodeId(node.nodeid)
+    }
+    setTime(getNextReminderTime().getTime())
+  }, [node, modalOpen]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleNodeChange = (quickLink: QuickLink) => {
     const newValue = quickLink.value
     if (newValue) {
-      // setFrom(newValue)
+      mog('newValue', { newValue, quickLink })
+      setNodeId(getNodeidFromPath(newValue))
     }
   }
   const { trackEvent } = useAnalytics()
 
-  const onSubmit = async ({ title, description, time, priority }) => {
+  const onSubmit = async ({ title, description }) => {
     // console.log({ intents, command, title, description })
+    const { time, nodeid } = modalValue
+
     const reminder: Reminder = {
       id: `${REMINDER_PREFIX}${nanoid()}`,
       title,
       description,
-      nodeid: remNodeid,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
+      nodeid,
       time,
-      // frequency?: ReminderFrequency,
-      priority
-      // blockid?: string,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
     }
 
     trackEvent(getEventNameFromElement('Reminders', ActionType.CREATE, 'Reminder'), {
@@ -115,80 +137,71 @@ const CreateReminderModal = () => {
     mog('Creating Reminder', {
       reminder
     })
-  }
-  // const { from, to, open, mockRefactor } = renameState
-
-  // useEffect(() => {
-  //   if (to && from && !isReserved(from) && !isReserved(from)) {
-  //     // mog('To, from in rename', { to, from })
-  //     setMockRefactored(getMockRefactor(from, to))
-  //   }
-  // }, [to, from, q])
-
-  const handleRefactor = () => {
-    // if (to && from) {
-    //   // mog('To, from in rename exec', { to, from })
-    //   const res = execRefactor(from, to)
-
-    //   saveData()
-    //   const path = useEditorStore.getState().node.id
-    //   const nodeid = useEditorStore.getState().node.nodeid
-    //   if (doesLinkRemain(path, res)) {
-    //     push(nodeid, { savePrev: false })
-    //   } else if (res.length > 0) {
-    //     const nodeid = getNodeidFromPath(res[0].to)
-    //     push(nodeid, { savePrev: false })
-    //   }
-    // }
-
+    addReminder(reminder)
+    saveData()
     closeModal()
   }
 
   const handleCancel = () => {
     closeModal()
   }
-  // mog('RenameComponent', { mockRefactored, to, from, ilinks: useDataStore.getState().ilinks })
+
+  mog('CreateReminderModal', {
+    modalOpen,
+    modalValue
+  })
 
   return (
-    <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={modalOpen}>
-      <ModalHeader>Rename</ModalHeader>
-
-      <WrappedNodeSelect
-        placeholder="Reminder for node"
-        defaultValue={useEditorStore.getState().node.id ?? nodepath}
-        disallowReserved
-        highlightWhenSelected
-        iconHighlight={nodepath !== undefined}
-        handleSelectItem={handleFromChange}
-      />
+    <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={handleCancel} isOpen={modalOpen}>
+      <ModalHeader>Reminder</ModalHeader>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Label htmlFor="command">Command</Label>
-        <InputBlock autoFocus placeholder="Ex. notify" {...register('command')} />
-
         <Label htmlFor="title">Title</Label>
-        <InputBlock placeholder="Ex. Notify Team Members" {...register('title')} />
+        <InputBlock autoFocus placeholder="Ex. Send email to team" {...register('title')} />
 
         <Label htmlFor="description">Description</Label>
-        <TextAreaBlock
-          placeholder="Ex. Notify team members about recent changes in spec"
-          {...register('description')}
+        <TextAreaBlock placeholder="Ex. Remember to share new developments" {...register('description')} />
+
+        <Label htmlFor="node">NodeId</Label>
+        <WrappedNodeSelect
+          placeholder="Reminder for node"
+          defaultValue={useEditorStore.getState().node.id ?? ''}
+          disallowReserved
+          highlightWhenSelected
+          iconHighlight={modalValue.nodeid !== undefined}
+          handleSelectItem={handleNodeChange}
         />
+
+        <Label htmlFor="time">Time</Label>
+        <DatePickerStyles>
+          <ReactDatePicker
+            selected={new Date(modalValue.time ?? getNextReminderTime())}
+            showTimeSelect
+            timeFormat="p"
+            timeIntervals={15}
+            onChange={(date) => {
+              console.log(date)
+              setTime(date.getTime())
+            }}
+            inline
+          />
+          {modalValue.time && (
+            <SelectedDate>
+              <i>Remind :</i>
+              <span>{getRelativeDate(new Date(modalValue.time))}</span>
+            </SelectedDate>
+          )}
+        </DatePickerStyles>
 
         <ModalControls>
           <Button large onClick={handleCancel}>
             Cancel
           </Button>
           <LoadingButton loading={isSubmitting} buttonProps={{ type: 'submit', primary: true, large: true }}>
-            Submit
+            Save Reminder
           </LoadingButton>
         </ModalControls>
       </form>
-      <ModalControls>
-        <Button primary large onClick={handleRefactor}>
-          Apply Rename
-        </Button>
-      </ModalControls>
     </Modal>
   )
 }

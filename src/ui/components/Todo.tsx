@@ -1,29 +1,10 @@
-import Tippy, { TippyProps } from '@tippyjs/react'
 import React, { useEffect, useState } from 'react'
-import { useContextMenu } from 'react-contexify'
-import { useReadOnly } from 'slate-react'
-import { useTheme } from 'styled-components'
-import PriorityMenu from '../../editor/Components/Todo/PriorityMenu'
-import {
-  getNextStatus,
-  Priority,
-  PriorityDataType,
-  PriorityType,
-  TodoStatus,
-  TodoType
-} from '../../editor/Components/Todo/types'
+import { getNextStatus, PriorityDataType, PriorityType, TodoStatus } from '../../editor/Components/Todo/types'
 import useTodoStore from '../../store/useTodoStore'
 import { MexIcon } from '../../style/Layouts'
 import { mog } from '../../utils/lib/helper'
-import {
-  CheckBoxWrapper,
-  PriorityButton,
-  StyledTodoStatus,
-  TaskPriority,
-  TodoContainer,
-  TodoOptions,
-  TodoText
-} from './Todo.style'
+import PrioritySelect from './Priority/PrioritySelect'
+import { CheckBoxWrapper, StyledTodoStatus, TodoContainer, TodoOptions, TodoText } from './Todo.style'
 
 interface TodoProps {
   parentNodeId: string
@@ -37,15 +18,10 @@ interface TodoProps {
 const Todo = ({ parentNodeId, todoid, children, readOnly, onDeleteClick, showDelete = true }: TodoProps) => {
   const [showOptions, setShowOptions] = useState(false)
 
-  const theme = useTheme()
-
   const [animate, setAnimate] = useState(false)
 
   const updateTodo = useTodoStore((store) => store.updateTodoOfNode)
   const getTodo = useTodoStore((store) => store.getTodoOfNode)
-
-  const { show } = useContextMenu({ id: todoid })
-
   const todo = getTodo(parentNodeId, todoid)
 
   useEffect(() => {
@@ -90,35 +66,14 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, onDeleteClick, showDel
               cursor="pointer"
               margin="0"
               fontSize={20}
-              color={theme.colors.primary}
             />
           )}
-          <TaskPriority onClick={show} background={theme.colors.secondary} transparent={0.8}>
-            <Tippy
-              delay={100}
-              interactiveDebounce={100}
-              placement="bottom"
-              appendTo={() => document.body}
-              theme="mex"
-              content={Priority[todo?.metadata.priority]?.title}
-            >
-              <PriorityButton background={theme.colors.background.card}>
-                <MexIcon
-                  onClick={show}
-                  icon={Priority[todo?.metadata?.priority]?.icon}
-                  fontSize={20}
-                  cursor="pointer"
-                  color={theme.colors.primary}
-                />
-              </PriorityButton>
-            </Tippy>
-          </TaskPriority>
+          <PrioritySelect value={todo.metadata.priority} onPriorityChange={onPriorityChange} id={todo.id} />
           {/* <TaskPriority background="#114a9e" transparent={0.25}>
             assignee
           </TaskPriority> */}
         </TodoOptions>
       )}
-      <PriorityMenu id={todo.id} onClick={onPriorityChange} />
     </TodoContainer>
   )
 }

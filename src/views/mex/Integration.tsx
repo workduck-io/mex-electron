@@ -13,7 +13,6 @@ import Template from '../../components/mex/Integrations/Template'
 import { Service } from '../../editor/Components/SyncBlock'
 import { ServiceIcon } from '../../editor/Components/SyncBlock/SyncIcons'
 import useLoad from '../../hooks/useLoad'
-import { DateFormat } from '../../hooks/useRelativeTime'
 import { useUpdater } from '../../hooks/useUpdater'
 import useDataStore from '../../store/useDataStore'
 import { useIntegrationStore } from '../../store/useIntegrationStore'
@@ -44,6 +43,7 @@ import {
   Title
 } from '../../style/Integration'
 import { camelCase } from '../../utils/lib/strings'
+import { getRelativeTime } from '../../utils/time'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 // eslint-disable-next-line import/namespace
 
@@ -177,7 +177,7 @@ const TemplateInfo = () => {
             {info.lastRun > 0 && (
               <Flex>
                 <StyledIcon icon={timeIcon} />
-                <Text>{DateFormat(info.lastRun)}</Text>
+                <Text>{getRelativeTime(info.lastRun)}</Text>
               </Flex>
             )}
           </TemplateInfoList>

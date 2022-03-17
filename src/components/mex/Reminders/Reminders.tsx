@@ -1,28 +1,38 @@
-import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
+import addCircleLine from '@iconify/icons-ri/add-circle-line'
+import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
 import more2Fill from '@iconify/icons-ri/more-2-fill'
-import React from 'react'
+import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
+import timerLine from '@iconify/icons-ri/timer-line'
+import { Icon } from '@iconify/react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { useReminders } from '../../../hooks/useReminders'
+import { useReminders, useReminderStore } from '../../../hooks/useReminders'
 import useToggleElements from '../../../hooks/useToggleElements'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import IconButton, { Button } from '../../../style/Buttons'
 import { InfobarFull, InfobarTools } from '../../../style/infobar'
-import { Result, ResultHeader, ResultTitle } from '../../../style/Search'
-import { Title } from '../../../style/Typography'
+import { Description, Title } from '../../../style/Typography'
+import { getRelativeDate, toLocaleString } from '../../../utils/time'
+import { RelativeTime } from '../RelativeTime'
 import { useCreateReminderModal } from './CreateReminderModal'
-import { Reminder, RemindersWrapper } from './Reminders.style'
-
-const Margin = styled.div`
-  margin: 1rem 1rem 0;
-`
+import {
+  Reminder,
+  ReminderExact,
+  ReminderGroup,
+  ReminderInfobar,
+  ReminderRelative,
+  RemindersWrapper,
+  ReminderTime
+} from './Reminders.style'
 
 const RemindersInfobar = () => {
   const infobar = useLayoutStore((s) => s.infobar)
   const { toggleReminder } = useToggleElements()
   const shortcuts = useHelpStore((store) => store.shortcuts)
-  const { getNodeReminders } = useReminders()
+  const remindersAll = useReminderStore((store) => store.reminders)
+  const { getNodeReminders, clearNodeReminders } = useReminders()
   // const contents = useContentStore((store) => store.contents)
   // const { getPathFromNodeid } = useLinks()
   const nodeid = useEditorStore((store) => store.node.nodeid)
@@ -36,55 +46,71 @@ const RemindersInfobar = () => {
   //   })
   // }
 
-  const reminders = getNodeReminders(nodeid)
+  const reminderGroups = useMemo(() => {
+    const nodeReminders = getNodeReminders(nodeid)
+    return nodeReminders
+  }, [remindersAll, nodeid])
+
   return (
     <InfobarFull>
       <InfobarTools>
         <IconButton
           size={24}
-          icon={lightbulbFlashLine}
-          shortcut={shortcuts.showSuggestedNodes.keystrokes}
+          icon={timerFlashLine}
+          shortcut={shortcuts.showReminder.keystrokes}
           title="Reminders"
           highlight={infobar.mode === 'reminders'}
           onClick={toggleReminder}
         />
         <label htmlFor="reminders">Reminders</label>
+        <IconButton
+          size={24}
+          icon={deleteBin6Line}
+          onClick={() => clearNodeReminders(nodeid)}
+          title="Delete All Reminders"
+        />
         <IconButton size={24} icon={more2Fill} onClick={toggleModal} title="Options" />
       </InfobarTools>
 
-      <RemindersWrapper>
-        <Reminder>
-          <Title>Create Reminder</Title>
-
-          <Button large primary onClick={toggleModal}>
-            Create Reminder
-          </Button>
-        </Reminder>
-        {reminders.map((reminder) => {
-          // const con = contents[suggestion.id]
-          // const path = getPathFromNodeid(suggestion.id)
-          // const content = con ? con.content : defaultContent.content
-          // mog('SuggestionInfoBar', { content, con, path, suggestion })
-
-          return (
-            <Reminder key={`ResultForSearch_${reminder.id}`}>
-              <Title>{reminder.title}</Title>
-              {reminder.description}
-              {reminder.time}
-            </Reminder>
+      <ReminderInfobar>
+        <Title>Reminders</Title>
+        <Button large primary onClick={() => toggleModal()}>
+          <Icon icon={addCircleLine} />
+          Create Reminder
+        </Button>
+        {reminderGroups.map(
+          (
+            reminderGroup // const con = contents[suggestion.id]
+          ) => (
+            // const path = getPathFromNodeid(suggestion.id)
+            // const content = con ? con.content : defaultContent.content
+            // mog('SuggestionInfoBar', { content, con, path, suggestion })
+            <ReminderGroup key={`ReminderGroup_${nodeid}_${reminderGroup.type}`}>
+              <Title>{reminderGroup.label}</Title>
+              <RemindersWrapper>
+                {reminderGroup.reminders.map((reminder) => (
+                  <Reminder key={`ReultForSearch_${reminder.id}`}>
+                    <ReminderTime>
+                      <ReminderRelative>
+                        <Icon icon={timerLine} />
+                        <RelativeTime
+                          tippy
+                          dateNum={reminder.time}
+                          refreshMs={1000 * 30}
+                          tippyProps={{ placement: 'right', theme: 'mex-bright' }}
+                        />
+                      </ReminderRelative>
+                      <ReminderExact>{getRelativeDate(new Date(reminder.time))}</ReminderExact>
+                    </ReminderTime>
+                    <Title>{reminder.title}</Title>
+                    <Description>{reminder.description}</Description>
+                  </Reminder>
+                ))}
+              </RemindersWrapper>
+            </ReminderGroup>
           )
-        })}
-        {reminders.length === 0 && (
-          <Reminder>
-            <ResultHeader>
-              <ResultTitle>No reminders</ResultTitle>
-            </ResultHeader>
-            <p>
-              You can add reminders by clicking the <strong>Create</strong> button in the toolbar.
-            </p>
-          </Reminder>
         )}
-      </RemindersWrapper>
+      </ReminderInfobar>
     </InfobarFull>
   )
 }
