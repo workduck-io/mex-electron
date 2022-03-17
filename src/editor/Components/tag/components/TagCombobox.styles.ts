@@ -10,7 +10,6 @@ export const ComboboxItem = styled.div`
   display: flex;
   align-items: center;
   font-size: 14px;
-  max-width: 180px;
   gap: ${({ theme }) => theme.spacing.tiny};
 
   :first-child {
@@ -48,12 +47,12 @@ export const ComboboxRoot = styled.div<{ isOpen: boolean }>`
       }
     }
   }
-  &.reversed {
+  /* &.reversed {
     transform: rotate(180deg);
     ${ComboboxItem} {
       transform: rotate(-180deg);
     }
-  }
+  } */
   ${({ isOpen, theme }) =>
     isOpen &&
     css`
@@ -65,7 +64,7 @@ export const ComboboxRoot = styled.div<{ isOpen: boolean }>`
       margin: 0;
       z-index: 11;
       background: ${theme.colors.background.modal};
-      width: 440px;
+      max-width: 440px;
       border-radius: 8px;
       box-shadow: rgba(0, 0, 0, 0.133) 0 3.2px 7.2px 0, rgba(0, 0, 0, 0.11) 0 0.6px 1.8px 0;
     `}
@@ -75,7 +74,7 @@ export const ItemTitle = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  width: 140px;
+  width: 200px;
 `
 
 export const ItemRightIcons = styled.div`
@@ -84,7 +83,7 @@ export const ItemRightIcons = styled.div`
 `
 
 export const ItemDesc = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.tiny};
+  margin: ${({ theme }) => theme.spacing.tiny} 0;
   color: ${({ theme }) => theme.colors.text.fade};
   font-size: 0.8rem;
   white-space: nowrap;

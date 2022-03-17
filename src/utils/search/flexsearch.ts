@@ -29,7 +29,8 @@ export const createSearchIndex = (fileData: FileData, data: CreateSearchIndexDat
     const options = {
       document: {
         id: 'blockId',
-        index: ['title', 'text']
+        index: ['title', 'text'],
+        store: ['text']
       },
       tokenize: 'full'
     }
@@ -58,7 +59,8 @@ export const createGenricSearchIndex = (
   options: any = {
     document: {
       id: 'id',
-      index: ['title', 'text']
+      index: ['title', 'text'],
+      store: ['text']
     },
     tokenize: 'full'
   }

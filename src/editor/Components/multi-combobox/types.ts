@@ -1,3 +1,4 @@
+import { BaseRange } from 'slate'
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 import { ComboboxKey } from '../combobox/useComboboxStore'
 
@@ -19,4 +20,17 @@ export interface ComboboxType {
   icon?: string
   trigger: string
   data: ComboboxItem[]
+  blockTrigger?: string
+}
+
+export interface ComboTriggerDataType {
+  range: BaseRange
+  search: ComboSearchType
+  isBlockTriggered: boolean
+  key: string
+}
+
+export interface ComboSearchType {
+  textAfterTrigger: string
+  textAfterBlockTrigger?: string
 }

@@ -11,7 +11,6 @@ import { useSnippets } from '../../hooks/useSnippets'
 import IconButton from '../../style/Buttons'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 import tinykeys from 'tinykeys'
-import { mog } from '../../utils/lib/helper'
 
 type Inputs = {
   title: string

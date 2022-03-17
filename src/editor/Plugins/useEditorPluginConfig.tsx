@@ -12,10 +12,10 @@ import { ILinkComboboxItem } from '../Components/ilink/components/ILinkComboboxI
 import { ELEMENT_ILINK } from '../Components/ilink/defaults'
 import { ELEMENT_INLINE_BLOCK } from '../Components/InlineBlock/types'
 import { ComboConfigData } from '../Components/multi-combobox/multiComboboxContainer'
+import { ComboboxType } from '../Components/multi-combobox/types'
 import useMultiComboboxOnChange from '../Components/multi-combobox/useMultiComboboxChange'
 import useMultiComboboxOnKeyDown from '../Components/multi-combobox/useMultiComboboxOnKeyDown'
 import { SlashComboboxItem } from '../Components/SlashCommands/SlashComboboxItem'
-import { useSyncConfig } from '../Components/SlashCommands/useSyncConfig'
 import { TagComboboxItem } from '../Components/tag/components/TagComboboxItem'
 import { ELEMENT_TAG } from '../Components/tag/defaults'
 
@@ -129,10 +129,11 @@ const useEditorPluginConfig = (editorId: string) => {
     }
   }
 
-  const OnChangeConf = {
+  const OnChangeConf: Record<string, ComboboxType> = {
     internal: {
       cbKey: ComboboxKey.INTERNAL,
       trigger: '[[',
+      blockTrigger: '@',
       data: internals,
       icon: 'ri:file-list-2-line'
     },

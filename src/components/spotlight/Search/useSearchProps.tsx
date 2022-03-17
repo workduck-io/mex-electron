@@ -10,7 +10,6 @@ import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
-import useDataStore from '../../../store/useDataStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 
@@ -39,9 +38,7 @@ type SaveItProps = {
 }
 
 export const useSaveChanges = () => {
-  const ilinks = useDataStore((store) => store.ilinks)
   const getContent = useContentStore((store) => store.getContent)
-  const addILink = useDataStore((store) => store.addILink)
   const node = useSpotlightEditorStore((store) => store.node)
   const addRecent = useRecentsStore((store) => store.addRecent)
   const addInResearchNodes = useRecentsStore((store) => store.addInResearchNodes)

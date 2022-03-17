@@ -45,6 +45,8 @@ export interface IComboboxItem {
    */
   desc?: string
 
+  prefix?: string
+
   /**
    * Whether the option is disabled
    * @defaultvalue false

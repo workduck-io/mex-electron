@@ -1,5 +1,5 @@
-import { PEditor, overridePluginsByKey, deleteFragment } from '@udecode/plate'
-import { KeyboardHandler, setNodes } from '@udecode/plate-core'
+import { PlateEditor } from '@udecode/plate'
+import { KeyboardHandler } from '@udecode/plate-core'
 import { mog } from '../../../../utils/lib/helper'
 import { useEditorStore } from '../../../../store/useEditorStore'
 import { ComboConfigData } from '../../multi-combobox/multiComboboxContainer'
@@ -13,6 +13,7 @@ import { FlowCommandPrefix } from '../../SlashCommands/useSyncConfig'
 import { SnippetCommandPrefix } from '../../../../hooks/useSnippets'
 import { CreateNewPrefix } from '../../multi-combobox/useMultiComboboxChange'
 import { Editor, Transforms } from 'slate'
+import { ComboSearchType } from '../../multi-combobox/types'
 
 const pure = (id: string) => {
   let newId = id
@@ -44,7 +45,7 @@ export const isInternalCommand = (search?: string) => {
   return false
 }
 
-export type OnSelectItem = (editor: PEditor, item: IComboboxItem) => any // eslint-disable-line @typescript-eslint/no-explicit-any
+export type OnSelectItem = (editor: PlateEditor, item: IComboboxItem) => any // eslint-disable-line @typescript-eslint/no-explicit-any
 export type OnNewItem = (name: string, parentId?) => string | undefined
 
 export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnNewItem, creatable?: boolean) => {
@@ -108,7 +109,8 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
     const comboType = keys[comboboxKey]
 
     const itemIndex = useComboboxStore.getState().itemIndex
-    const search = useComboboxStore.getState().search
+    const isBlockTriggered = useComboboxStore.getState().isBlockTriggered
+    const { textAfterTrigger: search }: ComboSearchType = useComboboxStore.getState().search
     const items = useComboboxStore.getState().items
     const isOpen = !!useComboboxStore.getState().targetRange
     const item = items[itemIndex]
@@ -133,21 +135,28 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
     )
 
     if (isOpen) {
+      // if (!isBlockTriggered) {
       if (e.key === 'ArrowDown') {
         e.preventDefault()
 
         const newIndex = getNextWrappingIndex(1, itemIndex, items.length, () => undefined, true)
+
+        // * Replace current searched text with list item
         // replaceFragment(editor, items[newIndex].text)
+
         return setItemIndex(newIndex)
       }
       if (e.key === 'ArrowUp') {
         e.preventDefault()
 
         const newIndex = getNextWrappingIndex(-1, itemIndex, items.length, () => undefined, true)
+
+        // * Replace current searched text with list item
         // replaceFragment(editor, items[newIndex].text)
 
         return setItemIndex(newIndex)
       }
+      // }
       if (e.key === 'Escape') {
         e.preventDefault()
         return closeMenu()

@@ -8,6 +8,7 @@ import {
 } from '../../tag/components/TagCombobox.styles'
 import { PortalBody, getPreventDefaultHandler, useEditorState } from '@udecode/plate'
 import React, { useEffect, useState } from 'react'
+import arrowLeftLine from '@iconify/icons-ri/arrow-left-line'
 
 import { ComboboxProps } from './Combobox.types'
 import { Icon } from '@iconify/react'
@@ -19,25 +20,46 @@ import useMergedRef from '@react-hook/merged-ref'
 import { mog } from '../../../../utils/lib/helper'
 import EditorPreviewRenderer from '../../../EditorPreviewRenderer'
 import { QuickLinkType } from '../../../../components/mex/NodeSelect/NodeSelect'
-import useDataStore from '../../../../store/useDataStore'
 import { useContentStore } from '../../../../store/useContentStore'
-import { defaultContent } from '../../../../data/Defaults/baseData'
-import { Flex } from '../../../../style/Integration'
+import { PrimaryText } from '../../../../style/Integration'
 import { useSnippets } from '../../../../hooks/useSnippets'
 import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
+import { ComboSearchType } from '../../multi-combobox/types'
+import { getBlocks } from '../../../../utils/helpers'
+import { NodeEditorContent } from '../../../../types/Types'
+import { MexIcon } from '../../../../style/Layouts'
+import styled, { useTheme } from 'styled-components'
+import IconButton, { Button } from '../../../../style/Buttons'
+import { search as getSearchResults } from 'fast-fuzzy'
 
-export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps) => {
+const StyledComboHeader = styled(ComboboxItem)`
+  padding: 0.2rem 0;
+  margin: 0.25rem 0;
+
+  ${Button} {
+    padding: 0.25rem;
+    margin: 0 0.5rem 0 0;
+  }
+`
+
+export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'
   const at = useComboboxStore((state) => state.targetRange)
   const items = useComboboxStore((state) => state.items)
   const closeMenu = useComboboxStore((state) => state.closeMenu)
   const itemIndex = useComboboxStore((state) => state.itemIndex)
   const setItemIndex = useComboboxStore((state) => state.setItemIndex)
+  const search: ComboSearchType = useComboboxStore((store) => store.search)
+  const isBlockTriggered = useComboboxStore((store) => store.isBlockTriggered)
+
   const combobox = useComboboxControls(true)
   const isOpen = useComboboxIsOpen()
-  const [preview, setPreview] = useState(defaultContent?.content)
+  const [preview, setPreview] = useState(undefined)
+  const [blocks, setBlocks] = useState<Array<{ block: any; desc: string }>>(undefined)
   const getContent = useContentStore((store) => store.getContent)
   const { getSnippetContent } = useSnippets()
+
+  const theme = useTheme()
 
   const ref = React.useRef<any>(null) // eslint-disable-line @typescript-eslint/no-explicit-any
   const editor = useEditorState()
@@ -70,21 +92,38 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
   useEffect(() => {
     const comboItem = items[itemIndex]
 
-    if (comboItem) {
+    if (comboItem && comboItem.type) {
       const { key, type } = comboItem
 
+      let content: NodeEditorContent | undefined
+
       if (type === QuickLinkType.ilink) {
-        const cont = getContent(key)
-
-        setPreview(cont?.content)
+        content = getContent(key)?.content
       } else if (type === QuickLinkType.snippet) {
-        const con = getSnippetContent(key)
+        content = getSnippetContent(key)
+      }
 
-        mog('value is', { item: items[itemIndex], con })
-        setPreview(con)
+      if (content) {
+        const blocks = getBlocks(content)
+        setPreview(content)
+        if (blocks) setBlocks(Object.values(blocks))
+      } else {
+        setPreview(undefined)
+        setBlocks(undefined)
       }
     }
   }, [itemIndex, items])
+
+  useEffect(() => {
+    const trimmedSearch = search.textAfterBlockTrigger?.trim()
+    if (blocks && trimmedSearch) {
+      const res = getSearchResults(trimmedSearch, blocks, { keySelector: (obj) => obj.desc })
+      mog('Searching something', { blocks, res, tr: trimmedSearch }, { pretty: true, collapsed: false })
+      setBlocks(res)
+      // if (res && res.length > 0) setPreview(res[0].block)
+      // else setPreview(undefined)
+    }
+  }, [search.textAfterBlockTrigger])
 
   if (!combobox) return null
 
@@ -93,15 +132,15 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
       <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
         <div>
           {isOpen &&
+            !isBlockTriggered &&
             items.map((item, index) => {
               const Item = onRenderItem ? onRenderItem({ item }) : item.text
               const lastItem = index > 0 ? items[index - 1] : undefined
 
               return (
-                <>
+                <span key={`${item.key}-${String(index)}`}>
                   {item.type !== lastItem?.type && <ActionTitle>{item.type}</ActionTitle>}
                   <ComboboxItem
-                    key={`${item.key}-${String(index)}`}
                     className={index === itemIndex ? 'highlight' : ''}
                     {...comboProps(item, index)}
                     onMouseEnter={() => {
@@ -111,7 +150,13 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
                   >
                     {item.icon && <Icon height={18} key={`${item.key}_${item.icon}`} icon={item.icon} />}
                     <ItemCenterWrapper>
-                      <ItemTitle>{Item}</ItemTitle>
+                      {!item.prefix ? (
+                        <ItemTitle>{Item}</ItemTitle>
+                      ) : (
+                        <ItemTitle>
+                          {item.prefix} <PrimaryText>{Item}</PrimaryText>
+                        </ItemTitle>
+                      )}
                       {item.desc && <ItemDesc>{item.desc}</ItemDesc>}
                     </ItemCenterWrapper>
                     {item.rightIcons && (
@@ -122,15 +167,66 @@ export const Combobox = ({ onSelectItem, onRenderItem, isSlash }: ComboboxProps)
                       </ItemRightIcons>
                     )}
                   </ComboboxItem>
-                </>
+                </span>
               )
             })}
         </div>
-        <div style={{ minHeight: '400px', maxHeight: '400px', width: '100%', overflow: 'scroll' }}>
-          {items[itemIndex]?.type && preview && (
+        {isBlockTriggered && (
+          <>
+            <div style={{ marginLeft: '8px', maxHeight: '400px', width: '100%', overflow: 'scroll' }}>
+              <StyledComboHeader key="random">
+                <IconButton
+                  size={16}
+                  shortcut={`Esc`}
+                  icon={arrowLeftLine}
+                  onClick={() => setBlocks(undefined)}
+                  title={'Back to Quick links'}
+                />
+                <ItemTitle>
+                  {`In ${items[itemIndex]?.text}: `}
+                  <PrimaryText>{search.textAfterBlockTrigger}</PrimaryText>
+                </ItemTitle>
+              </StyledComboHeader>
+
+              {blocks?.length === 0 && (
+                <ComboboxItem
+                  key={`Nothing found`}
+                  className="highlight"
+                  // {...comboProps(item, index)}
+                  // onMouseEnter={() => {
+                  //   setItemIndex(index)
+                  // }}
+                  // onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, block)}
+                >
+                  <ItemCenterWrapper>No block found! Create new </ItemCenterWrapper>
+                </ComboboxItem>
+              )}
+
+              {blocks?.map(({ block, desc }, index) => (
+                <ComboboxItem
+                  key={`${block.id}-${String(index)}`}
+                  className={index === itemIndex ? 'highlight' : ''}
+                  // {...comboProps(item, index)}
+                  // onMouseEnter={() => {
+                  //   setItemIndex(index)
+                  // }}
+                  // onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, block)}
+                >
+                  <MexIcon fontSize={24} icon="ph:squares-four-fill" color={theme.colors.primary} />
+                  <ItemCenterWrapper>
+                    {/* <ItemTitle>{block.type}</ItemTitle> */}
+                    {desc && <ItemDesc>{desc}</ItemDesc>}
+                  </ItemCenterWrapper>
+                </ComboboxItem>
+              ))}
+            </div>
+          </>
+        )}
+        {items[itemIndex]?.type && preview && !isBlockTriggered && (
+          <div style={{ maxHeight: '400px', width: '100%', overflow: 'scroll' }}>
             <EditorPreviewRenderer content={preview} editorId={items[itemIndex]?.key + String(itemIndex)} />
-          )}
-        </div>
+          </div>
+        )}
       </ComboboxRoot>
     </PortalBody>
   )

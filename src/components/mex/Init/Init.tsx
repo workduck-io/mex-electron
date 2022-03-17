@@ -131,10 +131,6 @@ const Init = () => {
 
           goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid)
         })
-        .then(async () => {
-          const results = await queryIndex('node', 'snippet')
-          mog('SearchResultsInit', { results })
-        })
         // .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.push, nodeid))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()

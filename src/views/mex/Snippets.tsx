@@ -8,7 +8,6 @@ import SearchView, { RenderItemProps, RenderPreviewProps } from '../../component
 import { View } from '../../components/mex/Search/ViewSelector'
 import { generateSnippetId } from '../../data/Defaults/idPrefixes'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
-import { useNodes } from '../../hooks/useNodes'
 import { useSnippets } from '../../hooks/useSnippets'
 import { useUpdater } from '../../hooks/useUpdater'
 import { useSnippetStore } from '../../store/useSnippetStore'
@@ -39,11 +38,10 @@ export type SnippetsProps = {
 
 const Snippets = () => {
   const snippets = useSnippetStore((store) => store.snippets)
-  const { addSnippet, deleteSnippet, getSnippetContent, getSnippet } = useSnippets()
+  const { addSnippet, deleteSnippet, getSnippet } = useSnippets()
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const { updater } = useUpdater()
   const { queryIndex } = useSearch()
-  const { getNode } = useNodes()
   const { goTo } = useRouting()
   const initialSnippets: GenericSearchResult[] = snippets.map((snippet) => ({
     id: snippet.id,

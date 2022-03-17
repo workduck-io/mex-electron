@@ -3,7 +3,9 @@ import { defaultContent } from '../data/Defaults/baseData'
 import { useContentStore } from '../store/useContentStore'
 import { NodeProperties } from '../store/useEditorStore'
 import { NodeContent } from '../types/data'
+import { NodeEditorContent } from '../types/Types'
 import { mog } from './lib/helper'
+import { convertContentToRawText } from './search/parseData'
 
 /** Get the contents of the node with id */
 export function getContent(nodeid: string): NodeContent {
@@ -17,6 +19,25 @@ export function getContent(nodeid: string): NodeContent {
     return contents[nodeid]
   }
   return defaultContent
+}
+
+export const getBlocks = (content: NodeEditorContent): Record<string, any> | undefined => {
+  if (content) {
+    const blocks: Record<string, any> = {}
+    let insertOp = false
+
+    content.map((block) => {
+      if (block.id) {
+        if (!insertOp) insertOp = true
+        const desc = convertContentToRawText(block.children)
+        blocks[block.id] = { block, desc }
+      }
+    })
+
+    if (insertOp) return blocks
+  }
+
+  return undefined
 }
 
 export const isFromSameSource = (oldSource: SourceType, newSource: SourceType): boolean => {

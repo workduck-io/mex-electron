@@ -1,5 +1,6 @@
 import { UseComboboxReturnValue } from 'downshift'
 import { Range } from 'slate'
+import { ComboSearchType } from '../multi-combobox/types'
 import { createStore, setStoreValue } from '../store/createStore'
 import { IComboboxItem } from './components/Combobox.types'
 
@@ -21,12 +22,15 @@ export type ComboboxState = {
   setMaxSuggestions: (value: number) => void
 
   // Tag search value
-  search: string
-  setSearch: (value: string) => void
+  search: ComboSearchType
+  setSearch: (value: ComboSearchType) => void
 
   // Fetched tags
   items: IComboboxItem[]
   setItems: (value: IComboboxItem[]) => void
+
+  isBlockTriggered: boolean
+  setIsBlockTriggered: (value: boolean) => void
 
   // Range from the tag trigger to the cursor
   targetRange: Range | null
@@ -49,10 +53,13 @@ export const useComboboxStore = createStore()<ComboboxState>((set) => ({
   key: ComboboxKey.TAG,
   setKey: setStoreValue(set, 'key', 'setKey'),
 
+  isBlockTriggered: false,
+  setIsBlockTriggered: setStoreValue(set, 'isBlockTriggered', 'setIsBlockTriggered'),
+
   maxSuggestions: 10,
   setMaxSuggestions: setStoreValue(set, 'maxSuggestions', 'setMaxSuggestions'),
 
-  search: '',
+  search: { textAfterTrigger: '' },
   setSearch: setStoreValue(set, 'search', 'setSearch'),
 
   items: [],

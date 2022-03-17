@@ -80,20 +80,20 @@ const searchWorker: SearchWorker = {
       let response: any[] = []
 
       if (typeof key === 'string') {
-        response = globalSearchIndex[key].search(query)
+        response = globalSearchIndex[key].search(query, { enrich: true })
       } else {
         key.forEach((k) => {
-          response = [...response, globalSearchIndex[k].search(query)]
+          response = [...response, ...globalSearchIndex[k].search(query, { enrich: true })]
         })
       }
 
+      mog('response is', { response }, { pretty: true, collapsed: false })
       const results = new Array<any>()
       response.forEach((entry) => {
         const matchField = entry.field
         entry.result.forEach((i) => {
-          mog('ResultEntry', { i })
-          const { nodeId, blockId } = getNodeAndBlockIdFromCompositeKey(i)
-          results.push({ id: nodeId, blockId, matchField })
+          const { nodeId, blockId } = getNodeAndBlockIdFromCompositeKey(i.id)
+          results.push({ id: nodeId, blockId, text: i.doc?.text?.slice(0, 100), matchField })
         })
       })
 
@@ -110,6 +110,8 @@ const searchWorker: SearchWorker = {
           combinedResults.push(item)
         }
       })
+
+      mog('RESULTS', { combinedResults })
 
       return combinedResults
     } catch (e) {
