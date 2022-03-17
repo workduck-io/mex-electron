@@ -57,7 +57,7 @@ export const createGenricSearchIndex = (
       index.import(key, parsedData)
     })
   } else {
-    mog('Adding from FileData', { initList })
+    // mog('Adding from FileData', { initList })
     initList.forEach((i) => index.add(i))
   }
   return index

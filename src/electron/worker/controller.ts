@@ -82,16 +82,12 @@ export const removeDoc = async (key: idxKey, id: string) => {
   }
 }
 
-export const searchIndex = async (
-  key: idxKey | idxKey[],
-  query: string,
-  callback: (results: GenericSearchResult[]) => void
-) => {
+export const searchIndex = async (key: idxKey | idxKey[], query: string) => {
   try {
     if (!search_worker) throw new Error('Search Worker Not Initialized')
 
     const results = await search_worker.searchIndex(key, query)
-    callback(results)
+    return results
   } catch (error) {
     mog('SearchIndexError', { error })
   }

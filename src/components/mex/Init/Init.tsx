@@ -32,6 +32,7 @@ import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
 import { AppleNote } from '../../../utils/importers/appleNotes'
 import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import { useSearch } from '../../../hooks/useSearch'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -58,6 +59,8 @@ const Init = () => {
   const { getNodeidFromPath } = useLinks()
   const { onSave } = useSaver()
   const updateDoc = useSearchStore((store) => store.updateDoc)
+
+  const { queryIndex } = useSearch()
 
   /**
    * Setup save
@@ -126,6 +129,10 @@ const Init = () => {
           // mog('Navigating to ', { nodeid })
 
           goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid)
+        })
+        .then(async () => {
+          const results = await queryIndex('node', 'snippet')
+          mog('SearchResultsInit', { results })
         })
         // .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.push, nodeid))
         .catch((e) => console.error(e)) // eslint-disable-line no-console

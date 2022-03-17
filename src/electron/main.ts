@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import chokidar from 'chokidar'
 import {
   app,
@@ -38,7 +39,7 @@ import {
 } from './utils/getSelectedText'
 import { getIndexData, setSearchIndexData } from './utils/indexData'
 import { checkIfAlpha } from './utils/version'
-import { analyseContent, initSearchIndex } from './worker/controller'
+import { addDoc, analyseContent, initSearchIndex, removeDoc, searchIndex, updateDoc } from './worker/controller'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -634,3 +635,22 @@ export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) 
   if (from === AppType.MEX) spotlight?.webContents.send(action, { data })
   else mex?.webContents.send(action, { data })
 }
+
+// Handlers for Search Worker Operations
+ipcMain.handle(IpcAction.ADD_DOCUMENT, async (_event, { key, doc }) => {
+  await addDoc(key, doc)
+})
+
+ipcMain.handle(IpcAction.UPDATE_DOCUMENT, async (_event, { key, doc }) => {
+  await updateDoc(key, doc)
+})
+
+ipcMain.handle(IpcAction.REMOVE_DOCUMENT, async (_event, { key, id }) => {
+  await removeDoc(key, id)
+})
+
+ipcMain.handle(IpcAction.QUERY_INDEX, async (_event, key, query) => {
+  console.log(`Key: ${key} | Query: ${query}`)
+  const results = await searchIndex(key, query)
+  return results
+})
