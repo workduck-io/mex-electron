@@ -79,9 +79,9 @@ export const convertDataToIndexable = (data: FileData) => {
         if (v.type === 'editor' && k !== '__null__' && titleNodeMap.has(k)) {
           if (!nodeBlockMap[k]) nodeBlockMap[k] = []
           v.content.forEach((block) => {
-            nodeBlockMap[k].push(block.id)
             const blockText = convertContentToRawText(block.children)
             if (blockText.length !== 0) {
+              nodeBlockMap[k].push(block.id)
               const temp: GenericSearchData = { id: k, text: blockText, blockId: block.id, title: titleNodeMap.get(k) }
               idxResult.push(temp)
             }
