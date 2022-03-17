@@ -14,12 +14,10 @@ export interface CreateSearchIndexData {
 export const createSearchIndex = (fileData: FileData, data: CreateSearchIndexData): SearchIndex => {
   // TODO: Find a way to delay the conversion until needed i.e. if index is not present
   const initList: Record<indexNames, any> = convertDataToIndexable(fileData)
-  // Pass options corrwectly depending on what fields are indexed ([title, text] for now)
-  return {
-    node: createGenricSearchIndex(initList.node, data.node),
-    snippet: createGenricSearchIndex(initList.snippet, data.snippet),
-    archive: createGenricSearchIndex(initList.archive, data.archive)
-  }
+
+  return Object.entries(indexNames).reduce((p, c) => {
+    return { ...p, [c[0]]: createGenricSearchIndex(initList[c[0]], data[c[0]]) }
+  }, diskIndex)
 }
 
 export const flexIndexKeys = [
