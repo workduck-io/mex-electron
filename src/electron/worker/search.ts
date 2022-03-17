@@ -41,7 +41,7 @@ const searchWorker: SearchWorker = {
     if (globalSearchIndex[key]) {
       const parsedBlocks = parseNode(nodeId, contents, title)
 
-      const existingNodeBlocks = nodeBlockMapping[nodeId]
+      const existingNodeBlocks = nodeBlockMapping[nodeId] ?? []
       const newBlockIds = parsedBlocks.map((block) => block.blockId)
 
       const blockIdsToBeDeleted = existingNodeBlocks.filter((id) => !newBlockIds.includes(id))

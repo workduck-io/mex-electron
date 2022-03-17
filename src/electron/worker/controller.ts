@@ -69,7 +69,7 @@ export const updateDoc = async (key: idxKey, nodeId: string, contents: any[], ti
     if (!search_worker) throw new Error('Search Worker Not Initialized')
     await search_worker.updateDoc(key, nodeId, contents, title)
   } catch (error) {
-    mog('AddDocIndexError', { error })
+    mog('UpdateDocIndexError', { error })
   }
 }
 
@@ -78,7 +78,7 @@ export const removeDoc = async (key: idxKey, id: string) => {
     if (!search_worker) throw new Error('Search Worker Not Initialized')
     await search_worker.removeDoc(key, id)
   } catch (error) {
-    mog('AddDocIndexError', { error })
+    mog('RemoveDocIndexError', { error })
   }
 }
 
