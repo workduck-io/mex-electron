@@ -13,6 +13,8 @@ import {
   shell,
   Tray
 } from 'electron'
+import { Deeplink } from 'electron-deeplink'
+import isDev from 'electron-is-dev'
 import fs from 'fs'
 import path from 'path'
 import { getSaveLocation, getSearchIndexLocation } from '../data/Defaults/data'
@@ -163,7 +165,13 @@ const createMexWindow = () => {
   // MEX here
   mex = new BrowserWindow(MEX_WINDOW_OPTIONS)
   mex.loadURL(MEX_WINDOW_WEBPACK_ENTRY)
+  const protocol = isDev ? 'dev-app' : 'prod-app'
 
+  const deepLink = new Deeplink({ app, mainWindow: mex, protocol, isDev })
+
+  deepLink.on('received', (link) => {
+    alert(`catched ${link}`)
+  })
   mex.once('close', () => {
     mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
   })
