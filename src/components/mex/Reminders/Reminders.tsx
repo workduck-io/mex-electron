@@ -7,9 +7,13 @@ import useToggleElements from '../../../hooks/useToggleElements'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
-import IconButton from '../../../style/Buttons'
+import IconButton, { Button } from '../../../style/Buttons'
+import { InfobarTools } from '../../../style/infobar'
 import { Result, ResultHeader, ResultTitle } from '../../../style/Search'
-import { GraphTools, StyledGraph } from '../Graph/Graph.styles'
+import { Title } from '../../../style/Typography'
+import { StyledGraph } from '../Graph/Graph.styles'
+import { useCreateReminderModal } from './CreateReminderModal'
+import { Reminder, RemindersWrapper } from './Reminders.style'
 
 const Margin = styled.div`
   margin: 1rem 1rem 0;
@@ -23,6 +27,7 @@ const RemindersInfobar = () => {
   // const contents = useContentStore((store) => store.contents)
   // const { getPathFromNodeid } = useLinks()
   const nodeid = useEditorStore((store) => store.node.nodeid)
+  const toggleModal = useCreateReminderModal((state) => state.toggleModal)
 
   // const onClick = (id: string) => {
   //   insertNodes<TElement>(editor, {
@@ -35,7 +40,7 @@ const RemindersInfobar = () => {
   const reminders = getNodeReminders(nodeid)
   return (
     <StyledGraph>
-      <GraphTools>
+      <InfobarTools>
         <IconButton
           size={24}
           icon={lightbulbFlashLine}
@@ -45,10 +50,17 @@ const RemindersInfobar = () => {
           onClick={toggleReminder}
         />
         <label htmlFor="reminders">Reminders</label>
-        <IconButton size={24} icon={more2Fill} title="Options" />
-      </GraphTools>
+        <IconButton size={24} icon={more2Fill} onClick={toggleModal} title="Options" />
+      </InfobarTools>
 
-      <>
+      <RemindersWrapper>
+        <Reminder>
+          <Title>Create Reminder</Title>
+
+          <Button large primary onClick={toggleModal}>
+            Create Reminder
+          </Button>
+        </Reminder>
         {reminders.map((reminder) => {
           // const con = contents[suggestion.id]
           // const path = getPathFromNodeid(suggestion.id)
@@ -56,18 +68,24 @@ const RemindersInfobar = () => {
           // mog('SuggestionInfoBar', { content, con, path, suggestion })
 
           return (
-            <Margin key={`ResultForSearch_${reminder.id}`}>
-              <Result>
-                <ResultHeader>
-                  <ResultTitle>{reminder.title}</ResultTitle>
-                </ResultHeader>
-                {reminder.description}
-                {reminder.time}
-              </Result>
-            </Margin>
+            <Reminder key={`ResultForSearch_${reminder.id}`}>
+              <Title>{reminder.title}</Title>
+              {reminder.description}
+              {reminder.time}
+            </Reminder>
           )
         })}
-      </>
+        {reminders.length === 0 && (
+          <Reminder>
+            <ResultHeader>
+              <ResultTitle>No reminders</ResultTitle>
+            </ResultHeader>
+            <p>
+              You can add reminders by clicking the <strong>Create</strong> button in the toolbar.
+            </p>
+          </Reminder>
+        )}
+      </RemindersWrapper>
     </StyledGraph>
   )
 }

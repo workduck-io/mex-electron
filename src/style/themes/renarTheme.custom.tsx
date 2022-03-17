@@ -8,7 +8,7 @@ import { EditorStyles, NodeInfo } from '../Editor'
 import { Widget } from '../../editor/Components/SyncBlock'
 import { AsyncButton, Button } from '../Buttons'
 import { DataInfobarWrapper } from '../../components/mex/Sidebar/DataInfoBar'
-import { StyledGraph, GraphTools, GraphWrapper } from '../../components/mex/Graph/Graph.styles'
+import { StyledGraph, GraphWrapper } from '../../components/mex/Graph/Graph.styles'
 import { EditorPreviewWrapper } from '../../editor/Components/EditorPreview/EditorPreview.styles'
 import { SettingsOptions, SettingTitle } from '../../views/mex/Settings'
 import { BackCard } from '../Card'
@@ -20,7 +20,7 @@ import { Result, ResultHeader, SearchContainer } from '../Search'
 import { CreateSnippet, SSnippet } from '../Snippets'
 import { ComboboxRoot, ComboboxItem } from '../../editor/Components/tag/components/TagCombobox.styles'
 import { ActionDraggableIcon } from '../../editor/Actions/withDraggable'
-import { InfoBarWrapper } from '../infobar'
+import { InfobarTools, InfoBarWrapper } from '../infobar'
 
 const grayMixerTrans = (n: number) => css`
   ${({ theme }) => transparentize(0.33, theme.colors.gray[n])}
@@ -40,7 +40,7 @@ const graphStyles = css`
     flex-direction: column;
     gap: ${({ theme }) => theme.spacing.medium};
   }
-  ${GraphTools} {
+  ${InfobarTools} {
     backdrop-filter: blur(10px);
     background-color: ${grayMainColor};
     margin: 2rem 0 0;

@@ -17,7 +17,6 @@ import IconButton from '../style/Buttons'
 import { InfoTools, NodeInfo } from '../style/Editor'
 import Loading from '../style/Loading'
 import NodeRenameTitle from './Components/NodeRenameTitle'
-import { SaverButton } from './Components/Saver'
 
 const Toolbar = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -30,12 +29,7 @@ const Toolbar = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const infobar = useLayoutStore((store) => store.infobar)
-  const { toggleGraph, toggleSuggestedNodes } = useToggleElements()
-
-  const onSave = () => {
-    // console.log('onsave')
-    // callback after save
-  }
+  const { toggleGraph, toggleSuggestedNodes, toggleReminder } = useToggleElements()
 
   return (
     <NodeInfo {...getFocusProps(focusMode)}>
@@ -66,7 +60,6 @@ const Toolbar = () => {
           highlight={nodeIntentsModalOpen}
           onClick={nodeIntentsModalToggle}
         />
-        */}
         <SaverButton
           // saveOnUnmount
           shortcut={shortcuts.save.keystrokes}
@@ -74,7 +67,6 @@ const Toolbar = () => {
           singleton={target}
           callbackAfterSave={onSave}
         />
-        {/*
         <IconButton
           size={24}
           singleton={target}
@@ -85,6 +77,15 @@ const Toolbar = () => {
           onClick={toggleSyncBlocks}
         />
         */}
+        <IconButton
+          size={24}
+          singleton={target}
+          icon={lightbulbFlashLine}
+          shortcut={shortcuts.showReminder.keystrokes}
+          title="Reminders"
+          highlight={infobar.mode === 'reminders'}
+          onClick={toggleReminder}
+        />
         <IconButton
           size={24}
           singleton={target}

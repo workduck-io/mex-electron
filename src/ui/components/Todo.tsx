@@ -83,6 +83,16 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, onDeleteClick, showDel
       </TodoText>
       {(showOptions || todo.metadata.priority !== PriorityType.noPriority) && (
         <TodoOptions contentEditable={false}>
+          {showOptions && showDelete && (
+            <MexIcon
+              onClick={() => onDeleteClick(todo.id)}
+              icon="codicon:trash"
+              cursor="pointer"
+              margin="0"
+              fontSize={20}
+              color={theme.colors.primary}
+            />
+          )}
           <TaskPriority onClick={show} background={theme.colors.secondary} transparent={0.8}>
             <Tippy
               delay={100}
@@ -106,16 +116,6 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, onDeleteClick, showDel
           {/* <TaskPriority background="#114a9e" transparent={0.25}>
             assignee
           </TaskPriority> */}
-          {showOptions && showDelete && (
-            <MexIcon
-              onClick={() => onDeleteClick(todo.id)}
-              icon="codicon:trash"
-              cursor="pointer"
-              margin="0"
-              fontSize={20}
-              color={theme.colors.primary}
-            />
-          )}
         </TodoOptions>
       )}
       <PriorityMenu id={todo.id} onClick={onPriorityChange} />

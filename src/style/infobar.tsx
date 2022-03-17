@@ -50,3 +50,15 @@ export const InfoWidgetScroll = styled.div`
   overflow-y: auto;
   max-height: 20vh;
 `
+
+export const InfobarTools = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: ${({ theme: { spacing } }) => `${spacing.large} ${spacing.medium}`};
+  margin-top: 2rem;
+
+  background-color: ${({ theme }) => theme.colors.gray[9]};
+  padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.small}`};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+`

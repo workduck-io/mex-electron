@@ -9,6 +9,9 @@ interface ReminderState {
   deleteReminder(id: string): void
   updateReminder(newReminder: Reminder): void
   clearReminders(): void
+
+  modalOpen: boolean
+  setModalOpen: (modalOpen: boolean) => void
 }
 
 export const useReminderStore = create<ReminderState>((set) => ({
@@ -25,7 +28,10 @@ export const useReminderStore = create<ReminderState>((set) => ({
         reminder.id === newReminder.id ? { ...reminder, ...newReminder } : reminder
       )
     })),
-  clearReminders: () => set({ reminders: [] })
+  clearReminders: () => set({ reminders: [] }),
+
+  modalOpen: false,
+  setModalOpen: (modalOpen: boolean) => set({ modalOpen })
 }))
 
 export const useReminders = () => {

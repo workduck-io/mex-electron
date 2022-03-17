@@ -14,6 +14,7 @@ export const Relative = styled.div``
 
 export const RelativeTime = ({ dateNum, tippy = true, tippyProps, refreshMs }: RelativeTimeProps) => {
   const [date, setDate] = useState(new Date(dateNum))
+
   const options = {
     weekday: 'long',
     year: 'numeric',

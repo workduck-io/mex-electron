@@ -1,6 +1,6 @@
 import { transparentize } from 'polished'
 import { css } from 'styled-components'
-import { GraphTools, GraphWrapper, StyledGraph } from '../../components/mex/Graph/Graph.styles'
+import { GraphWrapper, StyledGraph } from '../../components/mex/Graph/Graph.styles'
 import { ServiceChip, TemplateCard } from '../../components/mex/Integrations/Template/styled'
 import { StyledMenu } from '../../components/mex/NodeSelect/NodeSelect.styles'
 import { ComingSoonCard, ImporterCard } from '../../components/mex/Settings/Importers'
@@ -18,7 +18,7 @@ import { SwitchWrapper } from '../../views/router/Switch'
 import { BackCard } from '../Card'
 import { EditorStyles, NodeInfo, StyledEditor } from '../Editor'
 import { GridWrapper } from '../Grid'
-import { InfoBarWrapper } from '../infobar'
+import { InfobarTools, InfoBarWrapper } from '../infobar'
 import { MenuTrigger, RightCut, ServiceCard } from '../Integration'
 import { NavButton } from '../Nav'
 import { Result, ResultHeader, SearchContainer, SplitSearchPreviewWrapper } from '../Search'
@@ -81,7 +81,7 @@ const graphStyles = css`
     flex-direction: column;
     gap: ${({ theme }) => theme.spacing.medium};
   }
-  ${GraphTools} {
+  ${InfobarTools} {
     ${NeoContainer}
     margin: 2rem 0 0;
   }
