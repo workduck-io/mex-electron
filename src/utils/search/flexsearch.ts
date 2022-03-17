@@ -3,8 +3,8 @@ import { Document } from 'flexsearch'
 import { FileData, GenericSearchData } from '../../types/data'
 import { diskIndex, indexNames } from '../../data/search'
 import { convertDataToIndexable } from './localSearch'
-
 import { SearchIndex } from '../../types/search'
+import { mog } from '../lib/helper'
 export interface CreateSearchIndexData {
   node: GenericSearchData[] | null
   snippet: GenericSearchData[] | null
@@ -50,13 +50,14 @@ export const createGenricSearchIndex = (
 
   if (indexData && Object.keys(indexData).length > 0) {
     // When using a prebuilt index read from disk present in the indexData parameter
-    // mog('Using Prebuilt Index!', {})
+    mog('Using Prebuilt Index!', {})
     Object.entries(indexData).forEach(([key, data]) => {
       const parsedData = JSON.parse((data as string) ?? '') ?? null
       index.import(key, parsedData)
     })
   } else {
-    // mog('Adding from FileData', { initList })
+    const initListLen = initList.length
+    mog('AddingFromFileData', { initListLen })
     initList.forEach((i) => index.add(i))
   }
   return index
@@ -85,6 +86,7 @@ export const exportAsync = (index) => {
 
 export const exportIndex = async (indexEntries) => {
   const result = diskIndex
+
   for (const [idxName, idxVal] of indexEntries) {
     result[idxName] = await exportAsync(idxVal)
   }

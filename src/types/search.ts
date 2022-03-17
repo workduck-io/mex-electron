@@ -24,9 +24,10 @@ export interface GenericSearchResult {
 export type idxKey = keyof SearchIndex
 
 export interface SearchWorker {
-  init: (fileData: FileData) => void
+  init: (fileData: FileData, indexData: Record<idxKey, any>) => void
   addDoc: (key: idxKey, doc: GenericSearchData) => void
   updateDoc: (key: idxKey, doc: GenericSearchData) => void
   removeDoc: (key: idxKey, id: string) => void
   searchIndex: (key: idxKey | idxKey[], query: string) => GenericSearchResult[]
+  dumpIndexDisk: (location: string) => Promise<void>
 }

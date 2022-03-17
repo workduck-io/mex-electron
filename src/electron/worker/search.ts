@@ -1,16 +1,16 @@
 import { expose } from 'threads/worker'
 
 import { FileData } from './../../types/data'
-import { createSearchIndex } from '../../utils/search/flexsearch'
-import { diskIndex } from '../../data/search'
+import { createSearchIndex, exportIndex } from '../../utils/search/flexsearch'
 import { mog } from '../../utils/lib/helper'
 import { SearchWorker, idxKey, GenericSearchData, GenericSearchResult, SearchIndex } from '../../types/search'
+import { setSearchIndexData } from './../utils/indexData'
 
 let globalSearchIndex: SearchIndex = null
 
 const searchWorker: SearchWorker = {
-  init: (fileData: FileData) => {
-    globalSearchIndex = createSearchIndex(fileData, diskIndex)
+  init: (fileData: FileData, indexData: Record<idxKey, any>) => {
+    globalSearchIndex = createSearchIndex(fileData, indexData)
   },
 
   addDoc: (key: idxKey, doc: GenericSearchData) => {
@@ -62,6 +62,13 @@ const searchWorker: SearchWorker = {
       mog('Searching Broke:', { e })
       return []
     }
+  },
+
+  dumpIndexDisk: async (location: string) => {
+    const indexEntries = Object.entries(globalSearchIndex)
+    const indexDump = await exportIndex(indexEntries)
+
+    setSearchIndexData(indexDump, location)
   }
 }
 

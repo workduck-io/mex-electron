@@ -22,6 +22,7 @@ import { IpcAction } from '../data/IpcAction'
 import { AppType } from '../hooks/useInitialize'
 import { initializeSentry } from '../services/sentry'
 import { FileData } from '../types/data'
+import { idxKey } from '../types/search'
 import { getAppleNotes } from '../utils/importers/appleNotes'
 import { mog } from '../utils/lib/helper'
 import { sanitizeHtml } from '../utils/sanitizeHtml'
@@ -38,7 +39,16 @@ import {
   useSnippetFromClipboard
 } from './utils/getSelectedText'
 import { checkIfAlpha } from './utils/version'
-import { addDoc, analyseContent, initSearchIndex, removeDoc, searchIndex, updateDoc } from './worker/controller'
+import {
+  addDoc,
+  analyseContent,
+  initSearchIndex,
+  removeDoc,
+  searchIndex,
+  updateDoc,
+  dumpIndexDisk
+} from './worker/controller'
+import { getIndexData } from './utils/indexData'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -363,10 +373,11 @@ ipcMain.on('close', closeWindow)
 //   spotlightInBubbleMode(isClicked)
 // })
 
-app.on('before-quit', () => {
+app.on('before-quit', async () => {
   console.log('App before quit')
+  await dumpIndexDisk(SEARCH_INDEX_LOCATION)
   // mex?.webContents.send(IpcAction.GET_LOCAL_INDEX)
-  console.log('Sent IPC Action to fetch index')
+  // console.log('Sent IPC Action to fetch index')
   // toast?.destroy()
 
   // mex?.webContents.send(IpcAction.SAVE_AND_QUIT)
@@ -513,7 +524,8 @@ ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
 
 ipcMain.on(IpcAction.GET_LOCAL_DATA, async (event) => {
   const fileData: FileData = getFileData(SAVE_LOCATION)
-  await initSearchIndex(fileData)
+  const indexData: Record<idxKey, any> = getIndexData(SEARCH_INDEX_LOCATION)
+  await initSearchIndex(fileData, indexData)
   event.sender.send(IpcAction.RECEIVE_LOCAL_DATA, { fileData })
 })
 
@@ -635,7 +647,6 @@ ipcMain.handle(IpcAction.REMOVE_DOCUMENT, async (_event, { key, id }) => {
 })
 
 ipcMain.handle(IpcAction.QUERY_INDEX, async (_event, key, query) => {
-  console.log(`Key: ${key} | Query: ${query}`)
   const results = await searchIndex(key, query)
   return results
 })
