@@ -93,8 +93,10 @@ const Archive = () => {
   const theme = useTheme()
   const searchIndex = useSearchStore((store) => store.searchIndex)
   const { queryIndex } = useSearch()
-  const updateDoc = useSearchStore((store) => store.updateDoc)
-  const removeDoc = useSearchStore((store) => store.removeDoc)
+  // const updateDoc = useSearchStore((store) => store.updateDoc)
+  // const removeDoc = useSearchStore((store) => store.removeDoc)
+
+  const { updateDocument, removeDocument } = useSearch()
 
   // * TODO: Uncomment this !important
   // useEffect(() => {
@@ -111,7 +113,7 @@ const Archive = () => {
     }
   }
   const onSearch = async (newSearchTerm: string) => {
-    const res = await searchIndex('archive', newSearchTerm)
+    const res = await queryIndex('archive', newSearchTerm)
     mog('ArchiveSearch', { newSearchTerm, res })
     if (newSearchTerm === '' && res.length === 0) {
       return initialArchive
@@ -131,8 +133,9 @@ const Archive = () => {
     addILink({ ilink: node.path, nodeid: node.nodeid, archived: true })
 
     const content = getContent(node.nodeid)
-    removeDoc('archive', node.nodeid)
-    updateDoc('node', convertEntryToRawText(node.nodeid, content.content, node.path))
+    await removeDocument('archive', node.nodeid)
+
+    await updateDocument('node', convertEntryToRawText(node.nodeid, content.content, node.path))
 
     const archiveNode: NodeProperties = {
       id: node.path,
@@ -152,8 +155,8 @@ const Archive = () => {
 
     await removeArchiveData(nodesToDelete)
 
-    nodesToDelete.forEach((node) => {
-      removeDoc('archive', node.nodeid)
+    nodesToDelete.forEach(async (node) => {
+      await removeDocument('archive', node.nodeid)
     })
 
     // onSave()

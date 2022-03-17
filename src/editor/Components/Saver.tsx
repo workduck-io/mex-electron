@@ -10,6 +10,7 @@ import { appNotifierWindow } from '../../electron/utils/notifiers'
 import { AppType } from '../../hooks/useInitialize'
 import { useLinks } from '../../hooks/useLinks'
 import { useSaveData } from '../../hooks/useSaveData'
+import { useSearch } from '../../hooks/useSearch'
 import { useKeyListener } from '../../hooks/useShortcutListener'
 import { useTags } from '../../hooks/useTags'
 import { useUpdater } from '../../hooks/useUpdater'
@@ -35,10 +36,12 @@ export const useDataSaverFromContent = () => {
   const updateNodeTodos = useTodoStore((store) => store.replaceContentOfTodos)
   const { updateTagsFromContent } = useTags()
   const { saveDataAPI } = useApi()
-  const updateDoc = useSearchStore((store) => store.updateDoc)
+  // const updateDoc = useSearchStore((store) => store.updateDoc)
+
+  const { updateDocument } = useSearch()
 
   // By default saves to API use false to not save
-  const saveEditorValueAndUpdateStores = (nodeid: string, editorValue: any[], saveApi?: boolean) => {
+  const saveEditorValueAndUpdateStores = async (nodeid: string, editorValue: any[], saveApi?: boolean) => {
     //useCallback(
     if (editorValue) {
       setContent(nodeid, editorValue)
@@ -50,8 +53,9 @@ export const useDataSaverFromContent = () => {
 
       const title = getPathFromNodeid(nodeid)
       const parsedDoc = convertEntryToRawText(nodeid, editorValue, title)
-      updateDoc('node', parsedDoc)
-      appNotifierWindow(IpcAction.SYNC_INDEX, AppType.MEX, { parsedDoc })
+      // updateDoc('node', parsedDoc)
+      // appNotifierWindow(IpcAction.SYNC_INDEX, AppType.MEX, { parsedDoc })
+      await updateDocument('node', parsedDoc)
       // saveData()
     }
   } //, [])

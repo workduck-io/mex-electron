@@ -16,6 +16,8 @@ import { useSearchStore } from '../../../store/useSearchStore'
 import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import { convertEntryToRawText } from '../../../utils/search/localSearch'
 
+import { useSearch } from '../../../hooks/useSearch'
+
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
   const normalMode = useSpotlightAppStore((store) => store.normalMode)
@@ -52,9 +54,10 @@ export const useSaveChanges = () => {
 
   const { setSearch } = useSpotlightContext()
 
-  const updateDoc = useSearchStore((store) => store.updateDoc)
+  // const updateDoc = useSearchStore((store) => store.updateDoc)
+  const { updateDocument } = useSearch()
 
-  const saveIt = (options?: SaveItProps) => {
+  const saveIt = async (options?: SaveItProps) => {
     let editorContent = getPlateSelectors().value()
 
     if (options?.removeHighlight) {
@@ -78,8 +81,9 @@ export const useSaveChanges = () => {
     })
 
     const parsedDoc = convertEntryToRawText(node.nodeid, editorContent, node.title)
-    updateDoc('node', parsedDoc)
-    appNotifierWindow(IpcAction.SYNC_INDEX, AppType.SPOTLIGHT, { parsedDoc })
+    await updateDocument('node', parsedDoc)
+    // updateDoc('node', parsedDoc)
+    // appNotifierWindow(IpcAction.SYNC_INDEX, AppType.SPOTLIGHT, { parsedDoc })
 
     setSearch({ value: '', type: CategoryType.search })
     setInput('')

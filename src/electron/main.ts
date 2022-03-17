@@ -637,11 +637,11 @@ export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) 
 }
 
 // Handlers for Search Worker Operations
-ipcMain.handle(IpcAction.ADD_DOCUMENT, async (_event, { key, doc }) => {
+ipcMain.handle(IpcAction.ADD_DOCUMENT, async (_event, key, doc) => {
   await addDoc(key, doc)
 })
 
-ipcMain.handle(IpcAction.UPDATE_DOCUMENT, async (_event, { key, doc }) => {
+ipcMain.handle(IpcAction.UPDATE_DOCUMENT, async (_event, key, doc) => {
   await updateDoc(key, doc)
 })
 

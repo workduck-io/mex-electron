@@ -141,11 +141,11 @@ const GlobalListener = memo(() => {
 
     ipcRenderer.send(IpcAction.GET_LOCAL_DATA)
 
-    ipcRenderer.on(IpcAction.SYNC_INDEX, (event, arg) => {
-      const { parsedDoc } = arg
-      mog('SpotlightUpdateDoc: ', parsedDoc)
-      updateDoc('node', parsedDoc)
-    })
+    // ipcRenderer.on(IpcAction.SYNC_INDEX, (event, arg) => {
+    //   const { parsedDoc } = arg
+    //   mog('SpotlightUpdateDoc: ', parsedDoc)
+    //   updateDoc('node', parsedDoc)
+    // })
   }, [])
 
   return <></>

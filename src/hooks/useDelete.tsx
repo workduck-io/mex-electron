@@ -9,6 +9,7 @@ import { mog } from '../utils/lib/helper'
 import { isMatch } from '../utils/lib/paths'
 import { convertEntryToRawText } from '../utils/search/localSearch'
 import useArchive from './useArchive'
+import { useSearch } from './useSearch'
 
 export const useDelete = () => {
   const ilinks = useDataStore((state) => state.ilinks)
@@ -22,6 +23,8 @@ export const useDelete = () => {
 
   const updateDoc = useSearchStore((store) => store.updateDoc)
   const removeDoc = useSearchStore((store) => store.removeDoc)
+
+  const { updateDocument, removeDocument } = useSearch()
 
   const lastOpened = useRecentsStore((state) => state.lastOpened)
   const updateLastOpened = useRecentsStore((state) => state.update)
@@ -56,12 +59,15 @@ export const useDelete = () => {
     if (baseId !== -1 && newIlinks.length > 0) {
       setBaseNodeId(newIlinks[0].path)
     }
-    archivedNodes.map((item) => {
+    archivedNodes.map(async (item) => {
       mog('Archiving', { item })
       const { path, nodeid } = item
       const content = getContent(nodeid)
-      removeDoc('node', nodeid)
-      updateDoc('archive', convertEntryToRawText(nodeid, content.content, path))
+
+      await removeDocument('node', nodeid)
+      await updateDocument('archive', convertEntryToRawText(nodeid, content.content, path))
+      // removeDoc('node', nodeid)
+      // updateDoc('archive', convertEntryToRawText(nodeid, content.content, path))
     })
 
     // const archContent = getContent(del.)
