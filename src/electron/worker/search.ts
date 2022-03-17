@@ -1,3 +1,4 @@
+import { diskIndex } from './../../data/search'
 import { expose } from 'threads/worker'
 
 import { FileData } from './../../types/data'
@@ -7,10 +8,14 @@ import { SearchWorker, idxKey, GenericSearchData, GenericSearchResult, SearchInd
 import { setSearchIndexData } from './../utils/indexData'
 
 let globalSearchIndex: SearchIndex = null
+let blockNodeMapping: Record<idxKey, Record<string, string>> = diskIndex
 
 const searchWorker: SearchWorker = {
   init: (fileData: FileData, indexData: Record<idxKey, any>) => {
-    globalSearchIndex = createSearchIndex(fileData, indexData)
+    const { idx, bnMap } = createSearchIndex(fileData, indexData)
+
+    globalSearchIndex = idx
+    blockNodeMapping = bnMap
   },
 
   addDoc: (key: idxKey, doc: GenericSearchData) => {
@@ -25,21 +30,17 @@ const searchWorker: SearchWorker = {
     if (globalSearchIndex[key]) globalSearchIndex[key].remove(id)
   },
 
-  searchIndex: (key: idxKey | idxKey[], query: string) => {
+  searchIndex: (key: idxKey, query: string) => {
     try {
       let response: any[] = []
-      if (typeof key === 'string') {
-        response = globalSearchIndex[key].search(query)
-      } else {
-        key.forEach((k) => (response = [...response, globalSearchIndex[k].search(query)]))
-      }
+      response = globalSearchIndex[key].search(query)
 
       const results = new Array<any>()
       response.forEach((entry) => {
         const matchField = entry.field
         entry.result.forEach((i) => {
           mog('ResultEntry', { i })
-          results.push({ id: i, matchField })
+          results.push({ id: blockNodeMapping[key][i], blockId: i, matchField })
         })
       })
 

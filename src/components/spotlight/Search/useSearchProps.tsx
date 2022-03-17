@@ -13,7 +13,7 @@ import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
-import { convertEntryToRawText } from '../../../utils/search/localSearch'
+import { convertEntryToRawText } from '../../../utils/search/parseData'
 
 import { useSearch } from '../../../hooks/useSearch'
 

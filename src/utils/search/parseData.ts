@@ -1,8 +1,9 @@
 // import { FileData, NodeSearchData } from '../Types/data'
 
 import { indexNames, diskIndex } from '../../data/search'
-import { FileData, GenericSearchData } from '../../types/data'
+import { FileData } from '../../types/data'
 import { mog } from '../lib/helper'
+import { GenericSearchData, idxKey } from './../../types/search'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const convertContentToRawText = (content: any[], join?: string): string => {
@@ -24,7 +25,21 @@ export const convertEntryToRawText = (nodeUID: string, entry: any[], title = '')
   return { id: nodeUID, title, text: convertContentToRawText(entry, ' ') }
 }
 
-export const convertDataToIndexable = (data: FileData): Record<indexNames, GenericSearchData[]> => {
+export const parseNode = (nodeId: string, contents: any[], title = ''): GenericSearchData[] => {
+  const result: GenericSearchData[] = []
+
+  contents.forEach((block) => {
+    const blockText = convertContentToRawText(block.children)
+    if (blockText.length !== 0) {
+      const temp: GenericSearchData = { id: nodeId, text: blockText, blockId: block.id, title: title }
+      result.push(temp)
+    }
+  })
+  return result
+}
+
+export const convertDataToIndexable = (data: FileData) => {
+  const blockNodeMap: Record<idxKey, any> = diskIndex
   const result: Record<indexNames, GenericSearchData[]> = Object.entries(indexNames).reduce((p, c) => {
     const idxResult = []
     const idxName = c[0]
@@ -62,15 +77,21 @@ export const convertDataToIndexable = (data: FileData): Record<indexNames, Gener
     if (idxName === indexNames.archive || idxName === indexNames.node) {
       Object.entries(data.contents).forEach(([k, v]) => {
         if (v.type === 'editor' && k !== '__null__' && titleNodeMap.has(k)) {
-          const temp: GenericSearchData = convertEntryToRawText(k, v.content)
-          temp.title = titleNodeMap.get(k)
-          idxResult.push(temp)
+          v.content.forEach((block) => {
+            blockNodeMap[idxName][block.id] = k
+            const blockText = convertContentToRawText(block.children)
+            if (blockText.length !== 0) {
+              const temp: GenericSearchData = { id: k, text: blockText, blockId: block.id, title: titleNodeMap.get(k) }
+              idxResult.push(temp)
+            }
+          })
         }
       })
     } else if (idxName === indexNames.snippet) {
       data.snippets.map((snip) => {
         const temp: GenericSearchData = convertEntryToRawText(snip.id, snip.content)
         temp.title = titleNodeMap.get(snip.id)
+        blockNodeMap[idxName][snip.id] = snip.id // Redundant right now, not doing block level indexing for snippets
         idxResult.push(temp)
       })
     } else {
@@ -80,5 +101,8 @@ export const convertDataToIndexable = (data: FileData): Record<indexNames, Gener
     return { ...p, [idxName]: idxResult }
   }, diskIndex)
 
-  return result
+  // const dump = JSON.stringify(result)
+  // mog('ConvertDataToIndexable', { dump, blockNodeMap })
+
+  return { result, blockNodeMap }
 }

@@ -6,7 +6,7 @@ import { ILink } from '../types/Types'
 import { getContent } from '../utils/helpers'
 import { mog } from '../utils/lib/helper'
 import { isMatch } from '../utils/lib/paths'
-import { convertEntryToRawText } from '../utils/search/localSearch'
+import { convertEntryToRawText } from '../utils/search/parseData'
 import useArchive from './useArchive'
 import { useSearch } from './useSearch'
 

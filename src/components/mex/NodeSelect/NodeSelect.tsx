@@ -19,7 +19,7 @@ import { ILink } from '../../../types/Types'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { isClash, isReserved } from '../../../utils/lib/paths'
-import { convertContentToRawText } from '../../../utils/search/localSearch'
+import { convertContentToRawText } from '../../../utils/search/parseData'
 import { SEPARATOR } from '../Sidebar/treeUtils'
 import {
   StyledCombobox,

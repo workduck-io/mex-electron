@@ -4,6 +4,7 @@ import { FileData } from './data'
 
 export interface GenericSearchData {
   id: string
+  blockId?: string
   title?: string
   text: string
 }
@@ -16,6 +17,7 @@ export interface SearchIndex {
 
 export interface GenericSearchResult {
   id: string
+  blockId?: string
   title?: string
   text?: string
   matchField?: string[]
@@ -28,6 +30,6 @@ export interface SearchWorker {
   addDoc: (key: idxKey, doc: GenericSearchData) => void
   updateDoc: (key: idxKey, doc: GenericSearchData) => void
   removeDoc: (key: idxKey, id: string) => void
-  searchIndex: (key: idxKey | idxKey[], query: string) => GenericSearchResult[]
+  searchIndex: (key: idxKey, query: string) => GenericSearchResult[]
   dumpIndexDisk: (location: string) => Promise<void>
 }

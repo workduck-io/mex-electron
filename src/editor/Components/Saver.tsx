@@ -26,7 +26,7 @@ import { NodeEditorContent } from '../../types/Types'
 import { getTodosFromContent } from '../../utils/lib/content'
 import { mog } from '../../utils/lib/helper'
 import { getEventNameFromElement } from '../../utils/lib/strings'
-import { convertEntryToRawText } from '../../utils/search/localSearch'
+import { convertEntryToRawText } from '../../utils/search/parseData'
 
 export const useDataSaverFromContent = () => {
   const setContent = useContentStore((state) => state.setContent)

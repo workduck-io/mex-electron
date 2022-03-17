@@ -27,7 +27,7 @@ import {
 import { CreateSnippet, SnippetCommand, SnippetCommandPrefix, SnippetHeader } from '../../style/Snippets'
 import { Title } from '../../style/Typography'
 import { mog } from '../../utils/lib/helper'
-import { convertContentToRawText } from '../../utils/search/localSearch'
+import { convertContentToRawText } from '../../utils/search/parseData'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 
 import { useSearch } from '../../hooks/useSearch'

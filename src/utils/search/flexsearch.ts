@@ -2,7 +2,7 @@ import { Document } from 'flexsearch'
 
 import { FileData, GenericSearchData } from '../../types/data'
 import { diskIndex, indexNames } from '../../data/search'
-import { convertDataToIndexable } from './localSearch'
+import { convertDataToIndexable } from './parseData'
 import { SearchIndex } from '../../types/search'
 import { mog } from '../lib/helper'
 export interface CreateSearchIndexData {
@@ -11,13 +11,41 @@ export interface CreateSearchIndexData {
   archive: GenericSearchData[] | null
 }
 
-export const createSearchIndex = (fileData: FileData, data: CreateSearchIndexData): SearchIndex => {
+export const createSearchIndex = (fileData: FileData, data: CreateSearchIndexData) => {
   // TODO: Find a way to delay the conversion until needed i.e. if index is not present
-  const initList: Record<indexNames, any> = convertDataToIndexable(fileData)
+  const { result: initList, blockNodeMap: bnMap } = convertDataToIndexable(fileData)
 
-  return Object.entries(indexNames).reduce((p, c) => {
-    return { ...p, [c[0]]: createGenricSearchIndex(initList[c[0]], data[c[0]]) }
+  const idx = Object.entries(indexNames).reduce((p, c) => {
+    const idxName = c[0]
+    let options: any
+
+    switch (idxName) {
+      case indexNames.node:
+      case indexNames.archive: {
+        options = {
+          document: {
+            id: 'blockId',
+            index: ['title', 'text']
+          },
+          tokenize: 'full'
+        }
+        break
+      }
+      case indexNames.snippet: {
+        options = {
+          document: {
+            id: 'id',
+            index: ['title', 'text']
+          },
+          tokenize: 'full'
+        }
+      }
+    }
+
+    return { ...p, [idxName]: createGenricSearchIndex(initList[idxName], data[idxName], options) }
   }, diskIndex)
+
+  return { idx, bnMap }
 }
 
 export const flexIndexKeys = [

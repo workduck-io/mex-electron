@@ -82,7 +82,7 @@ export const removeDoc = async (key: idxKey, id: string) => {
   }
 }
 
-export const searchIndex = async (key: idxKey | idxKey[], query: string) => {
+export const searchIndex = async (key: idxKey, query: string) => {
   try {
     if (!search_worker) throw new Error('Search Worker Not Initialized')
 

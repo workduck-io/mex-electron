@@ -4,7 +4,7 @@ import { CategoryType } from '../../../store/Context/context.spotlight'
 import { ILink } from '../../../types/Types'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { Snippet } from '../../../store/useSnippetStore'
-import { convertContentToRawText } from '../../../utils/search/localSearch'
+import { convertContentToRawText } from '../../../utils/search/parseData'
 import { getContent } from '../../../utils/helpers'
 
 export const getListItemFromNode = (node: ILink) => {

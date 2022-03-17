@@ -33,7 +33,7 @@ import { Title } from '../../style/Typography'
 import { ILink } from '../../types/Types'
 import { getContent } from '../../utils/helpers'
 import { mog } from '../../utils/lib/helper'
-import { convertContentToRawText, convertEntryToRawText } from '../../utils/search/localSearch'
+import { convertContentToRawText, convertEntryToRawText } from '../../utils/search/parseData'
 
 import { useSearch } from '../../hooks/useSearch'
 import { GenericSearchResult } from '../../types/search'

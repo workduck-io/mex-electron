@@ -1,7 +1,7 @@
 import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import { useSnippetStore, Snippet } from '../store/useSnippetStore'
 import { SlashCommandConfig } from '../editor/Components/SlashCommands/Types'
-import { convertEntryToRawText } from '../utils/search/localSearch'
+import { convertEntryToRawText } from '../utils/search/parseData'
 import { useSearch } from './useSearch'
 
 export const useSnippets = () => {
