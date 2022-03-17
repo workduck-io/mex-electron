@@ -5,7 +5,6 @@ import React, { memo, useEffect, useState } from 'react'
 import { FileData } from '../../../types/data'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { convertDataToIndexable } from '../../../utils/search/localSearch'
 import { getHtmlString } from '../../../components/spotlight/Source'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { getPlateSelectors } from '@udecode/plate'
@@ -14,7 +13,6 @@ import { mog } from '../../../utils/lib/helper'
 import useAnalytics from '../../../services/analytics'
 import { useAuthStore } from '../../../services/auth/useAuth'
 import useDataStore from '../../../store/useDataStore'
-import { useSearchStore } from '../../../store/useSearchStore'
 import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { useSaver } from '../../../editor/Components/Saver'
@@ -22,7 +20,6 @@ import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
-import { CreateSearchIndexData } from '../../../utils/search/flexsearch'
 
 interface IndexAndFileData {
   fileData: FileData
@@ -38,11 +35,9 @@ const GlobalListener = memo(() => {
   const setReset = useSpotlightAppStore((state) => state.setReset)
   const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
-  const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const addILink = useDataStore((store) => store.addILink)
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
-  const updateDoc = useSearchStore((store) => store.updateDoc)
 
   const { onSave } = useSaver()
   const { init, update } = useInitialize()
@@ -115,7 +110,6 @@ const GlobalListener = memo(() => {
       const { fileData, indexData } = arg
       const editorID = getNewDraftKey()
       init(fileData, editorID, AppType.SPOTLIGHT)
-      initializeSearchIndex(fileData, indexData)
     })
 
     ipcRenderer.on(IpcAction.SPOTLIGHT_BUBBLE, (_event, arg) => {
@@ -140,12 +134,6 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.send(IpcAction.GET_LOCAL_DATA)
-
-    // ipcRenderer.on(IpcAction.SYNC_INDEX, (event, arg) => {
-    //   const { parsedDoc } = arg
-    //   mog('SpotlightUpdateDoc: ', parsedDoc)
-    //   updateDoc('node', parsedDoc)
-    // })
   }, [])
 
   return <></>

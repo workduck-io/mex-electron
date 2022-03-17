@@ -12,7 +12,6 @@ import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
-import { useSearchStore } from '../../../store/useSearchStore'
 import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import { convertEntryToRawText } from '../../../utils/search/localSearch'
 
@@ -54,7 +53,6 @@ export const useSaveChanges = () => {
 
   const { setSearch } = useSpotlightContext()
 
-  // const updateDoc = useSearchStore((store) => store.updateDoc)
   const { updateDocument } = useSearch()
 
   const saveIt = async (options?: SaveItProps) => {
@@ -82,8 +80,6 @@ export const useSaveChanges = () => {
 
     const parsedDoc = convertEntryToRawText(node.nodeid, editorContent, node.title)
     await updateDocument('node', parsedDoc)
-    // updateDoc('node', parsedDoc)
-    // appNotifierWindow(IpcAction.SYNC_INDEX, AppType.SPOTLIGHT, { parsedDoc })
 
     setSearch({ value: '', type: CategoryType.search })
     setInput('')

@@ -2,7 +2,6 @@ import React from 'react'
 import useDataStore from '../store/useDataStore'
 import { useHistoryStore } from '../store/useHistoryStore'
 import { useRecentsStore } from '../store/useRecentsStore'
-import { useSearchStore } from '../store/useSearchStore'
 import { ILink } from '../types/Types'
 import { getContent } from '../utils/helpers'
 import { mog } from '../utils/lib/helper'
@@ -20,9 +19,6 @@ export const useDelete = () => {
   const historyStack = useHistoryStore((state) => state.stack)
   const currentIndex = useHistoryStore((state) => state.currentNodeIndex)
   const updateHistory = useHistoryStore((state) => state.update)
-
-  const updateDoc = useSearchStore((store) => store.updateDoc)
-  const removeDoc = useSearchStore((store) => store.removeDoc)
 
   const { updateDocument, removeDocument } = useSearch()
 
@@ -66,16 +62,9 @@ export const useDelete = () => {
 
       await removeDocument('node', nodeid)
       await updateDocument('archive', convertEntryToRawText(nodeid, content.content, path))
-      // removeDoc('node', nodeid)
-      // updateDoc('archive', convertEntryToRawText(nodeid, content.content, path))
     })
 
-    // const archContent = getContent(del.)
-    // // Update Search
-    // updateDoc(newIlinks)
-
     setILinks(newIlinks)
-    // initContents(newContents)
 
     return { archivedNodes, newLinks: newIlinks }
   }

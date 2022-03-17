@@ -1,11 +1,10 @@
 import { Document } from 'flexsearch'
 
-import { GenericSearchResult, SearchIndex } from '../../store/useSearchStore'
-import { FileData, GenericSearchData, NodeSearchData } from '../../types/data'
+import { FileData, GenericSearchData } from '../../types/data'
 import { diskIndex, indexNames } from '../../data/search'
-import { mog } from '../lib/helper'
 import { convertDataToIndexable } from './localSearch'
 
+import { SearchIndex } from '../../types/search'
 export interface CreateSearchIndexData {
   node: GenericSearchData[] | null
   snippet: GenericSearchData[] | null

@@ -19,7 +19,6 @@ import { ActionType } from '../../services/analytics/events'
 import { useContentStore } from '../../store/useContentStore'
 import { NodeProperties, useEditorStore } from '../../store/useEditorStore'
 import { useHelpStore } from '../../store/useHelpStore'
-import { useSearchStore } from '../../store/useSearchStore'
 import { useSnippetStore } from '../../store/useSnippetStore'
 import useTodoStore from '../../store/useTodoStore'
 import IconButton from '../../style/Buttons'
@@ -36,7 +35,6 @@ export const useDataSaverFromContent = () => {
   const updateNodeTodos = useTodoStore((store) => store.replaceContentOfTodos)
   const { updateTagsFromContent } = useTags()
   const { saveDataAPI } = useApi()
-  // const updateDoc = useSearchStore((store) => store.updateDoc)
 
   const { updateDocument } = useSearch()
 
@@ -53,8 +51,6 @@ export const useDataSaverFromContent = () => {
 
       const title = getPathFromNodeid(nodeid)
       const parsedDoc = convertEntryToRawText(nodeid, editorValue, title)
-      // updateDoc('node', parsedDoc)
-      // appNotifierWindow(IpcAction.SYNC_INDEX, AppType.MEX, { parsedDoc })
       await updateDocument('node', parsedDoc)
       // saveData()
     }

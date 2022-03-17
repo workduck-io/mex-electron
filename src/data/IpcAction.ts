@@ -46,7 +46,8 @@ export enum IpcAction {
   TOAST_MESSAGE = 'TOAST_MESSAGE',
 
   // * Sync Index
-  SYNC_INDEX = 'SYNC_INDEX',
+  // Not needed anymore since index is maintained in search worker
+  // SYNC_INDEX = 'SYNC_INDEX',
 
   // * Worker
   ANALYSE_CONTENT = 'WORKER:ANALYSE',

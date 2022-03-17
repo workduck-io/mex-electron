@@ -22,7 +22,6 @@ import { useKeyListener } from '../hooks/useShortcutListener'
 import useLayout from '../hooks/useLayout'
 import useLoad from '../hooks/useLoad'
 import { useNavigation } from '../hooks/useNavigation'
-import { useSearchStore } from '../store/useSearchStore'
 import { usePlateEditorRef } from '@udecode/plate'
 import useSuggestionStore from '../store/useSuggestions'
 import useToggleElements from '../hooks/useToggleElements'
@@ -36,7 +35,6 @@ const ContentEditor = () => {
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
 
   const { showGraph, showSuggestedNodes } = useToggleElements()
-  const searchIndex = useSearchStore((store) => store.searchIndex)
   const { queryIndex } = useSearch()
 
   const { nodeid, node, fsContent } = useEditorStore(

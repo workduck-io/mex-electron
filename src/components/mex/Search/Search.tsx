@@ -11,7 +11,6 @@ import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
-import { GenericSearchResult, useSearchStore } from '../../../store/useSearchStore'
 import { MainHeader } from '../../../style/Layouts'
 import {
   Result,
@@ -39,10 +38,10 @@ import SearchView, { RenderFilterProps, RenderItemProps, RenderPreviewProps } fr
 import { View } from './ViewSelector'
 
 import { useSearch } from '../../../hooks/useSearch'
+import { GenericSearchResult } from '../../../types/search'
 
 const Search = () => {
   const { loadNode } = useLoad()
-  const searchIndex = useSearchStore((store) => store.searchIndex)
   const contents = useContentStore((store) => store.contents)
   const ilinks = useDataStore((store) => store.ilinks)
   const initialResults = ilinks

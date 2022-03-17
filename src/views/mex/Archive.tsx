@@ -16,7 +16,6 @@ import useLoad from '../../hooks/useLoad'
 import { useContentStore } from '../../store/useContentStore'
 import useDataStore from '../../store/useDataStore'
 import { NodeProperties } from '../../store/useEditorStore'
-import { GenericSearchResult, useSearchStore } from '../../store/useSearchStore'
 import { Button } from '../../style/Buttons'
 import { MainHeader } from '../../style/Layouts'
 import {
@@ -37,6 +36,7 @@ import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText, convertEntryToRawText } from '../../utils/search/localSearch'
 
 import { useSearch } from '../../hooks/useSearch'
+import { GenericSearchResult } from '../../types/search'
 
 const Nodes = styled.section`
   padding-right: 2rem;
@@ -91,10 +91,7 @@ const Archive = () => {
   const { onSave } = useSaver()
   const contents = useContentStore((store) => store.contents)
   const theme = useTheme()
-  const searchIndex = useSearchStore((store) => store.searchIndex)
   const { queryIndex } = useSearch()
-  // const updateDoc = useSearchStore((store) => store.updateDoc)
-  // const removeDoc = useSearchStore((store) => store.removeDoc)
 
   const { updateDocument, removeDocument } = useSearch()
 

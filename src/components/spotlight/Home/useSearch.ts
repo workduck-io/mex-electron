@@ -8,7 +8,6 @@ import { isReservedOrClash } from '../../../utils/lib/paths'
 import { mog } from '../../../utils/lib/helper'
 /* eslint-disable no-case-declarations */
 import useLoad from '../../../hooks/useLoad'
-import { useSearchStore } from '../../../store/useSearchStore'
 import { useQuickLinks } from '../../../hooks/useQuickLinks'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { useSnippets } from '../../../hooks/useSnippets'
@@ -41,7 +40,6 @@ export const CREATE_NEW_ITEM: ListItemType = {
 export const useSearch = () => {
   const { isLocalNode } = useLoad()
   const { search } = useSpotlightContext()
-  const searchIndex = useSearchStore((store) => store.searchIndex)
   const { queryIndex } = useSearchHook()
   const { getQuickLinks } = useQuickLinks()
   const { getSnippet } = useSnippets()

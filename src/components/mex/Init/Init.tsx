@@ -27,7 +27,6 @@ import { useHistoryStore } from '../../../store/useHistoryStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
-import { useSearchStore } from '../../../store/useSearchStore'
 import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
 import { AppleNote } from '../../../utils/importers/appleNotes'
 import { mog } from '../../../utils/lib/helper'
@@ -52,13 +51,10 @@ const Init = () => {
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
   const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
 
-  const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
-  const fetchIndexLocalStorage = useSearchStore((store) => store.fetchIndexLocalStorage)
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
   const { getNodeidFromPath } = useLinks()
   const { onSave } = useSaver()
-  const updateDoc = useSearchStore((store) => store.updateDoc)
 
   const { queryIndex } = useSearch()
 
@@ -68,8 +64,6 @@ const Init = () => {
   useSaveAndExit()
 
   const { getTemplates } = useUpdater()
-
-  const auth = useAuthStore((store) => store.authenticated)
 
   /**
    * Initialization of the app data, search index and auth,
@@ -86,10 +80,6 @@ const Init = () => {
         .then(({ fileData, indexData }) => {
           init(fileData)
           // setOnboardData()
-          return { fileData, indexData }
-        })
-        .then(({ fileData, indexData }) => {
-          const index = initializeSearchIndex(fileData, indexData)
           return fileData
         })
         .then((d) => {
@@ -197,12 +187,7 @@ const Init = () => {
       loadNode(appleNotesUID)
       goTo(ROUTE_PATHS.node, NavigationType.push, appleNotesUID)
     })
-    // ipcRenderer.on(IpcAction.SYNC_INDEX, (event, arg) => {
-    //   const { parsedDoc } = arg
-    //   mog('MexUpdateDoc: ', parsedDoc)
-    //   updateDoc('node', parsedDoc)
-    // })
-  }, [fetchIndexLocalStorage, isOnboarding]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isOnboarding]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (editor && appleNotes.length > 0) {

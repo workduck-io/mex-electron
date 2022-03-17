@@ -2,12 +2,12 @@ import { useState } from 'react'
 import create from 'zustand'
 import { getAllParentIds, isElder } from '../components/mex/Sidebar/treeUtils'
 import useDataStore from '../store/useDataStore'
-import { GenericSearchResult } from '../store/useSearchStore'
 import { mog } from '../utils/lib/helper'
 import { useLinks } from './useLinks'
 import { useTags } from './useTags'
 // import create from 'zustand'
 
+import { GenericSearchResult } from '../types/search'
 /*
 - Date
 - Node level

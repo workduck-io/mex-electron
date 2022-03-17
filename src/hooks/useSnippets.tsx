@@ -1,7 +1,6 @@
 import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import { useSnippetStore, Snippet } from '../store/useSnippetStore'
 import { SlashCommandConfig } from '../editor/Components/SlashCommands/Types'
-import { useSearchStore } from '../store/useSearchStore'
 import { convertEntryToRawText } from '../utils/search/localSearch'
 import { useSearch } from './useSearch'
 
@@ -9,8 +8,6 @@ export const useSnippets = () => {
   const addSnippetZus = useSnippetStore((state) => state.addSnippet)
   const updateSnippetZus = useSnippetStore((state) => state.updateSnippet)
   const deleteSnippetZus = useSnippetStore((state) => state.deleteSnippet)
-  const updateDoc = useSearchStore((store) => store.updateDoc)
-  const removeDoc = useSearchStore((store) => store.removeDoc)
 
   const { updateDocument, removeDocument } = useSearch()
 
@@ -52,17 +49,14 @@ export const useSnippets = () => {
   const updateSnippet = async (snippet: Snippet) => {
     updateSnippetZus(snippet.id, snippet)
     await updateDocument('snippet', convertEntryToRawText(snippet.id, snippet.content, snippet.title))
-    // updateDoc('snippet', convertEntryToRawText(snippet.id, snippet.content, snippet.title))
   }
   const deleteSnippet = async (id: string) => {
     deleteSnippetZus(id)
     await removeDocument('snippet', id)
-    // removeDoc('snippet', id)
   }
   const addSnippet = async (snippet: Snippet) => {
     addSnippetZus(snippet)
     await updateDocument('snippet', convertEntryToRawText(snippet.id, snippet.content, snippet.title))
-    // updateDoc('snippet', convertEntryToRawText(snippet.id, snippet.content, snippet.title))
   }
 
   return { getSnippets, getSnippet, getSnippetContent, getSnippetsConfigs, addSnippet, updateSnippet, deleteSnippet }

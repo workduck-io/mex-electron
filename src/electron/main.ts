@@ -623,13 +623,6 @@ ipcMain.on(IpcAction.IMPORT_APPLE_NOTES, async () => {
   if (selectedAppleNotes) mex?.webContents.send(IpcAction.SET_APPLE_NOTES_DATA, selectedAppleNotes)
 })
 
-ipcMain.on(IpcAction.SYNC_INDEX, (event, arg) => {
-  const { from, data } = arg
-
-  if (from === AppType.MEX) spotlight?.webContents.send(IpcAction.SYNC_INDEX, data)
-  else if (from === AppType.SPOTLIGHT) mex?.webContents.send(IpcAction.SYNC_INDEX, data)
-})
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) => {
   if (from === AppType.MEX) spotlight?.webContents.send(action, { data })
