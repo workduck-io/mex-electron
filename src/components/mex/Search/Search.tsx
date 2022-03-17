@@ -38,6 +38,8 @@ import SearchFilters from './SearchFilters'
 import SearchView, { RenderFilterProps, RenderItemProps, RenderPreviewProps } from './SearchView'
 import { View } from './ViewSelector'
 
+import { useSearch } from '../../../hooks/useSearch'
+
 const Search = () => {
   const { loadNode } = useLoad()
   const searchIndex = useSearchStore((store) => store.searchIndex)
@@ -67,8 +69,10 @@ const Search = () => {
 
   const { getPathFromNodeid } = useLinks()
 
-  const onSearch = (newSearchTerm: string) => {
-    const res = searchIndex('node', newSearchTerm)
+  const { queryIndex } = useSearch()
+
+  const onSearch = async (newSearchTerm: string) => {
+    const res = await queryIndex('node', newSearchTerm)
     const nodeids = useDataStore.getState().ilinks.map((l) => l.nodeid)
     const filRes = res.filter((r) => nodeids.includes(r.id))
     // mog('search', { res, filRes })

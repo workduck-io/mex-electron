@@ -31,6 +31,8 @@ import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText } from '../../utils/search/localSearch'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 
+import { useSearch } from '../../hooks/useSearch'
+
 export type SnippetsProps = {
   title?: string
 }
@@ -41,6 +43,7 @@ const Snippets = () => {
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const { updater } = useUpdater()
   const searchIndex = useSearchStore((store) => store.searchIndex)
+  const { queryIndex } = useSearch()
   const { getNode } = useNodes()
   const { goTo } = useRouting()
   const initialSnippets: GenericSearchResult[] = snippets.map((snippet) => ({
@@ -49,8 +52,8 @@ const Snippets = () => {
     text: convertContentToRawText(snippet.content)
   }))
 
-  const onSearch = (newSearchTerm: string) => {
-    const res = searchIndex('snippet', newSearchTerm)
+  const onSearch = async (newSearchTerm: string) => {
+    const res = await queryIndex('snippet', newSearchTerm)
     mog('search', { res })
     if (newSearchTerm === '' && res.length === 0) {
       return initialSnippets

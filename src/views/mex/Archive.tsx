@@ -36,6 +36,8 @@ import { getContent } from '../../utils/helpers'
 import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText, convertEntryToRawText } from '../../utils/search/localSearch'
 
+import { useSearch } from '../../hooks/useSearch'
+
 const Nodes = styled.section`
   padding-right: 2rem;
   height: 100%;
@@ -90,6 +92,7 @@ const Archive = () => {
   const contents = useContentStore((store) => store.contents)
   const theme = useTheme()
   const searchIndex = useSearchStore((store) => store.searchIndex)
+  const { queryIndex } = useSearch()
   const updateDoc = useSearchStore((store) => store.updateDoc)
   const removeDoc = useSearchStore((store) => store.removeDoc)
 
@@ -107,8 +110,8 @@ const Archive = () => {
       text: convertContentToRawText(content.content)
     }
   }
-  const onSearch = (newSearchTerm: string) => {
-    const res = searchIndex('archive', newSearchTerm)
+  const onSearch = async (newSearchTerm: string) => {
+    const res = await searchIndex('archive', newSearchTerm)
     mog('ArchiveSearch', { newSearchTerm, res })
     if (newSearchTerm === '' && res.length === 0) {
       return initialArchive

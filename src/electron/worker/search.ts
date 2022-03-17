@@ -26,11 +26,6 @@ const searchWorker: SearchWorker = {
   },
 
   searchIndex: (key: idxKey | idxKey[], query: string) => {
-    console.log('Global Search Index: ', globalSearchIndex)
-
-    const keyType = typeof key
-    mog('TypeofKey', { keyType })
-
     try {
       let response: any[] = []
       if (typeof key === 'string') {
@@ -38,8 +33,6 @@ const searchWorker: SearchWorker = {
       } else {
         key.forEach((k) => (response = [...response, globalSearchIndex[k].search(query)]))
       }
-
-      mog('SearchResultsWorker', { response })
 
       const results = new Array<any>()
       response.forEach((entry) => {

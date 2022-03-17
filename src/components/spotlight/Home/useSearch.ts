@@ -12,6 +12,7 @@ import { useSearchStore } from '../../../store/useSearchStore'
 import { useQuickLinks } from '../../../hooks/useQuickLinks'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { useSnippets } from '../../../hooks/useSnippets'
+import { useSearch as useSearchHook } from '../../../hooks/useSearch'
 
 export const CREATE_NEW_ITEM: ListItemType = {
   title: 'Create new ',
@@ -41,10 +42,11 @@ export const useSearch = () => {
   const { isLocalNode } = useLoad()
   const { search } = useSpotlightContext()
   const searchIndex = useSearchStore((store) => store.searchIndex)
+  const { queryIndex } = useSearchHook()
   const { getQuickLinks } = useQuickLinks()
   const { getSnippet } = useSnippets()
 
-  const searchInList = () => {
+  const searchInList = async () => {
     let searchList: Array<ListItemType> = []
     const quickLinks = getQuickLinks()
 
@@ -73,8 +75,8 @@ export const useSearch = () => {
         break
 
       case CategoryType.search:
-        const nodeItems = searchIndex('node', search.value)
-        const snippetItems = searchIndex('snippet', search.value)
+        const nodeItems = await queryIndex('node', search.value)
+        const snippetItems = await queryIndex('snippet', search.value)
 
         const actionItems = getSearchResults(search.value, initActions, { keySelector: (obj) => obj.title })
         const localNodes = []

@@ -80,7 +80,5 @@ export const convertDataToIndexable = (data: FileData): Record<indexNames, Gener
     return { ...p, [idxName]: idxResult }
   }, diskIndex)
 
-  mog('ConvertDataToIndexable', { data, result })
-
   return result
 }
