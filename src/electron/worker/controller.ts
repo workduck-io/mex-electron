@@ -55,19 +55,19 @@ export const initSearchIndex = async (fileData: FileData, indexData: Record<idxK
   }
 }
 
-export const addDoc = async (key: idxKey, doc: GenericSearchData) => {
+export const addDoc = async (key: idxKey, nodeId: string, contents: any[], title: string) => {
   try {
     if (!search_worker) throw new Error('Search Worker Not Initialized')
-    await search_worker.addDoc(key, doc)
+    await search_worker.addDoc(key, nodeId, contents, title)
   } catch (error) {
     mog('AddDocIndexError', { error })
   }
 }
 
-export const updateDoc = async (key: idxKey, doc: GenericSearchData) => {
+export const updateDoc = async (key: idxKey, nodeId: string, contents: any[], title: string) => {
   try {
     if (!search_worker) throw new Error('Search Worker Not Initialized')
-    await search_worker.updateDoc(key, doc)
+    await search_worker.updateDoc(key, nodeId, contents, title)
   } catch (error) {
     mog('AddDocIndexError', { error })
   }

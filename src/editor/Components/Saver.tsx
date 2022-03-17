@@ -26,12 +26,12 @@ import { NodeEditorContent } from '../../types/Types'
 import { getTodosFromContent } from '../../utils/lib/content'
 import { mog } from '../../utils/lib/helper'
 import { getEventNameFromElement } from '../../utils/lib/strings'
-import { convertEntryToRawText } from '../../utils/search/parseData'
+import { convertEntryToRawText, parseNode } from '../../utils/search/parseData'
 
 export const useDataSaverFromContent = () => {
   const setContent = useContentStore((state) => state.setContent)
   const getContent = useContentStore((state) => state.getContent)
-  const { updateLinksFromContent, getPathFromNodeid } = useLinks()
+  const { updateLinksFromContent } = useLinks()
   const updateNodeTodos = useTodoStore((store) => store.replaceContentOfTodos)
   const { updateTagsFromContent } = useTags()
   const { saveDataAPI } = useApi()
@@ -39,35 +39,33 @@ export const useDataSaverFromContent = () => {
   const { updateDocument } = useSearch()
 
   // By default saves to API use false to not save
-  const saveEditorValueAndUpdateStores = async (nodeid: string, editorValue: any[], saveApi?: boolean) => {
+  const saveEditorValueAndUpdateStores = async (nodeId: string, editorValue: any[], saveApi?: boolean) => {
     //useCallback(
     if (editorValue) {
-      setContent(nodeid, editorValue)
-      mog('saveEditorValueAndUpdateStores', { nodeid, editorValue, saveApi })
-      if (saveApi !== false) saveDataAPI(nodeid, editorValue)
-      updateLinksFromContent(nodeid, editorValue)
-      updateTagsFromContent(nodeid, editorValue)
-      updateNodeTodos(nodeid, getTodosFromContent(editorValue))
+      setContent(nodeId, editorValue)
+      mog('saveEditorValueAndUpdateStores', { nodeId, editorValue, saveApi })
+      if (saveApi !== false) saveDataAPI(nodeId, editorValue)
+      updateLinksFromContent(nodeId, editorValue)
+      updateTagsFromContent(nodeId, editorValue)
+      updateNodeTodos(nodeId, getTodosFromContent(editorValue))
 
-      const title = getPathFromNodeid(nodeid)
-      const parsedDoc = convertEntryToRawText(nodeid, editorValue, title)
-      await updateDocument('node', parsedDoc)
+      await updateDocument('node', nodeId, editorValue)
       // saveData()
     }
   } //, [])
 
-  const saveNodeAPIandFs = (nodeid: string) => {
-    const content = getContent(nodeid)
-    mog('saving to api for nodeid: ', { nodeid, content })
-    saveDataAPI(nodeid, content.content)
+  const saveNodeAPIandFs = (nodeId: string) => {
+    const content = getContent(nodeId)
+    mog('saving to api for nodeId: ', { nodeId, content })
+    saveDataAPI(nodeId, content.content)
     // saveData()
   }
 
-  const saveNodeWithValue = (nodeid: string, value: NodeEditorContent) => {
-    // const content = getContent(nodeid)
-    mog('saving to api for nodeid: ', { nodeid, value })
-    // saveDataAPI(nodeid, content.content)
-    saveEditorValueAndUpdateStores(nodeid, value, true)
+  const saveNodeWithValue = (nodeId: string, value: NodeEditorContent) => {
+    // const content = getContent(nodeId)
+    mog('saving to api for nodeId: ', { nodeId, value })
+    // saveDataAPI(nodeId, content.content)
+    saveEditorValueAndUpdateStores(nodeId, value, true)
     // saveData()
   }
 
@@ -96,7 +94,7 @@ export const useSaver = () => {
     const defaultNode = useEditorStore.getState().node
     const cnode = node || defaultNode
 
-    // * Editor Id is different from nodeid
+    // * Editor Id is different from nodeId
     const editorId = getPlateId()
     const hasState = !!state[editorId]
 
@@ -121,7 +119,7 @@ interface SaverButtonProps {
   noButton?: boolean
   // Warning doesn't get the current node in the editor
   saveOnUnmount?: boolean
-  callbackAfterSave?: (nodeid?: string) => void
+  callbackAfterSave?: (nodeId?: string) => void
   callbackBeforeSave?: () => void
   singleton?: TippyProps['singleton']
 }

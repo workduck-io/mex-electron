@@ -1,33 +1,78 @@
-import { diskIndex } from './../../data/search'
 import { expose } from 'threads/worker'
 
 import { FileData } from './../../types/data'
-import { createSearchIndex, exportIndex } from '../../utils/search/flexsearch'
+import {
+  createSearchIndex,
+  exportIndex,
+  createIndexCompositeKey,
+  getNodeAndBlockIdFromCompositeKey
+} from '../../utils/search/flexsearch'
 import { mog } from '../../utils/lib/helper'
 import { SearchWorker, idxKey, GenericSearchData, GenericSearchResult, SearchIndex } from '../../types/search'
 import { setSearchIndexData } from './../utils/indexData'
+import { parseNode } from '../../utils/search/parseData'
 
 let globalSearchIndex: SearchIndex = null
-let blockNodeMapping: Map<string, string> = null
+let nodeBlockMapping: { [key: string]: string[] } = null
 
 const searchWorker: SearchWorker = {
   init: (fileData: FileData, indexData: Record<idxKey, any>) => {
-    const { idx, bnMap } = createSearchIndex(fileData, indexData)
+    const { idx, nbMap } = createSearchIndex(fileData, indexData)
 
     globalSearchIndex = idx
-    blockNodeMapping = bnMap
+    nodeBlockMapping = nbMap
   },
 
-  addDoc: (key: idxKey, doc: GenericSearchData) => {
-    if (globalSearchIndex[key]) globalSearchIndex[key].add(doc)
+  addDoc: (key: idxKey, nodeId: string, contents: any[], title = '') => {
+    if (globalSearchIndex[key]) {
+      const parsedBlocks = parseNode(nodeId, contents, title)
+
+      const blockIds = parsedBlocks.map((block) => block.id)
+      nodeBlockMapping[nodeId] = blockIds
+
+      parsedBlocks.forEach((block) => {
+        block.blockId = createIndexCompositeKey(nodeId, block.blockId)
+        globalSearchIndex[key].add(block)
+      })
+    }
   },
 
-  updateDoc: (key: idxKey, doc: GenericSearchData) => {
-    if (globalSearchIndex[key]) globalSearchIndex[key].update(doc)
+  updateDoc: (key: idxKey, nodeId: string, contents: any[], title = '') => {
+    if (globalSearchIndex[key]) {
+      const parsedBlocks = parseNode(nodeId, contents, title)
+
+      const existingNodeBlocks = nodeBlockMapping[nodeId]
+      const newBlockIds = parsedBlocks.map((block) => block.blockId)
+
+      const blockIdsToBeDeleted = existingNodeBlocks.filter((id) => !newBlockIds.includes(id))
+
+      mog('UpdatingDoc', { existingNodeBlocks, blockIdsToBeDeleted, parsedBlocks })
+
+      nodeBlockMapping[nodeId] = newBlockIds
+
+      blockIdsToBeDeleted.forEach((blockId) => {
+        const compositeKey = createIndexCompositeKey(nodeId, blockId)
+        globalSearchIndex[key].remove(compositeKey)
+      })
+
+      parsedBlocks.forEach((block) => {
+        block.blockId = createIndexCompositeKey(nodeId, block.blockId)
+        globalSearchIndex[key].update(block)
+      })
+    }
   },
 
   removeDoc: (key: idxKey, id: string) => {
-    if (globalSearchIndex[key]) globalSearchIndex[key].remove(id)
+    if (globalSearchIndex[key]) {
+      const blockIds = nodeBlockMapping[id]
+
+      delete nodeBlockMapping[id]
+
+      blockIds.forEach((blockId) => {
+        const compositeKey = createIndexCompositeKey(id, blockId)
+        globalSearchIndex[key].remove(compositeKey)
+      })
+    }
   },
 
   searchIndex: (key: idxKey | idxKey[], query: string) => {
@@ -47,7 +92,8 @@ const searchWorker: SearchWorker = {
         const matchField = entry.field
         entry.result.forEach((i) => {
           mog('ResultEntry', { i })
-          results.push({ id: blockNodeMapping.get(i), blockId: i, matchField })
+          const { nodeId, blockId } = getNodeAndBlockIdFromCompositeKey(i)
+          results.push({ id: nodeId, blockId, matchField })
         })
       })
 

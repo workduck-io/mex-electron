@@ -13,7 +13,6 @@ import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
-import { convertEntryToRawText } from '../../../utils/search/parseData'
 
 import { useSearch } from '../../../hooks/useSearch'
 
@@ -78,8 +77,7 @@ export const useSaveChanges = () => {
       independent: options?.saveAndClose
     })
 
-    const parsedDoc = convertEntryToRawText(node.nodeid, editorContent, node.title)
-    await updateDocument('node', parsedDoc)
+    await updateDocument('node', node.nodeid, editorContent)
 
     setSearch({ value: '', type: CategoryType.search })
     setInput('')

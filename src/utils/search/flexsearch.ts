@@ -1,9 +1,9 @@
 import { Document } from 'flexsearch'
 
-import { FileData, GenericSearchData } from '../../types/data'
+import { FileData } from '../../types/data'
 import { diskIndex, indexNames } from '../../data/search'
 import { convertDataToIndexable } from './parseData'
-import { SearchIndex } from '../../types/search'
+import { SearchIndex, GenericSearchData } from '../../types/search'
 import { mog } from '../lib/helper'
 export interface CreateSearchIndexData {
   node: GenericSearchData[] | null
@@ -11,41 +11,32 @@ export interface CreateSearchIndexData {
   archive: GenericSearchData[] | null
 }
 
+export const createIndexCompositeKey = (nodeId: string, blockId: string) => {
+  return `${nodeId}#${blockId}`
+}
+
+export const getNodeAndBlockIdFromCompositeKey = (compositeKey: string) => {
+  const c = compositeKey.split('#')
+  return { nodeId: c[0], blockId: c[1] }
+}
+
 export const createSearchIndex = (fileData: FileData, data: CreateSearchIndexData) => {
   // TODO: Find a way to delay the conversion until needed i.e. if index is not present
-  const { result: initList, blockNodeMap: bnMap } = convertDataToIndexable(fileData)
+  const { result: initList, nodeBlockMap: nbMap } = convertDataToIndexable(fileData)
 
   const idx = Object.entries(indexNames).reduce((p, c) => {
     const idxName = c[0]
-    let options: any
-
-    switch (idxName) {
-      case indexNames.node:
-      case indexNames.archive: {
-        options = {
-          document: {
-            id: 'blockId',
-            index: ['title', 'text']
-          },
-          tokenize: 'full'
-        }
-        break
-      }
-      case indexNames.snippet: {
-        options = {
-          document: {
-            id: 'id',
-            index: ['title', 'text']
-          },
-          tokenize: 'full'
-        }
-      }
+    const options = {
+      document: {
+        id: 'blockId',
+        index: ['title', 'text']
+      },
+      tokenize: 'full'
     }
-
     return { ...p, [idxName]: createGenricSearchIndex(initList[idxName], data[idxName], options) }
   }, diskIndex)
 
-  return { idx, bnMap }
+  return { idx, nbMap }
 }
 
 export const flexIndexKeys = [
@@ -82,9 +73,10 @@ export const createGenricSearchIndex = (
       index.import(key, parsedData)
     })
   } else {
-    const initListLen = initList.length
-    mog('AddingFromFileData', { initListLen })
-    initList.forEach((i) => index.add(i))
+    initList.forEach((block) => {
+      block.blockId = createIndexCompositeKey(block.id, block.blockId ?? block.id)
+      index.add(block)
+    })
   }
   return index
 }

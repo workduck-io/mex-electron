@@ -39,7 +39,7 @@ export const parseNode = (nodeId: string, contents: any[], title = ''): GenericS
 }
 
 export const convertDataToIndexable = (data: FileData) => {
-  const blockNodeMap = new Map<string, string>()
+  const nodeBlockMap: { [key: string]: string[] } = {}
   const result: Record<indexNames, GenericSearchData[]> = Object.entries(indexNames).reduce((p, c) => {
     const idxResult = []
     const idxName = c[0]
@@ -77,8 +77,9 @@ export const convertDataToIndexable = (data: FileData) => {
     if (idxName === indexNames.archive || idxName === indexNames.node) {
       Object.entries(data.contents).forEach(([k, v]) => {
         if (v.type === 'editor' && k !== '__null__' && titleNodeMap.has(k)) {
+          if (!nodeBlockMap[k]) nodeBlockMap[k] = []
           v.content.forEach((block) => {
-            blockNodeMap.set(block.id, k)
+            nodeBlockMap[k].push(block.id)
             const blockText = convertContentToRawText(block.children)
             if (blockText.length !== 0) {
               const temp: GenericSearchData = { id: k, text: blockText, blockId: block.id, title: titleNodeMap.get(k) }
@@ -91,7 +92,7 @@ export const convertDataToIndexable = (data: FileData) => {
       data.snippets.map((snip) => {
         const temp: GenericSearchData = convertEntryToRawText(snip.id, snip.content)
         temp.title = titleNodeMap.get(snip.id)
-        blockNodeMap.set(snip.id, snip.id) // Redundant right now, not doing block level indexing for snippets
+        nodeBlockMap[snip.id] = [snip.id] // Redundant right now, not doing block level indexing for snippets
         idxResult.push(temp)
       })
     } else {
@@ -104,5 +105,7 @@ export const convertDataToIndexable = (data: FileData) => {
   // const dump = JSON.stringify(result)
   // mog('ConvertDataToIndexable', { dump, blockNodeMap })
 
-  return { result, blockNodeMap }
+  mog('NodeBlockMap', { nodeBlockMap })
+
+  return { result, nodeBlockMap }
 }

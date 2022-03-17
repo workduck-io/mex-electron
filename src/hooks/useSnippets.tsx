@@ -48,7 +48,7 @@ export const useSnippets = () => {
 
   const updateSnippet = async (snippet: Snippet) => {
     updateSnippetZus(snippet.id, snippet)
-    await updateDocument('snippet', convertEntryToRawText(snippet.id, snippet.content, snippet.title))
+    await updateDocument('snippet', snippet.id, snippet.content, snippet.title)
   }
   const deleteSnippet = async (id: string) => {
     deleteSnippetZus(id)
@@ -56,7 +56,7 @@ export const useSnippets = () => {
   }
   const addSnippet = async (snippet: Snippet) => {
     addSnippetZus(snippet)
-    await updateDocument('snippet', convertEntryToRawText(snippet.id, snippet.content, snippet.title))
+    await updateDocument('snippet', snippet.id, snippet.content, snippet.title)
   }
 
   return { getSnippets, getSnippet, getSnippetContent, getSnippetsConfigs, addSnippet, updateSnippet, deleteSnippet }

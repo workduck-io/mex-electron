@@ -6,7 +6,6 @@ import { ILink } from '../types/Types'
 import { getContent } from '../utils/helpers'
 import { mog } from '../utils/lib/helper'
 import { isMatch } from '../utils/lib/paths'
-import { convertEntryToRawText } from '../utils/search/parseData'
 import useArchive from './useArchive'
 import { useSearch } from './useSearch'
 
@@ -61,7 +60,7 @@ export const useDelete = () => {
       const content = getContent(nodeid)
 
       await removeDocument('node', nodeid)
-      await updateDocument('archive', convertEntryToRawText(nodeid, content.content, path))
+      await updateDocument('archive', nodeid, content.content, path)
     })
 
     setILinks(newIlinks)

@@ -2,13 +2,18 @@ import { idxKey, GenericSearchData, GenericSearchResult } from '../types/search'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../data/IpcAction'
 
+import { parseNode } from '../utils/search/parseData'
+import { useLinks } from './useLinks'
+
 export const useSearch = () => {
-  const addDocument = async (key: idxKey, doc: GenericSearchData) => {
-    await ipcRenderer.invoke(IpcAction.ADD_DOCUMENT, key, doc)
+  const { getPathFromNodeid } = useLinks()
+
+  const addDocument = async (key: idxKey, nodeId: string, contents: any[], title?: string) => {
+    await ipcRenderer.invoke(IpcAction.ADD_DOCUMENT, key, nodeId, contents, title ?? getPathFromNodeid(nodeId))
   }
 
-  const updateDocument = async (key: idxKey, doc: GenericSearchData) => {
-    await ipcRenderer.invoke(IpcAction.UPDATE_DOCUMENT, key, doc)
+  const updateDocument = async (key: idxKey, nodeId: string, contents: any[], title?: string) => {
+    await ipcRenderer.invoke(IpcAction.UPDATE_DOCUMENT, key, nodeId, contents, title ?? getPathFromNodeid(nodeId))
   }
 
   const removeDocument = async (key: idxKey, id: string) => {

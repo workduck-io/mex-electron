@@ -33,7 +33,7 @@ import { Title } from '../../style/Typography'
 import { ILink } from '../../types/Types'
 import { getContent } from '../../utils/helpers'
 import { mog } from '../../utils/lib/helper'
-import { convertContentToRawText, convertEntryToRawText } from '../../utils/search/parseData'
+import { convertContentToRawText } from '../../utils/search/parseData'
 
 import { useSearch } from '../../hooks/useSearch'
 import { GenericSearchResult } from '../../types/search'
@@ -132,7 +132,7 @@ const Archive = () => {
     const content = getContent(node.nodeid)
     await removeDocument('archive', node.nodeid)
 
-    await updateDocument('node', convertEntryToRawText(node.nodeid, content.content, node.path))
+    await updateDocument('node', node.nodeid, content.content, node.path)
 
     const archiveNode: NodeProperties = {
       id: node.path,
