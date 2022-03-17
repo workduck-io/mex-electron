@@ -21,11 +21,6 @@ import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
 
-interface IndexAndFileData {
-  fileData: FileData
-  indexData: Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
-}
-
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
   const { setSelection } = useSpotlightContext()
@@ -106,8 +101,8 @@ const GlobalListener = memo(() => {
       } else setUnAuthenticated()
     })
 
-    ipcRenderer.on(IpcAction.RECEIVE_LOCAL_DATA, (_event, arg: IndexAndFileData) => {
-      const { fileData, indexData } = arg
+    ipcRenderer.on(IpcAction.RECEIVE_LOCAL_DATA, (_event, arg) => {
+      const { fileData } = arg
       const editorID = getNewDraftKey()
       init(fileData, editorID, AppType.SPOTLIGHT)
     })

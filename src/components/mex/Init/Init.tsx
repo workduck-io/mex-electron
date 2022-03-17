@@ -77,7 +77,7 @@ const Init = () => {
           mog('Initializaing', { d })
           return d
         })
-        .then(({ fileData, indexData }) => {
+        .then(({ fileData }) => {
           init(fileData)
           // setOnboardData()
           return fileData
@@ -153,22 +153,6 @@ const Init = () => {
       if (page) {
         goTo(page, NavigationType.replace)
       }
-    })
-    // TODO: THIS DOESN'T WORK. INDEX IS RELOADED ON EVERY APP OPEN`
-    ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, () => {
-      // setSearchIndexData(searchIndex, '.')
-      // const searchIndex = await fetch('https://google.com`')
-      // fetchIndexLocalStorage().then((searchIndex) => {
-      // })
-      // const searchIndex = Object.entries(indexNames).reduce((p, c) => {
-      //   const currIdx = {}
-      //   indexKeys[c[0]].forEach((key) => {
-      //     const t = localStorage.getItem(`${c[0]}.${key}`)
-      //     if (t === null) currIdx[key] = ''
-      //     else currIdx[key] = t
-      //   })
-      //   return { ...p, [c[0]]: currIdx }
-      // }, diskIndex)
     })
     ipcRenderer.on(IpcAction.CREATE_NEW_NODE, () => {
       const newNodeId = getNewDraftKey()

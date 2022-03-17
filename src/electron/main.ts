@@ -37,7 +37,6 @@ import {
   SelectionType,
   useSnippetFromClipboard
 } from './utils/getSelectedText'
-import { getIndexData, setSearchIndexData } from './utils/indexData'
 import { checkIfAlpha } from './utils/version'
 import { addDoc, analyseContent, initSearchIndex, removeDoc, searchIndex, updateDoc } from './worker/controller'
 
@@ -514,20 +513,13 @@ ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
 
 ipcMain.on(IpcAction.GET_LOCAL_DATA, async (event) => {
   const fileData: FileData = getFileData(SAVE_LOCATION)
-  const indexData: any = getIndexData(SEARCH_INDEX_LOCATION)
-  console.log('Received Index Data: ', indexData)
   await initSearchIndex(fileData)
-  event.sender.send(IpcAction.RECEIVE_LOCAL_DATA, { fileData, indexData })
+  event.sender.send(IpcAction.RECEIVE_LOCAL_DATA, { fileData })
 })
 
 ipcMain.on(IpcAction.SET_THEME, (ev, arg) => {
   const { data } = arg
   toast?.send(IpcAction.SET_THEME, data.theme)
-})
-
-ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
-  const { searchIndex } = arg
-  if (searchIndex) setSearchIndexData(searchIndex, SEARCH_INDEX_LOCATION)
 })
 
 ipcMain.on(IpcAction.SET_LOCAL_DATA, (_event, arg) => {
