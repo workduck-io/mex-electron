@@ -58,35 +58,38 @@ const Content = () => {
 
   // * For setting the results
   useEffect(() => {
-    if (!activeItem?.item) {
-      if (search.value) {
-        const listWithNew = searchInList()
-        setSearchResults(listWithNew)
-      } else {
-        // * Get those recent node links which exists locally
+    async function getSearchItems() {
+      if (!activeItem?.item) {
+        if (search.value) {
+          const listWithNew = await searchInList()
+          setSearchResults(listWithNew)
+        } else {
+          // * Get those recent node links which exists locally
 
-        if (!useSpotlightAppStore.getState().normalMode) return
+          if (!useSpotlightAppStore.getState().normalMode) return
 
-        const recents = selection ? recentResearchNodes : lastOpenedNodes
-        const items = recents.filter((recent: string) => ilinks.find((ilink) => ilink.nodeid === recent))
+          const recents = selection ? recentResearchNodes : lastOpenedNodes
+          const items = recents.filter((recent: string) => ilinks.find((ilink) => ilink.nodeid === recent))
 
-        const recentList = items
-          .map((nodeid: string) => {
-            const item = ilinks.find((link) => link?.nodeid === nodeid)
+          const recentList = items
+            .map((nodeid: string) => {
+              const item = ilinks.find((link) => link?.nodeid === nodeid)
 
-            const listItem: ListItemType = getListItemFromNode(item)
-            return listItem
-          })
-          .reverse()
+              const listItem: ListItemType = getListItemFromNode(item)
+              return listItem
+            })
+            .reverse()
 
-        const recentLimit = recentList.length < MAX_RECENT_ITEMS ? recentList.length : MAX_RECENT_ITEMS
-        const limitedList = recentList.slice(0, recentLimit)
+          const recentLimit = recentList.length < MAX_RECENT_ITEMS ? recentList.length : MAX_RECENT_ITEMS
+          const limitedList = recentList.slice(0, recentLimit)
 
-        const list = !recentLimit ? [CREATE_NEW_ITEM] : insertItemInArray(limitedList, CREATE_NEW_ITEM, 1)
-        const data = [...list, ...initActions]
-        setSearchResults(data)
+          const list = !recentLimit ? [CREATE_NEW_ITEM] : insertItemInArray(limitedList, CREATE_NEW_ITEM, 1)
+          const data = [...list, ...initActions]
+          setSearchResults(data)
+        }
       }
     }
+    getSearchItems()
     // else {
     //   setSearchResults([activeItem.item])
     // }

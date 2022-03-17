@@ -16,7 +16,6 @@ import useLoad from '../../hooks/useLoad'
 import { useContentStore } from '../../store/useContentStore'
 import useDataStore from '../../store/useDataStore'
 import { NodeProperties } from '../../store/useEditorStore'
-import { GenericSearchResult, useSearchStore } from '../../store/useSearchStore'
 import { Button } from '../../style/Buttons'
 import { MainHeader } from '../../style/Layouts'
 import {
@@ -34,7 +33,10 @@ import { Title } from '../../style/Typography'
 import { ILink } from '../../types/Types'
 import { getContent } from '../../utils/helpers'
 import { mog } from '../../utils/lib/helper'
-import { convertContentToRawText, convertEntryToRawText } from '../../utils/search/localSearch'
+import { convertContentToRawText } from '../../utils/search/parseData'
+
+import { useSearch } from '../../hooks/useSearch'
+import { GenericSearchResult } from '../../types/search'
 
 const Nodes = styled.section`
   padding-right: 2rem;
@@ -89,9 +91,9 @@ const Archive = () => {
   const { onSave } = useSaver()
   const contents = useContentStore((store) => store.contents)
   const theme = useTheme()
-  const searchIndex = useSearchStore((store) => store.searchIndex)
-  const updateDoc = useSearchStore((store) => store.updateDoc)
-  const removeDoc = useSearchStore((store) => store.removeDoc)
+  const { queryIndex } = useSearch()
+
+  const { updateDocument, removeDocument } = useSearch()
 
   // * TODO: Uncomment this !important
   // useEffect(() => {
@@ -107,8 +109,8 @@ const Archive = () => {
       text: convertContentToRawText(content.content)
     }
   }
-  const onSearch = (newSearchTerm: string) => {
-    const res = searchIndex('archive', newSearchTerm)
+  const onSearch = async (newSearchTerm: string) => {
+    const res = await queryIndex('archive', newSearchTerm)
     mog('ArchiveSearch', { newSearchTerm, res })
     if (newSearchTerm === '' && res.length === 0) {
       return initialArchive
@@ -128,8 +130,9 @@ const Archive = () => {
     addILink({ ilink: node.path, nodeid: node.nodeid, archived: true })
 
     const content = getContent(node.nodeid)
-    removeDoc('archive', node.nodeid)
-    updateDoc('node', convertEntryToRawText(node.nodeid, content.content, node.path))
+    await removeDocument('archive', node.nodeid)
+
+    await updateDocument('node', node.nodeid, content.content, node.path)
 
     const archiveNode: NodeProperties = {
       id: node.path,
@@ -149,8 +152,8 @@ const Archive = () => {
 
     await removeArchiveData(nodesToDelete)
 
-    nodesToDelete.forEach((node) => {
-      removeDoc('archive', node.nodeid)
+    nodesToDelete.forEach(async (node) => {
+      await removeDocument('archive', node.nodeid)
     })
 
     // onSave()

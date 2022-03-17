@@ -1,6 +1,6 @@
 import { NodeAnalysis, OutlineItem } from '../../store/useAnalysis'
 import { NodeEditorContent } from '../../types/Types'
-import { convertContentToRawText } from '../../utils/search/localSearch'
+import { convertContentToRawText } from '../../utils/search/parseData'
 import { expose } from 'threads/worker'
 import { getTagsFromContent } from '../../utils/lib/content'
 // import { parentPort, workerData } from 'worker_threads'

@@ -27,11 +27,11 @@ import { useHistoryStore } from '../../../store/useHistoryStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
-import { useSearchStore } from '../../../store/useSearchStore'
 import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
 import { AppleNote } from '../../../utils/importers/appleNotes'
 import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import { useSearch } from '../../../hooks/useSearch'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -51,13 +51,12 @@ const Init = () => {
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
   const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
 
-  const initializeSearchIndex = useSearchStore((store) => store.initializeSearchIndex)
-  const fetchIndexLocalStorage = useSearchStore((store) => store.fetchIndexLocalStorage)
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
   const { getNodeidFromPath } = useLinks()
   const { onSave } = useSaver()
-  const updateDoc = useSearchStore((store) => store.updateDoc)
+
+  const { queryIndex } = useSearch()
 
   /**
    * Setup save
@@ -65,8 +64,6 @@ const Init = () => {
   useSaveAndExit()
 
   const { getTemplates } = useUpdater()
-
-  const auth = useAuthStore((store) => store.authenticated)
 
   /**
    * Initialization of the app data, search index and auth,
@@ -80,13 +77,9 @@ const Init = () => {
           mog('Initializaing', { d })
           return d
         })
-        .then(({ fileData, indexData }) => {
+        .then(({ fileData }) => {
           init(fileData)
           // setOnboardData()
-          return { fileData, indexData }
-        })
-        .then(({ fileData, indexData }) => {
-          const index = initializeSearchIndex(fileData, indexData)
           return fileData
         })
         .then((d) => {
@@ -127,6 +120,10 @@ const Init = () => {
 
           goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid)
         })
+        .then(async () => {
+          const results = await queryIndex('node', 'snippet')
+          mog('SearchResultsInit', { results })
+        })
         // .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.push, nodeid))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
@@ -157,22 +154,6 @@ const Init = () => {
         goTo(page, NavigationType.replace)
       }
     })
-    // TODO: THIS DOESN'T WORK. INDEX IS RELOADED ON EVERY APP OPEN`
-    ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, () => {
-      // setSearchIndexData(searchIndex, '.')
-      // const searchIndex = await fetch('https://google.com`')
-      // fetchIndexLocalStorage().then((searchIndex) => {
-      // })
-      // const searchIndex = Object.entries(indexNames).reduce((p, c) => {
-      //   const currIdx = {}
-      //   indexKeys[c[0]].forEach((key) => {
-      //     const t = localStorage.getItem(`${c[0]}.${key}`)
-      //     if (t === null) currIdx[key] = ''
-      //     else currIdx[key] = t
-      //   })
-      //   return { ...p, [c[0]]: currIdx }
-      // }, diskIndex)
-    })
     ipcRenderer.on(IpcAction.CREATE_NEW_NODE, () => {
       const newNodeId = getNewDraftKey()
       const node = addILink({ ilink: newNodeId })
@@ -190,12 +171,7 @@ const Init = () => {
       loadNode(appleNotesUID)
       goTo(ROUTE_PATHS.node, NavigationType.push, appleNotesUID)
     })
-    ipcRenderer.on(IpcAction.SYNC_INDEX, (event, arg) => {
-      const { parsedDoc } = arg
-      mog('MexUpdateDoc: ', parsedDoc)
-      updateDoc('node', parsedDoc)
-    })
-  }, [fetchIndexLocalStorage, isOnboarding]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isOnboarding]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (editor && appleNotes.length > 0) {

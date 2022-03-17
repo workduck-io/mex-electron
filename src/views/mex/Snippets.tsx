@@ -11,7 +11,6 @@ import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import { useNodes } from '../../hooks/useNodes'
 import { useSnippets } from '../../hooks/useSnippets'
 import { useUpdater } from '../../hooks/useUpdater'
-import { GenericSearchResult, useSearchStore } from '../../store/useSearchStore'
 import { useSnippetStore } from '../../store/useSnippetStore'
 import IconButton, { Button } from '../../style/Buttons'
 import { MainHeader } from '../../style/Layouts'
@@ -28,8 +27,11 @@ import {
 import { CreateSnippet, SnippetCommand, SnippetCommandPrefix, SnippetHeader } from '../../style/Snippets'
 import { Title } from '../../style/Typography'
 import { mog } from '../../utils/lib/helper'
-import { convertContentToRawText } from '../../utils/search/localSearch'
+import { convertContentToRawText } from '../../utils/search/parseData'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
+
+import { useSearch } from '../../hooks/useSearch'
+import { GenericSearchResult } from '../../types/search'
 
 export type SnippetsProps = {
   title?: string
@@ -40,7 +42,7 @@ const Snippets = () => {
   const { addSnippet, deleteSnippet, getSnippetContent, getSnippet } = useSnippets()
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const { updater } = useUpdater()
-  const searchIndex = useSearchStore((store) => store.searchIndex)
+  const { queryIndex } = useSearch()
   const { getNode } = useNodes()
   const { goTo } = useRouting()
   const initialSnippets: GenericSearchResult[] = snippets.map((snippet) => ({
@@ -49,8 +51,8 @@ const Snippets = () => {
     text: convertContentToRawText(snippet.content)
   }))
 
-  const onSearch = (newSearchTerm: string) => {
-    const res = searchIndex('snippet', newSearchTerm)
+  const onSearch = async (newSearchTerm: string) => {
+    const res = await queryIndex('snippet', newSearchTerm)
     mog('search', { res })
     if (newSearchTerm === '' && res.length === 0) {
       return initialSnippets

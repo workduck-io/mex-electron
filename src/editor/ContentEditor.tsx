@@ -7,7 +7,7 @@ import Metadata from '../components/mex/Metadata/Metadata'
 import NodeIntentsModal from '../components/mex/NodeIntentsModal/NodeIntentsModal'
 import { StyledEditor } from '../style/Editor'
 import Toolbar from './Toolbar'
-import { convertContentToRawText } from '../utils/search/localSearch'
+import { convertContentToRawText } from '../utils/search/parseData'
 import { defaultContent } from '../data/Defaults/baseData'
 import { getEditorId } from '../utils/lib/EditorId'
 import { mog } from '../utils/lib/helper'
@@ -22,10 +22,10 @@ import { useKeyListener } from '../hooks/useShortcutListener'
 import useLayout from '../hooks/useLayout'
 import useLoad from '../hooks/useLoad'
 import { useNavigation } from '../hooks/useNavigation'
-import { useSearchStore } from '../store/useSearchStore'
 import { usePlateEditorRef } from '@udecode/plate'
 import useSuggestionStore from '../store/useSuggestions'
 import useToggleElements from '../hooks/useToggleElements'
+import { useSearch } from '../hooks/useSearch'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -35,7 +35,7 @@ const ContentEditor = () => {
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
 
   const { showGraph, showSuggestedNodes } = useToggleElements()
-  const searchIndex = useSearchStore((store) => store.searchIndex)
+  const { queryIndex } = useSearch()
 
   const { nodeid, node, fsContent } = useEditorStore(
     (state) => ({ nodeid: state.node.nodeid, node: state.node, fsContent: state.content }),
@@ -52,7 +52,7 @@ const ContentEditor = () => {
 
   const { addOrUpdateValBuffer, getBufferVal } = useEditorBuffer()
 
-  const onChangeSave = (val: any[]) => {
+  const onChangeSave = async (val: any[]) => {
     if (val && node && node.nodeid !== '__null__') {
       if (showSuggestedNodes) {
         const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
@@ -62,7 +62,7 @@ const ContentEditor = () => {
 
         const keywords = sw.removeStopwords(rawText.split(' ').filter(Boolean))
 
-        const results = searchIndex('node', keywords.join(' '))
+        const results = await queryIndex('node', keywords.join(' '))
 
         const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
 

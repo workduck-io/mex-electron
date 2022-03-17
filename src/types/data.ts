@@ -66,8 +66,3 @@ export interface NodeSearchData {
   title?: string
   text: string
 }
-export interface GenericSearchData {
-  id: string
-  title?: string
-  text: string
-}

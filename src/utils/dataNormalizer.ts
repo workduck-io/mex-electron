@@ -1,7 +1,7 @@
 /**
  * ## Order of transformations
  *
- * Each value function recieves the old object value.
+ * Each value function receives the old object value.
  *
  * 1. Add
  * 2. Update

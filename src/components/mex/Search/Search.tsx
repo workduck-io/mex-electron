@@ -11,7 +11,6 @@ import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
-import { GenericSearchResult, useSearchStore } from '../../../store/useSearchStore'
 import { MainHeader } from '../../../style/Layouts'
 import {
   Result,
@@ -29,7 +28,7 @@ import { Title } from '../../../style/Typography'
 import { SplitType } from '../../../ui/layout/splitView'
 import { getInitialNode } from '../../../utils/helpers'
 import { mog } from '../../../utils/lib/helper'
-import { convertContentToRawText } from '../../../utils/search/localSearch'
+import { convertContentToRawText } from '../../../utils/search/parseData'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import Backlinks from '../Backlinks'
 import Metadata from '../Metadata/Metadata'
@@ -38,9 +37,11 @@ import SearchFilters from './SearchFilters'
 import SearchView, { RenderFilterProps, RenderItemProps, RenderPreviewProps } from './SearchView'
 import { View } from './ViewSelector'
 
+import { useSearch } from '../../../hooks/useSearch'
+import { GenericSearchResult } from '../../../types/search'
+
 const Search = () => {
   const { loadNode } = useLoad()
-  const searchIndex = useSearchStore((store) => store.searchIndex)
   const contents = useContentStore((store) => store.contents)
   const ilinks = useDataStore((store) => store.ilinks)
   const initialResults = ilinks
@@ -67,8 +68,10 @@ const Search = () => {
 
   const { getPathFromNodeid } = useLinks()
 
-  const onSearch = (newSearchTerm: string) => {
-    const res = searchIndex('node', newSearchTerm)
+  const { queryIndex } = useSearch()
+
+  const onSearch = async (newSearchTerm: string) => {
+    const res = await queryIndex('node', newSearchTerm)
     const nodeids = useDataStore.getState().ilinks.map((l) => l.nodeid)
     const filRes = res.filter((r) => nodeids.includes(r.id))
     // mog('search', { res, filRes })

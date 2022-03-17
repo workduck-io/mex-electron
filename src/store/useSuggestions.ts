@@ -1,7 +1,7 @@
 // import { NodeSearchResult } from './useSearchStore'
 import create from 'zustand'
 import { AnyObject, TNode } from '@udecode/plate'
-import { GenericSearchResult } from './useSearchStore'
+import { GenericSearchResult } from '../types/search'
 
 type SuggestionStoreType = {
   suggestions: GenericSearchResult[]

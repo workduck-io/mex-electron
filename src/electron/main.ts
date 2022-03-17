@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import chokidar from 'chokidar'
 import {
   app,
@@ -21,6 +22,7 @@ import { IpcAction } from '../data/IpcAction'
 import { AppType } from '../hooks/useInitialize'
 import { initializeSentry } from '../services/sentry'
 import { FileData } from '../types/data'
+import { idxKey } from '../types/search'
 import { getAppleNotes } from '../utils/importers/appleNotes'
 import { mog } from '../utils/lib/helper'
 import { sanitizeHtml } from '../utils/sanitizeHtml'
@@ -36,9 +38,17 @@ import {
   SelectionType,
   useSnippetFromClipboard
 } from './utils/getSelectedText'
-import { getIndexData, setSearchIndexData } from './utils/indexData'
 import { checkIfAlpha } from './utils/version'
-import { analyseContent } from './worker/controler'
+import {
+  addDoc,
+  analyseContent,
+  initSearchIndex,
+  removeDoc,
+  searchIndex,
+  updateDoc,
+  dumpIndexDisk
+} from './worker/controller'
+import { getIndexData } from './utils/indexData'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -363,10 +373,11 @@ ipcMain.on('close', closeWindow)
 //   spotlightInBubbleMode(isClicked)
 // })
 
-app.on('before-quit', () => {
+app.on('before-quit', async () => {
   console.log('App before quit')
+  await dumpIndexDisk(SEARCH_INDEX_LOCATION)
   // mex?.webContents.send(IpcAction.GET_LOCAL_INDEX)
-  console.log('Sent IPC Action to fetch index')
+  // console.log('Sent IPC Action to fetch index')
   // toast?.destroy()
 
   // mex?.webContents.send(IpcAction.SAVE_AND_QUIT)
@@ -511,21 +522,16 @@ ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
   else globalShortcut.register(SPOTLIGHT_SHORTCUT, handleToggleMainWindow) // * If more than one global listener, use registerAll
 })
 
-ipcMain.on(IpcAction.GET_LOCAL_DATA, (event) => {
+ipcMain.on(IpcAction.GET_LOCAL_DATA, async (event) => {
   const fileData: FileData = getFileData(SAVE_LOCATION)
-  const indexData: any = getIndexData(SEARCH_INDEX_LOCATION)
-  console.log('Received Index Data: ', indexData)
-  event.sender.send(IpcAction.RECIEVE_LOCAL_DATA, { fileData, indexData })
+  const indexData: Record<idxKey, any> = getIndexData(SEARCH_INDEX_LOCATION)
+  await initSearchIndex(fileData, indexData)
+  event.sender.send(IpcAction.RECEIVE_LOCAL_DATA, { fileData })
 })
 
 ipcMain.on(IpcAction.SET_THEME, (ev, arg) => {
   const { data } = arg
   toast?.send(IpcAction.SET_THEME, data.theme)
-})
-
-ipcMain.on(IpcAction.SET_LOCAL_INDEX, (_event, arg) => {
-  const { searchIndex } = arg
-  if (searchIndex) setSearchIndexData(searchIndex, SEARCH_INDEX_LOCATION)
 })
 
 ipcMain.on(IpcAction.SET_LOCAL_DATA, (_event, arg) => {
@@ -537,7 +543,7 @@ ipcMain.on(IpcAction.ANALYSE_CONTENT, async (event, arg) => {
   if (!arg) return
   await analyseContent(arg, (analysis) => {
     console.log('Analysis', { analysis })
-    event.sender.send(IpcAction.RECIEVE_ANALYIS, analysis)
+    event.sender.send(IpcAction.RECEIVE_ANALYSIS, analysis)
   })
 })
 
@@ -621,15 +627,26 @@ ipcMain.on(IpcAction.IMPORT_APPLE_NOTES, async () => {
   if (selectedAppleNotes) mex?.webContents.send(IpcAction.SET_APPLE_NOTES_DATA, selectedAppleNotes)
 })
 
-ipcMain.on(IpcAction.SYNC_INDEX, (event, arg) => {
-  const { from, data } = arg
-
-  if (from === AppType.MEX) spotlight?.webContents.send(IpcAction.SYNC_INDEX, data)
-  else if (from === AppType.SPOTLIGHT) mex?.webContents.send(IpcAction.SYNC_INDEX, data)
-})
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) => {
   if (from === AppType.MEX) spotlight?.webContents.send(action, { data })
   else mex?.webContents.send(action, { data })
 }
+
+// Handlers for Search Worker Operations
+ipcMain.handle(IpcAction.ADD_DOCUMENT, async (_event, key, nodeId, contents, title) => {
+  await addDoc(key, nodeId, contents, title)
+})
+
+ipcMain.handle(IpcAction.UPDATE_DOCUMENT, async (_event, key, nodeId, contents, title) => {
+  await updateDoc(key, nodeId, contents, title)
+})
+
+ipcMain.handle(IpcAction.REMOVE_DOCUMENT, async (_event, key, id) => {
+  await removeDoc(key, id)
+})
+
+ipcMain.handle(IpcAction.QUERY_INDEX, async (_event, key, query) => {
+  const results = await searchIndex(key, query)
+  return results
+})
