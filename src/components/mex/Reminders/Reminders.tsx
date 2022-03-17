@@ -8,10 +8,9 @@ import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import IconButton, { Button } from '../../../style/Buttons'
-import { InfobarTools } from '../../../style/infobar'
+import { InfobarFull, InfobarTools } from '../../../style/infobar'
 import { Result, ResultHeader, ResultTitle } from '../../../style/Search'
 import { Title } from '../../../style/Typography'
-import { StyledGraph } from '../Graph/Graph.styles'
 import { useCreateReminderModal } from './CreateReminderModal'
 import { Reminder, RemindersWrapper } from './Reminders.style'
 
@@ -39,7 +38,7 @@ const RemindersInfobar = () => {
 
   const reminders = getNodeReminders(nodeid)
   return (
-    <StyledGraph>
+    <InfobarFull>
       <InfobarTools>
         <IconButton
           size={24}
@@ -86,7 +85,7 @@ const RemindersInfobar = () => {
           </Reminder>
         )}
       </RemindersWrapper>
-    </StyledGraph>
+    </InfobarFull>
   )
 }
 

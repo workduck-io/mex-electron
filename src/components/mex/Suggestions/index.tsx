@@ -13,10 +13,9 @@ import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import useSuggestionStore from '../../../store/useSuggestions'
 import IconButton from '../../../style/Buttons'
-import { InfobarTools } from '../../../style/infobar'
+import { InfobarFull, InfobarTools } from '../../../style/infobar'
 import { Result, ResultHeader, ResultTitle } from '../../../style/Search'
 import { mog } from '../../../utils/lib/helper'
-import { StyledGraph } from '../Graph/Graph.styles'
 
 const Margin = styled.div`
   margin: 1rem 1rem 0;
@@ -40,7 +39,7 @@ const SuggestionInfoBar = () => {
   }
 
   return (
-    <StyledGraph>
+    <InfobarFull>
       <InfobarTools>
         <IconButton
           size={24}
@@ -73,7 +72,7 @@ const SuggestionInfoBar = () => {
           )
         })}
       </>
-    </StyledGraph>
+    </InfobarFull>
   )
 }
 

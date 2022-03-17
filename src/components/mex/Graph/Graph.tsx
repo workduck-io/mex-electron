@@ -10,9 +10,9 @@ import { useGraphStore } from '../../../store/useGraphStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import IconButton from '../../../style/Buttons'
-import { InfobarTools } from '../../../style/infobar'
+import { InfobarFull, InfobarTools } from '../../../style/infobar'
 import Switch from '../Forms/Switch'
-import { GraphWrapper, StyledGraph } from './Graph.styles'
+import { GraphWrapper } from './Graph.styles'
 import NodePreview from './NodePreview'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -134,7 +134,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
   }
 
   return (
-    <StyledGraph id={`graph_${showLocal ? 'local' : 'global'}`}>
+    <InfobarFull id={`graph_${showLocal ? 'local' : 'global'}`}>
       {showTools ? (
         <InfobarTools>
           {/* <IconButton size={24} icon={bubbleChartLine} title="Graph" highlight={showGraph} onClick={toggleGraph} /> */}
@@ -171,7 +171,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
         />
       </GraphWrapper>
       {/* <NodeServices /> */}
-    </StyledGraph>
+    </InfobarFull>
   )
 }
 

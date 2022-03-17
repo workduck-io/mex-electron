@@ -51,6 +51,17 @@ export const InfoWidgetScroll = styled.div`
   max-height: 20vh;
 `
 
+export const InfobarFull = styled.div`
+  max-height: 100vh;
+  width: 100%;
+  position: relative;
+  min-width: 600px;
+  * {
+    outline: none;
+    outline-style: none;
+  }
+`
+
 export const InfobarTools = styled.div`
   display: flex;
   align-items: center;

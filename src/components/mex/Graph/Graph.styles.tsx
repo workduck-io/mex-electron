@@ -5,10 +5,6 @@ export const StyledGraph = styled.div`
   width: 100%;
   position: relative;
   min-width: 600px;
-  /* position: fixed; */
-  /* top: 0; */
-  /* right: 0; */
-  /* border: 3px solid red; */
   * {
     outline: none;
     outline-style: none;
