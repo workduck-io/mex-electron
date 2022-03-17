@@ -39,7 +39,7 @@ export const parseNode = (nodeId: string, contents: any[], title = ''): GenericS
 }
 
 export const convertDataToIndexable = (data: FileData) => {
-  const blockNodeMap: Record<idxKey, any> = diskIndex
+  const blockNodeMap = new Map<string, string>()
   const result: Record<indexNames, GenericSearchData[]> = Object.entries(indexNames).reduce((p, c) => {
     const idxResult = []
     const idxName = c[0]
@@ -78,7 +78,7 @@ export const convertDataToIndexable = (data: FileData) => {
       Object.entries(data.contents).forEach(([k, v]) => {
         if (v.type === 'editor' && k !== '__null__' && titleNodeMap.has(k)) {
           v.content.forEach((block) => {
-            blockNodeMap[idxName][block.id] = k
+            blockNodeMap.set(block.id, k)
             const blockText = convertContentToRawText(block.children)
             if (blockText.length !== 0) {
               const temp: GenericSearchData = { id: k, text: blockText, blockId: block.id, title: titleNodeMap.get(k) }
@@ -91,7 +91,7 @@ export const convertDataToIndexable = (data: FileData) => {
       data.snippets.map((snip) => {
         const temp: GenericSearchData = convertEntryToRawText(snip.id, snip.content)
         temp.title = titleNodeMap.get(snip.id)
-        blockNodeMap[idxName][snip.id] = snip.id // Redundant right now, not doing block level indexing for snippets
+        blockNodeMap.set(snip.id, snip.id) // Redundant right now, not doing block level indexing for snippets
         idxResult.push(temp)
       })
     } else {

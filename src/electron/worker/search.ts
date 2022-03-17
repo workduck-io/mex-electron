@@ -8,7 +8,7 @@ import { SearchWorker, idxKey, GenericSearchData, GenericSearchResult, SearchInd
 import { setSearchIndexData } from './../utils/indexData'
 
 let globalSearchIndex: SearchIndex = null
-let blockNodeMapping: Record<idxKey, Record<string, string>> = diskIndex
+let blockNodeMapping: Map<string, string> = null
 
 const searchWorker: SearchWorker = {
   init: (fileData: FileData, indexData: Record<idxKey, any>) => {
@@ -30,17 +30,24 @@ const searchWorker: SearchWorker = {
     if (globalSearchIndex[key]) globalSearchIndex[key].remove(id)
   },
 
-  searchIndex: (key: idxKey, query: string) => {
+  searchIndex: (key: idxKey | idxKey[], query: string) => {
     try {
       let response: any[] = []
-      response = globalSearchIndex[key].search(query)
+
+      if (typeof key === 'string') {
+        response = globalSearchIndex[key].search(query)
+      } else {
+        key.forEach((k) => {
+          response = [...response, globalSearchIndex[k].search(query)]
+        })
+      }
 
       const results = new Array<any>()
       response.forEach((entry) => {
         const matchField = entry.field
         entry.result.forEach((i) => {
           mog('ResultEntry', { i })
-          results.push({ id: blockNodeMapping[key][i], blockId: i, matchField })
+          results.push({ id: blockNodeMapping.get(i), blockId: i, matchField })
         })
       })
 
