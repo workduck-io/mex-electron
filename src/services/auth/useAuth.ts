@@ -65,7 +65,7 @@ export const useAuthentication = () => {
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const setRegistered = useAuthStore((store) => store.setRegistered)
   const { updateDefaultServices, updateServices } = useUpdater()
-  const { signIn, signUp, verifySignUp, signOut } = useAuth()
+  const { signIn, signUp, verifySignUp, signOut, googleSignIn } = useAuth()
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
   // const { getNodesByWorkspace } = useApi()
 
@@ -123,6 +123,53 @@ export const useAuthentication = () => {
     }
 
     return { data, v, authDetails }
+  }
+
+  const loginViaGoogle = async (idToken: string, accessToken: string, getWorkspace = false) => {
+    try {
+      const result: any = await googleSignIn(idToken, accessToken)
+      if (getWorkspace && result !== undefined) {
+        await client
+          .get(apiURLs.getUserRecords(result.userId))
+          .then((d: any) => {
+            const userDetails = { email: result.email, userId: result.userId }
+            const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
+
+            setAuthenticated(userDetails, workspaceDetails)
+          })
+          .catch(async (e) => {
+            setSensitiveData({ email: result.email, name: result.username, password: '', roles: [] })
+
+            const uCred: UserCred = {
+              email: result.email,
+              userId: result.userId,
+              expiry: result.exp,
+              token: accessToken,
+              url: result.iss
+            }
+            const newWorkspaceName = `WD_${nanoid()}`
+
+            await client
+              .post(apiURLs.registerUser, {
+                user: {
+                  id: uCred.userId,
+                  name: uCred.email,
+                  email: uCred.email
+                },
+                workspaceName: newWorkspaceName
+              })
+              .then((d: any) => {
+                const userDetails = { email: uCred.email, userId: uCred.userId }
+                const workspaceDetails = { id: d.data.id, name: d.data.name }
+
+                setAuthenticated(userDetails, workspaceDetails)
+              })
+              .catch(console.error)
+          })
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const registerDetails = (data: RegisterFormData): Promise<string> => {
@@ -209,5 +256,5 @@ export const useAuthentication = () => {
     })
   }
 
-  return { login, registerDetails, logout, verifySignup }
+  return { login, registerDetails, logout, verifySignup, loginViaGoogle }
 }

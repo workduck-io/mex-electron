@@ -11,7 +11,7 @@ import { Button } from '../../style/Buttons'
 import { CenteredColumn } from '../../style/Layouts'
 import { IpcAction } from '../../data/IpcAction'
 import { Link } from 'react-router-dom'
-import { LoadingButton } from '../../components/mex/Buttons/LoadingButton'
+import { LoadingButton, GoogleLoginButton } from '../../components/mex/Buttons/LoadingButton'
 import { PasswordRequirements } from '../../components/mex/Auth/errorMessages'
 import { ROUTE_PATHS } from '../routes/urls'
 import { StyledRolesSelectComponents } from '../../style/Select'
@@ -111,75 +111,78 @@ const Register = () => {
       <BackCard>
         <Title>Register</Title>
         {!registered ? (
-          <AuthForm onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
-            <InputFormError
-              name="name"
-              label="Name"
-              inputProps={{
-                autoFocus: true,
-                ...registerForm.register('name', {
-                  required: true
-                })
-              }}
-              errors={regErrors}
-            ></InputFormError>
+          <>
+            <AuthForm onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
+              <InputFormError
+                name="name"
+                label="Name"
+                inputProps={{
+                  autoFocus: true,
+                  ...registerForm.register('name', {
+                    required: true
+                  })
+                }}
+                errors={regErrors}
+              ></InputFormError>
 
-            <InputFormError
-              name="email"
-              label="Email"
-              inputProps={{
-                ...registerForm.register('email', {
-                  required: true,
-                  pattern: EMAIL_REG
-                })
-              }}
-              errors={regErrors}
-            ></InputFormError>
+              <InputFormError
+                name="email"
+                label="Email"
+                inputProps={{
+                  ...registerForm.register('email', {
+                    required: true,
+                    pattern: EMAIL_REG
+                  })
+                }}
+                errors={regErrors}
+              ></InputFormError>
 
-            <Label htmlFor="roles">What roles are you part of?</Label>
-            <Controller
-              control={registerForm.control}
-              render={({ field }) => (
-                <StyledCreatatbleSelect
-                  {...field}
-                  isMulti
-                  isCreatable
-                  options={UserRoleValues}
-                  closeMenuOnSelect={true}
-                  closeMenuOnBlur={false}
-                  components={StyledRolesSelectComponents}
-                  placeholder="Ex. Developer, Designer"
-                />
-              )}
-              rules={{ required: true }}
-              name="roles"
-            />
+              <Label htmlFor="roles">What roles are you part of?</Label>
+              <Controller
+                control={registerForm.control}
+                render={({ field }) => (
+                  <StyledCreatatbleSelect
+                    {...field}
+                    isMulti
+                    isCreatable
+                    options={UserRoleValues}
+                    closeMenuOnSelect={true}
+                    closeMenuOnBlur={false}
+                    components={StyledRolesSelectComponents}
+                    placeholder="Ex. Developer, Designer"
+                  />
+                )}
+                rules={{ required: true }}
+                name="roles"
+              />
 
-            <InputFormError
-              name="password"
-              label="Password"
-              inputProps={{
-                type: 'password',
-                ...registerForm.register('password', {
-                  required: true,
-                  pattern: PASSWORD
-                })
-              }}
-              errors={regErrors}
-            ></InputFormError>
+              <InputFormError
+                name="password"
+                label="Password"
+                inputProps={{
+                  type: 'password',
+                  ...registerForm.register('password', {
+                    required: true,
+                    pattern: PASSWORD
+                  })
+                }}
+                errors={regErrors}
+              ></InputFormError>
 
-            {regErrors.password?.type === 'pattern' ? <PasswordRequirements /> : undefined}
+              {regErrors.password?.type === 'pattern' ? <PasswordRequirements /> : undefined}
 
-            <ButtonFields>
-              <LoadingButton
-                loading={regSubmitting}
-                alsoDisabled={regErrors.email !== undefined || regErrors.password !== undefined}
-                buttonProps={{ type: 'submit', primary: true, large: true }}
-              >
-                Send Verification Code
-              </LoadingButton>
-            </ButtonFields>
-          </AuthForm>
+              <ButtonFields>
+                <LoadingButton
+                  loading={regSubmitting}
+                  alsoDisabled={regErrors.email !== undefined || regErrors.password !== undefined}
+                  buttonProps={{ type: 'submit', primary: true, large: true }}
+                >
+                  Send Verification Code
+                </LoadingButton>
+              </ButtonFields>
+            </AuthForm>
+            <GoogleLoginButton text={'Register via Google'} />
+          </>
         ) : (
           <AuthForm onSubmit={verifyForm.handleSubmit(onVerifySubmit)}>
             <Input

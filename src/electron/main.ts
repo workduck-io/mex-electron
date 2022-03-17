@@ -165,13 +165,7 @@ const createMexWindow = () => {
   // MEX here
   mex = new BrowserWindow(MEX_WINDOW_OPTIONS)
   mex.loadURL(MEX_WINDOW_WEBPACK_ENTRY)
-  const protocol = isDev ? 'dev-app' : 'prod-app'
 
-  const deepLink = new Deeplink({ app, mainWindow: mex, protocol, isDev })
-
-  deepLink.on('received', (link) => {
-    alert(`catched ${link}`)
-  })
   mex.once('close', () => {
     mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
   })
@@ -387,6 +381,19 @@ app.on('will-quit', () => {
 
 app.on('quit', () => {
   console.log('App quit')
+})
+
+app.setAsDefaultProtocolClient('mex')
+
+app.on('open-url', function (event, url) {
+  event.preventDefault()
+
+  const URL = new URLSearchParams(url)
+
+  const accessToken = URL.get('mex://localhost:3000/?access_token')
+  const idToken = URL.get('id_token')
+
+  mex.webContents.send(IpcAction.OAUTH, { accessToken, idToken })
 })
 
 app
