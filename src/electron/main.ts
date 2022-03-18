@@ -27,7 +27,7 @@ import { getAppleNotes } from '../utils/importers/appleNotes'
 import { mog } from '../utils/lib/helper'
 import { sanitizeHtml } from '../utils/sanitizeHtml'
 import MenuBuilder from './menu'
-import Toast, { ToastStatus, ToastType } from './Toast'
+import Toast from './Toast'
 import { setupUpdateService } from './update'
 import { getFileData, setFileData } from './utils/filedata'
 import {
@@ -49,6 +49,7 @@ import {
   dumpIndexDisk
 } from './worker/controller'
 import { getIndexData } from './utils/indexData'
+import { ToastStatus, ToastType } from '../types/toast'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -605,6 +606,21 @@ ipcMain.on(IpcAction.REDIRECT_TO, (_event, arg) => {
   mex?.focus()
   mex?.show()
   mex?.webContents.send(IpcAction.REDIRECT_TO, { page: arg.page })
+})
+
+ipcMain.on(IpcAction.SHOW_NOTIFICATION, (ev, { from, data }: { from: AppType; data: ToastType }) => {
+  if (from === AppType.SPOTLIGHT) {
+    toast?.setParent(spotlight)
+  } else if (from === AppType.MEX) {
+    toast?.setParent(mex)
+  }
+  console.log('Show notification', { from, data })
+  toast?.send(IpcAction.TOAST_MESSAGE, data)
+  toast?.open(data.independent, false, true, 'reminder')
+})
+
+ipcMain.on(IpcAction.HIDE_NOTIFICATION, () => {
+  toast?.hide()
 })
 
 ipcMain.on(IpcAction.SHOW_TOAST, (ev, { from, data }: { from: AppType; data: ToastType }) => {

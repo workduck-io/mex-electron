@@ -2,10 +2,10 @@ import { BrowserWindow, app, autoUpdater, dialog, ipcMain } from 'electron'
 
 import { AppType } from '../hooks/useInitialize'
 import { IpcAction } from '../data/IpcAction'
-import { ToastStatus } from './Toast'
 import { backupMexJSON } from './backup'
 import { checkIfAlpha } from './utils/version'
 import { toast } from './main'
+import { ToastStatus } from '../types/toast'
 
 export const buildUpdateFeedURL = (version: string, isAlpha: boolean) => {
   if (process.platform === 'darwin') {

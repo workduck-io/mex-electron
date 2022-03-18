@@ -1,7 +1,7 @@
 import { BrowserWindow, Menu, MenuItemConstructorOptions, app, autoUpdater, shell } from 'electron'
 
 import { IpcAction } from '../data/IpcAction'
-import { ToastStatus } from './Toast'
+import { ToastStatus } from '../types/toast'
 import { toast } from './main'
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {

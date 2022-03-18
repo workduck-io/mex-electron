@@ -178,7 +178,7 @@ const CreateReminderModal = () => {
             selected={new Date(modalValue.time ?? getNextReminderTime())}
             showTimeSelect
             timeFormat="p"
-            timeIntervals={15}
+            timeIntervals={1}
             onChange={(date) => {
               console.log(date)
               setTime(date.getTime())

@@ -1,5 +1,6 @@
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
+import { flatten } from 'lodash'
 import more2Fill from '@iconify/icons-ri/more-2-fill'
 import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
 import timerLine from '@iconify/icons-ri/timer-line'
@@ -32,7 +33,7 @@ const RemindersInfobar = () => {
   const { toggleReminder } = useToggleElements()
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const remindersAll = useReminderStore((store) => store.reminders)
-  const { getNodeReminders, clearNodeReminders } = useReminders()
+  const { getNodeReminders, clearNodeReminders, armReminders } = useReminders()
   // const contents = useContentStore((store) => store.contents)
   // const { getPathFromNodeid } = useLinks()
   const nodeid = useEditorStore((store) => store.node.nodeid)
@@ -48,6 +49,9 @@ const RemindersInfobar = () => {
 
   const reminderGroups = useMemo(() => {
     const nodeReminders = getNodeReminders(nodeid)
+
+    armReminders(flatten(nodeReminders.map((r) => r.reminders)))
+
     return nodeReminders
   }, [remindersAll, nodeid])
 

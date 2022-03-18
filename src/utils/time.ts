@@ -1,4 +1,5 @@
 import { formatDistanceToNow, formatRelative, format, add, startOfTomorrow, sub, startOfToday } from 'date-fns'
+import { capitalize } from './lib/strings'
 
 export const toLocaleString = (date: Date) => {
   return date.toLocaleString('en-US', {
@@ -22,7 +23,7 @@ export const getRelativeDate = (date: Date): string => {
   if (date.getTime() < sevenDaysAgo.getTime() || date.getTime() > sevenDaysAfter.getTime()) {
     return toLocaleString(date)
   } else {
-    return formatRelative(date, new Date())
+    return capitalize(formatRelative(date, new Date()))
   }
 }
 

@@ -1,31 +1,10 @@
-import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron'
+import { BrowserWindow, screen, BrowserWindowConstructorOptions } from 'electron'
 
 import { IpcAction } from '../data/IpcAction'
+import { TOAST_DIMENSIONS } from '../types/toast'
 import { SPOTLIGHT_WINDOW_OPTIONS } from './main'
 
 declare const TOAST_WINDOW_WEBPACK_ENTRY: string
-
-export enum ToastStatus {
-  SUCCESS = 'success',
-  ERROR = 'error',
-  INFO = 'info',
-  WARNING = 'warning',
-  LOADING = 'loading'
-}
-
-export type ToastType = {
-  status: ToastStatus
-  title: string
-  description?: string
-  independent?: boolean // if true, toast will not be closed when parent is closed
-}
-
-export const TOAST_DIMENSIONS = {
-  height: 50,
-  width: 240,
-  offset: 15,
-  delta: 15
-}
 
 /* Toast for showing custom notifications in the app */
 class Toast {
@@ -48,7 +27,9 @@ class Toast {
 
     this.window.loadURL(TOAST_WINDOW_WEBPACK_ENTRY)
     this.window.setParentWindow(spotlightWindow)
-    this.window.setVisibleOnAllWorkspaces(true)
+    // this.window.webContents.openDevTools()
+    this.window.setAlwaysOnTop(true, 'status')
+    this.window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 
     this.setParent(spotlightWindow)
 
@@ -76,9 +57,15 @@ class Toast {
     )
   }
 
-  public open(independent?: boolean, center?: boolean, noHide?: boolean) {
+  public open(independent?: boolean, center?: boolean, noHide?: boolean, variant?: 'reminder') {
     if (center) this.window.center()
     if (independent) this.window.setParentWindow(null)
+
+    if (variant === 'reminder') {
+      const scr = screen.getDisplayNearestPoint(screen.getCursorScreenPoint())
+      const bounds = scr.bounds
+      this.window.setPosition(bounds.width - 200, 20)
+    }
 
     this.window.showInactive()
     this.window.setHasShadow(true)

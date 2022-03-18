@@ -70,6 +70,7 @@ export const ReminderInfobar = styled.div`
   align-items: center;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.large};
+  margin: 0 ${({ theme }) => theme.spacing.medium};
 
   & > ${Title} {
     margin: ${({ theme }) => theme.spacing.large} 0 0;
@@ -81,10 +82,14 @@ export const SelectedDate = styled.div`
   background-color: ${({ theme }) => theme.colors.gray[8]};
   margin-top: ${({ theme }) => theme.spacing.small};
   display: flex;
-  gap: ${({ theme }) => theme.spacing.small};
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.tiny};
   justify-content: center;
   align-items: center;
+  max-width: 325px;
+
   i {
+    font-size: 0.9rem;
     color: ${({ theme }) => theme.colors.text.fade};
   }
 `
