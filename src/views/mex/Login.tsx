@@ -8,7 +8,7 @@ import { useAuthentication, useAuthStore } from '../../services/auth/useAuth'
 import { BackCard, FooterCard } from '../../style/Card'
 import { CenteredColumn } from '../../style/Layouts'
 import { Title } from '../../style/Typography'
-import { LoadingButton } from '../../components/mex/Buttons/LoadingButton'
+import { LoadingButton, GoogleLoginButton } from '../../components/mex/Buttons/LoadingButton'
 import { AuthForm, ButtonFields } from '../../style/Form'
 import { mog } from '../../utils/lib/helper'
 import { useEditorStore } from '../../store/useEditorStore'
@@ -103,6 +103,9 @@ const Login = () => {
             </LoadingButton>
           </ButtonFields>
         </AuthForm>
+        <ButtonFields>
+          <GoogleLoginButton text={'Login via Google'} />
+        </ButtonFields>
       </BackCard>
       <FooterCard>
         <Link to={ROUTE_PATHS.register}>Register</Link>

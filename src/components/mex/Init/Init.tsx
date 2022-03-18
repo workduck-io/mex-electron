@@ -17,7 +17,7 @@ import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useSyncData } from '../../../hooks/useSyncData'
 import { useUpdater } from '../../../hooks/useUpdater'
-import { useAuthStore } from '../../../services/auth/useAuth'
+import { useAuthentication, useAuthStore } from '../../../services/auth/useAuth'
 import { useAnalysis, useAnalysisIPC } from '../../../store/useAnalysis'
 import useBlockStore from '../../../store/useBlockStore'
 import useDataStore from '../../../store/useDataStore'
@@ -46,6 +46,7 @@ const Init = () => {
   const { init } = useInitialize()
   const { loadNode, getNode } = useLoad()
   const { initCognito } = useAuth()
+  const { loginViaGoogle } = useAuthentication()
 
   const { getLocalData } = useLocalData()
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
@@ -149,6 +150,7 @@ const Init = () => {
       const { data } = arg
       addRecent(data)
     })
+
     ipcRenderer.on(IpcAction.REDIRECT_TO, (_event, { page }) => {
       if (page) {
         goTo(page, NavigationType.replace)
@@ -210,6 +212,9 @@ const Init = () => {
 
   useEffect(() => {
     setIpc()
+    ipcRenderer.on(IpcAction.OAUTH, async (event, data) => {
+      await loginViaGoogle(data.idToken, data.accessToken, true)
+    })
     // Setup recieving the analysis call
     setAnalysisIpc()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

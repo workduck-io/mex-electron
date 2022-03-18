@@ -9,6 +9,13 @@ module.exports = {
   },
   packagerConfig: {
     icon: 'assets/icon.icns',
+    protocols: [
+      {
+        protocol: 'mex',
+        name: 'mex',
+        schemes: 'mex'
+      }
+    ],
     extendInfo: {
       NSAppleEventsUsageDescription: 'Mex can control other applications with AppleScript.'
     }

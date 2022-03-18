@@ -392,6 +392,19 @@ app.on('quit', () => {
   console.log('App quit')
 })
 
+app.setAsDefaultProtocolClient('mex')
+
+app.on('open-url', function (event, url) {
+  event.preventDefault()
+
+  const URL = new URLSearchParams(url)
+
+  const accessToken = URL.get('mex://localhost:3000/?access_token')
+  const idToken = URL.get('id_token')
+
+  mex.webContents.send(IpcAction.OAUTH, { accessToken, idToken })
+})
+
 app
   .whenReady()
   .then(() => {
