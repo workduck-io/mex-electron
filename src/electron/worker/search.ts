@@ -100,11 +100,14 @@ const searchWorker: SearchWorker = {
       const combinedResults = new Array<GenericSearchResult>()
       results.forEach(function (item) {
         const existing = combinedResults.filter(function (v, i) {
-          return v.id == item.id
+          return v.id === item.id
         })
         if (existing.length) {
           const existingIndex = combinedResults.indexOf(existing[0])
-          combinedResults[existingIndex].matchField = combinedResults[existingIndex].matchField.concat(item.matchField)
+          if (!combinedResults[existingIndex].matchField.includes(item.matchField))
+            combinedResults[existingIndex].matchField = combinedResults[existingIndex].matchField.concat(
+              item.matchField
+            )
         } else {
           if (typeof item.matchField == 'string') item.matchField = [item.matchField]
           combinedResults.push(item)
@@ -148,11 +151,11 @@ const searchWorker: SearchWorker = {
           results.push({ id: nodeId, blockId, text: i.doc?.text?.slice(0, 100), matchField })
         })
       })
-
+      mog('RawSearchResponses', { response })
       const combinedResults = new Array<GenericSearchResult>()
       results.forEach(function (item) {
         const existing = combinedResults.filter(function (v, i) {
-          return v.id == item.id
+          return v.blockId == item.blockId
         })
         if (existing.length) {
           const existingIndex = combinedResults.indexOf(existing[0])
