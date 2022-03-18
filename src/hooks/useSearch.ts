@@ -25,5 +25,10 @@ export const useSearch = () => {
     return results
   }
 
-  return { addDocument, updateDocument, removeDocument, queryIndex }
+  const queryIndexByNodeId = async (key: idxKey | idxKey[], nodeId: string, query: string) => {
+    const results = await ipcRenderer.invoke(IpcAction.QUERY_INDEX_BY_NODEID, key, nodeId, query)
+    return results
+  }
+
+  return { addDocument, updateDocument, removeDocument, queryIndex, queryIndexByNodeId }
 }

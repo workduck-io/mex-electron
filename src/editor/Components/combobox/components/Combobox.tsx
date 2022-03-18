@@ -31,6 +31,7 @@ import { MexIcon } from '../../../../style/Layouts'
 import styled, { useTheme } from 'styled-components'
 import IconButton, { Button } from '../../../../style/Buttons'
 import { search as getSearchResults } from 'fast-fuzzy'
+import { useSearch } from '../../../../hooks/useSearch'
 
 const StyledComboHeader = styled(ComboboxItem)`
   padding: 0.2rem 0;
@@ -65,6 +66,8 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   const editor = useEditorState()
   // const _editor = usePlateEditorState(usePlateEventId('focus'));
   // console.log(editor === _editor);
+
+  const { queryIndexByNodeId } = useSearch()
 
   useEffect(() => {
     // Throws error when the combobox is open and editor is switched or removed
@@ -115,119 +118,126 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   }, [itemIndex, items])
 
   useEffect(() => {
-    const trimmedSearch = search.textAfterBlockTrigger?.trim()
-    if (blocks && trimmedSearch) {
-      const res = getSearchResults(trimmedSearch, blocks, { keySelector: (obj) => obj.desc })
-      mog('Searching something', { blocks, res, tr: trimmedSearch }, { pretty: true, collapsed: false })
-      setBlocks(res)
-      // if (res && res.length > 0) setPreview(res[0].block)
-      // else setPreview(undefined)
+    async function getBlockSearchRes() {
+      const trimmedSearch = search.textAfterBlockTrigger?.trim()
+      if (blocks && trimmedSearch && items[itemIndex]) {
+        const blockSearchRes = await queryIndexByNodeId('node', items[itemIndex].key, trimmedSearch)
+        mog('BlockSearchFlexRes', { blockSearchRes })
+
+        const res = getSearchResults(trimmedSearch, blocks, { keySelector: (obj) => obj.desc })
+        // mog('Searching something', { blocks, res, tr: trimmedSearch }, { pretty: true, collapsed: false })
+        setBlocks(res)
+        // if (res && res.length > 0) setPreview(res[0].block)
+        // else setPreview(undefined)
+      }
     }
+    getBlockSearchRes()
   }, [search.textAfterBlockTrigger])
 
   if (!combobox) return null
 
   return (
-    <PortalBody>
-      <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
-        <div>
-          {isOpen &&
-            !isBlockTriggered &&
-            items.map((item, index) => {
-              const Item = onRenderItem ? onRenderItem({ item }) : item.text
-              const lastItem = index > 0 ? items[index - 1] : undefined
+    // <PortalBody>
+    //   <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
+    //     <div>
+    //       {isOpen &&
+    //         !isBlockTriggered &&
+    //         items.map((item, index) => {
+    //           const Item = onRenderItem ? onRenderItem({ item }) : item.text
+    //           const lastItem = index > 0 ? items[index - 1] : undefined
 
-              return (
-                <span key={`${item.key}-${String(index)}`}>
-                  {item.type !== lastItem?.type && <ActionTitle>{item.type}</ActionTitle>}
-                  <ComboboxItem
-                    className={index === itemIndex ? 'highlight' : ''}
-                    {...comboProps(item, index)}
-                    onMouseEnter={() => {
-                      setItemIndex(index)
-                    }}
-                    onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, item)}
-                  >
-                    {item.icon && <Icon height={18} key={`${item.key}_${item.icon}`} icon={item.icon} />}
-                    <ItemCenterWrapper>
-                      {!item.prefix ? (
-                        <ItemTitle>{Item}</ItemTitle>
-                      ) : (
-                        <ItemTitle>
-                          {item.prefix} <PrimaryText>{Item}</PrimaryText>
-                        </ItemTitle>
-                      )}
-                      {item.desc && <ItemDesc>{item.desc}</ItemDesc>}
-                    </ItemCenterWrapper>
-                    {item.rightIcons && (
-                      <ItemRightIcons>
-                        {item.rightIcons.map((i: string) => (
-                          <Icon key={item.key + i} icon={i} />
-                        ))}
-                      </ItemRightIcons>
-                    )}
-                  </ComboboxItem>
-                </span>
-              )
-            })}
-        </div>
-        {isBlockTriggered && (
-          <>
-            <div style={{ marginLeft: '8px', maxHeight: '400px', width: '100%', overflow: 'scroll' }}>
-              <StyledComboHeader key="random">
-                <IconButton
-                  size={16}
-                  shortcut={`Esc`}
-                  icon={arrowLeftLine}
-                  onClick={() => setBlocks(undefined)}
-                  title={'Back to Quick links'}
-                />
-                <ItemTitle>
-                  {`In ${items[itemIndex]?.text}: `}
-                  <PrimaryText>{search.textAfterBlockTrigger}</PrimaryText>
-                </ItemTitle>
-              </StyledComboHeader>
+    //           return (
+    //             <span key={`${item.key}-${String(index)}`}>
+    //               {item.type !== lastItem?.type && <ActionTitle>{item.type}</ActionTitle>}
+    //               <ComboboxItem
+    //                 className={index === itemIndex ? 'highlight' : ''}
+    //                 {...comboProps(item, index)}
+    //                 onMouseEnter={() => {
+    //                   setItemIndex(index)
+    //                 }}
+    //                 onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, item)}
+    //               >
+    //                 {item.icon && <Icon height={18} key={`${item.key}_${item.icon}`} icon={item.icon} />}
+    //                 <ItemCenterWrapper>
+    //                   {!item.prefix ? (
+    //                     <ItemTitle>{Item}</ItemTitle>
+    //                   ) : (
+    //                     <ItemTitle>
+    //                       {item.prefix} <PrimaryText>{Item}</PrimaryText>
+    //                     </ItemTitle>
+    //                   )}
+    //                   {item.desc && <ItemDesc>{item.desc}</ItemDesc>}
+    //                 </ItemCenterWrapper>
+    //                 {item.rightIcons && (
+    //                   <ItemRightIcons>
+    //                     {item.rightIcons.map((i: string) => (
+    //                       <Icon key={item.key + i} icon={i} />
+    //                     ))}
+    //                   </ItemRightIcons>
+    //                 )}
+    //               </ComboboxItem>
+    //             </span>
+    //           )
+    //         })}
+    //     </div>
+    //     {isBlockTriggered && (
+    //       <>
+    //         <div style={{ marginLeft: '8px', maxHeight: '400px', width: '100%', overflow: 'scroll' }}>
+    //           <StyledComboHeader key="random">
+    //             <IconButton
+    //               size={16}
+    //               shortcut={`Esc`}
+    //               icon={arrowLeftLine}
+    //               onClick={() => setBlocks(undefined)}
+    //               title={'Back to Quick links'}
+    //             />
+    //             <ItemTitle>
+    //               {`In ${items[itemIndex]?.text}: `}
+    //               <PrimaryText>{search.textAfterBlockTrigger}</PrimaryText>
+    //             </ItemTitle>
+    //           </StyledComboHeader>
 
-              {blocks?.length === 0 && (
-                <ComboboxItem
-                  key={`Nothing found`}
-                  className="highlight"
-                  // {...comboProps(item, index)}
-                  // onMouseEnter={() => {
-                  //   setItemIndex(index)
-                  // }}
-                  // onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, block)}
-                >
-                  <ItemCenterWrapper>No block found! Create new </ItemCenterWrapper>
-                </ComboboxItem>
-              )}
+    //           {blocks?.length === 0 && (
+    //             <ComboboxItem
+    //               key={`Nothing found`}
+    //               className="highlight"
+    //               // {...comboProps(item, index)}
+    //               // onMouseEnter={() => {
+    //               //   setItemIndex(index)
+    //               // }}
+    //               // onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, block)}
+    //             >
+    //               <ItemCenterWrapper>No block found! Create new </ItemCenterWrapper>
+    //             </ComboboxItem>
+    //           )}
 
-              {blocks?.map(({ block, desc }, index) => (
-                <ComboboxItem
-                  key={`${block.id}-${String(index)}`}
-                  className={index === itemIndex ? 'highlight' : ''}
-                  // {...comboProps(item, index)}
-                  // onMouseEnter={() => {
-                  //   setItemIndex(index)
-                  // }}
-                  // onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, block)}
-                >
-                  <MexIcon fontSize={24} icon="ph:squares-four-fill" color={theme.colors.primary} />
-                  <ItemCenterWrapper>
-                    {/* <ItemTitle>{block.type}</ItemTitle> */}
-                    {desc && <ItemDesc>{desc}</ItemDesc>}
-                  </ItemCenterWrapper>
-                </ComboboxItem>
-              ))}
-            </div>
-          </>
-        )}
-        {items[itemIndex]?.type && preview && !isBlockTriggered && (
-          <div style={{ maxHeight: '400px', width: '100%', overflow: 'scroll' }}>
-            <EditorPreviewRenderer content={preview} editorId={items[itemIndex]?.key + String(itemIndex)} />
-          </div>
-        )}
-      </ComboboxRoot>
-    </PortalBody>
+    //           {blocks?.map(({ block, desc }, index) => (
+    //             <ComboboxItem
+    //               key={`${block.id}-${String(index)}`}
+    //               className={index === itemIndex ? 'highlight' : ''}
+    //               // {...comboProps(item, index)}
+    //               // onMouseEnter={() => {
+    //               //   setItemIndex(index)
+    //               // }}
+    //               // onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, block)}
+    //             >
+    //               <MexIcon fontSize={24} icon="ph:squares-four-fill" color={theme.colors.primary} />
+    //               <ItemCenterWrapper>
+    //                 {/* <ItemTitle>{block.type}</ItemTitle> */}
+    //                 {desc && <ItemDesc>{desc}</ItemDesc>}
+    //               </ItemCenterWrapper>
+    //             </ComboboxItem>
+    //           ))}
+    //         </div>
+    //       </>
+    //     )}
+    //     {items[itemIndex]?.type && preview && !isBlockTriggered && (
+    //       <div style={{ maxHeight: '400px', width: '100%', overflow: 'scroll' }}>
+    //         <EditorPreviewRenderer content={preview} editorId={items[itemIndex]?.key + String(itemIndex)} />
+    //       </div>
+    //     )}
+    //   </ComboboxRoot>
+    // </PortalBody>
+    <></>
   )
 }

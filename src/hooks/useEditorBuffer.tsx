@@ -41,7 +41,7 @@ export const useEditorBuffer = () => {
   const getBufferVal = (nodeid: string) => useBufferStore.getState().buffer[nodeid] ?? undefined
   const saveAndClearBuffer = () => {
     const buffer = useBufferStore.getState().buffer
-    mog('Save And Clear Buffer', { buffer })
+    // mog('Save And Clear Buffer', { buffer })
     if (Object.keys(buffer).length > 0) {
       const saved = Object.entries(buffer)
         .map(([nodeid, val]) => {

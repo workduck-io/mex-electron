@@ -105,7 +105,5 @@ export const convertDataToIndexable = (data: FileData) => {
   // const dump = JSON.stringify(result)
   // mog('ConvertDataToIndexable', { dump, blockNodeMap })
 
-  mog('NodeBlockMap', { nodeBlockMap })
-
   return { result, nodeBlockMap }
 }

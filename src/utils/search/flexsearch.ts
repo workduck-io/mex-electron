@@ -29,12 +29,13 @@ export const createSearchIndex = (fileData: FileData, data: CreateSearchIndexDat
     const options = {
       document: {
         id: 'blockId',
+        tag: 'tag',
         index: ['title', 'text'],
         store: ['text']
       },
       tokenize: 'full'
     }
-    return { ...p, [idxName]: createGenricSearchIndex(initList[idxName], data[idxName], options) }
+    return { ...p, [idxName]: createGenricSearchIndex(initList[idxName], data[idxName] ?? null, options) }
   }, diskIndex)
 
   return { idx, nbMap }
@@ -67,6 +68,8 @@ export const createGenricSearchIndex = (
 ): Document<GenericSearchData> => {
   const index = new Document<GenericSearchData>(options)
 
+  mog('CreateIndexOptions', { indexData, initList, options })
+
   if (indexData && Object.keys(indexData).length > 0) {
     // When using a prebuilt index read from disk present in the indexData parameter
     mog('Using Prebuilt Index!', {})
@@ -77,7 +80,10 @@ export const createGenricSearchIndex = (
   } else {
     initList.forEach((block) => {
       block.blockId = createIndexCompositeKey(block.id, block.blockId ?? block.id)
-      index.add(block)
+
+      mog('Block', block)
+
+      index.add({ ...block, tag: [block.id] })
     })
   }
   return index

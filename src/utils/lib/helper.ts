@@ -16,7 +16,7 @@ type MogOptions = {
 export const mog = (
   title: string,
   propertiesToLog?: Record<string, any>,
-  options: Partial<MogOptions> = { pretty: true, collapsed: false }
+  options: Partial<MogOptions> = { pretty: false, collapsed: true }
 ) => {
   if (IS_DEV) {
     if (!propertiesToLog) {

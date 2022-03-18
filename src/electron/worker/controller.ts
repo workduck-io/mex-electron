@@ -106,3 +106,14 @@ export const dumpIndexDisk = async (location: string) => {
     mog('ErrorDumpingIndexToDisk', { error })
   }
 }
+
+export const searchIndexByNodeId = async (key: idxKey, nodeId: string, query: string) => {
+  try {
+    if (!search_worker) throw new Error('Search Worker Not Initialized')
+
+    const results = await search_worker.searchIndexByNodeId(key, nodeId, query)
+    return results
+  } catch (error) {
+    mog('SearchIndexByNodeIdError', { error, nodeId })
+  }
+}
