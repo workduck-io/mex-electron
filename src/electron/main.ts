@@ -13,8 +13,6 @@ import {
   shell,
   Tray
 } from 'electron'
-import { Deeplink } from 'electron-deeplink'
-import isDev from 'electron-is-dev'
 import fs from 'fs'
 import path from 'path'
 import { getSaveLocation, getSearchIndexLocation } from '../data/Defaults/data'
