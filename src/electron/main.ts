@@ -555,7 +555,6 @@ ipcMain.on(IpcAction.SET_LOCAL_DATA, (_event, arg) => {
 ipcMain.on(IpcAction.ANALYSE_CONTENT, async (event, arg) => {
   if (!arg) return
   await analyseContent(arg, (analysis) => {
-    console.log('Analysis', { analysis })
     event.sender.send(IpcAction.RECEIVE_ANALYSIS, analysis)
   })
 })

@@ -18,6 +18,9 @@ export interface OutlineItem {
 export interface NodeAnalysis {
   tags: string[]
   outline: OutlineItem[]
+  systemTags?: string[]
+  urls?: string[]
+  ilinks?: string[]
 }
 
 interface AnalysisStore extends NodeAnalysis {

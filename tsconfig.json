@@ -5,16 +5,24 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "jsx": "react",
-    "lib": ["es2021", "dom"],
+    "lib": [
+      "es2021",
+      "dom"
+    ],
     "noImplicitAny": false,
     "sourceMap": true,
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "downlevelIteration": true,
     "paths": {
-      "*": ["./node_modules/*"]
+      "*": [
+        "./node_modules/*"
+      ]
     }
     // "strictNullChecks": true
   },
-  "include": ["./src/**/*"]
+  "include": [
+    "./src/**/*"
+  ]
 }
