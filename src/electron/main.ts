@@ -160,7 +160,7 @@ const createSpotLighWindow = (show?: boolean) => {
 
   require('@electron/remote/main').enable(spotlight.webContents)
 
-  if (isAlpha) spotlight.webContents.openDevTools()
+  if (isAlpha) spotlight.webContents.openDevTools({ mode: 'detach' })
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -211,7 +211,10 @@ const createMexWindow = () => {
     toast?.setOnFullScreen()
   })
 
-  if (isAlpha) mex.webContents.openDevTools()
+  if (isAlpha)
+    mex.webContents.openDevTools({
+      mode: 'detach'
+    })
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const callbackOptions = {
@@ -535,11 +538,12 @@ ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
   else globalShortcut.register(SPOTLIGHT_SHORTCUT, handleToggleMainWindow) // * If more than one global listener, use registerAll
 })
 
-ipcMain.on(IpcAction.GET_LOCAL_DATA, async (event) => {
+ipcMain.handle(IpcAction.GET_LOCAL_DATA, async (event) => {
   const fileData: FileData = getFileData(SAVE_LOCATION)
   const indexData: Record<idxKey, any> = getIndexData(SEARCH_INDEX_LOCATION)
   await initSearchIndex(fileData, indexData)
-  event.sender.send(IpcAction.RECEIVE_LOCAL_DATA, { fileData })
+
+  return { fileData }
 })
 
 ipcMain.on(IpcAction.SET_THEME, (ev, arg) => {
@@ -552,12 +556,18 @@ ipcMain.on(IpcAction.SET_LOCAL_DATA, (_event, arg) => {
   syncFileData(arg)
 })
 
-ipcMain.on(IpcAction.ANALYSE_CONTENT, async (event, arg) => {
+ipcMain.handle(IpcAction.ANALYSE_CONTENT, async (_event, arg) => {
   if (!arg) return
-  await analyseContent(arg, (analysis) => {
-    event.sender.send(IpcAction.RECEIVE_ANALYSIS, analysis)
-  })
+  const analysis = await analyseContent(arg)
+  return analysis
 })
+
+// ipcMain.on(IpcAction.ANALYSE_CONTENT, async (event, arg) => {
+//   if (!arg) return
+//   await analyseContent(arg, (analysis) => {
+//     event.sender.send(IpcAction.RECEIVE_ANALYSIS, analysis)
+//   })
+// })
 
 ipcMain.on(IpcAction.CHECK_FOR_UPDATES, (_event, arg) => {
   if (arg.from === AppType.SPOTLIGHT) {

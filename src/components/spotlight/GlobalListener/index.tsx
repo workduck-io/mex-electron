@@ -101,12 +101,6 @@ const GlobalListener = memo(() => {
       } else setUnAuthenticated()
     })
 
-    ipcRenderer.on(IpcAction.RECEIVE_LOCAL_DATA, (_event, arg) => {
-      const { fileData } = arg
-      const editorID = getNewDraftKey()
-      init(fileData, editorID, AppType.SPOTLIGHT)
-    })
-
     ipcRenderer.on(IpcAction.SPOTLIGHT_BUBBLE, (_event, arg) => {
       setBubble()
     })
@@ -127,8 +121,17 @@ const GlobalListener = memo(() => {
     ipcRenderer.on(IpcAction.SYNC_DATA, (_event, arg) => {
       update(arg)
     })
+  }, [])
 
-    ipcRenderer.send(IpcAction.GET_LOCAL_DATA)
+  useEffect(() => {
+    async function getLocalData() {
+      const localData = await ipcRenderer.invoke(IpcAction.GET_LOCAL_DATA)
+      const { fileData } = localData
+      const editorID = getNewDraftKey()
+
+      init(fileData, editorID, AppType.SPOTLIGHT)
+    }
+    getLocalData()
   }, [])
 
   return <></>

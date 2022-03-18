@@ -77,7 +77,7 @@ export const ExcalidrawElement = (props: any) => {
   }
 
   return (
-    <RootElement max={max} {...attributes} {...rootProps}>
+    <RootElement max={max.toString()} {...attributes} {...rootProps}>
       <div contentEditable={false}>
         <div
           style={{ height: max ? '86.5vh' : '600px' }}

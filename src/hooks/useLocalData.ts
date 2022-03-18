@@ -4,15 +4,10 @@ import { FileData } from '../types/data'
 
 export const useLocalData = () => {
   const getLocalData = async () => {
-    const prom = new Promise<{ fileData: FileData }>((resolve) => {
-      ipcRenderer.on(IpcAction.RECEIVE_LOCAL_DATA, (_event, arg: any) => {
-        resolve(arg)
-      })
-    })
+    const localData = await ipcRenderer.invoke(IpcAction.GET_LOCAL_DATA)
 
-    ipcRenderer.send(IpcAction.GET_LOCAL_DATA)
-
-    return prom
+    const { fileData } = localData
+    return fileData
   }
   return { getLocalData }
 }

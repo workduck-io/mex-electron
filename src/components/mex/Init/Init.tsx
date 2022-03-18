@@ -17,8 +17,8 @@ import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useSyncData } from '../../../hooks/useSyncData'
 import { useUpdater } from '../../../hooks/useUpdater'
-import { useAuthentication, useAuthStore } from '../../../services/auth/useAuth'
-import { useAnalysis, useAnalysisIPC } from '../../../store/useAnalysis'
+import { useAuthStore, useAuthentication } from '../../../services/auth/useAuth'
+import { useAnalysis } from '../../../store/useAnalysis'
 import useBlockStore from '../../../store/useBlockStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
@@ -78,9 +78,8 @@ const Init = () => {
           mog('Initializaing', { d })
           return d
         })
-        .then(({ fileData }) => {
+        .then((fileData) => {
           init(fileData)
-          // setOnboardData()
           return fileData
         })
         .then((d) => {
@@ -196,7 +195,6 @@ const Init = () => {
   }, [appleNotes, editor]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { setIpc } = useSyncData()
-  const setAnalysisIpc = useAnalysisIPC()
 
   // Setup sending the analysis call
   useAnalysis()
@@ -215,8 +213,6 @@ const Init = () => {
     ipcRenderer.on(IpcAction.OAUTH, async (event, data) => {
       await loginViaGoogle(data.idToken, data.accessToken, true)
     })
-    // Setup recieving the analysis call
-    setAnalysisIpc()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   /** Set shortcuts */
