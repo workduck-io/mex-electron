@@ -14,7 +14,7 @@ import { SlashCommandConfig } from './Types'
 import { mog } from '../../../utils/lib/helper'
 
 export const useSlashCommandOnChange = (
-  keys: { [type: string]: SlashCommandConfig }
+  keys: Record<string, SlashCommandConfig>
   // internal: {
   //   [type: string]: SlashCommandConfig
   // }

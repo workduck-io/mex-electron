@@ -21,6 +21,9 @@ export type ComboboxState = {
   maxSuggestions: number
   setMaxSuggestions: (value: number) => void
 
+  activeBlock: any
+  setActiveBlock: (block: any) => void
+
   // Tag search value
   search: ComboSearchType
   setSearch: (value: ComboSearchType) => void
@@ -58,6 +61,8 @@ export const useComboboxStore = createStore()<ComboboxState>((set) => ({
 
   maxSuggestions: 10,
   setMaxSuggestions: setStoreValue(set, 'maxSuggestions', 'setMaxSuggestions'),
+
+  setActiveBlock: setStoreValue(set, 'activeBlock', 'setActiveBlock'),
 
   search: { textAfterTrigger: '' },
   setSearch: setStoreValue(set, 'search', 'setSearch'),

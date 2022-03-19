@@ -133,7 +133,7 @@ const useEditorPluginConfig = (editorId: string) => {
     internal: {
       cbKey: ComboboxKey.INTERNAL,
       trigger: '[[',
-      blockTrigger: '@',
+      blockTrigger: ':',
       data: internals,
       icon: 'ri:file-list-2-line'
     },

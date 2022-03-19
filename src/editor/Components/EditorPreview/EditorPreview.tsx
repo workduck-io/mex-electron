@@ -2,6 +2,7 @@ import Tippy from '@tippyjs/react/headless' // different import path!
 import React, { forwardRef, useState } from 'react'
 import { useContentStore } from '../../../store/useContentStore'
 import { Button } from '../../../style/Buttons'
+import { NodeEditorContent } from '../../../types/Types'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
 import { EditorPreviewWrapper } from './EditorPreview.styles'
 
@@ -11,6 +12,8 @@ export interface EditorPreviewProps {
   placement?: string
   delay?: number
   preview?: boolean
+  previewRef?: any
+  content?: NodeEditorContent
   allowClosePreview?: boolean
   closePreview?: () => void
 }
@@ -50,11 +53,12 @@ const EditorPreview = ({
   preview,
   children,
   delay,
+  content,
   ...props
 }: EditorPreviewProps) => {
   const getContent = useContentStore((store) => store.getContent)
-  const content = getContent(nodeid)
-  const cc = content && content.content
+  const nodeContent = getContent(nodeid)
+  const cc = content ?? (nodeContent && nodeContent.content)
 
   if (cc) {
     return (

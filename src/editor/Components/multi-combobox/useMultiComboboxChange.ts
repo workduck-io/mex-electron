@@ -5,7 +5,7 @@ import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange'
 import { isInternalCommand } from '../combobox/hooks/useComboboxOnKeyDown'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
-import { ComboboxType, ComboSearchType } from './types'
+import { ComboboxType } from './types'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { useRouting } from '../../../views/routes/urls'
 import { useLinks } from '../../../hooks/useLinks'
@@ -63,8 +63,8 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
     }))
 
     const dataKeys = items.map((i) => i.text)
-    // Insert new item conditionally
 
+    // Create for new item
     if (
       key !== ComboboxKey.SLASH_COMMAND &&
       key !== ComboboxKey.BLOCK &&

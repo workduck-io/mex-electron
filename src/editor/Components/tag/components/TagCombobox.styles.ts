@@ -1,11 +1,5 @@
 import styled, { css } from 'styled-components'
 
-// const classNames = {
-//   root: 'slate-TagCombobox',
-//   tagItem: 'slate-TagCombobox-tagItem',
-//   tagItemHighlighted: 'slate-TagCombobox-tagItemHighlighted',
-// };
-
 export const ComboboxItem = styled.div`
   display: flex;
   align-items: center;
@@ -24,6 +18,7 @@ export const ComboboxItem = styled.div`
   padding: 0 8px;
   min-height: 36px;
   user-select: none;
+  width: 220px;
   color: ${({ theme }) => theme.colors.text.subheading};
   &.highlight {
     background: ${({ theme }) => theme.colors.background.highlight};
@@ -63,10 +58,13 @@ export const ComboboxRoot = styled.div<{ isOpen: boolean }>`
       display: flex;
       margin: 0;
       z-index: 11;
-      background: ${theme.colors.background.modal};
+      > div {
+        background: ${theme.colors.background.modal};
+        height: fit-content;
+        box-shadow: rgba(0, 0, 0, 0.133) 0 3.2px 7.2px 0, rgba(0, 0, 0, 0.11) 0 0.6px 1.8px 0;
+        border-radius: ${theme.borderRadius.small};
+      }
       max-width: 440px;
-      border-radius: 8px;
-      box-shadow: rgba(0, 0, 0, 0.133) 0 3.2px 7.2px 0, rgba(0, 0, 0, 0.11) 0 0.6px 1.8px 0;
     `}
 `
 
@@ -74,7 +72,7 @@ export const ItemTitle = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  width: 200px;
+  /* width: 200px; */
 `
 
 export const ItemRightIcons = styled.div`

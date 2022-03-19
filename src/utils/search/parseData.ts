@@ -1,7 +1,10 @@
 // import { FileData, NodeSearchData } from '../Types/data'
 
 import { indexNames, diskIndex } from '../../data/search'
+import { useContentStore } from '../../store/useContentStore'
+import { useEditorStore } from '../../store/useEditorStore'
 import { FileData } from '../../types/data'
+import { getBlocks, getContent } from '../helpers'
 import { mog } from '../lib/helper'
 import { GenericSearchData, idxKey } from './../../types/search'
 
@@ -18,6 +21,24 @@ export const convertContentToRawText = (content: any[], join?: string): string =
   const rawText = text.join(join ?? '')
   // mog('Rawtext', { content, rawText })
   return rawText
+}
+
+export const getBlock = (nodeid: string, blockId: string) => {
+  const nodeContent = useContentStore.getState().getContent(nodeid)
+
+  if (nodeContent?.content) {
+    const blocksMap = getBlocks(nodeContent.content)
+    if (blocksMap) {
+      const blocks = Object.values(blocksMap).map((bd) => bd.block)
+      if (!blocks) return undefined
+
+      return blocks.find((b) => {
+        return b?.id === blockId
+      })
+    }
+  }
+
+  return undefined
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

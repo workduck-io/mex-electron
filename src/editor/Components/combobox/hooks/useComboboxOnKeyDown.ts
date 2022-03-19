@@ -93,6 +93,7 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
 
   const elementOnChange = getElementOnChange(keys[comboboxKey], keys)
 
+  // * Replace textBeforeTrigger with provided text value in editor
   const replaceFragment = (editor: any, text: string) => {
     const sel = editor.selection
     const targetRange = useComboboxStore.getState().targetRange
@@ -136,25 +137,27 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
 
     if (isOpen) {
       // if (!isBlockTriggered) {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault()
+      if (isBlockTriggered) {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault()
 
-        const newIndex = getNextWrappingIndex(1, itemIndex, items.length, () => undefined, true)
+          const newIndex = getNextWrappingIndex(1, itemIndex, items.length, () => undefined, true)
 
-        // * Replace current searched text with list item
-        // replaceFragment(editor, items[newIndex].text)
+          // * Replace current searched text with list item
+          // replaceFragment(editor, items[newIndex].text)
 
-        return setItemIndex(newIndex)
-      }
-      if (e.key === 'ArrowUp') {
-        e.preventDefault()
+          return setItemIndex(newIndex)
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault()
 
-        const newIndex = getNextWrappingIndex(-1, itemIndex, items.length, () => undefined, true)
+          const newIndex = getNextWrappingIndex(-1, itemIndex, items.length, () => undefined, true)
 
-        // * Replace current searched text with list item
-        // replaceFragment(editor, items[newIndex].text)
+          // * Replace current searched text with list item
+          // replaceFragment(editor, items[newIndex].text)
 
-        return setItemIndex(newIndex)
+          return setItemIndex(newIndex)
+        }
       }
       // }
       if (e.key === 'Escape') {

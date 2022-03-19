@@ -23,7 +23,8 @@ import { mog } from '../../../../utils/lib/helper'
 import useDataStore from '../../../../store/useDataStore'
 
 export const MAX_RECENT_ITEMS = 3
-enum KEYBOARD_KEYS {
+
+export enum KEYBOARD_KEYS {
   Enter = 'Enter',
   ArrowUp = 'ArrowUp',
   ArrowDown = 'ArrowDown'

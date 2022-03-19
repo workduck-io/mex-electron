@@ -35,6 +35,8 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
       }
 
       const targetRange = useComboboxStore.getState().targetRange
+      mog('Target Range', { targetRange })
+
       const type = getPluginType(
         editor,
         comboType.slateElementType === 'internal' ? 'ilink' : comboType.slateElementType
@@ -62,11 +64,26 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         Transforms.select(editor, targetRange)
         mog('Inserting Element', { comboType, type, itemValue, item })
 
-        insertNodes<TElement>(editor, {
-          type,
-          children: [{ text: '' }],
-          value: itemValue
-        })
+        const isBlockTriggered = useComboboxStore.getState().isBlockTriggered
+        const activeBlock = useComboboxStore.getState().activeBlock
+
+        if (type === ELEMENT_ILINK && isBlockTriggered && activeBlock) {
+          mog('Inserting from here', { activeBlock })
+          const withBlockInfo = {
+            type: ELEMENT_ILINK,
+            children: [{ text: '' }],
+            value: itemValue,
+            blockId: activeBlock.blockId
+          }
+
+          insertNodes(editor, withBlockInfo)
+        } else {
+          insertNodes<TElement>(editor, {
+            type,
+            children: [{ text: '' }],
+            value: itemValue
+          })
+        }
 
         trackEvent(getEventNameFromElement('Editor', ActionType.CREATE, type), {
           'mex-element-type': type,

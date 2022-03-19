@@ -15,6 +15,7 @@ import { useHotkeys } from '../hooks/useHotkeys'
 import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { SILink, SILinkRoot } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
+import { mog } from '../../../../utils/lib/helper'
 
 /**
  * ILinkElement with no default styles.
@@ -44,6 +45,8 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
     if (!preview) setPreview(true)
     else push(element.value)
   })
+
+  mog('BLOCK INSERT', { element })
 
   useEffect(() => {
     // If the preview is shown and the element losses focus --> Editor focus is moved
