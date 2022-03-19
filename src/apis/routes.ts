@@ -44,10 +44,10 @@ export const apiURLs = {
   getNode: (nodeid: string) => `${TEST_API_URL}/node/${nodeid}`,
 
   // * User Preference
-  getUserPreferences: (userId: string) => `${BASE_API_URL}/userPreference/all/${userId}`,
-  getPreference: (userId: string, preferenceType: string) =>
-    `${BASE_API_URL}/userPreference/${userId}/${preferenceType}`,
-  saveUserPrefernces: () => `${BASE_API_URL}/userPreference`,
+  // getUserPreferences: (userId: string) => `${BASE_API_URL}/userPreference/all/${userId}`,
+  // getPreference: (userId: string, preferenceType: string) =>
+  //   `${BASE_API_URL}/userPreference/${userId}/${preferenceType}`,
+  // saveUserPrefernces: () => `${BASE_API_URL}/userPreference`,
 
   // Bookmarks
   // post to add
@@ -57,7 +57,7 @@ export const apiURLs = {
 
   // User
   getUserRecords: (userId: string) => `${BASE_USER_URL}/user/${userId}/${MEX_TAG}`,
-  registerUser: `${BASE_API_URL}/user/register`,
+  registerUser: `${TEST_API_URL}/user/register`,
 
   // Archive
   archiveNodes: () => `${TEST_API_URL}/node/archive`,
