@@ -399,7 +399,7 @@ app.on('open-url', function (event, url) {
 
   const URL = new URLSearchParams(url)
 
-  const accessToken = URL.get('mex://localhost:3000/?access_token')
+  const accessToken = URL.get('mex://localhost:3333/?access_token')
   const idToken = URL.get('id_token')
 
   mex.webContents.send(IpcAction.OAUTH, { accessToken, idToken })
