@@ -616,7 +616,7 @@ ipcMain.on(
   (ev, { from, data }: { from: AppType; data: { type: string; reminder: Reminder; time?: number } }) => {
     const { type, reminder } = data
     console.log('Acted on Reminder ', { from, data, type, reminder })
-    mex?.webContents.send(IpcAction.ACTION_REMINDER, data)
+    spotlight?.webContents.send(IpcAction.ACTION_REMINDER, data)
   }
 )
 

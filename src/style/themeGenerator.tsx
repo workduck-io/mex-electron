@@ -64,6 +64,7 @@ export interface ColorPalette {
   green: string
   yellow: string
   red: string
+  blue: string
 }
 
 export interface TextPalette {
@@ -95,7 +96,7 @@ export interface ThemePalette {
 
   // Palettes
   gray: ShadePalette
-  palette: ColorPalette
+  palette: Partial<ColorPalette>
 
   backgroundImages?: BackgroundImages
 
@@ -133,7 +134,16 @@ export const generateTheme = (p: ThemePalette): DefaultTheme => {
         secondary: p.secondary,
 
         //
-        palette: p.palette,
+        palette: {
+          white: '#ffffff',
+          black: '#000000',
+          green: '#00e676',
+          yellow: '#eeff41',
+          red: '#ff3b30',
+          blue: '#00b0ff',
+
+          ...p.palette
+        },
         gray: p.gray,
 
         //

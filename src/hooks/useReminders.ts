@@ -12,6 +12,15 @@ import { isInSameMinute } from '../utils/time'
 import { SearchFilter } from './useFilters'
 import { AppType } from './useInitialize'
 import { useEffect } from 'react'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../views/routes/urls'
+import { useNavigation } from './useNavigation'
+import { useSaveData } from './useSaveData'
+import { useLinks } from './useLinks'
+
+interface ArmedReminder {
+  reminderId: string
+  timeoutId: NodeJS.Timeout
+}
 
 interface ReminderStoreState {
   reminders: Reminder[]
@@ -23,9 +32,9 @@ interface ReminderStoreState {
   clearReminders(): void
 
   // To store the currently aremd ie:"timeout set" reminders
-  armedReminders: Reminder[]
-  setArmedReminders: (reminders: Reminder[]) => void
-  addArmReminder: (reminder: Reminder) => void
+  armedReminders: Array<ArmedReminder>
+  setArmedReminders: (reminders: ArmedReminder[]) => void
+  addArmReminder: (reminder: ArmedReminder) => void
   clearArmedReminders: () => void
 
   modalOpen: boolean
@@ -53,8 +62,9 @@ export const useReminderStore = create<ReminderStoreState>((set) => ({
   clearReminders: () => set({ reminders: [] }),
 
   armedReminders: [],
-  setArmedReminders: (reminders: Reminder[]) => set({ armedReminders: reminders }),
-  addArmReminder: (reminder: Reminder) => set((state) => ({ armedReminders: [...state.armedReminders, reminder] })),
+  setArmedReminders: (reminders: ArmedReminder[]) => set({ armedReminders: reminders }),
+  addArmReminder: (reminder: ArmedReminder) =>
+    set((state) => ({ armedReminders: [...state.armedReminders, reminder] })),
   clearArmedReminders: () => set({ armedReminders: [] }),
 
   modalOpen: false,
@@ -73,6 +83,11 @@ export const useReminders = () => {
   const addArmReminder = useReminderStore((state) => state.addArmReminder)
   const clearArmedReminders = useReminderStore((state) => state.clearArmedReminders)
 
+  const { goTo } = useRouting()
+  const { push } = useNavigation()
+  const { saveData } = useSaveData()
+  const { getPathFromNodeid } = useLinks()
+
   const dismissReminder = (reminder: Reminder) => {
     const newReminder: Reminder = {
       ...reminder,
@@ -84,12 +99,24 @@ export const useReminders = () => {
     updateReminder(newReminder)
   }
 
+  const markUndone = (reminder: Reminder) => {
+    const newReminder: Reminder = {
+      ...reminder,
+      state: {
+        ...reminder.state,
+        done: false
+      }
+    }
+    updateReminder(newReminder)
+  }
+
   const snoozeReminder = (reminder: Reminder, time: number) => {
     const newReminder = {
       ...reminder,
       time,
       state: {
         ...reminder.state,
+        done: false,
         snooze: true
       }
     }
@@ -120,12 +147,13 @@ export const useReminders = () => {
   }
 
   const upcoming = (reminder: Reminder) => {
-    const today = new Date()
+    const todayExact = new Date()
+    const today = sub(todayExact, { minutes: 1 })
     return today.getTime() <= reminder.time
   }
 
   const isArmed = (reminder: Reminder) => {
-    return useReminderStore.getState().armedReminders.some((r) => r.id === reminder.id)
+    return useReminderStore.getState().armedReminders.some((r) => r.reminderId === reminder.id)
   }
 
   /*
@@ -171,10 +199,11 @@ export const useReminders = () => {
    */
   const missed = (reminder: Reminder) => {
     if (reminder.state.done) return false
-    const now = new Date()
-    const prevWeek = sub(now, { weeks: 1 })
-    const isWithinWeek = prevWeek.getTime() < reminder.time && reminder.time < now.getTime()
-    if (isWithinWeek) {
+    const nowExact = new Date()
+    const now = sub(nowExact, { seconds: 60 })
+    const prevDay = sub(now, { days: 1 })
+    const isWithinDay = prevDay.getTime() < reminder.time && reminder.time < now.getTime()
+    if (isWithinDay) {
       return true
     }
     return false
@@ -187,6 +216,10 @@ export const useReminders = () => {
     })
   }
 
+  const getBlockReminder = (blockid: string) => {
+    const reminders = useReminderStore.getState().reminders
+    return reminders.find((reminder) => reminder.blockid === blockid)
+  }
   /*
    * Reminders that are to be armed
    * Includes snoozed and missed reminders
@@ -248,7 +281,7 @@ export const useReminders = () => {
   }
 
   const armMissedReminders = () => {
-    const toArmRem = getToArmReminders().filter((rems) => rems.time - Date.now() <= 1000 * 60 * 5)
+    const toArmRem = getToArmReminders()
     const now = Date.now()
     const tenSecNow = add(now, { seconds: 5 })
     mog('ReminderArmer: Using the interval', { reminders, toArmRem })
@@ -258,11 +291,11 @@ export const useReminders = () => {
   }
 
   const actOnReminder = (type: ReminderActions, reminder: Reminder, time?: number) => {
+    mog('ReminderArmer: IpcAction.ACTION_REMINDER', { type, reminder })
     switch (type) {
       case 'open':
-        mog('ReminderArmer: IpcAction.ACTION_REMINDER', { type, reminder })
-        // goTo(ROUTE_PATHS.node, NavigationType.push, reminder.id)
-        // addReminder(reminder)
+        dismissReminder(reminder)
+        ipcRenderer.send(IpcAction.OPEN_NODE_IN_MEX, { nodeid: reminder.nodeid })
         break
       case 'delete':
         deleteReminder(reminder.id)
@@ -276,49 +309,21 @@ export const useReminders = () => {
       default:
         break
     }
+    saveData()
+  }
+
+  const attachPath = (reminder: Reminder) => {
+    const path = getPathFromNodeid(reminder.nodeid)
+    if (path) {
+      return { ...reminder, path }
+    }
+    return reminder
   }
 
   /*
    * Setup the timeout to display notification for the reminder
    */
   const setupReminders = (reminders: Reminder[], time: number) => {
-    const toArmRems = reminders.filter((reminder) => {
-      if (!toArm(reminder)) {
-        console.error(`Reminder does not meet arming conditions. Reminder will not be set up.`, { reminder })
-      }
-      return toArm(reminder)
-    })
-
-    const reminderGroup: ReminderGroup = {
-      type: 'reminders',
-      label: reminders.length > 1 ? 'Reminders' : 'Reminder',
-      reminders: toArmRems
-    }
-
-    const missedReminderGroup = {
-      type: 'missed',
-      label: 'Missed',
-      reminders: getMissedReminders()
-    }
-
-    const reminderGroups: ReminderGroup[] = []
-    if (reminderGroup.reminders.length > 0) {
-      reminderGroups.push(reminderGroup)
-    }
-    if (missedReminderGroup.reminders.length > 0) {
-      reminderGroups.push(missedReminderGroup)
-    }
-
-    mog('reminderGroups', {
-      reminderGroups,
-      reminderGroup,
-      missedReminderGroup
-    })
-
-    if (reminderGroups.length === 0) {
-      return
-    }
-
     const now = new Date()
     const next24t = add(now, { hours: 24 })
     if (time < now.getTime() || time > next24t.getTime()) {
@@ -326,8 +331,49 @@ export const useReminders = () => {
       return
     }
 
+    const toArmRems = reminders.filter((reminder) => {
+      if (!toArm(reminder)) {
+        console.error(`Reminder does not meet arming conditions. Reminder will not be set up.`, { reminder })
+      }
+      return toArm(reminder)
+    })
     const id = setTimeout(() => {
-      console.log(`Reminders:`, { toArmRems })
+      const rems = toArmRems.map(attachPath)
+      const reminderGroup: ReminderGroup = {
+        type: 'reminders',
+        label: reminders.length > 1 ? 'Reminders' : 'Reminder',
+        reminders: rems
+      }
+
+      const missedReminderGroup = {
+        type: 'missed',
+        label: 'Missed',
+        reminders: getMissedReminders()
+          .filter((reminder) => {
+            return reminderGroup.reminders.find((r) => r.id === reminder.id) === undefined
+          })
+          .map(attachPath)
+      }
+
+      const reminderGroups: ReminderGroup[] = []
+
+      if (reminderGroup.reminders.length > 0) {
+        reminderGroups.push(reminderGroup)
+      }
+
+      if (missedReminderGroup.reminders.length > 0) {
+        reminderGroups.push(missedReminderGroup)
+      }
+
+      mog('reminderGroups', {
+        reminderGroups,
+        reminderGroup,
+        missedReminderGroup
+      })
+
+      if (reminderGroups.length === 0) {
+        return
+      }
       // Use multiple notifications
       appNotifierWindow(IpcAction.SHOW_REMINDER, AppType.MEX, {
         status: ToastStatus.WARNING,
@@ -337,7 +383,7 @@ export const useReminders = () => {
         attachment: reminderGroups
       })
     }, time - now.getTime())
-    if (id) toArmRems.forEach(addArmReminder)
+    toArmRems.forEach((r) => addArmReminder({ reminderId: r.id, timeoutId: id }))
   }
 
   /*
@@ -358,11 +404,20 @@ export const useReminders = () => {
     })
     return pastReminders
   }
+
   const getNodeReminders = (nodeid: string): NodeReminderGroup[] => {
-    const upcomingReminders = getUpcomingReminders(nodeid)
-    const pastReminders = getPastReminders(nodeid)
+    const upcomingRemindersBase = getUpcomingReminders(nodeid)
+    const pastRemindersBase = getPastReminders(nodeid)
 
     const res = []
+
+    const upcomingReminders = upcomingRemindersBase.filter(
+      (reminder) => pastRemindersBase.find((r) => r.id === reminder.id && r.state.done === true) === undefined
+    )
+
+    const pastReminders = pastRemindersBase.filter(
+      (reminder) => upcomingRemindersBase.find((r) => r.id === reminder.id && r.state.done === false) === undefined
+    )
 
     if (upcomingReminders.length > 0) {
       res.push({
@@ -380,6 +435,14 @@ export const useReminders = () => {
     }
 
     return res
+  }
+
+  const clearAllArmedReminders = () => {
+    const armedReminders = useReminderStore.getState().armedReminders
+    armedReminders.forEach((reminder) => {
+      clearTimeout(reminder.timeoutId)
+    })
+    clearArmedReminders()
   }
 
   const clearNodeReminders = (nodeid: string) => {
@@ -409,8 +472,11 @@ export const useReminders = () => {
     clearNodeReminders,
     armReminders,
     armMissedReminders,
-    clearArmedReminders,
+    clearAllArmedReminders,
     actOnReminder,
+    markUndone,
+    getMissedReminders,
+    getBlockReminder,
     getRemindersForNextNMinutes
   }
 }

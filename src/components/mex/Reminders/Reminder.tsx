@@ -1,12 +1,16 @@
+import closeCircleLine from '@iconify/icons-ri/close-circle-line'
 import { Icon } from '@iconify/react'
 import timerLine from '@iconify/icons-ri/timer-line'
 import React from 'react'
 import { Description, Title } from '../../../style/Typography'
 import { Reminder } from '../../../types/reminders'
 import { mog } from '../../../utils/lib/helper'
-import { getRelativeDate } from '../../../utils/time'
+import arrowDropRightLine from '@iconify/icons-ri/arrow-drop-right-line'
+import arrowDropUpLine from '@iconify/icons-ri/arrow-drop-up-line'
+import { getNextReminderTime, getRelativeDate } from '../../../utils/time'
 import { RelativeTime } from '../RelativeTime'
 import {
+  ReminderButtonControlsWrapper,
   ReminderControlsWrapper,
   ReminderExact,
   ReminderGroupsWrapper,
@@ -19,22 +23,33 @@ import {
 import { Button } from '../../../style/Buttons'
 import { useReminders } from '../../../hooks/useReminders'
 import { add, sub } from 'date-fns'
+import { getReminderState } from '../../../services/reminders/reminders'
+import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 
-export interface ReminderControls {
-  onSnooze: (reminder: Reminder, time: number) => void
-  onDismiss: (reminder: Reminder) => void
-  onOpen: (reminder: Reminder) => void
+export interface ReminderControl {
+  type: 'dismiss' | 'open' | 'delete' | 'unarchive'
+  action: (reminder: Reminder) => void
 }
+
+export interface SnoozeControl {
+  type: 'snooze'
+  action: (reminder: Reminder, time: number) => void
+}
+
+export type ReminderControls = Array<ReminderControl | SnoozeControl>
 
 interface Props {
   reminder: Reminder
-  showControls?: boolean
-  controls?: ReminderControls
+  isNotification?: boolean
+  controls?: Array<ReminderControl | SnoozeControl>
 }
 
 interface ReminderControlProps {
   reminder: Reminder
-  controls: ReminderControls
+  controls: Array<ReminderControl | SnoozeControl>
+  snoozeControls: boolean
+  setSnoozeControls: React.Dispatch<React.SetStateAction<boolean>>
+  isNotification?: boolean
 }
 
 const DefaultSnoozeTimes = () => {
@@ -59,16 +74,22 @@ const DefaultSnoozeTimes = () => {
   ]
 }
 
-const ReminderControlsUI = ({ controls, reminder }: ReminderControlProps) => {
+const ReminderControlsUI = ({
+  controls,
+  isNotification,
+  reminder,
+  snoozeControls,
+  setSnoozeControls
+}: ReminderControlProps) => {
   // const { snooze, dismiss, open } = useReminders()
-  const [snoozeControls, setSnoozeControls] = React.useState(false)
   if (!controls) return null
-  const { onSnooze, onDismiss, onOpen } = controls
+  const onSnooze = controls.find((c) => c.type === 'snooze')?.action
+  // const { onSnooze, onDismiss, onOpen } = controls
 
   return (
-    <>
-      {snoozeControls && (
-        <SnoozeControls>
+    <ReminderControlsWrapper>
+      {onSnooze && (
+        <SnoozeControls showControls={snoozeControls}>
           Snooze For:
           {DefaultSnoozeTimes().map(({ time, label }) => (
             <Button
@@ -81,72 +102,75 @@ const ReminderControlsUI = ({ controls, reminder }: ReminderControlProps) => {
               {label}
             </Button>
           ))}
+          <Button
+            onClick={() => {
+              setSnoozeControls(false)
+            }}
+          >
+            <Icon height={20} icon={closeCircleLine} />
+          </Button>
         </SnoozeControls>
       )}
-
-      <ReminderControlsWrapper>
-        <Button
-          onClick={() => {
-            setSnoozeControls(!snoozeControls)
-            // onSnooze(reminder)
-          }}
-        >
-          Snooze
-        </Button>
-        <Button
-          onClick={() => {
-            onDismiss(reminder)
-          }}
-        >
-          Dismiss
-        </Button>
-        <Button
-          onClick={() => {
-            onOpen(reminder)
-          }}
-        >
-          Open
-        </Button>
-      </ReminderControlsWrapper>
-    </>
+      <ReminderButtonControlsWrapper>
+        {controls.map((control) => {
+          if (control.type === 'snooze') {
+            return (
+              <>
+                <Button
+                  key={control.type}
+                  transparent
+                  primary={snoozeControls}
+                  onClick={() => {
+                    setSnoozeControls((prevState: boolean) => !prevState)
+                  }}
+                >
+                  Snooze
+                </Button>
+              </>
+            )
+          }
+          return (
+            <Button
+              key={control.type}
+              transparent={control.type !== 'open'}
+              onClick={() => {
+                control.action(reminder)
+              }}
+            >
+              {control.type.charAt(0).toUpperCase() + control.type.slice(1)}
+              {control.type === 'open' && reminder.path && (
+                <>
+                  <Icon height={14} icon={fileList2Line} /> {reminder.path}
+                </>
+              )}
+            </Button>
+          )
+        })}
+      </ReminderButtonControlsWrapper>
+    </ReminderControlsWrapper>
   )
 }
 
-const stateIcons = {
+export const reminderStateIcons = {
   active: timerLine,
   snooze: timerLine,
   missed: 'ri-close-line',
   done: 'ri-check-line'
 }
 
-const getReminderState = (reminder: Reminder): 'active' | 'snooze' | 'done' | 'missed' => {
-  const now = new Date()
-  const lessOneMin = sub(now, { minutes: 1 })
-  const { time, state } = reminder
-  if (state.done) {
-    return 'done'
-  }
-  if (time < lessOneMin.getTime()) {
-    return 'missed'
-  }
-  if (state.snooze) {
-    return 'snooze'
-  }
-  return 'active'
-}
-
-const ReminderUI = ({ reminder, showControls, controls }: Props) => {
+const ReminderUI = ({ reminder, isNotification, controls }: Props) => {
+  const [snoozeControls, setSnoozeControls] = React.useState(false)
   // mog('reminder', { reminder })
   const reminderState = getReminderState(reminder)
   return (
-    <ReminderStyled key={`ReultForSearch_${reminder.id}`} showControls={showControls}>
+    <ReminderStyled key={`ReultForSearch_${reminder.id}`} isNotification={isNotification} showControls={snoozeControls}>
       <ReminderTime>
         <ReminderRelative>
           <ReminderStateTag state={reminderState}>
-            <Icon icon={stateIcons[reminderState]} />
+            <Icon icon={reminderStateIcons[reminderState]} />
             {reminderState}
           </ReminderStateTag>
-          {!controls && (
+          {!isNotification && (
             <RelativeTime
               tippy
               dateNum={reminder.time}
@@ -155,11 +179,23 @@ const ReminderUI = ({ reminder, showControls, controls }: Props) => {
             />
           )}
         </ReminderRelative>
+        {isNotification && reminder.path && (
+          <ReminderStateTag state={reminderState}>
+            <Icon icon={reminderStateIcons[reminderState]} />
+            {reminder.path}
+          </ReminderStateTag>
+        )}
         <ReminderExact>{getRelativeDate(new Date(reminder.time))}</ReminderExact>
       </ReminderTime>
       <Title>{reminder.title}</Title>
       <Description>{reminder.description}</Description>
-      <ReminderControlsUI controls={controls} reminder={reminder} />
+      <ReminderControlsUI
+        isNotification={isNotification}
+        snoozeControls={snoozeControls}
+        setSnoozeControls={setSnoozeControls}
+        controls={controls}
+        reminder={reminder}
+      />
     </ReminderStyled>
   )
 }

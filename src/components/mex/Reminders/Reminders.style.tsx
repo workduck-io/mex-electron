@@ -1,6 +1,7 @@
 import { mix, transparentize } from 'polished'
 import styled, { createGlobalStyle, css } from 'styled-components'
 import { REMINDERS_DIMENSIONS } from '../../../services/reminders/reminders'
+import { Button } from '../../../style/Buttons'
 import { Title } from '../../../style/Typography'
 
 export const RemindersWrapper = styled.div`
@@ -31,37 +32,77 @@ export const ReminderGroupWrapper = styled.div`
 
 const ReminderWidth = css`calc(${REMINDERS_DIMENSIONS.baseWidth}px - ${({ theme }) => theme.spacing.medium} * 2)`
 
-export const ReminderControlsWrapper = styled.div`
+export const ReminderButtonControlsWrapper = styled.div`
   opacity: 0.5;
-  margin-top: ${({ theme }) => theme.spacing.small};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${({ theme }) => theme.spacing.medium};
+  width: ${ReminderWidth};
+  transition: opacity 0.25s ease-in-out, height 0.25s ease-in-out, gap 0.25s ease-in-out;
+  ${Button} {
+    svg {
+      color: ${({ theme }) => theme.colors.primary};
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+  &:hover {
+    opacity: 1;
+  }
+`
+
+export const ReminderControlsWrapper = styled.div`
+  margin-top: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: ${({ theme }) => theme.spacing.medium};
+  flex-direction: column;
   width: ${ReminderWidth};
-  transition: opacity 0.25s ease-in-out;
+  gap: 0;
+  transition: opacity 0.25s ease-in-out, max-height 0.25s ease-in-out;
 `
 
-export const SnoozeControls = styled.div`
+export const SnoozeControls = styled.div<{ showControls?: boolean }>`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: ${({ theme }) => theme.spacing.small};
-  background-color: ${({ theme }) => theme.colors.gray[8]};
-  width: calc(${REMINDERS_DIMENSIONS.baseWidth}px - ${({ theme }) => theme.spacing.medium} * 4);
+  justify-content: center;
+  background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[10])};
+  width: max-content;
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  padding: ${({ theme }) => theme.spacing.small};
+  transition: opacity 0.25s ease-in-out, height 0.25s ease-in-out, padding 0.25s ease-in-out, gap 0.25s ease-in-out,
+    margin 0.25s ease-in-out;
+
+  ${({ showControls }) =>
+    showControls
+      ? css`
+          opacity: 1;
+          height: 40px;
+          gap: ${({ theme }) => theme.spacing.medium};
+          padding: 0 0 0 ${({ theme }) => theme.spacing.small};
+          margin: ${({ theme }) => `${theme.spacing.small} 0 ${theme.spacing.tiny}`};
+        `
+      : css`
+          opacity: 0.5;
+          height: 0px;
+          overflow: hidden;
+          gap: ${({ theme }) => theme.spacing.tiny};
+          padding: 0;
+          margin: 0;
+        `}
 `
 
-export const ReminderStyled = styled.div<{ showControls?: boolean }>`
+export const ReminderStyled = styled.div<{ isNotification?: boolean; showControls?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
+  height: max-content;
   gap: ${({ theme }) => theme.spacing.small};
   padding: ${({ theme }) => theme.spacing.medium};
   border-radius: ${({ theme }) => theme.borderRadius.large};
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.15);
+  transition: opacity 0.25s ease-in-out, height 0.25s ease-in-out;
 
   background: ${({ theme }) => theme.colors.gray[9]};
   background: linear-gradient(
@@ -77,23 +118,58 @@ export const ReminderStyled = styled.div<{ showControls?: boolean }>`
     font-weight: normal;
   }
 
-  ${({ showControls }) =>
-    !showControls &&
-    css`
-      ${ReminderControlsWrapper} {
-        height: 0px;
-        overflow: hidden;
-        opacity: 0;
-      }
-    `}
-
-  :hover {
-    ${ReminderControlsWrapper} {
-      height: 100%;
-      overflow: visible;
-      opacity: 1;
-    }
-  }
+  ${({ isNotification, showControls }) =>
+    isNotification
+      ? css``
+      : css`
+          ${ReminderControlsWrapper} {
+            opacity: 0.5;
+            overflow: hidden;
+            width: 100%;
+            ${ReminderButtonControlsWrapper} {
+              height: 0;
+              width: 100%;
+              gap: ${({ theme }) => theme.spacing.tiny};
+            }
+            ${SnoozeControls} {
+              opacity: 0.5;
+              height: 0px;
+              overflow: hidden;
+              gap: ${({ theme }) => theme.spacing.tiny};
+              padding: 0;
+              margin: 0;
+            }
+          }
+          :hover {
+            ${ReminderControlsWrapper} {
+              overflow: hidden;
+              opacity: 1;
+              width: 100%;
+              ${ReminderButtonControlsWrapper} {
+                height: 40px;
+                gap: ${({ theme }) => theme.spacing.large};
+              }
+              ${SnoozeControls} {
+                ${showControls
+                  ? css`
+                      opacity: 1;
+                      height: 40px;
+                      gap: ${({ theme }) => theme.spacing.medium};
+                      padding: 0 0 0 ${({ theme }) => theme.spacing.small};
+                      margin: ${({ theme }) => theme.spacing.small} 0;
+                    `
+                  : css`
+                      opacity: 0.5;
+                      height: 0px;
+                      overflow: hidden;
+                      gap: ${({ theme }) => theme.spacing.tiny};
+                      padding: 0;
+                      margin: 0;
+                    `}
+              }
+            }
+          }
+        `}
 `
 
 export const ReminderTime = styled.div`
@@ -125,7 +201,7 @@ export const ReminderStateTag = styled.div<{ state: 'done' | 'snooze' | 'missed'
         break
 
       case 'active':
-        color = theme.colors.primary
+        color = theme.colors.palette.blue
         break
 
       case 'snooze':
@@ -158,11 +234,14 @@ export const ReminderRelative = styled.div`
 `
 
 export const ReminderInfobar = styled.div`
+  height: calc(100vh - 7.5rem);
+  overflow-y: auto;
   display: flex;
   align-items: center;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.large};
-  margin: 0 ${({ theme }) => theme.spacing.medium};
+  padding: 0 ${({ theme }) => theme.spacing.small};
+  border-radius: 0px 0px ${({ theme }) => `calc(2 * ${theme.borderRadius.large}) calc(2* ${theme.borderRadius.large})`};
 
   & > ${Title} {
     margin: ${({ theme }) => theme.spacing.large} 0 0;

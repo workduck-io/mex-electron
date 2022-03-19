@@ -6,6 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { useForm } from 'react-hook-form'
 import Modal from 'react-modal'
 import create from 'zustand'
+import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
 import { useLinks } from '../../../hooks/useLinks'
 import { useReminders } from '../../../hooks/useReminders'
 import { useSaveData } from '../../../hooks/useSaveData'
@@ -15,6 +16,7 @@ import { useEditorStore } from '../../../store/useEditorStore'
 import { Button } from '../../../style/Buttons'
 import { DatePickerStyles, InputBlock, Label, TextAreaBlock } from '../../../style/Form'
 import { Reminder, REMINDER_PREFIX } from '../../../types/reminders'
+import { NodeEditorContent } from '../../../types/Types'
 import { mog } from '../../../utils/lib/helper'
 import { getEventNameFromElement } from '../../../utils/lib/strings'
 import { getNextReminderTime, getRelativeDate } from '../../../utils/time'
@@ -26,6 +28,8 @@ import { SelectedDate } from './Reminders.style'
 interface ModalValue {
   time?: number
   nodeid?: string
+  blockid?: string
+  blockContent?: string
 }
 
 interface CreateReminderModalState {
@@ -46,6 +50,8 @@ export const useCreateReminderModal = create<CreateReminderModalState>((set) => 
   open: false,
   focus: false,
   modalValue: {
+    blockId: undefined,
+    blockContent: undefined,
     nodeid: undefined,
     time: undefined
   },
@@ -54,7 +60,24 @@ export const useCreateReminderModal = create<CreateReminderModalState>((set) => 
     set((state) => ({ open: !state.open }))
   },
   openModal: (modalValue) => {
-    set({ open: true, modalValue })
+    if (modalValue) {
+      set((state) => ({
+        ...state,
+        modalValue: modalValue,
+        open: true
+      }))
+    } else {
+      set((state) => ({
+        ...state,
+        modalValue: {
+          blockId: undefined,
+          blockContent: undefined,
+          nodeid: undefined,
+          time: undefined
+        },
+        open: true
+      }))
+    }
   },
   setFocus: (focus) => {
     set({ focus })
@@ -63,7 +86,10 @@ export const useCreateReminderModal = create<CreateReminderModalState>((set) => 
     set({
       open: false,
       modalValue: {
-        time: undefined
+        time: undefined,
+        blockContent: undefined,
+        blockid: undefined,
+        nodeid: undefined
       }
     })
   },
@@ -89,13 +115,14 @@ const CreateReminderModal = () => {
   const setTime = useCreateReminderModal((state) => state.setTime)
   const setNodeId = useCreateReminderModal((state) => state.setNodeId)
   const node = useEditorStore((state) => state.node)
-  const { saveData } = useSaveData()
+  const { saveAndClearBuffer } = useEditorBuffer()
   const { addReminder } = useReminders()
 
   const { getNodeidFromPath } = useLinks()
 
   const {
     // control,
+    reset,
     register,
     handleSubmit,
     formState: { isSubmitting }
@@ -119,18 +146,19 @@ const CreateReminderModal = () => {
 
   const onSubmit = async ({ title, description }) => {
     // console.log({ intents, command, title, description })
-    const { time, nodeid } = modalValue
+    const { time, nodeid, blockid, blockContent } = modalValue
 
     const reminder: Reminder = {
       id: `${REMINDER_PREFIX}${nanoid()}`,
       title,
-      description,
+      description: blockContent || description,
       nodeid,
       time,
       state: {
         snooze: false,
         done: false
       },
+      blockid,
       createdAt: Date.now(),
       updatedAt: Date.now()
     }
@@ -143,7 +171,9 @@ const CreateReminderModal = () => {
       reminder
     })
     addReminder(reminder)
-    saveData()
+
+    saveAndClearBuffer()
+    reset()
     closeModal()
   }
 
@@ -165,7 +195,12 @@ const CreateReminderModal = () => {
         <InputBlock autoFocus placeholder="Ex. Send email to team" {...register('title')} />
 
         <Label htmlFor="description">Description</Label>
-        <TextAreaBlock placeholder="Ex. Remember to share new developments" {...register('description')} />
+        <TextAreaBlock
+          disabled={modalValue.blockContent !== undefined}
+          defaultValue={modalValue.blockContent}
+          placeholder="Ex. Remember to share new developments"
+          {...register('description')}
+        />
 
         <Label htmlFor="node">NodeId</Label>
         <WrappedNodeSelect

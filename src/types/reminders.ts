@@ -1,4 +1,5 @@
 import { PriorityType } from '../editor/Components/Todo/types'
+import { NodeEditorContent } from './Types'
 
 export const REMINDER_PREFIX = 'REMINDER_'
 
@@ -59,6 +60,7 @@ export interface Reminder {
   createdAt: number
   updatedAt: number
 
+  path?: string // As get path from id is not present in the toast
   // Frequency, if present is used instead of time
   // TODO: Combine with time
   frequency?: ReminderFrequency

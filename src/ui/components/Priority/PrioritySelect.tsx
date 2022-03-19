@@ -4,7 +4,7 @@ import { useContextMenu } from 'react-contexify'
 import PriorityMenu from '../../../editor/Components/Todo/PriorityMenu'
 import { Priority, PriorityDataType, PriorityType } from '../../../editor/Components/Todo/types'
 import { MexIcon } from '../../../style/Layouts'
-import { PriorityButton, TaskPriority } from '../Todo.style'
+import { TodoActionButton, TodoActionWrapper } from '../Todo.style'
 
 interface PriorityMenuSelect {
   id: string
@@ -18,7 +18,7 @@ const PrioritySelect = ({ id, value, onPriorityChange, withLabel = false }: Prio
   const { show } = useContextMenu({ id: menuId })
   return (
     <>
-      <TaskPriority onClick={show}>
+      <TodoActionWrapper onClick={show}>
         <Tippy
           delay={100}
           interactiveDebounce={100}
@@ -27,12 +27,12 @@ const PrioritySelect = ({ id, value, onPriorityChange, withLabel = false }: Prio
           theme="mex"
           content={Priority[value]?.title}
         >
-          <PriorityButton>
+          <TodoActionButton>
             <MexIcon onClick={show} icon={Priority[value]?.icon} fontSize={20} cursor="pointer" />
             {withLabel && <span>{Priority[value]?.title}</span>}
-          </PriorityButton>
+          </TodoActionButton>
         </Tippy>
-      </TaskPriority>
+      </TodoActionWrapper>
       <PriorityMenu id={menuId} onClick={onPriorityChange} />
     </>
   )

@@ -3,7 +3,7 @@
 // import { IpcAction } from '../../data/IpcAction'
 // import { ToastStatus } from '../../electron/Toast'
 // import { Reminder } from '../../types/reminders'
-
+import { sub } from 'date-fns'
 import { Reminder, ReminderGroup } from '../../types/reminders'
 
 /*
@@ -11,7 +11,7 @@ import { Reminder, ReminderGroup } from '../../types/reminders'
  */
 const BASE_REMINDER_HEIGHT = 80
 const BASE_TITLE_HEIGHT = 20
-export const BASE_WIDTH = 400
+export const BASE_WIDTH = 500
 const BASE_PADDING = 12
 
 export const REMINDERS_DIMENSIONS = {
@@ -20,6 +20,22 @@ export const REMINDERS_DIMENSIONS = {
   baseWidth: BASE_WIDTH,
   padding: BASE_PADDING,
   offset: 20
+}
+
+export const getReminderState = (reminder: Reminder): 'active' | 'snooze' | 'done' | 'missed' => {
+  const now = new Date()
+  const lessOneMin = sub(now, { minutes: 1 })
+  const { time, state } = reminder
+  if (state.done) {
+    return 'done'
+  }
+  if (time < lessOneMin.getTime()) {
+    return 'missed'
+  }
+  if (state.snooze) {
+    return 'snooze'
+  }
+  return 'active'
 }
 
 export const getReminderDimensions = (reminderGroups: ReminderGroup[]) => {

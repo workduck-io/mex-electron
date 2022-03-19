@@ -29,6 +29,7 @@ interface ColorPalette {
   green: string
   yellow: string
   red: string
+  blue: string
 }
 
 // and extend them!

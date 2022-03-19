@@ -222,18 +222,6 @@ const Init = () => {
     setAnalysisIpc()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Set reminder action listner
-  useEffect(() => {
-    ipcRenderer.on(
-      IpcAction.ACTION_REMINDER,
-      (_event, arg: { type: ReminderActions; reminder: Reminder; time?: number }) => {
-        // goTo(ROUTE_PATHS.node, NavigationType.push, appleNotesUID)
-        mog('ReminderArmer: IpcAction.ACTION_REMINDER', { arg })
-        const { type, reminder, time } = arg
-        actOnReminder(type, reminder, time)
-      }
-    )
-  }, [])
 
   /** Set shortcuts */
   const shortcuts = useHelpStore((store) => store.shortcuts)

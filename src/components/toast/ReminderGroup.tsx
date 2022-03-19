@@ -27,7 +27,7 @@ const ReminderGroupUI = ({ reminderGroup, controls }: ReminderGroupProps) => {
       <ReminderGroupTitle>{reminderGroup.label}</ReminderGroupTitle>
       <RemindersWrapper>
         {reminderGroup.reminders.map((reminder) => (
-          <ReminderUI showControls controls={controls} reminder={reminder} key={reminder.id} />
+          <ReminderUI isNotification controls={controls} reminder={reminder} key={reminder.id} />
         ))}
       </RemindersWrapper>
     </ReminderGroupWrapper>
@@ -86,20 +86,38 @@ const ReminderGroupsUI = ({ reminderGroups: init }: ReminderGroupsProps) => {
     appNotifierWindow(IpcAction.HIDE_REMINDER, AppType.SPOTLIGHT)
   }
 
-  const controls: ReminderControls = {
-    onSnooze: (reminder: Reminder, time: number) => {
-      removeReminderFromGroups(reminder)
-      appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, { type: 'snooze', reminder: reminder, time })
+  const controls: ReminderControls = [
+    {
+      type: 'open',
+      action: (reminder: Reminder) => {
+        removeReminderFromGroups(reminder)
+        appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, { type: 'open', reminder: reminder })
+      }
     },
-    onDismiss: (reminder: Reminder) => {
-      removeReminderFromGroups(reminder)
-      appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, { type: 'dismiss', reminder: reminder })
+    {
+      type: 'snooze',
+      action: (reminder: Reminder, time) => {
+        removeReminderFromGroups(reminder)
+        appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, { type: 'snooze', reminder: reminder, time })
+      }
     },
-    onOpen: (reminder: Reminder) => {
-      removeReminderFromGroups(reminder)
-      appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, { type: 'open', reminder: reminder })
+    {
+      type: 'dismiss',
+      action: (reminder: Reminder) => {
+        removeReminderFromGroups(reminder)
+        appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, { type: 'dismiss', reminder: reminder })
+      }
     }
-  }
+
+    // onDismiss: (reminder: Reminder) => {
+    //              removeReminderFromGroups(reminder)
+    //                appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, { type: 'dismiss', reminder: reminder })
+    //            },
+    // onOpen: (reminder: Reminder) => {
+    //           removeReminderFromGroups(reminder)
+    //             appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, { type: 'open', reminder: reminder })
+    //         }
+  ]
 
   return (
     <ReminderGroupsWrapper>

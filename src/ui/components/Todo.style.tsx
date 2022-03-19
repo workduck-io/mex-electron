@@ -18,7 +18,7 @@ export const TodoContainer = styled.div<{ checked?: boolean }>`
     `}
 `
 
-export const TaskPriority = styled.span`
+export const TodoActionWrapper = styled.span`
   padding: 2px;
   border-radius: 1rem;
   cursor: pointer;
@@ -29,7 +29,7 @@ export const TaskPriority = styled.span`
   margin-right: 0.5rem;
 `
 
-export const PriorityButton = styled.button`
+export const TodoActionButton = styled.button`
   padding: 1px 0.4rem;
   display: flex;
   align-items: center;
