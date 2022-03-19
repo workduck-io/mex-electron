@@ -1,8 +1,11 @@
+import { BrowserWindow } from '@electron/remote'
 import { useAuth } from '@workduck-io/dwindle'
 import React from 'react'
+import { useApi } from '../../apis/useSaveApi'
 import { CopyButton } from '../../components/mex/Buttons/CopyButton'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
 import { useAuthStore } from '../../services/auth/useAuth'
+import { Button } from '../../style/Buttons'
 import { BackCard } from '../../style/Card'
 import { CenteredColumn } from '../../style/Layouts'
 import { Title } from '../../style/Typography'
@@ -13,8 +16,14 @@ const UserPage = () => {
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
 
   const userDetails = getUserDetails()
+  const { getGoogleAuthUrl } = useApi()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleGoogleAuthUrl = async () => {
+    const googleAuthUrl = await getGoogleAuthUrl()
+    window.open(googleAuthUrl, '_blank', 'width=1000,height=1000')
+    // TODO: fetch the google refresh token from the auth service and set in the local auth store
+  }
 
   return (
     <CenteredColumn>
@@ -36,6 +45,7 @@ const UserPage = () => {
                 {getWorkspaceId()}
               </InfoData>
             </Info>
+            <Button onClick={handleGoogleAuthUrl}>Authorize Google Calendar</Button>
           </div>
         </ProfileContainer>
       </BackCard>
