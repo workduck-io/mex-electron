@@ -51,8 +51,8 @@ export const apiURLs = {
   // Bookmarks
   // post to add
   // path to delete
-  bookmark: (userId: string, nodeid: string) => `${BOOKMARK_URL}/userBookmark/${userId}/${nodeid}`,
-  getBookmarks: (userId: string) => `${BOOKMARK_URL}/userBookmark/${userId}`,
+  bookmark: (userId: string, nodeid: string) => `${TEST_API_URL}/userBookmark/${userId}/${nodeid}`,
+  getBookmarks: (userId: string) => `${TEST_API_URL}/userBookmark/${userId}`,
 
   // User
   getUserRecords: (userId: string) => `${BASE_USER_URL}/user/${userId}/${MEX_TAG}`,

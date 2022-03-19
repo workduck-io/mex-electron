@@ -1,9 +1,12 @@
 import { client, useAuth } from '@workduck-io/dwindle'
 import { apiURLs } from '../apis/routes'
+import { WORKSPACE_HEADER } from '../data/Defaults/defaults'
 import { USE_API } from '../data/Defaults/dev_'
 import { useSaver } from '../editor/Components/Saver'
 import useDataStore from '../store/useDataStore'
 import { useLinks } from './useLinks'
+
+import { useAuthStore } from '../services/auth/useAuth'
 
 export const useBookmarks = () => {
   const setBookmarks = useDataStore((state) => state.setBookmarks)
@@ -13,6 +16,8 @@ export const useBookmarks = () => {
   const { onSave } = useSaver()
   const { userCred } = useAuth()
   const { getPathFromNodeid } = useLinks()
+
+  const workspaceDetails = useAuthStore((store) => store.workspaceDetails)
 
   const isBookmark = (nodeid: string) => {
     const bookmarks = useDataStore.getState().bookmarks
@@ -26,9 +31,18 @@ export const useBookmarks = () => {
     }
     if (userCred) {
       return await client
-        .post(apiURLs.bookmark(userCred.userId, nodeid), {
-          type: 'BookmarkRequest'
-        })
+        .post(
+          apiURLs.bookmark(userCred.userId, nodeid),
+          {
+            type: 'BookmarkRequest'
+          },
+          {
+            headers: {
+              [WORKSPACE_HEADER]: workspaceDetails.id,
+              Accept: 'application/json, text/plain, */*'
+            }
+          }
+        )
         // .then(console.log)
         .then(() => {
           addBookmarks([nodeid])
@@ -51,7 +65,12 @@ export const useBookmarks = () => {
     }
 
     await client
-      .get(apiURLs.getBookmarks(userCred.userId))
+      .get(apiURLs.getBookmarks(userCred.userId), {
+        headers: {
+          [WORKSPACE_HEADER]: workspaceDetails.id,
+          Accept: 'application/json, text/plain, */*'
+        }
+      })
       .then((d) => {
         // console.log('Data', d.data)
 
@@ -71,9 +90,18 @@ export const useBookmarks = () => {
     }
     if (userCred) {
       const res = await client
-        .patch(apiURLs.bookmark(userCred.userId, nodeid), {
-          type: 'BookmarkRequest'
-        })
+        .patch(
+          apiURLs.bookmark(userCred.userId, nodeid),
+          {
+            type: 'BookmarkRequest'
+          },
+          {
+            headers: {
+              [WORKSPACE_HEADER]: workspaceDetails.id,
+              Accept: 'application/json, text/plain, */*'
+            }
+          }
+        )
         // .then(console.log)
         .then(() => {
           removeBookmarks([nodeid])
