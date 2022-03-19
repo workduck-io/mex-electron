@@ -8,6 +8,7 @@ export const TodoContainer = styled.div<{ checked?: boolean }>`
   flex-direction: row;
   /* align-items: center; */
   position: relative;
+  width: 100%;
 
   ${({ theme, checked }) =>
     checked &&

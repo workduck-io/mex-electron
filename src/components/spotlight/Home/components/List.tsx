@@ -148,6 +148,7 @@ const List = ({
               let nodePath = node.path
               if (currentActiveItem?.extras.new && !activeItem.active) {
                 nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
+                addILink({ ilink: nodePath, nodeid: node.nodeid })
               }
 
               if (selection) {
@@ -167,7 +168,6 @@ const List = ({
               setInput('')
             } else {
               let nodePath = node.path
-              mog('im here', { node, activeItem })
               setNormalMode(false)
 
               if (currentActiveItem?.extras.new && !activeItem.active) {
