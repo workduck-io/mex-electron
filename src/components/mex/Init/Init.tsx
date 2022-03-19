@@ -32,6 +32,8 @@ import { AppleNote } from '../../../utils/importers/appleNotes'
 import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { useSearch } from '../../../hooks/useSearch'
+import { Reminder, ReminderActions } from '../../../types/reminders'
+import { useReminders } from '../../../hooks/useReminders'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -56,6 +58,7 @@ const Init = () => {
   const { push } = useNavigation()
   const { getNodeidFromPath } = useLinks()
   const { onSave } = useSaver()
+  const { actOnReminder } = useReminders()
 
   const { queryIndex } = useSearch()
 
@@ -218,6 +221,19 @@ const Init = () => {
     // Setup recieving the analysis call
     setAnalysisIpc()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Set reminder action listner
+  useEffect(() => {
+    ipcRenderer.on(
+      IpcAction.ACTION_REMINDER,
+      (_event, arg: { type: ReminderActions; reminder: Reminder; time?: number }) => {
+        // goTo(ROUTE_PATHS.node, NavigationType.push, appleNotesUID)
+        mog('ReminderArmer: IpcAction.ACTION_REMINDER', { arg })
+        const { type, reminder, time } = arg
+        actOnReminder(type, reminder, time)
+      }
+    )
+  }, [])
 
   /** Set shortcuts */
   const shortcuts = useHelpStore((store) => store.shortcuts)

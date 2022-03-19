@@ -1,6 +1,7 @@
 import { BrowserWindow, screen, BrowserWindowConstructorOptions } from 'electron'
 
 import { IpcAction } from '../data/IpcAction'
+import { REMINDERS_DIMENSIONS } from '../services/reminders/reminders'
 import { TOAST_DIMENSIONS } from '../types/toast'
 import { SPOTLIGHT_WINDOW_OPTIONS } from './main'
 
@@ -16,6 +17,7 @@ class Toast {
       ...SPOTLIGHT_WINDOW_OPTIONS,
       height: TOAST_DIMENSIONS.height,
       width: TOAST_DIMENSIONS.width,
+      maxHeight: 1000,
       center: false
     }
 
@@ -27,7 +29,7 @@ class Toast {
 
     this.window.loadURL(TOAST_WINDOW_WEBPACK_ENTRY)
     this.window.setParentWindow(spotlightWindow)
-    // this.window.webContents.openDevTools()
+    this.window.webContents.openDevTools({ mode: 'detach' })
     this.window.setAlwaysOnTop(true, 'status')
     this.window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 
@@ -57,15 +59,44 @@ class Toast {
     )
   }
 
-  public open(independent?: boolean, center?: boolean, noHide?: boolean, variant?: 'reminder') {
+  public updateReminderSize(size: { height: number; width: number }, animate?: boolean) {
+    const scr = screen.getDisplayNearestPoint(screen.getCursorScreenPoint())
+    const bounds = scr.bounds
+    // console.log({ bounds })
+    const maxHeight = (bounds.height * 2) / 3
+    if (size.height <= maxHeight) {
+      this.window.setSize(size.width, size.height, animate)
+    } else {
+      this.window.setSize(size.width, maxHeight, animate)
+    }
+    this.window.setPosition(
+      bounds.x + bounds.width - REMINDERS_DIMENSIONS.width - REMINDERS_DIMENSIONS.offset,
+      bounds.y + REMINDERS_DIMENSIONS.offset
+    )
+  }
+
+  public openReminder(size: { height: number; width: number }, timeout?: number) {
+    if (this.window.isVisible()) {
+      return
+    }
+    this.window.setParentWindow(null)
+
+    this.updateReminderSize(size, true)
+
+    this.window.showInactive()
+    this.window.setHasShadow(true)
+
+    if (this.timeoutId) clearTimeout(this.timeoutId)
+
+    if (timeout) {
+      this.timeoutId = setTimeout(() => {
+        this.hide()
+      }, timeout)
+    }
+  }
+  public open(independent?: boolean, center?: boolean, noHide?: boolean) {
     if (center) this.window.center()
     if (independent) this.window.setParentWindow(null)
-
-    if (variant === 'reminder') {
-      const scr = screen.getDisplayNearestPoint(screen.getCursorScreenPoint())
-      const bounds = scr.bounds
-      this.window.setPosition(bounds.width - 200, 20)
-    }
 
     this.window.showInactive()
     this.window.setHasShadow(true)

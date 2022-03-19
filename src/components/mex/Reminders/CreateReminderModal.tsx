@@ -1,3 +1,4 @@
+import { startOfToday } from 'date-fns'
 import { nanoid } from 'nanoid'
 import React, { useEffect } from 'react'
 import ReactDatePicker from 'react-datepicker'
@@ -126,6 +127,10 @@ const CreateReminderModal = () => {
       description,
       nodeid,
       time,
+      state: {
+        snooze: false,
+        done: false
+      },
       createdAt: Date.now(),
       updatedAt: Date.now()
     }
@@ -179,6 +184,14 @@ const CreateReminderModal = () => {
             showTimeSelect
             timeFormat="p"
             timeIntervals={1}
+            filterDate={(date) => {
+              const todayStart = startOfToday()
+              return date.getTime() >= todayStart.getTime()
+            }}
+            filterTime={(date) => {
+              const now = Date.now()
+              return date.getTime() >= now
+            }}
             onChange={(date) => {
               console.log(date)
               setTime(date.getTime())

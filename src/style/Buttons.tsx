@@ -12,12 +12,15 @@ export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   primary?: boolean
   large?: boolean
   highlight?: boolean
+  transparent?: boolean
 }
 
 export const Button = styled.button<ButtonProps>`
   ${centeredCss};
   gap: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
+  border: none;
+  outline: none;
   color: ${({ theme }) => theme.colors.text.subheading};
   cursor: pointer;
   transition: 0.3s ease;
@@ -26,6 +29,16 @@ export const Button = styled.button<ButtonProps>`
     color: ${({ theme }) => theme.colors.primary};
     box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
   }
+
+  ${({ primary, transparent, theme }) =>
+    !primary &&
+    transparent &&
+    css`
+      background-color: transparent;
+      &:hover {
+        background-color: ${theme.colors.form.button.bg};
+      }
+    `}
 
   ${({ theme: { spacing }, large }) =>
     large

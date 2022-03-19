@@ -50,6 +50,9 @@ import {
 } from './worker/controller'
 import { getIndexData } from './utils/indexData'
 import { ToastStatus, ToastType } from '../types/toast'
+import { getReminderDimensions, REMINDERS_DIMENSIONS } from '../services/reminders/reminders'
+import { IS_DEV } from '../data/Defaults/dev_'
+import { Reminder } from '../types/reminders'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -161,7 +164,7 @@ const createSpotLighWindow = (show?: boolean) => {
 
   require('@electron/remote/main').enable(spotlight.webContents)
 
-  if (isAlpha) spotlight.webContents.openDevTools()
+  if (isAlpha || IS_DEV) spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -608,18 +611,34 @@ ipcMain.on(IpcAction.REDIRECT_TO, (_event, arg) => {
   mex?.webContents.send(IpcAction.REDIRECT_TO, { page: arg.page })
 })
 
-ipcMain.on(IpcAction.SHOW_NOTIFICATION, (ev, { from, data }: { from: AppType; data: ToastType }) => {
-  if (from === AppType.SPOTLIGHT) {
-    toast?.setParent(spotlight)
-  } else if (from === AppType.MEX) {
-    toast?.setParent(mex)
+ipcMain.on(
+  IpcAction.ACTION_REMINDER,
+  (ev, { from, data }: { from: AppType; data: { type: string; reminder: Reminder; time?: number } }) => {
+    const { type, reminder } = data
+    console.log('Acted on Reminder ', { from, data, type, reminder })
+    mex?.webContents.send(IpcAction.ACTION_REMINDER, data)
   }
-  console.log('Show notification', { from, data })
-  toast?.send(IpcAction.TOAST_MESSAGE, data)
-  toast?.open(data.independent, false, true, 'reminder')
+)
+
+ipcMain.on(IpcAction.RESIZE_REMINDER, (ev, { from, data }: { from: AppType; data: { height: number } }) => {
+  const { height } = data
+  // console.log('Resized Reminder: ', { from, data, height })
+  toast?.updateReminderSize({ height, width: REMINDERS_DIMENSIONS.width }, true)
 })
 
-ipcMain.on(IpcAction.HIDE_NOTIFICATION, () => {
+ipcMain.on(IpcAction.SHOW_REMINDER, (ev, { from, data }: { from: AppType; data: ToastType }) => {
+  console.log('Show Reminder', { from, data })
+  if (data.attachment) {
+    const size = getReminderDimensions(data.attachment)
+    toast?.send(IpcAction.TOAST_MESSAGE, data)
+    toast?.openReminder(size)
+  } else {
+    console.error('Attach reminder groups with data to display reminders ')
+  }
+})
+
+// ipcMain.on(IpcAction.HIDE_REMINDER, () => {})
+ipcMain.on(IpcAction.HIDE_REMINDER, () => {
   toast?.hide()
 })
 

@@ -27,6 +27,12 @@ export const getRelativeDate = (date: Date): string => {
   }
 }
 
+// If the two time are within same min
+export const isInSameMinute = (time1: number, time2: number) => {
+  const diff = Math.abs(time1 - time2)
+  return diff < 60000
+}
+
 export const getRelativeTime = (date: Date): string => {
   const dateStr = formatDistanceToNow(date, { addSuffix: true })
   // mog('DateFormat', { dateStr })

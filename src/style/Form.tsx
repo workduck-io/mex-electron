@@ -1,10 +1,9 @@
-import styled, { DefaultTheme, css, useTheme } from 'styled-components'
-
-import { AppType } from '../hooks/useInitialize'
-import Creatable from 'react-select/creatable'
+import { transparentize } from 'polished'
 import React from 'react'
 import Select from 'react-select'
-import { transparentize } from 'polished'
+import Creatable from 'react-select/creatable'
+import styled, { css, DefaultTheme, useTheme } from 'styled-components'
+import { AppType } from '../hooks/useInitialize'
 
 interface InputProps {
   isSelected?: boolean
@@ -301,11 +300,11 @@ export const DatePickerStyles = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 30px;
+    height: 26px;
     padding: 6px 0px 5px;
     margin-left: 4px;
     white-space: nowrap;
-    border-radius: ${({ theme }) => theme.borderRadius.small};
+    border-radius: 26px;
     transition: background 0.2s ease-in-out;
   }
   .react-datepicker__time-container
@@ -335,5 +334,28 @@ export const DatePickerStyles = styled.div`
     font-weight: bold;
     cursor: pointer;
     color: ${({ theme }) => theme.colors.text.oppositePrimary};
+  }
+  .react-datepicker__time-container
+    .react-datepicker__time
+    .react-datepicker__time-box
+    ul.react-datepicker__time-list
+    li.react-datepicker__time-list-item--disabled,
+  .react-datepicker__day--disabled,
+  .react-datepicker__month-text--disabled,
+  .react-datepicker__quarter-text--disabled,
+  .react-datepicker__year-text--disabled {
+    color: ${({ theme }) => transparentize(0.4, theme.colors.text.fade)};
+  }
+  .react-datepicker__day--disabled:hover,
+  .react-datepicker__month-text--disabled:hover,
+  .react-datepicker__quarter-text--disabled:hover,
+  .react-datepicker__year-text--disabled:hover,
+  .react-datepicker__time-container
+    .react-datepicker__time
+    .react-datepicker__time-box
+    ul.react-datepicker__time-list
+    li.react-datepicker__time-list-item--disabled:hover {
+    background-color: transparent;
+    color: ${({ theme }) => transparentize(0.5, theme.colors.text.fade)};
   }
 `

@@ -12,7 +12,7 @@ import { useSpotlightSettingsStore } from '../store/settings.spotlight'
 import { useSyncStore } from '../store/useSyncStore'
 import useThemeStore from '../store/useThemeStore'
 import useTodoStore from '../store/useTodoStore'
-import { useReminderStore } from './useReminders'
+import { useReminderStore } from '../hooks/useReminders'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',

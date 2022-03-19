@@ -1,12 +1,10 @@
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
-import { flatten } from 'lodash'
 import more2Fill from '@iconify/icons-ri/more-2-fill'
 import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
-import timerLine from '@iconify/icons-ri/timer-line'
 import { Icon } from '@iconify/react'
+import { flatten } from 'lodash'
 import React, { useMemo } from 'react'
-import styled from 'styled-components'
 import { useReminders, useReminderStore } from '../../../hooks/useReminders'
 import useToggleElements from '../../../hooks/useToggleElements'
 import { useEditorStore } from '../../../store/useEditorStore'
@@ -14,19 +12,10 @@ import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import IconButton, { Button } from '../../../style/Buttons'
 import { InfobarFull, InfobarTools } from '../../../style/infobar'
-import { Description, Title } from '../../../style/Typography'
-import { getRelativeDate, toLocaleString } from '../../../utils/time'
-import { RelativeTime } from '../RelativeTime'
+import { Title } from '../../../style/Typography'
 import { useCreateReminderModal } from './CreateReminderModal'
-import {
-  Reminder,
-  ReminderExact,
-  ReminderGroup,
-  ReminderInfobar,
-  ReminderRelative,
-  RemindersWrapper,
-  ReminderTime
-} from './Reminders.style'
+import ReminderUI from './Reminder'
+import { ReminderGroupWrapper, ReminderInfobar, RemindersWrapper } from './Reminders.style'
 
 const RemindersInfobar = () => {
   const infobar = useLayoutStore((s) => s.infobar)
@@ -49,9 +38,6 @@ const RemindersInfobar = () => {
 
   const reminderGroups = useMemo(() => {
     const nodeReminders = getNodeReminders(nodeid)
-
-    armReminders(flatten(nodeReminders.map((r) => r.reminders)))
-
     return nodeReminders
   }, [remindersAll, nodeid])
 
@@ -89,29 +75,14 @@ const RemindersInfobar = () => {
             // const path = getPathFromNodeid(suggestion.id)
             // const content = con ? con.content : defaultContent.content
             // mog('SuggestionInfoBar', { content, con, path, suggestion })
-            <ReminderGroup key={`ReminderGroup_${nodeid}_${reminderGroup.type}`}>
+            <ReminderGroupWrapper key={`ReminderGroup_${nodeid}_${reminderGroup.type}`}>
               <Title>{reminderGroup.label}</Title>
               <RemindersWrapper>
                 {reminderGroup.reminders.map((reminder) => (
-                  <Reminder key={`ReultForSearch_${reminder.id}`}>
-                    <ReminderTime>
-                      <ReminderRelative>
-                        <Icon icon={timerLine} />
-                        <RelativeTime
-                          tippy
-                          dateNum={reminder.time}
-                          refreshMs={1000 * 30}
-                          tippyProps={{ placement: 'right', theme: 'mex-bright' }}
-                        />
-                      </ReminderRelative>
-                      <ReminderExact>{getRelativeDate(new Date(reminder.time))}</ReminderExact>
-                    </ReminderTime>
-                    <Title>{reminder.title}</Title>
-                    <Description>{reminder.description}</Description>
-                  </Reminder>
+                  <ReminderUI key={`ReultForSearch_${reminder.id}`} reminder={reminder} />
                 ))}
               </RemindersWrapper>
-            </ReminderGroup>
+            </ReminderGroupWrapper>
           )
         )}
       </ReminderInfobar>

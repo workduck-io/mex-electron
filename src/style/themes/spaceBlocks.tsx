@@ -2,7 +2,7 @@ import { transparentize } from 'polished'
 import { css, DefaultTheme, FlattenInterpolation, ThemeProps } from 'styled-components'
 import { GraphWrapper, StyledGraph } from '../../components/mex/Graph/Graph.styles'
 import { TemplateCard } from '../../components/mex/Integrations/Template/styled'
-import { Reminder } from '../../components/mex/Reminders/Reminders.style'
+import { ReminderStyled } from '../../components/mex/Reminders/Reminders.style'
 import { ComingSoonCard, ImporterCard } from '../../components/mex/Settings/Importers'
 import { DataInfobarWrapper } from '../../components/mex/Sidebar/DataInfoBar'
 import { NavWrapper } from '../../components/mex/Sidebar/Nav'
@@ -156,7 +156,7 @@ export const SpaceBlocksCss = ({ containerStyle, containerStyleReset, heightMain
   `
 
   const remindersStyles = css`
-    ${Reminder} {
+    ${ReminderStyled} {
       ${containerStyle}
     }
   `

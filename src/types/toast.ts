@@ -1,3 +1,5 @@
+import { ReminderGroup } from './reminders'
+
 export enum ToastStatus {
   SUCCESS = 'success',
   ERROR = 'error',
@@ -11,6 +13,8 @@ export type ToastType = {
   title: string
   description?: string
   independent?: boolean // if true, toast will not be closed when parent is closed
+  // Provide only strict values
+  attachment?: ReminderGroup[]
 }
 
 export const TOAST_DIMENSIONS = {
@@ -19,3 +23,4 @@ export const TOAST_DIMENSIONS = {
   offset: 15,
   delta: 15
 }
+

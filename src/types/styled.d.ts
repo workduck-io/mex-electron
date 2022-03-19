@@ -23,6 +23,14 @@ interface LayoutStyle {
   indent: { sidebar: Pixels }
 }
 
+interface ColorPalette {
+  white: string
+  black: string
+  green: string
+  yellow: string
+  red: string
+}
+
 // and extend them!
 declare module 'styled-components' {
   export interface DefaultTheme extends LayoutStyle {
