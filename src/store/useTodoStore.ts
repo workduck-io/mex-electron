@@ -1,6 +1,7 @@
 import create from 'zustand'
 import { defaultContent } from '../data/Defaults/baseData'
 import { TodoType, TodoStatus, PriorityType, TodosType } from '../editor/Components/Todo/types'
+import { useReminders, useReminderStore } from '../hooks/useReminders'
 import { NodeEditorContent } from '../types/Types'
 import { mog } from '../utils/lib/helper'
 
@@ -87,11 +88,22 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
       return
     }
 
+    const nTodo = todos[nodeid] ?? []
     const nodeTodos = todosContent.map((content) => {
-      const todo = todos[nodeid]?.find((todo) => todo.id === content.id && nodeid === todo.nodeid)
+      const todo = nTodo.find((todo) => todo.id === content.id && nodeid === todo.nodeid)
       // mog('replaceContent', { nodeid, todosContent, nodeTodos, todo, content })
       return todo ? { ...todo, content: [content] } : createTodo(nodeid, content.id, [content])
     })
+
+    const leftOutTodos = nTodo.filter((todo) => !nodeTodos.find((t) => t.id === todo.id && nodeid === t.nodeid))
+
+    mog('replaceContentOfTodos', { nodeid, todosContent, nodeTodos, leftOutTodos })
+
+    const reminders = useReminderStore.getState().reminders
+    const setReminders = useReminderStore.getState().setReminders
+    const newReminders = reminders.filter((reminder) => !leftOutTodos.find((todo) => todo.id === reminder.blockid))
+    mog('Deleted Reminders', { reminders, newReminders, leftOutTodos })
+    setReminders(newReminders)
     const newtodos = { ...todos, [nodeid]: nodeTodos }
     // mog('newTodos', { newtodos })
     set({ todos: newtodos })

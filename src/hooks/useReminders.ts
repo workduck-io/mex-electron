@@ -295,7 +295,9 @@ export const useReminders = () => {
     switch (type) {
       case 'open':
         dismissReminder(reminder)
-        ipcRenderer.send(IpcAction.OPEN_NODE_IN_MEX, { nodeid: reminder.nodeid })
+        setTimeout(() => {
+          ipcRenderer.send(IpcAction.OPEN_NODE_IN_MEX, { nodeid: reminder.nodeid })
+        }, 200)
         break
       case 'delete':
         deleteReminder(reminder.id)
@@ -310,6 +312,12 @@ export const useReminders = () => {
         break
     }
     saveData()
+  }
+
+  const removeRemindersForBlockid = (blockid: string) => {
+    const reminders = useReminderStore.getState().reminders
+    const newReminders = reminders.filter((reminder) => reminder.blockid !== blockid)
+    useReminderStore.setState({ reminders: newReminders })
   }
 
   const attachPath = (reminder: Reminder) => {
@@ -337,6 +345,7 @@ export const useReminders = () => {
       }
       return toArm(reminder)
     })
+
     const id = setTimeout(() => {
       const rems = toArmRems.map(attachPath)
       const reminderGroup: ReminderGroup = {
@@ -465,6 +474,7 @@ export const useReminders = () => {
     deleteReminder,
     updateReminder,
     clearReminders,
+    setReminders,
     getTodayReminders,
     getFilteredReminders,
     getNodeReminders,
@@ -477,6 +487,7 @@ export const useReminders = () => {
     markUndone,
     getMissedReminders,
     getBlockReminder,
+    removeRemindersForBlockid,
     getRemindersForNextNMinutes
   }
 }

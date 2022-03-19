@@ -9,14 +9,12 @@ import create from 'zustand'
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
 import { useLinks } from '../../../hooks/useLinks'
 import { useReminders } from '../../../hooks/useReminders'
-import { useSaveData } from '../../../hooks/useSaveData'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { Button } from '../../../style/Buttons'
 import { DatePickerStyles, InputBlock, Label, TextAreaBlock } from '../../../style/Form'
 import { Reminder, REMINDER_PREFIX } from '../../../types/reminders'
-import { NodeEditorContent } from '../../../types/Types'
 import { mog } from '../../../utils/lib/helper'
 import { getEventNameFromElement } from '../../../utils/lib/strings'
 import { getNextReminderTime, getRelativeDate } from '../../../utils/time'
@@ -171,7 +169,6 @@ const CreateReminderModal = () => {
       reminder
     })
     addReminder(reminder)
-
     saveAndClearBuffer()
     reset()
     closeModal()
@@ -194,7 +191,7 @@ const CreateReminderModal = () => {
         <Label htmlFor="title">Title</Label>
         <InputBlock autoFocus placeholder="Ex. Send email to team" {...register('title')} />
 
-        <Label htmlFor="description">Description</Label>
+        <Label htmlFor="description">Description {modalValue.blockContent !== undefined && '(Filled from task)'}</Label>
         <TextAreaBlock
           disabled={modalValue.blockContent !== undefined}
           defaultValue={modalValue.blockContent}

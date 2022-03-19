@@ -181,7 +181,7 @@ const ReminderUI = ({ reminder, isNotification, controls }: Props) => {
         </ReminderRelative>
         {isNotification && reminder.path && (
           <ReminderStateTag state={reminderState}>
-            <Icon icon={reminderStateIcons[reminderState]} />
+            <Icon icon={fileList2Line} />
             {reminder.path}
           </ReminderStateTag>
         )}

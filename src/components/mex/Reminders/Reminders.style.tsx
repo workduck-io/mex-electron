@@ -42,9 +42,8 @@ export const ReminderButtonControlsWrapper = styled.div`
   transition: opacity 0.25s ease-in-out, height 0.25s ease-in-out, gap 0.25s ease-in-out;
   ${Button} {
     svg {
-      color: ${({ theme }) => theme.colors.primary};
-      width: 1.5rem;
-      height: 1.5rem;
+      width: 1rem;
+      height: 1rem;
     }
   }
   &:hover {
