@@ -36,6 +36,7 @@ export const GOOGLE_OAUTH2_REFRESH_URL = `${MEXIT_BACKEND_URL_BASE}/oauth2/getGo
 // http://localhost:5000/api/v1/googleservices/calendar/list?maxResults=5
 
 export const TEST_API_URL = 'https://qp5qf0k5sg.execute-api.us-east-1.amazonaws.com'
+export const TEST_USER_URL = 'https://qp5qf0k5sg.execute-api.us-east-1.amazonaws.com/'
 
 export const apiURLs = {
   //node
@@ -59,17 +60,20 @@ export const apiURLs = {
   registerUser: `${BASE_API_URL}/user/register`,
 
   // Archive
-  archiveNodes: () => `${BASE_API_URL}/node/archive`,
-  deleteArchiveNodes: () => `${BASE_API_URL}/node/archive`,
-  getArchivedNodes: (workspaceId: string) => `${BASE_API_URL}/node/archive/${workspaceId}`,
-  unArchiveNodes: () => `${BASE_API_URL}/node/unarchive`,
+  archiveNodes: () => `${TEST_API_URL}/node/archive`,
+  deleteArchiveNodes: () => `${TEST_API_URL}/node/archive`,
+  getArchivedNodes: (workspaceId: string) => `${TEST_API_URL}/node/archive/${workspaceId}`,
+  unArchiveNodes: () => `${TEST_API_URL}/node/unarchive`,
 
-  // Workspace
-  createWorkspace: `${BASE_API_URL}/workspace`,
-  getNodesByWorkspace: (workspaceId: string) => `${BASE_API_URL}/workspace/${workspaceId}/namespace/NAMESPACE1`,
-  getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`,
-
+  // Image CDN
   createImageURL: `${WORKDUCK_API_BASE}/testing/upload/s3`,
   getImagePublicURL: (path: string) => `${CDN_BASE}/${path}`,
-  getGoogleAuthUrl: () => `${MEXIT_BACKEND_URL_BASE}/oauth2/getGoogleAuthUrl`
+
+  // Google OAuth
+  getGoogleAuthUrl: () => `${MEXIT_BACKEND_URL_BASE}/oauth2/getGoogleAuthUrl`,
+
+  // Workspace
+  // createWorkspace: `${BASE_API_URL}/workspace`,
+  getNodesByWorkspace: (workspaceId: string) => `${BASE_API_URL}/workspace/${workspaceId}/namespace/NAMESPACE1`
+  // getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`
 }

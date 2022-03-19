@@ -1,3 +1,4 @@
+import { WORKSPACE_HEADER } from './../data/Defaults/defaults'
 import { client, useAuth } from '@workduck-io/dwindle'
 import { apiURLs } from '../apis/routes'
 import { USE_API } from '../data/Defaults/dev_'
@@ -36,9 +37,18 @@ const useArchive = () => {
     }
     if (userCred) {
       return await client
-        .post(apiURLs.archiveNodes(), {
-          ids: nodes.map((i) => i.nodeid)
-        })
+        .post(
+          apiURLs.archiveNodes(),
+          {
+            ids: nodes.map((i) => i.nodeid)
+          },
+          {
+            headers: {
+              [WORKSPACE_HEADER]: getWorkspaceId(),
+              Accept: 'application/json, text/plain, */*'
+            }
+          }
+        )
         // .then(console.log)
         .then(() => {
           addInArchive(nodes)
@@ -60,9 +70,18 @@ const useArchive = () => {
       return unArchive(nodes[0])
     }
     await client
-      .post(apiURLs.unArchiveNodes(), {
-        ids: nodes.map((i) => i.nodeid)
-      })
+      .post(
+        apiURLs.unArchiveNodes(),
+        {
+          ids: nodes.map((i) => i.nodeid)
+        },
+        {
+          headers: {
+            [WORKSPACE_HEADER]: getWorkspaceId(),
+            Accept: 'application/json, text/plain, */*'
+          }
+        }
+      )
       .then((d) => {
         mog('Unarchive Data', d.data)
         if (d.data) unArchive(nodes[0])
@@ -77,7 +96,12 @@ const useArchive = () => {
     }
 
     await client
-      .get(apiURLs.getArchivedNodes(getWorkspaceId()))
+      .get(apiURLs.getArchivedNodes(getWorkspaceId()), {
+        headers: {
+          [WORKSPACE_HEADER]: getWorkspaceId(),
+          Accept: 'application/json, text/plain, */*'
+        }
+      })
       .then((d) => {
         if (d.data) {
           const ids = d.data
@@ -113,9 +137,18 @@ const useArchive = () => {
 
     if (userCred) {
       const res = await client
-        .post(apiURLs.deleteArchiveNodes(), {
-          ids: nodeids.map((i) => i.nodeid)
-        })
+        .post(
+          apiURLs.deleteArchiveNodes(),
+          {
+            ids: nodeids.map((i) => i.nodeid)
+          },
+          {
+            headers: {
+              [WORKSPACE_HEADER]: getWorkspaceId(),
+              Accept: 'application/json, text/plain, */*'
+            }
+          }
+        )
         // .then(console.log)
         .then(() => {
           removeArchive(nodeids)
