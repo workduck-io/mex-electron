@@ -2,7 +2,9 @@ import { MEX_TAG } from '../data/Defaults/auth'
 import { IS_DEV } from '../data/Defaults/dev_'
 
 export const BASE_INTEGRATION_URL = 'https://http.workduck.io/integration'
-
+export const MEXIT_BACKEND_URL_BASE = IS_DEV
+  ? 'http://localhost:5000/api/v1'
+  : 'https://mex-webapp-dev.workduck.io/api/v1'
 export const integrationURLs = {
   createTemplate: `${BASE_INTEGRATION_URL}/sync/template`,
   getIntentValues: `${BASE_INTEGRATION_URL}/intents/value`,
@@ -58,5 +60,6 @@ export const apiURLs = {
   getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`,
 
   createImageURL: `${WORKDUCK_API_BASE}/testing/upload/s3`,
-  getImagePublicURL: (path: string) => `${CDN_BASE}/${path}`
+  getImagePublicURL: (path: string) => `${CDN_BASE}/${path}`,
+  getGoogleAuthUrl: () => `${MEXIT_BACKEND_URL_BASE}/oauth2/getGoogleAuthUrl`
 }
