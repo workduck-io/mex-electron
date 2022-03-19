@@ -35,9 +35,11 @@ export const GOOGLE_OAUTH2_REFRESH_URL = `${MEXIT_BACKEND_URL_BASE}/oauth2/getGo
 // http://localhost:5000/api/v1/googleservices/calendar
 // http://localhost:5000/api/v1/googleservices/calendar/list?maxResults=5
 
+export const TEST_API_URL = 'https://qp5qf0k5sg.execute-api.us-east-1.amazonaws.com'
+
 export const apiURLs = {
   //node
-  saveNode: `${BASE_API_URL}/node`,
+  saveNode: `${TEST_API_URL}/node`,
   getNode: (nodeid: string) => `${BASE_API_URL}/node/${nodeid}`,
 
   // * User Preference

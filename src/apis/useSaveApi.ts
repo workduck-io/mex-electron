@@ -9,6 +9,7 @@ import { mog, removeNulls } from '../utils/lib/helper'
 import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
+import { WORKSPACE_HEADER, DEFAULT_NAMESPACE } from '../data/Defaults/defaults'
 
 // clientInterceptor
 //
@@ -27,7 +28,6 @@ export const useApi = () => {
       type: 'NodeRequest',
       lastEditedBy: useAuthStore.getState().userDetails.email,
       namespaceIdentifier: 'NAMESPACE1',
-      workspaceIdentifier: getWorkspaceId(),
       data: serializeContent(defaultContent.content)
     }
 
@@ -37,7 +37,12 @@ export const useApi = () => {
 
     setContent(nodeid, defaultContent.content)
     const data = await client
-      .post(apiURLs.saveNode, reqData, {})
+      .post(apiURLs.saveNode, reqData, {
+        headers: {
+          'workspace-id': getWorkspaceId(),
+          Accept: 'application/json, text/plain, */*'
+        }
+      })
       .then((d) => {
         mog('saveNewNodeAPI response', d)
         setMetadata(nodeid, extractMetadata(d.data))
@@ -57,8 +62,7 @@ export const useApi = () => {
       id: nodeid,
       type: 'NodeRequest',
       lastEditedBy: useAuthStore.getState().userDetails.email,
-      namespaceIdentifier: 'NAMESPACE1',
-      workspaceIdentifier: getWorkspaceId(),
+      namespaceIdentifier: DEFAULT_NAMESPACE,
       data: serializeContent(content ?? defaultContent.content)
     }
 
@@ -66,7 +70,12 @@ export const useApi = () => {
       return
     }
     const data = await client
-      .post(apiURLs.saveNode, reqData, {})
+      .post(apiURLs.saveNode, reqData, {
+        headers: {
+          'workspace-id': getWorkspaceId(),
+          Accept: 'application/json, text/plain, */*'
+        }
+      })
       .then((d) => {
         mog('savedData', { d })
         // setMetadata(nodeid, extractMetadata(d.data))
