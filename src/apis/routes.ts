@@ -40,7 +40,7 @@ export const TEST_API_URL = 'https://qp5qf0k5sg.execute-api.us-east-1.amazonaws.
 export const apiURLs = {
   //node
   saveNode: `${TEST_API_URL}/node`,
-  getNode: (nodeid: string) => `${BASE_API_URL}/node/${nodeid}`,
+  getNode: (nodeid: string) => `${TEST_API_URL}/node/${nodeid}`,
 
   // * User Preference
   getUserPreferences: (userId: string) => `${BASE_API_URL}/userPreference/all/${userId}`,

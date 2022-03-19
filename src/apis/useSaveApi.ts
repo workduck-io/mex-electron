@@ -39,7 +39,7 @@ export const useApi = () => {
     const data = await client
       .post(apiURLs.saveNode, reqData, {
         headers: {
-          'workspace-id': getWorkspaceId(),
+          [WORKSPACE_HEADER]: getWorkspaceId(),
           Accept: 'application/json, text/plain, */*'
         }
       })
@@ -72,7 +72,7 @@ export const useApi = () => {
     const data = await client
       .post(apiURLs.saveNode, reqData, {
         headers: {
-          'workspace-id': getWorkspaceId(),
+          [WORKSPACE_HEADER]: getWorkspaceId(),
           Accept: 'application/json, text/plain, */*'
         }
       })
@@ -97,7 +97,12 @@ export const useApi = () => {
 
     // console.warn('\n\n\n\nAPI has not been requested before, requesting\n\n\n\n')
     const res = await client
-      .get(url, {})
+      .get(apiURLs.getNode(nodeid), {
+        headers: {
+          [WORKSPACE_HEADER]: getWorkspaceId(),
+          Accept: 'application/json, text/plain, */*'
+        }
+      })
       .then((d) => {
         const metadata = {
           createdBy: d.data.createdBy,
