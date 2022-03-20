@@ -11,13 +11,15 @@ export const uploadImageToWDCDN = async (data: string | ArrayBuffer): Promise<st
       const parsedImage = data.split(',')[1]
 
       const file = Compress.convertBase64ToFile(parsedImage)
-
+      mog('FileSizeBeforeCompression', { size: `${file.size / 1000} KB` })
       const compressedImg = (
         await compress.compress([file], {
           size: 4,
           quality: 0.9
         })
       )[0]
+
+      mog('FileSizeAfterCompression', { size: `${compressedImg.endSizeInMb * 1000} KB` })
 
       const resp = await client.post(apiURLs.createImageURL, {
         encodedString: compressedImg.data
