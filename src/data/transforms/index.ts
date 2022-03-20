@@ -6,6 +6,7 @@ const v085 = (): CustomTransformation => {
     version: '0.9.0-alpha.1',
     custom: (data) => {
       if (!data.reminders) return { ...data, reminders: [] }
+      return data
     }
   }
 }
@@ -15,6 +16,7 @@ const v081 = (): CustomTransformation => {
     version: '0.8.1',
     custom: (data) => {
       if (!data.todo) return { ...data, todo: {} }
+      return data
     }
   }
 }
