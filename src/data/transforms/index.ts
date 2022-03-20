@@ -3,9 +3,9 @@ import { ArrayTransform, CustomTransformation, DataTransformation, KeysTransform
 const v085 = (): CustomTransformation => {
   return {
     type: 'CustomTransformation',
-    version: '0.8.5',
+    version: '0.9.0-alpha.1',
     custom: (data) => {
-      return { ...data, reminders: [] }
+      if (!data.reminders) return { ...data, reminders: [] }
     }
   }
 }
@@ -14,7 +14,7 @@ const v081 = (): CustomTransformation => {
     type: 'CustomTransformation',
     version: '0.8.1',
     custom: (data) => {
-      return { ...data, todo: {} }
+      if (!data.todo) return { ...data, todo: {} }
     }
   }
 }
