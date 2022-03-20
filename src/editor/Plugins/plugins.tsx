@@ -54,7 +54,8 @@ import {
   optionsExitBreakPlugin,
   optionsResetBlockTypePlugin,
   optionsSelectOnBackspacePlugin,
-  optionsSoftBreakPlugin
+  optionsSoftBreakPlugin,
+  optionsImagePlugin
 } from './pluginOptions'
 
 import { ExcalidrawElement } from '../Components/Excalidraw'
@@ -106,7 +107,7 @@ export const generatePlugins = (options: PluginOptionType) => {
     // createTodoListPlugin(),
 
     // Special Elements
-    createImagePlugin(), // Image
+    createImagePlugin(optionsImagePlugin), // Image
     createLinkPlugin(), // Link
     createListPlugin(), // List
     createTodoPlugin(),

@@ -22,6 +22,9 @@ export const MEXIT_FRONTEND_BASE_URL = IS_DEV ? 'http://localhost:3333' : 'https
 
 export const GOOGLE_OAUTH_URL = `${MEXIT_FRONTEND_BASE_URL}/oauth/desktop`
 
+export const WORKDUCK_API_BASE = 'https://http.workduck.io'
+export const CDN_BASE = 'https://cdn.workduck.io'
+
 export const apiURLs = {
   //node
   saveNode: `${BASE_API_URL}/node`,
@@ -52,5 +55,8 @@ export const apiURLs = {
   // Workspace
   createWorkspace: `${BASE_API_URL}/workspace`,
   getNodesByWorkspace: (workspaceId: string) => `${BASE_API_URL}/workspace/${workspaceId}/namespace/NAMESPACE1`,
-  getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`
+  getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`,
+
+  createImageURL: `${WORKDUCK_API_BASE}/testing/upload/s3`,
+  getImagePublicURL: (path: string) => `${CDN_BASE}/${path}`
 }
