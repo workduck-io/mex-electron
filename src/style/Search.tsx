@@ -61,8 +61,8 @@ export const SearchHeader = styled.div`
 export const SearchFilterWrapper = styled(SearchHeader)`
   flex-grow: 1;
   justify-content: flex-start;
-  overflow-x: auto;
-  gap: ${({ theme }) => theme.spacing.large};
+  flex-wrap: wrap;
+  gap: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.large}`};
 `
 
 export const SearchFilterCategoryLabel = styled.div`
@@ -75,11 +75,29 @@ export const SearchFilterLabel = styled.div`
   color: ${({ theme }) => theme.colors.text.fade};
 `
 
+export const SearchFilterListWrap = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: ${({ theme }) => theme.spacing.small};
+  margin-right: ${({ theme }) => theme.spacing.medium};
+  max-width: 70vw;
+  overflow-x: auto;
+`
+
+export const SearchFilterListCurrent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: ${({ theme }) => theme.spacing.small};
+`
+
+export const SearchFilterListSuggested = styled(SearchFilterListCurrent)``
+
 export const SearchFilterList = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  flex-grow: 1;
   gap: ${({ theme }) => theme.spacing.small};
 `
 
@@ -112,12 +130,12 @@ export const SearchFilterCancel = styled.div`
 export const SearchFilterStyled = styled.div<{ selected?: boolean }>`
   cursor: pointer;
   display: flex;
-  padding: ${({ theme }) => ` ${theme.spacing.small}`};
+  padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
   transition: all 0.25s ease-in-out;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
 
-  border-radius: ${({ theme }) => theme.borderRadius.tiny};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
 
   background-color: ${({ theme }) => theme.colors.gray[8]};
   transition: all 0.25s ease-in-out;
@@ -145,6 +163,17 @@ export const SearchFilterStyled = styled.div<{ selected?: boolean }>`
         }
       }
     `}
+`
+
+export const SearchFilterCount = styled.div`
+  background-color: ${({ theme }) => theme.colors.gray[8]};
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.primary};
+  padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.tiny}`};
+  border-radius: 2rem;
+  min-width: 1.35rem;
+  text-align: center;
 `
 
 export const SearchViewContainer = styled.div`
@@ -337,7 +366,8 @@ export const SearchPreviewWrapper = styled.div<{ active?: boolean }>`
 `
 
 export const SearchFilterInputWrapper = styled(StyledInputWrapper)`
-  max-width: 20rem;
+  max-width: 12rem;
+  margin: 0;
 `
 
 export const SplitSearchPreviewWrapper = styled.div`

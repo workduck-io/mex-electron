@@ -31,7 +31,8 @@ import { NavProps } from './Types'
 
 export const NavWrapper = styled.div<FocusModeProp>`
   overflow: scroll;
-  height: 100%;
+  height: calc(100vh - 2rem);
+  margin-top: 1rem;
   z-index: 10;
   display: flex;
   flex-direction: column;

@@ -6,8 +6,12 @@ import { FilterKey, SearchFilter, useFilters } from '../../../hooks/useFilters'
 import {
   SearchFilterCancel,
   SearchFilterCategoryLabel,
+  SearchFilterCount,
   SearchFilterLabel,
   SearchFilterList,
+  SearchFilterListCurrent,
+  SearchFilterListSuggested,
+  SearchFilterListWrap,
   SearchFilterStyled,
   SearchFilterWrapper
 } from '../../../style/Search'
@@ -84,7 +88,7 @@ const SearchFilters = <Item,>({
     [filters, currentFilters, result]
   )
 
-  // mog('SearchFilters', { filters, currentFilters, filtersByKey })
+  mog('SearchFilters', { filters, currentFilters, filtersByKey })
 
   const toggleForFilter = (filter: SearchFilter<Item>) => {
     if (currentFilters.find((currentFilter) => currentFilter.id === filter.id)) {
@@ -108,32 +112,44 @@ const SearchFilters = <Item,>({
           return (
             <SearchFilterList key={`filter_options${k}`}>
               <SearchFilterCategoryLabel>{startCase(k)}:</SearchFilterCategoryLabel>
-              {filter.current.map((f) => (
-                <SearchFilterStyled
-                  selected
-                  key={`current_f_${f.id}`}
-                  onClick={() => {
-                    removeCurrentFilter(f)
-                    // updateResults()
-                  }}
-                >
-                  {f.icon ? <Icon icon={f.icon} /> : null}
-                  {f.label}
-                </SearchFilterStyled>
-              ))}
-              {filter.suggested.slice(0, 5).map((f) => (
-                <SearchFilterStyled
-                  key={`suggested_f_${f.id}`}
-                  onClick={() => {
-                    addCurrentFilter(f)
-                    // updateResults()
-                  }}
-                >
-                  {f.icon ? <Icon icon={f.icon} /> : null}
-                  {f.label}
-                </SearchFilterStyled>
-              ))}
 
+              <SearchFilterListWrap>
+                {filter.current.length > 0 && (
+                  <SearchFilterListCurrent>
+                    {filter.current.map((f) => (
+                      <SearchFilterStyled
+                        selected
+                        key={`current_f_${f.id}`}
+                        onClick={() => {
+                          removeCurrentFilter(f)
+                          // updateResults()
+                        }}
+                      >
+                        {f.icon ? <Icon icon={f.icon} /> : null}
+                        {f.label}
+                        {f.count && <SearchFilterCount>{f.count}</SearchFilterCount>}
+                      </SearchFilterStyled>
+                    ))}
+                  </SearchFilterListCurrent>
+                )}
+                {filter.suggested.length > 0 && (
+                  <SearchFilterListSuggested>
+                    {filter.suggested.slice(0, 5).map((f) => (
+                      <SearchFilterStyled
+                        key={`suggested_f_${f.id}`}
+                        onClick={() => {
+                          addCurrentFilter(f)
+                          // updateResults()
+                        }}
+                      >
+                        {f.icon ? <Icon icon={f.icon} /> : null}
+                        {f.label}
+                        {f.count && <SearchFilterCount>{f.count}</SearchFilterCount>}
+                      </SearchFilterStyled>
+                    ))}
+                  </SearchFilterListSuggested>
+                )}
+              </SearchFilterListWrap>
               <SearchFilterInput
                 key={`filter_input_${randomId}`}
                 items={[...filter.current, ...filter.suggested]}

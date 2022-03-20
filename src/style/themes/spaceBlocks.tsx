@@ -20,6 +20,7 @@ import { ServiceCard } from '../Integration'
 import { Result } from '../Search'
 import { SidebarDiv } from '../Sidebar'
 import { CreateSnippet, SSnippet } from '../Snippets'
+import { StyledBoard } from '../Todo'
 
 interface SpaceProps {
   containerStyle?: FlattenInterpolation<ThemeProps<DefaultTheme>>
@@ -46,7 +47,7 @@ export const SpaceBlocksCss = ({ containerStyle, containerStyleReset, heightMain
     }
     ${InfobarTools} {
       ${containerStyle}
-      margin: 2rem 0 0;
+      margin: 1rem 0 0;
     }
     ${InfoBarWrapper} {
       margin-right: 3rem;
@@ -67,7 +68,7 @@ export const SpaceBlocksCss = ({ containerStyle, containerStyleReset, heightMain
     ${DataInfobarWrapper} {
       height: ${heightMain};
       ${containerStyle}
-      margin-top: 2rem;
+      margin-top: 1rem;
     }
     ${BalloonToolbarBase} {
       background-color: ${({ theme }) => theme.colors.gray[8]};
@@ -97,6 +98,11 @@ export const SpaceBlocksCss = ({ containerStyle, containerStyleReset, heightMain
       ${EditorStyles} {
         padding: 0;
         ${containerStyleReset}
+      }
+    }
+    ${StyledBoard} {
+      .react-kanban-column {
+        ${containerStyle}
       }
     }
   `
@@ -133,7 +139,7 @@ export const SpaceBlocksCss = ({ containerStyle, containerStyleReset, heightMain
   const navStyles = css`
     ${NavWrapper} {
       padding: 0;
-      margin: 2rem 0;
+      margin: 1rem 0;
       overflow: auto;
       height: ${heightMain};
       min-height: ${heightMain};

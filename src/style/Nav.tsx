@@ -6,7 +6,6 @@ export const NavButton = styled.div<{ primary?: boolean }>`
   align-items: center;
   color: ${({ theme }) => theme.colors.gray[5]};
   padding: ${({ theme }) => theme.spacing.small};
-  margin-top: ${({ theme }) => theme.spacing.medium};
   border-radius: ${({ theme }) => theme.borderRadius.small};
 
   &:hover {

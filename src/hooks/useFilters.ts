@@ -16,13 +16,15 @@ import { GenericSearchResult } from '../types/search'
 - Sorting [:?]
 */
 
-export type FilterKey = 'node' | 'tag' | 'date'
+export type FilterKey = 'node' | 'tag' | 'date' | 'state'
 export interface SearchFilter<Item> {
   key: FilterKey
   id: string
   label: string
   filter: (item: Item) => boolean | number
   icon?: string
+  // No. of items that match this filter
+  count?: number
   // sort: 'asc' | 'desc'
 }
 

@@ -24,11 +24,11 @@ react-kanban-column-header__button
 react-kanban-column-adder-button
  */
 
-const KANBAN_WIDTH = `calc(( 100vw - 12rem ) / 3)`
-const KANBAN_HEIGHT = `calc( 100vh - 18rem )`
-const KANBAN_CARD_WIDTH = `calc(( 100vw - 15rem ) / 3)`
+export const KANBAN_WIDTH = `calc(( 100vw - 12rem ) / 3)`
+export const KANBAN_HEIGHT = `calc( 100vh - 22rem )`
+export const KANBAN_CARD_WIDTH = `calc(( 100vw - 15rem ) / 3)`
 
-export const StyledTasksKanban = styled.div`
+export const StyledBoard = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.medium};
@@ -43,6 +43,8 @@ export const StyledTasksKanban = styled.div`
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
 `
+
+export const StyledTasksKanban = styled(StyledBoard)``
 
 export const TaskHeader = styled(MainHeader)`
   ${Title} {

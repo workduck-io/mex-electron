@@ -1,24 +1,40 @@
 import Board from '@asseinfo/react-kanban'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import create from 'zustand'
-import ReminderUI from '../../../components/mex/Reminders/Reminder'
+import ReminderUI, { reminderStateIcons } from '../../../components/mex/Reminders/Reminder'
 import { RemindersWrapper } from '../../../components/mex/Reminders/Reminders.style'
 import SearchFilters from '../../../components/mex/Search/SearchFilters'
 import { TodoType } from '../../../editor/Components/Todo/types'
 import { FilterStore, SearchFilter } from '../../../hooks/useFilters'
-import { ReminderBoardCard, useReminders, useReminderStore } from '../../../hooks/useReminders'
+import { useLinks } from '../../../hooks/useLinks'
+import {
+  ReminderBoardCard,
+  ReminderBoard,
+  useReminders,
+  useReminderStore,
+  upcoming,
+  past,
+  ReminderBoardColumn
+} from '../../../hooks/useReminders'
+import { getReminderState } from '../../../services/reminders/reminders'
 import { MainHeader, PageContainer } from '../../../style/Layouts'
+import { StyledBoard } from '../../../style/Todo'
+import { Title } from '../../../style/Typography'
 import { Reminder } from '../../../types/reminders'
 import { mog } from '../../../utils/lib/helper'
-import { AllRemindersWrapper } from './RemindersAll.style'
+import { AllRemindersWrapper, ReminderBoardStyled, ReminderColumnHeader } from './RemindersAll.style'
 
 interface AllReminderFilterStore extends FilterStore<Reminder> {
+  board: ReminderBoard
+  setBoard: (board: ReminderBoard) => void
   addCurrentFilter: (filter: SearchFilter<Reminder>) => void
   removeCurrentFilter: (filter: SearchFilter<Reminder>) => void
   resetCurrentFilters: () => void
 }
 
 export const useReminderFilter = create<AllReminderFilterStore>((set, get) => ({
+  board: { columns: [] },
+  setBoard: (board: ReminderBoard) => set({ board }),
   currentFilters: [],
   setCurrentFilters: (filters) => set({ currentFilters: filters }),
   filters: [],
@@ -34,17 +50,149 @@ export const useReminderFilter = create<AllReminderFilterStore>((set, get) => ({
   }
 }))
 
+const useReminderFilters = () => {
+  const { getPathFromNodeid } = useLinks()
+
+  const getRemindersBoard = (): { board: ReminderBoard; filters: SearchFilter<Reminder>[] } => {
+    const remindersBase = useReminderStore.getState().reminders
+    const currentFilters = useReminderFilter.getState().currentFilters
+
+    const reminders =
+      currentFilters.length > 0
+        ? remindersBase.filter((reminder) => {
+            return currentFilters.every((filter) => filter.filter(reminder))
+          })
+        : remindersBase
+
+    const upcomingRemindersBase = reminders.filter(upcoming).sort((a, b) => {
+      return a.time - b.time
+    })
+
+    const pastRemindersBase = reminders.filter(past).sort((a, b) => {
+      return b.time - a.time
+    })
+
+    const upcomingReminders = upcomingRemindersBase.filter(
+      (reminder) => pastRemindersBase.find((r) => r.id === reminder.id && r.state.done === true) === undefined
+    )
+
+    const upcomingRemindersColumn: ReminderBoardColumn = {
+      id: 'upcoming',
+      title: 'Upcoming Reminders',
+      cards: upcomingReminders.map((reminder) => ({ id: reminder.id, reminder }))
+    }
+
+    const pastReminders = pastRemindersBase.filter(
+      (reminder) => upcomingRemindersBase.find((r) => r.id === reminder.id && r.state.done === false) === undefined
+    )
+
+    const pastRemindersColumn: ReminderBoardColumn = {
+      id: 'past',
+      title: 'Past Reminders',
+      cards: pastReminders.map((reminder) => ({ id: reminder.id, reminder }))
+    }
+
+    const newFilters = getReminderFilters([...upcomingReminders, ...pastReminders])
+    mog('NewFilters and Board', { newFilters, upcomingRemindersColumn, pastRemindersColumn })
+    // setCurrentFilters(newFilters)
+    return {
+      board: {
+        columns: [upcomingRemindersColumn, pastRemindersColumn]
+      },
+      filters: newFilters
+    }
+  }
+
+  const getReminderFilters = (reminders: Reminder[]) => {
+    const filters: SearchFilter<Reminder>[] = []
+    const nodes = reminders
+      .map((reminder) => reminder.nodeid)
+      .filter((nodeid, index, self) => self.indexOf(nodeid) === index)
+
+    const nodeCounts = reminders.reduce((acc, reminder) => {
+      const nodeid = reminder.nodeid
+      if (acc[nodeid]) {
+        acc[nodeid] += 1
+      } else {
+        acc[nodeid] = 1
+      }
+      return acc
+    }, {} as { [nodeid: string]: number })
+    nodes.forEach((nodeid) => {
+      const path = getPathFromNodeid(nodeid)
+      filters.push({
+        key: 'node',
+        id: nodeid,
+        label: path,
+        filter: (reminder) => reminder.nodeid === nodeid,
+        count: nodeCounts[nodeid],
+        icon: 'ri:file-list-line'
+      })
+    })
+
+    const allStates = { active: 0, snooze: 0, done: 0, missed: 0 }
+
+    reminders.forEach((reminder) => {
+      const status = getReminderState(reminder)
+      allStates[status] += 1
+    })
+
+    const stateFilters = Object.entries(allStates)
+      .filter(([, count]) => count > 0)
+      .forEach(([state, count]) => {
+        filters.push({
+          key: 'state',
+          id: state,
+          label: state,
+          icon: reminderStateIcons[state],
+          count,
+          filter: (reminder: Reminder) => getReminderState(reminder) === state
+        })
+      })
+
+    mog('Filters', { filters, stateFilters })
+
+    return filters
+  }
+
+  const applyFilters = (reminders: Reminder[]) => {
+    const currentFilters = useReminderFilter.getState().currentFilters
+    return reminders.filter((reminder) => {
+      return currentFilters.every((filter) => filter.filter(reminder))
+    })
+  }
+
+  return {
+    getReminderFilters,
+    getRemindersBoard,
+    applyFilters
+  }
+}
+
 const RemindersAll = () => {
   const reminders = useReminderStore((s) => s.reminders)
   const addCurrentFilter = useReminderFilter((s) => s.addCurrentFilter)
   const removeCurrentFilter = useReminderFilter((s) => s.removeCurrentFilter)
   const resetCurrentFilters = useReminderFilter((s) => s.resetCurrentFilters)
-  const filters = useReminderFilter((s) => s.currentFilters)
+  // const filters = useReminderFilter((s) => s.currentFilters)
   const currentFilters = useReminderFilter((s) => s.currentFilters)
+  const armedReminders = useReminderStore((s) => s.armedReminders)
+  // const setBoard = useReminderFilter((s) => s.setBoard)
+  // const setFilters = useReminderFilter((s) => s.setFilters)
+  const { getRemindersBoard } = useReminderFilters()
 
-  const { getRemindersBoard } = useReminders()
+  const { board, filters } = useMemo(() => {
+    const { board, filters } = getRemindersBoard()
+    // setFilters(newFilters)
+    // mog('Setting Board', { newFilters })
+    return { board, filters }
+  }, [reminders, armedReminders, currentFilters])
 
-  const board = useMemo(() => getRemindersBoard(), [currentFilters])
+  // useEffect(() => {
+  //   const { board, filters } = getRemindersBoard()
+  //   setBoard(board)
+  //   setCurrentFilters(filters)
+  // }, [reminders])
 
   const handleCardMove = (card, source, destination) => {
     mog('card moved', { card, source, destination })
@@ -59,19 +207,24 @@ const RemindersAll = () => {
 
   const RenderCard = ({ id, reminder }: ReminderBoardCard, { dragging }: { dragging: boolean }) => {
     // const pC = getPureContent(todo)
+    const { getReminderControls } = useReminders()
     // mog('RenderTodo', { id, todo, dragging })
     return (
       <ReminderUI
-        // controls={activeOrSnoozedControls}
+        controls={getReminderControls(reminder)}
         key={`ReultForSearch_${reminder.id}_${id}`}
         reminder={reminder}
       />
     )
   }
 
+  mog('RemindersAll', { reminders, board, filters, currentFilters })
+
   return (
     <PageContainer>
-      <MainHeader>Reminders</MainHeader>
+      <MainHeader>
+        <Title>Reminders</Title>
+      </MainHeader>
       <AllRemindersWrapper>
         <SearchFilters
           result={board}
@@ -81,23 +234,17 @@ const RemindersAll = () => {
           filters={filters}
           currentFilters={currentFilters}
         />
-        <Board
-          renderColumnHeader={({ title }) => <div>{title}</div>}
-          disableColumnDrag
-          onCardDragEnd={handleCardMove}
-          renderCard={RenderCard}
-        >
-          {board}
-        </Board>
-        <RemindersWrapper>
-          {reminders.map((reminder) => (
-            <ReminderUI
-              // controls={activeOrSnoozedControls}
-              key={`ReultForSearch_${reminder.id}`}
-              reminder={reminder}
-            />
-          ))}
-        </RemindersWrapper>
+        <ReminderBoardStyled>
+          <Board
+            renderColumnHeader={({ title }) => <ReminderColumnHeader>{title}</ReminderColumnHeader>}
+            disableColumnDrag
+            disableCardDrag
+            onCardDragEnd={handleCardMove}
+            renderCard={RenderCard}
+          >
+            {board}
+          </Board>
+        </ReminderBoardStyled>
       </AllRemindersWrapper>
     </PageContainer>
   )

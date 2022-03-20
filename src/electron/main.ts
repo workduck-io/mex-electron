@@ -164,7 +164,11 @@ const createSpotLighWindow = (show?: boolean) => {
 
   require('@electron/remote/main').enable(spotlight.webContents)
 
-  if (isAlpha || IS_DEV) spotlight.webContents.openDevTools()
+  if (
+    isAlpha
+    // || IS_DEV
+  )
+    spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {

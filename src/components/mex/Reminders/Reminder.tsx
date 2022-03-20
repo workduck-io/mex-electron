@@ -23,7 +23,7 @@ import {
 import { Button } from '../../../style/Buttons'
 import { useReminders } from '../../../hooks/useReminders'
 import { add, sub } from 'date-fns'
-import { getReminderState } from '../../../services/reminders/reminders'
+import { getReminderState, ReminderStatus } from '../../../services/reminders/reminders'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 
 export interface ReminderControl {
@@ -151,11 +151,11 @@ const ReminderControlsUI = ({
   )
 }
 
-export const reminderStateIcons = {
-  active: timerLine,
-  snooze: timerLine,
-  missed: 'ri-close-line',
-  done: 'ri-check-line'
+export const reminderStateIcons: Record<ReminderStatus, string> = {
+  active: 'ri-chat-4-line',
+  snooze: 'ri-chat-forward-line',
+  missed: 'ri-chat-delete-line',
+  done: 'ri-chat-check-line'
 }
 
 const ReminderUI = ({ reminder, isNotification, controls }: Props) => {

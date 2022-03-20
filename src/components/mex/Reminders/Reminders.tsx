@@ -27,61 +27,11 @@ const RemindersInfobar = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const remindersAll = useReminderStore((store) => store.reminders)
   const armedReminders = useReminderStore((store) => store.armedReminders)
-  const { getNodeReminders, clearNodeReminders, actOnReminder, markUndone } = useReminders()
-  // const contents = useContentStore((store) => store.contents)
-  // const { getPathFromNodeid } = useLinks()
+  const { getNodeReminders, clearNodeReminders, getReminderControls } = useReminders()
   const nodeid = useEditorStore((store) => store.node.nodeid)
   const toggleModal = useCreateReminderModal((state) => state.toggleModal)
 
   const { goTo } = useRouting()
-
-  // const onClick = (id: string) => {
-  //   insertNodes<TElement>(editor, {
-  //     type: ELEMENT_ILINK as any, // eslint-disable-line @typescript-eslint/no-explicit-any
-  //     children: [{ text: '' }],
-  //     value: id
-  //   })
-  // }
-  //
-  const snoozeControl: SnoozeControl = {
-    type: 'snooze',
-    action: (reminder: Reminder, time: number) => {
-      actOnReminder('snooze', reminder, time)
-    }
-  }
-  const pastControls: ReminderControls = [
-    {
-      type: 'delete',
-      action: (reminder: Reminder) => {
-        actOnReminder('delete', reminder)
-      }
-    },
-    snoozeControl
-  ]
-  const futureControls: ReminderControls = [
-    ...pastControls,
-    {
-      type: 'unarchive',
-      action: (reminder: Reminder) => {
-        markUndone(reminder)
-      }
-    }
-  ]
-  const activeOrSnoozedControls: ReminderControls = [
-    {
-      type: 'open',
-      action: (reminder: Reminder) => {
-        actOnReminder('open', reminder)
-      }
-    },
-    snoozeControl,
-    {
-      type: 'dismiss',
-      action: (reminder: Reminder) => {
-        actOnReminder('dismiss', reminder)
-      }
-    }
-  ]
 
   const reminderGroups = useMemo(() => {
     mog('RemindersInfobar', { reminderGroups, remindersAll })
@@ -92,6 +42,14 @@ const RemindersInfobar = () => {
   return (
     <InfobarFull>
       <InfobarTools>
+        <IconButton
+          size={24}
+          icon="ri-discuss-line"
+          onClick={() => {
+            goTo(ROUTE_PATHS.reminders, NavigationType.push)
+          }}
+          title="All Reminders"
+        />
         <IconButton
           size={24}
           icon={timerFlashLine}
@@ -106,14 +64,6 @@ const RemindersInfobar = () => {
           icon={deleteBin6Line}
           onClick={() => clearNodeReminders(nodeid)}
           title="Delete All Reminders"
-        />
-        <IconButton
-          size={24}
-          icon={more2Fill}
-          onClick={() => {
-            goTo(ROUTE_PATHS.reminders, NavigationType.push)
-          }}
-          title="All Reminders"
         />
       </InfobarTools>
 
@@ -133,35 +83,13 @@ const RemindersInfobar = () => {
             <ReminderGroupWrapper key={`ReminderGroup_${nodeid}_${reminderGroup.type}`}>
               <Title>{reminderGroup.label}</Title>
               <RemindersWrapper>
-                {reminderGroup.reminders.map((reminder) => {
-                  const remState = getReminderState(reminder)
-                  if (remState === 'active' || remState === 'snooze') {
-                    return (
-                      <ReminderUI
-                        controls={activeOrSnoozedControls}
-                        key={`ReultForSearch_${reminder.id}`}
-                        reminder={reminder}
-                      />
-                    )
-                  }
-                  if (reminder.time > Date.now()) {
-                    return (
-                      <ReminderUI controls={futureControls} key={`ReultForSearch_${reminder.id}`} reminder={reminder} />
-                    )
-                  }
-                  if (reminder.time < Date.now() && !reminder.state.done) {
-                    return (
-                      <ReminderUI
-                        controls={activeOrSnoozedControls}
-                        key={`ReultForSearch_${reminder.id}`}
-                        reminder={reminder}
-                      />
-                    )
-                  }
-                  return (
-                    <ReminderUI controls={pastControls} key={`ReultForSearch_${reminder.id}`} reminder={reminder} />
-                  )
-                })}
+                {reminderGroup.reminders.map((reminder) => (
+                  <ReminderUI
+                    controls={getReminderControls(reminder)}
+                    key={`ReultForSearch_${reminder.id}`}
+                    reminder={reminder}
+                  />
+                ))}
               </RemindersWrapper>
             </ReminderGroupWrapper>
           )

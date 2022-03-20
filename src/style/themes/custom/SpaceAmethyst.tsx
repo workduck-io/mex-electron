@@ -1,8 +1,9 @@
 import { transparentize } from 'polished'
 import { css } from 'styled-components'
+import { ReminderStyled } from '../../../components/mex/Reminders/Reminders.style'
 import { SpaceBlocksCss } from '../spaceBlocks'
 
-export const SpaceAmethyst = SpaceBlocksCss({
+const blockCss = SpaceBlocksCss({
   containerStyle: css`
     background-color: ${({ theme }) => transparentize(0.5, '#202333')};
     box-shadow: 0px 15px 40px ${({ theme }) => transparentize(0.9, theme.colors.palette.black)};
@@ -16,3 +17,9 @@ export const SpaceAmethyst = SpaceBlocksCss({
   `,
   heightMain: 'calc(100vh - 4rem)'
 })
+export const SpaceAmethyst = css`
+  ${blockCss}
+  ${ReminderStyled} {
+    border: none;
+  }
+`
