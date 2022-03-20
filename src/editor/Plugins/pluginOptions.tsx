@@ -44,7 +44,8 @@ import {
 
 import { ELEMENT_SYNC_BLOCK } from '../Components/SyncBlock'
 import { generateTempId } from '../../data/Defaults/idPrefixes'
-import { Editor } from 'slate'
+
+import { uploadImageToWDCDN } from '../../utils/imageUpload'
 
 const preFormat = (editor: TEditor<AnyObject>) => unwrapList(editor as PlateEditor)
 
@@ -288,5 +289,11 @@ export const optionsCreateNodeIdPlugin = {
     filterText: false,
     idCreator: () => generateTempId(),
     exclude: [ELEMENT_SYNC_BLOCK]
+  }
+}
+
+export const optionsImagePlugin = {
+  options: {
+    uploadImage: uploadImageToWDCDN
   }
 }
