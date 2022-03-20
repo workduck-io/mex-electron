@@ -175,10 +175,10 @@ const CreateReminderModal = () => {
     closeModal()
   }
 
-  mog('CreateReminderModal', {
-    modalOpen,
-    modalValue
-  })
+  // mog('CreateReminderModal', {
+  //   modalOpen,
+  //   modalValue
+  // })
 
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={handleCancel} isOpen={modalOpen}>
