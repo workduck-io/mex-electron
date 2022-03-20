@@ -66,13 +66,9 @@ const heightMain = `calc(100vh - 4rem)`
 
 const graphStyles = css`
   ${StyledGraph} {
-    height: ${heightMain};
     display: flex;
     flex-direction: column;
     gap: ${({ theme }) => theme.spacing.medium};
-  }
-  ${InfobarTools} {
-    margin: 2rem 0 0;
   }
   ${InfoBarWrapper} {
     margin-right: 3rem;
@@ -88,7 +84,7 @@ const edStyles = css`
     background-color: ${({ theme }) => theme.colors.gray[10]};
   }
   ${StyledEditor} {
-    padding: ${({ theme }) => theme.spacing.large} 3rem;
+    padding: 0 3rem;
   }
   ${EditorStyles} {
     border-radius: 1rem;
@@ -118,9 +114,7 @@ const edStyles = css`
     background-color: ${grayMixerTrans(9)};
   }
   ${DataInfobarWrapper} {
-    height: ${heightMain};
     border-radius: ${({ theme }) => theme.borderRadius.small};
-    margin-top: 2rem;
   }
   ${BalloonToolbarBase} {
     background-color: ${({ theme }) => theme.colors.gray[8]};
@@ -132,7 +126,6 @@ const edStyles = css`
     }
   }
   ${EditorPreviewWrapper} {
-    background: ${grayMainColor} !important;
     ${EditorStyles} {
       background: transparent;
     }
@@ -220,18 +213,7 @@ const navStyles = css`
     overflow: unset;
   }
   ${NavWrapper} {
-    padding: 0;
-    margin: 2rem 0;
-    overflow: auto;
-    height: ${heightMain};
-    min-height: ${heightMain};
     border-radius: ${({ theme }) => theme.borderRadius.small};
-  }
-  ${GridWrapper} {
-    margin: 1rem;
-    height: calc(100vh - 2rem);
-    width: calc(100vw - 2rem);
-    grid-gap: ${({ theme }) => theme.spacing.medium};
   }
   ${NavButton} {
     margin-top: 0;
@@ -240,7 +222,6 @@ const navStyles = css`
 
 const sidebarStyles = css`
   ${SidebarDiv} {
-    height: ${heightMain};
     border-radius: ${({ theme }) => theme.borderRadius.small};
     padding: 0 ${({ theme }) => theme.spacing.medium};
     ${StyledTree} {

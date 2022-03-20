@@ -44,19 +44,19 @@ const RemindersInfobar = () => {
       <InfobarTools>
         <IconButton
           size={24}
-          icon="ri-discuss-line"
-          onClick={() => {
-            goTo(ROUTE_PATHS.reminders, NavigationType.push)
-          }}
-          title="All Reminders"
-        />
-        <IconButton
-          size={24}
           icon={timerFlashLine}
           shortcut={shortcuts.showReminder.keystrokes}
           title="Reminders"
           highlight={infobar.mode === 'reminders'}
           onClick={toggleReminder}
+        />
+        <IconButton
+          size={24}
+          icon="ri-discuss-line"
+          onClick={() => {
+            goTo(ROUTE_PATHS.reminders, NavigationType.push)
+          }}
+          title="All Reminders"
         />
         <label htmlFor="reminders">Reminders</label>
         <IconButton

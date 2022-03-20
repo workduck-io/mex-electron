@@ -13,7 +13,7 @@ import { TodoContainer } from '../../ui/components/Todo.style'
 import { ArchivedNode } from '../../views/mex/Archive'
 import { SettingsOptions } from '../../views/mex/Settings'
 import { BackCard } from '../Card'
-import { EditorStyles, NodeInfo } from '../Editor'
+import { EditorStyles, NodeInfo, StyledEditor } from '../Editor'
 import { GridWrapper } from '../Grid'
 import { InfobarTools, InfoBarWrapper } from '../infobar'
 import { ServiceCard } from '../Integration'
@@ -47,7 +47,7 @@ export const SpaceBlocksCss = ({ containerStyle, containerStyleReset, heightMain
     }
     ${InfobarTools} {
       ${containerStyle}
-      margin: 1rem 0 0;
+      margin: 0 0;
     }
     ${InfoBarWrapper} {
       margin-right: 3rem;
@@ -62,13 +62,16 @@ export const SpaceBlocksCss = ({ containerStyle, containerStyleReset, heightMain
     ${EditorStyles} {
       ${containerStyle}
     }
+    ${StyledEditor} {
+      margin: 0 auto;
+    }
     ${NodeInfo} {
       ${containerStyle}
     }
     ${DataInfobarWrapper} {
       height: ${heightMain};
       ${containerStyle}
-      margin-top: 1rem;
+      margin-top: 0;
     }
     ${BalloonToolbarBase} {
       background-color: ${({ theme }) => theme.colors.gray[8]};
@@ -80,7 +83,6 @@ export const SpaceBlocksCss = ({ containerStyle, containerStyleReset, heightMain
       }
     }
     ${EditorPreviewWrapper} {
-      ${containerStyle}
     }
     ${ComboboxRoot} {
       backdrop-filter: blur(10px);
@@ -139,16 +141,17 @@ export const SpaceBlocksCss = ({ containerStyle, containerStyleReset, heightMain
   const navStyles = css`
     ${NavWrapper} {
       padding: 0;
-      margin: 1rem 0;
+      margin: 0;
       overflow: auto;
       height: ${heightMain};
       min-height: ${heightMain};
       ${containerStyle}
     }
     ${GridWrapper} {
-      margin: 1rem;
-      height: calc(100vh - 2rem);
-      width: calc(100vw - 2rem);
+      margin: 2rem;
+      margin-left: ${({ theme }) => theme.spacing.medium};
+      margin-right: -1rem;
+      margin-bottom: 0;
       grid-gap: ${({ theme }) => theme.spacing.medium};
     }
   `
@@ -157,6 +160,7 @@ export const SpaceBlocksCss = ({ containerStyle, containerStyleReset, heightMain
     ${SidebarDiv} {
       height: ${heightMain};
       ${containerStyle}
+      margin-top: 0;
       padding: 0 ${({ theme }) => theme.spacing.medium};
     }
   `
