@@ -15,6 +15,7 @@ import {
   TableToolbarButton
 } from '@udecode/plate'
 import React from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
 import styled, { useTheme } from 'styled-components'
 import { MexIcon } from '../../style/Layouts'
 import { ButtonSeparator } from '../../style/Toolbar'
@@ -80,7 +81,11 @@ export const TableModal = ({ element, popoverProps, children }: TableElementProp
 )
 
 const TableWrapper = (props: any) => {
-  return <TableElement {...props} onRenderContainer={TableModal} id="hello" />
+  return (
+    <ErrorBoundary fallback={<></>}>
+      <TableElement {...props} onRenderContainer={TableModal} id="hello" />
+    </ErrorBoundary>
+  )
 }
 
 export default TableWrapper

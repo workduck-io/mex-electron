@@ -4,7 +4,6 @@ import useArchive from '../../../hooks/useArchive'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useContentStore } from '../../../store/useContentStore'
-import { mog } from '../../../utils/lib/helper'
 import { getBlock } from '../../../utils/search/parseData'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
 import { useSaver } from '../Saver'
@@ -42,7 +41,6 @@ const InlineBlock = (props: any) => {
 
     return data
   }, [nodeid, blockId])
-  mog('INLINE', { content, element: props.element })
 
   const { onSave } = useSaver()
   const { archived } = useArchive()

@@ -15,7 +15,7 @@ import { NodeMetadata } from '../../../types/data'
 import { RelativeTime } from '../RelativeTime'
 import { ProfileImageWithToolTip } from '../User/ProfileImage'
 
-const Data = styled.div`
+export const Data = styled.div`
   color: ${({ theme }) => theme.colors.text.fade};
 `
 
@@ -77,7 +77,7 @@ export const MetadataWrapper = styled.div<MetaDataWrapperProps>`
   ${(props) => focusStyles(props)}
 
   ${Label} {
-    color: ${({ theme }) => theme.colors.gray[6]};
+    color: ${({ theme }) => theme.colors.gray[5]};
     font-size: 0.9rem;
     margin: 0 0 0.2rem;
   }

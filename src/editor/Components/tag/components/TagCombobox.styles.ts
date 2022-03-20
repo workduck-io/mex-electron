@@ -48,6 +48,7 @@ export const ComboboxRoot = styled.div<{ isOpen: boolean }>`
       transform: rotate(-180deg);
     }
   } */
+
   ${({ isOpen, theme }) =>
     isOpen &&
     css`
@@ -64,7 +65,6 @@ export const ComboboxRoot = styled.div<{ isOpen: boolean }>`
         box-shadow: rgba(0, 0, 0, 0.133) 0 3.2px 7.2px 0, rgba(0, 0, 0, 0.11) 0 0.6px 1.8px 0;
         border-radius: ${theme.borderRadius.small};
       }
-      /* max-width: 440px; */
     `}
 `
 

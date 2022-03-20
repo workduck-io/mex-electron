@@ -159,15 +159,15 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
         }
       }
 
-      if (e.metaKey && e.key === 'Enter') {
-        // * On CMD + Enter insert the selected item as Inline Block
+      if (e.key === 'Tab') {
+        // * On Tab insert the selected item as Inline Block
         e.preventDefault()
         creatabaleOnSelect(editor, search, ELEMENT_INLINE_BLOCK)
         return false
       }
       // }
 
-      if (['Tab', 'Enter', ']'].includes(e.key)) {
+      if (['Enter', ']'].includes(e.key)) {
         e.preventDefault()
         creatabaleOnSelect(editor, search)
         return false

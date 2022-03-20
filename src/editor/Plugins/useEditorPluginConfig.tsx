@@ -3,10 +3,10 @@ import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { useMemo } from 'react'
 import { QuickLinkType } from '../../components/mex/NodeSelect/NodeSelect'
 import { useSnippets } from '../../hooks/useSnippets'
-import useAnalytics from '../../services/analytics'
 import useDataStore from '../../store/useDataStore'
 import { useEditorStore } from '../../store/useEditorStore'
 import { mog } from '../../utils/lib/helper'
+import { useRouting } from '../../views/routes/urls'
 import { ComboboxKey } from '../Components/combobox/useComboboxStore'
 import { ILinkComboboxItem } from '../Components/ilink/components/ILinkComboboxItem'
 import { ELEMENT_ILINK } from '../Components/ilink/defaults'
@@ -29,15 +29,27 @@ const useEditorPluginConfig = (editorId: string) => {
   const addILink = useDataStore((state) => state.addILink)
   const { getSnippetsConfigs } = useSnippets()
   // const { getSyncBlockConfigs } = useSyncConfig()
-  const { trackEvent } = useAnalytics()
 
   // Combobox
   const snippetConfigs = getSnippetsConfigs()
   // const syncBlockConfigs = getSyncBlockConfigs()
 
+  const { params, location } = useRouting()
+
   const ilinksForCurrentNode = useMemo(() => {
+    if (params.snippetid) return ilinks
+
     return ilinks.filter((item) => item.nodeid !== nodeid)
   }, [nodeid, ilinks])
+
+  const slashInternals = useMemo(() => {
+    const snippetName = (location?.state as any)?.title
+    if (params.snippetid && snippetName) {
+      return slashCommands.internal.filter((item) => snippetName !== item.text)
+    }
+
+    return slashCommands.internal
+  }, [slashCommands.internal])
 
   const internals = [
     ...ilinksForCurrentNode.map((l) => ({
@@ -47,7 +59,7 @@ const useEditorPluginConfig = (editorId: string) => {
       icon: l.icon ?? 'ri:file-list-2-line',
       type: QuickLinkType.ilink
     })),
-    ...slashCommands.internal.map((l) => ({ ...l, value: l.command, text: l.text, type: l.type }))
+    ...slashInternals.map((l) => ({ ...l, value: l.command, text: l.text, type: l.type }))
   ]
 
   const comboConfigData: ComboConfigData = {

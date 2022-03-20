@@ -8,6 +8,7 @@ export type InlineBlockType = {
 export const StyledInlineBlockPreview = styled.div`
   max-height: 25vh;
   overflow-y: auto;
+  overflow-x: hidden;
 `
 
 export const StyledInlineBlock = styled.section<InlineBlockType>`

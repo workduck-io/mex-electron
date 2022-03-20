@@ -46,6 +46,9 @@ export type ComboboxState = {
   itemIndex: number
   setItemIndex: (value: number) => void
 
+  isSlash: boolean
+  setIsSlash: (value: boolean) => void
+
   preview?: any
   setPreview: (value: any) => void
 
@@ -63,6 +66,9 @@ export const useComboboxStore = createStore()<ComboboxState>((set) => ({
   setKey: setStoreValue(set, 'key', 'setKey'),
 
   setBlockRange: setStoreValue(set, 'blockRange', 'setBlockRange'),
+
+  isSlash: false,
+  setIsSlash: setStoreValue(set, 'isSlash', 'setIsSlash'),
 
   isBlockTriggered: false,
   setIsBlockTriggered: setStoreValue(set, 'isBlockTriggered', 'setIsBlockTriggered'),

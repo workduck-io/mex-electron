@@ -37,7 +37,7 @@ export const ExcalidrawElement = (props: any) => {
 
   useEffect(() => {
     import('@excalidraw/excalidraw-next').then((comp) => setExcalidraw(comp.default))
-  })
+  }, [])
 
   const styles = getExcalidrawElementStyles(props)
   const _excalidrawRef = useRef<ExcalidrawImperativeAPI>(null)

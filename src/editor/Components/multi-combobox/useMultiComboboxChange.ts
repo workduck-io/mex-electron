@@ -1,15 +1,14 @@
 import { OnChange, usePlateEditorRef } from '@udecode/plate'
 import { useCallback } from 'react'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
-import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange'
 import { isInternalCommand } from '../combobox/hooks/useComboboxOnKeyDown'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
-import { ComboboxItem, ComboboxType } from './types'
+import { ComboboxType } from './types'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { useRouting } from '../../../views/routes/urls'
 import { useLinks } from '../../../hooks/useLinks'
-import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 
 export const CreateNewPrefix = `Create `
@@ -39,13 +38,12 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
     if (search === undefined) return false
 
     const key = useComboboxStore.getState().key
-    const maxSuggestions = useComboboxStore.getState().maxSuggestions
 
     const ct = keys[key]
     const data = ct.data
 
     if (!data) return false
-    const { textAfterTrigger, textAfterBlockTrigger } = search
+    const textAfterTrigger = search.textAfterTrigger
 
     if (params.snippetid && textAfterTrigger?.startsWith('.')) return
 
@@ -72,9 +70,6 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
     }, {} as any)
 
     const items = Object.values(groups).flat()
-
-    mog('group', groups)
-    mog('group', { items })
 
     const dataKeys = items.map((i: any) => i.text)
 

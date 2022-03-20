@@ -28,17 +28,17 @@ export const ElementTypeBasedShortcut: Record<string, Record<string, Shortcut>> 
   [QuickLinkType.ilink]: {
     link: {
       ...spotlightShortcuts.open,
-      title: 'Link'
+      title: 'to Link'
     },
     inlineBlock: {
-      ...spotlightShortcuts.save,
-      title: 'Embed'
+      ...spotlightShortcuts.Tab,
+      title: 'to Embed'
     }
   },
   [QuickLinkType.snippet]: {
     snippet: {
       ...spotlightShortcuts.open,
-      title: 'Insert'
+      title: 'to Insert'
     }
   }
 }

@@ -1,5 +1,5 @@
-import { getPlateEditorRef, Plate, usePlateEditorRef } from '@udecode/plate'
-import React, { useEffect } from 'react'
+import { Plate } from '@udecode/plate'
+import React from 'react'
 import { EditorStyles } from '../style/Editor'
 import generatePlugins from './Plugins/plugins'
 import { editorPreviewComponents } from './Components/components'
@@ -9,13 +9,15 @@ interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
   editorId: string
   noStyle?: boolean
+  noMouseEvents?: boolean
 }
 
-const PreviewStyles = styled(EditorStyles)`
+const PreviewStyles = styled(EditorStyles)<{ noMouseEvents: boolean }>`
+  ${({ noMouseEvents }) => noMouseEvents && 'pointer-events: none;'};
   font-size: 14px;
 `
 
-const EditorPreviewRenderer = ({ content, editorId, noStyle }: EditorPreviewRendererProps) => {
+const EditorPreviewRenderer = ({ content, editorId, noStyle, noMouseEvents }: EditorPreviewRendererProps) => {
   const editableProps = {
     placeholder: 'Murmuring the mex hype... ',
     spellCheck: false,
@@ -31,7 +33,7 @@ const EditorPreviewRenderer = ({ content, editorId, noStyle }: EditorPreviewRend
   const plugins = generatePlugins(editorPreviewComponents, { exclude: { dnd: true } })
 
   return (
-    <PreviewStyles>
+    <PreviewStyles noMouseEvents={noMouseEvents}>
       <Plate id={editorId} editableProps={editableProps} value={content} plugins={plugins} />
     </PreviewStyles>
   )

@@ -6,7 +6,6 @@ import { NODE_ID_PREFIX } from '../../../data/Defaults/idPrefixes'
 import { useLinks } from '../../../hooks/useLinks'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
-import { mog } from '../../../utils/lib/helper'
 import { getEventNameFromElement } from '../../../utils/lib/strings'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { isInternalCommand, useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown'
@@ -124,7 +123,9 @@ export const useOnSelectItem = (
   const elementOnChange = useElementOnChange(singleComboConfig)
 
   const search: ComboSearchType = useComboboxStore.getState().search
+  const isSlashTrigger = useComboboxStore((store) => store.isSlash)
   const isSlash =
+    isSlashTrigger ||
     comboboxKey === ComboboxKey.SLASH_COMMAND ||
     (comboboxKey === ComboboxKey.INTERNAL && isInternalCommand(search.textAfterTrigger))
 

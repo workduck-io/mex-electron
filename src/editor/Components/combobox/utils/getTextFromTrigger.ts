@@ -32,6 +32,7 @@ export const getTextFromTrigger = (editor: Editor, options: TriggerOptions): Tex
   let blockStart = options.at
 
   // eslint-disable-next-line no-constant-condition
+
   while (true) {
     end = start
     if (!start) break
@@ -46,7 +47,6 @@ export const getTextFromTrigger = (editor: Editor, options: TriggerOptions): Tex
 
     // * Uncomment this (changes)
     // if (!options.isTrigger && !charText.match(`\\S+`)) {
-    //   mog('charText', { charText })
     //   start = end
     //   break
     // }

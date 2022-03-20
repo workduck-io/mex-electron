@@ -29,6 +29,8 @@ import { ElementTypeBasedShortcut } from '../../../../components/spotlight/Short
 import { ShortcutText } from '../../../../components/spotlight/Home/components/Item'
 import { DisplayShortcut } from '../../../../components/mex/Shortcuts'
 import { replaceFragment } from '../hooks/useComboboxOnKeyDown'
+import { mog } from '../../../../utils/lib/helper'
+import PreviewMeta from './PreviewMeta'
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'
@@ -45,10 +47,12 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   const setPreview = useComboboxStore((store) => store.setPreview)
   const combobox = useComboboxControls(true)
   const isOpen = useComboboxIsOpen()
+
   const textAfterTrigger = useComboboxStore((store) => store.search.textAfterTrigger)
   const getContent = useContentStore((store) => store.getContent)
   const { getSnippetContent } = useSnippets()
-
+  const setIsSlash = useComboboxStore((store) => store.setIsSlash)
+  const [metaData, setMetaData] = useState(undefined)
   const ref = React.useRef<any>(null) // eslint-disable-line @typescript-eslint/no-explicit-any
   const editor = useEditorState()
 
@@ -76,6 +80,14 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   }
 
   useEffect(() => {
+    if (items?.[itemIndex]?.type === QuickLinkType.snippet) {
+      setIsSlash(true)
+    } else {
+      setIsSlash(false)
+    }
+  }, [itemIndex])
+
+  useEffect(() => {
     if (editor && items?.[itemIndex] && textAfterTrigger.trim() && isBlockTriggered) {
       replaceFragment(editor, targetRange, `[[${items[itemIndex].text}:`)
     }
@@ -90,7 +102,10 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
       let content: NodeEditorContent | undefined
 
       if (type === QuickLinkType.ilink) {
-        content = getContent(key)?.content
+        const nodeContent = getContent(key)
+        content = nodeContent?.content
+
+        setMetaData(nodeContent?.metadata)
       } else if (type === QuickLinkType.snippet) {
         content = getSnippetContent(key)
       }
@@ -121,7 +136,9 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
                     onMouseEnter={() => {
                       setItemIndex(index)
                     }}
-                    onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, item)}
+                    onMouseDown={() => {
+                      editor && onSelectItem(editor, item)
+                    }}
                   >
                     {item.icon && <Icon height={18} key={`${item.key}_${item.icon}`} icon={item.icon} />}
                     <ItemCenterWrapper>
@@ -159,12 +176,16 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
           </div>
         )}
         <BlockCombo nodeId={items[itemIndex]?.key} isNew={items[itemIndex]?.data} />
-        {preview && items[itemIndex]?.type === QuickLinkType.ilink && (
+        {preview && listItem?.type && (
           <ComboSeperator>
-            <EditorPreviewRenderer
-              content={preview}
-              editorId={isBlockTriggered && activeBlock ? activeBlock.blockId : items[itemIndex]?.key}
-            />
+            <section>
+              <EditorPreviewRenderer
+                noMouseEvents
+                content={preview}
+                editorId={isBlockTriggered && activeBlock ? activeBlock.blockId : items[itemIndex]?.key}
+              />
+            </section>
+            {preview && <PreviewMeta meta={metaData} />}
           </ComboSeperator>
         )}
       </ComboboxRoot>
