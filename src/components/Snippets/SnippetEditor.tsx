@@ -51,6 +51,9 @@ const SnippetEditor = () => {
     }
   }
 
+  const { params } = useRouting()
+  const snippetid = snippet?.id ?? params.snippetid
+
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       Escape: (event) => {
@@ -88,7 +91,7 @@ const SnippetEditor = () => {
           </InfoTools>
         </NodeInfo>
 
-        <Editor onChange={onChangeSave} content={content} editorId={snippet.id} />
+        {<Editor onChange={onChangeSave} content={content} editorId={snippetid} />}
       </StyledEditor>
     </>
   )

@@ -75,7 +75,6 @@ export const EditorStyles = styled.div`
   font-family: 'Inter', sans-serif;
   /* font-weight: 400; */
   line-height: 1.75;
-  overflow: scroll;
   width: 100%;
 
   .slate-Draggable {

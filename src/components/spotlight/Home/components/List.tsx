@@ -27,7 +27,8 @@ export const MAX_RECENT_ITEMS = 3
 export enum KEYBOARD_KEYS {
   Enter = 'Enter',
   ArrowUp = 'ArrowUp',
-  ArrowDown = 'ArrowDown'
+  ArrowDown = 'ArrowDown',
+  Escape = 'Escape'
 }
 
 const List = ({

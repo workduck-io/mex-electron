@@ -5,6 +5,7 @@ import {
   getNodes,
   getPlateSelectors,
   insertNodes,
+  getNode,
   usePlateEditorRef
 } from '@udecode/plate'
 import { NodeEntry, Transforms } from 'slate'

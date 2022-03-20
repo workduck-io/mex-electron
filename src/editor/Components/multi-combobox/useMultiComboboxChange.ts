@@ -5,11 +5,12 @@ import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange'
 import { isInternalCommand } from '../combobox/hooks/useComboboxOnKeyDown'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
-import { ComboboxType } from './types'
+import { ComboboxItem, ComboboxType } from './types'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { useRouting } from '../../../views/routes/urls'
 import { useLinks } from '../../../hooks/useLinks'
-import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 
 export const CreateNewPrefix = `Create `
 // Handle multiple combobox
@@ -53,16 +54,29 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
 
     const searchItems = fuzzySearch(data, searchTerm, { keys: ['text'] })
 
-    const items: IComboboxItem[] = (
-      searchTerm !== '' ? searchItems.slice(0, maxSuggestions) : keys[key].data.slice(0, maxSuggestions)
-    ).map((item) => ({
-      key: item.value,
-      icon: item.icon ?? ct.icon ?? undefined,
-      text: item.text,
-      type: item.type
-    }))
+    const groups = (searchTerm !== '' ? searchItems : data).reduce((acc, item) => {
+      const type = item.type
+      if (!acc[type]) {
+        acc[type] = []
+      }
 
-    const dataKeys = items.map((i) => i.text)
+      if (!(acc[type].length === 5))
+        acc[type].push({
+          key: item.value,
+          icon: item.icon ?? ct.icon ?? undefined,
+          text: item.text,
+          type
+        })
+
+      return acc
+    }, {} as any)
+
+    const items = Object.values(groups).flat()
+
+    mog('group', groups)
+    mog('group', { items })
+
+    const dataKeys = items.map((i: any) => i.text)
 
     // Create for new item
     if (
@@ -76,6 +90,11 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
       items.unshift({
         key: '__create_new',
         icon: 'ri:add-circle-line',
+        // data: {
+        //   isNew: true
+        // },
+        type: QuickLinkType.ilink,
+        data: true,
         prefix: CreateNewPrefix,
         text: searchTerm
       })

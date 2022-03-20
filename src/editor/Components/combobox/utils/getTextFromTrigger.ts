@@ -1,8 +1,5 @@
 import { escapeRegExp, getText } from '@udecode/plate-core'
 import { BaseRange, Editor, Point } from 'slate'
-import { useEditorStore } from '../../../../store/useEditorStore'
-import { mog } from '../../../../utils/lib/helper'
-import { useComboboxStore } from '../useComboboxStore'
 
 /**
  * Get text and range from trigger to cursor.
@@ -47,23 +44,24 @@ export const getTextFromTrigger = (editor: Editor, options: TriggerOptions): Tex
       blockStart = start
     }
 
+    // * Uncomment this (changes)
+    // if (!options.isTrigger && !charText.match(`\\S+`)) {
+    //   mog('charText', { charText })
+    //   start = end
+    //   break
+    // }
+
     if (!charText.match(searchPattern)) {
       start = end
       break
     }
-
-    // * Uncomment this (changes)
-    // if (!options.isTrigger && !charText.match(`\\S+`)) {
-    //   start = end
-    //   break
-    // }
   }
 
   // Range from start to cursor
   const range = start && Editor.range(editor, start, options.at)
   const text = getText(editor, range)
 
-  if (!range || !text.match(triggerRegex)) return
+  if (!range || !text.match(triggerRegex) || text.length > 100) return
 
   const res = {
     range,

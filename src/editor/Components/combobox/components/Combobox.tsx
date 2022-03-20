@@ -24,19 +24,28 @@ import { useSnippets } from '../../../../hooks/useSnippets'
 import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
 import { NodeEditorContent } from '../../../../types/Types'
 import BlockCombo from './BlockCombo'
+import { ComboboxShortcuts, ComboSeperator } from './styled'
+import { ElementTypeBasedShortcut } from '../../../../components/spotlight/Shortcuts/list'
+import { ShortcutText } from '../../../../components/spotlight/Home/components/Item'
+import { DisplayShortcut } from '../../../../components/mex/Shortcuts'
+import { replaceFragment } from '../hooks/useComboboxOnKeyDown'
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'
+
   const at = useComboboxStore((state) => state.targetRange)
   const items = useComboboxStore((state) => state.items)
   const closeMenu = useComboboxStore((state) => state.closeMenu)
   const itemIndex = useComboboxStore((state) => state.itemIndex)
+  const targetRange = useComboboxStore((state) => state.targetRange)
   const setItemIndex = useComboboxStore((state) => state.setItemIndex)
   const isBlockTriggered = useComboboxStore((store) => store.isBlockTriggered)
-
+  const activeBlock = useComboboxStore((store) => store.activeBlock)
+  const preview = useComboboxStore((store) => store.preview)
+  const setPreview = useComboboxStore((store) => store.setPreview)
   const combobox = useComboboxControls(true)
   const isOpen = useComboboxIsOpen()
-  const [preview, setPreview] = useState(undefined)
+  const textAfterTrigger = useComboboxStore((store) => store.search.textAfterTrigger)
   const getContent = useContentStore((store) => store.getContent)
   const { getSnippetContent } = useSnippets()
 
@@ -67,9 +76,15 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   }
 
   useEffect(() => {
+    if (editor && items?.[itemIndex] && textAfterTrigger.trim() && isBlockTriggered) {
+      replaceFragment(editor, targetRange, `[[${items[itemIndex].text}:`)
+    }
+  }, [isBlockTriggered])
+
+  useEffect(() => {
     const comboItem = items[itemIndex]
 
-    if (comboItem && comboItem.type) {
+    if (comboItem && comboItem.type && isOpen) {
       const { key, type } = comboItem
 
       let content: NodeEditorContent | undefined
@@ -79,12 +94,14 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
       } else if (type === QuickLinkType.snippet) {
         content = getSnippetContent(key)
       }
-
-      setPreview(content)
+      if (!activeBlock) setPreview(content)
     }
-  }, [itemIndex, items])
+  }, [itemIndex, items, activeBlock, isOpen])
 
   if (!combobox) return null
+
+  const listItem = items[itemIndex]
+  const itemShortcut = listItem?.type ? ElementTypeBasedShortcut[listItem?.type] : undefined
 
   return (
     <PortalBody>
@@ -128,13 +145,27 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
                 </span>
               )
             })}
+            {itemShortcut && (
+              <ComboboxShortcuts>
+                {Object.entries(itemShortcut).map(([key, shortcut]) => {
+                  return (
+                    <ShortcutText key={key}>
+                      <DisplayShortcut shortcut={shortcut.keystrokes} /> <div className="text">{shortcut.title}</div>
+                    </ShortcutText>
+                  )
+                })}
+              </ComboboxShortcuts>
+            )}
           </div>
         )}
-        <BlockCombo />
-        {items[itemIndex]?.type && preview && !isBlockTriggered && (
-          <div style={{ maxHeight: '400px', marginLeft: '0.5rem', width: '220px', overflow: 'hidden' }}>
-            <EditorPreviewRenderer content={preview} editorId={items[itemIndex]?.key + String(itemIndex)} />
-          </div>
+        <BlockCombo nodeId={items[itemIndex]?.key} isNew={items[itemIndex]?.data} />
+        {preview && items[itemIndex]?.type === QuickLinkType.ilink && (
+          <ComboSeperator>
+            <EditorPreviewRenderer
+              content={preview}
+              editorId={isBlockTriggered && activeBlock ? activeBlock.blockId : items[itemIndex]?.key}
+            />
+          </ComboSeperator>
         )}
       </ComboboxRoot>
     </PortalBody>

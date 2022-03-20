@@ -18,7 +18,7 @@ export const ComboboxItem = styled.div`
   padding: 0 8px;
   min-height: 36px;
   user-select: none;
-  width: 220px;
+  width: 300px;
   color: ${({ theme }) => theme.colors.text.subheading};
   &.highlight {
     background: ${({ theme }) => theme.colors.background.highlight};
@@ -64,7 +64,7 @@ export const ComboboxRoot = styled.div<{ isOpen: boolean }>`
         box-shadow: rgba(0, 0, 0, 0.133) 0 3.2px 7.2px 0, rgba(0, 0, 0, 0.11) 0 0.6px 1.8px 0;
         border-radius: ${theme.borderRadius.small};
       }
-      max-width: 440px;
+      /* max-width: 440px; */
     `}
 `
 

@@ -10,10 +10,13 @@ export const createExcalidrawPlugin = createPluginFactory({
   isElement: true,
   isVoid: true,
   deserializeHtml: {
-    getNode: (el) => ({
-      type: ELEMENT_EXCALIDRAW,
-      value: el.getAttribute('data-slate-value')
-    }),
-    rules: [{ validClassName: getSlateClass(ELEMENT_EXCALIDRAW) }]
+    getNode: (el: HTMLElement, node) => {
+      if (node.type !== ELEMENT_EXCALIDRAW) return
+
+      return {
+        type: ELEMENT_EXCALIDRAW,
+        value: el.getAttribute('data-slate-value')
+      }
+    }
   }
 })

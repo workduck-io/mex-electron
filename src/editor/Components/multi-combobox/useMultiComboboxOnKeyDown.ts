@@ -1,6 +1,7 @@
 import { getBlockAbove, getPluginType, insertNodes, PEditor, PlateEditor, TElement } from '@udecode/plate'
 import { Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
+import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 import { NODE_ID_PREFIX } from '../../../data/Defaults/idPrefixes'
 import { useLinks } from '../../../hooks/useLinks'
 import useAnalytics from '../../../services/analytics'
@@ -26,7 +27,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
   const { getNodeidFromPath } = useLinks()
   const closeMenu = useComboboxStore((state) => state.closeMenu)
 
-  return (editor: PlateEditor, item: IComboboxItem) => {
+  return (editor: PlateEditor, item: IComboboxItem, elementType?: string) => {
     try {
       let comboType = elementComboType
       if (keys) {
@@ -35,12 +36,13 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
       }
 
       const targetRange = useComboboxStore.getState().targetRange
-      mog('Target Range', { targetRange })
+      // mog('Target Range', { targetRange })
 
-      const type = getPluginType(
-        editor,
-        comboType.slateElementType === 'internal' ? 'ilink' : comboType.slateElementType
-      )
+      // mog('ELEMENT', { elementType, comboType })
+
+      const type =
+        elementType ??
+        getPluginType(editor, comboType.slateElementType === 'internal' ? 'ilink' : comboType.slateElementType)
 
       if (targetRange) {
         const pathAbove = getBlockAbove(editor)?.[1]
@@ -54,7 +56,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         let itemValue = item.text
 
         if ((type === ELEMENT_ILINK || type === ELEMENT_INLINE_BLOCK) && !itemValue.startsWith(`${NODE_ID_PREFIX}_`)) {
-          mog('Replacing itemValue', { comboType, type, itemValue, item })
+          // mog('Replacing itemValue', { comboType, type, itemValue, item })
 
           const nodeId = getNodeidFromPath(itemValue)
           itemValue = nodeId
@@ -62,22 +64,26 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
 
         // select the ilink text and insert the ilink element
         Transforms.select(editor, targetRange)
-        mog('Inserting Element', { comboType, type, itemValue, item })
+        // mog('Inserting Element', { comboType, type, itemValue, item })
 
         const isBlockTriggered = useComboboxStore.getState().isBlockTriggered
         const activeBlock = useComboboxStore.getState().activeBlock
 
-        if (type === ELEMENT_ILINK && isBlockTriggered && activeBlock) {
-          mog('Inserting from here', { activeBlock })
+        // mog('Inserting from here', { activeBlock, isBlockTriggered })
+        if ((item.type === QuickLinkType.ilink || type === ELEMENT_INLINE_BLOCK) && isBlockTriggered && activeBlock) {
           const withBlockInfo = {
-            type: ELEMENT_ILINK,
+            type,
             children: [{ text: '' }],
-            value: itemValue,
+            value: activeBlock.id,
             blockId: activeBlock.blockId
           }
 
           insertNodes(editor, withBlockInfo)
         } else {
+          if (item.type === QuickLinkType.flow || item.type === QuickLinkType.snippet) {
+            itemValue = item.key
+          }
+
           insertNodes<TElement>(editor, {
             type,
             children: [{ text: '' }],
@@ -112,9 +118,9 @@ export const useOnSelectItem = (
   comboboxKey: string,
   slashCommands: ConfigDataSlashCommands,
   singleComboConfig: SingleComboboxConfig,
-  internal: ConfigDataSlashCommands
+  commands: ConfigDataSlashCommands
 ) => {
-  const slashCommandOnChange = useSlashCommandOnChange({ ...slashCommands, ...internal })
+  const slashCommandOnChange = useSlashCommandOnChange({ ...slashCommands, ...commands })
   const elementOnChange = useElementOnChange(singleComboConfig)
 
   const search: ComboSearchType = useComboboxStore.getState().search
@@ -123,13 +129,6 @@ export const useOnSelectItem = (
     (comboboxKey === ComboboxKey.INTERNAL && isInternalCommand(search.textAfterTrigger))
 
   let elementChangeHandler: (editor: PEditor & ReactEditor, item: IComboboxItem) => any
-
-  // mog('useOnSelectItem', {
-  //   isSlash,
-  //   search,
-  //   con1: comboboxKey === ComboboxKey.SLASH_COMMAND,
-  //   con2: comboboxKey === ComboboxKey.INTERNAL && isInternalCommand(search)
-  // })
 
   if (isSlash) {
     elementChangeHandler = slashCommandOnChange

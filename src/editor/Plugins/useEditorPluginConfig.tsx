@@ -23,7 +23,7 @@ const useEditorPluginConfig = (editorId: string) => {
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
   const slashCommands = useDataStore((state) => state.slashCommands)
-  const node = useEditorStore((state) => state.node)
+  const nodeid = useEditorStore((state) => state.node.nodeid)
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
@@ -36,18 +36,18 @@ const useEditorPluginConfig = (editorId: string) => {
   // const syncBlockConfigs = getSyncBlockConfigs()
 
   const ilinksForCurrentNode = useMemo(() => {
-    return ilinks.filter((item) => item.nodeid !== node.nodeid)
-  }, [node, ilinks])
+    return ilinks.filter((item) => item.nodeid !== nodeid)
+  }, [nodeid, ilinks])
 
   const internals = [
-    ...ilinks.map((l) => ({
+    ...ilinksForCurrentNode.map((l) => ({
       ...l,
       value: l.nodeid,
       text: l.path,
       icon: l.icon ?? 'ri:file-list-2-line',
       type: QuickLinkType.ilink
     })),
-    ...slashCommands.internal.map((l) => ({ ...l, value: l.command, text: l.command, type: l.type }))
+    ...slashCommands.internal.map((l) => ({ ...l, value: l.command, text: l.text, type: l.type }))
   ]
 
   const comboConfigData: ComboConfigData = {
@@ -137,12 +137,13 @@ const useEditorPluginConfig = (editorId: string) => {
       data: internals,
       icon: 'ri:file-list-2-line'
     },
-    inline_block: {
-      cbKey: ComboboxKey.INLINE_BLOCK,
-      trigger: '![[',
-      data: ilinksForCurrentNode.map((l) => ({ ...l, value: l.path, text: l.path, type: QuickLinkType.ilink })),
-      icon: 'ri:picture-in-picture-line'
-    },
+    // inline_block: {
+    //   cbKey: ComboboxKey.INLINE_BLOCK,
+    //   trigger: '![[',
+    //   blockTrigger: ':',
+    //   data: ilinksForCurrentNode.map((l) => ({ ...l, value: l.nodeid, text: l.path, type: QuickLinkType.ilink })),
+    //   icon: 'ri:picture-in-picture-line'
+    // },
     tag: {
       cbKey: ComboboxKey.TAG,
       trigger: '#',

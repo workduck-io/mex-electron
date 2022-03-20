@@ -14,6 +14,7 @@ import { SnippetCommandPrefix } from '../../../../hooks/useSnippets'
 import { CreateNewPrefix } from '../../multi-combobox/useMultiComboboxChange'
 import { Editor, Transforms } from 'slate'
 import { ComboSearchType } from '../../multi-combobox/types'
+import { ELEMENT_INLINE_BLOCK } from '../../InlineBlock/types'
 
 const pure = (id: string) => {
   let newId = id
@@ -27,14 +28,6 @@ const pure = (id: string) => {
 }
 
 export const isInternalCommand = (search?: string) => {
-  // mog('mog', {
-  //   search,
-  //   FlowCommandPrefix,
-  //   n: isElder(search, FlowCommandPrefix),
-  //   n1: isElder(search, SnippetCommandPrefix),
-  //   n2: FlowCommandPrefix.startsWith(search),
-  //   n3: SnippetCommandPrefix.startsWith(search)
-  // })
   if (search !== undefined && search !== '')
     return (
       isElder(search, FlowCommandPrefix) ||
@@ -42,14 +35,15 @@ export const isInternalCommand = (search?: string) => {
       FlowCommandPrefix.startsWith(search) ||
       SnippetCommandPrefix.startsWith(search)
     )
+
   return false
 }
 
-export type OnSelectItem = (editor: PlateEditor, item: IComboboxItem) => any // eslint-disable-line @typescript-eslint/no-explicit-any
+export type OnSelectItem = (editor: PlateEditor, item: IComboboxItem, elementType?: string) => any // eslint-disable-line @typescript-eslint/no-explicit-any
 export type OnNewItem = (name: string, parentId?) => string | undefined
 
 export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnNewItem, creatable?: boolean) => {
-  const creatableOnSelect = (editor: any, selectVal: IComboboxItem | string) => {
+  const creatableOnSelect = (editor: any, selectVal: IComboboxItem | string, elementType?: string) => {
     const items = useComboboxStore.getState().items
     const currentNodeKey = useEditorStore.getState().node.path
     const itemIndex = useComboboxStore.getState().itemIndex
@@ -64,18 +58,27 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
         const res = onNewItem(val, currentNodeKey)
         // mog('getCreatableInSelect', { item, val, selectVal, creatable, res })
         mog('Select__CN clause', { val, selectVal, creatable, res })
-        if (res) onSelectItem(editor, { key: String(items.length), text: res })
-      } else onSelectItem(editor, item)
+        if (res) onSelectItem(editor, { key: String(items.length), text: res }, elementType)
+      } else onSelectItem(editor, item, elementType)
     } else if (selectVal && creatable) {
       const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
       const res = onNewItem(val, currentNodeKey)
       mog('SelectElse clause', { val, selectVal, creatable, res })
       // onSelectItem(editor, { key: String(items.length), text: res ?? val })
-      if (res) onSelectItem(editor, { key: String(items.length), text: val })
+      if (res) onSelectItem(editor, { key: String(items.length), text: val }, elementType)
     }
   }
 
   return creatableOnSelect
+}
+
+export const replaceFragment = (editor: any, range: any, text: string) => {
+  const sel = editor.selection
+
+  if (sel) {
+    Transforms.select(editor, range)
+    Editor.insertText(editor, text)
+  }
 }
 
 /**
@@ -94,15 +97,6 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
   const elementOnChange = getElementOnChange(keys[comboboxKey], keys)
 
   // * Replace textBeforeTrigger with provided text value in editor
-  const replaceFragment = (editor: any, text: string) => {
-    const sel = editor.selection
-    const targetRange = useComboboxStore.getState().targetRange
-
-    if (sel) {
-      Transforms.select(editor, targetRange)
-      Editor.insertText(editor, `[[${text}`)
-    }
-  }
 
   return (editor) => (e) => {
     const comboboxKey: string = useComboboxStore.getState().key
@@ -113,7 +107,8 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
     const isBlockTriggered = useComboboxStore.getState().isBlockTriggered
     const { textAfterTrigger: search }: ComboSearchType = useComboboxStore.getState().search
     const items = useComboboxStore.getState().items
-    const isOpen = !!useComboboxStore.getState().targetRange
+    const targetRange = useComboboxStore.getState().targetRange
+    const isOpen = !!targetRange
     const item = items[itemIndex]
 
     const isSlashCommand =
@@ -121,7 +116,6 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
       (comboType.slateElementType === ComboboxKey.INTERNAL && isInternalCommand(item ? item.key : search))
 
     const onSelectItemHandler = isSlashCommand ? slashCommandOnChange : elementOnChange
-
     const creatabaleOnSelect = getCreateableOnSelect(
       onSelectItemHandler,
       (newItem, parentId?) => {
@@ -137,14 +131,14 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
 
     if (isOpen) {
       // if (!isBlockTriggered) {
-      if (isBlockTriggered) {
+      if (!isBlockTriggered) {
         if (e.key === 'ArrowDown') {
           e.preventDefault()
 
           const newIndex = getNextWrappingIndex(1, itemIndex, items.length, () => undefined, true)
 
           // * Replace current searched text with list item
-          // replaceFragment(editor, items[newIndex].text)
+          // replaceFragment(editor, targetRange, items[newIndex].text)
 
           return setItemIndex(newIndex)
         }
@@ -154,16 +148,24 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
           const newIndex = getNextWrappingIndex(-1, itemIndex, items.length, () => undefined, true)
 
           // * Replace current searched text with list item
-          // replaceFragment(editor, items[newIndex].text)
+          // replaceFragment(editor, targetRange, items[newIndex].text)
 
           return setItemIndex(newIndex)
         }
+
+        if (e.key === 'Escape') {
+          e.preventDefault()
+          return closeMenu()
+        }
+      }
+
+      if (e.metaKey && e.key === 'Enter') {
+        // * On CMD + Enter insert the selected item as Inline Block
+        e.preventDefault()
+        creatabaleOnSelect(editor, search, ELEMENT_INLINE_BLOCK)
+        return false
       }
       // }
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        return closeMenu()
-      }
 
       if (['Tab', 'Enter', ']'].includes(e.key)) {
         e.preventDefault()

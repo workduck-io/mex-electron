@@ -26,7 +26,7 @@ export const StyledInlineBlock = styled.section<InlineBlockType>`
   }
 
   box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.gray[8]};
-  background: ${({ theme }) => theme.colors.background.card};
+  /* background: ${({ theme }) => theme.colors.background.card}; */
   border-radius: ${({ theme: { borderRadius } }) => `${borderRadius.small}`};
 `
 export const InlineBlockHeading = styled.div`
@@ -48,6 +48,10 @@ export const InlineFlex = styled.div`
 
 export const Chip = styled(StyledMessage)`
   cursor: pointer;
+  background: transparent;
+  box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.gray[8]};
+  padding: 0.25rem 0.75rem;
+  font-size: 0.95rem;
   &:hover {
     background: ${({ theme }) => theme.colors.background.modal};
   }

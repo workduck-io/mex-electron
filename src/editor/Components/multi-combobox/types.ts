@@ -27,6 +27,7 @@ export interface ComboTriggerDataType {
   range: BaseRange
   search: ComboSearchType
   isBlockTriggered: boolean
+  blockRange: BaseRange
   key: string
 }
 

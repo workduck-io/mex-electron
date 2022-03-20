@@ -65,7 +65,6 @@ export const useSaveChanges = () => {
     }
 
     onSave(node, true, false, editorContent)
-
     if (options?.saveAndClose) appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
     appNotifierWindow(IpcAction.SHOW_TOAST, AppType.SPOTLIGHT, {

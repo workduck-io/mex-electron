@@ -1,58 +1,67 @@
 import React, { useEffect, useState } from 'react'
 import arrowLeftLine from '@iconify/icons-ri/arrow-left-line'
 import { MexIcon } from '../../../../style/Layouts'
-import IconButton, { Button } from '../../../../style/Buttons'
-import styled, { useTheme } from 'styled-components'
+import IconButton from '../../../../style/Buttons'
+import { useTheme } from 'styled-components'
 import { ComboboxItem, ItemCenterWrapper, ItemDesc, ItemTitle } from '../../tag/components/TagCombobox.styles'
 import { useComboboxStore } from '../useComboboxStore'
 import { PrimaryText } from '../../../../style/Integration'
 import { useSearch } from '../../../../hooks/useSearch'
-import { mog } from '../../../../utils/lib/helper'
-import { groupBy } from 'lodash'
-import { useLinks } from '../../../../hooks/useLinks'
 import { KEYBOARD_KEYS } from '../../../../components/spotlight/Home/components/List'
-import { getContent } from '../../../../utils/helpers'
 import { getBlock } from '../../../../utils/search/parseData'
+import { ComboSeperator, StyledComboHeader } from './styled'
+import { replaceFragment } from '../hooks/useComboboxOnKeyDown'
+import { getPlateEditorRef } from '@udecode/plate'
+import { getPathFromNodeIdHookless } from '../../../../hooks/useLinks'
+import { mog } from '../../../../utils/lib/helper'
+import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
 
-const StyledComboHeader = styled(ComboboxItem)`
-  padding: 0.2rem 0;
-  margin: 0.25rem 0;
-
-  ${Button} {
-    padding: 0.25rem;
-    margin: 0 0.5rem 0;
-  }
-`
-
-const BlockCombo = () => {
+const BlockCombo = ({ nodeId, isNew }: { nodeId?: string; isNew?: boolean }) => {
+  const [index, setIndex] = useState<number>(0)
   const [blocks, setBlocks] = useState<Array<any>>(undefined)
 
-  const isBlockTriggered = useComboboxStore((store) => store.isBlockTriggered)
+  const blockRange = useComboboxStore((store) => store.blockRange)
+  const setPreview = useComboboxStore((store) => store.setPreview)
   const setActiveBlock = useComboboxStore((store) => store.setActiveBlock)
-  const [index, setIndex] = useState<number>(0)
-
-  const { getPathFromNodeid } = useLinks()
-
+  const isBlockTriggered = useComboboxStore((store) => store.isBlockTriggered)
   const { textAfterBlockTrigger, textAfterTrigger } = useComboboxStore((store) => store.search)
 
   const theme = useTheme()
-  const { queryIndex } = useSearch()
+  const { queryIndexByNodeId, queryIndex } = useSearch()
+
+  const clearBlockSearch = () => {
+    if (blockRange && isBlockTriggered) {
+      replaceFragment(getPlateEditorRef(), blockRange, '')
+    }
+    setBlocks(undefined)
+  }
 
   useEffect(() => {
     const trimmedSearch = textAfterBlockTrigger?.trim()
+    const trimmedNodeText = textAfterTrigger?.trim()
 
     if (trimmedSearch) {
-      queryIndex(['node', 'snippet'], trimmedSearch).then((res) => {
-        if (textAfterTrigger) {
+      if (nodeId && trimmedNodeText) {
+        queryIndexByNodeId(['node'], nodeId, trimmedSearch).then((res) => {
+          const newBlocks = res.map((block) => {
+            const { matchField, ...restBlock } = block
+            return restBlock
+          })
+
+          setBlocks(newBlocks)
+          setIndex(0)
+          // setBlocks(res)
+        })
+      } else {
+        queryIndex(['node'], trimmedSearch).then((res) => {
           const newBlocks = res.map((block) => {
             const { matchField, ...restBlock } = block
             return restBlock
           })
           setBlocks(newBlocks)
           setIndex(0)
-        }
-        // setBlocks(res)
-      })
+        })
+      }
     } else {
       setBlocks(undefined)
     }
@@ -60,6 +69,10 @@ const BlockCombo = () => {
 
   useEffect(() => {
     const handler = (event) => {
+      if (event.key === KEYBOARD_KEYS.Escape) {
+        event.preventDefault()
+        clearBlockSearch()
+      }
       if (event.key === KEYBOARD_KEYS.ArrowDown) {
         event.preventDefault()
 
@@ -83,70 +96,78 @@ const BlockCombo = () => {
       }
     }
 
-    window.addEventListener('keydown', handler)
+    if (blocks) window.addEventListener('keydown', handler)
+    else window.removeEventListener('keydown', handler)
 
-    return () => window.addEventListener('keydown', handler)
-  }, [blocks, index])
+    return () => window.removeEventListener('keydown', handler)
+  }, [blocks, isBlockTriggered])
 
   useEffect(() => {
+    onClickSetActiveBlock(blocks, index)
+    return () => setActiveBlock(undefined)
+  }, [index, blocks])
+
+  const onClickSetActiveBlock = (blocks: Array<any>, index: number) => {
     if (blocks && index <= blocks.length - 1) {
       const block = blocks[index]
-      mog('Content of block is', { blocks, index, len: blocks.length - 1 })
       const content = getBlock(block.id, block.blockId)
-
       setActiveBlock({
         ...block,
         content
       })
+
+      if (content) {
+        setPreview([content])
+      }
     }
-  }, [index])
+  }
 
   if (!isBlockTriggered) return null
 
   return (
-    <div style={{ maxHeight: '400px', marginLeft: '0.5rem', width: '100%' }}>
+    <ComboSeperator>
       <StyledComboHeader className="" key="random">
         <IconButton
           size={16}
           shortcut={`Esc`}
           icon={arrowLeftLine}
-          onClick={() => setBlocks(undefined)}
+          onClick={clearBlockSearch}
           title={'Back to Quick links'}
         />
-        <ItemTitle>
-          <PrimaryText>{textAfterBlockTrigger}</PrimaryText>
-        </ItemTitle>
+        <ItemTitle>{`In ${textAfterTrigger}`}</ItemTitle>
       </StyledComboHeader>
 
       {blocks?.length === 0 && (
-        <ComboboxItem
-          key={`Nothing found`}
-          className="highlight"
-          // {...comboProps(item, index)}
-          // onMouseEnter={() => {
-          //   setItemIndex(index)
-          // }}
-          // onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, block)}
-        >
-          <ItemCenterWrapper>Hmmm.. sure?</ItemCenterWrapper>
+        <ComboboxItem key={`search-text`} className="highlight">
+          <MexIcon fontSize={20} icon="ri:add-circle-line" color={theme.colors.primary} />
+          <ItemCenterWrapper>
+            <ItemTitle>
+              No results:&nbsp;
+              <PrimaryText>{textAfterBlockTrigger}</PrimaryText>
+            </ItemTitle>
+          </ItemCenterWrapper>
         </ComboboxItem>
       )}
 
-      {blocks?.map((block, i) => (
-        <ComboboxItem
-          key={`${block.id}-${String(i)}`}
-          className={index === i ? 'highlight' : ''}
-          // {...comboProps(item, index)}
-          // onMouseEnter={() => {
-          //   setItemIndex(index)
-          // }}
-          // onMouseDown={editor && getPreventDefaultHandler(onSelectItem, editor, block)}
-        >
-          <MexIcon fontSize={24} icon="ph:squares-four-fill" color={theme.colors.primary} />
-          <ItemCenterWrapper>{block.text && <ItemDesc>{block.text}</ItemDesc>}</ItemCenterWrapper>
-        </ComboboxItem>
-      ))}
-    </div>
+      {blocks?.map((block, i) => {
+        const lastItem = i > 0 ? blocks[i - 1] : undefined
+        return (
+          <span key={`${block.blockId}-${String(i)}`}>
+            {block.id !== lastItem?.id && !textAfterTrigger && (
+              <ActionTitle>{getPathFromNodeIdHookless(block.id)}</ActionTitle>
+            )}
+            <ComboboxItem
+              onMouseEnter={() => setIndex(i)}
+              className={index === i ? 'highlight' : ''}
+              onClick={() => onClickSetActiveBlock(blocks, index)}
+            >
+              <MexIcon fontSize={20} icon="ph:squares-four-fill" color={theme.colors.primary} />
+              <ItemCenterWrapper>{block.text && <ItemDesc>{block.text}</ItemDesc>}</ItemCenterWrapper>
+            </ComboboxItem>
+          </span>
+        )
+      })}
+    </ComboSeperator>
   )
 }
 

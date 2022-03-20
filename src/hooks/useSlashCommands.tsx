@@ -11,18 +11,22 @@ import { extractSnippetCommands } from './useSnippets'
 export const useSlashCommands = () => {
   const generateInternalSlashCommands = (snippets: Snippet[], templates: SyncBlockTemplate[]) => {
     const snippetCommands = extractSnippetCommands(snippets)
-    const syncCommands = extractSyncBlockCommands(templates)
+    // const syncCommands = extractSyncBlockCommands(templates)
 
     const commands: SlashCommand[] = generatorCombo(
       uniq([
         ...addIconToSlashCommand(
-          snippetCommands.map((command) => ({ command, type: QuickLinkType.snippet })),
+          snippetCommands.map((command) => ({
+            command,
+            text: command.replace('snip.', ''),
+            type: QuickLinkType.snippet
+          })),
           'ri:quill-pen-line'
-        ),
-        ...addIconToSlashCommand(
-          syncCommands.map((command) => ({ command, type: QuickLinkType.flow })),
-          'ri:refresh-fill'
         )
+        // ...addIconToSlashCommand(
+        //   syncCommands.map((command) => ({ command, text: command.replace('flow.', ''), type: QuickLinkType.flow })),
+        //   'ri:refresh-fill'
+        // )
       ])
     )
 

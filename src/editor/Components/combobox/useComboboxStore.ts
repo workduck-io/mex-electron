@@ -1,5 +1,5 @@
 import { UseComboboxReturnValue } from 'downshift'
-import { Range } from 'slate'
+import { BaseRange, Range } from 'slate'
 import { ComboSearchType } from '../multi-combobox/types'
 import { createStore, setStoreValue } from '../store/createStore'
 import { IComboboxItem } from './components/Combobox.types'
@@ -35,6 +35,9 @@ export type ComboboxState = {
   isBlockTriggered: boolean
   setIsBlockTriggered: (value: boolean) => void
 
+  blockRange: BaseRange | null
+  setBlockRange: (value: BaseRange) => void
+
   // Range from the tag trigger to the cursor
   targetRange: Range | null
   setTargetRange: (value: Range | null) => void
@@ -42,6 +45,9 @@ export type ComboboxState = {
   // Highlighted index
   itemIndex: number
   setItemIndex: (value: number) => void
+
+  preview?: any
+  setPreview: (value: any) => void
 
   showPreview: boolean
   setShowPreview: (value: boolean) => void
@@ -56,6 +62,8 @@ export const useComboboxStore = createStore()<ComboboxState>((set) => ({
   key: ComboboxKey.TAG,
   setKey: setStoreValue(set, 'key', 'setKey'),
 
+  setBlockRange: setStoreValue(set, 'blockRange', 'setBlockRange'),
+
   isBlockTriggered: false,
   setIsBlockTriggered: setStoreValue(set, 'isBlockTriggered', 'setIsBlockTriggered'),
 
@@ -63,6 +71,7 @@ export const useComboboxStore = createStore()<ComboboxState>((set) => ({
   setMaxSuggestions: setStoreValue(set, 'maxSuggestions', 'setMaxSuggestions'),
 
   setActiveBlock: setStoreValue(set, 'activeBlock', 'setActiveBlock'),
+  setPreview: setStoreValue(set, 'preview', 'setPreview'),
 
   search: { textAfterTrigger: '' },
   setSearch: setStoreValue(set, 'search', 'setSearch'),

@@ -33,6 +33,7 @@ export interface Tag {
 
 export interface SlashCommand {
   command: string
+  text?: string
   icon?: string
   type?: QuickLinkType | SlashType
 }

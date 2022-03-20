@@ -1,3 +1,6 @@
+import { Shortcut } from '../../mex/Help/Help.types'
+import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
+
 export const spotlightShortcuts = {
   save: {
     title: 'Save changes',
@@ -18,5 +21,24 @@ export const spotlightShortcuts = {
     title: 'Create new quick note',
     keystrokes: 'Tab',
     category: 'Action'
+  }
+}
+
+export const ElementTypeBasedShortcut: Record<string, Record<string, Shortcut>> = {
+  [QuickLinkType.ilink]: {
+    link: {
+      ...spotlightShortcuts.open,
+      title: 'Link'
+    },
+    inlineBlock: {
+      ...spotlightShortcuts.save,
+      title: 'Embed'
+    }
+  },
+  [QuickLinkType.snippet]: {
+    snippet: {
+      ...spotlightShortcuts.open,
+      title: 'Insert'
+    }
   }
 }
