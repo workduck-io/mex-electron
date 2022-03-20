@@ -3,7 +3,8 @@ import { useTheme } from 'styled-components'
 import { AsyncButton, AsyncButtonProps, GoogleAuthButton } from '../../../style/Buttons'
 import Loading from '../../../style/Loading'
 import { Icon } from '@iconify/react'
-import { IS_DEV } from '../../../data/Defaults/dev_'
+import { GOOGLE_OAUTH_URL } from '../../../apis/routes'
+import config from '../../../apis/config'
 
 export interface LoadingButtonProps {
   children?: React.ReactNode
@@ -35,11 +36,19 @@ export const LoadingButton = ({ children, dots, loading, alsoDisabled, buttonPro
 }
 
 export const GoogleLoginButton = ({ text }: GoogleLoginButtonProps) => {
-  const authURL = IS_DEV
-    ? 'https://workduck.auth.us-east-1.amazoncognito.com/oauth2/authorize?identity_provider=Google&redirect_uri=http://localhost:3333/oauth/desktop&response_type=token&client_id=6pvqt64p0l2kqkk2qafgdh13qe&scope=email openid profile'
-    : // TODO: Add the production deployed url of the mexit webapp
-      // and register it in the cognito as well
-      ''
+  const baseAuthURL = 'https://workduck.auth.us-east-1.amazoncognito.com/oauth2/authorize'
+  const searchParams = new URLSearchParams({
+    identity_provider: 'Google',
+    response_type: 'token',
+    redirect_uri: GOOGLE_OAUTH_URL,
+    client_id: config.cognito.APP_CLIENT_ID,
+    scope: config.cognito.SCOPES
+  })
+
+  const URLObject = new URL(baseAuthURL)
+  URLObject.search = searchParams.toString()
+
+  const authURL = URLObject.toString()
 
   const openUrl = (url) => {
     const newWindow = window.open(url, '_blank', 'width=500, height=500')

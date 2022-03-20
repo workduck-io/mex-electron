@@ -1,4 +1,5 @@
 import { MEX_TAG } from '../data/Defaults/auth'
+import { IS_DEV } from '../data/Defaults/dev_'
 
 export const BASE_INTEGRATION_URL = 'https://http.workduck.io/integration'
 
@@ -17,6 +18,9 @@ export const BASE_API_URL = 'https://http.workduck.io/mex'
 export const BASE_USER_URL = 'https://http.workduck.io/user'
 
 export const BOOKMARK_URL = BASE_API_URL
+export const MEXIT_FRONTEND_BASE_URL = IS_DEV ? 'http://localhost:3333' : 'https://mexit.workduck.io'
+
+export const GOOGLE_OAUTH_URL = `${MEXIT_FRONTEND_BASE_URL}/oauth/desktop`
 
 export const apiURLs = {
   //node
