@@ -16,6 +16,7 @@ import { InfobarFull, InfobarTools } from '../../../style/infobar'
 import { Title } from '../../../style/Typography'
 import { Reminder } from '../../../types/reminders'
 import { mog } from '../../../utils/lib/helper'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { useCreateReminderModal } from './CreateReminderModal'
 import ReminderUI, { ReminderControls, SnoozeControl } from './Reminder'
 import { ReminderGroupWrapper, ReminderInfobar, RemindersWrapper } from './Reminders.style'
@@ -31,6 +32,8 @@ const RemindersInfobar = () => {
   // const { getPathFromNodeid } = useLinks()
   const nodeid = useEditorStore((store) => store.node.nodeid)
   const toggleModal = useCreateReminderModal((state) => state.toggleModal)
+
+  const { goTo } = useRouting()
 
   // const onClick = (id: string) => {
   //   insertNodes<TElement>(editor, {
@@ -104,7 +107,14 @@ const RemindersInfobar = () => {
           onClick={() => clearNodeReminders(nodeid)}
           title="Delete All Reminders"
         />
-        <IconButton size={24} icon={more2Fill} onClick={toggleModal} title="Options" />
+        <IconButton
+          size={24}
+          icon={more2Fill}
+          onClick={() => {
+            goTo(ROUTE_PATHS.reminders, NavigationType.push)
+          }}
+          title="All Reminders"
+        />
       </InfobarTools>
 
       <ReminderInfobar>

@@ -16,6 +16,7 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '../views/routes/urls'
 import { useNavigation } from './useNavigation'
 import { useSaveData } from './useSaveData'
 import { useLinks } from './useLinks'
+import { KanbanBoard, KanbanCard, KanbanColumn } from '../types/search'
 
 interface ArmedReminder {
   reminderId: string
@@ -70,6 +71,19 @@ export const useReminderStore = create<ReminderStoreState>((set) => ({
   modalOpen: false,
   setModalOpen: (modalOpen: boolean) => set({ modalOpen })
 }))
+
+export interface ReminderBoardCard extends KanbanCard {
+  reminder: Reminder
+}
+
+export interface ReminderBoardColumn extends KanbanColumn {
+  id: string
+  cards: ReminderBoardCard[]
+}
+
+export interface ReminderBoard extends KanbanBoard {
+  columns: ReminderBoardColumn[]
+}
 
 export const useReminders = () => {
   const reminders = useReminderStore((state) => state.reminders)
@@ -399,6 +413,7 @@ export const useReminders = () => {
    * Functions related to rendering
    */
   const getUpcomingReminders = (nodeid: string) => {
+    const reminders = useReminderStore.getState().reminders
     const allNodeReminders = reminders.filter((reminder) => reminder.nodeid === nodeid)
     const upcomingReminders = allNodeReminders.filter(upcoming).sort((a, b) => {
       return a.time - b.time
@@ -407,6 +422,7 @@ export const useReminders = () => {
   }
 
   const getPastReminders = (nodeid: string) => {
+    const reminders = useReminderStore.getState().reminders
     const allNodeReminders = reminders.filter((reminder) => reminder.nodeid === nodeid)
     const pastReminders = allNodeReminders.filter(past).sort((a, b) => {
       return b.time - a.time
@@ -444,6 +460,42 @@ export const useReminders = () => {
     }
 
     return res
+  }
+
+  const getRemindersBoard = (): ReminderBoard => {
+    const reminders = useReminderStore.getState().reminders
+
+    const upcomingRemindersBase = reminders.filter(upcoming).sort((a, b) => {
+      return a.time - b.time
+    })
+
+    const pastRemindersBase = reminders.filter(past).sort((a, b) => {
+      return b.time - a.time
+    })
+
+    const upcomingReminders: ReminderBoardColumn = {
+      id: 'upcoming',
+      title: 'Upcoming Reminders',
+      cards: upcomingRemindersBase
+        .filter(
+          (reminder) => pastRemindersBase.find((r) => r.id === reminder.id && r.state.done === true) === undefined
+        )
+        .map((reminder) => ({ id: reminder.id, reminder }))
+    }
+
+    const pastReminders: ReminderBoardColumn = {
+      id: 'past',
+      title: 'Past Reminders',
+      cards: pastRemindersBase
+        .filter(
+          (reminder) => upcomingRemindersBase.find((r) => r.id === reminder.id && r.state.done === false) === undefined
+        )
+        .map((reminder) => ({ id: reminder.id, reminder }))
+    }
+
+    return {
+      columns: [upcomingReminders, pastReminders]
+    }
   }
 
   const clearAllArmedReminders = () => {
@@ -487,6 +539,7 @@ export const useReminders = () => {
     markUndone,
     getMissedReminders,
     getBlockReminder,
+    getRemindersBoard,
     removeRemindersForBlockid,
     getRemindersForNextNMinutes
   }

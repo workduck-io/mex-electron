@@ -15,5 +15,6 @@ export const StyledSyncBlockInfo = styled(StyledGraph)`
 `
 
 export const GraphWrapper = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.small};
   height: calc(100vh - 8.5rem);
 `

@@ -428,6 +428,9 @@ export const EditorStyles = styled.div`
   }
 `
 
+export const EditorPreviewStyles = styled.div`
+  overflow-x: hidden;
+`
 interface StyledEditorProps {
   showGraph?: boolean
 }

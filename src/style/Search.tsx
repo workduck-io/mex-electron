@@ -61,6 +61,7 @@ export const SearchHeader = styled.div`
 export const SearchFilterWrapper = styled(SearchHeader)`
   flex-grow: 1;
   justify-content: flex-start;
+  overflow-x: auto;
   gap: ${({ theme }) => theme.spacing.large};
 `
 
@@ -352,20 +353,26 @@ export const SplitSearchPreviewWrapper = styled.div`
   ${EditorStyles} {
     border-radius: ${({ theme }) => theme.borderRadius.small};
     max-height: 40vh;
+    overflow-x: hidden;
     overflow-y: auto;
 
     background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
   }
 
   ${MetadataWrapper} {
-    font-size: 0.9rem;
-    margin: ${({ theme }) => theme.spacing.large} 0;
+    font-size: 0.8rem;
+    margin: 0;
   }
 
   ${Title} {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: ${({ theme }) => theme.spacing.small};
+    flex-wrap: wrap;
+    svg {
+      color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `
 

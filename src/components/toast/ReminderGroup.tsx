@@ -18,7 +18,7 @@ interface ReminderGroupProps {
   controls: ReminderControls
 }
 
-const ReminderGroupUI = ({ reminderGroup, controls }: ReminderGroupProps) => {
+export const ReminderGroupUI = ({ reminderGroup, controls }: ReminderGroupProps) => {
   if (reminderGroup.reminders.length === 0) {
     return null
   }

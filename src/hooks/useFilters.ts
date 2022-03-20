@@ -26,7 +26,7 @@ export interface SearchFilter<Item> {
   // sort: 'asc' | 'desc'
 }
 
-interface FilterStore<Item> {
+export interface FilterStore<Item> {
   filters: SearchFilter<Item>[]
   currentFilters: SearchFilter<Item>[]
   setFilters: (filters: SearchFilter<Item>[]) => void

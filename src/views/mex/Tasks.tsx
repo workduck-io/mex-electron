@@ -60,7 +60,6 @@ const Tasks = () => {
     changeStatus,
     changePriority,
     getPureContent,
-
     addCurrentFilter,
     removeCurrentFilter,
     resetCurrentFilters,

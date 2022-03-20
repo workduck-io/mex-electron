@@ -12,6 +12,7 @@ export const ROUTE_PATHS = {
   search: '/search',
   settings: '/settings',
   tasks: '/tasks',
+  reminders: '/reminders',
   integrations: '/integrations',
   snippets: '/snippets',
   snippet: '/snippets/node' // * /snippets/node/:snippetid

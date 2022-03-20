@@ -73,7 +73,7 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, onDeleteClick, showDel
             fontSize={20}
           />
         )}
-        {(showOptions || reminder) && (
+        {(showOptions || (reminder && !reminder.state.done)) && (
           <TodoReminder
             id={todo.id}
             todoid={todo.id}
