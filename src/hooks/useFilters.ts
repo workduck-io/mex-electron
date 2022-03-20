@@ -16,7 +16,7 @@ import { GenericSearchResult } from '../types/search'
 - Sorting [:?]
 */
 
-export type FilterKey = 'node' | 'tag' | 'date' | 'state'
+export type FilterKey = 'node' | 'tag' | 'date' | 'state' | 'has'
 export interface SearchFilter<Item> {
   key: FilterKey
   id: string
@@ -111,6 +111,7 @@ export const useFilters = <Item>() => {
               icon: 'ri:hashtag',
               id: `tag_filter_${tag}`,
               label: tag,
+              count: rank,
               filter: (item: GenericSearchResult) => {
                 return tags && tags.nodes.includes(item.id)
               }
@@ -152,6 +153,7 @@ export const useFilters = <Item>() => {
           id: `node_${path}`,
           icon: 'ri:file-list-2-line',
           label: path,
+          count: rank,
           filter: (item: GenericSearchResult) => {
             const itemPath = getPathFromNodeid(item.id)
             mog('itemPath being filtered', { item, itemPath, path })

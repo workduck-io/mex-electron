@@ -29,7 +29,7 @@ const RemindersInfobar = () => {
   const armedReminders = useReminderStore((store) => store.armedReminders)
   const { getNodeReminders, clearNodeReminders, getReminderControls } = useReminders()
   const nodeid = useEditorStore((store) => store.node.nodeid)
-  const toggleModal = useCreateReminderModal((state) => state.toggleModal)
+  const openModal = useCreateReminderModal((state) => state.openModal)
 
   const { goTo } = useRouting()
 
@@ -69,7 +69,7 @@ const RemindersInfobar = () => {
 
       <ReminderInfobar>
         <Title>Reminders</Title>
-        <Button large primary onClick={() => toggleModal()}>
+        <Button large primary onClick={() => openModal({ nodeid: nodeid })}>
           <Icon icon={addCircleLine} />
           Create Reminder
         </Button>

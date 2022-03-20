@@ -127,9 +127,6 @@ const CreateReminderModal = () => {
   } = useForm()
 
   useEffect(() => {
-    if (node) {
-      setNodeId(node.nodeid)
-    }
     setTime(getNextReminderTime().getTime())
   }, [node, modalOpen]) // eslint-disable-line react-hooks/exhaustive-deps
 

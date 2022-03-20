@@ -1,4 +1,4 @@
-import { transparentize } from 'polished'
+import { mix, transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 import { TodoContainer } from '../ui/components/Todo.style'
 import { MainHeader } from './Layouts'
@@ -37,7 +37,7 @@ export const StyledBoard = styled.div`
     max-height: ${KANBAN_HEIGHT};
     overflow-y: scroll;
     overflow-x: hidden;
-    background: ${({ theme }) => theme.colors.gray[9]};
+    background: ${({ theme }) => mix(0.5, theme.colors.gray[9], theme.colors.gray[10])};
     padding: ${({ theme }) => theme.spacing.small};
     margin: ${({ theme }) => theme.spacing.small};
     border-radius: ${({ theme }) => theme.borderRadius.small};

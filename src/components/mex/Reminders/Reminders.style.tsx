@@ -181,7 +181,7 @@ export const ReminderTime = styled.div`
   flex-wrap: wrap;
 `
 
-export const ReminderStateTag = styled.div<{ state: 'done' | 'snooze' | 'missed' | 'active' }>`
+export const ReminderStateTag = styled.div<{ state?: 'done' | 'snooze' | 'missed' | 'active' }>`
   display: flex;
   align-items: center;
   justify-content: center;

@@ -27,7 +27,7 @@ export const ReminderGroupUI = ({ reminderGroup, controls }: ReminderGroupProps)
       <ReminderGroupTitle>{reminderGroup.label}</ReminderGroupTitle>
       <RemindersWrapper>
         {reminderGroup.reminders.map((reminder) => (
-          <ReminderUI isNotification controls={controls} reminder={reminder} key={reminder.id} />
+          <ReminderUI isNotification showNodeInfo controls={controls} reminder={reminder} key={reminder.id} />
         ))}
       </RemindersWrapper>
     </ReminderGroupWrapper>

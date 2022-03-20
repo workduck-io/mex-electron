@@ -42,6 +42,7 @@ interface Props {
   reminder: Reminder
   isNotification?: boolean
   controls?: Array<ReminderControl | SnoozeControl>
+  showNodeInfo?: boolean
 }
 
 interface ReminderControlProps {
@@ -158,7 +159,7 @@ export const reminderStateIcons: Record<ReminderStatus, string> = {
   done: 'ri-chat-check-line'
 }
 
-const ReminderUI = ({ reminder, isNotification, controls }: Props) => {
+const ReminderUI = ({ reminder, isNotification, showNodeInfo, controls }: Props) => {
   const [snoozeControls, setSnoozeControls] = React.useState(false)
   // mog('reminder', { reminder })
   const reminderState = getReminderState(reminder)
@@ -179,10 +180,16 @@ const ReminderUI = ({ reminder, isNotification, controls }: Props) => {
             />
           )}
         </ReminderRelative>
-        {isNotification && reminder.path && (
-          <ReminderStateTag state={reminderState}>
+        {showNodeInfo && reminder.path && (
+          <ReminderStateTag>
             <Icon icon={fileList2Line} />
             {reminder.path}
+          </ReminderStateTag>
+        )}
+        {reminder.blockid && (
+          <ReminderStateTag>
+            <Icon icon={fileList2Line} />
+            Task
           </ReminderStateTag>
         )}
         <ReminderExact>{getRelativeDate(new Date(reminder.time))}</ReminderExact>

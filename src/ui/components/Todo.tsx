@@ -19,6 +19,7 @@ interface TodoProps {
 }
 
 const Todo = ({ parentNodeId, todoid, children, readOnly, onDeleteClick, showDelete = true }: TodoProps) => {
+  mog('Todo', { parentNodeId, todoid, readOnly })
   const [showOptions, setShowOptions] = useState(false)
 
   const [animate, setAnimate] = useState(false)

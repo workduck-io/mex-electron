@@ -57,12 +57,18 @@ const useReminderFilters = () => {
     const remindersBase = useReminderStore.getState().reminders
     const currentFilters = useReminderFilter.getState().currentFilters
 
-    const reminders =
+    const reminders = (
       currentFilters.length > 0
         ? remindersBase.filter((reminder) => {
             return currentFilters.every((filter) => filter.filter(reminder))
           })
         : remindersBase
+    ).map((reminder) => {
+      return {
+        ...reminder,
+        path: getPathFromNodeid(reminder.nodeid)
+      }
+    })
 
     const upcomingRemindersBase = reminders.filter(upcoming).sort((a, b) => {
       return a.time - b.time
@@ -137,7 +143,7 @@ const useReminderFilters = () => {
       allStates[status] += 1
     })
 
-    const stateFilters = Object.entries(allStates)
+    Object.entries(allStates)
       .filter(([, count]) => count > 0)
       .forEach(([state, count]) => {
         filters.push({
@@ -150,7 +156,19 @@ const useReminderFilters = () => {
         })
       })
 
-    mog('Filters', { filters, stateFilters })
+    const todoRemindersLen = reminders.filter((reminder) => reminder.blockid !== undefined).length
+    if (todoRemindersLen > 0) {
+      filters.push({
+        key: 'has',
+        id: 'block_todo',
+        label: 'Task',
+        icon: 'ri:ri-task-line',
+        count: todoRemindersLen,
+        filter: (reminder: Reminder) => reminder.blockid !== undefined
+      })
+    }
+
+    mog('Filters', { filters })
 
     return filters
   }
@@ -211,6 +229,7 @@ const RemindersAll = () => {
     // mog('RenderTodo', { id, todo, dragging })
     return (
       <ReminderUI
+        showNodeInfo
         controls={getReminderControls(reminder)}
         key={`ReultForSearch_${reminder.id}_${id}`}
         reminder={reminder}
