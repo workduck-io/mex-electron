@@ -22,7 +22,8 @@ import {
 } from './Reminders.style'
 import { Button } from '../../../style/Buttons'
 import { useReminders } from '../../../hooks/useReminders'
-import { add, sub } from 'date-fns'
+import { sub } from 'date-fns'
+import { add } from 'date-fns/fp'
 import { getReminderState, ReminderStatus } from '../../../services/reminders/reminders'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { TodoType } from '../../../editor/Components/Todo/types'
@@ -57,10 +58,9 @@ interface ReminderControlProps {
 }
 
 const DefaultSnoozeTimes = () => {
-  const now = new Date()
-  const fifteenMinutes = add(now, { minutes: 15 })
-  const oneHour = add(now, { hours: 1 })
-  const oneDay = add(now, { days: 1 })
+  const fifteenMinutes = add({ minutes: 15 })
+  const oneHour = add({ hours: 1 })
+  const oneDay = add({ days: 1 })
 
   return [
     {
@@ -97,9 +97,9 @@ const ReminderControlsUI = ({
           Snooze For:
           {DefaultSnoozeTimes().map(({ time, label }) => (
             <Button
-              key={time.toString()}
+              key={`SnoozeTimes${label}`}
               onClick={() => {
-                onSnooze(reminder, time.getTime())
+                onSnooze(reminder, time(Date.now()).getTime())
                 setSnoozeControls(false)
               }}
             >

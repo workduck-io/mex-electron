@@ -363,7 +363,7 @@ export const useReminders = () => {
     mog('ReminderArmer: IpcAction.ACTION_REMINDER', { action, reminder })
     switch (action.type) {
       case 'open':
-        // mog('ReminderArmer: IpcAction.ACTION_REMINDER USE OPEN_REMINDER ACTION', { type, reminder })
+        mog('ReminderArmer: IpcAction.ACTION_REMINDER USE OPEN_REMINDER ACTION', { action, reminder })
         ipcRenderer.send(IpcAction.OPEN_REMINDER_IN_MEX, { reminder: reminder })
         break
       case 'delete':

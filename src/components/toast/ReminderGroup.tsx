@@ -104,9 +104,8 @@ const ReminderGroupsUI = ({ reminderGroups: init }: ReminderGroupsProps) => {
       action: (reminder: Reminder, time) => {
         removeReminderFromGroups(reminder)
         appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, {
-          action: { type: 'snooze' },
-          reminder: reminder,
-          time
+          action: { type: 'snooze', value: time },
+          reminder: reminder
         })
       }
     },

@@ -619,7 +619,7 @@ ipcMain.on(
   IpcAction.ACTION_REMINDER,
   (ev, { from, data }: { from: AppType; data: { action: ReminderActions; reminder: Reminder; time?: number } }) => {
     const { action, reminder } = data
-    console.log('Acted on Reminder ', { from, data, })
+    console.log('Acted on Reminder ', { from, data })
     if (action.type === 'open') {
       // console.log('Opening reminder', { data })
       mex?.webContents.send(IpcAction.OPEN_REMINDER, { reminder: reminder })
