@@ -20,7 +20,7 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
 
   publish_on_mac_x64:
-    runs-on: macos-10.15
+    runs-on: macos-latest
     needs: create_github_release
     env:
       GITHUB_TOKEN: ${{ github.token }}
@@ -45,6 +45,8 @@ jobs:
       - name: Build App
         run: yarn package --arch=x64
       - name: Codesign Mex.app Bundle
+        env:
+          DEBUG: "*"
         run: node build/darwin-sign.js x64
       - name: Notarize Mex.app Bundle
         run: node build/darwin-notarize.js x64
@@ -59,7 +61,7 @@ jobs:
           path: ./out/make/*
 
   publish_on_mac_arm64:
-    runs-on: macos-10.15
+    runs-on: macos-latest
     needs: create_github_release
     env:
       GITHUB_TOKEN: ${{ github.token }}
@@ -84,6 +86,8 @@ jobs:
       - name: Build App
         run: yarn package --arch=arm64
       - name: Codesign Mex.app Bundle
+        env:
+          DEBUG: "*"
         run: node build/darwin-sign.js arm64
       - name: Notarize Mex.app Bundle
         run: node build/darwin-notarize.js arm64
