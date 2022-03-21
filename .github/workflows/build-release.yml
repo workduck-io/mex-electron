@@ -20,7 +20,7 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
 
   publish_on_mac_x64:
-    runs-on: macos-latest
+    runs-on: macos-10.15
     needs: create_github_release
     env:
       GITHUB_TOKEN: ${{ github.token }}
@@ -59,7 +59,7 @@ jobs:
           path: ./out/make/*
 
   publish_on_mac_arm64:
-    runs-on: macos-latest
+    runs-on: macos-10.15
     needs: create_github_release
     env:
       GITHUB_TOKEN: ${{ github.token }}
