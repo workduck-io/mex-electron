@@ -25,6 +25,15 @@ export interface TodoKanbanBoard extends KanbanBoard {
 
 // interface KanbanStore extends FilterStore<TodoType> {}
 
+export const getPureContent = (todo: TodoType) => {
+  const { content } = todo
+  if (content.length > 0) {
+    if (content[0].type !== ELEMENT_TODO_LI) return content
+    else return content[0].children
+  }
+  return defaultContent
+}
+
 export const useKanbanFilterStore = create<FilterStore<TodoType>>((set) => ({
   currentFilters: [],
   setCurrentFilters: (filters: SearchFilter<TodoType>[]) => set({ currentFilters: filters }),
@@ -92,15 +101,6 @@ export const useTodoKanban = () => {
 
     // mog('nodeFilters', { rankedPaths, nodeFilters })
     return nodeFilters
-  }
-
-  const getPureContent = (todo: TodoType) => {
-    const { content } = todo
-    if (content.length > 0) {
-      if (content[0].type !== ELEMENT_TODO_LI) return content
-      else return content[0].children
-    }
-    return defaultContent
   }
 
   const getTodoBoard = () => {

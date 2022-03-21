@@ -6,6 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { useForm } from 'react-hook-form'
 import Modal from 'react-modal'
 import create from 'zustand'
+import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
 import { useLinks } from '../../../hooks/useLinks'
 import { useReminders } from '../../../hooks/useReminders'
@@ -15,6 +16,8 @@ import { useEditorStore } from '../../../store/useEditorStore'
 import { Button } from '../../../style/Buttons'
 import { DatePickerStyles, InputBlock, Label, TextAreaBlock } from '../../../style/Form'
 import { Reminder, REMINDER_PREFIX } from '../../../types/reminders'
+import { NodeEditorContent } from '../../../types/Types'
+import Todo from '../../../ui/components/Todo'
 import { mog } from '../../../utils/lib/helper'
 import { getEventNameFromElement } from '../../../utils/lib/strings'
 import { getNextReminderTime, getRelativeDate } from '../../../utils/time'
@@ -27,7 +30,7 @@ interface ModalValue {
   time?: number
   nodeid?: string
   todoid?: string
-  blockContent?: string
+  blockContent?: NodeEditorContent
 }
 
 interface CreateReminderModalState {
@@ -48,7 +51,7 @@ export const useCreateReminderModal = create<CreateReminderModalState>((set) => 
   open: false,
   focus: false,
   modalValue: {
-    blockId: undefined,
+    todoid: undefined,
     blockContent: undefined,
     nodeid: undefined,
     time: undefined
@@ -68,7 +71,7 @@ export const useCreateReminderModal = create<CreateReminderModalState>((set) => 
       set((state) => ({
         ...state,
         modalValue: {
-          blockId: undefined,
+          todoid: undefined,
           blockContent: undefined,
           nodeid: undefined,
           time: undefined
@@ -146,7 +149,7 @@ const CreateReminderModal = () => {
     const reminder: Reminder = {
       id: `${REMINDER_PREFIX}${nanoid()}`,
       title,
-      description: blockContent || description,
+      description: !todoid ? description : undefined,
       nodeid,
       time,
       state: {
@@ -187,14 +190,29 @@ const CreateReminderModal = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Label htmlFor="title">Title</Label>
         <InputBlock autoFocus placeholder="Ex. Send email to team" {...register('title')} />
-
-        <Label htmlFor="description">Description {modalValue.blockContent !== undefined && '(Filled from task)'}</Label>
-        <TextAreaBlock
-          disabled={modalValue.blockContent !== undefined}
-          defaultValue={modalValue.blockContent}
-          placeholder="Ex. Remember to share new developments"
-          {...register('description')}
-        />
+        {modalValue.todoid === undefined ? (
+          <>
+            <Label htmlFor="description">Description </Label>
+            <TextAreaBlock
+              disabled={modalValue.todoid !== undefined}
+              placeholder="Ex. Remember to share new developments"
+              {...register('description')}
+            />
+          </>
+        ) : (
+          <>
+            <Label htmlFor="task">Task </Label>
+            <Todo oid="Tasks_Modal" todoid={modalValue.todoid} readOnly parentNodeId={modalValue.nodeid}>
+              {modalValue.blockContent ? (
+                <EditorPreviewRenderer
+                  noStyle
+                  content={modalValue.blockContent}
+                  editorId={`NodeTodoPreview_CreateTodo_${modalValue.todoid}`}
+                />
+              ) : null}
+            </Todo>
+          </>
+        )}
 
         <Label htmlFor="node">NodeId</Label>
         <WrappedNodeSelect

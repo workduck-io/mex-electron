@@ -45,6 +45,7 @@ interface Props {
   isNotification?: boolean
   controls?: Array<ReminderControl | SnoozeControl>
   showNodeInfo?: boolean
+  oid?: string
 }
 
 interface ReminderControlProps {
@@ -159,13 +160,19 @@ export const reminderStateIcons: Record<ReminderStatus, string> = {
   seen: 'ri-check-double-line'
 }
 
-const ReminderUI = ({ reminder, isNotification, showNodeInfo, controls }: Props) => {
+const ReminderUI = ({ reminder, isNotification, showNodeInfo, controls, oid }: Props) => {
+  // mog('ReminderUI', { reminder, isNotification, showNodeInfo })
   const [snoozeControls, setSnoozeControls] = React.useState(false)
   // mog('reminder', { reminder })
   const reminderState = getReminderState(reminder)
 
   return (
-    <ReminderStyled key={`ReultForSearch_${reminder.id}`} isNotification={isNotification} showControls={snoozeControls}>
+    <ReminderStyled
+      id={`StyledReminderForReminders_${reminder.id}_${oid}`}
+      key={`StyledReminderForReminders_${reminder.id}_${oid}`}
+      isNotification={isNotification}
+      showControls={snoozeControls}
+    >
       <ReminderTime>
         <ReminderRelative>
           <ReminderStateTag state={reminderState}>
@@ -197,13 +204,11 @@ const ReminderUI = ({ reminder, isNotification, showNodeInfo, controls }: Props)
       </ReminderTime>
       <Title>{reminder.title}</Title>
       {reminder.description && <Description>{reminder.description}</Description>}
-      {reminder.todoid && (
-        <>
-          <Icon icon="ri-task-line" />
-        </>
-      )}
-      {isNotification && (
+      {reminder.todo && (
         <NotificationTodo
+          oid="ReminderTodo"
+          isNotification={isNotification}
+          reminder={reminder}
           todo={reminder.todo as TodoType}
           dismissNotification={() => {
             console.log('dismiss notification')

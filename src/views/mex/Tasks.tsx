@@ -93,8 +93,10 @@ const Tasks = () => {
   const selectFirst = () => {
     const firstCardColumn = board.columns.find((column) => column.cards.length > 0)
     if (firstCardColumn) {
-      const firstCard = firstCardColumn.cards[0]
-      setSelectedCard(firstCard)
+      if (firstCardColumn.cards) {
+        const firstCard = firstCardColumn.cards[0]
+        setSelectedCard(firstCard)
+      }
     }
   }
 

@@ -48,12 +48,13 @@ interface ReminderStoreState {
   setArmedReminders: (reminders: ArmedReminder[]) => void
   addArmReminder: (reminder: ArmedReminder) => void
   clearArmedReminders: () => void
+  snoozeReminder: (id: string, time: number) => void
 
   modalOpen: boolean
   setModalOpen: (modalOpen: boolean) => void
 }
 
-export const useReminderStore = create<ReminderStoreState>((set) => ({
+export const useReminderStore = create<ReminderStoreState>((set, get) => ({
   reminders: [],
   setReminders: (reminders: Reminder[]) => set({ reminders }),
   addReminder: (reminder: Reminder) => set((state) => ({ reminders: [...state.reminders, reminder] })),
@@ -68,10 +69,15 @@ export const useReminderStore = create<ReminderStoreState>((set) => ({
       )
     })),
   updateReminderState: (id: string, rstate: ReminderState) =>
-    set((state) => ({
-      reminders: state.reminders.map((reminder) => (reminder.id === id ? { ...reminder, state: rstate } : reminder))
-    })),
+    get().updateReminder({ ...get().reminders.find((reminder) => reminder.id === id), state: rstate }),
+
   clearReminders: () => set({ reminders: [] }),
+
+  snoozeReminder: (id: string, time: number) => {
+    const oldRem = get().reminders.find((reminder) => reminder.id === id)
+    const newRem = { ...oldRem, state: { ...oldRem.state, done: false, snooze: true }, time }
+    get().updateReminder(newRem)
+  },
 
   armedReminders: [],
   setArmedReminders: (reminders: ArmedReminder[]) => set({ armedReminders: reminders }),
@@ -121,7 +127,8 @@ export const useReminders = () => {
   const updateReminder = useReminderStore((state) => state.updateReminder)
   const clearReminders = useReminderStore((state) => state.clearReminders)
   const updateReminderState = useReminderStore((state) => state.updateReminderState)
-  const getTodo = useTodoStore((state) => state.getTodoOfNode)
+  const snoozeReminder = useReminderStore((state) => state.snoozeReminder)
+  const getTodo = useTodoStore((state) => state.getTodoOfNodeWithoutCreating)
 
   // const setArmedReminders = useReminderStore((state) => state.setArmedReminders)
   const addArmReminder = useReminderStore((state) => state.addArmReminder)
@@ -130,8 +137,6 @@ export const useReminders = () => {
   const updatePriorityOfTodo = useTodoStore((store) => store.updatePriorityOfTodo)
   const updateStatusOfTodo = useTodoStore((store) => store.updateStatusOfTodo)
 
-  const { goTo } = useRouting()
-  const { push } = useNavigation()
   const { saveData } = useSaveData()
   const { getPathFromNodeid } = useLinks()
 
@@ -147,15 +152,6 @@ export const useReminders = () => {
     const newReminderState: ReminderState = {
       ...reminder.state,
       done: false
-    }
-    updateReminderState(reminder.id, newReminderState)
-  }
-
-  const snoozeReminder = (reminder: Reminder, time: number) => {
-    const newReminderState = {
-      ...reminder.state,
-      done: false,
-      snooze: true
     }
     updateReminderState(reminder.id, newReminderState)
   }
@@ -312,7 +308,7 @@ export const useReminders = () => {
   const snoozeControl: SnoozeControl = {
     type: 'snooze',
     action: (reminder: Reminder, time: number) => {
-      actOnReminder({ type: 'snooze' }, reminder, time)
+      actOnReminder({ type: 'snooze', value: time }, reminder)
     }
   }
   const pastControls: ReminderControls = [
@@ -363,34 +359,35 @@ export const useReminders = () => {
     return pastControls
   }
 
-  const actOnReminder = (type: ReminderActions, reminder: Reminder, time?: number) => {
-    mog('ReminderArmer: IpcAction.ACTION_REMINDER', { type, reminder })
-    switch (type.type) {
+  const actOnReminder = (action: ReminderActions, reminder: Reminder) => {
+    mog('ReminderArmer: IpcAction.ACTION_REMINDER', { action, reminder })
+    switch (action.type) {
       case 'open':
-        dismissReminder(reminder)
-        setTimeout(() => {
-          ipcRenderer.send(IpcAction.OPEN_NODE_IN_MEX, { nodeid: reminder.nodeid })
-        }, 200)
+        // mog('ReminderArmer: IpcAction.ACTION_REMINDER USE OPEN_REMINDER ACTION', { type, reminder })
+        ipcRenderer.send(IpcAction.OPEN_REMINDER_IN_MEX, { reminder: reminder })
         break
       case 'delete':
         deleteReminder(reminder.id)
         break
       case 'snooze':
-        if (time) snoozeReminder(reminder, time)
+        snoozeReminder(reminder.id, action.value)
         break
       case 'dismiss':
         dismissReminder(reminder)
         break
       case 'todo':
-        switch (type.todoAction) {
-          case 'status':
-            updateStatusOfTodo(type.value.nodeid, type.value.id, type.value.metadata.status)
-            break
-          case 'priority':
-            updatePriorityOfTodo(type.value.nodeid, type.value.id, type.value.metadata.priority)
-            break
-          default:
-            break
+        {
+          mog('USE TODO ACTION', { action, reminder })
+          switch (action.todoAction) {
+            case 'status':
+              updateStatusOfTodo(action.value.nodeid, action.value.id, action.value.metadata.status)
+              break
+            case 'priority':
+              updatePriorityOfTodo(action.value.nodeid, action.value.id, action.value.metadata.priority)
+              break
+            default:
+              break
+          }
         }
         break
       default:
@@ -407,16 +404,8 @@ export const useReminders = () => {
 
   const attachBlockData = (reminder: Reminder): DisplayReminder => {
     const path = getPathFromNodeid(reminder.nodeid)
-    if (path) {
-      return { ...reminder, path }
-    }
-    if (reminder.todoid) {
-      const block = getTodo(reminder.nodeid, reminder.todoid)
-      if (block) {
-        return { ...reminder, todo: block }
-      }
-    }
-    return reminder
+    const block = reminder.todoid ? getTodo(reminder.nodeid, reminder.todoid) : undefined
+    return { ...reminder, path, todo: block }
   }
 
   /*
@@ -525,14 +514,14 @@ export const useReminders = () => {
       res.push({
         type: 'upcoming',
         label: 'Upcoming Reminders',
-        reminders: upcomingReminders
+        reminders: upcomingReminders.map(attachBlockData)
       })
     }
     if (pastReminders.length > 0) {
       res.push({
         type: 'past',
         label: 'Past Reminders',
-        reminders: pastReminders
+        reminders: pastReminders.map(attachBlockData)
       })
     }
 
@@ -584,6 +573,7 @@ export const useReminders = () => {
     getBlockReminder,
     removeRemindersForBlockid,
     getReminderControls,
+    attachBlockData,
     getRemindersForNextNMinutes
   }
 }

@@ -86,7 +86,8 @@ const RemindersInfobar = () => {
                 {reminderGroup.reminders.map((reminder) => (
                   <ReminderUI
                     controls={getReminderControls(reminder)}
-                    key={`ReultForSearch_${reminder.id}`}
+                    key={`ReminderFo_${reminder.id}`}
+                    oid={`ReminderUI_for_${reminder.id}_infobar`}
                     reminder={reminder}
                   />
                 ))}

@@ -9,18 +9,19 @@ import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import { MexIcon } from '../../style/Layouts'
 import { useLayoutStore } from '../../store/useLayoutStore'
 import { getRelativeTime } from '../../utils/time'
+import { NodeEditorContent } from '../../types/Types'
 
 interface TodoReminderProps {
-  id: string
+  oid: string
   todoid: string
   nodeid: string
-  content: string
+  content: NodeEditorContent
 }
 
-const TodoReminder = ({ id, todoid, nodeid, content }: TodoReminderProps) => {
+const TodoReminder = ({ oid, todoid, nodeid, content }: TodoReminderProps) => {
   const openModal = useCreateReminderModal((state) => state.openModal)
   const { getBlockReminder } = useReminders()
-  const reminder = getBlockReminder(id)
+  const reminder = getBlockReminder(todoid)
   const reminderState = reminder ? getReminderState(reminder) : null
   const setInfobarMode = useLayoutStore((state) => state.setInfobarMode)
 
@@ -41,7 +42,7 @@ const TodoReminder = ({ id, todoid, nodeid, content }: TodoReminderProps) => {
   }
 
   return (
-    <TodoActionWrapper id={`TodoReminderPrompty_${id}_${todoid}`}>
+    <TodoActionWrapper id={`TodoReminderPrompt_${oid}_${todoid}`}>
       <Tippy
         delay={100}
         interactiveDebounce={100}

@@ -3,7 +3,7 @@ import { ipcRenderer } from 'electron'
 import React, { useEffect } from 'react'
 import { IpcAction } from '../../../data/IpcAction'
 import { useReminders, useReminderStore } from '../../../hooks/useReminders'
-import { Reminder, ReminderActions } from '../../../types/reminders'
+import { Reminder, ReminderActionIpcData, ReminderActions } from '../../../types/reminders'
 import { mog } from '../../../utils/lib/helper'
 
 const ReminderArmer = () => {
@@ -19,15 +19,12 @@ const ReminderArmer = () => {
 
   // Set reminder action listner
   useEffect(() => {
-    ipcRenderer.on(
-      IpcAction.ACTION_REMINDER,
-      (_event, arg: { type: ReminderActions; reminder: Reminder; time?: number }) => {
-        // goTo(ROUTE_PATHS.node, NavigationType.push, appleNotesUID)
-        mog('ReminderArmer: IpcAction.ACTION_REMINDER', { arg })
-        const { type, reminder, time } = arg
-        actOnReminder(type, reminder, time)
-      }
-    )
+    ipcRenderer.on(IpcAction.ACTION_REMINDER, (_event, arg: ReminderActionIpcData) => {
+      // goTo(ROUTE_PATHS.node, NavigationType.push, appleNotesUID)
+      mog('ReminderArmer: IpcAction.ACTION_REMINDER', { arg })
+      const { action, reminder } = arg
+      actOnReminder(action, reminder)
+    })
   }, [])
 
   useEffect(() => {

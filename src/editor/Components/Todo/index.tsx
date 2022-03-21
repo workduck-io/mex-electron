@@ -40,6 +40,8 @@ const Todo = (props: any) => {
   // const nodeid = useEditorStore((store) => store.node.nodeid)
   const nodeid = cleanEditorId(editorId)
 
+  mog('Todo', { nodeid, editorId, readOnly })
+
   const onDeleteClick = () => {
     const editor = getPlateEditorRef()
     const blockNode = getNodes(editor, {
@@ -61,6 +63,7 @@ const Todo = (props: any) => {
       {...rootProps}
       {...attributes}
       readOnly={readOnly}
+      oid={'EditorTodo'}
       todoid={element.id}
       parentNodeId={nodeid}
       controls={{

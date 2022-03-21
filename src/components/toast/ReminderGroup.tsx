@@ -12,6 +12,7 @@ import {
   RemindersWrapper,
   ReminderUIGlobal
 } from '../mex/Reminders/Reminders.style'
+import { mog } from '../../utils/lib/helper'
 
 interface ReminderGroupProps {
   reminderGroup: DisplayReminderGroup
@@ -91,21 +92,29 @@ const ReminderGroupsUI = ({ reminderGroups: init }: ReminderGroupsProps) => {
       type: 'open',
       action: (reminder: Reminder) => {
         removeReminderFromGroups(reminder)
-        appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, { type: 'open', reminder: reminder })
+        mog('open', { reminder })
+        appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, {
+          action: { type: 'open' },
+          reminder: reminder
+        })
       }
     },
     {
       type: 'snooze',
       action: (reminder: Reminder, time) => {
         removeReminderFromGroups(reminder)
-        appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, { type: 'snooze', reminder: reminder, time })
+        appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, {
+          action: { type: 'snooze' },
+          reminder: reminder,
+          time
+        })
       }
     },
     {
       type: 'dismiss',
       action: (reminder: Reminder) => {
         removeReminderFromGroups(reminder)
-        appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, { type: 'dismiss', reminder: reminder })
+        appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, { action: { type: 'dismiss' }, reminder: reminder })
       }
     }
 

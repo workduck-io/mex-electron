@@ -74,13 +74,18 @@ export interface DisplayReminder extends Reminder {
 }
 
 export type ReminderActions =
-  | { type: 'snooze' }
+  | { type: 'snooze'; value: number }
   | { type: 'open' }
   | { type: 'dismiss' }
   | { type: 'delete' }
   | { type: 'todo'; todoAction: 'status'; value: TodoType }
   | { type: 'todo'; todoAction: 'priority'; value: TodoType }
   | { type: 'todo'; todoAction: 'delete' }
+
+export interface ReminderActionIpcData {
+  action: ReminderActions
+  reminder: Reminder
+}
 
 export interface ReminderGroup {
   type: string

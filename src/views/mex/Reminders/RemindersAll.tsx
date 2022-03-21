@@ -52,6 +52,7 @@ export const useReminderFilter = create<AllReminderFilterStore>((set, get) => ({
 
 const useReminderFilters = () => {
   const { getPathFromNodeid } = useLinks()
+  const { attachBlockData } = useReminders()
 
   const getRemindersBoard = (): { board: ReminderBoard; filters: SearchFilter<Reminder>[] } => {
     const remindersBase = useReminderStore.getState().reminders
@@ -85,7 +86,7 @@ const useReminderFilters = () => {
     const upcomingRemindersColumn: ReminderBoardColumn = {
       id: 'upcoming',
       title: 'Upcoming Reminders',
-      cards: upcomingReminders.map((reminder) => ({ id: reminder.id, reminder }))
+      cards: upcomingReminders.map(attachBlockData).map((reminder) => ({ id: reminder.id, reminder }))
     }
 
     const pastReminders = pastRemindersBase.filter(
@@ -95,7 +96,7 @@ const useReminderFilters = () => {
     const pastRemindersColumn: ReminderBoardColumn = {
       id: 'past',
       title: 'Past Reminders',
-      cards: pastReminders.map((reminder) => ({ id: reminder.id, reminder }))
+      cards: pastReminders.map(attachBlockData).map((reminder) => ({ id: reminder.id, reminder }))
     }
 
     const newFilters = getReminderFilters([...upcomingReminders, ...pastReminders])

@@ -5,28 +5,36 @@ import { PriorityType, TodoStatus, TodoType } from '../../editor/Components/Todo
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import Todo, { TodoControls } from '../../ui/components/Todo'
 import { IpcAction } from '../../data/IpcAction'
+import { Reminder } from '../../types/reminders'
+import { getPureContent } from '../../hooks/useTodoKanban'
+import TodoPlain from '../../ui/components/Todo.plain'
 
 interface NotificationTodoProps {
+  oid?: string
   todo: TodoType
+  isNotification: boolean
   dismissNotification: () => void
+  reminder: Reminder
 }
 
-const NotificationTodo = ({ todo, dismissNotification }: NotificationTodoProps) => {
+const NotificationTodo = ({ todo, reminder, dismissNotification, isNotification, oid }: NotificationTodoProps) => {
   const [localTodo, setLocalTodo] = useState(todo)
   const controls: TodoControls = {
     onChangeStatus: (todoid: string, status: TodoStatus) => {
       console.log('change status', todoid, status)
       const newTodo = { ...localTodo, metadata: { ...localTodo.metadata, status } }
       setLocalTodo(newTodo)
-      appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, { type: 'todo', todoAction: 'status', value: newTodo })
+      appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, {
+        action: { type: 'todo', todoAction: 'status', value: newTodo },
+        reminder
+      })
     },
     onChangePriority: (todoid: string, priority: PriorityType) => {
       console.log('change priority', todoid, priority)
       const newTodo = { ...localTodo, metadata: { ...localTodo.metadata, priority } }
       appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, {
-        type: 'todo',
-        todoAction: 'priority',
-        value: newTodo
+        action: { type: 'todo', todoAction: 'priority', value: newTodo },
+        reminder
       })
       setLocalTodo(newTodo)
     },
@@ -35,12 +43,20 @@ const NotificationTodo = ({ todo, dismissNotification }: NotificationTodoProps) 
       return localTodo
     }
   }
+
   return (
-    <Todo showDelete={false} parentNodeId={todo.nodeid} todoid={todo.id} controls={controls} readOnly>
+    <Todo
+      oid={`NotificationTodo_${todo.id}_${oid}`}
+      showDelete={false}
+      parentNodeId={todo.nodeid}
+      todoid={todo.id}
+      controls={isNotification ? controls : undefined}
+      readOnly
+    >
       <EditorPreviewRenderer
         noStyle
-        content={todo.content}
-        editorId={`NoticationTodoPreview_${todo.nodeid}_${todo.id}_${todo.metadata.status}`}
+        content={getPureContent(todo)}
+        editorId={`NoticationTodoPreview_${isNotification ? 'notification' : 'normal'}_${todo.nodeid}_${todo.id}`}
       />
     </Todo>
   )

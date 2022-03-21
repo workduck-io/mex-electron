@@ -27,6 +27,7 @@ type TodoStoreType = {
   setNodeTodos: (nodeid: string, todos: Array<TodoType>) => void
   addTodoInNode: (nodeid: string, todo: TodoType) => void
   getTodoOfNode: (nodeid: string, todoId: string) => TodoType | undefined
+  getTodoOfNodeWithoutCreating: (nodeid: string, todoId: string) => TodoType | undefined
   updateTodoOfNode: (nodeid: string, todo: TodoType) => void
   replaceContentOfTodos: (nodeid: string, todosContent: NodeEditorContent) => void
 
@@ -49,6 +50,11 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
     const nodeTodos = todos?.[nodeid] ?? []
     set({ todos: { ...todos, [nodeid]: [todo, ...nodeTodos] } })
   },
+  getTodoOfNodeWithoutCreating: (nodeid, todoId) => {
+    const todo = get().todos?.[nodeid]?.find((todo) => todo.id === todoId && nodeid === todo.nodeid)
+    return todo
+  },
+
   getTodoOfNode: (nodeid, todoId) => {
     const todo = get().todos?.[nodeid]?.find((todo) => todo.id === todoId && nodeid === todo.nodeid)
 
@@ -112,14 +118,14 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
     set({ todos: newtodos })
   },
   updatePriorityOfTodo: (nodeid, todoId, priority) => {
-    const todo = get().getTodoOfNode(nodeid, todoId)
+    const todo = get().getTodoOfNodeWithoutCreating(nodeid, todoId)
     if (!todo) return
 
     const newTodo = { ...todo, metadata: { ...todo.metadata, priority } }
     get().updateTodoOfNode(nodeid, newTodo)
   },
   updateStatusOfTodo: (nodeid, todoId, status) => {
-    const todo = get().getTodoOfNode(nodeid, todoId)
+    const todo = get().getTodoOfNodeWithoutCreating(nodeid, todoId)
     if (!todo) return
 
     const newTodo = { ...todo, metadata: { ...todo.metadata, status } }
