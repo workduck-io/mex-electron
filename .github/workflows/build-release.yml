@@ -1,5 +1,8 @@
 name: Build and Release on macOS
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - "mukul-wd-1020-task-auto-deploy-mex-releases"
 
 jobs:
   create_github_release:
