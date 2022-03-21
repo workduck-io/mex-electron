@@ -22,14 +22,14 @@ export const REMINDERS_DIMENSIONS = {
   offset: 20
 }
 
-export type ReminderStatus = 'active' | 'snooze' | 'done' | 'missed'
+export type ReminderStatus = 'active' | 'snooze' | 'seen' | 'missed'
 
 export const getReminderState = (reminder: Reminder): ReminderStatus => {
   const now = new Date()
   const lessOneMin = sub(now, { minutes: 1 })
   const { time, state } = reminder
   if (state.done) {
-    return 'done'
+    return 'seen'
   }
   if (time < lessOneMin.getTime()) {
     return 'missed'

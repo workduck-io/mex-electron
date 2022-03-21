@@ -29,7 +29,7 @@ const TodoReminder = ({ id, todoid, nodeid, content }: TodoReminderProps) => {
     const infobar = useLayoutStore.getState().infobar
     if (reminderState === null) {
       openModal({
-        blockid: todoid,
+        todoid: todoid,
         nodeid: nodeid,
         blockContent: content
       })

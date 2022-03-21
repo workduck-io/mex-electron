@@ -156,7 +156,7 @@ const useReminderFilters = () => {
         })
       })
 
-    const todoRemindersLen = reminders.filter((reminder) => reminder.blockid !== undefined).length
+    const todoRemindersLen = reminders.filter((reminder) => reminder.todoid !== undefined).length
     if (todoRemindersLen > 0) {
       filters.push({
         key: 'has',
@@ -164,7 +164,7 @@ const useReminderFilters = () => {
         label: 'Task',
         icon: 'ri:ri-task-line',
         count: todoRemindersLen,
-        filter: (reminder: Reminder) => reminder.blockid !== undefined
+        filter: (reminder: Reminder) => reminder.todoid !== undefined
       })
     }
 

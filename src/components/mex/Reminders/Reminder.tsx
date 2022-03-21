@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react'
 import timerLine from '@iconify/icons-ri/timer-line'
 import React from 'react'
 import { Description, Title } from '../../../style/Typography'
-import { Reminder } from '../../../types/reminders'
+import { DisplayReminder, Reminder } from '../../../types/reminders'
 import { mog } from '../../../utils/lib/helper'
 import arrowDropRightLine from '@iconify/icons-ri/arrow-drop-right-line'
 import arrowDropUpLine from '@iconify/icons-ri/arrow-drop-up-line'
@@ -25,6 +25,8 @@ import { useReminders } from '../../../hooks/useReminders'
 import { add, sub } from 'date-fns'
 import { getReminderState, ReminderStatus } from '../../../services/reminders/reminders'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
+import { TodoType } from '../../../editor/Components/Todo/types'
+import NotificationTodo from '../../toast/NotificationTodo'
 
 export interface ReminderControl {
   type: 'dismiss' | 'open' | 'delete' | 'unarchive'
@@ -39,14 +41,14 @@ export interface SnoozeControl {
 export type ReminderControls = Array<ReminderControl | SnoozeControl>
 
 interface Props {
-  reminder: Reminder
+  reminder: DisplayReminder
   isNotification?: boolean
   controls?: Array<ReminderControl | SnoozeControl>
   showNodeInfo?: boolean
 }
 
 interface ReminderControlProps {
-  reminder: Reminder
+  reminder: DisplayReminder
   controls: Array<ReminderControl | SnoozeControl>
   snoozeControls: boolean
   setSnoozeControls: React.Dispatch<React.SetStateAction<boolean>>
@@ -116,18 +118,16 @@ const ReminderControlsUI = ({
         {controls.map((control) => {
           if (control.type === 'snooze') {
             return (
-              <>
-                <Button
-                  key={control.type}
-                  transparent
-                  primary={snoozeControls}
-                  onClick={() => {
-                    setSnoozeControls((prevState: boolean) => !prevState)
-                  }}
-                >
-                  Snooze
-                </Button>
-              </>
+              <Button
+                key={control.type}
+                transparent
+                primary={snoozeControls}
+                onClick={() => {
+                  setSnoozeControls((prevState: boolean) => !prevState)
+                }}
+              >
+                Snooze
+              </Button>
             )
           }
           return (
@@ -156,13 +156,14 @@ export const reminderStateIcons: Record<ReminderStatus, string> = {
   active: 'ri-chat-4-line',
   snooze: 'ri-chat-forward-line',
   missed: 'ri-chat-delete-line',
-  done: 'ri-chat-check-line'
+  seen: 'ri-check-double-line'
 }
 
 const ReminderUI = ({ reminder, isNotification, showNodeInfo, controls }: Props) => {
   const [snoozeControls, setSnoozeControls] = React.useState(false)
   // mog('reminder', { reminder })
   const reminderState = getReminderState(reminder)
+
   return (
     <ReminderStyled key={`ReultForSearch_${reminder.id}`} isNotification={isNotification} showControls={snoozeControls}>
       <ReminderTime>
@@ -186,16 +187,29 @@ const ReminderUI = ({ reminder, isNotification, showNodeInfo, controls }: Props)
             {reminder.path}
           </ReminderStateTag>
         )}
-        {reminder.blockid && (
+        {reminder.todoid && (
           <ReminderStateTag>
-            <Icon icon={fileList2Line} />
+            <Icon icon="ri-task-line" />
             Task
           </ReminderStateTag>
         )}
         <ReminderExact>{getRelativeDate(new Date(reminder.time))}</ReminderExact>
       </ReminderTime>
       <Title>{reminder.title}</Title>
-      <Description>{reminder.description}</Description>
+      {reminder.description && <Description>{reminder.description}</Description>}
+      {reminder.todoid && (
+        <>
+          <Icon icon="ri-task-line" />
+        </>
+      )}
+      {isNotification && (
+        <NotificationTodo
+          todo={reminder.todo as TodoType}
+          dismissNotification={() => {
+            console.log('dismiss notification')
+          }}
+        />
+      )}
       <ReminderControlsUI
         isNotification={isNotification}
         snoozeControls={snoozeControls}

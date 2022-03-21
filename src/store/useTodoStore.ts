@@ -29,6 +29,9 @@ type TodoStoreType = {
   getTodoOfNode: (nodeid: string, todoId: string) => TodoType | undefined
   updateTodoOfNode: (nodeid: string, todo: TodoType) => void
   replaceContentOfTodos: (nodeid: string, todosContent: NodeEditorContent) => void
+
+  updatePriorityOfTodo: (nodeid: string, todoId: string, priority: PriorityType) => void
+  updateStatusOfTodo: (nodeid: string, todoId: string, status: TodoStatus) => void
 }
 
 const useTodoStore = create<TodoStoreType>((set, get) => ({
@@ -97,16 +100,30 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
 
     const leftOutTodos = nTodo.filter((todo) => !nodeTodos.find((t) => t.id === todo.id && nodeid === t.nodeid))
 
-    mog('replaceContentOfTodos', { nodeid, todosContent, nodeTodos, leftOutTodos })
+    // mog('replaceContentOfTodos', { nodeid, todosContent, nodeTodos, leftOutTodos })
 
     const reminders = useReminderStore.getState().reminders
     const setReminders = useReminderStore.getState().setReminders
-    const newReminders = reminders.filter((reminder) => !leftOutTodos.find((todo) => todo.id === reminder.blockid))
-    mog('Deleted Reminders', { reminders, newReminders, leftOutTodos })
+    const newReminders = reminders.filter((reminder) => !leftOutTodos.find((todo) => todo.id === reminder.todoid))
+    // mog('Deleted Reminders', { reminders, newReminders, leftOutTodos })
     setReminders(newReminders)
     const newtodos = { ...todos, [nodeid]: nodeTodos }
     // mog('newTodos', { newtodos })
     set({ todos: newtodos })
+  },
+  updatePriorityOfTodo: (nodeid, todoId, priority) => {
+    const todo = get().getTodoOfNode(nodeid, todoId)
+    if (!todo) return
+
+    const newTodo = { ...todo, metadata: { ...todo.metadata, priority } }
+    get().updateTodoOfNode(nodeid, newTodo)
+  },
+  updateStatusOfTodo: (nodeid, todoId, status) => {
+    const todo = get().getTodoOfNode(nodeid, todoId)
+    if (!todo) return
+
+    const newTodo = { ...todo, metadata: { ...todo.metadata, status } }
+    get().updateTodoOfNode(nodeid, newTodo)
   }
 }))
 

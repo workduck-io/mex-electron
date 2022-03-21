@@ -1,6 +1,6 @@
 import { mix, transparentize } from 'polished'
 import styled, { createGlobalStyle, css } from 'styled-components'
-import { REMINDERS_DIMENSIONS } from '../../../services/reminders/reminders'
+import { ReminderStatus, REMINDERS_DIMENSIONS } from '../../../services/reminders/reminders'
 import { Button } from '../../../style/Buttons'
 import { Title } from '../../../style/Typography'
 
@@ -181,7 +181,7 @@ export const ReminderTime = styled.div`
   flex-wrap: wrap;
 `
 
-export const ReminderStateTag = styled.div<{ state?: 'done' | 'snooze' | 'missed' | 'active' }>`
+export const ReminderStateTag = styled.div<{ state?: ReminderStatus }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -190,12 +190,11 @@ export const ReminderStateTag = styled.div<{ state?: 'done' | 'snooze' | 'missed
   border-radius: ${({ theme }) => theme.borderRadius.large};
   font-size: 0.8rem;
   letter-spacing: 0.1rem;
-  text-transform: uppercase;
 
   ${({ theme, state }) => {
     let color = theme.colors.primary
     switch (state) {
-      case 'done':
+      case 'seen':
         color = theme.colors.palette.green
         break
 

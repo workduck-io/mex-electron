@@ -63,7 +63,9 @@ const Todo = (props: any) => {
       readOnly={readOnly}
       todoid={element.id}
       parentNodeId={nodeid}
-      onDeleteClick={onDeleteClick}
+      controls={{
+        onDeleteClick
+      }}
     >
       {children}
     </TodoBase>

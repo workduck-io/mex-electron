@@ -2,7 +2,7 @@ import { IpcAction } from '../../data/IpcAction'
 import { appNotifierWindow } from '../../electron/utils/notifiers'
 import { AppType } from '../../hooks/useInitialize'
 import React, { useEffect } from 'react'
-import { ReminderGroup, Reminder } from '../../types/reminders'
+import { ReminderGroup, Reminder, DisplayReminderGroup } from '../../types/reminders'
 import ReminderUI, { ReminderControls } from '../mex/Reminders/Reminder'
 import { debounce } from 'lodash'
 import {
@@ -14,7 +14,7 @@ import {
 } from '../mex/Reminders/Reminders.style'
 
 interface ReminderGroupProps {
-  reminderGroup: ReminderGroup
+  reminderGroup: DisplayReminderGroup
   controls: ReminderControls
 }
 

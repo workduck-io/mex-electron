@@ -26,7 +26,7 @@ import { SelectedDate } from './Reminders.style'
 interface ModalValue {
   time?: number
   nodeid?: string
-  blockid?: string
+  todoid?: string
   blockContent?: string
 }
 
@@ -86,7 +86,7 @@ export const useCreateReminderModal = create<CreateReminderModalState>((set) => 
       modalValue: {
         time: undefined,
         blockContent: undefined,
-        blockid: undefined,
+        todoid: undefined,
         nodeid: undefined
       }
     })
@@ -141,7 +141,7 @@ const CreateReminderModal = () => {
 
   const onSubmit = async ({ title, description }) => {
     // console.log({ intents, command, title, description })
-    const { time, nodeid, blockid, blockContent } = modalValue
+    const { time, nodeid, todoid, blockContent } = modalValue
 
     const reminder: Reminder = {
       id: `${REMINDER_PREFIX}${nanoid()}`,
@@ -153,7 +153,7 @@ const CreateReminderModal = () => {
         snooze: false,
         done: false
       },
-      blockid,
+      todoid,
       createdAt: Date.now(),
       updatedAt: Date.now()
     }
@@ -199,6 +199,7 @@ const CreateReminderModal = () => {
         <Label htmlFor="node">NodeId</Label>
         <WrappedNodeSelect
           placeholder="Reminder for node"
+          disabled={modalValue.blockContent !== undefined}
           defaultValue={useEditorStore.getState().node.id ?? ''}
           disallowReserved
           highlightWhenSelected
@@ -212,7 +213,7 @@ const CreateReminderModal = () => {
             selected={new Date(modalValue.time ?? getNextReminderTime())}
             showTimeSelect
             timeFormat="p"
-            timeIntervals={15}
+            timeIntervals={1}
             filterDate={(date) => {
               const todayStart = startOfToday()
               return date.getTime() >= todayStart.getTime()

@@ -1,4 +1,4 @@
-import { PriorityType } from '../editor/Components/Todo/types'
+import { PriorityType, TodoStatus, TodoType } from '../editor/Components/Todo/types'
 import { NodeEditorContent } from './Types'
 
 export const REMINDER_PREFIX = 'REMINDER_'
@@ -60,20 +60,36 @@ export interface Reminder {
   createdAt: number
   updatedAt: number
 
-  path?: string // As get path from id is not present in the toast
   // Frequency, if present is used instead of time
   // TODO: Combine with time
   frequency?: ReminderFrequency
   priority?: PriorityType
-  blockid?: string
+  todoid?: string
 }
 
-export type ReminderActions = 'snooze' | 'open' | 'dismiss' | 'delete'
+export interface DisplayReminder extends Reminder {
+  // Toast display props: (Not part of data)
+  path?: string // As get path from id is not present in the toast
+  todo?: TodoType // Todo to which the reminder belongs (if any)
+}
+
+export type ReminderActions =
+  | { type: 'snooze' }
+  | { type: 'open' }
+  | { type: 'dismiss' }
+  | { type: 'delete' }
+  | { type: 'todo'; todoAction: 'status'; value: TodoType }
+  | { type: 'todo'; todoAction: 'priority'; value: TodoType }
+  | { type: 'todo'; todoAction: 'delete' }
 
 export interface ReminderGroup {
   type: string
   label: string
   reminders: Reminder[]
+}
+
+export interface DisplayReminderGroup extends ReminderGroup {
+  reminders: DisplayReminder[]
 }
 
 export interface NodeReminderGroup {

@@ -52,7 +52,7 @@ import { getIndexData } from './utils/indexData'
 import { ToastStatus, ToastType } from '../types/toast'
 import { getReminderDimensions, REMINDERS_DIMENSIONS } from '../services/reminders/reminders'
 import { IS_DEV } from '../data/Defaults/dev_'
-import { Reminder } from '../types/reminders'
+import { Reminder, ReminderActions } from '../types/reminders'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -617,7 +617,7 @@ ipcMain.on(IpcAction.REDIRECT_TO, (_event, arg) => {
 
 ipcMain.on(
   IpcAction.ACTION_REMINDER,
-  (ev, { from, data }: { from: AppType; data: { type: string; reminder: Reminder; time?: number } }) => {
+  (ev, { from, data }: { from: AppType; data: { type: ReminderActions; reminder: Reminder; time?: number } }) => {
     const { type, reminder } = data
     console.log('Acted on Reminder ', { from, data, type, reminder })
     spotlight?.webContents.send(IpcAction.ACTION_REMINDER, data)
