@@ -11,7 +11,7 @@ import { getPlateSelectors } from '@udecode/plate'
 import { ipcRenderer } from 'electron'
 import { mog } from '../../../utils/lib/helper'
 import useAnalytics from '../../../services/analytics'
-import { useAuthStore } from '../../../services/auth/useAuth'
+import { useAuthentication, useAuthStore } from '../../../services/auth/useAuth'
 import useDataStore from '../../../store/useDataStore'
 import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
@@ -34,6 +34,8 @@ const GlobalListener = memo(() => {
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const addILink = useDataStore((store) => store.addILink)
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
+
+  const { loginViaGoogle } = useAuthentication()
 
   const { onSave } = useSaver()
   const { init, update } = useInitialize()
@@ -96,6 +98,7 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.on(IpcAction.LOGGED_IN, (_event, arg) => {
+      mog('loglogged in', { arg })
       if (arg.loggedIn) {
         if (arg.userDetails && arg.workspaceDetails) setAuthenticated(arg.userDetails, arg.workspaceDetails)
         goTo(ROUTE_PATHS.home, NavigationType.replace)

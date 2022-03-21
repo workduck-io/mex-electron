@@ -411,6 +411,7 @@ app.on('open-url', function (event, url) {
   const idToken = URL.get('id_token')
 
   mex.webContents.send(IpcAction.OAUTH, { accessToken, idToken })
+  spotlight.webContents.send(IpcAction.OAUTH, { accessToken, idToken })
 })
 
 app
