@@ -77,7 +77,9 @@ if __name__ == "__main__":
     baseURL = os.getenv("ERS_BASE_URL")
 
     if not (username and password and baseURL):
-        raise RuntimeError("Add ERS_USERNAME, ERS_PASSWORD and ERS_BASE_URL environment variables")
+        raise RuntimeError(
+            "Add ERS_USERNAME, ERS_PASSWORD and ERS_BASE_URL environment variables"
+        )
 
     with open(PACKAGE_JSON_PATH) as f:
         package = json.load(f)
