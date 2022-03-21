@@ -1,6 +1,7 @@
 import { AppType } from '../../hooks/useInitialize'
+import { nanoid } from 'nanoid'
 import { appNotifierWindow } from '../../electron/utils/notifiers'
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { PriorityType, TodoStatus, TodoType } from '../../editor/Components/Todo/types'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import Todo, { TodoControls } from '../../ui/components/Todo'
@@ -8,6 +9,8 @@ import { IpcAction } from '../../data/IpcAction'
 import { Reminder } from '../../types/reminders'
 import { getPureContent } from '../../hooks/useTodoKanban'
 import TodoPlain from '../../ui/components/Todo.plain'
+import useTodoStore from '../../store/useTodoStore'
+import { mog } from '../../utils/lib/helper'
 
 interface NotificationTodoProps {
   oid?: string
@@ -19,6 +22,24 @@ interface NotificationTodoProps {
 
 const NotificationTodo = ({ todo, reminder, dismissNotification, isNotification, oid }: NotificationTodoProps) => {
   const [localTodo, setLocalTodo] = useState(todo)
+  const todos = useTodoStore((state) => state.todos)
+  const getTodoOfNode = useTodoStore((state) => state.getTodoOfNodeWithoutCreating)
+
+  useEffect(() => {
+    if (isNotification) {
+      return
+    }
+    const ntodo = getTodoOfNode(todo.nodeid, todo.id)
+    if (ntodo) {
+      setLocalTodo(ntodo)
+    }
+  }, [todo, todos])
+
+  // const { content, rid } = useMemo(() => {
+  //   return { content: getPureContent(localTodo), rid: nanoid() }
+  // }, [localTodo, todo])
+
+  // mog('todo', { reminder, localTodo })
   const controls: TodoControls = {
     onChangeStatus: (todoid: string, status: TodoStatus) => {
       console.log('change status', todoid, status)
@@ -55,7 +76,7 @@ const NotificationTodo = ({ todo, reminder, dismissNotification, isNotification,
     >
       <EditorPreviewRenderer
         noStyle
-        content={getPureContent(todo)}
+        content={getPureContent(localTodo)}
         editorId={`NoticationTodoPreview_${isNotification ? 'notification' : 'normal'}_${todo.nodeid}_${todo.id}`}
       />
     </Todo>

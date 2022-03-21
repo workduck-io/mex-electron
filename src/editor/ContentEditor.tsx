@@ -11,6 +11,7 @@ import useLoad from '../hooks/useLoad'
 import { useNavigation } from '../hooks/useNavigation'
 import { useSearch } from '../hooks/useSearch'
 import { useKeyListener } from '../hooks/useShortcutListener'
+import { useAnalysisTodoAutoUpdate } from '../store/useAnalysis'
 import useBlockStore from '../store/useBlockStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
@@ -24,7 +25,6 @@ import BlockInfoBar from './Components/Blocks/BlockInfoBar'
 import { BlockOptionsMenu } from './Components/EditorContextMenu'
 import Editor from './Editor'
 import Toolbar from './Toolbar'
-
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -74,6 +74,8 @@ const ContentEditor = () => {
   }
 
   const editorId = useMemo(() => getEditorId(node.nodeid, false), [node, fetchingContent])
+
+  useAnalysisTodoAutoUpdate()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {

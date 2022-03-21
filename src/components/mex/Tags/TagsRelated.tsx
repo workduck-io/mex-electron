@@ -44,7 +44,7 @@ interface TagsRelated {
 const TagsRelated = ({ nodeid }: TagsRelated) => {
   const { getRelatedNodes, getTags } = useTags()
   const tagsCache = useDataStore((state) => state.tagsCache)
-  const analysisTags = useAnalysisStore((state) => state.tags)
+  const analysisTags = useAnalysisStore((state) => state.analysis.tags)
   const [relNodes, setRelNodes] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
   const { goTo } = useRouting()

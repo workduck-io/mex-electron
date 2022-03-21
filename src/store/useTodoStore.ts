@@ -106,15 +106,13 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
 
     const leftOutTodos = nTodo.filter((todo) => !nodeTodos.find((t) => t.id === todo.id && nodeid === t.nodeid))
 
-    // mog('replaceContentOfTodos', { nodeid, todosContent, nodeTodos, leftOutTodos })
 
     const reminders = useReminderStore.getState().reminders
     const setReminders = useReminderStore.getState().setReminders
     const newReminders = reminders.filter((reminder) => !leftOutTodos.find((todo) => todo.id === reminder.todoid))
-    // mog('Deleted Reminders', { reminders, newReminders, leftOutTodos })
+
     setReminders(newReminders)
     const newtodos = { ...todos, [nodeid]: nodeTodos }
-    // mog('newTodos', { newtodos })
     set({ todos: newtodos })
   },
   updatePriorityOfTodo: (nodeid, todoId, priority) => {

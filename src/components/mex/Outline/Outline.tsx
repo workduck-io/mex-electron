@@ -12,7 +12,7 @@ import { DataInfoHeader } from '../Backlinks/Backlinks.style'
 import { OutlineItemRender } from './Outline.styles'
 
 const Outline = () => {
-  const outline = useAnalysisStore((state) => state.outline)
+  const outline = useAnalysisStore((state) => state.analysis.outline)
 
   const onSelectHeading = (heading: OutlineItem, e: React.MouseEvent) => {
     e.preventDefault()

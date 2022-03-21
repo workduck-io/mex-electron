@@ -11,6 +11,7 @@ import { getReminderState } from '../../../services/reminders/reminders'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
+import useTodoStore from '../../../store/useTodoStore'
 import IconButton, { Button } from '../../../style/Buttons'
 import { InfobarFull, InfobarTools } from '../../../style/infobar'
 import { Title } from '../../../style/Typography'
@@ -30,6 +31,7 @@ const RemindersInfobar = () => {
   const { getNodeReminders, clearNodeReminders, getReminderControls } = useReminders()
   const nodeid = useEditorStore((store) => store.node.nodeid)
   const openModal = useCreateReminderModal((state) => state.openModal)
+  const todos = useTodoStore((store) => store.todos)
 
   const { goTo } = useRouting()
 
@@ -37,7 +39,7 @@ const RemindersInfobar = () => {
     mog('RemindersInfobar', { reminderGroups, remindersAll })
     const nodeReminders = getNodeReminders(nodeid)
     return nodeReminders
-  }, [remindersAll, nodeid, armedReminders])
+  }, [remindersAll, nodeid, armedReminders, todos])
 
   return (
     <InfobarFull>

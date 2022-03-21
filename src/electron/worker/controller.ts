@@ -22,7 +22,12 @@ export const startAnalysisWorkerService = async () => {
   if (!worker) worker = await spawn(new Worker(workerURL))
 }
 
-export const analyseContent = async (content: NodeEditorContent, callback: (data: any) => void) => {
+interface AnalyseContentProps {
+  content: NodeEditorContent
+  nodeid: string
+}
+
+export const analyseContent = async (props: AnalyseContentProps, callback: (data: any) => void) => {
   try {
     if (!worker) {
       await startAnalysisWorkerService()
@@ -30,7 +35,7 @@ export const analyseContent = async (content: NodeEditorContent, callback: (data
     } else {
       console.log('Reusing analysis worker')
     }
-    const analysis = await worker.analyseContent(content)
+    const analysis = await worker.analyseContent(props)
     callback(analysis)
   } catch (error) {
     console.log(error)
