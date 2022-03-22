@@ -10,6 +10,7 @@ import { BackCard } from '../../style/Card'
 import { CenteredColumn } from '../../style/Layouts'
 import { Title } from '../../style/Typography'
 import { Info, InfoData, InfoLabel, ProfileContainer, ProfileIcon } from '../../style/UserPage'
+import { mog } from '../../utils/lib/helper'
 
 const UserPage = () => {
   const { getUserDetails } = useAuth()
@@ -21,6 +22,7 @@ const UserPage = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleGoogleAuthUrl = async () => {
     const googleAuthUrl = await getGoogleAuthUrl()
+    mog('googleAuthUrl', { googleAuthUrl })
     window.open(googleAuthUrl, '_blank', 'width=1000,height=1000')
     // TODO: fetch the google refresh token from the auth service and set in the local auth store
   }

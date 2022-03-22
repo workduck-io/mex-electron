@@ -1,7 +1,11 @@
+import axios from 'axios'
 import { add, formatDistanceToNow, sub } from 'date-fns'
+import { useEffect } from 'react'
 import create from 'zustand'
+import { FETCH_CALENDAR_EVENTS } from '../apis/routes'
 import { ItemActionType, ItemExtraType, ListItemType } from '../components/spotlight/SearchResults/types'
 import { testEvents } from '../data/Defaults/Test/calendar'
+import { useTokenStore } from '../services/auth/useTokens'
 import { CategoryType } from '../store/Context/context.spotlight'
 import { GoogleEvent } from '../types/gcal'
 
@@ -162,8 +166,48 @@ export const useCalendar = () => {
     return todayEventList
   }
 
+  const fetchGoogleCalendarEvents = () => {
+    const now = new Date()
+    const yesterday = sub(now, { days: 1 })
+    const twoDaysFromNow = add(now, { days: 2 })
+    const tokens = useTokenStore.getState().data
+    // Headers in axios post request
+    //
+
+    if (
+      !tokens.googleAuth ||
+      !tokens.googleAuth.calendar ||
+      !tokens.googleAuth.calendar.accessToken ||
+      !tokens.googleAuth.calendar.idToken
+    ) {
+      return
+    }
+    axios
+      .post(FETCH_CALENDAR_EVENTS(yesterday.getTime(), twoDaysFromNow.getTime(), 10), {
+        headers: {
+          'mex-google-access-token': tokens.googleAuth.calendar.accessToken,
+          'mex-google-id-token': tokens.googleAuth.calendar.idToken
+        }
+      })
+      .then((response) => {
+        const events = response.data.items.map(converGoogleEventToCalendarEvent)
+        // setEvents(events)
+        console.log('We got em events', { events })
+      })
+  }
+
   return {
     getUserEvents,
-    getUpcomingEvents
+    getUpcomingEvents,
+    fetchGoogleCalendarEvents
   }
+}
+
+export const useGoogleCalendarAutoFetch = () => {
+  const tokens = useTokenStore((state) => state.data)
+  const { fetchGoogleCalendarEvents } = useCalendar()
+
+  useEffect(() => {
+    fetchGoogleCalendarEvents()
+  }, [tokens])
 }

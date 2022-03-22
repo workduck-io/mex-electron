@@ -11,7 +11,7 @@ import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType, useInitialize } from '../../../hooks/useInitialize'
 import { getNodeidFromPathAndLinks, useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
-import { useLocalData } from '../../../hooks/useLocalData'
+import { useLocalData, useTokenData } from '../../../hooks/useLocalData'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
@@ -34,12 +34,14 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/u
 import { useSearch } from '../../../hooks/useSearch'
 import { Reminder, ReminderActions } from '../../../types/reminders'
 import { useReminders, useReminderStore } from '../../../hooks/useReminders'
-import { useCalendar } from '../../../hooks/useCalendar'
+import { useCalendar, useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
+import { useTokens } from '../../../services/auth/useTokens'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
   const { goTo } = useRouting()
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
+  const authenticated = useAuthStore(({ authenticated }) => authenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const pushHs = useHistoryStore((store) => store.push)
   const isOnboarding = useOnboard((s) => s.isOnboarding)
@@ -64,10 +66,14 @@ const Init = () => {
 
   const { queryIndex } = useSearch()
 
+  const { addGoogleCalendarToken } = useTokens()
+
   /**
    * Setup save
    * */
   useSaveAndExit()
+
+  const { getTokenData } = useTokenData()
 
   const { getTemplates } = useUpdater()
 
@@ -85,6 +91,7 @@ const Init = () => {
         })
         .then(({ fileData }) => {
           init(fileData)
+          getTokenData()
           // setOnboardData()
           return fileData
         })
@@ -134,6 +141,7 @@ const Init = () => {
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const editor = usePlateEditorRef()
 
   /**
@@ -230,11 +238,23 @@ const Init = () => {
   //     ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndex })
   //   })
   // }, [fetchIndexLocalStorage])
+  //
+  useGoogleCalendarAutoFetch()
 
   useEffect(() => {
     setIpc()
     ipcRenderer.on(IpcAction.OAUTH, async (event, data) => {
-      await loginViaGoogle(data.idToken, data.accessToken, true)
+      const { type } = data
+      switch (type) {
+        case 'login_google':
+          await loginViaGoogle(data.idToken, data.accessToken, true)
+          break
+        case 'calendar_google':
+          addGoogleCalendarToken({ accessToken: data.accessToken, idToken: data.idToken })
+          break
+        default:
+          await loginViaGoogle(data.idToken, data.accessToken, true)
+      }
     })
     // Setup recieving the analysis call
     setAnalysisIpc()

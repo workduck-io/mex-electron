@@ -134,10 +134,10 @@ export const useAuthentication = () => {
           .get(apiURLs.getUserRecords(result.userId))
           .then((d: any) => {
             const userDetails = { email: result.email, userId: result.userId }
-            const workspaceDetails = { id: d.data.id, name: d.data.name }
+            const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
             ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
             identifyUser(userDetails.email)
-            mog('Login Google BIG success', { userDetails, workspaceDetails })
+            mog('Login Google BIG success', { d, userDetails, workspaceDetails })
             addUserProperties({
               [Properties.EMAIL]: userDetails.email,
               [Properties.NAME]: userDetails.email,
@@ -172,7 +172,7 @@ export const useAuthentication = () => {
               })
               .then((d: any) => {
                 const userDetails = { email: uCred.email, userId: uCred.userId }
-                const workspaceDetails = { id: d.data.id, name: d.data.name }
+                const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
 
                 ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
                 identifyUser(userDetails.email)
