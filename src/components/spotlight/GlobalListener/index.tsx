@@ -2,7 +2,6 @@ import { AppType, useInitialize } from '../../../hooks/useInitialize'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import React, { memo, useEffect, useState } from 'react'
 
-import { FileData } from '../../../types/data'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { getHtmlString } from '../../../components/spotlight/Source'
@@ -11,7 +10,7 @@ import { getPlateSelectors } from '@udecode/plate'
 import { ipcRenderer } from 'electron'
 import { mog } from '../../../utils/lib/helper'
 import useAnalytics from '../../../services/analytics'
-import { useAuthentication, useAuthStore } from '../../../services/auth/useAuth'
+import { useAuthStore } from '../../../services/auth/useAuth'
 import useDataStore from '../../../store/useDataStore'
 import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
@@ -24,6 +23,7 @@ import ReminderArmer from '../Reminder/ReminderArmer'
 import { useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
 import { useTokenData } from '../../../hooks/useLocalData'
 import { useRecieveTokens } from '../../../hooks/useSyncData'
+import useActions from '../Actions/useActions'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
@@ -38,14 +38,14 @@ const GlobalListener = memo(() => {
   const addILink = useDataStore((store) => store.addILink)
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
 
-  const { loginViaGoogle, logout } = useAuthentication()
-
   const { getTokenData } = useTokenData()
+  const { initActionsInStore } = useActions()
   const { setReceiveToken } = useRecieveTokens()
   const { onSave } = useSaver()
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()
-  const { goTo } = useRouting()
+  const { goTo, location } = useRouting()
+  // const { initActionPerformers } = useActionPerformer()
 
   const userDetails = useAuthStore((state) => state.userDetails)
 
@@ -66,10 +66,14 @@ const GlobalListener = memo(() => {
   }, [showSource, temp])
 
   useEffect(() => {
+    initActionsInStore()
+
     ipcRenderer.on(IpcAction.SELECTED_TEXT, (_event, data) => {
       if (!data) {
         setSelection(undefined)
       } else {
+        // * If user captures a content when in action mode, then we need to redirect him to the home page
+        goTo(ROUTE_PATHS.home, NavigationType.replace)
         setTemp(data)
       }
     })
@@ -103,7 +107,6 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.on(IpcAction.LOGGED_IN, (_event, arg) => {
-      mog('loglogged in', { arg })
       if (arg.loggedIn) {
         if (arg.userDetails && arg.workspaceDetails) setAuthenticated(arg.userDetails, arg.workspaceDetails)
         getTokenData()

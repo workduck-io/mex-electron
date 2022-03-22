@@ -79,7 +79,7 @@ export const TextArea = styled.textarea`
     border-color: ${({ theme }) => theme.colors.primary};
   }
 
-  &::hover,
+  &:hover,
   &:active {
     border-color: ${({ theme }) => theme.colors.primary};
   }

@@ -1,7 +1,7 @@
 import BackIcon from '@iconify/icons-ph/caret-circle-left-light'
 import LensIcon from '@iconify/icons-ph/magnifying-glass-bold'
-import { ELEMENT_DEFAULT, getPlateSelectors } from '@udecode/plate'
-import { cleanString, generateTempId } from '../../../data/Defaults/idPrefixes'
+import { getPlateSelectors } from '@udecode/plate'
+import { cleanString } from '../../../data/Defaults/idPrefixes'
 import { IpcAction } from '../../../data/IpcAction'
 import { useSaver } from '../../../editor/Components/Saver'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
@@ -17,11 +17,23 @@ import { useSearch } from '../../../hooks/useSearch'
 import useLoad from '../../../hooks/useLoad'
 import { checkIfUntitledDraftNode } from '../../../utils/lib/strings'
 import { getTitleFromContent } from '../../../utils/search/parseData'
+import { useRouting } from '../../../views/routes/urls'
 
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
   const normalMode = useSpotlightAppStore((store) => store.normalMode)
   const node = useSpotlightEditorStore((store) => store.node)
+
+  const { location } = useRouting()
+  const { activeItem } = useSpotlightContext()
+  const isActionSearch = location.pathname === '/action'
+
+  if (isActionSearch) {
+    return {
+      icon: activeItem?.item?.icon,
+      placeholder: activeItem?.item?.description
+    }
+  }
 
   const icon = !normalMode ? BackIcon : LensIcon
 
@@ -48,10 +60,10 @@ export const useSaveChanges = () => {
   const setNormalMode = useSpotlightAppStore((store) => store.setNormalMode)
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const preview = useSpotlightEditorStore((store) => store.preview)
-  const { onSave } = useSaver()
 
   const { setSearch } = useSpotlightContext()
 
+  const { onSave } = useSaver()
   const { saveNodeName } = useLoad()
   const { updateDocument } = useSearch()
 

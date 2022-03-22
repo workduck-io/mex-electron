@@ -51,7 +51,6 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
       const activeNodeContent = getContent(nodeId)?.content ?? []
 
       const nodeContent = [...activeNodeContent, ...deserializedContent]
-      mog('PreviewContentSet', { nodeContent, activeNodeContent, deserializedContent })
       setNodeContent(nodeContent)
     }
   }, [preview, showSource, nodeId, normalMode])

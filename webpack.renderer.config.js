@@ -13,6 +13,6 @@ module.exports = {
   plugins: plugins,
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
-    fallback: { url: require.resolve('url') }
+    fallback: { url: false }
   }
 }

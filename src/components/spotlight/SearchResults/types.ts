@@ -20,6 +20,7 @@ export interface ItemExtraType {
   blockid: string
   path: string
   new: boolean
+  combo: boolean
   customAction: () => void
   componentName: string
   base_url: string

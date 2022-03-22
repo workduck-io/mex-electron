@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { mog } from '../../utils/lib/helper'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useKeyListener } from '../../hooks/useShortcutListener'
 import { useHelpStore } from '../../store/useHelpStore'
 import { useRecentsStore } from '../../store/useRecentsStore'
@@ -27,7 +26,8 @@ export const ROUTE_PATHS = {
   integrations: '/integrations',
   snippets: '/snippets',
   snippet: '/snippets/node', // * /snippets/node/:snippetid
-  forgotpassword: '/forgotpassword'
+  forgotpassword: '/forgotpassword',
+  actions: '/actions'
 }
 
 export enum NavigationType {

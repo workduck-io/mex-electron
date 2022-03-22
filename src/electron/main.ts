@@ -154,12 +154,12 @@ const createSpotLighWindow = (show?: boolean) => {
       spotlight.focus()
       spotlight.show()
     } else {
-      spotlight.hide()
+      // spotlight.hide()
     }
   })
 
   spotlight.on('blur', () => {
-    spotlight.hide()
+    // spotlight.hide()
     spotlight.webContents.send(IpcAction.SPOTLIGHT_BLURRED)
   })
 
@@ -432,7 +432,7 @@ app
     // getPermissions().then((s) => console.log('Hello'))
 
     global.appVersion = app.getVersion()
-    globalShortcut.register('CommandOrCOntrol+Shift+L', handleToggleMainWindow)
+    globalShortcut.register('CommandOrControl+Shift+X', handleToggleMainWindow)
 
     const icon = nativeImage.createFromDataURL(trayIconBase64)
     const twitterIcon = nativeImage.createFromDataURL(twitterIconBase64)

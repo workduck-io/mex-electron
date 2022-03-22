@@ -115,7 +115,6 @@ export const useAuthentication = () => {
             [Properties.WORKSPACE_ID]: d.data.group
           })
           addEventProperties({ [CustomEvents.LOGGED_IN]: true })
-          mog('Login BIG success', { userDetails, workspaceDetails })
           return { userDetails, workspaceDetails }
         })
         // .then(updateDefaultServices)
