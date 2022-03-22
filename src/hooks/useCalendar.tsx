@@ -1,7 +1,9 @@
-import { add, sub } from 'date-fns'
+import { add, formatDistanceToNow, sub } from 'date-fns'
 import create from 'zustand'
-import { ItemExtraType } from '../components/spotlight/SearchResults/types'
+import { ItemActionType, ItemExtraType, ListItemType } from '../components/spotlight/SearchResults/types'
+import { testEvents } from '../data/Defaults/Test/calendar'
 import { CategoryType } from '../store/Context/context.spotlight'
+import { GoogleEvent } from '../types/gcal'
 
 /*
  * Need
@@ -75,8 +77,65 @@ interface UserCalendarState {
   setEvents: (events: CalendarEvent[]) => void
 }
 
+const convertCalendarEventToAction = (e: CalendarEvent) => {
+  const desc = e.description ? `: ${e.description}` : ''
+  return {
+    id: e.id,
+    icon: 'ri-calendar-event-line',
+    title: e.summary,
+    description: formatDistanceToNow(e.times.start, { addSuffix: true }) + ` ${desc}`,
+    type: ItemActionType.open,
+    category: CategoryType.action,
+    shortcut: {
+      open: {
+        title: 'to open Meeting',
+        category: 'action',
+        keystrokes: 'Enter'
+      }
+    },
+    extras: {
+      base_url: e.links.meet
+    }
+  }
+}
+
+const converGoogleEventToCalendarEvent = (event: GoogleEvent): CalendarEvent => {
+  const createdTime = Date.parse(event.created)
+  const updatedTime = Date.parse(event.updated)
+  const startTime = Date.parse(event.start.dateTime ?? event.start.date)
+  const endTime = Date.parse(event.end.dateTime ?? event.end.date)
+  return {
+    id: event.id,
+    status: event.status as any,
+    summary: event.summary,
+    description: event.description,
+    links: {
+      meet: event.hangoutLink,
+      event: event.htmlLink
+    },
+    creator: event.creator,
+    times: {
+      created: createdTime,
+      updated: updatedTime,
+      start: startTime,
+      end: endTime
+    },
+    people: event.attendees?.map((attendee) => {
+      return {
+        email: attendee.email,
+        displayName: attendee.displayName,
+        optional: attendee.optional,
+        organizer: attendee.email === event.organizer?.email,
+        responseStatus: attendee.responseStatus as any,
+        creator: attendee.email === event.creator?.email,
+        resource: attendee.resource
+      }
+    })
+  }
+}
+
 const useCalendarStore = create<UserCalendarState>((set) => ({
-  events: [],
+  events: testEvents.map(converGoogleEventToCalendarEvent),
   setEvents: (events) => set({ events })
 }))
 
@@ -87,25 +146,18 @@ export const useCalendar = () => {
   }
 
   const getUpcomingEvents = () => {
-    const today = new Date()
-    const twoHoursFromNow = add(today, { hours: 2 })
-    const oneHourBefore = sub(today, { hours: 1 })
+    const now = new Date()
+    const twoHoursFromNow = add(now, { hours: 2 })
+    const fifteenMinutesBefore = sub(now, { minutes: 15 })
     const events = useCalendarStore.getState().events
     const todayEvents = events
-      .filter((event) => {
-        const start = new Date(event.times.start)
-        return start >= oneHourBefore && start <= twoHoursFromNow
-      })
+      // .filter((event) => {
+      //   const start = new Date(event.times.start)
+      //   return start >= fifteenMinutesBefore && start <= twoHoursFromNow
+      // })
       .sort((a, b) => a.times.start - b.times.start)
 
-    const todayEventList = todayEvents.map((e) => ({
-      id: e.id,
-      icon: 'calendar',
-      title: e.summary,
-      description: e.description,
-      type: 'open',
-      category: CategoryType.action
-    }))
+    const todayEventList: ListItemType[] = todayEvents.map(convertCalendarEventToAction)
 
     return todayEventList
   }

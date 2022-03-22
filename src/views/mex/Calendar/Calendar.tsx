@@ -1,6 +1,6 @@
 import React from 'react'
 import { CalendarEvent, useCalendar } from '../../../hooks/useCalendar'
-import { Description, Title } from '../../../style/Typography'
+import { Title } from '../../../style/Typography'
 
 interface EventProps {
   event: CalendarEvent
@@ -10,7 +10,7 @@ export const Event = ({ event }: EventProps) => {
   return (
     <div>
       <Title>{event.summary}</Title>
-      <Description>{event.description}</Description>
+      <p>{event.description}</p>
     </div>
   )
 }

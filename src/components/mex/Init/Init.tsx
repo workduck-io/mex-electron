@@ -34,6 +34,7 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/u
 import { useSearch } from '../../../hooks/useSearch'
 import { Reminder, ReminderActions } from '../../../types/reminders'
 import { useReminders, useReminderStore } from '../../../hooks/useReminders'
+import { useCalendar } from '../../../hooks/useCalendar'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -53,6 +54,7 @@ const Init = () => {
   const { getLocalData } = useLocalData()
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
   const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
+  const { getUpcomingEvents, getUserEvents } = useCalendar()
 
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
@@ -213,6 +215,12 @@ const Init = () => {
 
   // Setup sending the analysis call
   useAnalysis()
+
+  useEffect(() => {
+    const e1 = getUserEvents()
+    const e2 = getUpcomingEvents()
+    mog('Setting up IPC', { e1, e2 })
+  }, [])
 
   // useEffect(() => {
   //   ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, async () => {

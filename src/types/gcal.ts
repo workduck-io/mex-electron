@@ -1,4 +1,4 @@
-export interface Schema$EventReminder {
+export interface GoogleEventReminder {
   /**
    * The method used by this reminder. Possible values are:
    * - "email" - Reminders are sent via email.
@@ -13,7 +13,7 @@ export interface Schema$EventReminder {
   minutes?: number | null
 }
 
-export interface Schema$EventDateTime {
+export interface GoogleEventDateTime {
   /**
    * The date, in the format "yyyy-mm-dd", if this is an all-day event.
    */
@@ -28,7 +28,7 @@ export interface Schema$EventDateTime {
   timeZone?: string | null
 }
 
-export interface Schema$ConferenceRequestStatus {
+export interface GoogleConferenceRequestStatus {
   /**
    * The current status of the conference create request. Read-only.
    * The possible values are:
@@ -39,7 +39,7 @@ export interface Schema$ConferenceRequestStatus {
   statusCode?: string | null
 }
 
-export interface Schema$ConferenceSolution {
+export interface GoogleConferenceSolution {
   /**
    * The user-visible icon for this solution.
    */
@@ -47,13 +47,13 @@ export interface Schema$ConferenceSolution {
   /**
    * The key which can uniquely identify the conference solution for this event.
    */
-  key?: Schema$ConferenceSolutionKey
+  key?: GoogleConferenceSolutionKey
   /**
    * The user-visible name of this solution. Not localized.
    */
   name?: string | null
 }
-export interface Schema$ConferenceSolutionKey {
+export interface GoogleConferenceSolutionKey {
   /**
    * The conference solution type.
    * If a client encounters an unfamiliar or empty type, it should still be able to display the entry points. However, it should disallow modifications.
@@ -66,11 +66,11 @@ export interface Schema$ConferenceSolutionKey {
   type?: string | null
 }
 
-export interface Schema$CreateConferenceRequest {
+export interface GoogleCreateConferenceRequest {
   /**
    * The conference solution, such as Hangouts or Google Meet.
    */
-  conferenceSolutionKey?: Schema$ConferenceSolutionKey
+  conferenceSolutionKey?: GoogleConferenceSolutionKey
   /**
    * The client-generated unique ID for this request.
    * Clients should regenerate this ID for every new request. If an ID provided is the same as for the previous request, the request is ignored.
@@ -79,9 +79,9 @@ export interface Schema$CreateConferenceRequest {
   /**
    * The status of the conference create request.
    */
-  status?: Schema$ConferenceRequestStatus
+  status?: GoogleConferenceRequestStatus
 }
-export interface Schema$EntryPoint {
+export interface GoogleEntryPoint {
   /**
    * The access code to access the conference. The maximum length is 128 characters.
    * When creating new conference data, populate only the subset of {meetingCode, accessCode, passcode, password, pin\} fields that match the terminology that the conference provider uses. Only the populated fields should be displayed.
@@ -150,18 +150,18 @@ export interface Schema$EntryPoint {
   uri?: string | null
 }
 
-export interface Schema$ConferenceParameters {
+export interface GoogleConferenceParameters {
   /**
    * Additional add-on specific data.
    */
-  addOnParameters?: Schema$ConferenceParametersAddOnParameters
+  addOnParameters?: GoogleConferenceParametersAddOnParameters
 }
 
-export interface Schema$ConferenceParametersAddOnParameters {
+export interface GoogleConferenceParametersAddOnParameters {
   parameters?: { [key: string]: string } | null
 }
 
-export interface Schema$ConferenceData {
+export interface GoogleConferenceData {
   /**
    * The ID of the conference.
    * Can be used by developers to keep track of conferences, should not be displayed to users.
@@ -177,18 +177,18 @@ export interface Schema$ConferenceData {
    * Unset for a conference with a failed create request.
    * Either conferenceSolution and at least one entryPoint, or createRequest is required.
    */
-  conferenceSolution?: Schema$ConferenceSolution
+  conferenceSolution?: GoogleConferenceSolution
   /**
    * A request to generate a new conference and attach it to the event. The data is generated asynchronously. To see whether the data is present check the status field.
    * Either conferenceSolution and at least one entryPoint, or createRequest is required.
    */
-  createRequest?: Schema$CreateConferenceRequest
+  createRequest?: GoogleCreateConferenceRequest
   /**
    * Information about individual conference entry points, such as URLs or phone numbers.
    * All of them must belong to the same conference.
    * Either conferenceSolution and at least one entryPoint, or createRequest is required.
    */
-  entryPoints?: Schema$EntryPoint[]
+  entryPoints?: GoogleEntryPoint[]
   /**
    * Additional notes (such as instructions from the domain administrator, legal notices) to display to the user. Can contain HTML. The maximum length is 2048 characters. Optional.
    */
@@ -196,7 +196,7 @@ export interface Schema$ConferenceData {
   /**
    * Additional properties related to a conference. An example would be a solution-specific setting for enabling video streaming.
    */
-  parameters?: Schema$ConferenceParameters
+  parameters?: GoogleConferenceParameters
   /**
    * The signature of the conference data.
    * Generated on server side. Must be preserved while copying the conference data between events, otherwise the conference data will not be copied.
@@ -206,7 +206,7 @@ export interface Schema$ConferenceData {
   signature?: string | null
 }
 
-export interface Schema$EventAttendee {
+export interface GoogleEventAttendee {
   /**
    * Number of additional guests. Optional. The default is 0.
    */
@@ -254,7 +254,7 @@ export interface Schema$EventAttendee {
   self?: boolean | null
 }
 
-export interface Schema$EventAttachment {
+export interface GoogleEventAttachment {
   /**
    * ID of the attached file. Read-only.
    * For Google Drive files, this is the ID of the corresponding Files resource entry in the Drive API.
@@ -280,7 +280,7 @@ export interface Schema$EventAttachment {
   title?: string | null
 }
 
-export interface Schema$Event {
+export interface GoogleEvent {
   /**
    * Whether anyone can invite themselves to the event (deprecated). Optional. The default is False.
    */
@@ -290,11 +290,11 @@ export interface Schema$Event {
    * In order to modify attachments the supportsAttachments request parameter should be set to true.
    * There can be at most 25 attachments per event,
    */
-  attachments?: Schema$EventAttachment[]
+  attachments?: GoogleEventAttachment[]
   /**
    * The attendees of the event. See the Events with attendees guide for more information on scheduling events with other calendar users. Service accounts need to use domain-wide delegation of authority to populate the attendee list.
    */
-  attendees?: Schema$EventAttendee[]
+  attendees?: GoogleEventAttendee[]
   /**
    * Whether attendees may have been omitted from the event's representation. When retrieving an event, this may be due to a restriction specified by the maxAttendee query parameter. When updating an event, this can be used to only update the participant's response. Optional. The default is False.
    */
@@ -306,7 +306,7 @@ export interface Schema$Event {
   /**
    * The conference-related information, such as details of a Google Meet conference. To create new conference details use the createRequest field. To persist your changes, remember to set the conferenceDataVersion request parameter to 1 for all event modification requests.
    */
-  conferenceData?: Schema$ConferenceData
+  conferenceData?: GoogleConferenceData
   /**
    * Creation time of the event (as a RFC3339 timestamp). Read-only.
    */
@@ -327,7 +327,7 @@ export interface Schema$Event {
   /**
    * The (exclusive) end time of the event. For a recurring event, this is the end time of the first instance.
    */
-  end?: Schema$EventDateTime
+  end?: GoogleEventDateTime
   /**
    * Whether the end time is actually unspecified. An end time is still provided for compatibility reasons, even if this attribute is set to True. The default is False.
    */
@@ -420,7 +420,7 @@ export interface Schema$Event {
   /**
    * For an instance of a recurring event, this is the time at which this event would start according to the recurrence data in the recurring event identified by recurringEventId. It uniquely identifies the instance within the recurring event series even if the instance was moved to a different time. Immutable.
    */
-  originalStartTime?: Schema$EventDateTime
+  originalStartTime?: GoogleEventDateTime
   /**
    * If set to True, Event propagation is disabled. Note that it is not the same thing as Private event properties. Optional. Immutable. The default is False.
    */
@@ -437,7 +437,7 @@ export interface Schema$Event {
    * Information about the event's reminders for the authenticated user.
    */
   reminders?: {
-    overrides?: Schema$EventReminder[]
+    overrides?: GoogleEventReminder[]
     useDefault?: boolean
   } | null
   /**
@@ -451,7 +451,7 @@ export interface Schema$Event {
   /**
    * The (inclusive) start time of the event. For a recurring event, this is the start time of the first instance.
    */
-  start?: Schema$EventDateTime
+  start?: GoogleEventDateTime
   /**
    * Status of the event. Optional. Possible values are:
    * - "confirmed" - The event is confirmed. This is the default status.
