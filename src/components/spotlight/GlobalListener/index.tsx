@@ -45,7 +45,8 @@ const GlobalListener = memo(() => {
   const { onSave } = useSaver()
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()
-  const { goTo } = useRouting()
+  const { goTo, location } = useRouting()
+  // const { initActionPerformers } = useActionPerformer()
 
   const addActions = useActionStore((store) => store.addActions)
   const addGroupedActions = useActionStore((store) => store.addGroupedActions)
@@ -73,6 +74,8 @@ const GlobalListener = memo(() => {
   }, [showSource, temp])
 
   useEffect(() => {
+    // initActionsInStore()
+
     ipcRenderer.on(IpcAction.SELECTED_TEXT, (_event, data) => {
       if (!data) {
         setSelection(undefined)

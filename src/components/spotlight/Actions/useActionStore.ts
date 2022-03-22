@@ -159,7 +159,6 @@ export const useActionStore = create<ActionStoreType>(
 
         // * If this is global action, update the value in cache
         const globalCache = false
-
         // const globalCache = actionsCache[actionId]?.value
         if (globalCache) {
           // actionsCache[actionId].value = selection.value
