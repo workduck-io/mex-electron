@@ -5,6 +5,60 @@ import { IpcAction } from './IpcAction'
 
 // TODO: change shortcut keys based on user's OS
 export const initActions: Array<ListItemType> = [
+  // {
+  //   id: 'GET_GITHUB_ISSUES_COMMENTS',
+  //   category: CategoryType.action,
+  //   type: ItemActionType.action,
+  //   shortcut: {
+  //     search: {
+  //       category: 'action',
+  //       title: 'to search',
+  //       keystrokes: 'Enter'
+  //     }
+  //   },
+  //   title: 'Search comments',
+  //   description: 'List comments',
+  //   icon: 'bi:github',
+  //   extras: {
+  //     combo: true
+  //   }
+  // },
+  // {
+  //   id: 'GET_GITHUB_REPOS',
+  //   category: CategoryType.action,
+  //   type: ItemActionType.action,
+  //   shortcut: {
+  //     search: {
+  //       category: 'action',
+  //       title: 'to search',
+  //       keystrokes: 'Enter'
+  //     }
+  //   },
+  //   title: 'Search Repositories',
+  //   description: 'List all repos from Github',
+  //   icon: 'bi:github',
+  //   extras: {
+  //     combo: true
+  //   }
+  // },
+  // {
+  //   id: 'GET_GITHUB_REPO_ISSUES',
+  //   category: CategoryType.action,
+  //   type: ItemActionType.action,
+  //   shortcut: {
+  //     search: {
+  //       category: 'action',
+  //       title: 'to search',
+  //       keystrokes: 'Enter'
+  //     }
+  //   },
+  //   title: 'Search Issues',
+  //   description: 'List all issues from Github',
+  //   icon: 'bi:github',
+  //   extras: {
+  //     combo: true
+  //   }
+  // },
   {
     id: '1',
     category: CategoryType.action,
@@ -12,7 +66,7 @@ export const initActions: Array<ListItemType> = [
     shortcut: {
       search: {
         category: 'action',
-        title: 'to search',
+        title: 'to list',
         keystrokes: 'Enter'
       }
     },

@@ -11,10 +11,9 @@ import { useSaveChanges } from '../../components/spotlight/Search/useSearchProps
 import { useSpotlightAppStore } from '../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../store/settings.spotlight'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 
 export const useGlobalShortcuts = () => {
-  const location = useLocation()
-
   const { setSelection, setSearch, setActiveItem, activeItem, search, selection } = useSpotlightContext()
 
   const { showSource } = useSpotlightSettingsStore(({ showSource, toggleSource }) => ({
@@ -24,6 +23,7 @@ export const useGlobalShortcuts = () => {
   const setSaved = useContentStore((state) => state.setSaved)
   const setInput = useSpotlightAppStore((store) => store.setInput)
 
+  const { goTo, location } = useRouting()
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const setCurrentListItem = useSpotlightEditorStore((s) => s.setCurrentListItem)
@@ -43,7 +43,10 @@ export const useGlobalShortcuts = () => {
       [spotlightShortcuts.escape.keystrokes]: (event) => {
         event.preventDefault()
         if (!shortcutDisabled) {
-          if (selection && normalMode && !search.value && !activeItem.active) {
+          if (location.pathname === '/action') {
+            handleCancel()
+            goTo(ROUTE_PATHS.home, NavigationType.replace)
+          } else if (selection && normalMode && !search.value && !activeItem.active) {
             ipcRenderer.send('close') // * TO be continued when flow are introd
             setSelection(undefined) // * this will do something
           } else if ((search.value && normalMode) || activeItem.active) {

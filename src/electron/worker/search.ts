@@ -1,5 +1,4 @@
 import { expose } from 'threads/worker'
-
 import { FileData } from './../../types/data'
 import {
   createSearchIndex,
@@ -59,7 +58,6 @@ const searchWorker: SearchWorker = {
 
       parsedBlocks.forEach((block) => {
         block.blockId = createIndexCompositeKey(nodeId, block.blockId)
-        mog('PARSING SNIPPET', { tags })
         globalSearchIndex[key].update({ ...block, tag: [...tags, nodeId] })
       })
     }

@@ -26,10 +26,10 @@ import { ROUTE_PATHS } from '../routes/urls'
 import UserPage from '../mex/UserPage'
 import Shortcuts from '../../components/mex/Settings/Shortcuts'
 import ContentEditor from '../../editor/ContentEditor'
-import { mog } from '../../utils/lib/helper'
 import NotFound from '../NotFound'
 import useBlockStore from '../../store/useBlockStore'
 import RemindersAll from '../mex/Reminders/RemindersAll'
+import SpotlightActions from '../../components/spotlight/Actions/SpotlightActions'
 
 export const SwitchWrapper = styled.div<{ isAuth?: boolean }>`
   position: fixed;
@@ -92,7 +92,7 @@ const Switch = () => {
           <Route path={ROUTE_PATHS.tasks} element={<ProtectedRoute component={Tasks} />} />
           <Route path={ROUTE_PATHS.reminders} element={<ProtectedRoute component={RemindersAll} />} />
 
-          {/* Dynamic routes */}
+          <Route path={ROUTE_PATHS.actions} element={<SpotlightActions />} />
           <Route path={`${ROUTE_PATHS.snippet}/:snippetid`} element={<ProtectedRoute component={SnippetEditor} />} />
           <Route path={ROUTE_PATHS.settings} element={<ProtectedRoute component={Settings} />}>
             <Route path="themes" element={<ProtectedRoute component={Themes} />} />

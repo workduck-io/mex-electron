@@ -7,7 +7,6 @@ import { useSnippets } from '../../hooks/useSnippets'
 import { CategoryType } from '../../store/Context/context.spotlight'
 import useDataStore from '../../store/useDataStore'
 import { useEditorStore } from '../../store/useEditorStore'
-import { mog } from '../../utils/lib/helper'
 import { useRouting } from '../../views/routes/urls'
 import { ComboboxKey } from '../Components/combobox/useComboboxStore'
 import { ILinkComboboxItem } from '../Components/ilink/components/ILinkComboboxItem'
@@ -18,6 +17,7 @@ import { ComboboxType } from '../Components/multi-combobox/types'
 import useMultiComboboxOnChange from '../Components/multi-combobox/useMultiComboboxChange'
 import useMultiComboboxOnKeyDown from '../Components/multi-combobox/useMultiComboboxOnKeyDown'
 import { SlashComboboxItem } from '../Components/SlashCommands/SlashComboboxItem'
+// import { useSyncConfig } from '../Components/SlashCommands/useSyncConfig'
 import { TagComboboxItem } from '../Components/tag/components/TagComboboxItem'
 import { ELEMENT_TAG } from '../Components/tag/defaults'
 
@@ -93,7 +93,7 @@ const useEditorPluginConfig = (editorId: string) => {
         slateElementType: 'internal',
         newItemHandler: (newItem, parentId?) => {
           const link = addILink({ ilink: newItem, parentId })
-          mog('Link', { link, newItem, parentId })
+          // mog('Link', { link, newItem, parentId })
           return link.nodeid
         },
         renderElement: SlashComboboxItem
@@ -104,7 +104,7 @@ const useEditorPluginConfig = (editorId: string) => {
         slateElementType: ELEMENT_ILINK,
         newItemHandler: (newItem, parentId?) => {
           const link = addILink({ ilink: newItem, parentId })
-          mog('Link', { link, newItem, parentId })
+          // mog('Link', { link, newItem, parentId })
           return link.nodeid
         },
         renderElement: ILinkComboboxItem

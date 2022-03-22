@@ -1,14 +1,14 @@
-import Content from './Content'
 import React from 'react'
 import Search from './Search'
-import { StyledLookup } from './styled'
+import { SpotlightContainer } from './styled'
+import { Outlet } from 'react-router-dom'
 
 const Spotlight = () => {
   return (
-    <StyledLookup>
+    <SpotlightContainer id="wd-mex-spotlight-container">
       <Search />
-      <Content />
-    </StyledLookup>
+      <Outlet />
+    </SpotlightContainer>
   )
 }
 

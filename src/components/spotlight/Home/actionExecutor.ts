@@ -6,12 +6,15 @@ import { IpcAction } from '../../../data/IpcAction'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { openNodeInMex } from '../../../utils/combineSources'
+import { useActionStore } from '../Actions/useActionStore'
+import { NavigationType, useRouting } from '../../../views/routes/urls'
 
 const useItemExecutor = () => {
-  const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
   const { setSearch, setActiveItem } = useSpotlightContext()
   const setInput = useSpotlightAppStore((store) => store.setInput)
+  const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
+  const initAction = useActionStore((store) => store.initAction)
+  const { goTo } = useRouting()
 
   const closeSpotlight = () => {
     setInput('')
@@ -24,6 +27,8 @@ const useItemExecutor = () => {
   const itemActionExecutor = (item: ListItemType, query?: string, isMetaPressed?: boolean) => {
     switch (item.type) {
       case ItemActionType.action:
+        goTo('action', NavigationType.push)
+        initAction(item.id)
         break
       case ItemActionType.customAction:
         if (item.extras.customAction) item.extras.customAction()

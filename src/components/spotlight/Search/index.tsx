@@ -13,6 +13,8 @@ import { useDebouncedCallback } from 'use-debounce'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useTheme } from 'styled-components'
 import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { useRouting } from '../../../views/routes/urls'
+import Loading from '../../../style/Loading'
 
 type QueryType = {
   value: string
@@ -22,15 +24,28 @@ type QueryType = {
 const Search: React.FC = () => {
   const theme = useTheme()
   const ref = useRef<HTMLInputElement>()
-  const { setSearch, search, activeIndex } = useSpotlightContext()
+
+  // * Searched query
   const input = useSpotlightAppStore((store) => store.input)
   const setInput = useSpotlightAppStore((store) => store.setInput)
+
+  // * For showing toast message on right
   const saved = useContentStore((store) => store.saved)
+
+  // * Editor's mode (normal/edit)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
+  const isLoading = useSpotlightAppStore((s) => s.isLoading)
 
   const { saveIt } = useSaveChanges()
+  const { location } = useRouting()
+  const { icon, placeholder } = useSearchProps()
+  const { setSearch, search, activeIndex } = useSpotlightContext()
+  const isActionSearch = location.pathname === '/action'
+
   const handleSearchInput = useDebouncedCallback((value: string) => {
-    const query: QueryType = getQuery(value)
+    // * based on value of input, set search category type
+
+    const query: QueryType = isActionSearch ? { value: value.trim(), type: CategoryType.performed } : getQuery(value)
 
     setSearch(query)
   }, 200)
@@ -61,47 +76,53 @@ const Search: React.FC = () => {
     ref.current.focus()
   }, [search, normalMode, activeIndex])
 
-  const { icon, placeholder } = useSearchProps()
-
   const onBackClick = () => {
     if (!normalMode) {
       saveIt()
     }
   }
 
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+
+    const dots = new RegExp(/\.{2,}/g)
+    const replaceContinousDots = value.replace(dots, '.') // * replace two or more dots with one dot
+
+    const key = withoutContinuousDelimiter(replaceContinousDots).key
+
+    const query = key.startsWith('.') || key.startsWith('[[.') ? key.replace('.', '') : key
+
+    setInput(replaceContinousDots)
+    handleSearchInput(query)
+  }
+
   const type = getQuery(input).type
   const before = type === CategoryType.search ? '' : type
 
+  const disabled = !normalMode
+
+  mog('loading', { isLoading })
+
   return (
-    <StyledSearch>
-      <CenterIcon cursor={!normalMode} onClick={onBackClick}>
+    <StyledSearch id="wd-mex-spotlight-search-container">
+      <CenterIcon id="wd-mex-search-left-icon" cursor={!normalMode} onClick={onBackClick}>
         <Icon color={theme.colors.primary} height={24} width={24} icon={icon} />
       </CenterIcon>
-      <Before before={before}>
+      <Before before={before} id="wd-mex-spotlight-quick-action-chip">
         <StyledInput
           ref={ref}
-          disabled={!normalMode}
-          autoFocus={normalMode}
+          disabled={disabled}
+          autoFocus={!disabled}
           value={input}
-          id="spotlight_search"
+          id="wd-mex-spotlight-search-input"
           name="spotlight_search"
           placeholder={placeholder}
-          onChange={({ target: { value } }) => {
-            const dots = new RegExp(/\.{2,}/g)
-            const replaceContinousDots = value.replace(dots, '.') // * replace two or more dots with one dot
-
-            const key = withoutContinuousDelimiter(replaceContinousDots).key
-
-            const query = key.startsWith('.') || key.startsWith('[[.') ? key.replace('.', '') : key
-
-            setInput(replaceContinousDots)
-            handleSearchInput(query)
-          }}
+          onChange={onChange}
         />
       </Before>
       {saved && <Message text="Saved" />}
-      <CenterIcon>
-        <WDLogo />
+      <CenterIcon id="wd-mex-spotlight-logo">
+        {isLoading ? <Loading color={theme.colors.primary} dots={3} transparent /> : <WDLogo />}
       </CenterIcon>
     </StyledSearch>
   )

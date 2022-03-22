@@ -1,6 +1,8 @@
 import checkboxLine from '@iconify/icons-ri/checkbox-line'
 import fileDocument from '@iconify/icons-gg/file-document'
 import appsLine from '@iconify/icons-ri/apps-line'
+import actionIcon from '@iconify/icons-ri/cursor-line'
+
 import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
@@ -29,6 +31,12 @@ const useNavlinks = () => {
         path: ROUTE_PATHS.search,
         shortcut: shortcuts.showSearch.keystrokes,
         icon: GetIcon(searchLine)
+      },
+      {
+        title: 'Actions',
+        path: ROUTE_PATHS.actions,
+        // shortcut: shortcuts.showIntegrations.keystrokes,
+        icon: GetIcon(actionIcon)
       },
       // {
       //   title: 'Dashboard',

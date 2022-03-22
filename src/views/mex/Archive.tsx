@@ -279,7 +279,6 @@ const Archive = () => {
         </SplitSearchPreviewWrapper>
       )
   }
-  // mog('Archive', { archive })
 
   return (
     <SearchContainer>

@@ -33,7 +33,7 @@ import { NavTooltip } from '../Tooltips'
 import { NavProps } from './Types'
 
 export const NavWrapper = styled.div<FocusModeProp>`
-  overflow: scroll;
+  overflow: auto;
   margin-top: 1rem;
   z-index: 10;
   display: flex;
@@ -108,7 +108,6 @@ const ComingSoon = styled.div`
 `
 
 const Nav = ({ links }: NavProps) => {
-  // const match = useMatch(`/${ROUTE_PATHS.node}/:nodeid`)
   const authenticated = useAuthStore((store) => store.authenticated)
   const focusMode = useLayoutStore((store) => store.focusMode)
   const addILink = useDataStore((store) => store.addILink)

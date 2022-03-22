@@ -11,7 +11,7 @@ const Login = () => {
   }
 
   return (
-    <StyledLoginContainer>
+    <StyledLoginContainer id="wd-mex-spotlight-login-container">
       <h2>
         <PrimaryText onClick={redirectToLoginInMex} style={{ cursor: 'pointer' }}>
           Log in&nbsp;

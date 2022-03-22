@@ -16,6 +16,7 @@ const v081 = (): CustomTransformation => {
     version: '0.8.1',
     custom: (data) => {
       if (!data.todos) return { ...data, todos: {} }
+
       return data
     }
   }
@@ -53,7 +54,7 @@ const v080_alpha_2 = (): KeysTransformation => {
 
 export const UpdateVersionTransforms: Array<DataTransformation> = [
   // Add new transformations here
-  //
+
   // For a quick one, use CustomTransformation
   //
 

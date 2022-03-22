@@ -22,7 +22,7 @@ import { useEditorStore } from '../../store/useEditorStore'
 import { useRecentsStore } from '../../store/useRecentsStore'
 import useTodoStore from '../../store/useTodoStore'
 import { Button } from '../../style/Buttons'
-import { MainHeader, PageContainer } from '../../style/Layouts'
+import { PageContainer } from '../../style/Layouts'
 import {
   ShortcutToken,
   ShortcutTokens,
@@ -63,7 +63,6 @@ const Tasks = () => {
     addCurrentFilter,
     removeCurrentFilter,
     resetCurrentFilters,
-    resetFilters,
     filters,
     currentFilters
   } = useTodoKanban()

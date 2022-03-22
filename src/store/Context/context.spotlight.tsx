@@ -5,6 +5,7 @@ export enum CategoryType {
   backlink = 'Backlinks',
   action = 'Quick Actions',
   search = 'Search Results',
+  performed = 'Performed Actions',
   meeting = 'Meetings'
 }
 
