@@ -90,6 +90,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   useEffect(() => {
     if (editor && items?.[itemIndex] && textAfterTrigger.trim() && isBlockTriggered) {
       replaceFragment(editor, targetRange, `[[${items[itemIndex].text}:`)
+      setItemIndex(0)
     }
   }, [isBlockTriggered])
 
@@ -175,7 +176,16 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
             )}
           </div>
         )}
-        <BlockCombo nodeId={items[itemIndex]?.key} isNew={items[itemIndex]?.data} />
+        <BlockCombo
+          onSelect={() => {
+            const item = items[itemIndex]
+            if (item?.type === QuickLinkType.ilink) {
+              editor && onSelectItem(editor, items[itemIndex])
+            }
+          }}
+          nodeId={items[itemIndex]?.key}
+          isNew={items[itemIndex]?.data}
+        />
         {preview && listItem?.type && (
           <ComboSeperator>
             <section>

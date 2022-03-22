@@ -15,8 +15,9 @@ import { getPlateEditorRef } from '@udecode/plate'
 import { getPathFromNodeIdHookless } from '../../../../hooks/useLinks'
 import { mog } from '../../../../utils/lib/helper'
 import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
+import { QuickLinkType } from '../../../../components/mex/NodeSelect/NodeSelect'
 
-const BlockCombo = ({ nodeId, isNew }: { nodeId?: string; isNew?: boolean }) => {
+const BlockCombo = ({ nodeId, onSelect, isNew }: { onSelect; nodeId?: string; isNew?: boolean }) => {
   const [index, setIndex] = useState<number>(0)
   const [blocks, setBlocks] = useState<Array<any>>(undefined)
 
@@ -159,7 +160,12 @@ const BlockCombo = ({ nodeId, isNew }: { nodeId?: string; isNew?: boolean }) => 
             <ComboboxItem
               onMouseEnter={() => setIndex(i)}
               className={index === i ? 'highlight' : ''}
-              onClick={() => onClickSetActiveBlock(blocks, index)}
+              onClick={() => {
+                onClickSetActiveBlock(blocks, index)
+                // if (comboItem.type === QuickLinkType.ilink) {
+                onSelect()
+                // }
+              }}
             >
               <MexIcon fontSize={20} icon="ph:squares-four-fill" color={theme.colors.primary} />
               <ItemCenterWrapper>{block.text && <ItemDesc>{block.text}</ItemDesc>}</ItemCenterWrapper>
