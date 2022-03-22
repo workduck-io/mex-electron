@@ -15,11 +15,20 @@ export const useSyncData = () => {
       update(arg)
       loadNode(useEditorStore.getState().node)
     })
+  }
+
+  return { setIpc }
+}
+
+export const useRecieveTokens = () => {
+  const setTokenData = useTokenStore((s) => s.setData)
+
+  const setReceiveToken = () => {
     ipcRenderer.on(IpcAction.RECIEVE_TOKEN_DATA, (_event, arg) => {
       console.log('Recieved token data', arg)
       setTokenData(arg)
     })
   }
 
-  return { setIpc }
+  return { setReceiveToken }
 }

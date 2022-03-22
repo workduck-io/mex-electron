@@ -21,6 +21,9 @@ import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
 import ReminderArmer from '../Reminder/ReminderArmer'
+import { useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
+import { useTokenData } from '../../../hooks/useLocalData'
+import { useRecieveTokens } from '../../../hooks/useSyncData'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
@@ -37,6 +40,8 @@ const GlobalListener = memo(() => {
 
   const { loginViaGoogle } = useAuthentication()
 
+  const { getTokenData } = useTokenData()
+  const { setReceiveToken } = useRecieveTokens()
   const { onSave } = useSaver()
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()
@@ -101,6 +106,7 @@ const GlobalListener = memo(() => {
       mog('loglogged in', { arg })
       if (arg.loggedIn) {
         if (arg.userDetails && arg.workspaceDetails) setAuthenticated(arg.userDetails, arg.workspaceDetails)
+        getTokenData()
         goTo(ROUTE_PATHS.home, NavigationType.replace)
       } else setUnAuthenticated()
     })
@@ -133,7 +139,11 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.send(IpcAction.GET_LOCAL_DATA)
+
+    setReceiveToken()
   }, [])
+
+  useGoogleCalendarAutoFetch()
 
   return (
     <>

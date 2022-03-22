@@ -15,7 +15,7 @@ import { useLocalData, useTokenData } from '../../../hooks/useLocalData'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
-import { useSyncData } from '../../../hooks/useSyncData'
+import { useRecieveTokens, useSyncData } from '../../../hooks/useSyncData'
 import { useUpdater } from '../../../hooks/useUpdater'
 import { useAuthentication, useAuthStore } from '../../../services/auth/useAuth'
 import { useAnalysis, useAnalysisIPC } from '../../../store/useAnalysis'
@@ -63,6 +63,7 @@ const Init = () => {
   const { getNodeidFromPath } = useLinks()
   const { onSave } = useSaver()
   const updateReminderState = useReminderStore((store) => store.updateReminderState)
+  const { setReceiveToken } = useRecieveTokens()
 
   const { queryIndex } = useSearch()
 
@@ -239,10 +240,10 @@ const Init = () => {
   //   })
   // }, [fetchIndexLocalStorage])
   //
-  useGoogleCalendarAutoFetch()
 
   useEffect(() => {
     setIpc()
+    setReceiveToken()
     ipcRenderer.on(IpcAction.OAUTH, async (event, data) => {
       const { type } = data
       switch (type) {
