@@ -29,7 +29,6 @@ export const useActionPerformer = () => {
     Performs an actions and rsturn's the result
     if not found, it will perform the action and add it to the cache
   */
-
   const performer = async (actionId: string, fetch?: boolean) => {
     const actionConfig = actionConfigs[actionId]
     const prevActionValue = getPrevActionValue(actionId)

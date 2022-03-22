@@ -1,6 +1,6 @@
 import create from 'zustand'
 import { ActionHelperConfig, ReturnType, ActionGroup } from '@workduck-io/action-request-helper'
-import { actionGroups, actionsConfig } from './data'
+import { actionsConfig } from './data'
 import { ListItemType } from '../SearchResults/types'
 import { persist } from 'zustand/middleware'
 
@@ -75,7 +75,7 @@ export const useActionStore = create<ActionStoreType>(
       actions: [],
       setActions: (actions: Array<ListItemType>) => set({ actions }),
 
-      actionGroups: actionGroups,
+      actionGroups: {},
       setActionGroups: (actionGroups: Record<string, ActionGroup>) => set({ actionGroups }),
 
       actionConfigs: actionsConfig(),
@@ -154,7 +154,6 @@ export const useActionStore = create<ActionStoreType>(
           const index = cachedActions.findIndex((cached) => cached.actionId === actionId)
 
           const actions = cachedActions.slice(0, index)
-
           const updatedActions = [...actions, { ...cachedActions[index], value: selection.value }]
 
           const size = activeAction?.size - 1

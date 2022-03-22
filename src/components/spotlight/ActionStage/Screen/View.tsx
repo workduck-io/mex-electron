@@ -55,14 +55,7 @@ const View: React.FC<ViewProps> = ({ item, onBack, onNext, onPrev }) => {
         ))}
       </ViewInfo>
       <ViewMeta>
-        <Row
-          row={viewMeta}
-          isView
-          type="column"
-          // onClick={() => {
-          //   // mog('ROW')
-          // }}
-        />
+        <Row row={viewMeta} isView type="column" />
       </ViewMeta>
     </StyledView>
   )

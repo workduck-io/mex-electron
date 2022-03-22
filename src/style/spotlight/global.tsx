@@ -8,6 +8,7 @@ const GlobalStyle = createGlobalStyle`
 
   html {
     height: 100vh;
+    overflow: hidden;
   }
 
   #spotlight {

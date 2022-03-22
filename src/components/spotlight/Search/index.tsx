@@ -103,6 +103,10 @@ const Search: React.FC = () => {
 
   mog('loading', { isLoading })
 
+  const disabled = !normalMode
+
+  mog('loading', { isLoading })
+
   return (
     <StyledSearch id="wd-mex-spotlight-search-container">
       <CenterIcon id="wd-mex-search-left-icon" cursor={!normalMode} onClick={onBackClick}>
