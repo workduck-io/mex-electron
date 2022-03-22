@@ -171,7 +171,6 @@ export const useActionStore = create<ActionStoreType>(
           const index = cachedActions.findIndex((cached) => cached.actionId === actionId)
 
           const actions = cachedActions.slice(0, index)
-
           const updatedActions = [...actions, { ...cachedActions[index], value: selection.value }]
 
           const size = activeAction?.size - 1
