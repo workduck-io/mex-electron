@@ -3,9 +3,7 @@ import { MEX_TAG } from '../data/Defaults/auth'
 import { IS_DEV } from '../data/Defaults/dev_'
 
 export const BASE_INTEGRATION_URL = 'https://http.workduck.io/integration'
-export const MEXIT_BACKEND_URL_BASE = IS_DEV
-  ? 'http://localhost:5000/api/v1'
-  : 'https://mex-webapp-dev.workduck.io/api/v1'
+
 export const integrationURLs = {
   createTemplate: `${BASE_INTEGRATION_URL}/sync/template`,
   getIntentValues: `${BASE_INTEGRATION_URL}/intents/value`,
@@ -23,14 +21,17 @@ export const BASE_USER_URL = 'https://http.workduck.io/user'
 export const BOOKMARK_URL = BASE_API_URL
 export const MEXIT_FRONTEND_BASE_URL = IS_DEV ? 'http://localhost:3333' : 'https://mexit.workduck.io'
 
-export const GOOGLE_OAUTH_URL = `${MEXIT_FRONTEND_BASE_URL}/oauth/desktop`
+export const MEXIT_BACKEND_URL_BASE = IS_DEV
+  ? 'http://localhost:5000/api/v1'
+  : 'https://mex-webapp-dev.workduck.io/api/v1'
 
 export const WORKDUCK_API_BASE = 'https://http.workduck.io'
 export const CDN_BASE = 'https://cdn.workduck.io'
 
-
-
-export const GOOGLE_CAL_BASE = 'https://www.googleapis.com/calendar/v3/calendars';
+export const GOOGLE_OAUTH_URL = `${MEXIT_FRONTEND_BASE_URL}/oauth/desktop`
+export const GOOGLE_CAL_BASE = 'https://www.googleapis.com/calendar/v3/calendars'
+// http://localhost:5000/api/v1/oauth2/getGoogleAccessToken
+export const GOOGLE_OAUTH2_REFRESH_URL = `${MEXIT_BACKEND_URL_BASE}/oauth2/getGoogleAccessToken`
 // http://localhost:5000/api/v1/googleservices/calendar
 // http://localhost:5000/api/v1/googleservices/calendar/list?maxResults=5
 

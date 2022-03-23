@@ -1,6 +1,7 @@
 export interface AuthToken {
   accessToken: string
   idToken: string
+  refreshToken: string
 }
 
 export interface GoogleAuthTokens {
@@ -9,4 +10,11 @@ export interface GoogleAuthTokens {
 
 export interface AuthTokenData {
   googleAuth?: GoogleAuthTokens
+}
+
+// Note that there are more fields, only required ones are listed here
+export interface GoogleOAuthTokenData {
+  email: string
+  email_verified: boolean
+  exp: number
 }

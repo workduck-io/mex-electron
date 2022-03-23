@@ -3,12 +3,13 @@ import axios from 'axios'
 import { add, formatDistanceToNow, sub } from 'date-fns'
 import { useEffect } from 'react'
 import create from 'zustand'
-import { GOOGLE_CAL_BASE } from '../apis/routes'
+import { GOOGLE_CAL_BASE, GOOGLE_OAUTH2_REFRESH_URL } from '../apis/routes'
 import { ItemActionType, ListItemType } from '../components/spotlight/SearchResults/types'
 import { testEvents } from '../data/Defaults/Test/calendar'
-import { useTokenStore } from '../services/auth/useTokens'
+import { checkTokenGoogleCalendar, fetchNewCalendarToken, useTokenStore } from '../services/auth/useTokens'
 import { CategoryType } from '../store/Context/context.spotlight'
 import { GoogleEvent } from '../types/gcal'
+import { mog } from '../utils/lib/helper'
 
 /*
  * Need
@@ -146,6 +147,7 @@ export const useCalendarStore = create<UserCalendarState>((set) => ({
 
 export const useCalendar = () => {
   const setEvents = useCalendarStore((state) => state.setEvents)
+  const updateToken = useTokenStore((state) => state.updateGoogleCalendarToken)
 
   const getUserEvents = () => {
     const events = useCalendarStore.getState().events
@@ -169,23 +171,31 @@ export const useCalendar = () => {
     return todayEventList
   }
 
-  const fetchGoogleCalendarEvents = () => {
+  const fetchGoogleCalendarEvents = async () => {
     const now = new Date()
     const yesterday = sub(now, { days: 1 }).toISOString()
     const twoDaysFromNow = add(now, { days: 2 }).toISOString()
     const tokens = useTokenStore.getState().data
     const max = 5
-    // Headers in axios post request
-    //
 
-    if (
-      !tokens.googleAuth ||
-      !tokens.googleAuth.calendar ||
-      !tokens.googleAuth.calendar.accessToken ||
-      !tokens.googleAuth.calendar.idToken
-    ) {
-      return
+    const tokenStatus = checkTokenGoogleCalendar(tokens)
+
+    switch (tokenStatus) {
+      case 'absent':
+        return
+      case 'expired': {
+        const refreshToken = tokens.googleAuth.calendar.refreshToken
+        const resp = await fetchNewCalendarToken(refreshToken)
+        const { accessToken, idToken } = resp
+        mog('refresh token', { resp, accessToken, idToken })
+        updateToken(accessToken, idToken)
+        return
+      }
+      case 'active':
+        break
     }
+
+    mog('fetching events', { now, yesterday, twoDaysFromNow })
     const reqUrl = encodeURI(
       `${GOOGLE_CAL_BASE}/primary/events?maxResults=${max}&timeMin=${yesterday}&timeMax=${twoDaysFromNow}`
     )
@@ -227,9 +237,11 @@ export const useGoogleCalendarAutoFetch = () => {
   const { fetchGoogleCalendarEvents } = useCalendar()
 
   useEffect(() => {
+    console.log('Setting up autofetch for Google Calendar Events')
     const id = setInterval(() => {
+      console.log('Fetching Google Calendar Events')
       fetchGoogleCalendarEvents()
-    }, 1000 * 60 * 15) // 15 minutes
+    }, 1000 * 60 * 1) // 15 minutes
     return () => clearInterval(id)
   }, [tokens])
 }

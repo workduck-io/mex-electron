@@ -251,7 +251,7 @@ const Init = () => {
           await loginViaGoogle(data.idToken, data.accessToken, true)
           break
         case 'calendar_google':
-          addGoogleCalendarToken({ accessToken: data.accessToken, idToken: data.idToken })
+          addGoogleCalendarToken({ accessToken: data.accessToken, idToken: data.idToken, refreshToken: data.refreshToken })
           break
         default:
           await loginViaGoogle(data.idToken, data.accessToken, true)

@@ -410,11 +410,12 @@ app.on('open-url', function (event, url) {
   const URLparams = new URL(url).searchParams
   const accessToken = URLparams.get('access_token')
   const idToken = URLparams.get('id_token')
+  const refreshToken = URLparams.get('refresh_token')
   const type = URLparams.get('type') ?? 'login_google'
 
-  console.log('Sending accessToken', { url, URLparams, type, accessToken, idToken })
-  mex.webContents.send(IpcAction.OAUTH, { type, accessToken, idToken })
-  spotlight.webContents.send(IpcAction.OAUTH, { type, accessToken, idToken })
+  console.log('Sending accessToken', { url, URLparams, type, accessToken, idToken, refreshToken })
+  mex.webContents.send(IpcAction.OAUTH, { type, accessToken, idToken, refreshToken })
+  spotlight.webContents.send(IpcAction.OAUTH, { type, accessToken, idToken, refreshToken })
 })
 
 app
