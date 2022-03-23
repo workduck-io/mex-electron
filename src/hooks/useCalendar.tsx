@@ -211,6 +211,7 @@ export const useCalendar = () => {
         setEvents(events)
       })
 
+    // When client is accessible, use it to get the events
     // client
     //   .get('', {
     //     headers: {
