@@ -238,10 +238,11 @@ export const useGoogleCalendarAutoFetch = () => {
 
   useEffect(() => {
     console.log('Setting up autofetch for Google Calendar Events')
+    fetchGoogleCalendarEvents()
     const id = setInterval(() => {
       console.log('Fetching Google Calendar Events')
       fetchGoogleCalendarEvents()
-    }, 1000 * 60 * 1) // 15 minutes
+    }, 1000 * 60 * 15) // 15 minutes
     return () => clearInterval(id)
   }, [tokens])
 }
