@@ -247,7 +247,6 @@ const globalStyles = css`
 const containerStyle = css`
   background-color: ${transparentize(0.2, palette.body)};
   box-shadow: 0px 15px 40px ${({ theme }) => transparentize(0.9, theme.colors.palette.black)};
-  backdrop-filter: blur(10px);
 `
 
 const containerStyleReset = css`
@@ -255,7 +254,9 @@ const containerStyleReset = css`
   box-shadow: none;
 `
 
-const spaceBlocks = SpaceBlocksCss({ containerStyle, containerStyleReset, heightMain })
+const blur = `10px`
+
+const spaceBlocks = SpaceBlocksCss({ containerStyle, containerStyleReset, heightMain, blur })
 
 export const RenarStylesWithoutContainer = css`
   ${globalStyles}

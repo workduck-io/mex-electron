@@ -26,11 +26,21 @@ interface SpaceProps {
   containerStyle?: FlattenInterpolation<ThemeProps<DefaultTheme>>
   containerStyleReset?: FlattenInterpolation<ThemeProps<DefaultTheme>>
   heightMain?: string
+  blur?: string
 }
 
-export const SpaceBlocksCss = ({ containerStyle, containerStyleReset, heightMain }: SpaceProps) => {
+export const SpaceBlocksCss = (props: SpaceProps) => {
+  const { containerStyleReset, heightMain, blur } = props
   const grayMixerTrans = (n: number) => css`
     ${({ theme }) => transparentize(0.33, theme.colors.gray[n])}
+  `
+
+  const containerStyle = css`
+    ${props.containerStyle};
+    ${blur &&
+    css`
+      backdrop-filter: blur(${blur});
+    `}
   `
 
   // const NeoContainer = css`
@@ -60,7 +70,7 @@ export const SpaceBlocksCss = ({ containerStyle, containerStyleReset, heightMain
 
   const edStyles = css`
     ${EditorStyles} {
-      ${containerStyle}
+      ${props.containerStyle}
     }
     ${StyledEditor} {
       margin: 0 auto;
