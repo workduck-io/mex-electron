@@ -40,7 +40,7 @@ const Todo = (props: any) => {
   // const nodeid = useEditorStore((store) => store.node.nodeid)
   const nodeid = cleanEditorId(editorId)
 
-  mog('Todo', { nodeid, editorId, readOnly })
+  // mog('Todo', { nodeid, editorId, readOnly })
 
   const onDeleteClick = () => {
     const editor = getPlateEditorRef()

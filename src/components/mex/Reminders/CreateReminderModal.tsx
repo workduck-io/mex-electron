@@ -1,4 +1,4 @@
-import { startOfToday } from 'date-fns'
+import { add, startOfToday } from 'date-fns'
 import { nanoid } from 'nanoid'
 import React, { useEffect } from 'react'
 import ReactDatePicker from 'react-datepicker'
@@ -241,15 +241,19 @@ const CreateReminderModal = () => {
               return date.getTime() >= now
             }}
             onChange={(date) => {
-              console.log(date)
               setTime(date.getTime())
             }}
             inline
           />
-          {modalValue.time && (
+          {modalValue.time && modalValue.time > Date.now() ? (
             <SelectedDate>
               <i>Remind :</i>
               <span>{getRelativeDate(new Date(modalValue.time))}</span>
+            </SelectedDate>
+          ) : (
+            <SelectedDate>
+              <span>Please select a time in the future. </span>
+              <i>(Unless you have a time machine.)</i>
             </SelectedDate>
           )}
         </DatePickerStyles>

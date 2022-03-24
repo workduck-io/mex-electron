@@ -1,5 +1,4 @@
 import { AppType } from '../../hooks/useInitialize'
-import { nanoid } from 'nanoid'
 import { appNotifierWindow } from '../../electron/utils/notifiers'
 import React, { useEffect, useMemo, useState } from 'react'
 import { PriorityType, TodoStatus, TodoType } from '../../editor/Components/Todo/types'
@@ -8,7 +7,6 @@ import Todo, { TodoControls } from '../../ui/components/Todo'
 import { IpcAction } from '../../data/IpcAction'
 import { Reminder } from '../../types/reminders'
 import { getPureContent } from '../../hooks/useTodoKanban'
-import TodoPlain from '../../ui/components/Todo.plain'
 import useTodoStore from '../../store/useTodoStore'
 import { mog } from '../../utils/lib/helper'
 
@@ -34,10 +32,6 @@ const NotificationTodo = ({ todo, reminder, dismissNotification, isNotification,
       setLocalTodo(ntodo)
     }
   }, [todo, todos])
-
-  // const { content, rid } = useMemo(() => {
-  //   return { content: getPureContent(localTodo), rid: nanoid() }
-  // }, [localTodo, todo])
 
   // mog('todo', { reminder, localTodo })
   const controls: TodoControls = {
