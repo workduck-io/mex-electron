@@ -45,8 +45,8 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, oid, controls, showDel
       : getTodoFromStore(parentNodeId, todoid)
   }, [parentNodeId, todoid, animate, todos])
 
-  const { getBlockReminder } = useReminders()
-  const reminder = getBlockReminder(todoid)
+  // const { getBlockReminder } = useReminders()
+  // const reminder = getBlockReminder(todoid)
 
   useEffect(() => {
     if (animate) setAnimate(false)
@@ -93,9 +93,9 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, oid, controls, showDel
             fontSize={20}
           />
         )}
-        {(showOptions || (reminder && !reminder.state.done)) && (
-          <TodoReminder oid={oid} todoid={todo.id} nodeid={parentNodeId} content={getPureContent(todo)} />
-        )}
+        {/*
+          (showOptions || (reminder && !reminder.state.done)) && (<TodoReminder oid={oid} todoid={todo.id} nodeid={parentNodeId} content={getPureContent(todo)} />)
+        */}
         {(showOptions || todo.metadata.priority !== PriorityType.noPriority) && (
           <PrioritySelect value={todo.metadata.priority} onPriorityChange={onPriorityChange} id={todo.id} />
         )}
