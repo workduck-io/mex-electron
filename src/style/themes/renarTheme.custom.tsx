@@ -1,87 +1,109 @@
 import { transparentize } from 'polished'
-import { NavWrapper } from '../../components/mex/Sidebar/Nav'
 import { css } from 'styled-components'
-import { SidebarDiv } from '../Sidebar'
-import { GridWrapper } from '../Grid'
-import { NavButton } from '../Nav'
-import { EditorStyles, NodeInfo } from '../Editor'
-import { Widget } from '../../editor/Components/SyncBlock'
-import { AsyncButton, Button } from '../Buttons'
-import { DataInfobarWrapper } from '../../components/mex/Sidebar/DataInfoBar'
-import { StyledGraph, GraphTools, GraphWrapper } from '../../components/mex/Graph/Graph.styles'
-import { EditorPreviewWrapper } from '../../editor/Components/EditorPreview/EditorPreview.styles'
-import { SettingsOptions, SettingTitle } from '../../views/mex/Settings'
-import { BackCard } from '../Card'
+import { GraphWrapper, StyledGraph } from '../../components/mex/Graph/Graph.styles'
+import { ServiceChip, TemplateCard } from '../../components/mex/Integrations/Template/styled'
+import { StyledMenu } from '../../components/mex/NodeSelect/NodeSelect.styles'
 import { ComingSoonCard, ImporterCard } from '../../components/mex/Settings/Importers'
-import { RightCut, ServiceCard } from '../Integration'
-import { TemplateCard } from '../../components/mex/Integrations/Template/styled'
+import { DataInfobarWrapper } from '../../components/mex/Sidebar/DataInfoBar'
+import { NavWrapper } from '../../components/mex/Sidebar/Nav'
+import { BalloonToolbarBase } from '../../editor/Components/BalloonToolbar'
+import { EditorPreviewWrapper } from '../../editor/Components/EditorPreview/EditorPreview.styles'
+import { SILink } from '../../editor/Components/ilink/components/ILinkElement.styles'
+import { Widget } from '../../editor/Components/SyncBlock'
+import { ComboboxItem, ComboboxRoot } from '../../editor/Components/tag/components/TagCombobox.styles'
+import { TodoContainer } from '../../ui/components/Todo.style'
 import { ArchivedNode } from '../../views/mex/Archive'
-import { Result, ResultHeader, SearchContainer } from '../Search'
+import { SettingsOptions, SettingTitle } from '../../views/mex/Settings'
+import { SwitchWrapper } from '../../views/router/Switch'
+import { BackCard } from '../Card'
+import { EditorStyles, NodeInfo, StyledEditor } from '../Editor'
+import { GridWrapper } from '../Grid'
+import { InfobarTools, InfoBarWrapper } from '../infobar'
+import { MenuTrigger, RightCut, ServiceCard } from '../Integration'
+import { NavButton } from '../Nav'
+import { Result, ResultHeader, SearchContainer, SplitSearchPreviewWrapper } from '../Search'
+import { SidebarDiv, StyledTree } from '../Sidebar'
 import { CreateSnippet, SSnippet } from '../Snippets'
-import { ComboboxRoot, ComboboxItem } from '../../editor/Components/tag/components/TagCombobox.styles'
-import { ActionDraggableIcon } from '../../editor/Actions/withDraggable'
-import { InfoBarWrapper } from '../infobar'
+import { Title } from '../Typography'
+import { SpaceBlocksCss } from './spaceBlocks'
 
+const palette = { body: '#1B1F3D' }
+
+const listColors = css`
+  li::marker {
+    color: ${({ theme }) => transparentize(0.5, theme.colors.secondary)};
+  }
+`
 const grayMixerTrans = (n: number) => css`
   ${({ theme }) => transparentize(0.33, theme.colors.gray[n])}
 `
 const grayMainColor = css`
-  ${grayMixerTrans(10)}
+  ${({ theme }) => theme.colors.gray[10]}
 `
 
-const heightMain = css`
-  calc(100vh - 4rem)
-`
+const heightMain = `calc(100vh - 4rem)`
 
 const graphStyles = css`
   ${StyledGraph} {
-    height: ${heightMain};
     display: flex;
     flex-direction: column;
     gap: ${({ theme }) => theme.spacing.medium};
-  }
-  ${GraphTools} {
-    backdrop-filter: blur(10px);
-    background-color: ${grayMainColor};
-    margin: 2rem 0 0;
   }
   ${InfoBarWrapper} {
     margin-right: 3rem;
     overflow: auto;
   }
   ${GraphWrapper} {
-    backdrop-filter: blur(10px);
-    background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
 `
 
 const edStyles = css`
-  ${EditorStyles} {
-    border-radius: ${({ theme }) => theme.borderRadius.small};
-    backdrop-filter: blur(10px);
-    background-color: ${grayMainColor};
+  ${MenuTrigger} {
+    background-color: ${({ theme }) => theme.colors.gray[10]};
   }
-  ${NodeInfo} {
-    backdrop-filter: blur(10px);
-    background-color: ${grayMainColor};
-    ${Button}, ${AsyncButton} {
-      background-color: ${grayMixerTrans(9)};
+  ${StyledEditor} {
+    padding: 0 3rem;
+  }
+  ${EditorStyles} {
+    border-radius: 1rem;
+    padding: 1.25rem;
+    transition: all 0.25s ease-in-out;
+    blockquote {
+      background-color: ${({ theme }) => theme.colors.gray[9]};
+    }
+    ${listColors}
+  }
+  ${SILink} {
+    .ILink_decoration {
+      color: ${({ theme }) => theme.colors.primary};
+      &_left {
+      }
+      &_right {
+        margin-left: ${({ theme }) => theme.spacing.tiny};
+      }
+      &_value {
+        font-weight: 600;
+        color: ${({ theme }) => theme.colors.primary};
+      }
     }
   }
   ${Widget} {
-    background-color: ${grayMixerTrans(8)};
+    background-color: ${grayMixerTrans(9)};
   }
   ${DataInfobarWrapper} {
-    height: ${heightMain};
-    backdrop-filter: blur(10px);
-    background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
-    margin-top: 2rem;
+  }
+  ${BalloonToolbarBase} {
+    background-color: ${({ theme }) => theme.colors.gray[8]};
+    box-shadow: 0px 10px 20px ${({ theme }) => transparentize(0.75, theme.colors.palette.black)};
+    .slate-ToolbarButton-active,
+    .slate-ToolbarButton:hover {
+      color: ${({ theme }) => theme.colors.secondary};
+      background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
+    }
   }
   ${EditorPreviewWrapper} {
-    backdrop-filter: blur(10px);
-    background: ${grayMainColor} !important;
     ${EditorStyles} {
       background: transparent;
     }
@@ -95,17 +117,19 @@ const edStyles = css`
       color: ${({ theme }) => theme.colors.secondary};
     }
   }
+`
 
-  ${ActionDraggableIcon} {
-    background-color: ${grayMixerTrans(9)};
+const todoStyles = css`
+  ${TodoContainer} {
+    ${EditorStyles} {
+      padding: 0;
+    }
   }
 `
 
 const settingsStyles = css`
   ${SettingsOptions} {
     padding: ${({ theme }) => theme.spacing.medium};
-    backdrop-filter: blur(10px);
-    background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
   ${SettingTitle} {
@@ -115,40 +139,36 @@ const settingsStyles = css`
   }
   ${BackCard}, ${ComingSoonCard}, ${ImporterCard} {
     border: none;
-    backdrop-filter: blur(10px);
-    background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
 `
 
 const gridCardStyles = css`
   ${ArchivedNode}, ${Result} {
-    backdrop-filter: blur(10px);
-    background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
     overflow: hidden;
   }
   ${ResultHeader} {
-    backdrop-filter: blur(10px);
     background-color: ${grayMixerTrans(9)};
   }
-  ${SSnippet} {
-    backdrop-filter: blur(10px);
-    background-color: ${grayMainColor};
-  }
   ${CreateSnippet} {
-    backdrop-filter: blur(10px);
-    background-color: ${grayMixerTrans(8)};
+    background-color: ${grayMixerTrans(10)};
   }
+`
+
+const searchStyles = css`
   ${SearchContainer} {
     margin-right: 3rem;
+  }
+  ${SplitSearchPreviewWrapper} {
+    ${Title} {
+      color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `
 
 const integrationStyles = css`
   ${TemplateCard}, ${ServiceCard} {
-    backdrop-filter: blur(10px);
-    background-color: ${grayMainColor};
     border-radius: ${({ theme }) => theme.borderRadius.small};
     &:hover {
       border: 0.2rem solid ${({ theme }) => theme.colors.primary};
@@ -159,56 +179,121 @@ const integrationStyles = css`
         transparent;
     }
   }
+  ${ServiceChip} {
+    color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.gray[9]};
+    box-shadow: none;
+  }
 `
 
 const navStyles = css`
-  ${SidebarDiv} {
-    height: ${heightMain};
-    backdrop-filter: blur(10px);
-    background-color: ${grayMainColor};
-    border-radius: ${({ theme }) => theme.borderRadius.small};
-    padding: 0 ${({ theme }) => theme.spacing.medium};
-    .rc-tree .rc-tree-treenode .rc-tree-node-selected {
-      background-color: ${({ theme }) => theme.colors.primary};
-      .rc-tree-title {
-        color: ${({ theme }) => theme.colors.text.oppositePrimary} !important;
-      }
-      box-shadow: 0px 2px 6px ${({ theme }) => theme.colors.primary};
-    }
+  ${SwitchWrapper} {
+    overflow: unset;
   }
   ${NavWrapper} {
-    padding: 0;
-    margin: 2rem 0;
-    overflow: auto;
-    height: ${heightMain};
-    min-height: ${heightMain};
     border-radius: ${({ theme }) => theme.borderRadius.small};
-    backdrop-filter: blur(10px);
-    background-color: ${grayMainColor};
-  }
-  ${GridWrapper} {
-    margin: 1rem;
-    height: calc(100vh - 2rem);
-    width: calc(100vw - 2rem);
-    grid-gap: ${({ theme }) => theme.spacing.medium};
   }
   ${NavButton} {
     margin-top: 0;
   }
 `
 
-export const RenarStyles = css`
+const sidebarStyles = css`
+  ${SidebarDiv} {
+    border-radius: ${({ theme }) => theme.borderRadius.small};
+    padding: 0 ${({ theme }) => theme.spacing.medium};
+    ${StyledTree} {
+      ${({ theme }) => css`
+        .rc-tree .rc-tree-treenode {
+          .rc-tree-node-selected {
+            background-color: ${theme.colors.primary};
+            .rc-tree-title {
+              color: ${theme.colors.text.oppositePrimary} !important;
+            }
+            box-shadow: 0px 2px 6px ${theme.colors.primary};
+          }
+
+          span.rc-tree-switcher {
+            color: ${theme.colors.primary};
+            :hover {
+              color: ${theme.colors.primary};
+            }
+          }
+        }
+      `}
+    }
+  }
+`
+
+const modalStyles = css`
   .ModalContent {
-    background-color: ${grayMainColor};
     border: none;
   }
   .ModalOverlay {
-    backdrop-filter: blur(10px);
   }
+
+  ${StyledMenu} {
+    box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.5, theme.colors.palette.black)};
+    background-color: ${({ theme }) => theme.colors.gray[9]};
+  }
+`
+
+const globalStyles = css`
+  body {
+    background-color: ${({ theme }) => theme.colors.gray[10]};
+  }
+`
+
+const containerStyle = css`
+  background-color: ${transparentize(0.2, palette.body)};
+  box-shadow: 0px 15px 40px ${({ theme }) => transparentize(0.9, theme.colors.palette.black)};
+`
+
+const containerStyleReset = css`
+  background-color: transparent;
+  box-shadow: none;
+`
+
+const blur = `10px`
+
+const spaceBlocks = SpaceBlocksCss({ containerStyle, containerStyleReset, heightMain, blur })
+
+export const RenarStylesWithoutContainer = css`
+  ${globalStyles}
+  ${modalStyles}
   ${navStyles}
+  ${sidebarStyles}
   ${settingsStyles}
-    ${integrationStyles}
-    ${gridCardStyles}
-    ${edStyles}
+  ${searchStyles}
+  ${integrationStyles}
+  ${gridCardStyles}
+  ${edStyles}
   ${graphStyles}
+  ${todoStyles}
+`
+
+export const RenarStyles = css`
+  ${spaceBlocks}
+  ${RenarStylesWithoutContainer}
+`
+
+const imperialContainerStyle = css`
+  background-color: ${transparentize(0.2, palette.body)};
+  box-shadow: 0px 15px 40px ${({ theme }) => transparentize(0.9, theme.colors.palette.black)};
+`
+
+const imperialContainerStyleReset = css`
+  background-color: transparent;
+  box-shadow: none;
+`
+
+const imperialSpaceBlocks = SpaceBlocksCss({
+  containerStyle: imperialContainerStyle,
+  containerStyleReset: imperialContainerStyleReset,
+  heightMain
+})
+
+export const ImperialStyles = css`
+  ${imperialSpaceBlocks}
+  ${RenarStylesWithoutContainer}
 `

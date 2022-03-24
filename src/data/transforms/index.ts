@@ -1,11 +1,22 @@
 import { ArrayTransform, CustomTransformation, DataTransformation, KeysTransformation } from '../../utils/dataTransform'
 
+const v085 = (): CustomTransformation => {
+  return {
+    type: 'CustomTransformation',
+    version: '0.9.0-alpha.1',
+    custom: (data) => {
+      if (!data.reminders) return { ...data, reminders: [] }
+      return data
+    }
+  }
+}
 const v081 = (): CustomTransformation => {
   return {
     type: 'CustomTransformation',
     version: '0.8.1',
     custom: (data) => {
-      return { ...data, todo: {} }
+      if (!data.todo) return { ...data, todo: {} }
+      return data
     }
   }
 }
@@ -47,5 +58,6 @@ export const UpdateVersionTransforms: Array<DataTransformation> = [
   //
 
   v080_alpha_2(),
-  v081()
+  v081(),
+  v085()
 ]

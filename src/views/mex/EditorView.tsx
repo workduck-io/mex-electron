@@ -11,7 +11,7 @@ import { Outlet } from 'react-router-dom'
 
 const EditorViewWrapper = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
   height: 100%;

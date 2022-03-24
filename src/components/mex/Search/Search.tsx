@@ -7,10 +7,12 @@ import { useFilters } from '../../../hooks/useFilters'
 import { useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
 import { useNodes } from '../../../hooks/useNodes'
+import { useSearch } from '../../../hooks/useSearch'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
+import { EditorPreviewStyles } from '../../../style/Editor'
 import { MainHeader } from '../../../style/Layouts'
 import {
   Result,
@@ -24,7 +26,8 @@ import {
   SearchPreviewWrapper,
   SplitSearchPreviewWrapper
 } from '../../../style/Search'
-import { Title } from '../../../style/Typography'
+import { Title, TitleText } from '../../../style/Typography'
+import { GenericSearchResult } from '../../../types/search'
 import { SplitType } from '../../../ui/layout/splitView'
 import { getInitialNode } from '../../../utils/helpers'
 import { mog } from '../../../utils/lib/helper'
@@ -36,9 +39,6 @@ import TagsRelated from '../Tags/TagsRelated'
 import SearchFilters from './SearchFilters'
 import SearchView, { RenderFilterProps, RenderItemProps, RenderPreviewProps } from './SearchView'
 import { View } from './ViewSelector'
-
-import { useSearch } from '../../../hooks/useSearch'
-import { GenericSearchResult } from '../../../types/search'
 
 const Search = () => {
   const { loadNode } = useLoad()
@@ -175,10 +175,10 @@ const Search = () => {
       return (
         <SplitSearchPreviewWrapper id={`splitSearchPreview_for_${item.id}`}>
           <Title>
-            {node.path}
             <Icon icon={icon} />
+            <TitleText>{node.path}</TitleText>
+            <Metadata fadeOnHover={false} node={edNode} />
           </Title>
-          <Metadata fadeOnHover={false} node={edNode} />
           <EditorPreviewRenderer content={content} editorId={`SearchPreview_editor_${item.id}`} />
           <Backlinks nodeid={node.nodeid} />
           <TagsRelated nodeid={node.nodeid} />

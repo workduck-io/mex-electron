@@ -46,6 +46,7 @@ export const DefaultFileData = (version: string): FileData => ({
   archive: [],
   bookmarks: [],
   todos: {},
+  reminders: [],
   tags: [{ value: 'mex' }],
   syncBlocks: [],
   templates: [],

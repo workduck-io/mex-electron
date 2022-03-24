@@ -12,6 +12,7 @@ import { useSpotlightSettingsStore } from '../store/settings.spotlight'
 import { useSyncStore } from '../store/useSyncStore'
 import useThemeStore from '../store/useThemeStore'
 import useTodoStore from '../store/useTodoStore'
+import { useReminderStore } from '../hooks/useReminders'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
@@ -24,6 +25,7 @@ export const useInitialize = () => {
   const initContents = useContentStore((state) => state.initContents)
   const initSpotlightSettings = useSpotlightSettingsStore((state) => state.initSpotlightSettings)
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
+  const setReminders = useReminderStore((state) => state.setReminders)
   const setTheme = useThemeStore((state) => state.setTheme)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
   const { generateSlashCommands } = useSlashCommands()
@@ -33,6 +35,7 @@ export const useInitialize = () => {
     const {
       tags,
       todos,
+      reminders,
       ilinks,
       linkCache,
       tagsCache,
@@ -67,6 +70,7 @@ export const useInitialize = () => {
     initSyncBlocks(syncBlocks, templates, services, intents)
     initSnippets(snippets)
     initTodos(todos)
+    setReminders(reminders)
     const currentTheme = getTheme(data.userSettings.theme)
     appNotifierWindow(IpcAction.SET_THEME, AppType.MEX, { theme: currentTheme })
     setTheme(currentTheme)

@@ -27,7 +27,7 @@ import { getAppleNotes } from '../utils/importers/appleNotes'
 import { mog } from '../utils/lib/helper'
 import { sanitizeHtml } from '../utils/sanitizeHtml'
 import MenuBuilder from './menu'
-import Toast, { ToastStatus, ToastType } from './Toast'
+import Toast from './Toast'
 import { setupUpdateService } from './update'
 import { getFileData, setFileData } from './utils/filedata'
 import {
@@ -49,6 +49,10 @@ import {
   dumpIndexDisk
 } from './worker/controller'
 import { getIndexData } from './utils/indexData'
+import { ToastStatus, ToastType } from '../types/toast'
+import { getReminderDimensions, REMINDERS_DIMENSIONS } from '../services/reminders/reminders'
+import { IS_DEV } from '../data/Defaults/dev_'
+import { Reminder, ReminderActions } from '../types/reminders'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -160,7 +164,11 @@ const createSpotLighWindow = (show?: boolean) => {
 
   require('@electron/remote/main').enable(spotlight.webContents)
 
-  if (isAlpha) spotlight.webContents.openDevTools()
+  if (
+    isAlpha
+    // || IS_DEV
+  )
+    spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -605,6 +613,43 @@ ipcMain.on(IpcAction.REDIRECT_TO, (_event, arg) => {
   mex?.focus()
   mex?.show()
   mex?.webContents.send(IpcAction.REDIRECT_TO, { page: arg.page })
+})
+
+ipcMain.on(
+  IpcAction.ACTION_REMINDER,
+  (ev, { from, data }: { from: AppType; data: { action: ReminderActions; reminder: Reminder; time?: number } }) => {
+    const { action, reminder } = data
+    console.log('Acted on Reminder ', { from, data })
+    if (action.type === 'open') {
+      // console.log('Opening reminder', { data })
+      mex?.webContents.send(IpcAction.OPEN_REMINDER, { reminder: reminder })
+      mex.focus()
+      mex.show()
+    }
+    spotlight?.webContents.send(IpcAction.ACTION_REMINDER, data)
+  }
+)
+
+ipcMain.on(IpcAction.RESIZE_REMINDER, (ev, { from, data }: { from: AppType; data: { height: number } }) => {
+  const { height } = data
+  // console.log('Resized Reminder: ', { from, data, height })
+  toast?.updateReminderSize({ height, width: REMINDERS_DIMENSIONS.width }, true)
+})
+
+ipcMain.on(IpcAction.SHOW_REMINDER, (ev, { from, data }: { from: AppType; data: ToastType }) => {
+  console.log('Show Reminder', { from, data })
+  if (data.attachment) {
+    const size = getReminderDimensions(data.attachment)
+    toast?.send(IpcAction.TOAST_MESSAGE, data)
+    toast?.openReminder(size)
+  } else {
+    console.error('Attach reminder groups with data to display reminders ')
+  }
+})
+
+// ipcMain.on(IpcAction.HIDE_REMINDER, () => {})
+ipcMain.on(IpcAction.HIDE_REMINDER, () => {
+  toast?.hide()
 })
 
 ipcMain.on(IpcAction.SHOW_TOAST, (ev, { from, data }: { from: AppType; data: ToastType }) => {

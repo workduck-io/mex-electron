@@ -1,33 +1,39 @@
-import { useContentStore } from '../store/useContentStore'
-import { useGraphStore } from '../store/useGraphStore'
+import { InfobarMode, useLayoutStore } from '../store/useLayoutStore'
 
 const useToggleElements = () => {
-  const showGraph = useGraphStore((state) => state.showGraph)
-  const toggleGraphElement = useGraphStore((state) => state.toggleGraph)
-  const showSyncBlocks = useContentStore((state) => state.showSyncBlocks)
-  const toggleSyncBlockElements = useContentStore((state) => state.toggleSyncBlocks)
-  const showSuggestedNodes = useContentStore((store) => store.showSuggestedNodes)
-  const toggleSuggestedNodeInfoBar = useContentStore((store) => store.toggleSuggestedNodes)
+  const setInfobarMode = useLayoutStore((store) => store.setInfobarMode)
+
+  const toggleMode = (mode: InfobarMode) => {
+    const infobar = useLayoutStore.getState().infobar
+    if (infobar.mode === mode) {
+      setInfobarMode('default')
+    } else {
+      setInfobarMode(mode)
+    }
+  }
 
   const toggleGraph = () => {
-    if (showSyncBlocks) toggleSyncBlockElements()
-    if (showSuggestedNodes) toggleSuggestedNodeInfoBar()
-    toggleGraphElement()
+    toggleMode('graph')
   }
 
   const toggleSyncBlocks = () => {
-    if (showGraph) toggleGraphElement()
-    if (showSuggestedNodes) toggleSuggestedNodeInfoBar()
-    toggleSyncBlockElements()
+    toggleMode('flow')
   }
 
   const toggleSuggestedNodes = () => {
-    if (showGraph) toggleGraphElement()
-    if (showSyncBlocks) toggleSyncBlocks()
-    toggleSuggestedNodeInfoBar()
+    toggleMode('suggestions')
   }
 
-  return { showGraph, showSyncBlocks, showSuggestedNodes, toggleSuggestedNodes, toggleGraph, toggleSyncBlocks }
+  const toggleReminder = () => {
+    toggleMode('reminders')
+  }
+
+  return {
+    toggleSuggestedNodes,
+    toggleGraph,
+    toggleSyncBlocks,
+    toggleReminder
+  }
 }
 
 export default useToggleElements

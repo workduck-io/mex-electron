@@ -50,3 +50,31 @@ export const InfoWidgetScroll = styled.div`
   overflow-y: auto;
   max-height: 20vh;
 `
+
+export const InfobarFull = styled.div`
+  max-height: 100vh;
+  width: 100%;
+  position: relative;
+  min-width: 600px;
+  * {
+    outline: none;
+    outline-style: none;
+  }
+`
+
+export const InfobarTools = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: ${({ theme: { spacing } }) => `${spacing.large} ${spacing.medium}`};
+  margin-top: 2rem;
+
+  background-color: ${({ theme }) => theme.colors.gray[9]};
+  padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.small}`};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+
+  label {
+    flex-grow: 1;
+    text-align: center;
+  }
+`

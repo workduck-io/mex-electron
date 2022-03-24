@@ -12,12 +12,15 @@ export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   primary?: boolean
   large?: boolean
   highlight?: boolean
+  transparent?: boolean
 }
 
 export const Button = styled.button<ButtonProps>`
   ${centeredCss};
   gap: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
+  border: none;
+  outline: none;
   color: ${({ theme }) => theme.colors.text.subheading};
   cursor: pointer;
   transition: 0.3s ease;
@@ -26,6 +29,16 @@ export const Button = styled.button<ButtonProps>`
     color: ${({ theme }) => theme.colors.primary};
     box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
   }
+
+  ${({ primary, transparent, theme }) =>
+    !primary &&
+    transparent &&
+    css`
+      background-color: transparent;
+      &:hover {
+        background-color: ${theme.colors.form.button.bg};
+      }
+    `}
 
   ${({ theme: { spacing }, large }) =>
     large
@@ -88,7 +101,7 @@ const IconButton = ({ icon, title, size, onClick, shortcut, highlight, singleton
       }
       singleton={singleton}
     >
-      <Button onClick={onClick} highlight={highlight}>
+      <Button transparent onClick={onClick} highlight={highlight}>
         <Icon icon={icon} height={size} />
       </Button>
     </ToolbarTooltip>
@@ -107,6 +120,7 @@ export interface AsyncButtonProps {
   id?: string
   onClick?: any // eslint-disable-line @typescript-eslint/no-explicit-any
   type?: 'button' | 'submit' | 'reset'
+  transparent?: boolean
 }
 
 export const AsyncButton = styled.button<AsyncButtonProps>`
@@ -116,6 +130,16 @@ export const AsyncButton = styled.button<AsyncButtonProps>`
   cursor: pointer;
   transition: 0.3s ease;
   background-color: ${({ theme }) => theme.colors.form.button.bg};
+
+  ${({ primary, transparent, theme }) =>
+    !primary &&
+    transparent &&
+    css`
+      background-color: transparent;
+      &:hover {
+        background-color: ${theme.colors.form.button.bg};
+      }
+    `}
 
   ${({ theme, large }) =>
     large

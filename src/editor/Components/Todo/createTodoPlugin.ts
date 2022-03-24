@@ -27,7 +27,7 @@ export const withTodos: WithOverride<any, HotkeyPlugin> = (editor: PlateEditor) 
 
   editor.onChange = () => {
     onChange()
-    updateTodosFromContent()
+    // updateTodosFromContent()
   }
 
   return editor

@@ -10,6 +10,7 @@ import useThemeStore from '../store/useThemeStore'
 import { FileData } from '../types/data'
 import { mog } from '../utils/lib/helper'
 import useTodoStore from '../store/useTodoStore'
+import { useReminderStore } from './useReminders'
 
 // Save the data in the local file database
 export const useSaveData = () => {
@@ -17,6 +18,7 @@ export const useSaveData = () => {
   const saveData = () => {
     const { baseNodeId, ilinks, linkCache, tags, tagsCache, archive, bookmarks } = useDataStore.getState()
     const { syncBlocks, templates, intents, services } = useSyncStore.getState()
+    const { reminders } = useReminderStore.getState()
     const { version } = useVersionStore.getState()
 
     const fileData: FileData = {
@@ -26,6 +28,7 @@ export const useSaveData = () => {
       ilinks,
       linkCache,
       todos: useTodoStore.getState().todos,
+      reminders,
       tags,
       tagsCache,
       archive,

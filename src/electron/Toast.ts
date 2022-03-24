@@ -1,31 +1,11 @@
-import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron'
+import { BrowserWindow, screen, BrowserWindowConstructorOptions } from 'electron'
 
 import { IpcAction } from '../data/IpcAction'
+import { REMINDERS_DIMENSIONS } from '../services/reminders/reminders'
+import { TOAST_DIMENSIONS } from '../types/toast'
 import { SPOTLIGHT_WINDOW_OPTIONS } from './main'
 
 declare const TOAST_WINDOW_WEBPACK_ENTRY: string
-
-export enum ToastStatus {
-  SUCCESS = 'success',
-  ERROR = 'error',
-  INFO = 'info',
-  WARNING = 'warning',
-  LOADING = 'loading'
-}
-
-export type ToastType = {
-  status: ToastStatus
-  title: string
-  description?: string
-  independent?: boolean // if true, toast will not be closed when parent is closed
-}
-
-export const TOAST_DIMENSIONS = {
-  height: 50,
-  width: 240,
-  offset: 15,
-  delta: 15
-}
 
 /* Toast for showing custom notifications in the app */
 class Toast {
@@ -37,6 +17,7 @@ class Toast {
       ...SPOTLIGHT_WINDOW_OPTIONS,
       height: TOAST_DIMENSIONS.height,
       width: TOAST_DIMENSIONS.width,
+      maxHeight: 1000,
       center: false
     }
 
@@ -48,7 +29,9 @@ class Toast {
 
     this.window.loadURL(TOAST_WINDOW_WEBPACK_ENTRY)
     this.window.setParentWindow(spotlightWindow)
-    this.window.setVisibleOnAllWorkspaces(true)
+    this.window.webContents.openDevTools({ mode: 'detach' })
+    this.window.setAlwaysOnTop(true, 'status')
+    this.window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 
     this.setParent(spotlightWindow)
 
@@ -76,6 +59,41 @@ class Toast {
     )
   }
 
+  public updateReminderSize(size: { height: number; width: number }, animate?: boolean) {
+    const scr = screen.getDisplayNearestPoint(screen.getCursorScreenPoint())
+    const bounds = scr.bounds
+    // console.log({ bounds })
+    const maxHeight = (bounds.height * 2) / 3
+    if (size.height <= maxHeight) {
+      this.window.setSize(size.width, size.height, animate)
+    } else {
+      this.window.setSize(size.width, maxHeight, animate)
+    }
+    this.window.setPosition(
+      bounds.x + bounds.width - REMINDERS_DIMENSIONS.width - REMINDERS_DIMENSIONS.offset,
+      bounds.y + REMINDERS_DIMENSIONS.offset
+    )
+  }
+
+  public openReminder(size: { height: number; width: number }, timeout?: number) {
+    if (this.window.isVisible()) {
+      return
+    }
+    this.window.setParentWindow(null)
+
+    this.updateReminderSize(size, true)
+
+    this.window.showInactive()
+    this.window.setHasShadow(true)
+
+    if (this.timeoutId) clearTimeout(this.timeoutId)
+
+    if (timeout) {
+      this.timeoutId = setTimeout(() => {
+        this.hide()
+      }, timeout)
+    }
+  }
   public open(independent?: boolean, center?: boolean, noHide?: boolean) {
     if (center) this.window.center()
     if (independent) this.window.setParentWindow(null)

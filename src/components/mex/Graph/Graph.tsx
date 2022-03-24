@@ -8,9 +8,11 @@ import { useNavigation } from '../../../hooks/useNavigation'
 import useToggleElements from '../../../hooks/useToggleElements'
 import { useGraphStore } from '../../../store/useGraphStore'
 import { useHelpStore } from '../../../store/useHelpStore'
+import { useLayoutStore } from '../../../store/useLayoutStore'
 import IconButton from '../../../style/Buttons'
+import { InfobarFull, InfobarTools } from '../../../style/infobar'
 import Switch from '../Forms/Switch'
-import { GraphTools, GraphWrapper, StyledGraph } from './Graph.styles'
+import { GraphWrapper } from './Graph.styles'
 import NodePreview from './NodePreview'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -56,7 +58,8 @@ export const TreeGraph = (props: TreeGraphProps) => {
   const { push } = useNavigation()
   const { getNodeidFromPath } = useLinks()
 
-  const { showGraph, toggleGraph } = useToggleElements()
+  const infobar = useLayoutStore((state) => state.infobar)
+  const { toggleGraph } = useToggleElements()
 
   const showTools = useGraphStore((state) => state.showTools)
 
@@ -131,16 +134,16 @@ export const TreeGraph = (props: TreeGraphProps) => {
   }
 
   return (
-    <StyledGraph id={`graph_${showLocal ? 'local' : 'global'}`}>
+    <InfobarFull id={`graph_${showLocal ? 'local' : 'global'}`}>
       {showTools ? (
-        <GraphTools>
+        <InfobarTools>
           {/* <IconButton size={24} icon={bubbleChartLine} title="Graph" highlight={showGraph} onClick={toggleGraph} /> */}
           <IconButton
             size={24}
             icon={bubbleChartLine}
             shortcut={shortcuts.showGraph.keystrokes}
             title="Graph"
-            highlight={showGraph}
+            highlight={infobar.mode === 'graph'}
             onClick={toggleGraph}
           />
           <Switch
@@ -152,7 +155,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
           />
 
           <IconButton size={24} icon={more2Fill} title="Options" />
-        </GraphTools>
+        </InfobarTools>
       ) : null}
       {showNodePreview && <NodePreview node={selectedNode} />}
       <GraphWrapper>
@@ -168,7 +171,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
         />
       </GraphWrapper>
       {/* <NodeServices /> */}
-    </StyledGraph>
+    </InfobarFull>
   )
 }
 

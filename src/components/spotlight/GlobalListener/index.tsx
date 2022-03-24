@@ -20,6 +20,7 @@ import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
+import ReminderArmer from '../Reminder/ReminderArmer'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
@@ -131,7 +132,11 @@ const GlobalListener = memo(() => {
     ipcRenderer.send(IpcAction.GET_LOCAL_DATA)
   }, [])
 
-  return <></>
+  return (
+    <>
+      <ReminderArmer />
+    </>
+  )
 })
 
 GlobalListener.displayName = 'GlobalListener'

@@ -14,6 +14,7 @@ import { useGraphStore } from '../store/useGraphStore'
 import { useRouting } from '../views/routes/urls'
 import useSuggestionStore from '../store/useSuggestions'
 import useToggleElements from './useToggleElements'
+import { useLayoutStore } from '../store/useLayoutStore'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -39,7 +40,8 @@ const useLoad = () => {
   const setSelectedNode = useGraphStore((store) => store.setSelectedNode)
   const { getDataAPI, saveDataAPI } = useApi()
   const setSuggestions = useSuggestionStore((store) => store.setSuggestions)
-  const { toggleSuggestedNodes, showSuggestedNodes } = useToggleElements()
+  const { toggleSuggestedNodes } = useToggleElements()
+  const infobar = useLayoutStore((store) => store.infobar)
 
   // const { saveNodeAPIandFs } = useDataSaverFromContent()
   const { saveAndClearBuffer } = useEditorBuffer()
@@ -172,7 +174,7 @@ const useLoad = () => {
 
     setNodePreview(false)
     setSuggestions([])
-    if (showSuggestedNodes) toggleSuggestedNodes()
+    if (infobar.mode === 'suggestions') toggleSuggestedNodes()
 
     setSelectedNode(undefined)
 

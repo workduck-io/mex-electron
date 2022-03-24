@@ -1,6 +1,7 @@
 import create from 'zustand'
 import { defaultContent } from '../data/Defaults/baseData'
 import { TodoType, TodoStatus, PriorityType, TodosType } from '../editor/Components/Todo/types'
+import { useReminders, useReminderStore } from '../hooks/useReminders'
 import { NodeEditorContent } from '../types/Types'
 import { mog } from '../utils/lib/helper'
 
@@ -26,8 +27,12 @@ type TodoStoreType = {
   setNodeTodos: (nodeid: string, todos: Array<TodoType>) => void
   addTodoInNode: (nodeid: string, todo: TodoType) => void
   getTodoOfNode: (nodeid: string, todoId: string) => TodoType | undefined
+  getTodoOfNodeWithoutCreating: (nodeid: string, todoId: string) => TodoType | undefined
   updateTodoOfNode: (nodeid: string, todo: TodoType) => void
   replaceContentOfTodos: (nodeid: string, todosContent: NodeEditorContent) => void
+
+  updatePriorityOfTodo: (nodeid: string, todoId: string, priority: PriorityType) => void
+  updateStatusOfTodo: (nodeid: string, todoId: string, status: TodoStatus) => void
 }
 
 const useTodoStore = create<TodoStoreType>((set, get) => ({
@@ -45,6 +50,11 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
     const nodeTodos = todos?.[nodeid] ?? []
     set({ todos: { ...todos, [nodeid]: [todo, ...nodeTodos] } })
   },
+  getTodoOfNodeWithoutCreating: (nodeid, todoId) => {
+    const todo = get().todos?.[nodeid]?.find((todo) => todo.id === todoId && nodeid === todo.nodeid)
+    return todo
+  },
+
   getTodoOfNode: (nodeid, todoId) => {
     const todo = get().todos?.[nodeid]?.find((todo) => todo.id === todoId && nodeid === todo.nodeid)
 
@@ -87,14 +97,37 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
       return
     }
 
+    const nTodo = todos[nodeid] ?? []
     const nodeTodos = todosContent.map((content) => {
-      const todo = todos[nodeid]?.find((todo) => todo.id === content.id && nodeid === todo.nodeid)
+      const todo = nTodo.find((todo) => todo.id === content.id && nodeid === todo.nodeid)
       // mog('replaceContent', { nodeid, todosContent, nodeTodos, todo, content })
       return todo ? { ...todo, content: [content] } : createTodo(nodeid, content.id, [content])
     })
+
+    const leftOutTodos = nTodo.filter((todo) => !nodeTodos.find((t) => t.id === todo.id && nodeid === t.nodeid))
+
+
+    const reminders = useReminderStore.getState().reminders
+    const setReminders = useReminderStore.getState().setReminders
+    const newReminders = reminders.filter((reminder) => !leftOutTodos.find((todo) => todo.id === reminder.todoid))
+
+    setReminders(newReminders)
     const newtodos = { ...todos, [nodeid]: nodeTodos }
-    // mog('newTodos', { newtodos })
     set({ todos: newtodos })
+  },
+  updatePriorityOfTodo: (nodeid, todoId, priority) => {
+    const todo = get().getTodoOfNodeWithoutCreating(nodeid, todoId)
+    if (!todo) return
+
+    const newTodo = { ...todo, metadata: { ...todo.metadata, priority } }
+    get().updateTodoOfNode(nodeid, newTodo)
+  },
+  updateStatusOfTodo: (nodeid, todoId, status) => {
+    const todo = get().getTodoOfNodeWithoutCreating(nodeid, todoId)
+    if (!todo) return
+
+    const newTodo = { ...todo, metadata: { ...todo.metadata, status } }
+    get().updateTodoOfNode(nodeid, newTodo)
   }
 }))
 

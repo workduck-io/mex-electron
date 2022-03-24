@@ -1,4 +1,4 @@
-import { transparentize } from 'polished'
+import { mix, transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 import { TodoContainer } from '../ui/components/Todo.style'
 import { MainHeader } from './Layouts'
@@ -24,11 +24,11 @@ react-kanban-column-header__button
 react-kanban-column-adder-button
  */
 
-const KANBAN_WIDTH = `calc(( 100vw - 12rem ) / 3)`
-const KANBAN_HEIGHT = `calc( 100vh - 18rem )`
-const KANBAN_CARD_WIDTH = `calc(( 100vw - 15rem ) / 3)`
+export const KANBAN_WIDTH = `calc(( 100vw - 12rem ) / 3)`
+export const KANBAN_HEIGHT = `calc( 100vh - 22rem )`
+export const KANBAN_CARD_WIDTH = `calc(( 100vw - 15rem ) / 3)`
 
-export const StyledTasksKanban = styled.div`
+export const StyledBoard = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.medium};
@@ -37,12 +37,14 @@ export const StyledTasksKanban = styled.div`
     max-height: ${KANBAN_HEIGHT};
     overflow-y: scroll;
     overflow-x: hidden;
-    background: ${({ theme }) => theme.colors.gray[9]};
+    background: ${({ theme }) => mix(0.5, theme.colors.gray[9], theme.colors.gray[10])};
     padding: ${({ theme }) => theme.spacing.small};
     margin: ${({ theme }) => theme.spacing.small};
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
 `
+
+export const StyledTasksKanban = styled(StyledBoard)``
 
 export const TaskHeader = styled(MainHeader)`
   ${Title} {

@@ -6,6 +6,7 @@ import React from 'react'
 import Refactor from '../mex/Refactor/Refactor'
 import Rename from '../mex/Refactor/Rename'
 import { useAuthStore } from '../../services/auth/useAuth'
+import CreateReminderModal from '../mex/Reminders/CreateReminderModal'
 
 const Modals = () => {
   const isAuthenticated = useAuthStore((store) => store.authenticated)
@@ -18,6 +19,7 @@ const Modals = () => {
       <Delete />
       <HelpModal />
       <BlockModal />
+      <CreateReminderModal />
     </>
   )
 }

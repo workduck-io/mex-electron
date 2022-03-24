@@ -4,34 +4,37 @@ import { SNIPPET_PREFIX } from '../data/Defaults/idPrefixes'
 import { PriorityType, TodoRanks, TodoStatus, TodoStatusRanks, TodoType } from '../editor/Components/Todo/types'
 import create from 'zustand'
 import useTodoStore from '../store/useTodoStore'
-import { SearchFilter } from './useFilters'
+import { SearchFilter, FilterStore } from './useFilters'
 import { mog } from '../utils/lib/helper'
 import { getAllParentIds, isElder } from '../components/mex/Sidebar/treeUtils'
 import { useLinks } from './useLinks'
+import { KanbanBoard, KanbanCard, KanbanColumn } from '../types/search'
 
-export interface TodoKanbanCard {
-  id: string
+export interface TodoKanbanCard extends KanbanCard {
   todo: TodoType
 }
 
-export interface KanbanBoardColumn {
+export interface KanbanBoardColumn extends KanbanColumn {
   id: TodoStatus
-  title: string
   cards: TodoKanbanCard[]
 }
 
-export interface KanbanBoard {
+export interface TodoKanbanBoard extends KanbanBoard {
   columns: KanbanBoardColumn[]
 }
 
-interface KanbanStore {
-  currentFilters: SearchFilter<TodoType>[]
-  setCurrentFilters: (filters: SearchFilter<TodoType>[]) => void
-  filters: SearchFilter<TodoType>[]
-  setFilters: (filters: SearchFilter<TodoType>[]) => void
+// interface KanbanStore extends FilterStore<TodoType> {}
+
+export const getPureContent = (todo: TodoType) => {
+  const { content } = todo
+  if (content.length > 0) {
+    if (content[0].type !== ELEMENT_TODO_LI) return content
+    else return content[0].children
+  }
+  return defaultContent
 }
 
-export const useKanbanFilterStore = create<KanbanStore>((set) => ({
+export const useKanbanFilterStore = create<FilterStore<TodoType>>((set) => ({
   currentFilters: [],
   setCurrentFilters: (filters: SearchFilter<TodoType>[]) => set({ currentFilters: filters }),
   filters: [],
@@ -54,7 +57,7 @@ export const useTodoKanban = () => {
     updateTodo(todo.nodeid, { ...todo, metadata: { ...todo.metadata, priority: newPriority } })
   }
 
-  const generateTodoNodeFilters = (board: KanbanBoard) => {
+  const generateTodoNodeFilters = (board: TodoKanbanBoard) => {
     const todoNodes: string[] = []
     board.columns.forEach((column) => {
       column.cards.forEach((card) => {
@@ -100,18 +103,9 @@ export const useTodoKanban = () => {
     return nodeFilters
   }
 
-  const getPureContent = (todo: TodoType) => {
-    const { content } = todo
-    if (content.length > 0) {
-      if (content[0].type !== ELEMENT_TODO_LI) return content
-      else return content[0].children
-    }
-    return defaultContent
-  }
-
   const getTodoBoard = () => {
     const nodetodos = useTodoStore.getState().todos
-    const todoBoard: KanbanBoard = {
+    const todoBoard: TodoKanbanBoard = {
       columns: [
         {
           id: TodoStatus.todo,

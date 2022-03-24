@@ -60,7 +60,6 @@ const Tasks = () => {
     changeStatus,
     changePriority,
     getPureContent,
-
     addCurrentFilter,
     removeCurrentFilter,
     resetCurrentFilters,
@@ -94,8 +93,10 @@ const Tasks = () => {
   const selectFirst = () => {
     const firstCardColumn = board.columns.find((column) => column.cards.length > 0)
     if (firstCardColumn) {
-      const firstCard = firstCardColumn.cards[0]
-      setSelectedCard(firstCard)
+      if (firstCardColumn.cards) {
+        const firstCard = firstCardColumn.cards[0]
+        setSelectedCard(firstCard)
+      }
     }
   }
 
@@ -304,7 +305,7 @@ const Tasks = () => {
     }
   }
 
-  // mog('Tasks', { nodesTodo, board, selectedCard })
+  mog('Tasks', { nodesTodo, board, selectedCard })
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
     const pC = getPureContent(todo)

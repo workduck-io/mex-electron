@@ -32,6 +32,8 @@ import { AppleNote } from '../../../utils/importers/appleNotes'
 import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { useSearch } from '../../../hooks/useSearch'
+import { Reminder, ReminderActions } from '../../../types/reminders'
+import { useReminders, useReminderStore } from '../../../hooks/useReminders'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -56,6 +58,7 @@ const Init = () => {
   const { push } = useNavigation()
   const { getNodeidFromPath } = useLinks()
   const { onSave } = useSaver()
+  const updateReminderState = useReminderStore((store) => store.updateReminderState)
 
   const { queryIndex } = useSearch()
 
@@ -164,6 +167,16 @@ const Init = () => {
 
       goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
     })
+
+    ipcRenderer.on(IpcAction.OPEN_REMINDER, (_event, { reminder }) => {
+      mog('Opening Reminder', { reminder })
+      updateReminderState(reminder.id, {
+        ...reminder.state,
+        done: true
+      })
+      goTo(ROUTE_PATHS.node, NavigationType.push, reminder.nodeid)
+    })
+
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
       goTo(`${ROUTE_PATHS.settings}/themes`, NavigationType.push)
     })

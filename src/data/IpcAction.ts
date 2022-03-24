@@ -46,6 +46,16 @@ export enum IpcAction {
   HIDE_TOAST = 'HIDE_TOAST',
   TOAST_MESSAGE = 'TOAST_MESSAGE',
 
+  OPEN_REMINDER = 'OPEN_REMINDER',
+  OPEN_REMINDER_IN_MEX = 'OPEN_REMINDER_IN_MEX',
+  SHOW_REMINDER = 'SHOW_REMINDER',
+  HIDE_REMINDER = 'HIDE_REMINDER',
+  RESIZE_REMINDER = 'RESIZE_REMINDER',
+
+  // Reminders
+  // Type of action is attached with payload
+  ACTION_REMINDER = 'ACTION_REMINDER',
+
   // * Sync Index
   // Not needed anymore since index is maintained in search worker
   // SYNC_INDEX = 'SYNC_INDEX',

@@ -3,6 +3,7 @@ import focusLine from '@iconify/icons-ri/focus-line'
 import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
 import messageIcon from '@iconify/icons-ri/message-3-line'
 import settings4Line from '@iconify/icons-ri/settings-4-line'
+import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
 import { useSingleton } from '@tippyjs/react'
 import React from 'react'
 import BookmarkButton from '../components/mex/Buttons/BookmarkButton'
@@ -17,7 +18,6 @@ import IconButton from '../style/Buttons'
 import { InfoTools, NodeInfo } from '../style/Editor'
 import Loading from '../style/Loading'
 import NodeRenameTitle from './Components/NodeRenameTitle'
-import { SaverButton } from './Components/Saver'
 
 const Toolbar = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -29,13 +29,8 @@ const Toolbar = () => {
   const [source, target] = useSingleton()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
-  const { showGraph, showSyncBlocks, toggleSyncBlocks, toggleGraph, showSuggestedNodes, toggleSuggestedNodes } =
-    useToggleElements()
-
-  const onSave = () => {
-    // console.log('onsave')
-    // callback after save
-  }
+  const infobar = useLayoutStore((store) => store.infobar)
+  const { toggleGraph, toggleSuggestedNodes, toggleReminder } = useToggleElements()
 
   return (
     <NodeInfo {...getFocusProps(focusMode)}>
@@ -66,7 +61,6 @@ const Toolbar = () => {
           highlight={nodeIntentsModalOpen}
           onClick={nodeIntentsModalToggle}
         />
-        */}
         <SaverButton
           // saveOnUnmount
           shortcut={shortcuts.save.keystrokes}
@@ -74,7 +68,6 @@ const Toolbar = () => {
           singleton={target}
           callbackAfterSave={onSave}
         />
-        {/*
         <IconButton
           size={24}
           singleton={target}
@@ -88,10 +81,19 @@ const Toolbar = () => {
         <IconButton
           size={24}
           singleton={target}
+          icon={timerFlashLine}
+          shortcut={shortcuts.showReminder.keystrokes}
+          title="Reminders"
+          highlight={infobar.mode === 'reminders'}
+          onClick={toggleReminder}
+        />
+        <IconButton
+          size={24}
+          singleton={target}
           icon={lightbulbFlashLine}
           shortcut={shortcuts.showSuggestedNodes.keystrokes}
           title="Suggestions"
-          highlight={showSuggestedNodes}
+          highlight={infobar.mode === 'suggestions'}
           onClick={toggleSuggestedNodes}
         />
         <IconButton
@@ -100,7 +102,7 @@ const Toolbar = () => {
           icon={bubbleChartLine}
           shortcut={shortcuts.showGraph.keystrokes}
           title="Graph"
-          highlight={showGraph}
+          highlight={infobar.mode === 'graph'}
           onClick={toggleGraph}
         />
       </InfoTools>

@@ -294,7 +294,6 @@ export const EditorStyles = styled.div`
   select {
     font-family: inherit;
     font-size: inherit;
-    padding: 10px;
     border: none;
     outline: none;
   }
@@ -429,6 +428,9 @@ export const EditorStyles = styled.div`
   }
 `
 
+export const EditorPreviewStyles = styled.div`
+  overflow-x: hidden;
+`
 interface StyledEditorProps {
   showGraph?: boolean
 }
@@ -438,9 +440,8 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   flex-direction: column;
   align-items: flex-start;
   gap: ${({ theme }) => theme.spacing.large};
-  padding: ${({ theme }) => theme.spacing.large} ${({ theme }) => theme.spacing.medium};
-  margin: auto;
-  margin-bottom: 0;
+  padding: 0 ${({ theme }) => theme.spacing.medium};
+  margin: calc(${({ theme }) => theme.spacing.large}) auto 0;
   width: 100%;
   max-width: 1000px;
   min-width: 400px;

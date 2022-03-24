@@ -1,31 +1,30 @@
+import { usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect, useMemo } from 'react'
-
-import BlockInfoBar from './Components/Blocks/BlockInfoBar'
-import { BlockOptionsMenu } from './Components/EditorContextMenu'
-import Editor from './Editor'
-import Metadata from '../components/mex/Metadata/Metadata'
-import NodeIntentsModal from '../components/mex/NodeIntentsModal/NodeIntentsModal'
-import { StyledEditor } from '../style/Editor'
-import Toolbar from './Toolbar'
-import { convertContentToRawText } from '../utils/search/parseData'
-import { defaultContent } from '../data/Defaults/baseData'
-import { getEditorId } from '../utils/lib/EditorId'
-import { mog } from '../utils/lib/helper'
-import shallow from 'zustand/shallow'
 import sw from 'stopword'
 import tinykeys from 'tinykeys'
-import useBlockStore from '../store/useBlockStore'
+import shallow from 'zustand/shallow'
+import Metadata from '../components/mex/Metadata/Metadata'
+import { defaultContent } from '../data/Defaults/baseData'
 import { useEditorBuffer } from '../hooks/useEditorBuffer'
-import { useEditorStore } from '../store/useEditorStore'
-import { useHelpStore } from '../store/useHelpStore'
-import { useKeyListener } from '../hooks/useShortcutListener'
 import useLayout from '../hooks/useLayout'
 import useLoad from '../hooks/useLoad'
 import { useNavigation } from '../hooks/useNavigation'
-import { usePlateEditorRef } from '@udecode/plate'
-import useSuggestionStore from '../store/useSuggestions'
-import useToggleElements from '../hooks/useToggleElements'
 import { useSearch } from '../hooks/useSearch'
+import { useKeyListener } from '../hooks/useShortcutListener'
+import { useAnalysisTodoAutoUpdate } from '../store/useAnalysis'
+import useBlockStore from '../store/useBlockStore'
+import { useEditorStore } from '../store/useEditorStore'
+import { useHelpStore } from '../store/useHelpStore'
+import { useLayoutStore } from '../store/useLayoutStore'
+import useSuggestionStore from '../store/useSuggestions'
+import { StyledEditor } from '../style/Editor'
+import { getEditorId } from '../utils/lib/EditorId'
+import { mog } from '../utils/lib/helper'
+import { convertContentToRawText } from '../utils/search/parseData'
+import BlockInfoBar from './Components/Blocks/BlockInfoBar'
+import { BlockOptionsMenu } from './Components/EditorContextMenu'
+import Editor from './Editor'
+import Toolbar from './Toolbar'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -34,8 +33,9 @@ const ContentEditor = () => {
 
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
 
-  const { showGraph, showSuggestedNodes } = useToggleElements()
   const { queryIndex } = useSearch()
+
+  const infobar = useLayoutStore((store) => store.infobar)
 
   const { nodeid, node, fsContent } = useEditorStore(
     (state) => ({ nodeid: state.node.nodeid, node: state.node, fsContent: state.content }),
@@ -54,7 +54,7 @@ const ContentEditor = () => {
 
   const onChangeSave = async (val: any[]) => {
     if (val && node && node.nodeid !== '__null__') {
-      if (showSuggestedNodes) {
+      if (infobar.mode === 'suggestions') {
         const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
 
         const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
@@ -74,6 +74,8 @@ const ContentEditor = () => {
   }
 
   const editorId = useMemo(() => getEditorId(node.nodeid, false), [node, fetchingContent])
+
+  useAnalysisTodoAutoUpdate()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -112,7 +114,7 @@ const ContentEditor = () => {
 
   return (
     <>
-      <StyledEditor showGraph={showGraph} className="mex_editor">
+      <StyledEditor showGraph={infobar.mode === 'graph'} className="mex_editor">
         <Toolbar />
 
         {isBlockMode ? <BlockInfoBar /> : <Metadata node={node} />}

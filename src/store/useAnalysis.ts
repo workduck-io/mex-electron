@@ -7,6 +7,9 @@ import { useBufferStore, useEditorBuffer } from '../hooks/useEditorBuffer'
 import { useEditorStore } from './useEditorStore'
 import { getContent } from '../utils/helpers'
 import { mog } from '../utils/lib/helper'
+import { TodoType } from '../editor/Components/Todo/types'
+import useTodoStore from './useTodoStore'
+import { getTodosFromContent } from '../utils/lib/content'
 
 export interface OutlineItem {
   id: string
@@ -16,21 +19,41 @@ export interface OutlineItem {
 }
 
 export interface NodeAnalysis {
+  nodeid: string
   tags: string[]
   outline: OutlineItem[]
+  editorTodos: TodoType[]
 }
 
-interface AnalysisStore extends NodeAnalysis {
+interface AnalysisStore {
+  analysis: NodeAnalysis
   setAnalysis: (analysis: NodeAnalysis) => void
 }
 
 export const useAnalysisStore = create<AnalysisStore>((set, get) => ({
-  tags: [],
-  outline: [],
+  analysis: {
+    nodeid: undefined,
+    tags: [],
+    outline: [],
+    editorTodos: []
+  },
   setAnalysis: (analysis: NodeAnalysis) => {
-    set(analysis)
+    set({ analysis })
   }
 }))
+
+export const useAnalysisTodoAutoUpdate = () => {
+  // const { setTodo } = useEditorStore(state => state)
+  const analysis = useAnalysisStore((state) => state.analysis)
+  const updateNodeTodos = useTodoStore((store) => store.replaceContentOfTodos)
+  const node = useEditorStore((state) => state.node)
+
+  useEffect(() => {
+    const { editorTodos, nodeid } = useAnalysisStore.getState().analysis
+    mog('EditorTodos', { editorTodos, nodeid })
+    updateNodeTodos(nodeid, editorTodos)
+  }, [analysis, node])
+}
 
 export const useAnalysisIPC = () => {
   const setAnalysis = useAnalysisStore((s) => s.setAnalysis)
@@ -58,11 +81,12 @@ export const useAnalysis = () => {
     mog('sending for calc', { node, buffer })
     if (bufferContent) {
       // mog('Buffer for calc', { bufferContent })
-      ipcRenderer.send(IpcAction.ANALYSE_CONTENT, bufferContent)
+      ipcRenderer.send(IpcAction.ANALYSE_CONTENT, { content: bufferContent, nodeid: node.nodeid })
     } else {
       const content = getContent(node.nodeid)
       // mog('Content for calc', { content })
-      if (content && content.content) ipcRenderer.send(IpcAction.ANALYSE_CONTENT, content.content)
+      if (content && content.content)
+        ipcRenderer.send(IpcAction.ANALYSE_CONTENT, { content: content.content, nodeid: node.nodeid })
     }
   }, [node.nodeid, buffer])
 

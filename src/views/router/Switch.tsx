@@ -28,11 +28,11 @@ import ContentEditor from '../../editor/ContentEditor'
 import { mog } from '../../utils/lib/helper'
 import NotFound from '../NotFound'
 import useBlockStore from '../../store/useBlockStore'
+import RemindersAll from '../mex/Reminders/RemindersAll'
 
 export const SwitchWrapper = styled.div<{ isAuth?: boolean }>`
   position: fixed;
   width: ${({ theme, isAuth }) => (!isAuth ? '100%' : `calc(100% - ${theme.width.nav}px)`)};
-  height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
 `
@@ -88,6 +88,7 @@ const Switch = () => {
           <Route path={ROUTE_PATHS.snippets} element={<ProtectedRoute component={Snippets} />} />
           <Route path={ROUTE_PATHS.search} element={<ProtectedRoute component={Search} />} />
           <Route path={ROUTE_PATHS.tasks} element={<ProtectedRoute component={Tasks} />} />
+          <Route path={ROUTE_PATHS.reminders} element={<ProtectedRoute component={RemindersAll} />} />
 
           {/* Dynamic routes */}
           <Route path={`${ROUTE_PATHS.snippet}/:snippetid`} element={<ProtectedRoute component={SnippetEditor} />} />

@@ -2,12 +2,14 @@ import { ipcRenderer } from 'electron'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { IpcAction } from '../../data/IpcAction'
-import { ToastStatus, ToastType } from '../../electron/Toast'
 import { appNotifierWindow } from '../../electron/utils/notifiers'
 import { AppType } from '../../hooks/useInitialize'
 import useThemeStore from '../../store/useThemeStore'
+import { ToastStatus, ToastType } from '../../types/toast'
 import { mog } from '../../utils/lib/helper'
 import { Description } from '../spotlight/SearchResults/styled'
+import ReminderGroupsUI from './ReminderGroup'
+import ToastUI from './ToastUI'
 
 const StyledNotifier = styled.div`
   box-sizing: border-box;
@@ -50,13 +52,25 @@ const Msg = styled.div`
 
 const StyledMsg = styled.div``
 
+type NotifyType = 'toast' | 'reminder'
+
+interface NotifierState {
+  type: NotifyType
+  message: ToastType
+}
+
 const Notifier = () => {
-  const [message, setMessage] = useState<ToastType>({} as ToastType)
+  const [nState, setNState] = useState<NotifierState | undefined>(undefined)
+
   const setTheme = useThemeStore((store) => store.setTheme)
   useEffect(() => {
     ipcRenderer.on(IpcAction.TOAST_MESSAGE, (ev, message) => {
       mog('Message', { message }, { collapsed: false })
-      setMessage(message)
+      if (message.attachment) {
+        setNState({ type: 'reminder', message })
+      } else {
+        setNState({ type: 'toast', message })
+      }
     })
     ipcRenderer.on(IpcAction.SET_THEME, (ev, theme) => {
       setTheme(theme)
@@ -67,19 +81,14 @@ const Notifier = () => {
     appNotifierWindow(IpcAction.HIDE_TOAST, AppType.SPOTLIGHT, { hide: true })
   }
 
-  return (
-    <StyledNotifier>
-      <MessageNotify>
-        <MessageType type={message.status} />
-        <StyledMsg>
-          <Msg>
-            <span>{message.title}</span>
-          </Msg>
-          {message?.description && <Description>{message.description}</Description>}
-        </StyledMsg>
-      </MessageNotify>
-    </StyledNotifier>
-  )
+  if (nState === undefined) {
+    return null
+  }
+  if (nState.type === 'toast') {
+    return <ToastUI message={nState.message} />
+  } else if (nState.type === 'reminder') {
+    return <ReminderGroupsUI reminderGroups={nState.message.attachment} />
+  }
 }
 
 export default Notifier

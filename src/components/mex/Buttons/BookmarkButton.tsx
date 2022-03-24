@@ -42,7 +42,7 @@ const BookmarkButton = ({ nodeid }: BookmarkButtonProps) => {
   // mog('BookmarkButton', { bmed, bookmarks, loading, nodeid })
 
   return (
-    <LoadingButton dots={2} loading={loading} buttonProps={{ highlight: bmed, onClick: onBookmark }}>
+    <LoadingButton dots={2} loading={loading} buttonProps={{ highlight: bmed, onClick: onBookmark, transparent: true }}>
       <Icon width={24} icon={bmed ? bookmarkFill : bookmarkLine} />
     </LoadingButton>
   )

@@ -6,9 +6,9 @@ import React from 'react'
 import styled from 'styled-components'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useLinks } from '../../../hooks/useLinks'
-import { DateFormat } from '../../../hooks/useRelativeTime'
 import { useContentStore } from '../../../store/useContentStore'
 import { ILink } from '../../../types/Types'
+import { getRelativeTime } from '../../../utils/time'
 
 export const Container = styled.section`
   position: absolute;
@@ -89,7 +89,7 @@ const NodePreview = ({ node }: { node: ILink }) => {
         {time && (
           <Flex>
             <StyledIcon icon={timeIcon} />
-            <SmallText>{DateFormat(new Date(time))}</SmallText>
+            <SmallText>{getRelativeTime(new Date(time))}</SmallText>
           </Flex>
         )}
       </MetaDeta>
