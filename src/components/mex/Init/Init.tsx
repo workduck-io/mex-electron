@@ -11,11 +11,11 @@ import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType, useInitialize } from '../../../hooks/useInitialize'
 import { getNodeidFromPathAndLinks, useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
-import { useLocalData } from '../../../hooks/useLocalData'
+import { useLocalData, useTokenData } from '../../../hooks/useLocalData'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
-import { useSyncData } from '../../../hooks/useSyncData'
+import { useRecieveTokens, useSyncData } from '../../../hooks/useSyncData'
 import { useUpdater } from '../../../hooks/useUpdater'
 import { useAuthentication, useAuthStore } from '../../../services/auth/useAuth'
 import { useAnalysis, useAnalysisIPC } from '../../../store/useAnalysis'
@@ -34,11 +34,14 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/u
 import { useSearch } from '../../../hooks/useSearch'
 import { Reminder, ReminderActions } from '../../../types/reminders'
 import { useReminders, useReminderStore } from '../../../hooks/useReminders'
+import { useCalendar, useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
+import { useTokens } from '../../../services/auth/useTokens'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
   const { goTo } = useRouting()
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
+  const authenticated = useAuthStore(({ authenticated }) => authenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const pushHs = useHistoryStore((store) => store.push)
   const isOnboarding = useOnboard((s) => s.isOnboarding)
@@ -53,19 +56,25 @@ const Init = () => {
   const { getLocalData } = useLocalData()
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
   const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
+  const { getUpcomingEvents, getUserEvents } = useCalendar()
 
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
   const { getNodeidFromPath } = useLinks()
   const { onSave } = useSaver()
   const updateReminderState = useReminderStore((store) => store.updateReminderState)
+  const { setReceiveToken } = useRecieveTokens()
 
   const { queryIndex } = useSearch()
+
+  const { addGoogleCalendarToken } = useTokens()
 
   /**
    * Setup save
    * */
   useSaveAndExit()
+
+  const { getTokenData } = useTokenData()
 
   const { getTemplates } = useUpdater()
 
@@ -83,6 +92,7 @@ const Init = () => {
         })
         .then(({ fileData }) => {
           init(fileData)
+          getTokenData()
           // setOnboardData()
           return fileData
         })
@@ -132,6 +142,7 @@ const Init = () => {
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const editor = usePlateEditorRef()
 
   /**
@@ -214,6 +225,12 @@ const Init = () => {
   // Setup sending the analysis call
   useAnalysis()
 
+  useEffect(() => {
+    const e1 = getUserEvents()
+    const e2 = getUpcomingEvents()
+    mog('Setting up IPC', { e1, e2 })
+  }, [])
+
   // useEffect(() => {
   //   ipcRenderer.on(IpcAction.GET_LOCAL_INDEX, async () => {
   //     const searchIndex = await fetchIndexLocalStorage()
@@ -222,11 +239,23 @@ const Init = () => {
   //     ipcRenderer.send(IpcAction.SET_LOCAL_INDEX, { searchIndex })
   //   })
   // }, [fetchIndexLocalStorage])
+  //
 
   useEffect(() => {
     setIpc()
+    setReceiveToken()
     ipcRenderer.on(IpcAction.OAUTH, async (event, data) => {
-      await loginViaGoogle(data.idToken, data.accessToken, true)
+      const { type } = data
+      switch (type) {
+        case 'login_google':
+          await loginViaGoogle(data.idToken, data.accessToken, true)
+          break
+        case 'calendar_google':
+          addGoogleCalendarToken({ accessToken: data.accessToken, idToken: data.idToken, refreshToken: data.refreshToken })
+          break
+        default:
+          await loginViaGoogle(data.idToken, data.accessToken, true)
+      }
     })
     // Setup recieving the analysis call
     setAnalysisIpc()

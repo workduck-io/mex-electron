@@ -104,7 +104,14 @@ export const useApi = () => {
     return data
   }
 
-  return { saveDataAPI, getDataAPI, saveNewNodeAPI, getNodesByWorkspace }
+  const getGoogleAuthUrl = async () => {
+    return await client
+      .get<any>(apiURLs.getGoogleAuthUrl(), {})
+      .then((resp) => resp.data)
+      .catch((error) => console.error(error))
+  }
+
+  return { saveDataAPI, getDataAPI, saveNewNodeAPI, getNodesByWorkspace, getGoogleAuthUrl }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

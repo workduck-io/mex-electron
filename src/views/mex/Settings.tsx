@@ -12,6 +12,7 @@ import styled from 'styled-components'
 import useAnalytics from '../../services/analytics'
 import { CustomEvents } from '../../services/analytics/events'
 import { useAuthentication } from '../../services/auth/useAuth'
+import { useTokenStore } from '../../services/auth/useTokens'
 import { Button } from '../../style/Buttons'
 import { IntegrationContainer, Margin, Title } from '../../style/Integration'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
@@ -68,12 +69,15 @@ export const SettingsContent = styled.div`
 const Settings = () => {
   const { logout } = useAuthentication()
   const { goTo } = useRouting()
+  const removeGoogleCalendarToken = useTokenStore((store) => store.removeGoogleCalendarToken)
 
   const { addEventProperties } = useAnalytics()
 
   const onLogout = (e: any) => {
     e.preventDefault()
+
     logout()
+    removeGoogleCalendarToken()
     addEventProperties({ [CustomEvents.LOGGED_IN]: false })
     /**
      * Sessions ends after 30mins of inactivity

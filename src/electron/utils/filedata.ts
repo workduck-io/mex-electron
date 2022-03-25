@@ -4,6 +4,7 @@ import { FileData } from '../../types/data'
 import { DefaultFileData } from '../../data/Defaults/baseData'
 import { applyTransforms, requiresTransform } from '../../utils/dataTransform'
 import { UpdateVersionTransforms } from '../../data/transforms'
+import { AuthTokenData } from '../../types/auth'
 
 export const getFileData = (location: string) => {
   if (fs.existsSync(location)) {
@@ -27,6 +28,23 @@ export const getFileData = (location: string) => {
   }
 }
 
-export const setFileData = (data: FileData, location: string) => {
+export const setFileData = (data: AuthTokenData, location: string) => {
+  fs.writeFileSync(location, JSON.stringify(data))
+}
+
+export const getTokenData = (location: string): AuthTokenData => {
+  if (fs.existsSync(location)) {
+    const stringData = fs.readFileSync(location, 'utf-8')
+    const data = JSON.parse(stringData)
+    return data
+  } else {
+    const version = app.getVersion()
+    fs.writeFileSync(location, JSON.stringify({}))
+    console.log('SettingAuth', { version })
+    return {}
+  }
+}
+
+export const setTokenData = (data: AuthTokenData, location: string) => {
   fs.writeFileSync(location, JSON.stringify(data))
 }

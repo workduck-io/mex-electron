@@ -25,6 +25,7 @@ import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import 'react-contexify/dist/ReactContexify.css'
+import { useCalendar, useCalendarStore } from '../../../hooks/useCalendar'
 
 export const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -38,6 +39,7 @@ const Content = () => {
   const lastOpenedNodes = useRecentsStore((store) => store.lastOpened)
   const normalMode = useSpotlightAppStore((store) => store.normalMode)
   const recentResearchNodes = useRecentsStore((store) => store.recentResearchNodes)
+  const { getUpcomingEvents } = useCalendar()
   const { editorNode, setNodeContent, setPreviewEditorNode, preview, setPreview } = useSpotlightEditorStore(
     (store) => ({
       editorNode: store.node,
@@ -55,6 +57,7 @@ const Content = () => {
   const { searchInList } = useSearch()
   const { resetEditor } = useEditorActions()
   const { search, selection, activeItem, activeIndex, searchResults, setSearchResults } = useSpotlightContext()
+  const events = useCalendarStore((store) => store.events)
 
   // * For setting the results
   useEffect(() => {
@@ -68,6 +71,7 @@ const Content = () => {
 
           if (!useSpotlightAppStore.getState().normalMode) return
 
+          const recentEvents = getUpcomingEvents()
           const recents = selection ? recentResearchNodes : lastOpenedNodes
           const items = recents.filter((recent: string) => ilinks.find((ilink) => ilink.nodeid === recent))
 
@@ -84,7 +88,7 @@ const Content = () => {
           const limitedList = recentList.slice(0, recentLimit)
 
           const list = !recentLimit ? [CREATE_NEW_ITEM] : insertItemInArray(limitedList, CREATE_NEW_ITEM, 1)
-          const data = [...list, ...initActions]
+          const data = [...recentEvents, ...list, ...initActions]
           setSearchResults(data)
         }
       }
@@ -93,7 +97,7 @@ const Content = () => {
     // else {
     //   setSearchResults([activeItem.item])
     // }
-  }, [search.value, selection, activeItem.item, ilinks])
+  }, [search.value, selection, activeItem.item, ilinks, events])
 
   // * For setting the preview
   useEffect(() => {

@@ -128,17 +128,28 @@ export const useAuthentication = () => {
   const loginViaGoogle = async (idToken: string, accessToken: string, getWorkspace = false) => {
     try {
       const result: any = await googleSignIn(idToken, accessToken)
+      mog('Login via Google BIG success', { result })
       if (getWorkspace && result !== undefined) {
         await client
           .get(apiURLs.getUserRecords(result.userId))
           .then((d: any) => {
             const userDetails = { email: result.email, userId: result.userId }
             const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
+            ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
+            identifyUser(userDetails.email)
+            mog('Login Google BIG success', { d, userDetails, workspaceDetails })
+            addUserProperties({
+              [Properties.EMAIL]: userDetails.email,
+              [Properties.NAME]: userDetails.email,
+              [Properties.ROLE]: '',
+              [Properties.WORKSPACE_ID]: d.data.group
+            })
+            addEventProperties({ [CustomEvents.LOGGED_IN]: true })
 
             setAuthenticated(userDetails, workspaceDetails)
           })
           .catch(async (e) => {
-            setSensitiveData({ email: result.email, name: result.username, password: '', roles: [] })
+            setSensitiveData({ email: result.email, name: result.email, password: '', roles: [] })
 
             const uCred: UserCred = {
               email: result.email,
@@ -149,6 +160,7 @@ export const useAuthentication = () => {
             }
             const newWorkspaceName = `WD_${nanoid()}`
 
+            console.error('catch', { e })
             await client
               .post(apiURLs.registerUser, {
                 user: {
@@ -160,8 +172,18 @@ export const useAuthentication = () => {
               })
               .then((d: any) => {
                 const userDetails = { email: uCred.email, userId: uCred.userId }
-                const workspaceDetails = { id: d.data.id, name: d.data.name }
+                const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
 
+                ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
+                identifyUser(userDetails.email)
+                mog('Login Google BIG success', { userDetails, workspaceDetails })
+                addUserProperties({
+                  [Properties.EMAIL]: userDetails.email,
+                  [Properties.NAME]: userDetails.email,
+                  [Properties.ROLE]: '',
+                  [Properties.WORKSPACE_ID]: d.data.group
+                })
+                addEventProperties({ [CustomEvents.LOGGED_IN]: true })
                 setAuthenticated(userDetails, workspaceDetails)
               })
               .catch(console.error)

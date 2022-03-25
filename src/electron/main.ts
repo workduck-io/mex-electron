@@ -16,7 +16,7 @@ import {
 } from 'electron'
 import fs from 'fs'
 import path from 'path'
-import { getSaveLocation, getSearchIndexLocation } from '../data/Defaults/data'
+import { getSaveLocation, getSearchIndexLocation, getTokenLocation } from '../data/Defaults/data'
 import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
 import { IpcAction } from '../data/IpcAction'
 import { AppType } from '../hooks/useInitialize'
@@ -29,7 +29,7 @@ import { sanitizeHtml } from '../utils/sanitizeHtml'
 import MenuBuilder from './menu'
 import Toast from './Toast'
 import { setupUpdateService } from './update'
-import { getFileData, setFileData } from './utils/filedata'
+import { getFileData, getTokenData, setFileData, setTokenData } from './utils/filedata'
 import {
   copyToClipboard,
   getGlobalShortcut,
@@ -53,6 +53,7 @@ import { ToastStatus, ToastType } from '../types/toast'
 import { getReminderDimensions, REMINDERS_DIMENSIONS } from '../services/reminders/reminders'
 import { IS_DEV } from '../data/Defaults/dev_'
 import { Reminder, ReminderActions } from '../types/reminders'
+import { AuthTokenData } from '../types/auth'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -94,6 +95,7 @@ if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   sourceMapSupport.install()
 }
 
+const TOKEN_LOCATION = getTokenLocation(app)
 const SAVE_LOCATION = getSaveLocation(app)
 const SEARCH_INDEX_LOCATION = getSearchIndexLocation(app)
 // const RESOURCES_PATH = app.isPackaged ? path.join(process.resourcesPath, 'assets') : path.join(__dirname, '../assets')
@@ -405,12 +407,15 @@ app.setAsDefaultProtocolClient('mex')
 app.on('open-url', function (event, url) {
   event.preventDefault()
 
-  const URL = new URLSearchParams(url)
+  const URLparams = new URL(url).searchParams
+  const accessToken = URLparams.get('access_token')
+  const idToken = URLparams.get('id_token')
+  const refreshToken = URLparams.get('refresh_token')
+  const type = URLparams.get('type') ?? 'login_google'
 
-  const accessToken = URL.get('mex://localhost:3333/?access_token')
-  const idToken = URL.get('id_token')
-
-  mex.webContents.send(IpcAction.OAUTH, { accessToken, idToken })
+  console.log('Sending accessToken', { url, URLparams, type, accessToken, idToken, refreshToken })
+  mex.webContents.send(IpcAction.OAUTH, { type, accessToken, idToken, refreshToken })
+  spotlight.webContents.send(IpcAction.OAUTH, { type, accessToken, idToken, refreshToken })
 })
 
 app
@@ -541,6 +546,18 @@ ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
   const { disable } = arg
   if (disable) globalShortcut.unregisterAll()
   else globalShortcut.register(SPOTLIGHT_SHORTCUT, handleToggleMainWindow) // * If more than one global listener, use registerAll
+})
+
+ipcMain.on(IpcAction.GET_TOKEN_DATA, async (event) => {
+  const tokenData: AuthTokenData = getTokenData(TOKEN_LOCATION)
+  event.sender.send(IpcAction.RECIEVE_TOKEN_DATA, tokenData)
+})
+
+ipcMain.on(IpcAction.SET_TOKEN_DATA, (_event, arg) => {
+  setTokenData(arg, TOKEN_LOCATION)
+  const tokenData: AuthTokenData = arg || getTokenData(TOKEN_LOCATION)
+  mex?.webContents.send(IpcAction.RECIEVE_TOKEN_DATA, tokenData)
+  spotlight?.webContents.send(IpcAction.RECIEVE_TOKEN_DATA, tokenData)
 })
 
 ipcMain.on(IpcAction.GET_LOCAL_DATA, async (event) => {
