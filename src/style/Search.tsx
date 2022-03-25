@@ -2,7 +2,7 @@ import { transparentize } from 'polished'
 import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { Ellipsis } from '../components/mex/Integrations/Template/styled'
-import { MetadataWrapper } from '../components/mex/Metadata/Metadata'
+import { DataGroup, MetadataWrapper } from '../components/mex/Metadata/Metadata'
 import { StyledInputWrapper, StyledMenu } from '../components/mex/NodeSelect/NodeSelect.styles'
 import { View } from '../components/mex/Search/ViewSelector'
 import { EditorStyles } from './Editor'
@@ -270,6 +270,9 @@ export const ResultMetaData = styled.div`
   align-items: center;
   justify-content: flex-end;
   font-size: 0.9rem;
+  ${DataGroup} {
+    min-width: 15rem;
+  }
   ${ProfileIcon} {
     opacity: 0.66;
   }
