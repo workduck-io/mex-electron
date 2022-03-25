@@ -7,12 +7,14 @@ import TagsRelated from '../Tags/TagsRelated'
 
 export const DataInfobarWrapper = styled.div`
   display: flex;
-  height: 100%;
+  height: calc(100% - 10rem);
+  margin-top: 10rem;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: calc(2 * ${({ theme }) => theme.spacing.large});
   padding: ${({ theme }) => `${theme.spacing.medium}`};
   max-width: 300px;
+  overflow-y: auto;
 `
 
 const DataInfoBar = () => {

@@ -1,4 +1,4 @@
-import { usePlateEditorRef } from '@udecode/plate'
+import { selectEditor, useEditorRef, usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect, useMemo } from 'react'
 import sw from 'stopword'
 import tinykeys from 'tinykeys'
@@ -17,7 +17,7 @@ import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
 import { useLayoutStore } from '../store/useLayoutStore'
 import useSuggestionStore from '../store/useSuggestions'
-import { StyledEditor } from '../style/Editor'
+import { EditorWrapper, StyledEditor } from '../style/Editor'
 import { getEditorId } from '../utils/lib/EditorId'
 import { mog } from '../utils/lib/helper'
 import { convertContentToRawText } from '../utils/search/parseData'
@@ -75,6 +75,12 @@ const ContentEditor = () => {
 
   const editorId = useMemo(() => getEditorId(node.nodeid, false), [node, fetchingContent])
 
+  const onFocusClick = () => {
+    if (editorRef) {
+      selectEditor(editorRef, { focus: true })
+    }
+  }
+
   useAnalysisTodoAutoUpdate()
 
   useEffect(() => {
@@ -119,13 +125,15 @@ const ContentEditor = () => {
 
         {isBlockMode ? <BlockInfoBar /> : <Metadata node={node} />}
 
-        <Editor
-          showBalloonToolbar
-          // readOnly={fetchingContent}
-          content={fsContent?.content ?? defaultContent.content}
-          onChange={onChangeSave}
-          editorId={editorId}
-        />
+        <EditorWrapper onClick={onFocusClick}>
+          <Editor
+            showBalloonToolbar
+            // readOnly={fetchingContent}
+            content={fsContent?.content ?? defaultContent.content}
+            onChange={onChangeSave}
+            editorId={editorId}
+          />
+        </EditorWrapper>
       </StyledEditor>
       <BlockOptionsMenu blockId="one" />
       {/* <NodeIntentsModal nodeid={nodeid} /> */}

@@ -35,7 +35,8 @@ export const hackerTheme = generateTheme({
     oppositePrimary: '#000000'
   },
   backgroundImages: {
-    app: 'https://i.imgur.com/OCW3IAi.png'
+    app: 'https://i.imgur.com/OCW3IAi.png',
+    preview: 'https://i.imgur.com/qSimBsf.png'
   },
   custom: 'HackerStyles'
 })

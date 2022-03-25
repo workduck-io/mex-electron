@@ -35,6 +35,7 @@ export const reduxTheme = generateTheme({
     oppositePrimary: '#282828'
   },
   backgroundImages: {
-    app: 'https://i.imgur.com/spzhDDp.jpg'
+    app: 'https://i.imgur.com/spzhDDp.jpg',
+    preview: 'https://i.imgur.com/Tq3DWs6.png'
   }
 })

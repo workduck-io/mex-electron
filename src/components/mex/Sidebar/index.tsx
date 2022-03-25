@@ -1,53 +1,33 @@
-import arrowRightSLine from '@iconify/icons-ri/arrow-right-s-line'
 import bookmark3Line from '@iconify/icons-ri/bookmark-3-line'
 import gitBranchLine from '@iconify/icons-ri/git-branch-line'
-import { Icon } from '@iconify/react'
-import React, { useState } from 'react'
+import React from 'react'
 import useLayout from '../../../hooks/useLayout'
 import { useLayoutStore } from '../../../store/useLayoutStore'
-import { SectionHeading, SidebarContent, SidebarDiv, SidebarDivider, SidebarSection } from '../../../style/Sidebar'
+import { SidebarContent, SidebarDiv, SidebarDivider } from '../../../style/Sidebar'
 import TreeNode from '../../../types/tree'
+import Collapse from '../../../ui/layout/Collapse/Collapse'
 import Bookmarks from './Bookmarks'
 import { TreeWithContextMenu } from './TreeWithContextMenu'
 
 export type SideBarProps = { tree: TreeNode[]; starred: TreeNode[] }
 
-const SideBar = ({ tree, starred }: SideBarProps) => {
+const SideBar = ({ tree }: SideBarProps) => {
   // const { transitions } = useFocusTransition()
-  const [sHide, setShide] = useState(false)
-  const [tHide, setThide] = useState(false)
   const focusMode = useLayoutStore((s) => s.focusMode)
   const { getFocusProps } = useLayout()
 
   return (
     <SidebarDiv {...getFocusProps(focusMode)}>
       <SidebarContent>
-        <SidebarSection className="starred">
-          <SectionHeading
-            onClick={() => {
-              setShide((b) => !b)
-            }}
-          >
-            <Icon height={20} icon={sHide ? arrowRightSLine : bookmark3Line} />
-            <h2>Bookmarks</h2>
-          </SectionHeading>
-
-          {!sHide && <Bookmarks />}
-        </SidebarSection>
+        <Collapse title="Bookmarks" icon={bookmark3Line} maximumHeight="30vh">
+          <Bookmarks />
+        </Collapse>
 
         <SidebarDivider />
 
-        <SidebarSection className="tree">
-          <SectionHeading
-            onClick={() => {
-              setThide((b) => !b)
-            }}
-          >
-            <Icon height={20} icon={tHide ? arrowRightSLine : gitBranchLine} />
-            <h2>Tree</h2>
-          </SectionHeading>
-          {!tHide && <TreeWithContextMenu tree={tree} />}
-        </SidebarSection>
+        <Collapse title="Tree" defaultOpen icon={gitBranchLine} maximumHeight="80vh">
+          <TreeWithContextMenu tree={tree} />
+        </Collapse>
       </SidebarContent>
     </SidebarDiv>
   )

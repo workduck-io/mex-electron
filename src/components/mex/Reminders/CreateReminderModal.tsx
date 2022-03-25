@@ -231,7 +231,7 @@ const CreateReminderModal = () => {
             selected={new Date(modalValue.time ?? getNextReminderTime())}
             showTimeSelect
             timeFormat="p"
-            timeIntervals={1}
+            timeIntervals={15}
             filterDate={(date) => {
               const todayStart = startOfToday()
               return date.getTime() >= todayStart.getTime()

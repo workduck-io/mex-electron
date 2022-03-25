@@ -12,12 +12,13 @@ import { ComboboxItem, ComboboxRoot } from '../../editor/Components/tag/componen
 import { TodoContainer } from '../../ui/components/Todo.style'
 import { ArchivedNode } from '../../views/mex/Archive'
 import { SettingsOptions } from '../../views/mex/Settings'
+import { SwitchWrapper } from '../../views/router/Switch'
 import { BackCard } from '../Card'
-import { EditorStyles, NodeInfo, StyledEditor } from '../Editor'
+import { EditorStyles, EditorWrapper, NodeInfo, StyledEditor } from '../Editor'
 import { GridWrapper } from '../Grid'
 import { InfobarTools, InfoBarWrapper } from '../infobar'
 import { ServiceCard } from '../Integration'
-import { Result } from '../Search'
+import { Result, SearchFilterListWrap } from '../Search'
 import { SidebarDiv } from '../Sidebar'
 import { CreateSnippet, SSnippet } from '../Snippets'
 import { StyledBoard } from '../Todo'
@@ -60,7 +61,6 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
       margin: 0 0;
     }
     ${InfoBarWrapper} {
-      margin-right: 3rem;
       overflow: auto;
     }
     ${GraphWrapper} {
@@ -69,19 +69,23 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
   `
 
   const edStyles = css`
-    ${EditorStyles} {
-      ${props.containerStyle}
-    }
     ${StyledEditor} {
       margin: 0 auto;
+      padding: 0 3rem;
+      height: calc(100vh - 4rem);
     }
     ${NodeInfo} {
       ${containerStyle}
     }
     ${DataInfobarWrapper} {
+      margin-top: 0rem;
       height: ${heightMain};
       ${containerStyle}
       margin-top: 0;
+    }
+    ${EditorWrapper} {
+      ${containerStyle}
+      border-radius: ${({ theme }) => theme.borderRadius.small};
     }
     ${BalloonToolbarBase} {
       background-color: ${({ theme }) => theme.colors.gray[8]};
@@ -93,6 +97,9 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
       }
     }
     ${EditorPreviewWrapper} {
+      ${EditorStyles} {
+        ${containerStyleReset}
+      }
     }
     ${ComboboxRoot} {
       backdrop-filter: blur(10px);
@@ -126,6 +133,10 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
     }
     ${BackCard}, ${ComingSoonCard}, ${ImporterCard} {
       ${containerStyle}
+    }
+    ${SwitchWrapper} {
+      width: calc(100% - 80px);
+      width: ${({ theme }) => css`calc(100% - ${theme.width.nav}px - 3rem)`};
     }
   `
 
@@ -166,12 +177,18 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
     }
   `
 
+  const searchStyles = css`
+    ${SearchFilterListWrap} {
+      width: -webkit-fill-available;
+    }
+  `
+
   const sidebarStyles = css`
     ${SidebarDiv} {
       height: ${heightMain};
       ${containerStyle}
       margin-top: 0;
-      padding: 0 ${({ theme }) => theme.spacing.medium};
+      padding: 0;
     }
   `
 
@@ -192,6 +209,7 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
   ${sidebarStyles}
   ${settingsStyles}
   ${integrationStyles}
+  ${searchStyles}
   ${gridCardStyles}
   ${edStyles}
   ${graphStyles}

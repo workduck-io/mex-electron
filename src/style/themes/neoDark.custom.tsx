@@ -71,7 +71,6 @@ const graphStyles = css`
     gap: ${({ theme }) => theme.spacing.medium};
   }
   ${InfoBarWrapper} {
-    margin-right: 3rem;
     overflow: auto;
   }
   ${GraphWrapper} {
@@ -83,12 +82,8 @@ const edStyles = css`
   ${MenuTrigger} {
     background-color: ${({ theme }) => theme.colors.gray[10]};
   }
-  ${StyledEditor} {
-    padding: 0 3rem;
-  }
   ${EditorStyles} {
     border-radius: 1rem;
-    padding: 1.25rem;
     transition: all 0.25s ease-in-out;
     blockquote {
       background-color: ${({ theme }) => theme.colors.gray[9]};
@@ -209,9 +204,6 @@ const integrationStyles = css`
 `
 
 const navStyles = css`
-  ${SwitchWrapper} {
-    overflow: unset;
-  }
   ${NavWrapper} {
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
@@ -223,7 +215,6 @@ const navStyles = css`
 const sidebarStyles = css`
   ${SidebarDiv} {
     border-radius: ${({ theme }) => theme.borderRadius.small};
-    padding: 0 ${({ theme }) => theme.spacing.medium};
     ${StyledTree} {
       ${({ theme }) => css`
         .rc-tree .rc-tree-treenode {
@@ -259,11 +250,23 @@ const modalStyles = css`
     background-color: ${({ theme }) => theme.colors.gray[9]};
   }
 `
-
 const globalStyles = css`
   body {
     background-color: ${({ theme }) => theme.colors.gray[10]};
   }
+`
+
+export const NeoDarkStylesPlain = css`
+  ${modalStyles}
+  ${navStyles}
+  ${sidebarStyles}
+  ${settingsStyles}
+  ${searchStyles}
+  ${integrationStyles}
+  ${gridCardStyles}
+  ${edStyles}
+  ${graphStyles}
+  ${todoStyles}
 `
 
 const containerStyle = css`
@@ -275,7 +278,6 @@ const containerStyleReset = css`
   background-color: transparent;
   box-shadow: none;
 `
-
 const spaceBlocks = SpaceBlocksCss({ containerStyle, containerStyleReset, heightMain })
 
 export const NeoDarkStyles = css`

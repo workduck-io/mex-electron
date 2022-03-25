@@ -2,7 +2,7 @@ import { transparentize } from 'polished'
 import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { Ellipsis } from '../components/mex/Integrations/Template/styled'
-import { MetadataWrapper } from '../components/mex/Metadata/Metadata'
+import { DataGroup, MetadataWrapper } from '../components/mex/Metadata/Metadata'
 import { StyledInputWrapper, StyledMenu } from '../components/mex/NodeSelect/NodeSelect.styles'
 import { View } from '../components/mex/Search/ViewSelector'
 import { EditorStyles } from './Editor'
@@ -270,6 +270,9 @@ export const ResultMetaData = styled.div`
   align-items: center;
   justify-content: flex-end;
   font-size: 0.9rem;
+  ${DataGroup} {
+    min-width: 15rem;
+  }
   ${ProfileIcon} {
     opacity: 0.66;
   }
@@ -313,7 +316,7 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
         css`
           transition: 0s ease;
           background-color: ${theme.colors.gray[8]};
-          border: 1px solid ${theme.colors.primary};
+          border: 1px solid ${theme.colors.primary} !important;
           ${ResultTitle} {
             font-weight: bold;
             color: ${theme.colors.primary};
@@ -385,6 +388,7 @@ export const SplitSearchPreviewWrapper = styled.div`
     max-height: 40vh;
     overflow-x: hidden;
     overflow-y: auto;
+    min-height: 30vh;
 
     background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
   }

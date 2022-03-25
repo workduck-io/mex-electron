@@ -1,39 +1,73 @@
-import { mix, transparentize } from 'polished'
-import { NavWrapper } from '../../components/mex/Sidebar/Nav'
+import { transparentize } from 'polished'
 import { css } from 'styled-components'
-import { SidebarDiv, StyledTree } from '../Sidebar'
-import { GridWrapper } from '../Grid'
-import { NavButton } from '../Nav'
-import { EditorStyles, NodeInfo, StyledEditor } from '../Editor'
-import { Widget } from '../../editor/Components/SyncBlock'
-import { AsyncButton, Button } from '../Buttons'
-import { DataInfobarWrapper } from '../../components/mex/Sidebar/DataInfoBar'
-import { StyledGraph, GraphWrapper } from '../../components/mex/Graph/Graph.styles'
-import { EditorPreviewWrapper } from '../../editor/Components/EditorPreview/EditorPreview.styles'
-import { SettingsOptions, SettingTitle } from '../../views/mex/Settings'
-import { BackCard } from '../Card'
-import { ComingSoonCard, ImporterCard } from '../../components/mex/Settings/Importers'
-import { MenuTrigger, RightCut, ServiceCard, Title } from '../Integration'
-import { ServiceChip, TemplateCard, TemplateCommand } from '../../components/mex/Integrations/Template/styled'
-import { ArchivedNode } from '../../views/mex/Archive'
-import { Result, ResultHeader, SearchContainer, SplitSearchPreviewWrapper } from '../Search'
-import { CreateSnippet, SSnippet } from '../Snippets'
-import { ComboboxRoot, ComboboxItem } from '../../editor/Components/tag/components/TagCombobox.styles'
-import { SwitchWrapper } from '../../views/router/Switch'
-import { BalloonToolbarBase } from '../../editor/Components/BalloonToolbar'
+import { GraphWrapper, StyledGraph } from '../../components/mex/Graph/Graph.styles'
+import { ServiceChip, TemplateCard } from '../../components/mex/Integrations/Template/styled'
 import { StyledMenu } from '../../components/mex/NodeSelect/NodeSelect.styles'
+import { ComingSoonCard, ImporterCard } from '../../components/mex/Settings/Importers'
+import { DataInfobarWrapper } from '../../components/mex/Sidebar/DataInfoBar'
+import { NavWrapper } from '../../components/mex/Sidebar/Nav'
+import { BalloonToolbarBase } from '../../editor/Components/BalloonToolbar'
+import { EditorPreviewWrapper } from '../../editor/Components/EditorPreview/EditorPreview.styles'
 import { SILink } from '../../editor/Components/ilink/components/ILinkElement.styles'
-import { InfobarTools, InfoBarWrapper } from '../infobar'
-import { SpaceBlocksCss } from './spaceBlocks'
+import { Widget } from '../../editor/Components/SyncBlock'
+import { ComboboxItem, ComboboxRoot } from '../../editor/Components/tag/components/TagCombobox.styles'
 import { TodoContainer } from '../../ui/components/Todo.style'
+import { ArchivedNode } from '../../views/mex/Archive'
+import { SettingsOptions, SettingTitle } from '../../views/mex/Settings'
+import { SwitchWrapper } from '../../views/router/Switch'
+import { BackCard } from '../Card'
+import { EditorStyles, StyledEditor } from '../Editor'
+import { InfoBarWrapper } from '../infobar'
+import { MenuTrigger, RightCut, ServiceCard } from '../Integration'
+import { NavButton } from '../Nav'
+import { Result, ResultHeader, SearchContainer, SplitSearchPreviewWrapper } from '../Search'
+import { SidebarDiv, StyledTree } from '../Sidebar'
+import { CreateSnippet } from '../Snippets'
+import { Title } from '../Typography'
+import { SpaceBlocksCss } from './spaceBlocks'
 
-const palette = { body: '#C4CCE0', background: '#D2D9EC', shadow: '#576BA4', primDark: '#4263B6' }
+const textStyleColors = css`
+  b,
+  i,
+  strong {
+    color: #a372e3;
+  }
+`
+
+const headingColors = css`
+  h1 {
+    color: #dfcc84;
+  }
+  h2 {
+    color: #abc86f;
+  }
+  h3 {
+    color: #83c182;
+  }
+  h4 {
+    color: #82c1aa;
+  }
+  h5 {
+    color: #82bec1;
+  }
+  h6 {
+    color: #699ecf;
+  }
+`
+
+const listColors = css`
+  li::marker {
+    color: ${({ theme }) => transparentize(0.5, theme.colors.secondary)};
+  }
+`
 const grayMixerTrans = (n: number) => css`
   ${({ theme }) => transparentize(0.33, theme.colors.gray[n])}
 `
-const grayMainColor = palette.background
+const grayMainColor = css`
+  ${({ theme }) => theme.colors.gray[10]}
+`
 
-const heightMain = `calc(100vh - 3rem)`
+const heightMain = `calc(100vh - 4rem)`
 
 const graphStyles = css`
   ${StyledGraph} {
@@ -59,6 +93,9 @@ const edStyles = css`
     blockquote {
       background-color: ${({ theme }) => theme.colors.gray[9]};
     }
+    ${headingColors}
+    ${textStyleColors}
+    ${listColors}
   }
   ${SILink} {
     .ILink_decoration {
@@ -220,31 +257,49 @@ const modalStyles = css`
   }
 `
 
+const setFonts = (fontFamily: string) => css`
+  body {
+    font-family: ${fontFamily};
+  }
+  ${EditorStyles} {
+    font-family: ${fontFamily};
+  }
+`
+
+const globalStyles = css`
+  ${setFonts('"Jost", sans-serif')}
+  body {
+    background-color: ${({ theme }) => theme.colors.gray[10]};
+  }
+`
+
+const palette = { body: '#211E33', border: '#332A47' }
+
 const containerStyle = css`
-  background-color: ${palette.background};
-  box-shadow: 0px 15px 40px ${transparentize(0.9, palette.shadow)};
+  background-color: ${transparentize(0.15, palette.body)};
+  box-shadow: 0px 15px 40px ${({ theme }) => transparentize(0.9, theme.colors.palette.black)};
+  border: 1px solid ${palette.border};
 `
 
 const containerStyleReset = css`
   background-color: transparent;
   box-shadow: none;
+  border: none;
 `
 
 const spaceBlocks = SpaceBlocksCss({ containerStyle, containerStyleReset, heightMain })
 
-export const NeoLightStyles = css`
-  body {
-    background-color: ${palette.body};
-  }
-  ${searchStyles}
-  ${todoStyles}
+export const VertigoStyles = css`
   ${spaceBlocks}
+  ${globalStyles}
   ${modalStyles}
   ${navStyles}
   ${sidebarStyles}
   ${settingsStyles}
-    ${integrationStyles}
-    ${gridCardStyles}
-    ${edStyles}
+  ${searchStyles}
+  ${integrationStyles}
+  ${gridCardStyles}
+  ${edStyles}
   ${graphStyles}
+  ${todoStyles}
 `

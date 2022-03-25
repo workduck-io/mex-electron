@@ -1,9 +1,8 @@
-import { AsyncButton, Button } from './Buttons'
 import { mix, transparentize } from 'polished'
 import styled, { css } from 'styled-components'
-
-import { FocusModeProp } from './props'
+import { AsyncButton, Button } from './Buttons'
 import { focusStyles } from './focus'
+import { FocusModeProp } from './props'
 
 export const NoteTitle = styled.h1``
 
@@ -35,6 +34,43 @@ export const InfoTools = styled.div`
   }
 `
 
+export const EditorPreviewStyles = styled.div`
+  overflow-x: hidden;
+`
+interface StyledEditorProps {
+  showGraph?: boolean
+}
+
+export const EditorWrapper = styled.div`
+  height: 100%;
+  overflow-y: auto;
+`
+export const StyledEditor = styled.div<StyledEditorProps>`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.spacing.large};
+  padding: 0 ${({ theme }) => theme.spacing.medium};
+  margin: calc(${({ theme }) => theme.spacing.large}) auto 0;
+  width: 100%;
+  max-width: 1000px;
+  min-width: 400px;
+  height: calc(100vh - 3rem);
+  flex: 1;
+  overflow-y: auto;
+  /* ${({ showGraph }) =>
+    showGraph
+      ? css`
+          max-width: 600px;
+        `
+      : css`
+          max-width: 800px;
+        `} */
+
+  && > div {
+    width: 100%;
+  }
+`
 export const EditorStyles = styled.div`
   font-family: 'Inter', sans-serif;
   /* font-weight: 400; */
@@ -425,39 +461,5 @@ export const EditorStyles = styled.div`
 
   .LinkIcon > * {
     color: ${({ theme }) => theme.colors.primary};
-  }
-`
-
-export const EditorPreviewStyles = styled.div`
-  overflow-x: hidden;
-`
-interface StyledEditorProps {
-  showGraph?: boolean
-}
-
-export const StyledEditor = styled.div<StyledEditorProps>`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: ${({ theme }) => theme.spacing.large};
-  padding: 0 ${({ theme }) => theme.spacing.medium};
-  margin: calc(${({ theme }) => theme.spacing.large}) auto 0;
-  width: 100%;
-  max-width: 1000px;
-  min-width: 400px;
-  height: 100%;
-  flex: 1;
-  overflow-y: auto;
-  /* ${({ showGraph }) =>
-    showGraph
-      ? css`
-          max-width: 600px;
-        `
-      : css`
-          max-width: 800px;
-        `} */
-
-  && > div {
-    width: 100%;
   }
 `

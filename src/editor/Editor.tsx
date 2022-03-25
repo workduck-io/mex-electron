@@ -41,7 +41,7 @@ export const Editor = ({
     spellCheck: false,
     autoFocus: autoFocus,
     style: {
-      padding: '15px'
+      padding: '32px'
     },
     readOnly
   }

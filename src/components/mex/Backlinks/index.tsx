@@ -4,6 +4,7 @@ import React from 'react'
 import { useLinks } from '../../../hooks/useLinks'
 import { InfoWidgetScroll, InfoWidgetWrapper } from '../../../style/infobar'
 import { Note } from '../../../style/Typography'
+import Collapse from '../../../ui/layout/Collapse/Collapse'
 import NodeLink from '../NodeLink/NodeLink'
 import { DataInfoHeader } from './Backlinks.style'
 
@@ -16,11 +17,7 @@ const Backlinks = ({ nodeid }: BackLinkProps) => {
 
   return (
     <InfoWidgetWrapper>
-      <DataInfoHeader>
-        <Icon icon={arrowGoBackLine}></Icon>
-        Backlinks
-      </DataInfoHeader>
-      <InfoWidgetScroll>
+      <Collapse maximumHeight="40vh" defaultOpen icon={arrowGoBackLine} title="Backlinks">
         {backlinks.length === 0 && (
           <>
             <Note>No backlinks found.</Note>
@@ -30,7 +27,7 @@ const Backlinks = ({ nodeid }: BackLinkProps) => {
         {backlinks.map((l, i) => (
           <NodeLink key={`backlink_${l.nodeid}_${i}`} keyStr={`backlink_${l.nodeid}_${i}`} nodeid={l.nodeid} />
         ))}
-      </InfoWidgetScroll>
+      </Collapse>
     </InfoWidgetWrapper>
   )
 }
