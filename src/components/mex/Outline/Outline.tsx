@@ -7,6 +7,7 @@ import { ReactEditor } from 'slate-react'
 import { OutlineItem, useAnalysisStore } from '../../../store/useAnalysis'
 import { InfoWidgetScroll, InfoWidgetWrapper } from '../../../style/infobar'
 import { Note } from '../../../style/Typography'
+import Collapse from '../../../ui/layout/Collapse/Collapse'
 import { mog } from '../../../utils/lib/helper'
 import { DataInfoHeader } from '../Backlinks/Backlinks.style'
 import { OutlineItemRender } from './Outline.styles'
@@ -38,17 +39,9 @@ const Outline = () => {
     }
   }
 
-  // useEffect(() => {
-  //   console.log('Outline updated', outline)
-  // }, [outline])
-
   return (
     <InfoWidgetWrapper>
-      <DataInfoHeader>
-        <Icon icon={fileList3Line}></Icon>
-        Outline
-      </DataInfoHeader>
-      <InfoWidgetScroll>
+      <Collapse maximumHeight="40vh" defaultOpen icon={fileList3Line} title="Outline">
         {outline.length > 0 ? (
           outline.map((heading) => (
             <OutlineItemRender
@@ -65,7 +58,7 @@ const Outline = () => {
             <Note>Create headings with h1, h2, h3 etc to generate outline.</Note>
           </>
         )}
-      </InfoWidgetScroll>
+      </Collapse>
     </InfoWidgetWrapper>
   )
 }

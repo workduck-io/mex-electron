@@ -8,6 +8,7 @@ import useDataStore from '../../../store/useDataStore'
 import { HoverSubtleGlow } from '../../../style/helpers'
 import { InfoWidgetScroll, InfoWidgetWrapper } from '../../../style/infobar'
 import { Note } from '../../../style/Typography'
+import Collapse from '../../../ui/layout/Collapse/Collapse'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { DataInfoHeader } from '../Backlinks/Backlinks.style'
 import NodeLink from '../NodeLink/NodeLink'
@@ -65,11 +66,7 @@ const TagsRelated = ({ nodeid }: TagsRelated) => {
 
   return (
     <InfoWidgetWrapper>
-      <DataInfoHeader>
-        <Icon icon={hashtagIcon}></Icon>
-        Tags
-      </DataInfoHeader>
-      <InfoWidgetScroll>
+      <Collapse icon={hashtagIcon} title="Tags" defaultOpen maximumHeight="40vh">
         {tags.length > 0 ? (
           <>
             <TagsFlex>
@@ -96,7 +93,7 @@ const TagsRelated = ({ nodeid }: TagsRelated) => {
             <Note>Create tags with # view them and related nodes here.</Note>
           </>
         )}
-      </InfoWidgetScroll>
+      </Collapse>
     </InfoWidgetWrapper>
   )
 }

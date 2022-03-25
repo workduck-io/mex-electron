@@ -13,10 +13,10 @@ import { EditorPreviewWrapper } from '../../editor/Components/EditorPreview/Edit
 import { SettingsOptions, SettingTitle } from '../../views/mex/Settings'
 import { BackCard } from '../Card'
 import { ComingSoonCard, ImporterCard } from '../../components/mex/Settings/Importers'
-import { MenuTrigger, RightCut, ServiceCard } from '../Integration'
+import { MenuTrigger, RightCut, ServiceCard, Title } from '../Integration'
 import { ServiceChip, TemplateCard, TemplateCommand } from '../../components/mex/Integrations/Template/styled'
 import { ArchivedNode } from '../../views/mex/Archive'
-import { Result, ResultHeader, SearchContainer } from '../Search'
+import { Result, ResultHeader, SearchContainer, SplitSearchPreviewWrapper } from '../Search'
 import { CreateSnippet, SSnippet } from '../Snippets'
 import { ComboboxRoot, ComboboxItem } from '../../editor/Components/tag/components/TagCombobox.styles'
 import { SwitchWrapper } from '../../views/router/Switch'
@@ -25,6 +25,7 @@ import { StyledMenu } from '../../components/mex/NodeSelect/NodeSelect.styles'
 import { SILink } from '../../editor/Components/ilink/components/ILinkElement.styles'
 import { InfobarTools, InfoBarWrapper } from '../infobar'
 import { SpaceBlocksCss } from './spaceBlocks'
+import { TodoContainer } from '../../ui/components/Todo.style'
 
 const palette = { body: '#C4CCE0', background: '#D2D9EC', shadow: '#576BA4', primDark: '#4263B6' }
 const grayMixerTrans = (n: number) => css`
@@ -41,7 +42,6 @@ const graphStyles = css`
     gap: ${({ theme }) => theme.spacing.medium};
   }
   ${InfoBarWrapper} {
-    margin-right: 3rem;
     overflow: auto;
   }
   ${GraphWrapper} {
@@ -55,19 +55,9 @@ const edStyles = css`
   }
   ${EditorStyles} {
     border-radius: 1rem;
-    padding: 1.25rem;
     transition: all 0.25s ease-in-out;
     blockquote {
       background-color: ${({ theme }) => theme.colors.gray[9]};
-    }
-  }
-  .focus_mode {
-    ${StyledEditor} {
-      padding: ${({ theme }) => theme.spacing.large} 80px;
-    }
-    ${EditorStyles} {
-      border-radius: 2rem;
-      box-shadow: 20px 20px 60px #b3b8c9, -20px -20px 60px #f2faff;
     }
   }
   ${SILink} {
@@ -91,8 +81,8 @@ const edStyles = css`
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
   ${BalloonToolbarBase} {
-    background-color: ${({ theme }) => theme.colors.gray[9]};
-    box-shadow: 0px 10px 20px ${({ theme }) => transparentize(0.75, theme.colors.text.heading)};
+    background-color: ${({ theme }) => theme.colors.gray[8]};
+    box-shadow: 0px 10px 20px ${({ theme }) => transparentize(0.75, theme.colors.palette.black)};
     .slate-ToolbarButton-active,
     .slate-ToolbarButton:hover {
       color: ${({ theme }) => theme.colors.secondary};
@@ -111,6 +101,14 @@ const edStyles = css`
   ${ComboboxItem} {
     & > svg {
       color: ${({ theme }) => theme.colors.secondary};
+    }
+  }
+`
+
+const todoStyles = css`
+  ${TodoContainer} {
+    ${EditorStyles} {
+      padding: 0;
     }
   }
 `
@@ -142,8 +140,16 @@ const gridCardStyles = css`
   ${CreateSnippet} {
     background-color: ${grayMixerTrans(10)};
   }
+`
+
+const searchStyles = css`
   ${SearchContainer} {
     margin-right: 3rem;
+  }
+  ${SplitSearchPreviewWrapper} {
+    ${Title} {
+      color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `
 
@@ -167,9 +173,6 @@ const integrationStyles = css`
 `
 
 const navStyles = css`
-  ${SwitchWrapper} {
-    overflow: unset;
-  }
   ${NavWrapper} {
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
@@ -181,8 +184,6 @@ const navStyles = css`
 const sidebarStyles = css`
   ${SidebarDiv} {
     border-radius: ${({ theme }) => theme.borderRadius.small};
-    padding: 0 ${({ theme }) => theme.spacing.medium};
-    margin: 0;
     ${StyledTree} {
       ${({ theme }) => css`
         .rc-tree .rc-tree-treenode {
@@ -211,11 +212,10 @@ const modalStyles = css`
     border: none;
   }
   .ModalOverlay {
-    backdrop-filter: blur(10px);
   }
 
   ${StyledMenu} {
-    box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.5, theme.colors.gray[6])};
+    box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.5, theme.colors.palette.black)};
     background-color: ${({ theme }) => theme.colors.gray[9]};
   }
 `
@@ -236,6 +236,8 @@ export const NeoLightStyles = css`
   body {
     background-color: ${palette.body};
   }
+  ${searchStyles}
+  ${todoStyles}
   ${spaceBlocks}
   ${modalStyles}
   ${navStyles}

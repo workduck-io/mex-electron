@@ -32,7 +32,7 @@ import RemindersAll from '../mex/Reminders/RemindersAll'
 
 export const SwitchWrapper = styled.div<{ isAuth?: boolean }>`
   position: fixed;
-  width: ${({ theme, isAuth }) => (!isAuth ? '100%' : `calc(100% - ${theme.width.nav}px)`)};
+  width: ${({ theme, isAuth }) => (!isAuth ? '100% !important' : `calc(100% - ${theme.width.nav}px)`)};
   overflow-x: hidden;
   overflow-y: auto;
 `

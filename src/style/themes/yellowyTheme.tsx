@@ -35,6 +35,7 @@ export const yellowyTheme = generateTheme({
   //   oppositePrimary: '#000',
   // },
   backgroundImages: {
-    app: 'https://i.imgur.com/0SGx9h8.png'
+    app: 'https://i.imgur.com/0SGx9h8.png',
+    preview: 'https://i.imgur.com/Lwos7os.png'
   }
 })

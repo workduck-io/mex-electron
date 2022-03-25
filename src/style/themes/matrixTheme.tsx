@@ -35,6 +35,7 @@ export const matrixTheme = generateTheme({
     oppositePrimary: '#000'
   },
   backgroundImages: {
-    app: 'https://i.imgur.com/vVzVdsW.jpg'
+    app: 'https://i.imgur.com/vVzVdsW.jpg',
+    preview: 'https://i.imgur.com/FJnrKFE.png'
   }
 })

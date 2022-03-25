@@ -35,7 +35,8 @@ export const imperialTheme = generateTheme({
     oppositePrimary: '#ffffff'
   },
   backgroundImages: {
-    app: 'https://i.imgur.com/Z2iNoSC.jpg'
+    app: 'https://i.imgur.com/Z2iNoSC.jpg',
+    preview: 'https://i.imgur.com/2zgshMW.png'
   },
   custom: 'ImperialStyles'
 })

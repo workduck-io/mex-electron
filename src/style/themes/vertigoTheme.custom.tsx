@@ -1,6 +1,6 @@
 import { transparentize } from 'polished'
 import { css } from 'styled-components'
-import { GraphTools, GraphWrapper, StyledGraph } from '../../components/mex/Graph/Graph.styles'
+import { GraphWrapper, StyledGraph } from '../../components/mex/Graph/Graph.styles'
 import { ServiceChip, TemplateCard } from '../../components/mex/Integrations/Template/styled'
 import { StyledMenu } from '../../components/mex/NodeSelect/NodeSelect.styles'
 import { ComingSoonCard, ImporterCard } from '../../components/mex/Settings/Importers'
@@ -16,17 +16,15 @@ import { ArchivedNode } from '../../views/mex/Archive'
 import { SettingsOptions, SettingTitle } from '../../views/mex/Settings'
 import { SwitchWrapper } from '../../views/router/Switch'
 import { BackCard } from '../Card'
-import { EditorStyles, NodeInfo, StyledEditor } from '../Editor'
-import { GridWrapper } from '../Grid'
+import { EditorStyles, StyledEditor } from '../Editor'
 import { InfoBarWrapper } from '../infobar'
 import { MenuTrigger, RightCut, ServiceCard } from '../Integration'
 import { NavButton } from '../Nav'
 import { Result, ResultHeader, SearchContainer, SplitSearchPreviewWrapper } from '../Search'
 import { SidebarDiv, StyledTree } from '../Sidebar'
-import { CreateSnippet, SSnippet } from '../Snippets'
+import { CreateSnippet } from '../Snippets'
 import { Title } from '../Typography'
-
-const palette = { body: '#1B1F3D' }
+import { SpaceBlocksCss } from './spaceBlocks'
 
 const textStyleColors = css`
   b,
@@ -35,6 +33,7 @@ const textStyleColors = css`
     color: #a372e3;
   }
 `
+
 const headingColors = css`
   h1 {
     color: #dfcc84;
@@ -68,36 +67,18 @@ const grayMainColor = css`
   ${({ theme }) => theme.colors.gray[10]}
 `
 
-const NeoContainer = css`
-  background-color: ${palette.body};
-  box-shadow: 0px 15px 40px ${({ theme }) => transparentize(0.9, theme.colors.palette.black)};
-`
-
-const NeoContainerUnset = css`
-  background-color: transparent;
-  box-shadow: none;
-`
-const heightMain = css`
-  calc(100vh - 4rem)
-`
+const heightMain = `calc(100vh - 4rem)`
 
 const graphStyles = css`
   ${StyledGraph} {
-    height: ${heightMain};
     display: flex;
     flex-direction: column;
     gap: ${({ theme }) => theme.spacing.medium};
   }
-  ${GraphTools} {
-    ${NeoContainer}
-    margin: 2rem 0 0;
-  }
   ${InfoBarWrapper} {
-    margin-right: 3rem;
     overflow: auto;
   }
   ${GraphWrapper} {
-    ${NeoContainer}
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
 `
@@ -106,13 +87,8 @@ const edStyles = css`
   ${MenuTrigger} {
     background-color: ${({ theme }) => theme.colors.gray[10]};
   }
-  ${StyledEditor} {
-    padding: ${({ theme }) => theme.spacing.large} 3rem;
-  }
   ${EditorStyles} {
     border-radius: 1rem;
-    ${NeoContainer}
-    padding: 1.25rem;
     transition: all 0.25s ease-in-out;
     blockquote {
       background-color: ${({ theme }) => theme.colors.gray[9]};
@@ -135,17 +111,11 @@ const edStyles = css`
       }
     }
   }
-  ${NodeInfo} {
-    ${NeoContainer}
-  }
   ${Widget} {
     background-color: ${grayMixerTrans(9)};
   }
   ${DataInfobarWrapper} {
-    height: ${heightMain};
-    ${NeoContainer}
     border-radius: ${({ theme }) => theme.borderRadius.small};
-    margin-top: 2rem;
   }
   ${BalloonToolbarBase} {
     background-color: ${({ theme }) => theme.colors.gray[8]};
@@ -157,8 +127,6 @@ const edStyles = css`
     }
   }
   ${EditorPreviewWrapper} {
-    ${NeoContainer}
-    background: ${grayMainColor} !important;
     ${EditorStyles} {
       background: transparent;
     }
@@ -178,7 +146,6 @@ const todoStyles = css`
   ${TodoContainer} {
     ${EditorStyles} {
       padding: 0;
-      ${NeoContainerUnset}
     }
   }
 `
@@ -186,7 +153,6 @@ const todoStyles = css`
 const settingsStyles = css`
   ${SettingsOptions} {
     padding: ${({ theme }) => theme.spacing.medium};
-    ${NeoContainer}
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
   ${SettingTitle} {
@@ -196,25 +162,19 @@ const settingsStyles = css`
   }
   ${BackCard}, ${ComingSoonCard}, ${ImporterCard} {
     border: none;
-    ${NeoContainer}
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
 `
 
 const gridCardStyles = css`
   ${ArchivedNode}, ${Result} {
-    ${NeoContainer}
     border-radius: ${({ theme }) => theme.borderRadius.small};
     overflow: hidden;
   }
   ${ResultHeader} {
     background-color: ${grayMixerTrans(9)};
   }
-  ${SSnippet} {
-    ${NeoContainer}
-  }
   ${CreateSnippet} {
-    ${NeoContainer}
     background-color: ${grayMixerTrans(10)};
   }
 `
@@ -232,7 +192,6 @@ const searchStyles = css`
 
 const integrationStyles = css`
   ${TemplateCard}, ${ServiceCard} {
-    ${NeoContainer}
     border-radius: ${({ theme }) => theme.borderRadius.small};
     &:hover {
       border: 0.2rem solid ${({ theme }) => theme.colors.primary};
@@ -251,23 +210,8 @@ const integrationStyles = css`
 `
 
 const navStyles = css`
-  ${SwitchWrapper} {
-    overflow: unset;
-  }
   ${NavWrapper} {
-    padding: 0;
-    margin: 2rem 0;
-    overflow: auto;
-    height: ${heightMain};
-    min-height: ${heightMain};
     border-radius: ${({ theme }) => theme.borderRadius.small};
-    ${NeoContainer}
-  }
-  ${GridWrapper} {
-    margin: 1rem;
-    height: calc(100vh - 2rem);
-    width: calc(100vw - 2rem);
-    grid-gap: ${({ theme }) => theme.spacing.medium};
   }
   ${NavButton} {
     margin-top: 0;
@@ -276,10 +220,7 @@ const navStyles = css`
 
 const sidebarStyles = css`
   ${SidebarDiv} {
-    height: ${heightMain};
-    ${NeoContainer}
     border-radius: ${({ theme }) => theme.borderRadius.small};
-    padding: 0 ${({ theme }) => theme.spacing.medium};
     ${StyledTree} {
       ${({ theme }) => css`
         .rc-tree .rc-tree-treenode {
@@ -305,7 +246,6 @@ const sidebarStyles = css`
 
 const modalStyles = css`
   .ModalContent {
-    ${NeoContainer}
     border: none;
   }
   .ModalOverlay {
@@ -333,7 +273,24 @@ const globalStyles = css`
   }
 `
 
+const palette = { body: '#211E33', border: '#332A47' }
+
+const containerStyle = css`
+  background-color: ${transparentize(0.15, palette.body)};
+  box-shadow: 0px 15px 40px ${({ theme }) => transparentize(0.9, theme.colors.palette.black)};
+  border: 1px solid ${palette.border};
+`
+
+const containerStyleReset = css`
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+`
+
+const spaceBlocks = SpaceBlocksCss({ containerStyle, containerStyleReset, heightMain })
+
 export const VertigoStyles = css`
+  ${spaceBlocks}
   ${globalStyles}
   ${modalStyles}
   ${navStyles}

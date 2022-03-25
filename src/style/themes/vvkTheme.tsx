@@ -35,7 +35,8 @@ export const vvkTheme = generateTheme({
     oppositePrimary: '#000'
   },
   backgroundImages: {
-    app: 'https://wallpapercave.com/wp/wp2757874.gif'
+    app: 'https://wallpapercave.com/wp/wp2757874.gif',
+    preview: 'https://wallpapercave.com/wp/wp2757874.gif'
   },
   custom: 'SpaceAmethyst'
 })

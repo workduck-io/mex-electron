@@ -11,7 +11,7 @@ import { useLayoutStore } from '../../store/useLayoutStore'
 
 const AppWrapper = styled.div`
   min-height: 100%;
-  overflow: auto;
+  overflow: hidden;
   ${navTooltip};
   ${linkTooltip};
 `

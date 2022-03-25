@@ -2,21 +2,21 @@ import { generateTheme } from '../themeGenerator'
 
 export const vertigoTheme = generateTheme({
   // Colors
-  primary: '#4293F2',
-  secondary: '#c31575',
+  primary: '#E56895',
+  secondary: '#B877EC',
 
   // Palettes
   gray: {
-    1: '#C4CAF8', // Lightest for Light theme
-    2: '#A7AEEA',
-    3: '#868DC5',
-    4: '#6E75AC',
-    5: '#555C90',
-    6: '#4A4F7C',
-    7: '#3D426C',
-    8: '#2E335B',
-    9: '#212647',
-    10: '#13162E' // Darkest for light theme
+    1: '#CABADE', // Lightest for Light theme
+    2: '#A790C4',
+    3: '#8475A6',
+    4: '#6A6392',
+    5: '#544D7D',
+    6: '#4D436B',
+    7: '#403758',
+    8: '#322B45',
+    9: '#29263E',
+    10: '#171A27' // Darkest for light theme
   },
 
   palette: {
@@ -27,13 +27,17 @@ export const vertigoTheme = generateTheme({
     red: '#fb4934'
   },
   text: {
-    heading: '#CDD6EC',
-    default: '#909EC4',
-    subheading: '#909EC4',
-    fade: '#7580A6',
+    heading: '#A790C4',
+    default: '#8475A6',
+    subheading: '#C490C0',
+    fade: '#6A6392',
     disabled: '#9CA2BA',
     accent: '#CC7796',
     oppositePrimary: '#ffffff'
+  },
+  backgroundImages: {
+    app: 'https://i.imgur.com/5og7Xot.png',
+    preview: 'https://i.imgur.com/8tfThnE.png'
   },
   custom: 'VertigoStyles'
 })
