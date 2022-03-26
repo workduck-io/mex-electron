@@ -24,11 +24,11 @@ export const useContentStore = create<ContentStoreState>((set, get) => ({
   setContent: (nodeid, content, metadata) => {
     // mog('SetContent', { nodeid, content, metadata })
     const oldContent = get().contents
+    // console.log('OldContent is here:', { oldContent: oldContent[nodeid] })
 
     const oldMetadata = oldContent[nodeid] && oldContent[nodeid].metadata ? oldContent[nodeid].metadata : undefined
     delete oldContent[nodeid]
     const nmetadata = { ...oldMetadata, ...metadata }
-    // console.log({ oldMetadata, nmetadata, metadata })
     set({
       contents: { [nodeid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
     })

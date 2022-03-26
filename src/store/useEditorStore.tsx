@@ -26,6 +26,10 @@ export type EditorContextType = {
 
   fetchingContent: boolean
 
+  loadingNodeid: string | null
+  setLoadingNodeid: (nodeid: string) => void
+  clearLoadingNodeid: () => void
+
   // State transformations
 
   // Load a node and its contents in the editor
@@ -59,6 +63,16 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
   setFetchingContent: (value) =>
     set({
       fetchingContent: value
+    }),
+
+  loadingNodeid: null,
+  setLoadingNodeid: (nodeid) =>
+    set({
+      loadingNodeid: nodeid
+    }),
+  clearLoadingNodeid: () =>
+    set({
+      loadingNodeid: null
     }),
 
   loadNode: (node: NodeProperties) => {

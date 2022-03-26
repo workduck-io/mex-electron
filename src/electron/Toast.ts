@@ -29,7 +29,7 @@ class Toast {
 
     this.window.loadURL(TOAST_WINDOW_WEBPACK_ENTRY)
     this.window.setParentWindow(spotlightWindow)
-    this.window.webContents.openDevTools({ mode: 'detach' })
+    // this.window.webContents.openDevTools({ mode: 'detach' })
     this.window.setAlwaysOnTop(true, 'status')
     this.window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 

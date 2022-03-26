@@ -15,6 +15,8 @@ import { useRouting } from '../views/routes/urls'
 import useSuggestionStore from '../store/useSuggestions'
 import useToggleElements from './useToggleElements'
 import { useLayoutStore } from '../store/useLayoutStore'
+import { useEditor } from 'slate-react'
+import { useState } from 'react'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -42,6 +44,8 @@ const useLoad = () => {
   const setSuggestions = useSuggestionStore((store) => store.setSuggestions)
   const { toggleSuggestedNodes } = useToggleElements()
   const infobar = useLayoutStore((store) => store.infobar)
+  const setLoadingNodeid = useEditorStore((store) => store.setLoadingNodeid)
+  const clearLoadingNodeid = useEditorStore((store) => store.clearLoadingNodeid)
 
   // const { saveNodeAPIandFs } = useDataSaverFromContent()
   const { saveAndClearBuffer } = useEditorBuffer()
@@ -122,7 +126,7 @@ const useLoad = () => {
    * Fetches the node and saves it to local state
    * Should be used when current editor content is irrelevant to the node
    */
-  const fetchAndSaveNode = (node: NodeProperties, withLoading = true) => {
+  const fetchAndSaveNode = async (node: NodeProperties, withLoading = true) => {
     // console.log('Fetch and save', { node })
     // const node = getNode(nodeid)
     if (withLoading) setFetchingContent(true)
@@ -140,12 +144,19 @@ const useLoad = () => {
               version,
               metadata
             }
+
             // mog('Fetch and load data', { data, metadata, version })
-            loadNodeAndReplaceContent(node, nodeContent)
+            const loadingNodeid = useEditorStore.getState().loadingNodeid
+
+            if (node.nodeid === loadingNodeid) {
+              loadNodeAndReplaceContent(node, nodeContent)
+            } else {
+              mog('CurrentNode is not same for loadNode', { node, loadingNodeid })
+            }
             setContent(node.nodeid, content, metadata)
-            if (withLoading) setFetchingContent(false)
           }
         }
+        if (withLoading) setFetchingContent(false)
       })
       .catch((e) => {
         console.error(e)
@@ -169,8 +180,10 @@ const useLoad = () => {
     const hasBeenLoaded = false
     if (!options.node && !isLocalNode(nodeid).isLocal) {
       toast.error('Selected node does not exist.')
-      nodeid = editorNodeId
+      nodeid = useEditorStore.getState().node.nodeid
     }
+
+    setLoadingNodeid(nodeid)
 
     setNodePreview(false)
     setSuggestions([])

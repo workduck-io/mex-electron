@@ -1,4 +1,4 @@
-import { useReadOnly , useFocused, useSelected } from 'slate-react'
+import { useReadOnly, useFocused, useSelected } from 'slate-react'
 import archivedIcon from '@iconify/icons-ri/archive-line'
 import { Icon } from '@iconify/react'
 import { useEditorRef } from '@udecode/plate'
@@ -104,9 +104,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
       ) : (
         <EditorPreview
           allowClosePreview={readOnly}
-          isPreview={isPreview(editor.id)}
           preview={preview}
-          previewRef={editor}
           nodeid={element.value}
           closePreview={() => setPreview(false)}
         >
