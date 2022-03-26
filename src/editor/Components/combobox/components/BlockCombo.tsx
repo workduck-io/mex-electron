@@ -45,11 +45,14 @@ const BlockCombo = ({ nodeId, onSelect, isNew }: { onSelect; nodeId?: string; is
       if (nodeId && trimmedNodeText) {
         queryIndexByNodeId(['node'], nodeId, trimmedSearch).then((res) => {
           const topFiveBlocks = res
+            ?.filter((block) => block.blockId !== 'undefined')
             ?.map((block) => {
               const { matchField, ...restBlock } = block
               return restBlock
             })
             ?.slice(0, 5)
+
+          mog('BLOCKS', { topFiveBlocks })
 
           setBlocks(topFiveBlocks)
           setIndex(0)
@@ -58,11 +61,13 @@ const BlockCombo = ({ nodeId, onSelect, isNew }: { onSelect; nodeId?: string; is
       } else {
         queryIndex(['node'], trimmedSearch).then((res) => {
           const topFiveBlocks = res
+            ?.filter((block) => block.blockId !== 'undefined')
             ?.map((block) => {
               const { matchField, ...restBlock } = block
               return restBlock
             })
             ?.slice(0, 5)
+          mog('BLOCKS', { topFiveBlocks })
 
           setBlocks(topFiveBlocks)
           setIndex(0)

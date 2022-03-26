@@ -130,84 +130,89 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   return (
     <PortalBody>
       <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
-        {!isBlockTriggered && (
-          <div id="List" style={{ flex: 1 }}>
-            <section id="items-container">
-              {items.map((item, index) => {
-                const Item = onRenderItem ? onRenderItem({ item }) : item.text
-                const lastItem = index > 0 ? items[index - 1] : undefined
+        {isOpen && (
+          <>
+            {!isBlockTriggered && (
+              <div id="List" style={{ flex: 1 }}>
+                <section id="items-container">
+                  {items.map((item, index) => {
+                    const Item = onRenderItem ? onRenderItem({ item }) : item.text
+                    const lastItem = index > 0 ? items[index - 1] : undefined
 
-                return (
-                  <span key={`${item.key}-${String(index)}`}>
-                    {item.type !== lastItem?.type && <ActionTitle>{item.type}</ActionTitle>}
-                    <ComboboxItem
-                      className={index === itemIndex ? 'highlight' : ''}
-                      {...comboProps(item, index)}
-                      onMouseEnter={() => {
-                        setItemIndex(index)
-                      }}
-                      onMouseDown={() => {
-                        editor && onSelectItem(editor, item)
-                      }}
-                    >
-                      {item.icon && <Icon height={18} key={`${item.key}_${item.icon}`} icon={item.icon} />}
-                      <ItemCenterWrapper>
-                        {!item.prefix ? (
-                          <ItemTitle>{Item}</ItemTitle>
-                        ) : (
-                          <ItemTitle>
-                            {item.prefix} <PrimaryText>{Item}</PrimaryText>
-                          </ItemTitle>
-                        )}
-                        {item.desc && <ItemDesc>{item.desc}</ItemDesc>}
-                      </ItemCenterWrapper>
-                      {item.rightIcons && (
-                        <ItemRightIcons>
-                          {item.rightIcons.map((i: string) => (
-                            <Icon key={item.key + i} icon={i} />
-                          ))}
-                        </ItemRightIcons>
-                      )}
-                    </ComboboxItem>
-                  </span>
-                )
-              })}
-            </section>
-            {itemShortcut && (
-              <ComboboxShortcuts>
-                {Object.entries(itemShortcut).map(([key, shortcut]) => {
-                  return (
-                    <ShortcutText key={key}>
-                      <DisplayShortcut shortcut={shortcut.keystrokes} /> <div className="text">{shortcut.title}</div>
-                    </ShortcutText>
-                  )
-                })}
-              </ComboboxShortcuts>
+                    return (
+                      <span key={`${item.key}-${String(index)}`}>
+                        {item.type !== lastItem?.type && <ActionTitle>{item.type}</ActionTitle>}
+                        <ComboboxItem
+                          className={index === itemIndex ? 'highlight' : ''}
+                          {...comboProps(item, index)}
+                          onMouseEnter={() => {
+                            setItemIndex(index)
+                          }}
+                          onMouseDown={() => {
+                            editor && onSelectItem(editor, item)
+                          }}
+                        >
+                          {item.icon && <Icon height={18} key={`${item.key}_${item.icon}`} icon={item.icon} />}
+                          <ItemCenterWrapper>
+                            {!item.prefix ? (
+                              <ItemTitle>{Item}</ItemTitle>
+                            ) : (
+                              <ItemTitle>
+                                {item.prefix} <PrimaryText>{Item}</PrimaryText>
+                              </ItemTitle>
+                            )}
+                            {item.desc && <ItemDesc>{item.desc}</ItemDesc>}
+                          </ItemCenterWrapper>
+                          {item.rightIcons && (
+                            <ItemRightIcons>
+                              {item.rightIcons.map((i: string) => (
+                                <Icon key={item.key + i} icon={i} />
+                              ))}
+                            </ItemRightIcons>
+                          )}
+                        </ComboboxItem>
+                      </span>
+                    )
+                  })}
+                </section>
+                {itemShortcut && (
+                  <ComboboxShortcuts>
+                    {Object.entries(itemShortcut).map(([key, shortcut]) => {
+                      return (
+                        <ShortcutText key={key}>
+                          <DisplayShortcut shortcut={shortcut.keystrokes} />{' '}
+                          <div className="text">{shortcut.title}</div>
+                        </ShortcutText>
+                      )
+                    })}
+                  </ComboboxShortcuts>
+                )}
+              </div>
             )}
-          </div>
-        )}
-        <BlockCombo
-          onSelect={() => {
-            const item = items[itemIndex]
-            if (item?.type === QuickLinkType.ilink) {
-              editor && onSelectItem(editor, items[itemIndex])
-            }
-          }}
-          nodeId={items[itemIndex]?.key}
-          isNew={items[itemIndex]?.data}
-        />
-        {((preview && listItem?.type && !isBlockTriggered) ||
-          (isBlockTriggered && textAfterBlockTrigger && preview)) && (
-          <ComboSeperator>
-            <section>
-              <EditorPreviewRenderer
-                noMouseEvents
-                content={preview}
-                editorId={isBlockTriggered && activeBlock ? activeBlock.blockId : items[itemIndex]?.key}
-              />
-            </section>
-            {preview && <PreviewMeta meta={metaData} />}
-          </ComboSeperator>
+            <BlockCombo
+              onSelect={() => {
+                const item = items[itemIndex]
+                if (item?.type === QuickLinkType.ilink) {
+                  editor && onSelectItem(editor, items[itemIndex])
+                }
+              }}
+              nodeId={items[itemIndex]?.key}
+              isNew={items[itemIndex]?.data}
+            />
+            {((preview && listItem?.type && !isBlockTriggered) ||
+              (isBlockTriggered && textAfterBlockTrigger && preview)) && (
+              <ComboSeperator>
+                <section>
+                  <EditorPreviewRenderer
+                    noMouseEvents
+                    content={preview}
+                    editorId={isBlockTriggered && activeBlock ? activeBlock.blockId : items[itemIndex]?.key}
+                  />
+                </section>
+                {preview && <PreviewMeta meta={metaData} />}
+              </ComboSeperator>
+            )}
+          </>
         )}
       </ComboboxRoot>
     </PortalBody>

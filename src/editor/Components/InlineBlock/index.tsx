@@ -66,11 +66,11 @@ const InlineBlock = (props: any) => {
             </InlineFlex>
             {archived(nodeid) ? <StyledArchiveText>Archived</StyledArchiveText> : <Chip onClick={openNode}>Open</Chip>}
           </FlexBetween>
-          {
+          {!archived(nodeid) && (
             <StyledInlineBlockPreview>
               <EditorPreviewRenderer content={content} editorId={`__preview__${blockId ?? nodeid}`} />
             </StyledInlineBlockPreview>
-          }
+          )}
         </StyledInlineBlock>
       </div>
       {props.children}
