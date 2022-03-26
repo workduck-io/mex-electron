@@ -130,7 +130,6 @@ const ContentEditor = () => {
         <EditorWrapper onClick={onFocusClick}>
           <Editor
             showBalloonToolbar
-            // readOnly={fetchingContent}
             content={fsContent?.content ?? defaultContent.content}
             onChange={onChangeSave}
             editorId={editorId}

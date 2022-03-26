@@ -132,7 +132,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
       <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
         {!isBlockTriggered && (
           <div id="List" style={{ flex: 1 }}>
-            <section>
+            <section id="items-container">
               {items.map((item, index) => {
                 const Item = onRenderItem ? onRenderItem({ item }) : item.text
                 const lastItem = index > 0 ? items[index - 1] : undefined

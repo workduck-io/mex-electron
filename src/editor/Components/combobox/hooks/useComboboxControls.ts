@@ -13,7 +13,7 @@ export const useComboboxControls = (withNew: boolean) => {
     isOpen,
     highlightedIndex: itemIndex,
     items,
-    circularNavigation: true,
+    circularNavigation: true
     // onInputValueChange: ({inputValue}) => {
     //   setInputItems(
     //     items.filter(item =>
@@ -33,7 +33,7 @@ export const useComboboxControls = (withNew: boolean) => {
     () => ({
       closeMenu,
       getMenuProps,
-      getItemProps,
+      getItemProps
     }),
     [closeMenu, getItemProps, getMenuProps]
   )

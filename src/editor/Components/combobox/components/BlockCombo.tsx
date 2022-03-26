@@ -44,22 +44,27 @@ const BlockCombo = ({ nodeId, onSelect, isNew }: { onSelect; nodeId?: string; is
     if (trimmedSearch) {
       if (nodeId && trimmedNodeText) {
         queryIndexByNodeId(['node'], nodeId, trimmedSearch).then((res) => {
-          const newBlocks = res.map((block) => {
-            const { matchField, ...restBlock } = block
-            return restBlock
-          })
+          const topFiveBlocks = res
+            ?.map((block) => {
+              const { matchField, ...restBlock } = block
+              return restBlock
+            })
+            ?.slice(0, 5)
 
-          setBlocks(newBlocks)
+          setBlocks(topFiveBlocks)
           setIndex(0)
           // setBlocks(res)
         })
       } else {
         queryIndex(['node'], trimmedSearch).then((res) => {
-          const newBlocks = res.map((block) => {
-            const { matchField, ...restBlock } = block
-            return restBlock
-          })
-          setBlocks(newBlocks)
+          const topFiveBlocks = res
+            ?.map((block) => {
+              const { matchField, ...restBlock } = block
+              return restBlock
+            })
+            ?.slice(0, 5)
+
+          setBlocks(topFiveBlocks)
           setIndex(0)
         })
       }
@@ -135,9 +140,8 @@ const BlockCombo = ({ nodeId, onSelect, isNew }: { onSelect; nodeId?: string; is
           onClick={clearBlockSearch}
           title={'Back to Quick links'}
         />
-        <ItemTitle>{textAfterTrigger ? `In ${textAfterTrigger}` : `Searching`}</ItemTitle>
+        <ItemTitle>{textAfterTrigger ? `In ${textAfterTrigger}` : `Search`}</ItemTitle>
       </StyledComboHeader>
-
       {blocks?.length === 0 && (
         <ComboboxItem key={`search-text`} className="highlight">
           <MexIcon fontSize={20} icon="ri:add-circle-line" color={theme.colors.primary} />

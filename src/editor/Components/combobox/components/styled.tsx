@@ -5,11 +5,12 @@ import { ComboboxItem } from '../../tag/components/TagCombobox.styles'
 export const ComboSeperator = styled.div`
   margin-left: 0.5rem;
 
-  /* section {
-    max-height: 400px;
+  section {
+    height: 30vh !important;
     overflow-y: auto;
     overflow-x: hidden;
-  } */
+  }
+
   width: 300px;
 `
 

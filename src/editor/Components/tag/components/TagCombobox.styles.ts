@@ -60,18 +60,20 @@ export const ComboboxRoot = styled.div<{ isOpen: boolean }>`
       display: flex;
       margin: 0;
       z-index: 11;
+      height: fit-content;
 
       > div {
         background: ${theme.colors.background.modal};
         height: fit-content;
+        /* max-height: 400px; */
         box-shadow: rgba(0, 0, 0, 0.133) 0 3.2px 7.2px 0, rgba(0, 0, 0, 0.11) 0 0.6px 1.8px 0;
         border-radius: ${theme.borderRadius.small};
-      }
 
-      > section {
-        max-height: 40vh;
-        overflow-y: auto;
-        overflow-x: hidden;
+        > section {
+          max-height: 30vh;
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
       }
     `}
 `

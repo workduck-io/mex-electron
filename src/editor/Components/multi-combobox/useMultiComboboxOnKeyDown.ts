@@ -71,12 +71,13 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
 
         // mog('Inserting from here', { activeBlock, isBlockTriggered })
         if ((item.type === QuickLinkType.ilink || type === ELEMENT_INLINE_BLOCK) && isBlockTriggered && activeBlock) {
+          const blockValue = activeBlock?.text ? activeBlock.text.substring(0, 100) : ''
           const withBlockInfo = {
             type,
             children: [{ text: '' }],
-            value: activeBlock.id,
-            blockValue: activeBlock.text,
-            blockId: activeBlock.blockId
+            value: activeBlock?.id,
+            blockValue,
+            blockId: activeBlock?.blockId
           }
 
           insertNodes(editor, withBlockInfo)
