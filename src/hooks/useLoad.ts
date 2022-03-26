@@ -144,6 +144,7 @@ const useLoad = () => {
               version,
               metadata
             }
+
             // mog('Fetch and load data', { data, metadata, version })
             const loadingNodeid = useEditorStore.getState().loadingNodeid
 
@@ -153,9 +154,9 @@ const useLoad = () => {
               mog('CurrentNode is not same for loadNode', { node, loadingNodeid })
             }
             setContent(node.nodeid, content, metadata)
-            if (withLoading) setFetchingContent(false)
           }
         }
+        if (withLoading) setFetchingContent(false)
       })
       .catch((e) => {
         console.error(e)

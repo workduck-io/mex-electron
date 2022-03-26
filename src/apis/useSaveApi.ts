@@ -1,13 +1,17 @@
 import { client } from '@workduck-io/dwindle'
 import { defaultContent } from '../data/Defaults/baseData'
 import { USE_API } from '../data/Defaults/dev_'
+import '../services/apiClient/apiClient'
 import { useAuthStore } from '../services/auth/useAuth'
+import { isRequestedWithin } from '../store/useApiStore'
 import { useContentStore } from '../store/useContentStore'
 import { mog, removeNulls } from '../utils/lib/helper'
 import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
 
+// clientInterceptor
+//
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
@@ -76,8 +80,15 @@ export const useApi = () => {
   }
 
   const getDataAPI = async (nodeid: string) => {
+    const url = apiURLs.getNode(nodeid)
+    if (isRequestedWithin(5, url)) {
+      console.warn('\nAPI has been requested before, cancelling\n')
+      return
+    }
+
+    // console.warn('\n\n\n\nAPI has not been requested before, requesting\n\n\n\n')
     const res = await client
-      .get(apiURLs.getNode(nodeid), {})
+      .get(url, {})
       .then((d) => {
         const metadata = {
           createdBy: d.data.createdBy,
