@@ -1,7 +1,10 @@
 import create from 'zustand'
 import { useDataSaverFromContent } from '../editor/Components/Saver'
 import { NodeEditorContent } from '../types/Types'
+import { getContent } from '../utils/helpers'
+import { areEqual } from '../utils/lib/hash'
 import { mog } from '../utils/lib/helper'
+import { measureTime } from '../utils/lib/perf'
 import { useSaveData } from './useSaveData'
 
 interface BufferStore {
@@ -30,6 +33,7 @@ export const useEditorBuffer = () => {
   const { saveNodeWithValue } = useDataSaverFromContent()
 
   const addOrUpdateValBuffer = (nodeid: string, val: NodeEditorContent) => {
+    // mog('Buff up', { nodeid, val })
     add2Buffer(nodeid, val)
   }
 
@@ -39,10 +43,20 @@ export const useEditorBuffer = () => {
     const buffer = useBufferStore.getState().buffer
     mog('Save And Clear Buffer', { buffer })
     if (Object.keys(buffer).length > 0) {
-      Object.entries(buffer).map(([nodeid, val]) => {
-        saveNodeWithValue(nodeid, val)
-      })
-      saveData()
+      const saved = Object.entries(buffer)
+        .map(([nodeid, val]) => {
+          const content = getContent(nodeid)
+          const res = areEqual(content.content, val)
+          // const mT = measureTime(() => areEqual(content.content, val))
+          if (!res) {
+            saveNodeWithValue(nodeid, val)
+          }
+          return !res
+        })
+        .reduce((acc, cur) => acc || cur, false)
+      if (saved) {
+        saveData()
+      }
       clearBuffer()
     }
   }
