@@ -10,9 +10,7 @@ export interface EditorPreviewProps {
   children: React.ReactElement
   placement?: string
   delay?: number
-  isPreview?: boolean
   preview?: boolean
-  previewRef?: any
   allowClosePreview?: boolean
   closePreview?: () => void
 }
@@ -48,12 +46,11 @@ const EditorPreview = ({
   nodeid,
   placement,
   allowClosePreview,
-  isPreview,
   closePreview,
   preview,
   children,
-  previewRef,
-  delay
+  delay,
+  ...props
 }: EditorPreviewProps) => {
   const getContent = useContentStore((store) => store.getContent)
   const content = getContent(nodeid)
