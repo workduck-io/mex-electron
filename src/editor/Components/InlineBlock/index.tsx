@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react'
+import { useSelected } from 'slate-react'
 import styled from 'styled-components'
 import useArchive from '../../../hooks/useArchive'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useContentStore } from '../../../store/useContentStore'
+import { mog } from '../../../utils/lib/helper'
 import { getBlock } from '../../../utils/search/parseData'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
 import { useSaver } from '../Saver'
@@ -51,10 +53,12 @@ const InlineBlock = (props: any) => {
     push(nodeid)
   }
 
+  const selected = useSelected()
+
   return (
     <RootElement {...props.attributes}>
       <div contentEditable={false}>
-        <StyledInlineBlock data-tour="mex-onboarding-inline-block">
+        <StyledInlineBlock selected={selected} data-tour="mex-onboarding-inline-block">
           <FlexBetween>
             <InlineFlex>
               <InlineBlockHeading>{blockId ? 'Within:' : 'From:'}</InlineBlockHeading>

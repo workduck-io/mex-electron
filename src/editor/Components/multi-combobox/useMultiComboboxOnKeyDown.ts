@@ -67,6 +67,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
 
         const isBlockTriggered = useComboboxStore.getState().isBlockTriggered
         const activeBlock = useComboboxStore.getState().activeBlock
+        const textAfterBlockTrigger = useComboboxStore.getState().search.textAfterBlockTrigger
 
         // mog('Inserting from here', { activeBlock, isBlockTriggered })
         if ((item.type === QuickLinkType.ilink || type === ELEMENT_INLINE_BLOCK) && isBlockTriggered && activeBlock) {
@@ -74,6 +75,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
             type,
             children: [{ text: '' }],
             value: activeBlock.id,
+            blockValue: activeBlock.text,
             blockId: activeBlock.blockId
           }
 

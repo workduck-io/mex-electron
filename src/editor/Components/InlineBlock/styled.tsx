@@ -1,5 +1,5 @@
 import { StyledMessage } from '../../../components/spotlight/Message/styled'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 export type InlineBlockType = {
   selected?: boolean
@@ -18,13 +18,24 @@ export const StyledInlineBlock = styled.section<InlineBlockType>`
   justify-content: center;
 
   margin: ${({ theme }) => theme.spacing.small} 0;
-  padding: 0;
+  padding: 1px;
 
   transition: transform 0.2s ease-in;
 
-  :hover {
-    transform: translateY(-5px);
-  }
+  ${({ selected }) =>
+    selected
+      ? css`
+          border: 1px solid ${({ theme }) => theme.colors.primary};
+          background: none;
+
+          padding: 0px;
+          /* transform: translateY(-5px); */
+        `
+      : css`
+          :hover {
+            transform: translateY(-5px);
+          }
+        `}
 
   box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.gray[8]};
   /* background: ${({ theme }) => theme.colors.background.card}; */

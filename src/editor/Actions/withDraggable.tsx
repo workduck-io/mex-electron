@@ -133,13 +133,13 @@ const GrabberTooltipContent = (props: any) => {
           <Icon icon={addLine} />
         </ActionDraggableIcon>
       </Tippy> */}
-      {props.element && props.element.metadata ? (
+      {/* {props.element && props.element.metadata ? (
         <TippyHeadless {...MetadataTooltipProps} render={(attrs) => <MetadataViewSmall m={props.element.metadata} />}>
           <ActionDraggableIcon>
             <Icon icon={timeLine} />
           </ActionDraggableIcon>
         </TippyHeadless>
-      ) : null}
+      ) : null} */}
     </StyledTip>
   )
 }

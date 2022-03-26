@@ -16,6 +16,7 @@ const directPropertyKeys = [
   'code',
   'url',
   'value',
+  'blockValue',
   'checked',
   'blockId',
   'body'
@@ -72,8 +73,6 @@ export const serializeContent = (content: any[]) => {
     if (el.children) {
       nl.children = serializeContent(el.children)
     }
-
-    // console.log('Process: ', nl, el)
 
     return nl
   })

@@ -1,5 +1,6 @@
 import Tippy from '@tippyjs/react/headless' // different import path!
 import React, { forwardRef, useState } from 'react'
+import { generateTempId } from '../../../data/Defaults/idPrefixes'
 import { useContentStore } from '../../../store/useContentStore'
 import { Button } from '../../../style/Buttons'
 import { NodeEditorContent } from '../../../types/Types'
@@ -60,6 +61,8 @@ const EditorPreview = ({
   const nodeContent = getContent(nodeid)
   const cc = content ?? (nodeContent && nodeContent.content)
 
+  const editorId = `__preview__${nodeid}_${generateTempId()}`
+
   if (cc) {
     return (
       <LazyTippy
@@ -76,7 +79,7 @@ const EditorPreview = ({
                 &times;
               </Button>
             )}
-            {cc && <EditorPreviewRenderer content={cc} editorId={`__preview__${nodeid}`} />}
+            {cc && <EditorPreviewRenderer content={cc} editorId={editorId} />}
           </EditorPreviewWrapper>
         )}
       >

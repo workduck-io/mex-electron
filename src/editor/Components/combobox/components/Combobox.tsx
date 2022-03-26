@@ -48,7 +48,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   const combobox = useComboboxControls(true)
   const isOpen = useComboboxIsOpen()
 
-  const textAfterTrigger = useComboboxStore((store) => store.search.textAfterTrigger)
+  const { textAfterTrigger, textAfterBlockTrigger } = useComboboxStore((store) => store.search)
   const getContent = useContentStore((store) => store.getContent)
   const { getSnippetContent } = useSnippets()
   const setIsSlash = useComboboxStore((store) => store.setIsSlash)
@@ -92,6 +92,10 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
       replaceFragment(editor, targetRange, `[[${items[itemIndex].text}:`)
       setItemIndex(0)
     }
+
+    if (isBlockTriggered) {
+      setPreview(undefined)
+    }
   }, [isBlockTriggered])
 
   useEffect(() => {
@@ -111,6 +115,10 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
         content = getSnippetContent(key)
       }
       if (!activeBlock) setPreview(content)
+
+      if (isBlockTriggered && !textAfterBlockTrigger) {
+        setPreview(undefined)
+      }
     }
   }, [itemIndex, items, activeBlock, isOpen])
 
@@ -124,45 +132,47 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
       <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
         {!isBlockTriggered && (
           <div id="List" style={{ flex: 1 }}>
-            {items.map((item, index) => {
-              const Item = onRenderItem ? onRenderItem({ item }) : item.text
-              const lastItem = index > 0 ? items[index - 1] : undefined
+            <section>
+              {items.map((item, index) => {
+                const Item = onRenderItem ? onRenderItem({ item }) : item.text
+                const lastItem = index > 0 ? items[index - 1] : undefined
 
-              return (
-                <span key={`${item.key}-${String(index)}`}>
-                  {item.type !== lastItem?.type && <ActionTitle>{item.type}</ActionTitle>}
-                  <ComboboxItem
-                    className={index === itemIndex ? 'highlight' : ''}
-                    {...comboProps(item, index)}
-                    onMouseEnter={() => {
-                      setItemIndex(index)
-                    }}
-                    onMouseDown={() => {
-                      editor && onSelectItem(editor, item)
-                    }}
-                  >
-                    {item.icon && <Icon height={18} key={`${item.key}_${item.icon}`} icon={item.icon} />}
-                    <ItemCenterWrapper>
-                      {!item.prefix ? (
-                        <ItemTitle>{Item}</ItemTitle>
-                      ) : (
-                        <ItemTitle>
-                          {item.prefix} <PrimaryText>{Item}</PrimaryText>
-                        </ItemTitle>
+                return (
+                  <span key={`${item.key}-${String(index)}`}>
+                    {item.type !== lastItem?.type && <ActionTitle>{item.type}</ActionTitle>}
+                    <ComboboxItem
+                      className={index === itemIndex ? 'highlight' : ''}
+                      {...comboProps(item, index)}
+                      onMouseEnter={() => {
+                        setItemIndex(index)
+                      }}
+                      onMouseDown={() => {
+                        editor && onSelectItem(editor, item)
+                      }}
+                    >
+                      {item.icon && <Icon height={18} key={`${item.key}_${item.icon}`} icon={item.icon} />}
+                      <ItemCenterWrapper>
+                        {!item.prefix ? (
+                          <ItemTitle>{Item}</ItemTitle>
+                        ) : (
+                          <ItemTitle>
+                            {item.prefix} <PrimaryText>{Item}</PrimaryText>
+                          </ItemTitle>
+                        )}
+                        {item.desc && <ItemDesc>{item.desc}</ItemDesc>}
+                      </ItemCenterWrapper>
+                      {item.rightIcons && (
+                        <ItemRightIcons>
+                          {item.rightIcons.map((i: string) => (
+                            <Icon key={item.key + i} icon={i} />
+                          ))}
+                        </ItemRightIcons>
                       )}
-                      {item.desc && <ItemDesc>{item.desc}</ItemDesc>}
-                    </ItemCenterWrapper>
-                    {item.rightIcons && (
-                      <ItemRightIcons>
-                        {item.rightIcons.map((i: string) => (
-                          <Icon key={item.key + i} icon={i} />
-                        ))}
-                      </ItemRightIcons>
-                    )}
-                  </ComboboxItem>
-                </span>
-              )
-            })}
+                    </ComboboxItem>
+                  </span>
+                )
+              })}
+            </section>
             {itemShortcut && (
               <ComboboxShortcuts>
                 {Object.entries(itemShortcut).map(([key, shortcut]) => {
@@ -186,7 +196,8 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
           nodeId={items[itemIndex]?.key}
           isNew={items[itemIndex]?.data}
         />
-        {preview && listItem?.type && (
+        {((preview && listItem?.type && !isBlockTriggered) ||
+          (isBlockTriggered && textAfterBlockTrigger && preview)) && (
           <ComboSeperator>
             <section>
               <EditorPreviewRenderer

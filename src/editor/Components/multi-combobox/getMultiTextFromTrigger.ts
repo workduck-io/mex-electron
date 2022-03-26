@@ -3,6 +3,7 @@ import { getParent, isCollapsed, isElement, ELEMENT_CODE_BLOCK, ELEMENT_CODE_LIN
 import { ComboboxType, ComboTriggerDataType } from './types'
 import { getTextFromTrigger } from '../combobox/utils/getTextFromTrigger'
 import { debounce } from 'lodash'
+import { mog } from '../../../utils/lib/helper'
 
 export const getTriggeredData = (
   editor: PlateEditor,
@@ -72,7 +73,9 @@ const getTextFromTriggers = (
       triggerSelection = getTriggeredData(editor, isTrigger, setIsTrigger, true, !!isTrigger.blockTrigger)
     }
 
-    if (!triggerSelection && isTrigger) setIsTrigger(undefined)
+    if (!triggerSelection && isTrigger) {
+      setIsTrigger(undefined)
+    }
 
     return triggerSelection
   }

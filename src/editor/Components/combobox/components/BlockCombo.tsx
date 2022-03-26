@@ -135,7 +135,7 @@ const BlockCombo = ({ nodeId, onSelect, isNew }: { onSelect; nodeId?: string; is
           onClick={clearBlockSearch}
           title={'Back to Quick links'}
         />
-        <ItemTitle>{`In ${textAfterTrigger}`}</ItemTitle>
+        <ItemTitle>{textAfterTrigger ? `In ${textAfterTrigger}` : `Searching`}</ItemTitle>
       </StyledComboHeader>
 
       {blocks?.length === 0 && (

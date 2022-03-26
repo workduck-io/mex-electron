@@ -126,7 +126,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
             <span className="ILink_decoration ILink_decoration_left">[[</span>
             <span className="ILink_decoration ILink_decoration_value">
               {' '}
-              {!content ? path : `${path} : ${convertContentToRawText(content, ' ').slice(0, 20)}`}{' '}
+              {!content ? path : `${path} : ${element.blockValue}`}{' '}
             </span>
             <span className="ILink_decoration ILink_decoration_right">]]</span>
           </SILink>

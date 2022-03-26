@@ -12,7 +12,10 @@ export const EditorPreviewWrapper = styled.div`
   color: ${({ theme }) => theme.colors.fade};
   max-height: 400px;
   max-width: 700px;
+
   overflow-y: auto;
+  overflow-x: hidden;
+
   ${CardShadow}
   min-width: 400px;
 `
