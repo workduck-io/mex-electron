@@ -45,6 +45,7 @@ import {
   initSearchIndex,
   removeDoc,
   searchIndex,
+  searchIndexByNodeId,
   updateDoc,
   dumpIndexDisk
 } from './worker/controller'
@@ -166,11 +167,7 @@ const createSpotLighWindow = (show?: boolean) => {
 
   require('@electron/remote/main').enable(spotlight.webContents)
 
-  if (
-    isAlpha
-    // || IS_DEV
-  )
-    spotlight.webContents.openDevTools()
+  if (isAlpha || IS_DEV) spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -723,5 +720,10 @@ ipcMain.handle(IpcAction.REMOVE_DOCUMENT, async (_event, key, id) => {
 
 ipcMain.handle(IpcAction.QUERY_INDEX, async (_event, key, query) => {
   const results = await searchIndex(key, query)
+  return results
+})
+
+ipcMain.handle(IpcAction.QUERY_INDEX_BY_NODEID, async (_event, key, nodeId, query) => {
+  const results = await searchIndexByNodeId(key, nodeId, query)
   return results
 })

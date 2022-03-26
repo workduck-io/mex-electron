@@ -1,11 +1,5 @@
 import styled, { css } from 'styled-components'
 
-// const classNames = {
-//   root: 'slate-TagCombobox',
-//   tagItem: 'slate-TagCombobox-tagItem',
-//   tagItemHighlighted: 'slate-TagCombobox-tagItemHighlighted',
-// };
-
 export const ComboboxItem = styled.div`
   display: flex;
   align-items: center;
@@ -24,6 +18,7 @@ export const ComboboxItem = styled.div`
   padding: 0 8px;
   min-height: 36px;
   user-select: none;
+  width: 300px;
   color: ${({ theme }) => theme.colors.text.subheading};
   &.highlight {
     background: ${({ theme }) => theme.colors.background.highlight};
@@ -38,7 +33,7 @@ export const ComboboxItem = styled.div`
     color: ${({ theme }) => theme.colors.gray[4]};
   }
 `
-export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
+export const ComboboxRoot = styled.div<{ isOpen: boolean }>`
   :hover {
     ${ComboboxItem} {
       &.highlight {
@@ -47,12 +42,13 @@ export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
       }
     }
   }
-  &.reversed {
+  /* &.reversed {
     transform: rotate(180deg);
     ${ComboboxItem} {
       transform: rotate(-180deg);
     }
-  }
+  } */
+
   ${({ isOpen, theme }) =>
     isOpen &&
     css`
@@ -60,23 +56,42 @@ export const ComboboxRoot = styled.ul<{ isOpen: boolean }>`
       left: -9999px;
       position: absolute;
       padding: 0;
+
+      display: flex;
       margin: 0;
       z-index: 11;
-      background: ${theme.colors.background.modal};
-      width: 300px;
-      border-radius: 8px;
-      box-shadow: rgba(0, 0, 0, 0.133) 0 3.2px 7.2px 0, rgba(0, 0, 0, 0.11) 0 0.6px 1.8px 0;
+      height: fit-content;
+
+      > div {
+        background: ${theme.colors.background.modal};
+        height: fit-content;
+        /* max-height: 400px; */
+        box-shadow: rgba(0, 0, 0, 0.133) 0 3.2px 7.2px 0, rgba(0, 0, 0, 0.11) 0 0.6px 1.8px 0;
+        border-radius: ${theme.borderRadius.small};
+
+        > section {
+          max-height: 30vh;
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
+      }
     `}
 `
 
-export const ItemTitle = styled.div``
+export const ItemTitle = styled.div`
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  /* width: 200px; */
+`
+
 export const ItemRightIcons = styled.div`
   display: flex;
   flex-gap: ${({ theme }) => theme.spacing.tiny};
 `
 
 export const ItemDesc = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.tiny};
+  margin: ${({ theme }) => theme.spacing.tiny} 0;
   color: ${({ theme }) => theme.colors.text.fade};
   font-size: 0.8rem;
   white-space: nowrap;

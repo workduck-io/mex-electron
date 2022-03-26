@@ -27,7 +27,7 @@ const useArchive = () => {
   const { userCred } = useAuth()
 
   const archived = (nodeid: string) => {
-    return archive.map((i) => i.nodeid).indexOf(nodeid) > -1
+    return archive.find((node) => node.nodeid === nodeid)
   }
 
   const addArchiveData = async (nodes: ILink[]): Promise<boolean> => {

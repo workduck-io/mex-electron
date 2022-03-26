@@ -32,7 +32,7 @@ const searchWorker: SearchWorker = {
 
       parsedBlocks.forEach((block) => {
         block.blockId = createIndexCompositeKey(nodeId, block.blockId)
-        globalSearchIndex[key].add(block)
+        globalSearchIndex[key].add({ ...block, tag: [nodeId] })
       })
     }
   },
@@ -46,7 +46,7 @@ const searchWorker: SearchWorker = {
 
       const blockIdsToBeDeleted = existingNodeBlocks.filter((id) => !newBlockIds.includes(id))
 
-      mog('UpdatingDoc', { existingNodeBlocks, blockIdsToBeDeleted, parsedBlocks })
+      // mog('UpdatingDoc', { existingNodeBlocks, blockIdsToBeDeleted, parsedBlocks })
 
       nodeBlockMapping[nodeId] = newBlockIds
 
@@ -57,7 +57,7 @@ const searchWorker: SearchWorker = {
 
       parsedBlocks.forEach((block) => {
         block.blockId = createIndexCompositeKey(nodeId, block.blockId)
-        globalSearchIndex[key].update(block)
+        globalSearchIndex[key].update({ ...block, tag: [nodeId] })
       })
     }
   },
@@ -80,36 +80,41 @@ const searchWorker: SearchWorker = {
       let response: any[] = []
 
       if (typeof key === 'string') {
-        response = globalSearchIndex[key].search(query)
+        response = globalSearchIndex[key].search(query, { enrich: true })
       } else {
         key.forEach((k) => {
-          response = [...response, globalSearchIndex[k].search(query)]
+          response = [...response, ...globalSearchIndex[k].search(query, { enrich: true })]
         })
       }
 
+      // mog('response is', { response }, { pretty: true, collapsed: false })
       const results = new Array<any>()
       response.forEach((entry) => {
         const matchField = entry.field
         entry.result.forEach((i) => {
-          mog('ResultEntry', { i })
-          const { nodeId, blockId } = getNodeAndBlockIdFromCompositeKey(i)
-          results.push({ id: nodeId, blockId, matchField })
+          const { nodeId, blockId } = getNodeAndBlockIdFromCompositeKey(i.id)
+          results.push({ id: nodeId, blockId, text: i.doc?.text?.slice(0, 100), matchField })
         })
       })
 
       const combinedResults = new Array<GenericSearchResult>()
       results.forEach(function (item) {
         const existing = combinedResults.filter(function (v, i) {
-          return v.id == item.id
+          return v.id === item.id
         })
         if (existing.length) {
           const existingIndex = combinedResults.indexOf(existing[0])
-          combinedResults[existingIndex].matchField = combinedResults[existingIndex].matchField.concat(item.matchField)
+          if (!combinedResults[existingIndex].matchField.includes(item.matchField))
+            combinedResults[existingIndex].matchField = combinedResults[existingIndex].matchField.concat(
+              item.matchField
+            )
         } else {
           if (typeof item.matchField == 'string') item.matchField = [item.matchField]
           combinedResults.push(item)
         }
       })
+
+      // mog('RESULTS', { combinedResults })
 
       return combinedResults
     } catch (e) {
@@ -123,6 +128,51 @@ const searchWorker: SearchWorker = {
     const indexDump = await exportIndex(indexEntries)
 
     setSearchIndexData(indexDump, location)
+  },
+
+  searchIndexByNodeId: (key, nodeId, query) => {
+    try {
+      let response: any[] = []
+
+      if (typeof key === 'string') {
+        response = globalSearchIndex[key].search(query, { enrich: true, tag: nodeId })
+      } else {
+        key.forEach((k) => {
+          response = [...response, ...globalSearchIndex[k].search(query, { enrich: true, tag: nodeId })]
+        })
+      }
+
+      // mog('response is', response, { pretty: true, collapsed: false })
+      const results = new Array<any>()
+      response.forEach((entry) => {
+        const matchField = entry.field
+        entry.result.forEach((i) => {
+          const { nodeId, blockId } = getNodeAndBlockIdFromCompositeKey(i.id)
+          results.push({ id: nodeId, blockId, text: i.doc?.text?.slice(0, 100), matchField })
+        })
+      })
+      mog('RawSearchResponses', { response })
+      const combinedResults = new Array<GenericSearchResult>()
+      results.forEach(function (item) {
+        const existing = combinedResults.filter(function (v, i) {
+          return v.blockId == item.blockId
+        })
+        if (existing.length) {
+          const existingIndex = combinedResults.indexOf(existing[0])
+          combinedResults[existingIndex].matchField = combinedResults[existingIndex].matchField.concat(item.matchField)
+        } else {
+          if (typeof item.matchField == 'string') item.matchField = [item.matchField]
+          combinedResults.push(item)
+        }
+      })
+
+      mog('RESULTS', { combinedResults })
+
+      return combinedResults
+    } catch (e) {
+      mog('Searching Broke:', { e })
+      return []
+    }
   }
 }
 

@@ -1,5 +1,6 @@
 import { UseComboboxReturnValue } from 'downshift'
-import { Range } from 'slate'
+import { BaseRange, Range } from 'slate'
+import { ComboSearchType } from '../multi-combobox/types'
 import { createStore, setStoreValue } from '../store/createStore'
 import { IComboboxItem } from './components/Combobox.types'
 
@@ -7,7 +8,8 @@ export enum ComboboxKey {
   TAG = 'tag',
   INTERNAL = 'internal',
   INLINE_BLOCK = 'inline_block',
-  SLASH_COMMAND = 'slash_command'
+  SLASH_COMMAND = 'slash_command',
+  BLOCK = 'block'
 }
 
 export type ComboboxState = {
@@ -19,13 +21,22 @@ export type ComboboxState = {
   maxSuggestions: number
   setMaxSuggestions: (value: number) => void
 
+  activeBlock: any
+  setActiveBlock: (block: any) => void
+
   // Tag search value
-  search: string
-  setSearch: (value: string) => void
+  search: ComboSearchType
+  setSearch: (value: ComboSearchType) => void
 
   // Fetched tags
   items: IComboboxItem[]
   setItems: (value: IComboboxItem[]) => void
+
+  isBlockTriggered: boolean
+  setIsBlockTriggered: (value: boolean) => void
+
+  blockRange: BaseRange | null
+  setBlockRange: (value: BaseRange) => void
 
   // Range from the tag trigger to the cursor
   targetRange: Range | null
@@ -34,6 +45,15 @@ export type ComboboxState = {
   // Highlighted index
   itemIndex: number
   setItemIndex: (value: number) => void
+
+  isSlash: boolean
+  setIsSlash: (value: boolean) => void
+
+  preview?: any
+  setPreview: (value: any) => void
+
+  showPreview: boolean
+  setShowPreview: (value: boolean) => void
 
   combobox: UseComboboxReturnValue<IComboboxItem> | null
   setCombobox: (value: UseComboboxReturnValue<IComboboxItem>) => void
@@ -45,10 +65,21 @@ export const useComboboxStore = createStore()<ComboboxState>((set) => ({
   key: ComboboxKey.TAG,
   setKey: setStoreValue(set, 'key', 'setKey'),
 
+  setBlockRange: setStoreValue(set, 'blockRange', 'setBlockRange'),
+
+  isSlash: false,
+  setIsSlash: setStoreValue(set, 'isSlash', 'setIsSlash'),
+
+  isBlockTriggered: false,
+  setIsBlockTriggered: setStoreValue(set, 'isBlockTriggered', 'setIsBlockTriggered'),
+
   maxSuggestions: 10,
   setMaxSuggestions: setStoreValue(set, 'maxSuggestions', 'setMaxSuggestions'),
 
-  search: '',
+  setActiveBlock: setStoreValue(set, 'activeBlock', 'setActiveBlock'),
+  setPreview: setStoreValue(set, 'preview', 'setPreview'),
+
+  search: { textAfterTrigger: '' },
   setSearch: setStoreValue(set, 'search', 'setSearch'),
 
   items: [],

@@ -118,6 +118,8 @@ const ContentEditor = () => {
     }
   }, [shortcuts, toggleFocusMode])
 
+  const readOnly = !!fetchingContent
+
   return (
     <>
       <StyledEditor showGraph={infobar.mode === 'graph'} className="mex_editor">
@@ -128,7 +130,6 @@ const ContentEditor = () => {
         <EditorWrapper onClick={onFocusClick}>
           <Editor
             showBalloonToolbar
-            // readOnly={fetchingContent}
             content={fsContent?.content ?? defaultContent.content}
             onChange={onChangeSave}
             editorId={editorId}

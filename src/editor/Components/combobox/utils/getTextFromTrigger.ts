@@ -1,54 +1,90 @@
-import { escapeRegExp, getText } from '@udecode/plate'
-import { TEditor } from '@udecode/plate-core'
+import { escapeRegExp, getText } from '@udecode/plate-core'
 import { BaseRange, Editor, Point } from 'slate'
+import { mog } from '../../../../utils/lib/helper'
 
 /**
  * Get text and range from trigger to cursor.
  * Starts with trigger and ends with non-whitespace character.
- * TODO: move to plugins
  */
-export const getTextFromTrigger = (
-  editor: TEditor,
-  { at, trigger }: { at: Point; trigger: string }
-): { range: BaseRange; textAfterTrigger: string } | undefined => {
-  const escapedTrigger = escapeRegExp(trigger)
-  const triggerRegex = new RegExp(`^${escapedTrigger}`)
-  const noWhiteSpaceRegex = new RegExp(`\\S+`)
+export type TriggerOptions = {
+  at: Point
+  trigger: string
+  searchPattern?: string
+  blockTrigger?: string
+  isTrigger?: boolean
+}
 
-  let start: Point | undefined = at
+export type TextFromTrigger = {
+  range: BaseRange
+  blockRange?: BaseRange
+  textAfterTrigger: string
+  isBlockTriggered?: boolean
+  textAfterBlockTrigger?: string
+}
+
+export const getTextFromTrigger = (editor: Editor, options: TriggerOptions): TextFromTrigger => {
+  const searchPattern = options.searchPattern ?? `\\D+`
+
+  const escapedTrigger = escapeRegExp(options.trigger)
+  const triggerRegex = new RegExp(`(?:^)${escapedTrigger}`)
+
+  let start: Point | undefined = { ...options.at }
   let end: Point | undefined
+  let blockStart = options.at
 
-  // console.log({ start, end, at, trigger });
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    end = start
+    if (!start) break
 
-  try {
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      end = start
+    start = Editor.before(editor, start)
+    const charRange = start && Editor.range(editor, start, end)
+    const charText = getText(editor, charRange)
 
-      if (!start) break
-
-      start = Editor.before(editor, start)
-      const charRange = start && Editor.range(editor, start, end)
-      const charText = getText(editor, charRange)
-
-      // Match non-whitespace character on before text
-      if (!charText.match(noWhiteSpaceRegex)) {
-        start = end
-        break
-      }
+    if (charText === options.blockTrigger) {
+      blockStart = start
     }
 
-    // Range from start to cursor
-    const range = start && Editor.range(editor, start, at)
-    const text = getText(editor, range)
+    // * Uncomment this (changes)
 
-    if (!range || !text.match(triggerRegex)) return undefined
-    return {
-      range,
-      textAfterTrigger: text.substring(trigger.length)
+    if (!charText.match(searchPattern)) {
+      start = end
+      break
     }
-  } catch (e) {
-    console.error(e)
-    return undefined
   }
+
+  // Range from start to cursor
+  const range = start && Editor.range(editor, start, options.at)
+  const text = getText(editor, range)
+
+  const triggerIndex = text.indexOf(options.trigger)
+
+  if (!range || triggerIndex <= -1) return
+
+  const textStart = { ...start, offset: triggerIndex }
+  const textRange = textStart && Editor.range(editor, textStart, options.at)
+  const triggerText = getText(editor, textRange)
+
+  if (triggerText.length > 100) return
+
+  const isBlockTriggered = blockStart.offset !== options.at.offset
+
+  const res = {
+    range: textRange,
+    textAfterTrigger: triggerText.substring(options.trigger.length, blockStart.offset - textStart.offset)
+  }
+
+  if (isBlockTriggered) {
+    const blockRange = blockStart && Editor.range(editor, blockStart, options.at)
+    const blockText = triggerText.substring(blockStart.offset - textStart.offset + 1)
+
+    return {
+      ...res,
+      isBlockTriggered,
+      blockRange,
+      textAfterBlockTrigger: blockText
+    }
+  }
+
+  return res
 }

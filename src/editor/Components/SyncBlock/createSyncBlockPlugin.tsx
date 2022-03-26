@@ -36,7 +36,7 @@ export const createSyncBlockPlugin = (): PlatePlugin => ({
         }
       }
     }
-  }),
+  })
 
-  isInline: true
+  // isInline: true
 })

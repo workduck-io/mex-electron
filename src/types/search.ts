@@ -7,6 +7,7 @@ export interface GenericSearchData {
   blockId?: string
   title?: string
   text: string
+  tag?: string[]
 }
 
 export interface SearchIndex {
@@ -21,6 +22,7 @@ export interface GenericSearchResult {
   title?: string
   text?: string
   matchField?: string[]
+  tag?: string[]
 }
 
 export type idxKey = keyof SearchIndex
@@ -30,7 +32,8 @@ export interface SearchWorker {
   addDoc: (key: idxKey, nodeId: string, contents: any[], title: string) => void
   updateDoc: (key: idxKey, nodeId: string, contents: any[], title: string) => void
   removeDoc: (key: idxKey, id: string) => void
-  searchIndex: (key: idxKey, query: string) => GenericSearchResult[]
+  searchIndex: (key: idxKey | idxKey[], query: string) => GenericSearchResult[]
+  searchIndexByNodeId: (key: idxKey | idxKey[], nodeId: string, query: string) => GenericSearchResult[]
   dumpIndexDisk: (location: string) => Promise<void>
 }
 

@@ -35,7 +35,6 @@ export const useILinkOnSelectItem = () => {
             children: [{ text: '' }],
             value: item.text
           })
-          // console.log({ type, item });
 
           // move the selection after the ilink element
           Transforms.move(editor)

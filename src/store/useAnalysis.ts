@@ -78,7 +78,7 @@ export const useAnalysis = () => {
   // mog('Setting up IPC for Buffer', { node })
   useEffect(() => {
     const bufferContent = getBufferVal(node.nodeid)
-    mog('sending for calc', { node, buffer })
+    // mog('sending for calc', { node, buffer })
     if (bufferContent) {
       // mog('Buffer for calc', { bufferContent })
       ipcRenderer.send(IpcAction.ANALYSE_CONTENT, { content: bufferContent, nodeid: node.nodeid })

@@ -11,7 +11,6 @@ import { useSnippets } from '../../hooks/useSnippets'
 import IconButton from '../../style/Buttons'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 import tinykeys from 'tinykeys'
-import { mog } from '../../utils/lib/helper'
 
 type Inputs = {
   title: string
@@ -52,6 +51,9 @@ const SnippetEditor = () => {
     }
   }
 
+  const { params } = useRouting()
+  const snippetid = snippet?.id ?? params.snippetid
+
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       Escape: (event) => {
@@ -89,7 +91,7 @@ const SnippetEditor = () => {
           </InfoTools>
         </NodeInfo>
 
-        <Editor onChange={onChangeSave} content={content} editorId={snippet.id} />
+        {<Editor onChange={onChangeSave} content={content} editorId={snippetid} />}
       </StyledEditor>
     </>
   )

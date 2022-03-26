@@ -1,4 +1,6 @@
 import { ReactEditor } from 'slate-react'
+import { QuickLinkType } from '../../../../components/mex/NodeSelect/NodeSelect'
+import { SlashType } from '../../multi-combobox/types'
 
 export interface RenderFunction<P = { [key: string]: any }> {
   (props: P, defaultRender?: (props?: P) => JSX.Element | null): JSX.Element | null
@@ -26,6 +28,8 @@ export interface IComboboxItem {
    */
   itemType?: ComboboxItemType
 
+  type?: QuickLinkType | SlashType
+
   /**
    * Icon to be rendered
    */
@@ -40,6 +44,8 @@ export interface IComboboxItem {
    * description text if any
    */
   desc?: string
+
+  prefix?: string
 
   /**
    * Whether the option is disabled

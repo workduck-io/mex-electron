@@ -1,7 +1,6 @@
 import { OnChange, usePlateEditorRef } from '@udecode/plate'
 import { useCallback } from 'react'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
-import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange'
 import { isInternalCommand } from '../combobox/hooks/useComboboxOnKeyDown'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
@@ -9,16 +8,12 @@ import { ComboboxType } from './types'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { useRouting } from '../../../views/routes/urls'
 import { useLinks } from '../../../hooks/useLinks'
-import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 
-export const CreateNewPrefix = `Create New `
+export const CreateNewPrefix = `Create `
 // Handle multiple combobox
-const useMultiComboboxOnChange = (
-  editorId: string,
-  keys: {
-    [type: string]: ComboboxType
-  }
-): OnChange => {
+const useMultiComboboxOnChange = (editorId: string, keys: Record<string, ComboboxType>): OnChange => {
   const editor = usePlateEditorRef(editorId)! // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
   const closeMenu = useComboboxStore((state) => state.closeMenu)
@@ -43,42 +38,45 @@ const useMultiComboboxOnChange = (
     if (search === undefined) return false
 
     const key = useComboboxStore.getState().key
-    const maxSuggestions = useComboboxStore.getState().maxSuggestions
 
     const ct = keys[key]
     const data = ct.data
 
     if (!data) return false
+    const textAfterTrigger = search.textAfterTrigger
 
-    if (params.snippetid && search.startsWith('.')) return
+    if (params.snippetid && textAfterTrigger?.startsWith('.')) return
 
-    const { isChild, key: pathKey } = withoutContinuousDelimiter(search)
+    const { isChild, key: pathKey } = withoutContinuousDelimiter(textAfterTrigger)
     const searchTerm = isChild ? `${getPathFromNodeid(editorId)}${pathKey}` : pathKey
 
     const searchItems = fuzzySearch(data, searchTerm, { keys: ['text'] })
-    const items: IComboboxItem[] = (
-      searchTerm !== '' ? searchItems.slice(0, maxSuggestions) : keys[key].data.slice(0, maxSuggestions)
-    ).map((item) => ({
-      key: item.value,
-      icon: item.icon ?? ct.icon ?? undefined,
-      text: item.text
-    }))
 
-    // mog('Change in Combobox', {
-    //   data,
-    //   dataKeys,
-    //   log: !isReservedOrClash(search, dataKeys),
-    //   search,
-    //   ct,
-    //   keys,
-    //   key
-    // })
+    const groups = (searchTerm !== '' ? searchItems : data).reduce((acc, item) => {
+      const type = item.type
+      if (!acc[type]) {
+        acc[type] = []
+      }
 
-    const dataKeys = items.map((i) => i.text)
-    // Insert new item conditionally
+      if (!(acc[type].length === 5))
+        acc[type].push({
+          key: item.value,
+          icon: item.icon ?? ct.icon ?? undefined,
+          text: item.text,
+          type
+        })
 
+      return acc
+    }, {} as any)
+
+    const items = Object.values(groups).flat()
+
+    const dataKeys = items.map((i: any) => i.text)
+
+    // Create for new item
     if (
       key !== ComboboxKey.SLASH_COMMAND &&
+      key !== ComboboxKey.BLOCK &&
       searchTerm !== '' &&
       searchTerm !== '.' &&
       !isInternalCommand(searchTerm) &&
@@ -87,7 +85,13 @@ const useMultiComboboxOnChange = (
       items.unshift({
         key: '__create_new',
         icon: 'ri:add-circle-line',
-        text: `${CreateNewPrefix}${searchTerm}`
+        // data: {
+        //   isNew: true
+        // },
+        type: QuickLinkType.ilink,
+        data: true,
+        prefix: CreateNewPrefix,
+        text: searchTerm
       })
     }
 

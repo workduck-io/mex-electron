@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react'
 import { useSelected } from 'slate-react'
 import styled from 'styled-components'
-import { defaultContent } from '../../../data/Defaults/baseData'
 import useArchive from '../../../hooks/useArchive'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useContentStore } from '../../../store/useContentStore'
 import { mog } from '../../../utils/lib/helper'
+import { getBlock } from '../../../utils/search/parseData'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
 import { useSaver } from '../Saver'
 import { RootElement } from '../SyncBlock'
@@ -32,7 +32,18 @@ const InlineBlock = (props: any) => {
   const getContent = useContentStore((store) => store.getContent)
   const path = useMemo(() => getPathFromNodeid(props.element.value), [props.element.value])
   const nodeid = props.element.value
-  const content = useMemo(() => getContent(nodeid), [nodeid])
+  const blockId = props.element.blockId
+
+  const content = useMemo(() => {
+    if (blockId) {
+      const data = getBlock(nodeid, blockId)
+      return data ? [data] : undefined
+    }
+    const data = getContent(nodeid)?.content
+
+    return data
+  }, [nodeid, blockId])
+
   const { onSave } = useSaver()
   const { archived } = useArchive()
 
@@ -42,25 +53,22 @@ const InlineBlock = (props: any) => {
     push(nodeid)
   }
 
-  // mog('INLINE_BLOCK', { el: props.element, path })
+  const selected = useSelected()
 
   return (
     <RootElement {...props.attributes}>
       <div contentEditable={false}>
-        <StyledInlineBlock data-tour="mex-onboarding-inline-block">
+        <StyledInlineBlock selected={selected} data-tour="mex-onboarding-inline-block">
           <FlexBetween>
             <InlineFlex>
-              <InlineBlockHeading>From:</InlineBlockHeading>
+              <InlineBlockHeading>{blockId ? 'Within:' : 'From:'}</InlineBlockHeading>
               <InlineBlockText>{path}</InlineBlockText>
             </InlineFlex>
             {archived(nodeid) ? <StyledArchiveText>Archived</StyledArchiveText> : <Chip onClick={openNode}>Open</Chip>}
           </FlexBetween>
           {!archived(nodeid) && (
             <StyledInlineBlockPreview>
-              <EditorPreviewRenderer
-                content={content?.content ?? defaultContent.content}
-                editorId={`__preview__${nodeid}`}
-              />
+              <EditorPreviewRenderer content={content} editorId={`__preview__${blockId ?? nodeid}`} />
             </StyledInlineBlockPreview>
           )}
         </StyledInlineBlock>

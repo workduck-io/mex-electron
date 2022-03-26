@@ -30,7 +30,7 @@ export const TreeWithContextMenu = ({ tree }: TreeProps) => {
   })
 
   function displayMenu({ event, node }: any) {
-    mog('DisplayTreeContextMenu', { event, node })
+    // mog('DisplayTreeContextMenu', { event, node })
     show(event, { props: { id: node.id } })
   }
 

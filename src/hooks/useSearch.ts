@@ -1,9 +1,9 @@
-import { idxKey, GenericSearchData, GenericSearchResult } from '../types/search'
+import { idxKey } from '../types/search'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../data/IpcAction'
 
-import { parseNode } from '../utils/search/parseData'
 import { useLinks } from './useLinks'
+import { mog } from '../utils/lib/helper'
 
 export const useSearch = () => {
   const { getPathFromNodeid } = useLinks()
@@ -20,10 +20,15 @@ export const useSearch = () => {
     await ipcRenderer.invoke(IpcAction.REMOVE_DOCUMENT, key, id)
   }
 
-  const queryIndex = async (key: idxKey, query: string) => {
+  const queryIndex = async (key: idxKey | idxKey[], query: string) => {
     const results = await ipcRenderer.invoke(IpcAction.QUERY_INDEX, key, query)
     return results
   }
 
-  return { addDocument, updateDocument, removeDocument, queryIndex }
+  const queryIndexByNodeId = async (key: idxKey | idxKey[], nodeId: string, query: string) => {
+    const results = await ipcRenderer.invoke(IpcAction.QUERY_INDEX_BY_NODEID, key, nodeId, query)
+    return results
+  }
+
+  return { addDocument, updateDocument, removeDocument, queryIndex, queryIndexByNodeId }
 }

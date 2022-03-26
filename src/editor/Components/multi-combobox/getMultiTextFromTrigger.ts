@@ -1,59 +1,87 @@
 import { Range } from 'slate'
-import { getParent, isCollapsed, TEditor, isElement, ELEMENT_CODE_BLOCK, ELEMENT_CODE_LINE } from '@udecode/plate'
-import { ComboboxType } from './types'
+import { getParent, isCollapsed, isElement, ELEMENT_CODE_BLOCK, ELEMENT_CODE_LINE, PlateEditor } from '@udecode/plate'
+import { ComboboxType, ComboTriggerDataType } from './types'
 import { getTextFromTrigger } from '../combobox/utils/getTextFromTrigger'
+import { debounce } from 'lodash'
+import { mog } from '../../../utils/lib/helper'
 
-// Gets an object with different keys
-// Returns the search and key
-// Trigger should not be prefixes of other triggers
-export default function getTextFromTriggers(editor: TEditor, keys: { [type: string]: ComboboxType }) {
+export const getTriggeredData = (
+  editor: PlateEditor,
+  comboboxItem: ComboboxType,
+  setTrigger: any,
+  isTrigger: boolean,
+  blockSearch?: boolean
+): ComboTriggerDataType | undefined => {
+  const selection = editor?.selection
+  const cursor = Range.start(selection)
+
+  const isCursorAfterTrigger = getTextFromTrigger(editor, {
+    at: cursor,
+    trigger: comboboxItem.trigger,
+    blockTrigger: comboboxItem.blockTrigger,
+    isTrigger
+  })
+
+  if (isCursorAfterTrigger) {
+    const { range, textAfterTrigger, isBlockTriggered, blockRange, textAfterBlockTrigger } = isCursorAfterTrigger
+
+    if (!blockSearch) setTrigger(comboboxItem)
+
+    return {
+      range,
+      key: comboboxItem.cbKey,
+      search: { textAfterTrigger, textAfterBlockTrigger },
+      isBlockTriggered,
+      blockRange
+    }
+  }
+
+  return undefined
+}
+
+const debouncedTriggger = debounce(getTriggeredData, 200)
+
+const getTextFromTriggers = (
+  editor: PlateEditor,
+  keys: Record<string, ComboboxType>,
+  isTrigger: ComboboxType | undefined,
+  setIsTrigger: any
+) => {
   const selection = editor?.selection
 
   if (selection && isCollapsed(selection)) {
-    const cursor = Range.start(selection)
+    let triggerSelection
 
     const parentEntry = getParent(editor, editor.selection.focus)
+
     if (!parentEntry) return
     const [node] = parentEntry
 
-    // mog('formatQuery', { editor, options, node })
-
     if (isElement(node) && (node.type === ELEMENT_CODE_LINE || node.type === ELEMENT_CODE_BLOCK)) {
-      // mog('formatNodeConversion', {
-      //   node,
-      //   parentEntry
-      // })
       return undefined
     }
 
     // Check within keys
-    const selections = Object.keys(keys).map((k) => {
-      const comboType = keys[k]
-
-      const isCursorAfterTrigger = getTextFromTrigger(editor, {
-        at: cursor,
-        trigger: comboType.trigger
-      })
-
-      if (isCursorAfterTrigger) {
-        const { range, textAfterTrigger } = isCursorAfterTrigger
-
-        return {
-          range,
-          key: comboType.cbKey,
-          search: textAfterTrigger
+    if (!isTrigger) {
+      Object.values(keys).map((comboType) => {
+        const data = getTriggeredData(editor, comboType, setIsTrigger, false)
+        if (data) {
+          triggerSelection = data
         }
-      }
-      return undefined
-    })
-
-    // Get the trigger for which the selection in present
-    const selected = selections.filter((k) => k !== undefined)
-
-    if (selected.length > 0) {
-      return selected[0] // We return the first caught selection
+      })
+    } else {
+      triggerSelection = getTriggeredData(editor, isTrigger, setIsTrigger, true, !!isTrigger.blockTrigger)
     }
+
+    if (!triggerSelection && isTrigger) {
+      setIsTrigger(undefined)
+    }
+
+    return triggerSelection
   }
+
   // We return all that can be set in the useComboboxOnChange-keys function
   return undefined
 }
+
+export default getTextFromTriggers

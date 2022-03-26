@@ -1,5 +1,4 @@
 import { getBlockAbove, getPluginType, insertNodes, insertTable, PlateEditor, TElement } from '@udecode/plate'
-import { useCallback } from 'react'
 import { Editor, Transforms } from 'slate'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
@@ -8,13 +7,13 @@ import { getEventNameFromElement } from '../../../utils/lib/strings'
 
 import { useSnippets } from '../../../hooks/useSnippets'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
-import { useComboboxIsOpen } from '../combobox/selectors/useComboboxIsOpen'
 import { useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from './Types'
 import { mog } from '../../../utils/lib/helper'
+import { defaultContent } from '../../../data/Defaults/baseData'
 
 export const useSlashCommandOnChange = (
-  keys: { [type: string]: SlashCommandConfig }
+  keys: Record<string, SlashCommandConfig>
   // internal: {
   //   [type: string]: SlashCommandConfig
   // }
@@ -26,8 +25,8 @@ export const useSlashCommandOnChange = (
 
   return (editor: PlateEditor, item: IComboboxItem) => {
     const targetRange = useComboboxStore.getState().targetRange
-    const commandKey = Object.keys(keys).filter((k) => keys[k].command === item.text)[0]
-
+    const commandKey = Object.keys(keys).filter((k) => keys[k].command === item.key)[0]
+    mog('COMMAND', { commandKey, item, keys: Object.keys(keys) })
     const commandConfig = keys[commandKey]
     // console.log({ commandConfig })
     if (targetRange) {
@@ -37,6 +36,7 @@ export const useSlashCommandOnChange = (
         const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
 
         if (isElder(commandKey, 'snip')) {
+          mog('im here', { commandKey, item, keys })
           const content = getSnippetContent(commandConfig.command)
 
           const eventName = getEventNameFromElement('Editor', ActionType.USE, 'Snippet')
@@ -50,23 +50,21 @@ export const useSlashCommandOnChange = (
           Transforms.select(editor, targetRange)
           insertTable(editor, { header: true })
         } else {
-          // console.log('useElementOnChange 2', { type, pathAbove, isBlockEnd });
           const type = getPluginType(editor, commandConfig.slateElementType)
           const data = commandConfig.getBlockData ? commandConfig.getBlockData(item) : {}
-
-          // console.log('INSERT: ', { type, data })
 
           const eventName = getEventNameFromElement('Editor', ActionType.CREATE, type)
           trackEvent(eventName, { 'mex-type': type, 'mex-data': data })
 
           Transforms.select(editor, targetRange)
-
           insertNodes<TElement>(editor, {
             type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
             children: [{ text: '' }],
             ...commandConfig.options,
             ...data
           })
+
+          insertNodes(editor, defaultContent.content[0])
 
           // move the selection after the inserted content
           Transforms.move(editor)

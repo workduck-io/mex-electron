@@ -1,7 +1,9 @@
 import Tippy from '@tippyjs/react/headless' // different import path!
 import React, { forwardRef, useState } from 'react'
+import { generateTempId } from '../../../data/Defaults/idPrefixes'
 import { useContentStore } from '../../../store/useContentStore'
 import { Button } from '../../../style/Buttons'
+import { NodeEditorContent } from '../../../types/Types'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
 import { EditorPreviewWrapper } from './EditorPreview.styles'
 
@@ -11,6 +13,8 @@ export interface EditorPreviewProps {
   placement?: string
   delay?: number
   preview?: boolean
+  previewRef?: any
+  content?: NodeEditorContent
   allowClosePreview?: boolean
   closePreview?: () => void
 }
@@ -50,11 +54,14 @@ const EditorPreview = ({
   preview,
   children,
   delay,
+  content,
   ...props
 }: EditorPreviewProps) => {
   const getContent = useContentStore((store) => store.getContent)
-  const content = getContent(nodeid)
-  const cc = content && content.content
+  const nodeContent = getContent(nodeid)
+  const cc = content ?? (nodeContent && nodeContent.content)
+
+  const editorId = `__preview__${nodeid}_${generateTempId()}`
 
   if (cc) {
     return (
@@ -72,7 +79,7 @@ const EditorPreview = ({
                 &times;
               </Button>
             )}
-            {cc && <EditorPreviewRenderer content={cc} editorId={`__preview__${nodeid}`} />}
+            {cc && <EditorPreviewRenderer content={cc} editorId={editorId} />}
           </EditorPreviewWrapper>
         )}
       >

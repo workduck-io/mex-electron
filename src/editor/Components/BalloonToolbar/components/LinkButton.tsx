@@ -1,13 +1,13 @@
 import Tippy, { TippyProps } from '@tippyjs/react' // optional
 import {
-    ELEMENT_LINK,
-    getAbove,
-    getPlateEditorRef,
-    getPluginType,
-    isCollapsed,
-    LinkToolbarButtonProps,
-    someNode,
-    unwrapNodes
+  ELEMENT_LINK,
+  getAbove,
+  getPlateEditorRef,
+  getPluginType,
+  isCollapsed,
+  LinkToolbarButtonProps,
+  someNode,
+  unwrapNodes
 } from '@udecode/plate'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'

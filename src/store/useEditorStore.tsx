@@ -1,6 +1,7 @@
 import React from 'react'
 import create from 'zustand'
 import { defaultContent } from '../data/Defaults/baseData'
+import { ComboboxType } from '../editor/Components/multi-combobox/types'
 import { NodeContent } from '../types/data'
 import { getContent, getInitialNode } from '../utils/helpers'
 
@@ -20,6 +21,10 @@ export type EditorContextType = {
   // These are loaded internally from ID
   content: NodeContent
   readOnly: boolean
+
+  // * Checks if there's an active trigger in the editor
+  isTrigger?: ComboboxType | undefined
+  setIsTrigger: (isTrigger: ComboboxType | undefined) => void
 
   setUid: (nodeid: string) => void
   setNode: (node: NodeProperties) => void
@@ -47,6 +52,7 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
   content: defaultContent,
   readOnly: false,
   fetchingContent: false,
+  setIsTrigger: (isTrigger) => set({ isTrigger }),
 
   setReadOnly: (isReadOnly: boolean) => {
     set({ readOnly: isReadOnly })

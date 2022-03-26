@@ -8,7 +8,6 @@ import SearchView, { RenderItemProps, RenderPreviewProps } from '../../component
 import { View } from '../../components/mex/Search/ViewSelector'
 import { generateSnippetId } from '../../data/Defaults/idPrefixes'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
-import { useNodes } from '../../hooks/useNodes'
 import { useSnippets } from '../../hooks/useSnippets'
 import { useUpdater } from '../../hooks/useUpdater'
 import { useSnippetStore } from '../../store/useSnippetStore'
@@ -39,11 +38,10 @@ export type SnippetsProps = {
 
 const Snippets = () => {
   const snippets = useSnippetStore((store) => store.snippets)
-  const { addSnippet, deleteSnippet, getSnippetContent, getSnippet } = useSnippets()
+  const { addSnippet, deleteSnippet, getSnippet } = useSnippets()
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const { updater } = useUpdater()
   const { queryIndex } = useSearch()
-  const { getNode } = useNodes()
   const { goTo } = useRouting()
   const initialSnippets: GenericSearchResult[] = snippets.map((snippet) => ({
     id: snippet.id,
@@ -63,9 +61,11 @@ const Snippets = () => {
   const onCreateNew = () => {
     // Create a better way.
     const snippetId = generateSnippetId()
+    const snippetName = genereateName().dashed
+
     addSnippet({
       id: snippetId,
-      title: genereateName().dashed,
+      title: snippetName,
       icon: 'ri:quill-pen-line',
       content: [{ children: [{ text: '' }], type: ELEMENT_PARAGRAPH }]
     })
@@ -73,12 +73,11 @@ const Snippets = () => {
     loadSnippet(snippetId)
     updater()
 
-    goTo(ROUTE_PATHS.snippet, NavigationType.push, snippetId)
+    goTo(ROUTE_PATHS.snippet, NavigationType.push, snippetId, { title: snippetName })
   }
 
   const onOpenSnippet = (id: string) => {
     loadSnippet(id)
-    goTo(ROUTE_PATHS.snippet, NavigationType.push, id)
   }
 
   const onDeleteSnippet = (id: string) => {
@@ -87,8 +86,10 @@ const Snippets = () => {
 
   // console.log({ result })
   const onSelect = (item: GenericSearchResult) => {
-    const snippetid = item.id
-    onOpenSnippet(snippetid)
+    const snippetId = item.id
+    const snippetName = item.title
+    onOpenSnippet(snippetId)
+    goTo(ROUTE_PATHS.snippet, NavigationType.push, snippetId, { title: snippetName })
   }
 
   const onEscapeExit = () => {
