@@ -16,7 +16,6 @@ import { useNavigation } from '../../../hooks/useNavigation'
 import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useRecieveTokens, useSyncData } from '../../../hooks/useSyncData'
-import { useUpdater } from '../../../hooks/useUpdater'
 import { useAuthentication, useAuthStore } from '../../../services/auth/useAuth'
 import { useAnalysis, useAnalysisIPC } from '../../../store/useAnalysis'
 import useBlockStore from '../../../store/useBlockStore'
@@ -76,8 +75,6 @@ const Init = () => {
 
   const { getTokenData } = useTokenData()
 
-  const { getTemplates } = useUpdater()
-
   /**
    * Initialization of the app data, search index and auth,
    * also sends the auth details to the other processess
@@ -120,7 +117,7 @@ const Init = () => {
             })
 
             // * Fetch quick flow templates
-            getTemplates()
+            // getTemplates()
 
             // mog('Initialization complete', { d, auth })
 
