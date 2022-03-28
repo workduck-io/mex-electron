@@ -10,6 +10,7 @@ import { mog } from '../utils/lib/helper'
 import { TodoType } from '../editor/Components/Todo/types'
 import useTodoStore from './useTodoStore'
 import { getTodosFromContent } from '../utils/lib/content'
+import { areEqual } from '../utils/lib/hash'
 
 export interface OutlineItem {
   id: string
@@ -78,12 +79,14 @@ export const useAnalysis = () => {
   // mog('Setting up IPC for Buffer', { node })
   useEffect(() => {
     const bufferContent = getBufferVal(node.nodeid)
+    const content = getContent(node.nodeid)
     // mog('sending for calc', { node, buffer })
     if (bufferContent) {
       // mog('Buffer for calc', { bufferContent })
-      ipcRenderer.send(IpcAction.ANALYSE_CONTENT, { content: bufferContent, nodeid: node.nodeid })
+      if (!areEqual(bufferContent, content.content)) {
+        ipcRenderer.send(IpcAction.ANALYSE_CONTENT, { content: bufferContent, nodeid: node.nodeid })
+      }
     } else {
-      const content = getContent(node.nodeid)
       // mog('Content for calc', { content })
       if (content && content.content)
         ipcRenderer.send(IpcAction.ANALYSE_CONTENT, { content: content.content, nodeid: node.nodeid })

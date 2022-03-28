@@ -9,7 +9,7 @@ import { getTagsFromContent, getTodosFromContent } from '../../utils/lib/content
 const ELEMENTS_IN_OUTLINE = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 
 const getOutline = (content: NodeEditorContent): OutlineItem[] => {
-  console.log('getOutline', content)
+  // console.log('getOutline', content)
   if (!content) return []
   const outline: OutlineItem[] = []
   content.forEach((item) => {

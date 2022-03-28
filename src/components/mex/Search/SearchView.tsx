@@ -101,7 +101,13 @@ interface SearchViewProps<Item> {
    * Handle select item
    * @param item - The selected item
    */
-  onSelect: (item: Item) => void
+  onSelect: (item: Item, e?: React.MouseEvent<Element>) => void
+
+  /**
+   * Handle delete keypress on selected item
+   * @param item - The selected item
+   */
+  onDelete?: (item: Item) => void
 
   /**
    * On search result update, the filterResults is called to get the filtered results
@@ -167,6 +173,7 @@ const SearchView = <Item,>({
   // views,
   onSearch,
   onSelect,
+  onDelete,
   onEscapeExit,
   getItemKey,
   filterResults,
@@ -188,7 +195,7 @@ const SearchView = <Item,>({
   const filters = useFilterStore((store) => store.filters) as SearchFilter<Item>[]
   const setSelected = (selected: number) => setSS((s) => ({ ...s, selected }))
   const setView = (view: View) => {
-    mog('setview', { view })
+    // mog('setview', { view })
     setSS((s) => ({ ...s, view }))
   }
   const setOnlyResult = (result: Item[]) => {
@@ -206,14 +213,14 @@ const SearchView = <Item,>({
   const selectedRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    mog('Setting View', { view, id })
+    // mog('Setting View', { view, id })
     if (options?.view) {
       setView(options.view)
     }
   }, [options?.view])
 
   useEffect(() => {
-    mog('clearing search on ID change', { searchTerm, id })
+    // mog('clearing search on ID change', { searchTerm, id })
     clearSearch()
   }, [id])
 
@@ -221,7 +228,7 @@ const SearchView = <Item,>({
     if (newSearchTerm === '' && initialItems.length > 0) {
       // const res = onSearch(newSearchTerm)
       const filtered = filterResults ? filterResults(initialItems) : initialItems
-      mog('ExecuteSearch - Initial', { newSearchTerm, currentFilters, filtered })
+      mog('ExecuteSearch - Initial', { newSearchTerm, currentFilters, filtered, initialItems })
       setResult(filtered, newSearchTerm)
     } else {
       const res = await onSearch(newSearchTerm)
@@ -231,8 +238,6 @@ const SearchView = <Item,>({
     }
   }
 
-  // console.log({ result })
-
   const updateResults = useMemo(
     () => () => {
       // mog('SearchFiltersUpdate', { result, currentFilters })
@@ -241,7 +246,7 @@ const SearchView = <Item,>({
       // setOnlyResult(results)
       executeSearch(searchTerm)
     },
-    [currentFilters, result]
+    [currentFilters, result, initialItems]
   )
 
   useEffect(() => {
@@ -254,7 +259,7 @@ const SearchView = <Item,>({
       mog('clearing search', { searchTerm })
       clearSearch()
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [initialItems]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (selectedRef.current) {
@@ -345,12 +350,20 @@ const SearchView = <Item,>({
         if (selected > -1) {
           onSelect(result[selected] as Item)
         }
+      },
+      Delete: (event) => {
+        // Only when the selected index is -1
+        if (isOnSearchFilter()) return
+        if (selected > -1) {
+          onDelete(result[selected] as Item)
+          setSelected(-1)
+        }
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [result, selected])
+  }, [result, selected, initialItems])
 
   // onKeyDown handler function
   const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -378,8 +391,8 @@ const SearchView = <Item,>({
               e.preventDefault()
               if (selected !== i) setSelected(i)
             }}
-            onClick={() => {
-              onSelect(c)
+            onClick={(e) => {
+              onSelect(c, e)
             }}
             splitOptions={splitOptions}
             selected={i === selected}
@@ -392,7 +405,7 @@ const SearchView = <Item,>({
     </Results>
   )
 
-  // mog('SearchContainer', { options, result, id, selected, view })
+  // mog('SearchContainer', { options, result, initialItems, id, selected, view })
   return (
     <SearchViewContainer key={id} id={id} onKeyDown={keyDownHandler}>
       <SearchHeader>

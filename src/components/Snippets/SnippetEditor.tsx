@@ -11,6 +11,7 @@ import { useSnippets } from '../../hooks/useSnippets'
 import IconButton from '../../style/Buttons'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 import tinykeys from 'tinykeys'
+import { useSaveData } from '../../hooks/useSaveData'
 
 type Inputs = {
   title: string
@@ -30,6 +31,7 @@ const SnippetEditor = () => {
   const [content, setContent] = useState<any[] | undefined>(undefined)
 
   const { updater } = useUpdater()
+  const { saveData } = useSaveData()
 
   useEffect(() => {
     if (snippet) {
@@ -68,6 +70,7 @@ const SnippetEditor = () => {
 
   const returnToSnippets = () => {
     updater()
+    saveData()
     goTo(ROUTE_PATHS.snippets, NavigationType.push)
   }
 

@@ -16,6 +16,7 @@ import { EditorPreviewStyles } from '../../../style/Editor'
 import { MainHeader } from '../../../style/Layouts'
 import {
   Result,
+  ResultCardFooter,
   ResultDesc,
   ResultHeader,
   ResultMain,
@@ -35,7 +36,7 @@ import { convertContentToRawText } from '../../../utils/search/parseData'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import Backlinks from '../Backlinks'
 import Metadata from '../Metadata/Metadata'
-import TagsRelated from '../Tags/TagsRelated'
+import TagsRelated, { TagsRelatedTiny } from '../Tags/TagsRelated'
 import SearchFilters from './SearchFilters'
 import SearchView, { RenderFilterProps, RenderItemProps, RenderPreviewProps } from './SearchView'
 import { View } from './ViewSelector'
@@ -114,11 +115,13 @@ const Search = () => {
       return (
         <Result {...props} key={id} ref={ref}>
           <ResultHeader active={item.matchField?.includes('title')}>
+            <Icon icon={icon} />
             <ResultTitle>{node.path}</ResultTitle>
           </ResultHeader>
           <SearchPreviewWrapper active={item.matchField?.includes('text')}>
             <EditorPreviewRenderer content={content} editorId={`editor_${item.id}`} />
           </SearchPreviewWrapper>
+          <TagsRelatedTiny nodeid={edNode.nodeid} />
         </Result>
       )
     } else if (props.view === View.List) {

@@ -43,6 +43,8 @@ export const CreateSnippet = styled(Card)`
   font-weight: 600;
   font-size: 1.5rem;
   flex-direction: column;
+  height: auto;
+  padding: ${({ theme }) => theme.spacing.small} 0;
 
   svg {
     color: ${({ theme }) => theme.colors.primary};

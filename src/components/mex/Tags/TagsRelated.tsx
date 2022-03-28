@@ -7,8 +7,10 @@ import { useAnalysisStore } from '../../../store/useAnalysis'
 import useDataStore from '../../../store/useDataStore'
 import { HoverSubtleGlow } from '../../../style/helpers'
 import { InfoWidgetScroll, InfoWidgetWrapper } from '../../../style/infobar'
+import { ResultCardFooter } from '../../../style/Search'
 import { Note } from '../../../style/Typography'
 import Collapse from '../../../ui/layout/Collapse/Collapse'
+import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { DataInfoHeader } from '../Backlinks/Backlinks.style'
 import NodeLink from '../NodeLink/NodeLink'
@@ -96,6 +98,41 @@ const TagsRelated = ({ nodeid }: TagsRelated) => {
       </Collapse>
     </InfoWidgetWrapper>
   )
+}
+
+export const TagsRelatedTiny = ({ nodeid }: TagsRelated) => {
+  const { getTags } = useTags()
+  const tagsCache = useDataStore((state) => state.tagsCache)
+  const [tags, setTags] = useState<string[]>([])
+  const { goTo } = useRouting()
+
+  useEffect(() => {
+    setTags(getTags(nodeid))
+  }, [nodeid, tagsCache])
+
+  const navigateToTag = (tag: string) => {
+    goTo(ROUTE_PATHS.tag, NavigationType.push, tag)
+  }
+
+  // mog('TagsRelated', { nodeid, tags })
+
+  return tags.length > 0 ? (
+    <ResultCardFooter>
+      <TagsFlex>
+        {tags.map((t) => (
+          <TagFlex
+            key={`info_tags_${nodeid}_${t}`}
+            onClick={(e) => {
+              e.preventDefault()
+              navigateToTag(t)
+            }}
+          >
+            #{t}
+          </TagFlex>
+        ))}
+      </TagsFlex>
+    </ResultCardFooter>
+  ) : null
 }
 
 export default TagsRelated
