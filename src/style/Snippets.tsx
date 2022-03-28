@@ -44,6 +44,7 @@ export const CreateSnippet = styled(Card)`
   font-size: 1.5rem;
   flex-direction: column;
   height: auto;
+  max-height: 300px;
   padding: ${({ theme }) => theme.spacing.small} 0;
 
   svg {

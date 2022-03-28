@@ -26,6 +26,7 @@ import {
 } from '../../style/Search'
 import { CreateSnippet, SnippetCommand, SnippetCommandPrefix, SnippetHeader } from '../../style/Snippets'
 import { Title } from '../../style/Typography'
+// import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText } from '../../utils/search/parseData'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 
@@ -46,17 +47,18 @@ const Snippets = () => {
   const { queryIndex } = useSearch()
   const { goTo } = useRouting()
   const { saveData } = useSaveData()
-  const { initialSnippets, randId }: { initialSnippets: GenericSearchResult[]; randId: string } = useMemo(
+  const { initialSnippets }: { initialSnippets: GenericSearchResult[] } = useMemo(
     () => ({
       initialSnippets: snippets.map((snippet) => ({
         id: snippet.id,
         title: snippet.title,
         text: convertContentToRawText(snippet.content)
-      })),
-      randId: nanoid()
+      }))
     }),
     [snippets]
   )
+
+  const randId = useMemo(() => nanoid(), [initialSnippets])
 
   const onSearch = async (newSearchTerm: string): Promise<GenericSearchResult[]> => {
     const res = await queryIndex('snippet', newSearchTerm)
@@ -92,6 +94,7 @@ const Snippets = () => {
   const onDeleteSnippet = (id: string) => {
     deleteSnippet(id)
     saveData()
+    goTo(ROUTE_PATHS.snippets, NavigationType.replace)
   }
 
   // console.log({ result })
@@ -124,7 +127,7 @@ const Snippets = () => {
       return null
     }
     const icon = quillPenLine
-    const id = `${item.id}_ResultFor_SearchSnippet`
+    const id = `${item.id}_ResultFor_SearchSnippet_${randId}`
 
     if (props.view === View.Card) {
       return (
@@ -179,7 +182,7 @@ const Snippets = () => {
       // const edNode = { ...node, title: node.path, id: node.nodeid }
       if (snip)
         return (
-          <SplitSearchPreviewWrapper id={`splitSnippetSearchPreview_for_${item.id}`}>
+          <SplitSearchPreviewWrapper id={`splitSnippetSearchPreview_for_${item.id}_${randId}`}>
             <Title>
               {snip.title}
               <Icon icon={icon} />
@@ -204,7 +207,7 @@ const Snippets = () => {
       </MainHeader>
       <SearchView
         id={`searchSnippet_${randId}`}
-        key="searchSnippet"
+        key={`searchSnippet_${randId}`}
         initialItems={initialSnippets}
         getItemKey={(i) => i.id}
         onSelect={onSelect}

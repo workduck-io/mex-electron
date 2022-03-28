@@ -259,7 +259,7 @@ const SearchView = <Item,>({
       mog('clearing search', { searchTerm })
       clearSearch()
     }
-  }, [initialItems]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (selectedRef.current) {

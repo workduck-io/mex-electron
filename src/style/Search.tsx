@@ -318,7 +318,7 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
         ${selected &&
         css`
           ${CardShadow}
-          border: 1px solid ${theme.colors.primary};
+          border: 1px solid ${theme.colors.primary} !important;
           ${ResultTitle} {
             font-weight: bold;
             color: ${theme.colors.primary};
@@ -327,7 +327,7 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
         :hover {
           cursor: pointer;
           ${CardShadow}
-          border: 1px solid ${theme.colors.primary};
+          border: 1px solid ${theme.colors.primary} !important;
         }
       `
     } else if (view === View.List) {

@@ -1,13 +1,13 @@
 import hashtagIcon from '@iconify/icons-ri/hashtag'
 import { Icon } from '@iconify/react'
+import { transparentize } from 'polished'
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { useTags } from '../../../hooks/useTags'
 import { useAnalysisStore } from '../../../store/useAnalysis'
 import useDataStore from '../../../store/useDataStore'
 import { HoverSubtleGlow } from '../../../style/helpers'
 import { InfoWidgetScroll, InfoWidgetWrapper } from '../../../style/infobar'
-import { ResultCardFooter } from '../../../style/Search'
 import { Note } from '../../../style/Typography'
 import Collapse from '../../../ui/layout/Collapse/Collapse'
 import { mog } from '../../../utils/lib/helper'
@@ -15,14 +15,12 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/u
 import { DataInfoHeader } from '../Backlinks/Backlinks.style'
 import NodeLink from '../NodeLink/NodeLink'
 
-const TagFlex = styled.div`
+export const TagFlex = styled.div`
   cursor: pointer;
   padding: ${({ theme }) => theme.spacing.tiny} ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
   background-color: ${({ theme }) => theme.colors.gray[9]};
   color: ${({ theme }) => theme.colors.text.fade};
-  margin-right: ${({ theme }) => theme.spacing.small};
-  margin-bottom: ${({ theme }) => theme.spacing.small};
 
   ${HoverSubtleGlow}
 `
@@ -30,6 +28,7 @@ const TagFlex = styled.div`
 const TagsFlex = styled.div`
   display: flex;
   flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.small};
 `
 
 const InfoSubHeading = styled.h2`
@@ -40,6 +39,25 @@ const InfoSubHeading = styled.h2`
   color: ${({ theme }) => theme.colors.text.fade};
 `
 
+export const ResultCardFooter = styled.div<{ active?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1rem;
+  background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};
+  border-top: 1px solid ${({ theme }) => theme.colors.gray[9]};
+  padding: ${({ theme }) => theme.spacing.small};
+  color: ${({ theme }) => theme.colors.text.fade};
+  ${TagFlex} {
+    background-color: ${({ theme }) => theme.colors.gray[8]};
+    ${HoverSubtleGlow}
+  }
+  ${({ theme, active }) =>
+    active &&
+    css`
+      color: ${theme.colors.primary};
+    `}
+`
 interface TagsRelated {
   nodeid: string
 }
