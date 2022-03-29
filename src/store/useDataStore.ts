@@ -292,7 +292,7 @@ export const useTreeFromLinks = () => {
   const tree = generateTree(sanatizedLinks)
   const sortedTree = sortTree(tree, contents)
 
-  mog('Tree', { ilinks, contents, links, sanatizedLinks, sortedTree, tree })
+  // mog('Tree', { ilinks, contents, links, sanatizedLinks, sortedTree, tree })
 
   return sortedTree
 }
