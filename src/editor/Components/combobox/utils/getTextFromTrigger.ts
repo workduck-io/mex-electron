@@ -1,6 +1,8 @@
 import { escapeRegExp, getText } from '@udecode/plate-core'
 import { BaseRange, Editor, Point } from 'slate'
 import { mog } from '../../../../utils/lib/helper'
+import { ComboboxType } from '../../multi-combobox/types'
+import { ComboTriggerType } from '../useComboboxStore'
 
 /**
  * Get text and range from trigger to cursor.
@@ -8,10 +10,10 @@ import { mog } from '../../../../utils/lib/helper'
  */
 export type TriggerOptions = {
   at: Point
-  trigger: string
+  comboTypes: Array<ComboboxType>
+  trigger: ComboTriggerType | undefined
+  setTrigger: any
   searchPattern?: string
-  blockTrigger?: string
-  isTrigger?: boolean
 }
 
 export type TextFromTrigger = {
@@ -25,66 +27,129 @@ export type TextFromTrigger = {
 export const getTextFromTrigger = (editor: Editor, options: TriggerOptions): TextFromTrigger => {
   const searchPattern = options.searchPattern ?? `\\D+`
 
-  const escapedTrigger = escapeRegExp(options.trigger)
+  const escapedTrigger = escapeRegExp('/')
   const triggerRegex = new RegExp(`(?:^)${escapedTrigger}`)
 
-  let start: Point | undefined = { ...options.at }
-  let end: Point | undefined
-  let blockStart = options.at
+  // return null
 
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    end = start
-    if (!start) break
+  if (options.trigger) {
+    const start = options.trigger.at
+    const at = options.at
+    let blockStart: Point | undefined = options.at
 
-    start = Editor.before(editor, start)
-    const charRange = start && Editor.range(editor, start, end)
+    const range = start && Editor.range(editor, start, at)
+    const text = getText(editor, range)
+
+    // * Limit user to enter 100 characters or less for ILINKS
+    if (text.length > 100) return undefined
+
+    const textAfterTrigger = text.substring(options.trigger.trigger.length, at.offset)
+
+    const lastCharAt = Editor.before(editor, options.at)
+    const charRange = lastCharAt && Editor.range(editor, lastCharAt, options.at)
     const charText = getText(editor, charRange)
 
-    if (charText === options.blockTrigger) {
+    const res = {
+      range,
+      textAfterTrigger
+    }
+
+    if (options.trigger.blockAt) {
+      const blockRange = Editor.range(editor, options.trigger.blockAt, options.at)
+      const blockText = getText(editor, blockRange)
+
+      return {
+        ...res,
+        blockRange,
+        isBlockTriggered: true,
+        textAfterBlockTrigger: blockText
+      }
+    }
+
+    if (charText === options.trigger.blockTrigger) {
       blockStart = start
     }
 
-    // * Uncomment this (changes)
+    return res
+  }
 
-    if (!charText.match(searchPattern)) {
-      start = end
-      break
+  let start: Point | undefined = options.at
+  let end: Point | undefined
+
+  start = Editor.before(editor, start, { distance: 2 })
+  const charRange = start && Editor.range(editor, start, options.at)
+  const charText = getText(editor, charRange)
+
+  options.comboTypes.forEach((comboType) => {
+    if (charText.trim() === comboType.trigger) {
+      options.setTrigger({ ...comboType, at: start })
     }
-  }
+  })
 
-  // Range from start to cursor
-  const range = start && Editor.range(editor, start, options.at)
-  const text = getText(editor, range)
+  if (!charRange || !charText) return null
 
-  const triggerIndex = text.indexOf(options.trigger)
+  // if (options.at)
+  //   if (charText === options.searchPattern) {
+  //     blockStart = start
+  //   }
 
-  if (!range || triggerIndex <= -1) return
+  // mog('CHAR_TEXT', { charText }, { pretty: true })
 
-  const textStart = { ...start, offset: triggerIndex }
-  const textRange = textStart && Editor.range(editor, textStart, options.at)
-  const triggerText = getText(editor, textRange)
+  // if (charText === '/') {
+  // }
+  // eslint-disable-next-line no-constant-condition
+  // while (true) {
+  //   end = start
+  //   if (!start) break
 
-  if (triggerText.length > 100) return
+  //   start = Editor.before(editor, start)
+  //   const charRange = start && Editor.range(editor, start, end)
+  //   const charText = getText(editor, charRange)
 
-  const isBlockTriggered = blockStart.offset !== options.at.offset
+  //   if (charText === options.blockTrigger) {
+  //     blockStart = start
+  //   }
 
-  const res = {
-    range: textRange,
-    textAfterTrigger: triggerText.substring(options.trigger.length, blockStart.offset - textStart.offset)
-  }
+  //   // * Uncomment this (changes)
 
-  if (isBlockTriggered) {
-    const blockRange = blockStart && Editor.range(editor, blockStart, options.at)
-    const blockText = triggerText.substring(blockStart.offset - textStart.offset + 1)
+  //   if (!charText.match(searchPattern)) {
+  //     start = end
+  //     break
+  //   }
+  // }
 
-    return {
-      ...res,
-      isBlockTriggered,
-      blockRange,
-      textAfterBlockTrigger: blockText
-    }
-  }
+  // // Range from start to cursor
+  // const range = start && Editor.range(editor, start, options.at)
+  // const text = getText(editor, range)
 
-  return res
+  // const triggerIndex = text.indexOf(options.trigger)
+
+  // if (!range || triggerIndex <= -1) return
+
+  // const textStart = { ...start, offset: triggerIndex }
+  // const textRange = textStart && Editor.range(editor, textStart, options.at)
+  // const triggerText = getText(editor, textRange)
+
+  // if (triggerText.length > 100) return
+
+  // const isBlockTriggered = blockStart.offset !== options.at.offset
+
+  // const res = {
+  //   range: textRange,
+  //   textAfterTrigger: triggerText.substring(options.trigger.length, blockStart.offset - textStart.offset)
+  // }
+
+  // if (isBlockTriggered) {
+  //   const blockRange = blockStart && Editor.range(editor, blockStart, options.at)
+  //   const blockText = triggerText.substring(blockStart.offset - textStart.offset + 1)
+
+  //   return {
+  //     ...res,
+  //     isBlockTriggered,
+  //     blockRange,
+  //     textAfterBlockTrigger: blockText
+  //   }
+  // }
+
+  return undefined
 }

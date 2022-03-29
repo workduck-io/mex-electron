@@ -29,6 +29,8 @@ import styled from 'styled-components'
 import { RelativeTime } from '../../components/mex/RelativeTime'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
 import useBlockStore from '../../store/useBlockStore'
+import { useEditorStore } from '../../store/useEditorStore'
+import { mog } from '../../utils/lib/helper'
 
 const StyledTip = styled.div`
   display: flex;
@@ -167,7 +169,11 @@ export const DraggerContent = () => {
 }
 
 export const withStyledDraggables = (components: any) => {
-  if (useBlockStore.getState().isBlockMode) return components
+  const isBlockMode = useBlockStore.getState().isBlockMode
+  const isEditing = useEditorStore.getState().isEditing
+
+  // mog('About here', {})
+  if (isBlockMode || isEditing) return components
 
   return withDraggables(components, [
     {
@@ -213,7 +219,7 @@ export const withStyledDraggables = (components: any) => {
       key: ELEMENT_H1,
       styles: {
         gutterLeft: {
-          padding: '3em 4px 4px'
+          alignItems: 'center'
         },
         blockToolbarWrapper: {
           height: '1.3em'
@@ -224,8 +230,7 @@ export const withStyledDraggables = (components: any) => {
       key: ELEMENT_H2,
       styles: {
         gutterLeft: {
-          padding: '1em 4px 1px',
-          fontSize: '1.5em'
+          alignItems: 'center'
         },
         blockToolbarWrapper: {
           height: '1.3em'
@@ -236,8 +241,7 @@ export const withStyledDraggables = (components: any) => {
       key: ELEMENT_H3,
       styles: {
         gutterLeft: {
-          padding: '1em 1px',
-          fontSize: '1.25em'
+          alignItems: 'center'
         },
         blockToolbarWrapper: {
           height: '1.3em'
@@ -248,8 +252,7 @@ export const withStyledDraggables = (components: any) => {
       keys: [ELEMENT_H4, ELEMENT_H5, ELEMENT_H6],
       styles: {
         gutterLeft: {
-          padding: '1em 4px 0',
-          fontSize: '1.1em'
+          alignItems: 'center'
         },
         blockToolbarWrapper: {
           height: '1.3em'
@@ -260,7 +263,7 @@ export const withStyledDraggables = (components: any) => {
       keys: [ELEMENT_PARAGRAPH, ELEMENT_UL, ELEMENT_OL],
       styles: {
         gutterLeft: {
-          padding: '2px 4px 0'
+          alignItems: 'center'
         }
       }
     },
@@ -268,7 +271,7 @@ export const withStyledDraggables = (components: any) => {
       key: ELEMENT_BLOCKQUOTE,
       styles: {
         gutterLeft: {
-          padding: '18px 4px 0'
+          alignItems: 'center'
         }
       }
     },
@@ -276,7 +279,7 @@ export const withStyledDraggables = (components: any) => {
       key: ELEMENT_CODE_BLOCK,
       styles: {
         gutterLeft: {
-          padding: '12px 4px 0'
+          alignItems: 'center'
         }
       }
     },
@@ -284,7 +287,7 @@ export const withStyledDraggables = (components: any) => {
       key: ELEMENT_TODO_LI,
       styles: {
         gutterLeft: {
-          padding: '6px 4px 0'
+          alignItems: 'center'
         }
       }
     }

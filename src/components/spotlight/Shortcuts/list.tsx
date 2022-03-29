@@ -1,3 +1,4 @@
+import { CategoryType } from '../../../store/Context/context.spotlight'
 import { Shortcut } from '../../mex/Help/Help.types'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 
@@ -37,6 +38,12 @@ export const ElementTypeBasedShortcut: Record<string, Record<string, Shortcut>> 
   },
   [QuickLinkType.snippet]: {
     snippet: {
+      ...spotlightShortcuts.open,
+      title: 'to Insert'
+    }
+  },
+  [CategoryType.quicklink]: {
+    action: {
       ...spotlightShortcuts.open,
       title: 'to Insert'
     }

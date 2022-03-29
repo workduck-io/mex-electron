@@ -1,6 +1,7 @@
 import { UseComboboxReturnValue } from 'downshift'
-import { BaseRange, Range } from 'slate'
-import { ComboSearchType } from '../multi-combobox/types'
+import { BaseRange, Point, Range } from 'slate'
+import { useEditorStore } from '../../../store/useEditorStore'
+import { ComboSearchType, ComboboxType } from '../multi-combobox/types'
 import { createStore, setStoreValue } from '../store/createStore'
 import { IComboboxItem } from './components/Combobox.types'
 
@@ -11,6 +12,8 @@ export enum ComboboxKey {
   SLASH_COMMAND = 'slash_command',
   BLOCK = 'block'
 }
+
+export type ComboTriggerType = ComboboxType & { at: Point; blockAt: Point }
 
 export type ComboboxState = {
   // Combobox key
@@ -95,6 +98,7 @@ export const useComboboxStore = createStore()<ComboboxState>((set) => ({
   setCombobox: setStoreValue(set, 'combobox', 'setCombobox'),
 
   closeMenu: () => {
+    useEditorStore.getState().setTrigger(undefined)
     set((state) => {
       state.targetRange = null
       state.items = []

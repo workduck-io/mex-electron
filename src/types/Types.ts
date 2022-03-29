@@ -1,5 +1,5 @@
 import { QuickLinkType } from '../components/mex/NodeSelect/NodeSelect'
-import { SlashType } from '../editor/Components/multi-combobox/types'
+import { CategoryType } from '../store/Context/context.spotlight'
 
 /*
  * Specific to comboboxes
@@ -35,7 +35,7 @@ export interface SlashCommand {
   command: string
   text?: string
   icon?: string
-  type?: QuickLinkType | SlashType
+  type?: QuickLinkType | CategoryType
 }
 
 export type LinkCache = Record<string, CachedILink[]>

@@ -6,7 +6,7 @@ import SnippetEditor from '../../components/Snippets/SnippetEditor'
 import Archive from '../mex/Archive'
 import Dashboard from '../mex/Dashboard'
 import EditorView from '../mex/EditorView'
-// import Integrations from '../mex/Integration'
+import Integrations from '../mex/Integration'
 import Login from '../mex/Login'
 import Register from '../mex/Register'
 import Settings from '../mex/Settings'
@@ -83,7 +83,7 @@ const Switch = () => {
 
         <Route path={ROUTE_PATHS.home} element={<Home />}>
           <Route index element={<ProtectedRoute component={Dashboard} />} />
-          {/*<Route path={ROUTE_PATHS.integrations} element={<ProtectedRoute component={Integrations} />} />*/}
+          <Route path={ROUTE_PATHS.integrations} element={<ProtectedRoute component={Integrations} />} />
           <Route path={ROUTE_PATHS.archive} element={<ProtectedRoute component={Archive} />} />
           <Route path={ROUTE_PATHS.snippets} element={<ProtectedRoute component={Snippets} />} />
           <Route path={ROUTE_PATHS.search} element={<ProtectedRoute component={Search} />} />

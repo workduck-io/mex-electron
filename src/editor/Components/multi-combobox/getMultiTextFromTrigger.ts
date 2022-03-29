@@ -3,33 +3,32 @@ import { getParent, isCollapsed, isElement, ELEMENT_CODE_BLOCK, ELEMENT_CODE_LIN
 import { ComboboxType, ComboTriggerDataType } from './types'
 import { getTextFromTrigger } from '../combobox/utils/getTextFromTrigger'
 import { debounce } from 'lodash'
-import { mog } from '../../../utils/lib/helper'
+import { ComboTriggerType } from '../combobox/useComboboxStore'
 
 export const getTriggeredData = (
   editor: PlateEditor,
-  comboboxItem: ComboboxType,
-  setTrigger: any,
-  isTrigger: boolean,
-  blockSearch?: boolean
+  keys: Array<ComboboxType>,
+  trigger: ComboTriggerType | undefined,
+  setTrigger: any
 ): ComboTriggerDataType | undefined => {
   const selection = editor?.selection
   const cursor = Range.start(selection)
 
   const isCursorAfterTrigger = getTextFromTrigger(editor, {
     at: cursor,
-    trigger: comboboxItem.trigger,
-    blockTrigger: comboboxItem.blockTrigger,
-    isTrigger
+    comboTypes: keys,
+    trigger,
+    setTrigger
   })
 
   if (isCursorAfterTrigger) {
     const { range, textAfterTrigger, isBlockTriggered, blockRange, textAfterBlockTrigger } = isCursorAfterTrigger
 
-    if (!blockSearch) setTrigger(comboboxItem)
+    // if (!blockSearch) setTrigger(comboboxItem)
 
     return {
       range,
-      key: comboboxItem.cbKey,
+      key: trigger.cbKey,
       search: { textAfterTrigger, textAfterBlockTrigger },
       isBlockTriggered,
       blockRange
@@ -44,7 +43,7 @@ const debouncedTriggger = debounce(getTriggeredData, 200)
 const getTextFromTriggers = (
   editor: PlateEditor,
   keys: Record<string, ComboboxType>,
-  isTrigger: ComboboxType | undefined,
+  isTrigger: ComboTriggerType | undefined,
   setIsTrigger: any
 ) => {
   const selection = editor?.selection
@@ -62,20 +61,20 @@ const getTextFromTriggers = (
     }
 
     // Check within keys
-    if (!isTrigger) {
-      Object.values(keys).map((comboType) => {
-        const data = getTriggeredData(editor, comboType, setIsTrigger, false)
-        if (data) {
-          triggerSelection = data
-        }
-      })
-    } else {
-      triggerSelection = getTriggeredData(editor, isTrigger, setIsTrigger, true, !!isTrigger.blockTrigger)
-    }
+    // if (!isTrigger) {
+    //   Object.values(keys).map((comboType) => {
+    //     const data = getTriggeredData(editor, comboType, setIsTrigger, false)
+    //     if (data) {
+    //       triggerSelection = data
+    //     }
+    //   })
+    // } else {
+    triggerSelection = getTriggeredData(editor, Object.values(keys), isTrigger, setIsTrigger)
+    // }
 
-    if (!triggerSelection && isTrigger) {
-      setIsTrigger(undefined)
-    }
+    // if (!triggerSelection && isTrigger) {
+    //   setIsTrigger(undefined)
+    // }
 
     return triggerSelection
   }

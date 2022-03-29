@@ -13,8 +13,8 @@ export const useComboboxOnChange = ({ editor, keys }: { editor: PlateEditor; key
   const setTargetRange = useComboboxStore((state) => state.setTargetRange)
   const setSearch = useComboboxStore((state) => state.setSearch)
   const setKey = useComboboxStore((state) => state.setKey)
-  const isTrigger = useEditorStore((store) => store.isTrigger)
-  const setIsTrigger = useEditorStore((store) => store.setIsTrigger)
+  const isTrigger = useEditorStore((store) => store.trigger)
+  const setIsTrigger = useEditorStore((store) => store.setTrigger)
   const setIsBlockTriggered = useComboboxStore((store) => store.setIsBlockTriggered)
   const setBlockRange = useComboboxStore((store) => store.setBlockRange)
 

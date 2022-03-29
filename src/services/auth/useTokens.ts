@@ -5,6 +5,7 @@ import jwtDecode from 'jwt-decode'
 import { formatDistanceToNow } from 'date-fns'
 import { client } from '@workduck-io/dwindle'
 import { GOOGLE_OAUTH2_REFRESH_URL } from '../../apis/routes'
+import { mog } from '../../utils/lib/helper'
 
 interface TokenStore {
   data: AuthTokenData
@@ -18,12 +19,17 @@ export const useTokenStore = create<TokenStore>((set, get) => ({
   data: {},
   setData: (data: AuthTokenData) => set({ data }),
   addGoogleCalendarToken: (token: AuthToken) => {
+    const existingData = get().data
+
     const newData = {
-      ...get().data,
+      ...existingData,
       googleAuth: {
         calendar: token
       }
     }
+
+    mog('ADD GOOGLE CALENDAR data', { existingData, newData })
+
     set({ data: newData })
     return newData
   },
@@ -61,6 +67,7 @@ export const useTokens = () => {
   const { setTokenData } = useTokenData()
 
   const addGoogleCalendarToken = (token: AuthToken) => {
+    mog('google calendar', { token })
     const tokenData = addGoogleCalendarTokenStore(token)
     setTokenData(tokenData)
   }

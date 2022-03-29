@@ -185,7 +185,7 @@ export const generatePlugins = (options: PluginOptionType) => {
 const useMemoizedPlugins = (components: Record<string, any>, options?: PluginOptionType) => {
   const wrappedComponents = options?.exclude
     ? components
-    : withStyledPlaceHolders(withStyledDraggables(withBlockOptions(components, {})))
+    : withStyledDraggables(withStyledPlaceHolders(withBlockOptions(components, {})))
 
   const plugins = createPlugins(generatePlugins(options), {
     components: wrappedComponents

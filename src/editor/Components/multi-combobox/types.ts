@@ -1,5 +1,6 @@
 import { BaseRange } from 'slate'
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
+import { CategoryType } from '../../../store/Context/context.spotlight'
 import { ComboboxKey } from '../combobox/useComboboxStore'
 
 export enum SlashType {
@@ -12,7 +13,7 @@ export interface ComboboxItem {
   text: string
   value: string
   icon?: string
-  type?: QuickLinkType | SlashType
+  type?: QuickLinkType | CategoryType
 }
 
 export interface ComboboxType {

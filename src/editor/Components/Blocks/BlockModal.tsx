@@ -46,7 +46,13 @@ const BlockModal = () => {
     const blocks = Object.values(blocksFromStore)
     const blockIter = getNodes(editor, {
       at: [],
-      match: (node) => blocks.find((block) => block.id === node.id),
+      match: (node) => {
+        mog('node ', { node })
+        return blocks.find((block) => {
+          mog('block', { block, node })
+          return block.id === node.id
+        })
+      },
       block: true
     })
 

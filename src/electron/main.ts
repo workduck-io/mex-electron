@@ -405,6 +405,7 @@ app.on('open-url', function (event, url) {
   event.preventDefault()
 
   const URLparams = new URL(url).searchParams
+  mog('URL', { url: url })
   const accessToken = URLparams.get('access_token')
   const idToken = URLparams.get('id_token')
   const refreshToken = URLparams.get('refresh_token')
@@ -551,8 +552,10 @@ ipcMain.on(IpcAction.GET_TOKEN_DATA, async (event) => {
 })
 
 ipcMain.on(IpcAction.SET_TOKEN_DATA, (_event, arg) => {
+  mog('SETTING TOKEN DATA', { arg })
   setTokenData(arg, TOKEN_LOCATION)
   const tokenData: AuthTokenData = arg || getTokenData(TOKEN_LOCATION)
+
   mex?.webContents.send(IpcAction.RECIEVE_TOKEN_DATA, tokenData)
   spotlight?.webContents.send(IpcAction.RECIEVE_TOKEN_DATA, tokenData)
 })
