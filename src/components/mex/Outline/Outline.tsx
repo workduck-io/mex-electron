@@ -15,8 +15,9 @@ import { Note } from '../../../style/Typography'
 import Collapse from '../../../ui/layout/Collapse/Collapse'
 import { mog } from '../../../utils/lib/helper'
 import { DataInfoHeader } from '../Backlinks/Backlinks.style'
-import { OutlineIconWrapper, OutlineItemRender } from './Outline.styles'
+import { OutlineIconWrapper, OutlineItemRender, OutlineItemText, OutlineWrapper } from './Outline.styles'
 import { ELEMENT_TODO_LI } from '../../../editor/Components/Todo/createTodoPlugin'
+import { OutlineHelp } from '../../../data/Defaults/helpText'
 
 const Outline = () => {
   const outline = useAnalysisStore((state) => state.analysis.outline)
@@ -47,25 +48,37 @@ const Outline = () => {
 
   return (
     <InfoWidgetWrapper>
-      <Collapse maximumHeight="40vh" defaultOpen icon={fileList3Line} title="Outline">
+      <Collapse
+        maximumHeight="40vh"
+        defaultOpen
+        icon={fileList3Line}
+        title="Outline"
+        infoProps={{
+          text: OutlineHelp
+        }}
+      >
         {outline.length > 0 ? (
-          outline.map((outlineItem) => {
-            const icon = getOutlineIcon(outlineItem.type)
-            const isHeading = ELEMENTS_IN_OUTLINE.includes(outlineItem.type.toLowerCase())
-            return (
-              <OutlineItemRender
-                key={`OutlineItemFor_${outlineItem.id}`}
-                onClick={(e) => onSelectHeading(outlineItem, e)}
-                level={outlineItem.level}
-                heading={isHeading}
-              >
-                <OutlineIconWrapper>
-                  {isHeading ? outlineItem.type.toUpperCase() : <Icon icon={icon} />}
-                </OutlineIconWrapper>
-                {outlineItem.title}
-              </OutlineItemRender>
-            )
-          })
+          <OutlineWrapper>
+            {outline.map((outlineItem) => {
+              const icon = getOutlineIcon(outlineItem.type)
+              const isHeading = ELEMENTS_IN_OUTLINE.includes(outlineItem.type.toLowerCase())
+              return (
+                <OutlineItemRender
+                  key={`OutlineItemFor_${outlineItem.id}`}
+                  onClick={(e) => onSelectHeading(outlineItem, e)}
+                  level={outlineItem.level}
+                  heading={isHeading}
+                >
+                  <OutlineIconWrapper>
+                    {isHeading ? outlineItem.type.toUpperCase() : <Icon icon={icon} />}
+                  </OutlineIconWrapper>
+                  <OutlineItemText level={outlineItem.level} heading={isHeading}>
+                    {outlineItem.title}
+                  </OutlineItemText>
+                </OutlineItemRender>
+              )
+            })}
+          </OutlineWrapper>
         ) : (
           <>
             <Note>No Outline found.</Note>

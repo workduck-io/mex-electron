@@ -21,6 +21,7 @@ export const ViewSelectorWrapper = styled.div`
 `
 
 export const ViewSelectorButton = styled.div<{ selected: boolean }>`
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;

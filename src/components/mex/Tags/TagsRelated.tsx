@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react'
 import { transparentize } from 'polished'
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
+import { TagsHelp } from '../../../data/Defaults/helpText'
 import { useTags } from '../../../hooks/useTags'
 import { useAnalysisStore } from '../../../store/useAnalysis'
 import useDataStore from '../../../store/useDataStore'
@@ -86,7 +87,15 @@ const TagsRelated = ({ nodeid }: TagsRelated) => {
 
   return (
     <InfoWidgetWrapper>
-      <Collapse icon={hashtagIcon} title="Tags" defaultOpen maximumHeight="40vh">
+      <Collapse
+        icon={hashtagIcon}
+        infoProps={{
+          text: TagsHelp
+        }}
+        title="Tags"
+        defaultOpen
+        maximumHeight="40vh"
+      >
         {tags.length > 0 ? (
           <>
             <TagsFlex>

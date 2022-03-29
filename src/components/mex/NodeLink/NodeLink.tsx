@@ -67,7 +67,7 @@ const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
       closePreview={() => closePreview()}
       allowClosePreview={fixVisible}
       nodeid={nodeid}
-      placement="auto"
+      placement="auto-start"
     >
       <NodeLinkStyled
         onMouseEnter={() => setVisible(true)}

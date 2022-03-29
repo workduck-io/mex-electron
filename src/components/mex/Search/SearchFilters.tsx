@@ -20,6 +20,8 @@ import { startCase } from 'lodash'
 import { Icon } from '@iconify/react'
 import SearchFilterInput from './SearchFilterInput'
 import { nanoid } from 'nanoid'
+import Infobox from '../../../ui/components/Help/Infobox'
+import { SearchFiltersHelp } from '../../../data/Defaults/helpText'
 
 interface SearchFiltersProps<Item> {
   result?: any
@@ -166,6 +168,7 @@ const SearchFilters = <Item,>({
           Reset
         </SearchFilterCancel>
       )}
+      <Infobox text={SearchFiltersHelp} />
     </SearchFilterWrapper>
   )
 }

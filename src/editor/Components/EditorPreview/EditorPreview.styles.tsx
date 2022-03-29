@@ -1,5 +1,6 @@
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
+import { TagFlex } from '../../../components/mex/Tags/TagsRelated'
 import { Button } from '../../../style/Buttons'
 import { CardShadow } from '../../../style/helpers'
 
@@ -55,6 +56,13 @@ export const EditorPreviewControls = styled.div<{ hasTags?: boolean }>`
         color: ${({ theme }) => theme.colors.palette.red};
       }
       border: 1px solid ${({ theme }) => transparentize(0.5, theme.colors.palette.red)};
+    }
+  }
+
+  ${TagFlex} {
+    background: ${({ theme }) => transparentize(0.5, theme.colors.gray[7])};
+    :hover {
+      background: ${({ theme }) => theme.colors.primary};
     }
   }
 `

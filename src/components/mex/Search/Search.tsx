@@ -2,6 +2,7 @@ import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import React from 'react'
 import { defaultContent } from '../../../data/Defaults/baseData'
+import { SearchHelp } from '../../../data/Defaults/helpText'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useFilters } from '../../../hooks/useFilters'
 import { useLinks } from '../../../hooks/useLinks'
@@ -30,6 +31,7 @@ import {
 } from '../../../style/Search'
 import { Title, TitleText } from '../../../style/Typography'
 import { GenericSearchResult } from '../../../types/search'
+import Infobox from '../../../ui/components/Help/Infobox'
 import { SplitType } from '../../../ui/layout/splitView'
 import { getInitialNode } from '../../../utils/helpers'
 import { mog } from '../../../utils/lib/helper'
@@ -207,6 +209,7 @@ const Search = () => {
     <SearchContainer>
       <MainHeader>
         <Title>Search</Title>
+        <Infobox text={SearchHelp} />
       </MainHeader>
       <SearchView
         id="searchStandard"
