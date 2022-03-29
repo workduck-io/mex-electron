@@ -13,7 +13,7 @@ export enum ComboboxKey {
   BLOCK = 'block'
 }
 
-export type ComboTriggerType = ComboboxType & { at: Point; blockAt: Point }
+export type ComboTriggerType = ComboboxType & { at?: Point; blockAt?: Point }
 
 export type ComboboxState = {
   // Combobox key

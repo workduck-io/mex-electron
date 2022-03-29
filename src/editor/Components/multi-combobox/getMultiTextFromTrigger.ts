@@ -7,28 +7,28 @@ import { ComboTriggerType } from '../combobox/useComboboxStore'
 
 export const getTriggeredData = (
   editor: PlateEditor,
-  keys: Array<ComboboxType>,
-  trigger: ComboTriggerType | undefined,
-  setTrigger: any
+  comboboxItem: ComboTriggerType,
+  setTrigger: any,
+  isTrigger: boolean,
+  blockSearch?: boolean
 ): ComboTriggerDataType | undefined => {
   const selection = editor?.selection
   const cursor = Range.start(selection)
 
   const isCursorAfterTrigger = getTextFromTrigger(editor, {
     at: cursor,
-    comboTypes: keys,
-    trigger,
-    setTrigger
+    trigger: comboboxItem,
+    isTrigger
   })
 
   if (isCursorAfterTrigger) {
     const { range, textAfterTrigger, isBlockTriggered, blockRange, textAfterBlockTrigger } = isCursorAfterTrigger
 
-    // if (!blockSearch) setTrigger(comboboxItem)
+    if (range || blockRange) setTrigger({ ...comboboxItem, at: range.anchor, blockAt: blockRange?.anchor })
 
     return {
       range,
-      key: trigger.cbKey,
+      key: comboboxItem.cbKey,
       search: { textAfterTrigger, textAfterBlockTrigger },
       isBlockTriggered,
       blockRange
@@ -61,20 +61,20 @@ const getTextFromTriggers = (
     }
 
     // Check within keys
-    // if (!isTrigger) {
-    //   Object.values(keys).map((comboType) => {
-    //     const data = getTriggeredData(editor, comboType, setIsTrigger, false)
-    //     if (data) {
-    //       triggerSelection = data
-    //     }
-    //   })
-    // } else {
-    triggerSelection = getTriggeredData(editor, Object.values(keys), isTrigger, setIsTrigger)
-    // }
+    if (!isTrigger) {
+      Object.values(keys).map((comboType) => {
+        const data = getTriggeredData(editor, comboType, setIsTrigger, false)
+        if (data) {
+          triggerSelection = data
+        }
+      })
+    } else {
+      triggerSelection = getTriggeredData(editor, isTrigger, setIsTrigger, true, !!isTrigger.blockTrigger)
+    }
 
-    // if (!triggerSelection && isTrigger) {
-    //   setIsTrigger(undefined)
-    // }
+    if (!triggerSelection && isTrigger) {
+      setIsTrigger(undefined)
+    }
 
     return triggerSelection
   }

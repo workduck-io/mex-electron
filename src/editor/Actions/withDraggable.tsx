@@ -135,13 +135,13 @@ const GrabberTooltipContent = (props: any) => {
           <Icon icon={addLine} />
         </ActionDraggableIcon>
       </Tippy> */}
-      {/* {props.element && props.element.metadata ? (
+      {props.element && props.element.metadata ? (
         <TippyHeadless {...MetadataTooltipProps} render={(attrs) => <MetadataViewSmall m={props.element.metadata} />}>
           <ActionDraggableIcon>
             <Icon icon={timeLine} />
           </ActionDraggableIcon>
         </TippyHeadless>
-      ) : null} */}
+      ) : null}
     </StyledTip>
   )
 }
@@ -172,7 +172,6 @@ export const withStyledDraggables = (components: any) => {
   const isBlockMode = useBlockStore.getState().isBlockMode
   const isEditing = useEditorStore.getState().isEditing
 
-  // mog('About here', {})
   if (isBlockMode || isEditing) return components
 
   return withDraggables(components, [
