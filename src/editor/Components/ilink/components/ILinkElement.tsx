@@ -116,6 +116,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
         </SILink>
       ) : (
         <EditorPreview
+          placement="auto"
           allowClosePreview={readOnly}
           preview={preview}
           nodeid={element.value}

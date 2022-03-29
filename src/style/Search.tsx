@@ -3,8 +3,9 @@ import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { Ellipsis } from '../components/mex/Integrations/Template/styled'
 import { DataGroup, MetadataWrapper } from '../components/mex/Metadata/Metadata'
-import { StyledInputWrapper, StyledMenu } from '../components/mex/NodeSelect/NodeSelect.styles'
+import { StyledInputWrapper } from '../components/mex/NodeSelect/NodeSelect.styles'
 import { View } from '../components/mex/Search/ViewSelector'
+import { TagFlex } from '../components/mex/Tags/TagsRelated'
 import { EditorStyles } from './Editor'
 import { Input } from './Form'
 import { CardShadow } from './helpers'
@@ -209,6 +210,12 @@ export const ResultCardFooter = styled.div<{ active?: boolean }>`
   border-top: 1px solid ${({ theme }) => theme.colors.gray[8]};
   padding: ${({ theme }) => theme.spacing.small};
   color: ${({ theme }) => theme.colors.text.fade};
+  ${TagFlex} {
+    background: ${({ theme }) => transparentize(0.5, theme.colors.gray[7])};
+    :hover {
+      background: ${({ theme }) => theme.colors.primary};
+    }
+  }
   ${({ theme, active }) =>
     active &&
     css`
@@ -307,8 +314,8 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
     if (view === View.Card) {
       return css`
         max-height: 400px;
-        height: min-content;
         overflow-y: auto;
+        border: 1px solid transparent !important;
 
         ${SearchPreviewWrapper} {
           max-height: 300px;
@@ -365,7 +372,7 @@ export const Results = styled.div<{ view: View }>`
       return css`
         display: grid;
         grid-gap: ${theme.spacing.large};
-        grid-auto-rows: min-cotent;
+        grid-auto-rows: min-content;
         grid-auto-flow: row;
 
         @media (max-width: ${size.wide}) {

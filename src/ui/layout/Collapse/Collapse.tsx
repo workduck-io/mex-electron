@@ -2,7 +2,8 @@ import arrowRightSLine from '@iconify/icons-ri/arrow-right-s-line'
 import { Icon, IconifyIcon } from '@iconify/react'
 import React, { useMemo } from 'react'
 import { useSpring } from 'react-spring'
-import { CollapseContent, CollapseHeader, CollapseWrapper } from './Collapse.style'
+import Infobox, { InfoboxProps } from '../../components/Help/Infobox'
+import { CollapseContent, CollapseHeader, CollapseToggle, CollapseWrapper } from './Collapse.style'
 
 interface CollapseProps {
   oid?: string
@@ -11,9 +12,10 @@ interface CollapseProps {
   maximumHeight?: string
   icon?: string | IconifyIcon
   children?: React.ReactNode
+  infoProps?: InfoboxProps
 }
 
-const Collapse = ({ defaultOpen, maximumHeight, icon, children, oid, title }: CollapseProps) => {
+const Collapse = ({ defaultOpen, maximumHeight, icon, infoProps, children, oid, title }: CollapseProps) => {
   const [hide, setHide] = React.useState(!defaultOpen ?? true)
 
   const springProps = useMemo(() => {
@@ -37,8 +39,11 @@ const Collapse = ({ defaultOpen, maximumHeight, icon, children, oid, title }: Co
           setHide((b) => !b)
         }}
       >
-        <Icon icon={hide ? arrowRightSLine : icon} />
+        <CollapseToggle>
+          <Icon icon={hide ? arrowRightSLine : icon} />
+        </CollapseToggle>
         <h2>{title}</h2>
+        {infoProps && <Infobox {...infoProps} />}
       </CollapseHeader>
 
       <CollapseContent style={animationProps}>{children}</CollapseContent>

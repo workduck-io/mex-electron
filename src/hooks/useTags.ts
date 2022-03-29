@@ -58,6 +58,11 @@ export const useTags = () => {
     return analTags
   }
 
+  const hasTags = (nodeid: string): boolean => {
+    const tagsCache = useDataStore.getState().tagsCache
+    return _getTags(nodeid, tagsCache).length > 0
+  }
+
   const getNodesAndCleanCacheForTag = (tag: string): { nodes: string[]; cleanCache: TagsCache } => {
     const tagsCache = useDataStore.getState().tagsCache
     const cleanCache = Object.entries(tagsCache).reduce((p, [k, v]) => {
@@ -167,5 +172,5 @@ export const useTags = () => {
     }
   }
 
-  return { getRelatedNodes, getNodesAndCleanCacheForTag, updateTagsFromContent, getTags }
+  return { getRelatedNodes, getNodesAndCleanCacheForTag, updateTagsFromContent, getTags, hasTags }
 }

@@ -1,6 +1,6 @@
 import { transparentize } from 'polished'
-import styled from 'styled-components'
-import { HoverSubtleGlow } from '../../../style/helpers'
+import styled, { css } from 'styled-components'
+import { HoverSubtleGlow, SubtleGlow } from '../../../style/helpers'
 
 export const SBackLinks = styled.div`
   width: 100%;
@@ -9,7 +9,7 @@ export const SBackLinks = styled.div`
   margin: 3rem 0;
 `
 
-export const NodeLinkStyled = styled.div`
+export const NodeLinkStyled = styled.div<{ selected?: boolean }>`
   cursor: pointer;
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
   margin-bottom: ${({ theme }) => theme.spacing.small};
@@ -17,11 +17,19 @@ export const NodeLinkStyled = styled.div`
 
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.medium}`};
 
-  &:nth-child(2n + 1) {
-    background: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
-  }
-
-  ${HoverSubtleGlow}
+  ${({ selected, theme }) =>
+    selected
+      ? css`
+          background: ${theme.colors.primary};
+          color: ${theme.colors.text.oppositePrimary};
+          ${SubtleGlow}
+        `
+      : css`
+          &:nth-child(2n + 1) {
+            background: ${transparentize(0.5, theme.colors.gray[8])};
+          }
+          ${HoverSubtleGlow}
+        `}
 `
 
 export const DataInfoHeader = styled.div`

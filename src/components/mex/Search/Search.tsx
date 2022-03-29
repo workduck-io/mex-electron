@@ -2,12 +2,14 @@ import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import React from 'react'
 import { defaultContent } from '../../../data/Defaults/baseData'
+import { SearchHelp } from '../../../data/Defaults/helpText'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useFilters } from '../../../hooks/useFilters'
 import { useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
 import { useNodes } from '../../../hooks/useNodes'
 import { useSearch } from '../../../hooks/useSearch'
+import { useTags } from '../../../hooks/useTags'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
@@ -29,6 +31,7 @@ import {
 } from '../../../style/Search'
 import { Title, TitleText } from '../../../style/Typography'
 import { GenericSearchResult } from '../../../types/search'
+import Infobox from '../../../ui/components/Help/Infobox'
 import { SplitType } from '../../../ui/layout/splitView'
 import { getInitialNode } from '../../../utils/helpers'
 import { mog } from '../../../utils/lib/helper'
@@ -70,6 +73,7 @@ const Search = () => {
   const { getPathFromNodeid } = useLinks()
 
   const { queryIndex } = useSearch()
+  const { hasTags } = useTags()
 
   const onSearch = async (newSearchTerm: string) => {
     const res = await queryIndex('node', newSearchTerm)
@@ -110,6 +114,7 @@ const Search = () => {
     const content = con ? con.content : defaultContent.content
     const icon = node?.icon ?? fileList2Line
     const edNode = node ? { ...node, title: node.path, id: node.nodeid } : getInitialNode()
+    const isTagged = hasTags(edNode.nodeid)
     const id = `${item.id}_ResultFor_Search`
     if (props.view === View.Card) {
       return (
@@ -121,7 +126,11 @@ const Search = () => {
           <SearchPreviewWrapper active={item.matchField?.includes('text')}>
             <EditorPreviewRenderer content={content} editorId={`editor_${item.id}`} />
           </SearchPreviewWrapper>
-          <TagsRelatedTiny nodeid={edNode.nodeid} />
+          {isTagged && (
+            <ResultCardFooter>
+              <TagsRelatedTiny nodeid={edNode.nodeid} />
+            </ResultCardFooter>
+          )}
         </Result>
       )
     } else if (props.view === View.List) {
@@ -200,6 +209,7 @@ const Search = () => {
     <SearchContainer>
       <MainHeader>
         <Title>Search</Title>
+        <Infobox text={SearchHelp} />
       </MainHeader>
       <SearchView
         id="searchStandard"

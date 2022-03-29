@@ -1,11 +1,16 @@
+import closeCircleLine from '@iconify/icons-ri/close-circle-line'
+import { Icon } from '@iconify/react'
 import Tippy from '@tippyjs/react/headless' // different import path!
 import React, { forwardRef, useState } from 'react'
+import { TagsRelatedTiny } from '../../../components/mex/Tags/TagsRelated'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
+import { useTags } from '../../../hooks/useTags'
 import { useContentStore } from '../../../store/useContentStore'
 import { Button } from '../../../style/Buttons'
 import { NodeEditorContent } from '../../../types/Types'
+import { mog } from '../../../utils/lib/helper'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
-import { EditorPreviewWrapper } from './EditorPreview.styles'
+import { EditorPreviewControls, EditorPreviewEditorWrapper, EditorPreviewWrapper } from './EditorPreview.styles'
 
 export interface EditorPreviewProps {
   nodeid: string
@@ -60,6 +65,7 @@ const EditorPreview = ({
   const getContent = useContentStore((store) => store.getContent)
   const nodeContent = getContent(nodeid)
   const cc = content ?? (nodeContent && nodeContent.content)
+  const { hasTags } = useTags()
 
   const editorId = `__preview__${nodeid}_${generateTempId()}`
 
@@ -74,12 +80,19 @@ const EditorPreview = ({
         appendTo={() => document.body}
         render={(attrs) => (
           <EditorPreviewWrapper className="__editor__preview" tabIndex={-1} {...attrs}>
-            {allowClosePreview && (
-              <Button className="close" onClick={() => closePreview && closePreview()}>
-                &times;
-              </Button>
+            {(allowClosePreview || hasTags(nodeid)) && (
+              <EditorPreviewControls hasTags={hasTags(nodeid)}>
+                <TagsRelatedTiny nodeid={nodeid} />
+                {allowClosePreview && (
+                  <Button transparent onClick={() => closePreview && closePreview()}>
+                    <Icon icon={closeCircleLine} />
+                  </Button>
+                )}
+              </EditorPreviewControls>
             )}
-            {cc && <EditorPreviewRenderer content={cc} editorId={editorId} />}
+            <EditorPreviewEditorWrapper>
+              <EditorPreviewRenderer content={cc} editorId={editorId} />
+            </EditorPreviewEditorWrapper>
           </EditorPreviewWrapper>
         )}
       >
