@@ -192,6 +192,7 @@ const Tag = () => {
                   goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
                 }}
                 style={styles}
+                view={View.Card}
                 key={`tag_res_prev_${tag}_${nodeid}${_i}`}
               >
                 <ResultHeader>

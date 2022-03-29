@@ -11,6 +11,8 @@ import { useSnippets } from '../../hooks/useSnippets'
 import IconButton from '../../style/Buttons'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 import tinykeys from 'tinykeys'
+import { useSaveData } from '../../hooks/useSaveData'
+import { useSnippetBuffer } from '../../hooks/useEditorBuffer'
 
 type Inputs = {
   title: string
@@ -30,6 +32,7 @@ const SnippetEditor = () => {
   const [content, setContent] = useState<any[] | undefined>(undefined)
 
   const { updater } = useUpdater()
+  const { addOrUpdateValBuffer, saveAndClearBuffer } = useSnippetBuffer()
 
   useEffect(() => {
     if (snippet) {
@@ -46,8 +49,7 @@ const SnippetEditor = () => {
   const onChangeSave = (val: any[]) => {
     // mog('onChangeSave', { val })
     if (val) {
-      updateSnippet({ ...snippet, content: val })
-      updater()
+      addOrUpdateValBuffer(snippet.id, val)
     }
   }
 
@@ -67,6 +69,7 @@ const SnippetEditor = () => {
   }, [])
 
   const returnToSnippets = () => {
+    saveAndClearBuffer()
     updater()
     goTo(ROUTE_PATHS.snippets, NavigationType.push)
   }

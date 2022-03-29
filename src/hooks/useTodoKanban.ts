@@ -9,6 +9,7 @@ import { mog } from '../utils/lib/helper'
 import { getAllParentIds, isElder } from '../components/mex/Sidebar/treeUtils'
 import { useLinks } from './useLinks'
 import { KanbanBoard, KanbanCard, KanbanColumn } from '../types/search'
+import { useNodes } from './useNodes'
 
 export interface TodoKanbanCard extends KanbanCard {
   todo: TodoType
@@ -48,6 +49,7 @@ export const useTodoKanban = () => {
   const setFilters = useKanbanFilterStore((s) => s.setFilters)
   const updateTodo = useTodoStore((s) => s.updateTodoOfNode)
   const { getPathFromNodeid } = useLinks()
+  const { isInArchive } = useNodes()
 
   const changeStatus = (todo: TodoType, newStatus: TodoStatus) => {
     updateTodo(todo.nodeid, { ...todo, metadata: { ...todo.metadata, status: newStatus } })
@@ -68,6 +70,7 @@ export const useTodoKanban = () => {
     // All paths in which the todos occur
     const rankedPaths = todoNodes.reduce((acc, item) => {
       const path = getPathFromNodeid(item)
+      if (!path) return acc
       const allPaths = getAllParentIds(path)
       // const allPaths =
       allPaths.forEach((path) => {
@@ -127,6 +130,7 @@ export const useTodoKanban = () => {
     const currentFilters = useKanbanFilterStore.getState().currentFilters
     Object.entries(nodetodos).forEach(([nodeid, todos]) => {
       if (nodeid.startsWith(SNIPPET_PREFIX)) return
+      if (isInArchive(nodeid)) return
       todos
         .filter((todo) => currentFilters.every((filter) => filter.filter(todo)))
         .forEach((todo) => {

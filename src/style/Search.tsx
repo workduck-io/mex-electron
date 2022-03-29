@@ -187,6 +187,7 @@ export const SearchViewContainer = styled.div`
 export const SearchContainer = styled.div`
   margin: ${({ theme: { spacing } }) => `calc(2 * ${spacing.large}) ${spacing.large} ${spacing.medium}`};
   position: relative;
+  min-height: 60vh;
 `
 
 export const NoSearchResults = styled.div`
@@ -199,25 +200,21 @@ export const NoSearchResults = styled.div`
   top: 0;
 `
 
-export const ResultHeader = styled.div<{ active?: boolean }>`
+export const ResultCardFooter = styled.div<{ active?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 1.2rem;
-  background-color: ${({ theme }) => theme.colors.gray[8]};
-  padding: ${({ theme }) => theme.spacing.medium};
+  font-size: 1rem;
+  background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};
+  border-top: 1px solid ${({ theme }) => theme.colors.gray[8]};
+  padding: ${({ theme }) => theme.spacing.small};
   color: ${({ theme }) => theme.colors.text.fade};
   ${({ theme, active }) =>
     active &&
     css`
-      color: ${({ theme }) => theme.colors.primary};
-
-      ${ResultTitle} {
-        color: ${theme.colors.primary};
-      }
+      color: ${theme.colors.primary};
     `}
 `
-
 export const ResultRow = styled.div<{ active?: boolean; selected?: boolean }>`
   display: flex;
   align-items: center;
@@ -256,6 +253,29 @@ export const ResultTitle = styled.div`
   color: ${({ theme }) => theme.colors.text.default};
 `
 
+export const ResultHeader = styled.div<{ active?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.2rem;
+  background-color: ${({ theme }) => theme.colors.gray[8]};
+  padding: ${({ theme }) => theme.spacing.medium};
+  color: ${({ theme }) => theme.colors.text.fade};
+  gap: ${({ theme }) => theme.spacing.small};
+  ${ResultTitle} {
+    flex-grow: 1;
+  }
+  ${({ theme, active }) =>
+    active &&
+    css`
+      color: ${theme.colors.primary};
+
+      ${ResultTitle} {
+        color: ${theme.colors.primary};
+      }
+    `}
+`
+
 export const ResultDesc = styled.div`
   flex-shrink: 1;
   color: ${({ theme }) => theme.colors.gray[5]};
@@ -286,12 +306,19 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
   ${({ theme, selected, view }) => {
     if (view === View.Card) {
       return css`
-        max-height: 300px;
+        max-height: 400px;
+        height: min-content;
         overflow-y: auto;
+
+        ${SearchPreviewWrapper} {
+          max-height: 300px;
+          overflow: hidden;
+        }
+
         ${selected &&
         css`
           ${CardShadow}
-          transform: scale(1.025) translateY(-10px);
+          border: 1px solid ${theme.colors.primary} !important;
           ${ResultTitle} {
             font-weight: bold;
             color: ${theme.colors.primary};
@@ -300,7 +327,7 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
         :hover {
           cursor: pointer;
           ${CardShadow}
-          transform: scale(1.025) translateY(-10px);
+          border: 1px solid ${theme.colors.primary} !important;
         }
       `
     } else if (view === View.List) {
@@ -338,6 +365,7 @@ export const Results = styled.div<{ view: View }>`
       return css`
         display: grid;
         grid-gap: ${theme.spacing.large};
+        grid-auto-rows: min-cotent;
         grid-auto-flow: row;
 
         @media (max-width: ${size.wide}) {

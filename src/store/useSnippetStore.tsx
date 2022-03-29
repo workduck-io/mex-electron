@@ -17,13 +17,14 @@ interface SnippetStore {
   initSnippets: (snippets: Snippet[]) => void
   addSnippet: (snippets: Snippet) => void
   updateSnippet: (id: string, snippets: Snippet) => void
+  updateSnippetContent: (id: string, content: any[]) => void
   deleteSnippet: (id: string) => void
 
   editor: SnippetEditorStore
   loadSnippet: (id: string) => void
 }
 
-export const useSnippetStore = create<SnippetStore>((set) => ({
+export const useSnippetStore = create<SnippetStore>((set, get) => ({
   snippets: [],
 
   initSnippets: (snippets: Snippet[]) =>
@@ -40,6 +41,16 @@ export const useSnippetStore = create<SnippetStore>((set) => ({
       const snippets = state.snippets.filter((s) => s.id !== id)
       return { snippets: [...snippets, snippet] }
     }),
+
+  updateSnippetContent: (id: string, content: any[]) => {
+    const snippets = get().snippets.map((s) => {
+      if (s.id === id) {
+        return { ...s, content }
+      }
+      return s
+    })
+    set({ snippets })
+  },
 
   deleteSnippet: (id: string) =>
     // Updates the snippet at the ID with a new snippet,
