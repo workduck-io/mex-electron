@@ -16,7 +16,7 @@ export interface OutlineItem {
   id: string
   title: string
   type: string
-  level: number
+  level?: number
 }
 
 export interface NodeAnalysis {

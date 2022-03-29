@@ -10,6 +10,8 @@ import getFlatTree from '../utils/lib/flatTree'
 import { getNodeIcon } from '../utils/lib/icons'
 import { getUniquePath } from '../utils/lib/paths'
 import { removeLink } from '../utils/lib/links'
+import { Contents, useContentStore } from './useContentStore'
+import TreeNode from '../types/tree'
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   // Tags
@@ -253,13 +255,46 @@ export const sanatizeLinks = (links: treeMap): treeMap => {
   return newLinks
 }
 
+const sortTree = (tree: TreeNode[], contents: Contents): TreeNode[] => {
+  // const metadataList = Object.entries(contents).map(([k, v]) => v.metadata)
+
+  const sorting = (a, b) => {
+    const aMeta = contents[a.nodeid] && contents[a.nodeid].metadata ? contents[a.nodeid].metadata : {}
+    const bMeta = contents[b.nodeid] && contents[b.nodeid].metadata ? contents[b.nodeid].metadata : {}
+    if (aMeta.updatedAt && bMeta.updatedAt) {
+      return bMeta.updatedAt - aMeta.updatedAt
+    }
+    if (aMeta.updatedAt && !bMeta.updatedAt) {
+      return -1
+    }
+    if (bMeta.updatedAt && !aMeta.updatedAt) {
+      return 1
+    }
+    return 0
+  }
+
+  const sortedTree = tree.sort((a, b) => sorting(a, b))
+
+  tree.map((node) => {
+    if (node.children) {
+      node.children = sortTree(node.children, contents)
+    }
+  })
+
+  return sortedTree
+}
+
 export const useTreeFromLinks = () => {
   const ilinks = useDataStore((store) => store.ilinks)
+  const contents = useContentStore((store) => store.contents)
   const links = ilinks.map((i) => ({ id: i.path, nodeid: i.nodeid, icon: i.icon }))
   const sanatizedLinks = sanatizeLinks(links)
   const tree = generateTree(sanatizedLinks)
+  const sortedTree = sortTree(tree, contents)
 
-  return tree
+  // mog('Tree', { ilinks, contents, links, sanatizedLinks, sortedTree, tree })
+
+  return sortedTree
 }
 
 export const useFlatTreeFromILinks = () => {
