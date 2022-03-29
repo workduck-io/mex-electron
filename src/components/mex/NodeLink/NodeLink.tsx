@@ -58,7 +58,7 @@ const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
   //   // Hide the preview
   //   if (preview && !selected) setPreview(false)
   // }, [selected])
-  mog('NodeLink', { nodeid, preview, icon, visible, fixVisible })
+  // mog('NodeLink', { nodeid, preview, icon, visible, fixVisible })
 
   return (
     <EditorPreview
