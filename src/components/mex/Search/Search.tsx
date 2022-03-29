@@ -8,6 +8,7 @@ import { useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
 import { useNodes } from '../../../hooks/useNodes'
 import { useSearch } from '../../../hooks/useSearch'
+import { useTags } from '../../../hooks/useTags'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
@@ -70,6 +71,7 @@ const Search = () => {
   const { getPathFromNodeid } = useLinks()
 
   const { queryIndex } = useSearch()
+  const { hasTags } = useTags()
 
   const onSearch = async (newSearchTerm: string) => {
     const res = await queryIndex('node', newSearchTerm)
@@ -110,6 +112,7 @@ const Search = () => {
     const content = con ? con.content : defaultContent.content
     const icon = node?.icon ?? fileList2Line
     const edNode = node ? { ...node, title: node.path, id: node.nodeid } : getInitialNode()
+    const isTagged = hasTags(edNode.nodeid)
     const id = `${item.id}_ResultFor_Search`
     if (props.view === View.Card) {
       return (
@@ -121,7 +124,11 @@ const Search = () => {
           <SearchPreviewWrapper active={item.matchField?.includes('text')}>
             <EditorPreviewRenderer content={content} editorId={`editor_${item.id}`} />
           </SearchPreviewWrapper>
-          <TagsRelatedTiny nodeid={edNode.nodeid} />
+          {isTagged && (
+            <ResultCardFooter>
+              <TagsRelatedTiny nodeid={edNode.nodeid} />
+            </ResultCardFooter>
+          )}
         </Result>
       )
     } else if (props.view === View.List) {

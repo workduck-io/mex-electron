@@ -135,21 +135,19 @@ export const TagsRelatedTiny = ({ nodeid }: TagsRelated) => {
   // mog('TagsRelated', { nodeid, tags })
 
   return tags.length > 0 ? (
-    <ResultCardFooter>
-      <TagsFlex>
-        {tags.map((t) => (
-          <TagFlex
-            key={`info_tags_${nodeid}_${t}`}
-            onClick={(e) => {
-              e.preventDefault()
-              navigateToTag(t)
-            }}
-          >
-            #{t}
-          </TagFlex>
-        ))}
-      </TagsFlex>
-    </ResultCardFooter>
+    <TagsFlex>
+      {tags.map((t) => (
+        <TagFlex
+          key={`info_tags_${nodeid}_${t}`}
+          onClick={(e) => {
+            e.preventDefault()
+            navigateToTag(t)
+          }}
+        >
+          #{t}
+        </TagFlex>
+      ))}
+    </TagsFlex>
   ) : null
 }
 

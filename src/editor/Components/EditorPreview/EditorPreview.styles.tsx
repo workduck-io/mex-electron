@@ -1,9 +1,9 @@
 import { transparentize } from 'polished'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import { Button } from '../../../style/Buttons'
 import { CardShadow } from '../../../style/helpers'
 
 export const EditorPreviewWrapper = styled.div`
-  padding: ${({ theme }) => theme.spacing.small};
   background: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])} !important;
 
   backdrop-filter: blur(10px);
@@ -16,6 +16,45 @@ export const EditorPreviewWrapper = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
 
+  display: flex;
+  flex-direction: column;
+
   ${CardShadow}
   min-width: 400px;
+`
+
+export const EditorPreviewEditorWrapper = styled.div`
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+`
+
+export const EditorPreviewControls = styled.div<{ hasTags?: boolean }>`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.small};
+  align-items: center;
+  background: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])} !important;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray[8]};
+  justify-content: flex-end;
+  padding: ${({ theme }) => theme.spacing.small};
+
+  ${({ hasTags }) =>
+    hasTags &&
+    css`
+      justify-content: space-between;
+    `}
+
+  ${Button} {
+    color: ${({ theme }) => theme.colors.text.fade};
+    background: transparent;
+    padding: ${({ theme }) => theme.spacing.tiny};
+    border: 1px solid ${({ theme }) => transparentize(0.5, theme.colors.text.fade)};
+
+    :hover {
+      svg {
+        color: ${({ theme }) => theme.colors.palette.red};
+      }
+      border: 1px solid ${({ theme }) => transparentize(0.5, theme.colors.palette.red)};
+    }
+  }
 `
