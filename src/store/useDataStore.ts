@@ -262,7 +262,7 @@ const sortTree = (tree: TreeNode[], contents: Contents): TreeNode[] => {
     const aMeta = contents[a.nodeid] && contents[a.nodeid].metadata ? contents[a.nodeid].metadata : {}
     const bMeta = contents[b.nodeid] && contents[b.nodeid].metadata ? contents[b.nodeid].metadata : {}
     if (aMeta.updatedAt && bMeta.updatedAt) {
-      return aMeta.updatedAt - bMeta.updatedAt
+      return bMeta.updatedAt - aMeta.updatedAt
     }
     if (aMeta.updatedAt && !bMeta.updatedAt) {
       return -1
