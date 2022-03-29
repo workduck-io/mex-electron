@@ -1,9 +1,12 @@
 import React from 'react'
+import { Location } from 'slate'
 import create from 'zustand'
 import { defaultContent } from '../data/Defaults/baseData'
+import { ComboTriggerType } from '../editor/Components/combobox/useComboboxStore'
 import { ComboboxType } from '../editor/Components/multi-combobox/types'
 import { NodeContent } from '../types/data'
 import { getContent, getInitialNode } from '../utils/helpers'
+import { mog } from '../utils/lib/helper'
 
 export interface NodeProperties {
   title: string
@@ -23,8 +26,8 @@ export type EditorContextType = {
   readOnly: boolean
 
   // * Checks if there's an active trigger in the editor
-  isTrigger?: ComboboxType | undefined
-  setIsTrigger: (isTrigger: ComboboxType | undefined) => void
+  trigger?: ComboTriggerType | undefined
+  setTrigger: (trigger: ComboTriggerType | undefined) => void
 
   setUid: (nodeid: string) => void
   setNode: (node: NodeProperties) => void
@@ -36,6 +39,9 @@ export type EditorContextType = {
   clearLoadingNodeid: () => void
 
   // State transformations
+  //* On change
+  isEditing: boolean
+  setIsEditing: (isEditing: boolean) => void
 
   // Load a node and its contents in the editor
   loadNode: (node: NodeProperties) => void
@@ -52,7 +58,7 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
   content: defaultContent,
   readOnly: false,
   fetchingContent: false,
-  setIsTrigger: (isTrigger) => set({ isTrigger }),
+  setTrigger: (trigger) => set({ trigger }),
 
   setReadOnly: (isReadOnly: boolean) => {
     set({ readOnly: isReadOnly })
@@ -62,6 +68,13 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
     const node = get().node
     node.nodeid = nodeid
     set({ node })
+  },
+
+  isEditing: false,
+  setIsEditing: (isEditing: boolean) => {
+    if (get().isEditing === isEditing) return
+    mog(isEditing ? 'editing' : 'stopped')
+    set({ isEditing })
   },
 
   setNode: (node: NodeProperties) => set({ node }),

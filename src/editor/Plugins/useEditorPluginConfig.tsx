@@ -3,6 +3,7 @@ import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { useMemo } from 'react'
 import { QuickLinkType } from '../../components/mex/NodeSelect/NodeSelect'
 import { useSnippets } from '../../hooks/useSnippets'
+import { CategoryType } from '../../store/Context/context.spotlight'
 import useDataStore from '../../store/useDataStore'
 import { useEditorStore } from '../../store/useEditorStore'
 import { mog } from '../../utils/lib/helper'
@@ -166,7 +167,7 @@ const useEditorPluginConfig = (editorId: string) => {
       cbKey: ComboboxKey.SLASH_COMMAND,
       trigger: '/',
       icon: 'ri:flask-line',
-      data: slashCommands.default.map((l) => ({ ...l, value: l.command, text: l.command }))
+      data: slashCommands.default.map((l) => ({ ...l, value: l.command, type: CategoryType.action, text: l.text }))
     }
   }
   // console.log({ slashCommands, OnChangeConf })

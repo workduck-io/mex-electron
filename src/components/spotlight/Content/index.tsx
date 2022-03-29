@@ -69,7 +69,7 @@ const Content = () => {
         } else {
           // * Get those recent node links which exists locally
 
-          if (!useSpotlightAppStore.getState().normalMode) return
+          if (!normalMode) return
 
           const recentEvents = getUpcomingEvents()
           const recents = selection ? recentResearchNodes : lastOpenedNodes
@@ -93,11 +93,13 @@ const Content = () => {
         }
       }
     }
-    getSearchItems()
+
+    if (normalMode) getSearchItems()
+
     // else {
     //   setSearchResults([activeItem.item])
     // }
-  }, [search.value, selection, activeItem.item, ilinks, events])
+  }, [search.value, selection, activeItem.item, normalMode, ilinks, events])
 
   // * For setting the preview
   useEffect(() => {

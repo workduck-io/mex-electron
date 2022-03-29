@@ -14,6 +14,8 @@ import { useContextMenu } from 'react-contexify'
 import { useEditorChange } from '../hooks/useEditorActions'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 import { useGraphStore } from '../store/useGraphStore'
+import { useEditorStore } from '../store/useEditorStore'
+
 import { getBlocks } from '../utils/helpers'
 import { mog } from '../utils/lib/helper'
 
@@ -48,6 +50,7 @@ export const Editor = ({
     readOnly
   }
 
+  const setIsEditing = useEditorStore((store) => store.setIsEditing)
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
 
   // const generateEditorId = () => `${editorId}`
@@ -81,16 +84,17 @@ export const Editor = ({
 
   useEditorChange(editorId, content)
 
+  const onDelayPerform = debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 1000)
+
+  const onChangeContent = (val: any[]) => {
+    setIsEditing(true)
+    onDelayPerform(val)
+  }
+
   return (
     <>
       <EditorStyles onClick={() => setNodePreview(false)} data-tour="mex-onboarding-draft-editor">
-        <Plate
-          id={editorId}
-          editableProps={editableProps}
-          value={content}
-          plugins={plugins}
-          onChange={debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 1000)}
-        >
+        <Plate id={editorId} editableProps={editableProps} value={content} plugins={plugins} onChange={onChangeContent}>
           {showBalloonToolbar && <BallonMarkToolbarButtons />}
           <MultiComboboxContainer config={comboConfigData} />
         </Plate>

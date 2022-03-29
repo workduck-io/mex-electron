@@ -1,7 +1,12 @@
 import { ELEMENT_H1, ELEMENT_PARAGRAPH, ELEMENT_TH, withPlaceholders } from '@udecode/plate'
+import { useEditorStore } from '../../store/useEditorStore'
 
-export const withStyledPlaceHolders = (components: any) =>
-  withPlaceholders(components, [
+export const withStyledPlaceHolders = (components: any) => {
+  const isEditing = useEditorStore.getState().isEditing
+
+  if (isEditing) return components
+
+  return withPlaceholders(components, [
     {
       key: ELEMENT_PARAGRAPH,
       placeholder: 'Type  `[[`  to see links or type  `/`  to see actions',
@@ -18,3 +23,4 @@ export const withStyledPlaceHolders = (components: any) =>
       hideOnBlur: true
     }
   ])
+}

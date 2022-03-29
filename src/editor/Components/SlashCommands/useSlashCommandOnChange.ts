@@ -46,7 +46,7 @@ export const useSlashCommandOnChange = (
             Transforms.select(editor, targetRange)
             insertNodes<TElement>(editor, content)
           }
-        } else if (item.text === 'table') {
+        } else if (item.key === 'table') {
           Transforms.select(editor, targetRange)
           insertTable(editor, { header: true })
         } else {

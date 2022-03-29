@@ -1,6 +1,6 @@
 import { escapeRegExp, getText } from '@udecode/plate-core'
 import { BaseRange, Editor, Point } from 'slate'
-import { mog } from '../../../../utils/lib/helper'
+import { ComboTriggerType } from '../useComboboxStore'
 
 /**
  * Get text and range from trigger to cursor.
@@ -8,9 +8,8 @@ import { mog } from '../../../../utils/lib/helper'
  */
 export type TriggerOptions = {
   at: Point
-  trigger: string
+  trigger: ComboTriggerType
   searchPattern?: string
-  blockTrigger?: string
   isTrigger?: boolean
 }
 
@@ -23,60 +22,32 @@ export type TextFromTrigger = {
 }
 
 export const getTextFromTrigger = (editor: Editor, options: TriggerOptions): TextFromTrigger => {
-  const searchPattern = options.searchPattern ?? `\\D+`
-
-  const escapedTrigger = escapeRegExp(options.trigger)
+  const escapedTrigger = escapeRegExp(options.trigger.trigger)
   const triggerRegex = new RegExp(`(?:^)${escapedTrigger}`)
 
-  let start: Point | undefined = { ...options.at }
-  let end: Point | undefined
-  let blockStart = options.at
-
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    end = start
-    if (!start) break
-
-    start = Editor.before(editor, start)
-    const charRange = start && Editor.range(editor, start, end)
-    const charText = getText(editor, charRange)
-
-    if (charText === options.blockTrigger) {
-      blockStart = start
-    }
-
-    // * Uncomment this (changes)
-
-    if (!charText.match(searchPattern)) {
-      start = end
-      break
-    }
-  }
+  const start: Point | undefined =
+    options.trigger.at ?? Editor.before(editor, options.at, { distance: options.trigger.trigger.length })
 
   // Range from start to cursor
   const range = start && Editor.range(editor, start, options.at)
   const text = getText(editor, range)
 
-  const triggerIndex = text.indexOf(options.trigger)
+  if (!range || !text?.match(triggerRegex)) return
 
-  if (!range || triggerIndex <= -1) return
-
-  const textStart = { ...start, offset: triggerIndex }
-  const textRange = textStart && Editor.range(editor, textStart, options.at)
-  const triggerText = getText(editor, textRange)
-
-  if (triggerText.length > 100) return
-
-  const isBlockTriggered = blockStart.offset !== options.at.offset
+  const isBlockTriggered = !!options.trigger.blockAt || text.slice(-1) === options.trigger.blockTrigger
+  const blockStart = options.trigger.blockAt ?? { ...options.at, offset: text.length - 1 }
 
   const res = {
-    range: textRange,
-    textAfterTrigger: triggerText.substring(options.trigger.length, blockStart.offset - textStart.offset)
+    range,
+    textAfterTrigger: text.substring(
+      options.trigger.trigger.length,
+      isBlockTriggered ? blockStart.offset : options.at.offset
+    )
   }
 
   if (isBlockTriggered) {
     const blockRange = blockStart && Editor.range(editor, blockStart, options.at)
-    const blockText = triggerText.substring(blockStart.offset - textStart.offset + 1)
+    const blockText = text.substring(blockStart.offset + 1)
 
     return {
       ...res,

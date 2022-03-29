@@ -51,7 +51,6 @@ export const useAnalysisTodoAutoUpdate = () => {
 
   useEffect(() => {
     const { editorTodos, nodeid } = useAnalysisStore.getState().analysis
-    mog('EditorTodos', { editorTodos, nodeid })
     updateNodeTodos(nodeid, editorTodos)
   }, [analysis, node])
 }

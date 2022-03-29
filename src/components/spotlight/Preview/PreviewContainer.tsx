@@ -35,7 +35,7 @@ const PreviewContainer: React.FC<PreviewProps> = ({ nodeId, preview }) => {
   const deserializedContentNodes = getDeserializeSelectionToNodes(preview, normalMode)
   useEffect(() => {
     if (preview.isSelection && deserializedContentNodes) {
-      const deserializedContent = [{ children: deserializedContentNodes }]
+      const deserializedContent = deserializedContentNodes
       const activeNodeContent = getContent(nodeId)?.content ?? []
 
       setNodeContent([...activeNodeContent, ...deserializedContent])

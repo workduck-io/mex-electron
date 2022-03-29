@@ -6,7 +6,7 @@ import {
   ItemRightIcons,
   ItemTitle
 } from '../../tag/components/TagCombobox.styles'
-import { PortalBody, getPreventDefaultHandler, useEditorState } from '@udecode/plate'
+import { PortalBody, useEditorState } from '@udecode/plate'
 import React, { useEffect, useState } from 'react'
 
 import { ComboboxProps } from './Combobox.types'
@@ -29,7 +29,6 @@ import { ElementTypeBasedShortcut } from '../../../../components/spotlight/Short
 import { ShortcutText } from '../../../../components/spotlight/Home/components/Item'
 import { DisplayShortcut } from '../../../../components/mex/Shortcuts'
 import { replaceFragment } from '../hooks/useComboboxOnKeyDown'
-import { mog } from '../../../../utils/lib/helper'
 import PreviewMeta from './PreviewMeta'
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {

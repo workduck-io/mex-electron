@@ -1,13 +1,10 @@
 import saveLine from '@iconify/icons-ri/save-line'
 import { TippyProps } from '@tippyjs/react'
-import { getPlateId, platesStore, usePlateId, usePlateSelectors } from '@udecode/plate'
+import { getPlateSelectors, platesStore, usePlateId, usePlateSelectors } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import tinykeys from 'tinykeys'
 import { useApi } from '../../apis/useSaveApi'
-import { IpcAction } from '../../data/IpcAction'
-import { appNotifierWindow } from '../../electron/utils/notifiers'
-import { AppType } from '../../hooks/useInitialize'
 import { useLinks } from '../../hooks/useLinks'
 import { useSaveData } from '../../hooks/useSaveData'
 import { useSearch } from '../../hooks/useSearch'
@@ -26,7 +23,6 @@ import { NodeEditorContent } from '../../types/Types'
 import { getTodosFromContent } from '../../utils/lib/content'
 import { mog } from '../../utils/lib/helper'
 import { getEventNameFromElement } from '../../utils/lib/strings'
-import { convertEntryToRawText, parseNode } from '../../utils/search/parseData'
 
 export const useDataSaverFromContent = () => {
   const setContent = useContentStore((state) => state.setContent)
@@ -95,7 +91,7 @@ export const useSaver = () => {
     const cnode = node || defaultNode
 
     // * Editor Id is different from nodeId
-    const editorId = getPlateId()
+    const editorId = getPlateSelectors().id()
     const hasState = !!state[editorId]
 
     if (hasState || content) {

@@ -28,6 +28,7 @@ import Toolbar from './Toolbar'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
+  const setIsEditing = useEditorStore((store) => store.setIsEditing)
   const { toggleFocusMode } = useLayout()
   const { saveApiAndUpdate } = useLoad()
 
@@ -69,6 +70,8 @@ const ContentEditor = () => {
         setSuggestions(withoutCurrentNode)
       }
 
+      setIsEditing(false)
+      mog('stopped!!')
       addOrUpdateValBuffer(node.nodeid, val)
     }
   }
