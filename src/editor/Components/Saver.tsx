@@ -1,6 +1,6 @@
 import saveLine from '@iconify/icons-ri/save-line'
 import { TippyProps } from '@tippyjs/react'
-import { getPlateSelectors, platesStore, usePlateId, usePlateSelectors } from '@udecode/plate'
+import { getPlateId, platesStore, usePlateId, usePlateSelectors } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import tinykeys from 'tinykeys'
@@ -91,7 +91,7 @@ export const useSaver = () => {
     const cnode = node || defaultNode
 
     // * Editor Id is different from nodeId
-    const editorId = getPlateSelectors().id()
+    const editorId = getPlateId()
     const hasState = !!state[editorId]
 
     if (hasState || content) {
