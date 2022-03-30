@@ -34,6 +34,8 @@ import { useSearch } from '../../hooks/useSearch'
 import { GenericSearchResult } from '../../types/search'
 import { nanoid } from 'nanoid'
 import { useSaveData } from '../../hooks/useSaveData'
+import { SnippetHelp } from '../../data/Defaults/helpText'
+import Infobox from '../../ui/components/Help/Infobox'
 
 export type SnippetsProps = {
   title?: string
@@ -204,6 +206,7 @@ const Snippets = () => {
           <Icon icon={quillPenLine} height={24} />
           Create New Snippet
         </Button>
+        <Infobox text={SnippetHelp} />
       </MainHeader>
       <SearchView
         id={`searchSnippet_${randId}`}

@@ -59,3 +59,27 @@ export const SearchHelp = (
     <p>Switch view of results with the toggle</p>
   </div>
 )
+
+export const SnippetHelp = (
+  <div>
+    <h1>Snippets</h1>
+    <p>Create snippets to use in notes.</p>
+  </div>
+)
+
+export const TasksHelp = (
+  <div>
+    <h1>Tasks</h1>
+    <p>All the tasks from your notes appear here.</p>
+    <p>Tasks are sorted by priority and grouped by their status.</p>
+    <p>Drag and drop or use the checkbox to change status.</p>
+    <p>Tasks can be filtered by the notes they appear in.</p>
+  </div>
+)
+export const ArchiveHelp = (
+  <div>
+    <h1>Archive</h1>
+    <p>Archived notes appear here.</p>
+    <p>You can unarchive an archived note or delete it permanently.</p>
+  </div>
+)

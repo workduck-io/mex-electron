@@ -24,7 +24,7 @@ const DataInfoBar = () => {
     <DataInfobarWrapper>
       <Outline />
       <Backlinks nodeid={node.nodeid} />
-      <TagsRelated nodeid={node.nodeid} />
+      <TagsRelated nodeid={node.nodeid} fromAnalysis />
     </DataInfobarWrapper>
   )
 }
