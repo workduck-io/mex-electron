@@ -1,5 +1,6 @@
 import { escapeRegExp, getText } from '@udecode/plate-core'
 import { BaseRange, Editor, Point } from 'slate'
+import { mog } from '../../../../utils/lib/helper'
 import { ComboTriggerType } from '../useComboboxStore'
 
 /**
@@ -18,6 +19,7 @@ export type TextFromTrigger = {
   blockRange?: BaseRange
   textAfterTrigger: string
   isBlockTriggered?: boolean
+  blockStart?: any
   textAfterBlockTrigger?: string
 }
 
@@ -32,27 +34,33 @@ export const getTextFromTrigger = (editor: Editor, options: TriggerOptions): Tex
   const range = start && Editor.range(editor, start, options.at)
   const text = getText(editor, range)
 
-  if (!range || !text?.match(triggerRegex)) return
+  if (!range || !text?.match(triggerRegex) || text.length > 100) return
 
-  const isBlockTriggered = !!options.trigger.blockAt || text.slice(-1) === options.trigger.blockTrigger
+  const isBlockTriggered = text.indexOf(options.trigger.blockTrigger) > -1
   const blockStart = options.trigger.blockAt ?? { ...options.at, offset: text.length - 1 }
+
+  const textAfterTrigger = text.substring(
+    options.trigger.trigger.length,
+    isBlockTriggered ? blockStart.offset : options.at.offset
+  )
 
   const res = {
     range,
-    textAfterTrigger: text.substring(
-      options.trigger.trigger.length,
-      isBlockTriggered ? blockStart.offset : options.at.offset
-    )
+    textAfterTrigger,
+    blockStart: undefined
   }
 
   if (isBlockTriggered) {
-    const blockRange = blockStart && Editor.range(editor, blockStart, options.at)
+    const blockRange =
+      blockStart && Editor.range(editor, { ...blockStart, offset: blockStart.offset + range.anchor.offset }, options.at)
+    // const t = getText(editor, blockRange)
     const blockText = text.substring(blockStart.offset + 1)
 
     return {
       ...res,
       isBlockTriggered,
       blockRange,
+      blockStart,
       textAfterBlockTrigger: blockText
     }
   }
