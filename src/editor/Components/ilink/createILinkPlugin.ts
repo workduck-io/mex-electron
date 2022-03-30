@@ -1,7 +1,9 @@
-import { deleteFragment, isCollapsed, PlatePlugin, WithOverride } from '@udecode/plate-core'
-import { Editor } from 'slate'
+import { deleteFragment, PlatePlugin, WithOverride } from '@udecode/plate-core'
+import { Editor, Range } from 'slate'
 import { getPathFromNodeIdHookless } from '../../../hooks/useLinks'
+import { useEditorStore } from '../../../store/useEditorStore'
 import { mog } from '../../../utils/lib/helper'
+import { ComboboxKey } from '../combobox/useComboboxStore'
 import { ELEMENT_ILINK } from './defaults'
 import { getILinkDeserialize } from './getILinkDeserialize'
 
@@ -32,9 +34,20 @@ export const withILink: WithOverride<any, PlatePlugin> = (editor, { type, option
     if (prev && prev[0]) {
       const node = prev[0] as any
       if (node.type && node.type === ELEMENT_ILINK && node.value) {
-        const val = getPathFromNodeIdHookless(node.value)
         deleteFragment(editor, { at: prev[1], unit: 'block' })
+        const val = getPathFromNodeIdHookless(node.value)
+
+        // * On delete, cursor location
+        const start = editor.selection
+        const cursor = Range.start(start)
+
+        // * Replace The ILink with the values
         Editor.insertText(editor, `[[${val} `)
+
+        // * Set the cursor to the end of the inserted text
+        useEditorStore
+          .getState()
+          .setTrigger({ cbKey: ComboboxKey.INTERNAL, blockTrigger: ':', trigger: '[[', at: cursor })
       }
     }
     deleteBackward(options)

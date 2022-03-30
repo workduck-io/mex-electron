@@ -42,7 +42,7 @@ export const ElementTypeBasedShortcut: Record<string, Record<string, Shortcut>> 
       title: 'to Insert'
     }
   },
-  [CategoryType.quicklink]: {
+  [CategoryType.action]: {
     action: {
       ...spotlightShortcuts.open,
       title: 'to Insert'

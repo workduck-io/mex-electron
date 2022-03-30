@@ -30,6 +30,7 @@ import { ShortcutText } from '../../../../components/spotlight/Home/components/I
 import { DisplayShortcut } from '../../../../components/mex/Shortcuts'
 import { replaceFragment } from '../hooks/useComboboxOnKeyDown'
 import PreviewMeta from './PreviewMeta'
+import { mog } from '../../../../utils/lib/helper'
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'
@@ -124,6 +125,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   if (!combobox) return null
 
   const listItem = items[itemIndex]
+  mog('element', { listItem })
   const itemShortcut = listItem?.type ? ElementTypeBasedShortcut[listItem?.type] : undefined
 
   return (

@@ -16,9 +16,9 @@ import { yellowyTheme } from './yellowyTheme'
 export const defaultThemes = [
   { id: 'Vertigo', themeData: vertigoTheme },
   { id: 'Gruvbox', themeData: gruvboxTheme },
-  { id: 'Gruvbox+', themeData: reduxTheme },
+  // { id: 'Gruvbox+', themeData: reduxTheme },
   { id: 'Dev', themeData: devTheme },
-  { id: 'Dev+', themeData: matrixTheme },
+  // { id: 'Dev+', themeData: matrixTheme },
   { id: 'Amethyst', themeData: vvkTheme },
   { id: 'Light', themeData: lightTheme },
   { id: 'Clean', themeData: spotlightTheme },
@@ -26,7 +26,7 @@ export const defaultThemes = [
   { id: 'Neo Light', themeData: neoLight },
   { id: 'Neo Dark', themeData: neoDark },
   { id: 'Imperial', themeData: imperialTheme },
-  { id: 'Renar', themeData: renarTheme },
+  // { id: 'Renar', themeData: renarTheme },
   { id: 'Hacker', themeData: hackerTheme }
 ]
 

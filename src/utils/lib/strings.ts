@@ -21,7 +21,7 @@ export const getEventNameFromElement = (location: string, action: string, elemen
   return `${location} - ${actionWithDetails}`
 }
 
-export const NODE_PATH_SPACER = '-'
+export const NODE_PATH_SPACER = ' '
 export const NODE_PATH_WORD_LENGTH = 5
 export const NODE_PATH_CHAR_LENGTH = 40
 

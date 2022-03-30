@@ -6,7 +6,7 @@ import { NODE_ID_PREFIX } from '../../../data/Defaults/idPrefixes'
 import { useLinks } from '../../../hooks/useLinks'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
-import { getEventNameFromElement } from '../../../utils/lib/strings'
+import { getEventNameFromElement, getSlug } from '../../../utils/lib/strings'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { isInternalCommand, useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
@@ -71,7 +71,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
 
         // mog('Inserting from here', { activeBlock, isBlockTriggered })
         if ((item.type === QuickLinkType.ilink || type === ELEMENT_INLINE_BLOCK) && isBlockTriggered && activeBlock) {
-          const blockValue = activeBlock?.text ? activeBlock.text.substring(0, 100) : ''
+          const blockValue = activeBlock?.text ? getSlug(activeBlock.text) : ''
           const withBlockInfo = {
             type,
             children: [{ text: '' }],

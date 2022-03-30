@@ -22,9 +22,10 @@ export const getTriggeredData = (
   })
 
   if (isCursorAfterTrigger) {
-    const { range, textAfterTrigger, isBlockTriggered, blockRange, textAfterBlockTrigger } = isCursorAfterTrigger
+    const { range, textAfterTrigger, isBlockTriggered, blockRange, blockStart, textAfterBlockTrigger } =
+      isCursorAfterTrigger
 
-    if (range || blockRange) setTrigger({ ...comboboxItem, at: range.anchor, blockAt: blockRange?.anchor })
+    if (!blockSearch || blockStart === undefined) setTrigger({ ...comboboxItem, at: range.anchor, blockAt: blockStart })
 
     return {
       range,
@@ -69,7 +70,7 @@ const getTextFromTriggers = (
         }
       })
     } else {
-      triggerSelection = getTriggeredData(editor, isTrigger, setIsTrigger, true, !!isTrigger.blockTrigger)
+      triggerSelection = getTriggeredData(editor, isTrigger, setIsTrigger, true, !!isTrigger.blockAt)
     }
 
     if (!triggerSelection && isTrigger) {
