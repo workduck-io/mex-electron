@@ -20,7 +20,7 @@ export interface ComboboxType {
   cbKey: ComboboxKey
   icon?: string
   trigger: string
-  data: ComboboxItem[]
+  data?: ComboboxItem[]
   blockTrigger?: string
 }
 
