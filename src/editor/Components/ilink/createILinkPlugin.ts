@@ -45,7 +45,9 @@ export const withILink: WithOverride<any, PlatePlugin> = (editor, { type, option
         Editor.insertText(editor, `[[${val} `)
 
         // * Set the cursor to the end of the inserted text
-        useEditorStore.getState().setTrigger({ cbKey: ComboboxKey.INTERNAL, trigger: '[[', at: cursor })
+        useEditorStore
+          .getState()
+          .setTrigger({ cbKey: ComboboxKey.INTERNAL, blockTrigger: ':', trigger: '[[', at: cursor })
       }
     }
     deleteBackward(options)

@@ -8,7 +8,7 @@ import { ComboboxType } from './types'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { useRouting } from '../../../views/routes/urls'
 import { useLinks } from '../../../hooks/useLinks'
-import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 
 export const CreateNewPrefix = `Create `
@@ -88,7 +88,7 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
         // data: {
         //   isNew: true
         // },
-        type: QuickLinkType.ilink,
+        type: ct.cbKey === 'tag' ? QuickLinkType.tags : QuickLinkType.ilink,
         data: true,
         prefix: CreateNewPrefix,
         text: searchTerm
