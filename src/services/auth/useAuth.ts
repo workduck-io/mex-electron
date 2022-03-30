@@ -125,6 +125,9 @@ export const useAuthentication = () => {
     return { data, v, authDetails }
   }
 
+  /*
+   * Login via google
+   */
   const loginViaGoogle = async (idToken: string, accessToken: string, getWorkspace = false) => {
     try {
       const result: any = await googleSignIn(idToken, accessToken)
@@ -132,6 +135,9 @@ export const useAuthentication = () => {
       if (getWorkspace && result !== undefined) {
         await client
           .get(apiURLs.getUserRecords(result.userId))
+          /*
+           * If the user is present in the database, then we will add properties
+           */
           .then((d: any) => {
             const userDetails = { email: result.email, userId: result.userId }
             const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
@@ -148,6 +154,10 @@ export const useAuthentication = () => {
 
             setAuthenticated(userDetails, workspaceDetails)
           })
+          /*
+           * TODO: FIX THIS
+           * If the user is not present in the database, then we will register the new user
+           */
           .catch(async (e) => {
             setSensitiveData({ email: result.email, name: result.email, password: '', roles: [] })
 
@@ -160,23 +170,33 @@ export const useAuthentication = () => {
             }
             const newWorkspaceName = `WD_${nanoid()}`
 
-            console.error('catch', { e })
+            mog('Login Google Need to create user', { uCred })
+            // console.error('catch', { e })
             await client
-              .post(apiURLs.registerUser, {
-                user: {
-                  id: uCred.userId,
-                  name: uCred.email,
-                  email: uCred.email
+              .post(
+                apiURLs.registerUser,
+                {
+                  type: 'RegisterUserRequest',
+                  user: {
+                    id: uCred.userId,
+                    name: uCred.email,
+                    email: uCred.email
+                  },
+                  workspaceName: newWorkspaceName
                 },
-                workspaceName: newWorkspaceName
-              })
+                {
+                  headers: {
+                    'mex-workspace-id': ''
+                  }
+                }
+              )
               .then((d: any) => {
                 const userDetails = { email: uCred.email, userId: uCred.userId }
                 const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
 
                 ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
                 identifyUser(userDetails.email)
-                mog('Login Google BIG success', { userDetails, workspaceDetails })
+                mog('Login Google BIG success created user', { userDetails, workspaceDetails })
                 addUserProperties({
                   [Properties.EMAIL]: userDetails.email,
                   [Properties.NAME]: userDetails.email,
