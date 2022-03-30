@@ -61,9 +61,10 @@ export const ResultCardFooter = styled.div<{ active?: boolean }>`
 `
 interface TagsRelated {
   nodeid: string
+  fromAnalysis?: boolean
 }
 
-const TagsRelated = ({ nodeid }: TagsRelated) => {
+const TagsRelated = ({ nodeid, fromAnalysis }: TagsRelated) => {
   const { getRelatedNodes, getTags } = useTags()
   const tagsCache = useDataStore((state) => state.tagsCache)
   const analysisTags = useAnalysisStore((state) => state.analysis.tags)
@@ -72,11 +73,11 @@ const TagsRelated = ({ nodeid }: TagsRelated) => {
   const { goTo } = useRouting()
 
   useEffect(() => {
-    setRelNodes(getRelatedNodes(nodeid, true))
+    setRelNodes(getRelatedNodes(nodeid, fromAnalysis))
   }, [nodeid, tagsCache, analysisTags])
 
   useEffect(() => {
-    setTags(getTags(nodeid, true))
+    setTags(getTags(nodeid, fromAnalysis))
   }, [nodeid, tagsCache, analysisTags])
 
   const navigateToTag = (tag: string) => {

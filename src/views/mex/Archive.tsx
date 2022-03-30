@@ -37,6 +37,8 @@ import { convertContentToRawText } from '../../utils/search/parseData'
 
 import { useSearch } from '../../hooks/useSearch'
 import { GenericSearchResult } from '../../types/search'
+import Infobox from '../../ui/components/Help/Infobox'
+import { ArchiveHelp } from '../../data/Defaults/helpText'
 
 const Nodes = styled.section`
   padding-right: 2rem;
@@ -283,6 +285,7 @@ const Archive = () => {
     <SearchContainer>
       <MainHeader>
         <Title>Archive</Title>
+        <Infobox text={ArchiveHelp} />
       </MainHeader>
 
       <SearchView

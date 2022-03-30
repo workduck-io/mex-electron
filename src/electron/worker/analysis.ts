@@ -6,6 +6,12 @@ import { getTagsFromContent, getTodosFromContent } from '../../utils/lib/content
 import { ELEMENTS_IN_OUTLINE, HIGHLIGHTED_ELEMENTS, LIST_ELEMENTS } from '../../data/outline'
 // import { parentPort, workerData } from 'worker_threads'
 // parentPort.postMessage(analyseData(workerData.content))
+//
+const getSingle = (content: NodeEditorContent) => {
+  if (content[0] && content[0].children.length === 1) {
+    return content[0].children
+  } else return getSingle(content[0].children)
+}
 
 const getOutline = (content: NodeEditorContent): OutlineItem[] => {
   // console.log('getOutline', content)
@@ -30,7 +36,7 @@ const getOutline = (content: NodeEditorContent): OutlineItem[] => {
       } // Lists
       else if (LIST_ELEMENTS.includes(item.type.toLowerCase())) {
         if (item.children && item.children[0]) {
-          const title = convertContentToRawText(item.children[0].children, ' ')
+          const title = convertContentToRawText(getSingle(item.children), ' ')
           if (title.trim() !== '')
             outline.push({
               type: item.type,
@@ -40,15 +46,17 @@ const getOutline = (content: NodeEditorContent): OutlineItem[] => {
             })
         }
         curHighlighted = ''
-      } else if (HIGHLIGHTED_ELEMENTS.includes(item.type.toLowerCase()) && curHighlighted !== item.type) {
-        const title = convertContentToRawText(item.children, ' ')
-        if (title.trim() !== '')
-          outline.push({
-            type: item.type,
-            title: title,
-            id: item.id,
-            level: lastLevel
-          })
+      } else if (HIGHLIGHTED_ELEMENTS.includes(item.type.toLowerCase())) {
+        if (curHighlighted !== item.type) {
+          const title = convertContentToRawText(item.children, ' ')
+          if (title.trim() !== '')
+            outline.push({
+              type: item.type,
+              title: title,
+              id: item.id,
+              level: lastLevel
+            })
+        }
         curHighlighted = item.type
       } else curHighlighted = ''
     }

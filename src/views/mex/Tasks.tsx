@@ -36,6 +36,8 @@ import { mog } from '../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 import { Title } from '../../style/Typography'
 import SearchFilters from '../../components/mex/Search/SearchFilters'
+import Infobox from '../../ui/components/Help/Infobox'
+import { TasksHelp } from '../../data/Defaults/helpText'
 
 const Tasks = () => {
   const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
@@ -340,7 +342,7 @@ const Tasks = () => {
   return (
     <PageContainer>
       <TaskHeader>
-        <Title>Todos</Title>
+        <Title>Tasks</Title>
         <ShortcutTokens>
           <ShortcutToken>
             Select:
@@ -373,6 +375,7 @@ const Tasks = () => {
           <Icon icon={trashIcon} height={24} />
           Clear Todos
         </Button>
+        <Infobox text={TasksHelp} />
       </TaskHeader>
       <StyledTasksKanban>
         <SearchFilters

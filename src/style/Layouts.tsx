@@ -66,5 +66,6 @@ export const MainHeader = styled.div`
   ${Title} {
     font-size: 2rem;
     font-weight: bold;
+    flex-grow: 1;
   }
 `
