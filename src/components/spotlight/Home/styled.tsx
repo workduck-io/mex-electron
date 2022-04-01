@@ -3,10 +3,10 @@ import { animated } from 'react-spring'
 import styled from 'styled-components'
 
 export const StyledList = styled(animated.div)`
-  overflow: scroll;
+  overflow: hidden scroll;
   position: relative;
   scroll-behavior: smooth;
-  max-height: 422px;
+  max-height: 425px;
 `
 
 export const ListItem = styled.div<{ start: number }>`

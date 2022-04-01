@@ -142,7 +142,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
             size={24}
             icon={bubbleChartLine}
             shortcut={shortcuts.showGraph.keystrokes}
-            title="Graph"
+            title="Context View"
             highlight={infobar.mode === 'graph'}
             onClick={toggleGraph}
           />

@@ -22,7 +22,7 @@ export const defaultShortcuts = {
     disabled: true
   },
   showSuggestedNodes: {
-    title: 'Suggest Nodes',
+    title: 'Smart Suggestions',
     keystrokes: '$mod+/',
     category: 'Actions'
   },
@@ -56,17 +56,17 @@ export const defaultShortcuts = {
 
   // Actions
   newNode: {
-    title: 'Create New Node',
+    title: 'Create New Note',
     keystrokes: '$mod+KeyN',
     category: 'Actions'
   },
   save: {
-    title: 'Save current Node',
+    title: 'Save current Note',
     keystrokes: '$mod+KeyS',
     category: 'Actions'
   },
   refreshNode: {
-    title: 'Refresh current Node',
+    title: 'Refresh current Note',
     keystrokes: '$mod+KeyR',
     category: 'Actions'
   },
@@ -75,12 +75,12 @@ export const defaultShortcuts = {
     keystrokes: '$mod+Backslash',
     category: 'Actions'
   },
-  showSyncBlocks: {
-    title: 'Flow Links',
-    keystrokes: '$mod+Shift+KeyF',
-    category: 'Actions',
-    disabled: true
-  },
+  // showSyncBlocks: {
+  //   title: 'Flow Links',
+  //   keystrokes: '$mod+Shift+KeyF',
+  //   category: 'Actions',
+  //   disabled: true
+  // },
   showReminder: {
     title: 'Reminders',
     keystrokes: '$mod+Shift+KeyM',

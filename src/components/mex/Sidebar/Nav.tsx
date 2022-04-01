@@ -167,7 +167,7 @@ const Nav = ({ links }: NavProps) => {
           <NavTooltip
             key={shortcuts.newNode.title}
             singleton={target}
-            content={<TooltipTitleWithShortcut title="Create New Node" shortcut={shortcuts.newNode.keystrokes} />}
+            content={<TooltipTitleWithShortcut title="New Note" shortcut={shortcuts.newNode.keystrokes} />}
           >
             <NavButton primary onClick={onNewNote}>
               {GetIcon(addCircleLine)}
@@ -179,7 +179,7 @@ const Nav = ({ links }: NavProps) => {
       <MainLinkContainer>
         {links.map((l) =>
           l.isComingSoon ? (
-            <NavTooltip key={l.path} singleton={target} content={`${l.title} (Coming Soon!)`}>
+            <NavTooltip key={l.path} singleton={target} content={`${l.title} (Stay Tuned! 👀  )`}>
               <ComingSoon tabIndex={-1} key={`nav_${l.title}`}>
                 {l.icon !== undefined ? l.icon : l.title}
               </ComingSoon>

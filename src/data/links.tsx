@@ -58,7 +58,7 @@ const useNavlinks = () => {
       },
 
       {
-        title: 'Integrations',
+        title: 'Flows',
         path: ROUTE_PATHS.integrations,
         // shortcut: shortcuts.showIntegrations.keystrokes,
         icon: GetIcon(appsLine),

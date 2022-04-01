@@ -39,14 +39,14 @@ const SyncBlockInfo = () => {
   return (
     <StyledSyncBlockInfo>
       <InfobarTools>
-        <IconButton
+        {/* <IconButton
           size={24}
           icon={messageIcon}
           shortcut={shortcuts.showSyncBlocks.keystrokes}
           title="Flow Links"
           highlight={infobar.mode === 'flow'}
           onClick={toggleSyncBlocks}
-        />
+        /> */}
         <label htmlFor="flow-links">Flow Links</label>
         <IconButton size={24} icon={more2Fill} title="Options" />
       </InfobarTools>

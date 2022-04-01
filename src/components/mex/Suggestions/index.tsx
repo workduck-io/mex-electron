@@ -45,11 +45,11 @@ const SuggestionInfoBar = () => {
           size={24}
           icon={lightbulbFlashLine}
           shortcut={shortcuts.showSuggestedNodes.keystrokes}
-          title="Suggestions"
+          title="Smart Suggestions"
           highlight={infobar.mode === 'suggestions'}
           onClick={toggleSuggestedNodes}
         />
-        <label htmlFor="flow-links">Suggestions</label>
+        <label htmlFor="flow-links">Smart Suggestions</label>
         <IconButton size={24} icon={more2Fill} title="Options" />
       </InfobarTools>
 
