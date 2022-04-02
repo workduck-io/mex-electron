@@ -15,7 +15,7 @@ const v081 = (): CustomTransformation => {
     type: 'CustomTransformation',
     version: '0.8.1',
     custom: (data) => {
-      if (!data.todo) return { ...data, todo: {} }
+      if (!data.todos) return { ...data, todos: {} }
       return data
     }
   }

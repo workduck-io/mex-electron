@@ -37,7 +37,7 @@ const useNavlinks = () => {
       //   isComingSoon: true
       // },
       {
-        title: 'Editor',
+        title: 'Notes',
         path: `${ROUTE_PATHS.node}/${nodeid}`,
         shortcut: shortcuts.showEditor.keystrokes,
         icon: GetIcon(fileDocument)

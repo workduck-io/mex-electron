@@ -93,7 +93,7 @@ const searchWorker: SearchWorker = {
         const matchField = entry.field
         entry.result.forEach((i) => {
           const { nodeId, blockId } = getNodeAndBlockIdFromCompositeKey(i.id)
-          results.push({ id: nodeId, blockId, text: i.doc?.text?.slice(0, 100), matchField })
+          results.push({ id: nodeId, data: i.doc?.data, blockId, text: i.doc?.text?.slice(0, 100), matchField })
         })
       })
 
@@ -135,10 +135,10 @@ const searchWorker: SearchWorker = {
       let response: any[] = []
 
       if (typeof key === 'string') {
-        response = globalSearchIndex[key].search(query, { enrich: true, tag: nodeId })
+        response = globalSearchIndex[key].search(query, { enrich: true, tag: nodeId, index: 'text' })
       } else {
         key.forEach((k) => {
-          response = [...response, ...globalSearchIndex[k].search(query, { enrich: true, tag: nodeId })]
+          response = [...response, ...globalSearchIndex[k].search(query, { enrich: true, tag: nodeId, index: 'text' })]
         })
       }
 
@@ -148,10 +148,10 @@ const searchWorker: SearchWorker = {
         const matchField = entry.field
         entry.result.forEach((i) => {
           const { nodeId, blockId } = getNodeAndBlockIdFromCompositeKey(i.id)
-          results.push({ id: nodeId, blockId, text: i.doc?.text?.slice(0, 100), matchField })
+          results.push({ id: nodeId, blockId, data: i.doc?.data, text: i.doc?.text?.slice(0, 100), matchField })
         })
       })
-      mog('RawSearchResponses', { response })
+
       const combinedResults = new Array<GenericSearchResult>()
       results.forEach(function (item) {
         const existing = combinedResults.filter(function (v, i) {

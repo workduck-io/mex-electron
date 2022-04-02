@@ -8,16 +8,24 @@ import { useComboboxStore } from '../useComboboxStore'
 import { PrimaryText } from '../../../../style/Integration'
 import { useSearch } from '../../../../hooks/useSearch'
 import { KEYBOARD_KEYS } from '../../../../components/spotlight/Home/components/List'
-import { getBlock } from '../../../../utils/search/parseData'
-import { ComboSeperator, StyledComboHeader } from './styled'
+import { ComboboxShortcuts, ComboSeperator, StyledComboHeader } from './styled'
 import { replaceFragment } from '../hooks/useComboboxOnKeyDown'
 import { getPlateEditorRef } from '@udecode/plate'
 import { getPathFromNodeIdHookless } from '../../../../hooks/useLinks'
 import { mog } from '../../../../utils/lib/helper'
 import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
-import { QuickLinkType } from '../../../../components/mex/NodeSelect/NodeSelect'
+import { BlockIcons } from '../../Blocks/BlockIcons'
+import { DisplayShortcut } from '../../../../components/mex/Shortcuts'
+import { ShortcutText } from '../../../../components/spotlight/Home/components/Item'
 
-const BlockCombo = ({ nodeId, onSelect, isNew }: { onSelect; nodeId?: string; isNew?: boolean }) => {
+type BlockComboProps = {
+  onSelect
+  nodeId?: string
+  shortcuts: Record<string, any> | undefined
+  isNew?: boolean
+}
+
+const BlockCombo = ({ nodeId, onSelect, isNew, shortcuts }: BlockComboProps) => {
   const [index, setIndex] = useState<number>(0)
   const [blocks, setBlocks] = useState<Array<any>>(undefined)
 
@@ -52,7 +60,7 @@ const BlockCombo = ({ nodeId, onSelect, isNew }: { onSelect; nodeId?: string; is
             })
             ?.slice(0, 5)
 
-          mog('BLOCKS', { topFiveBlocks })
+          // mog('BLOCKS OF NODEID', { topFiveBlocks })
 
           setBlocks(topFiveBlocks)
           setIndex(0)
@@ -67,7 +75,7 @@ const BlockCombo = ({ nodeId, onSelect, isNew }: { onSelect; nodeId?: string; is
               return restBlock
             })
             ?.slice(0, 5)
-          mog('BLOCKS', { topFiveBlocks })
+          // mog('BLOCKS', { topFiveBlocks })
 
           setBlocks(topFiveBlocks)
           setIndex(0)
@@ -121,7 +129,7 @@ const BlockCombo = ({ nodeId, onSelect, isNew }: { onSelect; nodeId?: string; is
   const onClickSetActiveBlock = (blocks: Array<any>, index: number) => {
     if (blocks && index <= blocks.length - 1) {
       const block = blocks[index]
-      const content = getBlock(block.id, block.blockId)
+      const content = block.data
       setActiveBlock({
         ...block,
         content
@@ -176,12 +184,23 @@ const BlockCombo = ({ nodeId, onSelect, isNew }: { onSelect; nodeId?: string; is
                 // }
               }}
             >
-              <MexIcon fontSize={20} icon="ph:squares-four-fill" color={theme.colors.primary} />
+              <MexIcon fontSize={20} icon={BlockIcons[block?.data?.type]} color={theme.colors.primary} />
               <ItemCenterWrapper>{block.text && <ItemDesc>{block.text}</ItemDesc>}</ItemCenterWrapper>
             </ComboboxItem>
           </span>
         )
       })}
+      {shortcuts && blocks?.length !== 0 && textAfterBlockTrigger?.trim() && (
+        <ComboboxShortcuts>
+          {Object.entries(shortcuts).map(([key, shortcut]) => {
+            return (
+              <ShortcutText key={key}>
+                <DisplayShortcut shortcut={shortcut.keystrokes} /> <div className="text">{shortcut.title}</div>
+              </ShortcutText>
+            )
+          })}
+        </ComboboxShortcuts>
+      )}
     </ComboSeperator>
   )
 }

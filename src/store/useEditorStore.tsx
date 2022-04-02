@@ -1,12 +1,9 @@
 import React from 'react'
-import { Location } from 'slate'
 import create from 'zustand'
 import { defaultContent } from '../data/Defaults/baseData'
 import { ComboTriggerType } from '../editor/Components/combobox/useComboboxStore'
-import { ComboboxType } from '../editor/Components/multi-combobox/types'
 import { NodeContent } from '../types/data'
 import { getContent, getInitialNode } from '../utils/helpers'
-import { mog } from '../utils/lib/helper'
 
 export interface NodeProperties {
   title: string
@@ -73,7 +70,6 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
   isEditing: false,
   setIsEditing: (isEditing: boolean) => {
     if (get().isEditing === isEditing) return
-    mog(isEditing ? 'editing' : 'stopped')
     set({ isEditing })
   },
 

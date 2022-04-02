@@ -31,6 +31,8 @@ import { DisplayShortcut } from '../../../../components/mex/Shortcuts'
 import { replaceFragment } from '../hooks/useComboboxOnKeyDown'
 import PreviewMeta from './PreviewMeta'
 import { mog } from '../../../../utils/lib/helper'
+import { MexIcon } from '../../../../style/Layouts'
+import { useTheme } from 'styled-components'
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'
@@ -55,6 +57,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   const [metaData, setMetaData] = useState(undefined)
   const ref = React.useRef<any>(null) // eslint-disable-line @typescript-eslint/no-explicit-any
   const editor = useEditorState()
+  const theme = useTheme()
 
   useEffect(() => {
     // Throws error when the combobox is open and editor is switched or removed
@@ -125,7 +128,6 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   if (!combobox) return null
 
   const listItem = items[itemIndex]
-  mog('element', { listItem })
   const itemShortcut = listItem?.type ? ElementTypeBasedShortcut[listItem?.type] : undefined
 
   return (
@@ -153,7 +155,14 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
                             editor && onSelectItem(editor, item)
                           }}
                         >
-                          {item.icon && <Icon height={18} key={`${item.key}_${item.icon}`} icon={item.icon} />}
+                          {item.icon && (
+                            <MexIcon
+                              fontSize={20}
+                              key={`${item.key}_${item.icon}`}
+                              icon={item.icon}
+                              color={theme.colors.primary}
+                            />
+                          )}
                           <ItemCenterWrapper>
                             {!item.prefix ? (
                               <ItemTitle>{Item}</ItemTitle>
@@ -197,6 +206,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
                   editor && onSelectItem(editor, items[itemIndex])
                 }
               }}
+              shortcuts={itemShortcut}
               nodeId={items[itemIndex]?.key}
               isNew={items[itemIndex]?.data}
             />

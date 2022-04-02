@@ -6,7 +6,7 @@ export const defaultShortcuts = {
     category: 'Navigate'
   },
   showEditor: {
-    title: 'Editor',
+    title: 'Notes',
     keystrokes: '$mod+Shift+KeyE',
     category: 'Navigate'
   },
@@ -16,7 +16,7 @@ export const defaultShortcuts = {
     category: 'Navigate'
   },
   showIntegrations: {
-    title: 'Integrations',
+    title: 'Flows',
     keystrokes: '$mod+Shift+KeyI',
     category: 'Navigate',
     disabled: true
@@ -56,17 +56,17 @@ export const defaultShortcuts = {
 
   // Actions
   newNode: {
-    title: 'Create New Note',
+    title: 'New Note',
     keystrokes: '$mod+KeyN',
     category: 'Actions'
   },
   save: {
-    title: 'Save current Note',
+    title: 'Save Note',
     keystrokes: '$mod+KeyS',
     category: 'Actions'
   },
   refreshNode: {
-    title: 'Refresh current Note',
+    title: 'Refresh Note',
     keystrokes: '$mod+KeyR',
     category: 'Actions'
   },
@@ -108,17 +108,17 @@ export const defaultShortcuts = {
     global: true
   },
   showArchiveModal: {
-    title: 'Archive Node',
+    title: 'Archive Note',
     keystrokes: '$mod+Shift+KeyD',
     category: 'Actions'
   },
   showRefactor: {
-    title: 'Open Refactor',
+    title: 'Refactor',
     keystrokes: '$mod+Shift+KeyR',
     category: 'Actions'
   },
   showRename: {
-    title: 'Open Rename',
+    title: 'Rename',
     keystrokes: '$mod+Shift+KeyN',
     category: 'Actions'
   }

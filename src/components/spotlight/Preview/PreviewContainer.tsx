@@ -12,6 +12,7 @@ import { useHelpStore } from '../../../store/useHelpStore'
 import useOnboard from '../../../store/useOnboarding'
 import { openNodeInMex } from '../../../utils/combineSources'
 import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
+import { mog } from '../../../utils/lib/helper'
 import { useSaveChanges } from '../Search/useSearchProps'
 import { spotlightShortcuts } from '../Shortcuts/list'
 
@@ -33,6 +34,9 @@ const PreviewContainer: React.FC<PreviewProps> = ({ nodeId, preview }) => {
   const shortcuts = useHelpStore((state) => state.shortcuts)
 
   const deserializedContentNodes = getDeserializeSelectionToNodes(preview, normalMode)
+
+  mog('HELLO ', { nodeId, preview, deserializedContentNodes })
+
   useEffect(() => {
     if (preview.isSelection && deserializedContentNodes) {
       const deserializedContent = deserializedContentNodes
