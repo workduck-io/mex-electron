@@ -67,6 +67,7 @@ export const parseNode = (nodeId: string, contents: any[], title = ''): GenericS
       result.push(temp)
     }
   })
+  mog('---------------------- MOGGINNG', { result })
   return result
 }
 
