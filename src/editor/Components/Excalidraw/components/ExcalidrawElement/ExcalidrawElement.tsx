@@ -11,6 +11,7 @@ import { getRootProps } from '@udecode/plate-styled-components'
 import { debounce } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
 import { ReactEditor } from 'slate-react'
+import { mog } from '../../../../../utils/lib/helper'
 import {
   InputPrompt,
   InputWrapper,
@@ -61,13 +62,16 @@ export const ExcalidrawElement = (props: any) => {
     onChange: debounce((elements: readonly any[], state: AppState) => {
       try {
         const path = ReactEditor.findPath(props.editor, element)
-
+        mog('PATH IS', { path, element })
         if (props.editor) {
           const serializedData = serializeAsJSON(elements, state)
-          setNodes(props.editor, {
-            value: serializedData,
-            at: path
-          })
+          setNodes(
+            props.editor,
+            {
+              value: serializedData
+            },
+            { at: path }
+          )
         }
       } catch (e) {
         console.error(e)

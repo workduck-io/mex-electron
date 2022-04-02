@@ -7,12 +7,15 @@ import { FileData } from '../../types/data'
 import { getBlocks, getContent } from '../helpers'
 import { mog } from '../lib/helper'
 import { GenericSearchData, idxKey } from './../../types/search'
+import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const convertContentToRawText = (content: any[], join?: string): string => {
+export const convertContentToRawText = (content: any[], join?: string, exclude = [ELEMENT_EXCALIDRAW]): string => {
   const text: string[] = []
 
   content?.forEach((n) => {
+    if (exclude.includes(n.type)) return
+
     if (n.text && n.text !== '') text.push(n.text)
     if (n.value && n.value !== '') text.push(n.value)
     if (n.url && n.url !== '') text.push(n.url)
@@ -21,6 +24,7 @@ export const convertContentToRawText = (content: any[], join?: string): string =
       text.push(childText)
     }
   })
+
   const rawText = text.join(join ?? '')
   return rawText
 }
@@ -51,6 +55,8 @@ export const convertEntryToRawText = (nodeUID: string, entry: any[], title = '')
 export const parseNode = (nodeId: string, contents: any[], title = ''): GenericSearchData[] => {
   const result: GenericSearchData[] = []
   contents.forEach((block) => {
+    if (block.type === ELEMENT_EXCALIDRAW) return
+
     let blockText = ''
     if (block.value && block.value !== '') blockText += `${block.value}`
     if (block.url && block.url !== '') blockText += ` ${block.url}`
@@ -61,7 +67,6 @@ export const parseNode = (nodeId: string, contents: any[], title = ''): GenericS
       result.push(temp)
     }
   })
-  mog('---------------------- MOGGINNG', { result })
   return result
 }
 
