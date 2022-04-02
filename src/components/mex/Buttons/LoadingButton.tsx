@@ -39,7 +39,7 @@ export const GoogleLoginButton = ({ text }: GoogleLoginButtonProps) => {
   const baseAuthURL = 'https://workduck.auth.us-east-1.amazoncognito.com/oauth2/authorize'
   const searchParams = new URLSearchParams({
     identity_provider: 'Google',
-    response_type: 'token',
+    response_type: 'code',
     redirect_uri: GOOGLE_OAUTH_URL,
     client_id: config.cognito.APP_CLIENT_ID,
     scope: config.cognito.SCOPES

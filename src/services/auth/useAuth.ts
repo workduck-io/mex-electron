@@ -102,6 +102,7 @@ export const useAuthentication = () => {
           // Set Authenticated, user and workspace details
 
           ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
+          // * For Heap analytics
           identifyUser(email)
           addUserProperties({
             [Properties.EMAIL]: email,
@@ -128,18 +129,17 @@ export const useAuthentication = () => {
   /*
    * Login via google
    */
-  const loginViaGoogle = async (idToken: string, accessToken: string, getWorkspace = false) => {
+  const loginViaGoogle = async (code: string, clientId: string, redirectURI: string, getWorkspace = true) => {
     try {
-      const result: any = await googleSignIn(idToken, accessToken)
-      mog('Login via Google BIG success', { result })
+      const result: any = await googleSignIn(code, clientId, redirectURI)
       if (getWorkspace && result !== undefined) {
         await client
-          .get(apiURLs.getUserRecords(result.userId))
+          .get(apiURLs.getUserRecords(result.userCred.userId))
           /*
            * If the user is present in the database, then we will add properties
            */
           .then((d: any) => {
-            const userDetails = { email: result.email, userId: result.userId }
+            const userDetails = { email: result.userCred.email, userId: result.userCred.userId }
             const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
             ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
             identifyUser(userDetails.email)
@@ -162,11 +162,12 @@ export const useAuthentication = () => {
             setSensitiveData({ email: result.email, name: result.email, password: '', roles: [] })
 
             const uCred: UserCred = {
-              email: result.email,
-              userId: result.userId,
-              expiry: result.exp,
-              token: accessToken,
-              url: result.iss
+              username: result.userCred.username,
+              email: result.userCred.email,
+              userId: result.userCred.userId,
+              expiry: result.userCred.exp,
+              token: result.userCred.token,
+              url: result.userCred.iss
             }
             const newWorkspaceName = `WD_${nanoid()}`
 
@@ -192,7 +193,7 @@ export const useAuthentication = () => {
               )
               .then((d: any) => {
                 const userDetails = { email: uCred.email, userId: uCred.userId }
-                const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
+                const workspaceDetails = { id: d.data.id, name: 'WORKSPACE_NAME' }
 
                 ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
                 identifyUser(userDetails.email)
@@ -264,14 +265,23 @@ export const useAuthentication = () => {
     const newWorkspaceName = `WD_${nanoid()}`
 
     await client
-      .post(apiURLs.registerUser, {
-        user: {
-          id: uCred.userId,
-          name: uCred.email,
-          email: uCred.email
+      .post(
+        apiURLs.registerUser,
+        {
+          type: 'RegisterUserRequest',
+          user: {
+            id: uCred.userId,
+            name: uCred.email,
+            email: uCred.email
+          },
+          workspaceName: newWorkspaceName
         },
-        workspaceName: newWorkspaceName
-      })
+        {
+          headers: {
+            'mex-workspace-id': ''
+          }
+        }
+      )
       .then((d) => {
         // console.log(d.data)
         // Set workspace details
