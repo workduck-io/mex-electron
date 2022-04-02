@@ -79,7 +79,9 @@ const useEditorActions = () => {
 export const useEditorChange = (editorId: string, content: NodeEditorContent) => {
   const editor = usePlateEditorRef(editorId)
   useEffect(() => {
+    mog('content is here', { editorId, content })
     if (editor && content) {
+      mog('Inside changing...')
       editor.children = content
     }
   }, [editorId, content])

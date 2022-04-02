@@ -87,7 +87,7 @@ export const useTodoKanban = () => {
       if (rank > 1) {
         // mog('path', { path, rank })
         acc.push({
-          key: 'node',
+          key: 'note',
           id: `node_${path}`,
           icon: 'ri:file-list-2-line',
           label: path,

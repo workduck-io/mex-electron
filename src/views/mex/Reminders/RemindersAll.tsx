@@ -128,7 +128,7 @@ const useReminderFilters = () => {
     nodes.forEach((nodeid) => {
       const path = getPathFromNodeid(nodeid)
       filters.push({
-        key: 'node',
+        key: 'note',
         id: nodeid,
         label: path,
         filter: (reminder) => reminder.nodeid === nodeid,
