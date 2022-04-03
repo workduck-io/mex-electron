@@ -16,7 +16,7 @@ import { GenericSearchResult } from '../types/search'
 - Sorting [:?]
 */
 
-export type FilterKey = 'node' | 'tag' | 'date' | 'state' | 'has'
+export type FilterKey = 'note' | 'tag' | 'date' | 'state' | 'has'
 export interface SearchFilter<Item> {
   key: FilterKey
   id: string
@@ -149,7 +149,7 @@ export const useFilters = <Item>() => {
       if (rank > 1) {
         // mog('path', { path, rank })
         acc.push({
-          key: 'node',
+          key: 'note',
           id: `node_${path}`,
           icon: 'ri:file-list-2-line',
           label: path,

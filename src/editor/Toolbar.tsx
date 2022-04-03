@@ -92,7 +92,7 @@ const Toolbar = () => {
           singleton={target}
           icon={lightbulbFlashLine}
           shortcut={shortcuts.showSuggestedNodes.keystrokes}
-          title="Suggestions"
+          title="Smart Suggestions"
           highlight={infobar.mode === 'suggestions'}
           onClick={toggleSuggestedNodes}
         />
@@ -101,7 +101,7 @@ const Toolbar = () => {
           size={24}
           icon={bubbleChartLine}
           shortcut={shortcuts.showGraph.keystrokes}
-          title="Graph"
+          title="Context View"
           highlight={infobar.mode === 'graph'}
           onClick={toggleGraph}
         />

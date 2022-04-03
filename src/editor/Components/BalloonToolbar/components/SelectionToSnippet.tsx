@@ -4,7 +4,7 @@ import React from 'react'
 import { useTransform } from './useTransform'
 
 /**
- * Toolbar button to Create new node from editor selection
+ * Toolbar button to Create new note from editor selection
  */
 export const SelectionToSnippet = ({ ...props }: ToolbarButtonProps) => {
   const editor = usePlateEditorState()!

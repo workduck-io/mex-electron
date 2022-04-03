@@ -39,7 +39,14 @@ import {
   TElement,
   TodoListItemNodeData,
   insertNodes,
-  AutoformatQueryOptions
+  AutoformatQueryOptions,
+  autoformatSubscriptNumbers,
+  autoformatComparison,
+  autoformatEquality,
+  autoformatFraction,
+  autoformatSubscriptSymbols,
+  autoformatSuperscriptNumbers,
+  autoformatSuperscriptSymbols
 } from '@udecode/plate'
 
 import { ELEMENT_SYNC_BLOCK } from '../Components/SyncBlock'
@@ -236,6 +243,31 @@ export const optionsSoftBreakPlugin = {
     ]
   }
 }
+
+export const autoformatMath: AutoformatRule[] = [
+  ...autoformatComparison,
+  ...autoformatEquality,
+  ...autoformatFraction,
+  {
+    mode: 'text',
+    match: '+-',
+    format: '±'
+  },
+  {
+    mode: 'text',
+    match: '%%',
+    format: '‰'
+  },
+  {
+    mode: 'text',
+    match: ['%%%', '‰%'],
+    format: '‱'
+  },
+  ...autoformatSuperscriptSymbols,
+  ...autoformatSubscriptSymbols,
+  ...autoformatSuperscriptNumbers,
+  ...autoformatSubscriptNumbers
+]
 
 export const optionsExitBreakPlugin = {
   options: {

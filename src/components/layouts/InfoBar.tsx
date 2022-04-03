@@ -50,12 +50,12 @@ const InfoBar = () => {
           toggleGraph()
         })
       },
-      [shortcuts.showSyncBlocks.keystrokes]: (event) => {
-        event.preventDefault()
-        shortcutHandler(shortcuts.showSyncBlocks, () => {
-          toggleSyncBlocks()
-        })
-      },
+      // [shortcuts.showSyncBlocks.keystrokes]: (event) => {
+      //   event.preventDefault()
+      //   shortcutHandler(shortcuts.showSyncBlocks, () => {
+      //     toggleSyncBlocks()
+      //   })
+      // },
       [shortcuts.showSuggestedNodes.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSuggestedNodes, () => {

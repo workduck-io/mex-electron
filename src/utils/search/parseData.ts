@@ -7,17 +7,24 @@ import { FileData } from '../../types/data'
 import { getBlocks, getContent } from '../helpers'
 import { mog } from '../lib/helper'
 import { GenericSearchData, idxKey } from './../../types/search'
+import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const convertContentToRawText = (content: any[], join?: string): string => {
+export const convertContentToRawText = (content: any[], join?: string, exclude = [ELEMENT_EXCALIDRAW]): string => {
   const text: string[] = []
+
   content?.forEach((n) => {
+    if (exclude.includes(n.type)) return
+
     if (n.text && n.text !== '') text.push(n.text)
+    if (n.value && n.value !== '') text.push(n.value)
+    if (n.url && n.url !== '') text.push(n.url)
     if (n.children && n.children.length > 0) {
       const childText = convertContentToRawText(n.children, join ?? '')
       text.push(childText)
     }
   })
+
   const rawText = text.join(join ?? '')
   return rawText
 }
@@ -47,11 +54,16 @@ export const convertEntryToRawText = (nodeUID: string, entry: any[], title = '')
 
 export const parseNode = (nodeId: string, contents: any[], title = ''): GenericSearchData[] => {
   const result: GenericSearchData[] = []
-
   contents.forEach((block) => {
-    const blockText = convertContentToRawText(block.children)
-    if (blockText.length !== 0) {
-      const temp: GenericSearchData = { id: nodeId, text: blockText, blockId: block.id, title: title }
+    if (block.type === ELEMENT_EXCALIDRAW) return
+
+    let blockText = ''
+    if (block.value && block.value !== '') blockText += `${block.value}`
+    if (block.url && block.url !== '') blockText += ` ${block.url}`
+    blockText += ' ' + convertContentToRawText(block.children, ' ')
+
+    if (blockText.trim().length !== 0) {
+      const temp: GenericSearchData = { id: nodeId, text: blockText, blockId: block.id, title: title, data: block }
       result.push(temp)
     }
   })
@@ -99,10 +111,16 @@ export const convertDataToIndexable = (data: FileData) => {
         if (v.type === 'editor' && k !== '__null__' && titleNodeMap.has(k)) {
           if (!nodeBlockMap[k]) nodeBlockMap[k] = []
           v.content.forEach((block) => {
-            const blockText = convertContentToRawText(block.children)
+            const blockText = convertContentToRawText(block.children, ' ')
             if (blockText.length !== 0) {
               nodeBlockMap[k].push(block.id)
-              const temp: GenericSearchData = { id: k, text: blockText, blockId: block.id, title: titleNodeMap.get(k) }
+              const temp: GenericSearchData = {
+                id: k,
+                text: blockText,
+                blockId: block.id,
+                title: titleNodeMap.get(k),
+                data: block
+              }
               idxResult.push(temp)
             }
           })

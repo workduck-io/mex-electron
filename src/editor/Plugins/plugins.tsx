@@ -14,7 +14,6 @@ import {
   autoformatArrow,
   autoformatLegal,
   autoformatLegalHtml,
-  autoformatMath,
   autoformatPunctuation,
   autoformatSmartQuotes,
   createAlignPlugin,
@@ -55,7 +54,8 @@ import {
   optionsResetBlockTypePlugin,
   optionsSelectOnBackspacePlugin,
   optionsSoftBreakPlugin,
-  optionsImagePlugin
+  optionsImagePlugin,
+  autoformatMath
 } from './pluginOptions'
 
 import { ExcalidrawElement } from '../Components/Excalidraw'
@@ -133,8 +133,8 @@ export const generatePlugins = (options: PluginOptionType) => {
           ...autoformatSmartQuotes,
           ...autoformatLegal,
           ...autoformatLegalHtml,
-          ...autoformatArrow,
           ...autoformatMath,
+          ...autoformatArrow,
           ...optionsAutoFormatRule,
           {
             mode: 'block',

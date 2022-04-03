@@ -7,6 +7,7 @@ export interface GenericSearchData {
   blockId?: string
   title?: string
   text: string
+  data?: any
   tag?: string[]
 }
 
@@ -21,6 +22,7 @@ export interface GenericSearchResult {
   blockId?: string
   title?: string
   text?: string
+  data?: any
   matchField?: string[]
   tag?: string[]
 }

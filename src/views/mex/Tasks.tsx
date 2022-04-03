@@ -53,8 +53,6 @@ const Tasks = () => {
 
   const { push } = useNavigation()
 
-  console.log('Tasks', { nodesTodo })
-
   const todos = useMemo(() => Object.entries(nodesTodo), [nodesTodo])
 
   const {

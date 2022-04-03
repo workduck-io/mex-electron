@@ -12,6 +12,8 @@ import h3 from '@iconify/icons-ri/h-3'
 import italicIcon from '@iconify/icons-ri/italic'
 import listOrdered from '@iconify/icons-ri/list-ordered'
 import listUnordered from '@iconify/icons-ri/list-unordered'
+import strikeThrough from '@iconify/icons-ri/strikethrough'
+
 import { Icon } from '@iconify/react'
 import {
   AlignToolbarButton,
@@ -28,6 +30,7 @@ import {
   MARK_BOLD,
   MARK_CODE,
   MARK_ITALIC,
+  MARK_STRIKETHROUGH,
   ToolbarButtonProps,
   usePlateEditorRef
 } from '@udecode/plate'
@@ -119,6 +122,10 @@ const BallonMarkToolbarButtons = () => {
         type={getPluginType(editor, MARK_BOLD)}
         icon={<Icon height={20} icon={boldIcon} />}
         tooltip={{ content: 'Bold (⌘B)', ...tooltip }}
+      />
+      <MarkToolbarButton
+        type={getPluginType(editor, MARK_STRIKETHROUGH)}
+        icon={<Icon height={20} icon={strikeThrough} />}
       />
       <MarkToolbarButton
         type={getPluginType(editor, MARK_ITALIC)}

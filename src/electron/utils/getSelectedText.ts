@@ -37,8 +37,14 @@ export const getSelectedText = async (): Promise<SelectionType> => {
   simulateCopy()
 
   const windowDetails = await activeWindow()
+  let selectedText
 
-  const selectedText = clipboard.readHTML()
+  try {
+    selectedText = clipboard.readHTML()
+  } catch (err) {
+    selectedText = clipboard.readText()
+  }
+
   clipboard.writeHTML(contentBackup)
 
   return {

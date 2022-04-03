@@ -37,7 +37,7 @@ const useNavlinks = () => {
       //   isComingSoon: true
       // },
       {
-        title: 'Editor',
+        title: 'Notes',
         path: `${ROUTE_PATHS.node}/${nodeid}`,
         shortcut: shortcuts.showEditor.keystrokes,
         icon: GetIcon(fileDocument)
@@ -58,7 +58,7 @@ const useNavlinks = () => {
       },
 
       {
-        title: 'Integrations',
+        title: 'Flows',
         path: ROUTE_PATHS.integrations,
         // shortcut: shortcuts.showIntegrations.keystrokes,
         icon: GetIcon(appsLine),

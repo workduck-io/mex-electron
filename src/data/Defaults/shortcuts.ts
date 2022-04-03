@@ -6,7 +6,7 @@ export const defaultShortcuts = {
     category: 'Navigate'
   },
   showEditor: {
-    title: 'Editor',
+    title: 'Notes',
     keystrokes: '$mod+Shift+KeyE',
     category: 'Navigate'
   },
@@ -16,13 +16,13 @@ export const defaultShortcuts = {
     category: 'Navigate'
   },
   showIntegrations: {
-    title: 'Integrations',
+    title: 'Flows',
     keystrokes: '$mod+Shift+KeyI',
     category: 'Navigate',
     disabled: true
   },
   showSuggestedNodes: {
-    title: 'Suggest Nodes',
+    title: 'Smart Suggestions',
     keystrokes: '$mod+/',
     category: 'Actions'
   },
@@ -56,17 +56,17 @@ export const defaultShortcuts = {
 
   // Actions
   newNode: {
-    title: 'Create New Node',
+    title: 'New Note',
     keystrokes: '$mod+KeyN',
     category: 'Actions'
   },
   save: {
-    title: 'Save current Node',
+    title: 'Save Note',
     keystrokes: '$mod+KeyS',
     category: 'Actions'
   },
   refreshNode: {
-    title: 'Refresh current Node',
+    title: 'Refresh Note',
     keystrokes: '$mod+KeyR',
     category: 'Actions'
   },
@@ -75,12 +75,12 @@ export const defaultShortcuts = {
     keystrokes: '$mod+Backslash',
     category: 'Actions'
   },
-  showSyncBlocks: {
-    title: 'Flow Links',
-    keystrokes: '$mod+Shift+KeyF',
-    category: 'Actions',
-    disabled: true
-  },
+  // showSyncBlocks: {
+  //   title: 'Flow Links',
+  //   keystrokes: '$mod+Shift+KeyF',
+  //   category: 'Actions',
+  //   disabled: true
+  // },
   showReminder: {
     title: 'Reminders',
     keystrokes: '$mod+Shift+KeyM',
@@ -108,17 +108,17 @@ export const defaultShortcuts = {
     global: true
   },
   showArchiveModal: {
-    title: 'Archive Node',
+    title: 'Archive Note',
     keystrokes: '$mod+Shift+KeyD',
     category: 'Actions'
   },
   showRefactor: {
-    title: 'Open Refactor',
+    title: 'Refactor',
     keystrokes: '$mod+Shift+KeyR',
     category: 'Actions'
   },
   showRename: {
-    title: 'Open Rename',
+    title: 'Rename',
     keystrokes: '$mod+Shift+KeyN',
     category: 'Actions'
   }

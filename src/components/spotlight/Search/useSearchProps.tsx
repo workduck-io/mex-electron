@@ -57,7 +57,7 @@ export const useSaveChanges = () => {
     if (options?.removeHighlight) {
       const deserializedContent = getDeserializeSelectionToNodes(preview, false)
       if (deserializedContent && preview.isSelection) {
-        const previewContent = deserializedContent
+        const previewContent = [{ children: deserializedContent }]
         const activeNodeContent = getContent(node.nodeid)?.content ?? []
 
         editorContent = [...activeNodeContent, ...previewContent]

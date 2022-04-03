@@ -5,7 +5,6 @@ import { PriorityType, TodoRanks, TodoStatus, TodoStatusRanks, TodoType } from '
 import create from 'zustand'
 import useTodoStore from '../store/useTodoStore'
 import { SearchFilter, FilterStore } from './useFilters'
-import { mog } from '../utils/lib/helper'
 import { getAllParentIds, isElder } from '../components/mex/Sidebar/treeUtils'
 import { useLinks } from './useLinks'
 import { KanbanBoard, KanbanCard, KanbanColumn } from '../types/search'
@@ -88,7 +87,7 @@ export const useTodoKanban = () => {
       if (rank > 1) {
         // mog('path', { path, rank })
         acc.push({
-          key: 'node',
+          key: 'note',
           id: `node_${path}`,
           icon: 'ri:file-list-2-line',
           label: path,
@@ -136,7 +135,7 @@ export const useTodoKanban = () => {
         .forEach((todo) => {
           todoBoard.columns
             .find((column) => column.id === todo.metadata.status)
-            .cards.push({
+            ?.cards.push({
               id: `KANBAN_ID_${todo.nodeid}_${todo.id}`,
               todo: todo
             })

@@ -16,9 +16,6 @@ import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 import { useGraphStore } from '../store/useGraphStore'
 import { useEditorStore } from '../store/useEditorStore'
 
-import { getBlocks } from '../utils/helpers'
-import { mog } from '../utils/lib/helper'
-
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
   editorId: string
