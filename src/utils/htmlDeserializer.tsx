@@ -1,4 +1,10 @@
-import { deserializeHtml, getPlateEditorRef, htmlBodyToFragment, htmlStringToDOMNode } from '@udecode/plate-core'
+import {
+  deserializeHtml,
+  ELEMENT_DEFAULT,
+  getPlateEditorRef,
+  htmlBodyToFragment,
+  htmlStringToDOMNode
+} from '@udecode/plate-core'
 
 import { BlockType } from '../store/useBlockStore'
 import { NodeEditorContent } from '../types/Types'
@@ -6,6 +12,8 @@ import components from '../editor/Components/components'
 import { createPlateUIEditor } from '@udecode/plate'
 import getPlugins from '../editor/Plugins/plugins'
 import { updateIds } from './dataTransform'
+import { Text } from 'slate'
+import { generateTempId } from '../data/Defaults/idPrefixes'
 
 export const plateEditor = () => {
   const plugins = getPlugins(components, { exclude: { dnd: true } })
@@ -22,6 +30,9 @@ export const getDeserializeSelectionToNodes = (
 
   try {
     nodes = editor ? deserializeHtml(editor, { element, stripWhitespace: true }) : undefined
+    if (nodes && Text.isText(nodes[0])) {
+      nodes = [{ id: generateTempId(), type: ELEMENT_DEFAULT, children: nodes }]
+    }
     if (nodes) nodes = nodes.map((block) => updateIds(block, true))
     if (nodes) nodes = nodes.map((node) => highlightNodes(node, highlight))
   } catch (err) {
