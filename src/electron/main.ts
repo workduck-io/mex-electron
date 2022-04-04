@@ -408,14 +408,12 @@ app.on('open-url', function (event, url) {
   if (code) {
     const type = 'login_google'
     mex.webContents.send(IpcAction.OAUTH, { type, code })
-    spotlight.webContents.send(IpcAction.OAUTH, { type, code })
   } else {
     const accessToken = URLparams.get('access_token')
     const idToken = URLparams.get('id_token')
     const refreshToken = URLparams.get('refresh_token')
     const type = URLparams.get('type')
     mex.webContents.send(IpcAction.OAUTH, { type, accessToken, idToken, refreshToken })
-    spotlight.webContents.send(IpcAction.OAUTH, { type, accessToken, idToken, refreshToken })
   }
 })
 
