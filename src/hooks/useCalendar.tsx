@@ -100,7 +100,7 @@ const convertCalendarEventToAction = (e: CalendarEvent) => {
       }
     },
     extras: {
-      base_url: e.links.meet
+      base_url: e.links.meet ?? e.links.event
     }
   }
 }

@@ -33,14 +33,14 @@ export const useTokenStore = create<TokenStore>((set, get) => ({
     set({ data: newData })
     return newData
   },
-  updateGoogleCalendarToken: (accessToken: string, refreshToken: string) => {
+  updateGoogleCalendarToken: (accessToken: string, idToken: string) => {
     const newData = {
       ...get().data,
       googleAuth: {
         calendar: {
           ...get().data.googleAuth.calendar,
           accessToken,
-          refreshToken
+          idToken
         }
       }
     }
