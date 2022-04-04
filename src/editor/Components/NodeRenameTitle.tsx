@@ -14,6 +14,7 @@ import { useLinks } from '../../hooks/useLinks'
 import { useNavigation } from '../../hooks/useNavigation'
 import { useRefactor } from '../../hooks/useRefactor'
 import { useRenameStore } from '../../store/useRenameStore'
+import { useAnalysisStore } from '../../store/useAnalysis'
 
 const Wrapper = styled.div`
   position: relative;
@@ -72,6 +73,7 @@ const NodeRenameTitle = () => {
   const to = useRenameStore((store) => store.to)
   // const from = useRenameStore((store) => store.from)
   const mockRefactored = useRenameStore((store) => store.mockRefactored)
+  const nodeTitle = useAnalysisStore((state) => state.analysis.title)
 
   const { push } = useNavigation()
   const openModal = useRenameStore((store) => store.openModal)
@@ -153,7 +155,7 @@ const NodeRenameTitle = () => {
     <Wrapper>
       {isReserved(nodeFrom) ? (
         <Tippy theme="mex" placement="bottom-start" content="Reserved Node">
-          <TitleStatic>{nodeFrom}</TitleStatic>
+          <TitleStatic>{nodeTitle?.length > 0 ? nodeTitle : nodeFrom}</TitleStatic>
         </Tippy>
       ) : editable ? (
         <WrappedNodeSelect
@@ -175,7 +177,7 @@ const NodeRenameTitle = () => {
               setEditable(true)
             }}
           >
-            {nodeFrom}
+            {nodeTitle?.length > 0 ? nodeTitle : nodeFrom}
           </TitleStatic>
         </Tippy>
       )}

@@ -148,7 +148,15 @@ export const useLinks = () => {
     if (link) return link.path
   }
 
-  return { getAllLinks, getLinks, getBacklinks, updateLinksFromContent, getNodeidFromPath, getPathFromNodeid, createLink }
+  return {
+    getAllLinks,
+    getLinks,
+    getBacklinks,
+    updateLinksFromContent,
+    getNodeidFromPath,
+    getPathFromNodeid,
+    createLink
+  }
 }
 
 export const getNodeidFromPathAndLinks = (links: ILink[], path: string) => {
@@ -166,3 +174,12 @@ export const getPathFromNodeIdHookless = (nodeid: string) => {
   if (link) return link.path
   if (archivedLink) return archivedLink.path
 }
+
+/* 
+
+   at useEditorBuffer (useEditorBuffer.tsx?2981:30:36)
+   at useRefactor (useRefactor.tsx?2f12:40:49)
+   at useDataSaverFromContent (Saver.tsx?2625:38:39)
+   at useEditorBuffer
+
+*/

@@ -1,5 +1,8 @@
 import { CustomEvents } from '../../services/analytics/events'
 import { trim } from 'lodash'
+import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
+import { DRAFT_NODE, DRAFT_PREFIX } from '../../data/Defaults/idPrefixes'
+import { mog } from './helper'
 
 export const capitalize = (str: string) => {
   if (!str) return ''
@@ -19,6 +22,24 @@ export const getEventNameFromElement = (location: string, action: string, elemen
   const actionWithDetails = CustomEvents[key]
 
   return `${location} - ${actionWithDetails}`
+}
+
+export const checkIfUntitledDraftNode = (path: string) => {
+  mog('CALLING IS DRAFT', { path })
+  if (!path) return
+
+  const pathParts = path.split(SEPARATOR)
+  const length = pathParts.length
+
+  if (length > 1) {
+    const parent = pathParts.at(0)
+    const child = pathParts.at(-1)
+
+    const isUntitled = parent === DRAFT_PREFIX && child?.startsWith(DRAFT_NODE)
+    return isUntitled
+  }
+
+  return false
 }
 
 export const NODE_PATH_SPACER = ' '

@@ -45,8 +45,8 @@ export const useRefactor = () => {
    * from: the current path
    * to: the new changed path
    */
-  const getMockRefactor = (from: string, to: string): NodeLink[] => {
-    saveAndClearBuffer()
+  const getMockRefactor = (from: string, to: string, clearBuffer = true): NodeLink[] => {
+    if (clearBuffer) saveAndClearBuffer()
     // saveQ()
     const refactorMap = ilinks.filter((i) => {
       const match = isMatch(i.path, from)
@@ -60,13 +60,13 @@ export const useRefactor = () => {
       }
     })
 
-    console.log({ from, to, refactorMap, refactored })
+    mog('MOCK REFACTOR', { ilinks, from, to, refactorMap, refactored })
     return refactored
   }
 
-  const execRefactor = (from: string, to: string) => {
+  const execRefactor = (from: string, to: string, clearBuffer = true) => {
     trackEvent(CustomEvents.REFACTOR, { 'mex-from': from, 'mex-to': to })
-    const refactored = getMockRefactor(from, to)
+    const refactored = getMockRefactor(from, to, clearBuffer)
 
     mog('execRefactor', { from, to, refactored })
 

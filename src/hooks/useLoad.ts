@@ -17,6 +17,13 @@ import useToggleElements from './useToggleElements'
 import { useLayoutStore } from '../store/useLayoutStore'
 import { useEditor } from 'slate-react'
 import { useState } from 'react'
+import { useRefactor } from './useRefactor'
+import { getParentId } from '../components/mex/Sidebar/treeUtils'
+import { useAnalysisStore } from '../store/useAnalysis'
+import { checkIfUntitledDraftNode } from '../utils/lib/strings'
+import { getPathFromNodeIdHookless } from './useLinks'
+import { doesLinkRemain } from '../components/mex/Refactor/doesLinkRemain'
+import { useNavigation } from './useNavigation'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -44,12 +51,43 @@ const useLoad = () => {
   const setSuggestions = useSuggestionStore((store) => store.setSuggestions)
   const { toggleSuggestedNodes } = useToggleElements()
   const infobar = useLayoutStore((store) => store.infobar)
+
   const setLoadingNodeid = useEditorStore((store) => store.setLoadingNodeid)
+  // const { push } = useNavigation()
   const clearLoadingNodeid = useEditorStore((store) => store.clearLoadingNodeid)
 
   // const { saveNodeAPIandFs } = useDataSaverFromContent()
   const { saveAndClearBuffer } = useEditorBuffer()
+  const { execRefactor } = useRefactor()
   // const { saveQ } = useSaveQ()
+
+  const saveNodeName = (nodeId: string) => {
+    const draftNodeTitle = useAnalysisStore.getState().analysis.title
+    mog('NODE NAME', { draftNodeTitle })
+    if (!draftNodeTitle) return
+
+    const nodePath = getPathFromNodeIdHookless(nodeId)
+    const isUntitled = checkIfUntitledDraftNode(nodePath)
+
+    if (!isUntitled) return
+
+    const parentNodePath = getParentId(nodePath)
+    const newNodePath = `${parentNodePath}.${draftNodeTitle}`
+
+    try {
+      // mog('RENAMING NODE', { nodePath, newNodePath })
+      const res = execRefactor(nodePath, newNodePath, false)
+
+      // if (doesLinkRemain(nodePath, res)) {
+      //   push(nodeId, { savePrev: false })
+      // } else if (res.length > 0) {
+      //   const nodeid = getPathFromNodeIdHookless(res[0].to)
+      //   push(nodeid, { savePrev: false })
+      // }
+    } catch (err) {
+      toast('Unable to rename node')
+    }
+  }
 
   const getNode = (nodeid: string): NodeProperties => {
     const ilinks = useDataStore.getState().ilinks
@@ -178,9 +216,11 @@ const useLoad = () => {
   const loadNode: LoadNodeFn = (nodeid, options = { savePrev: true, fetch: USE_API(), withLoading: true }) => {
     mog('loadNode', { nodeid, options })
     const hasBeenLoaded = false
+    const currentNodeId = useEditorStore.getState().node.nodeid
+
     if (!options.node && !isLocalNode(nodeid).isLocal) {
       toast.error('Selected node does not exist.')
-      nodeid = useEditorStore.getState().node.nodeid
+      nodeid = currentNodeId
     }
 
     setLoadingNodeid(nodeid)
@@ -196,7 +236,9 @@ const useLoad = () => {
       // if (q.includes(nodeid)) {
       //   hasBeenLoaded = true
       // }
+      saveNodeName(currentNodeId)
       saveAndClearBuffer()
+
       // if (q.length > 0) {
       // saveQ()
       // }
@@ -225,7 +267,16 @@ const useLoad = () => {
     loadNodeAndReplaceContent(nodeProps, { ...nodeContent, content: appendedContent })
   }
 
-  return { loadNode, fetchAndSaveNode, loadNodeAndAppend, isLocalNode, loadNodeProps, getNode, saveApiAndUpdate }
+  return {
+    loadNode,
+    fetchAndSaveNode,
+    saveNodeName,
+    loadNodeAndAppend,
+    isLocalNode,
+    loadNodeProps,
+    getNode,
+    saveApiAndUpdate
+  }
 }
 
 export default useLoad

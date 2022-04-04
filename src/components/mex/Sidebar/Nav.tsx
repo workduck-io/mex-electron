@@ -9,9 +9,10 @@ import { NavLink, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useApi } from '../../../apis/useSaveApi'
+import { DRAFT_NODE } from '../../../data/Defaults/idPrefixes'
 import { IpcAction } from '../../../data/IpcAction'
 import { GetIcon } from '../../../data/links'
-import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import { getNewDraftKey, getUntitledDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
 import useLayout from '../../../hooks/useLayout'
@@ -119,8 +120,9 @@ const Nav = ({ links }: NavProps) => {
   const [source, target] = useSingleton()
 
   const createNewNode = () => {
-    const newNodeId = getNewDraftKey()
-    const node = addILink({ ilink: newNodeId })
+    const newNodeId = getUntitledDraftKey()
+    const node = addILink({ ilink: newNodeId, showAlert: false })
+
     if (node === undefined) {
       toast.error('The node clashed')
       return

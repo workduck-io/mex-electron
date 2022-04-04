@@ -86,7 +86,7 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
     const userILinks = archived ? ilinks.map((val) => (val.path === uniquePath ? { ...val, nodeid } : val)) : ilinks
 
-    mog('Adding ILink', { ilink, uniquePath, nodeid, parentId, archived, newLink, newLinks, userILinks, parents })
+    // mog('Adding ILink', { ilink, uniquePath, nodeid, parentId, archived, newLink, newLinks, userILinks, parents })
     set({
       ilinks: [...userILinks, ...newILinks]
     })

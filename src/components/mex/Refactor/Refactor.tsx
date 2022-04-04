@@ -135,14 +135,17 @@ const Refactor = () => {
 
   const handleRefactor = () => {
     const res = execRefactor(from, to)
-    const path = useEditorStore.getState().node.id
+
+    const path = useEditorStore.getState().node.path
     const nodeid = useEditorStore.getState().node.nodeid
+
     if (doesLinkRemain(path, res)) {
       push(nodeid, { savePrev: false })
     } else if (res.length > 0) {
       const nodeid = getNodeidFromPath(res[0].to)
       push(nodeid, { savePrev: false })
     }
+
     closeModal()
   }
 
