@@ -36,6 +36,7 @@ import { useReminders, useReminderStore } from '../../../hooks/useReminders'
 import { useCalendar, useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
 import { useTokens } from '../../../services/auth/useTokens'
 import { GOOGLE_OAUTH_URL } from '../../../apis/routes'
+import toast from 'react-hot-toast'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -252,7 +253,7 @@ const Init = () => {
           })
           break
         default:
-          await loginViaGoogle(data.code, config.cognito.APP_CLIENT_ID, GOOGLE_OAUTH_URL)
+          toast('Something went wrong')
       }
     })
     // Setup recieving the analysis call
