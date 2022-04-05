@@ -360,6 +360,17 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
     }
   }}
 
+  ${({ theme, selected }) =>
+    selected &&
+    css`
+      background-color: ${theme.colors.gray[8]};
+      /* border: 1px solid ${theme.colors.primary} !important; */
+      ${ResultTitle} {
+        font-weight: bold;
+        color: ${theme.colors.primary};
+      }
+    `}
+    
   border-radius: ${({ theme }) => theme.borderRadius.small};
   ${SearchTransition}
 `

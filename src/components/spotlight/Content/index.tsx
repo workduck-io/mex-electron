@@ -14,7 +14,7 @@ import SideBar from '../SideBar'
 import { StyledContent } from './styled'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import { getListItemFromNode } from '../Home/helper'
-import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import { getNewDraftKey, getUntitledDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { initActions } from '../../../data/Actions'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
@@ -110,7 +110,7 @@ const Content = () => {
       const isNew = resultNode?.extras?.new
       const val = search.type === CategoryType.quicklink ? search.value.slice(2) : search.value
 
-      const nodeValue = val || getNewDraftKey()
+      const nodeValue = val || getUntitledDraftKey()
       const node = isNew ? createNodeWithUid(nodeValue) : getNode(resultNode?.id ?? '')
       setPreviewEditorNode(node)
     }

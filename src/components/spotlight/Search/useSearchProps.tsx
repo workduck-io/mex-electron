@@ -14,6 +14,9 @@ import { useRecentsStore } from '../../../store/useRecentsStore'
 import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 
 import { useSearch } from '../../../hooks/useSearch'
+import useLoad from '../../../hooks/useLoad'
+import { checkIfUntitledDraftNode } from '../../../utils/lib/strings'
+import { getTitleFromContent } from '../../../utils/search/parseData'
 
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
@@ -49,19 +52,32 @@ export const useSaveChanges = () => {
 
   const { setSearch } = useSpotlightContext()
 
+  const { saveNodeName } = useLoad()
   const { updateDocument } = useSearch()
 
   const saveIt = async (options?: SaveItProps) => {
     let editorContent = getPlateSelectors().value()
+    const existingContent = getContent(node.nodeid)
 
     if (options?.removeHighlight) {
       const deserializedContent = getDeserializeSelectionToNodes(preview, false)
       if (deserializedContent && preview.isSelection) {
         const previewContent = deserializedContent
-        const activeNodeContent = getContent(node.nodeid)?.content ?? []
+        const activeNodeContent = existingContent?.content ?? []
 
         editorContent = [...activeNodeContent, ...previewContent]
       }
+    }
+
+    // * Check if draft node
+
+    const metadata = existingContent?.metadata ?? {}
+    const isUntitledDraftNode = checkIfUntitledDraftNode(node.path)
+    const isNewDraftNode = metadata?.createdAt === metadata?.updatedAt
+
+    if (isNewDraftNode || isUntitledDraftNode) {
+      const title = getTitleFromContent(editorContent)
+      saveNodeName(node.nodeid, title)
     }
 
     onSave(node, true, false, editorContent)

@@ -9,7 +9,7 @@ import useDataStore from '../store/useDataStore'
 import { NodeLink } from '../types/relations'
 import { mog } from '../utils/lib/helper'
 import { getNodeIcon } from '../utils/lib/icons'
-import { isMatch } from '../utils/lib/paths'
+import { getUniquePath, isMatch } from '../utils/lib/paths'
 import { useEditorBuffer } from './useEditorBuffer'
 
 export const useRefactor = () => {
@@ -48,15 +48,27 @@ export const useRefactor = () => {
   const getMockRefactor = (from: string, to: string, clearBuffer = true): NodeLink[] => {
     if (clearBuffer) saveAndClearBuffer()
     // saveQ()
+    const ilinks = useDataStore.getState().ilinks
+
     const refactorMap = ilinks.filter((i) => {
       const match = isMatch(i.path, from)
       return match
     })
 
+    const allPaths = ilinks.map((link) => link.path)
+
     const refactored = refactorMap.map((f) => {
+      const uniquePath = getUniquePath(to, allPaths, true)
+
+      if (uniquePath)
+        return {
+          from: f.path,
+          to: uniquePath?.unique
+        }
+
       return {
         from: f.path,
-        to: f.path.replace(from, to)
+        to: f.path
       }
     })
 
@@ -71,6 +83,8 @@ export const useRefactor = () => {
     mog('execRefactor', { from, to, refactored })
 
     // Generate the new links
+    const ilinks = useDataStore.getState().ilinks
+
     const newIlinks = ilinks.map((i) => {
       for (const ref of refactored) {
         if (ref.from === i.path) {
