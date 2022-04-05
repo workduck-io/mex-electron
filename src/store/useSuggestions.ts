@@ -16,7 +16,11 @@ type SuggestionStoreType = {
 
 const useSuggestionStore = create<SuggestionStoreType>((set, get) => ({
   suggestions: [],
-  setSuggestions: (suggestions: SuggestionType[]) => set({ suggestions }),
+  setSuggestions: (suggestions: SuggestionType[]) => {
+    const pinnedSuggestions = get().pinnedSuggestions
+
+    set({ suggestions: suggestions.filter((s) => pinnedSuggestions.filter((p) => p.id === s.id).length === 0) })
+  },
   pinnedSuggestions: [],
   pinSuggestion: (suggestionToPin: SuggestionType) => {
     const suggestions = get().suggestions.filter((suggestion) => suggestion.id !== suggestionToPin.id)
