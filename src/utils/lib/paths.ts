@@ -47,10 +47,14 @@ export const isReservedOrClash = (path: string, paths: string[]) => {
  *
  * If there are no clashes it returns the original path as is.
  */
-export const getUniquePath = (path: string, paths: string[], showNotification = true): { unique: string } | false => {
+export const getUniquePath = (
+  path: string,
+  paths: string[],
+  showNotification = true
+): { unique: string } | undefined => {
   // Is path reserved
   if (isReserved(path)) {
-    return false
+    return undefined
   }
 
   // Is path is already present (Clash)

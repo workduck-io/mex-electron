@@ -31,10 +31,9 @@ export const useEditorBuffer = () => {
   const clearBuffer = useBufferStore((s) => s.clear)
   const { saveData } = useSaveData()
 
-  const { saveNodeWithValue } = useDataSaverFromContent()
+  const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
 
   const addOrUpdateValBuffer = (nodeid: string, val: NodeEditorContent) => {
-    // mog('Buff up', { nodeid, val })
     add2Buffer(nodeid, val)
   }
 
@@ -51,7 +50,7 @@ export const useEditorBuffer = () => {
           const res = areEqual(content.content, val)
           // const mT = measureTime(() => areEqual(content.content, val))
           if (!res) {
-            saveNodeWithValue(nodeid, val)
+            saveEditorValueAndUpdateStores(nodeid, val, true)
           }
           return !res
         })

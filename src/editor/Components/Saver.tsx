@@ -5,7 +5,10 @@ import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import tinykeys from 'tinykeys'
 import { useApi } from '../../apis/useSaveApi'
-import { useLinks } from '../../hooks/useLinks'
+import { getParentId } from '../../components/mex/Sidebar/treeUtils'
+import { getPathFromNodeIdHookless, useLinks } from '../../hooks/useLinks'
+import useLoad from '../../hooks/useLoad'
+import { useRefactor } from '../../hooks/useRefactor'
 import { useSaveData } from '../../hooks/useSaveData'
 import { useSearch } from '../../hooks/useSearch'
 import { useKeyListener } from '../../hooks/useShortcutListener'
@@ -13,13 +16,14 @@ import { useTags } from '../../hooks/useTags'
 import { useUpdater } from '../../hooks/useUpdater'
 import useAnalytics from '../../services/analytics'
 import { ActionType } from '../../services/analytics/events'
+import { useAnalysisStore } from '../../store/useAnalysis'
 import { useContentStore } from '../../store/useContentStore'
+import useDataStore from '../../store/useDataStore'
 import { NodeProperties, useEditorStore } from '../../store/useEditorStore'
 import { useHelpStore } from '../../store/useHelpStore'
 import { useSnippetStore } from '../../store/useSnippetStore'
 import useTodoStore from '../../store/useTodoStore'
 import IconButton from '../../style/Buttons'
-import { NodeEditorContent } from '../../types/Types'
 import { getTodosFromContent } from '../../utils/lib/content'
 import { mog } from '../../utils/lib/helper'
 import { getEventNameFromElement } from '../../utils/lib/strings'
@@ -27,8 +31,10 @@ import { getEventNameFromElement } from '../../utils/lib/strings'
 export const useDataSaverFromContent = () => {
   const setContent = useContentStore((state) => state.setContent)
   const getContent = useContentStore((state) => state.getContent)
+
   const { updateLinksFromContent } = useLinks()
   const updateNodeTodos = useTodoStore((store) => store.replaceContentOfTodos)
+
   const { updateTagsFromContent } = useTags()
   const { saveDataAPI } = useApi()
 
@@ -40,6 +46,7 @@ export const useDataSaverFromContent = () => {
     if (editorValue) {
       setContent(nodeId, editorValue)
       mog('saveEditorValueAndUpdateStores', { nodeId, editorValue, saveApi })
+
       if (saveApi !== false) saveDataAPI(nodeId, editorValue)
       updateLinksFromContent(nodeId, editorValue)
       updateTagsFromContent(nodeId, editorValue)
@@ -57,15 +64,15 @@ export const useDataSaverFromContent = () => {
     // saveData()
   }
 
-  const saveNodeWithValue = (nodeId: string, value: NodeEditorContent) => {
-    // const content = getContent(nodeId)
-    mog('saving to api for nodeId: ', { nodeId, value })
-    // saveDataAPI(nodeId, content.content)
-    saveEditorValueAndUpdateStores(nodeId, value, true)
-    // saveData()
-  }
+  // const saveNodeWithValue = (nodeId: string, value: NodeEditorContent) => {
+  //   // const content = getContent(nodeId)
+  //   mog('saving to api for nodeId: ', { nodeId, value })
+  //   // saveDataAPI(nodeId, content.content)
+  //   saveEditorValueAndUpdateStores(nodeId, value, true)
+  //   // saveData()
+  // }
 
-  return { saveEditorValueAndUpdateStores, saveNodeAPIandFs, saveNodeWithValue }
+  return { saveEditorValueAndUpdateStores, saveNodeAPIandFs }
 }
 
 export const useSaver = () => {

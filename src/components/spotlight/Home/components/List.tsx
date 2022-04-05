@@ -241,7 +241,7 @@ const List = ({
 
   return (
     <StyledList style={springProps} ref={parentRef}>
-      {!data.length && <ActionTitle>{search.type}</ActionTitle>}
+      {!data.length && <ActionTitle key={search.type}>{search.type}</ActionTitle>}
       <div style={{ height: virtualizer.totalSize }}>
         {virtualizer.virtualItems.map((virtualRow) => {
           const item = data[virtualRow.index]
@@ -271,8 +271,8 @@ const List = ({
 
           return (
             <ListItem key={virtualRow.index} ref={virtualRow.measureRef} start={virtualRow.start} {...handlers}>
-              {item.category !== lastItem?.category && <ActionTitle>{item.category}</ActionTitle>}
-              <Item item={item} active={active} />
+              {item.category !== lastItem?.category && <ActionTitle key={item.category}>{item.category}</ActionTitle>}
+              <Item key={item.id} item={item} active={active} />
             </ListItem>
           )
         })}

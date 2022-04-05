@@ -22,9 +22,14 @@ export const startAnalysisWorkerService = async () => {
   if (!worker) worker = await spawn(new Worker(workerURL))
 }
 
-interface AnalyseContentProps {
+export interface AnalysisOptions {
+  title?: boolean
+}
+
+export interface AnalyseContentProps {
   content: NodeEditorContent
   nodeid: string
+  options?: AnalysisOptions
 }
 
 export const analyseContent = async (props: AnalyseContentProps, callback: (data: any) => void) => {

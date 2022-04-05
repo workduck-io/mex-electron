@@ -86,7 +86,7 @@ const SnippetEditor = () => {
             title={'Return To Snippets'}
           />
           <NoteTitle>
-            [[ snip. <Input defaultValue={snippet && snippet.title} {...register('title')} />
+            [[ <Input autoFocus defaultValue={snippet && snippet.title} {...register('title')} /> ]]
           </NoteTitle>
 
           <InfoTools>
@@ -94,7 +94,15 @@ const SnippetEditor = () => {
           </InfoTools>
         </NodeInfo>
 
-        {<Editor onChange={onChangeSave} content={content} editorId={snippetid} />}
+        {
+          <Editor
+            autoFocus={false}
+            focusAtBeginning={false}
+            onChange={onChangeSave}
+            content={content}
+            editorId={snippetid}
+          />
+        }
       </StyledEditor>
     </>
   )

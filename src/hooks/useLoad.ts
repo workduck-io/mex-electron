@@ -11,12 +11,15 @@ import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
 import { useEditorBuffer } from './useEditorBuffer'
 import { useGraphStore } from '../store/useGraphStore'
-import { useRouting } from '../views/routes/urls'
 import useSuggestionStore from '../store/useSuggestions'
 import useToggleElements from './useToggleElements'
 import { useLayoutStore } from '../store/useLayoutStore'
-import { useEditor } from 'slate-react'
-import { useState } from 'react'
+import { useRefactor } from './useRefactor'
+import { getParentId, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
+import { useAnalysisStore } from '../store/useAnalysis'
+import { checkIfUntitledDraftNode } from '../utils/lib/strings'
+import { getPathFromNodeIdHookless } from './useLinks'
+import { DRAFT_PREFIX } from '../data/Defaults/idPrefixes'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -37,19 +40,40 @@ const useLoad = () => {
   const loadNodeAndReplaceContent = useEditorStore((store) => store.loadNodeAndReplaceContent)
   const setFetchingContent = useEditorStore((store) => store.setFetchingContent)
   const setContent = useContentStore((store) => store.setContent)
-  const editorNodeId = useEditorStore((state) => state.node.nodeid)
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
   const setSelectedNode = useGraphStore((store) => store.setSelectedNode)
   const { getDataAPI, saveDataAPI } = useApi()
   const setSuggestions = useSuggestionStore((store) => store.setSuggestions)
   const { toggleSuggestedNodes } = useToggleElements()
   const infobar = useLayoutStore((store) => store.infobar)
+
   const setLoadingNodeid = useEditorStore((store) => store.setLoadingNodeid)
+  // const { push } = useNavigation()
   const clearLoadingNodeid = useEditorStore((store) => store.clearLoadingNodeid)
 
   // const { saveNodeAPIandFs } = useDataSaverFromContent()
   const { saveAndClearBuffer } = useEditorBuffer()
+  const { execRefactor } = useRefactor()
   // const { saveQ } = useSaveQ()
+
+  const saveNodeName = (nodeId: string, title?: string) => {
+    const draftNodeTitle = title ?? useAnalysisStore.getState().analysis.title
+    if (!draftNodeTitle) return
+
+    const nodePath = getPathFromNodeIdHookless(nodeId)
+    const isUntitled = checkIfUntitledDraftNode(nodePath)
+
+    if (!isUntitled) return
+
+    const parentNodePath = getParentId(nodePath)
+    const newNodePath = `${parentNodePath}.${draftNodeTitle}`
+
+    try {
+      execRefactor(nodePath, newNodePath, false)
+    } catch (err) {
+      toast('Unable to rename node')
+    }
+  }
 
   const getNode = (nodeid: string): NodeProperties => {
     const ilinks = useDataStore.getState().ilinks
@@ -80,7 +104,7 @@ const useLoad = () => {
     const inIlinks = ilinks.find((i) => i.nodeid === nodeid)
     const inArchive = archive.find((i) => i.nodeid === nodeid)
 
-    const isDraftNode = node && node.path?.startsWith('Draft.')
+    const isDraftNode = node && node.path?.startsWith(`${DRAFT_PREFIX}${SEPARATOR}`)
 
     const res = {
       isLocal: !!inIlinks || !!inArchive || !!isDraftNode,
@@ -178,9 +202,11 @@ const useLoad = () => {
   const loadNode: LoadNodeFn = (nodeid, options = { savePrev: true, fetch: USE_API(), withLoading: true }) => {
     mog('loadNode', { nodeid, options })
     const hasBeenLoaded = false
+    const currentNodeId = useEditorStore.getState().node.nodeid
+
     if (!options.node && !isLocalNode(nodeid).isLocal) {
       toast.error('Selected node does not exist.')
-      nodeid = useEditorStore.getState().node.nodeid
+      nodeid = currentNodeId
     }
 
     setLoadingNodeid(nodeid)
@@ -196,7 +222,9 @@ const useLoad = () => {
       // if (q.includes(nodeid)) {
       //   hasBeenLoaded = true
       // }
+      saveNodeName(currentNodeId)
       saveAndClearBuffer()
+
       // if (q.length > 0) {
       // saveQ()
       // }
@@ -225,7 +253,16 @@ const useLoad = () => {
     loadNodeAndReplaceContent(nodeProps, { ...nodeContent, content: appendedContent })
   }
 
-  return { loadNode, fetchAndSaveNode, loadNodeAndAppend, isLocalNode, loadNodeProps, getNode, saveApiAndUpdate }
+  return {
+    loadNode,
+    fetchAndSaveNode,
+    saveNodeName,
+    loadNodeAndAppend,
+    isLocalNode,
+    loadNodeProps,
+    getNode,
+    saveApiAndUpdate
+  }
 }
 
 export default useLoad

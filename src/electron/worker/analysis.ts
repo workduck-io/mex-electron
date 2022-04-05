@@ -1,9 +1,10 @@
 import { NodeAnalysis, OutlineItem } from '../../store/useAnalysis'
 import { NodeEditorContent } from '../../types/Types'
-import { convertContentToRawText } from '../../utils/search/parseData'
+import { convertContentToRawText, getTitleFromContent } from '../../utils/search/parseData'
 import { expose } from 'threads/worker'
 import { getTagsFromContent, getTodosFromContent } from '../../utils/lib/content'
 import { ELEMENTS_IN_OUTLINE, HIGHLIGHTED_ELEMENTS, LIST_ELEMENTS } from '../../data/outline'
+import { AnalyseContentProps } from './controller'
 // import { parentPort, workerData } from 'worker_threads'
 // parentPort.postMessage(analyseData(workerData.content))
 //
@@ -64,12 +65,7 @@ const getOutline = (content: NodeEditorContent): OutlineItem[] => {
   return outline
 }
 
-interface AnalyseContentProps {
-  content: NodeEditorContent
-  nodeid: string
-}
-
-function analyseContent({ content, nodeid }: AnalyseContentProps): NodeAnalysis {
+function analyseContent({ content, nodeid, options }: AnalyseContentProps): NodeAnalysis {
   if (!content)
     return {
       nodeid,
@@ -77,13 +73,15 @@ function analyseContent({ content, nodeid }: AnalyseContentProps): NodeAnalysis 
       tags: [],
       editorTodos: []
     }
-  // console.log('Analuse', content)
-  return {
+
+  const analysisResult = {
     nodeid,
     outline: getOutline(content),
     tags: getTagsFromContent(content),
     editorTodos: getTodosFromContent(content)
   }
+
+  return options.title ? { ...analysisResult, title: getTitleFromContent(content) } : analysisResult
 }
 
 expose({ analyseContent })

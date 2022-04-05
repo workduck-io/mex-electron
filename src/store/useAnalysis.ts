@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect } from 'react'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../data/IpcAction'
 
@@ -9,8 +9,9 @@ import { getContent } from '../utils/helpers'
 import { mog } from '../utils/lib/helper'
 import { TodoType } from '../editor/Components/Todo/types'
 import useTodoStore from './useTodoStore'
-import { getTodosFromContent } from '../utils/lib/content'
 import { areEqual } from '../utils/lib/hash'
+import { DRAFT_NODE } from '../data/Defaults/idPrefixes'
+import { checkIfUntitledDraftNode } from '../utils/lib/strings'
 
 export interface OutlineItem {
   id: string
@@ -24,6 +25,7 @@ export interface NodeAnalysis {
   tags: string[]
   outline: OutlineItem[]
   editorTodos: TodoType[]
+  title?: string
 }
 
 interface AnalysisStore {
@@ -60,7 +62,6 @@ export const useAnalysisIPC = () => {
   const node = useEditorStore((s) => s.node)
 
   const setIpc = () => {
-    mog('Setting up IPC for analysis', { node })
     ipcRenderer.on(IpcAction.RECEIVE_ANALYSIS, (_event, analysis: any) => {
       // mog('analysisRECEIVEd', { analysis })
       if (analysis) setAnalysis(analysis)
@@ -79,16 +80,27 @@ export const useAnalysis = () => {
   useEffect(() => {
     const bufferContent = getBufferVal(node.nodeid)
     const content = getContent(node.nodeid)
+    const metadata = content.metadata
+    const options = {}
+
+    const isUntitledDraftNode = checkIfUntitledDraftNode(node.path)
+    const isNewDraftNode = metadata?.createdAt === metadata?.updatedAt
+
+    // * New Draft node, get Title from its content
+    if (isUntitledDraftNode && isNewDraftNode) {
+      options['title'] = true
+    }
+
     // mog('sending for calc', { node, buffer })
     if (bufferContent) {
       // mog('Buffer for calc', { bufferContent })
       if (!areEqual(bufferContent, content.content)) {
-        ipcRenderer.send(IpcAction.ANALYSE_CONTENT, { content: bufferContent, nodeid: node.nodeid })
+        ipcRenderer.send(IpcAction.ANALYSE_CONTENT, { content: bufferContent, nodeid: node.nodeid, options })
       }
     } else {
       // mog('Content for calc', { content })
       if (content && content.content)
-        ipcRenderer.send(IpcAction.ANALYSE_CONTENT, { content: content.content, nodeid: node.nodeid })
+        ipcRenderer.send(IpcAction.ANALYSE_CONTENT, { content: content.content, nodeid: node.nodeid, options })
     }
   }, [node.nodeid, buffer])
 

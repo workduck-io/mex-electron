@@ -15,7 +15,8 @@ import useSuggestionStore from '../../../store/useSuggestions'
 import IconButton from '../../../style/Buttons'
 import { InfobarFull, InfobarTools } from '../../../style/infobar'
 import { Result, ResultHeader, ResultTitle } from '../../../style/Search'
-import { mog } from '../../../utils/lib/helper'
+import pushpin2Line from '@iconify/icons-ri/pushpin-2-line'
+import { View } from '../Search/ViewSelector'
 
 const Margin = styled.div`
   margin: 1rem 1rem 0;
@@ -25,7 +26,7 @@ const SuggestionInfoBar = () => {
   const infobar = useLayoutStore((s) => s.infobar)
   const { toggleSuggestedNodes } = useToggleElements()
   const shortcuts = useHelpStore((store) => store.shortcuts)
-  const { suggestions } = useSuggestionStore()
+  const { suggestions, pinSuggestion, pinnedSuggestions } = useSuggestionStore()
   const contents = useContentStore((store) => store.contents)
   const { getPathFromNodeid } = useLinks()
   const editor = usePlateEditorRef()
@@ -54,17 +55,52 @@ const SuggestionInfoBar = () => {
       </InfobarTools>
 
       <>
+        {pinnedSuggestions.map((suggestion) => {
+          const con = contents[suggestion.id]
+          const path = getPathFromNodeid(suggestion.id)
+          const content = con ? con.content : defaultContent.content
+
+          return (
+            <Margin key={`ResultForSearch_${suggestion.id}_pinned`} onClick={() => onClick(suggestion.id)}>
+              <Result selected={suggestion.pinned}>
+                <ResultHeader>
+                  <ResultTitle>{path}</ResultTitle>
+                  <IconButton
+                    highlight={suggestion.pinned}
+                    onClick={(ev) => {
+                      ev.stopPropagation()
+                      pinSuggestion(suggestion)
+                    }}
+                    icon={pushpin2Line}
+                    title="Pin suggestion"
+                  />
+                </ResultHeader>
+                <EditorPreviewRenderer content={content} editorId={`editor_${suggestion.id}_pinned`} />
+              </Result>
+            </Margin>
+          )
+        })}
+      </>
+
+      <>
         {suggestions.map((suggestion) => {
           const con = contents[suggestion.id]
           const path = getPathFromNodeid(suggestion.id)
           const content = con ? con.content : defaultContent.content
-          // mog('SuggestionInfoBar', { content, con, path, suggestion })
 
           return (
             <Margin key={`ResultForSearch_${suggestion.id}`} onClick={() => onClick(suggestion.id)}>
-              <Result>
+              <Result selected={suggestion.pinned}>
                 <ResultHeader>
                   <ResultTitle>{path}</ResultTitle>
+                  <IconButton
+                    onClick={(ev) => {
+                      ev.stopPropagation()
+                      pinSuggestion(suggestion)
+                    }}
+                    icon={pushpin2Line}
+                    title="Pin suggestion"
+                  />
                 </ResultHeader>
                 <EditorPreviewRenderer content={content} editorId={`editor_${suggestion.id}`} />
               </Result>

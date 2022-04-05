@@ -13,7 +13,6 @@ import { mog } from '../../../utils/lib/helper'
 import tinykeys from 'tinykeys'
 import toast from 'react-hot-toast'
 import { useApi } from '../../../apis/useSaveApi'
-import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useNavigation } from '../../../hooks/useNavigation'
@@ -25,7 +24,7 @@ const StyledModal = styled(Modal)`
   z-index: 10010000;
 `
 
-const Brackets = styled.span`
+export const Brackets = styled.span`
   padding: 0.6rem;
   font-size: 1.6rem;
   background-color: ${(props) => props.theme.colors.form.input.bg};

@@ -53,14 +53,16 @@ export const ShortcutText = styled.div`
   }
 `
 
-function Item({ item, active, onClick }: { item: ListItemType; active?: boolean; onClick?: () => void }) {
+type ItemProps = { item: ListItemType; active?: boolean; onClick?: () => void }
+
+const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
   const theme = useTheme()
   const { search, selection, activeItem } = useSpotlightContext()
 
   const newNodeName = cleanString(search.type === CategoryType.quicklink ? search.value.slice(2) : search.value)
 
   return (
-    <StyledRow showColor={active} onClick={onClick} key={`STRING_${item?.title}`}>
+    <StyledRow showColor={active} onClick={onClick}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Dot active={active ? 'true' : ''} />
         <div style={{ display: 'flex', alignItems: 'center', marginRight: '1rem' }}>
