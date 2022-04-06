@@ -73,7 +73,8 @@ const Content = () => {
           if (!normalMode) return
 
           const recentEvents = getUpcomingEvents()
-          notifyGoogleEvent(recentEvents)
+          const notifyEvents = getUpcomingEvents(true)
+          notifyGoogleEvent(notifyEvents)
           const recents = selection ? recentResearchNodes : lastOpenedNodes
           const items = recents.filter((recent: string) => ilinks.find((ilink) => ilink.nodeid === recent))
 

@@ -155,15 +155,15 @@ export const useCalendar = () => {
     return events
   }
 
-  const getUpcomingEvents = () => {
+  const getUpcomingEvents = (isFromNotification = false) => {
     const now = new Date()
-    const twoHoursFromNow = add(now, { hours: 2 })
+    const timeFromNow = isFromNotification ? add(now, { minutes: 15 }) : add(now, { hours: 2 })
     const fifteenMinutesBefore = sub(now, { minutes: 15 })
     const events = useCalendarStore.getState().events
     const todayEvents = events
       .filter((event) => {
         const start = new Date(event.times.start)
-        return start >= fifteenMinutesBefore && start <= twoHoursFromNow
+        return start >= fifteenMinutesBefore && start <= timeFromNow
       })
       .sort((a, b) => a.times.start - b.times.start)
 
@@ -198,7 +198,7 @@ export const useCalendar = () => {
 
     mog('fetching events', { now, yesterday, twoDaysFromNow })
     const reqUrl = encodeURI(
-      `${GOOGLE_CAL_BASE}/primary/events?maxResults=${max}&timeMin=${yesterday}&timeMax=${twoDaysFromNow}`
+      `${GOOGLE_CAL_BASE}/primary/events?maxResults=${max}&timeMin=${yesterday}&timeMax=${twoDaysFromNow}&singleEvents=true`
     )
     axios
       .get(reqUrl, {
@@ -230,7 +230,7 @@ export const useCalendar = () => {
     try {
       for (const event of recentEvents) {
         const NOTIFICATION_TITLE = event.title
-        const EVENT_SUMMARY = 'Join the Google Meeting'
+        const EVENT_SUMMARY = `Join the Google Meeting`
         showRemoteNotification(NOTIFICATION_TITLE, EVENT_SUMMARY, () => {
           window.open(event.extras.base_url)
         })
@@ -257,7 +257,7 @@ export const useGoogleCalendarAutoFetch = () => {
     const id = setInterval(() => {
       console.log('Fetching Google Calendar Events')
       fetchGoogleCalendarEvents()
-    }, 1000 * 60 * 2) // 15 minutes
+    }, 1000 * 60 * 15) // 15 minutes
     return () => clearInterval(id)
   }, [tokens])
 }
