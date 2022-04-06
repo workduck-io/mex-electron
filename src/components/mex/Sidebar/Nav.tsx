@@ -16,10 +16,12 @@ import { getNewDraftKey, getUntitledDraftKey } from '../../../editor/Components/
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
 import useLayout from '../../../hooks/useLayout'
+import useLoad from '../../../hooks/useLoad'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useAuthStore } from '../../../services/auth/useAuth'
 import useDataStore from '../../../store/useDataStore'
+import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import { focusStyles } from '../../../style/focus'
@@ -116,6 +118,7 @@ const Nav = ({ links }: NavProps) => {
 
   const { goTo } = useRouting()
   const location = useLocation()
+  const { saveNodeName } = useLoad()
 
   const [source, target] = useSingleton()
 
@@ -128,6 +131,7 @@ const Nav = ({ links }: NavProps) => {
       return
     }
 
+    saveNodeName(useEditorStore.getState().node.nodeid)
     saveNewNodeAPI(node.nodeid)
     push(node.nodeid, { withLoading: false })
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
