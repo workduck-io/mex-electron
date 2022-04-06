@@ -26,6 +26,7 @@ import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import 'react-contexify/dist/ReactContexify.css'
 import { useCalendar, useCalendarStore } from '../../../hooks/useCalendar'
+import { showRemoteNotification } from '../../../electron/utils/notifications'
 
 export const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -39,7 +40,7 @@ const Content = () => {
   const lastOpenedNodes = useRecentsStore((store) => store.lastOpened)
   const normalMode = useSpotlightAppStore((store) => store.normalMode)
   const recentResearchNodes = useRecentsStore((store) => store.recentResearchNodes)
-  const { getUpcomingEvents } = useCalendar()
+  const { getUpcomingEvents, notifyGoogleEvent } = useCalendar()
   const { editorNode, setNodeContent, setPreviewEditorNode, preview, setPreview } = useSpotlightEditorStore(
     (store) => ({
       editorNode: store.node,
@@ -72,6 +73,7 @@ const Content = () => {
           if (!normalMode) return
 
           const recentEvents = getUpcomingEvents()
+          notifyGoogleEvent(recentEvents)
           const recents = selection ? recentResearchNodes : lastOpenedNodes
           const items = recents.filter((recent: string) => ilinks.find((ilink) => ilink.nodeid === recent))
 

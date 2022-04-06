@@ -6,6 +6,7 @@ import create from 'zustand'
 import { GOOGLE_CAL_BASE, GOOGLE_OAUTH2_REFRESH_URL } from '../apis/routes'
 import { ItemActionType, ListItemType } from '../components/spotlight/SearchResults/types'
 import { testEvents } from '../data/Defaults/Test/calendar'
+import { showRemoteNotification } from '../electron/utils/notifications'
 import { checkTokenGoogleCalendar, fetchNewCalendarToken, useTokenStore } from '../services/auth/useTokens'
 import { CategoryType } from '../store/Context/context.spotlight'
 import { GoogleEvent } from '../types/gcal'
@@ -207,7 +208,7 @@ export const useCalendar = () => {
       })
       .then((res) => {
         const events = res.data.items.map((event) => converGoogleEventToCalendarEvent(event))
-        // console.log('Got Events', res.data)
+        console.log('Got Events', res.data)
         setEvents(events)
       })
 
@@ -225,8 +226,22 @@ export const useCalendar = () => {
     //     setEvents(events)
     //   })
   }
+  const notifyGoogleEvent = (recentEvents) => {
+    try {
+      for (const event of recentEvents) {
+        const NOTIFICATION_TITLE = event.title
+        const EVENT_SUMMARY = 'Join the Google Meeting'
+        showRemoteNotification(NOTIFICATION_TITLE, EVENT_SUMMARY, () => {
+          window.open(event.extras.base_url)
+        })
+      }
+    } catch (error) {
+      mog('Error in fetching the google event', { message: error.message }, { collapsed: false, pretty: true })
+    }
+  }
 
   return {
+    notifyGoogleEvent,
     getUserEvents,
     getUpcomingEvents,
     fetchGoogleCalendarEvents
@@ -239,11 +254,10 @@ export const useGoogleCalendarAutoFetch = () => {
 
   useEffect(() => {
     console.log('Setting up autofetch for Google Calendar Events')
-    fetchGoogleCalendarEvents()
     const id = setInterval(() => {
       console.log('Fetching Google Calendar Events')
       fetchGoogleCalendarEvents()
-    }, 1000 * 60 * 15) // 15 minutes
+    }, 1000 * 60 * 2) // 15 minutes
     return () => clearInterval(id)
   }, [tokens])
 }
