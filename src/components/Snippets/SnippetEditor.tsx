@@ -11,8 +11,8 @@ import { useSnippets } from '../../hooks/useSnippets'
 import IconButton from '../../style/Buttons'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 import tinykeys from 'tinykeys'
-import { useSaveData } from '../../hooks/useSaveData'
 import { useSnippetBuffer } from '../../hooks/useEditorBuffer'
+import { mog } from '../../utils/lib/helper'
 
 type Inputs = {
   title: string
@@ -42,8 +42,6 @@ const SnippetEditor = () => {
     }
   }, [snippet])
 
-  const { updateSnippet } = useSnippets()
-
   const getSnippetTitle = () => getValues().title
 
   const onChangeSave = (val: any[]) => {
@@ -63,6 +61,7 @@ const SnippetEditor = () => {
         returnToSnippets()
       }
     })
+
     return () => {
       unsubscribe()
     }

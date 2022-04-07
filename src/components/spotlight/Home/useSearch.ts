@@ -74,7 +74,7 @@ export const useSearch = () => {
 
       case CategoryType.search:
         const nodeItems = await queryIndex('node', search.value)
-        const snippetItems = await queryIndex('snippet', search.value)
+        const snippetItems = await queryIndex('snippet', search.value, ['snippet'])
 
         const actionItems = getSearchResults(search.value, initActions, { keySelector: (obj) => obj.title })
         const localNodes = []
@@ -87,8 +87,6 @@ export const useSearch = () => {
             localNodes.push(listItem)
           }
         })
-
-        mog('snippets', { snippetItems })
 
         snippetItems.forEach((snippet) => {
           const snip = getSnippet(snippet.id)

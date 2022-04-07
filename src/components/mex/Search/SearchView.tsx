@@ -180,7 +180,6 @@ const SearchView = <Item,>({
   RenderItem,
   RenderPreview,
   RenderNotFound,
-  RenderStartCard,
   RenderFilters,
   options
 }: SearchViewProps<Item>) => {
@@ -380,7 +379,7 @@ const SearchView = <Item,>({
 
   const ResultsView = (
     <Results key={`ResultForSearch_${id}`} view={view}>
-      {view === View.Card && RenderStartCard && <RenderStartCard />}
+      {/* {view === View.Card && RenderStartCard && <RenderStartCard />} */}
       {result.map((c, i) => {
         // mog('item from result', { c, i })
         return (

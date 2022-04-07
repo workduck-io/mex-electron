@@ -156,6 +156,7 @@ export const SearchFilterStyled = styled.div<{ selected?: boolean }>`
     css`
       background-color: ${({ theme }) => theme.colors.primary};
       color: ${({ theme }) => theme.colors.text.oppositePrimary};
+
       &:hover {
         background-color: ${({ theme }) => transparentize(0.4, theme.colors.primary)};
         color: ${({ theme }) => theme.colors.text.oppositePrimary};
@@ -351,6 +352,10 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
           transition: 0s ease;
           background-color: ${theme.colors.gray[8]};
           border: 1px solid ${theme.colors.primary} !important;
+
+          max-height: 400px;
+          overflow-y: auto;
+          border: 1px solid transparent !important;
           ${ResultTitle} {
             font-weight: bold;
             color: ${theme.colors.primary};
@@ -359,18 +364,6 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
       `
     }
   }}
-
-  ${({ theme, selected }) =>
-    selected &&
-    css`
-      background-color: ${theme.colors.gray[8]};
-      /* border: 1px solid ${theme.colors.primary} !important; */
-      ${ResultTitle} {
-        font-weight: bold;
-        color: ${theme.colors.primary};
-      }
-    `}
-    
   border-radius: ${({ theme }) => theme.borderRadius.small};
   ${SearchTransition}
 `

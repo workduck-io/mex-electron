@@ -5,20 +5,16 @@ import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import tinykeys from 'tinykeys'
 import { useApi } from '../../apis/useSaveApi'
-import { getParentId } from '../../components/mex/Sidebar/treeUtils'
-import { getPathFromNodeIdHookless, useLinks } from '../../hooks/useLinks'
-import useLoad from '../../hooks/useLoad'
-import { useRefactor } from '../../hooks/useRefactor'
+import { useLinks } from '../../hooks/useLinks'
 import { useSaveData } from '../../hooks/useSaveData'
 import { useSearch } from '../../hooks/useSearch'
 import { useKeyListener } from '../../hooks/useShortcutListener'
+import { useSnippets } from '../../hooks/useSnippets'
 import { useTags } from '../../hooks/useTags'
 import { useUpdater } from '../../hooks/useUpdater'
 import useAnalytics from '../../services/analytics'
 import { ActionType } from '../../services/analytics/events'
-import { useAnalysisStore } from '../../store/useAnalysis'
 import { useContentStore } from '../../store/useContentStore'
-import useDataStore from '../../store/useDataStore'
 import { NodeProperties, useEditorStore } from '../../store/useEditorStore'
 import { useHelpStore } from '../../store/useHelpStore'
 import { useSnippetStore } from '../../store/useSnippetStore'
@@ -192,10 +188,16 @@ export const useSnippetSaver = () => {
   const updateSnippet = useSnippetStore((state) => state.updateSnippet)
   const editorState = usePlateSelectors(usePlateId()).value()
   const { saveData } = useSaveData()
+  const { updateSnippet: updateSnippetIndex } = useSnippets()
   const { updater } = useUpdater()
 
   const onSave = (title: string) => {
-    if (editorState) updateSnippet(snippet.id, { ...snippet, title, content: editorState })
+    mog('Snippet editor', { editorState })
+    if (editorState) {
+      const newSnippet = { ...snippet, title, content: editorState }
+      updateSnippet(snippet.id, newSnippet)
+      updateSnippetIndex(newSnippet)
+    }
     updater()
     saveData()
     toast('Snippet Saved!', { duration: 1000 })

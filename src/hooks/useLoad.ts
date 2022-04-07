@@ -58,6 +58,7 @@ const useLoad = () => {
 
   const saveNodeName = (nodeId: string, title?: string) => {
     const draftNodeTitle = title ?? useAnalysisStore.getState().analysis.title
+    mog('SAVE NODE NAME', { draftNodeTitle })
     if (!draftNodeTitle) return
 
     const nodePath = getPathFromNodeIdHookless(nodeId)
@@ -68,11 +69,13 @@ const useLoad = () => {
     const parentNodePath = getParentId(nodePath)
     const newNodePath = `${parentNodePath}.${draftNodeTitle}`
 
-    try {
-      execRefactor(nodePath, newNodePath, false)
-    } catch (err) {
-      toast('Unable to rename node')
-    }
+    if (newNodePath !== nodePath)
+      try {
+        execRefactor(nodePath, newNodePath, false)
+        loadNode(nodeId, { fetch: false })
+      } catch (err) {
+        toast('Unable to rename node')
+      }
   }
 
   const getNode = (nodeid: string): NodeProperties => {
@@ -200,7 +203,6 @@ const useLoad = () => {
    * This does not navigate to editor.
    */
   const loadNode: LoadNodeFn = (nodeid, options = { savePrev: true, fetch: USE_API(), withLoading: true }) => {
-    mog('loadNode', { nodeid, options })
     const hasBeenLoaded = false
     const currentNodeId = useEditorStore.getState().node.nodeid
 

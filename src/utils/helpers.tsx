@@ -21,6 +21,9 @@ export function getContent(nodeid: string): NodeContent {
   return defaultContent
 }
 
+// Inclusive
+export const randomNumberBetween = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min)
+
 export const getBlocks = (content: NodeEditorContent): Record<string, any> | undefined => {
   if (content) {
     const blocks: Record<string, any> = {}

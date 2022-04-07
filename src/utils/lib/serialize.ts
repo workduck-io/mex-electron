@@ -19,7 +19,9 @@ const directPropertyKeys = [
   'blockValue',
   'checked',
   'blockId',
-  'body'
+  'body',
+  'questionId',
+  'question'
 ]
 const PropKeysArray = [...directPropertyKeys] as const
 type PropKeys = typeof PropKeysArray[number]

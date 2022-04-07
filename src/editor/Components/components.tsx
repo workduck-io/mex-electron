@@ -21,6 +21,8 @@ import { ELEMENT_TAG } from './tag/defaults'
 import { StyledElement } from '@udecode/plate-styled-components'
 import TableWrapper from './TableWrapper'
 import Todo from './Todo'
+import { ELEMENT_QA_BLOCK } from './QABlock/createQAPlugin'
+import QABlock from './QABlock'
 
 export const editorPreviewComponents = createPlateUI({
   [ELEMENT_LINK]: withProps(LinkElement, {
@@ -38,6 +40,7 @@ export const editorPreviewComponents = createPlateUI({
   [ELEMENT_ILINK]: ILinkElement as any,
   [ELEMENT_INLINE_BLOCK]: ILinkElement as any,
   [ELEMENT_MEDIA_EMBED]: MediaEmbedElement as any,
+  [ELEMENT_QA_BLOCK]: QABlock as any,
   [ELEMENT_SYNC_BLOCK]: SyncBlock as any,
   [ELEMENT_TABLE]: TableWrapper
 })

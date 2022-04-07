@@ -1,4 +1,4 @@
-import { selectEditor, useEditorRef, usePlateEditorRef } from '@udecode/plate'
+import { selectEditor, usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect, useMemo } from 'react'
 import sw from 'stopword'
 import tinykeys from 'tinykeys'
@@ -19,7 +19,6 @@ import { useLayoutStore } from '../store/useLayoutStore'
 import useSuggestionStore from '../store/useSuggestions'
 import { EditorWrapper, StyledEditor } from '../style/Editor'
 import { getEditorId } from '../utils/lib/EditorId'
-import { mog } from '../utils/lib/helper'
 import { convertContentToRawText } from '../utils/search/parseData'
 import BlockInfoBar from './Components/Blocks/BlockInfoBar'
 import { BlockOptionsMenu } from './Components/EditorContextMenu'
@@ -31,6 +30,7 @@ const ContentEditor = () => {
   const setIsEditing = useEditorStore((store) => store.setIsEditing)
   const { toggleFocusMode } = useLayout()
   const { saveApiAndUpdate } = useLoad()
+  const headingQASearch = useSuggestionStore((store) => store.headingQASearch)
 
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
 
@@ -38,7 +38,7 @@ const ContentEditor = () => {
 
   const infobar = useLayoutStore((store) => store.infobar)
 
-  const { nodeid, node, fsContent } = useEditorStore(
+  const { node, fsContent } = useEditorStore(
     (state) => ({ nodeid: state.node.nodeid, node: state.node, fsContent: state.content }),
     shallow
   )
@@ -55,23 +55,17 @@ const ContentEditor = () => {
 
   const onChangeSave = async (val: any[]) => {
     if (val && node && node.nodeid !== '__null__') {
-      if (infobar.mode === 'suggestions') {
+      if (infobar.mode === 'suggestions' && !headingQASearch) {
         const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
-
         const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
         const rawText = convertContentToRawText(val.slice(lastTwoParagraphs, cursorPosition + 1), ' ')
-
         const keywords = sw.removeStopwords(rawText.split(' ').filter(Boolean))
-
         const results = await queryIndex('node', keywords.join(' '))
-
         const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
-
         setSuggestions(withoutCurrentNode)
       }
 
       setIsEditing(false)
-      mog('stopped!!')
       addOrUpdateValBuffer(node.nodeid, val)
     }
   }
@@ -111,7 +105,6 @@ const ContentEditor = () => {
         shortcutHandler(shortcuts.refreshNode, () => {
           const node = useEditorStore.getState().node
           const val = getBufferVal(node.nodeid)
-          mog('Buffer value for node', { node, val })
           saveApiAndUpdate(node, val)
         })
       }

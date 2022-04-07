@@ -1,15 +1,18 @@
 // import { NodeSearchResult } from './useSearchStore'
 import create from 'zustand'
 import { AnyObject, TNode } from '@udecode/plate'
-import { GenericSearchResult } from '../types/search'
-
-type SuggestionType = GenericSearchResult & { pinned: boolean }
+import { SuggestionType } from '../components/mex/Suggestions/types'
 
 type SuggestionStoreType = {
   suggestions: SuggestionType[]
   setSuggestions: (suggestions: SuggestionType[]) => void
+
   pinnedSuggestions: SuggestionType[]
   pinSuggestion: (pinnedSuggestions: SuggestionType) => void
+
+  headingQASearch?: boolean
+  setHeadingQASearch: (headingQASearch: boolean) => void
+
   query?: TNode<AnyObject>[]
   setQuery?: (query: TNode<AnyObject>[]) => void
 }
@@ -21,6 +24,7 @@ const useSuggestionStore = create<SuggestionStoreType>((set, get) => ({
 
     set({ suggestions: suggestions.filter((s) => pinnedSuggestions.filter((p) => p.id === s.id).length === 0) })
   },
+
   pinnedSuggestions: [],
   pinSuggestion: (suggestionToPin: SuggestionType) => {
     const suggestions = get().suggestions.filter((suggestion) => suggestion.id !== suggestionToPin.id)
@@ -41,7 +45,9 @@ const useSuggestionStore = create<SuggestionStoreType>((set, get) => ({
       pinnedSuggestions: [...pinnedSuggestions, { ...suggestionToPin, pinned: !suggestionToPin.pinned }],
       suggestions
     })
-  }
+  },
+
+  setHeadingQASearch: (headingQASearch: boolean) => set({ headingQASearch })
 }))
 
 export default useSuggestionStore

@@ -1,7 +1,10 @@
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
+import { questions } from '../../editor/Components/QABlock/starters'
+import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin'
 import { Contents } from '../../store/useContentStore'
 import { FileData, NodeContent } from '../../types/data'
 import { generateILinks } from '../../utils/generateComboItem'
+import { randomNumberBetween } from '../../utils/helpers'
 import { generateNodeUID, generateTempId } from './idPrefixes'
 // import { generateTempId } from './idPrefixes'
 //
@@ -26,6 +29,15 @@ export const defaultContent: NodeContent = {
   type: 'init',
   content: [{ id: generateTempId(), type: ELEMENT_PARAGRAPH, children: [{ text: '' }] }],
   version: -1
+}
+
+export const getRandomQAContent = () => {
+  const idx = randomNumberBetween(0, questions.length - 1)
+  const pickedQuestion = questions[idx]
+
+  const qaBlockContent = [{ id: generateTempId(), type: ELEMENT_QA_BLOCK, ...pickedQuestion, children: [{ text: '' }] }]
+
+  return qaBlockContent
 }
 
 const contents: Contents = links.reduce((prev, cur) => {

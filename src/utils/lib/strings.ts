@@ -25,7 +25,6 @@ export const getEventNameFromElement = (location: string, action: string, elemen
 }
 
 export const checkIfUntitledDraftNode = (path: string) => {
-  mog('CALLING IS DRAFT', { path })
   if (!path) return
 
   const pathParts = path.split(SEPARATOR)

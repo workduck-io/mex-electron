@@ -70,6 +70,7 @@ import { withBlockOptions } from '../Components/Blocks'
 import { withStyledDraggables } from '../Actions/withDraggable'
 import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
 import createTodoPlugin from '../Components/Todo/createTodoPlugin'
+import { createQAPlugin } from '../Components/QABlock/createQAPlugin'
 
 export type PluginOptionType = {
   exclude: {
@@ -170,6 +171,8 @@ export const generatePlugins = (options: PluginOptionType) => {
 
     // Sync Blocks
     createSyncBlockPlugin(),
+
+    createQAPlugin(),
 
     // // For Inline Blocks
     createInlineBlockPlugin(),

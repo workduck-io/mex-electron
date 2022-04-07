@@ -5,6 +5,7 @@ export interface Snippet {
   title: string
   icon: string
   content: any[]
+  isTemplate?: boolean
 }
 
 interface SnippetEditorStore {

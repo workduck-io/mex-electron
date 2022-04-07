@@ -8,6 +8,7 @@ import { GenericSearchData } from './../../types/search'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { NodeEditorContent } from '../../types/Types'
 import { getSlug } from '../lib/strings'
+import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin'
 
 type ExcludeFromTextType = {
   types?: Set<string>
@@ -68,6 +69,18 @@ export const convertEntryToRawText = (nodeUID: string, entry: any[], title = '')
   return { id: nodeUID, title, text: convertContentToRawText(entry, ' ') }
 }
 
+export const getHeadingBlock = (content: NodeEditorContent) => {
+  const isHeadingBlock = content[0].type === ELEMENT_QA_BLOCK
+  if (isHeadingBlock) {
+    return {
+      isHeadingBlock: true,
+      title: getSlug(content[0].value ?? '')
+    }
+  }
+
+  return undefined
+}
+
 export const parseNode = (nodeId: string, contents: any[], title = ''): GenericSearchData[] => {
   const result: GenericSearchData[] = []
   contents.forEach((block) => {
@@ -79,7 +92,7 @@ export const parseNode = (nodeId: string, contents: any[], title = ''): GenericS
     blockText += ' ' + convertContentToRawText(block.children, ' ')
 
     if (blockText.trim().length !== 0) {
-      const temp: GenericSearchData = { id: nodeId, text: blockText, blockId: block.id, title: title, data: block }
+      const temp: GenericSearchData = { id: nodeId, text: blockText, blockId: block.id, title, data: block }
       result.push(temp)
     }
   })
@@ -87,6 +100,9 @@ export const parseNode = (nodeId: string, contents: any[], title = ''): GenericS
 }
 
 export const getTitleFromContent = (content: NodeEditorContent) => {
+  const heading = getHeadingBlock(content)
+  if (heading) return heading.title
+
   const text = convertContentToRawText(content, ' ', { fields: new Set<ExcludeFieldTypes>(['value', 'url']) })
   const title = getSlug(text)
 
@@ -151,8 +167,8 @@ export const convertDataToIndexable = (data: FileData) => {
       })
     } else if (idxName === indexNames.snippet) {
       data.snippets.map((snip) => {
-        const temp: GenericSearchData = convertEntryToRawText(snip.id, snip.content)
-        temp.title = titleNodeMap.get(snip.id)
+        const title = titleNodeMap.get(snip.id)
+        const temp: GenericSearchData = convertEntryToRawText(snip.id, snip.content, title)
         nodeBlockMap[snip.id] = [snip.id] // Redundant right now, not doing block level indexing for snippets
         idxResult.push(temp)
       })
