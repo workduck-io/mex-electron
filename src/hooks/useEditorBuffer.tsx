@@ -7,6 +7,7 @@ import { areEqual } from '../utils/lib/hash'
 import { mog } from '../utils/lib/helper'
 import { measureTime } from '../utils/lib/perf'
 import { useSaveData } from './useSaveData'
+import { useSnippets } from './useSnippets'
 
 interface BufferStore {
   buffer: Record<string, NodeEditorContent>
@@ -81,6 +82,7 @@ export const useSnippetBuffer = () => {
   const clearBuffer = useSnippetBufferStore((s) => s.clear)
   const updateSnippetContent = useSnippetStore((s) => s.updateSnippetContent)
   const { saveData } = useSaveData()
+  const { updateSnippet: updateSnippetIndex, getSnippet } = useSnippets()
 
   const addOrUpdateValBuffer = (snippetId: string, val: NodeEditorContent) => {
     add2Buffer(snippetId, val)
@@ -96,6 +98,9 @@ export const useSnippetBuffer = () => {
       const saved = Object.entries(buffer)
         .map(([snippetId, val]) => {
           updateSnippetContent(snippetId, val)
+          const snippet = getSnippet(snippetId)
+          mog('snipppet', { snippetId, val, buffer })
+          if (snippet) updateSnippetIndex({ ...snippet, content: val })
           return true
         })
         .reduce((acc, cur) => acc || cur, false)

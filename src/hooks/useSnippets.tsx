@@ -62,7 +62,7 @@ export const useSnippets = () => {
     addSnippetZus(snippet)
     const tags = snippet.isTemplate ? ['template'] : ['snippet']
     mog('Add snippet', { snippet, tags })
-    await addDocument('snippet', snippet.id, snippet.content, snippet.title, tags)
+    await updateDocument('snippet', snippet.id, snippet.content, snippet.title, tags)
   }
 
   return { getSnippets, getSnippet, getSnippetContent, getSnippetsConfigs, addSnippet, updateSnippet, deleteSnippet }

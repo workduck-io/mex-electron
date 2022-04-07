@@ -193,12 +193,14 @@ export const useSnippetSaver = () => {
 
   const onSave = (title: string) => {
     mog('Snippet editor', { editorState })
-    if (editorState) updateSnippet(snippet.id, { ...snippet, title, content: editorState })
-    updateSnippetIndex(snippet).then((res) => {
-      updater()
-      saveData()
-      toast('Snippet Saved!', { duration: 1000 })
-    })
+    if (editorState) {
+      const newSnippet = { ...snippet, title, content: editorState }
+      updateSnippet(snippet.id, newSnippet)
+      updateSnippetIndex(newSnippet)
+    }
+    updater()
+    saveData()
+    toast('Snippet Saved!', { duration: 1000 })
   }
 
   return { onSave }
