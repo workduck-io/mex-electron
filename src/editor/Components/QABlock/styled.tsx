@@ -2,7 +2,6 @@ import styled from 'styled-components'
 
 export const QuestionInput = styled.div`
   position: relative;
-  user-select: none;
 
   input {
     :focus + span,
@@ -18,6 +17,7 @@ export const QuestionInput = styled.div`
     top: 0;
     padding: 5px 0.25rem;
     transition: ease-in all 200ms;
+    pointer-events: none;
     opacity: 0.5;
   }
 `

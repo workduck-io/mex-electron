@@ -13,10 +13,11 @@ import { InfobarFull, InfobarTools } from '../../../style/infobar'
 import { useSnippets } from '../../../hooks/useSnippets'
 import { getContent } from '../../../utils/helpers'
 import { NodeEditorContent } from '../../../types/Types'
-import { Transforms } from 'slate'
 import { SuggestionContent, SuggestionType } from './types'
 import SmartSuggestions from './SmartSuggestions'
 import { ELEMENT_INLINE_BLOCK } from '../../../editor/Components/InlineBlock/types'
+import { defaultContent } from '../../../data/Defaults/baseData'
+import { mog } from '../../../utils/lib/helper'
 
 const SuggestionInfoBar = () => {
   // * Store
@@ -39,24 +40,21 @@ const SuggestionInfoBar = () => {
       // * Meta + click
       if (event.metaKey) {
         // * Insert Inline Embed
-        if (suggestion) {
-          insertNodes<TElement>(editor, {
-            type: ELEMENT_INLINE_BLOCK,
-            children: [{ text: '' }],
-            value: suggestion.id
-          })
-        }
+        insertNodes<TElement>(editor, {
+          type: ELEMENT_INLINE_BLOCK,
+          children: [{ text: '' }],
+          value: suggestion.id
+        })
+      } else {
+        // * Insert ILink
+        insertNodes<TElement>(editor, {
+          type: ELEMENT_ILINK,
+          children: [{ text: '' }],
+          value: suggestion.id
+        })
       }
-
-      // * Insert ILink
-      insertNodes<TElement>(editor, {
-        type: ELEMENT_ILINK,
-        children: [{ text: '' }],
-        value: suggestion.id
-      })
     }
-
-    Transforms.move(editor)
+    insertNodes(editor, defaultContent.content)
     selectEditor(editor, { focus: true })
   }
 
@@ -64,9 +62,12 @@ const SuggestionInfoBar = () => {
     if (suggestion.type === 'snippet' || suggestion.type === 'template') {
       const snippet = getSnippet(suggestion.id)
 
+      mog('SNIPPET', { snippet })
+
       return {
         title: snippet.title,
-        content: snippet.content
+        content: snippet.content,
+        isTemplate: snippet.isTemplate
       }
     }
 

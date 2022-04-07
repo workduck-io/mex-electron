@@ -17,7 +17,9 @@ const Suggestion: React.FC<SuggestionProps> = ({ suggestion, onPin, onClick }) =
       <SuggestionContainer highlight={suggestion.pinned}>
         <ResultHeader>
           <ResultTitle>{suggestion?.content?.title}</ResultTitle>
-          <IconButton highlight={suggestion.pinned} onClick={onPin} icon={pushpin2Line} title="Pin suggestion" />
+          {!suggestion?.content?.isTemplate && (
+            <IconButton highlight={suggestion.pinned} onClick={onPin} icon={pushpin2Line} title="Pin suggestion" />
+          )}
         </ResultHeader>
         <EditorPreviewRenderer
           content={suggestion.content.content}

@@ -57,7 +57,6 @@ export const Editor = ({
 
   useEffect(() => {
     if (editorRef && focusAtBeginning) {
-      mog('_________________CALLED_______________')
       selectEditor(editorRef, { edge: 'end', focus: true })
     }
   }, [editorRef, editorId, focusAtBeginning]) // eslint-disable-line react-hooks/exhaustive-deps

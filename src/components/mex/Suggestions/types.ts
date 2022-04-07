@@ -4,6 +4,7 @@ import { NodeEditorContent } from '../../../types/Types'
 export type SuggestionContent = {
   title: string
   content: NodeEditorContent
+  isTemplate?: boolean
 }
 
 export type SuggestionExtras = {

@@ -16,7 +16,6 @@ import { KEYBOARD_KEYS } from '../../../components/spotlight/Home/components/Lis
 import { QuestionInput } from './styled'
 import { useRouting } from '../../../views/routes/urls'
 import { defaultContent } from '../../../data/Defaults/baseData'
-import { useNavigation } from '../../../hooks/useNavigation'
 import { getSlug } from '../../../utils/lib/strings'
 
 interface QABlockProps {
@@ -25,40 +24,44 @@ interface QABlockProps {
 }
 
 const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
-  const [userResponse, setUserResponse] = useState(element?.answer ?? '')
+  const [userResponse, setUserResponse] = useState(element?.value ?? '')
 
   const ref = useRef(null)
 
   const selected = useSelected()
   const { params } = useRouting()
-  const { push } = useNavigation()
   const { queryIndex } = useSearch()
   const editor = usePlateEditorRef()
   const { saveNodeName } = useLoad()
-  const { setSuggestions } = useSuggestionStore()
+  const { setSuggestions, setHeadingQASearch } = useSuggestionStore()
 
   const setInfobarMode = useLayoutStore((store) => store.setInfobarMode)
 
   useEffect(() => {
     const node = ref.current
-    if (node && selected) node.focus()
+    if (node && selected) {
+      node.focus()
+    }
+
+    setHeadingQASearch(selected)
   }, [selected])
 
   const goToNextLine = () => {
     // * Go to next line
     const n = Editor.next(editor)
 
-    if (n) selectEditor(editor, { at: n[1], edge: 'start', focus: true })
-    else {
+    if (n) {
+      selectEditor(editor, { at: n[1], focus: true })
+    } else {
       insertNodes(editor, defaultContent.content)
       selectEditor(editor, { focus: true })
     }
   }
 
-  const saveAnswer = (answer: string) => {
+  const saveAnswer = (value: string) => {
     const path = ReactEditor.findPath(editor, element)
     if (editor) {
-      const question = { questionId: element.questionId, question: element.question, answer }
+      const question = { questionId: element.questionId, question: element.question, value }
       setNodes(editor, question, { at: path })
     }
   }
@@ -75,7 +78,6 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
         deleteFragment(editor, { at: editor.selection, unit: 'block' })
         insertNodes(editor, defaultContent.content)
         selectEditor(editor, { focus: true })
-        mog('editor', { editor })
       }
     }
 
@@ -92,7 +94,7 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
       const keywords = sw.removeStopwords(value.split(' ').filter(Boolean))
       queryIndex('snippet', keywords.join(' '), ['template']).then((results) => {
         const mapped = results.map((result) => ({ ...result, type: 'template' }))
-        mog('SEARCHING >>>>>>>>> ', { value, results, mapped })
+
         setSuggestions(mapped)
         setInfobarMode('suggestions')
       })
@@ -113,7 +115,19 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
   return (
     <RootElement {...attributes}>
       <QuestionInput contentEditable={false}>
-        <InputBlock required type="text" onKeyDown={onKeyDown} value={userResponse} ref={ref} onChange={onChange} />
+        <InputBlock
+          tabIndex={-1}
+          required
+          onClick={(ev) => {
+            ev.stopPropagation()
+            mog('SELECTION', { selected })
+          }}
+          type="text"
+          onKeyDown={onKeyDown}
+          value={userResponse}
+          ref={ref}
+          onChange={onChange}
+        />
         <span className="placeholder">{question}</span>
       </QuestionInput>
       {children}

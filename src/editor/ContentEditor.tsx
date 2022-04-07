@@ -1,6 +1,5 @@
 import { selectEditor, usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect, useMemo } from 'react'
-import { useFocused, useSelected } from 'slate-react'
 import sw from 'stopword'
 import tinykeys from 'tinykeys'
 import shallow from 'zustand/shallow'
@@ -32,6 +31,7 @@ const ContentEditor = () => {
   const setIsEditing = useEditorStore((store) => store.setIsEditing)
   const { toggleFocusMode } = useLayout()
   const { saveApiAndUpdate } = useLoad()
+  const headingQASearch = useSuggestionStore((store) => store.headingQASearch)
 
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
 
@@ -43,9 +43,6 @@ const ContentEditor = () => {
     (state) => ({ nodeid: state.node.nodeid, node: state.node, fsContent: state.content }),
     shallow
   )
-
-  const focus = useFocused()
-  const selected = useSelected()
 
   const { shortcutHandler } = useKeyListener()
   const { setSuggestions } = useSuggestionStore()
@@ -59,18 +56,13 @@ const ContentEditor = () => {
 
   const onChangeSave = async (val: any[]) => {
     if (val && node && node.nodeid !== '__null__') {
-      if (infobar.mode === 'suggestions') {
+      if (infobar.mode === 'suggestions' && !headingQASearch) {
         const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
-
         const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
         const rawText = convertContentToRawText(val.slice(lastTwoParagraphs, cursorPosition + 1), ' ')
-
         const keywords = sw.removeStopwords(rawText.split(' ').filter(Boolean))
-
         const results = await queryIndex('node', keywords.join(' '))
-
         const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
-
         setSuggestions(withoutCurrentNode)
       }
 
@@ -114,7 +106,6 @@ const ContentEditor = () => {
         shortcutHandler(shortcuts.refreshNode, () => {
           const node = useEditorStore.getState().node
           const val = getBufferVal(node.nodeid)
-          mog('Buffer value for node', { node, val })
           saveApiAndUpdate(node, val)
         })
       }

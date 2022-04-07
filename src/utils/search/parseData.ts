@@ -8,6 +8,7 @@ import { GenericSearchData } from './../../types/search'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { NodeEditorContent } from '../../types/Types'
 import { getSlug } from '../lib/strings'
+import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin'
 
 type ExcludeFromTextType = {
   types?: Set<string>
@@ -68,6 +69,18 @@ export const convertEntryToRawText = (nodeUID: string, entry: any[], title = '')
   return { id: nodeUID, title, text: convertContentToRawText(entry, ' ') }
 }
 
+export const getHeadingBlock = (content: NodeEditorContent) => {
+  const isHeadingBlock = content[0].type === ELEMENT_QA_BLOCK
+  if (isHeadingBlock) {
+    return {
+      isHeadingBlock: true,
+      title: getSlug(content[0].value ?? '')
+    }
+  }
+
+  return undefined
+}
+
 export const parseNode = (nodeId: string, contents: any[], title = ''): GenericSearchData[] => {
   const result: GenericSearchData[] = []
   contents.forEach((block) => {
@@ -87,6 +100,9 @@ export const parseNode = (nodeId: string, contents: any[], title = ''): GenericS
 }
 
 export const getTitleFromContent = (content: NodeEditorContent) => {
+  const heading = getHeadingBlock(content)
+  if (heading) return heading.title
+
   const text = convertContentToRawText(content, ' ', { fields: new Set<ExcludeFieldTypes>(['value', 'url']) })
   const title = getSlug(text)
 
