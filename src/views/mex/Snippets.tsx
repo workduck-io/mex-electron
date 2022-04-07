@@ -24,7 +24,6 @@ import {
   SearchPreviewWrapper,
   SplitSearchPreviewWrapper
 } from '../../style/Search'
-import { CreateSnippet, SnippetCommand, SnippetCommandPrefix, SnippetHeader } from '../../style/Snippets'
 import { Title } from '../../style/Typography'
 // import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText } from '../../utils/search/parseData'
@@ -36,6 +35,7 @@ import { nanoid } from 'nanoid'
 import { useSaveData } from '../../hooks/useSaveData'
 import { SnippetHelp } from '../../data/Defaults/helpText'
 import Infobox from '../../ui/components/Help/Infobox'
+import { IS_DEV } from '../../data/Defaults/dev_'
 
 export type SnippetsProps = {
   title?: string
@@ -63,7 +63,7 @@ const Snippets = () => {
   const randId = useMemo(() => nanoid(), [initialSnippets])
 
   const onSearch = async (newSearchTerm: string): Promise<GenericSearchResult[]> => {
-    const res = await queryIndex('snippet', newSearchTerm)
+    const res = await queryIndex('snippet', newSearchTerm, ['snippet'])
     // mog('search', { res })
     if (newSearchTerm === '' && res.length === 0) {
       return initialSnippets
@@ -79,6 +79,25 @@ const Snippets = () => {
     addSnippet({
       id: snippetId,
       title: snippetName,
+      icon: 'ri:quill-pen-line',
+      content: [{ children: [{ text: '' }], type: ELEMENT_PARAGRAPH }]
+    })
+
+    loadSnippet(snippetId)
+    updater()
+
+    goTo(ROUTE_PATHS.snippet, NavigationType.push, snippetId, { title: snippetName })
+  }
+
+  // * Delete this create special snippet
+  const onCreateSpecialSnippet = () => {
+    const snippetId = generateSnippetId()
+    const snippetName = genereateName().dashed
+
+    addSnippet({
+      id: snippetId,
+      title: snippetName,
+      isTemplate: true,
       icon: 'ri:quill-pen-line',
       content: [{ children: [{ text: '' }], type: ELEMENT_PARAGRAPH }]
     })
@@ -166,15 +185,15 @@ const Snippets = () => {
   }
   const RenderItem = React.forwardRef(BaseItem)
 
-  const RenderStartCard = () => {
-    // mog('RenderPreview', { item })
-    return (
-      <CreateSnippet onClick={onCreateNew}>
-        <Icon icon={quillPenLine} height={100} />
-        <p>Create New Snippet</p>
-      </CreateSnippet>
-    )
-  }
+  // const RenderStartCard = () => {
+  //   // mog('RenderPreview', { item })
+  //   return (
+  //     <CreateSnippet onClick={onCreateNew}>
+  //       <Icon icon={quillPenLine} height={100} />
+  //       <p>Create New Snippet</p>
+  //     </CreateSnippet>
+  //   )
+  // }
 
   const RenderPreview = ({ item }: RenderPreviewProps<GenericSearchResult>) => {
     // mog('RenderPreview', { item })
@@ -206,6 +225,12 @@ const Snippets = () => {
           <Icon icon={quillPenLine} height={24} />
           Create New Snippet
         </Button>
+        {IS_DEV && (
+          <Button primary large onClick={onCreateSpecialSnippet}>
+            <Icon icon={quillPenLine} height={24} />
+            Create Special Snippet
+          </Button>
+        )}
         <Infobox text={SnippetHelp} />
       </MainHeader>
       <SearchView
@@ -219,7 +244,6 @@ const Snippets = () => {
         onSearch={onSearch}
         RenderItem={RenderItem}
         RenderPreview={RenderPreview}
-        RenderStartCard={RenderStartCard}
       />
     </SearchContainer>
   )

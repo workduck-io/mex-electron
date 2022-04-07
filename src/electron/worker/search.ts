@@ -8,7 +8,7 @@ import {
   getNodeAndBlockIdFromCompositeKey
 } from '../../utils/search/flexsearch'
 import { mog } from '../../utils/lib/helper'
-import { SearchWorker, idxKey, GenericSearchData, GenericSearchResult, SearchIndex } from '../../types/search'
+import { SearchWorker, idxKey, GenericSearchResult, SearchIndex } from '../../types/search'
 import { setSearchIndexData } from './../utils/indexData'
 import { parseNode } from '../../utils/search/parseData'
 
@@ -23,7 +23,7 @@ const searchWorker: SearchWorker = {
     nodeBlockMapping = nbMap
   },
 
-  addDoc: (key: idxKey, nodeId: string, contents: any[], title = '') => {
+  addDoc: (key: idxKey, nodeId: string, contents: any[], title = '', tags: Array<string> = []) => {
     if (globalSearchIndex[key]) {
       const parsedBlocks = parseNode(nodeId, contents, title)
 
@@ -32,12 +32,13 @@ const searchWorker: SearchWorker = {
 
       parsedBlocks.forEach((block) => {
         block.blockId = createIndexCompositeKey(nodeId, block.blockId)
-        globalSearchIndex[key].add({ ...block, tag: [nodeId] })
+        mog('NEW ADD SNIPPET', { tags })
+        globalSearchIndex[key].add({ ...block, tag: [...tags, nodeId] })
       })
     }
   },
 
-  updateDoc: (key: idxKey, nodeId: string, contents: any[], title = '') => {
+  updateDoc: (key: idxKey, nodeId: string, contents: any[], title = '', tags: Array<string> = []) => {
     if (globalSearchIndex[key]) {
       const parsedBlocks = parseNode(nodeId, contents, title)
 
@@ -45,8 +46,6 @@ const searchWorker: SearchWorker = {
       const newBlockIds = parsedBlocks.map((block) => block.blockId)
 
       const blockIdsToBeDeleted = existingNodeBlocks.filter((id) => !newBlockIds.includes(id))
-
-      // mog('UpdatingDoc', { existingNodeBlocks, blockIdsToBeDeleted, parsedBlocks })
 
       nodeBlockMapping[nodeId] = newBlockIds
 
@@ -57,7 +56,8 @@ const searchWorker: SearchWorker = {
 
       parsedBlocks.forEach((block) => {
         block.blockId = createIndexCompositeKey(nodeId, block.blockId)
-        globalSearchIndex[key].update({ ...block, tag: [nodeId] })
+        mog('PARSING SNIPPET', { tags })
+        globalSearchIndex[key].update({ ...block, tag: [...tags, nodeId] })
       })
     }
   },
@@ -75,19 +75,19 @@ const searchWorker: SearchWorker = {
     }
   },
 
-  searchIndex: (key: idxKey | idxKey[], query: string) => {
+  searchIndex: (key: idxKey | idxKey[], query: string, tags: Array<string> = []) => {
     try {
       let response: any[] = []
 
       if (typeof key === 'string') {
-        response = globalSearchIndex[key].search(query, { enrich: true })
+        response = globalSearchIndex[key].search(query, { enrich: true, tag: tags })
       } else {
         key.forEach((k) => {
-          response = [...response, ...globalSearchIndex[k].search(query, { enrich: true })]
+          response = [...response, ...globalSearchIndex[k].search(query, { enrich: true, tag: tags })]
         })
       }
 
-      // mog('response is', { response }, { pretty: true, collapsed: false })
+      mog('response is', { response }, { pretty: true, collapsed: false })
       const results = new Array<any>()
       response.forEach((entry) => {
         const matchField = entry.field
@@ -113,8 +113,6 @@ const searchWorker: SearchWorker = {
           combinedResults.push(item)
         }
       })
-
-      // mog('RESULTS', { combinedResults })
 
       return combinedResults
     } catch (e) {

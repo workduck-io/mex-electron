@@ -1,15 +1,15 @@
 import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import { useSnippetStore, Snippet } from '../store/useSnippetStore'
 import { SlashCommandConfig } from '../editor/Components/SlashCommands/Types'
-import { convertEntryToRawText } from '../utils/search/parseData'
 import { useSearch } from './useSearch'
+import { mog } from '../utils/lib/helper'
 
 export const useSnippets = () => {
   const addSnippetZus = useSnippetStore((state) => state.addSnippet)
   const updateSnippetZus = useSnippetStore((state) => state.updateSnippet)
   const deleteSnippetZus = useSnippetStore((state) => state.deleteSnippet)
 
-  const { updateDocument, removeDocument } = useSearch()
+  const { updateDocument, addDocument, removeDocument } = useSearch()
 
   const getSnippets = () => {
     return useSnippetStore.getState().snippets
@@ -48,15 +48,21 @@ export const useSnippets = () => {
 
   const updateSnippet = async (snippet: Snippet) => {
     updateSnippetZus(snippet.id, snippet)
-    await updateDocument('snippet', snippet.id, snippet.content, snippet.title)
+    const tags = snippet.isTemplate ? ['template'] : ['snippet']
+    mog('Update snippet', { snippet, tags })
+    await updateDocument('snippet', snippet.id, snippet.content, snippet.title, tags)
   }
+
   const deleteSnippet = async (id: string) => {
     deleteSnippetZus(id)
     await removeDocument('snippet', id)
   }
+
   const addSnippet = async (snippet: Snippet) => {
     addSnippetZus(snippet)
-    await updateDocument('snippet', snippet.id, snippet.content, snippet.title)
+    const tags = snippet.isTemplate ? ['template'] : ['snippet']
+    mog('Add snippet', { snippet, tags })
+    await addDocument('snippet', snippet.id, snippet.content, snippet.title, tags)
   }
 
   return { getSnippets, getSnippet, getSnippetContent, getSnippetsConfigs, addSnippet, updateSnippet, deleteSnippet }

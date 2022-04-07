@@ -1,5 +1,5 @@
 import { client } from '@workduck-io/dwindle'
-import { defaultContent } from '../data/Defaults/baseData'
+import { defaultContent, getRandomQAContent } from '../data/Defaults/baseData'
 import { USE_API } from '../data/Defaults/dev_'
 import '../services/apiClient/apiClient'
 import { useAuthStore } from '../services/auth/useAuth'
@@ -22,20 +22,24 @@ export const useApi = () => {
    * Saves data in the backend
    * Also updates the incoming data in the store
    */
+
+  const defaultQAContent = getRandomQAContent()
+
   const saveNewNodeAPI = async (nodeid: string) => {
     const reqData = {
       id: nodeid,
       type: 'NodeRequest',
       lastEditedBy: useAuthStore.getState().userDetails.email,
       namespaceIdentifier: 'NAMESPACE1',
-      data: serializeContent(defaultContent.content)
+      data: serializeContent(defaultQAContent)
     }
+
+    setContent(nodeid, defaultQAContent)
 
     if (!USE_API()) {
       return
     }
 
-    setContent(nodeid, defaultContent.content)
     const data = await client
       .post(apiURLs.saveNode, reqData, {
         headers: {

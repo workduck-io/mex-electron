@@ -3,7 +3,6 @@ import { keyTap, keyToggle, setKeyboardDelay } from 'robotjs'
 import activeWindow from 'active-win-universal'
 import { clipboard } from 'electron'
 import { getKeyFromKeycode } from '../../utils/lib/keyMap'
-import { mog } from '../../utils/lib/helper'
 
 export type SelectionType = {
   text: string

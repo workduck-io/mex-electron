@@ -79,7 +79,7 @@ export const parseNode = (nodeId: string, contents: any[], title = ''): GenericS
     blockText += ' ' + convertContentToRawText(block.children, ' ')
 
     if (blockText.trim().length !== 0) {
-      const temp: GenericSearchData = { id: nodeId, text: blockText, blockId: block.id, title: title, data: block }
+      const temp: GenericSearchData = { id: nodeId, text: blockText, blockId: block.id, title, data: block }
       result.push(temp)
     }
   })
@@ -151,8 +151,8 @@ export const convertDataToIndexable = (data: FileData) => {
       })
     } else if (idxName === indexNames.snippet) {
       data.snippets.map((snip) => {
-        const temp: GenericSearchData = convertEntryToRawText(snip.id, snip.content)
-        temp.title = titleNodeMap.get(snip.id)
+        const title = titleNodeMap.get(snip.id)
+        const temp: GenericSearchData = convertEntryToRawText(snip.id, snip.content, title)
         nodeBlockMap[snip.id] = [snip.id] // Redundant right now, not doing block level indexing for snippets
         idxResult.push(temp)
       })

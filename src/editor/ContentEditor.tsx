@@ -1,5 +1,6 @@
-import { selectEditor, useEditorRef, usePlateEditorRef } from '@udecode/plate'
+import { selectEditor, usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect, useMemo } from 'react'
+import { useFocused, useSelected } from 'slate-react'
 import sw from 'stopword'
 import tinykeys from 'tinykeys'
 import shallow from 'zustand/shallow'
@@ -38,10 +39,13 @@ const ContentEditor = () => {
 
   const infobar = useLayoutStore((store) => store.infobar)
 
-  const { nodeid, node, fsContent } = useEditorStore(
+  const { node, fsContent } = useEditorStore(
     (state) => ({ nodeid: state.node.nodeid, node: state.node, fsContent: state.content }),
     shallow
   )
+
+  const focus = useFocused()
+  const selected = useSelected()
 
   const { shortcutHandler } = useKeyListener()
   const { setSuggestions } = useSuggestionStore()
@@ -71,7 +75,6 @@ const ContentEditor = () => {
       }
 
       setIsEditing(false)
-      mog('stopped!!')
       addOrUpdateValBuffer(node.nodeid, val)
     }
   }

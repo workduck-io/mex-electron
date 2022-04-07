@@ -3,7 +3,7 @@ import { spawn, Worker } from 'threads'
 import { mog } from '../../utils/lib/helper'
 import { NodeEditorContent } from '../../types/Types'
 import { FileData } from '../../types/data'
-import { GenericSearchData, GenericSearchResult, idxKey, SearchIndex } from '../../types/search'
+import { idxKey } from '../../types/search'
 
 // @ts-expect-error it don't want .ts
 // eslint-disable-next-line
@@ -65,19 +65,19 @@ export const initSearchIndex = async (fileData: FileData, indexData: Record<idxK
   }
 }
 
-export const addDoc = async (key: idxKey, nodeId: string, contents: any[], title: string) => {
+export const addDoc = async (key: idxKey, nodeId: string, contents: any[], title: string, tags?: Array<string>) => {
   try {
     if (!search_worker) throw new Error('Search Worker Not Initialized')
-    await search_worker.addDoc(key, nodeId, contents, title)
+    await search_worker.addDoc(key, nodeId, contents, title, tags)
   } catch (error) {
     mog('AddDocIndexError', { error })
   }
 }
 
-export const updateDoc = async (key: idxKey, nodeId: string, contents: any[], title: string) => {
+export const updateDoc = async (key: idxKey, nodeId: string, contents: any[], title: string, tags?: Array<string>) => {
   try {
     if (!search_worker) throw new Error('Search Worker Not Initialized')
-    await search_worker.updateDoc(key, nodeId, contents, title)
+    await search_worker.updateDoc(key, nodeId, contents, title, tags)
   } catch (error) {
     mog('UpdateDocIndexError', { error })
   }
@@ -92,11 +92,11 @@ export const removeDoc = async (key: idxKey, id: string) => {
   }
 }
 
-export const searchIndex = async (key: idxKey, query: string) => {
+export const searchIndex = async (key: idxKey, query: string, tags?: Array<string>) => {
   try {
     if (!search_worker) throw new Error('Search Worker Not Initialized')
 
-    const results = await search_worker.searchIndex(key, query)
+    const results = await search_worker.searchIndex(key, query, tags)
     return results
   } catch (error) {
     mog('SearchIndexError', { error })

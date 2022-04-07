@@ -3,25 +3,36 @@ import { ipcRenderer } from 'electron'
 import { IpcAction } from '../data/IpcAction'
 
 import { useLinks } from './useLinks'
-import { mog } from '../utils/lib/helper'
 
 export const useSearch = () => {
   const { getPathFromNodeid } = useLinks()
 
-  const addDocument = async (key: idxKey, nodeId: string, contents: any[], title?: string) => {
-    await ipcRenderer.invoke(IpcAction.ADD_DOCUMENT, key, nodeId, contents, title ?? getPathFromNodeid(nodeId))
+  const addDocument = async (
+    key: idxKey,
+    nodeId: string,
+    contents: any[],
+    title: string | undefined = undefined,
+    tags?: Array<string>
+  ) => {
+    await ipcRenderer.invoke(IpcAction.ADD_DOCUMENT, key, nodeId, contents, title ?? getPathFromNodeid(nodeId), tags)
   }
 
-  const updateDocument = async (key: idxKey, nodeId: string, contents: any[], title?: string) => {
-    await ipcRenderer.invoke(IpcAction.UPDATE_DOCUMENT, key, nodeId, contents, title ?? getPathFromNodeid(nodeId))
+  const updateDocument = async (
+    key: idxKey,
+    nodeId: string,
+    contents: any[],
+    title: string | undefined = undefined,
+    tags?: Array<string>
+  ) => {
+    await ipcRenderer.invoke(IpcAction.UPDATE_DOCUMENT, key, nodeId, contents, title ?? getPathFromNodeid(nodeId), tags)
   }
 
   const removeDocument = async (key: idxKey, id: string) => {
     await ipcRenderer.invoke(IpcAction.REMOVE_DOCUMENT, key, id)
   }
 
-  const queryIndex = async (key: idxKey | idxKey[], query: string) => {
-    const results = await ipcRenderer.invoke(IpcAction.QUERY_INDEX, key, query)
+  const queryIndex = async (key: idxKey | idxKey[], query: string, tags?: Array<string>) => {
+    const results = await ipcRenderer.invoke(IpcAction.QUERY_INDEX, key, query, tags)
     return results
   }
 

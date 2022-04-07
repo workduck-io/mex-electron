@@ -20,6 +20,7 @@ import { useAnalysisStore } from '../store/useAnalysis'
 import { checkIfUntitledDraftNode } from '../utils/lib/strings'
 import { getPathFromNodeIdHookless } from './useLinks'
 import { DRAFT_PREFIX } from '../data/Defaults/idPrefixes'
+import { useNavigation } from './useNavigation'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -70,6 +71,7 @@ const useLoad = () => {
 
     try {
       execRefactor(nodePath, newNodePath, false)
+      loadNode(nodeId, { fetch: false })
     } catch (err) {
       toast('Unable to rename node')
     }

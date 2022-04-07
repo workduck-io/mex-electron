@@ -1,15 +1,15 @@
 // import { NodeSearchResult } from './useSearchStore'
 import create from 'zustand'
 import { AnyObject, TNode } from '@udecode/plate'
-import { GenericSearchResult } from '../types/search'
-
-type SuggestionType = GenericSearchResult & { pinned: boolean }
+import { SuggestionType } from '../components/mex/Suggestions/types'
 
 type SuggestionStoreType = {
   suggestions: SuggestionType[]
   setSuggestions: (suggestions: SuggestionType[]) => void
+
   pinnedSuggestions: SuggestionType[]
   pinSuggestion: (pinnedSuggestions: SuggestionType) => void
+
   query?: TNode<AnyObject>[]
   setQuery?: (query: TNode<AnyObject>[]) => void
 }

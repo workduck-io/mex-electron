@@ -32,6 +32,7 @@ const SnippetEditor = () => {
   const [content, setContent] = useState<any[] | undefined>(undefined)
 
   const { updater } = useUpdater()
+  const { updateSnippet: updateSnippetIndex } = useSnippets()
   const { addOrUpdateValBuffer, saveAndClearBuffer } = useSnippetBuffer()
 
   useEffect(() => {
@@ -69,9 +70,11 @@ const SnippetEditor = () => {
   }, [])
 
   const returnToSnippets = () => {
-    saveAndClearBuffer()
-    updater()
-    goTo(ROUTE_PATHS.snippets, NavigationType.push)
+    updateSnippetIndex(snippet).then((res) => {
+      saveAndClearBuffer()
+      updater()
+      goTo(ROUTE_PATHS.snippets, NavigationType.push)
+    })
   }
 
   return (

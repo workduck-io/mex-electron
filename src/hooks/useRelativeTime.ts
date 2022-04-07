@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getRelativeTime } from '../utils/time'
 // import { mog } from '../utils/lib/helper'
 
@@ -26,4 +26,22 @@ export function useRelativeTime(d: Date | number, refresh_ms?: number) {
   }, [d])
 
   return humanTime
+}
+
+export const useInterval = (callback: () => void, delay: number | null) => {
+  const savedCallback = useRef(callback)
+
+  useEffect(() => {
+    savedCallback.current = callback
+  }, [callback])
+
+  useEffect(() => {
+    if (delay === null) {
+      return
+    }
+
+    const refId = setInterval(() => savedCallback.current(), delay)
+
+    return () => clearInterval(refId)
+  }, [delay])
 }

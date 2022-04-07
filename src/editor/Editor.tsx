@@ -15,6 +15,7 @@ import { useEditorChange } from '../hooks/useEditorActions'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 import { useGraphStore } from '../store/useGraphStore'
 import { useEditorStore } from '../store/useEditorStore'
+import { mog } from '../utils/lib/helper'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -56,6 +57,7 @@ export const Editor = ({
 
   useEffect(() => {
     if (editorRef && focusAtBeginning) {
+      mog('_________________CALLED_______________')
       selectEditor(editorRef, { edge: 'end', focus: true })
     }
   }, [editorRef, editorId, focusAtBeginning]) // eslint-disable-line react-hooks/exhaustive-deps
