@@ -55,6 +55,7 @@ import { getReminderDimensions, REMINDERS_DIMENSIONS } from '../services/reminde
 import { IS_DEV } from '../data/Defaults/dev_'
 import { Reminder, ReminderActions } from '../types/reminders'
 import { AuthTokenData } from '../types/auth'
+import { clearLocalStorage } from '../utils/dataTransform'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -563,6 +564,14 @@ ipcMain.on(IpcAction.SET_TOKEN_DATA, (_event, arg) => {
 
 ipcMain.on(IpcAction.GET_LOCAL_DATA, async (event) => {
   const fileData: FileData = getFileData(SAVE_LOCATION)
+  const isUpdate = app.getVersion() !== fileData.version
+
+  // Needed for this upgrade, because of dwindle changes
+  if (isUpdate && clearLocalStorage(fileData.version, app.getVersion())) {
+    mex?.webContents.send(IpcAction.FORCE_SIGNOUT)
+    spotlight?.webContents.send(IpcAction.FORCE_SIGNOUT)
+  }
+
   const indexData: Record<idxKey, any> = getIndexData(SEARCH_INDEX_LOCATION)
   await initSearchIndex(fileData, indexData)
   event.sender.send(IpcAction.RECEIVE_LOCAL_DATA, { fileData })

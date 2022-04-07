@@ -52,7 +52,7 @@ const Init = () => {
   const { init } = useInitialize()
   const { loadNode, getNode } = useLoad()
   const { initCognito } = useAuth()
-  const { loginViaGoogle } = useAuthentication()
+  const { loginViaGoogle, logout } = useAuthentication()
 
   const { getLocalData } = useLocalData()
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
@@ -65,8 +65,6 @@ const Init = () => {
   const { onSave } = useSaver()
   const updateReminderState = useReminderStore((store) => store.updateReminderState)
   const { setReceiveToken } = useRecieveTokens()
-
-  const { queryIndex } = useSearch()
 
   const { addGoogleCalendarToken } = useTokens()
 
@@ -193,6 +191,15 @@ const Init = () => {
       goTo(ROUTE_PATHS.node, NavigationType.push, appleNotesUID)
     })
   }, [isOnboarding]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    ipcRenderer.on(IpcAction.FORCE_SIGNOUT, () => {
+      localStorage.clear()
+      logout()
+
+      goTo(ROUTE_PATHS.login, NavigationType.push)
+    })
+  })
 
   useEffect(() => {
     if (editor && appleNotes.length > 0) {

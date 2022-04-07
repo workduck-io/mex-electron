@@ -1,6 +1,5 @@
 import { app } from 'electron'
 import fs from 'fs'
-import { FileData } from '../../types/data'
 import { DefaultFileData } from '../../data/Defaults/baseData'
 import { applyTransforms, requiresTransform } from '../../utils/dataTransform'
 import { UpdateVersionTransforms } from '../../data/transforms'

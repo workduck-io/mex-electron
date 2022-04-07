@@ -228,3 +228,11 @@ export const applyTransforms = (d: any, transforms: DataTransformation[]): { dat
 
   return { data: transformedData, toWrite: toApplyTransform.length > 0 }
 }
+
+export const clearLocalStorage = (fileDataVersion: string, currVersion: string) => {
+  const usesAccessToken = semver.compare(fileDataVersion, '0.9.0-alpha.1')
+  const usesIdToken = semver.compare(currVersion, '0.9.0-alpha.1')
+
+  if (usesAccessToken === -1 && usesIdToken >= 0) return true
+  return false
+}
