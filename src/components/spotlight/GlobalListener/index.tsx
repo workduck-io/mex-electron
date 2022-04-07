@@ -38,7 +38,7 @@ const GlobalListener = memo(() => {
   const addILink = useDataStore((store) => store.addILink)
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
 
-  const { loginViaGoogle } = useAuthentication()
+  const { loginViaGoogle, logout } = useAuthentication()
 
   const { getTokenData } = useTokenData()
   const { setReceiveToken } = useRecieveTokens()
@@ -139,6 +139,10 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.send(IpcAction.GET_LOCAL_DATA)
+
+    ipcRenderer.on(IpcAction.FORCE_SIGNOUT, (_event) => {
+      localStorage.clear()
+    })
 
     setReceiveToken()
   }, [])
