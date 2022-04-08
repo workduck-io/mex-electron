@@ -5,11 +5,12 @@ import { Contents } from '../../store/useContentStore'
 import { FileData, NodeContent } from '../../types/data'
 import { generateILinks } from '../../utils/generateComboItem'
 import { randomNumberBetween } from '../../utils/helpers'
-import { generateNodeUID, generateTempId } from './idPrefixes'
+import { generateNodeUID, generateTempId, MEETING_PREFIX } from './idPrefixes'
 // import { generateTempId } from './idPrefixes'
 //
 export const BASE_DRAFT_PATH = 'Draft'
 export const BASE_TASKS_PATH = 'Tasks'
+export const BASE_MEETING_PATH = MEETING_PREFIX
 
 const links = [
   ...generateILinks(['doc', 'dev', 'design', '@']),

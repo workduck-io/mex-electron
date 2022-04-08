@@ -2,6 +2,7 @@ import { CategoryType } from '../../../store/Context/context.spotlight'
 import { IpcAction } from '../../../data/IpcAction'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { Shortcut } from '../../mex/Help/Help.types'
+import { CalendarEvent } from '../../../hooks/useCalendar'
 
 export interface ListItemType {
   id: string
@@ -21,6 +22,7 @@ export interface ItemExtraType {
   customAction: () => void
   componentName: string
   base_url: string
+  event: CalendarEvent
   ipcAction: IpcAction
 }
 

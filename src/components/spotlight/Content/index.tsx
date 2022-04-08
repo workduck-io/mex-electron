@@ -72,7 +72,7 @@ const Content = () => {
 
           if (!normalMode) return
 
-          const recentEvents = getUpcomingEvents()
+          const recentEvents = selection ? [] : getUpcomingEvents()
           const recents = selection ? recentResearchNodes : lastOpenedNodes
           const items = recents.filter((recent: string) => ilinks.find((ilink) => ilink.nodeid === recent))
 
@@ -142,7 +142,8 @@ const Content = () => {
         setNodeContent(content)
         setPreview(INIT_PREVIEW)
       } else if (isMeeting) {
-        const content = MeetingSnippetContent
+        const e = resultNode?.extras.event
+        const content = MeetingSnippetContent(e.summary, e.times.start, e.links.meet ?? e.links.event)
         setNodeContent(content)
         setPreview(INIT_PREVIEW)
       }

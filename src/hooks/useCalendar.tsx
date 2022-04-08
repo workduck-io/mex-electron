@@ -16,6 +16,8 @@ import { GoogleEvent } from '../types/gcal'
 import { mog } from '../utils/lib/helper'
 import { getSlug } from '../utils/lib/strings'
 import { ILink } from '../types/Types'
+import { MEETING_PREFIX } from '../data/Defaults/idPrefixes'
+import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 
 /*
  * Need
@@ -90,7 +92,7 @@ interface UserCalendarState {
 }
 
 export const getNodeForMeeting = (title: string, date: number, create?: boolean): ILink | undefined => {
-  const customName = getSlug(`${title}-${format(date, 'dd-MM-yyyy')}`)
+  const customName = `${MEETING_PREFIX}${SEPARATOR}${getSlug(title)} ${format(date, 'dd-MM-yyyy')}`
   const links = useDataStore.getState().ilinks
 
   const link = links.find((l) => l.path === customName)
@@ -106,9 +108,9 @@ export const getNodeForMeeting = (title: string, date: number, create?: boolean)
   return node
 }
 
-export const openCalendarMeetingNote = (title: string, date: number) => {
+export const openCalendarMeetingNote = (e: CalendarEvent) => {
   // if link present use it
-  const node = getNodeForMeeting(title, date, true)
+  const node = getNodeForMeeting(e.summary, e.times.start, true)
   useSpotlightEditorStore.getState().loadNode(
     {
       title: node.path,
@@ -116,7 +118,7 @@ export const openCalendarMeetingNote = (title: string, date: number) => {
       id: node.nodeid,
       path: node.path
     },
-    MeetingSnippetContent
+    MeetingSnippetContent(e.summary, e.times.start, e.links.meet ?? e.links.event)
   )
   useSpotlightAppStore.getState().setNormalMode(false)
 }
@@ -146,9 +148,10 @@ const convertCalendarEventToAction = (e: CalendarEvent) => {
     extras: {
       base_url: e.links.meet ?? e.links.event,
       nodeid: node ? node.nodeid : undefined,
+      event: e,
       customAction: () => {
         console.log('custom action')
-        openCalendarMeetingNote(e.summary, e.times.start)
+        openCalendarMeetingNote(e)
       }
     }
   }
@@ -218,6 +221,11 @@ export const useCalendar = () => {
 
     const todayEventList: ListItemType[] = todayEvents.map(convertCalendarEventToAction)
 
+    mog('calendar', {
+      events,
+      todayEventList
+    })
+
     return todayEventList
   }
 
@@ -226,7 +234,7 @@ export const useCalendar = () => {
     const yesterday = sub(now, { days: 1 }).toISOString()
     const twoDaysFromNow = add(now, { days: 2 }).toISOString()
     const tokens = useTokenStore.getState().data
-    const max = 5
+    const max = 15
 
     const tokenStatus = checkTokenGoogleCalendar(tokens)
 
@@ -257,7 +265,7 @@ export const useCalendar = () => {
       })
       .then((res) => {
         const events = res.data.items.map((event) => converGoogleEventToCalendarEvent(event))
-        // console.log('Got Events', res.data)
+        console.log('Got Events', res.data, events)
         setEvents(events)
       })
 

@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast'
 import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
-import { BASE_TASKS_PATH, BASE_DRAFT_PATH } from '../../data/Defaults/baseData'
+import { BASE_DRAFT_PATH, BASE_MEETING_PATH, BASE_TASKS_PATH } from '../../data/Defaults/baseData'
 import { FlowCommandPrefix } from '../../editor/Components/SlashCommands/useSyncConfig'
 import { SnippetCommandPrefix } from '../../hooks/useSnippets'
 import { mog } from './helper'
@@ -11,6 +11,7 @@ const RESERVED_PATHS: string[] = [
   FlowCommandPrefix,
   'mex',
   SnippetCommandPrefix,
+  BASE_MEETING_PATH,
   'sync',
   'root'
 ]

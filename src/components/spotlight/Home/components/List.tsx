@@ -70,7 +70,7 @@ const List = ({
     }
 
     if (searchResults[activeIndex] && searchResults[activeIndex]?.category === CategoryType.meeting) {
-      if (normalMode) style.width = '100%'
+      if (normalMode) style.width = '55%'
       else style.width = '0%'
     }
 
