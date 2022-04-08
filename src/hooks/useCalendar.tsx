@@ -1,6 +1,6 @@
 import { client } from '@workduck-io/dwindle'
 import axios from 'axios'
-import { add, formatDistanceToNow, sub } from 'date-fns'
+import { add, format, formatDistanceToNow, sub } from 'date-fns'
 import { useEffect } from 'react'
 import create from 'zustand'
 import { GOOGLE_CAL_BASE, GOOGLE_OAUTH2_REFRESH_URL } from '../apis/routes'
@@ -90,7 +90,7 @@ interface UserCalendarState {
 }
 
 export const getNodeForMeeting = (title: string, date: number, create?: boolean): ILink | undefined => {
-  const customName = getSlug(`${title}`)
+  const customName = getSlug(`${title}-${format(date, 'dd-MM-yyyy')}`)
   const links = useDataStore.getState().ilinks
 
   const link = links.find((l) => l.path === customName)
