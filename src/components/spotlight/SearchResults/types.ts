@@ -31,8 +31,8 @@ export enum ItemActionType {
   open,
 
   /** **Twin Open**
-  On Enter Opens the URL,
-  On Meta+Enter opens the nodeid
+  On Enter opens the nodeid
+  On Meta+Enter opens the URL,
   */
   twinOpen,
 

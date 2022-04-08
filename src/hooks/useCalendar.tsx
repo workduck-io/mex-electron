@@ -135,12 +135,12 @@ const convertCalendarEventToAction = (e: CalendarEvent) => {
     category: CategoryType.meeting,
     shortcut: {
       open: {
-        title: 'to open Meeting',
+        title: 'to open Meeting Notes',
         category: 'action',
         keystrokes: 'Enter'
       },
       edit: {
-        title: 'to edit Meeting Notes',
+        title: 'to open Meeting Link',
         category: 'action',
         keystrokes: 'Cmd+Enter'
       }
