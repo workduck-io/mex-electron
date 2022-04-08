@@ -4,7 +4,8 @@ import { ListItemType } from '../../components/spotlight/SearchResults/types'
 export enum CategoryType {
   quicklink = 'Quick Links',
   action = 'Quick Actions',
-  search = 'Search Results'
+  search = 'Search Results',
+  meeting = 'Meetings'
 }
 
 export type Search = {

@@ -13,6 +13,7 @@ import { useHelpStore } from '../../../store/useHelpStore'
 import useOnboard from '../../../store/useOnboarding'
 import { openNodeInMex } from '../../../utils/combineSources'
 import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
+import { mog } from '../../../utils/lib/helper'
 import { useSaveChanges } from '../Search/useSearchProps'
 import { spotlightShortcuts } from '../Shortcuts/list'
 
@@ -40,7 +41,9 @@ const PreviewContainer: React.FC<PreviewProps> = ({ nodeId, preview }) => {
       const deserializedContent = deserializedContentNodes
       const activeNodeContent = getContent(nodeId)?.content ?? []
 
-      setNodeContent([...activeNodeContent, ...deserializedContent])
+      const nodeContent = [...activeNodeContent, ...deserializedContent]
+      mog('PreviewContentSet', { nodeContent, activeNodeContent, deserializedContent })
+      setNodeContent(nodeContent)
     }
   }, [preview, showSource, nodeId, normalMode])
 

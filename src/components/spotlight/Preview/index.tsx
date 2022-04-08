@@ -48,6 +48,10 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
       style.width = '0%'
     }
 
+    if (searchResults[activeIndex] && searchResults[activeIndex]?.category === CategoryType.meeting) {
+      if (normalMode) style.width = '45%'
+      else style.width = '100%'
+    }
     return style
   }, [normalMode, activeIndex, searchResults])
 

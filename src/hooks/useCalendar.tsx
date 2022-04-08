@@ -5,11 +5,17 @@ import { useEffect } from 'react'
 import create from 'zustand'
 import { GOOGLE_CAL_BASE, GOOGLE_OAUTH2_REFRESH_URL } from '../apis/routes'
 import { ItemActionType, ListItemType } from '../components/spotlight/SearchResults/types'
+import { MeetingSnippetContent } from '../data/Defaults/MeetingNote'
 import { testEvents } from '../data/Defaults/Test/calendar'
 import { checkTokenGoogleCalendar, fetchNewCalendarToken, useTokenStore } from '../services/auth/useTokens'
+import { useSpotlightAppStore } from '../store/app.spotlight'
 import { CategoryType } from '../store/Context/context.spotlight'
+import useDataStore from '../store/useDataStore'
+import { useSpotlightEditorStore } from '../store/editor.spotlight'
 import { GoogleEvent } from '../types/gcal'
 import { mog } from '../utils/lib/helper'
+import { getSlug } from '../utils/lib/strings'
+import { ILink } from '../types/Types'
 
 /*
  * Need
@@ -83,24 +89,67 @@ interface UserCalendarState {
   setEvents: (events: CalendarEvent[]) => void
 }
 
+export const getNodeForMeeting = (title: string, date: number, create?: boolean): ILink | undefined => {
+  const customName = getSlug(`${title}`)
+  const links = useDataStore.getState().ilinks
+
+  const link = links.find((l) => l.path === customName)
+
+  const node = link
+    ? link
+    : create
+    ? useDataStore.getState().addILink({
+        ilink: customName
+      })
+    : undefined
+
+  return node
+}
+
+export const openCalendarMeetingNote = (title: string, date: number) => {
+  // if link present use it
+  const node = getNodeForMeeting(title, date, true)
+  useSpotlightEditorStore.getState().loadNode(
+    {
+      title: node.path,
+      nodeid: node.nodeid,
+      id: node.nodeid,
+      path: node.path
+    },
+    MeetingSnippetContent
+  )
+  useSpotlightAppStore.getState().setNormalMode(false)
+}
+
 const convertCalendarEventToAction = (e: CalendarEvent) => {
+  const node = getNodeForMeeting(e.summary, e.times.start, false)
   const desc = e.description ? `: ${e.description}` : ''
   return {
     id: e.id,
     icon: 'ri-calendar-event-line',
     title: e.summary,
     description: formatDistanceToNow(e.times.start, { addSuffix: true }) + ` ${desc}`,
-    type: ItemActionType.open,
-    category: CategoryType.action,
+    type: ItemActionType.twinOpen,
+    category: CategoryType.meeting,
     shortcut: {
       open: {
         title: 'to open Meeting',
         category: 'action',
         keystrokes: 'Enter'
+      },
+      edit: {
+        title: 'to edit Meeting Notes',
+        category: 'action',
+        keystrokes: 'Cmd+Enter'
       }
     },
     extras: {
-      base_url: e.links.meet ?? e.links.event
+      base_url: e.links.meet ?? e.links.event,
+      nodeid: node ? node.nodeid : undefined,
+      customAction: () => {
+        console.log('custom action')
+        openCalendarMeetingNote(e.summary, e.times.start)
+      }
     }
   }
 }
@@ -148,6 +197,7 @@ export const useCalendarStore = create<UserCalendarState>((set) => ({
 export const useCalendar = () => {
   const setEvents = useCalendarStore((state) => state.setEvents)
   const updateToken = useTokenStore((state) => state.updateGoogleCalendarToken)
+  // const ilink =c
 
   const getUserEvents = () => {
     const events = useCalendarStore.getState().events

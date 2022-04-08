@@ -14,6 +14,7 @@ export type SpotlightAppStore = {
 export const useSpotlightAppStore = create<SpotlightAppStore>((set, get) => ({
   reset: false,
   search: '',
+  // Mode for list if false, the editor takes full screen
   normalMode: true,
   input: '',
   setInput: (value: string) => set({ input: value }),
