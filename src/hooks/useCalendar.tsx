@@ -2,15 +2,22 @@ import { client } from '@workduck-io/dwindle'
 import axios from 'axios'
 import { add, formatDistanceToNow, sub } from 'date-fns'
 import { useEffect } from 'react'
+import toast from 'react-hot-toast'
 import create from 'zustand'
-import { GOOGLE_CAL_BASE, GOOGLE_OAUTH2_REFRESH_URL } from '../apis/routes'
+import { GOOGLE_CAL_BASE } from '../apis/routes'
+import { useApi } from '../apis/useSaveApi'
 import { ItemActionType, ListItemType } from '../components/spotlight/SearchResults/types'
 import { testEvents } from '../data/Defaults/Test/calendar'
+import { IpcAction } from '../data/IpcAction'
+import { getUntitledDraftKey } from '../editor/Components/SyncBlock/getNewBlockData'
 import { showRemoteNotification } from '../electron/utils/notifications'
+import { appNotifierWindow } from '../electron/utils/notifiers'
 import { checkTokenGoogleCalendar, fetchNewCalendarToken, useTokenStore } from '../services/auth/useTokens'
 import { CategoryType } from '../store/Context/context.spotlight'
+import useDataStore from '../store/useDataStore'
 import { GoogleEvent } from '../types/gcal'
 import { mog } from '../utils/lib/helper'
+import { AppType } from './useInitialize'
 
 /*
  * Need
@@ -149,10 +156,27 @@ export const useCalendarStore = create<UserCalendarState>((set) => ({
 export const useCalendar = () => {
   const setEvents = useCalendarStore((state) => state.setEvents)
   const updateToken = useTokenStore((state) => state.updateGoogleCalendarToken)
-
+  const addILink = useDataStore((store) => store.addILink)
+  const { saveNewNodeAPI } = useApi()
   const getUserEvents = () => {
     const events = useCalendarStore.getState().events
     return events
+  }
+
+  const createPreMeetingNotes = (events: any[]) => {
+    for (const event of events) {
+      const newNodeId = `${event.title}-${getUntitledDraftKey()}`
+      const node = addILink({ ilink: newNodeId, showAlert: false })
+
+      if (node === undefined) {
+        toast.error('The node clashed')
+        continue
+      }
+
+      saveNewNodeAPI(node.nodeid)
+      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
+      mog('CREATED PRE MEETING NOTES', { node }, { pretty: true, collapsed: false })
+    }
   }
 
   const getUpcomingEvents = (isFromNotification = false) => {
@@ -210,6 +234,9 @@ export const useCalendar = () => {
         const events = res.data.items.map((event) => converGoogleEventToCalendarEvent(event))
         console.log('Got Events', res.data)
         setEvents(events)
+        const upcomingEvents = getUpcomingEvents(true)
+        mog('UPCOMING EVENTS', { upcomingEvents }, { pretty: true, collapsed: false })
+        createPreMeetingNotes(upcomingEvents)
       })
 
     // When client is accessible, use it to get the events
@@ -244,7 +271,8 @@ export const useCalendar = () => {
     notifyGoogleEvent,
     getUserEvents,
     getUpcomingEvents,
-    fetchGoogleCalendarEvents
+    fetchGoogleCalendarEvents,
+    createPreMeetingNotes
   }
 }
 
