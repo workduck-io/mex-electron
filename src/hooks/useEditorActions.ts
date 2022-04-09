@@ -76,11 +76,13 @@ const useEditorActions = () => {
   }
 }
 
-export const useEditorChange = (editorId: string, content: NodeEditorContent) => {
+export const useEditorChange = (editorId: string, content: NodeEditorContent, onChange?: any) => {
   const editor = usePlateEditorRef(editorId)
   useEffect(() => {
     if (editor && content) {
+      mog('useEditorChange', { editorId, content })
       editor.children = content
+      if (onChange) onChange(content)
     }
   }, [editorId, content])
 }
