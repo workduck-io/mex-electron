@@ -3,7 +3,7 @@ import { Document } from 'flexsearch'
 import { FileData } from '../../types/data'
 import { diskIndex, indexNames } from '../../data/search'
 import { convertDataToIndexable } from './parseData'
-import { SearchIndex, GenericSearchData } from '../../types/search'
+import { GenericSearchData } from '../../types/search'
 import { mog } from '../lib/helper'
 export interface CreateSearchIndexData {
   node: GenericSearchData[] | null
@@ -80,8 +80,6 @@ export const createGenricSearchIndex = (
   } else {
     initList.forEach((block) => {
       block.blockId = createIndexCompositeKey(block.id, block.blockId ?? block.id)
-
-      mog('Block', block)
 
       index.add({ ...block, tag: [block.id] })
     })

@@ -4,6 +4,7 @@ import { EditorStyles } from '../style/Editor'
 import generatePlugins from './Plugins/plugins'
 import { editorPreviewComponents } from './Components/components'
 import styled from 'styled-components'
+import { TodoContainer } from '../ui/components/Todo.style'
 
 interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -14,7 +15,12 @@ interface EditorPreviewRendererProps {
 
 const PreviewStyles = styled(EditorStyles)<{ noMouseEvents: boolean }>`
   ${({ noMouseEvents }) => noMouseEvents && 'pointer-events: none;'};
+  user-select: none;
   font-size: 14px;
+
+  ${TodoContainer}, button, input, textarea, select, option {
+    pointer-events: none;
+  }
 `
 
 const EditorPreviewRenderer = ({ content, editorId, noStyle, noMouseEvents }: EditorPreviewRendererProps) => {
@@ -33,7 +39,13 @@ const EditorPreviewRenderer = ({ content, editorId, noStyle, noMouseEvents }: Ed
   const plugins = generatePlugins(editorPreviewComponents, { exclude: { dnd: true } })
 
   return (
-    <PreviewStyles noMouseEvents={noMouseEvents}>
+    <PreviewStyles
+      noMouseEvents={noMouseEvents}
+      onClick={(ev) => {
+        ev.preventDefault()
+        ev.stopPropagation()
+      }}
+    >
       <Plate id={editorId} editableProps={editableProps} value={content} plugins={plugins} />
     </PreviewStyles>
   )

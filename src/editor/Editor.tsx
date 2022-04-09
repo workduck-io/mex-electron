@@ -15,7 +15,6 @@ import { useEditorChange } from '../hooks/useEditorActions'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 import { useGraphStore } from '../store/useGraphStore'
 import { useEditorStore } from '../store/useEditorStore'
-import { mog } from '../utils/lib/helper'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -57,7 +56,7 @@ export const Editor = ({
 
   useEffect(() => {
     if (editorRef && focusAtBeginning) {
-      selectEditor(editorRef, { edge: 'end', focus: true })
+      selectEditor(editorRef, { edge: 'start', focus: true })
     }
   }, [editorRef, editorId, focusAtBeginning]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -91,7 +90,7 @@ export const Editor = ({
 
   return (
     <>
-      <EditorStyles onClick={() => setNodePreview(false)} data-tour="mex-onboarding-draft-editor">
+      <EditorStyles readOnly={readOnly} onClick={() => setNodePreview(false)} data-tour="mex-onboarding-draft-editor">
         <Plate id={editorId} editableProps={editableProps} value={content} plugins={plugins} onChange={onChangeContent}>
           {showBalloonToolbar && <BallonMarkToolbarButtons />}
           <MultiComboboxContainer config={comboConfigData} />

@@ -1,8 +1,6 @@
-import { ELEMENT_DEFAULT } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import tinykeys from 'tinykeys'
 import { getDefaultContent, PreviewProps } from '.'
-import { generateTempId } from '../../../data/Defaults/idPrefixes'
 import { Editor } from '../../../editor/Editor'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'

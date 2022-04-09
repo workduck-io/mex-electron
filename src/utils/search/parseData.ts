@@ -74,7 +74,7 @@ export const getHeadingBlock = (content: NodeEditorContent) => {
   if (isHeadingBlock) {
     return {
       isHeadingBlock: true,
-      title: getSlug(content[0].value ?? '')
+      title: getSlug(content[0].answer ?? '')
     }
   }
 

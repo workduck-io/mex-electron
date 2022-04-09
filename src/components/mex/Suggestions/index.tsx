@@ -1,6 +1,6 @@
 import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
 import { insertNodes, selectEditor, TElement, usePlateEditorRef } from '@udecode/plate'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { ELEMENT_ILINK } from '../../../editor/Components/ilink/defaults'
 import { useLinks } from '../../../hooks/useLinks'
 import useToggleElements from '../../../hooks/useToggleElements'
@@ -17,7 +17,6 @@ import { SuggestionContent, SuggestionType } from './types'
 import SmartSuggestions from './SmartSuggestions'
 import { ELEMENT_INLINE_BLOCK } from '../../../editor/Components/InlineBlock/types'
 import { defaultContent } from '../../../data/Defaults/baseData'
-import { mog } from '../../../utils/lib/helper'
 
 const SuggestionInfoBar = () => {
   // * Store
@@ -33,9 +32,10 @@ const SuggestionInfoBar = () => {
 
   const onSuggestionClick = (event: MouseEvent, suggestion: SuggestionType, content?: NodeEditorContent): void => {
     event.stopPropagation()
-
+    const selection = editor.selection
     if (suggestion.type === 'snippet' || suggestion.type === 'template') {
       insertNodes<TElement>(editor, content)
+      selectEditor(editor, { at: selection, edge: 'start', focus: true })
     } else {
       // * Meta + click
       if (event.metaKey) {
@@ -54,15 +54,13 @@ const SuggestionInfoBar = () => {
         })
       }
     }
+
     insertNodes(editor, defaultContent.content)
-    selectEditor(editor, { focus: true })
   }
 
   const getSuggestionContent = (suggestion: SuggestionType): SuggestionContent => {
     if (suggestion.type === 'snippet' || suggestion.type === 'template') {
       const snippet = getSnippet(suggestion.id)
-
-      mog('SNIPPET', { snippet })
 
       return {
         title: snippet.title,

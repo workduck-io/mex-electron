@@ -1,7 +1,6 @@
 import { uniq } from 'lodash'
 import { QuickLinkType } from '../components/mex/NodeSelect/NodeSelect'
 import { defaultCommands } from '../data/Defaults/slashCommands'
-import { extractSyncBlockCommands } from '../editor/Components/SlashCommands/useSyncConfig'
 import { SyncBlockTemplate } from '../editor/Components/SyncBlock'
 import { Snippet } from '../store/useSnippetStore'
 import { SlashCommand } from '../types/Types'
