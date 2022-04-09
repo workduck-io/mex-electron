@@ -12,7 +12,6 @@ export const buildUpdateFeedURL = (version: string, isAlpha: boolean) => {
   const platform = process.arch === 'arm64' ? 'darwin_arm64' : 'darwin'
 
   const url = `${base}/update/${platform}/${version}`
-  console.log('Update Server URL: ', url)
   return url
 }
 
@@ -24,8 +23,6 @@ export const handleUpdateErrors = (err) => {
 export const setupAutoUpdates = (version: string, isAlpha: boolean, beforeQuit: () => void) => {
   const feedURL = buildUpdateFeedURL(version, isAlpha)
   autoUpdater.setFeedURL({ url: feedURL })
-
-  console.log('Update URL is: ', feedURL)
 
   autoUpdater.on('error', handleUpdateErrors)
 
