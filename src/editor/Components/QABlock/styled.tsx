@@ -1,8 +1,9 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
-export const QuestionInput = styled.div<{ highlight?: boolean }>`
+export const QuestionInput = styled.div<{ highlight?: boolean; selected?: boolean }>`
   position: relative;
   margin: 0.25rem 0;
+  opacity: 0.5;
 
   input {
     background: none;
@@ -16,6 +17,12 @@ export const QuestionInput = styled.div<{ highlight?: boolean }>`
       transform: translate3d(0, -90%, 0);
     }
   }
+
+  ${({ selected }) =>
+    selected &&
+    css`
+      opacity: 1;
+    `}
 
   span {
     position: absolute;

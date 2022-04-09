@@ -164,7 +164,7 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
 
   return (
     <RootElement {...attributes}>
-      <QuestionInput contentEditable={false}>
+      <QuestionInput selected={selected} contentEditable={false}>
         <InputBlock
           tabIndex={-1}
           required
