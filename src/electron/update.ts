@@ -8,19 +8,11 @@ import { toast } from './main'
 import { ToastStatus } from '../types/toast'
 
 export const buildUpdateFeedURL = (version: string, isAlpha: boolean) => {
-  if (process.platform === 'darwin') {
-    const base = 'https://reserv.workduck.io'
-    let url: string
+  const base = isAlpha ? 'https://alpha-releases.workduck.io' : 'https://releases.workduck.io'
+  const platform = process.arch === 'arm64' ? 'darwin_arm64' : 'darwin'
 
-    if (process.arch == 'arm64') {
-      url = base + `/update/osx_arm64/${version}`
-    } else {
-      url = base + `/update/osx_x64/${version}`
-    }
-
-    if (isAlpha) url = url + '/alpha'
-    return url
-  }
+  const url = `${base}/update/${platform}/${version}`
+  return url
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,8 +23,6 @@ export const handleUpdateErrors = (err) => {
 export const setupAutoUpdates = (version: string, isAlpha: boolean, beforeQuit: () => void) => {
   const feedURL = buildUpdateFeedURL(version, isAlpha)
   autoUpdater.setFeedURL({ url: feedURL })
-
-  console.log('Update URL is: ', feedURL)
 
   autoUpdater.on('error', handleUpdateErrors)
 

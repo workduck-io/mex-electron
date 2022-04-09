@@ -1,14 +1,29 @@
+const { version } = require('./package.json')
+const semver = require('semver')
+
 const externalsWin = ['active-win-universal', 'ffi-napi', 'ref-napi', 'iconv']
 const externalsDarwin = ['active-win-universal']
 
 const externals = process.platform === 'darwin' ? externalsDarwin : externalsWin
+
+const checkAlpha = (version) => {
+  const parsed = semver.parse(version)
+  if (parsed.prerelease[0] === 'alpha') return true
+
+  return false
+}
+const isAlpha = checkAlpha(version)
+
+const appBundleId = isAlpha ? 'com.workduck.mex-alpha' : 'com.workduck.mex'
+const icon = isAlpha ? 'assets/icon-alpha.icns' : 'assets/icon.icns'
 
 module.exports = {
   electronRebuildConfig: {
     forceABI: 101
   },
   packagerConfig: {
-    icon: 'assets/icon.icns',
+    icon: icon,
+    appBundleId: appBundleId,
     protocols: [
       {
         protocol: 'mex',
@@ -20,33 +35,6 @@ module.exports = {
       NSAppleEventsUsageDescription: 'Mex can control other applications with AppleScript.'
     }
   },
-  makers: [
-    {
-      name: '@electron-forge/maker-squirrel',
-      config: {
-        name: 'mex',
-        setupIcon: 'assets/icon.ico'
-      }
-    },
-    {
-      name: '@electron-forge/maker-zip',
-      platforms: ['darwin']
-    },
-    {
-      name: '@electron-forge/maker-deb',
-      config: {}
-    },
-    {
-      name: '@electron-forge/maker-rpm',
-      config: {}
-    },
-    {
-      name: '@electron-forge/maker-dmg',
-      config: {
-        format: 'ULFO'
-      }
-    }
-  ],
   plugins: [
     [
       '@electron-forge/plugin-webpack',
