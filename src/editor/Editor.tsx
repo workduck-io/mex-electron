@@ -80,7 +80,7 @@ export const Editor = ({
     }
   ]
 
-  useEditorChange(editorId, content)
+  useEditorChange(editorId, content, onChange)
 
   const onDelayPerform = debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 1000)
 
