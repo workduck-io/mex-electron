@@ -196,10 +196,9 @@ const Init = () => {
     ipcRenderer.on(IpcAction.FORCE_SIGNOUT, () => {
       localStorage.clear()
       logout()
-
       goTo(ROUTE_PATHS.login, NavigationType.push)
     })
-  })
+  }, [])
 
   useEffect(() => {
     if (editor && appleNotes.length > 0) {
