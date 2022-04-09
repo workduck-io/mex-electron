@@ -25,7 +25,8 @@ import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import 'react-contexify/dist/ReactContexify.css'
-import { useCalendar, useCalendarStore } from '../../../hooks/useCalendar'
+import { useCalendar, useCalendarStore, openCalendarMeetingNote } from '../../../hooks/useCalendar'
+import { MeetingSnippetContent } from '../../../data/Defaults/MeetingNote'
 
 export const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -71,7 +72,7 @@ const Content = () => {
 
           if (!normalMode) return
 
-          const recentEvents = getUpcomingEvents()
+          const recentEvents = selection ? [] : getUpcomingEvents()
           const recents = selection ? recentResearchNodes : lastOpenedNodes
           const items = recents.filter((recent: string) => ilinks.find((ilink) => ilink.nodeid === recent))
 
@@ -88,6 +89,8 @@ const Content = () => {
           const limitedList = recentList.slice(0, recentLimit)
 
           const list = !recentLimit ? [CREATE_NEW_ITEM] : insertItemInArray(limitedList, CREATE_NEW_ITEM, 1)
+
+          mog('Events', { recentEvents })
           const data = [...recentEvents, ...list, ...initActions]
           setSearchResults(data)
         }
@@ -105,6 +108,8 @@ const Content = () => {
   useEffect(() => {
     const resultNode = searchResults[activeIndex]
     const isNode = resultNode?.type === QuickLinkType.ilink
+    const isMeeting = resultNode?.category === CategoryType.meeting
+    let nodeid
 
     if (isNode && !activeItem.active) {
       const isNew = resultNode?.extras?.new
@@ -112,7 +117,18 @@ const Content = () => {
 
       const nodeValue = val || getUntitledDraftKey()
       const node = isNew ? createNodeWithUid(nodeValue) : getNode(resultNode?.id ?? '')
+      nodeid = node.nodeid
       setPreviewEditorNode(node)
+    }
+
+    if (isMeeting && !activeItem.active) {
+      mog('isMeeting, checking', { activeItem, resultNode })
+      if (resultNode?.extras.nodeid !== undefined) {
+        const node = getNode(resultNode?.extras.nodeid ?? '')
+        mog('isMeeting, seeting node', { node })
+        nodeid = node.nodeid
+        setPreviewEditorNode(node)
+      }
     }
 
     if (selection) {
@@ -121,9 +137,16 @@ const Content = () => {
         isSelection: true
       })
     } else {
-      const content = useContentStore.getState().getContent(resultNode?.id)?.content ?? defaultContent.content
-      setNodeContent(content)
-      setPreview(INIT_PREVIEW)
+      if (nodeid) {
+        const content = useContentStore.getState().getContent(nodeid)?.content ?? defaultContent.content
+        setNodeContent(content)
+        setPreview(INIT_PREVIEW)
+      } else if (isMeeting) {
+        const e = resultNode?.extras.event
+        const content = MeetingSnippetContent(e.summary, e.times.start, e.links.meet ?? e.links.event)
+        setNodeContent(content)
+        setPreview(INIT_PREVIEW)
+      }
     }
   }, [search.value, activeIndex, activeItem, selection, searchResults])
 

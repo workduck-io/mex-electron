@@ -14,6 +14,7 @@ export const SNIPPET_PREFIX = 'SNIPPET'
 export const SYNCTEMP_PREFIX = 'SYNCTEMP'
 export const TODO_PREFIX = 'TODO'
 export const DRAFT_PREFIX = 'Draft'
+export const MEETING_PREFIX = 'Meeting'
 export const DRAFT_NODE = 'Untitled'
 
 export const generateNodeUID = () => `${NODE_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`

@@ -130,6 +130,7 @@ export const useLinks = () => {
     }
   }
 
+
   const getNodeidFromPath = (path: string) => {
     const links = useDataStore.getState().ilinks
     const archive = useDataStore.getState().archive
@@ -175,7 +176,7 @@ export const getPathFromNodeIdHookless = (nodeid: string) => {
   if (archivedLink) return archivedLink.path
 }
 
-/* 
+/*
 
    at useEditorBuffer (useEditorBuffer.tsx?2981:30:36)
    at useRefactor (useRefactor.tsx?2f12:40:49)

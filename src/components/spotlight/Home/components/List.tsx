@@ -21,6 +21,7 @@ import { useSnippets } from '../../../../hooks/useSnippets'
 import { getPlateEditorRef, serializeHtml } from '@udecode/plate'
 import { mog } from '../../../../utils/lib/helper'
 import useDataStore from '../../../../store/useDataStore'
+import { CanvasText } from '../../../../editor/Components/Excalidraw'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -66,6 +67,11 @@ const List = ({
 
     if (searchResults[activeIndex] && searchResults[activeIndex]?.category !== CategoryType.quicklink) {
       style.width = '100%'
+    }
+
+    if (searchResults[activeIndex] && searchResults[activeIndex]?.category === CategoryType.meeting) {
+      if (normalMode) style.width = '55%'
+      else style.width = '0%'
     }
 
     return style
@@ -178,10 +184,13 @@ const List = ({
               }
             }
           }
-        } else if (currentActiveItem.category === CategoryType.action) {
+        } else if (
+          currentActiveItem.category === CategoryType.action ||
+          currentActiveItem.category === CategoryType.meeting
+        ) {
           if (currentActiveItem?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
             setSelectedItem({ item: data[activeIndex], active: false })
-            itemActionExecutor(data[activeIndex])
+            itemActionExecutor(data[activeIndex], undefined, event.metaKey)
           } else {
             if (!selectedItem?.active) {
               setCurrentListItem(data[activeIndex])
