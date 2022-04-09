@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { SnippetSaverButton } from '../../editor/Components/Saver'
 import Editor from '../../editor/Editor'
-import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../../style/Editor'
+import { EditorWrapper, InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../../style/Editor'
 import { Input } from '../../style/Form'
 import { useSnippetStore } from '../../store/useSnippetStore'
 import { useUpdater } from '../../hooks/useUpdater'
@@ -11,6 +11,7 @@ import IconButton from '../../style/Buttons'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 import tinykeys from 'tinykeys'
 import { useSnippetBuffer } from '../../hooks/useEditorBuffer'
+import { selectEditor, usePlateEditorRef } from '@udecode/plate'
 
 type Inputs = {
   title: string
@@ -51,6 +52,13 @@ const SnippetEditor = () => {
 
   const { params } = useRouting()
   const snippetid = snippet?.id ?? params.snippetid
+  const editorRef = usePlateEditorRef()
+
+  const onFocusClick = () => {
+    if (editorRef) {
+      selectEditor(editorRef, { focus: true })
+    }
+  }
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -91,15 +99,17 @@ const SnippetEditor = () => {
           </InfoTools>
         </NodeInfo>
 
-        {
-          <Editor
-            autoFocus={false}
-            focusAtBeginning={false}
-            onChange={onChangeSave}
-            content={content}
-            editorId={snippetid}
-          />
-        }
+        <EditorWrapper onClick={onFocusClick}>
+          {
+            <Editor
+              autoFocus={false}
+              focusAtBeginning={false}
+              onChange={onChangeSave}
+              content={content}
+              editorId={snippetid}
+            />
+          }
+        </EditorWrapper>
       </StyledEditor>
     </>
   )
