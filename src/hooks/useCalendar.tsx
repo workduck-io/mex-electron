@@ -18,6 +18,7 @@ import { getSlug } from '../utils/lib/strings'
 import { ILink } from '../types/Types'
 import { MEETING_PREFIX } from '../data/Defaults/idPrefixes'
 import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
+import { useAuthStore } from '../services/auth/useAuth'
 
 /*
  * Need
@@ -294,9 +295,11 @@ export const useCalendar = () => {
 export const useGoogleCalendarAutoFetch = () => {
   const tokens = useTokenStore((state) => state.data)
   const { fetchGoogleCalendarEvents } = useCalendar()
+  const authenticated = useAuthStore((store) => store.authenticated)
 
   useEffect(() => {
     console.log('Setting up autofetch for Google Calendar Events')
+    if (!authenticated) return
     fetchGoogleCalendarEvents()
     const id = setInterval(() => {
       console.log('Fetching Google Calendar Events')
