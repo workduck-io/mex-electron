@@ -42,8 +42,8 @@ const EditorPreviewRenderer = ({ content, editorId, noStyle, noMouseEvents }: Ed
     <PreviewStyles
       noMouseEvents={noMouseEvents}
       onClick={(ev) => {
-        ev.preventDefault()
-        ev.stopPropagation()
+        // ev.preventDefault()
+        // ev.stopPropagation()
       }}
     >
       <Plate id={editorId} editableProps={editableProps} value={content} plugins={plugins} />
