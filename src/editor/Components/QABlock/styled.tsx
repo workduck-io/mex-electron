@@ -24,6 +24,10 @@ export const QuestionInput = styled.div<{ highlight?: boolean; selected?: boolea
       opacity: 1;
     `}
 
+  :hover {
+    opacity: 1;
+  }
+
   span {
     position: absolute;
     display: flex;

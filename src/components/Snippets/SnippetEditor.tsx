@@ -5,13 +5,15 @@ import { SnippetSaverButton } from '../../editor/Components/Saver'
 import Editor from '../../editor/Editor'
 import { EditorWrapper, InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../../style/Editor'
 import { Input } from '../../style/Form'
-import { useSnippetStore } from '../../store/useSnippetStore'
+import { Snippet, useSnippetStore } from '../../store/useSnippetStore'
 import { useUpdater } from '../../hooks/useUpdater'
 import IconButton from '../../style/Buttons'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 import tinykeys from 'tinykeys'
 import { useSnippetBuffer } from '../../hooks/useEditorBuffer'
-import { selectEditor, usePlateEditorRef } from '@udecode/plate'
+import { getPlateEditorRef, selectEditor, usePlateEditorRef, usePlateEditorState } from '@udecode/plate'
+import { useTransform } from '../../editor/Components/BalloonToolbar/components/useTransform'
+import { IS_DEV } from '../../data/Defaults/dev_'
 
 type Inputs = {
   title: string
@@ -111,8 +113,36 @@ const SnippetEditor = () => {
           }
         </EditorWrapper>
       </StyledEditor>
+      {IS_DEV && <CustomDevOnly editorId={snippetid} snippet={snippet} />}
     </>
   )
+}
+
+interface CustomDevOnlyProps {
+  snippet: Snippet
+  editorId: string
+}
+
+const CustomDevOnly = ({ snippet, editorId }: CustomDevOnlyProps) => {
+  const { convertSelectionToQABlock } = useTransform()
+  const editor = usePlateEditorState()!
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      '$mod+Shift+,': (event) => {
+        event.preventDefault()
+        // const edState = editorRef.current.getEditorState()
+        console.log('convertSelectionToQABlock', { editor })
+        convertSelectionToQABlock(editor)
+      }
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [snippet, editorId, editor])
+
+  return <div id={`Speciale_${editorId}`} />
 }
 
 export default SnippetEditor
