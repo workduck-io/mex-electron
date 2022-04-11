@@ -58,6 +58,89 @@ export interface ShadePalette {
   1: string // Lightest
 }
 
+/** A string of CSS color */
+type Color = string
+
+/** Styles for a element */
+export interface ElementPalette {
+  /** Text Color */
+  color: AdvancedColor
+
+  /** Background Color | Style */
+  background: AdvancedColor | string
+
+  border?: AdvancedColor
+
+  /** Shadow Style */
+  shadow?: string
+}
+
+/** Color with variants for user interaction */
+export interface AdvancedColor {
+  /** Main color */
+  main: Color
+
+  /** Hover color === Focus color */
+  hover: Color
+
+  /** Active color */
+  active: Color
+
+  /** Disabled color */
+  disabled: Color
+}
+
+export interface UIPalette {
+  /** The main background */
+  background: string
+
+  /** The text colors */
+  text: {
+    default: Color
+    heading: Color
+    subheading: Color
+
+    /** Text with less importance */
+    fade: Color
+
+    disabled: Color
+
+    /** Of a anchor link */
+    link: {
+      default: Color
+      hover: Color
+      /** Hover is used when not given */
+      active?: Color
+      /** Hover is used when not given */
+      visited?: Color
+    }
+  }
+
+  /** Styles of Card Elements */
+  card: ElementPalette
+
+  /** Form Elements */
+  form: {
+    button: ElementPalette
+    /** Same used for text area */
+    input: ElementPalette
+  }
+
+  tooltips: {
+    element: ElementPalette
+    shortcut: ElementPalette
+  }
+
+  /** For preview containers */
+  preview: ElementPalette
+
+  /** Colors for palette */
+  palette: {
+    primary: AdvancedColor
+    accent: AdvancedColor
+  }
+}
+
 export interface ColorPalette {
   white: string
   black: string
