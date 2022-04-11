@@ -69,8 +69,6 @@ export const createGenricSearchIndex = (
 ): Document<GenericSearchData> => {
   const index = new Document<GenericSearchData>(options)
 
-  mog('CreateIndexOptions', { indexData, initList, options })
-
   if (indexData && Object.keys(indexData).length > 0) {
     // When using a prebuilt index read from disk present in the indexData parameter
     mog('Using Prebuilt Index!', {})
@@ -85,6 +83,8 @@ export const createGenricSearchIndex = (
       index.add({ ...block, tag: [block.id, ...(block.tag ?? [])] })
     })
   }
+
+  mog('CreateSearchIndex', { options, initList })
   return index
 }
 

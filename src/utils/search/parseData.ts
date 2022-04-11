@@ -148,11 +148,12 @@ export const convertDataToIndexable = (data: FileData) => {
     // Process the filedata to get the indexable data
     if (idxName === indexNames.archive || idxName === indexNames.node) {
       Object.entries(data.contents).forEach(([k, v]) => {
-        if (v.type === 'editor' && k !== '__null__' && titleNodeMap.has(k)) {
+        if (k !== '__null__' && titleNodeMap.has(k)) {
           if (!nodeBlockMap[k]) nodeBlockMap[k] = []
           v.content.forEach((block) => {
             const blockText = convertContentToRawText(block.children, ' ')
-            if (blockText.length !== 0) {
+            // If the type is init, we index the initial empty block
+            if (blockText.length !== 0 || v.type === 'init') {
               nodeBlockMap[k].push(block.id)
               const temp: GenericSearchData = {
                 id: k,
