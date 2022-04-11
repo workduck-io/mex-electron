@@ -15,6 +15,7 @@ export interface SearchIndex {
   node: Document<GenericSearchData> | null
   snippet: Document<GenericSearchData> | null
   archive: Document<GenericSearchData> | null
+  template: Document<GenericSearchData> | null
 }
 
 export interface GenericSearchResult {

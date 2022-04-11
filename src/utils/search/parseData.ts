@@ -132,6 +132,7 @@ export const convertDataToIndexable = (data: FileData) => {
         break
       }
 
+      case indexNames.template:
       case indexNames.snippet: {
         data.snippets.forEach((snippet) => {
           titleNodeMap.set(snippet.id, snippet.title)
@@ -166,24 +167,35 @@ export const convertDataToIndexable = (data: FileData) => {
         }
       })
     } else if (idxName === indexNames.snippet) {
-      data.snippets.map((snip) => {
-        const title = titleNodeMap.get(snip.id)
-        const temp: GenericSearchData = {
-          ...convertEntryToRawText(snip.id, snip.content, title),
-          tag: snip.isTemplate ? ['template'] : ['snippet']
-        }
-        nodeBlockMap[snip.id] = [snip.id] // Redundant right now, not doing block level indexing for snippets
-        idxResult.push(temp)
-      })
+      data.snippets
+        .filter((snip) => !snip.isTemplate)
+        .map((snip) => {
+          const title = titleNodeMap.get(snip.id)
+          const temp: GenericSearchData = {
+            ...convertEntryToRawText(snip.id, snip.content, title),
+            tag: ['snippet']
+          }
+          nodeBlockMap[snip.id] = [snip.id] // Redundant right now, not doing block level indexing for snippets
+          idxResult.push(temp)
+        })
+    } else if (idxName === indexNames.template) {
+      data.snippets
+        .filter((snip) => snip.isTemplate)
+        .map((template) => {
+          const title = titleNodeMap.get(template.id)
+          const temp: GenericSearchData = {
+            ...convertEntryToRawText(template.id, template.content, title),
+            tag: ['template']
+          }
+          nodeBlockMap[template.id] = [template.id] // Redundant right now, not doing block level indexing for snippets
+          idxResult.push(temp)
+        })
     } else {
       throw new Error('No corresponding index name found')
     }
 
     return { ...p, [idxName]: idxResult }
   }, diskIndex)
-
-  const dump = JSON.stringify(result)
-  console.log('ConvertDataToIndexable', { result, dump, nodeBlockMap })
 
   return { result, nodeBlockMap }
 }

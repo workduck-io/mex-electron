@@ -9,6 +9,7 @@ export interface CreateSearchIndexData {
   node: GenericSearchData[] | null
   snippet: GenericSearchData[] | null
   archive: GenericSearchData[] | null
+  template: GenericSearchData[] | null
 }
 
 export const createIndexCompositeKey = (nodeId: string, blockId: string) => {

@@ -18,15 +18,19 @@ export const getIndexData = (location: string) => {
 
     const areSame = isEmpty(xor(keys, idxKeys))
     if (!areSame) searchIndex[idxName] = null
+    else {
+      for (let i = 0, key: string; i < keys.length; i += 1) {
+        key = keys[i]
+        try {
+          const data = fs.readFileSync(path.join(location, `${idxName}.${key}.json`), 'utf8')
+          searchIndex[idxName][key] = data
+        } catch {
+          searchIndex[idxName][key] = null
+        }
+      }
 
-    for (let i = 0, key; i < keys.length; i += 1) {
-      key = keys[i]
-      const data = fs.readFileSync(path.join(location, `${idxName}.${key}.json`), 'utf8')
-      searchIndex[idxName][key] = data ?? null
+      if (searchIndex[idxName]['title.map'] === '') searchIndex[idxName] = null
     }
-
-    // console.log(`\n====\n Indexing ${location} Positive \n====\n`, { keys, idxKeys })
-    if (searchIndex[idxName]['title.map'] === '') searchIndex[idxName] = null
   })
 
   return searchIndex

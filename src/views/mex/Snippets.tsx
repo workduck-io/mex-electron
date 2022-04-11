@@ -3,7 +3,7 @@ import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import { Icon } from '@iconify/react'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 import genereateName from 'project-name-generator'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import SearchView, { RenderItemProps, RenderPreviewProps } from '../../components/mex/Search/SearchView'
 import { View } from '../../components/mex/Search/ViewSelector'
 import { generateSnippetId } from '../../data/Defaults/idPrefixes'
@@ -36,12 +36,14 @@ import { useSaveData } from '../../hooks/useSaveData'
 import { SnippetHelp } from '../../data/Defaults/helpText'
 import Infobox from '../../ui/components/Help/Infobox'
 import { IS_DEV } from '../../data/Defaults/dev_'
+import ToggleButton from '../../components/spotlight/ToggleButton'
 
 export type SnippetsProps = {
   title?: string
 }
 
 const Snippets = () => {
+  const [searchTemplates, setSearchTemplates] = useState<boolean>(true)
   const snippets = useSnippetStore((store) => store.snippets)
   const { addSnippet, deleteSnippet, getSnippet } = useSnippets()
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
@@ -63,7 +65,9 @@ const Snippets = () => {
   const randId = useMemo(() => nanoid(), [initialSnippets])
 
   const onSearch = async (newSearchTerm: string): Promise<GenericSearchResult[]> => {
-    const res = await queryIndex('snippet', newSearchTerm, ['snippet'])
+    const idx = searchTemplates ? 'template' : 'snippet'
+    const res = await queryIndex(idx, newSearchTerm)
+  
     // mog('search', { res })
     if (newSearchTerm === '' && res.length === 0) {
       return initialSnippets
@@ -215,6 +219,10 @@ const Snippets = () => {
     return null
   }
 
+  const changeSearchSnipTemplate = () => {
+    setSearchTemplates(!searchTemplates)
+  }
+
   // mog('Snippets', { initialSnippets })
 
   return (
@@ -233,6 +241,8 @@ const Snippets = () => {
         )}
         <Infobox text={SnippetHelp} />
       </MainHeader>
+      <ToggleButton value={searchTemplates} checked={searchTemplates} onChange={changeSearchSnipTemplate}></ToggleButton>
+      <p>Search Templates?</p>
       <SearchView
         id={`searchSnippet_${randId}`}
         key={`searchSnippet_${randId}`}
