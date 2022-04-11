@@ -8,6 +8,7 @@ export const QuestionInput = styled.div<{ highlight?: boolean; selected?: boolea
   input {
     background: none;
     color: ${({ theme }) => theme.colors.text.default};
+    margin-top: 1rem;
     :focus + span,
     :not(:focus):valid + span {
       font-size: 0.85rem;
@@ -18,13 +19,7 @@ export const QuestionInput = styled.div<{ highlight?: boolean; selected?: boolea
     }
   }
 
-  ${({ selected }) =>
-    selected &&
-    css`
-      opacity: 1;
-    `}
-
-  :hover {
+  &:hover {
     opacity: 1;
   }
 
@@ -33,11 +28,19 @@ export const QuestionInput = styled.div<{ highlight?: boolean; selected?: boolea
     display: flex;
     align-items: center;
     /* color: opacify(0.9, ${({ theme }) => theme.colors.text.fade}); */
-    opacity: 0.4;
+    opacity: 0.5;
 
     top: 0;
     padding: 5px 0.5rem;
     transition: ease-in all 200ms;
     pointer-events: none;
   }
+  ${({ selected }) =>
+    selected &&
+    css`
+      opacity: 1;
+      span {
+        opacity: 0.66;
+      }
+    `}
 `

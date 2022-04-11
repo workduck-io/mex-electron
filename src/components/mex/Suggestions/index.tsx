@@ -1,5 +1,5 @@
 import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
-import { insertNodes, selectEditor, TElement, usePlateEditorRef } from '@udecode/plate'
+import { ELEMENT_PARAGRAPH, insertNodes, selectEditor, TElement, usePlateEditorRef } from '@udecode/plate'
 import React, { useMemo } from 'react'
 import { ELEMENT_ILINK } from '../../../editor/Components/ilink/defaults'
 import { useLinks } from '../../../hooks/useLinks'
@@ -17,6 +17,8 @@ import { SuggestionContent, SuggestionType } from './types'
 import SmartSuggestions from './SmartSuggestions'
 import { ELEMENT_INLINE_BLOCK } from '../../../editor/Components/InlineBlock/types'
 import { defaultContent } from '../../../data/Defaults/baseData'
+import { mog } from '../../../utils/lib/helper'
+import { generateTempId } from '../../../data/Defaults/idPrefixes'
 
 const SuggestionInfoBar = () => {
   // * Store
@@ -47,15 +49,34 @@ const SuggestionInfoBar = () => {
         })
       } else {
         // * Insert ILink
-        insertNodes<TElement>(editor, {
-          type: ELEMENT_ILINK,
-          children: [{ text: '' }],
-          value: suggestion.id
-        })
+        // As link is inline, we add a p wrapper on it
+        const link = {
+          type: ELEMENT_PARAGRAPH,
+          id: generateTempId(),
+          children: [
+            { text: '', id: generateTempId() },
+            {
+              type: ELEMENT_ILINK,
+              children: [{ text: '', id: generateTempId() }],
+              value: suggestion.id,
+              id: generateTempId()
+            },
+            { text: '', id: generateTempId() }
+          ]
+        }
+        // mog('InsertIlink', {
+        //   event,
+        //   link,
+        //   suggestion,
+        //   type: ELEMENT_ILINK,
+        //   children: [{ text: '' }],
+        //   value: suggestion.id
+        // })
+        insertNodes<TElement>(editor, link)
       }
     }
 
-    insertNodes(editor, defaultContent.content)
+    // insertNodes(editor, defaultContent.content)
   }
 
   const getSuggestionContent = (suggestion: SuggestionType): SuggestionContent => {
