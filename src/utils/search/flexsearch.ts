@@ -81,7 +81,7 @@ export const createGenricSearchIndex = (
     initList.forEach((block) => {
       block.blockId = createIndexCompositeKey(block.id, block.blockId ?? block.id)
 
-      index.add({ ...block, tag: [block.id] })
+      index.add({ ...block, tag: [block.id, ...(block.tag ?? [])] })
     })
   }
   return index
