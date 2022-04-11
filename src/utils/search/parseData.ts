@@ -168,7 +168,10 @@ export const convertDataToIndexable = (data: FileData) => {
     } else if (idxName === indexNames.snippet) {
       data.snippets.map((snip) => {
         const title = titleNodeMap.get(snip.id)
-        const temp: GenericSearchData = convertEntryToRawText(snip.id, snip.content, title)
+        const temp: GenericSearchData = {
+          ...convertEntryToRawText(snip.id, snip.content, title),
+          tag: snip.isTemplate ? ['template'] : ['snippet']
+        }
         nodeBlockMap[snip.id] = [snip.id] // Redundant right now, not doing block level indexing for snippets
         idxResult.push(temp)
       })
@@ -179,8 +182,8 @@ export const convertDataToIndexable = (data: FileData) => {
     return { ...p, [idxName]: idxResult }
   }, diskIndex)
 
-  // const dump = JSON.stringify(result)
-  // mog('ConvertDataToIndexable', { dump, blockNodeMap })
+  const dump = JSON.stringify(result)
+  console.log('ConvertDataToIndexable', { result, dump, nodeBlockMap })
 
   return { result, nodeBlockMap }
 }
