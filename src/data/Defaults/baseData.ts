@@ -6,6 +6,7 @@ import { FileData, NodeContent } from '../../types/data'
 import { generateILinks } from '../../utils/generateComboItem'
 import { randomNumberBetween } from '../../utils/helpers'
 import { generateNodeUID, generateTempId, MEETING_PREFIX } from './idPrefixes'
+import { initialSnippets } from '../initial/snippets'
 // import { generateTempId } from './idPrefixes'
 //
 export const BASE_DRAFT_PATH = 'Draft'
@@ -71,5 +72,5 @@ export const DefaultFileData = (version: string): FileData => ({
       showSource: true
     }
   },
-  snippets: []
+  snippets: initialSnippets
 })

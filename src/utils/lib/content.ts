@@ -1,5 +1,6 @@
 import { ELEMENT_TODO_LI } from '@udecode/plate'
 import { uniq } from 'lodash'
+import { generateTempId } from '../../data/Defaults/idPrefixes'
 import { ELEMENT_TAG } from '../../editor/Components/tag/defaults'
 import { NodeEditorContent } from '../../types/Types'
 
@@ -28,4 +29,17 @@ export const getTodosFromContent = (content: NodeEditorContent): NodeEditorConte
   })
 
   return todos
+}
+
+export const insertId = (content: any[]) => {
+  if (content.length === 0) {
+    return content
+  }
+  return content.map((item) => {
+    if (item.children) item.children = insertId(item.children)
+    return {
+      ...item,
+      id: generateTempId()
+    }
+  })
 }

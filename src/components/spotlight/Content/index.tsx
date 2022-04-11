@@ -26,7 +26,7 @@ import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import 'react-contexify/dist/ReactContexify.css'
 import { useCalendar, useCalendarStore, openCalendarMeetingNote } from '../../../hooks/useCalendar'
-import { MeetingSnippetContent } from '../../../data/Defaults/MeetingNote'
+import { MeetingSnippetContent } from '../../../data/initial/MeetingNote'
 
 export const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
