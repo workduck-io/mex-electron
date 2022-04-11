@@ -5,7 +5,7 @@ import { generateQuestionId, generateTempId } from '../Defaults/idPrefixes'
 export const PRDTemplate = insertId([
   {
     children: [{ text: '' }, { type: 'tag', children: [{ text: '' }], value: 'PRD' }, { text: ' Title' }],
-    type: 'h2'
+    type: 'h1'
   },
   { type: 'p', children: [{ text: '' }] },
   { type: 'p', children: [{ text: 'Description:', bold: true }, { text: ' A short description' }, { text: '.' }] },

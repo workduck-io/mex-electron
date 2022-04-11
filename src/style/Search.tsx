@@ -355,7 +355,6 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
 
           max-height: 400px;
           overflow-y: auto;
-          border: 1px solid transparent !important;
           ${ResultTitle} {
             font-weight: bold;
             color: ${theme.colors.primary};
