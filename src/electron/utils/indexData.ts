@@ -52,3 +52,7 @@ export const setSearchIndexData = (index: Record<indexNames, any>, location: str
     })
   })
 }
+
+export const deleteSearchIndexDisk = (location: string) => {
+  fs.rmSync(location, { recursive: true, force: true })
+}

@@ -97,9 +97,9 @@ if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   sourceMapSupport.install()
 }
 
-const TOKEN_LOCATION = getTokenLocation(app)
-const SAVE_LOCATION = getSaveLocation(app)
-const SEARCH_INDEX_LOCATION = getSearchIndexLocation(app)
+export const TOKEN_LOCATION = getTokenLocation(app)
+export const SAVE_LOCATION = getSaveLocation(app)
+export const SEARCH_INDEX_LOCATION = getSearchIndexLocation(app)
 // const RESOURCES_PATH = app.isPackaged ? path.join(process.resourcesPath, 'assets') : path.join(__dirname, '../assets')
 
 // const getAssetPath = (...paths: string[]): string => {
