@@ -31,6 +31,7 @@ export const getTodosFromContent = (content: NodeEditorContent): NodeEditorConte
   return todos
 }
 
+// Inserts temporary ids to all elements
 export const insertId = (content: any[]) => {
   if (content.length === 0) {
     return content
@@ -41,5 +42,17 @@ export const insertId = (content: any[]) => {
       ...item,
       id: generateTempId()
     }
+  })
+}
+
+// Removes existing element IDs
+export const removeId = (content: any[]) => {
+  if (content.length === 0) {
+    return content
+  }
+  return content.map((item) => {
+    if (item.children) item.children = removeId(item.children)
+    if (item.id) delete item.id
+    return item
   })
 }

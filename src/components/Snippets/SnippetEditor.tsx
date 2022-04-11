@@ -14,6 +14,7 @@ import { useSnippetBuffer } from '../../hooks/useEditorBuffer'
 import { getPlateEditorRef, selectEditor, usePlateEditorRef, usePlateEditorState } from '@udecode/plate'
 import { useTransform } from '../../editor/Components/BalloonToolbar/components/useTransform'
 import { IS_DEV } from '../../data/Defaults/dev_'
+import { SnippetCopierButton } from './SnippetContentCopier'
 
 type Inputs = {
   title: string
@@ -98,6 +99,7 @@ const SnippetEditor = () => {
 
           <InfoTools>
             <SnippetSaverButton getSnippetTitle={getSnippetTitle} title="Save Snippet" />
+            {IS_DEV && <SnippetCopierButton />}
           </InfoTools>
         </NodeInfo>
 
@@ -131,6 +133,7 @@ const CustomDevOnly = ({ snippet, editorId }: CustomDevOnlyProps) => {
     const unsubscribe = tinykeys(window, {
       '$mod+Shift+,': (event) => {
         event.preventDefault()
+        if (!snippet.isTemplate) return
         // const edState = editorRef.current.getEditorState()
         console.log('convertSelectionToQABlock', { editor })
         convertSelectionToQABlock(editor)
