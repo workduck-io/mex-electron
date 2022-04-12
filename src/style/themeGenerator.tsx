@@ -37,7 +37,7 @@ const LayoutTheme: LayoutStyle = {
     tiny: '0.25rem'
   },
   width: {
-    nav: 48,
+    nav: 300,
     sidebar: 300
   },
   indent: {

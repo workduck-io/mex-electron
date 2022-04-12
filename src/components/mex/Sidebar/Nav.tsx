@@ -1,5 +1,6 @@
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import archiveFill from '@iconify/icons-ri/archive-fill'
+import gitBranchLine from '@iconify/icons-ri/git-branch-line'
 import settings4Line from '@iconify/icons-ri/settings-4-line'
 import { useSingleton } from '@tippyjs/react'
 import { transparentize } from 'polished'
@@ -9,6 +10,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useApi } from '../../../apis/useSaveApi'
+import { TreeHelp } from '../../../data/Defaults/helpText'
 import { DRAFT_NODE } from '../../../data/Defaults/idPrefixes'
 import { IpcAction } from '../../../data/IpcAction'
 import { GetIcon } from '../../../data/links'
@@ -16,20 +18,24 @@ import { getNewDraftKey, getUntitledDraftKey } from '../../../editor/Components/
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
 import useLayout from '../../../hooks/useLayout'
+import { useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useAuthStore } from '../../../services/auth/useAuth'
-import useDataStore from '../../../store/useDataStore'
+import useDataStore, { useTreeFromLinks } from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import { focusStyles } from '../../../style/focus'
 import { NavButton } from '../../../style/Nav'
 import { FocusModeProp } from '../../../style/props'
+import Collapse from '../../../ui/layout/Collapse/Collapse'
+import { CollapseWrapper } from '../../../ui/layout/Collapse/Collapse.style'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
+import { TreeWithContextMenu } from './TreeWithContextMenu'
 import { NavProps } from './Types'
 
 export const NavWrapper = styled.div<FocusModeProp>`
@@ -38,13 +44,20 @@ export const NavWrapper = styled.div<FocusModeProp>`
   z-index: 10;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   min-height: 100%;
   position: fixed;
-  width: ${({ theme }) => theme.width.nav};
+  width: ${({ theme }) => theme.width.sidebar}px;
   transition: opacity 0.3s ease-in-out;
   padding-top: 1rem;
+  padding-left: 10px;
+  gap: ${({ theme }) => theme.spacing.small};
+
+  ${CollapseWrapper} {
+    flex-grow: 1;
+    width: 100%;
+  }
 
   ${(props) => focusStyles(props)}
 `
@@ -59,33 +72,49 @@ export const navTooltip = css`
   }
 `
 
+export const NavTitle = styled.span`
+  flex-grow: 1;
+`
+
+export const Count = styled.span`
+  color: ${({ theme }) => theme.colors.text.fade};
+`
+
 export const Link = styled(NavLink)`
   display: flex;
-  justify-content: center;
   align-items: center;
+  gap: ${({ theme }) => theme.spacing.tiny};
   color: ${({ theme }) => theme.colors.gray[5]};
-  padding: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.medium};
+  text-decoration: none !important;
 
-  margin-top: ${({ theme }) => theme.spacing.medium};
-  &:first-child {
-    margin-top: 0;
+  font-size: 18px;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: ${({ theme }) => theme.colors.primary};
   }
 
   border-radius: ${({ theme }) => theme.borderRadius.small};
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.background.card};
+    background-color: ${({ theme }) => theme.colors.gray[10]};
+    color: ${({ theme }) => theme.colors.text.heading};
   }
 
   &.active {
-    background-color: ${({ theme }) => theme.colors.primary};
-    color: ${({ theme }) => theme.colors.text.oppositePrimary};
-    box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.primary)};
+    background-color: ${({ theme }) => theme.colors.gray[9]};
+    color: ${({ theme }) => theme.colors.primary};
   }
 `
 
 const MainLinkContainer = styled.div`
+  width: 100%;
   margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.small};
 `
 
 const ComingSoon = styled.div`
@@ -109,13 +138,14 @@ const ComingSoon = styled.div`
 
 const Nav = ({ links }: NavProps) => {
   // const match = useMatch(`/${ROUTE_PATHS.node}/:nodeid`)
+  const Tree = useTreeFromLinks()
   const authenticated = useAuthStore((store) => store.authenticated)
   const focusMode = useLayoutStore((store) => store.focusMode)
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
   const { saveNewNodeAPI } = useApi()
   const { getFocusProps } = useLayout()
-
+  const { getLinkCount } = useLinks()
   const { goTo } = useRouting()
   const location = useLocation()
   const { saveNodeName } = useLoad()
@@ -181,7 +211,6 @@ const Nav = ({ links }: NavProps) => {
           </NavTooltip>
         </div>
       )}
-      <div></div>
       <MainLinkContainer>
         {links.map((l) =>
           l.isComingSoon ? (
@@ -198,11 +227,25 @@ const Nav = ({ links }: NavProps) => {
             >
               <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={l.path} key={`nav_${l.title}`}>
                 {l.icon !== undefined ? l.icon : l.title}
+                <NavTitle>{l.title}</NavTitle>
+                {l.count > 0 && <Count>{l.count}</Count>}
               </Link>
             </NavTooltip>
           )
         )}
       </MainLinkContainer>
+
+      <Collapse
+        title="Tree"
+        defaultOpen
+        icon={gitBranchLine}
+        maximumHeight="80vh"
+        infoProps={{
+          text: TreeHelp
+        }}
+      >
+        <TreeWithContextMenu tree={Tree} />
+      </Collapse>
       <div>
         {/* {authenticated ? (
           <NavTooltip singleton={target} content="User">
@@ -224,6 +267,8 @@ const Nav = ({ links }: NavProps) => {
         >
           <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={ROUTE_PATHS.archive} key="nav_search">
             {GetIcon(archiveFill)}
+            <NavTitle>Archive</NavTitle>
+            <Count>{getLinkCount().archive}</Count>
           </Link>
         </NavTooltip>
         {/* <NavTooltip
@@ -244,7 +289,7 @@ const Nav = ({ links }: NavProps) => {
             key="nav_settings"
           >
             {GetIcon(settings4Line)}
-            {/* <Icon icon={settings4Line} /> */}
+            <NavTitle>Settings</NavTitle>
           </Link>
         </NavTooltip>
       </div>

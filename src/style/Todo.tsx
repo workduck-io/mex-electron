@@ -24,9 +24,9 @@ react-kanban-column-header__button
 react-kanban-column-adder-button
  */
 
-export const KANBAN_WIDTH = `calc(( 100vw - 13rem ) / 3)`
+export const KANBAN_WIDTH = `calc(( 100vw - 468px ) / 3)`
 export const KANBAN_HEIGHT = `calc( 100vh - 22rem )`
-export const KANBAN_CARD_WIDTH = `calc(( 100vw - 15rem ) / 3)`
+export const KANBAN_CARD_WIDTH = `calc(( 100vw - 520px ) / 3)`
 
 export const StyledBoard = styled.div`
   display: flex;

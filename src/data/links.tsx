@@ -1,3 +1,4 @@
+import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
 import checkboxLine from '@iconify/icons-ri/checkbox-line'
 import fileDocument from '@iconify/icons-gg/file-document'
 import appsLine from '@iconify/icons-ri/apps-line'
@@ -9,6 +10,7 @@ import { NavLinkData } from '../components/mex/Sidebar/Types'
 import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
 import { ROUTE_PATHS } from '../views/routes/urls'
+import { useLinks } from '../hooks/useLinks'
 
 /*
 Sidebar links are defined here
@@ -21,6 +23,9 @@ export const GetIcon = (icon: any): React.ReactNode => <Icon width="32" icon={ic
 const useNavlinks = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const nodeid = useEditorStore((store) => store.node.nodeid)
+  const { getLinkCount } = useLinks()
+
+  const count = getLinkCount()
 
   const getLinks = () => {
     const links: NavLinkData[] = [
@@ -40,30 +45,41 @@ const useNavlinks = () => {
         title: 'Notes',
         path: `${ROUTE_PATHS.node}/${nodeid}`,
         shortcut: shortcuts.showEditor.keystrokes,
-        icon: GetIcon(fileDocument)
+        icon: GetIcon(fileDocument),
+        count: count.notes
       },
 
       {
         title: 'Snippets',
         path: ROUTE_PATHS.snippets,
         shortcut: shortcuts.showSnippets.keystrokes,
-        icon: GetIcon(quillPenLine)
+        icon: GetIcon(quillPenLine),
+        count: count.snippets
       },
       {
         title: 'Tasks',
         path: ROUTE_PATHS.tasks,
         icon: GetIcon(checkboxLine),
-        shortcut: shortcuts.showTasks.keystrokes
+        shortcut: shortcuts.showTasks.keystrokes,
+        count: count.tasks
         // isComingSoon: true
       },
-
       {
+        title: 'Reminders',
+        path: ROUTE_PATHS.reminders,
+        icon: GetIcon(timerFlashLine),
+        count: count.reminders
+        // shortcut: shortcuts.showReminder.keystrokes
+        // isComingSoon: true
+      }
+
+      /*{
         title: 'Flows',
         path: ROUTE_PATHS.integrations,
         // shortcut: shortcuts.showIntegrations.keystrokes,
         icon: GetIcon(appsLine),
         isComingSoon: true
-      }
+      }*/
     ]
     return links
   }

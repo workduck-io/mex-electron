@@ -161,7 +161,6 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
 
   const navStyles = css`
     ${NavWrapper} {
-      padding: 0;
       margin: 0;
       overflow: auto;
       height: ${heightMain};
