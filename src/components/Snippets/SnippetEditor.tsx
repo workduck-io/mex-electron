@@ -15,6 +15,8 @@ import { getPlateEditorRef, selectEditor, usePlateEditorRef, usePlateEditorState
 import { useTransform } from '../../editor/Components/BalloonToolbar/components/useTransform'
 import { IS_DEV } from '../../data/Defaults/dev_'
 import { SnippetCopierButton } from './SnippetContentCopier'
+import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
+import Infobox from '../../ui/components/Help/Infobox'
 
 type Inputs = {
   title: string
@@ -94,26 +96,43 @@ const SnippetEditor = () => {
             title={'Return To Snippets'}
           />
           <NoteTitle>
-            [[ <Input autoFocus defaultValue={snippet && snippet.title} {...register('title')} /> ]]
+            {snippet && (!snippet.isTemplate || IS_DEV) ? (
+              <>
+                [[ <Input autoFocus defaultValue={snippet && snippet.title} {...register('title')} /> ]]
+              </>
+            ) : (
+              <>[[ {snippet && snippet.title} ]]</>
+            )}
           </NoteTitle>
 
-          <InfoTools>
-            <SnippetSaverButton getSnippetTitle={getSnippetTitle} title="Save Snippet" />
-            {IS_DEV && <SnippetCopierButton />}
-          </InfoTools>
+          {snippet && (!snippet.isTemplate || IS_DEV) ? (
+            <InfoTools>
+              <SnippetSaverButton getSnippetTitle={getSnippetTitle} title="Save Snippet" />
+              {IS_DEV && <SnippetCopierButton />}
+            </InfoTools>
+          ) : (
+            <Infobox text={<div>Templates cannnot be edited</div>} />
+          )}
         </NodeInfo>
 
-        <EditorWrapper onClick={onFocusClick}>
-          {
-            <Editor
-              autoFocus={false}
-              focusAtBeginning={false}
-              onChange={onChangeSave}
-              content={content}
-              editorId={snippetid}
-            />
-          }
-        </EditorWrapper>
+        {snippet &&
+          (snippet.isTemplate && !IS_DEV ? (
+            <EditorWrapper>
+              <EditorPreviewRenderer content={content} editorId={snippetid} />
+            </EditorWrapper>
+          ) : (
+            <EditorWrapper onClick={onFocusClick}>
+              {
+                <Editor
+                  autoFocus={false}
+                  focusAtBeginning={false}
+                  onChange={onChangeSave}
+                  content={content}
+                  editorId={snippetid}
+                />
+              }
+            </EditorWrapper>
+          ))}
       </StyledEditor>
       {IS_DEV && <CustomDevOnly editorId={snippetid} snippet={snippet} />}
     </>
