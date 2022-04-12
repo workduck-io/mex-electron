@@ -18,7 +18,7 @@ Sidebar links are defined here
 
 // Disabled as IconifyIcon type doesn't work
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-export const GetIcon = (icon: any): React.ReactNode => <Icon width="32" icon={icon} />
+export const GetIcon = (icon: any): React.ReactNode => <Icon icon={icon} />
 
 const useNavlinks = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)

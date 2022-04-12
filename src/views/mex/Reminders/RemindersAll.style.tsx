@@ -10,7 +10,7 @@ export const AllRemindersWrapper = styled.div`
   flex-direction: column;
 `
 
-const ColWidth = `(100vw  / 2 - 14rem)`
+const ColWidth = `(100vw  / 2 - 20rem)`
 const ColHeight = `(100vh - 22rem)`
 export const ReminderBoardStyled = styled(StyledBoard)`
   .react-kanban-column {

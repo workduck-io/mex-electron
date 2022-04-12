@@ -2,6 +2,7 @@ import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import archiveFill from '@iconify/icons-ri/archive-fill'
 import gitBranchLine from '@iconify/icons-ri/git-branch-line'
 import settings4Line from '@iconify/icons-ri/settings-4-line'
+import { Icon } from '@iconify/react'
 import { useSingleton } from '@tippyjs/react'
 import { transparentize } from 'polished'
 import React, { useEffect } from 'react'
@@ -206,7 +207,7 @@ const Nav = ({ links }: NavProps) => {
             content={<TooltipTitleWithShortcut title="New Note" shortcut={shortcuts.newNode.keystrokes} />}
           >
             <NavButton primary onClick={onNewNote}>
-              {GetIcon(addCircleLine)}
+              <Icon icon="fa6-regular:pen-to-square" />
             </NavButton>
           </NavTooltip>
         </div>
