@@ -8,7 +8,7 @@ import { View } from '../components/mex/Search/ViewSelector'
 import { TagFlex } from '../components/mex/Tags/TagsRelated'
 import { EditorStyles } from './Editor'
 import { Input } from './Form'
-import { CardShadow } from './helpers'
+import { CardShadow, HoverSubtleGlow } from './helpers'
 import { size } from './responsive'
 import { Title } from './Typography'
 import { ProfileIcon } from './UserPage'
@@ -402,6 +402,27 @@ export const ResultsWrapper = styled.div`
   position: relative;
 `
 
+export const SearchResultTag = styled.div<{ large?: boolean }>`
+  padding: 0.2rem ${({ theme }) => theme.spacing.small};
+  border-radius: ${({ theme }) => theme.borderRadius.tiny};
+  background-color: ${({ theme }) => theme.colors.gray[9]};
+  color: ${({ theme }) => theme.colors.text.fade};
+  font-size: 0.9rem;
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.tiny};
+  svg {
+    color: ${({ theme }) => theme.colors.text.default};
+  }
+  ${({ large }) =>
+    large &&
+    css`
+      padding: 0.25rem ${({ theme }) => theme.spacing.small};
+      font-size: 1rem;
+    `}
+`
+
 export const SearchPreviewWrapper = styled.div<{ active?: boolean }>`
   ${({ theme, active }) => active && css``}
 `
@@ -442,7 +463,10 @@ export const SplitSearchPreviewWrapper = styled.div`
     justify-content: space-between;
     gap: ${({ theme }) => theme.spacing.small};
     flex-wrap: wrap;
-    svg {
+    .title {
+      flex-grow: 1;
+    }
+    & > svg {
       color: ${({ theme }) => theme.colors.primary};
     }
   }

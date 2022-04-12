@@ -71,11 +71,10 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
     if (prev) selectEditor(editor, { at: prev[1], focus: true })
   }
 
-  // * TODO: Get type from flexsearch instead
+  // Differentiate between node and snippet
   const getSuggestionType = (id: string): SuggestionElementType => {
     if (id.startsWith(SNIPPET_PREFIX)) {
-      const snippet = getSnippet(id)
-      return snippet.isTemplate ? 'template' : 'snippet'
+      return 'snippet'
     }
 
     return 'node'
@@ -126,8 +125,9 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
     const isHeadingBlock = Editor.previous(editor) === undefined
 
     if (isHeadingBlock) {
-      queryIndex('snippet', query, ['template']).then((results) => {
+      queryIndex('template', query).then((results) => {
         const templates = results.map((result) => ({ ...result, type: 'template' }))
+        mog('HeaderQA', { templates, results })
         setSuggestions(templates)
         setInfobarMode('suggestions')
       })
@@ -135,8 +135,9 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
       queryIndex(['snippet', 'node'], query).then((results) => {
         const res = results.map((res) => ({ ...res, type: getSuggestionType(res.id) }))
 
-        const withoutTemplates = res.filter((r) => r.type !== 'template')
-        setSuggestions(withoutTemplates)
+        // const withoutTemplates = res.filter((r) => r.type !== 'template')
+        mog('NotHeaderQA', { results })
+        setSuggestions(res)
         setInfobarMode('suggestions')
       })
     }
