@@ -2,12 +2,15 @@ import { BrowserWindow, Menu, MenuItemConstructorOptions, app, autoUpdater, shel
 
 import { IpcAction } from '../data/IpcAction'
 import { ToastStatus } from '../types/toast'
-import { toast } from './main'
+import { toast, mex, spotlight } from './main'
+import { checkIfAlpha } from './utils/version'
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string
   submenu?: DarwinMenuItemConstructorOptions[] | Menu
 }
+
+const isAlpha = checkIfAlpha(app.getVersion())
 
 export default class MenuBuilder {
   mainWindow: BrowserWindow
@@ -86,6 +89,7 @@ export default class MenuBuilder {
         }
       ]
     }
+
     const subMenuEdit: DarwinMenuItemConstructorOptions = {
       label: 'Edit',
       submenu: [
@@ -123,7 +127,8 @@ export default class MenuBuilder {
           label: 'Toggle Developer Tools',
           accelerator: 'Alt+Command+I',
           click: () => {
-            this.mainWindow.webContents.toggleDevTools()
+            mex.webContents.openDevTools()
+            spotlight.webContents.openDevTools()
           }
         }
       ]
@@ -184,7 +189,9 @@ export default class MenuBuilder {
     }
 
     const subMenuView =
-      process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true' ? subMenuViewDev : subMenuViewProd
+      process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true' || isAlpha
+        ? subMenuViewDev
+        : subMenuViewProd
 
     return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp]
   }

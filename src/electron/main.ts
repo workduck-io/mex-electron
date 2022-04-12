@@ -76,8 +76,8 @@ if (require('electron-squirrel-startup')) {
 }
 
 let tray: Tray | null
-let mex: BrowserWindow | null
-let spotlight: BrowserWindow | null
+export let mex: BrowserWindow | null
+export let spotlight: BrowserWindow | null
 export let toast: Toast
 let spotlightBubble = false
 let isSelection = false
@@ -168,7 +168,7 @@ const createSpotLighWindow = (show?: boolean) => {
 
   require('@electron/remote/main').enable(spotlight.webContents)
 
-  if (isAlpha || IS_DEV) spotlight.webContents.openDevTools()
+  if (IS_DEV) spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -219,7 +219,7 @@ const createMexWindow = () => {
     toast?.setOnFullScreen()
   })
 
-  if (isAlpha) mex.webContents.openDevTools()
+  if (IS_DEV) mex.webContents.openDevTools()
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const callbackOptions = {
