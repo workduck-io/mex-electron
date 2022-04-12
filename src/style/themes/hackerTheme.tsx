@@ -34,6 +34,7 @@ export const hackerTheme = generateTheme({
     accent: '#2bff30',
     oppositePrimary: '#000000'
   },
+  hasBlocks: true,
   backgroundImages: {
     app: 'https://i.imgur.com/OCW3IAi.png',
     preview: 'https://i.imgur.com/qSimBsf.png'

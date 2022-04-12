@@ -30,10 +30,13 @@ import { mog } from '../../utils/lib/helper'
 import NotFound from '../NotFound'
 import useBlockStore from '../../store/useBlockStore'
 import RemindersAll from '../mex/Reminders/RemindersAll'
+import { animated } from 'react-spring'
+import { useSidebarTransition } from '../../components/mex/Sidebar/Transition'
 
-export const SwitchWrapper = styled.div<{ isAuth?: boolean }>`
+export const SwitchWrapper = styled(animated.div)<{ isAuth?: boolean }>`
   position: fixed;
-  width: ${({ theme, isAuth }) => (!isAuth ? '100% !important' : `calc(100% - ${theme.width.nav}px)`)};
+  width: ${({ theme, isAuth }) =>
+    !isAuth ? '100% !important' : `calc(100% - 300px - ${theme.additional.hasBlocks ? '3rem' : '0px'})`};
   overflow-x: hidden;
   overflow-y: auto;
 `
@@ -59,6 +62,8 @@ const Switch = () => {
     }
   }, [location])
 
+  const { switchWrapperSpringProps } = useSidebarTransition()
+
   /* Hierarchy:
     - login
     - register
@@ -77,7 +82,7 @@ const Switch = () => {
   */
 
   return (
-    <SwitchWrapper isAuth={authenticated}>
+    <SwitchWrapper style={switchWrapperSpringProps} isAuth={authenticated}>
       <Routes>
         <Route path={ROUTE_PATHS.login} element={<AuthRoute component={Login} />} />
         <Route path={ROUTE_PATHS.register} element={<AuthRoute component={Register} />} />

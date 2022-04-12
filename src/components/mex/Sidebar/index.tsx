@@ -22,6 +22,7 @@ const SideBar = ({ tree }: SideBarProps) => {
       <SidebarContent>
         <Collapse
           title="Bookmarks"
+          oid="Bookmarks"
           icon={bookmark3Line}
           maximumHeight="30vh"
           infoProps={{
@@ -35,6 +36,7 @@ const SideBar = ({ tree }: SideBarProps) => {
 
         <Collapse
           title="Notes"
+          oid="Tree"
           defaultOpen
           icon={gitBranchLine}
           maximumHeight="80vh"

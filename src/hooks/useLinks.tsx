@@ -7,6 +7,7 @@ import { useSnippetStore } from '../store/useSnippetStore'
 import useTodoStore from '../store/useTodoStore'
 import { NodeLink } from '../types/relations'
 import { CachedILink, ILink } from '../types/Types'
+import { mog } from '../utils/lib/helper'
 import { hasLink } from '../utils/lib/links'
 import { useNodes } from './useNodes'
 import { useReminderStore } from './useReminders'
@@ -65,7 +66,7 @@ export const useLinks = () => {
     const snippets = useSnippetStore.getState().snippets
     const ntasks = useTodoStore.getState().todos
 
-    const reminders = remindersAll.filter((r) => r.state.done !== false)
+    const reminders = remindersAll.filter((r) => r.state.done === false)
 
     const tasksC = Object.entries(ntasks).reduce((acc, [_k, v]) => {
       const c = v.reduce((acc, t) => {
@@ -76,6 +77,8 @@ export const useLinks = () => {
       }, 0)
       return acc + c
     }, 0)
+
+    mog('reminderCounds', { remindersAll, reminders })
 
     return {
       notes: links.length,

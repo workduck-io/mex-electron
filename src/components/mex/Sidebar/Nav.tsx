@@ -1,21 +1,19 @@
-import addCircleLine from '@iconify/icons-ri/add-circle-line'
+import menuFoldLine from '@iconify/icons-ri/menu-fold-line'
+import menuUnfoldLine from '@iconify/icons-ri/menu-unfold-line'
 import archiveFill from '@iconify/icons-ri/archive-fill'
 import gitBranchLine from '@iconify/icons-ri/git-branch-line'
 import settings4Line from '@iconify/icons-ri/settings-4-line'
 import { Icon } from '@iconify/react'
 import { useSingleton } from '@tippyjs/react'
-import { transparentize } from 'polished'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
-import { NavLink, useLocation } from 'react-router-dom'
-import styled, { css } from 'styled-components'
+import { useLocation } from 'react-router-dom'
 import tinykeys from 'tinykeys'
 import { useApi } from '../../../apis/useSaveApi'
-import { TreeHelp } from '../../../data/Defaults/helpText'
-import { DRAFT_NODE } from '../../../data/Defaults/idPrefixes'
+import { BookmarksHelp, TreeHelp } from '../../../data/Defaults/helpText'
 import { IpcAction } from '../../../data/IpcAction'
 import { GetIcon } from '../../../data/links'
-import { getNewDraftKey, getUntitledDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import { getUntitledDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
 import useLayout from '../../../hooks/useLayout'
@@ -28,119 +26,32 @@ import useDataStore, { useTreeFromLinks } from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
-import { focusStyles } from '../../../style/focus'
-import { NavButton } from '../../../style/Nav'
-import { FocusModeProp } from '../../../style/props'
+import {
+  ComingSoon,
+  Count,
+  EndLinkContainer,
+  Link,
+  MainLinkContainer,
+  NavButton,
+  NavTitle,
+  NavWrapper
+} from '../../../style/Nav'
 import Collapse from '../../../ui/layout/Collapse/Collapse'
-import { CollapseWrapper } from '../../../ui/layout/Collapse/Collapse.style'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
+import { useSidebarTransition } from './Transition'
 import { TreeWithContextMenu } from './TreeWithContextMenu'
 import { NavProps } from './Types'
-
-export const NavWrapper = styled.div<FocusModeProp>`
-  overflow: scroll;
-  margin-top: 1rem;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  min-height: 100%;
-  position: fixed;
-  width: ${({ theme }) => theme.width.sidebar}px;
-  transition: opacity 0.3s ease-in-out;
-  padding-top: 1rem;
-  padding-left: 10px;
-  gap: ${({ theme }) => theme.spacing.small};
-
-  ${CollapseWrapper} {
-    flex-grow: 1;
-    width: 100%;
-  }
-
-  ${(props) => focusStyles(props)}
-`
-
-export const navTooltip = css`
-  .nav-tooltip {
-    color: ${({ theme }) => theme.colors.text.oppositePrimary} !important;
-    background: ${({ theme }) => theme.colors.primary} !important;
-    &::after {
-      border-right-color: ${({ theme }) => theme.colors.primary} !important;
-    }
-  }
-`
-
-export const NavTitle = styled.span`
-  flex-grow: 1;
-`
-
-export const Count = styled.span`
-  color: ${({ theme }) => theme.colors.text.fade};
-`
-
-export const Link = styled(NavLink)`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.tiny};
-  color: ${({ theme }) => theme.colors.gray[5]};
-  padding: ${({ theme }) => theme.spacing.medium};
-  text-decoration: none !important;
-
-  font-size: 18px;
-
-  svg {
-    width: 20px;
-    height: 20px;
-    color: ${({ theme }) => theme.colors.primary};
-  }
-
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.gray[10]};
-    color: ${({ theme }) => theme.colors.text.heading};
-  }
-
-  &.active {
-    background-color: ${({ theme }) => theme.colors.gray[9]};
-    color: ${({ theme }) => theme.colors.primary};
-  }
-`
-
-const MainLinkContainer = styled.div`
-  width: 100%;
-  margin: 2rem 0;
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.small};
-`
-
-const ComingSoon = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${({ theme }) => theme.colors.gray[5]};
-  padding: ${({ theme }) => theme.spacing.small};
-
-  margin-top: ${({ theme }) => theme.spacing.medium};
-  &:first-child {
-    margin-top: 0;
-  }
-
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.background.card};
-  }
-`
+import Bookmarks from './Bookmarks'
+import bookmark3Line from '@iconify/icons-ri/bookmark-3-line'
 
 const Nav = ({ links }: NavProps) => {
   // const match = useMatch(`/${ROUTE_PATHS.node}/:nodeid`)
   const Tree = useTreeFromLinks()
   const authenticated = useAuthStore((store) => store.authenticated)
+  const sidebar = useLayoutStore((store) => store.sidebar)
+  const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
   const focusMode = useLayoutStore((store) => store.focusMode)
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
@@ -148,7 +59,6 @@ const Nav = ({ links }: NavProps) => {
   const { getFocusProps } = useLayout()
   const { getLinkCount } = useLinks()
   const { goTo } = useRouting()
-  const location = useLocation()
   const { saveNodeName } = useLoad()
 
   const [source, target] = useSingleton()
@@ -196,8 +106,12 @@ const Nav = ({ links }: NavProps) => {
     }
   }, [shortcuts])
 
+  const { springProps } = useSidebarTransition()
+
+  const archiveCount = getLinkCount().archive
+
   return (
-    <NavWrapper {...getFocusProps(focusMode)}>
+    <NavWrapper style={springProps} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
       <NavTooltip singleton={source} />
       {authenticated && (
         <div>
@@ -237,7 +151,20 @@ const Nav = ({ links }: NavProps) => {
       </MainLinkContainer>
 
       <Collapse
+        title="Bookmarks"
+        oid="bookmarks"
+        icon={bookmark3Line}
+        maximumHeight="30vh"
+        infoProps={{
+          text: BookmarksHelp
+        }}
+      >
+        <Bookmarks />
+      </Collapse>
+
+      <Collapse
         title="Tree"
+        oid="tree"
         defaultOpen
         icon={gitBranchLine}
         maximumHeight="80vh"
@@ -247,7 +174,8 @@ const Nav = ({ links }: NavProps) => {
       >
         <TreeWithContextMenu tree={Tree} />
       </Collapse>
-      <div>
+
+      <EndLinkContainer>
         {/* {authenticated ? (
           <NavTooltip singleton={target} content="User">
             <Link  tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to="/user" key="nav_user">
@@ -269,7 +197,7 @@ const Nav = ({ links }: NavProps) => {
           <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={ROUTE_PATHS.archive} key="nav_search">
             {GetIcon(archiveFill)}
             <NavTitle>Archive</NavTitle>
-            <Count>{getLinkCount().archive}</Count>
+            {archiveCount > 0 && <Count>{archiveCount}</Count>}
           </Link>
         </NavTooltip>
         {/* <NavTooltip
@@ -278,6 +206,12 @@ const Nav = ({ links }: NavProps) => {
         >
           <HelpTooltip />
         </NavTooltip> */}
+
+        <NavButton onClick={toggleSidebar}>
+          <Icon icon={sidebar.expanded ? menuFoldLine : menuUnfoldLine} />
+          <NavTitle>{sidebar.expanded ? 'Collapse' : 'Expand'}</NavTitle>
+        </NavButton>
+
         <NavTooltip
           key={shortcuts.showSettings.title}
           singleton={target}
@@ -293,7 +227,7 @@ const Nav = ({ links }: NavProps) => {
             <NavTitle>Settings</NavTitle>
           </Link>
         </NavTooltip>
-      </div>
+      </EndLinkContainer>
     </NavWrapper>
   )
 }

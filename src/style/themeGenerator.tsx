@@ -105,6 +105,7 @@ export interface ThemePalette {
 
   custom?: string
   additionalTheme?: Partial<DefaultTheme>
+  hasBlocks?: boolean
 }
 
 export const generateTheme = (p: ThemePalette): DefaultTheme => {
@@ -213,7 +214,8 @@ export const generateTheme = (p: ThemePalette): DefaultTheme => {
             controlHeight: 38,
             menuGutter: 8
           }
-        }
+        },
+        hasBlocks: p.hasBlocks
       },
       custom: p.custom,
       ...p.additionalTheme

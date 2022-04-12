@@ -81,6 +81,7 @@ declare module 'styled-components' {
     additional: {
       profilePalette: string[]
       reactSelect: ThemeConfig
+      hasBlocks?: boolean
     }
     custom?: string
   }

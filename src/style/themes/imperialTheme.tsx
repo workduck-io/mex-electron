@@ -34,6 +34,7 @@ export const imperialTheme = generateTheme({
     accent: '#BCC7FF',
     oppositePrimary: '#ffffff'
   },
+  hasBlocks: true,
   backgroundImages: {
     app: 'https://i.imgur.com/Z2iNoSC.jpg',
     preview: 'https://i.imgur.com/2zgshMW.png'

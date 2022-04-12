@@ -76,6 +76,7 @@ export const SidebarSection = styled.div`
 // Styles for the Sidebar Tree
 // ============================
 export const StyledTree = styled.div`
+  padding-left: ${({ theme }) => theme.spacing.medium};
   .rc-tree-child-tree {
     display: block;
   }
