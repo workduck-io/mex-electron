@@ -17,7 +17,7 @@ export const CREATE_NEW_ITEM: ListItemType = {
   title: 'Create new ',
   id: 'create-new-node',
   icon: 'bi:plus-circle',
-  type: QuickLinkType.ilink,
+  type: QuickLinkType.backlink,
   category: CategoryType.quicklink,
   description: 'Quick note',
   shortcut: {

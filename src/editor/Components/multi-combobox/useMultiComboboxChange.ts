@@ -88,7 +88,7 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
         // data: {
         //   isNew: true
         // },
-        type: ct.cbKey === 'tag' ? QuickLinkType.tags : QuickLinkType.ilink,
+        type: ct.cbKey === 'tag' ? QuickLinkType.tags : QuickLinkType.backlink,
         data: true,
         prefix: CreateNewPrefix,
         text: searchTerm

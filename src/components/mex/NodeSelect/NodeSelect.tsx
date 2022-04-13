@@ -52,7 +52,7 @@ export type QuickLink = {
 }
 
 export enum QuickLinkType {
-  ilink = 'ILinks',
+  backlink = 'Backlink',
   snippet = 'Snippets',
   flow = 'Flows',
   tags = 'Tags'
@@ -69,13 +69,13 @@ export const makeQuickLink = (
 ): QuickLink => ({
   text: title,
   value: title,
-  type: options.type ?? QuickLinkType.ilink,
+  type: options.type ?? QuickLinkType.backlink,
   status: QuickLinkStatus.exists,
   nodeid: options.nodeid,
   icon: options.icon
 })
 
-export const createNewQuickLink = (path: string, type: QuickLinkType = QuickLinkType.ilink): QuickLink => ({
+export const createNewQuickLink = (path: string, type: QuickLinkType = QuickLinkType.backlink): QuickLink => ({
   text: `Create new: ${path}`,
   value: path,
   type,

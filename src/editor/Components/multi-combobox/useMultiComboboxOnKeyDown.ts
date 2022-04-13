@@ -70,7 +70,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         const textAfterBlockTrigger = useComboboxStore.getState().search.textAfterBlockTrigger
 
         // mog('Inserting from here', { activeBlock, isBlockTriggered })
-        if ((item.type === QuickLinkType.ilink || type === ELEMENT_INLINE_BLOCK) && isBlockTriggered && activeBlock) {
+        if ((item.type === QuickLinkType.backlink || type === ELEMENT_INLINE_BLOCK) && isBlockTriggered && activeBlock) {
           const blockValue = activeBlock?.text ? getSlug(activeBlock.text) : ''
           const withBlockInfo = {
             type,

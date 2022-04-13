@@ -109,7 +109,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
 
       let content: NodeEditorContent | undefined
 
-      if (type === QuickLinkType.ilink) {
+      if (type === QuickLinkType.backlink) {
         const nodeContent = getContent(key)
         content = nodeContent?.content
 
@@ -202,7 +202,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
             <BlockCombo
               onSelect={() => {
                 const item = items[itemIndex]
-                if (item?.type === QuickLinkType.ilink) {
+                if (item?.type === QuickLinkType.backlink) {
                   editor && onSelectItem(editor, items[itemIndex])
                 }
               }}

@@ -16,7 +16,7 @@ export const getListItemFromNode = (node: ILink) => {
     title: node?.path,
     id: node?.nodeid,
     description: rawText,
-    type: QuickLinkType.ilink,
+    type: QuickLinkType.backlink,
     category: CategoryType.quicklink,
     extras: {
       nodeid: node?.nodeid,
