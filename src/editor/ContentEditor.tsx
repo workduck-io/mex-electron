@@ -1,6 +1,5 @@
 import { selectEditor, usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect, useMemo } from 'react'
-import sw from 'stopword'
 import tinykeys from 'tinykeys'
 import shallow from 'zustand/shallow'
 import Metadata from '../components/mex/Metadata/Metadata'
@@ -25,6 +24,8 @@ import BlockInfoBar from './Components/Blocks/BlockInfoBar'
 import { BlockOptionsMenu } from './Components/EditorContextMenu'
 import Editor from './Editor'
 import Toolbar from './Toolbar'
+
+import { removeStopwords } from '../utils/stopwords'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -60,7 +61,7 @@ const ContentEditor = () => {
         const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
         const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
         const rawText = convertContentToRawText(val.slice(lastTwoParagraphs, cursorPosition + 1), ' ')
-        const keywords = sw.removeStopwords(rawText.split(' ').filter(Boolean))
+        const keywords = removeStopwords(rawText)
 
         const results = await queryIndexWithRanking('node', keywords.join(' '))
         const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
