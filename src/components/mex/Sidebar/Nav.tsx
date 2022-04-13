@@ -38,7 +38,7 @@ import {
   NavWrapper
 } from '../../../style/Nav'
 import Collapse from '../../../ui/layout/Collapse/Collapse'
-import { Logo } from '../../../data/illustrations/logo'
+import { Logo, SidebarToggle } from '../../../data/illustrations/logo'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
@@ -118,6 +118,7 @@ const Nav = ({ links }: NavProps) => {
 
       <NavLogoWrapper>
         <Logo />
+        <SidebarToggle />
       </NavLogoWrapper>
 
       {authenticated && (

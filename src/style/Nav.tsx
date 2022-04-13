@@ -1,3 +1,4 @@
+import { transparentize } from 'polished'
 import { NavLink } from 'react-router-dom'
 import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
@@ -28,22 +29,22 @@ const ButtonOrLinkStyles = css`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
-  color: ${({ theme }) => theme.colors.gray[5]};
-  padding: ${({ theme }) => theme.spacing.medium};
+  color: ${({ theme }) => theme.colors.text.default};
+  padding: 12px;
   text-decoration: none !important;
   cursor: pointer;
 
-  font-size: 18px;
+  font-size: 14px;
 
   svg {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     flex-shrink: 0;
     color: ${({ theme }) => theme.colors.primary};
   }
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.gray[10]};
+    background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[6])};
     color: ${({ theme }) => theme.colors.text.heading};
   }
 
@@ -54,8 +55,7 @@ export const Link = styled(NavLink)`
   ${ButtonOrLinkStyles}
 
   &.active {
-    background-color: ${({ theme }) => theme.colors.gray[9]};
-    color: ${({ theme }) => theme.colors.primary};
+    background-color: ${({ theme }) => theme.colors.gray[6]};
   }
 `
 
@@ -94,7 +94,15 @@ export const ComingSoon = styled.div`
   }
 `
 
-export const NavLogoWrapper = styled.div``
+export const NavLogoWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-bottom: 1px solid #293242;
+  padding: ${({ theme }) => theme.spacing.small};
+`
 // export const NavLogoWrapper = styled.div``
 
 export const NavButton = styled.div<{ primary?: boolean }>`
@@ -128,8 +136,7 @@ export interface NavWrapperProps extends FocusModeProp {
 
 export const NavWrapper = styled(animated.div)<NavWrapperProps>`
   overflow-y: auto;
-  overflow-x: hidden;
-  margin-top: 1rem;
+  overflow-x: visible;
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -138,7 +145,8 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
   min-height: 100%;
   position: fixed;
   transition: opacity 0.3s ease-in-out;
-  padding: 1rem ${({ theme }) => theme.spacing.small} 0;
+  padding: 2rem ${({ theme }) => theme.spacing.small} 0;
+  background-color: ${({ theme }) => theme.colors.gray[8]};
   gap: ${({ theme }) => theme.spacing.small};
 
   ${CollapseWrapper} {
@@ -161,7 +169,15 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
       }
 
       ${Link}, ${NavButton} {
-        padding: 0.75rem;
+        padding: 12px;
+      }
+
+      ${MainLinkContainer}, ${EndLinkContainer} {
+        width: 48px;
+      }
+
+      ${NavLogoWrapper} {
+        padding: 22px;
       }
 
       ${CollapseWrapper} {
