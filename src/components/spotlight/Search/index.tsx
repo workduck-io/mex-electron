@@ -42,7 +42,7 @@ const Search: React.FC = () => {
     }
 
     if (value.startsWith('[[')) {
-      query.type = CategoryType.quicklink
+      query.type = CategoryType.backlink
     }
 
     if (value.startsWith('/')) {

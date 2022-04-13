@@ -64,7 +64,7 @@ const List = ({
       style.width = '0%'
     }
 
-    if (searchResults[activeIndex] && searchResults[activeIndex]?.category !== CategoryType.quicklink) {
+    if (searchResults[activeIndex] && searchResults[activeIndex]?.category !== CategoryType.backlink) {
       style.width = '100%'
     }
 
@@ -149,7 +149,7 @@ const List = ({
         const currentActiveItem = data[activeIndex]
 
         // * If current item is ILINK
-        if (currentActiveItem?.category === CategoryType.quicklink && !activeItem.active) {
+        if (currentActiveItem?.category === CategoryType.backlink && !activeItem.active) {
           if (event.metaKey) {
             if (currentActiveItem?.type === QuickLinkType.backlink) {
               let nodePath = node.path

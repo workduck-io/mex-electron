@@ -44,7 +44,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
       style.width = '100%'
     }
 
-    if (searchResults[activeIndex] && searchResults[activeIndex]?.category !== CategoryType.quicklink) {
+    if (searchResults[activeIndex] && searchResults[activeIndex]?.category !== CategoryType.backlink) {
       style.width = '0%'
     }
 

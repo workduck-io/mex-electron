@@ -52,7 +52,7 @@ export type QuickLink = {
 }
 
 export enum QuickLinkType {
-  backlink = 'Backlink',
+  backlink = 'Backlinks',
   snippet = 'Snippets',
   flow = 'Flows',
   tags = 'Tags'

@@ -1,5 +1,7 @@
 import React from 'react'
+import { getAllParentIds } from '../components/mex/Sidebar/treeUtils'
 import useDataStore from '../store/useDataStore'
+import { useEditorStore } from '../store/useEditorStore'
 import { useHistoryStore } from '../store/useHistoryStore'
 import { useRecentsStore } from '../store/useRecentsStore'
 import { ILink } from '../types/Types'
@@ -7,6 +9,7 @@ import { getContent } from '../utils/helpers'
 import { mog } from '../utils/lib/helper'
 import { isMatch } from '../utils/lib/paths'
 import useArchive from './useArchive'
+import { useLinks } from './useLinks'
 import { useSearch } from './useSearch'
 
 export const useDelete = () => {
@@ -18,6 +21,7 @@ export const useDelete = () => {
   const historyStack = useHistoryStore((state) => state.stack)
   const currentIndex = useHistoryStore((state) => state.currentNodeIndex)
   const updateHistory = useHistoryStore((state) => state.update)
+  const { getNodeidFromPath } = useLinks()
 
   const { updateDocument, removeDocument } = useSearch()
 
@@ -37,6 +41,8 @@ export const useDelete = () => {
   }
 
   const execDelete = (del: string) => {
+    const currentNode = useEditorStore.getState().node
+    const oldHistory = useHistoryStore.getState().stack
     const { archivedNodes, newIlinks } = getMockDelete(del)
 
     addArchiveData(archivedNodes)
@@ -54,6 +60,7 @@ export const useDelete = () => {
     if (baseId !== -1 && newIlinks.length > 0) {
       setBaseNodeId(newIlinks[0].path)
     }
+
     archivedNodes.map(async (item) => {
       mog('Archiving', { item })
       const { path, nodeid } = item
@@ -65,7 +72,16 @@ export const useDelete = () => {
 
     setILinks(newIlinks)
 
-    return { archivedNodes, newLinks: newIlinks }
+    const allParents = getAllParentIds(currentNode.path)
+    const isCurrent = newIlinks.map((i) => i.path).indexOf(currentNode.path) !== -1
+    let toLoad: string
+
+    if (isCurrent) toLoad = currentNode.nodeid
+    if (!toLoad) toLoad = allParents.length > 1 ? getNodeidFromPath(allParents[allParents.length - 2]) : undefined
+    if (!toLoad) toLoad = newHistory.length > 0 ? newHistory[0] : undefined
+    if (!toLoad) toLoad = newIlinks.length > 0 ? newIlinks[0].nodeid : undefined
+
+    return { archivedNodes, toLoad }
   }
 
   return { getMockDelete, execDelete }
@@ -77,7 +93,7 @@ const applyDeleteToIds = (ids: string[], currentIndex: number, newIlinks: ILink[
 
   ids.forEach((nodeid) => {
     const isPresent = newIlinks.some((l) => l.nodeid === nodeid)
-    if (!isPresent) {
+    if (isPresent) {
       newIds.push(nodeid)
     }
   })

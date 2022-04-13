@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from 'react'
 import { ListItemType } from '../../components/spotlight/SearchResults/types'
 
 export enum CategoryType {
-  quicklink = 'Quick Links',
+  backlink = 'Backlinks',
   action = 'Quick Actions',
   search = 'Search Results',
   meeting = 'Meetings'
