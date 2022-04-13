@@ -76,7 +76,7 @@ const InfoBar = () => {
   }, [shortcuts])
 
   return (
-    <InfoBarWrapper wide={infobar.mode === 'default' ? 'false' : 'true'} {...getFocusProps(focusMode)}>
+    <InfoBarWrapper mode={infobar.mode} {...getFocusProps(focusMode)}>
       <InfoBarItems />
     </InfoBarWrapper>
   )

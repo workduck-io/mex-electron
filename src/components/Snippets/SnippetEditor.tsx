@@ -1,4 +1,6 @@
 import arrowLeftLine from '@iconify/icons-ri/arrow-left-line'
+import { mog } from '../../utils/lib/helper'
+import { debounce } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { SnippetSaverButton } from '../../editor/Components/Saver'
@@ -10,7 +12,7 @@ import { useUpdater } from '../../hooks/useUpdater'
 import IconButton from '../../style/Buttons'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 import tinykeys from 'tinykeys'
-import { useSnippetBuffer } from '../../hooks/useEditorBuffer'
+import { useSnippetBuffer, useSnippetBufferStore } from '../../hooks/useEditorBuffer'
 import { getPlateEditorRef, selectEditor, usePlateEditorRef, usePlateEditorState } from '@udecode/plate'
 import { useTransform } from '../../editor/Components/BalloonToolbar/components/useTransform'
 import { IS_DEV } from '../../data/Defaults/dev_'
@@ -37,9 +39,12 @@ const SnippetEditor = () => {
 
   const { updater } = useUpdater()
   const { addOrUpdateValBuffer, saveAndClearBuffer } = useSnippetBuffer()
+  const addTitle = useSnippetBufferStore((store) => store.addTitle)
+  const addAll = useSnippetBufferStore((store) => store.addAll)
 
   useEffect(() => {
     if (snippet) {
+      addAll(snippet.id, snippet.content, snippet.title)
       setContent(snippet.content)
     } else {
       returnToSnippets()
@@ -49,10 +54,15 @@ const SnippetEditor = () => {
   const getSnippetTitle = () => getValues().title
 
   const onChangeSave = (val: any[]) => {
-    // mog('onChangeSave', { val })
+    mog('onChangeSave', { val })
     if (val) {
       addOrUpdateValBuffer(snippet.id, val)
     }
+  }
+
+  const onChangeTitle = (title: string) => {
+    mog('onChangeTitle', { title })
+    addTitle(snippet.id, title)
   }
 
   const { params } = useRouting()
@@ -98,7 +108,13 @@ const SnippetEditor = () => {
           <NoteTitle>
             {snippet && (!snippet.isTemplate || IS_DEV) ? (
               <>
-                [[ <Input autoFocus defaultValue={snippet && snippet.title} {...register('title')} /> ]]
+                [[{' '}
+                <Input
+                  autoFocus
+                  defaultValue={snippet && snippet.title}
+                  onChange={debounce((e) => onChangeTitle(e.target.value), 250)}
+                />{' '}
+                ]]
               </>
             ) : (
               <>[[ {snippet && snippet.title} ]]</>

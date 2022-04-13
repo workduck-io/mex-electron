@@ -81,7 +81,7 @@ export const Editor = ({
 
   useEditorChange(editorId, content, onChange)
 
-  const onDelayPerform = debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 1000)
+  const onDelayPerform = debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 200)
 
   const onChangeContent = (val: any[]) => {
     setIsEditing(true)

@@ -8,7 +8,7 @@ import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import useSuggestionStore from '../../../store/useSuggestions'
 import IconButton from '../../../style/Buttons'
-import { InfobarFull, InfobarTools } from '../../../style/infobar'
+import { InfobarFull, InfobarMedium, InfobarTools } from '../../../style/infobar'
 
 import { useSnippets } from '../../../hooks/useSnippets'
 import { getContent } from '../../../utils/helpers'
@@ -97,7 +97,7 @@ const SuggestionInfoBar = () => {
   }
 
   return (
-    <InfobarFull>
+    <InfobarMedium>
       <InfobarTools>
         <IconButton
           size={24}
@@ -116,7 +116,7 @@ const SuggestionInfoBar = () => {
         pinSuggestion={pinSuggestion}
         getContent={getSuggestionContent}
       />
-    </InfobarFull>
+    </InfobarMedium>
   )
 }
 

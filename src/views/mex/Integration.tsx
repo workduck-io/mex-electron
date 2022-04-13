@@ -154,7 +154,7 @@ const TemplateInfo = () => {
   }, [templateDetails, ilinks])
 
   return (
-    <TemplateInfoBar wide="false">
+    <TemplateInfoBar mode="default">
       <TemplateTitle>Details</TemplateTitle>
       <LoadingButton
         style={{ color: !isTemplateDetailsLoading && theme.colors.text.fade }}

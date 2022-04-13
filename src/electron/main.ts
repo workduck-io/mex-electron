@@ -207,6 +207,10 @@ const createMexWindow = () => {
     mex = null
   })
 
+  mex.on('blur', () => {
+    mex.webContents.send(IpcAction.MEX_BLURRED)
+  })
+
   mex.webContents.on('new-window', (event, url) => {
     event.preventDefault()
     shell.openExternal(url)

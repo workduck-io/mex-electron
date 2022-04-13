@@ -23,6 +23,7 @@ const PreviewContainer: React.FC<PreviewProps> = ({ nodeId, preview }) => {
 
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
   const getContent = useContentStore((state) => state.getContent)
+  const contents = useContentStore((state) => state.contents)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
   const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
@@ -44,6 +45,14 @@ const PreviewContainer: React.FC<PreviewProps> = ({ nodeId, preview }) => {
       setNodeContent(nodeContent)
     }
   }, [preview, showSource, nodeId, normalMode])
+
+  useEffect(() => {
+    if (!preview.isSelection) {
+      const activeNodeContent = getContent(nodeId)?.content ?? []
+      mog('PreviewContentSet', { activeNodeContent })
+      setNodeContent(activeNodeContent)
+    }
+  }, [contents])
 
   const handleSaveContent = (saveAndClose: boolean, removeHighlight?: boolean) => {
     saveIt({ saveAndClose, removeHighlight })

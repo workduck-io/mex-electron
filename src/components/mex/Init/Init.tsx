@@ -37,6 +37,7 @@ import { useCalendar, useGoogleCalendarAutoFetch } from '../../../hooks/useCalen
 import { useTokens } from '../../../services/auth/useTokens'
 import { GOOGLE_OAUTH_URL } from '../../../apis/routes'
 import toast from 'react-hot-toast'
+import { useBufferStore, useEditorBuffer } from '../../../hooks/useEditorBuffer'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -74,6 +75,7 @@ const Init = () => {
   useSaveAndExit()
 
   const { getTokenData } = useTokenData()
+  const { saveAndClearBuffer } = useEditorBuffer()
 
   /**
    * Initialization of the app data, search index and auth,
@@ -181,6 +183,9 @@ const Init = () => {
       goTo(ROUTE_PATHS.node, NavigationType.push, reminder.nodeid)
     })
 
+    ipcRenderer.on(IpcAction.MEX_BLURRED, () => {
+      saveAndClearBuffer()
+    })
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
       goTo(`${ROUTE_PATHS.settings}/themes`, NavigationType.push)
     })

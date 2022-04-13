@@ -66,9 +66,29 @@ export const useEditorBuffer = () => {
   return { addOrUpdateValBuffer, saveAndClearBuffer, getBuffer, getBufferVal, clearBuffer }
 }
 
-export const useSnippetBufferStore = create<BufferStore>((set, get) => ({
+interface SnippetBufferStore {
+  buffer: Record<string, { content: NodeEditorContent; title: string }>
+  add: (nodeid: string, val: NodeEditorContent) => void
+  addTitle: (nodeid: string, title: string) => void
+  addAll: (nodeid: string, val: NodeEditorContent, title: string) => void
+  remove: (nodeid: string) => void
+  clear: () => void
+}
+
+export const useSnippetBufferStore = create<SnippetBufferStore>((set, get) => ({
   buffer: {},
-  add: (nodeid, val) => set({ buffer: { ...get().buffer, [nodeid]: val } }),
+  add: (nodeid, val) => {
+    const prev = get().buffer[nodeid]
+    set({ buffer: { ...get().buffer, [nodeid]: { ...prev, content: val } } })
+  },
+  addTitle: (nodeid, title) => {
+    const prev = get().buffer[nodeid]
+    set({ buffer: { ...get().buffer, [nodeid]: { ...prev, title } } })
+  },
+  addAll: (nodeid, val, title) => {
+    const prev = get().buffer[nodeid]
+    set({ buffer: { ...get().buffer, [nodeid]: { ...prev, content: val, title } } })
+  },
   remove: (nodeid) => {
     const newBuffer = get().buffer
     if (newBuffer[nodeid]) delete newBuffer[nodeid]
@@ -80,11 +100,12 @@ export const useSnippetBufferStore = create<BufferStore>((set, get) => ({
 export const useSnippetBuffer = () => {
   const add2Buffer = useSnippetBufferStore((s) => s.add)
   const clearBuffer = useSnippetBufferStore((s) => s.clear)
-  const updateSnippetContent = useSnippetStore((s) => s.updateSnippetContent)
+  const updateSnippetContent = useSnippetStore((s) => s.updateSnippetContentAndTitle)
   const { saveData } = useSaveData()
   const { updateSnippet: updateSnippetIndex, getSnippet } = useSnippets()
 
   const addOrUpdateValBuffer = (snippetId: string, val: NodeEditorContent) => {
+    mog('Add to buffer', { snippetId, val })
     add2Buffer(snippetId, val)
   }
 
@@ -97,10 +118,10 @@ export const useSnippetBuffer = () => {
     if (Object.keys(buffer).length > 0) {
       const saved = Object.entries(buffer)
         .map(([snippetId, val]) => {
-          updateSnippetContent(snippetId, val)
+          updateSnippetContent(snippetId, val.content, val.title)
           const snippet = getSnippet(snippetId)
           mog('snipppet', { snippetId, val, buffer })
-          if (snippet) updateSnippetIndex({ ...snippet, content: val })
+          if (snippet) updateSnippetIndex({ ...snippet, content: val.content, title: val.title })
           return true
         })
         .reduce((acc, cur) => acc || cur, false)
