@@ -12,6 +12,9 @@ export interface CreateSearchIndexData {
   template: GenericSearchData[] | null
 }
 
+export const SEARCH_RESULTS_LIMIT = 10
+export const TITLE_RANK_BUMP = 3
+
 export const createIndexCompositeKey = (nodeId: string, blockId: string) => {
   return `${nodeId}#${blockId}`
 }

@@ -6,7 +6,9 @@ import {
   exportIndex,
   createIndexCompositeKey,
   getNodeAndBlockIdFromCompositeKey,
-  indexedFields
+  indexedFields,
+  SEARCH_RESULTS_LIMIT,
+  TITLE_RANK_BUMP
 } from '../../utils/search/flexsearch'
 import { mog } from '../../utils/lib/helper'
 import { SearchWorker, idxKey, GenericSearchResult, SearchIndex } from '../../types/search'
@@ -204,12 +206,15 @@ const searchWorker: SearchWorker = {
         })
       }
 
-      mog('response is', { response }, { pretty: true, collapsed: false })
       const results = new Array<any>()
+      const rankingMap: { [k: string]: number } = {}
+
       response.forEach((entry) => {
         const matchField = entry.field
         entry.result.forEach((i) => {
           const { nodeId, blockId } = getNodeAndBlockIdFromCompositeKey(i.id)
+          if (rankingMap[nodeId]) rankingMap[nodeId]++
+          else rankingMap[nodeId] = 1
           results.push({ id: nodeId, data: i.doc?.data, blockId, text: i.doc?.text?.slice(0, 100), matchField })
         })
       })
@@ -231,7 +236,19 @@ const searchWorker: SearchWorker = {
         }
       })
 
-      return combinedResults
+      const sortedResults = combinedResults.sort((a, b) => {
+        const titleBumpA = a.matchField.includes('title') ? TITLE_RANK_BUMP : 0
+        const titleBumpB = b.matchField.includes('title') ? TITLE_RANK_BUMP : 0
+        const rankA = rankingMap[a.id] + titleBumpA
+        const rankB = rankingMap[b.id] + titleBumpB
+
+        if (rankA > rankB) return -1
+        else if (rankA < rankB) return 1
+        else return a.matchField.length >= b.matchField.length ? -1 : 1
+      })
+      mog('SortedResults', { sortedResults })
+
+      return sortedResults.slice(0, SEARCH_RESULTS_LIMIT)
     } catch (e) {
       mog('Searching Broke:', { e })
       return []
