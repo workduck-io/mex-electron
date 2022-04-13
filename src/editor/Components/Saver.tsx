@@ -5,6 +5,7 @@ import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import tinykeys from 'tinykeys'
 import { useApi } from '../../apis/useSaveApi'
+import { useSnippetBuffer, useSnippetBufferStore } from '../../hooks/useEditorBuffer'
 import { useLinks } from '../../hooks/useLinks'
 import { useSaveData } from '../../hooks/useSaveData'
 import { useSearch } from '../../hooks/useSearch'
@@ -184,22 +185,20 @@ export const SaverButton = ({
 }
 
 export const useSnippetSaver = () => {
-  const snippet = useSnippetStore((store) => store.editor.snippet)
-  const updateSnippet = useSnippetStore((state) => state.updateSnippet)
-  const editorState = usePlateSelectors(usePlateId()).value()
-  const { saveData } = useSaveData()
-  const { updateSnippet: updateSnippetIndex } = useSnippets()
+  // const editorState = usePlateSelectors(usePlateId()).value()
+  const { saveAndClearBuffer } = useSnippetBuffer()
+  const snippet = useSnippetStore((state) => state.editor.snippet)
+  const addTitle = useSnippetBufferStore((store) => store.addTitle)
   const { updater } = useUpdater()
 
   const onSave = (title: string) => {
-    mog('Snippet editor', { editorState })
-    if (editorState) {
-      const newSnippet = { ...snippet, title, content: editorState }
-      updateSnippet(snippet.id, newSnippet)
-      updateSnippetIndex(newSnippet)
-    }
+    // mog('Snippet editor', { editorState })
+    addTitle(snippet.id, title)
+    saveAndClearBuffer()
+    // const newSnippet = { ...snippet, title }
+    // updateSnippet(snippet.id, newSnippet)
+    // updateSnippetIndex(newSnippet)
     updater()
-    saveData()
     toast('Snippet Saved!', { duration: 1000 })
   }
 
