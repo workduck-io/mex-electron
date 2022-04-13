@@ -72,11 +72,11 @@ const Search = () => {
 
   const { getPathFromNodeid } = useLinks()
 
-  const { queryIndex } = useSearch()
+  const { queryIndex, queryIndexWithRanking } = useSearch()
   const { hasTags } = useTags()
 
   const onSearch = async (newSearchTerm: string) => {
-    const res = await queryIndex('node', newSearchTerm)
+    const res = await queryIndexWithRanking('node', newSearchTerm)
     const nodeids = useDataStore.getState().ilinks.map((l) => l.nodeid)
     const filRes = res.filter((r) => nodeids.includes(r.id))
     // mog('search', { res, filRes })

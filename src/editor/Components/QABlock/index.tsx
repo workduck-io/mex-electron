@@ -8,7 +8,6 @@ import { useSearch } from '../../../hooks/useSearch'
 import useLoad from '../../../hooks/useLoad'
 import chat from '@iconify/icons-ph/chats-circle-bold'
 
-import sw from 'stopword'
 import useSuggestionStore from '../../../store/useSuggestions'
 import { ReactEditor, useSelected } from 'slate-react'
 import { Editor } from 'slate'
@@ -23,6 +22,8 @@ import { useTheme } from 'styled-components'
 import { SNIPPET_PREFIX } from '../../../data/Defaults/idPrefixes'
 import { SuggestionElementType } from '../../../components/mex/Suggestions/types'
 import { useSnippets } from '../../../hooks/useSnippets'
+
+import { removeStopwords } from '../../../utils/stopwords'
 
 interface QABlockProps {
   attributes: any
@@ -119,8 +120,10 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
   }
 
   const getSuggestions = (value: string) => {
-    const keywords = sw.removeStopwords(value.split(' ').filter(Boolean))
+    const keywords = removeStopwords(value)
     const query = keywords.join(' ')
+
+    mog('StopWords', { query })
 
     const isHeadingBlock = Editor.previous(editor) === undefined
 
