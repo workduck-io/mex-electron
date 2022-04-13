@@ -34,6 +34,8 @@ export const SidebarToggleWrapper = styled.div`
   padding: 8px;
   display: flex;
   align-items: center;
+  border-radius: 4px;
+  margin-right: -18px;
 `
 
 export const SidebarToggle = () => {
