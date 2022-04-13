@@ -9,6 +9,8 @@ import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { NodeEditorContent } from '../../types/Types'
 import { getSlug } from '../lib/strings'
 import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin'
+import { ELEMENT_ILINK } from '../../editor/Components/ilink/defaults'
+import { ELEMENT_INLINE_BLOCK } from '../../editor/Components/InlineBlock/types'
 
 type ExcludeFromTextType = {
   types?: Set<string>
@@ -21,7 +23,7 @@ type ExcludeFieldTypes = 'value' | 'url' | 'text'
 export const convertContentToRawText = (
   content: any[],
   join?: string,
-  exclude: ExcludeFromTextType = { types: new Set([ELEMENT_EXCALIDRAW]) }
+  exclude: ExcludeFromTextType = { types: new Set([ELEMENT_EXCALIDRAW, ELEMENT_ILINK, ELEMENT_INLINE_BLOCK]) }
 ): string => {
   const text: string[] = []
 

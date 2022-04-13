@@ -20,7 +20,7 @@ import { convertContentToRawText } from '../../../../utils/search/parseData'
 import { useSnippets } from '../../../../hooks/useSnippets'
 import { getPlateEditorRef, serializeHtml } from '@udecode/plate'
 import useDataStore from '../../../../store/useDataStore'
-import { CanvasText } from '../../../../editor/Components/Excalidraw'
+import { mog } from '../../../../utils/lib/helper'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -238,9 +238,15 @@ const List = ({
     const snippet = getSnippet(id)
     const text = convertContentToRawText(snippet.content, '\n')
 
-    const html = serializeHtml(getPlateEditorRef(), {
-      nodes: snippet.content
-    })
+    let html = text
+
+    try {
+      html = serializeHtml(getPlateEditorRef(), {
+        nodes: snippet.content
+      })
+    } catch (err) {
+      mog('Something went wrong', { err })
+    }
 
     const action = isUse ? IpcAction.USE_SNIPPET : IpcAction.COPY_TO_CLIPBOARD
 
