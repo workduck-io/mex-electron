@@ -8,29 +8,26 @@ import { randomNumberBetween } from '../../utils/helpers'
 import { generateNodeUID, generateTempId, MEETING_PREFIX } from './idPrefixes'
 import { initialSnippets } from '../initial/snippets'
 import { onboardingContent } from '../initial/onboardingDoc'
+import { draftContent } from '../initial/draftDoc'
 // import { generateTempId } from './idPrefixes'
 //
 export const BASE_DRAFT_PATH = 'Draft'
 export const BASE_TASKS_PATH = 'Tasks'
 export const BASE_MEETING_PATH = MEETING_PREFIX
+const links = generateILinks(['doc', 'dev', 'design', '@'])
+
 export const onboardingLink = {
   path: 'Onboarding',
   nodeid: generateNodeUID()
 }
 
-const links = [
-  ...generateILinks(['doc', 'dev', 'design', '@']),
-  {
-    path: BASE_DRAFT_PATH,
-    nodeid: generateNodeUID(),
-    icon: 'ri:draft-line'
-  },
-  {
-    path: BASE_TASKS_PATH,
-    nodeid: generateNodeUID(),
-    icon: 'ri:task-line'
-  }
-]
+const draftLink = {
+  path: BASE_DRAFT_PATH,
+  nodeid: generateNodeUID(),
+  icon: 'ri:draft-line'
+}
+
+const linksWithSpecialContent = [onboardingLink, draftLink]
 
 export const defaultContent: NodeContent = {
   type: 'init',
@@ -63,7 +60,8 @@ const contents: Contents = links.reduce(
     }
   },
   {
-    [onboardingLink.nodeid]: onboardingContent
+    [onboardingLink.nodeid]: onboardingContent,
+    [draftLink.nodeid]: draftContent
   }
 )
 
@@ -71,7 +69,7 @@ export const DefaultFileData = (version: string): FileData => ({
   version,
   remoteUpdate: true,
   baseNodeId: '@',
-  ilinks: [onboardingLink, ...links],
+  ilinks: [...linksWithSpecialContent, ...links],
   contents,
   linkCache: {},
   tagsCache: {},
