@@ -74,7 +74,7 @@ export const useSearch = () => {
 
       case CategoryType.search:
         const nodeItems = await queryIndex('node', search.value)
-        const snippetItems = await queryIndex('snippet', search.value, ['snippet'])
+        const snippetItems = await queryIndex('snippet', search.value)
 
         const actionItems = getSearchResults(search.value, initActions, { keySelector: (obj) => obj.title })
         const localNodes = []

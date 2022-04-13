@@ -37,7 +37,7 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
   const theme = useTheme()
   const selected = useSelected()
   const { params } = useRouting()
-  const { queryIndex } = useSearch()
+  const { queryIndexWithRanking } = useSearch()
   const editor = usePlateEditorRef()
   const { saveNodeName } = useLoad()
   const { getSnippet } = useSnippets()
@@ -125,14 +125,14 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
     const isHeadingBlock = Editor.previous(editor) === undefined
 
     if (isHeadingBlock) {
-      queryIndex('template', query).then((results) => {
+      queryIndexWithRanking('template', query).then((results) => {
         const templates = results.map((result) => ({ ...result, type: 'template' }))
         mog('HeaderQA', { templates, results })
         setSuggestions(templates)
         setInfobarMode('suggestions')
       })
     } else {
-      queryIndex(['snippet', 'node'], query).then((results) => {
+      queryIndexWithRanking(['snippet', 'node'], query).then((results) => {
         const res = results.map((res) => ({ ...res, type: getSuggestionType(res.id) }))
 
         // const withoutTemplates = res.filter((r) => r.type !== 'template')

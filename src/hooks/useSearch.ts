@@ -41,5 +41,10 @@ export const useSearch = () => {
     return results
   }
 
-  return { addDocument, updateDocument, removeDocument, queryIndex, queryIndexByNodeId }
+  const queryIndexWithRanking = async (key: idxKey | idxKey[], query: string) => {
+    const results = await ipcRenderer.invoke(IpcAction.QUERY_INDEX_WITH_RANKING, key, query)
+    return results
+  }
+
+  return { addDocument, updateDocument, removeDocument, queryIndex, queryIndexByNodeId, queryIndexWithRanking }
 }

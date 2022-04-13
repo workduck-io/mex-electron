@@ -46,6 +46,7 @@ import {
   removeDoc,
   searchIndex,
   searchIndexByNodeId,
+  searchIndexWithRanking,
   updateDoc,
   dumpIndexDisk
 } from './worker/controller'
@@ -738,5 +739,10 @@ ipcMain.handle(IpcAction.QUERY_INDEX, async (_event, key, query, tags) => {
 
 ipcMain.handle(IpcAction.QUERY_INDEX_BY_NODEID, async (_event, key, nodeId, query) => {
   const results = await searchIndexByNodeId(key, nodeId, query)
+  return results
+})
+
+ipcMain.handle(IpcAction.QUERY_INDEX_WITH_RANKING, async (_event, key, query) => {
+  const results = await searchIndexWithRanking(key, query)
   return results
 })

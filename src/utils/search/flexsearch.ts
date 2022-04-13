@@ -1,4 +1,4 @@
-import { Document } from 'flexsearch'
+import { Document } from '@workduck-io/flexsearch'
 
 import { FileData } from '../../types/data'
 import { diskIndex, indexNames } from '../../data/search'
@@ -21,6 +21,9 @@ export const getNodeAndBlockIdFromCompositeKey = (compositeKey: string) => {
   return { nodeId: c[0], blockId: c[1] }
 }
 
+export const indexedFields = ['title', 'text']
+export const storedFields = ['text', 'data']
+
 export const createSearchIndex = (fileData: FileData, data: CreateSearchIndexData) => {
   // TODO: Find a way to delay the conversion until needed i.e. if index is not present
   const { result: initList, nodeBlockMap: nbMap } = convertDataToIndexable(fileData)
@@ -31,8 +34,8 @@ export const createSearchIndex = (fileData: FileData, data: CreateSearchIndexDat
       document: {
         id: 'blockId',
         tag: 'tag',
-        index: ['title', 'text'],
-        store: ['text', 'data']
+        index: indexedFields,
+        store: storedFields
       },
       tokenize: 'full'
     }

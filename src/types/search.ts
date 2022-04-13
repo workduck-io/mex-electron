@@ -1,4 +1,4 @@
-import { Document } from 'flexsearch'
+import { Document } from '@workduck-io/flexsearch'
 
 import { FileData } from './data'
 
@@ -35,9 +35,10 @@ export interface SearchWorker {
   addDoc: (key: idxKey, nodeId: string, contents: any[], title: string, tags?: Array<string>) => void
   updateDoc: (key: idxKey, nodeId: string, contents: any[], title: string, tags?: Array<string>) => void
   removeDoc: (key: idxKey, id: string) => void
-  searchIndex: (key: idxKey | idxKey[], query: string) => GenericSearchResult[]
+  searchIndex: (key: idxKey | idxKey[], query: string, tags: Array<string>) => GenericSearchResult[]
   searchIndexByNodeId: (key: idxKey | idxKey[], nodeId: string, query: string) => GenericSearchResult[]
   dumpIndexDisk: (location: string) => Promise<void>
+  searchIndexWithRanking: (key: idxKey | idxKey[], query: string, tags?: Array<string>) => GenericSearchResult[]
 }
 
 export interface KanbanCard {
