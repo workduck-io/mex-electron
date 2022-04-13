@@ -2,20 +2,123 @@ import { insertId } from '../../utils/lib/content'
 import { generateQuestionId } from '../Defaults/idPrefixes'
 
 export const BugReportTemplate = insertId([
-  { children: [{ text: 'Speciale Snippete' }], type: 'h1' },
-  { type: 'p', children: [{ text: '' }] },
-  {
-    type: 'agent-based-question',
-    question: 'This is a speiale Snippete',
-    questionId: generateQuestionId(),
-    children: [{ text: '' }]
-  },
-  { type: 'p', children: [{ text: '' }] },
-  { type: 'p', children: [{ text: 'And this should be added in the init.' }] },
-  { type: 'p', children: [{ text: '' }] },
   {
     type: 'p',
-    children: [{ text: '' }, { type: 'tag', children: [{ text: '' }], value: 'speciale' }, { text: '' }]
+    children: [
+      {
+        text: 'Assigned to: [['
+      }
+    ]
   },
-  { type: 'p', children: [{ text: '' }] }
+  {
+    type: 'p',
+    children: [
+      {
+        text: 'Feature associated: [['
+      },
+      {
+        text: ' '
+      }
+    ]
+  },
+  {
+    type: 'p',
+    children: [
+      {
+        text: ''
+      }
+    ]
+  },
+  {
+    type: 'h3',
+    children: [
+      {
+        text: 'Describe the bug'
+      }
+    ]
+  },
+  {
+    type: 'action_item',
+    children: [
+      {
+        text: 'A clear and concise description of what the bug is <add priority and track progress in tasks view> ',
+        italic: true
+      }
+    ]
+  },
+  {
+    type: 'p',
+    children: [
+      {
+        text: ''
+      }
+    ]
+  },
+  {
+    type: 'h3',
+    children: [
+      {
+        text: 'Expected Behaviour'
+      }
+    ]
+  },
+  {
+    type: 'p',
+    children: [
+      {
+        text: 'Explain what was supposed to happen',
+        italic: true
+      }
+    ]
+  },
+  {
+    type: 'p',
+    children: [
+      {
+        text: ''
+      }
+    ]
+  },
+  {
+    type: 'h3',
+    children: [
+      {
+        text: 'Screenshots'
+      }
+    ]
+  },
+  {
+    type: 'p',
+    children: [
+      {
+        text: 'If applicable (simply drag and drop) ',
+        italic: true
+      }
+    ]
+  },
+  {
+    type: 'p',
+    children: [
+      {
+        text: ''
+      }
+    ]
+  },
+  {
+    type: 'h3',
+    children: [
+      {
+        text: 'Additional Context'
+      }
+    ]
+  },
+  {
+    type: 'p',
+    children: [
+      {
+        text: 'Any additional things that might help gain context of the bug ',
+        italic: true
+      }
+    ]
+  }
 ])
