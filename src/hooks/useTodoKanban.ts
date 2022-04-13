@@ -132,6 +132,7 @@ export const useTodoKanban = () => {
       if (isInArchive(nodeid)) return
       todos
         .filter((todo) => currentFilters.every((filter) => filter.filter(todo)))
+        .filter((todo) => todo.content !== defaultContent.content)
         .forEach((todo) => {
           todoBoard.columns
             .find((column) => column.id === todo.metadata.status)

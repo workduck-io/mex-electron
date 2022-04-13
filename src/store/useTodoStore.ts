@@ -57,10 +57,10 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
 
   getTodoOfNode: (nodeid, todoId) => {
     const todo = get().todos?.[nodeid]?.find((todo) => todo.id === todoId && nodeid === todo.nodeid)
-
     // mog('getTodoOfNode', { nodeid, todoId, todo })
     if (!todo) {
       const newTodo = createTodo(nodeid, todoId)
+      if (!nodeid) return newTodo
       get().addTodoInNode(nodeid, newTodo)
 
       return newTodo
@@ -70,11 +70,15 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
   },
 
   setNodeTodos: (nodeid, todos) => {
+    // mog('setNodeTodos', { nodeid, todos })
+    if (!nodeid) return
     const currentTodos = get().todos ?? {}
     const newTodos = { ...currentTodos, [nodeid]: todos }
     set({ todos: newTodos })
   },
   updateTodoOfNode: (nodeid, todo) => {
+    // mog('updateNodeTodos', { nodeid, todo })
+    if (!nodeid) return
     const currentTodos = get().todos ?? {}
 
     const todos = currentTodos?.[nodeid] ?? []
@@ -85,6 +89,7 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
     set({ todos: { ...currentTodos, [nodeid]: newTodos } })
   },
   replaceContentOfTodos: (nodeid, todosContent) => {
+    // mog('replaceContentOfTodos', { nodeid, todosContent })
     if (!nodeid) return
     const todos = get().todos ?? {}
 
@@ -106,7 +111,6 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
 
     const leftOutTodos = nTodo.filter((todo) => !nodeTodos.find((t) => t.id === todo.id && nodeid === t.nodeid))
 
-
     const reminders = useReminderStore.getState().reminders
     const setReminders = useReminderStore.getState().setReminders
     const newReminders = reminders.filter((reminder) => !leftOutTodos.find((todo) => todo.id === reminder.todoid))
@@ -116,6 +120,8 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
     set({ todos: newtodos })
   },
   updatePriorityOfTodo: (nodeid, todoId, priority) => {
+    // mog('updatePro', { nodeid, todoId, priority })
+    if (!nodeid) return
     const todo = get().getTodoOfNodeWithoutCreating(nodeid, todoId)
     if (!todo) return
 
@@ -123,6 +129,8 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
     get().updateTodoOfNode(nodeid, newTodo)
   },
   updateStatusOfTodo: (nodeid, todoId, status) => {
+    // mog('updateSta', { nodeid, todoId, status })
+    if (!nodeid) return
     const todo = get().getTodoOfNodeWithoutCreating(nodeid, todoId)
     if (!todo) return
 
