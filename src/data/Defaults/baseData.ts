@@ -7,11 +7,16 @@ import { generateILinks } from '../../utils/generateComboItem'
 import { randomNumberBetween } from '../../utils/helpers'
 import { generateNodeUID, generateTempId, MEETING_PREFIX } from './idPrefixes'
 import { initialSnippets } from '../initial/snippets'
+import { onboardingContent } from '../initial/onboardingDoc'
 // import { generateTempId } from './idPrefixes'
 //
 export const BASE_DRAFT_PATH = 'Draft'
 export const BASE_TASKS_PATH = 'Tasks'
 export const BASE_MEETING_PATH = MEETING_PREFIX
+export const onboardingLink = {
+  path: 'Onboarding',
+  nodeid: generateNodeUID()
+}
 
 const links = [
   ...generateILinks(['doc', 'dev', 'design', '@']),
@@ -50,18 +55,23 @@ export const getRandomQAContent = () => {
   return qaBlockContent
 }
 
-const contents: Contents = links.reduce((prev, cur) => {
-  return {
-    ...prev,
-    [cur.nodeid]: generateDefaultNode()
+const contents: Contents = links.reduce(
+  (prev, cur) => {
+    return {
+      ...prev,
+      [cur.nodeid]: generateDefaultNode()
+    }
+  },
+  {
+    [onboardingLink.nodeid]: onboardingContent
   }
-}, {})
+)
 
 export const DefaultFileData = (version: string): FileData => ({
   version,
   remoteUpdate: true,
   baseNodeId: '@',
-  ilinks: links,
+  ilinks: [onboardingLink, ...links],
   contents,
   linkCache: {},
   tagsCache: {},

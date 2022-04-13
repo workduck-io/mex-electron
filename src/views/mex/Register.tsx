@@ -182,7 +182,7 @@ const Register = () => {
                 </LoadingButton>
               </ButtonFields>
             </AuthForm>
-            <GoogleLoginButton text={'Register via Google'} />
+            <GoogleLoginButton text={'Signup via Google'} />
           </>
         ) : (
           <AuthForm onSubmit={verifyForm.handleSubmit(onVerifySubmit)}>
