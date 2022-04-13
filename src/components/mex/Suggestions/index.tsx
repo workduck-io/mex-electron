@@ -1,6 +1,6 @@
 import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
-import { insertNodes, selectEditor, TElement, usePlateEditorRef } from '@udecode/plate'
-import React from 'react'
+import { ELEMENT_PARAGRAPH, insertNodes, selectEditor, TElement, usePlateEditorRef } from '@udecode/plate'
+import React, { useMemo } from 'react'
 import { ELEMENT_ILINK } from '../../../editor/Components/ilink/defaults'
 import { useLinks } from '../../../hooks/useLinks'
 import useToggleElements from '../../../hooks/useToggleElements'
@@ -18,6 +18,7 @@ import SmartSuggestions from './SmartSuggestions'
 import { ELEMENT_INLINE_BLOCK } from '../../../editor/Components/InlineBlock/types'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import { mog } from '../../../utils/lib/helper'
+import { generateTempId } from '../../../data/Defaults/idPrefixes'
 
 const SuggestionInfoBar = () => {
   // * Store
@@ -33,9 +34,10 @@ const SuggestionInfoBar = () => {
 
   const onSuggestionClick = (event: MouseEvent, suggestion: SuggestionType, content?: NodeEditorContent): void => {
     event.stopPropagation()
-
+    const selection = editor.selection
     if (suggestion.type === 'snippet' || suggestion.type === 'template') {
       insertNodes<TElement>(editor, content)
+      selectEditor(editor, { at: selection, edge: 'start', focus: true })
     } else {
       // * Meta + click
       if (event.metaKey) {
@@ -47,22 +49,39 @@ const SuggestionInfoBar = () => {
         })
       } else {
         // * Insert ILink
-        insertNodes<TElement>(editor, {
-          type: ELEMENT_ILINK,
-          children: [{ text: '' }],
-          value: suggestion.id
-        })
+        // As link is inline, we add a p wrapper on it
+        const link = {
+          type: ELEMENT_PARAGRAPH,
+          id: generateTempId(),
+          children: [
+            { text: '', id: generateTempId() },
+            {
+              type: ELEMENT_ILINK,
+              children: [{ text: '', id: generateTempId() }],
+              value: suggestion.id,
+              id: generateTempId()
+            },
+            { text: '', id: generateTempId() }
+          ]
+        }
+        // mog('InsertIlink', {
+        //   event,
+        //   link,
+        //   suggestion,
+        //   type: ELEMENT_ILINK,
+        //   children: [{ text: '' }],
+        //   value: suggestion.id
+        // })
+        insertNodes<TElement>(editor, link)
       }
     }
-    insertNodes(editor, defaultContent.content)
-    selectEditor(editor, { focus: true })
+
+    // insertNodes(editor, defaultContent.content)
   }
 
   const getSuggestionContent = (suggestion: SuggestionType): SuggestionContent => {
     if (suggestion.type === 'snippet' || suggestion.type === 'template') {
       const snippet = getSnippet(suggestion.id)
-
-      mog('SNIPPET', { snippet })
 
       return {
         title: snippet.title,

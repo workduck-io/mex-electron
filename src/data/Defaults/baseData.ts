@@ -6,11 +6,17 @@ import { FileData, NodeContent } from '../../types/data'
 import { generateILinks } from '../../utils/generateComboItem'
 import { randomNumberBetween } from '../../utils/helpers'
 import { generateNodeUID, generateTempId, MEETING_PREFIX } from './idPrefixes'
+import { initialSnippets } from '../initial/snippets'
+import { onboardingContent } from '../initial/onboardingDoc'
 // import { generateTempId } from './idPrefixes'
 //
 export const BASE_DRAFT_PATH = 'Draft'
 export const BASE_TASKS_PATH = 'Tasks'
 export const BASE_MEETING_PATH = MEETING_PREFIX
+export const onboardingLink = {
+  path: 'Onboarding',
+  nodeid: generateNodeUID()
+}
 
 const links = [
   ...generateILinks(['doc', 'dev', 'design', '@']),
@@ -32,6 +38,14 @@ export const defaultContent: NodeContent = {
   version: -1
 }
 
+export const generateDefaultNode = (): NodeContent => {
+  return {
+    type: 'init',
+    content: [{ id: generateTempId(), type: ELEMENT_PARAGRAPH, children: [{ text: '' }] }],
+    version: -1
+  }
+}
+
 export const getRandomQAContent = () => {
   const idx = randomNumberBetween(0, questions.length - 1)
   const pickedQuestion = questions[idx]
@@ -41,18 +55,23 @@ export const getRandomQAContent = () => {
   return qaBlockContent
 }
 
-const contents: Contents = links.reduce((prev, cur) => {
-  return {
-    ...prev,
-    [cur.nodeid]: { type: 'init', content: defaultContent.content, version: -1 }
+const contents: Contents = links.reduce(
+  (prev, cur) => {
+    return {
+      ...prev,
+      [cur.nodeid]: generateDefaultNode()
+    }
+  },
+  {
+    [onboardingLink.nodeid]: onboardingContent
   }
-}, {})
+)
 
 export const DefaultFileData = (version: string): FileData => ({
   version,
   remoteUpdate: true,
   baseNodeId: '@',
-  ilinks: links,
+  ilinks: [onboardingLink, ...links],
   contents,
   linkCache: {},
   tagsCache: {},
@@ -71,5 +90,5 @@ export const DefaultFileData = (version: string): FileData => ({
       showSource: true
     }
   },
-  snippets: []
+  snippets: initialSnippets
 })

@@ -122,3 +122,14 @@ export const searchIndexByNodeId = async (key: idxKey, nodeId: string, query: st
     mog('SearchIndexByNodeIdError', { error, nodeId })
   }
 }
+
+export const searchIndexWithRanking = async (key: idxKey | idxKey[], query: string) => {
+  try {
+    if (!search_worker) throw new Error('Search Worker Not Initialized')
+
+    const results = await search_worker.searchIndexWithRanking(key, query)
+    return results
+  } catch (error) {
+    mog('SearchIndexError', { error })
+  }
+}

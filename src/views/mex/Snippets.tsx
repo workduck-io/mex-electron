@@ -1,9 +1,10 @@
+import magicLine from '@iconify/icons-ri/magic-line'
 import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
 import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import { Icon } from '@iconify/react'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 import genereateName from 'project-name-generator'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import SearchView, { RenderItemProps, RenderPreviewProps } from '../../components/mex/Search/SearchView'
 import { View } from '../../components/mex/Search/ViewSelector'
 import { generateSnippetId } from '../../data/Defaults/idPrefixes'
@@ -22,6 +23,7 @@ import {
   ResultTitle,
   SearchContainer,
   SearchPreviewWrapper,
+  SearchResultTag,
   SplitSearchPreviewWrapper
 } from '../../style/Search'
 import { Title } from '../../style/Typography'
@@ -36,6 +38,7 @@ import { useSaveData } from '../../hooks/useSaveData'
 import { SnippetHelp } from '../../data/Defaults/helpText'
 import Infobox from '../../ui/components/Help/Infobox'
 import { IS_DEV } from '../../data/Defaults/dev_'
+import ToggleButton from '../../components/spotlight/ToggleButton'
 
 export type SnippetsProps = {
   title?: string
@@ -63,8 +66,8 @@ const Snippets = () => {
   const randId = useMemo(() => nanoid(), [initialSnippets])
 
   const onSearch = async (newSearchTerm: string): Promise<GenericSearchResult[]> => {
-    const res = await queryIndex('snippet', newSearchTerm, ['snippet'])
-    // mog('search', { res })
+    const res = await queryIndex(['template', 'snippet'], newSearchTerm)
+
     if (newSearchTerm === '' && res.length === 0) {
       return initialSnippets
     }
@@ -156,6 +159,12 @@ const Snippets = () => {
           <ResultHeader>
             <Icon icon={icon} />
             <ResultTitle onClick={() => onSelect({ id: snip.id, title: snip.title })}>{snip.title}</ResultTitle>
+            {snip.isTemplate && (
+              <SearchResultTag large>
+                <Icon icon={magicLine} />
+                Template
+              </SearchResultTag>
+            )}
             <IconButton size={20} icon={deleteBin6Line} title="delete" onClick={() => onDeleteSnippet(snip.id)} />
           </ResultHeader>
           <SearchPreviewWrapper
@@ -175,6 +184,12 @@ const Snippets = () => {
               <ResultTitle>{snip.title}</ResultTitle>
               <ResultDesc>{convertContentToRawText(snip.content, ' ')}</ResultDesc>
             </ResultMain>
+            {snip.isTemplate && (
+              <SearchResultTag>
+                <Icon icon={magicLine} />
+                Template
+              </SearchResultTag>
+            )}
             <IconButton size={20} icon={deleteBin6Line} title="delete" onClick={() => onDeleteSnippet(snip.id)} />
           </ResultRow>
         </Result>
@@ -205,7 +220,13 @@ const Snippets = () => {
         return (
           <SplitSearchPreviewWrapper id={`splitSnippetSearchPreview_for_${item.id}_${randId}`}>
             <Title>
-              {snip.title}
+              <span className="title">{snip.title}</span>
+              {snip.isTemplate && (
+                <SearchResultTag large>
+                  <Icon icon={magicLine} />
+                  Template
+                </SearchResultTag>
+              )}
               <Icon icon={icon} />
             </Title>
             <EditorPreviewRenderer content={snip.content} editorId={`SnippetSearchPreview_editor_${item.id}`} />

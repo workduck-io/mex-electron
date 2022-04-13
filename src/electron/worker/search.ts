@@ -5,7 +5,8 @@ import {
   createSearchIndex,
   exportIndex,
   createIndexCompositeKey,
-  getNodeAndBlockIdFromCompositeKey
+  getNodeAndBlockIdFromCompositeKey,
+  indexedFields
 } from '../../utils/search/flexsearch'
 import { mog } from '../../utils/lib/helper'
 import { SearchWorker, idxKey, GenericSearchResult, SearchIndex } from '../../types/search'
@@ -165,6 +166,70 @@ const searchWorker: SearchWorker = {
       })
 
       mog('RESULTS', { combinedResults })
+
+      return combinedResults
+    } catch (e) {
+      mog('Searching Broke:', { e })
+      return []
+    }
+  },
+  // TODO: Figure out tags with this OR approach
+  searchIndexWithRanking: (key: idxKey | idxKey[], query: string, tags?: Array<string>) => {
+    try {
+      const words = query.split(' ')
+      const searchItems = []
+
+      indexedFields.forEach((field) => {
+        words.forEach((w) => {
+          const t = {
+            field,
+            query: w
+          }
+          searchItems.push(t)
+        })
+      })
+
+      const searchQuery = {
+        index: searchItems,
+        enrich: true
+      }
+
+      let response: any[] = []
+
+      if (typeof key === 'string') {
+        response = globalSearchIndex[key].search(searchQuery)
+      } else {
+        key.forEach((k) => {
+          response = [...response, ...globalSearchIndex[k].search(searchQuery)]
+        })
+      }
+
+      mog('response is', { response }, { pretty: true, collapsed: false })
+      const results = new Array<any>()
+      response.forEach((entry) => {
+        const matchField = entry.field
+        entry.result.forEach((i) => {
+          const { nodeId, blockId } = getNodeAndBlockIdFromCompositeKey(i.id)
+          results.push({ id: nodeId, data: i.doc?.data, blockId, text: i.doc?.text?.slice(0, 100), matchField })
+        })
+      })
+
+      const combinedResults = new Array<GenericSearchResult>()
+      results.forEach(function (item) {
+        const existing = combinedResults.filter(function (v, i) {
+          return v.id === item.id
+        })
+        if (existing.length) {
+          const existingIndex = combinedResults.indexOf(existing[0])
+          if (!combinedResults[existingIndex].matchField.includes(item.matchField))
+            combinedResults[existingIndex].matchField = combinedResults[existingIndex].matchField.concat(
+              item.matchField
+            )
+        } else {
+          if (typeof item.matchField == 'string') item.matchField = [item.matchField]
+          combinedResults.push(item)
+        }
+      })
 
       return combinedResults
     } catch (e) {

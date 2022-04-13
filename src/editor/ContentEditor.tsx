@@ -19,6 +19,7 @@ import { useLayoutStore } from '../store/useLayoutStore'
 import useSuggestionStore from '../store/useSuggestions'
 import { EditorWrapper, StyledEditor } from '../style/Editor'
 import { getEditorId } from '../utils/lib/EditorId'
+import { mog } from '../utils/lib/helper'
 import { convertContentToRawText } from '../utils/search/parseData'
 import BlockInfoBar from './Components/Blocks/BlockInfoBar'
 import { BlockOptionsMenu } from './Components/EditorContextMenu'
@@ -34,7 +35,7 @@ const ContentEditor = () => {
 
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
 
-  const { queryIndex } = useSearch()
+  const { queryIndexWithRanking } = useSearch()
 
   const infobar = useLayoutStore((store) => store.infobar)
 
@@ -60,9 +61,11 @@ const ContentEditor = () => {
         const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
         const rawText = convertContentToRawText(val.slice(lastTwoParagraphs, cursorPosition + 1), ' ')
         const keywords = sw.removeStopwords(rawText.split(' ').filter(Boolean))
-        const results = await queryIndex('node', keywords.join(' '))
+
+        const results = await queryIndexWithRanking('node', keywords.join(' '))
         const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
-        setSuggestions(withoutCurrentNode)
+        const suggestions = withoutCurrentNode.map((item) => ({ ...item, type: 'node' }))
+        setSuggestions(suggestions)
       }
 
       setIsEditing(false)

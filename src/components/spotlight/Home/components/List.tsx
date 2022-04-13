@@ -19,7 +19,6 @@ import { AppType } from '../../../../hooks/useInitialize'
 import { convertContentToRawText } from '../../../../utils/search/parseData'
 import { useSnippets } from '../../../../hooks/useSnippets'
 import { getPlateEditorRef, serializeHtml } from '@udecode/plate'
-import { mog } from '../../../../utils/lib/helper'
 import useDataStore from '../../../../store/useDataStore'
 import { CanvasText } from '../../../../editor/Components/Excalidraw'
 

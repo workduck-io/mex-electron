@@ -38,6 +38,7 @@ const UserRoleValues = [
   { value: 'development', label: 'Development' },
   { value: 'design', label: 'Design' },
   { value: 'product', label: 'Product' },
+  { value: 'product-ops', label: 'Product Ops' },
   { value: 'testing', label: 'Testing' }
 ]
 
@@ -137,7 +138,7 @@ const Register = () => {
                 errors={regErrors}
               ></InputFormError>
 
-              <Label htmlFor="roles">What roles are you part of?</Label>
+              <Label htmlFor="roles">What is your role in your organization?</Label>
               <Controller
                 control={registerForm.control}
                 render={({ field }) => (
@@ -181,7 +182,7 @@ const Register = () => {
                 </LoadingButton>
               </ButtonFields>
             </AuthForm>
-            <GoogleLoginButton text={'Register via Google'} />
+            <GoogleLoginButton text={'Signup via Google'} />
           </>
         ) : (
           <AuthForm onSubmit={verifyForm.handleSubmit(onVerifySubmit)}>

@@ -8,7 +8,7 @@ import { ILinkNode } from '../../ilink/types'
 import { SEPARATOR } from '../../../../components/mex/Sidebar/treeUtils'
 import { convertContentToRawText } from '../../../../utils/search/parseData'
 import { defaultContent } from '../../../../data/Defaults/baseData'
-import { generateSnippetId } from '../../../../data/Defaults/idPrefixes'
+import { generateSnippetId, generateTempId } from '../../../../data/Defaults/idPrefixes'
 import genereateName from 'project-name-generator'
 import toast from 'react-hot-toast'
 import { useContentStore } from '../../../../store/useContentStore'
@@ -16,6 +16,8 @@ import useDataStore from '../../../../store/useDataStore'
 import { useEditorStore } from '../../../../store/useEditorStore'
 import { useSaveData } from '../../../../hooks/useSaveData'
 import { useSnippetStore } from '../../../../store/useSnippetStore'
+import { ELEMENT_QA_BLOCK } from '../../QABlock/createQAPlugin'
+import { mog } from '../../../../utils/lib/helper'
 
 export const useTransform = () => {
   const addILink = useDataStore((s) => s.addILink)
@@ -30,6 +32,39 @@ export const useTransform = () => {
         return node.children.map(isFlowBlock).reduce((p: boolean, c: boolean) => p || c, false)
     }
     return false
+  }
+
+  // Checks whether current editor selection can be converted
+  const addQABlock = (editor: TEditor, block: { question: string; questionId: string }): boolean => {
+    if (!editor) return false
+    if (!editor?.selection) return false
+    const { question, questionId } = block
+
+    Transforms.delete(editor)
+    // If editor selection has flowblock it is not convertable
+    insertNodes<any>(editor, [{ type: ELEMENT_QA_BLOCK, question, questionId, id: generateTempId(), children: [] }], {
+      at: editor.selection
+    })
+  }
+
+  const convertSelectionToQABlock = (editor: TEditor) => {
+    try {
+      const selectionPath = Editor.path(editor, editor.selection)
+      const val = selectionToValue(editor)
+      const valText = convertContentToRawText(val)
+
+      // mog('replaceSelectionWithLink  selPath', { selectionPath })
+
+      Transforms.removeNodes(editor, { at: editor.selection, hanging: false })
+      // Transforms.liftNodes(editor, { at: editor.selection, mode: 'lowest' })
+
+      mog('replaceSelectionWithQA  ', { selectionPath, val, valText })
+      //
+      addQABlock(editor, { question: valText, questionId: generateSnippetId() })
+    } catch (e) {
+      console.error(e)
+      return e
+    }
   }
 
   // Checks whether current editor selection can be converted
@@ -78,21 +113,19 @@ export const useTransform = () => {
     if (!editor.selection) return
     if (!isConvertable(editor)) return
 
-    Editor.withoutNormalizing(editor, () => {
-      const nodes = Array.from(
-        getNodes(editor, {
-          mode: 'highest',
-          block: true,
-          at: editor.selection
-        })
-      )
-
-      const value = nodes.map(([node, _path]) => {
-        return node
+    const nodes = Array.from(
+      getNodes(editor, {
+        mode: 'highest',
+        block: true,
+        at: editor.selection
       })
+    )
 
-      return value
+    const value = nodes.map(([node, _path]) => {
+      return node
     })
+
+    return value
   }
 
   /**
@@ -184,5 +217,12 @@ export const useTransform = () => {
     })
   }
 
-  return { selectionToNode, isConvertable, isFlowBlock, selectionToSnippet, selectionToValue }
+  return {
+    selectionToNode,
+    convertSelectionToQABlock,
+    isConvertable,
+    isFlowBlock,
+    selectionToSnippet,
+    selectionToValue
+  }
 }

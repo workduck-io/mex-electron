@@ -74,7 +74,7 @@ export const getHeadingBlock = (content: NodeEditorContent) => {
   if (isHeadingBlock) {
     return {
       isHeadingBlock: true,
-      title: getSlug(content[0].value ?? '')
+      title: getSlug(content[0].answer ?? '')
     }
   }
 
@@ -132,6 +132,7 @@ export const convertDataToIndexable = (data: FileData) => {
         break
       }
 
+      case indexNames.template:
       case indexNames.snippet: {
         data.snippets.forEach((snippet) => {
           titleNodeMap.set(snippet.id, snippet.title)
@@ -147,11 +148,12 @@ export const convertDataToIndexable = (data: FileData) => {
     // Process the filedata to get the indexable data
     if (idxName === indexNames.archive || idxName === indexNames.node) {
       Object.entries(data.contents).forEach(([k, v]) => {
-        if (v.type === 'editor' && k !== '__null__' && titleNodeMap.has(k)) {
+        if (k !== '__null__' && titleNodeMap.has(k)) {
           if (!nodeBlockMap[k]) nodeBlockMap[k] = []
           v.content.forEach((block) => {
             const blockText = convertContentToRawText(block.children, ' ')
-            if (blockText.length !== 0) {
+            // If the type is init, we index the initial empty block
+            if (blockText.length !== 0 || v.type === 'init') {
               nodeBlockMap[k].push(block.id)
               const temp: GenericSearchData = {
                 id: k,
@@ -166,21 +168,35 @@ export const convertDataToIndexable = (data: FileData) => {
         }
       })
     } else if (idxName === indexNames.snippet) {
-      data.snippets.map((snip) => {
-        const title = titleNodeMap.get(snip.id)
-        const temp: GenericSearchData = convertEntryToRawText(snip.id, snip.content, title)
-        nodeBlockMap[snip.id] = [snip.id] // Redundant right now, not doing block level indexing for snippets
-        idxResult.push(temp)
-      })
+      data.snippets
+        .filter((snip) => !snip.isTemplate)
+        .map((snip) => {
+          const title = titleNodeMap.get(snip.id)
+          const temp: GenericSearchData = {
+            ...convertEntryToRawText(snip.id, snip.content, title),
+            tag: ['snippet']
+          }
+          nodeBlockMap[snip.id] = [snip.id] // Redundant right now, not doing block level indexing for snippets
+          idxResult.push(temp)
+        })
+    } else if (idxName === indexNames.template) {
+      data.snippets
+        .filter((snip) => snip.isTemplate)
+        .map((template) => {
+          const title = titleNodeMap.get(template.id)
+          const temp: GenericSearchData = {
+            ...convertEntryToRawText(template.id, template.content, title),
+            tag: ['template']
+          }
+          nodeBlockMap[template.id] = [template.id] // Redundant right now, not doing block level indexing for snippets
+          idxResult.push(temp)
+        })
     } else {
       throw new Error('No corresponding index name found')
     }
 
     return { ...p, [idxName]: idxResult }
   }, diskIndex)
-
-  // const dump = JSON.stringify(result)
-  // mog('ConvertDataToIndexable', { dump, blockNodeMap })
 
   return { result, nodeBlockMap }
 }

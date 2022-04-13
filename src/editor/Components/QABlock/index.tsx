@@ -6,6 +6,7 @@ import { useLayoutStore } from '../../../store/useLayoutStore'
 import { mog } from '../../../utils/lib/helper'
 import { useSearch } from '../../../hooks/useSearch'
 import useLoad from '../../../hooks/useLoad'
+import chat from '@iconify/icons-ph/chats-circle-bold'
 
 import sw from 'stopword'
 import useSuggestionStore from '../../../store/useSuggestions'
@@ -17,6 +18,11 @@ import { QuestionInput } from './styled'
 import { useRouting } from '../../../views/routes/urls'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import { getSlug } from '../../../utils/lib/strings'
+import { MexIcon } from '../../../style/Layouts'
+import { useTheme } from 'styled-components'
+import { SNIPPET_PREFIX } from '../../../data/Defaults/idPrefixes'
+import { SuggestionElementType } from '../../../components/mex/Suggestions/types'
+import { useSnippets } from '../../../hooks/useSnippets'
 
 interface QABlockProps {
   attributes: any
@@ -24,15 +30,17 @@ interface QABlockProps {
 }
 
 const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
-  const [userResponse, setUserResponse] = useState(element?.value ?? '')
+  const [userResponse, setUserResponse] = useState(element?.answer ?? '')
 
   const ref = useRef(null)
 
+  const theme = useTheme()
   const selected = useSelected()
   const { params } = useRouting()
-  const { queryIndex } = useSearch()
+  const { queryIndexWithRanking } = useSearch()
   const editor = usePlateEditorRef()
   const { saveNodeName } = useLoad()
+  const { getSnippet } = useSnippets()
   const { setSuggestions, setHeadingQASearch } = useSuggestionStore()
 
   const setInfobarMode = useLayoutStore((store) => store.setInfobarMode)
@@ -58,10 +66,24 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
     }
   }
 
-  const saveAnswer = (value: string) => {
+  const goToPreviousLine = () => {
+    const prev = Editor.previous(editor)
+    if (prev) selectEditor(editor, { at: prev[1], focus: true })
+  }
+
+  // Differentiate between node and snippet
+  const getSuggestionType = (id: string): SuggestionElementType => {
+    if (id.startsWith(SNIPPET_PREFIX)) {
+      return 'snippet'
+    }
+
+    return 'node'
+  }
+
+  const saveAnswer = (answer: string) => {
     const path = ReactEditor.findPath(editor, element)
     if (editor) {
-      const question = { questionId: element.questionId, question: element.question, value }
+      const question = { questionId: element.questionId, question: element.question, answer }
       setNodes(editor, question, { at: path })
     }
   }
@@ -69,10 +91,14 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
   const onKeyDown = (event) => {
     if (event.key === KEYBOARD_KEYS.Enter) {
       event.preventDefault()
+      const isHeadingBlock = Editor.previous(editor) === undefined
+
       // TODO: save Draft node name
       if (userResponse) {
-        const title = getSlug(userResponse)
-        saveNodeName(params.nodeid, title)
+        if (isHeadingBlock) {
+          const title = getSlug(userResponse)
+          saveNodeName(params.nodeid, title)
+        }
         goToNextLine()
       } else {
         deleteFragment(editor, { at: editor.selection, unit: 'block' })
@@ -81,23 +107,48 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
       }
     }
 
+    if (event.key === KEYBOARD_KEYS.ArrowUp) {
+      event.preventDefault()
+      goToPreviousLine()
+    }
+
     if (event.key === KEYBOARD_KEYS.ArrowDown) {
       event.preventDefault()
       goToNextLine()
     }
   }
 
-  const getTemplateSuggestions = useDebouncedCallback((value: string) => {
+  const getSuggestions = (value: string) => {
+    const keywords = sw.removeStopwords(value.split(' ').filter(Boolean))
+    const query = keywords.join(' ')
+
+    const isHeadingBlock = Editor.previous(editor) === undefined
+
+    if (isHeadingBlock) {
+      queryIndexWithRanking('template', query).then((results) => {
+        const templates = results.map((result) => ({ ...result, type: 'template' }))
+        mog('HeaderQA', { templates, results })
+        setSuggestions(templates)
+        setInfobarMode('suggestions')
+      })
+    } else {
+      queryIndexWithRanking(['snippet', 'node'], query).then((results) => {
+        const res = results.map((res) => ({ ...res, type: getSuggestionType(res.id) }))
+
+        // const withoutTemplates = res.filter((r) => r.type !== 'template')
+        mog('NotHeaderQA', { results })
+        setSuggestions(res)
+        setInfobarMode('suggestions')
+      })
+    }
+  }
+
+  const onDelayPerform = useDebouncedCallback((value: string) => {
     if (value) {
       // * Search for template suggestions
       saveAnswer(value)
-      const keywords = sw.removeStopwords(value.split(' ').filter(Boolean))
-      queryIndex('snippet', keywords.join(' '), ['template']).then((results) => {
-        const mapped = results.map((result) => ({ ...result, type: 'template' }))
-
-        setSuggestions(mapped)
-        setInfobarMode('suggestions')
-      })
+      setHeadingQASearch(true)
+      getSuggestions(value)
     } else {
       setInfobarMode('default')
     }
@@ -107,14 +158,14 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
     const value = event.target.value
 
     setUserResponse(value)
-    getTemplateSuggestions(value)
+    onDelayPerform(value)
   }
 
   const question = element?.question
 
   return (
     <RootElement {...attributes}>
-      <QuestionInput contentEditable={false}>
+      <QuestionInput selected={selected} contentEditable={false}>
         <InputBlock
           tabIndex={-1}
           required
@@ -128,7 +179,10 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
           ref={ref}
           onChange={onChange}
         />
-        <span className="placeholder">{question}</span>
+        <span className="placeholder">
+          <MexIcon icon={chat} fontSize={16} color={theme.colors.primary} margin="0 0.25rem 0 0" />
+          {question}
+        </span>
       </QuestionInput>
       {children}
     </RootElement>

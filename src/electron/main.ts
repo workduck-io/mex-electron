@@ -46,6 +46,7 @@ import {
   removeDoc,
   searchIndex,
   searchIndexByNodeId,
+  searchIndexWithRanking,
   updateDoc,
   dumpIndexDisk
 } from './worker/controller'
@@ -76,8 +77,8 @@ if (require('electron-squirrel-startup')) {
 }
 
 let tray: Tray | null
-let mex: BrowserWindow | null
-let spotlight: BrowserWindow | null
+export let mex: BrowserWindow | null
+export let spotlight: BrowserWindow | null
 export let toast: Toast
 let spotlightBubble = false
 let isSelection = false
@@ -97,9 +98,9 @@ if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   sourceMapSupport.install()
 }
 
-const TOKEN_LOCATION = getTokenLocation(app)
-const SAVE_LOCATION = getSaveLocation(app)
-const SEARCH_INDEX_LOCATION = getSearchIndexLocation(app)
+export const TOKEN_LOCATION = getTokenLocation(app)
+export const SAVE_LOCATION = getSaveLocation(app)
+export const SEARCH_INDEX_LOCATION = getSearchIndexLocation(app)
 // const RESOURCES_PATH = app.isPackaged ? path.join(process.resourcesPath, 'assets') : path.join(__dirname, '../assets')
 
 // const getAssetPath = (...paths: string[]): string => {
@@ -168,7 +169,7 @@ const createSpotLighWindow = (show?: boolean) => {
 
   require('@electron/remote/main').enable(spotlight.webContents)
 
-  if (isAlpha || IS_DEV) spotlight.webContents.openDevTools()
+  if (IS_DEV) spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
   spotlight.webContents.on('new-window', (event, url) => {
@@ -219,7 +220,7 @@ const createMexWindow = () => {
     toast?.setOnFullScreen()
   })
 
-  if (isAlpha) mex.webContents.openDevTools()
+  if (IS_DEV) mex.webContents.openDevTools()
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const callbackOptions = {
@@ -738,5 +739,10 @@ ipcMain.handle(IpcAction.QUERY_INDEX, async (_event, key, query, tags) => {
 
 ipcMain.handle(IpcAction.QUERY_INDEX_BY_NODEID, async (_event, key, nodeId, query) => {
   const results = await searchIndexByNodeId(key, nodeId, query)
+  return results
+})
+
+ipcMain.handle(IpcAction.QUERY_INDEX_WITH_RANKING, async (_event, key, query) => {
+  const results = await searchIndexWithRanking(key, query)
   return results
 })

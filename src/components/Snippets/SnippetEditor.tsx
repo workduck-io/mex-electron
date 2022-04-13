@@ -3,16 +3,20 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { SnippetSaverButton } from '../../editor/Components/Saver'
 import Editor from '../../editor/Editor'
-import { InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../../style/Editor'
+import { EditorWrapper, InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../../style/Editor'
 import { Input } from '../../style/Form'
-import { useSnippetStore } from '../../store/useSnippetStore'
+import { Snippet, useSnippetStore } from '../../store/useSnippetStore'
 import { useUpdater } from '../../hooks/useUpdater'
-import { useSnippets } from '../../hooks/useSnippets'
 import IconButton from '../../style/Buttons'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 import tinykeys from 'tinykeys'
 import { useSnippetBuffer } from '../../hooks/useEditorBuffer'
-import { mog } from '../../utils/lib/helper'
+import { getPlateEditorRef, selectEditor, usePlateEditorRef, usePlateEditorState } from '@udecode/plate'
+import { useTransform } from '../../editor/Components/BalloonToolbar/components/useTransform'
+import { IS_DEV } from '../../data/Defaults/dev_'
+import { SnippetCopierButton } from './SnippetContentCopier'
+import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
+import Infobox from '../../ui/components/Help/Infobox'
 
 type Inputs = {
   title: string
@@ -53,6 +57,13 @@ const SnippetEditor = () => {
 
   const { params } = useRouting()
   const snippetid = snippet?.id ?? params.snippetid
+  const editorRef = usePlateEditorRef()
+
+  const onFocusClick = () => {
+    if (editorRef) {
+      selectEditor(editorRef, { focus: true })
+    }
+  }
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -85,26 +96,75 @@ const SnippetEditor = () => {
             title={'Return To Snippets'}
           />
           <NoteTitle>
-            [[ <Input autoFocus defaultValue={snippet && snippet.title} {...register('title')} /> ]]
+            {snippet && (!snippet.isTemplate || IS_DEV) ? (
+              <>
+                [[ <Input autoFocus defaultValue={snippet && snippet.title} {...register('title')} /> ]]
+              </>
+            ) : (
+              <>[[ {snippet && snippet.title} ]]</>
+            )}
           </NoteTitle>
 
-          <InfoTools>
-            <SnippetSaverButton getSnippetTitle={getSnippetTitle} title="Save Snippet" />
-          </InfoTools>
+          {snippet && (!snippet.isTemplate || IS_DEV) ? (
+            <InfoTools>
+              <SnippetSaverButton getSnippetTitle={getSnippetTitle} title="Save Snippet" />
+              {IS_DEV && <SnippetCopierButton />}
+            </InfoTools>
+          ) : (
+            <Infobox text={<div>Templates cannnot be edited</div>} />
+          )}
         </NodeInfo>
 
-        {
-          <Editor
-            autoFocus={false}
-            focusAtBeginning={false}
-            onChange={onChangeSave}
-            content={content}
-            editorId={snippetid}
-          />
-        }
+        {snippet &&
+          (snippet.isTemplate && !IS_DEV ? (
+            <EditorWrapper>
+              <EditorPreviewRenderer content={content} editorId={snippetid} />
+            </EditorWrapper>
+          ) : (
+            <EditorWrapper onClick={onFocusClick}>
+              {
+                <Editor
+                  autoFocus={false}
+                  focusAtBeginning={false}
+                  onChange={onChangeSave}
+                  content={content}
+                  editorId={snippetid}
+                />
+              }
+            </EditorWrapper>
+          ))}
       </StyledEditor>
+      {IS_DEV && <CustomDevOnly editorId={snippetid} snippet={snippet} />}
     </>
   )
+}
+
+interface CustomDevOnlyProps {
+  snippet: Snippet
+  editorId: string
+}
+
+const CustomDevOnly = ({ snippet, editorId }: CustomDevOnlyProps) => {
+  const { convertSelectionToQABlock } = useTransform()
+  const editor = usePlateEditorState()!
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      '$mod+Shift+,': (event) => {
+        event.preventDefault()
+        if (!snippet.isTemplate) return
+        // const edState = editorRef.current.getEditorState()
+        console.log('convertSelectionToQABlock', { editor })
+        convertSelectionToQABlock(editor)
+      }
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [snippet, editorId, editor])
+
+  return <div id={`Speciale_${editorId}`} />
 }
 
 export default SnippetEditor

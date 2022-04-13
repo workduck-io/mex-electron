@@ -268,6 +268,12 @@ const setFonts = (fontFamily: string) => css`
 
 const globalStyles = css`
   ${setFonts('"Jost", sans-serif')}
+
+  ::selection {
+    color: ${({ theme }) => theme.colors.text.oppositePrimary};
+    background: ${({ theme }) => transparentize(0.5, theme.colors.primary)};
+  }
+
   body {
     background-color: ${({ theme }) => theme.colors.gray[10]};
   }
