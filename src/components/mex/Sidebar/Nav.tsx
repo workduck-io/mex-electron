@@ -33,10 +33,12 @@ import {
   Link,
   MainLinkContainer,
   NavButton,
+  NavLogoWrapper,
   NavTitle,
   NavWrapper
 } from '../../../style/Nav'
 import Collapse from '../../../ui/layout/Collapse/Collapse'
+import { Logo } from '../../../data/illustrations/logo'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
@@ -113,6 +115,11 @@ const Nav = ({ links }: NavProps) => {
   return (
     <NavWrapper style={springProps} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
       <NavTooltip singleton={source} />
+
+      <NavLogoWrapper>
+        <Logo />
+      </NavLogoWrapper>
+
       {authenticated && (
         <div>
           <NavTooltip

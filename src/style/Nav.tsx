@@ -94,6 +94,9 @@ export const ComingSoon = styled.div`
   }
 `
 
+export const NavLogoWrapper = styled.div``
+// export const NavLogoWrapper = styled.div``
+
 export const NavButton = styled.div<{ primary?: boolean }>`
   ${ButtonOrLinkStyles}
 
