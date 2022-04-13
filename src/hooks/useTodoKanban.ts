@@ -93,6 +93,7 @@ export const useTodoKanban = () => {
           label: path,
           filter: (item: TodoType) => {
             const itemPath = getPathFromNodeid(item.nodeid)
+            if (!itemPath) return false
             // mog('itemPath being filtered', { item, itemPath, path })
             return isElder(itemPath, path) || itemPath === path
           }

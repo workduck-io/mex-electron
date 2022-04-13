@@ -214,7 +214,7 @@ const CreateReminderModal = () => {
           </>
         )}
 
-        <Label htmlFor="node">NodeId</Label>
+        <Label htmlFor="node">Note</Label>
         <WrappedNodeSelect
           placeholder="Reminder for node"
           disabled={modalValue.blockContent !== undefined}

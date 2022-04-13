@@ -43,7 +43,9 @@ export const getNextReminderTime = () => {
   /*
    * Get 10 AM of the next day
    */
-  const tomorrow = startOfTomorrow()
-  const nextDay10AM = add(tomorrow, { hours: 10 })
-  return nextDay10AM
+  // const tomorrow = startOfTomorrow()
+  const today = Date.now()
+  const nextFifteenMinute = add(today, { minutes: 15 })
+  // const nextDay10AM = add(tomorrow, { hours: 10 })
+  return nextFifteenMinute
 }
