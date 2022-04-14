@@ -50,7 +50,7 @@ export const useSearch = () => {
 
     let sQuery: string
 
-    if (search?.type === CategoryType.quicklink) sQuery = search?.value.substring(2)
+    if (search?.type === CategoryType.backlink) sQuery = search?.value.substring(2)
     else sQuery = search?.value
 
     switch (search?.type) {
