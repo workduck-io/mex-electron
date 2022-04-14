@@ -107,13 +107,13 @@ const Content = () => {
   // * For setting the preview
   useEffect(() => {
     const resultNode = searchResults[activeIndex]
-    const isNode = resultNode?.type === QuickLinkType.ilink
+    const isNode = resultNode?.type === QuickLinkType.backlink
     const isMeeting = resultNode?.category === CategoryType.meeting
     let nodeid
 
     if (isNode && !activeItem.active) {
       const isNew = resultNode?.extras?.new
-      const val = search.type === CategoryType.quicklink ? search.value.slice(2) : search.value
+      const val = search.type === CategoryType.backlink ? search.value.slice(2) : search.value
 
       const nodeValue = val || getUntitledDraftKey()
       const node = isNew ? createNodeWithUid(nodeValue) : getNode(resultNode?.id ?? '')

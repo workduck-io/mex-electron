@@ -26,7 +26,7 @@ export const spotlightShortcuts = {
 }
 
 export const ElementTypeBasedShortcut: Record<string, Record<string, Shortcut>> = {
-  [QuickLinkType.ilink]: {
+  [QuickLinkType.backlink]: {
     link: {
       ...spotlightShortcuts.open,
       title: 'to Link'

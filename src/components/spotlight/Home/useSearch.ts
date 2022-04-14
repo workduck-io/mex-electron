@@ -17,8 +17,8 @@ export const CREATE_NEW_ITEM: ListItemType = {
   title: 'Create new ',
   id: 'create-new-node',
   icon: 'bi:plus-circle',
-  type: QuickLinkType.ilink,
-  category: CategoryType.quicklink,
+  type: QuickLinkType.backlink,
+  category: CategoryType.backlink,
   description: 'Quick note',
   shortcut: {
     edit: {
@@ -50,7 +50,7 @@ export const useSearch = () => {
 
     switch (search?.type) {
       // * Search quick links using [[
-      case CategoryType.quicklink:
+      case CategoryType.backlink:
         const query = search.value.substring(2)
         if (query) {
           const results = getSearchResults(query, quickLinks, { keySelector: (obj) => obj.title })

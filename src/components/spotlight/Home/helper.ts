@@ -16,8 +16,8 @@ export const getListItemFromNode = (node: ILink) => {
     title: node?.path,
     id: node?.nodeid,
     description: rawText,
-    type: QuickLinkType.ilink,
-    category: CategoryType.quicklink,
+    type: QuickLinkType.backlink,
+    category: CategoryType.backlink,
     extras: {
       nodeid: node?.nodeid,
       path: node?.path,
@@ -48,7 +48,7 @@ export const getListItemFromSnippet = (snippet: Snippet) => {
     id: snippet.id,
     description: rawText,
     type: QuickLinkType.snippet,
-    category: CategoryType.quicklink,
+    category: CategoryType.backlink,
     extras: {
       nodeid: snippet.id,
       path: snippet.title

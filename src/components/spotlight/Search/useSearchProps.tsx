@@ -26,7 +26,7 @@ export const useSearchProps = () => {
   const icon = !normalMode ? BackIcon : LensIcon
 
   const path = node.path
-  const placeholder = !normalMode ? cleanString(path) : '[[  for links or / for actions'
+  const placeholder = !normalMode ? cleanString(path) : '[[  for Backlinks or / for actions'
 
   return {
     icon: currentListItem?.icon ?? icon,

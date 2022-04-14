@@ -58,7 +58,7 @@ const useEditorPluginConfig = (editorId: string) => {
       value: l.nodeid,
       text: l.path,
       icon: l.icon ?? 'ri:file-list-2-line',
-      type: QuickLinkType.ilink
+      type: QuickLinkType.backlink
     })),
     ...slashInternals.map((l) => ({ ...l, value: l.command, text: l.text, type: l.type }))
   ]

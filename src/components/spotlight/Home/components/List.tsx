@@ -64,7 +64,7 @@ const List = ({
       style.width = '0%'
     }
 
-    if (searchResults[activeIndex] && searchResults[activeIndex]?.category !== CategoryType.quicklink) {
+    if (searchResults[activeIndex] && searchResults[activeIndex]?.category !== CategoryType.backlink) {
       style.width = '100%'
     }
 
@@ -149,9 +149,9 @@ const List = ({
         const currentActiveItem = data[activeIndex]
 
         // * If current item is ILINK
-        if (currentActiveItem?.category === CategoryType.quicklink && !activeItem.active) {
+        if (currentActiveItem?.category === CategoryType.backlink && !activeItem.active) {
           if (event.metaKey) {
-            if (currentActiveItem?.type === QuickLinkType.ilink) {
+            if (currentActiveItem?.type === QuickLinkType.backlink) {
               let nodePath = node.path
               if (currentActiveItem?.extras.new && !activeItem.active) {
                 nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
@@ -218,7 +218,7 @@ const List = ({
   // * handles double click on a list item
   function handleDoubleClick(id: number) {
     const currentActiveItem = data[id]
-    if (currentActiveItem?.type === QuickLinkType.ilink && !activeItem.active) {
+    if (currentActiveItem?.type === QuickLinkType.backlink && !activeItem.active) {
       setNormalMode(false)
     } else if (currentActiveItem?.type === QuickLinkType.snippet && !activeItem.active) {
       handleCopySnippet(currentActiveItem.id, true)

@@ -59,7 +59,7 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
   const theme = useTheme()
   const { search, selection, activeItem } = useSpotlightContext()
 
-  const newNodeName = cleanString(search.type === CategoryType.quicklink ? search.value.slice(2) : search.value)
+  const newNodeName = cleanString(search.type === CategoryType.backlink ? search.value.slice(2) : search.value)
 
   return (
     <StyledRow showColor={active} onClick={onClick}>
@@ -80,7 +80,7 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
                   Create a <PrimaryText>{search.value && !activeItem.active ? newNodeName : 'Quick note'}</PrimaryText>
                 </>
               ) : (
-                <>{item?.type === QuickLinkType.ilink ? cleanString(item?.title) : item?.title}</>
+                <>{item?.type === QuickLinkType.backlink ? cleanString(item?.title) : item?.title}</>
               )}
             </div>
             <Description>{item?.description ?? 'some content'}</Description>
@@ -97,7 +97,7 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
           }}
         >
           {Object.entries(item.shortcut).map(([key, shortcut]) => {
-            if (item.type === QuickLinkType.ilink && key === 'save') {
+            if (item.type === QuickLinkType.backlink && key === 'save') {
               if (!selection) return <></>
             }
 
