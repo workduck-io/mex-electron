@@ -39,6 +39,7 @@ import { SnippetHelp } from '../../data/Defaults/helpText'
 import Infobox from '../../ui/components/Help/Infobox'
 import { IS_DEV } from '../../data/Defaults/dev_'
 import ToggleButton from '../../components/spotlight/ToggleButton'
+import { SnippetsSearchContainer } from '../../style/Snippets'
 
 export type SnippetsProps = {
   title?: string
@@ -239,7 +240,7 @@ const Snippets = () => {
   // mog('Snippets', { initialSnippets })
 
   return (
-    <SearchContainer>
+    <SnippetsSearchContainer>
       <MainHeader>
         <Title>Snippets</Title>
         <Button primary large onClick={onCreateNew}>
@@ -266,7 +267,7 @@ const Snippets = () => {
         RenderItem={RenderItem}
         RenderPreview={RenderPreview}
       />
-    </SearchContainer>
+    </SnippetsSearchContainer>
   )
 }
 

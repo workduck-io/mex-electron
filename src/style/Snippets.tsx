@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 import { Card } from './Card'
 import { GridCss } from './Grid'
+import { size } from './responsive'
+import { ResultDesc, ResultMain, SearchContainer } from './Search'
 
 export const SSnippets = styled.div`
   ${GridCss(2, 3)}
@@ -67,4 +69,12 @@ export const TemplateToggle = styled.div`
   }
   padding: 0.25rem ${({ theme }) => theme.spacing.small};
   font-size: 1rem;
+`
+
+export const SnippetsSearchContainer = styled(SearchContainer)`
+  ${ResultDesc} {
+    @media (max-width: ${size.normal}) {
+      max-width: 15rem;
+    }
+  }
 `
