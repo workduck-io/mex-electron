@@ -9,7 +9,8 @@ export type BlockType = {
 
 export enum ContextMenuActionType {
   move = 'Move',
-  send = 'Send'
+  send = 'Send',
+  del = 'Delete'
 }
 
 export type ModalOpenType = ContextMenuActionType | undefined
