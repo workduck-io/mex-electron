@@ -131,8 +131,8 @@ const Init = () => {
         .then(({ nodeid }) => {
           // mog('Navigating to ', { nodeid })
 
-          goTo(ROUTE_PATHS.actions, NavigationType.replace)
-          // goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid)
+          // goTo(ROUTE_PATHS.actions, NavigationType.replace)
+          goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid)
         })
         // .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.push, nodeid))
         .catch((e) => console.error(e)) // eslint-disable-line no-console
