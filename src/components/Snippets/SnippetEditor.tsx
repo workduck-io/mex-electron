@@ -1,7 +1,7 @@
 import arrowLeftLine from '@iconify/icons-ri/arrow-left-line'
 import { mog } from '../../utils/lib/helper'
 import { debounce } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { SnippetSaverButton } from '../../editor/Components/Saver'
 import Editor from '../../editor/Editor'
@@ -19,6 +19,10 @@ import { IS_DEV } from '../../data/Defaults/dev_'
 import { SnippetCopierButton } from './SnippetContentCopier'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import Infobox from '../../ui/components/Help/Infobox'
+import { Icon } from '@iconify/react'
+import magicLine from '@iconify/icons-ri/magic-line'
+import { TemplateToggle } from '../../style/Snippets'
+import ItemTag from '../../ui/components/ItemTag/ItemTag'
 
 type Inputs = {
   title: string
@@ -38,9 +42,11 @@ const SnippetEditor = () => {
   const [content, setContent] = useState<any[] | undefined>(undefined)
 
   const { updater } = useUpdater()
-  const { addOrUpdateValBuffer, saveAndClearBuffer } = useSnippetBuffer()
+  const { addOrUpdateValBuffer, saveAndClearBuffer, getBufferVal } = useSnippetBuffer()
   const addTitle = useSnippetBufferStore((store) => store.addTitle)
+  const buffer = useSnippetBufferStore((store) => store.buffer)
   const addAll = useSnippetBufferStore((store) => store.addAll)
+  const toggleIsTemplate = useSnippetBufferStore((store) => store.toggleIsTemplate)
 
   useEffect(() => {
     if (snippet) {
@@ -51,7 +57,19 @@ const SnippetEditor = () => {
     }
   }, [snippet])
 
-  const getSnippetTitle = () => getValues().title
+  const getSnippetTitle = () => {
+    const val = getBufferVal(snippet?.id)
+    return val?.title || snippet?.title || ''
+  }
+
+  const isSnippetTemplate = useMemo(() => {
+    const val = getBufferVal(snippet?.id)
+    console.log('Getting whether snippet is a template or not', { val, snippet })
+    if (val && val.isTemplate !== undefined) {
+      return val.isTemplate
+    }
+    return snippet?.isTemplate || false
+  }, [snippet, buffer])
 
   const onChangeSave = (val: any[]) => {
     mog('onChangeSave', { val })
@@ -73,6 +91,13 @@ const SnippetEditor = () => {
     if (editorRef) {
       selectEditor(editorRef, { focus: true })
     }
+  }
+
+  const onToggleTemplate = () => {
+    const val = getBufferVal(snippet.id)
+    if (val && val.isTemplate !== undefined) {
+      toggleIsTemplate(snippet.id, !val.isTemplate)
+    } else toggleIsTemplate(snippet.id, !snippet.isTemplate)
   }
 
   useEffect(() => {
@@ -123,6 +148,16 @@ const SnippetEditor = () => {
 
           {snippet && (!snippet.isTemplate || IS_DEV) ? (
             <InfoTools>
+              {isSnippetTemplate && (
+                <ItemTag tag={'Template'} icon={'ri-magic-line'} tooltip={'This snippet is a Template'} />
+              )}
+              <IconButton
+                size={24}
+                icon={magicLine}
+                onClick={onToggleTemplate}
+                highlight={isSnippetTemplate}
+                title={isSnippetTemplate ? 'Convert to Snippet' : 'Convert to Template'}
+              />
               <SnippetSaverButton getSnippetTitle={getSnippetTitle} title="Save Snippet" />
               {IS_DEV && <SnippetCopierButton />}
             </InfoTools>
@@ -150,7 +185,7 @@ const SnippetEditor = () => {
             </EditorWrapper>
           ))}
       </StyledEditor>
-      {IS_DEV && <CustomDevOnly editorId={snippetid} snippet={snippet} />}
+      <CustomDevOnly editorId={snippetid} snippet={snippet} />
     </>
   )
 }
@@ -168,7 +203,7 @@ const CustomDevOnly = ({ snippet, editorId }: CustomDevOnlyProps) => {
     const unsubscribe = tinykeys(window, {
       '$mod+Shift+,': (event) => {
         event.preventDefault()
-        if (!snippet.isTemplate) return
+        // if (!snippet.isTemplate) return
         // const edState = editorRef.current.getEditorState()
         console.log('convertSelectionToQABlock', { editor })
         convertSelectionToQABlock(editor)

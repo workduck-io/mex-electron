@@ -18,12 +18,13 @@ import { DatePickerStyles, InputBlock, Label, TextAreaBlock } from '../../../sty
 import { Reminder, REMINDER_PREFIX } from '../../../types/reminders'
 import { NodeEditorContent } from '../../../types/Types'
 import Todo from '../../../ui/components/Todo'
-import { mog } from '../../../utils/lib/helper'
+import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { getEventNameFromElement } from '../../../utils/lib/strings'
 import { getNextReminderTime, getRelativeDate } from '../../../utils/time'
 import { LoadingButton } from '../Buttons/LoadingButton'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
+import { getNodeIdLast } from '../Sidebar/treeUtils'
 import { SelectedDate } from './Reminders.style'
 
 interface ModalValue {
@@ -119,7 +120,7 @@ const CreateReminderModal = () => {
   const { saveAndClearBuffer } = useEditorBuffer()
   const { addReminder } = useReminders()
 
-  const { getNodeidFromPath } = useLinks()
+  const { getNodeidFromPath, getPathFromNodeid } = useLinks()
 
   const {
     // control,
@@ -142,9 +143,12 @@ const CreateReminderModal = () => {
   }
   const { trackEvent } = useAnalytics()
 
-  const onSubmit = async ({ title, description }) => {
+  const onSubmit = async ({ description }) => {
     // console.log({ intents, command, title, description })
     const { time, nodeid, todoid, blockContent } = modalValue
+
+    const path = getPathFromNodeid(nodeid)
+    const title = getNodeIdLast(path)
 
     const reminder: Reminder = {
       id: `${REMINDER_PREFIX}${nanoid()}`,
@@ -188,8 +192,17 @@ const CreateReminderModal = () => {
       <ModalHeader>Reminder</ModalHeader>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Label htmlFor="title">Title</Label>
-        <InputBlock autoFocus placeholder="Ex. Send email to team" {...register('title')} />
+        <Label htmlFor="node">Note</Label>
+        <WrappedNodeSelect
+          placeholder="Reminder for node"
+          disabled={modalValue.blockContent !== undefined}
+          defaultValue={useEditorStore.getState().node.id ?? ''}
+          disallowReserved
+          highlightWhenSelected
+          iconHighlight={modalValue.nodeid !== undefined}
+          handleSelectItem={handleNodeChange}
+        />
+
         {modalValue.todoid === undefined ? (
           <>
             <Label htmlFor="description">Description </Label>
@@ -213,17 +226,6 @@ const CreateReminderModal = () => {
             </Todo>
           </>
         )}
-
-        <Label htmlFor="node">NodeId</Label>
-        <WrappedNodeSelect
-          placeholder="Reminder for node"
-          disabled={modalValue.blockContent !== undefined}
-          defaultValue={useEditorStore.getState().node.id ?? ''}
-          disallowReserved
-          highlightWhenSelected
-          iconHighlight={modalValue.nodeid !== undefined}
-          handleSelectItem={handleNodeChange}
-        />
 
         <Label htmlFor="time">Time</Label>
         <DatePickerStyles>

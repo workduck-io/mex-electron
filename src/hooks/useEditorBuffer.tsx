@@ -67,9 +67,10 @@ export const useEditorBuffer = () => {
 }
 
 interface SnippetBufferStore {
-  buffer: Record<string, { content: NodeEditorContent; title: string }>
+  buffer: Record<string, { content: NodeEditorContent; title: string; isTemplate?: boolean }>
   add: (nodeid: string, val: NodeEditorContent) => void
   addTitle: (nodeid: string, title: string) => void
+  toggleIsTemplate: (nodeid: string, isTemplate: boolean) => void
   addAll: (nodeid: string, val: NodeEditorContent, title: string) => void
   remove: (nodeid: string) => void
   clear: () => void
@@ -84,6 +85,10 @@ export const useSnippetBufferStore = create<SnippetBufferStore>((set, get) => ({
   addTitle: (nodeid, title) => {
     const prev = get().buffer[nodeid]
     set({ buffer: { ...get().buffer, [nodeid]: { ...prev, title } } })
+  },
+  toggleIsTemplate: (nodeid: string, isTemplate: boolean) => {
+    const prev = get().buffer[nodeid]
+    set({ buffer: { ...get().buffer, [nodeid]: { ...prev, isTemplate } } })
   },
   addAll: (nodeid, val, title) => {
     const prev = get().buffer[nodeid]
@@ -118,9 +123,10 @@ export const useSnippetBuffer = () => {
     if (Object.keys(buffer).length > 0) {
       const saved = Object.entries(buffer)
         .map(([snippetId, val]) => {
-          updateSnippetContent(snippetId, val.content, val.title)
+          updateSnippetContent(snippetId, val.content, val.title, val.isTemplate)
           const snippet = getSnippet(snippetId)
           mog('snipppet', { snippetId, val, buffer })
+          // TODO: Switch snippet to template index
           if (snippet) updateSnippetIndex({ ...snippet, content: val.content, title: val.title })
           return true
         })

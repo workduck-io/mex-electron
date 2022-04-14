@@ -51,6 +51,11 @@ export const useSnippets = () => {
     const tags = snippet.isTemplate ? ['template'] : ['snippet']
     const idxName = snippet.isTemplate ? 'template' : 'snippet'
     mog('Update snippet', { snippet, tags })
+    if (snippet.isTemplate) {
+      await removeDocument('snippet', snippet.id)
+    } else {
+      await removeDocument('template', snippet.id)
+    }
     await updateDocument(idxName, snippet.id, snippet.content, snippet.title, tags)
   }
 

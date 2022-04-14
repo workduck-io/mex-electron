@@ -28,6 +28,7 @@ export const NodeInfo = styled.div<FocusModeProp>`
 export const InfoTools = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: ${({ theme }) => theme.spacing.small};
   ${Button}, ${AsyncButton} {
     margin: 0;

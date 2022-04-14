@@ -81,42 +81,42 @@ export const optionsAutoFormatRule: Array<AutoformatRule> = [
   {
     mode: 'block',
     type: ELEMENT_H1,
-    match: 'h1',
+    match: ['h1', 'H1'],
     query: formatQuery,
     preFormat
   },
   {
     mode: 'block',
     type: ELEMENT_H2,
-    match: 'h2',
+    match: ['h2', 'H2'],
     query: formatQuery,
     preFormat
   },
   {
     mode: 'block',
     type: ELEMENT_H3,
-    match: 'h3',
+    match: ['h3', 'H3'],
     query: formatQuery,
     preFormat
   },
   {
     mode: 'block',
     type: ELEMENT_H4,
-    match: 'h4',
+    match: ['h4', 'H4'],
     query: formatQuery,
     preFormat
   },
   {
     mode: 'block',
     type: ELEMENT_H5,
-    match: 'h5',
+    match: ['h5', 'H5'],
     query: formatQuery,
     preFormat
   },
   {
     mode: 'block',
     type: ELEMENT_H6,
-    match: 'h6',
+    match: ['h6', 'H6'],
     query: formatQuery,
     preFormat
   },

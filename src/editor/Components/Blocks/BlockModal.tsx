@@ -12,9 +12,10 @@ import { NodeEntry, Transforms } from 'slate'
 import { QuickLink, WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
 import useBlockStore, { ContextMenuActionType } from '../../../store/useBlockStore'
 
+import { Button } from '../../../style/Buttons'
 import { AppType } from '../../../hooks/useInitialize'
 import { IpcAction } from '../../../data/IpcAction'
-import Modal from 'react-modal'
+import Modal, { contextType } from 'react-modal'
 import { NodeEditorContent } from '../../../types/Types'
 import React from 'react'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
@@ -26,6 +27,7 @@ import { useContentStore } from '../../../store/useContentStore'
 import { useDataSaverFromContent } from '../Saver'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNodes } from '../../../hooks/useNodes'
+import { ButtonWrapper } from '../../../style/Settings'
 
 const BlockModal = () => {
   const blocksFromStore = useBlockStore((store) => store.blocks)
@@ -78,7 +80,9 @@ const BlockModal = () => {
 
   const deleteContentBlocks = (blocks: NodeEntry<TNode<AnyObject>>[]): void => {
     const selection = editor?.selection
-    const moveAction = isModalOpen === ContextMenuActionType.move // * Move content blocks
+    const moveAction =
+      isModalOpen === ContextMenuActionType.move /* Move content blocks */ ||
+      isModalOpen === ContextMenuActionType.del /* Delete content blocks */
 
     if (moveAction) {
       if (blocks.length) {
@@ -95,6 +99,19 @@ const BlockModal = () => {
 
     if (isEmpty)
       insertNodes(editor, { type: ELEMENT_PARAGRAPH, id: generateTempId(), children: [{ text: '' }] }, { at: [0] })
+  }
+
+  const onBlockDelete = (): void => {
+    const editorBlocks = getEditorBlocks()
+
+    deleteContentBlocks(editorBlocks)
+    setIsModalOpen(undefined)
+    setIsBlockMode(false)
+  }
+
+  const onCancel = (): void => {
+    setIsModalOpen(undefined)
+    setIsBlockMode(false)
   }
 
   const onNodeCreate = (quickLink: QuickLink): void => {
@@ -129,16 +146,32 @@ const BlockModal = () => {
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={toggleModal} isOpen={!!isModalOpen}>
       {length ? (
-        <>
-          <h1>{`${isModalOpen}  to`}</h1>
-          <WrappedNodeSelect
-            disallowReserved
-            autoFocus
-            menuOpen
-            handleCreateItem={onNodeCreate}
-            handleSelectItem={onNodeSelect}
-          />
-        </>
+        isModalOpen === ContextMenuActionType.del ? (
+          <>
+            <h1>{`${isModalOpen}`}</h1>
+            <p>{`Are you sure you want to delete ${length} block(s)?`}</p>
+            <ButtonWrapper>
+              <Button large onClick={onCancel}>
+                Cancel
+              </Button>
+              <Button primary large onClick={onBlockDelete}>
+                Delete
+              </Button>
+            </ButtonWrapper>
+            <br />
+          </>
+        ) : (
+          <>
+            <h1>{`${isModalOpen}  to`}</h1>
+            <WrappedNodeSelect
+              disallowReserved
+              autoFocus
+              menuOpen
+              handleCreateItem={onNodeCreate}
+              handleSelectItem={onNodeSelect}
+            />
+          </>
+        )
       ) : (
         <h1>Select Blocks</h1>
       )}

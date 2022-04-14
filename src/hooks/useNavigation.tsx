@@ -47,6 +47,7 @@ export const withNavigation = (Component: any) => {
     const { goTo } = useRouting()
 
     const onPush = useCallback((nodeid: string, options?: LoadNodeOptions) => {
+      console.log('onPush', { nodeid, options })
       goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
       push(nodeid, options)
     }, [])

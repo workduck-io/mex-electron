@@ -45,6 +45,9 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
   clearTodos: () => set({ todos: {} }),
 
   addTodoInNode: (nodeid, todo) => {
+    if (!nodeid) {
+      return
+    }
     const todos = get().todos ?? {}
 
     const nodeTodos = todos?.[nodeid] ?? []

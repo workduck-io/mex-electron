@@ -1,3 +1,4 @@
+import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
 import React from 'react'
 import styled, { useTheme } from 'styled-components'
 import useBlockStore, { ContextMenuActionType } from '../../../store/useBlockStore'
@@ -48,6 +49,10 @@ const BlockInfoBar = () => {
         </Button>
         <Button onClick={() => setIsModalOpen(ContextMenuActionType.send)}>
           <MexIcon fontSize={20} noHover color={theme.colors.primary} icon={sendToIcon} /> Send
+        </Button>
+        <Button onClick={() => setIsModalOpen(ContextMenuActionType.del)}>
+          <MexIcon fontSize={20} noHover color={theme.colors.primary} icon={deleteBin6Line} />
+          Delete
         </Button>
       </ButtonWrapper>
     </BlockMenu>
