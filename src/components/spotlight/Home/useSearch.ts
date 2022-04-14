@@ -3,7 +3,7 @@ import { ListItemType } from '../SearchResults/types'
 
 import { getListItemFromNode, getListItemFromSnippet } from './helper'
 import { search as getSearchResults } from 'fast-fuzzy'
-import { initActions } from '../../../data/Actions'
+import { initActions, searchBrowserAction, searchGoogle } from '../../../data/Actions'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { mog } from '../../../utils/lib/helper'
 /* eslint-disable no-case-declarations */
@@ -47,6 +47,11 @@ export const useSearch = () => {
   const searchInList = async () => {
     let searchList: Array<ListItemType> = []
     const quickLinks = getQuickLinks()
+
+    let sQuery: string
+
+    if (search?.type === CategoryType.quicklink) sQuery = search?.value.substring(2)
+    else sQuery = search?.value
 
     switch (search?.type) {
       // * Search quick links using [[
@@ -100,7 +105,9 @@ export const useSearch = () => {
           quickLinks.map((i) => i.title)
         )
 
-        searchList = isNew ? [CREATE_NEW_ITEM, ...localNodes, ...actionItems] : [...localNodes, ...actionItems]
+        const mainItems = [...localNodes, ...actionItems]
+        searchList = isNew ? [CREATE_NEW_ITEM, ...mainItems] : mainItems
+        if (mainItems.length === 0) searchList.push(searchGoogle(sQuery))
 
         break
 

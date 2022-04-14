@@ -286,3 +286,28 @@ export const searchBrowserAction = (query: string) => {
     }
   }
 }
+
+export const searchGoogle = (query: string) => {
+  return {
+    id: '0-google',
+    category: CategoryType.action,
+    title: 'Search Google',
+    description: `Search Google for "${query}"`,
+    type: ItemActionType.customAction,
+    shortcut: {
+      search: {
+        category: 'action',
+        title: 'to search',
+        keystrokes: 'Enter'
+      }
+    },
+    icon: 'logos:google-icon',
+    extras: {
+      customAction: () => {
+        // console.log('custom action', { query })
+        const url = encodeURI('https://www.google.com/search?q=' + query)
+        window.open(url, '_blank').focus()
+      }
+    }
+  }
+}

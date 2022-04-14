@@ -36,6 +36,11 @@ export enum ItemActionType {
   */
   twinOpen,
 
+  /** Custom Action
+   * the action function attached is run on selecting
+   */
+  customAction,
+
   render,
   action,
   ipc,

@@ -25,9 +25,14 @@ const useItemExecutor = () => {
     switch (item.type) {
       case ItemActionType.action:
         break
+      case ItemActionType.customAction:
+        if (item.extras.customAction) item.extras.customAction()
+        closeSpotlight()
+        break
       case ItemActionType.twinOpen:
         if (!isMetaPressed && item.extras.customAction) item.extras.customAction()
         else window.open(item.extras.base_url, '_blank').focus()
+        closeSpotlight()
         break
       case ItemActionType.open:
         window.open(item.extras.base_url, '_blank').focus()
