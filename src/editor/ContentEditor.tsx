@@ -7,7 +7,6 @@ import { defaultContent } from '../data/Defaults/baseData'
 import { useEditorBuffer } from '../hooks/useEditorBuffer'
 import useLayout from '../hooks/useLayout'
 import useLoad from '../hooks/useLoad'
-import { useNavigation } from '../hooks/useNavigation'
 import { useSearch } from '../hooks/useSearch'
 import { useKeyListener } from '../hooks/useShortcutListener'
 import { useAnalysisTodoAutoUpdate } from '../store/useAnalysis'
@@ -49,8 +48,6 @@ const ContentEditor = () => {
   const { setSuggestions } = useSuggestionStore()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
-  const { move } = useNavigation()
-
   const editorRef = usePlateEditorRef()
 
   const { addOrUpdateValBuffer, getBufferVal } = useEditorBuffer()
@@ -86,18 +83,6 @@ const ContentEditor = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      [shortcuts.gotoBackwards.keystrokes]: (event) => {
-        event.preventDefault()
-        shortcutHandler(shortcuts.gotoBackwards, () => {
-          move(-1)
-        })
-      },
-      [shortcuts.gotoForward.keystrokes]: (event) => {
-        event.preventDefault()
-        shortcutHandler(shortcuts.gotoForward, () => {
-          move(+1)
-        })
-      },
       [shortcuts.toggleFocusMode.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.toggleFocusMode, () => {

@@ -29,7 +29,7 @@ import { useRecentsStore } from '../../../store/useRecentsStore'
 import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
 import { AppleNote } from '../../../utils/importers/appleNotes'
 import { mog } from '../../../utils/lib/helper'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import { NavigationType, ROUTE_PATHS, useBrowserNavigation, useRouting } from '../../../views/routes/urls'
 import { useSearch } from '../../../hooks/useSearch'
 import { Reminder, ReminderActions } from '../../../types/reminders'
 import { useReminders, useReminderStore } from '../../../hooks/useReminders'
@@ -331,6 +331,8 @@ const Init = () => {
       unsubscribe()
     }
   }, [shortcuts, shortcutDisabled, node.nodeid]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useBrowserNavigation()
 
   useEffect(() => {
     if (focusMode.on) {

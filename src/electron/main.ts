@@ -532,6 +532,16 @@ ipcMain.on(IpcAction.SET_SPOTLIGHT_SHORTCUT, (event, arg) => {
   }
 })
 
+ipcMain.on(IpcAction.GO_FORWARD, (event, arg) => {
+  console.log('Go Forward', { event, arg })
+  event.sender.goForward()
+})
+
+ipcMain.on(IpcAction.GO_BACK, (event, arg) => {
+  console.log('Go back', { event, arg })
+  event.sender.goBack()
+})
+
 ipcMain.on(IpcAction.USE_SNIPPET, (event, arg) => {
   const { from, data } = arg
   spotlight?.hide()

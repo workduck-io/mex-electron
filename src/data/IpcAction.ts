@@ -56,6 +56,10 @@ export enum IpcAction {
   HIDE_REMINDER = 'HIDE_REMINDER',
   RESIZE_REMINDER = 'RESIZE_REMINDER',
 
+  // Navigation
+  GO_BACK = 'GO_BACK',
+  GO_FORWARD = 'GO_FORWARD',
+
   // Reminders
   // Type of action is attached with payload
   ACTION_REMINDER = 'ACTION_REMINDER',
