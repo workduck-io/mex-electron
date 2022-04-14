@@ -402,7 +402,8 @@ export const ResultsWrapper = styled.div`
   position: relative;
 `
 
-export const SearchResultTag = styled.div<{ large?: boolean }>`
+export const ItemTag = styled.div<{ large?: boolean }>`
+  height: 100%;
   padding: 0.2rem ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
   background-color: ${({ theme }) => theme.colors.gray[9]};

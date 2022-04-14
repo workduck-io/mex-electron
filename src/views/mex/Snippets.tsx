@@ -23,7 +23,7 @@ import {
   ResultTitle,
   SearchContainer,
   SearchPreviewWrapper,
-  SearchResultTag,
+  ItemTag,
   SplitSearchPreviewWrapper
 } from '../../style/Search'
 import { Title } from '../../style/Typography'
@@ -160,10 +160,10 @@ const Snippets = () => {
             <Icon icon={icon} />
             <ResultTitle onClick={() => onSelect({ id: snip.id, title: snip.title })}>{snip.title}</ResultTitle>
             {snip.isTemplate && (
-              <SearchResultTag large>
+              <ItemTag large>
                 <Icon icon={magicLine} />
                 Template
-              </SearchResultTag>
+              </ItemTag>
             )}
             <IconButton size={20} icon={deleteBin6Line} title="delete" onClick={() => onDeleteSnippet(snip.id)} />
           </ResultHeader>
@@ -185,10 +185,10 @@ const Snippets = () => {
               <ResultDesc>{convertContentToRawText(snip.content, ' ')}</ResultDesc>
             </ResultMain>
             {snip.isTemplate && (
-              <SearchResultTag>
+              <ItemTag>
                 <Icon icon={magicLine} />
                 Template
-              </SearchResultTag>
+              </ItemTag>
             )}
             <IconButton size={20} icon={deleteBin6Line} title="delete" onClick={() => onDeleteSnippet(snip.id)} />
           </ResultRow>
@@ -222,10 +222,10 @@ const Snippets = () => {
             <Title>
               <span className="title">{snip.title}</span>
               {snip.isTemplate && (
-                <SearchResultTag large>
+                <ItemTag large>
                   <Icon icon={magicLine} />
                   Template
-                </SearchResultTag>
+                </ItemTag>
               )}
               <Icon icon={icon} />
             </Title>
@@ -248,8 +248,8 @@ const Snippets = () => {
         </Button>
         {IS_DEV && (
           <Button primary large onClick={onCreateSpecialSnippet}>
-            <Icon icon={quillPenLine} height={24} />
-            Create Special Snippet
+            <Icon icon={magicLine} height={24} />
+            Create New Template Snippet
           </Button>
         )}
         <Infobox text={SnippetHelp} />

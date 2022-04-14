@@ -18,8 +18,8 @@ interface SnippetStore {
   initSnippets: (snippets: Snippet[]) => void
   addSnippet: (snippets: Snippet) => void
   updateSnippet: (id: string, snippets: Snippet) => void
-  updateSnippetContent: (id: string, content: any[]) => void
-  updateSnippetContentAndTitle: (id: string, content: any[], title: string) => void
+  updateSnippetContent: (id: string, content: any[], isTemplate?: boolean) => void
+  updateSnippetContentAndTitle: (id: string, content: any[], title: string, isTemplate?: boolean) => void
   deleteSnippet: (id: string) => void
 
   editor: SnippetEditorStore
@@ -44,9 +44,12 @@ export const useSnippetStore = create<SnippetStore>((set, get) => ({
       return { snippets: [...snippets, snippet] }
     }),
 
-  updateSnippetContent: (id: string, content: any[]) => {
+  updateSnippetContent: (id: string, content: any[], isTemplate?: boolean) => {
     const snippets = get().snippets.map((s) => {
       if (s.id === id) {
+        if (isTemplate !== undefined) {
+          return { ...s, content, isTemplate }
+        }
         return { ...s, content }
       }
       return s
@@ -54,9 +57,12 @@ export const useSnippetStore = create<SnippetStore>((set, get) => ({
     set({ snippets })
   },
 
-  updateSnippetContentAndTitle: (id: string, content: any[], title: string) => {
+  updateSnippetContentAndTitle: (id: string, content: any[], title: string, isTemplate?: boolean) => {
     const snippets = get().snippets.map((s) => {
       if (s.id === id) {
+        if (isTemplate !== undefined) {
+          return { ...s, content, isTemplate, title }
+        }
         return { ...s, content, title }
       }
       return s

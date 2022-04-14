@@ -67,6 +67,7 @@ const searchWorker: SearchWorker = {
 
   removeDoc: (key: idxKey, id: string) => {
     if (globalSearchIndex[key]) {
+      mog('REMOVING id', { key, id })
       const blockIds = nodeBlockMapping[id]
 
       delete nodeBlockMapping[id]
