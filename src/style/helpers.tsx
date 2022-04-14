@@ -63,6 +63,16 @@ export const getLineIcons = (icon: string) => {
   if (MexIcons[icon]) return MexIcons[icon]
 }
 
+export const dashedBack = (color: string, backColor: string) =>
+  `background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='${encodeURIComponent(
+    color
+  )}' stroke-width='4' stroke-dasharray='20%2c 30' stroke-dashoffset='-8' stroke-linecap='round'/%3e%3c/svg%3e"),
+repeating-linear-gradient(30deg, ${backColor}, ${backColor} 30px, ${transparentize(
+    0.1,
+    backColor
+  )} 30px, ${transparentize(0.1, backColor)} 60px);
+  ;`
+
 export const getLineIconsIconify = (icon: string) => {
   if (MexNodeIcons[icon]) return MexNodeIcons[icon]
 }

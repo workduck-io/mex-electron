@@ -1,14 +1,21 @@
 import styled, { css } from 'styled-components'
-import { CardShadow } from '../../../style/helpers'
-import { ResultTitle } from '../../../style/Search'
+import { transparentize, mix } from 'polished'
+import { CardShadow, dashedBack } from '../../../style/helpers'
+import { ResultHeader, ResultTitle } from '../../../style/Search'
 
-export const SuggestionContainer = styled.div<{ highlight: boolean }>`
-  max-height: 400px;
-  overflow: hidden auto;
+export const SuggestionPreviewWrapper = styled.div`
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 20rem;
+`
 
+export const SuggestionContainer = styled.div<{ highlight: boolean; type: string }>`
+  overflow: hidden;
   ${({ theme }) => css`
-    background-color: ${theme.colors.gray[8]};
     border-radius: ${theme.borderRadius.small};
+    background-color: ${theme.colors.gray[8]};
 
     ${ResultTitle} {
       font-weight: bold;
@@ -22,6 +29,30 @@ export const SuggestionContainer = styled.div<{ highlight: boolean }>`
       ${CardShadow};
     }
   `}
+
+  ${({ type, theme }) => {
+    if (type === 'snippet' || type === 'template') {
+      return css`
+        ${ResultHeader} {
+          background: ${theme.colors.gray[9]};
+          background: linear-gradient(
+            35deg,
+            ${transparentize(0.2, theme.colors.gray[9])} 0%,
+            ${transparentize(0.2, mix(0.4, theme.colors.gray[9], theme.colors.gray[9]))} 56%,
+            ${transparentize(0.5, theme.colors.primary)} 100%
+          );
+
+          color: ${theme.colors.primary};
+          svg {
+            color: ${theme.colors.primary};
+          }
+        }
+        ${ResultTitle} {
+          color: ${theme.colors.primary};
+        }
+      `
+    }
+  }}
 `
 
 export const Margin = styled.div`
