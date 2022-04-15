@@ -102,3 +102,5 @@ src/dist/
 CHANGELOG.md
 
 src/main.prod.js
+
+actionConfigs.ts
