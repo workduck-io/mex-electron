@@ -1,9 +1,12 @@
-import { BrowserWindow, Menu, MenuItemConstructorOptions, app, autoUpdater, shell } from 'electron'
+import { BrowserWindow, Menu, MenuItemConstructorOptions, app, autoUpdater, shell, dialog } from 'electron'
+import fs from 'fs/promises'
+import path from 'path'
 
 import { IpcAction } from '../data/IpcAction'
 import { ToastStatus } from '../types/toast'
 import { toast, mex, spotlight } from './main'
 import { checkIfAlpha } from './utils/version'
+import { getSaveLocation, DataFileName } from '../data/Defaults/data'
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string
@@ -129,6 +132,30 @@ export default class MenuBuilder {
           click: () => {
             mex.webContents.openDevTools()
             spotlight.webContents.openDevTools()
+          }
+        },
+        {
+          label: 'Export mex.json for debugging',
+          click: async () => {
+            const selectedFiles = await dialog.showOpenDialog({
+              defaultPath: '~/',
+              properties: ['openDirectory', 'createDirectory'],
+              message: 'Choose where you would like to export mex.json'
+            })
+            if (selectedFiles.canceled) return null
+
+            const srcPath = getSaveLocation(app)
+            const destPath = path.join(selectedFiles.filePaths[0], DataFileName)
+            await fs.copyFile(srcPath, destPath)
+            toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.SUCCESS, title: 'Exported mex.json' })
+            toast?.open(true, true, false)
+          }
+        },
+        {
+          label: 'Share mex.json for debugging',
+          role: 'shareMenu',
+          sharingItem: {
+            filePaths: [getSaveLocation(app)]
           }
         }
       ]
