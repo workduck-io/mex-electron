@@ -173,7 +173,7 @@ const CreateReminderModal = () => {
       reminder
     })
     addReminder(reminder)
-    saveAndClearBuffer()
+    saveAndClearBuffer(true)
     reset()
     closeModal()
   }

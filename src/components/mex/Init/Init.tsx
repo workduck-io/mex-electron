@@ -176,10 +176,12 @@ const Init = () => {
 
     ipcRenderer.on(IpcAction.OPEN_REMINDER, (_event, { reminder }) => {
       mog('Opening Reminder', { reminder })
-      updateReminderState(reminder.id, {
-        ...reminder.state,
-        done: true
-      })
+      if (!reminder) return
+      // updateReminderState(reminder.id, {
+      //   ...reminder.state,
+      //   done: true
+      // })
+      loadNode(reminder.nodeid)
       goTo(ROUTE_PATHS.node, NavigationType.push, reminder.nodeid)
     })
 

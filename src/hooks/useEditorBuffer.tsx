@@ -41,7 +41,7 @@ export const useEditorBuffer = () => {
   const getBuffer = () => useBufferStore.getState().buffer
   const getBufferVal = (nodeid: string) => useBufferStore.getState().buffer[nodeid] ?? undefined
 
-  const saveAndClearBuffer = () => {
+  const saveAndClearBuffer = (explicitSave?: boolean) => {
     const buffer = useBufferStore.getState().buffer
     // mog('Save And Clear Buffer', { buffer })
     if (Object.keys(buffer).length > 0) {
@@ -56,7 +56,7 @@ export const useEditorBuffer = () => {
           return !res
         })
         .reduce((acc, cur) => acc || cur, false)
-      if (saved) {
+      if (saved || explicitSave) {
         saveData()
       }
       clearBuffer()
