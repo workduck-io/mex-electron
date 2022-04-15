@@ -155,7 +155,7 @@ const SnippetEditor = () => {
             )}
           </NoteTitle>
 
-          {snippet && (!snippet.isTemplate || IS_DEV) ? (
+          {snippet && (
             <InfoTools>
               {isSnippetTemplate && (
                 <ItemTag tag={'Template'} icon={'ri-magic-line'} tooltip={'This snippet is a Template'} />
@@ -174,29 +174,22 @@ const SnippetEditor = () => {
               />
               {IS_DEV && <SnippetCopierButton />}
             </InfoTools>
-          ) : (
-            <Infobox text={<div>Templates cannnot be edited</div>} />
           )}
         </NodeInfo>
 
-        {snippet &&
-          (snippet.isTemplate && !IS_DEV ? (
-            <EditorWrapper>
-              <EditorPreviewRenderer content={content} editorId={snippetid} />
-            </EditorWrapper>
-          ) : (
-            <EditorWrapper onClick={onFocusClick}>
-              {
-                <Editor
-                  autoFocus={false}
-                  focusAtBeginning={false}
-                  onChange={onChangeSave}
-                  content={content}
-                  editorId={snippetid}
-                />
-              }
-            </EditorWrapper>
-          ))}
+        {snippet && (
+          <EditorWrapper onClick={onFocusClick}>
+            {
+              <Editor
+                autoFocus={false}
+                focusAtBeginning={false}
+                onChange={onChangeSave}
+                content={content}
+                editorId={snippetid}
+              />
+            }
+          </EditorWrapper>
+        )}
       </StyledEditor>
       <CustomDevOnly editorId={snippetid} snippet={snippet} />
     </>
