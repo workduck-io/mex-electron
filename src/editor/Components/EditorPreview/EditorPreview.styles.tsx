@@ -24,6 +24,25 @@ export const EditorPreviewWrapper = styled.div`
   min-width: 400px;
 `
 
+export const EditorPreviewNoteName = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.tiny};
+
+  cursor: pointer;
+
+  svg {
+    color: ${({ theme }) => theme.colors.text.fade};
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+    svg {
+      color: ${({ theme }) => theme.colors.primary};
+    }
+  }
+`
+
 export const EditorPreviewEditorWrapper = styled.div`
   flex-grow: 1;
   overflow-y: auto;
@@ -36,14 +55,8 @@ export const EditorPreviewControls = styled.div<{ hasTags?: boolean }>`
   align-items: center;
   background: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])} !important;
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray[8]};
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: ${({ theme }) => theme.spacing.small};
-
-  ${({ hasTags }) =>
-    hasTags &&
-    css`
-      justify-content: space-between;
-    `}
 
   ${Button} {
     color: ${({ theme }) => theme.colors.text.fade};
@@ -61,6 +74,7 @@ export const EditorPreviewControls = styled.div<{ hasTags?: boolean }>`
 
   ${TagFlex} {
     background: ${({ theme }) => transparentize(0.5, theme.colors.gray[7])};
+    flex-grow: 1;
     :hover {
       background: ${({ theme }) => theme.colors.primary};
     }

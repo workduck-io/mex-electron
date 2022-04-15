@@ -63,7 +63,7 @@ export const isTopNode = (id: string) => {
   return getParentId(id) === null
 }
 
-export const getNodeIdLast = (id: string) => {
+export const getNameFromPath = (id: string) => {
   const split = id.split(SEPARATOR)
   if (split.length > 1) return split[split.length - 1]
   return id
@@ -71,7 +71,7 @@ export const getNodeIdLast = (id: string) => {
 
 const createChildLess = (n: string, nodeid: string, icon?: string): TreeNode => ({
   id: n,
-  title: getNodeIdLast(n),
+  title: getNameFromPath(n),
   key: n,
   nodeid,
   mex_icon: icon,

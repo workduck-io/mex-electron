@@ -130,6 +130,11 @@ export const useLinks = () => {
     }
   }
 
+  const getILinkFromNodeid = (nodeid: string) => {
+    const links = useDataStore.getState().ilinks
+    const link = links.find((l) => l.nodeid === nodeid)
+    if (link) return link
+  }
 
   const getNodeidFromPath = (path: string) => {
     const links = useDataStore.getState().ilinks
@@ -155,6 +160,7 @@ export const useLinks = () => {
     getBacklinks,
     updateLinksFromContent,
     getNodeidFromPath,
+    getILinkFromNodeid,
     getPathFromNodeid,
     createLink
   }

@@ -15,7 +15,7 @@ import { withRefactor } from '../../../hooks/useRefactor'
 import { withNodeOps } from '../../../store/useEditorStore'
 import { StyledTree } from '../../../style/Sidebar'
 import TreeExpandIcon from './Icon'
-import { getNodeIdLast, SEPARATOR } from './treeUtils'
+import { getNameFromPath, SEPARATOR } from './treeUtils'
 import { mog } from '../../../utils/lib/helper'
 
 const motion = {
@@ -135,7 +135,7 @@ class Tree extends React.Component<RCTreeProps> {
       }
     }
 
-    const singleId = getNodeIdLast(dragKey)
+    const singleId = getNameFromPath(dragKey)
 
     const from = dragKey
     const to = dropKey + SEPARATOR + singleId

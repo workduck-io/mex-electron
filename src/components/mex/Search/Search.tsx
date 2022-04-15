@@ -100,6 +100,14 @@ const Search = () => {
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
+  const onDoubleClick = (e: React.MouseEvent<HTMLElement>, nodeid: string) => {
+    e.preventDefault()
+    if (e.detail === 2) {
+      loadNode(nodeid)
+      goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+    }
+  }
+
   // Forwarding ref to focus on the selected result
   const BaseItem = (
     { item, splitOptions, ...props }: RenderItemProps<GenericSearchResult>,
@@ -186,12 +194,16 @@ const Search = () => {
       mog('RenderPreview', { item, content, node })
       return (
         <SplitSearchPreviewWrapper id={`splitSearchPreview_for_${item.id}`}>
-          <Title>
+          <Title onMouseUp={(e) => onDoubleClick(e, edNode.nodeid)}>
             <Icon icon={icon} />
             <TitleText>{node.path}</TitleText>
             <Metadata fadeOnHover={false} node={edNode} />
           </Title>
-          <EditorPreviewRenderer content={content} editorId={`SearchPreview_editor_${item.id}`} />
+          <EditorPreviewRenderer
+            content={content}
+            onDoubleClick={(e) => onDoubleClick(e, edNode.nodeid)}
+            editorId={`SearchPreview_editor_${item.id}`}
+          />
           <Backlinks nodeid={node.nodeid} />
           <TagsRelated nodeid={node.nodeid} />
         </SplitSearchPreviewWrapper>
