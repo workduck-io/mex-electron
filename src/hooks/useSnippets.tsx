@@ -3,6 +3,8 @@ import { useSnippetStore, Snippet } from '../store/useSnippetStore'
 import { SlashCommandConfig } from '../editor/Components/SlashCommands/Types'
 import { useSearch } from './useSearch'
 import { mog } from '../utils/lib/helper'
+import { convertToCopySnippet, defaultCopyConverter, defaultCopyFilter } from '../utils/search/parseData'
+import { serializeHtml, getPlateEditorRef, createPlateUI, createPlateUIEditor } from '@udecode/plate'
 
 export const useSnippets = () => {
   const addSnippetZus = useSnippetStore((state) => state.addSnippet)
@@ -73,7 +75,15 @@ export const useSnippets = () => {
     await updateDocument(idxName, snippet.id, snippet.content, snippet.title, tags)
   }
 
-  return { getSnippets, getSnippet, getSnippetContent, getSnippetsConfigs, addSnippet, updateSnippet, deleteSnippet }
+  return {
+    getSnippets,
+    getSnippet,
+    getSnippetContent,
+    getSnippetsConfigs,
+    addSnippet,
+    updateSnippet,
+    deleteSnippet
+  }
 }
 
 export const extractSnippetCommands = (snippets: Snippet[]): string[] => {

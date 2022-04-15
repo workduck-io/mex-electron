@@ -16,11 +16,29 @@ import { QuickLinkType } from '../../../mex/NodeSelect/NodeSelect'
 import { appNotifierWindow } from '../../../../electron/utils/notifiers'
 import { IpcAction } from '../../../../data/IpcAction'
 import { AppType } from '../../../../hooks/useInitialize'
-import { convertContentToRawText } from '../../../../utils/search/parseData'
+import {
+  convertContentToRawText,
+  convertToCopySnippet,
+  defaultCopyConverter,
+  defaultCopyFilter
+} from '../../../../utils/search/parseData'
 import { useSnippets } from '../../../../hooks/useSnippets'
-import { getPlateEditorRef, serializeHtml } from '@udecode/plate'
 import useDataStore from '../../../../store/useDataStore'
 import { mog } from '../../../../utils/lib/helper'
+import {
+  serializeHtml,
+  getPlateEditorRef,
+  createPlateEditor,
+  createPlateUIEditor,
+  createPlateUI,
+  ELEMENT_MEDIA_EMBED,
+  LinkElement,
+  ELEMENT_IMAGE
+} from '@udecode/plate'
+import getPlugins from '../../../../editor/Plugins/plugins'
+import { TagElement } from '../../../../editor/Components/tag/components/TagElement'
+import { ELEMENT_TAG } from '../../../../editor/Components/tag/defaults'
+import { CopyTag } from '../../../../editor/Components/tag/components/CopyTag'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -241,8 +259,27 @@ const List = ({
     let html = text
 
     try {
-      html = serializeHtml(getPlateEditorRef(), {
-        nodes: snippet.content
+      const filterdContent = convertToCopySnippet(snippet.content)
+      const convertedContent = convertToCopySnippet(filterdContent, {
+        filter: defaultCopyFilter,
+        converter: defaultCopyConverter
+      })
+
+      const tempEditor = createPlateEditor({
+        plugins: getPlugins(
+          createPlateUI({
+            [ELEMENT_TAG]: CopyTag as any
+          }),
+          {
+            exclude: { dnd: true }
+          }
+        )
+      })
+
+      mog('CONVERTED', { convertedContent })
+
+      html = serializeHtml(tempEditor, {
+        nodes: convertedContent
       })
     } catch (err) {
       mog('Something went wrong', { err })
