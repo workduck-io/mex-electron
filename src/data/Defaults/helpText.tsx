@@ -31,7 +31,7 @@ export const TreeHelp = (
     <h1>Tree</h1>
     <p>All of your notes in a hierarchal(nested) structure.</p>
     <p>Click on note to navigate</p>
-    <p>The tree is sorted by the recently updated note.</p>
+    <p>The tree is sorted by the note&#39;s creation time.</p>
   </div>
 )
 
