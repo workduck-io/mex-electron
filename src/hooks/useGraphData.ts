@@ -1,7 +1,7 @@
 import { useTheme } from 'styled-components'
 import { GraphEdge, GraphNode } from '../components/mex/Graph/Graph.types'
 import { ServiceImg } from '../components/mex/Graph/icons'
-import { getNodeIdLast, isParent, isTopNode } from '../components/mex/Sidebar/treeUtils'
+import { getNameFromPath, isParent, isTopNode } from '../components/mex/Sidebar/treeUtils'
 import useDataStore, { getLevel } from '../store/useDataStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { useGraphStore } from '../store/useGraphStore'
@@ -40,7 +40,7 @@ export const useGraphData = () => {
     const level = getLevel(node)
     return {
       id: id + 1,
-      label: showLocal ? node : getNodeIdLast(node),
+      label: showLocal ? node : getNameFromPath(node),
       path: node,
       ...getNodeStyles(level, theme)
     }

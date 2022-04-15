@@ -11,6 +11,7 @@ interface EditorPreviewRendererProps {
   editorId: string
   noStyle?: boolean
   noMouseEvents?: boolean
+  onDoubleClick?: (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
 const PreviewStyles = styled(EditorStyles)<{ noMouseEvents: boolean }>`
@@ -23,7 +24,13 @@ const PreviewStyles = styled(EditorStyles)<{ noMouseEvents: boolean }>`
   }
 `
 
-const EditorPreviewRenderer = ({ content, editorId, noStyle, noMouseEvents }: EditorPreviewRendererProps) => {
+const EditorPreviewRenderer = ({
+  content,
+  editorId,
+  noStyle,
+  noMouseEvents,
+  onDoubleClick
+}: EditorPreviewRendererProps) => {
   const editableProps = {
     placeholder: 'Murmuring the mex hype... ',
     spellCheck: false,
@@ -44,6 +51,9 @@ const EditorPreviewRenderer = ({ content, editorId, noStyle, noMouseEvents }: Ed
       onClick={(ev) => {
         // ev.preventDefault()
         // ev.stopPropagation()
+        if (onDoubleClick && ev.detail === 2) {
+          onDoubleClick(ev)
+        }
       }}
     >
       <Plate id={editorId} editableProps={editableProps} value={content} plugins={plugins} />

@@ -179,6 +179,7 @@ export const DatePickerStyles = styled.div`
     font-size: 0.9rem;
   }
   .react-datepicker__month-container {
+    float: none;
   }
   .react-datepicker__current-month,
   .react-datepicker-time__header,
@@ -285,6 +286,24 @@ export const DatePickerStyles = styled.div`
 
   /* Time */
 
+  .react-datepicker__input-time-container {
+    float: none;
+    text-align: center;
+  }
+  .react-datepicker__input-time-container input.react-datepicker-time__input {
+    width: auto;
+    margin-left: 0;
+    margin-right: 0;
+    padding: ${({ theme }) => theme.spacing.tiny};
+    border: 1px solid ${({ theme }) => theme.colors.form.input.border};
+    border-radius: ${({ theme }) => theme.borderRadius.tiny};
+    background: ${({ theme }) => transparentize(0.5, theme.colors.gray[6])};
+    color: ${({ theme }) => theme.colors.text.default};
+    font-size: 1.2rem;
+  }
+  input[type='time']::-webkit-calendar-picker-indicator {
+    filter: invert(0.5) sepia(1) saturate(5) hue-rotate(175deg);
+  }
   .react-datepicker__time-container .react-datepicker__time {
     background: transparent;
     font-size: 0.8rem;

@@ -261,13 +261,13 @@ const sortTree = (tree: TreeNode[], contents: Contents): TreeNode[] => {
   const sorting = (a, b) => {
     const aMeta = contents[a.nodeid] && contents[a.nodeid].metadata ? contents[a.nodeid].metadata : {}
     const bMeta = contents[b.nodeid] && contents[b.nodeid].metadata ? contents[b.nodeid].metadata : {}
-    if (aMeta.updatedAt && bMeta.updatedAt) {
-      return bMeta.updatedAt - aMeta.updatedAt
+    if (aMeta.createdAt && bMeta.createdAt) {
+      return bMeta.createdAt - aMeta.createdAt
     }
-    if (aMeta.updatedAt && !bMeta.updatedAt) {
+    if (aMeta.createdAt && !bMeta.createdAt) {
       return -1
     }
-    if (bMeta.updatedAt && !aMeta.updatedAt) {
+    if (bMeta.createdAt && !aMeta.createdAt) {
       return 1
     }
     return 0

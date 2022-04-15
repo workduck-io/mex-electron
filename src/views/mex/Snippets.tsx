@@ -116,6 +116,13 @@ const Snippets = () => {
     loadSnippet(id)
   }
 
+  const onDoubleClick = (e: React.MouseEvent<HTMLElement>, id: string, title: string) => {
+    e.preventDefault()
+    if (e.detail === 2) {
+      onOpenSnippet(id)
+      goTo(ROUTE_PATHS.snippet, NavigationType.push, id, { title })
+    }
+  }
   const onDeleteSnippet = (id: string) => {
     deleteSnippet(id)
     saveData()
@@ -220,7 +227,7 @@ const Snippets = () => {
       if (snip)
         return (
           <SplitSearchPreviewWrapper id={`splitSnippetSearchPreview_for_${item.id}_${randId}`}>
-            <Title>
+            <Title onMouseUp={(e) => onDoubleClick(e, item.id, item.title)}>
               <span className="title">{snip.title}</span>
               {snip.isTemplate && (
                 <ItemTag large>
@@ -230,7 +237,11 @@ const Snippets = () => {
               )}
               <Icon icon={icon} />
             </Title>
-            <EditorPreviewRenderer content={snip.content} editorId={`SnippetSearchPreview_editor_${item.id}`} />
+            <EditorPreviewRenderer
+              onDoubleClick={(e) => onDoubleClick(e, item.id, item.title)}
+              content={snip.content}
+              editorId={`SnippetSearchPreview_editor_${item.id}`}
+            />
           </SplitSearchPreviewWrapper>
         )
     }

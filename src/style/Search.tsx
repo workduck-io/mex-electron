@@ -464,6 +464,7 @@ export const SplitSearchPreviewWrapper = styled.div`
     justify-content: space-between;
     gap: ${({ theme }) => theme.spacing.small};
     flex-wrap: wrap;
+    cursor: pointer;
     .title {
       flex-grow: 1;
     }

@@ -68,8 +68,10 @@ export const useReminderStore = create<ReminderStoreState>((set, get) => ({
         reminder.id === newReminder.id ? { ...reminder, ...newReminder } : reminder
       )
     })),
-  updateReminderState: (id: string, rstate: ReminderState) =>
-    get().updateReminder({ ...get().reminders.find((reminder) => reminder.id === id), state: rstate }),
+  updateReminderState: (id: string, rstate: ReminderState) => {
+    mog('ReminderArmer: updateReminderState', { id, rstate })
+    get().updateReminder({ ...get().reminders.find((reminder) => reminder.id === id), state: rstate })
+  },
 
   clearReminders: () => set({ reminders: [] }),
 
@@ -363,8 +365,12 @@ export const useReminders = () => {
     mog('ReminderArmer: IpcAction.ACTION_REMINDER', { action, reminder })
     switch (action.type) {
       case 'open':
+        updateReminderState(reminder.id, {
+          ...reminder.state,
+          done: true
+        })
         mog('ReminderArmer: IpcAction.ACTION_REMINDER USE OPEN_REMINDER ACTION', { action, reminder })
-        ipcRenderer.send(IpcAction.OPEN_REMINDER_IN_MEX, { reminder: reminder })
+        appNotifierWindow(IpcAction.OPEN_REMINDER_IN_MEX, AppType.SPOTLIGHT, { reminder: reminder })
         break
       case 'delete':
         deleteReminder(reminder.id)

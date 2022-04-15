@@ -24,7 +24,7 @@ import { getNextReminderTime, getRelativeDate } from '../../../utils/time'
 import { LoadingButton } from '../Buttons/LoadingButton'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
-import { getNodeIdLast } from '../Sidebar/treeUtils'
+import { getNameFromPath } from '../Sidebar/treeUtils'
 import { SelectedDate } from './Reminders.style'
 
 interface ModalValue {
@@ -148,7 +148,7 @@ const CreateReminderModal = () => {
     const { time, nodeid, todoid, blockContent } = modalValue
 
     const path = getPathFromNodeid(nodeid)
-    const title = getNodeIdLast(path)
+    const title = getNameFromPath(path)
 
     const reminder: Reminder = {
       id: `${REMINDER_PREFIX}${nanoid()}`,
@@ -173,7 +173,7 @@ const CreateReminderModal = () => {
       reminder
     })
     addReminder(reminder)
-    saveAndClearBuffer()
+    saveAndClearBuffer(true)
     reset()
     closeModal()
   }
@@ -231,7 +231,7 @@ const CreateReminderModal = () => {
         <DatePickerStyles>
           <ReactDatePicker
             selected={new Date(modalValue.time ?? getNextReminderTime())}
-            showTimeSelect
+            showTimeInput
             timeFormat="p"
             timeIntervals={15}
             filterDate={(date) => {
@@ -264,7 +264,11 @@ const CreateReminderModal = () => {
           <Button large onClick={handleCancel}>
             Cancel
           </Button>
-          <LoadingButton loading={isSubmitting} buttonProps={{ type: 'submit', primary: true, large: true }}>
+          <LoadingButton
+            loading={isSubmitting}
+            alsoDisabled={!modalValue.time || modalValue.time < Date.now()}
+            buttonProps={{ type: 'submit', primary: true, large: true }}
+          >
             Save Reminder
           </LoadingButton>
         </ModalControls>

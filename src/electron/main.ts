@@ -661,16 +661,17 @@ ipcMain.on(
   IpcAction.ACTION_REMINDER,
   (ev, { from, data }: { from: AppType; data: { action: ReminderActions; reminder: Reminder; time?: number } }) => {
     const { action, reminder } = data
-    console.log('Acted on Reminder ', { from, data })
-    if (action.type === 'open') {
-      // console.log('Opening reminder', { data })
-      mex?.webContents.send(IpcAction.OPEN_REMINDER, { reminder: reminder })
-      mex.focus()
-      mex.show()
-    }
+    // mog('Action reminder', { from, data })
     spotlight?.webContents.send(IpcAction.ACTION_REMINDER, data)
   }
 )
+
+ipcMain.on(IpcAction.OPEN_REMINDER_IN_MEX, (ev, { from, data }: { from: AppType; data: { reminder: Reminder } }) => {
+  // mog('Open reminder in mex', { from, data })
+  mex?.webContents.send(IpcAction.OPEN_REMINDER, { reminder: data.reminder })
+  mex.focus()
+  mex.show()
+})
 
 ipcMain.on(IpcAction.RESIZE_REMINDER, (ev, { from, data }: { from: AppType; data: { height: number } }) => {
   const { height } = data
