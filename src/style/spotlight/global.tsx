@@ -12,6 +12,7 @@ const GlobalStyle = createGlobalStyle`
 
   #spotlight {
     height: 100%;
+    overflow: hidden;
   }
 
   body {

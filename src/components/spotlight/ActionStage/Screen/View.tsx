@@ -15,6 +15,7 @@ const StyledView = styled.section`
   flex-direction: row;
   /* align-items: center; */
   width: 100%;
+  margin-top: 0.5rem;
   /* background: ${({ theme }) => theme.colors.background.modal}; */
 `
 

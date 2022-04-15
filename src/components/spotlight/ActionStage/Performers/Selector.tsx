@@ -21,6 +21,8 @@ const Dropdown = styled.div`
 
 type SelectedProps = {
   actionId: string
+  value?: any
+  data?: any
 }
 
 export const SelectBar = styled(StyledSelect)`
@@ -31,6 +33,7 @@ export const SelectBar = styled(StyledSelect)`
   color: ${({ theme }) => theme.colors.text.default};
   & > div {
     border-radius: ${({ theme }) => theme.borderRadius.small};
+    margin: 0.5rem 0 0;
   }
 `
 
@@ -80,8 +83,11 @@ const StyledOption = styled.div`
 //   ) : null
 // }
 
-const Selector: React.FC<SelectedProps> = ({ actionId }) => {
-  const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({ data: [] })
+const Selector: React.FC<SelectedProps> = ({ actionId, data, value }) => {
+  const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
+    data: data ?? [],
+    value: value ?? null
+  })
   const activeAction = useActionStore((store) => store.activeAction)
   const updateValueInCache = useActionStore((store) => store.updateValueInCache)
 

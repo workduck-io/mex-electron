@@ -6,6 +6,7 @@ export const StyledList = styled(animated.div)`
   overflow: hidden auto;
   position: relative;
   scroll-behavior: smooth;
+  overflow-behavior: contain;
   max-height: 425px;
 `
 

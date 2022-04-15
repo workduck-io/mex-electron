@@ -12,7 +12,8 @@ export enum ProjectElementType {
   'labels' = 'labels',
   'icon' = 'icon',
   'desc' = 'desc',
-  'timestamp' = 'timestamp'
+  'timestamp' = 'timestamp',
+  'info' = 'info'
 }
 
 type ProjectType = {
