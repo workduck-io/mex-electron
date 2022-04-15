@@ -11,6 +11,16 @@ import { getSlug } from '../lib/strings'
 import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin'
 import { ELEMENT_ILINK } from '../../editor/Components/ilink/defaults'
 import { ELEMENT_INLINE_BLOCK } from '../../editor/Components/InlineBlock/types'
+import {
+  ELEMENT_MEDIA_EMBED,
+  ELEMENT_TABLE,
+  ELEMENT_TODO_LI,
+  ELEMENT_LINK,
+  ELEMENT_IMAGE,
+  ELEMENT_CODE_BLOCK
+} from '@udecode/plate'
+import { BlockType } from '../../store/useBlockStore'
+import { mog } from '../lib/helper'
 
 type ExcludeFromTextType = {
   types?: Set<string>
@@ -201,4 +211,73 @@ export const convertDataToIndexable = (data: FileData) => {
   }, diskIndex)
 
   return { result, nodeBlockMap }
+}
+
+// * Snippet Copy/Paste
+
+type BeforeCopyOptions = {
+  filter: (block: BlockType) => boolean
+  converter?: (block: BlockType) => { changed: boolean; block: BlockType }
+}
+
+export const convertToCopySnippet = (
+  content: Array<BlockType>,
+  options: BeforeCopyOptions = { filter: defaultCopyFilter }
+) => {
+  return content.reduce((previousArr, block) => {
+    const children = convertToCopySnippet(block.children || [], options)
+
+    if (options.filter(block)) {
+      if (options.converter) {
+        const { changed, block: newBlock } = options.converter(block)
+        previousArr.push(Object.assign({}, newBlock, children.length && !changed && { children }))
+      } else {
+        previousArr.push(Object.assign({}, block, children.length && { children }))
+      }
+    }
+
+    return previousArr
+  }, [])
+}
+
+export const defaultCopyConverter = (block) => {
+  if (block.type === ELEMENT_TODO_LI) {
+    return {
+      changed: true,
+      block: {
+        type: 'ul',
+        children: [
+          {
+            type: 'li',
+            children: [{ type: 'lic', children: block.children }]
+          }
+        ]
+      }
+    }
+  }
+
+  if (block.type === ELEMENT_MEDIA_EMBED || block.type === ELEMENT_IMAGE) {
+    return {
+      changed: true,
+      block: {
+        type: ELEMENT_LINK,
+        url: block.url,
+        children: [{ text: '' }]
+      }
+    }
+  }
+
+  return { changed: false, block }
+}
+
+export const defaultCopyFilter = ({ type }) => {
+  const exclude: Array<string> = [
+    ELEMENT_EXCALIDRAW,
+    ELEMENT_ILINK,
+    ELEMENT_TABLE,
+    ELEMENT_QA_BLOCK,
+    ELEMENT_INLINE_BLOCK,
+    ELEMENT_CODE_BLOCK
+  ]
+  return !exclude.includes(type)
 }

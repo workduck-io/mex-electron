@@ -181,7 +181,7 @@ const Refactor = () => {
       {mockRefactored.length > 0 && (
         <MockRefactorMap>
           <MRMHead>
-            <h1>Nodes being refactored... </h1>
+            <h1>Notes being refactored... </h1>
             <p>{mockRefactored.length} changes</p>
           </MRMHead>
           {mockRefactored.map((t) => (

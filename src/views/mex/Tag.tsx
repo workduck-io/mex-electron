@@ -179,7 +179,7 @@ const Tag = () => {
       </TagsSidebar>
       <TagMain>
         <h1>#{tag}</h1>
-        <p>Nodes with tag</p>
+        <p>Notes with tag</p>
         <Results view={View.Card}>
           {transition((styles, nodeid, _t, _i) => {
             const con = contents[nodeid]

@@ -427,9 +427,9 @@ function NodeSelect({
             <Icon width={24} icon={lock2Line} />
             {nodeSelectState.reserved && (
               <SuggestionContentWrapper>
-                <SuggestionText>Warning: Reserved Node</SuggestionText>
-                <SuggestionDesc>Reserved Nodes cannot be used!</SuggestionDesc>
-                <SuggestionDesc>However, Children inside reserved nodes can be used.</SuggestionDesc>
+                <SuggestionText>Warning: Reserved Note</SuggestionText>
+                <SuggestionDesc>Reserved Notes cannot be used!</SuggestionDesc>
+                <SuggestionDesc>However, Children inside reserved notes can be used.</SuggestionDesc>
               </SuggestionContentWrapper>
             )}
           </SuggestionError>

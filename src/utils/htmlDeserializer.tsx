@@ -14,7 +14,6 @@ import getPlugins from '../editor/Plugins/plugins'
 import { updateIds } from './dataTransform'
 import { Descendant, Editor, Text } from 'slate'
 import { generateTempId } from '../data/Defaults/idPrefixes'
-import { mog } from './lib/helper'
 
 export const plateEditor = () => {
   const plugins = getPlugins(components, { exclude: { dnd: true } })

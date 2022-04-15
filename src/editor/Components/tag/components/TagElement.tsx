@@ -31,6 +31,7 @@ export const TagElement = ({ attributes, children, element }: TagElementProps) =
     },
     [selected, focused]
   )
+
   useHotkeys(
     'delete',
     () => {
