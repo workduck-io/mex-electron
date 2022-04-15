@@ -9,6 +9,7 @@ export const FullWidth = styled.div`
   width: 100%;
   height: 420px;
   overflow-y: auto;
+  overflow-behavior: contain;
   margin-top: 0.5rem;
 `
 
