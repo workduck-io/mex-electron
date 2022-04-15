@@ -230,9 +230,9 @@ export const applyTransforms = (d: any, transforms: DataTransformation[]): { dat
 }
 
 export const clearLocalStorage = (fileDataVersion: string, currVersion: string) => {
-  const usesAccessToken = semver.compare(fileDataVersion, '0.9.0-alpha.1')
-  const usesIdToken = semver.compare(currVersion, '0.9.0-alpha.1')
+  const compareFileDataVersion = semver.compare(fileDataVersion, '0.9.0-alpha.4')
+  const compareCurrentVersion = semver.compare(currVersion, '0.9.0-alpha.4')
 
-  if (usesAccessToken === -1 && usesIdToken >= 0) return true
+  if (compareFileDataVersion === -1 && compareCurrentVersion >= 0) return true
   return false
 }
