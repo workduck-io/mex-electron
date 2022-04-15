@@ -24,6 +24,7 @@ import IconButton from '../../style/Buttons'
 import { getTodosFromContent } from '../../utils/lib/content'
 import { mog } from '../../utils/lib/helper'
 import { getEventNameFromElement } from '../../utils/lib/strings'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 
 export const useDataSaverFromContent = () => {
   const setContent = useContentStore((state) => state.setContent)
@@ -187,39 +188,38 @@ export const SaverButton = ({
 export const useSnippetSaver = () => {
   // const editorState = usePlateSelectors(usePlateId()).value()
   const { saveAndClearBuffer } = useSnippetBuffer()
-  const snippet = useSnippetStore((state) => state.editor.snippet)
-  const addTitle = useSnippetBufferStore((store) => store.addTitle)
   const { updater } = useUpdater()
+  const loadSnippet = useSnippetStore((store) => store.loadSnippet)
 
-  const onSave = (title: string) => {
-    // mog('Snippet editor', { editorState })
-    addTitle(snippet.id, title)
+  const onSave = () => {
     saveAndClearBuffer()
-    // const newSnippet = { ...snippet, title }
-    // updateSnippet(snippet.id, newSnippet)
-    // updateSnippetIndex(newSnippet)
     updater()
+
     toast('Snippet Saved!', { duration: 1000 })
   }
 
   return { onSave }
 }
 
+interface SnippetExtras {
+  title: string
+  isTemplate: boolean
+}
 interface SnippetSaverButtonProps extends SaverButtonProps {
-  getSnippetTitle: () => string
+  getSnippetExtras: () => SnippetExtras
 }
 
-export const SnippetSaverButton = ({ callbackAfterSave, title, getSnippetTitle }: SnippetSaverButtonProps) => {
+export const SnippetSaverButton = ({ callbackAfterSave, title, getSnippetExtras }: SnippetSaverButtonProps) => {
   const { onSave: onSaveFs } = useSnippetSaver()
   const shortcuts = useHelpStore((state) => state.shortcuts)
   const { trackEvent } = useAnalytics()
 
   const onSave = () => {
-    const snippetTitle = getSnippetTitle()
+    const extras = getSnippetExtras()
+    trackEvent(getEventNameFromElement('Editor', ActionType.CREATE, 'Snippet'), { 'mex-title': extras.title })
 
-    trackEvent(getEventNameFromElement('Editor', ActionType.CREATE, 'Snippet'), { 'mex-title': snippetTitle })
+    onSaveFs()
 
-    onSaveFs(snippetTitle)
     if (callbackAfterSave) callbackAfterSave()
   }
 

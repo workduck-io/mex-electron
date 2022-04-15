@@ -41,6 +41,7 @@ const SnippetEditor = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [content, setContent] = useState<any[] | undefined>(undefined)
 
+  const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const { updater } = useUpdater()
   const { addOrUpdateValBuffer, saveAndClearBuffer, getBufferVal } = useSnippetBuffer()
   const addTitle = useSnippetBufferStore((store) => store.addTitle)
@@ -50,6 +51,7 @@ const SnippetEditor = () => {
 
   useEffect(() => {
     if (snippet) {
+      mog('Snippy', { snippet })
       addAll(snippet.id, snippet.content, snippet.title)
       setContent(snippet.content)
     } else {
@@ -57,9 +59,9 @@ const SnippetEditor = () => {
     }
   }, [snippet])
 
-  const getSnippetTitle = () => {
+  const getSnippetExtras = () => {
     const val = getBufferVal(snippet?.id)
-    return val?.title || snippet?.title || ''
+    return { title: val?.title || snippet?.title || '', isTemplate: val?.isTemplate || snippet?.isTemplate || false }
   }
 
   const isSnippetTemplate = useMemo(() => {
@@ -113,6 +115,13 @@ const SnippetEditor = () => {
     }
   }, [])
 
+  const callbackAfterSave = () => {
+    const { title } = getSnippetExtras()
+    loadSnippet(snippet.id)
+    goTo(ROUTE_PATHS.snippet, NavigationType.push, snippet.id, { title })
+    // const snippet = useSnippetStore.getState().sn
+  }
+
   const returnToSnippets = () => {
     saveAndClearBuffer()
     updater()
@@ -158,7 +167,11 @@ const SnippetEditor = () => {
                 highlight={isSnippetTemplate}
                 title={isSnippetTemplate ? 'Convert to Snippet' : 'Convert to Template'}
               />
-              <SnippetSaverButton getSnippetTitle={getSnippetTitle} title="Save Snippet" />
+              <SnippetSaverButton
+                getSnippetExtras={getSnippetExtras}
+                callbackAfterSave={callbackAfterSave}
+                title="Save Snippet"
+              />
               {IS_DEV && <SnippetCopierButton />}
             </InfoTools>
           ) : (
