@@ -11,6 +11,8 @@ export type SpotlightAppStore = {
   setReset: () => void
   isLoading: boolean
   setIsLoading: (value: boolean) => void
+  view: boolean
+  setView: (value: boolean) => void
 }
 
 export const useSpotlightAppStore = create<SpotlightAppStore>((set, get) => ({
@@ -21,6 +23,9 @@ export const useSpotlightAppStore = create<SpotlightAppStore>((set, get) => ({
 
   normalMode: true,
   setNormalMode: (value: boolean) => set(() => ({ normalMode: value })),
+
+  view: false,
+  setView: (value: boolean) => set({ view: value }),
 
   search: '',
   setSearch: (value) => set({ search: value }),

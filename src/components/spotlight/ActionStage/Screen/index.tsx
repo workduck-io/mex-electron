@@ -31,13 +31,16 @@ export const isURL = (text: string) => {
 
 const Screen: React.FC<ScreenProps> = ({ actionId }) => {
   const [resData, setResData] = useState<Array<TemplateConfig>>([])
-  const activeAction = useActionStore((store) => store.activeAction)
+  const actionToPerform = useActionStore((store) => store.actionToPerform)
   const getCachedAction = useActionStore((store) => store.getCachedAction)
+  const selectedValue = useActionStore((store) => store.selectedValue)
 
   const isLoading = useSpotlightAppStore((store) => store.isLoading)
   const { performer, isReady } = useActionPerformer()
   const [activeIndex, setActiveIndex] = useState(-1)
-  const [view, setView] = useState<boolean>(false)
+  const view = useSpotlightAppStore((store) => store.view)
+  const setView = useSpotlightAppStore((store) => store.setView)
+
   const { search } = useSpotlightContext()
 
   useEffect(() => {
@@ -53,7 +56,7 @@ const Screen: React.FC<ScreenProps> = ({ actionId }) => {
         })
         .catch((err) => mog('error', { err }))
     }
-  }, [actionId, activeAction.isReady])
+  }, [actionId, actionToPerform, selectedValue])
 
   useEffect(() => {
     const data = (getCachedAction(actionId)?.data?.displayData as TemplateConfig[]) ?? []

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 
 import styled from 'styled-components'
 import { StyledSelect } from '../../../../style/Form'
-import { mog } from '../../../../utils/lib/helper'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
 import { useActionStore } from '../../Actions/useActionStore'
 import { StyledBackground } from '../../styled'
@@ -71,6 +70,8 @@ const StyledOption = styled.div`
 `
 
 // eslint-disable-next-line react/prop-types
+
+// * Custom Option for Selector component
 // const CustomOption = ({ innerProps, isDisabled, data }) => {
 //   const sub = data?.value?.display?.sub
 //   const label = data?.label
@@ -88,8 +89,9 @@ const Selector: React.FC<SelectedProps> = ({ actionId, data, value }) => {
     data: data ?? [],
     value: value ?? null
   })
-  const activeAction = useActionStore((store) => store.activeAction)
+  const actionToPerform = useActionStore((store) => store.actionToPerform)
   const updateValueInCache = useActionStore((store) => store.updateValueInCache)
+  const selectedValue = useActionStore((store) => store.selectedValue)
 
   const { performer, isPerformer } = useActionPerformer()
 
@@ -108,13 +110,13 @@ const Selector: React.FC<SelectedProps> = ({ actionId, data, value }) => {
           }
         })
 
-        if (res?.value) {
-          const selected = { label: res?.value?.select?.value, value: res.value }
-          setInputValue({ data, value: selected })
-        } else setInputValue({ data })
+        // if (res?.value) {
+        //   const selected = { label: res?.value?.select?.value, value: res.value }
+        //   setInputValue({ data, value: selected })
+        setInputValue({ data })
       })
     }
-  }, [actionId, activeAction.at])
+  }, [actionId, actionToPerform, selectedValue])
 
   const handleChange = (selected: any) => {
     updateValueInCache(actionId, selected)
@@ -122,9 +124,7 @@ const Selector: React.FC<SelectedProps> = ({ actionId, data, value }) => {
 
   return (
     <SelectBar
-      // components={{ Option: CustomOption }}
       autoFocus={isPerformer(actionId)}
-      isDisabled={!isPerformer(actionId)}
       onChange={handleChange}
       value={inputValue.value}
       options={inputValue.data}

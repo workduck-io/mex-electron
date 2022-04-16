@@ -76,19 +76,26 @@ const List = ({
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
 
   const listStyle = useMemo(() => {
-    const style = { width: '55%' }
+    const style = { width: '55%', marginRight: '0.5rem' }
 
     if (!normalMode) {
       style.width = '0%'
+      style.marginRight = '0'
     }
 
     if (searchResults[activeIndex] && searchResults[activeIndex]?.category !== CategoryType.backlink) {
       style.width = '100%'
+      style.marginRight = '0'
     }
 
     if (searchResults[activeIndex] && searchResults[activeIndex]?.category === CategoryType.meeting) {
-      if (normalMode) style.width = '55%'
-      else style.width = '0%'
+      if (normalMode) {
+        style.width = '55%'
+        style.marginRight = '0.5rem'
+      } else {
+        style.width = '0%'
+        style.marginRight = '0'
+      }
     }
 
     return style

@@ -55,7 +55,7 @@ const Row: React.FC<RowProps> = ({ row, onClick, type = 'row', isView }) => {
 
   return (
     <RowContainer type={type} onClick={onClick} onDoubleClick={handleOpenURL}>
-      {row.slice(0, ROW_ITEMS_LIMIT).map((item, index) => (
+      {row.map((item, index) => (
         <ErrorBoundary key={index} fallback={<></>}>
           <Project key={`PROJECT_${index}`} isView={isView} item={item} type={item?.type as any} />
         </ErrorBoundary>

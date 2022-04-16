@@ -30,20 +30,17 @@ import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
 import { AppleNote } from '../../../utils/importers/appleNotes'
 import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useBrowserNavigation, useRouting } from '../../../views/routes/urls'
-import { useSearch } from '../../../hooks/useSearch'
-import { Reminder, ReminderActions } from '../../../types/reminders'
-import { useReminders, useReminderStore } from '../../../hooks/useReminders'
-import { useCalendar, useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
+import { useReminderStore } from '../../../hooks/useReminders'
+import { useCalendar } from '../../../hooks/useCalendar'
 import { useTokens } from '../../../services/auth/useTokens'
 import { GOOGLE_OAUTH_URL } from '../../../apis/routes'
 import toast from 'react-hot-toast'
-import { useBufferStore, useEditorBuffer } from '../../../hooks/useEditorBuffer'
+import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
   const { goTo } = useRouting()
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
-  const authenticated = useAuthStore(({ authenticated }) => authenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const pushHs = useHistoryStore((store) => store.push)
   const isOnboarding = useOnboard((s) => s.isOnboarding)

@@ -58,8 +58,6 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
   useEffect(() => {
     if (!preview.isSelection) {
       const activeNodeContent = getContent(nodeId)?.content ?? []
-      mog('-------------  Setting node content  ------------------')
-      mog('PreviewContentSet', { activeNodeContent })
       if (activeNodeContent.length) setNodeContent(activeNodeContent)
     }
   }, [contents])

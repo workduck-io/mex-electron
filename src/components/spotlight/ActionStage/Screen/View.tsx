@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Row from './Row'
 import Project from '../Project'
+import { mog } from '../../../../utils/lib/helper'
 
 type ViewProps = {
   item: any
@@ -16,6 +17,7 @@ const StyledView = styled.section`
   /* align-items: center; */
   width: 100%;
   margin-top: 0.5rem;
+  max-height: 425px;
   /* background: ${({ theme }) => theme.colors.background.modal}; */
 `
 
@@ -23,7 +25,7 @@ const ViewInfo = styled.div`
   flex: 2;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 45%;
   padding: ${({ theme }) => theme.spacing.small};
 
   border-radius: ${({ theme }) => theme.borderRadius.small};
@@ -33,13 +35,15 @@ const ViewInfo = styled.div`
 
 const ViewMeta = styled.div`
   flex: 1;
-  width: 100%;
+  width: 55%;
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background: ${({ theme }) => theme.colors.background.modal};
 `
 
 const View: React.FC<ViewProps> = ({ item, onBack, onNext, onPrev }) => {
+  if (!item) return null
+
   const viewInfos = item.filter((item) => item.type === 'title' || item.type === 'desc')
   const viewMeta = item.filter((item) => item.type !== 'title' && item.type !== 'desc')
 
@@ -49,8 +53,6 @@ const View: React.FC<ViewProps> = ({ item, onBack, onNext, onPrev }) => {
         {viewInfos.map((item, index) => (
           <Project item={item} type={item.type} key={index} isView />
         ))}
-        {/* <pre>{JSON.stringify(viewInfos, null, 2)}</pre>
-        <pre>{JSON.stringify(item, null, 2)}</pre> */}
       </ViewInfo>
       <ViewMeta>
         <Row

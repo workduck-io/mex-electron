@@ -96,8 +96,8 @@ const Search: React.FC = () => {
     handleSearchInput(query)
   }
 
-  const type = getQuery(input).type
-  const before = type === CategoryType.search ? '' : type
+  // const type = getQuery(input).type
+  // const before = type === CategoryType.search ? '' : type
 
   const disabled = !normalMode
 
@@ -108,18 +108,18 @@ const Search: React.FC = () => {
       <CenterIcon id="wd-mex-search-left-icon" cursor={!normalMode} onClick={onBackClick}>
         <Icon color={theme.colors.primary} height={24} width={24} icon={icon} />
       </CenterIcon>
-      <Before before={before} id="wd-mex-spotlight-quick-action-chip">
-        <StyledInput
-          ref={ref}
-          disabled={disabled}
-          autoFocus={!disabled}
-          value={input}
-          id="wd-mex-spotlight-search-input"
-          name="spotlight_search"
-          placeholder={placeholder}
-          onChange={onChange}
-        />
-      </Before>
+      {/* <Before before={before} id="wd-mex-spotlight-quick-action-chip"> */}
+      <StyledInput
+        ref={ref}
+        disabled={disabled}
+        autoFocus={!disabled}
+        value={input}
+        id="wd-mex-spotlight-search-input"
+        name="spotlight_search"
+        placeholder={placeholder}
+        onChange={onChange}
+      />
+      {/* </Before> */}
       {saved && <Message text="Saved" />}
       <CenterIcon id="wd-mex-spotlight-logo">
         {isLoading ? <Loading color={theme.colors.primary} dots={3} transparent /> : <WDLogo />}
