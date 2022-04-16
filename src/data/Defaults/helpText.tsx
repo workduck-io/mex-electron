@@ -28,10 +28,10 @@ export const BacklinksHelp = (
 
 export const TreeHelp = (
   <div>
-    <h1>Tree</h1>
+    <h1>Notes</h1>
     <p>All of your notes in a hierarchal(nested) structure.</p>
     <p>Click on note to navigate</p>
-    <p>The tree is sorted by the note&#39;s creation time.</p>
+    <p>The note is sorted by it&#39;s creation time.</p>
   </div>
 )
 
