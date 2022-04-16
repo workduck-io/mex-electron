@@ -12,6 +12,7 @@ import { useSpotlightAppStore } from '../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../store/settings.spotlight'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
+import { useActionStore } from '../../components/spotlight/Actions/useActionStore'
 
 export const useGlobalShortcuts = () => {
   const { setSelection, setSearch, setActiveItem, activeItem, search, selection } = useSpotlightContext()
@@ -27,6 +28,8 @@ export const useGlobalShortcuts = () => {
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const setCurrentListItem = useSpotlightEditorStore((s) => s.setCurrentListItem)
+  const clearPerformedAction = useActionStore((store) => store.clear)
+  const setView = useSpotlightAppStore((store) => store.setView)
 
   const handleCancel = () => {
     setNormalMode(true)
@@ -44,10 +47,23 @@ export const useGlobalShortcuts = () => {
         event.preventDefault()
         if (!shortcutDisabled) {
           if (location.pathname === '/action') {
-            handleCancel()
-            goTo(ROUTE_PATHS.home, NavigationType.replace)
+            // * If no value is present, take back to home view
+            if (!search.value) {
+              handleCancel()
+              clearPerformedAction()
+              goTo(ROUTE_PATHS.home, NavigationType.replace)
+              return
+            }
+
+            // * clear action search
+            if (useSpotlightAppStore.getState().view) {
+              setView(false)
+            } else {
+              setInput('')
+              setSearch({ value: '', type: CategoryType.search })
+            }
           } else if (selection && normalMode && !search.value && !activeItem.active) {
-            ipcRenderer.send('close') // * TO be continued when flow are introd
+            ipcRenderer.send('close') // * To be continued when flow are introd
             setSelection(undefined) // * this will do something
           } else if ((search.value && normalMode) || activeItem.active) {
             setInput('')

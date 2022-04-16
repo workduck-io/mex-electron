@@ -173,7 +173,7 @@ export const initActions: Array<ListItemType> = [
         keystrokes: 'Enter'
       }
     },
-    icon: 'logos:github-icon',
+    icon: 'codicon:github',
     extras: {
       base_url: 'https://gist.new'
     }
@@ -191,7 +191,7 @@ export const initActions: Array<ListItemType> = [
         keystrokes: 'Enter'
       }
     },
-    icon: 'logos:github-icon',
+    icon: 'codicon:github',
     extras: {
       base_url: 'https://repo.new'
     }
@@ -300,7 +300,7 @@ export const initActions: Array<ListItemType> = [
         keystrokes: 'Enter'
       }
     },
-    icon: 'logos:github-icon',
+    icon: 'codicon:github',
     extras: {
       base_url: 'https://github.com/search?ref=opensearch&q='
     }

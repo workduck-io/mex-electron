@@ -47,7 +47,7 @@ export const getListItemFromAction = (config: ActionHelperConfig, actionGroup?: 
     category: CategoryType.action,
     id: config.actionId,
     type: ItemActionType.action,
-    description: config.name,
+    description: config.description,
     shortcut: {
       search: {
         category: 'action',

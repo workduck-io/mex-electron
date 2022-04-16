@@ -22,21 +22,21 @@ export const useActionPerformer = () => {
   const addActionInCache = useActionStore((store) => store.addActionInCache)
   const getPrevActionValue = useActionStore((store) => store.getPrevActionValue)
   const setIsLoading = useSpotlightAppStore((store) => store.setIsLoading)
-  const getCachedAction = useActionStore((store) => store.getCachedAction)
+  const actionToPerform = useActionStore((store) => store.actionToPerform)
 
   /* 
     Looks for the action in the cache first,
     Performs an actions and rsturn's the result
     if not found, it will perform the action and add it to the cache
   */
+
   const performer = async (actionId: string, fetch?: boolean) => {
     const actionConfig = actionConfigs[actionId]
     const prevActionValue = getPrevActionValue(actionId)
 
     // * if we have a cache, return the cached result
-    const cache = getCachedAction(actionId)
-    if (cache?.data) return { ...cache?.data, value: cache?.value }
-    // mog('CACHED RETURNED', { prevActionValue, actionConfig, authConfig })
+    // const cache = getCachedAction(actionId)
+    // if (cache?.data) return { ...cache?.data, value: cache?.value }
 
     setIsLoading(true)
 
@@ -66,14 +66,11 @@ export const useActionPerformer = () => {
   }
 
   const isPerformer = (actionId: string) => {
-    const positionAt = activeAction?.at
-    const actionIndex = activeAction.actionIds?.indexOf(actionId)
-
-    return actionIndex === positionAt
+    return actionToPerform === actionId
   }
 
   const isReady = () => {
-    return activeAction.isReady
+    return activeAction.id === actionToPerform
   }
 
   const getConfig = (actionId: string) => actionConfigs[actionId]

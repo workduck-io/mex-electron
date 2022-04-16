@@ -48,7 +48,7 @@ const ProjectIconMex: React.FC<{ isMex: boolean; icon: string }> = ({ isMex, ico
 }
 
 const ProjectIcon: React.FC<TemplateItemProp> = ({ item, isView }) => {
-  if (!item.icon) return null
+  if (!item.icon) return <></>
 
   const mexIcon = !isUrl(item.icon)
 

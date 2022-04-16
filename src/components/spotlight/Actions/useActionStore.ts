@@ -1,9 +1,8 @@
 import create from 'zustand'
 import { ActionHelperConfig, ReturnType, ActionGroup } from '@workduck-io/action-request-helper'
-import { actionsConfig } from './data'
-import { mog } from '../../../utils/lib/helper'
-import { persist } from 'zustand/middleware'
+import { actionGroups, actionsConfig } from './data'
 import { ListItemType } from '../SearchResults/types'
+import { persist } from 'zustand/middleware'
 
 type ActiveActionType = {
   id: string
@@ -41,8 +40,14 @@ type ActionStoreType = {
   actions: Array<ListItemType>
   setActions: (actions: Array<ListItemType>) => void
 
-  actionGroups: Array<ActionGroup>
-  setActionGroups: (actionGroups: Array<ActionGroup>) => void
+  actionGroups: Record<string, ActionGroup>
+  setActionGroups: (actionGroups: Record<string, ActionGroup>) => void
+
+  selectedValue?: any
+  setSelectedValue: (value: any) => void
+
+  actionToPerform?: string
+  setActionToPerform: (actionToPerform: string) => void
 
   // * Actions are stored in this config
   actionConfigs: Record<string, ActionHelperConfig>
@@ -59,6 +64,9 @@ type ActionStoreType = {
   activeAction?: ActiveActionType
   setPerformingActionIndex: (performingActionId: string) => void
   initAction: (actionId: string) => void
+
+  //* Clear fields
+  clear: () => void
 }
 
 export const useActionStore = create<ActionStoreType>(
@@ -67,8 +75,8 @@ export const useActionStore = create<ActionStoreType>(
       actions: [],
       setActions: (actions: Array<ListItemType>) => set({ actions }),
 
-      actionGroups: [],
-      setActionGroups: (actionGroups: Array<ActionGroup>) => set({ actionGroups }),
+      actionGroups: actionGroups,
+      setActionGroups: (actionGroups: Record<string, ActionGroup>) => set({ actionGroups }),
 
       actionConfigs: actionsConfig(),
       setActionConfigs: (actionConfigs: Record<string, any>) => set({ actionConfigs }),
@@ -79,6 +87,8 @@ export const useActionStore = create<ActionStoreType>(
         set({ activeAction: updatedAction })
       },
 
+      setSelectedValue: (value) => set({ selectedValue: value }),
+
       initAction: (actionId) => {
         const actionConfigs = get().actionConfigs
         const actionCache = get().actionsCache
@@ -87,22 +97,26 @@ export const useActionStore = create<ActionStoreType>(
         const renderType = actionConfigs[actionId]?.returnType
         const preActionId = actionConfigs[actionId]?.preActionId
 
-        let isReady = true
+        let actionToPerform = actionId
         let actionIds: Array<string> | undefined
 
         if (preActionId) {
           actionIds = getActionIds(actionId, actionConfigs, [])
-          isReady = false
+          actionToPerform = actionIds[0]
         }
 
         if (actionCache[actionId]) {
-          isReady = true
+          actionToPerform = actionId
         }
 
         // * Final component will be rendered based on renderType (or with response item type)
-        const activeAction = { id: actionId, actionIds, renderType, at: 0, isReady, size: actionIds?.length ?? 0 }
+        const activeAction = { id: actionId, actionIds, renderType, at: 0, size: actionIds?.length ?? 0 }
 
-        set({ activeAction })
+        set({ activeAction, actionToPerform })
+      },
+
+      setActionToPerform: (perfomerActionId: string) => {
+        set({ actionToPerform: perfomerActionId })
       },
 
       actionsCache: {},
@@ -140,6 +154,7 @@ export const useActionStore = create<ActionStoreType>(
           const index = cachedActions.findIndex((cached) => cached.actionId === actionId)
 
           const actions = cachedActions.slice(0, index)
+
           const updatedActions = [...actions, { ...cachedActions[index], value: selection.value }]
 
           const size = activeAction?.size - 1
@@ -147,13 +162,13 @@ export const useActionStore = create<ActionStoreType>(
           const at = size < updatedAt + 1 ? size : updatedAt + 1
 
           const isReady = size === updatedAt
+          const actionToPerform = isReady ? activeAction.id : activeAction.actionIds[at]
 
           actionsCache[activeAction?.id] = updatedActions
 
-          const updatedActiveAction = { ...activeAction, at, isReady }
-          mog('Updated Action', { actions, updatedActiveAction, updatedActions })
+          const updatedActiveAction = { ...activeAction, at }
 
-          set({ actionsCache, activeAction: updatedActiveAction })
+          set({ actionsCache, activeAction: updatedActiveAction, actionToPerform, selectedValue: selection.value })
         }
       },
 
@@ -176,10 +191,11 @@ export const useActionStore = create<ActionStoreType>(
       getPrevActionValue: () => {
         const activeAction = get().activeAction
         const at = activeAction?.at
+        const actionToPerform = get().actionToPerform
         const actionId = activeAction?.actionIds?.[at]
         const cachedAction = actionId && get().getCachedAction(actionId)
 
-        if (activeAction.isReady) return cachedAction
+        if (activeAction.id === actionToPerform) return cachedAction
 
         // if (cachedAction?.value) {
         //   return cachedAction
@@ -189,6 +205,14 @@ export const useActionStore = create<ActionStoreType>(
         const prevAction = get().getCachedAction(prevActionId)
 
         return prevAction
+      },
+
+      clear: () => {
+        set({
+          selectedValue: undefined,
+          activeAction: undefined,
+          actionToPerform: undefined
+        })
       }
     }),
     {

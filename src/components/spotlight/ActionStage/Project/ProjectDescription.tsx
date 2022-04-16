@@ -12,6 +12,7 @@ export const TemplateCss = css`
 const DescContainer = styled.span<{ isView: boolean }>`
   ${TemplateCss}
   overflow-y: auto;
+  height: 100%;
 
   ${({ isView }) =>
     isView &&

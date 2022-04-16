@@ -5,14 +5,13 @@ import { useSingleton } from '@tippyjs/react'
 import { transparentize } from 'polished'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import tinykeys from 'tinykeys'
 import { useApi } from '../../../apis/useSaveApi'
-import { DRAFT_NODE } from '../../../data/Defaults/idPrefixes'
 import { IpcAction } from '../../../data/IpcAction'
 import { GetIcon } from '../../../data/links'
-import { getNewDraftKey, getUntitledDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import { getUntitledDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
 import useLayout from '../../../hooks/useLayout'
@@ -116,7 +115,6 @@ const Nav = ({ links }: NavProps) => {
   const { getFocusProps } = useLayout()
 
   const { goTo } = useRouting()
-  const location = useLocation()
   const { saveNodeName } = useLoad()
 
   const [source, target] = useSingleton()

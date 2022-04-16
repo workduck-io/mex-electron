@@ -44,7 +44,7 @@ const GlobalListener = memo(() => {
   const { onSave } = useSaver()
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()
-  const { goTo, location } = useRouting()
+  const { goTo } = useRouting()
   // const { initActionPerformers } = useActionPerformer()
 
   const userDetails = useAuthStore((state) => state.userDetails)
@@ -73,6 +73,7 @@ const GlobalListener = memo(() => {
         setSelection(undefined)
       } else {
         // * If user captures a content when in action mode, then we need to redirect him to the home page
+        useSpotlightAppStore.getState().setView(false)
         goTo(ROUTE_PATHS.home, NavigationType.replace)
         setTemp(data)
       }

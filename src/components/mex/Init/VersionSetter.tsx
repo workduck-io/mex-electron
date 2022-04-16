@@ -1,6 +1,5 @@
 import { getGlobal } from '@electron/remote'
 import React, { useEffect } from 'react'
-import { mog } from '../../../utils/lib/helper'
 import { useVersionStore } from '../../../store/useAppDataStore'
 // import { useAuthStore } from '../../../services/auth/useAuth'
 

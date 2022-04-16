@@ -9,14 +9,14 @@ import { PrimaryText } from '../../../../style/Integration'
 import React from 'react'
 import { cleanString } from '../../../../data/Defaults/idPrefixes'
 import { QuickLinkType } from '../../../mex/NodeSelect/NodeSelect'
-import { mog } from '../../../../utils/lib/helper'
 
 export const ActionIcon = styled.div`
   display: flex;
   align-items: center;
   margin-right: 0.75rem;
+
   img {
-    height: 24px;
+    height: 2rem;
     aspect-ratio: 1/1;
   }
 `
@@ -69,8 +69,8 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
           <Icon
             color={theme.colors.primary}
             style={{ marginRight: '0.75rem' }}
-            height={18}
-            width={18}
+            height={20}
+            width={20}
             icon={item?.icon}
           />
           <div style={{ maxWidth: '200px' }}>
