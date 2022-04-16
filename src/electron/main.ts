@@ -70,8 +70,6 @@ if (process.platform === 'win32') {
   app.disableHardwareAcceleration()
 }
 
-require('@electron/remote/main').initialize()
-
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
 
@@ -171,8 +169,6 @@ const createSpotLighWindow = (show?: boolean) => {
     spotlight = null
   })
 
-  require('@electron/remote/main').enable(spotlight.webContents)
-
   if (IS_DEV) spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
@@ -201,8 +197,6 @@ const createMexWindow = () => {
       mex.show()
     }
   })
-
-  require('@electron/remote/main').enable(mex.webContents)
 
   const menuBuilder = new MenuBuilder(mex)
   menuBuilder.buildMenu()
@@ -764,4 +758,9 @@ ipcMain.handle(IpcAction.QUERY_INDEX_BY_NODEID, async (_event, key, nodeId, quer
 ipcMain.handle(IpcAction.QUERY_INDEX_WITH_RANKING, async (_event, key, query) => {
   const results = await searchIndexWithRanking(key, query)
   return results
+})
+
+ipcMain.handle(IpcAction.VERSION_GETTER, async (_event) => {
+  const version = app.getVersion()
+  return version
 })
