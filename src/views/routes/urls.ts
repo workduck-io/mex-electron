@@ -71,7 +71,7 @@ export const useBrowserNavigation = () => {
       if (node.nodeid) {
         const nodeid = location.pathname.split('/')[2]
         if (nodeid && nodeid !== node.nodeid) {
-          mog('Navigation reloaded', { nodeid, location, node })
+          // mog('Navigation reloaded', { nodeid, location, node })
           loadNode(nodeid)
           addRecent(nodeid)
         }
