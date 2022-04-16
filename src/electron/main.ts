@@ -405,6 +405,7 @@ app.on('quit', () => {
   console.log('App quit')
 })
 
+app.removeAsDefaultProtocolClient('mex')
 app.setAsDefaultProtocolClient('mex')
 
 app.on('open-url', function (event, url) {
