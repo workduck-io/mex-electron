@@ -2,7 +2,7 @@ import arrowLeftLine from '@iconify/icons-ri/arrow-left-line'
 import { mog } from '../../utils/lib/helper'
 import { debounce } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { SnippetSaverButton } from '../../editor/Components/Saver'
 import Editor from '../../editor/Editor'
 import { EditorWrapper, InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../../style/Editor'
@@ -23,6 +23,10 @@ import { Icon } from '@iconify/react'
 import magicLine from '@iconify/icons-ri/magic-line'
 import { TemplateToggle } from '../../style/Snippets'
 import ItemTag from '../../ui/components/ItemTag/ItemTag'
+import { DRAFT_NODE } from '../../data/Defaults/idPrefixes'
+import { InputFormError } from '../mex/Forms/Input'
+import toast from 'react-hot-toast'
+import { getSlug } from '../../utils/lib/strings'
 
 type Inputs = {
   title: string
@@ -32,14 +36,11 @@ const SnippetEditor = () => {
   const snippet = useSnippetStore((store) => store.editor.snippet)
   const { goTo } = useRouting()
 
-  const {
-    register,
-    getValues,
-    formState: { errors }
-  } = useForm<Inputs>()
+  const { control, handleSubmit } = useForm<Inputs>()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [content, setContent] = useState<any[] | undefined>(undefined)
+  // const [value, setValue] = useState('')
 
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const { updater } = useUpdater()
@@ -81,8 +82,8 @@ const SnippetEditor = () => {
   }
 
   const onChangeTitle = (title: string) => {
-    mog('onChangeTitle', { title })
-    addTitle(snippet.id, title)
+    const snippetTitle = title ? getSlug(title) : DRAFT_NODE
+    addTitle(snippet.id, snippetTitle)
   }
 
   const { params } = useRouting()
@@ -128,6 +129,15 @@ const SnippetEditor = () => {
     goTo(ROUTE_PATHS.snippets, NavigationType.push)
   }
 
+  const defaultValue = snippet && snippet.title !== DRAFT_NODE ? snippet.title : ''
+
+  const onDelay = debounce((value) => onChangeTitle(value), 250)
+
+  const onChange = (e) => {
+    const value = e.target.value
+    onDelay(value)
+  }
+
   return (
     <>
       <StyledEditor className="snippets_editor">
@@ -140,19 +150,9 @@ const SnippetEditor = () => {
             title={'Return To Snippets'}
           />
           <NoteTitle>
-            {snippet && (!snippet.isTemplate || IS_DEV) ? (
-              <>
-                [[{' '}
-                <Input
-                  autoFocus
-                  defaultValue={snippet && snippet.title}
-                  onChange={debounce((e) => onChangeTitle(e.target.value), 250)}
-                />{' '}
-                ]]
-              </>
-            ) : (
-              <>[[ {snippet && snippet.title} ]]</>
-            )}
+            <>
+              [[ <Input autoFocus placeholder={DRAFT_NODE} defaultValue={defaultValue} onChange={onChange} /> ]]
+            </>
           </NoteTitle>
 
           {snippet && (

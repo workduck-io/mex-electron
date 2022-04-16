@@ -34,7 +34,7 @@ const SideBar = ({ tree }: SideBarProps) => {
         <SidebarDivider />
 
         <Collapse
-          title="Tree"
+          title="Notes"
           defaultOpen
           icon={gitBranchLine}
           maximumHeight="80vh"

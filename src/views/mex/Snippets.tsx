@@ -3,11 +3,11 @@ import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
 import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import { Icon } from '@iconify/react'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import genereateName from 'project-name-generator'
+import generateName from 'project-name-generator'
 import React, { useMemo, useState } from 'react'
 import SearchView, { RenderItemProps, RenderPreviewProps } from '../../components/mex/Search/SearchView'
 import { View } from '../../components/mex/Search/ViewSelector'
-import { generateSnippetId } from '../../data/Defaults/idPrefixes'
+import { DRAFT_NODE, generateSnippetId } from '../../data/Defaults/idPrefixes'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import { useSnippets } from '../../hooks/useSnippets'
 import { useUpdater } from '../../hooks/useUpdater'
@@ -21,7 +21,6 @@ import {
   ResultMain,
   ResultRow,
   ResultTitle,
-  SearchContainer,
   SearchPreviewWrapper,
   ItemTag,
   SplitSearchPreviewWrapper
@@ -75,10 +74,10 @@ const Snippets = () => {
     return res
   }
 
-  const onCreateNew = () => {
+  const onCreateNew = (generateTitle = false) => {
     // Create a better way.
     const snippetId = generateSnippetId()
-    const snippetName = genereateName().dashed
+    const snippetName = generateTitle ? generateName().dashed : DRAFT_NODE
 
     addSnippet({
       id: snippetId,
@@ -96,7 +95,7 @@ const Snippets = () => {
   // * Delete this create special snippet
   const onCreateSpecialSnippet = () => {
     const snippetId = generateSnippetId()
-    const snippetName = genereateName().dashed
+    const snippetName = generateName().dashed
 
     addSnippet({
       id: snippetId,
@@ -254,7 +253,7 @@ const Snippets = () => {
     <SnippetsSearchContainer>
       <MainHeader>
         <Title>Snippets</Title>
-        <Button primary large onClick={onCreateNew}>
+        <Button primary large onClick={() => onCreateNew()}>
           <Icon icon={quillPenLine} height={24} />
           Create New Snippet
         </Button>
