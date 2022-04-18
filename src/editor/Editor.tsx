@@ -77,7 +77,7 @@ export const Editor = ({
       // mog('editor highlighted', { hightlightedBlockIds, editorId })
       selectBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
       const clearHighlightTimeoutId = setTimeout(() => {
-        clearHighlights()
+        if (!readOnly) clearHighlights()
       }, 2000)
       return () => clearTimeout(clearHighlightTimeoutId)
     }

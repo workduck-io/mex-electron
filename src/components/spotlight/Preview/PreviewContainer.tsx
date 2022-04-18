@@ -88,15 +88,14 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
   }, [blockId, nodeId, previewContent])
 
   useEffect(() => {
-    if (highlights.length > 0) {
-      mog('editor highlighted', { highlights, nodeId })
+    if (!normalMode && highlights.length > 0) {
       selectBlock(highlights[highlights.length - 1], nodeId)
       const clearHighlightTimeoutId = setTimeout(() => {
         clearHighlights('editor')
       }, 2000)
       return () => clearTimeout(clearHighlightTimeoutId)
     }
-  }, [highlights, nodeId])
+  }, [highlights, nodeId, normalMode, blockId])
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
