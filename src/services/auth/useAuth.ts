@@ -65,7 +65,7 @@ export const useAuthentication = () => {
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const setRegistered = useAuthStore((store) => store.setRegistered)
   const { updateDefaultServices, updateServices } = useUpdater()
-  const { signIn, signUp, verifySignUp, signOut, googleSignIn } = useAuth()
+  const { signIn, signUp, verifySignUp, signOut, googleSignIn, refreshToken } = useAuth()
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
   // const { getNodesByWorkspace } = useApi()
 
@@ -191,10 +191,14 @@ export const useAuthentication = () => {
                   }
                 }
               )
-              .then((d: any) => {
+              .then(async (d: any) => {
+                try {
+                  await refreshToken()
+                } catch (error) {
+                  console.error('Error: ', error)
+                }
                 const userDetails = { email: uCred.email, userId: uCred.userId }
                 const workspaceDetails = { id: d.data.id, name: 'WORKSPACE_NAME' }
-
                 ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
                 identifyUser(userDetails.email)
                 mog('Login Google BIG success created user', { userDetails, workspaceDetails })
