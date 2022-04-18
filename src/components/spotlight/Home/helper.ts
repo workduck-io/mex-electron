@@ -7,9 +7,8 @@ import { Snippet } from '../../../store/useSnippetStore'
 import { convertContentToRawText } from '../../../utils/search/parseData'
 import { getContent } from '../../../utils/helpers'
 
-export const getListItemFromNode = (node: ILink) => {
-  const content = getContent(node?.nodeid)
-  const rawText = convertContentToRawText(content?.content ?? [], ' ')
+export const getListItemFromNode = (node: ILink, description?: string, blockid?: string) => {
+  const rawText = description ?? convertContentToRawText(getContent(node?.nodeid)?.content ?? [], ' ')
 
   const listItem: ListItemType = {
     icon: node?.icon ?? 'gg:file-document',
@@ -20,6 +19,7 @@ export const getListItemFromNode = (node: ILink) => {
     category: CategoryType.backlink,
     extras: {
       nodeid: node?.nodeid,
+      blockid,
       path: node?.path,
       new: false
     },

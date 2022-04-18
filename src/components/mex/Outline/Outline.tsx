@@ -17,33 +17,13 @@ import { mog } from '../../../utils/lib/helper'
 import { OutlineIconWrapper, OutlineItemRender, OutlineItemText, OutlineWrapper } from './Outline.styles'
 import { ELEMENT_TODO_LI } from '../../../editor/Components/Todo/createTodoPlugin'
 import { OutlineHelp } from '../../../data/Defaults/helpText'
+import { useBlockHighlightStore, useFocusBlock } from '../../../editor/Actions/useFocusBlock'
 
 const Outline = () => {
   const outline = useAnalysisStore((state) => state.analysis.outline)
 
-  const onSelectHeading = (heading: OutlineItem, e: React.MouseEvent) => {
-    e.preventDefault()
-    const editor = getPlateEditorRef()
-    if (editor) {
-      const headingNode = findNode(editor, {
-        at: [],
-        match: (n) => {
-          console.log('n', n)
-          return n.id === heading.id
-        },
-        mode: 'all'
-      })
-      // console.log('select heading', { heading, headingNode, e })
-      if (!headingNode) return
-      const headingNodePath = headingNode[1]
-
-      if (!headingNodePath) return
-
-      Transforms.select(editor, Editor.start(editor, headingNodePath))
-      ReactEditor.focus(editor)
-      mog('select heading', { heading, headingNode, headingNodePath })
-    }
-  }
+  const { selectBlock } = useFocusBlock()
+  const setHighlights = useBlockHighlightStore((state) => state.setHighlightedBlockIds)
 
   return (
     <InfoWidgetWrapper>
@@ -64,7 +44,11 @@ const Outline = () => {
               return (
                 <OutlineItemRender
                   key={`OutlineItemFor_${outlineItem.id}`}
-                  onClick={(e) => onSelectHeading(outlineItem, e)}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    selectBlock(outlineItem.id)
+                    setHighlights([outlineItem.id], 'editor')
+                  }}
                   level={outlineItem.level}
                   heading={isHeading}
                 >

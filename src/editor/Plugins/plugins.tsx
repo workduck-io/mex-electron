@@ -71,6 +71,7 @@ import { withStyledDraggables } from '../Actions/withDraggable'
 import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
 import createTodoPlugin from '../Components/Todo/createTodoPlugin'
 import { createQAPlugin } from '../Components/QABlock/createQAPlugin'
+import { createHighlightTextPlugin } from './highlightText'
 
 export type PluginOptionType = {
   exclude: {
@@ -177,7 +178,8 @@ export const generatePlugins = (options: PluginOptionType) => {
     // // For Inline Blocks
     createInlineBlockPlugin(),
 
-    createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin)
+    createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin),
+    createHighlightTextPlugin()
   ]
 
   const withPlugins = !options?.exclude?.dnd ? [...Plugins, createDndPlugin()] : Plugins

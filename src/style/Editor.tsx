@@ -100,6 +100,7 @@ export const EditorStyles = styled.div<{ readOnly?: boolean }>`
   mark {
     background-color: ${(props) => transparentize(0.75, props.theme.colors.primary)};
     color: ${(props) => props.theme.colors.text.default};
+    transition: all 0.3s ease-in-out;
   }
 
   p,

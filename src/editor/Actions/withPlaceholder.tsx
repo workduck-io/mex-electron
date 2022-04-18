@@ -12,11 +12,11 @@ export const withStyledPlaceHolders = (components: any) => {
       placeholder: 'Type  `[[`  to see links or type  `/`  to see actions',
       hideOnBlur: true
     },
-    {
-      key: ELEMENT_H1,
-      placeholder: 'Untitled',
-      hideOnBlur: false
-    },
+    // {
+    //   key: ELEMENT_H1,
+    //   placeholder: 'Untitled',
+    //   hideOnBlur: false
+    // },
     {
       key: ELEMENT_TH,
       placeholder: 'Header',
