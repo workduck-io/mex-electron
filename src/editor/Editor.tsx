@@ -62,7 +62,7 @@ export const Editor = ({
   useEffect(() => {
     const hightlightedBlockIds = useBlockHighlightStore.getState().hightlighted.editor
     if (editorRef && hightlightedBlockIds.length > 0) {
-      mog('editor highlighted with start', { hightlightedBlockIds, editorId })
+      // mog('editor highlighted with start', { hightlightedBlockIds, editorId })
       selectBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
       // editorRef.current.focus()
       return
@@ -74,7 +74,7 @@ export const Editor = ({
 
   useEffect(() => {
     if (editorRef && hightlightedBlockIds.length > 0) {
-      mog('editor highlighted', { hightlightedBlockIds, editorId })
+      // mog('editor highlighted', { hightlightedBlockIds, editorId })
       selectBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
       const clearHighlightTimeoutId = setTimeout(() => {
         clearHighlights()

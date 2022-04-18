@@ -88,7 +88,8 @@ export const useSearch = () => {
           const localNode = isLocalNode(item.id)
 
           if (localNode.isLocal) {
-            const listItem = getListItemFromNode(localNode.ilink)
+            // mog('Local node', { localNode, item })
+            const listItem = getListItemFromNode(localNode.ilink, item.text, item.blockId)
             localNodes.push(listItem)
           }
         })
@@ -96,7 +97,7 @@ export const useSearch = () => {
         snippetItems.forEach((snippet) => {
           const snip = getSnippet(snippet.id)
           const item = getListItemFromSnippet(snip)
-          mog('item', { item })
+          // mog('item', { item })
           localNodes.push(item)
         })
 
@@ -107,6 +108,7 @@ export const useSearch = () => {
 
         const mainItems = [...localNodes, ...actionItems]
         searchList = isNew ? [CREATE_NEW_ITEM, ...mainItems] : mainItems
+        // mog('searchList', { searchList })
         if (mainItems.length === 0) searchList.push(searchGoogle(sQuery))
 
         break

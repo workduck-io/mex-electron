@@ -17,6 +17,7 @@ export interface ListItemType {
 
 export interface ItemExtraType {
   nodeid: string
+  blockid: string
   path: string
   new: boolean
   customAction: () => void

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import tinykeys from 'tinykeys'
 import { getDefaultContent, PreviewProps } from '.'
+import { useFocusBlock, useBlockHighlightStore } from '../../../editor/Actions/useFocusBlock'
 import { Editor } from '../../../editor/Editor'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
@@ -15,7 +16,11 @@ import { mog } from '../../../utils/lib/helper'
 import { useSaveChanges } from '../Search/useSearchProps'
 import { spotlightShortcuts } from '../Shortcuts/list'
 
-const PreviewContainer: React.FC<PreviewProps> = ({ nodeId, preview }) => {
+export interface PreviewContainerProps extends PreviewProps {
+  blockId?: string
+}
+
+const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, blockId }) => {
   // * Store
 
   const { saveIt } = useSaveChanges()
@@ -33,6 +38,10 @@ const PreviewContainer: React.FC<PreviewProps> = ({ nodeId, preview }) => {
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const shortcuts = useHelpStore((state) => state.shortcuts)
 
+  const { selectBlock } = useFocusBlock()
+  const setHighlights = useBlockHighlightStore((s) => s.setHighlightedBlockIds)
+  const clearHighlights = useBlockHighlightStore((s) => s.clearHighlightedBlockIds)
+  const highlights = useBlockHighlightStore((s) => s.hightlighted.editor)
   const deserializedContentNodes = getDeserializeSelectionToNodes(preview, normalMode)
 
   useEffect(() => {
@@ -63,6 +72,31 @@ const PreviewContainer: React.FC<PreviewProps> = ({ nodeId, preview }) => {
       changeOnboarding(false)
     }
   }
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (blockId) {
+        // mog('editorPreviewRenderer', { blockId, editorId })
+        selectBlock(blockId, nodeId)
+        setHighlights([blockId], 'editor')
+      }
+    }, 300)
+
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, [blockId, nodeId, previewContent])
+
+  useEffect(() => {
+    if (highlights.length > 0) {
+      mog('editor highlighted', { highlights, nodeId })
+      selectBlock(highlights[highlights.length - 1], nodeId)
+      const clearHighlightTimeoutId = setTimeout(() => {
+        clearHighlights('editor')
+      }, 2000)
+      return () => clearTimeout(clearHighlightTimeoutId)
+    }
+  }, [highlights, nodeId])
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {

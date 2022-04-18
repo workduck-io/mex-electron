@@ -8,6 +8,7 @@ import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSnippetStore } from '../../../store/useSnippetStore'
+import { mog } from '../../../utils/lib/helper'
 import PreviewContainer from './PreviewContainer'
 import { SeePreview, StyledPreview } from './styled'
 
@@ -33,8 +34,11 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
   const isSnippet = searchResults[activeIndex]?.id?.startsWith('SNIPPET_')
   const snippets = useSnippetStore((store) => store.snippets)
 
-  const snippet = useMemo(() => {
-    return snippets.find((s) => s.id === searchResults[activeIndex]?.id)
+  const { snippet, currentItem } = useMemo(() => {
+    return {
+      snippet: snippets.find((s) => s.id === searchResults[activeIndex]?.id),
+      currentItem: searchResults[activeIndex]
+    }
   }, [activeIndex, searchResults])
 
   const springProps = useMemo(() => {
@@ -61,6 +65,8 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
     ref.current.scrollTop = ref.current.scrollHeight
   }
 
+  mog('Preview', { preview, nodeId, currentItem })
+
   return (
     <StyledPreview
       key={`PreviewSpotlightEditor${!isSnippet ? nodeId : snippet.id}`}
@@ -75,9 +81,17 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
         </SeePreview>
       )}
       {isSnippet ? (
-        <EditorPreviewRenderer content={snippet.content} editorId={snippet.id} />
+        <EditorPreviewRenderer
+          content={snippet.content}
+          blockId={currentItem && currentItem.extras && currentItem.extras.blockid}
+          editorId={snippet.id}
+        />
       ) : (
-        <PreviewContainer nodeId={nodeId} preview={preview} />
+        <PreviewContainer
+          nodeId={nodeId}
+          blockId={currentItem && currentItem.extras && currentItem.extras.blockid}
+          preview={preview}
+        />
       )}
     </StyledPreview>
   )
