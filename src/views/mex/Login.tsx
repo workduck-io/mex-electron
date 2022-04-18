@@ -103,9 +103,9 @@ const Login = () => {
             </LoadingButton>
           </ButtonFields>
         </AuthForm>
-        {/* <ButtonFields>
+        <ButtonFields>
           <GoogleLoginButton text={'Login via Google'} />
-        </ButtonFields> */}
+        </ButtonFields>
       </BackCard>
       <FooterCard>
         <Link to={ROUTE_PATHS.register}>Register</Link>
