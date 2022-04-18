@@ -3,8 +3,6 @@ import { createPluginFactory, Decorate } from '@udecode/plate-core'
 import { useBlockHighlightStore } from '../../editor/Actions/useFocusBlock'
 import { mog } from '../../utils/lib/helper'
 
-// import { FindReplacePlugin } from './types';
-//
 interface HighlightPlugin {} // eslint-disable-line @typescript-eslint/no-empty-interface
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -23,7 +21,7 @@ export const decorateHighlightElement: Decorate<{}, HighlightPlugin> =
 
       if (isHighlighled && path) {
         const range1 = getNodesRange(editor, [[node, path]])
-        mog('decorate', { text, range1, node, path, ranges, highlightedBlocks })
+        // mog('decorate', { text, range1, node, path, ranges, highlightedBlocks })
         ranges.push({ ...range1, [type]: true })
       }
     } catch (e) {
