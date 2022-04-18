@@ -15,6 +15,8 @@ import { useEditorChange } from '../hooks/useEditorActions'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 import { useGraphStore } from '../store/useGraphStore'
 import { useEditorStore } from '../store/useEditorStore'
+import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
+import { mog } from '../utils/lib/helper'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -53,12 +55,33 @@ export const Editor = ({
   // const generateEditorId = () => `${editorId}`
   const editorRef = usePlateEditorRef()
   const { show } = useContextMenu({ id: MENU_ID })
+  const { selectBlock } = useFocusBlock()
+  const clearHighlights = useBlockHighlightStore((store) => store.clearAllHighlightedBlockIds)
+  const hightlightedBlockIds = useBlockHighlightStore((store) => store.hightlighted.editor)
 
   useEffect(() => {
+    const hightlightedBlockIds = useBlockHighlightStore.getState().hightlighted.editor
+    if (editorRef && hightlightedBlockIds.length > 0) {
+      mog('editor highlighted with start', { hightlightedBlockIds, editorId })
+      selectBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
+      // editorRef.current.focus()
+      return
+    }
     if (editorRef && focusAtBeginning) {
       selectEditor(editorRef, { edge: 'start', focus: true })
     }
   }, [editorRef, editorId, focusAtBeginning]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (editorRef && hightlightedBlockIds.length > 0) {
+      mog('editor highlighted', { hightlightedBlockIds, editorId })
+      selectBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
+      const clearHighlightTimeoutId = setTimeout(() => {
+        clearHighlights()
+      }, 2000)
+      return () => clearTimeout(clearHighlightTimeoutId)
+    }
+  }, [hightlightedBlockIds, editorId, editorRef])
 
   const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId)
 
@@ -83,9 +106,12 @@ export const Editor = ({
 
   const onDelayPerform = debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 200)
 
+  const delayedHighlightRemoval = debounce(clearHighlights, 2000)
+
   const onChangeContent = (val: any[]) => {
     setIsEditing(true)
     onDelayPerform(val)
+    // delayedHighlightRemoval('editor')
   }
 
   return (

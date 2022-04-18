@@ -20,12 +20,15 @@ import { useAnalysisStore } from '../store/useAnalysis'
 import { checkIfUntitledDraftNode } from '../utils/lib/strings'
 import { getPathFromNodeIdHookless } from './useLinks'
 import { DRAFT_PREFIX } from '../data/Defaults/idPrefixes'
+import { useBlockHighlightStore } from '../editor/Actions/useFocusBlock'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
   fetch?: boolean
   node?: NodeProperties
   withLoading?: boolean
+  // Highlights the block after loading
+  highlightBlockId?: string
 }
 
 export interface IsLocalType {
@@ -46,6 +49,7 @@ const useLoad = () => {
   const setSuggestions = useSuggestionStore((store) => store.setSuggestions)
   const { toggleSuggestedNodes } = useToggleElements()
   const infobar = useLayoutStore((store) => store.infobar)
+  const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)
 
   const setLoadingNodeid = useEditorStore((store) => store.setLoadingNodeid)
   // const { push } = useNavigation()
@@ -236,6 +240,9 @@ const useLoad = () => {
 
     if (options.fetch && !hasBeenLoaded) {
       fetchAndSaveNode(node, options.withLoading)
+    }
+    if (options.highlightBlockId) {
+      setHighlights([options.highlightBlockId], 'editor')
     }
 
     loadNodeEditor(node)

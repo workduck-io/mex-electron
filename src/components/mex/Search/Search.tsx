@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react'
 import React from 'react'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import { SearchHelp } from '../../../data/Defaults/helpText'
+import { useBlockHighlightStore } from '../../../editor/Actions/useFocusBlock'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useFilters } from '../../../hooks/useFilters'
 import { useLinks } from '../../../hooks/useLinks'
@@ -74,12 +75,15 @@ const Search = () => {
 
   const { queryIndex, queryIndexWithRanking } = useSearch()
   const { hasTags } = useTags()
+  const clearHighlights = useBlockHighlightStore((store) => store.clearHighlightedBlockIds)
+  const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)
 
   const onSearch = async (newSearchTerm: string) => {
     const res = await queryIndexWithRanking('node', newSearchTerm)
     const nodeids = useDataStore.getState().ilinks.map((l) => l.nodeid)
     const filRes = res.filter((r) => nodeids.includes(r.id))
-    // mog('search', { res, filRes })
+    mog('search', { res, filRes })
+    clearHighlights('preview')
     return filRes
   }
 
@@ -90,7 +94,7 @@ const Search = () => {
   // console.log({ result })
   const onSelect = (item: GenericSearchResult) => {
     const nodeid = item.id
-    loadNode(nodeid)
+    loadNode(nodeid, { highlightBlockId: item.blockId })
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
@@ -100,10 +104,11 @@ const Search = () => {
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
-  const onDoubleClick = (e: React.MouseEvent<HTMLElement>, nodeid: string) => {
+  const onDoubleClick = (e: React.MouseEvent<HTMLElement>, item: GenericSearchResult) => {
     e.preventDefault()
+    const nodeid = item.id
     if (e.detail === 2) {
-      loadNode(nodeid)
+      loadNode(nodeid, { highlightBlockId: item.blockId })
       goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
     }
   }
@@ -148,7 +153,7 @@ const Search = () => {
             <Icon icon={icon} />
             <ResultMain>
               <ResultTitle>{node.path}</ResultTitle>
-              <ResultDesc>{convertContentToRawText(content, ' ')}</ResultDesc>
+              <ResultDesc>{item.text ?? convertContentToRawText(content, ' ')}</ResultDesc>
             </ResultMain>
             {(!splitOptions || splitOptions.type === SplitType.NONE) && (
               <ResultMetaData>
@@ -194,14 +199,15 @@ const Search = () => {
       mog('RenderPreview', { item, content, node })
       return (
         <SplitSearchPreviewWrapper id={`splitSearchPreview_for_${item.id}`}>
-          <Title onMouseUp={(e) => onDoubleClick(e, edNode.nodeid)}>
+          <Title onMouseUp={(e) => onDoubleClick(e, item)}>
             <Icon icon={icon} />
             <TitleText>{node.path}</TitleText>
             <Metadata fadeOnHover={false} node={edNode} />
           </Title>
           <EditorPreviewRenderer
             content={content}
-            onDoubleClick={(e) => onDoubleClick(e, edNode.nodeid)}
+            blockId={item.blockId}
+            onDoubleClick={(e) => onDoubleClick(e, item)}
             editorId={`SearchPreview_editor_${item.id}`}
           />
           <Backlinks nodeid={node.nodeid} />
