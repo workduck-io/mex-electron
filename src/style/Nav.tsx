@@ -33,6 +33,7 @@ const ButtonOrLinkStyles = css`
   padding: 12px;
   text-decoration: none !important;
   cursor: pointer;
+  font-weight: bold;
 
   font-size: 14px;
 
@@ -55,7 +56,11 @@ export const Link = styled(NavLink)`
   ${ButtonOrLinkStyles}
 
   &.active {
-    background-color: ${({ theme }) => theme.colors.gray[6]};
+    background-color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.text.oppositePrimary};
+    svg {
+      color: ${({ theme }) => theme.colors.text.oppositePrimary};
+    }
   }
 `
 

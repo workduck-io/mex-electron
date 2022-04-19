@@ -2,14 +2,14 @@ import { generateTheme } from '../themeGenerator'
 
 export const mexTheme = generateTheme({
   // Colors
-  primary: '#EB4B63',
-  secondary: '#5E8FF1',
+  primary: '#0576B9',
+  secondary: '#128C7E',
 
   // Palettes
   gray: {
-    10: '#1E1E1E', // Darkest
-    9: '#24202E',
-    8: '#2d244b',
+    10: '#212121', // Darkest
+    9: '#2d244b',
+    8: '#1F2933',
     7: '#322D3E',
     6: '#473E65',
     5: '#9F99B7',
@@ -32,6 +32,6 @@ export const mexTheme = generateTheme({
     fade: '#9F99B7',
     disabled: '#72767D',
     accent: '#fe8019',
-    oppositePrimary: '#282828'
+    oppositePrimary: '#ffffff'
   }
 })
