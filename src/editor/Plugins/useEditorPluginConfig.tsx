@@ -2,6 +2,7 @@ import { ELEMENT_MEDIA_EMBED, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { useMemo } from 'react'
 import { QuickLinkType } from '../../components/mex/NodeSelect/NodeSelect'
+import { openReminderModal } from '../../components/mex/Reminders/CreateReminderModal'
 import { useSnippets } from '../../hooks/useSnippets'
 import { CategoryType } from '../../store/Context/context.spotlight'
 import useDataStore from '../../store/useDataStore'
@@ -131,7 +132,11 @@ const useEditorPluginConfig = (editorId: string) => {
       },
       remind: {
         slateElementType: ELEMENT_PARAGRAPH,
-        command: 'remind'
+        command: 'remind',
+        onExtendedCommand: (newValue, editor) => {
+          mog('remind', { newValue })
+          openReminderModal(newValue)
+        }
       }
       // For `/sync`
       // sync_block: {

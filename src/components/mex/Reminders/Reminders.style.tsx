@@ -20,7 +20,7 @@ export const ReminderGroupWrapper = styled.div`
   align-items: flex-start;
   gap: ${({ theme }) => theme.spacing.small};
   width: 100%;
-  height: 100%;
+  height: auto;
 
   & > ${Title} {
     font-size: 1.5rem;

@@ -508,13 +508,18 @@ export const useReminders = () => {
 
     const res = []
 
-    const upcomingReminders = upcomingRemindersBase.filter(
-      (reminder) => pastRemindersBase.find((r) => r.id === reminder.id && r.state.done === true) === undefined
-    )
+    const finishedUpcoming = upcomingRemindersBase.filter((reminder) => reminder.state.done)
+    const upcomingReminders = upcomingRemindersBase
+      .filter((reminder) => {
+        return pastRemindersBase.find((r) => r.id === reminder.id && r.state.done === true) === undefined
+      })
+      .filter((reminder) => reminder.state.done === false)
 
     const pastReminders = pastRemindersBase.filter(
       (reminder) => upcomingRemindersBase.find((r) => r.id === reminder.id && r.state.done === false) === undefined
     )
+
+    pastReminders.unshift(...finishedUpcoming)
 
     if (upcomingReminders.length > 0) {
       res.push({

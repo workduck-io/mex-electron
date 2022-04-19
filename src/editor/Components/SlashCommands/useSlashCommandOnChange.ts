@@ -52,10 +52,12 @@ export const useSlashCommandOnChange = (
         } else if (item.extended) {
           Transforms.select(editor, targetRange)
           Transforms.delete(editor)
+          const search = useComboboxStore.getState().search
           mog('extended', {
             item,
             commandKey
           })
+          commandConfig.onExtendedCommand(search.textAfterTrigger, editor)
         } else {
           const type = getPluginType(editor, commandConfig.slateElementType)
           const data = commandConfig.getBlockData ? commandConfig.getBlockData(item) : {}

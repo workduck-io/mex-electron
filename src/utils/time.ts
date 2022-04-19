@@ -80,10 +80,10 @@ export const getTimeInText = (text: string): { time: Date; textWithoutTime: stri
   if (parsed.length > 0) {
     const parse = parsed[0]
     const parsedTimeText = parse.text
-    const textWithoutTime = text.replace(parsedTimeText, '').trim()
-    const textRemoveSurrounding = surrounding.reduce((acc, cur) => acc.replace(cur, ''), textWithoutTime).trim()
+    const textRemoveSurrounding = surrounding.reduce((acc, cur) => acc.replace(cur, ''), text).trim()
+    const textWithoutTime = textRemoveSurrounding.replace(parsedTimeText, '').trim()
 
-    return { time: parse.date(), textWithoutTime: textRemoveSurrounding }
+    return { time: parse.date(), textWithoutTime }
   }
   return undefined
 }

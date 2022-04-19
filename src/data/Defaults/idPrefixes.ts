@@ -17,6 +17,7 @@ export const DRAFT_PREFIX = 'Draft'
 export const MEETING_PREFIX = 'Meeting'
 export const QUESTION_ID_PREFIX = 'WD_MEX_QUESTION'
 export const DRAFT_NODE = 'Untitled'
+export const REMINDER_ID_PREFIX = 'REMINDER'
 
 export const generateNodeUID = () => `${NODE_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`
 export const generateWorkspaceId = () => `${WORKSPACE_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`
@@ -27,6 +28,7 @@ export const generateSnippetId = () => `${SNIPPET_PREFIX}${ID_SEPARATOR}${nanoid
 export const generateSyncTempId = () => `${SYNCTEMP_PREFIX}${ID_SEPARATOR}${nanoid()}`
 export const generateTodoId = () => `${TODO_PREFIX}${ID_SEPARATOR}${nanoid()}`
 export const generateQuestionId = () => `${QUESTION_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`
+export const generateReminderId = () => `${REMINDER_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`
 
 export const cleanString = (str: string) =>
   str.startsWith(`${DRAFT_PREFIX}${SEPARATOR}`) ? str.replace(`${DRAFT_PREFIX}${SEPARATOR}`, '') : str
