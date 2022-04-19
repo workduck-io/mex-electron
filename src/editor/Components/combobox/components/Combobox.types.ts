@@ -54,7 +54,13 @@ export interface IComboboxItem {
   disabled?: boolean
 
   /**
-   * Data available to onRenderItem.
+   * Extedned
+   * @defaultvalue false
+   */
+  extended?: boolean
+
+  /**
+   * Data available to onRenderItem / onExtendedAction.
    */
   data?: unknown
 }

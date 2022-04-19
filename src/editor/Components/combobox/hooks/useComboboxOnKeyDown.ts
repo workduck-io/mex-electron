@@ -48,11 +48,11 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
     const currentNodeKey = useEditorStore.getState().node.path
     const itemIndex = useComboboxStore.getState().itemIndex
 
-    // mog('getCreatableInSelect', { items, selectVal, creatable })
+    mog('getCreatableInSelect', { items, selectVal, creatable, itemIndex })
 
     if (items[itemIndex]) {
       const item = items[itemIndex]
-      // mog('getCreatableInSelect', { item, selectVal, creatable })
+      mog('getCreatableInSelect', { item, selectVal, creatable })
       if (item.key === '__create_new' && selectVal) {
         const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
         const res = onNewItem(val, currentNodeKey)
@@ -110,6 +110,12 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
     const targetRange = useComboboxStore.getState().targetRange
     const isOpen = !!targetRange
     const item = items[itemIndex]
+
+    mog('useComboboxOnKeyDown', {
+      item,
+      items,
+      slashCommands
+    })
 
     const isSlashCommand =
       comboType.slateElementType === ComboboxKey.SLASH_COMMAND ||

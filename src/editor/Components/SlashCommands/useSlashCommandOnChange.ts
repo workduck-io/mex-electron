@@ -26,11 +26,11 @@ export const useSlashCommandOnChange = (
   return (editor: PlateEditor, item: IComboboxItem) => {
     const targetRange = useComboboxStore.getState().targetRange
     const commandKey = Object.keys(keys).filter((k) => keys[k].command === item.key)[0]
-    mog('COMMAND', { commandKey, item, keys: Object.keys(keys) })
+    // mog('COMMAND', { commandKey, item, keys: Object.keys(keys) })
     const commandConfig = keys[commandKey]
     // console.log({ commandConfig })
     if (targetRange) {
-      mog('useSlashCommandOnChange', { commandConfig, commandKey, keys, item })
+      mog('useSlashCommandOnChange', { commandConfig, commandKey, keys })
       try {
         const pathAbove = getBlockAbove(editor)?.[1]
         const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
@@ -49,6 +49,15 @@ export const useSlashCommandOnChange = (
         } else if (item.key === 'table') {
           Transforms.select(editor, targetRange)
           insertTable(editor, { header: true })
+        } else if (item.extended) {
+          Transforms.select(editor, targetRange)
+          Transforms.removeNodes(editor)
+
+          // insertNodes<TElement>(editor, defaultContent.content[0])
+          mog('extended', {
+            item,
+            commandKey
+          })
         } else {
           const type = getPluginType(editor, commandConfig.slateElementType)
           const data = commandConfig.getBlockData ? commandConfig.getBlockData(item) : {}

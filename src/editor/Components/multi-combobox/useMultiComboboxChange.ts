@@ -4,14 +4,33 @@ import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange'
 import { isInternalCommand } from '../combobox/hooks/useComboboxOnKeyDown'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
-import { ComboboxType } from './types'
+import { ComboboxItem, ComboboxType, SlashType } from './types'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { useRouting } from '../../../views/routes/urls'
 import { useLinks } from '../../../hooks/useLinks'
 import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
+import { CategoryType } from '../../../store/Context/context.spotlight'
 
 export const CreateNewPrefix = `Create `
+
+export const getCommandExtended = (search: string, keys: Record<string, ComboboxType>) => {
+  // mog('getCommandExtended', { search, keys })
+  const extendedKeys = keys['slash_command'].data.filter((ct) => ct.extended)
+  const extendedCommands = extendedKeys
+    .filter((ct) => {
+      return search.startsWith(ct.value)
+    })
+    .map((ct) => {
+      return { ...ct, text: `Set Reminder ${search}`, search: search }
+    })
+
+  const isExtended = extendedKeys.some((ct) => {
+    return search.startsWith(ct.value)
+  })
+
+  return { isExtended, extendedCommands }
+}
 // Handle multiple combobox
 const useMultiComboboxOnChange = (editorId: string, keys: Record<string, ComboboxType>): OnChange => {
   const editor = usePlateEditorRef(editorId)! // eslint-disable-line @typescript-eslint/no-non-null-assertion
@@ -52,6 +71,14 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
 
     const searchItems = fuzzySearch(data, searchTerm, { keys: ['text'] })
 
+    const { isExtended, extendedCommands } = getCommandExtended(search.textAfterTrigger, keys)
+
+    // Create for new item
+    if (isExtended) {
+      searchItems.unshift(...extendedCommands)
+      // dataKeys.push(newItem.text)
+    }
+
     const groups = (searchTerm !== '' ? searchItems : data).reduce((acc, item) => {
       const type = item.type
       if (!acc[type]) {
@@ -63,6 +90,7 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
           key: item.value,
           icon: item.icon ?? ct.icon ?? undefined,
           text: item.text,
+          extended: item.extended,
           type
         })
 
@@ -70,9 +98,7 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
     }, {} as any)
 
     const items = Object.values(groups).flat()
-
     const dataKeys = items.map((i: any) => i.text)
-
     // Create for new item
     if (
       key !== ComboboxKey.SLASH_COMMAND &&
@@ -95,6 +121,7 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
       })
     }
 
+    // mog('items', { items })
     setItems(items)
 
     return true
