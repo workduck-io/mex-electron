@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron'
 import React, { useEffect } from 'react'
-import { IpcAction } from '../../../data/IpcAction'
+import { IpcAction } from '@data/IpcAction'
 import { useVersionStore } from '../../../store/useAppDataStore'
 
 export const VersionSetter = () => {
