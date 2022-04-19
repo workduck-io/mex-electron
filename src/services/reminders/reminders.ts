@@ -5,6 +5,7 @@
 // import { Reminder } from '../../types/reminders'
 import { sub } from 'date-fns'
 import { Reminder, ReminderGroup } from '../../types/reminders'
+import { insertId } from '../../utils/lib/content'
 
 /*
  * Only sets up reminder for the next 24 hours
@@ -61,3 +62,9 @@ export const getReminderGroupDimensions = (reminderGroups: ReminderGroup[]) => {
     width: BASE_WIDTH + BASE_PADDING
   }
 }
+
+export const getReminderPreview = (time: string, content: string) =>
+  insertId([
+    { type: 'h1', children: [{ text: content }] },
+    { type: 'h3', children: [{ text: `On: ${time}` }] }
+  ])

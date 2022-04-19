@@ -51,9 +51,7 @@ export const useSlashCommandOnChange = (
           insertTable(editor, { header: true })
         } else if (item.extended) {
           Transforms.select(editor, targetRange)
-          Transforms.removeNodes(editor)
-
-          // insertNodes<TElement>(editor, defaultContent.content[0])
+          Transforms.delete(editor)
           mog('extended', {
             item,
             commandKey

@@ -107,6 +107,7 @@
     "axios": "^0.21.1",
     "boring-avatars": "^1.5.8",
     "chokidar": "^3.5.2",
+    "chrono-node": "^2.3.8",
     "color-scheme": "^1.0.1",
     "compress.js": "^1.2.2",
     "date-fns": "^2.28.0",

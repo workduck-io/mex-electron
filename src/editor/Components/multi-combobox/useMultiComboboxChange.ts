@@ -1,3 +1,5 @@
+import * as chrono from 'chrono-node'
+
 import { OnChange, usePlateEditorRef } from '@udecode/plate'
 import { useCallback } from 'react'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
@@ -11,18 +13,26 @@ import { useLinks } from '../../../hooks/useLinks'
 import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 import { CategoryType } from '../../../store/Context/context.spotlight'
+import { getTimeInText, toLocaleString } from '../../../utils/time'
 
 export const CreateNewPrefix = `Create `
 
 export const getCommandExtended = (search: string, keys: Record<string, ComboboxType>) => {
-  // mog('getCommandExtended', { search, keys })
   const extendedKeys = keys['slash_command'].data.filter((ct) => ct.extended)
   const extendedCommands = extendedKeys
     .filter((ct) => {
       return search.startsWith(ct.value)
     })
     .map((ct) => {
-      return { ...ct, text: `Set Reminder ${search}`, search: search }
+      if (ct.value === 'remind') {
+        const searchTerm = search.slice(ct.value.length)
+        const parsed = getTimeInText(searchTerm)
+        // mog('getCommandExtended', { parsed, search })
+        const text = parsed ? ` ${toLocaleString(parsed.time)}: ${parsed.textWithoutTime}` : undefined
+        return { ...ct, text: text ?? `Set Reminder: ${searchTerm}`, search, desc: parsed?.textWithoutTime }
+      } else {
+        throw new Error('Not implemented')
+      }
     })
 
   const isExtended = extendedKeys.some((ct) => {
