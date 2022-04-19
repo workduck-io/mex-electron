@@ -25,11 +25,12 @@ export const getCommandExtended = (search: string, keys: Record<string, Combobox
     })
     .map((ct) => {
       if (ct.value === 'remind') {
-        const searchTerm = search.slice(ct.value.length)
+        const searchTerm = search.slice(ct.value.length).trim()
         const parsed = getTimeInText(searchTerm)
         // mog('getCommandExtended', { parsed, search })
-        const text = parsed ? ` ${toLocaleString(parsed.time)}: ${parsed.textWithoutTime}` : undefined
-        return { ...ct, text: text ?? `Set Reminder: ${searchTerm}`, search, desc: parsed?.textWithoutTime }
+        const text = parsed ? toLocaleString(parsed.time) : undefined
+        if (searchTerm !== '')
+          return { ...ct, text: text ?? `Set Reminder: ${searchTerm}`, search, desc: parsed?.textWithoutTime }
       } else {
         throw new Error('Not implemented')
       }

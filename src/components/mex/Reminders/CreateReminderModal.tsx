@@ -146,7 +146,7 @@ export const openReminderModal = (query: string) => {
       nodeid: node.nodeid,
       description: searchTerm
     })
-  }
+  } else openModal({ nodeid: node.nodeid })
   // const text = parsed ? ` ${toLocaleString(parsed.time)}: ${parsed.textWithoutTime}` : undefined
 }
 const CreateReminderModal = () => {
@@ -253,6 +253,7 @@ const CreateReminderModal = () => {
             <Label htmlFor="description">Description </Label>
             <TextAreaBlock
               disabled={modalValue.todoid !== undefined}
+              autoFocus={modalValue.description !== undefined}
               placeholder="Ex. Remember to share new developments"
               {...register('description')}
             />
