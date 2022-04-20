@@ -36,6 +36,8 @@ export interface SlashCommand {
   text?: string
   icon?: string
   type?: QuickLinkType | CategoryType
+  /** Extended command -> Text after the command is part of it and used as arguments */
+  extended?: boolean
 }
 
 export type LinkCache = Record<string, CachedILink[]>

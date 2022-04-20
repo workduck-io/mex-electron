@@ -12,6 +12,11 @@ export interface SlashCommandConfig {
   // Additional data to be inserted on node creation is fetched from this function
   // The element is a Combobox Item
   getBlockData?: (el: IComboboxItem) => Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
+
+  /**
+   * On extended command, run the callback with the command and the editor
+   */
+  onExtendedCommand?: (query: string, editor: any) => void // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface SnippetCommandConfig {

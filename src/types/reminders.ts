@@ -1,8 +1,6 @@
 import { PriorityType, TodoStatus, TodoType } from '../editor/Components/Todo/types'
 import { NodeEditorContent } from './Types'
 
-export const REMINDER_PREFIX = 'REMINDER_'
-
 type Weekday = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
 
 interface WeeklyFrequency {

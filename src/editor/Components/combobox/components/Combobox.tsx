@@ -33,6 +33,8 @@ import PreviewMeta from './PreviewMeta'
 import { mog } from '../../../../utils/lib/helper'
 import { MexIcon } from '../../../../style/Layouts'
 import { useTheme } from 'styled-components'
+import { getTimeInText, toLocaleString } from '../../../../utils/time'
+import { getReminderPreview } from '../../../../services/reminders/reminders'
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'
@@ -47,6 +49,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   const activeBlock = useComboboxStore((store) => store.activeBlock)
   const preview = useComboboxStore((store) => store.preview)
   const setPreview = useComboboxStore((store) => store.setPreview)
+  const search = useComboboxStore((store) => store.search)
   const combobox = useComboboxControls(true)
   const isOpen = useComboboxIsOpen()
 
@@ -117,13 +120,26 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
       } else if (type === QuickLinkType.snippet) {
         content = getSnippetContent(key)
       }
+      /*
+         * else if (key === 'remind') {
+        // mog('reminderItem', { comboItem, search })
+        const searchTerm = search.textAfterTrigger.slice(key.length)
+        const parsed = getTimeInText(searchTerm)
+        if (parsed) {
+          const time = toLocaleString(parsed.time)
+          const text = parsed.textWithoutTime
+          const newContent = getReminderPreview(time, text)
+          mog('getCommandExtendedInRenderItem', { parsed, search, newContent })
+          content = newContent
+        }
+        }
+        */
       if (!activeBlock) setPreview(content)
-
       if (isBlockTriggered && !textAfterBlockTrigger) {
         setPreview(undefined)
       }
     }
-  }, [itemIndex, items, activeBlock, isOpen])
+  }, [itemIndex, items, activeBlock, isOpen, search])
 
   if (!combobox) return null
 

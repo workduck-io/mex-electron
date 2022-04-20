@@ -1,10 +1,12 @@
-// import { add } from 'date-fns'
-// // import { ipcRenderer } from 'electron'
-// import { IpcAction } from '../../data/IpcAction'
-// import { ToastStatus } from '../../electron/Toast'
-// import { Reminder } from '../../types/reminders'
 import { sub } from 'date-fns'
+import { useCreateReminderModal } from '../../components/mex/Reminders/CreateReminderModal'
+import { generateReminderId } from '../../data/Defaults/idPrefixes'
+import { useReminderStore } from '../../hooks/useReminders'
+import { useEditorStore } from '../../store/useEditorStore'
 import { Reminder, ReminderGroup } from '../../types/reminders'
+import { insertId } from '../../utils/lib/content'
+import { mog } from '../../utils/lib/helper'
+import { getTimeInText, toLocaleString } from '../../utils/time'
 
 /*
  * Only sets up reminder for the next 24 hours
@@ -61,3 +63,9 @@ export const getReminderGroupDimensions = (reminderGroups: ReminderGroup[]) => {
     width: BASE_WIDTH + BASE_PADDING
   }
 }
+
+export const getReminderPreview = (time: string, content: string) =>
+  insertId([
+    { type: 'h1', children: [{ text: content }] },
+    { type: 'h3', children: [{ text: `On: ${time}` }] }
+  ])

@@ -1,36 +1,40 @@
 import { add, startOfToday } from 'date-fns'
 import { nanoid } from 'nanoid'
+import toast from 'react-hot-toast'
 import React, { useEffect } from 'react'
 import ReactDatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useForm } from 'react-hook-form'
 import Modal from 'react-modal'
 import create from 'zustand'
+import { generateReminderId } from '../../../data/Defaults/idPrefixes'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
 import { useLinks } from '../../../hooks/useLinks'
-import { useReminders } from '../../../hooks/useReminders'
+import { useReminders, useReminderStore } from '../../../hooks/useReminders'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { Button } from '../../../style/Buttons'
 import { DatePickerStyles, InputBlock, Label, TextAreaBlock } from '../../../style/Form'
-import { Reminder, REMINDER_PREFIX } from '../../../types/reminders'
+import { Reminder } from '../../../types/reminders'
 import { NodeEditorContent } from '../../../types/Types'
 import Todo from '../../../ui/components/Todo'
 import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { getEventNameFromElement } from '../../../utils/lib/strings'
-import { getNextReminderTime, getRelativeDate } from '../../../utils/time'
+import { getNextReminderTime, getRelativeDate, getTimeInText } from '../../../utils/time'
 import { LoadingButton } from '../Buttons/LoadingButton'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { getNameFromPath } from '../Sidebar/treeUtils'
 import { SelectedDate } from './Reminders.style'
+import { useLayoutStore } from '../../../store/useLayoutStore'
 
 interface ModalValue {
   time?: number
   nodeid?: string
   todoid?: string
+  description?: string
   blockContent?: NodeEditorContent
 }
 
@@ -48,15 +52,18 @@ interface CreateReminderModalState {
   setNodeId: (nodeid: string) => void
 }
 
+export const initModal = {
+  todoid: undefined,
+  blockContent: undefined,
+  description: undefined,
+  nodeid: undefined,
+  time: undefined
+}
+
 export const useCreateReminderModal = create<CreateReminderModalState>((set) => ({
   open: false,
   focus: false,
-  modalValue: {
-    todoid: undefined,
-    blockContent: undefined,
-    nodeid: undefined,
-    time: undefined
-  },
+  modalValue: initModal,
 
   toggleModal: () => {
     set((state) => ({ open: !state.open }))
@@ -71,12 +78,7 @@ export const useCreateReminderModal = create<CreateReminderModalState>((set) => 
     } else {
       set((state) => ({
         ...state,
-        modalValue: {
-          todoid: undefined,
-          blockContent: undefined,
-          nodeid: undefined,
-          time: undefined
-        },
+        modalValue: initModal,
         open: true
       }))
     }
@@ -87,12 +89,7 @@ export const useCreateReminderModal = create<CreateReminderModalState>((set) => 
   closeModal: () => {
     set({
       open: false,
-      modalValue: {
-        time: undefined,
-        blockContent: undefined,
-        todoid: undefined,
-        nodeid: undefined
-      }
+      modalValue: initModal
     })
   },
   setNodeId: (nodeid) => {
@@ -110,6 +107,48 @@ export const useCreateReminderModal = create<CreateReminderModalState>((set) => 
   }
 }))
 
+export const openReminderModal = (query: string) => {
+  const openModal = useCreateReminderModal.getState().openModal
+  const node = useEditorStore.getState().node
+  const addReminder = useReminderStore.getState().addReminder
+  const setInfobarMode = useLayoutStore.getState().setInfobarMode
+  // {}
+  const searchTerm = query.slice('remind'.length)
+  const parsed = getTimeInText(searchTerm)
+  const title = getNameFromPath(node.path)
+  if (parsed) {
+    const reminder: Reminder = {
+      id: generateReminderId(),
+      nodeid: node.nodeid,
+      time: parsed.time.getTime(),
+      title,
+      description: parsed.textWithoutTime,
+      state: {
+        done: false,
+        snooze: false
+      },
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    }
+    // mog('openReminderModal has time', { parsed, query, reminder })
+    if (parsed.textWithoutTime !== '') {
+      addReminder(reminder)
+      toast(`Reminder added for ${parsed.textWithoutTime}`)
+      setInfobarMode('reminders')
+    } else
+      openModal({
+        time: parsed.time.getTime(),
+        nodeid: node.nodeid
+      })
+  } else if (!parsed && searchTerm !== '') {
+    // mog('openModal Without time', { parsed, query, searchTerm })
+    openModal({
+      nodeid: node.nodeid,
+      description: searchTerm
+    })
+  } else openModal({ nodeid: node.nodeid })
+  // const text = parsed ? ` ${toLocaleString(parsed.time)}: ${parsed.textWithoutTime}` : undefined
+}
 const CreateReminderModal = () => {
   const modalOpen = useCreateReminderModal((state) => state.open)
   const closeModal = useCreateReminderModal((state) => state.closeModal)
@@ -126,18 +165,24 @@ const CreateReminderModal = () => {
     // control,
     reset,
     register,
+    setValue,
     handleSubmit,
     formState: { isSubmitting }
   } = useForm()
 
   useEffect(() => {
-    setTime(getNextReminderTime().getTime())
+    if (modalValue.time === undefined) setTime(getNextReminderTime().getTime())
   }, [node, modalOpen]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (modalValue.description !== undefined) setValue('description', modalValue.description)
+    else setValue('description', '')
+  }, [modalOpen]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleNodeChange = (quickLink: QuickLink) => {
     const newValue = quickLink.value
     if (newValue) {
-      mog('newValue', { newValue, quickLink })
+      // mog('newValue', { newValue, quickLink })
       setNodeId(getNodeidFromPath(newValue))
     }
   }
@@ -151,7 +196,7 @@ const CreateReminderModal = () => {
     const title = getNameFromPath(path)
 
     const reminder: Reminder = {
-      id: `${REMINDER_PREFIX}${nanoid()}`,
+      id: generateReminderId(),
       title,
       description: !todoid ? description : undefined,
       nodeid,
@@ -208,6 +253,7 @@ const CreateReminderModal = () => {
             <Label htmlFor="description">Description </Label>
             <TextAreaBlock
               disabled={modalValue.todoid !== undefined}
+              autoFocus={modalValue.description !== undefined}
               placeholder="Ex. Remember to share new developments"
               {...register('description')}
             />

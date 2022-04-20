@@ -6,7 +6,8 @@ import { ComboboxKey } from '../combobox/useComboboxStore'
 export enum SlashType {
   embed = 'media_embed',
   table = 'table',
-  canvas = 'excalidraw'
+  canvas = 'excalidraw',
+  remind = 'remind'
 }
 
 export interface ComboboxItem {
@@ -14,6 +15,9 @@ export interface ComboboxItem {
   value: string
   icon?: string
   type?: QuickLinkType | CategoryType
+
+  /** Extended command -> Text after the command is part of it and used as arguments */
+  extended?: boolean
 }
 
 export interface ComboboxType {
