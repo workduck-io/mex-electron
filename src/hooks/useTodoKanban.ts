@@ -9,6 +9,8 @@ import { getAllParentIds, isElder } from '../components/mex/Sidebar/treeUtils'
 import { useLinks } from './useLinks'
 import { KanbanBoard, KanbanCard, KanbanColumn } from '../types/search'
 import { useNodes } from './useNodes'
+import { convertContentToRawText } from '../utils/search/parseData'
+import { mog } from '../utils/lib/helper'
 
 export interface TodoKanbanCard extends KanbanCard {
   todo: TodoType
@@ -133,7 +135,16 @@ export const useTodoKanban = () => {
       if (isInArchive(nodeid)) return
       todos
         .filter((todo) => currentFilters.every((filter) => filter.filter(todo)))
-        .filter((todo) => todo.content !== defaultContent.content)
+        .filter((todo) => {
+          // TODO: Find a faster way to check for empty content
+          const text = convertContentToRawText(todo.content).trim()
+          // mog('empty todo check', { text, nodeid, todo })
+          if (text === '') {
+            return false
+          }
+          if (todo.content === defaultContent.content) return false
+          return true
+        })
         .forEach((todo) => {
           todoBoard.columns
             .find((column) => column.id === todo.metadata.status)
