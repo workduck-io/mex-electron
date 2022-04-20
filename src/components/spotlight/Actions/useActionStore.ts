@@ -1,13 +1,17 @@
 import create from 'zustand'
 import { ActionHelperConfig, ReturnType, ActionGroup } from '@workduck-io/action-request-helper'
-import { actionsConfig } from './data'
 import { ListItemType } from '../SearchResults/types'
-import { persist } from 'zustand/middleware'
+import { devtools, persist } from 'zustand/middleware'
+import { getActionIds } from '../../../utils/actions'
+import { initActions } from '../../../data/Actions'
+import { mog } from '../../../utils/lib/helper'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 
-type ActiveActionType = {
+export type ActiveActionType = {
   id: string
   actionIds?: Array<string>
   renderType?: ReturnType
+  actionGroupId: string
   isReady?: boolean
   at: number
   size: number
@@ -15,43 +19,26 @@ type ActiveActionType = {
 
 const ACTION_STORE_NAME = 'mex-action-store'
 
-// * recurse through the action config and create a list of all the action ids
-const getActionIds = (actionId: string, actionConfigs: Record<string, ActionHelperConfig>, arr: Array<string>) => {
-  const config = actionConfigs[actionId]
-
-  // * recurse config to get all the action ids
-
-  const preActionId = config?.preActionId
-
-  if (preActionId && !arr.includes(preActionId)) {
-    getActionIds(preActionId, actionConfigs, arr)
-    arr.push(preActionId)
-  }
-
-  return arr
-}
-
-// * Create new ACTION ITEM in the store
-const newAction = (actionId: string): { data: any; value: any; actionId?: string } => {
-  return { actionId, data: null, value: null }
-}
+export type ActionGroupType = ActionGroup & { connected?: boolean }
 
 type ActionStoreType = {
   actions: Array<ListItemType>
   setActions: (actions: Array<ListItemType>) => void
+  addActions: (actions: Array<ListItemType>) => void
 
-  actionGroups: Record<string, ActionGroup>
-  setActionGroups: (actionGroups: Record<string, ActionGroup>) => void
+  actionGroups: Record<string, ActionGroupType>
+  setActionGroups: (actionGroups: Record<string, ActionGroupType>) => void
+
+  // * Actions are stored in this config
+  groupedActions: Record<string, Record<string, ActionHelperConfig>>
+  setGroupedActions: (groupedActions: Record<string, Record<string, ActionHelperConfig>>) => void
+  addGroupedActions: (actionGroupId: string, groupedActions: Record<string, ActionHelperConfig>) => void
 
   selectedValue?: any
   setSelectedValue: (value: any) => void
 
   actionToPerform?: string
   setActionToPerform: (actionToPerform: string) => void
-
-  // * Actions are stored in this config
-  actionConfigs: Record<string, ActionHelperConfig>
-  setActionConfigs: (actionConfigs: Record<string, ActionHelperConfig>) => void
 
   // * Performed Action cache map
   actionsCache: Record<string, Array<Record<string, any>>> | Record<string, any>
@@ -63,7 +50,7 @@ type ActionStoreType = {
   // * For now, let's store active action here
   activeAction?: ActiveActionType
   setPerformingActionIndex: (performingActionId: string) => void
-  initAction: (actionId: string) => void
+  initAction: (actionGroupId: string, actionId: string) => void
 
   //* Clear fields
   clear: () => void
@@ -71,15 +58,22 @@ type ActionStoreType = {
 
 export const useActionStore = create<ActionStoreType>(
   persist(
-    (set, get) => ({
-      actions: [],
-      setActions: (actions: Array<ListItemType>) => set({ actions }),
-
+    devtools((set, get) => ({
       actionGroups: {},
       setActionGroups: (actionGroups: Record<string, ActionGroup>) => set({ actionGroups }),
 
-      actionConfigs: actionsConfig(),
-      setActionConfigs: (actionConfigs: Record<string, any>) => set({ actionConfigs }),
+      groupedActions: {},
+      setGroupedActions: (groupedActions) => set({ groupedActions }),
+      addGroupedActions: (actionGroupId, groupedActions) =>
+        set({ groupedActions: { ...get().groupedActions, [actionGroupId]: groupedActions } }),
+
+      actions: initActions,
+      setActions: (actions: Array<ListItemType>) => set({ actions }),
+      addActions: (actions: Array<ListItemType>) => {
+        const existingActions = get().actions
+        const newActions = [...actions, ...existingActions]
+        set({ actions: newActions })
+      },
 
       setPerformingActionIndex: (performingActionId) => {
         const activeAction = get().activeAction
@@ -89,17 +83,20 @@ export const useActionStore = create<ActionStoreType>(
 
       setSelectedValue: (value) => set({ selectedValue: value }),
 
-      initAction: (actionId) => {
-        const actionConfigs = get().actionConfigs
+      initAction: (actionGroupId, actionId) => {
+        const actionConfigs = get().groupedActions?.[actionGroupId]
         const actionCache = get().actionsCache
 
-        // * Check if preActionId exists in config
-        const renderType = actionConfigs[actionId]?.returnType
-        const preActionId = actionConfigs[actionId]?.preActionId
+        const action = actionConfigs[actionId]
+
+        const preActionId = action?.preActionId
+
+        const renderType = action?.returnType
 
         let actionToPerform = actionId
         let actionIds: Array<string> | undefined
 
+        // * Get sequence of all pre-actions required to perform this action
         if (preActionId) {
           actionIds = getActionIds(actionId, actionConfigs, [])
           actionToPerform = actionIds[0]
@@ -110,7 +107,7 @@ export const useActionStore = create<ActionStoreType>(
         }
 
         // * Final component will be rendered based on renderType (or with response item type)
-        const activeAction = { id: actionId, actionIds, renderType, at: 0, size: actionIds?.length ?? 0 }
+        const activeAction = { id: actionId, actionGroupId, actionIds, renderType, at: 0, size: actionIds?.length ?? 0 }
 
         set({ activeAction, actionToPerform })
       },
@@ -127,13 +124,17 @@ export const useActionStore = create<ActionStoreType>(
 
         // * Check if we can cache this action
 
+        mog('action-store', { response, actionId })
+
         const cachedActions: Array<Record<string, any>> = actionsCache?.[activeAction?.id] ?? []
         const newActions = cachedActions.filter((action) => action.actionId !== actionId)
         const updatedActions = [...newActions, { data: response, value: null, actionId }]
+        mog('Updating', { updatedActions })
 
-        actionsCache[activeAction?.id] = updatedActions
-
-        set({ actionsCache })
+        if (activeAction?.id) {
+          actionsCache[activeAction?.id] = updatedActions
+          set({ actionsCache })
+        }
       },
 
       updateValueInCache: (actionId, selection) => {
@@ -142,6 +143,7 @@ export const useActionStore = create<ActionStoreType>(
 
         // * If this is global action, update the value in cache
         const globalCache = false
+
         // const globalCache = actionsCache[actionId]?.value
         if (globalCache) {
           // actionsCache[actionId].value = selection.value
@@ -213,10 +215,14 @@ export const useActionStore = create<ActionStoreType>(
           actionToPerform: undefined
         })
       }
-    }),
+    })),
     {
       name: ACTION_STORE_NAME,
-      partialize: (state) => ({ actionConfigs: state.actionConfigs, actionsCache: state.actionsCache })
+      partialize: (state) => ({
+        actions: state.actions,
+        actionsCache: state.actionsCache,
+        groupedActions: state.groupedActions
+      })
     }
   )
 )

@@ -13,6 +13,8 @@ import { persist } from 'zustand/middleware'
 import useAnalytics from '../analytics'
 import { Properties, CustomEvents } from '../analytics/events'
 import { mog } from '../../utils/lib/helper'
+import useActions from '../../components/spotlight/Actions/useActions'
+import { useActionPerformer } from '../../components/spotlight/Actions/useActionPerformer'
 
 interface UserDetails {
   email: string
@@ -71,6 +73,7 @@ export const useAuthentication = () => {
   const { updateDefaultServices, updateServices } = useUpdater()
   const { signIn, signUp, verifySignUp, signOut, googleSignIn, refreshToken } = useAuth()
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
+  const { actionPerformer } = useActionPerformer()
   // const { getNodesByWorkspace } = useApi()
 
   interface AuthDetails {
@@ -311,6 +314,7 @@ export const useAuthentication = () => {
   const logout = () => {
     signOut().then(() => {
       setUnAuthenticated()
+      actionPerformer.clearStore()
       ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: false })
     })
   }

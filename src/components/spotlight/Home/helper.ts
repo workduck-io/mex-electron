@@ -41,7 +41,7 @@ export const getListItemFromNode = (node: ILink, description?: string, blockid?:
   return listItem
 }
 
-export const getListItemFromAction = (config: ActionHelperConfig, actionGroup?: ActionGroup) => {
+export const getListItemFromAction = (config: ActionHelperConfig, actionGroup: ActionGroup) => {
   const actionItem: ListItemType = {
     icon: actionGroup?.icon ?? 'fluent:arrow-routing-24-filled',
     category: CategoryType.action,
@@ -57,7 +57,11 @@ export const getListItemFromAction = (config: ActionHelperConfig, actionGroup?: 
     },
     title: config.name,
     extras: {
-      combo: true
+      combo: true,
+      actionGroup: {
+        actionGroupId: actionGroup.actionGroupId,
+        authTypeId: config.authTypeId
+      }
     }
   }
 

@@ -2,7 +2,9 @@ import { isUrl } from '@udecode/plate'
 import React from 'react'
 import styled, { css, useTheme } from 'styled-components'
 import { MexIcon } from '../../../../style/Layouts'
+import Tippy from '@tippyjs/react'
 import { TemplateCss, TemplateItemProp } from './ProjectTitle'
+import { mog } from '../../../../utils/lib/helper'
 
 export const FieldLabel = styled.div`
   display: flex;
@@ -57,9 +59,21 @@ const ProjectIcon: React.FC<TemplateItemProp> = ({ item, isView }) => {
   if (!isIconfiy && mexIcon) return null
 
   if (!isView) {
+    const tooltip = `${item.key}: ${item.value}`
+    mog('TOOLTIP', { tooltip })
+
     return (
       <ProjectIconContainer isView={isView}>
-        <ProjectIconMex icon={item.icon} isMex={mexIcon} />
+        <Tippy
+          delay={100}
+          interactiveDebounce={100}
+          placement="bottom"
+          appendTo={() => document.body}
+          theme="mex"
+          content={'SOMETHING IS HERE!'}
+        >
+          <ProjectIconMex icon={item.icon} isMex={mexIcon} />
+        </Tippy>
       </ProjectIconContainer>
     )
   }

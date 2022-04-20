@@ -9,11 +9,12 @@ interface RelativeTimeProps {
   tippy?: boolean
   tippyProps?: TippyProps
   refreshMs?: number
+  prefix?: string
 }
 
 export const Relative = styled.div``
 
-export const RelativeTime = ({ dateNum, tippy = true, tippyProps, refreshMs }: RelativeTimeProps) => {
+export const RelativeTime = ({ dateNum, prefix, tippy = true, tippyProps, refreshMs }: RelativeTimeProps) => {
   const [date, setDate] = useState(new Date(dateNum))
 
   useEffect(() => {
@@ -24,6 +25,8 @@ export const RelativeTime = ({ dateNum, tippy = true, tippyProps, refreshMs }: R
   const relTime = useRelativeTime(date, refreshMs)
   const localDateString = toLocaleString(date)
 
+  const tooltip = prefix ? `${prefix}: ${relTime}` : localDateString
+
   if (tippy)
     return (
       <Tippy
@@ -32,7 +35,7 @@ export const RelativeTime = ({ dateNum, tippy = true, tippyProps, refreshMs }: R
         placement="bottom"
         appendTo={() => document.body}
         theme="mex"
-        content={localDateString}
+        content={tooltip}
         {...tippyProps}
       >
         <Relative>{relTime}</Relative>

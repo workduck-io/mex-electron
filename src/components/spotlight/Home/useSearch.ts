@@ -3,7 +3,7 @@ import { ListItemType } from '../SearchResults/types'
 
 import { getListItemFromNode, getListItemFromSnippet } from './helper'
 import { search as getSearchResults } from 'fast-fuzzy'
-import { initActions, searchBrowserAction, searchGoogle } from '../../../data/Actions'
+import { searchGoogle } from '../../../data/Actions'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { mog } from '../../../utils/lib/helper'
 

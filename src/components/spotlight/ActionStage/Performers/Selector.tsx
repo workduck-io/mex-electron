@@ -19,9 +19,10 @@ const Dropdown = styled.div`
 `
 
 type SelectedProps = {
-  actionId: string
   value?: any
   data?: any
+  actionId: string
+  actionGroupId: string
 }
 
 export const SelectBar = styled(StyledSelect)`
@@ -84,7 +85,7 @@ const StyledOption = styled.div`
 //   ) : null
 // }
 
-const Selector: React.FC<SelectedProps> = ({ actionId, data, value }) => {
+const Selector: React.FC<SelectedProps> = ({ actionId, actionGroupId, data, value }) => {
   const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
     data: data ?? [],
     value: value ?? null
@@ -99,7 +100,7 @@ const Selector: React.FC<SelectedProps> = ({ actionId, data, value }) => {
     const at = isPerformer(actionId)
 
     if (at) {
-      performer(actionId).then((res) => {
+      performer(actionGroupId, actionId).then((res) => {
         const result = res?.contextData
 
         const data = result?.map((item) => {
@@ -116,7 +117,7 @@ const Selector: React.FC<SelectedProps> = ({ actionId, data, value }) => {
         setInputValue({ data })
       })
     }
-  }, [actionId, actionToPerform, selectedValue])
+  }, [actionId, actionGroupId, actionToPerform, selectedValue])
 
   const handleChange = (selected: any) => {
     updateValueInCache(actionId, selected)

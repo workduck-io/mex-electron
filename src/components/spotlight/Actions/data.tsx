@@ -1,4 +1,4 @@
-import { ActionHelperConfig, AuthTypeId, ActionGroup } from '@workduck-io/action-request-helper'
+import { ActionHelperConfig } from '@workduck-io/action-request-helper'
 import * as actionConfig from './actionConfigs'
 
 /*

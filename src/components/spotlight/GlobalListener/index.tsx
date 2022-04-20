@@ -24,6 +24,7 @@ import { useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
 import { useTokenData } from '../../../hooks/useLocalData'
 import { useRecieveTokens } from '../../../hooks/useSyncData'
 import useActions from '../Actions/useActions'
+import { useActionStore } from '../Actions/useActionStore'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
@@ -39,12 +40,17 @@ const GlobalListener = memo(() => {
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
 
   const { getTokenData } = useTokenData()
-  const { initActionsInStore } = useActions()
+  // const { initActionsInStore, initActionsOfGroup } = useActions()
   const { setReceiveToken } = useRecieveTokens()
   const { onSave } = useSaver()
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()
   const { goTo } = useRouting()
+
+  const addActions = useActionStore((store) => store.addActions)
+  const addGroupedActions = useActionStore((store) => store.addGroupedActions)
+  const setActionGroups = useActionStore((store) => store.setActionGroups)
+
   // const { initActionPerformers } = useActionPerformer()
 
   const userDetails = useAuthStore((state) => state.userDetails)
@@ -66,8 +72,6 @@ const GlobalListener = memo(() => {
   }, [showSource, temp])
 
   useEffect(() => {
-    initActionsInStore()
-
     ipcRenderer.on(IpcAction.SELECTED_TEXT, (_event, data) => {
       if (!data) {
         setSelection(undefined)
@@ -140,6 +144,17 @@ const GlobalListener = memo(() => {
 
     ipcRenderer.on(IpcAction.SYNC_DATA, (_event, arg) => {
       update(arg)
+    })
+
+    ipcRenderer.on(IpcAction.UPDATE_ACTIONS, (_event, arg) => {
+      const { groups, actionList, actions, actionGroupId } = arg?.data
+
+      if (groups) setActionGroups(groups)
+      else if (actionList) addActions(actionList)
+      else if (actions && actionGroupId) {
+        addGroupedActions(actionGroupId, actions)
+        // initActionsOfGroup(actionGroupId)
+      }
     })
 
     ipcRenderer.send(IpcAction.GET_LOCAL_DATA)

@@ -33,7 +33,7 @@ const ProjectTime: React.FC<TemplateItemProp> = ({ item, isView }) => {
       </ProjectTimeStyled>
     )
 
-  return <ProjectTimeStyled>{<RelativeTime dateNum={item.value as any} />}</ProjectTimeStyled>
+  return <ProjectTimeStyled>{<RelativeTime prefix={item.key} dateNum={item.value as any} />}</ProjectTimeStyled>
 }
 
 export default ProjectTime

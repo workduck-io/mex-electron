@@ -28,7 +28,7 @@ const ActionStage: React.FC<ActionStageProp> = ({ id = 'GET_GITHUB_REPO_ISSUES',
       {doAction !== id ? (
         <Button
           onClick={() => {
-            initAction(id)
+            initAction('GITHUB', id)
             setDoAction(id)
           }}
         >

@@ -39,7 +39,7 @@ const InfoBar = () => {
   const { getFocusProps } = useLayout()
 
   const infobar = useLayoutStore((s) => s.infobar)
-  const { toggleSyncBlocks, toggleGraph, toggleSuggestedNodes, toggleReminder } = useToggleElements()
+  const { toggleGraph, toggleSuggestedNodes, toggleReminder } = useToggleElements()
   const { shortcutHandler } = useKeyListener()
 
   useEffect(() => {

@@ -30,12 +30,11 @@ import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
 import { AppleNote } from '../../../utils/importers/appleNotes'
 import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useBrowserNavigation, useRouting } from '../../../views/routes/urls'
-import { useReminderStore } from '../../../hooks/useReminders'
 import { useCalendar } from '../../../hooks/useCalendar'
-import { useTokens } from '../../../services/auth/useTokens'
-import { GOOGLE_OAUTH_URL } from '../../../apis/routes'
 import toast from 'react-hot-toast'
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
+import { useRedirectAuth } from '../Auth/useRedirectAuth'
+import useActions from '../../spotlight/Actions/useActions'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -50,7 +49,7 @@ const Init = () => {
   const { init } = useInitialize()
   const { loadNode, getNode } = useLoad()
   const { initCognito } = useAuth()
-  const { loginViaGoogle, logout } = useAuthentication()
+  const { logout } = useAuthentication()
 
   const { getLocalData } = useLocalData()
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
@@ -61,10 +60,7 @@ const Init = () => {
   const { push } = useNavigation()
   const { getNodeidFromPath } = useLinks()
   const { onSave } = useSaver()
-  const updateReminderState = useReminderStore((store) => store.updateReminderState)
   const { setReceiveToken } = useRecieveTokens()
-
-  const { addGoogleCalendarToken } = useTokens()
 
   /**
    * Setup save
@@ -73,6 +69,7 @@ const Init = () => {
 
   const { getTokenData } = useTokenData()
   const { saveAndClearBuffer } = useEditorBuffer()
+  const { getGroupsToView } = useActions()
 
   /**
    * Initialization of the app data, search index and auth,
@@ -128,7 +125,8 @@ const Init = () => {
         .then(({ nodeid }) => {
           // mog('Navigating to ', { nodeid })
 
-          // goTo(ROUTE_PATHS.actions, NavigationType.replace)
+          // TODO: REMOVE THIS AFTER INTEGRATIONS
+          // goTo(ROUTE_PATHS.integrations, NavigationType.replace)
           goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid)
         })
         // .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.push, nodeid))
@@ -228,6 +226,13 @@ const Init = () => {
   const { setIpc } = useSyncData()
   const setAnalysisIpc = useAnalysisIPC()
 
+  const { redirectAuthHandler } = useRedirectAuth()
+
+  // * Mex App redirect auth Handler
+  useEffect(() => {
+    redirectAuthHandler()
+  }, [])
+
   // Setup sending the analysis call
   useAnalysis()
 
@@ -250,23 +255,12 @@ const Init = () => {
   useEffect(() => {
     setIpc()
     setReceiveToken()
-    ipcRenderer.on(IpcAction.OAUTH, async (event, data) => {
-      const { type } = data
-      switch (type) {
-        case 'login_google':
-          await loginViaGoogle(data.code, config.cognito.APP_CLIENT_ID, GOOGLE_OAUTH_URL)
-          break
-        case 'calendar_google':
-          addGoogleCalendarToken({
-            accessToken: data.accessToken,
-            idToken: data.idToken,
-            refreshToken: data.refreshToken
-          })
-          break
-        default:
-          toast('Something went wrong')
-      }
-    })
+
+    // * Set up integrations page
+    getGroupsToView()
+      .then(() => mog('Groups in view initialized'))
+      .catch((e) => mog('Error getting groups in view', { e }))
+
     // Setup recieving the analysis call
     setAnalysisIpc()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

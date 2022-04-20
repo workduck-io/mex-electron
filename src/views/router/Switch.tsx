@@ -30,6 +30,8 @@ import NotFound from '../NotFound'
 import useBlockStore from '../../store/useBlockStore'
 import RemindersAll from '../mex/Reminders/RemindersAll'
 import SpotlightActions from '../../components/spotlight/Actions/SpotlightActions'
+import ServiceInfo from '../../components/mex/Integrations/ServiceInfo'
+import ActionGroupsPage from '../mex/Actions'
 
 export const SwitchWrapper = styled.div<{ isAuth?: boolean }>`
   position: fixed;
@@ -85,7 +87,13 @@ const Switch = () => {
 
         <Route path={ROUTE_PATHS.home} element={<Home />}>
           <Route index element={<ProtectedRoute component={Dashboard} />} />
-          <Route path={ROUTE_PATHS.integrations} element={<ProtectedRoute component={Integrations} />} />
+          {/* Old <Route path={ROUTE_PATHS.integrations} element={<ProtectedRoute component={Integrations} />} />  */}
+          <Route path={ROUTE_PATHS.integrations} element={<ProtectedRoute component={ActionGroupsPage} />} />
+
+          <Route
+            path={`${ROUTE_PATHS.integrations}/:actionGroupId`}
+            element={<ProtectedRoute component={ServiceInfo} />}
+          />
           <Route path={ROUTE_PATHS.archive} element={<ProtectedRoute component={Archive} />} />
           <Route path={ROUTE_PATHS.snippets} element={<ProtectedRoute component={Snippets} />} />
           <Route path={ROUTE_PATHS.search} element={<ProtectedRoute component={Search} />} />

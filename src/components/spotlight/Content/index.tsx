@@ -103,7 +103,7 @@ const Content = () => {
     // else {
     //   setSearchResults([activeItem.item])
     // }
-  }, [search.value, selection, activeItem.item, normalMode, ilinks, events])
+  }, [search.value, actions, selection, activeItem.item, normalMode, ilinks, events])
 
   // * For setting the preview
   useEffect(() => {

@@ -4,9 +4,10 @@ import React from 'react'
 import { FieldLabel } from './ProjectIcon'
 import { transparentize } from 'polished'
 
-const ProjectLabelsStyled = styled.div<{ isView?: boolean }>`
+const ProjectLabelsStyled = styled.span<{ isView?: boolean }>`
   ${TemplateCss};
   margin: 0.25rem 0;
+
   section {
     display: flex;
     flex-direction: row;
@@ -21,7 +22,7 @@ const Label = styled.span<{ color?: string }>`
   padding: ${({ theme }) => theme.spacing.tiny};
   margin: ${({ theme }) => theme.spacing.tiny};
   color: ${({ color, theme }) => (color ? color : theme.colors.text.default)};
-  background: ${({ color, theme }) => transparentize(0.4, color ? color : theme.colors.gray[5])};
+  background: ${({ color, theme }) => transparentize(0.7, color ? color : theme.colors.gray[5])};
 `
 
 const ProjectLabels: React.FC<TemplateItemProp> = ({ item, isView }) => {
