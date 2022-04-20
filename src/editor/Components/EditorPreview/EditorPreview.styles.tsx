@@ -11,6 +11,7 @@ export const EditorPreviewWrapper = styled.div`
 
   border-radius: ${({ theme }) => theme.borderRadius.small};
   color: ${({ theme }) => theme.colors.fade};
+  min-height: 300px;
   max-height: 400px;
   max-width: 700px;
 
