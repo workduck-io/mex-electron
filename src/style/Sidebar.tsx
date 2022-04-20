@@ -1,7 +1,6 @@
 import { Icon } from '@iconify/react'
 import React from 'react'
-import styled, { css } from 'styled-components'
-import { FOCUS_MODE_OPACITY } from './consts'
+import styled from 'styled-components'
 import { focusStyles } from './focus'
 import { PixelToCSS, ThinScrollbar } from './helpers'
 import { FocusModeProp } from './props'
@@ -70,6 +69,34 @@ export const SidebarSection = styled.div`
   &.tree:hover {
     color: ${({ theme }) => theme.colors.secondary};
   } */
+`
+
+export const StyledTreeItemSwitcher = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: ${({ theme }) => theme.colors.text.fade};
+  &:hover {
+    background: ${({ theme }) => theme.colors.gray[8]};
+  }
+`
+
+export const StyledTreeItem = styled.div`
+  display: flex;
+  align-items: center;
+  padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  cursor: pointer;
+  &:hover {
+    background: ${({ theme }) => theme.colors.gray[5]};
+  }
 `
 
 // ============================

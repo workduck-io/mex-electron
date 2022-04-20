@@ -47,10 +47,11 @@ import { TreeWithContextMenu } from './TreeWithContextMenu'
 import { NavProps } from './Types'
 import Bookmarks from './Bookmarks'
 import bookmark3Line from '@iconify/icons-ri/bookmark-3-line'
+import Tree from './Tree'
 
 const Nav = ({ links }: NavProps) => {
   // const match = useMatch(`/${ROUTE_PATHS.node}/:nodeid`)
-  const Tree = useTreeFromLinks()
+  const initTree = useTreeFromLinks()
   const authenticated = useAuthStore((store) => store.authenticated)
   const sidebar = useLayoutStore((store) => store.sidebar)
   const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
@@ -180,7 +181,7 @@ const Nav = ({ links }: NavProps) => {
           text: TreeHelp
         }}
       >
-        <TreeWithContextMenu tree={Tree} />
+        <Tree initTree={initTree} />
       </Collapse>
 
       <EndLinkContainer>

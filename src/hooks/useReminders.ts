@@ -353,10 +353,10 @@ export const useReminders = () => {
       return activeOrSnoozedControls
     }
     if (reminder.time > Date.now()) {
-      futureControls
+      return futureControls
     }
     if (reminder.time < Date.now() && !reminder.state.done) {
-      activeOrSnoozedControls // missed reminders
+      return activeOrSnoozedControls // missed reminders
     }
     return pastControls
   }

@@ -1,12 +1,12 @@
 import { CachedILink, DataStoreState } from '../types/Types'
-import { SEPARATOR, generateTree, getAllParentIds } from '../components/mex/Sidebar/treeUtils'
+import { SEPARATOR, getAllParentIds } from '../components/mex/Sidebar/treeUtils'
 import { Settify, typeInvert } from '../utils/helpers'
 import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
 
 import create from 'zustand'
 import { generateNodeUID } from '../data/Defaults/idPrefixes'
 import { generateTag } from '../utils/generateComboItem'
-import getFlatTree from '../utils/lib/flatTree'
+import getFlatTree, { generateTree } from '../utils/lib/tree'
 import { getNodeIcon } from '../utils/lib/icons'
 import { getUniquePath } from '../utils/lib/paths'
 import { removeLink } from '../utils/lib/links'
@@ -255,50 +255,22 @@ export const sanatizeLinks = (links: treeMap): treeMap => {
   return newLinks
 }
 
-const sortTree = (tree: TreeNode[], contents: Contents): TreeNode[] => {
-  // const metadataList = Object.entries(contents).map(([k, v]) => v.metadata)
-
-  const sorting = (a, b) => {
-    const aMeta = contents[a.nodeid] && contents[a.nodeid].metadata ? contents[a.nodeid].metadata : {}
-    const bMeta = contents[b.nodeid] && contents[b.nodeid].metadata ? contents[b.nodeid].metadata : {}
-    if (aMeta.createdAt && bMeta.createdAt) {
-      return bMeta.createdAt - aMeta.createdAt
-    }
-    if (aMeta.createdAt && !bMeta.createdAt) {
-      return -1
-    }
-    if (bMeta.createdAt && !aMeta.createdAt) {
-      return 1
-    }
-    return 0
-  }
-
-  const sortedTree = tree.sort((a, b) => sorting(a, b))
-
-  tree.map((node) => {
-    if (node.children) {
-      node.children = sortTree(node.children, contents)
-    }
-  })
-
-  return sortedTree
-}
-
 export const useTreeFromLinks = () => {
   const ilinks = useDataStore((store) => store.ilinks)
-  const contents = useContentStore((store) => store.contents)
+  // const contents = useContentStore((store) => store.contents)
   const links = ilinks.map((i) => ({ id: i.path, nodeid: i.nodeid, icon: i.icon }))
   const sanatizedLinks = sanatizeLinks(links)
+  mog('Sanatized links', { sanatizedLinks })
   const tree = generateTree(sanatizedLinks)
-  const sortedTree = sortTree(tree, contents)
+  // const sortedTree = sortTree(tree, contents)
 
   // mog('Tree', { ilinks, contents, links, sanatizedLinks, sortedTree, tree })
 
-  return sortedTree
+  return tree
 }
 
 export const useFlatTreeFromILinks = () => {
-  return getFlatTree(useTreeFromLinks())
+  return useTreeFromLinks()
 }
 
 export default useDataStore

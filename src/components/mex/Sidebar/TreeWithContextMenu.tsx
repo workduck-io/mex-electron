@@ -52,8 +52,6 @@ export const TreeWithContextMenu = ({ tree }: TreeProps) => {
 
   return (
     <>
-      <Tree tree={tree} displayMenu={displayMenu} />
-
       <StyledMenu id={MENU_ID}>
         <Item
           id="rename"
