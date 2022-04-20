@@ -130,6 +130,77 @@ const useActions = () => {
     useActionStore.getState().clear()
   }
 
+  // const getActionsFromConfig = () => {
+  //   // * From grouped Actions, get all the visible actions
+  //   const visibleConfigs = Object.values(actionConfigs).filter((config) => config.visibility)
+
+  //   const actions = visibleConfigs.map((actionConfig) => {
+  //     const actionGroup = actionGroups[actionConfig.actionGroupId]
+  //     return getListItemFromAction(actionConfig, actionGroup)
+  //   })
+
+  //   return actions
+  // }
+
+  // const setActionFromConfig = () => {
+  //   // * From grouped Actions, get all the visible actions
+  //   const visibleConfigs = Object.values(actionConfigs)
+  //   const groups = groupBy(visibleConfigs, 'actionGroupId')
+
+  //   mog('groups are', { groups }, { collapsed: true, pretty: false })
+
+  //   // const actions = visibleConfigs.map((actionConfig) => {
+  //   //   const actionGroup = actionGroups[actionConfig.actionGroupId]
+  //   // })
+  //   setGroupedActions(groups)
+  //   // return actions
+  // }
+
+  // const initActionsOfGroup = (actionGroupId: string) => {
+  //   const groupId = actionGroupId
+  //   const groups = useActionStore.getState().actionGroups
+
+  //   const actionGroup = groups?.[groupId]
+  //   const actions = useActionStore.getState().groupedActions?.[groupId]
+
+  //   mog('actions are here ....', { actions, groups, actionGroup, groupedActions })
+
+  //   // if (!actions) throw new Error('Actions for this group does not exist!')
+
+  //   if (actions) {
+  //     const actionItems = actions?.map((action) => getListItemFromAction(action, actionGroup))
+  //     mog('Im here', { actionItems })
+  //     addActions(actionItems)
+  //   }
+  // }
+
+  // const getGroupsWithInfo = async () => {
+  //   setActionGroups(groups)
+  //   appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { groups })
+
+  //   // * For all Action Groups, get the actions
+  //   for await (const group of Object.values(groups)) {
+  //     const actions = await actionPerformer.getAllActionsOfGroups(group.actionGroupId)
+
+  //     mog('ACTIONS')
+
+  //     // * Add the actions to the store
+  //     addGroupedActions(group.actionGroupId, Object.values(actions))
+
+  //     // * Notify spotlight to initilize actions in list
+  //     appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { actionGroupId: group.actionGroupId, actions })
+  //   }
+  // }
+
+  // const initActionsInStore = () => {
+  //   // const authActions = getActionsFromConfig()
+  //   setActionFromConfig()
+
+  //   const allActions = [...initActions]
+
+  //   setActions(allActions)
+  // }
+
   return {
     getGroupsToView,
     setActionsInList,

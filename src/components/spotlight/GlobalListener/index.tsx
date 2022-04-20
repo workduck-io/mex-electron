@@ -73,8 +73,6 @@ const GlobalListener = memo(() => {
   }, [showSource, temp])
 
   useEffect(() => {
-    // initActionsInStore()
-
     ipcRenderer.on(IpcAction.SELECTED_TEXT, (_event, data) => {
       if (!data) {
         setSelection(undefined)
