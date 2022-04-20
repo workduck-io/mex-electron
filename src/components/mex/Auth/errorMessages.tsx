@@ -17,3 +17,9 @@ export const PasswordRequirements = () => (
     </ul>
   </>
 )
+
+export const PasswordNotMatch = () => (
+  <>
+    <p>Passwords does not match</p>
+  </>
+)

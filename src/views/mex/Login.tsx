@@ -108,6 +108,9 @@ const Login = () => {
         </ButtonFields>
       </BackCard>
       <FooterCard>
+        <Link to={ROUTE_PATHS.forgotpassword}>Forgot Password?</Link>
+      </FooterCard>
+      <FooterCard>
         <Link to={ROUTE_PATHS.register}>Register</Link>
       </FooterCard>
     </CenteredColumn>

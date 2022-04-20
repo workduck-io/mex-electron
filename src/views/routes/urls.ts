@@ -22,7 +22,8 @@ export const ROUTE_PATHS = {
   reminders: '/reminders',
   integrations: '/integrations',
   snippets: '/snippets',
-  snippet: '/snippets/node' // * /snippets/node/:snippetid
+  snippet: '/snippets/node', // * /snippets/node/:snippetid
+  forgotpassword: '/forgotpassword'
 }
 
 export enum NavigationType {

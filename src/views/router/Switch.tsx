@@ -8,6 +8,7 @@ import Dashboard from '../mex/Dashboard'
 import EditorView from '../mex/EditorView'
 import Integrations from '../mex/Integration'
 import Login from '../mex/Login'
+import ForgotPassword from '../mex/ForgotPassword'
 import Register from '../mex/Register'
 import Settings from '../mex/Settings'
 import Snippets from '../mex/Snippets'
@@ -80,6 +81,7 @@ const Switch = () => {
       <Routes>
         <Route path={ROUTE_PATHS.login} element={<AuthRoute component={Login} />} />
         <Route path={ROUTE_PATHS.register} element={<AuthRoute component={Register} />} />
+        <Route path={ROUTE_PATHS.forgotpassword} element={<AuthRoute component={ForgotPassword} />} />
 
         <Route path={ROUTE_PATHS.home} element={<Home />}>
           <Route index element={<ProtectedRoute component={Dashboard} />} />
