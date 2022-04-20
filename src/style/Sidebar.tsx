@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react'
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { focusStyles } from './focus'
 import { PixelToCSS, ThinScrollbar } from './helpers'
 import { FocusModeProp } from './props'
@@ -83,20 +83,44 @@ export const StyledTreeItemSwitcher = styled.button`
   justify-content: center;
   height: 100%;
   color: ${({ theme }) => theme.colors.text.fade};
+  margin-left: ${({ theme }) => theme.spacing.tiny};
   &:hover {
     background: ${({ theme }) => theme.colors.gray[8]};
   }
 `
 
-export const StyledTreeItem = styled.div`
+export const StyledTreeItem = styled.div<{ selected?: boolean }>`
   display: flex;
   align-items: center;
-  padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
+  gap: ${({ theme }) => theme.spacing.tiny};
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  cursor: pointer;
   &:hover {
-    background: ${({ theme }) => theme.colors.gray[5]};
+    background: ${({ theme }) => theme.colors.gray[7]};
   }
+  ${({ selected }) =>
+    selected &&
+    css`
+      background: ${({ theme }) => theme.colors.primary};
+      color: ${({ theme }) => theme.colors.text.oppositePrimary};
+    `}
+`
+
+export const ItemTitle = styled.div`
+  flex-grow: 1;
+`
+
+export const ItemCount = styled.div`
+  font-size: 0.9rem;
+  color: ${({ theme }) => theme.colors.text.fade};
+`
+
+export const ItemContent = styled.div`
+  cursor: pointer;
+  padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.tiny};
 `
 
 // ============================

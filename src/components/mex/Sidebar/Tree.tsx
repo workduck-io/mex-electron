@@ -17,7 +17,13 @@ import {
 } from '@atlaskit/tree'
 import { mog } from '../../../utils/lib/helper'
 import { Icon } from '@iconify/react'
-import { StyledTreeItem, StyledTreeItemSwitcher } from '../../../style/Sidebar'
+import { ItemContent, ItemCount, ItemTitle, StyledTreeItem, StyledTreeItemSwitcher } from '../../../style/Sidebar'
+import { useEditorStore } from '../../../store/useEditorStore'
+import { useNavigation } from '../../../hooks/useNavigation'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { IpcAction } from '../../../data/IpcAction'
+import { AppType } from '../../../hooks/useInitialize'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 // import { complexTree } from '../mockdata/complexTree'
 
 const Container = styled.div`
@@ -43,11 +49,11 @@ const GetIcon = ({ item, onCollapse, onExpand }: GetIconProps) => {
   if (item.children && item.children.length > 0) {
     return item.isExpanded ? (
       <StyledTreeItemSwitcher onClick={() => onCollapse(item.id)}>
-        <Icon icon={'ri:arrow-drop-down-line'} />
+        <Icon icon={'ri:arrow-down-s-line'} />
       </StyledTreeItemSwitcher>
     ) : (
       <StyledTreeItemSwitcher onClick={() => onExpand(item.id)}>
-        <Icon icon={'ri:arrow-drop-right-line'} />
+        <Icon icon={'ri:arrow-right-s-line'} />
       </StyledTreeItemSwitcher>
     )
   }
@@ -64,17 +70,39 @@ interface TreeProps {
 
 const Tree = ({ initTree }: TreeProps) => {
   const [tree, setTree] = React.useState<TreeData>(initTree)
+  const node = useEditorStore((state) => state.node)
+  const { push } = useNavigation()
+  const { goTo } = useRouting()
   // mog('renderTree', { initTree })
   //
   useEffect(() => {
     setTree(initTree)
   }, [initTree])
 
+  const onOpenItem = (itemId: string, nodeid: string) => {
+    push(nodeid)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
+
+    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+    setTree(mutateTree(tree, itemId, { isExpanded: true }))
+  }
+
   const renderItem = ({ item, onExpand, onCollapse, provided, snapshot }: RenderItemParams) => {
+    mog('renderItem', { item })
     return (
-      <StyledTreeItem ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+      <StyledTreeItem
+        ref={provided.innerRef}
+        selected={node && item.data && node.nodeid === item.data.nodeid}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
+      >
         <GetIcon item={item} onExpand={onExpand} onCollapse={onCollapse} />
-        <div>{item.data ? item.data.title : 'No Title'}</div>
+        <ItemContent onClick={() => onOpenItem(item.id as string, item.data.nodeid)}>
+          <ItemTitle>{item.data ? item.data.title : 'No Title'}</ItemTitle>
+          {item.hasChildren && item.children && item.children.length > 0 && (
+            <ItemCount>{item.children.length}</ItemCount>
+          )}
+        </ItemContent>
 
         {/* <AkNavigationItem
           isDragging={snbpshot.isDragging}
