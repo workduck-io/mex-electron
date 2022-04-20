@@ -28,6 +28,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { RelativeTime } from '../../components/mex/RelativeTime'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
+import { IS_DEV } from '../../data/Defaults/dev_'
 import useBlockStore from '../../store/useBlockStore'
 import { useEditorStore } from '../../store/useEditorStore'
 import { mog } from '../../utils/lib/helper'
@@ -159,11 +160,18 @@ export const grabberTooltipProps: TippyProps = {
   theme: 'transparent'
 }
 
-export const DraggerContent = () => {
+export const DraggerContent = ({ element }: any) => {
   return (
     <>
       <div>Drag to move</div>
       <div>Click to select</div>
+      {IS_DEV && (
+        <div>
+          <span>
+            <i>{element && element.id}</i> - {element && element.type}
+          </span>
+        </div>
+      )}
     </>
   )
 }
@@ -205,7 +213,7 @@ export const withStyledDraggables = (components: any) => {
 
         return (
           <Tippy {...grabberTooltipProps} content={<GrabberTooltipContent element={element} />}>
-            <Tippy theme="mex" placement="top" content={<DraggerContent />}>
+            <Tippy theme="mex" placement="top" content={<DraggerContent element={element} />}>
               <StyledDraggable onClick={() => setIsBlockMode(true)} className={className} css={styles}>
                 <Icon icon={checkboxBlankCircleLine} />
               </StyledDraggable>
