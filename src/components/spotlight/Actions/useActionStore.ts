@@ -5,6 +5,9 @@ import { devtools, persist } from 'zustand/middleware'
 import { getActionIds } from '../../../utils/actions'
 import { initActions } from '../../../data/Actions'
 import { mog } from '../../../utils/lib/helper'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { IpcAction } from '../../../data/IpcAction'
+import { AppType } from '../../../hooks/useInitialize'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
 export type ActiveActionType = {
@@ -17,6 +20,10 @@ export type ActiveActionType = {
   size: number
 }
 
+export enum UpdateActionsType {
+  REMOVE_ACTION_BY_GROUP_ID
+}
+
 const ACTION_STORE_NAME = 'mex-action-store'
 
 export type ActionGroupType = ActionGroup & { connected?: boolean }
@@ -25,6 +32,7 @@ type ActionStoreType = {
   actions: Array<ListItemType>
   setActions: (actions: Array<ListItemType>) => void
   addActions: (actions: Array<ListItemType>) => void
+  removeActionsByGroupId: (actionGroupId: string) => void
 
   actionGroups: Record<string, ActionGroupType>
   setActionGroups: (actionGroups: Record<string, ActionGroupType>) => void
@@ -69,6 +77,14 @@ export const useActionStore = create<ActionStoreType>(
 
       actions: initActions,
       setActions: (actions: Array<ListItemType>) => set({ actions }),
+      removeActionsByGroupId: (actionGroupId: string) => {
+        const actions = get().actions.filter((action) => action?.extras?.actionGroup?.actionGroupId !== actionGroupId)
+        set({ actions })
+        appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, {
+          actions,
+          type: UpdateActionsType.REMOVE_ACTION_BY_GROUP_ID
+        })
+      },
       addActions: (actions: Array<ListItemType>) => {
         const existingActions = get().actions
         const newActions = [...actions, ...existingActions]
@@ -220,7 +236,8 @@ export const useActionStore = create<ActionStoreType>(
       name: ACTION_STORE_NAME,
       partialize: (state) => ({
         actions: state.actions,
-        actionsCache: state.actionsCache,
+        // actionsCache: state.actionsCache,
+        actionGroups: state.actionGroups,
         groupedActions: state.groupedActions
       })
     }

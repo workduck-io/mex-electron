@@ -7,10 +7,10 @@ import ActionGroup from './ActionGroup'
 
 const ActionGroupsPage = () => {
   const actionGroups = useActionStore((store) => store.actionGroups)
-  const { getAuthorizedGroups } = useActions()
+  const { getAuthorizedGroups, sortActionGroups } = useActions()
 
   useEffect(() => {
-    getAuthorizedGroups().then(() => mog('Authorized groups loaded'))
+    getAuthorizedGroups(true).then(() => mog('Authorized groups loaded'))
   }, [])
 
   return (
@@ -19,7 +19,7 @@ const ActionGroupsPage = () => {
         <IntegrationContainer>
           <Title>Integrations</Title>
           <Services>
-            {Object.values(actionGroups).map((group) => (
+            {sortActionGroups(actionGroups).map((group) => (
               <ActionGroup key={group.actionGroupId} group={group} />
             ))}
           </Services>

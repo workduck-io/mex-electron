@@ -21,6 +21,8 @@ const Title = styled.span<{ isView: boolean }>`
       : css`
           flex: 1;
           font-size: 0.9rem;
+          display: flex;
+          align-items: center;
         `}
 `
 

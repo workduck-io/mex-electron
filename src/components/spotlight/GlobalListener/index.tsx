@@ -24,7 +24,7 @@ import { useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
 import { useTokenData } from '../../../hooks/useLocalData'
 import { useRecieveTokens } from '../../../hooks/useSyncData'
 import useActions from '../Actions/useActions'
-import { useActionStore } from '../Actions/useActionStore'
+import { useActionStore, UpdateActionsType } from '../Actions/useActionStore'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
@@ -50,6 +50,7 @@ const GlobalListener = memo(() => {
   const addActions = useActionStore((store) => store.addActions)
   const addGroupedActions = useActionStore((store) => store.addGroupedActions)
   const setActionGroups = useActionStore((store) => store.setActionGroups)
+  const removeActionsByGroupId = useActionStore((store) => store.removeActionsByGroupId)
 
   // const { initActionPerformers } = useActionPerformer()
 
@@ -149,7 +150,8 @@ const GlobalListener = memo(() => {
     ipcRenderer.on(IpcAction.UPDATE_ACTIONS, (_event, arg) => {
       const { groups, actionList, actions, actionGroupId } = arg?.data
 
-      if (groups) setActionGroups(groups)
+      if (UpdateActionsType.REMOVE_ACTION_BY_GROUP_ID) removeActionsByGroupId(actions)
+      else if (groups) setActionGroups(groups)
       else if (actionList) addActions(actionList)
       else if (actions && actionGroupId) {
         addGroupedActions(actionGroupId, actions)

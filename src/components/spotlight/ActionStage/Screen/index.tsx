@@ -46,13 +46,12 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
 
   useEffect(() => {
     const ready = isReady()
-
     if (ready) {
       performer(actionGroupId, actionId)
         .then((res) => {
-          if (Array.isArray(res.displayData)) {
-            const data = (res?.displayData as TemplateConfig[]) ?? []
-            setResData(data)
+          if (Array.isArray(res?.displayData)) {
+            const displayData = res?.displayData as Array<TemplateConfig>
+            setResData(displayData || [])
           }
         })
         .catch((err) => mog('error', { err }))
@@ -70,12 +69,6 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
   }, [search.value])
 
   if (isLoading) return null
-
-  // return (
-  //   <StyledScreen>
-  //     <Loading transparent dots={5} />
-  //   </StyledScreen>
-  // )
 
   const onSelectItem = (index: any) => {
     setActiveIndex(index)

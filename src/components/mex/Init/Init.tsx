@@ -61,6 +61,7 @@ const Init = () => {
   const { getNodeidFromPath } = useLinks()
   const { onSave } = useSaver()
   const { setReceiveToken } = useRecieveTokens()
+  // const { getAuthorizedGroups } = useActions()
 
   /**
    * Setup save
@@ -127,6 +128,8 @@ const Init = () => {
 
           // TODO: REMOVE THIS AFTER INTEGRATIONS
           // goTo(ROUTE_PATHS.integrations, NavigationType.replace)
+          // getAuthorizedGroups(true).then(() => mog('Authorized groups loaded'))
+
           goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid)
         })
         // .then(({ nodeid }) => goTo(ROUTE_PATHS.node, NavigationType.push, nodeid))
@@ -171,7 +174,7 @@ const Init = () => {
     })
 
     ipcRenderer.on(IpcAction.OPEN_REMINDER, (_event, { reminder }) => {
-      mog('Opening Reminder', { reminder })
+      // mog('Opening Reminder', { reminder })
       if (!reminder) return
       // updateReminderState(reminder.id, {
       //   ...reminder.state,

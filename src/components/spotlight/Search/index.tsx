@@ -1,7 +1,7 @@
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 /* eslint-disable react/prop-types */
 import React, { useEffect, useRef } from 'react'
-import { Before, StyledInput, StyledSearch } from './styled'
+import { StyledInput, StyledSearch } from './styled'
 import { useSaveChanges, useSearchProps } from './useSearchProps'
 
 import { CenterIcon } from '../../../style/spotlight/layout'
@@ -12,7 +12,7 @@ import { useContentStore } from '../../../store/useContentStore'
 import { useDebouncedCallback } from 'use-debounce'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useTheme } from 'styled-components'
-import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { useRouting } from '../../../views/routes/urls'
 import Loading from '../../../style/Loading'
 
@@ -100,12 +100,6 @@ const Search: React.FC = () => {
   // const before = type === CategoryType.search ? '' : type
 
   const disabled = !normalMode
-
-  mog('loading', { isLoading })
-
-  const disabled = !normalMode
-
-  mog('loading', { isLoading })
 
   return (
     <StyledSearch id="wd-mex-spotlight-search-container">

@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { shell } from 'electron'
+import arrowLeftLine from '@iconify/icons-ri/arrow-left-line'
 import styled, { css, useTheme } from 'styled-components'
 import { CardStyles } from '../Settings/Importers'
-import { Button } from '../../../style/Buttons'
+import IconButton, { Button } from '../../../style/Buttons'
 import { StyledEditor } from '../../../style/Editor'
 import { CardShadow } from '../../../style/helpers'
 import { CenteredFlex, Title } from '../../../style/Integration'
@@ -14,13 +15,17 @@ import { ActionHelperConfig } from '@workduck-io/action-request-helper'
 import { mog } from '../../../utils/lib/helper'
 import { ErrorBoundary } from 'react-error-boundary'
 import { MexIcon } from '../../../style/Layouts'
+import tinykeys from 'tinykeys'
+import { useKeyListener } from '../../../hooks/useShortcutListener'
 
 const ServiceContainer = styled(StyledEditor)``
 
 const GroupHeaderContainer = styled.section`
   ${CardStyles}
   ${CardShadow}
+  position: relative;
 
+  margin-top: 1rem;
   user-select: none;
 
   & > div {
@@ -75,6 +80,12 @@ const GroupHeader = styled.div<{ connected?: boolean }>`
         }
       `}
   }
+`
+
+const FloatingIcon = styled.span`
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
 `
 
 const ActionsContainer = styled.section`
@@ -142,19 +153,31 @@ const ServiceInfo = () => {
   const { params } = useRouting()
   const groupedActions = useActionStore((store) => store.groupedActions)
   const actionGroups = useActionStore((store) => store.actionGroups)
+  const { shortcutDisabled } = useKeyListener()
 
   const actionGroup = actionGroups[params?.actionGroupId]
   const { goTo } = useRouting()
   const theme = useTheme()
 
   const onConnectClick = () => {
-    // * TODO: Connect to service URL
-
     const url = actionGroup.authConfig.authURL
-    mog('connect', actionGroup)
-
     if (url) shell.openExternal(url)
   }
+
+  const goBackToIntegrations = () => goTo(ROUTE_PATHS.integrations, NavigationType.replace)
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      Escape: (event) => {
+        event.preventDefault()
+        if (!shortcutDisabled) goBackToIntegrations()
+      }
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [])
 
   return (
     <ErrorBoundary
@@ -162,6 +185,15 @@ const ServiceInfo = () => {
     >
       <ServiceContainer>
         <GroupHeaderContainer>
+          <FloatingIcon>
+            <IconButton
+              size={24}
+              shortcut={`Esc`}
+              icon={arrowLeftLine}
+              onClick={goBackToIntegrations}
+              title={'Return to Integrations'}
+            />
+          </FloatingIcon>
           <div>
             <ActionGroupIcon>
               <span>

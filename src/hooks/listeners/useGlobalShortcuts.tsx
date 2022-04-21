@@ -47,18 +47,19 @@ export const useGlobalShortcuts = () => {
         event.preventDefault()
         if (!shortcutDisabled) {
           if (location.pathname === '/action') {
-            // * If no value is present, take back to home view
-            if (!search.value) {
-              handleCancel()
-              clearPerformedAction()
-              goTo(ROUTE_PATHS.home, NavigationType.replace)
-              return
-            }
-
-            // * clear action search
             if (useSpotlightAppStore.getState().view) {
               setView(false)
             } else {
+              // * If no value is present, take back to home view
+              if (!search.value) {
+                handleCancel()
+                setView(false)
+                clearPerformedAction()
+                goTo(ROUTE_PATHS.home, NavigationType.replace)
+                return
+              }
+              // * clear action search
+
               setInput('')
               setSearch({ value: '', type: CategoryType.search })
             }

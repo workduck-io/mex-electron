@@ -69,7 +69,7 @@ export const useReminderStore = create<ReminderStoreState>((set, get) => ({
       )
     })),
   updateReminderState: (id: string, rstate: ReminderState) => {
-    mog('ReminderArmer: updateReminderState', { id, rstate })
+    // mog('ReminderArmer: updateReminderState', { id, rstate })
     get().updateReminder({ ...get().reminders.find((reminder) => reminder.id === id), state: rstate })
   },
 
@@ -247,11 +247,11 @@ export const useReminders = () => {
     const upcomingReminders = reminders.filter(upcoming).filter(toArm)
     const tobeArmedReminders = uniqBy(upcomingReminders, 'id')
 
-    mog('tobeArmedReminders', {
-      tobeArmedReminders,
-      reminders,
-      upcomingReminders
-    })
+    // mog('tobeArmedReminders', {
+    //   tobeArmedReminders,
+    //   reminders,
+    //   upcomingReminders
+    // })
 
     // Group by time of interval 1 minutes
     const groupedReminders: Record<number, Reminder[]> = tobeArmedReminders.reduce(
@@ -301,7 +301,7 @@ export const useReminders = () => {
     const toArmRem = getToArmReminders()
     const now = Date.now()
     const tenSecNow = add(now, { seconds: 5 })
-    mog('ReminderArmer: Using the interval', { reminders, toArmRem })
+    // mog('ReminderArmer: Using the interval', { reminders, toArmRem })
     if (toArmRem.length === 0) {
       armReminders([], tenSecNow.getTime())
     }
@@ -362,14 +362,14 @@ export const useReminders = () => {
   }
 
   const actOnReminder = (action: ReminderActions, reminder: Reminder) => {
-    mog('ReminderArmer: IpcAction.ACTION_REMINDER', { action, reminder })
+    // mog('ReminderArmer: IpcAction.ACTION_REMINDER', { action, reminder })
     switch (action.type) {
       case 'open':
         updateReminderState(reminder.id, {
           ...reminder.state,
           done: true
         })
-        mog('ReminderArmer: IpcAction.ACTION_REMINDER USE OPEN_REMINDER ACTION', { action, reminder })
+        // mog('ReminderArmer: IpcAction.ACTION_REMINDER USE OPEN_REMINDER ACTION', { action, reminder })
         appNotifierWindow(IpcAction.OPEN_REMINDER_IN_MEX, AppType.SPOTLIGHT, { reminder: reminder })
         break
       case 'delete':

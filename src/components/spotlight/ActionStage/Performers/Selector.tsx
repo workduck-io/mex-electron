@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import styled from 'styled-components'
 import { StyledSelect } from '../../../../style/Form'
+import { mog } from '../../../../utils/lib/helper'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
 import { useActionStore } from '../../Actions/useActionStore'
 import { StyledBackground } from '../../styled'
@@ -87,9 +88,14 @@ const StyledOption = styled.div`
 
 const Selector: React.FC<SelectedProps> = ({ actionId, actionGroupId, data, value }) => {
   const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
-    data: data ?? [],
-    value: value ?? null
+    data: [],
+    value: null
   })
+
+  useEffect(() => {
+    setInputValue({ data, value })
+  }, [data, value])
+
   const actionToPerform = useActionStore((store) => store.actionToPerform)
   const updateValueInCache = useActionStore((store) => store.updateValueInCache)
   const selectedValue = useActionStore((store) => store.selectedValue)
@@ -110,11 +116,7 @@ const Selector: React.FC<SelectedProps> = ({ actionId, actionGroupId, data, valu
             value: item
           }
         })
-
-        // if (res?.value) {
-        //   const selected = { label: res?.value?.select?.value, value: res.value }
-        //   setInputValue({ data, value: selected })
-        setInputValue({ data })
+        setInputValue({ data, value: null })
       })
     }
   }, [actionId, actionGroupId, actionToPerform, selectedValue])

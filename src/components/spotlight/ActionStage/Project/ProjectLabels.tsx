@@ -28,7 +28,9 @@ const Label = styled.span<{ color?: string }>`
 const ProjectLabels: React.FC<TemplateItemProp> = ({ item, isView }) => {
   if (!item.value || !Array.isArray(item.value)) return <></>
 
-  if (isView)
+  if (isView) {
+    if (item.value.length === 0) return <></>
+
     return (
       <ProjectLabelsStyled isView={isView}>
         <FieldLabel>{item.key}</FieldLabel>
@@ -47,6 +49,7 @@ const ProjectLabels: React.FC<TemplateItemProp> = ({ item, isView }) => {
         </section>
       </ProjectLabelsStyled>
     )
+  }
 
   return <></>
 }

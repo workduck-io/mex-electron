@@ -32,8 +32,10 @@ export const useActionPerformer = () => {
     const prevActionValue = getPrevActionValue(actionId)
 
     // * if we have a cache, return the cached result
+    // if (!fetch) {
     // const cache = getCachedAction(actionId)
     // if (cache?.data) return { ...cache?.data, value: cache?.value }
+    // }
 
     setIsLoading(true)
 
