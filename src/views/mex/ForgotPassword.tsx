@@ -53,20 +53,6 @@ const ForgotPassword = () => {
   const regSubmitting = forgotPasswordForm.formState.isSubmitting
   const verSubmitting = verifyForm.formState.isSubmitting
 
-  const onResendRequest = async (e) => {
-    e.preventDefault()
-    setReqCode(true)
-    await resendCode()
-      .then((r) => {
-        toast('Verification code sent!')
-      })
-      .catch(() => toast.error('Code could not be sent'))
-
-    // setTimeout(() => {
-    setReqCode(false)
-    // }, 20000)
-  }
-
   const onForgotPasswordSubmit = async (data: ForgotPasswordFormData) => {
     setIsForgottenPassword(true)
     setNewPassword(data.newpassword)
@@ -177,15 +163,6 @@ const ForgotPassword = () => {
               error={verErrors.code?.type === 'required' ? 'Code is required' : undefined}
             ></Input>
 
-            <LoadingButton
-              loading={reqCode}
-              buttonProps={{
-                id: 'resendCodeButton',
-                onClick: onResendRequest
-              }}
-            >
-              Resend Code
-            </LoadingButton>
             <ButtonFields>
               <Button large onClick={onCancelVerification}>
                 Cancel
