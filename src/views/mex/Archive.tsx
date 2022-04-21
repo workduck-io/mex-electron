@@ -40,12 +40,6 @@ import { GenericSearchResult } from '../../types/search'
 import Infobox from '../../ui/components/Help/Infobox'
 import { ArchiveHelp } from '../../data/Defaults/helpText'
 
-const Nodes = styled.section`
-  padding-right: 2rem;
-  height: 100%;
-  width: 100%;
-`
-
 export const ArchivedNode = styled.div`
   display: flex;
   flex-direction: column;
@@ -55,17 +49,6 @@ export const ArchivedNode = styled.div`
   height: 8rem;
   margin: 1rem;
   background-color: ${({ theme }) => theme.colors.background.card};
-`
-
-const ArchiveHeader = styled.div`
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-  /* background-color: ${({ theme }) => theme.colors.background.card}; */
-  overflow-x: hidden;
-  padding: 1rem;
-  font-size: 1.3rem;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  /* color: ${({ theme }) => theme.colors.primary}; */
 `
 
 const StyledIcon = styled(Icon)`

@@ -8,6 +8,8 @@ import {
   TreeItem,
   TreeSourcePosition
 } from '@atlaskit/tree'
+
+import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useRef } from 'react'
 import { useContextMenu } from 'react-contexify'
@@ -43,11 +45,7 @@ const GetIcon = ({ item, onCollapse, onExpand }: GetIconProps) => {
       </StyledTreeItemSwitcher>
     )
   }
-  return (
-    <StyledTreeItemSwitcher>
-      <Icon icon={'ri:checkbox-blank-circle-line'} />
-    </StyledTreeItemSwitcher>
-  )
+  return <StyledTreeItemSwitcher></StyledTreeItemSwitcher>
 }
 
 interface TreeProps {
@@ -95,24 +93,42 @@ const Tree = ({ initTree }: TreeProps) => {
   const onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, item: TreeItem) => {
     // mog('onClick', { item })
     if (e.button === 0) {
+      expandNode(item.data.path)
       onOpenItem(item.id as string, item.data.nodeid)
     }
   }
+  const defaultSnap = {
+    isDragging: false,
+    isDropAnimating: false,
+    dropAnimation: null,
+    mode: null,
+    draggingOver: null,
+    combineTargetFor: null,
+    combineWith: null
+  }
 
   const renderItem = ({ item, onExpand, onCollapse, provided, snapshot }: RenderItemParams) => {
-    // mog('renderItem', { item, snapshot })
+    const isTrue = JSON.stringify(snapshot) !== JSON.stringify(defaultSnap)
+
+    if (isTrue) mog('renderItem', { item, snapshot, provided })
+
     return (
       <StyledTreeItem
         ref={provided.innerRef}
         selected={node && item.data && node.nodeid === item.data.nodeid}
         isDragging={snapshot.isDragging}
+        isBeingDroppedAt={isTrue}
         onContextMenu={(e) => show(e, { props: { id: item.data.nodeid, path: item.data.path } })}
         {...provided.draggableProps}
         {...provided.dragHandleProps}
       >
         <GetIcon item={item} onExpand={onExpand} onCollapse={onCollapse} />
+
         <ItemContent onMouseDown={(e) => onClick(e, item)}>
-          <ItemTitle>{item.data ? item.data.title : 'No Title'}</ItemTitle>
+          <ItemTitle>
+            <Icon icon={item.data.icon ?? fileList2Line} />
+            <span>{item.data ? item.data.title : 'No Title'}</span>
+          </ItemTitle>
           {item.hasChildren && item.children && item.children.length > 0 && (
             <ItemCount>{item.children.length}</ItemCount>
           )}

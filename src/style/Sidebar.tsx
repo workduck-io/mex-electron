@@ -1,6 +1,8 @@
 import { Icon } from '@iconify/react'
+import { transparentize } from 'polished'
 import React from 'react'
 import styled, { css } from 'styled-components'
+import { Ellipsis } from '../components/mex/Integrations/Template/styled'
 import { focusStyles } from './focus'
 import { PixelToCSS, ThinScrollbar } from './helpers'
 import { FocusModeProp } from './props'
@@ -81,38 +83,29 @@ export const StyledTreeItemSwitcher = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  color: ${({ theme }) => theme.colors.text.fade};
+  width: 18px;
+  height: 24px;
+  color: ${({ theme }) => transparentize(0.3, theme.colors.text.fade)};
   margin-left: ${({ theme }) => theme.spacing.tiny};
+  border-radius: 3px;
   &:hover {
+    color: ${({ theme }) => theme.colors.primary};
     background: ${({ theme }) => theme.colors.gray[8]};
   }
 `
 
-export const StyledTreeItem = styled.div<{ selected?: boolean; isDragging?: boolean }>`
+export const ItemTitle = styled.div`
+  flex-grow: 1;
+  max-width: 220px;
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-  &:hover {
-    background: ${({ theme }) => theme.colors.gray[7]};
+  svg {
+    flex-shrink: 0;
   }
-  ${({ selected, theme }) =>
-    selected &&
-    css`
-      background: ${theme.colors.primary};
-      color: ${theme.colors.text.oppositePrimary};
-    `}
-  ${({ isDragging, theme }) =>
-    isDragging &&
-    css`
-      background: ${theme.colors.gray[7]};
-      border: 1px inset ${theme.colors.secondary};
-    `}
-`
-
-export const ItemTitle = styled.div`
-  flex-grow: 1;
+  span {
+    ${Ellipsis}
+  }
 `
 
 export const ItemCount = styled.div`
@@ -122,11 +115,55 @@ export const ItemCount = styled.div`
 
 export const ItemContent = styled.div`
   cursor: pointer;
-  padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
+  padding: 8px 16px;
+  padding-left: 0px;
   flex-grow: 1;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.tiny};
+`
+
+export const StyledTreeItem = styled.div<{ selected?: boolean; isDragging?: boolean; isBeingDroppedAt?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.tiny};
+  border-radius: 5px 0px 0px 5px;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.gray[7]};
+  }
+  // &:drop {
+  //   background: ${({ theme }) => theme.colors.gray[7]};
+  // }
+  ${({ selected, theme }) =>
+    selected &&
+    css`
+      background: ${theme.colors.primary};
+      color: ${theme.colors.text.oppositePrimary};
+      ${ItemCount}, svg {
+        color: ${theme.colors.text.oppositePrimary};
+      }
+      :hover {
+        background: ${transparentize(0.3, theme.colors.primary)};
+      }
+      ${StyledTreeItemSwitcher} {
+        &:hover svg {
+          color: ${theme.colors.primary};
+        }
+      }
+    `}
+
+  ${({ isBeingDroppedAt, isDragging, theme }) =>
+    (isBeingDroppedAt || isDragging) &&
+    css`
+      ${isDragging &&
+      css`
+        color: ${theme.colors.primary};
+      `}
+      background: ${theme.colors.gray[7]};
+      box-shadow: inset 0 0 0 1px ${isDragging ? theme.colors.secondary : theme.colors.secondary};
+    `}
 `
 
 // ============================

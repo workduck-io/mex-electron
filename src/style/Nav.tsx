@@ -67,6 +67,7 @@ export const Link = styled(NavLink)`
 export const MainLinkContainer = styled.div`
   width: 100%;
   margin: 2rem 0;
+  padding-right: ${({ theme }) => theme.spacing.small};
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
@@ -151,6 +152,7 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
   position: fixed;
   transition: opacity 0.3s ease-in-out;
   padding: 2rem ${({ theme }) => theme.spacing.small} 0;
+  padding-right: 0px;
   background-color: ${({ theme }) => theme.colors.gray[8]};
   gap: ${({ theme }) => theme.spacing.small};
 
