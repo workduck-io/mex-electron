@@ -6,12 +6,15 @@ import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
 import create from 'zustand'
 import { generateNodeUID } from '../data/Defaults/idPrefixes'
 import { generateTag } from '../utils/generateComboItem'
+import { useEditorStore } from './useEditorStore'
 import getFlatTree, { generateTree } from '../utils/lib/tree'
 import { getNodeIcon } from '../utils/lib/icons'
 import { getUniquePath } from '../utils/lib/paths'
 import { removeLink } from '../utils/lib/links'
 import { Contents, useContentStore } from './useContentStore'
 import TreeNode from '../types/tree'
+import { useTreeStore } from './useTreeStore'
+import { useMemo } from 'react'
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   // Tags
@@ -256,13 +259,14 @@ export const sanatizeLinks = (links: treeMap): treeMap => {
 }
 
 export const useTreeFromLinks = () => {
+  const node = useEditorStore((state) => state.node)
   const ilinks = useDataStore((store) => store.ilinks)
-  // const contents = useContentStore((store) => store.contents)
+  const expanded = useTreeStore((store) => store.expanded)
   const links = ilinks.map((i) => ({ id: i.path, nodeid: i.nodeid, icon: i.icon }))
   const sanatizedLinks = sanatizeLinks(links)
   mog('Sanatized links', { sanatizedLinks })
-  const tree = generateTree(sanatizedLinks)
-  // const sortedTree = sortTree(tree, contents)
+  // const sortedTree = sortTree(sanatizeLinks, contents)
+  const tree = useMemo(() => generateTree(sanatizedLinks, expanded), [ilinks, node])
 
   // mog('Tree', { ilinks, contents, links, sanatizedLinks, sortedTree, tree })
 

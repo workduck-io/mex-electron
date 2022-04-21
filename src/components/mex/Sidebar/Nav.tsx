@@ -5,7 +5,7 @@ import gitBranchLine from '@iconify/icons-ri/git-branch-line'
 import settings4Line from '@iconify/icons-ri/settings-4-line'
 import { Icon } from '@iconify/react'
 import { useSingleton } from '@tippyjs/react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import toast from 'react-hot-toast'
 import { useLocation } from 'react-router-dom'
 import tinykeys from 'tinykeys'
@@ -43,11 +43,11 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/u
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
 import { useSidebarTransition } from './Transition'
-import { TreeWithContextMenu } from './TreeWithContextMenu'
 import { NavProps } from './Types'
 import Bookmarks from './Bookmarks'
 import bookmark3Line from '@iconify/icons-ri/bookmark-3-line'
 import Tree from './Tree'
+import { nanoid } from 'nanoid'
 
 const Nav = ({ links }: NavProps) => {
   // const match = useMatch(`/${ROUTE_PATHS.node}/:nodeid`)
@@ -173,7 +173,7 @@ const Nav = ({ links }: NavProps) => {
 
       <Collapse
         title="Tree"
-        oid="tree"
+        oid={`tree`}
         defaultOpen
         icon={gitBranchLine}
         maximumHeight="80vh"

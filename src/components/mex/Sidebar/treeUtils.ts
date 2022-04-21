@@ -19,8 +19,8 @@ export const sampleFlatTree = [
 
 export const SEPARATOR = '.'
 
-export const getParentId = (id: string) => {
-  const lastIndex = id.lastIndexOf(SEPARATOR)
+export const getParentId = (id: string, separator = SEPARATOR) => {
+  const lastIndex = id.lastIndexOf(separator)
   if (lastIndex === -1) return null
   return id.slice(0, lastIndex)
 }
@@ -32,13 +32,14 @@ export const getParentId = (id: string) => {
     a, a.b, a.b.c
   */
 export const getAllParentIds = (
-  id: string // const allParents: string[] = []
+  id: string, // const allParents: string[] = []
+  separator = SEPARATOR
 ) =>
   id
-    .split(SEPARATOR) // split by `.`
+    .split(separator) // split by `.`
     .reduce(
       // Use prefix of last element when the array has elements
-      (p, c) => [...p, p.length > 0 ? `${p[p.length - 1]}${SEPARATOR}${c}` : c],
+      (p, c) => [...p, p.length > 0 ? `${p[p.length - 1]}${separator}${c}` : c],
       []
     )
 

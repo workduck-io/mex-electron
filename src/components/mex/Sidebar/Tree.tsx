@@ -1,43 +1,29 @@
-import React, { Component, useEffect } from 'react'
-import styled from 'styled-components'
-// import Navigation, { AkNavigationItem } from '@atlaskit/navigation';
-// import ChevronDownIcon from '@atlaskit/icon/glyph/chevron-down';
-// import ChevronRightIcon from '@atlaskit/icon/glyph/chevron-right';
-// import Button from '@atlaskit/button/standard-button';
 import {
   default as AtlaskitTree,
-  mutateTree,
-  moveItemOnTree,
-  RenderItemParams,
-  TreeItem,
-  TreeData,
   ItemId,
-  TreeSourcePosition,
-  TreeDestinationPosition
+  mutateTree,
+  RenderItemParams,
+  TreeData,
+  TreeDestinationPosition,
+  TreeItem,
+  TreeSourcePosition
 } from '@atlaskit/tree'
-import { mog } from '../../../utils/lib/helper'
 import { Icon } from '@iconify/react'
-import { ItemContent, ItemCount, ItemTitle, StyledTreeItem, StyledTreeItemSwitcher } from '../../../style/Sidebar'
-import { useEditorStore } from '../../../store/useEditorStore'
-import { useNavigation } from '../../../hooks/useNavigation'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import React, { useEffect, useRef } from 'react'
+import { useContextMenu } from 'react-contexify'
 import { IpcAction } from '../../../data/IpcAction'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
+import { useNavigation } from '../../../hooks/useNavigation'
+import { useEditorStore } from '../../../store/useEditorStore'
+import { useTreeStore } from '../../../store/useTreeStore'
+import { ItemContent, ItemCount, ItemTitle, StyledTreeItem, StyledTreeItemSwitcher } from '../../../style/Sidebar'
+import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import { useRefactorStore } from '../Refactor/Refactor'
+import { getNameFromPath, SEPARATOR } from './treeUtils'
+import { MENU_ID, TreeContextMenu } from './TreeWithContextMenu'
 // import { complexTree } from '../mockdata/complexTree'
-
-const Container = styled.div`
-  display: flex;
-`
-
-const Dot = styled.span`
-  display: flex;
-  width: 24px;
-  height: 32px;
-  justify-content: center;
-  font-size: 12px;
-  line-height: 32px;
-`
 
 interface GetIconProps {
   item: TreeItem
@@ -68,15 +54,30 @@ interface TreeProps {
   initTree: TreeData
 }
 
+interface TreeLocalState {
+  tree: TreeData
+}
+
 const Tree = ({ initTree }: TreeProps) => {
-  const [tree, setTree] = React.useState<TreeData>(initTree)
+  const [treeState, setTreeState] = React.useState<TreeLocalState>({ tree: initTree })
+  // const [draggedItem, setDraggedItem] = React.useState<TreeItem | null>(null)
   const node = useEditorStore((state) => state.node)
+  const expandNode = useTreeStore((state) => state.expandNode)
+  const collapseNode = useTreeStore((state) => state.collapseNode)
+  const prefillModal = useRefactorStore((state) => state.prefillModal)
   const { push } = useNavigation()
   const { goTo } = useRouting()
+  const { tree } = treeState
   // mog('renderTree', { initTree })
   //
+  const draggedRef = useRef<TreeItem | null>(null)
+
+  const changeTree = (newTree: TreeData) => {
+    setTreeState((state) => ({ ...state, tree: newTree }))
+  }
+  //
   useEffect(() => {
-    setTree(initTree)
+    setTreeState({ tree: initTree })
   }, [initTree])
 
   const onOpenItem = (itemId: string, nodeid: string) => {
@@ -84,20 +85,33 @@ const Tree = ({ initTree }: TreeProps) => {
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
 
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-    setTree(mutateTree(tree, itemId, { isExpanded: true }))
+    changeTree(mutateTree(tree, itemId, { isExpanded: true }))
+  }
+
+  const { show } = useContextMenu({
+    id: MENU_ID
+  })
+
+  const onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, item: TreeItem) => {
+    // mog('onClick', { item })
+    if (e.button === 0) {
+      onOpenItem(item.id as string, item.data.nodeid)
+    }
   }
 
   const renderItem = ({ item, onExpand, onCollapse, provided, snapshot }: RenderItemParams) => {
-    mog('renderItem', { item })
+    // mog('renderItem', { item, snapshot })
     return (
       <StyledTreeItem
         ref={provided.innerRef}
         selected={node && item.data && node.nodeid === item.data.nodeid}
+        isDragging={snapshot.isDragging}
+        onContextMenu={(e) => show(e, { props: { id: item.data.nodeid, path: item.data.path } })}
         {...provided.draggableProps}
         {...provided.dragHandleProps}
       >
         <GetIcon item={item} onExpand={onExpand} onCollapse={onCollapse} />
-        <ItemContent onClick={() => onOpenItem(item.id as string, item.data.nodeid)}>
+        <ItemContent onMouseDown={(e) => onClick(e, item)}>
           <ItemTitle>{item.data ? item.data.title : 'No Title'}</ItemTitle>
           {item.hasChildren && item.children && item.children.length > 0 && (
             <ItemCount>{item.children.length}</ItemCount>
@@ -105,7 +119,6 @@ const Tree = ({ initTree }: TreeProps) => {
         </ItemContent>
 
         {/* <AkNavigationItem
-          isDragging={snbpshot.isDragging}
           text={item.data ? item.data.title : ''}
           icon={DragDropWithNestingTree.getIcon(item, onExpand, onCollapse)}
           dnd={{ dragHandleProps: provided.dragHandleProps }}
@@ -116,37 +129,76 @@ const Tree = ({ initTree }: TreeProps) => {
 
   const onExpand = (itemId: ItemId) => {
     // const { tree }: State = this.state
-    setTree(mutateTree(tree, itemId, { isExpanded: true }))
+    const item = tree.items[itemId]
+    if (item && item.data && item.data.path) {
+      expandNode(item.data.path)
+    }
+    changeTree(mutateTree(tree, itemId, { isExpanded: true }))
   }
 
   const onCollapse = (itemId: ItemId) => {
     // const { tree }: State = this.state
-    setTree(mutateTree(tree, itemId, { isExpanded: false }))
+    const item = tree.items[itemId]
+    if (item && item.data && item.data.path) {
+      collapseNode(item.data.path)
+    }
+    changeTree(mutateTree(tree, itemId, { isExpanded: false }))
+  }
+
+  const onDragStart = (itemId: ItemId) => {
+    // const { tree }: State = this.state
+    const item = tree.items[itemId]
+    if (item && item.data && item.data.path) {
+      draggedRef.current = item
+    }
   }
 
   const onDragEnd = (source: TreeSourcePosition, destination?: TreeDestinationPosition) => {
     // const { tree } = this.state
 
-    if (!destination) {
+    if (!destination || !draggedRef.current) {
+      draggedRef.current = null
       return
     }
 
-    const newTree = moveItemOnTree(tree, source, destination)
-    setTree(newTree)
+    if (source === destination) {
+      draggedRef.current = null
+      return
+    }
+
+    if (source.parentId === destination.parentId) {
+      return
+    }
+
+    const from = draggedRef.current.data.path
+    const toItem = tree.items[destination.parentId]
+    const to = toItem && `${toItem.data.path}${SEPARATOR}${getNameFromPath(from)}`
+    // const newTree = moveItemOnTree(tree, source, destination)
+    mog('onDragEnd', { source, destination, to, from, toItem, tree })
+
+    draggedRef.current = null
+
+    prefillModal(from, to)
+    // changeTree(newTree)
   }
 
   // const { tree } = state
 
   return (
-    <AtlaskitTree
-      tree={tree}
-      renderItem={renderItem}
-      onExpand={onExpand}
-      onCollapse={onCollapse}
-      onDragEnd={onDragEnd}
-      isDragEnabled
-      isNestingEnabled
-    />
+    <>
+      <AtlaskitTree
+        offsetPerLevel={16}
+        tree={tree}
+        renderItem={renderItem}
+        onExpand={onExpand}
+        onCollapse={onCollapse}
+        onDragEnd={onDragEnd}
+        onDragStart={onDragStart}
+        isDragEnabled
+        isNestingEnabled
+      />
+      <TreeContextMenu />
+    </>
   )
 }
 

@@ -3,6 +3,7 @@ import { NodeContent, NodeMetadata } from '../types/data'
 import { NodeEditorContent } from '../types/Types'
 
 export interface Contents {
+  // Mapped with nodeid
   [key: string]: NodeContent
 }
 
@@ -13,6 +14,8 @@ interface ContentStoreState {
   removeContent: (nodeid: string) => void
   getContent: (nodeid: string) => NodeContent
   setContent: (nodeid: string, content: NodeEditorContent, metadata?: NodeMetadata) => void
+  // Nodeid mapped metadata
+  getAllMetadata: () => Record<string, NodeMetadata>
   setMetadata: (nodeid: string, metadata: NodeMetadata) => void
   initContents: (contents: Contents) => void
 }
@@ -32,6 +35,16 @@ export const useContentStore = create<ContentStoreState>((set, get) => ({
     set({
       contents: { [nodeid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
     })
+  },
+  getAllMetadata: () => {
+    const contents = get().contents
+    const metadata = {}
+    Object.keys(contents).forEach((key) => {
+      if (contents[key].metadata) {
+        metadata[key] = contents[key].metadata
+      }
+    })
+    return metadata
   },
   setMetadata: (nodeid: string, metadata: NodeMetadata) => {
     const oldContent = get().contents

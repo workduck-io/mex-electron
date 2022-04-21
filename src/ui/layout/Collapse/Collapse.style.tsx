@@ -42,4 +42,5 @@ export const CollapseHeader = styled.div`
 export const CollapseContent = styled(animated.div)`
   overflow-y: auto;
   overflow-x: hidden;
+  flex-grow: 1;
 `

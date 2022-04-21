@@ -8,7 +8,7 @@ import { SidebarContent, SidebarDiv, SidebarDivider } from '../../../style/Sideb
 import TreeNode from '../../../types/tree'
 import Collapse from '../../../ui/layout/Collapse/Collapse'
 import Bookmarks from './Bookmarks'
-import { TreeWithContextMenu } from './TreeWithContextMenu'
+// import { TreeWithContextMenu } from './TreeWithContextMenu'
 
 export type SideBarProps = { tree: TreeNode[]; starred: TreeNode[] }
 
@@ -33,19 +33,6 @@ const SideBar = ({ tree }: SideBarProps) => {
         </Collapse>
 
         <SidebarDivider />
-
-        <Collapse
-          title="Notes"
-          oid="Tree"
-          defaultOpen
-          icon={gitBranchLine}
-          maximumHeight="80vh"
-          infoProps={{
-            text: TreeHelp
-          }}
-        >
-          <TreeWithContextMenu tree={tree} />
-        </Collapse>
       </SidebarContent>
     </SidebarDiv>
   )

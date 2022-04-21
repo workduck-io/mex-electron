@@ -50,15 +50,25 @@ export const useRefactor = () => {
     // saveQ()
     const ilinks = useDataStore.getState().ilinks
 
-    const refactorMap = ilinks.filter((i) => {
-      const match = isMatch(i.path, from)
-      return match
-    })
+    const refactorMap = ilinks
+      .filter((i) => {
+        const match = isMatch(i.path, from)
+        return match
+      })
+      .map((i) => {
+        const newPath = i.path.replace(from, to)
+        return {
+          ...i,
+          newPath: newPath
+        }
+      })
 
     const allPaths = ilinks.map((link) => link.path)
 
     const refactored = refactorMap.map((f) => {
-      const uniquePath = getUniquePath(to, allPaths, true)
+      // const toPath = f.path.replace(from, to)
+
+      const uniquePath = getUniquePath(f.newPath, allPaths, true)
 
       if (uniquePath)
         return {

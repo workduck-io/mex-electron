@@ -89,7 +89,7 @@ export const StyledTreeItemSwitcher = styled.button`
   }
 `
 
-export const StyledTreeItem = styled.div<{ selected?: boolean }>`
+export const StyledTreeItem = styled.div<{ selected?: boolean; isDragging?: boolean }>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
@@ -97,11 +97,17 @@ export const StyledTreeItem = styled.div<{ selected?: boolean }>`
   &:hover {
     background: ${({ theme }) => theme.colors.gray[7]};
   }
-  ${({ selected }) =>
+  ${({ selected, theme }) =>
     selected &&
     css`
-      background: ${({ theme }) => theme.colors.primary};
-      color: ${({ theme }) => theme.colors.text.oppositePrimary};
+      background: ${theme.colors.primary};
+      color: ${theme.colors.text.oppositePrimary};
+    `}
+  ${({ isDragging, theme }) =>
+    isDragging &&
+    css`
+      background: ${theme.colors.gray[7]};
+      border: 1px inset ${theme.colors.secondary};
     `}
 `
 
