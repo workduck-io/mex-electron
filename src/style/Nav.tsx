@@ -157,6 +157,15 @@ export const NavButton = styled.div<{ primary?: boolean }>`
         }
       }
     `}
+
+    &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.gray[6]};
+    border-radius: 6px;
+    border: 2px solid rgba(0, 0, 0, 0);
+    background-clip: content-box;
+    min-width: 10px;
+    min-height: 32px;
+  }
 `
 
 export interface NavWrapperProps extends FocusModeProp {
