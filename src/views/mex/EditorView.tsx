@@ -17,13 +17,13 @@ const EditorViewWrapper = styled.div`
 `
 
 const EditorView = () => {
-  const Tree = useTreeFromLinks()
+  // const Tree = useTreeFromLinks()
 
   const { resetEditor } = useEditorActions()
 
   return (
     <EditorViewWrapper>
-      <SideBar tree={Tree} starred={Tree} />
+      {/* <SideBar tree={Tree} starred={Tree} /> */}
       <ErrorBoundary onReset={resetEditor} FallbackComponent={EditorErrorFallback}>
         <Outlet />
       </ErrorBoundary>

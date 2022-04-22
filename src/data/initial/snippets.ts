@@ -3,6 +3,7 @@ import { ABTestingSnippet } from './ABTestingSnippet'
 import { BugReportTemplate } from './bugReportTemplate'
 import { DesignSpecSnippet } from './DesignSpecSnippet'
 import { GTMPlanSnippet } from './GTMPlanSnippet'
+import { OnboardingDoc } from './onboardingDoc'
 import { OnePagerSnippet } from './OnePagerSnippet'
 import { PRDTemplate } from './PRD_Snippet'
 import { ProductSpecSnippet } from './ProductSpecSnippet'
@@ -83,5 +84,12 @@ export const initialSnippets = [
     isTemplate: true,
     title: 'Design Spec',
     content: DesignSpecSnippet
+  },
+  {
+    icon: 'ri:quill-pen-line',
+    id: generateSnippetId(),
+    isTemplate: true,
+    title: 'Onboarding',
+    content: OnboardingDoc
   }
 ]

@@ -1,11 +1,18 @@
 import { uniq } from 'lodash'
+import { defaultContent } from '../data/Defaults/baseData'
 import { ELEMENT_INLINE_BLOCK } from '../editor/Components/InlineBlock/types'
+import { TodoStatus } from '../editor/Components/Todo/types'
 import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
+import { useSnippetStore } from '../store/useSnippetStore'
+import useTodoStore from '../store/useTodoStore'
 import { NodeLink } from '../types/relations'
 import { CachedILink, ILink } from '../types/Types'
+import { mog } from '../utils/lib/helper'
 import { hasLink } from '../utils/lib/links'
+import { convertContentToRawText } from '../utils/search/parseData'
 import { useNodes } from './useNodes'
+import { useReminderStore } from './useReminders'
 
 const getLinksFromContent = (content: any[]): string[] => {
   let links: string[] = []
@@ -46,6 +53,49 @@ export const useLinks = () => {
     })
 
     return allLinks
+  }
+
+  const getLinkCount = (): {
+    notes: number
+    archive: number
+    reminders: number
+    snippets: number
+    tasks: number
+  } => {
+    const links = useDataStore.getState().ilinks
+    const archive = useDataStore.getState().archive
+    const remindersAll = useReminderStore.getState().reminders
+    const snippets = useSnippetStore.getState().snippets
+    const ntasks = useTodoStore.getState().todos
+
+    const reminders = remindersAll.filter((r) => r.state.done === false)
+
+    const tasksC = Object.entries(ntasks).reduce((acc, [_k, v]) => {
+      const c = v.reduce((acc, t) => {
+        // TODO: Find a faster way to check for empty content
+        const text = convertContentToRawText(t.content).trim()
+        // mog('empty todo check', { text, nodeid, todo })
+        if (text === '') {
+          return acc
+        }
+        if (t.content === defaultContent.content) return acc
+        if (t.metadata.status !== TodoStatus.completed) {
+          acc += 1
+        }
+        return acc
+      }, 0)
+      return acc + c
+    }, 0)
+
+    mog('reminderCounds', { remindersAll, reminders })
+
+    return {
+      notes: links.length,
+      archive: archive.length,
+      reminders: reminders.length,
+      snippets: snippets.length,
+      tasks: tasksC
+    }
   }
 
   const getLinks = (nodeid: string): NodeLink[] => {
@@ -156,6 +206,7 @@ export const useLinks = () => {
 
   return {
     getAllLinks,
+    getLinkCount,
     getLinks,
     getBacklinks,
     updateLinksFromContent,

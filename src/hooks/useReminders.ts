@@ -42,6 +42,7 @@ interface ReminderStoreState {
   updateReminder(newReminder: Reminder): void
   updateReminderState: (id: string, rstate: ReminderState) => void
   clearReminders(): void
+  getNodeReminderGroup(): Record<string, Reminder[]>
 
   // To store the currently aremd ie:"timeout set" reminders
   armedReminders: Array<ArmedReminder>
@@ -79,6 +80,20 @@ export const useReminderStore = create<ReminderStoreState>((set, get) => ({
     const oldRem = get().reminders.find((reminder) => reminder.id === id)
     const newRem = { ...oldRem, state: { ...oldRem.state, done: false, snooze: true }, time }
     get().updateReminder(newRem)
+  },
+
+  getNodeReminderGroup: () => {
+    const reminders = get().reminders.filter((reminder) => reminder.state.done === false)
+    const groups: Record<string, Reminder[]> = {}
+
+    reminders.forEach((reminder) => {
+      if (!groups[reminder.nodeid]) {
+        groups[reminder.nodeid] = [reminder]
+      } else {
+        groups[reminder.nodeid] = [...groups[reminder.nodeid], reminder]
+      }
+    })
+    return groups
   },
 
   armedReminders: [],
@@ -353,10 +368,10 @@ export const useReminders = () => {
       return activeOrSnoozedControls
     }
     if (reminder.time > Date.now()) {
-      futureControls
+      return futureControls
     }
     if (reminder.time < Date.now() && !reminder.state.done) {
-      activeOrSnoozedControls // missed reminders
+      return activeOrSnoozedControls // missed reminders
     }
     return pastControls
   }

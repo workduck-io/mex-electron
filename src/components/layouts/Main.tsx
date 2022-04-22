@@ -2,12 +2,14 @@ import { transparentize } from 'polished'
 import React from 'react'
 // import AutoSave from '../Components/AutoSave'
 import styled, { css } from 'styled-components'
-import Nav, { navTooltip } from '../mex/Sidebar/Nav'
+import Nav from '../mex/Sidebar/Nav'
 import { linkTooltip } from '../../editor/Components/Link'
 import { GridWrapper } from '../../style/Grid'
 import useNavlinks from '../../data/links'
 import { useAuthStore } from '../../services/auth/useAuth'
 import { useLayoutStore } from '../../store/useLayoutStore'
+import { navTooltip } from '../../style/Nav'
+import { useSidebarTransition } from '../mex/Sidebar/Transition'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -53,10 +55,12 @@ const Main = ({ children }: MainProps) => {
   const authenticated = useAuthStore((state) => state.authenticated)
   const focusMode = useLayoutStore((s) => s.focusMode)
 
+  const { gridSpringProps } = useSidebarTransition()
+
   return (
     <AppWrapper className={focusMode.on ? 'focus_mode' : ''}>
       <Draggable style={styles as any} /> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
-      <GridWrapper grid={authenticated ? 'true' : ''}>
+      <GridWrapper style={gridSpringProps} grid={authenticated ? 'true' : ''}>
         {authenticated && <Nav links={getLinks()} />}
         <Content id="wd-mex-content-view" grid={authenticated}>
           {children}

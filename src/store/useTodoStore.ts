@@ -4,6 +4,7 @@ import { TodoType, TodoStatus, PriorityType, TodosType } from '../editor/Compone
 import { useReminders, useReminderStore } from '../hooks/useReminders'
 import { NodeEditorContent } from '../types/Types'
 import { mog } from '../utils/lib/helper'
+import { convertContentToRawText } from '../utils/search/parseData'
 
 const createTodo = (nodeid: string, todoId: string, content: NodeEditorContent = defaultContent.content) => ({
   id: todoId,
@@ -30,6 +31,7 @@ type TodoStoreType = {
   getTodoOfNodeWithoutCreating: (nodeid: string, todoId: string) => TodoType | undefined
   updateTodoOfNode: (nodeid: string, todo: TodoType) => void
   replaceContentOfTodos: (nodeid: string, todosContent: NodeEditorContent) => void
+  getAllTodos: () => TodosType
 
   updatePriorityOfTodo: (nodeid: string, todoId: string, priority: PriorityType) => void
   updateStatusOfTodo: (nodeid: string, todoId: string, status: TodoStatus) => void
@@ -70,6 +72,24 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
     }
 
     return todo
+  },
+
+  getAllTodos: () => {
+    const allTodos = Object.entries(get().todos).reduce((acc, [nodeid, todos]) => {
+      const newTodos = todos.filter((todo) => {
+        // TODO: Find a faster way to check for empty content
+        const text = convertContentToRawText(todo.content).trim()
+        // mog('empty todo check', { text, nodeid, todo })
+        if (text === '') {
+          return false
+        }
+        if (todo.content === defaultContent.content) return false
+        return true
+      })
+
+      return { ...acc, [nodeid]: newTodos }
+    }, {})
+    return allTodos
   },
 
   setNodeTodos: (nodeid, todos) => {

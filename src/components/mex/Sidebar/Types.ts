@@ -3,6 +3,7 @@ export interface NavLinkData {
   title: string
   icon?: React.ReactNode
   shortcut?: string
+  count?: number
   isComingSoon?: boolean
 }
 

@@ -5,7 +5,6 @@ import { ServiceChip, TemplateCard } from '../../components/mex/Integrations/Tem
 import { StyledMenu } from '../../components/mex/NodeSelect/NodeSelect.styles'
 import { ComingSoonCard, ImporterCard } from '../../components/mex/Settings/Importers'
 import { DataInfobarWrapper } from '../../components/mex/Sidebar/DataInfoBar'
-import { NavWrapper } from '../../components/mex/Sidebar/Nav'
 import { BalloonToolbarBase } from '../../editor/Components/BalloonToolbar'
 import { EditorPreviewWrapper } from '../../editor/Components/EditorPreview/EditorPreview.styles'
 import { SILink } from '../../editor/Components/ilink/components/ILinkElement.styles'
@@ -19,9 +18,9 @@ import { BackCard } from '../Card'
 import { EditorStyles, StyledEditor } from '../Editor'
 import { InfoBarWrapper } from '../infobar'
 import { MenuTrigger, RightCut, ServiceCard } from '../Integration'
-import { NavButton } from '../Nav'
+import { NavButton, NavWrapper } from '../Nav'
 import { Result, ResultHeader, SearchContainer, SplitSearchPreviewWrapper } from '../Search'
-import { SidebarDiv, StyledTree } from '../Sidebar'
+import { SidebarDiv } from '../Sidebar'
 import { CreateSnippet } from '../Snippets'
 import { Title } from '../Typography'
 import { SpaceBlocksCss } from './spaceBlocks'
@@ -221,26 +220,6 @@ const navStyles = css`
 const sidebarStyles = css`
   ${SidebarDiv} {
     border-radius: ${({ theme }) => theme.borderRadius.small};
-    ${StyledTree} {
-      ${({ theme }) => css`
-        .rc-tree .rc-tree-treenode {
-          .rc-tree-node-selected {
-            background-color: ${theme.colors.primary};
-            .rc-tree-title {
-              color: ${theme.colors.text.oppositePrimary} !important;
-            }
-            box-shadow: 0px 2px 6px ${theme.colors.primary};
-          }
-
-          span.rc-tree-switcher {
-            color: ${theme.colors.primary};
-            :hover {
-              color: ${theme.colors.primary};
-            }
-          }
-        }
-      `}
-    }
   }
 `
 

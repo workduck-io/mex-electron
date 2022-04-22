@@ -4,6 +4,7 @@ import { hackerTheme } from './hackerTheme'
 import { imperialTheme } from './imperialTheme'
 import { lightTheme } from './lightTheme'
 import { matrixTheme } from './matrixTheme'
+import { mexTheme } from './mexTheme'
 import { neoDark } from './neoDarkTheme'
 import { neoLight } from './neoLightTheme'
 import { reduxTheme } from './reduxTheme'
@@ -14,6 +15,7 @@ import { vvkTheme } from './vvkTheme'
 import { yellowyTheme } from './yellowyTheme'
 
 export const defaultThemes = [
+  { id: 'Mex', themeData: mexTheme },
   { id: 'Vertigo', themeData: vertigoTheme },
   { id: 'Gruvbox', themeData: gruvboxTheme },
   // { id: 'Gruvbox+', themeData: reduxTheme },

@@ -5,7 +5,6 @@ import { TemplateCard } from '../../components/mex/Integrations/Template/styled'
 import { ReminderStyled } from '../../components/mex/Reminders/Reminders.style'
 import { ComingSoonCard, ImporterCard } from '../../components/mex/Settings/Importers'
 import { DataInfobarWrapper } from '../../components/mex/Sidebar/DataInfoBar'
-import { NavWrapper } from '../../components/mex/Sidebar/Nav'
 import { BalloonToolbarBase } from '../../editor/Components/BalloonToolbar'
 import { EditorPreviewWrapper } from '../../editor/Components/EditorPreview/EditorPreview.styles'
 import { ComboboxItem, ComboboxRoot } from '../../editor/Components/tag/components/TagCombobox.styles'
@@ -18,6 +17,7 @@ import { EditorStyles, EditorWrapper, NodeInfo, StyledEditor } from '../Editor'
 import { GridWrapper } from '../Grid'
 import { InfobarTools, InfoBarWrapper } from '../infobar'
 import { ServiceCard } from '../Integration'
+import { NavWrapper } from '../Nav'
 import { Result, SearchFilterListWrap } from '../Search'
 import { SidebarDiv } from '../Sidebar'
 import { CreateSnippet, SSnippet } from '../Snippets'
@@ -134,10 +134,8 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
     ${BackCard}, ${ComingSoonCard}, ${ImporterCard} {
       ${containerStyle}
     }
-    ${SwitchWrapper} {
-      width: calc(100% - 80px);
-      width: ${({ theme }) => css`calc(100% - ${theme.width.nav}px - 3rem)`};
-    }
+    // ${SwitchWrapper} {
+    // }
   `
 
   const gridCardStyles = css`
@@ -161,11 +159,10 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
 
   const navStyles = css`
     ${NavWrapper} {
-      padding: 0;
       margin: 0;
-      overflow: auto;
       height: ${heightMain};
       min-height: ${heightMain};
+      padding: ${({ theme }) => theme.spacing.small} 0 0;
       ${containerStyle}
     }
     ${GridWrapper} {

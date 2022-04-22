@@ -4,44 +4,33 @@ import refreshFill from '@iconify/icons-ri/refresh-fill'
 import shareLine from '@iconify/icons-ri/share-line'
 import { Icon } from '@iconify/react'
 import React from 'react'
-import { Item, ItemParams, Separator, useContextMenu } from 'react-contexify'
+import { Item, ItemParams, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.css'
 import { useRenameStore } from '../../../store/useRenameStore'
 import { StyledMenu } from '../../../style/Menu'
-import TreeNode from '../../../types/tree'
-import { mog } from '../../../utils/lib/helper'
 import { isReserved } from '../../../utils/lib/paths'
 import { useDeleteStore } from '../Refactor/DeleteModal'
-import Tree from './Tree'
 
-interface TreeProps {
-  tree: TreeNode[]
-}
 interface ItemProps {
   id: string
+  path: string
+  onDisplayMenu: (nodeid: string) => void
 }
-const MENU_ID = 'Tree-Menu'
 
-export const TreeWithContextMenu = ({ tree }: TreeProps) => {
+export const MENU_ID = 'Tree-Menu'
+
+export const TreeContextMenu = () => {
   const openRenameModal = useRenameStore((store) => store.openModal)
   const openDeleteModal = useDeleteStore((store) => store.openModal)
-  const { show } = useContextMenu({
-    id: MENU_ID
-  })
-
-  function displayMenu({ event, node }: any) {
-    // mog('DisplayTreeContextMenu', { event, node })
-    show(event, { props: { id: node.id } })
-  }
 
   function handleItemClick({ event, props: p, data, triggerEvent }: ItemParams<ItemProps, any>) {
-    mog('handleItemClick', { event, p, data, triggerEvent })
+    // mog('handleItemClick', { event, p, data, triggerEvent })
     switch (event.currentTarget.id) {
       case 'rename':
-        openRenameModal(p.id)
+        openRenameModal(p.path)
         break
       case 'archive':
-        openDeleteModal(p.id)
+        openDeleteModal(p.path)
         break
       case 'sync':
         break
@@ -52,28 +41,12 @@ export const TreeWithContextMenu = ({ tree }: TreeProps) => {
 
   return (
     <>
-      <Tree tree={tree} displayMenu={displayMenu} />
-
       <StyledMenu id={MENU_ID}>
-        <Item
-          id="rename"
-          disabled={(args) => {
-            // mog('isDisabled', { args })
-            return isReserved(args.props.id)
-          }}
-          onClick={handleItemClick}
-        >
+        <Item id="rename" disabled={(args) => isReserved(args.props.path)} onClick={handleItemClick}>
           <Icon icon={editLine} />
           Rename
         </Item>
-        <Item
-          disabled={(args) => {
-            // mog('isDisabled', { args })
-            return isReserved(args.props.id)
-          }}
-          id="archive"
-          onClick={handleItemClick}
-        >
+        <Item disabled={(args) => isReserved(args.props.path)} id="archive" onClick={handleItemClick}>
           <Icon icon={archiveLine} />
           Archive
         </Item>

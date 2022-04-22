@@ -34,6 +34,7 @@ export const vvkTheme = generateTheme({
     accent: '#C792EA',
     oppositePrimary: '#000'
   },
+  hasBlocks: true,
   backgroundImages: {
     app: 'https://wallpapercave.com/wp/wp2757874.gif',
     preview: 'https://wallpapercave.com/wp/wp2757874.gif'
