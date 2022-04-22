@@ -19,7 +19,7 @@ import { InfoBarWrapper } from '../infobar'
 import { MenuTrigger, RightCut, ServiceCard, Title } from '../Integration'
 import { NavButton, NavWrapper } from '../Nav'
 import { Result, ResultHeader, SearchContainer, SplitSearchPreviewWrapper } from '../Search'
-import { SidebarDiv, StyledTree } from '../Sidebar'
+import { SidebarDiv } from '../Sidebar'
 import { CreateSnippet } from '../Snippets'
 import { SpaceBlocksCss } from './spaceBlocks'
 
@@ -180,26 +180,6 @@ const navStyles = css`
 const sidebarStyles = css`
   ${SidebarDiv} {
     border-radius: ${({ theme }) => theme.borderRadius.small};
-    ${StyledTree} {
-      ${({ theme }) => css`
-        .rc-tree .rc-tree-treenode {
-          .rc-tree-node-selected {
-            background-color: ${theme.colors.primary};
-            .rc-tree-title {
-              color: ${theme.colors.text.oppositePrimary} !important;
-            }
-            box-shadow: 0px 2px 6px ${theme.colors.primary};
-          }
-
-          span.rc-tree-switcher {
-            color: ${theme.colors.primary};
-            :hover {
-              color: ${theme.colors.primary};
-            }
-          }
-        }
-      `}
-    }
   }
 `
 
