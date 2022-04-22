@@ -22,19 +22,23 @@ const Dropdown = styled.div`
 type SelectedProps = {
   value?: any
   data?: any
+  isMulti?: boolean
+  width?: string
   actionId: string
+  placeholder?: string
   actionGroupId: string
 }
 
 export const SelectBar = styled(StyledSelect)`
   flex: 1;
-  max-width: 30%;
+  max-width: ${({ width }) => width || '30%'};
   font-size: 0.9rem;
-  margin: 0 0.25rem;
   color: ${({ theme }) => theme.colors.text.default};
+
   & > div {
     border-radius: ${({ theme }) => theme.borderRadius.small};
-    margin: 0.5rem 0 0;
+    margin: 1rem 0 0;
+    border: none;
   }
 `
 
@@ -86,7 +90,15 @@ const StyledOption = styled.div`
 //   ) : null
 // }
 
-const Selector: React.FC<SelectedProps> = ({ actionId, actionGroupId, data, value }) => {
+const Selector: React.FC<SelectedProps> = ({
+  actionId,
+  placeholder,
+  width = '30%',
+  actionGroupId,
+  data,
+  value,
+  isMulti
+}) => {
   const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
     data: [],
     value: null
@@ -102,6 +114,16 @@ const Selector: React.FC<SelectedProps> = ({ actionId, actionGroupId, data, valu
 
   const { performer, isPerformer } = useActionPerformer()
 
+  const resToDisplay = (result) => {
+    return result?.map((item) => {
+      const displayItem = item.select
+      return {
+        label: displayItem.value,
+        value: item
+      }
+    })
+  }
+
   useEffect(() => {
     const at = isPerformer(actionId)
 
@@ -109,13 +131,7 @@ const Selector: React.FC<SelectedProps> = ({ actionId, actionGroupId, data, valu
       performer(actionGroupId, actionId).then((res) => {
         const result = res?.contextData
 
-        const data = result?.map((item) => {
-          const displayItem = item.select
-          return {
-            label: displayItem.value,
-            value: item
-          }
-        })
+        const data = resToDisplay(result)
         setInputValue({ data, value: null })
       })
     }
@@ -127,6 +143,9 @@ const Selector: React.FC<SelectedProps> = ({ actionId, actionGroupId, data, valu
 
   return (
     <SelectBar
+      placeholder={placeholder}
+      width={width}
+      isMulti={isMulti}
       autoFocus={isPerformer(actionId)}
       onChange={handleChange}
       value={inputValue.value}

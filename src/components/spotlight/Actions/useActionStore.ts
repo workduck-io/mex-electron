@@ -4,16 +4,18 @@ import { ListItemType } from '../SearchResults/types'
 import { devtools, persist } from 'zustand/middleware'
 import { getActionIds } from '../../../utils/actions'
 import { initActions } from '../../../data/Actions'
-import { mog } from '../../../utils/lib/helper'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { IpcAction } from '../../../data/IpcAction'
 import { AppType } from '../../../hooks/useInitialize'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
+export type ActionSubType = 'form' | 'none' | undefined
+
 export type ActiveActionType = {
   id: string
   actionIds?: Array<string>
   renderType?: ReturnType
+  subType?: ActionSubType
   actionGroupId: string
   isReady?: boolean
   at: number
@@ -107,7 +109,8 @@ export const useActionStore = create<ActionStoreType>(
 
         const preActionId = action?.preActionId
 
-        const renderType = action?.returnType
+        const renderType = action.form ? ReturnType.NONE : action?.returnType
+        const subType: ActionSubType = action.form ? 'form' : undefined
 
         let actionToPerform = actionId
         let actionIds: Array<string> | undefined
@@ -123,7 +126,15 @@ export const useActionStore = create<ActionStoreType>(
         }
 
         // * Final component will be rendered based on renderType (or with response item type)
-        const activeAction = { id: actionId, actionGroupId, actionIds, renderType, at: 0, size: actionIds?.length ?? 0 }
+        const activeAction = {
+          id: actionId,
+          actionGroupId,
+          subType,
+          actionIds,
+          renderType,
+          at: 0,
+          size: actionIds?.length ?? 0
+        }
 
         set({ activeAction, actionToPerform })
       },
@@ -139,13 +150,9 @@ export const useActionStore = create<ActionStoreType>(
         // const preActionId = get().actionConfigs?.[actionId]?.preActionId
 
         // * Check if we can cache this action
-
-        mog('action-store', { response, actionId })
-
         const cachedActions: Array<Record<string, any>> = actionsCache?.[activeAction?.id] ?? []
         const newActions = cachedActions.filter((action) => action.actionId !== actionId)
         const updatedActions = [...newActions, { data: response, value: null, actionId }]
-        mog('Updating', { updatedActions })
 
         if (activeAction?.id) {
           actionsCache[activeAction?.id] = updatedActions

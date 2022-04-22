@@ -3,6 +3,7 @@ import Selector from './Selector'
 import Screen from '../Screen'
 import { ReturnType } from '@workduck-io/action-request-helper'
 import { useActionStore } from '../../Actions/useActionStore'
+import ActionForm from '../Forms'
 
 type PerformType = {
   actionId: string
@@ -29,7 +30,9 @@ const Performer: React.FC<PerformType> = ({ actionId, actionType }) => {
     case ReturnType.OBJECT:
       return <Selector actionId={actionId} actionGroupId={activeAction?.actionGroupId} value={value} data={data} />
     case ReturnType.NONE:
-      return <>Successfull</>
+      return (
+        <ActionForm actionId={actionId} actionGroupId={activeAction?.actionGroupId} subType={activeAction?.subType} />
+      )
     case ReturnType.LIST:
       return <Screen actionGroupId={activeAction?.actionGroupId} actionId={actionId} />
     default:

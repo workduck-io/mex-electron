@@ -5,6 +5,7 @@ import {
   app,
   autoUpdater,
   BrowserWindow,
+  BrowserWindowConstructorOptions,
   globalShortcut,
   ipcMain,
   Menu,
@@ -127,6 +128,7 @@ export const SPOTLIGHT_WINDOW_OPTIONS = {
   width: 800,
   height: 500,
   maxWidth: 800,
+  vibrancy: 'popover' as any,
   maxHeight: 500,
   center: false,
   frame: false,
@@ -161,8 +163,8 @@ const createSpotLighWindow = (show?: boolean) => {
   })
 
   spotlight.on('blur', () => {
-    spotlight.hide()
-    spotlight.webContents.send(IpcAction.SPOTLIGHT_BLURRED)
+    // spotlight.hide()
+    // spotlight.webContents.send(IpcAction.SPOTLIGHT_BLURRED)
   })
 
   spotlight.on('closed', () => {

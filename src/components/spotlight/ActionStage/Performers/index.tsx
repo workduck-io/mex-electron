@@ -1,5 +1,4 @@
 import React from 'react'
-import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
 import { useActionStore } from '../../Actions/useActionStore'
 import Performer from './Performer'
@@ -13,7 +12,6 @@ export enum PerformerType {
 
 const PerformersContainer = () => {
   const activeAction = useActionStore((store) => store.activeAction)
-  const view = useSpotlightAppStore((store) => store.view)
 
   const { isReady } = useActionPerformer()
   const preActions = activeAction?.actionIds

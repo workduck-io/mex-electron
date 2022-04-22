@@ -43,6 +43,11 @@ export const StyledInput = styled.input<{ disabled?: boolean; before?: string }>
       }
     `}
 
+  ::placeholder {
+    color: ${({ theme }) => theme.colors.gray[4]};
+    opacity: 0.5rem;
+  }
+
   :focus {
     outline: none;
   }
