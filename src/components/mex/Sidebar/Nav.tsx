@@ -20,6 +20,7 @@ import { useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
+import { useAuthStore } from '../../../services/auth/useAuth'
 import useDataStore, { useTreeFromLinks } from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
@@ -48,9 +49,10 @@ import { NavProps } from './Types'
 const Nav = ({ links }: NavProps) => {
   // const match = useMatch(`/${ROUTE_PATHS.node}/:nodeid`)
   const initTree = useTreeFromLinks()
+  const authenticated = useAuthStore((store) => store.authenticated)
   const sidebar = useLayoutStore((store) => store.sidebar)
-  const focusMode = useLayoutStore((store) => store.focusMode)
   const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
+  const focusMode = useLayoutStore((store) => store.focusMode)
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
   const { saveNewNodeAPI } = useApi()
