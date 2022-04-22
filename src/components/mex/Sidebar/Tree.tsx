@@ -8,7 +8,7 @@ import {
   TreeItem,
   TreeSourcePosition
 } from '@atlaskit/tree'
-
+import Tippy from '@tippyjs/react'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useRef } from 'react'
@@ -20,7 +20,15 @@ import { AppType } from '../../../hooks/useInitialize'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useTreeStore } from '../../../store/useTreeStore'
-import { ItemContent, ItemCount, ItemTitle, StyledTreeItem, StyledTreeItemSwitcher } from '../../../style/Sidebar'
+import {
+  ItemContent,
+  ItemCount,
+  ItemTitle,
+  StyledTreeItem,
+  StyledTreeItemSwitcher,
+  TooltipContentWrapper,
+  TooltipCount
+} from '../../../style/Sidebar'
 import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { useRefactorStore } from '../Refactor/Refactor'
@@ -47,6 +55,26 @@ const GetIcon = ({ item, onCollapse, onExpand }: GetIconProps) => {
     )
   }
   return <StyledTreeItemSwitcher></StyledTreeItemSwitcher>
+}
+
+const TooltipContent = ({ item }: { item: TreeItem }) => {
+  return (
+    <TooltipContentWrapper>
+      {item.data.title}
+      {item.data.tasks !== undefined && item.data.tasks > 0 && (
+        <TooltipCount>
+          <Icon icon="ri:task-line" />
+          {item.data.tasks}
+        </TooltipCount>
+      )}
+      {item.data.reminders !== undefined && item.data.reminders > 0 && (
+        <TooltipCount>
+          <Icon icon="ri:timer-flash-line" />
+          {item.data.reminders}
+        </TooltipCount>
+      )}
+    </TooltipContentWrapper>
+  )
 }
 
 interface TreeProps {
@@ -117,31 +145,35 @@ const Tree = ({ initTree }: TreeProps) => {
     // mog('renderItem', { item, snapshot, provided, location, isInEditor })
 
     return (
-      <StyledTreeItem
-        ref={provided.innerRef}
-        selected={isInEditor && node && item.data && node.nodeid === item.data.nodeid}
-        isDragging={snapshot.isDragging}
-        isBeingDroppedAt={isTrue}
-        onContextMenu={(e) => show(e, { props: { id: item.data.nodeid, path: item.data.path } })}
-        {...provided.draggableProps}
-        {...provided.dragHandleProps}
-      >
-        <GetIcon item={item} onExpand={onExpand} onCollapse={onCollapse} />
+      <Tippy theme="mex" placement="right" content={<TooltipContent item={item} />}>
+        <StyledTreeItem
+          ref={provided.innerRef}
+          selected={isInEditor && node && item.data && node.nodeid === item.data.nodeid}
+          isDragging={snapshot.isDragging}
+          isBeingDroppedAt={isTrue}
+          onContextMenu={(e) => show(e, { props: { id: item.data.nodeid, path: item.data.path } })}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+        >
+          <GetIcon item={item} onExpand={onExpand} onCollapse={onCollapse} />
 
-        <ItemContent onMouseDown={(e) => onClick(e, item)}>
-          <ItemTitle>
-            <Icon icon={item.data.mex_icon ?? fileList2Line} />
-            <span>{item.data ? item.data.title : 'No Title'}</span>
-          </ItemTitle>
-        </ItemContent>
+          <ItemContent onMouseDown={(e) => onClick(e, item)}>
+            <ItemTitle>
+              <Icon icon={item.data.mex_icon ?? fileList2Line} />
+              <span>{item.data ? item.data.title : 'No Title'}</span>
+            </ItemTitle>
+          </ItemContent>
 
-        {item.hasChildren && item.children && item.children.length > 0 && <ItemCount>{item.children.length}</ItemCount>}
-        {/* <AkNavigationItem
+          {item.hasChildren && item.children && item.children.length > 0 && (
+            <ItemCount>{item.children.length}</ItemCount>
+          )}
+          {/* <AkNavigationItem
           text={item.data ? item.data.title : ''}
           icon={DragDropWithNestingTree.getIcon(item, onExpand, onCollapse)}
           dnd={{ dragHandleProps: provided.dragHandleProps }}
         /> */}
-      </StyledTreeItem>
+        </StyledTreeItem>
+      </Tippy>
     )
   }
 

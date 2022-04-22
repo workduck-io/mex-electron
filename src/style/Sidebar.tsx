@@ -117,6 +117,19 @@ export const ItemCount = styled.div`
   color: ${({ theme }) => theme.colors.text.fade};
 `
 
+export const TooltipContentWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
+`
+
+export const TooltipCount = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  gap: ${({ theme }) => theme.spacing.tiny};
+  color: ${({ theme }) => theme.colors.text.fade};
+`
 export const ItemContent = styled.div`
   cursor: pointer;
   padding: 8px 0px;

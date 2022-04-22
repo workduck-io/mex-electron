@@ -4,6 +4,8 @@ import TreeNode from '../../types/tree'
 import { TreeData, TreeItem } from '@atlaskit/tree'
 import { mog } from './helper'
 import { NodeMetadata } from '../../types/data'
+import useTodoStore from '../../store/useTodoStore'
+import { useReminderStore } from '../../hooks/useReminders'
 
 export const sortTree = (tree: TreeNode[], contents: Contents): TreeNode[] => {
   // const metadataList = Object.entries(contents).map(([k, v]) => v.metadata)
@@ -34,17 +36,12 @@ export const sortTree = (tree: TreeNode[], contents: Contents): TreeNode[] => {
   return sortedTree
 }
 
-const createChildLess = (path: string, nodeid: string, id: string, icon?: string): TreeItem => ({
+const createChildLess = (path: string, nodeid: string, id: string, icon?: string, data?: any): TreeItem => ({
   id,
   hasChildren: false,
   isExpanded: false,
   isChildrenLoading: false,
-  data: {
-    title: getNameFromPath(path),
-    nodeid,
-    path,
-    mex_icon: icon
-  },
+  data,
   children: []
 })
 
@@ -77,6 +74,8 @@ const insertInNested = (iNode: BaseTreeNode, nestedTree: BaseTreeNode[]) => {
 interface FlatItem {
   id: string
   nodeid: string
+  tasks?: number
+  reminders?: number
   icon?: string
 }
 
@@ -107,6 +106,26 @@ interface BaseTreeNode {
   nodeid: string
   children: BaseTreeNode[]
   icon?: string
+  tasks?: number
+  reminders?: number
+}
+
+const getItemFromBaseNestedTree = (baseNestedTree: BaseTreeNode[], path: string): BaseTreeNode | undefined => {
+  if (!path) {
+    return undefined
+  }
+  for (let i = 0; i < baseNestedTree.length; i++) {
+    const node = baseNestedTree[i]
+    if (!node) return undefined
+    if (node.path === path) {
+      return node
+    }
+    // mog('node', { node, path, baseNestedTree })
+    if (isElder(path, node.path)) {
+      return getItemFromBaseNestedTree(node.children, path)
+    }
+  }
+  return undefined
 }
 
 const getIdFromBaseNestedTree = (baseNestedTree: BaseTreeNode[], path: string): string | undefined => {
@@ -157,6 +176,8 @@ export const sortBaseNestedTree = (baseNestedTree: BaseTreeNode[], metadata: Rec
 
 export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
   const metadata = useContentStore.getState().getAllMetadata()
+  const todos = useTodoStore.getState().getAllTodos()
+  const reminderGroups = useReminderStore.getState().getNodeReminderGroup()
   let baseNestedTree: BaseTreeNode[] = []
 
   flatTree.forEach((n) => {
@@ -166,7 +187,9 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
       baseNestedTree.push({
         path: n.id,
         nodeid: n.nodeid,
-        children: []
+        children: [],
+        tasks: todos[n.nodeid] ? todos[n.nodeid].length : 0,
+        reminders: reminderGroups[n.nodeid] ? reminderGroups[n.nodeid].length : 0
       })
     } else {
       // Will have a parent
@@ -174,7 +197,9 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
         {
           path: n.id,
           nodeid: n.nodeid,
-          children: []
+          children: [],
+          tasks: todos[n.nodeid] ? todos[n.nodeid].length : 0,
+          reminders: reminderGroups[n.nodeid] ? reminderGroups[n.nodeid].length : 0
         },
         baseNestedTree
       )
@@ -211,20 +236,32 @@ export const generateTree = (treeFlat: FlatItem[], expanded: string[]): TreeData
   for (let i = 0; i < treeFlat.length; i++) {
     const n = treeFlat[i]
     const parentPath = getParentId(n.id)
+    const nestedItem = getItemFromBaseNestedTree(baseNestedTree, n.id)
     // mog('hasParent', { parentId, n, i })
+    if (!nestedItem) {
+      // mog('nestedItem', { n, i })
+      continue
+    }
     if (parentPath === null) {
       // add to tree first level
       const newId = `1${TREE_SEPARATOR}${getIdFromBaseNestedTree(baseNestedTree, n.id)}`
       // mog('does not Parent Internal', { parentPath, n, newId, i })
       nestedTree.items[newId] = {
-        ...createChildLess(n.id, n.nodeid, newId, n.icon),
+        ...createChildLess(n.id, n.nodeid, newId, n.icon, {
+          title: getNameFromPath(n.id),
+          nodeid: n.nodeid,
+          path: n.id,
+          mex_icon: n.icon,
+          tasks: nestedItem.tasks,
+          reminders: nestedItem.reminders
+        }),
         isExpanded: expanded.includes(n.id)
       }
     } else {
       // Will have a parent
       const parentId = `1${TREE_SEPARATOR}${getIdFromBaseNestedTree(baseNestedTree, parentPath)}`
       const parentItem = nestedTree.items[parentId]
-      // mog('hasParent Internal', { parentId, parentItem, parentPath, n, i })
+      mog('hasParent Internal', { parentId, nestedItem, parentItem, parentPath, n, i })
       if (parentItem) {
         // add to tree and update parent
         const newId = `1${TREE_SEPARATOR}${getIdFromBaseNestedTree(baseNestedTree, n.id)}`
@@ -233,7 +270,14 @@ export const generateTree = (treeFlat: FlatItem[], expanded: string[]): TreeData
         parentItem.hasChildren = true
         nestedTree.items[parentId] = parentItem
         nestedTree.items[newId] = {
-          ...createChildLess(n.id, n.nodeid, newId, n.icon),
+          ...createChildLess(n.id, n.nodeid, newId, n.icon, {
+            title: getNameFromPath(n.id),
+            nodeid: n.nodeid,
+            path: n.id,
+            mex_icon: n.icon,
+            tasks: nestedItem.tasks,
+            reminders: nestedItem.reminders
+          }),
           isExpanded: expanded.includes(n.id)
         }
       }

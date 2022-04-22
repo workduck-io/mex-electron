@@ -131,7 +131,7 @@ const Nav = ({ links }: NavProps) => {
           content={<TooltipTitleWithShortcut title="New Note" shortcut={shortcuts.newNode.keystrokes} />}
         >
           <CreateNewButton onClick={onNewNote}>
-            <Icon icon="fa6-regular:pen-to-square" />
+            <Icon icon="fa6-solid:file-pen" />
             <NavTitle>Create New Note</NavTitle>
           </CreateNewButton>
         </NavTooltip>

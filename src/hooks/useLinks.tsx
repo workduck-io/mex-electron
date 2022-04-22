@@ -1,4 +1,5 @@
 import { uniq } from 'lodash'
+import { defaultContent } from '../data/Defaults/baseData'
 import { ELEMENT_INLINE_BLOCK } from '../editor/Components/InlineBlock/types'
 import { TodoStatus } from '../editor/Components/Todo/types'
 import { useContentStore } from '../store/useContentStore'
@@ -9,6 +10,7 @@ import { NodeLink } from '../types/relations'
 import { CachedILink, ILink } from '../types/Types'
 import { mog } from '../utils/lib/helper'
 import { hasLink } from '../utils/lib/links'
+import { convertContentToRawText } from '../utils/search/parseData'
 import { useNodes } from './useNodes'
 import { useReminderStore } from './useReminders'
 
@@ -70,6 +72,13 @@ export const useLinks = () => {
 
     const tasksC = Object.entries(ntasks).reduce((acc, [_k, v]) => {
       const c = v.reduce((acc, t) => {
+        // TODO: Find a faster way to check for empty content
+        const text = convertContentToRawText(t.content).trim()
+        // mog('empty todo check', { text, nodeid, todo })
+        if (text === '') {
+          return acc
+        }
+        if (t.content === defaultContent.content) return acc
         if (t.metadata.status !== TodoStatus.completed) {
           acc += 1
         }
