@@ -5,6 +5,7 @@ interface TreeState {
   expanded: string[]
 
   expandNode: (path: string) => void
+  expandNodes: (paths: string[]) => void
   collapseNode: (path: string) => void
 }
 
@@ -13,6 +14,11 @@ export const useTreeStore = create<TreeState>((set, get) => ({
   expandNode: (path: string) => {
     set({
       expanded: [...get().expanded, path]
+    })
+  },
+  expandNodes: (paths: string[]) => {
+    set({
+      expanded: [...get().expanded, ...paths]
     })
   },
   collapseNode: (path: string) => {

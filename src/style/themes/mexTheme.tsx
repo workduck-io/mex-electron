@@ -26,9 +26,9 @@ export const mexTheme = generateTheme({
     red: '#fb4934'
   },
   text: {
-    heading: '#ffffff',
+    heading: '#E4F1FF',
     default: '#C4DBF5',
-    subheading: '#CCC8DA',
+    subheading: '#D1E5FB',
     fade: '#A1B8D3',
     disabled: '#72767D',
     accent: '#fe8019',

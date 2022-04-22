@@ -15,12 +15,13 @@ import useSuggestionStore from '../store/useSuggestions'
 import useToggleElements from './useToggleElements'
 import { useLayoutStore } from '../store/useLayoutStore'
 import { useRefactor } from './useRefactor'
-import { getParentId, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
+import { getAllParentIds, getParentId, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import { useAnalysisStore } from '../store/useAnalysis'
 import { checkIfUntitledDraftNode } from '../utils/lib/strings'
 import { getPathFromNodeIdHookless } from './useLinks'
 import { DRAFT_PREFIX } from '../data/Defaults/idPrefixes'
 import { useBlockHighlightStore } from '../editor/Actions/useFocusBlock'
+import { useTreeStore } from '../store/useTreeStore'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -54,6 +55,7 @@ const useLoad = () => {
   const setLoadingNodeid = useEditorStore((store) => store.setLoadingNodeid)
   // const { push } = useNavigation()
   const clearLoadingNodeid = useEditorStore((store) => store.clearLoadingNodeid)
+  const expandNodes = useTreeStore((store) => store.expandNodes)
 
   // const { saveNodeAPIandFs } = useDataSaverFromContent()
   const { saveAndClearBuffer } = useEditorBuffer()
@@ -244,6 +246,9 @@ const useLoad = () => {
     if (options.highlightBlockId) {
       setHighlights([options.highlightBlockId], 'editor')
     }
+
+    const allParents = getAllParentIds(node.path)
+    expandNodes(allParents)
 
     loadNodeEditor(node)
   }

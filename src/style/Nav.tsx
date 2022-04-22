@@ -209,7 +209,11 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
 
       ${CollapseWrapper} {
         pointer-events: none;
+        cursor: default;
         opacity: 0;
+        div {
+          pointer-events: none !important;
+        }
       }
     `}
 
