@@ -29,10 +29,12 @@ import { useLayoutStore } from '../../../store/useLayoutStore'
 import {
   ComingSoon,
   Count,
+  CreateNewButton,
   EndLinkContainer,
   Link,
   MainLinkContainer,
   NavButton,
+  NavDivider,
   NavLogoWrapper,
   NavTitle,
   NavWrapper
@@ -122,20 +124,17 @@ const Nav = ({ links }: NavProps) => {
         <SidebarToggle />
       </NavLogoWrapper>
 
-      {authenticated && (
-        <div>
-          <NavTooltip
-            key={shortcuts.newNode.title}
-            singleton={target}
-            content={<TooltipTitleWithShortcut title="New Note" shortcut={shortcuts.newNode.keystrokes} />}
-          >
-            <NavButton primary onClick={onNewNote}>
-              <Icon icon="fa6-regular:pen-to-square" />
-            </NavButton>
-          </NavTooltip>
-        </div>
-      )}
       <MainLinkContainer>
+        <NavTooltip
+          key={shortcuts.newNode.title}
+          singleton={target}
+          content={<TooltipTitleWithShortcut title="New Note" shortcut={shortcuts.newNode.keystrokes} />}
+        >
+          <CreateNewButton onClick={onNewNote}>
+            <Icon icon="fa6-regular:pen-to-square" />
+            <NavTitle>Create New Note</NavTitle>
+          </CreateNewButton>
+        </NavTooltip>
         {links.map((l) =>
           l.isComingSoon ? (
             <NavTooltip key={l.path} singleton={target} content={`${l.title} (Stay Tuned! 👀  )`}>
@@ -172,7 +171,7 @@ const Nav = ({ links }: NavProps) => {
       </Collapse>
 
       <Collapse
-        title="Tree"
+        title="All Notes"
         oid={`tree`}
         defaultOpen
         icon={gitBranchLine}
@@ -183,6 +182,8 @@ const Nav = ({ links }: NavProps) => {
       >
         <Tree initTree={initTree} />
       </Collapse>
+
+      <NavDivider />
 
       <EndLinkContainer>
         {/* {authenticated ? (
@@ -209,17 +210,12 @@ const Nav = ({ links }: NavProps) => {
             {archiveCount > 0 && <Count>{archiveCount}</Count>}
           </Link>
         </NavTooltip>
-        {/* <NavTooltip
-          singleton={target}
-          content={<TooltipTitleWithShortcut title="Shortcuts" shortcut={shortcuts.showHelp.keystrokes} />}
-        >
-          <HelpTooltip />
-        </NavTooltip> */}
-
+        {/*
         <NavButton onClick={toggleSidebar}>
           <Icon icon={sidebar.expanded ? menuFoldLine : menuUnfoldLine} />
           <NavTitle>{sidebar.expanded ? 'Collapse' : 'Expand'}</NavTitle>
         </NavButton>
+         */}
 
         <NavTooltip
           key={shortcuts.showSettings.title}

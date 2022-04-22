@@ -162,6 +162,7 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
       margin: 0;
       height: ${heightMain};
       min-height: ${heightMain};
+      padding: ${({ theme }) => theme.spacing.small} 0 0;
       ${containerStyle}
     }
     ${GridWrapper} {

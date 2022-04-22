@@ -2,13 +2,16 @@ import { transparentize } from 'polished'
 import { NavLink } from 'react-router-dom'
 import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
+import { Ellipsis } from '../components/mex/Integrations/Template/styled'
 import { CollapseWrapper } from '../ui/layout/Collapse/Collapse.style'
 import { focusStyles } from './focus'
 import { FocusModeProp } from './props'
 
 export const NavTitle = styled.span`
   flex-grow: 1;
+  flex-shrink: 0;
   transition: opacity 0.2s ease-in-out;
+  ${Ellipsis}
 `
 
 export const navTooltip = css`
@@ -28,12 +31,13 @@ export const Count = styled.span`
 const ButtonOrLinkStyles = css`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.tiny};
+  gap: 8px;
   color: ${({ theme }) => theme.colors.text.default};
   padding: 12px;
   text-decoration: none !important;
   cursor: pointer;
   font-weight: bold;
+  width: 100%;
 
   font-size: 14px;
 
@@ -58,26 +62,37 @@ export const Link = styled(NavLink)`
   &.active {
     background-color: ${({ theme }) => theme.colors.primary};
     color: ${({ theme }) => theme.colors.text.oppositePrimary};
-    svg {
+    svg,
+    ${Count} {
       color: ${({ theme }) => theme.colors.text.oppositePrimary};
     }
   }
 `
 
+export const NavDivider = styled.div`
+  height: 1px;
+  background-color: ${({ theme }) => theme.colors.gray[6]};
+  margin: ${({ theme }) => theme.spacing.small} 0;
+`
+
 export const MainLinkContainer = styled.div`
   width: 100%;
-  margin: 2rem 0;
-  padding-right: ${({ theme }) => theme.spacing.small};
+  margin: 1rem 0;
+  padding: ${({ theme }) => theme.spacing.small};
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: ${({ theme }) => theme.spacing.small};
 `
 
 export const EndLinkContainer = styled.div`
+  border-top: 1px solid ${({ theme }) => transparentize(0.5, theme.colors.gray[6])};
+  padding: ${({ theme }) => theme.spacing.small};
   width: 100%;
-  margin: 2rem 0 1rem;
+  margin: 1rem 0 1rem;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: ${({ theme }) => theme.spacing.small};
 `
 
@@ -109,7 +124,13 @@ export const NavLogoWrapper = styled.div`
   border-bottom: 1px solid #293242;
   padding: ${({ theme }) => theme.spacing.small};
 `
-// export const NavLogoWrapper = styled.div``
+
+export const CreateNewButton = styled.div`
+  ${ButtonOrLinkStyles}
+  border: 1px solid ${({ theme }) => theme.colors.primary};
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.text.heading};
+`
 
 export const NavButton = styled.div<{ primary?: boolean }>`
   ${ButtonOrLinkStyles}
@@ -142,23 +163,22 @@ export interface NavWrapperProps extends FocusModeProp {
 
 export const NavWrapper = styled(animated.div)<NavWrapperProps>`
   overflow-y: auto;
-  overflow-x: visible;
+  overflow-x: hidden;
   z-index: 10;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   min-height: 100%;
-  position: fixed;
   transition: opacity 0.3s ease-in-out;
-  padding: 2rem ${({ theme }) => theme.spacing.small} 0;
-  padding-right: 0px;
+  padding: 2rem 0 0;
   background-color: ${({ theme }) => theme.colors.gray[8]};
   gap: ${({ theme }) => theme.spacing.small};
 
   ${CollapseWrapper} {
     width: 100%;
     transition: opacity 0.2s ease-in-out;
+    padding: 0 0 0 ${({ theme }) => theme.spacing.small};
   }
 
   #Collapse_tree {
@@ -175,12 +195,12 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
         opacity: 0;
       }
 
-      ${Link}, ${NavButton} {
+      ${Link}, ${NavButton}, ${CreateNewButton} {
         padding: 12px;
+        max-width: 48px;
       }
 
       ${MainLinkContainer}, ${EndLinkContainer} {
-        width: 48px;
       }
 
       ${NavLogoWrapper} {
@@ -192,4 +212,13 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
         opacity: 0;
       }
     `}
+
+    &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.gray[6]};
+    border-radius: 6px;
+    border: 2px solid rgba(0, 0, 0, 0);
+    background-clip: content-box;
+    min-width: 10px;
+    min-height: 32px;
+  }
 `

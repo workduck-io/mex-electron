@@ -126,14 +126,12 @@ const Tree = ({ initTree }: TreeProps) => {
 
         <ItemContent onMouseDown={(e) => onClick(e, item)}>
           <ItemTitle>
-            <Icon icon={item.data.icon ?? fileList2Line} />
+            <Icon icon={item.data.mex_icon ?? fileList2Line} />
             <span>{item.data ? item.data.title : 'No Title'}</span>
           </ItemTitle>
-          {item.hasChildren && item.children && item.children.length > 0 && (
-            <ItemCount>{item.children.length}</ItemCount>
-          )}
         </ItemContent>
 
+        {item.hasChildren && item.children && item.children.length > 0 && <ItemCount>{item.children.length}</ItemCount>}
         {/* <AkNavigationItem
           text={item.data ? item.data.title : ''}
           icon={DragDropWithNestingTree.getIcon(item, onExpand, onCollapse)}
@@ -188,8 +186,16 @@ const Tree = ({ initTree }: TreeProps) => {
 
     const from = draggedRef.current.data.path
     const toItem = tree.items[destination.parentId]
-    const to = toItem && `${toItem.data.path}${SEPARATOR}${getNameFromPath(from)}`
-    // const newTree = moveItemOnTree(tree, source, destination)
+    let to: string | null = null
+    if (toItem) {
+      if (toItem.id === '1') {
+        // Has been dropped on root
+        to = getNameFromPath(from)
+      } else {
+        // Has been dropped inside some item
+        to = `${toItem.data.path}${SEPARATOR}${getNameFromPath(from)}`
+      }
+    }
     mog('onDragEnd', { source, destination, to, from, toItem, tree })
 
     draggedRef.current = null
@@ -197,8 +203,6 @@ const Tree = ({ initTree }: TreeProps) => {
     prefillModal(from, to)
     // changeTree(newTree)
   }
-
-  // const { tree } = state
 
   return (
     <>

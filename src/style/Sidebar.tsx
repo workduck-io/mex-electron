@@ -88,7 +88,9 @@ export const StyledTreeItemSwitcher = styled.button`
   color: ${({ theme }) => transparentize(0.3, theme.colors.text.fade)};
   margin-left: ${({ theme }) => theme.spacing.tiny};
   border-radius: 3px;
+  transition: 0.3s ease;
   &:hover {
+    transition: 0s ease;
     color: ${({ theme }) => theme.colors.primary};
     background: ${({ theme }) => theme.colors.gray[8]};
   }
@@ -96,6 +98,7 @@ export const StyledTreeItemSwitcher = styled.button`
 
 export const ItemTitle = styled.div`
   flex-grow: 1;
+  flex-shrink: 1;
   max-width: 220px;
   display: flex;
   align-items: center;
@@ -109,16 +112,17 @@ export const ItemTitle = styled.div`
 `
 
 export const ItemCount = styled.div`
+  flex-shrink: 0;
   font-size: 0.9rem;
   color: ${({ theme }) => theme.colors.text.fade};
 `
 
 export const ItemContent = styled.div`
   cursor: pointer;
-  padding: 8px 16px;
-  padding-left: 0px;
-  flex-grow: 1;
+  padding: 8px 0px;
   display: flex;
+  flex-grow: 1;
+  flex-shrink: 1;
   align-items: center;
   justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.tiny};
@@ -128,11 +132,15 @@ export const StyledTreeItem = styled.div<{ selected?: boolean; isDragging?: bool
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
-  border-radius: 5px 0px 0px 5px;
+  border-radius: 6px 0px 0px 6px;
+  padding-right: 12px;
 
+  transition: 0.3s ease;
   &:hover {
+    transition: 0s ease;
     background: ${({ theme }) => theme.colors.gray[7]};
   }
+
   // &:drop {
   //   background: ${({ theme }) => theme.colors.gray[7]};
   // }

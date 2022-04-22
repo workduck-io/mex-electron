@@ -34,15 +34,21 @@ const Collapse = ({ defaultOpen, maximumHeight, icon, infoProps, children, oid, 
 
   return (
     <CollapseWrapper id={`Collapse_${oid}`}>
-      <CollapseHeader
-        onClick={() => {
-          setHide((b) => !b)
-        }}
-      >
-        <CollapseToggle>
+      <CollapseHeader collapsed={hide}>
+        <CollapseToggle
+          onClick={() => {
+            setHide((b) => !b)
+          }}
+        >
           <Icon icon={hide ? arrowRightSLine : icon} />
         </CollapseToggle>
-        <h2>{title}</h2>
+        <h2
+          onClick={() => {
+            setHide((b) => !b)
+          }}
+        >
+          {title}
+        </h2>
         {infoProps && <Infobox {...infoProps} />}
       </CollapseHeader>
 
