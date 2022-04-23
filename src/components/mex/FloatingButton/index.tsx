@@ -1,8 +1,10 @@
+import Tippy from '@tippyjs/react'
 import CloseIcon from '@iconify/icons-ri/close-line'
 import QuestionMarkIcon from '@iconify/icons-ri/question-mark'
 import { Icon } from '@iconify/react'
 import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
+import AutoformatHelp from '../../../data/initial/AutoformatHelp'
 import { GetIcon } from '../../../data/links'
 import { useAuthStore } from '../../../services/auth/useAuth'
 import { useInitOlvy } from '../../../services/olvy'
@@ -122,6 +124,11 @@ const FloatingButton = () => {
             <MenuItem key="wd-mex-what-is-new-button" id="olvy-target">
               <MexIcon fontSize={20} margin="0 1rem 0 0" icon="fluent:gift-24-filled" /> What&apos;s New
             </MenuItem>
+            <Tippy interactive theme="markdown-help" placement="right" content={<AutoformatHelp />}>
+              <MenuItem key="wd-mex-shortcuts-button">
+                <MexIcon fontSize={20} margin="0 1rem 0 0" icon="ri:text" /> Markdown Hints
+              </MenuItem>
+            </Tippy>
             <MenuItem key="wd-mex-shortcuts-button" onClick={onShortcutClick}>
               <MexIcon fontSize={20} margin="0 1rem 0 0" icon="fluent:keyboard-24-filled" /> Keyboard Shortcuts
             </MenuItem>
