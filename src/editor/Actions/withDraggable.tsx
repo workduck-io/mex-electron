@@ -101,17 +101,21 @@ const MetadataViewSmall = ({ m }: any) => {
       <MetadataRow>
         <Icon icon={addCircleLine} width={16} />
         {m.createdBy !== undefined ? <ProfileImage email={m.createdBy} size={16} /> : null}
-        <MetadataText>
-          <RelativeTime dateNum={m.createdAt} tippy tippyProps={tippyProps} />
-        </MetadataText>
+        {m.createdAt !== undefined && (
+          <MetadataText>
+            <RelativeTime dateNum={m.createdAt} tippy tippyProps={tippyProps} />
+          </MetadataText>
+        )}
       </MetadataRow>
       <MetadataRow>
         <Icon icon={refreshLine} width={16} />
 
         {m.lastEditedBy !== undefined ? <ProfileImage email={m.lastEditedBy} size={16} /> : null}
-        <MetadataText>
-          <RelativeTime dateNum={m.updatedAt} tippy tippyProps={tippyProps} />
-        </MetadataText>
+        {m.updatedAt !== undefined && (
+          <MetadataText>
+            <RelativeTime dateNum={m.updatedAt} tippy tippyProps={tippyProps} />
+          </MetadataText>
+        )}
       </MetadataRow>
     </MetadataWrap>
   )
