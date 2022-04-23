@@ -7,6 +7,7 @@ import { ELEMENT_INLINE_BLOCK } from '../../editor/Components/InlineBlock/types'
 import { NodeEditorContent } from '../../types/Types'
 import { ELEMENT_SYNC_BLOCK } from '../../editor/Components/SyncBlock'
 import { useEditorStore } from '../../store/useEditorStore'
+import { TodoStatus, TodoType } from '../../editor/Components/Todo/types'
 
 export type ContentBlockType = typeof ELEMENT_SYNC_BLOCK | typeof ELEMENT_INLINE_BLOCK
 
@@ -37,4 +38,11 @@ export const useFilteredContent = (filter: FilterContentType) => {
   }, [content])
 
   return { elements }
+}
+
+export const filterIncompleteTodos = (todo: TodoType) => {
+  if (todo.metadata.status === TodoStatus.completed) {
+    return false
+  }
+  return true
 }
