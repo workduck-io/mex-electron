@@ -6,6 +6,7 @@ import { mog } from './helper'
 import { NodeMetadata } from '../../types/data'
 import useTodoStore from '../../store/useTodoStore'
 import { useReminderStore } from '../../hooks/useReminders'
+import { filterIncompleteTodos } from './filter'
 
 export const sortTree = (tree: TreeNode[], contents: Contents): TreeNode[] => {
   // const metadataList = Object.entries(contents).map(([k, v]) => v.metadata)
@@ -182,14 +183,16 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
 
   flatTree.forEach((n) => {
     const parentId = getParentId(n.id)
+    const tasks = todos[n.nodeid] ? todos[n.nodeid].filter(filterIncompleteTodos).length : 0
+    const reminders = reminderGroups[n.nodeid] ? reminderGroups[n.nodeid].length : 0
     if (parentId === null) {
       // add to tree first level
       baseNestedTree.push({
         path: n.id,
         nodeid: n.nodeid,
         children: [],
-        tasks: todos[n.nodeid] ? todos[n.nodeid].length : 0,
-        reminders: reminderGroups[n.nodeid] ? reminderGroups[n.nodeid].length : 0
+        tasks,
+        reminders
       })
     } else {
       // Will have a parent
@@ -198,8 +201,8 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
           path: n.id,
           nodeid: n.nodeid,
           children: [],
-          tasks: todos[n.nodeid] ? todos[n.nodeid].length : 0,
-          reminders: reminderGroups[n.nodeid] ? reminderGroups[n.nodeid].length : 0
+          tasks,
+          reminders
         },
         baseNestedTree
       )
