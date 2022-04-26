@@ -1,9 +1,14 @@
-import React from 'react'
-import styled, { useTheme } from 'styled-components'
+import Tippy from '@tippyjs/react'
+import React, { useEffect } from 'react'
+import styled, { css, useTheme } from 'styled-components'
 import { useLayoutStore } from '../../store/useLayoutStore'
 import arrowLeftSLine from '@iconify/icons-ri/arrow-left-s-line'
 import arrowRightSLine from '@iconify/icons-ri/arrow-right-s-line'
 import { Icon } from '@iconify/react'
+import tinykeys from 'tinykeys'
+import { useKeyListener } from '../../hooks/useShortcutListener'
+import { useHelpStore } from '../../store/useHelpStore'
+import { TooltipTitleWithShortcut } from '../../components/mex/Shortcuts'
 
 const LogoWrapper = styled.div<{ expanded: boolean }>`
   ${({ expanded }) => (expanded ? 'width: 100%;' : 'width: 40px;')}
@@ -29,12 +34,26 @@ export const Logo = () => {
   )
 }
 
-export const SidebarToggleWrapper = styled.div`
+export const SidebarToggleWrapper = styled.div<{ expanded: boolean }>`
+  position: absolute;
+  ${({ expanded, theme }) =>
+    expanded
+      ? css`
+          top: ${theme.additional.hasBlocks ? 46 : 32}px;
+          left: ${theme.additional.hasBlocks ? 296 : 280}px;
+        `
+      : css`
+          top: ${theme.additional.hasBlocks ? 65 : 56}px;
+          left: ${theme.additional.hasBlocks ? 86 : 60}px;
+        `}
+  transition: left 0.6s ease, top 0.6s ease;
+  z-index: 10000000;
   background-color: ${({ theme }) => theme.colors.gray[7]};
   padding: 8px;
   display: flex;
   align-items: center;
   border-radius: 4px;
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
 `
 
 export const SidebarToggle = () => {
@@ -42,9 +61,38 @@ export const SidebarToggle = () => {
 
   const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
 
+  /** Set shortcuts */
+  const shortcuts = useHelpStore((store) => store.shortcuts)
+  const { shortcutDisabled, shortcutHandler } = useKeyListener()
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      [shortcuts.toggleSidebar.keystrokes]: (event) => {
+        event.preventDefault()
+        shortcutHandler(shortcuts.showSnippets, () => {
+          toggleSidebar()
+        })
+      }
+    })
+    return () => {
+      unsubscribe()
+    }
+  }, [shortcuts, shortcutDisabled]) // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
-    <SidebarToggleWrapper onClick={toggleSidebar}>
-      <Icon icon={sidebar.expanded ? arrowLeftSLine : arrowRightSLine} />
-    </SidebarToggleWrapper>
+    <Tippy
+      theme="mex-bright"
+      placement="right"
+      content={
+        <TooltipTitleWithShortcut
+          title={sidebar.expanded ? 'Collapse Sidebar' : 'Expand Sidebar'}
+          shortcut={shortcuts.toggleSidebar.keystrokes}
+        />
+      }
+    >
+      <SidebarToggleWrapper onClick={toggleSidebar} expanded={sidebar.expanded}>
+        <Icon icon={sidebar.expanded ? arrowLeftSLine : arrowRightSLine} />
+      </SidebarToggleWrapper>
+    </Tippy>
   )
 }

@@ -264,7 +264,7 @@ export const useTreeFromLinks = () => {
   const expanded = useTreeStore((store) => store.expanded)
   const links = ilinks.map((i) => ({ id: i.path, nodeid: i.nodeid, icon: i.icon }))
   const sanatizedLinks = sanatizeLinks(links)
-  mog('Sanatized links', { sanatizedLinks })
+  // mog('Sanatized links', { sanatizedLinks })
   // const sortedTree = sortTree(sanatizeLinks, contents)
   const tree = useMemo(() => generateTree(sanatizedLinks, expanded), [ilinks, node])
 

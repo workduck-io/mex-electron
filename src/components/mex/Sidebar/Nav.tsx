@@ -1,16 +1,15 @@
-import menuFoldLine from '@iconify/icons-ri/menu-fold-line'
-import menuUnfoldLine from '@iconify/icons-ri/menu-unfold-line'
 import archiveFill from '@iconify/icons-ri/archive-fill'
+import bookmark3Line from '@iconify/icons-ri/bookmark-3-line'
 import gitBranchLine from '@iconify/icons-ri/git-branch-line'
 import settings4Line from '@iconify/icons-ri/settings-4-line'
 import { Icon } from '@iconify/react'
 import { useSingleton } from '@tippyjs/react'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
-import { useLocation } from 'react-router-dom'
 import tinykeys from 'tinykeys'
 import { useApi } from '../../../apis/useSaveApi'
 import { BookmarksHelp, TreeHelp } from '../../../data/Defaults/helpText'
+import { Logo, SidebarToggle } from '../../../data/illustrations/logo'
 import { IpcAction } from '../../../data/IpcAction'
 import { GetIcon } from '../../../data/links'
 import { getUntitledDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
@@ -33,30 +32,24 @@ import {
   EndLinkContainer,
   Link,
   MainLinkContainer,
-  NavButton,
   NavDivider,
   NavLogoWrapper,
   NavTitle,
   NavWrapper
 } from '../../../style/Nav'
 import Collapse from '../../../ui/layout/Collapse/Collapse'
-import { Logo, SidebarToggle } from '../../../data/illustrations/logo'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
-import { useSidebarTransition } from './Transition'
-import { NavProps } from './Types'
 import Bookmarks from './Bookmarks'
-import bookmark3Line from '@iconify/icons-ri/bookmark-3-line'
+import { useSidebarTransition } from './Transition'
 import Tree from './Tree'
-import { nanoid } from 'nanoid'
+import { NavProps } from './Types'
 
 const Nav = ({ links }: NavProps) => {
   // const match = useMatch(`/${ROUTE_PATHS.node}/:nodeid`)
   const initTree = useTreeFromLinks()
-  const authenticated = useAuthStore((store) => store.authenticated)
   const sidebar = useLayoutStore((store) => store.sidebar)
-  const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
   const focusMode = useLayoutStore((store) => store.focusMode)
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
@@ -116,77 +109,78 @@ const Nav = ({ links }: NavProps) => {
   const archiveCount = getLinkCount().archive
 
   return (
-    <NavWrapper style={springProps} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
-      <NavTooltip singleton={source} />
+    <>
+      <SidebarToggle />
+      <NavWrapper style={springProps} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
+        <NavTooltip singleton={source} />
 
-      <NavLogoWrapper>
-        <Logo />
-        <SidebarToggle />
-      </NavLogoWrapper>
+        <NavLogoWrapper>
+          <Logo />
+        </NavLogoWrapper>
 
-      <MainLinkContainer>
-        <NavTooltip
-          key={shortcuts.newNode.title}
-          singleton={target}
-          content={<TooltipTitleWithShortcut title="New Note" shortcut={shortcuts.newNode.keystrokes} />}
+        <MainLinkContainer>
+          <NavTooltip
+            key={shortcuts.newNode.title}
+            singleton={target}
+            content={<TooltipTitleWithShortcut title="New Note" shortcut={shortcuts.newNode.keystrokes} />}
+          >
+            <CreateNewButton onClick={onNewNote}>
+              <Icon icon="fa6-solid:file-pen" />
+              <NavTitle>Create New Note</NavTitle>
+            </CreateNewButton>
+          </NavTooltip>
+          {links.map((l) =>
+            l.isComingSoon ? (
+              <NavTooltip key={l.path} singleton={target} content={`${l.title} (Stay Tuned! 👀  )`}>
+                <ComingSoon tabIndex={-1} key={`nav_${l.title}`}>
+                  {l.icon !== undefined ? l.icon : l.title}
+                </ComingSoon>
+              </NavTooltip>
+            ) : (
+              <NavTooltip
+                key={l.path}
+                singleton={target}
+                content={l.shortcut ? <TooltipTitleWithShortcut title={l.title} shortcut={l.shortcut} /> : l.title}
+              >
+                <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={l.path} key={`nav_${l.title}`}>
+                  {l.icon !== undefined ? l.icon : l.title}
+                  <NavTitle>{l.title}</NavTitle>
+                  {l.count > 0 && <Count>{l.count}</Count>}
+                </Link>
+              </NavTooltip>
+            )
+          )}
+        </MainLinkContainer>
+
+        <Collapse
+          title="Bookmarks"
+          oid="bookmarks"
+          icon={bookmark3Line}
+          maximumHeight="30vh"
+          infoProps={{
+            text: BookmarksHelp
+          }}
         >
-          <CreateNewButton onClick={onNewNote}>
-            <Icon icon="fa6-solid:file-pen" />
-            <NavTitle>Create New Note</NavTitle>
-          </CreateNewButton>
-        </NavTooltip>
-        {links.map((l) =>
-          l.isComingSoon ? (
-            <NavTooltip key={l.path} singleton={target} content={`${l.title} (Stay Tuned! 👀  )`}>
-              <ComingSoon tabIndex={-1} key={`nav_${l.title}`}>
-                {l.icon !== undefined ? l.icon : l.title}
-              </ComingSoon>
-            </NavTooltip>
-          ) : (
-            <NavTooltip
-              key={l.path}
-              singleton={target}
-              content={l.shortcut ? <TooltipTitleWithShortcut title={l.title} shortcut={l.shortcut} /> : l.title}
-            >
-              <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={l.path} key={`nav_${l.title}`}>
-                {l.icon !== undefined ? l.icon : l.title}
-                <NavTitle>{l.title}</NavTitle>
-                {l.count > 0 && <Count>{l.count}</Count>}
-              </Link>
-            </NavTooltip>
-          )
-        )}
-      </MainLinkContainer>
+          <Bookmarks />
+        </Collapse>
 
-      <Collapse
-        title="Bookmarks"
-        oid="bookmarks"
-        icon={bookmark3Line}
-        maximumHeight="30vh"
-        infoProps={{
-          text: BookmarksHelp
-        }}
-      >
-        <Bookmarks />
-      </Collapse>
+        <Collapse
+          title="All Notes"
+          oid={`tree`}
+          defaultOpen
+          icon={gitBranchLine}
+          maximumHeight="80vh"
+          infoProps={{
+            text: TreeHelp
+          }}
+        >
+          <Tree initTree={initTree} />
+        </Collapse>
 
-      <Collapse
-        title="All Notes"
-        oid={`tree`}
-        defaultOpen
-        icon={gitBranchLine}
-        maximumHeight="80vh"
-        infoProps={{
-          text: TreeHelp
-        }}
-      >
-        <Tree initTree={initTree} />
-      </Collapse>
+        <NavDivider />
 
-      <NavDivider />
-
-      <EndLinkContainer>
-        {/* {authenticated ? (
+        <EndLinkContainer>
+          {/* {authenticated ? (
           <NavTooltip singleton={target} content="User">
             <Link  tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to="/user" key="nav_user">
               {GetIcon(user3Line)}
@@ -199,41 +193,47 @@ const Nav = ({ links }: NavProps) => {
             </Link>
           </NavTooltip>
         )} */}
-        <NavTooltip
-          key={shortcuts.showArchive.title}
-          singleton={target}
-          content={<TooltipTitleWithShortcut title="Archive" shortcut={shortcuts.showArchive.keystrokes} />}
-        >
-          <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={ROUTE_PATHS.archive} key="nav_search">
-            {GetIcon(archiveFill)}
-            <NavTitle>Archive</NavTitle>
-            {archiveCount > 0 && <Count>{archiveCount}</Count>}
-          </Link>
-        </NavTooltip>
-        {/*
+          <NavTooltip
+            key={shortcuts.showArchive.title}
+            singleton={target}
+            content={<TooltipTitleWithShortcut title="Archive" shortcut={shortcuts.showArchive.keystrokes} />}
+          >
+            <Link
+              tabIndex={-1}
+              className={(s) => (s.isActive ? 'active' : '')}
+              to={ROUTE_PATHS.archive}
+              key="nav_search"
+            >
+              {GetIcon(archiveFill)}
+              <NavTitle>Archive</NavTitle>
+              {archiveCount > 0 && <Count>{archiveCount}</Count>}
+            </Link>
+          </NavTooltip>
+          {/*
         <NavButton onClick={toggleSidebar}>
           <Icon icon={sidebar.expanded ? menuFoldLine : menuUnfoldLine} />
           <NavTitle>{sidebar.expanded ? 'Collapse' : 'Expand'}</NavTitle>
         </NavButton>
          */}
 
-        <NavTooltip
-          key={shortcuts.showSettings.title}
-          singleton={target}
-          content={<TooltipTitleWithShortcut title="Settings" shortcut={shortcuts.showSettings.keystrokes} />}
-        >
-          <Link
-            tabIndex={-1}
-            className={(s) => (s.isActive ? 'active' : '')}
-            to={`${ROUTE_PATHS.settings}/themes`}
-            key="nav_settings"
+          <NavTooltip
+            key={shortcuts.showSettings.title}
+            singleton={target}
+            content={<TooltipTitleWithShortcut title="Settings" shortcut={shortcuts.showSettings.keystrokes} />}
           >
-            {GetIcon(settings4Line)}
-            <NavTitle>Settings</NavTitle>
-          </Link>
-        </NavTooltip>
-      </EndLinkContainer>
-    </NavWrapper>
+            <Link
+              tabIndex={-1}
+              className={(s) => (s.isActive ? 'active' : '')}
+              to={`${ROUTE_PATHS.settings}/themes`}
+              key="nav_settings"
+            >
+              {GetIcon(settings4Line)}
+              <NavTitle>Settings</NavTitle>
+            </Link>
+          </NavTooltip>
+        </EndLinkContainer>
+      </NavWrapper>
+    </>
   )
 }
 

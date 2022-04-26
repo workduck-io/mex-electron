@@ -72,8 +72,7 @@ export const SidebarSection = styled.div`
     color: ${({ theme }) => theme.colors.secondary};
   } */
 `
-
-export const StyledTreeItemSwitcher = styled.button`
+export const StyledTreeSwitcher = styled.button`
   background: none;
   border: none;
   padding: 0;
@@ -85,8 +84,11 @@ export const StyledTreeItemSwitcher = styled.button`
   justify-content: center;
   width: 18px;
   height: 24px;
-  color: ${({ theme }) => transparentize(0.3, theme.colors.text.fade)};
+  flex-shrink: 0;
   margin-left: ${({ theme }) => theme.spacing.tiny};
+`
+export const StyledTreeItemSwitcher = styled(StyledTreeSwitcher)`
+  color: ${({ theme }) => transparentize(0.3, theme.colors.text.fade)};
   border-radius: 3px;
   transition: 0.3s ease;
   &:hover {
