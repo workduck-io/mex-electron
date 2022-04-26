@@ -20,7 +20,6 @@ import { useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
-import { useAuthStore } from '../../../services/auth/useAuth'
 import useDataStore, { useTreeFromLinks } from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
@@ -110,7 +109,6 @@ const Nav = ({ links }: NavProps) => {
 
   return (
     <>
-      <SidebarToggle />
       <NavWrapper style={springProps} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
         <NavTooltip singleton={source} />
 
@@ -233,6 +231,7 @@ const Nav = ({ links }: NavProps) => {
           </NavTooltip>
         </EndLinkContainer>
       </NavWrapper>
+      <SidebarToggle />
     </>
   )
 }

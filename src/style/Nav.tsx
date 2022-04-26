@@ -123,6 +123,8 @@ export const NavLogoWrapper = styled.div`
   align-items: center;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.5, theme.colors.gray[6])};
   padding: ${({ theme }) => theme.spacing.small};
+  padding-left: 5rem;
+  transition: padding 0.5s ease;
 `
 
 export const CreateNewButton = styled.div`
@@ -164,14 +166,13 @@ export interface NavWrapperProps extends FocusModeProp {
 export const NavWrapper = styled(animated.div)<NavWrapperProps>`
   overflow-y: auto;
   overflow-x: hidden;
-  z-index: 10;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   min-height: 100%;
   transition: opacity 0.3s ease-in-out;
-  padding: 2rem 0 0;
+  padding: 0 0;
   background-color: ${({ theme }) => theme.colors.gray[8]};
   gap: ${({ theme }) => theme.spacing.small};
 
@@ -191,13 +192,15 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
   ${({ expanded }) =>
     !expanded &&
     css`
-      ${NavTitle} {
-        opacity: 0;
+      ${NavTitle}, ${Count} {
+        display: none;
       }
 
       ${Link}, ${NavButton}, ${CreateNewButton} {
         padding: 12px;
-        max-width: 48px;
+        width: 48px;
+        transition-delay: 0.8s;
+        transition: width 0.8s ease-in-out;
       }
 
       ${MainLinkContainer}, ${EndLinkContainer} {
@@ -208,7 +211,7 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
       }
 
       ${NavLogoWrapper} {
-        padding: 22px;
+        padding: 28px 22px 16px;
       }
 
       ${CollapseWrapper} {
