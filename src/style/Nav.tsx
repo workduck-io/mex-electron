@@ -177,7 +177,7 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
 
   ${CollapseWrapper} {
     width: 100%;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.2s ease-in-out, height 0.2s ease-in-out;
     padding: 0 0 0 ${({ theme }) => theme.spacing.small};
   }
 
@@ -214,7 +214,7 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
       ${CollapseWrapper} {
         pointer-events: none;
         cursor: default;
-        max-height: 0;
+        max-height: 64px;
         opacity: 0;
         div {
           pointer-events: none !important;
@@ -222,8 +222,8 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
       }
     `}
 
-    &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.gray[6]};
+    &::-webkit-scrollbar-thumb, *::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => transparentize(0.5, theme.colors.gray[6])};
     border-radius: 6px;
     border: 2px solid rgba(0, 0, 0, 0);
     background-clip: content-box;

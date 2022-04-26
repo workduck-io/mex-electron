@@ -9,6 +9,9 @@ import tinykeys from 'tinykeys'
 import { useKeyListener } from '../../hooks/useShortcutListener'
 import { useHelpStore } from '../../store/useHelpStore'
 import { TooltipTitleWithShortcut } from '../../components/mex/Shortcuts'
+import useLayout from '../../hooks/useLayout'
+import { focusStyles } from '../../style/focus'
+import { FocusModeProp } from '../../style/props'
 
 const LogoWrapper = styled.div<{ expanded: boolean }>`
   ${({ expanded }) => (expanded ? 'width: 100%;' : 'width: 40px;')}
@@ -34,8 +37,13 @@ export const Logo = () => {
   )
 }
 
-export const SidebarToggleWrapper = styled.div<{ expanded: boolean }>`
+interface SidebarToggleWrappperProps extends FocusModeProp {
+  expanded: boolean
+}
+
+export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
   position: absolute;
+  ${(props) => focusStyles(props)}
   ${({ expanded, theme }) =>
     expanded
       ? css`
@@ -46,8 +54,8 @@ export const SidebarToggleWrapper = styled.div<{ expanded: boolean }>`
           top: ${theme.additional.hasBlocks ? 65 : 56}px;
           left: ${theme.additional.hasBlocks ? 86 : 60}px;
         `}
-  transition: left 0.6s ease, top 0.6s ease;
-  z-index: 10000000;
+  transition: left 0.5s ease, top 0.5s ease;
+  z-index: 11;
   background-color: ${({ theme }) => theme.colors.gray[7]};
   padding: 8px;
   display: flex;
@@ -64,6 +72,9 @@ export const SidebarToggle = () => {
   /** Set shortcuts */
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { shortcutDisabled, shortcutHandler } = useKeyListener()
+
+  const focusMode = useLayoutStore((state) => state.focusMode)
+  const { getFocusProps } = useLayout()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -90,7 +101,7 @@ export const SidebarToggle = () => {
         />
       }
     >
-      <SidebarToggleWrapper onClick={toggleSidebar} expanded={sidebar.expanded}>
+      <SidebarToggleWrapper onClick={toggleSidebar} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
         <Icon icon={sidebar.expanded ? arrowLeftSLine : arrowRightSLine} />
       </SidebarToggleWrapper>
     </Tippy>
