@@ -75,6 +75,7 @@ export interface DataStoreState {
   baseNodeId: string
   bookmarks: string[]
   archive: ILink[]
+  initialized: boolean
 
   initializeDataStore: (initData: InitData) => void
 

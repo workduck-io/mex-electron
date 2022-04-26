@@ -448,7 +448,7 @@ app
         }
       },
       {
-        label: 'New Node',
+        label: 'New Note',
         click: () => {
           mex?.webContents.send(IpcAction.CREATE_NEW_NODE)
           mex?.show()

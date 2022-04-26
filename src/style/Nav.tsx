@@ -123,6 +123,8 @@ export const NavLogoWrapper = styled.div`
   align-items: center;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.5, theme.colors.gray[6])};
   padding: ${({ theme }) => theme.spacing.small};
+  padding-left: 5rem;
+  transition: padding 0.5s ease;
 `
 
 export const CreateNewButton = styled.div`
@@ -164,20 +166,20 @@ export interface NavWrapperProps extends FocusModeProp {
 export const NavWrapper = styled(animated.div)<NavWrapperProps>`
   overflow-y: auto;
   overflow-x: hidden;
-  z-index: 10;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   min-height: 100%;
   transition: opacity 0.3s ease-in-out;
-  padding: 2rem 0 0;
+  padding: 0 0;
   background-color: ${({ theme }) => theme.colors.gray[8]};
   gap: ${({ theme }) => theme.spacing.small};
+  user-select: none;
 
   ${CollapseWrapper} {
     width: 100%;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.2s ease-in-out, height 0.2s ease-in-out;
     padding: 0 0 0 ${({ theme }) => theme.spacing.small};
   }
 
@@ -188,28 +190,36 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
 
   ${(props) => focusStyles(props)}
 
-  ${({ expanded }) =>
+  ${({ expanded, theme }) =>
     !expanded &&
     css`
-      ${NavTitle} {
-        opacity: 0;
+      ${NavTitle}, ${Count} {
+        display: none;
       }
 
       ${Link}, ${NavButton}, ${CreateNewButton} {
         padding: 12px;
-        max-width: 48px;
+        width: 48px;
+        transition-delay: 0.8s;
+        transition: width 0.8s ease-in-out;
       }
 
       ${MainLinkContainer}, ${EndLinkContainer} {
       }
 
+      ${EndLinkContainer} {
+        margin-top: auto;
+      }
+
       ${NavLogoWrapper} {
-        padding: 22px;
+        padding: 0px 22px 16px;
+        padding-top: ${({ theme }) => (theme.additional.hasBlocks ? 8 : 28)}px;
       }
 
       ${CollapseWrapper} {
         pointer-events: none;
         cursor: default;
+        max-height: 64px;
         opacity: 0;
         div {
           pointer-events: none !important;
@@ -217,8 +227,8 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
       }
     `}
 
-    &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.gray[6]};
+    &::-webkit-scrollbar-thumb, *::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => transparentize(0.5, theme.colors.gray[6])};
     border-radius: 6px;
     border: 2px solid rgba(0, 0, 0, 0);
     background-clip: content-box;

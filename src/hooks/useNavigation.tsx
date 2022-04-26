@@ -3,6 +3,7 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '../views/routes/urls'
 import { useHistoryStore } from '../store/useHistoryStore'
 import { useRecentsStore } from '../store/useRecentsStore'
 import useLoad, { LoadNodeOptions } from './useLoad'
+import { mog } from '../utils/lib/helper'
 
 export const useNavigation = () => {
   // const loadNodeFromId = useEditorStore((store) => store.loadNodeFromId)
@@ -13,6 +14,7 @@ export const useNavigation = () => {
   const addRecent = useRecentsStore((store) => store.addRecent)
   const { goTo } = useRouting()
   const getCurrentUID = useHistoryStore((store) => store.getCurrentUId)
+  const getDistanceNodeid = useHistoryStore((store) => store.getDistanceNodeid)
 
   const push = (nodeid: string, options?: LoadNodeOptions) => {
     pushHs(nodeid)
@@ -27,12 +29,13 @@ export const useNavigation = () => {
   }
 
   const move = (dist: number) => {
-    moveHs(dist)
-    const newId = getCurrentUID()
+    const newId = getDistanceNodeid(dist)
     if (newId) {
-      goTo(ROUTE_PATHS.node, NavigationType.push, newId)
+      moveHs(dist)
+      mog('Moving', { dist, newId })
       loadNode(newId)
       addRecent(newId)
+      goTo(ROUTE_PATHS.node, NavigationType.push, newId)
     }
     return newId
   }

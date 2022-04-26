@@ -8,9 +8,9 @@ import {
   TreeItem,
   TreeSourcePosition
 } from '@atlaskit/tree'
-import Tippy from '@tippyjs/react'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
+import Tippy, { useSingleton } from '@tippyjs/react'
 import React, { useEffect, useRef } from 'react'
 import { useContextMenu } from 'react-contexify'
 import { useLocation } from 'react-router-dom'
@@ -18,6 +18,7 @@ import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
 import { useNavigation } from '../../../hooks/useNavigation'
+import { useAnalysisStore } from '../../../store/useAnalysis'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useTreeStore } from '../../../store/useTreeStore'
 import {
@@ -26,6 +27,7 @@ import {
   ItemTitle,
   StyledTreeItem,
   StyledTreeItemSwitcher,
+  StyledTreeSwitcher,
   TooltipContentWrapper,
   TooltipCount
 } from '../../../style/Sidebar'
@@ -54,7 +56,7 @@ const GetIcon = ({ item, onCollapse, onExpand }: GetIconProps) => {
       </StyledTreeItemSwitcher>
     )
   }
-  return <StyledTreeItemSwitcher></StyledTreeItemSwitcher>
+  return <StyledTreeSwitcher></StyledTreeSwitcher>
 }
 
 const TooltipContent = ({ item }: { item: TreeItem }) => {
@@ -77,6 +79,22 @@ const TooltipContent = ({ item }: { item: TreeItem }) => {
   )
 }
 
+const ItemTitleWithAnalysis = ({ item }: { item: TreeItem }) => {
+  const anal = useAnalysisStore((state) => state.analysis)
+  const title =
+    anal.nodeid && anal.nodeid === item.data.nodeid && anal.title !== undefined && anal.title !== ''
+      ? anal.title
+      : item.data
+      ? item.data.title
+      : 'NoTitle'
+
+  return (
+    <ItemTitle>
+      <Icon icon={item.data.mex_icon ?? fileList2Line} />
+      <span>{title}</span>
+    </ItemTitle>
+  )
+}
 interface TreeProps {
   initTree: TreeData
 }
@@ -106,8 +124,11 @@ const Tree = ({ initTree }: TreeProps) => {
   }
   //
   useEffect(() => {
+    mog('renderTree', { initTree })
     setTreeState({ tree: initTree })
   }, [initTree])
+
+  const [source, target] = useSingleton()
 
   const onOpenItem = (itemId: string, nodeid: string) => {
     push(nodeid)
@@ -145,7 +166,7 @@ const Tree = ({ initTree }: TreeProps) => {
     // mog('renderItem', { item, snapshot, provided, location, isInEditor })
 
     return (
-      <Tippy theme="mex" placement="right" content={<TooltipContent item={item} />}>
+      <Tippy theme="mex" placement="right" singleton={target} content={<TooltipContent item={item} />}>
         <StyledTreeItem
           ref={provided.innerRef}
           selected={isInEditor && node && item.data && node.nodeid === item.data.nodeid}
@@ -158,10 +179,7 @@ const Tree = ({ initTree }: TreeProps) => {
           <GetIcon item={item} onExpand={onExpand} onCollapse={onCollapse} />
 
           <ItemContent onMouseDown={(e) => onClick(e, item)}>
-            <ItemTitle>
-              <Icon icon={item.data.mex_icon ?? fileList2Line} />
-              <span>{item.data ? item.data.title : 'No Title'}</span>
-            </ItemTitle>
+            <ItemTitleWithAnalysis item={item} />
           </ItemContent>
 
           {item.hasChildren && item.children && item.children.length > 0 && (
@@ -242,6 +260,7 @@ const Tree = ({ initTree }: TreeProps) => {
 
   return (
     <>
+      <Tippy theme="mex" placement="right" singleton={source} />
       <AtlaskitTree
         offsetPerLevel={16}
         tree={tree}

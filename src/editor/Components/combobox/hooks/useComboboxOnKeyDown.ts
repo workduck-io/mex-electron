@@ -108,14 +108,14 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
     const { textAfterTrigger: search }: ComboSearchType = useComboboxStore.getState().search
     const items = useComboboxStore.getState().items
     const targetRange = useComboboxStore.getState().targetRange
-    const isOpen = !!targetRange
+    const isOpen = !!targetRange && items.length > 0
     const item = items[itemIndex]
 
-    mog('useComboboxOnKeyDown', {
-      item,
-      items,
-      slashCommands
-    })
+    // mog('useComboboxOnKeyDown', {
+    //   item,
+    //   items,
+    //   slashCommands
+    // })
 
     const isSlashCommand =
       comboType.slateElementType === ComboboxKey.SLASH_COMMAND ||
