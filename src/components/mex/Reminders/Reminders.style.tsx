@@ -238,7 +238,7 @@ export const ReminderInfobar = styled.div`
   align-items: center;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.large};
-  padding: 0 ${({ theme }) => theme.spacing.small};
+  padding: 0 ${({ theme }) => theme.spacing.medium};
   border-radius: 0px 0px ${({ theme }) => `calc(2 * ${theme.borderRadius.large}) calc(2* ${theme.borderRadius.large})`};
 
   & > ${Title} {
