@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
     "allowJs": true,
     "module": "commonjs",
     "skipLibCheck": true,
@@ -16,50 +17,50 @@
     "resolveJsonModule": true,
     "paths": {
       "*": [
-        "./node_modules/*"
+        "node_modules/*"
       ],
       "@apis/*": [
-        "./src/apis/*"
+        "src/apis/*"
       ],
       "@components/*": [
-        "./src/components/*"
+        "src/components/*"
       ],
       "@data/*": [
-        "./src/data/*"
+        "src/data/*"
       ],
       "@editor/*": [
-        "./src/editor/*"
+        "src/editor/*"
       ],
       "@electron/*": [
-        "./src/electron/*"
+        "src/electron/*"
       ],
       "@hooks/*": [
-        "./src/hooks/*"
+        "src/hooks/*"
       ],
       "@services/*": [
-        "./src/services/*"
+        "src/services/*"
       ],
       "@store/*": [
-        "./src/store/*"
+        "src/store/*"
       ],
       "@style/*": [
-        "./src/style/*"
+        "src/style/*"
       ],
       "@types/*": [
-        "./src/types/*"
+        "src/types/*"
       ],
       "@ui/*": [
-        "./src/ui/*"
+        "src/ui/*"
       ],
       "@utils/*": [
-        "./src/utils/*"
+        "src/utils/*"
       ],
       "@views/*": [
-        "./src/views/*"
+        "src/views/*"
       ]
     }
   },
   "include": [
-    "./src/**/*"
+    "src/**/*"
   ]
 }
