@@ -31,7 +31,7 @@ const Backlinks = ({ nodeid }: BackLinkProps) => {
         {backlinks.length === 0 && (
           <>
             <Note>No backlinks found.</Note>
-            <Note>Link from other nodes to view them here.</Note>
+            <Note>Link from other notes to view them here.</Note>
           </>
         )}
         {backlinks.map((l, i) => (
