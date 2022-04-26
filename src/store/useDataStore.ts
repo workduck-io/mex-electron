@@ -35,11 +35,14 @@ const useDataStore = create<DataStoreState>((set, get) => ({
   bookmarks: [],
 
   archive: [],
+
+  initialized: false,
   // Load initial data in the store
   initializeDataStore: (initData) => {
     // mog('Initializing Data store', { initData })
     set({
-      ...initData
+      ...initData,
+      initialized: true
     })
   },
 

@@ -9,6 +9,7 @@ export type HistoryType = {
   replace: (nodeid: string) => void
   update: (stack: string[], currentNodeIndex: number) => void
   getCurrentUId: () => string | undefined
+  getDistanceNodeid: (distance: number) => string | undefined
 }
 
 export const useHistoryStore = create<HistoryType>((set, get) => ({
@@ -71,6 +72,15 @@ export const useHistoryStore = create<HistoryType>((set, get) => ({
     const curIndex = get().currentNodeIndex
     if (curIndex >= 0 && curIndex < get().stack.length) {
       return get().stack[curIndex]
+    }
+    return undefined
+  },
+  getDistanceNodeid: (distance) => {
+    const curIndex = get().currentNodeIndex
+    const newIndex = curIndex + distance
+    const stack = get().stack
+    if (newIndex >= 0 && newIndex < stack.length) {
+      return stack[newIndex]
     }
     return undefined
   }

@@ -3,10 +3,14 @@ import { useLocation, useNavigate, useParams, useSearchParams } from 'react-rout
 import { mog } from '../../utils/lib/helper'
 import { useKeyListener } from '../../hooks/useShortcutListener'
 import { useHelpStore } from '../../store/useHelpStore'
+import { useRecentsStore } from '../../store/useRecentsStore'
 import tinykeys from 'tinykeys'
 import { useNavigation } from '../../hooks/useNavigation'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../../data/IpcAction'
+import useLoad from '../../hooks/useLoad'
+import { useEditorStore } from '../../store/useEditorStore'
+import useDataStore from '../../store/useDataStore'
 
 export const ROUTE_PATHS = {
   home: '/',
@@ -51,33 +55,52 @@ export const useRouting = () => {
 export const useBrowserNavigation = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { shortcutDisabled, shortcutHandler } = useKeyListener()
-  const { move } = useNavigation()
+  const { move, push } = useNavigation()
+  const { loadNode } = useLoad()
+  const addRecent = useRecentsStore((store) => store.addRecent)
   // const navigate = useNavigate()
   const location = useLocation()
+
+  useEffect(() => {
+    const node = useEditorStore.getState().node
+    const initialized = useDataStore.getState().initialized
+
+    if (!initialized) return
+
+    if (node && location && location.pathname) {
+      if (node.nodeid) {
+        const nodeid = location.pathname.split('/')[2]
+        if (nodeid && nodeid !== node.nodeid) {
+          mog('Navigation reloaded', { nodeid, location, node })
+          loadNode(nodeid)
+          addRecent(nodeid)
+        }
+      }
+    }
+  }, [location])
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.gotoBackwards.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.gotoBackwards, () => {
-          console.log('NavigateBack', { location })
+          console.log('NavigateBack', { location, path: location.pathname })
           if (location.pathname.startsWith(ROUTE_PATHS.node)) {
-            move(-1)
-          } else {
-            ipcRenderer.send(IpcAction.GO_BACK)
+            // move(-1)
           }
+
+          ipcRenderer.send(IpcAction.GO_BACK)
           // navigate(-1)
         })
       },
       [shortcuts.gotoForward.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.gotoForward, () => {
-          console.log('NavigateForward', { location })
+          console.log('NavigateForward', { location, path: location.pathname })
           if (location.pathname.startsWith(ROUTE_PATHS.node)) {
-            move(+1)
-          } else {
-            ipcRenderer.send(IpcAction.GO_FORWARD)
+            // move(+1)
           }
+          ipcRenderer.send(IpcAction.GO_FORWARD)
           // move(1)
           // navigate(+1)
         })
