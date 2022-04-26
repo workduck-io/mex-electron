@@ -189,7 +189,7 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
 
   ${(props) => focusStyles(props)}
 
-  ${({ expanded }) =>
+  ${({ expanded, theme }) =>
     !expanded &&
     css`
       ${NavTitle}, ${Count} {
@@ -211,7 +211,8 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
       }
 
       ${NavLogoWrapper} {
-        padding: 28px 22px 16px;
+        padding: 0px 22px 16px;
+        padding-top: ${({ theme }) => (theme.additional.hasBlocks ? 8 : 28)}px;
       }
 
       ${CollapseWrapper} {
