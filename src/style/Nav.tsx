@@ -175,6 +175,7 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
   padding: 0 0;
   background-color: ${({ theme }) => theme.colors.gray[8]};
   gap: ${({ theme }) => theme.spacing.small};
+  user-select: none;
 
   ${CollapseWrapper} {
     width: 100%;

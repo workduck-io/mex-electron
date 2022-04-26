@@ -50,6 +50,7 @@ const Nav = ({ links }: NavProps) => {
   const initTree = useTreeFromLinks()
   const sidebar = useLayoutStore((store) => store.sidebar)
   const focusMode = useLayoutStore((store) => store.focusMode)
+  const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
   const addILink = useDataStore((store) => store.addILink)
   const { push } = useNavigation()
   const { saveNewNodeAPI } = useApi()
@@ -84,6 +85,17 @@ const Nav = ({ links }: NavProps) => {
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
+  const onDoubleClickToogle = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.detail === 2) {
+      toggleSidebar()
+
+      if (window && window.getSelection) {
+        const sel = window.getSelection()
+        sel.removeAllRanges()
+      }
+    }
+  }
+
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { shortcutHandler } = useKeyListener()
 
@@ -109,7 +121,12 @@ const Nav = ({ links }: NavProps) => {
 
   return (
     <>
-      <NavWrapper style={springProps} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
+      <NavWrapper
+        onMouseUp={(e) => onDoubleClickToogle(e)}
+        style={springProps}
+        expanded={sidebar.expanded}
+        {...getFocusProps(focusMode)}
+      >
         <NavTooltip singleton={source} />
 
         <NavLogoWrapper>
