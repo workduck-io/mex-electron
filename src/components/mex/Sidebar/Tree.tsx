@@ -18,6 +18,7 @@ import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
 import { useNavigation } from '../../../hooks/useNavigation'
+import { useAnalysisStore } from '../../../store/useAnalysis'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useTreeStore } from '../../../store/useTreeStore'
 import {
@@ -78,6 +79,22 @@ const TooltipContent = ({ item }: { item: TreeItem }) => {
   )
 }
 
+const ItemTitleWithAnalysis = ({ item }: { item: TreeItem }) => {
+  const anal = useAnalysisStore((state) => state.analysis)
+  const title =
+    anal.nodeid && anal.nodeid === item.data.nodeid && anal.title !== undefined && anal.title !== ''
+      ? anal.title
+      : item.data
+      ? item.data.title
+      : 'NoTitle'
+
+  return (
+    <ItemTitle>
+      <Icon icon={item.data.mex_icon ?? fileList2Line} />
+      <span>{title}</span>
+    </ItemTitle>
+  )
+}
 interface TreeProps {
   initTree: TreeData
 }
@@ -107,6 +124,7 @@ const Tree = ({ initTree }: TreeProps) => {
   }
   //
   useEffect(() => {
+    mog('renderTree', { initTree })
     setTreeState({ tree: initTree })
   }, [initTree])
 
@@ -161,10 +179,7 @@ const Tree = ({ initTree }: TreeProps) => {
           <GetIcon item={item} onExpand={onExpand} onCollapse={onCollapse} />
 
           <ItemContent onMouseDown={(e) => onClick(e, item)}>
-            <ItemTitle>
-              <Icon icon={item.data.mex_icon ?? fileList2Line} />
-              <span>{item.data ? item.data.title : 'No Title'}</span>
-            </ItemTitle>
+            <ItemTitleWithAnalysis item={item} />
           </ItemContent>
 
           {item.hasChildren && item.children && item.children.length > 0 && (
