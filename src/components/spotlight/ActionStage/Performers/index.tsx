@@ -13,6 +13,7 @@ export enum PerformerType {
 
 const PerformersContainer = () => {
   const activeAction = useActionStore((store) => store.activeAction)
+  const view = useSpotlightAppStore((store) => store.view)
 
   const { isReady } = useActionPerformer()
   const preActions = activeAction?.actionIds

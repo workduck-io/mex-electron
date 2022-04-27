@@ -37,6 +37,8 @@ import ActionGroupsPage from '../mex/Actions'
 import { animated } from 'react-spring'
 import { useSidebarTransition } from '../../components/mex/Sidebar/Transition'
 import SpotlightActions from '../../components/spotlight/Actions/SpotlightActions'
+import ServiceInfo from '../../components/mex/Integrations/ServiceInfo'
+import ActionGroupsPage from '../mex/Actions'
 
 export const SwitchWrapper = styled(animated.div)<{ isAuth?: boolean }>`
   position: fixed;

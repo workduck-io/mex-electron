@@ -46,7 +46,6 @@ const GlobalListener = memo(() => {
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()
   const { goTo } = useRouting()
-  // const { initActionPerformers } = useActionPerformer()
 
   const addActions = useActionStore((store) => store.addActions)
   const addGroupedActions = useActionStore((store) => store.addGroupedActions)
