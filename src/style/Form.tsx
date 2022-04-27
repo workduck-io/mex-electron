@@ -4,6 +4,7 @@ import Select from 'react-select'
 import Creatable from 'react-select/creatable'
 import styled, { css, DefaultTheme, useTheme } from 'styled-components'
 import { AppType } from '../hooks/useInitialize'
+import { TextFieldHeight } from '@workduck-io/action-request-helper'
 
 interface InputProps {
   isSelected?: boolean
@@ -93,9 +94,44 @@ export const AuthForm = styled.form`
   width: 100%;
 `
 
-export const TextAreaBlock = styled(TextArea)`
+export const TextAreaBlock = styled(TextArea)<{ height?: TextFieldHeight }>`
   width: 100%;
   display: block;
+
+  ${({ height }) =>
+    height &&
+    css`
+      resize: none;
+      box-sizing: border-box;
+      ::placeholder {
+        color: ${(props) => props.theme.colors.gray[4]};
+        opacity: 0.8;
+        font-size: 0.96rem;
+      }
+    `}
+
+  ${({ height }) => {
+    switch (height) {
+      case TextFieldHeight.SMALL:
+        return css`
+          max-height: 2rem;
+        `
+      case TextFieldHeight.MEDIUM:
+        return css`
+          min-height: 4rem;
+          max-height: 9rem;
+        `
+      case TextFieldHeight.LARGE:
+        return css`
+          height: 9rem;
+          max-height: 9rem;
+        `
+      default:
+        return css`
+          height: 2rem;
+        `
+    }
+  }}
   margin: ${({ theme }) => theme.spacing.small} 0;
 `
 

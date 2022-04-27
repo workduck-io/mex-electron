@@ -65,8 +65,6 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
     ref.current.scrollTop = ref.current.scrollHeight
   }
 
-  mog('Preview', { preview, nodeId, currentItem })
-
   return (
     <StyledPreview
       key={`PreviewSpotlightEditor${!isSnippet ? nodeId : snippet.id}`}

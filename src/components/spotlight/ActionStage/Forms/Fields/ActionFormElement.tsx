@@ -1,31 +1,41 @@
-import React from 'react'
-import styled from 'styled-components'
-import { FormField } from '@workduck-io/action-request-helper'
+import React, { useRef } from 'react'
+import styled, { css } from 'styled-components'
 import { darken } from 'polished'
 
-const StyledActionFormContainer = styled.div`
-  display: flex;
-  margin: ${({ theme }) => theme.spacing.tiny};
-  align-items: center;
-  gap: 0 1rem;
+export const ElementContainer = styled.div<{ isInline?: boolean; flex?: number }>`
+  ${({ isInline }) =>
+    isInline &&
+    css`
+      display: inline-block;
+    `}
+  flex: ${({ flex }) => flex || 'inherit'};
 `
 
-const ActionElementLabel = styled.span`
+const ActionElementLabel = styled.span<{ required?: boolean }>`
+  ${({ required }) =>
+    required &&
+    css`
+      &::after {
+        content: '*';
+        /* padding: 0.3rem 10px; */
+        margin-left: 0.2rem;
+        color: ${({ theme }) => theme.colors.text.disabled};
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+    `}
   color: ${({ theme }) => theme.colors.text.default};
   font-size: 0.8rem;
-  flex: 3;
   margin-top: 1rem;
   user-select: none;
-  text-align: right;
 `
 
-const ElementContainer = styled.div`
-  flex: 5;
-  align-items: flex-start;
-  width: 100%;
-  display: flex;
+const ElementHeader = styled.div`
+  /* flex: 5; */
   align-items: center;
-  gap: 0 0.5rem;
+  justify-content: space-between;
+  display: flex;
+  gap: 0.5rem;
 `
 
 const ActionElementErrorText = styled.span`
@@ -37,18 +47,25 @@ const ActionElementErrorText = styled.span`
 `
 
 type ActionFormElementProps = {
-  element: FormField
+  label: string
+  required?: boolean
+  isInline?: boolean
+  flex?: number
 }
 
-const ActionFormElement: React.FC<ActionFormElementProps> = ({ element, children }) => {
+const ActionFormElement: React.FC<ActionFormElementProps> = ({ label, required, children, isInline, flex }) => {
+  const ref = useRef<HTMLDivElement>(null)
+
+  const scrollThere = () => ref.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+
   return (
-    <StyledActionFormContainer>
-      <ActionElementLabel>{element.label}</ActionElementLabel>
-      <ElementContainer>
-        {children}
-        {element.options.required && <ActionElementErrorText>Required!</ActionElementErrorText>}
-      </ElementContainer>
-    </StyledActionFormContainer>
+    <ElementContainer ref={ref} onClick={scrollThere} isInline={isInline} flex={flex}>
+      <ElementHeader>
+        <ActionElementLabel required={required}>{label}</ActionElementLabel>
+        {/* {required && <ActionElementErrorText>Required!</ActionElementErrorText>} */}
+      </ElementHeader>
+      {children}
+    </ElementContainer>
   )
 }
 

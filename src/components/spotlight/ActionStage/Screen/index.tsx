@@ -32,12 +32,12 @@ export const isURL = (text: string) => {
 
 const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
   const [resData, setResData] = useState<Array<TemplateConfig>>([])
-  const actionToPerform = useActionStore((store) => store.actionToPerform)
-  const getCachedAction = useActionStore((store) => store.getCachedAction)
-  const selectedValue = useActionStore((store) => store.selectedValue)
+  const getCacheResult = useActionStore((store) => store.getCacheResult)
+  const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
+  const prevValue = getPreviousActionValue(actionId)?.selection
 
   const isLoading = useSpotlightAppStore((store) => store.isLoading)
-  const { performer, isReady } = useActionPerformer()
+  const { performer, isPerformer } = useActionPerformer()
   const [activeIndex, setActiveIndex] = useState(-1)
   const view = useSpotlightAppStore((store) => store.view)
   const setView = useSpotlightAppStore((store) => store.setView)
@@ -45,7 +45,8 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
   const { search } = useSpotlightContext()
 
   useEffect(() => {
-    const ready = isReady()
+    const ready = isPerformer(actionId)
+
     if (ready) {
       performer(actionGroupId, actionId)
         .then((res) => {
@@ -56,10 +57,10 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
         })
         .catch((err) => mog('error', { err }))
     }
-  }, [actionId, actionToPerform, selectedValue])
+  }, [actionId, prevValue])
 
   useEffect(() => {
-    const data = (getCachedAction(actionId)?.data?.displayData as TemplateConfig[]) ?? []
+    const data = (getCacheResult(actionId)?.displayData as TemplateConfig[]) ?? []
 
     const res = getSearchResults(search?.value, data, {
       keySelector: (obj: any) => obj.find((item) => item.type === 'title')?.value
@@ -72,7 +73,7 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
 
   const onSelectItem = (index: any) => {
     setActiveIndex(index)
-    setView(true)
+    setView('item')
   }
 
   const nextItem = () => {
@@ -84,7 +85,7 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
   }
 
   const onBack = () => {
-    setView(false)
+    setView(undefined)
   }
 
   return (

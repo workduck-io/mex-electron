@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { forwardRef, useEffect, useState } from 'react'
 
 import styled from 'styled-components'
 import { StyledSelect } from '../../../../style/Form'
@@ -25,6 +25,7 @@ type SelectedProps = {
   isMulti?: boolean
   width?: string
   actionId: string
+  onChange?: any
   placeholder?: string
   actionGroupId: string
 }
@@ -33,11 +34,12 @@ export const SelectBar = styled(StyledSelect)`
   flex: 1;
   max-width: ${({ width }) => width || '30%'};
   font-size: 0.9rem;
+  margin: 0 0.25rem 0 0;
   color: ${({ theme }) => theme.colors.text.default};
 
   & > div {
     border-radius: ${({ theme }) => theme.borderRadius.small};
-    margin: 1rem 0 0;
+    margin: 0.5rem 0 0;
     border: none;
   }
 `
@@ -90,15 +92,8 @@ const StyledOption = styled.div`
 //   ) : null
 // }
 
-const Selector: React.FC<SelectedProps> = ({
-  actionId,
-  placeholder,
-  width = '30%',
-  actionGroupId,
-  data,
-  value,
-  isMulti
-}) => {
+const Selector = forwardRef<any, SelectedProps>((props, ref) => {
+  const { actionId, placeholder, onChange, width = '30%', actionGroupId, data, value, isMulti } = props
   const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
     data: [],
     value: null
@@ -108,43 +103,49 @@ const Selector: React.FC<SelectedProps> = ({
     setInputValue({ data, value })
   }, [data, value])
 
-  const actionToPerform = useActionStore((store) => store.actionToPerform)
-  const updateValueInCache = useActionStore((store) => store.updateValueInCache)
-  const selectedValue = useActionStore((store) => store.selectedValue)
+  const addSelectionInCache = useActionStore((store) => store.addSelectionInCache)
+  const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
 
   const { performer, isPerformer } = useActionPerformer()
+  const prevSelelectedLabel = getPreviousActionValue(actionId)?.selection
 
   const resToDisplay = (result) => {
     return result?.map((item) => {
       const displayItem = item.select
       return {
-        label: displayItem.value,
+        label: displayItem?.label,
         value: item
       }
     })
   }
 
   useEffect(() => {
-    const at = isPerformer(actionId)
+    const isReady = isPerformer(actionId)
 
-    if (at) {
+    if (isReady) {
       performer(actionGroupId, actionId).then((res) => {
         const result = res?.contextData
-
         const data = resToDisplay(result)
+
         setInputValue({ data, value: null })
       })
     }
-  }, [actionId, actionGroupId, actionToPerform, selectedValue])
+  }, [actionId, actionGroupId, prevSelelectedLabel])
 
-  const handleChange = (selected: any) => {
-    updateValueInCache(actionId, selected)
+  const handleChange = (selection: any) => {
+    if (onChange) onChange(selection)
+    const val = { prev: prevSelelectedLabel?.label, selection }
+    mog('CHANGING', { val })
+    addSelectionInCache(actionId, val)
   }
 
   return (
     <SelectBar
+      openMenuOnClick
+      menuShouldScrollIntoView
       placeholder={placeholder}
       width={width}
+      ref={ref}
       isMulti={isMulti}
       autoFocus={isPerformer(actionId)}
       onChange={handleChange}
@@ -152,6 +153,8 @@ const Selector: React.FC<SelectedProps> = ({
       options={inputValue.data}
     />
   )
-}
+})
+
+Selector.displayName = 'Selector'
 
 export default Selector

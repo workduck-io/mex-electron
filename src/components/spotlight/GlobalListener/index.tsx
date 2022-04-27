@@ -23,7 +23,6 @@ import ReminderArmer from '../Reminder/ReminderArmer'
 import { useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
 import { useTokenData } from '../../../hooks/useLocalData'
 import { useRecieveTokens } from '../../../hooks/useSyncData'
-import useActions from '../Actions/useActions'
 import { useActionStore, UpdateActionsType } from '../Actions/useActionStore'
 
 const GlobalListener = memo(() => {
@@ -51,6 +50,7 @@ const GlobalListener = memo(() => {
   const addGroupedActions = useActionStore((store) => store.addGroupedActions)
   const setActionGroups = useActionStore((store) => store.setActionGroups)
   const removeActionsByGroupId = useActionStore((store) => store.removeActionsByGroupId)
+  const setConnectedGroups = useActionStore((store) => store.setConnectedGroups)
 
   // const { initActionPerformers } = useActionPerformer()
 
@@ -78,7 +78,7 @@ const GlobalListener = memo(() => {
         setSelection(undefined)
       } else {
         // * If user captures a content when in action mode, then we need to redirect him to the home page
-        useSpotlightAppStore.getState().setView(false)
+        useSpotlightAppStore.getState().setView(undefined)
         goTo(ROUTE_PATHS.home, NavigationType.replace)
         setTemp(data)
       }
@@ -148,14 +148,15 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.on(IpcAction.UPDATE_ACTIONS, (_event, arg) => {
-      const { groups, actionList, actions, actionGroupId } = arg?.data
+      const { groups, actionList, actions, actionGroupId, connectedGroups, type } = arg?.data
 
-      if (UpdateActionsType.REMOVE_ACTION_BY_GROUP_ID) removeActionsByGroupId(actions)
+      if (type === UpdateActionsType.CLEAR) useActionStore.getState().clear()
+      else if (type === UpdateActionsType.REMOVE_ACTION_BY_GROUP_ID) removeActionsByGroupId(actions)
+      else if (type === UpdateActionsType.AUTH_GROUPS) setConnectedGroups(connectedGroups)
       else if (groups) setActionGroups(groups)
       else if (actionList) addActions(actionList)
       else if (actions && actionGroupId) {
         addGroupedActions(actionGroupId, actions)
-        // initActionsOfGroup(actionGroupId)
       }
     })
 

@@ -31,7 +31,6 @@ interface AuthStoreState extends State {
   userDetails: undefined | UserDetails
   workspaceDetails: undefined | WorkspaceDetails
   setAuthenticated: (userDetails: UserDetails, workspaceDetails: WorkspaceDetails) => void
-  // setAuthenticatedUserDetails: (userDetails: UserDetails) => void
   setUnAuthenticated: () => void
   setRegistered: (val: boolean) => void
   setIsForgottenPassword: (val: boolean) => void
@@ -72,7 +71,7 @@ export const useAuthentication = () => {
   const { updateDefaultServices, updateServices } = useUpdater()
   const { signIn, signUp, verifySignUp, signOut, googleSignIn, refreshToken } = useAuth()
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
-  const { clearActionStore } = useActions()
+  const { clearActionStore, getGroupsToView } = useActions()
   // const { getNodesByWorkspace } = useApi()
 
   interface AuthDetails {
@@ -300,6 +299,7 @@ export const useAuthentication = () => {
         ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
         setAuthenticated({ email: sensitiveData.email }, { id: d.data.id, name: d.data.name })
       })
+      .then(getGroupsToView)
       .then(updateDefaultServices)
       .then(updateServices)
       .catch(console.error)

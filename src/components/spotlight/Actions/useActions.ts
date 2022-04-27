@@ -1,10 +1,10 @@
 // * Hook for managing unauthenticated actions list in Combobox and Spotlight
 
 import { mog } from '../../../utils/lib/helper'
-import { orderBy } from 'lodash'
+import { orderBy, isEmpty } from 'lodash'
 import { getListItemFromAction } from '../Home/helper'
 import { useActionPerformer } from './useActionPerformer'
-import { ActionGroupType, useActionStore } from './useActionStore'
+import { ActionGroupType, UpdateActionsType, useActionStore } from './useActionStore'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { IpcAction } from '../../../data/IpcAction'
 import { AppType } from '../../../hooks/useInitialize'
@@ -14,7 +14,7 @@ const useActions = () => {
   const addActions = useActionStore((store) => store.addActions)
   const addGroupedActions = useActionStore((store) => store.addGroupedActions)
   const setActionGroups = useActionStore((store) => store.setActionGroups)
-  const removeActionsByGroupId = useActionStore((store) => store.removeActionsByGroupId)
+  const setConnectedGroups = useActionStore((store) => store.setConnectedGroups)
   const { actionPerformer } = useActionPerformer()
 
   /*
@@ -87,15 +87,22 @@ const useActions = () => {
   }
 
   const sortActionGroups = (actionGroups: Record<string, ActionGroupType>) => {
-    const res = orderBy(Object.values(actionGroups), ['enabled', 'connected', 'actionGroupId'], ['desc', 'desc', 'asc'])
+    const connectedGroups = useActionStore.getState().connectedGroups
+    const res = orderBy(
+      Object.values(actionGroups).map((item) => ({ ...item, connected: connectedGroups[item.actionGroupId] })),
+      ['connected', 'actionGroupId'],
+      ['desc', 'asc']
+    )
+
     return res
   }
 
   // * For Integrations page, check for Authorized action groups
   const getAuthorizedGroups = async (forceUpdate?: boolean) => {
     const groupsAuth = await actionPerformer.getAllAuths(forceUpdate)
-    const groups = useActionStore.getState().actionGroups
-    const actionGroups = { ...groups }
+    const actionGroups = useActionStore.getState().actionGroups
+    const connected = useActionStore.getState().connectedGroups
+    const connectedGroups = { ...connected }
 
     if (groupsAuth) {
       Object.values(actionGroups).forEach((actionGroup) => {
@@ -106,28 +113,31 @@ const useActions = () => {
         for (const authTypeId of authTypeIds) {
           if (actionGroup?.authConfig?.authTypeId === authTypeId) {
             connected = true
-            if (!actionGroup.connected) setActionsInList(actionGroup.actionGroupId)
+
+            if (!connectedGroups[actionGroup?.actionGroupId]) {
+              setActionsInList(actionGroup.actionGroupId)
+            }
+
             break
           }
         }
 
-        if (!connected) {
-          removeActionsByGroupId(actionGroup.actionGroupId)
-        }
+        // if (!connected) {
+        //   removeActionsByGroupId(actionGroup.actionGroupId)
+        // }
 
-        if (actionGroups[actionGroup.actionGroupId]) {
-          actionGroups[actionGroup.actionGroupId] = { ...actionGroup, connected }
-        }
+        connectedGroups[actionGroup.actionGroupId] = connected
       })
 
-      setActionGroups(actionGroups)
-      appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { groups: actionGroups })
+      setConnectedGroups(connectedGroups)
+      appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { connectedGroups, type: UpdateActionsType.AUTH_GROUPS })
     }
   }
 
   const clearActionStore = () => {
     actionPerformer.clearStore()
     useActionStore.getState().clear()
+    appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { type: UpdateActionsType.CLEAR })
   }
 
   return {

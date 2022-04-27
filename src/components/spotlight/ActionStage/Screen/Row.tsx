@@ -40,8 +40,6 @@ type RowProps = {
   isView?: boolean
 }
 
-export const ROW_ITEMS_LIMIT = 6
-
 const Row: React.FC<RowProps> = ({ row, onClick, type = 'row', isView }) => {
   const handleOpenURL = () => {
     const url = row.find((item) => item.type === 'url')?.value as string

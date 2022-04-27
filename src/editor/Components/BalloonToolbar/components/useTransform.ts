@@ -58,7 +58,7 @@ export const useTransform = () => {
       Transforms.removeNodes(editor, { at: editor.selection, hanging: false })
       // Transforms.liftNodes(editor, { at: editor.selection, mode: 'lowest' })
 
-      mog('replaceSelectionWithQA  ', { selectionPath, val, valText })
+      // mog('replaceSelectionWithQA  ', { selectionPath, val, valText })
       //
       addQABlock(editor, { question: valText, questionId: generateSnippetId() })
     } catch (e) {

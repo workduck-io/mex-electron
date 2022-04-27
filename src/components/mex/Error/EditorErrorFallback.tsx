@@ -32,7 +32,7 @@ const EditorErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (!useEditorErrorStore.getState().alreadyErrored) {
-        mog('Resetting the editor store', { alreadyErrored, prevNode })
+        // mog('Resetting the editor store', { alreadyErrored, prevNode })
         setErrorState('', false)
       }
     }, 1000)

@@ -17,8 +17,6 @@ export const useRedirectAuth = () => {
     ipcRenderer.on(IpcAction.OAUTH, async (event, data) => {
       const type = data.type
 
-      mog('OAuth', { data })
-
       switch (type) {
         case 'login_google':
           await loginViaGoogle(data.code, config.cognito.APP_CLIENT_ID, GOOGLE_OAUTH_URL)
@@ -36,7 +34,10 @@ export const useRedirectAuth = () => {
           // * Update the store for changed integrations
           try {
             if (data.actionGroupId) {
+              // * Get auth and config of the group
               getAuthorizedGroups(true)
+
+              // * initialize actions
               setActionsInList(data.actionGroupId)
             }
           } catch (error) {
@@ -45,7 +46,6 @@ export const useRedirectAuth = () => {
 
           break
         default:
-          mog('Unknown OAuth Type', { type })
           toast('Something went wrong')
       }
     })

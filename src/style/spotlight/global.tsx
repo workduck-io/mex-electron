@@ -27,7 +27,8 @@ const GlobalStyle = createGlobalStyle`
   
   * {
       /* box-sizing: border-box; */
-      ${ThinScrollbar};
+      ${ThinScrollbar}
+      
       ::-webkit-scrollbar {
         width: 0;
       }

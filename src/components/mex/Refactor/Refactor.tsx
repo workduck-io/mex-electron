@@ -124,7 +124,7 @@ const Refactor = () => {
   const { getNodeidFromPath } = useLinks()
 
   useEffect(() => {
-    mog('Refactor', { open, to, from })
+    // mog('Refactor', { open, to, from })
     if (to && from && !isReserved(from) && !isReserved(to)) {
       // mog('To, from in refactor', { to, from })
       setMockRefactored(getMockRefactor(from, to))

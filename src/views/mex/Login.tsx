@@ -17,6 +17,7 @@ import useLoad from '../../hooks/useLoad'
 import { useUpdater } from '../../hooks/useUpdater'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 import { useLinks } from '../../hooks/useLinks'
+import useActions from '../../components/spotlight/Actions/useActions'
 
 interface LoginFormData {
   email: string
@@ -30,6 +31,7 @@ const Login = () => {
     formState: { errors, isSubmitting }
   } = useForm<LoginFormData>()
   const { login } = useAuthentication()
+  const { getGroupsToView } = useActions()
 
   const setAuthenticated = useAuthStore((s) => s.setAuthenticated)
   const { loadNode } = useLoad()
@@ -56,6 +58,7 @@ const Login = () => {
           setAuthenticated(userDetails, workspaceDetails)
         }
       })
+      .then(getGroupsToView)
       .then(updateDefaultServices)
       .then(updateServices)
       .catch((e) => {

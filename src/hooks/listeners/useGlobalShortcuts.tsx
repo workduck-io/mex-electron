@@ -28,7 +28,7 @@ export const useGlobalShortcuts = () => {
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const setCurrentListItem = useSpotlightEditorStore((s) => s.setCurrentListItem)
-  const clearPerformedAction = useActionStore((store) => store.clear)
+  // const clearPerformedAction = useActionStore((store) => store.clear)
   const setView = useSpotlightAppStore((store) => store.setView)
 
   const handleCancel = () => {
@@ -47,14 +47,14 @@ export const useGlobalShortcuts = () => {
         event.preventDefault()
         if (!shortcutDisabled) {
           if (location.pathname === '/action') {
-            if (useSpotlightAppStore.getState().view) {
-              setView(false)
+            if (useSpotlightAppStore.getState().view === 'item') {
+              setView(undefined)
             } else {
               // * If no value is present, take back to home view
               if (!search.value) {
                 handleCancel()
-                setView(false)
-                clearPerformedAction()
+                setView(undefined)
+                // clearPerformedAction()
                 goTo(ROUTE_PATHS.home, NavigationType.replace)
                 return
               }

@@ -419,7 +419,7 @@ app.on('open-url', function (event, url) {
 })
 
 ipcMain.on(IpcAction.UPDATE_ACTIONS, (event, data) => {
-  mog('DATA', { data })
+  // mog('DATA', { data })
   spotlight.webContents.send(IpcAction.UPDATE_ACTIONS, data)
 })
 
@@ -573,7 +573,7 @@ ipcMain.on(IpcAction.GET_TOKEN_DATA, async (event) => {
 })
 
 ipcMain.on(IpcAction.SET_TOKEN_DATA, (_event, arg) => {
-  mog('SETTING TOKEN DATA', { arg })
+  // mog('SETTING TOKEN DATA', { arg })
   setTokenData(arg, TOKEN_LOCATION)
   const tokenData: AuthTokenData = arg || getTokenData(TOKEN_LOCATION)
 
@@ -630,7 +630,7 @@ ipcMain.on(IpcAction.CLEAR_RECENTS, (_event, arg) => {
 
 ipcMain.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {
   const { from, data } = arg
-  mog('Add new recent item', { from, data })
+  // mog('Add new recent item', { from, data })
   notifyOtherWindow(IpcAction.NEW_RECENT_ITEM, from, data)
 })
 

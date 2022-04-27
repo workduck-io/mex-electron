@@ -1,5 +1,7 @@
 import create from 'zustand'
 
+export type ViewType = 'item' | 'form' | undefined
+
 export type SpotlightAppStore = {
   search: string
   setSearch: (value: string) => void
@@ -11,8 +13,8 @@ export type SpotlightAppStore = {
   setReset: () => void
   isLoading: boolean
   setIsLoading: (value: boolean) => void
-  view: boolean
-  setView: (value: boolean) => void
+  view?: ViewType
+  setView: (value: ViewType) => void
 }
 
 export const useSpotlightAppStore = create<SpotlightAppStore>((set, get) => ({
@@ -24,14 +26,13 @@ export const useSpotlightAppStore = create<SpotlightAppStore>((set, get) => ({
   normalMode: true,
   setNormalMode: (value: boolean) => set(() => ({ normalMode: value })),
 
-  view: false,
-  setView: (value: boolean) => set({ view: value }),
+  setView: (value: ViewType) => set({ view: value }),
 
   search: '',
   setSearch: (value) => set({ search: value }),
 
   reset: false,
-  setReset: () => set({ reset: !get().reset, normalMode: true }),
+  setReset: () => set({ reset: !get().reset, normalMode: true, view: undefined }),
 
   isLoading: false,
   setIsLoading: (value: boolean) => set({ isLoading: value })

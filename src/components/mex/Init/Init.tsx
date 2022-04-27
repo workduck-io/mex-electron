@@ -259,11 +259,6 @@ const Init = () => {
     setIpc()
     setReceiveToken()
 
-    // * Set up integrations page
-    getGroupsToView()
-      .then(() => mog('Groups in view initialized'))
-      .catch((e) => mog('Error getting groups in view', { e }))
-
     // Setup recieving the analysis call
     setAnalysisIpc()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

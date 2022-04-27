@@ -28,7 +28,8 @@ const useItemExecutor = () => {
   const itemActionExecutor = (item: ListItemType, query?: string, isMetaPressed?: boolean) => {
     switch (item.type) {
       case ItemActionType.action:
-        goTo('action', NavigationType.push)
+        setSearch({ value: '', type: CategoryType.search })
+        setInput('')
 
         // eslint-disable-next-line no-case-declarations
         const actionGroupInfo = item?.extras?.actionGroup
@@ -36,6 +37,8 @@ const useItemExecutor = () => {
         if (actionGroupInfo) {
           initAction(actionGroupInfo.actionGroupId, item.id)
         }
+
+        goTo('action', NavigationType.push)
 
         break
       case ItemActionType.customAction:

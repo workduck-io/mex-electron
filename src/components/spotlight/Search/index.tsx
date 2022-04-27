@@ -7,14 +7,13 @@ import { useSaveChanges, useSearchProps } from './useSearchProps'
 import { CenterIcon } from '../../../style/spotlight/layout'
 import { Icon } from '@iconify/react'
 import Message from '../Message'
-import WDLogo from './Logo'
 import { useContentStore } from '../../../store/useContentStore'
 import { useDebouncedCallback } from 'use-debounce'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useTheme } from 'styled-components'
 import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { useRouting } from '../../../views/routes/urls'
-import Loading from '../../../style/Loading'
+import ViewActionHandler from '../ActionStage/Forms/ViewActionHandler'
 
 type QueryType = {
   value: string
@@ -35,6 +34,7 @@ const Search: React.FC = () => {
   // * Editor's mode (normal/edit)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const isLoading = useSpotlightAppStore((s) => s.isLoading)
+  const view = useSpotlightAppStore((store) => store.view)
 
   const { saveIt } = useSaveChanges()
   const { location } = useRouting()
@@ -71,6 +71,7 @@ const Search: React.FC = () => {
     if (search.value === '') {
       ref.current.value = ''
     }
+
     if (!normalMode) setInput('')
 
     ref.current.focus()
@@ -99,7 +100,7 @@ const Search: React.FC = () => {
   // const type = getQuery(input).type
   // const before = type === CategoryType.search ? '' : type
 
-  const disabled = !normalMode
+  const disabled = !normalMode || !!view
 
   return (
     <StyledSearch id="wd-mex-spotlight-search-container">
@@ -120,7 +121,7 @@ const Search: React.FC = () => {
       {/* </Before> */}
       {saved && <Message text="Saved" />}
       <CenterIcon id="wd-mex-spotlight-logo">
-        {isLoading ? <Loading color={theme.colors.primary} dots={3} transparent /> : <WDLogo />}
+        <ViewActionHandler />
       </CenterIcon>
     </StyledSearch>
   )

@@ -1,14 +1,13 @@
-import React from 'react'
-import { FormField } from '@workduck-io/action-request-helper'
-import styled from 'styled-components'
-import { Input } from '../../../../../style/Form'
-import { lighten, opacify } from 'polished'
+import React, { forwardRef } from 'react'
+import { FormField, TextFieldHeight } from '@workduck-io/action-request-helper'
+import styled, { css } from 'styled-components'
+import { Input, TextAreaBlock } from '../../../../../style/Form'
 
 export const ActionInputContainer = styled(Input)`
   max-width: 12rem;
-  min-width: 50%;
+  min-width: 100%;
   border-radius: ${(props) => props.theme.borderRadius.small};
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   box-sizing: border-box;
   padding-left: 0.7rem;
 
@@ -23,10 +22,24 @@ export type ActionInputProps = {
   actionId: string
   actionGroupId: string
   element: FormField
+  onChange: any
+  value: string
+  type: TextFieldHeight
 }
 
-const ActionInput: React.FC<ActionInputProps> = ({ actionId, actionGroupId, element }) => {
-  return <ActionInputContainer placeholder={element.options.placeholder} />
-}
+const ActionInput = forwardRef<any, ActionInputProps>((props, ref) => {
+  return (
+    <TextAreaBlock
+      onChange={props.onChange}
+      value={props.value}
+      ref={ref}
+      draggable={false}
+      placeholder={props.element.options.placeholder}
+      height={props.type}
+    />
+  )
+})
+
+ActionInput.displayName = 'ActionInput'
 
 export default ActionInput
