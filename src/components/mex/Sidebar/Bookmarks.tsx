@@ -56,6 +56,7 @@ const Bookmarks = () => {
           </BLink>
         )
       })}
+      {bookmarks.length === 0 && <div>No notes bookmarked yet!</div>}
     </BList>
   )
 }
