@@ -25,6 +25,7 @@ import Editor from './Editor'
 import Toolbar from './Toolbar'
 
 import { removeStopwords } from '../utils/stopwords'
+import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -34,6 +35,7 @@ const ContentEditor = () => {
   const headingQASearch = useSuggestionStore((store) => store.headingQASearch)
 
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
+  const isComboOpen = useComboboxOpen()
 
   const { queryIndexWithRanking } = useSearch()
 
@@ -112,7 +114,7 @@ const ContentEditor = () => {
 
         {isBlockMode ? <BlockInfoBar /> : <Metadata node={node} />}
 
-        <EditorWrapper onClick={onFocusClick}>
+        <EditorWrapper onClick={onFocusClick} comboboxOpen={isComboOpen}>
           <Editor
             showBalloonToolbar
             content={fsContent?.content ?? defaultContent.content}
