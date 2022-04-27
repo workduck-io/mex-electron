@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import styled from 'styled-components'
 import { StyledSelect } from '../../../../style/Form'
+import { mog } from '../../../../utils/lib/helper'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
 import { useActionStore } from '../../Actions/useActionStore'
 import { StyledBackground } from '../../styled'
@@ -19,9 +20,10 @@ const Dropdown = styled.div`
 `
 
 type SelectedProps = {
-  actionId: string
   value?: any
   data?: any
+  actionId: string
+  actionGroupId: string
 }
 
 export const SelectBar = styled(StyledSelect)`
@@ -84,11 +86,16 @@ const StyledOption = styled.div`
 //   ) : null
 // }
 
-const Selector: React.FC<SelectedProps> = ({ actionId, data, value }) => {
+const Selector: React.FC<SelectedProps> = ({ actionId, actionGroupId, data, value }) => {
   const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
-    data: data ?? [],
-    value: value ?? null
+    data: [],
+    value: null
   })
+
+  useEffect(() => {
+    setInputValue({ data, value })
+  }, [data, value])
+
   const actionToPerform = useActionStore((store) => store.actionToPerform)
   const updateValueInCache = useActionStore((store) => store.updateValueInCache)
   const selectedValue = useActionStore((store) => store.selectedValue)
@@ -99,7 +106,7 @@ const Selector: React.FC<SelectedProps> = ({ actionId, data, value }) => {
     const at = isPerformer(actionId)
 
     if (at) {
-      performer(actionId).then((res) => {
+      performer(actionGroupId, actionId).then((res) => {
         const result = res?.contextData
 
         const data = result?.map((item) => {
@@ -109,14 +116,10 @@ const Selector: React.FC<SelectedProps> = ({ actionId, data, value }) => {
             value: item
           }
         })
-
-        // if (res?.value) {
-        //   const selected = { label: res?.value?.select?.value, value: res.value }
-        //   setInputValue({ data, value: selected })
-        setInputValue({ data })
+        setInputValue({ data, value: null })
       })
     }
-  }, [actionId, actionToPerform, selectedValue])
+  }, [actionId, actionGroupId, actionToPerform, selectedValue])
 
   const handleChange = (selected: any) => {
     updateValueInCache(actionId, selected)

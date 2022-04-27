@@ -1,14 +1,15 @@
 import { isUrl } from '@udecode/plate'
-import React from 'react'
+import React, { forwardRef } from 'react'
 import styled, { css, useTheme } from 'styled-components'
 import { MexIcon } from '../../../../style/Layouts'
+import Tippy from '@tippyjs/react'
 import { TemplateCss, TemplateItemProp } from './ProjectTitle'
 
 export const FieldLabel = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 0.25rem;
-  font-size: smaller;
+  font-size: 0.8rem;
   color: ${(props) => props.theme.colors.text.fade};
 `
 
@@ -17,6 +18,7 @@ export const FieldValue = styled.div`
   align-items: center;
   margin-bottom: ${(props) => props.theme.spacing[2]}px;
   color: ${(props) => props.theme.colors.text.default};
+  font-size: 0.9rem;
   span {
     margin-left: 0.25rem;
   }
@@ -25,13 +27,17 @@ export const FieldValue = styled.div`
 const ProjectIconContainer = styled.span<{ isView: boolean }>`
   ${TemplateCss}
   ${(props) =>
-    props.isView &&
-    css`
-      width: 100%;
-      margin: 0.25rem 0;
-    `}
+    props.isView
+      ? css`
+          width: 100%;
+          margin: 0.25rem 0;
+        `
+      : css`
+          display: flex;
+          align-items: center;
+        `}
   
-  font-size: 0.9em;
+  font-size: 0.9rem;
 
   img {
     border-radius: 50%;
@@ -40,12 +46,16 @@ const ProjectIconContainer = styled.span<{ isView: boolean }>`
   }
 `
 
-const ProjectIconMex: React.FC<{ isMex: boolean; icon: string }> = ({ isMex, icon }) => {
+const ProjectIconMex: React.FC<{ isMex: boolean; icon: string }> = forwardRef((props, ref) => {
   const theme = useTheme()
+  // eslint-disable-next-line react/prop-types
+  const { isMex, icon } = props
 
-  if (isMex) return <MexIcon icon={icon} fontSize={20} color={theme.colors.primary} />
-  return <img src={icon} height={24} width={24} />
-}
+  if (isMex) return <MexIcon ref={ref as any} icon={icon} fontSize={20} color={theme.colors.primary} />
+  return <img ref={ref as any} src={icon} height={24} width={24} />
+})
+
+ProjectIconMex.displayName = 'ProjectIconMex'
 
 const ProjectIcon: React.FC<TemplateItemProp> = ({ item, isView }) => {
   if (!item.icon) return <></>
@@ -57,9 +67,20 @@ const ProjectIcon: React.FC<TemplateItemProp> = ({ item, isView }) => {
   if (!isIconfiy && mexIcon) return null
 
   if (!isView) {
+    const tooltip = `${item.key}: ${item.value}`
+
     return (
       <ProjectIconContainer isView={isView}>
-        <ProjectIconMex icon={item.icon} isMex={mexIcon} />
+        <Tippy
+          delay={100}
+          interactiveDebounce={100}
+          placement="bottom"
+          appendTo={() => document.body}
+          theme="mex"
+          content={tooltip}
+        >
+          <ProjectIconMex icon={item.icon} isMex={mexIcon} />
+        </Tippy>
       </ProjectIconContainer>
     )
   }

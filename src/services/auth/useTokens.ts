@@ -28,8 +28,6 @@ export const useTokenStore = create<TokenStore>((set, get) => ({
       }
     }
 
-    mog('ADD GOOGLE CALENDAR data', { existingData, newData })
-
     set({ data: newData })
     return newData
   },

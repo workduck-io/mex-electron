@@ -22,8 +22,7 @@ const RowContainer = styled.div<RowContainerProps>`
   padding: 0.5rem;
   min-height: 2rem;
   margin: 0 0 0.5rem;
-  user-select: none;
-  align-items: center;
+  align-items: ${(props) => (props.type === 'row' ? 'center' : 'inherit')};
   border-radius: 0.5rem;
   justify-content: space-between;
   flex-direction: ${(props) => (props.type === 'row' ? 'row' : 'column')};

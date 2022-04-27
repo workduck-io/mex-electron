@@ -8,6 +8,7 @@ import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { useActionStore } from '../Actions/useActionStore'
 import { NavigationType, useRouting } from '../../../views/routes/urls'
+import { mog } from '../../../utils/lib/helper'
 
 const useItemExecutor = () => {
   const { setSearch, setActiveItem } = useSpotlightContext()
@@ -28,7 +29,14 @@ const useItemExecutor = () => {
     switch (item.type) {
       case ItemActionType.action:
         goTo('action', NavigationType.push)
-        initAction(item.id)
+
+        // eslint-disable-next-line no-case-declarations
+        const actionGroupInfo = item?.extras?.actionGroup
+
+        if (actionGroupInfo) {
+          initAction(actionGroupInfo.actionGroupId, item.id)
+        }
+
         break
       case ItemActionType.customAction:
         if (item.extras.customAction) item.extras.customAction()

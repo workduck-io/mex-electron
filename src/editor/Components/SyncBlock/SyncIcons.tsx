@@ -4,6 +4,7 @@ import notionIcon from '@iconify/icons-simple-icons/notion'
 import slackIcon from '@iconify/icons-simple-icons/slack'
 import telegramIcon from '@iconify/icons-simple-icons/telegram'
 import React from 'react'
+import Asana from '../../../components/icons/Asana'
 import Github from '../../../components/icons/github'
 import Linear from '../../../components/icons/linear'
 import Mex from '../../../components/icons/mex'
@@ -31,7 +32,8 @@ export const ServiceIcons: Record<string, any> = {
   SLACK: Slack,
   LINEAR: Linear,
   NOTION: Notion,
-  TELEGRAM: Telegram
+  TELEGRAM: Telegram,
+  ASANA: Asana
 }
 
 export type ServiceIconType = { service: string; height: string; width: string }

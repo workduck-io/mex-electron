@@ -21,6 +21,7 @@ const StyledScreen = styled.section`
 `
 
 type ScreenProps = {
+  actionGroupId: string
   actionId: string
 }
 
@@ -29,7 +30,7 @@ export const isURL = (text: string) => {
   return text.match(pattern)
 }
 
-const Screen: React.FC<ScreenProps> = ({ actionId }) => {
+const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
   const [resData, setResData] = useState<Array<TemplateConfig>>([])
   const actionToPerform = useActionStore((store) => store.actionToPerform)
   const getCachedAction = useActionStore((store) => store.getCachedAction)
@@ -45,13 +46,12 @@ const Screen: React.FC<ScreenProps> = ({ actionId }) => {
 
   useEffect(() => {
     const ready = isReady()
-
     if (ready) {
-      performer(actionId)
+      performer(actionGroupId, actionId)
         .then((res) => {
-          if (Array.isArray(res.displayData)) {
-            const data = (res?.displayData as TemplateConfig[]) ?? []
-            setResData(data)
+          if (Array.isArray(res?.displayData)) {
+            const displayData = res?.displayData as Array<TemplateConfig>
+            setResData(displayData || [])
           }
         })
         .catch((err) => mog('error', { err }))
@@ -61,20 +61,14 @@ const Screen: React.FC<ScreenProps> = ({ actionId }) => {
   useEffect(() => {
     const data = (getCachedAction(actionId)?.data?.displayData as TemplateConfig[]) ?? []
 
-    const res = getSearchResults(search.value, data, {
-      keySelector: (obj: any) => obj.find((item) => item.type === 'title').value
+    const res = getSearchResults(search?.value, data, {
+      keySelector: (obj: any) => obj.find((item) => item.type === 'title')?.value
     })
 
-    setResData(search.value ? res : data)
+    setResData(search?.value ? res : data)
   }, [search.value])
 
   if (isLoading) return null
-
-  // return (
-  //   <StyledScreen>
-  //     <Loading transparent dots={5} />
-  //   </StyledScreen>
-  // )
 
   const onSelectItem = (index: any) => {
     setActiveIndex(index)

@@ -134,7 +134,7 @@ const useEditorPluginConfig = (editorId: string) => {
         slateElementType: ELEMENT_PARAGRAPH,
         command: 'remind',
         onExtendedCommand: (newValue, editor) => {
-          mog('remind', { newValue })
+          // mog('remind', { newValue })
           openReminderModal(newValue)
         }
       }

@@ -5,6 +5,7 @@ import ProjectTitle from './ProjectTitle'
 import { TemplateEntity, TemplateEntityType } from '@workduck-io/action-request-helper'
 import ProjectDescription from './ProjectDescription'
 import ProjectLabels from './ProjectLabels'
+import ProjectInfo from './ProjectInfo'
 
 type ProjectType = {
   type: TemplateEntityType
@@ -24,6 +25,8 @@ const Project: React.FC<ProjectType> = ({ type, item, isView }) => {
       return <ProjectIcon item={item} isView={isView} />
     case 'desc':
       return <ProjectDescription item={item} isView={isView} />
+    case 'info':
+      return <ProjectInfo item={item} isView={isView} />
     default:
       return null
   }

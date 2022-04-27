@@ -39,6 +39,7 @@ const ViewMeta = styled.div`
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background: ${({ theme }) => theme.colors.background.modal};
+  overflow: hidden auto;
 `
 
 const View: React.FC<ViewProps> = ({ item, onBack, onNext, onPrev }) => {
@@ -55,14 +56,7 @@ const View: React.FC<ViewProps> = ({ item, onBack, onNext, onPrev }) => {
         ))}
       </ViewInfo>
       <ViewMeta>
-        <Row
-          row={viewMeta}
-          isView
-          type="column"
-          // onClick={() => {
-          //   // mog('ROW')
-          // }}
-        />
+        <Row row={viewMeta} isView type="column" />
       </ViewMeta>
     </StyledView>
   )

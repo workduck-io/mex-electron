@@ -257,7 +257,7 @@ const IntegrationPage = () => {
   const template = useIntegrationStore((state) => state.template)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       await updateServices()
     })()
 

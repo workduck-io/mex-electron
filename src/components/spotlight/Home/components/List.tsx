@@ -25,18 +25,8 @@ import {
 import { useSnippets } from '../../../../hooks/useSnippets'
 import useDataStore from '../../../../store/useDataStore'
 import { mog } from '../../../../utils/lib/helper'
-import {
-  serializeHtml,
-  getPlateEditorRef,
-  createPlateEditor,
-  createPlateUIEditor,
-  createPlateUI,
-  ELEMENT_MEDIA_EMBED,
-  LinkElement,
-  ELEMENT_IMAGE
-} from '@udecode/plate'
+import { serializeHtml, createPlateEditor, createPlateUI } from '@udecode/plate'
 import getPlugins from '../../../../editor/Plugins/plugins'
-import { TagElement } from '../../../../editor/Components/tag/components/TagElement'
 import { ELEMENT_TAG } from '../../../../editor/Components/tag/defaults'
 import { CopyTag } from '../../../../editor/Components/tag/components/CopyTag'
 

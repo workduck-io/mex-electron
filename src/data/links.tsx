@@ -44,6 +44,12 @@ const useNavlinks = () => {
         shortcut: shortcuts.showSearch.keystrokes,
         icon: GetIcon(searchLine)
       },
+      {
+        title: 'Actions',
+        path: ROUTE_PATHS.actions,
+        // shortcut: shortcuts.showIntegrations.keystrokes,
+        icon: GetIcon(actionIcon)
+      },
       // {
       //   title: 'Actions',
       //   path: ROUTE_PATHS.actions,
