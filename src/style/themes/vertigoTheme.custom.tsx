@@ -246,7 +246,7 @@ const setFonts = (fontFamily: string) => css`
 `
 
 const globalStyles = css`
-  ${setFonts('"Jost", sans-serif')}
+  ${setFonts('"Inter", sans-serif')}
 
   ::selection {
     color: ${({ theme }) => theme.colors.text.oppositePrimary};
