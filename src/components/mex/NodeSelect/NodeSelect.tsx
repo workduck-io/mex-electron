@@ -92,7 +92,11 @@ interface NodeSelectProps {
   showAll?: boolean
   prefillRecent?: boolean
   menuOpen?: boolean
+  /** If true, the combobox will be autofocused */
   autoFocus?: boolean
+  /** If true, when autofocused, all text will be selected */
+  autoFocusSelectAll?: boolean
+
   defaultValue?: string | undefined
   placeholder?: string
 
@@ -130,6 +134,7 @@ interface ReserveClashActionProps {
 
 function NodeSelect({
   autoFocus,
+  autoFocusSelectAll,
   menuOpen,
   defaultValue,
   placeholder,
@@ -292,6 +297,19 @@ function NodeSelect({
     }
   }
 
+  const onFocusWithSelect = (e: React.FocusEvent<HTMLInputElement>) => {
+    mog('Focusing with select all1', { e, autoFocus })
+    const timoutId = setTimeout(() => {
+      if (autoFocus && autoFocusSelectAll) {
+        mog('Focusing with select all', { e, autoFocus })
+        e.target.focus()
+        e.target.select()
+        e.target.setSelectionRange(0, e.target.value.length)
+      }
+    }, 300)
+    onFocus && onFocus(e)
+  }
+
   const onKeyUp = (event) => {
     if (event.key === 'Enter') {
       if (inputItems[0] && highlightedIndex < 0 && selectedItem === null && isOpen) {
@@ -411,7 +429,7 @@ function NodeSelect({
             onInpChange(e)
           }}
           onKeyUp={onKeyUp}
-          onFocus={onFocus}
+          onFocus={onFocusWithSelect}
           onBlur={onBlur}
         />
         {highlightWhenSelected &&
