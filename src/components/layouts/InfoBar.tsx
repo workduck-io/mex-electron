@@ -7,6 +7,7 @@ import { useKeyListener } from '../../hooks/useShortcutListener'
 import useToggleElements from '../../hooks/useToggleElements'
 import { useHelpStore } from '../../store/useHelpStore'
 import { useLayoutStore } from '../../store/useLayoutStore'
+import useSuggestionStore from '../../store/useSuggestions'
 import { InfoBarWrapper } from '../../style/infobar'
 import Graph from '../mex/Graph/Graph'
 import RemindersInfobar from '../mex/Reminders/Reminders'
@@ -39,6 +40,7 @@ const InfoBar = () => {
   const { getFocusProps } = useLayout()
 
   const infobar = useLayoutStore((s) => s.infobar)
+  const pinnedSuggestions = useSuggestionStore((s) => s.pinnedSuggestions)
   const { toggleSyncBlocks, toggleGraph, toggleSuggestedNodes, toggleReminder } = useToggleElements()
   const { shortcutHandler } = useKeyListener()
 
@@ -76,7 +78,11 @@ const InfoBar = () => {
   }, [shortcuts])
 
   return (
-    <InfoBarWrapper mode={infobar.mode} {...getFocusProps(focusMode)}>
+    <InfoBarWrapper
+      hasPinnedSuggestions={pinnedSuggestions.length > 0}
+      mode={infobar.mode}
+      {...getFocusProps(focusMode)}
+    >
       <InfoBarItems />
     </InfoBarWrapper>
   )

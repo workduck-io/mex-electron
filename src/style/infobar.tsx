@@ -1,10 +1,12 @@
 import styled, { css } from 'styled-components'
+import { FOCUS_MODE_OPACITY } from './consts'
 import { focusStyles } from './focus'
 import { FocusModeProp } from './props'
 import { size } from './responsive'
 
 interface InfoBarWrapperProps extends FocusModeProp {
   mode: string
+  hasPinnedSuggestions?: boolean
 }
 
 const infoWidths = {
@@ -56,7 +58,34 @@ export const InfoBarWrapper = styled.div<InfoBarWrapperProps>`
     }};
   }
   transition: opacity 0.3s ease-in-out;
-  ${focusStyles}
+  ${({ focusMode, focusHover, mode, hasPinnedSuggestions }) => {
+    if (focusMode) {
+      if (mode === 'suggestions' && hasPinnedSuggestions) {
+        return focusHover
+          ? css`
+              opacity: 1;
+              ${InfobarTools} {
+                transition: opacity 0.3s ease-in-out;
+                opacity: 1;
+              }
+            `
+          : css`
+              opacity: 1;
+              ${InfobarTools} {
+                transition: opacity 0.3s ease-in-out;
+                opacity: ${FOCUS_MODE_OPACITY};
+              }
+            `
+      }
+      return focusHover
+        ? css`
+            opacity: 1;
+          `
+        : css`
+            opacity: ${FOCUS_MODE_OPACITY};
+          `
+    }
+  }}
 `
 
 export const TemplateInfoBar = styled(InfoBarWrapper)`
