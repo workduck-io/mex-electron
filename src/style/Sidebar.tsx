@@ -148,7 +148,7 @@ export const StyledTreeItem = styled.div<{ selected?: boolean; isDragging?: bool
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
   border-radius: 6px 0px 0px 6px;
-  padding-right: 12px;
+  padding-right: 16px;
 
   transition: 0.3s ease;
   &:hover {

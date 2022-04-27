@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { Ellipsis } from '../components/mex/Integrations/Template/styled'
-import { CollapseWrapper } from '../ui/layout/Collapse/Collapse.style'
+import { CollapseHeader, CollapseWrapper } from '../ui/layout/Collapse/Collapse.style'
 import { focusStyles } from './focus'
 import { FocusModeProp } from './props'
 
@@ -33,7 +33,7 @@ const ButtonOrLinkStyles = css`
   align-items: center;
   gap: 8px;
   color: ${({ theme }) => theme.colors.text.default};
-  padding: 12px;
+  padding: 6px 12px;
   text-decoration: none !important;
   cursor: pointer;
   font-weight: bold;
@@ -181,6 +181,9 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
     width: 100%;
     transition: opacity 0.2s ease-in-out, height 0.2s ease-in-out;
     padding: 0 0 0 ${({ theme }) => theme.spacing.small};
+    ${CollapseHeader} {
+      padding-right: 0.5rem;
+    }
   }
 
   #Collapse_tree {

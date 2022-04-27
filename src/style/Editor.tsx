@@ -42,10 +42,16 @@ interface StyledEditorProps {
   showGraph?: boolean
 }
 
-export const EditorWrapper = styled.div`
+export const EditorWrapper = styled.div<{ comboboxOpen?: boolean }>`
   height: 100%;
   overflow-y: auto;
+  ${({ comboboxOpen }) =>
+    comboboxOpen &&
+    css`
+      overflow-y: hidden;
+    `}
 `
+
 export const StyledEditor = styled.div<StyledEditorProps>`
   display: flex;
   flex-direction: column;
@@ -59,6 +65,7 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   height: calc(100vh - 3rem);
   flex: 1;
   overflow-y: auto;
+
   /* ${({ showGraph }) =>
     showGraph
       ? css`

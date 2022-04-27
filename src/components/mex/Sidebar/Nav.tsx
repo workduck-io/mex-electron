@@ -168,18 +168,6 @@ const Nav = ({ links }: NavProps) => {
         </MainLinkContainer>
 
         <Collapse
-          title="Bookmarks"
-          oid="bookmarks"
-          icon={bookmark3Line}
-          maximumHeight="30vh"
-          infoProps={{
-            text: BookmarksHelp
-          }}
-        >
-          <Bookmarks />
-        </Collapse>
-
-        <Collapse
           title="All Notes"
           oid={`tree`}
           defaultOpen
@@ -189,6 +177,17 @@ const Nav = ({ links }: NavProps) => {
             text: TreeHelp
           }}
         >
+          <Collapse
+            title="Bookmarks"
+            oid="bookmarks"
+            icon={bookmark3Line}
+            maximumHeight="30vh"
+            infoProps={{
+              text: BookmarksHelp
+            }}
+          >
+            <Bookmarks />
+          </Collapse>
           <Tree initTree={initTree} />
         </Collapse>
 

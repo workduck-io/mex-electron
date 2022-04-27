@@ -28,9 +28,9 @@ export const vertigoTheme = generateTheme({
   },
   text: {
     heading: '#A790C4',
-    default: '#8475A6',
+    default: '#B0A1D1',
     subheading: '#C490C0',
-    fade: '#6A6392',
+    fade: '#9891C2',
     disabled: '#9CA2BA',
     accent: '#CC7796',
     oppositePrimary: '#ffffff'
