@@ -20,18 +20,6 @@ export const DesignSprintSnippet = insertId([
       },
       {
         text: ' '
-      },
-      {
-        type: 'tag',
-        children: [
-          {
-            text: ''
-          }
-        ],
-        value: 'DesignSprint'
-      },
-      {
-        text: ''
       }
     ]
   },

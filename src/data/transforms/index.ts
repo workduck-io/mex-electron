@@ -60,20 +60,21 @@ const UpdateTemplateSnippets = (): CustomTransformation => {
     custom: (data) => {
       // initialSnippets
       // if (!data.reminders) return { ...data, reminders: [] }
-      console.log('UpdateTemplateSnippets', data)
+      // console.log('UpdateTemplateSnippets', data)
       if (!data.snippets) return { ...data, snippets: initialSnippets }
-      const initialSnippetTitles = initialSnippets.map((snippet) => snippet.title)
-      const prevSnippets: Snippet[] = data.snippets
-      const updatedSnippets = prevSnippets.map((s) => {
-        if (initialSnippetTitles.includes(s.title)) {
-          const newSnippet = initialSnippets.find((snippet) => snippet.title === s.title)
-          if (newSnippet) {
-            return newSnippet
-          }
+      const prevSnippetsTitles: string[] = data.snippets ? data.snippets.map((snippet: Snippet) => snippet.title) : []
+      const updatedSnippets = initialSnippets.reduce((ps, s) => {
+        if (prevSnippetsTitles.includes(s.title)) {
+          return ps
+          // const newSnippet = initialSnippets.find((snippet) => snippet.title === s.title)
+          // const removedSnippets = ps.filter((snippet) => snippet.title !== s.title)
+          // if (newSnippet) {
+          //   return [...removedSnippets, newSnippet]
+          // }
         }
-        return s
-      })
-      return { data, snippets: updatedSnippets }
+        return [...ps, s]
+      }, data.snippets as Snippet[])
+      return { ...data, snippets: updatedSnippets }
     }
   }
 }

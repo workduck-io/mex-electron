@@ -1,8 +1,9 @@
+import { Snippet } from '../../store/useSnippetStore'
 import { generateSnippetId } from '../Defaults/idPrefixes'
 import { ABTestingSnippet } from './ABTestingSnippet'
 import { BugReportTemplate } from './bugReportTemplate'
 import { DesignSpecSnippet } from './DesignSpecSnippet'
-import { DesignSprintSnippet } from './DesignSpring'
+import { DesignSprintSnippet } from './DesignSprint'
 import { GrowthSnippet } from './GrowthSnippet'
 import { GTMPlanSnippet } from './GTMPlanSnippet'
 import { OnboardingDoc } from './onboardingDoc'
@@ -31,7 +32,7 @@ import { SprintReviewSnippet } from './SprintReview'
  *
  */
 
-export const initialSnippets = [
+export const initialSnippets: Snippet[] = [
   {
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),

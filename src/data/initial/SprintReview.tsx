@@ -16,7 +16,7 @@ export const SprintReviewSnippet = insertId([
             text: ''
           }
         ],
-        value: 'SprintReview'
+        value: 'Sprint'
       },
       {
         text: ''
@@ -51,20 +51,7 @@ export const SprintReviewSnippet = insertId([
             type: 'lic',
             children: [
               {
-                text: 'Talking Point 1'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        type: 'li',
-        children: [
-          {
-            type: 'lic',
-            children: [
-              {
-                text: 'Talking Point 2'
+                text: ''
               }
             ]
           }
@@ -120,20 +107,7 @@ export const SprintReviewSnippet = insertId([
             type: 'lic',
             children: [
               {
-                text: 'Talking Point 1'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        type: 'li',
-        children: [
-          {
-            type: 'lic',
-            children: [
-              {
-                text: 'Talking Point 2'
+                text: ''
               }
             ]
           }
@@ -189,20 +163,7 @@ export const SprintReviewSnippet = insertId([
             type: 'lic',
             children: [
               {
-                text: 'Talking Point 1'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        type: 'li',
-        children: [
-          {
-            type: 'lic',
-            children: [
-              {
-                text: 'Talking Point 2'
+                text: ''
               }
             ]
           }
@@ -258,20 +219,7 @@ export const SprintReviewSnippet = insertId([
             type: 'lic',
             children: [
               {
-                text: 'Talking Point 1'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        type: 'li',
-        children: [
-          {
-            type: 'lic',
-            children: [
-              {
-                text: 'Talking Point 3'
+                text: ''
               }
             ]
           }
@@ -327,20 +275,7 @@ export const SprintReviewSnippet = insertId([
             type: 'lic',
             children: [
               {
-                text: 'Talking Point 1'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        type: 'li',
-        children: [
-          {
-            type: 'lic',
-            children: [
-              {
-                text: 'Talking Point 3'
+                text: ''
               }
             ]
           }
@@ -388,20 +323,7 @@ export const SprintReviewSnippet = insertId([
             type: 'lic',
             children: [
               {
-                text: 'Talking Point 1'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        type: 'li',
-        children: [
-          {
-            type: 'lic',
-            children: [
-              {
-                text: 'Talking Point 3'
+                text: ''
               }
             ]
           }

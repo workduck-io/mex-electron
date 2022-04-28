@@ -67,7 +67,7 @@ export const useBrowserNavigation = () => {
 
     if (!initialized) return
 
-    if (node && location && location.pathname) {
+    if (node && location && location.pathname && location.pathname.startsWith(ROUTE_PATHS.node)) {
       if (node.nodeid) {
         const nodeid = location.pathname.split('/')[2]
         if (nodeid && nodeid !== node.nodeid) {
