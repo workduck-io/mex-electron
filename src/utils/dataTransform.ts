@@ -2,6 +2,7 @@ import { app } from 'electron'
 import { BlockType } from '../store/useBlockStore'
 import { generateTempId } from '../data/Defaults/idPrefixes'
 import semver from 'semver'
+import { DefaultTransforms } from '../data/transforms'
 
 export type getValuefn = (obj?: any) => string
 export type getDatafn = (data?: any) => any
@@ -191,7 +192,7 @@ export const applyKeysTransform = (d: any, t: KeysTransformation): any => {
       }
     }
   })
-  return { ...newD, version: t.version }
+  return { ...newD, version: t.version !== '*' ? t.version : newD.version }
 }
 
 export const addBaseVersionIfNeeded = (d: any): any => {
@@ -224,9 +225,17 @@ export const applyTransforms = (d: any, transforms: DataTransformation[]): { dat
     }
   }, d)
 
+  const transformedDataWithDefaultTransforms = DefaultTransforms.reduce((pd, t) => {
+    if (t.type === 'KeysTransformation') {
+      return applyKeysTransform(pd, t)
+    } else if (t.type === 'CustomTransformation') {
+      return t.custom ? t.custom(pd) : pd
+    }
+  }, transformedData)
+
   console.log('BigBrainDataTransform', { v: transformedData.version, toApplyTransform, transforms })
 
-  return { data: transformedData, toWrite: toApplyTransform.length > 0 }
+  return { data: transformedDataWithDefaultTransforms, toWrite: toApplyTransform.length > 0 }
 }
 
 export const clearLocalStorage = (fileDataVersion: string, currVersion: string) => {

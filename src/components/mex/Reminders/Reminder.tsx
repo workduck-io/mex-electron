@@ -28,6 +28,7 @@ import { getReminderState, ReminderStatus } from '../../../services/reminders/re
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { TodoType } from '../../../editor/Components/Todo/types'
 import NotificationTodo from '../../toast/NotificationTodo'
+import { getNameFromPath } from '../Sidebar/treeUtils'
 
 export interface ReminderControl {
   type: 'dismiss' | 'open' | 'delete' | 'unarchive'
@@ -142,7 +143,7 @@ const ReminderControlsUI = ({
               {control.type.charAt(0).toUpperCase() + control.type.slice(1)}
               {control.type === 'open' && reminder.path && (
                 <>
-                  <Icon height={14} icon={fileList2Line} /> {reminder.path}
+                  <Icon height={14} icon={fileList2Line} /> {getNameFromPath(reminder.path)}
                 </>
               )}
             </Button>

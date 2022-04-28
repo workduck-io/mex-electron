@@ -37,7 +37,8 @@ export const ReminderButtonControlsWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: ${({ theme }) => theme.spacing.medium};
+  gap: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.medium}`};
+  flex-wrap: wrap;
   width: ${ReminderWidth};
   transition: opacity 0.25s ease-in-out, height 0.25s ease-in-out, gap 0.25s ease-in-out;
   ${Button} {
@@ -59,7 +60,7 @@ export const ReminderControlsWrapper = styled.div`
   flex-direction: column;
   width: ${ReminderWidth};
   gap: 0;
-  transition: opacity 0.25s ease-in-out, max-height 0.25s ease-in-out;
+  transition: opacity 0.25s ease-in-out, max-height 0.25s ease-in-out, height 0.25s ease-in-out;
 `
 
 export const SnoozeControls = styled.div<{ showControls?: boolean }>`
@@ -126,9 +127,8 @@ export const ReminderStyled = styled.div<{ isNotification?: boolean; showControl
             overflow: hidden;
             width: 100%;
             ${ReminderButtonControlsWrapper} {
-              height: 0;
+              max-height: 0px;
               width: 100%;
-              gap: ${({ theme }) => theme.spacing.tiny};
             }
             ${SnoozeControls} {
               opacity: 0.5;
@@ -145,8 +145,8 @@ export const ReminderStyled = styled.div<{ isNotification?: boolean; showControl
               opacity: 1;
               width: 100%;
               ${ReminderButtonControlsWrapper} {
-                height: 40px;
-                gap: ${({ theme }) => theme.spacing.large};
+                max-height: 200px;
+                gap: ${({ theme }) => theme.spacing.tiny} ${({ theme }) => theme.spacing.large};
               }
               ${SnoozeControls} {
                 ${showControls

@@ -1,4 +1,6 @@
+import { Snippet } from '../../store/useSnippetStore'
 import { ArrayTransform, CustomTransformation, DataTransformation, KeysTransformation } from '../../utils/dataTransform'
+import { initialSnippets } from '../initial/snippets'
 
 const v0901 = (): CustomTransformation => {
   return {
@@ -51,6 +53,32 @@ const v080_alpha_2 = (): KeysTransformation => {
   }
 }
 
+const UpdateTemplateSnippets = (): CustomTransformation => {
+  return {
+    type: 'CustomTransformation',
+    version: '*',
+    custom: (data) => {
+      // initialSnippets
+      // if (!data.reminders) return { ...data, reminders: [] }
+      // console.log('UpdateTemplateSnippets', data)
+      if (!data.snippets) return { ...data, snippets: initialSnippets }
+      const prevSnippetsTitles: string[] = data.snippets ? data.snippets.map((snippet: Snippet) => snippet.title) : []
+      const updatedSnippets = initialSnippets.reduce((ps, s) => {
+        if (prevSnippetsTitles.includes(s.title)) {
+          return ps
+          // const newSnippet = initialSnippets.find((snippet) => snippet.title === s.title)
+          // const removedSnippets = ps.filter((snippet) => snippet.title !== s.title)
+          // if (newSnippet) {
+          //   return [...removedSnippets, newSnippet]
+          // }
+        }
+        return [...ps, s]
+      }, data.snippets as Snippet[])
+      return { ...data, snippets: updatedSnippets }
+    }
+  }
+}
+
 export const UpdateVersionTransforms: Array<DataTransformation> = [
   // Add new transformations here
   //
@@ -60,4 +88,11 @@ export const UpdateVersionTransforms: Array<DataTransformation> = [
   v080_alpha_2(),
   v081(),
   v0901()
+]
+
+export const DefaultTransforms: Array<DataTransformation> = [
+  // Transforms that are applied always
+  // (even if the version is not the latest)
+  // These are applied at the end of all previous transformations
+  UpdateTemplateSnippets()
 ]

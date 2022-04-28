@@ -1,13 +1,17 @@
+import { Snippet } from '../../store/useSnippetStore'
 import { generateSnippetId } from '../Defaults/idPrefixes'
 import { ABTestingSnippet } from './ABTestingSnippet'
 import { BugReportTemplate } from './bugReportTemplate'
 import { DesignSpecSnippet } from './DesignSpecSnippet'
+import { DesignSprintSnippet } from './DesignSprint'
+import { GrowthSnippet } from './GrowthSnippet'
 import { GTMPlanSnippet } from './GTMPlanSnippet'
 import { OnboardingDoc } from './onboardingDoc'
 import { OnePagerSnippet } from './OnePagerSnippet'
 import { PRDTemplate } from './PRD_Snippet'
 import { ProductSpecSnippet } from './ProductSpecSnippet'
 import { ReleaseSnippet } from './ReleaseSnippet'
+import { SprintReviewSnippet } from './SprintReview'
 
 /**
  * ## Creating Initial Snippet Templates
@@ -28,7 +32,7 @@ import { ReleaseSnippet } from './ReleaseSnippet'
  *
  */
 
-export const initialSnippets = [
+export const initialSnippets: Snippet[] = [
   {
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),
@@ -84,6 +88,27 @@ export const initialSnippets = [
     isTemplate: true,
     title: 'Design Spec',
     content: DesignSpecSnippet
+  },
+  {
+    icon: 'ri:quill-pen-line',
+    id: generateSnippetId(),
+    isTemplate: true,
+    title: 'Design Sprint Retrospective',
+    content: DesignSprintSnippet
+  },
+  {
+    icon: 'ri:quill-pen-line',
+    id: generateSnippetId(),
+    isTemplate: true,
+    title: 'Sprint Review',
+    content: SprintReviewSnippet
+  },
+  {
+    icon: 'ri:quill-pen-line',
+    id: generateSnippetId(),
+    isTemplate: true,
+    title: 'Growth Meeting',
+    content: GrowthSnippet
   },
   {
     icon: 'ri:quill-pen-line',

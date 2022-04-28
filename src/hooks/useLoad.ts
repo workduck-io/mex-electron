@@ -212,8 +212,10 @@ const useLoad = () => {
     const hasBeenLoaded = false
     const currentNodeId = useEditorStore.getState().node.nodeid
 
+    // mog('LOAD NODE', { nodeid, options })
+
     if (!options.node && !isLocalNode(nodeid).isLocal) {
-      toast.error('Selected node does not exist.')
+      toast.error('Selected note does not exist.')
       nodeid = currentNodeId
     }
 
