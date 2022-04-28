@@ -24,6 +24,7 @@ import { useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
 import { useTokenData } from '../../../hooks/useLocalData'
 import { useRecieveTokens } from '../../../hooks/useSyncData'
 import { useActionStore, UpdateActionsType } from '../Actions/useActionStore'
+import { useActionPerformer } from '../Actions/useActionPerformer'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
@@ -44,6 +45,7 @@ const GlobalListener = memo(() => {
   const { onSave } = useSaver()
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()
+  const { initActionPerfomerClient } = useActionPerformer()
   const { goTo } = useRouting()
 
   const addActions = useActionStore((store) => store.addActions)
@@ -114,7 +116,10 @@ const GlobalListener = memo(() => {
 
     ipcRenderer.on(IpcAction.LOGGED_IN, (_event, arg) => {
       if (arg.loggedIn) {
-        if (arg.userDetails && arg.workspaceDetails) setAuthenticated(arg.userDetails, arg.workspaceDetails)
+        if (arg.userDetails && arg.workspaceDetails) {
+          setAuthenticated(arg.userDetails, arg.workspaceDetails)
+          initActionPerfomerClient(arg?.workspaceDetails?.id)
+        }
         getTokenData()
         goTo(ROUTE_PATHS.home, NavigationType.replace)
       } else setUnAuthenticated()

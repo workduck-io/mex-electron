@@ -6,7 +6,6 @@ import { useActionPerformer } from '../../Actions/useActionPerformer'
 import { useActionStore } from '../../Actions/useActionStore'
 import { TemplateConfig } from '@workduck-io/action-request-helper'
 import List from './List'
-import View from './View'
 import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 
@@ -38,9 +37,8 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
 
   const isLoading = useSpotlightAppStore((store) => store.isLoading)
   const { performer, isPerformer } = useActionPerformer()
-  const [activeIndex, setActiveIndex] = useState(-1)
+
   const view = useSpotlightAppStore((store) => store.view)
-  const setView = useSpotlightAppStore((store) => store.setView)
 
   const { search } = useSpotlightContext()
 
@@ -71,32 +69,7 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
 
   if (isLoading) return null
 
-  const onSelectItem = (index: any) => {
-    setActiveIndex(index)
-    setView('item')
-  }
-
-  const nextItem = () => {
-    setActiveIndex((activeIndex + 1) % resData.length)
-  }
-
-  const prevItem = () => {
-    setActiveIndex((activeIndex - 1 + resData.length) % resData.length)
-  }
-
-  const onBack = () => {
-    setView(undefined)
-  }
-
-  return (
-    <StyledScreen>
-      {!view ? (
-        <List items={resData} onSelect={onSelectItem} />
-      ) : (
-        <View item={resData[activeIndex]} onNext={nextItem} onPrev={prevItem} onBack={onBack} />
-      )}
-    </StyledScreen>
-  )
+  return <StyledScreen>{!view && <List items={resData} />}</StyledScreen>
 }
 
 export default Screen

@@ -44,12 +44,12 @@ const useNavlinks = () => {
         shortcut: shortcuts.showSearch.keystrokes,
         icon: GetIcon(searchLine)
       },
-      {
-        title: 'Actions',
-        path: ROUTE_PATHS.actions,
-        // shortcut: shortcuts.showIntegrations.keystrokes,
-        icon: GetIcon(actionIcon)
-      },
+      // {
+      //   title: 'Actions',
+      //   path: ROUTE_PATHS.actions,
+      //   // shortcut: shortcuts.showIntegrations.keystrokes,
+      //   icon: GetIcon(actionIcon)
+      // },
       // {
       //   title: 'Actions',
       //   path: ROUTE_PATHS.actions,
@@ -92,15 +92,14 @@ const useNavlinks = () => {
         count: count.reminders
         // shortcut: shortcuts.showReminder.keystrokes
         // isComingSoon: true
-      }
+      },
 
-      /*{
+      {
         title: 'Flows',
         path: ROUTE_PATHS.integrations,
-        // shortcut: shortcuts.showIntegrations.keystrokes,
-        icon: GetIcon(appsLine),
-        isComingSoon: true
-      }*/
+        shortcut: shortcuts.showIntegrations.keystrokes,
+        icon: GetIcon(appsLine)
+      }
     ]
     return links
   }

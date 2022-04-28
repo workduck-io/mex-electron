@@ -5,6 +5,7 @@ import { useActionStore } from '../../Actions/useActionStore'
 import ActionInput from './Fields/ActionInput'
 import styled from 'styled-components'
 import { Controller, useFormContext } from 'react-hook-form'
+import { mog } from '../../../../utils/lib/helper'
 
 export type FormSelectorProps = {
   element: FormField
@@ -32,6 +33,10 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
       value: res
     }
   })
+
+  const filterTags = (value) => {
+    return data?.filter((d) => d?.value?.select?.value).includes(value)
+  }
 
   const value = selection ?? null
 
@@ -95,9 +100,11 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
             <Selector
               isMulti
               data={data}
-              value={data?.map((d) => d?.value?.select?.value).includes(value)}
+              value={filterTags(value)}
               ref={ref}
-              onChange={(changed) => onChange(changed.map((d) => d?.value?.select?.value))}
+              onChange={(changed) => {
+                onChange(changed.map((d) => d?.value?.select?.value))
+              }}
               width="100%"
               placeholder={element.options.placeholder}
               actionGroupId={activeAction?.actionGroupId}
@@ -107,7 +114,7 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
         />
       )
     default:
-      return <div>Hello </div>
+      return <></>
   }
 }
 

@@ -1,14 +1,16 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import Project from '../Project'
 import { TemplateConfig } from '@workduck-io/action-request-helper'
 import { transparentize } from 'polished'
 import { ErrorBoundary } from 'react-error-boundary'
+import { StyledBackground } from '../../styled'
 
 type RowConatainerType = 'row' | 'column'
 
 type RowContainerProps = {
   type: RowConatainerType
+  active?: boolean
 }
 
 const RowContainer = styled.div<RowContainerProps>`
@@ -28,6 +30,12 @@ const RowContainer = styled.div<RowContainerProps>`
   flex-direction: ${(props) => (props.type === 'row' ? 'row' : 'column')};
   background-color: ${({ theme }) => transparentize(0.65, theme.colors.background.modal)};
 
+  ${({ active }) =>
+    active &&
+    css`
+      background-color: ${({ theme }) => theme.colors.primary};
+    `}
+
   :hover {
     background-color: ${({ theme }) => theme.colors.background.modal};
   }
@@ -38,9 +46,10 @@ type RowProps = {
   onClick?: () => void
   type?: RowConatainerType
   isView?: boolean
+  active?: boolean
 }
 
-const Row: React.FC<RowProps> = ({ row, onClick, type = 'row', isView }) => {
+const Row: React.FC<RowProps> = ({ row, onClick, active, type = 'row', isView }) => {
   const handleOpenURL = () => {
     const url = row.find((item) => item.type === 'url')?.value as string
 
@@ -51,7 +60,7 @@ const Row: React.FC<RowProps> = ({ row, onClick, type = 'row', isView }) => {
   }
 
   return (
-    <RowContainer type={type} onClick={onClick} onDoubleClick={handleOpenURL}>
+    <RowContainer active={active} type={type} onClick={onClick} onDoubleClick={handleOpenURL}>
       {row.map((item, index) => (
         <ErrorBoundary key={index} fallback={<></>}>
           <Project key={`PROJECT_${index}`} isView={isView} item={item} type={item?.type as any} />

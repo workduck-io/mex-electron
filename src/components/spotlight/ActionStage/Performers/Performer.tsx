@@ -4,7 +4,6 @@ import Screen from '../Screen'
 import { ReturnType } from '@workduck-io/action-request-helper'
 import { useActionStore } from '../../Actions/useActionStore'
 import ActionForm from '../Forms'
-import { mog } from '../../../../utils/lib/helper'
 
 type PerformType = {
   actionId: string
@@ -19,14 +18,16 @@ const Performer: React.FC<PerformType> = ({ actionId, actionType }) => {
   const context = getCacheResult(actionId)
   const cacheSelection = selectionCache[actionId]
 
-  const data = context?.contextData?.map((res) => {
-    const displayItem = res?.select
+  const data = Array.isArray(context?.contextData)
+    ? context?.contextData?.map((res) => {
+        const displayItem = res?.select
 
-    return {
-      label: displayItem?.label,
-      value: res
-    }
-  })
+        return {
+          label: displayItem?.label,
+          value: res
+        }
+      })
+    : []
 
   const value = cacheSelection?.selection ?? null
 

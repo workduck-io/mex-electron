@@ -18,6 +18,8 @@ import { useUpdater } from '../../hooks/useUpdater'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 import { useLinks } from '../../hooks/useLinks'
 import useActions from '../../components/spotlight/Actions/useActions'
+import { useActionStore } from '../../components/spotlight/Actions/useActionStore'
+import { useActionPerformer } from '../../components/spotlight/Actions/useActionPerformer'
 
 interface LoginFormData {
   email: string
@@ -32,11 +34,11 @@ const Login = () => {
   } = useForm<LoginFormData>()
   const { login } = useAuthentication()
   const { getGroupsToView } = useActions()
+  const { initActionPerfomerClient } = useActionPerformer()
 
   const setAuthenticated = useAuthStore((s) => s.setAuthenticated)
   const { loadNode } = useLoad()
   const { getNodeidFromPath } = useLinks()
-  const { updateServices, updateDefaultServices } = useUpdater()
   const { goTo } = useRouting()
   const onSubmit = async (data: LoginFormData): Promise<void> => {
     await login(data.email, data.password, true)
@@ -55,12 +57,13 @@ const Login = () => {
             goTo(ROUTE_PATHS.node, NavigationType.push, baseNodeid)
           }
           const { userDetails, workspaceDetails } = s.authDetails
+          initActionPerfomerClient(workspaceDetails.id)
           setAuthenticated(userDetails, workspaceDetails)
         }
       })
       .then(getGroupsToView)
-      .then(updateDefaultServices)
-      .then(updateServices)
+      // .then(updateDefaultServices)
+      // .then(updateServices)
       .catch((e) => {
         toast.error(e)
       })

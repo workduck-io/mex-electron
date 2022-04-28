@@ -4,6 +4,8 @@ import { client } from '@workduck-io/dwindle'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { mog } from '../../../utils/lib/helper'
 import { useMemo } from 'react'
+import { NavigationType, useRouting } from '../../../views/routes/urls'
+import { useAuthStore } from '../../../services/auth/useAuth'
 
 type PerfomerOptions = {
   fetch?: boolean
@@ -18,15 +20,19 @@ export const useActionPerformer = () => {
   const setIsLoading = useSpotlightAppStore((store) => store.setIsLoading)
   const actionToPerform = useActionStore((store) => store.actionToPerform)
   const groupedAction = useActionStore((store) => store.groupedActions)
-  const view = useSpotlightAppStore((store) => store.view)
+  const setView = useSpotlightAppStore((store) => store.setView)
+  const setViewData = useSpotlightAppStore((store) => store.setViewData)
+  const setActionPerformer = useActionStore((store) => store.setActionPerformer)
 
-  const actionPerformer = useMemo(() => {
-    // * REMOVE: For testing purposes
-    const workspaceId = 'WORKSPACEBBR1Z6DEWP877Z6431TT69ZSXM6917993H6NCMXZRWQLD0CMWL01'
+  const { goTo } = useRouting()
 
-    // * const workspaceId = useAuthStore.getState().getWorkspaceId()
-    return new ActionHelperClient(client, workspaceId)
-  }, [])
+  // const actionPerformer = useMemo(() => {
+  //   // * REMOVE: For testing purposes
+  //   // const workspaceId = 'WORKSPACEBBR1Z6DEWP877Z6431TT69ZSXM6917993H6NCMXZRWQLD0CMWL01'
+
+  //   const workspaceId = useAuthStore.getState().getWorkspaceId()
+  //   return
+  // }, [worspaceDetails?.id])
 
   /* 
     Looks for the action in the cache first,
@@ -37,6 +43,7 @@ export const useActionPerformer = () => {
   const performer = async (actionGroupId: string, actionId: string, options?: PerfomerOptions) => {
     const actionConfig = groupedAction?.[actionGroupId]?.[actionId]
     const prevActionValue = getPrevActionValue(actionId)?.selection
+    const actionPerformer = useActionStore.getState().actionPerformer
 
     // * if we have a cache, return the cached result
     // if (!fetch) {
@@ -48,8 +55,14 @@ export const useActionPerformer = () => {
 
     setIsLoading(true)
 
+    let auth
+    try {
+      auth = await actionPerformer.getAuth(actionConfig?.authTypeId)
+    } catch (err) {
+      mog('AUTH ERROR', { err })
+    }
+
     // * Get Auth Config from local storage or else call API
-    const auth = await actionPerformer.getAuth(actionConfig?.authTypeId)
     const serviceType = actionConfig?.authTypeId?.split('_')?.[0]?.toLowerCase()
     const configVal = options?.formData
       ? { ...prevActionValue?.value, formData: options.formData }
@@ -64,6 +77,8 @@ export const useActionPerformer = () => {
         serviceType
       })
 
+      addResultInCache(actionId, result)
+
       const resultAction = actionConfig?.postAction?.result
       const isRunAction = resultAction?.type === ClickPostActionType.RUN_ACTION
 
@@ -75,12 +90,14 @@ export const useActionPerformer = () => {
           serviceType
         })
 
+        setView('item')
+        setViewData(postAction?.displayData || [])
+        goTo('/action/view', NavigationType.replace)
+
         mog('POST ACTION RESULT', { postAction })
       }
 
       setIsLoading(false)
-
-      addResultInCache(actionId, result)
 
       mog(`RESULT PERFOMER: ${actionId}`, { result })
 
@@ -91,6 +108,11 @@ export const useActionPerformer = () => {
     }
 
     return undefined
+  }
+
+  const initActionPerfomerClient = (workspaceId: string) => {
+    const cli = new ActionHelperClient(client, workspaceId)
+    setActionPerformer(cli)
   }
 
   const isPerformer = (actionId: string) => {
@@ -113,8 +135,8 @@ export const useActionPerformer = () => {
   return {
     isPerformer,
     performer,
+    initActionPerfomerClient,
     isReady,
-    getConfig,
-    actionPerformer
+    getConfig
   }
 }

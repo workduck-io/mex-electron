@@ -7,6 +7,8 @@ export type SpotlightAppStore = {
   setSearch: (value: string) => void
   normalMode: boolean
   setNormalMode: (value: boolean) => void
+  viewData: any
+  setViewData: (value: any) => void
   input: string
   setInput: (value: string) => void
   reset: boolean
@@ -25,6 +27,9 @@ export const useSpotlightAppStore = create<SpotlightAppStore>((set, get) => ({
 
   normalMode: true,
   setNormalMode: (value: boolean) => set(() => ({ normalMode: value })),
+
+  viewData: undefined,
+  setViewData: (value: any) => set({ viewData: value }),
 
   setView: (value: ViewType) => set({ view: value }),
 

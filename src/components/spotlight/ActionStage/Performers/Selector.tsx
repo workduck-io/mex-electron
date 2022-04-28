@@ -1,6 +1,7 @@
 import React, { forwardRef, useEffect, useState } from 'react'
 
 import styled from 'styled-components'
+import { components } from 'react-select'
 import { StyledSelect } from '../../../../style/Form'
 import { mog } from '../../../../utils/lib/helper'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
@@ -80,14 +81,14 @@ const StyledOption = styled.div`
 // eslint-disable-next-line react/prop-types
 
 // * Custom Option for Selector component
-// const CustomOption = ({ innerProps, isDisabled, data }) => {
-//   const sub = data?.value?.display?.sub
+// const CustomOption = ({ innerProps, innerRef, isDisabled, data }) => {
 //   const label = data?.label
 
+//   mog('CUSTOM OPTION', { data })
+
 //   return !isDisabled ? (
-//     <StyledOption {...innerProps}>
+//     <StyledOption ref={innerRef} {...innerProps}>
 //       <span>{label}</span>
-//       {sub && <div>{sub}</div>}
 //     </StyledOption>
 //   ) : null
 // }
@@ -144,6 +145,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
       openMenuOnClick
       menuShouldScrollIntoView
       placeholder={placeholder}
+      // components={{ Option: CustomOption }}
       width={width}
       ref={ref}
       isMulti={isMulti}
