@@ -164,6 +164,7 @@ const List = ({
             return nextIndex
           })
       } else if (event.key === KEYBOARD_KEYS.Enter && normalMode) {
+        event.preventDefault()
         const currentActiveItem = data[activeIndex]
 
         mog('Enter key pressed', { currentActiveItem })
@@ -217,7 +218,6 @@ const List = ({
             setInput('')
           }
         } else if (currentActiveItem.category === CategoryType.meeting) {
-          event.preventDefault()
           if (!event.metaKey && currentActiveItem.extras.customAction) currentActiveItem.extras.customAction()
           else window.open(currentActiveItem.extras.base_url, '_blank').focus()
         }
