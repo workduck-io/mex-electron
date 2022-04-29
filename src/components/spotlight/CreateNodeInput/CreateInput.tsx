@@ -78,6 +78,7 @@ const CreateInput: React.FC<CreateInputType> = () => {
         id="wd-spotlight-editor-search"
         name="wd-spotlight-editor-search"
         prefillRecent
+        autoFocus
         placeholder={title}
         handleSelectItem={handleChange}
         handleCreateItem={handleOnCreate}

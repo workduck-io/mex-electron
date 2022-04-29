@@ -19,6 +19,7 @@ import { ILink } from '../types/Types'
 import { MEETING_PREFIX } from '../data/Defaults/idPrefixes'
 import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import { useAuthStore } from '../services/auth/useAuth'
+import { getContent } from '../utils/helpers'
 
 /*
  * Need
@@ -110,8 +111,11 @@ export const getNodeForMeeting = (title: string, date: number, create?: boolean)
 }
 
 export const openCalendarMeetingNote = (e: CalendarEvent) => {
+  mog('OpenCalendarMeeting', e)
   // if link present use it
   const node = getNodeForMeeting(e.summary, e.times.start, true)
+  const content = getContent(node.path)
+
   useSpotlightEditorStore.getState().loadNode(
     {
       title: node.path,
@@ -119,7 +123,7 @@ export const openCalendarMeetingNote = (e: CalendarEvent) => {
       id: node.nodeid,
       path: node.path
     },
-    MeetingSnippetContent(e.summary, e.times.start, e.links.meet ?? e.links.event)
+    content.content ?? MeetingSnippetContent(e.summary, e.times.start, e.links.meet ?? e.links.event)
   )
   useSpotlightAppStore.getState().setNormalMode(false)
 }
@@ -151,7 +155,7 @@ const convertCalendarEventToAction = (e: CalendarEvent) => {
       nodeid: node ? node.nodeid : undefined,
       event: e,
       customAction: () => {
-        console.log('custom action')
+        // console.log('custom action')
         openCalendarMeetingNote(e)
       }
     }

@@ -164,8 +164,10 @@ const List = ({
             return nextIndex
           })
       } else if (event.key === KEYBOARD_KEYS.Enter && normalMode) {
+        event.preventDefault()
         const currentActiveItem = data[activeIndex]
 
+        mog('Enter key pressed', { currentActiveItem })
         // * If current item is ILINK
         if (currentActiveItem?.category === CategoryType.backlink && !activeItem.active) {
           if (event.metaKey) {
@@ -201,10 +203,7 @@ const List = ({
               }
             }
           }
-        } else if (
-          currentActiveItem.category === CategoryType.action ||
-          currentActiveItem.category === CategoryType.meeting
-        ) {
+        } else if (currentActiveItem.category === CategoryType.action) {
           if (currentActiveItem?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
             setSelectedItem({ item: data[activeIndex], active: false })
             itemActionExecutor(data[activeIndex], undefined, event.metaKey)
@@ -218,6 +217,9 @@ const List = ({
             }
             setInput('')
           }
+        } else if (currentActiveItem.category === CategoryType.meeting) {
+          if (!event.metaKey && currentActiveItem.extras.customAction) currentActiveItem.extras.customAction()
+          else window.open(currentActiveItem.extras.base_url, '_blank').focus()
         }
       }
     }

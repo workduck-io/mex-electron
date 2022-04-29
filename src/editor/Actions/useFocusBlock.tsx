@@ -94,6 +94,42 @@ export const useFocusBlock = () => {
       console.log('select block error', e)
     }
   }
+  const focusBlock = (blockid: string, editorId?: string) => {
+    try {
+      const editor = editorId ? getPlateEditorRef(editorId) : getPlateEditorRef()
+      mog('editor', { editor })
+      if (editor) {
+        const headingNode = findNode(editor, {
+          at: [],
+          match: (n) => {
+            // console.log('n', n)
+            return n.id === blockid
+          },
+          mode: 'all'
+        })
+        // console.log('select heading', { heading, headingNode, e })
+        if (!headingNode) return
+        const headingNodePath = headingNode[1]
 
-  return { selectBlock }
+        mog('select block', { blockid, headingNode, headingNodePath })
+        if (!headingNodePath) return
+
+        // setHighlightedBlockIds([blockid], key)
+        Transforms.select(editor, Editor.start(editor, headingNodePath))
+        setTimeout(() => {
+          const highlightEl = document.getElementsByClassName('slate-highlight')[0]
+          if (highlightEl) {
+            highlightEl.scrollIntoView({
+              block: 'center',
+              inline: 'center'
+            })
+          }
+        }, 50)
+      }
+    } catch (e) {
+      console.log('select block error', e)
+    }
+  }
+
+  return { selectBlock, focusBlock }
 }
