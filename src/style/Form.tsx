@@ -94,9 +94,20 @@ export const AuthForm = styled.form`
   width: 100%;
 `
 
-export const TextAreaBlock = styled(TextArea)<{ height?: TextFieldHeight }>`
+export const TextAreaBlock = styled(TextArea)<{ height?: TextFieldHeight; error?: any }>`
   width: 100%;
   display: block;
+
+  ${({ error }) =>
+    error &&
+    css`
+      :focus,
+      :hover,
+      :active {
+        border-color: none;
+      }
+      border: 1px solid ${({ theme }) => theme.colors.palette.red};
+    `}
 
   ${({ height }) =>
     height &&
@@ -187,7 +198,16 @@ export const ReactSelectStyles = (theme: DefaultTheme) => ({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const StyledSelect = (props: any) => {
   const theme = useTheme()
-  return <Select {...props} theme={theme.additional.reactSelect} styles={ReactSelectStyles(theme)}></Select>
+  return (
+    <Select
+      captureMenuScroll
+      blurInputOnSelect
+      menuShouldBlockScroll
+      {...props}
+      theme={theme.additional.reactSelect}
+      styles={ReactSelectStyles(theme)}
+    ></Select>
+  )
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

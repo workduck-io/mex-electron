@@ -3,14 +3,15 @@ import { ActionHelperClient, ClickPostActionType } from '@workduck-io/action-req
 import { client } from '@workduck-io/dwindle'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { mog } from '../../../utils/lib/helper'
-import { useMemo } from 'react'
 import { NavigationType, useRouting } from '../../../views/routes/urls'
-import { useAuthStore } from '../../../services/auth/useAuth'
+import { ACTION_ENV } from '../../../apis/routes'
 
 type PerfomerOptions = {
   fetch?: boolean
   formData: Record<string, any>
 }
+
+export const actionPerformer = new ActionHelperClient(client, undefined, ACTION_ENV)
 
 export const useActionPerformer = () => {
   const activeAction = useActionStore((store) => store.activeAction)
@@ -22,7 +23,6 @@ export const useActionPerformer = () => {
   const groupedAction = useActionStore((store) => store.groupedActions)
   const setView = useSpotlightAppStore((store) => store.setView)
   const setViewData = useSpotlightAppStore((store) => store.setViewData)
-  const setActionPerformer = useActionStore((store) => store.setActionPerformer)
 
   const { goTo } = useRouting()
 
@@ -43,7 +43,6 @@ export const useActionPerformer = () => {
   const performer = async (actionGroupId: string, actionId: string, options?: PerfomerOptions) => {
     const actionConfig = groupedAction?.[actionGroupId]?.[actionId]
     const prevActionValue = getPrevActionValue(actionId)?.selection
-    const actionPerformer = useActionStore.getState().actionPerformer
 
     // * if we have a cache, return the cached result
     // if (!fetch) {
@@ -57,7 +56,7 @@ export const useActionPerformer = () => {
 
     let auth
     try {
-      auth = await actionPerformer.getAuth(actionConfig?.authTypeId)
+      auth = await actionPerformer?.getAuth(actionConfig?.authTypeId)
     } catch (err) {
       mog('AUTH ERROR', { err })
     }
@@ -70,7 +69,7 @@ export const useActionPerformer = () => {
 
     try {
       // * if we have a previous action selection, use that
-      const result = await actionPerformer.request({
+      const result = await actionPerformer?.request({
         config: actionConfig,
         auth,
         configVal,
@@ -83,7 +82,7 @@ export const useActionPerformer = () => {
       const isRunAction = resultAction?.type === ClickPostActionType.RUN_ACTION
 
       if (isRunAction) {
-        const postAction = await actionPerformer.request({
+        const postAction = await actionPerformer?.request({
           config: groupedAction?.[actionGroupId]?.[resultAction?.actionId],
           auth,
           configVal: result.contextData,
@@ -93,13 +92,9 @@ export const useActionPerformer = () => {
         setView('item')
         setViewData(postAction?.displayData || [])
         goTo('/action/view', NavigationType.replace)
-
-        mog('POST ACTION RESULT', { postAction })
       }
 
       setIsLoading(false)
-
-      mog(`RESULT PERFOMER: ${actionId}`, { result })
 
       return result
     } catch (err) {
@@ -111,8 +106,8 @@ export const useActionPerformer = () => {
   }
 
   const initActionPerfomerClient = (workspaceId: string) => {
-    const cli = new ActionHelperClient(client, workspaceId)
-    setActionPerformer(cli)
+    mog('WORKSPACE ID', { workspaceId })
+    if (workspaceId) actionPerformer.setWorkspaceId(workspaceId)
   }
 
   const isPerformer = (actionId: string) => {

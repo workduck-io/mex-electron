@@ -8,6 +8,7 @@ import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { IpcAction } from '../../../data/IpcAction'
 import { AppType } from '../../../hooks/useInitialize'
 import { ActionHelperConfig, ActionGroup } from '@workduck-io/action-request-helper'
+import { actionPerformer } from './useActionPerformer'
 
 const useActions = () => {
   const addActions = useActionStore((store) => store.addActions)
@@ -20,10 +21,8 @@ const useActions = () => {
    * @returns groups: Record<string, ActionGroup>
    */
   const fetchActionGroups = async () => {
-    const actionPerformer = useActionStore.getState().actionPerformer
-    mog('fetchActionGroups', { actionPerformer })
     try {
-      const groups: Record<string, ActionGroup> = await actionPerformer.getAllGroups(true)
+      const groups: Record<string, ActionGroup> = await actionPerformer?.getAllGroups(true)
 
       setActionGroups(groups)
       appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { groups })
@@ -41,10 +40,8 @@ const useActions = () => {
    * @returns actionConfigs: Record<string, ActionHelperConfig>
    */
   const getActionsFromGroup = async (actionGroupId: string) => {
-    const actionPerformer = useActionStore.getState().actionPerformer
-
     try {
-      const actions: Record<string, ActionHelperConfig> = await actionPerformer.getAllActionsOfGroups(actionGroupId)
+      const actions: Record<string, ActionHelperConfig> = await actionPerformer?.getAllActionsOfGroups(actionGroupId)
 
       addGroupedActions(actionGroupId, actions)
       appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { actionGroupId: actionGroupId, actions })
@@ -102,9 +99,7 @@ const useActions = () => {
 
   // * For Integrations page, check for Authorized action groups
   const getAuthorizedGroups = async (forceUpdate?: boolean) => {
-    const actionPerformer = useActionStore.getState().actionPerformer
-
-    const groupsAuth = await actionPerformer.getAllAuths(forceUpdate)
+    const groupsAuth = await actionPerformer?.getAllAuths(forceUpdate)
     const actionGroups = useActionStore.getState().actionGroups
     const connected = useActionStore.getState().connectedGroups
     const connectedGroups = { ...connected }
@@ -140,12 +135,9 @@ const useActions = () => {
   }
 
   const clearActionStore = () => {
-    const actionClient = useActionStore.getState()?.actionPerformer
-    if (actionClient) {
-      actionClient.clear()
-      useActionStore.getState().clear()
-      appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { type: UpdateActionsType.CLEAR })
-    }
+    actionPerformer?.clearStore()
+    useActionStore.getState().clear()
+    appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { type: UpdateActionsType.CLEAR })
   }
 
   return {

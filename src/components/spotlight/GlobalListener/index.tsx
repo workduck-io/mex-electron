@@ -171,6 +171,7 @@ const GlobalListener = memo(() => {
       localStorage.clear()
     })
 
+    initActionPerfomerClient(useAuthStore.getState()?.workspaceDetails?.id)
     setReceiveToken()
   }, [])
 

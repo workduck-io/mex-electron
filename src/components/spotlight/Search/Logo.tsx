@@ -1,9 +1,12 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
 
-const StyledLogo = styled.svg<{ bubble?: boolean }>`
+const StyledLogo = styled.svg<{ bubble?: boolean; padding: string }>`
   padding-right: 8px;
+  ${({ padding }) => css`
+    padding: ${padding};
+  `}
   -webkit-app-region: no-drag;
   /* cursor: pointer; */
 
@@ -12,7 +15,7 @@ const StyledLogo = styled.svg<{ bubble?: boolean }>`
   }
 `
 
-const WDLogo = () => {
+const WDLogo: React.FC<{ height?: string; width?: string; padding?: string }> = ({ height, width, padding }) => {
   const { bubble, setBubble } = useSpotlightSettingsStore(({ bubble, setBubble }) => ({ bubble, setBubble }))
 
   // useEffect(() => { //   ipcRenderer.send(IpcAction.SPOTLIGHT_BUBBLE, { isClicked: bubble }) // }, [bubble])
@@ -23,8 +26,9 @@ const WDLogo = () => {
 
   return (
     <StyledLogo
-      width="25"
-      height="25"
+      width={width ?? '25'}
+      height={height ?? '25'}
+      padding={padding}
       viewBox="0 0 25 25"
       fill="none"
       onClick={onClick}

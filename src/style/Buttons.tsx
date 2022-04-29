@@ -1,4 +1,4 @@
-import Tippy, { TippyProps } from '@tippyjs/react'
+import { TippyProps } from '@tippyjs/react'
 import { Icon } from '@iconify/react'
 import { transparentize } from 'polished'
 import React from 'react'

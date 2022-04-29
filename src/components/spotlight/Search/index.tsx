@@ -14,6 +14,7 @@ import { useTheme } from 'styled-components'
 import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { useRouting } from '../../../views/routes/urls'
 import ViewActionHandler from '../ActionStage/Forms/ViewActionHandler'
+import { useActionStore } from '../Actions/useActionStore'
 
 type QueryType = {
   value: string
@@ -33,7 +34,6 @@ const Search: React.FC = () => {
 
   // * Editor's mode (normal/edit)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
-  const isLoading = useSpotlightAppStore((s) => s.isLoading)
   const view = useSpotlightAppStore((store) => store.view)
 
   const { saveIt } = useSaveChanges()
@@ -75,7 +75,7 @@ const Search: React.FC = () => {
     if (!normalMode) setInput('')
 
     ref.current.focus()
-  }, [search, normalMode, activeIndex])
+  }, [search, normalMode, view, activeIndex])
 
   const onBackClick = () => {
     if (!normalMode) {

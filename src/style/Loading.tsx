@@ -21,10 +21,25 @@ export const LoadingWrapper = styled.div<LoadingProps>`
 
   border-radius: 5px;
 
-  max-width: ${({ dots }) => `${dots * 24}px`};
+  ${({ orientation, dots }) =>
+    orientation === 'vertical'
+      ? css`
+          flex-direction: column;
+          max-height: ${dots * 24}px;
+          gap: 0.5rem;
+          margin: 1rem;
+        `
+      : css`
+          max-width: ${dots * 24}px;
+        `}
 `
 
-const LoadingDot = styled.div<{ totalDots: number; color?: string; size?: string }>`
+const LoadingDot = styled.div<{
+  totalDots: number
+  color?: string
+  size?: string
+  direction?: 'forward' | 'reverse'
+}>`
   width: ${({ size }) => size ?? '8px'};
   height: ${({ size }) => size ?? '8px'};
   margin: 0 4px;
@@ -45,12 +60,12 @@ const LoadingDot = styled.div<{ totalDots: number; color?: string; size?: string
 
   animation: ${loadingFade} 1s infinite;
 
-  ${({ totalDots }) =>
+  ${({ totalDots, direction }) =>
     range(totalDots).reduce((prev, d) => {
       return css`
         ${prev};
         &:nth-child(${d + 1}) {
-          animation-delay: ${d * 0.1}s;
+          animation-delay: ${d * (direction === 'forward' ? 0.1 : -0.1)}s;
         }
       `
     }, css``)}
@@ -59,17 +74,25 @@ const LoadingDot = styled.div<{ totalDots: number; color?: string; size?: string
 export interface LoadingProps {
   dots: number
   transparent?: boolean
+  orientation?: 'horizontal' | 'vertical'
+  direction?: 'forward' | 'reverse'
   color?: string
   size?: string
 }
 
-const Loading = ({ dots, transparent, color, size }: LoadingProps) => {
+const Loading = ({ dots, transparent, color, size, orientation, direction }: LoadingProps) => {
   return (
-    <LoadingWrapper transparent={transparent} dots={dots}>
+    <LoadingWrapper transparent={transparent} orientation={orientation ?? 'horizontal'} dots={dots}>
       {Array(dots)
         .fill(0)
         .map((e, i) => (
-          <LoadingDot color={color} size={size} totalDots={dots} key={`loadingDot${i}`}></LoadingDot>
+          <LoadingDot
+            direction={direction ?? 'forward'}
+            color={color}
+            size={size}
+            totalDots={dots}
+            key={`loadingDot${i}`}
+          ></LoadingDot>
         ))}
     </LoadingWrapper>
   )

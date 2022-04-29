@@ -51,9 +51,10 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
           rules={{
             required: element.options.required
           }}
-          render={({ field: { onChange, value } }) => (
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
             <Selector
               width="100%"
+              error={error}
               data={data}
               value={data?.find((d) => d?.value?.select?.value === value)}
               onChange={({ value }) => onChange(value?.select?.value)}
@@ -74,12 +75,14 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
           rules={{
             required: element.options.required
           }}
-          render={({ field: { onChange, value } }) => (
+          render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
             <ActionInput
               type={element.options.height}
               value={value ?? ''}
               onChange={onChange}
+              error={error}
               element={element}
+              ref={ref}
               actionGroupId={activeAction?.actionGroupId}
               actionId={element.actionId}
             />
@@ -96,10 +99,11 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
           rules={{
             required: element.options.required
           }}
-          render={({ field: { ref, onChange, value } }) => (
+          render={({ field: { ref, onChange, value }, fieldState: { error } }) => (
             <Selector
               isMulti
               data={data}
+              error={error}
               value={filterTags(value)}
               ref={ref}
               onChange={(changed) => {

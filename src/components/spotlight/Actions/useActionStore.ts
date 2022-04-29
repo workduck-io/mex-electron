@@ -43,9 +43,6 @@ type ActionStoreType = {
   addActions: (actions: Array<ListItemType>) => void
   removeActionsByGroupId: (actionGroupId: string) => void
 
-  actionPerformer?: any
-  setActionPerformer: (actionPerformer: any) => void
-
   actionGroups: Record<string, ActionGroupType>
   setActionGroups: (actionGroups: Record<string, ActionGroupType>) => void
 
@@ -80,6 +77,10 @@ type ActionStoreType = {
   activeAction?: ActiveActionType
   initAction: (actionGroupId: string, actionId: string) => void
 
+  // * Form submit
+  isSubmitting: boolean
+  setIsSubmitting: (isSubmiting: boolean) => void
+
   //* Clear fields
   clear: () => void
 }
@@ -95,7 +96,8 @@ export const useActionStore = create<ActionStoreType>(
           connectedGroups: {},
           setConnectedGroups: (connectedGroups: Record<string, boolean>) => set({ connectedGroups }),
 
-          setActionPerformer: (actionPerformer: any) => set({ actionPerformer }),
+          isSubmitting: false,
+          setIsSubmitting: (isSubmitting: boolean) => set({ isSubmitting }),
 
           resultCache: {},
           getCacheResult: (actionId: string) => get().resultCache[actionId],
@@ -201,7 +203,8 @@ export const useActionStore = create<ActionStoreType>(
               selectedValue: undefined,
               activeAction: undefined,
               actionToPerform: undefined,
-              actionPerformer: undefined,
+              actionGroups: {},
+              groupedActions: {},
               connectedGroups: {},
               resultCache: {},
               selectionCache: {},

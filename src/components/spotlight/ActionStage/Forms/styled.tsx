@@ -1,25 +1,10 @@
-import styled, { css } from 'styled-components'
-import { FullWidth } from '../Screen/List'
+import styled from 'styled-components'
 
-export const StyledActionFormContainer = styled(FullWidth)`
-  margin-top: 1rem;
-  /* padding: 0 ${({ theme }) => theme.spacing.medium}; */
-  border-top: 1px solid ${({ theme }) => theme.colors.gray[7]};
-  overflow-y: auto;
-  flex: 3;
-
-  ${({ narrow }) =>
-    narrow
-      ? css`
-          height: calc(84vh - 5rem);
-        `
-      : css`
-          height: 84vh;
-        `}
-
-  /* padding-bottom: 10rem; */
+export const StyledActionFormContainer = styled.form`
+  height: fit-content;
+  width: 100%;
+  margin-top: 0.5rem;
   display: flex;
-  /* align-items: center; */
   flex-direction: column;
 `
 

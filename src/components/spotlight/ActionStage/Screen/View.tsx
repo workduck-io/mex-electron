@@ -15,11 +15,10 @@ type ViewProps = {
 const StyledView = styled.section`
   display: flex;
   flex-direction: row;
-  /* align-items: center; */
   width: 100%;
   margin-top: 0.5rem;
-  max-height: 425px;
-  /* background: ${({ theme }) => theme.colors.background.modal}; */
+  height: 90vh;
+  max-height: 90vh;
 `
 
 const ViewInfo = styled.div`

@@ -28,6 +28,7 @@ type SelectedProps = {
   actionId: string
   onChange?: any
   placeholder?: string
+  error?: any
   actionGroupId: string
 }
 
@@ -148,8 +149,9 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
       // components={{ Option: CustomOption }}
       width={width}
       ref={ref}
+      error={props.error}
       isMulti={isMulti}
-      autoFocus={isPerformer(actionId)}
+      // autoFocus={isPerformer(actionId)}
       onChange={handleChange}
       value={inputValue.value}
       options={inputValue.data}
