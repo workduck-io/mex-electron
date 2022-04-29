@@ -217,6 +217,7 @@ const List = ({
             setInput('')
           }
         } else if (currentActiveItem.category === CategoryType.meeting) {
+          event.preventDefault()
           if (!event.metaKey && currentActiveItem.extras.customAction) currentActiveItem.extras.customAction()
           else window.open(currentActiveItem.extras.base_url, '_blank').focus()
         }
