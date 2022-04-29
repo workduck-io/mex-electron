@@ -10,6 +10,7 @@ import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import useOnboard from '../../../store/useOnboarding'
+import { FadeContainer } from '../../../style/animation/fade'
 import { openNodeInMex } from '../../../utils/combineSources'
 import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import { mog } from '../../../utils/lib/helper'
@@ -38,7 +39,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const shortcuts = useHelpStore((state) => state.shortcuts)
 
-  const { selectBlock } = useFocusBlock()
+  const { focusBlock } = useFocusBlock()
   const setHighlights = useBlockHighlightStore((s) => s.setHighlightedBlockIds)
   const clearHighlights = useBlockHighlightStore((s) => s.clearHighlightedBlockIds)
   const highlights = useBlockHighlightStore((s) => s.hightlighted.editor)
@@ -77,7 +78,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
     const timeoutId = setTimeout(() => {
       if (blockId) {
         // mog('editorPreviewRenderer', { blockId, editorId })
-        selectBlock(blockId, nodeId)
+        focusBlock(blockId, nodeId)
         setHighlights([blockId], 'editor')
       }
     }, 300)
@@ -89,7 +90,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
 
   useEffect(() => {
     if (!normalMode && highlights.length > 0) {
-      selectBlock(highlights[highlights.length - 1], nodeId)
+      focusBlock(highlights[highlights.length - 1], nodeId)
       const clearHighlightTimeoutId = setTimeout(() => {
         clearHighlights('editor')
       }, 2000)
@@ -115,7 +116,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
   }, [normalMode, handleSaveContent])
 
   return (
-    <div onClick={() => setNormalMode(false)}>
+    <FadeContainer fade={blockId !== undefined} onClick={() => setNormalMode(false)}>
       <Editor
         autoFocus={!normalMode}
         focusAtBeginning={!normalMode}
@@ -124,7 +125,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
         content={previewContent ?? getDefaultContent()}
         editorId={nodeId}
       />
-    </div>
+    </FadeContainer>
   )
 }
 

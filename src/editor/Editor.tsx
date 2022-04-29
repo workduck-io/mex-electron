@@ -55,7 +55,7 @@ export const Editor = ({
   // const generateEditorId = () => `${editorId}`
   const editorRef = usePlateEditorRef()
   const { show } = useContextMenu({ id: MENU_ID })
-  const { selectBlock } = useFocusBlock()
+  const { focusBlock } = useFocusBlock()
   const clearHighlights = useBlockHighlightStore((store) => store.clearAllHighlightedBlockIds)
   const hightlightedBlockIds = useBlockHighlightStore((store) => store.hightlighted.editor)
 
@@ -63,7 +63,7 @@ export const Editor = ({
     const hightlightedBlockIds = useBlockHighlightStore.getState().hightlighted.editor
     if (editorRef && hightlightedBlockIds.length > 0) {
       // mog('editor highlighted with start', { hightlightedBlockIds, editorId })
-      selectBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
+      focusBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
       // editorRef.current.focus()
       return
     }
@@ -75,7 +75,7 @@ export const Editor = ({
   useEffect(() => {
     if (editorRef && hightlightedBlockIds.length > 0) {
       // mog('editor highlighted', { hightlightedBlockIds, editorId })
-      selectBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
+      focusBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
       const clearHighlightTimeoutId = setTimeout(() => {
         if (!readOnly) clearHighlights()
       }, 2000)

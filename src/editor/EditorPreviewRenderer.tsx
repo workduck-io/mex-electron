@@ -3,10 +3,11 @@ import React, { useEffect } from 'react'
 import { EditorStyles } from '../style/Editor'
 import generatePlugins from './Plugins/plugins'
 import { editorPreviewComponents } from './Components/components'
-import styled from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import { TodoContainer } from '../ui/components/Todo.style'
 import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
 import { mog } from '../utils/lib/helper'
+import { FadeContainer } from '../style/animation/fade'
 
 interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -19,6 +20,7 @@ interface EditorPreviewRendererProps {
   noMouseEvents?: boolean
   onDoubleClick?: (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
+
 
 const PreviewStyles = styled(EditorStyles)<{ noMouseEvents: boolean }>`
   ${({ noMouseEvents }) => noMouseEvents && 'pointer-events: none;'};
@@ -52,13 +54,13 @@ const EditorPreviewRenderer = ({
   // We get memoized plugins
   const plugins = generatePlugins(editorPreviewComponents, { exclude: { dnd: true } })
   const setHighlights = useBlockHighlightStore((s) => s.setHighlightedBlockIds)
-  const { selectBlock } = useFocusBlock()
+  const { focusBlock } = useFocusBlock()
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (blockId) {
         // mog('editorPreviewRenderer', { blockId, editorId })
-        selectBlock(blockId, editorId)
+        focusBlock(blockId, editorId)
         setHighlights([blockId], 'preview')
       }
     }, 300)
@@ -80,7 +82,9 @@ const EditorPreviewRenderer = ({
           }
         }}
       >
-        <Plate id={editorId} editableProps={editableProps} value={content} plugins={plugins} />
+        <FadeContainer fade={blockId !== undefined}>
+          <Plate id={editorId} editableProps={editableProps} value={content} plugins={plugins} />
+        </FadeContainer>
       </PreviewStyles>
     </>
   )
