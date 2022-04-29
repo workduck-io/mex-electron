@@ -4,7 +4,7 @@ import { Scroll } from '../../../style/spotlight/layout'
 import { StyledBackground } from '../styled'
 
 export interface ColorProp {
-  showColor?: boolean
+  background?: boolean
   start?: number
 }
 
@@ -61,7 +61,7 @@ export const FlexBetween = styled.div`
 `
 
 export const CreateMex = styled.div<ColorProp>`
-  ${({ showColor }) => showColor && StyledBackground}
+  ${({ background }) => background && StyledBackground}
   align-items: center;
   display: flex;
   border-radius: 8px;
@@ -71,7 +71,7 @@ export const CreateMex = styled.div<ColorProp>`
 `
 
 export const ActionDesc = styled.div<ColorProp>`
-  ${({ showColor }) => showColor && StyledBackground}
+  ${({ background }) => background && StyledBackground}
   color: ${({ theme }) => theme.colors.text.fade};
   font-weight: lighter;
   padding: 0.5rem;

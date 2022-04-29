@@ -104,7 +104,7 @@ const Search: React.FC = () => {
 
   return (
     <StyledSearch id="wd-mex-spotlight-search-container">
-      <CenterIcon id="wd-mex-search-left-icon" cursor={!normalMode} onClick={onBackClick}>
+      <CenterIcon id="wd-mex-search-left-icon" pointer={!normalMode} onClick={onBackClick}>
         <Icon color={theme.colors.primary} height={24} width={24} icon={icon} />
       </CenterIcon>
       {/* <Before before={before} id="wd-mex-spotlight-quick-action-chip"> */}

@@ -70,7 +70,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
       key={`PreviewSpotlightEditor${!isSnippet ? nodeId : snippet.id}`}
       style={animationProps}
       ref={ref}
-      preview={normalMode}
+      readOnly={normalMode}
       data-tour="mex-quick-capture-preview"
     >
       {selection && (

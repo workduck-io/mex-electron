@@ -17,13 +17,11 @@ export const ActionSelector = styled(Selector)`
 
 const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
   const getCacheResult = useActionStore((store) => store.getCacheResult)
-  const getSelectionCache = useActionStore((store) => store.getSelectionCache)
   const activeAction = useActionStore((store) => store.activeAction)
 
   const { control } = useFormContext()
 
   const context = getCacheResult(element.actionId)
-  const selection = getSelectionCache(element.actionId)?.selection
 
   const data = context?.contextData?.map((res) => {
     const displayItem = res?.select
@@ -35,10 +33,10 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
   })
 
   const filterTags = (value) => {
-    return data?.filter((d) => d?.value?.select?.value).includes(value)
+    const r = data?.filter((d) => value?.includes(d?.value?.select?.value))
+    mog('FILTERING VALUE', { value, r })
+    return r
   }
-
-  const value = selection ?? null
 
   switch (element.type) {
     case FormDataType.SELECT:
@@ -46,7 +44,6 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
         <Controller
           name={element.key}
           control={control}
-          defaultValue={value}
           key={element.key}
           rules={{
             required: element.options.required
@@ -70,7 +67,6 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
         <Controller
           name={element.key}
           control={control}
-          defaultValue={value}
           key={element.key}
           rules={{
             required: element.options.required
@@ -94,7 +90,6 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
         <Controller
           name={element.key}
           control={control}
-          defaultValue={value}
           key={element.key}
           rules={{
             required: element.options.required

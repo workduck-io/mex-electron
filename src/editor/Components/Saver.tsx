@@ -24,7 +24,6 @@ import IconButton from '../../style/Buttons'
 import { getTodosFromContent } from '../../utils/lib/content'
 import { mog } from '../../utils/lib/helper'
 import { getEventNameFromElement } from '../../utils/lib/strings'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 
 export const useDataSaverFromContent = () => {
   const setContent = useContentStore((state) => state.setContent)

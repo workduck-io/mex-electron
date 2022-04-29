@@ -62,7 +62,7 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
   const newNodeName = cleanString(search.type === CategoryType.backlink ? search.value.slice(2) : search.value)
 
   return (
-    <StyledRow showColor={active} onClick={onClick}>
+    <StyledRow background={active} onClick={onClick}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Dot active={active ? 'true' : ''} />
         <div style={{ display: 'flex', alignItems: 'center', marginRight: '1rem' }}>
@@ -98,7 +98,7 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
         >
           {Object.entries(item.shortcut).map(([key, shortcut]) => {
             if (item.type === QuickLinkType.backlink && key === 'save') {
-              if (!selection) return <></>
+              if (!selection) return <span key={key}></span>
             }
 
             return (
