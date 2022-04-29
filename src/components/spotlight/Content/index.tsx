@@ -147,7 +147,7 @@ const Content = () => {
         setPreview(INIT_PREVIEW)
       }
     }
-  }, [search.value, activeIndex, activeItem, selection, searchResults])
+  }, [search.value, normalMode, activeIndex, activeItem, selection, searchResults])
 
   return (
     <StyledContent>

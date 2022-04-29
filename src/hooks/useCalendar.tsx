@@ -110,6 +110,8 @@ export const getNodeForMeeting = (title: string, date: number, create?: boolean)
 }
 
 export const openCalendarMeetingNote = (e: CalendarEvent) => {
+  mog('OpenCalendarMeeting', e)
+  useSpotlightAppStore.getState().setNormalMode(false)
   // if link present use it
   const node = getNodeForMeeting(e.summary, e.times.start, true)
   useSpotlightEditorStore.getState().loadNode(
@@ -121,7 +123,6 @@ export const openCalendarMeetingNote = (e: CalendarEvent) => {
     },
     MeetingSnippetContent(e.summary, e.times.start, e.links.meet ?? e.links.event)
   )
-  useSpotlightAppStore.getState().setNormalMode(false)
 }
 
 const convertCalendarEventToAction = (e: CalendarEvent) => {
@@ -151,7 +152,7 @@ const convertCalendarEventToAction = (e: CalendarEvent) => {
       nodeid: node ? node.nodeid : undefined,
       event: e,
       customAction: () => {
-        console.log('custom action')
+        // console.log('custom action')
         openCalendarMeetingNote(e)
       }
     }
