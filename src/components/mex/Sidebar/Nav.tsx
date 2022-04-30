@@ -1,3 +1,7 @@
+import { usePolling } from '@apis/usePolling'
+import { SharedNodeIcon } from '@components/icons/Icons'
+import Tabs, { TabType } from '@components/layouts/Tabs'
+import { getRandomQAContent } from '@data/Defaults/baseData'
 import { Logo, SidebarToggle, TrafficLightBG } from '@data/illustrations/logo'
 import { GetIcon } from '@data/links'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
@@ -7,11 +11,10 @@ import { useKeyListener } from '@hooks/useShortcutListener'
 import archiveFill from '@iconify/icons-ri/archive-fill'
 import settings4Line from '@iconify/icons-ri/settings-4-line'
 import { Icon } from '@iconify/react'
+import { PollActions, useApiStore } from '@store/useApiStore'
 import { useHelpStore } from '@store/useHelpStore'
 import { useLayoutStore } from '@store/useLayoutStore'
-import { useSingleton } from '@tippyjs/react'
-import React, { useEffect, useMemo, useState } from 'react'
-import tinykeys from 'tinykeys'
+import { MexIcon } from '@style/Layouts'
 import {
   ComingSoon,
   Count,
@@ -23,7 +26,11 @@ import {
   NavTitle,
   NavWrapper
 } from '@style/Nav'
+import { useSingleton } from '@tippyjs/react'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useTheme } from 'styled-components'
+import tinykeys from 'tinykeys'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
 import Bookmarks from './Bookmarks'
@@ -31,13 +38,6 @@ import SharedNotes from './SharedNotes'
 import { useSidebarTransition } from './Transition'
 import { TreeContainer } from './Tree'
 import { NavProps } from './Types'
-import Tabs, { TabType } from '@components/layouts/Tabs'
-import { MexIcon } from '@style/Layouts'
-import { SharedNodeIcon } from '@components/icons/Icons'
-import { useTheme } from 'styled-components'
-import { PollActions, useApiStore } from '@store/useApiStore'
-import { usePolling } from '@apis/usePolling'
-import { getRandomQAContent } from '@data/Defaults/baseData'
 
 const Nav = ({ links }: NavProps) => {
   // const match = useMatch(`/${ROUTE_PATHS.node}/:nodeid`)

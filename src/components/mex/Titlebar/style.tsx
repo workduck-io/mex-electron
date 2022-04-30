@@ -1,6 +1,8 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import { focusStyles } from '../../../style/focus'
+import { FocusModeProp } from '../../../style/props'
 
-export const TitlebarWrapper = styled.div`
+export const TitlebarWrapper = styled.div<FocusModeProp>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -8,6 +10,7 @@ export const TitlebarWrapper = styled.div`
   gap: ${({ theme }) => theme.spacing.small};
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.large}`};
   background-color: ${({ theme }) => theme.colors.gray[9]};
+  ${(props) => focusStyles(props)}
 `
 
 export const TitlebarControls = styled.div`
@@ -35,13 +38,20 @@ export const VerticalSeparator = styled.div`
   margin: 0 ${({ theme }) => theme.spacing.small};
 `
 
-export const NavigationButton = styled.div`
+export const NavigationButton = styled.div<{ disabled: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
 
   padding: ${({ theme }) => theme.spacing.tiny};
   border-radius: ${({ theme }) => theme.borderRadius.small};
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      opacity: 0.25;
+      pointer-events: none;
+    `}
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.gray[8]};
