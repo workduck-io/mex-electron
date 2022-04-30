@@ -26,6 +26,7 @@ import { mog } from '../../../utils/lib/helper'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { useNewNote } from '../../../hooks/useNewNote'
 import useLayout from '../../../hooks/useLayout'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 
 const Titlebar = () => {
   const { getUserDetails } = useAuth()
@@ -35,6 +36,7 @@ const Titlebar = () => {
   const focusMode = useLayoutStore((store) => store.focusMode)
   const { createNewNote } = useNewNote()
   const { getFocusProps } = useLayout()
+  const { goTo } = useRouting()
 
   const { canGoBack, canGoForward } = useMemo(() => {
     const hist = window.history
@@ -58,11 +60,12 @@ const Titlebar = () => {
     ipcRenderer.send(IpcAction.GO_FORWARD)
   }
 
-  return (
-      <TitlebarWrapper
+  const onProfileClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    goTo(ROUTE_PATHS.settings, NavigationType.push, 'user')
+  }
 
-        {...getFocusProps(focusMode)}
-      >
+  return (
+    <TitlebarWrapper {...getFocusProps(focusMode)}>
       <TitlebarControls>
         <NavigationButtons>
           <ToolbarTooltip
@@ -95,9 +98,11 @@ const Titlebar = () => {
         <Icon icon={searchLine} />
         <input disabled type="text" placeholder="Search by the Keywords" />
       </SearchBar>
-      <UserIcon>
-        <ProfileImage email={userDetails?.email} size={28} />
-      </UserIcon>
+      <ToolbarTooltip content={'My Profile'}>
+        <UserIcon onClick={onProfileClick}>
+          <ProfileImage email={userDetails?.email} size={28} />
+        </UserIcon>
+      </ToolbarTooltip>
     </TitlebarWrapper>
   )
 }

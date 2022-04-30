@@ -111,4 +111,5 @@ export const UserIcon = styled.div`
   width: 28px;
   overflow: hidden;
   border-radius: ${({ theme }) => theme.borderRadius.large};
+  cursor: pointer;
 `
