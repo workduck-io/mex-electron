@@ -17,6 +17,8 @@ export type SpotlightAppStore = {
   setIsLoading: (value: boolean) => void
   view?: ViewType
   setView: (value: ViewType) => void
+  isMenuOpen: boolean
+  setIsMenuOpen: (value: boolean) => void
 }
 
 export const useSpotlightAppStore = create<SpotlightAppStore>((set, get) => ({
@@ -24,6 +26,8 @@ export const useSpotlightAppStore = create<SpotlightAppStore>((set, get) => ({
   setInput: (value: string) => set({ input: value }),
 
   // Mode for list if false, the editor takes full screen
+  isMenuOpen: false,
+  setIsMenuOpen: (value: boolean) => set({ isMenuOpen: value }),
 
   normalMode: true,
   setNormalMode: (value: boolean) => set(() => ({ normalMode: value })),
