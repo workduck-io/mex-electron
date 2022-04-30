@@ -29,5 +29,6 @@ export const GridWrapper = styled(animated.div)<{ grid?: string }>`
     grid &&
     css`
       grid-template-columns: 300px 2fr auto;
+      grid-template-rows: 52px auto;
     `}
 `

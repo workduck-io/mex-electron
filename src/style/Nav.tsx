@@ -190,6 +190,8 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
   background-color: ${({ theme }) => theme.colors.gray[8]};
   gap: ${({ theme }) => theme.spacing.small};
   user-select: none;
+  grid-row-start: 1;
+  grid-row-end: 3;
 
   ${CollapseWrapper} {
     width: 100%;

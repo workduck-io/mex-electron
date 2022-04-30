@@ -10,6 +10,7 @@ import { useAuthStore } from '../../services/auth/useAuth'
 import { useLayoutStore } from '../../store/useLayoutStore'
 import { navTooltip } from '../../style/Nav'
 import { useSidebarTransition } from '../mex/Sidebar/Transition'
+import Titlebar from '../mex/Titlebar'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -65,6 +66,7 @@ const Main = ({ children }: MainProps) => {
       <Draggable style={styles as any} /> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
       <GridWrapper style={gridSpringProps} grid={initialized ? 'true' : ''}>
         {initialized && <Nav links={getLinks()} />}
+        <Titlebar />
         <Content id="wd-mex-content-view" grid={initialized}>
           {children}
         </Content>

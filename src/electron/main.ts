@@ -116,6 +116,10 @@ const MEX_WINDOW_OPTIONS = {
   height: 1500,
   fullscreenable: true,
   maximizable: true,
+  // trafficLightPosition: {
+  //   x: 10,
+  //   y: 18
+  // },
   titleBarStyle: 'hidden' as const,
   webPreferences: {
     nodeIntegration: true,
