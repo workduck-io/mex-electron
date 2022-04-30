@@ -48,6 +48,9 @@ const Login = () => {
           toast.error(s.v)
         }
         if (s.v === 'success') {
+          const { userDetails, workspaceDetails } = s.authDetails
+          initActionPerfomerClient(workspaceDetails.id)
+          getGroupsToView().then(() => mog('Groups init'))
           const node = useEditorStore.getState().node
           if (node.nodeid === '__null__') {
             const basePath = useDataStore.getState().baseNodeId
@@ -56,14 +59,9 @@ const Login = () => {
             loadNode(baseNodeid, { savePrev: false, fetch: false })
             goTo(ROUTE_PATHS.node, NavigationType.push, baseNodeid)
           }
-          const { userDetails, workspaceDetails } = s.authDetails
-          initActionPerfomerClient(workspaceDetails.id)
           setAuthenticated(userDetails, workspaceDetails)
         }
       })
-      .then(getGroupsToView)
-      // .then(updateDefaultServices)
-      // .then(updateServices)
       .catch((e) => {
         toast.error(e)
       })
