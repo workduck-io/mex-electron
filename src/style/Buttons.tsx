@@ -1,4 +1,4 @@
-import Tippy, { TippyProps } from '@tippyjs/react'
+import { TippyProps } from '@tippyjs/react'
 import { Icon } from '@iconify/react'
 import { transparentize } from 'polished'
 import React from 'react'
@@ -25,6 +25,12 @@ export const Button = styled.button<ButtonProps>`
   cursor: pointer;
   transition: 0.3s ease;
   background-color: ${({ theme }) => theme.colors.form.button.bg};
+
+  &:focus {
+    color: ${({ theme }) => theme.colors.primary};
+    box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
+  }
+
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
     box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
@@ -116,6 +122,7 @@ export interface AsyncButtonProps {
   large?: boolean
   highlight?: boolean
   disabled?: boolean
+  form?: string
   style?: any
   id?: string
   onClick?: any // eslint-disable-line @typescript-eslint/no-explicit-any

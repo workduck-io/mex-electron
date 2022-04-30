@@ -20,8 +20,8 @@ export const StyledRow = styled(animated.div)<ColorProp>`
     background-color: ${({ theme }) => transparentize(0.65, theme.colors.background.modal)};
     /* padding: 10px 1rem 10px 0; */
   }
-  ${({ showColor }) =>
-    showColor &&
+  ${({ background }) =>
+    background &&
     css`
       ${StyledBackground}/* padding: 10px 1rem 10px 0; */
     `}

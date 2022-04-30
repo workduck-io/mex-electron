@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { mog } from '../../utils/lib/helper'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useKeyListener } from '../../hooks/useShortcutListener'
 import { useHelpStore } from '../../store/useHelpStore'
 import { useRecentsStore } from '../../store/useRecentsStore'
@@ -27,7 +26,8 @@ export const ROUTE_PATHS = {
   integrations: '/integrations',
   snippets: '/snippets',
   snippet: '/snippets/node', // * /snippets/node/:snippetid
-  forgotpassword: '/forgotpassword'
+  forgotpassword: '/forgotpassword',
+  actions: '/actions'
 }
 
 export enum NavigationType {
@@ -49,7 +49,11 @@ export const useRouting = () => {
     if (type === NavigationType.replace) navigate(path, { replace: true, state })
   }
 
-  return { goTo, location, params }
+  const goBack = () => {
+    navigate(-1)
+  }
+
+  return { goTo, goBack, location, params }
 }
 
 export const useBrowserNavigation = () => {
@@ -71,7 +75,7 @@ export const useBrowserNavigation = () => {
       if (node.nodeid) {
         const nodeid = location.pathname.split('/')[2]
         if (nodeid && nodeid !== node.nodeid) {
-          mog('Navigation reloaded', { nodeid, location, node })
+          // mog('Navigation reloaded', { nodeid, location, node })
           loadNode(nodeid)
           addRecent(nodeid)
         }

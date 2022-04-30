@@ -9,14 +9,14 @@ import { PrimaryText } from '../../../../style/Integration'
 import React from 'react'
 import { cleanString } from '../../../../data/Defaults/idPrefixes'
 import { QuickLinkType } from '../../../mex/NodeSelect/NodeSelect'
-import { mog } from '../../../../utils/lib/helper'
 
 export const ActionIcon = styled.div`
   display: flex;
   align-items: center;
   margin-right: 0.75rem;
+
   img {
-    height: 24px;
+    height: 2rem;
     aspect-ratio: 1/1;
   }
 `
@@ -62,15 +62,15 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
   const newNodeName = cleanString(search.type === CategoryType.backlink ? search.value.slice(2) : search.value)
 
   return (
-    <StyledRow showColor={active} onClick={onClick}>
+    <StyledRow background={active} onClick={onClick}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Dot active={active ? 'true' : ''} />
         <div style={{ display: 'flex', alignItems: 'center', marginRight: '1rem' }}>
           <Icon
             color={theme.colors.primary}
             style={{ marginRight: '0.75rem' }}
-            height={18}
-            width={18}
+            height={20}
+            width={20}
             icon={item?.icon}
           />
           <div style={{ maxWidth: '200px' }}>
@@ -98,7 +98,7 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
         >
           {Object.entries(item.shortcut).map(([key, shortcut]) => {
             if (item.type === QuickLinkType.backlink && key === 'save') {
-              if (!selection) return <></>
+              if (!selection) return <span key={key}></span>
             }
 
             return (

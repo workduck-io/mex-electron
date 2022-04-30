@@ -73,7 +73,7 @@ export const Services = styled.div`
   align-items: center;
 `
 
-export const ServiceCard = styled.div<{ hover: boolean; disabled: boolean }>`
+export const ServiceCard = styled.div<{ hover?: boolean; disabled?: boolean }>`
   position: relative;
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background: ${({ theme }) => theme.colors.background.card};

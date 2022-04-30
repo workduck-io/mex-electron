@@ -25,18 +25,8 @@ import {
 import { useSnippets } from '../../../../hooks/useSnippets'
 import useDataStore from '../../../../store/useDataStore'
 import { mog } from '../../../../utils/lib/helper'
-import {
-  serializeHtml,
-  getPlateEditorRef,
-  createPlateEditor,
-  createPlateUIEditor,
-  createPlateUI,
-  ELEMENT_MEDIA_EMBED,
-  LinkElement,
-  ELEMENT_IMAGE
-} from '@udecode/plate'
+import { serializeHtml, createPlateEditor, createPlateUI } from '@udecode/plate'
 import getPlugins from '../../../../editor/Plugins/plugins'
-import { TagElement } from '../../../../editor/Components/tag/components/TagElement'
 import { ELEMENT_TAG } from '../../../../editor/Components/tag/defaults'
 import { CopyTag } from '../../../../editor/Components/tag/components/CopyTag'
 
@@ -76,19 +66,26 @@ const List = ({
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
 
   const listStyle = useMemo(() => {
-    const style = { width: '55%' }
+    const style = { width: '55%', marginRight: '0.5rem' }
 
     if (!normalMode) {
       style.width = '0%'
+      style.marginRight = '0'
     }
 
     if (searchResults[activeIndex] && searchResults[activeIndex]?.category !== CategoryType.backlink) {
       style.width = '100%'
+      style.marginRight = '0'
     }
 
     if (searchResults[activeIndex] && searchResults[activeIndex]?.category === CategoryType.meeting) {
-      if (normalMode) style.width = '55%'
-      else style.width = '0%'
+      if (normalMode) {
+        style.width = '55%'
+        style.marginRight = '0.5rem'
+      } else {
+        style.width = '0%'
+        style.marginRight = '0'
+      }
     }
 
     return style

@@ -30,20 +30,17 @@ import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
 import { AppleNote } from '../../../utils/importers/appleNotes'
 import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useBrowserNavigation, useRouting } from '../../../views/routes/urls'
-import { useSearch } from '../../../hooks/useSearch'
-import { Reminder, ReminderActions } from '../../../types/reminders'
-import { useReminders, useReminderStore } from '../../../hooks/useReminders'
-import { useCalendar, useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
-import { useTokens } from '../../../services/auth/useTokens'
-import { GOOGLE_OAUTH_URL } from '../../../apis/routes'
+import { useCalendar } from '../../../hooks/useCalendar'
 import toast from 'react-hot-toast'
-import { useBufferStore, useEditorBuffer } from '../../../hooks/useEditorBuffer'
+import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
+import { useRedirectAuth } from '../Auth/useRedirectAuth'
+import useActions from '../../spotlight/Actions/useActions'
+import { useActionPerformer } from '../../spotlight/Actions/useActionPerformer'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
   const { goTo } = useRouting()
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
-  const authenticated = useAuthStore(({ authenticated }) => authenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const pushHs = useHistoryStore((store) => store.push)
   const isOnboarding = useOnboard((s) => s.isOnboarding)
@@ -53,7 +50,7 @@ const Init = () => {
   const { init } = useInitialize()
   const { loadNode, getNode } = useLoad()
   const { initCognito } = useAuth()
-  const { loginViaGoogle, logout } = useAuthentication()
+  const { logout } = useAuthentication()
 
   const { getLocalData } = useLocalData()
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
@@ -64,10 +61,8 @@ const Init = () => {
   const { push } = useNavigation()
   const { getNodeidFromPath } = useLinks()
   const { onSave } = useSaver()
-  const updateReminderState = useReminderStore((store) => store.updateReminderState)
   const { setReceiveToken } = useRecieveTokens()
-
-  const { addGoogleCalendarToken } = useTokens()
+  // const { getAuthorizedGroups } = useActions()
 
   /**
    * Setup save
@@ -76,6 +71,7 @@ const Init = () => {
 
   const { getTokenData } = useTokenData()
   const { saveAndClearBuffer } = useEditorBuffer()
+  const { initActionPerfomerClient } = useActionPerformer()
 
   /**
    * Initialization of the app data, search index and auth,
@@ -102,6 +98,7 @@ const Init = () => {
           })
           if (userAuthenticatedEmail) {
             ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: true })
+            initActionPerfomerClient(useAuthStore.getState().workspaceDetails?.id)
             return { d, auth: true }
           }
           setUnAuthenticated()
@@ -130,6 +127,10 @@ const Init = () => {
         // .then(() => goTo(ROUTE_PATHS.search, NavigationType.push))
         .then(({ nodeid }) => {
           // mog('Navigating to ', { nodeid })
+
+          // TODO: REMOVE THIS AFTER INTEGRATIONS
+          // goTo(ROUTE_PATHS.integrations, NavigationType.replace)
+          // getAuthorizedGroups(true).then(() => mog('Authorized groups loaded'))
 
           goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid)
         })
@@ -175,7 +176,7 @@ const Init = () => {
     })
 
     ipcRenderer.on(IpcAction.OPEN_REMINDER, (_event, { reminder }) => {
-      mog('Opening Reminder', { reminder })
+      // mog('Opening Reminder', { reminder })
       if (!reminder) return
       // updateReminderState(reminder.id, {
       //   ...reminder.state,
@@ -230,6 +231,13 @@ const Init = () => {
   const { setIpc } = useSyncData()
   const setAnalysisIpc = useAnalysisIPC()
 
+  const { redirectAuthHandler } = useRedirectAuth()
+
+  // * Mex App redirect auth Handler
+  useEffect(() => {
+    redirectAuthHandler()
+  }, [])
+
   // Setup sending the analysis call
   useAnalysis()
 
@@ -252,23 +260,7 @@ const Init = () => {
   useEffect(() => {
     setIpc()
     setReceiveToken()
-    ipcRenderer.on(IpcAction.OAUTH, async (event, data) => {
-      const { type } = data
-      switch (type) {
-        case 'login_google':
-          await loginViaGoogle(data.code, config.cognito.APP_CLIENT_ID, GOOGLE_OAUTH_URL)
-          break
-        case 'calendar_google':
-          addGoogleCalendarToken({
-            accessToken: data.accessToken,
-            idToken: data.idToken,
-            refreshToken: data.refreshToken
-          })
-          break
-        default:
-          toast('Something went wrong')
-      }
-    })
+
     // Setup recieving the analysis call
     setAnalysisIpc()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

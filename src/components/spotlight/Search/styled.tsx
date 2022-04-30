@@ -32,15 +32,22 @@ export const StyledInput = styled.input<{ disabled?: boolean; before?: string }>
 
   flex: 1;
   border: none;
-  color: ${({ theme, disabled }) => (disabled ? theme.colors.text.disabled : theme.colors.text.fade)};
+  color: ${({ theme }) => theme.colors.form.input.fg};
+
   ${({ disabled }) =>
     disabled &&
     css`
-      font-weight: bolder;
+      font-weight: bold;
       ::placeholder {
         color: ${({ theme }) => theme.colors.primary};
       }
     `}
+
+  ::placeholder {
+    color: ${({ theme }) => theme.colors.gray[4]};
+    opacity: 0.5rem;
+  }
+
   :focus {
     outline: none;
   }

@@ -6,12 +6,16 @@ import { IpcAction } from '../../../data/IpcAction'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { openNodeInMex } from '../../../utils/combineSources'
+import { useActionStore } from '../Actions/useActionStore'
+import { NavigationType, useRouting } from '../../../views/routes/urls'
+import { mog } from '../../../utils/lib/helper'
 
 const useItemExecutor = () => {
-  const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
   const { setSearch, setActiveItem } = useSpotlightContext()
   const setInput = useSpotlightAppStore((store) => store.setInput)
+  const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
+  const initAction = useActionStore((store) => store.initAction)
+  const { goTo } = useRouting()
 
   const closeSpotlight = () => {
     setInput('')
@@ -24,6 +28,18 @@ const useItemExecutor = () => {
   const itemActionExecutor = (item: ListItemType, query?: string, isMetaPressed?: boolean) => {
     switch (item.type) {
       case ItemActionType.action:
+        setSearch({ value: '', type: CategoryType.search })
+        setInput('')
+
+        // eslint-disable-next-line no-case-declarations
+        const actionGroupInfo = item?.extras?.actionGroup
+
+        if (actionGroupInfo) {
+          initAction(actionGroupInfo.actionGroupId, item.id)
+        }
+
+        goTo('action', NavigationType.push)
+
         break
       case ItemActionType.customAction:
         if (item.extras.customAction) item.extras.customAction()

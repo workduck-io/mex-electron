@@ -196,7 +196,7 @@ const Search = () => {
       const node = getNode(item.id)
       const icon = node?.icon ?? fileList2Line
       const edNode = { ...node, title: node.path, id: node.nodeid }
-      mog('RenderPreview', { item, content, node })
+      // mog('RenderPreview', { item, content, node })
       return (
         <SplitSearchPreviewWrapper id={`splitSearchPreview_for_${item.id}`}>
           <Title onMouseUp={(e) => onDoubleClick(e, item)}>

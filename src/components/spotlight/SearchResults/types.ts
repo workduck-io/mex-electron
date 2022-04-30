@@ -3,6 +3,7 @@ import { IpcAction } from '../../../data/IpcAction'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { Shortcut } from '../../mex/Help/Help.types'
 import { CalendarEvent } from '../../../hooks/useCalendar'
+import { AuthTypeId } from '@workduck-io/action-request-helper'
 
 export interface ListItemType {
   id: string
@@ -20,6 +21,11 @@ export interface ItemExtraType {
   blockid: string
   path: string
   new: boolean
+  actionGroup?: {
+    actionGroupId: string
+    authTypeId: AuthTypeId
+  }
+  combo: boolean
   customAction: () => void
   componentName: string
   base_url: string

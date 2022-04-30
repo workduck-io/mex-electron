@@ -21,7 +21,7 @@ const ReminderArmer = () => {
   useEffect(() => {
     ipcRenderer.on(IpcAction.ACTION_REMINDER, (_event, arg: ReminderActionIpcData) => {
       // goTo(ROUTE_PATHS.node, NavigationType.push, appleNotesUID)
-      mog('ReminderArmer: IpcAction.ACTION_REMINDER', { arg })
+      // mog('ReminderArmer: IpcAction.ACTION_REMINDER', { arg })
       const { action, reminder } = arg
       actOnReminder(action, reminder)
     })
@@ -29,7 +29,7 @@ const ReminderArmer = () => {
 
   useEffect(() => {
     const toArmRems = getToArmReminders()
-    mog('ReminderArmer: useEffect', { reminders, toArmRems })
+    // mog('ReminderArmer: useEffect', { reminders, toArmRems })
 
     if (toArmRems.length > 0) {
       toArmRems.forEach((rems) => armReminders(rems.reminders, rems.time))
@@ -40,14 +40,14 @@ const ReminderArmer = () => {
 
     const intervalId = setInterval(() => {
       const missedRems = getMissedReminders()
-      mog('ReminderArmer: Arming missed reminders', { reminders, missedRems })
+      // mog('ReminderArmer: Arming missed reminders', { reminders, missedRems })
       if (missedRems.length > 0) {
         armMissedReminders()
       }
     }, 1000 * 60 * 1) // one minutes
 
     return () => {
-      mog('ReminderArmer: unArming reminders', { reminders })
+      // mog('ReminderArmer: unArming reminders', { reminders })
       clearInterval(intervalId)
       clearAllArmedReminders()
     }

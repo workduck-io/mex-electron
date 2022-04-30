@@ -78,7 +78,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
       }
       // Once preview is shown the link looses focus
       if (preview) {
-        mog('working', { element })
+        // mog('working', { element })
         push(element.value)
         goTo(ROUTE_PATHS.node, NavigationType.push, element.value)
       }

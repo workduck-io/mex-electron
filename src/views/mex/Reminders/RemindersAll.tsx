@@ -238,7 +238,7 @@ const RemindersAll = () => {
     )
   }
 
-  mog('RemindersAll', { reminders, board, filters, currentFilters })
+  // mog('RemindersAll', { reminders, board, filters, currentFilters })
 
   return (
     <PageContainer>

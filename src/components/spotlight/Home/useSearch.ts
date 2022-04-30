@@ -3,15 +3,17 @@ import { ListItemType } from '../SearchResults/types'
 
 import { getListItemFromNode, getListItemFromSnippet } from './helper'
 import { search as getSearchResults } from 'fast-fuzzy'
-import { initActions, searchBrowserAction, searchGoogle } from '../../../data/Actions'
+import { searchGoogle } from '../../../data/Actions'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { mog } from '../../../utils/lib/helper'
+
 /* eslint-disable no-case-declarations */
 import useLoad from '../../../hooks/useLoad'
 import { useQuickLinks } from '../../../hooks/useQuickLinks'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { useSnippets } from '../../../hooks/useSnippets'
 import { useSearch as useSearchHook } from '../../../hooks/useSearch'
+import { useActionStore } from '../Actions/useActionStore'
 
 export const CREATE_NEW_ITEM: ListItemType = {
   title: 'Create new ',
@@ -42,6 +44,7 @@ export const useSearch = () => {
   const { search } = useSpotlightContext()
   const { queryIndex } = useSearchHook()
   const { getQuickLinks } = useQuickLinks()
+  const actions = useActionStore((store) => store.actions)
   const { getSnippet } = useSnippets()
 
   const searchInList = async () => {
@@ -54,6 +57,11 @@ export const useSearch = () => {
     else sQuery = search?.value
 
     switch (search?.type) {
+      case CategoryType.performed:
+        // const results = getSearchResults(search.value)
+        mog('Searching action results', { search }, { pretty: true })
+        break
+
       // * Search quick links using [[
       case CategoryType.backlink:
         const query = search.value.substring(2)
@@ -73,15 +81,15 @@ export const useSearch = () => {
       // * Search actions using "/"
       case CategoryType.action:
         const val = search.value.substring(1)
-        const actions = getSearchResults(val, initActions, { keySelector: (obj) => obj.title })
-        searchList = actions
+        const actionList = getSearchResults(val, actions, { keySelector: (obj) => obj.title })
+        searchList = actionList
         break
 
       case CategoryType.search:
         const nodeItems = await queryIndex('node', search.value)
         const snippetItems = await queryIndex('snippet', search.value)
 
-        const actionItems = getSearchResults(search.value, initActions, { keySelector: (obj) => obj.title })
+        const actionItems = getSearchResults(search.value, actions, { keySelector: (obj) => obj.title })
         const localNodes = []
 
         nodeItems.forEach((item) => {
@@ -97,7 +105,6 @@ export const useSearch = () => {
         snippetItems.forEach((snippet) => {
           const snip = getSnippet(snippet.id)
           const item = getListItemFromSnippet(snip)
-          // mog('item', { item })
           localNodes.push(item)
         })
 

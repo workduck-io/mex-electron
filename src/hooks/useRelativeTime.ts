@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { getRelativeTime } from '../utils/time'
-// import { mog } from '../utils/lib/helper'
 
 export function useRelativeTime(d: Date | number, refresh_ms?: number) {
   // Returns auto-refreshed human relative time

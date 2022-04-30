@@ -15,7 +15,6 @@ import { StyledContent } from './styled'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import { getListItemFromNode } from '../Home/helper'
 import { getUntitledDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
-import { initActions } from '../../../data/Actions'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import useEditorActions from '../../../hooks/useEditorActions'
@@ -25,8 +24,9 @@ import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import 'react-contexify/dist/ReactContexify.css'
-import { useCalendar, useCalendarStore, openCalendarMeetingNote } from '../../../hooks/useCalendar'
+import { useCalendar, useCalendarStore } from '../../../hooks/useCalendar'
 import { MeetingSnippetContent } from '../../../data/initial/MeetingNote'
+import { useActionStore } from '../Actions/useActionStore'
 
 export const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -38,8 +38,8 @@ const Content = () => {
   // * Store
   const ilinks = useDataStore((s) => s.ilinks)
   const lastOpenedNodes = useRecentsStore((store) => store.lastOpened)
-  const normalMode = useSpotlightAppStore((store) => store.normalMode)
   const recentResearchNodes = useRecentsStore((store) => store.recentResearchNodes)
+  const normalMode = useSpotlightAppStore((store) => store.normalMode)
   const { getUpcomingEvents } = useCalendar()
   const { editorNode, setNodeContent, setPreviewEditorNode, preview, setPreview } = useSpotlightEditorStore(
     (store) => ({
@@ -59,6 +59,7 @@ const Content = () => {
   const { resetEditor } = useEditorActions()
   const { search, selection, activeItem, activeIndex, searchResults, setSearchResults } = useSpotlightContext()
   const events = useCalendarStore((store) => store.events)
+  const actions = useActionStore((store) => store.actions)
 
   // * For setting the results
   useEffect(() => {
@@ -90,7 +91,8 @@ const Content = () => {
 
           const list = !recentLimit ? [CREATE_NEW_ITEM] : insertItemInArray(limitedList, CREATE_NEW_ITEM, 1)
 
-          const data = [...recentEvents, ...list, ...initActions]
+          // mog('Events', { recentEvents })
+          const data = [...recentEvents, ...list, ...actions]
           setSearchResults(data)
         }
       }
@@ -101,7 +103,7 @@ const Content = () => {
     // else {
     //   setSearchResults([activeItem.item])
     // }
-  }, [search.value, selection, activeItem.item, normalMode, ilinks, events])
+  }, [search.value, actions, selection, activeItem.item, normalMode, ilinks, events])
 
   // * For setting the preview
   useEffect(() => {

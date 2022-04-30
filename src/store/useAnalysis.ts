@@ -6,11 +6,9 @@ import create from 'zustand'
 import { useBufferStore, useEditorBuffer } from '../hooks/useEditorBuffer'
 import { useEditorStore } from './useEditorStore'
 import { getContent } from '../utils/helpers'
-import { mog } from '../utils/lib/helper'
 import { TodoType } from '../editor/Components/Todo/types'
 import useTodoStore from './useTodoStore'
 import { areEqual } from '../utils/lib/hash'
-import { DRAFT_NODE } from '../data/Defaults/idPrefixes'
 import { checkIfUntitledDraftNode } from '../utils/lib/strings'
 
 export interface OutlineItem {

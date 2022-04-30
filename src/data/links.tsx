@@ -2,6 +2,8 @@ import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
 import checkboxLine from '@iconify/icons-ri/checkbox-line'
 import fileDocument from '@iconify/icons-gg/file-document'
 import appsLine from '@iconify/icons-ri/apps-line'
+import actionIcon from '@iconify/icons-ri/cursor-line'
+
 import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
@@ -43,6 +45,18 @@ const useNavlinks = () => {
         icon: GetIcon(searchLine)
       },
       // {
+      //   title: 'Actions',
+      //   path: ROUTE_PATHS.actions,
+      //   // shortcut: shortcuts.showIntegrations.keystrokes,
+      //   icon: GetIcon(actionIcon)
+      // },
+      // {
+      //   title: 'Actions',
+      //   path: ROUTE_PATHS.actions,
+      //   // shortcut: shortcuts.showIntegrations.keystrokes,
+      //   icon: GetIcon(actionIcon)
+      // },
+      // {
       //   title: 'Dashboard',
       //   path: ROUTE_PATHS.dashborad,
       //   icon: GetIcon(dashboardLine),
@@ -78,15 +92,14 @@ const useNavlinks = () => {
         count: count.reminders
         // shortcut: shortcuts.showReminder.keystrokes
         // isComingSoon: true
-      }
+      },
 
-      /*{
+      {
         title: 'Flows',
         path: ROUTE_PATHS.integrations,
-        // shortcut: shortcuts.showIntegrations.keystrokes,
-        icon: GetIcon(appsLine),
-        isComingSoon: true
-      }*/
+        shortcut: shortcuts.showIntegrations.keystrokes,
+        icon: GetIcon(appsLine)
+      }
     ]
     return links
   }

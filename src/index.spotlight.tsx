@@ -6,4 +6,4 @@ import config from './services/analytics/config'
 
 analytics(config.heap.HEAP_PREFIX, config.heap.APP_ID)
 
-render(<App />, document.getElementById('root'))
+render(<App />, document.getElementById('spotlight'))

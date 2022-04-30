@@ -41,7 +41,7 @@ const InfoBar = () => {
 
   const infobar = useLayoutStore((s) => s.infobar)
   const pinnedSuggestions = useSuggestionStore((s) => s.pinnedSuggestions)
-  const { toggleSyncBlocks, toggleGraph, toggleSuggestedNodes, toggleReminder } = useToggleElements()
+  const { toggleGraph, toggleSuggestedNodes, toggleReminder } = useToggleElements()
   const { shortcutHandler } = useKeyListener()
 
   useEffect(() => {

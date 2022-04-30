@@ -2,8 +2,6 @@ import styled from 'styled-components'
 
 export const StyledContent = styled.section`
   display: flex;
-  justify-content: center;
-  flex: 1;
-  height: 422px;
+  height: calc(100% - 3.5rem);
   margin: 0.5rem 0 0;
 `

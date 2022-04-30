@@ -5,6 +5,7 @@ import {
   app,
   autoUpdater,
   BrowserWindow,
+  BrowserWindowConstructorOptions,
   globalShortcut,
   ipcMain,
   Menu,
@@ -15,6 +16,7 @@ import {
   Tray
 } from 'electron'
 import fs from 'fs'
+import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
 import path from 'path'
 import { getSaveLocation, getSearchIndexLocation, getTokenLocation } from '../data/Defaults/data'
 import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
@@ -57,6 +59,7 @@ import { IS_DEV } from '../data/Defaults/dev_'
 import { Reminder, ReminderActions } from '../types/reminders'
 import { AuthTokenData } from '../types/auth'
 import { clearLocalStorage } from '../utils/dataTransform'
+import { getRedirectPath } from './utils/redirect'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -125,6 +128,7 @@ export const SPOTLIGHT_WINDOW_OPTIONS = {
   width: 800,
   height: 500,
   maxWidth: 800,
+  vibrancy: 'popover' as any,
   maxHeight: 500,
   center: false,
   frame: false,
@@ -154,7 +158,7 @@ const createSpotLighWindow = (show?: boolean) => {
       spotlight.focus()
       spotlight.show()
     } else {
-      spotlight.hide()
+      // spotlight.hide()
     }
   })
 
@@ -410,18 +414,13 @@ app.setAsDefaultProtocolClient('mex')
 
 app.on('open-url', function (event, url) {
   event.preventDefault()
-  const URLparams = new URL(url).searchParams
-  const code = URLparams.get('code')
-  if (code) {
-    const type = 'login_google'
-    mex.webContents.send(IpcAction.OAUTH, { type, code })
-  } else {
-    const accessToken = URLparams.get('access_token')
-    const idToken = URLparams.get('id_token')
-    const refreshToken = URLparams.get('refresh_token')
-    const type = URLparams.get('type')
-    mex.webContents.send(IpcAction.OAUTH, { type, accessToken, idToken, refreshToken })
-  }
+
+  getRedirectPath(mex, url)
+})
+
+ipcMain.on(IpcAction.UPDATE_ACTIONS, (event, data) => {
+  // mog('DATA', { data })
+  spotlight.webContents.send(IpcAction.UPDATE_ACTIONS, data)
 })
 
 app
@@ -429,10 +428,14 @@ app
   .then(() => {
     // * permission check
 
+    installExtension(REDUX_DEVTOOLS)
+      .then((name) => console.log(`Added Extension:  ${name}`))
+      .catch((err) => console.log('An error occurred: ', err))
+
     // getPermissions().then((s) => console.log('Hello'))
 
     global.appVersion = app.getVersion()
-    globalShortcut.register('CommandOrCOntrol+Shift+L', handleToggleMainWindow)
+    globalShortcut.register('CommandOrControl+Shift+X', handleToggleMainWindow)
 
     const icon = nativeImage.createFromDataURL(trayIconBase64)
     const twitterIcon = nativeImage.createFromDataURL(twitterIconBase64)
@@ -570,7 +573,7 @@ ipcMain.on(IpcAction.GET_TOKEN_DATA, async (event) => {
 })
 
 ipcMain.on(IpcAction.SET_TOKEN_DATA, (_event, arg) => {
-  mog('SETTING TOKEN DATA', { arg })
+  // mog('SETTING TOKEN DATA', { arg })
   setTokenData(arg, TOKEN_LOCATION)
   const tokenData: AuthTokenData = arg || getTokenData(TOKEN_LOCATION)
 
@@ -627,7 +630,7 @@ ipcMain.on(IpcAction.CLEAR_RECENTS, (_event, arg) => {
 
 ipcMain.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {
   const { from, data } = arg
-  mog('Add new recent item', { from, data })
+  // mog('Add new recent item', { from, data })
   notifyOtherWindow(IpcAction.NEW_RECENT_ITEM, from, data)
 })
 

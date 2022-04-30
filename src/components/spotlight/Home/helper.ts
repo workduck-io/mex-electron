@@ -1,4 +1,5 @@
-import { ListItemType } from '../SearchResults/types'
+import { ItemActionType, ListItemType } from '../SearchResults/types'
+import { ActionHelperConfig, ActionGroup } from '@workduck-io/action-request-helper'
 
 import { CategoryType } from '../../../store/Context/context.spotlight'
 import { ILink } from '../../../types/Types'
@@ -38,6 +39,33 @@ export const getListItemFromNode = (node: ILink, description?: string, blockid?:
   }
 
   return listItem
+}
+
+export const getListItemFromAction = (config: ActionHelperConfig, actionGroup: ActionGroup) => {
+  const actionItem: ListItemType = {
+    icon: actionGroup?.icon ?? 'fluent:arrow-routing-24-filled',
+    category: CategoryType.action,
+    id: config.actionId,
+    type: ItemActionType.action,
+    description: config.description,
+    shortcut: {
+      search: {
+        category: 'action',
+        title: 'to Open',
+        keystrokes: 'Enter'
+      }
+    },
+    title: config.name,
+    extras: {
+      combo: true,
+      actionGroup: {
+        actionGroupId: actionGroup.actionGroupId,
+        authTypeId: config.authTypeId
+      }
+    }
+  }
+
+  return actionItem
 }
 
 export const getListItemFromSnippet = (snippet: Snippet) => {

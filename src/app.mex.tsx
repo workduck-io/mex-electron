@@ -21,7 +21,6 @@ import MexErrorFallback from './components/mex/Error/MexErrorFallback'
 if (!IS_DEV) initializeSentry()
 
 Modal.setAppElement('#root')
-initializeSentry()
 
 function App() {
   return (

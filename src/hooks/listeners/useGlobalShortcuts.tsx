@@ -6,15 +6,13 @@ import tinykeys from 'tinykeys'
 import { useContentStore } from '../../store/useContentStore'
 import { useEffect } from 'react'
 import { useKeyListener } from '../useShortcutListener'
-import { useLocation } from 'react-router'
 import { useSaveChanges } from '../../components/spotlight/Search/useSearchProps'
 import { useSpotlightAppStore } from '../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../store/settings.spotlight'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 
 export const useGlobalShortcuts = () => {
-  const location = useLocation()
-
   const { setSelection, setSearch, setActiveItem, activeItem, search, selection } = useSpotlightContext()
 
   const { showSource } = useSpotlightSettingsStore(({ showSource, toggleSource }) => ({
@@ -24,9 +22,11 @@ export const useGlobalShortcuts = () => {
   const setSaved = useContentStore((state) => state.setSaved)
   const setInput = useSpotlightAppStore((store) => store.setInput)
 
+  const { goTo, location, goBack } = useRouting()
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const setCurrentListItem = useSpotlightEditorStore((s) => s.setCurrentListItem)
+  const setView = useSpotlightAppStore((store) => store.setView)
 
   const handleCancel = () => {
     setNormalMode(true)
@@ -43,8 +43,26 @@ export const useGlobalShortcuts = () => {
       [spotlightShortcuts.escape.keystrokes]: (event) => {
         event.preventDefault()
         if (!shortcutDisabled) {
-          if (selection && normalMode && !search.value && !activeItem.active) {
-            ipcRenderer.send('close') // * TO be continued when flow are introd
+          if (location.pathname === '/action' || location.pathname === '/action/view') {
+            if (useSpotlightAppStore.getState().view === 'item') {
+              setView(undefined)
+              goBack()
+            } else {
+              // * If no value is present, take back to home view
+              if (!search.value) {
+                handleCancel()
+                setView(undefined)
+                // clearPerformedAction()
+                goTo(ROUTE_PATHS.home, NavigationType.replace)
+                return
+              }
+              // * clear action search
+
+              setInput('')
+              setSearch({ value: '', type: CategoryType.search })
+            }
+          } else if (selection && normalMode && !search.value && !activeItem.active) {
+            ipcRenderer.send('close') // * To be continued when flow are introd
             setSelection(undefined) // * this will do something
           } else if ((search.value && normalMode) || activeItem.active) {
             setInput('')

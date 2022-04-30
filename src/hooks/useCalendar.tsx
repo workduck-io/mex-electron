@@ -226,10 +226,10 @@ export const useCalendar = () => {
 
     const todayEventList: ListItemType[] = todayEvents.map(convertCalendarEventToAction)
 
-    mog('calendar', {
-      events,
-      todayEventList
-    })
+    // mog('calendar', {
+    //   events,
+    //   todayEventList
+    // })
 
     return todayEventList
   }
@@ -258,7 +258,7 @@ export const useCalendar = () => {
         break
     }
 
-    mog('fetching events', { now, yesterday, twoDaysFromNow })
+    // mog('fetching events', { now, yesterday, twoDaysFromNow })
     const reqUrl = encodeURI(
       `${GOOGLE_CAL_BASE}/primary/events?maxResults=${max}&timeMin=${yesterday}&timeMax=${twoDaysFromNow}`
     )
@@ -270,7 +270,7 @@ export const useCalendar = () => {
       })
       .then((res) => {
         const events = res.data.items.map((event) => converGoogleEventToCalendarEvent(event))
-        console.log('Got Events', res.data, events)
+        // console.log('Got Events', res.data, events)
         setEvents(events)
       })
 

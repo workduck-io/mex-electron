@@ -12,7 +12,7 @@ const Bubble = () => {
   useGlobalShortcuts()
 
   return (
-    <StyledBubble modal={bubble}>
+    <StyledBubble id="wd-mex-spotlight-bubble" modal={bubble}>
       <WDLogo />
       {nodeContent && <Badge />}
     </StyledBubble>

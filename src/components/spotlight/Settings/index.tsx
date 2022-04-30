@@ -1,7 +1,7 @@
 import React from 'react'
 import Shortcuts, { ShortcutType } from '../Shortcuts'
 import { useSettingsShortcuts } from '../../../hooks/listeners/useSettingsShortcuts'
-import { StyledLookup } from '../styled'
+import { SpotlightContainer } from '../styled'
 import { CenterIcon } from '../../../style/spotlight/layout'
 import WDLogo from '../Search/Logo'
 import ToggleButton from '../ToggleButton'
@@ -21,7 +21,7 @@ const Settings = () => {
   }
 
   return (
-    <StyledLookup>
+    <SpotlightContainer>
       <StyledHeadingContainer>
         <Title>SETTINGS</Title>
         <CenterIcon>
@@ -35,7 +35,7 @@ const Settings = () => {
         </SettingOption>
       </SettingsContainer>
       <Shortcuts type={ShortcutType.NEW} />
-    </StyledLookup>
+    </SpotlightContainer>
   )
 }
 

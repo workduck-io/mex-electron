@@ -2,9 +2,7 @@ import Board from '@asseinfo/react-kanban'
 import trashIcon from '@iconify/icons-codicon/trash'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useMemo, useRef } from 'react'
-import arrowEnterLeft20Filled from '@iconify/icons-fluent/arrow-enter-left-20-filled'
 import arrowLeftRightLine from '@iconify/icons-ri/arrow-left-right-line'
-import styled from 'styled-components'
 import dragMove2Fill from '@iconify/icons-ri/drag-move-2-fill'
 import tinykeys from 'tinykeys'
 import { DisplayShortcut, ShortcutMid } from '../../components/mex/Shortcuts'
@@ -22,7 +20,7 @@ import { useEditorStore } from '../../store/useEditorStore'
 import { useRecentsStore } from '../../store/useRecentsStore'
 import useTodoStore from '../../store/useTodoStore'
 import { Button } from '../../style/Buttons'
-import { MainHeader, PageContainer } from '../../style/Layouts'
+import { PageContainer } from '../../style/Layouts'
 import {
   ShortcutToken,
   ShortcutTokens,
@@ -63,7 +61,6 @@ const Tasks = () => {
     addCurrentFilter,
     removeCurrentFilter,
     resetCurrentFilters,
-    resetFilters,
     filters,
     currentFilters
   } = useTodoKanban()
