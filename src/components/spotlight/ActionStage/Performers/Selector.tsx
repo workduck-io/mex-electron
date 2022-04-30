@@ -8,6 +8,7 @@ import { useActionStore } from '../../Actions/useActionStore'
 import { StyledBackground } from '../../styled'
 import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
 import { transparentize } from 'polished'
+import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 
 const Dropdown = styled.div`
   ${StyledBackground}
@@ -149,6 +150,7 @@ export const MultiValueOption: React.FC<any> = (props) => {
 }
 
 const Selector = forwardRef<any, SelectedProps>((props, ref) => {
+  const setIsMenuOpen = useSpotlightAppStore((store) => store.setIsMenuOpen)
   const { actionId, placeholder, onChange, width = '30%', actionGroupId, data, value, isMulti } = props
   const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
     data: [],
@@ -200,6 +202,8 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
       openMenuOnClick
       menuShouldScrollIntoView
       placeholder={placeholder}
+      onMenuOpen={() => setIsMenuOpen(true)}
+      onMenuClose={() => setIsMenuOpen(false)}
       components={
         isMulti ? { Option: CustomOption, MultiValue: MultiValueOption } : { SingleValue, Option: CustomOption }
       }

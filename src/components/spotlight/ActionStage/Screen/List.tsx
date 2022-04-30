@@ -44,6 +44,7 @@ const List: React.FC<ListProps> = ({ items }) => {
   const [activeIndex, setActiveIndex] = useState(0)
   const setViewData = useSpotlightAppStore((store) => store.setViewData)
   const setView = useSpotlightAppStore((store) => store.setView)
+  const isMenuOpen = useSpotlightAppStore((store) => store.isMenuOpen)
   const { goTo } = useRouting()
 
   const parentRef = useRef(null)
@@ -93,10 +94,10 @@ const List: React.FC<ListProps> = ({ items }) => {
       }
     }
 
-    window.addEventListener('keydown', handler)
+    if (!isMenuOpen) window?.addEventListener('keydown', handler)
 
     return () => window.removeEventListener('keydown', handler)
-  }, [activeIndex, items])
+  }, [activeIndex, items, isMenuOpen])
 
   if (!items || items.length === 0) {
     return (
