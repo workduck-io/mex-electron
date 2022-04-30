@@ -83,26 +83,34 @@ const ActionForm: React.FC<ActionFormProps> = ({ subType, actionId, actionGroupI
   if (!subType || subType === 'none') return <></>
 
   const withFooter = (form: any) => {
+    const newForm = {}
     const config = groupedActions?.[actionGroupId]?.[actionId]
     const configForm = config?.form ?? []
 
     configForm.forEach((field) => {
       const suffix = field?.options?.appendValue
-      if (suffix && field.key) {
-        const value = formMethods?.getValues(field.key)
-        if (typeof value === 'string') {
-          const footerDescription = value + '\n' + suffix
-          set(form, field.key, footerDescription)
+      const value = formMethods?.getValues(field.key)
+
+      if (field.key && value) {
+        if (suffix) {
+          if (typeof value === 'string') {
+            const footerDescription = value + '\n' + suffix
+            set(newForm, field.key, footerDescription)
+          }
+        } else {
+          // * Null check
+          set(newForm, field.key, value)
         }
       }
     })
 
-    return form
+    return newForm
   }
 
   const onSubmit = async (form: any) => {
     setIsSubmitting(true)
     const updatedForm = withFooter(form)
+    mog('FORM IS ', { updatedForm, form })
     await performer(actionGroupId, actionId, { formData: updatedForm })
     setIsSubmitting(false)
   }
