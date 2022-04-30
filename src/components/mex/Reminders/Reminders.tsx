@@ -36,7 +36,7 @@ const RemindersInfobar = () => {
   const { goTo } = useRouting()
 
   const reminderGroups = useMemo(() => {
-    mog('RemindersInfobar', { reminderGroups, remindersAll })
+    // mog('RemindersInfobar', { reminderGroups, remindersAll })
     const nodeReminders = getNodeReminders(nodeid)
     return nodeReminders
   }, [remindersAll, nodeid, armedReminders, todos])

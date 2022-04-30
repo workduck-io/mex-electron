@@ -3,22 +3,22 @@ import styled from 'styled-components'
 import Row from './Row'
 import Project from '../Project'
 import { mog } from '../../../../utils/lib/helper'
+import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 
 type ViewProps = {
   item: any
-  onBack: () => void
-  onNext: () => void
-  onPrev: () => void
+  onBack?: () => void
+  onNext?: () => void
+  onPrev?: () => void
 }
 
 const StyledView = styled.section`
   display: flex;
   flex-direction: row;
-  /* align-items: center; */
   width: 100%;
   margin-top: 0.5rem;
-  max-height: 425px;
-  /* background: ${({ theme }) => theme.colors.background.modal}; */
+  height: 90vh;
+  max-height: 90vh;
 `
 
 const ViewInfo = styled.div`
@@ -41,6 +41,12 @@ const ViewMeta = styled.div`
   background: ${({ theme }) => theme.colors.background.modal};
   overflow: hidden auto;
 `
+
+export const ViewPage = () => {
+  const viewData = useSpotlightAppStore((store) => store.viewData)
+
+  return <View item={viewData} />
+}
 
 const View: React.FC<ViewProps> = ({ item, onBack, onNext, onPrev }) => {
   if (!item) return null

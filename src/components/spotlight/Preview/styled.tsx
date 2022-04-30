@@ -4,9 +4,9 @@ import { Scroll } from '../../../style/spotlight/layout'
 import { StyledBackground } from '../styled'
 import { animated } from 'react-spring'
 
-export const StyledPreview = styled(animated.div)<{ preview?: boolean }>`
+export const StyledPreview = styled(animated.div)<{ readOnly?: boolean }>`
   ${(props) =>
-    props.preview &&
+    props.readOnly &&
     css`
       cursor: pointer;
     `}

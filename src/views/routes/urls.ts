@@ -49,7 +49,11 @@ export const useRouting = () => {
     if (type === NavigationType.replace) navigate(path, { replace: true, state })
   }
 
-  return { goTo, location, params }
+  const goBack = () => {
+    navigate(-1)
+  }
+
+  return { goTo, goBack, location, params }
 }
 
 export const useBrowserNavigation = () => {

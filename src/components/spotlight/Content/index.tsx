@@ -91,7 +91,7 @@ const Content = () => {
 
           const list = !recentLimit ? [CREATE_NEW_ITEM] : insertItemInArray(limitedList, CREATE_NEW_ITEM, 1)
 
-          mog('Events', { recentEvents })
+          // mog('Events', { recentEvents })
           const data = [...recentEvents, ...list, ...actions]
           setSearchResults(data)
         }

@@ -51,7 +51,7 @@ export const useApi = () => {
         }
       })
       .then((d) => {
-        mog('saveNewNodeAPI response', d)
+        // mog('saveNewNodeAPI response', d)
         setMetadata(nodeid, extractMetadata(d.data))
         return d.data
       })

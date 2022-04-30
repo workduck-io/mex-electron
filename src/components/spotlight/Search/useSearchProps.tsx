@@ -26,7 +26,7 @@ export const useSearchProps = () => {
 
   const { location } = useRouting()
   const { activeItem } = useSpotlightContext()
-  const isActionSearch = location.pathname === '/action'
+  const isActionSearch = location.pathname === '/action' || location.pathname === '/action/view'
 
   if (isActionSearch) {
     return {

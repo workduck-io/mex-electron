@@ -23,8 +23,8 @@ import ReminderArmer from '../Reminder/ReminderArmer'
 import { useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
 import { useTokenData } from '../../../hooks/useLocalData'
 import { useRecieveTokens } from '../../../hooks/useSyncData'
-import useActions from '../Actions/useActions'
 import { useActionStore, UpdateActionsType } from '../Actions/useActionStore'
+import { useActionPerformer } from '../Actions/useActionPerformer'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
@@ -45,13 +45,14 @@ const GlobalListener = memo(() => {
   const { onSave } = useSaver()
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()
+  const { initActionPerfomerClient } = useActionPerformer()
   const { goTo } = useRouting()
-  // const { initActionPerformers } = useActionPerformer()
 
   const addActions = useActionStore((store) => store.addActions)
   const addGroupedActions = useActionStore((store) => store.addGroupedActions)
   const setActionGroups = useActionStore((store) => store.setActionGroups)
   const removeActionsByGroupId = useActionStore((store) => store.removeActionsByGroupId)
+  const setConnectedGroups = useActionStore((store) => store.setConnectedGroups)
 
   // const { initActionPerformers } = useActionPerformer()
 
@@ -74,14 +75,12 @@ const GlobalListener = memo(() => {
   }, [showSource, temp])
 
   useEffect(() => {
-    // initActionsInStore()
-
     ipcRenderer.on(IpcAction.SELECTED_TEXT, (_event, data) => {
       if (!data) {
         setSelection(undefined)
       } else {
         // * If user captures a content when in action mode, then we need to redirect him to the home page
-        useSpotlightAppStore.getState().setView(false)
+        useSpotlightAppStore.getState().setView(undefined)
         goTo(ROUTE_PATHS.home, NavigationType.replace)
         setTemp(data)
       }
@@ -117,7 +116,10 @@ const GlobalListener = memo(() => {
 
     ipcRenderer.on(IpcAction.LOGGED_IN, (_event, arg) => {
       if (arg.loggedIn) {
-        if (arg.userDetails && arg.workspaceDetails) setAuthenticated(arg.userDetails, arg.workspaceDetails)
+        if (arg.userDetails && arg.workspaceDetails) {
+          setAuthenticated(arg.userDetails, arg.workspaceDetails)
+          initActionPerfomerClient(arg?.workspaceDetails?.id)
+        }
         getTokenData()
         goTo(ROUTE_PATHS.home, NavigationType.replace)
       } else setUnAuthenticated()
@@ -151,14 +153,15 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.on(IpcAction.UPDATE_ACTIONS, (_event, arg) => {
-      const { groups, actionList, actions, actionGroupId } = arg?.data
+      const { groups, actionList, actions, actionGroupId, connectedGroups, type } = arg?.data
 
-      if (UpdateActionsType.REMOVE_ACTION_BY_GROUP_ID) removeActionsByGroupId(actions)
+      if (type === UpdateActionsType.CLEAR) useActionStore.getState().clear()
+      else if (type === UpdateActionsType.REMOVE_ACTION_BY_GROUP_ID) removeActionsByGroupId(actions)
+      else if (type === UpdateActionsType.AUTH_GROUPS) setConnectedGroups(connectedGroups)
       else if (groups) setActionGroups(groups)
       else if (actionList) addActions(actionList)
       else if (actions && actionGroupId) {
         addGroupedActions(actionGroupId, actions)
-        // initActionsOfGroup(actionGroupId)
       }
     })
 
@@ -168,6 +171,7 @@ const GlobalListener = memo(() => {
       localStorage.clear()
     })
 
+    initActionPerfomerClient(useAuthStore.getState()?.workspaceDetails?.id)
     setReceiveToken()
   }, [])
 

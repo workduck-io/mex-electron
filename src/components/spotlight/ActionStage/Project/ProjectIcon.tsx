@@ -46,23 +46,43 @@ const ProjectIconContainer = styled.span<{ isView: boolean }>`
   }
 `
 
-const ProjectIconMex: React.FC<{ isMex: boolean; icon: string }> = forwardRef((props, ref) => {
-  const theme = useTheme()
-  // eslint-disable-next-line react/prop-types
-  const { isMex, icon } = props
+export const ProjectIconMex: React.FC<{ isMex: boolean; icon: string; size?: number; color?: string }> = forwardRef(
+  (props, ref) => {
+    const theme = useTheme()
+    // eslint-disable-next-line react/prop-types
+    const { isMex, icon, size, color } = props
 
-  if (isMex) return <MexIcon ref={ref as any} icon={icon} fontSize={20} color={theme.colors.primary} />
-  return <img ref={ref as any} src={icon} height={24} width={24} />
-})
+    if (isMex)
+      return (
+        <MexIcon
+          ref={ref as any}
+          icon={icon}
+          height={size ?? 20}
+          width={size ?? 20}
+          color={color ?? theme.colors.primary}
+        />
+      )
+    return <img ref={ref as any} src={icon} height={size ? size : 24} width={size ? size : 24} />
+  }
+)
 
 ProjectIconMex.displayName = 'ProjectIconMex'
+
+export const getIconType = (icon: string): { mexIcon: boolean; isIconfiy: boolean } => {
+  const mexIcon = !isUrl(icon)
+
+  const isIconfiy = mexIcon && icon.includes(':')
+
+  return {
+    mexIcon,
+    isIconfiy
+  }
+}
 
 const ProjectIcon: React.FC<TemplateItemProp> = ({ item, isView }) => {
   if (!item.icon) return <></>
 
-  const mexIcon = !isUrl(item.icon)
-
-  const isIconfiy = mexIcon && item.icon.includes(':')
+  const { isIconfiy, mexIcon } = getIconType(item.icon)
 
   if (!isIconfiy && mexIcon) return null
 

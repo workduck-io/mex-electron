@@ -65,14 +65,12 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
     ref.current.scrollTop = ref.current.scrollHeight
   }
 
-  mog('Preview', { preview, nodeId, currentItem })
-
   return (
     <StyledPreview
       key={`PreviewSpotlightEditor${!isSnippet ? nodeId : snippet.id}`}
       style={animationProps}
       ref={ref}
-      preview={normalMode}
+      readOnly={normalMode}
       data-tour="mex-quick-capture-preview"
     >
       {selection && (

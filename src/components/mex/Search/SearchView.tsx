@@ -201,7 +201,7 @@ const SearchView = <Item,>({
     setSS((s) => ({ ...s, result }))
   }
   const setResult = (result: Item[], searchTerm: string) => {
-    mog('setresult', { result, searchTerm })
+    // mog('setresult', { result, searchTerm })
 
     setSS((s) => ({ ...s, result, searchTerm, selected: -1 }))
   }

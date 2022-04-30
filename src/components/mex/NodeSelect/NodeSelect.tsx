@@ -269,8 +269,6 @@ function NodeSelect({
       if (key === '') return
       if (isChild) return
 
-      mog('Handling the selected item change', { selectedItem, key, isChild })
-
       onReverseClashAction({
         path: key,
         onSuccess: () => {

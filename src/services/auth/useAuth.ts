@@ -14,6 +14,7 @@ import useAnalytics from '../analytics'
 import { Properties, CustomEvents } from '../analytics/events'
 import { mog } from '../../utils/lib/helper'
 import useActions from '../../components/spotlight/Actions/useActions'
+import { useActionPerformer } from '../../components/spotlight/Actions/useActionPerformer'
 
 interface UserDetails {
   email: string
@@ -31,7 +32,6 @@ interface AuthStoreState extends State {
   userDetails: undefined | UserDetails
   workspaceDetails: undefined | WorkspaceDetails
   setAuthenticated: (userDetails: UserDetails, workspaceDetails: WorkspaceDetails) => void
-  // setAuthenticatedUserDetails: (userDetails: UserDetails) => void
   setUnAuthenticated: () => void
   setRegistered: (val: boolean) => void
   setIsForgottenPassword: (val: boolean) => void
@@ -72,7 +72,8 @@ export const useAuthentication = () => {
   const { updateDefaultServices, updateServices } = useUpdater()
   const { signIn, signUp, verifySignUp, signOut, googleSignIn, refreshToken } = useAuth()
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
-  const { clearActionStore } = useActions()
+  const { clearActionStore, getGroupsToView } = useActions()
+  const { initActionPerfomerClient } = useActionPerformer()
   // const { getNodesByWorkspace } = useApi()
 
   interface AuthDetails {
@@ -103,6 +104,7 @@ export const useAuthentication = () => {
         .then((d): AuthDetails => {
           const userDetails = { email }
           const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
+          initActionPerfomerClient(workspaceDetails.id)
 
           // getNodesByWorkspace(workspaceDetails.id)
           // Set Authenticated, user and workspace details
@@ -146,6 +148,9 @@ export const useAuthentication = () => {
           .then((d: any) => {
             const userDetails = { email: result.userCred.email, userId: result.userCred.userId }
             const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
+            initActionPerfomerClient(workspaceDetails.id)
+            getGroupsToView().then(() => mog('Hello there'))
+
             ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
             identifyUser(userDetails.email)
             mog('Login Google BIG success', { d, userDetails, workspaceDetails })
@@ -204,6 +209,9 @@ export const useAuthentication = () => {
                 }
                 const userDetails = { email: uCred.email, userId: uCred.userId }
                 const workspaceDetails = { id: d.data.id, name: 'WORKSPACE_NAME' }
+                initActionPerfomerClient(workspaceDetails.id)
+                getGroupsToView().then(() => mog('Hello there'))
+
                 ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
                 identifyUser(userDetails.email)
                 mog('Login Google BIG success created user', { userDetails, workspaceDetails })
@@ -296,6 +304,8 @@ export const useAuthentication = () => {
         // Set workspace details
         const userDetails = { email: uCred.email }
         const workspaceDetails = { id: newWorkspaceName, name: 'WORKSPACE_NAME' }
+        initActionPerfomerClient(newWorkspaceName)
+        getGroupsToView().then(() => mog('Hello there'))
 
         ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
         setAuthenticated({ email: sensitiveData.email }, { id: d.data.id, name: d.data.name })

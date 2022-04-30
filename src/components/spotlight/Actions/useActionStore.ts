@@ -4,24 +4,33 @@ import { ListItemType } from '../SearchResults/types'
 import { devtools, persist } from 'zustand/middleware'
 import { getActionIds } from '../../../utils/actions'
 import { initActions } from '../../../data/Actions'
+
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { mog } from '../../../utils/lib/helper'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { IpcAction } from '../../../data/IpcAction'
-import { AppType } from '../../../hooks/useInitialize'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+
+export type ActionSubType = 'form' | 'none' | undefined
 
 export type ActiveActionType = {
   id: string
   actionIds?: Array<string>
   renderType?: ReturnType
+  subType?: ActionSubType
   actionGroupId: string
-  isReady?: boolean
-  at: number
   size: number
 }
 
+export type SelectionNode = {
+  prev?: string
+  selection?: any
+}
+
 export enum UpdateActionsType {
-  REMOVE_ACTION_BY_GROUP_ID
+  REMOVE_ACTION_BY_GROUP_ID,
+  AUTH_GROUPS,
+  UPDATE_GROUPS,
+  UPDATE_ACTION_LIST,
+  CLEAR
 }
 
 const ACTION_STORE_NAME = 'mex-action-store'
@@ -37,10 +46,14 @@ type ActionStoreType = {
   actionGroups: Record<string, ActionGroupType>
   setActionGroups: (actionGroups: Record<string, ActionGroupType>) => void
 
+  connectedGroups: Record<string, boolean>
+  setConnectedGroups: (connectedGroups: Record<string, boolean>) => void
+
   // * Actions are stored in this config
   groupedActions: Record<string, Record<string, ActionHelperConfig>>
   setGroupedActions: (groupedActions: Record<string, Record<string, ActionHelperConfig>>) => void
   addGroupedActions: (actionGroupId: string, groupedActions: Record<string, ActionHelperConfig>) => void
+  getConfig: (actionGroupId: string, actionId: string) => ActionHelperConfig | undefined
 
   selectedValue?: any
   setSelectedValue: (value: any) => void
@@ -48,17 +61,25 @@ type ActionStoreType = {
   actionToPerform?: string
   setActionToPerform: (actionToPerform: string) => void
 
-  // * Performed Action cache map
-  actionsCache: Record<string, Array<Record<string, any>>> | Record<string, any>
-  addActionInCache: (actionId: string, response: any) => void
-  updateValueInCache: (actionId: string, value: any) => void
+  resultCache: Record<string, any>
+  getCacheResult: (actionId: string) => any
+  setResultCache: (resultCache: Record<string, any>) => void
+  addResultInCache: (actionId: string, result: any) => void
+
+  selectionCache: Record<string, SelectionNode>
+  getSelectionCache: (actionId: string) => SelectionNode
+  setSelectionCache: (selectionCache: Record<string, SelectionNode>) => void
+  addSelectionInCache: (actionId: string, selectionNode: SelectionNode) => void
+
   getPrevActionValue: (actionId: string) => any
-  getCachedAction: (actionId: string) => any | undefined
 
   // * For now, let's store active action here
   activeAction?: ActiveActionType
-  setPerformingActionIndex: (performingActionId: string) => void
   initAction: (actionGroupId: string, actionId: string) => void
+
+  // * Form submit
+  isSubmitting: boolean
+  setIsSubmitting: (isSubmiting: boolean) => void
 
   //* Clear fields
   clear: () => void
@@ -66,180 +87,143 @@ type ActionStoreType = {
 
 export const useActionStore = create<ActionStoreType>(
   persist(
-    devtools((set, get) => ({
-      actionGroups: {},
-      setActionGroups: (actionGroups: Record<string, ActionGroup>) => set({ actionGroups }),
+    devtools(
+      (set, get) =>
+        ({
+          actionGroups: {},
+          setActionGroups: (actionGroups: Record<string, ActionGroup>) => set({ actionGroups }),
 
-      groupedActions: {},
-      setGroupedActions: (groupedActions) => set({ groupedActions }),
-      addGroupedActions: (actionGroupId, groupedActions) =>
-        set({ groupedActions: { ...get().groupedActions, [actionGroupId]: groupedActions } }),
+          connectedGroups: {},
+          setConnectedGroups: (connectedGroups: Record<string, boolean>) => set({ connectedGroups }),
 
-      actions: initActions,
-      setActions: (actions: Array<ListItemType>) => set({ actions }),
-      removeActionsByGroupId: (actionGroupId: string) => {
-        const actions = get().actions.filter((action) => action?.extras?.actionGroup?.actionGroupId !== actionGroupId)
-        set({ actions })
-        appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, {
-          actions,
-          type: UpdateActionsType.REMOVE_ACTION_BY_GROUP_ID
-        })
-      },
-      addActions: (actions: Array<ListItemType>) => {
-        const existingActions = get().actions
-        const newActions = [...actions, ...existingActions]
-        set({ actions: newActions })
-      },
+          isSubmitting: false,
+          setIsSubmitting: (isSubmitting: boolean) => set({ isSubmitting }),
 
-      setPerformingActionIndex: (performingActionId) => {
-        const activeAction = get().activeAction
-        const updatedAction = { ...activeAction, at: activeAction?.actionIds?.indexOf(performingActionId) }
-        set({ activeAction: updatedAction })
-      },
+          resultCache: {},
+          getCacheResult: (actionId: string) => get().resultCache[actionId],
+          setResultCache: (resultCache: Record<string, any>) => set({ resultCache }),
+          addResultInCache: (actionId, result) => {
+            const cache = get().resultCache
+            const selection = get().selectionCache
+            const activeAction = get().activeAction
 
-      setSelectedValue: (value) => set({ selectedValue: value }),
+            if (actionId === activeAction.id && activeAction?.actionIds) {
+              mog('RESULT CACHING ', { actionId, result, selection })
+            }
 
-      initAction: (actionGroupId, actionId) => {
-        const actionConfigs = get().groupedActions?.[actionGroupId]
-        const actionCache = get().actionsCache
+            set({
+              resultCache: { ...cache, [actionId]: result },
+              selectionCache: { ...selection, [actionId]: undefined }
+            })
+          },
 
-        const action = actionConfigs[actionId]
+          selectionCache: {},
+          getSelectionCache: (actionId: string) => get().selectionCache[actionId],
+          setSelectionCache: (selectionCache: Record<string, any>) => set({ selectionCache }),
+          addSelectionInCache: (actionId, selection) => {
+            const selectionCache = get().selectionCache
+            set({
+              selectionCache: { ...selectionCache, [actionId]: selection }
+            })
+          },
 
-        const preActionId = action?.preActionId
+          groupedActions: {},
+          setGroupedActions: (groupedActions) => set({ groupedActions }),
+          addGroupedActions: (actionGroupId, groupedActions) =>
+            set({ groupedActions: { ...get().groupedActions, [actionGroupId]: groupedActions } }),
+          getConfig: (actionGroupId, actionId) => get().groupedActions?.[actionGroupId]?.[actionId],
 
-        const renderType = action?.returnType
+          actions: initActions,
+          setActions: (actions: Array<ListItemType>) => set({ actions }),
+          removeActionsByGroupId: (actionGroupId: string) => {
+            const actions = get().actions.filter(
+              (action) => action?.extras?.actionGroup?.actionGroupId !== actionGroupId
+            )
 
-        let actionToPerform = actionId
-        let actionIds: Array<string> | undefined
+            set({ actions })
+          },
+          addActions: (actions: Array<ListItemType>) => {
+            const existingActions = get().actions
+            const newActions = [...actions, ...existingActions]
+            set({ actions: newActions })
+          },
 
-        // * Get sequence of all pre-actions required to perform this action
-        if (preActionId) {
-          actionIds = getActionIds(actionId, actionConfigs, [])
-          actionToPerform = actionIds[0]
-        }
+          setSelectedValue: (value) => set({ selectedValue: value }),
 
-        if (actionCache[actionId]) {
-          actionToPerform = actionId
-        }
+          initAction: (actionGroupId, actionId) => {
+            const actionConfigs = get().groupedActions?.[actionGroupId]
 
-        // * Final component will be rendered based on renderType (or with response item type)
-        const activeAction = { id: actionId, actionGroupId, actionIds, renderType, at: 0, size: actionIds?.length ?? 0 }
+            const action = actionConfigs[actionId]
 
-        set({ activeAction, actionToPerform })
-      },
+            const preActionId = action?.preActionId
 
-      setActionToPerform: (perfomerActionId: string) => {
-        set({ actionToPerform: perfomerActionId })
-      },
+            const renderType = action.form ? ReturnType.NONE : action?.returnType
+            const subType: ActionSubType = action.form ? 'form' : undefined
 
-      actionsCache: {},
-      addActionInCache: (actionId, response) => {
-        const activeAction = get().activeAction
-        const actionsCache = get().actionsCache
-        // const preActionId = get().actionConfigs?.[actionId]?.preActionId
+            if (subType) useSpotlightAppStore.getState().setView('form')
 
-        // * Check if we can cache this action
+            let actionIds: Array<string> | undefined
 
-        mog('action-store', { response, actionId })
+            // * Get sequence of all pre-actions required to perform this action
+            if (preActionId) {
+              actionIds = getActionIds(actionId, actionConfigs, [])
+            }
 
-        const cachedActions: Array<Record<string, any>> = actionsCache?.[activeAction?.id] ?? []
-        const newActions = cachedActions.filter((action) => action.actionId !== actionId)
-        const updatedActions = [...newActions, { data: response, value: null, actionId }]
-        mog('Updating', { updatedActions })
+            // * Final component will be rendered based on renderType (or with response item type)
+            const activeAction = {
+              id: actionId,
+              actionGroupId,
+              subType,
+              actionIds,
+              renderType,
+              size: actionIds?.length ?? 0
+            }
 
-        if (activeAction?.id) {
-          actionsCache[activeAction?.id] = updatedActions
-          set({ actionsCache })
-        }
-      },
+            set({ activeAction })
+          },
 
-      updateValueInCache: (actionId, selection) => {
-        const actionsCache = get().actionsCache
-        const activeAction = get().activeAction
+          setActionToPerform: (perfomerActionId: string) => {
+            set({ actionToPerform: perfomerActionId })
+          },
+          getPrevActionValue: (actionId: string) => {
+            const activeAction = get().activeAction
 
-        // * If this is global action, update the value in cache
-        const globalCache = false
-        // const globalCache = actionsCache[actionId]?.value
-        if (globalCache) {
-          // actionsCache[actionId].value = selection.value
-          // set({ actionsCache })
-        }
+            const actionConfig = get().groupedActions?.[activeAction?.actionGroupId]?.[actionId]
 
-        // * If this scoped action, update the value in action's cache
-        else {
-          const cachedActions: Array<Record<string, any>> = actionsCache[activeAction?.id] ?? []
-          const index = cachedActions.findIndex((cached) => cached.actionId === actionId)
+            const preActionId = actionConfig?.preActionId
+            const cache = get().selectionCache
 
-          const actions = cachedActions.slice(0, index)
+            set({ activeAction })
 
-          const updatedActions = [...actions, { ...cachedActions[index], value: selection.value }]
-
-          const size = activeAction?.size - 1
-          const updatedAt = activeAction?.actionIds.indexOf(actionId)
-          const at = size < updatedAt + 1 ? size : updatedAt + 1
-
-          const isReady = size === updatedAt
-          const actionToPerform = isReady ? activeAction.id : activeAction.actionIds[at]
-
-          actionsCache[activeAction?.id] = updatedActions
-
-          const updatedActiveAction = { ...activeAction, at }
-
-          set({ actionsCache, activeAction: updatedActiveAction, actionToPerform, selectedValue: selection.value })
-        }
-      },
-
-      getCachedAction: (actionId: string) => {
-        const activeAction = get().activeAction
-        const actionsCache = get().actionsCache
-
-        // * If this is global action, return the value from cache
-        // if (actionsCache[actionId]?.data) return actionsCache[actionId]
-
-        const cachedAction = actionsCache?.[activeAction?.id]?.find((action) => action.actionId === actionId)
-
-        if (cachedAction) {
-          return cachedAction
-        }
-
-        return undefined
-      },
-
-      getPrevActionValue: () => {
-        const activeAction = get().activeAction
-        const at = activeAction?.at
-        const actionToPerform = get().actionToPerform
-        const actionId = activeAction?.actionIds?.[at]
-        const cachedAction = actionId && get().getCachedAction(actionId)
-
-        if (activeAction.id === actionToPerform) return cachedAction
-
-        // if (cachedAction?.value) {
-        //   return cachedAction
-        // }
-
-        const prevActionId = activeAction?.actionIds?.[at - 1]
-        const prevAction = get().getCachedAction(prevActionId)
-
-        return prevAction
-      },
-
-      clear: () => {
-        set({
-          selectedValue: undefined,
-          activeAction: undefined,
-          actionToPerform: undefined
-        })
-      }
-    })),
+            if (preActionId) return cache?.[preActionId]
+            return cache?.[actionId]
+          },
+          clear: () => {
+            set({
+              selectedValue: undefined,
+              activeAction: undefined,
+              actionToPerform: undefined,
+              actionGroups: {},
+              groupedActions: {},
+              connectedGroups: {},
+              resultCache: {},
+              selectionCache: {},
+              actions: initActions
+            })
+          }
+        } as any)
+    ),
     {
       name: ACTION_STORE_NAME,
       partialize: (state) => ({
         actions: state.actions,
-        // actionsCache: state.actionsCache,
-        actionGroups: state.actionGroups,
-        groupedActions: state.groupedActions
+        resultCache: state.resultCache,
+        selectionCache: state.selectionCache,
+        groupedActions: state.groupedActions,
+        connectedGroups: state.connectedGroups,
+        actionGroups: state.actionGroups
       })
+      // getStorage: () => indexedDBStorage
     }
   )
 )

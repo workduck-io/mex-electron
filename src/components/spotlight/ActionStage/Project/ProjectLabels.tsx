@@ -7,6 +7,7 @@ import { transparentize } from 'polished'
 const ProjectLabelsStyled = styled.span<{ isView?: boolean }>`
   ${TemplateCss};
   margin: 0.25rem 0;
+
   section {
     display: flex;
     flex-direction: row;

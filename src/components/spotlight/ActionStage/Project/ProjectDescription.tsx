@@ -21,6 +21,12 @@ const DescContainer = styled.span<{ isView: boolean }>`
       color: ${({ theme }) => theme.colors.text.default};
       margin: 0 0.5rem;
 
+      a {
+        cursor: pointer;
+        color: ${({ theme }) => theme.colors.primary} !important;
+        text-decoration: inherit;
+      }
+
       strong {
         font-weight: bold;
       }

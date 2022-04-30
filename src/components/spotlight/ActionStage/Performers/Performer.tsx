@@ -3,6 +3,7 @@ import Selector from './Selector'
 import Screen from '../Screen'
 import { ReturnType } from '@workduck-io/action-request-helper'
 import { useActionStore } from '../../Actions/useActionStore'
+import ActionForm from '../Forms'
 
 type PerformType = {
   actionId: string
@@ -10,26 +11,43 @@ type PerformType = {
 }
 
 const Performer: React.FC<PerformType> = ({ actionId, actionType }) => {
-  const actionCache = useActionStore((store) => store.actionsCache)
+  const getCacheResult = useActionStore((store) => store.getCacheResult)
+  const selectionCache = useActionStore((store) => store.selectionCache)
   const activeAction = useActionStore((store) => store.activeAction)
 
-  const action = actionCache[activeAction?.id]?.find((s) => s.actionId === actionId)
+  const context = getCacheResult(actionId)
+  const cacheSelection = selectionCache[actionId]
 
-  const data = action?.data?.contextData?.map((item) => {
-    const displayItem = item.select
-    return {
-      label: displayItem.value,
-      value: item
-    }
-  })
+  const data = Array.isArray(context?.contextData)
+    ? context?.contextData?.map((res) => {
+        const displayItem = res?.select
 
-  const value = action?.value ? { label: action?.value?.select?.value, value: action?.value } : null
+        return {
+          label: displayItem?.label,
+          value: res
+        }
+      })
+    : []
+
+  const value = cacheSelection?.selection ?? null
+
+  const isForm = activeAction?.subType === 'form'
 
   switch (actionType) {
     case ReturnType.OBJECT:
-      return <Selector actionId={actionId} actionGroupId={activeAction?.actionGroupId} value={value} data={data} />
+      return (
+        <Selector
+          width={isForm ? '60vw' : '30%'}
+          actionId={actionId}
+          actionGroupId={activeAction?.actionGroupId}
+          value={value}
+          data={data}
+        />
+      )
     case ReturnType.NONE:
-      return <>Successfull</>
+      return (
+        <ActionForm actionId={actionId} actionGroupId={activeAction?.actionGroupId} subType={activeAction?.subType} />
+      )
     case ReturnType.LIST:
       return <Screen actionGroupId={activeAction?.actionGroupId} actionId={actionId} />
     default:

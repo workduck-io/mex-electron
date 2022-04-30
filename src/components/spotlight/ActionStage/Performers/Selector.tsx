@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { forwardRef, useEffect, useState } from 'react'
 
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
+import { components, StylesConfig } from 'react-select'
 import { StyledSelect } from '../../../../style/Form'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
 import { useActionStore } from '../../Actions/useActionStore'
 import { StyledBackground } from '../../styled'
+import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
+import { transparentize } from 'polished'
 
 const Dropdown = styled.div`
   ${StyledBackground}
@@ -21,71 +24,132 @@ const Dropdown = styled.div`
 type SelectedProps = {
   value?: any
   data?: any
+  isMulti?: boolean
+  width?: string
+  disabled?: boolean
   actionId: string
+  onChange?: any
+  placeholder?: string
+  error?: any
   actionGroupId: string
 }
 
 export const SelectBar = styled(StyledSelect)`
   flex: 1;
-  max-width: 30%;
+  max-width: ${({ width }) => width || '30%'};
   font-size: 0.9rem;
   margin: 0 0.25rem;
   color: ${({ theme }) => theme.colors.text.default};
+
   & > div {
     border-radius: ${({ theme }) => theme.borderRadius.small};
     margin: 0.5rem 0 0;
+    border: none;
   }
 `
 
 const StyledOption = styled.div`
-  padding: 0.75rem;
   border-radius: ${({ theme }) => theme.borderRadius.small};
   display: flex;
-  justify-content: space-between;
   align-items: center;
   cursor: pointer;
 
-  &:hover {
-    background: ${({ theme }) => theme.colors.background.card};
-    color: ${({ theme }) => theme.colors.text.default};
-  }
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none;
-
   span {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow-x: hidden;
-    margin-right: 4px;
+    margin-right: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  img {
+    border-radius: 50%;
+    padding: 2px;
+    background-color: ${({ theme }) => theme.colors.background.card};
   }
 
   div {
-    font-size: 0.9rem;
-    color: ${({ theme }) => theme.colors.gray[5]};
+    margin: 0;
   }
+
+  font-size: 0.9rem;
 `
 
 // eslint-disable-next-line react/prop-types
 
 // * Custom Option for Selector component
-// const CustomOption = ({ innerProps, isDisabled, data }) => {
-//   const sub = data?.value?.display?.sub
-//   const label = data?.label
+export const CustomOption: React.FC<any> = ({ children, ...props }) => {
+  const icon = props?.data?.value?.select?.icon
+  const color = props?.data?.value?.select?.color
 
-//   return !isDisabled ? (
-//     <StyledOption {...innerProps}>
-//       <span>{label}</span>
-//       {sub && <div>{sub}</div>}
-//     </StyledOption>
-//   ) : null
-// }
+  const { mexIcon } = getIconType(icon ?? 'codicon:circle-filled')
+  const theme = useTheme()
 
-const Selector: React.FC<SelectedProps> = ({ actionId, actionGroupId, data, value }) => {
+  return (
+    <components.Option {...props}>
+      <StyledOption>
+        <span>
+          <ProjectIconMex
+            isMex={mexIcon}
+            size={16}
+            color={color ?? theme.colors.secondary}
+            icon={icon ?? 'codicon:circle-filled'}
+          />
+        </span>
+        <div>{children}</div>
+      </StyledOption>
+    </components.Option>
+  )
+}
+
+export const SingleValue: React.FC<any> = ({ children, ...props }) => {
+  const icon = props?.data?.value?.select?.icon
+  const color = props?.data?.value?.select?.color
+
+  const { mexIcon } = getIconType(icon ?? 'codicon:circle-filled')
+  const theme = useTheme()
+
+  return (
+    <components.SingleValue {...props}>
+      <StyledOption>
+        <span>
+          <ProjectIconMex
+            isMex={mexIcon}
+            size={16}
+            color={color ?? theme.colors.secondary}
+            icon={icon ?? 'codicon:circle-filled'}
+          />
+        </span>
+        <div>{children}</div>
+      </StyledOption>
+    </components.SingleValue>
+  )
+}
+
+export const MultiValueOption: React.FC<any> = (props) => {
+  const icon = props?.data?.value?.select?.icon
+  const color = props?.data?.value?.select?.color
+
+  const { mexIcon } = getIconType(icon ?? 'codicon:circle-filled')
+
+  const theme = useTheme()
+
+  return (
+    <components.MultiValue {...props}>
+      <StyledOption>
+        <ProjectIconMex
+          isMex={mexIcon}
+          size={16}
+          color={color ?? theme.colors.secondary}
+          icon={icon ?? 'codicon:circle-filled'}
+        />
+        <span>{props?.data?.label}</span>
+      </StyledOption>
+    </components.MultiValue>
+  )
+}
+
+const Selector = forwardRef<any, SelectedProps>((props, ref) => {
+  const { actionId, placeholder, onChange, width = '30%', actionGroupId, data, value, isMulti } = props
   const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
     data: [],
     value: null
@@ -95,43 +159,62 @@ const Selector: React.FC<SelectedProps> = ({ actionId, actionGroupId, data, valu
     setInputValue({ data, value })
   }, [data, value])
 
-  const actionToPerform = useActionStore((store) => store.actionToPerform)
-  const updateValueInCache = useActionStore((store) => store.updateValueInCache)
-  const selectedValue = useActionStore((store) => store.selectedValue)
+  const addSelectionInCache = useActionStore((store) => store.addSelectionInCache)
+  const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
 
   const { performer, isPerformer } = useActionPerformer()
+  const prevSelelectedLabel = getPreviousActionValue(actionId)?.selection
+
+  const resToDisplay = (result) => {
+    return result?.map((item) => {
+      const displayItem = item.select
+      return {
+        label: displayItem?.label,
+        value: item
+      }
+    })
+  }
 
   useEffect(() => {
-    const at = isPerformer(actionId)
+    const isReady = isPerformer(actionId)
 
-    if (at) {
+    if (isReady) {
       performer(actionGroupId, actionId).then((res) => {
         const result = res?.contextData
+        const data = resToDisplay(result)
 
-        const data = result?.map((item) => {
-          const displayItem = item.select
-          return {
-            label: displayItem.value,
-            value: item
-          }
-        })
         setInputValue({ data, value: null })
       })
     }
-  }, [actionId, actionGroupId, actionToPerform, selectedValue])
+  }, [actionId, actionGroupId, prevSelelectedLabel])
 
-  const handleChange = (selected: any) => {
-    updateValueInCache(actionId, selected)
+  const handleChange = (selection: any) => {
+    if (onChange) onChange(selection)
+
+    const val = { prev: prevSelelectedLabel?.label, selection }
+    addSelectionInCache(actionId, val)
   }
 
   return (
     <SelectBar
-      autoFocus={isPerformer(actionId)}
+      openMenuOnClick
+      menuShouldScrollIntoView
+      placeholder={placeholder}
+      components={
+        isMulti ? { Option: CustomOption, MultiValue: MultiValueOption } : { SingleValue, Option: CustomOption }
+      }
+      width={width}
+      ref={ref}
+      error={props.error}
+      isMulti={isMulti}
+      isDisabled={props.disabled}
       onChange={handleChange}
       value={inputValue.value}
       options={inputValue.data}
     />
   )
-}
+})
+
+Selector.displayName = 'Selector'
 
 export default Selector

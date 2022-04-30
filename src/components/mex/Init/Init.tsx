@@ -35,6 +35,7 @@ import toast from 'react-hot-toast'
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
 import { useRedirectAuth } from '../Auth/useRedirectAuth'
 import useActions from '../../spotlight/Actions/useActions'
+import { useActionPerformer } from '../../spotlight/Actions/useActionPerformer'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -70,7 +71,7 @@ const Init = () => {
 
   const { getTokenData } = useTokenData()
   const { saveAndClearBuffer } = useEditorBuffer()
-  const { getGroupsToView } = useActions()
+  const { initActionPerfomerClient } = useActionPerformer()
 
   /**
    * Initialization of the app data, search index and auth,
@@ -97,6 +98,7 @@ const Init = () => {
           })
           if (userAuthenticatedEmail) {
             ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: true })
+            initActionPerfomerClient(useAuthStore.getState().workspaceDetails?.id)
             return { d, auth: true }
           }
           setUnAuthenticated()
@@ -258,11 +260,6 @@ const Init = () => {
   useEffect(() => {
     setIpc()
     setReceiveToken()
-
-    // * Set up integrations page
-    getGroupsToView()
-      .then(() => mog('Groups in view initialized'))
-      .catch((e) => mog('Error getting groups in view', { e }))
 
     // Setup recieving the analysis call
     setAnalysisIpc()

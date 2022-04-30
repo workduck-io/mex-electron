@@ -51,7 +51,7 @@ export const getListItemFromAction = (config: ActionHelperConfig, actionGroup: A
     shortcut: {
       search: {
         category: 'action',
-        title: '',
+        title: 'to Open',
         keystrokes: 'Enter'
       }
     },

@@ -116,7 +116,7 @@ const Lookup = () => {
     } else {
       const path = location.pathname
       if (`${ROUTE_PATHS.node}/${quickLink.nodeid}` === path) {
-        mog('This value is already opened', {})
+        // mog('This value is already opened', {})
         closeModal()
         return
       }

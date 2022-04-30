@@ -12,11 +12,11 @@ import { FlexBetween } from '../../spotlight/Actions/styled'
 import { useActionStore } from '../../spotlight/Actions/useActionStore'
 import { Description } from '../../spotlight/SearchResults/styled'
 import { ActionHelperConfig } from '@workduck-io/action-request-helper'
-import { mog } from '../../../utils/lib/helper'
 import { ErrorBoundary } from 'react-error-boundary'
 import { MexIcon } from '../../../style/Layouts'
 import tinykeys from 'tinykeys'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
+import { mog } from '../../../utils/lib/helper'
 
 const ServiceContainer = styled(StyledEditor)``
 
@@ -156,6 +156,7 @@ const ServiceInfo = () => {
   const { shortcutDisabled } = useKeyListener()
 
   const actionGroup = actionGroups[params?.actionGroupId]
+  const connectedGroups = useActionStore((store) => store.connectedGroups)
   const { goTo } = useRouting()
   const theme = useTheme()
 
@@ -179,6 +180,11 @@ const ServiceInfo = () => {
     }
   }, [])
 
+  mog(`ActionGroupId: ${params?.actionGroupId}`, {
+    c: connectedGroups[params?.actionGroupId],
+    a: params?.actionGroupId
+  })
+
   return (
     <ErrorBoundary
       FallbackComponent={() => <Button onClick={() => goTo(ROUTE_PATHS.home, NavigationType.replace)}>Back</Button>}
@@ -200,11 +206,11 @@ const ServiceInfo = () => {
                 <MexIcon color={theme.colors.primary} icon={actionGroup?.icon} height="10rem" width="10rem" />
               </span>
             </ActionGroupIcon>
-            <GroupHeader connected={actionGroup?.connected}>
+            <GroupHeader connected={connectedGroups[params?.actionGroupId]}>
               <FlexBetween>
                 <Title>{actionGroup?.name}</Title>
-                <Button onClick={onConnectClick} disabled={actionGroup?.connected}>
-                  {actionGroup?.connected ? 'Disconnect' : 'Connect'}
+                <Button onClick={onConnectClick} disabled={connectedGroups[params?.actionGroupId]}>
+                  {connectedGroups[params?.actionGroupId] ? 'Disconnect' : 'Connect'}
                 </Button>
               </FlexBetween>
               <ServiceDescription>
