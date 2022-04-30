@@ -1,12 +1,13 @@
 import React, { forwardRef, useEffect, useState } from 'react'
 
-import styled from 'styled-components'
-import { components } from 'react-select'
+import styled, { useTheme } from 'styled-components'
+import { components, StylesConfig } from 'react-select'
 import { StyledSelect } from '../../../../style/Form'
-import { mog } from '../../../../utils/lib/helper'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
 import { useActionStore } from '../../Actions/useActionStore'
 import { StyledBackground } from '../../styled'
+import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
+import { transparentize } from 'polished'
 
 const Dropdown = styled.div`
   ${StyledBackground}
@@ -25,6 +26,7 @@ type SelectedProps = {
   data?: any
   isMulti?: boolean
   width?: string
+  disabled?: boolean
   actionId: string
   onChange?: any
   placeholder?: string
@@ -36,7 +38,7 @@ export const SelectBar = styled(StyledSelect)`
   flex: 1;
   max-width: ${({ width }) => width || '30%'};
   font-size: 0.9rem;
-  margin: 0 0.25rem 0 0;
+  margin: 0 0.25rem;
   color: ${({ theme }) => theme.colors.text.default};
 
   & > div {
@@ -47,52 +49,104 @@ export const SelectBar = styled(StyledSelect)`
 `
 
 const StyledOption = styled.div`
-  padding: 0.75rem;
   border-radius: ${({ theme }) => theme.borderRadius.small};
   display: flex;
-  justify-content: space-between;
   align-items: center;
   cursor: pointer;
 
-  &:hover {
-    background: ${({ theme }) => theme.colors.background.card};
-    color: ${({ theme }) => theme.colors.text.default};
-  }
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none;
-
   span {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow-x: hidden;
-    margin-right: 4px;
+    margin-right: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  img {
+    border-radius: 50%;
+    padding: 2px;
+    background-color: ${({ theme }) => theme.colors.background.card};
   }
 
   div {
-    font-size: 0.9rem;
-    color: ${({ theme }) => theme.colors.gray[5]};
+    margin: 0;
   }
+
+  font-size: 0.9rem;
 `
 
 // eslint-disable-next-line react/prop-types
 
 // * Custom Option for Selector component
-// const CustomOption = ({ innerProps, innerRef, isDisabled, data }) => {
-//   const label = data?.label
+export const CustomOption: React.FC<any> = ({ children, ...props }) => {
+  const icon = props?.data?.value?.select?.icon
+  const color = props?.data?.value?.select?.color
 
-//   mog('CUSTOM OPTION', { data })
+  const { mexIcon } = getIconType(icon ?? 'codicon:circle-filled')
+  const theme = useTheme()
 
-//   return !isDisabled ? (
-//     <StyledOption ref={innerRef} {...innerProps}>
-//       <span>{label}</span>
-//     </StyledOption>
-//   ) : null
-// }
+  return (
+    <components.Option {...props}>
+      <StyledOption>
+        <span>
+          <ProjectIconMex
+            isMex={mexIcon}
+            size={16}
+            color={color ?? theme.colors.secondary}
+            icon={icon ?? 'codicon:circle-filled'}
+          />
+        </span>
+        <div>{children}</div>
+      </StyledOption>
+    </components.Option>
+  )
+}
+
+export const SingleValue: React.FC<any> = ({ children, ...props }) => {
+  const icon = props?.data?.value?.select?.icon
+  const color = props?.data?.value?.select?.color
+
+  const { mexIcon } = getIconType(icon ?? 'codicon:circle-filled')
+  const theme = useTheme()
+
+  return (
+    <components.SingleValue {...props}>
+      <StyledOption>
+        <span>
+          <ProjectIconMex
+            isMex={mexIcon}
+            size={16}
+            color={color ?? theme.colors.secondary}
+            icon={icon ?? 'codicon:circle-filled'}
+          />
+        </span>
+        <div>{children}</div>
+      </StyledOption>
+    </components.SingleValue>
+  )
+}
+
+export const MultiValueOption: React.FC<any> = (props) => {
+  const icon = props?.data?.value?.select?.icon
+  const color = props?.data?.value?.select?.color
+
+  const { mexIcon } = getIconType(icon ?? 'codicon:circle-filled')
+
+  const theme = useTheme()
+
+  return (
+    <components.MultiValue {...props}>
+      <StyledOption>
+        <ProjectIconMex
+          isMex={mexIcon}
+          size={16}
+          color={color ?? theme.colors.secondary}
+          icon={icon ?? 'codicon:circle-filled'}
+        />
+        <span>{props?.data?.label}</span>
+      </StyledOption>
+    </components.MultiValue>
+  )
+}
 
 const Selector = forwardRef<any, SelectedProps>((props, ref) => {
   const { actionId, placeholder, onChange, width = '30%', actionGroupId, data, value, isMulti } = props
@@ -136,8 +190,8 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
 
   const handleChange = (selection: any) => {
     if (onChange) onChange(selection)
+
     const val = { prev: prevSelelectedLabel?.label, selection }
-    mog('CHANGING', { val })
     addSelectionInCache(actionId, val)
   }
 
@@ -146,12 +200,14 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
       openMenuOnClick
       menuShouldScrollIntoView
       placeholder={placeholder}
-      // components={{ Option: CustomOption }}
+      components={
+        isMulti ? { Option: CustomOption, MultiValue: MultiValueOption } : { SingleValue, Option: CustomOption }
+      }
       width={width}
       ref={ref}
       error={props.error}
       isMulti={isMulti}
-      // autoFocus={isPerformer(actionId)}
+      isDisabled={props.disabled}
       onChange={handleChange}
       value={inputValue.value}
       options={inputValue.data}

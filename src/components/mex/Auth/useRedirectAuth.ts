@@ -6,12 +6,11 @@ import { ipcRenderer } from 'electron'
 import { GOOGLE_OAUTH_URL } from '../../../apis/routes'
 import { IpcAction } from '../../../data/IpcAction'
 import useActions from '../../spotlight/Actions/useActions'
-import { mog } from '../../../utils/lib/helper'
 
 export const useRedirectAuth = () => {
   const { addGoogleCalendarToken } = useTokens()
   const { loginViaGoogle } = useAuthentication()
-  const { setActionsInList, getAuthorizedGroups } = useActions()
+  const { getAuthorizedGroups } = useActions()
 
   const redirectAuthHandler = () => {
     ipcRenderer.on(IpcAction.OAUTH, async (event, data) => {
@@ -36,9 +35,6 @@ export const useRedirectAuth = () => {
             if (data.actionGroupId) {
               // * Get auth and config of the group
               getAuthorizedGroups(true)
-
-              // * initialize actions
-              setActionsInList(data.actionGroupId)
             }
           } catch (error) {
             toast('Something went wrong!')

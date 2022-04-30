@@ -9,13 +9,14 @@ import { mog } from '../../../../utils/lib/helper'
 
 export type FormSelectorProps = {
   element: FormField
+  disabled?: boolean
 }
 
 export const ActionSelector = styled(Selector)`
   max-width: 40vh;
 `
 
-const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
+const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled }) => {
   const getCacheResult = useActionStore((store) => store.getCacheResult)
   const activeAction = useActionStore((store) => store.activeAction)
 
@@ -34,7 +35,6 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
 
   const filterTags = (value) => {
     const r = data?.filter((d) => value?.includes(d?.value?.select?.value))
-    mog('FILTERING VALUE', { value, r })
     return r
   }
 
@@ -53,6 +53,7 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
               width="100%"
               error={error}
               data={data}
+              disabled={disabled}
               value={data?.find((d) => d?.value?.select?.value === value)}
               onChange={({ value }) => onChange(value?.select?.value)}
               placeholder={element.options.placeholder}
@@ -77,6 +78,7 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
               value={value ?? ''}
               onChange={onChange}
               error={error}
+              disabled={disabled}
               element={element}
               ref={ref}
               actionGroupId={activeAction?.actionGroupId}
@@ -99,6 +101,7 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element }) => {
               isMulti
               data={data}
               error={error}
+              disabled={disabled}
               value={filterTags(value)}
               ref={ref}
               onChange={(changed) => {

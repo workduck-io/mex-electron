@@ -40,6 +40,7 @@ export type ActionInputProps = {
   onChange: any
   value: string
   error: any
+  disabled?: boolean
   type: TextFieldHeight
 }
 
@@ -49,6 +50,7 @@ const ActionInput = forwardRef<any, ActionInputProps>((props, ref) => {
       onChange={props.onChange}
       value={props.value}
       ref={ref}
+      disabled={props.disabled}
       error={props.error}
       draggable={false}
       placeholder={props.element.options.placeholder}

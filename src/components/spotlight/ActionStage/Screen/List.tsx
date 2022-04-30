@@ -36,7 +36,7 @@ type ListProps = {
   items: Array<any>
 }
 
-export const ROW_ITEMS_LIMIT = 6
+export const ROW_ITEMS_LIMIT = 7
 
 const List: React.FC<ListProps> = ({ items }) => {
   const theme = useTheme()
@@ -88,6 +88,7 @@ const List: React.FC<ListProps> = ({ items }) => {
       }
 
       if (event.key === 'Enter') {
+        event.preventDefault()
         onSelect(activeIndex)
       }
     }

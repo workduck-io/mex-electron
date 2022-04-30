@@ -28,16 +28,16 @@ const RowContainer = styled.div<RowContainerProps>`
   border-radius: 0.5rem;
   justify-content: space-between;
   flex-direction: ${(props) => (props.type === 'row' ? 'row' : 'column')};
-  background-color: ${({ theme }) => transparentize(0.65, theme.colors.background.modal)};
+  /* background-color: ${({ theme }) => transparentize(0.65, theme.colors.background.modal)}; */
 
   ${({ active }) =>
     active &&
     css`
-      background-color: ${({ theme }) => theme.colors.primary};
+      ${StyledBackground};
     `}
 
   :hover {
-    background-color: ${({ theme }) => theme.colors.background.modal};
+    ${StyledBackground}
   }
 `
 

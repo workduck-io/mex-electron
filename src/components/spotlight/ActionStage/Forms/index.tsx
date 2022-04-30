@@ -3,12 +3,13 @@ import { FormData } from '@workduck-io/action-request-helper'
 import { ActionSubType, useActionStore } from '../../Actions/useActionStore'
 import ActionFormElement from './Fields/ActionFormElement'
 import FormSelector from './FormSelector'
-import { groupBy } from 'lodash'
+import { groupBy, set } from 'lodash'
 import { ActionRow, StyledActionFormContainer } from './styled'
 import styled from 'styled-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
 import tinykeys from 'tinykeys'
+import { mog } from '../../../../utils/lib/helper'
 
 export type ActionFormProps = {
   actionId: string
@@ -22,9 +23,10 @@ const groupRows = (data: FormData) => {
 
 type ActionRowRendererProps = {
   row: FormData
+  disabled?: boolean
 }
 
-const ActionRowRenderer: React.FC<ActionRowRendererProps> = ({ row }) => {
+const ActionRowRenderer: React.FC<ActionRowRendererProps> = ({ row, disabled }) => {
   return (
     <ActionRow isRow={true}>
       {row.map((element) => (
@@ -34,7 +36,7 @@ const ActionRowRenderer: React.FC<ActionRowRendererProps> = ({ row }) => {
           flex={element.options.flex}
           label={element.label}
         >
-          <FormSelector element={element} />
+          <FormSelector element={element} disabled={disabled} />
         </ActionFormElement>
       ))}
     </ActionRow>
@@ -49,6 +51,11 @@ const UniAction = styled.div`
 const ActionForm: React.FC<ActionFormProps> = ({ subType, actionId, actionGroupId }) => {
   const groupedActions = useActionStore((store) => store.groupedActions)
   const setIsSubmitting = useActionStore((store) => store.setIsSubmitting)
+  const activeAction = useActionStore((store) => store.activeAction)
+  const getPrevActionValue = useActionStore((store) => store.getPrevActionValue)
+
+  const prev = getPrevActionValue(actionId)
+  const disabled = !prev && !!activeAction?.actionIds
 
   const formMethods = useForm()
   const { performer } = useActionPerformer()
@@ -63,6 +70,7 @@ const ActionForm: React.FC<ActionFormProps> = ({ subType, actionId, actionGroupI
     const unsubscribe = tinykeys(window, {
       '$mod+Enter': (event) => {
         event.preventDefault()
+        event.stopPropagation()
 
         formMethods.handleSubmit(onSubmit)()
       }
@@ -74,9 +82,28 @@ const ActionForm: React.FC<ActionFormProps> = ({ subType, actionId, actionGroupI
 
   if (!subType || subType === 'none') return <></>
 
+  const withFooter = (form: any) => {
+    const config = groupedActions?.[actionGroupId]?.[actionId]
+    const configForm = config?.form ?? []
+
+    configForm.forEach((field) => {
+      const suffix = field?.options?.appendValue
+      if (suffix && field.key) {
+        const value = formMethods?.getValues(field.key)
+        if (typeof value === 'string') {
+          const footerDescription = value + '\n' + suffix
+          set(form, field.key, footerDescription)
+        }
+      }
+    })
+
+    return form
+  }
+
   const onSubmit = async (form: any) => {
     setIsSubmitting(true)
-    await performer(actionGroupId, actionId, { formData: form })
+    const updatedForm = withFooter(form)
+    await performer(actionGroupId, actionId, { formData: updatedForm })
     setIsSubmitting(false)
   }
 
@@ -85,7 +112,7 @@ const ActionForm: React.FC<ActionFormProps> = ({ subType, actionId, actionGroupI
       <FormProvider {...formMethods}>
         <StyledActionFormContainer id="action-form" onSubmit={formMethods.handleSubmit(onSubmit)}>
           {Object.values(form).map((row, index) => {
-            return <ActionRowRenderer key={index} row={row} />
+            return <ActionRowRenderer key={index} row={row} disabled={disabled} />
           })}
         </StyledActionFormContainer>
       </FormProvider>
