@@ -12,9 +12,14 @@ export const TemplateCss = css`
 const Title = styled.span<{ isView: boolean }>`
   ${TemplateCss}
 
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
   ${({ isView }) =>
     isView
       ? css`
+          max-width: 100%;
           font-size: 1.5rem;
           margin: 0.5rem;
         `

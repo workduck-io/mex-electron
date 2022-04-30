@@ -14,7 +14,6 @@ import { useTheme } from 'styled-components'
 import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { useRouting } from '../../../views/routes/urls'
 import ViewActionHandler from '../ActionStage/Forms/ViewActionHandler'
-import { useActionStore } from '../Actions/useActionStore'
 
 type QueryType = {
   value: string
@@ -72,7 +71,7 @@ const Search: React.FC = () => {
       ref.current.value = ''
     }
 
-    if (!normalMode) setInput('')
+    if (!normalMode || view === 'item') setInput('')
 
     ref.current.focus()
   }, [search, normalMode, view, activeIndex])

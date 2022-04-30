@@ -114,7 +114,12 @@ const List: React.FC<ListProps> = ({ items }) => {
       {virtualizer.virtualItems.map((vItem, i) => {
         const item = items[vItem.index]
         return (
-          <ListItem key={`TEMPLATE_${i}`} ref={vItem.measureRef} start={vItem.start} onClick={() => onSelect(i)}>
+          <ListItem
+            key={`TEMPLATE_${i}`}
+            ref={vItem.measureRef}
+            start={vItem.start}
+            onClick={() => onSelect(vItem.index)}
+          >
             <Row active={i === activeIndex} row={item.slice(0, ROW_ITEMS_LIMIT)} />
           </ListItem>
         )
