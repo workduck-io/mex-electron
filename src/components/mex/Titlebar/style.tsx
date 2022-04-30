@@ -62,8 +62,10 @@ export const CreateNewButton = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-left: ${({ theme }) => theme.spacing.medium};
+  cursor: pointer;
 
-  padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
+  padding: ${({ theme }) => `${theme.spacing.small}`};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.text.oppositePrimary};
@@ -82,7 +84,6 @@ export const SearchBar = styled.div`
   margin: 2rem 0;
   max-width: 800px;
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  background-color: ${({ theme }) => theme.colors.gray[8]};
   border: 1px solid ${({ theme }) => theme.colors.gray[7]};
   height: 36px;
 
