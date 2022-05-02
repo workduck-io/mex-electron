@@ -61,7 +61,13 @@ const Titlebar = () => {
   }
 
   const onProfileClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
     goTo(ROUTE_PATHS.settings, NavigationType.push, 'user')
+  }
+
+  const onSearchClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    goTo(ROUTE_PATHS.search, NavigationType.push)
   }
 
   return (
@@ -94,7 +100,7 @@ const Titlebar = () => {
           </CreateNewButton>
         </ToolbarTooltip>
       </TitlebarControls>
-      <SearchBar>
+      <SearchBar onClick={onSearchClick}>
         <Icon icon={searchLine} />
         <input disabled type="text" placeholder="Search by the Keywords" />
       </SearchBar>

@@ -34,7 +34,7 @@ const ButtonOrLinkStyles = css`
   align-items: center;
   gap: 8px;
   color: ${({ theme }) => theme.colors.text.default};
-  padding: 6px 12px;
+  padding: 8px 12px;
   text-decoration: none !important;
   cursor: pointer;
   font-weight: bold;
