@@ -31,7 +31,6 @@ import useBlockStore from '../../store/useBlockStore'
 import RemindersAll from '../mex/Reminders/RemindersAll'
 import { animated } from 'react-spring'
 import { useSidebarTransition } from '../../components/mex/Sidebar/Transition'
-import SpotlightActions from '../../components/spotlight/Actions/SpotlightActions'
 import ServiceInfo from '../../components/mex/Integrations/ServiceInfo'
 import ActionGroupsPage from '../mex/Actions'
 
@@ -105,7 +104,6 @@ const Switch = () => {
           <Route path={ROUTE_PATHS.tasks} element={<ProtectedRoute component={Tasks} />} />
           <Route path={ROUTE_PATHS.reminders} element={<ProtectedRoute component={RemindersAll} />} />
 
-          <Route path={ROUTE_PATHS.actions} element={<SpotlightActions />} />
           <Route path={`${ROUTE_PATHS.snippet}/:snippetid`} element={<ProtectedRoute component={SnippetEditor} />} />
           <Route path={ROUTE_PATHS.settings} element={<ProtectedRoute component={Settings} />}>
             <Route path="themes" element={<ProtectedRoute component={Themes} />} />
