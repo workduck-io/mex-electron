@@ -1,3 +1,4 @@
+import installExtension, { REACT_DEVELOPER_TOOLS , REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import chokidar from 'chokidar'
@@ -16,7 +17,6 @@ import {
   Tray
 } from 'electron'
 import fs from 'fs'
-import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
 import path from 'path'
 import { getSaveLocation, getSearchIndexLocation, getTokenLocation } from '../data/Defaults/data'
 import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
@@ -420,11 +420,11 @@ ipcMain.on(IpcAction.UPDATE_ACTIONS, (event, data) => {
 app
   .whenReady()
   .then(() => {
-    // * permission check
-
-    installExtension(REDUX_DEVTOOLS)
-      .then((name) => console.log(`Added Extension:  ${name}`))
-      .catch((err) => console.log('An error occurred: ', err))
+    if (isAlpha) {
+      installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS])
+        .then((name) => console.log(`Added Extensions: ${name}`))
+        .catch((err) => console.log(`An error occurred: ${err}`))
+    }
 
     // getPermissions().then((s) => console.log('Hello'))
 
