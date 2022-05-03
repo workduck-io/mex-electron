@@ -1,7 +1,9 @@
 import semver from 'semver'
 import fs from 'fs'
+import _ from 'lodash'
 
 import packageJson from '../package.json'
+import configJson from '../src/config.json'
 
 export enum BUILD_TYPE {
   ALPHA = 'ALPHA',
@@ -26,7 +28,7 @@ export const getBuildStage = (version: string): BUILD_TYPE => {
 const { version } = packageJson
 const buildStage = getBuildStage(version)
 
-const configValues = {
+const packageJsonValues = {
   [BUILD_TYPE.ALPHA]: {
     PRODUCT_NAME: 'Mex Alpha',
     NAME: 'mex-alpha'
@@ -37,12 +39,34 @@ const configValues = {
   }
 }
 
+const configValues = {
+  [BUILD_TYPE.ALPHA]: {
+    STAGE: 'alpha',
+    MEX_BACKEND_BASE_URL: 'https://http-test.workduck.io/mex'
+  },
+  [BUILD_TYPE.STABLE]: {
+    STAGE: 'stable',
+    MEX_BACKEND_BASE_URL: 'https://http.workduck.io/mex'
+  }
+}
+
 const packageJsonPaths = {
   NAME: 'name',
   PRODUCT_NAME: 'productName'
 }
 
-packageJson[packageJsonPaths.NAME] = configValues[buildStage].NAME
-packageJson[packageJsonPaths.PRODUCT_NAME] = configValues[buildStage].PRODUCT_NAME
+const configJsonpaths = {
+  STAGE: 'constants.STAGE',
+  MEX_BACKEND_BASE_URL: 'constants.MEX_BACKEND_BASE_URL'
+}
+
+Object.entries(packageJsonValues[buildStage]).forEach(([key, value]) => {
+  _.set(packageJson, packageJsonPaths[key], value)
+})
+
+Object.entries(configValues[buildStage]).forEach(([key, value]) => {
+  _.set(configJson, configJsonpaths[key], value)
+})
 
 fs.writeFileSync('./package.json', JSON.stringify(packageJson, null, '  '))
+fs.writeFileSync('./src/config.json', JSON.stringify(configJson, null, '  '))

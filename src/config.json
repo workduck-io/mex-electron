@@ -7,7 +7,7 @@
     "SCOPES": "email openid profile"
   },
   "constants": {
-    "stage": "alpha",
+    "STAGE": "alpha",
     "MEX_BACKEND_BASE_URL": "https://http-test.workduck.io/mex",
     "USER_SERVICE_BASE_URL": "https://http.workduck.io/user"
   }
