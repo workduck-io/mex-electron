@@ -1,18 +1,15 @@
-import * as chrono from 'chrono-node'
-
 import { OnChange, usePlateEditorRef } from '@udecode/plate'
 import { useCallback } from 'react'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange'
 import { isInternalCommand } from '../combobox/hooks/useComboboxOnKeyDown'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
-import { ComboboxItem, ComboboxType, SlashType } from './types'
+import { ComboboxType } from './types'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { useRouting } from '../../../views/routes/urls'
 import { useLinks } from '../../../hooks/useLinks'
-import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
-import { CategoryType } from '../../../store/Context/context.spotlight'
 import { getTimeInText, toLocaleString } from '../../../utils/time'
 
 export const CreateNewPrefix = `Create `
@@ -80,7 +77,7 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
     const { isChild, key: pathKey } = withoutContinuousDelimiter(textAfterTrigger)
     const searchTerm = isChild ? `${getPathFromNodeid(editorId)}${pathKey}` : pathKey
 
-    const searchItems = fuzzySearch(data, searchTerm, { keys: ['text'] })
+    const searchItems = fuzzySearch(data, searchTerm, (item) => item.text)
 
     const { isExtended, extendedCommands } = getCommandExtended(search.textAfterTrigger, keys)
 
