@@ -208,7 +208,7 @@ const useLoad = () => {
    * Loads a node in the editor.
    * This does not navigate to editor.
    */
-  const loadNode: LoadNodeFn = (nodeid, options = { savePrev: true, fetch: USE_API(), withLoading: true }) => {
+  const loadNode: LoadNodeFn = (nodeid, options = { savePrev: true, fetch: USE_API, withLoading: true }) => {
     const hasBeenLoaded = false
     const currentNodeId = useEditorStore.getState().node.nodeid
 

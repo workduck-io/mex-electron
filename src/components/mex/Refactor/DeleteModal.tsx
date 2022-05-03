@@ -117,7 +117,7 @@ const Delete = () => {
 
     // Load this node after deletion
     // mog('handling delete', { toLoad, del })
-    loadNode(toLoad, { savePrev: false, fetch: USE_API() })
+    loadNode(toLoad, { savePrev: false, fetch: USE_API })
     closeModal()
   }
 
