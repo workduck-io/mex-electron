@@ -37,7 +37,7 @@ const useArchive = () => {
     }
     if (userCred) {
       return await client
-        .post(
+        .put(
           apiURLs.archiveNodes(),
           {
             ids: nodes.map((i) => i.nodeid)
@@ -70,7 +70,7 @@ const useArchive = () => {
       return unArchive(nodes[0])
     }
     await client
-      .post(
+      .put(
         apiURLs.unArchiveNodes(),
         {
           ids: nodes.map((i) => i.nodeid)

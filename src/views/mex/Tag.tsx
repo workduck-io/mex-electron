@@ -11,7 +11,6 @@ import useLoad from '../../hooks/useLoad'
 import { useNodes } from '../../hooks/useNodes'
 import { useTags } from '../../hooks/useTags'
 import { useContentStore } from '../../store/useContentStore'
-import useDataStore from '../../store/useDataStore'
 import { Input } from '../../style/Form'
 import { HoverSubtleGlow } from '../../style/helpers'
 import { Result, ResultHeader, Results, ResultTitle, SearchPreviewWrapper } from '../../style/Search'
@@ -53,7 +52,7 @@ export const BaseLink = styled.div`
   ${HoverSubtleGlow}
 `
 
-const TagLink = styled(BaseLink)<{ active?: boolean; selected?: boolean }>`
+const TagLink = styled(BaseLink) <{ active?: boolean; selected?: boolean }>`
   color: ${({ theme }) => theme.colors.text.fade};
   background-color: ${({ theme }) => theme.colors.gray[9]};
   ${({ theme, active }) =>
@@ -142,7 +141,7 @@ const Tag = () => {
 
   useEffect(() => {
     if (search && search !== '') {
-      const filtered = fuzzySearch(Object.keys(cleanCache), search, {})
+      const filtered = fuzzySearch(Object.keys(cleanCache), search)
       setTags(filtered)
     }
     if (search === '') {
