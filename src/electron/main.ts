@@ -1,4 +1,3 @@
-import installExtension, { REACT_DEVELOPER_TOOLS , REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import chokidar from 'chokidar'
@@ -18,6 +17,8 @@ import {
 } from 'electron'
 import fs from 'fs'
 import path from 'path'
+import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
+
 import { getSaveLocation, getSearchIndexLocation, getTokenLocation } from '../data/Defaults/data'
 import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
 import { IpcAction } from '../data/IpcAction'
