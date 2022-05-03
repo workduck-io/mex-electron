@@ -1,3 +1,4 @@
+import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
 import sendToIcon from '@iconify/icons-ph/arrow-bend-up-right-bold'
 import moveToIcon from '@iconify/icons-ri/anticlockwise-2-fill'
 import { Icon } from '@iconify/react'
@@ -60,6 +61,11 @@ export const BlockOptionsMenu: React.FC<BlockOptionsProps> = () => {
     setIsModalOpen(ContextMenuActionType.move)
   }
 
+  const onDeleteClick = (item: any) => {
+    convertToBlocks()
+    setIsModalOpen(ContextMenuActionType.del)
+  }
+
   return (
     <StyledMenu id={MENU_ID}>
       <Item id="send-to" onClick={onSendToClick}>
@@ -69,6 +75,10 @@ export const BlockOptionsMenu: React.FC<BlockOptionsProps> = () => {
       <Item id="move-to" onClick={onMoveToClick}>
         <Icon icon={moveToIcon} />
         Move
+      </Item>
+      <Item id="move-to" onClick={onDeleteClick}>
+        <Icon icon={deleteBin6Line} />
+        Delete
       </Item>
     </StyledMenu>
   )
