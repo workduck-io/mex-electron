@@ -1,4 +1,4 @@
-import { formatRFC3339 } from 'date-fns'
+import config from '../config.json'
 import { MEX_TAG } from '../data/Defaults/auth'
 import { IS_DEV } from '../data/Defaults/dev_'
 
@@ -15,12 +15,7 @@ export const integrationURLs = {
   getAllTemplates: (workspaceId: string) => `${BASE_INTEGRATION_URL}/workspace/${workspaceId}/templates/all`
 }
 
-export const BASE_API_URL = 'https://http.workduck.io/mex'
-export const BASE_USER_URL = 'https://http.workduck.io/user'
-
-export const BOOKMARK_URL = BASE_API_URL
 export const MEXIT_FRONTEND_BASE_URL = IS_DEV ? 'http://localhost:3333' : 'https://mexit.workduck.io'
-// export const MEXIT_FRONTEND_BASE_URL = 'https://mexit.workduck.io'
 export const MEXIT_BACKEND_URL_BASE = IS_DEV
   ? 'http://localhost:5000/api/v1'
   : 'https://mex-webapp-dev.workduck.io/api/v1'
@@ -28,23 +23,18 @@ export const MEXIT_BACKEND_URL_BASE = IS_DEV
 export const WORKDUCK_API_BASE = 'https://http.workduck.io'
 export const CDN_BASE = 'https://cdn.workduck.io'
 
-// export const ACTION_ENV = IS_DEV ? 'test' : 'prod'
 export const ACTION_ENV = 'test'
 
 export const GOOGLE_OAUTH_URL = `${MEXIT_FRONTEND_BASE_URL}/oauth/desktop`
 export const GOOGLE_CAL_BASE = 'https://www.googleapis.com/calendar/v3/calendars'
-// http://localhost:5000/api/v1/oauth2/getGoogleAccessToken
 export const GOOGLE_OAUTH2_REFRESH_URL = `${MEXIT_BACKEND_URL_BASE}/oauth2/getGoogleAccessToken`
-// http://localhost:5000/api/v1/googleservices/calendar
-// http://localhost:5000/api/v1/googleservices/calendar/list?maxResults=5
 
-export const TEST_API_URL = 'https://http-test.workduck.io/mex'
-// export const TEST_USER_URL = 'https://qp5qf0k5sg.execute-api.us-east-1.amazonaws.com/'
+export const API_URL = config.constants.MEX_BACKEND_BASE_URL
 
 export const apiURLs = {
   //node
-  saveNode: `${TEST_API_URL}/node`,
-  getNode: (nodeid: string) => `${TEST_API_URL}/node/${nodeid}`,
+  saveNode: `${API_URL}/node`,
+  getNode: (nodeid: string) => `${API_URL}/node/${nodeid}`,
 
   // * User Preference
   // getUserPreferences: (userId: string) => `${BASE_API_URL}/userPreference/all/${userId}`,
@@ -55,18 +45,18 @@ export const apiURLs = {
   // Bookmarks
   // post to add
   // path to delete
-  bookmark: (userId: string, nodeid: string) => `${TEST_API_URL}/userBookmark/${userId}/${nodeid}`,
-  getBookmarks: (userId: string) => `${TEST_API_URL}/userBookmark/${userId}`,
+  bookmark: (userId: string, nodeid: string) => `${API_URL}/userBookmark/${userId}/${nodeid}`,
+  getBookmarks: (userId: string) => `${API_URL}/userBookmark/${userId}`,
 
   // User
-  getUserRecords: (userId: string) => `${BASE_USER_URL}/user/${userId}/${MEX_TAG}`,
-  registerUser: `${TEST_API_URL}/user/register`,
+  getUserRecords: (userId: string) => `${config.constants.USER_SERVICE_BASE_URL}/user/${userId}/${MEX_TAG}`,
+  registerUser: `${API_URL}/user/register`,
 
   // Archive
-  archiveNodes: () => `${TEST_API_URL}/node/archive`,
-  deleteArchiveNodes: () => `${TEST_API_URL}/node/archive`,
-  getArchivedNodes: (workspaceId: string) => `${TEST_API_URL}/node/archive/${workspaceId}`,
-  unArchiveNodes: () => `${TEST_API_URL}/node/unarchive`,
+  archiveNodes: () => `${API_URL}/node/archive`,
+  deleteArchiveNodes: () => `${API_URL}/node/archive`,
+  getArchivedNodes: (workspaceId: string) => `${API_URL}/node/archive/${workspaceId}`,
+  unArchiveNodes: () => `${API_URL}/node/unarchive`,
 
   // Image CDN
   createImageURL: `${WORKDUCK_API_BASE}/testing/upload/s3`,
@@ -77,6 +67,6 @@ export const apiURLs = {
 
   // Workspace
   // createWorkspace: `${BASE_API_URL}/workspace`,
-  getNodesByWorkspace: (workspaceId: string) => `${BASE_API_URL}/workspace/${workspaceId}/namespace/NAMESPACE1`
+  getNodesByWorkspace: (workspaceId: string) => `${API_URL}/workspace/${workspaceId}/namespace/NAMESPACE1`
   // getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`
 }

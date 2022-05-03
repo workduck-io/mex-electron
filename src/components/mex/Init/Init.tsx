@@ -4,7 +4,7 @@ import { ipcRenderer } from 'electron'
 import { useEffect, useState } from 'react'
 import tinykeys from 'tinykeys'
 
-import config from '../../../apis/config'
+import config from '../../../config.json'
 import { IpcAction } from '../../../data/IpcAction'
 import { useSaver } from '../../../editor/Components/Saver'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
