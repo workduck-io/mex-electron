@@ -1,4 +1,4 @@
-import config from '../../../apis/config'
+import config from '../../../config.json'
 import { useAuthentication } from '../../../services/auth/useAuth'
 import { useTokens } from '../../../services/auth/useTokens'
 import toast from 'react-hot-toast'

@@ -1,4 +1,3 @@
-import { BrowserWindow } from '@electron/remote'
 import { useAuth } from '@workduck-io/dwindle'
 import React from 'react'
 import { useApi } from '../../apis/useSaveApi'

@@ -3,7 +3,8 @@ import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
 import { useEffect, useState } from 'react'
 import tinykeys from 'tinykeys'
-import config from '../../../apis/config'
+
+import config from '../../../config.json'
 import { IpcAction } from '../../../data/IpcAction'
 import { useSaver } from '../../../editor/Components/Saver'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
@@ -11,7 +12,6 @@ import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType, useInitialize } from '../../../hooks/useInitialize'
 import { getNodeidFromPathAndLinks, useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
-import { useLocalData, useTokenData } from '../../../hooks/useLocalData'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
@@ -31,11 +31,11 @@ import { AppleNote } from '../../../utils/importers/appleNotes'
 import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useBrowserNavigation, useRouting } from '../../../views/routes/urls'
 import { useCalendar } from '../../../hooks/useCalendar'
-import toast from 'react-hot-toast'
+
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
 import { useRedirectAuth } from '../Auth/useRedirectAuth'
-import useActions from '../../spotlight/Actions/useActions'
 import { useActionPerformer } from '../../spotlight/Actions/useActionPerformer'
+import { useLocalData, useTokenData } from '@hooks/useLocalData'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -79,7 +79,7 @@ const Init = () => {
    * */
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
-    ;(async () => {
+    ; (async () => {
       getLocalData()
         .then((d) => {
           mog('Initializaing', { d })

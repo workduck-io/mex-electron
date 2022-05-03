@@ -25,7 +25,7 @@ export const useBookmarks = () => {
   }
 
   const addBookmark = async (nodeid: string): Promise<boolean> => {
-    if (!USE_API()) {
+    if (!USE_API) {
       addBookmarks([nodeid])
       return true
     }
@@ -60,7 +60,7 @@ export const useBookmarks = () => {
   }
 
   const getAllBookmarks = async () => {
-    if (!USE_API()) {
+    if (!USE_API) {
       return getBookmarks()
     }
 
@@ -84,7 +84,7 @@ export const useBookmarks = () => {
   }
 
   const removeBookmark = async (nodeid: string): Promise<boolean> => {
-    if (!USE_API()) {
+    if (!USE_API) {
       removeBookmarks([nodeid])
       return true
     }

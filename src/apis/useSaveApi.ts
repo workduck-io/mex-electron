@@ -39,7 +39,7 @@ export const useApi = () => {
 
     setContent(nodeid, defaultQAContent)
 
-    if (!USE_API()) {
+    if (!USE_API) {
       return
     }
 
@@ -74,7 +74,7 @@ export const useApi = () => {
       data: serializeContent(content ?? defaultContent.content)
     }
 
-    if (!USE_API()) {
+    if (!USE_API) {
       return
     }
     const data = await client

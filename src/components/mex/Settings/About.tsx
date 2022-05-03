@@ -1,4 +1,3 @@
-import { getGlobal } from '@electron/remote'
 import linkedinIcon from '@iconify/icons-logos/linkedin-icon'
 import twitterIcon from '@iconify/icons-logos/twitter'
 import globeIcon from '@iconify/icons-ph/globe'
@@ -8,6 +7,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { IpcAction } from '../../../data/IpcAction'
 import { AppType } from '../../../hooks/useInitialize'
+import { useVersionStore } from '../../../store/useAppDataStore'
 import useOnboard from '../../../store/useOnboarding'
 import { BackCard } from '../../../style/Card'
 import { CenteredColumn } from '../../../style/Layouts'
@@ -43,7 +43,7 @@ const Flex = styled.div`
 `
 
 const About = () => {
-  const appVersion = getGlobal('appVersion')
+  const appVersion = useVersionStore((store) => store.version)
   const { goTo } = useRouting()
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const setStep = useOnboard((s) => s.setStep)

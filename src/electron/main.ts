@@ -16,8 +16,9 @@ import {
   Tray
 } from 'electron'
 import fs from 'fs'
-import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
 import path from 'path'
+import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
+
 import { getSaveLocation, getSearchIndexLocation, getTokenLocation } from '../data/Defaults/data'
 import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
 import { IpcAction } from '../data/IpcAction'
@@ -69,8 +70,6 @@ if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
 if (process.platform === 'win32') {
   app.disableHardwareAcceleration()
 }
-
-require('@electron/remote/main').initialize()
 
 declare const MEX_WINDOW_WEBPACK_ENTRY: string
 declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
@@ -171,8 +170,6 @@ const createSpotLighWindow = (show?: boolean) => {
     spotlight = null
   })
 
-  require('@electron/remote/main').enable(spotlight.webContents)
-
   if (IS_DEV) spotlight.webContents.openDevTools()
 
   // Open urls in the user's browser
@@ -201,8 +198,6 @@ const createMexWindow = () => {
       mex.show()
     }
   })
-
-  require('@electron/remote/main').enable(mex.webContents)
 
   const menuBuilder = new MenuBuilder(mex)
   menuBuilder.buildMenu()
@@ -426,11 +421,11 @@ ipcMain.on(IpcAction.UPDATE_ACTIONS, (event, data) => {
 app
   .whenReady()
   .then(() => {
-    // * permission check
-
-    installExtension(REDUX_DEVTOOLS)
-      .then((name) => console.log(`Added Extension:  ${name}`))
-      .catch((err) => console.log('An error occurred: ', err))
+    if (isAlpha) {
+      installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS])
+        .then((name) => console.log(`Added Extensions: ${name}`))
+        .catch((err) => console.log(`An error occurred: ${err}`))
+    }
 
     // getPermissions().then((s) => console.log('Hello'))
 
@@ -764,4 +759,9 @@ ipcMain.handle(IpcAction.QUERY_INDEX_BY_NODEID, async (_event, key, nodeId, quer
 ipcMain.handle(IpcAction.QUERY_INDEX_WITH_RANKING, async (_event, key, query) => {
   const results = await searchIndexWithRanking(key, query)
   return results
+})
+
+ipcMain.handle(IpcAction.VERSION_GETTER, async (_event) => {
+  const version = app.getVersion()
+  return version
 })

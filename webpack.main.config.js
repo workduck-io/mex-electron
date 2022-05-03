@@ -1,3 +1,6 @@
+const fs = require('fs')
+const path = require('path')
+
 const ThreadsPlugin = require('threads-plugin')
 
 const externalsWin = {
@@ -12,6 +15,13 @@ const externalsDarwin = {
 }
 
 const externals = process.platform === 'darwin' ? externalsDarwin : externalsWin
+
+const aliases = fs
+  .readdirSync('src', { withFileTypes: true })
+  .filter((i) => i.isDirectory())
+  .reduce((p, c) => {
+    return { ...p, [`@${c.name}`]: path.resolve(__dirname, 'src', c.name) }
+  }, {})
 
 module.exports = {
   /**
@@ -31,6 +41,7 @@ module.exports = {
     })
   ],
   resolve: {
+    alias: aliases,
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json']
   }
 }

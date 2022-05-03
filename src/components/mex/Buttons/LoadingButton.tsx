@@ -5,7 +5,7 @@ import Loading from '../../../style/Loading'
 import { Icon } from '@iconify/react'
 import { GOOGLE_OAUTH_URL } from '../../../apis/routes'
 import { ErrorBoundary } from 'react-error-boundary'
-import config from '../../../apis/config'
+import config from '../../../config.json'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 
 export interface LoadingButtonProps {
