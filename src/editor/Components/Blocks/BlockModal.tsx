@@ -5,7 +5,6 @@ import {
   getNodes,
   getPlateSelectors,
   insertNodes,
-  getNode,
   usePlateEditorRef
 } from '@udecode/plate'
 import { NodeEntry, Transforms } from 'slate'
@@ -15,7 +14,7 @@ import useBlockStore, { ContextMenuActionType } from '../../../store/useBlockSto
 import { Button } from '../../../style/Buttons'
 import { AppType } from '../../../hooks/useInitialize'
 import { IpcAction } from '../../../data/IpcAction'
-import Modal, { contextType } from 'react-modal'
+import Modal from 'react-modal'
 import { NodeEditorContent } from '../../../types/Types'
 import React from 'react'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
@@ -28,6 +27,7 @@ import { useDataSaverFromContent } from '../Saver'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNodes } from '../../../hooks/useNodes'
 import { ButtonWrapper } from '../../../style/Settings'
+import { useSaveData } from '../../../hooks/useSaveData'
 
 const BlockModal = () => {
   const blocksFromStore = useBlockStore((store) => store.blocks)
@@ -36,6 +36,7 @@ const BlockModal = () => {
   const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
 
   const { addNode } = useNodes()
+  const { saveData } = useSaveData()
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
   const editor = usePlateEditorRef()
   const { getNodeidFromPath } = useLinks()
@@ -123,6 +124,7 @@ const BlockModal = () => {
     addNode({ ilink: quickLink.value, showAlert: true }, (node) => {
       saveEditorValueAndUpdateStores(node.nodeid, blocksContent)
       appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
+      saveData()
     })
   }
 
@@ -136,6 +138,7 @@ const BlockModal = () => {
     setIsBlockMode(false)
 
     saveEditorValueAndUpdateStores(nodeid, content)
+    saveData()
     mog('content length', { content: getPlateSelectors().value(), len: getPlateSelectors().value() })
   }
 
