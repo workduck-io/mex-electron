@@ -2,7 +2,6 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import Project from '../Project'
 import { TemplateConfig } from '@workduck-io/action-request-helper'
-import { transparentize } from 'polished'
 import { ErrorBoundary } from 'react-error-boundary'
 import { StyledBackground } from '../../styled'
 
@@ -14,7 +13,6 @@ type RowContainerProps = {
 }
 
 const RowContainer = styled.div<RowContainerProps>`
-  /* width: 100%; */
   * {
     box-sizing: border-box;
   }
@@ -28,7 +26,6 @@ const RowContainer = styled.div<RowContainerProps>`
   border-radius: 0.5rem;
   justify-content: space-between;
   flex-direction: ${(props) => (props.type === 'row' ? 'row' : 'column')};
-  /* background-color: ${({ theme }) => transparentize(0.65, theme.colors.background.modal)}; */
 
   ${({ active }) =>
     active &&

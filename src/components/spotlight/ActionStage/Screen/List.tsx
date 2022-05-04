@@ -58,7 +58,7 @@ const List: React.FC<ListProps> = ({ items }) => {
 
   const nextItem = () => {
     setActiveIndex((next) => {
-      const nextIndex = (next + 1) % items.length
+      const nextIndex = next === items.length - 1 ? next : next + 1
       scrollTo(nextIndex)
       return nextIndex
     })
@@ -66,7 +66,7 @@ const List: React.FC<ListProps> = ({ items }) => {
 
   const prevItem = () => {
     setActiveIndex((prev) => {
-      const prevIndex = (prev - 1 + items.length) % items.length
+      const prevIndex = prev === 0 ? prev : prev - 1
       scrollTo(prevIndex)
       return prevIndex
     })

@@ -25,6 +25,7 @@ export interface DisplayShortcutProps {
 
 export const DisplayShortcut = ({ shortcut }: DisplayShortcutProps) => {
   const keys = getSplitDisplayShortcut(shortcut)
+
   return (
     <ShortcutWrapper>
       {keys.map((k, i) => (

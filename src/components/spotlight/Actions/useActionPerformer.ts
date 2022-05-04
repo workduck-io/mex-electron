@@ -110,8 +110,11 @@ export const useActionPerformer = () => {
     const prevActionValue = getPrevActionValue(actionId)
     const action = getConfig(activeAction?.actionGroupId, actionId)
 
-    const hasPrevValueChanged = prevActionValue?.selection && selection?.prev !== prevActionValue?.selection?.label
+    const hasPrevValueChanged =
+      prevActionValue?.selection?.label && selection?.prev !== prevActionValue?.selection?.label
     const hasPreAction = action?.preActionId
+
+    mog(`${actionId}, IS PERFOMER? `, { prevActionValue, hasPreAction, hasPrevValueChanged })
 
     return hasPreAction ? hasPrevValueChanged : !hasPrevValueChanged
   }

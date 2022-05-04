@@ -1,14 +1,14 @@
 import React, { forwardRef, useEffect, useState } from 'react'
 
 import styled, { useTheme } from 'styled-components'
-import { components, StylesConfig } from 'react-select'
+import { components } from 'react-select'
 import { StyledSelect } from '../../../../style/Form'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
 import { useActionStore } from '../../Actions/useActionStore'
 import { StyledBackground } from '../../styled'
 import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
-import { transparentize } from 'polished'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
+import { mog } from '../../../../utils/lib/helper'
 
 const Dropdown = styled.div`
   ${StyledBackground}
@@ -166,7 +166,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
   const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
 
   const { performer, isPerformer } = useActionPerformer()
-  const prevSelelectedLabel = getPreviousActionValue(actionId)?.selection
+  const prevSelelectedLabel = getPreviousActionValue(actionId)
 
   const resToDisplay = (result) => {
     return result?.map((item) => {
@@ -182,6 +182,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     const isReady = isPerformer(actionId)
 
     if (isReady) {
+      mog(`${actionId} fetching`, { value, prevSelelectedLabel })
       performer(actionGroupId, actionId).then((res) => {
         const result = res?.contextData
         const data = resToDisplay(result)
@@ -194,7 +195,9 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
   const handleChange = (selection: any) => {
     if (onChange) onChange(selection)
 
-    const val = { prev: prevSelelectedLabel?.label, selection }
+    const prev = prevSelelectedLabel?.label
+    const val = { prev, selection }
+
     addSelectionInCache(actionId, val)
   }
 

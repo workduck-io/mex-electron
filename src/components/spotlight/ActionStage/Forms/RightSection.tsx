@@ -10,6 +10,7 @@ import Tippy from '@tippyjs/react'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { useRouting } from '../../../../views/routes/urls'
 import { Button } from '../../../../style/Buttons'
+import ActionMenu from '../ActionMenu'
 
 const JoinService = styled.span<{ left?: boolean }>`
   position: absolute;
@@ -78,13 +79,14 @@ const BorderButton = styled(Button)`
   border: 1px solid ${({ theme }) => theme.colors.form.button.bg};
 `
 
-type ActionsRightSectionProps = { actionGroupId: string; isLoading?: boolean }
+type ActionsRightSectionProps = { actionGroupId: string; actionId: string; isLoading?: boolean }
 
-export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionGroupId, isLoading }) => {
+export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionGroupId, actionId, isLoading }) => {
   const theme = useTheme()
   const actionGroups = useActionStore((store) => store.actionGroups)
   const setView = useSpotlightAppStore((store) => store.setView)
   const isSubmitting = useActionStore((store) => store.isSubmitting)
+  const getConfig = useActionStore((store) => store.getConfig)
   const { goBack } = useRouting()
 
   const onCancelClick = () => {
@@ -92,43 +94,57 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
     goBack()
   }
 
-  return (
-    <>
-      <TopBlur />
-      <JoinService>
-        <section>
-          <MexIcon color={theme.colors.primary} icon={actionGroups?.[actionGroupId]?.icon} height="4rem" width="4rem" />
-          {isSubmitting ? <Loading transparent dots={3} orientation="vertical" direction="reverse" /> : <Connector />}
-          <WDLogo padding="0" height="3.5rem" width="3.5rem" />
-        </section>
-      </JoinService>
-      <BottomBlur />
-      <FloatingGroup>
-        <Tippy
-          theme="mex"
-          placement="auto"
-          content={
-            <ShortcutText key="send">
-              <div className="text">Cancel&nbsp;</div> (<DisplayShortcut shortcut="Esc" />)
-            </ShortcutText>
-          }
-        >
-          <BorderButton onClick={onCancelClick}>Discard</BorderButton>
-        </Tippy>
-        <Tippy
-          theme="mex"
-          placement="auto"
-          content={
-            <ShortcutText key="send">
-              <div className="text">Send&nbsp;</div> (<DisplayShortcut shortcut="$mod+Enter" />)
-            </ShortcutText>
-          }
-        >
-          <FormButton form="action-form" type="submit" color={theme.colors.primary}>
-            Create
-          </FormButton>
-        </Tippy>
-      </FloatingGroup>
-    </>
-  )
+  const config = getConfig(actionGroupId, actionId)
+
+  if (config?.postAction?.menus) {
+    return <ActionMenu title="Options" />
+  }
+
+  if (config?.form)
+    return (
+      <>
+        <TopBlur />
+        <JoinService>
+          <section>
+            <MexIcon
+              color={theme.colors.primary}
+              icon={actionGroups?.[actionGroupId]?.icon}
+              height="4rem"
+              width="4rem"
+            />
+            {isSubmitting ? <Loading transparent dots={3} orientation="vertical" direction="reverse" /> : <Connector />}
+            <WDLogo padding="0" height="3.5rem" width="3.5rem" />
+          </section>
+        </JoinService>
+        <BottomBlur />
+        <FloatingGroup>
+          <Tippy
+            theme="mex"
+            placement="auto"
+            content={
+              <ShortcutText key="send">
+                <div className="text">Cancel&nbsp;</div> (<DisplayShortcut shortcut="Esc" />)
+              </ShortcutText>
+            }
+          >
+            <BorderButton onClick={onCancelClick}>Discard</BorderButton>
+          </Tippy>
+          <Tippy
+            theme="mex"
+            placement="auto"
+            content={
+              <ShortcutText key="send">
+                <div className="text">Send&nbsp;</div> (<DisplayShortcut shortcut="$mod+Enter" />)
+              </ShortcutText>
+            }
+          >
+            <FormButton form="action-form" type="submit" color={theme.colors.primary}>
+              Create
+            </FormButton>
+          </Tippy>
+        </FloatingGroup>
+      </>
+    )
+
+  return <></>
 }
