@@ -3,6 +3,7 @@ import { ELEMENT_EXCALIDRAW } from '@editor/Components/Excalidraw'
 import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
 import { ELEMENT_LI, ELEMENT_LIC, ELEMENT_MEDIA_EMBED, ELEMENT_OL, ELEMENT_PARAGRAPH, ELEMENT_UL } from '@udecode/plate'
 import { NodeEditorContent } from '../../types/Types'
+import { mog } from './helper'
 
 /**
  * Converts the content to a list of tasks
@@ -25,6 +26,8 @@ export const convertValueToTasks = (val: NodeEditorContent): NodeEditorContent =
     }
     if (node.type === ELEMENT_TODO_LI) {
       return [...p, node]
+    } else if (node.type === undefined && node.text !== '') {
+      return [...p, basicConvertedNode]
     } else if (node.type === ELEMENT_PARAGRAPH) {
       // Check for text in paragraph itself
       if (node.text !== undefined) {
@@ -63,6 +66,7 @@ export const convertValueToTasks = (val: NodeEditorContent): NodeEditorContent =
           const child1 = item.children
           if (child1 !== undefined && child1?.length > 0) {
             const child1converted = child1.reduce((p3, child2) => {
+              // mog('child1converted go brr', { child2, p3 })
               // Note that only internal lists have the LIC type
               if (child2.type === ELEMENT_LIC) {
                 return [
@@ -76,10 +80,20 @@ export const convertValueToTasks = (val: NodeEditorContent): NodeEditorContent =
               } else if (child2.type === ELEMENT_UL || child2.type === ELEMENT_OL) {
                 // If list is embedded in another list
                 // Recursive go brrrr
-                return [...p3, ...convertValueToTasks([child2])]
+                const convertedTasksForList = convertValueToTasks([child2])
+                return [...p3, ...convertedTasksForList]
               } else if (child2.type === ELEMENT_PARAGRAPH) {
                 // This is applied for external content which does not insert LIC
                 return [...p3, ...convertValueToTasks([child2])]
+              } else if (child2.text !== undefined) {
+                return [
+                  ...p3,
+                  {
+                    type: ELEMENT_TODO_LI,
+                    id: generateTempId(),
+                    children: [child2]
+                  }
+                ]
               }
               return [...p3]
             }, [])
