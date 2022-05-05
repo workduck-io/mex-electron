@@ -1,6 +1,7 @@
 import { isParent } from '@components/mex/Sidebar/treeUtils'
 import downIcon from '@iconify/icons-ph/arrow-down-bold'
 import { Icon } from '@iconify/react'
+import { useSpotlightSettingsStore } from '@store/settings.spotlight'
 import React, { useMemo, useRef } from 'react'
 import { useSpring } from 'react-spring'
 import { BASE_TASKS_PATH, defaultContent } from '../../../data/Defaults/baseData'
@@ -34,6 +35,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
   const { selection, searchResults, activeIndex } = useSpotlightContext()
   const isSnippet = searchResults[activeIndex]?.id?.startsWith('SNIPPET_')
   const snippets = useSnippetStore((store) => store.snippets)
+  const setShowSource = useSpotlightSettingsStore((state) => state.toggleSource)
 
   const { snippet, currentItem, blockid, isNewTask } = useMemo(() => {
     const currentItem = searchResults[activeIndex]
@@ -48,6 +50,9 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
     //   blockid,
     //   isNewTask
     // })
+
+    setShowSource(!isNewTask)
+
     return {
       snippet: snippets.find((s) => s.id === searchResults[activeIndex]?.id),
       currentItem,

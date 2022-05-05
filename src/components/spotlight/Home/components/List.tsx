@@ -1,6 +1,6 @@
 import { ActiveItem, CategoryType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { ItemActionType, ListItemType } from '../../SearchResults/types'
-import { ListItem, StyledList } from '../styled'
+import { ActionItem, ListItem, StyledList } from '../styled'
 import React, { useEffect, useMemo, useRef } from 'react'
 import { findIndex, groupBy } from 'lodash'
 import { Virtuoso } from 'react-virtuoso'
@@ -32,6 +32,7 @@ import { CopyTag } from '../../../../editor/Components/tag/components/CopyTag'
 import { useTaskFromSelection } from '@hooks/useTaskFromSelection'
 import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
+import { useSpotlightSettingsStore } from '@store/settings.spotlight'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -55,6 +56,7 @@ const List = ({
     useSpotlightContext()
   const parentRef = useRef(null)
 
+  const showSource = useSpotlightSettingsStore((state) => state.showSource)
   const addILink = useDataStore((store) => store.addILink)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
@@ -108,6 +110,8 @@ const List = ({
   const springProps = useSpring(listStyle)
 
   const { itemActionExecutor } = useItemExecutor()
+  const spotlightTrigger = useSpotlightSettingsStore((state) => state.spotlightTrigger)
+
   const groups = Object.keys(groupBy(data, (n) => n.category))
 
   const { saveIt } = useSaveChanges()
@@ -256,7 +260,7 @@ const List = ({
 
   useEffect(() => {
     setActiveIndex(0)
-  }, [selection])
+  }, [spotlightTrigger])
 
   // * handles double click on a list item
   function handleDoubleClick(id: number) {
@@ -348,10 +352,10 @@ const List = ({
             }
           }
           return (
-            <ListItem key={index} {...handlers}>
+            <ActionItem key={index} {...handlers}>
               {item.category !== lastItem?.category && <ActionTitle key={item.category}>{item.category}</ActionTitle>}
               <Item active={active} key={item.id} item={item} />
-            </ListItem>
+            </ActionItem>
           )
         }}
       />

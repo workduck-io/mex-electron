@@ -10,6 +10,7 @@ import { ListItem } from '../../Home/styled'
 import { KEYBOARD_KEYS } from '../../Home/components/List'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { NavigationType, useRouting } from '../../../../views/routes/urls'
+import { mog } from '@utils/lib/helper'
 
 export const FullWidth = styled.div<{ narrow: boolean }>`
   width: 100%;
@@ -79,7 +80,9 @@ const List: React.FC<ListProps> = ({ items }) => {
   const scrollTo = (itemIndex: number) => virtualizer.scrollToIndex(itemIndex)
 
   useEffect(() => {
+    mog('Is menu open', { isMenuOpen })
     const handler = (event) => {
+      if (isMenuOpen) return
       if (event.key === KEYBOARD_KEYS.ArrowUp) {
         event.preventDefault()
         prevItem()

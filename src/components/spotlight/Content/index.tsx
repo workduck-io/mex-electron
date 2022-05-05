@@ -1,9 +1,10 @@
+import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { getTodayTaskNodePath, useTaskFromSelection } from '@hooks/useTaskFromSelection'
 import React, { useEffect } from 'react'
 import 'react-contexify/dist/ReactContexify.css'
 import { ErrorBoundary } from 'react-error-boundary'
 import EditorErrorFallback from '../../../components/mex/Error/EditorErrorFallback'
-import { defaultContent } from '../../../data/Defaults/baseData'
+import { BASE_TASKS_PATH, defaultContent } from '../../../data/Defaults/baseData'
 import { MeetingSnippetContent } from '../../../data/initial/MeetingNote'
 import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
 import { getUntitledDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
@@ -85,13 +86,18 @@ const Content = () => {
               const listItem: ListItemType = getListItemFromNode(item)
               return listItem
             })
+            .filter((item) => {
+              const cond = !isParent(item.extras.path, BASE_TASKS_PATH)
+              console.log('cond', { cond })
+              return cond
+            })
             .reverse()
 
           const recentLimit = recentList.length < MAX_RECENT_ITEMS ? recentList.length : MAX_RECENT_ITEMS
           const limitedList = recentList.slice(0, recentLimit)
           const listWithNew = insertItemInArray(limitedList, CREATE_NEW_ITEM, 1)
-          const listWithAllNew = selection ? insertItemInArray(listWithNew, CREATE_NEW_TASK_ITEM, 2) : listWithNew
-          const defItems = selection ? [CREATE_NEW_ITEM, CREATE_NEW_TASK_ITEM] : [CREATE_NEW_ITEM]
+          const listWithAllNew = selection ? insertItemInArray(listWithNew, CREATE_NEW_TASK_ITEM(), 2) : listWithNew
+          const defItems = selection ? [CREATE_NEW_ITEM, CREATE_NEW_TASK_ITEM()] : [CREATE_NEW_ITEM]
 
           const list = !recentLimit ? defItems : listWithAllNew
 

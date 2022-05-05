@@ -205,6 +205,12 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
       placeholder={placeholder}
       onMenuOpen={() => setIsMenuOpen(true)}
       onMenuClose={() => setIsMenuOpen(false)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.stopPropagation()
+        }
+      }}
+      onSelect={(e) => e.stopImmediatePropagation()}
       components={
         isMulti ? { Option: CustomOption, MultiValue: MultiValueOption } : { SingleValue, Option: CustomOption }
       }

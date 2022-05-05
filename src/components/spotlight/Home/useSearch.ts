@@ -14,6 +14,7 @@ import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { useSnippets } from '../../../hooks/useSnippets'
 import { useSearch as useSearchHook } from '../../../hooks/useSearch'
 import { useActionStore } from '../Actions/useActionStore'
+import { getTodayTaskNodePath } from '@hooks/useTaskFromSelection'
 
 export const CREATE_NEW_ITEM: ListItemType = {
   title: 'Create new ',
@@ -39,13 +40,13 @@ export const CREATE_NEW_ITEM: ListItemType = {
   }
 }
 
-export const CREATE_NEW_TASK_ITEM: ListItemType = {
+export const CREATE_NEW_TASK_ITEM: () => ListItemType = () => ({
   title: 'Create New Task',
   id: 'create-new-task',
   icon: 'bi:plus-circle',
   type: QuickLinkType.backlink,
   category: CategoryType.task,
-  description: 'Create New Task',
+  description: `In: ${getTodayTaskNodePath()}`,
   shortcut: {
     edit: {
       category: 'action',
@@ -61,7 +62,7 @@ export const CREATE_NEW_TASK_ITEM: ListItemType = {
   extras: {
     newTask: true
   }
-}
+})
 export const useSearch = () => {
   const { isLocalNode } = useLoad()
   const { search } = useSpotlightContext()
