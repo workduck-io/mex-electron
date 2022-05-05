@@ -1,6 +1,6 @@
 import React from 'react'
 import { animated } from 'react-spring'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 export const StyledList = styled(animated.div)`
   overflow: hidden auto;
@@ -10,11 +10,15 @@ export const StyledList = styled(animated.div)`
   max-height: 425px;
 `
 
-export const ListItem = styled.div<{ start: number }>`
-  position: absolute;
-  transform: translateY(${(props) => props.start}px);
+export const ListItem = styled.div<{ start?: number }>`
   width: 100%;
   cursor: pointer;
+  ${({ start }) =>
+    start &&
+    css`
+      position: absolute;
+      transform: translateY(${start}px);
+    `}
 `
 
 export function usePointerMovedSinceMount() {

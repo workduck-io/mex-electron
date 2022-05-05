@@ -3,6 +3,7 @@ import { ItemActionType, ListItemType } from '../../SearchResults/types'
 import { ListItem, StyledList } from '../styled'
 import React, { useEffect, useMemo, useRef } from 'react'
 import { findIndex, groupBy } from 'lodash'
+import { Virtuoso } from 'react-virtuoso'
 
 import { ActionTitle } from '../../Actions/styled'
 import Item from './Item'
@@ -11,7 +12,6 @@ import { useSaveChanges } from '../../Search/useSearchProps'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../../store/editor.spotlight'
 import { useSpring } from 'react-spring'
-import { useVirtual } from 'react-virtual'
 import { QuickLinkType } from '../../../mex/NodeSelect/NodeSelect'
 import { appNotifierWindow } from '../../../../electron/utils/notifiers'
 import { IpcAction } from '../../../../data/IpcAction'
@@ -113,15 +113,12 @@ const List = ({
   const { saveIt } = useSaveChanges()
   const indexes = React.useMemo(() => groups.map((gn) => findIndex(data, (n) => n.category === gn)), [groups])
 
-  const virtualizer = useVirtual({
-    size: data?.length ?? 0,
-    parentRef
-  })
-
-  const { scrollToIndex } = virtualizer
-
   React.useEffect(() => {
-    scrollToIndex(activeIndex)
+    parentRef.current.scrollToIndex({
+      index: activeIndex,
+      align: 'start',
+      behavior: 'smooth'
+    })
   }, [activeIndex])
 
   useEffect(() => {
@@ -323,15 +320,18 @@ const List = ({
   }
 
   return (
-    <StyledList style={springProps} ref={parentRef}>
+    <StyledList style={springProps}>
       {!data.length && <ActionTitle key={search.type}>{search.type}</ActionTitle>}
-      <div style={{ height: virtualizer.totalSize }}>
-        {virtualizer.virtualItems.map((virtualRow) => {
-          const item = data[virtualRow.index]
+      <Virtuoso
+        data={data}
+        ref={parentRef}
+        itemContent={(index, item) => {
+          const lastItem = index > 0 ? data[index - 1] : undefined
+          const active = index === activeIndex
           const handlers = {
             onClick: () => {
-              setActiveIndex(virtualRow.index)
-              const currentActiveItem = data[virtualRow.index]
+              setActiveIndex(index)
+              const currentActiveItem = data[index]
 
               if (currentActiveItem?.type === ItemActionType.search) {
                 setCurrentListItem(currentActiveItem)
@@ -343,23 +343,18 @@ const List = ({
               }
             },
             onDoubleClick: () => {
-              handleDoubleClick(virtualRow.index)
+              handleDoubleClick(index)
               setInput('')
             }
           }
-
-          const index = virtualRow.index
-          const active = index === activeIndex
-          const lastItem = index > 0 ? data[index - 1] : undefined
-
           return (
-            <ListItem key={virtualRow.index} ref={virtualRow.measureRef} start={virtualRow.start} {...handlers}>
+            <ListItem key={index} {...handlers}>
               {item.category !== lastItem?.category && <ActionTitle key={item.category}>{item.category}</ActionTitle>}
-              <Item key={item.id} item={item} active={active} />
+              <Item active={active} key={item.id} item={item} />
             </ListItem>
           )
-        })}
-      </div>
+        }}
+      />
     </StyledList>
   )
 }
