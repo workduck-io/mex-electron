@@ -1,23 +1,29 @@
-import { Editor, Transforms } from 'slate'
-import { NODE_PATH_CHAR_LENGTH, NODE_PATH_SPACER, getSlug } from '../../../../utils/lib/strings'
-import { TEditor, getNodes, getSelectionText, insertNodes } from '@udecode/plate'
-
-import { ELEMENT_ILINK } from '../../ilink/defaults'
-import { ELEMENT_SYNC_BLOCK } from '../../SyncBlock'
-import { ILinkNode } from '../../ilink/types'
-import { SEPARATOR } from '../../../../components/mex/Sidebar/treeUtils'
-import { convertContentToRawText } from '../../../../utils/search/parseData'
-import { defaultContent } from '../../../../data/Defaults/baseData'
-import { generateSnippetId, generateTempId } from '../../../../data/Defaults/idPrefixes'
+import {
+    getNodes,
+    getSelectionText,
+    insertNodes, TEditor
+} from '@udecode/plate'
+import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import genereateName from 'project-name-generator'
 import toast from 'react-hot-toast'
+import { Editor, Transforms } from 'slate'
+import { SEPARATOR } from '../../../../components/mex/Sidebar/treeUtils'
+import { defaultContent } from '../../../../data/Defaults/baseData'
+import { generateSnippetId, generateTempId } from '../../../../data/Defaults/idPrefixes'
+import { useSaveData } from '../../../../hooks/useSaveData'
 import { useContentStore } from '../../../../store/useContentStore'
 import useDataStore from '../../../../store/useDataStore'
 import { useEditorStore } from '../../../../store/useEditorStore'
-import { useSaveData } from '../../../../hooks/useSaveData'
 import { useSnippetStore } from '../../../../store/useSnippetStore'
-import { ELEMENT_QA_BLOCK } from '../../QABlock/createQAPlugin'
+import { NodeEditorContent } from '../../../../types/Types'
 import { mog } from '../../../../utils/lib/helper'
+import { getSlug, NODE_PATH_CHAR_LENGTH, NODE_PATH_SPACER } from '../../../../utils/lib/strings'
+import { convertContentToRawText } from '../../../../utils/search/parseData'
+import { ELEMENT_ILINK } from '../../ilink/defaults'
+import { ILinkNode } from '../../ilink/types'
+import { ELEMENT_QA_BLOCK } from '../../QABlock/createQAPlugin'
+import { ELEMENT_SYNC_BLOCK } from '../../SyncBlock'
+
 
 export const useTransform = () => {
   const addILink = useDataStore((s) => s.addILink)
@@ -67,6 +73,23 @@ export const useTransform = () => {
     }
   }
 
+  const replaceSelectionWithTask = (editor: TEditor, todoVal: NodeEditorContent) => {
+    try {
+      Transforms.removeNodes(editor, { at: editor.selection, hanging: false })
+      Transforms.delete(editor)
+
+      const convertedVal = convertValueToTasks(todoVal)
+      mog('replaceSelectionWithTask  ', { todoVal, convertedVal })
+
+      insertNodes<any>(editor, convertedVal, {
+        at: editor.selection
+      })
+      // addQABlock(editor, { question: valText, questionId: generateSnippetId() })
+    } catch (e) {
+      console.error(e)
+      return e
+    }
+  }
   // Checks whether current editor selection can be converted
   const isConvertable = (editor: TEditor): boolean => {
     if (!editor) return false
@@ -105,8 +128,7 @@ export const useTransform = () => {
   }
 
   /**
-   * Converts selection to new snippet
-   * Shows notification of snippet creation
+   * Converts selection to Value
    * @param editor
    */
   const selectionToValue = (editor: TEditor) => {
@@ -177,6 +199,33 @@ export const useTransform = () => {
   }
 
   /**
+   * Converts selection to new Task
+   * @param editor
+   */
+  const selectionToTask = (editor: TEditor) => {
+    if (!editor.selection) return
+    if (!isConvertable(editor)) return
+
+    Editor.withoutNormalizing(editor, () => {
+      // const selectionPath = Editor.path(editor, editor.selection)
+      const nodes = Array.from(
+        getNodes(editor, {
+          mode: 'highest',
+          block: true,
+          at: editor.selection
+        })
+      )
+
+      const value = nodes.map(([node, _path]) => {
+        return node
+      })
+
+      replaceSelectionWithTask(editor, value)
+
+      // mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path })
+    })
+  }
+  /**
    * Converts selection to new snippet
    * Shows notification of snippet creation
    * @param editor
@@ -223,6 +272,7 @@ export const useTransform = () => {
     isConvertable,
     isFlowBlock,
     selectionToSnippet,
+    selectionToTask,
     selectionToValue
   }
 }

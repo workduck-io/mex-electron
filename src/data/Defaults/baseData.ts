@@ -21,13 +21,19 @@ export const onboardingLink = {
   nodeid: generateNodeUID()
 }
 
+const tasksLink = {
+  path: BASE_TASKS_PATH,
+  nodeid: generateNodeUID(),
+  icon: 'ri:draft-line'
+}
+
 const draftLink = {
   path: BASE_DRAFT_PATH,
   nodeid: generateNodeUID(),
   icon: 'ri:draft-line'
 }
 
-const linksWithSpecialContent = [onboardingLink, draftLink]
+const linksWithSpecialContent = [onboardingLink, draftLink, tasksLink]
 
 export const defaultContent: NodeContent = {
   type: 'init',
@@ -61,7 +67,8 @@ const contents: Contents = links.reduce(
   },
   {
     [onboardingLink.nodeid]: onboardingContent,
-    [draftLink.nodeid]: draftContent
+    [draftLink.nodeid]: draftContent,
+    [tasksLink.nodeid]: generateDefaultNode()
   }
 )
 

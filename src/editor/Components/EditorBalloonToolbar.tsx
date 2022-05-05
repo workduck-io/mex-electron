@@ -39,6 +39,7 @@ import { ButtonSeparator } from '../../style/Toolbar'
 import { BalloonToolbar } from './BalloonToolbar'
 import { SelectionToNode } from './BalloonToolbar/components/SelectionToNode'
 import { SelectionToSnippet } from './BalloonToolbar/components/SelectionToSnippet'
+import { SelectionToTask } from './BalloonToolbar/components/SelectionToTask'
 
 const BallonMarkToolbarButtons = () => {
   const editor = usePlateEditorRef()
@@ -135,6 +136,11 @@ const BallonMarkToolbarButtons = () => {
       <MarkToolbarButton type={getPluginType(editor, MARK_CODE)} icon={<Icon height={20} icon={codeLine} />} />
 
       <ButtonSeparator />
+
+      <SelectionToTask
+        icon={<Icon height={20} icon={fileAddLine} />}
+        tooltip={{ content: 'Convert Blocks to Task', ...tooltip }}
+      />
 
       <SelectionToNode
         icon={<Icon height={20} icon={addLine} />}

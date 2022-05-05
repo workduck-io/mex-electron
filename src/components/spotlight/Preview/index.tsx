@@ -1,8 +1,9 @@
+import { isParent } from '@components/mex/Sidebar/treeUtils'
 import downIcon from '@iconify/icons-ph/arrow-down-bold'
 import { Icon } from '@iconify/react'
 import React, { useMemo, useRef } from 'react'
 import { useSpring } from 'react-spring'
-import { defaultContent } from '../../../data/Defaults/baseData'
+import { BASE_TASKS_PATH, defaultContent } from '../../../data/Defaults/baseData'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
@@ -34,10 +35,24 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
   const isSnippet = searchResults[activeIndex]?.id?.startsWith('SNIPPET_')
   const snippets = useSnippetStore((store) => store.snippets)
 
-  const { snippet, currentItem } = useMemo(() => {
+  const { snippet, currentItem, blockid, isNewTask } = useMemo(() => {
+    const currentItem = searchResults[activeIndex]
+    const blockid = currentItem && currentItem.extras && currentItem.extras.blockid
+
+    const curPath = currentItem?.extras?.path
+    const isTaskNote = curPath ? isParent(curPath, BASE_TASKS_PATH) : false
+
+    const isNewTask = (currentItem && currentItem.extras && currentItem.extras.newTask) || isTaskNote
+    // mog('currentItem', {
+    //   currentItem,
+    //   blockid,
+    //   isNewTask
+    // })
     return {
       snippet: snippets.find((s) => s.id === searchResults[activeIndex]?.id),
-      currentItem: searchResults[activeIndex]
+      currentItem,
+      blockid,
+      isNewTask
     }
   }, [activeIndex, searchResults])
 
@@ -48,11 +63,19 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
       style.width = '100%'
     }
 
-    if (searchResults[activeIndex] && searchResults[activeIndex]?.category !== CategoryType.backlink) {
+    if (
+      searchResults[activeIndex] &&
+      searchResults[activeIndex]?.category !== CategoryType.backlink &&
+      searchResults[activeIndex]?.category !== CategoryType.task
+    ) {
       style.width = '0%'
     }
 
-    if (searchResults[activeIndex] && searchResults[activeIndex]?.category === CategoryType.meeting) {
+    if (
+      searchResults[activeIndex] &&
+      (searchResults[activeIndex]?.category === CategoryType.meeting ||
+        searchResults[activeIndex]?.category === CategoryType.task)
+    ) {
       if (normalMode) style.width = '45%'
       else style.width = '100%'
     }
@@ -85,11 +108,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
           editorId={snippet.id}
         />
       ) : (
-        <PreviewContainer
-          nodeId={nodeId}
-          blockId={currentItem && currentItem.extras && currentItem.extras.blockid}
-          preview={preview}
-        />
+        <PreviewContainer nodeId={nodeId} blockId={blockid} isNewTask={isNewTask} preview={preview} />
       )}
     </StyledPreview>
   )

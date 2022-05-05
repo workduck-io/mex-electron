@@ -3,6 +3,7 @@ import { ItemActionType, ListItemType } from '../../SearchResults/types'
 import { ListItem, StyledList } from '../styled'
 import React, { useEffect, useMemo, useRef } from 'react'
 import { findIndex, groupBy } from 'lodash'
+import { Virtuoso } from 'react-virtuoso'
 
 import { ActionTitle } from '../../Actions/styled'
 import Item from './Item'
@@ -11,7 +12,6 @@ import { useSaveChanges } from '../../Search/useSearchProps'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../../store/editor.spotlight'
 import { useSpring } from 'react-spring'
-import { useVirtual } from 'react-virtual'
 import { QuickLinkType } from '../../../mex/NodeSelect/NodeSelect'
 import { appNotifierWindow } from '../../../../electron/utils/notifiers'
 import { IpcAction } from '../../../../data/IpcAction'
@@ -29,6 +29,9 @@ import { serializeHtml, createPlateEditor, createPlateUI } from '@udecode/plate'
 import getPlugins from '../../../../editor/Plugins/plugins'
 import { ELEMENT_TAG } from '../../../../editor/Components/tag/defaults'
 import { CopyTag } from '../../../../editor/Components/tag/components/CopyTag'
+import { useTaskFromSelection } from '@hooks/useTaskFromSelection'
+import { isParent } from '@components/mex/Sidebar/treeUtils'
+import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -57,10 +60,13 @@ const List = ({
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
 
   const node = useSpotlightEditorStore((s) => s.node)
+  const setPreviewEditorNode = useSpotlightEditorStore((s) => s.setNode)
 
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
 
   const { getSnippet } = useSnippets()
+
+  const { getNewTaskNode } = useTaskFromSelection()
 
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
@@ -73,12 +79,20 @@ const List = ({
       style.marginRight = '0'
     }
 
-    if (searchResults[activeIndex] && searchResults[activeIndex]?.category !== CategoryType.backlink) {
+    if (
+      searchResults[activeIndex] &&
+      searchResults[activeIndex]?.category !== CategoryType.backlink &&
+      searchResults[activeIndex]?.category !== CategoryType.task
+    ) {
       style.width = '100%'
       style.marginRight = '0'
     }
 
-    if (searchResults[activeIndex] && searchResults[activeIndex]?.category === CategoryType.meeting) {
+    if (
+      searchResults[activeIndex] &&
+      (searchResults[activeIndex]?.category === CategoryType.meeting ||
+        searchResults[activeIndex]?.category === CategoryType.task)
+    ) {
       if (normalMode) {
         style.width = '55%'
         style.marginRight = '0.5rem'
@@ -99,15 +113,12 @@ const List = ({
   const { saveIt } = useSaveChanges()
   const indexes = React.useMemo(() => groups.map((gn) => findIndex(data, (n) => n.category === gn)), [groups])
 
-  const virtualizer = useVirtual({
-    size: data?.length ?? 0,
-    parentRef
-  })
-
-  const { scrollToIndex } = virtualizer
-
   React.useEffect(() => {
-    scrollToIndex(activeIndex)
+    parentRef.current.scrollToIndex({
+      index: activeIndex,
+      align: 'start',
+      behavior: 'smooth'
+    })
   }, [activeIndex])
 
   useEffect(() => {
@@ -170,13 +181,14 @@ const List = ({
           if (event.metaKey) {
             if (currentActiveItem?.type === QuickLinkType.backlink) {
               let nodePath = node.path
+              const isNewTask = isParent(node.path, BASE_TASKS_PATH)
               if (currentActiveItem?.extras.new && !activeItem.active) {
                 nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
                 addILink({ ilink: nodePath, nodeid: node.nodeid })
               }
 
               if (selection) {
-                saveIt({ path: nodePath, saveAndClose: true, removeHighlight: true })
+                saveIt({ path: nodePath, saveAndClose: true, removeHighlight: true, isNewTask })
                 setSelection(undefined)
               }
 
@@ -200,6 +212,20 @@ const List = ({
               }
             }
           }
+        } else if (currentActiveItem.category === CategoryType.task) {
+          const node = getNewTaskNode(true)
+          if (event.metaKey) {
+            saveIt({ path: node.path, saveAndClose: true, removeHighlight: true, isNewTask: true })
+            setSelection(undefined)
+          } else {
+            setPreviewEditorNode({
+              ...node,
+              title: node.path ?? 'Today Tasks',
+              id: node.nodeid
+            })
+            setNormalMode(false)
+          }
+          // setSelectedItem({ item: data[activeIndex], active: false })
         } else if (currentActiveItem.category === CategoryType.action) {
           if (currentActiveItem?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
             setSelectedItem({ item: data[activeIndex], active: false })
@@ -294,15 +320,18 @@ const List = ({
   }
 
   return (
-    <StyledList style={springProps} ref={parentRef}>
+    <StyledList style={springProps}>
       {!data.length && <ActionTitle key={search.type}>{search.type}</ActionTitle>}
-      <div style={{ height: virtualizer.totalSize }}>
-        {virtualizer.virtualItems.map((virtualRow) => {
-          const item = data[virtualRow.index]
+      <Virtuoso
+        data={data}
+        ref={parentRef}
+        itemContent={(index, item) => {
+          const lastItem = index > 0 ? data[index - 1] : undefined
+          const active = index === activeIndex
           const handlers = {
             onClick: () => {
-              setActiveIndex(virtualRow.index)
-              const currentActiveItem = data[virtualRow.index]
+              setActiveIndex(index)
+              const currentActiveItem = data[index]
 
               if (currentActiveItem?.type === ItemActionType.search) {
                 setCurrentListItem(currentActiveItem)
@@ -314,23 +343,18 @@ const List = ({
               }
             },
             onDoubleClick: () => {
-              handleDoubleClick(virtualRow.index)
+              handleDoubleClick(index)
               setInput('')
             }
           }
-
-          const index = virtualRow.index
-          const active = index === activeIndex
-          const lastItem = index > 0 ? data[index - 1] : undefined
-
           return (
-            <ListItem key={virtualRow.index} ref={virtualRow.measureRef} start={virtualRow.start} {...handlers}>
+            <ListItem key={index} {...handlers}>
               {item.category !== lastItem?.category && <ActionTitle key={item.category}>{item.category}</ActionTitle>}
-              <Item key={item.id} item={item} active={active} />
+              <Item active={active} key={item.id} item={item} />
             </ListItem>
           )
-        })}
-      </div>
+        }}
+      />
     </StyledList>
   )
 }

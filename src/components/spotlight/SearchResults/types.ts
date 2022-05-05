@@ -20,7 +20,10 @@ export interface ItemExtraType {
   nodeid: string
   blockid: string
   path: string
+  // New Note
   new: boolean
+  // New Task
+  newTask: boolean
   actionGroup?: {
     actionGroupId: string
     authTypeId: AuthTypeId

@@ -39,6 +39,29 @@ export const CREATE_NEW_ITEM: ListItemType = {
   }
 }
 
+export const CREATE_NEW_TASK_ITEM: ListItemType = {
+  title: 'Create New Task',
+  id: 'create-new-task',
+  icon: 'bi:plus-circle',
+  type: QuickLinkType.backlink,
+  category: CategoryType.task,
+  description: 'Create New Task',
+  shortcut: {
+    edit: {
+      category: 'action',
+      keystrokes: 'Enter',
+      title: 'to create'
+    },
+    save: {
+      category: 'action',
+      keystrokes: '$mod+Enter',
+      title: 'to save'
+    }
+  },
+  extras: {
+    newTask: true
+  }
+}
 export const useSearch = () => {
   const { isLocalNode } = useLoad()
   const { search } = useSpotlightContext()
