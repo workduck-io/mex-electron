@@ -230,13 +230,19 @@ const List = ({
 
   useEffect(() => {
     setActiveIndex(0)
-  }, [data])
+  }, [selection])
 
   // * handles double click on a list item
   function handleDoubleClick(id: number) {
     const currentActiveItem = data[id]
     if (currentActiveItem?.type === QuickLinkType.backlink && !activeItem.active) {
       setNormalMode(false)
+      if (currentActiveItem?.extras.new && !activeItem.active) {
+        const node = useSpotlightEditorStore.getState().node
+
+        const nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
+        addILink({ ilink: nodePath, nodeid: node.nodeid })
+      }
     } else if (currentActiveItem?.type === QuickLinkType.snippet && !activeItem.active) {
       handleCopySnippet(currentActiveItem.id, true)
     } else {
@@ -274,8 +280,6 @@ const List = ({
           }
         )
       })
-
-      mog('CONVERTED', { convertedContent })
 
       html = serializeHtml(tempEditor, {
         nodes: convertedContent

@@ -9,6 +9,8 @@ import { PrimaryText } from '../../../../style/Integration'
 import React from 'react'
 import { cleanString } from '../../../../data/Defaults/idPrefixes'
 import { QuickLinkType } from '../../../mex/NodeSelect/NodeSelect'
+import { ItemShortcutContainer, RowTitle } from './styled'
+import { BodyFont } from '@style/spotlight/global'
 
 export const ActionIcon = styled.div`
   display: flex;
@@ -45,9 +47,9 @@ export const ShortcutText = styled.div`
   justify-content: flex-end;
 
   .text {
+    ${BodyFont};
     display: flex;
     align-items: center;
-    font-size: 0.8rem;
     margin-left: 4px;
     color: ${({ theme }) => theme.colors.text.fade};
   }
@@ -74,7 +76,7 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
             icon={item?.icon}
           />
           <div style={{ maxWidth: '200px' }}>
-            <div style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflowX: 'hidden' }}>
+            <RowTitle>
               {item?.extras?.new ? (
                 <>
                   Create a <PrimaryText>{search.value && !activeItem.active ? newNodeName : 'Quick note'}</PrimaryText>
@@ -82,20 +84,13 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
               ) : (
                 <>{item?.type === QuickLinkType.backlink ? cleanString(item?.title) : item?.title}</>
               )}
-            </div>
+            </RowTitle>
             <Description>{item?.description ?? 'some content'}</Description>
           </div>
         </div>
       </div>
       {active && item.shortcut && (
-        <div
-          style={{
-            margin: '0 0.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center'
-          }}
-        >
+        <ItemShortcutContainer>
           {Object.entries(item.shortcut).map(([key, shortcut]) => {
             if (item.type === QuickLinkType.backlink && key === 'save') {
               if (!selection) return <span key={key}></span>
@@ -107,7 +102,7 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
               </ShortcutText>
             )
           })}
-        </div>
+        </ItemShortcutContainer>
       )}
     </StyledRow>
   )

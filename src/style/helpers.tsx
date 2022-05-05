@@ -34,7 +34,7 @@ export const ThinScrollbar = css`
   scrollbar-color: dark;
 
   &::-webkit-scrollbar {
-    width: 0;
+    width: 12px;
   }
   &::-webkit-scrollbar-corner {
     background: rgba(0, 0, 0, 0);

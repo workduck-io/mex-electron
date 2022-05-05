@@ -18,6 +18,10 @@ const GlobalStyle = createGlobalStyle`
     opacity: 0.5;
   }
 
+  html { 
+    font-size: 14px;
+  }
+
 
   * {
     box-sizing: border-box;
@@ -28,6 +32,7 @@ const GlobalStyle = createGlobalStyle`
     width: 100vw;
     overflow: hidden;
     display: flex;
+    font-size: 14px;
     font-family: Inter, sans-serif;
     color: ${({ theme }) => theme.colors.text.heading};
     ${({ theme }) => {

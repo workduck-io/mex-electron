@@ -26,6 +26,7 @@ interface EditorProps {
   autoFocus?: boolean
   focusAtBeginning?: boolean
   showBalloonToolbar?: boolean
+  padding?: string
   options?: PluginOptionType
 }
 
@@ -37,6 +38,7 @@ export const Editor = ({
   options,
   readOnly = false,
   onChange,
+  padding = '32px',
   focusAtBeginning = true,
   showBalloonToolbar = false
 }: EditorProps) => {
@@ -44,7 +46,7 @@ export const Editor = ({
     spellCheck: false,
     autoFocus: autoFocus,
     style: {
-      padding: '32px'
+      padding
     },
     readOnly
   }

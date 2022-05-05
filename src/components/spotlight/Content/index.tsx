@@ -1,32 +1,31 @@
-import { CREATE_NEW_ITEM, useSearch } from '../Home/useSearch'
-import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { ListItemType } from '../SearchResults/types'
-import Preview, { PreviewType } from '../Preview'
 import React, { useEffect } from 'react'
-import { createNodeWithUid, insertItemInArray, mog } from '../../../utils/lib/helper'
-
-import { AppType } from '../../../hooks/useInitialize'
-import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
-import EditorErrorFallback from '../../../components/mex/Error/EditorErrorFallback'
+import 'react-contexify/dist/ReactContexify.css'
 import { ErrorBoundary } from 'react-error-boundary'
-import { MAX_RECENT_ITEMS } from '../Home/components/List'
-import SideBar from '../SideBar'
-import { StyledContent } from './styled'
+import EditorErrorFallback from '../../../components/mex/Error/EditorErrorFallback'
 import { defaultContent } from '../../../data/Defaults/baseData'
-import { getListItemFromNode } from '../Home/helper'
+import { MeetingSnippetContent } from '../../../data/initial/MeetingNote'
+import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
 import { getUntitledDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import { useCalendar, useCalendarStore } from '../../../hooks/useCalendar'
+import useEditorActions from '../../../hooks/useEditorActions'
+import { AppType } from '../../../hooks/useInitialize'
+import useLoad from '../../../hooks/useLoad'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
-import useEditorActions from '../../../hooks/useEditorActions'
-import useLoad from '../../../hooks/useLoad'
 import { useRecentsStore } from '../../../store/useRecentsStore'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
+import { createNodeWithUid, insertItemInArray, mog } from '../../../utils/lib/helper'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
-import 'react-contexify/dist/ReactContexify.css'
-import { useCalendar, useCalendarStore } from '../../../hooks/useCalendar'
-import { MeetingSnippetContent } from '../../../data/initial/MeetingNote'
 import { useActionStore } from '../Actions/useActionStore'
+import { MAX_RECENT_ITEMS } from '../Home/components/List'
+import { getListItemFromNode } from '../Home/helper'
+import { CREATE_NEW_ITEM, useSearch } from '../Home/useSearch'
+import Preview, { PreviewType } from '../Preview'
+import { ListItemType } from '../SearchResults/types'
+import SideBar from '../SideBar'
+import { StyledContent } from './styled'
 
 export const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -91,7 +90,6 @@ const Content = () => {
 
           const list = !recentLimit ? [CREATE_NEW_ITEM] : insertItemInArray(limitedList, CREATE_NEW_ITEM, 1)
 
-          // mog('Events', { recentEvents })
           const data = [...recentEvents, ...list, ...actions]
           setSearchResults(data)
         }
@@ -123,10 +121,9 @@ const Content = () => {
     }
 
     if (isMeeting && !activeItem.active) {
-      mog('isMeeting, checking', { activeItem, resultNode })
       if (resultNode?.extras.nodeid !== undefined) {
         const node = getNode(resultNode?.extras.nodeid ?? '')
-        mog('isMeeting, seeting node', { node })
+
         nodeid = node.nodeid
         setPreviewEditorNode(node)
       }
@@ -138,8 +135,12 @@ const Content = () => {
         isSelection: true
       })
     } else {
-      if (nodeid) {
-        const content = useContentStore.getState().getContent(nodeid)?.content ?? defaultContent.content
+      if (nodeid && useSpotlightAppStore.getState().normalMode) {
+        const e = resultNode?.extras.event
+        const meetingContent = MeetingSnippetContent(e?.summary, e?.times?.start, e?.links?.meet ?? e?.links?.event)
+        const content =
+          useContentStore.getState().getContent(nodeid)?.content ??
+          (isMeeting ? meetingContent : defaultContent.content)
         setNodeContent(content)
         setPreview(INIT_PREVIEW)
       } else if (isMeeting) {
@@ -149,13 +150,12 @@ const Content = () => {
         setPreview(INIT_PREVIEW)
       }
     }
-  }, [search.value, normalMode, activeIndex, activeItem, selection, searchResults])
+  }, [search.value, activeIndex, activeItem, selection, searchResults])
 
   return (
     <StyledContent>
       <SideBar data={searchResults} />
       <ErrorBoundary onReset={() => resetEditor(AppType.SPOTLIGHT)} FallbackComponent={EditorErrorFallback}>
-        {/* <PreviewRenderer /> */}
         <Preview preview={preview} nodeId={editorNode.nodeid} />
       </ErrorBoundary>
     </StyledContent>

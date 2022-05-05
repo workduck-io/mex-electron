@@ -64,7 +64,6 @@ export const getUniquePath = (
     while (paths.includes(newPath)) {
       newPath = getPathNum(newPath)
     }
-    mog('Paths', { paths, newPath, isReserved })
     if (showNotification) toast('Path clashed with existing, incremented a numeric suffix')
     return { unique: newPath }
   }

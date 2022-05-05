@@ -1,3 +1,4 @@
+import { BodyFont } from '@style/spotlight/global'
 import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 import { Scroll } from '../../../style/spotlight/layout'
@@ -39,7 +40,7 @@ export const Action = styled.div`
 `
 
 export const ActionTitle = styled.div`
-  font-size: 0.8rem;
+  ${BodyFont};
   user-select: none;
   margin: 8px;
   white-space: nowrap;

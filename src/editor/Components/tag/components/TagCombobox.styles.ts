@@ -19,7 +19,7 @@ export const ComboboxItem = styled.div`
   min-height: 36px;
   user-select: none;
   width: 300px;
-  color: ${({ theme }) => theme.colors.text.subheading};
+  color: ${({ theme }) => theme.colors.text.default};
   &.highlight {
     background: ${({ theme }) => theme.colors.background.highlight};
   }
