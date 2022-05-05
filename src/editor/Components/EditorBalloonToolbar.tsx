@@ -1,3 +1,4 @@
+import taskLine from '@iconify/icons-ri/task-line'
 import AlignLeftIcon from '@iconify/icons-bx/bx-align-left'
 import AlignCenterIcon from '@iconify/icons-bx/bx-align-middle'
 import AlignRightIcon from '@iconify/icons-bx/bx-align-right'
@@ -138,7 +139,7 @@ const BallonMarkToolbarButtons = () => {
       <ButtonSeparator />
 
       <SelectionToTask
-        icon={<Icon height={20} icon={fileAddLine} />}
+        icon={<Icon height={20} icon={taskLine} />}
         tooltip={{ content: 'Convert Blocks to Task', ...tooltip }}
       />
 
