@@ -312,7 +312,7 @@ export const useGoogleCalendarAutoFetch = () => {
     const id = setInterval(() => {
       mog('Fetching Google Calendar Events')
       fetchGoogleCalendarEvents()
-    }, 1000 * 60 * 1) // 15 minutes
+    }, 1000 * 60 * 15) // 15 minutes
     return () => clearInterval(id)
   }, [tokens])
 }
