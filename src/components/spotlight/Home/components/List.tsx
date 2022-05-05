@@ -217,13 +217,17 @@ const List = ({
           }
         } else if (currentActiveItem.category === CategoryType.task) {
           const node = getNewTaskNode(true)
-          setPreviewEditorNode({
-            ...node,
-            title: node.path ?? 'Today Tasks',
-            id: node.nodeid
-          })
-          saveIt({ path: node.path, saveAndClose: false, removeHighlight: true, isNewTask: true })
-          setSelection(undefined)
+          if (event.metaKey) {
+            saveIt({ path: node.path, saveAndClose: true, removeHighlight: true, isNewTask: true })
+            setSelection(undefined)
+          } else {
+            setPreviewEditorNode({
+              ...node,
+              title: node.path ?? 'Today Tasks',
+              id: node.nodeid
+            })
+            setNormalMode(false)
+          }
           // setSelectedItem({ item: data[activeIndex], active: false })
         } else if (currentActiveItem.category === CategoryType.action) {
           if (currentActiveItem?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
