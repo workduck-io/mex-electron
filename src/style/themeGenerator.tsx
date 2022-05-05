@@ -77,14 +77,6 @@ export interface TextPalette {
   oppositePrimary: string
 }
 
-export interface ButtonPalette {
-  default: string
-  hover: string
-  focus: string
-  active: string
-  disabled: string
-}
-
 export interface BackgroundImages {
   app: string
   preview: string
