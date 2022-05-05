@@ -275,7 +275,7 @@ export const useCalendar = () => {
       })
       .then((res) => {
         const events = res.data.items.map((event) => converGoogleEventToCalendarEvent(event))
-        console.log('Got Events', res.data, events)
+        // console.log('Got Events', res.data, events)
         setEvents(events)
       })
 
