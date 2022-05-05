@@ -1,5 +1,7 @@
 import { generateTempId } from '@data/Defaults/idPrefixes'
 import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
+import { convertValueToTasks } from '@utils/lib/contentConvertTask'
+import { mog } from '@utils/lib/helper'
 import React, { useEffect } from 'react'
 import tinykeys from 'tinykeys'
 import { getDefaultContent, PreviewProps } from '.'
@@ -53,15 +55,11 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
       const activeNodeContent = getContent(nodeId)?.content ?? []
 
       if (!isNewTask) setNodeContent([...activeNodeContent, ...deserializedContent])
-      else
-        setNodeContent([
-          ...activeNodeContent,
-          {
-            type: ELEMENT_TODO_LI,
-            id: generateTempId(),
-            children: deserializedContent
-          }
-        ])
+      else {
+        const convertedTasks = convertValueToTasks(deserializedContent)
+        // mog('convertedTasks', { convertedTasks, deserializedContent })
+        setNodeContent([...activeNodeContent, ...convertedTasks])
+      }
     }
   }, [preview, isNewTask, showSource, nodeId, normalMode])
 

@@ -21,6 +21,7 @@ import { useRouting } from '../../../views/routes/urls'
 import { mog } from '../../../utils/lib/helper'
 import useDataStore from '../../../store/useDataStore'
 import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
+import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
@@ -84,14 +85,8 @@ export const useSaveChanges = () => {
         const activeNodeContent = existingContent?.content ?? []
 
         if (options?.isNewTask) {
-          editorContent = [
-            ...activeNodeContent,
-            {
-              type: ELEMENT_TODO_LI,
-              id: generateTempId(),
-              children: previewContent
-            }
-          ]
+          const convertedContent = convertValueToTasks(previewContent)
+          editorContent = [...activeNodeContent, ...convertedContent]
         } else {
           editorContent = [...activeNodeContent, ...previewContent]
         }

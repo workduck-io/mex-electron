@@ -1,4 +1,4 @@
-import { useTaskFromSelection } from '@hooks/useTaskFromSelection'
+import { getTodayTaskNodePath, useTaskFromSelection } from '@hooks/useTaskFromSelection'
 import React, { useEffect } from 'react'
 import 'react-contexify/dist/ReactContexify.css'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -136,14 +136,17 @@ const Content = () => {
     }
 
     if (isNewTask && !activeItem.active) {
-      const node = getNewTaskNode(false)
+      const node = getNewTaskNode(false) ?? {
+        nodeid: undefined,
+        path: getTodayTaskNodePath()
+      }
 
       nodeid = node ? node.nodeid : undefined
 
       // mog('NewTaskNode', { node })
       setPreviewEditorNode({
         ...node,
-        title: node.path ?? 'Today Tasks',
+        title: node?.path,
         id: nodeid
       })
     }
