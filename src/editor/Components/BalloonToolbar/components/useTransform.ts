@@ -18,6 +18,8 @@ import { useSaveData } from '../../../../hooks/useSaveData'
 import { useSnippetStore } from '../../../../store/useSnippetStore'
 import { ELEMENT_QA_BLOCK } from '../../QABlock/createQAPlugin'
 import { mog } from '../../../../utils/lib/helper'
+import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
+import { NodeEditorContent } from '../../../../types/Types'
 
 export const useTransform = () => {
   const addILink = useDataStore((s) => s.addILink)
@@ -67,6 +69,32 @@ export const useTransform = () => {
     }
   }
 
+  const replaceSelectionWithTask = (editor: TEditor, todoVal: NodeEditorContent) => {
+    try {
+      Transforms.removeNodes(editor, { at: editor.selection, hanging: false })
+      Transforms.delete(editor)
+
+      mog('replaceSelectionWithTask  ', { todoVal })
+
+      insertNodes<any>(
+        editor,
+        [
+          {
+            type: ELEMENT_TODO_LI,
+            id: generateTempId(),
+            children: todoVal
+          }
+        ],
+        {
+          at: editor.selection
+        }
+      )
+      // addQABlock(editor, { question: valText, questionId: generateSnippetId() })
+    } catch (e) {
+      console.error(e)
+      return e
+    }
+  }
   // Checks whether current editor selection can be converted
   const isConvertable = (editor: TEditor): boolean => {
     if (!editor) return false
@@ -105,8 +133,7 @@ export const useTransform = () => {
   }
 
   /**
-   * Converts selection to new snippet
-   * Shows notification of snippet creation
+   * Converts selection to Value
    * @param editor
    */
   const selectionToValue = (editor: TEditor) => {
@@ -177,6 +204,33 @@ export const useTransform = () => {
   }
 
   /**
+   * Converts selection to new Task
+   * @param editor
+   */
+  const selectionToTask = (editor: TEditor) => {
+    if (!editor.selection) return
+    if (!isConvertable(editor)) return
+
+    Editor.withoutNormalizing(editor, () => {
+      // const selectionPath = Editor.path(editor, editor.selection)
+      const nodes = Array.from(
+        getNodes(editor, {
+          mode: 'highest',
+          block: true,
+          at: editor.selection
+        })
+      )
+
+      const value = nodes.map(([node, _path]) => {
+        return node
+      })
+
+      replaceSelectionWithTask(editor, value)
+
+      // mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path })
+    })
+  }
+  /**
    * Converts selection to new snippet
    * Shows notification of snippet creation
    * @param editor
@@ -223,6 +277,7 @@ export const useTransform = () => {
     isConvertable,
     isFlowBlock,
     selectionToSnippet,
+    selectionToTask,
     selectionToValue
   }
 }

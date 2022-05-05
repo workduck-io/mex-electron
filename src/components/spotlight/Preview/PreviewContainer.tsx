@@ -1,4 +1,5 @@
 import { generateTempId } from '@data/Defaults/idPrefixes'
+import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
 import React, { useEffect } from 'react'
 import tinykeys from 'tinykeys'
 import { getDefaultContent, PreviewProps } from '.'
@@ -56,7 +57,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
         setNodeContent([
           ...activeNodeContent,
           {
-            type: 'action_item',
+            type: ELEMENT_TODO_LI,
             id: generateTempId(),
             children: deserializedContent
           }

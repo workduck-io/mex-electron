@@ -20,6 +20,7 @@ import { getTitleFromContent } from '../../../utils/search/parseData'
 import { useRouting } from '../../../views/routes/urls'
 import { mog } from '../../../utils/lib/helper'
 import useDataStore from '../../../store/useDataStore'
+import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
 
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
@@ -86,7 +87,7 @@ export const useSaveChanges = () => {
           editorContent = [
             ...activeNodeContent,
             {
-              type: 'action_item',
+              type: ELEMENT_TODO_LI,
               id: generateTempId(),
               children: previewContent
             }
