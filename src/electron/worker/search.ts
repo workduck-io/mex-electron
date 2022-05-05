@@ -42,6 +42,8 @@ const searchWorker: SearchWorker = {
 
   updateDoc: (key: idxKey, nodeId: string, contents: any[], title = '', tags: Array<string> = []) => {
     if (globalSearchIndex[key]) {
+      mog('UPDATE DOC', { nodeId, key, contents, tags })
+
       const parsedBlocks = parseNode(nodeId, contents, title)
 
       const existingNodeBlocks = nodeBlockMapping[nodeId] ?? []
@@ -70,7 +72,7 @@ const searchWorker: SearchWorker = {
 
       delete nodeBlockMapping[id]
 
-      blockIds.forEach((blockId) => {
+      blockIds?.forEach((blockId) => {
         const compositeKey = createIndexCompositeKey(id, blockId)
         globalSearchIndex[key].remove(compositeKey)
       })

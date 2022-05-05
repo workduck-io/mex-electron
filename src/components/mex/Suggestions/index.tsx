@@ -1,6 +1,6 @@
 import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
 import { ELEMENT_PARAGRAPH, insertNodes, selectEditor, TElement, usePlateEditorRef } from '@udecode/plate'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { ELEMENT_ILINK } from '../../../editor/Components/ilink/defaults'
 import { useLinks } from '../../../hooks/useLinks'
 import useToggleElements from '../../../hooks/useToggleElements'
@@ -8,7 +8,7 @@ import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import useSuggestionStore from '../../../store/useSuggestions'
 import IconButton from '../../../style/Buttons'
-import { InfobarFull, InfobarMedium, InfobarTools } from '../../../style/infobar'
+import { InfobarMedium, InfobarTools } from '../../../style/infobar'
 
 import { useSnippets } from '../../../hooks/useSnippets'
 import { getContent } from '../../../utils/helpers'
@@ -16,8 +16,6 @@ import { NodeEditorContent } from '../../../types/Types'
 import { SuggestionContent, SuggestionType } from './types'
 import SmartSuggestions from './SmartSuggestions'
 import { ELEMENT_INLINE_BLOCK } from '../../../editor/Components/InlineBlock/types'
-import { defaultContent } from '../../../data/Defaults/baseData'
-import { mog } from '../../../utils/lib/helper'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
 
 const SuggestionInfoBar = () => {
@@ -32,7 +30,12 @@ const SuggestionInfoBar = () => {
   const { toggleSuggestedNodes } = useToggleElements()
   const { suggestions, pinSuggestion, pinnedSuggestions } = useSuggestionStore()
 
-  const onSuggestionClick = (event: MouseEvent, suggestion: SuggestionType, content?: NodeEditorContent): void => {
+  const onSuggestionClick = (
+    event: MouseEvent,
+    suggestion: SuggestionType,
+    content?: NodeEditorContent,
+    embed?: boolean
+  ): void => {
     event.stopPropagation()
     const selection = editor.selection
     if (suggestion.type === 'snippet' || suggestion.type === 'template') {
@@ -40,7 +43,7 @@ const SuggestionInfoBar = () => {
       selectEditor(editor, { at: selection, edge: 'start', focus: true })
     } else {
       // * Meta + click
-      if (event.metaKey) {
+      if (event.metaKey || embed) {
         // * Insert Inline Embed
         insertNodes<TElement>(editor, {
           type: ELEMENT_INLINE_BLOCK,
@@ -92,7 +95,7 @@ const SuggestionInfoBar = () => {
 
     return {
       title: getPathFromNodeid(suggestion.id),
-      content: getContent(suggestion.id).content
+      content: [suggestion.data] ?? getContent(suggestion.id).content
     }
   }
 

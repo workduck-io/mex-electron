@@ -8,7 +8,7 @@ type SmartSuggestionsProps = {
   suggestions: Array<SuggestionType>
   pinned: Array<SuggestionType>
   pinSuggestion: (suggestion: SuggestionType) => void
-  onClick: (event: MouseEvent, suggestion: SuggestionType, content?: NodeEditorContent) => void
+  onClick: (event: MouseEvent, suggestion: SuggestionType, content?: NodeEditorContent, embed?: boolean) => void
   getContent: (suggestion: SuggestionType) => any
 }
 
@@ -30,6 +30,10 @@ const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({
             onClick(event, suggestion, content.content)
           }
 
+          const handleEmbedClick = (event) => {
+            onClick(event, suggestion, content.content, true)
+          }
+
           const onPinSuggestion = () => {
             pinSuggestion(suggestion)
           }
@@ -39,6 +43,7 @@ const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({
               suggestion={suggestionWithContent}
               onPin={onPinSuggestion}
               onClick={onSuggestionClick}
+              onEmbedClick={handleEmbedClick}
               key={suggestion.id}
             />
           )
@@ -53,6 +58,10 @@ const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({
             onClick(event, suggestion, content.content)
           }
 
+          const handleEmbedClick = (event) => {
+            onClick(event, suggestion, content.content, true)
+          }
+
           const onPinSuggestion = (ev) => {
             ev.stopPropagation()
             pinSuggestion(suggestion)
@@ -62,6 +71,7 @@ const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({
             <Suggestion
               suggestion={suggestionWithContent}
               onPin={onPinSuggestion}
+              onEmbedClick={handleEmbedClick}
               onClick={onSuggestionClick}
               key={suggestion.id}
             />

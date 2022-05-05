@@ -2,6 +2,8 @@
 import create from 'zustand'
 import { AnyObject, TNode } from '@udecode/plate'
 import { SuggestionType } from '../components/mex/Suggestions/types'
+import { mog } from '@utils/lib/helper'
+import { devtools } from 'zustand/middleware'
 
 type SuggestionStoreType = {
   suggestions: SuggestionType[]
@@ -17,37 +19,46 @@ type SuggestionStoreType = {
   setQuery?: (query: TNode<AnyObject>[]) => void
 }
 
-const useSuggestionStore = create<SuggestionStoreType>((set, get) => ({
-  suggestions: [],
-  setSuggestions: (suggestions: SuggestionType[]) => {
-    const pinnedSuggestions = get().pinnedSuggestions
+const useSuggestionStore = create<SuggestionStoreType>(
+  devtools(
+    (set, get) =>
+      ({
+        suggestions: [],
+        setSuggestions: (suggestions: SuggestionType[]) => {
+          const pinnedSuggestions = get().pinnedSuggestions
+          mog('Suggesigons', { suggestions, pinnedSuggestions })
 
-    set({ suggestions: suggestions.filter((s) => pinnedSuggestions.filter((p) => p.id === s.id).length === 0) })
-  },
+          set({ suggestions: suggestions.filter((s) => pinnedSuggestions.filter((p) => p.id === s.id).length === 0) })
+        },
 
-  pinnedSuggestions: [],
-  pinSuggestion: (suggestionToPin: SuggestionType) => {
-    const suggestions = get().suggestions.filter((suggestion) => suggestion.id !== suggestionToPin.id)
+        pinnedSuggestions: [],
+        pinSuggestion: (suggestionToPin: SuggestionType) => {
+          const suggestions = get().suggestions.filter((suggestion) => suggestion.id !== suggestionToPin.id)
 
-    const pinnedSuggestions = get().pinnedSuggestions
-    const isAlreadyPinned = pinnedSuggestions.find((suggestion) => suggestion.id === suggestionToPin.id)
+          const pinnedSuggestions = get().pinnedSuggestions
+          const isAlreadyPinned = pinnedSuggestions.find((suggestion) => suggestion.id === suggestionToPin.id)
 
-    if (isAlreadyPinned) {
-      set({
-        pinnedSuggestions: pinnedSuggestions.filter((s) => s.id !== suggestionToPin.id),
-        suggestions
-      })
+          mog(`Pinned suggestion ${suggestionToPin.id}`, { isAlreadyPinned })
+          const suggestionPinned = { ...suggestionToPin, pinned: !suggestionToPin.pinned }
 
-      return
-    }
+          if (isAlreadyPinned) {
+            set({
+              pinnedSuggestions: pinnedSuggestions.filter((s) => s.id !== suggestionToPin.id),
+              suggestions: [suggestionPinned, ...suggestions]
+            })
 
-    set({
-      pinnedSuggestions: [...pinnedSuggestions, { ...suggestionToPin, pinned: !suggestionToPin.pinned }],
-      suggestions
-    })
-  },
+            return
+          }
 
-  setHeadingQASearch: (headingQASearch: boolean) => set({ headingQASearch })
-}))
+          set({
+            pinnedSuggestions: [...pinnedSuggestions, suggestionPinned],
+            suggestions
+          })
+        },
+
+        setHeadingQASearch: (headingQASearch: boolean) => set({ headingQASearch })
+      } as any)
+  )
+)
 
 export default useSuggestionStore

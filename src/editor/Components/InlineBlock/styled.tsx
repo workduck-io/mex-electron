@@ -1,5 +1,6 @@
 import { StyledMessage } from '../../../components/spotlight/Message/styled'
 import styled, { css } from 'styled-components'
+import { MainFont } from '@style/spotlight/global'
 
 export type InlineBlockType = {
   selected?: boolean
@@ -9,6 +10,7 @@ export const StyledInlineBlockPreview = styled.div`
   max-height: 25vh;
   overflow-y: auto;
   overflow-x: hidden;
+  font-size: ${MainFont} !important;
 `
 
 export const StyledInlineBlock = styled.section<InlineBlockType>`
