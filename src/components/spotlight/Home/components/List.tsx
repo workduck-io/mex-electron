@@ -29,6 +29,9 @@ import { serializeHtml, createPlateEditor, createPlateUI } from '@udecode/plate'
 import getPlugins from '../../../../editor/Plugins/plugins'
 import { ELEMENT_TAG } from '../../../../editor/Components/tag/defaults'
 import { CopyTag } from '../../../../editor/Components/tag/components/CopyTag'
+import { useTaskFromSelection } from '@hooks/useTaskFromSelection'
+import { isParent } from '@components/mex/Sidebar/treeUtils'
+import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -57,10 +60,13 @@ const List = ({
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
 
   const node = useSpotlightEditorStore((s) => s.node)
+  const setPreviewEditorNode = useSpotlightEditorStore((s) => s.setNode)
 
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
 
   const { getSnippet } = useSnippets()
+
+  const { getNewTaskNode } = useTaskFromSelection()
 
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
@@ -73,12 +79,20 @@ const List = ({
       style.marginRight = '0'
     }
 
-    if (searchResults[activeIndex] && searchResults[activeIndex]?.category !== CategoryType.backlink) {
+    if (
+      searchResults[activeIndex] &&
+      searchResults[activeIndex]?.category !== CategoryType.backlink &&
+      searchResults[activeIndex]?.category !== CategoryType.task
+    ) {
       style.width = '100%'
       style.marginRight = '0'
     }
 
-    if (searchResults[activeIndex] && searchResults[activeIndex]?.category === CategoryType.meeting) {
+    if (
+      searchResults[activeIndex] &&
+      (searchResults[activeIndex]?.category === CategoryType.meeting ||
+        searchResults[activeIndex]?.category === CategoryType.task)
+    ) {
       if (normalMode) {
         style.width = '55%'
         style.marginRight = '0.5rem'
@@ -170,13 +184,14 @@ const List = ({
           if (event.metaKey) {
             if (currentActiveItem?.type === QuickLinkType.backlink) {
               let nodePath = node.path
+              const isNewTask = isParent(node.path, BASE_TASKS_PATH)
               if (currentActiveItem?.extras.new && !activeItem.active) {
                 nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
                 addILink({ ilink: nodePath, nodeid: node.nodeid })
               }
 
               if (selection) {
-                saveIt({ path: nodePath, saveAndClose: true, removeHighlight: true })
+                saveIt({ path: nodePath, saveAndClose: true, removeHighlight: true, isNewTask })
                 setSelection(undefined)
               }
 
@@ -200,6 +215,16 @@ const List = ({
               }
             }
           }
+        } else if (currentActiveItem.category === CategoryType.task) {
+          const node = getNewTaskNode(true)
+          setPreviewEditorNode({
+            ...node,
+            title: node.path ?? 'Today Tasks',
+            id: node.nodeid
+          })
+          saveIt({ path: node.path, saveAndClose: false, removeHighlight: true, isNewTask: true })
+          setSelection(undefined)
+          // setSelectedItem({ item: data[activeIndex], active: false })
         } else if (currentActiveItem.category === CategoryType.action) {
           if (currentActiveItem?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
             setSelectedItem({ item: data[activeIndex], active: false })

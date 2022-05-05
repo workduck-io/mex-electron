@@ -1,3 +1,4 @@
+import { useTaskFromSelection } from '@hooks/useTaskFromSelection'
 import React, { useEffect } from 'react'
 import 'react-contexify/dist/ReactContexify.css'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -21,7 +22,7 @@ import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { useActionStore } from '../Actions/useActionStore'
 import { MAX_RECENT_ITEMS } from '../Home/components/List'
 import { getListItemFromNode } from '../Home/helper'
-import { CREATE_NEW_ITEM, useSearch } from '../Home/useSearch'
+import { CREATE_NEW_ITEM, CREATE_NEW_TASK_ITEM, useSearch } from '../Home/useSearch'
 import Preview, { PreviewType } from '../Preview'
 import { ListItemType } from '../SearchResults/types'
 import SideBar from '../SideBar'
@@ -39,6 +40,7 @@ const Content = () => {
   const lastOpenedNodes = useRecentsStore((store) => store.lastOpened)
   const recentResearchNodes = useRecentsStore((store) => store.recentResearchNodes)
   const normalMode = useSpotlightAppStore((store) => store.normalMode)
+  const { getNewTaskNode, getNewTaskContent } = useTaskFromSelection()
   const { getUpcomingEvents } = useCalendar()
   const { editorNode, setNodeContent, setPreviewEditorNode, preview, setPreview } = useSpotlightEditorStore(
     (store) => ({
@@ -87,8 +89,11 @@ const Content = () => {
 
           const recentLimit = recentList.length < MAX_RECENT_ITEMS ? recentList.length : MAX_RECENT_ITEMS
           const limitedList = recentList.slice(0, recentLimit)
+          const listWithNew = insertItemInArray(limitedList, CREATE_NEW_ITEM, 1)
+          const listWithAllNew = selection ? insertItemInArray(listWithNew, CREATE_NEW_TASK_ITEM, 2) : listWithNew
+          const defItems = selection ? [CREATE_NEW_ITEM, CREATE_NEW_TASK_ITEM] : [CREATE_NEW_ITEM]
 
-          const list = !recentLimit ? [CREATE_NEW_ITEM] : insertItemInArray(limitedList, CREATE_NEW_ITEM, 1)
+          const list = !recentLimit ? defItems : listWithAllNew
 
           const data = [...recentEvents, ...list, ...actions]
           setSearchResults(data)
@@ -108,6 +113,7 @@ const Content = () => {
     const resultNode = searchResults[activeIndex]
     const isNode = resultNode?.type === QuickLinkType.backlink
     const isMeeting = resultNode?.category === CategoryType.meeting
+    const isNewTask = resultNode?.category === CategoryType.task
     let nodeid
 
     if (isNode && !activeItem.active) {
@@ -129,6 +135,19 @@ const Content = () => {
       }
     }
 
+    if (isNewTask && !activeItem.active) {
+      const node = getNewTaskNode(false)
+
+      nodeid = node ? node.nodeid : undefined
+
+      // mog('NewTaskNode', { node })
+      setPreviewEditorNode({
+        ...node,
+        title: node.path ?? 'Today Tasks',
+        id: nodeid
+      })
+    }
+
     if (selection) {
       setPreview({
         ...selection,
@@ -141,6 +160,10 @@ const Content = () => {
         const content =
           useContentStore.getState().getContent(nodeid)?.content ??
           (isMeeting ? meetingContent : defaultContent.content)
+        setNodeContent(content)
+        setPreview(INIT_PREVIEW)
+      } else if (isNewTask) {
+        const content = getNewTaskContent()
         setNodeContent(content)
         setPreview(INIT_PREVIEW)
       } else if (isMeeting) {

@@ -6,7 +6,8 @@ export enum CategoryType {
   action = 'Quick Actions',
   search = 'Search Results',
   performed = 'Performed Actions',
-  meeting = 'Meetings'
+  meeting = 'Meetings',
+  task = 'Task'
 }
 
 export type Search = {

@@ -1,3 +1,4 @@
+import { generateTempId } from '@data/Defaults/idPrefixes'
 import React, { useEffect } from 'react'
 import tinykeys from 'tinykeys'
 import { getDefaultContent, PreviewProps } from '.'
@@ -18,9 +19,10 @@ import { spotlightShortcuts } from '../Shortcuts/list'
 
 export interface PreviewContainerProps extends PreviewProps {
   blockId?: string
+  isNewTask?: boolean
 }
 
-const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, blockId }) => {
+const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, blockId, isNewTask }) => {
   // * Store
 
   const { saveIt } = useSaveChanges()
@@ -49,10 +51,18 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
       const deserializedContent = deserializedContentNodes
       const activeNodeContent = getContent(nodeId)?.content ?? []
 
-      const nodeContent = [...activeNodeContent, ...deserializedContent]
-      setNodeContent(nodeContent)
+      if (!isNewTask) setNodeContent([...activeNodeContent, ...deserializedContent])
+      else
+        setNodeContent([
+          ...activeNodeContent,
+          {
+            type: 'action_item',
+            id: generateTempId(),
+            children: deserializedContent
+          }
+        ])
     }
-  }, [preview, showSource, nodeId, normalMode])
+  }, [preview, isNewTask, showSource, nodeId, normalMode])
 
   useEffect(() => {
     if (!preview.isSelection) {
