@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import { transparentize, mix } from 'polished'
-import { CardShadow, dashedBack } from '../../../style/helpers'
+import { CardShadow } from '../../../style/helpers'
 import { ResultHeader, ResultTitle } from '../../../style/Search'
 
 export const SuggestionPreviewWrapper = styled.div`
@@ -11,11 +11,20 @@ export const SuggestionPreviewWrapper = styled.div`
   max-height: 20rem;
 `
 
+export const SuggestionIconsGroup = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
 export const SuggestionContainer = styled.div<{ highlight: boolean; type: string }>`
   overflow: hidden;
   ${({ theme }) => css`
     border-radius: ${theme.borderRadius.small};
     background-color: ${theme.colors.gray[8]};
+    + svg {
+      color: ${theme.colors.primary};
+    }
 
     ${ResultTitle} {
       font-weight: bold;
@@ -23,7 +32,6 @@ export const SuggestionContainer = styled.div<{ highlight: boolean; type: string
     }
 
     :hover {
-      cursor: pointer;
       background-color: ${theme.colors.gray[7]};
       transition: background-color 0.2s ease-in-out;
       ${CardShadow};
@@ -43,9 +51,6 @@ export const SuggestionContainer = styled.div<{ highlight: boolean; type: string
           );
 
           color: ${theme.colors.primary};
-          svg {
-            color: ${theme.colors.primary};
-          }
         }
         ${ResultTitle} {
           color: ${theme.colors.primary};

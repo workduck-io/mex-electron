@@ -17,7 +17,6 @@ import { useLayoutStore } from '../store/useLayoutStore'
 import useSuggestionStore from '../store/useSuggestions'
 import { EditorWrapper, StyledEditor } from '../style/Editor'
 import { getEditorId } from '../utils/lib/EditorId'
-import { mog } from '../utils/lib/helper'
 import { convertContentToRawText } from '../utils/search/parseData'
 import BlockInfoBar from './Components/Blocks/BlockInfoBar'
 import { BlockOptionsMenu } from './Components/EditorContextMenu'
@@ -26,6 +25,7 @@ import Toolbar from './Toolbar'
 
 import { removeStopwords } from '../utils/stopwords'
 import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
+import { mog } from '../utils/lib/helper'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -54,20 +54,30 @@ const ContentEditor = () => {
 
   const { addOrUpdateValBuffer, getBufferVal } = useEditorBuffer()
 
+  const getSuggestions = async (val: any[]) => {
+    if (infobar.mode === 'suggestions' && !headingQASearch) {
+      const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
+      const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
+      const rawText = convertContentToRawText(val.slice(lastTwoParagraphs, cursorPosition + 1), ' ')
+      const keywords = removeStopwords(rawText)
+
+      const results = await queryIndexWithRanking(['node', 'snippet'], keywords.join(' '))
+      mog('suggestions', { val, results })
+
+      const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
+
+      const suggestions = withoutCurrentNode.map((item) => ({
+        ...item,
+        type: item.id.startsWith('SNIPPET_') ? 'snippet' : 'node'
+      }))
+
+      setSuggestions(suggestions)
+    }
+  }
+
   const onChangeSave = async (val: any[]) => {
     if (val && node && node.nodeid !== '__null__') {
-      if (infobar.mode === 'suggestions' && !headingQASearch) {
-        const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
-        const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
-        const rawText = convertContentToRawText(val.slice(lastTwoParagraphs, cursorPosition + 1), ' ')
-        const keywords = removeStopwords(rawText)
-
-        const results = await queryIndexWithRanking('node', keywords.join(' '))
-        const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
-        const suggestions = withoutCurrentNode.map((item) => ({ ...item, type: 'node' }))
-        setSuggestions(suggestions)
-      }
-
+      mog('change')
       setIsEditing(false)
       addOrUpdateValBuffer(node.nodeid, val)
     }
@@ -116,6 +126,7 @@ const ContentEditor = () => {
 
         <EditorWrapper onClick={onFocusClick} comboboxOpen={isComboOpen}>
           <Editor
+            getSuggestions={getSuggestions}
             showBalloonToolbar
             content={fsContent?.content ?? defaultContent.content}
             onChange={onChangeSave}

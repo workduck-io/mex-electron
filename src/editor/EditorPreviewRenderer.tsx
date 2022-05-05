@@ -8,6 +8,7 @@ import { TodoContainer } from '../ui/components/Todo.style'
 import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
 import { mog } from '../utils/lib/helper'
 import { FadeContainer } from '../style/animation/fade'
+import { useEditorChange } from '@hooks/useEditorActions'
 
 interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -23,7 +24,7 @@ interface EditorPreviewRendererProps {
 
 const PreviewStyles = styled(EditorStyles)<{ noMouseEvents: boolean }>`
   ${({ noMouseEvents }) => noMouseEvents && 'pointer-events: none;'};
-  user-select: none;
+  /* user-select: none; */
   font-size: 0.9rem;
 
   ${TodoContainer}, button, input, textarea, select, option {
@@ -68,6 +69,8 @@ const EditorPreviewRenderer = ({
       clearTimeout(timeoutId)
     }
   }, [blockId, editorId, content])
+
+  useEditorChange(editorId, content)
 
   return (
     <>

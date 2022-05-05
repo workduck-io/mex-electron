@@ -266,6 +266,7 @@ export const ResultTitle = styled.div`
 export const ResultHeader = styled.div<{ active?: boolean }>`
   display: flex;
   align-items: center;
+  cursor: pointer;
   justify-content: space-between;
   background-color: ${({ theme }) => theme.colors.gray[8]};
   padding: ${({ theme }) => theme.spacing.medium};

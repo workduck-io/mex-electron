@@ -102,12 +102,12 @@ export const useFocusBlock = () => {
         const headingNode = findNode(editor, {
           at: [],
           match: (n) => {
-            // console.log('n', n)
+            console.log('n', n)
             return n.id === blockid
           },
           mode: 'all'
         })
-        // console.log('select heading', { heading, headingNode, e })
+        mog('mog', { headingNode })
         if (!headingNode) return
         const headingNodePath = headingNode[1]
 

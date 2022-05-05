@@ -1,5 +1,5 @@
 import { Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import generatePlugins, { PluginOptionType } from './Plugins/plugins'
 
 import BallonMarkToolbarButtons from './Components/EditorBalloonToolbar'
@@ -17,6 +17,7 @@ import { useGraphStore } from '../store/useGraphStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
 import { mog } from '../utils/lib/helper'
+import { useDebouncedCallback } from 'use-debounce'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -28,6 +29,7 @@ interface EditorProps {
   showBalloonToolbar?: boolean
   padding?: string
   options?: PluginOptionType
+  getSuggestions?: any
 }
 
 // High performance guaranteed
@@ -40,7 +42,8 @@ export const Editor = ({
   onChange,
   padding = '32px',
   focusAtBeginning = true,
-  showBalloonToolbar = false
+  showBalloonToolbar = false,
+  getSuggestions
 }: EditorProps) => {
   const editableProps = {
     spellCheck: false,
@@ -75,10 +78,12 @@ export const Editor = ({
   }, [editorRef, editorId, focusAtBeginning]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    mog('HIGHLIGHTED BLOCK IDS', { hightlightedBlockIds })
     if (editorRef && hightlightedBlockIds.length > 0) {
-      // mog('editor highlighted', { hightlightedBlockIds, editorId })
+      mog('editor highlighted', { hightlightedBlockIds, editorId })
       focusBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
       const clearHighlightTimeoutId = setTimeout(() => {
+        mog('WHATS UP ', { readOnly })
         if (!readOnly) clearHighlights()
       }, 2000)
       return () => clearTimeout(clearHighlightTimeoutId)
@@ -108,12 +113,22 @@ export const Editor = ({
 
   const onDelayPerform = debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 200)
 
+  // * Get suggestions after 1.5 secs
+  const getDebouncedSuggestions = useDebouncedCallback(
+    typeof getSuggestions === 'function' ? getSuggestions : () => undefined,
+    1500
+  )
+
   const delayedHighlightRemoval = debounce(clearHighlights, 2000)
 
   const onChangeContent = (val: any[]) => {
     setIsEditing(true)
     onDelayPerform(val)
-    // delayedHighlightRemoval('editor')
+
+    if (getSuggestions) {
+      getDebouncedSuggestions.cancel()
+      getDebouncedSuggestions(val)
+    }
   }
 
   return (

@@ -1,36 +1,72 @@
 import pushpin2Line from '@iconify/icons-ri/pushpin-2-line'
 import { nanoid } from 'nanoid'
-import React, { useMemo } from 'react'
-import { useTheme } from 'styled-components'
+import React, { useEffect, useMemo, useState } from 'react'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import IconButton from '../../../style/Buttons'
 import { MexIcon } from '../../../style/Layouts'
-import { ResultHeader, ResultTitle, SearchPreviewWrapper } from '../../../style/Search'
-import { Margin, SuggestionContainer, SuggestionPreviewWrapper } from './styled'
+import arrowGoBackLine from '@iconify/icons-ri/arrow-go-back-line'
+
+import { ResultHeader, ResultTitle } from '../../../style/Search'
+import { Margin, SuggestionContainer, SuggestionIconsGroup, SuggestionPreviewWrapper } from './styled'
+import { getContent } from '@utils/helpers'
+import { useBlockHighlightStore } from '@editor/Actions/useFocusBlock'
 
 type SuggestionProps = {
   suggestion: any
-  onPin: (suggestion: any) => void
-  onClick: (suggestion: any, content?: any) => void
+  onPin: (ev: any) => void
+  onClick: (ev: any) => void
+  onEmbedClick: (ev: any) => void
 }
 
-const Suggestion: React.FC<SuggestionProps> = ({ suggestion, onPin, onClick }) => {
+const Suggestion: React.FC<SuggestionProps> = ({ suggestion, onPin, onClick, onEmbedClick }) => {
+  const [showContent, setShowContent] = useState<boolean>(suggestion.pinned)
+  const [nodeContent, setNodeContent] = useState<any>([])
+  const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)
+
   const editorId = useMemo(() => `suggestion_preview_${nanoid()}`, [])
-  const theme = useTheme()
+
+  const isNote = suggestion.type === 'node'
+
+  useEffect(() => {
+    if (isNote && (showContent || suggestion.pinned)) {
+      setNodeContent(getContent(suggestion.id).content)
+      setHighlights([suggestion.blockId], 'editor')
+    } else {
+      setNodeContent(suggestion.content.content)
+    }
+  }, [showContent])
+
+  const handleClickContent = () => {
+    if (isNote) {
+      setShowContent(true)
+    }
+  }
 
   return (
-    <Margin key={`mex-smart-suggestions-${suggestion.id}-pinned`} onClick={onClick}>
+    <Margin key={`mex-smart-suggestions-${editorId}-pinned`}>
       <SuggestionContainer type={suggestion.type} highlight={suggestion.pinned}>
-        <ResultHeader>
-          <MexIcon fontSize={24} icon={suggestion.type === 'node' ? 'ri:file-list-2-line' : 'ri:quill-pen-line'} />
+        <ResultHeader onClick={onClick}>
+          <MexIcon fontSize={24} icon={isNote ? 'ri:file-list-2-line' : 'ri:quill-pen-line'} />
           <ResultTitle>{suggestion?.content?.title}</ResultTitle>
-          {!suggestion?.content?.isTemplate && (
-            <IconButton highlight={suggestion.pinned} onClick={onPin} icon={pushpin2Line} title="Pin suggestion" />
-          )}
+          <SuggestionIconsGroup>
+            {isNote && <IconButton onClick={onClick} icon={arrowGoBackLine} title="Insert Backlink" />}
+            <IconButton
+              onClick={onEmbedClick}
+              icon="lucide:file-input"
+              title={suggestion.type === 'node' ? 'Embed Note' : 'Insert Snippet'}
+            />
+            {!suggestion?.content?.isTemplate && (
+              <IconButton highlight={suggestion.pinned} onClick={onPin} icon={pushpin2Line} title="Pin suggestion" />
+            )}
+          </SuggestionIconsGroup>
         </ResultHeader>
 
-        <SuggestionPreviewWrapper>
-          <EditorPreviewRenderer content={suggestion.content.content} editorId={editorId} />
+        <SuggestionPreviewWrapper onClick={handleClickContent}>
+          <EditorPreviewRenderer
+            blockId={showContent && isNote ? suggestion.blockId : undefined}
+            content={nodeContent}
+            editorId={editorId}
+          />
         </SuggestionPreviewWrapper>
       </SuggestionContainer>
     </Margin>

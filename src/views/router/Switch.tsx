@@ -20,7 +20,7 @@ import Themes from '../../components/mex/Settings/Themes'
 import About from '../../components/mex/Settings/About'
 import AutoUpdate from '../../components/mex/Settings/AutoUpdate'
 import Importers from '../../components/mex/Settings/Importers'
-import { useEditorBuffer } from '../../hooks/useEditorBuffer'
+import { useEditorBuffer, useSnippetBuffer } from '../../hooks/useEditorBuffer'
 import { useAuthStore } from '../../services/auth/useAuth'
 import { ROUTE_PATHS } from '../routes/urls'
 import UserPage from '../mex/UserPage'
@@ -53,13 +53,15 @@ const Switch = () => {
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
   const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
 
-  const { saveAndClearBuffer } = useEditorBuffer()
+  const { saveAndClearBuffer: saveEditorBuffer } = useEditorBuffer()
+  const { saveAndClearBuffer: saveSnippetBuffer } = useSnippetBuffer()
   const authenticated = useAuthStore((s) => s.authenticated)
   useEffect(() => {
     // ? Do we need to save data locally on every route change?
     if (authenticated) {
       if (isBlockMode) setIsBlockMode(false)
-      saveAndClearBuffer()
+      saveEditorBuffer()
+      // saveSnippetBuffer()
     }
   }, [location])
 
