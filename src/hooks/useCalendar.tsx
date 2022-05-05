@@ -1,25 +1,24 @@
-import { client } from '@workduck-io/dwindle'
+import { useContentStore } from '@store/useContentStore'
 import axios from 'axios'
 import { add, format, formatDistanceToNow, sub } from 'date-fns'
 import { useEffect } from 'react'
 import create from 'zustand'
-import { GOOGLE_CAL_BASE, GOOGLE_OAUTH2_REFRESH_URL } from '../apis/routes'
+import { GOOGLE_CAL_BASE } from '../apis/routes'
+import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import { ItemActionType, ListItemType } from '../components/spotlight/SearchResults/types'
-import { MeetingSnippetContent } from '../data/initial/MeetingNote'
+import { MEETING_PREFIX } from '../data/Defaults/idPrefixes'
 import { testEvents } from '../data/Defaults/Test/calendar'
+import { MeetingSnippetContent } from '../data/initial/MeetingNote'
+import { useAuthStore } from '../services/auth/useAuth'
 import { checkTokenGoogleCalendar, fetchNewCalendarToken, useTokenStore } from '../services/auth/useTokens'
 import { useSpotlightAppStore } from '../store/app.spotlight'
 import { CategoryType } from '../store/Context/context.spotlight'
-import useDataStore from '../store/useDataStore'
 import { useSpotlightEditorStore } from '../store/editor.spotlight'
+import useDataStore from '../store/useDataStore'
 import { GoogleEvent } from '../types/gcal'
+import { ILink } from '../types/Types'
 import { mog } from '../utils/lib/helper'
 import { getSlug } from '../utils/lib/strings'
-import { ILink } from '../types/Types'
-import { MEETING_PREFIX } from '../data/Defaults/idPrefixes'
-import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
-import { useAuthStore } from '../services/auth/useAuth'
-import { getContent } from '../utils/helpers'
 
 /*
  * Need
@@ -113,9 +112,14 @@ export const getNodeForMeeting = (title: string, date: number, create?: boolean)
 export const openCalendarMeetingNote = (e: CalendarEvent) => {
   // if link present use it
   const node = getNodeForMeeting(e.summary, e.times.start, true)
-  const content = getContent(node.nodeid)
+  const content = useContentStore.getState().getContent(node?.nodeid)
+  // const content = getContent(node.nodeid)
+  const realContent =
+    content !== undefined
+      ? content?.content
+      : MeetingSnippetContent(e.summary, e.times.start, e.links.meet ?? e.links.event)
 
-  mog('OpenCalendarMeeting', { e, content })
+  // mog('OpenCalendarMeeting', { e, content, realContent })
 
   useSpotlightEditorStore.getState().loadNode(
     {
@@ -124,7 +128,8 @@ export const openCalendarMeetingNote = (e: CalendarEvent) => {
       id: node.nodeid,
       path: node.path
     },
-    content.content ?? MeetingSnippetContent(e.summary, e.times.start, e.links.meet ?? e.links.event)
+
+    realContent
   )
 
   useSpotlightAppStore.getState().setNormalMode(false)

@@ -230,7 +230,7 @@ const List = ({
 
   useEffect(() => {
     setActiveIndex(0)
-  }, [data])
+  }, [selection])
 
   // * handles double click on a list item
   function handleDoubleClick(id: number) {
