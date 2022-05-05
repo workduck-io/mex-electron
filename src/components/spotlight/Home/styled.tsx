@@ -13,12 +13,13 @@ export const StyledList = styled(animated.div)`
 export const ListItem = styled.div<{ start?: number }>`
   width: 100%;
   cursor: pointer;
-  ${({ start }) =>
-    start &&
-    css`
-      position: absolute;
-      transform: translateY(${start}px);
-    `}
+  position: absolute;
+  transform: translateY(${(props) => props.start}px);
+`
+
+export const ActionItem = styled.div`
+  width: 100%;
+  cursor: pointer;
 `
 
 export function usePointerMovedSinceMount() {

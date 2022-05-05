@@ -67,14 +67,6 @@ const SuggestionInfoBar = () => {
             { text: '', id: generateTempId() }
           ]
         }
-        // mog('InsertIlink', {
-        //   event,
-        //   link,
-        //   suggestion,
-        //   type: ELEMENT_ILINK,
-        //   children: [{ text: '' }],
-        //   value: suggestion.id
-        // })
         insertNodes<TElement>(editor, link)
       }
     }

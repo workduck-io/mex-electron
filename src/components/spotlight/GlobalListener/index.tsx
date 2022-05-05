@@ -29,6 +29,8 @@ import { useActionPerformer } from '../Actions/useActionPerformer'
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
   const { setSelection } = useSpotlightContext()
+  const setSpotlightTrigger = useSpotlightSettingsStore((state) => state.setSpotlightTrigger)
+
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
   const setBubble = useSpotlightSettingsStore((state) => state.setBubble)
   const { addRecent, clear } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
@@ -82,6 +84,7 @@ const GlobalListener = memo(() => {
         // * If user captures a content when in action mode, then we need to redirect him to the home page
         useSpotlightAppStore.getState().setView(undefined)
         goTo(ROUTE_PATHS.home, NavigationType.replace)
+        setSpotlightTrigger()
         setTemp(data)
       }
     })

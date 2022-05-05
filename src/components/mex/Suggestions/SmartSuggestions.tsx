@@ -34,7 +34,8 @@ const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({
             onClick(event, suggestion, content.content, true)
           }
 
-          const onPinSuggestion = () => {
+          const onPinSuggestion = (event) => {
+            event.stopPropagation()
             pinSuggestion(suggestion)
           }
 

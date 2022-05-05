@@ -168,8 +168,6 @@ const searchWorker: SearchWorker = {
         }
       })
 
-      mog('RESULTS', { combinedResults })
-
       return combinedResults
     } catch (e) {
       mog('Searching Broke:', { e })
