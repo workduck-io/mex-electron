@@ -10,6 +10,7 @@ import { EditorStyles } from './Editor'
 import { Input } from './Form'
 import { CardShadow, HoverSubtleGlow } from './helpers'
 import { size } from './responsive'
+import { BodyFont, MainFont } from './spotlight/global'
 import { Title } from './Typography'
 import { ProfileIcon } from './UserPage'
 
@@ -257,6 +258,7 @@ export const ResultMain = styled.div`
 `
 
 export const ResultTitle = styled.div`
+  ${MainFont};
   ${SearchTransition}
   color: ${({ theme }) => theme.colors.text.default};
 `
@@ -265,7 +267,6 @@ export const ResultHeader = styled.div<{ active?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 1.2rem;
   background-color: ${({ theme }) => theme.colors.gray[8]};
   padding: ${({ theme }) => theme.spacing.medium};
   color: ${({ theme }) => theme.colors.text.fade};
@@ -287,7 +288,7 @@ export const ResultHeader = styled.div<{ active?: boolean }>`
 export const ResultDesc = styled.div`
   flex-shrink: 1;
   color: ${({ theme }) => theme.colors.gray[5]};
-  font-size: 0.8rem;
+  font-size: ${BodyFont};
   max-width: 20rem;
 
   ${Ellipsis}

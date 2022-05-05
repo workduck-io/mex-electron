@@ -13,7 +13,6 @@ import useOnboard from '../../../store/useOnboarding'
 import { FadeContainer } from '../../../style/animation/fade'
 import { openNodeInMex } from '../../../utils/combineSources'
 import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
-import { mog } from '../../../utils/lib/helper'
 import { useSaveChanges } from '../Search/useSearchProps'
 import { spotlightShortcuts } from '../Shortcuts/list'
 
@@ -74,7 +73,6 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (blockId) {
-        // mog('editorPreviewRenderer', { blockId, editorId })
         focusBlock(blockId, nodeId)
         setHighlights([blockId], 'editor')
       }
@@ -116,6 +114,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
     <FadeContainer fade={blockId !== undefined} onClick={() => setNormalMode(false)}>
       <Editor
         autoFocus={!normalMode}
+        padding="1rem"
         focusAtBeginning={!normalMode}
         options={{ exclude: { dnd: true } }}
         readOnly={normalMode}

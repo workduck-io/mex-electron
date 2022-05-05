@@ -173,7 +173,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
                         >
                           {item.icon && (
                             <MexIcon
-                              fontSize={20}
+                              fontSize={16}
                               key={`${item.key}_${item.icon}`}
                               icon={item.icon}
                               color={theme.colors.primary}

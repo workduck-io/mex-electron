@@ -111,10 +111,11 @@ export const getNodeForMeeting = (title: string, date: number, create?: boolean)
 }
 
 export const openCalendarMeetingNote = (e: CalendarEvent) => {
-  mog('OpenCalendarMeeting', e)
   // if link present use it
   const node = getNodeForMeeting(e.summary, e.times.start, true)
-  const content = getContent(node.path)
+  const content = getContent(node.nodeid)
+
+  mog('OpenCalendarMeeting', { e, content })
 
   useSpotlightEditorStore.getState().loadNode(
     {
@@ -125,6 +126,7 @@ export const openCalendarMeetingNote = (e: CalendarEvent) => {
     },
     content.content ?? MeetingSnippetContent(e.summary, e.times.start, e.links.meet ?? e.links.event)
   )
+
   useSpotlightAppStore.getState().setNormalMode(false)
 }
 
@@ -155,7 +157,6 @@ const convertCalendarEventToAction = (e: CalendarEvent) => {
       nodeid: node ? node.nodeid : undefined,
       event: e,
       customAction: () => {
-        // console.log('custom action')
         openCalendarMeetingNote(e)
       }
     }
@@ -302,11 +303,11 @@ export const useGoogleCalendarAutoFetch = () => {
   const authenticated = useAuthStore((store) => store.authenticated)
 
   useEffect(() => {
-    console.log('Setting up autofetch for Google Calendar Events')
+    mog('Setting up autofetch for Google Calendar Events')
     if (!authenticated) return
     fetchGoogleCalendarEvents()
     const id = setInterval(() => {
-      console.log('Fetching Google Calendar Events')
+      mog('Fetching Google Calendar Events')
       fetchGoogleCalendarEvents()
     }, 1000 * 60 * 15) // 15 minutes
     return () => clearInterval(id)

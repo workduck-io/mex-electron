@@ -16,7 +16,7 @@ export const integrationURLs = {
 }
 
 export const MEXIT_FRONTEND_BASE_URL = IS_DEV ? 'http://localhost:3333' : 'https://mexit.workduck.io'
-export const MEXIT_BACKEND_URL_BASE = IS_DEV
+export const MEXIT_BACKEND_URL_BASE = false
   ? 'http://localhost:5000/api/v1'
   : 'https://mex-webapp-dev.workduck.io/api/v1'
 

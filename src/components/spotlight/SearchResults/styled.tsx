@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components'
 import { StyledBackground } from '../styled'
 import { animated } from 'react-spring'
 import { transparentize } from 'polished'
+import { BodyFont } from '@style/spotlight/global'
 
 export const StyledResults = styled(ColumnContainer)<{ margin: string }>`
   margin-top: 4px;
@@ -16,10 +17,11 @@ export const StyledResults = styled(ColumnContainer)<{ margin: string }>`
 export const StyledRow = styled(animated.div)<ColorProp>`
   /* transform: translateY(${(props) => props.start}px); */
   padding: 12px 1rem 12px 0;
+
   :hover {
-    background-color: ${({ theme }) => transparentize(0.65, theme.colors.background.modal)};
-    /* padding: 10px 1rem 10px 0; */
+    background-color: ${({ theme }) => transparentize(0.65, theme.colors.background.app)};
   }
+
   ${({ background }) =>
     background &&
     css`
@@ -32,13 +34,13 @@ export const StyledRow = styled(animated.div)<ColorProp>`
   /* margin: 5px 0; */
   user-select: none;
   color: ${({ theme }) => theme.colors.text.fade};
-  border-radius: 10px;
+  border-radius: ${({ theme }) => theme.borderRadius.small};
 `
 
 export const Description = styled.p`
   margin: 6px 0 4px;
-  font-size: 12px;
-  font-weight: 300;
+  ${BodyFont};
+  font-weight: 400;
   white-space: nowrap;
   overflow-x: hidden;
   color: ${({ theme }) => theme.colors.text.fade};

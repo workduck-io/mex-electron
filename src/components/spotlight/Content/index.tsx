@@ -91,7 +91,6 @@ const Content = () => {
 
           const list = !recentLimit ? [CREATE_NEW_ITEM] : insertItemInArray(limitedList, CREATE_NEW_ITEM, 1)
 
-          // mog('Events', { recentEvents })
           const data = [...recentEvents, ...list, ...actions]
           setSearchResults(data)
         }
@@ -123,10 +122,9 @@ const Content = () => {
     }
 
     if (isMeeting && !activeItem.active) {
-      mog('isMeeting, checking', { activeItem, resultNode })
       if (resultNode?.extras.nodeid !== undefined) {
         const node = getNode(resultNode?.extras.nodeid ?? '')
-        mog('isMeeting, seeting node', { node })
+
         nodeid = node.nodeid
         setPreviewEditorNode(node)
       }
@@ -149,13 +147,12 @@ const Content = () => {
         setPreview(INIT_PREVIEW)
       }
     }
-  }, [search.value, normalMode, activeIndex, activeItem, selection, searchResults])
+  }, [search.value, activeIndex, activeItem, selection, searchResults])
 
   return (
     <StyledContent>
       <SideBar data={searchResults} />
       <ErrorBoundary onReset={() => resetEditor(AppType.SPOTLIGHT)} FallbackComponent={EditorErrorFallback}>
-        {/* <PreviewRenderer /> */}
         <Preview preview={preview} nodeId={editorNode.nodeid} />
       </ErrorBoundary>
     </StyledContent>

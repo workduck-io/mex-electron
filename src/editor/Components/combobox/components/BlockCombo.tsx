@@ -157,7 +157,7 @@ const BlockCombo = ({ nodeId, onSelect, isNew, shortcuts }: BlockComboProps) => 
       </StyledComboHeader>
       {blocks?.length === 0 && (
         <ComboboxItem key={`search-text`} className="highlight">
-          <MexIcon fontSize={20} icon="ri:add-circle-line" color={theme.colors.primary} />
+          <MexIcon fontSize={16} icon="ri:add-circle-line" color={theme.colors.primary} />
           <ItemCenterWrapper>
             <ItemTitle>
               No results:&nbsp;
@@ -184,7 +184,7 @@ const BlockCombo = ({ nodeId, onSelect, isNew, shortcuts }: BlockComboProps) => 
                 // }
               }}
             >
-              <MexIcon fontSize={20} icon={BlockIcons[block?.data?.type]} color={theme.colors.primary} />
+              <MexIcon fontSize={16} icon={BlockIcons[block?.data?.type]} color={theme.colors.primary} />
               <ItemCenterWrapper>{block.text && <ItemDesc>{block.text}</ItemDesc>}</ItemCenterWrapper>
             </ComboboxItem>
           </span>

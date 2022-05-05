@@ -18,6 +18,8 @@ import useLoad from '../../../hooks/useLoad'
 import { checkIfUntitledDraftNode } from '../../../utils/lib/strings'
 import { getTitleFromContent } from '../../../utils/search/parseData'
 import { useRouting } from '../../../views/routes/urls'
+import { mog } from '../../../utils/lib/helper'
+import useDataStore from '../../../store/useDataStore'
 
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
@@ -54,7 +56,7 @@ type SaveItProps = {
 
 export const useSaveChanges = () => {
   const getContent = useContentStore((store) => store.getContent)
-  const node = useSpotlightEditorStore((store) => store.node)
+
   const addRecent = useRecentsStore((store) => store.addRecent)
   const addInResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
   const setNormalMode = useSpotlightAppStore((store) => store.setNormalMode)
@@ -68,6 +70,8 @@ export const useSaveChanges = () => {
   const { updateDocument } = useSearch()
 
   const saveIt = async (options?: SaveItProps) => {
+    const node = useSpotlightEditorStore.getState().node
+
     let editorContent = getPlateSelectors().value()
     const existingContent = getContent(node.nodeid)
 

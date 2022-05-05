@@ -1,3 +1,4 @@
+import { CollapsableHeaderTitle } from '@ui/layout/Collapse/Collapse'
 import React from 'react'
 import styled from 'styled-components'
 import { useEditorStore } from '../../../store/useEditorStore'
@@ -15,6 +16,10 @@ export const DataInfobarWrapper = styled.div`
   padding: ${({ theme }) => `${theme.spacing.medium}`};
   max-width: 300px;
   overflow-y: auto;
+
+  ${CollapsableHeaderTitle} {
+    font-size: 1.5rem;
+  }
 `
 
 const DataInfoBar = () => {

@@ -41,6 +41,7 @@ export const SelectBar = styled(StyledSelect)`
   font-size: 0.9rem;
   margin: 0 0.25rem;
   color: ${({ theme }) => theme.colors.text.default};
+  background-color: ${({ theme }) => transparentize(0.35, theme.colors.background.card)};
 
   & > div {
     border-radius: ${({ theme }) => theme.borderRadius.small};

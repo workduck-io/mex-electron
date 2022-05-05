@@ -21,11 +21,10 @@ interface EditorPreviewRendererProps {
   onDoubleClick?: (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
-
 const PreviewStyles = styled(EditorStyles)<{ noMouseEvents: boolean }>`
   ${({ noMouseEvents }) => noMouseEvents && 'pointer-events: none;'};
   user-select: none;
-  font-size: 14px;
+  font-size: 0.9rem;
 
   ${TodoContainer}, button, input, textarea, select, option {
     pointer-events: none;

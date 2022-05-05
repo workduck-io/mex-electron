@@ -2,6 +2,7 @@ import arrowRightSLine from '@iconify/icons-ri/arrow-right-s-line'
 import { Icon, IconifyIcon } from '@iconify/react'
 import React, { useMemo } from 'react'
 import { useSpring } from 'react-spring'
+import styled from 'styled-components'
 import Infobox, { InfoboxProps } from '../../components/Help/Infobox'
 import { CollapseContent, CollapseHeader, CollapseToggle, CollapseWrapper } from './Collapse.style'
 
@@ -14,6 +15,11 @@ interface CollapseProps {
   children?: React.ReactNode
   infoProps?: InfoboxProps
 }
+
+export const CollapsableHeaderTitle = styled.h2`
+  font-size: 1.25rem;
+  font-weight: bolder;
+`
 
 const Collapse = ({ defaultOpen, maximumHeight, icon, infoProps, children, oid, title }: CollapseProps) => {
   const [hide, setHide] = React.useState(!defaultOpen ?? true)
@@ -42,13 +48,13 @@ const Collapse = ({ defaultOpen, maximumHeight, icon, infoProps, children, oid, 
         >
           <Icon icon={hide ? arrowRightSLine : icon} />
         </CollapseToggle>
-        <h2
+        <CollapsableHeaderTitle
           onClick={() => {
             setHide((b) => !b)
           }}
         >
           {title}
-        </h2>
+        </CollapsableHeaderTitle>
         {infoProps && <Infobox {...infoProps} />}
       </CollapseHeader>
 
