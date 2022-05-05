@@ -11,6 +11,7 @@ import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
 import { WORKSPACE_HEADER, DEFAULT_NAMESPACE } from '../data/Defaults/defaults'
 import { useLinks } from '../hooks/useLinks'
+import { SEPARATOR } from './../components/mex/Sidebar/treeUtils'
 
 // clientInterceptor
 //
@@ -19,7 +20,7 @@ export const useApi = () => {
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const setMetadata = useContentStore((store) => store.setMetadata)
   const setContent = useContentStore((store) => store.setContent)
-  const { getPathFromNodeid } = useLinks()
+  const { getPathFromNodeid, getNodeidFromPath } = useLinks()
   /*
    * Saves data in the backend
    * Also updates the incoming data in the store
@@ -65,18 +66,24 @@ export const useApi = () => {
    * Also updates the incoming data in the store
    */
   const saveDataAPI = async (nodeid: string, content: any[]) => {
+    if (!USE_API) {
+      return
+    }
+
+    const path = getPathFromNodeid(nodeid).split(SEPARATOR)
     const reqData = {
       id: nodeid,
       type: 'NodeRequest',
-      title: getPathFromNodeid(nodeid),
+      title: path.slice(-1)[0],
       lastEditedBy: useAuthStore.getState().userDetails.email,
       namespaceIdentifier: DEFAULT_NAMESPACE,
       data: serializeContent(content ?? defaultContent.content)
     }
 
-    if (!USE_API) {
-      return
+    if (path.length > 1) {
+      reqData['referenceID'] = getNodeidFromPath(path.slice(0, -1).join(SEPARATOR))
     }
+
     const data = await client
       .post(apiURLs.saveNode, reqData, {
         headers: {
