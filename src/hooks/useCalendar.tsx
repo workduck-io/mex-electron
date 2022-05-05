@@ -264,7 +264,6 @@ export const useCalendar = () => {
         break
     }
 
-    // mog('fetching events', { now, yesterday, twoDaysFromNow })
     const reqUrl = encodeURI(
       `${GOOGLE_CAL_BASE}/primary/events?maxResults=${max}&timeMin=${yesterday}&timeMax=${twoDaysFromNow}`
     )
@@ -276,7 +275,7 @@ export const useCalendar = () => {
       })
       .then((res) => {
         const events = res.data.items.map((event) => converGoogleEventToCalendarEvent(event))
-        // console.log('Got Events', res.data, events)
+        console.log('Got Events', res.data, events)
         setEvents(events)
       })
 
@@ -308,13 +307,12 @@ export const useGoogleCalendarAutoFetch = () => {
   const authenticated = useAuthStore((store) => store.authenticated)
 
   useEffect(() => {
-    mog('Setting up autofetch for Google Calendar Events')
     if (!authenticated) return
     fetchGoogleCalendarEvents()
     const id = setInterval(() => {
       mog('Fetching Google Calendar Events')
       fetchGoogleCalendarEvents()
-    }, 1000 * 60 * 15) // 15 minutes
+    }, 1000 * 60 * 1) // 15 minutes
     return () => clearInterval(id)
   }, [tokens])
 }
