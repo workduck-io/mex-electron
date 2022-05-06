@@ -118,7 +118,6 @@ const useActions = () => {
             connected = true
 
             if (!connectedGroups[actionGroup?.actionGroupId]) {
-              mog(`----- ${actionGroup?.actionGroupId} -----`)
               setActionsInList(actionGroup.actionGroupId)
             }
 
