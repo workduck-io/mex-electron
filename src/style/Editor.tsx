@@ -62,7 +62,7 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   width: 100%;
   max-width: 1000px;
   min-width: 400px;
-  height: calc(100vh - 3rem);
+  height: calc(100vh - 6rem);
   flex: 1;
   overflow-y: auto;
 

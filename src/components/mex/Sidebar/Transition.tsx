@@ -31,11 +31,11 @@ export const useSidebarTransition = () => {
 
   const switchWrapperStyle = useMemo(() => {
     const style = {
-      width: `calc(100% - ${sidebarExpandedWidth} - ${theme.additional.hasBlocks ? '3rem' : '0px'})`
+      width: `calc(100% - ${sidebarExpandedWidth} - ${theme.additional.hasBlocks ? '1rem' : '0px'})`
     }
 
     if (!sidebar.expanded) {
-      style.width = `calc(100% - ${sidebarCollapsedWidth} - ${theme.additional.hasBlocks ? '3rem' : '0px'})`
+      style.width = `calc(100% - ${sidebarCollapsedWidth} - ${theme.additional.hasBlocks ? '1rem' : '0px'})`
     }
     return style
   }, [sidebar, theme])

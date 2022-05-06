@@ -66,7 +66,7 @@ const grayMainColor = css`
   ${({ theme }) => theme.colors.gray[10]}
 `
 
-const heightMain = `calc(100vh - 4rem)`
+const heightMain = `calc(100vh - 7rem)`
 
 const graphStyles = css`
   ${StyledGraph} {

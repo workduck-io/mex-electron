@@ -70,18 +70,16 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
 
   const edStyles = css`
     ${StyledEditor} {
-      margin: 0 auto;
       padding: 0 3rem;
-      height: calc(100vh - 4rem);
+      height: calc(100vh - 7rem);
     }
     ${NodeInfo} {
       ${containerStyle}
     }
     ${DataInfobarWrapper} {
-      margin-top: 0rem;
+      margin-top: ${({ theme }) => theme.spacing.large};
       height: ${heightMain};
       ${containerStyle}
-      margin-top: 0;
     }
     ${EditorWrapper} {
       ${containerStyle}
@@ -160,17 +158,13 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
   const navStyles = css`
     ${NavWrapper} {
       margin: 0;
-      height: ${heightMain};
-      min-height: ${heightMain};
       padding: ${({ theme }) => theme.spacing.small} 0 0;
       ${containerStyle}
     }
     ${GridWrapper} {
-      margin: 2rem;
-      margin-left: ${({ theme }) => theme.spacing.medium};
+      margin: 0rem;
       margin-right: -1rem;
       margin-bottom: 0;
-      grid-gap: ${({ theme }) => theme.spacing.medium};
     }
   `
 
@@ -182,7 +176,6 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
 
   const sidebarStyles = css`
     ${SidebarDiv} {
-      height: ${heightMain};
       ${containerStyle}
       margin-top: 0;
       padding: 0;
