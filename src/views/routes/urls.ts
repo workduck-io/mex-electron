@@ -10,6 +10,8 @@ import { IpcAction } from '../../data/IpcAction'
 import useLoad from '../../hooks/useLoad'
 import { useEditorStore } from '../../store/useEditorStore'
 import useDataStore from '../../store/useDataStore'
+import { useSnippetStore } from '../../store/useSnippetStore'
+import { mog } from '@utils/lib/helper'
 
 export const ROUTE_PATHS = {
   home: '/',
@@ -61,6 +63,7 @@ export const useBrowserNavigation = () => {
   const { shortcutDisabled, shortcutHandler } = useKeyListener()
   const { move, push } = useNavigation()
   const { loadNode } = useLoad()
+  const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const addRecent = useRecentsStore((store) => store.addRecent)
   // const navigate = useNavigate()
   const location = useLocation()
@@ -80,6 +83,11 @@ export const useBrowserNavigation = () => {
           addRecent(nodeid)
         }
       }
+    }
+    if (node && location && location.pathname && location.pathname.startsWith(ROUTE_PATHS.snippet)) {
+      const nodeid = location.pathname.split('/')[3]
+      loadSnippet(nodeid)
+      // mog('Navigation reloaded', { nodeid, location, ROUTE_PATHS })
     }
   }, [location])
 

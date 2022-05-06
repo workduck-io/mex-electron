@@ -1,5 +1,5 @@
 import { selectEditor, usePlateEditorRef } from '@udecode/plate'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import tinykeys from 'tinykeys'
 import shallow from 'zustand/shallow'
 import Metadata from '../components/mex/Metadata/Metadata'
@@ -18,13 +18,13 @@ import useSuggestionStore from '../store/useSuggestions'
 import { EditorWrapper, StyledEditor } from '../style/Editor'
 import { getEditorId } from '../utils/lib/EditorId'
 import { convertContentToRawText } from '../utils/search/parseData'
+import { removeStopwords } from '../utils/stopwords'
 import BlockInfoBar from './Components/Blocks/BlockInfoBar'
+import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
 import { BlockOptionsMenu } from './Components/EditorContextMenu'
 import Editor from './Editor'
 import Toolbar from './Toolbar'
 
-import { removeStopwords } from '../utils/stopwords'
-import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
 import { mog } from '../utils/lib/helper'
 
 const ContentEditor = () => {
@@ -40,6 +40,8 @@ const ContentEditor = () => {
   const { queryIndexWithRanking } = useSearch()
 
   const infobar = useLayoutStore((store) => store.infobar)
+
+  const editorWrapperRef = useRef<HTMLDivElement>(null)
 
   const { node, fsContent } = useEditorStore(
     (state) => ({ nodeid: state.node.nodeid, node: state.node, fsContent: state.content }),
@@ -87,7 +89,14 @@ const ContentEditor = () => {
 
   const onFocusClick = () => {
     if (editorRef) {
-      selectEditor(editorRef, { focus: true })
+      if (editorWrapperRef.current) {
+        const el = editorWrapperRef.current
+        const hasScrolled = el.scrollTop > 0
+        // mog('ElScroll', { hasScrolled })
+        if (!hasScrolled) {
+          selectEditor(editorRef, { focus: true })
+        }
+      }
     }
   }
 
@@ -124,7 +133,7 @@ const ContentEditor = () => {
 
         {isBlockMode ? <BlockInfoBar /> : <Metadata node={node} />}
 
-        <EditorWrapper onClick={onFocusClick} comboboxOpen={isComboOpen}>
+        <EditorWrapper onClick={onFocusClick} comboboxOpen={isComboOpen} ref={editorWrapperRef}>
           <Editor
             getSuggestions={getSuggestions}
             showBalloonToolbar
