@@ -64,6 +64,17 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
 `
 
+export const TrafficLightBG = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 66px;
+  height: 26px;
+  background-color: ${({ theme }) => theme.colors.gray[8]};
+  opacity: 0.9;
+  z-index: 10000;
+  border-radius: 0 0 10px;
+`
 export const SidebarToggle = () => {
   const sidebar = useLayoutStore((state) => state.sidebar)
 

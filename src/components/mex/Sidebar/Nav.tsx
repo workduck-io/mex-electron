@@ -6,7 +6,7 @@ import { Icon } from '@iconify/react'
 import { useSingleton } from '@tippyjs/react'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
-import { Logo, SidebarToggle } from '../../../data/illustrations/logo'
+import { Logo, SidebarToggle, TrafficLightBG } from '../../../data/illustrations/logo'
 import tinykeys from 'tinykeys'
 import { useApi } from '../../../apis/useSaveApi'
 import { BookmarksHelp, TreeHelp } from '../../../data/Defaults/helpText'
@@ -247,6 +247,7 @@ const Nav = ({ links }: NavProps) => {
           </NavTooltip>
         </EndLinkContainer>
       </NavWrapper>
+      <TrafficLightBG />
       <SidebarToggle />
     </>
   )
