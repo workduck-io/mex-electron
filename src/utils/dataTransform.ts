@@ -2,7 +2,7 @@ import { app } from 'electron'
 import { BlockType } from '../store/useBlockStore'
 import { generateTempId } from '../data/Defaults/idPrefixes'
 import semver from 'semver'
-import { DefaultTransforms } from '../data/transforms'
+import { DefaultTransforms, ForceLogutVersion } from '../data/transforms'
 
 export type getValuefn = (obj?: any) => string
 export type getDatafn = (data?: any) => any
@@ -239,8 +239,8 @@ export const applyTransforms = (d: any, transforms: DataTransformation[]): { dat
 }
 
 export const clearLocalStorage = (fileDataVersion: string, currVersion: string) => {
-  const compareFileDataVersion = semver.compare(fileDataVersion, '0.9.0-alpha.4')
-  const compareCurrentVersion = semver.compare(currVersion, '0.9.0-alpha.4')
+  const compareFileDataVersion = semver.compare(fileDataVersion, ForceLogutVersion)
+  const compareCurrentVersion = semver.compare(currVersion, ForceLogutVersion)
 
   if (compareFileDataVersion === -1 && compareCurrentVersion >= 0) return true
   return false

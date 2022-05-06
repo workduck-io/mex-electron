@@ -366,10 +366,10 @@ const Tasks = () => {
             <DisplayShortcut shortcut="Esc" />
           </ShortcutToken>
         </ShortcutTokens>
-        <Button onClick={onClearClick}>
+        {/*<Button onClick={onClearClick}>
           <Icon icon={trashIcon} height={24} />
           Clear Todos
-        </Button>
+        </Button> */}
         <Infobox text={TasksHelp} />
       </TaskHeader>
       <StyledTasksKanban>
