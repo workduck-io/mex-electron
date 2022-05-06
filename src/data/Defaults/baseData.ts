@@ -24,7 +24,7 @@ export const onboardingLink = {
 const tasksLink = {
   path: BASE_TASKS_PATH,
   nodeid: generateNodeUID(),
-  icon: 'ri:draft-line'
+  icon: 'ri:task-line'
 }
 
 const draftLink = {
