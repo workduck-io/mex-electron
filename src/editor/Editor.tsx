@@ -17,7 +17,8 @@ import { useGraphStore } from '../store/useGraphStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
 import { mog } from '../utils/lib/helper'
-import { useDebouncedCallback } from 'use-debounce'
+import { useDebounce, useDebouncedCallback } from 'use-debounce'
+import useSuggestionStore from '@store/useSuggestions'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -56,6 +57,7 @@ export const Editor = ({
 
   const setIsEditing = useEditorStore((store) => store.setIsEditing)
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
+  const headingQASearch = useSuggestionStore((store) => store.headingQASearch)
 
   // const generateEditorId = () => `${editorId}`
   const editorRef = usePlateEditorRef()
@@ -78,7 +80,6 @@ export const Editor = ({
   }, [editorRef, editorId, focusAtBeginning]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    mog('HIGHLIGHTED BLOCK IDS', { hightlightedBlockIds })
     if (editorRef && hightlightedBlockIds.length > 0) {
       mog('editor highlighted', { hightlightedBlockIds, editorId })
       focusBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
@@ -125,7 +126,7 @@ export const Editor = ({
     setIsEditing(true)
     onDelayPerform(val)
 
-    if (getSuggestions) {
+    if (getSuggestions && !headingQASearch) {
       getDebouncedSuggestions.cancel()
       getDebouncedSuggestions(val)
     }

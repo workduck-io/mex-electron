@@ -1,4 +1,5 @@
 import { isParent } from '@components/mex/Sidebar/treeUtils'
+import { DRAFT_NODE, DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
 import { getTodayTaskNodePath, useTaskFromSelection } from '@hooks/useTaskFromSelection'
 import React, { useEffect } from 'react'
 import 'react-contexify/dist/ReactContexify.css'
@@ -76,6 +77,8 @@ const Content = () => {
           if (!normalMode) return
 
           const recentEvents = selection ? [] : getUpcomingEvents()
+          mog('EVENTS', { recentEvents })
+
           const recents = selection ? recentResearchNodes : lastOpenedNodes
           const items = recents.filter((recent: string) => ilinks.find((ilink) => ilink.nodeid === recent))
 
@@ -127,9 +130,20 @@ const Content = () => {
       const val = search.type === CategoryType.backlink ? search.value.slice(2) : search.value
 
       const nodeValue = val || getUntitledDraftKey()
-      const node = isNew ? createNodeWithUid(nodeValue) : getNode(resultNode?.id ?? '')
-      nodeid = node.nodeid
-      setPreviewEditorNode(node)
+      let node
+
+      if (isNew) {
+        if (editorNode.title !== `${DRAFT_PREFIX}.${DRAFT_NODE}`) {
+          node = createNodeWithUid(nodeValue)
+        }
+      } else {
+        node = getNode(resultNode?.id ?? '')
+      }
+
+      if (node) {
+        nodeid = node.nodeid
+        setPreviewEditorNode(node)
+      }
     }
 
     if (isMeeting && !activeItem.active) {

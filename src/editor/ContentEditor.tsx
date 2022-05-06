@@ -32,7 +32,6 @@ const ContentEditor = () => {
   const setIsEditing = useEditorStore((store) => store.setIsEditing)
   const { toggleFocusMode } = useLayout()
   const { saveApiAndUpdate } = useLoad()
-  const headingQASearch = useSuggestionStore((store) => store.headingQASearch)
 
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
   const isComboOpen = useComboboxOpen()
@@ -57,7 +56,10 @@ const ContentEditor = () => {
   const { addOrUpdateValBuffer, getBufferVal } = useEditorBuffer()
 
   const getSuggestions = async (val: any[]) => {
-    if (infobar.mode === 'suggestions' && !headingQASearch) {
+    const mode = useLayoutStore.getState().infobar?.mode
+    const isQABlock = useSuggestionStore.getState().headingQASearch
+
+    if (mode === 'suggestions' && !isQABlock) {
       const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
       const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
       const rawText = convertContentToRawText(val.slice(lastTwoParagraphs, cursorPosition + 1), ' ')

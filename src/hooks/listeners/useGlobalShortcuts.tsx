@@ -71,6 +71,7 @@ export const useGlobalShortcuts = () => {
             if (!normalMode) {
               saveIt()
               handleCancel()
+              setInput('')
             }
             if (normalMode) ipcRenderer.send('close')
           }
