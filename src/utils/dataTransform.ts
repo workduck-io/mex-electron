@@ -242,6 +242,6 @@ export const clearLocalStorage = (fileDataVersion: string, currVersion: string) 
   const compareFileDataVersion = semver.compare(fileDataVersion, ForceLogutVersion)
   const compareCurrentVersion = semver.compare(currVersion, ForceLogutVersion)
 
-  if (compareFileDataVersion >= 0 && compareCurrentVersion > 0) return true
+  if (compareFileDataVersion <= 0 && compareCurrentVersion > 0) return true
   return false
 }
