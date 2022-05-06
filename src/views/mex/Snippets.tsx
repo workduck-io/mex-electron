@@ -93,9 +93,9 @@ const Snippets = () => {
   }
 
   // * Delete this create special snippet
-  const onCreateSpecialSnippet = () => {
+  const onCreateSpecialSnippet = (generateTitle = false) => {
     const snippetId = generateSnippetId()
-    const snippetName = generateName().dashed
+    const snippetName = generateTitle ? generateName().dashed : DRAFT_NODE
 
     addSnippet({
       id: snippetId,
@@ -258,7 +258,7 @@ const Snippets = () => {
           Create New Snippet
         </Button>
         {IS_DEV && (
-          <Button primary large onClick={onCreateSpecialSnippet}>
+          <Button primary large onClick={() => onCreateSpecialSnippet()}>
             <Icon icon={magicLine} height={24} />
             Create New Template Snippet
           </Button>

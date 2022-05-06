@@ -61,7 +61,7 @@ const Switch = () => {
     if (authenticated) {
       if (isBlockMode) setIsBlockMode(false)
       saveEditorBuffer()
-      // saveSnippetBuffer()
+      saveSnippetBuffer()
     }
   }, [location])
 
