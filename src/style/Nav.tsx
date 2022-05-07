@@ -69,6 +69,9 @@ export const Link = styled(NavLink)`
   }
 `
 
+export const NavSpacer = styled.div`
+  flex-grow: 1;
+`
 export const NavDivider = styled.div`
   height: 1px;
   background-color: ${({ theme }) => theme.colors.gray[6]};
@@ -197,7 +200,7 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
 
   #Collapse_tree {
     flex-shrink: 0;
-    flex-grow: 1;
+    // flex-grow: 1;
   }
 
   ${(props) => focusStyles(props)}

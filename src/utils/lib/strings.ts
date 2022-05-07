@@ -31,10 +31,10 @@ export const checkIfUntitledDraftNode = (path: string) => {
   const length = pathParts.length
 
   if (length > 1) {
-    const parent = pathParts.at(0)
+    // const parent = pathParts.at(0)
     const child = pathParts.at(-1)
 
-    const isUntitled = parent === DRAFT_PREFIX && child?.startsWith(DRAFT_NODE)
+    const isUntitled = child?.startsWith(DRAFT_NODE)
     return isUntitled
   }
 
