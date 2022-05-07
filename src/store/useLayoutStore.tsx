@@ -41,8 +41,12 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
     visible: true,
     mode: 'default'
   },
-  setInfobarMode: (mode) => set((state) => ({ infobar: { ...state.infobar, mode } })),
-  toggleInfobar: () => set((state) => ({ infobar: { ...state.infobar, visible: !state.infobar.visible } })),
-  showInfobar: () => set((state) => ({ infobar: { ...state.infobar, visible: true } })),
-  hideInfobar: () => set((state) => ({ infobar: { ...state.infobar, visible: false } }))
+  setInfobarMode: (mode) => {
+    const curMode = get().infobar.mode
+    if (curMode === mode) return
+    set({ infobar: { ...get().infobar, mode } })
+  },
+  toggleInfobar: () => set({ infobar: { ...get().infobar, visible: !get().infobar.visible } }),
+  showInfobar: () => set({ infobar: { ...get().infobar, visible: true } }),
+  hideInfobar: () => set({ infobar: { ...get().infobar, visible: false } })
 }))

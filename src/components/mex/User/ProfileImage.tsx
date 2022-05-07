@@ -1,6 +1,8 @@
 import user3Line from '@iconify/icons-ri/user-3-line'
 import { Icon } from '@iconify/react'
+import { useCacheStore } from '@store/useRequestCache'
 import Tippy from '@tippyjs/react/headless' // different import path!
+import { mog } from '@utils/lib/helper'
 import Avatar from 'boring-avatars'
 import md5 from 'md5'
 import React, { useEffect, useState } from 'react'
@@ -39,6 +41,7 @@ export const ProfileImage = ({ email, size }: ProfileImageProps) => {
 
   const theme = useTheme()
   const colors = theme.additional.profilePalette
+  const addGravatarAbsent = useCacheStore((store) => store.addGravatarAbsent)
 
   const params = {
     s: size.toString(),
@@ -52,6 +55,12 @@ export const ProfileImage = ({ email, size }: ProfileImageProps) => {
   const src = `${base}${hash}?${query.toString()}`
 
   useEffect(() => {
+    const gravatarAbsent = useCacheStore.getState().gravatarAbsent
+    mog('grabbing gravatar for', { email, src, formattedEmail, gravatarAbsent })
+    if (gravatarAbsent.includes(email)) {
+      setGravState(-1)
+      return
+    }
     // Check if the gravatar exists
     const img = new Image()
     img.src = src
@@ -59,13 +68,15 @@ export const ProfileImage = ({ email, size }: ProfileImageProps) => {
       setGravState(1) // It does
     }
     img.onerror = () => {
+      // mog('gravatar not found', { email, src, formattedEmail })
+      addGravatarAbsent(email)
       setGravState(-1) // It doesn't
     }
   }, [email])
 
+  if (gravState === -1) return <Avatar size={size} square name={email} colors={colors} variant="beam" />
   if (gravState === 1) return <img src={src} alt={email ? `Gravatar for ${formattedEmail}` : 'Gravatar'} />
 
-  if (gravState === -1) return <Avatar size={size} square name={email} colors={colors} variant="beam" />
   // Rendered if both fail
   return <Icon className="defaultProfileIcon" icon={user3Line} height={size} />
 }

@@ -14,6 +14,7 @@ interface CollapseProps {
   icon?: string | IconifyIcon
   children?: React.ReactNode
   infoProps?: InfoboxProps
+  stopPropagation?: boolean
 }
 
 export const CollapsableHeaderTitle = styled.h2`
@@ -21,7 +22,16 @@ export const CollapsableHeaderTitle = styled.h2`
   font-weight: bolder;
 `
 
-const Collapse = ({ defaultOpen, maximumHeight, icon, infoProps, children, oid, title }: CollapseProps) => {
+const Collapse = ({
+  defaultOpen,
+  maximumHeight,
+  icon,
+  infoProps,
+  children,
+  oid,
+  title,
+  stopPropagation
+}: CollapseProps) => {
   const [hide, setHide] = React.useState(!defaultOpen ?? true)
 
   const springProps = useMemo(() => {
@@ -39,7 +49,7 @@ const Collapse = ({ defaultOpen, maximumHeight, icon, infoProps, children, oid, 
   const animationProps = useSpring(springProps)
 
   return (
-    <CollapseWrapper id={`Collapse_${oid}`}>
+    <CollapseWrapper id={`Collapse_${oid}`} onMouseUp={(e) => stopPropagation && e.stopPropagation()}>
       <CollapseHeader collapsed={hide}>
         <CollapseToggle
           onClick={() => {

@@ -1,3 +1,4 @@
+import { useCreateNewNode } from '@hooks/useCreateNewNode'
 import archiveFill from '@iconify/icons-ri/archive-fill'
 import bookmark3Line from '@iconify/icons-ri/bookmark-3-line'
 import gitBranchLine from '@iconify/icons-ri/git-branch-line'
@@ -5,23 +6,14 @@ import settings4Line from '@iconify/icons-ri/settings-4-line'
 import { Icon } from '@iconify/react'
 import { useSingleton } from '@tippyjs/react'
 import React, { useEffect } from 'react'
-import toast from 'react-hot-toast'
-import { Logo, SidebarToggle, TrafficLightBG } from '../../../data/illustrations/logo'
 import tinykeys from 'tinykeys'
-import { useApi } from '../../../apis/useSaveApi'
 import { BookmarksHelp, TreeHelp } from '../../../data/Defaults/helpText'
-import { IpcAction } from '../../../data/IpcAction'
+import { Logo, SidebarToggle, TrafficLightBG } from '../../../data/illustrations/logo'
 import { GetIcon } from '../../../data/links'
-import { getUntitledDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { AppType } from '../../../hooks/useInitialize'
 import useLayout from '../../../hooks/useLayout'
 import { useLinks } from '../../../hooks/useLinks'
-import useLoad from '../../../hooks/useLoad'
-import { useNavigation } from '../../../hooks/useNavigation'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
-import useDataStore, { useTreeFromLinks } from '../../../store/useDataStore'
-import { useEditorStore } from '../../../store/useEditorStore'
+import { useTreeFromLinks } from '../../../store/useDataStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import {
@@ -33,6 +25,7 @@ import {
   MainLinkContainer,
   NavDivider,
   NavLogoWrapper,
+  NavSpacer,
   NavTitle,
   NavWrapper
 } from '../../../style/Nav'
@@ -51,32 +44,12 @@ const Nav = ({ links }: NavProps) => {
   const sidebar = useLayoutStore((store) => store.sidebar)
   const focusMode = useLayoutStore((store) => store.focusMode)
   const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
-  const addILink = useDataStore((store) => store.addILink)
-  const { push } = useNavigation()
-  const { saveNewNodeAPI } = useApi()
   const { getFocusProps } = useLayout()
   const { getLinkCount } = useLinks()
   const { goTo } = useRouting()
-  const { saveNodeName } = useLoad()
+  const { createNewNode } = useCreateNewNode()
 
   const [source, target] = useSingleton()
-
-  const createNewNode = () => {
-    const newNodeId = getUntitledDraftKey()
-    const node = addILink({ ilink: newNodeId, showAlert: false })
-
-    if (node === undefined) {
-      toast.error('The node clashed')
-      return
-    }
-
-    saveNodeName(useEditorStore.getState().node.nodeid)
-    saveNewNodeAPI(node.nodeid)
-    push(node.nodeid, { withLoading: false })
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
-
-    return node.nodeid
-  }
 
   const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault()
@@ -133,7 +106,7 @@ const Nav = ({ links }: NavProps) => {
           <Logo />
         </NavLogoWrapper>
 
-        <MainLinkContainer>
+        <MainLinkContainer onMouseUp={(e) => e.stopPropagation()}>
           <NavTooltip
             key={shortcuts.newNode.title}
             singleton={target}
@@ -171,6 +144,7 @@ const Nav = ({ links }: NavProps) => {
           title="All Notes"
           oid={`tree`}
           defaultOpen
+          stopPropagation
           icon={gitBranchLine}
           maximumHeight="80vh"
           infoProps={{
@@ -191,9 +165,10 @@ const Nav = ({ links }: NavProps) => {
           <Tree initTree={initTree} />
         </Collapse>
 
+        <NavSpacer />
         <NavDivider />
 
-        <EndLinkContainer>
+        <EndLinkContainer onMouseUp={(e) => e.stopPropagation()}>
           {/* {authenticated ? (
           <NavTooltip singleton={target} content="User">
             <Link  tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to="/user" key="nav_user">
