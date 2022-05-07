@@ -68,15 +68,15 @@ export const ProfileImage = ({ email, size }: ProfileImageProps) => {
       setGravState(1) // It does
     }
     img.onerror = () => {
-      mog('gravatar not found', { email, src, formattedEmail })
+      // mog('gravatar not found', { email, src, formattedEmail })
       addGravatarAbsent(email)
       setGravState(-1) // It doesn't
     }
   }, [email])
 
+  if (gravState === -1) return <Avatar size={size} square name={email} colors={colors} variant="beam" />
   if (gravState === 1) return <img src={src} alt={email ? `Gravatar for ${formattedEmail}` : 'Gravatar'} />
 
-  if (gravState === -1) return <Avatar size={size} square name={email} colors={colors} variant="beam" />
   // Rendered if both fail
   return <Icon className="defaultProfileIcon" icon={user3Line} height={size} />
 }
