@@ -4,6 +4,7 @@ import { ELEMENT_MENTION } from './defaults'
 import { Editor } from 'slate'
 import { getMentionDeserialize } from './getMentionDeserialize'
 import { mog } from '../../../utils/lib/helper'
+import { getUserFromUseridHookless } from '@store/useMentionStore'
 
 /**
  * Enables support for hypertags.
@@ -32,8 +33,10 @@ export const withMention: WithOverride<any, PlatePlugin> = (editor, { type, opti
     if (prev && prev[0]) {
       const node = prev[0] as any
       if (node.type && node.type === ELEMENT_MENTION && node.value) {
+        const user = getUserFromUseridHookless(node.value)
+        const val = user && user.username ? user.username : node.value
         deleteFragment(editor, { at: prev[1], unit: 'block' })
-        Editor.insertText(editor, `@${node.value}`)
+        Editor.insertText(editor, `@${val}`)
       }
     }
     deleteBackward(options)

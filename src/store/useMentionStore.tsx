@@ -14,3 +14,11 @@ export const useMentionStore = create<MentionStore>((set) => ({
       mentionable
     })
 }))
+
+export const getUserFromUseridHookless = (userid: string) => {
+  const mentionable = useMentionStore.getState().mentionable
+
+  const user = mentionable.find((user) => user.userid === userid)
+
+  if (user) return user
+}

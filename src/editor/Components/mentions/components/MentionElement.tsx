@@ -1,13 +1,30 @@
+import { ProfileImage } from '@components/mex/User/ProfileImage'
+import { useMentions } from '@hooks/useMentions'
+import Tippy from '@tippyjs/react/headless' // different import path!
 import { useEditorRef } from '@udecode/plate'
-import React, { useMemo } from 'react'
+import { mog } from '@utils/lib/helper'
+import React from 'react'
 import { Transforms } from 'slate'
 import { useFocused, useSelected } from 'slate-react'
+import { Mentionable } from '../../../../types/mentions'
 import { useHotkeys } from '../../tag/hooks/useHotkeys'
 import { useOnMouseClick } from '../../tag/hooks/useOnMouseClick'
-import { SMention, SMentionRoot } from './MentionElement.styles'
+import { MentionTooltip, SMention, SMentionRoot, TooltipMail, Username } from './MentionElement.styles'
 import { MentionElementProps } from './MentionElement.types'
-import { mog } from '@utils/lib/helper'
-import { useMentions } from '@hooks/useMentions'
+
+interface MentionTooltipProps {
+  user?: Mentionable
+}
+
+const MentionTooltipComponent = ({ user }: MentionTooltipProps) => {
+  return (
+    <MentionTooltip>
+      <ProfileImage email={user && user.email} size={64} />
+      <div>{user && user.username}</div>
+      <TooltipMail>{user && user.email}</TooltipMail>
+    </MentionTooltip>
+  )
+}
 
 /**
  * MentionElement with no default styles.
@@ -17,14 +34,16 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
   const editor = useEditorRef()
   const selected = useSelected()
   const focused = useFocused()
-  const { getUsernameFromUserid } = useMentions()
+  const { getUserFromUserid } = useMentions()
 
   const onClickProps = useOnMouseClick(() => {
     mog('Mention has been clicked yo', { val: element.value })
     // openTag(element.value)
   })
 
-  const username = useMemo(() => getUsernameFromUserid(element.value), [element.value])
+  const user = getUserFromUserid(element.value)
+
+  // mog('MentionElement', { user })
 
   useHotkeys(
     'backspace',
@@ -49,9 +68,17 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
 
   return (
     <SMentionRoot {...attributes} data-slate-value={element.value} contentEditable={false}>
-      <SMention {...onClickProps} selected={selected}>
-        @{username ?? element.value}
-      </SMention>
+      <Tippy
+        delay={100}
+        interactiveDebounce={100}
+        placement="bottom"
+        appendTo={() => document.body}
+        render={(attrs) => <MentionTooltipComponent user={user} />}
+      >
+        <SMention {...onClickProps} selected={selected}>
+          <Username>@{user?.username ?? element.value}</Username>
+        </SMention>
+      </Tippy>
       {children}
     </SMentionRoot>
   )
