@@ -69,6 +69,7 @@ import createTodoPlugin from '../Components/Todo/createTodoPlugin'
 import { createQAPlugin } from '../Components/QABlock/createQAPlugin'
 import { createHighlightTextPlugin } from './highlightText'
 import { createActionPlugin } from '@editor/Components/Actions/createActionPlugin'
+import { createMentionPlugin } from '@editor/Components/mentions/createMentionsPlugin'
 
 export type PluginOptionType = {
   exclude: {
@@ -165,6 +166,7 @@ export const generatePlugins = (options: PluginOptionType) => {
 
     // Comboboxes
     createTagPlugin(), // Tags
+    createMentionPlugin(), // Mentions
     createILinkPlugin(), // Internal Links ILinks
 
     // Sync Blocks

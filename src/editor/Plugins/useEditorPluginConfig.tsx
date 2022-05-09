@@ -2,7 +2,7 @@ import useActions from '@components/spotlight/Actions/useActions'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
-import { ELEMENT_MEDIA_EMBED, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/plate'
+import { ELEMENT_MEDIA_EMBED, ELEMENT_MENTION, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { mog } from '@utils/lib/helper'
 import { useMemo } from 'react'
@@ -139,6 +139,15 @@ const useEditorPluginConfig = (editorId: string) => {
         },
         renderElement: TagComboboxItem
       },
+      mention: {
+        slateElementType: ELEMENT_MENTION,
+        newItemHandler: (newItem) => {
+          // addTag(newItem)
+          mog('ELEMENT_MENTIONS', { newItem })
+          return newItem
+        },
+        renderElement: TagComboboxItem
+      },
       slash_command: {
         slateElementType: 'slash_command',
         newItemHandler: () => undefined,
@@ -219,6 +228,12 @@ const useEditorPluginConfig = (editorId: string) => {
       trigger: '#',
       data: tags.map((t) => ({ ...t, text: t.value })),
       icon: 'ri:hashtag'
+    },
+    mention: {
+      cbKey: ComboboxKey.MENTION,
+      trigger: '@',
+      data: tags.map((t) => ({ ...t, text: t.value })),
+      icon: 'ri:at-line'
     },
     slash_command: {
       cbKey: ComboboxKey.SLASH_COMMAND,
