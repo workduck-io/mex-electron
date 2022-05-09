@@ -86,6 +86,13 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
           }
 
           insertNodes(editor, withBlockInfo)
+        } else if (item.type === QuickLinkType.mentions) {
+          const withMentionUserId = {
+            type,
+            children: [{ text: '' }],
+            value: item.key
+          }
+          insertNodes(editor, withMentionUserId)
         } else {
           if (item.type === QuickLinkType.flow || item.type === QuickLinkType.snippet) {
             itemValue = item.key

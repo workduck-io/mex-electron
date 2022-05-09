@@ -1,13 +1,13 @@
 import { useEditorRef } from '@udecode/plate'
-import * as React from 'react'
+import React, { useMemo } from 'react'
 import { Transforms } from 'slate'
 import { useFocused, useSelected } from 'slate-react'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../../../../views/routes/urls'
 import { useHotkeys } from '../../tag/hooks/useHotkeys'
 import { useOnMouseClick } from '../../tag/hooks/useOnMouseClick'
 import { SMention, SMentionRoot } from './MentionElement.styles'
 import { MentionElementProps } from './MentionElement.types'
 import { mog } from '@utils/lib/helper'
+import { useMentions } from '@hooks/useMentions'
 
 /**
  * MentionElement with no default styles.
@@ -17,12 +17,14 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
   const editor = useEditorRef()
   const selected = useSelected()
   const focused = useFocused()
-  const { goTo } = useRouting()
+  const { getUsernameFromUserid } = useMentions()
 
   const onClickProps = useOnMouseClick(() => {
     mog('Mention has been clicked yo', { val: element.value })
     // openTag(element.value)
   })
+
+  const username = useMemo(() => getUsernameFromUserid(element.value), [element.value])
 
   useHotkeys(
     'backspace',
@@ -48,7 +50,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
   return (
     <SMentionRoot {...attributes} data-slate-value={element.value} contentEditable={false}>
       <SMention {...onClickProps} selected={selected}>
-        @{element.value}
+        @{username ?? element.value}
       </SMention>
       {children}
     </SMentionRoot>

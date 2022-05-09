@@ -1,10 +1,6 @@
+import { Mentionable } from '../types/mentions'
 import create from 'zustand'
-
-interface Mentionable {
-  userid: string
-  username: string
-  email: string
-}
+import { mentionables } from '@data/mock/mentionables'
 
 interface MentionStore {
   mentionable: Mentionable[]
@@ -12,7 +8,7 @@ interface MentionStore {
 }
 
 export const useMentionStore = create<MentionStore>((set) => ({
-  mentionable: [],
+  mentionable: mentionables,
   setMentionable: (mentionable) =>
     set({
       mentionable

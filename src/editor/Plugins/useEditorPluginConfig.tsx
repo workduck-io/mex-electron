@@ -2,6 +2,7 @@ import useActions from '@components/spotlight/Actions/useActions'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
+import { useMentionStore } from '@store/useMentionStore'
 import { ELEMENT_MEDIA_EMBED, ELEMENT_MENTION, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { mog } from '@utils/lib/helper'
@@ -32,6 +33,7 @@ const useEditorPluginConfig = (editorId: string) => {
   const nodeid = useEditorStore((state) => state.node.nodeid)
   const actionGroups = useActionsCache((store) => store.actionGroups)
   const groupedActions = useActionsCache((store) => store.groupedActions)
+  const mentionable = useMentionStore((state) => state.mentionable)
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
@@ -120,6 +122,13 @@ const useEditorPluginConfig = (editorId: string) => {
     })),
     ...slashInternals.map((l) => ({ ...l, value: l.command, text: l.text, type: l.type }))
   ]
+
+  const mentions = mentionable.map((m) => ({
+    value: m.userid,
+    text: m.username,
+    icon: 'ri:user-line',
+    type: QuickLinkType.mentions
+  }))
 
   const comboConfigData: ComboConfigData = {
     keys: {
@@ -232,7 +241,7 @@ const useEditorPluginConfig = (editorId: string) => {
     mention: {
       cbKey: ComboboxKey.MENTION,
       trigger: '@',
-      data: tags.map((t) => ({ ...t, text: t.value })),
+      data: mentions,
       icon: 'ri:at-line'
     },
     slash_command: {
