@@ -9,8 +9,10 @@ interface CacheStore {
 export const useCacheStore = create<CacheStore>((set, get) => ({
   gravatarAbsent: [],
   addGravatarAbsent: (value: string) => {
-    set({
-      gravatarAbsent: [...get().gravatarAbsent, value]
-    })
+    if (!get().gravatarAbsent.includes(value)) {
+      set({
+        gravatarAbsent: [...get().gravatarAbsent, value]
+      })
+    }
   }
 }))
