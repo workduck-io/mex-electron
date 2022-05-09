@@ -1,3 +1,5 @@
+import shareLine from '@iconify/icons-ri/share-line'
+import { useShareModalStore } from '@components/mex/Share/ShareModal'
 import bubbleChartLine from '@iconify/icons-ri/bubble-chart-line'
 import focusLine from '@iconify/icons-ri/focus-line'
 import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
@@ -21,6 +23,8 @@ const Toolbar = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const { toggleFocusMode, setFocusHover, getFocusProps } = useLayout()
   const focusMode = useLayoutStore((store) => store.focusMode)
+  const openShareModal = useShareModalStore((store) => store.openModal)
+  const shareModalState = useShareModalStore((store) => store.open)
   // const nodeIntentsModalOpen = useNodeIntentsModalStore((store) => store.open)
   // const nodeIntentsModalToggle = useNodeIntentsModalStore((store) => store.toggleModal)
   const nodeid = useEditorStore((state) => state.node.nodeid)
@@ -41,6 +45,14 @@ const Toolbar = () => {
             <BookmarkButton nodeid={nodeid} />
           </span>
         </ToolbarTooltip>
+        <IconButton
+          size={24}
+          singleton={target}
+          icon={shareLine}
+          title="Share"
+          highlight={shareModalState}
+          onClick={() => openShareModal()}
+        />
         <IconButton
           singleton={target}
           size={24}
