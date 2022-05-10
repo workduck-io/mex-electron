@@ -7,7 +7,7 @@ import Refactor from '../mex/Refactor/Refactor'
 import Rename from '../mex/Refactor/Rename'
 import { useAuthStore } from '../../services/auth/useAuth'
 import CreateReminderModal from '../mex/Reminders/CreateReminderModal'
-import ShareModal from '@components/mex/Share/ShareModal'
+import ShareModal from '@components/mex/Mention/ShareModal'
 
 const Modals = () => {
   const isAuthenticated = useAuthStore((store) => store.authenticated)

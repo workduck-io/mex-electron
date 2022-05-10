@@ -1,5 +1,5 @@
 import shareLine from '@iconify/icons-ri/share-line'
-import { useShareModalStore } from '@components/mex/Share/ShareModal'
+import { useShareModalStore } from '@components/mex/Mention/ShareModal'
 import bubbleChartLine from '@iconify/icons-ri/bubble-chart-line'
 import focusLine from '@iconify/icons-ri/focus-line'
 import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'

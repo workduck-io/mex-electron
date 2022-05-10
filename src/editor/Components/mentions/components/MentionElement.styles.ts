@@ -13,6 +13,16 @@ export const Username = styled.div`
   padding: ${({ theme }) => theme.spacing.tiny};
 `
 
+export const SAccessTag = styled.div`
+  display: flex;
+  align-items: center;
+  padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
+  background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};
+  border-radius: ${({ theme }) => theme.borderRadius.tiny};
+  gap: ${({ theme }) => theme.spacing.tiny};
+  font-size: 0.9rem;
+`
+
 export const MentionTooltip = styled.div`
   display: flex;
   flex-direction: column;
