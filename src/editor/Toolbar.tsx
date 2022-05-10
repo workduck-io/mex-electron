@@ -51,7 +51,7 @@ const Toolbar = () => {
           icon={shareLine}
           title="Share"
           highlight={shareModalState}
-          onClick={() => openShareModal()}
+          onClick={() => openShareModal('permission')}
         />
         <IconButton
           singleton={target}

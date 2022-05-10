@@ -20,7 +20,7 @@ const MentionTooltipComponent = ({ user }: MentionTooltipProps) => {
   return (
     <MentionTooltip>
       <ProfileImage email={user && user.email} size={64} />
-      <div>{user && user.username}</div>
+      <div>{user && user.alias}</div>
       <TooltipMail>{user && user.email}</TooltipMail>
     </MentionTooltip>
   )
@@ -76,7 +76,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
         render={(attrs) => <MentionTooltipComponent user={user} />}
       >
         <SMention {...onClickProps} selected={selected}>
-          <Username>@{user?.username ?? element.value}</Username>
+          <Username>@{user?.alias ?? element.value}</Username>
         </SMention>
       </Tippy>
       {children}

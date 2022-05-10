@@ -1,8 +1,15 @@
-type AccessLevel = 'manage' | 'edit' | 'view'
-
-export interface Mentionable {
-  userid: string
-  username: string
+export interface InvitedUser {
   email: string
-  access: AccessLevel
+  alias: string
+  access: AccessMap
+}
+
+export type AccessLevel = 'MANAGE' | 'WRITE' | 'READ'
+
+export interface AccessMap {
+  [nodeid: string]: AccessLevel
+}
+
+export interface Mentionable extends InvitedUser {
+  userid: string
 }

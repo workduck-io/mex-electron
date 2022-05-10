@@ -7,8 +7,6 @@ export const SMentionRoot = styled.div`
   line-height: 1.2;
   background-color: ${({ theme }) => theme.colors.gray[8]};
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
-
-  /* outline: selectedFocused ? rgb(0, 120, 212) auto 1px : undefined, */
 `
 
 export const Username = styled.div`

@@ -34,7 +34,7 @@ export const withMention: WithOverride<any, PlatePlugin> = (editor, { type, opti
       const node = prev[0] as any
       if (node.type && node.type === ELEMENT_MENTION && node.value) {
         const user = getUserFromUseridHookless(node.value)
-        const val = user && user.username ? user.username : node.value
+        const val = user && user.alias ? user.alias : node.value
         deleteFragment(editor, { at: prev[1], unit: 'block' })
         Editor.insertText(editor, `@${val}`)
       }
