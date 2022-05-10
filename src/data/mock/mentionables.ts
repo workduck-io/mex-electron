@@ -1,6 +1,7 @@
-import { Mentionable } from '../../types/mentions'
+import { InvitedUser, Mentionable } from '../../types/mentions'
 
 const randomUser = (s: string) => ({
+  type: 'mentionable' as const,
   userid: `USER_${s}`,
   alias: s,
   email: `${s}@gmail.com`,
@@ -8,6 +9,7 @@ const randomUser = (s: string) => ({
 })
 
 const inviteUser = (s: string) => ({
+  type: 'invite' as const,
   alias: s,
   email: `${s}@gmail.com`,
   access: {}
@@ -17,6 +19,6 @@ const randomUsers = ['alice', 'bob', 'charlie', 'dave', 'xypnox']
 
 const invitedUsers = ['zavier', 'xavoier', 'yavoier', 'zavoier']
 
-export const invited = invitedUsers.map(inviteUser)
+export const invited: InvitedUser[] = invitedUsers.map(inviteUser)
 
 export const mentionables: Mentionable[] = randomUsers.map(randomUser)

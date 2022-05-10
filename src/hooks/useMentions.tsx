@@ -1,5 +1,5 @@
 import { useMentionStore } from '@store/useMentionStore'
-import { AccessLevel, Mentionable } from '../types/mentions'
+import { AccessLevel, InvitedUser, Mentionable } from '../types/mentions'
 
 export const useMentions = () => {
   const addInvitedUser = useMentionStore((s) => s.addInvitedUser)
@@ -14,7 +14,7 @@ export const useMentions = () => {
     if (user) {
       addAccess(user.email, nodeid, accessLevel)
     } else {
-      addInvitedUser({ email, alias, access: { [nodeid]: accessLevel } })
+      addInvitedUser({ type: 'invite', email, alias, access: { [nodeid]: accessLevel } })
     }
   }
 
@@ -26,12 +26,20 @@ export const useMentions = () => {
     } else return undefined
   }
 
-  const getUserFromUserid = (userid: string): Mentionable | undefined => {
+  const getUserFromUserid = (userid: string): Mentionable | InvitedUser | undefined => {
     const mentionable = useMentionStore.getState().mentionable
     const user = mentionable.find((mention) => mention.userid === userid)
     if (user) {
       return user
-    } else return undefined
+    } else {
+      // If the user is invited only, the userid is the alias
+      const invited = useMentionStore.getState().invitedUsers
+      const invitedUser = invited.find((u) => u.alias === userid)
+      if (invitedUser) {
+        return invitedUser
+      }
+    }
+    return undefined
   }
 
   return { getUsernameFromUserid, getUserFromUserid, inviteUser }

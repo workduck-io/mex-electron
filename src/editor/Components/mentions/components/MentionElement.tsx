@@ -6,14 +6,14 @@ import { mog } from '@utils/lib/helper'
 import React from 'react'
 import { Transforms } from 'slate'
 import { useFocused, useSelected } from 'slate-react'
-import { Mentionable } from '../../../../types/mentions'
+import { InvitedUser, Mentionable } from '../../../../types/mentions'
 import { useHotkeys } from '../../tag/hooks/useHotkeys'
 import { useOnMouseClick } from '../../tag/hooks/useOnMouseClick'
 import { MentionTooltip, SMention, SMentionRoot, TooltipMail, Username } from './MentionElement.styles'
 import { MentionElementProps } from './MentionElement.types'
 
 interface MentionTooltipProps {
-  user?: Mentionable
+  user?: Mentionable | InvitedUser
 }
 
 const MentionTooltipComponent = ({ user }: MentionTooltipProps) => {
@@ -21,6 +21,7 @@ const MentionTooltipComponent = ({ user }: MentionTooltipProps) => {
     <MentionTooltip>
       <ProfileImage email={user && user.email} size={64} />
       <div>{user && user.alias}</div>
+      <div>State: {user?.type ?? 'Missing'}</div>
       <TooltipMail>{user && user.email}</TooltipMail>
     </MentionTooltip>
   )

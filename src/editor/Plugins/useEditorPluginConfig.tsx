@@ -134,7 +134,7 @@ const useEditorPluginConfig = (editorId: string) => {
       type: QuickLinkType.mentions
     })),
     ...invitedUsers.map((m) => ({
-      value: m.email,
+      value: m.alias,
       text: m.alias,
       icon: 'ri:user-line',
       type: QuickLinkType.mentions

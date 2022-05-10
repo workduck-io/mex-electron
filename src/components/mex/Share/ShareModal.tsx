@@ -77,6 +77,7 @@ const InviteModalContent = () => {
 
     if (node && node.nodeid) {
       addInvitedUser({
+        type: 'invite',
         alias: data.alias,
         email: data.email,
         access: {

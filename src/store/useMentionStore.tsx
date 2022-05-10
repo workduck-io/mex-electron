@@ -45,7 +45,7 @@ export const useMentionStore = create<MentionStore>((set, get) => ({
     })
 }))
 
-export const addAccessToUser = (user: InvitedUser | Mentionable, nodeid: string, accessLevel: AccessLevel) => {
+export const addAccessToUser = (user: any, nodeid: string, accessLevel: AccessLevel) => {
   const access = user.access || {}
   access[nodeid] = accessLevel
   user.access = access
