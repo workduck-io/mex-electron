@@ -5,7 +5,9 @@ const randomUser = (s: string) => ({
   userid: `USER_${s}`,
   alias: s,
   email: `${s}@gmail.com`,
-  access: {}
+  access: {
+    NODE_3WMXYjqUi8afVQwyG96df: 'READ' as const
+  }
 })
 
 const inviteUser = (s: string) => ({

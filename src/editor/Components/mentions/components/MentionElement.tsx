@@ -1,11 +1,12 @@
 import { ProfileImage } from '@components/mex/User/ProfileImage'
 import { useMentions } from '@hooks/useMentions'
+import { useEditorStore } from '@store/useEditorStore'
 import Tippy from '@tippyjs/react/headless' // different import path!
 import { useEditorRef } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
 import React from 'react'
 import { Transforms } from 'slate'
-import { useFocused, useSelected } from 'slate-react'
+import { useEditor, useFocused, useSelected } from 'slate-react'
 import { InvitedUser, Mentionable } from '../../../../types/mentions'
 import { useHotkeys } from '../../tag/hooks/useHotkeys'
 import { useOnMouseClick } from '../../tag/hooks/useOnMouseClick'
@@ -35,7 +36,8 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
   const editor = useEditorRef()
   const selected = useSelected()
   const focused = useFocused()
-  const { getUserFromUserid } = useMentions()
+  const node = useEditorStore((state) => state.node)
+  const { getUserFromUserid, getUserAccessLevelForNode } = useMentions()
 
   const onClickProps = useOnMouseClick(() => {
     mog('Mention has been clicked yo', { val: element.value })
@@ -43,6 +45,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
   })
 
   const user = getUserFromUserid(element.value)
+  const access = getUserAccessLevelForNode(element.value, node.nodeid)
 
   // mog('MentionElement', { user })
 
@@ -66,6 +69,8 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
     },
     [selected, focused]
   )
+
+  mog('MentionElement', { user, access, node })
 
   return (
     <SMentionRoot {...attributes} data-slate-value={element.value} contentEditable={false}>

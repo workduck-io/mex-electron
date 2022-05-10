@@ -1,9 +1,10 @@
 import { EMAIL_REG } from '@data/Defaults/auth'
 import { useEditorStore } from '@store/useEditorStore'
 import { useMentionStore } from '@store/useMentionStore'
-import { ButtonFields } from '@style/Form'
+import { ButtonFields, Label, StyledCreatatbleSelect } from '@style/Form'
+import { AccessLevel, permissionOptions } from '../../../types/mentions'
 import React from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import Modal from 'react-modal'
 import create from 'zustand'
 import { Button } from '../../../style/Buttons'
@@ -60,6 +61,7 @@ export const useShareModalStore = create<ShareModalState>((set) => ({
 interface InviteModalData {
   alias: string
   email: string
+  access: string
 }
 
 const InviteModalContent = () => {
@@ -69,11 +71,12 @@ const InviteModalContent = () => {
   const {
     handleSubmit,
     register,
+    control,
     formState: { errors, isSubmitting }
   } = useForm<InviteModalData>()
 
   const onSubmit = (data: InviteModalData) => {
-    console.log(data)
+    console.log('data', data)
 
     if (node && node.nodeid) {
       addInvitedUser({
@@ -81,7 +84,7 @@ const InviteModalContent = () => {
         alias: data.alias,
         email: data.email,
         access: {
-          [node.nodeid]: 'READ'
+          [node.nodeid]: (data.access as AccessLevel) ?? 'READ'
         }
       })
     }
@@ -115,6 +118,22 @@ const InviteModalContent = () => {
           }}
           errors={errors}
         ></InputFormError>
+
+        <Label htmlFor="access">Permission of the user</Label>
+        <Controller
+          control={control}
+          render={({ field }) => (
+            <StyledCreatatbleSelect
+              {...field}
+              defaultValue={{ value: 'READ', label: 'View' }}
+              options={permissionOptions}
+              closeMenuOnSelect={true}
+              closeMenuOnBlur={true}
+            />
+          )}
+          name="access"
+        />
+
         <ButtonFields>
           <LoadingButton
             loading={isSubmitting}
