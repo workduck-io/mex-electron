@@ -3,7 +3,7 @@ import { EMAIL_REG } from '@data/Defaults/auth'
 import { useEditorStore } from '@store/useEditorStore'
 import { useMentionStore } from '@store/useMentionStore'
 import { ButtonFields, Label, SelectWrapper, StyledCreatatbleSelect } from '@style/Form'
-import { AccessLevel, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
+import { AccessLevel, DefaultPermissionValue, Mentionable, permissionOptions } from '../../../types/mentions'
 import React, { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import Modal from 'react-modal'
@@ -16,6 +16,7 @@ import {
   InviteFormWrapper,
   InviteWrapper,
   ShareAlias,
+  ShareAliasInput,
   SharedPermissionsTable,
   SharedPermissionsWrapper,
   ShareEmail,
@@ -29,6 +30,14 @@ import { Title } from '@style/Typography'
 
 type ShareModalMode = 'invite' | 'permission'
 
+// To denote what has changed
+// Alias changes should not require a network call
+type UserChange = 'permission' | 'alias'
+
+interface ChangedUser extends Mentionable {
+  change: UserChange[]
+}
+
 interface ShareModalState {
   open: boolean
   focus: boolean
@@ -36,10 +45,12 @@ interface ShareModalState {
   data: {
     alias?: string
     fromEditor?: boolean
+    changedUsers?: ChangedUser[]
   }
   openModal: (mode: ShareModalMode) => void
   closeModal: () => void
   setFocus: (focus: boolean) => void
+  setChangedUsers: (users: ChangedUser[]) => void
   prefillModal: (mode: ShareModalMode, alias?: string, fromEditor?: boolean) => void
 }
 
@@ -47,7 +58,9 @@ export const useShareModalStore = create<ShareModalState>((set) => ({
   open: false,
   focus: true,
   mode: 'permission',
-  data: {},
+  data: {
+    changedUsers: []
+  },
   openModal: (mode: ShareModalMode) =>
     set({
       mode,
@@ -60,6 +73,7 @@ export const useShareModalStore = create<ShareModalState>((set) => ({
     })
   },
   setFocus: (focus: boolean) => set({ focus }),
+  setChangedUsers: (users: ChangedUser[]) => set({ data: { changedUsers: users } }),
   prefillModal: (mode: ShareModalMode, alias?: string, fromEditor?: boolean) =>
     set({
       mode,
@@ -172,6 +186,8 @@ interface PermissionModalContentProps {
 const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModalContentProps) => {
   const { getSharedUsersForNode } = useMentions()
   const node = useEditorStore((state) => state.node)
+  const changedUsers = useShareModalStore((state) => state.data.changedUsers)
+  const setChangedUsers = useShareModalStore((state) => state.setChangedUsers)
 
   const sharedUsers = useMemo(() => {
     if (node && node.nodeid) {
@@ -184,12 +200,96 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
     console.log('new invite', { alias, email, access })
   }
 
-  const onPermissionChange = (user: string, access: AccessLevel) => {
-    console.log('onPermissionChange', { user, access })
+  // This is called for every keystroke
+  const onAliasChange = (userid: string, alias: string) => {
+    // console.log('onPermissionChange', { userid, alias })
+
+    // Change the user and add to changedUsers
+    const changedUser = changedUsers.find((u) => u.userid === userid)
+    const dataUser = sharedUsers.find((u) => u.userid === userid)
+
+    if (changedUser) {
+      changedUser.alias = alias
+      changedUser.change.push('alias')
+      setChangedUsers([...changedUsers.filter((u) => u.userid !== userid), changedUser])
+    } else if (dataUser) {
+      dataUser.alias = alias
+      const changeUser = { ...dataUser, change: ['alias' as const] }
+      setChangedUsers([...changedUsers, changeUser])
+    }
+  }
+  const onPermissionChange = (userid: string, access: AccessLevel) => {
+    // Change the user and add to changedUsers
+    const changedUser = changedUsers.find((u) => u.userid === userid)
+    const dataUser = sharedUsers.find((u) => u.userid === userid)
+    console.log('onPermissionChange', { userid, access, changedUsers, changedUser, dataUser })
+
+    // TODO: Filter for the case when user permission is reverted to the og one
+    if (changedUser) {
+      const prevAccess = changedUser?.access[node.nodeid]
+      const ogAccess = dataUser?.access[node.nodeid]
+      if (ogAccess && access === ogAccess) {
+        console.log('removing user from changedUsers', { changedUser, access, ogAccess })
+        if (changedUser.change.includes('permission')) {
+          changedUser.change = changedUser.change.filter((c) => c !== 'permission')
+          if (changedUser.change.length !== 0) {
+            setChangedUsers([...changedUsers.filter((u) => u.userid !== userid), changedUser])
+          } else {
+            setChangedUsers([...changedUsers.filter((u) => u.userid !== userid)])
+          }
+        }
+      } else if (prevAccess !== access) {
+        changedUser.access[node.nodeid] = access
+        changedUser.change.push('permission')
+        setChangedUsers([...changedUsers.filter((u) => u.userid !== userid), changedUser])
+      } else {
+        if (changedUser.change.includes('permission')) {
+          changedUser.change = changedUser.change.filter((c) => c !== 'permission')
+          if (changedUser.change.length !== 0) {
+            setChangedUsers([...changedUsers.filter((u) => u.userid !== userid), changedUser])
+          } else {
+            setChangedUsers([...changedUsers.filter((u) => u.userid !== userid)])
+          }
+        }
+      }
+    } else if (dataUser) {
+      const prevAccess = dataUser?.access[node.nodeid]
+      if (prevAccess !== access) {
+        dataUser.access[node.nodeid] = access
+        const changeUser = { ...dataUser, change: ['permission' as const] }
+        setChangedUsers([...changedUsers, changeUser])
+      }
+    }
   }
 
   const onUserRemove = (userid: string) => {
     console.log('onUserRemove', { userid })
+  }
+
+  const onSave = () => {
+    // Only when change is done to permission
+    const newPermissions = changedUsers
+      .filter((u) => u.change.includes('permission'))
+      .reduce((acc, user) => {
+        acc.push({
+          userid: user.userid,
+          access: user.access[node.nodeid]
+        })
+
+        return acc
+      }, [])
+
+    const newAliases = changedUsers
+      .filter((u) => u.change.includes('alias'))
+      .reduce((acc, user) => {
+        acc.push({
+          userid: user.userid,
+          alias: user.alias
+        })
+        return acc
+      }, [])
+
+    console.log('onSave', { changedUsers, newPermissions, newAliases })
   }
 
   return (
@@ -211,9 +311,16 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
 
         {sharedUsers.map((user) => {
           const access = user.access[node.nodeid]
+          const hasChanged = changedUsers.find((u) => u.userid === user.userid)
           return (
-            <ShareRow key={`${user.userid}`}>
-              <ShareAlias>{user.alias}</ShareAlias>
+            <ShareRow hasChanged={!!hasChanged} key={`${user.userid}`}>
+              <ShareAlias hasChanged={!!hasChanged}>
+                <ShareAliasInput
+                  type="text"
+                  defaultValue={user.alias}
+                  onChange={(e) => onAliasChange(user.userid, e.target.value)}
+                />
+              </ShareAlias>
               <ShareEmail>{user.email}</ShareEmail>
 
               <SharePermission>
@@ -237,7 +344,7 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
         <Button large onClick={handleCopyLink}>
           Copy Link
         </Button>
-        <Button primary autoFocus={!focus} large onClick={handleSubmit}>
+        <Button primary autoFocus={!focus} large onClick={onSave} disabled={changedUsers.length === 0}>
           Save
         </Button>
       </ModalControls>
