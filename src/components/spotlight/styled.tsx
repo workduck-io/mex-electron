@@ -10,5 +10,5 @@ export const SpotlightContainer = styled.div`
 `
 
 export const StyledBackground = css`
-  background-color: ${({ theme }) => theme.colors.background.modal};
+  background-color: ${({ theme }) => theme.colors.background.app};
 `

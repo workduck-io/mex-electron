@@ -107,7 +107,7 @@ export const useActionStore = create<ActionStoreType>(
             const selection = get().selectionCache
             const activeAction = get().activeAction
 
-            if (actionId === activeAction.id && activeAction?.actionIds) {
+            if (actionId === activeAction?.id && activeAction?.actionIds) {
               mog('RESULT CACHING ', { actionId, result, selection })
             }
 
@@ -193,9 +193,12 @@ export const useActionStore = create<ActionStoreType>(
             const preActionId = actionConfig?.preActionId
             const cache = get().selectionCache
 
-            set({ activeAction })
+            // set({ activeAction })
 
+            // * If there's a preAction of this action, get the value from cache
             if (preActionId) return cache?.[preActionId]
+
+            // * If this is a global action, get the value from cache
             return cache?.[actionId]
           },
           clear: () => {

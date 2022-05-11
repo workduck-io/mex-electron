@@ -1,5 +1,5 @@
 import { useActionStore } from './useActionStore'
-import { ActionHelperClient, ClickPostActionType } from '@workduck-io/action-request-helper'
+import { ActionHelperClient, ActionHelperConfig, ClickPostActionType } from '@workduck-io/action-request-helper'
 import { client } from '@workduck-io/dwindle'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { mog } from '../../../utils/lib/helper'
@@ -26,20 +26,11 @@ export const useActionPerformer = () => {
 
   const { goTo } = useRouting()
 
-  // const actionPerformer = useMemo(() => {
-  //   // * REMOVE: For testing purposes
-  //   // const workspaceId = 'WORKSPACEBBR1Z6DEWP877Z6431TT69ZSXM6917993H6NCMXZRWQLD0CMWL01'
-
-  //   const workspaceId = useAuthStore.getState().getWorkspaceId()
-  //   return
-  // }, [worspaceDetails?.id])
-
   /* 
     Looks for the action in the cache first,
-    Performs an actions and retur1n's the result
+    Performs an actions and return's the result
     if not found, it will perform the action and add it to the cache
   */
-
   const performer = async (actionGroupId: string, actionId: string, options?: PerfomerOptions) => {
     const actionConfig = groupedAction?.[actionGroupId]?.[actionId]
     const prevActionValue = getPrevActionValue(actionId)?.selection
@@ -55,6 +46,7 @@ export const useActionPerformer = () => {
     setIsLoading(true)
 
     let auth
+
     try {
       auth = await actionPerformer?.getAuth(actionConfig?.authTypeId)
     } catch (err) {
@@ -81,16 +73,19 @@ export const useActionPerformer = () => {
       const resultAction = actionConfig?.postAction?.result
       const isRunAction = resultAction?.type === ClickPostActionType.RUN_ACTION
 
+      // * If there's a result action of type RUN_ACTION,
       if (isRunAction) {
         const postAction = await actionPerformer?.request({
           config: groupedAction?.[actionGroupId]?.[resultAction?.actionId],
           auth,
-          configVal: result.contextData,
+          configVal: result?.contextData,
           serviceType
         })
 
+        // * View the result action
         setView('item')
         setViewData(postAction?.displayData || [])
+
         goTo('/action/view', NavigationType.replace)
       }
 
@@ -125,13 +120,21 @@ export const useActionPerformer = () => {
     return activeAction?.id === actionToPerform
   }
 
-  const getConfig = (actionGroupId: string, actionId: string) => groupedAction?.[actionGroupId]?.[actionId]
+  const getConfig = (actionGroupId: string, actionId: string): ActionHelperConfig =>
+    groupedAction?.[actionGroupId]?.[actionId]
+
+  const getConfigWithActionId = (actionId: string) => {
+    const actionGroupId = useActionStore.getState().activeAction?.actionGroupId
+
+    return getConfig(actionGroupId, actionId)
+  }
 
   return {
     isPerformer,
     performer,
     initActionPerfomerClient,
     isReady,
+    getConfigWithActionId,
     getConfig
   }
 }

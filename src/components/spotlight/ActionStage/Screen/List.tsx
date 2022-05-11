@@ -5,12 +5,11 @@ import LensIcon from '@iconify/icons-ph/magnifying-glass-bold'
 import { NotFoundText } from '../../../../style/Form'
 import { Icon } from '@iconify/react'
 import { useActionStore } from '../../Actions/useActionStore'
-import { useVirtual } from 'react-virtual'
-import { ListItem } from '../../Home/styled'
+import { ActionItem } from '../../Home/styled'
 import { KEYBOARD_KEYS } from '../../Home/components/List'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { NavigationType, useRouting } from '../../../../views/routes/urls'
-import { mog } from '@utils/lib/helper'
+import { Virtuoso } from 'react-virtuoso'
 
 export const FullWidth = styled.div<{ narrow: boolean }>`
   width: 100%;
@@ -49,10 +48,6 @@ const List: React.FC<ListProps> = ({ items }) => {
   const { goTo } = useRouting()
 
   const parentRef = useRef(null)
-  const virtualizer = useVirtual({
-    size: items?.length ?? 0,
-    parentRef
-  })
 
   const onSelect = (i: any) => {
     setActiveIndex(i)
@@ -77,12 +72,21 @@ const List: React.FC<ListProps> = ({ items }) => {
     })
   }
 
-  const scrollTo = (itemIndex: number) => virtualizer.scrollToIndex(itemIndex)
+  const scrollTo = (itemIndex: number) =>
+    parentRef?.current?.scrollToIndex({
+      index: itemIndex,
+      align: 'start',
+      behavior: 'smooth'
+    })
 
   useEffect(() => {
-    mog('Is menu open', { isMenuOpen })
+    if (items && items.length > 0) scrollTo(0)
+  }, [items])
+
+  useEffect(() => {
     const handler = (event) => {
       if (isMenuOpen) return
+
       if (event.key === KEYBOARD_KEYS.ArrowUp) {
         event.preventDefault()
         prevItem()
@@ -114,20 +118,19 @@ const List: React.FC<ListProps> = ({ items }) => {
   }
 
   return (
-    <RelativeList ref={parentRef} narrow={!!activeAction?.actionIds}>
-      {virtualizer.virtualItems.map((vItem, i) => {
-        const item = items[vItem.index]
-        return (
-          <ListItem
-            key={`TEMPLATE_${i}`}
-            ref={vItem.measureRef}
-            start={vItem.start}
-            onClick={() => onSelect(vItem.index)}
-          >
-            <Row active={i === activeIndex} row={item.slice(0, ROW_ITEMS_LIMIT)} />
-          </ListItem>
-        )
-      })}
+    <RelativeList narrow={!!activeAction?.actionIds}>
+      <Virtuoso
+        tabIndex={-1}
+        data={items}
+        ref={parentRef}
+        itemContent={(index, item) => {
+          return (
+            <ActionItem key={index} onClick={() => onSelect(index)}>
+              <Row active={index === activeIndex} row={item.slice(0, ROW_ITEMS_LIMIT)} />
+            </ActionItem>
+          )
+        }}
+      />
     </RelativeList>
   )
 }

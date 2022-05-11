@@ -21,5 +21,6 @@ export const getDisplayShortcut = (keybinding: string) => {
 }
 
 export const getSplitDisplayShortcut = (keybindings: string): string[] => {
+  if (!keybindings) return []
   return keybindings.split('+').map(getDisplayShortcut)
 }
