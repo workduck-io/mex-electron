@@ -19,6 +19,9 @@ export const permissionOptions: {
   { value: 'READ', label: 'View' }
 ]
 
+export const DefaultPermission = 'MANAGE'
+export const DefaultPermissionValue = { value: 'MANAGE', label: 'Manage' }
+
 export interface AccessMap {
   [nodeid: string]: AccessLevel
 }

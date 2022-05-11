@@ -1,17 +1,19 @@
+import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
 import { EMAIL_REG } from '@data/Defaults/auth'
 import { useEditorStore } from '@store/useEditorStore'
 import { useMentionStore } from '@store/useMentionStore'
 import { ButtonFields, Label, StyledCreatatbleSelect } from '@style/Form'
-import { AccessLevel, permissionOptions } from '../../../types/mentions'
-import React from 'react'
+import { AccessLevel, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
+import React, { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import Modal from 'react-modal'
 import create from 'zustand'
-import { Button } from '../../../style/Buttons'
+import IconButton, { Button } from '../../../style/Buttons'
 import { LoadingButton } from '../Buttons/LoadingButton'
 import { InputFormError } from '../Forms/Input'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
-import { SharedPermissionsWrapper, ShareRow } from './styles'
+import { ShareAlias, SharedPermissionsWrapper, ShareEmail, SharePermission, ShareRemove, ShareRow } from './styles'
+import { getAccessValue, useMentions } from '@hooks/useMentions'
 
 type ShareModalMode = 'invite' | 'permission'
 
@@ -125,7 +127,7 @@ const InviteModalContent = () => {
           render={({ field }) => (
             <StyledCreatatbleSelect
               {...field}
-              defaultValue={{ value: 'READ', label: 'View' }}
+              defaultValue={DefaultPermissionValue}
               options={permissionOptions}
               closeMenuOnSelect={true}
               closeMenuOnBlur={true}
@@ -154,13 +156,55 @@ interface PermissionModalContentProps {
 }
 
 const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModalContentProps) => {
+  const { getSharedUsersForNode } = useMentions()
+  const node = useEditorStore((state) => state.node)
+
+  const sharedUsers = useMemo(() => {
+    if (node && node.nodeid) {
+      return getSharedUsersForNode(node.nodeid)
+    }
+    return []
+  }, [node, getSharedUsersForNode])
+
+  const onNewInvite = (alias: string, email: string, access: AccessLevel) => {
+    console.log('new invite', { alias, email, access })
+  }
+
+  const onPermissionChange = (user: string, access: AccessLevel) => {
+    console.log('onPermissionChange', { user, access })
+  }
+
+  const onUserRemove = (userid: string) => {
+    console.log('onUserRemove', { userid })
+  }
+
   return (
-    <div>
+    <>
       <ModalHeader>Share Note</ModalHeader>
 
       <SharedPermissionsWrapper>
-        <ShareRow>Mr Dank</ShareRow>
-        <ShareRow>Mr Stank</ShareRow>
+        {sharedUsers.map((user) => {
+          const access = user.access[node.nodeid]
+          return (
+            <ShareRow key={`${user.userid}`}>
+              <ShareAlias>{user.alias}</ShareAlias>
+              <ShareEmail>{user.email}</ShareEmail>
+
+              <SharePermission>
+                <StyledCreatatbleSelect
+                  onChange={(access) => onPermissionChange(user.userid, access.value)}
+                  defaultValue={getAccessValue(access) ?? DefaultPermissionValue}
+                  options={permissionOptions}
+                  closeMenuOnSelect={true}
+                  closeMenuOnBlur={true}
+                />
+              </SharePermission>
+              <ShareRemove>
+                <IconButton onClick={() => onUserRemove(user.userid)} icon={deleteBin6Line} title="Remove" />
+              </ShareRemove>
+            </ShareRow>
+          )
+        })}
       </SharedPermissionsWrapper>
 
       <ModalControls>
@@ -171,7 +215,7 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
           Save
         </Button>
       </ModalControls>
-    </div>
+    </>
   )
 }
 
