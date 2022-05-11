@@ -2,7 +2,7 @@ import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
 import { EMAIL_REG } from '@data/Defaults/auth'
 import { useEditorStore } from '@store/useEditorStore'
 import { useMentionStore } from '@store/useMentionStore'
-import { ButtonFields, Label, StyledCreatatbleSelect } from '@style/Form'
+import { ButtonFields, Label, SelectWrapper, StyledCreatatbleSelect } from '@style/Form'
 import { AccessLevel, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
 import React, { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -13,15 +13,19 @@ import { LoadingButton } from '../Buttons/LoadingButton'
 import { InputFormError } from '../Forms/Input'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import {
+  InviteFormWrapper,
+  InviteWrapper,
   ShareAlias,
+  SharedPermissionsTable,
   SharedPermissionsWrapper,
   ShareEmail,
   SharePermission,
   ShareRemove,
   ShareRow,
   ShareRowHeading
-} from './styles'
+} from './ShareModal.styles'
 import { getAccessValue, useMentions } from '@hooks/useMentions'
+import { Title } from '@style/Typography'
 
 type ShareModalMode = 'invite' | 'permission'
 
@@ -101,10 +105,10 @@ const InviteModalContent = () => {
   }
 
   return (
-    <div>
-      <h1>Invite</h1>
-      <p>Invite your friends to join your team.</p>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <InviteWrapper>
+      <Title>Invite</Title>
+      <p>Invite your friends to your Note.</p>
+      <InviteFormWrapper onSubmit={handleSubmit(onSubmit)}>
         <InputFormError
           name="alias"
           label="Alias"
@@ -129,20 +133,22 @@ const InviteModalContent = () => {
           errors={errors}
         ></InputFormError>
 
-        <Label htmlFor="access">Permission of the user</Label>
-        <Controller
-          control={control}
-          render={({ field }) => (
-            <StyledCreatatbleSelect
-              {...field}
-              defaultValue={DefaultPermissionValue}
-              options={permissionOptions}
-              closeMenuOnSelect={true}
-              closeMenuOnBlur={true}
-            />
-          )}
-          name="access"
-        />
+        <SelectWrapper>
+          <Label htmlFor="access">Permission</Label>
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <StyledCreatatbleSelect
+                {...field}
+                defaultValue={DefaultPermissionValue}
+                options={permissionOptions}
+                closeMenuOnSelect={true}
+                closeMenuOnBlur={true}
+              />
+            )}
+            name="access"
+          />
+        </SelectWrapper>
 
         <ButtonFields>
           <LoadingButton
@@ -150,11 +156,11 @@ const InviteModalContent = () => {
             alsoDisabled={errors.email !== undefined || errors.alias !== undefined}
             buttonProps={{ type: 'submit', primary: true, large: true }}
           >
-            Invite User
+            Invite
           </LoadingButton>
         </ButtonFields>
-      </form>
-    </div>
+      </InviteFormWrapper>
+    </InviteWrapper>
   )
 }
 
@@ -187,11 +193,13 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
   }
 
   return (
-    <>
+    <SharedPermissionsWrapper>
       <ModalHeader>Share Note</ModalHeader>
 
-      <SharedPermissionsWrapper>
-        <caption>Users with permission to this note</caption>
+      <InviteModalContent />
+
+      <SharedPermissionsTable>
+        <caption>Users with access to this note</caption>
         <ShareRowHeading>
           <tr>
             <td>Alias</td>
@@ -223,7 +231,7 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
             </ShareRow>
           )
         })}
-      </SharedPermissionsWrapper>
+      </SharedPermissionsTable>
 
       <ModalControls>
         <Button large onClick={handleCopyLink}>
@@ -233,13 +241,13 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
           Save
         </Button>
       </ModalControls>
-    </>
+    </SharedPermissionsWrapper>
   )
 }
 
 const ShareModal = () => {
   const open = useShareModalStore((store) => store.open)
-  const focus = useShareModalStore((store) => store.focus)
+  // const focus = useShareModalStore((store) => store.focus)
   const closeModal = useShareModalStore((store) => store.closeModal)
   const mode = useShareModalStore((store) => store.mode)
   // const openModal = useShareModalStore((store) => store.openModal)

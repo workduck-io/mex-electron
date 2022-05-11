@@ -185,14 +185,18 @@ export const ReactSelectStyles = (theme: DefaultTheme) => ({
     margin: `${theme.spacing.small} 0`
   }),
 
-  option: (provided, state) => ({
-    ...provided,
-    borderRadius: theme.borderRadius.tiny,
-    backgroundColor: state.isSelected || state.isFocused ? theme.colors.primary : 'transparent',
-    color: state.isSelected || state.isFocused ? theme.colors.text.oppositePrimary : 'inherit',
-    padding: '6px 10px',
-    margin: `${theme.spacing.tiny} 0px`
-  })
+  option: (provided, state) => {
+    let background = state.isSelected ? theme.colors.primary : 'transparent'
+    background = state.isFocused ? transparentize(0.33, theme.colors.primary) : background
+    return {
+      ...provided,
+      borderRadius: theme.borderRadius.tiny,
+      backgroundColor: background,
+      color: state.isSelected || state.isFocused ? theme.colors.text.oppositePrimary : 'inherit',
+      padding: '6px 10px',
+      margin: `${theme.spacing.tiny} 0px`
+    }
+  }
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -219,6 +223,10 @@ export const StyledCreatatbleSelect = (props: any) => {
 /*
  * Date and Time Picker Wrapper for combined styles
  */
+
+export const SelectWrapper = styled.div`
+  width: 100%;
+`
 
 export const DatePickerStyles = styled.div`
   background: ${({ theme }) => theme.colors.form.input.bg};
