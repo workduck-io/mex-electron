@@ -41,7 +41,6 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
   const { queryIndexWithRanking } = useSearch()
   const editor = usePlateEditorRef()
   const { saveNodeName } = useLoad()
-  const { getSnippet } = useSnippets()
   const { setSuggestions, setHeadingQASearch } = useSuggestionStore()
 
   const setInfobarMode = useLayoutStore((store) => store.setInfobarMode)
@@ -53,6 +52,8 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
     }
 
     setHeadingQASearch(selected)
+
+    return () => setHeadingQASearch(false)
   }, [selected])
 
   const goToNextLine = () => {

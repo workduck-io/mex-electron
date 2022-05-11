@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { useActionStore } from '../../Actions/useActionStore'
 import { RightActionSection } from '../Forms/RightSection'
 import Performer from './Performer'
@@ -17,8 +17,12 @@ const Container = styled.div`
   max-height: 430px;
 `
 
-const MainSection = styled.div`
-  overflow: auto;
+const MainSection = styled.div<{ overflow?: boolean }>`
+  ${({ overflow }) =>
+    overflow &&
+    css`
+      overflow: auto;
+    `}
 
   height: 430px;
   max-height: 430px;
@@ -31,9 +35,11 @@ const PerformersContainer = () => {
   const type = activeAction?.renderType
   const isRightSection = activeAction?.subType === 'form'
 
+  const isForm = activeAction?.subType === 'form'
+
   return (
     <Container>
-      <MainSection>
+      <MainSection overflow={isForm}>
         <PreActions actions={preActions} />
         {type && <Performer actionId={activeAction?.id} actionType={type} />}
       </MainSection>

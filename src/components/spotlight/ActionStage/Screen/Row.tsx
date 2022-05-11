@@ -33,12 +33,16 @@ const RowContainer = styled.div<RowContainerProps>`
   ${({ active }) =>
     active &&
     css`
-      ${StyledBackground};
+      background-color: ${({ theme }) => theme.colors.background.app};
     `}
 
-  :hover {
-    ${StyledBackground}
-  }
+  ${({ type }) =>
+    type === 'row' &&
+    css`
+      :hover {
+        ${StyledBackground}
+      }
+    `}
 `
 
 type RowProps = {

@@ -56,8 +56,12 @@ const useActions = () => {
   const getGroupsToView = async () => {
     const groups = await fetchActionGroups()
 
-    for await (const actionGroupId of Object.keys(groups)) {
-      await getActionsFromGroup(actionGroupId)
+    try {
+      for await (const actionGroupId of Object.keys(groups)) {
+        await getActionsFromGroup(actionGroupId)
+      }
+    } catch (err) {
+      mog('Failed to fetch actions of group', { err })
     }
   }
 
