@@ -12,7 +12,15 @@ import IconButton, { Button } from '../../../style/Buttons'
 import { LoadingButton } from '../Buttons/LoadingButton'
 import { InputFormError } from '../Forms/Input'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
-import { ShareAlias, SharedPermissionsWrapper, ShareEmail, SharePermission, ShareRemove, ShareRow } from './styles'
+import {
+  ShareAlias,
+  SharedPermissionsWrapper,
+  ShareEmail,
+  SharePermission,
+  ShareRemove,
+  ShareRow,
+  ShareRowHeading
+} from './styles'
 import { getAccessValue, useMentions } from '@hooks/useMentions'
 
 type ShareModalMode = 'invite' | 'permission'
@@ -183,6 +191,16 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
       <ModalHeader>Share Note</ModalHeader>
 
       <SharedPermissionsWrapper>
+        <caption>Users with permission to this note</caption>
+        <ShareRowHeading>
+          <tr>
+            <td>Alias</td>
+            <td>Email</td>
+            <td>Permission</td>
+            <td></td>
+          </tr>
+        </ShareRowHeading>
+
         {sharedUsers.map((user) => {
           const access = user.access[node.nodeid]
           return (
