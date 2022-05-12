@@ -35,6 +35,7 @@ import { getAccessValue, useMentions } from '@hooks/useMentions'
 import { Title } from '@style/Typography'
 import { mog } from '@utils/lib/helper'
 import { useUserService } from '@services/auth/useUserService'
+import { usePermission } from '@services/auth/usePermission'
 
 type ShareModalMode = 'invite' | 'permission'
 
@@ -197,14 +198,23 @@ const MultiEmailInviteModalContent = () => {
     formState: { errors, isSubmitting }
   } = useForm<InviteModalData>()
 
-  const onSubmit = (data: InviteModalData) => {
+  const onSubmit = async (data: InviteModalData) => {
     mog('data', data)
 
     if (node && node.nodeid) {
       const allMails = data.email.split(',')
-      allMails.forEach((email) => {
-        getUserDetails(email)
+
+      const userDetailPromises = allMails.map((email) => {
+        return getUserDetails(email)
       })
+
+      const userDetails = await Promise.allSettled(userDetailPromises)
+
+      mog('userDetails', { userDetails })
+
+      // const userDetails = allMails.map(async () => {})
+      // Only share with users with details, add the rest to invited users
+
       // addInvitedUser({
       //   type: 'invite',
       //   alias: data.alias,
@@ -279,6 +289,7 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
   const node = useEditorStore((state) => state.node)
   const changedUsers = useShareModalStore((state) => state.data.changedUsers)
   const setChangedUsers = useShareModalStore((state) => state.setChangedUsers)
+  const { changeUserPermission, revokeUserAccess } = usePermission()
 
   const sharedUsers = useMemo(() => {
     if (node && node.nodeid) {
@@ -377,20 +388,18 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
     }
   }
 
-  const onSave = () => {
+  const onSave = async () => {
     // Only when change is done to permission
-    const newPermissions = changedUsers
+
+    // We change for users that have not been revoked
+    const withoutRevokeChanges = changedUsers.filter((u) => !u.change.includes('revoke'))
+    const newPermissions: { [userid: string]: AccessLevel } = withoutRevokeChanges
       .filter((u) => u.change.includes('permission'))
       .reduce((acc, user) => {
-        acc.push({
-          userid: user.userid,
-          access: user.access[node.nodeid]
-        })
+        return { ...acc, [user.userid]: user.access[node.nodeid] }
+      }, {})
 
-        return acc
-      }, [])
-
-    const newAliases = changedUsers
+    const newAliases = withoutRevokeChanges
       .filter((u) => u.change.includes('alias'))
       .reduce((acc, user) => {
         acc.push({
@@ -400,7 +409,22 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
         return acc
       }, [])
 
-    mog('onSave', { changedUsers, newPermissions, newAliases })
+    const revokedUsers = changedUsers
+      .filter((u) => u.change.includes('revoke'))
+      .reduce((acc, user) => {
+        acc.push(user.userid)
+        return acc
+      }, [])
+
+    const applyPermissions = async () => {
+      const userChangePerm = await changeUserPermission(node.nodeid, newPermissions)
+      const userRevoke = await revokeUserAccess(node.nodeid, revokedUsers)
+      mog('setting new permissions', { userChangePerm, userRevoke })
+    }
+
+    await applyPermissions()
+
+    mog('onSave', { changedUsers, newPermissions, newAliases, revokedUsers })
   }
 
   return (
