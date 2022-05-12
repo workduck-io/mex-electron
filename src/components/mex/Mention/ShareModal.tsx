@@ -40,7 +40,7 @@ type ShareModalMode = 'invite' | 'permission'
 
 // To denote what has changed
 // Alias changes should not require a network call
-type UserChange = 'permission' | 'alias'
+type UserChange = 'permission' | 'alias' | 'revoke'
 
 interface ChangedUser extends Mentionable {
   change: UserChange[]
@@ -81,7 +81,7 @@ export const useShareModalStore = create<ShareModalState>((set) => ({
     })
   },
   setFocus: (focus: boolean) => set({ focus }),
-  setChangedUsers: (users: ChangedUser[]) => set({ data: { changedUsers: users } }),
+  setChangedUsers: (users: ChangedUser[]) => set({ data: { changedUsers: users.filter((u) => u.change.length > 0) } }),
   prefillModal: (mode: ShareModalMode, alias?: string, fromEditor?: boolean) =>
     set({
       mode,
@@ -187,7 +187,7 @@ const InviteModalContent = () => {
 }
 
 const MultiEmailInviteModalContent = () => {
-  const addInvitedUser = useMentionStore((state) => state.addInvitedUser)
+  // const addInvitedUser = useMentionStore((state) => state.addInvitedUser)
   const { getUserDetails } = useUserService()
   const node = useEditorStore((state) => state.node)
   const {
@@ -216,7 +216,7 @@ const MultiEmailInviteModalContent = () => {
     }
   }
 
-  mog('MultiEmailInvite', { errors })
+  // mog('MultiEmailInvite', { errors })
 
   return (
     <InviteWrapper>
@@ -309,6 +309,30 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
       setChangedUsers([...changedUsers, changeUser])
     }
   }
+
+  // This is called for every keystroke
+  const onRevokeAccess = (userid: string) => {
+    // mog('onPermissionChange', { userid, alias })
+
+    // Change the user and add to changedUsers
+    const changedUser = changedUsers.find((u) => u.userid === userid)
+    const dataUser = sharedUsers.find((u) => u.userid === userid)
+
+    if (changedUser) {
+      const hasBeenRevoked = changedUser.change.includes('revoke')
+      if (hasBeenRevoked) {
+        changedUser.change = changedUser.change.filter((p) => p !== 'revoke')
+        setChangedUsers([...changedUsers.filter((u) => u.userid !== userid), changedUser])
+      } else {
+        changedUser.change.push('revoke')
+        setChangedUsers([...changedUsers.filter((u) => u.userid !== userid), changedUser])
+      }
+    } else if (dataUser) {
+      const changeUser = { ...dataUser, change: ['revoke' as const] }
+      setChangedUsers([...changedUsers, changeUser])
+    }
+  }
+
   const onPermissionChange = (userid: string, access: AccessLevel) => {
     // Change the user and add to changedUsers
     const changedUser = changedUsers.find((u) => u.userid === userid)
@@ -351,10 +375,6 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
         setChangedUsers([...changedUsers, changeUser])
       }
     }
-  }
-
-  const onUserRemove = (userid: string) => {
-    mog('onUserRemove', { userid })
   }
 
   const onSave = () => {
@@ -403,8 +423,9 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
         {sharedUsers.map((user) => {
           const access = user.access[node.nodeid]
           const hasChanged = changedUsers.find((u) => u.userid === user.userid)
+          const isRevoked = !!hasChanged && hasChanged.change.includes('revoke')
           return (
-            <ShareRow hasChanged={!!hasChanged} key={`${user.userid}`}>
+            <ShareRow hasChanged={!!hasChanged} key={`${user.userid}`} isRevoked={isRevoked}>
               <ShareAlias hasChanged={!!hasChanged}>
                 <ShareAliasInput
                   type="text"
@@ -424,7 +445,7 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
                 />
               </SharePermission>
               <ShareRemove>
-                <IconButton onClick={() => onUserRemove(user.userid)} icon={deleteBin6Line} title="Remove" />
+                <IconButton onClick={() => onRevokeAccess(user.userid)} icon={deleteBin6Line} title="Remove" />
               </ShareRemove>
             </ShareRow>
           )
