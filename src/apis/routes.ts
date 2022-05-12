@@ -31,6 +31,9 @@ export const GOOGLE_OAUTH2_REFRESH_URL = `${MEXIT_BACKEND_URL_BASE}/oauth2/getGo
 
 export const API_URL = config.constants.MEX_BACKEND_BASE_URL
 
+export const USER_SERVICE_HELPER_URL = 'https://3jeonl1fee.execute-api.us-east-1.amazonaws.com'
+export const USER_SERVICE_EMAIL_URL = (email: string) => `${USER_SERVICE_HELPER_URL}/user/email/${email}`
+
 export const apiURLs = {
   //node
   saveNode: `${API_URL}/node`,

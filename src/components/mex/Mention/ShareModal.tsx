@@ -1,9 +1,15 @@
 import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
-import { EMAIL_REG } from '@data/Defaults/auth'
+import { EMAIL_REG, MultiEmailValidate } from '@data/Defaults/auth'
 import { useEditorStore } from '@store/useEditorStore'
 import { useMentionStore } from '@store/useMentionStore'
-import { ButtonFields, Label, SelectWrapper, StyledCreatatbleSelect } from '@style/Form'
-import { AccessLevel, DefaultPermissionValue, Mentionable, permissionOptions } from '../../../types/mentions'
+import { ButtonFields, Label, SelectWrapper, StyledCreatatbleSelect, TextAreaBlock } from '@style/Form'
+import {
+  AccessLevel,
+  DefaultPermission,
+  DefaultPermissionValue,
+  Mentionable,
+  permissionOptions
+} from '../../../types/mentions'
 import React, { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import Modal from 'react-modal'
@@ -27,6 +33,8 @@ import {
 } from './ShareModal.styles'
 import { getAccessValue, useMentions } from '@hooks/useMentions'
 import { Title } from '@style/Typography'
+import { mog } from '@utils/lib/helper'
+import { useUserService } from '@services/auth/useUserService'
 
 type ShareModalMode = 'invite' | 'permission'
 
@@ -104,7 +112,7 @@ const InviteModalContent = () => {
   } = useForm<InviteModalData>()
 
   const onSubmit = (data: InviteModalData) => {
-    console.log('data', data)
+    mog('data', data)
 
     if (node && node.nodeid) {
       addInvitedUser({
@@ -112,7 +120,7 @@ const InviteModalContent = () => {
         alias: data.alias,
         email: data.email,
         access: {
-          [node.nodeid]: (data.access as AccessLevel) ?? 'READ'
+          [node.nodeid]: (data.access as AccessLevel) ?? DefaultPermission
         }
       })
     }
@@ -178,6 +186,89 @@ const InviteModalContent = () => {
   )
 }
 
+const MultiEmailInviteModalContent = () => {
+  const addInvitedUser = useMentionStore((state) => state.addInvitedUser)
+  const { getUserDetails } = useUserService()
+  const node = useEditorStore((state) => state.node)
+  const {
+    handleSubmit,
+    register,
+    control,
+    formState: { errors, isSubmitting }
+  } = useForm<InviteModalData>()
+
+  const onSubmit = (data: InviteModalData) => {
+    mog('data', data)
+
+    if (node && node.nodeid) {
+      const allMails = data.email.split(',')
+      allMails.forEach((email) => {
+        getUserDetails(email)
+      })
+      // addInvitedUser({
+      //   type: 'invite',
+      //   alias: data.alias,
+      //   email: data.email,
+      //   access: {
+      //     [node.nodeid]: (data.access as AccessLevel) ?? DefaultPermission
+      //   }
+      // })
+    }
+  }
+
+  mog('MultiEmailInvite', { errors })
+
+  return (
+    <InviteWrapper>
+      <Title>Invite</Title>
+      <p>Invite your friends to your Note.</p>
+      <InviteFormWrapper onSubmit={handleSubmit(onSubmit)}>
+        <InputFormError
+          name="email"
+          label="Email"
+          inputProps={{
+            autoFocus: true,
+            type: 'email',
+            multiple: true,
+            ...register('email', {
+              required: true,
+              validate: MultiEmailValidate
+            })
+          }}
+          errors={errors}
+        ></InputFormError>
+
+        <SelectWrapper>
+          <Label htmlFor="access">Permission</Label>
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <StyledCreatatbleSelect
+                {...field}
+                defaultValue={DefaultPermissionValue}
+                options={permissionOptions}
+                closeMenuOnSelect={true}
+                closeMenuOnBlur={true}
+              />
+            )}
+            name="access"
+          />
+        </SelectWrapper>
+
+        <ButtonFields>
+          <LoadingButton
+            loading={isSubmitting}
+            alsoDisabled={errors.email !== undefined || errors.alias !== undefined}
+            buttonProps={{ type: 'submit', primary: true, large: true }}
+          >
+            Invite
+          </LoadingButton>
+        </ButtonFields>
+      </InviteFormWrapper>
+    </InviteWrapper>
+  )
+}
+
 interface PermissionModalContentProps {
   handleSubmit: () => void
   handleCopyLink: () => void
@@ -197,12 +288,12 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
   }, [node, getSharedUsersForNode])
 
   const onNewInvite = (alias: string, email: string, access: AccessLevel) => {
-    console.log('new invite', { alias, email, access })
+    mog('new invite', { alias, email, access })
   }
 
   // This is called for every keystroke
   const onAliasChange = (userid: string, alias: string) => {
-    // console.log('onPermissionChange', { userid, alias })
+    // mog('onPermissionChange', { userid, alias })
 
     // Change the user and add to changedUsers
     const changedUser = changedUsers.find((u) => u.userid === userid)
@@ -222,14 +313,14 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
     // Change the user and add to changedUsers
     const changedUser = changedUsers.find((u) => u.userid === userid)
     const dataUser = sharedUsers.find((u) => u.userid === userid)
-    console.log('onPermissionChange', { userid, access, changedUsers, changedUser, dataUser })
+    mog('onPermissionChange', { userid, access, changedUsers, changedUser, dataUser })
 
     // TODO: Filter for the case when user permission is reverted to the og one
     if (changedUser) {
       const prevAccess = changedUser?.access[node.nodeid]
       const ogAccess = dataUser?.access[node.nodeid]
       if (ogAccess && access === ogAccess) {
-        console.log('removing user from changedUsers', { changedUser, access, ogAccess })
+        mog('removing user from changedUsers', { changedUser, access, ogAccess })
         if (changedUser.change.includes('permission')) {
           changedUser.change = changedUser.change.filter((c) => c !== 'permission')
           if (changedUser.change.length !== 0) {
@@ -263,7 +354,7 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
   }
 
   const onUserRemove = (userid: string) => {
-    console.log('onUserRemove', { userid })
+    mog('onUserRemove', { userid })
   }
 
   const onSave = () => {
@@ -289,14 +380,14 @@ const PermissionModalContent = ({ handleSubmit, handleCopyLink }: PermissionModa
         return acc
       }, [])
 
-    console.log('onSave', { changedUsers, newPermissions, newAliases })
+    mog('onSave', { changedUsers, newPermissions, newAliases })
   }
 
   return (
     <SharedPermissionsWrapper>
       <ModalHeader>Share Note</ModalHeader>
 
-      <InviteModalContent />
+      <MultiEmailInviteModalContent />
 
       <SharedPermissionsTable>
         <caption>Users with access to this note</caption>
