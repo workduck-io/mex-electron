@@ -70,6 +70,10 @@ export const apiURLs = {
 
   // Workspace
   // createWorkspace: `${BASE_API_URL}/workspace`,
-  getNodesByWorkspace: (workspaceId: string) => `${API_URL}/workspace/${workspaceId}/namespace/NAMESPACE1`
-  // getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`
+  getNodesByWorkspace: (workspaceId: string) => `${API_URL}/workspace/${workspaceId}/namespace/NAMESPACE1`,
+  // getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`,
+
+  // Sharing
+  // Post type determines action
+  sharedNode: `${API_URL}/shared/node`
 }

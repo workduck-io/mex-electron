@@ -1,14 +1,48 @@
+import { AccessLevel } from '../../types/mentions'
 import { mog } from '@utils/lib/helper'
 import { client } from '@workduck-io/dwindle'
+import { apiURLs } from '@apis/routes'
 
 export const usePermission = () => {
-  const grantUsersPermission = (email: string) => {
+  const grantUsersPermission = (nodeid: string, userids: string[], access: AccessLevel) => {
     mog('changeThat permission')
+    const payload = {
+      type: 'SharedNodeRequest',
+      nodeID: nodeid,
+      userIDs: userids,
+      accessType: access
+    }
+    client.post(apiURLs.sharedNode, payload).then((resp) => {
+      mog('grantPermission resp', { resp })
+    })
   }
 
-  const changeUserPermission = () => {
+  const changeUserPermission = (nodeid: string, userIDToAccessTypeMap: { [userid: string]: string }) => {
     mog('changeThat permission')
+    const payload = {
+      type: 'UpdateAccessTypesRequest',
+      nodeID: nodeid,
+      userIDToAccessTypeMap
+    }
+    client.put(apiURLs.sharedNode, payload).then((resp) => {
+      mog('changeUsers resp', { resp })
+    })
   }
 
-  return { grantUsersPermission }
+  const revokeUserAccess = (nodeid: string, userids: string[]) => {
+    mog('changeThat permission')
+    const payload = {
+      type: 'SharedNodeRequest',
+      nodeID: nodeid,
+      userIDs: userids
+    }
+    client
+      .delete(apiURLs.sharedNode, {
+        data: payload
+      })
+      .then((resp) => {
+        mog('changeUsers resp', { resp })
+      })
+  }
+  return { grantUsersPermission, changeUserPermission, revokeUserAccess }
 }
