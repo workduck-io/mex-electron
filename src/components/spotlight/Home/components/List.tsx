@@ -243,6 +243,7 @@ const List = ({
               setSelectedItem({ item: null, active: false })
             }
             setInput('')
+            setSearch({ value: '', type: CategoryType.search })
           }
         } else if (currentActiveItem.category === CategoryType.meeting) {
           if (!event.metaKey && currentActiveItem.extras.customAction) currentActiveItem.extras.customAction()
@@ -259,8 +260,10 @@ const List = ({
   }, [data, activeIndex, node, nodeContent, normalMode, selection, selectedItem?.item, search.value])
 
   useEffect(() => {
-    setActiveIndex(0)
-  }, [spotlightTrigger])
+    if (normalMode && !activeItem.active) {
+      setActiveIndex(0)
+    }
+  }, [spotlightTrigger, search.value, normalMode])
 
   // * handles double click on a list item
   function handleDoubleClick(id: number) {

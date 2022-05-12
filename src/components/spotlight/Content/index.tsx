@@ -41,7 +41,7 @@ const Content = () => {
   const ilinks = useDataStore((s) => s.ilinks)
   const lastOpenedNodes = useRecentsStore((store) => store.lastOpened)
   const recentResearchNodes = useRecentsStore((store) => store.recentResearchNodes)
-  const normalMode = useSpotlightAppStore((store) => store.normalMode)
+  // const normalMode = useSpotlightAppStore((store) => store.normalMode)
   const { getNewTaskNode, getNewTaskContent } = useTaskFromSelection()
   const { getUpcomingEvents } = useCalendar()
   const { editorNode, setNodeContent, setPreviewEditorNode, preview, setPreview } = useSpotlightEditorStore(
@@ -66,6 +66,8 @@ const Content = () => {
 
   // * For setting the results
   useEffect(() => {
+    const normalMode = useSpotlightAppStore.getState().normalMode
+
     async function getSearchItems() {
       if (!activeItem?.item) {
         if (search.value) {
@@ -115,7 +117,7 @@ const Content = () => {
     // else {
     //   setSearchResults([activeItem.item])
     // }
-  }, [search.value, actions, selection, activeItem.item, normalMode, ilinks, events])
+  }, [search.value, actions, selection, activeItem.item, lastOpenedNodes, ilinks, events])
 
   // * For setting the preview
   useEffect(() => {

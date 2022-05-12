@@ -18,9 +18,6 @@ import useLoad from '../../../hooks/useLoad'
 import { checkIfUntitledDraftNode } from '../../../utils/lib/strings'
 import { getTitleFromContent } from '../../../utils/search/parseData'
 import { useRouting } from '../../../views/routes/urls'
-import { mog } from '../../../utils/lib/helper'
-import useDataStore from '../../../store/useDataStore'
-import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 
 export const useSearchProps = () => {
@@ -105,7 +102,6 @@ export const useSaveChanges = () => {
     }
 
     onSave(node, true, false, editorContent)
-    if (options?.saveAndClose) appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
     appNotifierWindow(IpcAction.SHOW_TOAST, AppType.SPOTLIGHT, {
       status: 'success',
@@ -113,16 +109,19 @@ export const useSaveChanges = () => {
       independent: options?.saveAndClose
     })
 
-    await updateDocument('node', node.nodeid, editorContent)
-
     setSearch({ value: '', type: CategoryType.search })
-    setInput('')
-    setNormalMode(true)
-
-    // * Add this item in recents list of Mex
     addRecent(node.nodeid)
     addInResearchNodes(node.nodeid)
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, { nodeid: node.nodeid })
+
+    await updateDocument('node', node.nodeid, editorContent)
+
+    setNormalMode(true)
+    setInput('')
+
+    // * Add this item in recents list of Mex
+
+    if (options?.saveAndClose) appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
   }
 
   return {
