@@ -90,6 +90,6 @@ export const SharePermission = styled.td`
   width: 120px;
 `
 
-export const ShareRemove = styled.td`
+export const ShareRowAction = styled.td`
   width: 48px;
 `

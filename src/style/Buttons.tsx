@@ -98,6 +98,7 @@ export type IconButtonProps = {
   size?: string | number
   onClick?: any // eslint-disable-line @typescript-eslint/no-explicit-any
   singleton?: TippyProps['singleton']
+  transparent?: boolean
   highlight?: boolean
   shortcut?: string
 }
@@ -107,7 +108,7 @@ export const HeadlessButton = styled.button`
   background: transparent;
 `
 
-const IconButton = ({ icon, title, size, onClick, shortcut, highlight, singleton }: IconButtonProps) => {
+const IconButton = ({ icon, title, size, onClick, transparent, shortcut, highlight, singleton }: IconButtonProps) => {
   return (
     <ToolbarTooltip
       content={
@@ -115,7 +116,7 @@ const IconButton = ({ icon, title, size, onClick, shortcut, highlight, singleton
       }
       singleton={singleton}
     >
-      <Button transparent onClick={onClick} highlight={highlight}>
+      <Button transparent={transparent ? transparent : true} onClick={onClick} highlight={highlight}>
         <Icon icon={icon} height={size} />
       </Button>
     </ToolbarTooltip>

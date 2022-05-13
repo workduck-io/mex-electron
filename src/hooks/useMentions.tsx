@@ -47,6 +47,12 @@ export const useMentions = () => {
     return users
   }
 
+  const getInvitedUsersForNode = (nodeid: string): InvitedUser[] => {
+    const invitedUsers = useMentionStore.getState().invitedUsers
+    const users = invitedUsers.filter((mention) => mention.access[nodeid] !== undefined)
+    return users
+  }
+
   const getUserFromUserid = (userid: string): Mentionable | InvitedUser | undefined => {
     const mentionable = useMentionStore.getState().mentionable
     const user = mentionable.find((mention) => mention.userid === userid)
@@ -63,7 +69,14 @@ export const useMentions = () => {
     return undefined
   }
 
-  return { getUsernameFromUserid, getUserFromUserid, inviteUser, getUserAccessLevelForNode, getSharedUsersForNode }
+  return {
+    getUsernameFromUserid,
+    getUserFromUserid,
+    inviteUser,
+    getUserAccessLevelForNode,
+    getSharedUsersForNode,
+    getInvitedUsersForNode
+  }
 }
 
 export const getAccessValue = (access: AccessLevel): { value: AccessLevel; label: string } => {
