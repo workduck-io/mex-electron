@@ -8,6 +8,7 @@ interface MentionStore {
   addInvitedUser: (invitedUser: InvitedUser) => void
   addAccess: (email: string, nodeid: string, accessLevel: AccessLevel) => void
   setMentionable: (mentionable: Mentionable[]) => void
+  initMentionData: (mentionable: Mentionable[], invitedUsers: InvitedUser[]) => void
 }
 
 export const useMentionStore = create<MentionStore>((set, get) => ({
@@ -39,6 +40,7 @@ export const useMentionStore = create<MentionStore>((set, get) => ({
       return
     }
   },
+  initMentionData: (mentionable, invitedUsers) => set({ mentionable, invitedUsers }),
   setMentionable: (mentionable) =>
     set({
       mentionable

@@ -15,7 +15,7 @@ import useLoad from '../../../hooks/useLoad'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
-import { useRecieveTokens, useSyncData } from '../../../hooks/useSyncData'
+import { useRecieveMentions, useRecieveTokens, useSyncData } from '../../../hooks/useSyncData'
 import { useAuthentication, useAuthStore } from '../../../services/auth/useAuth'
 import { useAnalysis, useAnalysisIPC } from '../../../store/useAnalysis'
 import useBlockStore from '../../../store/useBlockStore'
@@ -35,7 +35,8 @@ import { useCalendar } from '../../../hooks/useCalendar'
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
 import { useRedirectAuth } from '../Auth/useRedirectAuth'
 import { useActionsPerfomerClient } from '../../spotlight/Actions/useActionPerformer'
-import { useLocalData, useTokenData } from '@hooks/useLocalData'
+import { useActionPerformer } from '../../spotlight/Actions/useActionPerformer'
+import { useLocalData, useMentionData, useTokenData } from '@hooks/useLocalData'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -62,6 +63,7 @@ const Init = () => {
   const { getNodeidFromPath } = useLinks()
   const { onSave } = useSaver()
   const { setReceiveToken } = useRecieveTokens()
+  const { setReceiveMention } = useRecieveMentions()
   // const { getAuthorizedGroups } = useActions()
 
   /**
@@ -70,6 +72,7 @@ const Init = () => {
   useSaveAndExit()
 
   const { getTokenData } = useTokenData()
+  const { getMentionData } = useMentionData()
   const { saveAndClearBuffer } = useEditorBuffer()
   const { initActionPerfomerClient } = useActionsPerfomerClient()
 
@@ -88,6 +91,7 @@ const Init = () => {
         .then(({ fileData }) => {
           init(fileData)
           getTokenData()
+          getMentionData()
           // setOnboardData()
           return fileData
         })
@@ -260,6 +264,7 @@ const Init = () => {
   useEffect(() => {
     setIpc()
     setReceiveToken()
+    setReceiveMention()
 
     // Setup recieving the analysis call
     setAnalysisIpc()

@@ -31,7 +31,7 @@ export const setFileData = (data: AuthTokenData, location: string) => {
   fs.writeFileSync(location, JSON.stringify(data))
 }
 
-export const getTokenData = (location: string): AuthTokenData => {
+export const getDataOfLocation = (location: string): any => {
   if (fs.existsSync(location)) {
     const stringData = fs.readFileSync(location, 'utf-8')
     const data = JSON.parse(stringData)
@@ -39,11 +39,11 @@ export const getTokenData = (location: string): AuthTokenData => {
   } else {
     const version = app.getVersion()
     fs.writeFileSync(location, JSON.stringify({}))
-    console.log('SettingAuth', { version })
+    console.log('GettingData', { version, location })
     return {}
   }
 }
 
-export const setTokenData = (data: AuthTokenData, location: string) => {
+export const setDataAtLocation = (data: any, location: string) => {
   fs.writeFileSync(location, JSON.stringify(data))
 }

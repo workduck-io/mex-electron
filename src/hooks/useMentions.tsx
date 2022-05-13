@@ -1,9 +1,11 @@
 import { useMentionStore } from '@store/useMentionStore'
 import { AccessLevel, InvitedUser, Mentionable } from '../types/mentions'
+import { useMentionData } from './useLocalData'
 
 export const useMentions = () => {
   const addInvitedUser = useMentionStore((s) => s.addInvitedUser)
   const addAccess = useMentionStore((s) => s.addAccess)
+  const { setMentionData } = useMentionData()
 
   // Add access level that is returned from the backend after permissions have been given
   const inviteUser = (email: string, alias: string, nodeid: string, accessLevel: AccessLevel) => {
@@ -16,6 +18,11 @@ export const useMentions = () => {
     } else {
       addInvitedUser({ type: 'invite', email, alias, access: { [nodeid]: accessLevel } })
     }
+
+    setMentionData({
+      mentionable: useMentionStore.getState().mentionable,
+      invitedUsers: useMentionStore.getState().invitedUsers
+    })
   }
 
   const getUsernameFromUserid = (userid: string): string | undefined => {

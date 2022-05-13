@@ -1,18 +1,17 @@
+import { useMemo } from 'react'
+import create from 'zustand'
+import { getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
+import { generateNodeUID } from '../data/Defaults/idPrefixes'
 import { CachedILink, DataStoreState } from '../types/Types'
-import { SEPARATOR, getAllParentIds } from '../components/mex/Sidebar/treeUtils'
+import { generateTag } from '../utils/generateComboItem'
 import { Settify, typeInvert } from '../utils/helpers'
 import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
-
-import create from 'zustand'
-import { generateNodeUID } from '../data/Defaults/idPrefixes'
-import { generateTag } from '../utils/generateComboItem'
-import { useEditorStore } from './useEditorStore'
-import { generateTree } from '../utils/lib/tree'
 import { getNodeIcon } from '../utils/lib/icons'
-import { getUniquePath } from '../utils/lib/paths'
 import { removeLink } from '../utils/lib/links'
+import { getUniquePath } from '../utils/lib/paths'
+import { generateTree } from '../utils/lib/tree'
+import { useEditorStore } from './useEditorStore'
 import { useTreeStore } from './useTreeStore'
-import { useMemo } from 'react'
 
 const useDataStore = create<DataStoreState>((set, get) => ({
   // Tags
