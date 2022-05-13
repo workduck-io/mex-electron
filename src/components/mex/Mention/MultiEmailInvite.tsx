@@ -1,21 +1,21 @@
-import { EMAIL_REG } from '@data/Defaults/auth'
-import { useMentions } from '@hooks/useMentions'
+import { MultiEmailValidate } from '@data/Defaults/auth'
+import { useUserService } from '@services/auth/useUserService'
 import { useEditorStore } from '@store/useEditorStore'
 import { ButtonFields, Label, SelectWrapper, StyledCreatatbleSelect } from '@style/Form'
 import { Title } from '@style/Typography'
 import { mog } from '@utils/lib/helper'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { AccessLevel, DefaultPermission, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
+import { DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
 import { LoadingButton } from '../Buttons/LoadingButton'
 import { InputFormError } from '../Forms/Input'
 import { InviteFormWrapper, InviteWrapper } from './ShareModal.styles'
-import { InviteModalData, useShareModalStore } from './ShareModalStore'
+import { InviteModalData } from './ShareModalStore'
 
-export const InviteModalContent = () => {
-  const data = useShareModalStore((state) => state.data)
+export const MultiEmailInviteModalContent = () => {
+  // const addInvitedUser = useMentionStore((state) => state.addInvitedUser)
+  const { getUserDetails } = useUserService()
   const node = useEditorStore((state) => state.node)
-  const { inviteUser } = useMentions()
   const {
     handleSubmit,
     register,
@@ -23,13 +23,35 @@ export const InviteModalContent = () => {
     formState: { errors, isSubmitting }
   } = useForm<InviteModalData>()
 
-  const onSubmit = (data: InviteModalData) => {
+  const onSubmit = async (data: InviteModalData) => {
     mog('data', data)
 
     if (node && node.nodeid) {
-      inviteUser(data.email, data.alias, node.nodeid, (data.access as AccessLevel) ?? DefaultPermission)
+      const allMails = data.email.split(',').map((e) => e.trim())
+
+      const userDetailPromises = allMails.map((email) => {
+        return getUserDetails(email)
+      })
+
+      const userDetails = await Promise.allSettled(userDetailPromises)
+
+      mog('userDetails', { userDetails })
+
+      // const userDetails = allMails.map(async () => {})
+      // Only share with users with details, add the rest to invited users
+
+      // addInvitedUser({
+      //   type: 'invite',
+      //   alias: data.alias,
+      //   email: data.email,
+      //   access: {
+      //     [node.nodeid]: (data.access as AccessLevel) ?? DefaultPermission
+      //   }
+      // })
     }
   }
+
+  // mog('MultiEmailInvite', { errors })
 
   return (
     <InviteWrapper>
@@ -37,24 +59,16 @@ export const InviteModalContent = () => {
       <p>Invite your friends to your Note.</p>
       <InviteFormWrapper onSubmit={handleSubmit(onSubmit)}>
         <InputFormError
-          name="alias"
-          label="Alias"
-          inputProps={{
-            defaultValue: data.alias ?? '',
-            ...register('alias', {
-              required: true
-            })
-          }}
-          errors={errors}
-        ></InputFormError>
-        <InputFormError
           name="email"
           label="Email"
           inputProps={{
             autoFocus: true,
+            type: 'email',
+            // Accepts multiple emails
+            multiple: true,
             ...register('email', {
               required: true,
-              pattern: EMAIL_REG
+              validate: MultiEmailValidate
             })
           }}
           errors={errors}
@@ -90,5 +104,3 @@ export const InviteModalContent = () => {
     </InviteWrapper>
   )
 }
-
-// interface PermissionModalContentProps { }
