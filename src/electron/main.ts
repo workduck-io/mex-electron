@@ -61,7 +61,7 @@ import { Reminder, ReminderActions } from '../types/reminders'
 import { AuthTokenData } from '../types/auth'
 import { clearLocalStorage } from '../utils/dataTransform'
 import { getRedirectPath } from './utils/redirect'
-import { MentionData } from '@types/mentions'
+import { MentionData } from '../types/mentions'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()

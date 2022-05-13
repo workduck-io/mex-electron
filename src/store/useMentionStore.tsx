@@ -1,6 +1,6 @@
 import { AccessLevel, InvitedUser, Mentionable } from '../types/mentions'
 import create from 'zustand'
-import { mentionables } from '@data/mock/mentionables'
+// import { mentionables } from '@data/mock/mentionables'
 
 interface MentionStore {
   invitedUsers: InvitedUser[]
@@ -13,7 +13,7 @@ interface MentionStore {
 
 export const useMentionStore = create<MentionStore>((set, get) => ({
   invitedUsers: [],
-  mentionable: mentionables,
+  mentionable: [],
   addInvitedUser: (invitedUser: InvitedUser) => {
     const exists = get().invitedUsers.find((user) => user.email === invitedUser.email)
     if (!exists) {
