@@ -55,7 +55,11 @@ export const useShareModalStore = create<ShareModalState>((set) => ({
   closeModal: () => {
     set({
       open: false,
-      focus: false
+      focus: false,
+      data: {
+        changedUsers: [],
+        changedInvitedUsers: []
+      }
     })
   },
   setFocus: (focus: boolean) => set({ focus }),

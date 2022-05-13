@@ -176,6 +176,11 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
     mog('onSave', { changedUsers, newPermissions, newAliases, revokedUsers })
   }
 
+  // mog('ShareInvitedPermissions go brrr', {
+  //   sharedUsers,
+  //   changedUsers
+  // })
+
   return (
     <SharedPermissionsWrapper>
       <ModalHeader>Share Note</ModalHeader>

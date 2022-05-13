@@ -160,6 +160,9 @@ const useEditorPluginConfig = (editorId: string) => {
       },
       mention: {
         slateElementType: ELEMENT_MENTION,
+        onItemInsert: (alias) => {
+          mog('Inserted new item', { alias })
+        },
         newItemHandler: (newAlias) => {
           // addTag(newItem)
           mog('ELEMENT_MENTIONS', { newAlias })

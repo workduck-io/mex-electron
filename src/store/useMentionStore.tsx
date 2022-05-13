@@ -30,14 +30,16 @@ export const useMentionStore = create<MentionStore>((set, get) => ({
       set({
         invitedUsers: [...get().invitedUsers.filter((user) => user.email !== email), newInvited]
       })
+      return 'invite'
     } else if (!invitedExists && mentionExists) {
       // We know it is guaranteed to be mentionable
       const newMentioned: Mentionable = addAccessToUser(mentionExists, nodeid, accessLevel) as Mentionable
       set({
         mentionable: [...get().mentionable.filter((user) => user.email !== email), newMentioned]
       })
+      return 'mentionable'
     } else {
-      return
+      return 'absent'
     }
   },
   initMentionData: (mentionable, invitedUsers) => set({ mentionable, invitedUsers }),

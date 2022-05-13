@@ -38,7 +38,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
       const targetRange = useComboboxStore.getState().targetRange
       // mog('Target Range', { targetRange })
 
-      // mog('ELEMENT', { elementType, comboType })
+      mog('ELEMENT', { elementType, comboType })
 
       const type =
         elementType ??
@@ -61,6 +61,8 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
           const nodeId = getNodeidFromPath(itemValue)
           itemValue = nodeId
         }
+
+        // if (key)
 
         // select the ilink text and insert the ilink element
         Transforms.select(editor, targetRange)
@@ -92,6 +94,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
             children: [{ text: '' }],
             value: item.key
           }
+          if (comboType.onItemInsert) comboType.onItemInsert(item.text)
           insertNodes(editor, withMentionUserId)
         } else {
           if (item.type === QuickLinkType.flow || item.type === QuickLinkType.snippet) {

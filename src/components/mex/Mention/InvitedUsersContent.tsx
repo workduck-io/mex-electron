@@ -39,7 +39,7 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
 
   // This is called for every keystroke
   const onAliasChange = (email: string, alias: string) => {
-    // mog('onPermissionChange', { userid, alias })
+    mog('onAliasCHange', { email, alias })
 
     // Change the user and add to changedUsers
     const changedUser = changedIUsers.find((u) => u.email === email)
@@ -168,6 +168,10 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
     mog('onSave', { changedIUsers, newPermissions, newAliases, revokedUsers })
   }
 
+  // mog('ShareInvitedPermissions go brrr', {
+  //   sharedIUsers
+  // })
+
   return (
     <SharedPermissionsWrapper>
       <ModalHeader>Invited Users</ModalHeader>
@@ -188,7 +192,7 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
 
         {sharedIUsers.map((user) => {
           const access = user.access[node.nodeid]
-          const hasChanged = changedIUsers.find((u) => u.email === user.email)
+          const hasChanged = changedIUsers && changedIUsers.find((u) => u.email === user.email)
           const isRevoked = !!hasChanged && hasChanged.change.includes('revoke')
           return (
             <ShareRow hasChanged={!!hasChanged} key={`${user.email}`} isRevoked={isRevoked}>

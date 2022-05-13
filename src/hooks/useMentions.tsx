@@ -1,5 +1,6 @@
 import { useMentionStore } from '@store/useMentionStore'
-import { AccessLevel, InvitedUser, Mentionable } from '../types/mentions'
+import { mog } from '@utils/lib/helper'
+import { AccessLevel, DefaultPermission, InvitedUser, Mentionable } from '../types/mentions'
 import { useMentionData } from './useLocalData'
 
 export const useMentions = () => {
@@ -67,6 +68,11 @@ export const useMentions = () => {
       }
     }
     return undefined
+  }
+
+  const checkAndAddUserToNode = (alias: string, nodeid: string) => {
+    mog('checkAndAddUserToNode', { alias, nodeid })
+    // const res = addAccess()
   }
 
   return {
