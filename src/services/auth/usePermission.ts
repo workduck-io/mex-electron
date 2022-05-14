@@ -19,12 +19,13 @@ export const usePermission = () => {
   }
 
   const changeUserPermission = async (nodeid: string, userIDToAccessTypeMap: { [userid: string]: AccessLevel }) => {
-    mog('changeThat permission')
     const payload = {
       type: 'UpdateAccessTypesRequest',
       nodeID: nodeid,
       userIDToAccessTypeMap
     }
+    mog('changeThat permission', { payload })
+    return 'escaped'
     return await client.put(apiURLs.sharedNode, payload).then((resp) => {
       mog('changeUsers resp', { resp })
       return resp
@@ -32,12 +33,13 @@ export const usePermission = () => {
   }
 
   const revokeUserAccess = async (nodeid: string, userids: string[]) => {
-    mog('changeThat permission')
     const payload = {
       type: 'SharedNodeRequest',
       nodeID: nodeid,
       userIDs: userids
     }
+    mog('revokeThat permission', { payload })
+    return 'escaped'
     return await client
       .delete(apiURLs.sharedNode, {
         data: payload

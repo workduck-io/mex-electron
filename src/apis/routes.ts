@@ -29,8 +29,8 @@ export const GOOGLE_OAUTH_URL = `${MEXIT_FRONTEND_BASE_URL}/oauth/desktop`
 export const GOOGLE_CAL_BASE = 'https://www.googleapis.com/calendar/v3/calendars'
 export const GOOGLE_OAUTH2_REFRESH_URL = `${MEXIT_BACKEND_URL_BASE}/oauth2/getGoogleAccessToken`
 
-export const API_URL = config.constants.MEX_BACKEND_BASE_URL
 // NO ending `/`
+export const API_URL = config.constants.MEX_BACKEND_BASE_URL
 
 export const USER_SERVICE_HELPER_URL = 'https://3jeonl1fee.execute-api.us-east-1.amazonaws.com'
 export const USER_SERVICE_EMAIL_URL = (email: string) => `${USER_SERVICE_HELPER_URL}/user/email/${email}`

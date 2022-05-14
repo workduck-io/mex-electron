@@ -1,11 +1,15 @@
-import { useMentionStore } from '@store/useMentionStore'
+import { usePermission } from '@services/auth/usePermission'
+import { addAccessToUser, useMentionStore } from '@store/useMentionStore'
 import { mog } from '@utils/lib/helper'
 import { AccessLevel, DefaultPermission, InvitedUser, Mentionable } from '../types/mentions'
 import { useMentionData } from './useLocalData'
 
 export const useMentions = () => {
+  const { grantUsersPermission } = usePermission()
   const addInvitedUser = useMentionStore((s) => s.addInvitedUser)
   const addAccess = useMentionStore((s) => s.addAccess)
+  const setInvited = useMentionStore((s) => s.setInvited)
+  const setMentionable = useMentionStore((s) => s.setMentionable)
   const { setMentionData } = useMentionData()
 
   // Add access level that is returned from the backend after permissions have been given
@@ -24,6 +28,40 @@ export const useMentions = () => {
       mentionable: useMentionStore.getState().mentionable,
       invitedUsers: useMentionStore.getState().invitedUsers
     })
+  }
+
+  const grantUserAccessOnMention = (alias: string, nodeid: string, access: AccessLevel = DefaultPermission) => {
+    mog('GrantUserAccessOnMention', { alias, nodeid, access })
+
+    const invitedUsers = useMentionStore.getState().invitedUsers
+    const mentionable = useMentionStore.getState().mentionable
+    const invitedExists = invitedUsers.find((user) => user.alias === alias)
+    const mentionExists = mentionable.find((user) => user.alias === alias)
+    if (invitedExists && !mentionExists) {
+      const newInvited: InvitedUser = addAccessToUser(invitedExists, nodeid, access)
+      // As user not on mex no need to call backend and give permission
+      setInvited([...invitedUsers.filter((user) => user.alias !== alias), newInvited])
+      return 'invite'
+    } else if (!invitedExists && mentionExists) {
+      // We know it is guaranteed to be mentionable
+      // Call backend and give permission
+      const res = grantUsersPermission(nodeid, [mentionExists.userid], access)
+        .then(() => {
+          const newMentioned: Mentionable = addAccessToUser(mentionExists, nodeid, access) as Mentionable
+          setMentionable([...mentionable.filter((user) => user.email !== alias), newMentioned])
+          return 'mentionable'
+        })
+        .catch((e) => {
+          console.log('Granting permission to user failed', { e })
+          return 'error'
+        })
+      return res
+    } else {
+      // By design, the user should be in either invited or mentionable. The flow for new created user is different.
+      console.log('SHOULD NOT RUN', {})
+      return 'notFound'
+      //
+    }
   }
 
   const getUsernameFromUserid = (userid: string): string | undefined => {
@@ -70,18 +108,14 @@ export const useMentions = () => {
     return undefined
   }
 
-  const checkAndAddUserToNode = (alias: string, nodeid: string) => {
-    mog('checkAndAddUserToNode', { alias, nodeid })
-    // const res = addAccess()
-  }
-
   return {
     getUsernameFromUserid,
     getUserFromUserid,
     inviteUser,
     getUserAccessLevelForNode,
     getSharedUsersForNode,
-    getInvitedUsersForNode
+    getInvitedUsersForNode,
+    grantUserAccessOnMention
   }
 }
 

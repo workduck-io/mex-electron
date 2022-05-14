@@ -3,6 +3,7 @@ import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
+import { useMentions } from '@hooks/useMentions'
 import { useMentionStore } from '@store/useMentionStore'
 import { ELEMENT_MEDIA_EMBED, ELEMENT_MENTION, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
@@ -42,6 +43,8 @@ const useEditorPluginConfig = (editorId: string) => {
   const addILink = useDataStore((state) => state.addILink)
   const { setActionsInList } = useActions()
   const { getSnippetsConfigs } = useSnippets()
+
+  const { grantUserAccessOnMention } = useMentions()
   // const { getSyncBlockConfigs } = useSyncConfig()
   const { openReminderModal } = useOpenReminderModal()
 
@@ -162,6 +165,7 @@ const useEditorPluginConfig = (editorId: string) => {
         slateElementType: ELEMENT_MENTION,
         onItemInsert: (alias) => {
           mog('Inserted new item', { alias })
+          grantUserAccessOnMention(alias, nodeid)
         },
         newItemHandler: (newAlias) => {
           // addTag(newItem)

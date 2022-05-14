@@ -1,7 +1,6 @@
 import { getAccessValue, useMentions } from '@hooks/useMentions'
 import repeatLine from '@iconify/icons-ri/repeat-line'
 import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
-import { usePermission } from '@services/auth/usePermission'
 import { useEditorStore } from '@store/useEditorStore'
 import { StyledCreatatbleSelect } from '@style/Form'
 import { mog } from '@utils/lib/helper'
