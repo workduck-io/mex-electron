@@ -25,7 +25,7 @@ export const usePermission = () => {
       userIDToAccessTypeMap
     }
     mog('changeThat permission', { payload })
-    return 'escaped'
+    // return 'escaped'
     return await client.put(apiURLs.sharedNode, payload).then((resp) => {
       mog('changeUsers resp', { resp })
       return resp
@@ -39,7 +39,7 @@ export const usePermission = () => {
       userIDs: userids
     }
     mog('revokeThat permission', { payload })
-    return 'escaped'
+    // return 'escaped'
     return await client
       .delete(apiURLs.sharedNode, {
         data: payload
@@ -49,5 +49,12 @@ export const usePermission = () => {
         return resp
       })
   }
-  return { grantUsersPermission, changeUserPermission, revokeUserAccess }
+
+  const getAllSharedNodes = async () => {
+    return await client.get(apiURLs.allSharedNodes).then((resp) => {
+      mog('changeUsers resp', { resp })
+      return resp
+    })
+  }
+  return { grantUsersPermission, changeUserPermission, revokeUserAccess, getAllSharedNodes }
 }
