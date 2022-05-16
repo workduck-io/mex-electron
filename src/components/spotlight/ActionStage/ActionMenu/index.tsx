@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Default from './Default'
 import Menu from './Menu'
 import tinykeys from 'tinykeys'
+import useActionMenuStore from './useActionMenuStore'
 
 type ActionMenuProps = {
   title: string
@@ -9,13 +10,14 @@ type ActionMenuProps = {
 }
 
 const ActionMenu: React.FC<ActionMenuProps> = ({ title, shortcut }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const isOpen = useActionMenuStore((store) => store.isActionMenuOpen)
+  const toggleActionMenu = useActionMenuStore((store) => store.toggleActionMenu)
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       '$mod+K': (event) => {
         event.preventDefault()
-        setIsOpen((p) => !p)
+        toggleActionMenu()
       }
     })
     return () => {
@@ -23,7 +25,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ title, shortcut }) => {
     }
   }, [])
 
-  if (!isOpen) return <Default title={title} setIsOpen={setIsOpen} shortcut={shortcut} />
+  if (!isOpen) return <Default title={title} shortcut={shortcut} />
 
   return <Menu />
 }

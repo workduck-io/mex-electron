@@ -10,7 +10,7 @@ export const StyledInlineBlockPreview = styled.div`
   max-height: 25vh;
   overflow-y: auto;
   overflow-x: hidden;
-  font-size: ${MainFont} !important;
+  ${MainFont};
 `
 
 export const StyledInlineBlock = styled.section<InlineBlockType>`

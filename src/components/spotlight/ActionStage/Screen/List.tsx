@@ -35,11 +35,12 @@ const RelativeList = styled(FullWidth)`
 
 type ListProps = {
   items: Array<any>
+  context: Array<any>
 }
 
 export const ROW_ITEMS_LIMIT = 7
 
-const List: React.FC<ListProps> = ({ items }) => {
+const List: React.FC<ListProps> = ({ items, context }) => {
   const theme = useTheme()
   const activeAction = useActionStore((store) => store.activeAction)
   const [activeIndex, setActiveIndex] = useState(0)
@@ -50,10 +51,17 @@ const List: React.FC<ListProps> = ({ items }) => {
 
   const parentRef = useRef(null)
 
+  const setViewItemContext = (i: number) => {
+    setViewData({
+      display: items[i],
+      context: context[i]
+    })
+  }
+
   const onSelect = (i: any) => {
     setActiveIndex(i)
     setView('item')
-    setViewData(items[i])
+    setViewItemContext(i)
     goTo('/action/view', NavigationType.push)
   }
 
@@ -79,7 +87,7 @@ const List: React.FC<ListProps> = ({ items }) => {
       align: 'start',
       behavior: 'smooth'
     })
-    setViewData(items[itemIndex])
+    setViewItemContext(itemIndex)
   }
 
   useEffect(() => {
@@ -90,7 +98,6 @@ const List: React.FC<ListProps> = ({ items }) => {
 
   useEffect(() => {
     const handler = (event) => {
-      mog('IS MENU OPEN', { isMenuOpen })
       if (isMenuOpen) return
 
       if (event.key === KEYBOARD_KEYS.ArrowUp) {

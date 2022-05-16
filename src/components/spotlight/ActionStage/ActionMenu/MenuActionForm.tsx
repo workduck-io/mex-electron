@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ActionHelperConfig, FormField, MenuPostActionConfig } from '@workduck-io/action-request-helper'
 import { useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
 import ActionFormElement from '../Forms/Fields/ActionFormElement'
@@ -45,6 +45,7 @@ const MenuActionForm: React.FC<MenuActionFormProps> = ({ action }) => {
   const { getConfigWithActionId, performer } = useActionPerformer()
   const setIsMenuOpen = useSpotlightAppStore((store) => store.setIsMenuOpen)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
   const [activeIndex, setActiveIndex] = useState<number>(0)
   const formMethods = useForm()
   const theme = useTheme()
@@ -81,10 +82,9 @@ const MenuActionForm: React.FC<MenuActionFormProps> = ({ action }) => {
   }
 
   const onSubmit = async (form: any) => {
-    mog('FORM DATA', { form })
     setIsSubmitting(true)
     const updatedForm = withFooter(form)
-    await performer(actionDetails?.actionGroupId, action.actionId, { formData: updatedForm })
+    await performer(actionDetails?.actionGroupId, action.actionId, { formData: updatedForm, parent: true })
     setIsSubmitting(false)
   }
 

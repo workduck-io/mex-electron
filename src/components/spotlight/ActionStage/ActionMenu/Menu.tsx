@@ -78,10 +78,11 @@ const Menu: React.FC<MenuProps> = () => {
       clearMenuStore()
     }
   }, [])
+
   const { activeItem } = useSpotlightContext()
 
   const header = useMemo(() => {
-    const title = activeMenuItem?.filter((item) => item.type === 'title')?.[0]
+    const title = activeMenuItem?.display?.filter((item) => item.type === 'title')?.[0]
     const activeAction = useActionStore.getState().activeAction
     const actionDetails = getConfig(activeAction?.actionGroupId, activeMenuAction?.actionId)
 

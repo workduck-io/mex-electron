@@ -26,7 +26,6 @@ export const StyledMenuItem = styled.div<{ highlight?: boolean }>`
   border-radius: ${(props) => props.theme.borderRadius.small};
   align-items: center;
   font-size: ${BodyFont};
-  margin-bottom: ${(props) => props.theme.spacing.small};
   cursor: pointer;
   width: 100%;
   color: ${({ theme }) => theme.colors.text.default};
@@ -75,14 +74,14 @@ export const Overlay = styled.div`
 export const MenuTitle = styled.div`
   color: ${({ theme }) => theme.colors.text.heading};
   font-weight: bold;
-  font-size: ${MainFont};
+  ${BodyFont};
 `
 
 export const MenuContainer = styled(animated.div)`
   z-index: 3;
   margin: 0 ${(props) => props.theme.spacing.medium} ${(props) => props.theme.spacing.medium} 0;
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  background-color: ${({ theme }) => transparentize(0.35, theme.colors.background.card)};
+  background-color: ${({ theme }) => theme.colors.background.card};
   backdrop-filter: blur(20px);
   display: flex;
   flex-direction: column;

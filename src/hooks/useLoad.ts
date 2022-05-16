@@ -136,7 +136,7 @@ const useLoad = () => {
         if (data) {
           // const { data, metadata, version } = res
           // goTo(ROUTE_PATHS.node, NavigationType.replace, node.nodeid)
-          mog('SAVED DATA', { data })
+          // mog('SAVED DATA', { data })
           // if (data) {
           //   updateEmptyBlockTypes(data, ELEMENT_PARAGRAPH)
           //   const nodeContent = {

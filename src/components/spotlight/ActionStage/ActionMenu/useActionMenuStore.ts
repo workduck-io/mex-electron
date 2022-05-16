@@ -14,6 +14,11 @@ type MenuActionStoreProps = {
   activeMenuForm: number
   setActiveMenuForm: (activeMenuForm: number) => void
 
+  // * Action Menu Modal state
+  isActionMenuOpen: boolean
+  toggleActionMenu: () => void
+  setIsActionMenuOpen: (isActionMenuOpen: boolean) => void
+
   // * Clear
   clearMenuStore: () => void
 }
@@ -25,8 +30,12 @@ const useActionMenuStore = create<MenuActionStoreProps>((set, get) => ({
   activeMenuAction: null,
   setActiveMenuAction: (activeMenuAction) => set({ activeMenuAction }),
 
+  isActionMenuOpen: false,
+  setIsActionMenuOpen: (isActionMenuOpen) => set({ isActionMenuOpen }),
+
   activeMenuForm: 0,
   setActiveMenuForm: (activeMenuForm) => set({ activeMenuForm }),
+  toggleActionMenu: () => set({ isActionMenuOpen: !get().isActionMenuOpen }),
 
   clearMenuStore: () => set({ menuActions: [], activeMenuAction: null })
 }))

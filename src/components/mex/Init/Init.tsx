@@ -79,7 +79,7 @@ const Init = () => {
    * */
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
-    ; (async () => {
+    ;(async () => {
       getLocalData()
         .then((d) => {
           mog('Initializaing', { d })
@@ -103,7 +103,7 @@ const Init = () => {
           }
           setUnAuthenticated()
           ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: false })
-          return { d, auth: false }
+          return { d, auth: true }
         })
         .then(({ d, auth }) => {
           if (auth) {

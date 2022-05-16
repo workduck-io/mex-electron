@@ -4,16 +4,18 @@ import { DisplayShortcut } from '../../../mex/Shortcuts'
 import { ShortcutText } from '../../Home/components/Item'
 import { StyledDefault } from './styled'
 import Tippy from '@tippyjs/react'
+import useActionMenuStore from './useActionMenuStore'
 
 export type DefaultProps = {
-  setIsOpen: any
   title: string
   shortcut: string
 }
 
-const Default: React.FC<DefaultProps> = ({ setIsOpen, title, shortcut }) => {
+const Default: React.FC<DefaultProps> = ({ title, shortcut }) => {
+  const setIsMenuOpen = useActionMenuStore((store) => store.setIsActionMenuOpen)
+
   const onDefaultClick = () => {
-    setIsOpen(true)
+    setIsMenuOpen(true)
   }
 
   return (

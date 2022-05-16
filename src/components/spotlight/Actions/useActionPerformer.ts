@@ -1,5 +1,10 @@
 import { useActionStore } from './useActionStore'
-import { ActionHelperClient, ActionHelperConfig, ClickPostActionType } from '@workduck-io/action-request-helper'
+import {
+  ActionHelperClient,
+  ActionHelperConfig,
+  ActionResponse,
+  ClickPostActionType
+} from '@workduck-io/action-request-helper'
 import { client } from '@workduck-io/dwindle'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { mog } from '../../../utils/lib/helper'
@@ -7,11 +12,21 @@ import { NavigationType, useRouting } from '../../../views/routes/urls'
 import { ACTION_ENV } from '../../../apis/routes'
 
 type PerfomerOptions = {
+  formData?: Record<string, any>
   fetch?: boolean
-  formData: Record<string, any>
+  parent?: boolean
 }
 
 export const actionPerformer = new ActionHelperClient(client, undefined, ACTION_ENV)
+
+const getIndexedResult = (res: ActionResponse) => {
+  const d: ActionResponse = {
+    ...res,
+    displayData: res?.displayData?.map((data, index) => [...data, { key: 'index', type: 'hidden', value: index }])
+  }
+
+  return d
+}
 
 export const useActionPerformer = () => {
   const activeAction = useActionStore((store) => store.activeAction)
@@ -33,7 +48,10 @@ export const useActionPerformer = () => {
   */
   const performer = async (actionGroupId: string, actionId: string, options?: PerfomerOptions) => {
     const actionConfig = groupedAction?.[actionGroupId]?.[actionId]
-    const prevActionValue = getPrevActionValue(actionId)?.selection
+    const viewData = useSpotlightAppStore.getState().viewData
+    const prevActionValue = options?.parent ? { value: viewData?.context } : getPrevActionValue(actionId)?.selection
+
+    mog('PRE ACTIION VALUE', { prevActionValue })
 
     // * if we have a cache, return the cached result
     // if (!fetch) {
@@ -68,7 +86,7 @@ export const useActionPerformer = () => {
         serviceType
       })
 
-      addResultInCache(actionId, result)
+      addResultInCache(actionId, getIndexedResult(result))
 
       const resultAction = actionConfig?.postAction?.result
       const isRunAction = resultAction?.type === ClickPostActionType.RUN_ACTION
@@ -84,7 +102,7 @@ export const useActionPerformer = () => {
 
         // * View the result action
         setView('item')
-        setViewData(postAction?.displayData || [])
+        setViewData({ context: result?.contextData, display: postAction?.displayData ?? [] })
 
         goTo('/action/view', NavigationType.replace)
       }

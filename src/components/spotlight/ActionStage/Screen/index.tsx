@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { mog } from '../../../../utils/lib/helper'
 import { search as getSearchResults } from 'fast-fuzzy'
@@ -57,19 +57,23 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
     }
   }, [actionId, prevValue])
 
+  const memoData = useMemo(() => {
+    return getCacheResult(actionId)
+  }, [actionId])
+
   useEffect(() => {
-    const data = (getCacheResult(actionId)?.displayData as TemplateConfig[]) ?? []
+    const data = (memoData?.displayData as TemplateConfig[]) ?? []
 
     const res = getSearchResults(search?.value, data, {
       keySelector: (obj: any) => obj.find((item) => item.type === 'title')?.value
     })
 
     setResData(search?.value ? res : data)
-  }, [search.value])
+  }, [search.value, memoData])
 
   if (isLoading) return null
 
-  return <StyledScreen>{!view && <List items={resData} />}</StyledScreen>
+  return <StyledScreen>{!view && <List items={resData} context={memoData?.contextData ?? []} />}</StyledScreen>
 }
 
 export default Screen
