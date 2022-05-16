@@ -8,11 +8,37 @@ import { ComboboxType } from './types'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { useRouting } from '../../../views/routes/urls'
 import { useLinks } from '../../../hooks/useLinks'
-import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
-import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
+import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { makeQuickLink, QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 import { getTimeInText, toLocaleString } from '../../../utils/time'
 
 export const CreateNewPrefix = `Create `
+
+export const getNewItem = (ct: ComboboxType, searchTerm: string) => {
+  let type = QuickLinkType.backlink
+  let createNewPrefix = CreateNewPrefix
+
+  switch (ct.cbKey) {
+    case 'tag': {
+      type = QuickLinkType.tags
+      break
+    }
+    case 'mention': {
+      type = QuickLinkType.mentions
+      createNewPrefix = 'Invite '
+      break
+    }
+  }
+
+  return {
+    key: '__create_new',
+    icon: 'ri:add-circle-line',
+    type,
+    data: true,
+    prefix: createNewPrefix,
+    text: searchTerm
+  }
+}
 
 export const getCommandExtended = (search: string, keys: Record<string, ComboboxType>) => {
   const extendedKeys = keys['slash_command'].data.filter((ct) => ct.extended)
@@ -116,14 +142,7 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
       !isInternalCommand(searchTerm) &&
       !isReservedOrClash(searchTerm, dataKeys)
     ) {
-      items.unshift({
-        key: '__create_new',
-        icon: 'ri:add-circle-line',
-        type: ct.cbKey === 'tag' ? QuickLinkType.tags : QuickLinkType.backlink,
-        data: true,
-        prefix: CreateNewPrefix,
-        text: searchTerm
-      })
+      items.unshift(getNewItem(ct, searchTerm))
     }
 
     setItems(items)
