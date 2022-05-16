@@ -13,8 +13,10 @@ export const SharedPermissionsWrapper = styled.div`
 
     form {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
+      justify-content: space-between;
       gap: ${({ theme }) => theme.spacing.small};
+      flex-wrap: wrap;
 
       ${SelectWrapper} {
         width: 60%;

@@ -31,6 +31,8 @@ const useDataStore = create<DataStoreState>((set, get) => ({
 
   bookmarks: [],
 
+  sharedNodes: [],
+
   archive: [],
 
   initialized: false,
@@ -117,6 +119,12 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     set({ bookmarks: Array.from(ubookmarks) })
   },
   getBookmarks: () => get().bookmarks,
+
+  setSharedNodes: (sharedNodes) => {
+    set({ sharedNodes })
+  },
+
+  getSharedNodes: () => get().sharedNodes,
 
   setBaseNodeId: (baseNodeId) => set({ baseNodeId }),
 

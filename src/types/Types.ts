@@ -1,5 +1,6 @@
 import { QuickLinkType } from '../components/mex/NodeSelect/NodeSelect'
 import { CategoryType } from '../store/Context/context.spotlight'
+import { AccessLevel } from './mentions'
 
 /*
  * Specific to comboboxes
@@ -24,6 +25,10 @@ export interface ILink {
 
   /** Iconify Icon string */
   icon?: string
+}
+
+export interface SharedNode extends ILink {
+  access: AccessLevel
 }
 
 /**  Tags */
@@ -74,6 +79,7 @@ export interface DataStoreState {
   tagsCache: TagsCache
   baseNodeId: string
   bookmarks: string[]
+  sharedNodes: SharedNode[]
   archive: ILink[]
   initialized: boolean
 
@@ -94,6 +100,10 @@ export interface DataStoreState {
   removeBookamarks: (bookmarks: string[]) => void
   setBookmarks: (bookmarks: string[]) => void
   getBookmarks: () => string[]
+
+  // Shared Nodes
+  setSharedNodes: (sharedNodes: SharedNode[]) => void
+  getSharedNodes: () => SharedNode[]
 
   // Tags Cache
   updateTagCache: (tag: string, nodes: string[]) => void

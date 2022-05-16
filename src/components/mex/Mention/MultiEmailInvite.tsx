@@ -60,9 +60,10 @@ export const MultiEmailInviteModalContent = () => {
       <InviteFormWrapper onSubmit={handleSubmit(onSubmit)}>
         <InputFormError
           name="email"
-          label="Email"
+          label="Emails"
           inputProps={{
             autoFocus: true,
+            placeholder: 'alice@email.com, bob@email.com',
             type: 'email',
             // Accepts multiple emails
             multiple: true,
