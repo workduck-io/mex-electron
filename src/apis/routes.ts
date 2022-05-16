@@ -49,7 +49,7 @@ export const apiURLs = {
   getBookmarks: (userId: string) => `${API_URL}/userBookmark/${userId}`,
 
   // User
-  getUserRecords: (userId: string) => `${config.constants.USER_SERVICE_BASE_URL}/user/${userId}/${MEX_TAG}`,
+  getUserRecords: (userId: string) => `${config.constants.USER_SERVICE_BASE_URL}/user/${userId}`,
   registerUser: `${API_URL}/user/register`,
 
   // Archive
