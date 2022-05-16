@@ -18,9 +18,6 @@ import useLoad from '../../../hooks/useLoad'
 import { checkIfUntitledDraftNode } from '../../../utils/lib/strings'
 import { getTitleFromContent } from '../../../utils/search/parseData'
 import { useRouting } from '../../../views/routes/urls'
-import { mog } from '../../../utils/lib/helper'
-import useDataStore from '../../../store/useDataStore'
-import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 
 export const useSearchProps = () => {

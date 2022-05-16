@@ -9,7 +9,6 @@ import styled from 'styled-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
 import tinykeys from 'tinykeys'
-import { mog } from '../../../../utils/lib/helper'
 
 export type ActionFormProps = {
   actionId: string
@@ -63,6 +62,7 @@ const ActionForm: React.FC<ActionFormProps> = ({ subType, actionId, actionGroupI
   const form = useMemo(() => {
     const config = groupedActions?.[actionGroupId]?.[actionId]
     const groups = groupRows(config?.form ?? [])
+
     return groups
   }, [actionGroupId, actionId])
 
@@ -75,6 +75,7 @@ const ActionForm: React.FC<ActionFormProps> = ({ subType, actionId, actionGroupI
         formMethods.handleSubmit(onSubmit)()
       }
     })
+
     return () => {
       unsubscribe()
     }
@@ -110,7 +111,6 @@ const ActionForm: React.FC<ActionFormProps> = ({ subType, actionId, actionGroupI
   const onSubmit = async (form: any) => {
     setIsSubmitting(true)
     const updatedForm = withFooter(form)
-    mog('FORM IS ', { updatedForm, form })
     await performer(actionGroupId, actionId, { formData: updatedForm })
     setIsSubmitting(false)
   }

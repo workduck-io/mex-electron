@@ -47,7 +47,7 @@ const ActionElementErrorText = styled.span`
 `
 
 type ActionFormElementProps = {
-  label: string
+  label?: string
   required?: boolean
   isInline?: boolean
   flex?: number
@@ -60,10 +60,12 @@ const ActionFormElement: React.FC<ActionFormElementProps> = ({ label, required, 
 
   return (
     <ElementContainer ref={ref} onClick={scrollThere} isInline={isInline} flex={flex}>
-      <ElementHeader>
-        <ActionElementLabel required={required}>{label}</ActionElementLabel>
-        {/* {required && <ActionElementErrorText>Required!</ActionElementErrorText>} */}
-      </ElementHeader>
+      {label && (
+        <ElementHeader>
+          <ActionElementLabel required={required}>{label}</ActionElementLabel>
+          {/* {required && <ActionElementErrorText>Required!</ActionElementErrorText>} */}
+        </ElementHeader>
+      )}
       {children}
     </ElementContainer>
   )

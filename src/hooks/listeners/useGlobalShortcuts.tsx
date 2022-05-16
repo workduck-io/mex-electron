@@ -24,6 +24,7 @@ export const useGlobalShortcuts = () => {
 
   const { goTo, location, goBack } = useRouting()
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
+  const isMenuOpen = useSpotlightAppStore((s) => s.isMenuOpen)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const setCurrentListItem = useSpotlightEditorStore((s) => s.setCurrentListItem)
   const setView = useSpotlightAppStore((store) => store.setView)
@@ -42,7 +43,7 @@ export const useGlobalShortcuts = () => {
     const unsubscribe = tinykeys(window, {
       [spotlightShortcuts.escape.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled) {
+        if (!shortcutDisabled || !isMenuOpen) {
           if (location.pathname === '/action' || location.pathname === '/action/view') {
             if (useSpotlightAppStore.getState().view === 'item') {
               setView(undefined)
@@ -78,10 +79,6 @@ export const useGlobalShortcuts = () => {
           setCurrentListItem(undefined)
         }
       }
-      // [spotlightShortcuts.Tab.keystrokes]: (event) => {
-      //   event.preventDefault()
-      //   setNormalMode(false)
-      // }
     })
     return () => {
       unsubscribe()

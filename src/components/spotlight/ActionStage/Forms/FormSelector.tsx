@@ -5,18 +5,19 @@ import { useActionStore } from '../../Actions/useActionStore'
 import ActionInput from './Fields/ActionInput'
 import styled from 'styled-components'
 import { Controller, useFormContext } from 'react-hook-form'
-import { mog } from '../../../../utils/lib/helper'
+import { mog } from '@utils/lib/helper'
 
 export type FormSelectorProps = {
   element: FormField
   disabled?: boolean
+  isMenuAction?: boolean
 }
 
 export const ActionSelector = styled(Selector)`
   max-width: 40vh;
 `
 
-const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled }) => {
+const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAction }) => {
   const getCacheResult = useActionStore((store) => store.getCacheResult)
   const activeAction = useActionStore((store) => store.activeAction)
 
@@ -53,6 +54,7 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled }) => {
               width="100%"
               error={error}
               data={data}
+              isList={isMenuAction}
               disabled={disabled}
               value={data?.find((d) => d?.value?.select?.value === value)}
               onChange={({ value }) => onChange(value?.select?.value)}
@@ -87,6 +89,7 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled }) => {
           )}
         />
       )
+
     case FormDataType.MULTI_SELECT:
       return (
         <Controller
@@ -102,10 +105,24 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled }) => {
               data={data}
               error={error}
               disabled={disabled}
+              isList={isMenuAction}
               value={filterTags(value)}
               ref={ref}
-              onChange={(changed) => {
-                onChange(changed.map((d) => d?.value?.select?.value))
+              onChange={(newVal) => {
+                const isArray = Array.isArray(newVal)
+                mog('isArray', { value, newVal })
+
+                if (isArray) {
+                  onChange(newVal?.map((d) => d?.value?.select?.value))
+                  return
+                }
+                const val = newVal?.value?.select?.value
+                if (value) {
+                  const isPresent = value?.find((d) => d === val)
+                  isPresent ? onChange(value?.filter((d) => d !== val)) : onChange([...value, val])
+                } else {
+                  onChange([val])
+                }
               }}
               width="100%"
               placeholder={element.options.placeholder}

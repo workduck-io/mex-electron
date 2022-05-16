@@ -69,7 +69,7 @@ const FloatingGroup = styled.div`
   right: 0.5rem;
 `
 
-const FormButton = styled(Button)`
+export const FormButton = styled(Button)`
   padding: ${(props) => props.theme.spacing.small} ${(props) => props.theme.spacing.medium};
 `
 
@@ -83,11 +83,12 @@ type ActionsRightSectionProps = { actionGroupId: string; actionId: string; isLoa
 
 export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionGroupId, actionId, isLoading }) => {
   const theme = useTheme()
+  const { goBack } = useRouting()
+  const getConfig = useActionStore((store) => store.getConfig)
   const actionGroups = useActionStore((store) => store.actionGroups)
   const setView = useSpotlightAppStore((store) => store.setView)
   const isSubmitting = useActionStore((store) => store.isSubmitting)
-  const getConfig = useActionStore((store) => store.getConfig)
-  const { goBack } = useRouting()
+  const isActiveItem = useSpotlightAppStore((store) => store.viewData)
 
   const onCancelClick = () => {
     setView(undefined)
@@ -96,7 +97,7 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
 
   const config = getConfig(actionGroupId, actionId)
 
-  if (config?.postAction?.menus) {
+  if (config?.postAction?.menus && isActiveItem) {
     return <ActionMenu title="Options" />
   }
 
@@ -110,6 +111,7 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
               color={theme.colors.primary}
               icon={actionGroups?.[actionGroupId]?.icon}
               height="4rem"
+              noHover
               width="4rem"
             />
             {isSubmitting ? <Loading transparent dots={3} orientation="vertical" direction="reverse" /> : <Connector />}

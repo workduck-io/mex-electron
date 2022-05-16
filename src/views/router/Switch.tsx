@@ -36,6 +36,7 @@ import ActionGroupsPage from '../mex/Actions'
 
 export const SwitchWrapper = styled(animated.div)<{ isAuth?: boolean }>`
   position: fixed;
+  height: 100%;
   width: ${({ theme, isAuth }) =>
     !isAuth ? '100% !important' : `calc(100% - 300px - ${theme.additional.hasBlocks ? '3rem' : '0px'})`};
   overflow-x: hidden;

@@ -15,7 +15,7 @@ const ModalContent = css`
   min-width: 400px;
 `
 
-const ModalOverlay = css`
+export const ModalOverlay = css`
   position: fixed;
   inset: 0px;
   display: flex;

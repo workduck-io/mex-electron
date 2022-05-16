@@ -1,16 +1,30 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useSpring } from 'react-spring'
-import { Input } from '../../../../style/Form'
-import { useActionStore } from '../../Actions/useActionStore'
-import MenuItem from './MenuItem'
-import { StyledActionMenu, StyledMenuItems } from './styled'
+import { MenuContainer, MenuBody, MenuHeader, MenuFooter, Overlay, MenuTitle } from './styled'
 import tinykeys from 'tinykeys'
+import { useSpotlightAppStore } from '@store/app.spotlight'
+import { MenuPostActionConfig } from '@workduck-io/action-request-helper'
+import useActionMenuStore from './useActionMenuStore'
+import MenuDisplay from './MenuDisplay'
+import { useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
+import { useActionStore } from '@components/spotlight/Actions/useActionStore'
+import { useTheme } from 'styled-components'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
+import { MexIcon } from '@style/Layouts'
 
 type MenuProps = {}
 
 const Menu: React.FC<MenuProps> = () => {
-  const getConfig = useActionStore((store) => store.getConfig)
+  const activeMenuAction = useActionMenuStore((store) => store.activeMenuAction)
+  const clearMenuStore = useActionMenuStore((store) => store.clearMenuStore)
+  const activeMenuItem = useSpotlightAppStore((store) => store.viewData)
+
+  const theme = useTheme()
   const activeAction = useActionStore((store) => store.activeAction)
+  const setActiveMenuAction = useActionMenuStore((store) => store.setActiveMenuAction)
+  const setIsMenuOpen = useSpotlightAppStore((store) => store.setIsMenuOpen)
+  const { getConfig } = useActionPerformer()
+
   const menuItems = getConfig(activeAction?.actionGroupId, activeAction?.id)?.postAction?.menus
 
   const transitions = useSpring({
@@ -18,38 +32,84 @@ const Menu: React.FC<MenuProps> = () => {
       width: '0'
     },
     to: {
-      width: '36vw'
+      width: '40vw'
     }
   })
 
+  const executesMenuAction = (menuAction: MenuPostActionConfig) => (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+
+    setActiveMenuAction(menuAction)
+  }
+
+  const addMenuActionListener = (menuItems: Array<MenuPostActionConfig>) => {
+    return menuItems.reduce(
+      (prev, curr) => ({
+        ...prev,
+        [curr.shortcut]: executesMenuAction(curr)
+      }),
+      {}
+    )
+  }
+
   useEffect(() => {
+    // * Disable global keydown events
+    setIsMenuOpen(true)
+
     const unsubscribe = tinykeys(window, {
       Tab: (event) => {
         event.preventDefault()
         event.stopPropagation()
-      }
+      },
+      Escape: (event) => {
+        event.preventDefault()
+        // * go back to previous step
+      },
+      ...addMenuActionListener(menuItems)
     })
 
     return () => {
+      // * remove Menu listeners
       unsubscribe()
+
+      // * Enable global keydown events
+      setIsMenuOpen(false)
+      clearMenuStore()
     }
   }, [])
+  const { activeItem } = useSpotlightContext()
+
+  const header = useMemo(() => {
+    const title = activeMenuItem?.filter((item) => item.type === 'title')?.[0]
+    const activeAction = useActionStore.getState().activeAction
+    const actionDetails = getConfig(activeAction?.actionGroupId, activeMenuAction?.actionId)
+
+    return { subHeading: actionDetails?.name, heading: title }
+  }, [activeMenuAction, activeMenuItem])
+
   return (
-    <StyledActionMenu style={transitions} id="wd-mex-action-menu">
-      <div id="wd-mex-action-menu-heading">#43</div>
-      <StyledMenuItems id="wd-mex-action-menu-content">
-        {menuItems?.map((item) => {
-          return (
-            <MenuItem
-              key={item.actionId}
-              item={item}
-              title={getConfig(activeAction?.actionGroupId, item.actionId).name}
-            />
-          )
-        })}
-      </StyledMenuItems>
-      <Input autoFocus type="text" id="wd-mex-action-menu-search" placeholder="Search" />
-    </StyledActionMenu>
+    <Overlay onClick={() => setIsMenuOpen(false)}>
+      <MenuContainer style={transitions} id="wd-mex-action-menu">
+        <MenuHeader id="wd-mex-action-menu-heading">
+          <MexIcon
+            color={theme.colors.primary}
+            icon={activeItem?.item?.icon}
+            height="1rem"
+            width="1rem"
+            margin="0 1rem 0 0.5rem"
+          />
+          <MenuTitle>{header?.heading?.value || header?.subHeading}</MenuTitle>
+        </MenuHeader>
+        <MenuBody id="wd-mex-action-menu-content">
+          <MenuDisplay menuItems={menuItems} />
+        </MenuBody>
+        {/* <MenuFooter id="wd-mex-action-menu-footer"> */}
+        {/* <FormButton type="submit" form="menu-action-form" color={theme.colors.primary}></FormButton> */}
+        {/* <Input autoFocus type="text" id="wd-mex-action-menu-search" placeholder="Search" /> */}
+        {/* </MenuFooter> */}
+      </MenuContainer>
+    </Overlay>
   )
 }
 

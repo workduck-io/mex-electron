@@ -91,7 +91,6 @@ const Content = () => {
             })
             .filter((item) => {
               const cond = !isParent(item.extras.path, BASE_TASKS_PATH)
-              console.log('cond', { cond })
               return cond
             })
             .reverse()
@@ -104,7 +103,10 @@ const Content = () => {
 
           const list = !recentLimit ? defItems : listWithAllNew
 
-          const data = [...recentEvents, ...list, ...actions]
+          //! TODO: Uncomment this after completing Menu actions
+          // const data = [...recentEvents, ...list, ...actions]
+          const data = actions
+
           setSearchResults(data)
         }
       }

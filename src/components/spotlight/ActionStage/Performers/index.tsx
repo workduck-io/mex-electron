@@ -42,7 +42,7 @@ const PerformersContainer = () => {
         <PreActions actions={preActions} />
         {type && <Performer actionId={activeAction?.id} actionType={type} />}
       </MainSection>
-      <RightActionSection actionId={activeAction?.id} actionGroupId={activeAction?.actionGroupId} isLoading={true} />
+      <RightActionSection actionId={activeAction?.id} actionGroupId={activeAction?.actionGroupId} />
     </Container>
   )
 }

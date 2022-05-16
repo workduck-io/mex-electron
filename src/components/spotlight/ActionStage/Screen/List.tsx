@@ -10,6 +10,7 @@ import { KEYBOARD_KEYS } from '../../Home/components/List'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { NavigationType, useRouting } from '../../../../views/routes/urls'
 import { Virtuoso } from 'react-virtuoso'
+import { mog } from '@utils/lib/helper'
 
 export const FullWidth = styled.div<{ narrow: boolean }>`
   width: 100%;
@@ -72,19 +73,24 @@ const List: React.FC<ListProps> = ({ items }) => {
     })
   }
 
-  const scrollTo = (itemIndex: number) =>
+  const scrollTo = (itemIndex: number) => {
     parentRef?.current?.scrollToIndex({
       index: itemIndex,
       align: 'start',
       behavior: 'smooth'
     })
+    setViewData(items[itemIndex])
+  }
 
   useEffect(() => {
-    if (items && items.length > 0) scrollTo(0)
+    if (items && items.length > 0) {
+      scrollTo(0)
+    }
   }, [items])
 
   useEffect(() => {
     const handler = (event) => {
+      mog('IS MENU OPEN', { isMenuOpen })
       if (isMenuOpen) return
 
       if (event.key === KEYBOARD_KEYS.ArrowUp) {
@@ -122,6 +128,8 @@ const List: React.FC<ListProps> = ({ items }) => {
       <Virtuoso
         tabIndex={-1}
         data={items}
+        key="wd-mex-action-result-list"
+        id="wd-mex-action-result-list"
         ref={parentRef}
         itemContent={(index, item) => {
           return (

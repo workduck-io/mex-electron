@@ -1,6 +1,6 @@
 import { ActiveItem, CategoryType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { ItemActionType, ListItemType } from '../../SearchResults/types'
-import { ActionItem, ListItem, StyledList } from '../styled'
+import { ActionItem, StyledList } from '../styled'
 import React, { useEffect, useMemo, useRef } from 'react'
 import { findIndex, groupBy } from 'lodash'
 import { Virtuoso } from 'react-virtuoso'
@@ -40,7 +40,8 @@ export enum KEYBOARD_KEYS {
   Enter = 'Enter',
   ArrowUp = 'ArrowUp',
   ArrowDown = 'ArrowDown',
-  Escape = 'Escape'
+  Escape = 'Escape',
+  Space = 'Space'
 }
 
 const List = ({
