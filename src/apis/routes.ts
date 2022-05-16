@@ -1,5 +1,4 @@
 import config from '../config.json'
-import { MEX_TAG } from '../data/Defaults/auth'
 import { IS_DEV } from '../data/Defaults/dev_'
 
 export const BASE_INTEGRATION_URL = 'https://http.workduck.io/integration'
@@ -49,7 +48,7 @@ export const apiURLs = {
   getBookmarks: (userId: string) => `${API_URL}/userBookmark/${userId}`,
 
   // User
-  getUserRecords: (userId: string) => `${config.constants.USER_SERVICE_BASE_URL}/user/${userId}`,
+  getUserRecords: `${config.constants.USER_SERVICE_BASE_URL}/user/`,
   registerUser: `${API_URL}/user/register`,
 
   // Archive

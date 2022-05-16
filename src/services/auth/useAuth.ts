@@ -100,7 +100,7 @@ export const useAuthentication = () => {
 
     if (getWorkspace && data !== undefined) {
       authDetails = await client
-        .get(apiURLs.getUserRecords(data.userId))
+        .get(apiURLs.getUserRecords)
         .then((d): AuthDetails => {
           const userDetails = { email }
           const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
@@ -141,7 +141,7 @@ export const useAuthentication = () => {
       const result: any = await googleSignIn(code, clientId, redirectURI)
       if (getWorkspace && result !== undefined) {
         await client
-          .get(apiURLs.getUserRecords(result.userCred.userId))
+          .get(apiURLs.getUserRecords)
           /*
            * If the user is present in the database, then we will add properties
            */
