@@ -1,5 +1,6 @@
 import { EMAIL_REG } from '@data/Defaults/auth'
 import { useMentions } from '@hooks/useMentions'
+import { useUserService } from '@services/auth/useUserService'
 import { useEditorStore } from '@store/useEditorStore'
 import { ButtonFields, Label, SelectWrapper, StyledCreatatbleSelect } from '@style/Form'
 import { Title } from '@style/Typography'
@@ -14,8 +15,9 @@ import { InviteModalData, useShareModalStore } from './ShareModalStore'
 
 export const InviteModalContent = () => {
   const data = useShareModalStore((state) => state.data)
+  const { getUserDetails } = useUserService()
   const node = useEditorStore((state) => state.node)
-  const { inviteUser } = useMentions()
+  const { inviteUser, addMentionable } = useMentions()
   const {
     handleSubmit,
     register,
@@ -23,11 +25,19 @@ export const InviteModalContent = () => {
     formState: { errors, isSubmitting }
   } = useForm<InviteModalData>()
 
-  const onSubmit = (data: InviteModalData) => {
+  const onSubmit = async (data: InviteModalData) => {
     mog('data', data)
 
     if (node && node.nodeid) {
-      inviteUser(data.email, data.alias, node.nodeid, (data.access as AccessLevel) ?? DefaultPermission)
+      const details = await getUserDetails(data.email)
+      if (details) {
+        console.log({ details })
+        //const res = addMentionable(data.alias, data.email, userid, node.nodeid, data.access as AccessLevel ?? DefaultPermission)
+        //   // Get userid from res
+        //   replaceUserMention(editor, alias, res.userid)
+      } else {
+        inviteUser(data.email, data.alias, node.nodeid, (data.access as AccessLevel) ?? DefaultPermission)
+      }
     }
   }
 

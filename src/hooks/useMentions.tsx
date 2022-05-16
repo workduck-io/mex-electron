@@ -30,7 +30,7 @@ export const useMentions = () => {
     })
   }
 
-  const grantUserAccessOnMention = (alias: string, nodeid: string, access: AccessLevel = DefaultPermission) => {
+  const grantUserAccessOnMention = async (alias: string, nodeid: string, access: AccessLevel = DefaultPermission) => {
     mog('GrantUserAccessOnMention', { alias, nodeid, access })
 
     const invitedUsers = useMentionStore.getState().invitedUsers
@@ -41,19 +41,19 @@ export const useMentions = () => {
       const newInvited: InvitedUser = addAccessToUser(invitedExists, nodeid, access)
       // As user not on mex no need to call backend and give permission
       setInvited([...invitedUsers.filter((user) => user.alias !== alias), newInvited])
-      return 'invite'
+      return newInvited
     } else if (!invitedExists && mentionExists) {
       // We know it is guaranteed to be mentionable
       // Call backend and give permission
-      const res = grantUsersPermission(nodeid, [mentionExists.userid], access)
+      const res = await grantUsersPermission(nodeid, [mentionExists.userid], access)
         .then(() => {
           const newMentioned: Mentionable = addAccessToUser(mentionExists, nodeid, access) as Mentionable
           setMentionable([...mentionable.filter((user) => user.email !== alias), newMentioned])
-          return 'mentionable'
+          return newMentioned
         })
         .catch((e) => {
           console.log('Granting permission to user failed', { e })
-          return 'error'
+          return undefined
         })
       return res
     } else {
@@ -61,6 +61,28 @@ export const useMentions = () => {
       console.log('SHOULD NOT RUN', {})
       return 'notFound'
       //
+    }
+  }
+
+  const addMentionable = (alias: string, email: string, userid: string, nodeid: string, access: AccessLevel) => {
+    const mentionable = useMentionStore.getState().mentionable
+
+    const mentionExists = mentionable.find((user) => user.userid === userid)
+
+    if (mentionExists) {
+      mentionExists.access[nodeid] = access
+      setMentionable([...mentionable.filter((u) => u.userid !== userid), mentionExists])
+    } else {
+      const newMention: Mentionable = {
+        type: 'mentionable',
+        alias,
+        email,
+        access: {
+          [nodeid]: access
+        },
+        userid
+      }
+      setMentionable([...mentionable, newMention])
     }
   }
 
@@ -112,6 +134,7 @@ export const useMentions = () => {
     getUsernameFromUserid,
     getUserFromUserid,
     inviteUser,
+    addMentionable,
     getUserAccessLevelForNode,
     getSharedUsersForNode,
     getInvitedUsersForNode,

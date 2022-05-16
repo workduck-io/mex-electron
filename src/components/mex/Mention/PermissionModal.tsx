@@ -164,9 +164,9 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
       }, [])
 
     const applyPermissions = async () => {
-      // const userChangePerm = await changeUserPermission(node.nodeid, newPermissions)
-      // const userRevoke = await revokeUserAccess(node.nodeid, revokedUsers)
-      // mog('set new permissions', { userChangePerm, userRevoke })
+      const userChangePerm = await changeUserPermission(node.nodeid, newPermissions)
+      const userRevoke = await revokeUserAccess(node.nodeid, revokedUsers)
+      mog('set new permissions', { userChangePerm, userRevoke })
     }
 
     await applyPermissions()
