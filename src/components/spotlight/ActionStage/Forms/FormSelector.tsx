@@ -39,6 +39,10 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAc
     return r
   }
 
+  const getData = (value: string) => {
+    return data?.find((d) => d?.value?.select?.value === value)
+  }
+
   switch (element.type) {
     case FormDataType.SELECT:
       return (
@@ -56,7 +60,7 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAc
               data={data}
               isList={isMenuAction}
               disabled={disabled}
-              value={data?.find((d) => d?.value?.select?.value === value)}
+              value={getData(value)}
               onChange={({ value }) => onChange(value?.select?.value)}
               placeholder={element.options.placeholder}
               actionGroupId={activeAction?.actionGroupId}
@@ -110,7 +114,6 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAc
               ref={ref}
               onChange={(newVal) => {
                 const isArray = Array.isArray(newVal)
-                mog('isArray', { value, newVal })
 
                 if (isArray) {
                   onChange(newVal?.map((d) => d?.value?.select?.value))

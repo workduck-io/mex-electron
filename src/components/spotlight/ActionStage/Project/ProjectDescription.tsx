@@ -7,6 +7,7 @@ export type TemplateItemProp = { item: TemplateEntity; isView?: boolean }
 
 export const TemplateCss = css`
   margin: 0 0.25rem;
+  user-select: none;
 `
 
 const DescContainer = styled.span<{ isView: boolean }>`
@@ -20,6 +21,14 @@ const DescContainer = styled.span<{ isView: boolean }>`
       font-size: 0.9rem;
       color: ${({ theme }) => theme.colors.text.default};
       margin: 0 0.5rem;
+
+      img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 5px;
+        width: calc(100% - 5px);
+      }
 
       a {
         cursor: pointer;

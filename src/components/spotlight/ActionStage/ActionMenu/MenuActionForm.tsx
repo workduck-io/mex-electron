@@ -5,11 +5,11 @@ import ActionFormElement from '../Forms/Fields/ActionFormElement'
 import FormSelector from '../Forms/FormSelector'
 import { useForm, FormProvider } from 'react-hook-form'
 import { set } from 'lodash'
-import useActionMenuStore from './useActionMenuStore'
 import { useSpotlightAppStore } from '@store/app.spotlight'
-import { FormButton } from '../Forms/RightSection'
-import { useTheme } from 'styled-components'
+import { FormLoadingButton } from './styled'
+import tinykeys from 'tinykeys'
 import { mog } from '@utils/lib/helper'
+import useActionMenuStore from './useActionMenuStore'
 
 type MenuActionFormProps = {
   action: MenuPostActionConfig
@@ -48,7 +48,6 @@ const MenuActionForm: React.FC<MenuActionFormProps> = ({ action }) => {
 
   const [activeIndex, setActiveIndex] = useState<number>(0)
   const formMethods = useForm()
-  const theme = useTheme()
 
   const actionDetails: ActionHelperConfig = getConfigWithActionId(action.actionId)
 
@@ -81,10 +80,28 @@ const MenuActionForm: React.FC<MenuActionFormProps> = ({ action }) => {
     return newForm
   }
 
-  const onSubmit = async (form: any) => {
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      '$mod+Enter': async (event) => {
+        event.preventDefault()
+        await onSubmit()
+      }
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+
+  const onSubmit = async (form?: any) => {
     setIsSubmitting(true)
     const updatedForm = withFooter(form)
-    await performer(actionDetails?.actionGroupId, action.actionId, { formData: updatedForm, parent: true })
+    try {
+      await performer(actionDetails?.actionGroupId, action.actionId, { formData: updatedForm, parent: true })
+      useActionMenuStore.getState().clearMenuStore()
+    } catch (err) {
+      mog('Unable to update data')
+    }
     setIsSubmitting(false)
   }
 
@@ -102,14 +119,13 @@ const MenuActionForm: React.FC<MenuActionFormProps> = ({ action }) => {
           )
         })}
       </form>
-      <FormButton
-        // disabled={!formMethods.formState.isValid}
-        type="submit"
-        form="menu-action-form"
-        color={theme.colors.primary}
+      <FormLoadingButton
+        loading={isSubmitting}
+        alsoDisabled={!formMethods.formState.isDirty}
+        buttonProps={{ type: 'submit', form: 'menu-action-form', primary: true }}
       >
         Update
-      </FormButton>
+      </FormLoadingButton>
     </FormProvider>
   )
 }

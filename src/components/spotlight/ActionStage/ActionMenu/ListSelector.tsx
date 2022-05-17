@@ -4,6 +4,7 @@ import styled, { useTheme } from 'styled-components'
 import { StyledOption } from '../Performers/styled'
 import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
 import { StyledBackground } from '@components/spotlight/styled'
+import { BodyFont } from '@style/spotlight/global'
 
 type ListSelectorProps = {
   item: any
@@ -13,9 +14,10 @@ type ListSelectorProps = {
 }
 
 const MenuListOption = styled((props) => <StyledOption {...props} />)`
-  margin-bottom: ${({ theme }) => theme.spacing.tiny};
-  padding: ${({ theme }) => theme.spacing.medium};
+  padding: ${({ theme }) => theme.spacing.small};
+  user-select: none;
   background-color: ${({ theme, highlight }) => highlight && theme.colors.background.app};
+  ${BodyFont}
 
   :hover {
     ${StyledBackground}
@@ -24,13 +26,19 @@ const MenuListOption = styled((props) => <StyledOption {...props} />)`
 
 const DEFAULT_LIST_ITEM_ICON = 'codicon:circle-filled'
 
-const ListSelector: React.FC<ListSelectorProps> = ({ item, highlight, isActive }) => {
+const ListSelector: React.FC<ListSelectorProps> = ({ item, highlight, isActive, onClick }) => {
   const theme = useTheme()
   const { icon, color } = item?.value?.select
   const { mexIcon } = getIconType(icon ?? DEFAULT_LIST_ITEM_ICON)
 
+  const handleOnClick = (ev) => {
+    ev.preventDefault()
+    ev.stopPropagation()
+    onClick(item)
+  }
+
   return (
-    <MenuListOption highlight={highlight} isActive={isActive}>
+    <MenuListOption highlight={highlight} isActive={isActive} onClick={handleOnClick}>
       <span>
         <ProjectIconMex
           isMex={mexIcon}

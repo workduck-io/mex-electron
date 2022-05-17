@@ -53,10 +53,12 @@ const VirtualList = <T,>({ items, activeItems, getIsActive, onEnter, onClick, It
       switch (event.code) {
         case KEYBOARD_KEYS.ArrowUp:
           event.preventDefault()
+          event.stopPropagation()
           prevItem()
           break
         case KEYBOARD_KEYS.ArrowDown:
           event.preventDefault()
+          event.stopPropagation()
           nextItem()
           break
         case KEYBOARD_KEYS.Space:
@@ -79,7 +81,7 @@ const VirtualList = <T,>({ items, activeItems, getIsActive, onEnter, onClick, It
     <Virtuoso
       data={items}
       tabIndex={-1}
-      style={{ height: '250px' }}
+      style={{ height: '310px' }}
       ref={ref}
       key="wd-mex-action-menu-list"
       id="wd-mex-action-menu-list"

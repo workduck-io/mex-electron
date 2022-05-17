@@ -57,6 +57,7 @@ export const ProjectIconMex: React.FC<{ isMex: boolean; icon: string; size?: num
         <MexIcon
           ref={ref as any}
           icon={icon}
+          noHover
           height={size ?? 20}
           width={size ?? 20}
           color={color ?? theme.colors.primary}

@@ -10,6 +10,7 @@ import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { mog } from '../../../utils/lib/helper'
 import { NavigationType, useRouting } from '../../../views/routes/urls'
 import { ACTION_ENV } from '../../../apis/routes'
+import useActionMenuStore from '../ActionStage/ActionMenu/useActionMenuStore'
 
 type PerfomerOptions = {
   formData?: Record<string, any>
@@ -46,12 +47,16 @@ export const useActionPerformer = () => {
     Performs an actions and return's the result
     if not found, it will perform the action and add it to the cache
   */
+
   const performer = async (actionGroupId: string, actionId: string, options?: PerfomerOptions) => {
     const actionConfig = groupedAction?.[actionGroupId]?.[actionId]
     const viewData = useSpotlightAppStore.getState().viewData
-    const prevActionValue = options?.parent ? { value: viewData?.context } : getPrevActionValue(actionId)?.selection
+    const isMenuActionOpen = useActionMenuStore.getState().isActionMenuOpen
 
-    mog('PRE ACTIION VALUE', { prevActionValue })
+    const prevActionValue =
+      options?.parent && !actionConfig.preActionId
+        ? { value: viewData?.context }
+        : getPrevActionValue(actionId)?.selection
 
     // * if we have a cache, return the cached result
     // if (!fetch) {
@@ -61,7 +66,7 @@ export const useActionPerformer = () => {
 
     if (!actionConfig) return
 
-    setIsLoading(true)
+    if (!isMenuActionOpen) setIsLoading(true)
 
     let auth
 
@@ -76,6 +81,8 @@ export const useActionPerformer = () => {
     const configVal = options?.formData
       ? { ...prevActionValue?.value, formData: options.formData }
       : prevActionValue?.value
+
+    mog(`${actionId}`, { configVal, prevActionValue })
 
     try {
       // * if we have a previous action selection, use that
@@ -93,33 +100,34 @@ export const useActionPerformer = () => {
 
       // * If there's a result action of type RUN_ACTION,
       if (isRunAction) {
+        const postContext = result?.contextData || { url: configVal.url }
+
         const postAction = await actionPerformer?.request({
           config: groupedAction?.[actionGroupId]?.[resultAction?.actionId],
           auth,
-          configVal: result?.contextData,
+          configVal: postContext,
           serviceType
         })
 
         // * View the result action
         setView('item')
-        setViewData({ context: result?.contextData, display: postAction?.displayData ?? [] })
+        setViewData({ context: result?.contextData || configVal, display: postAction?.displayData ?? [] })
 
         goTo('/action/view', NavigationType.replace)
       }
 
-      setIsLoading(false)
+      if (!isMenuActionOpen) setIsLoading(false)
 
       return result
     } catch (err) {
       mog('Something went wrong', { err })
-      setIsLoading(false)
+      if (!isMenuActionOpen) setIsLoading(false)
     }
 
     return undefined
   }
 
   const initActionPerfomerClient = (workspaceId: string) => {
-    mog('WORKSPACE ID', { workspaceId })
     if (workspaceId) actionPerformer.setWorkspaceId(workspaceId)
   }
 

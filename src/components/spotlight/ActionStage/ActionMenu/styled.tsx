@@ -1,8 +1,9 @@
+import { LoadingButton } from '@components/mex/Buttons/LoadingButton'
 import { ModalOverlay } from '@components/mex/Refactor/styles'
 import { StyledBackground } from '@components/spotlight/styled'
 import { Input } from '@style/Form'
-import { BodyFont, MainFont } from '@style/spotlight/global'
-import { rgba, transparentize } from 'polished'
+import { BodyFont } from '@style/spotlight/global'
+import { rgba } from 'polished'
 import { animated } from 'react-spring'
 import styled from 'styled-components'
 
@@ -13,19 +14,30 @@ export const StyledDefault = styled.div`
   font-size: 0.9rem;
 `
 
-export const StyledMenuItem = styled.div<{ highlight?: boolean }>`
+export const FormLoadingButton = styled(LoadingButton)`
+  margin-top: ${(props) => props.theme.spacing.small};
+  box-shadow: none !important;
+`
+
+export const StyledMenuItem = styled.button<{ highlight?: boolean }>`
   display: flex;
+  border: none;
   user-select: none;
-  background-color: ${({ theme, highlight }) => highlight && theme.colors.background.app};
+  background-color: ${({ theme, highlight }) =>
+    highlight ? theme.colors.background.app : theme.colors.background.card};
+
+  :focus {
+    outline: none;
+  }
 
   :hover {
     ${StyledBackground}
   }
 
-  padding: ${(props) => props.theme.spacing.medium};
+  padding: ${(props) => props.theme.spacing.small};
   border-radius: ${(props) => props.theme.borderRadius.small};
   align-items: center;
-  font-size: ${BodyFont};
+  ${BodyFont};
   cursor: pointer;
   width: 100%;
   color: ${({ theme }) => theme.colors.text.default};
@@ -56,15 +68,14 @@ export const MenuBody = styled.div`
 `
 
 export const Overlay = styled.div`
-  position: fixed;
+  position: absolute;
   top: 0.3rem;
   left: 0.1rem;
   width: 100vw;
   height: 100vh;
   ${ModalOverlay};
-  z-index: 1;
+  z-index: 100;
   background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};
-
   transition: background-color 0.5s ease;
 
   align-items: flex-end;
@@ -88,5 +99,6 @@ export const MenuContainer = styled(animated.div)`
   box-sizing: border-box;
   padding: ${({ theme }) => theme.spacing.medium} ${({ theme }) => theme.spacing.small};
   gap: ${({ theme }) => theme.spacing.medium};
+  height: 85vh;
   min-height: 85vh;
 `

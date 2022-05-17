@@ -103,9 +103,7 @@ const Content = () => {
 
           const list = !recentLimit ? defItems : listWithAllNew
 
-          //! TODO: Uncomment this after completing Menu actions
-          // const data = [...recentEvents, ...list, ...actions]
-          const data = actions
+          const data = [...recentEvents, ...list, ...actions]
 
           setSearchResults(data)
         }

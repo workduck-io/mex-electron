@@ -45,7 +45,7 @@ const ViewMeta = styled.div`
 export const ViewPage = () => {
   const viewData = useSpotlightAppStore((store) => store.viewData)
 
-  return <View item={viewData.display} />
+  return <View item={viewData?.display} />
 }
 
 const View: React.FC<ViewProps> = ({ item, onBack, onNext, onPrev }) => {

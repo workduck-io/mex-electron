@@ -11,6 +11,7 @@ import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { NavigationType, useRouting } from '../../../../views/routes/urls'
 import { Virtuoso } from 'react-virtuoso'
 import { mog } from '@utils/lib/helper'
+import useActionMenuStore from '../ActionMenu/useActionMenuStore'
 
 export const FullWidth = styled.div<{ narrow: boolean }>`
   width: 100%;
@@ -47,6 +48,8 @@ const List: React.FC<ListProps> = ({ items, context }) => {
   const setViewData = useSpotlightAppStore((store) => store.setViewData)
   const setView = useSpotlightAppStore((store) => store.setView)
   const isMenuOpen = useSpotlightAppStore((store) => store.isMenuOpen)
+  const isActionMenuOpen = useActionMenuStore((store) => store.isActionMenuOpen)
+
   const { goTo } = useRouting()
 
   const parentRef = useRef(null)
@@ -98,26 +101,32 @@ const List: React.FC<ListProps> = ({ items, context }) => {
 
   useEffect(() => {
     const handler = (event) => {
-      if (isMenuOpen) return
-
-      if (event.key === KEYBOARD_KEYS.ArrowUp) {
-        event.preventDefault()
-        prevItem()
-      } else if (event.key === KEYBOARD_KEYS.ArrowDown) {
-        event.preventDefault()
-        nextItem()
-      }
-
-      if (event.key === 'Enter') {
-        event.preventDefault()
-        onSelect(activeIndex)
+      switch (event.code) {
+        case KEYBOARD_KEYS.ArrowUp:
+          event.preventDefault()
+          event.stopPropagation()
+          prevItem()
+          break
+        case KEYBOARD_KEYS.ArrowDown:
+          event.preventDefault()
+          event.stopPropagation()
+          nextItem()
+          break
+        case KEYBOARD_KEYS.Enter:
+          event.preventDefault()
+          event.stopPropagation()
+          onSelect(activeIndex)
+          break
+        default:
+          break
       }
     }
 
-    if (!isMenuOpen) window?.addEventListener('keydown', handler)
+    if (isMenuOpen || isActionMenuOpen) window?.removeEventListener('keydown', handler)
+    else window?.addEventListener('keydown', handler)
 
     return () => window.removeEventListener('keydown', handler)
-  }, [activeIndex, items, isMenuOpen])
+  }, [activeIndex, items, isMenuOpen, isActionMenuOpen])
 
   if (!items || items.length === 0) {
     return (

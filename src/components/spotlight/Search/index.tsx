@@ -20,7 +20,7 @@ type QueryType = {
   type: CategoryType
 }
 
-const Search: React.FC = () => {
+const Search = () => {
   const theme = useTheme()
   const ref = useRef<HTMLInputElement>()
 
@@ -96,9 +96,6 @@ const Search: React.FC = () => {
     handleSearchInput(query)
   }
 
-  // const type = getQuery(input).type
-  // const before = type === CategoryType.search ? '' : type
-
   const disabled = !normalMode || !!view
 
   return (
@@ -117,7 +114,6 @@ const Search: React.FC = () => {
         placeholder={placeholder}
         onChange={onChange}
       />
-      {/* </Before> */}
       {saved && <Message text="Saved" />}
       <CenterIcon id="wd-mex-spotlight-logo">
         <ViewActionHandler />

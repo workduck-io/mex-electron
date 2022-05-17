@@ -1,7 +1,7 @@
 import BackIcon from '@iconify/icons-ph/caret-circle-left-light'
 import LensIcon from '@iconify/icons-ph/magnifying-glass-bold'
 import { getPlateSelectors } from '@udecode/plate'
-import { cleanString, generateTempId } from '../../../data/Defaults/idPrefixes'
+import { cleanString } from '../../../data/Defaults/idPrefixes'
 import { IpcAction } from '../../../data/IpcAction'
 import { useSaver } from '../../../editor/Components/Saver'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'

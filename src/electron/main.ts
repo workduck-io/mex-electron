@@ -552,7 +552,7 @@ ipcMain.on(IpcAction.COPY_TO_CLIPBOARD, (event, arg) => {
   const { from, data } = arg
   copyToClipboard(data.text, data.html)
   toast?.setParent(spotlight)
-  toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.SUCCESS, title: 'Snippet Copied!' })
+  toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.SUCCESS, title: data.title })
   toast?.open()
 })
 

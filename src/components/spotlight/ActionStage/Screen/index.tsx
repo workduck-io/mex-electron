@@ -8,6 +8,7 @@ import { TemplateConfig } from '@workduck-io/action-request-helper'
 import List from './List'
 import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
+import useActionMenuStore from '../ActionMenu/useActionMenuStore'
 
 const StyledScreen = styled.section`
   display: flex;
@@ -34,6 +35,7 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
   const getCacheResult = useActionStore((store) => store.getCacheResult)
   const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
   const prevValue = getPreviousActionValue(actionId)?.selection
+  const needsRefresh = useActionMenuStore((store) => store.needsRefresh)
 
   const isLoading = useSpotlightAppStore((store) => store.isLoading)
   const { performer, isPerformer } = useActionPerformer()
@@ -55,11 +57,13 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
         })
         .catch((err) => mog('error', { err }))
     }
-  }, [actionId, prevValue])
+  }, [actionId, prevValue, needsRefresh])
 
   const memoData = useMemo(() => {
+    const res = getCacheResult(actionId)
+    mog('res', { res })
     return getCacheResult(actionId)
-  }, [actionId])
+  }, [actionId, resData])
 
   useEffect(() => {
     const data = (memoData?.displayData as TemplateConfig[]) ?? []

@@ -7,6 +7,7 @@ export type TemplateItemProp = { item: TemplateEntity; isView?: boolean }
 export const TemplateCss = css`
   margin: 0 0.25rem;
   color: ${({ theme }) => theme.colors.text.default};
+  user-select: none;
 `
 
 const Title = styled.span<{ isView: boolean }>`

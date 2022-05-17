@@ -320,8 +320,9 @@ const List = ({
     }
 
     const action = isUse ? IpcAction.USE_SNIPPET : IpcAction.COPY_TO_CLIPBOARD
+    const title = isUse ? 'Snippet Pasted!' : 'Snippet Copied!'
 
-    appNotifierWindow(action, AppType.SPOTLIGHT, { text, html })
+    appNotifierWindow(action, AppType.SPOTLIGHT, { text, html, title })
   }
 
   return (

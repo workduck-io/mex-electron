@@ -11,6 +11,8 @@ import { useSpotlightAppStore } from '../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../store/settings.spotlight'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
+import useActionMenuStore from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
+import { mog } from '@utils/lib/helper'
 
 export const useGlobalShortcuts = () => {
   const { setSelection, setSearch, setActiveItem, activeItem, search, selection } = useSpotlightContext()
@@ -41,13 +43,23 @@ export const useGlobalShortcuts = () => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
+      '$mod+R': (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+      },
       [spotlightShortcuts.escape.keystrokes]: (event) => {
         event.preventDefault()
-        if (!shortcutDisabled || !isMenuOpen) {
+        const isActionMenuOpen = useActionMenuStore.getState().isActionMenuOpen
+
+        if (isActionMenuOpen) return
+        else if (isMenuOpen) return
+        if (!shortcutDisabled) {
           if (location.pathname === '/action' || location.pathname === '/action/view') {
             if (useSpotlightAppStore.getState().view === 'item') {
+              mog('CALLING INSIDE')
               setView(undefined)
               goBack()
+              return
             } else {
               // * If no value is present, take back to home view
               if (!search.value) {
