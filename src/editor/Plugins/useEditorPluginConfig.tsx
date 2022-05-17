@@ -129,20 +129,24 @@ const useEditorPluginConfig = (editorId: string) => {
     ...slashInternals.map((l) => ({ ...l, value: l.command, text: l.text, type: l.type }))
   ]
 
-  const mentions = [
-    ...mentionable.map((m) => ({
-      value: m.userid,
-      text: m.alias,
-      icon: 'ri:user-line',
-      type: QuickLinkType.mentions
-    })),
-    ...invitedUsers.map((m) => ({
-      value: m.alias,
-      text: m.alias,
-      icon: 'ri:user-line',
-      type: QuickLinkType.mentions
-    }))
-  ]
+  const mentions = useMemo(
+    () => [
+      ...mentionable.map((m) => ({
+        value: m.userid,
+        text: m.alias,
+        icon: 'ri:user-line',
+        type: QuickLinkType.mentions
+      })),
+      ...invitedUsers.map((m) => ({
+        value: m.alias,
+        text: m.alias,
+        icon: 'ri:user-line',
+        type: QuickLinkType.mentions
+      }))
+    ],
+    [mentionable, invitedUsers]
+  )
+
   const comboConfigData: ComboConfigData = {
     keys: {
       inline_block: {

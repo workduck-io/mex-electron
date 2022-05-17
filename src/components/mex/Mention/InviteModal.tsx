@@ -1,6 +1,7 @@
 import { EMAIL_REG } from '@data/Defaults/auth'
 import { replaceUserMention } from '@editor/Actions/replaceUserMention'
 import { useMentions } from '@hooks/useMentions'
+import { usePermission } from '@services/auth/usePermission'
 import { useUserService } from '@services/auth/useUserService'
 import { useEditorStore } from '@store/useEditorStore'
 import { ButtonFields, Label, SelectWrapper, StyledCreatatbleSelect } from '@style/Form'
@@ -21,6 +22,7 @@ export const InviteModalContent = () => {
   const { getUserDetails } = useUserService()
   const node = useEditorStore((state) => state.node)
   const { inviteUser, addMentionable, saveMentionData } = useMentions()
+  const { grantUsersPermission } = usePermission()
 
   const {
     handleSubmit,
@@ -39,7 +41,8 @@ export const InviteModalContent = () => {
 
       if (details.userId !== undefined) {
         // TODO: Give permission here
-        // console.log({ details })
+        const resp = await grantUsersPermission(node.nodeid, [details.userId], access)
+        mog('UserPermission given', { details, resp })
         addMentionable(data.alias, data.email, details.userId, node.nodeid, access)
         replaceUserMention(editor, data.alias, details.userId)
       } else {

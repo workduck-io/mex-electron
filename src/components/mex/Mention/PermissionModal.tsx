@@ -2,6 +2,7 @@ import { getAccessValue, useMentions } from '@hooks/useMentions'
 import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
 import { usePermission } from '@services/auth/usePermission'
 import { useEditorStore } from '@store/useEditorStore'
+import { useMentionStore } from '@store/useMentionStore'
 import { StyledCreatatbleSelect } from '@style/Form'
 import { mog } from '@utils/lib/helper'
 import React, { useMemo } from 'react'
@@ -25,7 +26,7 @@ import { useShareModalStore } from './ShareModalStore'
 
 export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
   const closeModal = useShareModalStore((s) => s.closeModal)
-  const { getSharedUsersForNode, getInvitedUsersForNode } = useMentions()
+  const { getSharedUsersForNode, getInvitedUsersForNode, applyChangesMentionable } = useMentions()
   const node = useEditorStore((state) => state.node)
   const changedUsers = useShareModalStore((state) => state.data.changedUsers)
   const setChangedUsers = useShareModalStore((state) => state.setChangedUsers)
@@ -149,12 +150,8 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
     const newAliases = withoutRevokeChanges
       .filter((u) => u.change.includes('alias'))
       .reduce((acc, user) => {
-        acc.push({
-          userid: user.userid,
-          alias: user.alias
-        })
-        return acc
-      }, [])
+        return { ...acc, [user.userid]: user.alias }
+      }, {})
 
     const revokedUsers = changedUsers
       .filter((u) => u.change.includes('revoke'))
@@ -163,13 +160,21 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
         return acc
       }, [])
 
+    mog('Updating after the table changes ', { newAliases, revokedUsers, newPermissions })
+
     const applyPermissions = async () => {
-      const userChangePerm = await changeUserPermission(node.nodeid, newPermissions)
-      const userRevoke = await revokeUserAccess(node.nodeid, revokedUsers)
-      mog('set new permissions', { userChangePerm, userRevoke })
+      if (Object.keys(newPermissions).length > 0) await changeUserPermission(node.nodeid, newPermissions)
+
+      if (revokedUsers.length > 0) await revokeUserAccess(node.nodeid, revokedUsers)
+      // mog('set new permissions', { userRevoke })
+      applyChangesMentionable(newPermissions, newAliases, revokedUsers, node.nodeid)
     }
 
     await applyPermissions()
+
+    // Update Aliases
+    // Update Permissions
+    // Delete Revoked
 
     closeModal()
 
