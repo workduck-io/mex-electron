@@ -1,9 +1,11 @@
 import { EMAIL_REG } from '@data/Defaults/auth'
+import { replaceUserMention } from '@editor/Actions/replaceUserMention'
 import { useMentions } from '@hooks/useMentions'
 import { useUserService } from '@services/auth/useUserService'
 import { useEditorStore } from '@store/useEditorStore'
 import { ButtonFields, Label, SelectWrapper, StyledCreatatbleSelect } from '@style/Form'
 import { Title } from '@style/Typography'
+import { getPlateEditorRef, usePlateEditorRef } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -15,9 +17,11 @@ import { InviteModalData, useShareModalStore } from './ShareModalStore'
 
 export const InviteModalContent = () => {
   const data = useShareModalStore((state) => state.data)
+  const closeModal = useShareModalStore((state) => state.closeModal)
   const { getUserDetails } = useUserService()
   const node = useEditorStore((state) => state.node)
-  const { inviteUser, addMentionable } = useMentions()
+  const { inviteUser, addMentionable, saveMentionData } = useMentions()
+
   const {
     handleSubmit,
     register,
@@ -26,19 +30,25 @@ export const InviteModalContent = () => {
   } = useForm<InviteModalData>()
 
   const onSubmit = async (data: InviteModalData) => {
-    mog('data', data)
-
     if (node && node.nodeid) {
+      const editor = getPlateEditorRef()
+      const access = (data.access as AccessLevel) ?? DefaultPermission
+
       const details = await getUserDetails(data.email)
-      if (details) {
-        console.log({ details })
-        //const res = addMentionable(data.alias, data.email, userid, node.nodeid, data.access as AccessLevel ?? DefaultPermission)
-        //   // Get userid from res
-        //   replaceUserMention(editor, alias, res.userid)
+      mog('data', { data, details })
+
+      if (details.userId !== undefined) {
+        // TODO: Give permission here
+        // console.log({ details })
+        addMentionable(data.alias, data.email, details.userId, node.nodeid, access)
+        replaceUserMention(editor, data.alias, details.userId)
       } else {
-        inviteUser(data.email, data.alias, node.nodeid, (data.access as AccessLevel) ?? DefaultPermission)
+        inviteUser(data.email, data.alias, node.nodeid, access)
       }
+      saveMentionData()
     }
+
+    closeModal()
   }
 
   return (

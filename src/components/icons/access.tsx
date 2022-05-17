@@ -16,5 +16,6 @@ const accessIcons = {
 }
 
 export const AccessIcon = ({ access }: AccessIconProps) => {
-  return accessIcons[access]
+  if (accessIcons[access]) return accessIcons[access]
+  return null
 }

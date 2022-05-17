@@ -104,6 +104,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
       <Tippy
         delay={100}
         interactiveDebounce={100}
+        interactive
         placement="bottom"
         appendTo={() => document.body}
         render={(attrs) => <MentionTooltipComponent user={user} nodeid={node.nodeid} access={access} />}
