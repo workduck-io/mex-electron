@@ -6,6 +6,7 @@ interface MentionStore {
   invitedUsers: InvitedUser[]
   mentionable: Mentionable[]
   addInvitedUser: (invitedUser: InvitedUser) => void
+  addMentionable: (mentionable: Mentionable) => void
   addAccess: (email: string, nodeid: string, accessLevel: AccessLevel) => void
   setMentionable: (mentionable: Mentionable[]) => void
   setInvited: (invitedUsers: InvitedUser[]) => void
@@ -15,12 +16,26 @@ interface MentionStore {
 export const useMentionStore = create<MentionStore>((set, get) => ({
   invitedUsers: [],
   mentionable: [],
+  addMentionable: (mentionable: Mentionable) => {
+    const exists = get().mentionable.find((user) => user.email === mentionable.email)
+    if (!exists) {
+      set({
+        mentionable: [...get().mentionable, mentionable]
+      })
+    } else {
+      exists.access = { ...exists.access, ...mentionable.access }
+      set({ mentionable: [...get().mentionable.filter((iu) => iu.email !== mentionable.email), exists] })
+    }
+  },
   addInvitedUser: (invitedUser: InvitedUser) => {
     const exists = get().invitedUsers.find((user) => user.email === invitedUser.email)
     if (!exists) {
       set({
         invitedUsers: [...get().invitedUsers, invitedUser]
       })
+    } else {
+      exists.access = { ...exists.access, ...invitedUser.access }
+      set({ invitedUsers: [...get().invitedUsers.filter((iu) => iu.email !== invitedUser.email), exists] })
     }
   },
   addAccess: (email: string, nodeid: string, accessLevel: AccessLevel) => {

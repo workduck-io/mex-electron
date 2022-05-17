@@ -30,6 +30,13 @@ export const useMentions = () => {
     })
   }
 
+  const saveMentionData = () => {
+    setMentionData({
+      mentionable: useMentionStore.getState().mentionable,
+      invitedUsers: useMentionStore.getState().invitedUsers
+    })
+  }
+
   const grantUserAccessOnMention = async (alias: string, nodeid: string, access: AccessLevel = DefaultPermission) => {
     mog('GrantUserAccessOnMention', { alias, nodeid, access })
 
@@ -138,7 +145,8 @@ export const useMentions = () => {
     getUserAccessLevelForNode,
     getSharedUsersForNode,
     getInvitedUsersForNode,
-    grantUserAccessOnMention
+    grantUserAccessOnMention,
+    saveMentionData
   }
 }
 
