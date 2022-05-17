@@ -103,7 +103,7 @@ const Init = () => {
           }
           setUnAuthenticated()
           ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: false })
-          return { d, auth: true }
+          return { d, auth: false }
         })
         .then(({ d, auth }) => {
           if (auth) {
