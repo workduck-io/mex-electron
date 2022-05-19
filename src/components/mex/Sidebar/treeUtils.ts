@@ -1,6 +1,4 @@
-import MexIcons from '../../../components/icons/Icons'
-import { GetIcon } from '../../../data/links'
-import TreeNode from '../../../types/tree'
+import { mog } from '@utils/lib/helper'
 
 export const sampleFlatTree = [
   '@',

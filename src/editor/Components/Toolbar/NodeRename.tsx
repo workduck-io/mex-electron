@@ -1,70 +1,21 @@
-import { QuickLink, WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
-import React, { useEffect, useState } from 'react'
-
-import { Button } from '../../../style/Buttons'
-import { Input } from '../../../style/Form'
-import { StyledInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
+import { DisplayShortcut } from '@components/mex/Shortcuts'
+import { getNameFromPath, getParentFromPath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
+import useDataStore from '@store/useDataStore'
 import Tippy from '@tippyjs/react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { doesLinkRemain } from '../../../components/mex/Refactor/doesLinkRemain'
-import { isReserved } from '../../../utils/lib/paths'
-import { mog } from '../../../utils/lib/helper'
-import styled from 'styled-components'
-import { useEditorStore } from '../../../store/useEditorStore'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
-import { useRenameStore } from '../../../store/useRenameStore'
 import { useAnalysisStore } from '../../../store/useAnalysis'
-import { getNameFromPath, getParentFromPath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
-
-const Wrapper = styled.div`
-  position: relative;
-  width: 100%;
-
-  ${StyledInputWrapper} {
-    margin: 0;
-  }
-
-  .smallTooltip {
-    background: ${({ theme }) => theme.colors.gray[7]};
-  }
-
-  ${Input} {
-    width: 100%;
-    margin-right: ${({ theme }) => theme.spacing.small};
-    &:hover,
-    &:focus,
-    &:active {
-      border: 1px solid ${({ theme }) => theme.colors.primary};
-      background: ${({ theme }) => theme.colors.gray[8]};
-    }
-  }
-`
-
-const ButtonWrapper = styled.div`
-  position: absolute;
-  top: 100%;
-  display: flex;
-  padding: ${({ theme }) => theme.spacing.medium} 0;
-  z-index: 200;
-
-  ${Button} {
-    margin-right: ${({ theme }) => theme.spacing.small};
-  }
-`
-
-const TitleStatic = styled.div`
-  border: 1px solid transparent;
-  padding: ${({ theme }) => theme.spacing.small} 8px;
-  border-radius: ${({ theme }) => theme.borderRadius.tiny};
-  margin-right: ${({ theme }) => theme.spacing.small};
-
-  &:hover,
-  &:focus,
-  &:active {
-    background: ${({ theme }) => theme.colors.gray[8]};
-  }
-`
+import { useEditorStore } from '../../../store/useEditorStore'
+import { useRenameStore } from '../../../store/useRenameStore'
+import { Button } from '../../../style/Buttons'
+import { Input } from '../../../style/Form'
+import { mog } from '../../../utils/lib/helper'
+import { isClash, isReserved } from '../../../utils/lib/paths'
+import { ButtonWrapper, TitleStatic, Wrapper } from './NodeRename.style'
+import { debounce } from 'lodash'
 
 const NodeRenameOnlyTitle = () => {
   const { getNodeidFromPath } = useLinks()
@@ -72,6 +23,7 @@ const NodeRenameOnlyTitle = () => {
 
   // const focus = useRenameStore((store) => store.focus)
   const to = useRenameStore((store) => store.to)
+  const ilinks = useDataStore((store) => store.ilinks)
   // const from = useRenameStore((store) => store.from)
   const mockRefactored = useRenameStore((store) => store.mockRefactored)
   const nodeTitle = useAnalysisStore((state) => state.analysis.title)
@@ -82,45 +34,73 @@ const NodeRenameOnlyTitle = () => {
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
   const modalReset = useRenameStore((store) => store.closeModal)
   const setTo = useRenameStore((store) => store.setTo)
-  const nodeFrom = useEditorStore((store) => store.node.id ?? '')
+  const nodeFrom = useEditorStore((store) => store.node.path ?? '')
   const setFrom = useRenameStore((store) => store.setFrom)
   const [editable, setEditable] = useState(false)
+  const [newTitle, setNewTitle] = useState(getNameFromPath(nodeFrom))
   // const inpRef = useRef<HTMLInputElement>()
   //
-
-  useEffect(() => {
-    if (nodeFrom && isReserved(nodeFrom)) {
-      mog('ISRESERVED', { nodeFrom })
-    }
-  }, [nodeFrom])
 
   const reset = () => {
     if (editable) modalReset()
     setEditable(false)
+    setNewTitle(getNameFromPath(nodeFrom))
+  }
+
+  const getTo = (title: string) => {
+    const nFrom = useEditorStore.getState().node.path
+    const parent = getParentFromPath(nFrom)
+    if (parent) return `${parent}${SEPARATOR}${title}`
+    else return title
+  }
+
+  const isClashed = useMemo(() => {
+    return isClash(
+      getTo(newTitle),
+      ilinks.map((n) => n.path)
+    )
+  }, [ilinks, newTitle])
+
+  const handleSubmit = (e) => {
+    // console.log(e.key, 'KEY')
+    if (e.key === 'Enter') onRename(e)
+    else if (e.key === 'Escape') reset()
   }
 
   const handleTitleChange = (e) => {
-    const parent = getParentFromPath(nodeFrom)
-    console.log({ parent })
+    // console.log({ parent })
     if (e.target.value) {
-      setTo(`${parent}${SEPARATOR}${e.target.value}`)
+      // if (parent) setNewTitle(`${parent}${SEPARATOR}${e.target.value}`)
+      setNewTitle(e.target.value)
     }
   }
 
   const onRename: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault()
     // console.log('renaming', {})
+    if (newTitle === getNameFromPath(nodeFrom) || isClashed) {
+      reset()
+      return
+    }
+    const parent = getParentFromPath(nodeFrom)
     if (mockRefactored.length > 1) {
+      if (parent) setTo(`${parent}${SEPARATOR}${newTitle}`)
+      else setTo(newTitle)
       setFrom(nodeFrom)
+
       openModal()
       setEditable(false)
       return
     }
-    if (to && nodeFrom) {
-      const res = execRefactor(nodeFrom, to)
+    if (newTitle && nodeFrom) {
+      let newPath = newTitle
+      if (parent) newPath = `${parent}${SEPARATOR}${newTitle}`
+      setFrom(nodeFrom)
 
+      const res = execRefactor(nodeFrom, newPath)
       const path = useEditorStore.getState().node.id
       const nodeid = useEditorStore.getState().node.nodeid
+
       setEditable(false)
       if (doesLinkRemain(path, res)) {
         push(nodeid)
@@ -128,6 +108,7 @@ const NodeRenameOnlyTitle = () => {
         const nodeid = getNodeidFromPath(res[0].to)
         push(nodeid)
       }
+      reset()
     }
   }
 
@@ -136,18 +117,23 @@ const NodeRenameOnlyTitle = () => {
     reset()
   }
 
+  // useEffect(() => {
+  //   if (nodeFrom && isReserved(nodeFrom)) {
+  //     mog('ISRESERVED', { nodeFrom })
+  //   }
+  // }, [nodeFrom])
+
   useEffect(() => {
-    if (to && editable) {
-      mog('RenameInput', { id: useEditorStore.getState().node.id, to })
-      setMockRefactored(getMockRefactor(useEditorStore.getState().node.id, to))
+    if (newTitle && editable) {
+      // mog('RenameInput', { id: useEditorStore.getState().node.id, to })
+      if (newTitle === getNameFromPath(nodeFrom)) return
+      setMockRefactored(getMockRefactor(useEditorStore.getState().node.id, getTo(newTitle), true, false))
     }
-  }, [to, nodeFrom, editable])
+  }, [nodeFrom, newTitle, editable])
 
   useEffect(() => {
     reset()
   }, [nodeFrom])
-
-  // console.log({ mockRefactored, to, nodeFrom, editable })
 
   return (
     <Wrapper>
@@ -156,17 +142,14 @@ const NodeRenameOnlyTitle = () => {
           <TitleStatic>{nodeTitle?.length > 0 ? getNameFromPath(nodeTitle) : getNameFromPath(nodeFrom)}</TitleStatic>
         </Tippy>
       ) : editable ? (
-        <input
-          id="NodeRenameTitleSelect"
+        <Input
+          id={`NodeRenameTitleSelect_${nodeFrom}_${to}`}
           name="NodeRenameTitleSelect"
-          // createAtTop
-          // disallowReserved
-          // disallowClash
-          onChange={handleTitleChange}
+          onKeyDown={handleSubmit}
+          onChange={(e) => handleTitleChange(e)}
+          onBlur={() => reset()}
           autoFocus
-          defaultValue={getNameFromPath(to ?? nodeFrom)}
-          // handleSelectItem={handleToChange}
-          // handleCreateItem={handleToCreate}
+          defaultValue={newTitle}
         />
       ) : (
         <Tippy theme="mex" placement="bottom-start" content="Click to Rename">
@@ -182,10 +165,19 @@ const NodeRenameOnlyTitle = () => {
       )}
       {editable && (
         <ButtonWrapper>
-          <Button primary key="ButtonRename" onClick={onRename}>
+          <Button
+            primary
+            key="ButtonRename"
+            disabled={getNameFromPath(nodeFrom) === newTitle || isClashed}
+            onClick={onRename}
+          >
+            <DisplayShortcut shortcut="Enter" />
             Rename
           </Button>
-          <Button onClick={onCancel}>Cancel</Button>
+          <Button onClick={onCancel}>
+            <DisplayShortcut shortcut="Esc" />
+            Cancel
+          </Button>
         </ButtonWrapper>
       )}
     </Wrapper>

@@ -66,6 +66,7 @@ export const TippyBalloonStyles = css`
   }
 
   ${({ theme }) => getTippyStyles('mex', theme.colors.text.fade, theme.colors.gray[8])}
+  ${({ theme }) => getTippyStyles('mex-error', theme.colors.text.fade, theme.colors.palette.red)}
   ${({ theme }) => getTippyStyles('mex-bright', theme.colors.text.oppositePrimary, theme.colors.primary)}
 
   .tippy-box[data-theme~='markdown-help'] {
