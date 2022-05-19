@@ -1,8 +1,11 @@
 import { DisplayShortcut } from '@components/mex/Shortcuts'
 import { getNameFromPath, getParentFromPath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import useDataStore from '@store/useDataStore'
+import { useHelpStore } from '@store/useHelpStore'
 import Tippy from '@tippyjs/react'
-import React, { useEffect, useMemo, useState } from 'react'
+import { getPlateEditorRef, selectEditor } from '@udecode/plate'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import tinykeys from 'tinykeys'
 import { doesLinkRemain } from '../../../components/mex/Refactor/doesLinkRemain'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
@@ -12,10 +15,8 @@ import { useEditorStore } from '../../../store/useEditorStore'
 import { useRenameStore } from '../../../store/useRenameStore'
 import { Button } from '../../../style/Buttons'
 import { Input } from '../../../style/Form'
-import { mog } from '../../../utils/lib/helper'
 import { isClash, isReserved } from '../../../utils/lib/paths'
 import { ButtonWrapper, TitleStatic, Wrapper } from './NodeRename.style'
-import { debounce } from 'lodash'
 
 const NodeRenameOnlyTitle = () => {
   const { getNodeidFromPath } = useLinks()
@@ -38,7 +39,9 @@ const NodeRenameOnlyTitle = () => {
   const setFrom = useRenameStore((store) => store.setFrom)
   const [editable, setEditable] = useState(false)
   const [newTitle, setNewTitle] = useState(getNameFromPath(nodeFrom))
-  // const inpRef = useRef<HTMLInputElement>()
+  const inpRef = useRef<HTMLInputElement>()
+  //
+  //
   //
 
   const reset = () => {
@@ -60,6 +63,26 @@ const NodeRenameOnlyTitle = () => {
       ilinks.map((n) => n.path)
     )
   }, [ilinks, newTitle])
+
+  const shortcuts = useHelpStore((store) => store.shortcuts)
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      [shortcuts.showRename.keystrokes]: (event) => {
+        event.preventDefault()
+        // TODO: Fix the shortcut handler (not working after the shortcut is renamed)
+        // shortcutHandler(shortcuts.showRename, () => {
+        // console.log({ event })
+        setEditable(true)
+        inpRef.current.focus()
+        // })
+      }
+    })
+    // console.log(shortcuts.showRename)
+    return () => {
+      unsubscribe()
+    }
+  }, [shortcuts])
 
   const handleSubmit = (e) => {
     // console.log(e.key, 'KEY')
@@ -109,6 +132,10 @@ const NodeRenameOnlyTitle = () => {
         push(nodeid)
       }
       reset()
+      const editorRef = getPlateEditorRef()
+      if (editorRef) {
+        selectEditor(editorRef, { edge: 'start', focus: true })
+      }
     }
   }
 
@@ -150,6 +177,7 @@ const NodeRenameOnlyTitle = () => {
           onBlur={() => reset()}
           autoFocus
           defaultValue={newTitle}
+          ref={inpRef}
         />
       ) : (
         <Tippy theme="mex" placement="bottom-start" content="Click to Rename">

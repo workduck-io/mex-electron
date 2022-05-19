@@ -82,7 +82,7 @@ export const useRefactor = () => {
       }
     })
 
-    mog('MOCK REFACTOR', { ilinks, from, to, refactorMap, refactored })
+    // mog('MOCK REFACTOR', { ilinks, from, to, refactorMap, refactored })
     return refactored
   }
 

@@ -2,14 +2,11 @@ import arrowRightLine from '@iconify/icons-ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
-import tinykeys from 'tinykeys'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
 import { useSaveData } from '../../../hooks/useSaveData'
-import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useEditorStore } from '../../../store/useEditorStore'
-import { useHelpStore } from '../../../store/useHelpStore'
 import { useQStore } from '../../../store/useQStore'
 import { useRenameStore } from '../../../store/useRenameStore'
 import { Button } from '../../../style/Buttons'
@@ -21,41 +18,20 @@ import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow
 const Rename = () => {
   const { execRefactor, getMockRefactor } = useRefactor()
   const { push } = useNavigation()
-  const shortcuts = useHelpStore((store) => store.shortcuts)
   const { saveData } = useSaveData()
 
   const open = useRenameStore((store) => store.open)
-  const focus = useRenameStore((store) => store.focus)
   const to = useRenameStore((store) => store.to)
   const from = useRenameStore((store) => store.from)
   const mockRefactored = useRenameStore((store) => store.mockRefactored)
 
-  const openModal = useRenameStore((store) => store.openModal)
   const closeModal = useRenameStore((store) => store.closeModal)
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
   const setTo = useRenameStore((store) => store.setTo)
   const setFrom = useRenameStore((store) => store.setFrom)
 
   const { getNodeidFromPath } = useLinks()
-  const { shortcutHandler } = useKeyListener()
   const q = useQStore((s) => s.q)
-
-  useEffect(() => {
-    const unsubscribe = tinykeys(window, {
-      [shortcuts.showRename.keystrokes]: (event) => {
-        event.preventDefault()
-        // TODO: Fix the shortcut handler (not working after the shortcut is renamed)
-        // shortcutHandler(shortcuts.showRename, () => {
-        // console.log({ event })
-        openModal(useEditorStore.getState().node.id)
-        // })
-      }
-    })
-    // console.log(shortcuts.showRename)
-    return () => {
-      unsubscribe()
-    }
-  }, [shortcuts])
 
   const handleFromChange = (quickLink: QuickLink) => {
     const newValue = quickLink.value
