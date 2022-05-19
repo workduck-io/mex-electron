@@ -1,6 +1,6 @@
 import React from 'react'
 import { getSplitDisplayShortcut } from '../../utils/lib/shortcuts'
-import { shade } from 'polished'
+import { shade, transparentize } from 'polished'
 import styled from 'styled-components'
 
 const ShortcutWrapper = styled.div`
@@ -15,8 +15,8 @@ const ShortcutBox = styled.div`
   font-size: 0.7rem;
   padding: 4px ${({ theme }) => theme.spacing.tiny};
   border-radius: 4px;
-  background-color: ${({ theme }) => theme.colors.gray[8]};
-  color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => transparentize(0.75, theme.colors.palette.black)};
+  color: ${({ theme }) => transparentize(0.2, theme.colors.palette.white)};
 `
 
 export interface DisplayShortcutProps {

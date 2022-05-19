@@ -45,7 +45,7 @@ export const useRefactor = () => {
    * from: the current path
    * to: the new changed path
    */
-  const getMockRefactor = (from: string, to: string, clearBuffer = true): NodeLink[] => {
+  const getMockRefactor = (from: string, to: string, clearBuffer = true, notification = true): NodeLink[] => {
     if (clearBuffer) saveAndClearBuffer()
     // saveQ()
     const ilinks = useDataStore.getState().ilinks
@@ -68,7 +68,7 @@ export const useRefactor = () => {
     const refactored = refactorMap.map((f) => {
       // const toPath = f.path.replace(from, to)
 
-      const uniquePath = getUniquePath(f.newPath, allPaths, true)
+      const uniquePath = getUniquePath(f.newPath, allPaths, notification)
 
       if (uniquePath)
         return {
@@ -82,7 +82,7 @@ export const useRefactor = () => {
       }
     })
 
-    mog('MOCK REFACTOR', { ilinks, from, to, refactorMap, refactored })
+    // mog('MOCK REFACTOR', { ilinks, from, to, refactorMap, refactored })
     return refactored
   }
 
