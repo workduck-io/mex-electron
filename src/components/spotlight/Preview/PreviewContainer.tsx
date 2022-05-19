@@ -57,7 +57,6 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
       if (!isNewTask) setNodeContent([...activeNodeContent, ...deserializedContent])
       else {
         const convertedTasks = convertValueToTasks(deserializedContent)
-        // mog('convertedTasks', { convertedTasks, deserializedContent })
         setNodeContent([...activeNodeContent, ...convertedTasks])
       }
     }

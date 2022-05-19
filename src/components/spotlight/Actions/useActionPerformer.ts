@@ -1,17 +1,33 @@
 import { useActionStore } from './useActionStore'
-import { ActionHelperClient, ActionHelperConfig, ClickPostActionType } from '@workduck-io/action-request-helper'
+import {
+  ActionHelperClient,
+  ActionHelperConfig,
+  ActionResponse,
+  ClickPostActionType
+} from '@workduck-io/action-request-helper'
 import { client } from '@workduck-io/dwindle'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { mog } from '../../../utils/lib/helper'
 import { NavigationType, useRouting } from '../../../views/routes/urls'
 import { ACTION_ENV } from '../../../apis/routes'
+import useActionMenuStore from '../ActionStage/ActionMenu/useActionMenuStore'
 
 type PerfomerOptions = {
+  formData?: Record<string, any>
   fetch?: boolean
-  formData: Record<string, any>
+  parent?: boolean
 }
 
 export const actionPerformer = new ActionHelperClient(client, undefined, ACTION_ENV)
+
+const getIndexedResult = (res: ActionResponse) => {
+  const d: ActionResponse = {
+    ...res,
+    displayData: res?.displayData?.map((data, index) => [...data, { key: 'index', type: 'hidden', value: index }])
+  }
+
+  return d
+}
 
 export const useActionPerformer = () => {
   const activeAction = useActionStore((store) => store.activeAction)
@@ -31,9 +47,16 @@ export const useActionPerformer = () => {
     Performs an actions and return's the result
     if not found, it will perform the action and add it to the cache
   */
+
   const performer = async (actionGroupId: string, actionId: string, options?: PerfomerOptions) => {
     const actionConfig = groupedAction?.[actionGroupId]?.[actionId]
-    const prevActionValue = getPrevActionValue(actionId)?.selection
+    const viewData = useSpotlightAppStore.getState().viewData
+    const isMenuActionOpen = useActionMenuStore.getState().isActionMenuOpen
+
+    const prevActionValue =
+      options?.parent && !actionConfig.preActionId
+        ? { value: viewData?.context }
+        : getPrevActionValue(actionId)?.selection
 
     // * if we have a cache, return the cached result
     // if (!fetch) {
@@ -43,7 +66,7 @@ export const useActionPerformer = () => {
 
     if (!actionConfig) return
 
-    setIsLoading(true)
+    if (!isMenuActionOpen) setIsLoading(true)
 
     let auth
 
@@ -59,6 +82,8 @@ export const useActionPerformer = () => {
       ? { ...prevActionValue?.value, formData: options.formData }
       : prevActionValue?.value
 
+    mog(`${actionId}`, { configVal, prevActionValue })
+
     try {
       // * if we have a previous action selection, use that
       const result = await actionPerformer?.request({
@@ -68,40 +93,41 @@ export const useActionPerformer = () => {
         serviceType
       })
 
-      addResultInCache(actionId, result)
+      addResultInCache(actionId, getIndexedResult(result))
 
       const resultAction = actionConfig?.postAction?.result
       const isRunAction = resultAction?.type === ClickPostActionType.RUN_ACTION
 
       // * If there's a result action of type RUN_ACTION,
       if (isRunAction) {
+        const postContext = result?.contextData || { url: configVal.url }
+
         const postAction = await actionPerformer?.request({
           config: groupedAction?.[actionGroupId]?.[resultAction?.actionId],
           auth,
-          configVal: result?.contextData,
+          configVal: postContext,
           serviceType
         })
 
         // * View the result action
         setView('item')
-        setViewData(postAction?.displayData || [])
+        setViewData({ context: result?.contextData || configVal, display: postAction?.displayData ?? [] })
 
         goTo('/action/view', NavigationType.replace)
       }
 
-      setIsLoading(false)
+      if (!isMenuActionOpen) setIsLoading(false)
 
       return result
     } catch (err) {
       mog('Something went wrong', { err })
-      setIsLoading(false)
+      if (!isMenuActionOpen) setIsLoading(false)
     }
 
     return undefined
   }
 
   const initActionPerfomerClient = (workspaceId: string) => {
-    mog('WORKSPACE ID', { workspaceId })
     if (workspaceId) actionPerformer.setWorkspaceId(workspaceId)
   }
 

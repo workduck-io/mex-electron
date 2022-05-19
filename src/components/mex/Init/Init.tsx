@@ -79,7 +79,7 @@ const Init = () => {
    * */
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
-    ; (async () => {
+    ;(async () => {
       getLocalData()
         .then((d) => {
           mog('Initializaing', { d })

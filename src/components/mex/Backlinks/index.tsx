@@ -7,7 +7,6 @@ import { InfoWidgetScroll, InfoWidgetWrapper } from '../../../style/infobar'
 import { Note } from '../../../style/Typography'
 import Collapse from '../../../ui/layout/Collapse/Collapse'
 import NodeLink from '../NodeLink/NodeLink'
-import { DataInfoHeader } from './Backlinks.style'
 
 interface BackLinkProps {
   nodeid: string

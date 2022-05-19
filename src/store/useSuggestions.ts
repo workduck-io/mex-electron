@@ -34,7 +34,6 @@ const useSuggestionStore = create<SuggestionStoreType>((set, get) => ({
     const pinnedSuggestions = get().pinnedSuggestions
     const isAlreadyPinned = pinnedSuggestions.find((suggestion) => suggestion.id === suggestionToPin.id)
 
-    mog(`Pinned suggestion ${suggestionToPin.id}`, { isAlreadyPinned })
     const suggestionPinned = { ...suggestionToPin, pinned: !suggestionToPin.pinned }
 
     if (isAlreadyPinned) {

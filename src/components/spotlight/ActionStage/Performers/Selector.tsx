@@ -1,26 +1,15 @@
 import React, { forwardRef, useEffect, useState } from 'react'
 
-import styled, { useTheme } from 'styled-components'
-import { components, StylesConfig } from 'react-select'
-import { StyledSelect } from '../../../../style/Form'
+import { useTheme } from 'styled-components'
+import { components } from 'react-select'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
 import { useActionStore } from '../../Actions/useActionStore'
-import { StyledBackground } from '../../styled'
 import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
-import { transparentize } from 'polished'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
-
-const Dropdown = styled.div`
-  ${StyledBackground}
-  font-size: 1rem;
-  border-radius: 10px;
-  flex: 1;
-  border: none;
-  color: ${({ theme }) => theme.colors.text.fade};
-  :focus {
-    outline: none;
-  }
-`
+import ListSelector from '../ActionMenu/ListSelector'
+import { StyledOption, SelectBar } from './styled'
+import VirtualList from '../ActionMenu/VirtualList'
+import { mog } from '@utils/lib/helper'
 
 type SelectedProps = {
   value?: any
@@ -29,54 +18,12 @@ type SelectedProps = {
   width?: string
   disabled?: boolean
   actionId: string
+  isList?: boolean
   onChange?: any
   placeholder?: string
   error?: any
   actionGroupId: string
 }
-
-export const SelectBar = styled(StyledSelect)`
-  flex: 1;
-  max-width: ${({ width }) => width || '30%'};
-  font-size: 0.9rem;
-  margin: 0 0.25rem;
-  color: ${({ theme }) => theme.colors.text.default};
-  background-color: ${({ theme }) => transparentize(0.35, theme.colors.background.card)};
-
-  & > div {
-    border-radius: ${({ theme }) => theme.borderRadius.small};
-    margin: 0.5rem 0 0;
-    border: none;
-  }
-`
-
-const StyledOption = styled.div`
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-
-  span {
-    margin-right: 0.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  img {
-    border-radius: 50%;
-    padding: 2px;
-    background-color: ${({ theme }) => theme.colors.background.card};
-  }
-
-  div {
-    margin: 0;
-  }
-
-  font-size: 0.9rem;
-`
-
-// eslint-disable-next-line react/prop-types
 
 // * Custom Option for Selector component
 export const CustomOption: React.FC<any> = ({ children, ...props }) => {
@@ -151,8 +98,9 @@ export const MultiValueOption: React.FC<any> = (props) => {
 }
 
 const Selector = forwardRef<any, SelectedProps>((props, ref) => {
+  const { actionId, isList, placeholder, onChange, width = '30%', actionGroupId, data, value, isMulti } = props
+
   const setIsMenuOpen = useSpotlightAppStore((store) => store.setIsMenuOpen)
-  const { actionId, placeholder, onChange, width = '30%', actionGroupId, data, value, isMulti } = props
   const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
     data: [],
     value: null
@@ -166,7 +114,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
   const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
 
   const { performer, isPerformer } = useActionPerformer()
-  const prevSelelectedLabel = getPreviousActionValue(actionId)?.selection
+  const prevSelection = getPreviousActionValue(actionId)?.selection
 
   const resToDisplay = (result) => {
     return result?.map((item) => {
@@ -189,13 +137,32 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
         setInputValue({ data, value: null })
       })
     }
-  }, [actionId, actionGroupId, prevSelelectedLabel])
+  }, [actionId, actionGroupId, prevSelection])
 
   const handleChange = (selection: any) => {
     if (onChange) onChange(selection)
 
-    const val = { prev: prevSelelectedLabel?.label, selection }
+    const prev = prevSelection?.label
+    const val = { prev, selection }
+
     addSelectionInCache(actionId, val)
+  }
+
+  if (isList) {
+    return (
+      <VirtualList
+        items={inputValue?.data ?? []}
+        activeItems={inputValue?.value ?? []}
+        getIsActive={(item, activeItems) => {
+          return Array.isArray(activeItems)
+            ? activeItems?.find((i) => i.label === item?.label)
+            : activeItems.label === item.label
+        }}
+        onEnter={onChange}
+        onClick={onChange}
+        ItemRenderer={ListSelector}
+      />
+    )
   }
 
   return (

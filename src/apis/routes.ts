@@ -22,6 +22,7 @@ export const MEXIT_BACKEND_URL_BASE = IS_DEV
 export const WORKDUCK_API_BASE = 'https://http.workduck.io'
 export const CDN_BASE = 'https://cdn.workduck.io'
 
+// export const ACTION_ENV = IS_DEV ? 'test' : 'prod'
 export const ACTION_ENV = 'test'
 
 export const GOOGLE_OAUTH_URL = `${MEXIT_FRONTEND_BASE_URL}/oauth/desktop`

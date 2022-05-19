@@ -17,8 +17,13 @@ export const ListItem = styled.div<{ start?: number }>`
   transform: translateY(${(props) => props.start}px);
 `
 
-export const ActionItem = styled.div`
+export const ActionItem = styled.div<{ active?: boolean }>`
   width: 100%;
+  ${(props) =>
+    props.active &&
+    css`
+      z-index: 2;
+    `}
   cursor: pointer;
 `
 

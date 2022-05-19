@@ -9,6 +9,7 @@ import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { useActionStore } from '../Actions/useActionStore'
 import { NavigationType, useRouting } from '../../../views/routes/urls'
 import { mog } from '../../../utils/lib/helper'
+import useActionMenuStore from '../ActionStage/ActionMenu/useActionMenuStore'
 
 const useItemExecutor = () => {
   const { setSearch, setActiveItem } = useSpotlightContext()
@@ -35,10 +36,11 @@ const useItemExecutor = () => {
         const actionGroupInfo = item?.extras?.actionGroup
 
         if (actionGroupInfo) {
-          initAction(actionGroupInfo.actionGroupId, item.id)
-        }
+          useActionMenuStore.getState().setIsActionMenuOpen(false)
 
-        goTo('action', NavigationType.push)
+          initAction(actionGroupInfo.actionGroupId, item.id)
+          goTo('/action', NavigationType.replace)
+        }
 
         break
       case ItemActionType.customAction:

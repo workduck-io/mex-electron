@@ -1,7 +1,7 @@
 import BackIcon from '@iconify/icons-ph/caret-circle-left-light'
 import LensIcon from '@iconify/icons-ph/magnifying-glass-bold'
 import { getPlateSelectors } from '@udecode/plate'
-import { cleanString, generateTempId } from '../../../data/Defaults/idPrefixes'
+import { cleanString } from '../../../data/Defaults/idPrefixes'
 import { IpcAction } from '../../../data/IpcAction'
 import { useSaver } from '../../../editor/Components/Saver'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
@@ -18,9 +18,6 @@ import useLoad from '../../../hooks/useLoad'
 import { checkIfUntitledDraftNode } from '../../../utils/lib/strings'
 import { getTitleFromContent } from '../../../utils/search/parseData'
 import { useRouting } from '../../../views/routes/urls'
-import { mog } from '../../../utils/lib/helper'
-import useDataStore from '../../../store/useDataStore'
-import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 
 export const useSearchProps = () => {

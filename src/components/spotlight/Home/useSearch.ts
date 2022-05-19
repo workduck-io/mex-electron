@@ -91,7 +91,6 @@ export const useSearch = () => {
         const query = search.value.substring(2)
         if (query) {
           const results = getSearchResults(query, quickLinks, { keySelector: (obj) => obj.title })
-          mog('Searching', { results, quickLinks })
 
           const isNew = !isReservedOrClash(
             query,

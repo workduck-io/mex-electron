@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { mog } from '../../../../utils/lib/helper'
 import { search as getSearchResults } from 'fast-fuzzy'
@@ -8,6 +8,7 @@ import { TemplateConfig } from '@workduck-io/action-request-helper'
 import List from './List'
 import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
+import useActionMenuStore from '../ActionMenu/useActionMenuStore'
 
 const StyledScreen = styled.section`
   display: flex;
@@ -34,6 +35,7 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
   const getCacheResult = useActionStore((store) => store.getCacheResult)
   const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
   const prevValue = getPreviousActionValue(actionId)?.selection
+  const needsRefresh = useActionMenuStore((store) => store.needsRefresh)
 
   const isLoading = useSpotlightAppStore((store) => store.isLoading)
   const { performer, isPerformer } = useActionPerformer()
@@ -55,21 +57,27 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
         })
         .catch((err) => mog('error', { err }))
     }
-  }, [actionId, prevValue])
+  }, [actionId, prevValue, needsRefresh])
+
+  const memoData = useMemo(() => {
+    const res = getCacheResult(actionId)
+    mog('res', { res })
+    return getCacheResult(actionId)
+  }, [actionId, resData])
 
   useEffect(() => {
-    const data = (getCacheResult(actionId)?.displayData as TemplateConfig[]) ?? []
+    const data = (memoData?.displayData as TemplateConfig[]) ?? []
 
     const res = getSearchResults(search?.value, data, {
       keySelector: (obj: any) => obj.find((item) => item.type === 'title')?.value
     })
 
     setResData(search?.value ? res : data)
-  }, [search.value])
+  }, [search.value, memoData])
 
   if (isLoading) return null
 
-  return <StyledScreen>{!view && <List items={resData} />}</StyledScreen>
+  return <StyledScreen>{!view && <List items={resData} context={memoData?.contextData ?? []} />}</StyledScreen>
 }
 
 export default Screen

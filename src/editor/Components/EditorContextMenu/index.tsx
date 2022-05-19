@@ -48,6 +48,7 @@ export const BlockOptionsMenu: React.FC<BlockOptionsProps> = () => {
       toast.error('You can not move Flow links from one node to another.')
       return
     }
+
     convertToBlocks()
     setIsModalOpen(ContextMenuActionType.send)
   }

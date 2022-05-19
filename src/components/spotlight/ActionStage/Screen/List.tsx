@@ -10,6 +10,8 @@ import { KEYBOARD_KEYS } from '../../Home/components/List'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { NavigationType, useRouting } from '../../../../views/routes/urls'
 import { Virtuoso } from 'react-virtuoso'
+import { mog } from '@utils/lib/helper'
+import useActionMenuStore from '../ActionMenu/useActionMenuStore'
 
 export const FullWidth = styled.div<{ narrow: boolean }>`
   width: 100%;
@@ -34,31 +36,41 @@ const RelativeList = styled(FullWidth)`
 
 type ListProps = {
   items: Array<any>
+  context: Array<any>
 }
 
 export const ROW_ITEMS_LIMIT = 7
 
-const List: React.FC<ListProps> = ({ items }) => {
+const List: React.FC<ListProps> = ({ items, context }) => {
   const theme = useTheme()
   const activeAction = useActionStore((store) => store.activeAction)
   const [activeIndex, setActiveIndex] = useState(0)
   const setViewData = useSpotlightAppStore((store) => store.setViewData)
   const setView = useSpotlightAppStore((store) => store.setView)
   const isMenuOpen = useSpotlightAppStore((store) => store.isMenuOpen)
+  const isActionMenuOpen = useActionMenuStore((store) => store.isActionMenuOpen)
+
   const { goTo } = useRouting()
 
   const parentRef = useRef(null)
 
+  const setViewItemContext = (i: number) => {
+    setViewData({
+      display: items[i],
+      context: context[i]
+    })
+  }
+
   const onSelect = (i: any) => {
     setActiveIndex(i)
     setView('item')
-    setViewData(items[i])
+    setViewItemContext(i)
     goTo('/action/view', NavigationType.push)
   }
 
   const nextItem = () => {
     setActiveIndex((next) => {
-      const nextIndex = (next + 1) % items.length
+      const nextIndex = next === items.length - 1 ? next : next + 1
       scrollTo(nextIndex)
       return nextIndex
     })
@@ -66,45 +78,55 @@ const List: React.FC<ListProps> = ({ items }) => {
 
   const prevItem = () => {
     setActiveIndex((prev) => {
-      const prevIndex = (prev - 1 + items.length) % items.length
+      const prevIndex = prev === 0 ? prev : prev - 1
       scrollTo(prevIndex)
       return prevIndex
     })
   }
 
-  const scrollTo = (itemIndex: number) =>
+  const scrollTo = (itemIndex: number) => {
     parentRef?.current?.scrollToIndex({
       index: itemIndex,
       align: 'start',
       behavior: 'smooth'
     })
+    setViewItemContext(itemIndex)
+  }
 
   useEffect(() => {
-    if (items && items.length > 0) scrollTo(0)
+    if (items && items.length > 0) {
+      scrollTo(0)
+    }
   }, [items])
 
   useEffect(() => {
     const handler = (event) => {
-      if (isMenuOpen) return
-
-      if (event.key === KEYBOARD_KEYS.ArrowUp) {
-        event.preventDefault()
-        prevItem()
-      } else if (event.key === KEYBOARD_KEYS.ArrowDown) {
-        event.preventDefault()
-        nextItem()
-      }
-
-      if (event.key === 'Enter') {
-        event.preventDefault()
-        onSelect(activeIndex)
+      switch (event.code) {
+        case KEYBOARD_KEYS.ArrowUp:
+          event.preventDefault()
+          event.stopPropagation()
+          prevItem()
+          break
+        case KEYBOARD_KEYS.ArrowDown:
+          event.preventDefault()
+          event.stopPropagation()
+          nextItem()
+          break
+        case KEYBOARD_KEYS.Enter:
+          event.preventDefault()
+          event.stopPropagation()
+          onSelect(activeIndex)
+          break
+        default:
+          break
       }
     }
 
-    if (!isMenuOpen) window?.addEventListener('keydown', handler)
+    if (isMenuOpen || isActionMenuOpen) window?.removeEventListener('keydown', handler)
+    else window?.addEventListener('keydown', handler)
 
     return () => window.removeEventListener('keydown', handler)
-  }, [activeIndex, items, isMenuOpen])
+  }, [activeIndex, items, isMenuOpen, isActionMenuOpen])
 
   if (!items || items.length === 0) {
     return (
@@ -122,6 +144,8 @@ const List: React.FC<ListProps> = ({ items }) => {
       <Virtuoso
         tabIndex={-1}
         data={items}
+        key="wd-mex-action-result-list"
+        id="wd-mex-action-result-list"
         ref={parentRef}
         itemContent={(index, item) => {
           return (

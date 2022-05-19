@@ -61,7 +61,6 @@ const Search = () => {
   const { goTo } = useRouting()
   const {
     applyCurrentFilters,
-    resetFilters,
     addCurrentFilter,
     setFilters,
     generateNodeSearchFilters,
@@ -73,7 +72,7 @@ const Search = () => {
 
   const { getPathFromNodeid } = useLinks()
 
-  const { queryIndex, queryIndexWithRanking } = useSearch()
+  const { queryIndexWithRanking } = useSearch()
   const { hasTags } = useTags()
   const clearHighlights = useBlockHighlightStore((store) => store.clearHighlightedBlockIds)
   const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)

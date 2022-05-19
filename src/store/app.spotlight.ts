@@ -2,13 +2,15 @@ import create from 'zustand'
 
 export type ViewType = 'item' | 'form' | undefined
 
+export type ViewDataType = { context: any; display: any }
+
 export type SpotlightAppStore = {
   search: string
   setSearch: (value: string) => void
   normalMode: boolean
   setNormalMode: (value: boolean) => void
-  viewData: any
-  setViewData: (value: any) => void
+  viewData: ViewDataType
+  setViewData: (value: ViewDataType) => void
   input: string
   setInput: (value: string) => void
   reset: boolean
@@ -33,7 +35,7 @@ export const useSpotlightAppStore = create<SpotlightAppStore>((set, get) => ({
   setNormalMode: (value: boolean) => set(() => ({ normalMode: value })),
 
   viewData: undefined,
-  setViewData: (value: any) => set({ viewData: value }),
+  setViewData: (value: ViewDataType) => set({ viewData: value }),
 
   setView: (value: ViewType) => set({ view: value }),
 

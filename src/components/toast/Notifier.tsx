@@ -65,7 +65,6 @@ const Notifier = () => {
   const setTheme = useThemeStore((store) => store.setTheme)
   useEffect(() => {
     ipcRenderer.on(IpcAction.TOAST_MESSAGE, (ev, message) => {
-      mog('Message', { message }, { collapsed: false })
       if (message.attachment) {
         setNState({ type: 'reminder', message })
       } else {

@@ -90,8 +90,8 @@ export const useAnalysis = () => {
     }
 
     // mog('sending for calc', { node, buffer })
+    // mog('Buffer for calc', { bufferContent })
     if (bufferContent) {
-      // mog('Buffer for calc', { bufferContent })
       if (!areEqual(bufferContent, content.content)) {
         ipcRenderer.send(IpcAction.ANALYSE_CONTENT, { content: bufferContent, nodeid: node.nodeid, options })
       }
