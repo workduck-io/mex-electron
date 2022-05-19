@@ -1,20 +1,21 @@
-import { QuickLink, WrappedNodeSelect } from '../../components/mex/NodeSelect/NodeSelect'
+import { QuickLink, WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
 import React, { useEffect, useState } from 'react'
 
-import { Button } from '../../style/Buttons'
-import { Input } from '../../style/Form'
-import { StyledInputWrapper } from '../../components/mex/NodeSelect/NodeSelect.styles'
+import { Button } from '../../../style/Buttons'
+import { Input } from '../../../style/Form'
+import { StyledInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
 import Tippy from '@tippyjs/react'
-import { doesLinkRemain } from '../../components/mex/Refactor/doesLinkRemain'
-import { isReserved } from '../../utils/lib/paths'
-import { mog } from '../../utils/lib/helper'
+import { doesLinkRemain } from '../../../components/mex/Refactor/doesLinkRemain'
+import { isReserved } from '../../../utils/lib/paths'
+import { mog } from '../../../utils/lib/helper'
 import styled from 'styled-components'
-import { useEditorStore } from '../../store/useEditorStore'
-import { useLinks } from '../../hooks/useLinks'
-import { useNavigation } from '../../hooks/useNavigation'
-import { useRefactor } from '../../hooks/useRefactor'
-import { useRenameStore } from '../../store/useRenameStore'
-import { useAnalysisStore } from '../../store/useAnalysis'
+import { useEditorStore } from '../../../store/useEditorStore'
+import { useLinks } from '../../../hooks/useLinks'
+import { useNavigation } from '../../../hooks/useNavigation'
+import { useRefactor } from '../../../hooks/useRefactor'
+import { useRenameStore } from '../../../store/useRenameStore'
+import { useAnalysisStore } from '../../../store/useAnalysis'
+import { getNameFromPath, getParentFromPath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 
 const Wrapper = styled.div`
   position: relative;
@@ -65,7 +66,7 @@ const TitleStatic = styled.div`
   }
 `
 
-const NodeRenameTitle = () => {
+const NodeRenameOnlyTitle = () => {
   const { getNodeidFromPath } = useLinks()
   const { execRefactor, getMockRefactor } = useRefactor()
 
@@ -92,20 +93,17 @@ const NodeRenameTitle = () => {
       mog('ISRESERVED', { nodeFrom })
     }
   }, [nodeFrom])
+
   const reset = () => {
     if (editable) modalReset()
     setEditable(false)
   }
 
-  const handleToChange = (newValue: QuickLink) => {
-    if (newValue.value) {
-      setTo(newValue.value)
-    }
-  }
-
-  const handleToCreate = (inputValue: QuickLink) => {
-    if (inputValue.value) {
-      setTo(inputValue.value)
+  const handleTitleChange = (e) => {
+    const parent = getParentFromPath(nodeFrom)
+    console.log({ parent })
+    if (e.target.value) {
+      setTo(`${parent}${SEPARATOR}${e.target.value}`)
     }
   }
 
@@ -155,19 +153,20 @@ const NodeRenameTitle = () => {
     <Wrapper>
       {isReserved(nodeFrom) ? (
         <Tippy theme="mex" placement="bottom-start" content="Reserved Node">
-          <TitleStatic>{nodeTitle?.length > 0 ? nodeTitle : nodeFrom}</TitleStatic>
+          <TitleStatic>{nodeTitle?.length > 0 ? getNameFromPath(nodeTitle) : getNameFromPath(nodeFrom)}</TitleStatic>
         </Tippy>
       ) : editable ? (
-        <WrappedNodeSelect
+        <input
           id="NodeRenameTitleSelect"
           name="NodeRenameTitleSelect"
-          createAtTop
-          disallowReserved
-          disallowClash
+          // createAtTop
+          // disallowReserved
+          // disallowClash
+          onChange={handleTitleChange}
           autoFocus
-          defaultValue={to ?? nodeFrom}
-          handleSelectItem={handleToChange}
-          handleCreateItem={handleToCreate}
+          defaultValue={getNameFromPath(to ?? nodeFrom)}
+          // handleSelectItem={handleToChange}
+          // handleCreateItem={handleToCreate}
         />
       ) : (
         <Tippy theme="mex" placement="bottom-start" content="Click to Rename">
@@ -177,7 +176,7 @@ const NodeRenameTitle = () => {
               setEditable(true)
             }}
           >
-            {nodeTitle?.length > 0 ? nodeTitle : nodeFrom}
+            {getNameFromPath(nodeTitle?.length > 0 ? nodeTitle : nodeFrom)}
           </TitleStatic>
         </Tippy>
       )}
@@ -193,4 +192,4 @@ const NodeRenameTitle = () => {
   )
 }
 
-export default NodeRenameTitle
+export default NodeRenameOnlyTitle

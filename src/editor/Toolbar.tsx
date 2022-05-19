@@ -1,13 +1,10 @@
 import bubbleChartLine from '@iconify/icons-ri/bubble-chart-line'
 import focusLine from '@iconify/icons-ri/focus-line'
 import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
-import messageIcon from '@iconify/icons-ri/message-3-line'
-import settings4Line from '@iconify/icons-ri/settings-4-line'
 import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
 import { useSingleton } from '@tippyjs/react'
 import React from 'react'
 import BookmarkButton from '../components/mex/Buttons/BookmarkButton'
-import { useNodeIntentsModalStore } from '../components/mex/NodeIntentsModal/NodeIntentsModal'
 import { ToolbarTooltip } from '../components/mex/Tooltips'
 import useLayout from '../hooks/useLayout'
 import useToggleElements from '../hooks/useToggleElements'
@@ -17,7 +14,8 @@ import { useLayoutStore } from '../store/useLayoutStore'
 import IconButton from '../style/Buttons'
 import { InfoTools, NodeInfo } from '../style/Editor'
 import Loading from '../style/Loading'
-import NodeRenameTitle from './Components/NodeRenameTitle'
+import NodeRenameOnlyTitle from './Components/Toolbar/NodeRename'
+// import NodeRenameTitle from './Components/Toolbar/NodeRenameTitle'
 
 const Toolbar = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -34,7 +32,7 @@ const Toolbar = () => {
 
   return (
     <NodeInfo {...getFocusProps(focusMode)}>
-      <NodeRenameTitle />
+      <NodeRenameOnlyTitle />
       {fetchingContent && <Loading dots={3} />}
       <InfoTools>
         <ToolbarTooltip singleton={source} />
