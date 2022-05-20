@@ -71,6 +71,10 @@ export const Button = styled.button<ButtonProps>`
             background-color: ${theme.colors.fade.primary};
             color: ${theme.colors.text.oppositePrimary};
           }
+          &:focus {
+            color: ${theme.colors.text.oppositePrimary};
+            box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
+          }
         `
       : ''}
 

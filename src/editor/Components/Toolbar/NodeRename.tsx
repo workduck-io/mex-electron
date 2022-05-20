@@ -1,9 +1,11 @@
+import { useRefactorStore } from '@components/mex/Refactor/Refactor'
 import { DisplayShortcut } from '@components/mex/Shortcuts'
 import { getNameFromPath, getParentFromPath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import useDataStore from '@store/useDataStore'
 import { useHelpStore } from '@store/useHelpStore'
 import Tippy from '@tippyjs/react'
 import { getPlateEditorRef, selectEditor } from '@udecode/plate'
+import { mog } from '@utils/lib/helper'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import tinykeys from 'tinykeys'
 import { doesLinkRemain } from '../../../components/mex/Refactor/doesLinkRemain'
@@ -30,6 +32,7 @@ const NodeRenameOnlyTitle = () => {
   const nodeTitle = useAnalysisStore((state) => state.analysis.title)
 
   const { push } = useNavigation()
+  const prefillRefactorModal = useRefactorStore((store) => store.prefillModal)
   const openModal = useRenameStore((store) => store.openModal)
   // const closeModal = useRenameStore((store) => store.closeModal)
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
@@ -84,10 +87,18 @@ const NodeRenameOnlyTitle = () => {
     }
   }, [shortcuts])
 
-  const handleSubmit = (e) => {
-    // console.log(e.key, 'KEY')
-    if (e.key === 'Enter') onRename(e)
-    else if (e.key === 'Escape') reset()
+  const handleSubmit: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      if (e.shiftKey) {
+        // mog('Opening refactor')
+        const to = getTo(newTitle)
+        prefillRefactorModal(nodeFrom, to)
+      } else {
+        // mog('Renaming')
+        onRename()
+      }
+    } else if (e.key === 'Escape') reset()
   }
 
   const handleTitleChange = (e) => {
@@ -98,8 +109,12 @@ const NodeRenameOnlyTitle = () => {
     }
   }
 
-  const onRename: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+  const onRenameClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault()
+    onRename()
+  }
+
+  const onRename = () => {
     // console.log('renaming', {})
     if (newTitle === getNameFromPath(nodeFrom) || isClashed) {
       reset()
@@ -197,14 +212,14 @@ const NodeRenameOnlyTitle = () => {
             primary
             key="ButtonRename"
             disabled={getNameFromPath(nodeFrom) === newTitle || isClashed}
-            onClick={onRename}
+            onClick={onRenameClick}
           >
             <DisplayShortcut shortcut="Enter" />
             Rename
           </Button>
           <Button onClick={onCancel}>
-            <DisplayShortcut shortcut="Esc" />
-            Cancel
+            <DisplayShortcut shortcut="Shift+Enter" />
+            Open Refactor
           </Button>
         </ButtonWrapper>
       )}
