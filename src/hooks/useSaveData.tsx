@@ -16,7 +16,7 @@ import { useReminderStore } from './useReminders'
 export const useSaveData = () => {
   // const { updater } = useUpdater()
   const saveData = () => {
-    const { baseNodeId, ilinks, linkCache, tags, tagsCache, archive, bookmarks } = useDataStore.getState()
+    const { baseNodeId, ilinks, linkCache, tags, tagsCache, archive, bookmarks, sharedNodes } = useDataStore.getState()
     const { syncBlocks, templates, intents, services } = useSyncStore.getState()
     const { reminders } = useReminderStore.getState()
     const { version } = useVersionStore.getState()
@@ -33,6 +33,7 @@ export const useSaveData = () => {
       tagsCache,
       archive,
       bookmarks,
+      sharedNodes,
       contents: useContentStore.getState().contents,
       syncBlocks,
       templates,

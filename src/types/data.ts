@@ -1,7 +1,7 @@
 import { Service, SyncBlockData, SyncBlockTemplate, SyncStoreIntents } from '../editor/Components/SyncBlock'
 import { TodosType } from '../editor/Components/Todo/types'
 import { Snippet } from '../store/useSnippetStore'
-import { ILink, LinkCache, NodeEditorContent, Tag, TagsCache } from '../types/Types'
+import { ILink, LinkCache, NodeEditorContent, SharedNode, Tag, TagsCache } from '../types/Types'
 import { Reminder } from './reminders'
 
 export interface NodeMetadata {
@@ -44,6 +44,7 @@ export interface FileData {
   linkCache: LinkCache
   tagsCache: TagsCache
   bookmarks: string[]
+  sharedNodes: SharedNode[]
 
   // Tasks
   todos: TodosType

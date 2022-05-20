@@ -40,6 +40,7 @@ export const useInitialize = () => {
       linkCache,
       tagsCache,
       bookmarks,
+      sharedNodes,
       contents,
       archive,
       syncBlocks,
@@ -61,6 +62,7 @@ export const useInitialize = () => {
       linkCache,
       archive: archive ?? [],
       baseNodeId,
+      sharedNodes,
       bookmarks
     }
 

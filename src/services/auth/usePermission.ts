@@ -69,10 +69,17 @@ export const usePermission = () => {
   }
 
   const getAllSharedNodes = async () => {
-    return await client.get(apiURLs.allSharedNodes).then((resp) => {
-      mog('getAllSharedNodes resp', { resp })
-      return resp
-    })
+    return await client
+      .get(apiURLs.allSharedNodes, {
+        headers: {
+          'mex-workspace-id': workspaceDetails.id
+        }
+      })
+      .then((resp) => {
+        mog('getAllSharedNodes resp', { resp })
+        return resp
+      })
   }
+
   return { grantUsersPermission, changeUserPermission, revokeUserAccess, getAllSharedNodes }
 }

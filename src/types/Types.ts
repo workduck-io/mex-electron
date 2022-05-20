@@ -57,7 +57,9 @@ export interface InitData {
   bookmarks: string[]
   archive: ILink[]
   baseNodeId: string
+  sharedNodes: SharedNode[]
 }
+
 interface SlashCommands {
   default: SlashCommand[]
   internal: SlashCommand[]

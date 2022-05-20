@@ -37,6 +37,7 @@ import { useRedirectAuth } from '../Auth/useRedirectAuth'
 import { useActionsPerfomerClient } from '../../spotlight/Actions/useActionPerformer'
 import { useActionPerformer } from '../../spotlight/Actions/useActionPerformer'
 import { useLocalData, useMentionData, useTokenData } from '@hooks/useLocalData'
+import { usePermission } from '@services/auth/usePermission'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -73,6 +74,7 @@ const Init = () => {
 
   const { getTokenData } = useTokenData()
   const { getMentionData } = useMentionData()
+  const { getAllSharedNodes } = usePermission()
   const { saveAndClearBuffer } = useEditorBuffer()
   const { initActionPerfomerClient } = useActionsPerfomerClient()
 
@@ -92,6 +94,7 @@ const Init = () => {
           init(fileData)
           getTokenData()
           getMentionData()
+          getAllSharedNodes()
           // setOnboardData()
           return fileData
         })
