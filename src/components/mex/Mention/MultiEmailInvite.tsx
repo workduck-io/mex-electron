@@ -56,9 +56,11 @@ export const MultiEmailInviteModalContent = () => {
       // const userDetails = allMails.map(async () => {})
       // Only share with users with details, add the rest to invited users
       // TODO: Uncomment this to give permission
-      // const permGiven = await grantUsersPermission(node.nodeid, givePermToExisting, access)
+      const permGiven = await grantUsersPermission(node.nodeid, givePermToExisting, access)
 
-      mog('userDetails', { userDetails, existing, absent, givePermToExisting })
+      mog('userDetails', { userDetails, permGiven, existing, absent, givePermToExisting })
+
+      // ifck
 
       existing.forEach((u) => {
         addMentionable({

@@ -77,7 +77,7 @@ export const usePermission = () => {
       })
       .then((resp) => {
         mog('getAllSharedNodes resp', { resp })
-        return resp
+        return resp.data
       })
   }
 
