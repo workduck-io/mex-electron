@@ -1,10 +1,12 @@
 import bookmarkLine from '@iconify/icons-ri/bookmark-line'
 import { Icon } from '@iconify/react'
-import React, { useEffect } from 'react'
+import { SharedNode } from '../../../types/Types'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
 import { BaseLink } from '../../../views/mex/Tag'
+import { mog } from '@utils/lib/helper'
 
 const BList = styled.div`
   max-height: 15rem;
@@ -32,14 +34,17 @@ const BLink = styled(BaseLink)`
 `
 
 const SharedNotes = () => {
-  const sharedNodes = useDataStore((store) => store.sharedNodes)
+  const sharedNodesS = useDataStore((store) => store.sharedNodes)
   const { push } = useNavigation()
-  // const [ bookmarks, setBookmarks ] = useState<string[]>([])
+  const [sharedNodes, setSharedNodes] = useState<SharedNode[]>([])
 
-  // useEffect(() => {
-  //   // ssetBookmarks(
-  //   getAllBookmarks()
-  // }, [])
+  useEffect(() => {
+    // ssetBookmarks(
+    // getAllBookmarks()
+    setSharedNodes(sharedNodesS)
+  }, [sharedNodesS])
+
+  mog('Cool', { sharedNodes })
 
   return (
     <BList>

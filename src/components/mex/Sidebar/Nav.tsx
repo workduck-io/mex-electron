@@ -34,6 +34,7 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/u
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
 import Bookmarks from './Bookmarks'
+import SharedNotes from './SharedNotes'
 import { useSidebarTransition } from './Transition'
 import Tree from './Tree'
 import { NavProps } from './Types'
@@ -161,6 +162,17 @@ const Nav = ({ links }: NavProps) => {
             }}
           >
             <Bookmarks />
+          </Collapse>
+          <Collapse
+            title="SharedNotes"
+            oid="sharednotes"
+            icon={bookmark3Line}
+            maximumHeight="30vh"
+            infoProps={{
+              text: BookmarksHelp
+            }}
+          >
+            <SharedNotes />
           </Collapse>
           <Tree initTree={initTree} />
         </Collapse>

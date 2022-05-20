@@ -38,6 +38,7 @@ import { useActionsPerfomerClient } from '../../spotlight/Actions/useActionPerfo
 import { useActionPerformer } from '../../spotlight/Actions/useActionPerformer'
 import { useLocalData, useMentionData, useTokenData } from '@hooks/useLocalData'
 import { usePermission } from '@services/auth/usePermission'
+import { SharedNode } from '../../../types/Types'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -50,8 +51,9 @@ const Init = () => {
   const toggleFocusMode = useLayoutStore((s) => s.toggleFocusMode)
 
   const { init } = useInitialize()
+  const setSharedNodes = useDataStore((s) => s.setSharedNodes)
   const { loadNode, getNode } = useLoad()
-  const { initCognito } = useAuth()
+  const { initCognito, userCred } = useAuth()
   const { logout } = useAuthentication()
 
   const { getLocalData } = useLocalData()
@@ -94,7 +96,6 @@ const Init = () => {
           init(fileData)
           getTokenData()
           getMentionData()
-          getAllSharedNodes()
           // setOnboardData()
           return fileData
         })
@@ -145,6 +146,32 @@ const Init = () => {
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    //[
+    // {
+    //     "nodeID": "NODE_CAaByMUDxWDxLUwJVpwRJ",
+    //     "nodeTitle": "Draft.R Rated request",
+    //     "accessType": "MANAGE"
+    // },
+    // {
+    //     "nodeID": "NODE_wbWR6pybMWqLrFApn3tD3",
+    //     "nodeTitle": "design",
+    //     "accessType": "MANAGE"
+    // }
+    // ]
+    getAllSharedNodes().then((sharedNodesRaw) => {
+      const sharedNodes = sharedNodesRaw.map(
+        (n): SharedNode => ({
+          path: n.nodeTitle,
+          nodeid: n.nodeID,
+          access: n.accessType
+        })
+      )
+      console.log({ sharedNodes })
+      setSharedNodes(sharedNodes)
+    })
+  }, [userCred])
 
   const editor = usePlateEditorRef()
 
