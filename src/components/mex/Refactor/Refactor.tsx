@@ -127,7 +127,7 @@ const Refactor = () => {
     // mog('Refactor', { open, to, from })
     if (to && from && !isReserved(from) && !isReserved(to)) {
       // mog('To, from in refactor', { to, from })
-      setMockRefactored(getMockRefactor(from, to))
+      setMockRefactored(getMockRefactor(from, to, true, false))
     }
   }, [to, from, open])
 
