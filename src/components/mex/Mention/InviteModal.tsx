@@ -40,7 +40,7 @@ export const InviteModalContent = () => {
       mog('data', { data, details })
 
       if (details.userId !== undefined) {
-        // TODO: Give permission here
+        // Give permission here
         const resp = await grantUsersPermission(node.nodeid, [details.userId], access)
         mog('UserPermission given', { details, resp })
         addMentionable(data.alias, data.email, details.userId, node.nodeid, access)
