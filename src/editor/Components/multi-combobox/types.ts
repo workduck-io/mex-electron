@@ -1,3 +1,4 @@
+import { ListItemType } from '@components/spotlight/SearchResults/types'
 import { BaseRange } from 'slate'
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 import { CategoryType } from '../../../store/Context/context.spotlight'
@@ -15,6 +16,9 @@ export interface ComboboxItem {
   value: string
   icon?: string
   type?: QuickLinkType | CategoryType
+
+  /** submenu data -> Takes the data to render submenu */
+  submenu?: ListItemType[]
 
   /** Extended command -> Text after the command is part of it and used as arguments */
   extended?: boolean

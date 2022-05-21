@@ -23,6 +23,8 @@ import TableWrapper from './TableWrapper'
 import Todo from './Todo'
 import { ELEMENT_QA_BLOCK } from './QABlock/createQAPlugin'
 import QABlock from './QABlock'
+import { ELEMENT_ACTION_BLOCK } from './Actions/types'
+import ActionBlock from './Actions'
 
 export const editorPreviewComponents = createPlateUI({
   [ELEMENT_LINK]: withProps(LinkElement, {
@@ -42,6 +44,7 @@ export const editorPreviewComponents = createPlateUI({
   [ELEMENT_MEDIA_EMBED]: MediaEmbedElement as any,
   [ELEMENT_QA_BLOCK]: QABlock as any,
   [ELEMENT_SYNC_BLOCK]: SyncBlock as any,
+  [ELEMENT_ACTION_BLOCK]: ActionBlock,
   [ELEMENT_TABLE]: TableWrapper
 })
 

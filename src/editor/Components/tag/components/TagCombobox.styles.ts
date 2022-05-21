@@ -52,9 +52,9 @@ export const ComboboxRoot = styled.div<{ isOpen: boolean }>`
   ${({ isOpen, theme }) =>
     isOpen &&
     css`
-      top: -9999px;
-      left: -9999px;
-      position: absolute;
+      top: auto;
+      left: auto;
+      position: fixed;
       padding: 0;
       background: none !important;
       display: flex;

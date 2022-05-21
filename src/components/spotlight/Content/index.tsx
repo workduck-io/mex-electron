@@ -111,10 +111,6 @@ const Content = () => {
     }
 
     if (normalMode) getSearchItems()
-
-    // else {
-    //   setSearchResults([activeItem.item])
-    // }
   }, [search.value, actions, selection, activeItem.item, normalMode, ilinks, events])
 
   // * For setting the preview

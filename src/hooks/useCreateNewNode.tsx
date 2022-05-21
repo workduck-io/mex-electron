@@ -10,8 +10,8 @@ import useLoad from './useLoad'
 import { useNavigation } from './useNavigation'
 
 export const useCreateNewNode = () => {
-  const addILink = useDataStore((s) => s.addILink)
   const { push } = useNavigation()
+  const addILink = useDataStore((s) => s.addILink)
   const { saveNewNodeAPI } = useApi()
   const { saveNodeName } = useLoad()
 
@@ -21,6 +21,7 @@ export const useCreateNewNode = () => {
 
     if (node === undefined) {
       toast.error('The node clashed')
+
       return
     }
 

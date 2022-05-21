@@ -59,10 +59,15 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
         // mog('getCreatableInSelect', { item, val, selectVal, creatable, res })
         mog('Select__CN clause', { val, selectVal, creatable, res })
         if (res) onSelectItem(editor, { key: String(items.length), text: res }, elementType)
-      } else onSelectItem(editor, item, elementType)
+      } else {
+        mog('THIS would be called if i press enter', { item, elementType })
+
+        onSelectItem(editor, item, elementType)
+      }
     } else if (selectVal && creatable) {
       const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
       const res = onNewItem(val, currentNodeKey)
+
       mog('SelectElse clause', { val, selectVal, creatable, res })
       // onSelectItem(editor, { key: String(items.length), text: res ?? val })
       if (res) onSelectItem(editor, { key: String(items.length), text: val }, elementType)
@@ -111,32 +116,29 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
     const isOpen = !!targetRange && items.length > 0
     const item = items[itemIndex]
 
-    // mog('useComboboxOnKeyDown', {
-    //   item,
-    //   items,
-    //   slashCommands
-    // })
-
     const isSlashCommand =
       comboType.slateElementType === ComboboxKey.SLASH_COMMAND ||
       (comboType.slateElementType === ComboboxKey.INTERNAL && isInternalCommand(item ? item.key : search))
 
+    // * Is Command is "/" or "[[", select corresponding change handler
     const onSelectItemHandler = isSlashCommand ? slashCommandOnChange : elementOnChange
+
     const creatabaleOnSelect = getCreateableOnSelect(
       onSelectItemHandler,
       (newItem, parentId?) => {
-        // mog('CreatableOnSelect', { comboType, comboboxKey, il: internal.ilink })
         if (comboboxKey === ComboboxKey.INTERNAL && !isInternalCommand(search)) {
-          // mog('CreatableOnSelect', { comboType, comboboxKey })
           return internal.ilink.newItemHandler(newItem, parentId)
         }
-        if (comboType) return comboType.newItemHandler(newItem, parentId)
+
+        if (comboType) {
+          mog('comoboType', { newItem, comboType, parentId })
+          return comboType.newItemHandler(newItem, parentId)
+        }
       },
       comboboxKey !== ComboboxKey.SLASH_COMMAND
     )
 
     if (isOpen) {
-      // if (!isBlockTriggered) {
       if (!isBlockTriggered) {
         if (e.key === 'ArrowDown') {
           e.preventDefault()
@@ -175,8 +177,10 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
 
       if (['Enter', ']'].includes(e.key)) {
         e.preventDefault()
+
+        // * On Enter insert the selected item
         creatabaleOnSelect(editor, search)
-        return false
+        // return false
       }
     }
     return false

@@ -53,7 +53,6 @@ export const getTextFromTrigger = (editor: Editor, options: TriggerOptions): Tex
   if (isBlockTriggered) {
     const blockRange =
       blockStart && Editor.range(editor, { ...blockStart, offset: blockStart.offset + range.anchor.offset }, options.at)
-    // const t = getText(editor, blockRange)
     const blockText = text.substring(blockStart.offset + 1)
 
     return {
