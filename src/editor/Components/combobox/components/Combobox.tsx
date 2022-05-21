@@ -32,7 +32,6 @@ import { replaceFragment } from '../hooks/useComboboxOnKeyDown'
 import PreviewMeta from './PreviewMeta'
 import { MexIcon } from '../../../../style/Layouts'
 import { useTheme } from 'styled-components'
-import { mog } from '@utils/lib/helper'
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'

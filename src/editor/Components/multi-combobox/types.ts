@@ -18,7 +18,7 @@ export interface ComboboxItem {
   type?: QuickLinkType | CategoryType
 
   /** submenu data -> Takes the data to render submenu */
-  submenu?: ListItemType[]
+  submenu?: ComboboxItem[]
 
   /** Extended command -> Text after the command is part of it and used as arguments */
   extended?: boolean

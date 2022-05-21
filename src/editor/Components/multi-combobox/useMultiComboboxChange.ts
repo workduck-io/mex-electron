@@ -8,7 +8,7 @@ import { ComboboxType } from './types'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { useRouting } from '../../../views/routes/urls'
 import { useLinks } from '../../../hooks/useLinks'
-import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 import { getTimeInText, toLocaleString } from '../../../utils/time'
 
@@ -83,7 +83,6 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
     // Create for new item
     if (isExtended) {
       searchItems.unshift(...extendedCommands)
-      // dataKeys.push(newItem.text)
     }
 
     const groups = (searchTerm !== '' ? searchItems : data)?.reduce((acc, item) => {

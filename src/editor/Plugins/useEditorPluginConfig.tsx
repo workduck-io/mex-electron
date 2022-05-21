@@ -1,5 +1,5 @@
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
-import { getListItemFromAction } from '@components/spotlight/Home/helper'
+import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import { ELEMENT_MEDIA_EMBED, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { useMemo } from 'react'
@@ -56,16 +56,31 @@ const useEditorPluginConfig = (editorId: string) => {
     return slashCommands.internal
   }, [slashCommands.internal])
 
-  const internals: ComboboxItem[] = [
-    ...Object.values(actionGroups).map((group) => ({
-      text: group.name,
+  const getActionGroups = () => {
+    const groups = {}
+    Object.values(actionGroups).forEach((group) => {
+      groups[group.name] = {
+        slateElementType: ELEMENT_ACTION_BLOCK,
+        command: group.name
+      }
+    })
+
+    return groups
+  }
+
+  const getActionsData = () => {
+    const groups = Object.values(actionGroups).map((group) => ({
       value: group.actionGroupId,
-      type: QuickLinkType.flow,
+      text: group.name,
+      type: CategoryType.action,
       icon: group.icon,
-      submenu: Object.values(groupedActions?.[group?.actionGroupId] || {})?.map((action) =>
-        getListItemFromAction(action, group)
-      )
-    })),
+      command: group.name
+    }))
+
+    return groups
+  }
+
+  const internals: ComboboxItem[] = [
     ...ilinksForCurrentNode.map((l) => ({
       ...l,
       value: l.nodeid,
@@ -103,7 +118,6 @@ const useEditorPluginConfig = (editorId: string) => {
         slateElementType: 'internal',
         newItemHandler: (newItem, parentId?) => {
           const link = addILink({ ilink: newItem, parentId })
-          // mog('Link', { link, newItem, parentId })
           return link.nodeid
         },
         renderElement: SlashComboboxItem
@@ -125,6 +139,7 @@ const useEditorPluginConfig = (editorId: string) => {
       }
     },
     slashCommands: {
+      ...getActionGroups(),
       webem: {
         slateElementType: ELEMENT_MEDIA_EMBED,
         command: 'webem',
@@ -147,6 +162,7 @@ const useEditorPluginConfig = (editorId: string) => {
           openReminderModal(newValue)
         }
       }
+
       // For `/sync`
       // sync_block: {
       //   slateElementType: ELEMENT_SYNC_BLOCK,
@@ -178,7 +194,10 @@ const useEditorPluginConfig = (editorId: string) => {
       cbKey: ComboboxKey.SLASH_COMMAND,
       trigger: '/',
       icon: 'ri:flask-line',
-      data: slashCommands.default.map((l) => ({ ...l, value: l.command, type: CategoryType.action, text: l.text }))
+      data: [
+        ...getActionsData(),
+        ...slashCommands.default.map((l) => ({ ...l, value: l.command, type: CategoryType.action, text: l.text }))
+      ]
     }
   }
 

@@ -48,10 +48,9 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
     const currentNodeKey = useEditorStore.getState().node.path
     const itemIndex = useComboboxStore.getState().itemIndex
 
-    mog('getCreatableInSelect', { items, selectVal, creatable, itemIndex })
+    const item = items[itemIndex]
 
-    if (items[itemIndex]) {
-      const item = items[itemIndex]
+    if (item) {
       mog('getCreatableInSelect', { item, selectVal, creatable })
       if (item.key === '__create_new' && selectVal) {
         const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
@@ -171,7 +170,7 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
         // * On Tab insert the selected item as Inline Block
         e.preventDefault()
         creatabaleOnSelect(editor, search, ELEMENT_INLINE_BLOCK)
-        return false
+        // return false
       }
       // }
 
@@ -180,7 +179,7 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
 
         // * On Enter insert the selected item
         creatabaleOnSelect(editor, search)
-        // return false
+        return false
       }
     }
     return false

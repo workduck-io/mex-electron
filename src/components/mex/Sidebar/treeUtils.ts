@@ -32,14 +32,17 @@ export const getParentId = (id: string, separator = SEPARATOR) => {
 export const getAllParentIds = (
   id: string, // const allParents: string[] = []
   separator = SEPARATOR
-) =>
-  id
-    .split(separator) // split by `.`
-    .reduce(
+) => {
+  if (!id) return []
+
+  return id
+    ?.split(separator) // split by `.`
+    ?.reduce(
       // Use prefix of last element when the array has elements
       (p, c) => [...p, p.length > 0 ? `${p[p.length - 1]}${separator}${c}` : c],
       []
     )
+}
 
 //
 // let past = ''
