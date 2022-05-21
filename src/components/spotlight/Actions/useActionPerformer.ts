@@ -51,12 +51,14 @@ export const useActionPerformer = () => {
   const performer = async (actionGroupId: string, actionId: string, options?: PerfomerOptions) => {
     const actionConfig = groupedAction?.[actionGroupId]?.[actionId]
     const viewData = useSpotlightAppStore.getState().viewData
+    const activeAction = useActionStore.getState().activeAction
     const isMenuActionOpen = useActionMenuStore.getState().isActionMenuOpen
 
-    const prevActionValue =
-      options?.parent && !actionConfig.preActionId
-        ? { value: viewData?.context }
-        : getPrevActionValue(actionId)?.selection
+    const isParentContext =
+      (options?.parent && !actionConfig?.preActionId) ||
+      (!activeAction?.actionIds && isMenuActionOpen && !options?.parent)
+
+    const prevActionValue = isParentContext ? { value: viewData?.context } : getPrevActionValue(actionId)?.selection
 
     // * if we have a cache, return the cached result
     // if (!fetch) {
@@ -136,7 +138,9 @@ export const useActionPerformer = () => {
     const prevActionValue = getPrevActionValue(actionId)
     const action = getConfig(activeAction?.actionGroupId, actionId)
 
-    const hasPrevValueChanged = prevActionValue?.selection && selection?.prev !== prevActionValue?.selection?.label
+    const hasPrevValueChanged =
+      (prevActionValue?.selection && selection?.prev !== prevActionValue?.selection?.label) ||
+      useActionMenuStore.getState().activeMenuAction
     const hasPreAction = action?.preActionId
 
     return hasPreAction ? hasPrevValueChanged : !hasPrevValueChanged
@@ -154,7 +158,6 @@ export const useActionPerformer = () => {
 
     return getConfig(actionGroupId, actionId)
   }
-
   return {
     isPerformer,
     performer,
