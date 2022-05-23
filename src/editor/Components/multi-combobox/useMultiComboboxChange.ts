@@ -91,12 +91,13 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
         acc[type] = []
       }
 
-      if (!(acc[type].length === 5))
+      if (!(acc[type].length === 5) || item.extras)
         acc[type].push({
           key: item.value,
           icon: item.icon ?? ct.icon ?? undefined,
           text: item.text,
           extended: item.extended,
+          data: item.extras,
           type
         })
 

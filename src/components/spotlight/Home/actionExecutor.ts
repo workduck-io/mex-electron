@@ -11,7 +11,7 @@ import { NavigationType, useRouting } from '../../../views/routes/urls'
 import useActionMenuStore from '../ActionStage/ActionMenu/useActionMenuStore'
 
 const useItemExecutor = () => {
-  const { setSearch, setActiveItem } = useSpotlightContext()
+  const spotlightContext = useSpotlightContext()
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
   const initAction = useActionStore((store) => store.initAction)
@@ -19,16 +19,17 @@ const useItemExecutor = () => {
 
   const closeSpotlight = () => {
     setInput('')
-    setSearch({ value: '', type: CategoryType.search })
+    if (spotlightContext) {
+      spotlightContext.setSearch({ value: '', type: CategoryType.search })
+      spotlightContext.setActiveItem({ item: undefined, active: false })
+    }
     appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
-
-    setActiveItem({ item: undefined, active: false })
   }
 
   const itemActionExecutor = (item: ListItemType, query?: string, isMetaPressed?: boolean) => {
     switch (item.type) {
       case ItemActionType.action:
-        setSearch({ value: '', type: CategoryType.search })
+        spotlightContext?.setSearch({ value: '', type: CategoryType.search })
         setInput('')
 
         // eslint-disable-next-line no-case-declarations

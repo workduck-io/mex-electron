@@ -18,6 +18,7 @@ export type ActiveActionType = {
   renderType?: ReturnType
   subType?: ActionSubType
   actionGroupId: string
+  icon?: string
   size: number
 }
 
@@ -155,6 +156,7 @@ export const useActionStore = create<ActionStoreType>(
 
           initAction: (actionGroupId, actionId) => {
             const actionConfigs = get().groupedActions?.[actionGroupId]
+            const config = get().actionGroups?.[actionGroupId]
 
             const action = actionConfigs[actionId]
 
@@ -176,6 +178,7 @@ export const useActionStore = create<ActionStoreType>(
             const activeAction = {
               id: actionId,
               actionGroupId,
+              icon: config.icon,
               subType,
               actionIds,
               renderType,

@@ -29,6 +29,7 @@ export interface ComboboxType {
   icon?: string
   trigger: string
   data?: ComboboxItem[]
+  extras?: Record<string, any>
   blockTrigger?: string
 }
 

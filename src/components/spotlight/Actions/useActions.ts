@@ -69,7 +69,7 @@ const useActions = () => {
    *  After Action group authorization, add action items in the store.
    *  This would add the action items in the Combobox and Spotlight
    */
-  const setActionsInList = (actionGroupId: string) => {
+  const setActionsInList = (actionGroupId: string, add = true) => {
     const actionGroups = useActionStore.getState().actionGroups
     const groupedActionConfigs = useActionStore.getState().groupedActions
 
@@ -85,8 +85,13 @@ const useActions = () => {
         const actionList = actionsConfigList.map((action) => getListItemFromAction(action, group))
 
         mog(`${actionGroupId} list`, { actionList, actionGroupId })
-        addActions(actionList)
-        appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { actionList })
+
+        if (add) {
+          addActions(actionList)
+          appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { actionList })
+        }
+
+        return actionList
       }
     }
   }

@@ -209,7 +209,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
           e.stopPropagation()
         }
       }}
-      onSelect={(e) => e.stopImmediatePropagation()}
+      // onSelect={(e) => e.stopImmediatePropagation()}
       components={
         isMulti ? { Option: CustomOption, MultiValue: MultiValueOption } : { SingleValue, Option: CustomOption }
       }

@@ -95,6 +95,7 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
   // We need to create the select handlers ourselves here
 
   const { keys, slashCommands, internal } = config
+  mog('KEYS', { keys, slashCommands, internal })
   const slashCommandOnChange = useSlashCommandOnChange({ ...slashCommands, ...internal.commands })
   const comboboxKey: string = useComboboxStore.getState().key
 

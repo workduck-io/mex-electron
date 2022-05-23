@@ -1,6 +1,7 @@
+import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import PerformersContainer from '@components/spotlight/ActionStage/Performers'
-import { mog } from '@utils/lib/helper'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import { StyledInlineBlock } from '../InlineBlock/styled'
 import { RootElement } from '../SyncBlock'
 
 interface ActionBlockProps {
@@ -9,15 +10,25 @@ interface ActionBlockProps {
 }
 
 const ActionBlock: React.FC<ActionBlockProps> = ({ attributes, element, children }) => {
+  const [mounted, setMounted] = useState(false)
+  const initAction = useActionStore((store) => store.initAction)
+
   useEffect(() => {
-    mog('ACTION BLOCK ELEMENT', { element })
+    if (element.actionGroupId && element.actionId) {
+      initAction(element.actionGroupId, element.actionId)
+    }
+    setMounted(true)
   }, [])
+
+  if (!mounted) return <></>
 
   return (
     <RootElement {...attributes}>
-      <div contentEditable={false}>
-        <PerformersContainer />
-      </div>
+      <StyledInlineBlock contentEditable={false}>
+        <div>
+          <PerformersContainer />
+        </div>
+      </StyledInlineBlock>
       {children}
     </RootElement>
   )

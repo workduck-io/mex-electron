@@ -54,7 +54,7 @@ export const getAllParentIds = (
 // return allParents
 
 export const isElder = (id: string, xparent: string) => {
-  return id.startsWith(xparent + SEPARATOR)
+  return id?.startsWith(xparent + SEPARATOR)
 }
 
 export const isParent = (id: string, parent: string) => {

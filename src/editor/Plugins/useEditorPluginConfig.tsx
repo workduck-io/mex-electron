@@ -1,7 +1,9 @@
+import useActions from '@components/spotlight/Actions/useActions'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import { ELEMENT_MEDIA_EMBED, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
+import { mog } from '@utils/lib/helper'
 import { useMemo } from 'react'
 import { QuickLinkType } from '../../components/mex/NodeSelect/NodeSelect'
 import { openReminderModal } from '../../components/mex/Reminders/CreateReminderModal'
@@ -32,6 +34,7 @@ const useEditorPluginConfig = (editorId: string) => {
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
+  const { setActionsInList } = useActions()
   const { getSnippetsConfigs } = useSnippets()
   // const { getSyncBlockConfigs } = useSyncConfig()
 
@@ -59,9 +62,9 @@ const useEditorPluginConfig = (editorId: string) => {
   const getActionGroups = () => {
     const groups = {}
     Object.values(actionGroups).forEach((group) => {
-      groups[group.name] = {
+      groups[group.actionGroupId] = {
         slateElementType: ELEMENT_ACTION_BLOCK,
-        command: group.name
+        command: group.actionGroupId
       }
     })
 
@@ -74,7 +77,7 @@ const useEditorPluginConfig = (editorId: string) => {
       text: group.name,
       type: CategoryType.action,
       icon: group.icon,
-      command: group.name
+      command: group.actionGroupId
     }))
 
     return groups
@@ -90,6 +93,29 @@ const useEditorPluginConfig = (editorId: string) => {
     })),
     ...slashInternals.map((l) => ({ ...l, value: l.command, text: l.text, type: l.type }))
   ]
+
+  const getActionList = () => {
+    const groups = Object.keys(actionGroups)
+    const actionList = []
+
+    groups.map((actionGroupId) => {
+      const actions = setActionsInList(actionGroupId, false).map((action) => ({
+        value: actionGroupId,
+        text: action.title,
+        type: CategoryType.action,
+        icon: action.icon,
+        command: actionGroupId,
+        extras: {
+          actionId: action.id,
+          actionGroupId
+        }
+      }))
+
+      actionList.push(...actions)
+    })
+
+    return actionList
+  }
 
   const comboConfigData: ComboConfigData = {
     keys: {
@@ -195,7 +221,7 @@ const useEditorPluginConfig = (editorId: string) => {
       trigger: '/',
       icon: 'ri:flask-line',
       data: [
-        ...getActionsData(),
+        ...getActionList(),
         ...slashCommands.default.map((l) => ({ ...l, value: l.command, type: CategoryType.action, text: l.text }))
       ]
     }

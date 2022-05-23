@@ -86,8 +86,8 @@ export const Overlay = styled.div`
   position: absolute;
   top: 0.3rem;
   left: 0.1rem;
-  width: 100vw;
-  height: 100vh;
+  width: 800px;
+  height: 500px;
   ${ModalOverlay};
   z-index: 1;
   background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};

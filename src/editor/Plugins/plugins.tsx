@@ -41,7 +41,6 @@ import {
   createSoftBreakPlugin,
   createStrikethroughPlugin,
   createTablePlugin,
-  createTodoListPlugin,
   createUnderlinePlugin,
   insertNodes,
   setNodes
@@ -72,6 +71,7 @@ import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
 import createTodoPlugin from '../Components/Todo/createTodoPlugin'
 import { createQAPlugin } from '../Components/QABlock/createQAPlugin'
 import { createHighlightTextPlugin } from './highlightText'
+import { createActionPlugin } from '@editor/Components/Actions/createActionPlugin'
 
 export type PluginOptionType = {
   exclude: {
@@ -174,6 +174,7 @@ export const generatePlugins = (options: PluginOptionType) => {
     createSyncBlockPlugin(),
 
     createQAPlugin(),
+    createActionPlugin(),
 
     // // For Inline Blocks
     createInlineBlockPlugin(),

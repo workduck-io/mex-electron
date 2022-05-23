@@ -8,7 +8,6 @@ import MenuDisplay from './MenuDisplay'
 import { useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import { useTheme } from 'styled-components'
-import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { MexIcon } from '@style/Layouts'
 
 type MenuProps = {}
@@ -41,8 +40,6 @@ const Menu: React.FC<MenuProps> = () => {
     }
   })
 
-  const { activeItem } = useSpotlightContext()
-
   const onOutsideClick = (e: any) => {
     setIsMenuOpen(false)
     clearMenuStore()
@@ -66,7 +63,7 @@ const Menu: React.FC<MenuProps> = () => {
         <MenuHeader id="wd-mex-action-menu-heading">
           <MexIcon
             color={theme.colors.primary}
-            icon={activeItem?.item?.icon}
+            icon={activeAction?.icon}
             height="1rem"
             width="1rem"
             margin="0 0.5rem"

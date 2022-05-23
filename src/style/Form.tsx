@@ -56,7 +56,7 @@ export const InputBlock = styled(Input)`
 export const NotFoundText = styled.div`
   width: 100%;
   flex-direction: column;
-  height: 65vh;
+  height: 350px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -198,16 +198,7 @@ export const ReactSelectStyles = (theme: DefaultTheme) => ({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const StyledSelect = (props: any) => {
   const theme = useTheme()
-  return (
-    <Select
-      captureMenuScroll
-      blurInputOnSelect
-      menuShouldBlockScroll
-      {...props}
-      theme={theme.additional.reactSelect}
-      styles={ReactSelectStyles(theme)}
-    ></Select>
-  )
+  return <Select {...props} theme={theme.additional.reactSelect} styles={ReactSelectStyles(theme)}></Select>
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

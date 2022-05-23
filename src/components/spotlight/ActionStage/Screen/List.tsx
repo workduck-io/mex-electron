@@ -17,12 +17,12 @@ export const FullWidth = styled.div<{ narrow: boolean }>`
   ${({ narrow }) =>
     narrow
       ? css`
-          height: calc(84vh - 2.75rem);
-          max-height: calc(84vh - 2.75rem);
+          height: calc(430px - 2.75rem);
+          max-height: calc(430px - 2.75rem);
         `
       : css`
-          height: 84vh;
-          max-height: 84vh;
+          height: 430px;
+          max-height: 430px; ;
         `}
   overflow-y: auto;
   overflow-behavior: contain;

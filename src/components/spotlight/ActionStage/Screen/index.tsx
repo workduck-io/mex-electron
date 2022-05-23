@@ -43,7 +43,7 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
 
   const view = useSpotlightAppStore((store) => store.view)
 
-  const { search } = useSpotlightContext()
+  const search = useSpotlightContext()?.search
 
   useEffect(() => {
     const ready = isPerformer(actionId)
@@ -72,14 +72,16 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
   }, [resData])
 
   useEffect(() => {
-    const data = (memoData?.displayData as TemplateConfig[]) ?? []
+    if (search) {
+      const data = (memoData?.displayData as TemplateConfig[]) ?? []
 
-    const res = getSearchResults(search?.value, data, {
-      keySelector: (obj: any) => obj.find((item) => item.type === 'title')?.value
-    })
+      const res = getSearchResults(search?.value, data, {
+        keySelector: (obj: any) => obj.find((item) => item.type === 'title')?.value
+      })
 
-    setResData(search?.value ? res : data)
-  }, [search.value, memoData])
+      setResData(search?.value ? res : data)
+    }
+  }, [search?.value, memoData])
 
   if (isLoading) return null
 
