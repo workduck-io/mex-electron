@@ -1,21 +1,22 @@
+import { BookmarksHelp, SharedHelp, TreeHelp } from '@data/Defaults/helpText'
+import { Logo, SidebarToggle, TrafficLightBG } from '@data/illustrations/logo'
+import { GetIcon } from '@data/links'
 import { useCreateNewNode } from '@hooks/useCreateNewNode'
+import useLayout from '@hooks/useLayout'
+import { useLinks } from '@hooks/useLinks'
+import { useKeyListener } from '@hooks/useShortcutListener'
 import archiveFill from '@iconify/icons-ri/archive-fill'
 import bookmark3Line from '@iconify/icons-ri/bookmark-3-line'
 import gitBranchLine from '@iconify/icons-ri/git-branch-line'
 import settings4Line from '@iconify/icons-ri/settings-4-line'
+import shareLine from '@iconify/icons-ri/share-line'
 import { Icon } from '@iconify/react'
+import { useTreeFromLinks } from '@store/useDataStore'
+import { useHelpStore } from '@store/useHelpStore'
+import { useLayoutStore } from '@store/useLayoutStore'
 import { useSingleton } from '@tippyjs/react'
 import React, { useEffect } from 'react'
 import tinykeys from 'tinykeys'
-import { BookmarksHelp, TreeHelp } from '../../../data/Defaults/helpText'
-import { Logo, SidebarToggle, TrafficLightBG } from '../../../data/illustrations/logo'
-import { GetIcon } from '../../../data/links'
-import useLayout from '../../../hooks/useLayout'
-import { useLinks } from '../../../hooks/useLinks'
-import { useKeyListener } from '../../../hooks/useShortcutListener'
-import { useTreeFromLinks } from '../../../store/useDataStore'
-import { useHelpStore } from '../../../store/useHelpStore'
-import { useLayoutStore } from '../../../store/useLayoutStore'
 import {
   ComingSoon,
   Count,
@@ -28,9 +29,9 @@ import {
   NavSpacer,
   NavTitle,
   NavWrapper
-} from '../../../style/Nav'
-import Collapse from '../../../ui/layout/Collapse/Collapse'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+} from '@style/Nav'
+import Collapse from '@ui/layout/Collapse/Collapse'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
 import Bookmarks from './Bookmarks'
@@ -166,10 +167,10 @@ const Nav = ({ links }: NavProps) => {
           <Collapse
             title="SharedNotes"
             oid="sharednotes"
-            icon={bookmark3Line}
+            icon={shareLine}
             maximumHeight="30vh"
             infoProps={{
-              text: BookmarksHelp
+              text: SharedHelp
             }}
           >
             <SharedNotes />

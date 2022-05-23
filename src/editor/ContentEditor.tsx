@@ -26,12 +26,14 @@ import Editor from './Editor'
 import Toolbar from './Toolbar'
 
 import { mog } from '../utils/lib/helper'
+import { useNodes } from '@hooks/useNodes'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const setIsEditing = useEditorStore((store) => store.setIsEditing)
   const { toggleFocusMode } = useLayout()
   const { saveApiAndUpdate } = useLoad()
+  const { accessWhenShared } = useNodes()
 
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
   const isComboOpen = useComboboxOpen()
@@ -127,6 +129,7 @@ const ContentEditor = () => {
     }
   }, [shortcuts, toggleFocusMode])
 
+  const viewOnly = accessWhenShared(node.nodeid) === 'READ'
   const readOnly = !!fetchingContent
 
   return (
@@ -143,6 +146,7 @@ const ContentEditor = () => {
             content={fsContent?.content ?? defaultContent.content}
             onChange={onChangeSave}
             editorId={editorId}
+            readOnly={viewOnly}
           />
         </EditorWrapper>
       </StyledEditor>

@@ -6,6 +6,7 @@ import { getContent } from '../utils/helpers'
 import { areEqual } from '../utils/lib/hash'
 import { mog } from '../utils/lib/helper'
 import { measureTime } from '../utils/lib/perf'
+import { useNodes } from './useNodes'
 import { useSaveData } from './useSaveData'
 import { useSnippets } from './useSnippets'
 
@@ -31,6 +32,7 @@ export const useEditorBuffer = () => {
   const add2Buffer = useBufferStore((s) => s.add)
   const clearBuffer = useBufferStore((s) => s.clear)
   const { saveData } = useSaveData()
+  const { isSharedNode } = useNodes()
 
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
 
@@ -49,9 +51,10 @@ export const useEditorBuffer = () => {
         .map(([nodeid, val]) => {
           const content = getContent(nodeid)
           const res = areEqual(content.content, val)
+          const isShared = isSharedNode(nodeid)
           // const mT = measureTime(() => areEqual(content.content, val))
           if (!res) {
-            saveEditorValueAndUpdateStores(nodeid, val, true)
+            saveEditorValueAndUpdateStores(nodeid, val, { saveApi: true, isShared })
           }
           return !res
         })

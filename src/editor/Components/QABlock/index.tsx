@@ -9,7 +9,7 @@ import useLoad from '../../../hooks/useLoad'
 import chat from '@iconify/icons-ph/chats-circle-bold'
 
 import useSuggestionStore from '../../../store/useSuggestions'
-import { ReactEditor, useSelected } from 'slate-react'
+import { ReactEditor, useReadOnly, useSelected } from 'slate-react'
 import { Editor } from 'slate'
 import { deleteFragment, insertNodes, selectEditor, setNodes, usePlateEditorRef } from '@udecode/plate'
 import { KEYBOARD_KEYS } from '../../../components/spotlight/Home/components/List'
@@ -37,6 +37,7 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
 
   const theme = useTheme()
   const selected = useSelected()
+  const readOnly = useReadOnly()
   const { params } = useRouting()
   const { queryIndexWithRanking } = useSearch()
   const editor = usePlateEditorRef()
@@ -169,13 +170,14 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
 
   return (
     <RootElement {...attributes}>
-      <QuestionInput selected={selected} contentEditable={false}>
+      <QuestionInput selected={!readOnly && selected} contentEditable={false}>
         <InputBlock
           tabIndex={-1}
           required
           onClick={(ev) => {
             ev.stopPropagation()
           }}
+          readOnly={readOnly}
           type="text"
           onKeyDown={onKeyDown}
           value={userResponse}

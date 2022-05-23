@@ -3,6 +3,7 @@ import useDataStore from '../store/useDataStore'
 import { AddILinkProps, ILink } from '../types/Types'
 import toast from 'react-hot-toast'
 import { NodeProperties } from '../store/useEditorStore'
+import { AccessLevel } from '../types/mentions'
 
 // Used to ensure no path clashes while adding ILink.
 // path functions to check wether clash is happening can be also used
@@ -27,6 +28,19 @@ export const useNodes = () => {
     return res
   }
 
+  const isSharedNode = (nodeid: string): boolean => {
+    const sharedNodes = useDataStore.getState().sharedNodes
+    const res = sharedNodes.map((l) => l.nodeid).includes(nodeid)
+    return res
+  }
+
+  const accessWhenShared = (nodeid: string): AccessLevel => {
+    const sharedNodes = useDataStore.getState().sharedNodes
+    const res = sharedNodes.find((n) => n.nodeid === nodeid)
+    if (res) return res.access
+    return undefined
+  }
+
   const getIcon = (nodeid: string): string => {
     const nodes = useDataStore.getState().ilinks
     const node = nodes.find((l) => l.nodeid === nodeid)
@@ -43,5 +57,6 @@ export const useNodes = () => {
     const node = nodes.find((l) => l.nodeid === nodeid)
     if (node) return node
   }
-  return { addNode, isInArchive, getIcon, getNode, getArchiveNode }
+
+  return { addNode, isInArchive, isSharedNode, getIcon, getNode, getArchiveNode, accessWhenShared }
 }

@@ -70,9 +70,11 @@ export const useApi = () => {
       id: nodeid,
       type: 'NodeRequest',
       title: getPathFromNodeid(nodeid),
-      lastEditedBy: useAuthStore.getState().userDetails.email,
       namespaceIdentifier: DEFAULT_NAMESPACE,
       data: serializeContent(content ?? defaultContent.content, nodeid)
+    }
+    if (!isShared) {
+      reqData['lastEditedBy'] = useAuthStore.getState().userDetails.email
     }
 
     if (!USE_API) {

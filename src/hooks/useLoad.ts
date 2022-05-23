@@ -1,28 +1,27 @@
 import { ILink, NodeEditorContent } from '../types/Types'
-import { NodeProperties, useEditorStore } from '../store/useEditorStore'
-import { mog, updateEmptyBlockTypes } from '../utils/lib/helper'
+import { NodeProperties, useEditorStore } from '@store/useEditorStore'
+import { mog, updateEmptyBlockTypes } from '@utils/lib/helper'
 
 import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph'
-import { USE_API } from '../data/Defaults/dev_'
-import { getContent } from '../utils/helpers'
+import { USE_API } from '@data/Defaults/dev_'
+import { getContent } from '@utils/helpers'
 import toast from 'react-hot-toast'
-import { useApi } from '../apis/useSaveApi'
-import { useContentStore } from '../store/useContentStore'
-import useDataStore from '../store/useDataStore'
+import { useApi } from '@apis/useSaveApi'
+import { useContentStore } from '@store/useContentStore'
+import useDataStore from '@store/useDataStore'
 import { useEditorBuffer } from './useEditorBuffer'
-import { useGraphStore } from '../store/useGraphStore'
-import useSuggestionStore from '../store/useSuggestions'
+import { useGraphStore } from '@store/useGraphStore'
+import useSuggestionStore from '@store/useSuggestions'
 import useToggleElements from './useToggleElements'
-import { useLayoutStore } from '../store/useLayoutStore'
+import { useLayoutStore } from '@store/useLayoutStore'
 import { useRefactor } from './useRefactor'
-import { getAllParentIds, getParentId, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
-import { useAnalysisStore } from '../store/useAnalysis'
-import { checkIfUntitledDraftNode } from '../utils/lib/strings'
+import { getAllParentIds, getParentId, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
+import { useAnalysisStore } from '@store/useAnalysis'
+import { checkIfUntitledDraftNode } from '@utils/lib/strings'
 import { getPathFromNodeIdHookless } from './useLinks'
-import { DRAFT_PREFIX } from '../data/Defaults/idPrefixes'
-import { useBlockHighlightStore } from '../editor/Actions/useFocusBlock'
-import { useTreeStore } from '../store/useTreeStore'
-import { PasswordNotMatch } from '@components/mex/Auth/errorMessages'
+import { DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
+import { useBlockHighlightStore } from '@editor/Actions/useFocusBlock'
+import { useTreeStore } from '@store/useTreeStore'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -58,7 +57,7 @@ const useLoad = () => {
 
   const setLoadingNodeid = useEditorStore((store) => store.setLoadingNodeid)
   // const { push } = useNavigation()
-  const clearLoadingNodeid = useEditorStore((store) => store.clearLoadingNodeid)
+  // const clearLoadingNodeid = useEditorStore((store) => store.clearLoadingNodeid)
   const expandNodes = useTreeStore((store) => store.expandNodes)
 
   // const { saveNodeAPIandFs } = useDataSaverFromContent()
@@ -170,10 +169,10 @@ const useLoad = () => {
    * Fetches the node and saves it to local state
    * Should be used when current editor content is irrelevant to the node
    */
-  const fetchAndSaveNode = async (node: NodeProperties, withLoading = true) => {
+  const fetchAndSaveNode = async (node: NodeProperties, options = { withLoading: true, isShared: false }) => {
     // console.log('Fetch and save', { node })
     // const node = getNode(nodeid)
-    if (withLoading) setFetchingContent(true)
+    if (options.withLoading) setFetchingContent(true)
     getDataAPI(node.nodeid)
       .then((nodeData) => {
         if (nodeData) {
@@ -200,13 +199,13 @@ const useLoad = () => {
             setContent(node.nodeid, content, metadata)
           }
         }
-        if (withLoading) setFetchingContent(false)
+        if (options.withLoading) setFetchingContent(false)
       })
       .catch((e) => {
         console.error(e)
       })
       .finally(() => {
-        if (withLoading) setFetchingContent(false)
+        if (options.withLoading) setFetchingContent(false)
       })
   }
 
@@ -263,8 +262,8 @@ const useLoad = () => {
     if (options.fetch && !hasBeenLoaded) {
       if (localCheck.isShared) {
         // TODO: Change fetch for shared
-        fetchAndSaveNode(node, options.withLoading)
-      } else fetchAndSaveNode(node, options.withLoading)
+        fetchAndSaveNode(node, { withLoading: true, isShared: true })
+      } else fetchAndSaveNode(node, { withLoading: true, isShared: false })
     }
     if (options.highlightBlockId) {
       setHighlights([options.highlightBlockId], 'editor')
