@@ -10,7 +10,6 @@ import { KEYBOARD_KEYS } from '../../Home/components/List'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { NavigationType, useRouting } from '../../../../views/routes/urls'
 import { Virtuoso } from 'react-virtuoso'
-import { mog } from '@utils/lib/helper'
 import useActionMenuStore from '../ActionMenu/useActionMenuStore'
 
 export const FullWidth = styled.div<{ narrow: boolean }>`

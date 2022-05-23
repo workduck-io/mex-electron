@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useSpring } from 'react-spring'
 import { MenuContainer, MenuBody, MenuHeader, Overlay, MenuTitle } from './styled'
 import { groupBy } from 'lodash'
@@ -16,6 +16,7 @@ type MenuProps = {}
 const Menu: React.FC<MenuProps> = () => {
   const activeMenuAction = useActionMenuStore((store) => store.activeMenuAction)
   const activeMenuItem = useSpotlightAppStore((store) => store.viewData)
+  const clearMenuStore = useActionMenuStore((store) => store.clearMenuStore)
 
   const theme = useTheme()
 
@@ -42,6 +43,11 @@ const Menu: React.FC<MenuProps> = () => {
 
   const { activeItem } = useSpotlightContext()
 
+  const onOutsideClick = (e: any) => {
+    setIsMenuOpen(false)
+    clearMenuStore()
+  }
+
   const header = useMemo(() => {
     const title = activeMenuItem?.display?.filter((item) => item.type === 'title')?.[0]
     const activeAction = useActionStore.getState().activeAction
@@ -55,8 +61,8 @@ const Menu: React.FC<MenuProps> = () => {
   }, [])
 
   return (
-    <Overlay tabIndex={0} onClick={() => setIsMenuOpen(false)}>
-      <MenuContainer style={transitions} id="wd-mex-action-menu">
+    <Overlay tabIndex={0} onClick={onOutsideClick}>
+      <MenuContainer style={transitions} id="wd-mex-action-menu" onClick={(e) => e.stopPropagation()}>
         <MenuHeader id="wd-mex-action-menu-heading">
           <MexIcon
             color={theme.colors.primary}

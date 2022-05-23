@@ -101,13 +101,16 @@ export const useAuthentication = () => {
     if (getWorkspace && data !== undefined) {
       authDetails = await client
         .get(apiURLs.getUserRecords)
-        .then((d): AuthDetails => {
+        .then(async (d) => {
           const userDetails = { email }
           const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
           initActionPerfomerClient(workspaceDetails.id)
 
-          // getNodesByWorkspace(workspaceDetails.id)
-          // Set Authenticated, user and workspace details
+          try {
+            await getGroupsToView()
+          } catch (err) {
+            mog('Unable to init action groups into view', { err })
+          }
 
           ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
           // * For Heap analytics
@@ -145,11 +148,16 @@ export const useAuthentication = () => {
           /*
            * If the user is present in the database, then we will add properties
            */
-          .then((d: any) => {
+          .then(async (d: any) => {
             const userDetails = { email: result.userCred.email, userId: result.userCred.userId }
             const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
             initActionPerfomerClient(workspaceDetails.id)
-            getGroupsToView().then(() => mog('Hello there'))
+
+            try {
+              await getGroupsToView()
+            } catch (err) {
+              mog('Unable to init action groups into view', { err })
+            }
 
             ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
             identifyUser(userDetails.email)
@@ -205,12 +213,17 @@ export const useAuthentication = () => {
                 try {
                   await refreshToken()
                 } catch (error) {
-                  console.error('Error: ', error)
+                  mog('Error: ', { error })
                 }
                 const userDetails = { email: uCred.email, userId: uCred.userId }
                 const workspaceDetails = { id: d.data.id, name: 'WORKSPACE_NAME' }
                 initActionPerfomerClient(workspaceDetails.id)
-                getGroupsToView().then(() => mog('Hello there'))
+
+                try {
+                  await getGroupsToView()
+                } catch (err) {
+                  mog('Unable to init action groups into view', { err })
+                }
 
                 ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
                 identifyUser(userDetails.email)
@@ -299,13 +312,18 @@ export const useAuthentication = () => {
           }
         }
       )
-      .then((d) => {
+      .then(async (d: any) => {
         // console.log(d.data)
         // Set workspace details
         const userDetails = { email: uCred.email }
         const workspaceDetails = { id: newWorkspaceName, name: 'WORKSPACE_NAME' }
         initActionPerfomerClient(newWorkspaceName)
-        getGroupsToView().then(() => mog('Hello there'))
+
+        try {
+          await getGroupsToView()
+        } catch (err) {
+          mog('Unable to init action groups into view', { err })
+        }
 
         ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
         setAuthenticated({ email: sensitiveData.email }, { id: d.data.id, name: d.data.name })

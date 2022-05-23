@@ -11,6 +11,8 @@ import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { useRouting } from '../../../../views/routes/urls'
 import { Button } from '../../../../style/Buttons'
 import ActionMenu from '../ActionMenu'
+import { NoOption } from '../ActionMenu/styled'
+import useActionMenuStore from '../ActionMenu/useActionMenuStore'
 
 const JoinService = styled.span<{ left?: boolean }>`
   position: absolute;
@@ -19,10 +21,10 @@ const JoinService = styled.span<{ left?: boolean }>`
   ${({ left }) =>
     left
       ? css`
-          left: 6rem;
+          left: 7rem;
         `
       : css`
-          right: 6rem;
+          right: 7rem;
         `}
 
   section {
@@ -40,7 +42,7 @@ const Connector = styled.span`
 const Blur = css`
   width: 5rem;
   height: 4rem;
-  right: 6rem;
+  right: 7rem;
   filter: blur(3rem);
   border-radius: 2rem;
 `
@@ -89,6 +91,7 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
   const setView = useSpotlightAppStore((store) => store.setView)
   const isSubmitting = useActionStore((store) => store.isSubmitting)
   const isActiveItem = useSpotlightAppStore((store) => store.viewData)
+  const hideMenu = useActionMenuStore((store) => store.hideMenu)
 
   const onCancelClick = () => {
     setView(undefined)
@@ -97,7 +100,7 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
 
   const config = getConfig(actionGroupId, actionId)
 
-  if (config?.postAction?.menus && isActiveItem) {
+  if (config?.postAction?.menus && !hideMenu && isActiveItem) {
     return <ActionMenu title="Options" />
   }
 
@@ -122,26 +125,42 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
         <FloatingGroup>
           <Tippy
             theme="mex"
-            placement="auto"
+            arrow={false}
+            placement="top"
             content={
               <ShortcutText key="send">
-                <div className="text">Cancel&nbsp;</div> (<DisplayShortcut shortcut="Esc" />)
+                <div className="text">Cancel&nbsp;</div> <DisplayShortcut shortcut="Esc" />
               </ShortcutText>
             }
           >
-            <BorderButton onClick={onCancelClick}>Discard</BorderButton>
+            <BorderButton onClick={onCancelClick}>
+              <NoOption>
+                <MexIcon
+                  noHover
+                  icon="material-symbols:cancel-outline-rounded"
+                  height="1.25rem"
+                  width="1.25rem"
+                  margin="0 0.5rem 0 0"
+                />
+                Discard
+              </NoOption>
+            </BorderButton>
           </Tippy>
           <Tippy
             theme="mex"
-            placement="auto"
+            arrow={false}
+            placement="top"
             content={
               <ShortcutText key="send">
-                <div className="text">Send&nbsp;</div> (<DisplayShortcut shortcut="$mod+Enter" />)
+                <div className="text">Send&nbsp;</div> <DisplayShortcut shortcut="$mod+Enter" />
               </ShortcutText>
             }
           >
             <FormButton form="action-form" type="submit" color={theme.colors.primary}>
-              Create
+              <NoOption>
+                <MexIcon noHover icon="ion:create-outline" margin="0 0.5rem 0 0" height="1.25rem" width="1.25rem" />
+                Create
+              </NoOption>
             </FormButton>
           </Tippy>
         </FloatingGroup>

@@ -6,10 +6,14 @@ import FormSelector from '../Forms/FormSelector'
 import { useForm, FormProvider } from 'react-hook-form'
 import { set } from 'lodash'
 import { useSpotlightAppStore } from '@store/app.spotlight'
-import { FormLoadingButton } from './styled'
+import { FormLoadingButton, MenuForm, NoOption } from './styled'
 import tinykeys from 'tinykeys'
 import { mog } from '@utils/lib/helper'
 import useActionMenuStore from './useActionMenuStore'
+import Tippy from '@tippyjs/react'
+import { DisplayShortcut } from '@components/mex/Shortcuts'
+import { ShortcutText } from '@components/spotlight/Home/components/Item'
+import { MexIcon } from '@style/Layouts'
 
 type MenuActionFormProps = {
   action: MenuPostActionConfig
@@ -107,7 +111,7 @@ const MenuActionForm: React.FC<MenuActionFormProps> = ({ action }) => {
 
   return (
     <FormProvider {...formMethods}>
-      <form id="menu-action-form" onSubmit={formMethods.handleSubmit(onSubmit)}>
+      <MenuForm id="menu-action-form" onSubmit={formMethods.handleSubmit(onSubmit)}>
         {actionDetails?.form?.map((field, index) => {
           return (
             <MenuField
@@ -118,14 +122,28 @@ const MenuActionForm: React.FC<MenuActionFormProps> = ({ action }) => {
             />
           )
         })}
-      </form>
-      <FormLoadingButton
-        loading={isSubmitting}
-        alsoDisabled={!formMethods.formState.isDirty}
-        buttonProps={{ type: 'submit', form: 'menu-action-form', primary: true }}
+      </MenuForm>
+      <Tippy
+        theme="mex"
+        arrow={false}
+        placement="top"
+        content={
+          <ShortcutText key="send">
+            <DisplayShortcut shortcut="$mod+Enter" />
+          </ShortcutText>
+        }
       >
-        Update
-      </FormLoadingButton>
+        <FormLoadingButton
+          loading={isSubmitting}
+          alsoDisabled={!formMethods.formState.isDirty}
+          buttonProps={{ type: 'submit', form: 'menu-action-form', primary: true }}
+        >
+          <NoOption>
+            <MexIcon noHover icon="ion:create-outline" margin="0 0.5rem 0 0" height="1.25rem" width="1.25rem" />
+            Update
+          </NoOption>
+        </FormLoadingButton>
+      </Tippy>
     </FormProvider>
   )
 }

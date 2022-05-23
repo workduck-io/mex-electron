@@ -5,7 +5,6 @@ import { useActionStore } from '../../Actions/useActionStore'
 import ActionInput from './Fields/ActionInput'
 import styled from 'styled-components'
 import { Controller, useFormContext } from 'react-hook-form'
-import { mog } from '@utils/lib/helper'
 
 export type FormSelectorProps = {
   element: FormField
@@ -60,6 +59,7 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAc
               data={data}
               isList={isMenuAction}
               disabled={disabled}
+              cacheSelection={!isMenuAction}
               value={getData(value)}
               onChange={({ value }) => onChange(value?.select?.value)}
               placeholder={element.options.placeholder}
@@ -111,6 +111,7 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAc
               disabled={disabled}
               isList={isMenuAction}
               value={filterTags(value)}
+              cacheSelection={!isMenuAction}
               ref={ref}
               onChange={(newVal) => {
                 const isArray = Array.isArray(newVal)

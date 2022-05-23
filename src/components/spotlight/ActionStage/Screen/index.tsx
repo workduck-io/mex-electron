@@ -36,6 +36,7 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
   const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
   const prevValue = getPreviousActionValue(actionId)?.selection
   const needsRefresh = useActionMenuStore((store) => store.needsRefresh)
+  const setHideMenu = useActionMenuStore((store) => store.setHideMenu)
 
   const isLoading = useSpotlightAppStore((store) => store.isLoading)
   const { performer, isPerformer } = useActionPerformer()
@@ -62,8 +63,13 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
   const memoData = useMemo(() => {
     const res = getCacheResult(actionId)
     mog('res', { res })
-    return getCacheResult(actionId)
-  }, [actionId, resData])
+    return res
+  }, [actionId])
+
+  useEffect(() => {
+    const hideMenuOptions = !resData || resData?.length === 0
+    setHideMenu(hideMenuOptions)
+  }, [resData])
 
   useEffect(() => {
     const data = (memoData?.displayData as TemplateConfig[]) ?? []

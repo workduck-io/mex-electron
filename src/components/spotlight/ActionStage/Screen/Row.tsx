@@ -4,6 +4,7 @@ import Project from '../Project'
 import { TemplateConfig } from '@workduck-io/action-request-helper'
 import { ErrorBoundary } from 'react-error-boundary'
 import { StyledBackground } from '../../styled'
+import { OnHoverItemBackground } from '../ActionMenu/styled'
 
 type RowConatainerType = 'row' | 'column'
 
@@ -37,7 +38,7 @@ const RowContainer = styled.div<RowContainerProps>`
     type === 'row' &&
     css`
       :hover {
-        ${StyledBackground}
+        ${OnHoverItemBackground}
       }
     `}
 `

@@ -18,6 +18,10 @@ type MenuActionStoreProps = {
   needsRefresh: boolean
   setNeedsRefresh: () => void
 
+  // * If no items present hide menu button
+  hideMenu?: boolean
+  setHideMenu: (hideMenu: boolean) => void
+
   // * Action Menu Modal state
   isActionMenuOpen: boolean
   toggleActionMenu: () => void
@@ -39,6 +43,9 @@ const useActionMenuStore = create<MenuActionStoreProps>((set, get) => ({
 
   isActionMenuOpen: false,
   setIsActionMenuOpen: (isActionMenuOpen) => set({ isActionMenuOpen }),
+
+  hideMenu: false,
+  setHideMenu: (hideMenu) => set({ hideMenu }),
 
   activeMenuForm: 0,
   setActiveMenuForm: (activeMenuForm) => set({ activeMenuForm }),

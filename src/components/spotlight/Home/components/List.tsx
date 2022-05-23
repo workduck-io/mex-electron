@@ -121,7 +121,6 @@ const List = ({
   React.useEffect(() => {
     parentRef.current.scrollToIndex({
       index: activeIndex,
-      align: 'start',
       behavior: 'smooth'
     })
   }, [activeIndex])

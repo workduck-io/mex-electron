@@ -84,7 +84,7 @@ export const useActionPerformer = () => {
       ? { ...prevActionValue?.value, formData: options.formData }
       : prevActionValue?.value
 
-    mog(`${actionId}`, { configVal, prevActionValue })
+    // mog(`${actionId}`, { configVal, prevActionValue })
 
     try {
       // * if we have a previous action selection, use that
@@ -95,7 +95,7 @@ export const useActionPerformer = () => {
         serviceType
       })
 
-      addResultInCache(actionId, getIndexedResult(result))
+      if (!isMenuActionOpen) addResultInCache(actionId, getIndexedResult(result))
 
       const resultAction = actionConfig?.postAction?.result
       const isRunAction = resultAction?.type === ClickPostActionType.RUN_ACTION
@@ -133,17 +133,22 @@ export const useActionPerformer = () => {
     if (workspaceId) actionPerformer.setWorkspaceId(workspaceId)
   }
 
-  const isPerformer = (actionId: string) => {
+  const isPerformer = (actionId: string, option?: { isMenuAction?: boolean }) => {
     const selection = getSelection(actionId)
     const prevActionValue = getPrevActionValue(actionId)
     const action = getConfig(activeAction?.actionGroupId, actionId)
 
-    const hasPrevValueChanged =
-      (prevActionValue?.selection && selection?.prev !== prevActionValue?.selection?.label) ||
-      useActionMenuStore.getState().activeMenuAction
-    const hasPreAction = action?.preActionId
+    const isNew = prevActionValue === undefined && selection === undefined
+    const hasPrevValueChanged = prevActionValue?.selection && selection?.prev !== prevActionValue?.selection?.label
 
-    return hasPreAction ? hasPrevValueChanged : !hasPrevValueChanged
+    const hasPreAction = action?.preActionId
+    const isMenuOpen = useActionMenuStore.getState().isActionMenuOpen
+
+    if (isMenuOpen) {
+      return option?.isMenuAction
+    }
+
+    return hasPreAction ? hasPrevValueChanged : isNew
   }
 
   const isReady = () => {

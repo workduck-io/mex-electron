@@ -3,8 +3,8 @@ import styled, { css } from 'styled-components'
 
 import { StyledBackground } from '../styled'
 import { animated } from 'react-spring'
-import { transparentize } from 'polished'
 import { BodyFont } from '@style/spotlight/global'
+import { OnHoverItemBackground } from '../ActionStage/ActionMenu/styled'
 
 export const StyledResults = styled(ColumnContainer)<{ margin: string }>`
   margin-top: 4px;
@@ -19,7 +19,7 @@ export const StyledRow = styled(animated.div)<ColorProp>`
   padding: 12px 1rem 12px 0;
 
   :hover {
-    background-color: ${({ theme }) => transparentize(0.65, theme.colors.background.app)};
+    ${OnHoverItemBackground}
   }
 
   ${({ background }) =>

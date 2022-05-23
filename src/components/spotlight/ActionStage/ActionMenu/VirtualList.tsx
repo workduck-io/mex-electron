@@ -1,10 +1,15 @@
 import { KEYBOARD_KEYS } from '@components/spotlight/Home/components/List'
+import { MexIcon } from '@style/Layouts'
+import Loading from '@style/Loading'
 import { mog } from '@utils/lib/helper'
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { Virtuoso } from 'react-virtuoso'
+import { useTheme } from 'styled-components'
+import { ListContainer, NoOption } from './styled'
 
 type VirtualListProps<T> = {
   items: Array<T>
+  isLoading?: boolean
   activeItems?: Array<T> | undefined
   onEnter: (item: T) => void
   onClick?: (item: T) => void
@@ -18,15 +23,23 @@ type VirtualListProps<T> = {
   }>
 }
 
-const VirtualList = <T,>({ items, activeItems, getIsActive, onEnter, onClick, ItemRenderer }: VirtualListProps<T>) => {
+const VirtualList = <T,>({
+  items,
+  activeItems,
+  isLoading,
+  getIsActive,
+  onEnter,
+  onClick,
+  ItemRenderer
+}: VirtualListProps<T>) => {
   const [index, setIndex] = useState(0)
   const ref = useRef(null)
+  const theme = useTheme()
 
   const scrollTo = (index: number) => {
     if (ref.current) {
       ref.current.scrollIntoView({
         index,
-        align: 'start',
         behavior: 'smooth'
       })
     }
@@ -50,6 +63,8 @@ const VirtualList = <T,>({ items, activeItems, getIsActive, onEnter, onClick, It
 
   useEffect(() => {
     const handler = (event) => {
+      if (!items?.length) return
+
       switch (event.code) {
         case KEYBOARD_KEYS.ArrowUp:
           event.preventDefault()
@@ -76,6 +91,25 @@ const VirtualList = <T,>({ items, activeItems, getIsActive, onEnter, onClick, It
 
     return () => window.removeEventListener('keydown', handler)
   }, [items, index])
+
+  if (isLoading) return <Loading dots={3} transparent color={theme.colors.primary} />
+
+  if (items?.length === 0)
+    return (
+      <ListContainer>
+        <NoOption>
+          <MexIcon
+            noHover
+            icon="ri:list-unordered"
+            color={theme.colors.text.fade}
+            height="1rem"
+            width="1rem"
+            margin="0 0.5rem 0 0"
+          />
+          No options!
+        </NoOption>
+      </ListContainer>
+    )
 
   return (
     <Virtuoso
