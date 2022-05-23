@@ -1,8 +1,10 @@
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import PerformersContainer from '@components/spotlight/ActionStage/Performers'
 import React, { useEffect, useState } from 'react'
+import { useSelected } from 'slate-react'
 import { StyledInlineBlock } from '../InlineBlock/styled'
 import { RootElement } from '../SyncBlock'
+import ActionBlockHeader from './ActionBlockHeader'
 
 interface ActionBlockProps {
   attributes: any
@@ -12,11 +14,13 @@ interface ActionBlockProps {
 const ActionBlock: React.FC<ActionBlockProps> = ({ attributes, element, children }) => {
   const [mounted, setMounted] = useState(false)
   const initAction = useActionStore((store) => store.initAction)
+  const selected = useSelected()
 
   useEffect(() => {
     if (element.actionGroupId && element.actionId) {
       initAction(element.actionGroupId, element.actionId)
     }
+
     setMounted(true)
   }, [])
 
@@ -24,10 +28,9 @@ const ActionBlock: React.FC<ActionBlockProps> = ({ attributes, element, children
 
   return (
     <RootElement {...attributes}>
-      <StyledInlineBlock contentEditable={false}>
-        <div>
-          <PerformersContainer />
-        </div>
+      <StyledInlineBlock selected={selected} contentEditable={false}>
+        <ActionBlockHeader />
+        <PerformersContainer />
       </StyledInlineBlock>
       {children}
     </RootElement>

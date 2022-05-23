@@ -19,6 +19,7 @@ export type ActiveActionType = {
   subType?: ActionSubType
   actionGroupId: string
   icon?: string
+  name: string
   size: number
 }
 
@@ -179,6 +180,7 @@ export const useActionStore = create<ActionStoreType>(
               id: actionId,
               actionGroupId,
               icon: config.icon,
+              name: action.name,
               subType,
               actionIds,
               renderType,

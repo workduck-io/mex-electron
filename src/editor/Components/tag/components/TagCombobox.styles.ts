@@ -1,3 +1,4 @@
+import { MainFont } from '@style/spotlight/global'
 import styled, { css } from 'styled-components'
 
 export const ComboboxItem = styled.div`
@@ -82,6 +83,7 @@ export const ItemTitle = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  ${MainFont};
   /* width: 200px; */
 `
 

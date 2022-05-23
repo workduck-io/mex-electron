@@ -59,8 +59,6 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
         mog('Select__CN clause', { val, selectVal, creatable, res })
         if (res) onSelectItem(editor, { key: String(items.length), text: res }, elementType)
       } else {
-        mog('THIS would be called if i press enter', { item, elementType })
-
         onSelectItem(editor, item, elementType)
       }
     } else if (selectVal && creatable) {
@@ -95,7 +93,6 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
   // We need to create the select handlers ourselves here
 
   const { keys, slashCommands, internal } = config
-  mog('KEYS', { keys, slashCommands, internal })
   const slashCommandOnChange = useSlashCommandOnChange({ ...slashCommands, ...internal.commands })
   const comboboxKey: string = useComboboxStore.getState().key
 
@@ -143,7 +140,7 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
         if (e.key === 'ArrowDown') {
           e.preventDefault()
 
-          const newIndex = getNextWrappingIndex(1, itemIndex, items.length, () => undefined, true)
+          const newIndex = getNextWrappingIndex(1, itemIndex, items.length, () => undefined, false)
 
           // * Replace current searched text with list item
           // replaceFragment(editor, targetRange, items[newIndex].text)
@@ -153,7 +150,7 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
         if (e.key === 'ArrowUp') {
           e.preventDefault()
 
-          const newIndex = getNextWrappingIndex(-1, itemIndex, items.length, () => undefined, true)
+          const newIndex = getNextWrappingIndex(-1, itemIndex, items.length, () => undefined, false)
 
           // * Replace current searched text with list item
           // replaceFragment(editor, targetRange, items[newIndex].text)

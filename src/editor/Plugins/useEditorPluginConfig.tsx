@@ -71,29 +71,6 @@ const useEditorPluginConfig = (editorId: string) => {
     return groups
   }
 
-  const getActionsData = () => {
-    const groups = Object.values(actionGroups).map((group) => ({
-      value: group.actionGroupId,
-      text: group.name,
-      type: CategoryType.action,
-      icon: group.icon,
-      command: group.actionGroupId
-    }))
-
-    return groups
-  }
-
-  const internals: ComboboxItem[] = [
-    ...ilinksForCurrentNode.map((l) => ({
-      ...l,
-      value: l.nodeid,
-      text: l.path,
-      icon: l.icon ?? 'ri:file-list-2-line',
-      type: QuickLinkType.backlink
-    })),
-    ...slashInternals.map((l) => ({ ...l, value: l.command, text: l.text, type: l.type }))
-  ]
-
   const getActionList = () => {
     const groups = Object.keys(actionGroups)
     const actionList = []
@@ -116,6 +93,29 @@ const useEditorPluginConfig = (editorId: string) => {
 
     return actionList
   }
+
+  // const getActionsData = () => {
+  //   const groups = Object.values(actionGroups).map((group) => ({
+  //     value: group.actionGroupId,
+  //     text: group.name,
+  //     type: CategoryType.action,
+  //     icon: group.icon,
+  //     command: group.actionGroupId
+  //   }))
+
+  //   return groups
+  // }
+
+  const internals: ComboboxItem[] = [
+    ...ilinksForCurrentNode.map((l) => ({
+      ...l,
+      value: l.nodeid,
+      text: l.path,
+      icon: l.icon ?? 'ri:file-list-2-line',
+      type: QuickLinkType.backlink
+    })),
+    ...slashInternals.map((l) => ({ ...l, value: l.command, text: l.text, type: l.type }))
+  ]
 
   const comboConfigData: ComboConfigData = {
     keys: {

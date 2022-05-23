@@ -9,7 +9,6 @@ import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import ListSelector from '../ActionMenu/ListSelector'
 import { StyledOption, SelectBar } from './styled'
 import VirtualList from '../ActionMenu/VirtualList'
-import { mog } from '@utils/lib/helper'
 
 type SelectedProps = {
   value?: any

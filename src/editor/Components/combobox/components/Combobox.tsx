@@ -159,6 +159,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
                             fontSize={16}
                             key={`${item.key}_${item.icon}`}
                             icon={item.icon}
+                            margin="0 0.25rem 0 0"
                             color={theme.colors.primary}
                           />
                         )}

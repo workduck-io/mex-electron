@@ -74,7 +74,6 @@ const useActions = () => {
     const groupedActionConfigs = useActionStore.getState().groupedActions
 
     const group = actionGroups?.[actionGroupId]
-    mog(`${actionGroupId}`)
 
     if (group) {
       const actionsConfigList = Object.values(groupedActionConfigs?.[actionGroupId] ?? {}).filter(
@@ -83,8 +82,6 @@ const useActions = () => {
 
       if (actionsConfigList) {
         const actionList = actionsConfigList.map((action) => getListItemFromAction(action, group))
-
-        mog(`${actionGroupId} list`, { actionList, actionGroupId })
 
         if (add) {
           addActions(actionList)

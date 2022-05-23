@@ -127,7 +127,6 @@ export const useOnSelectItem = (
   singleComboConfig: SingleComboboxConfig,
   commands: ConfigDataSlashCommands
 ) => {
-  mog('SLASH', { slashCommands, commands })
   const slashCommandOnChange = useSlashCommandOnChange({ ...slashCommands, ...commands })
   const elementOnChange = useElementOnChange(singleComboConfig)
 
