@@ -1,6 +1,6 @@
 import { mog } from '../utils/lib/helper'
 import useDataStore from '../store/useDataStore'
-import { AddILinkProps, ILink } from '../types/Types'
+import { AddILinkProps, ILink, SharedNode } from '../types/Types'
 import toast from 'react-hot-toast'
 import { NodeProperties } from '../store/useEditorStore'
 import { AccessLevel } from '../types/mentions'
@@ -52,11 +52,16 @@ export const useNodes = () => {
     const node = nodes.find((l) => l.nodeid === nodeid)
     if (node) return node
   }
+  const getSharedNode = (nodeid: string): SharedNode => {
+    const nodes = useDataStore.getState().sharedNodes
+    const node = nodes.find((l) => l.nodeid === nodeid)
+    if (node) return node
+  }
   const getArchiveNode = (nodeid: string): ILink => {
     const nodes = useDataStore.getState().archive
     const node = nodes.find((l) => l.nodeid === nodeid)
     if (node) return node
   }
 
-  return { addNode, isInArchive, isSharedNode, getIcon, getNode, getArchiveNode, accessWhenShared }
+  return { addNode, isInArchive, isSharedNode, getIcon, getSharedNode, getNode, getArchiveNode, accessWhenShared }
 }

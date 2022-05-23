@@ -11,7 +11,7 @@ import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
 import { WORKSPACE_HEADER, DEFAULT_NAMESPACE } from '../data/Defaults/defaults'
 import { useLinks } from '../hooks/useLinks'
-import { getNameFromPath } from '@components/mex/Sidebar/treeUtils'
+import { useNodes } from '@hooks/useNodes'
 
 // clientInterceptor
 //
@@ -21,6 +21,7 @@ export const useApi = () => {
   const setMetadata = useContentStore((store) => store.setMetadata)
   const setContent = useContentStore((store) => store.setContent)
   const { getNodeTitleSave } = useLinks()
+  const { getSharedNode } = useNodes()
   /*
    * Saves data in the backend
    * Also updates the incoming data in the store
@@ -75,6 +76,11 @@ export const useApi = () => {
     }
     if (!isShared) {
       reqData['lastEditedBy'] = useAuthStore.getState().userDetails.email
+    }
+
+    if (isShared) {
+      const node = getSharedNode(nodeid)
+      if (node.access[nodeid] === 'READ') return
     }
 
     if (!USE_API) {
