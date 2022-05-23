@@ -7,6 +7,7 @@ import { initActions } from '../../../data/Actions'
 
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { mog } from '../../../utils/lib/helper'
+import useActionMenuStore from '../ActionStage/ActionMenu/useActionMenuStore'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
 export type ActionSubType = 'form' | 'none' | undefined
@@ -111,9 +112,11 @@ export const useActionStore = create<ActionStoreType>(
               mog('RESULT CACHING ', { actionId, result, selection })
             }
 
+            const isMenuAction = useActionMenuStore.getState().isActionMenuOpen
+
             set({
               resultCache: { ...cache, [actionId]: result },
-              selectionCache: { ...selection, [actionId]: undefined }
+              selectionCache: isMenuAction ? selection : { ...selection, [actionId]: undefined }
             })
           },
 

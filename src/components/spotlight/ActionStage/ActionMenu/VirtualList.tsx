@@ -46,11 +46,12 @@ const VirtualList = <T,>({
   }
 
   const nextItem = () => {
-    setIndex((next) => {
-      const nextIndex = next === items.length - 1 ? next : next + 1
-      scrollTo(nextIndex)
-      return nextIndex
-    })
+    if (items)
+      setIndex((next) => {
+        const nextIndex = next === items?.length - 1 ? next : next + 1
+        scrollTo(nextIndex)
+        return nextIndex
+      })
   }
 
   const prevItem = () => {
@@ -64,7 +65,6 @@ const VirtualList = <T,>({
   useEffect(() => {
     const handler = (event) => {
       if (!items?.length) return
-
       switch (event.code) {
         case KEYBOARD_KEYS.ArrowUp:
           event.preventDefault()

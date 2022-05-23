@@ -8,7 +8,6 @@ import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { useActionStore } from '../Actions/useActionStore'
 import { NavigationType, useRouting } from '../../../views/routes/urls'
-import { mog } from '../../../utils/lib/helper'
 import useActionMenuStore from '../ActionStage/ActionMenu/useActionMenuStore'
 
 const useItemExecutor = () => {

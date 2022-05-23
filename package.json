@@ -103,7 +103,7 @@
     "@udecode/plate-excalidraw": "^8.3.0",
     "@udecode/plate-highlight": "~10.2.2",
     "@uifabric/styling": "^7.19.0",
-    "@workduck-io/action-request-helper": "0.1.3",
+    "@workduck-io/action-request-helper": "^0.1.3",
     "@workduck-io/dwindle": "^0.0.15",
     "@workduck-io/flexsearch": "^0.7.22",
     "active-win-universal": "^7.6.2",

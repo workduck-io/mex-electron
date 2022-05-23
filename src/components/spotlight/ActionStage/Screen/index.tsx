@@ -64,7 +64,7 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
     const res = getCacheResult(actionId)
     mog('res', { res })
     return res
-  }, [actionId])
+  }, [actionId, resData])
 
   useEffect(() => {
     const hideMenuOptions = !resData || resData?.length === 0
