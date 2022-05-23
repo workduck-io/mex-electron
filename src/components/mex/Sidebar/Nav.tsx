@@ -165,7 +165,7 @@ const Nav = ({ links }: NavProps) => {
             <Bookmarks />
           </Collapse>
           <Collapse
-            title="SharedNotes"
+            title="Shared Notes"
             oid="sharednotes"
             icon={shareLine}
             maximumHeight="30vh"

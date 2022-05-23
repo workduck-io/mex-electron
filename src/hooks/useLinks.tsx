@@ -197,11 +197,26 @@ export const useLinks = () => {
     if (archivedLink) return archivedLink.nodeid
   }
 
+  const getPathFromShared = (nodeid: string) => {
+    const links = useDataStore.getState().sharedNodes
+
+    const link = links.find((l) => l.nodeid === nodeid)
+    if (link) return link.path
+  }
+
   const getPathFromNodeid = (nodeid: string) => {
     const links = useDataStore.getState().ilinks
 
     const link = links.find((l) => l.nodeid === nodeid)
     if (link) return link.path
+  }
+
+  const getNodeTitleSave = (nodeid: string) => {
+    const pathFromNodeid = getPathFromNodeid(nodeid)
+    if (pathFromNodeid) return pathFromNodeid
+
+    const pathFromShared = getPathFromShared(nodeid)
+    if (pathFromShared) return pathFromShared
   }
 
   return {
@@ -212,6 +227,8 @@ export const useLinks = () => {
     updateLinksFromContent,
     getNodeidFromPath,
     getILinkFromNodeid,
+    getNodeTitleSave,
+    getPathFromShared,
     getPathFromNodeid,
     createLink
   }

@@ -10,3 +10,5 @@ export const getNodeIcon = (path: string) => {
     return 'ri:task-line'
   }
 }
+
+export const DefaultNodeIcon = 'ri:file-list-2-line'

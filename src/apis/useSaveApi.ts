@@ -20,7 +20,7 @@ export const useApi = () => {
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const setMetadata = useContentStore((store) => store.setMetadata)
   const setContent = useContentStore((store) => store.setContent)
-  const { getPathFromNodeid } = useLinks()
+  const { getNodeTitleSave } = useLinks()
   /*
    * Saves data in the backend
    * Also updates the incoming data in the store
@@ -31,7 +31,7 @@ export const useApi = () => {
   const saveNewNodeAPI = async (nodeid: string) => {
     const reqData = {
       id: nodeid,
-      title: getNameFromPath(getPathFromNodeid(nodeid)),
+      title: getNodeTitleSave(nodeid),
       type: 'NodeRequest',
       lastEditedBy: useAuthStore.getState().userDetails.email,
       namespaceIdentifier: 'NAMESPACE1',
@@ -69,7 +69,7 @@ export const useApi = () => {
     const reqData = {
       id: nodeid,
       type: 'NodeRequest',
-      title: getPathFromNodeid(nodeid),
+      title: getNodeTitleSave(nodeid),
       namespaceIdentifier: DEFAULT_NAMESPACE,
       data: serializeContent(content ?? defaultContent.content, nodeid)
     }
