@@ -78,5 +78,8 @@ export const apiURLs = {
   // Sharing
   // Post type determines action
   sharedNode: `${API_URL}/shared/node`,
-  allSharedNodes: `${API_URL}/shared/node/all`
+  allSharedNodes: `${API_URL}/shared/node/all`,
+
+  getSharedNode: (nodeid: string) => `${API_URL}/shared/node/${nodeid}`,
+  updateSharedNode: `${API_URL}/shared/node/update`
 }

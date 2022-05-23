@@ -65,7 +65,7 @@ export const useApi = () => {
    * Saves data in the backend
    * Also updates the incoming data in the store
    */
-  const saveDataAPI = async (nodeid: string, content: any[]) => {
+  const saveDataAPI = async (nodeid: string, content: any[], isShared = false) => {
     const reqData = {
       id: nodeid,
       type: 'NodeRequest',
@@ -78,8 +78,9 @@ export const useApi = () => {
     if (!USE_API) {
       return
     }
+    const url = isShared ? apiURLs.updateSharedNode : apiURLs.saveNode
     const data = await client
-      .post(apiURLs.saveNode, reqData, {
+      .post(url, reqData, {
         headers: {
           [WORKSPACE_HEADER]: getWorkspaceId(),
           Accept: 'application/json, text/plain, */*'
@@ -97,8 +98,8 @@ export const useApi = () => {
     return data
   }
 
-  const getDataAPI = async (nodeid: string) => {
-    const url = apiURLs.getNode(nodeid)
+  const getDataAPI = async (nodeid: string, isShared = false) => {
+    const url = isShared ? apiURLs.getSharedNode(nodeid) : apiURLs.getNode(nodeid)
     if (isRequestedWithin(5, url)) {
       console.warn('\nAPI has been requested before, cancelling\n')
       return
@@ -106,7 +107,7 @@ export const useApi = () => {
 
     // console.warn('\n\n\n\nAPI has not been requested before, requesting\n\n\n\n')
     const res = await client
-      .get(apiURLs.getNode(nodeid), {
+      .get(url, {
         headers: {
           [WORKSPACE_HEADER]: getWorkspaceId(),
           Accept: 'application/json, text/plain, */*'

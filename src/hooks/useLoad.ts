@@ -29,6 +29,8 @@ export interface LoadNodeOptions {
   fetch?: boolean
   node?: NodeProperties
   withLoading?: boolean
+  // Is the note shared with the person?
+  isShared?: boolean
   // Highlights the block after loading
   highlightBlockId?: string
 }
@@ -220,7 +222,10 @@ const useLoad = () => {
    * For shared:
    * fetchAndSave different
    */
-  const loadNode: LoadNodeFn = (nodeid, options = { savePrev: true, fetch: USE_API, withLoading: true }) => {
+  const loadNode: LoadNodeFn = (
+    nodeid,
+    options = { savePrev: true, fetch: USE_API, withLoading: true, isShared: false }
+  ) => {
     const hasBeenLoaded = false
     const currentNodeId = useEditorStore.getState().node.nodeid
 

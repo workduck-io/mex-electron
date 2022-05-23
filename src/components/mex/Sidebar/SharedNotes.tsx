@@ -50,7 +50,10 @@ const SharedNotes = () => {
     <BList>
       {sharedNodes.map((sharedNode) => {
         return (
-          <BLink key={`shared_notes_link_${sharedNode.nodeid}`} onClick={() => push(sharedNode.nodeid)}>
+          <BLink
+            key={`shared_notes_link_${sharedNode.nodeid}`}
+            onClick={() => push(sharedNode.nodeid, { isShared: true })}
+          >
             <Icon height={14} icon={bookmarkLine} />
             {sharedNode.path}
           </BLink>
