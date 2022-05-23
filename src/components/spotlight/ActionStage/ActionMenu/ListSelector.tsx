@@ -1,10 +1,10 @@
 import { MexIcon } from '@style/Layouts'
-import React, { useRef } from 'react'
+import React from 'react'
 import styled, { useTheme } from 'styled-components'
 import { StyledOption } from '../Performers/styled'
 import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
-import { StyledBackground } from '@components/spotlight/styled'
 import { BodyFont } from '@style/spotlight/global'
+import { OnHoverItemBackground } from './styled'
 
 type ListSelectorProps = {
   item: any
@@ -20,7 +20,7 @@ const MenuListOption = styled((props) => <StyledOption {...props} />)`
   ${BodyFont}
 
   :hover {
-    ${StyledBackground}
+    ${OnHoverItemBackground}
   }
 `
 
@@ -28,7 +28,7 @@ const DEFAULT_LIST_ITEM_ICON = 'codicon:circle-filled'
 
 const ListSelector: React.FC<ListSelectorProps> = ({ item, highlight, isActive, onClick }) => {
   const theme = useTheme()
-  const { icon, color } = item?.value?.select
+  const { icon, color } = item?.value?.select || {}
   const { mexIcon } = getIconType(icon ?? DEFAULT_LIST_ITEM_ICON)
 
   const handleOnClick = (ev) => {

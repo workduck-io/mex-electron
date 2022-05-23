@@ -125,7 +125,7 @@ export const TextAreaBlock = styled(TextArea)<{ height?: TextFieldHeight; error?
     switch (height) {
       case TextFieldHeight.SMALL:
         return css`
-          max-height: 2rem;
+          max-height: 2.25rem;
         `
       case TextFieldHeight.MEDIUM:
         return css`
@@ -139,7 +139,7 @@ export const TextAreaBlock = styled(TextArea)<{ height?: TextFieldHeight; error?
         `
       default:
         return css`
-          height: 2rem;
+          height: 2.25rem;
         `
     }
   }}

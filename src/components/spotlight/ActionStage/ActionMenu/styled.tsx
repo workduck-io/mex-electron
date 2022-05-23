@@ -1,11 +1,10 @@
 import { LoadingButton } from '@components/mex/Buttons/LoadingButton'
 import { ModalOverlay } from '@components/mex/Refactor/styles'
-import { StyledBackground } from '@components/spotlight/styled'
 import { Input } from '@style/Form'
 import { BodyFont } from '@style/spotlight/global'
-import { rgba } from 'polished'
+import { rgba, transparentize } from 'polished'
 import { animated } from 'react-spring'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 export const StyledDefault = styled.div`
   position: absolute;
@@ -17,6 +16,22 @@ export const StyledDefault = styled.div`
 export const FormLoadingButton = styled(LoadingButton)`
   margin-top: ${(props) => props.theme.spacing.small};
   box-shadow: none !important;
+`
+
+export const OnHoverItemBackground = css`
+  background-color: ${({ theme }) => transparentize(0.65, theme.colors.background.app)};
+`
+
+export const MenuForm = styled.form``
+
+export const NoOption = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+export const ListContainer = styled.div`
+  color: ${({ theme }) => theme.colors.text.fade};
 `
 
 export const StyledMenuItem = styled.button<{ highlight?: boolean }>`
@@ -31,7 +46,7 @@ export const StyledMenuItem = styled.button<{ highlight?: boolean }>`
   }
 
   :hover {
-    ${StyledBackground}
+    ${OnHoverItemBackground}
   }
 
   padding: ${(props) => props.theme.spacing.small};
@@ -74,7 +89,7 @@ export const Overlay = styled.div`
   width: 100vw;
   height: 100vh;
   ${ModalOverlay};
-  z-index: 100;
+  z-index: 1;
   background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};
   transition: background-color 0.5s ease;
 

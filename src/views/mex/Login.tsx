@@ -33,8 +33,6 @@ const Login = () => {
     formState: { errors, isSubmitting }
   } = useForm<LoginFormData>()
   const { login } = useAuthentication()
-  const { getGroupsToView } = useActions()
-  const { initActionPerfomerClient } = useActionPerformer()
 
   const setAuthenticated = useAuthStore((s) => s.setAuthenticated)
   const { loadNode } = useLoad()
@@ -49,8 +47,6 @@ const Login = () => {
         }
         if (s.v === 'success') {
           const { userDetails, workspaceDetails } = s.authDetails
-          initActionPerfomerClient(workspaceDetails.id)
-          getGroupsToView().then(() => mog('Groups init'))
           const node = useEditorStore.getState().node
           if (node.nodeid === '__null__') {
             const basePath = useDataStore.getState().baseNodeId

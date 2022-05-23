@@ -14,6 +14,7 @@ import { mog } from '@utils/lib/helper'
 type SelectedProps = {
   value?: any
   data?: any
+  cacheSelection?: boolean
   isMulti?: boolean
   width?: string
   disabled?: boolean
@@ -98,7 +99,18 @@ export const MultiValueOption: React.FC<any> = (props) => {
 }
 
 const Selector = forwardRef<any, SelectedProps>((props, ref) => {
-  const { actionId, isList, placeholder, onChange, width = '30%', actionGroupId, data, value, isMulti } = props
+  const {
+    actionId,
+    isList,
+    placeholder,
+    onChange,
+    cacheSelection,
+    width = '30%',
+    actionGroupId,
+    data,
+    value,
+    isMulti
+  } = props
 
   const setIsMenuOpen = useSpotlightAppStore((store) => store.setIsMenuOpen)
   const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
@@ -112,6 +124,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
 
   const addSelectionInCache = useActionStore((store) => store.addSelectionInCache)
   const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
+  const isPerformingAction = useSpotlightAppStore((store) => store.isLoading)
 
   const { performer, isPerformer } = useActionPerformer()
   const prevSelection = getPreviousActionValue(actionId)?.selection
@@ -127,7 +140,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
   }
 
   useEffect(() => {
-    const isReady = isPerformer(actionId)
+    const isReady = isPerformer(actionId, { isMenuAction: isList })
 
     if (isReady) {
       performer(actionGroupId, actionId).then((res) => {
@@ -139,20 +152,34 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     }
   }, [actionId, actionGroupId, prevSelection])
 
+  const hasChanged = (newValue: any) => {
+    if (isMulti) {
+      // * In multi-selection, labels can't be same
+      return value?.length !== newValue?.length
+    }
+
+    return newValue?.label !== value?.label || inputValue?.value !== newValue?.label
+  }
+
   const handleChange = (selection: any) => {
+    if (!hasChanged(selection)) return
+
     if (onChange) onChange(selection)
 
-    const prev = prevSelection?.label
-    const val = { prev, selection }
+    if (cacheSelection !== false) {
+      const prev = prevSelection?.label
+      const val = { prev, selection }
 
-    addSelectionInCache(actionId, val)
+      addSelectionInCache(actionId, val)
+    }
   }
 
   if (isList) {
     return (
       <VirtualList
-        items={inputValue?.data ?? []}
-        activeItems={inputValue?.value ?? []}
+        items={inputValue?.data}
+        activeItems={inputValue?.value || []}
+        isLoading={isPerformingAction}
         getIsActive={(item, activeItems) => {
           return Array.isArray(activeItems)
             ? activeItems?.find((i) => i.label === item?.label)

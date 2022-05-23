@@ -51,12 +51,14 @@ export const useActionPerformer = () => {
   const performer = async (actionGroupId: string, actionId: string, options?: PerfomerOptions) => {
     const actionConfig = groupedAction?.[actionGroupId]?.[actionId]
     const viewData = useSpotlightAppStore.getState().viewData
+    const activeAction = useActionStore.getState().activeAction
     const isMenuActionOpen = useActionMenuStore.getState().isActionMenuOpen
 
-    const prevActionValue =
-      options?.parent && !actionConfig.preActionId
-        ? { value: viewData?.context }
-        : getPrevActionValue(actionId)?.selection
+    const isParentContext =
+      (options?.parent && !actionConfig?.preActionId) ||
+      (!activeAction?.actionIds && isMenuActionOpen && !options?.parent)
+
+    const prevActionValue = isParentContext ? { value: viewData?.context } : getPrevActionValue(actionId)?.selection
 
     // * if we have a cache, return the cached result
     // if (!fetch) {
@@ -82,7 +84,7 @@ export const useActionPerformer = () => {
       ? { ...prevActionValue?.value, formData: options.formData }
       : prevActionValue?.value
 
-    mog(`${actionId}`, { configVal, prevActionValue })
+    // mog(`${actionId}`, { configVal, prevActionValue })
 
     try {
       // * if we have a previous action selection, use that
@@ -93,7 +95,7 @@ export const useActionPerformer = () => {
         serviceType
       })
 
-      addResultInCache(actionId, getIndexedResult(result))
+      if (!isMenuActionOpen) addResultInCache(actionId, getIndexedResult(result))
 
       const resultAction = actionConfig?.postAction?.result
       const isRunAction = resultAction?.type === ClickPostActionType.RUN_ACTION
@@ -131,15 +133,22 @@ export const useActionPerformer = () => {
     if (workspaceId) actionPerformer.setWorkspaceId(workspaceId)
   }
 
-  const isPerformer = (actionId: string) => {
+  const isPerformer = (actionId: string, option?: { isMenuAction?: boolean }) => {
     const selection = getSelection(actionId)
     const prevActionValue = getPrevActionValue(actionId)
     const action = getConfig(activeAction?.actionGroupId, actionId)
 
+    const isNew = prevActionValue === undefined && selection === undefined
     const hasPrevValueChanged = prevActionValue?.selection && selection?.prev !== prevActionValue?.selection?.label
-    const hasPreAction = action?.preActionId
 
-    return hasPreAction ? hasPrevValueChanged : !hasPrevValueChanged
+    const hasPreAction = action?.preActionId
+    const isMenuOpen = useActionMenuStore.getState().isActionMenuOpen
+
+    if (isMenuOpen) {
+      return option?.isMenuAction
+    }
+
+    return hasPreAction ? hasPrevValueChanged : isNew
   }
 
   const isReady = () => {
@@ -154,7 +163,6 @@ export const useActionPerformer = () => {
 
     return getConfig(actionGroupId, actionId)
   }
-
   return {
     isPerformer,
     performer,
