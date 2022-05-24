@@ -20,6 +20,7 @@ import { useLayoutStore } from '@store/useLayoutStore'
 
 interface UserDetails {
   email: string
+  userId?: string
 }
 
 interface WorkspaceDetails {
@@ -117,6 +118,9 @@ export const useAuthentication = () => {
             setShowLoader(false)
             mog('Unable to init action groups into view', { err })
           }
+          // mog('UserDetails', { userDetails })
+          // getNodesByWorkspace(workspaceDetails.id)
+          // Set Authenticated, user and workspace details
 
           ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
           // * For Heap analytics

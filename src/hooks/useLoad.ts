@@ -173,7 +173,7 @@ const useLoad = () => {
     // console.log('Fetch and save', { node })
     // const node = getNode(nodeid)
     if (options.withLoading) setFetchingContent(true)
-    getDataAPI(node.nodeid)
+    getDataAPI(node.nodeid, options.isShared)
       .then((nodeData) => {
         if (nodeData) {
           // console.log(res)

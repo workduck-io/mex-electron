@@ -20,7 +20,8 @@ import {
   SharePermission,
   ShareRowAction,
   ShareRow,
-  ShareRowHeading
+  ShareRowHeading,
+  ShareRowActionsWrapper
 } from './ShareModal.styles'
 import { useShareModalStore } from './ShareModalStore'
 
@@ -230,7 +231,9 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
                     />
                   </SharePermission>
                   <ShareRowAction>
-                    <IconButton onClick={() => onRevokeAccess(user.userid)} icon={deleteBin6Line} title="Remove" />
+                    <ShareRowActionsWrapper>
+                      <IconButton onClick={() => onRevokeAccess(user.userid)} icon={deleteBin6Line} title="Remove" />
+                    </ShareRowActionsWrapper>
                   </ShareRowAction>
                 </ShareRow>
               )

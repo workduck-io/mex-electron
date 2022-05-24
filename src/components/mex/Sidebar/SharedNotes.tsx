@@ -22,8 +22,6 @@ const SharedNotes = () => {
     setSharedNodes(sharedNodesS)
   }, [sharedNodesS])
 
-  mog('Cool', { sharedNodes })
-
   const onOpenNode = (nodeid: string) => {
     push(nodeid, { isShared: true, fetch: true })
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)

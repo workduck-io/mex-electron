@@ -1,5 +1,7 @@
 import { useReadOnly, useFocused, useSelected } from 'slate-react'
+import shareForwardLine from '@iconify/icons-ri/share-forward-line'
 import archivedIcon from '@iconify/icons-ri/archive-line'
+import eyeOffLine from '@iconify/icons-ri/eye-off-line'
 import { Icon } from '@iconify/react'
 import { useEditorRef } from '@udecode/plate'
 import * as React from 'react'
@@ -13,20 +15,50 @@ import { useNodes } from '../../../../hooks/useNodes'
 import EditorPreview from '../../EditorPreview/EditorPreview'
 import { useHotkeys } from '../hooks/useHotkeys'
 import { useOnMouseClick } from '../hooks/useOnMouseClick'
-import { SILink, SILinkRoot } from './ILinkElement.styles'
+import { SILink, SILinkRoot, StyledIcon } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
 import { mog } from '../../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../../views/routes/urls'
 import { convertContentToRawText, getBlock } from '../../../../utils/search/parseData'
+import { ILink, NodeType, SharedNode } from '../../../../types/Types'
 
 /**
  * ILinkElement with no default styles.
  * [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling)
  */
 
-const StyledIcon = styled(Icon)`
-  margin-right: 4px;
-`
+const SharedNodeLink = ({ selected, sharedNode }: { selected: boolean; sharedNode: SharedNode }) => {
+  return (
+    <SILink selected={selected}>
+      <StyledIcon icon={shareForwardLine} color="#df7777" />
+      <span className="ILink_decoration ILink_decoration_left">[[</span>
+      <span className="ILink_decoration ILink_decoration_value"> {sharedNode?.path}</span>
+      <span className="ILink_decoration ILink_decoration_right">]]</span>
+    </SILink>
+  )
+}
+
+const ArchivedNode = ({ selected, archivedNode }: { selected: boolean; archivedNode: ILink }) => {
+  return (
+    <SILink selected={selected} archived={true}>
+      <StyledIcon icon={archivedIcon} color="#df7777" />
+      <span className="ILink_decoration ILink_decoration_left">[[</span>
+      <span className="ILink_decoration ILink_decoration_value"> {archivedNode?.path}</span>
+      <span className="ILink_decoration ILink_decoration_right">]]</span>
+    </SILink>
+  )
+}
+
+const MissingNode = ({ selected }: { selected: boolean }) => {
+  return (
+    <SILink selected={selected}>
+      <StyledIcon icon={eyeOffLine} />
+      <span className="ILink_decoration ILink_decoration_left">[[</span>
+      <span className="ILink_decoration ILink_decoration_value">Private/Missing</span>
+      <span className="ILink_decoration ILink_decoration_right">]]</span>
+    </SILink>
+  )
+}
 export const ILinkElement = ({ attributes, children, element }: ILinkElementProps) => {
   const editor = useEditorRef()
   const selected = useSelected()
@@ -34,13 +66,12 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const [preview, setPreview] = useState(false)
   const { push } = useNavigation()
   const { getPathFromNodeid } = useLinks()
-  const { getArchiveNode } = useNodes()
+  const { getArchiveNode, getSharedNode, getNodeType } = useNodes()
   // mog('We reached here', { selected, focused })
 
   // const nodeid = getNodeidFromPath(element.value)
   const readOnly = useReadOnly()
   const path = getPathFromNodeid(element.value)
-  const { archived } = useArchive()
   const { goTo } = useRouting()
 
   const onClickProps = useOnMouseClick(() => {
@@ -94,10 +125,11 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
     },
     [selected, focused]
   )
-  const isArchived = archived(element.value)
+  const nodeType = getNodeType(element.value)
   const block = element.blockId ? getBlock(element.value, element.blockId) : undefined
   const content = block ? [block] : undefined
-  const archivedNode = isArchived ? getArchiveNode(element.value) : undefined
+  const archivedNode = nodeType === NodeType.ARCHIVED ? getArchiveNode(element.value) : undefined
+  const sharedNode = nodeType === NodeType.SHARED ? getSharedNode(element.value) : undefined
 
   return (
     <SILinkRoot
@@ -107,32 +139,33 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
       data-slate-value={element.value}
       contentEditable={false}
     >
-      {isArchived ? (
-        <SILink selected={selected} archived={true}>
-          <StyledIcon icon={archivedIcon} color="#df7777" />
-          <span className="ILink_decoration ILink_decoration_left">[[</span>
-          <span className="ILink_decoration ILink_decoration_value"> {archivedNode?.path}</span>
-          <span className="ILink_decoration ILink_decoration_right">]]</span>
-        </SILink>
-      ) : (
-        <EditorPreview
-          placement="auto"
-          allowClosePreview={readOnly}
-          preview={preview}
-          nodeid={element.value}
-          content={content}
-          closePreview={() => setPreview(false)}
-        >
-          <SILink selected={selected} {...onClickProps}>
-            <span className="ILink_decoration ILink_decoration_left">[[</span>
-            <span className="ILink_decoration ILink_decoration_value">
-              {' '}
-              {!content ? path : `${path} : ${element.blockValue}`}{' '}
-            </span>
-            <span className="ILink_decoration ILink_decoration_right">]]</span>
-          </SILink>
-        </EditorPreview>
-      )}
+      {
+        // The key to the temporary object defines what to render
+        {
+          [NodeType.SHARED]: <SharedNodeLink selected={selected} sharedNode={sharedNode} />,
+          [NodeType.ARCHIVED]: <ArchivedNode selected={selected} archivedNode={archivedNode} />,
+          [NodeType.DEFAULT]: (
+            <EditorPreview
+              placement="auto"
+              allowClosePreview={readOnly}
+              preview={preview}
+              nodeid={element.value}
+              content={content}
+              closePreview={() => setPreview(false)}
+            >
+              <SILink selected={selected} {...onClickProps}>
+                <span className="ILink_decoration ILink_decoration_left">[[</span>
+                <span className="ILink_decoration ILink_decoration_value">
+                  {' '}
+                  {!content ? path : `${path} : ${element.blockValue}`}{' '}
+                </span>
+                <span className="ILink_decoration ILink_decoration_right">]]</span>
+              </SILink>
+            </EditorPreview>
+          ),
+          [NodeType.MISSING]: <MissingNode selected={selected} />
+        }[nodeType]
+      }
       {children}
     </SILinkRoot>
   )

@@ -1,3 +1,4 @@
+import IconButton, { Button } from '@style/Buttons'
 import { SelectWrapper } from '@style/Form'
 import { Title } from '@style/Typography'
 import { transparentize } from 'polished'
@@ -28,11 +29,13 @@ export const SharedPermissionsWrapper = styled.div`
 export const SharedPermissionsTable = styled.table`
   margin-top: ${({ theme }) => theme.spacing.large};
   min-width: 600px;
+  width: 100%;
   border: 1px solid ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
   border-radius: ${({ theme }) => theme.borderRadius.small};
 
   caption {
-    padding: ${({ theme }) => theme.spacing.small};
+    text-align: left;
+    padding: 0 0 ${({ theme }) => theme.spacing.medium} 0;
   }
 `
 
@@ -50,6 +53,9 @@ export const ShareRowHeading = styled.thead`
     border-bottom: 1px solid ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
     td {
       padding: ${({ theme }) => theme.spacing.small};
+      &:first-child {
+        padding-left: ${({ theme }) => theme.spacing.medium};
+      }
     }
   }
   font-weight: bold;
@@ -68,14 +74,13 @@ export const ShareAlias = styled.td<{ hasChanged?: boolean }>`
 `
 
 export const ShareAliasInput = styled.input`
-  background: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};
+  background: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
   border: none;
   color: ${({ theme }) => theme.colors.text.heading};
   padding: ${({ theme }) => theme.spacing.small};
   width: 100%;
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
   &:hover {
-    background: ${({ theme }) => transparentize(0.25, theme.colors.gray[9])};
   }
 
   &:focus {
@@ -84,6 +89,7 @@ export const ShareAliasInput = styled.input`
 `
 
 export const ShareEmail = styled.td`
+  max-width: 20rem;
   padding: ${({ theme }) => theme.spacing.small};
   color: ${({ theme }) => theme.colors.text.fade};
 `
@@ -92,6 +98,14 @@ export const SharePermission = styled.td`
   width: 120px;
 `
 
+export const ShareRowActionsWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  ${Button} {
+    height: 100%;
+  }
+`
 export const ShareRowAction = styled.td`
-  width: 48px;
+  width: 100px;
 `

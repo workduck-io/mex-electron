@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react'
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 
@@ -13,12 +14,20 @@ interface SILinkProps {
   archived?: boolean
 }
 
+export const StyledIcon = styled(Icon)`
+  margin-right: 4px;
+`
+
 export const SILink = styled.div<SILinkProps>`
   display: inline-flex;
   justify-content: center;
   align-items: center;
   /* color: ${({ theme, archived }) => (archived ? theme.colors.fade : theme.colors.secondary)}; */
   cursor: pointer;
+
+  ${StyledIcon} {
+    color: ${({ theme }) => theme.colors.text.fade};
+  }
   .ILink_decoration {
     color: ${({ theme }) => theme.colors.gray[6]};
     &_left {

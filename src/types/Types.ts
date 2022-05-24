@@ -135,3 +135,10 @@ export interface CachedILink {
 export interface CacheTag {
   nodes: string[]
 }
+
+export enum NodeType {
+  DEFAULT,
+  SHARED,
+  ARCHIVED,
+  MISSING
+}
