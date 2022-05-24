@@ -95,7 +95,7 @@ export const useActionPerformer = () => {
         serviceType
       })
 
-      if (!isMenuActionOpen) addResultInCache(actionId, getIndexedResult(result))
+      addResultInCache(actionId, getIndexedResult(result))
 
       const resultAction = actionConfig?.postAction?.result
       const isRunAction = resultAction?.type === ClickPostActionType.RUN_ACTION
