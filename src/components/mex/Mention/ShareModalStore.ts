@@ -1,5 +1,5 @@
 import create from 'zustand'
-import { InvitedUser, Mentionable } from '../../../types/mentions'
+import { AccessLevel, InvitedUser, Mentionable } from '../../../types/mentions'
 
 type ShareModalMode = 'invite' | 'permission'
 
@@ -18,7 +18,10 @@ interface ChangedInvitedUser extends InvitedUser {
 export interface InviteModalData {
   alias: string
   email: string
-  access: string
+  access: {
+    value: AccessLevel
+    label: string
+  }
 }
 
 interface ShareModalState {

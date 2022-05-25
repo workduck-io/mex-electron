@@ -35,7 +35,7 @@ export const MultiEmailInviteModalContent = () => {
 
     if (node && node.nodeid) {
       const allMails = data.email.split(',').map((e) => e.trim())
-      const access = (data?.access as AccessLevel) ?? DefaultPermission
+      const access = (data?.access?.value as AccessLevel) ?? DefaultPermission
 
       const userDetailPromises = allMails.map((email) => {
         return getUserDetails(email)

@@ -34,7 +34,7 @@ export const InviteModalContent = () => {
   const onSubmit = async (data: InviteModalData) => {
     if (node && node.nodeid) {
       const editor = getPlateEditorRef()
-      const access = (data.access as AccessLevel) ?? DefaultPermission
+      const access = (data?.access?.value as AccessLevel) ?? DefaultPermission
 
       const details = await getUserDetails(data.email)
       mog('data', { data, details })
