@@ -108,7 +108,7 @@ export const useApi = () => {
 
   const getDataAPI = async (nodeid: string, isShared = false) => {
     const url = isShared ? apiURLs.getSharedNode(nodeid) : apiURLs.getNode(nodeid)
-    if (isRequestedWithin(5, url)) {
+    if (!isShared && isRequestedWithin(5, url)) {
       console.warn('\nAPI has been requested before, cancelling\n')
       return
     }
