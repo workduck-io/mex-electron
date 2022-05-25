@@ -48,4 +48,9 @@ export const SItemContent = styled.div`
   flex-grow: 1;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
+  svg {
+    width: 16px;
+    height: 16px;
+    fill: ${({ theme }) => theme.colors.text.heading};
+  }
 `

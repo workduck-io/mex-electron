@@ -21,6 +21,7 @@ import { mog } from '../../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../../views/routes/urls'
 import { convertContentToRawText, getBlock } from '../../../../utils/search/parseData'
 import { ILink, NodeType, SharedNode } from '../../../../types/Types'
+import { SharedNodeIcon } from '@components/icons/Icons'
 
 /**
  * ILinkElement with no default styles.
@@ -41,7 +42,7 @@ const SharedNodeLink = ({ selected, sharedNode }: { selected: boolean; sharedNod
 const ArchivedNode = ({ selected, archivedNode }: { selected: boolean; archivedNode: ILink }) => {
   return (
     <SILink selected={selected} archived={true}>
-      <StyledIcon icon={archivedIcon} color="#df7777" />
+      <SharedNodeIcon />
       <span className="ILink_decoration ILink_decoration_left">[[</span>
       <span className="ILink_decoration ILink_decoration_value"> {archivedNode?.path}</span>
       <span className="ILink_decoration ILink_decoration_right">]]</span>

@@ -7,7 +7,7 @@ import { useMentionStore } from '@store/useMentionStore'
 import Tippy from '@tippyjs/react/headless' // different import path!
 import { useEditorRef } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Transforms } from 'slate'
 import { useFocused, useSelected } from 'slate-react'
 import { AccessLevel, InvitedUser, Mentionable, permissionOptions } from '../../../../types/mentions'
@@ -16,6 +16,8 @@ import { useOnMouseClick } from '../../tag/hooks/useOnMouseClick'
 import { MentionTooltip, SMention, SMentionRoot, TooltipMail, Username } from './MentionElement.styles'
 import { MentionElementProps } from './MentionElement.types'
 import { StyledCreatatbleSelect } from '@style/Form'
+import { useUserCacheStore } from '@store/useUserCacheStore'
+import { useUserService } from '@services/auth/useUserService'
 
 interface MentionTooltipProps {
   user?: Mentionable | InvitedUser
@@ -65,13 +67,20 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
   const focused = useFocused()
   const node = useEditorStore((state) => state.node)
   const { getUserFromUserid, getUserAccessLevelForNode } = useMentions()
+  const { getUserDetailsUserId } = useUserService()
 
   const onClickProps = useOnMouseClick(() => {
     mog('Mention has been clicked yo', { val: element.value })
     // openTag(element.value)
   })
 
-  const user = getUserFromUserid(element.value)
+  const user = useMemo(() => {
+    const u = getUserFromUserid(element.value)
+    if (u) return u
+
+    // const fetchu = await getUserDetailsUserId(element.value)
+    // if (fetchu) return fetchu
+  }, [element.value])
   const access = getUserAccessLevelForNode(element.value, node.nodeid)
 
   // mog('MentionElement', { user })
@@ -97,7 +106,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
     [selected, focused]
   )
 
-  // mog('MentionElement', { user, access, node })
+  mog('MentionElement', { user, access, node })
 
   return (
     <SMentionRoot {...attributes} data-slate-value={element.value} contentEditable={false}>

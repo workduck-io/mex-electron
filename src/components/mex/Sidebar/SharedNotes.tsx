@@ -1,3 +1,4 @@
+import { SharedNodeIcon } from '@components/icons/Icons'
 import { Icon } from '@iconify/react'
 import { useEditorStore } from '@store/useEditorStore'
 import { mog } from '@utils/lib/helper'
@@ -39,7 +40,7 @@ const SharedNotes = () => {
                 onClick={() => onOpenNode(sharedNode.nodeid)}
               >
                 <SItemContent>
-                  <Icon icon={getNodeIcon(sharedNode.path) ?? DefaultNodeIcon} />
+                  <SharedNodeIcon />
                   {sharedNode.path}
                 </SItemContent>
               </SItem>

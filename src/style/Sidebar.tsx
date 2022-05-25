@@ -107,6 +107,8 @@ export const ItemTitle = styled.div`
   gap: ${({ theme }) => theme.spacing.tiny};
   svg {
     flex-shrink: 0;
+    width: 16px;
+    height: 16px;
   }
   span {
     ${Ellipsis}
