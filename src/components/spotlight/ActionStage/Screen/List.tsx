@@ -11,6 +11,7 @@ import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { NavigationType, useRouting } from '../../../../views/routes/urls'
 import { Virtuoso } from 'react-virtuoso'
 import useActionMenuStore from '../ActionMenu/useActionMenuStore'
+import { getPlateEditorRef } from '@udecode/plate'
 
 export const FullWidth = styled.div<{ narrow: boolean }>`
   width: 100%;
@@ -62,9 +63,9 @@ const List: React.FC<ListProps> = ({ items, context }) => {
 
   const onSelect = (i: any) => {
     setActiveIndex(i)
-    setView('item')
     setViewItemContext(i)
-    goTo('/action/view', NavigationType.push)
+    setView('item')
+    // goTo('/action/view', NavigationType.push)
   }
 
   const nextItem = () => {
@@ -100,6 +101,10 @@ const List: React.FC<ListProps> = ({ items, context }) => {
 
   useEffect(() => {
     const handler = (event) => {
+      const isEditor = getPlateEditorRef()
+
+      if (isEditor) return
+
       switch (event.code) {
         case KEYBOARD_KEYS.ArrowUp:
           event.preventDefault()

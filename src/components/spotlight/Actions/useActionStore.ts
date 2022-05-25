@@ -64,21 +64,25 @@ type ActionStoreType = {
   actionToPerform?: string
   setActionToPerform: (actionToPerform: string) => void
 
-  resultCache: Record<string, any>
-  getCacheResult: (actionId: string) => any
-  setResultCache: (resultCache: Record<string, any>) => void
-  addResultInCache: (actionId: string, result: any) => void
-
   selectionCache: Record<string, SelectionNode>
   getSelectionCache: (actionId: string) => SelectionNode
   setSelectionCache: (selectionCache: Record<string, SelectionNode>) => void
   addSelectionInCache: (actionId: string, selectionNode: SelectionNode) => void
+
+  resultCache: Record<string, any>
+  getCacheResult: (actionId: string) => any
+  setResultCache: (resultCache: Record<string, any>) => void
+  addResultInCache: (actionId: string, result: any) => void
 
   getPrevActionValue: (actionId: string) => any
 
   // * For now, let's store active action here
   activeAction?: ActiveActionType
   initAction: (actionGroupId: string, actionId: string) => void
+
+  // * Selected action element in editor
+  element: any
+  setElement: (element: any) => void
 
   // * Form submit
   isSubmitting: boolean
@@ -121,6 +125,8 @@ export const useActionStore = create<ActionStoreType>(
               selectionCache: isMenuAction ? selection : { ...selection, [actionId]: undefined }
             })
           },
+          element: undefined,
+          setElement: (element: any) => set({ element }),
 
           selectionCache: {},
           getSelectionCache: (actionId: string) => get().selectionCache[actionId],
@@ -217,7 +223,6 @@ export const useActionStore = create<ActionStoreType>(
               actionGroups: {},
               groupedActions: {},
               connectedGroups: {},
-              resultCache: {},
               selectionCache: {},
               actions: initActions
             })

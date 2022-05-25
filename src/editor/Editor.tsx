@@ -37,7 +37,7 @@ interface EditorProps {
 export const Editor = ({
   content,
   editorId,
-  autoFocus = true,
+  autoFocus = false,
   options,
   readOnly = false,
   onChange,
@@ -48,7 +48,7 @@ export const Editor = ({
 }: EditorProps) => {
   const editableProps = {
     spellCheck: false,
-    autoFocus: autoFocus,
+    autoFocus,
     style: {
       padding
     },

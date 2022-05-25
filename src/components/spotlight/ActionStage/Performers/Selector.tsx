@@ -3,12 +3,14 @@ import React, { forwardRef, useEffect, useState } from 'react'
 import { useTheme } from 'styled-components'
 import { components } from 'react-select'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
-import { useActionStore } from '../../Actions/useActionStore'
+import { SelectionNode, useActionStore } from '../../Actions/useActionStore'
 import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import ListSelector from '../ActionMenu/ListSelector'
 import { StyledOption, SelectBar } from './styled'
 import VirtualList from '../ActionMenu/VirtualList'
+import { mog } from '@utils/lib/helper'
+import { findNodePath, getPlateEditorRef, setNodes } from '@udecode/plate'
 
 type SelectedProps = {
   value?: any
@@ -165,6 +167,18 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     return newValue?.label !== value?.label || inputValue?.value !== newValue?.label
   }
 
+  const saveSelectionInNote = (selection: SelectionNode) => {
+    const editor = getPlateEditorRef()
+
+    if (editor) {
+      const element = useActionStore.getState().element
+      const path = findNodePath(editor, element)
+      mog('editor is ehre', { editor, selection, path })
+
+      setNodes(editor, selection, { at: path })
+    }
+  }
+
   const handleChange = (selection: any) => {
     if (!hasChanged(selection)) return
 
@@ -173,6 +187,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     if (cacheSelection !== false) {
       const prev = prevSelection?.label
       const val = { prev, selection }
+      saveSelectionInNote(val)
 
       addSelectionInCache(actionId, val)
     }
@@ -200,6 +215,11 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     <SelectBar
       openMenuOnClick
       menuShouldScrollIntoView
+      contentEditable={false}
+      onClick={(ev) => {
+        ev.stopPropagation()
+        mog('SELECTION', { ev })
+      }}
       placeholder={placeholder}
       onMenuOpen={() => setIsMenuOpen(true)}
       onMenuClose={() => setIsMenuOpen(false)}

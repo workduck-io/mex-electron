@@ -115,7 +115,7 @@ export const useActionPerformer = () => {
         setView('item')
         setViewData({ context: result?.contextData || configVal, display: postAction?.displayData ?? [] })
 
-        goTo('/action/view', NavigationType.replace)
+        // goTo('/action/view', NavigationType.replace)
       }
 
       if (!isMenuActionOpen) setIsLoading(false)

@@ -93,6 +93,12 @@ const useActions = () => {
     }
   }
 
+  const getIsServiceConnected = (actionGroupId: string) => {
+    const connectedGroups = useActionStore.getState().connectedGroups
+
+    return connectedGroups?.[actionGroupId]
+  }
+
   const sortActionGroups = (
     actionGroups: Record<string, ActionGroupType>,
     connectedGroups: Record<string, boolean>
@@ -155,7 +161,8 @@ const useActions = () => {
     setActionsInList,
     getAuthorizedGroups,
     sortActionGroups,
-    clearActionStore
+    clearActionStore,
+    getIsServiceConnected
   }
 }
 

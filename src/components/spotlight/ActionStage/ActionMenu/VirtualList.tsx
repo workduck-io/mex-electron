@@ -65,6 +65,7 @@ const VirtualList = <T,>({
   useEffect(() => {
     const handler = (event) => {
       if (!items?.length) return
+
       switch (event.code) {
         case KEYBOARD_KEYS.ArrowUp:
           event.preventDefault()

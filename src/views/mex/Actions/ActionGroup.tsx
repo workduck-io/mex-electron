@@ -26,12 +26,12 @@ const ActionGroup: React.FC<ActionGroupProps> = ({ group }) => {
         <>
           <RightCut />
           <ActiveStatus>
-            <MexIcon height={24} icon={Check} />
+            <MexIcon noHover height={24} icon={Check} />
           </ActiveStatus>
         </>
       )}
       <CenteredFlex>
-        <MexIcon color={theme.colors.primary} icon={group.icon} height="56px" width="56px" />
+        <MexIcon noHover color={theme.colors.primary} icon={group.icon} height="56px" width="56px" />
       </CenteredFlex>
       <ServiceName>{camelCase(group.actionGroupId)}</ServiceName>
     </ServiceCard>

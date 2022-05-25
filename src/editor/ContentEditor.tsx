@@ -80,6 +80,7 @@ const ContentEditor = () => {
   }
 
   const onChangeSave = async (val: any[]) => {
+    mog('VALUE OF EDITOR IS', { val })
     if (val && node && node.nodeid !== '__null__') {
       mog('change')
       setIsEditing(false)
@@ -89,7 +90,12 @@ const ContentEditor = () => {
 
   const editorId = useMemo(() => getEditorId(node.nodeid, false), [node, fetchingContent])
 
-  const onFocusClick = () => {
+  const onFocusClick = (ev) => {
+    ev.preventDefault()
+    ev.stopPropagation()
+    // ! TODO: Remove this after actions in editor
+    ev?.stopImmediatePropagation()
+
     if (editorRef) {
       if (editorWrapperRef.current) {
         const el = editorWrapperRef.current
@@ -135,7 +141,7 @@ const ContentEditor = () => {
 
         {isBlockMode ? <BlockInfoBar /> : <Metadata node={node} />}
 
-        <EditorWrapper onClick={onFocusClick} comboboxOpen={isComboOpen} ref={editorWrapperRef}>
+        <EditorWrapper comboboxOpen={isComboOpen} ref={editorWrapperRef}>
           <Editor
             getSuggestions={getSuggestions}
             showBalloonToolbar
