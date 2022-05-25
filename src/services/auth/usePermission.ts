@@ -1,4 +1,5 @@
 import { AccessLevel } from '../../types/mentions'
+import { SharedNode } from '../../types/Types'
 import { mog } from '@utils/lib/helper'
 import { client } from '@workduck-io/dwindle'
 import { apiURLs } from '@apis/routes'
@@ -79,7 +80,31 @@ export const usePermission = () => {
         mog('getAllSharedNodes resp', { resp })
         return resp.data
       })
+      .then((sharedNodesRaw) => {
+        const sharedNodes = sharedNodesRaw.map(
+          (n): SharedNode => ({
+            path: n.nodeTitle,
+            nodeid: n.nodeID,
+            access: n.accessType
+          })
+        )
+        mog('SharedNodes', { sharedNodes })
+        return sharedNodes
+      })
   }
 
-  return { grantUsersPermission, changeUserPermission, revokeUserAccess, getAllSharedNodes }
+  const getUsersOfSharedNode = async (nodeid: string) => {
+    return await client
+      .get(apiURLs.getUsersOfSharedNode(nodeid), {
+        headers: {
+          'mex-workspace-id': workspaceDetails.id
+        }
+      })
+      .then((resp) => {
+        mog('getAllSharedUsers For Node resp', { resp })
+        return resp.data
+      })
+  }
+
+  return { grantUsersPermission, getUsersOfSharedNode, changeUserPermission, revokeUserAccess, getAllSharedNodes }
 }

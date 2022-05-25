@@ -160,15 +160,7 @@ const Init = () => {
     //     "accessType": "MANAGE"
     // }
     // ]
-    getAllSharedNodes().then((sharedNodesRaw) => {
-      const sharedNodes = sharedNodesRaw.map(
-        (n): SharedNode => ({
-          path: n.nodeTitle,
-          nodeid: n.nodeID,
-          access: n.accessType
-        })
-      )
-      console.log({ sharedNodes })
+    getAllSharedNodes().then((sharedNodes) => {
       setSharedNodes(sharedNodes)
     })
   }, [userCred])

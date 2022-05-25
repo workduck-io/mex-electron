@@ -83,5 +83,6 @@ export const apiURLs = {
   allSharedNodes: `${API_URL}/shared/node/all`,
 
   getSharedNode: (nodeid: string) => `${API_URL}/shared/node/${nodeid}`,
-  updateSharedNode: `${API_URL}/shared/node/update`
+  updateSharedNode: `${API_URL}/shared/node/update`,
+  getUsersOfSharedNode: (nodeid: string) => `${API_URL}/shared/node/${nodeid}/users`
 }
