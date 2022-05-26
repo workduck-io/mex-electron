@@ -141,7 +141,8 @@ const useEditorPluginConfig = (editorId: string) => {
         value: m.alias,
         text: m.alias,
         icon: 'ri:user-line',
-        type: QuickLinkType.mentions
+        type: QuickLinkType.mentions,
+        additional: { email: m.email }
       }))
     ],
     [mentionable, invitedUsers]

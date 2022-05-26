@@ -1,5 +1,5 @@
 import { EMAIL_REG } from '@data/Defaults/auth'
-import { replaceUserMention } from '@editor/Actions/replaceUserMention'
+import { replaceUserMention, replaceUserMentionEmail } from '@editor/Actions/replaceUserMention'
 import { useMentions } from '@hooks/useMentions'
 import { usePermission } from '@services/auth/usePermission'
 import { useUserService } from '@services/auth/useUserService'
@@ -47,6 +47,7 @@ export const InviteModalContent = () => {
         replaceUserMention(editor, data.alias, details.userId)
       } else {
         inviteUser(data.email, data.alias, node.nodeid, access)
+        replaceUserMentionEmail(editor, data.alias, details.email)
       }
       saveMentionData()
     }

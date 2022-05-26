@@ -8,7 +8,7 @@ import { useLinks } from '../../../hooks/useLinks'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
 import { getEventNameFromElement, getSlug } from '../../../utils/lib/strings'
-import { IComboboxItem } from '../combobox/components/Combobox.types'
+import { IComboboxItem, InsertableElement } from '../combobox/components/Combobox.types'
 import { isInternalCommand, useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { ELEMENT_ILINK } from '../ilink/defaults'
@@ -72,42 +72,47 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         const activeBlock = useComboboxStore.getState().activeBlock
         const textAfterBlockTrigger = useComboboxStore.getState().search.textAfterBlockTrigger
 
-        // mog('Inserting from here', { activeBlock, isBlockTriggered })
+        mog('Inserting from here', { item, isBlockTriggered })
+        let InsertedElement: InsertableElement = {
+          type,
+          children: [{ text: '' }],
+          value: itemValue
+        }
         if (
           (item.type === QuickLinkType.backlink || type === ELEMENT_INLINE_BLOCK) &&
           isBlockTriggered &&
           activeBlock
         ) {
           const blockValue = activeBlock?.text ? getSlug(activeBlock.text) : ''
-          const withBlockInfo = {
+          InsertedElement = {
+            ...InsertedElement,
             type,
             children: [{ text: '' }],
             value: activeBlock?.id,
             blockValue,
             blockId: activeBlock?.blockId
           }
-
-          insertNodes(editor, withBlockInfo)
         } else if (item.type === QuickLinkType.mentions) {
-          const withMentionUserId = {
-            type,
-            children: [{ text: '' }],
+          InsertedElement = {
+            ...InsertedElement,
             value: item.key
           }
           if (comboType.onItemInsert) comboType.onItemInsert(item.text)
-          insertNodes(editor, withMentionUserId)
         } else {
           if (item.type === QuickLinkType.flow || item.type === QuickLinkType.snippet) {
             itemValue = item.key
           }
 
-          insertNodes<TElement>(editor, {
-            type,
-            children: [{ text: '' }],
+          InsertedElement = {
+            ...InsertedElement,
             value: itemValue
-          })
+          }
+        }
+        if (item.additional) {
+          InsertedElement = { ...InsertedElement, ...item.additional }
         }
 
+        insertNodes<TElement>(editor, InsertedElement)
         trackEvent(getEventNameFromElement('Editor', ActionType.CREATE, type), {
           'mex-element-type': type,
           'mex-element-text': itemValue

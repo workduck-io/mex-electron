@@ -140,8 +140,10 @@ const useLoad = () => {
    * the response to update the content from server in local state
    */
   const saveApiAndUpdate = (node: NodeProperties, content: NodeEditorContent) => {
+    const sharedNodes = useDataStore.getState().sharedNodes
+    const isShared = !!sharedNodes.find((i) => i.nodeid === node.nodeid)
     setFetchingContent(true)
-    saveDataAPI(node.nodeid, content)
+    saveDataAPI(node.nodeid, content, isShared)
       .then((data) => {
         if (data) {
           // const { data, metadata, version } = res
@@ -228,7 +230,6 @@ const useLoad = () => {
     const hasBeenLoaded = false
     const currentNodeId = useEditorStore.getState().node.nodeid
 
-    // mog('LOAD NODE', { nodeid, options })
     const localCheck = isLocalNode(nodeid)
 
     if (!options.node && !localCheck.isLocal && !localCheck.isShared) {
@@ -259,7 +260,9 @@ const useLoad = () => {
 
     const node = options.node ?? getNode(nodeid)
 
+    mog('LOAD NODE', { nodeid, options, cond: options.fetch && !hasBeenLoaded, hasBeenLoaded })
     if (options.fetch && !hasBeenLoaded) {
+      mog('Fetching')
       if (localCheck.isShared) {
         // TODO: Change fetch for shared
         fetchAndSaveNode(node, { withLoading: true, isShared: true })

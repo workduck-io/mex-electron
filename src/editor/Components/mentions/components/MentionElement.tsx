@@ -78,6 +78,15 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
     const u = getUserFromUserid(element.value)
     if (u) return u
 
+    if (element.email)
+      return {
+        type: 'invite' as const,
+        email: element.email,
+        alias: element.value,
+        // Invited user access only needed for rendering, does not affect access as it is unknown (for 2nd person view)
+        access: {}
+      } as InvitedUser
+
     // const fetchu = await getUserDetailsUserId(element.value)
     // if (fetchu) return fetchu
   }, [element.value])
