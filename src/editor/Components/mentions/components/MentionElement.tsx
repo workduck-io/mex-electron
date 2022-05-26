@@ -16,8 +16,6 @@ import { useOnMouseClick } from '../../tag/hooks/useOnMouseClick'
 import { MentionTooltip, SMention, SMentionRoot, TooltipMail, Username } from './MentionElement.styles'
 import { MentionElementProps } from './MentionElement.types'
 import { StyledCreatatbleSelect } from '@style/Form'
-import { useUserCacheStore } from '@store/useUserCacheStore'
-import { useUserService } from '@services/auth/useUserService'
 
 interface MentionTooltipProps {
   user?: Mentionable | InvitedUser
@@ -67,7 +65,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
   const focused = useFocused()
   const node = useEditorStore((state) => state.node)
   const { getUserFromUserid, getUserAccessLevelForNode } = useMentions()
-  const { getUserDetailsUserId } = useUserService()
+  // const { getUserDetailsUserId } = useUserService()
 
   const onClickProps = useOnMouseClick(() => {
     mog('Mention has been clicked yo', { val: element.value })
@@ -83,7 +81,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
         type: 'invite' as const,
         email: element.email,
         alias: element.value,
-        // Invited user access only needed for rendering, does not affect access as it is unknown (for 2nd person view)
+        // Invited user access map only needed for rendering, does not affect access as it is unknown (for 2nd person view)
         access: {}
       } as InvitedUser
 
@@ -115,14 +113,14 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
     [selected, focused]
   )
 
-  // mog('MentionElement', { user, access, node })
+  // mog('MentionElement', { user, access, node, elementEmail: element?.email })
 
   return (
     <SMentionRoot {...attributes} data-slate-value={element.value} contentEditable={false}>
       <Tippy
         delay={100}
-        interactiveDebounce={100}
-        interactive
+        // interactiveDebounce={100}
+        // interactive
         placement="bottom"
         appendTo={() => document.body}
         render={(attrs) => <MentionTooltipComponent user={user} nodeid={node.nodeid} access={access} />}

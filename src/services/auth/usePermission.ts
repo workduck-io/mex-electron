@@ -69,28 +69,33 @@ export const usePermission = () => {
       })
   }
 
-  const getAllSharedNodes = async () => {
-    return await client
-      .get(apiURLs.allSharedNodes, {
-        headers: {
-          'mex-workspace-id': workspaceDetails.id
-        }
-      })
-      .then((resp) => {
-        mog('getAllSharedNodes resp', { resp })
-        return resp.data
-      })
-      .then((sharedNodesRaw) => {
-        const sharedNodes = sharedNodesRaw.map(
-          (n): SharedNode => ({
-            path: n.nodeTitle,
-            nodeid: n.nodeID,
-            access: n.accessType
-          })
-        )
-        mog('SharedNodes', { sharedNodes })
-        return sharedNodes
-      })
+  const getAllSharedNodes = async (): Promise<SharedNode[]> => {
+    try {
+      return await client
+        .get(apiURLs.allSharedNodes, {
+          headers: {
+            'mex-workspace-id': workspaceDetails.id
+          }
+        })
+        .then((resp) => {
+          mog('getAllSharedNodes resp', { resp })
+          return resp.data
+        })
+        .then((sharedNodesRaw) => {
+          const sharedNodes = sharedNodesRaw.map(
+            (n): SharedNode => ({
+              path: n.nodeTitle,
+              nodeid: n.nodeID,
+              access: n.accessType
+            })
+          )
+          mog('SharedNodes', { sharedNodes })
+          return sharedNodes
+        })
+    } catch (e) {
+      mog('Error Fetching Shared Nodes', { e })
+      return []
+    }
   }
 
   const getUsersOfSharedNode = async (nodeid: string) => {

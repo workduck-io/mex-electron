@@ -1,44 +1,41 @@
+import { IpcAction } from '@data/IpcAction'
+import { useSaver } from '@editor/Components/Saver'
+import { getNewDraftKey } from '@editor/Components/SyncBlock/getNewBlockData'
+import { appNotifierWindow } from '@electron/utils/notifiers'
+import { useCalendar } from '@hooks/useCalendar'
+import { useEditorBuffer } from '@hooks/useEditorBuffer'
+import { useFetchShareData } from '@hooks/useFetchShareData'
+import { AppType, useInitialize } from '@hooks/useInitialize'
+import { getNodeidFromPathAndLinks, useLinks } from '@hooks/useLinks'
+import useLoad from '@hooks/useLoad'
+import { useLocalData, useMentionData, useTokenData } from '@hooks/useLocalData'
+import { useNavigation } from '@hooks/useNavigation'
+import { useSaveAndExit } from '@hooks/useSaveAndExit'
+import { useKeyListener } from '@hooks/useShortcutListener'
+import { useRecieveMentions, useRecieveTokens, useSyncData } from '@hooks/useSyncData'
+import { useAuthentication, useAuthStore } from '@services/auth/useAuth'
+import { usePermission } from '@services/auth/usePermission'
+import { useAnalysis, useAnalysisIPC } from '@store/useAnalysis'
+import useBlockStore from '@store/useBlockStore'
+import useDataStore from '@store/useDataStore'
+import { useEditorStore } from '@store/useEditorStore'
+import { useHelpStore } from '@store/useHelpStore'
+import { useHistoryStore } from '@store/useHistoryStore'
+import { useLayoutStore } from '@store/useLayoutStore'
+import useOnboard from '@store/useOnboarding'
+import { useRecentsStore } from '@store/useRecentsStore'
 import { usePlateEditorRef } from '@udecode/plate'
+import { getMexHTMLDeserializer } from '@utils/htmlDeserializer'
+import { AppleNote } from '@utils/importers/appleNotes'
+import { mog } from '@utils/lib/helper'
+import { NavigationType, ROUTE_PATHS, useBrowserNavigation, useRouting } from '@views/routes/urls'
 import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
 import { useEffect, useState } from 'react'
 import tinykeys from 'tinykeys'
-
 import config from '../../../config.json'
-import { IpcAction } from '../../../data/IpcAction'
-import { useSaver } from '../../../editor/Components/Saver'
-import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { AppType, useInitialize } from '../../../hooks/useInitialize'
-import { getNodeidFromPathAndLinks, useLinks } from '../../../hooks/useLinks'
-import useLoad from '../../../hooks/useLoad'
-import { useNavigation } from '../../../hooks/useNavigation'
-import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
-import { useKeyListener } from '../../../hooks/useShortcutListener'
-import { useRecieveMentions, useRecieveTokens, useSyncData } from '../../../hooks/useSyncData'
-import { useAuthentication, useAuthStore } from '../../../services/auth/useAuth'
-import { useAnalysis, useAnalysisIPC } from '../../../store/useAnalysis'
-import useBlockStore from '../../../store/useBlockStore'
-import useDataStore from '../../../store/useDataStore'
-import { useEditorStore } from '../../../store/useEditorStore'
-import { useHelpStore } from '../../../store/useHelpStore'
-import { useHistoryStore } from '../../../store/useHistoryStore'
-import { useLayoutStore } from '../../../store/useLayoutStore'
-import useOnboard from '../../../store/useOnboarding'
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
-import { AppleNote } from '../../../utils/importers/appleNotes'
-import { mog } from '../../../utils/lib/helper'
-import { NavigationType, ROUTE_PATHS, useBrowserNavigation, useRouting } from '../../../views/routes/urls'
-import { useCalendar } from '../../../hooks/useCalendar'
-
-import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
-import { useRedirectAuth } from '../Auth/useRedirectAuth'
 import { useActionsPerfomerClient } from '../../spotlight/Actions/useActionPerformer'
-import { useActionPerformer } from '../../spotlight/Actions/useActionPerformer'
-import { useLocalData, useMentionData, useTokenData } from '@hooks/useLocalData'
-import { usePermission } from '@services/auth/usePermission'
-import { SharedNode } from '../../../types/Types'
+import { useRedirectAuth } from '../Auth/useRedirectAuth'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -77,6 +74,7 @@ const Init = () => {
   const { getTokenData } = useTokenData()
   const { getMentionData } = useMentionData()
   const { getAllSharedNodes } = usePermission()
+  const { fetchShareData } = useFetchShareData()
   const { saveAndClearBuffer } = useEditorBuffer()
   const { initActionPerfomerClient } = useActionsPerfomerClient()
 
@@ -160,9 +158,10 @@ const Init = () => {
     //     "accessType": "MANAGE"
     // }
     // ]
-    getAllSharedNodes().then((sharedNodes) => {
-      setSharedNodes(sharedNodes)
-    })
+    // getAllSharedNodes().then((sharedNodes) => {
+    //   setSharedNodes(sharedNodes)
+    // })
+    fetchShareData()
   }, [userCred])
 
   const editor = usePlateEditorRef()
