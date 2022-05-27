@@ -1,4 +1,4 @@
-import { MultiEmailValidate } from '@data/Defaults/auth'
+import { getEmailStart, MultiEmailValidate } from '@data/Defaults/auth'
 import { useMentions } from '@hooks/useMentions'
 import { usePermission } from '@services/auth/usePermission'
 import { useUserService } from '@services/auth/useUserService'
@@ -63,7 +63,7 @@ export const MultiEmailInviteModalContent = () => {
       existing.forEach((u) => {
         addMentionable({
           type: 'mentionable',
-          alias: u?.value?.email.substring(0, u?.value?.email?.indexOf('@')),
+          alias: getEmailStart(u?.value?.email),
           email: u?.value?.email,
           userid: u?.value?.userId,
           access: {
@@ -76,7 +76,7 @@ export const MultiEmailInviteModalContent = () => {
       absent.forEach((u) => {
         addInvitedUser({
           type: 'invite',
-          alias: u?.value?.email.substring(0, u?.value?.email?.indexOf('@')),
+          alias: getEmailStart(u?.value?.email),
           email: u?.value?.email,
           access: {
             [node?.nodeid]: access

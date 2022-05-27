@@ -24,3 +24,5 @@ export const getWrongEmails = (emailsRaw: string): string[] => {
 
   return wrongEmails
 }
+
+export const getEmailStart = (email: string) => email?.substring(0, email?.indexOf('@')) ?? 'null'

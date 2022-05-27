@@ -98,17 +98,22 @@ export const usePermission = () => {
     }
   }
 
-  const getUsersOfSharedNode = async (nodeid: string) => {
-    return await client
-      .get(apiURLs.getUsersOfSharedNode(nodeid), {
-        headers: {
-          'mex-workspace-id': workspaceDetails.id
-        }
-      })
-      .then((resp) => {
-        mog('getAllSharedUsers For Node resp', { resp })
-        return resp.data
-      })
+  const getUsersOfSharedNode = async (nodeid: string): Promise<{ nodeid: string; users: Record<string, string> }> => {
+    try {
+      return await client
+        .get(apiURLs.getUsersOfSharedNode(nodeid), {
+          headers: {
+            'mex-workspace-id': workspaceDetails.id
+          }
+        })
+        .then((resp) => {
+          mog('getAllSharedUsers For Node resp', { resp })
+          return { nodeid, users: resp.data }
+        })
+    } catch (e) {
+      mog('Failed to get SharedUsers', { e })
+      return { nodeid, users: {} }
+    }
   }
 
   return { grantUsersPermission, getUsersOfSharedNode, changeUserPermission, revokeUserAccess, getAllSharedNodes }

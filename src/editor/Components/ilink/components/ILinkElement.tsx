@@ -31,7 +31,7 @@ import { SharedNodeIcon } from '@components/icons/Icons'
 const SharedNodeLink = ({ selected, sharedNode }: { selected: boolean; sharedNode: SharedNode }) => {
   return (
     <SILink selected={selected}>
-      <StyledIcon icon={shareForwardLine} color="#df7777" />
+      <StyledIcon icon={shareForwardLine} />
       <span className="ILink_decoration ILink_decoration_left">[[</span>
       <span className="ILink_decoration ILink_decoration_value"> {sharedNode?.path}</span>
       <span className="ILink_decoration ILink_decoration_right">]]</span>
@@ -41,7 +41,7 @@ const SharedNodeLink = ({ selected, sharedNode }: { selected: boolean; sharedNod
 
 const ArchivedNode = ({ selected, archivedNode }: { selected: boolean; archivedNode: ILink }) => {
   return (
-    <SILink selected={selected} archived={true}>
+    <SILink selected={selected} color="#df7777" archived={true}>
       <SharedNodeIcon />
       <span className="ILink_decoration ILink_decoration_left">[[</span>
       <span className="ILink_decoration ILink_decoration_value"> {archivedNode?.path}</span>
