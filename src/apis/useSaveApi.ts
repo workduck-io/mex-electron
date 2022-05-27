@@ -11,6 +11,7 @@ import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
 import { WORKSPACE_HEADER, DEFAULT_NAMESPACE } from '../data/Defaults/defaults'
 import { useLinks } from '../hooks/useLinks'
+import { getNameFromPath } from '@components/mex/Sidebar/treeUtils'
 
 // clientInterceptor
 //
@@ -30,7 +31,7 @@ export const useApi = () => {
   const saveNewNodeAPI = async (nodeid: string) => {
     const reqData = {
       id: nodeid,
-      title: getPathFromNodeid(nodeid),
+      title: getNameFromPath(getPathFromNodeid(nodeid)),
       type: 'NodeRequest',
       lastEditedBy: useAuthStore.getState().userDetails.email,
       namespaceIdentifier: 'NAMESPACE1',

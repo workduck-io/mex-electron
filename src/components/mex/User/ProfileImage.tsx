@@ -56,7 +56,7 @@ export const ProfileImage = ({ email, size }: ProfileImageProps) => {
 
   useEffect(() => {
     const gravatarAbsent = useCacheStore.getState().gravatarAbsent
-    mog('grabbing gravatar for', { email, src, formattedEmail, gravatarAbsent })
+    // mog('grabbing gravatar for', { email, src, formattedEmail, gravatarAbsent })
     if (gravatarAbsent.includes(email)) {
       setGravState(-1)
       return

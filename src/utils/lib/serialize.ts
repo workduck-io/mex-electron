@@ -1,8 +1,8 @@
 // import { generateTempId } from '../Defaults/idPrefixes'
 
-import { extractMetadata } from './metadata'
-import { generateTempId } from '../../data/Defaults/idPrefixes'
 import { useAuthStore } from '@services/auth/useAuth'
+import { generateTempId } from '../../data/Defaults/idPrefixes'
+import { extractMetadata } from './metadata'
 
 // const ElementsWithProperties = [ELEMENT_PARAGRAPH]
 // const ElementsWithURL = [ELEMENT_LINK, ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED]
@@ -41,7 +41,7 @@ const mappedKeys = {
 export const serializeContent = (content: any[], nodeid: string) => {
   return content.map((el) => {
     if (Object.keys(serializeSpecial).includes(el.type)) {
-      return serializeSpecial[el.type](el)
+      return serializeSpecial[el.type](el, nodeid)
     }
     const nl: any = {}
     const directProperties: DirectProperties = {}
@@ -85,12 +85,12 @@ export const serializeContent = (content: any[], nodeid: string) => {
   })
 }
 
-export const serializeSpecial = {
+export const serializeSpecial: { [elementType: string]: (element: any, nodeid: string) => any } = {
   ilink: (el: any, nodeid: string) => {
     const workspaceDetails = useAuthStore.getState().workspaceDetails
     if (el.blockId)
       return {
-        type: 'blockILink',
+        elementType: 'blockILink',
         blockID: el.blockId,
         blockAlias: el.blockValue,
         nodeID: nodeid,
@@ -98,20 +98,20 @@ export const serializeSpecial = {
       }
     else
       return {
-        type: 'nodeILink',
+        elementType: 'nodeILink',
         nodeID: nodeid,
         workspaceID: workspaceDetails.id
       }
   },
   a: (el: any, nodeid: string) => {
     return {
-      type: 'webLink',
+      elementType: 'webLink',
       url: el.url
     }
   }
 }
 
-export const deserializeSpecial = {
+export const deserializeSpecial: { [elementType: string]: (element: any) => any } = {
   nodeILink: (el: any) => {
     return {
       type: 'ilink',
