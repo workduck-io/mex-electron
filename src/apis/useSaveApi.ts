@@ -34,7 +34,7 @@ export const useApi = () => {
       type: 'NodeRequest',
       lastEditedBy: useAuthStore.getState().userDetails.email,
       namespaceIdentifier: 'NAMESPACE1',
-      data: serializeContent(defaultQAContent)
+      data: serializeContent(defaultQAContent, nodeid)
     }
 
     setContent(nodeid, defaultQAContent)
@@ -71,7 +71,7 @@ export const useApi = () => {
       title: getPathFromNodeid(nodeid),
       lastEditedBy: useAuthStore.getState().userDetails.email,
       namespaceIdentifier: DEFAULT_NAMESPACE,
-      data: serializeContent(content ?? defaultContent.content)
+      data: serializeContent(content ?? defaultContent.content, nodeid)
     }
 
     if (!USE_API) {
