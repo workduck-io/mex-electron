@@ -6,6 +6,7 @@ import { getActionIds } from '../../../utils/actions'
 
 import { ViewDataType, ViewType } from '../../../store/app.spotlight'
 import { useActionsCache } from './useActionsCache'
+import { mog } from '@utils/lib/helper'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
 export type ActionSubType = 'form' | 'none' | undefined
@@ -76,6 +77,8 @@ type ActionStoreType = {
   isMenuOpen: boolean
   setIsMenuOpen: (value: boolean) => void
 
+  initActionWithElement: (actionContext: any) => void
+
   //* Clear fields
   clear: () => void
 }
@@ -107,6 +110,12 @@ export const actionStore = () =>
           },
 
           setSelectedValue: (value) => set({ selectedValue: value }),
+
+          initActionWithElement: (actionContext: any) => {
+            if (actionContext?.selections) get().setSelectionCache(actionContext?.selections)
+
+            get().initAction(actionContext?.actionGroupId, actionContext?.actionId)
+          },
 
           initAction: (actionGroupId, actionId) => {
             const actionConfigs = useActionsCache?.getState()?.groupedActions?.[actionGroupId]
@@ -148,8 +157,9 @@ export const actionStore = () =>
           },
           getPrevActionValue: (actionId: string) => {
             const activeAction = get().activeAction
+            const groupedActions = useActionsCache?.getState()?.groupedActions
 
-            const actionConfig = useActionsCache?.getState()?.[activeAction?.actionGroupId]?.[actionId]
+            const actionConfig = groupedActions?.[activeAction?.actionGroupId]?.[actionId]
 
             const preActionId = actionConfig?.preActionId
             const cache = get().selectionCache

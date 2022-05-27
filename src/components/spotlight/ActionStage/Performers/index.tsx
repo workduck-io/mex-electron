@@ -6,7 +6,6 @@ import { RightActionSection } from '../Forms/RightSection'
 import Performer from './Performer'
 import PreActions from './PreActions'
 // import Lottie from 'lottie-react'
-import { loader } from './loader'
 import useActions from '@components/spotlight/Actions/useActions'
 import ConnectService from '@components/spotlight/Actions/ConnectService'
 import { useSpotlightAppStore } from '@store/app.spotlight'
@@ -50,7 +49,6 @@ const PerformersContainer = () => {
   return (
     <Container>
       <MainSection overflow={isForm}>
-        {/* <Lottie height={100} width={100} loop autoplay animationData={loader} /> */}
         {isConnected ? (
           view ? (
             <ViewPage />

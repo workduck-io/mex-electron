@@ -173,9 +173,17 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
 
     if (editor) {
       const path = findNodePath(editor, element)
-      mog('editor is ehre', { editor, selection, path })
+      const actionContext = element?.actionContext ?? {}
+      const selections = actionContext?.selections ?? {}
+      mog('editor is ehre', { actionId, selection, element: actionContext?.selections })
 
-      setNodes(editor, { [actionId]: selection }, { at: path })
+      if (element?.actionContext) {
+        setNodes(
+          editor,
+          { actionContext: { ...actionContext, selections: { ...selections, [actionId]: selection } } },
+          { at: path }
+        )
+      }
     }
   }
 

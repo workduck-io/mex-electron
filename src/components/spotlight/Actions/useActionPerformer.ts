@@ -114,7 +114,6 @@ export const useActionPerformer = () => {
           forceUpdate: options?.fetch
         }
       })
-      mog('result', { result })
       addResultInCache(actionId, result?._hash)
       // addResultInCache(actionId, getIndexedResult(result))
 
@@ -154,7 +153,6 @@ export const useActionPerformer = () => {
 
   const addResultInCache = (actionId: string, hash: string) => {
     const actionHashKey = getActionCacheKey(actionId, element?.id)
-    mog('ACTION HASH KEY', { actionHashKey, element })
     addResultHash(actionHashKey, hash)
     if (!isMenuAction) addSelectionInCache(actionId, undefined)
   }

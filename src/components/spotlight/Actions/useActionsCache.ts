@@ -65,7 +65,6 @@ export const useActionsCache = create<ActionsCacheType>(
             const savedKey = getActionCacheKey(actionId, blockId)
             const key = useActionsCache.getState().resultHashCache?.[savedKey]
 
-            mog(actionId, { blockId, savedKey, key, cache: useActionsCache.getState().resultHashCache })
             const result = actionPerformer.getItem(LOCALSTORAGE_NAMESPACES.REQUEST_CACHE, key)
 
             if (result && key) return getIndexedResult(result)

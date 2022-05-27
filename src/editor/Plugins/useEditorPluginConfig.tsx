@@ -84,8 +84,10 @@ const useEditorPluginConfig = (editorId: string) => {
         icon: action.icon,
         command: actionGroupId,
         extras: {
-          actionId: action.id,
-          actionGroupId
+          actionContext: {
+            actionId: action.id,
+            actionGroupId
+          }
         }
       }))
 
