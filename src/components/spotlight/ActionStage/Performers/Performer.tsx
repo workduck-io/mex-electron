@@ -4,6 +4,7 @@ import Screen from '../Screen'
 import { ReturnType } from '@workduck-io/action-request-helper'
 import { useActionStore } from '../../Actions/useActionStore'
 import ActionForm from '../Forms'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 
 type PerformType = {
   actionId: string
@@ -11,11 +12,12 @@ type PerformType = {
 }
 
 const Performer: React.FC<PerformType> = ({ actionId, actionType }) => {
-  const getCacheResult = useActionStore((store) => store.getCacheResult)
+  const getCacheResult = useActionsCache((store) => store.getCacheResult)
   const selectionCache = useActionStore((store) => store.selectionCache)
   const activeAction = useActionStore((store) => store.activeAction)
+  const elementId = useActionStore((store) => store.element)?.id
 
-  const context = getCacheResult(actionId)
+  const context = getCacheResult(actionId, elementId)
   const cacheSelection = selectionCache[actionId]
 
   const data = Array.isArray(context?.contextData)

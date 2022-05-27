@@ -14,6 +14,7 @@ import Tippy from '@tippyjs/react'
 import { DisplayShortcut } from '@components/mex/Shortcuts'
 import { ShortcutText } from '@components/spotlight/Home/components/Item'
 import { MexIcon } from '@style/Layouts'
+import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 
 type MenuActionFormProps = {
   action: MenuPostActionConfig
@@ -47,7 +48,7 @@ const MenuField: React.FC<MenuFieldProps> = ({ field, isCurrent, onSelect }) => 
  */
 const MenuActionForm: React.FC<MenuActionFormProps> = ({ action }) => {
   const { getConfigWithActionId, performer } = useActionPerformer()
-  const setIsMenuOpen = useSpotlightAppStore((store) => store.setIsMenuOpen)
+  const setIsMenuOpen = useActionStore((store) => store.setIsMenuOpen)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [activeIndex, setActiveIndex] = useState<number>(0)

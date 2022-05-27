@@ -13,14 +13,13 @@ import { MexIcon } from '@style/Layouts'
 type MenuProps = {}
 
 const Menu: React.FC<MenuProps> = () => {
-  const activeMenuAction = useActionMenuStore((store) => store.activeMenuAction)
-  const activeMenuItem = useSpotlightAppStore((store) => store.viewData)
+  const activeAction = useActionStore()?.activeAction
+  const activeMenuItem = useActionStore((store) => store.viewData)
+  const setIsMenuOpen = useActionStore((store) => store.setIsMenuOpen)
   const clearMenuStore = useActionMenuStore((store) => store.clearMenuStore)
+  const activeMenuAction = useActionMenuStore((store) => store.activeMenuAction)
 
   const theme = useTheme()
-
-  const activeAction = useActionStore((store) => store.activeAction)
-  const setIsMenuOpen = useSpotlightAppStore((store) => store.setIsMenuOpen)
 
   const { getConfig, getConfigWithActionId } = useActionPerformer()
 
@@ -36,7 +35,7 @@ const Menu: React.FC<MenuProps> = () => {
       width: '0'
     },
     to: {
-      width: '38vw'
+      width: '20rem'
     }
   })
 
@@ -47,7 +46,6 @@ const Menu: React.FC<MenuProps> = () => {
 
   const header = useMemo(() => {
     const title = activeMenuItem?.display?.filter((item) => item.type === 'title')?.[0]
-    const activeAction = useActionStore.getState().activeAction
     const actionDetails = getConfig(activeAction?.actionGroupId, activeMenuAction?.actionId)
 
     return { subHeading: actionDetails?.name, heading: title }

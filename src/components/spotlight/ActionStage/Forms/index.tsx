@@ -9,6 +9,7 @@ import styled from 'styled-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
 import tinykeys from 'tinykeys'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 
 export type ActionFormProps = {
   actionId: string
@@ -48,7 +49,7 @@ const UniAction = styled.div`
 `
 
 const ActionForm: React.FC<ActionFormProps> = ({ subType, actionId, actionGroupId }) => {
-  const groupedActions = useActionStore((store) => store.groupedActions)
+  const groupedActions = useActionsCache((store) => store.groupedActions)
   const setIsSubmitting = useActionStore((store) => store.setIsSubmitting)
   const activeAction = useActionStore((store) => store.activeAction)
   const getPrevActionValue = useActionStore((store) => store.getPrevActionValue)

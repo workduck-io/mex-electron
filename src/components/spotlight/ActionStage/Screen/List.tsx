@@ -45,9 +45,9 @@ const List: React.FC<ListProps> = ({ items, context }) => {
   const theme = useTheme()
   const activeAction = useActionStore((store) => store.activeAction)
   const [activeIndex, setActiveIndex] = useState(0)
-  const setViewData = useSpotlightAppStore((store) => store.setViewData)
-  const setView = useSpotlightAppStore((store) => store.setView)
-  const isMenuOpen = useSpotlightAppStore((store) => store.isMenuOpen)
+  const setViewData = useActionStore((store) => store.setViewData)
+  const setView = useActionStore((store) => store.setView)
+  const isMenuOpen = useActionStore((store) => store.isMenuOpen)
   const isActionMenuOpen = useActionMenuStore((store) => store.isActionMenuOpen)
 
   const { goTo } = useRouting()

@@ -6,11 +6,10 @@ import {
   ClickPostActionType
 } from '@workduck-io/action-request-helper'
 import { client } from '@workduck-io/dwindle'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { mog } from '../../../utils/lib/helper'
-import { NavigationType, useRouting } from '../../../views/routes/urls'
 import { ACTION_ENV } from '../../../apis/routes'
 import useActionMenuStore from '../ActionStage/ActionMenu/useActionMenuStore'
+import { useActionsCache } from './useActionsCache'
 
 type PerfomerOptions = {
   formData?: Record<string, any>
@@ -18,9 +17,15 @@ type PerfomerOptions = {
   parent?: boolean
 }
 
+export const getActionCacheKey = (key: string, blockId?: string) => {
+  const hashKey = blockId ? `${blockId}#${key}` : key
+
+  return hashKey
+}
+
 export const actionPerformer = new ActionHelperClient(client, undefined, ACTION_ENV)
 
-const getIndexedResult = (res: ActionResponse) => {
+export const getIndexedResult = (res: ActionResponse) => {
   const d: ActionResponse = {
     ...res,
     displayData: res?.displayData?.map((data, index) => [...data, { key: 'index', type: 'hidden', value: index }])
@@ -29,18 +34,31 @@ const getIndexedResult = (res: ActionResponse) => {
   return d
 }
 
+export const useActionsPerfomerClient = () => {
+  const initActionPerfomerClient = (userId: string) => {
+    if (userId) actionPerformer.setUserId(userId)
+  }
+
+  return {
+    initActionPerfomerClient
+  }
+}
+
 export const useActionPerformer = () => {
   const activeAction = useActionStore((store) => store.activeAction)
-  const addResultInCache = useActionStore((store) => store.addResultInCache)
   const getPrevActionValue = useActionStore((store) => store.getPrevActionValue)
   const getSelection = useActionStore((store) => store.getSelectionCache)
-  const setIsLoading = useSpotlightAppStore((store) => store.setIsLoading)
+  const addSelectionInCache = useActionStore((store) => store.addSelectionInCache)
+  const setIsLoading = useActionStore((store) => store.setIsLoading)
   const actionToPerform = useActionStore((store) => store.actionToPerform)
-  const groupedAction = useActionStore((store) => store.groupedActions)
-  const setView = useSpotlightAppStore((store) => store.setView)
-  const setViewData = useSpotlightAppStore((store) => store.setViewData)
-
-  const { goTo } = useRouting()
+  const groupedAction = useActionsCache((store) => store.groupedActions)
+  const setView = useActionStore((store) => store.setView)
+  const setViewData = useActionStore((store) => store.setViewData)
+  const setNeedsRefresh = useActionMenuStore((store) => store.setNeedsRefresh)
+  const viewData = useActionStore((store) => store.viewData)
+  const element = useActionStore((store) => store.element)
+  const addResultHash = useActionsCache((store) => store.addResultHash)
+  const isMenuAction = useActionMenuStore((store) => store.isActionMenuOpen)
 
   /* 
     Looks for the action in the cache first,
@@ -50,8 +68,7 @@ export const useActionPerformer = () => {
 
   const performer = async (actionGroupId: string, actionId: string, options?: PerfomerOptions) => {
     const actionConfig = groupedAction?.[actionGroupId]?.[actionId]
-    const viewData = useSpotlightAppStore.getState().viewData
-    const activeAction = useActionStore.getState().activeAction
+
     const isMenuActionOpen = useActionMenuStore.getState().isActionMenuOpen
 
     const isParentContext =
@@ -92,10 +109,16 @@ export const useActionPerformer = () => {
         config: actionConfig,
         auth,
         configVal,
-        serviceType
+        serviceType,
+        options: {
+          forceUpdate: options?.fetch
+        }
       })
+      mog('result', { result })
+      addResultInCache(actionId, result?._hash)
+      // addResultInCache(actionId, getIndexedResult(result))
 
-      addResultInCache(actionId, getIndexedResult(result))
+      if (options?.fetch) setNeedsRefresh()
 
       const resultAction = actionConfig?.postAction?.result
       const isRunAction = resultAction?.type === ClickPostActionType.RUN_ACTION
@@ -120,7 +143,7 @@ export const useActionPerformer = () => {
 
       if (!isMenuActionOpen) setIsLoading(false)
 
-      return result
+      return getIndexedResult(result)
     } catch (err) {
       mog('Something went wrong', { err })
       if (!isMenuActionOpen) setIsLoading(false)
@@ -129,8 +152,11 @@ export const useActionPerformer = () => {
     return undefined
   }
 
-  const initActionPerfomerClient = (userId: string) => {
-    if (userId) actionPerformer.setUserId(userId)
+  const addResultInCache = (actionId: string, hash: string) => {
+    const actionHashKey = getActionCacheKey(actionId, element?.id)
+    mog('ACTION HASH KEY', { actionHashKey, element })
+    addResultHash(actionHashKey, hash)
+    if (!isMenuAction) addSelectionInCache(actionId, undefined)
   }
 
   const isPerformer = (actionId: string, option?: { isMenuAction?: boolean }) => {
@@ -159,14 +185,13 @@ export const useActionPerformer = () => {
     groupedAction?.[actionGroupId]?.[actionId]
 
   const getConfigWithActionId = (actionId: string) => {
-    const actionGroupId = useActionStore.getState().activeAction?.actionGroupId
+    const actionGroupId = activeAction?.actionGroupId
 
     return getConfig(actionGroupId, actionId)
   }
   return {
     isPerformer,
     performer,
-    initActionPerfomerClient,
     isReady,
     getConfigWithActionId,
     getConfig

@@ -1,44 +1,60 @@
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import React from 'react'
 import { useTheme } from 'styled-components'
-import { ActionBlockContainer } from './styled'
+import { ActionBlockContainer, LeftHeader } from './styled'
 import { MexIcon } from '@style/Layouts'
 import BackIcon from '@iconify/icons-ph/caret-circle-left-light'
 
-import { useSpotlightAppStore } from '@store/app.spotlight'
+import { ClickPostActionType } from '@workduck-io/action-request-helper'
+import { useMenuPerformer } from '@components/spotlight/ActionStage/ActionMenu/useMenuPerfomer'
 
 const ActionBlockHeader = () => {
   const activeAction = useActionStore((store) => store.activeAction)
-  const isView = useSpotlightAppStore((store) => store.view) === 'item'
-  const setView = useSpotlightAppStore((store) => store.setView)
+  const isView = useActionStore((store) => store.view) === 'item'
+  const setView = useActionStore((store) => store.setView)
 
+  const { runAction } = useMenuPerformer()
   const theme = useTheme()
 
   const onBackClick = () => {
     setView(undefined)
   }
 
+  const onRefreshClick = () => {
+    runAction({ type: ClickPostActionType.REFRESH_ACTION, shortcut: '$mod+R', icon: 'ic:round-refresh' })
+  }
+
   return (
     <ActionBlockContainer>
-      {isView && (
+      <LeftHeader>
+        {isView && (
+          <MexIcon
+            icon={BackIcon}
+            onClick={onBackClick}
+            height="1.5rem"
+            width="1.5rem"
+            color={theme.colors.primary}
+            margin="0 0.5rem 0 0"
+          />
+        )}
         <MexIcon
-          icon={BackIcon}
-          onClick={onBackClick}
-          height="2rem"
-          width="2rem"
+          icon={activeAction?.icon}
+          height="1.25em"
+          noHover
+          width="1.25rem"
           color={theme.colors.primary}
           margin="0 0.5rem 0 0"
         />
-      )}
+        <div>{activeAction?.name}</div>
+      </LeftHeader>
       <MexIcon
-        icon={activeAction?.icon}
-        height="1.25em"
-        noHover
-        width="1.25rem"
-        color={theme.colors.primary}
+        icon="ic:round-refresh"
+        height="1.5em"
+        width="1.5rem"
         margin="0 0.5rem 0 0"
+        color={theme.colors.primary}
+        onClick={onRefreshClick}
       />
-      <div>{activeAction?.name}</div>
     </ActionBlockContainer>
   )
 }

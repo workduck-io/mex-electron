@@ -1,6 +1,5 @@
 import { PlateEditor } from '@udecode/plate'
 import { KeyboardHandler } from '@udecode/plate-core'
-import { mog } from '../../../../utils/lib/helper'
 import { useEditorStore } from '../../../../store/useEditorStore'
 import { ComboConfigData } from '../../multi-combobox/multiComboboxContainer'
 import { useElementOnChange as getElementOnChange } from '../../multi-combobox/useMultiComboboxOnKeyDown'
@@ -51,12 +50,12 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
     const item = items[itemIndex]
 
     if (item) {
-      mog('getCreatableInSelect', { item, selectVal, creatable })
+      // mog('getCreatableInSelect', { item, selectVal, creatable })
       if (item.key === '__create_new' && selectVal) {
         const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
         const res = onNewItem(val, currentNodeKey)
         // mog('getCreatableInSelect', { item, val, selectVal, creatable, res })
-        mog('Select__CN clause', { val, selectVal, creatable, res })
+        // mog('Select__CN clause', { val, selectVal, creatable, res })
         if (res) onSelectItem(editor, { key: String(items.length), text: res }, elementType)
       } else {
         onSelectItem(editor, item, elementType)
@@ -65,7 +64,7 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
       const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
       const res = onNewItem(val, currentNodeKey)
 
-      mog('SelectElse clause', { val, selectVal, creatable, res })
+      // mog('SelectElse clause', { val, selectVal, creatable, res })
       // onSelectItem(editor, { key: String(items.length), text: res ?? val })
       if (res) onSelectItem(editor, { key: String(items.length), text: val }, elementType)
     }
@@ -128,7 +127,7 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
         }
 
         if (comboType) {
-          mog('comoboType', { newItem, comboType, parentId })
+          // mog('comoboType', { newItem, comboType, parentId })
           return comboType.newItemHandler(newItem, parentId)
         }
       },

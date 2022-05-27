@@ -24,7 +24,8 @@ import { useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
 import { useTokenData } from '../../../hooks/useLocalData'
 import { useRecieveTokens } from '../../../hooks/useSyncData'
 import { useActionStore, UpdateActionsType } from '../Actions/useActionStore'
-import { useActionPerformer } from '../Actions/useActionPerformer'
+import { useActionsPerfomerClient } from '../Actions/useActionPerformer'
+import { useActionsCache } from '../Actions/useActionsCache'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
@@ -47,14 +48,16 @@ const GlobalListener = memo(() => {
   const { onSave } = useSaver()
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()
-  const { initActionPerfomerClient } = useActionPerformer()
+  const { initActionPerfomerClient } = useActionsPerfomerClient()
   const { goTo } = useRouting()
 
-  const addActions = useActionStore((store) => store.addActions)
-  const addGroupedActions = useActionStore((store) => store.addGroupedActions)
-  const setActionGroups = useActionStore((store) => store.setActionGroups)
-  const removeActionsByGroupId = useActionStore((store) => store.removeActionsByGroupId)
-  const setConnectedGroups = useActionStore((store) => store.setConnectedGroups)
+  const addActions = useActionsCache((store) => store.addActions)
+  const addGroupedActions = useActionsCache((store) => store.addGroupedActions)
+  const setActionGroups = useActionsCache((store) => store.setActionGroups)
+  const removeActionsByGroupId = useActionsCache((store) => store.removeActionsByGroupId)
+  const setConnectedGroups = useActionsCache((store) => store.setConnectedGroups)
+  const clearActionStore = useActionStore((store) => store.clear)
+  const setView = useActionStore((store) => store.setView)
 
   // const { initActionPerformers } = useActionPerformer()
 
@@ -82,7 +85,7 @@ const GlobalListener = memo(() => {
         setSelection(undefined)
       } else {
         // * If user captures a content when in action mode, then we need to redirect him to the home page
-        useSpotlightAppStore.getState().setView(undefined)
+        setView(undefined)
         goTo(ROUTE_PATHS.home, NavigationType.replace)
         setSpotlightTrigger()
         setTemp(data)
@@ -158,7 +161,7 @@ const GlobalListener = memo(() => {
     ipcRenderer.on(IpcAction.UPDATE_ACTIONS, (_event, arg) => {
       const { groups, actionList, actions, actionGroupId, connectedGroups, type } = arg?.data
 
-      if (type === UpdateActionsType.CLEAR) useActionStore.getState().clear()
+      if (type === UpdateActionsType.CLEAR) clearActionStore()
       else if (type === UpdateActionsType.REMOVE_ACTION_BY_GROUP_ID) removeActionsByGroupId(actions)
       else if (type === UpdateActionsType.AUTH_GROUPS) setConnectedGroups(connectedGroups)
       else if (groups) setActionGroups(groups)

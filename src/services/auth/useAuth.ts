@@ -14,7 +14,7 @@ import useAnalytics from '../analytics'
 import { Properties, CustomEvents } from '../analytics/events'
 import { mog } from '../../utils/lib/helper'
 import useActions from '../../components/spotlight/Actions/useActions'
-import { useActionPerformer } from '../../components/spotlight/Actions/useActionPerformer'
+import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActionPerformer'
 
 interface UserDetails {
   email: string
@@ -73,7 +73,7 @@ export const useAuthentication = () => {
   const { signIn, signUp, verifySignUp, signOut, googleSignIn, refreshToken } = useAuth()
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
   const { clearActionStore, getGroupsToView } = useActions()
-  const { initActionPerfomerClient } = useActionPerformer()
+  const { initActionPerfomerClient } = useActionsPerfomerClient()
   // const { getNodesByWorkspace } = useApi()
 
   interface AuthDetails {

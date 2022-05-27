@@ -18,7 +18,7 @@ type ActionMenuProps = {
 
 const ActionMenu: React.FC<ActionMenuProps> = ({ title, shortcut }) => {
   const isOpen = useActionMenuStore((store) => store.isActionMenuOpen)
-  const setIsMenuOpen = useSpotlightAppStore((store) => store.setIsMenuOpen)
+  const setIsMenuOpen = useActionStore((store) => store.setIsMenuOpen)
   const toggleActionMenu = useActionMenuStore((store) => store.toggleActionMenu)
   const setActiveMenuAction = useActionMenuStore((store) => store.setActiveMenuAction)
   const setIsActiveMenuOpen = useActionMenuStore((store) => store.setIsActionMenuOpen)

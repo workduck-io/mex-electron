@@ -80,7 +80,6 @@ const ContentEditor = () => {
   }
 
   const onChangeSave = async (val: any[]) => {
-    mog('VALUE OF EDITOR IS', { val })
     if (val && node && node.nodeid !== '__null__') {
       mog('change')
       setIsEditing(false)

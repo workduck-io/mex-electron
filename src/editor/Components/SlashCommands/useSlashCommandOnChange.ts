@@ -31,7 +31,6 @@ export const useSlashCommandOnChange = (
     const commandConfig = keys[commandKey]
     // console.log({ commandConfig })
     if (targetRange) {
-      mog('useSlashCommandOnChange', { commandConfig, commandKey, keys })
       try {
         const pathAbove = getBlockAbove(editor)?.[1]
         const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
@@ -62,7 +61,6 @@ export const useSlashCommandOnChange = (
         } else {
           const type = getPluginType(editor, commandConfig.slateElementType)
           const data = commandConfig.getBlockData ? commandConfig.getBlockData(item) : {}
-          mog('INSERTING ELEEMNT', { type, commandConfig, data, item })
 
           const eventName = getEventNameFromElement('Editor', ActionType.CREATE, type)
           trackEvent(eventName, { 'mex-type': type, 'mex-data': data })

@@ -7,8 +7,8 @@ import { useActionStore } from '../../Actions/useActionStore'
 import { TemplateConfig } from '@workduck-io/action-request-helper'
 import List from './List'
 import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
-import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import useActionMenuStore from '../ActionMenu/useActionMenuStore'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 
 const StyledScreen = styled.section`
   display: flex;
@@ -32,16 +32,17 @@ export const isURL = (text: string) => {
 
 const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
   const [resData, setResData] = useState<Array<TemplateConfig>>([])
-  const getCacheResult = useActionStore((store) => store.getCacheResult)
+  const getCacheResult = useActionsCache((store) => store.getCacheResult)
   const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
   const prevValue = getPreviousActionValue(actionId)?.selection
   const needsRefresh = useActionMenuStore((store) => store.needsRefresh)
   const setHideMenu = useActionMenuStore((store) => store.setHideMenu)
+  const elementId = useActionStore((store) => store.element)?.id
 
-  const isLoading = useSpotlightAppStore((store) => store.isLoading)
+  const isLoading = useActionStore((store) => store.isLoading)
   const { performer, isPerformer } = useActionPerformer()
 
-  const view = useSpotlightAppStore((store) => store.view)
+  const view = useActionStore((store) => store.view)
 
   const search = useSpotlightContext()?.search
 
@@ -49,7 +50,7 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
     const ready = isPerformer(actionId)
 
     if (ready) {
-      performer(actionGroupId, actionId)
+      performer(actionGroupId, actionId, { fetch: needsRefresh })
         .then((res) => {
           if (Array.isArray(res?.displayData)) {
             const displayData = res?.displayData as Array<TemplateConfig>
@@ -61,7 +62,7 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
   }, [actionId, prevValue, needsRefresh])
 
   const memoData = useMemo(() => {
-    const res = getCacheResult(actionId)
+    const res = getCacheResult(actionId, elementId)
     mog('res', { res })
     return res
   }, [actionId, resData])

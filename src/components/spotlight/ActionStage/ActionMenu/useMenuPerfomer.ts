@@ -1,5 +1,6 @@
 /* eslint-disable no-case-declarations */
 import { useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import useItemExecutor from '@components/spotlight/Home/actionExecutor'
 import { getListItemFromAction } from '@components/spotlight/Home/helper'
@@ -18,6 +19,8 @@ export const useMenuPerformer = () => {
   const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
   const setActiveMenuAction = useActionMenuStore((store) => store.setActiveMenuAction)
   const setNeedsRefresh = useActionMenuStore((store) => store.setNeedsRefresh)
+  const activeAction = useActionStore((store) => store.activeAction)
+  const viewData = useActionStore((store) => store.viewData)
 
   const { itemActionExecutor } = useItemExecutor()
 
@@ -54,11 +57,9 @@ export const useMenuPerformer = () => {
     const actionDetails = getConfigWithActionId(item.actionId)
 
     if (!actionDetails.form) {
-      const activeAction = useActionStore.getState().activeAction
-      const actionGroups = useActionStore.getState().actionGroups
+      const actionGroups = useActionsCache.getState().actionGroups
       const selection = getPreviousActionValue(activeAction?.id)?.selection
 
-      const viewData = useSpotlightAppStore.getState().viewData
       const prev = selection?.label
 
       const currentLabel = viewData?.context?.select?.label
@@ -81,8 +82,6 @@ export const useMenuPerformer = () => {
   }
 
   const runAction = (item: MenuPostActionConfig) => {
-    const viewData = useSpotlightAppStore.getState().viewData
-
     actionRunner(item, viewData)
   }
 

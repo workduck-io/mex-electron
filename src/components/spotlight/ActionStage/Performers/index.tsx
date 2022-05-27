@@ -43,7 +43,7 @@ const PerformersContainer = () => {
   const type = activeAction?.renderType
 
   const isForm = activeAction?.subType === 'form'
-  const view = useSpotlightAppStore((store) => store.view) === 'item'
+  const view = useActionStore((store) => store.view) === 'item'
 
   const isConnected = getIsServiceConnected(activeAction.actionGroupId)
 

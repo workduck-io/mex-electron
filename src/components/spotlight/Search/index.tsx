@@ -14,6 +14,7 @@ import { useTheme } from 'styled-components'
 import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { useRouting } from '../../../views/routes/urls'
 import ViewActionHandler from '../ActionStage/Forms/ViewActionHandler'
+import { useActionStore } from '../Actions/useActionStore'
 
 type QueryType = {
   value: string
@@ -33,7 +34,7 @@ const Search = () => {
 
   // * Editor's mode (normal/edit)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
-  const view = useSpotlightAppStore((store) => store.view)
+  const view = useActionStore((store) => store.view)
 
   const { saveIt } = useSaveChanges()
   const { location } = useRouting()

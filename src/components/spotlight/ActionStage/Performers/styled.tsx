@@ -32,6 +32,7 @@ export const StyledOption = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   display: flex;
   align-items: center;
+  user-select: none;
   cursor: pointer;
 
   span {

@@ -4,7 +4,7 @@ import { AppType } from '../../hooks/useInitialize'
 import React, { useEffect } from 'react'
 import { ReminderGroup, Reminder, DisplayReminderGroup } from '../../types/reminders'
 import ReminderUI, { ReminderControls } from '../mex/Reminders/Reminder'
-import { debounce } from 'lodash'
+
 import {
   ReminderGroupsWrapper,
   ReminderGroupTitle,
@@ -18,6 +18,8 @@ interface ReminderGroupProps {
   reminderGroup: DisplayReminderGroup
   controls: ReminderControls
 }
+
+window.ResizeObserver = undefined
 
 export const ReminderGroupUI = ({ reminderGroup, controls }: ReminderGroupProps) => {
   if (reminderGroup.reminders.length === 0) {

@@ -117,7 +117,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     isMulti
   } = props
 
-  const setIsMenuOpen = useSpotlightAppStore((store) => store.setIsMenuOpen)
+  const setIsMenuOpen = useActionStore((store) => store.setIsMenuOpen)
   const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
     data: [],
     value: defaultValue
@@ -129,7 +129,8 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
 
   const addSelectionInCache = useActionStore((store) => store.addSelectionInCache)
   const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
-  const isPerformingAction = useSpotlightAppStore((store) => store.isLoading)
+  const isPerformingAction = useActionStore((store) => store.isLoading)
+  const element = useActionStore((store) => store.element)
 
   const { performer, isPerformer } = useActionPerformer()
   const prevSelection = getPreviousActionValue(actionId)?.selection
@@ -171,11 +172,10 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     const editor = getPlateEditorRef()
 
     if (editor) {
-      const element = useActionStore.getState().element
       const path = findNodePath(editor, element)
       mog('editor is ehre', { editor, selection, path })
 
-      setNodes(editor, selection, { at: path })
+      setNodes(editor, { [actionId]: selection }, { at: path })
     }
   }
 

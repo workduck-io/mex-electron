@@ -13,6 +13,7 @@ import { useSpotlightSettingsStore } from '../../store/settings.spotlight'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 import useActionMenuStore from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
 import { mog } from '@utils/lib/helper'
+import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 
 export const useGlobalShortcuts = () => {
   const { setSelection, setSearch, setActiveItem, activeItem, search, selection } = useSpotlightContext()
@@ -26,10 +27,11 @@ export const useGlobalShortcuts = () => {
 
   const { goTo, location, goBack } = useRouting()
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
-  const isMenuOpen = useSpotlightAppStore((s) => s.isMenuOpen)
+  const isMenuOpen = useActionStore((s) => s.isMenuOpen)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const setCurrentListItem = useSpotlightEditorStore((s) => s.setCurrentListItem)
-  const setView = useSpotlightAppStore((store) => store.setView)
+  const setView = useActionStore((store) => store.setView)
+  const view = useActionStore((store) => store.view)
 
   const handleCancel = () => {
     setNormalMode(true)
@@ -54,8 +56,8 @@ export const useGlobalShortcuts = () => {
         if (isActionMenuOpen) return
         else if (isMenuOpen) return
         if (!shortcutDisabled) {
-          if (location.pathname === '/action' || location.pathname === '/action/view') {
-            if (useSpotlightAppStore.getState().view === 'item') {
+          if (location.pathname === '/action') {
+            if (view === 'item') {
               mog('CALLING INSIDE')
               setView(undefined)
               goBack()

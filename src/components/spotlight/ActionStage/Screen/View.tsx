@@ -2,8 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Row from './Row'
 import Project from '../Project'
-import { mog } from '../../../../utils/lib/helper'
-import { useSpotlightAppStore } from '../../../../store/app.spotlight'
+import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 
 type ViewProps = {
   item: any
@@ -43,7 +42,7 @@ const ViewMeta = styled.div`
 `
 
 export const ViewPage = () => {
-  const viewData = useSpotlightAppStore((store) => store.viewData)
+  const viewData = useActionStore((store) => store.viewData)
 
   return <View item={viewData?.display} />
 }

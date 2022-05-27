@@ -13,6 +13,7 @@ import { Button } from '../../../../style/Buttons'
 import ActionMenu from '../ActionMenu'
 import { NoOption } from '../ActionMenu/styled'
 import useActionMenuStore from '../ActionMenu/useActionMenuStore'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 
 const JoinService = styled.span<{ left?: boolean }>`
   position: absolute;
@@ -86,11 +87,11 @@ type ActionsRightSectionProps = { actionGroupId: string; actionId: string; isLoa
 export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionGroupId, actionId, isLoading }) => {
   const theme = useTheme()
   const { goBack } = useRouting()
-  const getConfig = useActionStore((store) => store.getConfig)
-  const actionGroups = useActionStore((store) => store.actionGroups)
-  const setView = useSpotlightAppStore((store) => store.setView)
+  const getConfig = useActionsCache((store) => store.getConfig)
+  const actionGroups = useActionsCache((store) => store.actionGroups)
+  const setView = useActionStore((store) => store.setView)
   const isSubmitting = useActionStore((store) => store.isSubmitting)
-  const isActiveItem = useSpotlightAppStore((store) => store.viewData)
+  const isActiveItem = useActionStore((store) => store.viewData)
   const hideMenu = useActionMenuStore((store) => store.hideMenu)
 
   const onCancelClick = () => {

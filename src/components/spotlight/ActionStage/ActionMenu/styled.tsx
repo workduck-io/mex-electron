@@ -83,10 +83,10 @@ export const MenuBody = styled.div`
 `
 
 export const Overlay = styled.div`
-  position: absolute;
-  top: 0.3rem;
-  left: 0.1rem;
-  width: 800px;
+  position: absolute !important;
+  top: 0.3rem !important;
+  left: 0.1rem !important;
+  width: 100%;
   height: 500px;
   ${ModalOverlay};
   z-index: 1;
@@ -114,6 +114,6 @@ export const MenuContainer = styled(animated.div)`
   box-sizing: border-box;
   padding: ${({ theme }) => theme.spacing.medium} ${({ theme }) => theme.spacing.small};
   gap: ${({ theme }) => theme.spacing.medium};
-  height: 85vh;
-  min-height: 85vh;
+  height: 30rem;
+  min-height: 30rem;
 `

@@ -9,7 +9,6 @@ import { CardShadow } from '../../../style/helpers'
 import { CenteredFlex, Title } from '../../../style/Integration'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { FlexBetween } from '../../spotlight/Actions/styled'
-import { useActionStore } from '../../spotlight/Actions/useActionStore'
 import { Description } from '../../spotlight/SearchResults/styled'
 import { ActionHelperConfig } from '@workduck-io/action-request-helper'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -18,6 +17,8 @@ import tinykeys from 'tinykeys'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { mog } from '../../../utils/lib/helper'
 import GlobalSection from './GlobalSection'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
+import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 
 const ServiceContainer = styled(StyledEditor)``
 
@@ -155,13 +156,13 @@ const Action: React.FC<{ action: ActionHelperConfig; icon?: string }> = ({ actio
 
 const ServiceInfo = () => {
   const { params } = useRouting()
-  const groupedActions = useActionStore((store) => store.groupedActions)
-  const actionGroups = useActionStore((store) => store.actionGroups)
   const initAction = useActionStore((store) => store.initAction)
+  const groupedActions = useActionsCache((store) => store.groupedActions)
+  const actionGroups = useActionsCache((store) => store.actionGroups)
   const { shortcutDisabled } = useKeyListener()
 
   const actionGroup = actionGroups[params?.actionGroupId]
-  const connectedGroups = useActionStore((store) => store.connectedGroups)
+  const connectedGroups = useActionsCache((store) => store.connectedGroups)
   const { goTo } = useRouting()
   const theme = useTheme()
 

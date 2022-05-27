@@ -1,4 +1,5 @@
 import useActions from '@components/spotlight/Actions/useActions'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import { ELEMENT_MEDIA_EMBED, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/plate'
@@ -29,8 +30,8 @@ const useEditorPluginConfig = (editorId: string) => {
   const ilinks = useDataStore((state) => state.ilinks)
   const slashCommands = useDataStore((state) => state.slashCommands)
   const nodeid = useEditorStore((state) => state.node.nodeid)
-  const actionGroups = useActionStore((store) => store.actionGroups)
-  const groupedActions = useActionStore.getState().groupedActions
+  const actionGroups = useActionsCache((store) => store.actionGroups)
+  const groupedActions = useActionsCache((store) => store.groupedActions)
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)

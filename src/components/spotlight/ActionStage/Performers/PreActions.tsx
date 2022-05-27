@@ -2,7 +2,6 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { ReturnType } from '@workduck-io/action-request-helper'
 import Performer from './Performer'
-import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { useActionStore } from '../../Actions/useActionStore'
 import ActionFormElement, { ElementContainer } from '../Forms/Fields/ActionFormElement'
 
@@ -26,7 +25,7 @@ const Flex = styled.div<{ isForm?: boolean }>`
 `
 
 const PreActions: React.FC<PreActionProps> = ({ actions }) => {
-  const view = useSpotlightAppStore((store) => store.view)
+  const view = useActionStore((store) => store.view)
   const activeAction = useActionStore((store) => store.activeAction)
 
   if (view === 'item') return <></>
