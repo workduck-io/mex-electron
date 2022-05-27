@@ -5,6 +5,7 @@ import { AccessLevel } from '../types/mentions'
 import { mog } from '@utils/lib/helper'
 import { useMentions } from './useMentions'
 import { getEmailStart } from '@data/Defaults/auth'
+import { useAuthStore } from '@services/auth/useAuth'
 
 interface UsersRaw {
   nodeid: string
@@ -17,11 +18,13 @@ interface MUsersRaw {
   userid: string
   access: AccessLevel
 }
+
 export const useFetchShareData = () => {
   const { getAllSharedNodes, getUsersOfSharedNode } = usePermission()
   const { getUserDetailsUserId } = useUserService()
   const { addMentionable } = useMentions()
   const setSharedNodes = useDataStore((s) => s.setSharedNodes)
+  const userDetails = useAuthStore((s) => s.userDetails)
 
   const fetchShareData = async () => {
     // First fetch the shared nodes
@@ -60,6 +63,7 @@ export const useFetchShareData = () => {
     )
       .filter((p) => p.status === 'fulfilled')
       .map((p: any) => p.value as MUsersRaw)
+      .filter((u) => u.userid !== userDetails?.userId)
 
     mentionableU.forEach((u) => addMentionable(getEmailStart(u.email), u.email, u.userid, u.nodeid, u.access))
 

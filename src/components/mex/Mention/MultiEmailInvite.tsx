@@ -1,5 +1,6 @@
 import { getEmailStart, MultiEmailValidate } from '@data/Defaults/auth'
 import { useMentions } from '@hooks/useMentions'
+import { useAuthStore } from '@services/auth/useAuth'
 import { usePermission } from '@services/auth/usePermission'
 import { useUserService } from '@services/auth/useUserService'
 import { useEditorStore } from '@store/useEditorStore'
@@ -22,6 +23,7 @@ export const MultiEmailInviteModalContent = () => {
   const { getUserDetails } = useUserService()
   const { saveMentionData } = useMentions()
   const { grantUsersPermission } = usePermission()
+  const localuserDetails = useAuthStore((s) => s.userDetails)
   const node = useEditorStore((state) => state.node)
   const {
     handleSubmit,
@@ -37,9 +39,11 @@ export const MultiEmailInviteModalContent = () => {
       const allMails = data.email.split(',').map((e) => e.trim())
       const access = (data?.access?.value as AccessLevel) ?? DefaultPermission
 
-      const userDetailPromises = allMails.map((email) => {
-        return getUserDetails(email)
-      })
+      const userDetailPromises = allMails
+        .filter((e) => e !== localuserDetails.email)
+        .map((email) => {
+          return getUserDetails(email)
+        })
 
       const userDetails = await Promise.allSettled(userDetailPromises)
 
@@ -50,9 +54,11 @@ export const MultiEmailInviteModalContent = () => {
       const existing = userDetails.filter((p) => p.status === 'fulfilled' && p.value.userId !== undefined) as any[]
       const absent = userDetails.filter((p) => p.status === 'fulfilled' && p.value.userId === undefined) as any[]
 
-      const givePermToExisting = existing.reduce((p, c) => {
-        return [...p, c.value.userId]
-      }, [])
+      const givePermToExisting = existing
+        .reduce((p, c) => {
+          return [...p, c.value.userId]
+        }, [])
+        .filter((u) => u !== localuserDetails.userId)
 
       // Only share with users registered,
       if (givePermToExisting.length > 0) {

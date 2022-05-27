@@ -1,6 +1,7 @@
 import { EMAIL_REG } from '@data/Defaults/auth'
 import { replaceUserMention, replaceUserMentionEmail } from '@editor/Actions/replaceUserMention'
 import { useMentions } from '@hooks/useMentions'
+import { useAuthStore } from '@services/auth/useAuth'
 import { usePermission } from '@services/auth/usePermission'
 import { useUserService } from '@services/auth/useUserService'
 import { useEditorStore } from '@store/useEditorStore'
@@ -10,6 +11,7 @@ import { getPlateEditorRef, usePlateEditorRef } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import { AccessLevel, DefaultPermission, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
 import { LoadingButton } from '../Buttons/LoadingButton'
 import { InputFormError } from '../Forms/Input'
@@ -20,6 +22,7 @@ export const InviteModalContent = () => {
   const data = useShareModalStore((state) => state.data)
   const closeModal = useShareModalStore((state) => state.closeModal)
   const { getUserDetails } = useUserService()
+  const localUserDetails = useAuthStore((s) => s.userDetails)
   const node = useEditorStore((state) => state.node)
   const { inviteUser, addMentionable, saveMentionData } = useMentions()
   const { grantUsersPermission } = usePermission()
@@ -41,13 +44,20 @@ export const InviteModalContent = () => {
 
       if (details.userId !== undefined) {
         // Give permission here
+        if (details.userId === localUserDetails.userId) {
+          toast("Can't Invite Yourself")
+          closeModal()
+          return
+        }
         const resp = await grantUsersPermission(node.nodeid, [details.userId], access)
         mog('UserPermission given', { details, resp })
         addMentionable(data.alias, data.email, details.userId, node.nodeid, access)
         replaceUserMention(editor, data.alias, details.userId)
+        toast(`Shared with: ${data.email}`)
       } else {
         inviteUser(data.email, data.alias, node.nodeid, access)
         replaceUserMentionEmail(editor, data.alias, details.email)
+        toast(`${data.email} is not on Mex, added to Invited Users`)
       }
       saveMentionData()
     }

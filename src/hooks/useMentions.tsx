@@ -1,3 +1,4 @@
+import { useAuthStore } from '@services/auth/useAuth'
 import { usePermission } from '@services/auth/usePermission'
 import { addAccessToUser, useMentionStore } from '@store/useMentionStore'
 import { mog } from '@utils/lib/helper'
@@ -6,6 +7,7 @@ import { useMentionData } from './useLocalData'
 
 export const useMentions = () => {
   const { grantUsersPermission } = usePermission()
+  const localUserDetails = useAuthStore((s) => s.userDetails)
   const addInvitedUser = useMentionStore((s) => s.addInvitedUser)
   const addAccess = useMentionStore((s) => s.addAccess)
   const setInvited = useMentionStore((s) => s.setInvited)
@@ -78,6 +80,10 @@ export const useMentions = () => {
   }
 
   const addMentionable = (alias: string, email: string, userid: string, nodeid: string, access: AccessLevel) => {
+    if (userid === localUserDetails.userId) {
+      mog('Not adding mentionable user as it is the current user', { userid })
+      return
+    }
     const mentionable = useMentionStore.getState().mentionable
 
     const mentionExists = mentionable.find((user) => user.userid === userid)
