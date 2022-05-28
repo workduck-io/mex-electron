@@ -1,5 +1,5 @@
 import { useReadOnly, useFocused, useSelected } from 'slate-react'
-import shareForwardLine from '@iconify/icons-ri/share-forward-line'
+import shareLine from '@iconify/icons-ri/share-line'
 import archivedIcon from '@iconify/icons-ri/archive-line'
 import eyeOffLine from '@iconify/icons-ri/eye-off-line'
 import { Icon } from '@iconify/react'
@@ -31,7 +31,7 @@ import { SharedNodeIcon } from '@components/icons/Icons'
 const SharedNodeLink = ({ selected, sharedNode }: { selected: boolean; sharedNode: SharedNode }) => {
   return (
     <SILink selected={selected}>
-      <StyledIcon icon={shareForwardLine} />
+      <StyledIcon icon={shareLine} />
       <span className="ILink_decoration ILink_decoration_left">[[</span>
       <span className="ILink_decoration ILink_decoration_value"> {sharedNode?.path}</span>
       <span className="ILink_decoration ILink_decoration_right">]]</span>

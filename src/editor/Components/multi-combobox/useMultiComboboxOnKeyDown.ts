@@ -76,7 +76,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         let InsertedElement: InsertableElement = {
           type,
           children: [{ text: '' }],
-          value: itemValue
+          value: itemValue ?? item.key
         }
         if (
           (item.type === QuickLinkType.backlink || type === ELEMENT_INLINE_BLOCK) &&
@@ -111,6 +111,8 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         if (item.additional) {
           InsertedElement = { ...InsertedElement, ...item.additional }
         }
+
+        mog('Inserting', { InsertedElement })
 
         insertNodes<TElement>(editor, InsertedElement)
         trackEvent(getEventNameFromElement('Editor', ActionType.CREATE, type), {

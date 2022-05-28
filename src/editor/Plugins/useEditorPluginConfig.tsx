@@ -31,6 +31,7 @@ import { ELEMENT_TAG } from '../Components/tag/defaults'
 const useEditorPluginConfig = (editorId: string) => {
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
+  const sharedNodes = useDataStore((state) => state.sharedNodes)
   const slashCommands = useDataStore((state) => state.slashCommands)
   const nodeid = useEditorStore((state) => state.node.nodeid)
   const actionGroups = useActionsCache((store) => store.actionGroups)
@@ -126,8 +127,17 @@ const useEditorPluginConfig = (editorId: string) => {
       icon: l.icon ?? 'ri:file-list-2-line',
       type: QuickLinkType.backlink
     })),
+    // ...shared
+    ...sharedNodes.map((l) => ({
+      ...l,
+      value: l.nodeid,
+      text: l.path,
+      icon: l.icon ?? 'ri:share-line',
+      type: QuickLinkType.backlink
+    })),
     ...slashInternals.map((l) => ({ ...l, value: l.command, text: l.text, type: l.type }))
   ]
+
 
   const mentions = useMemo(
     () => [
