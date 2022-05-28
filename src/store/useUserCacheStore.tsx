@@ -6,6 +6,7 @@ interface CacheUser {
   userID: string
   email: string
   alias: string
+  name: string
 }
 
 interface UserCacheState {
@@ -16,6 +17,9 @@ interface UserCacheState {
   clearCache: () => void
 }
 
+/**
+ * Use the user service to access users, it prefills the user cache
+ */
 export const useUserCacheStore = create<UserCacheState>(
   persist(
     (set, get) => ({

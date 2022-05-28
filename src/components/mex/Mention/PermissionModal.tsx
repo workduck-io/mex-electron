@@ -29,6 +29,7 @@ import { useShareModalStore } from './ShareModalStore'
 export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
   const closeModal = useShareModalStore((s) => s.closeModal)
   const { getSharedUsersForNode, getInvitedUsersForNode, applyChangesMentionable } = useMentions()
+  const mentionable = useMentionStore((s) => s.mentionable)
   const node = useEditorStore((state) => state.node)
   const changedUsers = useShareModalStore((state) => state.data.changedUsers)
   const setChangedUsers = useShareModalStore((state) => state.setChangedUsers)
@@ -47,7 +48,7 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
       return getSharedUsersForNode(node.nodeid)
     }
     return []
-  }, [node, getSharedUsersForNode])
+  }, [node, getSharedUsersForNode, mentionable])
 
   const invitedUsers = useMemo(() => {
     if (node && node.nodeid) {

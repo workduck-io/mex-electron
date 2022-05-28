@@ -73,7 +73,7 @@ export const useMentions = () => {
       return res
     } else {
       // By design, the user should be in either invited or mentionable. The flow for new created user is different.
-      console.log('SHOULD NOT RUN', {})
+      console.error('SHOULD NOT RUN: grantUserAccessOnMention', { alias, nodeid, access })
       return 'notFound'
       //
     }

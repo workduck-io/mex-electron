@@ -1,7 +1,7 @@
 import { AuthForm, ButtonFields, Label, StyledCreatatbleSelect } from '../../style/Form'
 import { BackCard, FooterCard } from '../../style/Card'
 import { Controller, useForm } from 'react-hook-form'
-import { EMAIL_REG, MEX_TAG, PASSWORD } from '../../data/Defaults/auth'
+import { ALIAS_REG, EMAIL_REG, MEX_TAG, PASSWORD } from '../../data/Defaults/auth'
 import Input, { InputFormError } from '../../components/mex/Forms/Input'
 import React, { useState } from 'react'
 import { useAuthStore, useAuthentication } from '../../services/auth/useAuth'
@@ -29,6 +29,7 @@ export interface Option {
 
 export interface RegisterFormData {
   name: string
+  alias: string
   roles: Option[]
   email: string
   password: string
@@ -138,6 +139,21 @@ const Register = () => {
                     pattern: EMAIL_REG
                   })
                 }}
+                errors={regErrors}
+              ></InputFormError>
+
+              <InputFormError
+                name="alias"
+                label="Alias"
+                inputProps={{
+                  placeholder: 'Ex: CoolGuy',
+                  autoFocus: true,
+                  ...registerForm.register('alias', {
+                    required: true,
+                    pattern: ALIAS_REG
+                  })
+                }}
+                additionalInfo="Only Alphanumeric as content, and -_ as separators allowed"
                 errors={regErrors}
               ></InputFormError>
 

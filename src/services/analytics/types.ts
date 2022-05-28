@@ -4,6 +4,7 @@ export type UserProperties = {
   [Properties.EMAIL]: string
   [Properties.ROLE]: string
   [Properties.NAME]: string
+  [Properties.ALIAS]: string
   [Properties.WORKSPACE_ID]?: string
 }
 

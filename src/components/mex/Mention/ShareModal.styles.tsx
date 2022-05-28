@@ -6,7 +6,10 @@ import styled, { css } from 'styled-components'
 
 export const InviteWrapper = styled.div``
 export const InviteFormWrapper = styled.form``
-export const InviteFormFieldset = styled.fieldset``
+export const InviteFormFieldset = styled.fieldset`
+  border: none;
+  padding: 0;
+`
 export const SharedPermissionsWrapper = styled.div`
   ${InviteWrapper} {
     ${Title} {

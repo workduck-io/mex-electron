@@ -35,5 +35,6 @@ export enum Properties {
   WORKSPACE_ID = 'mex-workspace-id',
   EMAIL = 'mex-email',
   ROLE = 'mex-role',
-  NAME = 'mex-name'
+  NAME = 'mex-name',
+  ALIAS = 'mex-alias'
 }

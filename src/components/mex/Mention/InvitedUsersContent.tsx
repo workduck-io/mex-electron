@@ -23,6 +23,7 @@ import {
 import { useShareModalStore } from './ShareModalStore'
 import { useUserService } from '@services/auth/useUserService'
 import { usePermission } from '@services/auth/usePermission'
+import { useMentionStore } from '@store/useMentionStore'
 
 // Here since we don't have a specific userid we take email to be a unique key.
 export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
@@ -30,6 +31,7 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
   const node = useEditorStore((state) => state.node)
   const { grantUsersPermission } = usePermission()
   const { getUserDetails } = useUserService()
+  const invitedUsers = useMentionStore((s) => s.invitedUsers)
   const changedIUsers = useShareModalStore((state) => state.data.changedInvitedUsers)
   const setChangedIUsers = useShareModalStore((state) => state.setChangedInvitedUsers)
   // const { changeUserPermission, revokeUserAccess } = usePermission()
@@ -39,7 +41,7 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
       return getInvitedUsersForNode(node.nodeid)
     }
     return []
-  }, [node, getInvitedUsersForNode])
+  }, [node, getInvitedUsersForNode, invitedUsers])
 
   // This is called for every keystroke
   const onAliasChange = (email: string, alias: string) => {

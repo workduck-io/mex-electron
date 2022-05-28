@@ -130,7 +130,8 @@ export const useAuthentication = () => {
             [Properties.EMAIL]: email,
             [Properties.NAME]: d.data.metadata.name,
             [Properties.ROLE]: d.data.metadata.roles,
-            [Properties.WORKSPACE_ID]: d.data.group
+            [Properties.WORKSPACE_ID]: d.data.group,
+            [Properties.ALIAS]: d.data.metadata.alias
           })
           setShowLoader(false)
           addEventProperties({ [CustomEvents.LOGGED_IN]: true })
@@ -153,6 +154,7 @@ export const useAuthentication = () => {
    * Login via google
    */
   const loginViaGoogle = async (code: string, clientId: string, redirectURI: string, getWorkspace = true) => {
+    // TODO: Fix for alias
     try {
       const result: any = await googleSignIn(code, clientId, redirectURI)
       if (getWorkspace && result !== undefined) {
@@ -172,7 +174,12 @@ export const useAuthentication = () => {
               /**
                * Else we will add properties
                */
-              const userDetails = { email: result.userCred.email, userId: result.userCred.userId }
+              mog('UserDetails', { userDetails: result })
+              const userDetails = {
+                email: result.userCred.email,
+                name: result.userCred.name,
+                userId: result.userCred.userId
+              }
               const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
               initActionPerfomerClient(workspaceDetails.id)
 
@@ -188,7 +195,8 @@ export const useAuthentication = () => {
               mog('Login Google BIG success', { d, userDetails, workspaceDetails })
               addUserProperties({
                 [Properties.EMAIL]: userDetails.email,
-                [Properties.NAME]: userDetails.email,
+                [Properties.NAME]: userDetails.name,
+                [Properties.ALIAS]: d.data.metadata.alias,
                 [Properties.ROLE]: '',
                 [Properties.WORKSPACE_ID]: d.data.group
               })
@@ -206,7 +214,8 @@ export const useAuthentication = () => {
   }
 
   async function registerUserForGoogle(result: any) {
-    setSensitiveData({ email: result.email, name: result.email, password: '', roles: [] })
+    mog('Registering user for google', { result })
+    setSensitiveData({ email: result.email, name: result.email, password: '', roles: [], alias: result.alias })
     const uCred: UserCred = {
       username: result.userCred.username,
       email: result.userCred.email,
@@ -263,6 +272,7 @@ export const useAuthentication = () => {
         addUserProperties({
           [Properties.EMAIL]: userDetails.email,
           [Properties.NAME]: userDetails.email,
+          [Properties.ALIAS]: result.alias,
           [Properties.ROLE]: '',
           [Properties.WORKSPACE_ID]: d.data.group
         })
@@ -277,7 +287,7 @@ export const useAuthentication = () => {
   }
 
   const registerDetails = (data: RegisterFormData): Promise<string> => {
-    const { email, password, roles, name } = data
+    const { email, password, roles, name, alias } = data
     const userRole = roles.map((r) => r.value).join(', ') ?? ''
 
     const status = signUp(email, password)
@@ -290,6 +300,7 @@ export const useAuthentication = () => {
         addUserProperties({
           [Properties.EMAIL]: email,
           [Properties.NAME]: name,
+          [Properties.ALIAS]: alias,
           [Properties.ROLE]: userRole
         })
         setSensitiveData(data)
@@ -335,7 +346,8 @@ export const useAuthentication = () => {
           user: {
             id: uCred.userId,
             name: sensitiveData.name,
-            email: uCred.email
+            email: uCred.email,
+            alias: sensitiveData.alias
           },
           workspaceName: newWorkspaceName
         },
@@ -360,7 +372,7 @@ export const useAuthentication = () => {
         }
 
         ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
-        setAuthenticated({ email: sensitiveData.email }, { id: d.data.id, name: d.data.name })
+        setAuthenticated({ email: sensitiveData.email, userId: uCred.userId }, { id: d.data.id, name: d.data.name })
         setShowLoader(false)
       })
       .then(updateDefaultServices)
