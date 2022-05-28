@@ -100,6 +100,7 @@ export type IconButtonProps = {
   singleton?: TippyProps['singleton']
   transparent?: boolean
   highlight?: boolean
+  disabled?: boolean
   shortcut?: string
 }
 
@@ -108,7 +109,17 @@ export const HeadlessButton = styled.button`
   background: transparent;
 `
 
-const IconButton = ({ icon, title, size, onClick, transparent, shortcut, highlight, singleton }: IconButtonProps) => {
+const IconButton = ({
+  icon,
+  disabled,
+  title,
+  size,
+  onClick,
+  transparent,
+  shortcut,
+  highlight,
+  singleton
+}: IconButtonProps) => {
   return (
     <ToolbarTooltip
       content={
@@ -116,7 +127,12 @@ const IconButton = ({ icon, title, size, onClick, transparent, shortcut, highlig
       }
       singleton={singleton}
     >
-      <Button transparent={transparent ? transparent : true} onClick={onClick} highlight={highlight}>
+      <Button
+        transparent={transparent ? transparent : true}
+        disabled={disabled}
+        onClick={onClick}
+        highlight={highlight}
+      >
         <Icon icon={icon} height={size} />
       </Button>
     </ToolbarTooltip>

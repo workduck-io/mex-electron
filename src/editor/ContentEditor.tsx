@@ -146,7 +146,7 @@ const ContentEditor = () => {
             content={fsContent?.content ?? defaultContent.content}
             onChange={onChangeSave}
             editorId={editorId}
-            readOnly={viewOnly}
+            readOnly={viewOnly || readOnly}
           />
         </EditorWrapper>
       </StyledEditor>

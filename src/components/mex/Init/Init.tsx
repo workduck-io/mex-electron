@@ -161,7 +161,7 @@ const Init = () => {
     // getAllSharedNodes().then((sharedNodes) => {
     //   setSharedNodes(sharedNodes)
     // })
-    fetchShareData()
+    if (userCred?.email) fetchShareData()
   }, [userCred])
 
   const editor = usePlateEditorRef()

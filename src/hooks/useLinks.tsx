@@ -1,3 +1,4 @@
+import { getNameFromPath } from '@components/mex/Sidebar/treeUtils'
 import { uniq } from 'lodash'
 import { defaultContent } from '../data/Defaults/baseData'
 import { ELEMENT_INLINE_BLOCK } from '../editor/Components/InlineBlock/types'
@@ -213,10 +214,10 @@ export const useLinks = () => {
 
   const getNodeTitleSave = (nodeid: string) => {
     const pathFromNodeid = getPathFromNodeid(nodeid)
-    if (pathFromNodeid) return pathFromNodeid
+    if (pathFromNodeid) return getNameFromPath(pathFromNodeid)
 
     const pathFromShared = getPathFromShared(nodeid)
-    if (pathFromShared) return pathFromShared
+    if (pathFromShared) return getNameFromPath(pathFromShared)
   }
 
   return {

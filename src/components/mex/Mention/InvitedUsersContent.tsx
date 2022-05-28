@@ -134,7 +134,7 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
     const dataUser = sharedIUsers.find((u) => u.email === user.email)
     const access = changedUser ? changedUser.access[node.nodeid] : dataUser.access[node.nodeid] ?? undefined
     if (uDetails && access) {
-      const res = await grantUsersPermission(node.nodeid, [uDetails.userId], access)
+      const res = await grantUsersPermission(node.nodeid, [uDetails.userID], access)
       mog('res')
     }
   }

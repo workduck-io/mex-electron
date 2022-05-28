@@ -6,13 +6,14 @@ import styled, { css } from 'styled-components'
 
 export const InviteWrapper = styled.div``
 export const InviteFormWrapper = styled.form``
+export const InviteFormFieldset = styled.fieldset``
 export const SharedPermissionsWrapper = styled.div`
   ${InviteWrapper} {
     ${Title} {
       display: none;
     }
 
-    form {
+    form > fieldset {
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
@@ -94,8 +95,14 @@ export const ShareEmail = styled.td`
   color: ${({ theme }) => theme.colors.text.fade};
 `
 
-export const SharePermission = styled.td`
+export const SharePermission = styled.td<{ disabled?: boolean }>`
   width: 120px;
+
+  ${(disabled) =>
+    disabled &&
+    css`
+      pointer-events: none;
+    `}
 `
 
 export const ShareRowActionsWrapper = styled.div`

@@ -13,10 +13,10 @@ import { Controller, useForm } from 'react-hook-form'
 import { AccessLevel, DefaultPermission, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
 import { LoadingButton } from '../Buttons/LoadingButton'
 import { InputFormError } from '../Forms/Input'
-import { InviteFormWrapper, InviteWrapper } from './ShareModal.styles'
+import { InviteFormFieldset, InviteFormWrapper, InviteWrapper } from './ShareModal.styles'
 import { InviteModalData } from './ShareModalStore'
 
-export const MultiEmailInviteModalContent = () => {
+export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean }) => {
   const addInvitedUser = useMentionStore((state) => state.addInvitedUser)
   const addMentionable = useMentionStore((state) => state.addMentionable)
   // const closeModal = useShareModalStore((state) => state.closeModal)
@@ -51,12 +51,12 @@ export const MultiEmailInviteModalContent = () => {
 
       // Typescript has some weird thing going on with promises.
       // Try to improve the type (if you can that is)
-      const existing = userDetails.filter((p) => p.status === 'fulfilled' && p.value.userId !== undefined) as any[]
-      const absent = userDetails.filter((p) => p.status === 'fulfilled' && p.value.userId === undefined) as any[]
+      const existing = userDetails.filter((p) => p.status === 'fulfilled' && p.value.userID !== undefined) as any[]
+      const absent = userDetails.filter((p) => p.status === 'fulfilled' && p.value.userID === undefined) as any[]
 
       const givePermToExisting = existing
         .reduce((p, c) => {
-          return [...p, c.value.userId]
+          return [...p, c.value.userID]
         }, [])
         .filter((u) => u !== localuserDetails.userId)
 
@@ -71,7 +71,7 @@ export const MultiEmailInviteModalContent = () => {
           type: 'mentionable',
           alias: getEmailStart(u?.value?.email),
           email: u?.value?.email,
-          userid: u?.value?.userId,
+          userid: u?.value?.userID,
           access: {
             [node?.nodeid]: access
           }
@@ -103,49 +103,51 @@ export const MultiEmailInviteModalContent = () => {
       <Title>Invite</Title>
       <p>Invite your friends to your Note.</p>
       <InviteFormWrapper onSubmit={handleSubmit(onSubmit)}>
-        <InputFormError
-          name="email"
-          label="Emails"
-          inputProps={{
-            autoFocus: true,
-            placeholder: 'alice@email.com, bob@email.com',
-            type: 'email',
-            // Accepts multiple emails
-            multiple: true,
-            ...register('email', {
-              required: true,
-              validate: MultiEmailValidate
-            })
-          }}
-          errors={errors}
-        ></InputFormError>
+        <InviteFormFieldset disabled={disabled}>
+          <InputFormError
+            name="email"
+            label="Emails"
+            inputProps={{
+              autoFocus: true,
+              placeholder: 'alice@email.com, bob@email.com',
+              type: 'email',
+              // Accepts multiple emails
+              multiple: true,
+              ...register('email', {
+                required: true,
+                validate: MultiEmailValidate
+              })
+            }}
+            errors={errors}
+          ></InputFormError>
 
-        <SelectWrapper>
-          <Label htmlFor="access">Permission</Label>
-          <Controller
-            control={control}
-            render={({ field }) => (
-              <StyledCreatatbleSelect
-                {...field}
-                defaultValue={DefaultPermissionValue}
-                options={permissionOptions}
-                closeMenuOnSelect={true}
-                closeMenuOnBlur={true}
-              />
-            )}
-            name="access"
-          />
-        </SelectWrapper>
+          <SelectWrapper>
+            <Label htmlFor="access">Permission</Label>
+            <Controller
+              control={control}
+              render={({ field }) => (
+                <StyledCreatatbleSelect
+                  {...field}
+                  defaultValue={DefaultPermissionValue}
+                  options={permissionOptions}
+                  closeMenuOnSelect={true}
+                  closeMenuOnBlur={true}
+                />
+              )}
+              name="access"
+            />
+          </SelectWrapper>
 
-        <ButtonFields>
-          <LoadingButton
-            loading={isSubmitting}
-            alsoDisabled={errors.email !== undefined || errors.alias !== undefined}
-            buttonProps={{ type: 'submit', primary: true, large: true }}
-          >
-            Invite
-          </LoadingButton>
-        </ButtonFields>
+          <ButtonFields>
+            <LoadingButton
+              loading={isSubmitting}
+              alsoDisabled={errors.email !== undefined || errors.alias !== undefined}
+              buttonProps={{ type: 'submit', primary: true, large: true }}
+            >
+              Invite
+            </LoadingButton>
+          </ButtonFields>
+        </InviteFormFieldset>
       </InviteFormWrapper>
     </InviteWrapper>
   )

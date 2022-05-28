@@ -1,3 +1,9 @@
+export interface MexUser {
+  name: string
+  email: string
+  userID: string
+}
+
 export interface AuthToken {
   accessToken: string
   idToken: string

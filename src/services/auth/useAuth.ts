@@ -125,6 +125,7 @@ export const useAuthentication = () => {
           ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
           // * For Heap analytics
           identifyUser(email)
+          userDetails['name'] = d.data.metadata.name
           addUserProperties({
             [Properties.EMAIL]: email,
             [Properties.NAME]: d.data.metadata.name,
@@ -333,7 +334,7 @@ export const useAuthentication = () => {
           type: 'RegisterUserRequest',
           user: {
             id: uCred.userId,
-            name: uCred.email,
+            name: sensitiveData.name,
             email: uCred.email
           },
           workspaceName: newWorkspaceName

@@ -1,4 +1,5 @@
 import { getAccessValue, useMentions } from '@hooks/useMentions'
+import { useNodes } from '@hooks/useNodes'
 import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
 import { usePermission } from '@services/auth/usePermission'
 import { useEditorStore } from '@store/useEditorStore'
@@ -32,6 +33,14 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
   const changedUsers = useShareModalStore((state) => state.data.changedUsers)
   const setChangedUsers = useShareModalStore((state) => state.setChangedUsers)
   const { changeUserPermission, revokeUserAccess } = usePermission()
+  const { accessWhenShared } = useNodes()
+
+  const readOnly = useMemo(() => {
+    // to test: return true
+    const access = accessWhenShared(node.nodeid)
+    if (access) return access !== 'MANAGE'
+    return false
+  }, [node])
 
   const sharedUsers = useMemo(() => {
     if (node && node.nodeid) {
@@ -191,7 +200,7 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
     <SharedPermissionsWrapper>
       <ModalHeader>Share Note</ModalHeader>
 
-      <MultiEmailInviteModalContent />
+      {!readOnly && <MultiEmailInviteModalContent />}
 
       {sharedUsers.length > 0 && (
         <>
@@ -215,13 +224,14 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
                   <ShareAlias hasChanged={!!hasChanged}>
                     <ShareAliasInput
                       type="text"
+                      disabled={readOnly}
                       defaultValue={user.alias}
                       onChange={(e) => onAliasChange(user.userid, e.target.value)}
                     />
                   </ShareAlias>
                   <ShareEmail>{user.email}</ShareEmail>
 
-                  <SharePermission>
+                  <SharePermission disabled={readOnly}>
                     <StyledCreatatbleSelect
                       onChange={(access) => onPermissionChange(user.userid, access.value)}
                       defaultValue={getAccessValue(access) ?? DefaultPermissionValue}
@@ -232,7 +242,12 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
                   </SharePermission>
                   <ShareRowAction>
                     <ShareRowActionsWrapper>
-                      <IconButton onClick={() => onRevokeAccess(user.userid)} icon={deleteBin6Line} title="Remove" />
+                      <IconButton
+                        disabled={readOnly}
+                        onClick={() => onRevokeAccess(user.userid)}
+                        icon={deleteBin6Line}
+                        title="Remove"
+                      />
                     </ShareRowActionsWrapper>
                   </ShareRowAction>
                 </ShareRow>
@@ -241,7 +256,7 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
           </SharedPermissionsTable>
 
           <ModalControls>
-            <Button large onClick={onCopyLink}>
+            <Button disabled={readOnly} large onClick={onCopyLink}>
               Copy Link
             </Button>
             <Button
@@ -249,7 +264,7 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
               autoFocus={!focus}
               large
               onClick={onSave}
-              disabled={changedUsers && changedUsers.length === 0}
+              disabled={readOnly || (changedUsers && changedUsers.length === 0)}
             >
               Save
             </Button>
@@ -257,7 +272,7 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
         </>
       )}
 
-      {invitedUsers.length > 0 && <InvitedUsersContent />}
+      {!readOnly && invitedUsers.length > 0 && <InvitedUsersContent />}
     </SharedPermissionsWrapper>
   )
 }
