@@ -5,6 +5,7 @@ import { UserDetails } from '../types/auth'
 import { mog } from '@utils/lib/helper'
 import { AccessLevel, DefaultPermission, InvitedUser, Mentionable, SelfMention } from '../types/mentions'
 import { useMentionData } from './useLocalData'
+import useDataStore from '@store/useDataStore'
 
 export const useMentions = () => {
   const { grantUsersPermission } = usePermission()
@@ -126,6 +127,21 @@ export const useMentions = () => {
   const getSharedUsersForNode = (nodeid: string): Mentionable[] => {
     const mentionable = useMentionStore.getState().mentionable
     const users = mentionable.filter((mention) => mention.access[nodeid] !== undefined)
+    const currentUser = useAuthStore.getState().userDetails
+    const sharedNodes = useDataStore.getState().sharedNodes
+    const curNode = sharedNodes.find((node) => node.nodeid === nodeid)
+
+    if (curNode) {
+      const curUser: Mentionable = {
+        type: 'mentionable',
+        access: { [curNode.nodeid]: curNode.currentUserAccess },
+        email: currentUser.email,
+        alias: currentUser.alias,
+        userID: currentUser.userID
+      }
+      return [...users, curUser]
+    }
+
     return users
   }
 

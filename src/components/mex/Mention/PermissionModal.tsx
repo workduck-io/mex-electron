@@ -196,10 +196,10 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
     mog('onSave', { changedUsers, newPermissions, newAliases, revokedUsers })
   }
 
-  // mog('ShareInvitedPermissions go brrr', {
-  //   sharedUsers,
-  //   changedUsers
-  // })
+  mog('ShareInvitedPermissions go brrr', {
+    sharedUsers,
+    changedUsers
+  })
 
   return (
     <SharedPermissionsWrapper>
@@ -253,12 +253,14 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
                   </SharePermission>
                   <ShareRowAction>
                     <ShareRowActionsWrapper>
-                      <IconButton
-                        disabled={readOnly}
-                        onClick={() => onRevokeAccess(user.userID)}
-                        icon={deleteBin6Line}
-                        title="Remove"
-                      />
+                      {!isCurrent && (
+                        <IconButton
+                          disabled={readOnly}
+                          onClick={() => onRevokeAccess(user.userID)}
+                          icon={deleteBin6Line}
+                          title="Remove"
+                        />
+                      )}
                     </ShareRowActionsWrapper>
                   </ShareRowAction>
                 </ShareRow>

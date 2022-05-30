@@ -41,6 +41,8 @@ export const useFetchShareData = () => {
 
     const nodeDetails = await Promise.allSettled(sharedNodeDetails)
 
+    // const nodeUsers =
+
     const usersWithAccess = nodeDetails
       .filter((p) => p.status === 'fulfilled')
       .map((p: any) => {
@@ -53,14 +55,30 @@ export const useFetchShareData = () => {
       return [...p, ...rawUsers]
     }, [])
 
+    // const sharedNodeOwnerDetails = sharedNodes
+    //   .filter((node) => node.owner !== undefined)
+    //   .map((node) => {
+    //     return getUserDetailsUserId(node.owner)
+    //   })
     // Then finally fetch the user detail: email
     const mentionableU = (
-      await Promise.allSettled(
-        UserAccessDetails.map(async (u) => {
+      await Promise.allSettled([
+        ...UserAccessDetails.map(async (u) => {
           const uDetails = await getUserDetailsUserId(u.userid)
           return { ...u, email: uDetails.email, alias: uDetails.alias }
+        }),
+
+        ...sharedNodes.map(async (node) => {
+          const uDetails = await getUserDetailsUserId(node.owner)
+          return {
+            access: 'OWNER',
+            userid: uDetails.userID,
+            nodeid: node.nodeid,
+            email: uDetails.email,
+            alias: uDetails.alias
+          }
         })
-      )
+      ])
     )
       .filter((p) => p.status === 'fulfilled')
       .map((p: any) => p.value as MUsersRaw)

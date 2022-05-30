@@ -14,7 +14,7 @@ export interface InvitedUser extends IUser {
   type: 'invite'
 }
 
-export type AccessLevel = 'MANAGE' | 'WRITE' | 'READ'
+export type AccessLevel = 'MANAGE' | 'WRITE' | 'READ' | 'OWNER'
 
 export const permissionOptions: {
   value: AccessLevel
