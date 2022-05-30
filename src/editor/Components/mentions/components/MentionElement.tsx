@@ -10,15 +10,17 @@ import { mog } from '@utils/lib/helper'
 import React, { useMemo } from 'react'
 import { Transforms } from 'slate'
 import { useFocused, useSelected } from 'slate-react'
-import { AccessLevel, InvitedUser, Mentionable, permissionOptions } from '../../../../types/mentions'
+import { AccessLevel, InvitedUser, Mentionable, permissionOptions, SelfMention } from '../../../../types/mentions'
 import { useHotkeys } from '../../tag/hooks/useHotkeys'
 import { useOnMouseClick } from '../../tag/hooks/useOnMouseClick'
 import { MentionTooltip, SMention, SMentionRoot, TooltipMail, Username } from './MentionElement.styles'
 import { MentionElementProps } from './MentionElement.types'
 import { StyledCreatatbleSelect } from '@style/Form'
+import { UserDetails } from '../../../../types/auth'
+import toast from 'react-hot-toast'
 
 interface MentionTooltipProps {
-  user?: Mentionable | InvitedUser
+  user?: Mentionable | InvitedUser | SelfMention
   nodeid: string
   access?: AccessLevel
 }
@@ -29,9 +31,12 @@ const MentionTooltipComponent = ({ user, access, nodeid }: MentionTooltipProps) 
   const onAccessChange = async (val: any) => {
     mog('Val', val)
     // TODO: Extract new permission from Val
+    if (user.type === 'self') {
+      toast('Changing your own permission is not allowed')
+    }
     if (user.type === 'mentionable') {
       // Grant permission via api
-      const resp = await changeUserPermission(nodeid, { [user.userid]: access }) // Use new permission instead of acces here
+      const resp = await changeUserPermission(nodeid, { [user.userID]: access }) // Use new permission instead of acces here
     }
     addAccess(user.email, nodeid, access)
   }
@@ -116,7 +121,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
   // mog('MentionElement', { user, access, node, elementEmail: element?.email })
 
   return (
-    <SMentionRoot {...attributes} data-slate-value={element.value} contentEditable={false}>
+    <SMentionRoot {...attributes} type={user.type} data-slate-value={element.value} contentEditable={false}>
       <Tippy
         delay={100}
         // interactiveDebounce={100}
@@ -125,7 +130,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
         appendTo={() => document.body}
         render={(attrs) => <MentionTooltipComponent user={user} nodeid={node.nodeid} access={access} />}
       >
-        <SMention {...onClickProps} selected={selected}>
+        <SMention {...onClickProps} type={user.type} selected={selected}>
           <Username>@{user?.alias ?? element.value}</Username>
         </SMention>
       </Tippy>

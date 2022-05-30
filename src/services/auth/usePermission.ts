@@ -86,7 +86,9 @@ export const usePermission = () => {
             (n): SharedNode => ({
               path: n.nodeTitle,
               nodeid: n.nodeID,
-              access: n.accessType
+              currentUserAccess: n.accessType,
+              owner: n.ownerID,
+              sharedBy: n.grantedID
             })
           )
           mog('SharedNodes', { sharedNodes })

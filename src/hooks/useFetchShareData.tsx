@@ -15,6 +15,7 @@ interface UsersRaw {
 interface MUsersRaw {
   nodeid: string
   email: string
+  alias: string
   userid: string
   access: AccessLevel
 }
@@ -57,15 +58,17 @@ export const useFetchShareData = () => {
       await Promise.allSettled(
         UserAccessDetails.map(async (u) => {
           const uDetails = await getUserDetailsUserId(u.userid)
-          return { ...u, email: uDetails.email }
+          return { ...u, email: uDetails.email, alias: uDetails.alias }
         })
       )
     )
       .filter((p) => p.status === 'fulfilled')
       .map((p: any) => p.value as MUsersRaw)
-      .filter((u) => u.userid !== userDetails?.userID)
+    // .filter((u) => u.userid !== userDetails?.userID)
 
-    mentionableU.forEach((u) => addMentionable(getEmailStart(u.email), u.email, u.userid, u.nodeid, u.access))
+    mentionableU.forEach((u) =>
+      addMentionable(u.alias ?? getEmailStart(u.email), u.email, u.userid, u.nodeid, u.access)
+    )
 
     mog('SharedNode', { sharedNodes, usersWithAccess, mentionableU, UserAccessDetails })
   }

@@ -71,7 +71,7 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
           type: 'mentionable',
           alias: u?.value?.alias ?? '',
           email: u?.value?.email,
-          userid: u?.value?.userID,
+          userID: u?.value?.userID,
           access: {
             [node?.nodeid]: access
           }

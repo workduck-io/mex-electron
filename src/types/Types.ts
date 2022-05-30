@@ -2,6 +2,8 @@ import { QuickLinkType } from '../components/mex/NodeSelect/NodeSelect'
 import { CategoryType } from '../store/Context/context.spotlight'
 import { AccessLevel } from './mentions'
 
+type UserID = string
+
 /*
  * Specific to comboboxes
  */
@@ -28,7 +30,9 @@ export interface ILink {
 }
 
 export interface SharedNode extends ILink {
-  access: AccessLevel
+  currentUserAccess: AccessLevel
+  sharedBy: UserID
+  owner: UserID
 }
 
 /**  Tags */

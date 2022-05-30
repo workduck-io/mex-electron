@@ -51,6 +51,7 @@ const Init = () => {
   const setSharedNodes = useDataStore((s) => s.setSharedNodes)
   const { loadNode, getNode } = useLoad()
   const { initCognito, userCred } = useAuth()
+  const workspaceDetails = useAuthStore((store) => store.workspaceDetails)
   const { logout } = useAuthentication()
 
   const { getLocalData } = useLocalData()
@@ -146,23 +147,9 @@ const Init = () => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    //[
-    // {
-    //     "nodeID": "NODE_CAaByMUDxWDxLUwJVpwRJ",
-    //     "nodeTitle": "Draft.R Rated request",
-    //     "accessType": "MANAGE"
-    // },
-    // {
-    //     "nodeID": "NODE_wbWR6pybMWqLrFApn3tD3",
-    //     "nodeTitle": "design",
-    //     "accessType": "MANAGE"
-    // }
-    // ]
-    // getAllSharedNodes().then((sharedNodes) => {
-    //   setSharedNodes(sharedNodes)
-    // })
-    if (userCred?.email) fetchShareData()
-  }, [userCred])
+    // mog('Shared nodes loaded', { workspaceDetails })
+    if (workspaceDetails?.id) fetchShareData()
+  }, [workspaceDetails])
 
   const editor = usePlateEditorRef()
 

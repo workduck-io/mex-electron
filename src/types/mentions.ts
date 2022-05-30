@@ -1,3 +1,9 @@
+import { UserDetails } from './auth'
+
+export interface SelfMention extends UserDetails {
+  type: 'self'
+}
+
 export interface IUser {
   email: string
   alias: string
@@ -28,7 +34,7 @@ export interface AccessMap {
 
 export interface Mentionable extends IUser {
   type: 'mentionable'
-  userid: string
+  userID: string
 }
 
 export interface MentionData {

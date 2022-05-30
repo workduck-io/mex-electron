@@ -1,7 +1,8 @@
-export interface MexUser {
-  name: string
+export interface UserDetails {
   email: string
   userID: string
+  name: string
+  alias: string
 }
 
 export interface AuthToken {

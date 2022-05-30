@@ -142,7 +142,7 @@ const useEditorPluginConfig = (editorId: string) => {
   const mentions = useMemo(
     () => [
       ...mentionable.map((m) => ({
-        value: m.userid,
+        value: m.userID,
         text: m.alias,
         icon: 'ri:user-line',
         type: QuickLinkType.mentions

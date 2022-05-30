@@ -79,7 +79,7 @@ export const addAccessToUser = (user: any, nodeid: string, accessLevel: AccessLe
 export const getUserFromUseridHookless = (userid: string) => {
   const mentionable = useMentionStore.getState().mentionable
 
-  const user = mentionable.find((user) => user.userid === userid)
+  const user = mentionable.find((user) => user.userID === userid)
 
   if (user) return user
 }

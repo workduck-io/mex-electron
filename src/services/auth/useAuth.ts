@@ -18,12 +18,8 @@ import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActio
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useLayoutStore } from '@store/useLayoutStore'
 
-interface UserDetails {
-  email: string
-  userID: string
-  name: string
-  alias: string
-}
+import { useActionPerformer } from '../../components/spotlight/Actions/useActionPerformer'
+import { UserDetails } from '../../types/auth'
 
 interface WorkspaceDetails {
   name: string
@@ -109,7 +105,7 @@ export const useAuthentication = () => {
       authDetails = await client
         .get(apiURLs.getUserRecords)
         .then(async (d) => {
-          const userDetails = { email, alias: d.data.alias, userID: d.data.id, name: d.data.name }
+          const userDetails = { email, alias: d.data.alias ?? d.data.name, userID: d.data.id, name: d.data.name }
           const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
           initActionPerfomerClient(workspaceDetails.id)
 
@@ -390,6 +386,7 @@ export const useAuthentication = () => {
 
         ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
         setAuthenticated(userDetails, { id: d.data.id, name: d.data.name })
+        setShowLoader(false)
       })
       .then(updateDefaultServices)
       .then(updateServices)

@@ -80,7 +80,7 @@ export const useApi = () => {
 
     if (isShared) {
       const node = getSharedNode(nodeid)
-      if (node.access[nodeid] === 'READ') return
+      if (node.currentUserAccess[nodeid] === 'READ') return
     }
 
     if (!USE_API) {
