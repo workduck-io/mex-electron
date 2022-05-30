@@ -21,6 +21,7 @@ const Container = styled.div`
   position: relative;
   height: 430px;
   max-height: 430px;
+  width: 100%;
 `
 
 const MainSection = styled.div<{ overflow?: boolean }>`
@@ -44,7 +45,7 @@ const PerformersContainer = () => {
   const isForm = activeAction?.subType === 'form'
   const view = useActionStore((store) => store.view) === 'item'
 
-  const isConnected = getIsServiceConnected(activeAction.actionGroupId)
+  const isConnected = getIsServiceConnected(activeAction?.actionGroupId)
 
   return (
     <Container>
@@ -62,7 +63,7 @@ const PerformersContainer = () => {
           <ConnectService />
         )}
       </MainSection>
-      <RightActionSection actionId={activeAction?.id} actionGroupId={activeAction?.actionGroupId} />
+      {isConnected && <RightActionSection actionId={activeAction?.id} actionGroupId={activeAction?.actionGroupId} />}
     </Container>
   )
 }

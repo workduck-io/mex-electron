@@ -18,7 +18,7 @@ export const SelectBar = styled(StyledSelect)`
   flex: 1;
   max-width: ${({ width }) => width || '30%'};
   font-size: 0.9rem;
-  margin: 0 0.25rem;
+  margin: 0 0.25rem 0 0;
   color: ${({ theme }) => theme.colors.text.default};
 
   & > div {

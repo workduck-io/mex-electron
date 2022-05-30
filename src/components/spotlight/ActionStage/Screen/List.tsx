@@ -64,7 +64,6 @@ const List: React.FC<ListProps> = ({ items, context }) => {
   const onSelect = (i: any) => {
     setActiveIndex(i)
     setViewItemContext(i)
-    setView('item')
     // goTo('/action/view', NavigationType.push)
   }
 
@@ -74,6 +73,11 @@ const List: React.FC<ListProps> = ({ items, context }) => {
       scrollTo(nextIndex)
       return nextIndex
     })
+  }
+
+  const onDoubleClick = (index: number) => {
+    onSelect(index)
+    setView('item')
   }
 
   const prevItem = () => {
@@ -119,7 +123,7 @@ const List: React.FC<ListProps> = ({ items, context }) => {
         case KEYBOARD_KEYS.Enter:
           event.preventDefault()
           event.stopPropagation()
-          onSelect(activeIndex)
+          onDoubleClick(activeIndex)
           break
         default:
           break
@@ -153,7 +157,7 @@ const List: React.FC<ListProps> = ({ items, context }) => {
         ref={parentRef}
         itemContent={(index, item) => {
           return (
-            <ActionItem key={index} onClick={() => onSelect(index)}>
+            <ActionItem key={index} onDoubleClick={() => onDoubleClick(index)} onClick={() => onSelect(index)}>
               <Row active={index === activeIndex} row={item.slice(0, ROW_ITEMS_LIMIT)} />
             </ActionItem>
           )

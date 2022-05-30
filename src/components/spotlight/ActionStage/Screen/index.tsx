@@ -9,6 +9,8 @@ import List from './List'
 import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import useActionMenuStore from '../ActionMenu/useActionMenuStore'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
+import { loader } from '../Performers/loader'
+import Lottie from 'lottie-react'
 
 const StyledScreen = styled.section`
   display: flex;
@@ -65,7 +67,7 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
     const res = getCacheResult(actionId, elementId)
     mog('res', { res })
     return res
-  }, [actionId, resData])
+  }, [actionId])
 
   useEffect(() => {
     const hideMenuOptions = !resData || resData?.length === 0
@@ -84,7 +86,7 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
     }
   }, [search?.value, memoData])
 
-  if (isLoading) return null
+  if (isLoading) null
 
   return <StyledScreen>{!view && <List items={resData} context={memoData?.contextData ?? []} />}</StyledScreen>
 }

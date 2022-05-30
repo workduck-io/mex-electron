@@ -15,6 +15,7 @@ import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { useRouting } from '../../../views/routes/urls'
 import ViewActionHandler from '../ActionStage/Forms/ViewActionHandler'
 import { useActionStore } from '../Actions/useActionStore'
+import useActionMenuStore from '../ActionStage/ActionMenu/useActionMenuStore'
 
 type QueryType = {
   value: string
@@ -33,6 +34,7 @@ const Search = () => {
   const saved = useContentStore((store) => store.saved)
 
   // * Editor's mode (normal/edit)
+  const isActionMenuOpen = useActionMenuStore((store) => store.isActionMenuOpen)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const view = useActionStore((store) => store.view)
 
@@ -97,7 +99,7 @@ const Search = () => {
     handleSearchInput(query)
   }
 
-  const disabled = !normalMode || !!view
+  const disabled = !normalMode || !!view || isActionMenuOpen
 
   return (
     <StyledSearch id="wd-mex-spotlight-search-container">

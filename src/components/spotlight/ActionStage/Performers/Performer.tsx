@@ -39,7 +39,7 @@ const Performer: React.FC<PerformType> = ({ actionId, actionType }) => {
     case ReturnType.OBJECT:
       return (
         <Selector
-          width={isForm ? '60vw' : '30%'}
+          width={isForm ? '100%' : '30%'}
           actionId={actionId}
           actionGroupId={activeAction?.actionGroupId}
           value={value}

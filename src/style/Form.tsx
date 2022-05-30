@@ -173,7 +173,7 @@ export const ReactSelectStyles = (theme: DefaultTheme) => ({
     ...provided,
     // width: state.selectProps.width,
     color: state.selectProps.menuColor,
-    backgroundColor: theme.colors.gray[8],
+    backgroundColor: theme.colors.background.modal,
     padding: `${theme.spacing.small} ${theme.spacing.small}`
     // padding: 20,
   }),
@@ -198,7 +198,16 @@ export const ReactSelectStyles = (theme: DefaultTheme) => ({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const StyledSelect = (props: any) => {
   const theme = useTheme()
-  return <Select {...props} theme={theme.additional.reactSelect} styles={ReactSelectStyles(theme)}></Select>
+  return (
+    <Select
+      captureMenuScroll
+      blurInputOnSelect
+      menuShouldBlockScroll
+      theme={theme.additional.reactSelect}
+      styles={ReactSelectStyles(theme)}
+      {...props}
+    ></Select>
+  )
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

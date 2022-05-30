@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import Project from '../Project'
 import { TemplateConfig } from '@workduck-io/action-request-helper'
 import { ErrorBoundary } from 'react-error-boundary'
-import { StyledBackground } from '../../styled'
+import { lighten } from 'polished'
 import { OnHoverItemBackground } from '../ActionMenu/styled'
 
 type RowConatainerType = 'row' | 'column'
@@ -28,10 +28,10 @@ const RowContainer = styled.div<RowContainerProps>`
   justify-content: space-between;
   flex-direction: ${(props) => (props.type === 'row' ? 'row' : 'column')};
 
-  ${({ active }) =>
+  ${({ active, theme }) =>
     active &&
     css`
-      background-color: ${({ theme }) => theme.colors.background.app};
+      background-color: ${lighten(0.02, theme.colors.background.app)};
     `}
 
   ${({ type }) =>

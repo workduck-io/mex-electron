@@ -16,7 +16,7 @@ const StyledView = styled.section`
   flex-direction: row;
   width: 100%;
   margin-top: 0.5rem;
-  height: 90vh;
+  height: 100%;
   max-height: 90vh;
 `
 

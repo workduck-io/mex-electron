@@ -6,7 +6,6 @@ import { getActionIds } from '../../../utils/actions'
 
 import { ViewDataType, ViewType } from '../../../store/app.spotlight'
 import { useActionsCache } from './useActionsCache'
-import { mog } from '@utils/lib/helper'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
 export type ActionSubType = 'form' | 'none' | undefined

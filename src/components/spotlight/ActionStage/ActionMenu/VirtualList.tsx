@@ -116,7 +116,7 @@ const VirtualList = <T,>({
     <Virtuoso
       data={items}
       tabIndex={-1}
-      style={{ height: '310px' }}
+      style={{ height: '280px' }}
       ref={ref}
       key="wd-mex-action-menu-list"
       id="wd-mex-action-menu-list"

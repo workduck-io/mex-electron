@@ -1,5 +1,6 @@
 import { Button } from '@style/Buttons'
 import { MexIcon } from '@style/Layouts'
+import { capitalize } from '@utils/lib/strings'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React from 'react'
 import styled, { useTheme } from 'styled-components'
@@ -30,7 +31,7 @@ const ConnectService = () => {
   return (
     <Container>
       <MexIcon icon={activeAction?.icon} height="3rem" width="3rem" color={theme.colors.primary} />
-      <div>{`You're not connected to ${activeAction?.actionGroupId?.toLocaleLowerCase()}`}</div>
+      <div>{`You're not connected to ${capitalize(activeAction?.actionGroupId?.toLocaleLowerCase())}`}</div>
       <Button onClick={onLoginClick}>Connect</Button>
     </Container>
   )

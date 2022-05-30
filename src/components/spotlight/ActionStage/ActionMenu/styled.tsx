@@ -1,8 +1,9 @@
 import { LoadingButton } from '@components/mex/Buttons/LoadingButton'
+import { Ellipsis } from '@components/mex/Integrations/Template/styled'
 import { ModalOverlay } from '@components/mex/Refactor/styles'
 import { Input } from '@style/Form'
 import { BodyFont } from '@style/spotlight/global'
-import { rgba, transparentize } from 'polished'
+import { lighten, rgba, transparentize } from 'polished'
 import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 
@@ -19,7 +20,7 @@ export const FormLoadingButton = styled(LoadingButton)`
 `
 
 export const OnHoverItemBackground = css`
-  background-color: ${({ theme }) => transparentize(0.65, theme.colors.background.app)};
+  background-color: ${({ theme }) => lighten(0.01, theme.colors.background.app)};
 `
 
 export const MenuForm = styled.form``
@@ -84,10 +85,11 @@ export const MenuBody = styled.div`
 
 export const Overlay = styled.div`
   position: absolute !important;
-  top: 0.3rem !important;
-  left: 0.1rem !important;
+  top: 0 !important;
+  left: 0 !important;
   width: 100%;
-  height: 500px;
+  height: 31rem;
+  border-radius: ${(props) => props.theme.borderRadius.small};
   ${ModalOverlay};
   z-index: 1;
   background-color: ${({ theme }) => rgba(theme.colors.palette.black, 0.5)};
@@ -100,6 +102,7 @@ export const Overlay = styled.div`
 export const MenuTitle = styled.div`
   color: ${({ theme }) => theme.colors.text.heading};
   font-weight: bold;
+  ${Ellipsis};
   ${BodyFont};
 `
 
@@ -114,6 +117,6 @@ export const MenuContainer = styled(animated.div)`
   box-sizing: border-box;
   padding: ${({ theme }) => theme.spacing.medium} ${({ theme }) => theme.spacing.small};
   gap: ${({ theme }) => theme.spacing.medium};
-  height: 30rem;
-  min-height: 30rem;
+  height: 28rem;
+  min-height: 28rem;
 `
