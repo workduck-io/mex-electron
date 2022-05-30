@@ -19,6 +19,7 @@ export const MexIcon = styled(Icon)<{ margin?: string; noHover?: boolean }>`
     !noHover &&
     css`
       :hover {
+        cursor: pointer;
         background-color: ${(props) => props.theme.colors.background.card};
         border-radius: 5px;
       }

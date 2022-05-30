@@ -160,8 +160,8 @@ export const useActionStore = create<ActionStoreType>(
 
             const preActionId = action?.preActionId
 
-            const renderType = action.form ? ReturnType.NONE : action?.returnType
-            const subType: ActionSubType = action.form ? 'form' : undefined
+            const renderType = action?.form ? ReturnType.NONE : action?.returnType
+            const subType: ActionSubType = action?.form ? 'form' : undefined
 
             if (subType) useSpotlightAppStore.getState().setView('form')
 

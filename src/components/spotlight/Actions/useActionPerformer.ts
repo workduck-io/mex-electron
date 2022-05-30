@@ -79,7 +79,7 @@ export const useActionPerformer = () => {
     }
 
     // * Get Auth Config from local storage or else call API
-    const serviceType = actionConfig?.authTypeId?.split('_')?.[0]?.toLowerCase()
+    const serviceType = actionConfig?.actionGroupId?.toLowerCase()
     const configVal = options?.formData
       ? { ...prevActionValue?.value, formData: options.formData }
       : prevActionValue?.value

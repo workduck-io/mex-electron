@@ -5,18 +5,21 @@ import { useActionStore } from '../../Actions/useActionStore'
 import ActionInput from './Fields/ActionInput'
 import styled from 'styled-components'
 import { Controller, useFormContext } from 'react-hook-form'
+import { mog } from '@utils/lib/helper'
 
 export type FormSelectorProps = {
   element: FormField
   disabled?: boolean
   isMenuAction?: boolean
+  saveSelected?: boolean
+  defaultValue?: any
 }
 
 export const ActionSelector = styled(Selector)`
   max-width: 40vh;
 `
 
-const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAction }) => {
+const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAction, defaultValue, saveSelected }) => {
   const getCacheResult = useActionStore((store) => store.getCacheResult)
   const activeAction = useActionStore((store) => store.activeAction)
 
@@ -34,12 +37,16 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAc
   })
 
   const filterTags = (value) => {
-    const r = data?.filter((d) => value?.includes(d?.value?.select?.value))
-    return r
+    const result = data?.filter((d) => value?.includes(d?.value?.select?.value))
+    return result
   }
 
-  const getData = (value: string) => {
-    return data?.find((d) => d?.value?.select?.value === value)
+  const getData = (selectedValue: any) => {
+    const toMatch = saveSelected ? selectedValue?.value?.value : selectedValue
+
+    const result = data?.find((d) => d?.value?.select?.value === toMatch)
+    mog('RESULT', { result, data, toMatch, selectedValue })
+    return result
   }
 
   switch (element.type) {
@@ -49,6 +56,7 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAc
           name={element.key}
           control={control}
           key={element.key}
+          defaultValue={defaultValue}
           rules={{
             required: element.options.required
           }}
@@ -61,7 +69,7 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAc
               disabled={disabled}
               cacheSelection={!isMenuAction}
               value={getData(value)}
-              onChange={({ value }) => onChange(value?.select?.value)}
+              onChange={({ value }) => onChange(saveSelected ? value?.select : value?.select?.value)}
               placeholder={element.options.placeholder}
               actionGroupId={activeAction?.actionGroupId}
               actionId={element.actionId}
@@ -75,6 +83,7 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAc
           name={element.key}
           control={control}
           key={element.key}
+          defaultValue={defaultValue}
           rules={{
             required: element.options.required
           }}
@@ -99,6 +108,7 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAc
         <Controller
           name={element.key}
           control={control}
+          defaultValue={defaultValue}
           key={element.key}
           rules={{
             required: element.options.required

@@ -17,6 +17,7 @@ import { MexIcon } from '../../../style/Layouts'
 import tinykeys from 'tinykeys'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { mog } from '../../../utils/lib/helper'
+import GlobalSection from './GlobalSection'
 
 const ServiceContainer = styled(StyledEditor)``
 
@@ -49,10 +50,13 @@ const ServiceDescription = styled.p`
 const ActionGroupIcon = styled(CenteredFlex)`
   margin: 0 1rem;
 
+  ${Button} {
+    width: 100%;
+  }
+
   & > span {
-    /* background: ${({ theme }) => theme.colors.background.card}; */
-    padding: 1rem;
-    margin: 1rem 0;
+    padding: 1rem 2rem;
+    margin: 1rem 0 2rem;
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
 `
@@ -89,7 +93,7 @@ const FloatingIcon = styled.span`
 `
 
 const ActionsContainer = styled.section`
-  padding: 1rem;
+  padding: ${({ theme }) => theme.spacing.large};
   border-top: 1px solid ${({ theme }) => theme.colors.gray[7]};
   width: 100%;
   overflow: hidden auto;
@@ -153,6 +157,7 @@ const ServiceInfo = () => {
   const { params } = useRouting()
   const groupedActions = useActionStore((store) => store.groupedActions)
   const actionGroups = useActionStore((store) => store.actionGroups)
+  const initAction = useActionStore((store) => store.initAction)
   const { shortcutDisabled } = useKeyListener()
 
   const actionGroup = actionGroups[params?.actionGroupId]
@@ -168,6 +173,7 @@ const ServiceInfo = () => {
   const goBackToIntegrations = () => goTo(ROUTE_PATHS.integrations, NavigationType.replace)
 
   useEffect(() => {
+    initAction(params?.actionGroupId, actionGroup.globalActionId)
     const unsubscribe = tinykeys(window, {
       Escape: (event) => {
         event.preventDefault()
@@ -180,8 +186,10 @@ const ServiceInfo = () => {
     }
   }, [])
 
+  const isConnected = connectedGroups[params?.actionGroupId]
+
   mog(`ActionGroupId: ${params?.actionGroupId}`, {
-    c: connectedGroups[params?.actionGroupId],
+    c: isConnected,
     a: params?.actionGroupId
   })
 
@@ -203,15 +211,15 @@ const ServiceInfo = () => {
           <div>
             <ActionGroupIcon>
               <span>
-                <MexIcon color={theme.colors.primary} icon={actionGroup?.icon} height="10rem" width="10rem" />
+                <MexIcon noHover color={theme.colors.primary} icon={actionGroup?.icon} height="10rem" width="10rem" />
               </span>
+              <Button onClick={onConnectClick} disabled={isConnected}>
+                {isConnected ? 'Disconnect' : 'Connect'}
+              </Button>
             </ActionGroupIcon>
-            <GroupHeader connected={connectedGroups[params?.actionGroupId]}>
+            <GroupHeader connected={isConnected}>
               <FlexBetween>
                 <Title>{actionGroup?.name}</Title>
-                <Button onClick={onConnectClick} disabled={connectedGroups[params?.actionGroupId]}>
-                  {connectedGroups[params?.actionGroupId] ? 'Disconnect' : 'Connect'}
-                </Button>
               </FlexBetween>
               <ServiceDescription>
                 {actionGroup?.description ??
@@ -224,6 +232,9 @@ const ServiceInfo = () => {
               </ServiceDescription>
             </GroupHeader>
           </div>
+          {isConnected && actionGroup.globalActionId && (
+            <GlobalSection globalId={actionGroup.globalActionId} actionGroupId={params?.actionGroupId} />
+          )}
           <ActionsContainer>
             <header>What you can do? </header>
             {Object.values(groupedActions?.[params?.actionGroupId] ?? {}).map((action) => (
