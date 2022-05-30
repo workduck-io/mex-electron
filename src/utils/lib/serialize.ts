@@ -2,6 +2,7 @@
 
 import { useAuthStore } from '@services/auth/useAuth'
 import { generateTempId } from '../../data/Defaults/idPrefixes'
+import { mog } from './helper'
 import { extractMetadata } from './metadata'
 
 // const ElementsWithProperties = [ELEMENT_PARAGRAPH]
@@ -93,20 +94,23 @@ export const serializeSpecial: { [elementType: string]: (element: any, nodeid: s
         elementType: 'blockILink',
         blockID: el.blockId,
         blockAlias: el.blockValue,
-        nodeID: nodeid,
+        nodeID: el.value,
+        id: el.id ?? generateTempId(),
         workspaceID: workspaceDetails.id
       }
     else
       return {
         elementType: 'nodeILink',
-        nodeID: nodeid,
+        nodeID: el.value,
+        id: el.id ?? generateTempId(),
         workspaceID: workspaceDetails.id
       }
   },
   a: (el: any, nodeid: string) => {
     return {
       elementType: 'webLink',
-      url: el.url
+      url: el.url,
+      id: el.id ?? generateTempId()
     }
   }
 }
@@ -115,7 +119,9 @@ export const deserializeSpecial: { [elementType: string]: (element: any) => any 
   nodeILink: (el: any) => {
     return {
       type: 'ilink',
-      value: el.nodeID
+      value: el.nodeID,
+      id: el.id,
+      children: [{ text: '', id: generateTempId() }]
     }
   },
   blockILink: (el: any) => {
@@ -123,13 +129,19 @@ export const deserializeSpecial: { [elementType: string]: (element: any) => any 
       type: 'ilink',
       value: el.nodeID,
       blockId: el.blockID,
-      blockValue: el.blockAlias
+      blockValue: el.blockAlias,
+      id: el.id,
+
+      children: [{ text: '', id: generateTempId() }]
     }
   },
   webLink: (el: any) => {
     return {
       type: 'a',
-      url: el.url
+      url: el.url,
+      id: el.id,
+
+      children: [{ text: '', id: generateTempId() }]
     }
   }
 }
@@ -137,8 +149,10 @@ export const deserializeSpecial: { [elementType: string]: (element: any) => any 
 // From API to content
 export const deserializeContent = (sanatizedContent: any[]) => {
   return sanatizedContent.map((el) => {
-    if (Object.keys(deserializeSpecial).includes(el.type)) {
-      return deserializeSpecial[el.type](el)
+    if (Object.keys(deserializeSpecial).includes(el.elementType)) {
+      const dEl = deserializeSpecial[el.elementType](el)
+      mog('deserialized', { el, dEl })
+      return dEl
     }
     const nl: any = {}
 
