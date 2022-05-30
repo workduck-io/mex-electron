@@ -123,11 +123,17 @@ export const useSnippetBuffer = () => {
     if (Object.keys(buffer).length > 0) {
       const saved = Object.entries(buffer)
         .map(([snippetId, val]) => {
-          updateSnippetContent(snippetId, val.content, val.title, val.isTemplate)
           const snippet = getSnippet(snippetId)
+          // updateSnippetContent(snippetId, val.content ?? snippet.content, val.title ?? snippet.title, val.isTemplate)
           mog('snipppet', { snippetId, val, buffer })
           // TODO: Switch snippet to template index
-          if (snippet) updateSnippetIndex({ ...snippet, content: val.content, title: val.title })
+          if (snippet)
+            updateSnippetIndex({
+              ...snippet,
+              content: val.content ?? snippet.content,
+              isTemplate: val.isTemplate ?? snippet.isTemplate,
+              title: val.title ?? snippet.title
+            })
           return true
         })
         .reduce((acc, cur) => acc || cur, false)

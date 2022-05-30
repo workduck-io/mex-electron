@@ -61,9 +61,9 @@ export const useSnippetStore = create<SnippetStore>((set, get) => ({
     const snippets = get().snippets.map((s) => {
       if (s.id === id) {
         if (isTemplate !== undefined) {
-          return { ...s, content, isTemplate, title }
+          return { ...s, content, isTemplate, title: title ?? s.title }
         }
-        return { ...s, content, title }
+        return { ...s, content: content ?? s.content, title: title ?? s.title }
       }
       return s
     })
