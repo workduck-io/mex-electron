@@ -151,7 +151,6 @@ export const deserializeContent = (sanatizedContent: any[]) => {
   return sanatizedContent.map((el) => {
     if (Object.keys(deserializeSpecial).includes(el.elementType)) {
       const dEl = deserializeSpecial[el.elementType](el)
-      mog('deserialized', { el, dEl })
       return dEl
     }
     const nl: any = {}
