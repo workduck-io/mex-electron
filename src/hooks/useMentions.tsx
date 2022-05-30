@@ -80,7 +80,7 @@ export const useMentions = () => {
   }
 
   const addMentionable = (alias: string, email: string, userid: string, nodeid: string, access: AccessLevel) => {
-    if (userid === localUserDetails.userId) {
+    if (userid === localUserDetails.userID) {
       mog('Not adding mentionable user as it is the current user', { userid })
       return
     }

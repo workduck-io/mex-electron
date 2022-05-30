@@ -147,7 +147,6 @@ const Register = () => {
                 label="Alias"
                 inputProps={{
                   placeholder: 'Ex: CoolGuy',
-                  autoFocus: true,
                   ...registerForm.register('alias', {
                     required: true,
                     pattern: ALIAS_REG

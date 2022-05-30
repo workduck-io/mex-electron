@@ -23,7 +23,7 @@ export const InviteModalContent = () => {
   const data = useShareModalStore((state) => state.data)
   const closeModal = useShareModalStore((state) => state.closeModal)
   const { getUserDetails } = useUserService()
-  const localUserDetails = useAuthStore((s) => s.userDetails)
+  const currentUserDetails = useAuthStore((s) => s.userDetails)
   const node = useEditorStore((state) => state.node)
   const { inviteUser, addMentionable, saveMentionData } = useMentions()
   const { grantUsersPermission } = usePermission()
@@ -52,14 +52,14 @@ export const InviteModalContent = () => {
 
       if (details.userID !== undefined) {
         // Give permission here
-        if (details.userID === localUserDetails.userId) {
+        if (details.userID === currentUserDetails.userID) {
           toast("Can't Invite Yourself")
           closeModal()
           return
         }
         const resp = await grantUsersPermission(node.nodeid, [details.userID], access)
         mog('UserPermission given', { details, resp })
-        addMentionable(data.alias, data.email, details.userID, node.nodeid, access)
+        addMentionable(details.alias, data.email, details.userID, node.nodeid, access)
         replaceUserMention(editor, data.alias, details.userID)
         toast(`Shared with: ${data.email}`)
       } else {

@@ -58,7 +58,7 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
         .reduce((p, c) => {
           return [...p, c.value.userID]
         }, [])
-        .filter((u) => u !== localuserDetails.userId)
+        .filter((u) => u !== localuserDetails.userID)
 
       // Only share with users registered,
       if (givePermToExisting.length > 0) {
@@ -69,7 +69,7 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
       existing.forEach((u) => {
         addMentionable({
           type: 'mentionable',
-          alias: getEmailStart(u?.value?.email),
+          alias: u?.value?.alias ?? '',
           email: u?.value?.email,
           userid: u?.value?.userID,
           access: {

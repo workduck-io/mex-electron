@@ -77,6 +77,14 @@ export const ShareAlias = styled.td<{ hasChanged?: boolean }>`
   padding: ${({ theme }) => theme.spacing.small};
 `
 
+export const ShareProfileImage = styled.td`
+  padding: ${({ theme }) => theme.spacing.small};
+  svg,
+  img {
+    border-radius: ${({ theme }) => theme.borderRadius.small};
+  }
+`
+
 export const ShareAliasInput = styled.input`
   background: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
   border: none;

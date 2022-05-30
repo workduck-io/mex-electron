@@ -63,7 +63,7 @@ export const useFetchShareData = () => {
     )
       .filter((p) => p.status === 'fulfilled')
       .map((p: any) => p.value as MUsersRaw)
-      .filter((u) => u.userid !== userDetails?.userId)
+      .filter((u) => u.userid !== userDetails?.userID)
 
     mentionableU.forEach((u) => addMentionable(getEmailStart(u.email), u.email, u.userid, u.nodeid, u.access))
 

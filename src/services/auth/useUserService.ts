@@ -3,14 +3,14 @@ import { useUserCacheStore } from '@store/useUserCacheStore'
 import { mog } from '@utils/lib/helper'
 import { client } from '@workduck-io/dwindle'
 
-interface TempUser {
+export interface TempUser {
   email: string
   userID?: string
   alias?: string
   name?: string
 }
 
-interface TempUserUserID {
+export interface TempUserUserID {
   userID: string
   email?: string
   alias?: string

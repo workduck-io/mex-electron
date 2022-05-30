@@ -22,15 +22,19 @@ import {
   ShareRowAction,
   ShareRow,
   ShareRowHeading,
-  ShareRowActionsWrapper
+  ShareRowActionsWrapper,
+  ShareProfileImage
 } from './ShareModal.styles'
 import { useShareModalStore } from './ShareModalStore'
+import { useAuthStore } from '@services/auth/useAuth'
+import { ProfileImage } from '../User/ProfileImage'
 
 export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
   const closeModal = useShareModalStore((s) => s.closeModal)
   const { getSharedUsersForNode, getInvitedUsersForNode, applyChangesMentionable } = useMentions()
   const mentionable = useMentionStore((s) => s.mentionable)
   const node = useEditorStore((state) => state.node)
+  const currentUserDetails = useAuthStore((s) => s.userDetails)
   const changedUsers = useShareModalStore((state) => state.data.changedUsers)
   const setChangedUsers = useShareModalStore((state) => state.setChangedUsers)
   const { changeUserPermission, revokeUserAccess } = usePermission()
@@ -209,6 +213,7 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
             <caption>Users with access to this note</caption>
             <ShareRowHeading>
               <tr>
+                <td></td>
                 <td>Alias</td>
                 <td>Email</td>
                 <td>Permission</td>
@@ -220,15 +225,20 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
               const access = user.access[node.nodeid]
               const hasChanged = changedUsers.find((u) => u.userid === user.userid)
               const isRevoked = !!hasChanged && hasChanged.change.includes('revoke')
+              const isCurrent = user.userid === currentUserDetails.userID
               return (
                 <ShareRow hasChanged={!!hasChanged} key={`${user.userid}`} isRevoked={isRevoked}>
+                  <ShareProfileImage>
+                    <ProfileImage email={user.email} size={24} />
+                  </ShareProfileImage>
                   <ShareAlias hasChanged={!!hasChanged}>
-                    <ShareAliasInput
+                    {/*<ShareAliasInput
                       type="text"
-                      disabled={readOnly}
-                      defaultValue={user.alias}
+                      disabled={true}
+                      defaultValue={`${user.alias}${isCurrent ? ' (you)' : ''}`}
                       onChange={(e) => onAliasChange(user.userid, e.target.value)}
-                    />
+                    /> */}
+                    {`${user.alias}${isCurrent ? ' (you)' : ''}`}
                   </ShareAlias>
                   <ShareEmail>{user.email}</ShareEmail>
 

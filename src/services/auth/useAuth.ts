@@ -20,7 +20,9 @@ import { useLayoutStore } from '@store/useLayoutStore'
 
 interface UserDetails {
   email: string
-  userId?: string
+  userID: string
+  name: string
+  alias: string
 }
 
 interface WorkspaceDetails {
@@ -107,7 +109,7 @@ export const useAuthentication = () => {
       authDetails = await client
         .get(apiURLs.getUserRecords)
         .then(async (d) => {
-          const userDetails = { email }
+          const userDetails = { email, alias: d.data.alias, userID: d.data.id, name: d.data.name }
           const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
           initActionPerfomerClient(workspaceDetails.id)
 
@@ -118,7 +120,7 @@ export const useAuthentication = () => {
             setShowLoader(false)
             mog('Unable to init action groups into view', { err })
           }
-          // mog('UserDetails', { userDetails })
+          mog('UserDetails', { userDetails, d, data: d.data })
           // getNodesByWorkspace(workspaceDetails.id)
           // Set Authenticated, user and workspace details
 
@@ -167,6 +169,14 @@ export const useAuthentication = () => {
             /**
              * If workspaceId is not present then we calling the register endpoint of the backend
              */
+            const userDetails = {
+              email: result.userCred.email,
+              userID: result.userCred.userId,
+              alias: '__unset',
+              name: '__unset'
+            }
+            const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
+            initActionPerfomerClient(workspaceDetails.id)
             setShowLoader(true)
             if (!d.data.group) {
               await registerUserForGoogle(result)
@@ -178,7 +188,8 @@ export const useAuthentication = () => {
               const userDetails = {
                 email: result.userCred.email,
                 name: result.userCred.name,
-                userId: result.userCred.userId
+                userID: result.userCred.userId,
+                alias: result.userCred.alias
               }
               const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
               initActionPerfomerClient(workspaceDetails.id)
@@ -254,7 +265,7 @@ export const useAuthentication = () => {
           // setShowLoader(false)
           mog('Error: ', { error: JSON.stringify(error) })
         }
-        const userDetails = { email: uCred.email, userId: uCred.userId }
+        const userDetails = { email: uCred.email, userID: uCred.userId, name: result.name, alias: result.alias }
         const workspaceDetails = { id: d.data.id, name: 'WORKSPACE_NAME' }
         mog('Register Google BIG success', { d, userDetails, workspaceDetails })
 
@@ -321,6 +332,7 @@ export const useAuthentication = () => {
     const formMetaData = {
       ...metadata,
       name: sensitiveData.name,
+      alias: sensitiveData.alias,
       email: sensitiveData.email,
       roles: sensitiveData.roles.reduce((prev, cur) => `${prev},${cur.value}`, '').slice(1)
     }
@@ -360,7 +372,12 @@ export const useAuthentication = () => {
       .then(async (d: any) => {
         // console.log(d.data)
         // Set workspace details
-        const userDetails = { email: uCred.email }
+        const userDetails = {
+          email: uCred.email,
+          userID: uCred.userId,
+          name: sensitiveData.name,
+          alias: sensitiveData.alias
+        }
         const workspaceDetails = { id: newWorkspaceName, name: 'WORKSPACE_NAME' }
         initActionPerfomerClient(newWorkspaceName)
 
@@ -372,8 +389,7 @@ export const useAuthentication = () => {
         }
 
         ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
-        setAuthenticated({ email: sensitiveData.email, userId: uCred.userId }, { id: d.data.id, name: d.data.name })
-        setShowLoader(false)
+        setAuthenticated(userDetails, { id: d.data.id, name: d.data.name })
       })
       .then(updateDefaultServices)
       .then(updateServices)
