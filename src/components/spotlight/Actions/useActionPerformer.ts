@@ -129,8 +129,8 @@ export const useActionPerformer = () => {
     return undefined
   }
 
-  const initActionPerfomerClient = (workspaceId: string) => {
-    if (workspaceId) actionPerformer.setWorkspaceId(workspaceId)
+  const initActionPerfomerClient = (userId: string) => {
+    if (userId) actionPerformer.setUserId(userId)
   }
 
   const isPerformer = (actionId: string, option?: { isMenuAction?: boolean }) => {

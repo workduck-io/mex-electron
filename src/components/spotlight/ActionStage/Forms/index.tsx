@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { FormData } from '@workduck-io/action-request-helper'
+import { FormParams } from '@workduck-io/action-request-helper'
 import { ActionSubType, useActionStore } from '../../Actions/useActionStore'
 import ActionFormElement from './Fields/ActionFormElement'
 import FormSelector from './FormSelector'
@@ -16,12 +16,12 @@ export type ActionFormProps = {
   subType: ActionSubType
 }
 
-const groupRows = (data: FormData) => {
+const groupRows = (data: FormParams) => {
   return groupBy(data, (n) => n.options.row)
 }
 
 type ActionRowRendererProps = {
-  row: FormData
+  row: FormParams
   disabled?: boolean
 }
 
