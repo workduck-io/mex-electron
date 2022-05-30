@@ -27,6 +27,7 @@ import useMultiComboboxOnKeyDown from '../Components/multi-combobox/useMultiComb
 import { SlashComboboxItem } from '../Components/SlashCommands/SlashComboboxItem'
 import { TagComboboxItem } from '../Components/tag/components/TagComboboxItem'
 import { ELEMENT_TAG } from '../Components/tag/defaults'
+import { useAuthStore } from '../../services/auth/useAuth'
 
 const useEditorPluginConfig = (editorId: string) => {
   const tags = useDataStore((state) => state.tags)
@@ -39,6 +40,7 @@ const useEditorPluginConfig = (editorId: string) => {
   const mentionable = useMentionStore((state) => state.mentionable)
   const invitedUsers = useMentionStore((state) => state.invitedUsers)
   const prefillShareModal = useShareModalStore((state) => state.prefillModal)
+  const userDetails = useAuthStore((state) => state.userDetails)
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
@@ -138,24 +140,32 @@ const useEditorPluginConfig = (editorId: string) => {
     ...slashInternals.map((l) => ({ ...l, value: l.command, text: l.text, type: l.type }))
   ]
 
-
   const mentions = useMemo(
-    () => [
-      ...mentionable.map((m) => ({
-        value: m.userID,
-        text: m.alias,
-        icon: 'ri:user-line',
-        type: QuickLinkType.mentions
-      })),
-      ...invitedUsers.map((m) => ({
-        value: m.alias,
-        text: m.alias,
-        icon: 'ri:user-line',
-        type: QuickLinkType.mentions,
-        additional: { email: m.email }
-      }))
-    ],
-    [mentionable, invitedUsers]
+    () =>
+      userDetails
+        ? [
+            {
+              value: userDetails.userID,
+              text: `${userDetails.alias} (you)`,
+              icon: 'ri:user-line',
+              type: QuickLinkType.mentions
+            },
+            ...mentionable.map((m) => ({
+              value: m.userID,
+              text: m.alias,
+              icon: 'ri:user-line',
+              type: QuickLinkType.mentions
+            })),
+            ...invitedUsers.map((m) => ({
+              value: m.alias,
+              text: m.alias,
+              icon: 'ri:user-line',
+              type: QuickLinkType.mentions,
+              additional: { email: m.email }
+            }))
+          ]
+        : [],
+    [mentionable, invitedUsers, userDetails]
   )
 
   const comboConfigData: ComboConfigData = {

@@ -31,14 +31,14 @@ const MentionTooltipComponent = ({ user, access, nodeid }: MentionTooltipProps) 
   const onAccessChange = async (val: any) => {
     mog('Val', val)
     // TODO: Extract new permission from Val
-    if (user.type === 'self') {
+    if (user?.type === 'self') {
       toast('Changing your own permission is not allowed')
     }
-    if (user.type === 'mentionable') {
+    if (user?.type === 'mentionable') {
       // Grant permission via api
       const resp = await changeUserPermission(nodeid, { [user.userID]: access }) // Use new permission instead of acces here
     }
-    addAccess(user.email, nodeid, access)
+    addAccess(user?.email, nodeid, access)
   }
   return (
     <MentionTooltip>
@@ -118,10 +118,10 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
     [selected, focused]
   )
 
-  // mog('MentionElement', { user, access, node, elementEmail: element?.email })
+  mog('MentionElement', { user, access, node, elementEmail: element?.email })
 
   return (
-    <SMentionRoot {...attributes} type={user.type} data-slate-value={element.value} contentEditable={false}>
+    <SMentionRoot {...attributes} type={user?.type} data-slate-value={element.value} contentEditable={false}>
       <Tippy
         delay={100}
         // interactiveDebounce={100}
@@ -130,7 +130,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
         appendTo={() => document.body}
         render={(attrs) => <MentionTooltipComponent user={user} nodeid={node.nodeid} access={access} />}
       >
-        <SMention {...onClickProps} type={user.type} selected={selected}>
+        <SMention {...onClickProps} type={user?.type} selected={selected}>
           <Username>@{user?.alias ?? element.value}</Username>
         </SMention>
       </Tippy>
