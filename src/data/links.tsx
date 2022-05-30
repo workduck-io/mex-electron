@@ -2,7 +2,6 @@ import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
 import checkboxLine from '@iconify/icons-ri/checkbox-line'
 import fileDocument from '@iconify/icons-gg/file-document'
 import appsLine from '@iconify/icons-ri/apps-line'
-import actionIcon from '@iconify/icons-ri/cursor-line'
 
 import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import searchLine from '@iconify/icons-ri/search-line'
@@ -95,7 +94,7 @@ const useNavlinks = () => {
       },
 
       {
-        title: 'Flows',
+        title: 'Integrations',
         path: ROUTE_PATHS.integrations,
         shortcut: shortcuts.showIntegrations.keystrokes,
         icon: GetIcon(appsLine)

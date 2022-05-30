@@ -107,6 +107,7 @@ const useActions = () => {
   // * For Integrations page, check for Authorized action groups
   const getAuthorizedGroups = async (forceUpdate?: boolean) => {
     const groupsAuth = await actionPerformer?.getAllAuths(forceUpdate)
+
     const actionGroups = useActionStore.getState().actionGroups
     const connected = useActionStore.getState().connectedGroups
     const connectedGroups = { ...connected }
