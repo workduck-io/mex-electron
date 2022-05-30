@@ -23,7 +23,7 @@ export const WORKDUCK_API_BASE = 'https://http.workduck.io'
 export const CDN_BASE = 'https://cdn.workduck.io'
 
 // export const ACTION_ENV = IS_DEV ? 'test' : 'prod'
-export const ACTION_ENV = 'test'
+export const ACTION_ENV = 'local'
 
 export const GOOGLE_OAUTH_URL = `${MEXIT_FRONTEND_BASE_URL}/oauth/desktop`
 export const GOOGLE_CAL_BASE = 'https://www.googleapis.com/calendar/v3/calendars'

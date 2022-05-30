@@ -8,11 +8,13 @@ import { mog } from '@utils/lib/helper'
 import { LoadingButton } from '@components/mex/Buttons/LoadingButton'
 import { Icon } from '@iconify/react'
 import { LOCALSTORAGE_NAMESPACES } from '@workduck-io/action-request-helper'
+import { useTheme } from 'styled-components'
 
 const GlobalSection: React.FC<{ globalId: string; actionGroupId: string }> = ({ actionGroupId, globalId }) => {
   const [isEdit, setIsEdit] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const formMethods = useForm()
+  const theme = useTheme()
   const { getConfig } = useActionPerformer()
 
   const globalConfig = useMemo(() => getConfig(actionGroupId, globalId), [globalId])
@@ -65,9 +67,11 @@ const GlobalSection: React.FC<{ globalId: string; actionGroupId: string }> = ({ 
     return globalIds
   }, [globalId])
 
+  const title = `Connect${globalIdsCache ? 'ed' : ''} with `
+
   return (
     <GlobalSectionContainer>
-      <div>Connect with</div>
+      <div>{title}</div>
       <FormProvider {...formMethods}>
         <GlobalSectionHeader>
           {globalConfig?.form?.map((field) => {
@@ -87,7 +91,11 @@ const GlobalSection: React.FC<{ globalId: string; actionGroupId: string }> = ({ 
           })}
         </GlobalSectionHeader>
         <LoadingButton dots={2} loading={isSubmitting} buttonProps={{ onClick, transparent: true }}>
-          <Icon width={24} icon={isEdit ? 'teenyicons:tick-circle-solid' : 'clarity:note-edit-solid'} />
+          <Icon
+            color={theme.colors.primary}
+            width={20}
+            icon={isEdit ? 'teenyicons:tick-circle-solid' : 'clarity:note-edit-solid'}
+          />
         </LoadingButton>
       </FormProvider>
     </GlobalSectionContainer>

@@ -45,7 +45,9 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAc
     const toMatch = saveSelected ? selectedValue?.value?.value : selectedValue
 
     const result = data?.find((d) => d?.value?.select?.value === toMatch)
-    mog('RESULT', { result, data, toMatch, selectedValue })
+
+    if (!result) return selectedValue
+
     return result
   }
 
@@ -67,9 +69,14 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAc
               data={data}
               isList={isMenuAction}
               disabled={disabled}
+              defaultValue={defaultValue}
               cacheSelection={!isMenuAction}
               value={getData(value)}
-              onChange={({ value }) => onChange(saveSelected ? value?.select : value?.select?.value)}
+              onChange={({ value }) => {
+                mog(' value of something is here', { value })
+
+                return onChange(saveSelected ? value?.select : value?.select?.value)
+              }}
               placeholder={element.options.placeholder}
               actionGroupId={activeAction?.actionGroupId}
               actionId={element.actionId}

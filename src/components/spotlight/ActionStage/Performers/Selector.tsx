@@ -20,6 +20,7 @@ type SelectedProps = {
   disabled?: boolean
   actionId: string
   isList?: boolean
+  defaultValue?: any
   onChange?: any
   placeholder?: string
   error?: any
@@ -52,8 +53,10 @@ export const CustomOption: React.FC<any> = ({ children, ...props }) => {
 }
 
 export const SingleValue: React.FC<any> = ({ children, ...props }) => {
-  const icon = props?.data?.value?.select?.icon
-  const color = props?.data?.value?.select?.color
+  const selected = props?.data?.value?.select
+
+  const icon = selected?.icon || props?.data?.icon
+  const color = selected?.color || props?.data?.color
 
   const { mexIcon } = getIconType(icon ?? 'codicon:circle-filled')
   const theme = useTheme()
@@ -109,13 +112,14 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     actionGroupId,
     data,
     value,
+    defaultValue,
     isMulti
   } = props
 
   const setIsMenuOpen = useSpotlightAppStore((store) => store.setIsMenuOpen)
   const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
     data: [],
-    value: null
+    value: defaultValue
   })
 
   useEffect(() => {
@@ -147,7 +151,8 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
         const result = res?.contextData
         const data = resToDisplay(result)
 
-        setInputValue({ data, value: null })
+        mog('Setting value to null', { defaultValue, value })
+        setInputValue({ data, value: defaultValue || null })
       })
     }
   }, [actionId, actionGroupId, prevSelection])
