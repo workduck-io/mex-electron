@@ -1,4 +1,4 @@
-import IconButton, { Button } from '@style/Buttons'
+import { Button } from '@style/Buttons'
 import { SelectWrapper } from '@style/Form'
 import { Title } from '@style/Typography'
 import { transparentize } from 'polished'
@@ -83,6 +83,14 @@ export const ShareProfileImage = styled.td`
   img {
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
+`
+
+export const ShareOwnerTag = styled.div`
+  padding: ${({ theme }) => `0.75rem ${theme.spacing.small}`};
+  color: ${({ theme }) => theme.colors.text.default};
+  border-radius: ${({ theme }) => theme.borderRadius.tiny};
+  background: ${({ theme }) => theme.colors.gray[8]};
+  border: 1px solid ${({ theme }) => transparentize(0.5, theme.colors.gray[6])};
 `
 
 export const ShareAliasInput = styled.input`

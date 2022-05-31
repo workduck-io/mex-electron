@@ -150,12 +150,14 @@ const useEditorPluginConfig = (editorId: string) => {
               icon: 'ri:user-line',
               type: QuickLinkType.mentions
             },
-            ...mentionable.map((m) => ({
-              value: m.userID,
-              text: m.alias,
-              icon: 'ri:user-line',
-              type: QuickLinkType.mentions
-            })),
+            ...mentionable
+              .filter((m) => m.userID !== userDetails.userID)
+              .map((m) => ({
+                value: m.userID,
+                text: m.alias,
+                icon: 'ri:user-line',
+                type: QuickLinkType.mentions
+              })),
             ...invitedUsers.map((m) => ({
               value: m.alias,
               text: m.alias,

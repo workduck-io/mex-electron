@@ -23,7 +23,8 @@ import {
   ShareRow,
   ShareRowHeading,
   ShareRowActionsWrapper,
-  ShareProfileImage
+  ShareProfileImage,
+  ShareOwnerTag
 } from './ShareModal.styles'
 import { useShareModalStore } from './ShareModalStore'
 import { useAuthStore } from '@services/auth/useAuth'
@@ -243,13 +244,17 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
                   <ShareEmail>{user.email}</ShareEmail>
 
                   <SharePermission disabled={readOnly}>
-                    <StyledCreatatbleSelect
-                      onChange={(access) => onPermissionChange(user.userID, access.value)}
-                      defaultValue={getAccessValue(access) ?? DefaultPermissionValue}
-                      options={permissionOptions}
-                      closeMenuOnSelect={true}
-                      closeMenuOnBlur={true}
-                    />
+                    {user.access[node.nodeid] === 'OWNER' ? (
+                      <ShareOwnerTag>Owner</ShareOwnerTag>
+                    ) : (
+                      <StyledCreatatbleSelect
+                        onChange={(access) => onPermissionChange(user.userID, access.value)}
+                        defaultValue={getAccessValue(access) ?? DefaultPermissionValue}
+                        options={permissionOptions}
+                        closeMenuOnSelect={true}
+                        closeMenuOnBlur={true}
+                      />
+                    )}
                   </SharePermission>
                   <ShareRowAction>
                     <ShareRowActionsWrapper>

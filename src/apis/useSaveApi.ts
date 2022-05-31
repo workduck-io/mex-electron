@@ -132,7 +132,9 @@ export const useApi = () => {
         // console.log(metadata, d.data)
         return { data: d.data.data, metadata: removeNulls(metadata), version: d.data.version ?? undefined }
       })
-      .catch(console.error)
+      .catch((e) => {
+        console.error(`MexError: Fetching nodeid ${nodeid} failed with: `, e)
+      })
 
     if (res) {
       return { content: deserializeContent(res.data), metadata: res.metadata ?? undefined, version: res.version }
