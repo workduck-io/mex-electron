@@ -171,6 +171,7 @@ function NodeSelect({
   const getQuickLinks = () => {
     const ilinks = useDataStore.getState().ilinks
     const snippets = useSnippetStore.getState().snippets
+    const sharedNodes = useDataStore.getState().sharedNodes
 
     // if (!disallowReserved) {
     //   return ilinks.map((l) => makeQuickLink(l.path, { nodeid: l.nodeid, icon: l.icon }))
@@ -180,13 +181,15 @@ function NodeSelect({
 
     const mLinks = fLinks.map((l) => makeQuickLink(l.path, { nodeid: l.nodeid, icon: l.icon }))
 
+    const sLinks = sharedNodes.map((l) => makeQuickLink(l.path, { nodeid: l.nodeid, icon: 'ri:share-line' }))
+
     if (!showAll) return mLinks
 
     const mSnippets = snippets.map((s) =>
       makeQuickLink(s.title, { nodeid: s.id, type: QuickLinkType.snippet, icon: s.icon })
     )
 
-    return [...mLinks, ...mSnippets]
+    return [...mLinks, ...sLinks, ...mSnippets]
   }
 
   const reset = () =>
