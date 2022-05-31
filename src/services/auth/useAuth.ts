@@ -20,6 +20,7 @@ import { useLayoutStore } from '@store/useLayoutStore'
 
 import { useActionPerformer } from '../../components/spotlight/Actions/useActionPerformer'
 import { UserDetails } from '../../types/auth'
+import { useUserCacheStore } from '@store/useUserCacheStore'
 
 interface WorkspaceDetails {
   name: string
@@ -74,6 +75,7 @@ export const useAuthentication = () => {
   const clearActionCache = useActionsCache((store) => store.clearActionCache)
   const { signIn, signUp, verifySignUp, signOut, googleSignIn, refreshToken } = useAuth()
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
+  const addUser = useUserCacheStore((s) => s.addUser)
   const { clearActionStore, getGroupsToView } = useActions()
   const { initActionPerfomerClient } = useActionsPerfomerClient()
   const setShowLoader = useLayoutStore((store) => store.setShowLoader)
@@ -133,6 +135,13 @@ export const useAuthentication = () => {
           })
           setShowLoader(false)
           addEventProperties({ [CustomEvents.LOGGED_IN]: true })
+
+          addUser({
+            userID: userDetails.userID,
+            email: userDetails.email,
+            name: userDetails.name,
+            alias: userDetails.alias
+          })
           return { userDetails, workspaceDetails }
         })
         // .then(updateDefaultServices)
@@ -385,6 +394,12 @@ export const useAuthentication = () => {
         }
 
         ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
+        addUser({
+          userID: userDetails.userID,
+          email: userDetails.email,
+          name: userDetails.name,
+          alias: userDetails.alias
+        })
         setAuthenticated(userDetails, { id: d.data.id, name: d.data.name })
         setShowLoader(false)
       })

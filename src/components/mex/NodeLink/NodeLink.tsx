@@ -76,7 +76,7 @@ const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
         key={`NodeLink_${keyStr}`}
         {...onClickProps}
       >
-        {getPathFromNodeid(nodeid)}
+        {getPathFromNodeid(nodeid, true)}
       </NodeLinkStyled>
     </EditorPreview>
   )

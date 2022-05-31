@@ -47,6 +47,8 @@ export const useMentions = () => {
   const grantUserAccessOnMention = async (alias: string, nodeid: string, access: AccessLevel = DefaultPermission) => {
     const invitedUsers = useMentionStore.getState().invitedUsers
     const mentionable = useMentionStore.getState().mentionable
+    const currentUserDetails = useAuthStore.getState().userDetails
+
     const invitedExists = invitedUsers.find((user) => user.alias === alias)
     const mentionExists = mentionable.find((user) => user.alias === alias)
 
@@ -62,6 +64,8 @@ export const useMentions = () => {
       setInvited([...invitedUsers.filter((user) => user.alias !== alias), newInvited])
       return newInvited
     } else if (!invitedExists && mentionExists) {
+      // Don't give permission to current user
+      if (currentUserDetails.userID === mentionExists.userID) return
       // We know it is guaranteed to be mentionable
       // Call backend and give permission
       const res = await grantUsersPermission(nodeid, [mentionExists.userID], access)

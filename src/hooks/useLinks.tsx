@@ -208,11 +208,17 @@ export const useLinks = () => {
     if (link) return link.path
   }
 
-  const getPathFromNodeid = (nodeid: string) => {
+  const getPathFromNodeid = (nodeid: string, includeShared = false) => {
     const links = useDataStore.getState().ilinks
 
     const link = links.find((l) => l.nodeid === nodeid)
     if (link) return link.path
+
+    if (includeShared) {
+      const shared = useDataStore.getState().sharedNodes
+      const sharedLink = shared.find((l) => l.nodeid === nodeid)
+      if (sharedLink) return sharedLink.path
+    }
   }
 
   const getNodeTitleSave = (nodeid: string) => {
