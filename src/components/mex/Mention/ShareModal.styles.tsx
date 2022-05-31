@@ -117,7 +117,7 @@ export const ShareEmail = styled.td`
 export const SharePermission = styled.td<{ disabled?: boolean }>`
   width: 120px;
 
-  ${(disabled) =>
+  ${({ disabled }) =>
     disabled &&
     css`
       pointer-events: none;
