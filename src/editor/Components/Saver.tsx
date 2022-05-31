@@ -23,6 +23,7 @@ import IconButton from '@style/Buttons'
 import { getTodosFromContent } from '@utils/lib/content'
 import { mog } from '@utils/lib/helper'
 import { getEventNameFromElement } from '@utils/lib/strings'
+import { useNodes } from '@hooks/useNodes'
 
 interface SaveEditorValueOptions {
   // If not set, defaults to true
@@ -90,6 +91,7 @@ export const useDataSaverFromContent = () => {
 
 export const useSaver = () => {
   const { saveData } = useSaveData()
+  const { isSharedNode } = useNodes()
 
   // const editorState = usePlateSelectors(usePlateId()).value(
 
@@ -113,10 +115,11 @@ export const useSaver = () => {
     // * Editor Id is different from nodeId
     const editorId = getPlateId()
     const hasState = !!state[editorId]
+    const isShared = isSharedNode(cnode.nodeid)
 
     if (hasState || content) {
       const editorState = content ?? state[editorId].get.value()
-      saveEditorValueAndUpdateStores(cnode.nodeid, editorState)
+      saveEditorValueAndUpdateStores(cnode.nodeid, editorState, { isShared })
     }
 
     if (writeToFile !== false) {
