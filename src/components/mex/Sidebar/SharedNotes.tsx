@@ -1,8 +1,5 @@
 import { SharedNodeIcon } from '@components/icons/Icons'
-import { Icon } from '@iconify/react'
 import { useEditorStore } from '@store/useEditorStore'
-import { mog } from '@utils/lib/helper'
-import { DefaultNodeIcon, getNodeIcon } from '@utils/lib/icons'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '../../../hooks/useNavigation'
