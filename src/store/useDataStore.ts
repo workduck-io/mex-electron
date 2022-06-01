@@ -53,6 +53,10 @@ const useDataStore = create<DataStoreState>((set, get) => ({
     })
   },
 
+  setTags: (tags) => {
+    set({ tags })
+  },
+
   /*
    * Add a new ILink to the store
    * ## Rules

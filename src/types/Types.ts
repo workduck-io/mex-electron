@@ -96,6 +96,7 @@ export interface DataStoreState {
 
   // adds tag for combobox
   addTag: (tag: string) => void
+  setTags: (tags: Tag[]) => void
 
   setSlashCommands: (slashCommands: SlashCommands) => void
   setIlinks: (ilinks: ILink[]) => void

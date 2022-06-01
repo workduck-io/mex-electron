@@ -1,3 +1,4 @@
+import { generateTag } from '@utils/generateComboItem'
 import { useAnalysisStore } from '../store/useAnalysis'
 import useDataStore from '../store/useDataStore'
 import { TagsCache } from '../types/Types'
@@ -20,6 +21,7 @@ export interface RelatedNodes {
 export const useTags = () => {
   // const contents = useContentStore((state) => state.contents)
   const updateTagsCache = useDataStore((state) => state.updateTagsCache)
+  const setTags = useDataStore((state) => state.setTags)
   const { getPathFromNodeid } = useLinks()
   const { isInArchive } = useNodes()
 
@@ -114,6 +116,7 @@ export const useTags = () => {
 
   const updateTagsFromContent = (nodeid: string, content: any[]) => {
     const tagsCache = useDataStore.getState().tagsCache
+    const oldTags = useDataStore.getState().tags
 
     if (content) {
       const tags: string[] = getTagsFromContent(content)
@@ -167,8 +170,14 @@ export const useTags = () => {
         }
       }, {})
 
-      // console.log('We are updating', { nodeid, content, tagsCache, updatedTags, newCacheTags })
-      updateTagsCache({ ...updatedTags, ...newCacheTags })
+      const newTagsCache = { ...updatedTags, ...newCacheTags }
+      const newTagsForStore = Object.keys(newTagsCache)
+      const oldTagsFromStore = oldTags.map((t) => t.value)
+      const alltags = Settify([...oldTagsFromStore, ...newTagsForStore]).map(generateTag)
+
+      console.log('We are updating', { nodeid, content, tagsCache, updatedTags, newCacheTags, alltags })
+      setTags(alltags)
+      updateTagsCache(newTagsCache)
     }
   }
 
