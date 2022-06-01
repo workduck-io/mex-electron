@@ -66,7 +66,6 @@ export const useActionPerformer = () => {
     Performs an actions and return's the result
     if not found, it will perform the action and add it to the cache
   */
-
   const performer = async (actionGroupId: string, actionId: string, options?: PerfomerOptions) => {
     const actionConfig = groupedAction?.[actionGroupId]?.[actionId]
 
@@ -112,8 +111,6 @@ export const useActionPerformer = () => {
           forceUpdate: options?.fetch
         }
       })
-
-      mog('VALUE', { result })
 
       addResultInCache(actionId, result?._hash)
 

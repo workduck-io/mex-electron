@@ -64,6 +64,9 @@ const useActions = () => {
     } catch (err) {
       mog('Failed to fetch actions of group', { err })
     }
+
+    // * Get auth of all action groups
+    await getAuthorizedGroups(true)
   }
 
   /*
