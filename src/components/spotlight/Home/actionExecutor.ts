@@ -8,13 +8,14 @@ import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { useActionStore } from '../Actions/useActionStore'
 import { NavigationType, useRouting } from '../../../views/routes/urls'
-import useActionMenuStore from '../ActionStage/ActionMenu/useActionMenuStore'
+import { useActionMenuStore } from '../ActionStage/ActionMenu/useActionMenuStore'
 
 const useItemExecutor = () => {
   const spotlightContext = useSpotlightContext()
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
   const initAction = useActionStore((store) => store.initAction)
+  const setIsActionMenuOpen = useActionMenuStore((store) => store.setIsActionMenuOpen)
   const { goTo } = useRouting()
 
   const closeSpotlight = () => {
@@ -36,7 +37,7 @@ const useItemExecutor = () => {
         const actionGroupInfo = item?.extras?.actionGroup
 
         if (actionGroupInfo) {
-          useActionMenuStore.getState().setIsActionMenuOpen(false)
+          setIsActionMenuOpen(false)
 
           initAction(actionGroupInfo.actionGroupId, item.id)
           goTo('/action', NavigationType.replace)

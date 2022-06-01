@@ -144,17 +144,21 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     })
   }
 
+  const onReadyPerform = (actionGroupId: string, actionId: string) => {
+    mog('CALLED THIS', { actionId, defaultValue })
+    performer(actionGroupId, actionId).then((res) => {
+      const result = res?.contextData
+      const data = resToDisplay(result)
+
+      setInputValue({ data, value: defaultValue || null })
+    })
+  }
+
   useEffect(() => {
     const isReady = isPerformer(actionId, { isMenuAction: isList })
 
     if (isReady) {
-      performer(actionGroupId, actionId).then((res) => {
-        const result = res?.contextData
-        const data = resToDisplay(result)
-
-        mog('Setting value to null', { defaultValue, value })
-        setInputValue({ data, value: defaultValue || null })
-      })
+      onReadyPerform(actionGroupId, actionId)
     }
   }, [actionId, actionGroupId, prevSelection])
 
@@ -174,7 +178,6 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
       const path = findNodePath(editor, element)
       const actionContext = element?.actionContext ?? {}
       const selections = actionContext?.selections ?? {}
-      mog('editor is ehre', { actionId, selection, element: actionContext?.selections })
 
       if (element?.actionContext) {
         setNodes(
@@ -208,8 +211,8 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
         isLoading={isPerformingAction}
         getIsActive={(item, activeItems) => {
           return Array.isArray(activeItems)
-            ? activeItems?.find((i) => i.label === item?.label)
-            : activeItems.label === item.label
+            ? activeItems?.find((i) => i?.label === item?.label)
+            : activeItems?.label === item?.label
         }}
         onEnter={onChange}
         onClick={onChange}
@@ -225,10 +228,12 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
       contentEditable={false}
       onClick={(ev) => {
         ev.stopPropagation()
-        mog('SELECTION', { ev })
       }}
       placeholder={placeholder}
-      onMenuOpen={() => setIsMenuOpen(true)}
+      onMenuOpen={() => {
+        onReadyPerform(actionGroupId, actionId)
+        setIsMenuOpen(true)
+      }}
       onMenuClose={() => setIsMenuOpen(false)}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {

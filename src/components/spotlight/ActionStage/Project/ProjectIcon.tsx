@@ -4,7 +4,6 @@ import styled, { css, useTheme } from 'styled-components'
 import { MexIcon } from '../../../../style/Layouts'
 import Tippy from '@tippyjs/react'
 import { TemplateCss, TemplateItemProp } from './ProjectTitle'
-import { mog } from '@utils/lib/helper'
 
 export const FieldLabel = styled.div`
   display: flex;

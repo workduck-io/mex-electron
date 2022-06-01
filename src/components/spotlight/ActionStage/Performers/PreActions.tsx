@@ -18,7 +18,7 @@ const Flex = styled.div<{ isForm?: boolean }>`
     css`
       flex-direction: column;
       ${ElementContainer} {
-        min-width: 60vw;
+        min-width: 60%;
       }
     `}
   border-radius: ${({ theme }) => theme.borderRadius.small};

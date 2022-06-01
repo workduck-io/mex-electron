@@ -11,7 +11,7 @@ import { useSpotlightAppStore } from '../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../store/settings.spotlight'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
-import useActionMenuStore from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
+import { useActionMenuStore } from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
 import { mog } from '@utils/lib/helper'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 
@@ -32,7 +32,7 @@ export const useGlobalShortcuts = () => {
   const setCurrentListItem = useSpotlightEditorStore((s) => s.setCurrentListItem)
   const setView = useActionStore((store) => store.setView)
   const view = useActionStore((store) => store.view)
-
+  const isActionMenuOpen = useActionMenuStore((store) => store.isActionMenuOpen)
   const handleCancel = () => {
     setNormalMode(true)
     setSaved(false)
@@ -51,7 +51,6 @@ export const useGlobalShortcuts = () => {
       },
       [spotlightShortcuts.escape.keystrokes]: (event) => {
         event.preventDefault()
-        const isActionMenuOpen = useActionMenuStore.getState().isActionMenuOpen
 
         if (isActionMenuOpen) return
         else if (isMenuOpen) return
@@ -97,5 +96,5 @@ export const useGlobalShortcuts = () => {
     return () => {
       unsubscribe()
     }
-  }, [showSource, activeItem.active, selection, normalMode, search, location, shortcutDisabled])
+  }, [showSource, activeItem.active, view, isActionMenuOpen, selection, normalMode, search, location, shortcutDisabled])
 }

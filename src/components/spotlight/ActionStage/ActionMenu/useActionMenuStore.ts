@@ -1,5 +1,6 @@
 import create from 'zustand'
 import { MenuPostActionConfig } from '@workduck-io/action-request-helper'
+import createContext from 'zustand/context'
 
 type MenuActionStoreProps = {
   // * All active action's menu actions
@@ -31,27 +32,28 @@ type MenuActionStoreProps = {
   clearMenuStore: () => void
 }
 
-const useActionMenuStore = create<MenuActionStoreProps>((set, get) => ({
-  menuActions: [],
-  setMenuActions: (menuActions) => set({ menuActions }),
+export const { Provider: MenuProvider, useStore: useActionMenuStore } = createContext<MenuActionStoreProps>()
 
-  needsRefresh: false,
-  setNeedsRefresh: () => set({ needsRefresh: !get().needsRefresh }),
+export const actionMenuStore = () =>
+  create<MenuActionStoreProps>((set, get) => ({
+    menuActions: [],
+    setMenuActions: (menuActions) => set({ menuActions }),
 
-  activeMenuAction: null,
-  setActiveMenuAction: (activeMenuAction) => set({ activeMenuAction }),
+    needsRefresh: false,
+    setNeedsRefresh: () => set({ needsRefresh: !get().needsRefresh }),
 
-  isActionMenuOpen: false,
-  setIsActionMenuOpen: (isActionMenuOpen) => set({ isActionMenuOpen }),
+    activeMenuAction: null,
+    setActiveMenuAction: (activeMenuAction) => set({ activeMenuAction }),
 
-  hideMenu: false,
-  setHideMenu: (hideMenu) => set({ hideMenu }),
+    isActionMenuOpen: false,
+    setIsActionMenuOpen: (isActionMenuOpen) => set({ isActionMenuOpen }),
 
-  activeMenuForm: 0,
-  setActiveMenuForm: (activeMenuForm) => set({ activeMenuForm }),
-  toggleActionMenu: () => set({ isActionMenuOpen: !get().isActionMenuOpen }),
+    hideMenu: false,
+    setHideMenu: (hideMenu) => set({ hideMenu }),
 
-  clearMenuStore: () => set({ menuActions: [], activeMenuAction: null, isActionMenuOpen: false, activeMenuForm: 0 })
-}))
+    activeMenuForm: 0,
+    setActiveMenuForm: (activeMenuForm) => set({ activeMenuForm }),
+    toggleActionMenu: () => set({ isActionMenuOpen: !get().isActionMenuOpen }),
 
-export default useActionMenuStore
+    clearMenuStore: () => set({ menuActions: [], activeMenuAction: null, isActionMenuOpen: false, activeMenuForm: 0 })
+  }))

@@ -57,9 +57,8 @@ const GlobalListener = memo(() => {
   const removeActionsByGroupId = useActionsCache((store) => store.removeActionsByGroupId)
   const setConnectedGroups = useActionsCache((store) => store.setConnectedGroups)
   const clearActionStore = useActionStore((store) => store.clear)
+  const clearActionCache = useActionsCache((store) => store.clearActionCache)
   const setView = useActionStore((store) => store.setView)
-
-  // const { initActionPerformers } = useActionPerformer()
 
   const userDetails = useAuthStore((state) => state.userDetails)
 
@@ -146,7 +145,6 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.on(IpcAction.NEW_RECENT_ITEM, (_event, { data }) => {
-      mog('Data is coming ', { data })
       addRecent(data)
     })
 
@@ -161,8 +159,10 @@ const GlobalListener = memo(() => {
     ipcRenderer.on(IpcAction.UPDATE_ACTIONS, (_event, arg) => {
       const { groups, actionList, actions, actionGroupId, connectedGroups, type } = arg?.data
 
-      if (type === UpdateActionsType.CLEAR) clearActionStore()
-      else if (type === UpdateActionsType.REMOVE_ACTION_BY_GROUP_ID) removeActionsByGroupId(actions)
+      if (type === UpdateActionsType.CLEAR) {
+        clearActionStore()
+        clearActionCache()
+      } else if (type === UpdateActionsType.REMOVE_ACTION_BY_GROUP_ID) removeActionsByGroupId(actions)
       else if (type === UpdateActionsType.AUTH_GROUPS) setConnectedGroups(connectedGroups)
       else if (groups) setActionGroups(groups)
       else if (actionList) addActions(actionList)

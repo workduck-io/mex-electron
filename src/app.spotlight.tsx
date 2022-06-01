@@ -1,4 +1,5 @@
 import { actionStore, Provider } from '@components/spotlight/Actions/useActionStore'
+import { actionMenuStore, MenuProvider } from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
 import React from 'react'
 import { ThemeProvider } from 'styled-components'
 import { VersionSetter } from './components/mex/Init/VersionSetter'
@@ -20,13 +21,15 @@ export default function App() {
 
   return (
     <Provider createStore={actionStore}>
-      <ThemeProvider theme={currentTheme}>
-        <SpotlightProvider>
-          <Routes />
-          <OnBoardingTour steps={SpotlightOnboarding} />
-          <VersionSetter />
-        </SpotlightProvider>
-      </ThemeProvider>
+      <MenuProvider createStore={actionMenuStore}>
+        <ThemeProvider theme={currentTheme}>
+          <SpotlightProvider>
+            <Routes />
+            <OnBoardingTour steps={SpotlightOnboarding} />
+            <VersionSetter />
+          </SpotlightProvider>
+        </ThemeProvider>
+      </MenuProvider>
     </Provider>
   )
 }

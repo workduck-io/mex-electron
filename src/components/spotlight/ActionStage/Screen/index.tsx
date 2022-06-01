@@ -7,10 +7,8 @@ import { useActionStore } from '../../Actions/useActionStore'
 import { TemplateConfig } from '@workduck-io/action-request-helper'
 import List from './List'
 import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
-import useActionMenuStore from '../ActionMenu/useActionMenuStore'
+import { useActionMenuStore } from '../ActionMenu/useActionMenuStore'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
-import { loader } from '../Performers/loader'
-import Lottie from 'lottie-react'
 
 const StyledScreen = styled.section`
   display: flex;
@@ -36,6 +34,7 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
   const [resData, setResData] = useState<Array<TemplateConfig>>([])
   const getCacheResult = useActionsCache((store) => store.getCacheResult)
   const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
+
   const prevValue = getPreviousActionValue(actionId)?.selection
   const needsRefresh = useActionMenuStore((store) => store.needsRefresh)
   const setHideMenu = useActionMenuStore((store) => store.setHideMenu)
@@ -64,10 +63,9 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
   }, [actionId, prevValue, needsRefresh])
 
   const memoData = useMemo(() => {
-    const res = getCacheResult(actionId, elementId)
-    mog('res', { res })
-    return res
-  }, [actionId])
+    const result = getCacheResult(actionId, elementId)
+    return result
+  }, [actionId, elementId])
 
   useEffect(() => {
     const hideMenuOptions = !resData || resData?.length === 0
@@ -88,7 +86,11 @@ const Screen: React.FC<ScreenProps> = ({ actionGroupId, actionId }) => {
 
   if (isLoading) null
 
-  return <StyledScreen>{!view && <List items={resData} context={memoData?.contextData ?? []} />}</StyledScreen>
+  return (
+    <StyledScreen>
+      {!view && <List items={resData} context={getCacheResult(actionId, elementId)?.contextData ?? []} />}
+    </StyledScreen>
+  )
 }
 
 export default Screen

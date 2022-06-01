@@ -52,6 +52,7 @@ const ActionForm: React.FC<ActionFormProps> = ({ subType, actionId, actionGroupI
   const groupedActions = useActionsCache((store) => store.groupedActions)
   const setIsSubmitting = useActionStore((store) => store.setIsSubmitting)
   const activeAction = useActionStore((store) => store.activeAction)
+  const elementId = useActionStore((store) => store.element)?.id
   const getPrevActionValue = useActionStore((store) => store.getPrevActionValue)
 
   const prev = getPrevActionValue(actionId)
@@ -119,7 +120,7 @@ const ActionForm: React.FC<ActionFormProps> = ({ subType, actionId, actionGroupI
   return (
     <UniAction>
       <FormProvider {...formMethods}>
-        <StyledActionFormContainer id="action-form" onSubmit={formMethods.handleSubmit(onSubmit)}>
+        <StyledActionFormContainer id={`action-form-${elementId}`} onSubmit={formMethods.handleSubmit(onSubmit)}>
           {Object.values(form).map((row, index) => {
             return <ActionRowRenderer key={index} row={row} disabled={disabled} />
           })}

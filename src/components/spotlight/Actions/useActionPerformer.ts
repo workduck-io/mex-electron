@@ -3,13 +3,14 @@ import {
   ActionHelperClient,
   ActionHelperConfig,
   ActionResponse,
-  ClickPostActionType
+  ClickPostActionType,
+  ReturnType
 } from '@workduck-io/action-request-helper'
 import { client } from '@workduck-io/dwindle'
 import { mog } from '../../../utils/lib/helper'
 import { ACTION_ENV } from '../../../apis/routes'
-import useActionMenuStore from '../ActionStage/ActionMenu/useActionMenuStore'
 import { useActionsCache } from './useActionsCache'
+import { useActionMenuStore } from '../ActionStage/ActionMenu/useActionMenuStore'
 
 type PerfomerOptions = {
   formData?: Record<string, any>
@@ -58,7 +59,7 @@ export const useActionPerformer = () => {
   const viewData = useActionStore((store) => store.viewData)
   const element = useActionStore((store) => store.element)
   const addResultHash = useActionsCache((store) => store.addResultHash)
-  const isMenuAction = useActionMenuStore((store) => store.isActionMenuOpen)
+  const isMenuActionOpen = useActionMenuStore((store) => store.isActionMenuOpen)
 
   /* 
     Looks for the action in the cache first,
@@ -69,11 +70,8 @@ export const useActionPerformer = () => {
   const performer = async (actionGroupId: string, actionId: string, options?: PerfomerOptions) => {
     const actionConfig = groupedAction?.[actionGroupId]?.[actionId]
 
-    const isMenuActionOpen = useActionMenuStore.getState().isActionMenuOpen
-
     const isParentContext =
-      (options?.parent && !actionConfig?.preActionId) ||
-      (!activeAction?.actionIds && isMenuActionOpen && !options?.parent)
+      (isMenuActionOpen && !actionConfig?.preActionId) || options?.parent || !activeAction?.actionIds
 
     const prevActionValue = isParentContext ? { value: viewData?.context } : getPrevActionValue(actionId)?.selection
 
@@ -101,7 +99,7 @@ export const useActionPerformer = () => {
       ? { ...prevActionValue?.value, formData: options.formData }
       : prevActionValue?.value
 
-    // mog(`${actionId}`, { configVal, prevActionValue })
+    mog(`${actionId} performer`, { configVal, actionConfig, viewData, auth, prevActionValue, isParentContext })
 
     try {
       // * if we have a previous action selection, use that
@@ -114,8 +112,10 @@ export const useActionPerformer = () => {
           forceUpdate: options?.fetch
         }
       })
+
+      mog('VALUE', { result })
+
       addResultInCache(actionId, result?._hash)
-      // addResultInCache(actionId, getIndexedResult(result))
 
       if (options?.fetch) setNeedsRefresh()
 
@@ -125,26 +125,36 @@ export const useActionPerformer = () => {
       // * If there's a result action of type RUN_ACTION,
       if (isRunAction) {
         const postContext = result?.contextData || { url: configVal.url }
+        const resultActionConfig = groupedAction?.[actionGroupId]?.[resultAction?.actionId]
 
         const postAction = await actionPerformer?.request({
-          config: groupedAction?.[actionGroupId]?.[resultAction?.actionId],
+          config: resultActionConfig,
           auth,
           configVal: postContext,
-          serviceType
+          serviceType,
+          options: {
+            forceUpdate: true
+          }
         })
 
-        // * View the result action
-        setView('item')
-        setViewData({ context: result?.contextData || configVal, display: postAction?.displayData ?? [] })
+        mog('RESULT ACTION CONFIG', { resultActionConfig, postAction })
 
-        // goTo('/action/view', NavigationType.replace)
+        const display =
+          resultActionConfig.returnType === ReturnType.LIST ? postAction?.displayData?.[0] : postAction?.displayData
+        const viewData = { context: result?.contextData || configVal, display }
+
+        // * View the result action
+        if (display) {
+          setView('item')
+          setViewData(viewData)
+        }
       }
 
       if (!isMenuActionOpen) setIsLoading(false)
 
       return getIndexedResult(result)
     } catch (err) {
-      mog('Something went wrong', { err })
+      mog('Unable to perform action', { err })
       if (!isMenuActionOpen) setIsLoading(false)
     }
 
@@ -154,7 +164,7 @@ export const useActionPerformer = () => {
   const addResultInCache = (actionId: string, hash: string) => {
     const actionHashKey = getActionCacheKey(actionId, element?.id)
     addResultHash(actionHashKey, hash)
-    if (!isMenuAction) addSelectionInCache(actionId, undefined)
+    if (!isMenuActionOpen) addSelectionInCache(actionId, undefined)
   }
 
   const isPerformer = (actionId: string, option?: { isMenuAction?: boolean }) => {
@@ -166,9 +176,8 @@ export const useActionPerformer = () => {
     const hasPrevValueChanged = prevActionValue?.selection && selection?.prev !== prevActionValue?.selection?.label
 
     const hasPreAction = action?.preActionId
-    const isMenuOpen = useActionMenuStore.getState().isActionMenuOpen
 
-    if (isMenuOpen) {
+    if (isMenuActionOpen) {
       return option?.isMenuAction
     }
 

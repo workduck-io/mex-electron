@@ -15,6 +15,7 @@ import { Properties, CustomEvents } from '../analytics/events'
 import { mog } from '../../utils/lib/helper'
 import useActions from '../../components/spotlight/Actions/useActions'
 import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActionPerformer'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 
 interface UserDetails {
   email: string
@@ -70,6 +71,7 @@ export const useAuthentication = () => {
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const setRegistered = useAuthStore((store) => store.setRegistered)
   const { updateDefaultServices, updateServices } = useUpdater()
+  const clearActionCache = useActionsCache((store) => store.clearActionCache)
   const { signIn, signUp, verifySignUp, signOut, googleSignIn, refreshToken } = useAuth()
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
   const { clearActionStore, getGroupsToView } = useActions()
@@ -342,6 +344,7 @@ export const useAuthentication = () => {
     signOut().then(() => {
       setUnAuthenticated()
       clearActionStore()
+      clearActionCache()
       ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: false })
     })
   }

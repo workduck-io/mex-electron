@@ -1,7 +1,7 @@
 import React from 'react'
 
 import MenuItem from './MenuItem'
-import useActionMenuStore from './useActionMenuStore'
+import { useActionMenuStore } from './useActionMenuStore'
 import { MenuPostActionConfig } from '@workduck-io/action-request-helper'
 import MenuActionForm from './MenuActionForm'
 import VirtualList from './VirtualList'

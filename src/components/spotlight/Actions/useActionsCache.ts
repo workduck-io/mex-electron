@@ -29,6 +29,8 @@ type ActionsCacheType = {
   getResultHashCache: (key: string) => string
   addResultHash: (key: string, hash: string) => void
 
+  clearActionCache?: () => void
+
   // * Actions are stored in this config
   groupedActions: Record<string, Record<string, ActionHelperConfig>>
   setGroupedActions: (groupedActions: Record<string, Record<string, ActionHelperConfig>>) => void
@@ -92,6 +94,17 @@ export const useActionsCache = create<ActionsCacheType>(
             set({ actions })
           },
 
+          clearActionCache: () => {
+            set({
+              actions: initActions,
+              groupedActions: {},
+              resultCache: {},
+              resultHashCache: {},
+              actionGroups: {},
+              connectedGroups: {}
+            })
+          },
+
           addActions: (actions: Array<ListItemType>) => {
             const existingActions = get().actions
             const newActions = [...actions, ...existingActions]
@@ -105,6 +118,7 @@ export const useActionsCache = create<ActionsCacheType>(
       partialize: (state) => ({
         actions: state.actions,
         resultCache: state.resultCache,
+        resultHashCache: state.resultHashCache,
         groupedActions: state.groupedActions,
         connectedGroups: state.connectedGroups,
         actionGroups: state.actionGroups

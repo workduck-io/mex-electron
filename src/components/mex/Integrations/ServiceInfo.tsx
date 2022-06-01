@@ -18,7 +18,8 @@ import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { mog } from '../../../utils/lib/helper'
 import GlobalSection from './GlobalSection'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
-import { useActionStore } from '@components/spotlight/Actions/useActionStore'
+import { actionStore, Provider, useActionStore } from '@components/spotlight/Actions/useActionStore'
+import { actionMenuStore, MenuProvider } from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
 
 const ServiceContainer = styled(StyledEditor)``
 
@@ -156,7 +157,6 @@ const Action: React.FC<{ action: ActionHelperConfig; icon?: string }> = ({ actio
 
 const ServiceInfo = () => {
   const { params } = useRouting()
-  const initAction = useActionStore((store) => store.initAction)
   const groupedActions = useActionsCache((store) => store.groupedActions)
   const actionGroups = useActionsCache((store) => store.actionGroups)
   const { shortcutDisabled } = useKeyListener()
@@ -174,7 +174,6 @@ const ServiceInfo = () => {
   const goBackToIntegrations = () => goTo(ROUTE_PATHS.integrations, NavigationType.replace)
 
   useEffect(() => {
-    initAction(params?.actionGroupId, actionGroup.globalActionId)
     const unsubscribe = tinykeys(window, {
       Escape: (event) => {
         event.preventDefault()
@@ -233,9 +232,13 @@ const ServiceInfo = () => {
               </ServiceDescription>
             </GroupHeader>
           </div>
-          {isConnected && actionGroup.globalActionId && (
-            <GlobalSection globalId={actionGroup.globalActionId} actionGroupId={params?.actionGroupId} />
-          )}
+          <Provider createStore={actionStore}>
+            <MenuProvider createStore={actionMenuStore}>
+              {isConnected && actionGroup?.globalActionId && (
+                <GlobalSection globalId={actionGroup.globalActionId} actionGroupId={params?.actionGroupId} />
+              )}
+            </MenuProvider>
+          </Provider>
           <ActionsContainer>
             <header>What you can do? </header>
             {Object.values(groupedActions?.[params?.actionGroupId] ?? {}).map((action) => (

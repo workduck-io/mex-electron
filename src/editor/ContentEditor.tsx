@@ -66,7 +66,6 @@ const ContentEditor = () => {
       const keywords = removeStopwords(rawText)
 
       const results = await queryIndexWithRanking(['node', 'snippet'], keywords.join(' '))
-      mog('suggestions', { val, results })
 
       const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
 
@@ -81,7 +80,6 @@ const ContentEditor = () => {
 
   const onChangeSave = async (val: any[]) => {
     if (val && node && node.nodeid !== '__null__') {
-      mog('change')
       setIsEditing(false)
       addOrUpdateValBuffer(node.nodeid, val)
     }

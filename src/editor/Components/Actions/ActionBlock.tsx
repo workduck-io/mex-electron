@@ -1,6 +1,5 @@
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import PerformersContainer from '@components/spotlight/ActionStage/Performers'
-import { mog } from '@utils/lib/helper'
 import React, { memo, useEffect, useState } from 'react'
 import { useSelected } from 'slate-react'
 import { StyledActionBlock } from '.'
@@ -15,8 +14,6 @@ const ActionBlockContainer: React.FC<ActionBlockContainerProps> = ({ element }) 
   const [mounted, setMounted] = useState(false)
   const setElement = useActionStore((store) => store.setElement)
   const initActionWithElement = useActionStore((store) => store.initActionWithElement)
-
-  mog('element', { element })
 
   useEffect(() => {
     if (element?.actionContext) {

@@ -5,7 +5,6 @@ import { useActionStore } from '../../Actions/useActionStore'
 import ActionInput from './Fields/ActionInput'
 import styled from 'styled-components'
 import { Controller, useFormContext } from 'react-hook-form'
-import { mog } from '@utils/lib/helper'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 
 export type FormSelectorProps = {
@@ -75,8 +74,6 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAc
               cacheSelection={!isMenuAction}
               value={getData(value)}
               onChange={({ value }) => {
-                mog(' value of something is here', { value })
-
                 return onChange(saveSelected ? value?.select : value?.select?.value)
               }}
               placeholder={element.options.placeholder}

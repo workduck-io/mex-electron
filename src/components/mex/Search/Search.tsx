@@ -81,7 +81,7 @@ const Search = () => {
     const res = await queryIndexWithRanking('node', newSearchTerm)
     const nodeids = useDataStore.getState().ilinks.map((l) => l.nodeid)
     const filRes = res.filter((r) => nodeids.includes(r.id))
-    mog('search', { res, filRes })
+    // mog('search', { res, filRes })
     clearHighlights('preview')
     return filRes
   }
@@ -170,7 +170,7 @@ const Search = () => {
     const nFilters = generateNodeSearchFilters(results)
     setFilters(nFilters)
     const filtered = applyCurrentFilters(results)
-    mog('filtered', { filtered, nFilters, currentFilters, results })
+    // mog('filtered', { filtered, nFilters, currentFilters, results })
     return filtered
   }
 

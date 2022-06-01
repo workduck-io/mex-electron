@@ -7,11 +7,11 @@ import { Icon } from '@iconify/react'
 import { useActionStore } from '../../Actions/useActionStore'
 import { ActionItem } from '../../Home/styled'
 import { KEYBOARD_KEYS } from '../../Home/components/List'
-import { useSpotlightAppStore } from '../../../../store/app.spotlight'
-import { NavigationType, useRouting } from '../../../../views/routes/urls'
+import { useRouting } from '../../../../views/routes/urls'
 import { Virtuoso } from 'react-virtuoso'
-import useActionMenuStore from '../ActionMenu/useActionMenuStore'
+import { useActionMenuStore } from '../ActionMenu/useActionMenuStore'
 import { getPlateEditorRef } from '@udecode/plate'
+import { mog } from '@utils/lib/helper'
 
 export const FullWidth = styled.div<{ narrow: boolean }>`
   width: 100%;

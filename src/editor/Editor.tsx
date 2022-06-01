@@ -84,7 +84,6 @@ export const Editor = ({
       mog('editor highlighted', { hightlightedBlockIds, editorId })
       focusBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
       const clearHighlightTimeoutId = setTimeout(() => {
-        mog('WHATS UP ', { readOnly })
         if (!readOnly) clearHighlights()
       }, 2000)
       return () => clearTimeout(clearHighlightTimeoutId)

@@ -211,8 +211,8 @@ export const withStyledDraggables = (components: any) => {
         // ELEMENT_ILINK,
         ELEMENT_TABLE,
         ELEMENT_MEDIA_EMBED,
-        ELEMENT_CODE_BLOCK,
-        ELEMENT_ACTION_BLOCK
+        ELEMENT_CODE_BLOCK
+        // ELEMENT_ACTION_BLOCK
       ],
       onRenderDragHandle: ({ className, styles, element }) => {
         const setIsBlockMode = useBlockStore.getState().setIsBlockMode

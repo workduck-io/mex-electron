@@ -7,12 +7,12 @@ import { getListItemFromAction } from '@components/spotlight/Home/helper'
 import { IpcAction } from '@data/IpcAction'
 import { appNotifierWindow } from '@electron/utils/notifiers'
 import { AppType } from '@hooks/useInitialize'
-import { useSpotlightAppStore, ViewDataType } from '@store/app.spotlight'
+import { ViewDataType } from '@store/app.spotlight'
 import { getPlateEditorRef } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
 import { ClickPostActionType, MenuPostActionConfig } from '@workduck-io/action-request-helper'
 import toast from 'react-hot-toast'
-import useActionMenuStore from './useActionMenuStore'
+import { useActionMenuStore } from './useActionMenuStore'
 
 export const useMenuPerformer = () => {
   const { getConfigWithActionId } = useActionPerformer()
@@ -32,10 +32,17 @@ export const useMenuPerformer = () => {
         const text = actionInfo.display.find((d) => d.key === menuAction.key)?.value
         const title = menuAction.label.replace('Copy', 'Copied')
 
-        if (getPlateEditorRef()) {
-          toast(title)
-        } else appNotifierWindow(IpcAction.COPY_TO_CLIPBOARD, AppType.SPOTLIGHT, { text, html: text, title })
+        const showEditorToast = getPlateEditorRef()
 
+        appNotifierWindow(IpcAction.COPY_TO_CLIPBOARD, AppType.SPOTLIGHT, {
+          text,
+          html: text,
+          title,
+          hideToast: true
+        })
+
+        if (showEditorToast) toast(title)
+        clearMenu()
         break
       case ClickPostActionType.OPEN_URL:
         const url = actionInfo?.display?.find((item) => item.type === 'url')?.value as string

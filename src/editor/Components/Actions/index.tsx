@@ -1,5 +1,8 @@
 import { actionStore, Provider } from '@components/spotlight/Actions/useActionStore'
+import { actionMenuStore, MenuProvider } from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
+import { mog } from '@utils/lib/helper'
 import React from 'react'
+import { useReadOnly } from 'slate-react'
 import styled, { css } from 'styled-components'
 import { RootElement } from '../SyncBlock'
 import ActionBlockContainer from './ActionBlock'
@@ -30,7 +33,9 @@ const ActionBlock: React.FC<ActionBlockProps> = ({ attributes, element, children
   return (
     <RootElement {...attributes}>
       <Provider createStore={actionStore}>
-        <ActionBlockContainer element={element} />
+        <MenuProvider createStore={actionMenuStore}>
+          <ActionBlockContainer element={element} />
+        </MenuProvider>
       </Provider>
       {children}
     </RootElement>

@@ -140,8 +140,8 @@ export const actionStore = () =>
             const activeAction = {
               id: actionId,
               actionGroupId,
-              icon: config.icon,
-              name: action.name,
+              icon: config?.icon,
+              name: action?.name,
               subType,
               actionIds,
               renderType,

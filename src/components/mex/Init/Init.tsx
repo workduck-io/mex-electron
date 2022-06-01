@@ -244,7 +244,7 @@ const Init = () => {
   useEffect(() => {
     const e1 = getUserEvents()
     const e2 = getUpcomingEvents()
-    mog('Setting up IPC', { e1, e2 })
+    // mog('Setting up IPC', { e1, e2 })
   }, [])
 
   // useEffect(() => {

@@ -4,7 +4,7 @@ import { DisplayShortcut } from '../../../mex/Shortcuts'
 import { ShortcutText } from '../../Home/components/Item'
 import { StyledDefault } from './styled'
 import Tippy from '@tippyjs/react'
-import useActionMenuStore from './useActionMenuStore'
+import { useActionMenuStore } from './useActionMenuStore'
 
 export type DefaultProps = {
   title: string

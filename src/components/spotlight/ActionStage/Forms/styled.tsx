@@ -13,6 +13,6 @@ export const ActionRow = styled.div<{ isRow?: boolean }>`
   margin: ${({ theme }) => theme.spacing.tiny};
   align-items: center;
   gap: 0 1rem;
-  min-width: 60vw;
-  max-width: 60vw;
+  min-width: 70%;
+  max-width: 70%;
 `

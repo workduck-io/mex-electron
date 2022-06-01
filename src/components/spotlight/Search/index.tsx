@@ -15,7 +15,7 @@ import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { useRouting } from '../../../views/routes/urls'
 import ViewActionHandler from '../ActionStage/Forms/ViewActionHandler'
 import { useActionStore } from '../Actions/useActionStore'
-import useActionMenuStore from '../ActionStage/ActionMenu/useActionMenuStore'
+import { useActionMenuStore } from '../ActionStage/ActionMenu/useActionMenuStore'
 
 type QueryType = {
   value: string
