@@ -213,7 +213,7 @@ const Nav = ({ links }: NavProps) => {
             <Link
               tabIndex={-1}
               className={(s) => (s.isActive ? 'active' : '')}
-              to={`${ROUTE_PATHS.settings}/themes`}
+              to={`${ROUTE_PATHS.settings}`}
               key="nav_settings"
             >
               {GetIcon(settings4Line)}
