@@ -1,8 +1,4 @@
-import {
-    getNodes,
-    getSelectionText,
-    insertNodes, TEditor
-} from '@udecode/plate'
+import { getNodes, getSelectionText, insertNodes, TEditor } from '@udecode/plate'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import genereateName from 'project-name-generator'
 import toast from 'react-hot-toast'
@@ -23,7 +19,6 @@ import { ELEMENT_ILINK } from '../../ilink/defaults'
 import { ILinkNode } from '../../ilink/types'
 import { ELEMENT_QA_BLOCK } from '../../QABlock/createQAPlugin'
 import { ELEMENT_SYNC_BLOCK } from '../../SyncBlock'
-
 
 export const useTransform = () => {
   const addILink = useDataStore((s) => s.addILink)
@@ -259,7 +254,7 @@ export const useTransform = () => {
 
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value })
 
-      toast(`Snippet created '/snip.${snippetTitle}'`, { duration: 5000 })
+      toast(`Snippet created '${snippetTitle}'`, { duration: 5000 })
       // setContent(nodeid, value)
       // saveData()
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path })
