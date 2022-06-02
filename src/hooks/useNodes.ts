@@ -47,10 +47,15 @@ export const useNodes = () => {
     if (node) return node.icon
   }
 
-  const getNode = (nodeid: string): ILink => {
+  const getNode = (nodeid: string, shared = false): ILink => {
     const nodes = useDataStore.getState().ilinks
     const node = nodes.find((l) => l.nodeid === nodeid)
     if (node) return node
+    if (shared) {
+      const snodes = useDataStore.getState().sharedNodes
+      const snode = snodes.find((l) => l.nodeid === nodeid)
+      if (snode) return snode
+    }
   }
 
   const getNodeType = (nodeid: string) => {
