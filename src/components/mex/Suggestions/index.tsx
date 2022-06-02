@@ -86,7 +86,7 @@ const SuggestionInfoBar = () => {
     }
 
     return {
-      title: getPathFromNodeid(suggestion.id),
+      title: getPathFromNodeid(suggestion.id, true),
       content: [suggestion.data] ?? getContent(suggestion.id).content
     }
   }

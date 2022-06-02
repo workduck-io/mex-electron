@@ -27,13 +27,14 @@ import Toolbar from './Toolbar'
 
 import { mog } from '../utils/lib/helper'
 import { useNodes } from '@hooks/useNodes'
+import { NodeType } from '../types/Types'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const setIsEditing = useEditorStore((store) => store.setIsEditing)
   const { toggleFocusMode } = useLayout()
   const { saveApiAndUpdate } = useLoad()
-  const { accessWhenShared } = useNodes()
+  const { accessWhenShared, getNodeType } = useNodes()
 
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
   const isComboOpen = useComboboxOpen()
@@ -67,14 +68,19 @@ const ContentEditor = () => {
       const rawText = convertContentToRawText(val.slice(lastTwoParagraphs, cursorPosition + 1), ' ')
       const keywords = removeStopwords(rawText)
 
-      const results = await queryIndexWithRanking(['node', 'snippet'], keywords.join(' '))
+      const results = await queryIndexWithRanking(['node', 'snippet', 'shared'], keywords.join(' '))
 
       const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
 
-      const suggestions = withoutCurrentNode.map((item) => ({
-        ...item,
-        type: item.id.startsWith('SNIPPET_') ? 'snippet' : 'node'
-      }))
+      const suggestions = withoutCurrentNode.map((item) => {
+        const nodeType = getNodeType(item.id)
+        return {
+          ...item,
+          type: nodeType === NodeType.SHARED ? 'shared' : nodeType === NodeType.DEFAULT ? 'node' : 'snippet'
+        }
+      })
+
+      // mog('suggestions', { val, results, suggestions })
 
       setSuggestions(suggestions)
     }

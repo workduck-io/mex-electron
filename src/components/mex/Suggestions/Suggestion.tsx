@@ -26,9 +26,11 @@ const Suggestion: React.FC<SuggestionProps> = ({ suggestion, onPin, onClick, onE
   const editorId = useMemo(() => `suggestion_preview_${nanoid()}`, [])
 
   const isNote = suggestion.type === 'node'
+  const isShared = suggestion.type === 'shared'
+  const icon = isNote ? 'ri:file-list-2-line' : isShared ? 'ri:share-line' : 'ri:quill-pen-line'
 
   useEffect(() => {
-    if (isNote && (showContent || suggestion.pinned)) {
+    if ((isNote || isShared) && (showContent || suggestion.pinned)) {
       setNodeContent(getContent(suggestion.id).content)
       setHighlights([suggestion.blockId], 'editor')
     } else {
@@ -37,7 +39,7 @@ const Suggestion: React.FC<SuggestionProps> = ({ suggestion, onPin, onClick, onE
   }, [showContent])
 
   const handleClickContent = () => {
-    if (isNote) {
+    if (isNote || isShared) {
       setShowContent(true)
     }
   }
@@ -46,14 +48,14 @@ const Suggestion: React.FC<SuggestionProps> = ({ suggestion, onPin, onClick, onE
     <Margin key={`mex-smart-suggestions-${editorId}-pinned`}>
       <SuggestionContainer type={suggestion.type} highlight={suggestion.pinned}>
         <ResultHeader onClick={onClick}>
-          <MexIcon fontSize={24} icon={isNote ? 'ri:file-list-2-line' : 'ri:quill-pen-line'} />
+          <MexIcon fontSize={24} icon={icon} />
           <ResultTitle>{suggestion?.content?.title}</ResultTitle>
           <SuggestionIconsGroup>
             {isNote && <IconButton onClick={onClick} icon={arrowGoBackLine} title="Insert Backlink" />}
             <IconButton
               onClick={onEmbedClick}
               icon="lucide:file-input"
-              title={suggestion.type === 'node' ? 'Embed Note' : 'Insert Snippet'}
+              title={isNote || isShared ? 'Embed Note' : 'Insert Snippet'}
             />
             {!suggestion?.content?.isTemplate && (
               <IconButton highlight={suggestion.pinned} onClick={onPin} icon={pushpin2Line} title="Pin suggestion" />
