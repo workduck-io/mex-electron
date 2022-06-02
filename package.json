@@ -1,7 +1,7 @@
 {
   "name": "mex-alpha",
   "productName": "Mex Alpha",
-  "version": "0.10.0-alpha.9",
+  "version": "0.11.0-alpha.0",
   "description": "Mex it to flex it",
   "main": ".webpack/main",
   "scripts": {

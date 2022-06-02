@@ -2,7 +2,7 @@ import { Snippet } from '../../store/useSnippetStore'
 import { ArrayTransform, CustomTransformation, DataTransformation, KeysTransformation } from '../../utils/dataTransform'
 import { initialSnippets } from '../initial/snippets'
 
-export const ForceLogutVersion = '0.10.0-alpha.9'
+export const ForceLogutVersion = '0.11.0-alpha.0'
 
 const v0901 = (): CustomTransformation => {
   return {
