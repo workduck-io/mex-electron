@@ -20,6 +20,7 @@ import GlobalSection from './GlobalSection'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { actionStore, Provider, useActionStore } from '@components/spotlight/Actions/useActionStore'
 import { actionMenuStore, MenuProvider } from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
+import { ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
 
 const ServiceContainer = styled(StyledEditor)``
 
@@ -211,7 +212,7 @@ const ServiceInfo = () => {
           <div>
             <ActionGroupIcon>
               <span>
-                <MexIcon noHover color={theme.colors.primary} icon={actionGroup?.icon} height="10rem" width="10rem" />
+                <ProjectIconMex icon={actionGroup?.icon} size={140} />
               </span>
               <Button onClick={onConnectClick} disabled={isConnected}>
                 {isConnected ? 'Disconnect' : 'Connect'}

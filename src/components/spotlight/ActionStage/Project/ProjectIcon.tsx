@@ -48,7 +48,7 @@ const ProjectIconContainer = styled.span<{ isView: boolean }>`
 
 export const DEFAULT_IMAGE_URL = 'https://www.gravatar.com/avatar/?r=g&d=identicon'
 
-export const ProjectIconMex: React.FC<{ isMex: boolean; icon: string; size?: number; color?: string }> = forwardRef(
+export const ProjectIconMex: React.FC<{ isMex?: boolean; icon: string; size?: number; color?: string }> = forwardRef(
   (props, ref) => {
     const theme = useTheme()
     // eslint-disable-next-line react/prop-types

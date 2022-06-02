@@ -5,6 +5,7 @@ import paintBrushFill from '@iconify/icons-ri/paint-brush-fill'
 import refreshLine from '@iconify/icons-ri/refresh-line'
 import user3Line from '@iconify/icons-ri/user-3-line'
 import { Icon } from '@iconify/react'
+import { useHelpStore } from '@store/useHelpStore'
 import { transparentize } from 'polished'
 import React from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
@@ -69,6 +70,7 @@ export const SettingsContent = styled.div`
 const Settings = () => {
   const { logout } = useAuthentication()
   const { goTo } = useRouting()
+  const clearShortcuts = useHelpStore((store) => store.clearShortcuts)
   const removeGoogleCalendarToken = useTokenStore((store) => store.removeGoogleCalendarToken)
 
   const { addEventProperties } = useAnalytics()
@@ -77,6 +79,7 @@ const Settings = () => {
     e.preventDefault()
 
     logout()
+    clearShortcuts()
     removeGoogleCalendarToken()
     addEventProperties({ [CustomEvents.LOGGED_IN]: false })
     /**

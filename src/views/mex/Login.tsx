@@ -14,12 +14,8 @@ import { mog } from '../../utils/lib/helper'
 import { useEditorStore } from '../../store/useEditorStore'
 import useDataStore from '../../store/useDataStore'
 import useLoad from '../../hooks/useLoad'
-import { useUpdater } from '../../hooks/useUpdater'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 import { useLinks } from '../../hooks/useLinks'
-import useActions from '../../components/spotlight/Actions/useActions'
-import { useActionStore } from '../../components/spotlight/Actions/useActionStore'
-import { useActionPerformer } from '../../components/spotlight/Actions/useActionPerformer'
 
 interface LoginFormData {
   email: string

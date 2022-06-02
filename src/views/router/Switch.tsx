@@ -1,3 +1,4 @@
+import FullPageLoader from '@components/mex/FullPageLoader'
 import React, { useEffect } from 'react'
 import { Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { animated } from 'react-spring'
@@ -35,6 +36,7 @@ import ProtectedRoute from './ProtectedRoute'
 
 export const SwitchWrapper = styled(animated.div)<{ isAuth?: boolean }>`
   position: fixed;
+  height: 100%;
   width: ${({ theme, isAuth }) =>
     !isAuth ? '100% !important' : `calc(100% - 300px - ${theme.additional.hasBlocks ? '3rem' : '0px'})`};
   overflow-x: hidden;

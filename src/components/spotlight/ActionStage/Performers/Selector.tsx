@@ -157,7 +157,8 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     const isReady = isPerformer(actionId, { isMenuAction: isList })
 
     if (isReady) {
-      onReadyPerform(actionGroupId, actionId, defaultValue)
+      mog('defaultValue', { value, defaultValue })
+      onReadyPerform(actionGroupId, actionId, defaultValue || value)
     }
   }, [actionId, actionGroupId, prevSelection])
 
