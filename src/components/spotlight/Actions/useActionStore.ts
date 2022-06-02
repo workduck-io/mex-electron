@@ -31,7 +31,8 @@ export enum UpdateActionsType {
   AUTH_GROUPS,
   UPDATE_GROUPS,
   UPDATE_ACTION_LIST,
-  CLEAR
+  CLEAR,
+  UPDATE_HASH
 }
 
 const ACTION_STORE_NAME = 'mex-action-store'

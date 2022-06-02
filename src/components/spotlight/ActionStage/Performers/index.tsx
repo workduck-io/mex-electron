@@ -8,8 +8,8 @@ import PreActions from './PreActions'
 // import Lottie from 'lottie-react'
 import useActions from '@components/spotlight/Actions/useActions'
 import ConnectService from '@components/spotlight/Actions/ConnectService'
-import { useSpotlightAppStore } from '@store/app.spotlight'
 import { ViewPage } from '../Screen/View'
+import { mog } from '@utils/lib/helper'
 
 export enum PerformerType {
   list = 'list',
@@ -37,6 +37,7 @@ const MainSection = styled.div<{ overflow?: boolean }>`
 
 const PerformersContainer = () => {
   const activeAction = useActionStore((store) => store.activeAction)
+  const element = useActionStore((store) => store.element)
   const { getIsServiceConnected } = useActions()
 
   const preActions = activeAction?.actionIds
@@ -51,8 +52,8 @@ const PerformersContainer = () => {
     <Container>
       <MainSection overflow={isForm}>
         {isConnected ? (
-          view ? (
-            <ViewPage />
+          view || element?.actionContext?.view ? (
+            <ViewPage context={element?.actionContext} />
           ) : (
             <>
               <PreActions actions={preActions} />

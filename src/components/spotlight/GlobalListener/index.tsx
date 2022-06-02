@@ -41,6 +41,7 @@ const GlobalListener = memo(() => {
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const addILink = useDataStore((store) => store.addILink)
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
+  const addResultHash = useActionsCache((store) => store.addResultHash)
 
   const { getTokenData } = useTokenData()
   // const { initActionsInStore, initActionsOfGroup } = useActions()
@@ -157,13 +158,14 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.on(IpcAction.UPDATE_ACTIONS, (_event, arg) => {
-      const { groups, actionList, actions, actionGroupId, connectedGroups, type } = arg?.data
+      const { groups, actionList, actions, actionGroupId, connectedGroups, type, key, hash } = arg?.data
 
       if (type === UpdateActionsType.CLEAR) {
         clearActionStore()
         clearActionCache()
       } else if (type === UpdateActionsType.REMOVE_ACTION_BY_GROUP_ID) removeActionsByGroupId(actions)
       else if (type === UpdateActionsType.AUTH_GROUPS) setConnectedGroups(connectedGroups)
+      else if (type === UpdateActionsType.UPDATE_HASH) addResultHash(key, hash)
       else if (groups) setActionGroups(groups)
       else if (actionList) addActions(actionList)
       else if (actions && actionGroupId) {

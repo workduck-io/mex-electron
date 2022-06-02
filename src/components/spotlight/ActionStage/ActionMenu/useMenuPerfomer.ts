@@ -38,7 +38,7 @@ export const useMenuPerformer = () => {
           text,
           html: text,
           title,
-          hideToast: true
+          hideToast: showEditorToast
         })
 
         if (showEditorToast) toast(title)

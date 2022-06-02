@@ -56,7 +56,7 @@ const Row: React.FC<RowProps> = ({ row, onClick, active, type = 'row', isView })
     const url = row.find((item) => item.type === 'url')?.value as string
 
     // * Open result item in new tab
-    if (url) {
+    if (url && isView) {
       window.open(url, '_blank')
     }
   }

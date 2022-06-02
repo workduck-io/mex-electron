@@ -104,7 +104,7 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
 
   const config = getConfig(actionGroupId, actionId)
 
-  if (config?.postAction?.menus && !hideMenu && isActiveItem) {
+  if (config?.postAction?.menus && !hideMenu && isActiveItem && !isView) {
     return <ActionMenu title="Options" />
   }
 
@@ -142,7 +142,7 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
               placement="top"
               content={
                 <ShortcutText key="send">
-                  <div className="text">Cancel&nbsp;</div> <DisplayShortcut shortcut="Esc" />
+                  <div className="text">Cancel&n bsp;</div> <DisplayShortcut shortcut="Esc" />
                 </ShortcutText>
               }
             >

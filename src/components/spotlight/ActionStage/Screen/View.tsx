@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import Row from './Row'
 import Project from '../Project'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
-import { mog } from '@utils/lib/helper'
+import { useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
 
 type ViewProps = {
   item: any
@@ -42,8 +42,18 @@ const ViewMeta = styled.div`
   overflow: hidden auto;
 `
 
-export const ViewPage = () => {
+export const ViewPage: React.FC<{ context?: any }> = ({ context }) => {
   const viewData = useActionStore((store) => store.viewData)
+  const setViewData = useActionStore((store) => store.setViewData)
+  const { performer } = useActionPerformer()
+
+  useEffect(() => {
+    if (context?.prevContext && context?.view) {
+      performer(context?.actionGroupId, context?.actionId).then((res) => {
+        if (res) setViewData({ context: res?.contextData, display: res?.displayData })
+      })
+    }
+  }, [context])
 
   return <View item={viewData?.display} />
 }
