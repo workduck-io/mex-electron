@@ -4,6 +4,7 @@ import Row from './Row'
 import Project from '../Project'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import { useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
+import { useActionMenuStore } from '../ActionMenu/useActionMenuStore'
 
 type ViewProps = {
   item: any
@@ -45,6 +46,7 @@ const ViewMeta = styled.div`
 export const ViewPage: React.FC<{ context?: any }> = ({ context }) => {
   const viewData = useActionStore((store) => store.viewData)
   const setViewData = useActionStore((store) => store.setViewData)
+  const needsRefresh = useActionMenuStore((store) => store.needsRefresh)
   const { performer } = useActionPerformer()
 
   useEffect(() => {
@@ -53,7 +55,7 @@ export const ViewPage: React.FC<{ context?: any }> = ({ context }) => {
         if (res) setViewData({ context: res?.contextData, display: res?.displayData })
       })
     }
-  }, [context])
+  }, [context, needsRefresh])
 
   return <View item={viewData?.display} />
 }

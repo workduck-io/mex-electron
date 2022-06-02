@@ -144,13 +144,12 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     })
   }
 
-  const onReadyPerform = (actionGroupId: string, actionId: string) => {
-    mog('CALLED THIS', { actionId, defaultValue })
+  const onReadyPerform = (actionGroupId: string, actionId: string, value?: any) => {
     performer(actionGroupId, actionId).then((res) => {
       const result = res?.contextData
       const data = resToDisplay(result)
 
-      setInputValue({ data, value: defaultValue || null })
+      setInputValue({ data, value: value || null })
     })
   }
 
@@ -158,7 +157,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     const isReady = isPerformer(actionId, { isMenuAction: isList })
 
     if (isReady) {
-      onReadyPerform(actionGroupId, actionId)
+      onReadyPerform(actionGroupId, actionId, defaultValue)
     }
   }, [actionId, actionGroupId, prevSelection])
 
@@ -231,7 +230,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
       }}
       placeholder={placeholder}
       onMenuOpen={() => {
-        onReadyPerform(actionGroupId, actionId)
+        onReadyPerform(actionGroupId, actionId, defaultValue || value)
         setIsMenuOpen(true)
       }}
       onMenuClose={() => setIsMenuOpen(false)}

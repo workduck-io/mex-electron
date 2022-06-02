@@ -8,7 +8,7 @@ const ProtectedRoute: React.FC<MexRouteProps> = ({ component: Component }) => {
   const authenticated = useAuthStore((store) => store.authenticated)
 
   if (!authenticated) {
-    return <Navigate to={ROUTE_PATHS.register} />
+    return <Navigate to={ROUTE_PATHS.login} />
   }
 
   return <Component />

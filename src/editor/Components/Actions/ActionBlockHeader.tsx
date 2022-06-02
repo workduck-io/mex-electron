@@ -12,6 +12,7 @@ import useActions from '@components/spotlight/Actions/useActions'
 
 const ActionBlockHeader = () => {
   const activeAction = useActionStore((store) => store.activeAction)
+  const isElementView = useActionStore((store) => store.element)?.actionContext?.view
   const isView = useActionStore((store) => store.view) === 'item'
   const setView = useActionStore((store) => store.setView)
   const isLoading = useActionStore((store) => store.isLoading)
@@ -33,7 +34,7 @@ const ActionBlockHeader = () => {
   return (
     <ActionBlockContainer>
       <LeftHeader>
-        {isView && (
+        {isView && !isElementView && (
           <MexIcon
             icon={BackIcon}
             onClick={onBackClick}

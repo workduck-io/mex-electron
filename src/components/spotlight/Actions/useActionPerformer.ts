@@ -207,7 +207,7 @@ export const useActionPerformer = () => {
       hash
     })
 
-    if (!isMenuActionOpen) addSelectionInCache(actionId, undefined)
+    if (!isMenuActionOpen && activeAction?.subType !== 'form') addSelectionInCache(actionId, undefined)
   }
 
   const isPerformer = (actionId: string, option?: { isMenuAction?: boolean }) => {

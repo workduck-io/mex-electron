@@ -87,7 +87,7 @@ type ActionsRightSectionProps = { actionGroupId: string; actionId: string; isLoa
 export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionGroupId, actionId, isLoading }) => {
   const theme = useTheme()
   const { goBack } = useRouting()
-  const elementId = useActionStore((store) => store.element)?.id
+  const element = useActionStore((store) => store.element)
   const getConfig = useActionsCache((store) => store.getConfig)
   const actionGroups = useActionsCache((store) => store.actionGroups)
   const setView = useActionStore((store) => store.setView)
@@ -104,7 +104,7 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
 
   const config = getConfig(actionGroupId, actionId)
 
-  if (config?.postAction?.menus && !hideMenu && isActiveItem && !isView) {
+  if (config?.postAction?.menus && !hideMenu && isActiveItem && !isView && !element?.actionContext?.view) {
     return <ActionMenu title="Options" />
   }
 
@@ -170,7 +170,7 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
               </ShortcutText>
             }
           >
-            <FormButton form={`action-form-${elementId}`} type="submit" color={theme.colors.primary}>
+            <FormButton form={`action-form-${element?.id}`} type="submit" color={theme.colors.primary}>
               <NoOption>
                 <MexIcon noHover icon="ion:create-outline" margin="0 0.5rem 0 0" height="1.25rem" width="1.25rem" />
                 Create

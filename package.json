@@ -1,7 +1,7 @@
 {
   "name": "mex-alpha",
   "productName": "Mex Alpha",
-  "version": "0.10.0-alpha.8",
+  "version": "0.10.0-alpha.9",
   "description": "Mex it to flex it",
   "main": ".webpack/main",
   "scripts": {
@@ -103,7 +103,7 @@
     "@udecode/plate-excalidraw": "^8.3.0",
     "@udecode/plate-highlight": "~10.2.2",
     "@uifabric/styling": "^7.19.0",
-    "@workduck-io/action-request-helper": "^0.1.5",
+    "@workduck-io/action-request-helper": "^0.1.6",
     "@workduck-io/dwindle": "^0.0.15",
     "@workduck-io/flexsearch": "^0.7.22",
     "active-win-universal": "^7.6.2",

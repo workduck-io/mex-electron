@@ -54,6 +54,7 @@ export const useMenuPerformer = () => {
       case ClickPostActionType.REFRESH_ACTION:
         clearMenu()
         setNeedsRefresh()
+        mog('NEEDS REFRESH')
         break
       case ClickPostActionType.RUN_ACTION:
         performAction(menuAction)
