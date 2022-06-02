@@ -24,7 +24,7 @@ const MenuListOption = styled((props) => <StyledOption {...props} />)`
   }
 `
 
-const DEFAULT_LIST_ITEM_ICON = 'codicon:circle-filled'
+export const DEFAULT_LIST_ITEM_ICON = 'codicon:circle-filled'
 
 const ListSelector: React.FC<ListSelectorProps> = ({ item, highlight, isActive, onClick }) => {
   const theme = useTheme()

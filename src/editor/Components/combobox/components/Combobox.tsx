@@ -32,6 +32,8 @@ import { replaceFragment } from '../hooks/useComboboxOnKeyDown'
 import PreviewMeta from './PreviewMeta'
 import { MexIcon } from '../../../../style/Layouts'
 import { useTheme } from 'styled-components'
+import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
+import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'
@@ -140,6 +142,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
                 {items.map((item, index) => {
                   const Item = onRenderItem ? onRenderItem({ item }) : item.text
                   const lastItem = index > 0 ? items[index - 1] : undefined
+                  const { mexIcon } = getIconType(item?.icon ?? DEFAULT_LIST_ITEM_ICON)
 
                   return (
                     <span key={`${item.key}-${String(index)}`}>
@@ -155,8 +158,9 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
                         }}
                       >
                         {item.icon && (
-                          <MexIcon
-                            fontSize={16}
+                          <ProjectIconMex
+                            isMex={mexIcon}
+                            size={14}
                             key={`${item.key}_${item.icon}`}
                             icon={item.icon}
                             margin="0 0.25rem 0 0"
