@@ -21,6 +21,7 @@ import {
   StyledInlineBlock,
   StyledInlineBlockPreview
 } from './styled'
+import { SharedNodeIcon } from '@components/icons/Icons'
 
 const StyledArchiveText = styled.text`
   border-radius: ${({ theme }) => theme.borderRadius.small};
@@ -33,7 +34,7 @@ const InlineBlock = (props: any) => {
   const { getPathFromNodeid } = useLinks()
   const { getNodeType } = useNodes()
   const getContent = useContentStore((store) => store.getContent)
-  const path = useMemo(() => getPathFromNodeid(props.element.value), [props.element.value])
+  const path = useMemo(() => getPathFromNodeid(props.element.value, true), [props.element.value])
   const nodeid = props.element.value
   const blockId = props.element.blockId
   const nodeType = getNodeType(nodeid)
@@ -59,6 +60,8 @@ const InlineBlock = (props: any) => {
 
   const selected = useSelected()
 
+  mog('InlineBlock', { nodeid, selected, content, nodeType, path })
+
   return (
     <RootElement {...props.attributes}>
       <div contentEditable={false}>
@@ -67,6 +70,7 @@ const InlineBlock = (props: any) => {
             {nodeType !== NodeType.MISSING && (
               <InlineFlex>
                 <InlineBlockHeading>{blockId ? 'Within:' : 'From:'}</InlineBlockHeading>
+                {nodeType === NodeType.SHARED && <SharedNodeIcon />}
                 <InlineBlockText>{path}</InlineBlockText>
               </InlineFlex>
             )}
@@ -79,12 +83,11 @@ const InlineBlock = (props: any) => {
               }[nodeType]
             }
           </FlexBetween>
-          {nodeType === NodeType.SHARED ||
-            (nodeType === NodeType.DEFAULT && (
-              <StyledInlineBlockPreview>
-                <EditorPreviewRenderer content={content} editorId={`__preview__${blockId ?? nodeid}`} />
-              </StyledInlineBlockPreview>
-            ))}
+          {(nodeType === NodeType.SHARED || nodeType === NodeType.DEFAULT) && (
+            <StyledInlineBlockPreview>
+              <EditorPreviewRenderer content={content} editorId={`__preview__${blockId ?? nodeid}`} />
+            </StyledInlineBlockPreview>
+          )}
         </StyledInlineBlock>
       </div>
       {props.children}
