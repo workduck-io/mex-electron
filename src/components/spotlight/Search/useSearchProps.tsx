@@ -1,5 +1,3 @@
-import BackIcon from '@iconify/icons-ph/caret-circle-left-light'
-import LensIcon from '@iconify/icons-ph/magnifying-glass-bold'
 import { getPlateSelectors } from '@udecode/plate'
 import { cleanString } from '../../../data/Defaults/idPrefixes'
 import { IpcAction } from '../../../data/IpcAction'
@@ -36,7 +34,7 @@ export const useSearchProps = () => {
     }
   }
 
-  const icon = !normalMode ? BackIcon : LensIcon
+  const icon = !normalMode ? 'ph:caret-circle-left-light' : 'ph:magnifying-glass-bold'
 
   const path = node.path
   const placeholder = !normalMode ? cleanString(path) : '[[  for Backlinks or / for actions'

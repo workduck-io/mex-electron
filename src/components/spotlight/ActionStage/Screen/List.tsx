@@ -11,7 +11,6 @@ import { useRouting } from '../../../../views/routes/urls'
 import { Virtuoso } from 'react-virtuoso'
 import { useActionMenuStore } from '../ActionMenu/useActionMenuStore'
 import { getPlateEditorRef } from '@udecode/plate'
-import { mog } from '@utils/lib/helper'
 
 export const FullWidth = styled.div<{ narrow: boolean }>`
   width: 100%;

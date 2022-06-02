@@ -30,7 +30,7 @@ const ActionGroup: React.FC<ActionGroupProps> = ({ group }) => {
         </>
       )}
       <CenteredFlex>
-        <ProjectIconMex isMex icon={group.icon} size={56} />
+        <ProjectIconMex icon={group.icon} size={56} />
       </CenteredFlex>
       <ServiceName>{camelCase(group.actionGroupId)}</ServiceName>
     </ServiceCard>

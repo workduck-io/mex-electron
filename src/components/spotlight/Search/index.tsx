@@ -5,7 +5,6 @@ import { StyledInput, StyledSearch } from './styled'
 import { useSaveChanges, useSearchProps } from './useSearchProps'
 
 import { CenterIcon } from '../../../style/spotlight/layout'
-import { Icon } from '@iconify/react'
 import Message from '../Message'
 import { useContentStore } from '../../../store/useContentStore'
 import { useDebouncedCallback } from 'use-debounce'
@@ -16,6 +15,7 @@ import { useRouting } from '../../../views/routes/urls'
 import ViewActionHandler from '../ActionStage/Forms/ViewActionHandler'
 import { useActionStore } from '../Actions/useActionStore'
 import { useActionMenuStore } from '../ActionStage/ActionMenu/useActionMenuStore'
+import { getIconType, ProjectIconMex } from '../ActionStage/Project/ProjectIcon'
 
 type QueryType = {
   value: string
@@ -100,11 +100,12 @@ const Search = () => {
   }
 
   const disabled = !normalMode || !!view || isActionMenuOpen
+  const { mexIcon } = getIconType((icon as string) ?? 'codicon:circle-filled')
 
   return (
     <StyledSearch id="wd-mex-spotlight-search-container">
       <CenterIcon id="wd-mex-search-left-icon" pointer={!normalMode} onClick={onBackClick}>
-        <Icon color={theme.colors.primary} height={24} width={24} icon={icon} />
+        <ProjectIconMex isMex={mexIcon} color={theme.colors.primary} size={20} icon={icon as string} />
       </CenterIcon>
       {/* <Before before={before} id="wd-mex-spotlight-quick-action-chip"> */}
       <StyledInput

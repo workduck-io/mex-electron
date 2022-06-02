@@ -146,7 +146,7 @@ const Action: React.FC<{ action: ActionHelperConfig; icon?: string }> = ({ actio
   return (
     <ActionContainer>
       <ActionGroupIcon>
-        <MexIcon color={theme.colors.primary} icon={icon} height="1.25rem" width="1.25rem" />
+        <ProjectIconMex color={theme.colors.primary} icon={icon} size={20} />
       </ActionGroupIcon>
       <section>
         <h4>{action.name}</h4>
@@ -165,7 +165,6 @@ const ServiceInfo = () => {
   const actionGroup = actionGroups[params?.actionGroupId]
   const connectedGroups = useActionsCache((store) => store.connectedGroups)
   const { goTo } = useRouting()
-  const theme = useTheme()
 
   const onConnectClick = () => {
     const url = actionGroup.authConfig.authURL
