@@ -1,13 +1,11 @@
 import create from 'zustand'
-import { ActionHelperConfig, ReturnType, ActionGroup } from '@workduck-io/action-request-helper'
-import { ListItemType } from '../SearchResults/types'
-import { devtools, persist } from 'zustand/middleware'
+import createContext from 'zustand/context'
+import { ReturnType, ActionGroup } from '@workduck-io/action-request-helper'
+import { devtools } from 'zustand/middleware'
 import { getActionIds } from '../../../utils/actions'
-import { initActions } from '../../../data/Actions'
 
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { mog } from '../../../utils/lib/helper'
-import useActionMenuStore from '../ActionStage/ActionMenu/useActionMenuStore'
+import { ViewDataType, ViewType } from '../../../store/app.spotlight'
+import { useActionsCache } from './useActionsCache'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
 export type ActionSubType = 'form' | 'none' | undefined
@@ -18,6 +16,8 @@ export type ActiveActionType = {
   renderType?: ReturnType
   subType?: ActionSubType
   actionGroupId: string
+  icon?: string
+  name: string
   size: number
 }
 
@@ -31,7 +31,8 @@ export enum UpdateActionsType {
   AUTH_GROUPS,
   UPDATE_GROUPS,
   UPDATE_ACTION_LIST,
-  CLEAR
+  CLEAR,
+  UPDATE_HASH
 }
 
 const ACTION_STORE_NAME = 'mex-action-store'
@@ -39,33 +40,14 @@ const ACTION_STORE_NAME = 'mex-action-store'
 export type ActionGroupType = ActionGroup & { connected?: boolean }
 
 type ActionStoreType = {
-  actions: Array<ListItemType>
-  setActions: (actions: Array<ListItemType>) => void
-  addActions: (actions: Array<ListItemType>) => void
-  removeActionsByGroupId: (actionGroupId: string) => void
-
-  actionGroups: Record<string, ActionGroupType>
-  setActionGroups: (actionGroups: Record<string, ActionGroupType>) => void
-
-  connectedGroups: Record<string, boolean>
-  setConnectedGroups: (connectedGroups: Record<string, boolean>) => void
-
-  // * Actions are stored in this config
-  groupedActions: Record<string, Record<string, ActionHelperConfig>>
-  setGroupedActions: (groupedActions: Record<string, Record<string, ActionHelperConfig>>) => void
-  addGroupedActions: (actionGroupId: string, groupedActions: Record<string, ActionHelperConfig>) => void
-  getConfig: (actionGroupId: string, actionId: string) => ActionHelperConfig | undefined
-
   selectedValue?: any
   setSelectedValue: (value: any) => void
 
+  isLoading?: boolean
+  setIsLoading?: (isLoading?: boolean) => void
+
   actionToPerform?: string
   setActionToPerform: (actionToPerform: string) => void
-
-  resultCache: Record<string, any>
-  getCacheResult: (actionId: string) => any
-  setResultCache: (resultCache: Record<string, any>) => void
-  addResultInCache: (actionId: string, result: any) => void
 
   selectionCache: Record<string, SelectionNode>
   getSelectionCache: (actionId: string) => SelectionNode
@@ -78,47 +60,44 @@ type ActionStoreType = {
   activeAction?: ActiveActionType
   initAction: (actionGroupId: string, actionId: string) => void
 
+  // * Selected action element in editor
+  element: any
+  setElement: (element: any) => void
+
   // * Form submit
   isSubmitting: boolean
   setIsSubmitting: (isSubmiting: boolean) => void
+
+  view?: ViewType
+  setView: (value: ViewType) => void
+
+  viewData: ViewDataType
+  setViewData: (value: ViewDataType) => void
+
+  isMenuOpen: boolean
+  setIsMenuOpen: (value: boolean) => void
+
+  initActionWithElement: (actionContext: any) => void
 
   //* Clear fields
   clear: () => void
 }
 
-export const useActionStore = create<ActionStoreType>(
-  persist(
+export const { Provider, useStore: useActionStore } = createContext<ActionStoreType>()
+
+export const actionStore = () =>
+  create<ActionStoreType>(
     devtools(
       (set, get) =>
         ({
-          actionGroups: {},
-          setActionGroups: (actionGroups: Record<string, ActionGroup>) => set({ actionGroups }),
-
-          connectedGroups: {},
-          setConnectedGroups: (connectedGroups: Record<string, boolean>) => set({ connectedGroups }),
-
           isSubmitting: false,
           setIsSubmitting: (isSubmitting: boolean) => set({ isSubmitting }),
 
-          resultCache: {},
-          getCacheResult: (actionId: string) => get().resultCache[actionId],
-          setResultCache: (resultCache: Record<string, any>) => set({ resultCache }),
-          addResultInCache: (actionId, result) => {
-            const cache = get().resultCache
-            const selection = get().selectionCache
-            const activeAction = get().activeAction
+          element: undefined,
+          setElement: (element: any) => set({ element }),
 
-            if (actionId === activeAction?.id && activeAction?.actionIds) {
-              mog('RESULT CACHING ', { actionId, result, selection })
-            }
-
-            const isMenuAction = useActionMenuStore.getState().isActionMenuOpen
-
-            set({
-              resultCache: { ...cache, [actionId]: result },
-              selectionCache: isMenuAction ? selection : { ...selection, [actionId]: undefined }
-            })
-          },
+          isLoading: false,
+          setIsLoading: (isLoading: boolean) => set({ isLoading }),
 
           selectionCache: {},
           getSelectionCache: (actionId: string) => get().selectionCache[actionId],
@@ -130,40 +109,26 @@ export const useActionStore = create<ActionStoreType>(
             })
           },
 
-          groupedActions: {},
-          setGroupedActions: (groupedActions) => set({ groupedActions }),
-          addGroupedActions: (actionGroupId, groupedActions) =>
-            set({ groupedActions: { ...get().groupedActions, [actionGroupId]: groupedActions } }),
-          getConfig: (actionGroupId, actionId) => get().groupedActions?.[actionGroupId]?.[actionId],
-
-          actions: initActions,
-          setActions: (actions: Array<ListItemType>) => set({ actions }),
-          removeActionsByGroupId: (actionGroupId: string) => {
-            const actions = get().actions.filter(
-              (action) => action?.extras?.actionGroup?.actionGroupId !== actionGroupId
-            )
-
-            set({ actions })
-          },
-          addActions: (actions: Array<ListItemType>) => {
-            const existingActions = get().actions
-            const newActions = [...actions, ...existingActions]
-            set({ actions: newActions })
-          },
-
           setSelectedValue: (value) => set({ selectedValue: value }),
 
-          initAction: (actionGroupId, actionId) => {
-            const actionConfigs = get().groupedActions?.[actionGroupId]
+          initActionWithElement: (actionContext: any) => {
+            if (actionContext?.selections) get().setSelectionCache(actionContext?.selections)
 
-            const action = actionConfigs[actionId]
+            get().initAction(actionContext?.actionGroupId, actionContext?.actionId)
+          },
+
+          initAction: (actionGroupId, actionId) => {
+            const actionConfigs = useActionsCache?.getState()?.groupedActions?.[actionGroupId]
+            const config = useActionsCache?.getState()?.actionGroups?.[actionGroupId]
+
+            const action = actionConfigs?.[actionId]
 
             const preActionId = action?.preActionId
 
             const renderType = action?.form ? ReturnType.NONE : action?.returnType
             const subType: ActionSubType = action?.form ? 'form' : undefined
 
-            if (subType) useSpotlightAppStore.getState().setView('form')
+            if (subType) get().setView('form')
 
             let actionIds: Array<string> | undefined
 
@@ -176,6 +141,8 @@ export const useActionStore = create<ActionStoreType>(
             const activeAction = {
               id: actionId,
               actionGroupId,
+              icon: config?.icon,
+              name: action?.name,
               subType,
               actionIds,
               renderType,
@@ -190,8 +157,9 @@ export const useActionStore = create<ActionStoreType>(
           },
           getPrevActionValue: (actionId: string) => {
             const activeAction = get().activeAction
+            const groupedActions = useActionsCache?.getState()?.groupedActions
 
-            const actionConfig = get().groupedActions?.[activeAction?.actionGroupId]?.[actionId]
+            const actionConfig = groupedActions?.[activeAction?.actionGroupId]?.[actionId]
 
             const preActionId = actionConfig?.preActionId
             const cache = get().selectionCache
@@ -204,32 +172,27 @@ export const useActionStore = create<ActionStoreType>(
             // * If this is a global action, get the value from cache
             return cache?.[actionId]
           },
+
+          // Mode for list if false, the editor takes full screen
+          isMenuOpen: false,
+          setIsMenuOpen: (value: boolean) => set({ isMenuOpen: value }),
+
+          viewData: undefined,
+          setViewData: (value: ViewDataType) => set({ viewData: value }),
+
+          setView: (value: ViewType) => set({ view: value }),
+
           clear: () => {
             set({
               selectedValue: undefined,
               activeAction: undefined,
               actionToPerform: undefined,
-              actionGroups: {},
-              groupedActions: {},
-              connectedGroups: {},
-              resultCache: {},
               selectionCache: {},
-              actions: initActions
+              view: undefined,
+              viewData: undefined,
+              isMenuOpen: false
             })
           }
         } as any)
-    ),
-    {
-      name: ACTION_STORE_NAME,
-      partialize: (state) => ({
-        actions: state.actions,
-        resultCache: state.resultCache,
-        selectionCache: state.selectionCache,
-        groupedActions: state.groupedActions,
-        connectedGroups: state.connectedGroups,
-        actionGroups: state.actionGroups
-      })
-      // getStorage: () => indexedDBStorage
-    }
+    )
   )
-)

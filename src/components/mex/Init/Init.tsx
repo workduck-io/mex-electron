@@ -34,7 +34,7 @@ import { useCalendar } from '../../../hooks/useCalendar'
 
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
 import { useRedirectAuth } from '../Auth/useRedirectAuth'
-import { useActionPerformer } from '../../spotlight/Actions/useActionPerformer'
+import { useActionsPerfomerClient } from '../../spotlight/Actions/useActionPerformer'
 import { useLocalData, useTokenData } from '@hooks/useLocalData'
 
 const Init = () => {
@@ -71,7 +71,7 @@ const Init = () => {
 
   const { getTokenData } = useTokenData()
   const { saveAndClearBuffer } = useEditorBuffer()
-  const { initActionPerfomerClient } = useActionPerformer()
+  const { initActionPerfomerClient } = useActionsPerfomerClient()
 
   /**
    * Initialization of the app data, search index and auth,
@@ -244,7 +244,7 @@ const Init = () => {
   useEffect(() => {
     const e1 = getUserEvents()
     const e2 = getUpcomingEvents()
-    mog('Setting up IPC', { e1, e2 })
+    // mog('Setting up IPC', { e1, e2 })
   }, [])
 
   // useEffect(() => {

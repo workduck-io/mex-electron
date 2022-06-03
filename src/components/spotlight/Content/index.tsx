@@ -21,6 +21,7 @@ import useDataStore from '../../../store/useDataStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { createNodeWithUid, insertItemInArray, mog } from '../../../utils/lib/helper'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
+import { useActionsCache } from '../Actions/useActionsCache'
 import { useActionStore } from '../Actions/useActionStore'
 import { MAX_RECENT_ITEMS } from '../Home/components/List'
 import { getListItemFromNode } from '../Home/helper'
@@ -62,7 +63,7 @@ const Content = () => {
   const { resetEditor } = useEditorActions()
   const { search, selection, activeItem, activeIndex, searchResults, setSearchResults } = useSpotlightContext()
   const events = useCalendarStore((store) => store.events)
-  const actions = useActionStore((store) => store.actions)
+  const actions = useActionsCache((store) => store.actions)
 
   // * For setting the results
   useEffect(() => {
@@ -111,10 +112,6 @@ const Content = () => {
     }
 
     if (normalMode) getSearchItems()
-
-    // else {
-    //   setSearchResults([activeItem.item])
-    // }
   }, [search.value, actions, selection, activeItem.item, normalMode, ilinks, events])
 
   // * For setting the preview

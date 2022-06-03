@@ -5,15 +5,15 @@ import ActionFormElement from '../Forms/Fields/ActionFormElement'
 import FormSelector from '../Forms/FormSelector'
 import { useForm, FormProvider } from 'react-hook-form'
 import { set } from 'lodash'
-import { useSpotlightAppStore } from '@store/app.spotlight'
 import { FormLoadingButton, MenuForm, NoOption } from './styled'
 import tinykeys from 'tinykeys'
 import { mog } from '@utils/lib/helper'
-import useActionMenuStore from './useActionMenuStore'
+import { useActionMenuStore } from './useActionMenuStore'
 import Tippy from '@tippyjs/react'
 import { DisplayShortcut } from '@components/mex/Shortcuts'
 import { ShortcutText } from '@components/spotlight/Home/components/Item'
 import { MexIcon } from '@style/Layouts'
+import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 
 type MenuActionFormProps = {
   action: MenuPostActionConfig
@@ -47,7 +47,8 @@ const MenuField: React.FC<MenuFieldProps> = ({ field, isCurrent, onSelect }) => 
  */
 const MenuActionForm: React.FC<MenuActionFormProps> = ({ action }) => {
   const { getConfigWithActionId, performer } = useActionPerformer()
-  const setIsMenuOpen = useSpotlightAppStore((store) => store.setIsMenuOpen)
+  const setIsMenuOpen = useActionStore((store) => store.setIsMenuOpen)
+  const clearMenuStore = useActionMenuStore((store) => store.clearMenuStore)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [activeIndex, setActiveIndex] = useState<number>(0)
@@ -102,7 +103,7 @@ const MenuActionForm: React.FC<MenuActionFormProps> = ({ action }) => {
     const updatedForm = withFooter(form)
     try {
       await performer(actionDetails?.actionGroupId, action.actionId, { formData: updatedForm, parent: true })
-      useActionMenuStore.getState().clearMenuStore()
+      clearMenuStore()
     } catch (err) {
       mog('Unable to update data')
     }

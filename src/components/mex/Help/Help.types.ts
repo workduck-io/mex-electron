@@ -13,5 +13,6 @@ export interface HelpState {
   changeShortcut: (keybinding: Shortcut) => void
   shortcuts: Record<keyof typeof defaultShortcuts, Shortcut>
   toggleModal: () => void
+  clearShortcuts?: () => void
   closeModal: () => void
 }

@@ -227,12 +227,12 @@ const SearchView = <Item,>({
     if (newSearchTerm === '' && initialItems.length > 0) {
       // const res = onSearch(newSearchTerm)
       const filtered = filterResults ? filterResults(initialItems) : initialItems
-      mog('ExecuteSearch - Initial', { newSearchTerm, currentFilters, filtered, initialItems })
+      // mog('ExecuteSearch - Initial', { newSearchTerm, currentFilters, filtered, initialItems })
       setResult(filtered, newSearchTerm)
     } else {
       const res = await onSearch(newSearchTerm)
       const filtered = filterResults ? filterResults(res) : res
-      mog('ExecuteSearch - onNew', { newSearchTerm, currentFilters, filtered, res })
+      // mog('ExecuteSearch - onNew', { newSearchTerm, currentFilters, filtered, res })
       setResult(filtered, newSearchTerm)
     }
   }
@@ -241,7 +241,7 @@ const SearchView = <Item,>({
     () => () => {
       // mog('SearchFiltersUpdate', { result, currentFilters })
       // const results = applyCurrentFilters(result)
-      mog('updating results', { result, currentFilters })
+      // mog('updating results', { result, currentFilters })
       // setOnlyResult(results)
       executeSearch(searchTerm)
     },

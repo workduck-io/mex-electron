@@ -6,6 +6,7 @@ export const StyledActionFormContainer = styled.form`
   margin-top: 0.5rem;
   display: flex;
   flex-direction: column;
+  padding-bottom: 8rem;
 `
 
 export const ActionRow = styled.div<{ isRow?: boolean }>`
@@ -13,6 +14,6 @@ export const ActionRow = styled.div<{ isRow?: boolean }>`
   margin: ${({ theme }) => theme.spacing.tiny};
   align-items: center;
   gap: 0 1rem;
-  min-width: 60vw;
-  max-width: 60vw;
+  min-width: 70%;
+  max-width: 70%;
 `

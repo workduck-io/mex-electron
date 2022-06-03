@@ -2,26 +2,24 @@ import React, { useEffect, useMemo } from 'react'
 import { useSpring } from 'react-spring'
 import { MenuContainer, MenuBody, MenuHeader, Overlay, MenuTitle } from './styled'
 import { groupBy } from 'lodash'
-import { useSpotlightAppStore } from '@store/app.spotlight'
-import useActionMenuStore from './useActionMenuStore'
+import { useActionMenuStore } from './useActionMenuStore'
 import MenuDisplay from './MenuDisplay'
 import { useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import { useTheme } from 'styled-components'
-import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { MexIcon } from '@style/Layouts'
+import { mog } from '@utils/lib/helper'
 
 type MenuProps = {}
 
 const Menu: React.FC<MenuProps> = () => {
-  const activeMenuAction = useActionMenuStore((store) => store.activeMenuAction)
-  const activeMenuItem = useSpotlightAppStore((store) => store.viewData)
+  const activeAction = useActionStore()?.activeAction
+  const activeMenuItem = useActionStore((store) => store.viewData)
+  const setIsMenuOpen = useActionStore((store) => store.setIsMenuOpen)
   const clearMenuStore = useActionMenuStore((store) => store.clearMenuStore)
+  const activeMenuAction = useActionMenuStore((store) => store.activeMenuAction)
 
   const theme = useTheme()
-
-  const activeAction = useActionStore((store) => store.activeAction)
-  const setIsMenuOpen = useSpotlightAppStore((store) => store.setIsMenuOpen)
 
   const { getConfig, getConfigWithActionId } = useActionPerformer()
 
@@ -37,11 +35,9 @@ const Menu: React.FC<MenuProps> = () => {
       width: '0'
     },
     to: {
-      width: '38vw'
+      width: '20rem'
     }
   })
-
-  const { activeItem } = useSpotlightContext()
 
   const onOutsideClick = (e: any) => {
     setIsMenuOpen(false)
@@ -50,7 +46,6 @@ const Menu: React.FC<MenuProps> = () => {
 
   const header = useMemo(() => {
     const title = activeMenuItem?.display?.filter((item) => item.type === 'title')?.[0]
-    const activeAction = useActionStore.getState().activeAction
     const actionDetails = getConfig(activeAction?.actionGroupId, activeMenuAction?.actionId)
 
     return { subHeading: actionDetails?.name, heading: title }
@@ -66,7 +61,7 @@ const Menu: React.FC<MenuProps> = () => {
         <MenuHeader id="wd-mex-action-menu-heading">
           <MexIcon
             color={theme.colors.primary}
-            icon={activeItem?.item?.icon}
+            icon={activeAction?.icon}
             height="1rem"
             width="1rem"
             margin="0 0.5rem"

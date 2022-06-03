@@ -56,7 +56,7 @@ export const InputBlock = styled(Input)`
 export const NotFoundText = styled.div`
   width: 100%;
   flex-direction: column;
-  height: 65vh;
+  height: 350px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -173,7 +173,7 @@ export const ReactSelectStyles = (theme: DefaultTheme) => ({
     ...provided,
     // width: state.selectProps.width,
     color: state.selectProps.menuColor,
-    backgroundColor: theme.colors.gray[8],
+    backgroundColor: theme.colors.background.modal,
     padding: `${theme.spacing.small} ${theme.spacing.small}`
     // padding: 20,
   }),
@@ -203,9 +203,9 @@ export const StyledSelect = (props: any) => {
       captureMenuScroll
       blurInputOnSelect
       menuShouldBlockScroll
-      {...props}
       theme={theme.additional.reactSelect}
       styles={ReactSelectStyles(theme)}
+      {...props}
     ></Select>
   )
 }

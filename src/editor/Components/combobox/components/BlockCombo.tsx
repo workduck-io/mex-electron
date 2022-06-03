@@ -12,7 +12,6 @@ import { ComboboxShortcuts, ComboSeperator, StyledComboHeader } from './styled'
 import { replaceFragment } from '../hooks/useComboboxOnKeyDown'
 import { getPlateEditorRef } from '@udecode/plate'
 import { getPathFromNodeIdHookless } from '../../../../hooks/useLinks'
-import { mog } from '../../../../utils/lib/helper'
 import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
 import { BlockIcons } from '../../Blocks/BlockIcons'
 import { DisplayShortcut } from '../../../../components/mex/Shortcuts'
@@ -25,7 +24,7 @@ type BlockComboProps = {
   isNew?: boolean
 }
 
-const BlockCombo = ({ nodeId, onSelect, isNew, shortcuts }: BlockComboProps) => {
+const BlockCombo = ({ nodeId, onSelect, shortcuts }: BlockComboProps) => {
   const [index, setIndex] = useState<number>(0)
   const [blocks, setBlocks] = useState<Array<any>>(undefined)
 
@@ -60,8 +59,6 @@ const BlockCombo = ({ nodeId, onSelect, isNew, shortcuts }: BlockComboProps) => 
             })
             ?.slice(0, 5)
 
-          // mog('BLOCKS OF NODEID', { topFiveBlocks })
-
           setBlocks(topFiveBlocks)
           setIndex(0)
           // setBlocks(res)
@@ -75,7 +72,6 @@ const BlockCombo = ({ nodeId, onSelect, isNew, shortcuts }: BlockComboProps) => 
               return restBlock
             })
             ?.slice(0, 5)
-          // mog('BLOCKS', { topFiveBlocks })
 
           setBlocks(topFiveBlocks)
           setIndex(0)
@@ -88,30 +84,32 @@ const BlockCombo = ({ nodeId, onSelect, isNew, shortcuts }: BlockComboProps) => 
 
   useEffect(() => {
     const handler = (event) => {
-      if (event.key === KEYBOARD_KEYS.Escape) {
-        event.preventDefault()
-        clearBlockSearch()
-      }
-      if (event.key === KEYBOARD_KEYS.ArrowDown) {
-        event.preventDefault()
+      switch (event.key) {
+        case KEYBOARD_KEYS.ArrowDown:
+          event.preventDefault()
+          if (blocks) {
+            setIndex((index) => {
+              const nextIndex = index < blocks.length - 1 ? index + 1 : index
+              return nextIndex
+            })
+          }
 
-        if (blocks) {
-          setIndex((index) => {
-            const nextIndex = index < blocks.length - 1 ? index + 1 : index
-            return nextIndex
-          })
-        }
-      }
+          break
+        case KEYBOARD_KEYS.ArrowUp:
+          event.preventDefault()
 
-      if (event.key === KEYBOARD_KEYS.ArrowUp) {
-        event.preventDefault()
+          if (blocks) {
+            setIndex((index) => {
+              const nextIndex = index > 0 ? index - 1 : index
+              return nextIndex
+            })
+          }
 
-        if (blocks) {
-          setIndex((index) => {
-            const nextIndex = index > 0 ? index - 1 : index
-            return nextIndex
-          })
-        }
+          break
+        case KEYBOARD_KEYS.Escape:
+          event.preventDefault()
+          clearBlockSearch()
+          break
       }
     }
 

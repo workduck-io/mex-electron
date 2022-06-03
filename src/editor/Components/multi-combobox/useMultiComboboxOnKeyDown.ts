@@ -1,4 +1,5 @@
 import { getBlockAbove, getPluginType, insertNodes, PEditor, PlateEditor, TElement } from '@udecode/plate'
+import { mog } from '@utils/lib/helper'
 import { Editor, Transforms } from 'slate'
 import { ReactEditor } from 'slate-react'
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
@@ -70,7 +71,11 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         const textAfterBlockTrigger = useComboboxStore.getState().search.textAfterBlockTrigger
 
         // mog('Inserting from here', { activeBlock, isBlockTriggered })
-        if ((item.type === QuickLinkType.backlink || type === ELEMENT_INLINE_BLOCK) && isBlockTriggered && activeBlock) {
+        if (
+          (item.type === QuickLinkType.backlink || type === ELEMENT_INLINE_BLOCK) &&
+          isBlockTriggered &&
+          activeBlock
+        ) {
           const blockValue = activeBlock?.text ? getSlug(activeBlock.text) : ''
           const withBlockInfo = {
             type,

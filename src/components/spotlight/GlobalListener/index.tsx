@@ -24,7 +24,8 @@ import { useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
 import { useTokenData } from '../../../hooks/useLocalData'
 import { useRecieveTokens } from '../../../hooks/useSyncData'
 import { useActionStore, UpdateActionsType } from '../Actions/useActionStore'
-import { useActionPerformer } from '../Actions/useActionPerformer'
+import { useActionsPerfomerClient } from '../Actions/useActionPerformer'
+import { useActionsCache } from '../Actions/useActionsCache'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
@@ -40,6 +41,7 @@ const GlobalListener = memo(() => {
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const addILink = useDataStore((store) => store.addILink)
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
+  const addResultHash = useActionsCache((store) => store.addResultHash)
 
   const { getTokenData } = useTokenData()
   // const { initActionsInStore, initActionsOfGroup } = useActions()
@@ -47,16 +49,17 @@ const GlobalListener = memo(() => {
   const { onSave } = useSaver()
   const { init, update } = useInitialize()
   const { identifyUser } = useAnalytics()
-  const { initActionPerfomerClient } = useActionPerformer()
+  const { initActionPerfomerClient } = useActionsPerfomerClient()
   const { goTo } = useRouting()
 
-  const addActions = useActionStore((store) => store.addActions)
-  const addGroupedActions = useActionStore((store) => store.addGroupedActions)
-  const setActionGroups = useActionStore((store) => store.setActionGroups)
-  const removeActionsByGroupId = useActionStore((store) => store.removeActionsByGroupId)
-  const setConnectedGroups = useActionStore((store) => store.setConnectedGroups)
-
-  // const { initActionPerformers } = useActionPerformer()
+  const addActions = useActionsCache((store) => store.addActions)
+  const addGroupedActions = useActionsCache((store) => store.addGroupedActions)
+  const setActionGroups = useActionsCache((store) => store.setActionGroups)
+  const removeActionsByGroupId = useActionsCache((store) => store.removeActionsByGroupId)
+  const setConnectedGroups = useActionsCache((store) => store.setConnectedGroups)
+  const clearActionStore = useActionStore((store) => store.clear)
+  const clearActionCache = useActionsCache((store) => store.clearActionCache)
+  const setView = useActionStore((store) => store.setView)
 
   const userDetails = useAuthStore((state) => state.userDetails)
 
@@ -82,7 +85,7 @@ const GlobalListener = memo(() => {
         setSelection(undefined)
       } else {
         // * If user captures a content when in action mode, then we need to redirect him to the home page
-        useSpotlightAppStore.getState().setView(undefined)
+        setView(undefined)
         goTo(ROUTE_PATHS.home, NavigationType.replace)
         setSpotlightTrigger()
         setTemp(data)
@@ -143,7 +146,6 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.on(IpcAction.NEW_RECENT_ITEM, (_event, { data }) => {
-      mog('Data is coming ', { data })
       addRecent(data)
     })
 
@@ -156,11 +158,14 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.on(IpcAction.UPDATE_ACTIONS, (_event, arg) => {
-      const { groups, actionList, actions, actionGroupId, connectedGroups, type } = arg?.data
+      const { groups, actionList, actions, actionGroupId, connectedGroups, type, key, hash } = arg?.data
 
-      if (type === UpdateActionsType.CLEAR) useActionStore.getState().clear()
-      else if (type === UpdateActionsType.REMOVE_ACTION_BY_GROUP_ID) removeActionsByGroupId(actions)
+      if (type === UpdateActionsType.CLEAR) {
+        clearActionStore()
+        clearActionCache()
+      } else if (type === UpdateActionsType.REMOVE_ACTION_BY_GROUP_ID) removeActionsByGroupId(actions)
       else if (type === UpdateActionsType.AUTH_GROUPS) setConnectedGroups(connectedGroups)
+      else if (type === UpdateActionsType.UPDATE_HASH) addResultHash(key, hash)
       else if (groups) setActionGroups(groups)
       else if (actionList) addActions(actionList)
       else if (actions && actionGroupId) {

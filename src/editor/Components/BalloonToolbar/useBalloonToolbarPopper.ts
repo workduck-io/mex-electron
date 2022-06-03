@@ -41,13 +41,6 @@ export const useBalloonToolbarPopper = (options: UsePopperPositionOptions) => {
   }, [isHidden, selectionExpanded])
 
   useEffect(() => {
-    // mog('BlurSelectHide', {
-    //   selectionText,
-    //   selectionExpanded,
-    //   blurSelection,
-    //   blurSelectionText,
-    //   focused,
-    // })
     if (!focused && !isBalloonFocused) {
       setIsHidden(true)
     } else if (!selectionText) {

@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import Row from './Row'
 import Project from '../Project'
-import { mog } from '../../../../utils/lib/helper'
-import { useSpotlightAppStore } from '../../../../store/app.spotlight'
+import { useActionStore } from '@components/spotlight/Actions/useActionStore'
+import { useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
+import { useActionMenuStore } from '../ActionMenu/useActionMenuStore'
 
 type ViewProps = {
   item: any
@@ -17,7 +18,7 @@ const StyledView = styled.section`
   flex-direction: row;
   width: 100%;
   margin-top: 0.5rem;
-  height: 90vh;
+  height: 100%;
   max-height: 90vh;
 `
 
@@ -42,8 +43,19 @@ const ViewMeta = styled.div`
   overflow: hidden auto;
 `
 
-export const ViewPage = () => {
-  const viewData = useSpotlightAppStore((store) => store.viewData)
+export const ViewPage: React.FC<{ context?: any }> = ({ context }) => {
+  const viewData = useActionStore((store) => store.viewData)
+  const setViewData = useActionStore((store) => store.setViewData)
+  const needsRefresh = useActionMenuStore((store) => store.needsRefresh)
+  const { performer } = useActionPerformer()
+
+  useEffect(() => {
+    if (context?.prevContext && context?.view) {
+      performer(context?.actionGroupId, context?.actionId).then((res) => {
+        if (res) setViewData({ context: res?.contextData, display: res?.displayData })
+      })
+    }
+  }, [context, needsRefresh])
 
   return <View item={viewData?.display} />
 }

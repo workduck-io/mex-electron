@@ -11,6 +11,7 @@ import { cleanString } from '../../../../data/Defaults/idPrefixes'
 import { QuickLinkType } from '../../../mex/NodeSelect/NodeSelect'
 import { ItemShortcutContainer, RowTitle } from './styled'
 import { BodyFont } from '@style/spotlight/global'
+import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
 
 export const ActionIcon = styled.div`
   display: flex;
@@ -62,18 +63,19 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
   const { search, selection, activeItem } = useSpotlightContext()
 
   const newNodeName = cleanString(search.type === CategoryType.backlink ? search.value.slice(2) : search.value)
+  const { mexIcon } = getIconType(item?.icon ?? 'codicon:circle-filled')
 
   return (
     <StyledRow background={active} onClick={onClick}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Dot active={active ? 'true' : ''} />
         <div style={{ display: 'flex', alignItems: 'center', marginRight: '1rem' }}>
-          <Icon
+          <ProjectIconMex
+            isMex={mexIcon}
             color={theme.colors.primary}
-            style={{ marginRight: '0.75rem' }}
-            height={20}
-            width={20}
+            size={18}
             icon={item?.icon}
+            margin="0 0.75rem 0 0"
           />
           <div style={{ maxWidth: '200px' }}>
             <RowTitle>

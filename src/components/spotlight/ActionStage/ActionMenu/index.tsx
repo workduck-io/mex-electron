@@ -3,12 +3,13 @@ import Default from './Default'
 import Menu from './Menu'
 import tinykeys from 'tinykeys'
 import { groupBy } from 'lodash'
-import useActionMenuStore from './useActionMenuStore'
+import { useActionMenuStore } from './useActionMenuStore'
 import { useMenuPerformer } from './useMenuPerfomer'
-import { useSpotlightAppStore } from '@store/app.spotlight'
 import { MenuPostActionConfig } from '@workduck-io/action-request-helper'
 import { useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
+import { useSelected } from 'slate-react'
+import { getPlateEditorRef, usePlateEditorRef } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
 
 type ActionMenuProps = {
@@ -18,10 +19,13 @@ type ActionMenuProps = {
 
 const ActionMenu: React.FC<ActionMenuProps> = ({ title, shortcut }) => {
   const isOpen = useActionMenuStore((store) => store.isActionMenuOpen)
-  const setIsMenuOpen = useSpotlightAppStore((store) => store.setIsMenuOpen)
+  const setIsMenuOpen = useActionStore((store) => store.setIsMenuOpen)
   const toggleActionMenu = useActionMenuStore((store) => store.toggleActionMenu)
   const setActiveMenuAction = useActionMenuStore((store) => store.setActiveMenuAction)
   const setIsActiveMenuOpen = useActionMenuStore((store) => store.setIsActionMenuOpen)
+  const activeMenuAction = useActionMenuStore((store) => store.activeMenuAction)
+  const selected = useSelected()
+  const editor = usePlateEditorRef()
 
   const activeAction = useActionStore((store) => store.activeAction)
 
@@ -40,7 +44,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ title, shortcut }) => {
     event.preventDefault()
     event.stopPropagation()
 
-    if (!useActionMenuStore.getState().activeMenuAction) {
+    if (!activeMenuAction) {
       runAction(menuAction)
     }
   }
@@ -56,38 +60,39 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ title, shortcut }) => {
   }
 
   useEffect(() => {
-    const unsubscribe = tinykeys(window, {
-      '$mod+K': (event) => {
-        event.preventDefault()
-        setIsMenuOpen(false)
-        toggleActionMenu()
-      },
-      Tab: (event) => {
-        if (!isOpen) return
-        event.preventDefault()
-        event.stopPropagation()
-      },
-      Escape: (event) => {
-        if (!isOpen) return
-        event.preventDefault()
-        event.stopPropagation()
-        const activeMenuAction = useActionMenuStore.getState().activeMenuAction
+    const unsubscribe =
+      (selected || !editor) &&
+      tinykeys(window, {
+        '$mod+K': (event) => {
+          event.preventDefault()
+          setIsMenuOpen(false)
+          toggleActionMenu()
+        },
+        Tab: (event) => {
+          if (!isOpen) return
+          event.preventDefault()
+          event.stopPropagation()
+        },
+        Escape: (event) => {
+          if (!isOpen) return
+          event.preventDefault()
+          event.stopPropagation()
 
-        // * go back to previous step
-        if (activeMenuAction) {
-          setActiveMenuAction(undefined)
-        } else {
-          setIsActiveMenuOpen(false)
-        }
-      },
-      ...addMenuActionListener(menuItems)
-    })
+          // * go back to previous step
+          if (activeMenuAction) {
+            setActiveMenuAction(undefined)
+          } else {
+            setIsActiveMenuOpen(false)
+          }
+        },
+        ...addMenuActionListener(menuItems)
+      })
 
     return () => {
       // * remove Menu listeners
-      unsubscribe()
+      if (unsubscribe) unsubscribe()
     }
-  }, [isOpen])
+  }, [isOpen, activeMenuAction, selected, editor])
 
   if (!isOpen) return <Default title={title} shortcut={shortcut} />
 

@@ -66,7 +66,6 @@ const ContentEditor = () => {
       const keywords = removeStopwords(rawText)
 
       const results = await queryIndexWithRanking(['node', 'snippet'], keywords.join(' '))
-      mog('suggestions', { val, results })
 
       const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
 
@@ -81,7 +80,6 @@ const ContentEditor = () => {
 
   const onChangeSave = async (val: any[]) => {
     if (val && node && node.nodeid !== '__null__') {
-      mog('change')
       setIsEditing(false)
       addOrUpdateValBuffer(node.nodeid, val)
     }
@@ -89,7 +87,12 @@ const ContentEditor = () => {
 
   const editorId = useMemo(() => getEditorId(node.nodeid, false), [node, fetchingContent])
 
-  const onFocusClick = () => {
+  const onFocusClick = (ev) => {
+    ev.preventDefault()
+    ev.stopPropagation()
+    // ! TODO: Remove this after actions in editor
+    ev?.stopImmediatePropagation()
+
     if (editorRef) {
       if (editorWrapperRef.current) {
         const el = editorWrapperRef.current
@@ -135,7 +138,7 @@ const ContentEditor = () => {
 
         {isBlockMode ? <BlockInfoBar /> : <Metadata node={node} />}
 
-        <EditorWrapper onClick={onFocusClick} comboboxOpen={isComboOpen} ref={editorWrapperRef}>
+        <EditorWrapper comboboxOpen={isComboOpen} ref={editorWrapperRef}>
           <Editor
             getSuggestions={getSuggestions}
             showBalloonToolbar

@@ -13,8 +13,8 @@ import { useQuickLinks } from '../../../hooks/useQuickLinks'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { useSnippets } from '../../../hooks/useSnippets'
 import { useSearch as useSearchHook } from '../../../hooks/useSearch'
-import { useActionStore } from '../Actions/useActionStore'
 import { getTodayTaskNodePath } from '@hooks/useTaskFromSelection'
+import { useActionsCache } from '../Actions/useActionsCache'
 
 export const CREATE_NEW_ITEM: ListItemType = {
   title: 'Create new ',
@@ -68,7 +68,7 @@ export const useSearch = () => {
   const { search } = useSpotlightContext()
   const { queryIndex } = useSearchHook()
   const { getQuickLinks } = useQuickLinks()
-  const actions = useActionStore((store) => store.actions)
+  const actions = useActionsCache((store) => store.actions)
   const { getSnippet } = useSnippets()
 
   const searchInList = async () => {
@@ -110,7 +110,7 @@ export const useSearch = () => {
 
       case CategoryType.search:
         const nodeItems = await queryIndex('node', search.value)
-        const snippetItems = await queryIndex('snippet', search.value)
+        const snippetItems = await queryIndex(['snippet', 'template'], search.value)
 
         const actionItems = getSearchResults(search.value, actions, { keySelector: (obj) => obj.title })
         const localNodes = []

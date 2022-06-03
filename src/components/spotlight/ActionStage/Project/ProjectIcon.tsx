@@ -4,7 +4,6 @@ import styled, { css, useTheme } from 'styled-components'
 import { MexIcon } from '../../../../style/Layouts'
 import Tippy from '@tippyjs/react'
 import { TemplateCss, TemplateItemProp } from './ProjectTitle'
-import { mog } from '@utils/lib/helper'
 
 export const FieldLabel = styled.div`
   display: flex;
@@ -49,38 +48,44 @@ const ProjectIconContainer = styled.span<{ isView: boolean }>`
 
 export const DEFAULT_IMAGE_URL = 'https://www.gravatar.com/avatar/?r=g&d=identicon'
 
-export const ProjectIconMex: React.FC<{ isMex: boolean; icon: string; size?: number; color?: string }> = forwardRef(
-  (props, ref) => {
-    const theme = useTheme()
-    // eslint-disable-next-line react/prop-types
-    const { isMex, icon, size, color } = props
+export const ProjectIconMex: React.FC<{
+  isMex?: boolean
+  margin?: string
+  icon: string
+  size?: number
+  color?: string
+}> = forwardRef((props, ref) => {
+  const theme = useTheme()
+  // eslint-disable-next-line react/prop-types
+  const { isMex, icon, size, color, margin } = props
 
-    if (isMex)
-      return (
-        <MexIcon
-          ref={ref as any}
-          icon={icon}
-          noHover
-          height={size ?? 20}
-          width={size ?? 20}
-          color={color ?? theme.colors.primary}
-        />
-      )
-
+  if (isMex)
     return (
-      <img
+      <MexIcon
         ref={ref as any}
-        onError={(e) => {
-          e.currentTarget.onerror = null
-          e.currentTarget.src = DEFAULT_IMAGE_URL
-        }}
-        src={icon}
-        height={size ? size : 24}
-        width={size ? size : 24}
+        icon={icon}
+        noHover
+        margin={margin}
+        height={size ?? 20}
+        width={size ?? 20}
+        color={color ?? theme.colors.primary}
       />
     )
-  }
-)
+
+  return (
+    <img
+      ref={ref as any}
+      onError={(e) => {
+        e.currentTarget.onerror = null
+        e.currentTarget.src = DEFAULT_IMAGE_URL
+      }}
+      style={{ margin: margin ?? '0' }}
+      src={icon}
+      height={size ? size : 24}
+      width={size ? size : 24}
+    />
+  )
+})
 
 ProjectIconMex.displayName = 'ProjectIconMex'
 

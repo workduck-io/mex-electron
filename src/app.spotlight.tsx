@@ -1,4 +1,5 @@
-import { mog } from '@utils/lib/helper'
+import { actionStore, Provider } from '@components/spotlight/Actions/useActionStore'
+import { actionMenuStore, MenuProvider } from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
 import React from 'react'
 import { ThemeProvider } from 'styled-components'
 import { VersionSetter } from './components/mex/Init/VersionSetter'
@@ -19,12 +20,16 @@ export default function App() {
   const currentTheme = theme?.themeData ?? defaultThemes[0].themeData
 
   return (
-    <ThemeProvider theme={currentTheme}>
-      <SpotlightProvider>
-        <Routes />
-        <OnBoardingTour steps={SpotlightOnboarding} />
-        <VersionSetter />
-      </SpotlightProvider>
-    </ThemeProvider>
+    <Provider createStore={actionStore}>
+      <MenuProvider createStore={actionMenuStore}>
+        <ThemeProvider theme={currentTheme}>
+          <SpotlightProvider>
+            <Routes />
+            <OnBoardingTour steps={SpotlightOnboarding} />
+            <VersionSetter />
+          </SpotlightProvider>
+        </ThemeProvider>
+      </MenuProvider>
+    </Provider>
   )
 }

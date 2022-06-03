@@ -14,7 +14,9 @@ import useAnalytics from '../analytics'
 import { Properties, CustomEvents } from '../analytics/events'
 import { mog } from '../../utils/lib/helper'
 import useActions from '../../components/spotlight/Actions/useActions'
-import { useActionPerformer } from '../../components/spotlight/Actions/useActionPerformer'
+import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActionPerformer'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
+import { useLayoutStore } from '@store/useLayoutStore'
 
 interface UserDetails {
   email: string
@@ -70,10 +72,12 @@ export const useAuthentication = () => {
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const setRegistered = useAuthStore((store) => store.setRegistered)
   const { updateDefaultServices, updateServices } = useUpdater()
+  const clearActionCache = useActionsCache((store) => store.clearActionCache)
   const { signIn, signUp, verifySignUp, signOut, googleSignIn, refreshToken } = useAuth()
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
   const { clearActionStore, getGroupsToView } = useActions()
-  const { initActionPerfomerClient } = useActionPerformer()
+  const { initActionPerfomerClient } = useActionsPerfomerClient()
+  const setShowLoader = useLayoutStore((store) => store.setShowLoader)
   // const { getNodesByWorkspace } = useApi()
 
   interface AuthDetails {
@@ -106,9 +110,11 @@ export const useAuthentication = () => {
           const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
           initActionPerfomerClient(workspaceDetails.id)
 
+          setShowLoader(true)
           try {
             await getGroupsToView()
           } catch (err) {
+            setShowLoader(false)
             mog('Unable to init action groups into view', { err })
           }
 
@@ -121,6 +127,7 @@ export const useAuthentication = () => {
             [Properties.ROLE]: d.data.metadata.roles,
             [Properties.WORKSPACE_ID]: d.data.group
           })
+          setShowLoader(false)
           addEventProperties({ [CustomEvents.LOGGED_IN]: true })
           return { userDetails, workspaceDetails }
         })
@@ -129,6 +136,7 @@ export const useAuthentication = () => {
         // .then()
         .catch((e) => {
           console.error({ e })
+          setShowLoader(false)
           return e.toString() as string
         })
     }
@@ -152,10 +160,12 @@ export const useAuthentication = () => {
             const userDetails = { email: result.userCred.email, userId: result.userCred.userId }
             const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
             initActionPerfomerClient(workspaceDetails.id)
+            setShowLoader(true)
 
             try {
               await getGroupsToView()
             } catch (err) {
+              setShowLoader(false)
               mog('Unable to init action groups into view', { err })
             }
 
@@ -171,6 +181,7 @@ export const useAuthentication = () => {
             addEventProperties({ [CustomEvents.LOGGED_IN]: true })
 
             setAuthenticated(userDetails, workspaceDetails)
+            setShowLoader(false)
           })
           /*
            * TODO: FIX THIS
@@ -213,6 +224,7 @@ export const useAuthentication = () => {
                 try {
                   await refreshToken()
                 } catch (error) {
+                  setShowLoader(false)
                   mog('Error: ', { error })
                 }
                 const userDetails = { email: uCred.email, userId: uCred.userId }
@@ -236,12 +248,17 @@ export const useAuthentication = () => {
                 })
                 addEventProperties({ [CustomEvents.LOGGED_IN]: true })
                 setAuthenticated(userDetails, workspaceDetails)
+                setShowLoader(false)
               })
               .catch(console.error)
+              .finally(() => {
+                setShowLoader(false)
+              })
           })
       }
     } catch (error) {
       console.log(error)
+      setShowLoader(false)
     }
   }
 
@@ -282,6 +299,8 @@ export const useAuthentication = () => {
       email: sensitiveData.email,
       roles: sensitiveData.roles.reduce((prev, cur) => `${prev},${cur.value}`, '').slice(1)
     }
+    setShowLoader(true)
+
     const vSign = await verifySignUp(code, formMetaData).catch(console.error)
     // console.log({ vSign })
 
@@ -322,15 +341,20 @@ export const useAuthentication = () => {
         try {
           await getGroupsToView()
         } catch (err) {
+          setShowLoader(false)
           mog('Unable to init action groups into view', { err })
         }
 
         ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
         setAuthenticated({ email: sensitiveData.email }, { id: d.data.id, name: d.data.name })
+        setShowLoader(false)
       })
       .then(updateDefaultServices)
       .then(updateServices)
-      .catch(console.error)
+      .catch((err) => {
+        setShowLoader(false)
+        mog('Error: ', { error: 'Unable to create workspace' })
+      })
 
     if (vSign) {
       setRegistered(false)
@@ -342,6 +366,7 @@ export const useAuthentication = () => {
     signOut().then(() => {
       setUnAuthenticated()
       clearActionStore()
+      clearActionCache()
       ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: false })
     })
   }

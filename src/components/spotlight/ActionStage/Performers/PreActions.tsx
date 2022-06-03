@@ -2,7 +2,6 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { ReturnType } from '@workduck-io/action-request-helper'
 import Performer from './Performer'
-import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { useActionStore } from '../../Actions/useActionStore'
 import ActionFormElement, { ElementContainer } from '../Forms/Fields/ActionFormElement'
 
@@ -19,14 +18,14 @@ const Flex = styled.div<{ isForm?: boolean }>`
     css`
       flex-direction: column;
       ${ElementContainer} {
-        min-width: 60vw;
+        min-width: 60%;
       }
     `}
   border-radius: ${({ theme }) => theme.borderRadius.small};
 `
 
 const PreActions: React.FC<PreActionProps> = ({ actions }) => {
-  const view = useSpotlightAppStore((store) => store.view)
+  const view = useActionStore((store) => store.view)
   const activeAction = useActionStore((store) => store.activeAction)
 
   if (view === 'item') return <></>

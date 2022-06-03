@@ -7,22 +7,22 @@ import { Icon } from '@iconify/react'
 import { useActionStore } from '../../Actions/useActionStore'
 import { ActionItem } from '../../Home/styled'
 import { KEYBOARD_KEYS } from '../../Home/components/List'
-import { useSpotlightAppStore } from '../../../../store/app.spotlight'
-import { NavigationType, useRouting } from '../../../../views/routes/urls'
+import { useRouting } from '../../../../views/routes/urls'
 import { Virtuoso } from 'react-virtuoso'
-import useActionMenuStore from '../ActionMenu/useActionMenuStore'
+import { useActionMenuStore } from '../ActionMenu/useActionMenuStore'
+import { getPlateEditorRef } from '@udecode/plate'
 
 export const FullWidth = styled.div<{ narrow: boolean }>`
   width: 100%;
   ${({ narrow }) =>
     narrow
       ? css`
-          height: calc(84vh - 2.75rem);
-          max-height: calc(84vh - 2.75rem);
+          height: calc(430px - 2.75rem);
+          max-height: calc(430px - 2.75rem);
         `
       : css`
-          height: 84vh;
-          max-height: 84vh;
+          height: 430px;
+          max-height: 430px; ;
         `}
   overflow-y: auto;
   overflow-behavior: contain;
@@ -44,9 +44,9 @@ const List: React.FC<ListProps> = ({ items, context }) => {
   const theme = useTheme()
   const activeAction = useActionStore((store) => store.activeAction)
   const [activeIndex, setActiveIndex] = useState(0)
-  const setViewData = useSpotlightAppStore((store) => store.setViewData)
-  const setView = useSpotlightAppStore((store) => store.setView)
-  const isMenuOpen = useSpotlightAppStore((store) => store.isMenuOpen)
+  const setViewData = useActionStore((store) => store.setViewData)
+  const setView = useActionStore((store) => store.setView)
+  const isMenuOpen = useActionStore((store) => store.isMenuOpen)
   const isActionMenuOpen = useActionMenuStore((store) => store.isActionMenuOpen)
 
   const { goTo } = useRouting()
@@ -62,9 +62,8 @@ const List: React.FC<ListProps> = ({ items, context }) => {
 
   const onSelect = (i: any) => {
     setActiveIndex(i)
-    setView('item')
     setViewItemContext(i)
-    goTo('/action/view', NavigationType.push)
+    // goTo('/action/view', NavigationType.push)
   }
 
   const nextItem = () => {
@@ -73,6 +72,11 @@ const List: React.FC<ListProps> = ({ items, context }) => {
       scrollTo(nextIndex)
       return nextIndex
     })
+  }
+
+  const onDoubleClick = (index: number) => {
+    onSelect(index)
+    setView('item')
   }
 
   const prevItem = () => {
@@ -100,6 +104,10 @@ const List: React.FC<ListProps> = ({ items, context }) => {
 
   useEffect(() => {
     const handler = (event) => {
+      const isEditor = getPlateEditorRef()
+
+      if (isEditor) return
+
       switch (event.code) {
         case KEYBOARD_KEYS.ArrowUp:
           event.preventDefault()
@@ -114,7 +122,7 @@ const List: React.FC<ListProps> = ({ items, context }) => {
         case KEYBOARD_KEYS.Enter:
           event.preventDefault()
           event.stopPropagation()
-          onSelect(activeIndex)
+          onDoubleClick(activeIndex)
           break
         default:
           break
@@ -148,7 +156,7 @@ const List: React.FC<ListProps> = ({ items, context }) => {
         ref={parentRef}
         itemContent={(index, item) => {
           return (
-            <ActionItem key={index} onClick={() => onSelect(index)}>
+            <ActionItem key={index} onDoubleClick={() => onDoubleClick(index)} onClick={() => onSelect(index)}>
               <Row active={index === activeIndex} row={item.slice(0, ROW_ITEMS_LIMIT)} />
             </ActionItem>
           )

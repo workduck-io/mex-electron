@@ -5,7 +5,7 @@ import { useActionStore } from '../../Actions/useActionStore'
 import ActionInput from './Fields/ActionInput'
 import styled from 'styled-components'
 import { Controller, useFormContext } from 'react-hook-form'
-import { mog } from '@utils/lib/helper'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 
 export type FormSelectorProps = {
   element: FormField
@@ -20,12 +20,13 @@ export const ActionSelector = styled(Selector)`
 `
 
 const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAction, defaultValue, saveSelected }) => {
-  const getCacheResult = useActionStore((store) => store.getCacheResult)
+  const getCacheResult = useActionsCache((store) => store.getCacheResult)
   const activeAction = useActionStore((store) => store.activeAction)
+  const blockId = useActionStore((store) => store.element)?.id
 
   const { control } = useFormContext()
 
-  const context = getCacheResult(element.actionId)
+  const context = getCacheResult(element.actionId, blockId)
 
   const data = context?.contextData?.map((res) => {
     const displayItem = res?.select
@@ -73,8 +74,6 @@ const FormSelector: React.FC<FormSelectorProps> = ({ element, disabled, isMenuAc
               cacheSelection={!isMenuAction}
               value={getData(value)}
               onChange={({ value }) => {
-                mog(' value of something is here', { value })
-
                 return onChange(saveSelected ? value?.select : value?.select?.value)
               }}
               placeholder={element.options.placeholder}

@@ -24,7 +24,6 @@ export const getCommandExtended = (search: string, keys: Record<string, Combobox
       if (ct.value === 'remind') {
         const searchTerm = search.slice(ct.value.length).trim()
         const parsed = getTimeInText(searchTerm)
-        // mog('getCommandExtended', { parsed, search })
         const text = parsed ? toLocaleString(parsed.time) : undefined
         if (searchTerm !== '')
           return { ...ct, text: text ?? `Set Reminder: ${searchTerm}`, search, desc: parsed?.textWithoutTime }
@@ -39,6 +38,7 @@ export const getCommandExtended = (search: string, keys: Record<string, Combobox
 
   return { isExtended, extendedCommands }
 }
+
 // Handle multiple combobox
 const useMultiComboboxOnChange = (editorId: string, keys: Record<string, ComboboxType>): OnChange => {
   const editor = usePlateEditorRef(editorId)! // eslint-disable-line @typescript-eslint/no-non-null-assertion
@@ -54,8 +54,6 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
     keys
   })
 
-  // const { icon } = comboType
-
   // Construct the correct change handler
   const changeHandler = useCallback(() => {
     const res = comboboxOnChange()
@@ -67,6 +65,7 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
     const key = useComboboxStore.getState().key
 
     const ct = keys[key]
+
     const data = ct.data
 
     if (!data) return false
@@ -84,21 +83,21 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
     // Create for new item
     if (isExtended) {
       searchItems.unshift(...extendedCommands)
-      // dataKeys.push(newItem.text)
     }
 
-    const groups = (searchTerm !== '' ? searchItems : data).reduce((acc, item) => {
-      const type = item.type
+    const groups = (searchTerm !== '' ? searchItems : data)?.reduce((acc, item) => {
+      const type = item?.type
       if (!acc[type]) {
         acc[type] = []
       }
 
-      if (!(acc[type].length === 5))
+      if (!(acc[type].length === 5) || item.extras)
         acc[type].push({
           key: item.value,
           icon: item.icon ?? ct.icon ?? undefined,
           text: item.text,
           extended: item.extended,
+          data: item.extras,
           type
         })
 
@@ -107,6 +106,7 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
 
     const items = Object.values(groups).flat()
     const dataKeys = items.map((i: any) => i.text)
+
     // Create for new item
     if (
       key !== ComboboxKey.SLASH_COMMAND &&
@@ -119,9 +119,6 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
       items.unshift({
         key: '__create_new',
         icon: 'ri:add-circle-line',
-        // data: {
-        //   isNew: true
-        // },
         type: ct.cbKey === 'tag' ? QuickLinkType.tags : QuickLinkType.backlink,
         data: true,
         prefix: CreateNewPrefix,
@@ -129,7 +126,6 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
       })
     }
 
-    // mog('items', { items })
     setItems(items)
 
     return true

@@ -1,15 +1,18 @@
 /* eslint-disable no-case-declarations */
 import { useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import useItemExecutor from '@components/spotlight/Home/actionExecutor'
 import { getListItemFromAction } from '@components/spotlight/Home/helper'
 import { IpcAction } from '@data/IpcAction'
 import { appNotifierWindow } from '@electron/utils/notifiers'
 import { AppType } from '@hooks/useInitialize'
-import { useSpotlightAppStore, ViewDataType } from '@store/app.spotlight'
+import { ViewDataType } from '@store/app.spotlight'
+import { getPlateEditorRef } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
 import { ClickPostActionType, MenuPostActionConfig } from '@workduck-io/action-request-helper'
-import useActionMenuStore from './useActionMenuStore'
+import toast from 'react-hot-toast'
+import { useActionMenuStore } from './useActionMenuStore'
 
 export const useMenuPerformer = () => {
   const { getConfigWithActionId } = useActionPerformer()
@@ -18,6 +21,8 @@ export const useMenuPerformer = () => {
   const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
   const setActiveMenuAction = useActionMenuStore((store) => store.setActiveMenuAction)
   const setNeedsRefresh = useActionMenuStore((store) => store.setNeedsRefresh)
+  const activeAction = useActionStore((store) => store.activeAction)
+  const viewData = useActionStore((store) => store.viewData)
 
   const { itemActionExecutor } = useItemExecutor()
 
@@ -26,8 +31,20 @@ export const useMenuPerformer = () => {
       case ClickPostActionType.COPY_ACTION:
         const text = actionInfo.display.find((d) => d.key === menuAction.key)?.value
         const title = menuAction.label.replace('Copy', 'Copied')
-        appNotifierWindow(IpcAction.COPY_TO_CLIPBOARD, AppType.SPOTLIGHT, { text, html: text, title })
 
+        const showEditorToast = !!getPlateEditorRef()
+
+        const notifyObj = {
+          text,
+          html: text,
+          title,
+          hideToast: showEditorToast
+        }
+
+        appNotifierWindow(IpcAction.COPY_TO_CLIPBOARD, AppType.SPOTLIGHT, notifyObj)
+
+        if (showEditorToast) toast(title)
+        clearMenu()
         break
       case ClickPostActionType.OPEN_URL:
         const url = actionInfo?.display?.find((item) => item.type === 'url')?.value as string
@@ -39,6 +56,7 @@ export const useMenuPerformer = () => {
       case ClickPostActionType.REFRESH_ACTION:
         clearMenu()
         setNeedsRefresh()
+        mog('NEEDS REFRESH')
         break
       case ClickPostActionType.RUN_ACTION:
         performAction(menuAction)
@@ -54,11 +72,9 @@ export const useMenuPerformer = () => {
     const actionDetails = getConfigWithActionId(item.actionId)
 
     if (!actionDetails.form) {
-      const activeAction = useActionStore.getState().activeAction
-      const actionGroups = useActionStore.getState().actionGroups
+      const actionGroups = useActionsCache.getState().actionGroups
       const selection = getPreviousActionValue(activeAction?.id)?.selection
 
-      const viewData = useSpotlightAppStore.getState().viewData
       const prev = selection?.label
 
       const currentLabel = viewData?.context?.select?.label
@@ -81,8 +97,6 @@ export const useMenuPerformer = () => {
   }
 
   const runAction = (item: MenuPostActionConfig) => {
-    const viewData = useSpotlightAppStore.getState().viewData
-
     actionRunner(item, viewData)
   }
 

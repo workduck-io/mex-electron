@@ -20,6 +20,8 @@ interface LayoutState {
   setInfobarMode: (mode: InfobarMode) => void
   showInfobar: () => void
   hideInfobar: () => void
+  showLoader?: boolean
+  setShowLoader?: (showLoader: boolean) => void
 }
 
 export const useLayoutStore = create<LayoutState>((set, get) => ({
@@ -29,6 +31,9 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
   setFocusMode: (focusMode) => set({ focusMode }),
   hoverFocusMode: () => set((state) => ({ focusMode: { ...state.focusMode, hover: true } })),
   blurFocusMode: () => set((state) => ({ focusMode: { ...state.focusMode, hover: false } })),
+
+  showLoader: false,
+  setShowLoader: (showLoader) => set({ showLoader }),
 
   // Sidebar
   sidebar: {

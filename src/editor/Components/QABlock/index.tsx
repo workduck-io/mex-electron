@@ -175,7 +175,6 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
           required
           onClick={(ev) => {
             ev.stopPropagation()
-            mog('SELECTION', { selected })
           }}
           type="text"
           onKeyDown={onKeyDown}

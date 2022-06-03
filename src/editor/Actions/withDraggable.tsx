@@ -1,4 +1,5 @@
 // import addLine from '@iconify/icons-ri/add-line'
+import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import checkboxBlankCircleLine from '@iconify/icons-radix-icons/drag-handle-dots-2'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import refreshLine from '@iconify/icons-ri/refresh-line'
@@ -211,6 +212,7 @@ export const withStyledDraggables = (components: any) => {
         ELEMENT_TABLE,
         ELEMENT_MEDIA_EMBED,
         ELEMENT_CODE_BLOCK
+        // ELEMENT_ACTION_BLOCK
       ],
       onRenderDragHandle: ({ className, styles, element }) => {
         const setIsBlockMode = useBlockStore.getState().setIsBlockMode

@@ -37,7 +37,7 @@ interface EditorProps {
 export const Editor = ({
   content,
   editorId,
-  autoFocus = true,
+  autoFocus = false,
   options,
   readOnly = false,
   onChange,
@@ -48,7 +48,7 @@ export const Editor = ({
 }: EditorProps) => {
   const editableProps = {
     spellCheck: false,
-    autoFocus: autoFocus,
+    autoFocus,
     style: {
       padding
     },
@@ -84,7 +84,6 @@ export const Editor = ({
       mog('editor highlighted', { hightlightedBlockIds, editorId })
       focusBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
       const clearHighlightTimeoutId = setTimeout(() => {
-        mog('WHATS UP ', { readOnly })
         if (!readOnly) clearHighlights()
       }, 2000)
       return () => clearTimeout(clearHighlightTimeoutId)

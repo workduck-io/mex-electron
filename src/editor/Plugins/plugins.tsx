@@ -8,13 +8,11 @@ import {
   ELEMENT_H6,
   ELEMENT_HR,
   ELEMENT_PARAGRAPH,
-  ELEMENT_TODO_LI,
   PEditor,
   PlatePlugin,
   autoformatArrow,
   autoformatLegal,
   autoformatLegalHtml,
-  autoformatPunctuation,
   autoformatSmartQuotes,
   createAlignPlugin,
   createAutoformatPlugin,
@@ -22,7 +20,6 @@ import {
   createBoldPlugin,
   createCodeBlockPlugin,
   createCodePlugin,
-  createDeserializeHtmlPlugin,
   createDndPlugin,
   createExitBreakPlugin,
   createHeadingPlugin,
@@ -41,7 +38,6 @@ import {
   createSoftBreakPlugin,
   createStrikethroughPlugin,
   createTablePlugin,
-  createTodoListPlugin,
   createUnderlinePlugin,
   insertNodes,
   setNodes
@@ -72,6 +68,7 @@ import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
 import createTodoPlugin from '../Components/Todo/createTodoPlugin'
 import { createQAPlugin } from '../Components/QABlock/createQAPlugin'
 import { createHighlightTextPlugin } from './highlightText'
+import { createActionPlugin } from '@editor/Components/Actions/createActionPlugin'
 
 export type PluginOptionType = {
   exclude: {
@@ -174,6 +171,7 @@ export const generatePlugins = (options: PluginOptionType) => {
     createSyncBlockPlugin(),
 
     createQAPlugin(),
+    createActionPlugin(),
 
     // // For Inline Blocks
     createInlineBlockPlugin(),

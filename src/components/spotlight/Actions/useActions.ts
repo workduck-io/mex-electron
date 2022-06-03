@@ -3,18 +3,19 @@
 import { mog } from '../../../utils/lib/helper'
 import { orderBy } from 'lodash'
 import { getListItemFromAction } from '../Home/helper'
-import { ActionGroupType, UpdateActionsType, useActionStore } from './useActionStore'
+import { ActionGroupType, UpdateActionsType } from './useActionStore'
+import { useActionsCache } from './useActionsCache'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { IpcAction } from '../../../data/IpcAction'
 import { AppType } from '../../../hooks/useInitialize'
-import { ActionHelperConfig, ActionGroup } from '@workduck-io/action-request-helper'
+import { ActionHelperConfig, ActionGroup, LOCALSTORAGE_NAMESPACES } from '@workduck-io/action-request-helper'
 import { actionPerformer } from './useActionPerformer'
 
 const useActions = () => {
-  const addActions = useActionStore((store) => store.addActions)
-  const addGroupedActions = useActionStore((store) => store.addGroupedActions)
-  const setActionGroups = useActionStore((store) => store.setActionGroups)
-  const setConnectedGroups = useActionStore((store) => store.setConnectedGroups)
+  const addActions = useActionsCache((store) => store.addActions)
+  const addGroupedActions = useActionsCache((store) => store.addGroupedActions)
+  const setActionGroups = useActionsCache((store) => store.setActionGroups)
+  const setConnectedGroups = useActionsCache((store) => store.setConnectedGroups)
   /*
    * Fetch all action Groups from the store
    *
@@ -63,18 +64,20 @@ const useActions = () => {
     } catch (err) {
       mog('Failed to fetch actions of group', { err })
     }
+
+    // * Get auth of all action groups
+    await getAuthorizedGroups(true)
   }
 
   /*
    *  After Action group authorization, add action items in the store.
    *  This would add the action items in the Combobox and Spotlight
    */
-  const setActionsInList = (actionGroupId: string) => {
-    const actionGroups = useActionStore.getState().actionGroups
-    const groupedActionConfigs = useActionStore.getState().groupedActions
+  const setActionsInList = (actionGroupId: string, add = true) => {
+    const actionGroups = useActionsCache.getState().actionGroups
+    const groupedActionConfigs = useActionsCache.getState().groupedActions
 
     const group = actionGroups?.[actionGroupId]
-    mog(`${actionGroupId}`)
 
     if (group) {
       const actionsConfigList = Object.values(groupedActionConfigs?.[actionGroupId] ?? {}).filter(
@@ -84,11 +87,29 @@ const useActions = () => {
       if (actionsConfigList) {
         const actionList = actionsConfigList.map((action) => getListItemFromAction(action, group))
 
-        mog(`${actionGroupId} list`, { actionList, actionGroupId })
-        addActions(actionList)
-        appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { actionList })
+        if (add) {
+          addActions(actionList)
+          appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { actionList })
+        }
+
+        return actionList
       }
     }
+  }
+
+  const getIsServiceConfigured = (actionGroupId: string, actionId: string) => {
+    const actionGroup = useActionsCache.getState().actionGroups
+    const isGlobal = !!actionGroup?.[actionId]?.globalActionId
+
+    const globalIdsCache = !!actionPerformer.getGlobalId(LOCALSTORAGE_NAMESPACES.GLOBAL, actionGroupId)
+
+    return isGlobal && globalIdsCache
+  }
+
+  const getIsServiceConnected = (actionGroupId: string) => {
+    const connectedGroups = useActionsCache.getState().connectedGroups
+
+    return connectedGroups?.[actionGroupId]
   }
 
   const sortActionGroups = (
@@ -107,9 +128,8 @@ const useActions = () => {
   // * For Integrations page, check for Authorized action groups
   const getAuthorizedGroups = async (forceUpdate?: boolean) => {
     const groupsAuth = await actionPerformer?.getAllAuths(forceUpdate)
-
-    const actionGroups = useActionStore.getState().actionGroups
-    const connected = useActionStore.getState().connectedGroups
+    const actionGroups = useActionsCache.getState().actionGroups
+    const connected = useActionsCache.getState().connectedGroups
     const connectedGroups = { ...connected }
 
     if (groupsAuth) {
@@ -144,7 +164,8 @@ const useActions = () => {
 
   const clearActionStore = () => {
     actionPerformer?.clearStore()
-    useActionStore.getState().clear()
+    // ! Clear action result
+    // useActionStore()
     appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { type: UpdateActionsType.CLEAR })
   }
 
@@ -153,7 +174,9 @@ const useActions = () => {
     setActionsInList,
     getAuthorizedGroups,
     sortActionGroups,
-    clearActionStore
+    clearActionStore,
+    getIsServiceConnected,
+    getIsServiceConfigured
   }
 }
 

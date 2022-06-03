@@ -9,7 +9,6 @@ import { CardShadow } from '../../../style/helpers'
 import { CenteredFlex, Title } from '../../../style/Integration'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { FlexBetween } from '../../spotlight/Actions/styled'
-import { useActionStore } from '../../spotlight/Actions/useActionStore'
 import { Description } from '../../spotlight/SearchResults/styled'
 import { ActionHelperConfig } from '@workduck-io/action-request-helper'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -18,6 +17,10 @@ import tinykeys from 'tinykeys'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { mog } from '../../../utils/lib/helper'
 import GlobalSection from './GlobalSection'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
+import { actionStore, Provider, useActionStore } from '@components/spotlight/Actions/useActionStore'
+import { actionMenuStore, MenuProvider } from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
+import { ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
 
 const ServiceContainer = styled(StyledEditor)``
 
@@ -143,7 +146,7 @@ const Action: React.FC<{ action: ActionHelperConfig; icon?: string }> = ({ actio
   return (
     <ActionContainer>
       <ActionGroupIcon>
-        <MexIcon color={theme.colors.primary} icon={icon} height="1.25rem" width="1.25rem" />
+        <ProjectIconMex color={theme.colors.primary} icon={icon} size={20} />
       </ActionGroupIcon>
       <section>
         <h4>{action.name}</h4>
@@ -155,15 +158,13 @@ const Action: React.FC<{ action: ActionHelperConfig; icon?: string }> = ({ actio
 
 const ServiceInfo = () => {
   const { params } = useRouting()
-  const groupedActions = useActionStore((store) => store.groupedActions)
-  const actionGroups = useActionStore((store) => store.actionGroups)
-  const initAction = useActionStore((store) => store.initAction)
+  const groupedActions = useActionsCache((store) => store.groupedActions)
+  const actionGroups = useActionsCache((store) => store.actionGroups)
   const { shortcutDisabled } = useKeyListener()
 
   const actionGroup = actionGroups[params?.actionGroupId]
-  const connectedGroups = useActionStore((store) => store.connectedGroups)
+  const connectedGroups = useActionsCache((store) => store.connectedGroups)
   const { goTo } = useRouting()
-  const theme = useTheme()
 
   const onConnectClick = () => {
     const url = actionGroup.authConfig.authURL
@@ -173,7 +174,6 @@ const ServiceInfo = () => {
   const goBackToIntegrations = () => goTo(ROUTE_PATHS.integrations, NavigationType.replace)
 
   useEffect(() => {
-    initAction(params?.actionGroupId, actionGroup.globalActionId)
     const unsubscribe = tinykeys(window, {
       Escape: (event) => {
         event.preventDefault()
@@ -211,7 +211,7 @@ const ServiceInfo = () => {
           <div>
             <ActionGroupIcon>
               <span>
-                <MexIcon noHover color={theme.colors.primary} icon={actionGroup?.icon} height="10rem" width="10rem" />
+                <ProjectIconMex icon={actionGroup?.icon} size={140} />
               </span>
               <Button onClick={onConnectClick} disabled={isConnected}>
                 {isConnected ? 'Disconnect' : 'Connect'}
@@ -232,9 +232,13 @@ const ServiceInfo = () => {
               </ServiceDescription>
             </GroupHeader>
           </div>
-          {isConnected && actionGroup.globalActionId && (
-            <GlobalSection globalId={actionGroup.globalActionId} actionGroupId={params?.actionGroupId} />
-          )}
+          <Provider createStore={actionStore}>
+            <MenuProvider createStore={actionMenuStore}>
+              {isConnected && actionGroup?.globalActionId && (
+                <GlobalSection globalId={actionGroup.globalActionId} actionGroupId={params?.actionGroupId} />
+              )}
+            </MenuProvider>
+          </Provider>
           <ActionsContainer>
             <header>What you can do? </header>
             {Object.values(groupedActions?.[params?.actionGroupId] ?? {}).map((action) => (

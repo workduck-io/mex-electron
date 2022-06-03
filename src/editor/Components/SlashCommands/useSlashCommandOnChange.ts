@@ -11,6 +11,7 @@ import { useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from './Types'
 import { mog } from '../../../utils/lib/helper'
 import { defaultContent } from '../../../data/Defaults/baseData'
+import { ELEMENT_ACTION_BLOCK } from '../Actions/types'
 
 export const useSlashCommandOnChange = (
   keys: Record<string, SlashCommandConfig>
@@ -30,7 +31,6 @@ export const useSlashCommandOnChange = (
     const commandConfig = keys[commandKey]
     // console.log({ commandConfig })
     if (targetRange) {
-      mog('useSlashCommandOnChange', { commandConfig, commandKey, keys })
       try {
         const pathAbove = getBlockAbove(editor)?.[1]
         const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
@@ -64,13 +64,15 @@ export const useSlashCommandOnChange = (
 
           const eventName = getEventNameFromElement('Editor', ActionType.CREATE, type)
           trackEvent(eventName, { 'mex-type': type, 'mex-data': data })
+          const itemData = type === ELEMENT_ACTION_BLOCK ? (item.data as any) : {}
 
           Transforms.select(editor, targetRange)
           insertNodes<TElement>(editor, {
             type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
             children: [{ text: '' }],
             ...commandConfig.options,
-            ...data
+            ...data,
+            ...itemData
           })
 
           insertNodes(editor, defaultContent.content[0])

@@ -1,21 +1,27 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { actionPerformer, useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
 import { GlobalSectionContainer, GlobalSectionHeader } from './styled'
 import FormSelector from '@components/spotlight/ActionStage/Forms/FormSelector'
 import { FormProvider, useForm } from 'react-hook-form'
 import { set, get } from 'lodash'
-import { mog } from '@utils/lib/helper'
 import { LoadingButton } from '@components/mex/Buttons/LoadingButton'
 import { Icon } from '@iconify/react'
 import { LOCALSTORAGE_NAMESPACES } from '@workduck-io/action-request-helper'
 import { useTheme } from 'styled-components'
+import { useActionStore } from '@components/spotlight/Actions/useActionStore'
+import toast from 'react-hot-toast'
 
 const GlobalSection: React.FC<{ globalId: string; actionGroupId: string }> = ({ actionGroupId, globalId }) => {
   const [isEdit, setIsEdit] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const formMethods = useForm()
   const theme = useTheme()
+  const initAction = useActionStore((store) => store.initAction)
   const { getConfig } = useActionPerformer()
+
+  useEffect(() => {
+    initAction(actionGroupId, globalId)
+  }, [])
 
   const globalConfig = useMemo(() => getConfig(actionGroupId, globalId), [globalId])
 
@@ -56,9 +62,10 @@ const GlobalSection: React.FC<{ globalId: string; actionGroupId: string }> = ({ 
       await actionPerformer.createGlobalIdWorkspace(globalConfig?.actionGroupId?.toLowerCase(), updatedForm)
       setIsSubmitting(false)
       setIsEdit(false)
+      toast('Successfully updated!')
     } catch (err) {
-      mog('Unable to update data')
       setIsSubmitting(false)
+      toast('Unable to update!')
     }
   }
 

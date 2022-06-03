@@ -296,10 +296,10 @@ function NodeSelect({
   }
 
   const onFocusWithSelect = (e: React.FocusEvent<HTMLInputElement>) => {
-    mog('Focusing with select all1', { e, autoFocus })
+    // mog('Focusing with select all1', { e, autoFocus })
     const timoutId = setTimeout(() => {
       if (autoFocus && autoFocusSelectAll) {
-        mog('Focusing with select all', { e, autoFocus })
+        // mog('Focusing with select all', { e, autoFocus })
         e.target.focus()
         e.target.select()
         e.target.setSelectionRange(0, e.target.value.length)

@@ -23,9 +23,6 @@ export interface IComboboxItem {
    */
   text: any
 
-  /**
-   * Text to render for this option
-   */
   itemType?: ComboboxItemType
 
   type?: QuickLinkType | SlashType

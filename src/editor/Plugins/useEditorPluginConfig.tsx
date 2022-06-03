@@ -1,5 +1,10 @@
+import useActions from '@components/spotlight/Actions/useActions'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
+import { useActionStore } from '@components/spotlight/Actions/useActionStore'
+import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import { ELEMENT_MEDIA_EMBED, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
+import { mog } from '@utils/lib/helper'
 import { useMemo } from 'react'
 import { QuickLinkType } from '../../components/mex/NodeSelect/NodeSelect'
 import { openReminderModal } from '../../components/mex/Reminders/CreateReminderModal'
@@ -13,11 +18,10 @@ import { ILinkComboboxItem } from '../Components/ilink/components/ILinkComboboxI
 import { ELEMENT_ILINK } from '../Components/ilink/defaults'
 import { ELEMENT_INLINE_BLOCK } from '../Components/InlineBlock/types'
 import { ComboConfigData } from '../Components/multi-combobox/multiComboboxContainer'
-import { ComboboxType } from '../Components/multi-combobox/types'
+import { ComboboxItem, ComboboxType } from '../Components/multi-combobox/types'
 import useMultiComboboxOnChange from '../Components/multi-combobox/useMultiComboboxChange'
 import useMultiComboboxOnKeyDown from '../Components/multi-combobox/useMultiComboboxOnKeyDown'
 import { SlashComboboxItem } from '../Components/SlashCommands/SlashComboboxItem'
-// import { useSyncConfig } from '../Components/SlashCommands/useSyncConfig'
 import { TagComboboxItem } from '../Components/tag/components/TagComboboxItem'
 import { ELEMENT_TAG } from '../Components/tag/defaults'
 
@@ -26,9 +30,12 @@ const useEditorPluginConfig = (editorId: string) => {
   const ilinks = useDataStore((state) => state.ilinks)
   const slashCommands = useDataStore((state) => state.slashCommands)
   const nodeid = useEditorStore((state) => state.node.nodeid)
+  const actionGroups = useActionsCache((store) => store.actionGroups)
+  const groupedActions = useActionsCache((store) => store.groupedActions)
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
+  const { setActionsInList } = useActions()
   const { getSnippetsConfigs } = useSnippets()
   // const { getSyncBlockConfigs } = useSyncConfig()
 
@@ -53,7 +60,56 @@ const useEditorPluginConfig = (editorId: string) => {
     return slashCommands.internal
   }, [slashCommands.internal])
 
-  const internals = [
+  const getActionGroups = () => {
+    const groups = {}
+    Object.values(actionGroups).forEach((group) => {
+      groups[group.actionGroupId] = {
+        slateElementType: ELEMENT_ACTION_BLOCK,
+        command: group.actionGroupId
+      }
+    })
+
+    return groups
+  }
+
+  const getActionList = () => {
+    const groups = Object.keys(actionGroups)
+    const actionList = []
+
+    groups.map((actionGroupId) => {
+      const actions = setActionsInList(actionGroupId, false).map((action) => ({
+        value: actionGroupId,
+        text: action.title,
+        type: CategoryType.action,
+        icon: action.icon,
+        command: actionGroupId,
+        extras: {
+          actionContext: {
+            actionId: action.id,
+            actionGroupId
+          }
+        }
+      }))
+
+      actionList.push(...actions)
+    })
+
+    return actionList
+  }
+
+  // const getActionsData = () => {
+  //   const groups = Object.values(actionGroups).map((group) => ({
+  //     value: group.actionGroupId,
+  //     text: group.name,
+  //     type: CategoryType.action,
+  //     icon: group.icon,
+  //     command: group.actionGroupId
+  //   }))
+
+  //   return groups
+  // }
+
+  const internals: ComboboxItem[] = [
     ...ilinksForCurrentNode.map((l) => ({
       ...l,
       value: l.nodeid,
@@ -70,7 +126,6 @@ const useEditorPluginConfig = (editorId: string) => {
         slateElementType: ELEMENT_INLINE_BLOCK,
         newItemHandler: (newItem, parentId?) => {
           const link = addILink({ ilink: newItem, parentId })
-          // mog('Link', { link, newItem, parentId })
           return link.nodeid
         },
         renderElement: ILinkComboboxItem
@@ -79,7 +134,6 @@ const useEditorPluginConfig = (editorId: string) => {
         slateElementType: ELEMENT_TAG,
         newItemHandler: (newItem) => {
           addTag(newItem)
-          // mog('Tag', { newItem })
           return newItem
         },
         renderElement: TagComboboxItem
@@ -93,7 +147,6 @@ const useEditorPluginConfig = (editorId: string) => {
         slateElementType: 'internal',
         newItemHandler: (newItem, parentId?) => {
           const link = addILink({ ilink: newItem, parentId })
-          // mog('Link', { link, newItem, parentId })
           return link.nodeid
         },
         renderElement: SlashComboboxItem
@@ -115,6 +168,7 @@ const useEditorPluginConfig = (editorId: string) => {
       }
     },
     slashCommands: {
+      ...getActionGroups(),
       webem: {
         slateElementType: ELEMENT_MEDIA_EMBED,
         command: 'webem',
@@ -134,10 +188,10 @@ const useEditorPluginConfig = (editorId: string) => {
         slateElementType: ELEMENT_PARAGRAPH,
         command: 'remind',
         onExtendedCommand: (newValue, editor) => {
-          // mog('remind', { newValue })
           openReminderModal(newValue)
         }
       }
+
       // For `/sync`
       // sync_block: {
       //   slateElementType: ELEMENT_SYNC_BLOCK,
@@ -159,13 +213,6 @@ const useEditorPluginConfig = (editorId: string) => {
       data: internals,
       icon: 'ri:file-list-2-line'
     },
-    // inline_block: {
-    //   cbKey: ComboboxKey.INLINE_BLOCK,
-    //   trigger: '![[',
-    //   blockTrigger: ':',
-    //   data: ilinksForCurrentNode.map((l) => ({ ...l, value: l.nodeid, text: l.path, type: QuickLinkType.ilink })),
-    //   icon: 'ri:picture-in-picture-line'
-    // },
     tag: {
       cbKey: ComboboxKey.TAG,
       trigger: '#',
@@ -176,10 +223,12 @@ const useEditorPluginConfig = (editorId: string) => {
       cbKey: ComboboxKey.SLASH_COMMAND,
       trigger: '/',
       icon: 'ri:flask-line',
-      data: slashCommands.default.map((l) => ({ ...l, value: l.command, type: CategoryType.action, text: l.text }))
+      data: [
+        ...getActionList(),
+        ...slashCommands.default.map((l) => ({ ...l, value: l.command, type: CategoryType.action, text: l.text }))
+      ]
     }
   }
-  // console.log({ slashCommands, OnChangeConf })
 
   const pluginConfigs = {
     combobox: {

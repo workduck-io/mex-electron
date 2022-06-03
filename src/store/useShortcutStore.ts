@@ -1,8 +1,8 @@
 import create from 'zustand'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../data/IpcAction'
-import { Key, getKey } from '../hooks/useShortcutListener'
-import { EXCLUDED_KEYS_MODIFIERS, getKeyFromKeycode, KEY_MODIFIERS, MiscKeys } from '../utils/lib/keyMap'
+import { Key } from '../hooks/useShortcutListener'
+import { EXCLUDED_KEYS_MODIFIERS, getKeyFromKeycode, KEY_MODIFIERS } from '../utils/lib/keyMap'
 
 export type KeyBinding = {
   key: string

@@ -3,13 +3,13 @@ import React, { forwardRef, useEffect, useState } from 'react'
 import { useTheme } from 'styled-components'
 import { components } from 'react-select'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
-import { useActionStore } from '../../Actions/useActionStore'
+import { SelectionNode, useActionStore } from '../../Actions/useActionStore'
 import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
-import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import ListSelector from '../ActionMenu/ListSelector'
 import { StyledOption, SelectBar } from './styled'
 import VirtualList from '../ActionMenu/VirtualList'
 import { mog } from '@utils/lib/helper'
+import { findNodePath, getPlateEditorRef, setNodes } from '@udecode/plate'
 
 type SelectedProps = {
   value?: any
@@ -116,7 +116,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     isMulti
   } = props
 
-  const setIsMenuOpen = useSpotlightAppStore((store) => store.setIsMenuOpen)
+  const setIsMenuOpen = useActionStore((store) => store.setIsMenuOpen)
   const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
     data: [],
     value: defaultValue
@@ -128,7 +128,8 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
 
   const addSelectionInCache = useActionStore((store) => store.addSelectionInCache)
   const getPreviousActionValue = useActionStore((store) => store.getPrevActionValue)
-  const isPerformingAction = useSpotlightAppStore((store) => store.isLoading)
+  const isPerformingAction = useActionStore((store) => store.isLoading)
+  const element = useActionStore((store) => store.element)
 
   const { performer, isPerformer } = useActionPerformer()
   const prevSelection = getPreviousActionValue(actionId)?.selection
@@ -143,17 +144,21 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     })
   }
 
+  const onReadyPerform = (actionGroupId: string, actionId: string, value?: any) => {
+    performer(actionGroupId, actionId).then((res) => {
+      const result = res?.contextData
+      const data = resToDisplay(result)
+
+      setInputValue({ data, value: value || null })
+    })
+  }
+
   useEffect(() => {
     const isReady = isPerformer(actionId, { isMenuAction: isList })
 
     if (isReady) {
-      performer(actionGroupId, actionId).then((res) => {
-        const result = res?.contextData
-        const data = resToDisplay(result)
-
-        mog('Setting value to null', { defaultValue, value })
-        setInputValue({ data, value: defaultValue || null })
-      })
+      mog('defaultValue', { value, defaultValue })
+      onReadyPerform(actionGroupId, actionId, defaultValue || value)
     }
   }, [actionId, actionGroupId, prevSelection])
 
@@ -166,6 +171,24 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     return newValue?.label !== value?.label || inputValue?.value !== newValue?.label
   }
 
+  const saveSelectionInNote = (selection: SelectionNode) => {
+    const editor = getPlateEditorRef()
+
+    if (editor) {
+      const path = findNodePath(editor, element)
+      const actionContext = element?.actionContext ?? {}
+      const selections = actionContext?.selections ?? {}
+
+      if (element?.actionContext) {
+        setNodes(
+          editor,
+          { actionContext: { ...actionContext, selections: { ...selections, [actionId]: selection } } },
+          { at: path }
+        )
+      }
+    }
+  }
+
   const handleChange = (selection: any) => {
     if (!hasChanged(selection)) return
 
@@ -174,6 +197,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     if (cacheSelection !== false) {
       const prev = prevSelection?.label
       const val = { prev, selection }
+      saveSelectionInNote(val)
 
       addSelectionInCache(actionId, val)
     }
@@ -187,8 +211,8 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
         isLoading={isPerformingAction}
         getIsActive={(item, activeItems) => {
           return Array.isArray(activeItems)
-            ? activeItems?.find((i) => i.label === item?.label)
-            : activeItems.label === item.label
+            ? activeItems?.find((i) => i?.label === item?.label)
+            : activeItems?.label === item?.label
         }}
         onEnter={onChange}
         onClick={onChange}
@@ -201,15 +225,22 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     <SelectBar
       openMenuOnClick
       menuShouldScrollIntoView
+      contentEditable={false}
+      onClick={(ev) => {
+        ev.stopPropagation()
+      }}
       placeholder={placeholder}
-      onMenuOpen={() => setIsMenuOpen(true)}
+      onMenuOpen={() => {
+        onReadyPerform(actionGroupId, actionId, defaultValue || value)
+        setIsMenuOpen(true)
+      }}
       onMenuClose={() => setIsMenuOpen(false)}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
           e.stopPropagation()
         }
       }}
-      onSelect={(e) => e.stopImmediatePropagation()}
+      // onSelect={(e) => e.stopImmediatePropagation()}
       components={
         isMulti ? { Option: CustomOption, MultiValue: MultiValueOption } : { SingleValue, Option: CustomOption }
       }

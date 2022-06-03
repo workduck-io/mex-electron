@@ -7,12 +7,15 @@ import { useActionStore } from '../../Actions/useActionStore'
 import { ShortcutText } from '../../Home/components/Item'
 import WDLogo from '../../Search/Logo'
 import Tippy from '@tippyjs/react'
-import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { useRouting } from '../../../../views/routes/urls'
 import { Button } from '../../../../style/Buttons'
 import ActionMenu from '../ActionMenu'
 import { NoOption } from '../ActionMenu/styled'
-import useActionMenuStore from '../ActionMenu/useActionMenuStore'
+import { useActionMenuStore } from '../ActionMenu/useActionMenuStore'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
+import { usePlateEditorRef } from '@udecode/plate'
+import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
+import { DEFAULT_LIST_ITEM_ICON } from '../ActionMenu/ListSelector'
 
 const JoinService = styled.span<{ left?: boolean }>`
   position: absolute;
@@ -86,12 +89,15 @@ type ActionsRightSectionProps = { actionGroupId: string; actionId: string; isLoa
 export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionGroupId, actionId, isLoading }) => {
   const theme = useTheme()
   const { goBack } = useRouting()
-  const getConfig = useActionStore((store) => store.getConfig)
-  const actionGroups = useActionStore((store) => store.actionGroups)
-  const setView = useSpotlightAppStore((store) => store.setView)
+  const element = useActionStore((store) => store.element)
+  const getConfig = useActionsCache((store) => store.getConfig)
+  const actionGroups = useActionsCache((store) => store.actionGroups)
+  const setView = useActionStore((store) => store.setView)
   const isSubmitting = useActionStore((store) => store.isSubmitting)
-  const isActiveItem = useSpotlightAppStore((store) => store.viewData)
+  const isActiveItem = useActionStore((store) => store.viewData)
   const hideMenu = useActionMenuStore((store) => store.hideMenu)
+  const isView = useActionStore((store) => store.view) === 'item'
+  const isEditor = usePlateEditorRef()
 
   const onCancelClick = () => {
     setView(undefined)
@@ -100,52 +106,59 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
 
   const config = getConfig(actionGroupId, actionId)
 
-  if (config?.postAction?.menus && !hideMenu && isActiveItem) {
+  if (config?.postAction?.menus && !hideMenu && isActiveItem && !isView && !element?.actionContext?.view) {
     return <ActionMenu title="Options" />
   }
 
-  if (config?.form)
+  const icon = actionGroups?.[actionGroupId]?.icon
+  const { mexIcon } = getIconType(icon || DEFAULT_LIST_ITEM_ICON)
+
+  if (config?.form && !isView)
     return (
       <>
-        <TopBlur />
-        <JoinService>
-          <section>
-            <MexIcon
-              color={theme.colors.primary}
-              icon={actionGroups?.[actionGroupId]?.icon}
-              height="4rem"
-              noHover
-              width="4rem"
-            />
-            {isSubmitting ? <Loading transparent dots={3} orientation="vertical" direction="reverse" /> : <Connector />}
-            <WDLogo padding="0" height="3.5rem" width="3.5rem" />
-          </section>
-        </JoinService>
-        <BottomBlur />
+        {!isEditor && (
+          <>
+            <TopBlur />
+            <JoinService>
+              <section>
+                <ProjectIconMex isMex={mexIcon} color={theme.colors.primary} icon={icon} size={40} />
+                {isSubmitting ? (
+                  <Loading transparent dots={3} orientation="vertical" direction="reverse" />
+                ) : (
+                  <Connector />
+                )}
+                <WDLogo padding="0" height="3.5rem" width="3.5rem" />
+              </section>
+            </JoinService>
+            <BottomBlur />
+          </>
+        )}
         <FloatingGroup>
-          <Tippy
-            theme="mex"
-            arrow={false}
-            placement="top"
-            content={
-              <ShortcutText key="send">
-                <div className="text">Cancel&nbsp;</div> <DisplayShortcut shortcut="Esc" />
-              </ShortcutText>
-            }
-          >
-            <BorderButton onClick={onCancelClick}>
-              <NoOption>
-                <MexIcon
-                  noHover
-                  icon="material-symbols:cancel-outline-rounded"
-                  height="1.25rem"
-                  width="1.25rem"
-                  margin="0 0.5rem 0 0"
-                />
-                Discard
-              </NoOption>
-            </BorderButton>
-          </Tippy>
+          {!isEditor && (
+            <Tippy
+              theme="mex"
+              arrow={false}
+              placement="top"
+              content={
+                <ShortcutText key="send">
+                  <div className="text">Cancel&n bsp;</div> <DisplayShortcut shortcut="Esc" />
+                </ShortcutText>
+              }
+            >
+              <BorderButton onClick={onCancelClick}>
+                <NoOption>
+                  <MexIcon
+                    noHover
+                    icon="material-symbols:cancel-outline-rounded"
+                    height="1.25rem"
+                    width="1.25rem"
+                    margin="0 0.5rem 0 0"
+                  />
+                  Discard
+                </NoOption>
+              </BorderButton>
+            </Tippy>
+          )}
           <Tippy
             theme="mex"
             arrow={false}
@@ -156,7 +169,7 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
               </ShortcutText>
             }
           >
-            <FormButton form="action-form" type="submit" color={theme.colors.primary}>
+            <FormButton form={`action-form-${element?.id}`} type="submit" color={theme.colors.primary}>
               <NoOption>
                 <MexIcon noHover icon="ion:create-outline" margin="0 0.5rem 0 0" height="1.25rem" width="1.25rem" />
                 Create

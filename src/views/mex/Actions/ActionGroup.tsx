@@ -6,7 +6,7 @@ import { ActionGroupType } from '../../../components/spotlight/Actions/useAction
 import { ActionGroup } from '@workduck-io/action-request-helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../routes/urls'
 import { ActiveStatus, CenteredFlex, RightCut, ServiceCard, ServiceName } from '../../../style/Integration'
-import { useTheme } from 'styled-components'
+import { ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
 
 type ActionGroupProps = {
   group: ActionGroupType
@@ -14,7 +14,6 @@ type ActionGroupProps = {
 
 const ActionGroup: React.FC<ActionGroupProps> = ({ group }) => {
   const { goTo } = useRouting()
-  const theme = useTheme()
 
   const onClick = () => {
     goTo(ROUTE_PATHS.integrations, NavigationType.push, group.actionGroupId)
@@ -26,12 +25,12 @@ const ActionGroup: React.FC<ActionGroupProps> = ({ group }) => {
         <>
           <RightCut />
           <ActiveStatus>
-            <MexIcon height={24} icon={Check} />
+            <MexIcon noHover height={24} icon={Check} />
           </ActiveStatus>
         </>
       )}
       <CenteredFlex>
-        <MexIcon color={theme.colors.primary} icon={group.icon} height="56px" width="56px" />
+        <ProjectIconMex icon={group.icon} size={56} />
       </CenteredFlex>
       <ServiceName>{camelCase(group.actionGroupId)}</ServiceName>
     </ServiceCard>
