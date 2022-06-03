@@ -29,9 +29,15 @@ export const SAccessTag = styled.div`
   font-size: 0.9rem;
 `
 
-export const MentionTooltip = styled.div`
+export const MentionTooltipContent = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.spacing.small};
+`
+
+export const MentionTooltip = styled.div`
+  display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.small};
   padding: ${({ theme }) => theme.spacing.small};

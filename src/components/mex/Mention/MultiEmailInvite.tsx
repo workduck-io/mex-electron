@@ -13,7 +13,8 @@ import { Controller, useForm } from 'react-hook-form'
 import { AccessLevel, DefaultPermission, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
 import { LoadingButton } from '../Buttons/LoadingButton'
 import { InputFormError } from '../Forms/Input'
-import { InviteFormFieldset, InviteFormWrapper, InviteWrapper } from './ShareModal.styles'
+import { ModalControls, ModalHeader } from '../Refactor/styles'
+import { InviteFormFieldset, InviteFormWrapper, InviteWrapper, MultipleInviteWrapper } from './ShareModal.styles'
 import { InviteModalData } from './ShareModalStore'
 
 export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean }) => {
@@ -99,8 +100,8 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
   // mog('MultiEmailInvite', { errors })
 
   return (
-    <InviteWrapper>
-      <Title>Invite</Title>
+    <MultipleInviteWrapper>
+      <ModalHeader>Invite Users</ModalHeader>
       <p>Invite your friends to your Note.</p>
       <InviteFormWrapper onSubmit={handleSubmit(onSubmit)}>
         <InviteFormFieldset disabled={disabled}>
@@ -138,7 +139,7 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
             />
           </SelectWrapper>
 
-          <ButtonFields>
+          <ModalControls>
             <LoadingButton
               loading={isSubmitting}
               alsoDisabled={errors.email !== undefined || errors.alias !== undefined}
@@ -146,9 +147,9 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
             >
               Invite
             </LoadingButton>
-          </ButtonFields>
+          </ModalControls>
         </InviteFormFieldset>
       </InviteFormWrapper>
-    </InviteWrapper>
+    </MultipleInviteWrapper>
   )
 }

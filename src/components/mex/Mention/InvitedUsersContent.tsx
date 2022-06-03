@@ -7,7 +7,7 @@ import { mog } from '@utils/lib/helper'
 import React, { useMemo } from 'react'
 import IconButton, { Button } from '../../../style/Buttons'
 import { AccessLevel, DefaultPermissionValue, InvitedUser, permissionOptions } from '../../../types/mentions'
-import { ModalControls, ModalHeader } from '../Refactor/styles'
+import { ModalControls, ModalHeader, ModalSection, ModalSectionScroll } from '../Refactor/styles'
 import {
   ShareAlias,
   ShareAliasInput,
@@ -130,8 +130,8 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
   }
 
   const onReinviteUser = async (user: InvitedUser) => {
-    mog('Reinviting that damn user', { user })
     const uDetails = await getUserDetails(user.email)
+    mog('Reinviting that damn user', { user, uDetails })
     const changedUser = changedIUsers.find((u) => u.email === user.email)
     const dataUser = sharedIUsers.find((u) => u.email === user.email)
     const access = changedUser ? changedUser.access[node.nodeid] : dataUser.access[node.nodeid] ?? undefined
@@ -187,61 +187,63 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
   // })
 
   return (
-    <SharedPermissionsWrapper>
+    <ModalSection>
       <ModalHeader>Invited Users</ModalHeader>
 
-      <SharedPermissionsTable>
-        <caption>
-          Users invited to this note <em>that are not on Mex</em>
-        </caption>
-        <ShareRowHeading>
-          <tr>
-            <td>Alias</td>
-            <td>Email</td>
-            <td>Permission</td>
-            <td></td>
-          </tr>
-        </ShareRowHeading>
+      <ModalSectionScroll>
+        <SharedPermissionsTable>
+          <caption>
+            Users invited to this note <em>that are not on Mex</em>
+          </caption>
+          <ShareRowHeading>
+            <tr>
+              <td>Alias</td>
+              <td>Email</td>
+              <td>Permission</td>
+              <td></td>
+            </tr>
+          </ShareRowHeading>
 
-        {sharedIUsers.map((user) => {
-          const access = user.access[node.nodeid]
-          const hasChanged = changedIUsers && changedIUsers.find((u) => u.email === user.email)
-          const isRevoked = !!hasChanged && hasChanged.change.includes('revoke')
-          return (
-            <ShareRow hasChanged={!!hasChanged} key={`${user.email}`} isRevoked={isRevoked}>
-              <ShareAlias hasChanged={!!hasChanged}>
-                <ShareAliasInput
-                  type="text"
-                  defaultValue={user.alias}
-                  onChange={(e) => onAliasChange(user.email, e.target.value)}
-                />
-              </ShareAlias>
-              <ShareEmail>{user.email}</ShareEmail>
-
-              <SharePermission>
-                <StyledCreatatbleSelect
-                  onChange={(access) => onPermissionChange(user.email, access.value)}
-                  defaultValue={getAccessValue(access) ?? DefaultPermissionValue}
-                  options={permissionOptions}
-                  closeMenuOnSelect={true}
-                  closeMenuOnBlur={true}
-                />
-              </SharePermission>
-              <ShareRowAction>
-                <ShareRowActionsWrapper>
-                  <IconButton
-                    transparent={false}
-                    onClick={() => onReinviteUser(user)}
-                    icon={repeatLine}
-                    title="Reinvite User"
+          {sharedIUsers.map((user) => {
+            const access = user.access[node.nodeid]
+            const hasChanged = changedIUsers && changedIUsers.find((u) => u.email === user.email)
+            const isRevoked = !!hasChanged && hasChanged.change.includes('revoke')
+            return (
+              <ShareRow hasChanged={!!hasChanged} key={`${user.email}`} isRevoked={isRevoked}>
+                <ShareAlias hasChanged={!!hasChanged}>
+                  <ShareAliasInput
+                    type="text"
+                    defaultValue={user.alias}
+                    onChange={(e) => onAliasChange(user.email, e.target.value)}
                   />
-                  <IconButton onClick={() => onRevokeAccess(user.email)} icon={deleteBin6Line} title="Remove" />
-                </ShareRowActionsWrapper>
-              </ShareRowAction>
-            </ShareRow>
-          )
-        })}
-      </SharedPermissionsTable>
+                </ShareAlias>
+                <ShareEmail>{user.email}</ShareEmail>
+
+                <SharePermission>
+                  <StyledCreatatbleSelect
+                    onChange={(access) => onPermissionChange(user.email, access.value)}
+                    defaultValue={getAccessValue(access) ?? DefaultPermissionValue}
+                    options={permissionOptions}
+                    closeMenuOnSelect={true}
+                    closeMenuOnBlur={true}
+                  />
+                </SharePermission>
+                <ShareRowAction>
+                  <ShareRowActionsWrapper>
+                    <IconButton
+                      transparent={false}
+                      onClick={() => onReinviteUser(user)}
+                      icon={repeatLine}
+                      title="Reinvite User"
+                    />
+                    <IconButton onClick={() => onRevokeAccess(user.email)} icon={deleteBin6Line} title="Remove" />
+                  </ShareRowActionsWrapper>
+                </ShareRowAction>
+              </ShareRow>
+            )
+          })}
+        </SharedPermissionsTable>
+      </ModalSectionScroll>
 
       <ModalControls>
         <Button
@@ -254,6 +256,6 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
           Save
         </Button>
       </ModalControls>
-    </SharedPermissionsWrapper>
+    </ModalSection>
   )
 }
