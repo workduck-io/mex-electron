@@ -17,9 +17,7 @@ export const SMentionRoot = styled.div<{ type?: 'mentionable' | 'invite' | 'self
     `}
 `
 
-export const Username = styled.div`
-  padding: ${({ theme }) => theme.spacing.tiny};
-`
+export const Username = styled.div``
 
 export const SAccessTag = styled.div`
   display: flex;
@@ -59,6 +57,17 @@ export const TooltipMail = styled.div`
 `
 
 export const SMention = styled.div<{ selected: boolean; type: 'mentionable' | 'invite' | 'self' }>`
+  display: inline-flex;
+  align-items: baseline;
+  gap: ${({ theme }) => theme.spacing.tiny};
+  padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
+
+  svg,
+  img {
+    align-self: center;
+    border-radius: ${({ theme }) => theme.borderRadius.large};
+  }
+
   color: ${({ theme }) => theme.colors.secondary};
   ${({ selected, theme }) =>
     selected &&

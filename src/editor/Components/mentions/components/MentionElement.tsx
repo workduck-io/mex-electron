@@ -131,7 +131,8 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
         render={(attrs) => <MentionTooltipComponent user={user} nodeid={node.nodeid} access={access} />}
       >
         <SMention {...onClickProps} type={user?.type} selected={selected}>
-          <Username>@{user?.alias ?? element.value}</Username>
+          {user?.email && <ProfileImage email={user?.email} size={16} />}
+          <Username>{user?.alias ?? element.value}</Username>
         </SMention>
       </Tippy>
       {children}
