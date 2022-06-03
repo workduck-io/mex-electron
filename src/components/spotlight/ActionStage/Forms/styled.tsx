@@ -6,6 +6,7 @@ export const StyledActionFormContainer = styled.form`
   margin-top: 0.5rem;
   display: flex;
   flex-direction: column;
+  padding-bottom: 8rem;
 `
 
 export const ActionRow = styled.div<{ isRow?: boolean }>`
