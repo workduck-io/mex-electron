@@ -14,7 +14,6 @@ import { useSaveAndExit } from '@hooks/useSaveAndExit'
 import { useKeyListener } from '@hooks/useShortcutListener'
 import { useRecieveMentions, useRecieveTokens, useSyncData } from '@hooks/useSyncData'
 import { useAuthentication, useAuthStore } from '@services/auth/useAuth'
-import { usePermission } from '@services/auth/usePermission'
 import { useAnalysis, useAnalysisIPC } from '@store/useAnalysis'
 import useBlockStore from '@store/useBlockStore'
 import useDataStore from '@store/useDataStore'
@@ -48,9 +47,8 @@ const Init = () => {
   const toggleFocusMode = useLayoutStore((s) => s.toggleFocusMode)
 
   const { init } = useInitialize()
-  const setSharedNodes = useDataStore((s) => s.setSharedNodes)
   const { loadNode, getNode } = useLoad()
-  const { initCognito, userCred } = useAuth()
+  const { initCognito } = useAuth()
   const workspaceDetails = useAuthStore((store) => store.workspaceDetails)
   const { logout } = useAuthentication()
 
@@ -74,7 +72,6 @@ const Init = () => {
 
   const { getTokenData } = useTokenData()
   const { getMentionData } = useMentionData()
-  const { getAllSharedNodes } = usePermission()
   const { fetchShareData } = useFetchShareData()
   const { saveAndClearBuffer } = useEditorBuffer()
   const { initActionPerfomerClient } = useActionsPerfomerClient()

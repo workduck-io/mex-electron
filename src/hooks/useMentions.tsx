@@ -97,7 +97,7 @@ export const useMentions = () => {
 
     const mentionExists = mentionable.find((user) => user.userID === userID)
 
-    mog('adding mentionable user ', { userID, mentionExists, mentionable })
+    // mog('adding mentionable user ', { userID, mentionExists, mentionable })
     if (mentionExists) {
       mentionExists.access[nodeid] = access
       setMentionable([...mentionable.filter((u) => u.userID !== userID), mentionExists])

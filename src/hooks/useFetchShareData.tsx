@@ -5,7 +5,6 @@ import { AccessLevel } from '../types/mentions'
 import { mog } from '@utils/lib/helper'
 import { useMentions } from './useMentions'
 import { getEmailStart } from '@data/Defaults/auth'
-import { useAuthStore } from '@services/auth/useAuth'
 
 interface UsersRaw {
   nodeid: string
@@ -25,12 +24,15 @@ export const useFetchShareData = () => {
   const { getUserDetailsUserId } = useUserService()
   const { addMentionable } = useMentions()
   const setSharedNodes = useDataStore((s) => s.setSharedNodes)
-  const userDetails = useAuthStore((s) => s.userDetails)
 
   const fetchShareData = async () => {
     // First fetch the shared nodes
-    const sharedNodes = await getAllSharedNodes()
+    const sharedNodesPreset = await getAllSharedNodes()
     // mog('SharedNode', { sharedNodes })
+    //
+    if (sharedNodesPreset.status === 'error') return
+
+    const sharedNodes = sharedNodesPreset.data
 
     setSharedNodes(sharedNodes)
 

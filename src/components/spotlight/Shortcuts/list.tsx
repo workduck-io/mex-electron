@@ -36,6 +36,17 @@ export const ElementTypeBasedShortcut: Record<string, Record<string, Shortcut>> 
       title: 'to Embed'
     }
   },
+  [QuickLinkType.mentions]: {
+    link: {
+      ...spotlightShortcuts.open,
+      title: 'to Share'
+    },
+
+    insertOnly: {
+      ...spotlightShortcuts.Tab,
+      title: 'to Insert only'
+    }
+  },
   [QuickLinkType.snippet]: {
     snippet: {
       ...spotlightShortcuts.open,

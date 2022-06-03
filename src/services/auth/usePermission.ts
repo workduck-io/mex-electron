@@ -5,6 +5,16 @@ import { client } from '@workduck-io/dwindle'
 import { apiURLs } from '@apis/routes'
 import { useAuthStore } from '@services/auth/useAuth'
 
+interface SharedNodesPreset {
+  status: 'success'
+  data: SharedNode[]
+}
+
+interface SharedNodesErrorPreset {
+  status: 'error'
+  data: SharedNode[]
+}
+
 export const usePermission = () => {
   // const authDetails = useAuthStore()
   const workspaceDetails = useAuthStore((s) => s.workspaceDetails)
@@ -69,7 +79,7 @@ export const usePermission = () => {
       })
   }
 
-  const getAllSharedNodes = async (): Promise<SharedNode[]> => {
+  const getAllSharedNodes = async (): Promise<SharedNodesPreset | SharedNodesErrorPreset> => {
     try {
       return await client
         .get(apiURLs.allSharedNodes, {
@@ -92,11 +102,11 @@ export const usePermission = () => {
             })
           )
           mog('SharedNodes', { sharedNodes })
-          return sharedNodes
+          return { status: 'success', data: sharedNodes }
         })
     } catch (e) {
       mog('Error Fetching Shared Nodes', { e })
-      return []
+      return { data: [], status: 'error' }
     }
   }
 

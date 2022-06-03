@@ -118,7 +118,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
     [selected, focused]
   )
 
-  mog('MentionElement', { user, access, node, elementEmail: element?.email })
+  // mog('MentionElement', { user, access, node, elementEmail: element?.email })
 
   return (
     <SMentionRoot {...attributes} type={user?.type} data-slate-value={element.value} contentEditable={false}>
