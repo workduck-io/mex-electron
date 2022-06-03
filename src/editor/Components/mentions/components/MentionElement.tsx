@@ -18,6 +18,7 @@ import {
   MentionTooltipContent,
   SMention,
   SMentionRoot,
+  TooltipAlias,
   TooltipMail,
   Username
 } from './MentionElement.styles'
@@ -52,11 +53,15 @@ const MentionTooltipComponent = ({ user, access, nodeid }: MentionTooltipProps) 
   // }
   return (
     <MentionTooltip>
-      <ProfileImage email={user && user.email} size={64} />
+      <ProfileImage email={user && user.email} size={128} />
       <MentionTooltipContent>
-        <div>
-          {user && user.alias} {user.type === 'self' && '(you)'}
-        </div>
+        {user && user.type !== 'invite' && (
+          <div>
+            {user.name}
+            {user.type === 'self' && '(you)'}
+          </div>
+        )}
+        {user && user.alias && <TooltipAlias>@{user.alias}</TooltipAlias>}
         {/* <div>State: {user?.type ?? 'Missing'}</div> */}
         <TooltipMail>{user && user.email}</TooltipMail>
         {access && <AccessTag access={access} />}
@@ -128,6 +133,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
   return (
     <SMentionRoot {...attributes} type={user?.type} data-slate-value={element.value} contentEditable={false}>
       <Tippy
+        // delay={[100, 1000000]} for testing
         delay={100}
         // interactiveDebounce={100}
         // interactive

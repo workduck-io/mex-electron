@@ -34,13 +34,14 @@ export const MentionTooltipContent = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.small};
 `
 
 export const MentionTooltip = styled.div`
   display: flex;
   align-items: center;
+  flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
-  padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   max-height: 400px;
   max-width: 700px;
@@ -50,7 +51,9 @@ export const MentionTooltip = styled.div`
   color: ${({ theme }) => theme.colors.text.default};
   img,
   svg {
-    border-radius: ${({ theme }) => theme.borderRadius.large};
+    width: 100%;
+    height: 100%;
+    border-radius: ${({ theme }) => `${theme.borderRadius.large} ${theme.borderRadius.large} 0 0`};
   }
   &::after {
     border-right-color: ${({ theme }) => theme.colors.primary} !important;
@@ -60,6 +63,10 @@ export const MentionTooltip = styled.div`
 export const TooltipMail = styled.div`
   color: ${({ theme }) => theme.colors.text.fade};
   font-size: 0.9rem;
+`
+
+export const TooltipAlias = styled.div`
+  color: ${({ theme }) => theme.colors.primary};
 `
 
 export const SMention = styled.div<{ selected: boolean; type: 'mentionable' | 'invite' | 'self' }>`

@@ -15,6 +15,7 @@ interface MUsersRaw {
   nodeid: string
   email: string
   alias: string
+  name: string
   userid: string
   access: AccessLevel
 }
@@ -77,6 +78,7 @@ export const useFetchShareData = () => {
             userid: uDetails.userID,
             nodeid: node.nodeid,
             email: uDetails.email,
+            name: uDetails.name,
             alias: uDetails.alias
           }
         })
@@ -87,7 +89,7 @@ export const useFetchShareData = () => {
     // .filter((u) => u.userid !== userDetails?.userID)
 
     mentionableU.forEach((u) =>
-      addMentionable(u.alias ?? getEmailStart(u.email), u.email, u.userid, u.nodeid, u.access)
+      addMentionable(u.alias ?? getEmailStart(u.email), u.email, u.userid, u.name, u.nodeid, u.access)
     )
 
     mog('SharedNode', { sharedNodes, usersWithAccess, mentionableU, UserAccessDetails })
