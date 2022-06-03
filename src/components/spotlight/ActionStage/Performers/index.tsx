@@ -9,7 +9,6 @@ import PreActions from './PreActions'
 import useActions from '@components/spotlight/Actions/useActions'
 import ConnectService from '@components/spotlight/Actions/ConnectService'
 import { ViewPage } from '../Screen/View'
-import { mog } from '@utils/lib/helper'
 
 export enum PerformerType {
   list = 'list',

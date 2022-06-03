@@ -15,11 +15,16 @@ export type SpotlightAppStore = {
   setReset: () => void
   isLoading: boolean
   setIsLoading: (value: boolean) => void
+  configurationChanged?: boolean
+  toggleConfigurationChanged: () => void
 }
 
 export const useSpotlightAppStore = create<SpotlightAppStore>((set, get) => ({
   input: '',
   setInput: (value: string) => set({ input: value }),
+
+  configurationChanged: false,
+  toggleConfigurationChanged: () => set({ configurationChanged: !get().configurationChanged }),
 
   search: '',
   setSearch: (value) => set({ search: value }),

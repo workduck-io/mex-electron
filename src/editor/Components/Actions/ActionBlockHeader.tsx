@@ -9,6 +9,8 @@ import { ClickPostActionType } from '@workduck-io/action-request-helper'
 import { useMenuPerformer } from '@components/spotlight/ActionStage/ActionMenu/useMenuPerfomer'
 import Loading from '@style/Loading'
 import useActions from '@components/spotlight/Actions/useActions'
+import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
+import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
 
 const ActionBlockHeader = () => {
   const activeAction = useActionStore((store) => store.activeAction)
@@ -30,6 +32,7 @@ const ActionBlockHeader = () => {
   }
 
   const isConnected = getIsServiceConnected(activeAction?.actionGroupId)
+  const { mexIcon } = getIconType(activeAction?.icon ?? DEFAULT_LIST_ITEM_ICON)
 
   return (
     <ActionBlockContainer>
@@ -44,11 +47,10 @@ const ActionBlockHeader = () => {
             margin="0 0.5rem 0 0"
           />
         )}
-        <MexIcon
+        <ProjectIconMex
+          isMex={mexIcon}
           icon={activeAction?.icon}
-          height="1.25em"
-          noHover
-          width="1.25rem"
+          size={16}
           color={theme.colors.primary}
           margin="0 0.5rem 0 0"
         />

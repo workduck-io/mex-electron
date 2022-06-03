@@ -14,6 +14,8 @@ import { NoOption } from '../ActionMenu/styled'
 import { useActionMenuStore } from '../ActionMenu/useActionMenuStore'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { usePlateEditorRef } from '@udecode/plate'
+import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
+import { DEFAULT_LIST_ITEM_ICON } from '../ActionMenu/ListSelector'
 
 const JoinService = styled.span<{ left?: boolean }>`
   position: absolute;
@@ -108,6 +110,9 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
     return <ActionMenu title="Options" />
   }
 
+  const icon = actionGroups?.[actionGroupId]?.icon
+  const { mexIcon } = getIconType(icon || DEFAULT_LIST_ITEM_ICON)
+
   if (config?.form && !isView)
     return (
       <>
@@ -116,13 +121,7 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
             <TopBlur />
             <JoinService>
               <section>
-                <MexIcon
-                  color={theme.colors.primary}
-                  icon={actionGroups?.[actionGroupId]?.icon}
-                  height="4rem"
-                  noHover
-                  width="4rem"
-                />
+                <ProjectIconMex isMex={mexIcon} color={theme.colors.primary} icon={icon} size={40} />
                 {isSubmitting ? (
                   <Loading transparent dots={3} orientation="vertical" direction="reverse" />
                 ) : (

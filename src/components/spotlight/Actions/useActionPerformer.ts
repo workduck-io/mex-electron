@@ -181,7 +181,8 @@ export const useActionPerformer = () => {
   }
 
   const getPerformerContext = (config: ActionHelperConfig, options?: PerfomerOptions) => {
-    const isParentContext = (isMenuActionOpen && !config?.preActionId) || (options?.parent && !activeAction?.actionIds)
+    const isParentContext =
+      (options?.parent && !config?.preActionId) || (!activeAction?.actionIds && isMenuActionOpen && !options?.parent)
 
     const editorContext = element?.actionContext?.prevContext
 

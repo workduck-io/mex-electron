@@ -3,12 +3,12 @@
 import { mog } from '../../../utils/lib/helper'
 import { orderBy } from 'lodash'
 import { getListItemFromAction } from '../Home/helper'
-import { ActionGroupType, UpdateActionsType, useActionStore } from './useActionStore'
+import { ActionGroupType, UpdateActionsType } from './useActionStore'
 import { useActionsCache } from './useActionsCache'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { IpcAction } from '../../../data/IpcAction'
 import { AppType } from '../../../hooks/useInitialize'
-import { ActionHelperConfig, ActionGroup } from '@workduck-io/action-request-helper'
+import { ActionHelperConfig, ActionGroup, LOCALSTORAGE_NAMESPACES } from '@workduck-io/action-request-helper'
 import { actionPerformer } from './useActionPerformer'
 
 const useActions = () => {
@@ -97,6 +97,15 @@ const useActions = () => {
     }
   }
 
+  const getIsServiceConfigured = (actionGroupId: string, actionId: string) => {
+    const actionGroup = useActionsCache.getState().actionGroups
+    const isGlobal = !!actionGroup?.[actionId]?.globalActionId
+
+    const globalIdsCache = !!actionPerformer.getGlobalId(LOCALSTORAGE_NAMESPACES.GLOBAL, actionGroupId)
+
+    return isGlobal && globalIdsCache
+  }
+
   const getIsServiceConnected = (actionGroupId: string) => {
     const connectedGroups = useActionsCache.getState().connectedGroups
 
@@ -166,7 +175,8 @@ const useActions = () => {
     getAuthorizedGroups,
     sortActionGroups,
     clearActionStore,
-    getIsServiceConnected
+    getIsServiceConnected,
+    getIsServiceConfigured
   }
 }
 

@@ -1,9 +1,13 @@
+import { IpcAction } from '@data/IpcAction'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { Button } from '@style/Buttons'
-import { MexIcon } from '@style/Layouts'
 import { capitalize } from '@utils/lib/strings'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import { ipcRenderer } from 'electron'
 import React from 'react'
 import styled, { useTheme } from 'styled-components'
+import { DEFAULT_LIST_ITEM_ICON } from '../ActionStage/ActionMenu/ListSelector'
+import { getIconType, ProjectIconMex } from '../ActionStage/Project/ProjectIcon'
 import { useActionStore } from './useActionStore'
 
 export const Container = styled.div`
@@ -18,19 +22,26 @@ export const Container = styled.div`
 
 const ConnectService = () => {
   const activeAction = useActionStore((store) => store.activeAction)
+  const isSpotlightContext = useSpotlightContext()
 
   const theme = useTheme()
   const { goTo } = useRouting()
 
   const onLoginClick = () => {
     if (activeAction) {
-      goTo(ROUTE_PATHS.integrations, NavigationType.push, activeAction?.actionGroupId)
+      if (!isSpotlightContext) {
+        goTo(ROUTE_PATHS.integrations, NavigationType.push, activeAction?.actionGroupId)
+      } else {
+        ipcRenderer.send(IpcAction.REDIRECT_TO, { page: `${ROUTE_PATHS.integrations}/${activeAction?.actionGroupId}` })
+      }
     }
   }
 
+  const { mexIcon } = getIconType(activeAction?.icon || DEFAULT_LIST_ITEM_ICON)
+
   return (
     <Container>
-      <MexIcon icon={activeAction?.icon} height="3rem" width="3rem" color={theme.colors.primary} />
+      <ProjectIconMex isMex={mexIcon} icon={activeAction?.icon} size={32} color={theme.colors.primary} />
       <div>{`You're not connected to ${capitalize(activeAction?.actionGroupId?.toLocaleLowerCase())}`}</div>
       <Button onClick={onLoginClick}>Connect</Button>
     </Container>
