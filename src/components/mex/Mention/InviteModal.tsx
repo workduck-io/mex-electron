@@ -58,11 +58,17 @@ export const InviteModalContent = () => {
           closeModal()
           return
         }
-        const resp = await grantUsersPermission(node.nodeid, [details.userID], access)
-        mog('UserPermission given', { details, resp })
-        addMentionable(details.alias, data.email, details.userID, node.nodeid, access)
+        if (data?.access?.value !== 'NONE') {
+          const resp = await grantUsersPermission(node.nodeid, [details.userID], access)
+          mog('UserPermission given', { details, resp })
+          addMentionable(details.alias, data.email, details.userID, node.nodeid, access)
+        } else {
+          addMentionable(details.alias, data.email, details.userID, undefined, undefined)
+        }
         replaceUserMention(editor, data.alias, details.userID)
-        toast(`Shared with: ${data.email}`)
+        if (data?.access?.value !== 'NONE') {
+          toast(`Shared with: ${data.email}`)
+        } else toast(`Added mention for: ${data.email}`)
       } else {
         inviteUser(data.email, data.alias, node.nodeid, access)
         replaceUserMentionEmail(editor, data.alias, details.email)
@@ -112,7 +118,7 @@ export const InviteModalContent = () => {
                 <StyledCreatatbleSelect
                   {...field}
                   defaultValue={DefaultPermissionValue}
-                  options={permissionOptions}
+                  options={[...permissionOptions, { value: 'NONE', label: 'None' }]}
                   closeMenuOnSelect={true}
                   closeMenuOnBlur={true}
                 />

@@ -19,7 +19,7 @@ export interface InviteModalData {
   alias: string
   email: string
   access: {
-    value: AccessLevel
+    value: AccessLevel | 'NONE'
     label: string
   }
 }

@@ -88,7 +88,7 @@ export const useMentions = () => {
     }
   }
 
-  const addMentionable = (alias: string, email: string, userID: string, nodeid: string, access: AccessLevel) => {
+  const addMentionable = (alias: string, email: string, userID: string, nodeid?: string, access?: AccessLevel) => {
     // if (userID === localUserDetails.userID) {
     //   mog('Not adding mentionable user as it is the current user', { userID })
     //   return
@@ -99,7 +99,9 @@ export const useMentions = () => {
 
     // mog('adding mentionable user ', { userID, mentionExists, mentionable })
     if (mentionExists) {
-      mentionExists.access[nodeid] = access
+      if (nodeid && access) {
+        mentionExists.access[nodeid] = access
+      }
       setMentionable([...mentionable.filter((u) => u.userID !== userID), mentionExists])
     } else {
       const newMention: Mentionable = {

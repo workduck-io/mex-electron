@@ -21,6 +21,7 @@ import {
   TooltipMail,
   Username
 } from './MentionElement.styles'
+import { useAuthStore } from '@services/auth/useAuth'
 import { MentionElementProps } from './MentionElement.types'
 // import { StyledCreatatbleSelect } from '@style/Form'
 // import { UserDetails } from '../../../../types/auth'
@@ -33,6 +34,8 @@ interface MentionTooltipProps {
 }
 
 const MentionTooltipComponent = ({ user, access, nodeid }: MentionTooltipProps) => {
+  const currentUserDetails = useAuthStore((state) => state.userDetails)
+
   // const addAccess = useMentionStore((s) => s.addAccess)
   // const { changeUserPermission } = usePermission()
   // const onAccessChange = async (val: any) => {
@@ -51,7 +54,9 @@ const MentionTooltipComponent = ({ user, access, nodeid }: MentionTooltipProps) 
     <MentionTooltip>
       <ProfileImage email={user && user.email} size={64} />
       <MentionTooltipContent>
-        <div>{user && user.alias}</div>
+        <div>
+          {user && user.alias} {user.type === 'self' && '(you)'}
+        </div>
         {/* <div>State: {user?.type ?? 'Missing'}</div> */}
         <TooltipMail>{user && user.email}</TooltipMail>
         {access && <AccessTag access={access} />}

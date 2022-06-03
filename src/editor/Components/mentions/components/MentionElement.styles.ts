@@ -23,7 +23,7 @@ export const SAccessTag = styled.div`
   display: flex;
   align-items: center;
   padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
-  background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};
+  background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[6])};
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
   gap: ${({ theme }) => theme.spacing.tiny};
   font-size: 0.9rem;

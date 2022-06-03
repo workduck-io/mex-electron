@@ -33,7 +33,12 @@ const ShareModal = () => {
   // }, [shortcuts, shortcutDisabled])
 
   return (
-    <Modal className="ModalContentSplit" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
+    <Modal
+      className={mode === 'invite' ? 'ModalContent' : 'ModalContentSplit'}
+      overlayClassName="ModalOverlay"
+      onRequestClose={closeModal}
+      isOpen={open}
+    >
       {mode === 'invite' ? <InviteModalContent /> : <PermissionModalContent />}
     </Modal>
   )
