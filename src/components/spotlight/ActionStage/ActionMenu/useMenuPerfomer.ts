@@ -32,14 +32,16 @@ export const useMenuPerformer = () => {
         const text = actionInfo.display.find((d) => d.key === menuAction.key)?.value
         const title = menuAction.label.replace('Copy', 'Copied')
 
-        const showEditorToast = getPlateEditorRef()
+        const showEditorToast = !!getPlateEditorRef()
 
-        appNotifierWindow(IpcAction.COPY_TO_CLIPBOARD, AppType.SPOTLIGHT, {
+        const notifyObj = {
           text,
           html: text,
           title,
           hideToast: showEditorToast
-        })
+        }
+
+        appNotifierWindow(IpcAction.COPY_TO_CLIPBOARD, AppType.SPOTLIGHT, notifyObj)
 
         if (showEditorToast) toast(title)
         clearMenu()
