@@ -64,14 +64,18 @@ export const useReminderStore = create<ReminderStoreState>((set, get) => ({
       reminders: state.reminders.filter((reminder) => reminder.id !== id)
     })),
   updateReminder: (newReminder: Reminder) =>
-    set((state) => ({
-      reminders: state.reminders.map((reminder) =>
-        reminder.id === newReminder.id ? { ...reminder, ...newReminder } : reminder
-      )
-    })),
+    set({
+      reminders: get().reminders.map((reminder) => {
+        if (reminder.id === newReminder.id) {
+          console.log('UpdateReminder', { reminder, newReminder })
+        }
+        return reminder.id === newReminder.id ? { ...reminder, ...newReminder } : reminder
+      })
+    }),
   updateReminderState: (id: string, rstate: ReminderState) => {
-    // mog('ReminderArmer: updateReminderState', { id, rstate })
-    get().updateReminder({ ...get().reminders.find((reminder) => reminder.id === id), state: rstate })
+    const newReminder = { ...get().reminders.find((reminder) => reminder.id === id), state: rstate }
+    mog('ReminderArmer: updateReminderState', { id, rstate, newReminder })
+    get().updateReminder(newReminder)
   },
 
   clearReminders: () => set({ reminders: [] }),
@@ -379,7 +383,7 @@ export const useReminders = () => {
   const actOnReminder = (action: ReminderActions, reminder: Reminder) => {
     // mog('ReminderArmer: IpcAction.ACTION_REMINDER', { action, reminder })
     switch (action.type) {
-      case 'open':
+      case 'open': {
         updateReminderState(reminder.id, {
           ...reminder.state,
           done: true
@@ -387,30 +391,33 @@ export const useReminders = () => {
         // mog('ReminderArmer: IpcAction.ACTION_REMINDER USE OPEN_REMINDER ACTION', { action, reminder })
         appNotifierWindow(IpcAction.OPEN_REMINDER_IN_MEX, AppType.SPOTLIGHT, { reminder: reminder })
         break
-      case 'delete':
+      }
+      case 'delete': {
         deleteReminder(reminder.id)
         break
-      case 'snooze':
+      }
+      case 'snooze': {
         snoozeReminder(reminder.id, action.value)
         break
-      case 'dismiss':
+      }
+      case 'dismiss': {
         dismissReminder(reminder)
         break
-      case 'todo':
-        {
-          mog('USE TODO ACTION', { action, reminder })
-          switch (action.todoAction) {
-            case 'status':
-              updateStatusOfTodo(action.value.nodeid, action.value.id, action.value.metadata.status)
-              break
-            case 'priority':
-              updatePriorityOfTodo(action.value.nodeid, action.value.id, action.value.metadata.priority)
-              break
-            default:
-              break
-          }
+      }
+      case 'todo': {
+        mog('USE TODO ACTION', { action, reminder })
+        switch (action.todoAction) {
+          case 'status':
+            updateStatusOfTodo(action.value.nodeid, action.value.id, action.value.metadata.status)
+            break
+          case 'priority':
+            updatePriorityOfTodo(action.value.nodeid, action.value.id, action.value.metadata.priority)
+            break
+          default:
+            break
         }
         break
+      }
       default:
         break
     }
@@ -534,7 +541,10 @@ export const useReminders = () => {
       (reminder) => upcomingRemindersBase.find((r) => r.id === reminder.id && r.state.done === false) === undefined
     )
 
-    pastReminders.unshift(...finishedUpcoming)
+    const pastRemIds = pastReminders.map((reminder) => reminder.id)
+    pastReminders.unshift(
+      ...finishedUpcoming.filter((reminder) => pastRemIds.find((id) => id === reminder.id) === undefined)
+    )
 
     if (upcomingReminders.length > 0) {
       res.push({

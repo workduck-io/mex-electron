@@ -19,8 +19,6 @@ interface ReminderGroupProps {
   controls: ReminderControls
 }
 
-window.ResizeObserver = undefined
-
 export const ReminderGroupUI = ({ reminderGroup, controls }: ReminderGroupProps) => {
   if (reminderGroup.reminders.length === 0) {
     return null
