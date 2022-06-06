@@ -26,6 +26,7 @@ import { useRecieveMentions, useRecieveTokens } from '../../../hooks/useSyncData
 import { useActionStore, UpdateActionsType } from '../Actions/useActionStore'
 import { useActionsPerfomerClient } from '../Actions/useActionPerformer'
 import { useActionsCache } from '../Actions/useActionsCache'
+import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
@@ -42,6 +43,7 @@ const GlobalListener = memo(() => {
   const addILink = useDataStore((store) => store.addILink)
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
   const addResultHash = useActionsCache((store) => store.addResultHash)
+  const closeShareModal = useShareModalStore((store) => store.closeModal)
 
   const { getTokenData } = useTokenData()
   // const { initActionsInStore, initActionsOfGroup } = useActions()
@@ -107,6 +109,9 @@ const GlobalListener = memo(() => {
       const normalMode = useSpotlightAppStore.getState().normalMode
       const node = useSpotlightEditorStore.getState().node
       const ilinks = useDataStore.getState().ilinks
+
+      // Close the modal
+      closeShareModal()
 
       if (!normalMode) {
         const content = getPlateSelectors().value()
