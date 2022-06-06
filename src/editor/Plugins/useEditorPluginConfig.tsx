@@ -7,7 +7,7 @@ import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { mog } from '@utils/lib/helper'
 import { useMemo } from 'react'
 import { QuickLinkType } from '../../components/mex/NodeSelect/NodeSelect'
-import { openReminderModal } from '../../components/mex/Reminders/CreateReminderModal'
+import { useOpenReminderModal } from '../../components/mex/Reminders/CreateReminderModal'
 import { useSnippets } from '../../hooks/useSnippets'
 import { CategoryType } from '../../store/Context/context.spotlight'
 import useDataStore from '../../store/useDataStore'
@@ -38,6 +38,7 @@ const useEditorPluginConfig = (editorId: string) => {
   const { setActionsInList } = useActions()
   const { getSnippetsConfigs } = useSnippets()
   // const { getSyncBlockConfigs } = useSyncConfig()
+  const { openReminderModal } = useOpenReminderModal()
 
   // Combobox
   const snippetConfigs = getSnippetsConfigs()

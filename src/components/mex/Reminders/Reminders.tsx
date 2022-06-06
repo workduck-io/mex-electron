@@ -65,7 +65,7 @@ const RemindersInfobar = () => {
           size={24}
           icon={deleteBin6Line}
           onClick={() => clearNodeReminders(nodeid)}
-          title="Delete All Reminders"
+          title="Delete All Finished Reminders"
         />
       </InfobarTools>
 

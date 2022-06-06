@@ -107,47 +107,52 @@ export const useCreateReminderModal = create<CreateReminderModalState>((set) => 
   }
 }))
 
-export const openReminderModal = (query: string) => {
-  const openModal = useCreateReminderModal.getState().openModal
-  const node = useEditorStore.getState().node
-  const addReminder = useReminderStore.getState().addReminder
-  const setInfobarMode = useLayoutStore.getState().setInfobarMode
-  // {}
-  const searchTerm = query.slice('remind'.length)
-  const parsed = getTimeInText(searchTerm)
-  const title = getNameFromPath(node.path)
-  if (parsed) {
-    const reminder: Reminder = {
-      id: generateReminderId(),
-      nodeid: node.nodeid,
-      time: parsed.time.getTime(),
-      title,
-      description: parsed.textWithoutTime,
-      state: {
-        done: false,
-        snooze: false
-      },
-      createdAt: Date.now(),
-      updatedAt: Date.now()
-    }
-    // mog('openReminderModal has time', { parsed, query, reminder })
-    if (parsed.textWithoutTime !== '') {
-      addReminder(reminder)
-      toast(`Reminder added for ${parsed.textWithoutTime}`)
-      setInfobarMode('reminders')
-    } else
-      openModal({
+export const useOpenReminderModal = () => {
+  const { saveAndClearBuffer } = useEditorBuffer()
+  const openReminderModal = (query: string) => {
+    const openModal = useCreateReminderModal.getState().openModal
+    const node = useEditorStore.getState().node
+    const addReminder = useReminderStore.getState().addReminder
+    const setInfobarMode = useLayoutStore.getState().setInfobarMode
+    // {}
+    const searchTerm = query.slice('remind'.length)
+    const parsed = getTimeInText(searchTerm)
+    const title = getNameFromPath(node.path)
+    if (parsed) {
+      const reminder: Reminder = {
+        id: generateReminderId(),
+        nodeid: node.nodeid,
         time: parsed.time.getTime(),
-        nodeid: node.nodeid
+        title,
+        description: parsed.textWithoutTime,
+        state: {
+          done: false,
+          snooze: false
+        },
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      }
+      // mog('openReminderModal has time', { parsed, query, reminder })
+      if (parsed.textWithoutTime !== '') {
+        addReminder(reminder)
+        toast(`Reminder added for ${parsed.textWithoutTime}`)
+        saveAndClearBuffer(true)
+        setInfobarMode('reminders')
+      } else
+        openModal({
+          time: parsed.time.getTime(),
+          nodeid: node.nodeid
+        })
+    } else if (!parsed && searchTerm !== '') {
+      // mog('openModal Without time', { parsed, query, searchTerm })
+      openModal({
+        nodeid: node.nodeid,
+        description: searchTerm
       })
-  } else if (!parsed && searchTerm !== '') {
-    // mog('openModal Without time', { parsed, query, searchTerm })
-    openModal({
-      nodeid: node.nodeid,
-      description: searchTerm
-    })
-  } else openModal({ nodeid: node.nodeid })
-  // const text = parsed ? ` ${toLocaleString(parsed.time)}: ${parsed.textWithoutTime}` : undefined
+    } else openModal({ nodeid: node.nodeid })
+    // const text = parsed ? ` ${toLocaleString(parsed.time)}: ${parsed.textWithoutTime}` : undefined
+  }
+  return { openReminderModal }
 }
 const CreateReminderModal = () => {
   const modalOpen = useCreateReminderModal((state) => state.open)
