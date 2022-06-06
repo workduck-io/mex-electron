@@ -158,8 +158,8 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
   return (
     <SMentionRoot {...attributes} type={user?.type} data-slate-value={element.value} contentEditable={false}>
       <Tippy
-        delay={[100, 1000000]} // for testing
-        // delay={100}
+        // delay={[100, 1000000]} // for testing
+        delay={100}
         interactiveDebounce={100}
         interactive
         placement="bottom"
