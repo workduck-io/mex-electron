@@ -133,7 +133,14 @@ export const Editor = ({
 
   return (
     <>
-      <EditorStyles readOnly={readOnly} onClick={() => setNodePreview(false)} data-tour="mex-onboarding-draft-editor">
+      <EditorStyles
+        readOnly={readOnly}
+        onClick={(ev) => {
+          ev.stopPropagation()
+          setNodePreview(false)
+        }}
+        data-tour="mex-onboarding-draft-editor"
+      >
         <Plate id={editorId} editableProps={editableProps} value={content} plugins={plugins} onChange={onChangeContent}>
           {showBalloonToolbar && <BallonMarkToolbarButtons />}
           <MultiComboboxContainer config={comboConfigData} />

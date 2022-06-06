@@ -90,8 +90,6 @@ const ContentEditor = () => {
   const onFocusClick = (ev) => {
     ev.preventDefault()
     ev.stopPropagation()
-    // ! TODO: Remove this after actions in editor
-    ev?.stopImmediatePropagation()
 
     if (editorRef) {
       if (editorWrapperRef.current) {
@@ -138,7 +136,7 @@ const ContentEditor = () => {
 
         {isBlockMode ? <BlockInfoBar /> : <Metadata node={node} />}
 
-        <EditorWrapper comboboxOpen={isComboOpen} ref={editorWrapperRef}>
+        <EditorWrapper comboboxOpen={isComboOpen} ref={editorWrapperRef} onClick={onFocusClick}>
           <Editor
             getSuggestions={getSuggestions}
             showBalloonToolbar
