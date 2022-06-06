@@ -14,11 +14,10 @@ import useAnalytics from '../analytics'
 import { Properties, CustomEvents } from '../analytics/events'
 import { mog } from '../../utils/lib/helper'
 import useActions from '../../components/spotlight/Actions/useActions'
-import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActionPerformer'
+import { useActionsPerfomerClient, useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useLayoutStore } from '@store/useLayoutStore'
 
-import { useActionPerformer } from '../../components/spotlight/Actions/useActionPerformer'
 import { UserDetails } from '../../types/auth'
 import { useUserCacheStore } from '@store/useUserCacheStore'
 
@@ -177,8 +176,8 @@ export const useAuthentication = () => {
             const userDetails = {
               email: result.userCred.email,
               userID: result.userCred.userId,
-              alias: '__unset',
-              name: '__unset'
+              alias: d.data.alias ?? d.data.name,
+              name: d.data.name
             }
             const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
             initActionPerfomerClient(workspaceDetails.id)
@@ -253,6 +252,7 @@ export const useAuthentication = () => {
           user: {
             id: uCred.userId,
             name: uCred.email,
+            alias: result.userCred.alias,
             email: uCred.email
           },
           workspaceName: newWorkspaceName
