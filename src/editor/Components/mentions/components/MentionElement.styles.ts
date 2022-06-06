@@ -37,7 +37,7 @@ export const MentionTooltipContent = styled.div`
   padding: ${({ theme }) => theme.spacing.small};
 `
 
-export const MentionTooltip = styled.div`
+export const MentionTooltip = styled.div<{ spotlight?: boolean }>`
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -49,15 +49,20 @@ export const MentionTooltip = styled.div`
   ${CardShadow}
   background: ${({ theme }) => theme.colors.gray[8]} !important;
   color: ${({ theme }) => theme.colors.text.default};
-  img,
-  svg {
+  & > img,
+  & > svg {
     width: 100%;
     height: 100%;
-    border-radius: ${({ theme }) => `${theme.borderRadius.large} ${theme.borderRadius.large} 0 0`};
   }
   &::after {
     border-right-color: ${({ theme }) => theme.colors.primary} !important;
   }
+
+  ${({ spotlight }) =>
+    spotlight &&
+    css`
+      flex-direction: row;
+    `}
 `
 
 export const TooltipMail = styled.div`

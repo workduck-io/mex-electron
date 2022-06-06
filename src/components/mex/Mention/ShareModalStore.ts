@@ -25,8 +25,10 @@ export interface InviteModalData {
 }
 interface ShareModalData {
   alias?: string
-  nodeid?: string
+
   fromEditor?: boolean
+  // When sharing to a preexisting user from a mention
+  userid?: string
   changedUsers?: ChangedUser[]
   changedInvitedUsers?: ChangedInvitedUser[]
 }

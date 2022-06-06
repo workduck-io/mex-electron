@@ -1,3 +1,4 @@
+import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
 import AccessTag from '@components/mex/Mention/AccessTag'
 import { ProfileImage } from '@components/mex/User/ProfileImage'
 import { useMentions } from '@hooks/useMentions'
@@ -7,7 +8,7 @@ import { useEditorStore } from '@store/useEditorStore'
 import Tippy from '@tippyjs/react/headless' // different import path!
 import { useEditorRef } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Transforms } from 'slate'
 import { useFocused, useSelected } from 'slate-react'
 import { AccessLevel, InvitedUser, Mentionable, permissionOptions, SelfMention } from '../../../../types/mentions'
@@ -24,6 +25,14 @@ import {
 } from './MentionElement.styles'
 import { useAuthStore } from '@services/auth/useAuth'
 import { MentionElementProps } from './MentionElement.types'
+import { useMentionStore } from '@store/useMentionStore'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
+import { useUserService } from '@services/auth/useUserService'
+import { useUserCacheStore } from '@store/useUserCacheStore'
+import { usePermission } from '@services/auth/usePermission'
+import toast from 'react-hot-toast'
+import { Button } from '@style/Buttons'
+import { Icon } from '@iconify/react'
 // import { StyledCreatatbleSelect } from '@style/Form'
 // import { UserDetails } from '../../../../types/auth'
 // import toast from 'react-hot-toast'
@@ -35,24 +44,27 @@ interface MentionTooltipProps {
 }
 
 const MentionTooltipComponent = ({ user, access, nodeid }: MentionTooltipProps) => {
-  const currentUserDetails = useAuthStore((state) => state.userDetails)
+  const spotlightCtx = useSpotlightContext()
 
   // const addAccess = useMentionStore((s) => s.addAccess)
   // const { changeUserPermission } = usePermission()
-  // const onAccessChange = async (val: any) => {
-  //   mog('Val', val)
-  //   // TODO: Extract new permission from Val
-  //   if (user?.type === 'self') {
-  //     toast('Changing your own permission is not allowed')
-  //   }
-  //   if (user?.type === 'mentionable') {
-  //     // Grant permission via api
-  //     const resp = await changeUserPermission(nodeid, { [user.userID]: access }) // Use new permission instead of acces here
-  //   }
-  //   addAccess(user?.email, nodeid, access)
-  // }
+  const prefillShareModal = useShareModalStore((state) => state.prefillModal)
+
+  const onShareModal = async () => {
+    // mog('onShareModal')
+    // TODO: Extract new permission from Val
+    if (user?.type === 'self') {
+      toast('Changing your own permission is not allowed')
+    }
+    if (user?.type === 'mentionable') {
+      prefillShareModal('invite', {
+        userid: user?.userID
+      })
+    }
+  }
+
   return (
-    <MentionTooltip>
+    <MentionTooltip spotlight={spotlightCtx !== undefined}>
       <ProfileImage email={user && user.email} size={128} />
       <MentionTooltipContent>
         {user && user.type !== 'invite' && (
@@ -65,6 +77,12 @@ const MentionTooltipComponent = ({ user, access, nodeid }: MentionTooltipProps) 
         {/* <div>State: {user?.type ?? 'Missing'}</div> */}
         <TooltipMail>{user && user.email}</TooltipMail>
         {access && <AccessTag access={access} />}
+        {user && user?.type !== 'invite' && user?.type !== 'self' && !access && (
+          <Button onClick={onShareModal}>
+            <Icon icon="ri:share-line" />
+            Share Note
+          </Button>
+        )}
       </MentionTooltipContent>
     </MentionTooltip>
   )
@@ -79,6 +97,9 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
   const selected = useSelected()
   const focused = useFocused()
   const node = useEditorStore((state) => state.node)
+  const mentionable = useMentionStore((state) => state.mentionable)
+  const cache = useUserCacheStore((state) => state.cache)
+  const { getUserDetailsUserId } = useUserService()
   const { getUserFromUserid, getUserAccessLevelForNode } = useMentions()
   // const { getUserDetailsUserId } = useUserService()
 
@@ -99,13 +120,17 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
         // Invited user access map only needed for rendering, does not affect access as it is unknown (for 2nd person view)
         access: {}
       } as InvitedUser
+  }, [element.value, mentionable, cache])
 
-    // const fetchu = await getUserDetailsUserId(element.value)
-    // if (fetchu) return fetchu
-  }, [element.value])
+  useEffect(() => {
+    const _f = (async () => {
+      if (!user) await getUserDetailsUserId(element.value)
+    })()
+  }, [user])
+
   const access = getUserAccessLevelForNode(element.value, node.nodeid)
 
-  // mog('MentionElement', { user })
+  // mog('MentionElement', { user, access })
 
   useHotkeys(
     'backspace',
@@ -133,10 +158,10 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
   return (
     <SMentionRoot {...attributes} type={user?.type} data-slate-value={element.value} contentEditable={false}>
       <Tippy
-        // delay={[100, 1000000]} for testing
-        delay={100}
-        // interactiveDebounce={100}
-        // interactive
+        delay={[100, 1000000]} // for testing
+        // delay={100}
+        interactiveDebounce={100}
+        interactive
         placement="bottom"
         appendTo={() => document.body}
         render={(attrs) => <MentionTooltipComponent user={user} nodeid={node.nodeid} access={access} />}

@@ -40,6 +40,12 @@ export const Button = styled.button<ButtonProps>`
     opacity: 0.33;
   }
 
+  svg,
+  img {
+    height: 1.25rem;
+    width: 1.25rem;
+  }
+
   ${({ primary, transparent, theme }) =>
     !primary &&
     transparent &&

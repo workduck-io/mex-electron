@@ -31,6 +31,10 @@ const GlobalStyle = createGlobalStyle`
 
   ${ModalStyles}
 
+  button {
+    border: none;
+  }
+
   ${TippyBalloonStyles}
 
   * {

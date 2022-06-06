@@ -7,6 +7,7 @@ import { AccessLevel, DefaultPermission, InvitedUser, Mentionable, SelfMention }
 import { useMentionData } from './useLocalData'
 import useDataStore from '@store/useDataStore'
 import { useNodes } from './useNodes'
+import { useUserCacheStore } from '@store/useUserCacheStore'
 
 export const useMentions = () => {
   const { grantUsersPermission } = usePermission()
@@ -136,9 +137,21 @@ export const useMentions = () => {
   const getUserAccessLevelForNode = (userid: string, nodeid: string): AccessLevel | undefined => {
     const mentionable = useMentionStore.getState().mentionable
     const user = mentionable.find((mention) => mention.userID === userid)
-    if (user) {
+    if (user && user.access[nodeid]) {
       return user.access[nodeid]
-    } else return undefined
+    }
+    const sharedNodes = useDataStore.getState().sharedNodes
+    const sharedNode = sharedNodes.find((node) => node.nodeid === nodeid)
+    if (userid === localUserDetails.userID) {
+      if (sharedNode) {
+        return sharedNode.currentUserAccess
+      } else {
+        return 'OWNER'
+      }
+    }
+
+    // const isShared = isSharedNode(nodeid)
+    return undefined
   }
 
   const getSharedUsersForNode = (nodeid: string): Mentionable[] => {
@@ -192,6 +205,11 @@ export const useMentions = () => {
       if (invitedUser) {
         return invitedUser
       }
+    }
+    const cache = useUserCacheStore.getState().cache
+    const userFromCache = cache.find((u) => u.userID === userid)
+    if (userFromCache) {
+      return { ...userFromCache, type: 'mentionable', access: {} }
     }
     return undefined
   }

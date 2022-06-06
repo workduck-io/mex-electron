@@ -10,7 +10,7 @@ import { ButtonFields, Label, SelectWrapper, StyledCreatatbleSelect } from '@sty
 import { Title } from '@style/Typography'
 import { getPlateEditorRef, usePlateEditorRef } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { AccessLevel, DefaultPermission, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
@@ -22,7 +22,7 @@ import { InviteModalData, useShareModalStore } from './ShareModalStore'
 export const InviteModalContent = () => {
   const smodaldata = useShareModalStore((state) => state.data)
   const closeModal = useShareModalStore((state) => state.closeModal)
-  const { getUserDetails } = useUserService()
+  const { getUserDetails, getUserDetailsUserId } = useUserService()
   const currentUserDetails = useAuthStore((s) => s.userDetails)
   const node = useEditorStore((state) => state.node)
   const { inviteUser, addMentionable, saveMentionData } = useMentions()
@@ -33,6 +33,7 @@ export const InviteModalContent = () => {
     handleSubmit,
     register,
     control,
+    setValue,
     formState: { errors, isSubmitting }
   } = useForm<InviteModalData>()
 
@@ -42,6 +43,20 @@ export const InviteModalContent = () => {
     // By default, if no access -> user is the owner
     return false
   }, [node])
+
+  const [existUserDetails, setExistUserDetails] = useState<any | null>(null)
+
+  useEffect(() => {
+    if (smodaldata.userid) {
+      getUserDetailsUserId(smodaldata.userid).then((user) => {
+        setExistUserDetails(user)
+        if (user?.email && user?.alias) {
+          setValue('email', user.email)
+          setValue('alias', user.alias)
+        }
+      })
+    }
+  }, [smodaldata.userid])
 
   const onSubmit = async (data: InviteModalData) => {
     if (node && node.nodeid) {
@@ -65,13 +80,17 @@ export const InviteModalContent = () => {
         } else {
           addMentionable(details.alias, data.email, details.userID, undefined, undefined)
         }
-        replaceUserMention(editor, data.alias, details.userID)
+        if (!smodaldata.userid) {
+          replaceUserMention(editor, data.alias, details.userID)
+        }
         if (data?.access?.value !== 'NONE') {
           toast(`Shared with: ${data.email}`)
         } else toast(`Added mention for: ${data.email}`)
       } else {
         inviteUser(data.email, data.alias, node.nodeid, access)
-        replaceUserMentionEmail(editor, data.alias, details.email)
+        if (!smodaldata.userid) {
+          replaceUserMentionEmail(editor, data.alias, details.email)
+        }
         toast(`${data.email} is not on Mex, added to Invited Users`)
       }
       saveMentionData()
@@ -79,6 +98,10 @@ export const InviteModalContent = () => {
 
     closeModal()
   }
+
+  mog('InviteModalContent', {
+    existUserDetails
+  })
 
   return (
     <InviteWrapper>
@@ -90,7 +113,8 @@ export const InviteModalContent = () => {
             name="alias"
             label="Alias"
             inputProps={{
-              defaultValue: smodaldata.alias ?? '',
+              defaultValue: smodaldata.alias ?? existUserDetails?.alias ?? '',
+              readOnly: existUserDetails?.alias !== undefined,
               ...register('alias', {
                 required: true
               })
@@ -102,6 +126,8 @@ export const InviteModalContent = () => {
             label="Email"
             inputProps={{
               autoFocus: true,
+              defaultValue: existUserDetails?.email ?? '',
+              readOnly: existUserDetails?.email !== undefined,
               ...register('email', {
                 required: true,
                 pattern: EMAIL_REG
