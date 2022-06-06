@@ -659,6 +659,13 @@ ipcMain.on(IpcAction.STOP_ONBOARDING, (_event, arg) => {
   notifyOtherWindow(IpcAction.STOP_ONBOARDING, from)
 })
 
+ipcMain.on(IpcAction.OPEN_MODAL_IN_MEX, (_event, arg) => {
+  mex?.webContents.send(IpcAction.OPEN_MODAL, { type: arg.type, data: arg.data })
+  spotlight.hide()
+  mex.focus()
+  mex.show()
+})
+
 ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
   mex?.webContents.send(IpcAction.OPEN_NODE, { nodeid: arg.nodeid })
   spotlight.hide()

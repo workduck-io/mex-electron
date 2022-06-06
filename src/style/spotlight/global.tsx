@@ -3,6 +3,7 @@ import { TippyBalloonStyles } from '../Toolbar'
 import { createGlobalStyle, css } from 'styled-components'
 import normalize from './normalize'
 import { transparentize } from 'polished'
+import { ModalStyles } from '@components/mex/Refactor/styles'
 
 export const MainFont = css`
   font-size: 14px;
@@ -28,8 +29,10 @@ const GlobalStyle = createGlobalStyle`
     overflow: hidden;
   }
 
+  ${ModalStyles}
+
   ${TippyBalloonStyles}
-  
+
   * {
       ${ThinScrollbar};
 

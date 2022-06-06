@@ -20,7 +20,7 @@ import { InviteFormFieldset, InviteFormWrapper, InviteWrapper } from './ShareMod
 import { InviteModalData, useShareModalStore } from './ShareModalStore'
 
 export const InviteModalContent = () => {
-  const data = useShareModalStore((state) => state.data)
+  const smodaldata = useShareModalStore((state) => state.data)
   const closeModal = useShareModalStore((state) => state.closeModal)
   const { getUserDetails } = useUserService()
   const currentUserDetails = useAuthStore((s) => s.userDetails)
@@ -49,7 +49,7 @@ export const InviteModalContent = () => {
       const access = (data?.access?.value as AccessLevel) ?? DefaultPermission
 
       const details = await getUserDetails(data.email)
-      mog('data', { data, details })
+      mog('data', { data, details, node })
 
       if (details.userID !== undefined) {
         // Give permission here
@@ -61,7 +61,7 @@ export const InviteModalContent = () => {
         if (data?.access?.value !== 'NONE') {
           const resp = await grantUsersPermission(node.nodeid, [details.userID], access)
           mog('UserPermission given', { details, resp })
-          addMentionable(details.alias, data.email, details.userID, node.nodeid, access)
+          addMentionable(details.alias, data.email, details.userID, details.name, node.nodeid, access)
         } else {
           addMentionable(details.alias, data.email, details.userID, undefined, undefined)
         }
@@ -90,7 +90,7 @@ export const InviteModalContent = () => {
             name="alias"
             label="Alias"
             inputProps={{
-              defaultValue: data.alias ?? '',
+              defaultValue: smodaldata.alias ?? '',
               ...register('alias', {
                 required: true
               })

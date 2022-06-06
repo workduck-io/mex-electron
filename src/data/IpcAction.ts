@@ -63,6 +63,10 @@ export enum IpcAction {
   HIDE_REMINDER = 'HIDE_REMINDER',
   RESIZE_REMINDER = 'RESIZE_REMINDER',
 
+  // Open Modal
+  OPEN_MODAL = 'OPEN_MODAL',
+  OPEN_MODAL_IN_MEX = 'OPEN_MODAL_IN_MEX',
+
   // Navigation
   GO_BACK = 'GO_BACK',
   GO_FORWARD = 'GO_FORWARD',

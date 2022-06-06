@@ -12,7 +12,7 @@ import { useMemo } from 'react'
 import { QuickLinkType } from '../../components/mex/NodeSelect/NodeSelect'
 import { useOpenReminderModal } from '../../components/mex/Reminders/CreateReminderModal'
 import { useSnippets } from '../../hooks/useSnippets'
-import { CategoryType } from '../../store/Context/context.spotlight'
+import { CategoryType, useSpotlightContext } from '../../store/Context/context.spotlight'
 import useDataStore from '../../store/useDataStore'
 import { useEditorStore } from '../../store/useEditorStore'
 import { useRouting } from '../../views/routes/urls'
@@ -28,6 +28,8 @@ import { SlashComboboxItem } from '../Components/SlashCommands/SlashComboboxItem
 import { TagComboboxItem } from '../Components/tag/components/TagComboboxItem'
 import { ELEMENT_TAG } from '../Components/tag/defaults'
 import { useAuthStore } from '../../services/auth/useAuth'
+import { ipcRenderer } from 'electron'
+import { IpcAction } from '@data/IpcAction'
 
 const useEditorPluginConfig = (editorId: string) => {
   const tags = useDataStore((state) => state.tags)
@@ -46,6 +48,7 @@ const useEditorPluginConfig = (editorId: string) => {
   const addILink = useDataStore((state) => state.addILink)
   const { setActionsInList } = useActions()
   const { getSnippetsConfigs } = useSnippets()
+  const spotlightCtx = useSpotlightContext()
 
   const { grantUserAccessOnMention } = useMentions()
   // const { getSyncBlockConfigs } = useSyncConfig()
@@ -195,9 +198,8 @@ const useEditorPluginConfig = (editorId: string) => {
           grantUserAccessOnMention(alias, nodeid)
         },
         newItemHandler: (newAlias) => {
-          // addTag(newItem)
-          mog('ELEMENT_MENTIONS', { newAlias })
-          prefillShareModal('invite', newAlias, true)
+          mog('ELEMENT_MENTIONS', { newAlias, spotlightCtx })
+          prefillShareModal('invite', { alias: newAlias, fromEditor: true })
           return newAlias
         },
         renderElement: TagComboboxItem

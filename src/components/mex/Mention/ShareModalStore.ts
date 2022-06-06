@@ -23,26 +23,28 @@ export interface InviteModalData {
     label: string
   }
 }
+interface ShareModalData {
+  alias?: string
+  nodeid?: string
+  fromEditor?: boolean
+  changedUsers?: ChangedUser[]
+  changedInvitedUsers?: ChangedInvitedUser[]
+}
 
 interface ShareModalState {
   open: boolean
   focus: boolean
   mode: ShareModalMode
-  data: {
-    alias?: string
-    fromEditor?: boolean
-    changedUsers?: ChangedUser[]
-    changedInvitedUsers?: ChangedInvitedUser[]
-  }
+  data: ShareModalData
   openModal: (mode: ShareModalMode) => void
   closeModal: () => void
   setFocus: (focus: boolean) => void
   setChangedUsers: (users: ChangedUser[]) => void
   setChangedInvitedUsers: (users: ChangedInvitedUser[]) => void
-  prefillModal: (mode: ShareModalMode, alias?: string, fromEditor?: boolean) => void
+  prefillModal: (mode: ShareModalMode, data: ShareModalData) => void
 }
 
-export const useShareModalStore = create<ShareModalState>((set) => ({
+export const useShareModalStore = create<ShareModalState>((set, get) => ({
   open: false,
   focus: true,
   mode: 'permission',
@@ -69,13 +71,13 @@ export const useShareModalStore = create<ShareModalState>((set) => ({
   setChangedUsers: (users: ChangedUser[]) => set({ data: { changedUsers: users.filter((u) => u.change.length > 0) } }),
   setChangedInvitedUsers: (users: ChangedInvitedUser[]) =>
     set({ data: { changedInvitedUsers: users.filter((u) => u.change.length > 0) } }),
-  prefillModal: (mode: ShareModalMode, alias?: string, fromEditor?: boolean) =>
+  prefillModal: (mode: ShareModalMode, data) =>
     set({
       mode,
       open: true,
       data: {
-        alias,
-        fromEditor
+        ...get().data,
+        ...data
       },
       focus: false
     })
