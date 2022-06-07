@@ -4,10 +4,10 @@ import { initialSnippets } from '../initial/snippets'
 
 export const ForceLogutVersion = '0.11.0-alpha.0'
 
-const v0101 = (): CustomTransformation => {
+const v0120 = (): CustomTransformation => {
   return {
     type: 'CustomTransformation',
-    version: '0.10.1-alpha.1',
+    version: '0.12.0-alpha.0',
     custom: (data) => {
       if (!data.sharedNodes) return { ...data, sharedNodes: [] }
       return data
@@ -102,7 +102,7 @@ export const UpdateVersionTransforms: Array<DataTransformation> = [
   v080_alpha_2(),
   v081(),
   v0901(),
-  v0101()
+  v0120()
 ]
 
 export const DefaultTransforms: Array<DataTransformation> = [
