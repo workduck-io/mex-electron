@@ -9,6 +9,7 @@ export const getRedirectPath = (window: BrowserWindow, url: string) => {
   const params = urlObj.searchParams
 
   const path = sanitizePath(urlObj.pathname.substring(1))
+  const pathWithParams = `${path}${urlObj.search}`
   const code = params.get('code')
   const accessToken = params.get('access_token')
 
@@ -34,7 +35,7 @@ export const getRedirectPath = (window: BrowserWindow, url: string) => {
 
     default: {
       mog('Redirect to path page', { path })
-      window.webContents.send(IpcAction.REDIRECT_TO, { page: path })
+      window.webContents.send(IpcAction.REDIRECT_TO, { page: pathWithParams })
     }
   }
 

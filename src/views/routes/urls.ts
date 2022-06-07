@@ -11,7 +11,6 @@ import useLoad from '../../hooks/useLoad'
 import { useEditorStore } from '../../store/useEditorStore'
 import useDataStore from '../../store/useDataStore'
 import { useSnippetStore } from '../../store/useSnippetStore'
-import { mog } from '@utils/lib/helper'
 
 export const ROUTE_PATHS = {
   home: '/',

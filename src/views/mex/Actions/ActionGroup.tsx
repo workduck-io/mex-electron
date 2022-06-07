@@ -4,20 +4,17 @@ import { MexIcon } from '../../../style/Layouts'
 import { camelCase } from '../../../utils/lib/strings'
 import { ActionGroupType } from '../../../components/spotlight/Actions/useActionStore'
 import { ActionGroup } from '@workduck-io/action-request-helper'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../../routes/urls'
 import { ActiveStatus, CenteredFlex, RightCut, ServiceCard, ServiceName } from '../../../style/Integration'
-import { ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
+import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
+import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
 
 type ActionGroupProps = {
-  group: ActionGroupType
+  group: Partial<ActionGroupType>
+  onClick: () => void
 }
 
-const ActionGroup: React.FC<ActionGroupProps> = ({ group }) => {
-  const { goTo } = useRouting()
-
-  const onClick = () => {
-    goTo(ROUTE_PATHS.integrations, NavigationType.push, group.actionGroupId)
-  }
+const ActionGroup: React.FC<ActionGroupProps> = ({ group, onClick }) => {
+  const { mexIcon } = getIconType(group.icon || DEFAULT_LIST_ITEM_ICON)
 
   return (
     <ServiceCard data-tour="service-connect" onClick={onClick} hover={!group?.connected}>
@@ -30,7 +27,7 @@ const ActionGroup: React.FC<ActionGroupProps> = ({ group }) => {
         </>
       )}
       <CenteredFlex>
-        <ProjectIconMex icon={group.icon} size={56} />
+        <ProjectIconMex isMex={mexIcon} icon={group.icon} size={56} />
       </CenteredFlex>
       <ServiceName>{camelCase(group.actionGroupId)}</ServiceName>
     </ServiceCard>
