@@ -19,6 +19,7 @@ import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
 import { mog } from '../utils/lib/helper'
 import { useDebounce, useDebouncedCallback } from 'use-debounce'
 import useSuggestionStore from '@store/useSuggestions'
+import { useNodes } from '@hooks/useNodes'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -90,7 +91,7 @@ export const Editor = ({
     }
   }, [hightlightedBlockIds, editorId, editorRef])
 
-  const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId)
+  const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId, options)
 
   // function to add two numbers
 

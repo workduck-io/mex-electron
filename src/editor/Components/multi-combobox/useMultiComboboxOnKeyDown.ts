@@ -8,7 +8,7 @@ import { useLinks } from '../../../hooks/useLinks'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
 import { getEventNameFromElement, getSlug } from '../../../utils/lib/strings'
-import { IComboboxItem } from '../combobox/components/Combobox.types'
+import { IComboboxItem, InsertableElement } from '../combobox/components/Combobox.types'
 import { isInternalCommand, useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { ELEMENT_ILINK } from '../ilink/defaults'
@@ -27,7 +27,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
   const { getNodeidFromPath } = useLinks()
   const closeMenu = useComboboxStore((state) => state.closeMenu)
 
-  return (editor: PlateEditor, item: IComboboxItem, elementType?: string) => {
+  return (editor: PlateEditor, item: IComboboxItem, elementType?: string, tab?: boolean) => {
     try {
       let comboType = elementComboType
       if (keys) {
@@ -38,11 +38,17 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
       const targetRange = useComboboxStore.getState().targetRange
       // mog('Target Range', { targetRange })
 
-      // mog('ELEMENT', { elementType, comboType })
+      mog('ELEMENT', { elementType, comboType })
 
-      const type =
+      let type =
         elementType ??
         getPluginType(editor, comboType.slateElementType === 'internal' ? 'ilink' : comboType.slateElementType)
+
+      if (tab) {
+        // console.log('TAB', { comboType, type })
+        type = type === ELEMENT_ILINK ? ELEMENT_INLINE_BLOCK : type
+        // if (type)
+      }
 
       if (targetRange) {
         const pathAbove = getBlockAbove(editor)?.[1]
@@ -62,6 +68,8 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
           itemValue = nodeId
         }
 
+        // if (key)
+
         // select the ilink text and insert the ilink element
         Transforms.select(editor, targetRange)
         // mog('Inserting Element', { comboType, type, itemValue, item })
@@ -70,34 +78,49 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         const activeBlock = useComboboxStore.getState().activeBlock
         const textAfterBlockTrigger = useComboboxStore.getState().search.textAfterBlockTrigger
 
-        // mog('Inserting from here', { activeBlock, isBlockTriggered })
+        mog('Inserting from here', { item, isBlockTriggered })
+        let InsertedElement: InsertableElement = {
+          type,
+          children: [{ text: '' }],
+          value: itemValue ?? item.key
+        }
         if (
           (item.type === QuickLinkType.backlink || type === ELEMENT_INLINE_BLOCK) &&
           isBlockTriggered &&
           activeBlock
         ) {
           const blockValue = activeBlock?.text ? getSlug(activeBlock.text) : ''
-          const withBlockInfo = {
+          InsertedElement = {
+            ...InsertedElement,
             type,
             children: [{ text: '' }],
             value: activeBlock?.id,
             blockValue,
             blockId: activeBlock?.blockId
           }
-
-          insertNodes(editor, withBlockInfo)
+        } else if (item.type === QuickLinkType.mentions) {
+          InsertedElement = {
+            ...InsertedElement,
+            value: item.key
+          }
+          if (comboType.onItemInsert && tab !== true) comboType.onItemInsert(item.text)
         } else {
           if (item.type === QuickLinkType.flow || item.type === QuickLinkType.snippet) {
             itemValue = item.key
           }
 
-          insertNodes<TElement>(editor, {
-            type,
-            children: [{ text: '' }],
+          InsertedElement = {
+            ...InsertedElement,
             value: itemValue
-          })
+          }
+        }
+        if (item.additional) {
+          InsertedElement = { ...InsertedElement, ...item.additional }
         }
 
+        mog('Inserting', { InsertedElement })
+
+        insertNodes<TElement>(editor, InsertedElement)
         trackEvent(getEventNameFromElement('Editor', ActionType.CREATE, type), {
           'mex-element-type': type,
           'mex-element-text': itemValue

@@ -1,27 +1,27 @@
 import { ILink, NodeEditorContent } from '../types/Types'
-import { NodeProperties, useEditorStore } from '../store/useEditorStore'
-import { mog, updateEmptyBlockTypes } from '../utils/lib/helper'
+import { NodeProperties, useEditorStore } from '@store/useEditorStore'
+import { mog, updateEmptyBlockTypes } from '@utils/lib/helper'
 
 import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph'
-import { USE_API } from '../data/Defaults/dev_'
-import { getContent } from '../utils/helpers'
+import { USE_API } from '@data/Defaults/dev_'
+import { getContent } from '@utils/helpers'
 import toast from 'react-hot-toast'
-import { useApi } from '../apis/useSaveApi'
-import { useContentStore } from '../store/useContentStore'
-import useDataStore from '../store/useDataStore'
+import { useApi } from '@apis/useSaveApi'
+import { useContentStore } from '@store/useContentStore'
+import useDataStore from '@store/useDataStore'
 import { useEditorBuffer } from './useEditorBuffer'
-import { useGraphStore } from '../store/useGraphStore'
-import useSuggestionStore from '../store/useSuggestions'
+import { useGraphStore } from '@store/useGraphStore'
+import useSuggestionStore from '@store/useSuggestions'
 import useToggleElements from './useToggleElements'
-import { useLayoutStore } from '../store/useLayoutStore'
+import { useLayoutStore } from '@store/useLayoutStore'
 import { useRefactor } from './useRefactor'
-import { getAllParentIds, getParentId, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
-import { useAnalysisStore } from '../store/useAnalysis'
-import { checkIfUntitledDraftNode } from '../utils/lib/strings'
+import { getAllParentIds, getParentId, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
+import { useAnalysisStore } from '@store/useAnalysis'
+import { checkIfUntitledDraftNode } from '@utils/lib/strings'
 import { getPathFromNodeIdHookless } from './useLinks'
-import { DRAFT_PREFIX } from '../data/Defaults/idPrefixes'
-import { useBlockHighlightStore } from '../editor/Actions/useFocusBlock'
-import { useTreeStore } from '../store/useTreeStore'
+import { DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
+import { useBlockHighlightStore } from '@editor/Actions/useFocusBlock'
+import { useTreeStore } from '@store/useTreeStore'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -35,6 +35,7 @@ export interface LoadNodeOptions {
 export interface IsLocalType {
   isLocal: boolean
   ilink?: ILink
+  isShared: boolean
 }
 
 export type LoadNodeFn = (nodeid: string, options?: LoadNodeOptions) => void
@@ -54,7 +55,7 @@ const useLoad = () => {
 
   const setLoadingNodeid = useEditorStore((store) => store.setLoadingNodeid)
   // const { push } = useNavigation()
-  const clearLoadingNodeid = useEditorStore((store) => store.clearLoadingNodeid)
+  // const clearLoadingNodeid = useEditorStore((store) => store.clearLoadingNodeid)
   const expandNodes = useTreeStore((store) => store.expandNodes)
 
   // const { saveNodeAPIandFs } = useDataSaverFromContent()
@@ -87,12 +88,14 @@ const useLoad = () => {
   const getNode = (nodeid: string): NodeProperties => {
     const ilinks = useDataStore.getState().ilinks
     const archive = useDataStore.getState().archive
+    const sharedNodes = useDataStore.getState().sharedNodes
 
     const archiveLink = archive.find((i) => i.nodeid === nodeid)
     const respectiveLink = ilinks.find((i) => i.nodeid === nodeid)
+    const sharedLink = sharedNodes.find((i) => i.nodeid === nodeid)
 
-    const UID = respectiveLink?.nodeid ?? archiveLink?.nodeid ?? nodeid
-    const text = respectiveLink?.path ?? archiveLink?.path
+    const UID = respectiveLink?.nodeid ?? archiveLink?.nodeid ?? sharedLink?.nodeid ?? nodeid
+    const text = respectiveLink?.path ?? archiveLink?.path ?? sharedLink?.path
 
     const node = {
       title: text,
@@ -107,16 +110,21 @@ const useLoad = () => {
   const isLocalNode = (nodeid: string): IsLocalType => {
     const ilinks = useDataStore.getState().ilinks
     const archive = useDataStore.getState().archive
+    const sharedNodes = useDataStore.getState().sharedNodes
 
     const node = getNode(nodeid)
 
     const inIlinks = ilinks.find((i) => i.nodeid === nodeid)
     const inArchive = archive.find((i) => i.nodeid === nodeid)
+    const inShared = sharedNodes.find((i) => i.nodeid === nodeid)
 
     const isDraftNode = node && node.path?.startsWith(`${DRAFT_PREFIX}${SEPARATOR}`)
 
+    // const isSharedNode =
+
     const res = {
       isLocal: !!inIlinks || !!inArchive || !!isDraftNode,
+      isShared: !!inShared,
       ilink: inIlinks ?? inArchive
     }
 
@@ -130,8 +138,10 @@ const useLoad = () => {
    * the response to update the content from server in local state
    */
   const saveApiAndUpdate = (node: NodeProperties, content: NodeEditorContent) => {
+    const sharedNodes = useDataStore.getState().sharedNodes
+    const isShared = !!sharedNodes.find((i) => i.nodeid === node.nodeid)
     setFetchingContent(true)
-    saveDataAPI(node.nodeid, content)
+    saveDataAPI(node.nodeid, content, isShared)
       .then((data) => {
         if (data) {
           // const { data, metadata, version } = res
@@ -159,11 +169,11 @@ const useLoad = () => {
    * Fetches the node and saves it to local state
    * Should be used when current editor content is irrelevant to the node
    */
-  const fetchAndSaveNode = async (node: NodeProperties, withLoading = true) => {
+  const fetchAndSaveNode = async (node: NodeProperties, options = { withLoading: true, isShared: false }) => {
     // console.log('Fetch and save', { node })
     // const node = getNode(nodeid)
-    if (withLoading) setFetchingContent(true)
-    getDataAPI(node.nodeid)
+    if (options.withLoading) setFetchingContent(true)
+    getDataAPI(node.nodeid, options.isShared)
       .then((nodeData) => {
         if (nodeData) {
           // console.log(res)
@@ -189,13 +199,13 @@ const useLoad = () => {
             setContent(node.nodeid, content, metadata)
           }
         }
-        if (withLoading) setFetchingContent(false)
+        if (options.withLoading) setFetchingContent(false)
       })
       .catch((e) => {
         console.error(e)
       })
       .finally(() => {
-        if (withLoading) setFetchingContent(false)
+        if (options.withLoading) setFetchingContent(false)
       })
   }
 
@@ -207,14 +217,17 @@ const useLoad = () => {
   /**
    * Loads a node in the editor.
    * This does not navigate to editor.
+   *
+   * For shared:
+   * fetchAndSave different
    */
   const loadNode: LoadNodeFn = (nodeid, options = { savePrev: true, fetch: USE_API, withLoading: true }) => {
     const hasBeenLoaded = false
     const currentNodeId = useEditorStore.getState().node.nodeid
 
-    // mog('LOAD NODE', { nodeid, options })
+    const localCheck = isLocalNode(nodeid)
 
-    if (!options.node && !isLocalNode(nodeid).isLocal) {
+    if (!options.node && !localCheck.isLocal && !localCheck.isShared) {
       toast.error('Selected note does not exist.')
       nodeid = currentNodeId
     }
@@ -242,15 +255,22 @@ const useLoad = () => {
 
     const node = options.node ?? getNode(nodeid)
 
+    mog('LOAD NODE', { nodeid, options, cond: options.fetch && !hasBeenLoaded, hasBeenLoaded })
     if (options.fetch && !hasBeenLoaded) {
-      fetchAndSaveNode(node, options.withLoading)
+      mog('Fetching')
+      if (localCheck.isShared) {
+        // TODO: Change fetch for shared
+        fetchAndSaveNode(node, { withLoading: true, isShared: true })
+      } else fetchAndSaveNode(node, { withLoading: true, isShared: false })
     }
     if (options.highlightBlockId) {
       setHighlights([options.highlightBlockId], 'editor')
     }
 
-    const allParents = getAllParentIds(node.path)
-    expandNodes(allParents)
+    if (!localCheck.isShared) {
+      const allParents = getAllParentIds(node.path)
+      expandNodes(allParents)
+    }
 
     loadNodeEditor(node)
   }

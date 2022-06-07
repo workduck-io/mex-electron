@@ -21,11 +21,12 @@ import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
 import ReminderArmer from '../Reminder/ReminderArmer'
 import { useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
-import { useTokenData } from '../../../hooks/useLocalData'
-import { useRecieveTokens } from '../../../hooks/useSyncData'
+import { useMentionData, useTokenData } from '../../../hooks/useLocalData'
+import { useRecieveMentions, useRecieveTokens } from '../../../hooks/useSyncData'
 import { useActionStore, UpdateActionsType } from '../Actions/useActionStore'
 import { useActionsPerfomerClient } from '../Actions/useActionPerformer'
 import { useActionsCache } from '../Actions/useActionsCache'
+import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
@@ -42,6 +43,7 @@ const GlobalListener = memo(() => {
   const addILink = useDataStore((store) => store.addILink)
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
   const addResultHash = useActionsCache((store) => store.addResultHash)
+  const closeShareModal = useShareModalStore((store) => store.closeModal)
 
   const { getTokenData } = useTokenData()
   // const { initActionsInStore, initActionsOfGroup } = useActions()
@@ -60,6 +62,10 @@ const GlobalListener = memo(() => {
   const clearActionStore = useActionStore((store) => store.clear)
   const clearActionCache = useActionsCache((store) => store.clearActionCache)
   const setView = useActionStore((store) => store.setView)
+  const { setReceiveMention } = useRecieveMentions()
+  const { getMentionData } = useMentionData()
+
+  // const { initActionPerformers } = useActionPerformer()
 
   const userDetails = useAuthStore((state) => state.userDetails)
 
@@ -104,6 +110,9 @@ const GlobalListener = memo(() => {
       const node = useSpotlightEditorStore.getState().node
       const ilinks = useDataStore.getState().ilinks
 
+      // Close the modal
+      closeShareModal()
+
       if (!normalMode) {
         const content = getPlateSelectors().value()
 
@@ -124,9 +133,10 @@ const GlobalListener = memo(() => {
       if (arg.loggedIn) {
         if (arg.userDetails && arg.workspaceDetails) {
           setAuthenticated(arg.userDetails, arg.workspaceDetails)
-          initActionPerfomerClient(arg?.workspaceDetails?.id)
+          initActionPerfomerClient(arg?.userDetails?.userID)
         }
         getTokenData()
+        getMentionData()
         goTo(ROUTE_PATHS.home, NavigationType.replace)
       } else setUnAuthenticated()
     })
@@ -179,8 +189,9 @@ const GlobalListener = memo(() => {
       localStorage.clear()
     })
 
-    initActionPerfomerClient(useAuthStore.getState()?.workspaceDetails?.id)
+    initActionPerfomerClient(useAuthStore.getState()?.userDetails?.userID)
     setReceiveToken()
+    setReceiveMention()
   }, [])
 
   useGoogleCalendarAutoFetch()

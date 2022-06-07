@@ -42,6 +42,13 @@ export const StyledInlineBlock = styled.section<InlineBlockType>`
   box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.gray[8]};
   /* background: ${({ theme }) => theme.colors.background.card}; */
   border-radius: ${({ theme: { borderRadius } }) => `${borderRadius.small}`};
+
+  svg {
+    width: 16px;
+    height: 16px;
+    margin-left: ${({ theme }) => theme.spacing.small};
+    fill: ${({ theme }) => theme.colors.gray[4]};
+  }
 `
 export const InlineBlockHeading = styled.div`
   color: ${({ theme }) => theme.colors.text.disabled};

@@ -38,11 +38,11 @@ export const isInternalCommand = (search?: string) => {
   return false
 }
 
-export type OnSelectItem = (editor: PlateEditor, item: IComboboxItem, elementType?: string) => any // eslint-disable-line @typescript-eslint/no-explicit-any
+export type OnSelectItem = (editor: PlateEditor, item: IComboboxItem, elementType?: string, tab?: boolean) => any // eslint-disable-line @typescript-eslint/no-explicit-any
 export type OnNewItem = (name: string, parentId?) => string | undefined
 
 export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnNewItem, creatable?: boolean) => {
-  const creatableOnSelect = (editor: any, selectVal: IComboboxItem | string, elementType?: string) => {
+  const creatableOnSelect = (editor: any, selectVal: IComboboxItem | string, elementType?: string, tab?: boolean) => {
     const items = useComboboxStore.getState().items
     const currentNodeKey = useEditorStore.getState().node.path
     const itemIndex = useComboboxStore.getState().itemIndex
@@ -52,21 +52,20 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
     if (item) {
       // mog('getCreatableInSelect', { item, selectVal, creatable })
       if (item.key === '__create_new' && selectVal) {
+        // mog('getCreatableInSelect using OnNewItem', { item, selectVal, creatable })
         const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
         const res = onNewItem(val, currentNodeKey)
-        // mog('getCreatableInSelect', { item, val, selectVal, creatable, res })
-        // mog('Select__CN clause', { val, selectVal, creatable, res })
-        if (res) onSelectItem(editor, { key: String(items.length), text: res }, elementType)
+        if (res) {
+          onSelectItem(editor, { key: String(items.length), text: res }, elementType, tab)
+        }
       } else {
-        onSelectItem(editor, item, elementType)
+        onSelectItem(editor, item, elementType, tab)
       }
     } else if (selectVal && creatable) {
       const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
       const res = onNewItem(val, currentNodeKey)
-
-      // mog('SelectElse clause', { val, selectVal, creatable, res })
       // onSelectItem(editor, { key: String(items.length), text: res ?? val })
-      if (res) onSelectItem(editor, { key: String(items.length), text: val }, elementType)
+      if (res) onSelectItem(editor, { key: String(items.length), text: val }, elementType, tab)
     }
   }
 
@@ -166,8 +165,8 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
       if (e.key === 'Tab') {
         // * On Tab insert the selected item as Inline Block
         e.preventDefault()
-        creatabaleOnSelect(editor, search, ELEMENT_INLINE_BLOCK)
-        // return false
+        creatabaleOnSelect(editor, search, undefined, true)
+        return false
       }
       // }
 

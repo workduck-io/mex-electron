@@ -26,7 +26,9 @@ export interface ConfigDataSlashCommands {
 }
 export interface SingleComboboxConfig {
   slateElementType: string
-  newItemHandler: (newItem: string, parentId?: any) => any // eslint-disable-line @typescript-eslint/no-explicit-any
+  newItemHandler: (newItem: string, parentId?: any) => any
+  // Called when an item is inserted, Not called when a new item is inserted, use newItemHandler to handle the new item case
+  onItemInsert?: (item: string) => any
   renderElement: RenderFunction<ComboboxItemProps>
 }
 

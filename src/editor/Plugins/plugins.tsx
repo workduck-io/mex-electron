@@ -69,10 +69,12 @@ import createTodoPlugin from '../Components/Todo/createTodoPlugin'
 import { createQAPlugin } from '../Components/QABlock/createQAPlugin'
 import { createHighlightTextPlugin } from './highlightText'
 import { createActionPlugin } from '@editor/Components/Actions/createActionPlugin'
+import { createMentionPlugin } from '@editor/Components/mentions/createMentionsPlugin'
 
 export type PluginOptionType = {
   exclude: {
-    dnd: boolean
+    dnd?: boolean
+    mentions?: boolean
   }
 }
 
@@ -165,6 +167,7 @@ export const generatePlugins = (options: PluginOptionType) => {
 
     // Comboboxes
     createTagPlugin(), // Tags
+    createMentionPlugin(), // Mentions
     createILinkPlugin(), // Internal Links ILinks
 
     // Sync Blocks
@@ -186,7 +189,7 @@ export const generatePlugins = (options: PluginOptionType) => {
 }
 
 const useMemoizedPlugins = (components: Record<string, any>, options?: PluginOptionType) => {
-  const wrappedComponents = options?.exclude
+  const wrappedComponents = options?.exclude.dnd
     ? components
     : withStyledDraggables(withStyledPlaceHolders(withBlockOptions(components, {})))
 

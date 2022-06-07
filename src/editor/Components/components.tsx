@@ -25,6 +25,8 @@ import { ELEMENT_QA_BLOCK } from './QABlock/createQAPlugin'
 import QABlock from './QABlock'
 import { ELEMENT_ACTION_BLOCK } from './Actions/types'
 import ActionBlock from './Actions'
+import { ELEMENT_MENTION } from './mentions/defaults'
+import { MentionElement } from './mentions/components/MentionElement'
 
 export const editorPreviewComponents = createPlateUI({
   [ELEMENT_LINK]: withProps(LinkElement, {
@@ -39,6 +41,7 @@ export const editorPreviewComponents = createPlateUI({
   }),
   [ELEMENT_TODO_LI]: Todo as any,
   [ELEMENT_TAG]: TagElement as any,
+  [ELEMENT_MENTION]: MentionElement as any,
   [ELEMENT_ILINK]: ILinkElement as any,
   [ELEMENT_INLINE_BLOCK]: ILinkElement as any,
   [ELEMENT_MEDIA_EMBED]: MediaEmbedElement as any,

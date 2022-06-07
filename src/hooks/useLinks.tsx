@@ -1,3 +1,4 @@
+import { getNameFromPath } from '@components/mex/Sidebar/treeUtils'
 import { uniq } from 'lodash'
 import { defaultContent } from '../data/Defaults/baseData'
 import { ELEMENT_INLINE_BLOCK } from '../editor/Components/InlineBlock/types'
@@ -189,19 +190,43 @@ export const useLinks = () => {
   const getNodeidFromPath = (path: string) => {
     const links = useDataStore.getState().ilinks
     const archive = useDataStore.getState().archive
+    const sharedNodes = useDataStore.getState().sharedNodes
 
     const link = links.find((l) => l.path === path)
     const archivedLink = archive.find((l) => l.path === path)
+    const sharedNode = sharedNodes.find((l) => l.path === path)
 
     if (link) return link.nodeid
     if (archivedLink) return archivedLink.nodeid
+    if (sharedNode) return sharedNode.nodeid
   }
 
-  const getPathFromNodeid = (nodeid: string) => {
+  const getPathFromShared = (nodeid: string) => {
+    const links = useDataStore.getState().sharedNodes
+
+    const link = links.find((l) => l.nodeid === nodeid)
+    if (link) return link.path
+  }
+
+  const getPathFromNodeid = (nodeid: string, includeShared = false) => {
     const links = useDataStore.getState().ilinks
 
     const link = links.find((l) => l.nodeid === nodeid)
     if (link) return link.path
+
+    if (includeShared) {
+      const shared = useDataStore.getState().sharedNodes
+      const sharedLink = shared.find((l) => l.nodeid === nodeid)
+      if (sharedLink) return sharedLink.path
+    }
+  }
+
+  const getNodeTitleSave = (nodeid: string) => {
+    const pathFromNodeid = getPathFromNodeid(nodeid)
+    if (pathFromNodeid) return getNameFromPath(pathFromNodeid)
+
+    const pathFromShared = getPathFromShared(nodeid)
+    if (pathFromShared) return getNameFromPath(pathFromShared)
   }
 
   return {
@@ -212,6 +237,8 @@ export const useLinks = () => {
     updateLinksFromContent,
     getNodeidFromPath,
     getILinkFromNodeid,
+    getNodeTitleSave,
+    getPathFromShared,
     getPathFromNodeid,
     createLink
   }

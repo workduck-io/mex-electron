@@ -1,5 +1,7 @@
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
+import { NodeType } from '../../../types/Types'
+import shareLine from '@iconify/icons-ri/share-line'
 import React from 'react'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import { SearchHelp } from '../../../data/Defaults/helpText'
@@ -57,7 +59,7 @@ const Search = () => {
       })
     )
     .slice(0, 12)
-  const { getNode } = useNodes()
+  const { getNode, getNodeType } = useNodes()
   const { goTo } = useRouting()
   const {
     applyCurrentFilters,
@@ -70,18 +72,18 @@ const Search = () => {
     resetCurrentFilters
   } = useFilters<GenericSearchResult>()
 
-  const { getPathFromNodeid } = useLinks()
-
   const { queryIndexWithRanking } = useSearch()
   const { hasTags } = useTags()
   const clearHighlights = useBlockHighlightStore((store) => store.clearHighlightedBlockIds)
-  const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)
+  // const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)
 
   const onSearch = async (newSearchTerm: string) => {
-    const res = await queryIndexWithRanking('node', newSearchTerm)
-    const nodeids = useDataStore.getState().ilinks.map((l) => l.nodeid)
-    const filRes = res.filter((r) => nodeids.includes(r.id))
-    // mog('search', { res, filRes })
+    const res = await queryIndexWithRanking(['shared', 'node'], newSearchTerm)
+    const filRes = res.filter((r) => {
+      const nodeType = getNodeType(r.id)
+      return nodeType !== NodeType.MISSING && nodeType !== NodeType.ARCHIVED
+    })
+    mog('search', { res, filRes })
     clearHighlights('preview')
     return filRes
   }
@@ -117,17 +119,18 @@ const Search = () => {
     { item, splitOptions, ...props }: RenderItemProps<GenericSearchResult>,
     ref: React.Ref<HTMLDivElement>
   ) => {
-    const node = getNode(item.id)
-    // mog('Baseitem', { item, node })
+    const node = getNode(item.id, true)
+    const nodeType = getNodeType(node.nodeid)
     if (!item || !node) {
       return <Result {...props} ref={ref}></Result>
     }
     const con = contents[item.id]
     const content = con ? con.content : defaultContent.content
-    const icon = node?.icon ?? fileList2Line
+    const icon = node?.icon ?? (nodeType === NodeType.SHARED ? shareLine : fileList2Line)
     const edNode = node ? { ...node, title: node.path, id: node.nodeid } : getInitialNode()
     const isTagged = hasTags(edNode.nodeid)
     const id = `${item.id}_ResultFor_Search`
+    // mog('Baseitem', { item, node, icon, nodeType })
     if (props.view === View.Card) {
       return (
         <Result {...props} key={id} ref={ref}>
@@ -192,8 +195,9 @@ const Search = () => {
     if (item) {
       const con = contents[item.id]
       const content = con ? con.content : defaultContent.content
-      const node = getNode(item.id)
-      const icon = node?.icon ?? fileList2Line
+      const node = getNode(item.id, true)
+      const nodeType = getNodeType(node.nodeid)
+      const icon = node?.icon ?? (nodeType === NodeType.SHARED ? shareLine : fileList2Line)
       const edNode = { ...node, title: node.path, id: node.nodeid }
       // mog('RenderPreview', { item, content, node })
       return (

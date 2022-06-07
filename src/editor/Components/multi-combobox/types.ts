@@ -22,6 +22,9 @@ export interface ComboboxItem {
 
   /** Extended command -> Text after the command is part of it and used as arguments */
   extended?: boolean
+
+  // Inserted to element if present
+  additional?: Record<string, any>
 }
 
 export interface ComboboxType {

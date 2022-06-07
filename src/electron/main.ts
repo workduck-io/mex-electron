@@ -19,7 +19,7 @@ import fs from 'fs'
 import path from 'path'
 import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
 
-import { getSaveLocation, getSearchIndexLocation, getTokenLocation } from '../data/Defaults/data'
+import { getMentionLocation, getSaveLocation, getSearchIndexLocation, getTokenLocation } from '../data/Defaults/data'
 import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
 import { IpcAction } from '../data/IpcAction'
 import { AppType } from '../hooks/useInitialize'
@@ -32,7 +32,7 @@ import { sanitizeHtml } from '../utils/sanitizeHtml'
 import MenuBuilder from './menu'
 import Toast from './Toast'
 import { setupUpdateService } from './update'
-import { getFileData, getTokenData, setFileData, setTokenData } from './utils/filedata'
+import { getFileData, getDataOfLocation, setFileData, setDataAtLocation } from './utils/filedata'
 import {
   copyToClipboard,
   getGlobalShortcut,
@@ -61,6 +61,7 @@ import { Reminder, ReminderActions } from '../types/reminders'
 import { AuthTokenData } from '../types/auth'
 import { clearLocalStorage } from '../utils/dataTransform'
 import { getRedirectPath } from './utils/redirect'
+import { MentionData } from '../types/mentions'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -101,6 +102,7 @@ if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
 }
 
 export const TOKEN_LOCATION = getTokenLocation(app)
+export const MENTION_LOCATION = getMentionLocation(app)
 export const SAVE_LOCATION = getSaveLocation(app)
 export const SEARCH_INDEX_LOCATION = getSearchIndexLocation(app)
 // const RESOURCES_PATH = app.isPackaged ? path.join(process.resourcesPath, 'assets') : path.join(__dirname, '../assets')
@@ -566,17 +568,32 @@ ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
 })
 
 ipcMain.on(IpcAction.GET_TOKEN_DATA, async (event) => {
-  const tokenData: AuthTokenData = getTokenData(TOKEN_LOCATION)
+  const tokenData: AuthTokenData = getDataOfLocation(TOKEN_LOCATION)
   event.sender.send(IpcAction.RECIEVE_TOKEN_DATA, tokenData)
 })
 
 ipcMain.on(IpcAction.SET_TOKEN_DATA, (_event, arg) => {
   // mog('SETTING TOKEN DATA', { arg })
-  setTokenData(arg, TOKEN_LOCATION)
-  const tokenData: AuthTokenData = arg || getTokenData(TOKEN_LOCATION)
+  setDataAtLocation(arg, TOKEN_LOCATION)
+  const tokenData: AuthTokenData = arg || getDataOfLocation(TOKEN_LOCATION)
 
   mex?.webContents.send(IpcAction.RECIEVE_TOKEN_DATA, tokenData)
   spotlight?.webContents.send(IpcAction.RECIEVE_TOKEN_DATA, tokenData)
+})
+
+// Mentions Data
+ipcMain.on(IpcAction.GET_MENTION_DATA, async (event) => {
+  const mentionData: MentionData = getDataOfLocation(MENTION_LOCATION)
+  event.sender.send(IpcAction.RECIEVE_MENTION_DATA, mentionData)
+})
+
+ipcMain.on(IpcAction.SET_MENTION_DATA, (_event, arg) => {
+  mog('SETTING MENTION DATA', { arg })
+  setDataAtLocation(arg, MENTION_LOCATION)
+  const mentionData: MentionData = arg || getDataOfLocation(MENTION_LOCATION)
+
+  mex?.webContents.send(IpcAction.RECIEVE_MENTION_DATA, mentionData)
+  spotlight?.webContents.send(IpcAction.RECIEVE_MENTION_DATA, mentionData)
 })
 
 ipcMain.on(IpcAction.GET_LOCAL_DATA, async (event) => {
@@ -640,6 +657,13 @@ ipcMain.on(IpcAction.START_ONBOARDING, (_event, arg) => {
 ipcMain.on(IpcAction.STOP_ONBOARDING, (_event, arg) => {
   const { from } = arg
   notifyOtherWindow(IpcAction.STOP_ONBOARDING, from)
+})
+
+ipcMain.on(IpcAction.OPEN_MODAL_IN_MEX, (_event, arg) => {
+  mex?.webContents.send(IpcAction.OPEN_MODAL, { type: arg.type, data: arg.data })
+  spotlight.hide()
+  mex.focus()
+  mex.show()
 })
 
 ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {

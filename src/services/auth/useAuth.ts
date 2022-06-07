@@ -14,13 +14,12 @@ import useAnalytics from '../analytics'
 import { Properties, CustomEvents } from '../analytics/events'
 import { mog } from '../../utils/lib/helper'
 import useActions from '../../components/spotlight/Actions/useActions'
-import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActionPerformer'
+import { useActionsPerfomerClient, useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useLayoutStore } from '@store/useLayoutStore'
 
-interface UserDetails {
-  email: string
-}
+import { UserDetails } from '../../types/auth'
+import { useUserCacheStore } from '@store/useUserCacheStore'
 
 interface WorkspaceDetails {
   name: string
@@ -75,6 +74,7 @@ export const useAuthentication = () => {
   const clearActionCache = useActionsCache((store) => store.clearActionCache)
   const { signIn, signUp, verifySignUp, signOut, googleSignIn, refreshToken } = useAuth()
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
+  const addUser = useUserCacheStore((s) => s.addUser)
   const { clearActionStore, getGroupsToView } = useActions()
   const { initActionPerfomerClient } = useActionsPerfomerClient()
   const setShowLoader = useLayoutStore((store) => store.setShowLoader)
@@ -106,9 +106,9 @@ export const useAuthentication = () => {
       authDetails = await client
         .get(apiURLs.getUserRecords)
         .then(async (d) => {
-          const userDetails = { email }
+          const userDetails = { email, alias: d.data.alias ?? d.data.name, userID: d.data.id, name: d.data.name }
           const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
-          initActionPerfomerClient(workspaceDetails.id)
+          initActionPerfomerClient(userDetails?.userID)
 
           setShowLoader(true)
           try {
@@ -117,18 +117,30 @@ export const useAuthentication = () => {
             setShowLoader(false)
             mog('Unable to init action groups into view', { err })
           }
+          mog('UserDetails', { userDetails, d, data: d.data })
+          // getNodesByWorkspace(workspaceDetails.id)
+          // Set Authenticated, user and workspace details
 
           ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
           // * For Heap analytics
           identifyUser(email)
+          userDetails['name'] = d.data.metadata.name
           addUserProperties({
             [Properties.EMAIL]: email,
             [Properties.NAME]: d.data.metadata.name,
             [Properties.ROLE]: d.data.metadata.roles,
-            [Properties.WORKSPACE_ID]: d.data.group
+            [Properties.WORKSPACE_ID]: d.data.group,
+            [Properties.ALIAS]: d.data.metadata.alias
           })
           setShowLoader(false)
           addEventProperties({ [CustomEvents.LOGGED_IN]: true })
+
+          addUser({
+            userID: userDetails.userID,
+            email: userDetails.email,
+            name: userDetails.name,
+            alias: userDetails.alias
+          })
           return { userDetails, workspaceDetails }
         })
         // .then(updateDefaultServices)
@@ -148,6 +160,7 @@ export const useAuthentication = () => {
    * Login via google
    */
   const loginViaGoogle = async (code: string, clientId: string, redirectURI: string, getWorkspace = true) => {
+    // TODO: Fix for alias
     try {
       const result: any = await googleSignIn(code, clientId, redirectURI)
       if (getWorkspace && result !== undefined) {
@@ -160,16 +173,30 @@ export const useAuthentication = () => {
             /**
              * If workspaceId is not present then we calling the register endpoint of the backend
              */
+            const userDetails = {
+              email: result.userCred.email,
+              userID: result.userCred.userId,
+              alias: d.data.alias ?? d.data.name,
+              name: d.data.name
+            }
+            const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
+            initActionPerfomerClient(userDetails.userID)
             setShowLoader(true)
             if (!d.data.group) {
-              await registerUserForGoogle(result)
+              await registerUserForGoogle(result, d.data)
             } else {
               /**
                * Else we will add properties
                */
-              const userDetails = { email: result.userCred.email, userId: result.userCred.userId }
+              mog('UserDetails', { userDetails: result })
+              const userDetails = {
+                email: result.userCred.email,
+                name: d.data.name,
+                userID: result.userCred.userId,
+                alias: d.data.alias ?? d.data.name
+              }
               const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
-              initActionPerfomerClient(workspaceDetails.id)
+              initActionPerfomerClient(userDetails.userID)
 
               try {
                 await getGroupsToView()
@@ -183,7 +210,8 @@ export const useAuthentication = () => {
               mog('Login Google BIG success', { d, userDetails, workspaceDetails })
               addUserProperties({
                 [Properties.EMAIL]: userDetails.email,
-                [Properties.NAME]: userDetails.email,
+                [Properties.NAME]: userDetails.name,
+                [Properties.ALIAS]: d.data.alias,
                 [Properties.ROLE]: '',
                 [Properties.WORKSPACE_ID]: d.data.group
               })
@@ -200,8 +228,9 @@ export const useAuthentication = () => {
     }
   }
 
-  async function registerUserForGoogle(result: any) {
-    setSensitiveData({ email: result.email, name: result.email, password: '', roles: [] })
+  async function registerUserForGoogle(result: any, data: any) {
+    mog('Registering user for google', { result })
+    setSensitiveData({ email: result.email, name: data.name, password: '', roles: [], alias: data.alias ?? data.name })
     const uCred: UserCred = {
       username: result.userCred.username,
       email: result.userCred.email,
@@ -222,7 +251,8 @@ export const useAuthentication = () => {
           type: 'RegisterUserRequest',
           user: {
             id: uCred.userId,
-            name: uCred.email,
+            name: data.name,
+            alias: data.alias ?? data.name,
             email: uCred.email
           },
           workspaceName: newWorkspaceName
@@ -240,11 +270,16 @@ export const useAuthentication = () => {
           // setShowLoader(false)
           mog('Error: ', { error: JSON.stringify(error) })
         }
-        const userDetails = { email: uCred.email, userId: uCred.userId }
+        const userDetails = {
+          userID: uCred.userId,
+          name: data.name,
+          alias: data.alias ?? data.name,
+          email: uCred.email
+        }
         const workspaceDetails = { id: d.data.id, name: 'WORKSPACE_NAME' }
-        mog('Register Google BIG success', { d, userDetails, workspaceDetails })
+        mog('Register Google BIG success', { d, data, userDetails, workspaceDetails })
 
-        initActionPerfomerClient(workspaceDetails.id)
+        initActionPerfomerClient(userDetails.userID)
 
         try {
           await getGroupsToView()
@@ -257,7 +292,8 @@ export const useAuthentication = () => {
         mog('Login Google BIG success created user', { userDetails, workspaceDetails })
         addUserProperties({
           [Properties.EMAIL]: userDetails.email,
-          [Properties.NAME]: userDetails.email,
+          [Properties.NAME]: userDetails.name,
+          [Properties.ALIAS]: userDetails.alias,
           [Properties.ROLE]: '',
           [Properties.WORKSPACE_ID]: d.data.group
         })
@@ -272,7 +308,7 @@ export const useAuthentication = () => {
   }
 
   const registerDetails = (data: RegisterFormData): Promise<string> => {
-    const { email, password, roles, name } = data
+    const { email, password, roles, name, alias } = data
     const userRole = roles.map((r) => r.value).join(', ') ?? ''
 
     const status = signUp(email, password)
@@ -285,6 +321,7 @@ export const useAuthentication = () => {
         addUserProperties({
           [Properties.EMAIL]: email,
           [Properties.NAME]: name,
+          [Properties.ALIAS]: alias,
           [Properties.ROLE]: userRole
         })
         setSensitiveData(data)
@@ -305,6 +342,7 @@ export const useAuthentication = () => {
     const formMetaData = {
       ...metadata,
       name: sensitiveData.name,
+      alias: sensitiveData.alias,
       email: sensitiveData.email,
       roles: sensitiveData.roles.reduce((prev, cur) => `${prev},${cur.value}`, '').slice(1)
     }
@@ -329,8 +367,9 @@ export const useAuthentication = () => {
           type: 'RegisterUserRequest',
           user: {
             id: uCred.userId,
-            name: uCred.email,
-            email: uCred.email
+            name: sensitiveData.name,
+            email: uCred.email,
+            alias: sensitiveData.alias
           },
           workspaceName: newWorkspaceName
         },
@@ -343,9 +382,14 @@ export const useAuthentication = () => {
       .then(async (d: any) => {
         // console.log(d.data)
         // Set workspace details
-        const userDetails = { email: uCred.email }
+        const userDetails = {
+          email: uCred.email,
+          userID: uCred.userId,
+          name: sensitiveData.name,
+          alias: sensitiveData.alias
+        }
         const workspaceDetails = { id: newWorkspaceName, name: 'WORKSPACE_NAME' }
-        initActionPerfomerClient(newWorkspaceName)
+        initActionPerfomerClient(userDetails?.userID)
 
         try {
           await getGroupsToView()
@@ -355,7 +399,13 @@ export const useAuthentication = () => {
         }
 
         ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
-        setAuthenticated({ email: sensitiveData.email }, { id: d.data.id, name: d.data.name })
+        addUser({
+          userID: userDetails.userID,
+          email: userDetails.email,
+          name: userDetails.name,
+          alias: userDetails.alias
+        })
+        setAuthenticated(userDetails, { id: d.data.id, name: d.data.name })
         setShowLoader(false)
       })
       .then(updateDefaultServices)

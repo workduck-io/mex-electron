@@ -1,3 +1,4 @@
+import { SpotlightModals } from '@components/layouts/Modals'
 import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { DRAFT_NODE, DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
 import { getTodayTaskNodePath, useTaskFromSelection } from '@hooks/useTaskFromSelection'
@@ -198,6 +199,7 @@ const Content = () => {
   return (
     <StyledContent>
       <SideBar data={searchResults} />
+      <SpotlightModals />
       <ErrorBoundary onReset={() => resetEditor(AppType.SPOTLIGHT)} FallbackComponent={EditorErrorFallback}>
         <Preview preview={preview} nodeId={editorNode.nodeid} />
       </ErrorBoundary>

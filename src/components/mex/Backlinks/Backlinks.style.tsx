@@ -10,12 +10,21 @@ export const SBackLinks = styled.div`
 `
 
 export const NodeLinkStyled = styled.div<{ selected?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
   cursor: pointer;
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
   margin-bottom: ${({ theme }) => theme.spacing.small};
   background: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
 
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.medium}`};
+
+  svg {
+    fill: ${({ theme }) => theme.colors.text.fade};
+    width: 16px;
+    height: 16px;
+  }
 
   ${({ selected, theme }) =>
     selected

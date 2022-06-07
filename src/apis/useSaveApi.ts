@@ -11,7 +11,7 @@ import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
 import { WORKSPACE_HEADER, DEFAULT_NAMESPACE } from '../data/Defaults/defaults'
 import { useLinks } from '../hooks/useLinks'
-import { getNameFromPath } from '@components/mex/Sidebar/treeUtils'
+import { useNodes } from '@hooks/useNodes'
 
 // clientInterceptor
 //
@@ -20,7 +20,8 @@ export const useApi = () => {
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const setMetadata = useContentStore((store) => store.setMetadata)
   const setContent = useContentStore((store) => store.setContent)
-  const { getPathFromNodeid } = useLinks()
+  const { getNodeTitleSave } = useLinks()
+  const { getSharedNode } = useNodes()
   /*
    * Saves data in the backend
    * Also updates the incoming data in the store
@@ -31,7 +32,7 @@ export const useApi = () => {
   const saveNewNodeAPI = async (nodeid: string) => {
     const reqData = {
       id: nodeid,
-      title: getNameFromPath(getPathFromNodeid(nodeid)),
+      title: getNodeTitleSave(nodeid),
       type: 'NodeRequest',
       lastEditedBy: useAuthStore.getState().userDetails.email,
       namespaceIdentifier: 'NAMESPACE1',
@@ -65,21 +66,29 @@ export const useApi = () => {
    * Saves data in the backend
    * Also updates the incoming data in the store
    */
-  const saveDataAPI = async (nodeid: string, content: any[]) => {
+  const saveDataAPI = async (nodeid: string, content: any[], isShared = false) => {
     const reqData = {
       id: nodeid,
       type: 'NodeRequest',
-      title: getPathFromNodeid(nodeid),
-      lastEditedBy: useAuthStore.getState().userDetails.email,
+      title: getNodeTitleSave(nodeid),
       namespaceIdentifier: DEFAULT_NAMESPACE,
       data: serializeContent(content ?? defaultContent.content, nodeid)
+    }
+    if (!isShared) {
+      reqData['lastEditedBy'] = useAuthStore.getState().userDetails.email
+    }
+
+    if (isShared) {
+      const node = getSharedNode(nodeid)
+      if (node.currentUserAccess[nodeid] === 'READ') return
     }
 
     if (!USE_API) {
       return
     }
+    const url = isShared ? apiURLs.updateSharedNode : apiURLs.saveNode
     const data = await client
-      .post(apiURLs.saveNode, reqData, {
+      .post(url, reqData, {
         headers: {
           [WORKSPACE_HEADER]: getWorkspaceId(),
           Accept: 'application/json, text/plain, */*'
@@ -97,16 +106,16 @@ export const useApi = () => {
     return data
   }
 
-  const getDataAPI = async (nodeid: string) => {
-    const url = apiURLs.getNode(nodeid)
-    if (isRequestedWithin(5, url)) {
+  const getDataAPI = async (nodeid: string, isShared = false) => {
+    const url = isShared ? apiURLs.getSharedNode(nodeid) : apiURLs.getNode(nodeid)
+    if (!isShared && isRequestedWithin(5, url)) {
       console.warn('\nAPI has been requested before, cancelling\n')
       return
     }
 
     // console.warn('\n\n\n\nAPI has not been requested before, requesting\n\n\n\n')
     const res = await client
-      .get(apiURLs.getNode(nodeid), {
+      .get(url, {
         headers: {
           [WORKSPACE_HEADER]: getWorkspaceId(),
           Accept: 'application/json, text/plain, */*'
@@ -123,7 +132,9 @@ export const useApi = () => {
         // console.log(metadata, d.data)
         return { data: d.data.data, metadata: removeNulls(metadata), version: d.data.version ?? undefined }
       })
-      .catch(console.error)
+      .catch((e) => {
+        console.error(`MexError: Fetching nodeid ${nodeid} failed with: `, e)
+      })
 
     if (res) {
       return { content: deserializeContent(res.data), metadata: res.metadata ?? undefined, version: res.version }

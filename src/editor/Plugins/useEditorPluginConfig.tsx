@@ -2,14 +2,17 @@ import useActions from '@components/spotlight/Actions/useActions'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
-import { ELEMENT_MEDIA_EMBED, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/plate'
+import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
+import { useMentions } from '@hooks/useMentions'
+import { useMentionStore } from '@store/useMentionStore'
+import { ELEMENT_MEDIA_EMBED, ELEMENT_MENTION, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { mog } from '@utils/lib/helper'
 import { useMemo } from 'react'
 import { QuickLinkType } from '../../components/mex/NodeSelect/NodeSelect'
 import { useOpenReminderModal } from '../../components/mex/Reminders/CreateReminderModal'
 import { useSnippets } from '../../hooks/useSnippets'
-import { CategoryType } from '../../store/Context/context.spotlight'
+import { CategoryType, useSpotlightContext } from '../../store/Context/context.spotlight'
 import useDataStore from '../../store/useDataStore'
 import { useEditorStore } from '../../store/useEditorStore'
 import { useRouting } from '../../views/routes/urls'
@@ -24,19 +27,31 @@ import useMultiComboboxOnKeyDown from '../Components/multi-combobox/useMultiComb
 import { SlashComboboxItem } from '../Components/SlashCommands/SlashComboboxItem'
 import { TagComboboxItem } from '../Components/tag/components/TagComboboxItem'
 import { ELEMENT_TAG } from '../Components/tag/defaults'
+import { useAuthStore } from '../../services/auth/useAuth'
+import { ipcRenderer } from 'electron'
+import { IpcAction } from '@data/IpcAction'
+import { PluginOptionType } from './plugins'
 
-const useEditorPluginConfig = (editorId: string) => {
+const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => {
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
+  const sharedNodes = useDataStore((state) => state.sharedNodes)
   const slashCommands = useDataStore((state) => state.slashCommands)
   const nodeid = useEditorStore((state) => state.node.nodeid)
   const actionGroups = useActionsCache((store) => store.actionGroups)
   const groupedActions = useActionsCache((store) => store.groupedActions)
+  const mentionable = useMentionStore((state) => state.mentionable)
+  const invitedUsers = useMentionStore((state) => state.invitedUsers)
+  const prefillShareModal = useShareModalStore((state) => state.prefillModal)
+  const userDetails = useAuthStore((state) => state.userDetails)
 
   const addTag = useDataStore((state) => state.addTag)
   const addILink = useDataStore((state) => state.addILink)
   const { setActionsInList } = useActions()
   const { getSnippetsConfigs } = useSnippets()
+  const spotlightCtx = useSpotlightContext()
+
+  const { grantUserAccessOnMention } = useMentions()
   // const { getSyncBlockConfigs } = useSyncConfig()
   const { openReminderModal } = useOpenReminderModal()
 
@@ -118,8 +133,46 @@ const useEditorPluginConfig = (editorId: string) => {
       icon: l.icon ?? 'ri:file-list-2-line',
       type: QuickLinkType.backlink
     })),
+    // ...shared
+    ...sharedNodes.map((l) => ({
+      ...l,
+      value: l.nodeid,
+      text: l.path,
+      icon: l.icon ?? 'ri:share-line',
+      type: QuickLinkType.backlink
+    })),
     ...slashInternals.map((l) => ({ ...l, value: l.command, text: l.text, type: l.type }))
   ]
+
+  const mentions = useMemo(
+    () =>
+      userDetails
+        ? [
+            {
+              value: userDetails.userID,
+              text: `${userDetails.alias} (you)`,
+              icon: 'ri:user-line',
+              type: QuickLinkType.mentions
+            },
+            ...mentionable
+              .filter((m) => m.userID !== userDetails.userID)
+              .map((m) => ({
+                value: m.userID,
+                text: m.alias,
+                icon: 'ri:user-line',
+                type: QuickLinkType.mentions
+              })),
+            ...invitedUsers.map((m) => ({
+              value: m.alias,
+              text: m.alias,
+              icon: 'ri:user-line',
+              type: QuickLinkType.mentions,
+              additional: { email: m.email }
+            }))
+          ]
+        : [],
+    [mentionable, invitedUsers, userDetails]
+  )
 
   const comboConfigData: ComboConfigData = {
     keys: {
@@ -139,6 +192,21 @@ const useEditorPluginConfig = (editorId: string) => {
         },
         renderElement: TagComboboxItem
       },
+      mention: !options?.exclude?.mentions
+        ? {
+            slateElementType: ELEMENT_MENTION,
+            onItemInsert: (alias) => {
+              mog('Inserted new item', { alias })
+              grantUserAccessOnMention(alias, nodeid)
+            },
+            newItemHandler: (newAlias) => {
+              mog('ELEMENT_MENTIONS', { newAlias, spotlightCtx })
+              prefillShareModal('invite', { alias: newAlias, fromEditor: true })
+              return newAlias
+            },
+            renderElement: TagComboboxItem
+          }
+        : undefined,
       slash_command: {
         slateElementType: 'slash_command',
         newItemHandler: () => undefined,
@@ -231,9 +299,22 @@ const useEditorPluginConfig = (editorId: string) => {
     }
   }
 
+  const OnChange: Record<string, ComboboxType> = options?.exclude?.mentions
+    ? OnChangeConf
+    : {
+        ...OnChangeConf,
+
+        mention: {
+          cbKey: ComboboxKey.MENTION,
+          trigger: '@',
+          data: mentions,
+          icon: 'ri:at-line'
+        }
+      }
+
   const pluginConfigs = {
     combobox: {
-      onChange: useMultiComboboxOnChange(editorId, OnChangeConf),
+      onChange: useMultiComboboxOnChange(editorId, OnChange),
 
       onKeyDown: useMultiComboboxOnKeyDown(comboConfigData)
     }

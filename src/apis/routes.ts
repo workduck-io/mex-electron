@@ -23,12 +23,13 @@ export const WORKDUCK_API_BASE = 'https://http.workduck.io'
 export const CDN_BASE = 'https://cdn.workduck.io'
 
 // export const ACTION_ENV = IS_DEV ? 'test' : 'prod'
-export const ACTION_ENV = 'test'
+export const ACTION_ENV = config.constants.STAGE === 'alpha' ? 'test' : 'prod'
 
 export const GOOGLE_OAUTH_URL = `${MEXIT_FRONTEND_BASE_URL}/oauth/desktop`
 export const GOOGLE_CAL_BASE = 'https://www.googleapis.com/calendar/v3/calendars'
 export const GOOGLE_OAUTH2_REFRESH_URL = `${MEXIT_BACKEND_URL_BASE}/oauth2/getGoogleAccessToken`
 
+// NO ending `/`
 export const API_URL = config.constants.MEX_BACKEND_BASE_URL
 
 export const apiURLs = {
@@ -67,6 +68,21 @@ export const apiURLs = {
 
   // Workspace
   // createWorkspace: `${BASE_API_URL}/workspace`,
-  getNodesByWorkspace: (workspaceId: string) => `${API_URL}/workspace/${workspaceId}/namespace/NAMESPACE1`
-  // getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`
+  getNodesByWorkspace: (workspaceId: string) => `${API_URL}/workspace/${workspaceId}/namespace/NAMESPACE1`,
+  // getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`,
+
+  user: {
+    getFromEmail: (email: string) =>
+      `${config.constants.USER_SERVICE_BASE_URL}/user/email/${encodeURIComponent(email)}`,
+    getFromUserId: (userId: string) => `${config.constants.USER_SERVICE_BASE_URL}/user/${encodeURIComponent(userId)}`
+  },
+
+  // Sharing
+  // Post type determines action
+  sharedNode: `${API_URL}/shared/node`,
+  allSharedNodes: `${API_URL}/shared/node/all`,
+
+  getSharedNode: (nodeid: string) => `${API_URL}/shared/node/${nodeid}`,
+  updateSharedNode: `${API_URL}/shared/node/update`,
+  getUsersOfSharedNode: (nodeid: string) => `${API_URL}/shared/node/${nodeid}/users`
 }

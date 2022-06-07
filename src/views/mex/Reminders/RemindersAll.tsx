@@ -1,6 +1,10 @@
 import Board from '@asseinfo/react-kanban'
+import addCircleLine from '@iconify/icons-ri/add-circle-line'
+import { Icon } from '@iconify/react'
+import { Button } from '@style/Buttons'
 import React, { useEffect, useMemo } from 'react'
 import create from 'zustand'
+import { useCreateReminderModal } from '../../../components/mex/Reminders/CreateReminderModal'
 import ReminderUI, { reminderStateIcons } from '../../../components/mex/Reminders/Reminder'
 import { RemindersWrapper } from '../../../components/mex/Reminders/Reminders.style'
 import SearchFilters from '../../../components/mex/Search/SearchFilters'
@@ -189,6 +193,7 @@ const useReminderFilters = () => {
 }
 
 const RemindersAll = () => {
+  const openModal = useCreateReminderModal((state) => state.openModal)
   const reminders = useReminderStore((s) => s.reminders)
   const addCurrentFilter = useReminderFilter((s) => s.addCurrentFilter)
   const removeCurrentFilter = useReminderFilter((s) => s.removeCurrentFilter)
@@ -244,6 +249,10 @@ const RemindersAll = () => {
     <PageContainer>
       <MainHeader>
         <Title>Reminders</Title>
+        <Button large primary onClick={() => openModal()}>
+          <Icon icon={addCircleLine} />
+          Create Reminder
+        </Button>
       </MainHeader>
       <AllRemindersWrapper>
         <SearchFilters

@@ -1,5 +1,8 @@
 import { QuickLinkType } from '../components/mex/NodeSelect/NodeSelect'
 import { CategoryType } from '../store/Context/context.spotlight'
+import { AccessLevel } from './mentions'
+
+type UserID = string
 
 /*
  * Specific to comboboxes
@@ -24,6 +27,12 @@ export interface ILink {
 
   /** Iconify Icon string */
   icon?: string
+}
+
+export interface SharedNode extends ILink {
+  currentUserAccess: AccessLevel
+  sharedBy: UserID
+  owner: UserID
 }
 
 /**  Tags */
@@ -52,7 +61,9 @@ export interface InitData {
   bookmarks: string[]
   archive: ILink[]
   baseNodeId: string
+  sharedNodes: SharedNode[]
 }
+
 interface SlashCommands {
   default: SlashCommand[]
   internal: SlashCommand[]
@@ -74,6 +85,7 @@ export interface DataStoreState {
   tagsCache: TagsCache
   baseNodeId: string
   bookmarks: string[]
+  sharedNodes: SharedNode[]
   archive: ILink[]
   initialized: boolean
 
@@ -84,6 +96,7 @@ export interface DataStoreState {
 
   // adds tag for combobox
   addTag: (tag: string) => void
+  setTags: (tags: Tag[]) => void
 
   setSlashCommands: (slashCommands: SlashCommands) => void
   setIlinks: (ilinks: ILink[]) => void
@@ -94,6 +107,10 @@ export interface DataStoreState {
   removeBookamarks: (bookmarks: string[]) => void
   setBookmarks: (bookmarks: string[]) => void
   getBookmarks: () => string[]
+
+  // Shared Nodes
+  setSharedNodes: (sharedNodes: SharedNode[]) => void
+  getSharedNodes: () => SharedNode[]
 
   // Tags Cache
   updateTagCache: (tag: string, nodes: string[]) => void
@@ -122,4 +139,11 @@ export interface CachedILink {
 
 export interface CacheTag {
   nodes: string[]
+}
+
+export enum NodeType {
+  DEFAULT,
+  SHARED,
+  ARCHIVED,
+  MISSING
 }

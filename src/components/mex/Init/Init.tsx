@@ -1,41 +1,40 @@
+import { IpcAction } from '@data/IpcAction'
+import { useSaver } from '@editor/Components/Saver'
+import { getNewDraftKey } from '@editor/Components/SyncBlock/getNewBlockData'
+import { appNotifierWindow } from '@electron/utils/notifiers'
+import { useCalendar } from '@hooks/useCalendar'
+import { useEditorBuffer } from '@hooks/useEditorBuffer'
+import { useFetchShareData } from '@hooks/useFetchShareData'
+import { AppType, useInitialize } from '@hooks/useInitialize'
+import { getNodeidFromPathAndLinks, useLinks } from '@hooks/useLinks'
+import useLoad from '@hooks/useLoad'
+import { useLocalData, useMentionData, useTokenData } from '@hooks/useLocalData'
+import { useNavigation } from '@hooks/useNavigation'
+import { useSaveAndExit } from '@hooks/useSaveAndExit'
+import { useKeyListener } from '@hooks/useShortcutListener'
+import { useRecieveMentions, useRecieveTokens, useSyncData } from '@hooks/useSyncData'
+import { useAuthentication, useAuthStore } from '@services/auth/useAuth'
+import { useAnalysis, useAnalysisIPC } from '@store/useAnalysis'
+import useBlockStore from '@store/useBlockStore'
+import useDataStore from '@store/useDataStore'
+import { useEditorStore } from '@store/useEditorStore'
+import { useHelpStore } from '@store/useHelpStore'
+import { useHistoryStore } from '@store/useHistoryStore'
+import { useLayoutStore } from '@store/useLayoutStore'
+import useOnboard from '@store/useOnboarding'
+import { useRecentsStore } from '@store/useRecentsStore'
 import { usePlateEditorRef } from '@udecode/plate'
+import { getMexHTMLDeserializer } from '@utils/htmlDeserializer'
+import { AppleNote } from '@utils/importers/appleNotes'
+import { mog } from '@utils/lib/helper'
+import { NavigationType, ROUTE_PATHS, useBrowserNavigation, useRouting } from '@views/routes/urls'
 import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
 import { useEffect, useState } from 'react'
 import tinykeys from 'tinykeys'
-
 import config from '../../../config.json'
-import { IpcAction } from '../../../data/IpcAction'
-import { useSaver } from '../../../editor/Components/Saver'
-import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { AppType, useInitialize } from '../../../hooks/useInitialize'
-import { getNodeidFromPathAndLinks, useLinks } from '../../../hooks/useLinks'
-import useLoad from '../../../hooks/useLoad'
-import { useNavigation } from '../../../hooks/useNavigation'
-import { useSaveAndExit } from '../../../hooks/useSaveAndExit'
-import { useKeyListener } from '../../../hooks/useShortcutListener'
-import { useRecieveTokens, useSyncData } from '../../../hooks/useSyncData'
-import { useAuthentication, useAuthStore } from '../../../services/auth/useAuth'
-import { useAnalysis, useAnalysisIPC } from '../../../store/useAnalysis'
-import useBlockStore from '../../../store/useBlockStore'
-import useDataStore from '../../../store/useDataStore'
-import { useEditorStore } from '../../../store/useEditorStore'
-import { useHelpStore } from '../../../store/useHelpStore'
-import { useHistoryStore } from '../../../store/useHistoryStore'
-import { useLayoutStore } from '../../../store/useLayoutStore'
-import useOnboard from '../../../store/useOnboarding'
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { getMexHTMLDeserializer } from '../../../utils/htmlDeserializer'
-import { AppleNote } from '../../../utils/importers/appleNotes'
-import { mog } from '../../../utils/lib/helper'
-import { NavigationType, ROUTE_PATHS, useBrowserNavigation, useRouting } from '../../../views/routes/urls'
-import { useCalendar } from '../../../hooks/useCalendar'
-
-import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
-import { useRedirectAuth } from '../Auth/useRedirectAuth'
 import { useActionsPerfomerClient } from '../../spotlight/Actions/useActionPerformer'
-import { useLocalData, useTokenData } from '@hooks/useLocalData'
+import { useRedirectAuth } from '../Auth/useRedirectAuth'
 
 const Init = () => {
   const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
@@ -50,6 +49,7 @@ const Init = () => {
   const { init } = useInitialize()
   const { loadNode, getNode } = useLoad()
   const { initCognito } = useAuth()
+  const workspaceDetails = useAuthStore((store) => store.workspaceDetails)
   const { logout } = useAuthentication()
 
   const { getLocalData } = useLocalData()
@@ -62,6 +62,7 @@ const Init = () => {
   const { getNodeidFromPath } = useLinks()
   const { onSave } = useSaver()
   const { setReceiveToken } = useRecieveTokens()
+  const { setReceiveMention } = useRecieveMentions()
   // const { getAuthorizedGroups } = useActions()
 
   /**
@@ -70,6 +71,8 @@ const Init = () => {
   useSaveAndExit()
 
   const { getTokenData } = useTokenData()
+  const { getMentionData } = useMentionData()
+  const { fetchShareData } = useFetchShareData()
   const { saveAndClearBuffer } = useEditorBuffer()
   const { initActionPerfomerClient } = useActionsPerfomerClient()
 
@@ -88,6 +91,7 @@ const Init = () => {
         .then(({ fileData }) => {
           init(fileData)
           getTokenData()
+          getMentionData()
           // setOnboardData()
           return fileData
         })
@@ -98,7 +102,7 @@ const Init = () => {
           })
           if (userAuthenticatedEmail) {
             ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: true })
-            initActionPerfomerClient(useAuthStore.getState().workspaceDetails?.id)
+            initActionPerfomerClient(useAuthStore.getState().userDetails?.userID)
             return { d, auth: true }
           }
           setUnAuthenticated()
@@ -138,6 +142,11 @@ const Init = () => {
         .catch((e) => console.error(e)) // eslint-disable-line no-console
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    // mog('Shared nodes loaded', { workspaceDetails })
+    if (workspaceDetails?.id) fetchShareData()
+  }, [workspaceDetails])
 
   const editor = usePlateEditorRef()
 
@@ -260,6 +269,7 @@ const Init = () => {
   useEffect(() => {
     setIpc()
     setReceiveToken()
+    setReceiveMention()
 
     // Setup recieving the analysis call
     setAnalysisIpc()

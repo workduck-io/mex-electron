@@ -50,6 +50,9 @@ export interface IComboboxItem {
    */
   disabled?: boolean
 
+  // Inserted to element if present
+  additional?: Record<string, any>
+
   /**
    * Extedned
    * @defaultvalue false
@@ -70,4 +73,13 @@ export interface ComboboxProps {
   isSlash?: boolean
   onSelectItem: (editor: ReactEditor, item: string) => void
   onRenderItem?: RenderFunction<ComboboxItemProps>
+}
+
+export interface InsertableElement {
+  type: string
+  children: any[]
+  value: string
+  blockValue?: string
+  blockId?: string
+  // Also additional properties are added
 }

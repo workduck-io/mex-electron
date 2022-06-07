@@ -52,7 +52,7 @@ export const BaseLink = styled.div`
   ${HoverSubtleGlow}
 `
 
-const TagLink = styled(BaseLink) <{ active?: boolean; selected?: boolean }>`
+const TagLink = styled(BaseLink)<{ active?: boolean; selected?: boolean }>`
   color: ${({ theme }) => theme.colors.text.fade};
   background-color: ${({ theme }) => theme.colors.gray[9]};
   ${({ theme, active }) =>
@@ -182,7 +182,7 @@ const Tag = () => {
         <Results view={View.Card}>
           {transition((styles, nodeid, _t, _i) => {
             const con = contents[nodeid]
-            const path = getPathFromNodeid(nodeid)
+            const path = getPathFromNodeid(nodeid, true)
             const content = con ? con.content : defaultContent.content
             return (
               <Result

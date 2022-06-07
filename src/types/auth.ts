@@ -1,3 +1,10 @@
+export interface UserDetails {
+  email: string
+  userID: string
+  name: string
+  alias: string
+}
+
 export interface AuthToken {
   accessToken: string
   idToken: string

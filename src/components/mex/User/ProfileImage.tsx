@@ -12,6 +12,8 @@ import Centered from '../../../style/Layouts'
 interface ProfileImageProps {
   email: string
   size: number
+  // Component to replace the default image
+  DefaultFallback?: React.ComponentType
 }
 
 const protocol = '//'
@@ -32,7 +34,7 @@ const ProfileTooptip = styled.div`
   }
 `
 
-export const ProfileImage = ({ email, size }: ProfileImageProps) => {
+export const ProfileImage = ({ email, size, DefaultFallback }: ProfileImageProps) => {
   // 0 => not fetched yet
   // 1 => found
   // -1 => not found
@@ -73,8 +75,9 @@ export const ProfileImage = ({ email, size }: ProfileImageProps) => {
     }
   }, [email])
 
-  if (gravState === -1) return <Avatar size={size} square name={email} colors={colors} variant="beam" />
   if (gravState === 1) return <img src={src} alt={email ? `Gravatar for ${formattedEmail}` : 'Gravatar'} />
+  if (DefaultFallback !== undefined) return <DefaultFallback />
+  if (gravState === -1) return <Avatar size={size} square name={email} colors={colors} variant="beam" />
 
   // Rendered if both fail
   return <Icon className="defaultProfileIcon" icon={user3Line} height={size} />

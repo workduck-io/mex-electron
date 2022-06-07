@@ -4,25 +4,34 @@ import { getPlateId, platesStore } from '@udecode/plate'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import tinykeys from 'tinykeys'
-import { useApi } from '../../apis/useSaveApi'
-import { useSnippetBuffer } from '../../hooks/useEditorBuffer'
-import { useLinks } from '../../hooks/useLinks'
-import { useSaveData } from '../../hooks/useSaveData'
-import { useSearch } from '../../hooks/useSearch'
-import { useKeyListener } from '../../hooks/useShortcutListener'
-import { useTags } from '../../hooks/useTags'
-import { useUpdater } from '../../hooks/useUpdater'
-import useAnalytics from '../../services/analytics'
-import { ActionType } from '../../services/analytics/events'
-import { useContentStore } from '../../store/useContentStore'
-import { NodeProperties, useEditorStore } from '../../store/useEditorStore'
-import { useHelpStore } from '../../store/useHelpStore'
-import { useSnippetStore } from '../../store/useSnippetStore'
-import useTodoStore from '../../store/useTodoStore'
-import IconButton from '../../style/Buttons'
-import { getTodosFromContent } from '../../utils/lib/content'
-import { mog } from '../../utils/lib/helper'
-import { getEventNameFromElement } from '../../utils/lib/strings'
+import { useApi } from '@apis/useSaveApi'
+import { useSnippetBuffer } from '@hooks/useEditorBuffer'
+import { useLinks } from '@hooks/useLinks'
+import { useSaveData } from '@hooks/useSaveData'
+import { useSearch } from '@hooks/useSearch'
+import { useKeyListener } from '@hooks/useShortcutListener'
+import { useTags } from '@hooks/useTags'
+import { useUpdater } from '@hooks/useUpdater'
+import useAnalytics from '@services/analytics'
+import { ActionType } from '@services/analytics/events'
+import { useContentStore } from '@store/useContentStore'
+import { NodeProperties, useEditorStore } from '@store/useEditorStore'
+import { useHelpStore } from '@store/useHelpStore'
+import { useSnippetStore } from '@store/useSnippetStore'
+import useTodoStore from '@store/useTodoStore'
+import IconButton from '@style/Buttons'
+import { getTodosFromContent } from '@utils/lib/content'
+import { mog } from '@utils/lib/helper'
+import { getEventNameFromElement } from '@utils/lib/strings'
+import { useNodes } from '@hooks/useNodes'
+
+interface SaveEditorValueOptions {
+  // If not set, defaults to true
+  saveApi?: boolean
+
+  // Defaults to false
+  isShared?: boolean
+}
 
 export const useDataSaverFromContent = () => {
   const setContent = useContentStore((state) => state.setContent)
@@ -37,18 +46,27 @@ export const useDataSaverFromContent = () => {
   const { updateDocument } = useSearch()
 
   // By default saves to API use false to not save
-  const saveEditorValueAndUpdateStores = async (nodeId: string, editorValue: any[], saveApi?: boolean) => {
+  const saveEditorValueAndUpdateStores = async (
+    nodeId: string,
+    editorValue: any[],
+    options?: SaveEditorValueOptions
+  ) => {
     //useCallback(
     if (editorValue) {
       setContent(nodeId, editorValue)
-      mog('saveEditorValueAndUpdateStores', { nodeId, editorValue, saveApi })
+      mog('saveEditorValueAndUpdateStores', { nodeId, editorValue, options })
 
-      if (saveApi !== false) saveDataAPI(nodeId, editorValue)
+      if (options?.saveApi !== false) saveDataAPI(nodeId, editorValue, options?.isShared ?? false)
+
       updateLinksFromContent(nodeId, editorValue)
       updateTagsFromContent(nodeId, editorValue)
-      updateNodeTodos(nodeId, getTodosFromContent(editorValue))
 
-      await updateDocument('node', nodeId, editorValue)
+      // Update operations for only notes owned by the user
+      if (options?.isShared !== true) {
+        updateNodeTodos(nodeId, getTodosFromContent(editorValue))
+        await updateDocument('node', nodeId, editorValue)
+      }
+
       // saveData()
     }
   } //, [])
@@ -73,6 +91,7 @@ export const useDataSaverFromContent = () => {
 
 export const useSaver = () => {
   const { saveData } = useSaveData()
+  const { isSharedNode } = useNodes()
 
   // const editorState = usePlateSelectors(usePlateId()).value(
 
@@ -96,10 +115,11 @@ export const useSaver = () => {
     // * Editor Id is different from nodeId
     const editorId = getPlateId()
     const hasState = !!state[editorId]
+    const isShared = isSharedNode(cnode.nodeid)
 
     if (hasState || content) {
       const editorState = content ?? state[editorId].get.value()
-      saveEditorValueAndUpdateStores(cnode.nodeid, editorState)
+      saveEditorValueAndUpdateStores(cnode.nodeid, editorState, { isShared })
     }
 
     if (writeToFile !== false) {

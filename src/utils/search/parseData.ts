@@ -20,7 +20,8 @@ import {
   ELEMENT_CODE_BLOCK
 } from '@udecode/plate'
 import { BlockType } from '../../store/useBlockStore'
-import { mog } from '../lib/helper'
+// import { mog } from '../lib/helper'
+import { ELEMENT_MENTION } from '@editor/Components/mentions/defaults'
 
 type ExcludeFromTextType = {
   types?: Set<string>
@@ -33,7 +34,9 @@ type ExcludeFieldTypes = 'value' | 'url' | 'text'
 export const convertContentToRawText = (
   content: any[],
   join?: string,
-  exclude: ExcludeFromTextType = { types: new Set([ELEMENT_EXCALIDRAW, ELEMENT_ILINK, ELEMENT_INLINE_BLOCK]) }
+  exclude: ExcludeFromTextType = {
+    types: new Set([ELEMENT_EXCALIDRAW, ELEMENT_ILINK, ELEMENT_INLINE_BLOCK, ELEMENT_MENTION])
+  }
 ): string => {
   const text: string[] = []
 
@@ -152,13 +155,20 @@ export const convertDataToIndexable = (data: FileData) => {
         break
       }
 
+      case indexNames.shared: {
+        data.sharedNodes.forEach((entry) => {
+          titleNodeMap.set(entry.nodeid, entry.path)
+        })
+        break
+      }
+
       default: {
         throw new Error('No corresponding index name found')
       }
     }
 
     // Process the filedata to get the indexable data
-    if (idxName === indexNames.archive || idxName === indexNames.node) {
+    if (idxName === indexNames.archive || idxName === indexNames.node || idxName === indexNames.shared) {
       Object.entries(data.contents).forEach(([k, v]) => {
         if (k !== '__null__' && titleNodeMap.has(k)) {
           if (!nodeBlockMap[k]) nodeBlockMap[k] = []

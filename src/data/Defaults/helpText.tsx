@@ -35,6 +35,14 @@ export const TreeHelp = (
   </div>
 )
 
+export const SharedHelp = (
+  <div>
+    <h1>Shared Notes</h1>
+    <p>Notes that have been shared with you.</p>
+    <p>You can edit the note if you have manage or edit access.</p>
+  </div>
+)
+
 export const BookmarksHelp = (
   <div>
     <h1>Bookmarks</h1>

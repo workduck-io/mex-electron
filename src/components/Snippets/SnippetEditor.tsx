@@ -27,6 +27,7 @@ import { DRAFT_NODE } from '../../data/Defaults/idPrefixes'
 import { InputFormError } from '../mex/Forms/Input'
 import toast from 'react-hot-toast'
 import { getSlug } from '../../utils/lib/strings'
+import { SnippetProvider } from '@store/Context/context.snippet'
 
 type Inputs = {
   title: string
@@ -139,7 +140,7 @@ const SnippetEditor = () => {
   }
 
   return (
-    <>
+    <SnippetProvider>
       <StyledEditor className="snippets_editor">
         <NodeInfo>
           <IconButton
@@ -182,6 +183,9 @@ const SnippetEditor = () => {
             {
               <Editor
                 autoFocus={false}
+                options={{
+                  exclude: { mentions: true }
+                }}
                 focusAtBeginning={false}
                 onChange={onChangeSave}
                 content={content}
@@ -192,7 +196,7 @@ const SnippetEditor = () => {
         )}
       </StyledEditor>
       <CustomDevOnly editorId={snippetid} snippet={snippet} />
-    </>
+    </SnippetProvider>
   )
 }
 

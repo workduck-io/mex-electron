@@ -2,7 +2,18 @@ import { Snippet } from '../../store/useSnippetStore'
 import { ArrayTransform, CustomTransformation, DataTransformation, KeysTransformation } from '../../utils/dataTransform'
 import { initialSnippets } from '../initial/snippets'
 
-export const ForceLogutVersion = '0.11.0-alpha.0'
+export const ForceLogutVersion = '0.11.0-alpha.1'
+
+const v0120 = (): CustomTransformation => {
+  return {
+    type: 'CustomTransformation',
+    version: '0.12.0-alpha.0',
+    custom: (data) => {
+      if (!data.sharedNodes) return { ...data, sharedNodes: [] }
+      return data
+    }
+  }
+}
 
 const v0901 = (): CustomTransformation => {
   return {
@@ -90,7 +101,8 @@ export const UpdateVersionTransforms: Array<DataTransformation> = [
 
   v080_alpha_2(),
   v081(),
-  v0901()
+  v0901(),
+  v0120()
 ]
 
 export const DefaultTransforms: Array<DataTransformation> = [

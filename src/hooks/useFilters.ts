@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import create from 'zustand'
 import { getAllParentIds, isElder } from '../components/mex/Sidebar/treeUtils'
 import useDataStore from '../store/useDataStore'
@@ -131,7 +130,7 @@ export const useFilters = <Item>() => {
     const currentFilters_ = currentFilters as unknown as SearchFilter<GenericSearchResult>[]
     const filteredItems = currentFilters_.length > 0 ? applyFilters(items, currentFilters_) : items
     const rankedPaths = filteredItems.reduce((acc, item) => {
-      const path = getPathFromNodeid(item.id)
+      const path = getPathFromNodeid(item.id, true)
       const allPaths = getAllParentIds(path)
       // const allPaths =
       allPaths.forEach((path) => {
