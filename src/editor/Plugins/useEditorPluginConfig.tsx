@@ -30,8 +30,9 @@ import { ELEMENT_TAG } from '../Components/tag/defaults'
 import { useAuthStore } from '../../services/auth/useAuth'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '@data/IpcAction'
+import { PluginOptionType } from './plugins'
 
-const useEditorPluginConfig = (editorId: string) => {
+const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => {
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
   const sharedNodes = useDataStore((state) => state.sharedNodes)
@@ -191,19 +192,21 @@ const useEditorPluginConfig = (editorId: string) => {
         },
         renderElement: TagComboboxItem
       },
-      mention: {
-        slateElementType: ELEMENT_MENTION,
-        onItemInsert: (alias) => {
-          mog('Inserted new item', { alias })
-          grantUserAccessOnMention(alias, nodeid)
-        },
-        newItemHandler: (newAlias) => {
-          mog('ELEMENT_MENTIONS', { newAlias, spotlightCtx })
-          prefillShareModal('invite', { alias: newAlias, fromEditor: true })
-          return newAlias
-        },
-        renderElement: TagComboboxItem
-      },
+      mention: !options?.exclude?.mentions
+        ? {
+            slateElementType: ELEMENT_MENTION,
+            onItemInsert: (alias) => {
+              mog('Inserted new item', { alias })
+              grantUserAccessOnMention(alias, nodeid)
+            },
+            newItemHandler: (newAlias) => {
+              mog('ELEMENT_MENTIONS', { newAlias, spotlightCtx })
+              prefillShareModal('invite', { alias: newAlias, fromEditor: true })
+              return newAlias
+            },
+            renderElement: TagComboboxItem
+          }
+        : undefined,
       slash_command: {
         slateElementType: 'slash_command',
         newItemHandler: () => undefined,
@@ -285,12 +288,6 @@ const useEditorPluginConfig = (editorId: string) => {
       data: tags.map((t) => ({ ...t, text: t.value })),
       icon: 'ri:hashtag'
     },
-    mention: {
-      cbKey: ComboboxKey.MENTION,
-      trigger: '@',
-      data: mentions,
-      icon: 'ri:at-line'
-    },
     slash_command: {
       cbKey: ComboboxKey.SLASH_COMMAND,
       trigger: '/',
@@ -302,9 +299,22 @@ const useEditorPluginConfig = (editorId: string) => {
     }
   }
 
+  const OnChange: Record<string, ComboboxType> = options?.exclude?.mentions
+    ? OnChangeConf
+    : {
+        ...OnChangeConf,
+
+        mention: {
+          cbKey: ComboboxKey.MENTION,
+          trigger: '@',
+          data: mentions,
+          icon: 'ri:at-line'
+        }
+      }
+
   const pluginConfigs = {
     combobox: {
-      onChange: useMultiComboboxOnChange(editorId, OnChangeConf),
+      onChange: useMultiComboboxOnChange(editorId, OnChange),
 
       onKeyDown: useMultiComboboxOnKeyDown(comboConfigData)
     }

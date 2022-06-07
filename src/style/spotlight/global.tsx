@@ -18,6 +18,7 @@ const GlobalStyle = createGlobalStyle`
 
   html, body {
     ${MainFont};
+    color: ${({ theme }) => theme.colors.text.default};
     overflow: hidden;
     height: 100vh;
     background-color: ${({ theme }) => transparentize(0.35, theme.colors.background.card)};

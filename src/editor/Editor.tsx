@@ -91,7 +91,7 @@ export const Editor = ({
     }
   }, [hightlightedBlockIds, editorId, editorRef])
 
-  const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId)
+  const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId, options)
 
   // function to add two numbers
 

@@ -33,6 +33,7 @@ import { usePermission } from '@services/auth/usePermission'
 import toast from 'react-hot-toast'
 import { Button } from '@style/Buttons'
 import { Icon } from '@iconify/react'
+import { useSnippetContext } from '@store/Context/context.snippet'
 // import { StyledCreatatbleSelect } from '@style/Form'
 // import { UserDetails } from '../../../../types/auth'
 // import toast from 'react-hot-toast'
@@ -45,6 +46,7 @@ interface MentionTooltipProps {
 
 const MentionTooltipComponent = ({ user, access, nodeid }: MentionTooltipProps) => {
   const spotlightCtx = useSpotlightContext()
+  const snippetCtx = useSnippetContext()
 
   // const addAccess = useMentionStore((s) => s.addAccess)
   // const { changeUserPermission } = usePermission()
@@ -77,7 +79,7 @@ const MentionTooltipComponent = ({ user, access, nodeid }: MentionTooltipProps) 
         {/* <div>State: {user?.type ?? 'Missing'}</div> */}
         <TooltipMail>{user && user.email}</TooltipMail>
         {access && <AccessTag access={access} />}
-        {user && user?.type !== 'invite' && user?.type !== 'self' && !access && (
+        {user && user?.type !== 'invite' && user?.type !== 'self' && snippetCtx === undefined && !access && (
           <Button onClick={onShareModal}>
             <Icon icon="ri:share-line" />
             Share Note
@@ -101,10 +103,11 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
   const cache = useUserCacheStore((state) => state.cache)
   const { getUserDetailsUserId } = useUserService()
   const { getUserFromUserid, getUserAccessLevelForNode } = useMentions()
+  const snippetCtx = useSnippetContext()
   // const { getUserDetailsUserId } = useUserService()
 
   const onClickProps = useOnMouseClick(() => {
-    mog('Mention has been clicked yo', { val: element.value })
+    mog('Mention has been clicked yo', { val: element.value, snippetCtx })
     // openTag(element.value)
   })
 
@@ -128,7 +131,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
     })()
   }, [user])
 
-  const access = getUserAccessLevelForNode(element.value, node.nodeid)
+  const access = snippetCtx !== undefined ? undefined : getUserAccessLevelForNode(element.value, node.nodeid)
 
   // mog('MentionElement', { user, access })
 

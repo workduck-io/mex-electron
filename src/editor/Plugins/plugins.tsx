@@ -73,7 +73,8 @@ import { createMentionPlugin } from '@editor/Components/mentions/createMentionsP
 
 export type PluginOptionType = {
   exclude: {
-    dnd: boolean
+    dnd?: boolean
+    mentions?: boolean
   }
 }
 
@@ -188,7 +189,7 @@ export const generatePlugins = (options: PluginOptionType) => {
 }
 
 const useMemoizedPlugins = (components: Record<string, any>, options?: PluginOptionType) => {
-  const wrappedComponents = options?.exclude
+  const wrappedComponents = options?.exclude.dnd
     ? components
     : withStyledDraggables(withStyledPlaceHolders(withBlockOptions(components, {})))
 
