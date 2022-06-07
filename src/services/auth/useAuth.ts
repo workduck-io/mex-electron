@@ -157,109 +157,118 @@ export const useAuthentication = () => {
            * If the user is present in the database, then we will add properties
            */
           .then(async (d: any) => {
-            const userDetails = { email: result.userCred.email, userId: result.userCred.userId }
-            const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
-            initActionPerfomerClient(workspaceDetails.id)
+            /**
+             * If workspaceId is not present then we calling the register endpoint of the backend
+             */
             setShowLoader(true)
+            if (!d.data.group) {
+              await registerUserForGoogle(result)
+            } else {
+              /**
+               * Else we will add properties
+               */
+              const userDetails = { email: result.userCred.email, userId: result.userCred.userId }
+              const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
+              initActionPerfomerClient(workspaceDetails.id)
 
-            try {
-              await getGroupsToView()
-            } catch (err) {
+              try {
+                await getGroupsToView()
+              } catch (err) {
+                setShowLoader(false)
+                mog('Unable to init action groups into view', { err })
+              }
+
+              ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
+              identifyUser(userDetails.email)
+              mog('Login Google BIG success', { d, userDetails, workspaceDetails })
+              addUserProperties({
+                [Properties.EMAIL]: userDetails.email,
+                [Properties.NAME]: userDetails.email,
+                [Properties.ROLE]: '',
+                [Properties.WORKSPACE_ID]: d.data.group
+              })
+              addEventProperties({ [CustomEvents.LOGGED_IN]: true })
+
+              setAuthenticated(userDetails, workspaceDetails)
               setShowLoader(false)
-              mog('Unable to init action groups into view', { err })
             }
-
-            ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
-            identifyUser(userDetails.email)
-            mog('Login Google BIG success', { d, userDetails, workspaceDetails })
-            addUserProperties({
-              [Properties.EMAIL]: userDetails.email,
-              [Properties.NAME]: userDetails.email,
-              [Properties.ROLE]: '',
-              [Properties.WORKSPACE_ID]: d.data.group
-            })
-            addEventProperties({ [CustomEvents.LOGGED_IN]: true })
-
-            setAuthenticated(userDetails, workspaceDetails)
-            setShowLoader(false)
-          })
-          /*
-           * TODO: FIX THIS
-           * If the user is not present in the database, then we will register the new user
-           */
-          .catch(async (e) => {
-            setSensitiveData({ email: result.email, name: result.email, password: '', roles: [] })
-
-            const uCred: UserCred = {
-              username: result.userCred.username,
-              email: result.userCred.email,
-              userId: result.userCred.userId,
-              expiry: result.userCred.exp,
-              token: result.userCred.token,
-              url: result.userCred.iss
-            }
-            const newWorkspaceName = `WD_${nanoid()}`
-
-            mog('Login Google Need to create user', { uCred })
-            // console.error('catch', { e })
-            await client
-              .post(
-                apiURLs.registerUser,
-                {
-                  type: 'RegisterUserRequest',
-                  user: {
-                    id: uCred.userId,
-                    name: uCred.email,
-                    email: uCred.email
-                  },
-                  workspaceName: newWorkspaceName
-                },
-                {
-                  headers: {
-                    'mex-workspace-id': ''
-                  }
-                }
-              )
-              .then(async (d: any) => {
-                try {
-                  await refreshToken()
-                } catch (error) {
-                  setShowLoader(false)
-                  mog('Error: ', { error })
-                }
-                const userDetails = { email: uCred.email, userId: uCred.userId }
-                const workspaceDetails = { id: d.data.id, name: 'WORKSPACE_NAME' }
-                initActionPerfomerClient(workspaceDetails.id)
-
-                try {
-                  await getGroupsToView()
-                } catch (err) {
-                  mog('Unable to init action groups into view', { err })
-                }
-
-                ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
-                identifyUser(userDetails.email)
-                mog('Login Google BIG success created user', { userDetails, workspaceDetails })
-                addUserProperties({
-                  [Properties.EMAIL]: userDetails.email,
-                  [Properties.NAME]: userDetails.email,
-                  [Properties.ROLE]: '',
-                  [Properties.WORKSPACE_ID]: d.data.group
-                })
-                addEventProperties({ [CustomEvents.LOGGED_IN]: true })
-                setAuthenticated(userDetails, workspaceDetails)
-                setShowLoader(false)
-              })
-              .catch(console.error)
-              .finally(() => {
-                setShowLoader(false)
-              })
           })
       }
     } catch (error) {
       console.log(error)
       setShowLoader(false)
     }
+  }
+
+  async function registerUserForGoogle(result: any) {
+    setSensitiveData({ email: result.email, name: result.email, password: '', roles: [] })
+    const uCred: UserCred = {
+      username: result.userCred.username,
+      email: result.userCred.email,
+      userId: result.userCred.userId,
+      expiry: result.userCred.expiry,
+      token: result.userCred.token,
+      url: result.userCred.url
+    }
+
+    const newWorkspaceName = `WD_${nanoid()}`
+
+    mog('Login Google Need to create user', { uCred })
+    // console.error('catch', { e })
+    await client
+      .post(
+        apiURLs.registerUser,
+        {
+          type: 'RegisterUserRequest',
+          user: {
+            id: uCred.userId,
+            name: uCred.email,
+            email: uCred.email
+          },
+          workspaceName: newWorkspaceName
+        },
+        {
+          headers: {
+            'mex-workspace-id': ''
+          }
+        }
+      )
+      .then(async (d: any) => {
+        try {
+          await refreshToken()
+        } catch (error) {
+          // setShowLoader(false)
+          mog('Error: ', { error: JSON.stringify(error) })
+        }
+        const userDetails = { email: uCred.email, userId: uCred.userId }
+        const workspaceDetails = { id: d.data.id, name: 'WORKSPACE_NAME' }
+        mog('Register Google BIG success', { d, userDetails, workspaceDetails })
+
+        initActionPerfomerClient(workspaceDetails.id)
+
+        try {
+          await getGroupsToView()
+        } catch (err) {
+          mog('Unable to init action groups into view', { err })
+        }
+
+        ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
+        identifyUser(userDetails.email)
+        mog('Login Google BIG success created user', { userDetails, workspaceDetails })
+        addUserProperties({
+          [Properties.EMAIL]: userDetails.email,
+          [Properties.NAME]: userDetails.email,
+          [Properties.ROLE]: '',
+          [Properties.WORKSPACE_ID]: d.data.group
+        })
+        addEventProperties({ [CustomEvents.LOGGED_IN]: true })
+        setAuthenticated(userDetails, workspaceDetails)
+        // setShowLoader(false)
+      })
+      .catch(console.error)
+      .finally(() => {
+        setShowLoader(false)
+      })
   }
 
   const registerDetails = (data: RegisterFormData): Promise<string> => {
