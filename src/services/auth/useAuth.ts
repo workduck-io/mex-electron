@@ -183,7 +183,7 @@ export const useAuthentication = () => {
             initActionPerfomerClient(workspaceDetails.id)
             setShowLoader(true)
             if (!d.data.group) {
-              await registerUserForGoogle(result)
+              await registerUserForGoogle(result, d.data)
             } else {
               /**
                * Else we will add properties
@@ -191,9 +191,9 @@ export const useAuthentication = () => {
               mog('UserDetails', { userDetails: result })
               const userDetails = {
                 email: result.userCred.email,
-                name: result.userCred.name,
+                name: d.data.name,
                 userID: result.userCred.userId,
-                alias: result.userCred.alias
+                alias: d.data.alias ?? d.data.name
               }
               const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
               initActionPerfomerClient(workspaceDetails.id)
@@ -211,7 +211,7 @@ export const useAuthentication = () => {
               addUserProperties({
                 [Properties.EMAIL]: userDetails.email,
                 [Properties.NAME]: userDetails.name,
-                [Properties.ALIAS]: d.data.metadata.alias,
+                [Properties.ALIAS]: d.data.alias,
                 [Properties.ROLE]: '',
                 [Properties.WORKSPACE_ID]: d.data.group
               })
@@ -228,9 +228,9 @@ export const useAuthentication = () => {
     }
   }
 
-  async function registerUserForGoogle(result: any) {
+  async function registerUserForGoogle(result: any, data: any) {
     mog('Registering user for google', { result })
-    setSensitiveData({ email: result.email, name: result.email, password: '', roles: [], alias: result.alias })
+    setSensitiveData({ email: result.email, name: data.name, password: '', roles: [], alias: data.alias ?? data.name })
     const uCred: UserCred = {
       username: result.userCred.username,
       email: result.userCred.email,
@@ -251,8 +251,8 @@ export const useAuthentication = () => {
           type: 'RegisterUserRequest',
           user: {
             id: uCred.userId,
-            name: uCred.email,
-            alias: result.userCred.alias,
+            name: data.name,
+            alias: data.alias ?? data.name,
             email: uCred.email
           },
           workspaceName: newWorkspaceName
@@ -270,9 +270,14 @@ export const useAuthentication = () => {
           // setShowLoader(false)
           mog('Error: ', { error: JSON.stringify(error) })
         }
-        const userDetails = { email: uCred.email, userID: uCred.userId, name: result.name, alias: result.alias }
+        const userDetails = {
+          userID: uCred.userId,
+          name: data.name,
+          alias: data.alias ?? data.name,
+          email: uCred.email
+        }
         const workspaceDetails = { id: d.data.id, name: 'WORKSPACE_NAME' }
-        mog('Register Google BIG success', { d, userDetails, workspaceDetails })
+        mog('Register Google BIG success', { d, data, userDetails, workspaceDetails })
 
         initActionPerfomerClient(workspaceDetails.id)
 
@@ -287,8 +292,8 @@ export const useAuthentication = () => {
         mog('Login Google BIG success created user', { userDetails, workspaceDetails })
         addUserProperties({
           [Properties.EMAIL]: userDetails.email,
-          [Properties.NAME]: userDetails.email,
-          [Properties.ALIAS]: result.alias,
+          [Properties.NAME]: userDetails.name,
+          [Properties.ALIAS]: userDetails.alias,
           [Properties.ROLE]: '',
           [Properties.WORKSPACE_ID]: d.data.group
         })
