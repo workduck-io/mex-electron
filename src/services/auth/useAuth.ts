@@ -108,7 +108,7 @@ export const useAuthentication = () => {
         .then(async (d) => {
           const userDetails = { email, alias: d.data.alias ?? d.data.name, userID: d.data.id, name: d.data.name }
           const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
-          initActionPerfomerClient(workspaceDetails.id)
+          initActionPerfomerClient(userDetails?.userID)
 
           setShowLoader(true)
           try {
@@ -180,7 +180,7 @@ export const useAuthentication = () => {
               name: d.data.name
             }
             const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
-            initActionPerfomerClient(workspaceDetails.id)
+            initActionPerfomerClient(userDetails.userID)
             setShowLoader(true)
             if (!d.data.group) {
               await registerUserForGoogle(result, d.data)
@@ -196,7 +196,7 @@ export const useAuthentication = () => {
                 alias: d.data.alias ?? d.data.name
               }
               const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
-              initActionPerfomerClient(workspaceDetails.id)
+              initActionPerfomerClient(userDetails.userID)
 
               try {
                 await getGroupsToView()
@@ -279,7 +279,7 @@ export const useAuthentication = () => {
         const workspaceDetails = { id: d.data.id, name: 'WORKSPACE_NAME' }
         mog('Register Google BIG success', { d, data, userDetails, workspaceDetails })
 
-        initActionPerfomerClient(workspaceDetails.id)
+        initActionPerfomerClient(userDetails.userID)
 
         try {
           await getGroupsToView()
@@ -389,7 +389,7 @@ export const useAuthentication = () => {
           alias: sensitiveData.alias
         }
         const workspaceDetails = { id: newWorkspaceName, name: 'WORKSPACE_NAME' }
-        initActionPerfomerClient(newWorkspaceName)
+        initActionPerfomerClient(userDetails?.userID)
 
         try {
           await getGroupsToView()

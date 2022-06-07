@@ -133,7 +133,7 @@ const GlobalListener = memo(() => {
       if (arg.loggedIn) {
         if (arg.userDetails && arg.workspaceDetails) {
           setAuthenticated(arg.userDetails, arg.workspaceDetails)
-          initActionPerfomerClient(arg?.workspaceDetails?.id)
+          initActionPerfomerClient(arg?.userDetails?.userID)
         }
         getTokenData()
         getMentionData()
@@ -189,7 +189,7 @@ const GlobalListener = memo(() => {
       localStorage.clear()
     })
 
-    initActionPerfomerClient(useAuthStore.getState()?.workspaceDetails?.id)
+    initActionPerfomerClient(useAuthStore.getState()?.userDetails?.userID)
     setReceiveToken()
     setReceiveMention()
   }, [])

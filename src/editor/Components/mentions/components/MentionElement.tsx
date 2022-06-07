@@ -163,7 +163,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
       <Tippy
         // delay={[100, 1000000]} // for testing
         delay={100}
-        interactiveDebounce={100}
+        // interactiveDebounce={100}
         interactive
         placement="bottom"
         appendTo={() => document.body}

@@ -102,7 +102,7 @@ const Init = () => {
           })
           if (userAuthenticatedEmail) {
             ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: true })
-            initActionPerfomerClient(useAuthStore.getState().workspaceDetails?.id)
+            initActionPerfomerClient(useAuthStore.getState().userDetails?.userID)
             return { d, auth: true }
           }
           setUnAuthenticated()
