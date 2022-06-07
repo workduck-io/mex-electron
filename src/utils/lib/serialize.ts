@@ -1,7 +1,9 @@
 // import { generateTempId } from '../Defaults/idPrefixes'
 
-import { extractMetadata } from './metadata'
+import { useAuthStore } from '@services/auth/useAuth'
 import { generateTempId } from '../../data/Defaults/idPrefixes'
+import { mog } from './helper'
+import { extractMetadata } from './metadata'
 
 // const ElementsWithProperties = [ELEMENT_PARAGRAPH]
 // const ElementsWithURL = [ELEMENT_LINK, ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED]
@@ -38,8 +40,11 @@ const mappedKeys = {
 }
 
 // From content to api
-export const serializeContent = (content: any[]) => {
+export const serializeContent = (content: any[], nodeid: string) => {
   return content.map((el) => {
+    if (Object.keys(serializeSpecial).includes(el.type)) {
+      return serializeSpecial[el.type](el, nodeid)
+    }
     const nl: any = {}
     const directProperties: DirectProperties = {}
 
@@ -75,16 +80,80 @@ export const serializeContent = (content: any[]) => {
     }
 
     if (el.children) {
-      nl.children = serializeContent(el.children)
+      nl.children = serializeContent(el.children, nodeid)
     }
 
     return nl
   })
 }
 
+export const serializeSpecial: { [elementType: string]: (element: any, nodeid: string) => any } = {
+  ilink: (el: any, nodeid: string) => {
+    const workspaceDetails = useAuthStore.getState().workspaceDetails
+    if (el.blockId)
+      return {
+        elementType: 'blockILink',
+        blockID: el.blockId,
+        blockAlias: el.blockValue,
+        nodeID: el.value,
+        id: el.id ?? generateTempId(),
+        workspaceID: workspaceDetails.id
+      }
+    else
+      return {
+        elementType: 'nodeILink',
+        nodeID: el.value,
+        id: el.id ?? generateTempId(),
+        workspaceID: workspaceDetails.id
+      }
+  },
+  a: (el: any, nodeid: string) => {
+    return {
+      elementType: 'webLink',
+      url: el.url,
+      id: el.id ?? generateTempId()
+    }
+  }
+}
+
+export const deserializeSpecial: { [elementType: string]: (element: any) => any } = {
+  nodeILink: (el: any) => {
+    return {
+      type: 'ilink',
+      value: el.nodeID,
+      id: el.id,
+      children: [{ text: '', id: generateTempId() }]
+    }
+  },
+  blockILink: (el: any) => {
+    return {
+      type: 'ilink',
+      value: el.nodeID,
+      blockId: el.blockID,
+      blockValue: el.blockAlias,
+      id: el.id,
+
+      children: [{ text: '', id: generateTempId() }]
+    }
+  },
+  webLink: (el: any) => {
+    return {
+      type: 'a',
+      url: el.url,
+      id: el.id,
+
+      children: [{ text: '', id: generateTempId() }]
+    }
+  }
+}
+
 // From API to content
 export const deserializeContent = (sanatizedContent: any[]) => {
   return sanatizedContent.map((el) => {
+    if (Object.keys(deserializeSpecial).includes(el.elementType)) {
+      const dEl = deserializeSpecial[el.elementType](el)
+      return dEl
+    }
     const nl: any = {}
 
     if (el.elementType !== 'paragraph' && el.elementType !== undefined) {
