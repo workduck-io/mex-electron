@@ -65,6 +65,11 @@ export const useAuthStore = create<AuthStoreState>(
   )
 )
 
+interface AuthDetails {
+  userDetails: UserDetails
+  workspaceDetails: WorkspaceDetails
+}
+
 export const useAuthentication = () => {
   const [sensitiveData, setSensitiveData] = useState<RegisterFormData | undefined>()
   const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
@@ -79,11 +84,6 @@ export const useAuthentication = () => {
   const { initActionPerfomerClient } = useActionsPerfomerClient()
   const setShowLoader = useLayoutStore((store) => store.setShowLoader)
   // const { getNodesByWorkspace } = useApi()
-
-  interface AuthDetails {
-    userDetails: UserDetails
-    workspaceDetails: WorkspaceDetails
-  }
 
   const login = async (
     email: string,
@@ -171,7 +171,6 @@ export const useAuthentication = () => {
               alias: d.data.alias ?? d.data.name,
               name: d.data.name
             }
-            const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
             initActionPerfomerClient(userDetails.userID)
             if (!d.data.group) {
               await registerUserForGoogle(result, d.data)

@@ -1,5 +1,5 @@
 import Actions from '@components/mex/Integrations/Actions'
-import Bots from '@components/mex/Integrations/Bots'
+import Portals from '@components/mex/Integrations/Portals'
 import { mog } from '@utils/lib/helper'
 import React, { useEffect } from 'react'
 import { Outlet, Route, Routes, useLocation } from 'react-router-dom'
@@ -100,8 +100,8 @@ const Switch = () => {
           <Route path={ROUTE_PATHS.integrations} element={<ProtectedRoute component={ActionGroupsPage} />} />
           <Route path={`${ROUTE_PATHS.integrations}/:actionGroupId`} element={<ProtectedRoute component={Actions} />} />
           <Route
-            path={`${ROUTE_PATHS.integrations}/bots/:actionGroupId`}
-            element={<ProtectedRoute component={Bots} />}
+            path={`${ROUTE_PATHS.integrations}/portals/:actionGroupId`}
+            element={<ProtectedRoute component={Portals} />}
           />
           <Route path={ROUTE_PATHS.archive} element={<ProtectedRoute component={Archive} />} />
           <Route path={ROUTE_PATHS.snippets} element={<ProtectedRoute component={Snippets} />} />

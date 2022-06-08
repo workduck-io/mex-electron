@@ -103,8 +103,6 @@ const Service = (props: { service: Service }) => {
 const Integrations = () => {
   const services = useSyncStore((store) => store.services)
 
-  // console.log({ services })
-
   return (
     <IntegrationContainer>
       <Title>Integrations</Title>
@@ -257,7 +255,7 @@ const IntegrationPage = () => {
   const template = useIntegrationStore((state) => state.template)
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       await updateServices()
     })()
 

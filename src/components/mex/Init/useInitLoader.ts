@@ -4,6 +4,7 @@ import useActions from '@components/spotlight/Actions/useActions'
 import { IpcAction } from '@data/IpcAction'
 import { useFetchShareData } from '@hooks/useFetchShareData'
 import { hierarchyParser } from '@hooks/useHierarchy'
+import { usePortals } from '@hooks/usePortals'
 import { useAuthStore } from '@services/auth/useAuth'
 import useDataStore from '@store/useDataStore'
 import { useLayoutStore } from '@store/useLayoutStore'
@@ -21,6 +22,7 @@ export const useInitLoader = () => {
   const { getNodesByWorkspace } = useApi()
   const { getGroupsToView } = useActions()
   const { fetchShareData } = useFetchShareData()
+  const { initPortals } = usePortals()
 
   const fetchAll = async () => {
     initActionPerfomerClient(useAuthStore.getState().userDetails?.userID)
@@ -35,7 +37,8 @@ export const useInitLoader = () => {
           }
         }),
         getGroupsToView(),
-        fetchShareData()
+        fetchShareData(),
+        initPortals()
       ])
       setShowLoader(false)
     } catch (err) {
