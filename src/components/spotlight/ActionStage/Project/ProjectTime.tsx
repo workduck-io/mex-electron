@@ -22,6 +22,7 @@ const ProjectTimeStyled = styled.div<{ isView?: boolean }>`
 
 const ProjectTime: React.FC<TemplateItemProp> = ({ item, isView }) => {
   if (!item.value) return <></>
+  if (isNaN(+item.value)) return <></>
 
   if (isView)
     return (

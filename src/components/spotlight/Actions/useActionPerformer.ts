@@ -16,6 +16,7 @@ import { IpcAction } from '@data/IpcAction'
 import { appNotifierWindow } from '@electron/utils/notifiers'
 import { AppType } from '@hooks/useInitialize'
 import { getPlateEditorRef, findNodePath, setNodes } from '@udecode/plate'
+import { useReadOnly } from 'slate-react'
 
 type PerfomerOptions = {
   formData?: Record<string, any>
@@ -66,6 +67,7 @@ export const useActionPerformer = () => {
   const element = useActionStore((store) => store.element)
   const initAction = useActionStore((store) => store.initAction)
   const addResultHash = useActionsCache((store) => store.addResultHash)
+  const readOnly = useReadOnly()
   const isMenuActionOpen = useActionMenuStore((store) => store.isActionMenuOpen)
   /* 
     Looks for the action in the cache first,
@@ -165,7 +167,7 @@ export const useActionPerformer = () => {
   const insertInEditor = (element?: any, data?: Record<string, any>) => {
     const editor = getPlateEditorRef()
 
-    if (editor) {
+    if (editor && !readOnly) {
       const path = findNodePath(editor, element)
       setNodes(editor, data, { at: path })
     }

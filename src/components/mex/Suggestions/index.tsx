@@ -6,9 +6,10 @@ import { useLinks } from '../../../hooks/useLinks'
 import useToggleElements from '../../../hooks/useToggleElements'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
-import useSuggestionStore from '../../../store/useSuggestions'
+import useSuggestionStore from '../../../store/useSuggestionStore'
 import IconButton from '../../../style/Buttons'
 import { InfobarMedium, InfobarTools } from '../../../style/infobar'
+import appsLine from '@iconify/icons-ri/apps-line'
 
 import { useSnippets } from '../../../hooks/useSnippets'
 import { getContent } from '../../../utils/helpers'
@@ -22,6 +23,8 @@ const SuggestionInfoBar = () => {
   // * Store
   const infobar = useLayoutStore((store) => store.infobar)
   const shortcuts = useHelpStore((store) => store.shortcuts)
+  const actionsVisible = useSuggestionStore((store) => store.actionVisible)
+  const toggleActionInSuggestions = useSuggestionStore((store) => store.toggleActionInSuggestion)
 
   // * Custom Hooks
   const editor = usePlateEditorRef()
@@ -103,6 +106,13 @@ const SuggestionInfoBar = () => {
           onClick={toggleSuggestedNodes}
         />
         <label htmlFor="smart-suggestions">Smart Suggestions</label>
+        <IconButton
+          size={24}
+          icon={appsLine}
+          highlight={actionsVisible}
+          title={actionsVisible ? 'Hide Actions' : 'Show Actions'}
+          onClick={toggleActionInSuggestions}
+        />
       </InfobarTools>
       <SmartSuggestions
         suggestions={suggestions}

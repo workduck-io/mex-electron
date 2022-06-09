@@ -35,10 +35,6 @@ import {
   isType,
   toggleList,
   unwrapList,
-  setNodes,
-  TElement,
-  TodoListItemNodeData,
-  insertNodes,
   AutoformatQueryOptions,
   autoformatSubscriptNumbers,
   autoformatComparison,
@@ -53,6 +49,8 @@ import { ELEMENT_SYNC_BLOCK } from '../Components/SyncBlock'
 import { generateTempId } from '../../data/Defaults/idPrefixes'
 
 import { uploadImageToWDCDN } from '../../utils/imageUpload'
+import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
+import { ELEMENT_INLINE_BLOCK } from '@editor/Components/InlineBlock/types'
 
 const preFormat = (editor: TEditor<AnyObject>) => unwrapList(editor as PlateEditor)
 
@@ -313,7 +311,9 @@ export const optionsResetBlockTypePlugin = {
   }
 }
 
-export const optionsSelectOnBackspacePlugin = { options: { query: { allow: [ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED] } } }
+export const optionsSelectOnBackspacePlugin = {
+  options: { query: { allow: [ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED, ELEMENT_ACTION_BLOCK, ELEMENT_INLINE_BLOCK] } }
+}
 
 export const optionsCreateNodeIdPlugin = {
   options: {

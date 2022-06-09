@@ -18,6 +18,7 @@ export const useSuggestions = () => {
     const nodeId = useEditorStore.getState().node?.id
     const mode = useLayoutStore.getState().infobar?.mode
     const isQABlock = useSuggestionStore.getState().headingQASearch
+    const actionVisible = useSuggestionStore.getState().actionVisible
 
     if (mode === 'suggestions' && !isQABlock) {
       const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
@@ -25,7 +26,11 @@ export const useSuggestions = () => {
       const rawText = convertContentToRawText(value.slice(lastTwoParagraphs, cursorPosition + 1), ' ')
       const keywords = removeStopwords(rawText)
 
-      const results = await queryIndexWithRanking(['node', 'snippet', 'actions', 'shared'], keywords.join(' '))
+      const idKeys = ['node', 'snippet', 'shared']
+
+      if (actionVisible) idKeys.push('actions')
+
+      const results = await queryIndexWithRanking(idKeys as any, keywords.join(' '))
 
       const withoutCurrentNode = results.filter((item) => item.id !== nodeId)
 

@@ -5,10 +5,8 @@ import { useDebouncedCallback } from 'use-debounce'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import { mog } from '../../../utils/lib/helper'
 import { useSearch } from '../../../hooks/useSearch'
-import useLoad from '../../../hooks/useLoad'
 import chat from '@iconify/icons-ph/chats-circle-bold'
 
-import useSuggestionStore from '../../../store/useSuggestions'
 import { ReactEditor, useReadOnly, useSelected } from 'slate-react'
 import { Editor } from 'slate'
 import { deleteFragment, insertNodes, selectEditor, setNodes, usePlateEditorRef } from '@udecode/plate'
@@ -21,9 +19,10 @@ import { MexIcon } from '../../../style/Layouts'
 import { useTheme } from 'styled-components'
 import { SNIPPET_PREFIX } from '../../../data/Defaults/idPrefixes'
 import { SuggestionElementType } from '../../../components/mex/Suggestions/types'
-import { useSnippets } from '../../../hooks/useSnippets'
 
 import { removeStopwords } from '../../../utils/stopwords'
+import useLoad from '@hooks/useLoad'
+import useSuggestionStore from '@store/useSuggestionStore'
 
 interface QABlockProps {
   attributes: any
