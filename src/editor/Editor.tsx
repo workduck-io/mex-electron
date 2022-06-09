@@ -136,7 +136,6 @@ export const Editor = ({
       <EditorStyles
         readOnly={readOnly}
         onClick={(ev) => {
-          ev.preventDefault()
           ev.stopPropagation()
 
           setNodePreview(false)
