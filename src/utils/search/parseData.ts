@@ -1,27 +1,21 @@
 // import { FileData, NodeSearchData } from '../Types/data'
 
-import { indexNames, diskIndex } from '../../data/search'
+import {
+    ELEMENT_CODE_BLOCK, ELEMENT_IMAGE, ELEMENT_LINK, ELEMENT_MEDIA_EMBED,
+    ELEMENT_TABLE,
+    ELEMENT_TODO_LI
+} from '@udecode/plate'
+import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
+import { diskIndex, indexNames } from '../../data/search'
+import { ELEMENT_INLINE_BLOCK } from '../../editor/Components/InlineBlock/types'
+import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin'
+import { BlockType } from '../../store/useBlockStore'
 import { useContentStore } from '../../store/useContentStore'
 import { FileData } from '../../types/data'
-import { getBlocks } from '../helpers'
-import { GenericSearchData } from './../../types/search'
-import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { NodeEditorContent } from '../../types/Types'
+import { getBlocks } from '../helpers'
 import { getSlug } from '../lib/strings'
-import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin'
-import { ELEMENT_ILINK } from '../../editor/Components/ilink/defaults'
-import { ELEMENT_INLINE_BLOCK } from '../../editor/Components/InlineBlock/types'
-import {
-  ELEMENT_MEDIA_EMBED,
-  ELEMENT_TABLE,
-  ELEMENT_TODO_LI,
-  ELEMENT_LINK,
-  ELEMENT_IMAGE,
-  ELEMENT_CODE_BLOCK
-} from '@udecode/plate'
-import { BlockType } from '../../store/useBlockStore'
-// import { mog } from '../lib/helper'
-import { ELEMENT_MENTION } from '@editor/Components/mentions/defaults'
+import { GenericSearchData, SearchRepExtra } from './../../types/search'
 
 type ExcludeFromTextType = {
   types?: Set<string>
@@ -35,13 +29,25 @@ export const convertContentToRawText = (
   content: any[],
   join?: string,
   exclude: ExcludeFromTextType = {
-    types: new Set([ELEMENT_EXCALIDRAW, ELEMENT_ILINK, ELEMENT_INLINE_BLOCK, ELEMENT_MENTION])
-  }
+    types: new Set([ELEMENT_EXCALIDRAW])
+  },
+  extra?: SearchRepExtra
 ): string => {
   const text: string[] = []
+  const extraKeys = extra ? Object.keys(extra) : []
 
   content?.forEach((n) => {
     if (exclude?.types?.has(n.type)) return
+
+    if (extraKeys.includes(n.type)) {
+      if (extra[n.type]) {
+        const blockKey = extra[n.type].keyToIndex
+        const blockText = extra[n.type].replacements[n[blockKey]]
+        // console.log('Found Extra', { n, blockKey, blockText })
+        if (blockText) text.push(blockText)
+        return
+      }
+    }
 
     if (n.text && !exclude?.fields?.has('text') && n.text !== '') text.push(n.text)
 
@@ -52,7 +58,7 @@ export const convertContentToRawText = (
     if (n.url && !exclude?.fields?.has('url') && n.url !== '') text.push(n.url)
 
     if (n.children && n.children.length > 0) {
-      const childText = convertContentToRawText(n.children, join ?? '', exclude)
+      const childText = convertContentToRawText(n.children, join ?? '', exclude, extra)
       text.push(childText)
     }
   })
@@ -80,8 +86,13 @@ export const getBlock = (nodeid: string, blockId: string) => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const convertEntryToRawText = (nodeUID: string, entry: any[], title = ''): GenericSearchData => {
-  return { id: nodeUID, title, text: convertContentToRawText(entry, ' ') }
+export const convertEntryToRawText = (
+  nodeUID: string,
+  entry: any[],
+  title = '',
+  extra?: SearchRepExtra
+): GenericSearchData => {
+  return { id: nodeUID, title, text: convertContentToRawText(entry, ' ', undefined, extra) }
 }
 
 export const getHeadingBlock = (content: NodeEditorContent) => {
@@ -96,15 +107,25 @@ export const getHeadingBlock = (content: NodeEditorContent) => {
   return undefined
 }
 
-export const parseNode = (nodeId: string, contents: any[], title = ''): GenericSearchData[] => {
+export const parseNode = (nodeId: string, contents: any[], title = '', extra?: SearchRepExtra): GenericSearchData[] => {
   const result: GenericSearchData[] = []
+  const extraKeys = extra ? Object.keys(extra) : []
   contents.forEach((block) => {
     if (block.type === ELEMENT_EXCALIDRAW) return
 
     let blockText = ''
     if (block.value && block.value !== '') blockText += `${block.value}`
     if (block.url && block.url !== '') blockText += ` ${block.url}`
-    blockText += ' ' + convertContentToRawText(block.children, ' ')
+    blockText += ' ' + convertContentToRawText(block.children, ' ', undefined, extra)
+
+    if (extraKeys.includes(block.type)) {
+      if (extra[block.type]) {
+        const blockKey = extra[block.type].keyToIndex
+        blockText = extra[block.type].replacements[block[blockKey]]
+        // console.log('Found Extra', { block, blockKey, blockText })
+        // if (blockText1) (blockText1)
+      }
+    }
 
     if (blockText.trim().length !== 0) {
       const temp: GenericSearchData = { id: nodeId, text: blockText, blockId: block.id, title, data: block }
@@ -283,7 +304,7 @@ export const defaultCopyConverter = (block) => {
 export const defaultCopyFilter = ({ type }) => {
   const exclude: Array<string> = [
     ELEMENT_EXCALIDRAW,
-    ELEMENT_ILINK,
+    // ELEMENT_ILINK,
     ELEMENT_TABLE,
     ELEMENT_QA_BLOCK,
     ELEMENT_INLINE_BLOCK,

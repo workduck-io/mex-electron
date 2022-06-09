@@ -10,7 +10,7 @@ import {
   TITLE_RANK_BUMP
 } from '../../utils/search/flexsearch'
 import { mog } from '../../utils/lib/helper'
-import { SearchWorker, idxKey, GenericSearchResult, SearchIndex } from '../../types/search'
+import { SearchWorker, idxKey, GenericSearchResult, SearchIndex, SearchRepExtra } from '../../types/search'
 import { setSearchIndexData } from './../utils/indexData'
 import { parseNode } from '../../utils/search/parseData'
 
@@ -25,9 +25,16 @@ const searchWorker: SearchWorker = {
     nodeBlockMapping = nbMap
   },
 
-  addDoc: (key: idxKey, nodeId: string, contents: any[], title = '', tags: Array<string> = []) => {
+  addDoc: (
+    key: idxKey,
+    nodeId: string,
+    contents: any[],
+    title = '',
+    tags: Array<string> = [],
+    extra?: SearchRepExtra
+  ) => {
     if (globalSearchIndex[key]) {
-      const parsedBlocks = parseNode(nodeId, contents, title)
+      const parsedBlocks = parseNode(nodeId, contents, title, extra)
 
       const blockIds = parsedBlocks.map((block) => block.id)
       nodeBlockMapping[nodeId] = blockIds
@@ -40,11 +47,18 @@ const searchWorker: SearchWorker = {
     }
   },
 
-  updateDoc: (key: idxKey, nodeId: string, contents: any[], title = '', tags: Array<string> = []) => {
+  updateDoc: (
+    key: idxKey,
+    nodeId: string,
+    contents: any[],
+    title = '',
+    tags: Array<string> = [],
+    extra?: SearchRepExtra
+  ) => {
     if (globalSearchIndex[key]) {
-      mog('UPDATE DOC', { nodeId, key, contents, tags })
+      mog('UPDATE DOC', { nodeId, key, contents, tags, extra })
 
-      const parsedBlocks = parseNode(nodeId, contents, title)
+      const parsedBlocks = parseNode(nodeId, contents, title, extra)
 
       const existingNodeBlocks = nodeBlockMapping[nodeId] ?? []
       const newBlockIds = parsedBlocks.map((block) => block.blockId)

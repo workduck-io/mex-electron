@@ -3,7 +3,7 @@ import { spawn, Worker } from 'threads'
 import { mog } from '../../utils/lib/helper'
 import { NodeEditorContent } from '../../types/Types'
 import { FileData } from '../../types/data'
-import { idxKey } from '../../types/search'
+import { idxKey, SearchRepExtra } from '../../types/search'
 
 // @ts-expect-error it don't want .ts
 // eslint-disable-next-line
@@ -65,19 +65,33 @@ export const initSearchIndex = async (fileData: FileData, indexData: Record<idxK
   }
 }
 
-export const addDoc = async (key: idxKey, nodeId: string, contents: any[], title: string, tags?: Array<string>) => {
+export const addDoc = async (
+  key: idxKey,
+  nodeId: string,
+  contents: any[],
+  title: string,
+  tags?: Array<string>,
+  extra?: SearchRepExtra
+) => {
   try {
     if (!search_worker) throw new Error('Search Worker Not Initialized')
-    await search_worker.addDoc(key, nodeId, contents, title, tags)
+    await search_worker.addDoc(key, nodeId, contents, title, tags, extra)
   } catch (error) {
     mog('AddDocIndexError', { error })
   }
 }
 
-export const updateDoc = async (key: idxKey, nodeId: string, contents: any[], title: string, tags?: Array<string>) => {
+export const updateDoc = async (
+  key: idxKey,
+  nodeId: string,
+  contents: any[],
+  title: string,
+  tags?: Array<string>,
+  extra?: SearchRepExtra
+) => {
   try {
     if (!search_worker) throw new Error('Search Worker Not Initialized')
-    await search_worker.updateDoc(key, nodeId, contents, title, tags)
+    await search_worker.updateDoc(key, nodeId, contents, title, tags, extra)
   } catch (error) {
     mog('UpdateDocIndexError', { error })
   }
