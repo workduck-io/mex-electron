@@ -8,6 +8,7 @@ export interface GenericSearchData {
   title?: string
   text: string
   data?: any
+  actionContext?: any
   tag?: string[]
 }
 
@@ -17,6 +18,7 @@ export interface SearchIndex {
   archive: Document<GenericSearchData> | null
   template: Document<GenericSearchData> | null
   shared: Document<GenericSearchData> | null
+  actions: Document<GenericSearchData> | null
 }
 
 export interface GenericSearchResult {

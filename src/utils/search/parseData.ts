@@ -1,9 +1,13 @@
 // import { FileData, NodeSearchData } from '../Types/data'
 
+import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import {
-    ELEMENT_CODE_BLOCK, ELEMENT_IMAGE, ELEMENT_LINK, ELEMENT_MEDIA_EMBED,
-    ELEMENT_TABLE,
-    ELEMENT_TODO_LI
+  ELEMENT_CODE_BLOCK,
+  ELEMENT_IMAGE,
+  ELEMENT_LINK,
+  ELEMENT_MEDIA_EMBED,
+  ELEMENT_TABLE,
+  ELEMENT_TODO_LI
 } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { diskIndex, indexNames } from '../../data/search'
@@ -127,11 +131,14 @@ export const parseNode = (nodeId: string, contents: any[], title = '', extra?: S
       }
     }
 
+    if (block.type === ELEMENT_ACTION_BLOCK) blockText = block.actionContext?.actionId
+
     if (blockText.trim().length !== 0) {
       const temp: GenericSearchData = { id: nodeId, text: blockText, blockId: block.id, title, data: block }
       result.push(temp)
     }
   })
+
   return result
 }
 
@@ -145,97 +152,116 @@ export const getTitleFromContent = (content: NodeEditorContent) => {
   return title
 }
 
+export const getTitleNodeMap = (idxName: string, data: any) => {
+  const titleNodeMap = new Map<string, string>()
+
+  // Pre-process the data to get the title node map
+  switch (idxName) {
+    case indexNames.actions:
+    case indexNames.node: {
+      data.ilinks.forEach((entry) => {
+        titleNodeMap.set(entry.nodeid, entry.path)
+      })
+      break
+    }
+
+    case indexNames.archive: {
+      data.archive.forEach((entry) => {
+        titleNodeMap.set(entry.nodeid, entry.path)
+      })
+      break
+    }
+
+    case indexNames.template:
+    case indexNames.snippet: {
+      data.snippets.forEach((snippet) => {
+        titleNodeMap.set(snippet.id, snippet.title)
+      })
+      break
+    }
+
+    case indexNames.shared: {
+      data.sharedNodes.forEach((entry) => {
+        titleNodeMap.set(entry.nodeid, entry.path)
+      })
+      break
+    }
+
+    default: {
+      throw new Error('No corresponding index name found')
+    }
+  }
+
+  return titleNodeMap
+}
+
 export const convertDataToIndexable = (data: FileData) => {
   const nodeBlockMap: { [key: string]: string[] } = {}
   const result: Record<indexNames, GenericSearchData[]> = Object.entries(indexNames).reduce((p, c) => {
     const idxResult = []
     const idxName = c[0]
-    const titleNodeMap = new Map<string, string>()
 
-    // Pre-process the data to get the title node map
-    switch (idxName) {
-      case indexNames.node: {
-        data.ilinks.forEach((entry) => {
-          titleNodeMap.set(entry.nodeid, entry.path)
-        })
-        break
-      }
-
-      case indexNames.archive: {
-        data.archive.forEach((entry) => {
-          titleNodeMap.set(entry.nodeid, entry.path)
-        })
-        break
-      }
-
-      case indexNames.template:
-      case indexNames.snippet: {
-        data.snippets.forEach((snippet) => {
-          titleNodeMap.set(snippet.id, snippet.title)
-        })
-        break
-      }
-
-      case indexNames.shared: {
-        data.sharedNodes.forEach((entry) => {
-          titleNodeMap.set(entry.nodeid, entry.path)
-        })
-        break
-      }
-
-      default: {
-        throw new Error('No corresponding index name found')
-      }
-    }
+    const titleNodeMap = getTitleNodeMap(idxName, data)
 
     // Process the filedata to get the indexable data
-    if (idxName === indexNames.archive || idxName === indexNames.node || idxName === indexNames.shared) {
-      Object.entries(data.contents).forEach(([k, v]) => {
-        if (k !== '__null__' && titleNodeMap.has(k)) {
-          if (!nodeBlockMap[k]) nodeBlockMap[k] = []
-          v.content.forEach((block) => {
-            const blockText = convertContentToRawText(block.children, ' ')
-            // If the type is init, we index the initial empty block
-            if (blockText.length !== 0 || v.type === 'init') {
-              nodeBlockMap[k].push(block.id)
-              const temp: GenericSearchData = {
-                id: k,
-                text: blockText,
-                blockId: block.id,
-                title: titleNodeMap.get(k),
-                data: block
+    switch (idxName) {
+      case indexNames.archive:
+      case indexNames.node:
+      case indexNames.actions:
+        Object.entries(data.contents).forEach(([k, v]) => {
+          if (k !== '__null__' && titleNodeMap.has(k)) {
+            if (!nodeBlockMap[k]) nodeBlockMap[k] = []
+            v.content.forEach((block) => {
+              let blockText = convertContentToRawText(block.children, ' ')
+
+              if (block.type === ELEMENT_ACTION_BLOCK && block?.actionContext) blockText = block.actionContext?.actionId
+
+              // If the type is init, we index the initial empty block
+              if (blockText.length !== 0 || v.type === 'init') {
+                nodeBlockMap[k].push(block.id)
+                const temp: GenericSearchData = {
+                  id: k,
+                  text: blockText,
+                  blockId: block.id,
+                  title: titleNodeMap.get(k),
+                  data: block
+                }
+
+                idxResult.push(temp)
               }
-              idxResult.push(temp)
+            })
+          }
+        })
+        break
+      case indexNames.snippet:
+        data.snippets
+          .filter((snip) => !snip.isTemplate)
+          .map((snip) => {
+            const title = titleNodeMap.get(snip.id)
+            const temp: GenericSearchData = {
+              ...convertEntryToRawText(snip.id, snip.content, title),
+              tag: ['snippet']
             }
+            nodeBlockMap[snip.id] = [snip.id] // Redundant right now, not doing block level indexing for snippets
+            idxResult.push(temp)
           })
-        }
-      })
-    } else if (idxName === indexNames.snippet) {
-      data.snippets
-        .filter((snip) => !snip.isTemplate)
-        .map((snip) => {
-          const title = titleNodeMap.get(snip.id)
-          const temp: GenericSearchData = {
-            ...convertEntryToRawText(snip.id, snip.content, title),
-            tag: ['snippet']
-          }
-          nodeBlockMap[snip.id] = [snip.id] // Redundant right now, not doing block level indexing for snippets
-          idxResult.push(temp)
-        })
-    } else if (idxName === indexNames.template) {
-      data.snippets
-        .filter((snip) => snip.isTemplate)
-        .map((template) => {
-          const title = titleNodeMap.get(template.id)
-          const temp: GenericSearchData = {
-            ...convertEntryToRawText(template.id, template.content, title),
-            tag: ['template']
-          }
-          nodeBlockMap[template.id] = [template.id] // Redundant right now, not doing block level indexing for snippets
-          idxResult.push(temp)
-        })
-    } else {
-      throw new Error('No corresponding index name found')
+        break
+
+      case indexNames.template:
+        data.snippets
+          .filter((snip) => snip.isTemplate)
+          .map((template) => {
+            const title = titleNodeMap.get(template.id)
+            const temp: GenericSearchData = {
+              ...convertEntryToRawText(template.id, template.content, title),
+              tag: ['template']
+            }
+            nodeBlockMap[template.id] = [template.id] // Redundant right now, not doing block level indexing for snippets
+            idxResult.push(temp)
+          })
+        break
+      default:
+        throw new Error('No corresponding index name found')
     }
 
     return { ...p, [idxName]: idxResult }

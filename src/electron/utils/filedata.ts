@@ -16,8 +16,6 @@ export const getFileData = (location: string) => {
     const { data: fileData } = applyTransforms(data, UpdateVersionTransforms)
     fs.writeFileSync(location, JSON.stringify(fileData))
 
-    console.log('MEX: Applied Transforms to data')
-
     return fileData
   } else {
     const version = app.getVersion()

@@ -1,5 +1,6 @@
 import timeLine from '@iconify/icons-ri/time-line'
 import { Icon } from '@iconify/react'
+import { mog } from '@utils/lib/helper'
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import useLayout from '../../../hooks/useLayout'
@@ -142,6 +143,7 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
   // mog({ node, metadata })
 
   if (content === undefined || content.metadata === undefined || metadata === undefined || isEmpty) return null
+
   return (
     <MetadataWrapper {...getFocusProps(focusMode)} fadeOnHover={fadeOnHover}>
       <DataGroup>

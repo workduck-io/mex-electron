@@ -1,3 +1,4 @@
+import { useSuggestions } from '@components/mex/Suggestions/useSuggestions'
 import { selectEditor, usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect, useMemo, useRef } from 'react'
 import tinykeys from 'tinykeys'
@@ -7,39 +8,31 @@ import { defaultContent } from '../data/Defaults/baseData'
 import { useEditorBuffer } from '../hooks/useEditorBuffer'
 import useLayout from '../hooks/useLayout'
 import useLoad from '../hooks/useLoad'
-import { useSearch } from '../hooks/useSearch'
 import { useKeyListener } from '../hooks/useShortcutListener'
 import { useAnalysisTodoAutoUpdate } from '../store/useAnalysis'
 import useBlockStore from '../store/useBlockStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
 import { useLayoutStore } from '../store/useLayoutStore'
-import useSuggestionStore from '../store/useSuggestions'
 import { EditorWrapper, StyledEditor } from '../style/Editor'
 import { getEditorId } from '../utils/lib/EditorId'
-import { convertContentToRawText } from '../utils/search/parseData'
-import { removeStopwords } from '../utils/stopwords'
 import BlockInfoBar from './Components/Blocks/BlockInfoBar'
 import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
 import { BlockOptionsMenu } from './Components/EditorContextMenu'
 import Editor from './Editor'
 import Toolbar from './Toolbar'
 
-import { mog } from '../utils/lib/helper'
 import { useNodes } from '@hooks/useNodes'
-import { NodeType } from '../types/Types'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const setIsEditing = useEditorStore((store) => store.setIsEditing)
   const { toggleFocusMode } = useLayout()
   const { saveApiAndUpdate } = useLoad()
-  const { accessWhenShared, getNodeType } = useNodes()
+  const { accessWhenShared } = useNodes()
 
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
   const isComboOpen = useComboboxOpen()
-
-  const { queryIndexWithRanking } = useSearch()
 
   const infobar = useLayoutStore((store) => store.infobar)
 
@@ -51,40 +44,11 @@ const ContentEditor = () => {
   )
 
   const { shortcutHandler } = useKeyListener()
-  const { setSuggestions } = useSuggestionStore()
+  const { getSuggestions } = useSuggestions()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const editorRef = usePlateEditorRef()
-
   const { addOrUpdateValBuffer, getBufferVal } = useEditorBuffer()
-
-  const getSuggestions = async (val: any[]) => {
-    const mode = useLayoutStore.getState().infobar?.mode
-    const isQABlock = useSuggestionStore.getState().headingQASearch
-
-    if (mode === 'suggestions' && !isQABlock) {
-      const cursorPosition = editorRef?.selection?.anchor?.path?.[0]
-      const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
-      const rawText = convertContentToRawText(val.slice(lastTwoParagraphs, cursorPosition + 1), ' ')
-      const keywords = removeStopwords(rawText)
-
-      const results = await queryIndexWithRanking(['node', 'snippet', 'shared'], keywords.join(' '))
-
-      const withoutCurrentNode = results.filter((item) => item.id !== node.nodeid)
-
-      const suggestions = withoutCurrentNode.map((item) => {
-        const nodeType = getNodeType(item.id)
-        return {
-          ...item,
-          type: nodeType === NodeType.SHARED ? 'shared' : nodeType === NodeType.DEFAULT ? 'node' : 'snippet'
-        }
-      })
-
-      // mog('suggestions', { val, results, suggestions })
-
-      setSuggestions(suggestions)
-    }
-  }
 
   const onChangeSave = async (val: any[]) => {
     if (val && node && node.nodeid !== '__null__') {

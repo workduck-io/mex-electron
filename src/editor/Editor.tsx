@@ -1,5 +1,5 @@
 import { Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
-import React, { useCallback, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import generatePlugins, { PluginOptionType } from './Plugins/plugins'
 
 import BallonMarkToolbarButtons from './Components/EditorBalloonToolbar'
@@ -17,7 +17,7 @@ import { useGraphStore } from '../store/useGraphStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
 import { mog } from '../utils/lib/helper'
-import { useDebounce, useDebouncedCallback } from 'use-debounce'
+import { useDebouncedCallback } from 'use-debounce'
 import useSuggestionStore from '@store/useSuggestions'
 import { useNodes } from '@hooks/useNodes'
 
@@ -38,7 +38,7 @@ interface EditorProps {
 export const Editor = ({
   content,
   editorId,
-  autoFocus = false,
+  autoFocus = true,
   options,
   readOnly = false,
   onChange,
@@ -137,7 +137,9 @@ export const Editor = ({
       <EditorStyles
         readOnly={readOnly}
         onClick={(ev) => {
+          ev.preventDefault()
           ev.stopPropagation()
+
           setNodePreview(false)
         }}
         data-tour="mex-onboarding-draft-editor"

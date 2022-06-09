@@ -1,6 +1,6 @@
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import React from 'react'
-import { useTheme } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { ActionBlockContainer, LeftHeader } from './styled'
 import { MexIcon } from '@style/Layouts'
 import BackIcon from '@iconify/icons-ph/caret-circle-left-light'
@@ -11,6 +11,31 @@ import Loading from '@style/Loading'
 import useActions from '@components/spotlight/Actions/useActions'
 import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
 import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
+import { Relative, RelativeTime } from '@components/mex/RelativeTime'
+import { BodyFont } from '@style/spotlight/global'
+
+const LastUpdated: React.FC<{ actionId: string }> = ({ actionId }) => {
+  const element = useActionStore((store) => store.element)
+  const getCacheResult = useActionsCache((store) => store.getCacheResult)
+
+  const cache = getCacheResult(actionId, element.id)
+  const expires = cache?._expires - 5 * 60 * 1000
+
+  return cache ? <RelativeTime prefix="Last updated" dateNum={expires} /> : <></>
+}
+
+const ActionBlockInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0 ${(props) => props.theme.spacing.tiny};
+
+  ${Relative} {
+    ${BodyFont};
+    color: ${(props) => props.theme.colors.gray[4]};
+    opacity: 0.8;
+  }
+`
 
 const ActionBlockHeader = () => {
   const activeAction = useActionStore((store) => store.activeAction)
@@ -56,22 +81,25 @@ const ActionBlockHeader = () => {
         />
         <div>{activeAction?.name}</div>
       </LeftHeader>
-      {isConnected && (
-        <>
-          {isLoading ? (
-            <Loading color={theme.colors.primary} dots={3} transparent />
-          ) : (
-            <MexIcon
-              icon="ic:round-refresh"
-              height="1.5em"
-              width="1.5rem"
-              margin="0 0.5rem 0 0"
-              color={theme.colors.primary}
-              onClick={onRefreshClick}
-            />
-          )}
-        </>
-      )}
+      <ActionBlockInfo>
+        <LastUpdated actionId={activeAction?.id} />
+        {isConnected && (
+          <>
+            {isLoading ? (
+              <Loading color={theme.colors.primary} dots={2} transparent />
+            ) : (
+              <MexIcon
+                icon="ic:round-refresh"
+                height="1.5em"
+                width="1.5rem"
+                margin="0 0.5rem 0 0"
+                color={theme.colors.primary}
+                onClick={onRefreshClick}
+              />
+            )}
+          </>
+        )}
+      </ActionBlockInfo>
     </ActionBlockContainer>
   )
 }

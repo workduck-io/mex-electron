@@ -1,13 +1,11 @@
 import useActions from '@components/spotlight/Actions/useActions'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
-import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
 import { useMentions } from '@hooks/useMentions'
 import { useMentionStore } from '@store/useMentionStore'
 import { ELEMENT_MEDIA_EMBED, ELEMENT_MENTION, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
-import { mog } from '@utils/lib/helper'
 import { useMemo } from 'react'
 import { QuickLinkType } from '../../components/mex/NodeSelect/NodeSelect'
 import { useOpenReminderModal } from '../../components/mex/Reminders/CreateReminderModal'
@@ -28,9 +26,8 @@ import { SlashComboboxItem } from '../Components/SlashCommands/SlashComboboxItem
 import { TagComboboxItem } from '../Components/tag/components/TagComboboxItem'
 import { ELEMENT_TAG } from '../Components/tag/defaults'
 import { useAuthStore } from '../../services/auth/useAuth'
-import { ipcRenderer } from 'electron'
-import { IpcAction } from '@data/IpcAction'
 import { PluginOptionType } from './plugins'
+import { mog } from '@utils/lib/helper'
 
 const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => {
   const tags = useDataStore((state) => state.tags)
@@ -39,7 +36,6 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
   const slashCommands = useDataStore((state) => state.slashCommands)
   const nodeid = useEditorStore((state) => state.node.nodeid)
   const actionGroups = useActionsCache((store) => store.actionGroups)
-  const groupedActions = useActionsCache((store) => store.groupedActions)
   const mentionable = useMentionStore((state) => state.mentionable)
   const invitedUsers = useMentionStore((state) => state.invitedUsers)
   const prefillShareModal = useShareModalStore((state) => state.prefillModal)

@@ -21,6 +21,7 @@ type PerfomerOptions = {
   formData?: Record<string, any>
   fetch?: boolean
   parent?: boolean
+  storeInEditor?: boolean
 }
 
 export const getActionCacheKey = (key: string, blockId?: string) => {
@@ -101,8 +102,6 @@ export const useActionPerformer = () => {
         }
       })
 
-      mog(`PERFORMED ${actionId}`, { result, configVal })
-
       addResultInCache(actionId, result?._hash)
 
       if (options?.fetch) setNeedsRefresh()
@@ -126,7 +125,6 @@ export const useActionPerformer = () => {
         })
 
         if (!isMenuActionOpen && element) {
-          mog('OKAY IM INSERTING CONTEXT')
           saveContext(resultActionConfig, postContext, true)
           initAction(resultActionConfig?.actionGroupId, resultAction?.actionId)
           setView('item')
@@ -148,7 +146,14 @@ export const useActionPerformer = () => {
 
       if (!isMenuActionOpen) setIsLoading(false)
 
-      return actionConfig?.returnType === ReturnType.OBJECT ? result : getIndexedResult(result)
+      const storeRes: ActionResponse =
+        actionConfig?.returnType === ReturnType.OBJECT ? result : getIndexedResult(result)
+
+      if (actionId === activeAction?.id && !isMenuActionOpen && element) {
+        insertInEditor(element, { actionDisplayItems: storeRes?.displayData })
+      }
+
+      return storeRes
     } catch (err) {
       mog('Unable to perform result action', { err })
       if (!isMenuActionOpen) setIsLoading(false)
@@ -157,26 +162,25 @@ export const useActionPerformer = () => {
     return undefined
   }
 
-  const saveContext = (actionConfig: ActionHelperConfig, context: ActionHelperConfigValues, isView?: boolean) => {
+  const insertInEditor = (element?: any, data?: Record<string, any>) => {
     const editor = getPlateEditorRef()
 
     if (editor) {
       const path = findNodePath(editor, element)
+      setNodes(editor, data, { at: path })
+    }
+  }
 
-      if (element?.actionContext) {
-        setNodes(
-          editor,
-          {
-            actionContext: {
-              view: isView,
-              prevContext: context,
-              actionGroupId: actionConfig?.actionGroupId,
-              actionId: actionConfig?.actionId
-            }
-          },
-          { at: path }
-        )
-      }
+  const saveContext = (actionConfig: ActionHelperConfig, context: ActionHelperConfigValues, isView?: boolean) => {
+    if (element?.actionContext) {
+      insertInEditor(element, {
+        actionContext: {
+          view: isView,
+          prevContext: context,
+          actionGroupId: actionConfig?.actionGroupId,
+          actionId: actionConfig?.actionId
+        }
+      })
     }
   }
 
@@ -244,6 +248,7 @@ export const useActionPerformer = () => {
     isPerformer,
     performer,
     isReady,
+    insertInEditor,
     getConfigWithActionId,
     getConfig
   }

@@ -6,9 +6,7 @@ import { useActionMenuStore } from './useActionMenuStore'
 import MenuDisplay from './MenuDisplay'
 import { useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
-import { useTheme } from 'styled-components'
-import { MexIcon } from '@style/Layouts'
-import { mog } from '@utils/lib/helper'
+import Icon from '@ui/components/Icon'
 
 type MenuProps = {}
 
@@ -18,8 +16,6 @@ const Menu: React.FC<MenuProps> = () => {
   const setIsMenuOpen = useActionStore((store) => store.setIsMenuOpen)
   const clearMenuStore = useActionMenuStore((store) => store.clearMenuStore)
   const activeMenuAction = useActionMenuStore((store) => store.activeMenuAction)
-
-  const theme = useTheme()
 
   const { getConfig, getConfigWithActionId } = useActionPerformer()
 
@@ -59,13 +55,7 @@ const Menu: React.FC<MenuProps> = () => {
     <Overlay tabIndex={0} onClick={onOutsideClick}>
       <MenuContainer style={transitions} id="wd-mex-action-menu" onClick={(e) => e.stopPropagation()}>
         <MenuHeader id="wd-mex-action-menu-heading">
-          <MexIcon
-            color={theme.colors.primary}
-            icon={activeAction?.icon}
-            height="1rem"
-            width="1rem"
-            margin="0 0.5rem"
-          />
+          <Icon icon={activeAction?.icon} size={10} margin="0 0.75rem 0 0.5rem" />
           <MenuTitle>{header?.heading?.value || header?.subHeading}</MenuTitle>
         </MenuHeader>
         <MenuBody id="wd-mex-action-menu-content">

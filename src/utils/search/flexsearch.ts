@@ -10,6 +10,7 @@ export interface CreateSearchIndexData {
   snippet: GenericSearchData[] | null
   archive: GenericSearchData[] | null
   template: GenericSearchData[] | null
+  actions: GenericSearchData[] | null
 }
 
 export const SEARCH_RESULTS_LIMIT = 10
@@ -24,7 +25,14 @@ export const getNodeAndBlockIdFromCompositeKey = (compositeKey: string) => {
   return { nodeId: c[0], blockId: c[1] }
 }
 
-export const indexedFields = ['title', 'text']
+export const indexedFields: Record<indexNames, Array<string>> = {
+  node: ['title', 'text'],
+  snippet: ['title', 'text'],
+  archive: ['title', 'text'],
+  template: ['title', 'text'],
+  actions: ['data:actionDisplayItems[]:value']
+}
+
 export const storedFields = ['text', 'data']
 
 export const createSearchIndex = (fileData: FileData, data: CreateSearchIndexData) => {
@@ -37,7 +45,7 @@ export const createSearchIndex = (fileData: FileData, data: CreateSearchIndexDat
       document: {
         id: 'blockId',
         tag: 'tag',
-        index: indexedFields,
+        index: indexedFields[idxName],
         store: storedFields
       },
       tokenize: 'full'
@@ -90,7 +98,7 @@ export const createGenricSearchIndex = (
     })
   }
 
-  mog('CreateSearchIndex', { options, initList })
+  // mog('CreateSearchIndex', { options, initList })
   return index
 }
 

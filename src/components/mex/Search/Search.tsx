@@ -2,6 +2,7 @@ import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import { NodeType } from '../../../types/Types'
 import shareLine from '@iconify/icons-ri/share-line'
+import { mog } from '@utils/lib/helper'
 import React from 'react'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import { SearchHelp } from '../../../data/Defaults/helpText'
@@ -33,12 +34,9 @@ import {
   SplitSearchPreviewWrapper
 } from '../../../style/Search'
 import { Title, TitleText } from '../../../style/Typography'
-import { GenericSearchResult } from '../../../types/search'
 import Infobox from '../../../ui/components/Help/Infobox'
 import { SplitType } from '../../../ui/layout/splitView'
 import { getInitialNode } from '../../../utils/helpers'
-import { mog } from '../../../utils/lib/helper'
-import { convertContentToRawText } from '../../../utils/search/parseData'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import Backlinks from '../Backlinks'
 import Metadata from '../Metadata/Metadata'
@@ -46,6 +44,8 @@ import TagsRelated, { TagsRelatedTiny } from '../Tags/TagsRelated'
 import SearchFilters from './SearchFilters'
 import SearchView, { RenderFilterProps, RenderItemProps, RenderPreviewProps } from './SearchView'
 import { View } from './ViewSelector'
+import { GenericSearchResult } from '@types/search'
+import { convertContentToRawText } from '@utils/search/parseData'
 
 const Search = () => {
   const { loadNode } = useLoad()
@@ -78,7 +78,7 @@ const Search = () => {
   // const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)
 
   const onSearch = async (newSearchTerm: string) => {
-    const res = await queryIndexWithRanking(['shared', 'node'], newSearchTerm)
+    const res = await queryIndexWithRanking(['shared', 'node', 'actions'], newSearchTerm)
     const filRes = res.filter((r) => {
       const nodeType = getNodeType(r.id)
       return nodeType !== NodeType.MISSING && nodeType !== NodeType.ARCHIVED
