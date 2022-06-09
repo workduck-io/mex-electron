@@ -207,6 +207,7 @@ export const convertDataToIndexable = (data: FileData) => {
     switch (idxName) {
       case indexNames.archive:
       case indexNames.node:
+      case indexNames.shared:
       case indexNames.actions:
         Object.entries(data.contents).forEach(([k, v]) => {
           if (k !== '__null__' && titleNodeMap.has(k)) {

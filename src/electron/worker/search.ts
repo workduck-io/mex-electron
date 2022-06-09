@@ -12,7 +12,7 @@ import {
 } from '../../utils/search/flexsearch'
 import { mog } from '../../utils/lib/helper'
 import { setSearchIndexData } from './../utils/indexData'
-import { SearchIndex, SearchWorker, idxKey, SearchRepExtra, GenericSearchResult } from '@types/search'
+import { SearchIndex, SearchWorker, idxKey, SearchRepExtra, GenericSearchResult } from '../../types/search'
 import { parseNode } from '@utils/search/parseData'
 
 let globalSearchIndex: SearchIndex = null

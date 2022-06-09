@@ -30,6 +30,7 @@ export const indexedFields: Record<indexNames, Array<string>> = {
   snippet: ['title', 'text'],
   archive: ['title', 'text'],
   template: ['title', 'text'],
+  shared: ['title', 'text'],
   actions: ['data:actionDisplayItems[]:value']
 }
 

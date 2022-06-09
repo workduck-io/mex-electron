@@ -44,7 +44,7 @@ import TagsRelated, { TagsRelatedTiny } from '../Tags/TagsRelated'
 import SearchFilters from './SearchFilters'
 import SearchView, { RenderFilterProps, RenderItemProps, RenderPreviewProps } from './SearchView'
 import { View } from './ViewSelector'
-import { GenericSearchResult } from '@types/search'
+import { GenericSearchResult } from '../../../types/search'
 import { convertContentToRawText } from '@utils/search/parseData'
 
 const Search = () => {
