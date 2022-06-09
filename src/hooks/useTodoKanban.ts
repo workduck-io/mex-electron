@@ -11,6 +11,7 @@ import { KanbanBoard, KanbanCard, KanbanColumn } from '../types/search'
 import { useNodes } from './useNodes'
 import { convertContentToRawText } from '../utils/search/parseData'
 import { mog } from '../utils/lib/helper'
+import { useSearchExtra } from './useSearch'
 
 export interface TodoKanbanCard extends KanbanCard {
   todo: TodoType
@@ -51,6 +52,7 @@ export const useTodoKanban = () => {
   const updateTodo = useTodoStore((s) => s.updateTodoOfNode)
   const { getPathFromNodeid } = useLinks()
   const { isInArchive } = useNodes()
+  const { getSearchExtra } = useSearchExtra()
 
   const changeStatus = (todo: TodoType, newStatus: TodoStatus) => {
     updateTodo(todo.nodeid, { ...todo, metadata: { ...todo.metadata, status: newStatus } })
@@ -110,6 +112,7 @@ export const useTodoKanban = () => {
 
   const getTodoBoard = () => {
     const nodetodos = useTodoStore.getState().todos
+    const sExtra = getSearchExtra()
     const todoBoard: TodoKanbanBoard = {
       columns: [
         {
@@ -136,8 +139,8 @@ export const useTodoKanban = () => {
       todos
         .filter((todo) => currentFilters.every((filter) => filter.filter(todo)))
         .filter((todo) => {
-          // TODO: Find a faster way to check for empty content
-          const text = convertContentToRawText(todo.content).trim()
+          // TODO: Find a faster way to check for empty content // May not need to convert content to raw text
+          const text = convertContentToRawText(todo.content, ' ', undefined, sExtra).trim()
           // mog('empty todo check', { text, nodeid, todo })
           if (text === '') {
             return false
