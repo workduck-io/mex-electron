@@ -4,7 +4,10 @@ import { SENTRY_DSN, IS_DEV } from '../../data/Defaults/dev_'
 export const initializeSentry = () => {
   Sentry.init({
     dsn: SENTRY_DSN,
-    environment: IS_DEV ? 'dev' : 'production'
+    environment: IS_DEV ? 'dev' : 'production',
+    logLevel: 1,
+    // attachStacktrace: true,
+    ignoreErrors: ['Warning', 'ResizeObserver']
   })
   console.log('Sentry Initialized!')
 }
