@@ -8,8 +8,8 @@ import { client } from '@workduck-io/dwindle'
 
 export const usePortals = () => {
   const setApps = usePortalStore((store) => store.setApps)
-  const linkedNotes = usePortalStore((store) => store.linkedNotes)
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
+  const updateConnectedPortals = usePortalStore((store) => store.updateConnectedPortals)
   const setConnectedPortals = usePortalStore((store) => store.setConnectedPortals)
 
   const getPortals = async () => {
@@ -19,6 +19,7 @@ export const usePortals = () => {
           [WORKSPACE_HEADER]: getWorkspaceId()
         }
       })
+
       if (res) {
         setApps(res.data)
       }
@@ -27,11 +28,10 @@ export const usePortals = () => {
     }
   }
 
-  const connectToPortal = async (actionGroupId: string, serviceId: string, noteId: string) => {
-    const linkedNote = linkedNotes[actionGroupId]
+  const connectToPortal = async (actionGroupId: string, serviceId: string, parentNodeId: string) => {
     const workspaceId = getWorkspaceId()
 
-    const reqBody = { serviceId, parentNodeId: linkedNote, serviceType: actionGroupId, mexId: workspaceId }
+    const reqBody = { serviceId, parentNodeId, serviceType: actionGroupId, mexId: workspaceId }
 
     try {
       const res = client.post(apiURLs.connectToLochService(), reqBody, {
@@ -41,6 +41,27 @@ export const usePortals = () => {
       })
     } catch (err) {
       mog('Unable to connect to portal')
+    }
+  }
+
+  const updateParentNote = async (actionGroupId: string, serviceId: string, parentNodeId: string) => {
+    const reqBody = {
+      serviceId,
+      serviceType: actionGroupId,
+      parentNodeId
+    }
+
+    try {
+      const res = await client.put(apiURLs.updateParentNoteOfService(), reqBody, {
+        headers: {
+          [WORKSPACE_HEADER]: getWorkspaceId()
+        }
+      })
+      if (res) {
+        updateConnectedPortals(actionGroupId, serviceId, parentNodeId)
+      }
+    } catch (err) {
+      mog('Unable to update parent note')
     }
   }
 
@@ -73,6 +94,7 @@ export const usePortals = () => {
     getPortals,
     initPortals,
     connectToPortal,
+    updateParentNote,
     getConnectedPortals
   }
 }

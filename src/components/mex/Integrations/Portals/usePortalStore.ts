@@ -15,6 +15,7 @@ type PortalStoreType = {
   connectedPortals: Array<any>
   setConnectedPortals: (connectedPortals: []) => void
   getIsPortalConnected: (actionGroupId: string) => any
+  updateConnectedPortals: (actionGroupId: string, serviceId: string, parentNodeId: string) => void
 }
 
 const usePortalStore = create<PortalStoreType>(
@@ -34,7 +35,18 @@ const usePortalStore = create<PortalStoreType>(
       getIsPortalConnected: (actionGroupId: string) => {
         const connectedPortals = get().connectedPortals
 
-        return connectedPortals.find((portal) => portal.actionGroupId === actionGroupId)
+        return connectedPortals.find((portal) => portal.serviceType === actionGroupId)
+      },
+      updateConnectedPortals: (actionGroupId, serviceId, parentNodeId) => {
+        const connectedPortals = get().connectedPortals
+        const newConnectedPortals = connectedPortals.map((portal) => {
+          if (portal.serviceType === actionGroupId) {
+            return { ...portal, serviceId, parentNodeId }
+          }
+          return portal
+        })
+
+        set({ connectedPortals: newConnectedPortals })
       }
     }),
     {

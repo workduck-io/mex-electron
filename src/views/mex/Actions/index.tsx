@@ -30,13 +30,13 @@ const ActionGroupsPage = () => {
   }
 
   const groups = useMemo(
-    () => sortActionGroups(actionGroups, (item) => connectedGroups[item.actionGroupId]),
-    [connectedGroups]
+    () => sortActionGroups(actionGroups, (item: any) => connectedGroups[item.actionGroupId]),
+    [actionGroups, connectedGroups]
   )
 
   const portals = useMemo(
-    () => sortActionGroups(apps, (item) => getIsPortalConnected(item.actionGroupId)),
-    [connectedPortals]
+    () => sortActionGroups(apps, (item: any) => !!getIsPortalConnected(item.actionGroupId)),
+    [apps, connectedPortals]
   )
 
   return (
@@ -51,7 +51,7 @@ const ActionGroupsPage = () => {
           <Section
             items={portals}
             title="Portals"
-            onClick={(item: ActionGroupType) => onClick(`${ROUTE_PATHS.integrations}/portals`, item.actionGroupId)}
+            onClick={(item: ActionGroupType) => onClick(`${ROUTE_PATHS.integrations}/portal`, item.actionGroupId)}
           />
         </IntegrationContainer>
       </FullHeight>

@@ -100,7 +100,7 @@ const Switch = () => {
           <Route path={ROUTE_PATHS.integrations} element={<ProtectedRoute component={ActionGroupsPage} />} />
           <Route path={`${ROUTE_PATHS.integrations}/:actionGroupId`} element={<ProtectedRoute component={Actions} />} />
           <Route
-            path={`${ROUTE_PATHS.integrations}/portals/:actionGroupId`}
+            path={`${ROUTE_PATHS.integrations}/portal/:actionGroupId`}
             element={<ProtectedRoute component={Portals} />}
           />
           <Route path={ROUTE_PATHS.archive} element={<ProtectedRoute component={Archive} />} />

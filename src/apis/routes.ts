@@ -67,6 +67,7 @@ export const apiURLs = {
   getLochServices: () => `${MEX_LOCH_BASE_URL}/loch/connect/all`,
   getConnectedLochServices: () => `${MEX_LOCH_BASE_URL}/loch/connect`,
   connectToLochService: () => `${MEX_LOCH_BASE_URL}/loch/connect`,
+  updateParentNoteOfService: () => `${MEX_LOCH_BASE_URL}/loch/connect`,
 
   // Image CDN
   createImageURL: `${WORKDUCK_API_BASE}/testing/upload/s3`,

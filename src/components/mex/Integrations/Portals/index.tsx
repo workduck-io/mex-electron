@@ -9,12 +9,10 @@ import { LoadingButton } from '../../Buttons/LoadingButton'
 import { GlobalSectionContainer, GlobalSectionHeader } from '../GlobalSection/styled'
 import ServiceHeader from '../ServiceHeader'
 import ServiceInfo from '../ServiceInfo'
-import { client } from '@workduck-io/dwindle'
 import { useAuthStore } from '@services/auth/useAuth'
 import toast from 'react-hot-toast'
 import usePortalStore from './usePortalStore'
 import { QuickLink } from '@components/mex/NodeSelect/NodeSelect'
-import { useQuickLinks } from '@hooks/useQuickLinks'
 import { useLinks } from '@hooks/useLinks'
 import { usePortals } from '@hooks/usePortals'
 
@@ -31,7 +29,6 @@ const Portals = () => {
   const { connectToPortal } = usePortals()
 
   const apps = usePortalStore((store) => store.apps)
-  const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const getIsPortalConnected = usePortalStore((store) => store.getIsPortalConnected)
 
   const actionGroup = apps[params.actionGroupId]
@@ -50,12 +47,8 @@ const Portals = () => {
   }
 
   const onSaveDetails = async () => {
-    if (isEdit) {
-      setIsEdit(true)
-      return
-    }
-
     const query = new URLSearchParams(location.search)
+
     if (!parentNode) {
       toast('Select a node first')
       return
@@ -91,7 +84,7 @@ const Portals = () => {
       <GlobalSectionContainer>
         <div>Choose a Parent Note</div>
         <GlobalSectionHeader>
-          <CreateInput value={parentNoteName} disabled={!isEdit} onChange={onNodeChange} />
+          <CreateInput value={parentNoteName} onChange={onNodeChange} />
         </GlobalSectionHeader>
         <LoadingButton dots={2} loading={isLoading} buttonProps={{ onClick: onSaveDetails, transparent: true }}>
           <Icon
