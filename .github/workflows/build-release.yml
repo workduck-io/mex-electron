@@ -1,153 +1,52 @@
-name: Build and Release on x86_64
+name: "Create a GitHub Release, Build and Store the Output Artifacts"
 on:
-  push:
-    branches:
-      - mukul-wd-619-task-add-cicd-to-mex-electron
-  # release:
-  #   types:
-  #     - published
+  release:
+    types: [published]
 
 jobs:
-  create_github_release:
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-
-  # publish_on_linux:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-node@master
-  #       with:
-  #         node-version: 14
-  #     - name: install dependencies
-  #       run: npm install
-  #     - name: publish
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       run: npm run publish
-
   publish_on_mac_x64:
-    runs-on: macos-latest
-    needs: create_github_release
+    runs-on: [self-hosted, mex]
     env:
-      DEBUG: "*"
       GITHUB_TOKEN: ${{ github.token }}
       YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
-      CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
-      CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       APPLE_ID: ${{ secrets.APPLE_ID }}
       APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@master
-        with:
-          node-version: "16.x"
-      - name: Install Yarn
-        run: npm install -g yarn
-      - name: Install dependencies
+      - name: Install Dependencies
         run: yarn
-      - name: Upgrade Internal Dependencies
-        run: yarn upgrade @workduck-io/dwindle active-win-universal
-      - name: Add certificates to keychain
-        run: chmod +x build/osx-add-cert.sh && build/osx-add-cert.sh # Do not run on local machine
-      - name: Rebuild Native Dependencies for x64
-        run: ./node_modules/.bin/electron-rebuild --force --arch=x64
-      - name: Build App
-        run: yarn package --arch=x64
-      - name: Codesign Mex.app Bundle
-        run: node build/darwin-sign.js x64
-      - name: Notarize Mex.app Bundle
-        run: node build/darwin-notarize.js x64
-      - name: Build DMG from Mex.app Bundle
-        run: node build/darwin-build-dmg.js x64
-      - name: Create Zip from Mex.app Bundle
-        run: node build/darwin-build-zip.js x64
+      - name: Build for x64
+        run: yarn publish:x64
+        uses: martinbeentjes/npm-get-version-action@main
       - name: Upload Release Asset
         id: upload-release-asset
         uses: softprops/action-gh-release@v1
         with:
+          generate_release_notes: true
           files: |
             out/make/*.dmg
             out/make/*.zip
 
   publish_on_mac_arm64:
-    runs-on: macos-latest
-    needs: create_github_release
+    runs-on: [self-hosted, mex]
     env:
-      DEBUG: "*"
       GITHUB_TOKEN: ${{ github.token }}
       YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
-      CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
-      CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       APPLE_ID: ${{ secrets.APPLE_ID }}
       APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@master
-        with:
-          node-version: "16.x"
-      - name: Install Yarn
-        run: npm install -g yarn
-      - name: Install dependencies
+      - name: Install Dependencies
         run: yarn
-      - name: Upgrade Internal Dependencies
-        run: yarn upgrade @workduck-io/dwindle active-win-universal
-      - name: Add certificates to keychain
-        run: chmod +x build/osx-add-cert.sh && build/osx-add-cert.sh # Do not run on local
-      - name: Rebuild Native Dependencies for arm64
-        run: ./node_modules/.bin/electron-rebuild --force --arch=arm64
-      - name: Build App
-        run: yarn package --arch=arm64
-      - name: Codesign Mex.app Bundle
-        run: node build/darwin-sign.js arm64
-      - name: Notarize Mex.app Bundle
-        run: node build/darwin-notarize.js arm64
-      - name: Build DMG from Mex.app Bundle
-        run: node build/darwin-build-dmg.js arm64
-      - name: Create Zip from Mex.app Bundle
-        run: node build/darwin-build-zip.js arm64
+      - name: Build for Arm64
+        run: yarn publish:arm64
       - name: Upload Release Asset
         id: upload-release-asset
         uses: softprops/action-gh-release@v1
         with:
+          generate_release_notes: true
           files: |
             out/make/*.dmg
             out/make/*.zip
-  publish_on_win:
-    runs-on: windows-latest
-    needs: create_github_release
-    env:
-      DEBUG: "*"
-      GITHUB_TOKEN: ${{ github.token }}
-      YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@master
-        with:
-          node-version: "16.x"
-      - name: Install Yarn
-        run: npm install -g yarn
-      - name: Install dependencies
-        run: yarn
-      - name: Upgrade Internal Dependencies
-        run: yarn upgrade @workduck-io/dwindle active-win-universal
-      - name: Rebuild Native Dependencies for win32
-        run: ./node_modules/.bin/electron-rebuild --force
-      - name: Build App
-        run: yarn make
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            out/make/*.exe
