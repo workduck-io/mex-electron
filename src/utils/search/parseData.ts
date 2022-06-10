@@ -18,7 +18,7 @@ import { useContentStore } from '../../store/useContentStore'
 import { FileData } from '../../types/data'
 import { NodeEditorContent } from '../../types/Types'
 import { getBlocks } from '../helpers'
-import { getSlug } from '../lib/strings'
+import { camelCase, getSlug } from '../lib/strings'
 import { GenericSearchData, SearchRepExtra } from './../../types/search'
 
 type ExcludeFromTextType = {
@@ -131,7 +131,7 @@ export const parseNode = (nodeId: string, contents: any[], title = '', extra?: S
       }
     }
 
-    // if (block.type === ELEMENT_ACTION_BLOCK) blockText = block.actionContext?.actionId
+    if (block.type === ELEMENT_ACTION_BLOCK) blockText = camelCase(block.actionContext?.actionGroupId)
 
     if (blockText.trim().length !== 0) {
       const temp: GenericSearchData = { id: nodeId, text: blockText, blockId: block.id, title, data: block }
@@ -215,7 +215,8 @@ export const convertDataToIndexable = (data: FileData) => {
             v.content.forEach((block) => {
               let blockText = convertContentToRawText(block.children, ' ')
 
-              if (block.type === ELEMENT_ACTION_BLOCK && block?.actionContext) blockText = block.actionContext?.actionId
+              if (block.type === ELEMENT_ACTION_BLOCK && block?.actionContext)
+                blockText = camelCase(block.actionContext?.actionGroupId)
 
               // If the type is init, we index the initial empty block
               if (blockText.length !== 0 || v.type === 'init') {
