@@ -2,6 +2,9 @@ name: "Create a GitHub Release, Build and Store the Output Artifacts"
 on:
   release:
     types: [published]
+  push:
+    branches:
+      - mukul-wd-1339-feature-automated-releases-for-mex
 
 jobs:
   publish_on_mac_x64:
