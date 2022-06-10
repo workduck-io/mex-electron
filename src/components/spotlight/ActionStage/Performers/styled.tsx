@@ -16,7 +16,7 @@ export const Dropdown = styled.div`
 
 export const SelectBar = styled(StyledSelect)`
   flex: 1;
-  max-width: ${({ width }) => width || '30%'};
+  max-width: max(${({ width }) => width || '30%'}, 14rem);
   font-size: 0.9rem;
   margin: 0 0.25rem 0 0;
   color: ${({ theme }) => theme.colors.text.default};

@@ -131,7 +131,7 @@ export const parseNode = (nodeId: string, contents: any[], title = '', extra?: S
       }
     }
 
-    if (block.type === ELEMENT_ACTION_BLOCK) blockText = block.actionContext?.actionId
+    // if (block.type === ELEMENT_ACTION_BLOCK) blockText = block.actionContext?.actionId
 
     if (blockText.trim().length !== 0) {
       const temp: GenericSearchData = { id: nodeId, text: blockText, blockId: block.id, title, data: block }

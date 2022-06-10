@@ -8,6 +8,7 @@ import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
 import ListSelector from '../ActionMenu/ListSelector'
 import { StyledOption, SelectBar } from './styled'
 import VirtualList from '../ActionMenu/VirtualList'
+import { useReadOnly } from 'slate-react'
 
 type SelectedProps = {
   value?: any
@@ -114,6 +115,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     isMulti
   } = props
 
+  const readOnly = useReadOnly()
   const setIsMenuOpen = useActionStore((store) => store.setIsMenuOpen)
   const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
     data: [],
@@ -211,6 +213,8 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     )
   }
 
+  const isDisabled = readOnly || props.disabled
+
   return (
     <SelectBar
       openMenuOnClick
@@ -238,7 +242,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
       ref={ref}
       error={props.error}
       isMulti={isMulti}
-      isDisabled={props.disabled}
+      isDisabled={isDisabled}
       onChange={handleChange}
       value={inputValue.value}
       options={inputValue.data}
