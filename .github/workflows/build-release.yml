@@ -2,9 +2,6 @@ name: "Create a GitHub Release, Build and Store the Output Artifacts"
 on:
   release:
     types: [published]
-  push:
-    branches:
-      - mukul-wd-1339-feature-automated-releases-for-mex
 
 jobs:
   publish_on_mac_x64:
@@ -21,15 +18,12 @@ jobs:
         run: yarn
       - name: Build for x64
         run: yarn publish:x64
-      - name: get-npm-version
-        id: package-version
         uses: martinbeentjes/npm-get-version-action@main
       - name: Upload Release Asset
         id: upload-release-asset
         uses: softprops/action-gh-release@v1
         with:
           generate_release_notes: true
-          tag_name: v${{ steps.package-version.outputs.current-version }}
           files: |
             out/make/*.dmg
             out/make/*.zip
@@ -48,15 +42,11 @@ jobs:
         run: yarn
       - name: Build for Arm64
         run: yarn publish:arm64
-      - name: get-npm-version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@main
       - name: Upload Release Asset
         id: upload-release-asset
         uses: softprops/action-gh-release@v1
         with:
           generate_release_notes: true
-          tag_name: v${{ steps.package-version.outputs.current-version }}
           files: |
             out/make/*.dmg
             out/make/*.zip
