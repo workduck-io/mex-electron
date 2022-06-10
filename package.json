@@ -1,7 +1,7 @@
 {
   "name": "mex-alpha",
   "productName": "Mex Alpha",
-  "version": "0.12.0-alpha.0",
+  "version": "0.12.0-alpha.1",
   "description": "Mex it to flex it",
   "main": ".webpack/main",
   "scripts": {
@@ -69,7 +69,7 @@
     "@vercel/webpack-asset-relocator-loader": "1.6.0",
     "cross-zip": "^4.0.0",
     "css-loader": "^6.0.0",
-    "electron": "17.1.0",
+    "electron": "^17.1.1",
     "electron-devtools-installer": "^3.2.0",
     "eslint": "^7.6.0",
     "eslint-config-standard": "^16.0.3",
