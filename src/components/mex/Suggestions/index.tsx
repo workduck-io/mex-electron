@@ -25,6 +25,7 @@ const SuggestionInfoBar = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const actionsVisible = useSuggestionStore((store) => store.actionVisible)
   const toggleActionInSuggestions = useSuggestionStore((store) => store.toggleActionInSuggestion)
+  const isQABlock = useSuggestionStore((store) => store.headingQASearch)
 
   // * Custom Hooks
   const editor = usePlateEditorRef()
@@ -106,13 +107,15 @@ const SuggestionInfoBar = () => {
           onClick={toggleSuggestedNodes}
         />
         <label htmlFor="smart-suggestions">Smart Suggestions</label>
-        <IconButton
-          size={24}
-          icon={appsLine}
-          highlight={actionsVisible}
-          title={actionsVisible ? 'Hide Actions' : 'Show Actions'}
-          onClick={toggleActionInSuggestions}
-        />
+        {!isQABlock && (
+          <IconButton
+            size={24}
+            icon={appsLine}
+            highlight={actionsVisible}
+            title={actionsVisible ? 'Hide Actions' : 'Show Actions'}
+            onClick={toggleActionInSuggestions}
+          />
+        )}
       </InfobarTools>
       <SmartSuggestions
         suggestions={suggestions}

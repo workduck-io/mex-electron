@@ -135,9 +135,7 @@ const useActions = () => {
         const authTypeIds = Object.keys(groupsAuth)
 
         let connected = false
-        mog(`${actionGroup?.actionGroupId} 'authTYPEIDDS'`, { authTypeIds })
         for (const authTypeId of authTypeIds) {
-          mog('Auth Type Id', { auth: actionGroup?.authConfig?.authTypeId, authTypeId })
           if (actionGroup?.authConfig?.authTypeId === authTypeId) {
             connected = true
 

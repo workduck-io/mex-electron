@@ -235,33 +235,23 @@ export const convertDataToIndexable = (data: FileData) => {
           }
         })
         break
+
       case indexNames.snippet:
+      case indexNames.template: {
+        const isTemplate = idxName === indexNames.template
         data.snippets
-          .filter((snip) => !snip.isTemplate)
+          .filter((snip) => (isTemplate ? snip.isTemplate : !snip.isTemplate))
           .map((snip) => {
             const title = titleNodeMap.get(snip.id)
             const temp: GenericSearchData = {
               ...convertEntryToRawText(snip.id, snip.content, title),
-              tag: ['snippet']
+              tag: [snip.isTemplate ? 'template' : 'snippet']
             }
             nodeBlockMap[snip.id] = [snip.id] // Redundant right now, not doing block level indexing for snippets
             idxResult.push(temp)
           })
         break
-
-      case indexNames.template:
-        data.snippets
-          .filter((snip) => snip.isTemplate)
-          .map((template) => {
-            const title = titleNodeMap.get(template.id)
-            const temp: GenericSearchData = {
-              ...convertEntryToRawText(template.id, template.content, title),
-              tag: ['template']
-            }
-            nodeBlockMap[template.id] = [template.id] // Redundant right now, not doing block level indexing for snippets
-            idxResult.push(temp)
-          })
-        break
+      }
       default:
         throw new Error('No corresponding index name found')
     }

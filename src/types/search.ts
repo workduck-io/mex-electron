@@ -8,7 +8,6 @@ export interface GenericSearchData {
   title?: string
   text: string
   data?: any
-  actionContext?: any
   tag?: string[]
 }
 
