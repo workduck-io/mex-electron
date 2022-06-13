@@ -9,7 +9,6 @@ import { LoadingButton } from '../../Buttons/LoadingButton'
 import { GlobalSectionContainer, GlobalSectionHeader } from '../GlobalSection/styled'
 import ServiceHeader from '../ServiceHeader'
 import ServiceInfo from '../ServiceInfo'
-import { useAuthStore } from '@services/auth/useAuth'
 import toast from 'react-hot-toast'
 import usePortalStore from './usePortalStore'
 import { QuickLink } from '@components/mex/NodeSelect/NodeSelect'
@@ -26,7 +25,7 @@ const Portals = () => {
   const [parentNode, setParentNode] = React.useState(undefined)
 
   const { getPathFromNodeid } = useLinks()
-  const { connectToPortal } = usePortals()
+  const { connectToPortal, updateParentNote } = usePortals()
 
   const apps = usePortalStore((store) => store.apps)
   const getIsPortalConnected = usePortalStore((store) => store.getIsPortalConnected)
@@ -48,8 +47,12 @@ const Portals = () => {
 
   const onSaveDetails = async () => {
     const query = new URLSearchParams(location.search)
+    if (!isEdit) {
+      setIsEdit(true)
+      return
+    }
 
-    if (!parentNode) {
+    if (!parentNode && !isConnected) {
       toast('Select a node first')
       return
     }
@@ -58,7 +61,13 @@ const Portals = () => {
 
     try {
       setIsLoading(true)
-      await connectToPortal(params.actionGroupId, serviceId, parentNode?.nodeid)
+      const isUpdate = isConnected && isConnected.parentNodeId !== parentNode?.nodeid
+
+      if (isUpdate) {
+        updateParentNote(params.actionGroupId, isConnected.serviceId, parentNode.nodeid)
+      } else {
+        connectToPortal(params.actionGroupId, serviceId, parentNode?.nodeid)
+      }
     } catch (err) {
       mog('Error connecting to portal', { err })
     } finally {
@@ -84,7 +93,7 @@ const Portals = () => {
       <GlobalSectionContainer>
         <div>Choose a Parent Note</div>
         <GlobalSectionHeader>
-          <CreateInput value={parentNoteName} onChange={onNodeChange} />
+          <CreateInput value={parentNoteName} disabled={!isEdit} onChange={onNodeChange} />
         </GlobalSectionHeader>
         <LoadingButton dots={2} loading={isLoading} buttonProps={{ onClick: onSaveDetails, transparent: true }}>
           <Icon

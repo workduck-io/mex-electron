@@ -9,7 +9,7 @@ const CreateInput: React.FC<CreateInputType> = ({ onChange, value, disabled }) =
   return (
     <StyledSpotlightInputWrapper>
       <NodeSelect
-        autoFocus
+        autoFocus={!disabled}
         disabled={disabled}
         defaultValue={value}
         id="wd-spotlight-editor-search"

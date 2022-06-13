@@ -119,10 +119,6 @@ const useActions = () => {
     const itemsToSort = Object.values(actionGroups).map((item) => ({ ...item, connected: getIsConnected(item) }))
 
     const res = orderBy(itemsToSort, ['connected', 'actionGroupId'], ['desc', 'asc'])
-    const res2 = orderBy(itemsToSort, ['connected', 'actionGroupId'], ['asc', 'desc'])
-
-    mog('After sorting', { res, res2 })
-
     return res
   }
 
