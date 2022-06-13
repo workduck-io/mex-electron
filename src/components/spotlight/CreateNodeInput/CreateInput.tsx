@@ -3,13 +3,13 @@ import NodeSelect from '../../../components/mex/NodeSelect/NodeSelect'
 import React from 'react'
 import { StyledSpotlightInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
 
-export type CreateInputType = { value?: string; onChange; disabled?: boolean }
+export type CreateInputType = { value?: string; onChange; disabled?: boolean; autoFocus?: boolean }
 
-const CreateInput: React.FC<CreateInputType> = ({ onChange, value, disabled }) => {
+const CreateInput: React.FC<CreateInputType> = ({ autoFocus, onChange, value, disabled }) => {
   return (
     <StyledSpotlightInputWrapper>
       <NodeSelect
-        autoFocus={!disabled}
+        autoFocus={autoFocus}
         disabled={disabled}
         defaultValue={value}
         id="wd-spotlight-editor-search"

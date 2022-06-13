@@ -1,5 +1,5 @@
 import { apiURLs } from '@apis/routes'
-import usePortalStore from '@components/mex/Integrations/Portals/usePortalStore'
+import usePortalStore, { PortalType } from '@components/mex/Integrations/Portals/usePortalStore'
 import { ActionGroupType } from '@components/spotlight/Actions/useActionStore'
 import { WORKSPACE_HEADER } from '@data/Defaults/defaults'
 import { useAuthStore } from '@services/auth/useAuth'
@@ -9,6 +9,7 @@ import { client } from '@workduck-io/dwindle'
 export const usePortals = () => {
   const setApps = usePortalStore((store) => store.setApps)
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
+  const connectPortal = usePortalStore((store) => store.connectPortal)
   const updateConnectedPortals = usePortalStore((store) => store.updateConnectedPortals)
   const setConnectedPortals = usePortalStore((store) => store.setConnectedPortals)
 
@@ -31,14 +32,17 @@ export const usePortals = () => {
   const connectToPortal = async (actionGroupId: string, serviceId: string, parentNodeId: string) => {
     const workspaceId = getWorkspaceId()
 
-    const reqBody = { serviceId, parentNodeId, serviceType: actionGroupId, mexId: workspaceId }
+    const portal: PortalType = { serviceId, parentNodeId, serviceType: actionGroupId, mexId: workspaceId }
 
     try {
-      const res = client.post(apiURLs.connectToLochService(), reqBody, {
+      const res = client.post(apiURLs.connectToLochService(), portal, {
         headers: {
           [WORKSPACE_HEADER]: getWorkspaceId()
         }
       })
+      if (res) {
+        connectPortal(portal)
+      }
     } catch (err) {
       mog('Unable to connect to portal')
     }

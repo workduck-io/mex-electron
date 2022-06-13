@@ -4,13 +4,23 @@ import { ActionGroupType } from '@components/spotlight/Actions/useActionStore'
 
 const PORTAL_STORE_KEY = 'apps-portal-store'
 
+export type PortalType = {
+  serviceId: string
+  serviceType: string
+  mexId?: string
+  nodeId?: string
+  parentNodeId?: string
+  sessionStartTime?: number
+}
+
 type PortalStoreType = {
   apps: Record<string, ActionGroupType>
   setApps: (apps: Record<string, ActionGroupType>) => void
 
-  connectedPortals: Array<any>
+  connectedPortals: Array<PortalType>
+  connectPortal: (portal?: PortalType) => void
   setConnectedPortals: (connectedPortals: []) => void
-  getIsPortalConnected: (actionGroupId: string) => any
+  getIsPortalConnected: (actionGroupId: string) => PortalType
   updateConnectedPortals: (actionGroupId: string, serviceId: string, parentNodeId: string) => void
 }
 
@@ -23,6 +33,11 @@ const usePortalStore = create<PortalStoreType>(
 
         connectedPortals: [],
         setConnectedPortals: (connectedPortals) => set({ connectedPortals }),
+        connectPortal: (portal) => {
+          const connectedPortals = get().connectedPortals
+          const newConnectedPortals = [...connectedPortals, portal]
+          set({ connectedPortals: newConnectedPortals })
+        },
         getIsPortalConnected: (actionGroupId: string) => {
           const connectedPortals = get().connectedPortals
 
