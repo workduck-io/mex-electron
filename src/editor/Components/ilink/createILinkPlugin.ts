@@ -36,6 +36,7 @@ export const withILink: WithOverride<any, PlatePlugin> = (editor, { type, option
       if (node.type && node.type === ELEMENT_ILINK && node.value) {
         deleteFragment(editor, { at: prev[1], unit: 'block' })
         const val = getPathFromNodeIdHookless(node.value)
+        mog('value in editor is', { node, val })
 
         // * On delete, cursor location
         const start = editor.selection

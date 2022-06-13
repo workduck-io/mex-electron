@@ -16,6 +16,7 @@ import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { usePlateEditorRef } from '@udecode/plate'
 import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
 import { DEFAULT_LIST_ITEM_ICON } from '../ActionMenu/ListSelector'
+import { useReadOnly } from 'slate-react'
 
 const JoinService = styled.span<{ left?: boolean }>`
   position: absolute;
@@ -104,9 +105,10 @@ export const RightActionSection: React.FC<ActionsRightSectionProps> = ({ actionG
     goBack()
   }
 
+  const readOnly = useReadOnly()
   const config = getConfig(actionGroupId, actionId)
 
-  if (config?.postAction?.menus && !hideMenu && isActiveItem && !isView && !element?.actionContext?.view) {
+  if (config?.postAction?.menus && !readOnly && !hideMenu && isActiveItem && !isView && !element?.actionContext?.view) {
     return <ActionMenu title="Options" />
   }
 

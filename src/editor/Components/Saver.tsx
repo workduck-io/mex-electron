@@ -65,6 +65,7 @@ export const useDataSaverFromContent = () => {
       if (options?.isShared !== true) {
         updateNodeTodos(nodeId, getTodosFromContent(editorValue))
         await updateDocument('node', nodeId, editorValue)
+        await updateDocument('actions', nodeId, editorValue)
       }
 
       // saveData()

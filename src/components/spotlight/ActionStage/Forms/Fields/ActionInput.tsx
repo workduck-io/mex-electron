@@ -2,6 +2,7 @@ import React, { forwardRef } from 'react'
 import { FormField, TextFieldHeight } from '@workduck-io/action-request-helper'
 import styled, { css } from 'styled-components'
 import { Input, TextAreaBlock } from '../../../../../style/Form'
+import { useReadOnly } from 'slate-react'
 
 export const ActionInputContainer = styled(Input)`
   max-width: 12rem;
@@ -27,6 +28,15 @@ const StaticTextArea = styled(TextAreaBlock)`
   padding-left: 0.7rem;
   font-size: 0.9rem;
 
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      :hover {
+        border: none;
+      }
+      border: none;
+    `}
+
   ::placeholder {
     color: ${(props) => props.theme.colors.gray[4]};
     opacity: 0.8;
@@ -45,12 +55,15 @@ export type ActionInputProps = {
 }
 
 const ActionInput = forwardRef<any, ActionInputProps>((props, ref) => {
+  const readOnly = useReadOnly()
+  const isDisabled = readOnly || props.disabled
+
   return (
     <StaticTextArea
       onChange={props.onChange}
       value={props.value}
       ref={ref}
-      disabled={props.disabled}
+      disabled={isDisabled}
       error={props.error}
       draggable={false}
       placeholder={props.element.options.placeholder}

@@ -11,6 +11,9 @@ type SuggestionStoreType = {
   pinnedSuggestions: SuggestionType[]
   pinSuggestion: (pinnedSuggestions: SuggestionType) => void
 
+  actionVisible: boolean
+  toggleActionInSuggestion: () => void
+
   headingQASearch?: boolean
   setHeadingQASearch: (headingQASearch: boolean) => void
 
@@ -26,6 +29,9 @@ const useSuggestionStore = create<SuggestionStoreType>((set, get) => ({
 
     set({ suggestions: suggestions.filter((s) => pinnedSuggestions.filter((p) => p.id === s.id).length === 0) })
   },
+
+  actionVisible: true,
+  toggleActionInSuggestion: () => set({ actionVisible: !get().actionVisible }),
 
   pinnedSuggestions: [],
   pinSuggestion: (suggestionToPin: SuggestionType) => {

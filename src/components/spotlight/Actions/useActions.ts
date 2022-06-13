@@ -58,9 +58,7 @@ const useActions = () => {
     const groups = await fetchActionGroups()
 
     try {
-      for await (const actionGroupId of Object.keys(groups)) {
-        await getActionsFromGroup(actionGroupId)
-      }
+      await Promise.all(Object.keys(groups).map(async (actionGroupId) => await getActionsFromGroup(actionGroupId)))
     } catch (err) {
       mog('Failed to fetch actions of group', { err })
     }
@@ -137,7 +135,6 @@ const useActions = () => {
         const authTypeIds = Object.keys(groupsAuth)
 
         let connected = false
-
         for (const authTypeId of authTypeIds) {
           if (actionGroup?.authConfig?.authTypeId === authTypeId) {
             connected = true

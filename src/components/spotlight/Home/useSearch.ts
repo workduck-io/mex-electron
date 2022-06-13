@@ -63,6 +63,7 @@ export const CREATE_NEW_TASK_ITEM: () => ListItemType = () => ({
     newTask: true
   }
 })
+
 export const useSearch = () => {
   const { isLocalNode } = useLoad()
   const { search } = useSpotlightContext()
@@ -109,7 +110,7 @@ export const useSearch = () => {
         break
 
       case CategoryType.search:
-        const nodeItems = await queryIndex('node', search.value)
+        const nodeItems = await queryIndex(['node', 'actions'], search.value)
         const snippetItems = await queryIndex(['snippet', 'template'], search.value)
 
         const actionItems = getSearchResults(search.value, actions, { keySelector: (obj) => obj.title })

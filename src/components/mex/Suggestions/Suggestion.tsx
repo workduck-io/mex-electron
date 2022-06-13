@@ -65,6 +65,7 @@ const Suggestion: React.FC<SuggestionProps> = ({ suggestion, onPin, onClick, onE
 
         <SuggestionPreviewWrapper onClick={handleClickContent}>
           <EditorPreviewRenderer
+            noMouseEvents
             blockId={showContent && isNote ? suggestion.blockId : undefined}
             content={nodeContent}
             editorId={editorId}

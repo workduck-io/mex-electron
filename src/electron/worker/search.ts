@@ -7,18 +7,19 @@ import {
   getNodeAndBlockIdFromCompositeKey,
   indexedFields,
   SEARCH_RESULTS_LIMIT,
-  TITLE_RANK_BUMP
+  TITLE_RANK_BUMP,
+  CreateSearchIndexData
 } from '../../utils/search/flexsearch'
 import { mog } from '../../utils/lib/helper'
-import { SearchWorker, idxKey, GenericSearchResult, SearchIndex, SearchRepExtra } from '../../types/search'
 import { setSearchIndexData } from './../utils/indexData'
-import { parseNode } from '../../utils/search/parseData'
+import { SearchIndex, SearchWorker, idxKey, SearchRepExtra, GenericSearchResult } from '../../types/search'
+import { parseNode } from '@utils/search/parseData'
 
 let globalSearchIndex: SearchIndex = null
 let nodeBlockMapping: { [key: string]: string[] } = null
 
 const searchWorker: SearchWorker = {
-  init: (fileData: FileData, indexData: Record<idxKey, any>) => {
+  init: (fileData: FileData, indexData: CreateSearchIndexData) => {
     const { idx, nbMap } = createSearchIndex(fileData, indexData)
 
     globalSearchIndex = idx
@@ -41,7 +42,6 @@ const searchWorker: SearchWorker = {
 
       parsedBlocks.forEach((block) => {
         block.blockId = createIndexCompositeKey(nodeId, block.blockId)
-        mog('NEW ADD SNIPPET', { tags })
         globalSearchIndex[key].add({ ...block, tag: [...tags, nodeId] })
       })
     }
@@ -56,8 +56,6 @@ const searchWorker: SearchWorker = {
     extra?: SearchRepExtra
   ) => {
     if (globalSearchIndex[key]) {
-      mog('UPDATE DOC', { nodeId, key, contents, tags, extra })
-
       const parsedBlocks = parseNode(nodeId, contents, title, extra)
 
       const existingNodeBlocks = nodeBlockMapping[nodeId] ?? []
@@ -74,6 +72,7 @@ const searchWorker: SearchWorker = {
 
       parsedBlocks.forEach((block) => {
         block.blockId = createIndexCompositeKey(nodeId, block.blockId)
+        mog(`${block.title} updating block`, { block })
         globalSearchIndex[key].update({ ...block, tag: [...tags, nodeId] })
       })
     }
@@ -81,7 +80,6 @@ const searchWorker: SearchWorker = {
 
   removeDoc: (key: idxKey, id: string) => {
     if (globalSearchIndex[key]) {
-      mog('REMOVING id', { key, id })
       const blockIds = nodeBlockMapping[id]
 
       delete nodeBlockMapping[id]
@@ -105,7 +103,6 @@ const searchWorker: SearchWorker = {
         })
       }
 
-      mog('response is', { response }, { pretty: true, collapsed: false })
       const results = new Array<any>()
       response.forEach((entry) => {
         const matchField = entry.field
@@ -192,30 +189,43 @@ const searchWorker: SearchWorker = {
   searchIndexWithRanking: (key: idxKey | idxKey[], query: string, tags?: Array<string>) => {
     try {
       const words = query.split(' ')
-      const searchItems = []
+      const searchItems: Record<string, Array<any>> = {}
 
-      indexedFields.forEach((field) => {
-        words.forEach((w) => {
-          const t = {
-            field,
-            query: w
-          }
-          searchItems.push(t)
+      if (typeof key === 'string') {
+        mog('key is', { key })
+        indexedFields[key].forEach((field) => {
+          words.forEach((w) => {
+            const t = {
+              field,
+              query: w
+            }
+            if (searchItems[key]) searchItems[key].push(t)
+            else searchItems[key] = [t]
+          })
         })
-      })
-
-      const searchQuery = {
-        index: searchItems,
-        enrich: true
+      } else {
+        key.forEach((k) => {
+          indexedFields[k].forEach((field) => {
+            words.forEach((w) => {
+              const t = {
+                field,
+                query: w
+              }
+              if (searchItems[k]) searchItems[k].push(t)
+              else searchItems[k] = [t]
+            })
+          })
+        })
       }
 
       let response: any[] = []
 
       if (typeof key === 'string') {
-        response = globalSearchIndex[key].search(searchQuery)
+        response = globalSearchIndex[key].search({ index: searchItems[key], enrich: true })
+        mog('response', { response, key, index: searchItems[key] })
       } else {
         key.forEach((k) => {
-          response = [...response, ...globalSearchIndex[k].search(searchQuery)]
+          response = [...response, ...globalSearchIndex[k].search({ index: searchItems[k], enrich: true })]
         })
       }
 
@@ -228,6 +238,7 @@ const searchWorker: SearchWorker = {
           const { nodeId, blockId } = getNodeAndBlockIdFromCompositeKey(i.id)
           if (rankingMap[nodeId]) rankingMap[nodeId]++
           else rankingMap[nodeId] = 1
+
           results.push({ id: nodeId, data: i.doc?.data, blockId, text: i.doc?.text?.slice(0, 100), matchField })
         })
       })

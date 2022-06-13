@@ -8,8 +8,7 @@ import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
 import ListSelector from '../ActionMenu/ListSelector'
 import { StyledOption, SelectBar } from './styled'
 import VirtualList from '../ActionMenu/VirtualList'
-import { mog } from '@utils/lib/helper'
-import { findNodePath, getPlateEditorRef, setNodes } from '@udecode/plate'
+import { useReadOnly } from 'slate-react'
 
 type SelectedProps = {
   value?: any
@@ -116,6 +115,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     isMulti
   } = props
 
+  const readOnly = useReadOnly()
   const setIsMenuOpen = useActionStore((store) => store.setIsMenuOpen)
   const [inputValue, setInputValue] = useState<{ data: Array<any>; value?: any }>({
     data: [],
@@ -131,7 +131,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
   const isPerformingAction = useActionStore((store) => store.isLoading)
   const element = useActionStore((store) => store.element)
 
-  const { performer, isPerformer } = useActionPerformer()
+  const { performer, isPerformer, insertInEditor } = useActionPerformer()
   const prevSelection = getPreviousActionValue(actionId)?.selection
 
   const resToDisplay = (result) => {
@@ -157,7 +157,6 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     const isReady = isPerformer(actionId, { isMenuAction: isList })
 
     if (isReady) {
-      mog('defaultValue', { value, defaultValue })
       onReadyPerform(actionGroupId, actionId, defaultValue || value)
     }
   }, [actionId, actionGroupId, prevSelection])
@@ -172,20 +171,13 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
   }
 
   const saveSelectionInNote = (selection: SelectionNode) => {
-    const editor = getPlateEditorRef()
+    const actionContext = element?.actionContext ?? {}
+    const selections = actionContext?.selections ?? {}
 
-    if (editor) {
-      const path = findNodePath(editor, element)
-      const actionContext = element?.actionContext ?? {}
-      const selections = actionContext?.selections ?? {}
-
-      if (element?.actionContext) {
-        setNodes(
-          editor,
-          { actionContext: { ...actionContext, selections: { ...selections, [actionId]: selection } } },
-          { at: path }
-        )
-      }
+    if (actionContext) {
+      insertInEditor(element, {
+        actionContext: { ...actionContext, selections: { ...selections, [actionId]: selection } }
+      })
     }
   }
 
@@ -221,6 +213,8 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
     )
   }
 
+  const isDisabled = readOnly || props.disabled
+
   return (
     <SelectBar
       openMenuOnClick
@@ -248,7 +242,7 @@ const Selector = forwardRef<any, SelectedProps>((props, ref) => {
       ref={ref}
       error={props.error}
       isMulti={isMulti}
-      isDisabled={props.disabled}
+      isDisabled={isDisabled}
       onChange={handleChange}
       value={inputValue.value}
       options={inputValue.data}

@@ -35,8 +35,6 @@ export enum UpdateActionsType {
   UPDATE_HASH
 }
 
-const ACTION_STORE_NAME = 'mex-action-store'
-
 export type ActionGroupType = ActionGroup & { connected?: boolean }
 
 type ActionStoreType = {

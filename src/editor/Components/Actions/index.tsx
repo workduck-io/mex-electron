@@ -20,7 +20,7 @@ export const StyledActionBlock = styled.section<{ selected?: boolean }>`
       padding: 0px;
       /* transform: translateY(-5px); */
     `}
-  box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.gray[8]};
+  box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.gray[9]};
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme: { borderRadius } }) => `${borderRadius.small}`};
   overflow: hidden;

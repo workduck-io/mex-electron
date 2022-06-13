@@ -77,7 +77,7 @@ typings/
 .vuepress/dist
 
 # vs
-.vscode/*
+.vscode
 
 # Serverless directories
 .serverless/
