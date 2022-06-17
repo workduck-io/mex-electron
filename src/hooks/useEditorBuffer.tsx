@@ -59,7 +59,7 @@ export const useEditorBuffer = () => {
           return !res
         })
         .reduce((acc, cur) => acc || cur, false)
-      if (saved || explicitSave) {
+      if (explicitSave !== false && (saved || explicitSave)) {
         saveData()
       }
       clearBuffer()

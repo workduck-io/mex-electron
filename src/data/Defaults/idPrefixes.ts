@@ -3,6 +3,7 @@ import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
 
 const nolookalikes = '346789ABCDEFGHJKLMNPQRTUVWXYabcdefghijkmnpqrtwxyz'
 const nanoid = customAlphabet(nolookalikes, 21)
+const shortId = customAlphabet(nolookalikes, 5)
 
 export const ID_SEPARATOR = '_'
 export const NODE_ID_PREFIX = 'NODE'
@@ -23,12 +24,12 @@ export const generateNodeUID = () => `${NODE_ID_PREFIX}${ID_SEPARATOR}${nanoid()
 export const generateWorkspaceId = () => `${WORKSPACE_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`
 export const generateIgId = () => `${IG_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`
 export const generateSyncBlockId = () => `${SYNC_BLOCK_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`
-export const generateTempId = () => `${TEMP_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`
+export const generateTempId = () => `${TEMP_ID_PREFIX}${ID_SEPARATOR}${shortId()}`
 export const generateSnippetId = () => `${SNIPPET_PREFIX}${ID_SEPARATOR}${nanoid()}`
 export const generateSyncTempId = () => `${SYNCTEMP_PREFIX}${ID_SEPARATOR}${nanoid()}`
 export const generateTodoId = () => `${TODO_PREFIX}${ID_SEPARATOR}${nanoid()}`
-export const generateQuestionId = () => `${QUESTION_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`
-export const generateReminderId = () => `${REMINDER_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`
+export const generateQuestionId = () => `${QUESTION_ID_PREFIX}${ID_SEPARATOR}${shortId()}`
+export const generateReminderId = () => `${REMINDER_ID_PREFIX}${ID_SEPARATOR}${shortId()}`
 
 export const cleanString = (str: string) =>
   str.startsWith(`${DRAFT_PREFIX}${SEPARATOR}`) ? str.replace(`${DRAFT_PREFIX}${SEPARATOR}`, '') : str

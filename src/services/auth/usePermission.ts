@@ -119,7 +119,7 @@ export const usePermission = () => {
           }
         })
         .then((resp) => {
-          mog('getAllSharedUsers For Node resp', { resp })
+          // mog('getAllSharedUsers For Node resp', { resp })
           return { nodeid, users: resp.data }
         })
     } catch (e) {

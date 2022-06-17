@@ -92,7 +92,7 @@ export const useFetchShareData = () => {
       addMentionable(u.alias ?? getEmailStart(u.email), u.email, u.userid, u.name, u.nodeid, u.access)
     )
 
-    mog('SharedNode', { sharedNodes, usersWithAccess, mentionableU, UserAccessDetails })
+    // mog('SharedNode', { sharedNodes, usersWithAccess, mentionableU, UserAccessDetails })
   }
 
   return { fetchShareData }

@@ -78,7 +78,7 @@ const Search = () => {
   // const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)
 
   const onSearch = async (newSearchTerm: string) => {
-    const res = await queryIndexWithRanking(['shared', 'node', 'actions'], newSearchTerm)
+    const res = await queryIndexWithRanking(['shared', 'node'], newSearchTerm)
     const filRes = res.filter((r) => {
       const nodeType = getNodeType(r.id)
       return nodeType !== NodeType.MISSING && nodeType !== NodeType.ARCHIVED

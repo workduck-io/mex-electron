@@ -182,6 +182,7 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+
   min-height: 100%;
   transition: opacity 0.3s ease-in-out;
   padding: 0 0;

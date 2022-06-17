@@ -773,8 +773,8 @@ ipcMain.handle(IpcAction.REMOVE_DOCUMENT, async (_event, key, id) => {
   await removeDoc(key, id)
 })
 
-ipcMain.handle(IpcAction.QUERY_INDEX, async (_event, key, query, tags) => {
-  const results = await searchIndex(key, query, tags)
+ipcMain.handle(IpcAction.QUERY_INDEX, async (_event, key, query, options) => {
+  const results = await searchIndex(key, query, options)
   return results
 })
 
@@ -783,8 +783,8 @@ ipcMain.handle(IpcAction.QUERY_INDEX_BY_NODEID, async (_event, key, nodeId, quer
   return results
 })
 
-ipcMain.handle(IpcAction.QUERY_INDEX_WITH_RANKING, async (_event, key, query) => {
-  const results = await searchIndexWithRanking(key, query)
+ipcMain.handle(IpcAction.QUERY_INDEX_WITH_RANKING, async (_event, key, query, options) => {
+  const results = await searchIndexWithRanking(key, query, options)
   return results
 })
 

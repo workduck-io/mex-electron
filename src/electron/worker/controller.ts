@@ -3,7 +3,7 @@ import { spawn, Worker } from 'threads'
 import { mog } from '../../utils/lib/helper'
 import { NodeEditorContent } from '../../types/Types'
 import { FileData } from '../../types/data'
-import { idxKey, SearchRepExtra } from '../../types/search'
+import { idxKey, SearchOptions, SearchRepExtra } from '../../types/search'
 
 // @ts-expect-error it don't want .ts
 // eslint-disable-next-line
@@ -106,11 +106,11 @@ export const removeDoc = async (key: idxKey, id: string) => {
   }
 }
 
-export const searchIndex = async (key: idxKey, query: string, tags?: Array<string>) => {
+export const searchIndex = async (key: idxKey, query: string, options?: SearchOptions) => {
   try {
     if (!search_worker) throw new Error('Search Worker Not Initialized')
 
-    const results = await search_worker.searchIndex(key, query, tags)
+    const results = await search_worker.searchIndex(key, query, options)
     return results
   } catch (error) {
     mog('SearchIndexError', { error })
@@ -137,11 +137,11 @@ export const searchIndexByNodeId = async (key: idxKey, nodeId: string, query: st
   }
 }
 
-export const searchIndexWithRanking = async (key: idxKey | idxKey[], query: string) => {
+export const searchIndexWithRanking = async (key: idxKey | idxKey[], query: string, options?: SearchOptions) => {
   try {
     if (!search_worker) throw new Error('Search Worker Not Initialized')
 
-    const results = await search_worker.searchIndexWithRanking(key, query)
+    const results = await search_worker.searchIndexWithRanking(key, query, options)
     return results
   } catch (error) {
     mog('SearchIndexError', { error })

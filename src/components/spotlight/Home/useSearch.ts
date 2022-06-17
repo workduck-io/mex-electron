@@ -110,7 +110,7 @@ export const useSearch = () => {
         break
 
       case CategoryType.search:
-        const nodeItems = await queryIndex(['node', 'actions'], search.value)
+        const nodeItems = await queryIndex(['node'], search.value)
         const snippetItems = await queryIndex(['snippet', 'template'], search.value)
 
         const actionItems = getSearchResults(search.value, actions, { keySelector: (obj) => obj.title })

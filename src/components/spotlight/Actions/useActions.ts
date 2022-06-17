@@ -58,7 +58,9 @@ const useActions = () => {
     const groups = await fetchActionGroups()
 
     try {
-      await Promise.all(Object.keys(groups).map(async (actionGroupId) => await getActionsFromGroup(actionGroupId)))
+      await Promise.allSettled(
+        Object.keys(groups).map(async (actionGroupId) => await getActionsFromGroup(actionGroupId))
+      )
     } catch (err) {
       mog('Failed to fetch actions of group', { err })
     }

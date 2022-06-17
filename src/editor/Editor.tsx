@@ -28,6 +28,7 @@ interface EditorProps {
   autoFocus?: boolean
   focusAtBeginning?: boolean
   showBalloonToolbar?: boolean
+  onAutoSave?: (content: any[]) => void
   padding?: string
   options?: PluginOptionType
   getSuggestions?: any
@@ -41,6 +42,7 @@ export const Editor = ({
   options,
   readOnly = false,
   onChange,
+  onAutoSave,
   padding = '32px',
   focusAtBeginning = true,
   showBalloonToolbar = false,
@@ -119,6 +121,11 @@ export const Editor = ({
     1500
   )
 
+  const saveAfterDelay = useDebouncedCallback(
+    typeof onAutoSave === 'function' ? onAutoSave : () => undefined,
+    30 * 1000 // After 30 secons
+  )
+
   const delayedHighlightRemoval = debounce(clearHighlights, 2000)
 
   const onChangeContent = (val: any[]) => {
@@ -128,6 +135,11 @@ export const Editor = ({
     if (getSuggestions && !headingQASearch) {
       getDebouncedSuggestions.cancel()
       getDebouncedSuggestions(val)
+    }
+
+    if (onAutoSave) {
+      saveAfterDelay.cancel()
+      saveAfterDelay(val)
     }
   }
 

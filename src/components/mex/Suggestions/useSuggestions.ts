@@ -15,7 +15,7 @@ export const useSuggestions = () => {
 
   const getSuggestions = async (value: any[]) => {
     const editorRef = getPlateEditorRef()
-    const nodeId = useEditorStore.getState().node?.id
+    const nodeId = useEditorStore.getState().node?.nodeid
     const mode = useLayoutStore.getState().infobar?.mode
     const isQABlock = useSuggestionStore.getState().headingQASearch
     const actionVisible = useSuggestionStore.getState().actionVisible
@@ -25,12 +25,17 @@ export const useSuggestions = () => {
       const lastTwoParagraphs = cursorPosition > 2 ? cursorPosition - 2 : 0
       const rawText = convertContentToRawText(value.slice(lastTwoParagraphs, cursorPosition + 1), ' ')
       const keywords = removeStopwords(rawText)
+      let searchFields
 
       const idKeys = ['node', 'snippet', 'shared']
 
-      if (actionVisible) idKeys.push('actions')
+      if (!actionVisible)
+        searchFields = {
+          node: ['text', 'title'],
+          shared: ['text', 'title']
+        }
 
-      const results = await queryIndexWithRanking(idKeys as any, keywords.join(' '))
+      const results = await queryIndexWithRanking(idKeys as any, keywords.join(' '), { searchFields })
 
       const withoutCurrentNode = results.filter((item) => item.id !== nodeId)
 

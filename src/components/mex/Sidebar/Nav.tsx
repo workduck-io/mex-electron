@@ -1,4 +1,3 @@
-import { BookmarksHelp, SharedHelp, TreeHelp } from '@data/Defaults/helpText'
 import { Logo, SidebarToggle, TrafficLightBG } from '@data/illustrations/logo'
 import { GetIcon } from '@data/links'
 import { useCreateNewNode } from '@hooks/useCreateNewNode'
@@ -6,16 +5,12 @@ import useLayout from '@hooks/useLayout'
 import { useLinks } from '@hooks/useLinks'
 import { useKeyListener } from '@hooks/useShortcutListener'
 import archiveFill from '@iconify/icons-ri/archive-fill'
-import bookmark3Line from '@iconify/icons-ri/bookmark-3-line'
-import gitBranchLine from '@iconify/icons-ri/git-branch-line'
 import settings4Line from '@iconify/icons-ri/settings-4-line'
-import shareLine from '@iconify/icons-ri/share-line'
 import { Icon } from '@iconify/react'
-import { useTreeFromLinks } from '@store/useDataStore'
 import { useHelpStore } from '@store/useHelpStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { useSingleton } from '@tippyjs/react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import tinykeys from 'tinykeys'
 import {
   ComingSoon,
@@ -30,26 +25,33 @@ import {
   NavTitle,
   NavWrapper
 } from '@style/Nav'
-import Collapse from '@ui/layout/Collapse/Collapse'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
 import Bookmarks from './Bookmarks'
 import SharedNotes from './SharedNotes'
 import { useSidebarTransition } from './Transition'
-import Tree from './Tree'
+import Tree, { TreeContainer } from './Tree'
 import { NavProps } from './Types'
+import Tabs from '@components/layouts/Tabs'
+import { MexIcon } from '@style/Layouts'
+import { SharedNodeIcon } from '@components/icons/Icons'
+import { useTheme } from 'styled-components'
+import { useTreeFromLinks } from '@store/useDataStore'
+import { useBookmarks } from '@hooks/useBookmarks'
 
 const Nav = ({ links }: NavProps) => {
   // const match = useMatch(`/${ROUTE_PATHS.node}/:nodeid`)
-  const initTree = useTreeFromLinks()
   const sidebar = useLayoutStore((store) => store.sidebar)
   const focusMode = useLayoutStore((store) => store.focusMode)
   const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
   const { getFocusProps } = useLayout()
   const { getLinkCount } = useLinks()
   const { goTo } = useRouting()
+  const theme = useTheme()
   const { createNewNode } = useCreateNewNode()
+  const [openedTab, setOpenedTab] = useState<number>(0)
+  const { getAllBookmarks } = useBookmarks()
 
   const [source, target] = useSingleton()
 
@@ -70,6 +72,10 @@ const Nav = ({ links }: NavProps) => {
       }
     }
   }
+
+  useEffect(() => {
+    getAllBookmarks()
+  }, [])
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { shortcutHandler } = useKeyListener()
@@ -93,6 +99,30 @@ const Nav = ({ links }: NavProps) => {
   const { springProps } = useSidebarTransition()
 
   const archiveCount = getLinkCount().archive
+
+  const tabs = useMemo(
+    () => [
+      {
+        label: <MexIcon noHover icon="ri:draft-line" width={20} height={20} />,
+        key: 'wd-mex-all-notes-tree',
+        component: <TreeContainer />,
+        tooltip: 'All Notes'
+      },
+      {
+        label: <SharedNodeIcon fill={theme.colors.text.heading} height={18} width={18} />,
+        key: 'wd-mex-shared-notes',
+        component: <SharedNotes />,
+        tooltip: 'Shared Notes'
+      },
+      {
+        label: <MexIcon noHover icon="ri:bookmark-line" width={20} height={20} />,
+        key: 'wd-mex-bookmarks',
+        component: <Bookmarks />,
+        tooltip: 'Bookmarks'
+      }
+    ],
+    []
+  )
 
   return (
     <>
@@ -142,7 +172,10 @@ const Nav = ({ links }: NavProps) => {
           )}
         </MainLinkContainer>
 
-        <Collapse
+        {/* Notes, Shared, Bookmarks */}
+        <Tabs visible={sidebar.expanded} openedTab={openedTab} onChange={setOpenedTab} tabs={tabs} />
+
+        {/* <Collapse
           title="All Notes"
           oid={`tree`}
           defaultOpen
@@ -176,10 +209,10 @@ const Nav = ({ links }: NavProps) => {
             <SharedNotes />
           </Collapse>
           <Tree initTree={initTree} />
-        </Collapse>
+        </Collapse> */}
 
-        <NavSpacer />
-        <NavDivider />
+        {/* <NavSpacer />
+        <NavDivider /> */}
 
         <EndLinkContainer onMouseUp={(e) => e.stopPropagation()}>
           {/* {authenticated ? (

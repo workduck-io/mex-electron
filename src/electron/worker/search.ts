@@ -12,7 +12,14 @@ import {
 } from '../../utils/search/flexsearch'
 import { mog } from '../../utils/lib/helper'
 import { setSearchIndexData } from './../utils/indexData'
-import { SearchIndex, SearchWorker, idxKey, SearchRepExtra, GenericSearchResult } from '../../types/search'
+import {
+  SearchIndex,
+  SearchWorker,
+  idxKey,
+  SearchRepExtra,
+  GenericSearchResult,
+  SearchOptions
+} from '../../types/search'
 import { parseNode } from '@utils/search/parseData'
 
 let globalSearchIndex: SearchIndex = null
@@ -91,15 +98,20 @@ const searchWorker: SearchWorker = {
     }
   },
 
-  searchIndex: (key: idxKey | idxKey[], query: string, tags: Array<string> = []) => {
+  searchIndex: (key: idxKey | idxKey[], query: string, options?: SearchOptions) => {
     try {
       let response: any[] = []
 
       if (typeof key === 'string') {
-        response = globalSearchIndex[key].search(query, { enrich: true, tag: tags })
+        const fields = options?.searchFields?.[key] || indexedFields[key]
+        response = globalSearchIndex[key].search(query, { enrich: true, tag: options?.tags, index: fields })
       } else {
         key.forEach((k) => {
-          response = [...response, ...globalSearchIndex[k].search(query, { enrich: true, tag: tags })]
+          const fields = options?.searchFields?.[k] || indexedFields[k]
+          response = [
+            ...response,
+            ...globalSearchIndex[k].search(query, { enrich: true, tag: options?.tags, index: fields })
+          ]
         })
       }
 
@@ -142,7 +154,6 @@ const searchWorker: SearchWorker = {
 
     setSearchIndexData(indexDump, location)
   },
-
   searchIndexByNodeId: (key, nodeId, query) => {
     try {
       let response: any[] = []
@@ -186,14 +197,16 @@ const searchWorker: SearchWorker = {
     }
   },
   // TODO: Figure out tags with this OR approach
-  searchIndexWithRanking: (key: idxKey | idxKey[], query: string, tags?: Array<string>) => {
+  searchIndexWithRanking: (key: idxKey | idxKey[], query: string, options?: SearchOptions) => {
     try {
       const words = query.split(' ')
       const searchItems: Record<string, Array<any>> = {}
 
       if (typeof key === 'string') {
+        const fields = options?.searchFields?.[key] || indexedFields[key]
+
         mog('key is', { key })
-        indexedFields[key].forEach((field) => {
+        fields.forEach((field) => {
           words.forEach((w) => {
             const t = {
               field,
@@ -205,7 +218,10 @@ const searchWorker: SearchWorker = {
         })
       } else {
         key.forEach((k) => {
-          indexedFields[k].forEach((field) => {
+          const fields = options?.searchFields?.[k] || indexedFields[k]
+          mog(`${query} - FIELDS`, { fields, options })
+
+          fields.forEach((field) => {
             words.forEach((w) => {
               const t = {
                 field,
@@ -226,6 +242,7 @@ const searchWorker: SearchWorker = {
       } else {
         key.forEach((k) => {
           response = [...response, ...globalSearchIndex[k].search({ index: searchItems[k], enrich: true })]
+          mog(`${k}  response -- ${query}`, { response })
         })
       }
 

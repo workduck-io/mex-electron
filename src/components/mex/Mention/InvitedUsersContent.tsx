@@ -66,8 +66,8 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
     // mog('onPermissionChange', { userid, email })
 
     // Change the user and add to changedUsers
-    const changedUser = changedIUsers.find((u) => u.email === email)
-    const dataUser = sharedIUsers.find((u) => u.email === email)
+    const changedUser = changedIUsers?.find((u) => u.email === email)
+    const dataUser = sharedIUsers?.find((u) => u.email === email)
 
     if (changedUser) {
       const hasBeenRevoked = changedUser.change.includes('revoke')

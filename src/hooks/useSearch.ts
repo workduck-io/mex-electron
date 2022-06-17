@@ -1,4 +1,4 @@
-import { idxKey, SearchRepExtra } from '../types/search'
+import { idxKey, SearchOptions, SearchRepExtra } from '../types/search'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../data/IpcAction'
 
@@ -92,18 +92,18 @@ export const useSearch = () => {
     await ipcRenderer.invoke(IpcAction.REMOVE_DOCUMENT, key, id)
   }
 
-  const queryIndex = async (key: idxKey | idxKey[], query: string, tags?: Array<string>) => {
-    const results = await ipcRenderer.invoke(IpcAction.QUERY_INDEX, key, query, tags)
+  const queryIndex = async (key: idxKey | idxKey[], query: string, options?: SearchOptions) => {
+    const results = await ipcRenderer.invoke(IpcAction.QUERY_INDEX, key, query, options)
     return results
   }
 
-  const queryIndexByNodeId = async (key: idxKey | idxKey[], nodeId: string, query: string) => {
-    const results = await ipcRenderer.invoke(IpcAction.QUERY_INDEX_BY_NODEID, key, nodeId, query)
+  const queryIndexByNodeId = async (key: idxKey | idxKey[], nodeId: string, query: string, options?: SearchOptions) => {
+    const results = await ipcRenderer.invoke(IpcAction.QUERY_INDEX_BY_NODEID, key, nodeId, query, options)
     return results
   }
 
-  const queryIndexWithRanking = async (key: idxKey | idxKey[], query: string) => {
-    const results = await ipcRenderer.invoke(IpcAction.QUERY_INDEX_WITH_RANKING, key, query)
+  const queryIndexWithRanking = async (key: idxKey | idxKey[], query: string, options?: SearchOptions) => {
+    const results = await ipcRenderer.invoke(IpcAction.QUERY_INDEX_WITH_RANKING, key, query, options)
     return results
   }
 
