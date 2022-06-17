@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { useSpring } from 'react-spring'
+import Tippy from '@tippyjs/react'
 import { StyledTab, TabBody, TabsContainer, TabHeaderContainer, TabPanel } from './styled'
+import { TooltipTitleWithShortcut } from '@components/mex/Shortcuts'
 
 type TabType = {
   label: JSX.Element | string
   component: JSX.Element
   key: string | number
+  tooltip?: string
 }
 
 type TabsProps = {
@@ -34,9 +37,11 @@ const Tabs: React.FC<TabsProps> = ({ tabs, openedTab, onChange, visible }) => {
     <TabsContainer style={animationProps} visible={visible}>
       <TabHeaderContainer>
         {tabs.map((tab, tabIndex) => (
-          <StyledTab key={tabIndex} onClick={() => onChange(tabIndex)} selected={tabIndex === openedTab}>
-            {tab.label}
-          </StyledTab>
+          <Tippy delay={200} key={tabIndex} theme="mex" content={<TooltipTitleWithShortcut title={tab.tooltip} />}>
+            <StyledTab key={tabIndex} onClick={() => onChange(tabIndex)} selected={tabIndex === openedTab}>
+              {tab.label}
+            </StyledTab>
+          </Tippy>
         ))}
       </TabHeaderContainer>
       <TabPanel style={bodyAnimation}>

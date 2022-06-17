@@ -103,43 +103,22 @@ const Nav = ({ links }: NavProps) => {
   const tabs = useMemo(
     () => [
       {
-        label: (
-          <NavTooltip
-            key="wd-mex-all-notes-tree"
-            singleton={target}
-            content={<TooltipTitleWithShortcut title="All Notes" />}
-          >
-            <MexIcon noHover icon="ri:draft-line" width={20} height={20} />
-          </NavTooltip>
-        ),
-        key: 1,
-        component: <TreeContainer />
+        label: <MexIcon noHover icon="ri:draft-line" width={20} height={20} />,
+        key: 'wd-mex-all-notes-tree',
+        component: <TreeContainer />,
+        tooltip: 'All Notes'
       },
       {
-        label: (
-          <NavTooltip
-            key="wd-mex-shared-notes"
-            singleton={target}
-            content={<TooltipTitleWithShortcut title="Shared Notes" />}
-          >
-            <SharedNodeIcon fill={theme.colors.text.heading} height={18} width={18} />
-          </NavTooltip>
-        ),
-        key: 2,
-        component: <SharedNotes />
+        label: <SharedNodeIcon fill={theme.colors.text.heading} height={18} width={18} />,
+        key: 'wd-mex-shared-notes',
+        component: <SharedNotes />,
+        tooltip: 'Shared Notes'
       },
       {
-        label: (
-          <NavTooltip
-            key="wd-mex-bookmarks"
-            singleton={target}
-            content={<TooltipTitleWithShortcut title="Bookmarks" />}
-          >
-            <MexIcon noHover icon="ri:bookmark-line" width={20} height={20} />
-          </NavTooltip>
-        ),
-        key: 3,
-        component: <Bookmarks />
+        label: <MexIcon noHover icon="ri:bookmark-line" width={20} height={20} />,
+        key: 'wd-mex-bookmarks',
+        component: <Bookmarks />,
+        tooltip: 'Bookmarks'
       }
     ],
     []

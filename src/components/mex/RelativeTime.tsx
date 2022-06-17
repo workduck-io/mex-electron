@@ -1,5 +1,4 @@
 import Tippy, { TippyProps } from '@tippyjs/react'
-import { mog } from '@utils/lib/helper'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useRelativeTime } from '../../hooks/useRelativeTime'
