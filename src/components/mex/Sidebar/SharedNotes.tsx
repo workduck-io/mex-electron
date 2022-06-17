@@ -1,24 +1,32 @@
+import { usePolling } from '@apis/usePolling'
 import { SharedNodeIcon } from '@components/icons/Icons'
+import { useTimout } from '@hooks/useRelativeTime'
+import { usePermission } from '@services/auth/usePermission'
 import { useEditorStore } from '@store/useEditorStore'
+import { mog } from '@utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { useTheme } from 'styled-components'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
-import { SharedNode } from '../../../types/Types'
-import { BList, SharedBreak, SItem, SItemContent } from './SharedNotes.style'
+import { Centered } from './Bookmarks'
+import { BList, SItem, SItemContent } from './SharedNotes.style'
 
 const SharedNotes = () => {
-  const sharedNodesS = useDataStore((store) => store.sharedNodes)
+  const sharedNodes = useDataStore((store) => store.sharedNodes)
   const { push } = useNavigation()
-  const [sharedNodes, setSharedNodes] = useState<SharedNode[]>([])
+  const { getAllSharedNodes } = usePermission()
+
+  // const [sharedNodes, setSharedNodes] = useState<SharedNode[]>([])
   const { goTo } = useRouting()
+  const theme = useTheme()
   const node = useEditorStore((s) => s.node)
 
-  useEffect(() => {
-    // ssetBookmarks(
-    // getAllBookmarks()
-    setSharedNodes(sharedNodesS)
-  }, [sharedNodesS])
+  usePolling()
+
+  useTimout(() => {
+    getAllSharedNodes().then(() => mog('Fetched shared Notes after 15 secs'))
+  }, 15 * 1000)
 
   const onOpenNode = (nodeid: string) => {
     push(nodeid, { fetch: true })
@@ -44,10 +52,13 @@ const SharedNotes = () => {
             )
           })}
 
-          <SharedBreak />
+          {/* <SharedBreak /> */}
         </>
       ) : (
-        <div>No one shared notes with you yet!</div>
+        <Centered>
+          <SharedNodeIcon height={22} width={22} fill={theme.colors.text.heading} margin="0 0 1rem 0" />
+          <span>No one has shared Notes with you yet!</span>
+        </Centered>
       )}
     </BList>
   )

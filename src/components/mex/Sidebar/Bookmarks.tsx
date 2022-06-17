@@ -1,5 +1,6 @@
 import bookmarkLine from '@iconify/icons-ri/bookmark-line'
 import { Icon } from '@iconify/react'
+import { MexIcon } from '@style/Layouts'
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useBookmarks } from '../../../hooks/useBookmarks'
@@ -9,10 +10,11 @@ import useDataStore from '../../../store/useDataStore'
 import { BaseLink } from '../../../views/mex/Tag'
 
 const BList = styled.div`
-  max-height: 15rem;
+  /* max-height: 15rem;
   list-style: none;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: auto; */
+  height: 100%;
   padding: ${({ theme }) => theme.spacing.small};
 `
 
@@ -33,17 +35,25 @@ const BLink = styled(BaseLink)`
   }
 `
 
+export const Centered = styled.div`
+  display: flex;
+  height: 100%;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  flex-direction: column;
+`
+
 const Bookmarks = () => {
   const bookmarks = useDataStore((store) => store.bookmarks)
-  const { getAllBookmarks } = useBookmarks()
   const { getPathFromNodeid } = useLinks()
   const { push } = useNavigation()
   // const [ bookmarks, setBookmarks ] = useState<string[]>([])
 
-  useEffect(() => {
-    // ssetBookmarks(
-    getAllBookmarks()
-  }, [])
+  // useEffect(() => {
+  //   // ssetBookmarks(
+  //   getAllBookmarks()
+  // }, [])
 
   return (
     <BList>
@@ -56,7 +66,12 @@ const Bookmarks = () => {
           </BLink>
         )
       })}
-      {bookmarks.length === 0 && <div>No notes bookmarked yet!</div>}
+      {bookmarks.length === 0 && (
+        <Centered>
+          <MexIcon height={24} width={24} icon="ri:bookmark-line" margin="0 0 1rem 0" />
+          <span>No Notes bookmarked yet!</span>
+        </Centered>
+      )}
     </BList>
   )
 }

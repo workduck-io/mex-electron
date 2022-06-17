@@ -157,7 +157,6 @@ export const getTitleNodeMap = (idxName: string, data: any) => {
 
   // Pre-process the data to get the title node map
   switch (idxName) {
-    case indexNames.actions:
     case indexNames.node: {
       data.ilinks.forEach((entry) => {
         titleNodeMap.set(entry.nodeid, entry.path)
@@ -208,7 +207,6 @@ export const convertDataToIndexable = (data: FileData) => {
       case indexNames.archive:
       case indexNames.node:
       case indexNames.shared:
-      case indexNames.actions:
         Object.entries(data.contents).forEach(([k, v]) => {
           if (k !== '__null__' && titleNodeMap.has(k)) {
             if (!nodeBlockMap[k]) nodeBlockMap[k] = []

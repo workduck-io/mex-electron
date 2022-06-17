@@ -6,8 +6,6 @@ export const initializeSentry = () => {
     dsn: SENTRY_DSN,
     environment: IS_DEV ? 'dev' : 'production',
     logLevel: 1,
-    // attachStacktrace: true,
     ignoreErrors: ['Warning', 'ResizeObserver']
   })
-  console.log('Sentry Initialized!')
 }

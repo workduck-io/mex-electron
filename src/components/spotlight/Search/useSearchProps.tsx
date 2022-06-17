@@ -109,7 +109,6 @@ export const useSaveChanges = () => {
     })
 
     await updateDocument('node', node.nodeid, editorContent)
-    await updateDocument('actions', node.nodeid, editorContent)
 
     setSearch({ value: '', type: CategoryType.search })
     setInput('')

@@ -17,7 +17,6 @@ export interface SearchIndex {
   archive: Document<GenericSearchData> | null
   template: Document<GenericSearchData> | null
   shared: Document<GenericSearchData> | null
-  actions: Document<GenericSearchData> | null
 }
 
 export interface GenericSearchResult {
@@ -66,10 +65,15 @@ export interface SearchWorker {
     extra?: SearchRepExtra
   ) => void
   removeDoc: (key: idxKey, id: string) => void
-  searchIndex: (key: idxKey | idxKey[], query: string, tags: Array<string>) => GenericSearchResult[]
+  searchIndex: (key: idxKey | idxKey[], query: string, options?: SearchOptions) => GenericSearchResult[]
   searchIndexByNodeId: (key: idxKey | idxKey[], nodeId: string, query: string) => GenericSearchResult[]
   dumpIndexDisk: (location: string) => Promise<void>
-  searchIndexWithRanking: (key: idxKey | idxKey[], query: string, tags?: Array<string>) => GenericSearchResult[]
+  searchIndexWithRanking: (key: idxKey | idxKey[], query: string, options?: SearchOptions) => GenericSearchResult[]
+}
+
+export type SearchOptions = {
+  tags?: Array<string>
+  searchFields?: Record<idxKey, Array<string>>
 }
 
 export interface KanbanCard {

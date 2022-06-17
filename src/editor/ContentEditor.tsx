@@ -48,7 +48,7 @@ const ContentEditor = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const editorRef = usePlateEditorRef()
-  const { addOrUpdateValBuffer, getBufferVal } = useEditorBuffer()
+  const { addOrUpdateValBuffer, getBufferVal, saveAndClearBuffer } = useEditorBuffer()
 
   const onChangeSave = async (val: any[]) => {
     if (val && node && node.nodeid !== '__null__') {
@@ -92,8 +92,15 @@ const ContentEditor = () => {
           const val = getBufferVal(node.nodeid)
           saveApiAndUpdate(node, val)
         })
+      },
+      [shortcuts.save.keystrokes]: (event) => {
+        event.preventDefault()
+        shortcutHandler(shortcuts.refreshNode, () => {
+          saveAndClearBuffer()
+        })
       }
     })
+
     return () => {
       unsubscribe()
     }
@@ -113,6 +120,9 @@ const ContentEditor = () => {
           <Editor
             getSuggestions={getSuggestions}
             showBalloonToolbar
+            onAutoSave={(val) => {
+              saveAndClearBuffer(false)
+            }}
             content={fsContent?.content ?? defaultContent.content}
             onChange={onChangeSave}
             editorId={editorId}

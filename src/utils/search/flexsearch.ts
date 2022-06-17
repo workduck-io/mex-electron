@@ -10,7 +10,6 @@ export interface CreateSearchIndexData {
   snippet: GenericSearchData[] | null
   archive: GenericSearchData[] | null
   template: GenericSearchData[] | null
-  actions: GenericSearchData[] | null
 }
 
 export const SEARCH_RESULTS_LIMIT = 10
@@ -26,12 +25,11 @@ export const getNodeAndBlockIdFromCompositeKey = (compositeKey: string) => {
 }
 
 export const indexedFields: Record<indexNames, Array<string>> = {
-  node: ['title', 'text'],
+  node: ['title', 'text', 'data:actionDisplayItems[]:value'],
   snippet: ['title', 'text'],
-  archive: ['title', 'text'],
+  archive: ['title', 'text', 'data:actionDisplayItems[]:value'],
   template: ['title', 'text'],
-  shared: ['title', 'text'],
-  actions: ['data:actionDisplayItems[]:value']
+  shared: ['title', 'text', 'data:actionDisplayItems[]:value']
 }
 
 export const storedFields = ['text', 'data']
