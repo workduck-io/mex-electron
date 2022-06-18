@@ -109,7 +109,7 @@ const Nav = ({ links }: NavProps) => {
         tooltip: 'All Notes'
       },
       {
-        label: <SharedNodeIcon fill={theme.colors.text.heading} height={18} width={18} />,
+        label: <SharedNodeIcon fill={theme.colors.text.default} height={18} width={18} />,
         key: 'wd-mex-shared-notes',
         component: <SharedNotes />,
         tooltip: 'Shared Notes'
@@ -121,7 +121,7 @@ const Nav = ({ links }: NavProps) => {
         tooltip: 'Bookmarks'
       }
     ],
-    []
+    [theme]
   )
 
   return (
