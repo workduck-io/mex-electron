@@ -56,7 +56,7 @@ const SharedNotes = () => {
         </>
       ) : (
         <Centered>
-          <SharedNodeIcon height={22} width={22} fill={theme.colors.text.heading} margin="0 0 1rem 0" />
+          <SharedNodeIcon height={22} width={22} fill={theme.colors.text.default} margin="0 0 1rem 0" />
           <span>No one has shared Notes with you yet!</span>
         </Centered>
       )}
