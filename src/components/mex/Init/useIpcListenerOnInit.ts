@@ -60,7 +60,6 @@ export const useIpcListenerOnInit = () => {
     ipcRenderer.on(IpcAction.MEX_BLURRED, () => {
       saveAndClearBuffer()
     })
-
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
       goTo(`${ROUTE_PATHS.settings}/themes`, NavigationType.push)
     })
