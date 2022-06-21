@@ -10,6 +10,8 @@ import { TodoType } from '../editor/Components/Todo/types'
 import useTodoStore from './useTodoStore'
 import { areEqual } from '../utils/lib/hash'
 import { checkIfUntitledDraftNode } from '../utils/lib/strings'
+import { useSearchExtra } from '@hooks/useSearch'
+import { AnalysisOptions } from '@electron/worker/controller'
 
 export interface OutlineItem {
   id: string
@@ -73,13 +75,15 @@ export const useAnalysis = () => {
   const node = useEditorStore((s) => s.node)
   const { getBufferVal } = useEditorBuffer()
   const buffer = useBufferStore((s) => s.buffer)
+  const { getSearchExtra } = useSearchExtra()
 
   // mog('Setting up IPC for Buffer', { node })
   useEffect(() => {
     const bufferContent = getBufferVal(node.nodeid)
     const content = getContent(node.nodeid)
     const metadata = content.metadata
-    const options = {}
+    const modifier = getSearchExtra()
+    const options: AnalysisOptions = { modifier }
 
     const isUntitledDraftNode = checkIfUntitledDraftNode(node.path)
     const isNewDraftNode = metadata?.createdAt === metadata?.updatedAt

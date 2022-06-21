@@ -47,7 +47,7 @@ interface GetIconProps {
 
 const GetIcon = ({ item, onCollapse, onExpand }: GetIconProps) => {
   if (item.children && item.children.length > 0) {
-    return item.isExpanded ? (
+    return item?.isExpanded ? (
       <StyledTreeItemSwitcher onClick={() => onCollapse(item.id)}>
         <Icon icon={'ri:arrow-down-s-line'} />
       </StyledTreeItemSwitcher>

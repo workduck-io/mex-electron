@@ -1,4 +1,4 @@
-import { getNameFromPath } from '@components/mex/Sidebar/treeUtils'
+import { getNameFromPath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import { uniq } from 'lodash'
 import { defaultContent } from '../data/Defaults/baseData'
 import { ELEMENT_INLINE_BLOCK } from '../editor/Components/InlineBlock/types'
@@ -35,6 +35,7 @@ export const useLinks = () => {
   const addInternalLink = useDataStore((state) => state.addInternalLink)
   const removeInternalLink = useDataStore((state) => state.removeInternalLink)
   const linkCache = useDataStore((state) => state.linkCache)
+  const setILinks = useDataStore((store) => store.setIlinks)
   const { isInArchive } = useNodes()
 
   const getAllLinks = () => {
@@ -187,6 +188,10 @@ export const useLinks = () => {
     if (link) return link
   }
 
+  const getTitleFromPath = (path: string) => {
+    return path.split(SEPARATOR).slice(-1)[0]
+  }
+
   const getNodeidFromPath = (path: string) => {
     const links = useDataStore.getState().ilinks
     const archive = useDataStore.getState().archive
@@ -201,11 +206,41 @@ export const useLinks = () => {
     if (sharedNode) return sharedNode.nodeid
   }
 
+  const updateILinks = (addedILinks: Array<ILink>, removedILinks: Array<ILink>) => {
+    const links = useDataStore.getState().ilinks
+
+    removedILinks.forEach((ilink) => {
+      links.splice(
+        links.findIndex((item) => item.nodeid === ilink.nodeid),
+        1
+      )
+    })
+
+    addedILinks.forEach((p) => {
+      const idx = links.find((link) => link.nodeid === p.nodeid && link.path === p.path)
+      if (idx === undefined) links.push(p)
+    })
+
+    mog('Setting ILinks', { links })
+
+    setILinks([...links])
+  }
+
   const getPathFromShared = (nodeid: string) => {
     const links = useDataStore.getState().sharedNodes
 
     const link = links.find((l) => l.nodeid === nodeid)
     if (link) return link.path
+  }
+
+  const getParentILink = (path: string) => {
+    const links = useDataStore.getState().ilinks
+    const parentPath = path.split(SEPARATOR).slice(0, -1).join(SEPARATOR)
+    const note = links.find((ilink) => ilink.path === parentPath)
+
+    mog('FOUND PARENT', { parentPath, links, note })
+
+    return note
   }
 
   const getPathFromNodeid = (nodeid: string, includeShared = false) => {
@@ -234,13 +269,16 @@ export const useLinks = () => {
     getLinkCount,
     getLinks,
     getBacklinks,
+    getTitleFromPath,
     updateLinksFromContent,
     getNodeidFromPath,
     getILinkFromNodeid,
     getNodeTitleSave,
     getPathFromShared,
     getPathFromNodeid,
-    createLink
+    createLink,
+    updateILinks,
+    getParentILink
   }
 }
 

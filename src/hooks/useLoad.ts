@@ -120,8 +120,6 @@ const useLoad = () => {
 
     const isDraftNode = node && node.path?.startsWith(`${DRAFT_PREFIX}${SEPARATOR}`)
 
-    // const isSharedNode =
-
     const res = {
       isLocal: !!inIlinks || !!inArchive || !!isDraftNode,
       isShared: !!inShared,
@@ -129,8 +127,6 @@ const useLoad = () => {
     }
 
     return res
-
-    // return inIlinks || inArchive || isDraftNode
   }
 
   /*
@@ -208,11 +204,6 @@ const useLoad = () => {
         if (options.withLoading) setFetchingContent(false)
       })
   }
-
-  // const saveDebouncedAPIfs = () => {
-  // const oldNode = useEditorStore.getState().node
-  // if (oldNode && oldNode.nodeid !== '__null__') saveNodeAPIandFs(oldNode.nodeid)
-  // }
 
   /**
    * Loads a node in the editor.

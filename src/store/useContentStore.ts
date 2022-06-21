@@ -1,4 +1,5 @@
 import create from 'zustand'
+import { devtools } from 'zustand/middleware'
 import { NodeContent, NodeMetadata } from '../types/data'
 import { NodeEditorContent } from '../types/Types'
 
@@ -20,53 +21,55 @@ interface ContentStoreState {
   initContents: (contents: Contents) => void
 }
 
-export const useContentStore = create<ContentStoreState>((set, get) => ({
-  contents: {},
-  saved: false,
-  setSaved: (saved) => set(() => ({ saved })),
-  setContent: (nodeid, content, metadata) => {
-    // mog('SetContent', { nodeid, content, metadata })
-    const oldContent = get().contents
-    // console.log('OldContent is here:', { oldContent: oldContent[nodeid] })
+export const useContentStore = create<ContentStoreState>(
+  devtools((set, get) => ({
+    contents: {},
+    saved: false,
+    setSaved: (saved) => set(() => ({ saved })),
+    setContent: (nodeid, content, metadata) => {
+      // mog('SetContent', { nodeid, content, metadata })
+      const oldContent = get().contents
+      // console.log('OldContent is here:', { oldContent: oldContent[nodeid] })
 
-    const oldMetadata = oldContent[nodeid] && oldContent[nodeid].metadata ? oldContent[nodeid].metadata : undefined
-    delete oldContent[nodeid]
-    const nmetadata = { ...oldMetadata, ...metadata }
-    set({
-      contents: { [nodeid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
-    })
-  },
-  getAllMetadata: () => {
-    const contents = get().contents
-    const metadata = {}
-    Object.keys(contents).forEach((key) => {
-      if (contents[key].metadata) {
-        metadata[key] = contents[key].metadata
-      }
-    })
-    return metadata
-  },
-  setMetadata: (nodeid: string, metadata: NodeMetadata) => {
-    const oldContent = get().contents
-    const oldMetadata = oldContent[nodeid] && oldContent[nodeid].metadata ? oldContent[nodeid].metadata : undefined
-    const content = oldContent[nodeid] && oldContent[nodeid].content ? oldContent[nodeid].content : undefined
-    delete oldContent[nodeid]
-    const nmetadata = { ...oldMetadata, ...metadata }
-    // console.log({ oldMetadata, nmetadata, metadata })
-    set({
-      contents: { [nodeid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
-    })
-  },
-  getContent: (nodeid) => {
-    return get().contents[nodeid]
-  },
-  removeContent: (nodeid) => {
-    const oldContent = get().contents
-    delete oldContent[nodeid]
-  },
-  initContents: (contents) => {
-    set({
-      contents
-    })
-  }
-}))
+      const oldMetadata = oldContent[nodeid] && oldContent[nodeid].metadata ? oldContent[nodeid].metadata : undefined
+      delete oldContent[nodeid]
+      const nmetadata = { ...oldMetadata, ...metadata }
+      set({
+        contents: { [nodeid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
+      })
+    },
+    getAllMetadata: () => {
+      const contents = get().contents
+      const metadata = {}
+      Object.keys(contents).forEach((key) => {
+        if (contents[key].metadata) {
+          metadata[key] = contents[key].metadata
+        }
+      })
+      return metadata
+    },
+    setMetadata: (nodeid: string, metadata: NodeMetadata) => {
+      const oldContent = get().contents
+      const oldMetadata = oldContent[nodeid] && oldContent[nodeid].metadata ? oldContent[nodeid].metadata : undefined
+      const content = oldContent[nodeid] && oldContent[nodeid].content ? oldContent[nodeid].content : undefined
+      delete oldContent[nodeid]
+      const nmetadata = { ...oldMetadata, ...metadata }
+      // console.log({ oldMetadata, nmetadata, metadata })
+      set({
+        contents: { [nodeid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
+      })
+    },
+    getContent: (nodeid) => {
+      return get().contents[nodeid]
+    },
+    removeContent: (nodeid) => {
+      const oldContent = get().contents
+      delete oldContent[nodeid]
+    },
+    initContents: (contents) => {
+      set({
+        contents
+      })
+    }
+  }))
+)

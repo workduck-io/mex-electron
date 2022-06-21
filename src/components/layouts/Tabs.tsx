@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSpring } from 'react-spring'
 import Tippy from '@tippyjs/react'
-import { StyledTab, TabBody, TabsContainer, TabHeaderContainer, TabPanel } from './styled'
+import { StyledTab, TabBody, TabsWrapper, TabsContainer, TabHeaderContainer, TabPanel } from './styled'
 import { TooltipTitleWithShortcut } from '@components/mex/Shortcuts'
 
 type TabType = {
@@ -36,13 +36,15 @@ const Tabs: React.FC<TabsProps> = ({ tabs, openedTab, onChange, visible }) => {
   return (
     <TabsContainer style={animationProps} visible={visible}>
       <TabHeaderContainer>
-        {tabs.map((tab, tabIndex) => (
-          <Tippy delay={200} key={tabIndex} theme="mex" content={<TooltipTitleWithShortcut title={tab.tooltip} />}>
-            <StyledTab key={tabIndex} onClick={() => onChange(tabIndex)} selected={tabIndex === openedTab}>
-              {tab.label}
-            </StyledTab>
-          </Tippy>
-        ))}
+        <TabsWrapper index={openedTab}>
+          {tabs.map((tab, tabIndex) => (
+            <Tippy delay={200} key={tabIndex} theme="mex" content={<TooltipTitleWithShortcut title={tab.tooltip} />}>
+              <StyledTab key={tabIndex} onClick={() => onChange(tabIndex)} selected={tabIndex === openedTab}>
+                {tab.label}
+              </StyledTab>
+            </Tippy>
+          ))}
+        </TabsWrapper>
       </TabHeaderContainer>
       <TabPanel style={bodyAnimation}>
         <TabBody onClick={() => onChange(openedTab)}>{tabs[openedTab]?.component}</TabBody>

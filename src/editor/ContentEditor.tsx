@@ -23,6 +23,9 @@ import Editor from './Editor'
 import Toolbar from './Toolbar'
 
 import { useNodes } from '@hooks/useNodes'
+import { useApi } from '@apis/useSaveApi'
+import { getContent } from '@utils/helpers'
+import { areEqual } from '@utils/lib/hash'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -31,6 +34,7 @@ const ContentEditor = () => {
   const { saveApiAndUpdate } = useLoad()
   const { accessWhenShared } = useNodes()
 
+  const { getDataAPI } = useApi()
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
   const isComboOpen = useComboboxOpen()
 
@@ -90,7 +94,15 @@ const ContentEditor = () => {
         shortcutHandler(shortcuts.refreshNode, () => {
           const node = useEditorStore.getState().node
           const val = getBufferVal(node.nodeid)
-          saveApiAndUpdate(node, val)
+          const content = getContent(node.nodeid)
+          const res = areEqual(content.content, val)
+
+          if (!res) {
+            saveApiAndUpdate(node, val)
+          } else {
+            // * If buffer hasn't changed, refresh the note
+            getDataAPI(node.nodeid, false, true)
+          }
         })
       },
       [shortcuts.save.keystrokes]: (event) => {
@@ -123,7 +135,7 @@ const ContentEditor = () => {
             onAutoSave={(val) => {
               saveAndClearBuffer(false)
             }}
-            content={fsContent?.content ?? defaultContent.content}
+            content={fsContent?.content?.length ? fsContent?.content : defaultContent.content}
             onChange={onChangeSave}
             editorId={editorId}
             readOnly={viewOnly}

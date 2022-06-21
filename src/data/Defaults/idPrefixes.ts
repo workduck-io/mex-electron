@@ -14,11 +14,13 @@ export const TEMP_ID_PREFIX = 'TEMP'
 export const SNIPPET_PREFIX = 'SNIPPET'
 export const SYNCTEMP_PREFIX = 'SYNCTEMP'
 export const TODO_PREFIX = 'TODO'
-export const DRAFT_PREFIX = 'Draft'
+export const DRAFT_PREFIX = 'Drafts'
 export const MEETING_PREFIX = 'Meeting'
 export const QUESTION_ID_PREFIX = 'WD_MEX_QUESTION'
 export const DRAFT_NODE = 'Untitled'
 export const REMINDER_ID_PREFIX = 'REMINDER'
+
+export const HASH_SEPARATOR = '#'
 
 export const generateNodeUID = () => `${NODE_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`
 export const generateWorkspaceId = () => `${WORKSPACE_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`

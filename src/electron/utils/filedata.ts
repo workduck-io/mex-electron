@@ -20,7 +20,7 @@ export const getFileData = (location: string) => {
   } else {
     const version = app.getVersion()
     fs.writeFileSync(location, JSON.stringify(DefaultFileData(version)))
-    console.log('Getting data', { version })
+    console.log('---- Loading local data -----', { version })
     return DefaultFileData(version)
   }
 }

@@ -33,6 +33,7 @@ import { useTaskFromSelection } from '@hooks/useTaskFromSelection'
 import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
 import { useSpotlightSettingsStore } from '@store/settings.spotlight'
+import { useCreateNewNode } from '@hooks/useCreateNewNode'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -67,6 +68,7 @@ const List = ({
 
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
 
+  const { createNewNode } = useCreateNewNode()
   const { getSnippet } = useSnippets()
 
   const { getNewTaskNode } = useTaskFromSelection()
@@ -188,6 +190,9 @@ const List = ({
               const isNewTask = isParent(node.path, BASE_TASKS_PATH)
               if (currentActiveItem?.extras.new && !activeItem.active) {
                 nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
+
+                // TODO: Create new note with specified 'nodeid' and 'path'.
+                // createNewNode()
                 addILink({ ilink: nodePath, nodeid: node.nodeid })
               }
 
@@ -212,6 +217,8 @@ const List = ({
 
               if (currentActiveItem?.extras.new && !activeItem.active) {
                 nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
+
+                // TODO: Create new note with specified 'nodeid' and 'path'.
                 addILink({ ilink: nodePath, nodeid: node.nodeid })
               }
             }
@@ -271,6 +278,8 @@ const List = ({
         const node = useSpotlightEditorStore.getState().node
 
         const nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
+
+        // TODO: Create new note with specified 'nodeid' and 'path'.
         addILink({ ilink: nodePath, nodeid: node.nodeid })
       }
     } else if (currentActiveItem?.type === QuickLinkType.snippet && !activeItem.active) {

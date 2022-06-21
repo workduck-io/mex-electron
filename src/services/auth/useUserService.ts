@@ -53,7 +53,7 @@ export const useUserService = () => {
     if (user) return user
     try {
       return await client.get(apiURLs.user.getFromUserId(userID)).then((resp) => {
-        mog('Response', { data: resp.data })
+        // mog('Response', { data: resp.data })
         if (resp?.data?.email && resp?.data?.name) {
           addUser({
             userID,

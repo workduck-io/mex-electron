@@ -13,7 +13,6 @@ import { SnippetCommandPrefix } from '../../../../hooks/useSnippets'
 import { CreateNewPrefix } from '../../multi-combobox/useMultiComboboxChange'
 import { Editor, Transforms } from 'slate'
 import { ComboSearchType } from '../../multi-combobox/types'
-import { ELEMENT_INLINE_BLOCK } from '../../InlineBlock/types'
 
 const pure = (id: string) => {
   let newId = id

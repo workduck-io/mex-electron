@@ -14,7 +14,7 @@ import useAnalytics from '../analytics'
 import { Properties, CustomEvents } from '../analytics/events'
 import { mog } from '../../utils/lib/helper'
 import useActions from '../../components/spotlight/Actions/useActions'
-import { useActionsPerfomerClient, useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
+import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActionPerformer'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useLayoutStore } from '@store/useLayoutStore'
 
@@ -132,6 +132,7 @@ export const useAuthentication = () => {
             [Properties.WORKSPACE_ID]: d.data.group,
             [Properties.ALIAS]: d.data.metadata.alias
           })
+
           setShowLoader(false)
           addEventProperties({ [CustomEvents.LOGGED_IN]: true })
 

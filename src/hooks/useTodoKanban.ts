@@ -112,7 +112,7 @@ export const useTodoKanban = () => {
 
   const getTodoBoard = () => {
     const nodetodos = useTodoStore.getState().todos
-    const sExtra = getSearchExtra()
+    const extra = getSearchExtra()
     const todoBoard: TodoKanbanBoard = {
       columns: [
         {
@@ -140,7 +140,7 @@ export const useTodoKanban = () => {
         .filter((todo) => currentFilters.every((filter) => filter.filter(todo)))
         .filter((todo) => {
           // TODO: Find a faster way to check for empty content // May not need to convert content to raw text
-          const text = convertContentToRawText(todo.content, ' ', undefined, sExtra).trim()
+          const text = convertContentToRawText(todo.content, ' ', { extra }).trim()
           // mog('empty todo check', { text, nodeid, todo })
           if (text === '') {
             return false

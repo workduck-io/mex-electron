@@ -127,6 +127,7 @@ const Content = () => {
       const val = search.type === CategoryType.backlink ? search.value.slice(2) : search.value
 
       const nodeValue = val || getUntitledDraftKey()
+
       let node
 
       if (isNew) {

@@ -8,6 +8,13 @@ interface RequestData {
   // headers: string;
 }
 
+export type PollingType = {
+  type: 'hierarchy' | 'shared' | 'bookmarks'
+  interval?: number
+}
+
+export const defaultPollActions = []
+
 interface ApiStore {
   requests: { [URL: string]: RequestData }
   setRequest(url: string, data: RequestData): void

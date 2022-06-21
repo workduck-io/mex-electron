@@ -55,9 +55,9 @@ const Nav = ({ links }: NavProps) => {
 
   const [source, target] = useSingleton()
 
-  const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {
+  const onNewNote: React.MouseEventHandler<HTMLDivElement> = async (e) => {
     e.preventDefault()
-    const nodeid = createNewNode()
+    const nodeid = await createNewNode()
 
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
@@ -85,9 +85,7 @@ const Nav = ({ links }: NavProps) => {
       [shortcuts.newNode.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.newNode, () => {
-          const nodeid = createNewNode()
-
-          goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+          createNewNode().then((nodeid) => goTo(ROUTE_PATHS.node, NavigationType.push, nodeid))
         })
       }
     })

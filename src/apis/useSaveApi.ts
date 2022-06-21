@@ -12,15 +12,17 @@ import { apiURLs } from './routes'
 import { WORKSPACE_HEADER, DEFAULT_NAMESPACE } from '../data/Defaults/defaults'
 import { useLinks } from '../hooks/useLinks'
 import { useNodes } from '@hooks/useNodes'
+import { NodeEditorContent } from '../types/Types'
+import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
+import { HASH_SEPARATOR } from '@data/Defaults/idPrefixes'
+import { hierarchyParser, useHierarchy } from '@hooks/useHierarchy'
 
-// clientInterceptor
-//
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const setMetadata = useContentStore((store) => store.setMetadata)
   const setContent = useContentStore((store) => store.setContent)
-  const { getNodeTitleSave } = useLinks()
+  const { getNodeTitleSave, getTitleFromPath, updateILinks } = useLinks()
   const { getSharedNode } = useNodes()
   /*
    * Saves data in the backend
@@ -29,17 +31,26 @@ export const useApi = () => {
 
   const defaultQAContent = getRandomQAContent()
 
-  const saveNewNodeAPI = async (nodeid: string) => {
+  const saveNewNodeAPI = async (
+    noteId: string,
+    options?: {
+      path: string
+      parentNoteId: string
+      content?: NodeEditorContent
+    }
+  ) => {
+    const content = options?.content ?? defaultQAContent
+
     const reqData = {
-      id: nodeid,
-      title: getNodeTitleSave(nodeid),
+      id: noteId,
+      title: getTitleFromPath(options.path),
+      referenceID: options?.parentNoteId,
+      namespaceIdentifier: DEFAULT_NAMESPACE,
       type: 'NodeRequest',
-      lastEditedBy: useAuthStore.getState().userDetails.email,
-      namespaceIdentifier: 'NAMESPACE1',
-      data: serializeContent(defaultQAContent, nodeid)
+      data: serializeContent(content, noteId)
     }
 
-    setContent(nodeid, defaultQAContent)
+    setContent(noteId, content)
 
     if (!USE_API) {
       return
@@ -53,15 +64,61 @@ export const useApi = () => {
         }
       })
       .then((d) => {
-        // mog('saveNewNodeAPI response', d)
-        setMetadata(nodeid, extractMetadata(d.data))
+        setMetadata(noteId, extractMetadata(d.data))
         return d.data
       })
       .catch((e) => {
         console.error(e)
       })
+
     return data
   }
+
+  const bulkSaveNodes = async (
+    noteId: string,
+    options: {
+      path: string
+      parentNoteId?: string
+      content?: NodeEditorContent
+    }
+  ) => {
+    const paths = options?.path.split(SEPARATOR)
+    const content = options?.content ?? defaultContent.content
+
+    const reqData = {
+      nodePath: {
+        path: paths.join(HASH_SEPARATOR)
+      },
+      id: noteId,
+      title: getTitleFromPath(options.path),
+      namespaceIdentifier: DEFAULT_NAMESPACE,
+      type: 'NodeBulkRequest',
+      data: serializeContent(content, noteId)
+    }
+
+    setContent(noteId, content)
+
+    const data = await client
+      .post(apiURLs.bulkSaveNodes, reqData, {
+        headers: {
+          [WORKSPACE_HEADER]: getWorkspaceId()
+        }
+      })
+      .then((d: any) => {
+        const { addedPaths, removedPaths, node } = d.data
+        const addedILinks = hierarchyParser(addedPaths)
+        const removedILinks = hierarchyParser(removedPaths)
+        setMetadata(noteId, extractMetadata(node))
+
+        // * set the new hierarchy in the tree
+        updateILinks(addedILinks, removedILinks)
+
+        return d.data
+      })
+
+    return data
+  }
+
   /*
    * Saves data in the backend
    * Also updates the incoming data in the store
@@ -106,9 +163,9 @@ export const useApi = () => {
     return data
   }
 
-  const getDataAPI = async (nodeid: string, isShared = false) => {
+  const getDataAPI = async (nodeid: string, isShared = false, isRefresh = false) => {
     const url = isShared ? apiURLs.getSharedNode(nodeid) : apiURLs.getNode(nodeid)
-    if (!isShared && isRequestedWithin(5, url)) {
+    if (!isShared && isRequestedWithin(2, url) && !isRefresh) {
       console.warn('\nAPI has been requested before, cancelling\n')
       return
     }
@@ -141,9 +198,9 @@ export const useApi = () => {
     }
   }
 
-  const getNodesByWorkspace = async (workspaceId: string) => {
+  const getNodesByWorkspace = async () => {
     const data = await client
-      .get(apiURLs.getNodesByWorkspace(workspaceId), {
+      .get(apiURLs.getHeirarchy(), {
         headers: {
           [WORKSPACE_HEADER]: getWorkspaceId(),
           Accept: 'application/json, text/plain, */*'
@@ -163,7 +220,7 @@ export const useApi = () => {
       .catch((error) => console.error(error))
   }
 
-  return { saveDataAPI, getDataAPI, saveNewNodeAPI, getNodesByWorkspace, getGoogleAuthUrl }
+  return { saveDataAPI, getDataAPI, bulkSaveNodes, saveNewNodeAPI, getNodesByWorkspace, getGoogleAuthUrl }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

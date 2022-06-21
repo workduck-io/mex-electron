@@ -36,7 +36,7 @@ export const TreeContextMenu = () => {
         openDeleteModal(p.path)
         break
       case 'createChild':
-        createNewNode(p.path)
+        createNewNode({ parent: p.path })
         break
       case 'sync':
         break
