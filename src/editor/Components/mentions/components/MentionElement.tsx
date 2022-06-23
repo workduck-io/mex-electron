@@ -40,11 +40,11 @@ import { useSnippetContext } from '@store/Context/context.snippet'
 
 interface MentionTooltipProps {
   user?: Mentionable | InvitedUser | SelfMention
-  nodeid: string
   access?: AccessLevel
+  hideAccess?: boolean
 }
 
-const MentionTooltipComponent = ({ user, access, nodeid }: MentionTooltipProps) => {
+export const MentionTooltipComponent = ({ user, access, hideAccess }: MentionTooltipProps) => {
   const spotlightCtx = useSpotlightContext()
   const snippetCtx = useSnippetContext()
 
@@ -79,12 +79,17 @@ const MentionTooltipComponent = ({ user, access, nodeid }: MentionTooltipProps) 
         {/* <div>State: {user?.type ?? 'Missing'}</div> */}
         <TooltipMail>{user && user.email}</TooltipMail>
         {access && <AccessTag access={access} />}
-        {user && user?.type !== 'invite' && user?.type !== 'self' && snippetCtx === undefined && !access && (
-          <Button onClick={onShareModal}>
-            <Icon icon="ri:share-line" />
-            Share Note
-          </Button>
-        )}
+        {user &&
+          user?.type !== 'invite' &&
+          user?.type !== 'self' &&
+          snippetCtx === undefined &&
+          !access &&
+          !hideAccess && (
+            <Button onClick={onShareModal}>
+              <Icon icon="ri:share-line" />
+              Share Note
+            </Button>
+          )}
       </MentionTooltipContent>
     </MentionTooltip>
   )
@@ -167,7 +172,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
         interactive
         placement="bottom"
         appendTo={() => document.body}
-        render={(attrs) => <MentionTooltipComponent user={user} nodeid={node.nodeid} access={access} />}
+        render={(attrs) => <MentionTooltipComponent user={user} access={access} />}
       >
         <SMention {...onClickProps} type={user?.type} selected={selected}>
           {user?.email && <ProfileImage email={user?.email} size={16} />}

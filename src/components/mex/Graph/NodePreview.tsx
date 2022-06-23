@@ -1,8 +1,9 @@
 import editIcon from '@iconify/icons-bx/bx-edit-alt'
 import timeIcon from '@iconify/icons-bx/bx-time-five'
 import { Icon } from '@iconify/react'
+import { useUserService } from '@services/auth/useUserService'
 import { transparentize } from 'polished'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useLinks } from '../../../hooks/useLinks'
@@ -74,6 +75,18 @@ const NodePreview = ({ node }: { node: ILink }) => {
   const nodeid = getNodeidFromPath(node?.path)
   const content = getContent(nodeid)
 
+  const { getUserDetailsUserId } = useUserService()
+  const [alias, setAlias] = useState<string | undefined>()
+
+  useEffect(() => {
+    (async () => {
+      if (content?.metadata?.lastEditedBy) {
+        const user = await getUserDetailsUserId(content?.metadata?.lastEditedBy)
+        if (user.alias) setAlias(user.alias)
+      }
+    })()
+  }, [nodeid])
+
   const time = content?.metadata?.updatedAt
 
   return (
@@ -83,7 +96,7 @@ const NodePreview = ({ node }: { node: ILink }) => {
         {content?.metadata?.lastEditedBy && (
           <Flex>
             <StyledIcon icon={editIcon} />
-            <SmallText>{content?.metadata?.lastEditedBy}</SmallText>
+            <SmallText>{alias}</SmallText>
           </Flex>
         )}
         {time && (

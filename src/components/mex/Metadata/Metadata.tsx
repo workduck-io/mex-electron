@@ -151,7 +151,7 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
           <DataWrapper interactive={metadata.createdAt !== undefined}>
             {metadata.createdBy !== undefined ? (
               <ProfileIcon>
-                <ProfileImageWithToolTip props={{ email: metadata.createdBy, size: 32 }} placement="bottom" />
+                <ProfileImageWithToolTip props={{ userid: metadata.createdBy, size: 32 }} placement="bottom" />
               </ProfileIcon>
             ) : (
               <Icon icon={timeLine}></Icon>
@@ -173,7 +173,7 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
           <DataWrapper interactive={metadata.updatedAt !== undefined}>
             {metadata.lastEditedBy !== undefined ? (
               <ProfileIcon data-title={metadata.lastEditedBy}>
-                <ProfileImageWithToolTip props={{ email: metadata.lastEditedBy, size: 32 }} placement="bottom" />
+                <ProfileImageWithToolTip props={{ userid: metadata.lastEditedBy, size: 32 }} placement="bottom" />
               </ProfileIcon>
             ) : (
               <Icon icon={timeLine}></Icon>

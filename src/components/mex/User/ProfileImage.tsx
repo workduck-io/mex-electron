@@ -1,10 +1,13 @@
+import { MentionTooltipComponent } from '@editor/Components/mentions/components/MentionElement'
+import { useMentions } from '@hooks/useMentions'
 import user3Line from '@iconify/icons-ri/user-3-line'
 import { Icon } from '@iconify/react'
+import { useUserService } from '@services/auth/useUserService'
 import { useCacheStore } from '@store/useRequestCache'
 import Tippy from '@tippyjs/react/headless' // different import path!
 import Avatar from 'boring-avatars'
 import md5 from 'md5'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled, { useTheme } from 'styled-components'
 import { CardShadow } from '../../../style/helpers'
 import Centered from '../../../style/Layouts'
@@ -83,27 +86,37 @@ export const ProfileImage = ({ email, size, DefaultFallback }: ProfileImageProps
   return <Icon className="defaultProfileIcon" icon={user3Line} height={size} />
 }
 
+interface ProfileImageTooltipProps {
+  userid: string
+  size: number
+  // Component to replace the default image
+  DefaultFallback?: React.ComponentType
+}
+
 interface ProfileImageWithToolTipProps {
-  props: ProfileImageProps
+  props: ProfileImageTooltipProps
   placement?: string
 }
 
 export const ProfileImageWithToolTip = ({ props, placement }: ProfileImageWithToolTipProps) => {
-  const { email } = props // eslint-disable-line react/prop-types
+  const { userid, size, DefaultFallback } = props // eslint-disable-line react/prop-types
+  const { getUserFromUserid } = useMentions()
+
+  const user = useMemo(() => {
+    const u = getUserFromUserid(userid)
+    if (u) return u
+  }, [userid])
+
   return (
     <Tippy
       delay={100}
       interactiveDebounce={100}
       placement={(placement as any) ?? 'auto'}
       appendTo={() => document.body}
-      render={(attrs) => (
-        <ProfileTooptip tabIndex={-1} {...attrs}>
-          {email}
-        </ProfileTooptip>
-      )}
+      render={(attrs) => <MentionTooltipComponent user={user} hideAccess />}
     >
       <Centered>
-        <ProfileImage {...props} />
+        <ProfileImage size={size} email={user.email} DefaultFallback={DefaultFallback} />
       </Centered>
     </Tippy>
   )
