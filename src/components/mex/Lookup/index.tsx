@@ -125,7 +125,7 @@ const Lookup = () => {
     }
   }
 
-  const handleCreateItem = async (inputValue: QuickLink) => {
+  const handleCreateItem = (inputValue: QuickLink) => {
     if (tempClose) return
     createNewNote({ path: inputValue.value })
     closeModal()

@@ -58,7 +58,7 @@ const Nav = ({ links }: NavProps) => {
 
   const [source, target] = useSingleton()
 
-  const onNewNote: React.MouseEventHandler<HTMLDivElement> = async (e) => {
+  const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault()
     const note = createNewNote()
 
