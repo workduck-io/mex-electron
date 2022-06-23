@@ -1,5 +1,6 @@
 import user3Line from '@iconify/icons-ri/user-3-line'
 import { Icon } from '@iconify/react'
+import { useUserService } from '@services/auth/useUserService'
 import { useCacheStore } from '@store/useRequestCache'
 import Tippy from '@tippyjs/react/headless' // different import path!
 import Avatar from 'boring-avatars'
@@ -83,13 +84,30 @@ export const ProfileImage = ({ email, size, DefaultFallback }: ProfileImageProps
   return <Icon className="defaultProfileIcon" icon={user3Line} height={size} />
 }
 
+interface ProfileImageTooltipProps {
+  userid: string
+  size: number
+  // Component to replace the default image
+  DefaultFallback?: React.ComponentType
+}
+
 interface ProfileImageWithToolTipProps {
-  props: ProfileImageProps
+  props: ProfileImageTooltipProps
   placement?: string
 }
 
 export const ProfileImageWithToolTip = ({ props, placement }: ProfileImageWithToolTipProps) => {
-  const { email } = props // eslint-disable-line react/prop-types
+  const { userid, size, DefaultFallback } = props // eslint-disable-line react/prop-types
+  const { getUserDetailsUserId } = useUserService()
+  const [email, setEmail] = useState<string | undefined>()
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUserDetailsUserId(userid)
+      if (user.email) setEmail(user.email)
+    })()
+  }, [userid])
+
   return (
     <Tippy
       delay={100}
@@ -103,7 +121,7 @@ export const ProfileImageWithToolTip = ({ props, placement }: ProfileImageWithTo
       )}
     >
       <Centered>
-        <ProfileImage {...props} />
+        <ProfileImage size={size} email={email} DefaultFallback={DefaultFallback} />
       </Centered>
     </Tippy>
   )
