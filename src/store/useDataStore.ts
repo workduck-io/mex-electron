@@ -66,24 +66,12 @@ const useDataStore = create<DataStoreState>(
         - with existing add numeric suffix
         - not allowed with reserved keywords
    */
-    addILink: ({ ilink, nodeid, openedNotePath, archived, showAlert }) => {
-      const { key, isChild } = withoutContinuousDelimiter(ilink)
 
-      // * If `notePath` starts with '.', than create note under 'Opened Note'.
-      if (key) {
-        ilink = isChild && openedNotePath ? `${openedNotePath}${key}` : key
-      }
+    addILink: ({ ilink, nodeid, openedNotePath, archived, showAlert }) => {
+      const uniquePath = get().checkValidILink({ notePath: ilink, openedNotePath, showAlert })
 
       const ilinks = get().ilinks
-
       const linksStrings = ilinks.map((l) => l.path)
-      const reservedOrUnique = getUniquePath(ilink, linksStrings, showAlert)
-
-      if (!reservedOrUnique) {
-        throw Error(`ERROR-RESERVED: PATH (${ilink}) IS RESERVED. YOU DUMB`)
-      }
-
-      const uniquePath = reservedOrUnique.unique
 
       const parents = getAllParentIds(uniquePath) // includes link of child
       const newLinks = parents.filter((l) => !linksStrings.includes(l)) // only create links for non existing
@@ -98,12 +86,12 @@ const useDataStore = create<DataStoreState>(
 
       const userILinks = archived ? ilinks.map((val) => (val.path === uniquePath ? { ...val, nodeid } : val)) : ilinks
 
-      // mog('Adding ILink', { ilink, uniquePath, nodeid, parentId, archived, newLink, newLinks, userILinks, parents })
       set({
         ilinks: [...userILinks, ...newILinks]
       })
 
       if (newLink) return newLink
+
       return
     },
 

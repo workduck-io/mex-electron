@@ -1,12 +1,8 @@
 import { IpcAction } from '@data/IpcAction'
-import { getNewDraftKey } from '@editor/Components/SyncBlock/getNewBlockData'
-import { appNotifierWindow } from '@electron/utils/notifiers'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useEditorBuffer } from '@hooks/useEditorBuffer'
-import { AppType } from '@hooks/useInitialize'
 import useLoad from '@hooks/useLoad'
-import { useNavigation } from '@hooks/useNavigation'
 import { useAuthentication } from '@services/auth/useAuth'
-import useDataStore from '@store/useDataStore'
 import { useHistoryStore } from '@store/useHistoryStore'
 import useOnboard from '@store/useOnboarding'
 import { useRecentsStore } from '@store/useRecentsStore'
@@ -18,15 +14,14 @@ export const useIpcListenerOnInit = () => {
   const clear = useRecentsStore((store) => store.clear)
   const pushHs = useHistoryStore((store) => store.push)
   const isOnboarding = useOnboard((s) => s.isOnboarding)
-  const addILink = useDataStore((store) => store.addILink)
   const addRecent = useRecentsStore((store) => store.addRecent)
 
   // * Custom hooks
   const { goTo } = useRouting()
   const { loadNode } = useLoad()
-  const { push } = useNavigation()
   const { logout } = useAuthentication()
   const { saveAndClearBuffer } = useEditorBuffer()
+  const { createNewNote } = useCreateNewNote()
 
   /**
    * Sets handlers for IPC Calls
@@ -51,12 +46,8 @@ export const useIpcListenerOnInit = () => {
       }
     })
     ipcRenderer.on(IpcAction.CREATE_NEW_NODE, () => {
-      const newNodeId = getNewDraftKey()
-      const node = addILink({ ilink: newNodeId })
-      push(node.nodeid)
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
-
-      goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
+      const note = createNewNote()
+      goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
     })
 
     ipcRenderer.on(IpcAction.OPEN_REMINDER, (_event, { reminder }) => {

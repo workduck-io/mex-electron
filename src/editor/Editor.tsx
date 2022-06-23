@@ -19,7 +19,7 @@ import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
 import { mog } from '../utils/lib/helper'
 import { useDebouncedCallback } from 'use-debounce'
 import useSuggestionStore from '@store/useSuggestionStore'
-import { NodeEditorContent } from '@types/Types'
+import { NodeEditorContent } from '../types/Types'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any

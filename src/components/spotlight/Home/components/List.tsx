@@ -33,7 +33,7 @@ import { useTaskFromSelection } from '@hooks/useTaskFromSelection'
 import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
 import { useSpotlightSettingsStore } from '@store/settings.spotlight'
-import { useCreateNewNode } from '@hooks/useCreateNewNode'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -57,9 +57,7 @@ const List = ({
   const { search, setSelection, activeIndex, searchResults, activeItem, setSearch, selection, setActiveIndex } =
     useSpotlightContext()
   const parentRef = useRef(null)
-
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
-  const addILink = useDataStore((store) => store.addILink)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
 
@@ -68,7 +66,7 @@ const List = ({
 
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
 
-  const { createNewNode } = useCreateNewNode()
+  const { createNewNote } = useCreateNewNote()
   const { getSnippet } = useSnippets()
 
   const { getNewTaskNode } = useTaskFromSelection()
@@ -192,8 +190,8 @@ const List = ({
                 nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
 
                 // TODO: Create new note with specified 'nodeid' and 'path'.
-                // createNewNode()
-                addILink({ ilink: nodePath, nodeid: node.nodeid })
+                // createNewNote()
+                createNewNote({ path: nodePath, noteId: node.nodeid })
               }
 
               if (selection) {
@@ -219,7 +217,7 @@ const List = ({
                 nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
 
                 // TODO: Create new note with specified 'nodeid' and 'path'.
-                addILink({ ilink: nodePath, nodeid: node.nodeid })
+                createNewNote({ path: nodePath, noteId: node.nodeid })
               }
             }
           }
@@ -280,7 +278,7 @@ const List = ({
         const nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
 
         // TODO: Create new note with specified 'nodeid' and 'path'.
-        addILink({ ilink: nodePath, nodeid: node.nodeid })
+        createNewNote({ path: nodePath, noteId: node.nodeid })
       }
     } else if (currentActiveItem?.type === QuickLinkType.snippet && !activeItem.active) {
       handleCopySnippet(currentActiveItem.id, true)

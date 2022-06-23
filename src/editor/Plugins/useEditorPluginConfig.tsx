@@ -28,7 +28,7 @@ import { ELEMENT_TAG } from '../Components/tag/defaults'
 import { useAuthStore } from '../../services/auth/useAuth'
 import { PluginOptionType } from './plugins'
 import { mog } from '@utils/lib/helper'
-import { useCreateNewNode } from '@hooks/useCreateNewNode'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
 
 const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => {
   const tags = useDataStore((state) => state.tags)
@@ -43,7 +43,6 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
   const userDetails = useAuthStore((state) => state.userDetails)
 
   const addTag = useDataStore((state) => state.addTag)
-  const addILink = useDataStore((state) => state.addILink)
   const { setActionsInList } = useActions()
   const { getSnippetsConfigs } = useSnippets()
   const spotlightCtx = useSpotlightContext()
@@ -51,7 +50,7 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
   const { grantUserAccessOnMention } = useMentions()
   // const { getSyncBlockConfigs } = useSyncConfig()
   const { openReminderModal } = useOpenReminderModal()
-  const { createNewNode } = useCreateNewNode()
+  const { createNewNote } = useCreateNewNote()
   // Combobox
   const snippetConfigs = getSnippetsConfigs()
   // const syncBlockConfigs = getSyncBlockConfigs()
@@ -175,9 +174,9 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
     keys: {
       inline_block: {
         slateElementType: ELEMENT_INLINE_BLOCK,
-        newItemHandler: async (path, openedNotePath?) => {
-          const nodeid = await createNewNode({ path, openedNotePath, noRedirect: true })
-          return nodeid
+        newItemHandler: (path, openedNotePath?) => {
+          const note = createNewNote({ path, openedNotePath, noRedirect: true })
+          return note?.nodeid
         },
         renderElement: ILinkComboboxItem
       },
@@ -211,12 +210,10 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
       },
       internal: {
         slateElementType: 'internal',
-        newItemHandler: async (path, openedNotePath?) => {
+        newItemHandler: (path, openedNotePath?) => {
           mog('new item here is', { path, openedNotePath })
-          const nodeid = await createNewNode({ path, openedNotePath, noRedirect: true })
-          return nodeid
-          // const link = addILink({ ilink: newItem, openedNotePath })
-          return
+          const note = createNewNote({ path, openedNotePath, noRedirect: true })
+          return note?.nodeid
         },
         renderElement: SlashComboboxItem
       }
@@ -224,10 +221,10 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
     internal: {
       ilink: {
         slateElementType: ELEMENT_ILINK,
-        newItemHandler: async (path, openedNotePath?) => {
+        newItemHandler: (path, openedNotePath?) => {
           mog('new item here is', { path, openedNotePath })
-          const nodeid = await createNewNode({ path, openedNotePath, noRedirect: true })
-          return nodeid
+          const note = createNewNote({ path, openedNotePath, noRedirect: true })
+          return note?.nodeid
         },
         renderElement: ILinkComboboxItem
       },

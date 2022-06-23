@@ -1,10 +1,11 @@
 import { mog } from '@utils/lib/helper'
-import { useState, useEffect, useReducer } from 'react'
+import { useState, useEffect } from 'react'
 import create from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
 export type Job = {
-  task?: () => void | Promise<void>
+  task: () => void | Promise<void>
+  id: string
 }
 
 type JobQueueProps = {
@@ -15,7 +16,9 @@ type JobQueueProps = {
   setJobs?: (jobs: Array<Job>) => void
   addJobInQueue: (job: Job) => void
   nextJobInQueue: () => Job | undefined
-  emptyQueue: () => void
+
+  getIsJobsQueueEmpty: () => boolean
+  emptyJobsQueue: () => void
 }
 
 export const useJobQueueStore = create<JobQueueProps>(
@@ -41,7 +44,8 @@ export const useJobQueueStore = create<JobQueueProps>(
 
         return undefined
       },
-      emptyQueue: () => set({ jobs: [] })
+      getIsJobsQueueEmpty: () => get().jobs.length === 0,
+      emptyJobsQueue: () => set({ jobs: [] })
     })),
     {
       name: 'job-queue-store'
@@ -63,8 +67,12 @@ export const useJobQueue = () => {
         setIsExecutingTask(true)
         const job = jobs[0]
 
-        await job?.task()
-        nextJobInQueue()
+        try {
+          await job?.task()
+          nextJobInQueue()
+        } catch (err) {
+          mog('Unable to perform this Task')
+        }
 
         if (jobs.length === 0) {
           mog('Job Queue is empty')

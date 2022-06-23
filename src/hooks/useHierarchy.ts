@@ -1,15 +1,13 @@
 import { useApi } from '@apis/useSaveApi'
-import { generateNodeUID } from '@data/Defaults/idPrefixes'
-import useTodoStore from '@store/useTodoStore'
-import { getTodosFromContent } from '@utils/lib/content'
+import { generateNodeUID, HASH_SEPARATOR } from '@data/Defaults/idPrefixes'
 import { mog } from '@utils/lib/helper'
 import toast from 'react-hot-toast'
-import { useLinks } from './useLinks'
-import { useSearch } from './useSearch'
-import { useTags } from './useTags'
+import { getNodeidFromPathAndLinks, useLinks } from './useLinks'
 import { NodeEditorContent } from '../types/Types'
 import { defaultContent } from '@data/Defaults/baseData'
 import useDataStore from '@store/useDataStore'
+import { useDataSaverFromContent } from '@editor/Components/Saver'
+import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 
 export type ILink = {
   nodeid: string
@@ -66,60 +64,64 @@ export const hierarchyParser = (linkData: string[]): ILink[] => {
   return ilinks
 }
 
+const appendToText = (text: string, textToAppend: string, separator = SEPARATOR) => {
+  if (!text) return textToAppend
+  return `${text}${separator}${textToAppend}`
+}
+
 export const useHierarchy = () => {
-  const checkValidILink = useDataStore((s) => s.checkValidILink)
-  const { getParentILink } = useLinks()
   const { saveNewNodeAPI, bulkSaveNodes } = useApi()
+  const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
 
-  const { updateLinksFromContent } = useLinks()
-  const updateNodeTodos = useTodoStore((store) => store.replaceContentOfTodos)
+  const createNoteHierarchyString = (notePath: string) => {
+    const ilinks = useDataStore.getState().ilinks
+    let prefix = ''
 
-  const { updateTagsFromContent } = useTags()
-  const { updateDocument } = useSearch()
+    const noteLink = notePath.split(SEPARATOR).reduce((prevPath, currentNotePath) => {
+      prefix = appendToText(prefix, currentNotePath)
 
-  const addInHierachy = async (notePath, options?: NewILinkProps) => {
+      const currentNoteId = getNodeidFromPathAndLinks(ilinks, prefix)
+      const linkWithTitle = appendToText(prevPath, currentNotePath, HASH_SEPARATOR)
+      const link = appendToText(linkWithTitle, currentNoteId, HASH_SEPARATOR)
+
+      return link
+    }, '')
+
+    return noteLink
+  }
+
+  const addInHierarchy = async (options: {
+    noteId: string
+    notePath: string
+    parentNoteId: string
+    noteContent?: NodeEditorContent
+  }) => {
     try {
-      const uniqueNotePath = checkValidILink({
-        notePath,
-        openedNotePath: options?.openedNotePath,
-        showAlert: false
-      })
+      const { notePath, noteId, parentNoteId, noteContent } = options
 
-      mog('Unique note path', { uniqueNotePath, options, notePath })
+      const content = noteContent ?? defaultContent.content
+      const bulkNotePath = !parentNoteId ? createNoteHierarchyString(notePath) : notePath
 
-      const noteId = generateNodeUID()
-      const content = options?.content ?? defaultContent.content
-      const parentNoteLink = getParentILink(uniqueNotePath)
-
-      mog('UNIQUE', { uniqueNotePath, parentNoteLink, notePath })
-
-      const node = parentNoteLink?.nodeid
+      const node = parentNoteId
         ? await saveNewNodeAPI(noteId, {
-            path: uniqueNotePath,
-            parentNoteId: parentNoteLink.nodeid,
+            path: notePath,
+            parentNoteId,
             content
           })
         : await bulkSaveNodes(noteId, {
-            path: uniqueNotePath,
+            path: bulkNotePath,
             content
           })
 
-      if (content) {
-        updateLinksFromContent(noteId, content)
-        updateTagsFromContent(noteId, content)
-        updateNodeTodos(noteId, getTodosFromContent(content))
-
-        await updateDocument('node', noteId, content)
-      }
+      saveEditorValueAndUpdateStores(noteId, content)
 
       return node
     } catch (error) {
       mog('Error while creating node', { error })
-      if (options?.showAlert) toast.error('Path clashed with a ReservedKeyword')
     }
   }
 
   return {
-    addInHierachy
+    addInHierarchy
   }
 }

@@ -1,4 +1,4 @@
-import { useCreateNewNode } from '@hooks/useCreateNewNode'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import archiveLine from '@iconify/icons-ri/archive-line'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import editLine from '@iconify/icons-ri/edit-line'
@@ -24,7 +24,7 @@ export const MENU_ID = 'Tree-Menu'
 export const TreeContextMenu = () => {
   const openRenameModal = useRenameStore((store) => store.openModal)
   const openDeleteModal = useDeleteStore((store) => store.openModal)
-  const { createNewNode } = useCreateNewNode()
+  const { createNewNote } = useCreateNewNote()
 
   function handleItemClick({ event, props: p, data, triggerEvent }: ItemParams<ItemProps, any>) {
     // mog('handleItemClick', { event, p, data, triggerEvent })
@@ -36,7 +36,7 @@ export const TreeContextMenu = () => {
         openDeleteModal(p.path)
         break
       case 'createChild':
-        createNewNode({ parent: p.path })
+        createNewNote({ parent: p.path })
         break
       case 'sync':
         break

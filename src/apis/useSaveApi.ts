@@ -1,5 +1,5 @@
 import { client } from '@workduck-io/dwindle'
-import { defaultContent, getRandomQAContent } from '../data/Defaults/baseData'
+import { defaultContent } from '../data/Defaults/baseData'
 import { USE_API } from '../data/Defaults/dev_'
 import '../services/apiClient/apiClient'
 import { useAuthStore } from '../services/auth/useAuth'
@@ -13,9 +13,7 @@ import { WORKSPACE_HEADER, DEFAULT_NAMESPACE } from '../data/Defaults/defaults'
 import { useLinks } from '../hooks/useLinks'
 import { useNodes } from '@hooks/useNodes'
 import { NodeEditorContent } from '../types/Types'
-import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
-import { HASH_SEPARATOR } from '@data/Defaults/idPrefixes'
-import { hierarchyParser, useHierarchy } from '@hooks/useHierarchy'
+import { hierarchyParser } from '@hooks/useHierarchy'
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,28 +27,24 @@ export const useApi = () => {
    * Also updates the incoming data in the store
    */
 
-  const defaultQAContent = getRandomQAContent()
-
   const saveNewNodeAPI = async (
     noteId: string,
     options?: {
       path: string
       parentNoteId: string
-      content?: NodeEditorContent
+      content: NodeEditorContent
     }
   ) => {
-    const content = options?.content ?? defaultQAContent
-
     const reqData = {
       id: noteId,
       title: getTitleFromPath(options.path),
       referenceID: options?.parentNoteId,
       namespaceIdentifier: DEFAULT_NAMESPACE,
       type: 'NodeRequest',
-      data: serializeContent(content, noteId)
+      data: serializeContent(options.content, noteId)
     }
 
-    setContent(noteId, content)
+    setContent(noteId, options.content)
 
     if (!USE_API) {
       return
@@ -78,25 +72,21 @@ export const useApi = () => {
     noteId: string,
     options: {
       path: string
-      parentNoteId?: string
-      content?: NodeEditorContent
+      content: NodeEditorContent
     }
   ) => {
-    const paths = options?.path.split(SEPARATOR)
-    const content = options?.content ?? defaultContent.content
-
     const reqData = {
       nodePath: {
-        path: paths.join(HASH_SEPARATOR)
+        path: options.path
       },
       id: noteId,
-      title: getTitleFromPath(options.path),
+      title: getTitleFromPath(options.path, true),
       namespaceIdentifier: DEFAULT_NAMESPACE,
       type: 'NodeBulkRequest',
-      data: serializeContent(content, noteId)
+      data: serializeContent(options.content, noteId)
     }
 
-    setContent(noteId, content)
+    setContent(noteId, options.content)
 
     const data = await client
       .post(apiURLs.bulkSaveNodes, reqData, {

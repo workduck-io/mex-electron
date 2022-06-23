@@ -20,7 +20,7 @@ import { useNodes } from '../../../hooks/useNodes'
 import useOnboard from '../../../store/useOnboarding'
 import { useSnippetStore } from '../../../store/useSnippetStore'
 import { useHierarchy } from '@hooks/useHierarchy'
-import { useCreateNewNode } from '@hooks/useCreateNewNode'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
 
 const StyledModal = styled(Modal)`
   z-index: 10010000;
@@ -54,7 +54,7 @@ const Lookup = () => {
   const isOnboarding = useOnboard((s) => s.isOnboarding)
   const setStep = useOnboard((s) => s.setStep)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
-  const { createNewNode } = useCreateNewNode()
+  const { createNewNote } = useCreateNewNote()
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
 
   const { goTo, location } = useRouting()
@@ -125,9 +125,9 @@ const Lookup = () => {
     }
   }
 
-  const handleCreateItem = async (inputValue: QuickLink) => {
+  const handleCreateItem = (inputValue: QuickLink) => {
     if (tempClose) return
-    await createNewNode({ path: inputValue.value })
+    createNewNote({ path: inputValue.value })
     closeModal()
   }
 

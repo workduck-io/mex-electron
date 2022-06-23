@@ -12,12 +12,9 @@ import { QuickLink, WrappedNodeSelect } from '../../../components/mex/NodeSelect
 import useBlockStore, { ContextMenuActionType } from '../../../store/useBlockStore'
 
 import { Button } from '../../../style/Buttons'
-import { AppType } from '../../../hooks/useInitialize'
-import { IpcAction } from '../../../data/IpcAction'
 import Modal from 'react-modal'
 import { NodeEditorContent } from '../../../types/Types'
 import React from 'react'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
 import { mog } from '../../../utils/lib/helper'
@@ -25,9 +22,9 @@ import { updateIds } from '../../../utils/dataTransform'
 import { useContentStore } from '../../../store/useContentStore'
 import { useDataSaverFromContent } from '../Saver'
 import { useLinks } from '../../../hooks/useLinks'
-import { useNodes } from '../../../hooks/useNodes'
 import { ButtonWrapper } from '../../../style/Settings'
 import { useSaveData } from '../../../hooks/useSaveData'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
 
 const BlockModal = () => {
   const blocksFromStore = useBlockStore((store) => store.blocks)
@@ -35,7 +32,7 @@ const BlockModal = () => {
   const setIsModalOpen = useBlockStore((store) => store.setIsModalOpen)
   const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
 
-  const { addNode } = useNodes()
+  const { createNewNote } = useCreateNewNote()
   const { saveData } = useSaveData()
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
   const editor = usePlateEditorRef()
@@ -121,11 +118,8 @@ const BlockModal = () => {
     setIsModalOpen(undefined)
     setIsBlockMode(false)
 
-    addNode({ ilink: quickLink.value, showAlert: true }, (node) => {
-      saveEditorValueAndUpdateStores(node.nodeid, blocksContent)
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
-      saveData()
-    })
+    createNewNote({ path: quickLink.value, noteContent: blocksContent })
+    saveData()
   }
 
   const onNodeSelect = (quickLink: QuickLink) => {

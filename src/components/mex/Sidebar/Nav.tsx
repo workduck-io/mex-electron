@@ -1,6 +1,6 @@
 import { Logo, SidebarToggle, TrafficLightBG } from '@data/illustrations/logo'
 import { GetIcon } from '@data/links'
-import { useCreateNewNode } from '@hooks/useCreateNewNode'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import useLayout from '@hooks/useLayout'
 import { useLinks } from '@hooks/useLinks'
 import { useKeyListener } from '@hooks/useShortcutListener'
@@ -21,7 +21,6 @@ import {
   MainLinkContainer,
   NavDivider,
   NavLogoWrapper,
-  NavSpacer,
   NavTitle,
   NavWrapper
 } from '@style/Nav'
@@ -31,13 +30,12 @@ import { NavTooltip } from '../Tooltips'
 import Bookmarks from './Bookmarks'
 import SharedNotes from './SharedNotes'
 import { useSidebarTransition } from './Transition'
-import Tree, { TreeContainer } from './Tree'
+import { TreeContainer } from './Tree'
 import { NavProps } from './Types'
 import Tabs from '@components/layouts/Tabs'
 import { MexIcon } from '@style/Layouts'
 import { SharedNodeIcon } from '@components/icons/Icons'
 import { useTheme } from 'styled-components'
-import { useTreeFromLinks } from '@store/useDataStore'
 import { useBookmarks } from '@hooks/useBookmarks'
 
 const Nav = ({ links }: NavProps) => {
@@ -49,17 +47,17 @@ const Nav = ({ links }: NavProps) => {
   const { getLinkCount } = useLinks()
   const { goTo } = useRouting()
   const theme = useTheme()
-  const { createNewNode } = useCreateNewNode()
+  const { createNewNote } = useCreateNewNote()
   const [openedTab, setOpenedTab] = useState<number>(0)
   const { getAllBookmarks } = useBookmarks()
 
   const [source, target] = useSingleton()
 
-  const onNewNote: React.MouseEventHandler<HTMLDivElement> = async (e) => {
+  const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault()
-    const nodeid = await createNewNode()
+    const note = createNewNote()
 
-    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+    goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
   }
 
   const onDoubleClickToogle = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -85,7 +83,9 @@ const Nav = ({ links }: NavProps) => {
       [shortcuts.newNode.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.newNode, () => {
-          createNewNode().then((nodeid) => goTo(ROUTE_PATHS.node, NavigationType.push, nodeid))
+          const note = createNewNote()
+
+          goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
         })
       }
     })

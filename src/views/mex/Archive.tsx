@@ -39,6 +39,7 @@ import { useSearch } from '../../hooks/useSearch'
 import { GenericSearchResult } from '../../types/search'
 import Infobox from '../../ui/components/Help/Infobox'
 import { ArchiveHelp } from '../../data/Defaults/helpText'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
 
 export const ArchivedNode = styled.div`
   display: flex;
@@ -67,8 +68,8 @@ const ActionContainer = styled.div`
 
 const Archive = () => {
   const archive = useDataStore((store) => store.archive)
-  const addILink = useDataStore((state) => state.addILink)
 
+  const { createNewNote } = useCreateNewNote()
   const { unArchiveData, removeArchiveData } = useArchive()
   const [delNode, setDelNode] = useState(undefined)
   const [showModal, setShowModal] = useState(false)
@@ -112,7 +113,7 @@ const Archive = () => {
     // }
 
     await unArchiveData([node])
-    addILink({ ilink: node.path, nodeid: node.nodeid, archived: true })
+    createNewNote({ path: node.path, noteId: node.nodeid })
 
     const content = getContent(node.nodeid)
     await removeDocument('archive', node.nodeid)

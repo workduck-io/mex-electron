@@ -27,6 +27,7 @@ import { useActionStore, UpdateActionsType } from '../Actions/useActionStore'
 import { useActionsPerfomerClient } from '../Actions/useActionPerformer'
 import { useActionsCache } from '../Actions/useActionsCache'
 import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
@@ -40,7 +41,6 @@ const GlobalListener = memo(() => {
   const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
-  const addILink = useDataStore((store) => store.addILink)
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
   const addResultHash = useActionsCache((store) => store.addResultHash)
   const closeShareModal = useShareModalStore((store) => store.closeModal)
@@ -64,6 +64,7 @@ const GlobalListener = memo(() => {
   const setView = useActionStore((store) => store.setView)
   const { setReceiveMention } = useRecieveMentions()
   const { getMentionData } = useMentionData()
+  const { createNewNote } = useCreateNewNote()
 
   // const { initActionPerformers } = useActionPerformer()
 
@@ -117,8 +118,9 @@ const GlobalListener = memo(() => {
         const content = getPlateSelectors().value()
 
         const isNodePresent = ilinks.find((ilink) => ilink.nodeid === node.nodeid)
+
         if (!isNodePresent) {
-          addILink({ ilink: node.path, nodeid: node.nodeid })
+          createNewNote({ path: node.path, noteId: node.nodeid })
         }
 
         addRecent(node.nodeid)
