@@ -1,3 +1,4 @@
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { getNodes, getSelectionText, insertNodes, TEditor } from '@udecode/plate'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import genereateName from 'project-name-generator'
@@ -8,7 +9,6 @@ import { defaultContent } from '../../../../data/Defaults/baseData'
 import { generateSnippetId, generateTempId } from '../../../../data/Defaults/idPrefixes'
 import { useSaveData } from '../../../../hooks/useSaveData'
 import { useContentStore } from '../../../../store/useContentStore'
-import useDataStore from '../../../../store/useDataStore'
 import { useEditorStore } from '../../../../store/useEditorStore'
 import { useSnippetStore } from '../../../../store/useSnippetStore'
 import { NodeEditorContent } from '../../../../types/Types'
@@ -21,9 +21,10 @@ import { ELEMENT_QA_BLOCK } from '../../QABlock/createQAPlugin'
 import { ELEMENT_SYNC_BLOCK } from '../../SyncBlock'
 
 export const useTransform = () => {
-  const addILink = useDataStore((s) => s.addILink)
   const addSnippet = useSnippetStore((s) => s.addSnippet)
   const setContent = useContentStore((s) => s.setContent)
+  const { createNewNote } = useCreateNewNote()
+
   const { saveData } = useSaveData()
   // Checks whether a node is a flowblock
   const isFlowBlock = (node: any): boolean => {
@@ -183,11 +184,11 @@ export const useTransform = () => {
       const parentPath = useEditorStore.getState().node.title
       const path = parentPath + SEPARATOR + (isInline ? getSlug(selText) : getSlug(text))
 
-      const node = addILink({ ilink: path })
+      const note = createNewNote({ path })
 
-      replaceSelectionWithLink(editor, node.nodeid, isInline)
+      replaceSelectionWithLink(editor, note?.nodeid, isInline)
       // mog('We are here', { lowest, selText, esl: editor.selection, selectionPath, nodes, value, text, path, nodeid })
-      setContent(node.nodeid, putContent ? value : defaultContent.content)
+      setContent(note?.nodeid, putContent ? value : defaultContent.content)
       // saveData()
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path })
     })

@@ -1,20 +1,21 @@
 import React, { useState } from 'react'
 import { useSpring } from 'react-spring'
 import Tippy from '@tippyjs/react'
-import { StyledTab, TabBody, TabsContainer, TabHeaderContainer, TabPanel } from './styled'
+import { StyledTab, TabBody, TabsWrapper, TabsContainer, TabHeaderContainer, TabPanel } from './styled'
 import { TooltipTitleWithShortcut } from '@components/mex/Shortcuts'
+import { PollActions } from '@store/useApiStore'
 
-type TabType = {
+export type TabType = {
   label: JSX.Element | string
   component: JSX.Element
-  key: string | number
+  type: PollActions
   tooltip?: string
 }
 
 type TabsProps = {
   tabs: Array<TabType>
-  openedTab: number
-  onChange: (index: number) => void
+  openedTab: PollActions
+  onChange: (pollAction: PollActions) => void
   visible?: boolean
 }
 
@@ -33,19 +34,23 @@ const Tabs: React.FC<TabsProps> = ({ tabs, openedTab, onChange, visible }) => {
 
   if (openedTab !== previousTab) setPreviousTab(openedTab)
 
+  const index = tabs.findIndex((tab) => tab.type === openedTab)
+
   return (
     <TabsContainer style={animationProps} visible={visible}>
       <TabHeaderContainer>
-        {tabs.map((tab, tabIndex) => (
-          <Tippy delay={200} key={tabIndex} theme="mex" content={<TooltipTitleWithShortcut title={tab.tooltip} />}>
-            <StyledTab key={tabIndex} onClick={() => onChange(tabIndex)} selected={tabIndex === openedTab}>
-              {tab.label}
-            </StyledTab>
-          </Tippy>
-        ))}
+        <TabsWrapper index={index}>
+          {tabs.map((tab) => (
+            <Tippy delay={200} key={tab.type} theme="mex" content={<TooltipTitleWithShortcut title={tab.tooltip} />}>
+              <StyledTab key={tab.type} onClick={() => onChange(tab.type)} selected={tab.type === openedTab}>
+                {tab.label}
+              </StyledTab>
+            </Tippy>
+          ))}
+        </TabsWrapper>
       </TabHeaderContainer>
       <TabPanel style={bodyAnimation}>
-        <TabBody onClick={() => onChange(openedTab)}>{tabs[openedTab]?.component}</TabBody>
+        <TabBody onClick={() => onChange(openedTab)}>{tabs[index]?.component}</TabBody>
       </TabPanel>
     </TabsContainer>
   )

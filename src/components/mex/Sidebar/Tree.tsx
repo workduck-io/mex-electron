@@ -8,6 +8,7 @@ import {
   TreeItem,
   TreeSourcePosition
 } from '@atlaskit/tree'
+import { useTimout } from '@hooks/useRelativeTime'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import { useTreeFromLinks } from '@store/useDataStore'
@@ -47,7 +48,7 @@ interface GetIconProps {
 
 const GetIcon = ({ item, onCollapse, onExpand }: GetIconProps) => {
   if (item.children && item.children.length > 0) {
-    return item.isExpanded ? (
+    return item?.isExpanded ? (
       <StyledTreeItemSwitcher onClick={() => onCollapse(item.id)}>
         <Icon icon={'ri:arrow-down-s-line'} />
       </StyledTreeItemSwitcher>

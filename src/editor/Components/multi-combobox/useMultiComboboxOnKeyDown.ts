@@ -61,7 +61,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
 
         let itemValue = item.text
 
-        if ((type === ELEMENT_ILINK || type === ELEMENT_INLINE_BLOCK) && !itemValue.startsWith(`${NODE_ID_PREFIX}_`)) {
+        if ((type === ELEMENT_ILINK || type === ELEMENT_INLINE_BLOCK) && !itemValue?.startsWith(`${NODE_ID_PREFIX}_`)) {
           // mog('Replacing itemValue', { comboType, type, itemValue, item })
 
           const nodeId = getNodeidFromPath(itemValue)

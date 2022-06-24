@@ -2,7 +2,6 @@ import { MentionTooltipComponent } from '@editor/Components/mentions/components/
 import { useMentions } from '@hooks/useMentions'
 import user3Line from '@iconify/icons-ri/user-3-line'
 import { Icon } from '@iconify/react'
-import { useUserService } from '@services/auth/useUserService'
 import { useCacheStore } from '@store/useRequestCache'
 import Tippy from '@tippyjs/react/headless' // different import path!
 import Avatar from 'boring-avatars'
@@ -116,7 +115,7 @@ export const ProfileImageWithToolTip = ({ props, placement }: ProfileImageWithTo
       render={(attrs) => <MentionTooltipComponent user={user} hideAccess />}
     >
       <Centered>
-        <ProfileImage size={size} email={user.email} DefaultFallback={DefaultFallback} />
+        <ProfileImage size={size} email={user?.email} DefaultFallback={DefaultFallback} />
       </Centered>
     </Tippy>
   )

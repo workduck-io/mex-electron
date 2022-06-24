@@ -15,6 +15,12 @@ export interface ComboText {
   icon?: string
 }
 
+export interface CheckValidILinkProps {
+  notePath: string
+  openedNotePath?: string
+  showAlert?: boolean
+}
+
 /**  ~~ILinks~~ (Node)
  * Map of path -> heirarchal id, with nodeid -> Unique nanoid */
 export interface ILink {
@@ -72,7 +78,7 @@ interface SlashCommands {
 export interface AddILinkProps {
   ilink: string
   nodeid?: string
-  parentId?: string
+  openedNotePath?: string
   archived?: boolean
   showAlert?: boolean
 }
@@ -93,6 +99,7 @@ export interface DataStoreState {
 
   // adds the node
   addILink: (props: AddILinkProps) => ILink | undefined
+  checkValidILink: (props: CheckValidILinkProps) => string
 
   // adds tag for combobox
   addTag: (tag: string) => void

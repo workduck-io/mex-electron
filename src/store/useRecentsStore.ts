@@ -1,6 +1,6 @@
 import { remove } from 'lodash'
 import create from 'zustand'
-import { persist } from 'zustand/middleware'
+import { devtools, persist } from 'zustand/middleware'
 import { MAX_RECENT_SIZE } from '../data/Defaults/navigation'
 
 export type RecentsType = {
@@ -17,7 +17,7 @@ export type RecentsType = {
 
 export const useRecentsStore = create<RecentsType>(
   persist(
-    (set, get) => ({
+    devtools((set, get) => ({
       lastOpened: [],
       recentResearchNodes: [],
       setRecentResearchNodes: (nodes: Array<string>) => {
@@ -37,7 +37,7 @@ export const useRecentsStore = create<RecentsType>(
         })
       },
       clear: () => {
-        set({ lastOpened: [] })
+        set({ lastOpened: [], recentResearchNodes: [] })
       },
       addRecent: (nodeid: string) => {
         const oldLast10 = Array.from(new Set(get().lastOpened))
@@ -54,7 +54,7 @@ export const useRecentsStore = create<RecentsType>(
           lastOpened
         }),
       initRecents: (recentList) => set({ lastOpened: recentList })
-    }),
+    })),
     {
       name: 'recents'
     }

@@ -84,6 +84,7 @@ const FloatingButton = () => {
 
   const toggleModal = useHelpStore((store) => store.toggleModal)
   const focusMode = useLayoutStore((store) => store.focusMode)
+  const showLoader = useLayoutStore((store) => store.showLoader)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const authenticated = useAuthStore((store) => store.authenticated)
 
@@ -101,7 +102,7 @@ const FloatingButton = () => {
     toggleModal()
   }
 
-  if (!authenticated) return null
+  if (!authenticated || showLoader) return null
 
   return (
     <Float focusMode={focusMode.on}>

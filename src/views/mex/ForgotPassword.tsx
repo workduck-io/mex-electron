@@ -139,6 +139,7 @@ const ForgotPassword = () => {
 
               <ButtonFields>
                 <LoadingButton
+                  style={{ margin: '0 auto' }}
                   loading={regSubmitting}
                   alsoDisabled={
                     regErrors.email !== undefined || regErrors.newpassword !== undefined || !arePasswordEqual

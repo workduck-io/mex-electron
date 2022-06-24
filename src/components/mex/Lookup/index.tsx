@@ -19,6 +19,8 @@ import { useNavigation } from '../../../hooks/useNavigation'
 import { useNodes } from '../../../hooks/useNodes'
 import useOnboard from '../../../store/useOnboarding'
 import { useSnippetStore } from '../../../store/useSnippetStore'
+import { useHierarchy } from '@hooks/useHierarchy'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
 
 const StyledModal = styled(Modal)`
   z-index: 10010000;
@@ -52,9 +54,8 @@ const Lookup = () => {
   const isOnboarding = useOnboard((s) => s.isOnboarding)
   const setStep = useOnboard((s) => s.setStep)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
-  const { saveNewNodeAPI } = useApi()
+  const { createNewNote } = useCreateNewNote()
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
-  const { addNode } = useNodes()
 
   const { goTo, location } = useRouting()
   const shortcuts = useHelpStore((store) => store.shortcuts)
@@ -126,11 +127,7 @@ const Lookup = () => {
 
   const handleCreateItem = (inputValue: QuickLink) => {
     if (tempClose) return
-    addNode({ ilink: inputValue.value, showAlert: true }, (node) => {
-      saveNewNodeAPI(node.nodeid)
-      push(node.nodeid, { withLoading: false })
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
-    })
+    createNewNote({ path: inputValue.value })
     closeModal()
   }
 

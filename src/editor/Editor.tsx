@@ -19,6 +19,7 @@ import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
 import { mog } from '../utils/lib/helper'
 import { useDebouncedCallback } from 'use-debounce'
 import useSuggestionStore from '@store/useSuggestionStore'
+import { NodeEditorContent } from '../types/Types'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -28,7 +29,7 @@ interface EditorProps {
   autoFocus?: boolean
   focusAtBeginning?: boolean
   showBalloonToolbar?: boolean
-  onAutoSave?: (content: any[]) => void
+  onAutoSave?: (content: NodeEditorContent) => void
   padding?: string
   options?: PluginOptionType
   getSuggestions?: any

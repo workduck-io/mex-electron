@@ -71,12 +71,14 @@ export const TemplateSubtitle = styled(TemplateTitle)`
 export const Services = styled.div`
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 `
 
 export const ServiceCard = styled.div<{ hover?: boolean; disabled?: boolean }>`
   position: relative;
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background: ${({ theme }) => theme.colors.background.card};
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
   margin-left: ${({ theme }) => theme.spacing.medium};
   display: flex;
   width: 10rem;

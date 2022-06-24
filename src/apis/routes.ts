@@ -35,6 +35,7 @@ export const API_URL = config.constants.MEX_BACKEND_BASE_URL
 export const apiURLs = {
   //node
   saveNode: `${API_URL}/node`,
+  bulkSaveNodes: `${API_URL}/node/bulkCreate`,
   getNode: (nodeid: string) => `${API_URL}/node/${nodeid}`,
 
   // * User Preference
@@ -68,7 +69,9 @@ export const apiURLs = {
 
   // Workspace
   // createWorkspace: `${BASE_API_URL}/workspace`,
-  getNodesByWorkspace: (workspaceId: string) => `${API_URL}/workspace/${workspaceId}/namespace/NAMESPACE1`,
+  getNodesByWorkspace: (workspaceId: string) => `${API_URL}/node/workspace/${workspaceId}/namespace/NAMESPACE1`,
+  getHierarchy: () => `${API_URL}/workspace/hierarchy`,
+
   // getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`,
 
   user: {

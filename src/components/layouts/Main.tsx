@@ -53,16 +53,19 @@ const Main = ({ children }: MainProps) => {
   }
   const { getLinks } = useNavlinks()
   const authenticated = useAuthStore((state) => state.authenticated)
+  const showLoader = useLayoutStore((store) => store.showLoader)
   const focusMode = useLayoutStore((s) => s.focusMode)
 
   const { gridSpringProps } = useSidebarTransition()
 
+  const initialized = !showLoader && authenticated
+
   return (
     <AppWrapper className={focusMode.on ? 'focus_mode' : ''}>
       <Draggable style={styles as any} /> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
-      <GridWrapper style={gridSpringProps} grid={authenticated ? 'true' : ''}>
-        {authenticated && <Nav links={getLinks()} />}
-        <Content id="wd-mex-content-view" grid={authenticated}>
+      <GridWrapper style={gridSpringProps} grid={initialized ? 'true' : ''}>
+        {initialized && <Nav links={getLinks()} />}
+        <Content id="wd-mex-content-view" grid={initialized}>
           {children}
         </Content>
       </GridWrapper>

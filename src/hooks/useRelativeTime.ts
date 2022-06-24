@@ -27,6 +27,11 @@ export function useRelativeTime(d: Date | number, refresh_ms?: number) {
   return humanTime
 }
 
+export const useIntervalWithTimeout = (callback: () => void, delay: number | null) => {
+  useTimout(callback, delay ? 15 * 1000 : null)
+  useInterval(callback, delay)
+}
+
 export const useInterval = (callback: () => void, delay: number | null) => {
   const savedCallback = useRef(callback)
 

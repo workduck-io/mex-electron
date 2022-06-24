@@ -22,8 +22,11 @@ export const startAnalysisWorkerService = async () => {
   if (!worker) worker = await spawn(new Worker(workerURL))
 }
 
+export type AnalysisModifier = SearchRepExtra
+
 export interface AnalysisOptions {
   title?: boolean
+  modifier?: AnalysisModifier
 }
 
 export interface AnalyseContentProps {

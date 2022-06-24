@@ -5,12 +5,15 @@ import useDataStore from '@store/useDataStore'
 import { NodeEditorContent } from '../types/Types'
 import { format } from 'date-fns'
 import { generateTempId } from '@data/Defaults/idPrefixes'
+import { useCreateNewNote } from './useCreateNewNote'
 
 export const getTodayTaskNodePath = () => {
   return `${BASE_TASKS_PATH}${SEPARATOR}${format(Date.now(), 'do MMM yyyy')}`
 }
 
 export const useTaskFromSelection = () => {
+  const { createNewNote } = useCreateNewNote()
+
   const getNewTaskNode = (create?: boolean) => {
     const todayTaskNodePath = getTodayTaskNodePath()
     const links = useDataStore.getState().ilinks
@@ -20,8 +23,8 @@ export const useTaskFromSelection = () => {
     const node = link
       ? link
       : create
-      ? useDataStore.getState().addILink({
-          ilink: todayTaskNodePath
+      ? createNewNote({
+          path: todayTaskNodePath
         })
       : undefined
 

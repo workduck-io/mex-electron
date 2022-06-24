@@ -51,7 +51,6 @@ export const useDataSaverFromContent = () => {
     editorValue: any[],
     options?: SaveEditorValueOptions
   ) => {
-    //useCallback(
     if (editorValue) {
       setContent(nodeId, editorValue)
       mog('saveEditorValueAndUpdateStores', { nodeId, editorValue, options })
@@ -66,10 +65,8 @@ export const useDataSaverFromContent = () => {
         updateNodeTodos(nodeId, getTodosFromContent(editorValue))
         await updateDocument('node', nodeId, editorValue)
       }
-
-      // saveData()
     }
-  } //, [])
+  }
 
   const saveNodeAPIandFs = (nodeId: string) => {
     const content = getContent(nodeId)

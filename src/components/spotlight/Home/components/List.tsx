@@ -33,6 +33,9 @@ import { useTaskFromSelection } from '@hooks/useTaskFromSelection'
 import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
 import { useSpotlightSettingsStore } from '@store/settings.spotlight'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import { useSaver } from '@editor/Components/Saver'
+import { useSaveData } from '@hooks/useSaveData'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -56,9 +59,6 @@ const List = ({
   const { search, setSelection, activeIndex, searchResults, activeItem, setSearch, selection, setActiveIndex } =
     useSpotlightContext()
   const parentRef = useRef(null)
-
-  const showSource = useSpotlightSettingsStore((state) => state.showSource)
-  const addILink = useDataStore((store) => store.addILink)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
 
@@ -67,7 +67,9 @@ const List = ({
 
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
 
+  const { createNewNote } = useCreateNewNote()
   const { getSnippet } = useSnippets()
+  const { saveData } = useSaveData()
 
   const { getNewTaskNode } = useTaskFromSelection()
 
@@ -188,11 +190,22 @@ const List = ({
               const isNewTask = isParent(node.path, BASE_TASKS_PATH)
               if (currentActiveItem?.extras.new && !activeItem.active) {
                 nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
-                addILink({ ilink: nodePath, nodeid: node.nodeid })
+
+                // TODO: Create new note with specified 'nodeid' and 'path'.
+                if (!selection) createNewNote({ path: nodePath, noteId: node.nodeid })
               }
 
               if (selection) {
-                saveIt({ path: nodePath, saveAndClose: true, removeHighlight: true, isNewTask })
+                saveIt({
+                  path: nodePath,
+                  beforeSave: ({ path, noteId, noteContent }) => {
+                    createNewNote({ path, noteId, noteContent })
+                    saveData()
+                  },
+                  saveAndClose: true,
+                  removeHighlight: true,
+                  isNewTask
+                })
                 setSelection(undefined)
               }
 
@@ -212,7 +225,9 @@ const List = ({
 
               if (currentActiveItem?.extras.new && !activeItem.active) {
                 nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
-                addILink({ ilink: nodePath, nodeid: node.nodeid })
+
+                // TODO: Create new note with specified 'nodeid' and 'path'.
+                createNewNote({ path: nodePath, noteId: node.nodeid })
               }
             }
           }
@@ -271,7 +286,9 @@ const List = ({
         const node = useSpotlightEditorStore.getState().node
 
         const nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
-        addILink({ ilink: nodePath, nodeid: node.nodeid })
+
+        // TODO: Create new note with specified 'nodeid' and 'path'.
+        createNewNote({ path: nodePath, noteId: node.nodeid })
       }
     } else if (currentActiveItem?.type === QuickLinkType.snippet && !activeItem.active) {
       handleCopySnippet(currentActiveItem.id, true)

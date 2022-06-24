@@ -415,6 +415,11 @@ app.on('open-url', function (event, url) {
   getRedirectPath(mex, url)
 })
 
+ipcMain.on(IpcAction.UPDATE_ILINKS, (event, data) => {
+  mog('Getting ilinks from store', { data })
+  spotlight.webContents.send(IpcAction.UPDATE_ILINKS, data)
+})
+
 ipcMain.on(IpcAction.UPDATE_ACTIONS, (event, data) => {
   // mog('DATA', { data })
   spotlight.webContents.send(IpcAction.UPDATE_ACTIONS, data)

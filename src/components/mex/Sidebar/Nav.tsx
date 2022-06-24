@@ -1,6 +1,6 @@
 import { Logo, SidebarToggle, TrafficLightBG } from '@data/illustrations/logo'
 import { GetIcon } from '@data/links'
-import { useCreateNewNode } from '@hooks/useCreateNewNode'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import useLayout from '@hooks/useLayout'
 import { useLinks } from '@hooks/useLinks'
 import { useKeyListener } from '@hooks/useShortcutListener'
@@ -21,7 +21,6 @@ import {
   MainLinkContainer,
   NavDivider,
   NavLogoWrapper,
-  NavSpacer,
   NavTitle,
   NavWrapper
 } from '@style/Nav'
@@ -31,35 +30,39 @@ import { NavTooltip } from '../Tooltips'
 import Bookmarks from './Bookmarks'
 import SharedNotes from './SharedNotes'
 import { useSidebarTransition } from './Transition'
-import Tree, { TreeContainer } from './Tree'
+import { TreeContainer } from './Tree'
 import { NavProps } from './Types'
-import Tabs from '@components/layouts/Tabs'
+import Tabs, { TabType } from '@components/layouts/Tabs'
 import { MexIcon } from '@style/Layouts'
 import { SharedNodeIcon } from '@components/icons/Icons'
 import { useTheme } from 'styled-components'
-import { useTreeFromLinks } from '@store/useDataStore'
 import { useBookmarks } from '@hooks/useBookmarks'
+import { PollActions, useApiStore } from '@store/useApiStore'
+import { usePolling } from '@apis/usePolling'
 
 const Nav = ({ links }: NavProps) => {
   // const match = useMatch(`/${ROUTE_PATHS.node}/:nodeid`)
   const sidebar = useLayoutStore((store) => store.sidebar)
   const focusMode = useLayoutStore((store) => store.focusMode)
   const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
+  const replaceAndAddActionToPoll = useApiStore((store) => store.replaceAndAddActionToPoll)
   const { getFocusProps } = useLayout()
+
+  usePolling()
+
   const { getLinkCount } = useLinks()
   const { goTo } = useRouting()
   const theme = useTheme()
-  const { createNewNode } = useCreateNewNode()
-  const [openedTab, setOpenedTab] = useState<number>(0)
-  const { getAllBookmarks } = useBookmarks()
+  const { createNewNote } = useCreateNewNote()
+  const [openedTab, setOpenedTab] = useState<PollActions>(PollActions.hierarchy)
 
   const [source, target] = useSingleton()
 
   const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault()
-    const nodeid = createNewNode()
+    const note = createNewNote()
 
-    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+    goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
   }
 
   const onDoubleClickToogle = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -73,10 +76,6 @@ const Nav = ({ links }: NavProps) => {
     }
   }
 
-  useEffect(() => {
-    getAllBookmarks()
-  }, [])
-
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { shortcutHandler } = useKeyListener()
 
@@ -85,9 +84,9 @@ const Nav = ({ links }: NavProps) => {
       [shortcuts.newNode.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.newNode, () => {
-          const nodeid = createNewNode()
+          const note = createNewNote()
 
-          goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+          goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
         })
       }
     })
@@ -100,23 +99,23 @@ const Nav = ({ links }: NavProps) => {
 
   const archiveCount = getLinkCount().archive
 
-  const tabs = useMemo(
+  const tabs: Array<TabType> = useMemo(
     () => [
       {
         label: <MexIcon noHover icon="ri:draft-line" width={20} height={20} />,
-        key: 'wd-mex-all-notes-tree',
+        type: PollActions.hierarchy,
         component: <TreeContainer />,
         tooltip: 'All Notes'
       },
       {
         label: <SharedNodeIcon fill={theme.colors.text.default} height={18} width={18} />,
-        key: 'wd-mex-shared-notes',
         component: <SharedNotes />,
+        type: PollActions.shared,
         tooltip: 'Shared Notes'
       },
       {
         label: <MexIcon noHover icon="ri:bookmark-line" width={20} height={20} />,
-        key: 'wd-mex-bookmarks',
+        type: PollActions.bookmarks,
         component: <Bookmarks />,
         tooltip: 'Bookmarks'
       }
@@ -173,7 +172,15 @@ const Nav = ({ links }: NavProps) => {
         </MainLinkContainer>
 
         {/* Notes, Shared, Bookmarks */}
-        <Tabs visible={sidebar.expanded} openedTab={openedTab} onChange={setOpenedTab} tabs={tabs} />
+        <Tabs
+          visible={sidebar.expanded}
+          openedTab={openedTab}
+          onChange={(tab) => {
+            setOpenedTab(tab)
+            replaceAndAddActionToPoll(tab)
+          }}
+          tabs={tabs}
+        />
 
         {/* <Collapse
           title="All Notes"

@@ -5,7 +5,6 @@ import { IpcAction } from '../data/IpcAction'
 import { useLinks } from './useLinks'
 import useDataStore from '@store/useDataStore'
 import { ELEMENT_ILINK } from '@editor/Components/ilink/defaults'
-import { mog } from '@utils/lib/helper'
 import { ELEMENT_INLINE_BLOCK } from '@editor/Components/InlineBlock/types'
 import { useMentionStore } from '@store/useMentionStore'
 import { ELEMENT_MENTION } from '@editor/Components/mentions/defaults'
@@ -22,7 +21,7 @@ export const useSearchExtra = () => {
 
     const mention_rep = mentionable.reduce((p, mention) => ({ ...p, [mention.userID]: mention.alias }), {})
     const invited_rep = invited.reduce((p, invited) => ({ ...p, [invited.alias]: invited.alias }), {})
-    const self_rep = { ...invited_rep, ...mention_rep, [currentUserDetails.userID]: currentUserDetails.alias }
+    const self_rep = { ...invited_rep, ...mention_rep, [currentUserDetails?.userID]: currentUserDetails?.alias }
 
     return {
       [ELEMENT_ILINK]: {

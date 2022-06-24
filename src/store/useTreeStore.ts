@@ -1,4 +1,5 @@
 import create from 'zustand'
+import { devtools } from 'zustand/middleware'
 
 interface TreeState {
   // Path of the expanded nodes
@@ -9,21 +10,23 @@ interface TreeState {
   collapseNode: (path: string) => void
 }
 
-export const useTreeStore = create<TreeState>((set, get) => ({
-  expanded: [],
-  expandNode: (path: string) => {
-    set({
-      expanded: [...get().expanded, path]
-    })
-  },
-  expandNodes: (paths: string[]) => {
-    set({
-      expanded: [...get().expanded, ...paths]
-    })
-  },
-  collapseNode: (path: string) => {
-    set({
-      expanded: get().expanded.filter((p) => p !== path)
-    })
-  }
-}))
+export const useTreeStore = create<TreeState>(
+  devtools((set, get) => ({
+    expanded: [],
+    expandNode: (path: string) => {
+      set({
+        expanded: [...get().expanded, path]
+      })
+    },
+    expandNodes: (paths: string[]) => {
+      set({
+        expanded: [...get().expanded, ...paths]
+      })
+    },
+    collapseNode: (path: string) => {
+      set({
+        expanded: get().expanded.filter((p) => p !== path)
+      })
+    }
+  }))
+)

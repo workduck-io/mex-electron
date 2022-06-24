@@ -17,6 +17,7 @@ import { checkIfUntitledDraftNode } from '../../../utils/lib/strings'
 import { getTitleFromContent } from '../../../utils/search/parseData'
 import { useRouting } from '../../../views/routes/urls'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
+import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
@@ -46,6 +47,7 @@ export const useSearchProps = () => {
 }
 
 type SaveItProps = {
+  beforeSave?: (props: any) => void
   saveAndClose?: boolean
   removeHighlight?: boolean
   isNewTask?: boolean
@@ -94,12 +96,21 @@ export const useSaveChanges = () => {
     const isUntitledDraftNode = checkIfUntitledDraftNode(node.path)
     const isNewDraftNode = metadata?.createdAt === metadata?.updatedAt
 
-    if (isNewDraftNode || isUntitledDraftNode) {
-      const title = getTitleFromContent(editorContent)
-      saveNodeName(node.nodeid, title)
+    let path = node.path
+    const title = getTitleFromContent(editorContent)
+
+    if (isNewDraftNode && isUntitledDraftNode) {
+      if (options?.beforeSave) {
+        path = path.split(SEPARATOR).slice(0, -1).join(SEPARATOR) + `${SEPARATOR}${title}`
+      } else {
+        path = saveNodeName(node.nodeid, title)
+      }
     }
 
-    onSave(node, true, false, editorContent)
+    if (options?.beforeSave) {
+      options?.beforeSave({ path, noteId: node.nodeid, noteContent: editorContent })
+    } else onSave(node, true, false, editorContent)
+
     if (options?.saveAndClose) appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
     appNotifierWindow(IpcAction.SHOW_TOAST, AppType.SPOTLIGHT, {

@@ -28,6 +28,7 @@ export const FooterCard = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+  margin-bottom: ${({ theme }) => theme.spacing.large};
   justify-content: center;
   background: ${({ theme }) => theme.colors.background.card};
   border-radius: ${({ theme }) => theme.borderRadius.large};

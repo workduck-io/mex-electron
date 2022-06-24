@@ -2,13 +2,12 @@ import { mog } from '../utils/lib/helper'
 import useDataStore from '../store/useDataStore'
 import { AddILinkProps, ILink, NodeType, SharedNode } from '../types/Types'
 import toast from 'react-hot-toast'
-import { NodeProperties } from '../store/useEditorStore'
 import { AccessLevel } from '../types/mentions'
 
 // Used to ensure no path clashes while adding ILink.
 // path functions to check wether clash is happening can be also used
 export const useNodes = () => {
-  const addILink = useDataStore((s) => s.addILink)
+  const addILink = useDataStore((store) => store.addILink)
 
   const addNode = (props: AddILinkProps, onSuccess: (node: ILink) => void, showAlert = true) => {
     // mog('Adding Node for:', { props })

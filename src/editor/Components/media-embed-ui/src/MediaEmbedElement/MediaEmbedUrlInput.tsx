@@ -1,3 +1,4 @@
+import { isURL } from '@components/spotlight/ActionStage/Screen'
 import fullscreenExitLine from '@iconify/icons-ri/fullscreen-exit-line'
 import fullscreenLine from '@iconify/icons-ri/fullscreen-line'
 import globalLine from '@iconify/icons-ri/global-line'
@@ -41,7 +42,9 @@ export const MediaEmbedUrlInput = ({
         onChange={(e) => {
           const newUrl = e.target.value
           setValue(newUrl)
-          onChange(newUrl)
+          if (isURL(newUrl)) {
+            onChange(newUrl)
+          }
         }}
       />
       <Tippy

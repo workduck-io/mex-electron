@@ -11,7 +11,7 @@ import { onboardingContent } from '../initial/onboardingDoc'
 import { draftContent } from '../initial/draftDoc'
 // import { generateTempId } from './idPrefixes'
 //
-export const BASE_DRAFT_PATH = 'Draft'
+export const BASE_DRAFT_PATH = 'Drafts'
 export const BASE_TASKS_PATH = 'Tasks'
 export const BASE_MEETING_PATH = MEETING_PREFIX
 const links = generateILinks(['doc', 'dev', 'design', '@'])

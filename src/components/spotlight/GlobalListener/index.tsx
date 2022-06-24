@@ -27,6 +27,7 @@ import { useActionStore, UpdateActionsType } from '../Actions/useActionStore'
 import { useActionsPerfomerClient } from '../Actions/useActionPerformer'
 import { useActionsCache } from '../Actions/useActionsCache'
 import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
@@ -40,10 +41,10 @@ const GlobalListener = memo(() => {
   const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
-  const addILink = useDataStore((store) => store.addILink)
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
   const addResultHash = useActionsCache((store) => store.addResultHash)
   const closeShareModal = useShareModalStore((store) => store.closeModal)
+  const setILinks = useDataStore((store) => store.setIlinks)
 
   const { getTokenData } = useTokenData()
   // const { initActionsInStore, initActionsOfGroup } = useActions()
@@ -64,6 +65,7 @@ const GlobalListener = memo(() => {
   const setView = useActionStore((store) => store.setView)
   const { setReceiveMention } = useRecieveMentions()
   const { getMentionData } = useMentionData()
+  const { createNewNote } = useCreateNewNote()
 
   // const { initActionPerformers } = useActionPerformer()
 
@@ -117,8 +119,9 @@ const GlobalListener = memo(() => {
         const content = getPlateSelectors().value()
 
         const isNodePresent = ilinks.find((ilink) => ilink.nodeid === node.nodeid)
+
         if (!isNodePresent) {
-          addILink({ ilink: node.path, nodeid: node.nodeid })
+          createNewNote({ path: node.path, noteId: node.nodeid })
         }
 
         addRecent(node.nodeid)
@@ -138,7 +141,19 @@ const GlobalListener = memo(() => {
         getTokenData()
         getMentionData()
         goTo(ROUTE_PATHS.home, NavigationType.replace)
-      } else setUnAuthenticated()
+      } else {
+        setUnAuthenticated()
+        useRecentsStore.getState().clear()
+        useActionsCache.getState().clearActionCache()
+        localStorage.clear()
+      }
+    })
+
+    ipcRenderer.on(IpcAction.UPDATE_ILINKS, (_event, arg) => {
+      if (arg.ilinks) {
+        mog('IPLI')
+        setILinks(arg.ilinks)
+      }
     })
 
     ipcRenderer.on(IpcAction.RECEIVE_LOCAL_DATA, (_event, arg) => {
@@ -168,7 +183,7 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.on(IpcAction.UPDATE_ACTIONS, (_event, arg) => {
-      const { groups, actionList, actions, actionGroupId, connectedGroups, type, key, hash } = arg?.data
+      const { groups, actionList, actions, actionGroupId, connectedGroups, type, key, hash } = arg?.data || {}
 
       if (type === UpdateActionsType.CLEAR) {
         clearActionStore()
@@ -186,6 +201,8 @@ const GlobalListener = memo(() => {
     ipcRenderer.send(IpcAction.GET_LOCAL_DATA)
 
     ipcRenderer.on(IpcAction.FORCE_SIGNOUT, (_event) => {
+      useRecentsStore.getState().clear()
+      useActionsCache.getState().clearActionCache()
       localStorage.clear()
     })
 
