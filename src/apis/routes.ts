@@ -81,7 +81,11 @@ export const apiURLs = {
   getNodesByWorkspace: (workspaceId: string) => `${API_URL}/node/workspace/${workspaceId}/namespace/NAMESPACE1`,
   getHierarchy: () => `${API_URL}/workspace/hierarchy`,
 
-  // getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`,
+  // Share options
+  makeNotePublic: (uid: string) => `${API_URL}/node/makePublic/${uid}`,
+  makeNotePrivate: (uid: string) => `${API_URL}/node/makePrivate/${uid}`,
+  getPublicNote: (uid: string) => `${API_URL}/public/${uid}`,
+  getNotePublicURL: (uid: string) => `${MEXIT_FRONTEND_BASE_URL}/share/${uid}`,
 
   user: {
     getFromEmail: (email: string) =>

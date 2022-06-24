@@ -2,8 +2,10 @@ import { MentionTooltipComponent } from '@editor/Components/mentions/components/
 import { useMentions } from '@hooks/useMentions'
 import user3Line from '@iconify/icons-ri/user-3-line'
 import { Icon } from '@iconify/react'
+import { useUserService } from '@services/auth/useUserService'
 import { useCacheStore } from '@store/useRequestCache'
 import Tippy from '@tippyjs/react/headless' // different import path!
+import { mog } from '@utils/lib/helper'
 import Avatar from 'boring-avatars'
 import md5 from 'md5'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -100,10 +102,16 @@ interface ProfileImageWithToolTipProps {
 export const ProfileImageWithToolTip = ({ props, placement }: ProfileImageWithToolTipProps) => {
   const { userid, size, DefaultFallback } = props // eslint-disable-line react/prop-types
   const { getUserFromUserid } = useMentions()
+  const { getUserDetailsUserId } = useUserService()
 
   const user = useMemo(() => {
     const u = getUserFromUserid(userid)
     if (u) return u
+    else {
+      getUserDetailsUserId(userid)
+        .then((d) => mog('GOT USERID', { d }))
+        .catch((err) => mog('GOT ERROR', { err }))
+    }
   }, [userid])
 
   return (

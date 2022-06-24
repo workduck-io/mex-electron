@@ -5,7 +5,7 @@ import create from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import { generateNodeUID } from '../data/Defaults/idPrefixes'
-import { CachedILink, DataStoreState } from '../types/Types'
+import { CachedILink, DataStoreState, ILink } from '../types/Types'
 import { generateTag } from '../utils/generateComboItem'
 import { Settify, typeInvert } from '../utils/helpers'
 import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
@@ -13,7 +13,7 @@ import { getNodeIcon } from '../utils/lib/icons'
 import { removeLink } from '../utils/lib/links'
 import { getUniquePath } from '../utils/lib/paths'
 import { generateTree } from '../utils/lib/tree'
-import { useEditorStore } from './useEditorStore'
+import { NodeProperties, useEditorStore } from './useEditorStore'
 import { useTreeStore } from './useTreeStore'
 
 const useDataStore = create<DataStoreState>(
@@ -288,22 +288,20 @@ export const sanatizeLinks = (links: treeMap): treeMap => {
 }
 
 export const useTreeFromLinks = () => {
-  const node = useEditorStore((state) => state.node)
-  const ilinks = useDataStore((store) => store.ilinks)
-  const expanded = useTreeStore((store) => store.expanded)
-  const links = ilinks.map((i) => ({ id: i.path, nodeid: i.nodeid, icon: i.icon }))
-  const sanatizedLinks = sanatizeLinks(links)
-  // mog('Sanatized links', { sanatizedLinks })
-  // const sortedTree = sortTree(sanatizeLinks, contents)
-  const tree = useMemo(() => generateTree(sanatizedLinks, expanded), [ilinks, node])
+  const getTreeFromLinks = (links: ILink[]) => {
+    const expanded = useTreeStore.getState().expanded
 
-  mog('Tree', { ilinks, links, sanatizedLinks, tree })
+    const mappedLinks = links.map((i) => ({ id: i.path, nodeid: i.nodeid, icon: i.icon }))
 
-  return tree
-}
+    const sanatizedLinks = sanatizeLinks(mappedLinks)
+    const tree = generateTree(sanatizedLinks, expanded)
 
-export const useFlatTreeFromILinks = () => {
-  return useTreeFromLinks()
+    mog('Tree', { links, sanatizedLinks, tree })
+
+    return tree
+  }
+
+  return { getTreeFromLinks }
 }
 
 export default useDataStore

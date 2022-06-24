@@ -83,7 +83,6 @@ export const useAuthentication = () => {
   const { clearActionStore } = useActions()
   const { initActionPerfomerClient } = useActionsPerfomerClient()
   const setShowLoader = useLayoutStore((store) => store.setShowLoader)
-  // const { getNodesByWorkspace } = useApi()
 
   const login = async (
     email: string,

@@ -11,9 +11,9 @@ import {
 import { useTimout } from '@hooks/useRelativeTime'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
-import { useTreeFromLinks } from '@store/useDataStore'
+import useDataStore, { useTreeFromLinks } from '@store/useDataStore'
 import Tippy, { useSingleton } from '@tippyjs/react'
-import React, { memo, useEffect, useRef } from 'react'
+import React, { memo, useEffect, useMemo, useRef } from 'react'
 import { useContextMenu } from 'react-contexify'
 import { useLocation } from 'react-router-dom'
 import { IpcAction } from '../../../data/IpcAction'
@@ -128,7 +128,7 @@ const Tree = ({ initTree }: TreeProps) => {
   useEffect(() => {
     mog('renderTree', { initTree })
     setTreeState({ tree: initTree })
-  }, [initTree])
+  }, [initTree?.items])
 
   const [source, target] = useSingleton()
 
@@ -280,7 +280,12 @@ const Tree = ({ initTree }: TreeProps) => {
 }
 
 export const TreeContainer = () => {
-  const initTree = useTreeFromLinks()
+  const node = useEditorStore((store) => store.node)
+  const ilinks = useDataStore((store) => store.ilinks)
+
+  const { getTreeFromLinks } = useTreeFromLinks()
+
+  const initTree = useMemo(() => getTreeFromLinks(ilinks), [node, ilinks])
 
   return <Tree initTree={initTree} />
 }

@@ -78,7 +78,7 @@ const Portals = () => {
         await connectToPortal(params.actionGroupId, serviceId, parentNote?.nodeid)
       }
 
-      toast(`Updated Successfully! All new notes will be added under "${parentNoteName}"`)
+      toast(`Updated Successfully! All new notes will be added under "${parentNote?.text || ''}"`)
     } catch (err) {
       mog('Error connecting to portal', { err })
     } finally {

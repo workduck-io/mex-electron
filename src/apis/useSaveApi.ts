@@ -15,6 +15,9 @@ import { useNodes } from '@hooks/useNodes'
 import { NodeEditorContent } from '../types/Types'
 import { hierarchyParser } from '@hooks/useHierarchy'
 import { getTagsFromContent } from '@utils/lib/content'
+import { ipcRenderer } from 'electron'
+import { IpcAction } from '@data/IpcAction'
+import useDataStore from '@store/useDataStore'
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,6 +26,7 @@ export const useApi = () => {
   const setContent = useContentStore((store) => store.setContent)
   const { getNodeTitleSave, getTitleFromPath, updateILinks } = useLinks()
   const { getSharedNode } = useNodes()
+  const setILinks = useDataStore((store) => store.setIlinks)
   /*
    * Saves data in the backend
    * Also updates the incoming data in the store
@@ -158,6 +162,91 @@ export const useApi = () => {
     return data
   }
 
+  const makeNotePublic = async (nodeId: string) => {
+    const URL = apiURLs.makeNotePublic(nodeId)
+    return await client
+      .patch(URL, null, {
+        withCredentials: false,
+        headers: {
+          'mex-workspace-id': getWorkspaceId(),
+          Accept: 'application/json, text/plain, */*'
+        }
+      })
+      .then((resp) => resp.data)
+      .then((data: any) => {
+        if (data === nodeId) {
+          const publicURL = apiURLs.getNotePublicURL(data)
+          setMetadata(nodeId, { publicURL })
+          return publicURL
+        } else throw new Error('Error making node public')
+      })
+      .catch((error) => {
+        mog('MakeNodePublicError', { error })
+      })
+  }
+
+  const makeNotePrivate = async (nodeId: string) => {
+    const URL = apiURLs.makeNotePrivate(nodeId)
+
+    return await client
+      .patch(URL, null, {
+        withCredentials: false,
+        headers: {
+          'mex-workspace-id': getWorkspaceId()
+        }
+      })
+      .then((resp) => resp.data)
+      .then((data: any) => {
+        if (data === nodeId) {
+          setMetadata(nodeId, { publicURL: undefined })
+          return data
+        } else throw new Error('Error making node private')
+      })
+      .catch((error) => {
+        mog('MakeNodePrivateError', { error })
+      })
+  }
+
+  const getPublicNoteApi = async (noteId: string) => {
+    const res = await client
+      .get(apiURLs.getPublicNote(noteId), {
+        headers: {
+          Accept: 'application/json, text/plain, */*'
+        }
+      })
+      .then((d: any) => {
+        const metadata = {
+          createdBy: d.data.createdBy,
+          createdAt: d.data.createdAt,
+          lastEditedBy: d.data.lastEditedBy,
+          updatedAt: d.data.updatedAt
+        }
+
+        // console.log(metadata, d.data)
+        return {
+          title: d.data.title,
+          data: d.data.data,
+          metadata: removeNulls(metadata),
+          version: d.data.version ?? undefined
+        }
+      })
+
+    if (res) {
+      return {
+        id: noteId,
+        title: res.title ?? '',
+        content: deserializeContent(res.data),
+        metadata: res.metadata ?? undefined,
+        version: res.version
+      }
+    }
+  }
+
+  const isPublic = (nodeid: string) => {
+    const meta = useContentStore.getState().getAllMetadata()
+    return meta?.[nodeid]?.publicURL
+  }
+
   const getDataAPI = async (nodeid: string, isShared = false, isRefresh = false) => {
     const url = isShared ? apiURLs.getSharedNode(nodeid) : apiURLs.getNode(nodeid)
     if (!isShared && isRequestedWithin(2, url) && !isRefresh) {
@@ -202,7 +291,15 @@ export const useApi = () => {
         }
       })
       .then((d) => {
-        return d.data
+        if (d.data) {
+          const nodes = hierarchyParser(d.data)
+          if (nodes && nodes.length > 0) {
+            setILinks(nodes)
+            ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks: nodes })
+          }
+
+          return d.data
+        }
       })
 
     return data
@@ -215,7 +312,18 @@ export const useApi = () => {
       .catch((error) => console.error(error))
   }
 
-  return { saveDataAPI, getDataAPI, bulkSaveNodes, saveNewNodeAPI, getNodesByWorkspace, getGoogleAuthUrl }
+  return {
+    saveDataAPI,
+    getDataAPI,
+    makeNotePrivate,
+    makeNotePublic,
+    getPublicNoteApi,
+    isPublic,
+    bulkSaveNodes,
+    saveNewNodeAPI,
+    getNodesByWorkspace,
+    getGoogleAuthUrl
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
