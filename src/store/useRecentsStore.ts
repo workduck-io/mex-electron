@@ -37,7 +37,7 @@ export const useRecentsStore = create<RecentsType>(
         })
       },
       clear: () => {
-        set({ lastOpened: [] })
+        set({ lastOpened: [], recentResearchNodes: [] })
       },
       addRecent: (nodeid: string) => {
         const oldLast10 = Array.from(new Set(get().lastOpened))

@@ -34,6 +34,8 @@ import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
 import { useSpotlightSettingsStore } from '@store/settings.spotlight'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import { useSaver } from '@editor/Components/Saver'
+import { useSaveData } from '@hooks/useSaveData'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -57,7 +59,6 @@ const List = ({
   const { search, setSelection, activeIndex, searchResults, activeItem, setSearch, selection, setActiveIndex } =
     useSpotlightContext()
   const parentRef = useRef(null)
-  const showSource = useSpotlightSettingsStore((state) => state.showSource)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
 
@@ -68,6 +69,7 @@ const List = ({
 
   const { createNewNote } = useCreateNewNote()
   const { getSnippet } = useSnippets()
+  const { saveData } = useSaveData()
 
   const { getNewTaskNode } = useTaskFromSelection()
 
@@ -197,8 +199,8 @@ const List = ({
                 saveIt({
                   path: nodePath,
                   beforeSave: ({ path, noteId, noteContent }) => {
-                    mog('ADDING NEW NOTE', { path, noteId, noteContent })
                     createNewNote({ path, noteId, noteContent })
+                    saveData()
                   },
                   saveAndClose: true,
                   removeHighlight: true,

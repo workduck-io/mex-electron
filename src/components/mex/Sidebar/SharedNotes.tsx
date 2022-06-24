@@ -1,8 +1,5 @@
 import { SharedNodeIcon } from '@components/icons/Icons'
-import { useTimout } from '@hooks/useRelativeTime'
-import { usePermission } from '@services/auth/usePermission'
 import { useEditorStore } from '@store/useEditorStore'
-import { mog } from '@utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React from 'react'
 import { useTheme } from 'styled-components'
@@ -14,16 +11,11 @@ import { BList, SItem, SItemContent } from './SharedNotes.style'
 const SharedNotes = () => {
   const sharedNodes = useDataStore((store) => store.sharedNodes)
   const { push } = useNavigation()
-  const { getAllSharedNodes } = usePermission()
 
   // const [sharedNodes, setSharedNodes] = useState<SharedNode[]>([])
   const { goTo } = useRouting()
   const theme = useTheme()
   const node = useEditorStore((s) => s.node)
-
-  useTimout(() => {
-    getAllSharedNodes().then(() => mog('Fetched shared Notes after 15 secs'))
-  }, 15 * 1000)
 
   const onOpenNode = (nodeid: string) => {
     push(nodeid, { fetch: true })

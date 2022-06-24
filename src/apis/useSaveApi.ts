@@ -14,6 +14,7 @@ import { useLinks } from '../hooks/useLinks'
 import { useNodes } from '@hooks/useNodes'
 import { NodeEditorContent } from '../types/Types'
 import { hierarchyParser } from '@hooks/useHierarchy'
+import { getTagsFromContent } from '@utils/lib/content'
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,6 +42,7 @@ export const useApi = () => {
       referenceID: options?.parentNoteId,
       namespaceIdentifier: DEFAULT_NAMESPACE,
       type: 'NodeRequest',
+      tags: getTagsFromContent(options.content),
       data: serializeContent(options.content, noteId)
     }
 
@@ -83,6 +85,7 @@ export const useApi = () => {
       title: getTitleFromPath(options.path, true),
       namespaceIdentifier: DEFAULT_NAMESPACE,
       type: 'NodeBulkRequest',
+      tags: getTagsFromContent(options.content),
       data: serializeContent(options.content, noteId)
     }
 
@@ -119,6 +122,7 @@ export const useApi = () => {
       type: 'NodeRequest',
       title: getNodeTitleSave(nodeid),
       namespaceIdentifier: DEFAULT_NAMESPACE,
+      tags: getTagsFromContent(content),
       data: serializeContent(content ?? defaultContent.content, nodeid)
     }
 

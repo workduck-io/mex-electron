@@ -17,7 +17,7 @@ import { checkIfUntitledDraftNode } from '../../../utils/lib/strings'
 import { getTitleFromContent } from '../../../utils/search/parseData'
 import { useRouting } from '../../../views/routes/urls'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
-import { mog } from '@utils/lib/helper'
+import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
@@ -97,14 +97,17 @@ export const useSaveChanges = () => {
     const isNewDraftNode = metadata?.createdAt === metadata?.updatedAt
 
     let path = node.path
+    const title = getTitleFromContent(editorContent)
 
-    if (isNewDraftNode || isUntitledDraftNode) {
-      const title = getTitleFromContent(editorContent)
-      path = saveNodeName(node.nodeid, title) || node.path
+    if (isNewDraftNode && isUntitledDraftNode) {
+      if (options?.beforeSave) {
+        path = path.split(SEPARATOR).slice(0, -1).join(SEPARATOR) + `${SEPARATOR}${title}`
+      } else {
+        path = saveNodeName(node.nodeid, title)
+      }
     }
 
     if (options?.beforeSave) {
-      mog('before save', { node, editorContent })
       options?.beforeSave({ path, noteId: node.nodeid, noteContent: editorContent })
     } else onSave(node, true, false, editorContent)
 

@@ -417,7 +417,7 @@ app.on('open-url', function (event, url) {
 
 ipcMain.on(IpcAction.UPDATE_ILINKS, (event, data) => {
   mog('Getting ilinks from store', { data })
-  spotlight.webContents.send(IpcAction.UPDATE_ACTIONS, data)
+  spotlight.webContents.send(IpcAction.UPDATE_ILINKS, data)
 })
 
 ipcMain.on(IpcAction.UPDATE_ACTIONS, (event, data) => {

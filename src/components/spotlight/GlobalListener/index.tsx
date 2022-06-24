@@ -141,11 +141,19 @@ const GlobalListener = memo(() => {
         getTokenData()
         getMentionData()
         goTo(ROUTE_PATHS.home, NavigationType.replace)
-      } else setUnAuthenticated()
+      } else {
+        setUnAuthenticated()
+        useRecentsStore.getState().clear()
+        useActionsCache.getState().clearActionCache()
+        localStorage.clear()
+      }
     })
 
     ipcRenderer.on(IpcAction.UPDATE_ILINKS, (_event, arg) => {
-      if (arg.ilinks) setILinks(arg.ilinks)
+      if (arg.ilinks) {
+        mog('IPLI')
+        setILinks(arg.ilinks)
+      }
     })
 
     ipcRenderer.on(IpcAction.RECEIVE_LOCAL_DATA, (_event, arg) => {
@@ -175,7 +183,7 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.on(IpcAction.UPDATE_ACTIONS, (_event, arg) => {
-      const { groups, actionList, actions, actionGroupId, connectedGroups, type, key, hash } = arg?.data
+      const { groups, actionList, actions, actionGroupId, connectedGroups, type, key, hash } = arg?.data || {}
 
       if (type === UpdateActionsType.CLEAR) {
         clearActionStore()
@@ -193,6 +201,8 @@ const GlobalListener = memo(() => {
     ipcRenderer.send(IpcAction.GET_LOCAL_DATA)
 
     ipcRenderer.on(IpcAction.FORCE_SIGNOUT, (_event) => {
+      useRecentsStore.getState().clear()
+      useActionsCache.getState().clearActionCache()
       localStorage.clear()
     })
 

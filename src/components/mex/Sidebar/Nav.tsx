@@ -55,7 +55,6 @@ const Nav = ({ links }: NavProps) => {
   const theme = useTheme()
   const { createNewNote } = useCreateNewNote()
   const [openedTab, setOpenedTab] = useState<PollActions>(PollActions.hierarchy)
-  const { getAllBookmarks } = useBookmarks()
 
   const [source, target] = useSingleton()
 
@@ -76,10 +75,6 @@ const Nav = ({ links }: NavProps) => {
       }
     }
   }
-
-  useEffect(() => {
-    getAllBookmarks()
-  }, [])
 
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { shortcutHandler } = useKeyListener()

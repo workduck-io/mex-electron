@@ -1,5 +1,4 @@
 import { IpcAction } from '@data/IpcAction'
-import { appNotifierWindow } from '@electron/utils/notifiers'
 import { ipcRenderer } from 'electron'
 import { useMemo } from 'react'
 import create from 'zustand'
@@ -90,8 +89,6 @@ const useDataStore = create<DataStoreState>(
       const userILinks = archived ? ilinks.map((val) => (val.path === uniquePath ? { ...val, nodeid } : val)) : ilinks
       const createdILinks = [...userILinks, ...newILinks]
 
-      ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks: createdILinks })
-
       set({
         ilinks: createdILinks
       })
@@ -125,7 +122,6 @@ const useDataStore = create<DataStoreState>(
 
     setIlinks: (ilinks) => {
       mog('Setting ILinks', { ilinks })
-      ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks })
       set({
         ilinks
       })
