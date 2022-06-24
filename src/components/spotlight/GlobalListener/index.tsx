@@ -150,13 +150,6 @@ const GlobalListener = memo(() => {
     })
 
     ipcRenderer.on(IpcAction.UPDATE_ILINKS, (_event, arg) => {
-      if (arg.ilinks) {
-        mog('IPLI')
-        setILinks(arg.ilinks)
-      }
-    })
-
-    ipcRenderer.on(IpcAction.UPDATE_ILINKS, (_event, arg) => {
       if (arg.ilinks) setILinks(arg.ilinks)
     })
 

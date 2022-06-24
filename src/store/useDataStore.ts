@@ -122,7 +122,6 @@ const useDataStore = create<DataStoreState>(
 
     setIlinks: (ilinks) => {
       mog('Setting ILinks', { ilinks })
-      ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks })
       set({
         ilinks
       })
