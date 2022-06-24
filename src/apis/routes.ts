@@ -20,6 +20,9 @@ export const MEXIT_BACKEND_URL_BASE = IS_DEV
   : 'https://mex-webapp-dev.workduck.io/api/v1'
 
 export const WORKDUCK_API_BASE = 'https://http.workduck.io'
+export const MEX_LOCH_BASE_URL =
+  config.constants.STAGE === 'alpha' ? 'https://http-test.workduck.io' : 'https://http.workduck.io'
+
 export const CDN_BASE = 'https://cdn.workduck.io'
 
 // export const ACTION_ENV = IS_DEV ? 'test' : 'prod'
@@ -59,6 +62,12 @@ export const apiURLs = {
   deleteArchiveNodes: () => `${API_URL}/node/archive`,
   getArchivedNodes: (workspaceId: string) => `${API_URL}/node/archive/${workspaceId}`,
   unArchiveNodes: () => `${API_URL}/node/unarchive`,
+
+  // * Loch
+  getLochServices: () => `${MEX_LOCH_BASE_URL}/loch/connect/all`,
+  getConnectedLochServices: () => `${MEX_LOCH_BASE_URL}/loch/connect`,
+  connectToLochService: () => `${MEX_LOCH_BASE_URL}/loch/connect`,
+  updateParentNoteOfService: () => `${MEX_LOCH_BASE_URL}/loch/connect`,
 
   // Image CDN
   createImageURL: `${WORKDUCK_API_BASE}/testing/upload/s3`,

@@ -114,14 +114,11 @@ const useActions = () => {
 
   const sortActionGroups = (
     actionGroups: Record<string, ActionGroupType>,
-    connectedGroups: Record<string, boolean>
+    getIsConnected: (item: ActionGroupType) => boolean
   ) => {
-    const res = orderBy(
-      Object.values(actionGroups).map((item) => ({ ...item, connected: connectedGroups[item.actionGroupId] })),
-      ['connected', 'actionGroupId'],
-      ['desc', 'asc']
-    )
+    const itemsToSort = Object.values(actionGroups).map((item) => ({ ...item, connected: getIsConnected(item) }))
 
+    const res = orderBy(itemsToSort, ['connected', 'actionGroupId'], ['desc', 'asc'])
     return res
   }
 
@@ -148,10 +145,6 @@ const useActions = () => {
             break
           }
         }
-
-        // if (!connected) {
-        //   removeActionsByGroupId(actionGroup.actionGroupId)
-        // }
 
         connectedGroups[actionGroup.actionGroupId] = connected
       })

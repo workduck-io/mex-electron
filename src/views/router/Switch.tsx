@@ -1,8 +1,10 @@
+import Actions from '@components/mex/Integrations/Actions'
+import Portals from '@components/mex/Integrations/Portals'
+import { mog } from '@utils/lib/helper'
 import React, { useEffect } from 'react'
 import { Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { animated } from 'react-spring'
 import styled from 'styled-components'
-import ServiceInfo from '../../components/mex/Integrations/ServiceInfo'
 import Search from '../../components/mex/Search/Search'
 import About from '../../components/mex/Settings/About'
 import AutoUpdate from '../../components/mex/Settings/AutoUpdate'
@@ -59,6 +61,7 @@ const Switch = () => {
 
   useEffect(() => {
     // ? Do we need to save data locally on every route change?
+    mog('Changing location', { location })
     if (authenticated) {
       if (isBlockMode) setIsBlockMode(false)
       saveEditorBuffer()
@@ -94,12 +97,11 @@ const Switch = () => {
 
         <Route path={ROUTE_PATHS.home} element={<Home />}>
           <Route index element={<ProtectedRoute component={Dashboard} />} />
-          {/* Old <Route path={ROUTE_PATHS.integrations} element={<ProtectedRoute component={Integrations} />} />  */}
           <Route path={ROUTE_PATHS.integrations} element={<ProtectedRoute component={ActionGroupsPage} />} />
-
+          <Route path={`${ROUTE_PATHS.integrations}/:actionGroupId`} element={<ProtectedRoute component={Actions} />} />
           <Route
-            path={`${ROUTE_PATHS.integrations}/:actionGroupId`}
-            element={<ProtectedRoute component={ServiceInfo} />}
+            path={`${ROUTE_PATHS.integrations}/portal/:actionGroupId`}
+            element={<ProtectedRoute component={Portals} />}
           />
           <Route path={ROUTE_PATHS.archive} element={<ProtectedRoute component={Archive} />} />
           <Route path={ROUTE_PATHS.snippets} element={<ProtectedRoute component={Snippets} />} />

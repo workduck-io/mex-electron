@@ -23,7 +23,6 @@ import {
   defaultCopyFilter
 } from '../../../../utils/search/parseData'
 import { useSnippets } from '../../../../hooks/useSnippets'
-import useDataStore from '../../../../store/useDataStore'
 import { mog } from '../../../../utils/lib/helper'
 import { serializeHtml, createPlateEditor, createPlateUI } from '@udecode/plate'
 import getPlugins from '../../../../editor/Plugins/plugins'
@@ -34,7 +33,6 @@ import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
 import { useSpotlightSettingsStore } from '@store/settings.spotlight'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
-import { useSaver } from '@editor/Components/Saver'
 import { useSaveData } from '@hooks/useSaveData'
 
 export const MAX_RECENT_ITEMS = 3
