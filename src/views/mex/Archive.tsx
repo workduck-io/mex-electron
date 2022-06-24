@@ -171,7 +171,7 @@ const Archive = () => {
           <ResultHeader>
             <ResultTitle>{node.path}</ResultTitle>
             <ActionContainer>
-              <StyledIcon
+              {/* <StyledIcon
                 fontSize={32}
                 color={theme.colors.primary}
                 onClick={(ev) => {
@@ -179,7 +179,7 @@ const Archive = () => {
                   onUnarchiveClick(node)
                 }}
                 icon={unarchiveLine}
-              />
+              /> */}
               <StyledIcon
                 fontSize={32}
                 color="#df7777"
@@ -232,7 +232,7 @@ const Archive = () => {
             {node.path}
 
             <ActionContainer>
-              <StyledIcon
+              {/* <StyledIcon
                 fontSize={32}
                 color={theme.colors.primary}
                 onClick={(ev) => {
@@ -240,7 +240,7 @@ const Archive = () => {
                   onUnarchiveClick(node)
                 }}
                 icon={unarchiveLine}
-              />
+              /> */}
               <StyledIcon
                 fontSize={32}
                 color="#df7777"

@@ -1,3 +1,6 @@
+import { IpcAction } from '@data/IpcAction'
+import { appNotifierWindow } from '@electron/utils/notifiers'
+import { ipcRenderer } from 'electron'
 import { useMemo } from 'react'
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
@@ -85,9 +88,12 @@ const useDataStore = create<DataStoreState>(
       const newLink = newILinks.find((l) => l.path === uniquePath)
 
       const userILinks = archived ? ilinks.map((val) => (val.path === uniquePath ? { ...val, nodeid } : val)) : ilinks
+      const createdILinks = [...userILinks, ...newILinks]
+
+      ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks: createdILinks })
 
       set({
-        ilinks: [...userILinks, ...newILinks]
+        ilinks: createdILinks
       })
 
       if (newLink) return newLink
@@ -119,6 +125,7 @@ const useDataStore = create<DataStoreState>(
 
     setIlinks: (ilinks) => {
       mog('Setting ILinks', { ilinks })
+      ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks })
       set({
         ilinks
       })
@@ -294,7 +301,7 @@ export const useTreeFromLinks = () => {
   // const sortedTree = sortTree(sanatizeLinks, contents)
   const tree = useMemo(() => generateTree(sanatizedLinks, expanded), [ilinks, node])
 
-  // mog('Tree', { ilinks, contents, links, sanatizedLinks, sortedTree, tree })
+  mog('Tree', { ilinks, links, sanatizedLinks, tree })
 
   return tree
 }

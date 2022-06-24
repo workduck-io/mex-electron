@@ -13,7 +13,6 @@ export const useNavigation = () => {
   const moveHs = useHistoryStore((store) => store.move)
   const addRecent = useRecentsStore((store) => store.addRecent)
   const { goTo } = useRouting()
-  const getCurrentUID = useHistoryStore((store) => store.getCurrentUId)
   const getDistanceNodeid = useHistoryStore((store) => store.getDistanceNodeid)
 
   const push = (nodeid: string, options?: LoadNodeOptions) => {

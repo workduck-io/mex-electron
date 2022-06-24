@@ -8,20 +8,32 @@ interface RequestData {
   // headers: string;
 }
 
-export type PollingType = {
-  type: 'hierarchy' | 'shared' | 'bookmarks'
-  interval?: number
+export enum PollActions {
+  'hierarchy' = 'hierarchy',
+  'shared' = 'shared',
+  'bookmarks' = 'bookmarks'
 }
 
-export const defaultPollActions = []
-
 interface ApiStore {
+  polling: Set<PollActions>
+  addActionToPoll: (action: PollActions) => void
+  replaceAndAddActionToPoll: (action: PollActions) => void
   requests: { [URL: string]: RequestData }
   setRequest(url: string, data: RequestData): void
   clearRequests(): void
 }
 
 export const useApiStore = create<ApiStore>((set, get) => ({
+  polling: new Set([PollActions.hierarchy]),
+  addActionToPoll: (action: PollActions) => {
+    const polling = get().polling
+    const newActionsToPoll = polling.add(action)
+    set({ polling: newActionsToPoll })
+  },
+  replaceAndAddActionToPoll: (action: PollActions) => {
+    set({ polling: new Set([action]) })
+  },
+
   requests: {},
   setRequest(url, data) {
     set({

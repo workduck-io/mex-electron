@@ -11,14 +11,11 @@ import { useSaveAndExit } from '@hooks/useSaveAndExit'
 import { useRecieveMentions, useRecieveTokens, useSyncData } from '@hooks/useSyncData'
 import { useAuthStore } from '@services/auth/useAuth'
 import { useAnalysis, useAnalysisIPC } from '@store/useAnalysis'
-import useBlockStore from '@store/useBlockStore'
-import { useLayoutStore } from '@store/useLayoutStore'
 import { mog } from '@utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useBrowserNavigation, useRouting } from '@views/routes/urls'
 import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
 import { useEffect } from 'react'
-import tinykeys from 'tinykeys'
 import config from '../../../config.json'
 import { useActionsPerfomerClient } from '../../spotlight/Actions/useActionPerformer'
 import { useRedirectAuth } from '../Auth/useRedirectAuth'
@@ -29,17 +26,12 @@ import { useNavigator } from './useNavigator'
 const Init = () => {
   const { goTo } = useRouting()
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
-  const focusMode = useLayoutStore((s) => s.focusMode)
-  const toggleFocusMode = useLayoutStore((s) => s.toggleFocusMode)
 
   const { init } = useInitialize()
   const { loadNode } = useLoad()
   const { initCognito } = useAuth()
-  const workspaceDetails = useAuthStore((store) => store.workspaceDetails)
 
   const { getLocalData } = useLocalData()
-  const isBlockMode = useBlockStore((store) => store.isBlockMode)
-  const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
   const { getUpcomingEvents, getUserEvents } = useCalendar()
 
   const { setReceiveToken } = useRecieveTokens()
@@ -47,7 +39,6 @@ const Init = () => {
 
   const { getTokenData } = useTokenData()
   const { getMentionData } = useMentionData()
-  const { fetchShareData } = useFetchShareData()
   const { initActionPerfomerClient } = useActionsPerfomerClient()
 
   /**
@@ -101,10 +92,6 @@ const Init = () => {
     })()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    if (workspaceDetails?.id) fetchShareData()
-  }, [workspaceDetails])
-
   const { setIpc } = useSyncData()
   const setAnalysisIpc = useAnalysisIPC()
 
@@ -131,34 +118,6 @@ const Init = () => {
   useInternetListener()
   useIpcListenerOnInit()
   useBrowserNavigation()
-
-  useEffect(() => {
-    if (focusMode.on) {
-      const unsubscribe = tinykeys(window, {
-        Escape: (event) => {
-          event.preventDefault()
-          toggleFocusMode()
-        }
-      })
-      return () => {
-        unsubscribe()
-      }
-    }
-  }, [focusMode]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (isBlockMode) {
-      const unsubscribe = tinykeys(window, {
-        Escape: (event) => {
-          event.preventDefault()
-          setIsBlockMode(false)
-        }
-      })
-      return () => {
-        unsubscribe()
-      }
-    }
-  }, [isBlockMode])
 
   return null
 }

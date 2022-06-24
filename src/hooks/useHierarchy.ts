@@ -1,8 +1,7 @@
 import { useApi } from '@apis/useSaveApi'
-import { generateNodeUID, HASH_SEPARATOR } from '@data/Defaults/idPrefixes'
+import { HASH_SEPARATOR } from '@data/Defaults/idPrefixes'
 import { mog } from '@utils/lib/helper'
-import toast from 'react-hot-toast'
-import { getNodeidFromPathAndLinks, useLinks } from './useLinks'
+import { getNodeidFromPathAndLinks } from './useLinks'
 import { NodeEditorContent } from '../types/Types'
 import { defaultContent } from '@data/Defaults/baseData'
 import useDataStore from '@store/useDataStore'
@@ -113,7 +112,7 @@ export const useHierarchy = () => {
             content
           })
 
-      saveEditorValueAndUpdateStores(noteId, content)
+      saveEditorValueAndUpdateStores(noteId, content, { saveApi: false })
 
       return node
     } catch (error) {

@@ -19,6 +19,7 @@ import { GoogleEvent } from '../types/gcal'
 import { ILink } from '../types/Types'
 import { mog } from '../utils/lib/helper'
 import { getSlug } from '../utils/lib/strings'
+import { useCreateNewNote } from './useCreateNewNote'
 
 /*
  * Need
@@ -92,26 +93,12 @@ interface UserCalendarState {
   setEvents: (events: CalendarEvent[]) => void
 }
 
-export const getNodeForMeeting = (title: string, date: number, create?: boolean): ILink | undefined => {
-  const customName = `${MEETING_PREFIX}${SEPARATOR}${getSlug(title)} ${format(date, 'dd-MM-yyyy')}`
-  const links = useDataStore.getState().ilinks
-
-  const link = links.find((l) => l.path === customName)
-
-  const node = link
-    ? link
-    : create
-    ? useDataStore.getState().addILink({
-        ilink: customName
-      })
-    : undefined
-
-  return node
-}
-
-export const openCalendarMeetingNote = (e: CalendarEvent) => {
+export const openCalendarMeetingNote = (
+  e: CalendarEvent,
+  getMeetingNote: (title: string, date: number, create?: boolean) => ILink | undefined
+) => {
   // if link present use it
-  const node = getNodeForMeeting(e.summary, e.times.start, true)
+  const node = getMeetingNote(e.summary, e.times.start, true)
   const content = useContentStore.getState().getContent(node?.nodeid)
   // const content = getContent(node.nodeid)
   const realContent =
@@ -135,8 +122,11 @@ export const openCalendarMeetingNote = (e: CalendarEvent) => {
   useSpotlightAppStore.getState().setNormalMode(false)
 }
 
-const convertCalendarEventToAction = (e: CalendarEvent) => {
-  const node = getNodeForMeeting(e.summary, e.times.start, false)
+const convertCalendarEventToAction = (
+  e: CalendarEvent,
+  getMeetingNote: (title: string, date: number, create?: boolean) => ILink | undefined
+) => {
+  const node = getMeetingNote(e.summary, e.times.start, false)
   const desc = e.description ? `: ${e.description}` : ''
   return {
     id: e.id,
@@ -162,7 +152,7 @@ const convertCalendarEventToAction = (e: CalendarEvent) => {
       nodeid: node ? node.nodeid : undefined,
       event: e,
       customAction: () => {
-        openCalendarMeetingNote(e)
+        openCalendarMeetingNote(e, getMeetingNote)
       }
     }
   }
@@ -211,11 +201,22 @@ export const useCalendarStore = create<UserCalendarState>((set) => ({
 export const useCalendar = () => {
   const setEvents = useCalendarStore((state) => state.setEvents)
   const updateToken = useTokenStore((state) => state.updateGoogleCalendarToken)
-  // const ilink =c
+  const { createNewNote } = useCreateNewNote()
 
   const getUserEvents = () => {
     const events = useCalendarStore.getState().events
     return events
+  }
+
+  const getNodeForMeeting = (title: string, date: number, create?: boolean): ILink | undefined => {
+    const customName = `${MEETING_PREFIX}${SEPARATOR}${getSlug(title)} ${format(date, 'dd-MM-yyyy')}`
+    const links = useDataStore.getState().ilinks
+
+    const link = links?.find((l) => l.path === customName)
+
+    const node = link ? link : create ? createNewNote({ path: customName }) : undefined
+
+    return node
   }
 
   const getUpcomingEvents = () => {
@@ -230,7 +231,7 @@ export const useCalendar = () => {
       })
       .sort((a, b) => a.times.start - b.times.start)
 
-    const todayEventList: ListItemType[] = todayEvents.map(convertCalendarEventToAction)
+    const todayEventList: ListItemType[] = todayEvents.map((e) => convertCalendarEventToAction(e, getNodeForMeeting))
 
     // mog('calendar', {
     //   events,

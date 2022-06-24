@@ -83,6 +83,8 @@ const useLoad = () => {
       } catch (err) {
         toast('Unable to rename node')
       }
+
+    return newNodePath
   }
 
   const getNode = (nodeid: string): NodeProperties => {

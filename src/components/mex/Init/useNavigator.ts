@@ -1,7 +1,9 @@
 import useLoad from '@hooks/useLoad'
 import { useKeyListener } from '@hooks/useShortcutListener'
+import useBlockStore from '@store/useBlockStore'
 import { useEditorStore } from '@store/useEditorStore'
 import { useHelpStore } from '@store/useHelpStore'
+import { useLayoutStore } from '@store/useLayoutStore'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { useEffect } from 'react'
 import tinykeys from 'tinykeys'
@@ -10,11 +12,48 @@ export const useNavigator = () => {
   /** Set shortcuts */
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const node = useEditorStore((store) => store.node)
+  const focusMode = useLayoutStore((s) => s.focusMode)
+  const toggleFocusMode = useLayoutStore((s) => s.toggleFocusMode)
+
+  const isBlockMode = useBlockStore((store) => store.isBlockMode)
+  const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
   const { shortcutDisabled, shortcutHandler } = useKeyListener()
 
   const { loadNode } = useLoad()
-
   const { goTo } = useRouting()
+
+  useEffect(() => {
+    if (focusMode.on) {
+      const unsubscribe = tinykeys(window, {
+        Escape: (event) => {
+          event.preventDefault()
+          shortcutHandler({ disabled: false, title: 'Block View', keystrokes: 'Escape', category: 'Actions' }, () => {
+            toggleFocusMode()
+          })
+        }
+      })
+
+      return () => {
+        unsubscribe()
+      }
+    }
+  }, [focusMode]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (isBlockMode) {
+      const unsubscribe = tinykeys(window, {
+        Escape: (event) => {
+          event.preventDefault()
+          shortcutHandler({ disabled: false, title: 'Block View', keystrokes: 'Escape', category: 'Actions' }, () => {
+            setIsBlockMode(false)
+          })
+        }
+      })
+      return () => {
+        unsubscribe()
+      }
+    }
+  }, [isBlockMode])
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -65,6 +104,7 @@ export const useNavigator = () => {
         })
       }
     })
+
     return () => {
       unsubscribe()
     }

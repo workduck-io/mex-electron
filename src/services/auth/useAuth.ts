@@ -75,7 +75,7 @@ export const useAuthentication = () => {
   const { signIn, signUp, verifySignUp, signOut, googleSignIn, refreshToken } = useAuth()
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
   const addUser = useUserCacheStore((s) => s.addUser)
-  const { clearActionStore, getGroupsToView } = useActions()
+  const { clearActionStore } = useActions()
   const { initActionPerfomerClient } = useActionsPerfomerClient()
   const setShowLoader = useLayoutStore((store) => store.setShowLoader)
   // const { getNodesByWorkspace } = useApi()
@@ -107,24 +107,16 @@ export const useAuthentication = () => {
         .get(apiURLs.getUserRecords)
         .then(async (d) => {
           const userDetails = { email, alias: d.data.alias ?? d.data.name, userID: d.data.id, name: d.data.name }
+          mog('DATA AFTER LOGGING IN', { d })
           const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
           initActionPerfomerClient(userDetails?.userID)
-
-          setShowLoader(true)
-          try {
-            await getGroupsToView()
-          } catch (err) {
-            setShowLoader(false)
-            mog('Unable to init action groups into view', { err })
-          }
           mog('UserDetails', { userDetails, d, data: d.data })
-          // getNodesByWorkspace(workspaceDetails.id)
-          // Set Authenticated, user and workspace details
+          userDetails['name'] = d.data.metadata.name
 
           ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
+
           // * For Heap analytics
           identifyUser(email)
-          userDetails['name'] = d.data.metadata.name
           addUserProperties({
             [Properties.EMAIL]: email,
             [Properties.NAME]: d.data.metadata.name,
@@ -133,7 +125,6 @@ export const useAuthentication = () => {
             [Properties.ALIAS]: d.data.metadata.alias
           })
 
-          setShowLoader(false)
           addEventProperties({ [CustomEvents.LOGGED_IN]: true })
 
           addUser({
@@ -182,7 +173,6 @@ export const useAuthentication = () => {
             }
             const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
             initActionPerfomerClient(userDetails.userID)
-            setShowLoader(true)
             if (!d.data.group) {
               await registerUserForGoogle(result, d.data)
             } else {
@@ -198,13 +188,6 @@ export const useAuthentication = () => {
               }
               const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
               initActionPerfomerClient(userDetails.userID)
-
-              try {
-                await getGroupsToView()
-              } catch (err) {
-                setShowLoader(false)
-                mog('Unable to init action groups into view', { err })
-              }
 
               ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
               identifyUser(userDetails.email)
@@ -281,12 +264,6 @@ export const useAuthentication = () => {
         mog('Register Google BIG success', { d, data, userDetails, workspaceDetails })
 
         initActionPerfomerClient(userDetails.userID)
-
-        try {
-          await getGroupsToView()
-        } catch (err) {
-          mog('Unable to init action groups into view', { err })
-        }
 
         ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
         identifyUser(userDetails.email)
@@ -391,13 +368,6 @@ export const useAuthentication = () => {
         }
         const workspaceDetails = { id: newWorkspaceName, name: 'WORKSPACE_NAME' }
         initActionPerfomerClient(userDetails?.userID)
-
-        try {
-          await getGroupsToView()
-        } catch (err) {
-          setShowLoader(false)
-          mog('Unable to init action groups into view', { err })
-        }
 
         ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, loggedIn: true })
         addUser({

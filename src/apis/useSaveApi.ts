@@ -121,9 +121,10 @@ export const useApi = () => {
       namespaceIdentifier: DEFAULT_NAMESPACE,
       data: serializeContent(content ?? defaultContent.content, nodeid)
     }
-    if (!isShared) {
-      reqData['lastEditedBy'] = useAuthStore.getState().userDetails.email
-    }
+
+    // if (!isShared) {
+    //   reqData['lastEditedBy'] = useAuthStore.getState().userDetails.email
+    // }
 
     if (isShared) {
       const node = getSharedNode(nodeid)
@@ -190,7 +191,7 @@ export const useApi = () => {
 
   const getNodesByWorkspace = async () => {
     const data = await client
-      .get(apiURLs.getHeirarchy(), {
+      .get(apiURLs.getHierarchy(), {
         headers: {
           [WORKSPACE_HEADER]: getWorkspaceId(),
           Accept: 'application/json, text/plain, */*'

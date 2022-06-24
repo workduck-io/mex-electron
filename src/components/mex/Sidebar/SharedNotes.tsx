@@ -1,4 +1,3 @@
-import { usePolling } from '@apis/usePolling'
 import { SharedNodeIcon } from '@components/icons/Icons'
 import { useTimout } from '@hooks/useRelativeTime'
 import { usePermission } from '@services/auth/usePermission'
@@ -21,8 +20,6 @@ const SharedNotes = () => {
   const { goTo } = useRouting()
   const theme = useTheme()
   const node = useEditorStore((s) => s.node)
-
-  usePolling()
 
   useTimout(() => {
     getAllSharedNodes().then(() => mog('Fetched shared Notes after 15 secs'))

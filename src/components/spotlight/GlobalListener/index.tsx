@@ -44,6 +44,7 @@ const GlobalListener = memo(() => {
   const addInRecentResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
   const addResultHash = useActionsCache((store) => store.addResultHash)
   const closeShareModal = useShareModalStore((store) => store.closeModal)
+  const setILinks = useDataStore((store) => store.setIlinks)
 
   const { getTokenData } = useTokenData()
   // const { initActionsInStore, initActionsOfGroup } = useActions()
@@ -141,6 +142,10 @@ const GlobalListener = memo(() => {
         getMentionData()
         goTo(ROUTE_PATHS.home, NavigationType.replace)
       } else setUnAuthenticated()
+    })
+
+    ipcRenderer.on(IpcAction.UPDATE_ILINKS, (_event, arg) => {
+      if (arg.ilinks) setILinks(arg.ilinks)
     })
 
     ipcRenderer.on(IpcAction.RECEIVE_LOCAL_DATA, (_event, arg) => {

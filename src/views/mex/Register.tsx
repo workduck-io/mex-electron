@@ -217,6 +217,7 @@ const Register = () => {
               <ButtonFields>
                 <LoadingButton
                   loading={regSubmitting}
+                  style={{ margin: '0 auto' }}
                   alsoDisabled={regErrors.email !== undefined || regErrors.password !== undefined || !arePasswordEqual}
                   buttonProps={{ type: 'submit', primary: true, large: true }}
                 >
@@ -224,7 +225,9 @@ const Register = () => {
                 </LoadingButton>
               </ButtonFields>
             </AuthForm>
-            <GoogleLoginButton text={'Signup via Google'} />
+            <ButtonFields>
+              <GoogleLoginButton text={'Signup via Google'} />
+            </ButtonFields>
           </>
         ) : (
           <AuthForm onSubmit={verifyForm.handleSubmit(onVerifySubmit)}>

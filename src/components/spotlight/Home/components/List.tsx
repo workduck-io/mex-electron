@@ -190,12 +190,20 @@ const List = ({
                 nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
 
                 // TODO: Create new note with specified 'nodeid' and 'path'.
-                // createNewNote()
-                createNewNote({ path: nodePath, noteId: node.nodeid })
+                if (!selection) createNewNote({ path: nodePath, noteId: node.nodeid })
               }
 
               if (selection) {
-                saveIt({ path: nodePath, saveAndClose: true, removeHighlight: true, isNewTask })
+                saveIt({
+                  path: nodePath,
+                  beforeSave: ({ path, noteId, noteContent }) => {
+                    mog('ADDING NEW NOTE', { path, noteId, noteContent })
+                    createNewNote({ path, noteId, noteContent })
+                  },
+                  saveAndClose: true,
+                  removeHighlight: true,
+                  isNewTask
+                })
                 setSelection(undefined)
               }
 

@@ -1,4 +1,3 @@
-import FullPageLoader from '@components/mex/FullPageLoader'
 import React, { useEffect } from 'react'
 import { Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { animated } from 'react-spring'
@@ -57,6 +56,7 @@ const Switch = () => {
   const { saveAndClearBuffer: saveEditorBuffer } = useEditorBuffer()
   const { saveAndClearBuffer: saveSnippetBuffer } = useSnippetBuffer()
   const authenticated = useAuthStore((s) => s.authenticated)
+
   useEffect(() => {
     // ? Do we need to save data locally on every route change?
     if (authenticated) {

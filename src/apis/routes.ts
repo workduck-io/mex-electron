@@ -70,7 +70,7 @@ export const apiURLs = {
   // Workspace
   // createWorkspace: `${BASE_API_URL}/workspace`,
   getNodesByWorkspace: (workspaceId: string) => `${API_URL}/node/workspace/${workspaceId}/namespace/NAMESPACE1`,
-  getHeirarchy: () => `${API_URL}/workspace/hierarchy`,
+  getHierarchy: () => `${API_URL}/workspace/hierarchy`,
 
   // getWorkspace: (workspace_id: string) => `${BASE_API_URL}/workspace/${workspace_id}`,
 
