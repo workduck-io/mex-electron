@@ -104,6 +104,7 @@ export const useNavigator = () => {
         })
       }
     })
+
     return () => {
       unsubscribe()
     }
