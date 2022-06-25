@@ -1,7 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import SideBar from '../../components/mex/Sidebar'
-import { useTreeFromLinks } from '../../store/useDataStore'
 import InfoBar from '../../components/layouts/InfoBar'
 import { ErrorBoundary } from 'react-error-boundary'
 import EditorErrorFallback from '../../components/mex/Error/EditorErrorFallback'
@@ -17,13 +15,10 @@ const EditorViewWrapper = styled.div`
 `
 
 const EditorView = () => {
-  // const Tree = useTreeFromLinks()
-
   const { resetEditor } = useEditorActions()
 
   return (
     <EditorViewWrapper>
-      {/* <SideBar tree={Tree} starred={Tree} /> */}
       <ErrorBoundary onReset={resetEditor} FallbackComponent={EditorErrorFallback}>
         <Outlet />
       </ErrorBoundary>

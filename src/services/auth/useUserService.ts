@@ -51,6 +51,7 @@ export const useUserService = () => {
   const getUserDetailsUserId = async (userID: string): Promise<TempUserUserID> => {
     const user = getUser({ userID })
     if (user) return user
+
     try {
       return await client.get(apiURLs.user.getFromUserId(userID)).then((resp) => {
         // mog('Response', { data: resp.data })

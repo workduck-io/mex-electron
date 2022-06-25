@@ -10,6 +10,7 @@ import { ResultHeader, ResultTitle } from '../../../style/Search'
 import { Margin, SuggestionContainer, SuggestionIconsGroup, SuggestionPreviewWrapper } from './styled'
 import { getContent } from '@utils/helpers'
 import { useBlockHighlightStore } from '@editor/Actions/useFocusBlock'
+import { defaultContent } from '@data/Defaults/baseData'
 
 type SuggestionProps = {
   suggestion: any
@@ -31,10 +32,11 @@ const Suggestion: React.FC<SuggestionProps> = ({ suggestion, onPin, onClick, onE
 
   useEffect(() => {
     if ((isNote || isShared) && (showContent || suggestion.pinned)) {
-      setNodeContent(getContent(suggestion.id).content)
+      const c = getContent(suggestion.id)?.content
+      setNodeContent(c)
       setHighlights([suggestion.blockId], 'editor')
     } else {
-      setNodeContent(suggestion.content.content)
+      setNodeContent(suggestion?.content?.content)
     }
   }, [showContent])
 
@@ -67,7 +69,7 @@ const Suggestion: React.FC<SuggestionProps> = ({ suggestion, onPin, onClick, onE
           <EditorPreviewRenderer
             noMouseEvents
             blockId={showContent && isNote ? suggestion.blockId : undefined}
-            content={nodeContent}
+            content={nodeContent?.length ? nodeContent : defaultContent?.content}
             editorId={editorId}
           />
         </SuggestionPreviewWrapper>

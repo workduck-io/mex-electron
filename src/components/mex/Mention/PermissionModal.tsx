@@ -29,6 +29,7 @@ import {
 import { useShareModalStore } from './ShareModalStore'
 import { useAuthStore } from '@services/auth/useAuth'
 import { ProfileImage } from '../User/ProfileImage'
+import ShareOptions from '@components/spotlight/Public'
 
 export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
   const closeModal = useShareModalStore((s) => s.closeModal)
@@ -213,7 +214,11 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
 
   return (
     <>
-      <ModalSection>{!readOnly && <MultiEmailInviteModalContent />}</ModalSection>
+      {!readOnly && (
+        <ModalSection>
+          <MultiEmailInviteModalContent />
+        </ModalSection>
+      )}
 
       {sharedUsers.length > 0 && (
         <ModalSection>
@@ -286,9 +291,9 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
           </ModalSectionScroll>
 
           <ModalControls>
-            <Button disabled={readOnly} large onClick={onCopyLink}>
+            {/* <Button disabled={readOnly} large onClick={onCopyLink}>
               Copy Link
-            </Button>
+            </Button> */}
             <Button
               primary
               autoFocus={!focus}
@@ -303,6 +308,12 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
       )}
 
       {!readOnly && invitedUsers.length > 0 && <InvitedUsersContent />}
+
+      {!readOnly && (
+        <ModalSection>
+          <ShareOptions />
+        </ModalSection>
+      )}
     </>
   )
 }

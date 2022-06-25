@@ -65,6 +65,7 @@ export const GoogleLoginButton = ({ text }: GoogleLoginButtonProps) => {
     const newWindow = window.open(url, '_blank', 'width=500, height=500')
     if (newWindow) newWindow.opener = null
   }
+
   return (
     <ErrorBoundary FallbackComponent={GoogleAuthFallback}>
       <GoogleAuthButton

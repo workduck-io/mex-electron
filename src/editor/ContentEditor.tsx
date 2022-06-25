@@ -26,6 +26,7 @@ import { useNodes } from '@hooks/useNodes'
 import { useApi } from '@apis/useSaveApi'
 import { getContent } from '@utils/helpers'
 import { areEqual } from '@utils/lib/hash'
+import toast from 'react-hot-toast'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -109,6 +110,7 @@ const ContentEditor = () => {
         event.preventDefault()
         shortcutHandler(shortcuts.refreshNode, () => {
           saveAndClearBuffer()
+          toast('Saved!')
         })
       }
     })

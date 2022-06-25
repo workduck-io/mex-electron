@@ -1,5 +1,4 @@
 import { app } from 'electron'
-import { BlockType } from '../store/useBlockStore'
 import { generateTempId } from '../data/Defaults/idPrefixes'
 import semver from 'semver'
 import { DefaultTransforms, ForceLogutVersion } from '../data/transforms'

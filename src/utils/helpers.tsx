@@ -4,7 +4,6 @@ import { useContentStore } from '../store/useContentStore'
 import { NodeProperties } from '../store/useEditorStore'
 import { NodeContent } from '../types/data'
 import { NodeEditorContent } from '../types/Types'
-import { mog } from './lib/helper'
 import { convertContentToRawText } from './search/parseData'
 
 /** Get the contents of the node with id */
@@ -12,11 +11,11 @@ export function getContent(nodeid: string): NodeContent {
   // create a hashmap with id vs content
   // load the content from hashmap
 
-  const { contents } = useContentStore.getState()
-
+  const contents = useContentStore.getState().contents
+  const noteContent = contents?.[nodeid]
   // mog('getContent', { nodeid, contents, nodeidCon: contents[nodeid] })
-  if (contents[nodeid] && contents[nodeid].content.length > 0) {
-    return contents[nodeid]
+  if (noteContent?.content?.length > 0) {
+    return noteContent
   }
   return defaultContent
 }
