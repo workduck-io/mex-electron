@@ -174,11 +174,8 @@ export const useApi = () => {
       })
       .then((resp) => resp.data)
       .then((data: any) => {
-        if (data === nodeId) {
-          const publicURL = apiURLs.getNotePublicURL(data)
-          setMetadata(nodeId, { publicURL })
-          return publicURL
-        } else throw new Error('Error making node public')
+        setMetadata(nodeId, { publicAccess: true })
+        return nodeId
       })
       .catch((error) => {
         mog('MakeNodePublicError', { error })
@@ -197,10 +194,8 @@ export const useApi = () => {
       })
       .then((resp) => resp.data)
       .then((data: any) => {
-        if (data === nodeId) {
-          setMetadata(nodeId, { publicURL: undefined })
-          return data
-        } else throw new Error('Error making node private')
+        setMetadata(nodeId, { publicAccess: false })
+        return nodeId
       })
       .catch((error) => {
         mog('MakeNodePrivateError', { error })
@@ -215,18 +210,11 @@ export const useApi = () => {
         }
       })
       .then((d: any) => {
-        const metadata = {
-          createdBy: d.data.createdBy,
-          createdAt: d.data.createdAt,
-          lastEditedBy: d.data.lastEditedBy,
-          updatedAt: d.data.updatedAt
-        }
-
         // console.log(metadata, d.data)
         return {
           title: d.data.title,
           data: d.data.data,
-          metadata: removeNulls(metadata),
+          metadata: extractMetadata(d.data),
           version: d.data.version ?? undefined
         }
       })
@@ -242,9 +230,10 @@ export const useApi = () => {
     }
   }
 
-  const isPublic = (nodeid: string) => {
+  const getPublicURL = (nodeid: string) => {
     const meta = useContentStore.getState().getAllMetadata()
-    return meta?.[nodeid]?.publicURL
+    mog('META', { m: meta?.[nodeid] })
+    if (meta?.[nodeid]?.publicAccess) return apiURLs.getNotePublicURL(nodeid)
   }
 
   const getDataAPI = async (nodeid: string, isShared = false, isRefresh = false) => {
@@ -267,7 +256,8 @@ export const useApi = () => {
           createdBy: d.data.createdBy,
           createdAt: d.data.createdAt,
           lastEditedBy: d.data.lastEditedBy,
-          updatedAt: d.data.updatedAt
+          updatedAt: d.data.updatedAt,
+          publicAccess: d.data.publicAccess
         }
 
         // console.log(metadata, d.data)
@@ -318,7 +308,7 @@ export const useApi = () => {
     makeNotePrivate,
     makeNotePublic,
     getPublicNoteApi,
-    isPublic,
+    getPublicURL,
     bulkSaveNodes,
     saveNewNodeAPI,
     getNodesByWorkspace,

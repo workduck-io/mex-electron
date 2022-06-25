@@ -9,7 +9,7 @@ export interface NodeMetadata {
   createdAt?: number
   lastEditedBy?: string
   updatedAt?: number
-  publicURL?: string | undefined
+  publicAccess?: boolean
 }
 
 export interface NodeContent {

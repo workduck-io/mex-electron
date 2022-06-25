@@ -38,8 +38,8 @@ const ShareOptions = () => {
   const theme = useTheme()
 
   const [isLoading, setIsLoading] = useState(false)
-  const { makeNotePrivate, makeNotePublic, isPublic } = useApi()
-  const publicUrl = isPublic(node.nodeid)
+  const { makeNotePrivate, makeNotePublic, getPublicURL } = useApi()
+  const publicUrl = getPublicURL(node.nodeid)
 
   const flipPublicAccess = async () => {
     setIsLoading(true)
