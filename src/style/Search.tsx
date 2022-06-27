@@ -387,6 +387,10 @@ export const Results = styled.div<{ view: View }>`
         @media (min-width: ${size.wide}) {
           grid-template-columns: repeat(3, 1fr);
         }
+
+        @media (max-width: ${size.small}) {
+          grid-template-columns: repeat(1, 1fr);
+        }
       `
     } else if (view === View.List) {
       return css`
