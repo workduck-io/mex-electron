@@ -10,6 +10,7 @@ import { AppType } from './useInitialize'
 import { useLinks } from './useLinks'
 import useLoad from './useLoad'
 import { useNavigation } from './useNavigation'
+import { mog } from '@utils/lib/helper'
 
 export type NewNoteOptions = {
   path?: string
@@ -54,6 +55,8 @@ export const useCreateNewNote = () => {
 
       return undefined
     }
+
+    mog('NODE CREATED IS HERE', { node })
 
     addInHierarchy({ noteId: node.nodeid, notePath: node.path, parentNoteId, noteContent: options?.noteContent })
     saveNodeName(useEditorStore.getState().node.nodeid)

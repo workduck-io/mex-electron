@@ -1,15 +1,15 @@
 import { useBookmarks } from '@hooks/useBookmarks'
+import { useFetchShareData } from '@hooks/useFetchShareData'
 import { useIntervalWithTimeout } from '@hooks/useRelativeTime'
 import { useAuthStore } from '@services/auth/useAuth'
-import { usePermission } from '@services/auth/usePermission'
 import { PollActions, useApiStore } from '@store/useApiStore'
 import { mog } from '@utils/lib/helper'
 import { useApi } from './useSaveApi'
 
 export const PollingInterval = {
   [PollActions.shared]: 5 * 60 * 1000, // 5 minutes
-  [PollActions.hierarchy]: 30 * 60 * 1000, // 30 minutes
-  [PollActions.bookmarks]: 120 * 60 * 1000 // 120 minutes
+  [PollActions.hierarchy]: 5 * 60 * 1000, // 5 minutes
+  [PollActions.bookmarks]: 30 * 60 * 1000 // 30 minutes
 }
 
 export const usePolling = () => {
@@ -18,11 +18,11 @@ export const usePolling = () => {
 
   const { getNodesByWorkspace } = useApi()
   const { getAllBookmarks } = useBookmarks()
-  const { getAllSharedNodes } = usePermission()
+  const { fetchShareData } = useFetchShareData()
 
   useIntervalWithTimeout(
     () => {
-      getAllSharedNodes().then(() => mog('Successfully fetched shared nodes'))
+      fetchShareData().then(() => mog('Successfully fetched shared nodes'))
     },
     isAuthenticated && polling.has(PollActions.shared) ? PollingInterval[PollActions.shared] : null
   )

@@ -27,7 +27,7 @@ export const useApi = () => {
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const setMetadata = useContentStore((store) => store.setMetadata)
   const setContent = useContentStore((store) => store.setContent)
-  const { getNodeTitleSave, getTitleFromPath, updateILinks } = useLinks()
+  const { getTitleFromNoteId, updateILinks } = useLinks()
   const { getSharedNode } = useNodes()
   const setILinks = useDataStore((store) => store.setIlinks)
 
@@ -48,7 +48,7 @@ export const useApi = () => {
   ) => {
     const reqData = {
       id: noteId,
-      title: getTitleFromPath(options.path),
+      title: getTitleFromNoteId(noteId),
       referenceID: options?.parentNoteId,
       namespaceIdentifier: DEFAULT_NAMESPACE,
       type: 'NodeRequest',
@@ -91,8 +91,7 @@ export const useApi = () => {
       nodePath: {
         path: options.path
       },
-      id: noteId,
-      title: getTitleFromPath(options.path, true),
+      title: getTitleFromNoteId(noteId),
       namespaceIdentifier: DEFAULT_NAMESPACE,
       type: 'NodeBulkRequest',
       tags: getTagsFromContent(options.content),
@@ -130,7 +129,7 @@ export const useApi = () => {
     const reqData = {
       id: nodeid,
       type: 'NodeRequest',
-      title: getNodeTitleSave(nodeid),
+      title: getTitleFromNoteId(nodeid),
       namespaceIdentifier: DEFAULT_NAMESPACE,
       tags: getTagsFromContent(content),
       data: serializeContent(content ?? defaultContent.content, nodeid)

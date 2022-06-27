@@ -59,7 +59,7 @@ export const apiURLs = {
 
   // Archive
   archiveNodes: () => `${API_URL}/node/archive`,
-  deleteArchiveNodes: () => `${API_URL}/node/archive`,
+  deleteArchiveNodes: () => `${API_URL}/node/archive/delete`,
   getArchivedNodes: (workspaceId: string) => `${API_URL}/node/archive/${workspaceId}`,
   unArchiveNodes: () => `${API_URL}/node/unarchive`,
 

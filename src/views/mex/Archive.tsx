@@ -131,8 +131,9 @@ const Archive = () => {
   }
 
   const onDeleteClick = async () => {
+    mog('Deleting this node...', { archive, delNode })
     const nodesToDelete = archive.filter((i) => {
-      const match = i.path.startsWith(delNode.path)
+      const match = i.path.startsWith(delNode.title)
       return match
     })
 

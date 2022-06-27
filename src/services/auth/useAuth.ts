@@ -356,6 +356,13 @@ export const useAuthentication = () => {
         }
       )
       .then(async (d: any) => {
+        try {
+          await refreshToken()
+        } catch (error) {
+          // setShowLoader(false)
+          mog('Error: ', { error: JSON.stringify(error) })
+        }
+
         // console.log(d.data)
         // Set workspace details
         const userDetails = {

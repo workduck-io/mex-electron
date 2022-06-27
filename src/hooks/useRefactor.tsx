@@ -125,7 +125,11 @@ export const useRefactor = () => {
       icon: getNodeIcon(p)
     }))
 
-    setILinks([...newIlinks, ...newParentIlinks])
+    const newlyGeneratedILinks = [...newIlinks, ...newParentIlinks]
+
+    mog('newLy generated id', { newlyGeneratedILinks })
+
+    setILinks(newlyGeneratedILinks)
 
     const baseId = linkInRefactor(useDataStore.getState().baseNodeId, refactored)
     if (baseId !== false) {
