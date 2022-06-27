@@ -8,9 +8,18 @@ import { Service, SyncBlockTemplate } from '../editor/Components/SyncBlock'
 import { useSaveData } from './useSaveData'
 import { useSlashCommands } from './useSlashCommands'
 import { useAuthStore } from '../services/auth/useAuth'
+import useTodoStore from '@store/useTodoStore'
+import { NodeEditorContent } from '../types/Types'
+import { getTodosFromContent } from '@utils/lib/content'
+import { useLinks } from './useLinks'
+import { useSearch } from './useSearch'
+import { useTags } from './useTags'
+import { mog } from '@utils/lib/helper'
+import { useContentStore } from '@store/useContentStore'
 
 export const useUpdater = () => {
   const setSlashCommands = useDataStore((state) => state.setSlashCommands)
+  const setContent = useContentStore((store) => store.setContent)
   const setServices = useSyncStore((store) => store.setServices)
   const setTemplates = useSyncStore((store) => store.setTemplates)
   const { generateSlashCommands } = useSlashCommands()
@@ -23,6 +32,23 @@ export const useUpdater = () => {
     const slashCommands = generateSlashCommands(useSnippetStore.getState().snippets, useSyncStore.getState().templates)
 
     setSlashCommands(slashCommands)
+  }
+
+  const { updateLinksFromContent } = useLinks()
+  const updateNodeTodos = useTodoStore((store) => store.replaceContentOfTodos)
+
+  const { updateTagsFromContent } = useTags()
+  const { updateDocument } = useSearch()
+
+  const updateFromContent = async (noteId: string, content: NodeEditorContent) => {
+    if (content) {
+      setContent(noteId, content)
+      updateLinksFromContent(noteId, content)
+      updateTagsFromContent(noteId, content)
+      updateNodeTodos(noteId, getTodosFromContent(content))
+
+      await updateDocument('node', noteId, content)
+    }
   }
 
   const updateDefaultServices = async <T>(d?: T): Promise<T | undefined> => {
@@ -95,5 +121,5 @@ export const useUpdater = () => {
     } else console.error('Not authenticated, not fetching default services')
   }
 
-  return { updater, updateServices, getTemplates, updateDefaultServices }
+  return { updater, updateServices, updateFromContent, getTemplates, updateDefaultServices }
 }

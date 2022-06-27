@@ -1,23 +1,12 @@
 import { useApi } from '@apis/useSaveApi'
-import { HASH_SEPARATOR } from '@data/Defaults/idPrefixes'
-import { mog } from '@utils/lib/helper'
-import { getNodeidFromPathAndLinks } from './useLinks'
-import { NodeEditorContent } from '../types/Types'
-import { defaultContent } from '@data/Defaults/baseData'
-import useDataStore from '@store/useDataStore'
-import { useDataSaverFromContent } from '@editor/Components/Saver'
 import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
-
-export type ILink = {
-  nodeid: string
-  path: string
-}
-
-export type NewILinkProps = {
-  openedNotePath?: string
-  content?: NodeEditorContent
-  showAlert?: boolean
-}
+import { defaultContent } from '@data/Defaults/baseData'
+import { HASH_SEPARATOR } from '@data/Defaults/idPrefixes'
+import { useDataSaverFromContent } from '@editor/Components/Saver'
+import useDataStore from '@store/useDataStore'
+import { mog } from '@utils/lib/helper'
+import { ILink, NodeEditorContent } from '../types/Types'
+import { getNodeidFromPathAndLinks } from './useLinks'
 
 export const hierarchyParser = (linkData: string[]): ILink[] => {
   const ilinks: ILink[] = []

@@ -5,7 +5,7 @@ import '../services/apiClient/apiClient'
 import { useAuthStore } from '../services/auth/useAuth'
 import { isRequestedWithin } from '../store/useApiStore'
 import { useContentStore } from '../store/useContentStore'
-import { mog, removeNulls } from '../utils/lib/helper'
+import { mog } from '../utils/lib/helper'
 import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
@@ -18,6 +18,9 @@ import { getTagsFromContent } from '@utils/lib/content'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '@data/IpcAction'
 import useDataStore from '@store/useDataStore'
+import { iLinksToUpdate } from '@utils/hierarchy'
+import { runBatch } from '@utils/lib/batchPromise'
+import { useUpdater } from '@hooks/useUpdater'
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,6 +30,9 @@ export const useApi = () => {
   const { getNodeTitleSave, getTitleFromPath, updateILinks } = useLinks()
   const { getSharedNode } = useNodes()
   const setILinks = useDataStore((store) => store.setIlinks)
+
+  const { updateFromContent } = useUpdater()
+
   /*
    * Saves data in the backend
    * Also updates the incoming data in the store
@@ -252,16 +258,11 @@ export const useApi = () => {
         }
       })
       .then((d) => {
-        const metadata = {
-          createdBy: d.data.createdBy,
-          createdAt: d.data.createdAt,
-          lastEditedBy: d.data.lastEditedBy,
-          updatedAt: d.data.updatedAt,
-          publicAccess: d.data.publicAccess
-        }
-
         // console.log(metadata, d.data)
-        return { data: d.data.data, metadata: removeNulls(metadata), version: d.data.version ?? undefined }
+        const content = deserializeContent(d.data.data)
+        updateFromContent(nodeid, content)
+
+        return { data: d.data.data, metadata: extractMetadata(d.data), version: d.data.version ?? undefined }
       })
       .catch((e) => {
         console.error(`MexError: Fetching nodeid ${nodeid} failed with: `, e)
@@ -284,6 +285,11 @@ export const useApi = () => {
         if (d.data) {
           const nodes = hierarchyParser(d.data)
           if (nodes && nodes.length > 0) {
+            const localILinks = useDataStore.getState().ilinks
+            const { toUpdateLocal } = iLinksToUpdate(localILinks, nodes)
+
+            runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid)))
+
             setILinks(nodes)
             ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks: nodes })
           }

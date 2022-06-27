@@ -35,6 +35,12 @@ export interface ILink {
   icon?: string
 }
 
+export type NewILinkProps = {
+  openedNotePath?: string
+  content?: NodeEditorContent
+  showAlert?: boolean
+}
+
 export interface SharedNode extends ILink {
   currentUserAccess: AccessLevel
   sharedBy: UserID

@@ -1,6 +1,3 @@
-import { IpcAction } from '@data/IpcAction'
-import { ipcRenderer } from 'electron'
-import { useMemo } from 'react'
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
@@ -13,7 +10,6 @@ import { getNodeIcon } from '../utils/lib/icons'
 import { removeLink } from '../utils/lib/links'
 import { getUniquePath } from '../utils/lib/paths'
 import { generateTree } from '../utils/lib/tree'
-import { NodeProperties, useEditorStore } from './useEditorStore'
 import { useTreeStore } from './useTreeStore'
 
 const useDataStore = create<DataStoreState>(
