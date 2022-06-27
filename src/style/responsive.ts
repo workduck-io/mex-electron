@@ -8,7 +8,7 @@ interface Sizes {
 
 export const size: Sizes = {
   tiny: '600px',
-  small: '800px',
+  small: '900px',
   medium: '1200px',
   normal: '1400px',
   wide: '1920px'

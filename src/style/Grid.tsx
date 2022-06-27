@@ -13,6 +13,10 @@ export const GridCss = (smCol = 2, lgCol = 3, spacing?: string) => css`
   @media (min-width: ${size.wide}) {
     grid-template-columns: repeat(${lgCol}, 1fr);
   }
+
+  @media (max-width: ${size.small}) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 `
 
 export const GridWrapper = styled(animated.div)<{ grid?: string }>`
