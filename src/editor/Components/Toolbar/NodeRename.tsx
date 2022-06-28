@@ -1,12 +1,14 @@
 import { useRefactorStore } from '@components/mex/Refactor/Refactor'
 import { DisplayShortcut } from '@components/mex/Shortcuts'
 import { getNameFromPath, getParentFromPath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
+import { hierarchyParser } from '@hooks/useHierarchy'
+import { useKeyListener } from '@hooks/useShortcutListener'
 import useDataStore from '@store/useDataStore'
 import { useHelpStore } from '@store/useHelpStore'
 import Tippy from '@tippyjs/react'
 import { getPlateEditorRef, selectEditor } from '@udecode/plate'
-import { mog } from '@utils/lib/helper'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import toast from 'react-hot-toast'
 import tinykeys from 'tinykeys'
 import { doesLinkRemain } from '../../../components/mex/Refactor/doesLinkRemain'
 import { useLinks } from '../../../hooks/useLinks'
@@ -17,12 +19,12 @@ import { useEditorStore } from '../../../store/useEditorStore'
 import { useRenameStore } from '../../../store/useRenameStore'
 import { Button } from '../../../style/Buttons'
 import { Input } from '../../../style/Form'
-import { isClash, isReserved } from '../../../utils/lib/paths'
+import { isClash, isMatch, isReserved } from '../../../utils/lib/paths'
 import { ButtonWrapper, TitleStatic, Wrapper } from './NodeRename.style'
 
 const NodeRenameOnlyTitle = () => {
   const { getNodeidFromPath } = useLinks()
-  const { execRefactor, getMockRefactor } = useRefactor()
+  const { execRefactorAsync, getMockRefactor } = useRefactor()
 
   // const focus = useRenameStore((store) => store.focus)
   const to = useRenameStore((store) => store.to)
@@ -32,6 +34,7 @@ const NodeRenameOnlyTitle = () => {
   const nodeTitle = useAnalysisStore((state) => state.analysis.title)
 
   const { push } = useNavigation()
+  const { updateILinks } = useLinks()
   const prefillRefactorModal = useRefactorStore((store) => store.prefillModal)
   const openModal = useRenameStore((store) => store.openModal)
   // const closeModal = useRenameStore((store) => store.closeModal)
@@ -67,6 +70,7 @@ const NodeRenameOnlyTitle = () => {
     )
   }, [ilinks, newTitle])
 
+  const { shortcutHandler } = useKeyListener()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   useEffect(() => {
@@ -74,11 +78,11 @@ const NodeRenameOnlyTitle = () => {
       [shortcuts.showRename.keystrokes]: (event) => {
         event.preventDefault()
         // TODO: Fix the shortcut handler (not working after the shortcut is renamed)
-        // shortcutHandler(shortcuts.showRename, () => {
-        // console.log({ event })
-        setEditable(true)
-        inpRef.current.focus()
-        // })
+        shortcutHandler(shortcuts.showRename, () => {
+          console.log({ event })
+          setEditable(true)
+          inpRef.current.focus()
+        })
       }
     })
     // console.log(shortcuts.showRename)
@@ -90,9 +94,17 @@ const NodeRenameOnlyTitle = () => {
   const handleSubmit: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault()
+
+      const to = getTo(newTitle)
+
+      if (isMatch(to, nodeFrom)) {
+        toast('Note itself cannot be used')
+        return
+      }
+
       if (e.shiftKey) {
         // mog('Opening refactor')
-        const to = getTo(newTitle)
+
         prefillRefactorModal(nodeFrom, to)
       } else {
         // mog('Renaming')
@@ -114,7 +126,7 @@ const NodeRenameOnlyTitle = () => {
     onRename()
   }
 
-  const onRename = () => {
+  const onRename = async () => {
     // console.log('renaming', {})
     if (newTitle === getNameFromPath(nodeFrom) || isClashed) {
       reset()
@@ -135,18 +147,28 @@ const NodeRenameOnlyTitle = () => {
       if (parent) newPath = `${parent}${SEPARATOR}${newTitle}`
       setFrom(nodeFrom)
 
-      const res = execRefactor(nodeFrom, newPath)
+      const res = await execRefactorAsync(nodeFrom, newPath)
+
+      const { addedPaths, removedPaths } = res
+      const addedILinks = hierarchyParser(addedPaths)
+      const removedILinks = hierarchyParser(removedPaths)
+
+      // // * set the new hierarchy in the tree
+      const refactored = updateILinks(addedILinks, removedILinks)
+
       const path = useEditorStore.getState().node.id
       const nodeid = useEditorStore.getState().node.nodeid
-
       setEditable(false)
-      if (doesLinkRemain(path, res)) {
+
+      if (doesLinkRemain(path, refactored)) {
         push(nodeid)
       } else if (res.length > 0) {
         const nodeid = getNodeidFromPath(res[0].to)
         push(nodeid)
       }
+
       reset()
+
       const editorRef = getPlateEditorRef()
       if (editorRef) {
         selectEditor(editorRef, { edge: 'start', focus: true })

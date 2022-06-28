@@ -69,26 +69,11 @@ export const SettingsContent = styled.div`
 
 const Settings = () => {
   const { logout } = useAuthentication()
-  const { goTo } = useRouting()
-  const clearShortcuts = useHelpStore((store) => store.clearShortcuts)
-  const removeGoogleCalendarToken = useTokenStore((store) => store.removeGoogleCalendarToken)
-
-  const { addEventProperties } = useAnalytics()
 
   const onLogout = (e: any) => {
     e.preventDefault()
 
     logout()
-    clearShortcuts()
-    removeGoogleCalendarToken()
-    addEventProperties({ [CustomEvents.LOGGED_IN]: false })
-    /**
-     * Sessions ends after 30mins of inactivity
-     *
-     * identifyUser(undefined)
-     * */
-
-    goTo(ROUTE_PATHS.login, NavigationType.push)
   }
 
   return (

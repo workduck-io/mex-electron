@@ -70,6 +70,14 @@ export const useApi = () => {
         }
       })
       .then((d) => {
+        const { addedPaths, removedPaths, node } = d.data
+        const addedILinks = hierarchyParser(addedPaths)
+        const removedILinks = hierarchyParser(removedPaths)
+        setMetadata(noteId, extractMetadata(node))
+
+        // * set the new hierarchy in the tree
+        updateILinks(addedILinks, removedILinks)
+
         setMetadata(noteId, extractMetadata(d.data))
         return d.data
       })
@@ -125,11 +133,11 @@ export const useApi = () => {
    * Saves data in the backend
    * Also updates the incoming data in the store
    */
-  const saveDataAPI = async (nodeid: string, content: any[], isShared = false) => {
+  const saveDataAPI = async (nodeid: string, content: any[], isShared = false, title?: string) => {
     const reqData = {
       id: nodeid,
       type: 'NodeRequest',
-      title: getTitleFromNoteId(nodeid),
+      title: title || getTitleFromNoteId(nodeid),
       namespaceIdentifier: DEFAULT_NAMESPACE,
       tags: getTagsFromContent(content),
       data: serializeContent(content ?? defaultContent.content, nodeid)
@@ -205,6 +213,36 @@ export const useApi = () => {
       .catch((error) => {
         mog('MakeNodePrivateError', { error })
       })
+  }
+
+  const refactorNotes = async (
+    existingNodePath: { path: string; namespaceId?: string },
+    newNodePath: { path: string; namespaceId?: string },
+    nodeId: string
+  ) => {
+    const reqData = {
+      existingNodePath,
+      newNodePath,
+      nodeID: nodeId,
+      type: 'RefactorRequest'
+    }
+
+    const data = await client
+      .post(apiURLs.refactor, reqData, {
+        headers: {
+          [WORKSPACE_HEADER]: getWorkspaceId(),
+          Accept: 'application/json, text/plain, */*'
+        }
+      })
+      .then((response) => {
+        mog('refactor', response.data)
+        return response.data
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+    return data
   }
 
   const getPublicNoteApi = async (noteId: string) => {
@@ -289,9 +327,10 @@ export const useApi = () => {
 
             runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid)))
 
-            setILinks(nodes)
             ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks: nodes })
           }
+
+          setILinks(nodes)
 
           return d.data
         }
@@ -310,6 +349,7 @@ export const useApi = () => {
   return {
     saveDataAPI,
     getDataAPI,
+    refactorNotes,
     makeNotePrivate,
     makeNotePublic,
     getPublicNoteApi,

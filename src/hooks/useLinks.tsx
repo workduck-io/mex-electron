@@ -233,7 +233,11 @@ export const useLinks = () => {
 
     mog('Setting ILinks', { links })
 
-    setILinks([...links])
+    const newILinks = [...links]
+
+    setILinks(newILinks)
+
+    return newILinks
   }
 
   const getPathFromShared = (nodeid: string) => {

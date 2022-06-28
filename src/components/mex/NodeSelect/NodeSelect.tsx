@@ -18,7 +18,7 @@ import { Input } from '../../../style/Form'
 import { ILink } from '../../../types/Types'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
-import { isClash, isReserved } from '../../../utils/lib/paths'
+import { isClash, isMatch, isReserved } from '../../../utils/lib/paths'
 import { convertContentToRawText } from '../../../utils/search/parseData'
 import { SEPARATOR } from '../Sidebar/treeUtils'
 import {
@@ -110,6 +110,9 @@ interface NodeSelectProps {
   /** disallow input if clash */
   disallowClash?: boolean
 
+  /** disallow input if match  */
+  disallowMatch?: (path: string) => boolean
+
   /** Which highlight to show, true for selected (check) */
   iconHighlight?: boolean
 
@@ -125,11 +128,13 @@ interface NodeSelectState {
   selectedItem: QuickLink | null
   reserved: boolean
   clash: boolean
+  isMatch: boolean
 }
 interface ReserveClashActionProps {
   path: string
   onReserve: (reserve: boolean) => void
   onClash: (clash: boolean) => void
+  onMatch: (isMatch: boolean) => void
   onSuccess: () => void
 }
 
@@ -144,6 +149,7 @@ function NodeSelect({
   highlightWhenSelected,
   iconHighlight,
   prefillRecent,
+  disallowMatch,
   disallowReserved,
   disallowClash,
   handleSelectItem,
@@ -158,7 +164,8 @@ function NodeSelect({
     inputItems: [],
     selectedItem: null,
     reserved: false,
-    clash: false
+    clash: false,
+    isMatch: false
   })
 
   const setInputItems = (inputItems: QuickLink[]) => setNodeSelectState((state) => ({ ...state, inputItems }))
@@ -197,7 +204,8 @@ function NodeSelect({
       inputItems: [],
       selectedItem: null,
       reserved: false,
-      clash: false
+      clash: false,
+      isMatch: false
     })
 
   const quickLinks = getQuickLinks()
@@ -294,6 +302,10 @@ function NodeSelect({
         onClash: () => {
           setInputValue(key)
           toast('Existing node cannot be used')
+        },
+        onMatch: () => {
+          setInputValue(key)
+          toast('Note itself cannot be used')
         }
       })
     }
@@ -335,25 +347,37 @@ function NodeSelect({
           onClash: () => {
             toast('Existing node cannot be used')
             setInputValue('')
+          },
+          onMatch: () => {
+            toast('Note itself cannot be used')
+            setInputValue('')
           }
         })
       }
     }
   }
 
-  const onReverseClashAction = ({ path, onReserve, onClash, onSuccess }: ReserveClashActionProps) => {
+  const onReverseClashAction = ({ path, onReserve, onClash, onSuccess, onMatch }: ReserveClashActionProps) => {
     const reserved = isReserved(path)
     const clash = isClash(
       path,
       quickLinks.map((i) => i.value)
     )
 
+    const match = typeof disallowMatch === 'function' && disallowMatch(path)
+
+    mog('MATCH', { match })
+
     // Update if search is reserved/clash, or when reserved/clash is true
     if (
       ((reserved || nodeSelectState.reserved) && disallowReserved) ||
-      ((clash || nodeSelectState.clash) && disallowClash)
+      ((clash || nodeSelectState.clash) && disallowClash) ||
+      match ||
+      nodeSelectState.isMatch
     ) {
-      if ((reserved || nodeSelectState.reserved) && disallowReserved) {
+      if (match || nodeSelectState.isMatch) {
+        onMatch(match)
+      } else if ((reserved || nodeSelectState.reserved) && disallowReserved) {
         onReserve(reserved)
       } else if ((clash || nodeSelectState.clash) && disallowClash) {
         onClash(clash)
@@ -380,6 +404,9 @@ function NodeSelect({
       },
       onClash: (clash) => {
         setNodeSelectState({ ...nodeSelectState, inputItems, clash })
+      },
+      onMatch: (isMatch) => {
+        setNodeSelectState({ ...nodeSelectState, inputItems: newItems, isMatch })
       }
     })
   }, 150)
@@ -401,6 +428,10 @@ function NodeSelect({
         },
         onClash: (clash) => {
           setNodeSelectState({ ...nodeSelectState, inputItems, clash })
+          setInputValue(defaultValue)
+        },
+        onMatch: (isMatch) => {
+          setNodeSelectState({ ...nodeSelectState, inputItems, isMatch })
           setInputValue(defaultValue)
         }
       })

@@ -1,5 +1,7 @@
+import { hierarchyParser } from '@hooks/useHierarchy'
 import arrowRightLine from '@iconify/icons-ri/arrow-right-line'
 import { Icon } from '@iconify/react'
+import useDataStore from '@store/useDataStore'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
 import tinykeys from 'tinykeys'
@@ -13,7 +15,7 @@ import { useHelpStore } from '../../../store/useHelpStore'
 import { Button } from '../../../style/Buttons'
 import { NodeLink } from '../../../types/relations'
 import { mog } from '../../../utils/lib/helper'
-import { isReserved } from '../../../utils/lib/paths'
+import { isMatch, isReserved } from '../../../utils/lib/paths'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
@@ -81,8 +83,10 @@ const Refactor = () => {
   const setMockRefactored = useRefactorStore((store) => store.setMockRefactored)
   const setTo = useRefactorStore((store) => store.setTo)
   const setFrom = useRefactorStore((store) => store.setFrom)
+  const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
 
   const { push } = useNavigation()
+  const { updateILinks } = useLinks()
   const { shortcutDisabled, shortcutHandler } = useKeyListener()
 
   useEffect(() => {
@@ -120,7 +124,7 @@ const Refactor = () => {
     }
   }
 
-  const { getMockRefactor, execRefactor } = useRefactor()
+  const { getMockRefactor, execRefactorAsync } = useRefactor()
   const { getNodeidFromPath } = useLinks()
 
   useEffect(() => {
@@ -133,13 +137,27 @@ const Refactor = () => {
 
   // console.log({ mockRefactored });
 
-  const handleRefactor = () => {
-    const res = execRefactor(from, to)
+  const handleRefactor = async () => {
+    const res = await execRefactorAsync(from, to)
+
+    const { addedPaths, removedPaths } = res
+    const addedILinks = hierarchyParser(addedPaths)
+    const removedILinks = hierarchyParser(removedPaths)
+
+    mog('RESULT OF REFACTORING', { addedILinks, removedILinks })
+
+    // // * set the new hierarchy in the tree
+    const refactored = updateILinks(addedILinks, removedILinks)
+
+    // const baseId = linkInRefactor(useDataStore.getState().baseNodeId, refactored)
+    // if (baseId !== false) {
+    //   setBaseNodeId(baseId.to)
+    // }
 
     const path = useEditorStore.getState().node.path
     const nodeid = useEditorStore.getState().node.nodeid
 
-    if (doesLinkRemain(path, res)) {
+    if (doesLinkRemain(path, refactored)) {
       push(nodeid, { savePrev: false })
     } else if (res.length > 0) {
       const nodeid = getNodeidFromPath(res[0].to)
@@ -171,6 +189,7 @@ const Refactor = () => {
         // defaultValue={to}
         placeholder="Refactor To Node..."
         highlightWhenSelected
+        disallowMatch={(path) => isMatch(path, from)}
         createAtTop
         disallowClash
         iconHighlight={to !== undefined}

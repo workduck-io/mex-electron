@@ -23,6 +23,7 @@ import { SuggestionElementType } from '../../../components/mex/Suggestions/types
 import { removeStopwords } from '../../../utils/stopwords'
 import useLoad from '@hooks/useLoad'
 import useSuggestionStore from '@store/useSuggestionStore'
+import { useApi } from '@apis/useSaveApi'
 
 interface QABlockProps {
   attributes: any

@@ -6,6 +6,7 @@ import { Ellipsis } from '../components/mex/Integrations/Template/styled'
 import { CollapseHeader, CollapseWrapper } from '../ui/layout/Collapse/Collapse.style'
 import { focusStyles } from './focus'
 import { FocusModeProp } from './props'
+import { Scroll } from './spotlight/layout'
 
 export const NavTitle = styled.span`
   flex-grow: 1;
@@ -176,8 +177,8 @@ export interface NavWrapperProps extends FocusModeProp {
 }
 
 export const NavWrapper = styled(animated.div)<NavWrapperProps>`
-  overflow-y: auto;
-  overflow-x: hidden;
+  ${Scroll};
+
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
