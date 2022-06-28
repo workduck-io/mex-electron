@@ -27,7 +27,7 @@ export const useUserService = () => {
     try {
       return await client.get(apiURLs.user.getFromEmail(email)).then((resp) => {
         mog('Response', { data: resp.data })
-        if (resp?.data?.id && resp?.data?.name) {
+        if (resp?.data?.userId && resp?.data?.name) {
           addUser({
             email,
             userID: resp?.data?.userId,
@@ -37,7 +37,7 @@ export const useUserService = () => {
         }
         return {
           email,
-          userID: resp?.data?.id,
+          userID: resp?.data?.userId,
           alias: resp?.data?.alias ?? resp?.data?.name,
           name: resp?.data?.name
         }
