@@ -88,7 +88,7 @@ export const useTodoKanban = () => {
 
     const nodeFilters = Object.entries(rankedPaths).reduce((acc, c) => {
       const [path, rank] = c
-      if (rank > 1) {
+      if (rank >= 1) {
         // mog('path', { path, rank })
         acc.push({
           key: 'note',

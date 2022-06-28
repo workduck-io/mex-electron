@@ -64,6 +64,7 @@ const useLoad = () => {
   // const { saveQ } = useSaveQ()
 
   const saveNodeName = (nodeId: string, title?: string) => {
+    if (nodeId !== useAnalysisStore.getState().analysis.nodeid) return
     const draftNodeTitle = title ?? useAnalysisStore.getState().analysis.title
     mog('SAVE NODE NAME', { draftNodeTitle })
     if (!draftNodeTitle) return
