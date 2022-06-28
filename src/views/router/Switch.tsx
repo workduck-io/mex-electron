@@ -1,5 +1,7 @@
 import Actions from '@components/mex/Integrations/Actions'
 import Portals from '@components/mex/Integrations/Portals'
+import { useSaveNodeName } from '@hooks/useSaveNodeName'
+import { useEditorStore } from '@store/useEditorStore'
 import { mog } from '@utils/lib/helper'
 import React, { useEffect } from 'react'
 import { Outlet, Route, Routes, useLocation } from 'react-router-dom'
@@ -58,12 +60,15 @@ const Switch = () => {
   const { saveAndClearBuffer: saveEditorBuffer } = useEditorBuffer()
   const { saveAndClearBuffer: saveSnippetBuffer } = useSnippetBuffer()
   const authenticated = useAuthStore((s) => s.authenticated)
+  const { saveNodeName } = useSaveNodeName()
 
   useEffect(() => {
+    const editorNode = useEditorStore.getState().node
     // ? Do we need to save data locally on every route change?
     mog('Changing location', { location })
     if (authenticated) {
       if (isBlockMode) setIsBlockMode(false)
+      if (editorNode) saveNodeName(editorNode.nodeid)
       saveEditorBuffer()
       saveSnippetBuffer()
     }

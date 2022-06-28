@@ -152,6 +152,7 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
             },
             ...mentionable
               .filter((m) => m.userID !== userDetails.userID)
+              .filter((m) => m.alias !== undefined)
               .map((m) => ({
                 value: m.userID,
                 text: m.alias,
