@@ -1,51 +1,41 @@
-import { IpcAction } from '@data/IpcAction'
-import { useSaver } from '@editor/Components/Saver'
 import { usePlateEditorRef } from '@udecode/plate'
+
+import { useSaver } from '@editor/Components/Saver'
 import { getMexHTMLDeserializer } from '@utils/htmlDeserializer'
 import { AppleNote } from '@utils/importers/appleNotes'
-import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import { ipcRenderer } from 'electron'
-import { useState, useEffect } from 'react'
+import { useRouting } from '@views/routes/urls'
 import { useCreateNewNote } from './useCreateNewNote'
 import { useLinks } from './useLinks'
 import useLoad from './useLoad'
 
+// export type NewNoteOptions = {
+//   path?: string
+//   parent?: string
+//   noteId?: string
+//   noteContent?: NodeEditorContent
+//   openedNotePath?: string
+//   noRedirect?: boolean
+// }
+
 export const useImportExport = () => {
-  const [appleNotes, setAppleNotes] = useState<AppleNote[]>([])
-  const { onSave } = useSaver()
-  const { goTo } = useRouting()
-  const { getNode, loadNode } = useLoad()
-  const { getNodeidFromPath } = useLinks()
   const { createNewNote } = useCreateNewNote()
 
   const editor = usePlateEditorRef()
 
-  useEffect(() => {
-    ipcRenderer.on(IpcAction.SET_APPLE_NOTES_DATA, (_event, arg: AppleNote[]) => {
-      setAppleNotes(arg)
-      const appleNotesUID = getNodeidFromPath('Apple Notes')
-      loadNode(appleNotesUID)
-      goTo(ROUTE_PATHS.node, NavigationType.push, appleNotesUID)
+  const appleNotesToMexNotes = async (appleNotesData: AppleNote[]) => {
+    const parentNodeOptions = { path: 'Apple Notes', noRedirect: true }
+    const parentNote = createNewNote(parentNodeOptions)
+
+    appleNotesData.forEach((note) => {
+      const title = note.NoteTitle
+      const noteContent = getMexHTMLDeserializer(note.HTMLContent, editor, [])
+
+      console.log('note content: ', noteContent)
+
+      const nodeOptions = { path: `Apple Notes.${title}`, noRedirect: true, noteContent: noteContent }
+      const res = createNewNote(nodeOptions)
     })
-  }, [])
+  }
 
-  useEffect(() => {
-    if (editor && appleNotes.length > 0) {
-      const appleNotesParentKey = 'Apple Notes'
-
-      appleNotes.forEach((note) => {
-        const title = note.NoteTitle
-        const nodeKey = `${appleNotesParentKey}.${title}`
-        let nodeUID = createNewNote({ path: nodeKey })?.nodeid
-
-        const newNodeContent = getMexHTMLDeserializer(note.HTMLContent, editor, [])
-        if (!nodeUID) nodeUID = getNodeidFromPath(nodeKey)
-
-        const newNode = getNode(nodeUID)
-        onSave(newNode, true, false, [{ children: newNodeContent }])
-      })
-
-      setAppleNotes([])
-    }
-  }, [appleNotes, editor])
+  return { appleNotesToMexNotes }
 }

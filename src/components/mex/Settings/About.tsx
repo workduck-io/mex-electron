@@ -55,10 +55,6 @@ const About = () => {
     ipcRenderer.send(IpcAction.START_ONBOARDING, { from: AppType.MEX })
   }
 
-  const importAppleNotes = () => {
-    ipcRenderer.send(IpcAction.IMPORT_APPLE_NOTES)
-  }
-
   return (
     <CenteredColumn>
       <BackCard>

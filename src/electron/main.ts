@@ -753,17 +753,22 @@ ipcMain.on(IpcAction.CLOSE_SPOTLIGHT, (_event, arg) => {
   }
 })
 
-ipcMain.on(IpcAction.IMPORT_APPLE_NOTES, async () => {
-  const selectedAppleNotes = await getAppleNotes()
+// ipcMain.on(IpcAction.IMPORT_APPLE_NOTES, async () => {
+//   const selectedAppleNotes = await getAppleNotes()
 
-  if (selectedAppleNotes) mex?.webContents.send(IpcAction.SET_APPLE_NOTES_DATA, selectedAppleNotes)
-})
+//   if (selectedAppleNotes) mex?.webContents.send(IpcAction.SET_APPLE_NOTES_DATA, selectedAppleNotes)
+// })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) => {
   if (from === AppType.MEX) spotlight?.webContents.send(action, { data })
   else mex?.webContents.send(action, { data })
 }
+
+ipcMain.handle(IpcAction.IMPORT_APPLE_NOTES, async () => {
+  const selectedAppleNotes = await getAppleNotes()
+  return selectedAppleNotes
+})
 
 // Handlers for Search Worker Operations
 ipcMain.handle(IpcAction.ADD_DOCUMENT, async (_event, key, nodeId, contents, title, tags, extra) => {
