@@ -169,7 +169,7 @@ export const deserializeContent = (sanatizedContent: any[]) => {
 
     // Properties
     if (el.properties) {
-      const elProps = el.properties
+      const elProps = { ...el.properties }
       Object.keys(el.properties).forEach((k) => {
         if (directPropertyKeys.includes(k)) {
           nl[k] = el.properties[k]
