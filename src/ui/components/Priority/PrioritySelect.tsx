@@ -15,7 +15,11 @@ interface PriorityMenuSelect {
 
 const PrioritySelect = ({ id, value, onPriorityChange, withLabel = false }: PriorityMenuSelect) => {
   const menuId = `${id}-priority-menu`
-  const { show } = useContextMenu({ id: menuId })
+  const { show, hideAll } = useContextMenu({ id: menuId })
+  const onPriorityChangeClose = (priority: PriorityDataType) => {
+    onPriorityChange(priority)
+    hideAll()
+  }
   return (
     <>
       <TodoActionWrapper onClick={show}>
@@ -33,7 +37,7 @@ const PrioritySelect = ({ id, value, onPriorityChange, withLabel = false }: Prio
           </TodoActionButton>
         </Tippy>
       </TodoActionWrapper>
-      <PriorityMenu id={menuId} onClick={onPriorityChange} />
+      <PriorityMenu id={menuId} onClick={onPriorityChangeClose} />
     </>
   )
 }
