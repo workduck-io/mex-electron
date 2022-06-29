@@ -28,7 +28,7 @@ export const CDN_BASE = 'https://cdn.workduck.io'
 // export const ACTION_ENV = IS_DEV ? 'test' : 'prod'
 export const ACTION_ENV = config.constants.STAGE === 'alpha' ? 'test' : 'prod'
 
-export const GOOGLE_OAUTH_URL = `${MEXIT_FRONTEND_BASE_URL}/oauth/desktop`
+export const GOOGLE_OAUTH_URL = `${MEXIT_FRONTEND_BASE_URL}/oauth/google`
 export const GOOGLE_CAL_BASE = 'https://www.googleapis.com/calendar/v3/calendars'
 export const GOOGLE_OAUTH2_REFRESH_URL = `${MEXIT_BACKEND_URL_BASE}/oauth2/getGoogleAccessToken`
 
