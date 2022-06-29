@@ -1,7 +1,14 @@
+import { productName } from '../../../package.json'
+// import { useVersionStore } from '@store/useAppDataStore'
+// import { checkIfAlpha } from '../../electron/utils/version'
+
+// const version = useVersionStore.getState().version
+// const productName = checkIfAlpha(version) ? 'Mex Alpha' : 'Mex'
+
 export const script =
   '#!/usr/bin/osascript\n' +
   '\n' +
-  'set exportFolder to (path to application support folder from user domain as text) & "Mex:AppleNotes:"\n' +
+  `set exportFolder to (path to application support folder from user domain as text) & "${productName}:AppleNotes:"\n` +
   '\n' +
   '-- Simple text replacing\n' +
   'on replaceText(find, replace, subject)\n' +

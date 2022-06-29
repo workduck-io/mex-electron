@@ -8,6 +8,7 @@ import { Title } from '../../../style/Typography'
 import { Button } from '../../../style/Buttons'
 import { IpcAction } from '../../../data/IpcAction'
 import { CardShadow } from '../../../style/helpers'
+import { useImportExport } from '../../../hooks/useImportExport'
 
 const ComingSoonImporters = [
   { name: 'Docs', icon: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Google_Docs_logo_%282014-2020%29.svg' },
@@ -92,11 +93,27 @@ const ComingSoonImporter = ({ name, icon }: ComingSoonImporterProps) => (
   </ComingSoonCard>
 )
 
+// export type NewNoteOptions = {
+//   path?: string
+//   parent?: string
+//   noteId?: string
+//   noteContent?: NodeEditorContent
+//   openedNotePath?: string
+//   noRedirect?: boolean
+// }
+
 const Importers = () => {
-  const importAppleNotes = () => {
+  const { appleNotesToMexNotes } = useImportExport()
+
+  const importAppleNotes = async () => {
     toast('Importing Apple Notes! This might take a while', { duration: 3000 })
-    ipcRenderer.send(IpcAction.IMPORT_APPLE_NOTES)
+    const appleNotesData = await ipcRenderer.invoke(IpcAction.IMPORT_APPLE_NOTES)
+
+    console.log(`Apple Notes Data: ${appleNotesData}`)
+    const res = appleNotesToMexNotes(appleNotesData)
+    console.log(`Importer Res: `, res)
   }
+
   return (
     <Wrapper>
       <Title>Import notes from services</Title>

@@ -5,7 +5,10 @@ import { mog } from './lib/helper'
 import { apiURLs } from '../apis/routes'
 import toast from 'react-hot-toast'
 
-export const uploadImageToWDCDN = async (data: string | ArrayBuffer): Promise<string | ArrayBuffer> => {
+export const uploadImageToWDCDN = async (
+  data: string | ArrayBuffer,
+  showAlert = true
+): Promise<string | ArrayBuffer> => {
   if (typeof data === 'string') {
     try {
       const compress = new Compress()
@@ -22,12 +25,12 @@ export const uploadImageToWDCDN = async (data: string | ArrayBuffer): Promise<st
 
       mog('FileSizeAfterCompression', { size: `${compressedImg.endSizeInMb * 1000} KB` })
 
-      toast('Uploading image')
+      if (showAlert !== false) toast('Uploading image')
       const resp = await client.post(apiURLs.createImageURL, {
         encodedString: compressedImg.data
       })
       const path = await resp.data
-      toast('Image Uploaded')
+      if (showAlert !== false) toast('Image Uploaded')
       return apiURLs.getImagePublicURL(path)
     } catch (error) {
       mog('UploadImageFailed', { error })
