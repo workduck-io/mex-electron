@@ -4,10 +4,8 @@ import path from 'path'
 import { app, dialog } from 'electron'
 import { globby } from 'globby'
 import iconv from 'iconv-lite'
-import { DOMParser, parseHTML } from 'linkedom'
 
 import { script } from './fetchAppleNotes.applescript'
-import { uploadImageToWDCDN } from '../imageUpload'
 
 export interface AppleNote {
   APID: string
