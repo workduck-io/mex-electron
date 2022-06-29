@@ -6,7 +6,7 @@ import { Input } from '../../../style/Form'
 import { StyledInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
 import Tippy from '@tippyjs/react'
 import { doesLinkRemain } from '../../../components/mex/Refactor/doesLinkRemain'
-import { isReserved } from '../../../utils/lib/paths'
+import { isMatch, isReserved } from '../../../utils/lib/paths'
 import { mog } from '../../../utils/lib/helper'
 import styled from 'styled-components'
 import { useEditorStore } from '../../../store/useEditorStore'
@@ -15,6 +15,7 @@ import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
 import { useRenameStore } from '../../../store/useRenameStore'
 import { useAnalysisStore } from '../../../store/useAnalysis'
+import { hierarchyParser } from '@hooks/useHierarchy'
 
 const Wrapper = styled.div`
   position: relative;
@@ -66,8 +67,8 @@ const TitleStatic = styled.div`
 `
 
 const NodeRenameTitle = () => {
-  const { getNodeidFromPath } = useLinks()
-  const { execRefactor, getMockRefactor } = useRefactor()
+  const { getNodeidFromPath, updateILinks } = useLinks()
+  const { execRefactorAsync, getMockRefactor } = useRefactor()
 
   // const focus = useRenameStore((store) => store.focus)
   const to = useRenameStore((store) => store.to)
@@ -109,7 +110,7 @@ const NodeRenameTitle = () => {
     }
   }
 
-  const onRename: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+  const onRename: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault()
     // console.log('renaming', {})
     if (mockRefactored.length > 1) {
@@ -119,12 +120,21 @@ const NodeRenameTitle = () => {
       return
     }
     if (to && nodeFrom) {
-      const res = execRefactor(nodeFrom, to)
+      const res = await execRefactorAsync(nodeFrom, to)
+
+      const { addedPaths, removedPaths } = res
+      const addedILinks = hierarchyParser(addedPaths)
+      const removedILinks = hierarchyParser(removedPaths)
+
+      mog('RESULT OF Renaming', { addedILinks, removedILinks })
+
+      // // * set the new hierarchy in the tree
+      const refactored = updateILinks(addedILinks, removedILinks)
 
       const path = useEditorStore.getState().node.id
       const nodeid = useEditorStore.getState().node.nodeid
       setEditable(false)
-      if (doesLinkRemain(path, res)) {
+      if (doesLinkRemain(path, refactored)) {
         push(nodeid)
       } else if (res.length > 0) {
         const nodeid = getNodeidFromPath(res[0].to)
@@ -163,6 +173,7 @@ const NodeRenameTitle = () => {
           name="NodeRenameTitleSelect"
           createAtTop
           disallowReserved
+          disallowMatch={(path) => isMatch(path, nodeFrom)}
           disallowClash
           autoFocus
           defaultValue={to ?? nodeFrom}

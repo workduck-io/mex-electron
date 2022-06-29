@@ -120,7 +120,7 @@ export const useKeyListener = () => {
   const { trackEvent } = useAnalytics()
 
   const shortcutHandler = (shortcut: Shortcut, callback: any) => {
-    mog('shortcutHandler', { shortcut })
+    mog('shortcutHandler', { shortcut, shortcutDisabled, show: shortcut.disabled, showLoader })
     if (!shortcutDisabled && !shortcut.disabled && !showLoader) {
       trackEvent(getEventNameFromElement('Shortcut Settings', ActionType.KEY_PRESS, 'Shortcut'), shortcut)
       callback()

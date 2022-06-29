@@ -1,5 +1,7 @@
+import { ItemContent, StyledTreeItemSwitcher } from '@style/Sidebar'
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
+import { Ellipsis } from '../Integrations/Template/styled'
 
 export const BList = styled.div`
   /* max-height: 15rem;
@@ -15,6 +17,9 @@ export const BList = styled.div`
 export const SItem = styled.div<{ selected: boolean }>`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   padding-left: ${({ theme }) => theme.spacing.large};
+  gap: ${({ theme }) => theme.spacing.tiny};
+
+  transition: 0.3s ease;
   &:hover {
     transition: 0s ease;
     background: ${({ theme }) => theme.colors.gray[7]};
@@ -31,6 +36,11 @@ export const SItem = styled.div<{ selected: boolean }>`
       :hover {
         background: ${transparentize(0.3, theme.colors.primary)};
       }
+      ${StyledTreeItemSwitcher} {
+        &:hover svg {
+          color: ${theme.colors.primary};
+        }
+      }
     `}
 `
 
@@ -42,14 +52,7 @@ export const SharedBreak = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
 `
 
-export const SItemContent = styled.div`
-  padding: 8px 0px;
-  cursor: pointer;
-  display: flex;
-  flex-grow: 1;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.tiny};
-
+export const SItemContent = styled(ItemContent)`
   svg {
     width: 16px;
     height: 16px;

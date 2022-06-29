@@ -1,5 +1,7 @@
+import { hierarchyParser } from '@hooks/useHierarchy'
 import arrowRightLine from '@iconify/icons-ri/arrow-right-line'
 import { Icon } from '@iconify/react'
+import { mog } from '@utils/lib/helper'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
 import { useLinks } from '../../../hooks/useLinks'
@@ -10,25 +12,26 @@ import { useEditorStore } from '../../../store/useEditorStore'
 import { useQStore } from '../../../store/useQStore'
 import { useRenameStore } from '../../../store/useRenameStore'
 import { Button } from '../../../style/Buttons'
-import { isReserved } from '../../../utils/lib/paths'
+import { isMatch, isReserved } from '../../../utils/lib/paths'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
 const Rename = () => {
-  const { execRefactor, getMockRefactor } = useRefactor()
+  const { execRefactorAsync, getMockRefactor } = useRefactor()
   const { push } = useNavigation()
   const { saveData } = useSaveData()
 
   const open = useRenameStore((store) => store.open)
   const to = useRenameStore((store) => store.to)
   const from = useRenameStore((store) => store.from)
-  const mockRefactored = useRenameStore((store) => store.mockRefactored)
 
+  const mockRefactored = useRenameStore((store) => store.mockRefactored)
   const closeModal = useRenameStore((store) => store.closeModal)
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
   const setTo = useRenameStore((store) => store.setTo)
   const setFrom = useRenameStore((store) => store.setFrom)
+  const { updateILinks } = useLinks()
 
   const { getNodeidFromPath } = useLinks()
   const q = useQStore((s) => s.q)
@@ -63,15 +66,30 @@ const Rename = () => {
     }
   }, [to, from, q])
 
-  const handleRefactor = () => {
+  const handleRefactor = async () => {
     if (to && from) {
-      // mog('To, from in rename exec', { to, from })
-      const res = execRefactor(from, to)
+      const res = await execRefactorAsync(from, to)
+
+      const { addedPaths, removedPaths } = res
+      const addedILinks = hierarchyParser(addedPaths)
+      const removedILinks = hierarchyParser(removedPaths)
+
+      mog('RESULT OF Renaming', { addedILinks, removedILinks })
+
+      // // * set the new hierarchy in the tree
+      const refactored = updateILinks(addedILinks, removedILinks)
 
       saveData()
-      const path = useEditorStore.getState().node.id
+
+      // const baseId = linkInRefactor(useDataStore.getState().baseNodeId, mockRefactored)
+      // if (baseId !== false) {
+      //   setBaseNodeId(baseId.to)
+      // }
+
+      const path = useEditorStore.getState().node.path
       const nodeid = useEditorStore.getState().node.nodeid
-      if (doesLinkRemain(path, res)) {
+
+      if (doesLinkRemain(path, refactored)) {
         push(nodeid, { savePrev: false })
       } else if (res.length > 0) {
         const nodeid = getNodeidFromPath(res[0].to)
@@ -103,6 +121,7 @@ const Rename = () => {
         menuOpen={to === undefined}
         defaultValue={to}
         disallowClash
+        disallowMatch={(path) => isMatch(path, from)}
         createAtTop
         highlightWhenSelected
         iconHighlight={to !== undefined}

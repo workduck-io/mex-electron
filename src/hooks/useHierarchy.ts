@@ -86,6 +86,7 @@ export const useHierarchy = () => {
   }) => {
     try {
       const { notePath, noteId, parentNoteId, noteContent } = options
+      mog('OPTIONS ARE', { options })
 
       const content = noteContent ?? defaultContent.content
       const bulkNotePath = !parentNoteId ? createNoteHierarchyString(notePath) : notePath

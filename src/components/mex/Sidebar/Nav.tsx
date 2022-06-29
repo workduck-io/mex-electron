@@ -19,7 +19,6 @@ import {
   EndLinkContainer,
   Link,
   MainLinkContainer,
-  NavDivider,
   NavLogoWrapper,
   NavTitle,
   NavWrapper
@@ -36,9 +35,9 @@ import Tabs, { TabType } from '@components/layouts/Tabs'
 import { MexIcon } from '@style/Layouts'
 import { SharedNodeIcon } from '@components/icons/Icons'
 import { useTheme } from 'styled-components'
-import { useBookmarks } from '@hooks/useBookmarks'
 import { PollActions, useApiStore } from '@store/useApiStore'
 import { usePolling } from '@apis/usePolling'
+import { getRandomQAContent } from '@data/Defaults/baseData'
 
 const Nav = ({ links }: NavProps) => {
   // const match = useMatch(`/${ROUTE_PATHS.node}/:nodeid`)
@@ -60,7 +59,12 @@ const Nav = ({ links }: NavProps) => {
 
   const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault()
-    const note = createNewNote()
+    createNoteWithQABlock()
+  }
+
+  const createNoteWithQABlock = () => {
+    const qaContent = getRandomQAContent()
+    const note = createNewNote({ noteContent: qaContent })
 
     goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
   }
@@ -84,9 +88,7 @@ const Nav = ({ links }: NavProps) => {
       [shortcuts.newNode.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.newNode, () => {
-          const note = createNewNote()
-
-          goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
+          createNoteWithQABlock()
         })
       }
     })

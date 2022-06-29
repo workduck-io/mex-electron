@@ -20,6 +20,9 @@ import { useLayoutStore } from '@store/useLayoutStore'
 
 import { UserDetails } from '../../types/auth'
 import { useUserCacheStore } from '@store/useUserCacheStore'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import { useHelpStore } from '@store/useHelpStore'
+import { useTokenStore } from './useTokens'
 
 interface WorkspaceDetails {
   name: string
@@ -83,6 +86,10 @@ export const useAuthentication = () => {
   const { clearActionStore } = useActions()
   const { initActionPerfomerClient } = useActionsPerfomerClient()
   const setShowLoader = useLayoutStore((store) => store.setShowLoader)
+
+  const { goTo } = useRouting()
+  const clearShortcuts = useHelpStore((store) => store.clearShortcuts)
+  const removeGoogleCalendarToken = useTokenStore((store) => store.removeGoogleCalendarToken)
 
   const login = async (
     email: string,
@@ -356,6 +363,13 @@ export const useAuthentication = () => {
         }
       )
       .then(async (d: any) => {
+        try {
+          await refreshToken()
+        } catch (error) {
+          // setShowLoader(false)
+          mog('Error: ', { error: JSON.stringify(error) })
+        }
+
         // console.log(d.data)
         // Set workspace details
         const userDetails = {
@@ -391,12 +405,23 @@ export const useAuthentication = () => {
   }
 
   const logout = () => {
-    signOut().then(() => {
+    try {
+      signOut()
+    } catch (err) {
+      mog('Unable to logout')
+    } finally {
       setUnAuthenticated()
       clearActionStore()
       clearActionCache()
+      clearShortcuts()
+      removeGoogleCalendarToken()
+      addEventProperties({ [CustomEvents.LOGGED_IN]: false })
+
+      localStorage.clear()
+
       ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: false })
-    })
+      goTo(ROUTE_PATHS.login, NavigationType.push)
+    }
   }
 
   return { login, registerDetails, logout, verifySignup, loginViaGoogle }

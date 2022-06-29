@@ -1,3 +1,4 @@
+import { useApi } from '@apis/useSaveApi'
 import React from 'react'
 import { linkInRefactor } from '../components/mex/Refactor/doesLinkRemain'
 import { useRefactorStore } from '../components/mex/Refactor/Refactor'
@@ -11,6 +12,7 @@ import { mog } from '../utils/lib/helper'
 import { getNodeIcon } from '../utils/lib/icons'
 import { getUniquePath, isMatch } from '../utils/lib/paths'
 import { useEditorBuffer } from './useEditorBuffer'
+import { useLinks } from './useLinks'
 
 export const useRefactor = () => {
   const ilinks = useDataStore((state) => state.ilinks)
@@ -38,6 +40,8 @@ export const useRefactor = () => {
 
   // const { q, saveQ } = useSaveQ()
   const { saveAndClearBuffer } = useEditorBuffer()
+  const { getNodeidFromPath } = useLinks()
+  const { refactorNotes } = useApi()
 
   /*
    * Returns a mock array of refactored paths
@@ -86,6 +90,21 @@ export const useRefactor = () => {
     return refactored
   }
 
+  const execRefactorAsync = async (from: string, to: string, clearBuffer = true) => {
+    mog('FROM < TO', { from, to })
+    const nodeId = getNodeidFromPath(from)
+
+    const res = await refactorNotes(
+      { path: from.split('.').join('#') },
+      { path: to.split('.').join('#') },
+      nodeId
+    ).then((response) => {
+      return response
+    })
+
+    return res
+  }
+
   const execRefactor = (from: string, to: string, clearBuffer = true) => {
     trackEvent(CustomEvents.REFACTOR, { 'mex-from': from, 'mex-to': to })
     const refactored = getMockRefactor(from, to, clearBuffer)
@@ -125,7 +144,11 @@ export const useRefactor = () => {
       icon: getNodeIcon(p)
     }))
 
-    setILinks([...newIlinks, ...newParentIlinks])
+    const newlyGeneratedILinks = [...newIlinks, ...newParentIlinks]
+
+    mog('newLy generated id', { newlyGeneratedILinks })
+
+    setILinks(newlyGeneratedILinks)
 
     const baseId = linkInRefactor(useDataStore.getState().baseNodeId, refactored)
     if (baseId !== false) {
@@ -136,7 +159,7 @@ export const useRefactor = () => {
     return refactored
   }
 
-  return { getMockRefactor, execRefactor }
+  return { getMockRefactor, execRefactorAsync, execRefactor }
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

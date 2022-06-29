@@ -41,6 +41,7 @@ const Login = () => {
         if (s.v === 'Incorrect username or password.') {
           toast.error(s.v)
         }
+
         if (s.v === 'success') {
           const { userDetails, workspaceDetails } = s.authDetails
           const node = useEditorStore.getState().node

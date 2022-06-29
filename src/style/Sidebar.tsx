@@ -105,13 +105,14 @@ export const ItemTitle = styled.div`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
+  span {
+    ${Ellipsis}
+  }
+
   svg {
     flex-shrink: 0;
     width: 16px;
     height: 16px;
-  }
-  span {
-    ${Ellipsis}
   }
 `
 

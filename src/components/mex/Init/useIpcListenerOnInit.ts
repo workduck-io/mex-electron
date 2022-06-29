@@ -68,9 +68,7 @@ export const useIpcListenerOnInit = () => {
 
   useEffect(() => {
     ipcRenderer.on(IpcAction.FORCE_SIGNOUT, () => {
-      localStorage.clear()
       logout()
-      goTo(ROUTE_PATHS.login, NavigationType.push)
     })
   }, [])
 }

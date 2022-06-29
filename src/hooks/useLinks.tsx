@@ -101,6 +101,12 @@ export const useLinks = () => {
     }
   }
 
+  const getTitleFromNoteId = (noteId: string) => {
+    const path = getPathFromNodeid(noteId)
+
+    return getTitleFromPath(path)
+  }
+
   const getLinks = (nodeid: string): NodeLink[] => {
     const links = linkCache[nodeid]
     if (links) {
@@ -227,7 +233,11 @@ export const useLinks = () => {
 
     mog('Setting ILinks', { links })
 
-    setILinks([...links])
+    const newILinks = [...links]
+
+    setILinks(newILinks)
+
+    return newILinks
   }
 
   const getPathFromShared = (nodeid: string) => {
@@ -282,6 +292,7 @@ export const useLinks = () => {
     getPathFromNodeid,
     createLink,
     updateILinks,
+    getTitleFromNoteId,
     getParentILink
   }
 }

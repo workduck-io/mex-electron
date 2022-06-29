@@ -1,12 +1,13 @@
 import { SharedNodeIcon } from '@components/icons/Icons'
 import { useEditorStore } from '@store/useEditorStore'
+import { ItemContent, ItemTitle } from '@style/Sidebar'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React from 'react'
 import { useTheme } from 'styled-components'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
 import { Centered } from './Bookmarks'
-import { BList, SItem, SItemContent } from './SharedNotes.style'
+import { BList, SItem } from './SharedNotes.style'
 
 const SharedNotes = () => {
   const sharedNodes = useDataStore((store) => store.sharedNodes)
@@ -33,10 +34,12 @@ const SharedNotes = () => {
                 key={`shared_notes_link_${sharedNode.nodeid}`}
                 onClick={() => onOpenNode(sharedNode.nodeid)}
               >
-                <SItemContent>
-                  <SharedNodeIcon />
-                  {sharedNode.path}
-                </SItemContent>
+                <ItemContent>
+                  <ItemTitle>
+                    <SharedNodeIcon />
+                    <span>{sharedNode.path}</span>
+                  </ItemTitle>
+                </ItemContent>
               </SItem>
             )
           })}
