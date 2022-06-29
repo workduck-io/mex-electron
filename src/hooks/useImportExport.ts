@@ -1,18 +1,13 @@
 import { mog } from '@utils/lib/helper'
-import { createPlateEditor, createPlateUI } from '@udecode/plate'
+import { createPlateEditor } from '@udecode/plate'
 
-import { useSaver } from '@editor/Components/Saver'
 import { getMexHTMLDeserializer } from '@utils/htmlDeserializer'
 import { AppleNote } from '@utils/importers/appleNotes'
-import { useRouting } from '@views/routes/urls'
 import { useCreateNewNote } from './useCreateNewNote'
-import { useLinks } from './useLinks'
-import useLoad from './useLoad'
-import { CopyTag } from '../editor/Components/tag/components/CopyTag'
-import { ELEMENT_TAG } from '../editor/Components/tag/defaults'
 import components from '../editor/Components/components'
 import getPlugins from '@editor/Plugins/plugins'
 import useDataStore from '../store/useDataStore'
+import { uploadImageToWDCDN } from '../utils/imageUpload'
 
 // export type NewNoteOptions = {
 //   path?: string
@@ -23,33 +18,42 @@ import useDataStore from '../store/useDataStore'
 //   noRedirect?: boolean
 // }
 
+const HTMLParser = new DOMParser()
+
+const sanitizeHTML = async (HTMLContent: string) => {
+  const doc = HTMLParser.parseFromString(HTMLContent, 'text/html')
+
+  for (const img of Array.from(doc.querySelectorAll('img'))) {
+    const CDNLink = (await uploadImageToWDCDN(img.src, false)) as string
+    img.src = CDNLink
+  }
+
+  const innerHTML = doc.documentElement.innerHTML
+
+  return innerHTML
+}
+
 export const useImportExport = () => {
   const { createNewNote } = useCreateNewNote()
   const ilinks = useDataStore((store) => store.ilinks)
 
   const appleNotesToMexNotes = async (appleNotesData: AppleNote[]) => {
     const editor = createPlateEditor({
-      plugins: getPlugins(
-        createPlateUI({
-          [ELEMENT_TAG]: CopyTag as any
-        }),
-        {
-          exclude: { dnd: true }
-        }
-      )
+      plugins: getPlugins(components)
     })
 
     const parentILink = ilinks.find((ilink) => ilink.path === 'Apple Notes')
     const parentNote = parentILink ?? createNewNote({ path: 'Apple Notes', noRedirect: true })
 
-    appleNotesData.forEach((note) => {
+    appleNotesData.forEach(async (note) => {
       const title = note.NoteTitle
-      const noteContent = getMexHTMLDeserializer(note.HTMLContent, editor, [])
+      const sanitizedHTMLContent = await sanitizeHTML(note.HTMLContent)
+      const noteContent = getMexHTMLDeserializer(sanitizedHTMLContent, editor)
       mog(`ImportingAppleNotes `, { editor, title, noteContent, parentNote })
-      console.log('note content: ', noteContent)
+      // console.log('note content: ', noteContent)
 
       const nodeOptions = { path: `${parentNote.path}.${title}`, noRedirect: true, noteContent: noteContent }
-      const res = createNewNote(nodeOptions)
+      createNewNote(nodeOptions)
     })
   }
 

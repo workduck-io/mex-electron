@@ -73,10 +73,22 @@ export const highlightNodes = (blockToHighlight: BlockType, highlight?: boolean)
   return block
 }
 
-export const getMexHTMLDeserializer = (HTMLContent: string, editor: any, plugins: any) => {
+export const getMexHTMLDeserializer = (HTMLContent: string, editor: any) => {
   const element = htmlStringToDOMNode(HTMLContent ?? '')
+  let nodes = editor ? deserializeHtml(editor, { element, stripWhitespace: true }) : undefined
 
-  const nodes = editor ? htmlBodyToFragment(editor, element) : undefined
+  if (nodes) {
+    let isText = true
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i]
 
+      if (!isInlineNode(editor)(node)) {
+        isText = false
+        break
+      }
+    }
+
+    if (isText) nodes = [{ id: generateTempId(), type: ELEMENT_DEFAULT, children: nodes }]
+  }
   return nodes
 }
