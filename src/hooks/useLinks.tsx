@@ -102,7 +102,7 @@ export const useLinks = () => {
   }
 
   const getTitleFromNoteId = (noteId: string) => {
-    const path = getPathFromNodeid(noteId)
+    const path = getPathFromNodeid(noteId, true)
 
     return getTitleFromPath(path)
   }
