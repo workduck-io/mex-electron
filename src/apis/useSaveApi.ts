@@ -12,7 +12,7 @@ import { apiURLs } from './routes'
 import { WORKSPACE_HEADER, DEFAULT_NAMESPACE } from '../data/Defaults/defaults'
 import { useLinks } from '../hooks/useLinks'
 import { useNodes } from '@hooks/useNodes'
-import { NodeEditorContent } from '../types/Types'
+import { ILink, NodeEditorContent } from '../types/Types'
 import { hierarchyParser } from '@hooks/useHierarchy'
 import { getTagsFromContent } from '@utils/lib/content'
 import { ipcRenderer } from 'electron'
@@ -310,7 +310,7 @@ export const useApi = () => {
     }
   }
 
-  const getNodesByWorkspace = async () => {
+  const getNodesByWorkspace = async (): Promise<ILink[]> => {
     const data = await client
       .get(apiURLs.getHierarchy(), {
         headers: {
@@ -332,7 +332,7 @@ export const useApi = () => {
 
           setILinks(nodes)
 
-          return d.data
+          return nodes
         }
       })
 

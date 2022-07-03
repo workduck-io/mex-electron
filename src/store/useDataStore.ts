@@ -149,7 +149,7 @@ const useDataStore = create<DataStoreState>(
      * Should not add duplicate links
      */
     addInternalLink: (ilink, nodeid) => {
-      mog('Creating links', { ilink, nodeid })
+      // mog('Creating links', { ilink, nodeid })
       // No self links will be added
       if (nodeid === ilink.nodeid) return
 

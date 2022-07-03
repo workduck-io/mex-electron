@@ -1,6 +1,6 @@
 import { useSuggestions } from '@components/mex/Suggestions/useSuggestions'
 import { selectEditor, usePlateEditorRef } from '@udecode/plate'
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import tinykeys from 'tinykeys'
 import shallow from 'zustand/shallow'
 import Metadata from '../components/mex/Metadata/Metadata'
@@ -55,12 +55,19 @@ const ContentEditor = () => {
   const editorRef = usePlateEditorRef()
   const { addOrUpdateValBuffer, getBufferVal, saveAndClearBuffer } = useEditorBuffer()
 
-  const onChangeSave = async (val: any[]) => {
-    if (val && node && node.nodeid !== '__null__') {
-      setIsEditing(false)
-      addOrUpdateValBuffer(node.nodeid, val)
-    }
-  }
+  const onChangeSave = useCallback(
+    async (val: any[]) => {
+      if (val && node && node.nodeid !== '__null__') {
+        setIsEditing(false)
+        addOrUpdateValBuffer(node.nodeid, val)
+      }
+    },
+    [node.nodeid]
+  )
+
+  const onAutoSave = useCallback((val) => {
+    saveAndClearBuffer(false)
+  }, [])
 
   const editorId = useMemo(() => getEditorId(node.nodeid, false), [node, fetchingContent])
 
@@ -132,13 +139,11 @@ const ContentEditor = () => {
 
         <EditorWrapper comboboxOpen={isComboOpen} ref={editorWrapperRef} onClick={onFocusClick}>
           <Editor
+            // showBalloonToolbar
+            onAutoSave={onAutoSave}
             getSuggestions={getSuggestions}
-            showBalloonToolbar
-            onAutoSave={(val) => {
-              saveAndClearBuffer(false)
-            }}
-            content={fsContent?.content?.length ? fsContent?.content : defaultContent.content}
             onChange={onChangeSave}
+            content={fsContent?.content?.length ? fsContent?.content : defaultContent.content}
             editorId={editorId}
             readOnly={viewOnly}
           />

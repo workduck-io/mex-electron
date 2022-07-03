@@ -2,13 +2,16 @@ import { IpcAction } from '@data/IpcAction'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useEditorBuffer } from '@hooks/useEditorBuffer'
 import useLoad from '@hooks/useLoad'
+import { useRecieveMentions, useRecieveTokens, useSyncData } from '@hooks/useSyncData'
 import { useAuthentication } from '@services/auth/useAuth'
+import { useAnalysisIPC } from '@store/useAnalysis'
 import { useHistoryStore } from '@store/useHistoryStore'
 import useOnboard from '@store/useOnboarding'
 import { useRecentsStore } from '@store/useRecentsStore'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { ipcRenderer } from 'electron'
 import { useEffect } from 'react'
+import { useRedirectAuth } from '../Auth/useRedirectAuth'
 
 export const useIpcListenerOnInit = () => {
   const clear = useRecentsStore((store) => store.clear)
@@ -19,9 +22,14 @@ export const useIpcListenerOnInit = () => {
   // * Custom hooks
   const { goTo } = useRouting()
   const { loadNode } = useLoad()
+  const { setIpc } = useSyncData()
   const { logout } = useAuthentication()
-  const { saveAndClearBuffer } = useEditorBuffer()
+  const setAnalysisIpc = useAnalysisIPC()
   const { createNewNote } = useCreateNewNote()
+  const { setReceiveToken } = useRecieveTokens()
+  const { redirectAuthHandler } = useRedirectAuth()
+  const { saveAndClearBuffer } = useEditorBuffer()
+  const { setReceiveMention } = useRecieveMentions()
 
   /**
    * Sets handlers for IPC Calls
@@ -67,6 +75,15 @@ export const useIpcListenerOnInit = () => {
   }, [isOnboarding])
 
   useEffect(() => {
+    redirectAuthHandler()
+
+    setIpc()
+    setReceiveToken()
+    setReceiveMention()
+
+    // Setup recieving the analysis call
+    setAnalysisIpc()
+
     ipcRenderer.on(IpcAction.FORCE_SIGNOUT, () => {
       logout()
     })
