@@ -1,10 +1,16 @@
 import create from 'zustand'
 
+export type BlockMetaDataType = {
+  source?: string // * NodeId or Website URL
+  origin?: string
+}
+
 export type BlockType = {
   id: string
   children: BlockType[]
   type: string
   text?: string
+  metadata?: BlockMetaDataType
 }
 
 export enum ContextMenuActionType {

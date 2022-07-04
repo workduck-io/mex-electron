@@ -9,7 +9,7 @@ import {
 } from '@udecode/plate'
 import { NodeEntry, Transforms } from 'slate'
 import { QuickLink, WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
-import useBlockStore, { ContextMenuActionType } from '../../../store/useBlockStore'
+import useBlockStore, { BlockMetaDataType, ContextMenuActionType } from '../../../store/useBlockStore'
 
 import { Button } from '../../../style/Buttons'
 import Modal from 'react-modal'
@@ -25,6 +25,7 @@ import { useLinks } from '../../../hooks/useLinks'
 import { ButtonWrapper } from '../../../style/Settings'
 import { useSaveData } from '../../../hooks/useSaveData'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import { useEditorStore } from '@store/useEditorStore'
 
 const BlockModal = () => {
   const blocksFromStore = useBlockStore((store) => store.blocks)
@@ -42,7 +43,18 @@ const BlockModal = () => {
     setIsModalOpen(undefined)
   }
 
+  const getBlockMetadata = (nodeId: string, meta: BlockMetaDataType): BlockMetaDataType => {
+    const metadata = meta || {}
+
+    // * Origin of the block
+    if (!metadata.origin) return { ...metadata, source: nodeId, origin: nodeId }
+
+    return { ...metadata, source: nodeId }
+  }
+
   const getEditorBlocks = (): Array<NodeEntry<TNode<AnyObject>>> => {
+    const nodeId = useEditorStore.getState().node.nodeid
+
     const blocks = Object.values(blocksFromStore)
     const blockIter = getNodes(editor, {
       at: [],
@@ -55,6 +67,9 @@ const BlockModal = () => {
     })
 
     const blockEnteries = Array.from(blockIter).map(([block, _path]) => {
+      const blockWithMetadata = { ...block, metadata: getBlockMetadata(nodeId, block.metadata) }
+      mog('Block enteries are', { blockWithMetadata })
+
       return [updateIds(block), _path]
     })
 
@@ -112,14 +127,14 @@ const BlockModal = () => {
 
   const onNodeCreate = (quickLink: QuickLink): void => {
     const editorBlocks = getEditorBlocks()
-    const blocksContent = getContentFromBlocks(quickLink.value, editorBlocks, false)
+    // const blocksContent = getContentFromBlocks(quickLink.value, editorBlocks, false)
 
-    deleteContentBlocks(editorBlocks)
-    setIsModalOpen(undefined)
-    setIsBlockMode(false)
+    // deleteContentBlocks(editorBlocks)
+    // setIsModalOpen(undefined)
+    // setIsBlockMode(false)
 
-    createNewNote({ path: quickLink.value, noteContent: blocksContent })
-    saveData()
+    // createNewNote({ path: quickLink.value, noteContent: blocksContent })
+    // saveData()
   }
 
   const onNodeSelect = (quickLink: QuickLink) => {
