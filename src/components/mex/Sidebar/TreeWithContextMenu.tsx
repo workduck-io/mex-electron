@@ -1,75 +1,100 @@
+import { TreeItem } from '@atlaskit/tree'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
-import archiveLine from '@iconify/icons-ri/archive-line'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
+import archiveLine from '@iconify/icons-ri/archive-line'
 import editLine from '@iconify/icons-ri/edit-line'
 import refreshFill from '@iconify/icons-ri/refresh-fill'
 import shareLine from '@iconify/icons-ri/share-line'
 import { Icon } from '@iconify/react'
+// import * as ContextMenu from '@radix-ui/react-context-menu'
+//
+import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@ui/components/menus/contextMenu'
 import React from 'react'
-import { Item, ItemParams, Separator } from 'react-contexify'
-import 'react-contexify/dist/ReactContexify.css'
 import { useRenameStore } from '../../../store/useRenameStore'
-import { StyledMenu } from '../../../style/Menu'
-import { isReserved } from '../../../utils/lib/paths'
+import { useShareModalStore } from '../Mention/ShareModalStore'
 import { useDeleteStore } from '../Refactor/DeleteModal'
 
-interface ItemProps {
-  id: string
-  path: string
-  onDisplayMenu: (nodeid: string) => void
+// interface ItemProps {
+//   id: string
+//   path: string
+//   onDisplayMenu: (nodeid: string) => void
+// }
+
+interface TreeContextMenuProps {
+  item: TreeItem
 }
 
 export const MENU_ID = 'Tree-Menu'
 
-export const TreeContextMenu = () => {
+export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const openRenameModal = useRenameStore((store) => store.openModal)
   const openDeleteModal = useDeleteStore((store) => store.openModal)
   const { createNewNote } = useCreateNewNote()
+  const openShareModal = useShareModalStore((store) => store.openModal)
 
-  function handleItemClick({ event, props: p, data, triggerEvent }: ItemParams<ItemProps, any>) {
-    // mog('handleItemClick', { event, p, data, triggerEvent })
-    switch (event.currentTarget.id) {
-      case 'rename':
-        openRenameModal(p.path)
-        break
-      case 'archive':
-        openDeleteModal(p.path)
-        break
-      case 'createChild':
-        createNewNote({ parent: p.path })
-        break
-      case 'sync':
-        break
-      case 'share':
-        break
-    }
+  const handleRename = (item: TreeItem) => {
+    // mog('handleRename', { item })
+    openRenameModal(item.data.path)
+  }
+
+  const handleArchive = (item: TreeItem) => {
+    // mog('handleArchive', { item })
+    openDeleteModal(item.data.path)
+  }
+
+  const handleCreateChild = (item: TreeItem) => {
+    // mog('handleCreateChild', { item })
+    createNewNote({ parent: item.data.path })
+  }
+
+  const handleShare = (item: TreeItem) => {
+    // mog('handleShare', { item })
+    openShareModal('permission', item.data.nodeid)
   }
 
   return (
     <>
-      <StyledMenu id={MENU_ID}>
-        <Item id="rename" disabled={(args) => isReserved(args.props.path)} onClick={handleItemClick}>
+      <ContextMenuContent>
+        <ContextMenuItem
+          onSelect={(args) => {
+            // console.log('onSelectRename', args, item)
+            handleRename(item)
+          }}
+        >
           <Icon icon={editLine} />
           Rename
-        </Item>
-        <Item id="createChild" onClick={handleItemClick}>
+        </ContextMenuItem>
+        <ContextMenuItem
+          onSelect={(args) => {
+            handleCreateChild(item)
+          }}
+        >
           <Icon icon={addCircleLine} />
           Create Child
-        </Item>
-        <Item disabled={(args) => isReserved(args.props.path)} id="archive" onClick={handleItemClick}>
+        </ContextMenuItem>
+        <ContextMenuItem
+          onSelect={(args) => {
+            handleArchive(item)
+          }}
+        >
           <Icon icon={archiveLine} />
           Archive
-        </Item>
-        <Separator />
-        <Item id="sync" onClick={handleItemClick}>
+        </ContextMenuItem>
+        <ContextMenuSeparator />
+        {/* <ContextMenuItem>
           <Icon icon={refreshFill} />
           Sync
-        </Item>
-        <Item id="share" onClick={handleItemClick}>
+        </ContextMenuItem>
+         */}
+        <ContextMenuItem
+          onSelect={(args) => {
+            handleShare(item)
+          }}
+        >
           <Icon icon={shareLine} />
           Share
-        </Item>
-      </StyledMenu>
+        </ContextMenuItem>
+      </ContextMenuContent>
     </>
   )
 }

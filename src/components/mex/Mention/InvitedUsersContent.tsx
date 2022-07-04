@@ -31,16 +31,19 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
   const { grantUsersPermission } = usePermission()
   const { getUserDetails } = useUserService()
   const invitedUsers = useMentionStore((s) => s.invitedUsers)
+  const modalData = useShareModalStore((state) => state.data)
   const changedIUsers = useShareModalStore((state) => state.data.changedInvitedUsers)
   const setChangedIUsers = useShareModalStore((state) => state.setChangedInvitedUsers)
   // const { changeUserPermission, revokeUserAccess } = usePermission()
 
+  const nodeid = useMemo(() => modalData?.nodeid ?? node?.nodeid, [modalData.nodeid, node])
+
   const sharedIUsers = useMemo(() => {
-    if (node && node.nodeid) {
-      return getInvitedUsersForNode(node.nodeid)
+    if (nodeid) {
+      return getInvitedUsersForNode(nodeid)
     }
     return []
-  }, [node, getInvitedUsersForNode, invitedUsers])
+  }, [nodeid, invitedUsers])
 
   // This is called for every keystroke
   const onAliasChange = (email: string, alias: string) => {
@@ -92,8 +95,8 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
 
     // TODO: Filter for the case when user permission is reverted to the og one
     if (changedUser) {
-      const prevAccess = changedUser?.access[node.nodeid]
-      const ogAccess = dataUser?.access[node.nodeid]
+      const prevAccess = changedUser?.access[nodeid]
+      const ogAccess = dataUser?.access[nodeid]
       if (ogAccess && access === ogAccess) {
         mog('removing user from changedUsers', { changedUser, access, ogAccess })
         if (changedUser.change.includes('permission')) {
@@ -105,7 +108,7 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
           }
         }
       } else if (prevAccess !== access) {
-        changedUser.access[node.nodeid] = access
+        changedUser.access[nodeid] = access
         changedUser.change.push('permission')
         setChangedIUsers([...changedIUsers.filter((u) => u.email !== email), changedUser])
       } else {
@@ -119,9 +122,9 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
         }
       }
     } else if (dataUser) {
-      const prevAccess = dataUser?.access[node.nodeid]
+      const prevAccess = dataUser?.access[nodeid]
       if (prevAccess !== access) {
-        dataUser.access[node.nodeid] = access
+        dataUser.access[nodeid] = access
         const changeUser = { ...dataUser, change: ['permission' as const] }
         setChangedIUsers([...changedIUsers, changeUser])
       }
@@ -133,9 +136,9 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
     mog('Reinviting that damn user', { user, uDetails })
     const changedUser = changedIUsers.find((u) => u.email === user.email)
     const dataUser = sharedIUsers.find((u) => u.email === user.email)
-    const access = changedUser ? changedUser.access[node.nodeid] : dataUser.access[node.nodeid] ?? undefined
+    const access = changedUser ? changedUser.access[nodeid] : dataUser.access[nodeid] ?? undefined
     if (uDetails && access) {
-      const res = await grantUsersPermission(node.nodeid, [uDetails.userID], access)
+      const res = await grantUsersPermission(nodeid, [uDetails.userID], access)
       mog('res')
     }
   }
@@ -148,7 +151,7 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
     const newPermissions: { [email: string]: AccessLevel } = withoutRevokeChanges
       .filter((u) => u.change.includes('permission'))
       .reduce((acc, user) => {
-        return { ...acc, [user.email]: user.access[node.nodeid] }
+        return { ...acc, [user.email]: user.access[nodeid] }
       }, {})
 
     const newAliases = withoutRevokeChanges
@@ -204,7 +207,7 @@ export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {
           </ShareRowHeading>
 
           {sharedIUsers.map((user) => {
-            const access = user.access[node.nodeid]
+            const access = user.access[nodeid]
             const hasChanged = changedIUsers && changedIUsers.find((u) => u.email === user.email)
             const isRevoked = !!hasChanged && hasChanged.change.includes('revoke')
             return (
