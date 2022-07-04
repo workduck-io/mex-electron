@@ -1,27 +1,29 @@
 import { getEmailStart, MultiEmailValidate } from '@data/Defaults/auth'
+import { useLinks } from '@hooks/useLinks'
 import { useMentions } from '@hooks/useMentions'
 import { useAuthStore } from '@services/auth/useAuth'
 import { usePermission } from '@services/auth/usePermission'
 import { useUserService } from '@services/auth/useUserService'
 import { useEditorStore } from '@store/useEditorStore'
 import { useMentionStore } from '@store/useMentionStore'
-import { ButtonFields, Label, SelectWrapper, StyledCreatatbleSelect } from '@style/Form'
-import { Title } from '@style/Typography'
+import { Label, SelectWrapper, StyledCreatatbleSelect } from '@style/Form'
 import { mog } from '@utils/lib/helper'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { AccessLevel, DefaultPermission, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
 import { LoadingButton } from '../Buttons/LoadingButton'
 import { InputFormError } from '../Forms/Input'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { InviteFormFieldset, InviteFormWrapper, InviteWrapper, MultipleInviteWrapper } from './ShareModal.styles'
-import { InviteModalData } from './ShareModalStore'
+import { InviteModalData, useShareModalStore } from './ShareModalStore'
 
 export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean }) => {
   const addInvitedUser = useMentionStore((state) => state.addInvitedUser)
   const addMentionable = useMentionStore((state) => state.addMentionable)
+  const modalData = useShareModalStore((state) => state.data)
   // const closeModal = useShareModalStore((state) => state.closeModal)
   const { getUserDetails } = useUserService()
+  const { getPathFromNodeid } = useLinks()
   const { saveMentionData } = useMentions()
   const { grantUsersPermission } = usePermission()
   const localuserDetails = useAuthStore((s) => s.userDetails)
@@ -33,10 +35,12 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
     formState: { errors, isSubmitting }
   } = useForm<InviteModalData>()
 
+  const nodeid = useMemo(() => modalData?.nodeid ?? node?.nodeid, [modalData.nodeid, node])
+
   const onSubmit = async (data: InviteModalData) => {
     mog('data', data)
 
-    if (node && node.nodeid) {
+    if (nodeid) {
       const allMails = data.email.split(',').map((e) => e.trim())
       const access = (data?.access?.value as AccessLevel) ?? DefaultPermission
 
@@ -63,7 +67,7 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
 
       // Only share with users registered,
       if (givePermToExisting.length > 0) {
-        const permGiven = await grantUsersPermission(node.nodeid, givePermToExisting, access)
+        const permGiven = await grantUsersPermission(nodeid, givePermToExisting, access)
         mog('userDetails', { userDetails, permGiven, existing, absent, givePermToExisting })
       }
 
@@ -75,7 +79,7 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
           userID: u?.value?.userID,
           name: u?.value?.name,
           access: {
-            [node?.nodeid]: access
+            [nodeid]: access
           }
         })
       })
@@ -87,7 +91,7 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
           alias: getEmailStart(u?.value?.email),
           email: u?.value?.email,
           access: {
-            [node?.nodeid]: access
+            [nodeid]: access
           }
         })
       })
@@ -103,7 +107,9 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
   return (
     <MultipleInviteWrapper>
       <ModalHeader>Invite Users</ModalHeader>
-      <p>Invite your friends to your Note.</p>
+      <p>
+        Invite your friends to your note <strong>{getPathFromNodeid(nodeid)}</strong>.
+      </p>
       <InviteFormWrapper onSubmit={handleSubmit(onSubmit)}>
         <InviteFormFieldset disabled={disabled}>
           <InputFormError

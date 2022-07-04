@@ -59,7 +59,8 @@ export const InviteModalContent = () => {
   }, [smodaldata.userid])
 
   const onSubmit = async (data: InviteModalData) => {
-    if (node && node.nodeid) {
+    const nodeid = node?.nodeid
+    if (nodeid) {
       const editor = getPlateEditorRef()
       const access = (data?.access?.value as AccessLevel) ?? DefaultPermission
 
@@ -74,9 +75,9 @@ export const InviteModalContent = () => {
           return
         }
         if (data?.access?.value !== 'NONE') {
-          const resp = await grantUsersPermission(node.nodeid, [details.userID], access)
+          const resp = await grantUsersPermission(nodeid, [details.userID], access)
           mog('UserPermission given', { details, resp })
-          addMentionable(details.alias, data.email, details.userID, details.name, node.nodeid, access)
+          addMentionable(details.alias, data.email, details.userID, details.name, nodeid, access)
         } else {
           addMentionable(details.alias, data.email, details.userID, undefined, undefined)
         }
@@ -87,7 +88,7 @@ export const InviteModalContent = () => {
           toast(`Shared with: ${data.email}`)
         } else toast(`Added mention for: ${data.email}`)
       } else {
-        inviteUser(data.email, data.alias, node.nodeid, access)
+        inviteUser(data.email, data.alias, nodeid, access)
         if (!smodaldata.userid) {
           replaceUserMentionEmail(editor, data.alias, details.email)
         }

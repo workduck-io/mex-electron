@@ -30,6 +30,7 @@ import { useShareModalStore } from './ShareModalStore'
 import { useAuthStore } from '@services/auth/useAuth'
 import { ProfileImage } from '../User/ProfileImage'
 import ShareOptions from '@components/spotlight/Public'
+import { useLinks } from '@hooks/useLinks'
 
 export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
   const closeModal = useShareModalStore((s) => s.closeModal)
@@ -38,33 +39,37 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
   const mentionable = useMentionStore((s) => s.mentionable)
   const node = useEditorStore((state) => state.node)
   const currentUserDetails = useAuthStore((s) => s.userDetails)
+  const modalData = useShareModalStore((s) => s.data)
   const changedUsers = useShareModalStore((state) => state.data.changedUsers)
   const setChangedUsers = useShareModalStore((state) => state.setChangedUsers)
   const { changeUserPermission, revokeUserAccess } = usePermission()
+  const { getPathFromNodeid } = useLinks()
   const { accessWhenShared } = useNodes()
+
+  const nodeid = useMemo(() => modalData?.nodeid ?? node?.nodeid, [modalData.nodeid, node])
 
   const readOnly = useMemo(() => {
     // to test: return true
-    const access = accessWhenShared(node.nodeid)
+    const access = accessWhenShared(nodeid)
     if (access) return access !== 'MANAGE'
     return false
-  }, [node])
+  }, [nodeid])
 
   const [sharedUsers, setSharedUsers] = useState<Mentionable[]>([])
 
   useEffect(() => {
-    if (node && node.nodeid) {
-      const sUsers = getSharedUsersForNode(node.nodeid)
+    if (nodeid) {
+      const sUsers = getSharedUsersForNode(nodeid)
       setSharedUsers(sUsers)
     }
   }, [node, mentionable, open])
 
   const invitedUsers = useMemo(() => {
-    if (node && node.nodeid) {
-      return getInvitedUsersForNode(node.nodeid)
+    if (nodeid) {
+      return getInvitedUsersForNode(nodeid)
     }
     return []
-  }, [node])
+  }, [nodeid])
 
   const onCopyLink = () => {
     closeModal()
@@ -119,8 +124,8 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
 
     // TODO: Filter for the case when user permission is reverted to the og one
     if (changedUser) {
-      const prevAccess = changedUser?.access[node.nodeid]
-      const ogAccess = dataUser?.access[node.nodeid]
+      const prevAccess = changedUser?.access[nodeid]
+      const ogAccess = dataUser?.access[nodeid]
       if (ogAccess && access === ogAccess) {
         // mog('removing user from changedUsers', { changedUser, access, ogAccess })
         if (changedUser.change.includes('permission')) {
@@ -132,7 +137,7 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
           }
         }
       } else if (prevAccess !== access) {
-        changedUser.access[node.nodeid] = access
+        changedUser.access[nodeid] = access
         changedUser.change.push('permission')
         setChangedUsers([...changedUsers.filter((u) => u.userID !== userid), changedUser])
       } else {
@@ -146,16 +151,16 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
         }
       }
     } else if (dataUser) {
-      const prevAccess = dataUser?.access[node.nodeid]
+      const prevAccess = dataUser?.access[nodeid]
       // mog('onPermissionChange only DataUser', { userid, access, dataUser, prevAccess, node })
       // return
       if (prevAccess !== access) {
         const changeUser = {
           ...dataUser,
           change: ['permission' as const],
-          access: { ...dataUser.access, [node.nodeid]: access }
+          access: { ...dataUser.access, [nodeid]: access }
         }
-        // changeUser.access[node.nodeid] = access
+        // changeUser.access[nodeid] = access
         setChangedUsers([...changedUsers, changeUser])
       }
     }
@@ -169,7 +174,7 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
     const newPermissions: { [userid: string]: AccessLevel } = withoutRevokeChanges
       .filter((u) => u.change.includes('permission'))
       .reduce((acc, user) => {
-        return { ...acc, [user.userID]: user.access[node.nodeid] }
+        return { ...acc, [user.userID]: user.access[nodeid] }
       }, {})
 
     const newAliases = withoutRevokeChanges
@@ -188,11 +193,11 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
     mog('Updating after the table changes ', { newAliases, revokedUsers, newPermissions })
 
     const applyPermissions = async () => {
-      if (Object.keys(newPermissions).length > 0) await changeUserPermission(node.nodeid, newPermissions)
+      if (Object.keys(newPermissions).length > 0) await changeUserPermission(nodeid, newPermissions)
 
-      if (revokedUsers.length > 0) await revokeUserAccess(node.nodeid, revokedUsers)
+      if (revokedUsers.length > 0) await revokeUserAccess(nodeid, revokedUsers)
       // mog('set new permissions', { userRevoke })
-      applyChangesMentionable(newPermissions, newAliases, revokedUsers, node.nodeid)
+      applyChangesMentionable(newPermissions, newAliases, revokedUsers, nodeid)
     }
 
     await applyPermissions()
@@ -225,7 +230,9 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
           <ModalHeader>Manage Sharing</ModalHeader>
           <ModalSectionScroll>
             <SharedPermissionsTable>
-              <caption>Users with access to this note</caption>
+              <caption>
+                Users with access to note <strong>{getPathFromNodeid(nodeid)}</strong>.
+              </caption>
               <ShareRowHeading>
                 <tr>
                   <td>Alias</td>
@@ -238,7 +245,7 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
               <tbody>
                 {sharedUsers.map((user) => {
                   const hasChanged = changedUsers?.find((u) => u.userID === user.userID)
-                  const access = hasChanged ? hasChanged.access[node.nodeid] : user.access[node.nodeid]
+                  const access = hasChanged ? hasChanged.access[nodeid] : user.access[nodeid]
                   const isRevoked = !!hasChanged && hasChanged.change.includes('revoke')
                   const isCurrent = user.userID === currentUserDetails.userID
 
@@ -259,7 +266,7 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
                       <ShareEmail>{user.email}</ShareEmail>
 
                       <SharePermission disabled={readOnly || isCurrent}>
-                        {user.access[node.nodeid] === 'OWNER' ? (
+                        {user.access[nodeid] === 'OWNER' ? (
                           <ShareOwnerTag>Owner</ShareOwnerTag>
                         ) : (
                           <StyledCreatatbleSelect

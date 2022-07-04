@@ -1,3 +1,4 @@
+import * as ContextMenu from '@radix-ui/react-context-menu'
 import {
   default as AtlaskitTree,
   ItemId,
@@ -38,6 +39,7 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/u
 import { useRefactorStore } from '../Refactor/Refactor'
 import { getNameFromPath, SEPARATOR } from './treeUtils'
 import { MENU_ID, TreeContextMenu } from './TreeWithContextMenu'
+import { IS_DEV } from '@data/Defaults/dev_'
 // import { complexTree } from '../mockdata/complexTree'
 
 interface GetIconProps {
@@ -62,19 +64,21 @@ const GetIcon = ({ item, onCollapse, onExpand }: GetIconProps) => {
 }
 
 const TooltipContent = ({ item }: { item: TreeItem }) => {
+  // console.log('TooltipContent', { item, IS_DEV })
   return (
     <TooltipContentWrapper>
-      {item.data.title}
-      {item.data.tasks !== undefined && item.data.tasks > 0 && (
+      {item?.data?.title}
+      {IS_DEV && ' ' + item?.data?.nodeid}
+      {item?.data?.tasks !== undefined && item.data.tasks > 0 && (
         <TooltipCount>
           <Icon icon="ri:task-line" />
-          {item.data.tasks}
+          {item?.data?.tasks}
         </TooltipCount>
       )}
-      {item.data.reminders !== undefined && item.data.reminders > 0 && (
+      {item?.data?.reminders !== undefined && item.data.reminders > 0 && (
         <TooltipCount>
           <Icon icon="ri:timer-flash-line" />
-          {item.data.reminders}
+          {item?.data?.reminders}
         </TooltipCount>
       )}
     </TooltipContentWrapper>
@@ -169,30 +173,39 @@ const Tree = ({ initTree }: TreeProps) => {
 
     return (
       <Tippy theme="mex" placement="right" singleton={target} content={<TooltipContent item={item} />}>
-        <StyledTreeItem
-          ref={provided.innerRef}
-          selected={isInEditor && node && item.data && node.nodeid === item.data.nodeid}
-          isDragging={snapshot.isDragging}
-          isBeingDroppedAt={isTrue}
-          onContextMenu={(e) => show(e, { props: { id: item.data.nodeid, path: item.data.path } })}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-        >
-          <GetIcon item={item} onExpand={onExpand} onCollapse={onCollapse} />
+        <span>
+          <ContextMenu.Root>
+            <ContextMenu.Trigger asChild>
+              <StyledTreeItem
+                ref={provided.innerRef}
+                selected={isInEditor && node && item.data && node.nodeid === item.data.nodeid}
+                isDragging={snapshot.isDragging}
+                isBeingDroppedAt={isTrue}
+                onContextMenu={(e) => {
+                  console.log('ContextySe', e, item)
+                }}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+              >
+                <GetIcon item={item} onExpand={onExpand} onCollapse={onCollapse} />
 
-          <ItemContent onMouseDown={(e) => onClick(e, item)}>
-            <ItemTitleWithAnalysis item={item} />
-          </ItemContent>
+                <ItemContent onMouseDown={(e) => onClick(e, item)}>
+                  <ItemTitleWithAnalysis item={item} />
+                </ItemContent>
 
-          {item.hasChildren && item.children && item.children.length > 0 && (
-            <ItemCount>{item.children.length}</ItemCount>
-          )}
-          {/* <AkNavigationItem
+                {item.hasChildren && item.children && item.children.length > 0 && (
+                  <ItemCount>{item.children.length}</ItemCount>
+                )}
+                {/* <AkNavigationItem
           text={item.data ? item.data.title : ''}
           icon={DragDropWithNestingTree.getIcon(item, onExpand, onCollapse)}
           dnd={{ dragHandleProps: provided.dragHandleProps }}
         /> */}
-        </StyledTreeItem>
+              </StyledTreeItem>
+            </ContextMenu.Trigger>
+            <TreeContextMenu item={item} />
+          </ContextMenu.Root>
+        </span>
       </Tippy>
     )
   }
@@ -274,7 +287,6 @@ const Tree = ({ initTree }: TreeProps) => {
         isDragEnabled
         isNestingEnabled
       />
-      <TreeContextMenu />
     </>
   )
 }
