@@ -156,7 +156,7 @@ export const useTransform = () => {
     if (!isConvertable(editor)) return
 
     Editor.withoutNormalizing(editor, () => {
-      const selectionPath = Editor.path(editor, editor.selection)
+      // const selectionPath = Editor.path(editor, editor.selection)
       const nodes = Array.from(
         getNodes(editor, {
           mode: 'highest',
@@ -184,10 +184,19 @@ export const useTransform = () => {
       const parentPath = useEditorStore.getState().node.title
       const path = parentPath + SEPARATOR + (isInline ? getSlug(selText) : getSlug(text))
 
-      const note = createNewNote({ path })
+      const note = createNewNote({ path, noteContent: value, noRedirect: true })
 
       replaceSelectionWithLink(editor, note?.nodeid, isInline)
-      // mog('We are here', { lowest, selText, esl: editor.selection, selectionPath, nodes, value, text, path, nodeid })
+      // mog('Replace Selection with node We are here', {
+      //   lowest,
+      //   selText,
+      //   esl: editor.selection,
+      //   selectionPath,
+      //   nodes,
+      //   value,
+      //   text,
+      //   path
+      // })
       setContent(note?.nodeid, putContent ? value : defaultContent.content)
       // saveData()
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path })
