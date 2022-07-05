@@ -18,9 +18,11 @@ import {
   EndLinkContainer,
   Link,
   MainLinkContainer,
+  MainNav,
   NavLogoWrapper,
   NavTitle,
-  NavWrapper
+  NavWrapper,
+  SideNav
 } from '@style/Nav'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
@@ -29,7 +31,7 @@ import Bookmarks from './Bookmarks'
 import SharedNotes from './SharedNotes'
 import { useSidebarTransition } from './Transition'
 import { TreeContainer } from './Tree'
-import Tabs, { TabType } from '@components/layouts/Tabs'
+import Tabs, { SidebarTab, SingleTabType, TabType } from '@components/layouts/Tabs'
 import { MexIcon } from '@style/Layouts'
 import { SharedNodeIcon } from '@components/icons/Icons'
 import { useTheme } from 'styled-components'
@@ -40,6 +42,7 @@ import useDataStore from '@store/useDataStore'
 import { useNavigation } from '@hooks/useNavigation'
 import { SItem } from './SharedNotes.style'
 import { ItemContent, ItemTitle } from '@style/Sidebar'
+import WDLogo from '@components/spotlight/Search/Logo'
 
 const CreateNewNote: React.FC<{ target: any }> = ({ target }) => {
   const { goTo } = useRouting()
@@ -187,7 +190,7 @@ const TestNav = () => {
 }
 
 const NavBody: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
-  const [openedTab, setOpenedTab] = useState<PollActions>(PollActions.hierarchy)
+  const [openedTab, setOpenedTab] = useState<SingleTabType>(SidebarTab.hierarchy)
   const replaceAndAddActionToPoll = useApiStore((store) => store.replaceAndAddActionToPoll)
 
   usePolling()
@@ -196,20 +199,20 @@ const NavBody: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
   const tabs: Array<TabType> = useMemo(
     () => [
       {
-        label: <MexIcon noHover icon="ri:draft-line" width={20} height={20} />,
-        type: PollActions.hierarchy,
+        label: <MexIcon noHover icon="ri:draft-line" width={24} height={24} />,
+        type: SidebarTab.hierarchy,
         component: <TreeContainer />,
         tooltip: 'All Notes'
       },
       {
-        label: <SharedNodeIcon fill={theme.colors.text.default} height={18} width={18} />,
+        label: <SharedNodeIcon fill={theme.colors.text.default} height={22} width={22} />,
         component: <SharedNotes />,
-        type: PollActions.shared,
+        type: SidebarTab.shared,
         tooltip: 'Shared Notes'
       },
       {
-        label: <MexIcon noHover icon="ri:bookmark-line" width={20} height={20} />,
-        type: PollActions.bookmarks,
+        label: <MexIcon noHover icon="ri:bookmark-line" width={24} height={24} />,
+        type: SidebarTab.bookmarks,
         component: <Bookmarks />,
         tooltip: 'Bookmarks'
       }
@@ -223,7 +226,7 @@ const NavBody: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
       openedTab={openedTab}
       onChange={(tab) => {
         setOpenedTab(tab)
-        replaceAndAddActionToPoll(tab)
+        replaceAndAddActionToPoll(tab as PollActions)
       }}
       tabs={tabs}
     />
@@ -253,21 +256,14 @@ const Nav = () => {
 
   return (
     <>
-      <NavWrapper
-        onMouseUp={onDoubleClickToogle}
-        style={springProps}
-        expanded={sidebar.expanded}
-        {...getFocusProps(focusMode)}
-      >
-        <NavTooltip singleton={source} />
-
-        <NavLogoWrapper>
-          <Logo />
-        </NavLogoWrapper>
-
-        <NavHeader target={target} />
-        <NavBody isVisible={sidebar.expanded} />
-        <NavFooter target={target} />
+      <NavWrapper onMouseUp={(e) => onDoubleClickToogle(e)} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
+        <MainNav>
+          <NavHeader target={target} />
+          <NavFooter target={target} />
+        </MainNav>
+        <SideNav style={springProps} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
+          <NavBody isVisible={sidebar.expanded} />
+        </SideNav>
       </NavWrapper>
       <TrafficLightBG />
       <SidebarToggle />

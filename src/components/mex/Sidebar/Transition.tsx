@@ -4,16 +4,16 @@ import { useTheme } from 'styled-components'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 
 const sidebarCollapsedWidth = '86px'
-const sidebarExpandedWidth = '300px'
+const sidebarExpandedWidth = '340px'
 
 export const useSidebarTransition = () => {
   const sidebar = useLayoutStore((state) => state.sidebar)
   const theme = useTheme()
 
   const sidebarStyle = useMemo(() => {
-    const style = { width: sidebarExpandedWidth }
+    const style = { width: '276px' }
 
-    if (!sidebar.expanded) style.width = sidebarCollapsedWidth
+    if (!sidebar.expanded) style.width = '0px'
 
     return style
   }, [sidebar])

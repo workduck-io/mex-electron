@@ -6,7 +6,6 @@ export const TabPanel = styled(animated.div)`
   width: 100%;
   height: 100%;
 
-  max-height: 50vh;
   overflow: hidden auto;
   border-radius: ${({ theme }) => theme.borderRadius.small};
 `
@@ -28,10 +27,15 @@ export const StyledTab = styled.div.attrs({
     !selected &&
     css`
       :hover {
-        background: ${({ theme }) => transparentize(0.4, theme.colors.gray[8])};
+        background: ${({ theme }) => theme.colors.gray[8]};
       }
     `}
 
+  ${({ selected }) =>
+    selected &&
+    css`
+      color: ${({ theme }) => theme.colors.primary};
+    `}
   &:focus {
     outline: none;
   }
@@ -43,7 +47,6 @@ export const TabBody = styled(animated.div)<{ selected?: boolean }>`
   width: 100%;
   height: 100%;
   overflow-x: hidden;
-  padding: ${({ theme }) => theme.spacing.small};
 `
 
 export const TabsContainer = styled(animated.section)<{ visible?: boolean }>`
@@ -75,11 +78,11 @@ export const TabsWrapper = styled.div<{ index: number }>`
         display: block;
         position: absolute;
         width: 33.3333%;
-        height: 100%;
+        height: 4px;
         border-radius: ${({ theme }) => theme.borderRadius.small};
-        top: 0;
+        top: 32px;
         left: 0;
-        background: ${({ theme }) => theme.colors.gray[6]};
+        background: ${({ theme }) => theme.colors.primary};
         transform: translateX(${index * 100}%);
         transition: background 0.15s cubic-bezier(0.4, 0, 0.2, 1) 0s, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
       }
@@ -87,7 +90,6 @@ export const TabsWrapper = styled.div<{ index: number }>`
 `
 
 export const TabHeaderContainer = styled.div`
-  background: ${({ theme }) => theme.colors.gray[9]};
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
 `

@@ -33,5 +33,6 @@ export const mexTheme = generateTheme({
     disabled: '#72767D',
     accent: '#fe8019',
     oppositePrimary: '#ffffff'
-  }
+  },
+  custom: 'MexStyles'
 })

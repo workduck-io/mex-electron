@@ -2,13 +2,10 @@ import { useReadOnly, useFocused, useSelected } from 'slate-react'
 import shareLine from '@iconify/icons-ri/share-line'
 import archivedIcon from '@iconify/icons-ri/archive-line'
 import eyeOffLine from '@iconify/icons-ri/eye-off-line'
-import { Icon } from '@iconify/react'
 import { useEditorRef } from '@udecode/plate'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Transforms } from 'slate'
-import styled from 'styled-components'
-import useArchive from '../../../../hooks/useArchive'
 import { useLinks } from '../../../../hooks/useLinks'
 import { useNavigation } from '../../../../hooks/useNavigation'
 import { useNodes } from '../../../../hooks/useNodes'
@@ -17,11 +14,9 @@ import { useHotkeys } from '../hooks/useHotkeys'
 import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { SILink, SILinkRoot, StyledIcon } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
-import { mog } from '../../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../../views/routes/urls'
-import { convertContentToRawText, getBlock } from '../../../../utils/search/parseData'
+import { getBlock } from '../../../../utils/search/parseData'
 import { ILink, NodeType, SharedNode } from '../../../../types/Types'
-import { SharedNodeIcon } from '@components/icons/Icons'
 
 /**
  * ILinkElement with no default styles.
@@ -42,7 +37,7 @@ const SharedNodeLink = ({ selected, sharedNode }: { selected: boolean; sharedNod
 const ArchivedNode = ({ selected, archivedNode }: { selected: boolean; archivedNode: ILink }) => {
   return (
     <SILink selected={selected} color="#df7777" archived={true}>
-      <SharedNodeIcon />
+      <StyledIcon icon={archivedIcon} color="#df7777" />
       <span className="ILink_decoration ILink_decoration_left">[[</span>
       <span className="ILink_decoration ILink_decoration_value"> {archivedNode?.path}</span>
       <span className="ILink_decoration ILink_decoration_right">]]</span>

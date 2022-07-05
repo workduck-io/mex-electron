@@ -32,15 +32,15 @@ export const Count = styled.span`
 const ButtonOrLinkStyles = css`
   display: flex;
   align-items: center;
+  flex-direction: column;
   gap: 8px;
   color: ${({ theme }) => theme.colors.text.default};
   padding: 6px 12px;
   text-decoration: none !important;
   cursor: pointer;
-  font-weight: bold;
   width: 100%;
 
-  font-size: 14px;
+  font-size: 12px;
 
   svg {
     width: 22px;
@@ -123,7 +123,7 @@ export const NavLogoWrapper = styled.div`
   position: relative;
   width: 100%;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.5, theme.colors.gray[6])};
   padding: ${({ theme }) => theme.spacing.small};
@@ -172,79 +172,84 @@ export const NavButton = styled.div<{ primary?: boolean }>`
   }
 `
 
-export interface NavWrapperProps extends FocusModeProp {
-  expanded: boolean
-}
-
-export const NavWrapper = styled(animated.div)<NavWrapperProps>`
+export const MainNav = styled.div<FocusModeProp>`
   ${Scroll};
 
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  flex-shrink: 0;
+  width: 86px;
 
   min-height: 100%;
   transition: opacity 0.3s ease-in-out;
-  padding: 0 0;
   background-color: ${({ theme }) => theme.colors.gray[8]};
+  padding: 0 0;
   gap: ${({ theme }) => theme.spacing.small};
   user-select: none;
 
-  ${CollapseWrapper} {
-    width: 100%;
-    transition: opacity 0.2s ease-in-out, height 0.2s ease-in-out;
-    padding: 0 0 0 ${({ theme }) => theme.spacing.small};
-    ${CollapseHeader} {
-      padding-right: 0.5rem;
-    }
-  }
+  ${(props) => focusStyles(props)}
+`
 
-  #Collapse_tree {
-    flex-shrink: 0;
-    // flex-grow: 1;
-  }
+export interface NavWrapperProps extends FocusModeProp {
+  expanded: boolean
+}
+
+export const SideNav = styled(animated.div)<NavWrapperProps>`
+  width: 0px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 100%;
+  background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
+  padding: ${({ theme }) => theme.spacing.large} 0;
+
+  ${({ theme, expanded }) =>
+    expanded &&
+    css`
+      width: 100%;
+    `}
+`
+
+export const NavWrapper = styled(animated.div)<NavWrapperProps>`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+
+  min-height: 100%;
+  padding: 0 0;
+  user-select: none;
 
   ${(props) => focusStyles(props)}
 
-  ${({ expanded, theme }) =>
-    !expanded &&
-    css`
-      ${NavTitle}, ${Count} {
-        display: none;
-      }
+  ${Count} {
+    display: none;
+  }
 
-      ${Link}, ${NavButton}, ${CreateNewButton} {
-        padding: 12px;
-        width: 48px;
-        transition-delay: 0.8s;
-        transition: width 0.8s ease-in-out;
-      }
+  ${MainLinkContainer}, ${EndLinkContainer} {
+  }
 
-      ${MainLinkContainer}, ${EndLinkContainer} {
-      }
+  ${EndLinkContainer} {
+    margin-top: auto;
+  }
 
-      ${EndLinkContainer} {
-        margin-top: auto;
-      }
+  ${NavLogoWrapper} {
+    padding: 0px 22px 16px;
+    padding-top: ${({ theme }) => (theme.additional.hasBlocks ? 8 : 28)}px;
+  }
 
-      ${NavLogoWrapper} {
-        padding: 0px 22px 16px;
-        padding-top: ${({ theme }) => (theme.additional.hasBlocks ? 8 : 28)}px;
-      }
+  ${CollapseWrapper} {
+    pointer-events: none;
+    cursor: default;
+    max-height: 64px;
+    opacity: 0;
+    div {
+      pointer-events: none !important;
+    }
+  }
 
-      ${CollapseWrapper} {
-        pointer-events: none;
-        cursor: default;
-        max-height: 64px;
-        opacity: 0;
-        div {
-          pointer-events: none !important;
-        }
-      }
-    `}
-
-    &::-webkit-scrollbar-thumb, *::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb,
+  *::-webkit-scrollbar-thumb {
     background: ${({ theme }) => transparentize(0.5, theme.colors.gray[6])};
     border-radius: 6px;
     border: 2px solid rgba(0, 0, 0, 0);
