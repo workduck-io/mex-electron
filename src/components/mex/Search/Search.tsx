@@ -8,7 +8,7 @@ import { defaultContent } from '../../../data/Defaults/baseData'
 import { SearchHelp } from '../../../data/Defaults/helpText'
 import { useBlockHighlightStore } from '../../../editor/Actions/useFocusBlock'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
-import { useFilters } from '../../../hooks/useFilters'
+import { useFilters, useFilterStore } from '../../../hooks/useFilters'
 import { useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
 import { useNodes } from '../../../hooks/useNodes'
@@ -44,7 +44,7 @@ import TagsRelated, { TagsRelatedTiny } from '../Tags/TagsRelated'
 import SearchFilters from './SearchFilters'
 import SearchView, { RenderFilterProps, RenderItemProps, RenderPreviewProps } from './SearchView'
 import { View } from './ViewSelector'
-import { GenericSearchResult } from '../../../types/search'
+import { GenericSearchResult, idxKey } from '../../../types/search'
 import { convertContentToRawText } from '@utils/search/parseData'
 
 const Search = () => {
@@ -77,13 +77,16 @@ const Search = () => {
   const clearHighlights = useBlockHighlightStore((store) => store.clearHighlightedBlockIds)
   // const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)
 
-  const onSearch = async (newSearchTerm: string) => {
-    const res = await queryIndexWithRanking(['shared', 'node'], newSearchTerm)
-    const filRes = res.filter((r) => {
-      const nodeType = getNodeType(r.id)
-      return nodeType !== NodeType.MISSING && nodeType !== NodeType.ARCHIVED
-    })
-    mog('search', { res, filRes })
+  const onSearch = async (newSearchTerm: string, idxKeys: idxKey[]) => {
+    const res = await queryIndexWithRanking(idxKeys, newSearchTerm)
+    const filRes =
+      idxKeys.length === 1 && idxKeys.includes('node')
+        ? res.filter((r) => {
+            const nodeType = getNodeType(r.id)
+            return nodeType !== NodeType.MISSING && nodeType !== NodeType.ARCHIVED
+          })
+        : res
+    mog('search', { res, filRes, idxKeys })
     clearHighlights('preview')
     return filRes
   }
@@ -236,6 +239,16 @@ const Search = () => {
         id="searchStandard"
         key="searchStandard"
         initialItems={initialResults}
+        indexes={{
+          indexes: [
+            'node',
+            'shared'
+
+            // 'snippet', 'template'
+            // Need to fix display of snippets and templates
+          ],
+          default: ['node']
+        }}
         getItemKey={(i) => i.id}
         onSelect={onSelect}
         onEscapeExit={onEscapeExit}

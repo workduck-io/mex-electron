@@ -6,7 +6,7 @@ import { useLinks } from './useLinks'
 import { useTags } from './useTags'
 // import create from 'zustand'
 
-import { GenericSearchResult } from '../types/search'
+import { GenericSearchResult, idxKey } from '../types/search'
 /*
 - Date
 - Node level
@@ -16,6 +16,7 @@ import { GenericSearchResult } from '../types/search'
 */
 
 export type FilterKey = 'note' | 'tag' | 'date' | 'state' | 'has'
+
 export interface SearchFilter<Item> {
   key: FilterKey
   id: string
@@ -30,6 +31,8 @@ export interface SearchFilter<Item> {
 export interface FilterStore<Item> {
   filters: SearchFilter<Item>[]
   currentFilters: SearchFilter<Item>[]
+  indexes?: idxKey[]
+  setIndexes?: (indexes: idxKey[]) => void
   setFilters: (filters: SearchFilter<Item>[]) => void
   setCurrentFilters: (currentFilters: SearchFilter<Item>[]) => void
 }
@@ -37,8 +40,10 @@ export interface FilterStore<Item> {
 export const useFilterStoreBase = create<FilterStore<any>>((set) => ({
   filters: [],
   currentFilters: [],
+  indexes: ['node', 'shared'],
   setFilters: (filters) => set((state) => ({ ...state, filters })),
-  setCurrentFilters: (currentFilters) => set((state) => ({ ...state, currentFilters }))
+  setCurrentFilters: (currentFilters) => set((state) => ({ ...state, currentFilters })),
+  setIndexes: (indexes) => set((state) => ({ ...state, indexes }))
 }))
 
 export const useFilterStore = <Item, Slice>(selector: (state: FilterStore<Item>) => Slice) =>

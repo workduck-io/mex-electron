@@ -1,5 +1,6 @@
 import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
+import { idxKey } from '../../../types/search'
 import { debounce } from 'lodash'
 import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import tinykeys from 'tinykeys'
@@ -95,7 +96,7 @@ interface SearchViewProps<Item> {
    * @param index Index of the item
    * @param view View to render
    */
-  onSearch: (searchTerm: string) => Promise<Item[]>
+  onSearch: (searchTerm: string, idxKeys?: idxKey[]) => Promise<Item[]>
 
   /**
    * Handle select item
@@ -115,6 +116,12 @@ interface SearchViewProps<Item> {
    * @param results Results to filter
    */
   filterResults?: (result: Item[]) => Item[]
+
+  /**
+   * Indexes
+   * Indexes to show for choice
+   */
+  indexes?: { indexes: idxKey[]; default: idxKey[] }
 
   /**
    * Handle select item
@@ -170,6 +177,7 @@ interface SearchViewProps<Item> {
 const SearchView = <Item,>({
   id,
   initialItems,
+  indexes,
   // views,
   onSearch,
   onSelect,
@@ -192,6 +200,8 @@ const SearchView = <Item,>({
   const { applyCurrentFilters, resetCurrentFilters } = useFilters<Item>()
   const currentFilters = useFilterStore((store) => store.currentFilters) as SearchFilter<Item>[]
   const filters = useFilterStore((store) => store.filters) as SearchFilter<Item>[]
+  const idxKeys = useFilterStore((store) => store.indexes) as idxKey[]
+  const setIndexes = useFilterStore((store) => store.setIndexes)
   const setSelected = (selected: number) => setSS((s) => ({ ...s, selected }))
   const setView = (view: View) => {
     // mog('setview', { view })
@@ -202,10 +212,21 @@ const SearchView = <Item,>({
   }
   const setResult = (result: Item[], searchTerm: string) => {
     // mog('setresult', { result, searchTerm })
-
     setSS((s) => ({ ...s, result, searchTerm, selected: -1 }))
   }
-  const clearSearch = () => setSS((s) => ({ ...s, result: [], searchTerm: '', selected: -1 }))
+  const onToggleIndex = (index: idxKey) => {
+    mog('onToggleIndex', { index, idxKeys })
+    if (idxKeys.includes(index)) {
+      setIndexes(idxKeys.filter((i) => i !== index))
+    } else {
+      const newIdxKeys = [...idxKeys, index]
+      setIndexes(newIdxKeys)
+    }
+  }
+  const clearSearch = () => {
+    setSS((s) => ({ ...s, result: [], searchTerm: '', selected: -1 }))
+    setIndexes(indexes?.default ?? [])
+  }
   const { selected, searchTerm, result, view } = searchState
 
   const inpRef = useRef<HTMLInputElement>(null)
@@ -230,7 +251,7 @@ const SearchView = <Item,>({
       // mog('ExecuteSearch - Initial', { newSearchTerm, currentFilters, filtered, initialItems })
       setResult(filtered, newSearchTerm)
     } else {
-      const res = await onSearch(newSearchTerm)
+      const res = await onSearch(newSearchTerm, idxKeys)
       const filtered = filterResults ? filterResults(res) : res
       // mog('ExecuteSearch - onNew', { newSearchTerm, currentFilters, filtered, res })
       setResult(filtered, newSearchTerm)
@@ -245,12 +266,12 @@ const SearchView = <Item,>({
       // setOnlyResult(results)
       executeSearch(searchTerm)
     },
-    [currentFilters, result, initialItems]
+    [currentFilters, result, initialItems, idxKeys]
   )
 
   useEffect(() => {
     updateResults()
-  }, [currentFilters])
+  }, [currentFilters, idxKeys])
 
   useEffect(() => {
     executeSearch(searchTerm)
@@ -425,6 +446,19 @@ const SearchView = <Item,>({
             ref={inpRef}
           />
         </InputWrapper>
+        {indexes !== undefined && indexes.indexes.length > 0 && (
+          <div>
+            {indexes.indexes.map((i) => (
+              <div
+                style={{ padding: '10px', color: idxKeys.includes(i) ? 'green' : 'red' }}
+                onClick={() => onToggleIndex(i)}
+                key={`index_${id}_${i}`}
+              >
+                Index {i}
+              </div>
+            ))}
+          </div>
+        )}
         {!options?.view && (
           <ViewSelector
             currentView={view}
