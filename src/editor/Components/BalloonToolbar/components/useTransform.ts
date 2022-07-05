@@ -184,7 +184,7 @@ export const useTransform = () => {
       const parentPath = useEditorStore.getState().node.title
       const path = parentPath + SEPARATOR + (isInline ? getSlug(selText) : getSlug(text))
 
-      const note = createNewNote({ path, noteContent: value, noRedirect: true })
+      const note = createNewNote({ path, noteContent: putContent ? value : defaultContent.content, noRedirect: true })
 
       replaceSelectionWithLink(editor, note?.nodeid, isInline)
       // mog('Replace Selection with node We are here', {
@@ -197,7 +197,6 @@ export const useTransform = () => {
       //   text,
       //   path
       // })
-      setContent(note?.nodeid, putContent ? value : defaultContent.content)
       // saveData()
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path })
     })
