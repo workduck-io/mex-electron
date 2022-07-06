@@ -37,12 +37,12 @@ const useNavlinks = () => {
 
   const getLinks = () => {
     const links: NavLinkData[] = [
-      {
-        title: 'Search',
-        path: ROUTE_PATHS.search,
-        shortcut: shortcuts.showSearch.keystrokes,
-        icon: GetIcon(searchLine)
-      },
+      // {
+      //   title: 'Search',
+      //   path: ROUTE_PATHS.search,
+      //   shortcut: shortcuts.showSearch.keystrokes,
+      //   icon: GetIcon(searchLine)
+      // },
       // {
       //   title: 'Actions',
       //   path: ROUTE_PATHS.actions,

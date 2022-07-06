@@ -46,12 +46,12 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
           left: ${theme.additional.hasBlocks ? 296 : 325}px;
         `
       : css`
-          top: ${theme.additional.hasBlocks ? 84 : 64}px;
+          top: ${theme.additional.hasBlocks ? 84 : 52}px;
           left: ${theme.additional.hasBlocks ? 86 : 68}px;
         `}
   transition: left 0.5s ease, top 0.5s ease;
   z-index: 11;
-  background-color: ${({ theme }) => theme.colors.gray[7]};
+  background-color: ${({ theme }) => theme.colors.secondary};
   padding: 8px;
   display: flex;
   align-items: center;
@@ -63,8 +63,8 @@ export const TrafficLightBG = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  width: 66px;
-  height: 26px;
+  width: 86px;
+  height: 32px;
   background-color: ${({ theme }) => theme.colors.gray[8]};
   opacity: 0.9;
   z-index: 10000;

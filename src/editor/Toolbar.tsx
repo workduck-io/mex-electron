@@ -1,15 +1,11 @@
-import shareLine from '@iconify/icons-ri/share-line'
 import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
-import bubbleChartLine from '@iconify/icons-ri/bubble-chart-line'
 import focusLine from '@iconify/icons-ri/focus-line'
-import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
-import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
+import shareLine from '@iconify/icons-ri/share-line'
 import { useSingleton } from '@tippyjs/react'
 import React from 'react'
 import BookmarkButton from '../components/mex/Buttons/BookmarkButton'
 import { ToolbarTooltip } from '../components/mex/Tooltips'
 import useLayout from '../hooks/useLayout'
-import useToggleElements from '../hooks/useToggleElements'
 import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
 import { useLayoutStore } from '../store/useLayoutStore'
@@ -31,8 +27,8 @@ const Toolbar = () => {
   const [source, target] = useSingleton()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
-  const infobar = useLayoutStore((store) => store.infobar)
-  const { toggleGraph, toggleSuggestedNodes, toggleReminder } = useToggleElements()
+  // const infobar = useLayoutStore((store) => store.infobar)
+  // const { toggleGraph, toggleSuggestedNodes, toggleReminder } = useToggleElements()
 
   return (
     <NodeInfo {...getFocusProps(focusMode)}>
@@ -87,7 +83,6 @@ const Toolbar = () => {
           highlight={showSyncBlocks}
           onClick={toggleSyncBlocks}
         />
-        */}
         <IconButton
           size={24}
           singleton={target}
@@ -115,6 +110,7 @@ const Toolbar = () => {
           highlight={infobar.mode === 'graph'}
           onClick={toggleGraph}
         />
+        */}
       </InfoTools>
     </NodeInfo>
   )

@@ -1,8 +1,8 @@
 import { generateTheme } from '../themeGenerator'
 
-export const mexTheme = generateTheme({
+export const xemTheme = generateTheme({
   // Colors
-  primary: '#2D9EDF',
+  primary: '#55A2EA',
   secondary: '#128C7E',
 
   // Palettes
@@ -27,12 +27,12 @@ export const mexTheme = generateTheme({
   },
   text: {
     heading: '#E4F1FF',
-    default: '#C4DBF5',
+    default: '#B9C1D6',
     subheading: '#D1E5FB',
-    fade: '#A1B8D3',
+    fade: '#6B6F90',
     disabled: '#72767D',
     accent: '#fe8019',
-    oppositePrimary: '#ffffff'
+    oppositePrimary: '#1F2933'
   },
-  custom: 'MexStyles'
+  custom: 'xemThemeStyles'
 })

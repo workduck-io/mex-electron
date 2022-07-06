@@ -7,11 +7,10 @@ import { FocusModeProp } from './props'
 export const NoteTitle = styled.h1``
 
 export const NodeInfo = styled.div<FocusModeProp>`
-  background-color: ${({ theme }) => theme.colors.gray[9]};
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.small}`};
+  padding: 0.5rem 2rem 0.5rem 1.25rem;
   border-radius: ${({ theme }) => theme.borderRadius.small};
   transition: opacity 0.3s ease-in-out;
 

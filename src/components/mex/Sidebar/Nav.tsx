@@ -1,6 +1,7 @@
 import { Logo, SidebarToggle, TrafficLightBG } from '@data/illustrations/logo'
 import useNavlinks, { GetIcon } from '@data/links'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import useLayout from '@hooks/useLayout'
 import { useKeyListener } from '@hooks/useShortcutListener'
 import archiveFill from '@iconify/icons-ri/archive-fill'
@@ -22,6 +23,7 @@ import {
   NavLogoWrapper,
   NavTitle,
   NavWrapper,
+  SearchLink,
   SideNav
 } from '@style/Nav'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
@@ -44,6 +46,7 @@ import { useNavigation } from '@hooks/useNavigation'
 import { SItem } from './SharedNotes.style'
 import { ItemContent, ItemTitle } from '@style/Sidebar'
 import WDLogo from '@components/spotlight/Search/Logo'
+import searchLine from '@iconify/icons-ri/search-line'
 
 const CreateNewNote: React.FC<{ target: any }> = ({ target }) => {
   const { goTo } = useRouting()
@@ -240,6 +243,8 @@ const Nav = () => {
   const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
   const { getFocusProps } = useLayout()
 
+  const shortcuts = useHelpStore((store) => store.shortcuts)
+
   const [source, target] = useSingleton()
 
   const onDoubleClickToogle = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -258,7 +263,24 @@ const Nav = () => {
   return (
     <>
       <NavWrapper onMouseUp={(e) => onDoubleClickToogle(e)} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
-        <MainNav>
+        <NavLogoWrapper>
+          <WDLogo height={'64'} width={'64'} />
+        </NavLogoWrapper>
+        <NavTooltip
+          key={ROUTE_PATHS.search}
+          singleton={target}
+          content={<TooltipTitleWithShortcut title="Search" shortcut={shortcuts.showSearch.keystrokes} />}
+        >
+          <SearchLink
+            tabIndex={-1}
+            className={(s) => (s.isActive ? 'active' : '')}
+            to={ROUTE_PATHS.search}
+            key={`nav_search`}
+          >
+            {GetIcon(searchLine)}
+          </SearchLink>
+        </NavTooltip>
+        <MainNav {...getFocusProps(focusMode)}>
           <NavHeader target={target} />
           <NavFooter target={target} />
         </MainNav>

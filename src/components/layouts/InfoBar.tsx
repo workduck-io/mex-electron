@@ -15,6 +15,9 @@ import RemindersInfobar from '../mex/Reminders/Reminders'
 import DataInfoBar from '../mex/Sidebar/DataInfoBar'
 import SuggestionInfoBar from '../mex/Suggestions'
 import Tabs, { TabType } from './Tabs'
+import bubbleChartLine from '@iconify/icons-ri/bubble-chart-line'
+import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
+import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
 
 const InfoBarItems = () => {
   const graphData = useGraphData()
@@ -25,31 +28,25 @@ const InfoBarItems = () => {
   const tabs: Array<TabType> = useMemo(
     () => [
       {
-        label: <MexIcon noHover icon="ri:draft-line" width={24} height={24} />,
+        label: <MexIcon noHover icon="fluent:content-view-gallery-24-regular" width={24} height={24} />,
         type: 'default',
         component: <DataInfoBar />,
         tooltip: 'Context'
       },
       {
-        label: <MexIcon noHover icon="ri:draft-line" width={24} height={24} />,
+        label: <MexIcon noHover icon={bubbleChartLine} width={24} height={24} />,
         type: 'graph',
         component: <Graph graphData={graphData} />,
         tooltip: 'Graph'
       },
       {
-        label: <MexIcon noHover icon="ri:draft-line" width={24} height={24} />,
-        type: 'flow',
-        component: <SyncBlockInfo />,
-        tooltip: 'Flow'
-      },
-      {
-        label: <MexIcon noHover icon="ri:draft-line" width={24} height={24} />,
+        label: <MexIcon noHover icon={lightbulbFlashLine} width={24} height={24} />,
         type: 'suggestions',
         component: <SuggestionInfoBar />,
         tooltip: 'Suggestions'
       },
       {
-        label: <MexIcon noHover icon="ri:draft-line" width={24} height={24} />,
+        label: <MexIcon noHover icon={timerFlashLine} width={24} height={24} />,
         type: 'reminders',
         component: <RemindersInfobar />,
         tooltip: 'Reminders'

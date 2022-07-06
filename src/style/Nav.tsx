@@ -34,7 +34,7 @@ const ButtonOrLinkStyles = css`
   align-items: center;
   flex-direction: column;
   gap: 8px;
-  color: ${({ theme }) => theme.colors.text.default};
+  color: ${({ theme }) => theme.colors.text.fade};
   padding: 6px 12px;
   text-decoration: none !important;
   cursor: pointer;
@@ -43,10 +43,10 @@ const ButtonOrLinkStyles = css`
   font-size: 12px;
 
   svg {
-    width: 22px;
-    height: 22px;
+    width: 28px;
+    height: 28px;
     flex-shrink: 0;
-    color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.text.default};
   }
 
   &:hover {
@@ -57,15 +57,32 @@ const ButtonOrLinkStyles = css`
   border-radius: ${({ theme }) => theme.borderRadius.small};
 `
 
+export const SearchLink = styled(NavLink)`
+  ${ButtonOrLinkStyles}
+  background-color: ${({ theme }) => transparentize(0.88, theme.colors.primary)};
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
+  color: ${({ theme }) => theme.colors.primary};
+  svg {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  &.active {
+    background-color: ${({ theme }) => transparentize(0.88, theme.colors.primary)};
+    color: ${({ theme }) => theme.colors.primary};
+    svg {
+      color: ${({ theme }) => theme.colors.primary};
+    }
+  }
+`
+
 export const Link = styled(NavLink)`
   ${ButtonOrLinkStyles}
 
   &.active {
-    background-color: ${({ theme }) => theme.colors.primary};
-    color: ${({ theme }) => theme.colors.text.oppositePrimary};
-    svg,
-    ${Count} {
-      color: ${({ theme }) => theme.colors.text.oppositePrimary};
+    background-color: ${({ theme }) => transparentize(0.88, theme.colors.primary)};
+    color: ${({ theme }) => theme.colors.primary};
+    svg {
+      color: ${({ theme }) => theme.colors.primary};
     }
   }
 `
@@ -125,7 +142,6 @@ export const NavLogoWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-bottom: 1px solid ${({ theme }) => transparentize(0.5, theme.colors.gray[6])};
   padding: ${({ theme }) => theme.spacing.small};
   padding-left: 5rem;
   transition: padding 0.5s ease;
@@ -133,9 +149,14 @@ export const NavLogoWrapper = styled.div`
 
 export const CreateNewButton = styled.div`
   ${ButtonOrLinkStyles}
-  border: 1px solid ${({ theme }) => theme.colors.primary};
-  background-color: transparent;
-  color: ${({ theme }) => theme.colors.text.heading};
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.text.oppositePrimary};
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
+  svg {
+    height: 32px;
+    width: 32px;
+    color: ${({ theme }) => theme.colors.text.oppositePrimary};
+  }
 `
 
 export const NavButton = styled.div<{ primary?: boolean }>`
@@ -234,8 +255,8 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
   }
 
   ${NavLogoWrapper} {
-    padding: 0px 22px 16px;
-    padding-top: ${({ theme }) => (theme.additional.hasBlocks ? 8 : 28)}px;
+    padding: 0px 22px 0px;
+    padding-top: ${({ theme }) => (theme.additional.hasBlocks ? 8 : 22)}px;
   }
 
   ${CollapseWrapper} {

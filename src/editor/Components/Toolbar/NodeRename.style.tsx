@@ -18,11 +18,16 @@ export const Wrapper = styled.div`
   ${Input} {
     width: 100%;
     margin-right: ${({ theme }) => theme.spacing.small};
+    font-size: 2rem;
+    font-weight: bold;
     &:hover,
     &:focus,
     &:active {
       border: 1px solid ${({ theme }) => theme.colors.primary};
       background: ${({ theme }) => theme.colors.gray[8]};
+    }
+
+    &#NodeRenameTitle {
     }
   }
 `
@@ -44,6 +49,8 @@ export const TitleStatic = styled.div`
   padding: ${({ theme }) => theme.spacing.small} 8px;
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
   margin-right: ${({ theme }) => theme.spacing.small};
+  font-size: 2rem;
+  font-weight: bold;
 
   &:hover,
   &:focus,

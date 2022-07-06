@@ -14,7 +14,7 @@ export const DataInfobarWrapper = styled.div`
   justify-content: flex-start;
   gap: calc(2 * ${({ theme }) => theme.spacing.large});
   padding: ${({ theme }) => `${theme.spacing.medium}`};
-  max-width: 300px;
+  max-width: 100%;
   overflow-y: auto;
 
   ${CollapsableHeaderTitle} {

@@ -5,8 +5,10 @@ import { ImperialStyles, RenarStyles } from './renarTheme.custom'
 import { SpaceAmethyst } from './custom/SpaceAmethyst'
 import { VertigoStyles } from './vertigoTheme.custom'
 import { MexStyles } from './mexTheme.custom'
+import { xemThemeStyles } from './xemTheme.custom'
 
 export const customStyles = {
+  xemThemeStyles,
   MexStyles,
   VertigoStyles,
   ImperialStyles,
