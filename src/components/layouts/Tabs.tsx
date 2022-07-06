@@ -3,19 +3,27 @@ import { useSpring } from 'react-spring'
 import Tippy from '@tippyjs/react'
 import { StyledTab, TabBody, TabsWrapper, TabsContainer, TabHeaderContainer, TabPanel } from './styled'
 import { TooltipTitleWithShortcut } from '@components/mex/Shortcuts'
-import { PollActions } from '@store/useApiStore'
+import { InfobarMode } from '@store/useLayoutStore'
+
+export enum SidebarTab {
+  'hierarchy' = 'hierarchy',
+  'shared' = 'shared',
+  'bookmarks' = 'bookmarks'
+}
+
+export type SingleTabType = SidebarTab | InfobarMode
 
 export type TabType = {
   label: JSX.Element | string
   component: JSX.Element
-  type: PollActions
+  type: SingleTabType
   tooltip?: string
 }
 
 type TabsProps = {
   tabs: Array<TabType>
-  openedTab: PollActions
-  onChange: (pollAction: PollActions) => void
+  openedTab: SingleTabType
+  onChange: (tabType: SingleTabType) => void
   visible?: boolean
 }
 
@@ -39,7 +47,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, openedTab, onChange, visible }) => {
   return (
     <TabsContainer style={animationProps} visible={visible}>
       <TabHeaderContainer>
-        <TabsWrapper index={index}>
+        <TabsWrapper index={index} total={tabs.length}>
           {tabs.map((tab) => (
             <Tippy delay={200} key={tab.type} theme="mex" content={<TooltipTitleWithShortcut title={tab.tooltip} />}>
               <StyledTab key={tab.type} onClick={() => onChange(tab.type)} selected={tab.type === openedTab}>

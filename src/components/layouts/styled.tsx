@@ -64,20 +64,20 @@ export const TabsContainer = styled(animated.section)<{ visible?: boolean }>`
   width: 100%;
 `
 
-export const TabsWrapper = styled.div<{ index: number }>`
+export const TabsWrapper = styled.div<{ index: number; total: number }>`
   display: flex;
   position: relative;
   width: 100%;
   align-items: center;
   gap: 0 ${({ theme }) => theme.spacing.small};
 
-  ${({ index }) =>
+  ${({ index, total }) =>
     css`
       &::before {
         content: '';
         display: block;
         position: absolute;
-        width: 33.3333%;
+        width: calc(100% / ${total});
         height: 4px;
         border-radius: ${({ theme }) => theme.borderRadius.small};
         top: 32px;
