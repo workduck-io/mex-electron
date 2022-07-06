@@ -14,7 +14,7 @@ import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import useDataStore, { useTreeFromLinks } from '@store/useDataStore'
 import Tippy, { useSingleton } from '@tippyjs/react'
-import React, { memo, useEffect, useMemo, useRef } from 'react'
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useContextMenu } from 'react-contexify'
 import { useLocation } from 'react-router-dom'
 import { IpcAction } from '../../../data/IpcAction'
@@ -138,10 +138,9 @@ const Tree = ({ initTree }: TreeProps) => {
 
   const onOpenItem = (itemId: string, nodeid: string) => {
     push(nodeid)
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
-
-    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
     changeTree(mutateTree(tree, itemId, { isExpanded: true }))
+    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
   }
 
   const { show } = useContextMenu({
@@ -150,6 +149,7 @@ const Tree = ({ initTree }: TreeProps) => {
 
   const onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, item: TreeItem) => {
     // mog('onClick', { item })
+
     if (e.button === 0) {
       expandNode(item.data.path)
       onOpenItem(item.id as string, item.data.nodeid)
@@ -178,7 +178,7 @@ const Tree = ({ initTree }: TreeProps) => {
             <ContextMenu.Trigger asChild>
               <StyledTreeItem
                 ref={provided.innerRef}
-                selected={isInEditor && node && item.data && node.nodeid === item.data.nodeid}
+                selected={isInEditor && item.data && node?.nodeid === item.data.nodeid}
                 isDragging={snapshot.isDragging}
                 isBeingDroppedAt={isTrue}
                 onContextMenu={(e) => {

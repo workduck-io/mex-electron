@@ -1,8 +1,7 @@
 import { Logo, SidebarToggle, TrafficLightBG } from '@data/illustrations/logo'
-import { GetIcon } from '@data/links'
+import useNavlinks, { GetIcon } from '@data/links'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import useLayout from '@hooks/useLayout'
-import { useLinks } from '@hooks/useLinks'
 import { useKeyListener } from '@hooks/useShortcutListener'
 import archiveFill from '@iconify/icons-ri/archive-fill'
 import settings4Line from '@iconify/icons-ri/settings-4-line'
@@ -30,7 +29,6 @@ import Bookmarks from './Bookmarks'
 import SharedNotes from './SharedNotes'
 import { useSidebarTransition } from './Transition'
 import { TreeContainer } from './Tree'
-import { NavProps } from './Types'
 import Tabs, { TabType } from '@components/layouts/Tabs'
 import { MexIcon } from '@style/Layouts'
 import { SharedNodeIcon } from '@components/icons/Icons'
@@ -38,24 +36,15 @@ import { useTheme } from 'styled-components'
 import { PollActions, useApiStore } from '@store/useApiStore'
 import { usePolling } from '@apis/usePolling'
 import { getRandomQAContent } from '@data/Defaults/baseData'
+import useDataStore from '@store/useDataStore'
+import { useNavigation } from '@hooks/useNavigation'
+import { SItem } from './SharedNotes.style'
+import { ItemContent, ItemTitle } from '@style/Sidebar'
 
-const Nav = ({ links }: NavProps) => {
-  // const match = useMatch(`/${ROUTE_PATHS.node}/:nodeid`)
-  const sidebar = useLayoutStore((store) => store.sidebar)
-  const focusMode = useLayoutStore((store) => store.focusMode)
-  const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
-  const replaceAndAddActionToPoll = useApiStore((store) => store.replaceAndAddActionToPoll)
-  const { getFocusProps } = useLayout()
-
-  usePolling()
-
-  const { getLinkCount } = useLinks()
+const CreateNewNote: React.FC<{ target: any }> = ({ target }) => {
   const { goTo } = useRouting()
-  const theme = useTheme()
   const { createNewNote } = useCreateNewNote()
-  const [openedTab, setOpenedTab] = useState<PollActions>(PollActions.hierarchy)
-
-  const [source, target] = useSingleton()
+  const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault()
@@ -69,18 +58,6 @@ const Nav = ({ links }: NavProps) => {
     goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
   }
 
-  const onDoubleClickToogle = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.detail === 2) {
-      toggleSidebar()
-
-      if (window && window.getSelection) {
-        const sel = window.getSelection()
-        sel.removeAllRanges()
-      }
-    }
-  }
-
-  const shortcuts = useHelpStore((store) => store.shortcuts)
   const { shortcutHandler } = useKeyListener()
 
   useEffect(() => {
@@ -97,9 +74,124 @@ const Nav = ({ links }: NavProps) => {
     }
   }, [shortcuts])
 
-  const { springProps } = useSidebarTransition()
+  return (
+    <NavTooltip
+      key={shortcuts.newNode.title}
+      singleton={target}
+      content={<TooltipTitleWithShortcut title="New Note" shortcut={shortcuts.newNode.keystrokes} />}
+    >
+      <CreateNewButton onClick={onNewNote}>
+        <Icon icon="fa6-solid:file-pen" />
+        <NavTitle>Create New Note</NavTitle>
+      </CreateNewButton>
+    </NavTooltip>
+  )
+}
 
-  const archiveCount = getLinkCount().archive
+const NavHeader: React.FC<{ target: any }> = ({ target }) => {
+  const { getLinks } = useNavlinks()
+
+  const links = useMemo(() => getLinks(), [])
+
+  return (
+    <MainLinkContainer onMouseUp={(e) => e.stopPropagation()}>
+      <CreateNewNote target={target} />
+      {links.map((l) =>
+        l.isComingSoon ? (
+          <NavTooltip key={l.path} singleton={target} content={`${l.title} (Stay Tuned! 👀  )`}>
+            <ComingSoon tabIndex={-1} key={`nav_${l.title}`}>
+              {l.icon !== undefined ? l.icon : l.title}
+            </ComingSoon>
+          </NavTooltip>
+        ) : (
+          <NavTooltip
+            key={l.path}
+            singleton={target}
+            content={l.shortcut ? <TooltipTitleWithShortcut title={l.title} shortcut={l.shortcut} /> : l.title}
+          >
+            <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={l.path} key={`nav_${l.title}`}>
+              {l.icon !== undefined ? l.icon : l.title}
+              <NavTitle>{l.title}</NavTitle>
+              {l.count > 0 && <Count>{l.count}</Count>}
+            </Link>
+          </NavTooltip>
+        )
+      )}
+    </MainLinkContainer>
+  )
+}
+
+const NavFooter: React.FC<{ target: any }> = ({ target }) => {
+  const archive = useDataStore((store) => store.archive)
+  const shortcuts = useHelpStore((store) => store.shortcuts)
+
+  return (
+    <EndLinkContainer onMouseUp={(e) => e.stopPropagation()}>
+      <NavTooltip
+        key={shortcuts.showArchive.title}
+        singleton={target}
+        content={<TooltipTitleWithShortcut title="Archive" shortcut={shortcuts.showArchive.keystrokes} />}
+      >
+        <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={ROUTE_PATHS.archive} key="nav_search">
+          {GetIcon(archiveFill)}
+          <NavTitle>Archive</NavTitle>
+          {archive.length > 0 && <Count>{archive.length}</Count>}
+        </Link>
+      </NavTooltip>
+
+      <NavTooltip
+        key={shortcuts.showSettings.title}
+        singleton={target}
+        content={<TooltipTitleWithShortcut title="Settings" shortcut={shortcuts.showSettings.keystrokes} />}
+      >
+        <Link
+          tabIndex={-1}
+          className={(s) => (s.isActive ? 'active' : '')}
+          to={`${ROUTE_PATHS.settings}`}
+          key="nav_settings"
+        >
+          {GetIcon(settings4Line)}
+          <NavTitle>Settings</NavTitle>
+        </Link>
+      </NavTooltip>
+    </EndLinkContainer>
+  )
+}
+
+const TestNav = () => {
+  const { push } = useNavigation()
+  const { goTo } = useRouting()
+
+  const onClick = (id: string) => {
+    push(id)
+    goTo(ROUTE_PATHS.node, NavigationType.push, id)
+  }
+
+  return (
+    <div>
+      {[
+        { title: 'First', id: 'NODE_yeAL46g8VrykqYRqQWncy' },
+        { title: 'Second', id: 'NODE_MQVEejyKKNnMpBbDiGeAr' }
+      ].map((item) => (
+        <SItem selected={false} key={`shared_notes_link_${item.id}`} onClick={() => onClick(item.id)}>
+          <ItemContent>
+            <ItemTitle>
+              <SharedNodeIcon />
+              <span>{item.title}</span>
+            </ItemTitle>
+          </ItemContent>
+        </SItem>
+      ))}
+    </div>
+  )
+}
+
+const NavBody: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
+  const [openedTab, setOpenedTab] = useState<PollActions>(PollActions.hierarchy)
+  const replaceAndAddActionToPoll = useApiStore((store) => store.replaceAndAddActionToPoll)
+
+  usePolling()
+  const theme = useTheme()
 
   const tabs: Array<TabType> = useMemo(
     () => [
@@ -126,9 +218,43 @@ const Nav = ({ links }: NavProps) => {
   )
 
   return (
+    <Tabs
+      visible={isVisible}
+      openedTab={openedTab}
+      onChange={(tab) => {
+        setOpenedTab(tab)
+        replaceAndAddActionToPoll(tab)
+      }}
+      tabs={tabs}
+    />
+  )
+}
+
+const Nav = () => {
+  const sidebar = useLayoutStore((store) => store.sidebar)
+  const focusMode = useLayoutStore((store) => store.focusMode)
+  const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
+  const { getFocusProps } = useLayout()
+
+  const [source, target] = useSingleton()
+
+  const onDoubleClickToogle = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.detail === 2) {
+      toggleSidebar()
+
+      if (window && window.getSelection) {
+        const sel = window.getSelection()
+        sel.removeAllRanges()
+      }
+    }
+  }
+
+  const { springProps } = useSidebarTransition()
+
+  return (
     <>
       <NavWrapper
-        onMouseUp={(e) => onDoubleClickToogle(e)}
+        onMouseUp={onDoubleClickToogle}
         style={springProps}
         expanded={sidebar.expanded}
         {...getFocusProps(focusMode)}
@@ -139,143 +265,9 @@ const Nav = ({ links }: NavProps) => {
           <Logo />
         </NavLogoWrapper>
 
-        <MainLinkContainer onMouseUp={(e) => e.stopPropagation()}>
-          <NavTooltip
-            key={shortcuts.newNode.title}
-            singleton={target}
-            content={<TooltipTitleWithShortcut title="New Note" shortcut={shortcuts.newNode.keystrokes} />}
-          >
-            <CreateNewButton onClick={onNewNote}>
-              <Icon icon="fa6-solid:file-pen" />
-              <NavTitle>Create New Note</NavTitle>
-            </CreateNewButton>
-          </NavTooltip>
-          {links.map((l) =>
-            l.isComingSoon ? (
-              <NavTooltip key={l.path} singleton={target} content={`${l.title} (Stay Tuned! 👀  )`}>
-                <ComingSoon tabIndex={-1} key={`nav_${l.title}`}>
-                  {l.icon !== undefined ? l.icon : l.title}
-                </ComingSoon>
-              </NavTooltip>
-            ) : (
-              <NavTooltip
-                key={l.path}
-                singleton={target}
-                content={l.shortcut ? <TooltipTitleWithShortcut title={l.title} shortcut={l.shortcut} /> : l.title}
-              >
-                <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={l.path} key={`nav_${l.title}`}>
-                  {l.icon !== undefined ? l.icon : l.title}
-                  <NavTitle>{l.title}</NavTitle>
-                  {l.count > 0 && <Count>{l.count}</Count>}
-                </Link>
-              </NavTooltip>
-            )
-          )}
-        </MainLinkContainer>
-
-        {/* Notes, Shared, Bookmarks */}
-        <Tabs
-          visible={sidebar.expanded}
-          openedTab={openedTab}
-          onChange={(tab) => {
-            setOpenedTab(tab)
-            replaceAndAddActionToPoll(tab)
-          }}
-          tabs={tabs}
-        />
-
-        {/* <Collapse
-          title="All Notes"
-          oid={`tree`}
-          defaultOpen
-          stopPropagation
-          icon={gitBranchLine}
-          maximumHeight="80vh"
-          infoProps={{
-            text: TreeHelp
-          }}
-        >
-          <Collapse
-            title="Bookmarks"
-            oid="bookmarks"
-            icon={bookmark3Line}
-            maximumHeight="30vh"
-            infoProps={{
-              text: BookmarksHelp
-            }}
-          >
-            <Bookmarks />
-          </Collapse>
-          <Collapse
-            title="Shared Notes"
-            oid="sharednotes"
-            icon={shareLine}
-            maximumHeight="30vh"
-            infoProps={{
-              text: SharedHelp
-            }}
-          >
-            <SharedNotes />
-          </Collapse>
-          <Tree initTree={initTree} />
-        </Collapse> */}
-
-        {/* <NavSpacer />
-        <NavDivider /> */}
-
-        <EndLinkContainer onMouseUp={(e) => e.stopPropagation()}>
-          {/* {authenticated ? (
-          <NavTooltip singleton={target} content="User">
-            <Link  tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to="/user" key="nav_user">
-              {GetIcon(user3Line)}
-            </Link>
-          </NavTooltip>
-        ) : (
-          <NavTooltip singleton={target} content="Login">
-            <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={ROUTE_PATHS.login} key="nav_user" className="active">
-              {GetIcon(lockPasswordLine)}
-            </Link>
-          </NavTooltip>
-        )} */}
-          <NavTooltip
-            key={shortcuts.showArchive.title}
-            singleton={target}
-            content={<TooltipTitleWithShortcut title="Archive" shortcut={shortcuts.showArchive.keystrokes} />}
-          >
-            <Link
-              tabIndex={-1}
-              className={(s) => (s.isActive ? 'active' : '')}
-              to={ROUTE_PATHS.archive}
-              key="nav_search"
-            >
-              {GetIcon(archiveFill)}
-              <NavTitle>Archive</NavTitle>
-              {archiveCount > 0 && <Count>{archiveCount}</Count>}
-            </Link>
-          </NavTooltip>
-          {/*
-        <NavButton onClick={toggleSidebar}>
-          <Icon icon={sidebar.expanded ? menuFoldLine : menuUnfoldLine} />
-          <NavTitle>{sidebar.expanded ? 'Collapse' : 'Expand'}</NavTitle>
-        </NavButton>
-         */}
-
-          <NavTooltip
-            key={shortcuts.showSettings.title}
-            singleton={target}
-            content={<TooltipTitleWithShortcut title="Settings" shortcut={shortcuts.showSettings.keystrokes} />}
-          >
-            <Link
-              tabIndex={-1}
-              className={(s) => (s.isActive ? 'active' : '')}
-              to={`${ROUTE_PATHS.settings}`}
-              key="nav_settings"
-            >
-              {GetIcon(settings4Line)}
-              <NavTitle>Settings</NavTitle>
-            </Link>
-          </NavTooltip>
-        </EndLinkContainer>
+        <NavHeader target={target} />
+        <NavBody isVisible={sidebar.expanded} />
+        <NavFooter target={target} />
       </NavWrapper>
       <TrafficLightBG />
       <SidebarToggle />

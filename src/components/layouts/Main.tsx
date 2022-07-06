@@ -5,7 +5,6 @@ import styled, { css } from 'styled-components'
 import Nav from '../mex/Sidebar/Nav'
 import { linkTooltip } from '../../editor/Components/Link'
 import { GridWrapper } from '../../style/Grid'
-import useNavlinks from '../../data/links'
 import { useAuthStore } from '../../services/auth/useAuth'
 import { useLayoutStore } from '../../store/useLayoutStore'
 import { navTooltip } from '../../style/Nav'
@@ -51,7 +50,6 @@ const Main = ({ children }: MainProps) => {
   const styles = {
     WebkitAppRegion: 'drag'
   }
-  const { getLinks } = useNavlinks()
   const authenticated = useAuthStore((state) => state.authenticated)
   const showLoader = useLayoutStore((store) => store.showLoader)
   const focusMode = useLayoutStore((s) => s.focusMode)
@@ -64,7 +62,7 @@ const Main = ({ children }: MainProps) => {
     <AppWrapper className={focusMode.on ? 'focus_mode' : ''}>
       <Draggable style={styles as any} /> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
       <GridWrapper style={gridSpringProps} grid={initialized ? 'true' : ''}>
-        {initialized && <Nav links={getLinks()} />}
+        {initialized && <Nav />}
         <Content id="wd-mex-content-view" grid={initialized}>
           {children}
         </Content>

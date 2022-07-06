@@ -172,10 +172,10 @@ const useLoad = () => {
     // console.log('Fetch and save', { node })
     // const node = getNode(nodeid)
     if (options.withLoading) setFetchingContent(true)
+
     getDataAPI(node.nodeid, options.isShared)
       .then((nodeData) => {
         if (nodeData) {
-          // console.log(res)
           const { content, metadata, version } = nodeData
 
           if (content) {
@@ -205,7 +205,9 @@ const useLoad = () => {
       })
       .finally(() => {
         if (options.withLoading) setFetchingContent(false)
+        mog('FINALLY AFTER FETCH')
       })
+    mog('OUTSIDE FETCH AND SAVE NODe')
   }
 
   /**
@@ -249,7 +251,6 @@ const useLoad = () => {
 
     const node = options.node ?? getNode(nodeid)
 
-    mog('LOAD NODE', { nodeid, options, cond: options.fetch && !hasBeenLoaded, hasBeenLoaded })
     if (options.fetch && !hasBeenLoaded) {
       mog('Fetching')
       if (localCheck.isShared) {
@@ -257,6 +258,7 @@ const useLoad = () => {
         fetchAndSaveNode(node, { withLoading: true, isShared: true })
       } else fetchAndSaveNode(node, { withLoading: true, isShared: false })
     }
+
     if (options.highlightBlockId) {
       setHighlights([options.highlightBlockId], 'editor')
     }
@@ -265,7 +267,6 @@ const useLoad = () => {
       const allParents = getAllParentIds(node.path)
       expandNodes(allParents)
     }
-
     loadNodeEditor(node)
   }
 

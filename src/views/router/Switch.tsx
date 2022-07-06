@@ -1,10 +1,7 @@
 import Actions from '@components/mex/Integrations/Actions'
 import Portals from '@components/mex/Integrations/Portals'
-import { useSaveNodeName } from '@hooks/useSaveNodeName'
-import { useEditorStore } from '@store/useEditorStore'
-import { mog } from '@utils/lib/helper'
-import React, { useEffect } from 'react'
-import { Outlet, Route, Routes, useLocation } from 'react-router-dom'
+import React from 'react'
+import { Outlet, Route, Routes } from 'react-router-dom'
 import { animated } from 'react-spring'
 import styled from 'styled-components'
 import Search from '../../components/mex/Search/Search'
@@ -16,9 +13,7 @@ import Themes from '../../components/mex/Settings/Themes'
 import { useSidebarTransition } from '../../components/mex/Sidebar/Transition'
 import SnippetEditor from '../../components/Snippets/SnippetEditor'
 import ContentEditor from '../../editor/ContentEditor'
-import { useEditorBuffer, useSnippetBuffer } from '../../hooks/useEditorBuffer'
 import { useAuthStore } from '../../services/auth/useAuth'
-import useBlockStore from '../../store/useBlockStore'
 import ActionGroupsPage from '../mex/Actions'
 import Archive from '../mex/Archive'
 import Dashboard from '../mex/Dashboard'
@@ -53,26 +48,26 @@ const Home = () => (
 )
 
 const Switch = () => {
-  const location = useLocation()
-  const isBlockMode = useBlockStore((store) => store.isBlockMode)
-  const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
+  // const location = useLocation()
+  // const isBlockMode = useBlockStore((store) => store.isBlockMode)
+  // const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
 
-  const { saveAndClearBuffer: saveEditorBuffer } = useEditorBuffer()
-  const { saveAndClearBuffer: saveSnippetBuffer } = useSnippetBuffer()
+  // const { saveAndClearBuffer: saveEditorBuffer } = useEditorBuffer()
+  // const { saveAndClearBuffer: saveSnippetBuffer } = useSnippetBuffer()
   const authenticated = useAuthStore((s) => s.authenticated)
-  const { saveNodeName } = useSaveNodeName()
+  // const { saveNodeName } = useSaveNodeName()
 
-  useEffect(() => {
-    const editorNode = useEditorStore.getState().node
-    // ? Do we need to save data locally on every route change?
-    mog('Changing location', { location })
-    if (authenticated) {
-      if (isBlockMode) setIsBlockMode(false)
-      if (editorNode) saveNodeName(editorNode.nodeid)
-      saveEditorBuffer()
-      saveSnippetBuffer()
-    }
-  }, [location])
+  // useEffect(() => {
+  //   const editorNode = useEditorStore.getState().node
+  //   // ? Do we need to save data locally on every route change?
+  //   mog('Changing location', { location })
+  //   if (authenticated) {
+  //     if (isBlockMode) setIsBlockMode(false)
+  //     if (editorNode) saveNodeName(editorNode.nodeid)
+  //     saveEditorBuffer()
+  //     saveSnippetBuffer()
+  //   }
+  // }, [location])
 
   const { switchWrapperSpringProps } = useSidebarTransition()
 

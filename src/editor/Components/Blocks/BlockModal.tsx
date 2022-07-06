@@ -127,14 +127,14 @@ const BlockModal = () => {
 
   const onNodeCreate = (quickLink: QuickLink): void => {
     const editorBlocks = getEditorBlocks()
-    // const blocksContent = getContentFromBlocks(quickLink.value, editorBlocks, false)
+    const blocksContent = getContentFromBlocks(quickLink.value, editorBlocks, false)
 
-    // deleteContentBlocks(editorBlocks)
-    // setIsModalOpen(undefined)
-    // setIsBlockMode(false)
+    deleteContentBlocks(editorBlocks)
+    setIsModalOpen(undefined)
+    setIsBlockMode(false)
 
-    // createNewNote({ path: quickLink.value, noteContent: blocksContent })
-    // saveData()
+    createNewNote({ path: quickLink.value, noteContent: blocksContent })
+    saveData()
   }
 
   const onNodeSelect = (quickLink: QuickLink) => {

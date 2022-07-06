@@ -320,7 +320,9 @@ export const useApi = () => {
       })
       .then((d) => {
         if (d.data) {
-          const nodes = hierarchyParser(d.data)
+          const hierarchy = d.data.hierarchy || []
+          const nodes = hierarchyParser(hierarchy)
+
           if (nodes && nodes.length > 0) {
             const localILinks = useDataStore.getState().ilinks
             const { toUpdateLocal } = iLinksToUpdate(localILinks, nodes)

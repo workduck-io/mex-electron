@@ -265,15 +265,15 @@ export const getLevel = (path: string) => path.split(SEPARATOR).length
 
 type treeMap = { id: string; nodeid: string; icon?: string }[]
 
-export const sanatizeLinks = (links: treeMap): treeMap => {
+export const sanatizeLinks = (links: ILink[]): treeMap => {
   let oldLinks = links
   const newLinks: treeMap = []
   let currentDepth = 1
 
   while (oldLinks.length > 0) {
     for (const l of links) {
-      if (getLevel(l.id) === currentDepth) {
-        newLinks.push(l)
+      if (getLevel(l.path) === currentDepth) {
+        newLinks.push({ id: l.path, nodeid: l.nodeid, icon: l.icon })
         oldLinks = oldLinks.filter((k) => k !== l)
       }
     }
@@ -287,9 +287,9 @@ export const useTreeFromLinks = () => {
   const getTreeFromLinks = (links: ILink[]) => {
     const expanded = useTreeStore.getState().expanded
 
-    const mappedLinks = links.map((i) => ({ id: i.path, nodeid: i.nodeid, icon: i.icon }))
+    // const mappedLinks = links.map((i) => ({ id: i.path, nodeid: i.nodeid, icon: i.icon }))
 
-    const sanatizedLinks = sanatizeLinks(mappedLinks)
+    const sanatizedLinks = sanatizeLinks(links)
     const tree = generateTree(sanatizedLinks, expanded)
 
     mog('Tree', { links, sanatizedLinks, tree })

@@ -36,10 +36,10 @@ export const hierarchyParser = (linkData: string[]): ILink[] => {
       if (idPathMapping[nodeID]) {
         if (idPathMapping[nodeID] !== nodePath) throw new Error('Invalid Linkdata Input')
       } else if (pathIdMapping[nodePath]) {
-        mog(`Found existing notePath: ${nodePath} with ${nodeID} at index: ${pathIdMapping[nodePath].index}`)
+        // mog(`Found existing notePath: ${nodePath} with ${nodeID} at index: ${pathIdMapping[nodePath].index}`)
         ilinks[pathIdMapping[nodePath].index] = { nodeid: nodeID, path: nodePath }
       } else {
-        mog(`Inserting: ${nodePath} with ${nodeID} at index: ${ilinks.length}`)
+        // mog(`Inserting: ${nodePath} with ${nodeID} at index: ${ilinks.length}`)
         idPathMapping[nodeID] = nodePath
         pathIdMapping[nodePath] = { nodeid: nodeID, index: ilinks.length }
         ilinks.push({ nodeid: nodeID, path: nodePath })

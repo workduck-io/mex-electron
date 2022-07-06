@@ -1,5 +1,5 @@
 import { Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import generatePlugins, { PluginOptionType } from './Plugins/plugins'
 
 import BallonMarkToolbarButtons from './Components/EditorBalloonToolbar'
@@ -97,7 +97,7 @@ export const Editor = ({
 
   // function to add two numbers
 
-  const prePlugins = generatePlugins(components, options)
+  const prePlugins = useMemo(() => generatePlugins(components, options), [])
   const plugins = [
     ...prePlugins,
     {
@@ -112,7 +112,7 @@ export const Editor = ({
     }
   ]
 
-  useEditorChange(editorId, content, onChange)
+  // useEditorChange(editorId, content, onChange)
 
   const onDelayPerform = debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 200)
 
@@ -155,7 +155,13 @@ export const Editor = ({
         }}
         data-tour="mex-onboarding-draft-editor"
       >
-        <Plate id={editorId} editableProps={editableProps} value={content} plugins={plugins} onChange={onChangeContent}>
+        <Plate
+          id={editorId}
+          editableProps={editableProps}
+          initialValue={content}
+          plugins={plugins}
+          onChange={onChangeContent}
+        >
           {showBalloonToolbar && <BallonMarkToolbarButtons />}
           <MultiComboboxContainer config={comboConfigData} />
         </Plate>
