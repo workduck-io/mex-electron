@@ -1,15 +1,21 @@
+import { useSaveData } from '@hooks/useSaveData'
+import { useSnippets } from '@hooks/useSnippets'
+import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
-import { Icon } from '@iconify/react'
-import { NodeType } from '../../../types/Types'
+import magicLine from '@iconify/icons-ri/magic-line'
+import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import shareLine from '@iconify/icons-ri/share-line'
+import { Icon } from '@iconify/react'
+import { useSnippetStore } from '@store/useSnippetStore'
+import IconButton from '@style/Buttons'
 import { mog } from '@utils/lib/helper'
-import React from 'react'
+import { convertContentToRawText } from '@utils/search/parseData'
+import React, { useMemo } from 'react'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import { SearchHelp } from '../../../data/Defaults/helpText'
 import { useBlockHighlightStore } from '../../../editor/Actions/useFocusBlock'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
-import { useFilters, useFilterStore } from '../../../hooks/useFilters'
-import { useLinks } from '../../../hooks/useLinks'
+import { useFilters } from '../../../hooks/useFilters'
 import useLoad from '../../../hooks/useLoad'
 import { useNodes } from '../../../hooks/useNodes'
 import { useSearch } from '../../../hooks/useSearch'
@@ -18,23 +24,24 @@ import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
-import { EditorPreviewStyles } from '../../../style/Editor'
 import { MainHeader } from '../../../style/Layouts'
 import {
-  ItemTag,
-  Result,
-  ResultCardFooter,
-  ResultDesc,
-  ResultHeader,
-  ResultMain,
-  ResultMetaData,
-  ResultRow,
-  ResultTitle,
-  SearchContainer,
-  SearchPreviewWrapper,
-  SplitSearchPreviewWrapper
+    ItemTag,
+    Result,
+    ResultCardFooter,
+    ResultDesc,
+    ResultHeader,
+    ResultMain,
+    ResultMetaData,
+    ResultRow,
+    ResultTitle,
+    SearchContainer,
+    SearchPreviewWrapper,
+    SplitSearchPreviewWrapper
 } from '../../../style/Search'
 import { Title, TitleText } from '../../../style/Typography'
+import { GenericSearchResult, idxKey } from '../../../types/search'
+import { NodeType } from '../../../types/Types'
 import Infobox from '../../../ui/components/Help/Infobox'
 import { SplitType } from '../../../ui/layout/splitView'
 import { getInitialNode } from '../../../utils/helpers'
@@ -45,15 +52,6 @@ import TagsRelated, { TagsRelatedTiny } from '../Tags/TagsRelated'
 import SearchFilters from './SearchFilters'
 import SearchView, { RenderFilterProps, RenderItemProps, RenderPreviewProps } from './SearchView'
 import { View } from './ViewSelector'
-import { GenericSearchResult, idxKey } from '../../../types/search'
-import { convertContentToRawText } from '@utils/search/parseData'
-import magicLine from '@iconify/icons-ri/magic-line'
-import quillPenLine from '@iconify/icons-ri/quill-pen-line'
-import IconButton from '@style/Buttons'
-import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
-import { useSnippetStore } from '@store/useSnippetStore'
-import { useSnippets } from '@hooks/useSnippets'
-import { useSaveData } from '@hooks/useSaveData'
 
 const Search = () => {
   const { loadNode } = useLoad()
@@ -64,10 +62,25 @@ const Search = () => {
     .map(
       (link): GenericSearchResult => ({
         id: link.nodeid,
-        title: link.path
+        title: link.path,
+        index: 'node'
       })
     )
     .slice(0, 12)
+  const snippets = useSnippetStore((store) => store.snippets)
+  const { initialSnippets }: { initialSnippets: GenericSearchResult[] } = useMemo(
+    () => ({
+      initialSnippets: snippets
+        .map((snippet) => ({
+          id: snippet.id,
+          title: snippet.title,
+          index: snippet.isTemplate ? ('template' as const) : ('snippet' as const),
+          text: convertContentToRawText(snippet.content)
+        }))
+        .slice(0, 12)
+    }),
+    [snippets]
+  )
   const { getNode, getNodeType } = useNodes()
   const { saveData } = useSaveData()
   const { goTo } = useRouting()
@@ -161,6 +174,11 @@ const Search = () => {
       }
       const icon = quillPenLine
       const id = `${item.id}_ResultFor_SearchSnippet_`
+
+      mog('search', {
+        id,
+        item
+      })
 
       if (props.view === View.Card) {
         return (
@@ -353,7 +371,7 @@ const Search = () => {
       <SearchView
         id="searchStandard"
         key="searchStandard"
-        initialItems={initialResults}
+        initialItems={{ all: initialResults, notes: initialResults, snippets: initialSnippets }}
         indexes={{
           indexes: {
             all: ['node', 'shared', 'snippet', 'template'],

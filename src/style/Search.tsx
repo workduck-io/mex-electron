@@ -45,9 +45,6 @@ export const SearchInput = styled(Input)`
   width: 100%;
   max-width: 20rem;
   transition: all 0.25s ease-in-out;
-  &:focus {
-    max-width: 30rem;
-  }
 `
 
 export const SearchHeader = styled.div`

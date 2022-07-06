@@ -31,7 +31,7 @@ const SearchIndexInput = ({ indexGroups, onChange, placeholder }: SearchIndexInp
     // getToggleButtonProps,
     // getLabelProps,
     toggleMenu,
-    openMenu,
+    // openMenu,
     closeMenu,
     selectItem,
     getMenuProps,
@@ -69,12 +69,12 @@ const SearchIndexInput = ({ indexGroups, onChange, placeholder }: SearchIndexInp
           <Icon icon={arrowDownSLine} />
         </SearchIndexValue>
 
-        {/*<Input
+        <Input
           {...getInputProps()}
-          onFocusCapture={() => openMenu()}
+          style={{ display: 'none' }}
           placeholder={`Search in...`}
           className={`FilterInput`}
-        />*/}
+        />
       </StyledCombobox>
       <StyledMenu {...getMenuProps()} isOpen={isOpen}>
         {isOpen &&

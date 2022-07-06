@@ -10,7 +10,6 @@ import {
   NoSearchResults,
   Results,
   ResultsWrapper,
-  SearchFilterWrapper,
   SearchHeader,
   SearchInput,
   SearchViewContainer
@@ -92,7 +91,7 @@ interface SearchViewProps<Item> {
   /**
    * The initial items to display
    */
-  initialItems: Item[]
+  initialItems: Item[] | { [indexGroupKey: string]: Item[] }
 
   /**
    * Get next resut for current search term
@@ -221,7 +220,7 @@ const SearchView = <Item,>({
   }
   const onToggleIndexGroup = (indexGroup: string) => {
     const indexesOfGroup = indexes?.indexes[indexGroup]
-    mog('onToggleIndex', { indexesOfGroup, idxKeys })
+    // mog('onToggleIndex', { indexesOfGroup, idxKeys })
     setIndexes(indexesOfGroup)
   }
   const clearSearch = () => {
@@ -246,12 +245,23 @@ const SearchView = <Item,>({
     clearSearch()
   }, [id])
 
+  const findCurrentIndex = () => {
+    const indexGroup = Object.keys(indexes?.indexes).find(
+      (indexGroup) => JSON.stringify(indexes?.indexes[indexGroup]) === JSON.stringify(idxKeys)
+    )
+    return indexGroup
+  }
+
   const executeSearch = async (newSearchTerm: string) => {
-    if (newSearchTerm === '' && initialItems.length > 0) {
+    if (newSearchTerm === '') {
       // const res = onSearch(newSearchTerm)
-      const filtered = filterResults ? filterResults(initialItems) : initialItems
-      // mog('ExecuteSearch - Initial', { newSearchTerm, currentFilters, filtered, initialItems })
-      setResult(filtered, newSearchTerm)
+      const curIndexGroup = findCurrentIndex()
+      const initItems = Array.isArray(initialItems) ? initialItems : initialItems[curIndexGroup]
+      const filtered = filterResults ? filterResults(initItems) : initItems
+      // mog('ExecuteSearch - Initial', { newSearchTerm, currentFilters, filtered, initialItems, curIndexGroup })
+      if (filtered.length > 0) {
+        setResult(filtered, newSearchTerm)
+      }
     } else {
       const res = await onSearch(newSearchTerm, idxKeys)
       const filtered = filterResults ? filterResults(res) : res
