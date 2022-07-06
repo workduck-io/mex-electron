@@ -26,18 +26,18 @@ import { useEditorStore } from '../../../store/useEditorStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { MainHeader } from '../../../style/Layouts'
 import {
-    ItemTag,
-    Result,
-    ResultCardFooter,
-    ResultDesc,
-    ResultHeader,
-    ResultMain,
-    ResultMetaData,
-    ResultRow,
-    ResultTitle,
-    SearchContainer,
-    SearchPreviewWrapper,
-    SplitSearchPreviewWrapper
+  ItemTag,
+  Result,
+  ResultCardFooter,
+  ResultDesc,
+  ResultHeader,
+  ResultMain,
+  ResultMetaData,
+  ResultRow,
+  ResultTitle,
+  SearchContainer,
+  SearchPreviewWrapper,
+  SplitSearchPreviewWrapper
 } from '../../../style/Search'
 import { Title, TitleText } from '../../../style/Typography'
 import { GenericSearchResult, idxKey } from '../../../types/search'
@@ -175,10 +175,10 @@ const Search = () => {
       const icon = quillPenLine
       const id = `${item.id}_ResultFor_SearchSnippet_`
 
-      mog('search', {
-        id,
-        item
-      })
+      // mog('search', {
+      //   id,
+      //   item
+      // })
 
       if (props.view === View.Card) {
         return (
