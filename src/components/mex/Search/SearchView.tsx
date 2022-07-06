@@ -18,6 +18,7 @@ import {
 import SplitView, { RenderSplitProps, SplitOptions, SplitType } from '../../../ui/layout/splitView'
 import { mog } from '../../../utils/lib/helper'
 import ViewSelector, { View } from './ViewSelector'
+import SearchIndexInput from '@ui/components/search/IndexInput'
 
 interface SearchViewState<Item> {
   selected: number
@@ -47,6 +48,9 @@ export interface RenderItemProps<Item> extends Partial<RenderSplitProps> {
   onMouseEnter?: React.MouseEventHandler
 }
 
+interface IndexGroups {
+  [key: string]: idxKey[]
+}
 // export interface SearchViewStoreState<Item> extends SearchViewState<Item> {
 //   setSelected: (selected: number) => void
 //   setResult: (result: Item[], searchTerm: string) => void
@@ -118,10 +122,11 @@ interface SearchViewProps<Item> {
   filterResults?: (result: Item[]) => Item[]
 
   /**
-   * Indexes
-   * Indexes to show for choice
+   * IndexeGroups
+   *
+   * Default key of index groups to show initially
    */
-  indexes?: { indexes: idxKey[]; default: idxKey[] }
+  indexes?: { indexes: IndexGroups; default: string }
 
   /**
    * Handle select item
@@ -214,18 +219,15 @@ const SearchView = <Item,>({
     // mog('setresult', { result, searchTerm })
     setSS((s) => ({ ...s, result, searchTerm, selected: -1 }))
   }
-  const onToggleIndex = (index: idxKey) => {
-    mog('onToggleIndex', { index, idxKeys })
-    if (idxKeys.includes(index)) {
-      setIndexes(idxKeys.filter((i) => i !== index))
-    } else {
-      const newIdxKeys = [...idxKeys, index]
-      setIndexes(newIdxKeys)
-    }
+  const onToggleIndexGroup = (indexGroup: string) => {
+    const indexesOfGroup = indexes?.indexes[indexGroup]
+    mog('onToggleIndex', { indexesOfGroup, idxKeys })
+    setIndexes(indexesOfGroup)
   }
   const clearSearch = () => {
     setSS((s) => ({ ...s, result: [], searchTerm: '', selected: -1 }))
-    setIndexes(indexes?.default ?? [])
+    const defaultIndexes = indexes?.indexes[indexes?.default]
+    setIndexes(defaultIndexes ?? [])
   }
   const { selected, searchTerm, result, view } = searchState
 
@@ -445,8 +447,17 @@ const SearchView = <Item,>({
             }}
             ref={inpRef}
           />
+          {indexes !== undefined && (
+            <SearchIndexInput
+              indexGroups={Object.keys(indexes.indexes)}
+              onChange={(i) => {
+                onToggleIndexGroup(i)
+              }}
+            />
+          )}
         </InputWrapper>
-        {indexes !== undefined && indexes.indexes.length > 0 && (
+
+        {/*indexes !== undefined && indexes.indexes.length > 0 && (
           <div>
             {indexes.indexes.map((i) => (
               <div
@@ -458,7 +469,7 @@ const SearchView = <Item,>({
               </div>
             ))}
           </div>
-        )}
+        )*/}
         {!options?.view && (
           <ViewSelector
             currentView={view}

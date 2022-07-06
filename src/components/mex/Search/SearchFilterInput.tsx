@@ -47,7 +47,7 @@ const SearchFilterInput = <Item,>({ items, onChange, placeholder }: SearchFilter
               key={`${item.label}_${index}`}
               {...getItemProps({ item, index })}
             >
-              {item.label}
+              {item.key === 'tag' && '#'} {item.label}
             </Suggestion>
           ))}
       </StyledMenu>
