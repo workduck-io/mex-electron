@@ -27,6 +27,7 @@ export interface GenericSearchResult {
   data?: any
   matchField?: string[]
   tag?: string[]
+  index?: idxKey
 }
 
 /** Search Replacements Extra

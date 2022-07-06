@@ -30,7 +30,7 @@ const iconStyle = (primary?: boolean) => css`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.small};
-  svg {
+  & > svg {
     height: 1.5rem;
     width: 1.5rem;
     color: ${({ theme }) => (primary ? theme.colors.primary : theme.colors.gray[9])};
@@ -45,9 +45,6 @@ export const SearchInput = styled(Input)`
   width: 100%;
   max-width: 20rem;
   transition: all 0.25s ease-in-out;
-  &:focus {
-    max-width: 30rem;
-  }
 `
 
 export const SearchHeader = styled.div`
@@ -439,6 +436,19 @@ export const SearchFilterInputWrapper = styled(StyledInputWrapper)`
   margin: 0;
 `
 
+export const SearchIndexValue = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.tiny};
+
+  background-color: ${({ theme }) => theme.colors.gray[8]};
+  padding: ${({ theme }) => theme.spacing.small};
+  border-radius: ${({ theme }) => theme.borderRadius.tiny};
+
+  svg:first-child {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`
 export const SplitSearchPreviewWrapper = styled.div`
   height: calc(100vh - 22rem);
   overflow-y: auto;

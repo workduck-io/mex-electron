@@ -1,5 +1,6 @@
 import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
+import { idxKey } from '../../../types/search'
 import { debounce } from 'lodash'
 import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import tinykeys from 'tinykeys'
@@ -9,7 +10,6 @@ import {
   NoSearchResults,
   Results,
   ResultsWrapper,
-  SearchFilterWrapper,
   SearchHeader,
   SearchInput,
   SearchViewContainer
@@ -17,6 +17,7 @@ import {
 import SplitView, { RenderSplitProps, SplitOptions, SplitType } from '../../../ui/layout/splitView'
 import { mog } from '../../../utils/lib/helper'
 import ViewSelector, { View } from './ViewSelector'
+import SearchIndexInput from '@ui/components/search/IndexInput'
 
 interface SearchViewState<Item> {
   selected: number
@@ -46,6 +47,9 @@ export interface RenderItemProps<Item> extends Partial<RenderSplitProps> {
   onMouseEnter?: React.MouseEventHandler
 }
 
+interface IndexGroups {
+  [key: string]: idxKey[]
+}
 // export interface SearchViewStoreState<Item> extends SearchViewState<Item> {
 //   setSelected: (selected: number) => void
 //   setResult: (result: Item[], searchTerm: string) => void
@@ -87,7 +91,7 @@ interface SearchViewProps<Item> {
   /**
    * The initial items to display
    */
-  initialItems: Item[]
+  initialItems: Item[] | { [indexGroupKey: string]: Item[] }
 
   /**
    * Get next resut for current search term
@@ -95,7 +99,7 @@ interface SearchViewProps<Item> {
    * @param index Index of the item
    * @param view View to render
    */
-  onSearch: (searchTerm: string) => Promise<Item[]>
+  onSearch: (searchTerm: string, idxKeys?: idxKey[]) => Promise<Item[]>
 
   /**
    * Handle select item
@@ -115,6 +119,13 @@ interface SearchViewProps<Item> {
    * @param results Results to filter
    */
   filterResults?: (result: Item[]) => Item[]
+
+  /**
+   * IndexeGroups
+   *
+   * Default key of index groups to show initially
+   */
+  indexes?: { indexes: IndexGroups; default: string }
 
   /**
    * Handle select item
@@ -170,6 +181,7 @@ interface SearchViewProps<Item> {
 const SearchView = <Item,>({
   id,
   initialItems,
+  indexes,
   // views,
   onSearch,
   onSelect,
@@ -192,6 +204,8 @@ const SearchView = <Item,>({
   const { applyCurrentFilters, resetCurrentFilters } = useFilters<Item>()
   const currentFilters = useFilterStore((store) => store.currentFilters) as SearchFilter<Item>[]
   const filters = useFilterStore((store) => store.filters) as SearchFilter<Item>[]
+  const idxKeys = useFilterStore((store) => store.indexes) as idxKey[]
+  const setIndexes = useFilterStore((store) => store.setIndexes)
   const setSelected = (selected: number) => setSS((s) => ({ ...s, selected }))
   const setView = (view: View) => {
     // mog('setview', { view })
@@ -202,10 +216,18 @@ const SearchView = <Item,>({
   }
   const setResult = (result: Item[], searchTerm: string) => {
     // mog('setresult', { result, searchTerm })
-
     setSS((s) => ({ ...s, result, searchTerm, selected: -1 }))
   }
-  const clearSearch = () => setSS((s) => ({ ...s, result: [], searchTerm: '', selected: -1 }))
+  const onToggleIndexGroup = (indexGroup: string) => {
+    const indexesOfGroup = indexes?.indexes[indexGroup]
+    // mog('onToggleIndex', { indexesOfGroup, idxKeys })
+    setIndexes(indexesOfGroup)
+  }
+  const clearSearch = () => {
+    setSS((s) => ({ ...s, result: [], searchTerm: '', selected: -1 }))
+    const defaultIndexes = indexes?.indexes[indexes?.default]
+    setIndexes(defaultIndexes ?? [])
+  }
   const { selected, searchTerm, result, view } = searchState
 
   const inpRef = useRef<HTMLInputElement>(null)
@@ -223,14 +245,25 @@ const SearchView = <Item,>({
     clearSearch()
   }, [id])
 
+  const findCurrentIndex = () => {
+    const indexGroup = Object.keys(indexes?.indexes).find(
+      (indexGroup) => JSON.stringify(indexes?.indexes[indexGroup]) === JSON.stringify(idxKeys)
+    )
+    return indexGroup
+  }
+
   const executeSearch = async (newSearchTerm: string) => {
-    if (newSearchTerm === '' && initialItems.length > 0) {
+    if (newSearchTerm === '') {
       // const res = onSearch(newSearchTerm)
-      const filtered = filterResults ? filterResults(initialItems) : initialItems
-      // mog('ExecuteSearch - Initial', { newSearchTerm, currentFilters, filtered, initialItems })
-      setResult(filtered, newSearchTerm)
+      const curIndexGroup = findCurrentIndex()
+      const initItems = Array.isArray(initialItems) ? initialItems : initialItems[curIndexGroup]
+      const filtered = filterResults ? filterResults(initItems) : initItems
+      // mog('ExecuteSearch - Initial', { newSearchTerm, currentFilters, filtered, initialItems, curIndexGroup })
+      if (filtered.length > 0) {
+        setResult(filtered, newSearchTerm)
+      }
     } else {
-      const res = await onSearch(newSearchTerm)
+      const res = await onSearch(newSearchTerm, idxKeys)
       const filtered = filterResults ? filterResults(res) : res
       // mog('ExecuteSearch - onNew', { newSearchTerm, currentFilters, filtered, res })
       setResult(filtered, newSearchTerm)
@@ -245,12 +278,12 @@ const SearchView = <Item,>({
       // setOnlyResult(results)
       executeSearch(searchTerm)
     },
-    [currentFilters, result, initialItems]
+    [currentFilters, result, initialItems, idxKeys]
   )
 
   useEffect(() => {
     updateResults()
-  }, [currentFilters])
+  }, [currentFilters, idxKeys])
 
   useEffect(() => {
     executeSearch(searchTerm)
@@ -424,7 +457,29 @@ const SearchView = <Item,>({
             }}
             ref={inpRef}
           />
+          {indexes !== undefined && (
+            <SearchIndexInput
+              indexGroups={Object.keys(indexes.indexes)}
+              onChange={(i) => {
+                onToggleIndexGroup(i)
+              }}
+            />
+          )}
         </InputWrapper>
+
+        {/*indexes !== undefined && indexes.indexes.length > 0 && (
+          <div>
+            {indexes.indexes.map((i) => (
+              <div
+                style={{ padding: '10px', color: idxKeys.includes(i) ? 'green' : 'red' }}
+                onClick={() => onToggleIndex(i)}
+                key={`index_${id}_${i}`}
+              >
+                Index {i}
+              </div>
+            ))}
+          </div>
+        )*/}
         {!options?.view && (
           <ViewSelector
             currentView={view}

@@ -104,13 +104,17 @@ const searchWorker: SearchWorker = {
 
       if (typeof key === 'string') {
         const fields = options?.searchFields?.[key] || indexedFields[key]
-        response = globalSearchIndex[key].search(query, { enrich: true, tag: options?.tags, index: fields })
+        response = globalSearchIndex[key]
+          .search(query, { enrich: true, tag: options?.tags, index: fields })
+          .map((res) => ({ ...res, index: key }))
       } else {
         key.forEach((k) => {
           const fields = options?.searchFields?.[k] || indexedFields[k]
           response = [
             ...response,
-            ...globalSearchIndex[k].search(query, { enrich: true, tag: options?.tags, index: fields })
+            ...globalSearchIndex[k]
+              .search(query, { enrich: true, tag: options?.tags, index: fields })
+              .map((res) => ({ ...res, index: k }))
           ]
         })
       }
@@ -120,7 +124,14 @@ const searchWorker: SearchWorker = {
         const matchField = entry.field
         entry.result.forEach((i) => {
           const { nodeId, blockId } = getNodeAndBlockIdFromCompositeKey(i.id)
-          results.push({ id: nodeId, data: i.doc?.data, blockId, text: i.doc?.text?.slice(0, 100), matchField })
+          results.push({
+            id: nodeId,
+            data: i.doc?.data,
+            blockId,
+            text: i.doc?.text?.slice(0, 100),
+            matchField,
+            index: entry.index
+          })
         })
       })
 
@@ -237,11 +248,16 @@ const searchWorker: SearchWorker = {
       let response: any[] = []
 
       if (typeof key === 'string') {
-        response = globalSearchIndex[key].search({ index: searchItems[key], enrich: true })
+        response = globalSearchIndex[key]
+          .search({ index: searchItems[key], enrich: true })
+          .map((res) => ({ ...res, index: key }))
         mog('response', { response, key, index: searchItems[key] })
       } else {
         key.forEach((k) => {
-          response = [...response, ...globalSearchIndex[k].search({ index: searchItems[k], enrich: true })]
+          response = [
+            ...response,
+            ...globalSearchIndex[k].search({ index: searchItems[k], enrich: true }).map((res) => ({ ...res, index: k }))
+          ]
           mog(`${k}  response -- ${query}`, { response })
         })
       }
@@ -256,7 +272,14 @@ const searchWorker: SearchWorker = {
           if (rankingMap[nodeId]) rankingMap[nodeId]++
           else rankingMap[nodeId] = 1
 
-          results.push({ id: nodeId, data: i.doc?.data, blockId, text: i.doc?.text?.slice(0, 100), matchField })
+          results.push({
+            id: nodeId,
+            data: i.doc?.data,
+            blockId,
+            text: i.doc?.text?.slice(0, 100),
+            matchField,
+            index: entry.index
+          })
         })
       })
 

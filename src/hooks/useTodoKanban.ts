@@ -40,6 +40,8 @@ export const getPureContent = (todo: TodoType) => {
 export const useKanbanFilterStore = create<FilterStore<TodoType>>((set) => ({
   currentFilters: [],
   setCurrentFilters: (filters: SearchFilter<TodoType>[]) => set({ currentFilters: filters }),
+  indexes: [],
+  setIndexes: () => undefined,
   filters: [],
   setFilters: (filters: SearchFilter<TodoType>[]) => set({ filters })
 }))

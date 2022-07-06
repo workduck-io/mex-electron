@@ -18,7 +18,7 @@ export const StyledCombobox = styled.div`
   font-size: 1rem;
   align-items: center;
   svg {
-    margin-left: ${({ theme }) => theme.spacing.small};
+    margin-left: ${({ theme }) => theme.spacing.tiny};
     color: ${({ theme }) => theme.colors.text.fade};
     &.errorIcon {
       color: ${({ theme }) => theme.colors.palette.red};
