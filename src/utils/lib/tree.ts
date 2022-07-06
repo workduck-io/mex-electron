@@ -176,23 +176,23 @@ export const sortBaseNestedTree = (baseNestedTree: BaseTreeNode[], metadata: Rec
 }
 
 export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
-  // const metadata = useContentStore.getState().getAllMetadata()
-  // const todos = useTodoStore.getState().getAllTodos()
-  // const reminderGroups = useReminderStore.getState().getNodeReminderGroup()
+  const metadata = useContentStore.getState().getAllMetadata()
+  const todos = useTodoStore.getState().getAllTodos()
+  const reminderGroups = useReminderStore.getState().getNodeReminderGroup()
   let baseNestedTree: BaseTreeNode[] = []
 
   flatTree.forEach((n) => {
     const parentId = getParentId(n.id)
-    // const tasks = todos[n.nodeid] ? todos[n.nodeid].filter(filterIncompleteTodos).length : 0
-    // const reminders = reminderGroups[n.nodeid] ? reminderGroups[n.nodeid].length : 0
+    const tasks = todos[n.nodeid] ? todos[n.nodeid].filter(filterIncompleteTodos).length : 0
+    const reminders = reminderGroups[n.nodeid] ? reminderGroups[n.nodeid].length : 0
     if (parentId === null) {
       // add to tree first level
       baseNestedTree.push({
         path: n.id,
         nodeid: n.nodeid,
-        children: []
-        // tasks,
-        // reminders
+        children: [],
+        tasks,
+        reminders
       })
     } else {
       // Will have a parent
@@ -207,11 +207,11 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
     }
   })
 
-  // const sortedBaseNestedTree = sortBaseNestedTree(baseNestedTree, metadata)
+  const sortedBaseNestedTree = sortBaseNestedTree(baseNestedTree, metadata)
 
   // mog('baseNestedTree', { baseNestedTree, sortedBaseNestedTree })
 
-  return baseNestedTree
+  return sortedBaseNestedTree
 }
 
 // Generate nested node tree from a list of ordered id strings
@@ -252,9 +252,9 @@ export const generateTree = (treeFlat: FlatItem[], expanded: string[]): TreeData
           title: getNameFromPath(n.id),
           nodeid: n.nodeid,
           path: n.id,
-          mex_icon: n.icon
-          // tasks: nestedItem.tasks,
-          // reminders: nestedItem.reminders
+          mex_icon: n.icon,
+          tasks: nestedItem.tasks,
+          reminders: nestedItem.reminders
         }),
         isExpanded: expanded.includes(n.id)
       }
@@ -275,9 +275,9 @@ export const generateTree = (treeFlat: FlatItem[], expanded: string[]): TreeData
             title: getNameFromPath(n.id),
             nodeid: n.nodeid,
             path: n.id,
-            mex_icon: n.icon
-            // tasks: nestedItem.tasks,
-            // reminders: nestedItem.reminders
+            mex_icon: n.icon,
+            tasks: nestedItem.tasks,
+            reminders: nestedItem.reminders
           }),
           isExpanded: expanded.includes(n.id)
         }

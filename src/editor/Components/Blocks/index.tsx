@@ -1,19 +1,17 @@
-import { createNodesHOC, useEditorState } from '@udecode/plate-core'
+import { usePlateEditorRef, PlateRenderElementProps, createNodesHOC } from '@udecode/plate-core'
 import useBlockStore, { BlockType } from '../../../store/useBlockStore'
-import { ReactEditor } from 'slate-react'
 
 import Block from './Block'
-import { BlockOptionProps } from './types'
-import React, { memo, useMemo } from 'react'
+import React, { memo, useEffect, useMemo } from 'react'
+import { findNodePath } from '@udecode/plate'
 
-const BlockOptions = (props: BlockOptionProps) => {
+const BlockOptions = (props: PlateRenderElementProps) => {
   const { children, element } = props
 
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
-
+  const editor = usePlateEditorRef()
   // const theme = useTheme()
   // const selected = useSelected()
-  const editor = useEditorState()
   // const { isFlowBlock } = useTransform()
 
   // const elementStyles = {
@@ -23,24 +21,13 @@ const BlockOptions = (props: BlockOptionProps) => {
   //     selected && !isCollapsed(editor.selection) && transparentize(0.05, theme.colors.background.highlight)
   // }
 
-  const path = useMemo(
-    () => element && isBlockMode && ReactEditor.findPath(editor, element),
-    [editor, isBlockMode, element]
-  )
+  const isBlock = useMemo(() => {
+    const isThisBlock = element && editor && findNodePath(editor, element)?.length === 1
 
-  const isBlock = path?.length === 1
+    return isThisBlock
+  }, [editor, element, isBlockMode])
 
-  // const isFlowLinkPresent = element && isFlowBlock(element)
-
-  if (!element || !isBlockMode || !isBlock)
-    return React.Children.map(children, (child) => {
-      return React.cloneElement(child, {
-        className: child.props.className,
-        nodeProps: {
-          ...props.nodeProps
-        }
-      })
-    })
+  if (!element || !isBlockMode || !isBlock) return children
 
   return (
     <Block blockId={element?.id} block={element as BlockType}>
@@ -49,4 +36,6 @@ const BlockOptions = (props: BlockOptionProps) => {
   )
 }
 
-export const withBlockOptions = createNodesHOC(memo(BlockOptions))
+export default BlockOptions
+
+export const withBlockOptions = createNodesHOC(BlockOptions)

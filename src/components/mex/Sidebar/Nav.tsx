@@ -91,7 +91,7 @@ const CreateNewNote: React.FC<{ target: any }> = ({ target }) => {
 const NavHeader: React.FC<{ target: any }> = ({ target }) => {
   const { getLinks } = useNavlinks()
 
-  const links = useMemo(() => getLinks(), [])
+  const links = getLinks()
 
   return (
     <MainLinkContainer onMouseUp={(e) => e.stopPropagation()}>

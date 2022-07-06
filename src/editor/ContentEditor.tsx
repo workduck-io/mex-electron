@@ -87,7 +87,7 @@ const ContentEditor = () => {
     }
   }
 
-  // useAnalysisTodoAutoUpdate()
+  useAnalysisTodoAutoUpdate()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {

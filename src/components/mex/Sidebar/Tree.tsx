@@ -16,7 +16,7 @@ import useDataStore, { useTreeFromLinks } from '@store/useDataStore'
 import Tippy, { useSingleton } from '@tippyjs/react'
 import React, { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useContextMenu } from 'react-contexify'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useMatch, useParams } from 'react-router-dom'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
@@ -114,7 +114,7 @@ const Tree = ({ initTree }: TreeProps) => {
   // const [draggedItem, setDraggedItem] = React.useState<TreeItem | null>(null)
   const location = useLocation()
 
-  const node = useEditorStore((state) => state.node)
+  // const node = useEditorStore((state) => state.node)
   const expandNode = useTreeStore((state) => state.expandNode)
   const collapseNode = useTreeStore((state) => state.collapseNode)
   const prefillModal = useRefactorStore((state) => state.prefillModal)
@@ -123,6 +123,9 @@ const Tree = ({ initTree }: TreeProps) => {
   const { tree } = treeState
   // mog('renderTree', { initTree })
   //
+
+  const match = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
+
   const draggedRef = useRef<TreeItem | null>(null)
 
   const changeTree = (newTree: TreeData) => {
@@ -137,10 +140,11 @@ const Tree = ({ initTree }: TreeProps) => {
   const [source, target] = useSingleton()
 
   const onOpenItem = (itemId: string, nodeid: string) => {
-    push(nodeid)
-    changeTree(mutateTree(tree, itemId, { isExpanded: true }))
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+    changeTree(mutateTree(tree, itemId, { isExpanded: true }))
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
+
+    // push(nodeid)
   }
 
   const { show } = useContextMenu({
@@ -165,11 +169,10 @@ const Tree = ({ initTree }: TreeProps) => {
     combineWith: null
   }
 
+  const isInEditor = location.pathname.startsWith(ROUTE_PATHS.node)
+
   const renderItem = ({ item, onExpand, onCollapse, provided, snapshot }: RenderItemParams) => {
     const isTrue = JSON.stringify(snapshot) !== JSON.stringify(defaultSnap)
-    const isInEditor = location.pathname.startsWith(ROUTE_PATHS.node)
-
-    // mog('renderItem', { item, snapshot, provided, location, isInEditor })
 
     return (
       <Tippy theme="mex" placement="right" singleton={target} content={<TooltipContent item={item} />}>
@@ -178,7 +181,7 @@ const Tree = ({ initTree }: TreeProps) => {
             <ContextMenu.Trigger asChild>
               <StyledTreeItem
                 ref={provided.innerRef}
-                selected={isInEditor && item.data && node?.nodeid === item.data.nodeid}
+                selected={isInEditor && item.data && match?.params?.nodeid === item.data.nodeid}
                 isDragging={snapshot.isDragging}
                 isBeingDroppedAt={isTrue}
                 onContextMenu={(e) => {
@@ -216,6 +219,7 @@ const Tree = ({ initTree }: TreeProps) => {
     if (item && item.data && item.data.path) {
       expandNode(item.data.path)
     }
+
     changeTree(mutateTree(tree, itemId, { isExpanded: true }))
   }
 

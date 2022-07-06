@@ -205,9 +205,7 @@ const useLoad = () => {
       })
       .finally(() => {
         if (options.withLoading) setFetchingContent(false)
-        mog('FINALLY AFTER FETCH')
       })
-    mog('OUTSIDE FETCH AND SAVE NODe')
   }
 
   /**
@@ -267,6 +265,7 @@ const useLoad = () => {
       const allParents = getAllParentIds(node.path)
       expandNodes(allParents)
     }
+
     loadNodeEditor(node)
   }
 
