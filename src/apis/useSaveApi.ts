@@ -324,7 +324,7 @@ export const useApi = () => {
           const nodesMetadata = d.data.nodesMetadata || {}
           const nodes = hierarchyParser(hierarchy).map((ilink) => ({
             ...ilink,
-            createdAt: nodesMetadata[ilink.nodeid] || Infinity
+            createdAt: nodesMetadata[ilink.nodeid]?.createdAt || Infinity
           }))
 
           if (nodes && nodes.length > 0) {

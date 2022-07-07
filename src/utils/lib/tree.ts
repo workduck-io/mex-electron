@@ -168,7 +168,7 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
   const reminderGroups = useReminderStore.getState().getNodeReminderGroup()
   let baseNestedTree: BaseTreeNode[] = []
 
-  const sortedTree = flatTree.sort((a, b) => a.createdAt - b.createdAt)
+  const sortedTree = flatTree.sort((a, b) => b.createdAt - a.createdAt)
 
   sortedTree.forEach((n) => {
     const parentId = getParentId(n.id)

@@ -139,7 +139,7 @@ const ContentEditor = () => {
 
         <EditorWrapper comboboxOpen={isComboOpen} ref={editorWrapperRef} onClick={onFocusClick}>
           <Editor
-            // showBalloonToolbar
+            showBalloonToolbar
             onAutoSave={onAutoSave}
             getSuggestions={getSuggestions}
             onChange={onChangeSave}

@@ -10,7 +10,7 @@ export type BlockType = {
   children: BlockType[]
   type: string
   text?: string
-  metadata?: BlockMetaDataType
+  blockMeta?: BlockMetaDataType
 }
 
 export enum ContextMenuActionType {
