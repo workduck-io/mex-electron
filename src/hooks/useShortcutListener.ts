@@ -116,10 +116,11 @@ const useShortcutListener = (): ShortcutListner => {
 
 export const useKeyListener = () => {
   const shortcutDisabled = useShortcutStore((state) => state.editMode)
-  const showLoader = useLayoutStore((store) => store.showLoader)
   const { trackEvent } = useAnalytics()
 
   const shortcutHandler = (shortcut: Shortcut, callback: any) => {
+    const showLoader = useLayoutStore.getState().showLoader
+
     mog('shortcutHandler', { shortcut, shortcutDisabled, show: shortcut.disabled, showLoader })
     if (!shortcutDisabled && !shortcut.disabled && !showLoader) {
       trackEvent(getEventNameFromElement('Shortcut Settings', ActionType.KEY_PRESS, 'Shortcut'), shortcut)

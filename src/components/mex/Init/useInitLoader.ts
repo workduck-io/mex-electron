@@ -48,8 +48,8 @@ export const useInitLoader = () => {
 
       if (nodeid === '__null__') {
         const baseNode = updateBaseNode()
-        loadNode(baseNode.nodeid, { savePrev: false, fetch: false })
-        goTo(ROUTE_PATHS.node, NavigationType.push, baseNode.nodeid)
+        loadNode(baseNode?.nodeid, { savePrev: false, fetch: false })
+        goTo(ROUTE_PATHS.node, NavigationType.push, baseNode?.nodeid)
       }
 
       setShowLoader(false)
