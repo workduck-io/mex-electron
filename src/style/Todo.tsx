@@ -25,7 +25,7 @@ react-kanban-column-adder-button
  */
 
 export const KANBAN_WIDTH = (sidebarExpanded?: boolean) =>
-  `calc(( 100vw - ${sidebarExpanded ? '468px' : '190px'} ) / 3)`
+  `calc(( 100vw - ${sidebarExpanded ? '468px' : '186px'} ) / 3)`
 export const KANBAN_HEIGHT = `calc( 100vh - 22rem )`
 export const KANBAN_CARD_WIDTH = (sidebarExpanded?: boolean) =>
   `calc(( 100vw - ${sidebarExpanded ? '528px' : '248px'}) / 3)`
@@ -40,7 +40,7 @@ export const StyledBoard = styled.div<{ sidebarExpanded?: boolean }>`
     overflow-y: scroll;
     overflow-x: hidden;
     transition: width 0.5s ease-in-out;
-    background: ${({ theme }) => mix(0.5, theme.colors.gray[9], theme.colors.gray[10])};
+    background: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};
     padding: ${({ theme }) => theme.spacing.small};
     margin: ${({ theme }) => theme.spacing.small};
     border-radius: ${({ theme }) => theme.borderRadius.small};

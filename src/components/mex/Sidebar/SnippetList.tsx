@@ -40,7 +40,7 @@ const SnippetList = () => {
     })
   }, [snippets])
 
-  mog('Snippy', { snippets, showSelected, location })
+  // mog('Snippy', { snippets, showSelected, location })
 
   return (
     <SnippetListWrapper>

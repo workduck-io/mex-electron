@@ -167,7 +167,7 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
               {metadata.createdAt !== undefined && (
                 <Data>
                   <Icon icon={addCircleLine} width={16} />
-                  <RelativeTime dateNum={metadata.createdAt} />
+                  <RelativeTime prefix="created" dateNum={metadata.createdAt} />
                 </Data>
               )}
             </div>
@@ -190,7 +190,7 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
               {metadata.updatedAt !== undefined && (
                 <Data>
                   <Icon icon={refreshLine} width={16} />
-                  <RelativeTime dateNum={metadata.updatedAt} />
+                  <RelativeTime prefix={'Updated'} dateNum={metadata.updatedAt} />
                 </Data>
               )}
             </div>

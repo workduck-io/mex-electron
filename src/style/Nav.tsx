@@ -1,3 +1,4 @@
+import { TabBody } from '@components/layouts/styled'
 import { transparentize } from 'polished'
 import { NavLink } from 'react-router-dom'
 import { animated } from 'react-spring'
@@ -232,6 +233,10 @@ export const SideNav = styled(animated.div)<NavWrapperProps>`
     css`
       width: 100%;
     `}
+
+  ${TabBody} {
+    height: calc(100vh - 9rem);
+  }
 `
 
 export const NavWrapper = styled(animated.div)<NavWrapperProps>`

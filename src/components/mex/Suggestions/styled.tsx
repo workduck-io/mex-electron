@@ -21,7 +21,7 @@ export const SuggestionContainer = styled.div<{ highlight: boolean; type: string
   overflow: hidden;
   ${({ theme }) => css`
     border-radius: ${theme.borderRadius.small};
-    background-color: ${theme.colors.gray[8]};
+    background-color: ${transparentize(0.5, theme.colors.gray[8])};
     + svg {
       color: ${theme.colors.primary};
     }

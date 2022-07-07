@@ -34,12 +34,6 @@ const InfoBarItems = () => {
         tooltip: 'Context'
       },
       {
-        label: <MexIcon noHover icon={bubbleChartLine} width={24} height={24} />,
-        type: 'graph',
-        component: <Graph graphData={graphData} />,
-        tooltip: 'Graph'
-      },
-      {
         label: <MexIcon noHover icon={lightbulbFlashLine} width={24} height={24} />,
         type: 'suggestions',
         component: <SuggestionInfoBar />,
@@ -50,6 +44,12 @@ const InfoBarItems = () => {
         type: 'reminders',
         component: <RemindersInfobar />,
         tooltip: 'Reminders'
+      },
+      {
+        label: <MexIcon noHover icon={bubbleChartLine} width={24} height={24} />,
+        type: 'graph',
+        component: <Graph graphData={graphData} />,
+        tooltip: 'Graph'
       }
     ],
     [graphData]

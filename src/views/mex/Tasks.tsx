@@ -308,13 +308,13 @@ const Tasks = () => {
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
     const pC = getPureContent(todo)
-    // mog('RenderTodo', { id, todo, dragging })
+    mog('RenderTodo', { id, todo, dragging, sidebar })
     return (
       <TaskCard
         ref={selectedCard && id === selectedCard.id ? selectedRef : null}
         selected={selectedCard && selectedCard.id === id}
         dragging={dragging}
-        sidebarExpanded={sidebar.expanded}
+        sidebarExpanded={sidebar.show && sidebar.expanded}
         onMouseDown={(event) => {
           event.preventDefault()
           onDoubleClick(event, todo.nodeid)
@@ -375,7 +375,7 @@ const Tasks = () => {
         </Button> */}
         <Infobox text={TasksHelp} />
       </TaskHeader>
-      <StyledTasksKanban sidebarExpanded={sidebar.expanded}>
+      <StyledTasksKanban sidebarExpanded={sidebar.show && sidebar.expanded}>
         <SearchFilters
           result={board}
           addCurrentFilter={addCurrentFilter}

@@ -13,13 +13,13 @@ const ModalContent = (multi = false) => css`
     !multi
       ? css`
           padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
-          background: ${theme.colors.background.card};
+          background: ${theme.colors.gray[9]};
           box-shadow: 0px 20px 100px ${transparentize(0.75, theme.colors.primary)};
           border: 1px solid ${theme.colors.gray[8]};
         `
       : css`
           padding: ${({ theme }) => theme.spacing.large};
-          background: ${transparentize(0.5, theme.colors.background.card)};
+          background: ${transparentize(0.5, theme.colors.gray[9])};
           border: 1px solid ${({ theme }) => theme.colors.gray[8]};
           display: flex;
           flex-direction: column;

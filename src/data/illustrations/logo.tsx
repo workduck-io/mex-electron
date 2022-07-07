@@ -68,11 +68,12 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
 
   &:hover {
     cursor: pointer;
-    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
-    background-color: ${({ theme }) => transparentize(0.25, theme.colors.gray[8])};
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.25);
+    background-color: ${({ theme }) => theme.colors.gray[8]};
   }
 
   &:active {
+    transition: background 0.1s ease;
     background-color: ${({ theme }) => theme.colors.primary};
   }
 `
