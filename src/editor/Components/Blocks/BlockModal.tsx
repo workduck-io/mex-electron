@@ -1,12 +1,4 @@
-import {
-  AnyObject,
-  ELEMENT_PARAGRAPH,
-  TNode,
-  getNodes,
-  getPlateSelectors,
-  insertNodes,
-  usePlateEditorRef
-} from '@udecode/plate'
+import { AnyObject, ELEMENT_PARAGRAPH, TNode, getNodes, insertNodes, usePlateEditorRef } from '@udecode/plate'
 import { NodeEntry, Transforms } from 'slate'
 import { QuickLink, WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
 import useBlockStore, { BlockMetaDataType, ContextMenuActionType } from '../../../store/useBlockStore'
@@ -20,10 +12,9 @@ import { generateTempId } from '../../../data/Defaults/idPrefixes'
 import { mog } from '../../../utils/lib/helper'
 import { updateIds } from '../../../utils/dataTransform'
 import { useContentStore } from '../../../store/useContentStore'
-import { useDataSaverFromContent } from '../Saver'
+import { useDataSaverFromContent, useSaver } from '../Saver'
 import { useLinks } from '../../../hooks/useLinks'
 import { ButtonWrapper } from '../../../style/Settings'
-import { useSaveData } from '../../../hooks/useSaveData'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useEditorStore } from '@store/useEditorStore'
 
@@ -34,7 +25,7 @@ const BlockModal = () => {
   const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
 
   const { createNewNote } = useCreateNewNote()
-  const { saveData } = useSaveData()
+  const { onSave } = useSaver()
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
   const editor = usePlateEditorRef()
   const { getNodeidFromPath } = useLinks()
@@ -47,7 +38,7 @@ const BlockModal = () => {
     const metadata = meta || {}
 
     // * Origin of the block
-    if (!metadata.origin) return { ...metadata, source: nodeId, origin: nodeId }
+    if (!metadata?.origin) return { ...metadata, source: nodeId, origin: nodeId }
 
     return { ...metadata, source: nodeId }
   }
@@ -67,10 +58,10 @@ const BlockModal = () => {
     })
 
     const blockEnteries = Array.from(blockIter).map(([block, _path]) => {
-      const blockWithMetadata = { ...block, metadata: getBlockMetadata(nodeId, block.metadata) }
+      const blockWithMetadata = { ...block, blockMeta: getBlockMetadata(nodeId, block?.blockMeta) }
       mog('Block enteries are', { blockWithMetadata })
 
-      return [updateIds(block), _path]
+      return [updateIds(blockWithMetadata), _path]
     })
 
     return blockEnteries as NodeEntry<TNode<AnyObject>>[]
@@ -112,12 +103,14 @@ const BlockModal = () => {
       insertNodes(editor, { type: ELEMENT_PARAGRAPH, id: generateTempId(), children: [{ text: '' }] }, { at: [0] })
   }
 
-  const onBlockDelete = (): void => {
+  const onBlockDelete = (): any => {
     const editorBlocks = getEditorBlocks()
 
     deleteContentBlocks(editorBlocks)
     setIsModalOpen(undefined)
     setIsBlockMode(false)
+
+    return editorBlocks
   }
 
   const onCancel = (): void => {
@@ -126,29 +119,17 @@ const BlockModal = () => {
   }
 
   const onNodeCreate = (quickLink: QuickLink): void => {
-    const editorBlocks = getEditorBlocks()
+    const editorBlocks = onBlockDelete()
     const blocksContent = getContentFromBlocks(quickLink.value, editorBlocks, false)
-
-    deleteContentBlocks(editorBlocks)
-    setIsModalOpen(undefined)
-    setIsBlockMode(false)
-
     createNewNote({ path: quickLink.value, noteContent: blocksContent })
-    saveData()
   }
 
   const onNodeSelect = (quickLink: QuickLink) => {
     const nodeid = getNodeidFromPath(quickLink.value)
-    const editorBlocks = getEditorBlocks()
+    const editorBlocks = onBlockDelete()
     const content = getContentFromBlocks(nodeid, editorBlocks)
 
-    deleteContentBlocks(editorBlocks)
-    setIsModalOpen(undefined)
-    setIsBlockMode(false)
-
     saveEditorValueAndUpdateStores(nodeid, content)
-    saveData()
-    mog('content length', { content: getPlateSelectors().value(), len: getPlateSelectors().value() })
   }
 
   const length = Object.values(blocksFromStore).length
@@ -164,7 +145,7 @@ const BlockModal = () => {
               <Button large onClick={onCancel}>
                 Cancel
               </Button>
-              <Button primary large onClick={onBlockDelete}>
+              <Button primary large onClick={() => onBlockDelete()}>
                 Delete
               </Button>
             </ButtonWrapper>

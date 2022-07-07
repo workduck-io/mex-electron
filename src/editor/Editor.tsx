@@ -112,7 +112,7 @@ export const Editor = ({
     }
   ]
 
-  // useEditorChange(editorId, content, onChange)
+  useEditorChange(editorId, content, onChange)
 
   const onDelayPerform = debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 200)
 

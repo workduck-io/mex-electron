@@ -7,6 +7,7 @@ import { useUserService } from '@services/auth/useUserService'
 import { useEditorStore } from '@store/useEditorStore'
 import { useMentionStore } from '@store/useMentionStore'
 import { Label, SelectWrapper, StyledCreatatbleSelect } from '@style/Form'
+import { runBatch } from '@utils/lib/batchPromise'
 import { mog } from '@utils/lib/helper'
 import React, { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -50,7 +51,7 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
           return getUserDetails(email)
         })
 
-      const userDetails = await Promise.allSettled(userDetailPromises)
+      const userDetails = (await runBatch(userDetailPromises)).fulfilled
 
       mog('userDetails', { userDetails })
 

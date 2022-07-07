@@ -2,7 +2,6 @@
 
 import { useAuthStore } from '@services/auth/useAuth'
 import { generateTempId } from '../../data/Defaults/idPrefixes'
-import { mog } from './helper'
 import { extractMetadata } from './metadata'
 
 // const ElementsWithProperties = [ELEMENT_PARAGRAPH]
@@ -26,7 +25,8 @@ const directPropertyKeys = [
   'questionId',
   'question',
   'answer',
-  'actionContext'
+  'actionContext',
+  'blockMeta'
 ]
 const PropKeysArray = [...directPropertyKeys] as const
 type PropKeys = typeof PropKeysArray[number]

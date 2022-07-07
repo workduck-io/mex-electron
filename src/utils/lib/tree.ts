@@ -200,7 +200,9 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
         {
           path: n.id,
           nodeid: n.nodeid,
-          children: []
+          children: [],
+          tasks,
+          reminders
         },
         baseNestedTree
       )
