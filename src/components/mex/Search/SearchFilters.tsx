@@ -136,7 +136,7 @@ const SearchFilters = <Item,>({
                 )}
                 {filter.suggested.length > 0 && (
                   <SearchFilterListSuggested>
-                    {filter.suggested.slice(0, 5).map((f) => (
+                    {filter.suggested.slice(0, 3).map((f) => (
                       <SearchFilterStyled
                         key={`suggested_f_${f.id}`}
                         onClick={() => {

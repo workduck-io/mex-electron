@@ -35,6 +35,7 @@ export const Logo = () => {
 
 interface SidebarToggleWrappperProps extends FocusModeProp {
   expanded: boolean
+  show: boolean
 }
 
 export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
@@ -50,6 +51,7 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
           top: ${theme.additional.hasBlocks ? 84 : 36}px;
           left: ${theme.additional.hasBlocks ? 86 : 84}px;
         `}
+
   transition: left 0.5s ease, top 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;
   z-index: 11;
   padding: 8px;
@@ -57,6 +59,12 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
   align-items: center;
   border-radius: 4px;
   background-color: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
+
+  ${({ show }) =>
+    !show &&
+    css`
+      display: none;
+    `}
 
   &:hover {
     cursor: pointer;
@@ -117,7 +125,12 @@ export const SidebarToggle = () => {
         />
       }
     >
-      <SidebarToggleWrapper onClick={toggleSidebar} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
+      <SidebarToggleWrapper
+        onClick={toggleSidebar}
+        expanded={sidebar.expanded}
+        show={sidebar.show}
+        {...getFocusProps(focusMode)}
+      >
         <Icon icon={sidebar.expanded ? arrowLeftSLine : arrowRightSLine} />
       </SidebarToggleWrapper>
     </Tippy>

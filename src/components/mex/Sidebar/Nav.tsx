@@ -262,7 +262,12 @@ const Nav = () => {
 
   return (
     <>
-      <NavWrapper onMouseUp={(e) => onDoubleClickToogle(e)} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
+      <NavWrapper
+        onMouseUp={(e) => onDoubleClickToogle(e)}
+        expanded={sidebar.expanded}
+        show={sidebar.show}
+        {...getFocusProps(focusMode)}
+      >
         <NavLogoWrapper>
           <WDLogo height={'64'} width={'64'} />
         </NavLogoWrapper>
@@ -284,7 +289,7 @@ const Nav = () => {
           <NavHeader target={target} />
           <NavFooter target={target} />
         </MainNav>
-        <SideNav style={springProps} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
+        <SideNav style={springProps} show={sidebar.show} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
           <NavBody isVisible={sidebar.expanded} />
         </SideNav>
       </NavWrapper>

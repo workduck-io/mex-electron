@@ -215,6 +215,7 @@ export const MainNav = styled.div<FocusModeProp>`
 
 export interface NavWrapperProps extends FocusModeProp {
   expanded: boolean
+  show: boolean
 }
 
 export const SideNav = styled(animated.div)<NavWrapperProps>`
@@ -225,8 +226,9 @@ export const SideNav = styled(animated.div)<NavWrapperProps>`
   background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
   padding: ${({ theme }) => theme.spacing.large} 0;
 
-  ${({ theme, expanded }) =>
+  ${({ theme, expanded, show }) =>
     expanded &&
+    show &&
     css`
       width: 100%;
     `}

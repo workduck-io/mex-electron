@@ -4,6 +4,7 @@ import { useEditorBuffer, useSnippetBuffer } from '@hooks/useEditorBuffer'
 import { useSaveNodeName } from '@hooks/useSaveNodeName'
 import useBlockStore from '@store/useBlockStore'
 import { useEditorStore } from '@store/useEditorStore'
+import { useLayoutStore } from '@store/useLayoutStore'
 import { mog } from '@utils/lib/helper'
 import React, { useEffect } from 'react'
 import { Outlet, Route, Routes, useLocation } from 'react-router-dom'
@@ -61,6 +62,8 @@ const Switch = () => {
   const { saveAndClearBuffer: saveSnippetBuffer } = useSnippetBuffer()
   const authenticated = useAuthStore((s) => s.authenticated)
   const { saveNodeName } = useSaveNodeName()
+  const showSidebar = useLayoutStore((s) => s.showSidebar)
+  const hideSidebar = useLayoutStore((s) => s.hideSidebar)
 
   useEffect(() => {
     const editorNode = useEditorStore.getState().node
@@ -71,6 +74,19 @@ const Switch = () => {
       if (editorNode) saveNodeName(editorNode.nodeid)
       saveEditorBuffer()
       saveSnippetBuffer()
+    }
+
+    if (location.pathname) {
+      if (location.pathname.startsWith(ROUTE_PATHS.snippets)) {
+        mog('Showing Sidebar', { location })
+        showSidebar()
+      } else if (location.pathname.startsWith(ROUTE_PATHS.node)) {
+        mog('Showing Sidebar', { location })
+        showSidebar()
+      } else {
+        mog('Hiding Sidebar', { location })
+        hideSidebar()
+      }
     }
   }, [location])
 

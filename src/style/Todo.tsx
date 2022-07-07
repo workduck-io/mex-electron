@@ -39,6 +39,7 @@ export const StyledBoard = styled.div<{ sidebarExpanded?: boolean }>`
     max-height: ${KANBAN_HEIGHT};
     overflow-y: scroll;
     overflow-x: hidden;
+    transition: width 0.5s ease-in-out;
     background: ${({ theme }) => mix(0.5, theme.colors.gray[9], theme.colors.gray[10])};
     padding: ${({ theme }) => theme.spacing.small};
     margin: ${({ theme }) => theme.spacing.small};
@@ -100,6 +101,7 @@ export const TaskCard = styled.div<{ dragging: boolean; selected: boolean; sideb
   background: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
   border: 1px solid transparent;
   border-radius: ${({ theme }) => theme.borderRadius.small};
+  transition: width 0.5s ease-in-out;
   ${({ dragging, theme }) =>
     dragging &&
     css`
