@@ -6,15 +6,12 @@ import appsLine from '@iconify/icons-ri/apps-line'
 import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { NavLinkData } from '../components/mex/Sidebar/Types'
-import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
 import { ROUTE_PATHS } from '../views/routes/urls'
-import { useLinks } from '../hooks/useLinks'
-import { useReminderStore } from '../hooks/useReminders'
-import useDataStore from '../store/useDataStore'
-import useTodoStore from '../store/useTodoStore'
+import { useMatch } from 'react-router-dom'
+import { useEditorStore } from '@store/useEditorStore'
 
 /*
 Sidebar links are defined here
@@ -26,14 +23,17 @@ export const GetIcon = (icon: any): React.ReactNode => <Icon icon={icon} />
 
 const useNavlinks = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
-  const nodeid = useEditorStore((store) => store.node.nodeid)
-  const reminders = useReminderStore((store) => store.reminders)
-  const ilinks = useDataStore((store) => store.ilinks)
-  const archive = useDataStore((store) => store.archive)
-  const tasks = useTodoStore((store) => store.todos)
-  const { getLinkCount } = useLinks()
+  // const nodeid = useEditorStore((store) => store.node.nodeid)
+  // const reminders = useReminderStore((store) => store.reminders)
+  // const ilinks = useDataStore((store) => store.ilinks)
+  // const archive = useDataStore((store) => store.archive)
+  // const tasks = useTodoStore((store) => store.todos)
+  // const { getLinkCount } = useLinks()
 
-  const count = useMemo(() => getLinkCount(), [reminders, ilinks, archive, tasks])
+  const match = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
+  const nodeid = match?.params?.nodeid || useEditorStore.getState().node.nodeid
+
+  // const count = useMemo(() => getLinkCount(), [reminders, ilinks, archive, tasks])
 
   const getLinks = () => {
     const links: NavLinkData[] = [
@@ -65,30 +65,30 @@ const useNavlinks = () => {
         title: 'Notes',
         path: `${ROUTE_PATHS.node}/${nodeid}`,
         shortcut: shortcuts.showEditor.keystrokes,
-        icon: GetIcon(fileDocument),
-        count: count.notes
+        icon: GetIcon(fileDocument)
+        // count: count.notes
       },
 
       {
         title: 'Snippets',
         path: ROUTE_PATHS.snippets,
         shortcut: shortcuts.showSnippets.keystrokes,
-        icon: GetIcon(quillPenLine),
-        count: count.snippets
+        icon: GetIcon(quillPenLine)
+        // count: count.snippets
       },
       {
         title: 'Tasks',
         path: ROUTE_PATHS.tasks,
         icon: GetIcon(checkboxLine),
-        shortcut: shortcuts.showTasks.keystrokes,
-        count: count.tasks
+        shortcut: shortcuts.showTasks.keystrokes
+        // count: count.tasks
         // isComingSoon: true
       },
       {
         title: 'Reminders',
         path: ROUTE_PATHS.reminders,
-        icon: GetIcon(timerFlashLine),
-        count: count.reminders
+        icon: GetIcon(timerFlashLine)
+        // count: count.reminders
         // shortcut: shortcuts.showReminder.keystrokes
         // isComingSoon: true
       },

@@ -58,18 +58,10 @@ const SuggestionInfoBar = () => {
         // * Insert ILink
         // As link is inline, we add a p wrapper on it
         const link = {
-          type: ELEMENT_PARAGRAPH,
-          id: generateTempId(),
-          children: [
-            { text: '', id: generateTempId() },
-            {
-              type: ELEMENT_ILINK,
-              children: [{ text: '', id: generateTempId() }],
-              value: suggestion.id,
-              id: generateTempId()
-            },
-            { text: '', id: generateTempId() }
-          ]
+          type: ELEMENT_ILINK,
+          children: [{ text: ' ', id: generateTempId() }],
+          value: suggestion.id,
+          id: generateTempId()
         }
         insertNodes<TElement>(editor, link)
       }

@@ -5,6 +5,7 @@ import { AccessLevel } from '../types/mentions'
 import { mog } from '@utils/lib/helper'
 import { useMentions } from './useMentions'
 import { getEmailStart } from '@data/Defaults/auth'
+import { runBatch } from '@utils/lib/batchPromise'
 
 interface UsersRaw {
   nodeid: string
@@ -42,12 +43,12 @@ export const useFetchShareData = () => {
       return getUsersOfSharedNode(node.nodeid)
     })
 
-    const nodeDetails = await Promise.allSettled(sharedNodeDetails)
+    const nodeDetails = (await runBatch(sharedNodeDetails)).fulfilled
 
     // const nodeUsers =
 
     const usersWithAccess = nodeDetails
-      .filter((p) => p.status === 'fulfilled')
+      // .filter((p) => p.status === 'fulfilled')
       .map((p: any) => {
         return p.value as UsersRaw
       })
@@ -65,7 +66,7 @@ export const useFetchShareData = () => {
     //   })
     // Then finally fetch the user detail: email
     const mentionableU = (
-      await Promise.allSettled([
+      await runBatch([
         ...UserAccessDetails.map(async (u) => {
           const uDetails = await getUserDetailsUserId(u.userid)
           return { ...u, email: uDetails.email, alias: uDetails.alias }
@@ -83,8 +84,8 @@ export const useFetchShareData = () => {
           }
         })
       ])
-    )
-      .filter((p) => p.status === 'fulfilled')
+    ).fulfilled
+      // .filter((p) => p.status === 'fulfilled')
       .map((p: any) => p.value as MUsersRaw)
     // .filter((u) => u.userid !== userDetails?.userID)
 

@@ -43,7 +43,6 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
   const userDetails = useAuthStore((state) => state.userDetails)
 
   const addTag = useDataStore((state) => state.addTag)
-  const { setActionsInList } = useActions()
   const { getSnippetsConfigs } = useSnippets()
   const spotlightCtx = useSpotlightContext()
 
@@ -72,7 +71,7 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
     return slashCommands.internal
   }, [slashCommands.internal])
 
-  const getActionGroups = () => {
+  const actionGroupsCommands = useMemo(() => {
     const groups = {}
     Object.values(actionGroups).forEach((group) => {
       groups[group.actionGroupId] = {
@@ -82,14 +81,15 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
     })
 
     return groups
-  }
+  }, [actionGroups])
 
-  const getActionList = () => {
-    const groups = Object.keys(actionGroups)
-    const actionList = []
+  const actions = useActionsCache((store) => store.actions)
 
-    groups.map((actionGroupId) => {
-      const actions = setActionsInList(actionGroupId, false).map((action) => ({
+  const activeActions = useMemo(() => {
+    const result = actions.map((action) => {
+      const actionGroupId = action?.extras?.actionGroup?.actionGroupId
+
+      return {
         value: actionGroupId,
         text: action.title,
         type: CategoryType.action,
@@ -101,25 +101,11 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
             actionGroupId
           }
         }
-      }))
-
-      actionList.push(...actions)
+      }
     })
 
-    return actionList
-  }
-
-  // const getActionsData = () => {
-  //   const groups = Object.values(actionGroups).map((group) => ({
-  //     value: group.actionGroupId,
-  //     text: group.name,
-  //     type: CategoryType.action,
-  //     icon: group.icon,
-  //     command: group.actionGroupId
-  //   }))
-
-  //   return groups
-  // }
+    return result
+  }, [actions])
 
   const internals: ComboboxItem[] = [
     ...ilinksForCurrentNode.map((l) => ({
@@ -235,7 +221,7 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
       }
     },
     slashCommands: {
-      ...getActionGroups(),
+      ...actionGroupsCommands,
       webem: {
         slateElementType: ELEMENT_MEDIA_EMBED,
         command: 'webem',
@@ -291,7 +277,7 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
       trigger: '/',
       icon: 'ri:flask-line',
       data: [
-        ...getActionList(),
+        ...activeActions,
         ...slashCommands.default.map((l) => ({ ...l, value: l.command, type: CategoryType.action, text: l.text }))
       ]
     }

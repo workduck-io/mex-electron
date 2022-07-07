@@ -78,7 +78,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         const activeBlock = useComboboxStore.getState().activeBlock
         const textAfterBlockTrigger = useComboboxStore.getState().search.textAfterBlockTrigger
 
-        mog('Inserting from here', { item, isBlockTriggered })
+        // mog('Inserting from here', { item, isBlockTriggered })
         let InsertedElement: InsertableElement = {
           type,
           children: [{ text: '' }],
@@ -118,7 +118,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
           InsertedElement = { ...InsertedElement, ...item.additional }
         }
 
-        mog('Inserting', { InsertedElement })
+        // mog('Inserting', { InsertedElement })
 
         insertNodes<TElement>(editor, InsertedElement)
         trackEvent(getEventNameFromElement('Editor', ActionType.CREATE, type), {

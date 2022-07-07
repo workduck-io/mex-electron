@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useMatch, useNavigate, useParams, matchPath } from 'react-router-dom'
 import { useKeyListener } from '../../hooks/useShortcutListener'
 import { useHelpStore } from '../../store/useHelpStore'
 import { useRecentsStore } from '../../store/useRecentsStore'
@@ -50,11 +50,17 @@ export const useRouting = () => {
     if (type === NavigationType.replace) navigate(path, { replace: true, state })
   }
 
+  const getParams = (path: string) => {
+    const match = matchPath(location.pathname, path)
+
+    return match?.params
+  }
+
   const goBack = () => {
     navigate(-1)
   }
 
-  return { goTo, goBack, location, params }
+  return { goTo, goBack, location, params, getParams }
 }
 
 export const useBrowserNavigation = () => {

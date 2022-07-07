@@ -1,19 +1,14 @@
 import bookmark3Line from '@iconify/icons-ri/bookmark-3-line'
-import gitBranchLine from '@iconify/icons-ri/git-branch-line'
 import React from 'react'
-import { BookmarksHelp, TreeHelp } from '../../../data/Defaults/helpText'
+import { BookmarksHelp } from '../../../data/Defaults/helpText'
 import useLayout from '../../../hooks/useLayout'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import { SidebarContent, SidebarDiv, SidebarDivider } from '../../../style/Sidebar'
-import TreeNode from '../../../types/tree'
 import Collapse from '../../../ui/layout/Collapse/Collapse'
 import Bookmarks from './Bookmarks'
 // import { TreeWithContextMenu } from './TreeWithContextMenu'
 
-export type SideBarProps = { tree: TreeNode[]; starred: TreeNode[] }
-
-const SideBar = ({ tree }: SideBarProps) => {
-  // const { transitions } = useFocusTransition()
+const SideBar = () => {
   const focusMode = useLayoutStore((s) => s.focusMode)
   const { getFocusProps } = useLayout()
 

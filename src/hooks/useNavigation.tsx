@@ -16,9 +16,9 @@ export const useNavigation = () => {
   const getDistanceNodeid = useHistoryStore((store) => store.getDistanceNodeid)
 
   const push = (nodeid: string, options?: LoadNodeOptions) => {
+    loadNode(nodeid, options)
     pushHs(nodeid)
     addRecent(nodeid)
-    loadNode(nodeid, options)
   }
 
   const replace = (nodeid: string) => {

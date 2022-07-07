@@ -12,7 +12,7 @@ import { apiURLs } from './routes'
 import { WORKSPACE_HEADER, DEFAULT_NAMESPACE } from '../data/Defaults/defaults'
 import { useLinks } from '../hooks/useLinks'
 import { useNodes } from '@hooks/useNodes'
-import { NodeEditorContent } from '../types/Types'
+import { ILink, NodeEditorContent } from '../types/Types'
 import { hierarchyParser } from '@hooks/useHierarchy'
 import { getTagsFromContent } from '@utils/lib/content'
 import { ipcRenderer } from 'electron'
@@ -310,7 +310,7 @@ export const useApi = () => {
     }
   }
 
-  const getNodesByWorkspace = async () => {
+  const getNodesByWorkspace = async (): Promise<ILink[]> => {
     const data = await client
       .get(apiURLs.getHierarchy(), {
         headers: {
@@ -320,7 +320,13 @@ export const useApi = () => {
       })
       .then((d) => {
         if (d.data) {
-          const nodes = hierarchyParser(d.data)
+          const hierarchy = d.data.hierarchy || []
+          const nodesMetadata = d.data.nodesMetadata || {}
+          const nodes = hierarchyParser(hierarchy).map((ilink) => ({
+            ...ilink,
+            createdAt: nodesMetadata[ilink.nodeid]?.createdAt || Infinity
+          }))
+
           if (nodes && nodes.length > 0) {
             const localILinks = useDataStore.getState().ilinks
             const { toUpdateLocal } = iLinksToUpdate(localILinks, nodes)
@@ -332,7 +338,7 @@ export const useApi = () => {
 
           setILinks(nodes)
 
-          return d.data
+          return nodes
         }
       })
 

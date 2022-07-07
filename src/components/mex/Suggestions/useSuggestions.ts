@@ -7,13 +7,14 @@ import { NodeType } from '../../../types/Types'
 import { getPlateEditorRef } from '@udecode/plate'
 import { convertContentToRawText } from '@utils/search/parseData'
 import { removeStopwords } from '@utils/stopwords'
+import { useCallback } from 'react'
 
 export const useSuggestions = () => {
   const { getNodeType } = useNodes()
   const { queryIndexWithRanking } = useSearch()
   const { setSuggestions } = useSuggestionStore()
 
-  const getSuggestions = async (value: any[]) => {
+  const getSuggestions = useCallback(async (value: any[]) => {
     const editorRef = getPlateEditorRef()
     const nodeId = useEditorStore.getState().node?.nodeid
     const mode = useLayoutStore.getState().infobar?.mode
@@ -49,7 +50,7 @@ export const useSuggestions = () => {
 
       setSuggestions(suggestions)
     }
-  }
+  }, [])
 
   return {
     getSuggestions

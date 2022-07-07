@@ -62,7 +62,6 @@ import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
 import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
 import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin'
 import { createTagPlugin } from '../Components/tag/createTagPlugin'
-import { withBlockOptions } from '../Components/Blocks'
 import { withStyledDraggables } from '../Actions/withDraggable'
 import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
 import createTodoPlugin from '../Components/Todo/createTodoPlugin'
@@ -70,6 +69,7 @@ import { createQAPlugin } from '../Components/QABlock/createQAPlugin'
 import { createHighlightTextPlugin } from './highlightText'
 import { createActionPlugin } from '@editor/Components/Actions/createActionPlugin'
 import { createMentionPlugin } from '@editor/Components/mentions/createMentionsPlugin'
+import { withBlockOptions } from '@editor/Components/Blocks'
 
 export type PluginOptionType = {
   exclude: {

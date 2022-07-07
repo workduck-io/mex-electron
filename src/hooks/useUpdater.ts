@@ -47,7 +47,7 @@ export const useUpdater = () => {
       updateTagsFromContent(noteId, content)
       updateNodeTodos(noteId, getTodosFromContent(content))
 
-      await updateDocument('node', noteId, content)
+      updateDocument('node', noteId, content)
     }
   }
 

@@ -3,11 +3,13 @@ import useDataStore from '../store/useDataStore'
 import { AddILinkProps, ILink, NodeType, SharedNode } from '../types/Types'
 import toast from 'react-hot-toast'
 import { AccessLevel } from '../types/mentions'
+import { useRecentsStore } from '@store/useRecentsStore'
 
 // Used to ensure no path clashes while adding ILink.
 // path functions to check wether clash is happening can be also used
 export const useNodes = () => {
   const addILink = useDataStore((store) => store.addILink)
+  const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
 
   const addNode = (props: AddILinkProps, onSuccess: (node: ILink) => void, showAlert = true) => {
     // mog('Adding Node for:', { props })
@@ -57,6 +59,35 @@ export const useNodes = () => {
     }
   }
 
+  const updateBaseNode = (): ILink => {
+    const nodeILinks = useDataStore.getState().ilinks
+    const baseNodePath = useDataStore.getState().baseNodeId
+    const localBaseNode = nodeILinks.find((l) => l.path === baseNodePath)
+
+    if (!localBaseNode) {
+      const lastOpenedNodeId = useRecentsStore.getState().lastOpened?.at(0)
+
+      if (lastOpenedNodeId) {
+        const node = getNode(lastOpenedNodeId)
+
+        if (!node) {
+          const topNode = nodeILinks.at(0)
+          if (!topNode) throw new Error(`Could not find a Base Note: ${baseNodePath}`)
+
+          mog('Setting Base Node to first Node of hierarchy', { topNode })
+          setBaseNodeId(topNode.path)
+          return topNode
+        }
+
+        mog('Setting Base Node to last opened Node', { node })
+        setBaseNodeId(node.path)
+        return node
+      }
+    }
+
+    return localBaseNode
+  }
+
   const getNodeType = (nodeid: string) => {
     if (getNode(nodeid)) return NodeType.DEFAULT
     if (isInArchive(nodeid)) return NodeType.ARCHIVED
@@ -84,6 +115,7 @@ export const useNodes = () => {
     getSharedNode,
     getNode,
     getArchiveNode,
-    accessWhenShared
+    accessWhenShared,
+    updateBaseNode
   }
 }

@@ -63,7 +63,7 @@ export const useDataSaverFromContent = () => {
       // Update operations for only notes owned by the user
       if (options?.isShared !== true) {
         updateNodeTodos(nodeId, getTodosFromContent(editorValue))
-        await updateDocument('node', nodeId, editorValue)
+        updateDocument('node', nodeId, editorValue)
       }
     }
   }

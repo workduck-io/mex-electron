@@ -90,7 +90,7 @@ export const StyledTreeSwitcher = styled.button`
 export const StyledTreeItemSwitcher = styled(StyledTreeSwitcher)`
   color: ${({ theme }) => transparentize(0.3, theme.colors.text.fade)};
   border-radius: 3px;
-  transition: 0.3s ease;
+  transition: 0.1s ease;
   &:hover {
     transition: 0s ease;
     color: ${({ theme }) => theme.colors.primary};
@@ -153,7 +153,7 @@ export const StyledTreeItem = styled.div<{ selected?: boolean; isDragging?: bool
   border-radius: ${({ theme }) => theme.borderRadius.small};
   padding-right: 16px;
 
-  transition: 0.3s ease;
+  transition: 0.1s ease;
   &:hover {
     transition: 0s ease;
     background: ${({ theme }) => theme.colors.gray[7]};

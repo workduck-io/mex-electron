@@ -60,7 +60,7 @@ const InlineBlock = (props: any) => {
 
   const selected = useSelected()
 
-  mog('InlineBlock', { nodeid, selected, content, nodeType, path })
+  // mog('InlineBlock', { nodeid, selected, content, nodeType, path })
 
   return (
     <RootElement {...props.attributes}>

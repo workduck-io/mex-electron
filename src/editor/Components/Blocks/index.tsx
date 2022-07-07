@@ -1,56 +1,41 @@
-import { createNodeHOC, createNodesHOC, isCollapsed, useEditorState } from '@udecode/plate-core'
+import { usePlateEditorRef, PlateRenderElementProps, createNodesHOC } from '@udecode/plate-core'
 import useBlockStore, { BlockType } from '../../../store/useBlockStore'
-import { ReactEditor, useFocused, useSelected } from 'slate-react'
 
 import Block from './Block'
-import { BlockOptionProps } from './types'
-import { Editor } from 'slate'
-import React, { useMemo } from 'react'
-import { useTheme } from 'styled-components'
-import { transparentize } from 'polished'
-import { useTransform } from '../BalloonToolbar/components/useTransform'
+import React, { memo, useEffect, useMemo } from 'react'
+import { findNodePath } from '@udecode/plate'
 
-const BlockOptions = (props: BlockOptionProps) => {
+const BlockOptions = (props: PlateRenderElementProps) => {
   const { children, element } = props
 
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
+  const editor = usePlateEditorRef()
+  // const theme = useTheme()
+  // const selected = useSelected()
+  // const { isFlowBlock } = useTransform()
 
-  const theme = useTheme()
-  const focused = useFocused()
-  const selected = useSelected()
-  const editor = useEditorState()
-  const { isFlowBlock } = useTransform()
+  // const elementStyles = {
+  //   borderRadius: theme.borderRadius.tiny,
+  //   margin: '4px 0',
+  //   backgroundColor:
+  //     selected && !isCollapsed(editor.selection) && transparentize(0.05, theme.colors.background.highlight)
+  // }
 
-  const elementStyles = {
-    borderRadius: theme.borderRadius.tiny,
-    margin: '4px 0',
-    backgroundColor:
-      selected && !isCollapsed(editor.selection) && focused && transparentize(0.05, theme.colors.background.highlight)
-  }
+  const isBlock = useMemo(() => {
+    const isThisBlock = element && editor && findNodePath(editor, element)?.length === 1
 
-  const path = useMemo(() => element && ReactEditor.findPath(editor, element), [editor, element])
-  const isBlock = path?.length === 1
+    return isThisBlock
+  }, [editor, element, isBlockMode])
 
-  const isFlowLinkPresent = element && isFlowBlock(element)
-
-  if (!element || !isBlockMode || !isBlock || isFlowLinkPresent)
-    return React.Children.map(children, (child) => {
-      return React.cloneElement(child, {
-        style: elementStyles,
-        className: child.props.className,
-        nodeProps: {
-          ...props.nodeProps
-        }
-      })
-    })
-
-  const isEmptyBlock = Editor.isEmpty(editor, element)
+  if (!element || !isBlockMode || !isBlock) return children
 
   return (
-    <Block isBlock={isBlock} isEmpty={isEmptyBlock} blockId={element?.id} block={element as BlockType}>
+    <Block blockId={element?.id} block={element as BlockType}>
       {children}
     </Block>
   )
 }
+
+export default BlockOptions
 
 export const withBlockOptions = createNodesHOC(BlockOptions)
