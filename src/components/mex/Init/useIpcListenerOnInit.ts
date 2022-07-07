@@ -61,8 +61,8 @@ export const useIpcListenerOnInit = () => {
     ipcRenderer.on(IpcAction.OPEN_REMINDER, (_event, { reminder }) => {
       if (!reminder) return
 
-      loadNode(reminder.nodeid)
-      goTo(ROUTE_PATHS.node, NavigationType.push, reminder.nodeid)
+      loadNode(reminder?.nodeid)
+      goTo(ROUTE_PATHS.node, NavigationType.push, reminder?.nodeid)
     })
 
     ipcRenderer.on(IpcAction.MEX_BLURRED, () => {

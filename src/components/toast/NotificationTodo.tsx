@@ -63,7 +63,7 @@ const NotificationTodo = ({ todo, reminder, dismissNotification, isNotification,
     <Todo
       oid={`NotificationTodo_${todo.id}_${oid}`}
       showDelete={false}
-      parentNodeId={todo.nodeid}
+      parentNodeId={todo?.nodeid}
       todoid={todo.id}
       controls={isNotification ? controls : undefined}
       readOnly
@@ -71,7 +71,7 @@ const NotificationTodo = ({ todo, reminder, dismissNotification, isNotification,
       <EditorPreviewRenderer
         noStyle
         content={getPureContent(localTodo)}
-        editorId={`NoticationTodoPreview_${isNotification ? 'notification' : 'normal'}_${todo.nodeid}_${todo.id}`}
+        editorId={`NoticationTodoPreview_${isNotification ? 'notification' : 'normal'}_${todo?.nodeid}_${todo?.id}`}
       />
     </Todo>
   )

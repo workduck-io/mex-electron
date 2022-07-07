@@ -35,7 +35,7 @@ const useDataStore = create<DataStoreState>(
 
     archive: [],
 
-    initialized: false,
+    initialized: true,
     // Load initial data in the store
     initializeDataStore: (initData) => {
       // mog('Initializing Data store', { initData })
