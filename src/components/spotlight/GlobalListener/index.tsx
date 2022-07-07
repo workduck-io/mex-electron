@@ -73,12 +73,11 @@ const GlobalListener = memo(() => {
 
   useEffect(() => {
     if (showSource && temp) {
-      const source = getHtmlString(temp.metadata)
-      const text: string = temp.text
+      // const source = getHtmlString(temp.metadata)
+      // const text: string = temp.text
 
       const html = {
-        ...temp,
-        text: text.concat(source)
+        ...temp
       }
       setSelection(html)
     } else {

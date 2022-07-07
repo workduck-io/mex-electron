@@ -1,5 +1,6 @@
 import styled, { keyframes } from 'styled-components'
 import { transparentize } from 'polished'
+import { ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
 
 export const Element = styled.span<{ show: boolean }>`
   border-radius: ${(props) => props.theme.borderRadius.tiny};
@@ -30,6 +31,26 @@ export const BlockSelectorInput = styled.input`
 
   :focus {
     outline: none !important;
+  }
+`
+
+export const SourceInfoWrapper = styled.div`
+  position: relative;
+  user-select: none;
+`
+
+export const StyledSource = styled.div`
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+  justify-content: center;
+  position: absolute;
+  left: 95%;
+  user-select: none;
+  * {
+    box-sizing: border-box;
   }
 `
 

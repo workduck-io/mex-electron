@@ -18,6 +18,15 @@ import { ButtonWrapper } from '../../../style/Settings'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useEditorStore } from '@store/useEditorStore'
 
+export const getBlockMetadata = (text: string, meta?: BlockMetaDataType): BlockMetaDataType => {
+  const metadata = meta || {}
+
+  // * Origin of the block
+  if (!metadata?.origin) return { ...metadata, source: text, origin: text }
+
+  return { ...metadata, source: text }
+}
+
 const BlockModal = () => {
   const blocksFromStore = useBlockStore((store) => store.blocks)
   const isModalOpen = useBlockStore((store) => store.isModalOpen)
@@ -32,15 +41,6 @@ const BlockModal = () => {
 
   const toggleModal = () => {
     setIsModalOpen(undefined)
-  }
-
-  const getBlockMetadata = (nodeId: string, meta: BlockMetaDataType): BlockMetaDataType => {
-    const metadata = meta || {}
-
-    // * Origin of the block
-    if (!metadata?.origin) return { ...metadata, source: nodeId, origin: nodeId }
-
-    return { ...metadata, source: nodeId }
   }
 
   const getEditorBlocks = (): Array<NodeEntry<TNode<AnyObject>>> => {

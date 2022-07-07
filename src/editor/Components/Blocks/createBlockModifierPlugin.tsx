@@ -1,9 +1,11 @@
 import { PlatePlugin } from '@udecode/plate'
-import BlockOptions from '.'
+import SourceInfo from './SourceInfo'
+
+export const SOURCE_PLUGIN = 'BLOCK_MODIFIER_PLUGIN'
 
 export const createBlockModifierPlugin = (): PlatePlugin => ({
-  key: 'BLOCK_MODIFIER_PLUGIN',
+  key: SOURCE_PLUGIN,
   inject: {
-    aboveComponent: () => BlockOptions
+    aboveComponent: () => SourceInfo
   }
 })

@@ -70,6 +70,7 @@ import { createHighlightTextPlugin } from './highlightText'
 import { createActionPlugin } from '@editor/Components/Actions/createActionPlugin'
 import { createMentionPlugin } from '@editor/Components/mentions/createMentionsPlugin'
 import { withBlockOptions } from '@editor/Components/Blocks'
+import { createBlockModifierPlugin } from '@editor/Components/Blocks/createBlockModifierPlugin'
 
 export type PluginOptionType = {
   exclude: {
@@ -153,6 +154,7 @@ export const generatePlugins = (options: PluginOptionType) => {
       }
     }),
     createNodeIdPlugin(optionsCreateNodeIdPlugin),
+    createBlockModifierPlugin(),
 
     // serialization / deseriailization
 

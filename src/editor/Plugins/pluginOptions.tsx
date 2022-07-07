@@ -51,6 +51,7 @@ import { generateTempId } from '../../data/Defaults/idPrefixes'
 import { uploadImageToWDCDN } from '../../utils/imageUpload'
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import { ELEMENT_INLINE_BLOCK } from '@editor/Components/InlineBlock/types'
+import { SOURCE_PLUGIN } from '@editor/Components/Blocks/createBlockModifierPlugin'
 
 const preFormat = (editor: TEditor<AnyObject>) => unwrapList(editor as PlateEditor)
 

@@ -18,6 +18,8 @@ import { getTitleFromContent } from '../../../utils/search/parseData'
 import { useRouting } from '../../../views/routes/urls'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
+import { mog } from '@utils/lib/helper'
+import { getBlockMetadata } from '@editor/Components/Blocks/BlockModal'
 
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
@@ -78,7 +80,11 @@ export const useSaveChanges = () => {
     if (options?.removeHighlight) {
       const deserializedContent = getDeserializeSelectionToNodes(preview, false)
       if (deserializedContent && preview.isSelection) {
-        const previewContent = deserializedContent
+        const lastBlock = deserializedContent.at(-1)
+        const previewContent = [
+          ...deserializedContent.slice(0, deserializedContent.length - 1),
+          { ...lastBlock, blockMeta: getBlockMetadata(preview.metadata?.url) }
+        ]
         const activeNodeContent = existingContent?.content ?? []
 
         if (options?.isNewTask) {
@@ -98,6 +104,8 @@ export const useSaveChanges = () => {
 
     let path = node.path
     const title = getTitleFromContent(editorContent)
+
+    mog('isNewDraftNode', { path })
 
     if (isNewDraftNode && isUntitledDraftNode) {
       if (options?.beforeSave) {

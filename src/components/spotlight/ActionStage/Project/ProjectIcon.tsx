@@ -4,6 +4,7 @@ import styled, { css, useTheme } from 'styled-components'
 import { MexIcon } from '../../../../style/Layouts'
 import Tippy from '@tippyjs/react'
 import { TemplateCss, TemplateItemProp } from './ProjectTitle'
+import { mog } from '@utils/lib/helper'
 
 export const FieldLabel = styled.div`
   display: flex;
@@ -24,7 +25,7 @@ export const FieldValue = styled.div`
   }
 `
 
-const ProjectIconContainer = styled.span<{ isView: boolean }>`
+export const ProjectIconContainer = styled.span<{ isView: boolean }>`
   ${TemplateCss}
   ${(props) =>
     props.isView
@@ -77,6 +78,7 @@ export const ProjectIconMex: React.FC<{
       ref={ref as any}
       onError={(e) => {
         e.currentTarget.onerror = null
+        mog('SOMETHING WENT WRONG')
         e.currentTarget.src = DEFAULT_IMAGE_URL
       }}
       style={{ margin: margin ?? '0' }}
@@ -92,7 +94,7 @@ ProjectIconMex.displayName = 'ProjectIconMex'
 export const getIconType = (icon: string): { mexIcon: boolean; isIconfiy: boolean } => {
   const mexIcon = !isUrl(icon)
 
-  const isIconfiy = mexIcon && icon.includes(':')
+  const isIconfiy = mexIcon && icon?.includes(':')
 
   return {
     mexIcon,

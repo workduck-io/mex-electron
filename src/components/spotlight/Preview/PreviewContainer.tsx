@@ -1,3 +1,4 @@
+import { getBlockMetadata } from '@editor/Components/Blocks/BlockModal'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import React, { useEffect } from 'react'
 import tinykeys from 'tinykeys'
@@ -48,7 +49,16 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
 
   useEffect(() => {
     if (preview.isSelection && deserializedContentNodes) {
-      const deserializedContent = deserializedContentNodes
+      const selectionLength = deserializedContentNodes.length
+      const lastBlock = deserializedContentNodes.at(-1)
+
+      console.log({ lastBlock })
+
+      const deserializedContent = [
+        ...deserializedContentNodes.slice(0, selectionLength - 1),
+        { ...lastBlock, blockMeta: getBlockMetadata(preview.metadata?.url) }
+      ]
+
       const activeNodeContent = getContent(nodeId)?.content ?? []
 
       if (!isNewTask) setNodeContent([...activeNodeContent, ...deserializedContent])

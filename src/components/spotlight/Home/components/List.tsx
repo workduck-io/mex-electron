@@ -190,10 +190,6 @@ const List = ({
                 nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
 
                 // TODO: Create new note with specified 'nodeid' and 'path'.
-                if (!selection) createNewNote({ path: nodePath, noteId: node.nodeid })
-              }
-
-              if (selection) {
                 saveIt({
                   path: nodePath,
                   beforeSave: ({ path, noteId, noteContent }) => {
@@ -204,7 +200,15 @@ const List = ({
                   removeHighlight: true,
                   isNewTask
                 })
-                setSelection(undefined)
+              } else {
+                saveIt({
+                  path: nodePath,
+                  saveAndClose: true,
+                  removeHighlight: true,
+                  isNewTask
+                })
+
+                if (selection) setSelection(undefined)
               }
 
               setSearch({ value: '', type: CategoryType.search })
@@ -269,7 +273,7 @@ const List = ({
     }
 
     return () => window.removeEventListener('keydown', handler)
-  }, [data, activeIndex, node, nodeContent, normalMode, selection, selectedItem?.item, search.value])
+  }, [data, activeIndex, node, nodeContent, normalMode, selection, selectedItem?.item, search])
 
   useEffect(() => {
     setActiveIndex(0)
