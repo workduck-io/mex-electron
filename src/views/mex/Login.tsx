@@ -16,9 +16,6 @@ import useDataStore from '../../store/useDataStore'
 import useLoad from '../../hooks/useLoad'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 import { useLinks } from '../../hooks/useLinks'
-import { useLocalData, useMentionData, useTokenData } from '@hooks/useLocalData'
-import { useInitialize } from '@hooks/useInitialize'
-import { useNodes } from '@hooks/useNodes'
 
 interface LoginFormData {
   email: string
@@ -33,15 +30,11 @@ const Login = () => {
   } = useForm<LoginFormData>()
   const { login } = useAuthentication()
 
-  const { init } = useInitialize()
-  const { updateBaseNode } = useNodes()
-  const { getLocalData } = useLocalData()
-  const { getTokenData } = useTokenData()
-  const { getMentionData } = useMentionData()
   const setAuthenticated = useAuthStore((s) => s.setAuthenticated)
   const { loadNode } = useLoad()
   const { getNodeidFromPath } = useLinks()
   const { goTo } = useRouting()
+
   const onSubmit = async (data: LoginFormData): Promise<void> => {
     await login(data.email, data.password, true)
       .then((s) => {
@@ -52,35 +45,15 @@ const Login = () => {
 
         if (s.v === 'success') {
           const { userDetails, workspaceDetails } = s.authDetails
+          const node = useEditorStore.getState().node
+          if (node.nodeid === '__null__') {
+            const basePath = useDataStore.getState().baseNodeId
+            const baseNodeid = getNodeidFromPath(basePath)
+            mog('Found null, getting node', { nullNode: node, basePath, baseNodeid })
+            loadNode(baseNodeid, { savePrev: false, fetch: false })
+            goTo(ROUTE_PATHS.node, NavigationType.push, baseNodeid)
+          }
           setAuthenticated(userDetails, workspaceDetails)
-        }
-        return s
-      })
-      .then((s) => {
-        if (s.v === 'success') {
-          getLocalData()
-            .then(({ fileData }) => {
-              init(fileData)
-              getTokenData()
-              getMentionData()
-            })
-            .then(() => {
-              const baseNode = updateBaseNode()
-
-              loadNode(baseNode.nodeid, {
-                fetch: false,
-                savePrev: false,
-                withLoading: false
-              })
-
-              return { nodeid: baseNode.nodeid }
-            })
-            .then(({ nodeid }) => {
-              goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid)
-            })
-            .catch((e) => {
-              mog('Unable to Initialize App', { msg: e })
-            })
         }
       })
       .catch((e) => {
