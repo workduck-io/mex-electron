@@ -217,9 +217,11 @@ export const useLinks = () => {
   }
 
   const updateILinks = (addedILinks: Array<ILink>, removedILinks: Array<ILink>) => {
-    const links = useDataStore.getState().ilinks
+    let links = useDataStore.getState().ilinks
 
-    removedILinks.forEach((ilink) => {
+    const intersection = removedILinks.filter((l) => addedILinks.find((rem) => l.nodeid == rem.nodeid))
+
+    intersection.forEach((ilink) => {
       links.splice(
         links.findIndex((item) => item.nodeid === ilink.nodeid),
         1
@@ -227,11 +229,12 @@ export const useLinks = () => {
     })
 
     addedILinks.forEach((p) => {
-      const idx = links.find((link) => link.nodeid === p.nodeid && link.path === p.path)
-      if (idx === undefined) links.push(p)
-    })
+      const idx = links.find((link) => link.nodeid === p.nodeid)
 
-    mog('Setting ILinks', { links })
+      if (idx && idx.path !== p.path)
+        links = links.map((link) => (link.nodeid === p.nodeid ? { ...link, path: p.path } : link))
+      else if (idx === undefined) links.push({ ...p, createdAt: Infinity })
+    })
 
     const newILinks = [...links]
 

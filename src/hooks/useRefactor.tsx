@@ -60,7 +60,8 @@ export const useRefactor = () => {
         return match
       })
       .map((i) => {
-        const newPath = i.path.replace(from, to)
+        const s = `${i.path}`
+        const newPath = s.replace(from, to)
         return {
           ...i,
           newPath: newPath
@@ -141,7 +142,8 @@ export const useRefactor = () => {
     const newParentIlinks = newParents.map((p) => ({
       path: p,
       nodeid: generateNodeUID(),
-      icon: getNodeIcon(p)
+      icon: getNodeIcon(p),
+      createdAt: Infinity
     }))
 
     const newlyGeneratedILinks = [...newIlinks, ...newParentIlinks]
