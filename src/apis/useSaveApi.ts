@@ -299,9 +299,10 @@ export const useApi = () => {
       .then((d) => {
         // console.log(metadata, d.data)
         const content = deserializeContent(d.data.data)
-        updateFromContent(nodeid, content)
+        const metadata = extractMetadata(d.data)
+        updateFromContent(nodeid, content, metadata)
 
-        return { data: d.data.data, metadata: extractMetadata(d.data), version: d.data.version ?? undefined }
+        return { data: d.data.data, metadata, version: d.data.version ?? undefined }
       })
       .catch((e) => {
         console.error(`MexError: Fetching nodeid ${nodeid} failed with: `, e)

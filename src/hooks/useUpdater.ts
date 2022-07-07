@@ -22,6 +22,7 @@ export const useUpdater = () => {
   const setContent = useContentStore((store) => store.setContent)
   const setServices = useSyncStore((store) => store.setServices)
   const setTemplates = useSyncStore((store) => store.setTemplates)
+  const setMetadata = useContentStore((store) => store.setMetadata)
   const { generateSlashCommands } = useSlashCommands()
   const isOnboarding = useOnboard((s) => s.isOnboarding)
 
@@ -40,9 +41,10 @@ export const useUpdater = () => {
   const { updateTagsFromContent } = useTags()
   const { updateDocument } = useSearch()
 
-  const updateFromContent = async (noteId: string, content: NodeEditorContent) => {
+  const updateFromContent = async (noteId: string, content: NodeEditorContent, metadata?: any) => {
     if (content) {
       setContent(noteId, content)
+      setMetadata(noteId, metadata)
       updateLinksFromContent(noteId, content)
       updateTagsFromContent(noteId, content)
       updateNodeTodos(noteId, getTodosFromContent(content))
