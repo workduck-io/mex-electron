@@ -308,7 +308,7 @@ const Tasks = () => {
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
     const pC = getPureContent(todo)
-    mog('RenderTodo', { id, todo, dragging, sidebar })
+    // mog('RenderTodo', { id, todo, dragging, sidebar })
     return (
       <TaskCard
         ref={selectedCard && id === selectedCard.id ? selectedRef : null}

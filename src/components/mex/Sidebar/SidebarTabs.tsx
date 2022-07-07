@@ -11,6 +11,7 @@ import { useLayoutStore } from '@store/useLayoutStore'
 import { ROUTE_PATHS } from '@views/routes/urls'
 import { useLocation } from 'react-router-dom'
 import SnippetList from './SnippetList'
+import { usePolling } from '@apis/usePolling'
 
 const SidebarTabs = () => {
   const sidebar = useLayoutStore((store) => store.sidebar)
@@ -42,6 +43,8 @@ const SidebarTabs = () => {
     ],
     [theme]
   )
+
+  usePolling()
 
   const isEditor = useMemo(() => {
     if (location.pathname) {
