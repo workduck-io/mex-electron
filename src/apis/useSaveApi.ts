@@ -321,7 +321,11 @@ export const useApi = () => {
       .then((d) => {
         if (d.data) {
           const hierarchy = d.data.hierarchy || []
-          const nodes = hierarchyParser(hierarchy)
+          const nodesMetadata = d.data.nodesMetadata || {}
+          const nodes = hierarchyParser(hierarchy).map((ilink) => ({
+            ...ilink,
+            createdAt: nodesMetadata[ilink.nodeid] || Infinity
+          }))
 
           if (nodes && nodes.length > 0) {
             const localILinks = useDataStore.getState().ilinks

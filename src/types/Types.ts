@@ -33,6 +33,8 @@ export interface ILink {
 
   /** Iconify Icon string */
   icon?: string
+
+  createdAt?: number
 }
 
 export type NewILinkProps = {
@@ -46,6 +48,8 @@ export interface SharedNode extends ILink {
   sharedBy: UserID
   owner: UserID
 }
+
+export type ILinksMetadata = Record<string, any>
 
 /**  Tags */
 export interface Tag {

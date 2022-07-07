@@ -9,7 +9,7 @@ import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
 import { getNodeIcon } from '../utils/lib/icons'
 import { removeLink } from '../utils/lib/links'
 import { getUniquePath } from '../utils/lib/paths'
-import { generateTree } from '../utils/lib/tree'
+import { FlatItem, generateTree } from '../utils/lib/tree'
 import { useTreeStore } from './useTreeStore'
 
 const useDataStore = create<DataStoreState>(
@@ -263,17 +263,15 @@ export const getLevel = (path: string) => path.split(SEPARATOR).length
  * Guarantees parent is before child -> Condition required for correct tree
  */
 
-type treeMap = { id: string; nodeid: string; icon?: string }[]
-
-export const sanatizeLinks = (links: ILink[]): treeMap => {
+export const sanatizeLinks = (links: ILink[]): FlatItem[] => {
   let oldLinks = links
-  const newLinks: treeMap = []
+  const newLinks: FlatItem[] = []
   let currentDepth = 1
 
   while (oldLinks.length > 0) {
     for (const l of links) {
       if (getLevel(l.path) === currentDepth) {
-        newLinks.push({ id: l.path, nodeid: l.nodeid, icon: l.icon })
+        newLinks.push({ id: l.path, nodeid: l.nodeid, icon: l.icon, createdAt: l.createdAt })
         oldLinks = oldLinks.filter((k) => k !== l)
       }
     }
