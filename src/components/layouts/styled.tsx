@@ -6,7 +6,6 @@ export const TabPanel = styled(animated.div)`
   width: 100%;
   height: 100%;
 
-  max-height: 50vh;
   overflow: hidden auto;
   border-radius: ${({ theme }) => theme.borderRadius.small};
 `
@@ -20,7 +19,7 @@ export const StyledTab = styled.div.attrs({
   display: inline-flex;
   justify-content: center;
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  padding: ${({ theme }) => theme.spacing.tiny};
+  padding: ${({ theme }) => theme.spacing.medium} ${({ theme }) => theme.spacing.tiny};
   z-index: 1;
   flex: 1;
 
@@ -28,10 +27,15 @@ export const StyledTab = styled.div.attrs({
     !selected &&
     css`
       :hover {
-        background: ${({ theme }) => transparentize(0.4, theme.colors.gray[8])};
+        background: ${({ theme }) => theme.colors.gray[8]};
       }
     `}
 
+  ${({ selected }) =>
+    selected &&
+    css`
+      color: ${({ theme }) => theme.colors.primary};
+    `}
   &:focus {
     outline: none;
   }
@@ -43,7 +47,6 @@ export const TabBody = styled(animated.div)<{ selected?: boolean }>`
   width: 100%;
   height: 100%;
   overflow-x: hidden;
-  padding: ${({ theme }) => theme.spacing.small};
 `
 
 export const TabsContainer = styled(animated.section)<{ visible?: boolean }>`
@@ -61,25 +64,25 @@ export const TabsContainer = styled(animated.section)<{ visible?: boolean }>`
   width: 100%;
 `
 
-export const TabsWrapper = styled.div<{ index: number }>`
+export const TabsWrapper = styled.div<{ index: number; total: number }>`
   display: flex;
   position: relative;
   width: 100%;
   align-items: center;
   gap: 0 ${({ theme }) => theme.spacing.small};
 
-  ${({ index }) =>
+  ${({ index, total }) =>
     css`
       &::before {
         content: '';
         display: block;
         position: absolute;
-        width: 33.3333%;
-        height: 100%;
+        width: calc(100% / ${total});
+        height: 4px;
         border-radius: ${({ theme }) => theme.borderRadius.small};
-        top: 0;
+        top: 46px;
         left: 0;
-        background: ${({ theme }) => theme.colors.gray[6]};
+        background: ${({ theme }) => theme.colors.primary};
         transform: translateX(${index * 100}%);
         transition: background 0.15s cubic-bezier(0.4, 0, 0.2, 1) 0s, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
       }
@@ -87,7 +90,6 @@ export const TabsWrapper = styled.div<{ index: number }>`
 `
 
 export const TabHeaderContainer = styled.div`
-  background: ${({ theme }) => theme.colors.gray[9]};
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
 `

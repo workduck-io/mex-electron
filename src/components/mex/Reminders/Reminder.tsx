@@ -95,7 +95,7 @@ const ReminderControlsUI = ({
     <ReminderControlsWrapper>
       {onSnooze && (
         <SnoozeControls showControls={snoozeControls}>
-          Snooze For:
+          For:
           {DefaultSnoozeTimes().map(({ time, label }) => (
             <Button
               key={`SnoozeTimes${label}`}

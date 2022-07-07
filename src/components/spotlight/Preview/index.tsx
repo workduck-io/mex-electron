@@ -16,7 +16,7 @@ import { SeePreview, StyledPreview } from './styled'
 
 export type PreviewType = {
   text: string
-  metadata: string | null
+  metadata: any | null
   isSelection: boolean
 }
 

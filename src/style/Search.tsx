@@ -291,6 +291,14 @@ export const ResultDesc = styled.div`
 
   ${Ellipsis}
 `
+export const ResultPreviewMetaData = styled.div`
+  ${MetadataWrapper} {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: ${({ theme }) => theme.spacing.tiny};
+  }
+`
 export const ResultMetaData = styled.div`
   display: flex;
   flex-shrink: 1;

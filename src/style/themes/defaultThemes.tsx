@@ -12,10 +12,12 @@ import { renarTheme } from './renarTheme'
 import { spotlightTheme } from './spotlightTheme'
 import { vertigoTheme } from './vertigoTheme'
 import { vvkTheme } from './vvkTheme'
+import { xemTheme } from './xemTheme'
 import { yellowyTheme } from './yellowyTheme'
 
 export const defaultThemes = [
   { id: 'Mex', themeData: mexTheme },
+  { id: 'xeM', themeData: xemTheme },
   { id: 'Vertigo', themeData: vertigoTheme },
   { id: 'Gruvbox', themeData: gruvboxTheme },
   // { id: 'Gruvbox+', themeData: reduxTheme },

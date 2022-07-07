@@ -33,6 +33,7 @@ import {
   ResultHeader,
   ResultMain,
   ResultMetaData,
+  ResultPreviewMetaData,
   ResultRow,
   ResultTitle,
   SearchContainer,
@@ -341,7 +342,9 @@ const Search = () => {
           <Title onMouseUp={(e) => onDoubleClick(e, item)}>
             <Icon icon={icon} />
             <TitleText>{node.path}</TitleText>
-            <Metadata fadeOnHover={false} node={edNode} />
+            <ResultPreviewMetaData>
+              <Metadata fadeOnHover={false} node={edNode} />
+            </ResultPreviewMetaData>
           </Title>
           <EditorPreviewRenderer
             content={content}

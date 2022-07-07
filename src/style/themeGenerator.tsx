@@ -85,6 +85,25 @@ export interface ButtonPalette {
   disabled: string
 }
 
+export interface ElementStyle {
+  text: TextPalette
+  surface: string
+}
+
+export interface Theme {
+  components: {
+    navigation: {
+      // Toolbar: ElementStyle
+      nav: {
+        surface: string
+      }
+      sidebar: {
+        surface: string
+      }
+    }
+  }
+}
+
 export interface BackgroundImages {
   app: string
   preview: string

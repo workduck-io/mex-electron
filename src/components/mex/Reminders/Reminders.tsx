@@ -39,6 +39,7 @@ const RemindersInfobar = () => {
   return (
     <InfobarFull>
       <InfobarTools>
+        {/*
         <IconButton
           size={24}
           icon={timerFlashLine}
@@ -54,7 +55,7 @@ const RemindersInfobar = () => {
             goTo(ROUTE_PATHS.reminders, NavigationType.push)
           }}
           title="All Reminders"
-        />
+        /> */}
         <label htmlFor="reminders">Reminders</label>
         <IconButton
           size={24}

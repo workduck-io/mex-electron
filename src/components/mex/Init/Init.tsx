@@ -56,13 +56,13 @@ const Init = () => {
           .then(() => {
             const baseNode = updateBaseNode()
 
-            loadNode(baseNode.nodeid, {
+            loadNode(baseNode?.nodeid, {
               fetch: false,
               savePrev: false,
               withLoading: false
             })
 
-            return { nodeid: baseNode.nodeid }
+            return { nodeid: baseNode?.nodeid }
           })
           .then(({ nodeid }) => {
             goTo(ROUTE_PATHS.node, NavigationType.replace, nodeid)

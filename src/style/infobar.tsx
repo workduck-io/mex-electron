@@ -1,3 +1,4 @@
+import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 import { FOCUS_MODE_OPACITY } from './consts'
 import { focusStyles } from './focus'
@@ -38,24 +39,34 @@ const getMainWidth = (mode: string, wide: boolean) => {
 export const InfoBarWrapper = styled.div<InfoBarWrapperProps>`
   overflow-x: hidden;
   height: 100vh;
+  background-color: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
+  padding: ${({ theme }) => theme.spacing.large} 0 ${({ theme }) => theme.spacing.small};
 
   @media (max-width: ${size.wide}) {
-    ${({ mode }) => {
+    min-width: ${infoWidths.small.normal};
+    max-width: ${infoWidths.small.normal};
+    ${
+      /*({ mode }) => {
       const mainWidth = getMainWidth(mode, false)
       return css`
         min-width: calc(${mainWidth});
         max-width: calc(${mainWidth});
       `
-    }};
+    }*/ false
+    };
   }
   @media (min-width: ${size.wide}) {
-    ${({ mode }) => {
+    min-width: ${infoWidths.small.wide};
+    max-width: ${infoWidths.small.wide};
+    ${
+      /*({ mode }) => {
       const mainWidth = getMainWidth(mode, true)
       return css`
         min-width: calc(${mainWidth});
         max-width: calc(${mainWidth});
       `
-    }};
+    }*/ false
+    };
   }
   transition: opacity 0.3s ease-in-out;
   ${({ focusMode, focusHover, mode, hasPinnedSuggestions }) => {
@@ -108,7 +119,7 @@ export const InfobarFull = styled.div`
   max-height: 100vh;
   width: 100%;
   position: relative;
-  min-width: ${infoWidths.large.normal};
+  min-width: ${infoWidths.default};
   * {
     outline: none;
     outline-style: none;
@@ -120,6 +131,7 @@ export const InfobarMedium = styled.div`
   width: 100%;
   position: relative;
   min-width: ${infoWidths.small.normal};
+  height: calc(100vh - 9.5rem);
   * {
     outline: none;
     outline-style: none;
@@ -131,7 +143,7 @@ export const InfobarTools = styled.div`
   align-items: center;
   justify-content: space-between;
   margin: ${({ theme: { spacing } }) => `${spacing.large} ${spacing.medium}`};
-  margin-top: 2rem;
+  margin-top: 0.5rem;
 
   background-color: ${({ theme }) => theme.colors.gray[9]};
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.small}`};

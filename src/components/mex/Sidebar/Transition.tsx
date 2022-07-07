@@ -4,16 +4,18 @@ import { useTheme } from 'styled-components'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 
 const sidebarCollapsedWidth = '86px'
-const sidebarExpandedWidth = '300px'
+const sidebarExpandedWidth = '340px'
 
 export const useSidebarTransition = () => {
   const sidebar = useLayoutStore((state) => state.sidebar)
   const theme = useTheme()
 
   const sidebarStyle = useMemo(() => {
-    const style = { width: sidebarExpandedWidth }
+    const style = { width: '276px' }
 
-    if (!sidebar.expanded) style.width = sidebarCollapsedWidth
+    if (!sidebar.show || !sidebar.expanded) {
+      style.width = '0px'
+    }
 
     return style
   }, [sidebar])
@@ -24,7 +26,7 @@ export const useSidebarTransition = () => {
     const style = {
       gridTemplateColumns: `${sidebarExpandedWidth} 2fr auto`
     }
-    if (!sidebar.expanded) style.gridTemplateColumns = `${sidebarCollapsedWidth} 2fr auto`
+    if (!sidebar.expanded || !sidebar.show) style.gridTemplateColumns = `${sidebarCollapsedWidth} 2fr auto`
     return style
   }, [sidebar])
   const gridSpringProps = useSpring(gridStyle)
@@ -34,7 +36,7 @@ export const useSidebarTransition = () => {
       width: `calc(100% - ${sidebarExpandedWidth} - ${theme.additional.hasBlocks ? '3rem' : '0px'})`
     }
 
-    if (!sidebar.expanded) {
+    if (!sidebar.expanded || !sidebar.show) {
       style.width = `calc(100% - ${sidebarCollapsedWidth} - ${theme.additional.hasBlocks ? '3rem' : '0px'})`
     }
     return style

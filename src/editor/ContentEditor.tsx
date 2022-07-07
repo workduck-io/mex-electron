@@ -27,6 +27,7 @@ import { useApi } from '@apis/useSaveApi'
 import { getContent } from '@utils/helpers'
 import { areEqual } from '@utils/lib/hash'
 import toast from 'react-hot-toast'
+import { mog } from '@utils/lib/helper'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -129,6 +130,11 @@ const ContentEditor = () => {
 
   const viewOnly = accessWhenShared(node.nodeid) === 'READ'
   const readOnly = !!fetchingContent
+
+  mog('ContentEditor', {
+    node,
+    editorId
+  })
 
   return (
     <>

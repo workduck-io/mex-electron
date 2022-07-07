@@ -58,9 +58,9 @@ export const isFromSameSource = (oldSource: SourceType, newSource: SourceType): 
 }
 
 export const getInitialNode = (): NodeProperties => ({
-  title: '@',
-  id: '@',
-  path: '@',
+  title: '__loading__',
+  id: '__loading__',
+  path: '__loading__',
   nodeid: '__null__'
 })
 

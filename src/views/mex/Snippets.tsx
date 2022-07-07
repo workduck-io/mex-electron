@@ -4,14 +4,14 @@ import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import { Icon } from '@iconify/react'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 import generateName from 'project-name-generator'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import SearchView, { RenderItemProps, RenderPreviewProps } from '../../components/mex/Search/SearchView'
 import { View } from '../../components/mex/Search/ViewSelector'
 import { DRAFT_NODE, generateSnippetId } from '../../data/Defaults/idPrefixes'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import { useSnippets } from '../../hooks/useSnippets'
 import { useUpdater } from '../../hooks/useUpdater'
-import { useSnippetStore } from '../../store/useSnippetStore'
+import { Snippet, useSnippetStore } from '../../store/useSnippetStore'
 import IconButton, { Button } from '../../style/Buttons'
 import { MainHeader } from '../../style/Layouts'
 import {
@@ -39,6 +39,8 @@ import Infobox from '../../ui/components/Help/Infobox'
 import { IS_DEV } from '../../data/Defaults/dev_'
 import ToggleButton from '../../components/spotlight/ToggleButton'
 import { SnippetsSearchContainer } from '../../style/Snippets'
+import { useApi } from '@apis/useSaveApi'
+import { mog } from '@utils/lib/helper'
 
 export type SnippetsProps = {
   title?: string
@@ -46,7 +48,8 @@ export type SnippetsProps = {
 
 const Snippets = () => {
   const snippets = useSnippetStore((store) => store.snippets)
-  const { addSnippet, deleteSnippet, getSnippet } = useSnippets()
+  const { addSnippet, deleteSnippet, getSnippet, getSnippets, updateSnippet } = useSnippets()
+  const api = useApi()
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const { updater } = useUpdater()
   const { queryIndex } = useSearch()
@@ -246,6 +249,24 @@ const Snippets = () => {
     }
     return null
   }
+
+  useEffect(() => {
+    const snippets = getSnippets()
+    const unfetchedSnippets = snippets.filter((snippet) => snippet.content.length === 0)
+
+    try {
+      Promise.allSettled(
+        unfetchedSnippets.map(
+          async (item) =>
+            await api.getSnippetById(item.id).then((response) => {
+              updateSnippet(response as Snippet)
+            })
+        )
+      )
+    } catch (err) {
+      mog('Failed to fetch snippets', { err })
+    }
+  }, [])
 
   // mog('Snippets', { initialSnippets })
 

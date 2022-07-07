@@ -1,7 +1,7 @@
 import { FileData } from '../types/data'
 import { IpcAction } from '../data/IpcAction'
 import { appNotifierWindow } from '../electron/utils/notifiers'
-import { createNodeWithUid } from '../utils/lib/helper'
+import { createNodeWithUid, mog } from '../utils/lib/helper'
 import { getTheme } from '../style/themes/defaultThemes'
 import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
@@ -79,6 +79,7 @@ export const useInitialize = () => {
   }
 
   const init = (data: FileData, initNodeId?: string, initFor?: AppType) => {
+    // mog('INIT data', { data })
     update(data)
     const keyToLoad = initNodeId || '@'
 

@@ -35,7 +35,7 @@ const useDataStore = create<DataStoreState>(
 
     archive: [],
 
-    initialized: false,
+    initialized: true,
     // Load initial data in the store
     initializeDataStore: (initData) => {
       // mog('Initializing Data store', { initData })
@@ -271,7 +271,7 @@ export const sanatizeLinks = (links: ILink[]): FlatItem[] => {
   while (oldLinks.length > 0) {
     for (const l of links) {
       if (getLevel(l.path) === currentDepth) {
-        newLinks.push({ id: l.path, nodeid: l.nodeid, icon: l.icon, createdAt: l.createdAt })
+        newLinks.push({ id: l.path, nodeid: l.nodeid, icon: l.icon })
         oldLinks = oldLinks.filter((k) => k !== l)
       }
     }

@@ -2,21 +2,21 @@ import { generateTheme } from '../themeGenerator'
 
 export const mexTheme = generateTheme({
   // Colors
-  primary: '#0576B9',
+  primary: '#2D9EDF',
   secondary: '#128C7E',
 
   // Palettes
   gray: {
     10: '#0F2238', // Darkest
-    9: '#172B42',
-    8: '#193454',
-    7: '#354962',
-    6: '#556C88',
-    5: '#6A83A0',
-    4: '#869EBA',
-    3: '#A1B8D3',
-    2: '#B4CAE3',
-    1: '#C4DBF5' // Lightest
+    9: '#1E2124',
+    8: '#2F3740',
+    7: '#40444B',
+    6: '#4E525A',
+    5: '#646A75',
+    4: '#8E9096',
+    3: '#A3AEBD',
+    2: '#D1D3DA',
+    1: '#FFFFFF' // Lightest
   },
   palette: {
     white: '#ffffff',
@@ -33,5 +33,6 @@ export const mexTheme = generateTheme({
     disabled: '#72767D',
     accent: '#fe8019',
     oppositePrimary: '#ffffff'
-  }
+  },
+  custom: 'MexStyles'
 })

@@ -1,3 +1,4 @@
+import { TrafficLightBG } from '@data/illustrations/logo'
 import { transparentize } from 'polished'
 import { css, DefaultTheme, FlattenInterpolation, ThemeProps } from 'styled-components'
 import { GraphWrapper, StyledGraph } from '../../components/mex/Graph/Graph.styles'
@@ -158,11 +159,13 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
   `
 
   const navStyles = css`
+    ${TrafficLightBG} {
+      background-color: transparent;
+    }
     ${NavWrapper} {
       margin: 0;
       height: ${heightMain};
       min-height: ${heightMain};
-      padding: ${({ theme }) => theme.spacing.small} 0 0;
       ${containerStyle}
     }
     ${GridWrapper} {

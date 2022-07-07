@@ -22,6 +22,7 @@ import { getPathFromNodeIdHookless } from './useLinks'
 import { DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
 import { useBlockHighlightStore } from '@editor/Actions/useFocusBlock'
 import { useTreeStore } from '@store/useTreeStore'
+import { useFetchShareData } from './useFetchShareData'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -52,6 +53,7 @@ const useLoad = () => {
   const { toggleSuggestedNodes } = useToggleElements()
   const infobar = useLayoutStore((store) => store.infobar)
   const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)
+  const { fetchSharedNodeUsers } = useFetchShareData()
 
   const setLoadingNodeid = useEditorStore((store) => store.setLoadingNodeid)
   // const { push } = useNavigation()
@@ -162,6 +164,9 @@ const useLoad = () => {
       })
       .catch(console.error)
       .finally(() => setFetchingContent(false))
+    if (isShared) {
+      fetchSharedNodeUsers(node.nodeid)
+    }
   }
 
   /*

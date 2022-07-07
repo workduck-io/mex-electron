@@ -125,6 +125,10 @@ const List = ({
     })
   }, [activeIndex])
 
+  const getInputText = (search: any) => {
+    if (search?.value) return search.value.startsWith('[[') ? search.value.slice(2) : search.value
+  }
+
   useEffect(() => {
     const handler = (event) => {
       if (event.key === KEYBOARD_KEYS.ArrowUp) {
@@ -187,13 +191,12 @@ const List = ({
               let nodePath = node.path
               const isNewTask = isParent(node.path, BASE_TASKS_PATH)
               if (currentActiveItem?.extras.new && !activeItem.active) {
-                nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
+                const text = getInputText(search)
+                nodePath = search.value ? text : node.path
 
                 // TODO: Create new note with specified 'nodeid' and 'path'.
-                if (!selection) createNewNote({ path: nodePath, noteId: node.nodeid })
-              }
+                mog('NODE PATH IS', { nodePath, search })
 
-              if (selection) {
                 saveIt({
                   path: nodePath,
                   beforeSave: ({ path, noteId, noteContent }) => {
@@ -204,7 +207,15 @@ const List = ({
                   removeHighlight: true,
                   isNewTask
                 })
-                setSelection(undefined)
+              } else {
+                saveIt({
+                  path: nodePath,
+                  saveAndClose: true,
+                  removeHighlight: true,
+                  isNewTask
+                })
+
+                if (selection) setSelection(undefined)
               }
 
               setSearch({ value: '', type: CategoryType.search })
@@ -222,7 +233,8 @@ const List = ({
               setNormalMode(false)
 
               if (currentActiveItem?.extras.new && !activeItem.active) {
-                nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
+                const text = getInputText(search)
+                nodePath = search.value ? text : node.path
 
                 // TODO: Create new note with specified 'nodeid' and 'path'.
                 createNewNote({ path: nodePath, noteId: node.nodeid })
@@ -269,7 +281,7 @@ const List = ({
     }
 
     return () => window.removeEventListener('keydown', handler)
-  }, [data, activeIndex, node, nodeContent, normalMode, selection, selectedItem?.item, search.value])
+  }, [data, activeIndex, node, nodeContent, normalMode, selection, selectedItem?.item, search])
 
   useEffect(() => {
     setActiveIndex(0)

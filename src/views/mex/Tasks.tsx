@@ -36,11 +36,13 @@ import { Title } from '../../style/Typography'
 import SearchFilters from '../../components/mex/Search/SearchFilters'
 import Infobox from '../../ui/components/Help/Infobox'
 import { TasksHelp } from '../../data/Defaults/helpText'
+import { useLayoutStore } from '@store/useLayoutStore'
 
 const Tasks = () => {
   const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
   const nodesTodo = useTodoStore((store) => store.todos)
   const clearTodos = useTodoStore((store) => store.clearTodos)
+  const sidebar = useLayoutStore((store) => store.sidebar)
 
   const { loadNode } = useLoad()
   const { goTo } = useRouting()
@@ -306,12 +308,13 @@ const Tasks = () => {
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
     const pC = getPureContent(todo)
-    // mog('RenderTodo', { id, todo, dragging })
+    // mog('RenderTodo', { id, todo, dragging, sidebar })
     return (
       <TaskCard
         ref={selectedCard && id === selectedCard.id ? selectedRef : null}
         selected={selectedCard && selectedCard.id === id}
         dragging={dragging}
+        sidebarExpanded={sidebar.show && sidebar.expanded}
         onMouseDown={(event) => {
           event.preventDefault()
           onDoubleClick(event, todo.nodeid)
@@ -372,7 +375,7 @@ const Tasks = () => {
         </Button> */}
         <Infobox text={TasksHelp} />
       </TaskHeader>
-      <StyledTasksKanban>
+      <StyledTasksKanban sidebarExpanded={sidebar.show && sidebar.expanded}>
         <SearchFilters
           result={board}
           addCurrentFilter={addCurrentFilter}

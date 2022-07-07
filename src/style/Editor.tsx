@@ -7,11 +7,10 @@ import { FocusModeProp } from './props'
 export const NoteTitle = styled.h1``
 
 export const NodeInfo = styled.div<FocusModeProp>`
-  background-color: ${({ theme }) => theme.colors.gray[9]};
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.small}`};
+  padding: 0.5rem 2rem 0.5rem 1.25rem;
   border-radius: ${({ theme }) => theme.borderRadius.small};
   transition: opacity 0.3s ease-in-out;
 
@@ -56,7 +55,7 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: ${({ theme }) => theme.spacing.large};
+  gap: ${({ theme }) => theme.spacing.medium};
   padding: 0 ${({ theme }) => theme.spacing.medium};
   margin: calc(${({ theme }) => theme.spacing.large}) auto 0;
   width: 100%;

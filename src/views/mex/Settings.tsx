@@ -81,13 +81,13 @@ const Settings = () => {
       <Title>Settings</Title>
       <SettingsContainer>
         <SettingsOptions>
-          <SettingTitle tabIndex={-1} to="themes">
-            <Icon icon={paintBrushFill} />
-            Themes
-          </SettingTitle>
           <SettingTitle tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to="user">
             <Icon icon={user3Line} />
             Profile
+          </SettingTitle>
+          <SettingTitle tabIndex={-1} to="themes">
+            <Icon icon={paintBrushFill} />
+            Themes
           </SettingTitle>
           <SettingTitle tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to="shortcuts">
             <Icon icon={keyboardBoxLine} />

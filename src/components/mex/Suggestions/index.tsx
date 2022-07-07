@@ -90,6 +90,7 @@ const SuggestionInfoBar = () => {
   return (
     <InfobarMedium>
       <InfobarTools>
+        {/*
         <IconButton
           size={24}
           icon={lightbulbFlashLine}
@@ -97,7 +98,7 @@ const SuggestionInfoBar = () => {
           title="Smart Suggestions"
           highlight={infobar.mode === 'suggestions'}
           onClick={toggleSuggestedNodes}
-        />
+        /> */}
         <label htmlFor="smart-suggestions">Smart Suggestions</label>
         {!isQABlock && (
           <IconButton

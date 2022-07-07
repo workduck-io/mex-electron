@@ -27,6 +27,65 @@ export const useFetchShareData = () => {
   const { addMentionable } = useMentions()
   const setSharedNodes = useDataStore((s) => s.setSharedNodes)
 
+  const fetchSharedNodeUsers = async (nodeid: string) => {
+    const sharedNodes = useDataStore.getState().sharedNodes
+    const node = sharedNodes.find((n) => n.nodeid === nodeid)
+    // Then fetch the users with access to the shared node
+    //
+    if (!node) return
+    const sharedNodeDetails = [getUsersOfSharedNode(nodeid)]
+
+    const nodeDetails = (await runBatch(sharedNodeDetails)).fulfilled
+
+    // const nodeUsers =
+
+    const usersWithAccess = nodeDetails
+      // .filter((p) => p.status === 'fulfilled')
+      .map((p: any) => {
+        return p.value as UsersRaw
+      })
+
+    const UserAccessDetails = usersWithAccess.reduce((p, n) => {
+      // mog('getUserAccess', { p, n })
+      const rawUsers = Object.entries(n.users).map(([uid, access]) => ({ nodeid: n.nodeid, userid: uid, access }))
+      return [...p, ...rawUsers]
+    }, [])
+
+    // const sharedNodeOwnerDetails = sharedNodes
+    //   .filter((node) => node.owner !== undefined)
+    //   .map((node) => {
+    //     return getUserDetailsUserId(node.owner)
+    //   })
+    // Then finally fetch the user detail: email
+    const mentionableU = (
+      await runBatch([
+        ...UserAccessDetails.map(async (u) => {
+          const uDetails = await getUserDetailsUserId(u.userid)
+          return { ...u, email: uDetails.email, alias: uDetails.alias }
+        }),
+
+        ...[node].map(async (node) => {
+          const uDetails = await getUserDetailsUserId(node.owner)
+          return {
+            access: 'OWNER',
+            userid: uDetails.userID,
+            nodeid: node.nodeid,
+            email: uDetails.email,
+            name: uDetails.name,
+            alias: uDetails.alias
+          }
+        })
+      ])
+    ).fulfilled
+      // .filter((p) => p.status === 'fulfilled')
+      .map((p: any) => p.value as MUsersRaw)
+    // .filter((u) => u.userid !== userDetails?.userID)
+
+    mentionableU.forEach((u) =>
+      addMentionable(u.alias ?? getEmailStart(u.email), u.email, u.userid, u.name, u.nodeid, u.access)
+    )
+  }
+
   const fetchShareData = async () => {
     // First fetch the shared nodes
     const sharedNodesPreset = await getAllSharedNodes()
@@ -38,6 +97,7 @@ export const useFetchShareData = () => {
 
     setSharedNodes(sharedNodes)
 
+    /*
     // Then fetch the users with access to the shared node
     const sharedNodeDetails = sharedNodes.map((node) => {
       return getUsersOfSharedNode(node.nodeid)
@@ -94,7 +154,8 @@ export const useFetchShareData = () => {
     )
 
     // mog('SharedNode', { sharedNodes, usersWithAccess, mentionableU, UserAccessDetails })
+    */
   }
 
-  return { fetchShareData }
+  return { fetchShareData, fetchSharedNodeUsers }
 }

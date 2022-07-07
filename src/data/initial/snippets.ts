@@ -65,7 +65,7 @@ export const initialSnippets: Snippet[] = [
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),
     isTemplate: true,
-    title: 'A/B Testing',
+    title: 'A B Testing',
     content: ABTestingSnippet
   },
   {

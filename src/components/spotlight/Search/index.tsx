@@ -50,7 +50,7 @@ const Search = () => {
     const query: QueryType = isActionSearch ? { value: value.trim(), type: CategoryType.performed } : getQuery(value)
 
     setSearch(query)
-  }, 200)
+  }, 150)
 
   const getQuery = (value: string): QueryType => {
     const query: QueryType = {

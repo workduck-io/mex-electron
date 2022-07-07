@@ -78,7 +78,6 @@ export interface FlatItem {
   tasks?: number
   reminders?: number
   icon?: string
-  createdAt?: number
 }
 
 const getItem = (treeFlat: FlatItem[], id: string): number | undefined => {
@@ -148,29 +147,41 @@ const getIdFromBaseNestedTree = (baseNestedTree: BaseTreeNode[], path: string): 
   return undefined
 }
 
-// export const sortBaseNestedTree = (baseNestedTree: BaseTreeNode[], metadata: Record<string, any>) => {
+export const sortBaseNestedTree = (baseNestedTree: BaseTreeNode[], metadata: Record<string, NodeMetadata>) => {
+  const sorting = (a: BaseTreeNode, b: BaseTreeNode) => {
+    const aMeta = metadata[a.nodeid]
+    const bMeta = metadata[b.nodeid]
+    if (aMeta && aMeta.createdAt && bMeta && bMeta.createdAt) {
+      return bMeta.createdAt - aMeta.createdAt
+    }
+    if (aMeta && aMeta.createdAt && (!bMeta || !bMeta.createdAt)) {
+      return -1
+    }
+    if (bMeta && bMeta.createdAt && (!aMeta || !aMeta.createdAt)) {
+      return 1
+    }
+    return 0
+  }
+  const sortedTree = baseNestedTree.sort((a, b) => sorting(a, b))
 
-//   const sortedTree = baseNestedTree.sort((a, b) => sorting(a, b))
+  for (let i = 0; i < sortedTree.length; i++) {
+    const node = sortedTree[i]
+    if (node.children) {
+      node.children = sortBaseNestedTree(node.children, metadata)
+      sortedTree[i] = node
+    }
+  }
 
-//   for (let i = 0; i < sortedTree.length; i++) {
-//     const node = sortedTree[i]
-//     if (node.children) {
-//       node.children = sortBaseNestedTree(node.children, metadata)
-//       sortedTree[i] = node
-//     }
-//   }
-
-//   return sortedTree
-// }
+  return sortedTree
+}
 
 export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
+  const metadata = useContentStore.getState().getAllMetadata()
   const todos = useTodoStore.getState().getAllTodos()
   const reminderGroups = useReminderStore.getState().getNodeReminderGroup()
   let baseNestedTree: BaseTreeNode[] = []
 
-  const sortedTree = flatTree.sort((a, b) => b.createdAt - a.createdAt)
-
-  sortedTree.forEach((n) => {
+  flatTree.forEach((n) => {
     const parentId = getParentId(n.id)
     const tasks = todos[n.nodeid] ? todos[n.nodeid].filter(filterIncompleteTodos).length : 0
     const reminders = reminderGroups[n.nodeid] ? reminderGroups[n.nodeid].length : 0
@@ -198,11 +209,11 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
     }
   })
 
-  // const sortedBaseNestedTree = sortBaseNestedTree(baseNestedTree, metadata)
+  const sortedBaseNestedTree = sortBaseNestedTree(baseNestedTree, metadata)
 
   // mog('baseNestedTree', { baseNestedTree, sortedBaseNestedTree })
 
-  return baseNestedTree
+  return sortedBaseNestedTree
 }
 
 // Generate nested node tree from a list of ordered id strings

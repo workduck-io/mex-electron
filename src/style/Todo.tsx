@@ -24,20 +24,23 @@ react-kanban-column-header__button
 react-kanban-column-adder-button
  */
 
-export const KANBAN_WIDTH = `calc(( 100vw - 468px ) / 3)`
+export const KANBAN_WIDTH = (sidebarExpanded?: boolean) =>
+  `calc(( 100vw - ${sidebarExpanded ? '468px' : '186px'} ) / 3)`
 export const KANBAN_HEIGHT = `calc( 100vh - 22rem )`
-export const KANBAN_CARD_WIDTH = `calc(( 100vw - 520px ) / 3)`
+export const KANBAN_CARD_WIDTH = (sidebarExpanded?: boolean) =>
+  `calc(( 100vw - ${sidebarExpanded ? '528px' : '248px'}) / 3)`
 
-export const StyledBoard = styled.div`
+export const StyledBoard = styled.div<{ sidebarExpanded?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.medium};
   .react-kanban-column {
-    width: ${KANBAN_WIDTH};
+    width: ${({ sidebarExpanded }) => KANBAN_WIDTH(sidebarExpanded)};
     max-height: ${KANBAN_HEIGHT};
     overflow-y: scroll;
     overflow-x: hidden;
-    background: ${({ theme }) => mix(0.5, theme.colors.gray[9], theme.colors.gray[10])};
+    transition: width 0.5s ease-in-out;
+    background: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};
     padding: ${({ theme }) => theme.spacing.small};
     margin: ${({ theme }) => theme.spacing.small};
     border-radius: ${({ theme }) => theme.borderRadius.small};
@@ -88,16 +91,17 @@ export const TaskColumnHeader = styled.div`
   font-size: 1.5rem;
 `
 
-export const TaskCard = styled.div<{ dragging: boolean; selected: boolean }>`
+export const TaskCard = styled.div<{ dragging: boolean; selected: boolean; sidebarExpanded?: boolean }>`
   ${TodoContainer} {
-    width: ${KANBAN_CARD_WIDTH};
+    width: ${({ sidebarExpanded }) => KANBAN_CARD_WIDTH(sidebarExpanded)};
     padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
   }
-  width: ${KANBAN_CARD_WIDTH};
+  width: ${({ sidebarExpanded }) => KANBAN_CARD_WIDTH(sidebarExpanded)};
   margin: ${({ theme }) => theme.spacing.tiny} 0;
   background: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
   border: 1px solid transparent;
   border-radius: ${({ theme }) => theme.borderRadius.small};
+  transition: width 0.5s ease-in-out;
   ${({ dragging, theme }) =>
     dragging &&
     css`

@@ -8,7 +8,13 @@ export const BList = styled.div`
   overflow-x: hidden;
   overflow-y: auto; */
   list-style: none;
-  height: 100%;
+`
+
+export const SnippetListWrapper = styled.div`
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-top: 4rem;
+  padding: ${({ theme }) => theme.spacing.small};
 `
 
 // Sidebar Item
@@ -16,7 +22,7 @@ export const BList = styled.div`
 // For children with expand collapse, see StyledTreeItem
 export const SItem = styled.div<{ selected: boolean }>`
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  padding-left: ${({ theme }) => theme.spacing.large};
+  padding-left: ${({ theme }) => theme.spacing.medium};
   gap: ${({ theme }) => theme.spacing.tiny};
 
   transition: 0.3s ease;

@@ -137,7 +137,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
     <InfobarFull id={`graph_${showLocal ? 'local' : 'global'}`}>
       {showTools ? (
         <InfobarTools>
-          {/* <IconButton size={24} icon={bubbleChartLine} title="Graph" highlight={showGraph} onClick={toggleGraph} /> */}
+          {/* <IconButton size={24} icon={bubbleChartLine} title="Graph" highlight={showGraph} onClick={toggleGraph} />
           <IconButton
             size={24}
             icon={bubbleChartLine}
@@ -145,7 +145,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
             title="Context View"
             highlight={infobar.mode === 'graph'}
             onClick={toggleGraph}
-          />
+          />*/}
           <Switch
             showLabel
             id="LocalGraphSwitch"
@@ -154,7 +154,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
             onChange={() => toggleLocal()}
           />
 
-          <IconButton size={24} icon={more2Fill} title="Options" />
+          {/*<IconButton size={24} icon={more2Fill} title="Options" /> */}
         </InfobarTools>
       ) : null}
       {showNodePreview && <NodePreview node={selectedNode} />}

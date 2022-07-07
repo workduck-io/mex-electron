@@ -23,6 +23,7 @@ import { useUserCacheStore } from '@store/useUserCacheStore'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { useHelpStore } from '@store/useHelpStore'
 import { useTokenStore } from './useTokens'
+import toast from 'react-hot-toast'
 
 interface WorkspaceDetails {
   name: string
@@ -207,7 +208,6 @@ export const useAuthentication = () => {
               addEventProperties({ [CustomEvents.LOGGED_IN]: true })
 
               setAuthenticated(userDetails, workspaceDetails)
-              setShowLoader(false)
             }
           })
       }
@@ -282,10 +282,9 @@ export const useAuthentication = () => {
         })
         addEventProperties({ [CustomEvents.LOGGED_IN]: true })
         setAuthenticated(userDetails, workspaceDetails)
-        // setShowLoader(false)
       })
-      .catch(console.error)
-      .finally(() => {
+      .catch((err) => {
+        toast('Registeration failed')
         setShowLoader(false)
       })
   }

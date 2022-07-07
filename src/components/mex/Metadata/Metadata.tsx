@@ -1,3 +1,5 @@
+import addCircleLine from '@iconify/icons-ri/add-circle-line'
+import refreshLine from '@iconify/icons-ri/refresh-line'
 import timeLine from '@iconify/icons-ri/time-line'
 import { Icon } from '@iconify/react'
 import { mog } from '@utils/lib/helper'
@@ -17,6 +19,9 @@ import { RelativeTime } from '../RelativeTime'
 import { ProfileImageWithToolTip } from '../User/ProfileImage'
 
 export const Data = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.tiny};
+  align-items: center;
   color: ${({ theme }) => theme.colors.text.fade};
 `
 
@@ -57,7 +62,8 @@ interface MetaDataWrapperProps extends FocusModeProp {
 export const MetadataWrapper = styled.div<MetaDataWrapperProps>`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  padding: 0 ${({ theme }) => theme.spacing.large};
 
   ${({ theme, fadeOnHover }) =>
     fadeOnHover &&
@@ -151,16 +157,17 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
           <DataWrapper interactive={metadata.createdAt !== undefined}>
             {metadata.createdBy !== undefined ? (
               <ProfileIcon>
-                <ProfileImageWithToolTip props={{ userid: metadata.createdBy, size: 32 }} placement="bottom" />
+                <ProfileImageWithToolTip props={{ userid: metadata.createdBy, size: 16 }} placement="bottom" />
               </ProfileIcon>
             ) : (
               <Icon icon={timeLine}></Icon>
             )}
             <div>
-              {metadata.createdAt !== undefined ? <Label>Created</Label> : null}
+              {/*metadata.createdAt !== undefined ? <Label>Created</Label> : null*/}
               {metadata.createdAt !== undefined && (
                 <Data>
-                  <RelativeTime dateNum={metadata.createdAt} />
+                  <Icon icon={addCircleLine} width={16} />
+                  <RelativeTime prefix="created" dateNum={metadata.createdAt} />
                 </Data>
               )}
             </div>
@@ -173,16 +180,17 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
           <DataWrapper interactive={metadata.updatedAt !== undefined}>
             {metadata.lastEditedBy !== undefined ? (
               <ProfileIcon data-title={metadata.lastEditedBy}>
-                <ProfileImageWithToolTip props={{ userid: metadata.lastEditedBy, size: 32 }} placement="bottom" />
+                <ProfileImageWithToolTip props={{ userid: metadata.lastEditedBy, size: 16 }} placement="bottom" />
               </ProfileIcon>
             ) : (
               <Icon icon={timeLine}></Icon>
             )}
             <div>
-              {metadata.updatedAt !== undefined ? <Label>Updated</Label> : null}
+              {/*metadata.updatedAt !== undefined ? <Label>Updated</Label> : null */}
               {metadata.updatedAt !== undefined && (
                 <Data>
-                  <RelativeTime dateNum={metadata.updatedAt} />
+                  <Icon icon={refreshLine} width={16} />
+                  <RelativeTime prefix={'Updated'} dateNum={metadata.updatedAt} />
                 </Data>
               )}
             </div>
