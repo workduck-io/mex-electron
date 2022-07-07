@@ -1,7 +1,7 @@
-import { devTheme } from '../style/themes/devTheme'
 import { DefaultTheme } from 'styled-components'
 import create from 'zustand'
 import { defaultThemes } from '../style/themes/defaultThemes'
+import { xemTheme } from '@style/themes/xemTheme'
 
 interface Theme {
   id: string
@@ -16,7 +16,7 @@ interface ThemeStoreState {
 }
 
 const useThemeStore = create<ThemeStoreState>((set) => ({
-  theme: { id: 'Dev', themeData: devTheme },
+  theme: { id: 'xeM', themeData: xemTheme },
 
   themes: defaultThemes,
 
