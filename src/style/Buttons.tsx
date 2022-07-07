@@ -38,7 +38,7 @@ export const Button = styled.button<ButtonProps>`
   }
 
   &:disabled {
-    opacity: 0.33;
+    background-color: ${({ theme }) => theme.colors.gray[6]};
   }
 
   ${({ primary, transparent, theme }) =>
@@ -48,6 +48,9 @@ export const Button = styled.button<ButtonProps>`
       background-color: transparent;
       &:hover {
         background-color: ${theme.colors.form.button.bg};
+      }
+      &:disabled {
+        background-color: ${({ theme }) => theme.colors.gray[6]};
       }
     `}
 
@@ -72,6 +75,9 @@ export const Button = styled.button<ButtonProps>`
             background-color: ${theme.colors.fade.primary};
             color: ${theme.colors.text.oppositePrimary};
           }
+          &:disabled {
+            background-color: ${({ theme }) => theme.colors.gray[6]};
+          }
           &:focus {
             color: ${theme.colors.text.oppositePrimary};
             box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
@@ -88,6 +94,9 @@ export const Button = styled.button<ButtonProps>`
           &:hover {
             background-color: ${theme.colors.fade.primary};
             color: ${theme.colors.text.oppositePrimary};
+          }
+          &:disabled {
+            background-color: ${({ theme }) => theme.colors.gray[6]};
           }
         `
       : ''}
