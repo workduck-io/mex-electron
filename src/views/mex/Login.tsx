@@ -15,7 +15,7 @@ import { useEditorStore } from '../../store/useEditorStore'
 import useDataStore from '../../store/useDataStore'
 import useLoad from '../../hooks/useLoad'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
-import { useLinks } from '../../hooks/useLinks'
+import { useNodes } from '@hooks/useNodes'
 
 interface LoginFormData {
   email: string
@@ -32,7 +32,8 @@ const Login = () => {
 
   const setAuthenticated = useAuthStore((s) => s.setAuthenticated)
   const { loadNode } = useLoad()
-  const { getNodeidFromPath } = useLinks()
+  const { updateBaseNode } = useNodes()
+
   const { goTo } = useRouting()
 
   const onSubmit = async (data: LoginFormData): Promise<void> => {
@@ -47,11 +48,9 @@ const Login = () => {
           const { userDetails, workspaceDetails } = s.authDetails
           const node = useEditorStore.getState().node
           if (node.nodeid === '__null__') {
-            const basePath = useDataStore.getState().baseNodeId
-            const baseNodeid = getNodeidFromPath(basePath)
-            mog('Found null, getting node', { nullNode: node, basePath, baseNodeid })
-            loadNode(baseNodeid, { savePrev: false, fetch: false })
-            goTo(ROUTE_PATHS.node, NavigationType.push, baseNodeid)
+            const baseNode = updateBaseNode()
+            loadNode(baseNode.nodeid, { savePrev: false, fetch: false })
+            goTo(ROUTE_PATHS.node, NavigationType.push, baseNode.nodeid)
           }
           setAuthenticated(userDetails, workspaceDetails)
         }
