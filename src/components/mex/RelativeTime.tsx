@@ -25,7 +25,7 @@ export const RelativeTime = ({ dateNum, prefix, tippy = true, tippyProps, refres
   const relTime = useRelativeTime(date, refreshMs)
   const localDateString = toLocaleString(date)
 
-  const tooltip = prefix ? `${prefix}: ${relTime}` : localDateString
+  const tooltip = prefix ? `${prefix}: ${localDateString}` : localDateString
 
   if (tippy)
     return (
