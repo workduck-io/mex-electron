@@ -125,7 +125,6 @@ const NavHeader: React.FC<{ target: any }> = ({ target }) => {
             <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={l.path} key={`nav_${l.title}`}>
               {l.icon !== undefined ? l.icon : l.title}
               <NavTitle>{l.title}</NavTitle>
-              {l.count > 0 && <Count>{l.count}</Count>}
             </Link>
           </NavTooltip>
         )
@@ -257,7 +256,13 @@ const Nav = () => {
           <NavHeader target={target} />
           <NavFooter target={target} />
         </MainNav>
-        <SideNav style={springProps} expanded={sidebar.expanded} show={sidebar.show} {...getFocusProps(focusMode)}>
+        <SideNav
+          onMouseUp={(e) => e.stopPropagation()}
+          style={springProps}
+          expanded={sidebar.expanded}
+          show={sidebar.show}
+          {...getFocusProps(focusMode)}
+        >
           {/* Notes, Shared, Bookmarks */}
           <SidebarTabs />
         </SideNav>
