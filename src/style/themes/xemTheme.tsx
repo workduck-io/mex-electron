@@ -7,16 +7,16 @@ export const xemTheme = generateTheme({
 
   // Palettes
   gray: {
-    10: '#0F2238', // Darkest
-    9: '#172B42',
-    8: '#193454',
-    7: '#354962',
-    6: '#556C88',
-    5: '#6A83A0',
-    4: '#869EBA',
-    3: '#A1B8D3',
-    2: '#B4CAE3',
-    1: '#C4DBF5' // Lightest
+    10: '#11121B', // Darkest
+    9: '#2b2e4a',
+    8: '#363959',
+    7: '#525579',
+    6: '#71749A',
+    5: '#878BAE',
+    4: '#8F94C1',
+    3: '#9BA5D8',
+    2: '#B9C1D6',
+    1: '#ffffff' // Lightest
   },
   palette: {
     white: '#ffffff',
@@ -29,7 +29,7 @@ export const xemTheme = generateTheme({
     heading: '#E4F1FF',
     default: '#B9C1D6',
     subheading: '#D1E5FB',
-    fade: '#6B6F90',
+    fade: '#9aa2c9',
     disabled: '#72767D',
     accent: '#fe8019',
     oppositePrimary: '#1F2933'

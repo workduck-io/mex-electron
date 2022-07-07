@@ -4,7 +4,6 @@ export const StyledGraph = styled.div`
   max-height: 100vh;
   width: 100%;
   position: relative;
-  min-width: 600px;
   * {
     outline: none;
     outline-style: none;
@@ -16,5 +15,5 @@ export const StyledSyncBlockInfo = styled(StyledGraph)`
 
 export const GraphWrapper = styled.div`
   margin-top: ${({ theme }) => theme.spacing.small};
-  height: calc(100vh - 8.5rem);
+  height: calc(100vh - 15.5rem);
 `

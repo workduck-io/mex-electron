@@ -19,7 +19,7 @@ export const StyledTab = styled.div.attrs({
   display: inline-flex;
   justify-content: center;
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  padding: ${({ theme }) => theme.spacing.tiny};
+  padding: ${({ theme }) => theme.spacing.medium} ${({ theme }) => theme.spacing.tiny};
   z-index: 1;
   flex: 1;
 
@@ -80,7 +80,7 @@ export const TabsWrapper = styled.div<{ index: number; total: number }>`
         width: calc(100% / ${total});
         height: 4px;
         border-radius: ${({ theme }) => theme.borderRadius.small};
-        top: 32px;
+        top: 46px;
         left: 0;
         background: ${({ theme }) => theme.colors.primary};
         transform: translateX(${index * 100}%);

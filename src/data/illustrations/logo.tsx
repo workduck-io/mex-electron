@@ -12,6 +12,7 @@ import { TooltipTitleWithShortcut } from '../../components/mex/Shortcuts'
 import useLayout from '../../hooks/useLayout'
 import { focusStyles } from '../../style/focus'
 import { FocusModeProp } from '../../style/props'
+import { transparentize } from 'polished'
 
 const LogoWrapper = styled.div<{ expanded: boolean }>`
   ${({ expanded }) => (expanded ? 'width: 100%;' : 'width: 40px;')}
@@ -42,21 +43,30 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
   ${({ expanded, theme }) =>
     expanded
       ? css`
-          top: ${theme.additional.hasBlocks ? 76 : 52}px;
+          top: ${theme.additional.hasBlocks ? 76 : 46}px;
           left: ${theme.additional.hasBlocks ? 296 : 325}px;
         `
       : css`
-          top: ${theme.additional.hasBlocks ? 84 : 52}px;
-          left: ${theme.additional.hasBlocks ? 86 : 68}px;
+          top: ${theme.additional.hasBlocks ? 84 : 36}px;
+          left: ${theme.additional.hasBlocks ? 86 : 84}px;
         `}
-  transition: left 0.5s ease, top 0.5s ease;
+  transition: left 0.5s ease, top 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;
   z-index: 11;
-  background-color: ${({ theme }) => theme.colors.secondary};
   padding: 8px;
   display: flex;
   align-items: center;
   border-radius: 4px;
-  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
+  background-color: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
+    background-color: ${({ theme }) => transparentize(0.25, theme.colors.gray[8])};
+  }
+
+  &:active {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
 `
 
 export const TrafficLightBG = styled.div`
@@ -65,7 +75,7 @@ export const TrafficLightBG = styled.div`
   left: 0;
   width: 86px;
   height: 32px;
-  background-color: ${({ theme }) => theme.colors.gray[8]};
+  background-color: transparent;
   opacity: 0.9;
   z-index: 10000;
   border-radius: 0 0 10px;

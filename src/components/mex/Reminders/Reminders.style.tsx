@@ -232,7 +232,7 @@ export const ReminderRelative = styled.div`
 `
 
 export const ReminderInfobar = styled.div`
-  height: calc(100vh - 7.5rem);
+  height: calc(100vh - 15.5rem);
   overflow-y: auto;
   display: flex;
   align-items: center;

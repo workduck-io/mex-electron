@@ -40,7 +40,7 @@ export const InfoBarWrapper = styled.div<InfoBarWrapperProps>`
   overflow-x: hidden;
   height: 100vh;
   background-color: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
-  padding: ${({ theme }) => theme.spacing.large} 0;
+  padding: ${({ theme }) => theme.spacing.large} 0 ${({ theme }) => theme.spacing.small};
 
   @media (max-width: ${size.wide}) {
     min-width: ${infoWidths.small.normal};
@@ -119,7 +119,7 @@ export const InfobarFull = styled.div`
   max-height: 100vh;
   width: 100%;
   position: relative;
-  min-width: ${infoWidths.large.normal};
+  min-width: ${infoWidths.default};
   * {
     outline: none;
     outline-style: none;
