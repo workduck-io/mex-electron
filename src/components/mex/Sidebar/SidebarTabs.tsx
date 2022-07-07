@@ -13,12 +13,11 @@ import { useLocation } from 'react-router-dom'
 import SnippetList from './SnippetList'
 import { usePolling } from '@apis/usePolling'
 
-const SidebarTabs = () => {
+const NodeSidebar = () => {
   const sidebar = useLayoutStore((store) => store.sidebar)
   const [openedTab, setOpenedTab] = useState<SingleTabType>(SidebarTab.hierarchy)
   const replaceAndAddActionToPoll = useApiStore((store) => store.replaceAndAddActionToPoll)
   const theme = useTheme()
-  const location = useLocation()
 
   const tabs: Array<TabType> = useMemo(
     () => [
@@ -46,6 +45,23 @@ const SidebarTabs = () => {
 
   usePolling()
 
+  return (
+    <Tabs
+      visible={sidebar.expanded}
+      openedTab={openedTab}
+      onChange={(tab) => {
+        setOpenedTab(tab)
+        replaceAndAddActionToPoll(tab as PollActions)
+      }}
+      tabs={tabs}
+    />
+  )
+}
+
+const SidebarTabs = () => {
+  const sidebar = useLayoutStore((store) => store.sidebar)
+  const location = useLocation()
+
   const isEditor = useMemo(() => {
     if (location.pathname) {
       if (location.pathname.startsWith(ROUTE_PATHS.node)) {
@@ -55,24 +71,7 @@ const SidebarTabs = () => {
     return false
   }, [location])
 
-  return (
-    <>
-      {sidebar.show &&
-        (isEditor ? (
-          <Tabs
-            visible={sidebar.expanded}
-            openedTab={openedTab}
-            onChange={(tab) => {
-              setOpenedTab(tab)
-              replaceAndAddActionToPoll(tab as PollActions)
-            }}
-            tabs={tabs}
-          />
-        ) : (
-          <SnippetList />
-        ))}
-    </>
-  )
+  return <>{sidebar.show && (isEditor ? <NodeSidebar /> : <SnippetList />)}</>
 }
 
 export default SidebarTabs
