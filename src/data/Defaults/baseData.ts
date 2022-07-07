@@ -76,7 +76,7 @@ export const DefaultFileData = (version: string): FileData => ({
   version,
   remoteUpdate: true,
   baseNodeId: '@',
-  ilinks: [...linksWithSpecialContent, ...links],
+  ilinks: [],
   contents,
   linkCache: {},
   tagsCache: {},
@@ -91,10 +91,10 @@ export const DefaultFileData = (version: string): FileData => ({
   intents: {},
   services: [],
   userSettings: {
-    theme: 'dev',
+    theme: 'xeM',
     spotlight: {
       showSource: true
     }
   },
-  snippets: initialSnippets
+  snippets: []
 })

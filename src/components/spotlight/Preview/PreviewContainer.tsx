@@ -52,8 +52,6 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
       const selectionLength = deserializedContentNodes.length
       const lastBlock = deserializedContentNodes.at(-1)
 
-      console.log({ lastBlock })
-
       const deserializedContent = [
         ...deserializedContentNodes.slice(0, selectionLength - 1),
         { ...lastBlock, blockMeta: getBlockMetadata(preview.metadata?.url) }

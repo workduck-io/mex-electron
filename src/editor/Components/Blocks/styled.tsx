@@ -47,7 +47,7 @@ export const StyledSource = styled.div`
   z-index: 2;
   justify-content: center;
   position: absolute;
-  left: 95%;
+  left: 98%;
   user-select: none;
   * {
     box-sizing: border-box;
