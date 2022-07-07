@@ -1,3 +1,4 @@
+import { useApi } from '@apis/useSaveApi'
 import create from 'zustand'
 import { useDataSaverFromContent } from '../editor/Components/Saver'
 import { useSnippetStore } from '../store/useSnippetStore'
@@ -106,6 +107,7 @@ export const useSnippetBufferStore = create<SnippetBufferStore>((set, get) => ({
 }))
 
 export const useSnippetBuffer = () => {
+  const api = useApi()
   const add2Buffer = useSnippetBufferStore((s) => s.add)
   const clearBuffer = useSnippetBufferStore((s) => s.clear)
   const updateSnippetContent = useSnippetStore((s) => s.updateSnippetContentAndTitle)
@@ -124,9 +126,26 @@ export const useSnippetBuffer = () => {
     const buffer = useSnippetBufferStore.getState().buffer
     mog('Save And Clear Snippet Buffer', { buffer })
     if (Object.keys(buffer).length > 0) {
+      {
+        /*
+          const saved = Object.entries(buffer)
+        .map(([snippetId, val]) => {
+          api.saveSnippetAPI(snippetId, val.title, val?.content)
+          updateSnippetContent(snippetId, val.content, val.title, val.isTemplate)
+          const snippet = getSnippet(snippetId)
+
+          // TODO: Switch snippet to template index
+          if (snippet) updateSnippetIndex({ ...snippet, content: val.content, title: val.title })
+          return true
+        })
+        .reduce((acc, cur) => acc || cur, false)
+
+*/
+      }
       const saved = Object.entries(buffer)
         .map(([snippetId, val]) => {
           const snippet = getSnippet(snippetId)
+          api.saveSnippetAPI(snippetId, val.title ?? snippet.title, val?.content ?? snippet?.content)
           // updateSnippetContent(snippetId, val.content ?? snippet.content, val.title ?? snippet.title, val.isTemplate)
           mog('snipppet', { snippetId, val, buffer })
           // TODO: Switch snippet to template index

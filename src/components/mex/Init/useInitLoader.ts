@@ -16,7 +16,7 @@ export const useInitLoader = () => {
 
   const { initActionPerfomerClient } = useActionsPerfomerClient()
 
-  const { getNodesByWorkspace } = useApi()
+  const { getNodesByWorkspace, getAllSnippetsByWorkspace } = useApi()
   const { getGroupsToView } = useActions()
   const { logout } = useAuthentication()
   const { fetchShareData } = useFetchShareData()
@@ -34,7 +34,7 @@ export const useInitLoader = () => {
     initActionPerfomerClient(useAuthStore.getState().userDetails?.userID)
     setShowLoader(true)
     try {
-      await runBatch<any>([getNodesByWorkspace(), getGroupsToView(), initPortals()])
+      await runBatch<any>([getNodesByWorkspace(), getAllSnippetsByWorkspace(), getGroupsToView(), initPortals()])
       setShowLoader(false)
     } catch (err) {
       setShowLoader(false)

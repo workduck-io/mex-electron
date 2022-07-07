@@ -21,6 +21,7 @@ import useDataStore from '@store/useDataStore'
 import { iLinksToUpdate } from '@utils/hierarchy'
 import { runBatch } from '@utils/lib/batchPromise'
 import { useUpdater } from '@hooks/useUpdater'
+import { useSnippetStore } from '@store/useSnippetStore'
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,6 +31,7 @@ export const useApi = () => {
   const { getTitleFromNoteId, updateILinks } = useLinks()
   const { getSharedNode } = useNodes()
   const setILinks = useDataStore((store) => store.setIlinks)
+  const initSnippets = useSnippetStore((store) => store.initSnippets)
 
   const { updateFromContent } = useUpdater()
 
@@ -352,11 +354,91 @@ export const useApi = () => {
       .catch((error) => console.error(error))
   }
 
+  const saveSnippetAPI = async (snippetId: string, snippetTitle: string, content: any[]) => {
+    const reqData = {
+      id: snippetId,
+      type: 'SnippetRequest',
+      title: snippetTitle,
+      namespaceIdentifier: DEFAULT_NAMESPACE,
+      data: serializeContent(content ?? defaultContent.content, snippetId)
+    }
+
+    const data = await client
+      .post(apiURLs.createSnippet, reqData, {
+        headers: {
+          [WORKSPACE_HEADER]: getWorkspaceId(),
+          Accept: 'application/json, text/plain, */*'
+        }
+      })
+      .then((d) => {
+        mog('savedData', { d })
+        setMetadata(snippetId, extractMetadata(d.data))
+        return d.data
+      })
+      .catch((e) => {
+        console.error(e)
+      })
+    return data
+  }
+
+  const getAllSnippetsByWorkspace = async () => {
+    const data = await client
+      .get(apiURLs.getAllSnippetsByWorkspace, {
+        headers: {
+          [WORKSPACE_HEADER]: getWorkspaceId(),
+          Accept: 'application/json, text/plain, */*'
+        }
+      })
+      .then((d) => {
+        return d.data
+      })
+      .then((d) => {
+        const snippets = useSnippetStore.getState().snippets
+        const newSnippets = d.filter((snippet) => {
+          const existSnippet = snippets.find((s) => s.id === snippet.snippetID)
+          return existSnippet === undefined
+        })
+        mog('newSnippets', { newSnippets, snippets })
+        initSnippets([
+          ...snippets,
+          ...newSnippets.map((item) => ({
+            icon: 'ri:quill-pen-line',
+            id: item.snippetID,
+            title: item.title,
+            content: []
+          }))
+        ])
+      })
+
+    return data
+  }
+
+  const getSnippetById = async (id: string) => {
+    const url = apiURLs.getSnippetById(id)
+
+    const data = await client
+      .get(url, {
+        headers: {
+          [WORKSPACE_HEADER]: getWorkspaceId(),
+          Accept: 'application/json, text/plain, */*'
+        }
+      })
+      .then((d) => {
+        mog('snippet by id', { d })
+        return d.data
+      })
+
+    return data
+  }
+
   return {
     saveDataAPI,
     getDataAPI,
     refactorNotes,
     makeNotePrivate,
+    saveSnippetAPI,
+    getAllSnippetsByWorkspace,
+    getSnippetById,
     makeNotePublic,
     getPublicNoteApi,
     getPublicURL,

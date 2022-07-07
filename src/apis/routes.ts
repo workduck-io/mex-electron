@@ -15,9 +15,11 @@ export const integrationURLs = {
 }
 
 export const MEXIT_FRONTEND_BASE_URL = IS_DEV ? 'http://localhost:3333' : 'https://mexit.workduck.io'
-export const MEXIT_BACKEND_URL_BASE = IS_DEV
-  ? 'http://localhost:5000/api/v1'
-  : 'https://mex-webapp-dev.workduck.io/api/v1'
+
+export const MEXIT_BACKEND_URL_BASE = 'https://mex-webapp-dev.workduck.io/api/v1'
+// IS_DEV
+//   ? 'http://localhost:5000/api/v1'
+//   : 'https://mex-webapp-dev.workduck.io/api/v1'
 
 export const WORKDUCK_API_BASE = 'https://http.workduck.io'
 export const MEX_LOCH_BASE_URL =
@@ -93,6 +95,11 @@ export const apiURLs = {
       `${config.constants.USER_SERVICE_BASE_URL}/user/email/${encodeURIComponent(email)}`,
     getFromUserId: (userId: string) => `${config.constants.USER_SERVICE_BASE_URL}/user/${encodeURIComponent(userId)}`
   },
+
+  // Snippets
+  createSnippet: `${MEXIT_BACKEND_URL_BASE}/snippet`,
+  getAllSnippetsByWorkspace: `${MEXIT_BACKEND_URL_BASE}/snippet/all`,
+  getSnippetById: (uid: string) => `${MEXIT_BACKEND_URL_BASE}/snippet/${uid}`,
 
   // Sharing
   // Post type determines action
