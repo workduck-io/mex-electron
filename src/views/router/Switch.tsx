@@ -132,7 +132,7 @@ const Switch = () => {
 
           <Route path={`${ROUTE_PATHS.snippet}/:snippetid`} element={<ProtectedRoute component={SnippetEditor} />} />
           <Route path={ROUTE_PATHS.settings} element={<ProtectedRoute component={Settings} />}>
-            <Route index element={<ProtectedRoute component={Themes} />} />
+            <Route index element={<ProtectedRoute component={UserPage} />} />
             <Route path="themes" element={<ProtectedRoute component={Themes} />} />
             <Route path="user" element={<ProtectedRoute component={UserPage} />} />
             <Route path="shortcuts" element={<ProtectedRoute component={Shortcuts} />} />

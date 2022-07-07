@@ -1,18 +1,18 @@
-import Tippy from '@tippyjs/react'
-import React, { useEffect } from 'react'
-import styled, { css, useTheme } from 'styled-components'
-import { useLayoutStore } from '../../store/useLayoutStore'
 import arrowLeftSLine from '@iconify/icons-ri/arrow-left-s-line'
 import arrowRightSLine from '@iconify/icons-ri/arrow-right-s-line'
 import { Icon } from '@iconify/react'
+import Tippy from '@tippyjs/react'
+import { transparentize } from 'polished'
+import React, { useEffect } from 'react'
+import styled, { css, useTheme } from 'styled-components'
 import tinykeys from 'tinykeys'
-import { useKeyListener } from '../../hooks/useShortcutListener'
-import { useHelpStore } from '../../store/useHelpStore'
 import { TooltipTitleWithShortcut } from '../../components/mex/Shortcuts'
 import useLayout from '../../hooks/useLayout'
+import { useKeyListener } from '../../hooks/useShortcutListener'
+import { useHelpStore } from '../../store/useHelpStore'
+import { useLayoutStore } from '../../store/useLayoutStore'
 import { focusStyles } from '../../style/focus'
 import { FocusModeProp } from '../../style/props'
-import { transparentize } from 'polished'
 
 const LogoWrapper = styled.div<{ expanded: boolean }>`
   ${({ expanded }) => (expanded ? 'width: 100%;' : 'width: 40px;')}
@@ -48,7 +48,7 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
           left: ${theme.additional.hasBlocks ? 296 : 325}px;
         `
       : css`
-          top: ${theme.additional.hasBlocks ? 84 : 36}px;
+          top: ${theme.additional.hasBlocks ? 84 : 46}px;
           left: ${theme.additional.hasBlocks ? 86 : 84}px;
         `}
 

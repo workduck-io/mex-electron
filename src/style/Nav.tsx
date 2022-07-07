@@ -59,7 +59,7 @@ const ButtonOrLinkStyles = css`
 
 export const SearchLink = styled(NavLink)`
   ${ButtonOrLinkStyles}
-  background-color: ${({ theme }) => transparentize(0.88, theme.colors.primary)};
+  background-color: ${({ theme }) => transparentize(1, theme.colors.primary)};
   margin-bottom: ${({ theme }) => theme.spacing.medium};
   color: ${({ theme }) => theme.colors.primary};
   svg {
@@ -258,7 +258,7 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
 
   ${NavLogoWrapper} {
     padding: 0px 22px 0px;
-    padding-top: ${({ theme }) => (theme.additional.hasBlocks ? 8 : 22)}px;
+    padding-top: ${({ theme }) => (theme.additional.hasBlocks ? 8 : 30)}px;
   }
 
   ${CollapseWrapper} {

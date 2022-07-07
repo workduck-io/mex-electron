@@ -51,21 +51,23 @@ const SidebarTabs = () => {
     }
     return false
   }, [location])
+
   return (
     <>
-      {isEditor ? (
-        <Tabs
-          visible={sidebar.expanded}
-          openedTab={openedTab}
-          onChange={(tab) => {
-            setOpenedTab(tab)
-            replaceAndAddActionToPoll(tab as PollActions)
-          }}
-          tabs={tabs}
-        />
-      ) : (
-        <SnippetList />
-      )}
+      {sidebar.show &&
+        (isEditor ? (
+          <Tabs
+            visible={sidebar.expanded}
+            openedTab={openedTab}
+            onChange={(tab) => {
+              setOpenedTab(tab)
+              replaceAndAddActionToPoll(tab as PollActions)
+            }}
+            tabs={tabs}
+          />
+        ) : (
+          <SnippetList />
+        ))}
     </>
   )
 }
