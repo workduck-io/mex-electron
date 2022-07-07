@@ -124,7 +124,7 @@ const SnippetEditor = () => {
     goTo(ROUTE_PATHS.snippets, NavigationType.push)
   }
 
-  const defaultValue = snippet && snippet.title !== DRAFT_NODE ? snippet.title : ''
+  const defaultValue = useMemo(() => (snippet && snippet.title !== DRAFT_NODE ? snippet.title : ''), [snippet])
 
   const onDelay = debounce((value) => onChangeTitle(value), 250)
 
@@ -146,7 +146,15 @@ const SnippetEditor = () => {
           />
           <NoteTitle>
             <>
-              [[ <Input autoFocus placeholder={DRAFT_NODE} defaultValue={defaultValue} onChange={onChange} /> ]]
+              [[{' '}
+              <Input
+                id={snippet?.id ?? 'nullllll'}
+                key={snippet?.id ?? 'nullllll'}
+                placeholder={DRAFT_NODE}
+                defaultValue={defaultValue}
+                onChange={onChange}
+              />{' '}
+              ]]
             </>
           </NoteTitle>
 

@@ -47,6 +47,7 @@ import { SItem } from './SharedNotes.style'
 import { ItemContent, ItemTitle } from '@style/Sidebar'
 import WDLogo from '@components/spotlight/Search/Logo'
 import searchLine from '@iconify/icons-ri/search-line'
+import SidebarTabs from './SidebarTabs'
 
 const CreateNewNote: React.FC<{ target: any }> = ({ target }) => {
   const { goTo } = useRouting()
@@ -200,30 +201,6 @@ const NavBody: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
   usePolling()
   const theme = useTheme()
 
-  const tabs: Array<TabType> = useMemo(
-    () => [
-      {
-        label: <MexIcon noHover icon="ri:draft-line" width={24} height={24} />,
-        type: SidebarTab.hierarchy,
-        component: <TreeContainer />,
-        tooltip: 'All Notes'
-      },
-      {
-        label: <SharedNodeIcon fill={theme.colors.text.default} height={22} width={22} />,
-        component: <SharedNotes />,
-        type: SidebarTab.shared,
-        tooltip: 'Shared Notes'
-      },
-      {
-        label: <MexIcon noHover icon="ri:bookmark-line" width={24} height={24} />,
-        type: SidebarTab.bookmarks,
-        component: <Bookmarks />,
-        tooltip: 'Bookmarks'
-      }
-    ],
-    [theme]
-  )
-
   return (
     <Tabs
       visible={isVisible}
@@ -289,8 +266,9 @@ const Nav = () => {
           <NavHeader target={target} />
           <NavFooter target={target} />
         </MainNav>
-        <SideNav style={springProps} show={sidebar.show} expanded={sidebar.expanded} {...getFocusProps(focusMode)}>
-          <NavBody isVisible={sidebar.expanded} />
+        <SideNav style={springProps} expanded={sidebar.expanded} show={sidebar.show} {...getFocusProps(focusMode)}>
+          {/* Notes, Shared, Bookmarks */}
+          <SidebarTabs />
         </SideNav>
       </NavWrapper>
       <TrafficLightBG />

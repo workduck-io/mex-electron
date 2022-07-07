@@ -131,6 +131,7 @@ export const InfobarMedium = styled.div`
   width: 100%;
   position: relative;
   min-width: ${infoWidths.small.normal};
+  height: calc(100vh - 9.5rem);
   * {
     outline: none;
     outline-style: none;
