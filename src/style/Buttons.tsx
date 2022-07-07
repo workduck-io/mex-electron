@@ -7,6 +7,7 @@ import { centeredCss } from './Layouts'
 import { LoadingWrapper } from './Loading'
 import { TooltipTitleWithShortcut } from '../components/mex/Shortcuts'
 import { ToolbarTooltip } from '../components/mex/Tooltips'
+import { mog } from '@utils/lib/helper'
 
 export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   primary?: boolean
@@ -128,7 +129,7 @@ const IconButton = ({
       singleton={singleton}
     >
       <Button
-        transparent={transparent ? transparent : true}
+        transparent={transparent !== undefined ? transparent : true}
         disabled={disabled}
         onClick={onClick}
         highlight={highlight}

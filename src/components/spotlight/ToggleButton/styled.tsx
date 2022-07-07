@@ -1,3 +1,4 @@
+import { transparentize } from 'polished'
 import styled from 'styled-components'
 
 export const Input = styled.input`
@@ -36,7 +37,7 @@ export const Slider = styled.span`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: ${({ theme }) => theme.colors.background.modal};
+  background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[10])};
   -webkit-transition: 0.4s;
   transition: 0.4s;
   border-radius: 3.4em;

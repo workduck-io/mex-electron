@@ -3,7 +3,7 @@ import { generateTheme } from '../themeGenerator'
 export const xemTheme = generateTheme({
   // Colors
   primary: '#55A2EA',
-  secondary: '#128C7E',
+  secondary: '#B877EC',
 
   // Palettes
   gray: {

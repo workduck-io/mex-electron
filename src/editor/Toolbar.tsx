@@ -44,6 +44,7 @@ const Toolbar = () => {
         <IconButton
           size={24}
           singleton={target}
+          transparent={false}
           icon={shareLine}
           title="Share"
           highlight={shareModalState}
@@ -52,6 +53,7 @@ const Toolbar = () => {
         <IconButton
           singleton={target}
           size={24}
+          transparent={false}
           icon={focusLine}
           title="Focus Mode"
           shortcut={shortcuts.toggleFocusMode.keystrokes}
