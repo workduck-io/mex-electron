@@ -47,6 +47,7 @@ export type SnippetsProps = {
 }
 
 const Snippets = () => {
+  const { getAllSnippetsByWorkspace } = useApi()
   const snippets = useSnippetStore((store) => store.snippets)
   const { addSnippet, deleteSnippet, getSnippet, getSnippets, updateSnippet } = useSnippets()
   const api = useApi()
@@ -251,6 +252,7 @@ const Snippets = () => {
   }
 
   useEffect(() => {
+    getAllSnippetsByWorkspace()
     const snippets = getSnippets()
     const unfetchedSnippets = snippets.filter((snippet) => snippet.content.length === 0)
 
