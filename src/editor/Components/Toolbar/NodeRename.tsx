@@ -234,12 +234,12 @@ const NodeRenameOnlyTitle = () => {
             primary
             key="ButtonRename"
             disabled={getNameFromPath(nodeFrom) === newTitle || isClashed}
-            onClick={onRenameClick}
+            onMouseDown={onRenameClick}
           >
             <DisplayShortcut shortcut="Enter" />
             Rename
           </Button>
-          <Button onClick={onCancel}>
+          <Button onMouseDown={onCancel}>
             <DisplayShortcut shortcut="Shift+Enter" />
             Open Refactor
           </Button>
