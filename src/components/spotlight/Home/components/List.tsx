@@ -288,7 +288,7 @@ const List = ({
 
   useEffect(() => {
     setActiveIndex(0)
-  }, [spotlightTrigger, search.value])
+  }, [spotlightTrigger])
 
   // * handles double click on a list item
   function handleDoubleClick(id: number) {
