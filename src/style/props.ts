@@ -3,4 +3,6 @@ export interface FocusModeProp {
   focusMode?: boolean
   // Is element Hovered over focus mode?
   focusHover?: boolean
+  // Override focus mode opacity
+  overrideOpacity?: number
 }

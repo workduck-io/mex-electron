@@ -6,7 +6,7 @@ import { FocusModeProp } from './props'
 
 export const NoteTitle = styled.h1``
 
-export const NodeInfo = styled.div<FocusModeProp>`
+export const NodeInfo = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -20,11 +20,9 @@ export const NodeInfo = styled.div<FocusModeProp>`
     font-weight: normal;
     margin: 0 0 0 ${({ theme }) => theme.spacing.small};
   }
-
-  ${(props) => focusStyles(props)}
 `
 
-export const InfoTools = styled.div`
+export const InfoTools = styled.div<FocusModeProp>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -32,6 +30,7 @@ export const InfoTools = styled.div`
   ${Button}, ${AsyncButton} {
     margin: 0;
   }
+  ${(props) => focusStyles(props)}
 `
 
 export const EditorPreviewStyles = styled.div`
