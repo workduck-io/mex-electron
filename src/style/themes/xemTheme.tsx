@@ -7,8 +7,8 @@ export const mexTheme = generateTheme({
 
   // Palettes
   gray: {
-    10: '#11121B', // Darkest
-    9: '#1f2134',
+    10: '#191B2B', // Darkest
+    9: '#26283e',
     8: '#2b2e4a',
     7: '#363959',
     6: '#525579',

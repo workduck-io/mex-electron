@@ -7,9 +7,9 @@ export const xemTheme = generateTheme({
 
   // Palettes
   gray: {
-    10: '#0F2238', // Darkest
-    9: '#1E2124',
-    8: '#2F3740',
+    10: '#181b20', // Darkest
+    9: '#292d30',
+    8: '#2f353a',
     7: '#40444B',
     6: '#4E525A',
     5: '#646A75',
@@ -27,9 +27,9 @@ export const xemTheme = generateTheme({
   },
   text: {
     heading: '#E4F1FF',
-    default: '#C4DBF5',
+    default: '#cbd2d8',
     subheading: '#D1E5FB',
-    fade: '#A1B8D3',
+    fade: '#a1a4a9',
     disabled: '#72767D',
     accent: '#fe8019',
     oppositePrimary: '#ffffff'
