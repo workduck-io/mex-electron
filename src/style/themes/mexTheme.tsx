@@ -9,7 +9,7 @@ export const xemTheme = generateTheme({
   gray: {
     10: '#181b20', // Darkest
     9: '#292d30',
-    8: '#2F3740',
+    8: '#2f353a',
     7: '#40444B',
     6: '#4E525A',
     5: '#646A75',
