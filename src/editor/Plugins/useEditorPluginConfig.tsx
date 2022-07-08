@@ -86,25 +86,29 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
   const actions = useActionsCache((store) => store.actions)
 
   const activeActions = useMemo(() => {
-    const result = actions.map((action) => {
+    const results = []
+
+    actions.forEach((action) => {
       const actionGroupId = action?.extras?.actionGroup?.actionGroupId
 
-      return {
-        value: actionGroupId,
-        text: action.title,
-        type: CategoryType.action,
-        icon: action.icon,
-        command: actionGroupId,
-        extras: {
-          actionContext: {
-            actionId: action.id,
-            actionGroupId
+      if (actionGroupId) {
+        results.push({
+          value: actionGroupId,
+          text: action.title,
+          type: CategoryType.action,
+          icon: action.icon,
+          command: actionGroupId,
+          extras: {
+            actionContext: {
+              actionId: action.id,
+              actionGroupId
+            }
           }
-        }
+        })
       }
     })
 
-    return result
+    return results
   }, [actions])
 
   const internals: ComboboxItem[] = [

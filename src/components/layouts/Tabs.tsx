@@ -18,6 +18,7 @@ export type TabType = {
   component: JSX.Element
   type: SingleTabType
   tooltip?: string
+  shortcut?: string
 }
 
 type TabsProps = {
@@ -49,7 +50,12 @@ const Tabs: React.FC<TabsProps> = ({ tabs, openedTab, onChange, visible }) => {
       <TabHeaderContainer>
         <TabsWrapper index={index} total={tabs.length}>
           {tabs.map((tab) => (
-            <Tippy delay={200} key={tab.type} theme="mex" content={<TooltipTitleWithShortcut title={tab.tooltip} />}>
+            <Tippy
+              delay={200}
+              key={tab.type}
+              theme="mex-bright"
+              content={<TooltipTitleWithShortcut shortcut={tab.shortcut} title={tab.tooltip} />}
+            >
               <StyledTab key={tab.type} onClick={() => onChange(tab.type)} selected={tab.type === openedTab}>
                 {tab.label}
               </StyledTab>

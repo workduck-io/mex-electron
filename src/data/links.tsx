@@ -4,7 +4,6 @@ import fileDocument from '@iconify/icons-gg/file-document'
 import appsLine from '@iconify/icons-ri/apps-line'
 
 import quillPenLine from '@iconify/icons-ri/quill-pen-line'
-import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
 import React from 'react'
 import { NavLinkData } from '../components/mex/Sidebar/Types'
@@ -87,9 +86,9 @@ const useNavlinks = () => {
       {
         title: 'Reminders',
         path: ROUTE_PATHS.reminders,
-        icon: GetIcon(timerFlashLine)
+        icon: GetIcon(timerFlashLine),
         // count: count.reminders
-        // shortcut: shortcuts.showReminder.keystrokes
+        shortcut: shortcuts.showReminder.keystrokes
         // isComingSoon: true
       },
 
