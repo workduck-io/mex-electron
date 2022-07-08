@@ -8,6 +8,9 @@ import useTodoStore from '../../store/useTodoStore'
 import { useReminderStore } from '../../hooks/useReminders'
 import { filterIncompleteTodos } from './filter'
 
+// * at: numner (Lower -> asc)
+export type PriorityNode = { path: string; at: number }
+
 export const sortTree = (tree: TreeNode[], contents: Contents): TreeNode[] => {
   // const metadataList = Object.entries(contents).map(([k, v]) => v.metadata)
 
@@ -35,6 +38,37 @@ export const sortTree = (tree: TreeNode[], contents: Contents): TreeNode[] => {
   })
 
   return sortedTree
+}
+
+export const DEFAULT_PRIORITY_NODES = {
+  Onboarding: {
+    path: 'Onboarding',
+    at: 1
+  },
+  Drafts: {
+    path: 'Drafts',
+    at: 2
+  },
+  'Daily Tasks': {
+    path: 'Daily Tasks',
+    at: 3
+  }
+}
+
+export const sortTreeWithPriority = (
+  tree: BaseTreeNode[],
+  priorityNodes: Record<string, PriorityNode> = DEFAULT_PRIORITY_NODES
+) => {
+  const priorityNodesFromTree = []
+  const restBaseTree = []
+
+  tree.forEach((treeNode) => {
+    const pNode = priorityNodes[treeNode.path]
+    if (pNode) priorityNodesFromTree.push(treeNode)
+    else restBaseTree.push(treeNode)
+  })
+
+  return [...priorityNodesFromTree.sort((a, b) => priorityNodes[a.path].at - priorityNodes[b.path].at), ...restBaseTree]
 }
 
 const createChildLess = (path: string, nodeid: string, id: string, icon?: string, data?: any): TreeItem => ({
@@ -209,7 +243,7 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
     }
   })
 
-  const sortedBaseNestedTree = sortBaseNestedTree(baseNestedTree, metadata)
+  const sortedBaseNestedTree = sortTreeWithPriority(baseNestedTree)
 
   // mog('baseNestedTree', { baseNestedTree, sortedBaseNestedTree })
 
