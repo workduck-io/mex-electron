@@ -41,7 +41,11 @@ const parseAppleNotesTitle = (filepath: string) => {
   const splitName = filename.split(']')
 
   const APID = splitName[0].replace('[', '') // Apple Notes ID
-  const NoteTitle = splitName[1].trim().replace('.html', '').replace('.', '')
+  // replace any others characters than A-Z, a-z, 0-9 and , : - and ' ' because they aren't allowed in the backend
+  const NoteTitle = splitName[1]
+    .trim()
+    .replace('.html', '')
+    .replace(/[^ A-Za-z0-9,:-]+/g, '')
 
   return { APID, NoteTitle }
 }
