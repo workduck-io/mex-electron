@@ -53,13 +53,14 @@ export const Header = styled.div<{ colored?: boolean }>`
 
 const ShortcutListContainer = styled.section`
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  background-color: ${({ theme }) => theme.colors.background.card};
+  background-color: ${({ theme }) => theme.colors.gray[8]};
   margin: 0rem 4rem 2rem;
 `
 
 const ShortcutContent = styled.div`
   padding: 0;
-  background-color: ${({ theme }) => theme.colors.background.app};
+  background-color: ${({ theme }) => transparentize(0.4, theme.colors.gray[9])};
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
 `
 
 const Shortcuts = () => {
