@@ -285,7 +285,7 @@ const List = ({
 
   useEffect(() => {
     setActiveIndex(0)
-  }, [spotlightTrigger])
+  }, [spotlightTrigger, search.value])
 
   // * handles double click on a list item
   function handleDoubleClick(id: number) {
@@ -295,7 +295,8 @@ const List = ({
       if (currentActiveItem?.extras.new && !activeItem.active) {
         const node = useSpotlightEditorStore.getState().node
 
-        const nodePath = search.value.startsWith('[[') ? search.value.slice(2) : node.path
+        const text = getInputText(search)
+        const nodePath = search.value ? text : node.path
 
         // TODO: Create new note with specified 'nodeid' and 'path'.
         createNewNote({ path: nodePath, noteId: node.nodeid })
