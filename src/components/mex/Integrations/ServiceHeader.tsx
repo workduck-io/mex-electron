@@ -23,9 +23,6 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({ icon, onClick, isConnecte
         <span>
           <ProjectIconMex isMex={mexIcon} icon={icon} size={140} />
         </span>
-        <Button onClick={onClick} disabled={isConnected}>
-          {isConnected ? 'Disconnect' : 'Connect'}
-        </Button>
       </ActionGroupIcon>
       <GroupHeader connected={isConnected}>
         <FlexBetween>
@@ -40,6 +37,9 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({ icon, onClick, isConnecte
               Amet ut fugiat adipisicing officia aliquip quis non. Veniam magna dolor consequat quis aliqua ea ipsum
               reprehenderit commodo commodo. Minim minim sit sit magna labore sint esse ipsum.`}
         </ServiceDescription>
+        <Button primary onClick={onClick} disabled={isConnected}>
+          {isConnected ? 'Disconnect' : 'Connect'}
+        </Button>
       </GroupHeader>
     </div>
   )

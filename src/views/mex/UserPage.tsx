@@ -8,7 +8,7 @@ import { Button } from '../../style/Buttons'
 import { BackCard } from '../../style/Card'
 import { CenteredColumn } from '../../style/Layouts'
 import { Title } from '../../style/Typography'
-import { Info, InfoData, InfoLabel, ProfileContainer, ProfileIcon } from '../../style/UserPage'
+import { Info, InfoData, InfoLabel, ProfileContainer, ProfileIcon, UserCard } from '../../style/UserPage'
 import { mog } from '../../utils/lib/helper'
 
 const UserPage = () => {
@@ -27,7 +27,7 @@ const UserPage = () => {
 
   return (
     <CenteredColumn>
-      <BackCard>
+      <UserCard>
         <ProfileContainer>
           <ProfileIcon>
             <ProfileImage email={currentUserDetails?.email} size={128} />
@@ -56,7 +56,7 @@ const UserPage = () => {
             <Button onClick={handleGoogleAuthUrl}>Authorize Google Calendar</Button>
           </div>
         </ProfileContainer>
-      </BackCard>
+      </UserCard>
     </CenteredColumn>
   )
 }

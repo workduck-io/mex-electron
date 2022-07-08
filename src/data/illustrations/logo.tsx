@@ -44,12 +44,12 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
   ${({ expanded, theme }) =>
     expanded
       ? css`
-          top: ${theme.additional.hasBlocks ? 84 : 46}px;
-          left: ${theme.additional.hasBlocks ? 335 : 315}px;
+          top: ${theme.additional.hasBlocks ? 84 : 64}px;
+          left: ${theme.additional.hasBlocks ? 335 : 324}px;
         `
       : css`
-          top: ${theme.additional.hasBlocks ? 84 : 46}px;
-          left: ${theme.additional.hasBlocks ? 86 : 80}px;
+          top: ${theme.additional.hasBlocks ? 84 : 64}px;
+          left: ${theme.additional.hasBlocks ? 86 : 70}px;
         `}
 
   transition: left 0.5s ease, top 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;
@@ -57,8 +57,8 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
   padding: 8px;
   display: flex;
   align-items: center;
-  border-radius: 4px;
-  background-color: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
+  border-radius: 100%;
+  background: ${({ theme }) => theme.colors.secondary};
 
   ${({ show }) =>
     !show &&
@@ -69,7 +69,7 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
   &:hover {
     cursor: pointer;
     box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.25);
-    background-color: ${({ theme }) => theme.colors.gray[8]};
+    background: ${({ theme }) => theme.colors.secondary};
   }
 
   &:active {
@@ -132,7 +132,9 @@ export const SidebarToggle = () => {
         show={sidebar.show}
         {...getFocusProps(focusMode)}
       >
-        <Icon icon={sidebar.expanded ? arrowLeftSLine : arrowRightSLine} />
+        <Icon
+          icon={sidebar.expanded ? 'heroicons-solid:chevron-double-left' : 'heroicons-solid:chevron-double-right'}
+        />
       </SidebarToggleWrapper>
     </Tippy>
   )

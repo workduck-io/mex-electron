@@ -1,6 +1,12 @@
 import styled from 'styled-components'
 import { Button } from './Buttons'
+import { BackCard } from './Card'
 
+export const UserCard = styled(BackCard)`
+  max-width: 100%;
+  width: 98%;
+  min-height: 69vh;
+`
 export const ProfileContainer = styled.div`
   display: flex;
   align-items: center;

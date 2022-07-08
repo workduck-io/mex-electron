@@ -60,6 +60,7 @@ export const GroupHeader = styled.div<{ connected?: boolean }>`
   }
 
   ${Button} {
+    margin-top: ${({ theme }) => theme.spacing.medium};
     padding: 0.5rem 0.75rem;
     ${({ connected, theme }) =>
       connected &&
