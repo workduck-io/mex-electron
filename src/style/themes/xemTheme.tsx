@@ -1,6 +1,6 @@
 import { generateTheme } from '../themeGenerator'
 
-export const xemTheme = generateTheme({
+export const mexTheme = generateTheme({
   // Colors
   primary: '#55A2EA',
   secondary: '#B877EC',

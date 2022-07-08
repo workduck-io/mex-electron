@@ -7,7 +7,7 @@ import { useTheme } from 'styled-components'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
 import { Centered } from './Bookmarks'
-import { BList, SItem } from './SharedNotes.style'
+import { SItem } from './SharedNotes.style'
 
 const SharedNotes = () => {
   const sharedNodes = useDataStore((store) => store.sharedNodes)
@@ -23,36 +23,32 @@ const SharedNotes = () => {
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
-  return (
-    <BList>
-      {sharedNodes.length > 0 ? (
-        <>
-          {sharedNodes.map((sharedNode) => {
-            return (
-              <SItem
-                selected={node?.nodeid === sharedNode.nodeid}
-                key={`shared_notes_link_${sharedNode.nodeid}`}
-                onClick={() => onOpenNode(sharedNode.nodeid)}
-              >
-                <ItemContent>
-                  <ItemTitle>
-                    <SharedNodeIcon />
-                    <span>{sharedNode.path}</span>
-                  </ItemTitle>
-                </ItemContent>
-              </SItem>
-            )
-          })}
+  return sharedNodes.length > 0 ? (
+    <>
+      {sharedNodes.map((sharedNode) => {
+        return (
+          <SItem
+            selected={node?.nodeid === sharedNode.nodeid}
+            key={`shared_notes_link_${sharedNode.nodeid}`}
+            onClick={() => onOpenNode(sharedNode.nodeid)}
+          >
+            <ItemContent>
+              <ItemTitle>
+                <SharedNodeIcon />
+                <span>{sharedNode.path}</span>
+              </ItemTitle>
+            </ItemContent>
+          </SItem>
+        )
+      })}
 
-          {/* <SharedBreak /> */}
-        </>
-      ) : (
-        <Centered>
-          <SharedNodeIcon height={22} width={22} fill={theme.colors.text.default} margin="0 0 1rem 0" />
-          <span>No one has shared Notes with you yet!</span>
-        </Centered>
-      )}
-    </BList>
+      {/* <SharedBreak /> */}
+    </>
+  ) : (
+    <Centered>
+      <SharedNodeIcon height={22} width={22} fill={theme.colors.text.default} margin="0 0 1rem 0" />
+      <span>No one has shared Notes with you yet!</span>
+    </Centered>
   )
 }
 

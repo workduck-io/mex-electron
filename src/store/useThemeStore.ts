@@ -1,7 +1,7 @@
+import { xemTheme } from '@style/themes/mexTheme'
 import { DefaultTheme } from 'styled-components'
 import create from 'zustand'
 import { defaultThemes } from '../style/themes/defaultThemes'
-import { xemTheme } from '@style/themes/xemTheme'
 
 interface Theme {
   id: string

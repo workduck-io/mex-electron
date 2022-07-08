@@ -15,15 +15,19 @@ const getFavicon = (source: string) => {
 const Source: React.FC<{ source: string }> = ({ source }) => {
   const icon = getFavicon(source)
 
+  const onClick = () => {
+    window.open(source, '_blank')
+  }
+
   return (
-    <StyledSource contentEditable={false}>
+    <StyledSource contentEditable={false} onClick={onClick}>
       <ProjectIconContainer isView={false}>
         <Tippy
           delay={100}
           interactiveDebounce={100}
           placement="top"
           appendTo={() => document.body}
-          theme="mex"
+          theme="mex-bright"
           content={source}
         >
           <ProjectIconMex icon={icon} isMex={false} size={20} />
