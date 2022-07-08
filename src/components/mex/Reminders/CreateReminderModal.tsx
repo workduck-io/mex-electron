@@ -136,7 +136,11 @@ export const useOpenReminderModal = () => {
       if (parsed.textWithoutTime !== '') {
         addReminder(reminder)
         toast(`Reminder added for ${parsed.textWithoutTime}`)
-        saveAndClearBuffer(true)
+        //timeout 1s
+        setTimeout(() => {
+          saveAndClearBuffer(true)
+        }, 1000)
+
         setInfobarMode('reminders')
       } else
         openModal({
