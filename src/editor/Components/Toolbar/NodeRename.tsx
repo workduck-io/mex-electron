@@ -97,19 +97,19 @@ const NodeRenameOnlyTitle = () => {
 
       const to = getTo(newTitle)
 
-      if (isMatch(to, nodeFrom) && !e.shiftKey) {
+      if (isMatch(to, nodeFrom)) {
         toast('Note itself cannot be used')
         return
       }
 
-      if (e.shiftKey) {
-        // mog('Opening refactor')
+      // if (e.shiftKey) {
+      //   // mog('Opening refactor')
 
-        prefillRefactorModal(nodeFrom, to)
-      } else {
-        // mog('Renaming')
-        onRename()
-      }
+      //   prefillRefactorModal(nodeFrom, to)
+      // } else {
+      // mog('Renaming')
+      onRename()
+      // }
     } else if (e.key === 'Escape') reset()
   }
 
@@ -128,7 +128,7 @@ const NodeRenameOnlyTitle = () => {
 
   const onRename = async () => {
     // console.log('renaming', {})
-    if (newTitle === getNameFromPath(nodeFrom) || isClashed) {
+    if (newTitle === getNameFromPath(nodeFrom) || isClashed || newTitle.indexOf(SEPARATOR) !== -1) {
       reset()
       return
     }
@@ -233,15 +233,11 @@ const NodeRenameOnlyTitle = () => {
           <Button
             primary
             key="ButtonRename"
-            disabled={getNameFromPath(nodeFrom) === newTitle || isClashed}
+            disabled={getNameFromPath(nodeFrom) === newTitle || isClashed || newTitle.indexOf(SEPARATOR) !== -1}
             onMouseDown={onRenameClick}
           >
             <DisplayShortcut shortcut="Enter" />
             Rename
-          </Button>
-          <Button onMouseDown={onCancel}>
-            <DisplayShortcut shortcut="Shift+Enter" />
-            Open Refactor
           </Button>
         </ButtonWrapper>
       )}

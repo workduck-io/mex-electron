@@ -13,6 +13,7 @@ import React from 'react'
 import { useRenameStore } from '../../../store/useRenameStore'
 import { useShareModalStore } from '../Mention/ShareModalStore'
 import { useDeleteStore } from '../Refactor/DeleteModal'
+import { useRefactorStore } from '../Refactor/Refactor'
 
 // interface ItemProps {
 //   id: string
@@ -27,14 +28,14 @@ interface TreeContextMenuProps {
 export const MENU_ID = 'Tree-Menu'
 
 export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
-  const openRenameModal = useRenameStore((store) => store.openModal)
+  const openRefactorModal = useRefactorStore((store) => store.openModal)
   const openDeleteModal = useDeleteStore((store) => store.openModal)
   const { createNewNote } = useCreateNewNote()
   const openShareModal = useShareModalStore((store) => store.openModal)
 
-  const handleRename = (item: TreeItem) => {
+  const handleRefactor = (item: TreeItem) => {
     // mog('handleRename', { item })
-    openRenameModal(item.data.path)
+    openRefactorModal()
   }
 
   const handleArchive = (item: TreeItem) => {
@@ -58,11 +59,11 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
         <ContextMenuItem
           onSelect={(args) => {
             // console.log('onSelectRename', args, item)
-            handleRename(item)
+            handleRefactor(item)
           }}
         >
           <Icon icon={editLine} />
-          Rename
+          Refactor
         </ContextMenuItem>
         <ContextMenuItem
           onSelect={(args) => {

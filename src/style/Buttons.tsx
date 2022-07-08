@@ -39,6 +39,7 @@ export const Button = styled.button<ButtonProps>`
 
   &:disabled {
     background-color: ${({ theme }) => theme.colors.gray[6]};
+    cursor: default;
   }
 
   ${({ primary, transparent, theme }) =>
@@ -51,6 +52,7 @@ export const Button = styled.button<ButtonProps>`
       }
       &:disabled {
         background-color: ${({ theme }) => theme.colors.gray[6]};
+        cursor: default;
       }
     `}
 
@@ -77,6 +79,7 @@ export const Button = styled.button<ButtonProps>`
           }
           &:disabled {
             background-color: ${({ theme }) => theme.colors.gray[6]};
+            cursor: default;
           }
           &:focus {
             color: ${theme.colors.text.oppositePrimary};
