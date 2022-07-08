@@ -20,11 +20,12 @@ import {
   convertContentToRawText,
   convertToCopySnippet,
   defaultCopyConverter,
-  defaultCopyFilter
+  defaultCopyFilter,
+  getTitleFromContent
 } from '../../../../utils/search/parseData'
 import { useSnippets } from '../../../../hooks/useSnippets'
 import { mog } from '../../../../utils/lib/helper'
-import { serializeHtml, createPlateEditor, createPlateUI } from '@udecode/plate'
+import { serializeHtml, createPlateEditor, createPlateUI, getPlateSelectors } from '@udecode/plate'
 import getPlugins from '../../../../editor/Plugins/plugins'
 import { ELEMENT_TAG } from '../../../../editor/Components/tag/defaults'
 import { CopyTag } from '../../../../editor/Components/tag/components/CopyTag'
@@ -234,7 +235,9 @@ const List = ({
 
               if (currentActiveItem?.extras.new && !activeItem.active) {
                 const text = getInputText(search)
-                nodePath = search.value ? text : node.path
+                const editorContent = getPlateSelectors().value()
+                const title = getTitleFromContent(editorContent)
+                nodePath = search.value ? text : title ? `Drafts.${title}` : node.path
 
                 // TODO: Create new note with specified 'nodeid' and 'path'.
                 createNewNote({ path: nodePath, noteId: node.nodeid })

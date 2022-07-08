@@ -246,7 +246,7 @@ const SearchView = <Item,>({
   }, [id])
 
   const findCurrentIndex = () => {
-    const indexGroup = Object.keys(indexes?.indexes).find(
+    const indexGroup = Object.keys(indexes?.indexes ?? {})?.find(
       (indexGroup) => JSON.stringify(indexes?.indexes[indexGroup]) === JSON.stringify(idxKeys)
     )
     return indexGroup

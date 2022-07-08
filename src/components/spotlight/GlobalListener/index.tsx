@@ -1,6 +1,7 @@
 import { AppType, useInitialize } from '../../../hooks/useInitialize'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import React, { memo, useEffect, useState } from 'react'
+import config from '../../../config.json'
 
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
@@ -28,11 +29,13 @@ import { useActionsPerfomerClient } from '../Actions/useActionPerformer'
 import { useActionsCache } from '../Actions/useActionsCache'
 import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import { useAuth } from '@workduck-io/dwindle'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
   const { setSelection } = useSpotlightContext()
   const setSpotlightTrigger = useSpotlightSettingsStore((state) => state.setSpotlightTrigger)
+  const { initCognito } = useAuth()
 
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
   const setBubble = useSpotlightSettingsStore((state) => state.setBubble)
@@ -205,6 +208,11 @@ const GlobalListener = memo(() => {
     initActionPerfomerClient(useAuthStore.getState()?.userDetails?.userID)
     setReceiveToken()
     setReceiveMention()
+
+    const authenticatedUserEmail = initCognito({
+      UserPoolId: config.cognito.USER_POOL_ID,
+      ClientId: config.cognito.APP_CLIENT_ID
+    })
   }, [])
 
   useGoogleCalendarAutoFetch()
