@@ -235,7 +235,7 @@ export const SideNav = styled(animated.div)<NavWrapperProps>`
     `}
 
   ${TabBody} {
-    height: calc(100vh - 9rem);
+    height: calc(100% - 9rem);
   }
 `
 
