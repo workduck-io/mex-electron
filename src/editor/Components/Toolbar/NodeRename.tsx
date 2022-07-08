@@ -97,7 +97,7 @@ const NodeRenameOnlyTitle = () => {
 
       const to = getTo(newTitle)
 
-      if (isMatch(to, nodeFrom)) {
+      if (isMatch(to, nodeFrom) && !e.shiftKey) {
         toast('Note itself cannot be used')
         return
       }
