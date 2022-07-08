@@ -18,10 +18,12 @@ import Tabs, { TabType } from './Tabs'
 import bubbleChartLine from '@iconify/icons-ri/bubble-chart-line'
 import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
 import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
+import { useShortcutStore } from '@store/useShortcutStore'
 
 const InfoBarItems = () => {
   const graphData = useGraphData()
   const infobar = useLayoutStore((s) => s.infobar)
+  const shortcuts = useHelpStore((store) => store.shortcuts)
   const setInfobarMode = useLayoutStore((s) => s.setInfobarMode)
 
   // Ensure the tabs have InfobarType in type
@@ -37,7 +39,8 @@ const InfoBarItems = () => {
         label: <MexIcon noHover icon={lightbulbFlashLine} width={24} height={24} />,
         type: 'suggestions',
         component: <SuggestionInfoBar />,
-        tooltip: 'Suggestions'
+        tooltip: 'Suggestions',
+        shortcut: shortcuts.showSuggestedNodes.keystrokes
       },
       {
         label: <MexIcon noHover icon={timerFlashLine} width={24} height={24} />,
@@ -49,7 +52,8 @@ const InfoBarItems = () => {
         label: <MexIcon noHover icon={bubbleChartLine} width={24} height={24} />,
         type: 'graph',
         component: <Graph graphData={graphData} />,
-        tooltip: 'Graph'
+        tooltip: 'Graph',
+        shortcut: shortcuts.showGraph.keystrokes
       }
     ],
     [graphData]

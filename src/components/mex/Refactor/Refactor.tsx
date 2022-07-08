@@ -217,7 +217,7 @@ const Refactor = () => {
       )}
       <ModalControls>
         <Button primary autoFocus={!focus} large onClick={handleRefactor}>
-          Apply Refactor
+          Apply
         </Button>
       </ModalControls>
     </Modal>

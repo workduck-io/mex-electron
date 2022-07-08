@@ -170,34 +170,6 @@ const NavFooter: React.FC<{ target: any }> = ({ target }) => {
   )
 }
 
-const TestNav = () => {
-  const { push } = useNavigation()
-  const { goTo } = useRouting()
-
-  const onClick = (id: string) => {
-    push(id)
-    goTo(ROUTE_PATHS.node, NavigationType.push, id)
-  }
-
-  return (
-    <div>
-      {[
-        { title: 'First', id: 'NODE_yeAL46g8VrykqYRqQWncy' },
-        { title: 'Second', id: 'NODE_MQVEejyKKNnMpBbDiGeAr' }
-      ].map((item) => (
-        <SItem selected={false} key={`shared_notes_link_${item.id}`} onClick={() => onClick(item.id)}>
-          <ItemContent>
-            <ItemTitle>
-              <SharedNodeIcon />
-              <span>{item.title}</span>
-            </ItemTitle>
-          </ItemContent>
-        </SItem>
-      ))}
-    </div>
-  )
-}
-
 // const NavBody: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
 //   const [openedTab, setOpenedTab] = useState<SingleTabType>(SidebarTab.hierarchy)
 //   const replaceAndAddActionToPoll = useApiStore((store) => store.replaceAndAddActionToPoll)

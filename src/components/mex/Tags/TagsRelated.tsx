@@ -112,7 +112,7 @@ const TagsRelated = ({ nodeid, fromAnalysis }: TagsRelated) => {
                 </TagFlex>
               ))}
             </TagsFlex>
-            {relNodes.length > 0 ? <InfoSubHeading>Related Nodes</InfoSubHeading> : null}
+            {relNodes.length > 0 ? <InfoSubHeading>Related Notes</InfoSubHeading> : null}
             {relNodes.map((n) => (
               <NodeLink key={`info_tag_related_${nodeid}_${n}`} keyStr={`info_tag_related_${nodeid}_${n}`} nodeid={n} />
             ))}
@@ -120,7 +120,7 @@ const TagsRelated = ({ nodeid, fromAnalysis }: TagsRelated) => {
         ) : (
           <>
             <Note>No Tags found.</Note>
-            <Note>Create tags with # view them and related nodes here.</Note>
+            <Note>Create Tags with # view them and related Notes here.</Note>
           </>
         )}
       </Collapse>
