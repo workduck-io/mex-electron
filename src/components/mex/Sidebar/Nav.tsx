@@ -36,6 +36,7 @@ import React, { useEffect } from 'react'
 import tinykeys from 'tinykeys'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
+import NavigationCluster from './NavigationCluster'
 import { SItem } from './SharedNotes.style'
 import SidebarTabs from './SidebarTabs'
 import { useSidebarTransition } from './Transition'
@@ -94,6 +95,7 @@ const NavHeader: React.FC<{ target: any }> = ({ target }) => {
 
   return (
     <MainLinkContainer onMouseUp={(e) => e.stopPropagation()}>
+      <NavigationCluster />
       <CreateNewNote target={target} />
       <NavTooltip
         key={ROUTE_PATHS.search}

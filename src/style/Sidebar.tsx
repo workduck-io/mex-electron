@@ -188,3 +188,28 @@ export const StyledTreeItem = styled.div<{ selected?: boolean; isDragging?: bool
       box-shadow: inset 0 0 0 1px ${isDragging ? theme.colors.secondary : theme.colors.secondary};
     `}
 `
+
+export const NavigationClusterWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: ${({ theme }) => theme.spacing.tiny};
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
+`
+
+export const NavigationButton = styled.div<{ disabled: boolean }>`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: ${({ theme }) => theme.spacing.tiny};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      opacity: 0.25;
+      pointer-events: none;
+    `}
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.gray[7]};
+  }
+`
