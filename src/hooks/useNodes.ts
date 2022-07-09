@@ -66,22 +66,23 @@ export const useNodes = () => {
 
     if (!localBaseNode) {
       const lastOpenedNodeId = useRecentsStore.getState().lastOpened?.at(0)
-
       if (lastOpenedNodeId) {
         const node = getNode(lastOpenedNodeId)
 
-        if (!node) {
-          const topNode = nodeILinks.at(0)
-          if (!topNode) throw new Error(`Could not find a Base Note: ${baseNodePath}`)
+        if (node) {
+          setBaseNodeId(node?.path)
+          return node
+        }
+      }
 
+      if (!lastOpenedNodeId) {
+        const topNode = nodeILinks.at(0)
+
+        if (topNode) {
           mog('Setting Base Node to first Node of hierarchy', { topNode })
-          setBaseNodeId(topNode.path)
+          setBaseNodeId(topNode?.path)
           return topNode
         }
-
-        mog('Setting Base Node to last opened Node', { node })
-        setBaseNodeId(node.path)
-        return node
       }
     }
 

@@ -1,16 +1,18 @@
 import { useEffect } from 'react'
-import { useLocation, useMatch, useNavigate, useParams, matchPath } from 'react-router-dom'
+import { useLocation, useNavigate, useParams, matchPath } from 'react-router-dom'
 import { useKeyListener } from '../../hooks/useShortcutListener'
 import { useHelpStore } from '../../store/useHelpStore'
 import { useRecentsStore } from '../../store/useRecentsStore'
 import tinykeys from 'tinykeys'
-import { useNavigation } from '../../hooks/useNavigation'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../../data/IpcAction'
 import useLoad from '../../hooks/useLoad'
 import { useEditorStore } from '../../store/useEditorStore'
 import useDataStore from '../../store/useDataStore'
 import { useSnippetStore } from '../../store/useSnippetStore'
+import { useAuthStore } from '@services/auth/useAuth'
+import { useNodes } from '@hooks/useNodes'
+import { mog } from '@utils/lib/helper'
 
 export const ROUTE_PATHS = {
   home: '/',
@@ -66,35 +68,42 @@ export const useRouting = () => {
 export const useBrowserNavigation = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const { shortcutDisabled, shortcutHandler } = useKeyListener()
-  const { move, push } = useNavigation()
   const { loadNode } = useLoad()
+  const authenticated = useAuthStore((store) => store.authenticated)
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const addRecent = useRecentsStore((store) => store.addRecent)
   // const navigate = useNavigate()
   const location = useLocation()
+  const { updateBaseNode } = useNodes()
 
   useEffect(() => {
-    const node = useEditorStore.getState().node
-    const initialized = useDataStore.getState().initialized
+    if (authenticated) {
+      const node = useEditorStore.getState().node
+      const initialized = useDataStore.getState().initialized
 
-    if (!initialized) return
+      if (!initialized) return
 
-    if (node && location && location.pathname && location.pathname.startsWith(ROUTE_PATHS.node)) {
-      if (node.nodeid) {
-        const nodeid = location.pathname.split('/')[2]
-        if (nodeid && nodeid !== node.nodeid) {
-          // mog('Navigation reloaded', { nodeid, location, node })
-          loadNode(nodeid)
-          addRecent(nodeid)
+      if (node && location && location.pathname && location.pathname.startsWith(ROUTE_PATHS.node)) {
+        if (node.nodeid) {
+          let nodeid = location.pathname.split('/')[2]
+
+          if (nodeid === '__null__') nodeid = updateBaseNode()?.nodeid
+
+          if (nodeid && nodeid !== node.nodeid) {
+            // mog('Navigation reloaded', { nodeid, location, node })
+            loadNode(nodeid)
+            addRecent(nodeid)
+          }
         }
       }
+
+      if (node && location && location.pathname && location.pathname.startsWith(ROUTE_PATHS.snippet)) {
+        const nodeid = location.pathname.split('/')[3]
+        loadSnippet(nodeid)
+        // mog('Navigation reloaded', { nodeid, location, ROUTE_PATHS })
+      }
     }
-    if (node && location && location.pathname && location.pathname.startsWith(ROUTE_PATHS.snippet)) {
-      const nodeid = location.pathname.split('/')[3]
-      loadSnippet(nodeid)
-      // mog('Navigation reloaded', { nodeid, location, ROUTE_PATHS })
-    }
-  }, [location])
+  }, [location, authenticated])
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
