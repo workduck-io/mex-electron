@@ -51,7 +51,7 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
           return getUserDetails(email)
         })
 
-      const userDetails = (await runBatch(userDetailPromises)).fulfilled
+      const userDetails = (await runBatch(userDetailPromises)).fulfilled[0]
 
       mog('userDetails', { userDetails })
 

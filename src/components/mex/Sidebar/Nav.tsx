@@ -223,7 +223,7 @@ const Nav = () => {
           <NavTooltip singleton={source} />
 
           <NavLogoWrapper>
-            <WDLogo height={'64'} width={'64'} />
+            <WDLogo height={'56'} width={'56'} />
           </NavLogoWrapper>
           <NavHeader target={target} />
           <NavFooter target={target} />

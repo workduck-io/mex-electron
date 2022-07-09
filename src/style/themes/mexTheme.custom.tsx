@@ -1,3 +1,4 @@
+import { SidebarToggleWrapper } from '@data/illustrations/logo'
 import { InfoBarWrapper } from '@style/infobar'
 import { MainNav, SideNav } from '@style/Nav'
 import { SplitSearchPreviewWrapper } from '@style/Search'

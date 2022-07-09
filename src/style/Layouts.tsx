@@ -61,7 +61,6 @@ export const MainHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.medium};
-  color: ${({ theme }) => theme.colors.primary};
   margin: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
 
   ${Title} {

@@ -17,7 +17,7 @@ import NodeRenameOnlyTitle from './Components/Toolbar/NodeRename'
 
 const Toolbar = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
-  const { toggleFocusMode, setFocusHover, getFocusProps } = useLayout()
+  const { toggleFocusMode, getFocusProps } = useLayout()
   const focusMode = useLayoutStore((store) => store.focusMode)
   const openShareModal = useShareModalStore((store) => store.openModal)
   const shareModalState = useShareModalStore((store) => store.open)
@@ -31,10 +31,10 @@ const Toolbar = () => {
   // const { toggleGraph, toggleSuggestedNodes, toggleReminder } = useToggleElements()
 
   return (
-    <NodeInfo {...getFocusProps(focusMode)}>
+    <NodeInfo>
       <NodeRenameOnlyTitle />
       {fetchingContent && <Loading transparent dots={3} />}
-      <InfoTools>
+      <InfoTools {...getFocusProps(focusMode)}>
         <ToolbarTooltip singleton={source} />
         <ToolbarTooltip singleton={target} content="Bookmark">
           <span tabIndex={0}>
