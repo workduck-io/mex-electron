@@ -99,7 +99,6 @@ export const NavDivider = styled.div`
 
 export const MainLinkContainer = styled.div`
   width: 100%;
-  margin: 1rem 0;
   padding: ${({ theme }) => theme.spacing.small};
   display: flex;
   flex-direction: column;
