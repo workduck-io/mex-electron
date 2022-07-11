@@ -140,6 +140,12 @@ const GlobalListener = memo(() => {
           setAuthenticated(arg.userDetails, arg.workspaceDetails)
           initActionPerfomerClient(arg?.userDetails?.userID)
         }
+
+        initCognito({
+          UserPoolId: config.cognito.USER_POOL_ID,
+          ClientId: config.cognito.APP_CLIENT_ID
+        })
+
         getTokenData()
         getMentionData()
         goTo(ROUTE_PATHS.home, NavigationType.replace)
@@ -208,11 +214,6 @@ const GlobalListener = memo(() => {
     initActionPerfomerClient(useAuthStore.getState()?.userDetails?.userID)
     setReceiveToken()
     setReceiveMention()
-
-    const authenticatedUserEmail = initCognito({
-      UserPoolId: config.cognito.USER_POOL_ID,
-      ClientId: config.cognito.APP_CLIENT_ID
-    })
   }, [])
 
   useGoogleCalendarAutoFetch()

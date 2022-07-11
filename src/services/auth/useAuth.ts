@@ -24,6 +24,7 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { useHelpStore } from '@store/useHelpStore'
 import { useTokenStore } from './useTokens'
 import toast from 'react-hot-toast'
+import { useRecentsStore } from '@store/useRecentsStore'
 
 interface WorkspaceDetails {
   name: string
@@ -87,6 +88,7 @@ export const useAuthentication = () => {
   const { clearActionStore } = useActions()
   const { initActionPerfomerClient } = useActionsPerfomerClient()
   const setShowLoader = useLayoutStore((store) => store.setShowLoader)
+  const clearRecents = useRecentsStore((store) => store.clear)
 
   const { goTo } = useRouting()
   const clearShortcuts = useHelpStore((store) => store.clearShortcuts)
@@ -369,8 +371,6 @@ export const useAuthentication = () => {
           mog('Error: ', { error: JSON.stringify(error) })
         }
 
-        // console.log(d.data)
-        // Set workspace details
         const userDetails = {
           email: uCred.email,
           userID: uCred.userId,
@@ -388,10 +388,7 @@ export const useAuthentication = () => {
           alias: userDetails.alias
         })
         setAuthenticated(userDetails, { id: d.data.id, name: d.data.name })
-        setShowLoader(false)
       })
-      .then(updateDefaultServices)
-      .then(updateServices)
       .catch((err) => {
         setShowLoader(false)
         mog('Error: ', { error: 'Unable to create workspace' })
@@ -413,7 +410,9 @@ export const useAuthentication = () => {
       clearActionStore()
       clearActionCache()
       clearShortcuts()
+      clearRecents()
       removeGoogleCalendarToken()
+
       addEventProperties({ [CustomEvents.LOGGED_IN]: false })
 
       localStorage.clear()
