@@ -29,6 +29,10 @@ import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { getNameFromPath } from '../Sidebar/treeUtils'
 import { SelectedDate } from './Reminders.style'
 import { useLayoutStore } from '../../../store/useLayoutStore'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
+import { appNotifierWindow } from '@electron/utils/notifiers'
+import { IpcAction } from '@data/IpcAction'
+import { AppType } from '@hooks/useInitialize'
 
 interface ModalValue {
   time?: number
@@ -109,6 +113,7 @@ export const useCreateReminderModal = create<CreateReminderModalState>((set) => 
 
 export const useOpenReminderModal = () => {
   const { saveAndClearBuffer } = useEditorBuffer()
+  const spotlightCtx = useSpotlightContext()
   const openReminderModal = (query: string) => {
     const openModal = useCreateReminderModal.getState().openModal
     const node = useEditorStore.getState().node
@@ -135,7 +140,12 @@ export const useOpenReminderModal = () => {
       // mog('openReminderModal has time', { parsed, query, reminder })
       if (parsed.textWithoutTime !== '') {
         addReminder(reminder)
-        toast(`Reminder added for ${parsed.textWithoutTime}`)
+        if (spotlightCtx) {
+          appNotifierWindow(IpcAction.SHOW_TOAST, AppType.SPOTLIGHT, {
+            status: 'success',
+            title: 'Reminder saved successfully!'
+          })
+        } else toast(`Reminder added for ${parsed.textWithoutTime}`)
         //timeout 1s
         setTimeout(() => {
           saveAndClearBuffer(true)
@@ -158,6 +168,7 @@ export const useOpenReminderModal = () => {
   }
   return { openReminderModal }
 }
+
 const CreateReminderModal = () => {
   const modalOpen = useCreateReminderModal((state) => state.open)
   const closeModal = useCreateReminderModal((state) => state.closeModal)
