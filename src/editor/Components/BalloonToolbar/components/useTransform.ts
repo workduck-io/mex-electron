@@ -263,7 +263,7 @@ export const useTransform = () => {
 
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value })
 
-      toast(`Snippet created '${snippetTitle}'`, { duration: 5000 })
+      toast(`Snippet created [[${snippetTitle}]]`, { duration: 5000 })
       // setContent(nodeid, value)
       // saveData()
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path })
