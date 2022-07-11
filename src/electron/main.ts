@@ -528,7 +528,7 @@ app.on('window-all-closed', () => {
 })
 
 // * TBD: Save locally
-let SPOTLIGHT_SHORTCUT = 'CommandOrCOntrol+Shift+L'
+let SPOTLIGHT_SHORTCUT = 'CommandOrCOntrol+Shift+X'
 
 ipcMain.on(IpcAction.SET_SPOTLIGHT_SHORTCUT, (event, arg) => {
   const newSpotlightShortcut = getGlobalShortcut(arg.shortcut)
