@@ -7,9 +7,16 @@ import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { Snippet } from '../../../store/useSnippetStore'
 import { convertContentToRawText } from '../../../utils/search/parseData'
 import { getContent } from '../../../utils/helpers'
+import { SearchRepExtra } from '../../../types/search'
 
-export const getListItemFromNode = (node: ILink, description?: string, blockid?: string) => {
-  const rawText = description ?? convertContentToRawText(getContent(node?.nodeid)?.content ?? [], ' ')
+export const getListItemFromNode = (
+  node: ILink,
+  description?: string,
+  blockid?: string,
+  searchRepExtra?: SearchRepExtra
+) => {
+  const rawText =
+    description ?? convertContentToRawText(getContent(node?.nodeid)?.content ?? [], ' ', { extra: searchRepExtra })
 
   const listItem: ListItemType = {
     icon: node?.icon ?? 'gg:file-document',
