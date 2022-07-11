@@ -63,7 +63,7 @@ const GetIcon = ({ item, onCollapse, onExpand }: GetIconProps) => {
   return <StyledTreeSwitcher></StyledTreeSwitcher>
 }
 
-const TooltipContent = ({ item }: { item: TreeItem }) => {
+export const TooltipContent = ({ item }: { item: TreeItem }) => {
   // console.log('TooltipContent', { item, IS_DEV })
   return (
     <TooltipContentWrapper>
