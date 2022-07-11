@@ -44,8 +44,8 @@ const ButtonOrLinkStyles = css`
   font-size: 12px;
 
   svg {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     flex-shrink: 0;
     color: ${({ theme }) => theme.colors.text.default};
   }
