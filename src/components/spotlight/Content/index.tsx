@@ -1,6 +1,7 @@
 import { SpotlightModals } from '@components/layouts/Modals'
 import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { DRAFT_NODE, DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
+import { useSearchExtra } from '@hooks/useSearch'
 import { getTodayTaskNodePath, useTaskFromSelection } from '@hooks/useTaskFromSelection'
 import React, { useEffect } from 'react'
 import 'react-contexify/dist/ReactContexify.css'
@@ -61,6 +62,7 @@ const Content = () => {
   const { getNode } = useLoad()
   const { searchInList } = useSearch()
   const { resetEditor } = useEditorActions()
+  const { getSearchExtra } = useSearchExtra()
   const { search, selection, activeItem, activeIndex, searchResults, setSearchResults } = useSpotlightContext()
   const events = useCalendarStore((store) => store.events)
   const actions = useActionsCache((store) => store.actions)
@@ -76,6 +78,7 @@ const Content = () => {
           // * Get those recent node links which exists locally
 
           if (!normalMode) return
+          const extra = getSearchExtra()
 
           const recentEvents = selection ? [] : getUpcomingEvents()
           mog('EVENTS', { recentEvents })
@@ -87,7 +90,7 @@ const Content = () => {
             .map((nodeid: string) => {
               const item = ilinks.find((link) => link?.nodeid === nodeid)
 
-              const listItem: ListItemType = getListItemFromNode(item)
+              const listItem: ListItemType = getListItemFromNode(item, undefined, undefined, extra)
               return listItem
             })
             .filter((item) => {

@@ -12,7 +12,7 @@ import useLoad from '../../../hooks/useLoad'
 import { useQuickLinks } from '../../../hooks/useQuickLinks'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { useSnippets } from '../../../hooks/useSnippets'
-import { useSearch as useSearchHook } from '../../../hooks/useSearch'
+import { useSearch as useSearchHook, useSearchExtra } from '../../../hooks/useSearch'
 import { getTodayTaskNodePath } from '@hooks/useTaskFromSelection'
 import { useActionsCache } from '../Actions/useActionsCache'
 
@@ -71,10 +71,12 @@ export const useSearch = () => {
   const { getQuickLinks } = useQuickLinks()
   const actions = useActionsCache((store) => store.actions)
   const { getSnippet } = useSnippets()
+  const { getSearchExtra } = useSearchExtra()
 
   const searchInList = async () => {
     let searchList: Array<ListItemType> = []
     const quickLinks = getQuickLinks()
+    const extra = getSearchExtra()
 
     let sQuery: string
 
@@ -120,8 +122,8 @@ export const useSearch = () => {
           const localNode = isLocalNode(item.id)
 
           if (localNode.isLocal) {
-            // mog('Local node', { localNode, item })
-            const listItem = getListItemFromNode(localNode.ilink, item.text, item.blockId)
+            mog('Local node', { localNode, item, extra })
+            const listItem = getListItemFromNode(localNode.ilink, item.text, item.blockId, extra)
             localNodes.push(listItem)
           }
         })
