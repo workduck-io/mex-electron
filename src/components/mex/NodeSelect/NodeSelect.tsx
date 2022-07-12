@@ -1,3 +1,4 @@
+import { useSearchExtra } from '@hooks/useSearch'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import checkboxCircleLine from '@iconify/icons-ri/checkbox-circle-line'
 import errorWarningLine from '@iconify/icons-ri/error-warning-line'
@@ -5,7 +6,7 @@ import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import lock2Line from '@iconify/icons-ri/lock-2-line'
 import { Icon } from '@iconify/react'
 import { useCombobox } from 'downshift'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
 // import { MexIcon } from '../../../style/Layouts'
 import { useDebouncedCallback } from 'use-debounce'
@@ -168,6 +169,8 @@ function NodeSelect({
     isMatch: false
   })
 
+  const { getSearchExtra } = useSearchExtra()
+
   const setInputItems = (inputItems: QuickLink[]) => setNodeSelectState((state) => ({ ...state, inputItems }))
 
   const setSelectedItem = (selectedItem: QuickLink | null) =>
@@ -221,6 +224,7 @@ function NodeSelect({
     .filter((i) => i.text)
 
   const { inputItems, selectedItem } = nodeSelectState
+  const searchExtra = useMemo(() => getSearchExtra(), [])
   const contents = useContentStore((store) => store.contents)
 
   const getNewItems = (inputValue: string) => {
@@ -491,7 +495,7 @@ function NodeSelect({
                 let desc: undefined | string = undefined
                 if (item.status !== QuickLinkStatus.new) {
                   const content = contents[item.nodeid]
-                  if (content) desc = convertContentToRawText(content.content, ' ')
+                  if (content) desc = convertContentToRawText(content.content, ' ', { extra: searchExtra })
                   if (desc === '') desc = undefined
                 }
                 const icon = item.icon ? item.icon : fileList2Line
