@@ -1,3 +1,4 @@
+import Tippy from '@tippyjs/react'
 import { SharedNodeIcon } from '@components/icons/Icons'
 import { useEditorStore } from '@store/useEditorStore'
 import { ItemContent, ItemTitle } from '@style/Sidebar'
@@ -8,6 +9,7 @@ import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
 import { Centered } from './Bookmarks'
 import { SItem } from './SharedNotes.style'
+import { TooltipContent } from './Tree'
 
 const SharedNotes = () => {
   const sharedNodes = useDataStore((store) => store.sharedNodes)
@@ -27,18 +29,36 @@ const SharedNotes = () => {
     <>
       {sharedNodes.map((sharedNode) => {
         return (
-          <SItem
-            selected={node?.nodeid === sharedNode.nodeid}
-            key={`shared_notes_link_${sharedNode.nodeid}`}
-            onClick={() => onOpenNode(sharedNode.nodeid)}
+          <Tippy
+            theme="mex"
+            placement="right"
+            key={`shared_notes_link_tooltip${sharedNode.nodeid}`}
+            content={
+              <TooltipContent
+                item={{
+                  id: sharedNode.nodeid,
+                  children: [],
+                  data: {
+                    title: sharedNode.path,
+                    nodeid: sharedNode.nodeid
+                  }
+                }}
+              />
+            }
           >
-            <ItemContent>
-              <ItemTitle>
-                <SharedNodeIcon />
-                <span>{sharedNode.path}</span>
-              </ItemTitle>
-            </ItemContent>
-          </SItem>
+            <SItem
+              selected={node?.nodeid === sharedNode.nodeid}
+              key={`shared_notes_link_${sharedNode.nodeid}`}
+              onClick={() => onOpenNode(sharedNode.nodeid)}
+            >
+              <ItemContent>
+                <ItemTitle>
+                  <SharedNodeIcon />
+                  <span>{sharedNode.path}</span>
+                </ItemTitle>
+              </ItemContent>
+            </SItem>
+          </Tippy>
         )
       })}
 

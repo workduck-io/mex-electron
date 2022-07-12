@@ -2,16 +2,16 @@ import bookmarkLine from '@iconify/icons-ri/bookmark-line'
 import { Icon } from '@iconify/react'
 import { MexIcon } from '@style/Layouts'
 import { ItemContent, ItemTitle } from '@style/Sidebar'
+import Tippy from '@tippyjs/react'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import React, { useEffect } from 'react'
-import { useMatch, useParams } from 'react-router-dom'
+import React from 'react'
+import { useMatch } from 'react-router-dom'
 import styled from 'styled-components'
-import { useBookmarks } from '../../../hooks/useBookmarks'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
-import { BaseLink } from '../../../views/mex/Tag'
 import { SItem } from './SharedNotes.style'
+import { TooltipContent } from './Tree'
 
 const BList = styled.div`
   /* max-height: 15rem;
@@ -20,23 +20,6 @@ const BList = styled.div`
   overflow-y: auto; */
   height: 100%;
   padding: ${({ theme }) => theme.spacing.small};
-`
-
-const BLink = styled(BaseLink)`
-  display: flex;
-  align-items: center;
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-  padding: ${({ theme: { spacing } }) => `${spacing.tiny} ${spacing.small}`};
-  margin: 0 0 ${({ theme }) => theme.spacing.tiny};
-  svg {
-    margin-right: ${({ theme }) => theme.spacing.tiny};
-    color: ${({ theme }) => theme.colors.text.fade};
-  }
-  &:hover {
-    svg {
-      color: ${({ theme }) => theme.colors.text.oppositePrimary};
-    }
-  }
 `
 
 export const Centered = styled.div`
@@ -66,18 +49,36 @@ const Bookmarks = () => {
       {bookmarks.map((nodeid) => {
         if (getPathFromNodeid(nodeid) === undefined) return null
         return (
-          <SItem
-            selected={match?.params?.nodeid === nodeid}
-            key={`bookmarked_notes_link_${nodeid}`}
-            onClick={() => onOpenNode(nodeid)}
+          <Tippy
+            theme="mex"
+            placement="right"
+            key={`bookmarked_notes_link_tooltip${nodeid}`}
+            content={
+              <TooltipContent
+                item={{
+                  id: nodeid,
+                  children: [],
+                  data: {
+                    title: getPathFromNodeid(nodeid),
+                    nodeid
+                  }
+                }}
+              />
+            }
           >
-            <ItemContent>
-              <ItemTitle>
-                <Icon height={14} icon={bookmarkLine} />
-                <span>{getPathFromNodeid(nodeid)}</span>
-              </ItemTitle>
-            </ItemContent>
-          </SItem>
+            <SItem
+              selected={match?.params?.nodeid === nodeid}
+              key={`bookmarked_notes_link_${nodeid}`}
+              onClick={() => onOpenNode(nodeid)}
+            >
+              <ItemContent>
+                <ItemTitle>
+                  <Icon height={14} icon={bookmarkLine} />
+                  <span>{getPathFromNodeid(nodeid)}</span>
+                </ItemTitle>
+              </ItemContent>
+            </SItem>
+          </Tippy>
         )
       })}
       {bookmarks.length === 0 && (
