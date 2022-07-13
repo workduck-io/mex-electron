@@ -146,7 +146,12 @@ export const ItemContent = styled.div`
   gap: ${({ theme }) => theme.spacing.tiny};
 `
 
-export const StyledTreeItem = styled.div<{ selected?: boolean; isDragging?: boolean; isBeingDroppedAt?: boolean }>`
+export const StyledTreeItem = styled.div<{
+  selected?: boolean
+  isDragging?: boolean
+  isBeingDroppedAt?: boolean
+  hasMenuOpen?: boolean
+}>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
@@ -154,6 +159,14 @@ export const StyledTreeItem = styled.div<{ selected?: boolean; isDragging?: bool
   padding-right: 16px;
 
   transition: 0.1s ease;
+
+  ${({ hasMenuOpen, theme }) =>
+    hasMenuOpen &&
+    css`
+      background: ${transparentize(0.5, theme.colors.gray[7])};
+      color: ${theme.colors.text.fade};
+    `}
+
   &:hover {
     transition: 0s ease;
     background: ${({ theme }) => theme.colors.gray[7]};

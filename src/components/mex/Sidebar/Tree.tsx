@@ -107,10 +107,11 @@ interface TreeProps {
 
 interface TreeLocalState {
   tree: TreeData
+  contextOpenNodeid: string | null
 }
 
 const Tree = ({ initTree }: TreeProps) => {
-  const [treeState, setTreeState] = React.useState<TreeLocalState>({ tree: initTree })
+  const [treeState, setTreeState] = React.useState<TreeLocalState>({ tree: initTree, contextOpenNodeid: null })
   // const [draggedItem, setDraggedItem] = React.useState<TreeItem | null>(null)
   const location = useLocation()
 
@@ -134,7 +135,7 @@ const Tree = ({ initTree }: TreeProps) => {
   //
   useEffect(() => {
     mog('renderTree', { initTree })
-    setTreeState({ tree: initTree })
+    setTreeState({ tree: initTree, contextOpenNodeid: null })
   }, [initTree?.items])
 
   const [source, target] = useSingleton()
@@ -146,10 +147,6 @@ const Tree = ({ initTree }: TreeProps) => {
 
     // push(nodeid)
   }
-
-  const { show } = useContextMenu({
-    id: MENU_ID
-  })
 
   const onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, item: TreeItem) => {
     // mog('onClick', { item })
@@ -177,12 +174,19 @@ const Tree = ({ initTree }: TreeProps) => {
     return (
       <Tippy theme="mex" placement="right" singleton={target} content={<TooltipContent item={item} />}>
         <span>
-          <ContextMenu.Root>
+          <ContextMenu.Root
+            onOpenChange={(open) => {
+              if (open) {
+                setTreeState((state) => ({ ...state, contextOpenNodeid: item.data.nodeid }))
+              } else setTreeState((state) => ({ ...state, contextOpenNodeid: null }))
+            }}
+          >
             <ContextMenu.Trigger asChild>
               <StyledTreeItem
                 ref={provided.innerRef}
                 selected={isInEditor && item.data && match?.params?.nodeid === item.data.nodeid}
                 isDragging={snapshot.isDragging}
+                hasMenuOpen={treeState.contextOpenNodeid === item.data.nodeid}
                 isBeingDroppedAt={isTrue}
                 onContextMenu={(e) => {
                   console.log('ContextySe', e, item)
