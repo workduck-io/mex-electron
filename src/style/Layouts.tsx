@@ -67,5 +67,6 @@ export const MainHeader = styled.div`
     font-size: 2rem;
     font-weight: bold;
     flex-grow: 1;
+    margin: 0;
   }
 `

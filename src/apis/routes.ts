@@ -55,7 +55,7 @@ export const apiURLs = {
   getBookmarks: (userId: string) => `${API_URL}/userBookmark/${userId}`,
 
   // User
-  getUserRecords: `${config.constants.USER_SERVICE_BASE_URL}/user/`,
+  getUserRecords: `${config.constants.USER_SERVICE_BASE_URL}/`,
   registerUser: `${API_URL}/user/register`,
 
   // Archive
@@ -90,9 +90,9 @@ export const apiURLs = {
   getNotePublicURL: (uid: string) => `${MEXIT_FRONTEND_BASE_URL}/share/${uid}`,
 
   user: {
-    getFromEmail: (email: string) =>
-      `${config.constants.USER_SERVICE_BASE_URL}/user/email/${encodeURIComponent(email)}`,
-    getFromUserId: (userId: string) => `${config.constants.USER_SERVICE_BASE_URL}/user/${encodeURIComponent(userId)}`
+    getFromEmail: (email: string) => `${config.constants.USER_SERVICE_BASE_URL}/email/${encodeURIComponent(email)}`,
+    getFromUserId: (userId: string) => `${config.constants.USER_SERVICE_BASE_URL}/${encodeURIComponent(userId)}`,
+    updateInfo: `${config.constants.USER_SERVICE_BASE_URL}/info`
   },
 
   // Snippets

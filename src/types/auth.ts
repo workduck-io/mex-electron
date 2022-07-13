@@ -5,6 +5,11 @@ export interface UserDetails {
   alias: string
 }
 
+export interface UpdatableUserDetails {
+  name?: string
+  alias?: string
+}
+
 export interface AuthToken {
   accessToken: string
   idToken: string

@@ -7,6 +7,8 @@ import { AppType } from '../hooks/useInitialize'
 import { TextFieldHeight } from '@workduck-io/action-request-helper'
 
 interface InputProps {
+  transparent?: boolean
+  isDirty?: boolean
   isSelected?: boolean
   appType?: AppType
   error?: boolean
@@ -25,6 +27,23 @@ export const Input = styled.input<InputProps>`
     border-color: ${({ theme }) => theme.colors.primary};
     outline: none;
   }
+
+  ${({ transparent, isDirty, theme }) =>
+    transparent &&
+    css`
+      background-color: transparent;
+      border: 1px solid transparent;
+      &:hover,
+      &:focus {
+        background-color: ${theme.colors.form.input.bg};
+        border: 1px solid ${theme.colors.form.input.border};
+      }
+      ${isDirty &&
+      css`
+        background-color: ${theme.colors.form.input.bg};
+        border: 1px solid ${theme.colors.form.input.border};
+      `}
+    `}
 
   ${({ center }) =>
     center &&
@@ -86,8 +105,16 @@ export const TextArea = styled.textarea`
   }
 `
 
-export const InputWrapper = styled.div`
+export const InputWrapper = styled.div<{ transparent?: boolean }>`
   width: 100%;
+  ${({ transparent }) =>
+    transparent &&
+    css`
+      background-color: ${({ theme }) => theme.colors.gray[8]};
+      padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
+      border-radius: ${({ theme }) => theme.borderRadius.small};
+      margin-bottom: ${({ theme }) => theme.spacing.medium};
+    `}
 `
 
 export const AuthForm = styled.form`
@@ -148,6 +175,7 @@ export const TextAreaBlock = styled(TextArea)<{ height?: TextFieldHeight; error?
 
 interface LabelProps {
   error?: boolean
+  transparent?: boolean
 }
 
 export const Label = styled.label<LabelProps>`
@@ -155,6 +183,17 @@ export const Label = styled.label<LabelProps>`
   margin: ${({ theme: { spacing } }) => `${spacing.medium} 0 3px`};
   display: flex;
   align-items: center;
+  gap: ${({ theme: { spacing } }) => spacing.small};
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  ${({ transparent }) =>
+    transparent &&
+    css`
+      margin-left: ${({ theme }) => theme.spacing.small};
+    `};
+
   /*${({ theme, error }) =>
     error &&
     css`
@@ -167,6 +206,7 @@ export const ButtonFields = styled.div`
   display: flex;
   align-items: center;
   margin: ${({ theme }) => theme.spacing.large} 0 ${({ theme }) => theme.spacing.medium};
+  gap: ${({ theme }) => theme.spacing.medium};
 `
 
 export const ReactSelectStyles = (theme: DefaultTheme) => ({

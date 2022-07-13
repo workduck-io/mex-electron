@@ -18,7 +18,7 @@ import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActio
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useLayoutStore } from '@store/useLayoutStore'
 
-import { UserDetails } from '../../types/auth'
+import { UpdatableUserDetails, UserDetails } from '../../types/auth'
 import { useUserCacheStore } from '@store/useUserCacheStore'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { useHelpStore } from '@store/useHelpStore'
@@ -42,6 +42,7 @@ interface AuthStoreState extends State {
   setRegistered: (val: boolean) => void
   setIsForgottenPassword: (val: boolean) => void
   getWorkspaceId: () => string | undefined
+  updateUserDetails: (userDetails: UpdatableUserDetails) => void
 }
 
 export const useAuthStore = create<AuthStoreState>(
@@ -64,6 +65,9 @@ export const useAuthStore = create<AuthStoreState>(
           return workspaceDetails.id
         }
         return undefined
+      },
+      updateUserDetails: (userDetails) => {
+        set({ userDetails: { ...get().userDetails, ...userDetails } })
       }
     }),
     { name: 'auth-mex' }
