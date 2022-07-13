@@ -1,12 +1,12 @@
 import { useApi } from '@apis/useSaveApi'
 import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActionPerformer'
 import useActions from '@components/spotlight/Actions/useActions'
+import useArchive from '@hooks/useArchive'
 import { useFetchShareData } from '@hooks/useFetchShareData'
 import useLoad from '@hooks/useLoad'
 import { useNodes } from '@hooks/useNodes'
 import { usePortals } from '@hooks/usePortals'
 import { useAuthentication, useAuthStore } from '@services/auth/useAuth'
-import { useEditorStore } from '@store/useEditorStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { runBatch } from '@utils/lib/batchPromise'
 import { mog } from '@utils/lib/helper'
@@ -25,6 +25,7 @@ export const useInitLoader = () => {
   const { initActionPerfomerClient } = useActionsPerfomerClient()
 
   const { getNodesByWorkspace, getAllSnippetsByWorkspace } = useApi()
+  const { getArchiveNotesHierarchy } = useArchive()
   const { getGroupsToView } = useActions()
   const { logout } = useAuthentication()
   const { fetchShareData } = useFetchShareData()
@@ -32,7 +33,7 @@ export const useInitLoader = () => {
 
   const backgroundFetch = async () => {
     try {
-      runBatch<any>([fetchShareData()])
+      runBatch<any>([fetchShareData(), getArchiveNotesHierarchy()])
     } catch (err) {
       mog('Background fetch failed')
     }
@@ -44,13 +45,9 @@ export const useInitLoader = () => {
     try {
       await runBatch<any>([getNodesByWorkspace(), getAllSnippetsByWorkspace(), getGroupsToView(), initPortals()])
 
-      const nodeid = useEditorStore.getState().node?.nodeid
-
-      if (nodeid === '__null__') {
-        const baseNode = updateBaseNode()
-        loadNode(baseNode?.nodeid, { savePrev: false, fetch: false })
-        goTo(ROUTE_PATHS.node, NavigationType.push, baseNode?.nodeid)
-      }
+      const baseNode = updateBaseNode()
+      loadNode(baseNode?.nodeid, { savePrev: false, fetch: false })
+      goTo(ROUTE_PATHS.node, NavigationType.push, baseNode?.nodeid)
 
       setShowLoader(false)
     } catch (err) {

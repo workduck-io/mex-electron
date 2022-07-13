@@ -8,6 +8,11 @@ import useDataStore from '../store/useDataStore'
 import { ILink } from '../types/Types'
 import { mog } from '../utils/lib/helper'
 import { useSaveData } from './useSaveData'
+import { hierarchyParser } from './useHierarchy'
+import { iLinksToUpdate } from '@utils/hierarchy'
+import { runBatch } from '@utils/lib/batchPromise'
+import { useApi } from '@apis/useSaveApi'
+import { useLinks } from './useLinks'
 // import { apiURLs } from '.../Editor/Store/Types'
 
 const useArchive = () => {
@@ -16,15 +21,43 @@ const useArchive = () => {
   const unArchive = useDataStore((state) => state.unArchive)
   const addInArchive = useDataStore((state) => state.addInArchive)
   const removeArchive = useDataStore((state) => state.removeFromArchive)
+  const { getDataAPI } = useApi()
 
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
 
   const updateTagsCache = useDataStore((state) => state.updateTagsCache)
   const updateInternalLinks = useDataStore((state) => state.updateInternalLinks)
 
-  const { onSave } = useSaver()
   const { saveData } = useSaveData()
   const { userCred } = useAuth()
+  const { updateILinks } = useLinks()
+
+  const updateArchiveLinks = (addedILinks: Array<ILink>, removedILinks: Array<ILink>): Array<ILink> => {
+    let links = useDataStore.getState().archive
+
+    const intersection = removedILinks.filter((l) => addedILinks.find((rem) => l.nodeid == rem.nodeid))
+
+    intersection.forEach((ilink) => {
+      links.splice(
+        links.findIndex((item) => item.nodeid === ilink.nodeid),
+        1
+      )
+    })
+
+    addedILinks.forEach((p) => {
+      const idx = links.find((link) => link.nodeid === p.nodeid)
+
+      if (idx && idx.path !== p.path)
+        links = links.map((link) => (link.nodeid === p.nodeid ? { ...link, path: p.path } : link))
+      else if (idx === undefined) links.push(p)
+    })
+
+    const newILinks = [...links]
+
+    setArchive(newILinks)
+
+    return newILinks
+  }
 
   const archived = (nodeid: string) => {
     return archive.find((node) => node.nodeid === nodeid)
@@ -35,6 +68,7 @@ const useArchive = () => {
       addInArchive(nodes)
       return true
     }
+
     if (userCred) {
       return await client
         .put(
@@ -49,11 +83,19 @@ const useArchive = () => {
             }
           }
         )
-        // .then(console.log)
-        .then(() => {
-          addInArchive(nodes)
+        .then((d) => {
+          const { removedPaths, addedPaths } = d.data
+
+          const addedArchivedLinks = hierarchyParser(addedPaths)
+          const removedArchivedLinks = hierarchyParser(removedPaths)
+
+          mog('LINKS AFTER ARCHIVING', { addedArchivedLinks, removedArchivedLinks })
+
+          if (addedArchivedLinks && removedArchivedLinks) {
+            // * set the new hierarchy in the tree
+            updateArchiveLinks(addedArchivedLinks, removedArchivedLinks)
+          }
         })
-        .then(() => onSave())
         .then(() => {
           return true
         })
@@ -90,13 +132,13 @@ const useArchive = () => {
       .catch(console.error)
   }
 
-  const getArchiveData = async () => {
+  const getArchiveNotesHierarchy = async () => {
     if (!USE_API) {
       return archive
     }
 
     await client
-      .get(apiURLs.getArchivedNodes(getWorkspaceId()), {
+      .get(apiURLs.getArchiveNotesHierarchy(), {
         headers: {
           [WORKSPACE_HEADER]: getWorkspaceId(),
           Accept: 'application/json, text/plain, */*'
@@ -104,9 +146,18 @@ const useArchive = () => {
       })
       .then((d) => {
         if (d.data) {
-          const ids = d.data
-          const links = ids.filter((id) => archive.filter((ar) => ar.nodeid === id).length === 0)
-          setArchive(links)
+          const hierarchy = d.data
+
+          const archivedNotes = hierarchyParser(hierarchy)
+
+          if (archivedNotes && archivedNotes.length > 0) {
+            const localILinks = useDataStore.getState().archive
+            const { toUpdateLocal } = iLinksToUpdate(localILinks, archivedNotes)
+
+            runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid, false, false, false)))
+          }
+
+          setArchive(archivedNotes)
         }
         return d.data
       })
@@ -169,7 +220,7 @@ const useArchive = () => {
     return false
   }
 
-  return { archived, addArchiveData, removeArchiveData, getArchiveData, unArchiveData }
+  return { archived, addArchiveData, updateArchiveLinks, removeArchiveData, getArchiveNotesHierarchy, unArchiveData }
 }
 
 export default useArchive

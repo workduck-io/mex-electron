@@ -115,8 +115,6 @@ const Delete = () => {
   const handleDelete = () => {
     const { toLoad } = execDelete(del)
 
-    // Load this node after deletion
-    // mog('handling delete', { toLoad, del })
     loadNode(toLoad, { savePrev: false, fetch: USE_API })
     closeModal()
   }

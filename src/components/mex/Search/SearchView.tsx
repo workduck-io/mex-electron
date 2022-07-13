@@ -429,8 +429,8 @@ const SearchView = <Item,>({
             splitOptions={splitOptions}
             selected={i === selected}
             ref={i === selected ? selectedRef : null}
-            id={`ResultForSearch_${getItemKey(c)}`}
-            key={`ResultForSearch_${getItemKey(c)}`}
+            id={`ResultForSearch_${getItemKey(c)}_${i}`}
+            key={`ResultForSearch_${getItemKey(c)}_${i}`}
           />
         )
       })}
@@ -480,15 +480,14 @@ const SearchView = <Item,>({
             ))}
           </div>
         )*/}
-        {!options?.view && (
-          <ViewSelector
-            currentView={view}
-            onChangeView={(view) => {
-              mog('onChangeView', { view })
-              setView(view)
-            }}
-          />
-        )}
+
+        <ViewSelector
+          currentView={view}
+          onChangeView={(view) => {
+            mog('onChangeView', { view })
+            setView(view)
+          }}
+        />
       </SearchHeader>
 
       {RenderFilters && filters.length > 0 ? <RenderFilters result={result} /> : null}

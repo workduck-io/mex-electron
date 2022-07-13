@@ -108,7 +108,7 @@ export const defaultShortcuts = {
   },
   showSpotlight: {
     title: 'Open Spotlight',
-    keystrokes: '$mod+Shift+KeyL',
+    keystrokes: '$mod+Shift+KeyX',
     category: 'Actions',
     global: true
   },

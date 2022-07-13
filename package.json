@@ -106,7 +106,7 @@
     "@udecode/plate-highlight": "~10.2.2",
     "@uifabric/styling": "^7.19.0",
     "@workduck-io/action-request-helper": "^0.1.6",
-    "@workduck-io/dwindle": "^0.0.16",
+    "@workduck-io/dwindle": "^0.0.17",
     "@workduck-io/flexsearch": "^0.7.22",
     "active-win-universal": "^7.6.2",
     "axios": "^0.21.1",

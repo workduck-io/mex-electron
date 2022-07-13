@@ -297,6 +297,7 @@ const Snippets = () => {
         onDelete={(i) => onDeleteSnippet(i.id)}
         onEscapeExit={onEscapeExit}
         onSearch={onSearch}
+        options={{ view: View.Card }}
         RenderItem={RenderItem}
         RenderPreview={RenderPreview}
       />

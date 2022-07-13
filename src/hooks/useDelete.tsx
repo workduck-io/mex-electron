@@ -42,7 +42,6 @@ export const useDelete = () => {
 
   const execDelete = (del: string) => {
     const currentNode = useEditorStore.getState().node
-    const oldHistory = useHistoryStore.getState().stack
     const { archivedNodes, newIlinks } = getMockDelete(del)
 
     addArchiveData(archivedNodes)

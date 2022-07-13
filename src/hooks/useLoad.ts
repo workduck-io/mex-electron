@@ -23,6 +23,7 @@ import { DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
 import { useBlockHighlightStore } from '@editor/Actions/useFocusBlock'
 import { useTreeStore } from '@store/useTreeStore'
 import { useFetchShareData } from './useFetchShareData'
+import { useAuthStore } from '@services/auth/useAuth'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -223,6 +224,9 @@ const useLoad = () => {
   const loadNode: LoadNodeFn = (nodeid, options = { savePrev: true, fetch: USE_API, withLoading: true }) => {
     const hasBeenLoaded = false
     const currentNodeId = useEditorStore.getState().node.nodeid
+    const isAuthenticated = useAuthStore.getState().authenticated
+
+    if (!isAuthenticated) return
 
     const localCheck = isLocalNode(nodeid)
 

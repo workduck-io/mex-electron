@@ -46,13 +46,13 @@ const Login = () => {
 
         if (s.v === 'success') {
           const { userDetails, workspaceDetails } = s.authDetails
-          const node = useEditorStore.getState().node
+          // const node = useEditorStore.getState().node
 
-          if (node?.nodeid === '__null__') {
-            const baseNode = updateBaseNode()
-            loadNode(baseNode?.nodeid, { savePrev: false, fetch: false })
-            goTo(ROUTE_PATHS.node, NavigationType.push, baseNode?.nodeid)
-          }
+          // if (node?.nodeid === '__null__') {
+          //   const baseNode = updateBaseNode()
+          //   loadNode(baseNode?.nodeid, { savePrev: false, fetch: false })
+          //   goTo(ROUTE_PATHS.node, NavigationType.push, baseNode?.nodeid)
+          // }
 
           setAuthenticated(userDetails, workspaceDetails)
         }

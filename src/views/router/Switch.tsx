@@ -1,3 +1,4 @@
+import ArchiveNoteEditor from '@components/mex/Archive/ArchiveNoteEditor'
 import Actions from '@components/mex/Integrations/Actions'
 import Portals from '@components/mex/Integrations/Portals'
 import { useEditorBuffer, useSnippetBuffer } from '@hooks/useEditorBuffer'
@@ -83,6 +84,8 @@ const Switch = () => {
       } else if (location.pathname.startsWith(ROUTE_PATHS.node)) {
         mog('Showing Sidebar', { location })
         showSidebar()
+      } else if (location.pathname.startsWith(ROUTE_PATHS.archive)) {
+        showSidebar()
       } else {
         mog('Hiding Sidebar', { location })
         hideSidebar()
@@ -125,6 +128,8 @@ const Switch = () => {
             element={<ProtectedRoute component={Portals} />}
           />
           <Route path={ROUTE_PATHS.archive} element={<ProtectedRoute component={Archive} />} />
+          <Route path={`${ROUTE_PATHS.archive}/:nodeid`} element={<ProtectedRoute component={ArchiveNoteEditor} />} />
+
           <Route path={ROUTE_PATHS.snippets} element={<ProtectedRoute component={Snippets} />} />
           <Route path={ROUTE_PATHS.search} element={<ProtectedRoute component={Search} />} />
           <Route path={ROUTE_PATHS.tasks} element={<ProtectedRoute component={Tasks} />} />

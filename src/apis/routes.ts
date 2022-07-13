@@ -34,7 +34,9 @@ export const GOOGLE_CAL_BASE = 'https://www.googleapis.com/calendar/v3/calendars
 export const GOOGLE_OAUTH2_REFRESH_URL = `${MEXIT_BACKEND_URL_BASE}/oauth2/getGoogleAccessToken`
 
 // NO ending `/`
-export const API_URL = config.constants.MEX_BACKEND_BASE_URL
+export const API_URL = !IS_DEV
+  ? 'https://fsqucmv3of.execute-api.us-east-1.amazonaws.com'
+  : config.constants.MEX_BACKEND_BASE_URL
 
 export const apiURLs = {
   //node
@@ -59,9 +61,10 @@ export const apiURLs = {
   registerUser: `${API_URL}/user/register`,
 
   // Archive
-  archiveNodes: () => `${API_URL}/node/archive`,
+  archiveNodes: () => `${API_URL}/node/archive/middleware`,
   deleteArchiveNodes: () => `${API_URL}/node/archive/delete`,
   getArchivedNodes: (workspaceId: string) => `${API_URL}/node/archive/${workspaceId}`,
+  getArchiveNotesHierarchy: () => `${API_URL}/workspace/hierarchy/archived`,
   unArchiveNodes: () => `${API_URL}/node/unarchive`,
 
   // * Loch
