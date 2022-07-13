@@ -129,12 +129,12 @@ const ContentEditor = () => {
   }, [shortcuts, toggleFocusMode])
 
   const viewOnly = accessWhenShared(node.nodeid) === 'READ'
-  const readOnly = !!fetchingContent
+  // const readOnly = !!fetchingContent
 
-  mog('ContentEditor', {
-    node,
-    editorId
-  })
+  // mog('ContentEditor', {
+  //   node,
+  //   editorId
+  // })
 
   return (
     <>

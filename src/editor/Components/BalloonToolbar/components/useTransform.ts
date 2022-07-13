@@ -71,11 +71,11 @@ export const useTransform = () => {
 
   const replaceSelectionWithTask = (editor: TEditor, todoVal: NodeEditorContent) => {
     try {
-      Transforms.removeNodes(editor, { at: editor.selection, hanging: false })
-      Transforms.delete(editor)
+      // mog('replaceSelectionWithTask  ', { todoVal, selection: editor.selection })
+      Transforms.removeNodes(editor, { at: editor.selection, mode: 'highest' })
 
       const convertedVal = convertValueToTasks(todoVal)
-      mog('replaceSelectionWithTask  ', { todoVal, convertedVal })
+      // mog('replaceSelectionWithTask  ', { todoVal, convertedVal })
 
       insertNodes<any>(editor, convertedVal, {
         at: editor.selection
