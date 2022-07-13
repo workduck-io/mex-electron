@@ -303,14 +303,14 @@ export const useApi = () => {
 
         if (isUpdate) updateFromContent(nodeid, content, metadata)
 
-        return { data: d.data.data, metadata, version: d.data.version ?? undefined }
+        return { content, metadata, version: d.data.version ?? undefined }
       })
       .catch((e) => {
         console.error(`MexError: Fetching nodeid ${nodeid} failed with: `, e)
       })
 
     if (res) {
-      return { content: deserializeContent(res.data), metadata: res.metadata ?? undefined, version: res.version }
+      return { content: res?.content, metadata: res?.metadata ?? undefined, version: res.version }
     }
   }
 
