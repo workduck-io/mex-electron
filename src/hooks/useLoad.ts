@@ -15,7 +15,7 @@ import useSuggestionStore from '@store/useSuggestionStore'
 import useToggleElements from './useToggleElements'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { useRefactor } from './useRefactor'
-import { getAllParentIds, getParentId, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
+import { getAllParentIds, getParentNodePath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import { useAnalysisStore } from '@store/useAnalysis'
 import { checkIfUntitledDraftNode } from '@utils/lib/strings'
 import { getPathFromNodeIdHookless } from './useLinks'
@@ -77,7 +77,7 @@ const useLoad = () => {
 
     if (!isUntitled) return
 
-    const parentNodePath = getParentId(nodePath)
+    const parentNodePath = getParentNodePath(nodePath)
     const newNodePath = `${parentNodePath}.${draftNodeTitle}`
 
     if (newNodePath !== nodePath)

@@ -1,20 +1,18 @@
-import { SharedNodeIcon } from '@components/icons/Icons'
 import WDLogo from '@components/spotlight/Search/Logo'
 import { getRandomQAContent } from '@data/Defaults/baseData'
 import { SidebarToggle, TrafficLightBG } from '@data/illustrations/logo'
 import useNavlinks, { GetIcon } from '@data/links'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import useLayout from '@hooks/useLayout'
-import { useNavigation } from '@hooks/useNavigation'
 import { useKeyListener } from '@hooks/useShortcutListener'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
-import archiveFill from '@iconify/icons-ri/archive-fill'
 import searchLine from '@iconify/icons-ri/search-line'
 import settings4Line from '@iconify/icons-ri/settings-4-line'
 import { Icon } from '@iconify/react'
 import useDataStore from '@store/useDataStore'
 import { useHelpStore } from '@store/useHelpStore'
 import { useLayoutStore } from '@store/useLayoutStore'
+import archiveLine from '@iconify/icons-ri/archive-line'
 import {
   ComingSoon,
   Count,
@@ -29,7 +27,6 @@ import {
   SearchLink,
   SideNav
 } from '@style/Nav'
-import { ItemContent, ItemTitle } from '@style/Sidebar'
 import { useSingleton } from '@tippyjs/react'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React, { useEffect } from 'react'
@@ -37,7 +34,6 @@ import tinykeys from 'tinykeys'
 import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavTooltip } from '../Tooltips'
 import NavigationCluster from './NavigationCluster'
-import { SItem } from './SharedNotes.style'
 import SidebarTabs from './SidebarTabs'
 import { useSidebarTransition } from './Transition'
 
@@ -147,7 +143,7 @@ const NavFooter: React.FC<{ target: any }> = ({ target }) => {
         content={<TooltipTitleWithShortcut title="Archive" shortcut={shortcuts.showArchive.keystrokes} />}
       >
         <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={ROUTE_PATHS.archive} key="nav_search">
-          {GetIcon(archiveFill)}
+          {GetIcon(archiveLine)}
           <NavTitle>Archive</NavTitle>
           {archive.length > 0 && <Count>{archive.length}</Count>}
         </Link>

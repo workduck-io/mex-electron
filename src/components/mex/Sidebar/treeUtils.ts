@@ -17,10 +17,10 @@ export const sampleFlatTree = [
 
 export const SEPARATOR = '.'
 
-export const getParentId = (id: string, separator = SEPARATOR) => {
-  const lastIndex = id.lastIndexOf(separator)
+export const getParentNodePath = (path: string, separator = SEPARATOR) => {
+  const lastIndex = path.lastIndexOf(separator)
   if (lastIndex === -1) return null
-  return id.slice(0, lastIndex)
+  return path.slice(0, lastIndex)
 }
 
 /** Also includes the ID of the final node */
@@ -58,11 +58,11 @@ export const isElder = (id: string, xparent: string) => {
 }
 
 export const isParent = (id: string, parent: string) => {
-  return getParentId(id) === parent
+  return getParentNodePath(id) === parent
 }
 
 export const isTopNode = (id: string) => {
-  return getParentId(id) === null
+  return getParentNodePath(id) === null
 }
 
 export const getParentFromPath = (id: string) => {

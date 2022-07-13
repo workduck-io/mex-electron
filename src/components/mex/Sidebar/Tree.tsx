@@ -13,8 +13,7 @@ import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import useDataStore, { useTreeFromLinks } from '@store/useDataStore'
 import Tippy, { useSingleton } from '@tippyjs/react'
-import React, { useMemo, useRef, useState } from 'react'
-import { useContextMenu } from 'react-contexify'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useMatch } from 'react-router-dom'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
@@ -36,7 +35,7 @@ import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { useRefactorStore } from '../Refactor/Refactor'
 import { getNameFromPath, SEPARATOR } from './treeUtils'
-import { MENU_ID, TreeContextMenu } from './TreeWithContextMenu'
+import { TreeContextMenu } from './TreeWithContextMenu'
 import { IS_DEV } from '@data/Defaults/dev_'
 // import { complexTree } from '../mockdata/complexTree'
 
@@ -118,13 +117,15 @@ const Tree = ({ initTree }: TreeProps) => {
   const [contextOpenNodeId, setContextOpenNodeId] = useState<string>(null)
   const location = useLocation()
 
+  useEffect(() => {
+    setTreeState(initTree)
+  }, [initTree])
+
   // const node = useEditorStore((state) => state.node)
   const expandNode = useTreeStore((state) => state.expandNode)
   const collapseNode = useTreeStore((state) => state.collapseNode)
   const prefillModal = useRefactorStore((state) => state.prefillModal)
   const { goTo } = useRouting()
-  // mog('renderTree', { initTree })
-  //
 
   const match = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
 
@@ -196,7 +197,6 @@ const Tree = ({ initTree }: TreeProps) => {
   }
 
   const onExpand = (itemId: ItemId) => {
-    // const { tree }: State = this.state
     const item = tree.items[itemId]
     if (item && item.data && item.data.path) {
       expandNode(item.data.path)

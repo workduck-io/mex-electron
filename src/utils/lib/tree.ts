@@ -1,4 +1,4 @@
-import { getNameFromPath, isElder, isParent, getParentId } from '../../components/mex/Sidebar/treeUtils'
+import { getNameFromPath, isElder, isParent, getParentNodePath } from '../../components/mex/Sidebar/treeUtils'
 import { Contents, useContentStore } from '../../store/useContentStore'
 import TreeNode from '../../types/tree'
 import { TreeData, TreeItem } from '@atlaskit/tree'
@@ -82,33 +82,36 @@ const createChildLess = (path: string, nodeid: string, id: string, icon?: string
 
 // Insert the given node in a nested tree
 const insertInNested = (iNode: BaseTreeNode, nestedTree: BaseTreeNode[]) => {
-  const newNested = [...nestedTree]
+  const currentTree = [...nestedTree]
 
-  newNested.forEach((n) => {
-    const index = newNested.indexOf(n)
-    if (index > -1) {
-      if (isElder(iNode.path, n.path)) {
-        let children: BaseTreeNode[]
-        if (isParent(iNode.path, n.path)) {
-          children = [...n.children, iNode]
-        } else {
-          children = insertInNested(iNode, n.children)
-        }
-        // console.log({ children });
-        newNested.splice(index, 1, {
-          ...n,
-          children
-        })
+  currentTree.forEach((n, index) => {
+    // * Are Nodes related
+    if (isElder(iNode.path, n.path)) {
+      let children: BaseTreeNode[]
+
+      // * Is related note is its parent note
+      if (iNode.parentNodeId === n.nodeid) {
+        children = [...n.children, iNode]
+      } else if (!iNode.parentNodeId && isParent(iNode.path, n.path)) {
+        children = [...n.children, iNode]
+      } else {
+        children = insertInNested(iNode, n.children)
       }
+
+      currentTree.splice(index, 1, {
+        ...n,
+        children
+      })
     }
   })
 
-  return newNested
+  return currentTree
 }
 
 export interface FlatItem {
   id: string
   nodeid: string
+  parentNodeId?: string
   tasks?: number
   reminders?: number
   icon?: string
@@ -120,7 +123,7 @@ const getItem = (treeFlat: FlatItem[], id: string): number | undefined => {
 }
 
 const getParentItemId = (path: string, treeData: TreeData): string | undefined => {
-  const parentPath = getParentId(path)
+  const parentPath = getParentNodePath(path)
 
   if (parentPath) {
     const parentItem = Object.entries(treeData.items).find(([_k, n]) => {
@@ -139,43 +142,50 @@ export const TREE_SEPARATOR = '-'
 interface BaseTreeNode {
   path: string
   nodeid: string
+  parentNodeId?: string
   children: BaseTreeNode[]
   icon?: string
   tasks?: number
   reminders?: number
 }
 
-const getItemFromBaseNestedTree = (baseNestedTree: BaseTreeNode[], path: string): BaseTreeNode | undefined => {
+const getItemFromBaseNestedTree = (
+  baseNestedTree: BaseTreeNode[],
+  path: string,
+  nodeid: string
+): BaseTreeNode | undefined => {
   if (!path) {
     return undefined
   }
+
   for (let i = 0; i < baseNestedTree.length; i++) {
     const node = baseNestedTree[i]
     if (!node) return undefined
-    if (node.path === path) {
+    if (node.nodeid === nodeid) {
       return node
     }
     // mog('node', { node, path, baseNestedTree })
     if (isElder(path, node.path)) {
-      return getItemFromBaseNestedTree(node.children, path)
+      return getItemFromBaseNestedTree(node.children, path, nodeid)
     }
   }
   return undefined
 }
 
-const getIdFromBaseNestedTree = (baseNestedTree: BaseTreeNode[], path: string): string | undefined => {
+const getIdFromBaseNestedTree = (baseNestedTree: BaseTreeNode[], path: string, nodeid: string): string | undefined => {
   if (!path) {
     return undefined
   }
+
   for (let i = 0; i < baseNestedTree.length; i++) {
     const node = baseNestedTree[i]
     if (!node) return undefined
-    if (node.path === path) {
+
+    if (node.nodeid === nodeid || node.path === path) {
       return `${i + 1}`
     }
-    // mog('node', { node, path, baseNestedTree })
     if (isElder(path, node.path)) {
-      return `${i + 1}${TREE_SEPARATOR}${getIdFromBaseNestedTree(node.children, path)}`
+      return `${i + 1}${TREE_SEPARATOR}${getIdFromBaseNestedTree(node.children, path, nodeid)}`
     }
   }
   return undefined
@@ -216,30 +226,23 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
   let baseNestedTree: BaseTreeNode[] = []
 
   flatTree.forEach((n) => {
-    const parentId = getParentId(n.id)
+    const parentId = getParentNodePath(n.id)
     const tasks = todos[n.nodeid] ? todos[n.nodeid].filter(filterIncompleteTodos).length : 0
     const reminders = reminderGroups[n.nodeid] ? reminderGroups[n.nodeid].length : 0
+    const baseTreeNote = {
+      path: n.id,
+      nodeid: n.nodeid,
+      children: [],
+      tasks,
+      reminders
+    }
     if (parentId === null) {
       // add to tree first level
-      baseNestedTree.push({
-        path: n.id,
-        nodeid: n.nodeid,
-        children: [],
-        tasks,
-        reminders
-      })
+      baseNestedTree.push(baseTreeNote)
     } else {
       // Will have a parent
-      baseNestedTree = insertInNested(
-        {
-          path: n.id,
-          nodeid: n.nodeid,
-          children: [],
-          tasks,
-          reminders
-        },
-        baseNestedTree
-      )
+      const iNode = n.parentNodeId ? { ...baseTreeNote, parentNodeId: n.parentNodeId } : baseTreeNote
+      baseNestedTree = insertInNested(iNode, baseNestedTree)
     }
   })
 
@@ -256,11 +259,13 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
 // And id of TreeItem is the index+1 in nested tree like `1-2-3`
 export const generateTree = (treeFlat: FlatItem[], expanded: string[]): TreeData => {
   // tree should be sorted
+  mog('FLAT TREE', { treeFlat })
   const baseNestedTree = getBaseNestedTree(treeFlat)
   const nestedTree: TreeData = {
     rootId: '1',
     items: {}
   }
+
   const rootItem = {
     id: '1',
     data: { title: 'root', path: 'root' },
@@ -272,16 +277,16 @@ export const generateTree = (treeFlat: FlatItem[], expanded: string[]): TreeData
 
   for (let i = 0; i < treeFlat.length; i++) {
     const n = treeFlat[i]
-    const parentPath = getParentId(n.id)
-    const nestedItem = getItemFromBaseNestedTree(baseNestedTree, n.id)
-    // mog('hasParent', { parentId, n, i })
+    const parentPath = getParentNodePath(n.id)
+    const nestedItem = getItemFromBaseNestedTree(baseNestedTree, n.id, n.nodeid)
+
     if (!nestedItem) {
-      // mog('nestedItem', { n, i })
       continue
     }
+
     if (parentPath === null) {
       // add to tree first level
-      const newId = `1${TREE_SEPARATOR}${getIdFromBaseNestedTree(baseNestedTree, n.id)}`
+      const newId = `1${TREE_SEPARATOR}${getIdFromBaseNestedTree(baseNestedTree, n.id, n.nodeid)}`
       // mog('does not Parent Internal', { parentPath, n, newId, i })
       nestedTree.items[newId] = {
         ...createChildLess(n.id, n.nodeid, newId, n.icon, {
@@ -296,12 +301,12 @@ export const generateTree = (treeFlat: FlatItem[], expanded: string[]): TreeData
       }
     } else {
       // Will have a parent
-      const parentId = `1${TREE_SEPARATOR}${getIdFromBaseNestedTree(baseNestedTree, parentPath)}`
+      const parentId = `1${TREE_SEPARATOR}${getIdFromBaseNestedTree(baseNestedTree, parentPath, n.parentNodeId)}`
       const parentItem = nestedTree.items[parentId]
       // mog('hasParent Internal', { parentId, nestedItem, parentItem, parentPath, n, i })
       if (parentItem) {
         // add to tree and update parent
-        const newId = `1${TREE_SEPARATOR}${getIdFromBaseNestedTree(baseNestedTree, n.id)}`
+        const newId = `1${TREE_SEPARATOR}${getIdFromBaseNestedTree(baseNestedTree, n.id, n.nodeid)}`
         // Order is important for rendering children
         parentItem.children.unshift(newId)
         parentItem.hasChildren = true
@@ -326,8 +331,6 @@ export const generateTree = (treeFlat: FlatItem[], expanded: string[]): TreeData
   })
 
   nestedTree.items['1'] = rootItem
-
-  // mog('nestedTree', { treeFlat, nestedTree })
 
   return nestedTree
 }

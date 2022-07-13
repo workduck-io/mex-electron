@@ -35,6 +35,8 @@ export interface ILink {
   icon?: string
 
   createdAt?: number
+
+  parentNodeId?: string
 }
 
 export type NewILinkProps = {
@@ -75,7 +77,7 @@ export interface InitData {
   linkCache: LinkCache
   tagsCache: TagsCache
   bookmarks: string[]
-  archive: ILink[]
+  archive?: ILink[]
   baseNodeId: string
   sharedNodes: SharedNode[]
 }
@@ -102,7 +104,7 @@ export interface DataStoreState {
   baseNodeId: string
   bookmarks: string[]
   sharedNodes: SharedNode[]
-  archive: ILink[]
+  archive?: ILink[]
   initialized: boolean
 
   initializeDataStore: (initData: InitData) => void

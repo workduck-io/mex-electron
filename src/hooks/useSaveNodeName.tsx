@@ -1,4 +1,4 @@
-import { getParentId } from '@components/mex/Sidebar/treeUtils'
+import { getParentNodePath } from '@components/mex/Sidebar/treeUtils'
 import { useAnalysisStore } from '@store/useAnalysis'
 import { mog } from '@utils/lib/helper'
 import { checkIfUntitledDraftNode } from '@utils/lib/strings'
@@ -19,7 +19,7 @@ export const useSaveNodeName = () => {
 
     if (!isUntitled) return
 
-    const parentNodePath = getParentId(nodePath)
+    const parentNodePath = getParentNodePath(nodePath)
     const newNodePath = `${parentNodePath}.${draftNodeTitle}`
 
     if (newNodePath !== nodePath)

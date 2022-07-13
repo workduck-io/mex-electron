@@ -271,8 +271,9 @@ export const sanatizeLinks = (links: ILink[]): FlatItem[] => {
   while (oldLinks.length > 0) {
     for (const l of links) {
       if (getLevel(l.path) === currentDepth) {
-        newLinks.push({ id: l.path, nodeid: l.nodeid, icon: l.icon })
-        oldLinks = oldLinks.filter((k) => k !== l)
+        const ilink = { id: l.path, nodeid: l.nodeid, icon: l.icon }
+        newLinks.push(l.parentNodeId ? { ...ilink, parentNodeId: l.parentNodeId } : ilink)
+        oldLinks = oldLinks.filter((k) => k.nodeid !== l.nodeid)
       }
     }
     currentDepth += 1
@@ -285,12 +286,8 @@ export const useTreeFromLinks = () => {
   const getTreeFromLinks = (links: ILink[]) => {
     const expanded = useTreeStore.getState().expanded
 
-    // const mappedLinks = links.map((i) => ({ id: i.path, nodeid: i.nodeid, icon: i.icon }))
-
     const sanatizedLinks = sanatizeLinks(links)
     const tree = generateTree(sanatizedLinks, expanded)
-
-    mog('Tree', { links, sanatizedLinks, tree })
 
     return tree
   }

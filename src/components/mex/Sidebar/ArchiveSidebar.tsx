@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect } from 'react'
 import Tree, { RenderItemParams, ItemId, mutateTree, TreeItem, TreeData } from '@atlaskit/tree'
 import Tippy, { useSingleton } from '@tippyjs/react'
 import useDataStore, { useTreeFromLinks } from '@store/useDataStore'
@@ -6,21 +6,25 @@ import { GetIcon, TooltipContent } from './Tree'
 import * as ContextMenu from '@radix-ui/react-context-menu'
 import { ItemContent, ItemCount, ItemTitle, StyledTreeItem } from '@style/Sidebar'
 import { mog } from '@utils/lib/helper'
-import { TreeContextMenu } from './TreeWithContextMenu'
 import { useMatch } from 'react-router-dom'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { Icon } from '@iconify/react'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
+import ArchiveContextMenu from '../Archive/ArchiveContextMenu'
+import { Margin } from '../Archive/styled'
 
 const ArchiveTree: React.FC<{ tree: any }> = ({ tree }) => {
   const [archiveTree, setArchiveTree] = React.useState(tree)
+
+  useEffect(() => {
+    setArchiveTree(tree)
+  }, [tree])
 
   const { goTo } = useRouting()
   const [source, target] = useSingleton()
   const match = useMatch(`${ROUTE_PATHS.archive}/:nodeid`)
 
   const onExpand = (itemId: ItemId) => {
-    mog('ON EXPAND ITEM ', { itemId })
     changeTree(mutateTree(archiveTree, itemId, { isExpanded: true }))
   }
 
@@ -29,7 +33,6 @@ const ArchiveTree: React.FC<{ tree: any }> = ({ tree }) => {
   }
 
   const onCollapse = (itemId: ItemId) => {
-    mog('ON Collapse ITEM ', { itemId })
     changeTree(mutateTree(archiveTree, itemId, { isExpanded: false }))
   }
 
@@ -73,7 +76,7 @@ const ArchiveTree: React.FC<{ tree: any }> = ({ tree }) => {
                 )}
               </StyledTreeItem>
             </ContextMenu.Trigger>
-            <TreeContextMenu item={item} />
+            <ArchiveContextMenu item={item} />
           </ContextMenu.Root>
         </span>
       </Tippy>
@@ -81,7 +84,7 @@ const ArchiveTree: React.FC<{ tree: any }> = ({ tree }) => {
   }
 
   return (
-    <>
+    <Margin margin="1rem 0 0">
       <Tippy theme="mex" placement="right" singleton={source} />
       <Tree
         offsetPerLevel={16}
@@ -91,19 +94,14 @@ const ArchiveTree: React.FC<{ tree: any }> = ({ tree }) => {
         onCollapse={onCollapse}
         isNestingEnabled
       />
-    </>
+    </Margin>
   )
 }
 
 const ArchiveSidebar = () => {
   const archiveNotes = useDataStore((store) => store.archive)
   const { getTreeFromLinks } = useTreeFromLinks()
-
-  const tree = useMemo(
-    () => getTreeFromLinks(archiveNotes),
-
-    [archiveNotes]
-  )
+  const tree = getTreeFromLinks(archiveNotes)
 
   return (
     <>

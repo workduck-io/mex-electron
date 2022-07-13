@@ -33,10 +33,7 @@ export const GOOGLE_OAUTH_URL = `${MEXIT_FRONTEND_BASE_URL}/oauth/google`
 export const GOOGLE_CAL_BASE = 'https://www.googleapis.com/calendar/v3/calendars'
 export const GOOGLE_OAUTH2_REFRESH_URL = `${MEXIT_BACKEND_URL_BASE}/oauth2/getGoogleAccessToken`
 
-// NO ending `/`
-export const API_URL = !IS_DEV
-  ? 'https://fsqucmv3of.execute-api.us-east-1.amazonaws.com'
-  : config.constants.MEX_BACKEND_BASE_URL
+export const API_URL = config.constants.MEX_BACKEND_BASE_URL
 
 export const apiURLs = {
   //node

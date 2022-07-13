@@ -8,14 +8,19 @@ import { mog } from '@utils/lib/helper'
 import { ILink, NodeEditorContent } from '../types/Types'
 import { getNodeidFromPathAndLinks } from './useLinks'
 
-export const hierarchyParser = (linkData: string[]): ILink[] => {
+export const hierarchyParser = (
+  linkData: string[],
+  options?: { withParentNodeId: boolean; allowDuplicates?: boolean }
+): ILink[] => {
   const ilinks: ILink[] = []
   const idPathMapping: { [key: string]: string } = {}
   const pathIdMapping: { [key: string]: { nodeid: string; index: number } } = {}
 
   for (const subTree of linkData) {
     const nodes = subTree.split('#')
+
     let prefix: string
+    let parentNodeId: string | undefined
 
     if (nodes.length % 2 !== 0) throw new Error('Invalid Linkdata Input')
 
@@ -35,17 +40,19 @@ export const hierarchyParser = (linkData: string[]): ILink[] => {
 
       if (idPathMapping[nodeID]) {
         if (idPathMapping[nodeID] !== nodePath) throw new Error('Invalid Linkdata Input')
-      } else if (pathIdMapping[nodePath]) {
+      } else if (pathIdMapping[nodePath] && !options?.allowDuplicates) {
         // mog(`Found existing notePath: ${nodePath} with ${nodeID} at index: ${pathIdMapping[nodePath].index}`)
         ilinks[pathIdMapping[nodePath].index] = { nodeid: nodeID, path: nodePath }
       } else {
         // mog(`Inserting: ${nodePath} with ${nodeID} at index: ${ilinks.length}`)
         idPathMapping[nodeID] = nodePath
         pathIdMapping[nodePath] = { nodeid: nodeID, index: ilinks.length }
-        ilinks.push({ nodeid: nodeID, path: nodePath })
+        const ilink: ILink = { nodeid: nodeID, path: nodePath }
+        ilinks.push(options?.withParentNodeId ? { ...ilink, parentNodeId } : ilink)
       }
 
       prefix = nodePath
+      parentNodeId = nodeID
     }
   }
 

@@ -219,7 +219,7 @@ export const useLinks = () => {
   const updateILinks = (addedILinks: Array<ILink>, removedILinks: Array<ILink>) => {
     let links = useDataStore.getState().ilinks
 
-    const intersection = removedILinks.filter((l) => addedILinks.find((rem) => l.nodeid == rem.nodeid))
+    const intersection = removedILinks.filter((l) => addedILinks.find((rem) => l.nodeid === rem.nodeid))
 
     intersection.forEach((ilink) => {
       links.splice(
