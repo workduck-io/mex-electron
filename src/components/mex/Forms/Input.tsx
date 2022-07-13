@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react'
 import Tippy from '@tippyjs/react/headless' // different import path!
 import Infobox from '@ui/components/Help/Infobox'
 import React from 'react'
@@ -10,15 +11,28 @@ export interface LabeledInputProps {
   label: string
   inputProps?: any
   labelProps?: any
+  labelIcon?: any // eslint-disable-line @typescript-eslint/no-explicit-any
   additionalInfo?: string
+  // Whether the input is transparent or not
+  // Current transparent inputs lie on a card background with their label
+  transparent?: boolean
   error?: string
 }
 
-const Input = ({ name, label, inputProps, additionalInfo, labelProps, error }: LabeledInputProps) => {
+const Input = ({
+  name,
+  label,
+  inputProps,
+  labelIcon,
+  additionalInfo,
+  transparent,
+  labelProps,
+  error
+}: LabeledInputProps) => {
   // console.log({ name, label, inputProps, labelProps, error })
 
   return (
-    <InputWrapper key={`FormInput_${name}_${label}`}>
+    <InputWrapper transparent key={`FormInput_${name}_${label}`}>
       <Tippy
         render={(attrs) => (
           <ErrorTooltip tabIndex={-1} {...attrs}>
@@ -30,20 +44,16 @@ const Input = ({ name, label, inputProps, additionalInfo, labelProps, error }: L
         appendTo={() => document.body}
         visible={error !== undefined}
       >
-        <Label error={error !== undefined} htmlFor={name} {...labelProps}>
-          {label} {additionalInfo && <Infobox text={additionalInfo} />}
+        <Label transparent={transparent} error={error !== undefined} htmlFor={name} {...labelProps}>
+          {label} {labelIcon && <Icon icon={labelIcon} />} {additionalInfo && <Infobox text={additionalInfo} />}
         </Label>
       </Tippy>
-      <InputBlock error={error !== undefined} key={`login-form-${name} `} {...inputProps} />
+      <InputBlock error={error !== undefined} transparent={transparent} key={`form-input-${name} `} {...inputProps} />
     </InputWrapper>
   )
 }
 
 export interface ErroredInputProps extends LabeledInputProps {
-  name: string
-  label: string
-  inputProps?: any
-  labelProps?: any
   errors?: any
 }
 

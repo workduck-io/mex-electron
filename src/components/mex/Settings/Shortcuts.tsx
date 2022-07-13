@@ -54,7 +54,7 @@ export const Header = styled.div<{ colored?: boolean }>`
 const ShortcutListContainer = styled.section`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background-color: ${({ theme }) => theme.colors.gray[8]};
-  margin: 0rem 4rem 2rem;
+  margin: 0rem 0rem 2rem;
 `
 
 const ShortcutContent = styled.div`

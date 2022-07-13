@@ -100,7 +100,7 @@ export const useNavigator = () => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSettings, () => {
           // onSave(undefined, false, false)
-          goTo(`${ROUTE_PATHS.settings}/themes`, NavigationType.push)
+          goTo(`${ROUTE_PATHS.settings}/user`, NavigationType.push)
         })
       }
     })

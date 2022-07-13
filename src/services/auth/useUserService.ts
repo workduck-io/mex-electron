@@ -2,6 +2,7 @@ import { apiURLs } from '@apis/routes'
 import { useUserCacheStore } from '@store/useUserCacheStore'
 import { mog } from '@utils/lib/helper'
 import { client } from '@workduck-io/dwindle'
+import { useAuthStore } from './useAuth'
 
 export interface TempUser {
   email: string
@@ -20,6 +21,7 @@ export interface TempUserUserID {
 export const useUserService = () => {
   const addUser = useUserCacheStore((s) => s.addUser)
   const getUser = useUserCacheStore((s) => s.getUser)
+  const updateUserDetails = useAuthStore((s) => s.updateUserDetails)
   const getUserDetails = async (email: string): Promise<TempUser> => {
     const user = getUser({ email })
     if (user) return user
@@ -75,5 +77,20 @@ export const useUserService = () => {
       return { userID }
     }
   }
-  return { getUserDetails, getUserDetailsUserId }
+
+  const updateUserInfo = async (userID: string, name?: string, alias?: string): Promise<boolean> => {
+    try {
+      if (name === undefined && alias === undefined) return false
+      return await client.put(apiURLs.user.updateInfo, { id: userID, name, alias }).then((resp) => {
+        mog('Response', { data: resp.data })
+        updateUserDetails({ name: resp?.data?.name, alias: resp?.data?.alias })
+        return true
+      })
+    } catch (e) {
+      mog('Error Updating User Info', { error: e, userID })
+      return false
+    }
+  }
+
+  return { getUserDetails, getUserDetailsUserId, updateUserInfo }
 }

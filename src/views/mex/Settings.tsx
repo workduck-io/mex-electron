@@ -5,23 +5,20 @@ import paintBrushFill from '@iconify/icons-ri/paint-brush-fill'
 import refreshLine from '@iconify/icons-ri/refresh-line'
 import user3Line from '@iconify/icons-ri/user-3-line'
 import { Icon } from '@iconify/react'
-import { useHelpStore } from '@store/useHelpStore'
+import { MainHeader } from '@style/Layouts'
 import { transparentize } from 'polished'
 import React from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import styled from 'styled-components'
-import useAnalytics from '../../services/analytics'
-import { CustomEvents } from '../../services/analytics/events'
 import { useAuthentication } from '../../services/auth/useAuth'
-import { useTokenStore } from '../../services/auth/useTokens'
 import { Button } from '../../style/Buttons'
 import { IntegrationContainer, Margin, Title } from '../../style/Integration'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 
 export const SettingsContainer = styled.section`
   display: flex;
   width: 100%;
   user-select: none;
+  gap: ${({ theme }) => theme.spacing.large};
 `
 
 export const SettingsOptions = styled.div`
@@ -65,6 +62,10 @@ export const SettingTitle = styled(NavLink)`
 
 export const SettingsContent = styled.div`
   flex: 4;
+  height: calc(100vh - 14rem);
+  width: 98%;
+  overflow-y: auto;
+  padding: 2rem;
 `
 
 const Settings = () => {
@@ -78,7 +79,9 @@ const Settings = () => {
 
   return (
     <IntegrationContainer>
-      <Title>Settings</Title>
+      <MainHeader>
+        <Title>Settings</Title>
+      </MainHeader>
       <SettingsContainer>
         <SettingsOptions>
           <SettingTitle tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to="user">

@@ -8,18 +8,21 @@ export const Card = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.large};
 `
 
-export const BackCard = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: center;
+export const BaseCard = styled.div`
   background: ${({ theme }) => theme.colors.background.card};
-  box-shadow: 0px 20px 100px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
   border-radius: ${({ theme }) => theme.borderRadius.large};
   border: 1px solid ${({ theme }) => theme.colors.gray[8]};
   outline: none;
   padding: ${({ theme }) => theme.spacing.large};
   margin: ${({ theme }) => theme.spacing.large};
+`
+
+export const BackCard = styled(BaseCard)`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0px 20px 100px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
   min-width: 300px;
   max-width: 600px;
 `

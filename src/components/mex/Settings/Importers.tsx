@@ -115,7 +115,7 @@ const Importers = () => {
   }
 
   return (
-    <Wrapper>
+    <>
       <Title>Import notes from services</Title>
       <ImportersWrapper>
         <ImporterCard>
@@ -140,7 +140,7 @@ const Importers = () => {
           <ComingSoonImporter key={`ComingSoon_${i.name}`} {...i} />
         ))}
       </ComingSoonWrapper>
-    </Wrapper>
+    </>
   )
 }
 
