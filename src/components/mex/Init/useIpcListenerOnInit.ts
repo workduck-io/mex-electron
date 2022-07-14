@@ -5,9 +5,12 @@ import useLoad from '@hooks/useLoad'
 import { useRecieveMentions, useRecieveTokens, useSyncData } from '@hooks/useSyncData'
 import { useAuthentication } from '@services/auth/useAuth'
 import { useAnalysisIPC } from '@store/useAnalysis'
+import { useVersionStore } from '@store/useAppDataStore'
 import { useHistoryStore } from '@store/useHistoryStore'
+import useModalStore, { ModalsType } from '@store/useModalStore'
 import useOnboard from '@store/useOnboarding'
 import { useRecentsStore } from '@store/useRecentsStore'
+import { mog } from '@utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { ipcRenderer } from 'electron'
 import { useEffect } from 'react'
@@ -18,6 +21,7 @@ export const useIpcListenerOnInit = () => {
   const pushHs = useHistoryStore((store) => store.push)
   const isOnboarding = useOnboard((s) => s.isOnboarding)
   const addRecent = useRecentsStore((store) => store.addRecent)
+  const toggleModal = useModalStore((store) => store.toggleOpen)
 
   // * Custom hooks
   const { goTo } = useRouting()
@@ -53,6 +57,7 @@ export const useIpcListenerOnInit = () => {
         goTo(page, NavigationType.replace)
       }
     })
+
     ipcRenderer.on(IpcAction.CREATE_NEW_NODE, () => {
       const note = createNewNote()
       goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
@@ -67,6 +72,14 @@ export const useIpcListenerOnInit = () => {
 
     ipcRenderer.on(IpcAction.MEX_BLURRED, () => {
       saveAndClearBuffer()
+    })
+
+    ipcRenderer.on(IpcAction.SHOW_RELEASE_NOTES, (_event, { version }) => {
+      const showedReleaseNotes = useModalStore.getState().init
+
+      mog('SHOW RELEASE NOTES', { version, showedReleaseNotes })
+
+      if (!showedReleaseNotes) toggleModal(ModalsType.releases, true)
     })
 
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {

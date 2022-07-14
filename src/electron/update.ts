@@ -1,12 +1,12 @@
 import { BrowserWindow, app, autoUpdater, dialog, ipcMain } from 'electron'
 
-import { AppType } from '../hooks/useInitialize'
 import { IpcAction } from '../data/IpcAction'
 import { backupMexJSON } from './backup'
 import { checkIfAlpha } from './utils/version'
-import { toast, SEARCH_INDEX_LOCATION } from './main'
+import { toast, SEARCH_INDEX_LOCATION, TEMP_DATA_BEFORE_UPDATE } from './main'
 import { ToastStatus } from '../types/toast'
 import { deleteSearchIndexDisk } from './utils/indexData'
+import { setDataAtLocation } from './utils/filedata'
 
 export const buildUpdateFeedURL = (version: string, isAlpha: boolean) => {
   const base = isAlpha ? 'https://alpha-releases.workduck.io' : 'https://releases.workduck.io'
@@ -81,6 +81,7 @@ export const setupUpdateService = (mex: BrowserWindow) => {
 
       () => {
         backupMexJSON()
+        setDataAtLocation({ version }, TEMP_DATA_BEFORE_UPDATE)
         mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
         deleteSearchIndexDisk(SEARCH_INDEX_LOCATION)
       }

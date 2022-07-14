@@ -29,6 +29,7 @@ import { useActionsPerfomerClient } from '../Actions/useActionPerformer'
 import { useActionsCache } from '../Actions/useActionsCache'
 import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import useDwindleAuthStore from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
 import { useAuth } from '@workduck-io/dwindle'
 
 const GlobalListener = memo(() => {
@@ -136,20 +137,19 @@ const GlobalListener = memo(() => {
 
     ipcRenderer.on(IpcAction.LOGGED_IN, (_event, arg) => {
       if (arg.loggedIn) {
-        if (arg.userDetails && arg.workspaceDetails) {
+        mog('Set authenticated')
+
+        if (arg.userDetails && arg.workspaceDetails && arg.userCred) {
+          useDwindleAuthStore.getState().setUserCred(arg.userCred)
           setAuthenticated(arg.userDetails, arg.workspaceDetails)
           initActionPerfomerClient(arg?.userDetails?.userID)
         }
-
-        initCognito({
-          UserPoolId: config.cognito.USER_POOL_ID,
-          ClientId: config.cognito.APP_CLIENT_ID
-        })
 
         getTokenData()
         getMentionData()
         goTo(ROUTE_PATHS.home, NavigationType.replace)
       } else {
+        mog('Setting unathenicated .....')
         setUnAuthenticated()
         useRecentsStore.getState().clear()
         useActionsCache.getState().clearActionCache()
