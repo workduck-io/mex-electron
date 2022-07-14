@@ -13,6 +13,10 @@ export const camelCase = (str: string) => {
   return str[0].toUpperCase() + str.slice(1).toLowerCase()
 }
 
+export const titleCaseUnderScore = (str: string) => {
+  return str.split('_').map(camelCase).join(' ')
+}
+
 /**
  * LOCATION - ACTION - DETAILS
  */

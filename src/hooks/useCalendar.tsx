@@ -1,3 +1,5 @@
+import { useApi } from '@apis/useSaveApi'
+import { ActionGroupType } from '@components/spotlight/Actions/useActionStore'
 import { useContentStore } from '@store/useContentStore'
 import axios from 'axios'
 import { add, format, formatDistanceToNow, sub } from 'date-fns'
@@ -20,6 +22,7 @@ import { ILink } from '../types/Types'
 import { mog } from '../utils/lib/helper'
 import { getSlug } from '../utils/lib/strings'
 import { useCreateNewNote } from './useCreateNewNote'
+import jwt_decode from 'jwt-decode'
 
 /*
  * Need
@@ -91,6 +94,14 @@ export interface CalendarEvent {
 interface UserCalendarState {
   events: CalendarEvent[]
   setEvents: (events: CalendarEvent[]) => void
+}
+
+const GoogleCalendarActionData = {
+  actionGroupId: 'GOOGLE_CALENDAR',
+  name: 'Google Calendar',
+  description: 'Integrate Mex with your Google Calendar and track your meetings and events!',
+  icon: 'logos:google-calendar',
+  permissions: '__UNSET__'
 }
 
 export const openCalendarMeetingNote = (
@@ -201,7 +212,10 @@ export const useCalendarStore = create<UserCalendarState>((set) => ({
 export const useCalendar = () => {
   const setEvents = useCalendarStore((state) => state.setEvents)
   const updateToken = useTokenStore((state) => state.updateGoogleCalendarToken)
+  const tokenData = useTokenStore((state) => state.data)
+  const removeToken = useTokenStore((state) => state.removeGoogleCalendarToken)
   const { createNewNote } = useCreateNewNote()
+  const { getGoogleAuthUrl } = useApi()
 
   const getUserEvents = () => {
     const events = useCalendarStore.getState().events
@@ -295,9 +309,94 @@ export const useCalendar = () => {
     //   })
   }
 
+  const getGoogleCalendarAction = (): ActionGroupType => {
+    const idToken = tokenData?.googleAuth?.calendar?.idToken
+    const authConfig = {
+      onConnectAsync: async () => {
+        const googleAuthUrl = await getGoogleAuthUrl()
+        mog('Requested: googleAuthUrl', { googleAuthUrl })
+        window.open(googleAuthUrl, '_blank', 'width=1000,height=1000')
+      },
+      onDisconnectAsync: async () => {
+        mog('onDisconnectAsync: Removing token', { tokenData })
+        removeToken()
+      }
+    }
+
+    if (!idToken) {
+      return {
+        ...GoogleCalendarActionData,
+        tag: '',
+        authConfig,
+        connected: false
+      }
+    }
+
+    const decoded = jwt_decode(idToken)
+
+    mog('getGoogleCalendarAction', {
+      tokenData,
+      idToken,
+      decoded
+    })
+    /* Decoded Token Example
+    {
+      "iss": "https://accounts.google.com",
+      "azp": "XXXX-XXXX.apps.googleusercontent.com",
+      "aud": "XXXX-XXXX.apps.googleusercontent.com",
+      "sub": "XXXX",
+      "email": "aditya.XXXX@gmail.com",
+      "email_verified": true,
+      "at_hash": "XXXX-XXXX",
+      "name": "Aditya XXXX Singh",
+      "picture": "https://lh3.googleusercontent.com/a/XXXX=s96-c",
+      "given_name": "Aditya XXXX",
+      "family_name": "Singh",
+      "locale": "en",
+      "iat": XXXX,
+      "exp": XXXX
+    }
+    */
+
+    interface DecodedToken {
+      email: string
+      name: string
+      picture: string
+    }
+
+    if (decoded) {
+      const { email, name, picture } = decoded as DecodedToken
+      const userDetails = {
+        name,
+        picture,
+        email
+      }
+      return {
+        ...GoogleCalendarActionData,
+        authConfig: { ...authConfig, userDetails },
+        tag: '',
+        connected: true
+      }
+    }
+
+    return {
+      ...GoogleCalendarActionData,
+      authConfig,
+      tag: '',
+      connected: true
+    }
+  }
+
+  const getCalendarActions = (): ActionGroupType[] => {
+    const actions = [getGoogleCalendarAction()]
+    return actions
+  }
+
   return {
     getUserEvents,
     getUpcomingEvents,
+    getGoogleCalendarAction,
+    getCalendarActions,
     fetchGoogleCalendarEvents
   }
 }
