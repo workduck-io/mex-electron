@@ -7,11 +7,10 @@ import edit2Line from '@iconify/icons-ri/edit-2-line'
 import { AuthForm, ButtonFields } from '@style/Form'
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { useApi } from '../../apis/useSaveApi'
 import { CopyButton } from '../../components/mex/Buttons/CopyButton'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
 import { useAuthStore } from '../../services/auth/useAuth'
-import IconButton, { Button } from '../../style/Buttons'
+import IconButton from '../../style/Buttons'
 import { Title } from '../../style/Typography'
 import { Info, InfoData, InfoLabel, ProfileContainer, ProfileIcon, SettingsCard } from '../../style/UserPage'
 import { mog } from '../../utils/lib/helper'
@@ -27,16 +26,7 @@ const UserPage = () => {
   const { updateUserInfo } = useUserService()
 
   const currentUserDetails = useAuthStore((store) => store.userDetails)
-  const { getGoogleAuthUrl } = useApi()
   const updateUserForm = useForm<UpdateUserFormData>()
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleGoogleCalendarAuthUrl = async () => {
-    const googleAuthUrl = await getGoogleAuthUrl()
-    mog('googleAuthUrl', { googleAuthUrl })
-    window.open(googleAuthUrl, '_blank', 'width=1000,height=1000')
-    // TODO: fetch the google refresh token from the auth service and set in the local auth store
-  }
 
   const onUpdateSave = async (data: UpdateUserFormData) => {
     // mog('onUpdateSave', { data })
@@ -127,7 +117,6 @@ const UserPage = () => {
               </ButtonFields>
             )}
           </AuthForm>
-          <Button onClick={handleGoogleCalendarAuthUrl}>Authorize Google Calendar</Button>
         </div>
       </ProfileContainer>
     </SettingsCard>
