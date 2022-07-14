@@ -19,7 +19,13 @@ import fs from 'fs'
 import path from 'path'
 import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
 
-import { getMentionLocation, getSaveLocation, getSearchIndexLocation, getTokenLocation } from '../data/Defaults/data'
+import {
+  getBeforeUpdateDataLocation,
+  getMentionLocation,
+  getSaveLocation,
+  getSearchIndexLocation,
+  getTokenLocation
+} from '../data/Defaults/data'
 import { trayIconBase64, twitterIconBase64 } from '../data/Defaults/images'
 import { IpcAction } from '../data/IpcAction'
 import { AppType } from '../hooks/useInitialize'
@@ -105,6 +111,7 @@ export const TOKEN_LOCATION = getTokenLocation(app)
 export const MENTION_LOCATION = getMentionLocation(app)
 export const SAVE_LOCATION = getSaveLocation(app)
 export const SEARCH_INDEX_LOCATION = getSearchIndexLocation(app)
+export const TEMP_DATA_BEFORE_UPDATE = getBeforeUpdateDataLocation(app)
 // const RESOURCES_PATH = app.isPackaged ? path.join(process.resourcesPath, 'assets') : path.join(__dirname, '../assets')
 
 // const getAssetPath = (...paths: string[]): string => {
@@ -182,7 +189,7 @@ const createSpotLighWindow = (show?: boolean) => {
   })
 }
 
-const createMexWindow = () => {
+const createMexWindow = (tempData?: any) => {
   // MEX here
   mex = new BrowserWindow(MEX_WINDOW_OPTIONS)
   mex.loadURL(MEX_WINDOW_WEBPACK_ENTRY)
@@ -199,6 +206,11 @@ const createMexWindow = () => {
     if (mex && !mex?.isVisible()) {
       mex.focus()
       mex.show()
+    }
+
+    if (tempData?.version) {
+      mog('FOUND EXISTING VERSION', { version })
+      mex?.webContents.send(IpcAction.SHOW_RELEASE_NOTES, { version })
     }
   })
 
@@ -278,8 +290,8 @@ const spotlightInBubbleMode = (show?: boolean) => {
   }
 }
 
-const createWindow = () => {
-  createMexWindow()
+const createWindow = (d: any) => {
+  createMexWindow(d)
   createSpotLighWindow()
 
   toast = new Toast(spotlight)
@@ -437,6 +449,10 @@ app
 
     // getPermissions().then((s) => console.log('Hello'))
 
+    // * If updated
+    const tempData = getDataOfLocation(TEMP_DATA_BEFORE_UPDATE)
+    mog('------------- TEMP DATA ------------------', { tempData })
+
     global.appVersion = app.getVersion()
     globalShortcut.register('CommandOrControl+Shift+X', handleToggleMainWindow)
 
@@ -510,9 +526,10 @@ app
 
     tray.setToolTip('Mex')
     tray.setContextMenu(contextMenu)
-    return 0
+
+    return tempData
   })
-  .then(createWindow)
+  .then((d) => createWindow(d))
   .then(() => setupUpdateService(mex))
   .catch(console.error)
 
@@ -647,6 +664,10 @@ ipcMain.on(IpcAction.CHECK_FOR_UPDATES, (_event, arg) => {
 ipcMain.on(IpcAction.CLEAR_RECENTS, (_event, arg) => {
   const { from } = arg
   notifyOtherWindow(IpcAction.CLEAR_RECENTS, from)
+})
+
+ipcMain.on(IpcAction.SHOW_RELEASE_NOTES, (_event, arg) => {
+  fs.unlinkSync(TEMP_DATA_BEFORE_UPDATE)
 })
 
 ipcMain.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {

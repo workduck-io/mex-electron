@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import Tree, { RenderItemParams, ItemId, mutateTree, TreeItem, TreeData } from '@atlaskit/tree'
 import Tippy, { useSingleton } from '@tippyjs/react'
 import useDataStore, { useTreeFromLinks } from '@store/useDataStore'
+import archiveLine from '@iconify/icons-ri/archive-line'
+
 import { GetIcon, TooltipContent } from './Tree'
 import * as ContextMenu from '@radix-ui/react-context-menu'
 import { ItemContent, ItemCount, ItemTitle, StyledTreeItem } from '@style/Sidebar'
@@ -12,6 +14,9 @@ import { Icon } from '@iconify/react'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import ArchiveContextMenu from '../Archive/ArchiveContextMenu'
 import { Margin } from '../Archive/styled'
+import { MexIcon } from '@style/Layouts'
+import { useTheme } from 'styled-components'
+import { Centered } from './Bookmarks'
 
 const ArchiveTree: React.FC<{ tree: any }> = ({ tree }) => {
   const [archiveTree, setArchiveTree] = React.useState(tree)
@@ -98,9 +103,23 @@ const ArchiveTree: React.FC<{ tree: any }> = ({ tree }) => {
   )
 }
 
+const NoArchiveNotes = () => {
+  const theme = useTheme()
+
+  return (
+    <Centered>
+      <MexIcon color={theme.colors.primary} height={24} width={24} icon={archiveLine} margin="0 0 1rem 0" />
+      <span>Your archive is empty!</span>
+    </Centered>
+  )
+}
+
 const ArchiveSidebar = () => {
   const archiveNotes = useDataStore((store) => store.archive)
   const { getTreeFromLinks } = useTreeFromLinks()
+
+  if (!archiveNotes || archiveNotes.length === 0) return <NoArchiveNotes />
+
   const tree = getTreeFromLinks(archiveNotes)
 
   return (
