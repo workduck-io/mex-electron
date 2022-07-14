@@ -23,6 +23,7 @@ import { mog } from '../utils/lib/helper'
 import { getSlug } from '../utils/lib/strings'
 import { useCreateNewNote } from './useCreateNewNote'
 import jwt_decode from 'jwt-decode'
+import { useUserService } from '@services/auth/useUserService'
 
 /*
  * Need
@@ -59,6 +60,11 @@ interface EventPerson {
   responseStatus?: 'needsAction' | 'declined' | 'tentative' | 'accepted' | null
 
   creator?: boolean | null
+
+  /**
+   * UserID of the attendee in mex if it exists
+   */
+  mexUserID?: string
 }
 
 export interface CalendarEvent {
@@ -115,7 +121,12 @@ export const openCalendarMeetingNote = (
   const realContent =
     content !== undefined
       ? content?.content
-      : MeetingSnippetContent(e.summary, e.times.start, e.links.meet ?? e.links.event)
+      : MeetingSnippetContent({
+          title: e.summary,
+          date: e.times.start,
+          link: e.links.meet ?? e.links.event,
+          attendees: getAttendeeUserIDsFromCalendarEvent(e)
+        })
 
   // mog('OpenCalendarMeeting', { e, content, realContent })
 
@@ -169,11 +180,35 @@ const convertCalendarEventToAction = (
   }
 }
 
-const converGoogleEventToCalendarEvent = (event: GoogleEvent): CalendarEvent => {
+const converGoogleEventToCalendarEvent = async (
+  event: GoogleEvent,
+  getMexUserID: (email: string) => Promise<string | undefined>
+): Promise<CalendarEvent> => {
   const createdTime = Date.parse(event.created)
   const updatedTime = Date.parse(event.updated)
   const startTime = Date.parse(event.start.dateTime ?? event.start.date)
   const endTime = Date.parse(event.end.dateTime ?? event.end.date)
+  const people = await Promise.all(
+    event.attendees.map(async (a) => {
+      const person: EventPerson = {
+        email: a.email,
+        displayName: a.displayName,
+        optional: a.optional,
+        organizer: a.email === event.organizer?.email,
+        responseStatus: a.responseStatus as any,
+        creator: a.email === event.creator?.email,
+        resource: a.resource
+      }
+      if (person.email) {
+        const userID = await getMexUserID(person.email)
+        if (userID) {
+          person.mexUserID = userID
+        }
+      }
+      return person
+    })
+  )
+
   return {
     id: event.id,
     status: event.status as any,
@@ -190,24 +225,21 @@ const converGoogleEventToCalendarEvent = (event: GoogleEvent): CalendarEvent => 
       start: startTime,
       end: endTime
     },
-    people: event.attendees?.map((attendee) => {
-      return {
-        email: attendee.email,
-        displayName: attendee.displayName,
-        optional: attendee.optional,
-        organizer: attendee.email === event.organizer?.email,
-        responseStatus: attendee.responseStatus as any,
-        creator: attendee.email === event.creator?.email,
-        resource: attendee.resource
-      }
-    })
+    people
   }
 }
 
 export const useCalendarStore = create<UserCalendarState>((set) => ({
-  events: testEvents.map(converGoogleEventToCalendarEvent),
+  events: [],
   setEvents: (events) => set({ events })
 }))
+
+export const getAttendeeUserIDsFromCalendarEvent = (event: CalendarEvent) => {
+  if (event?.people) {
+    return event.people.filter((p) => p.mexUserID).map((p) => p.mexUserID)
+  }
+  return []
+}
 
 export const useCalendar = () => {
   const setEvents = useCalendarStore((state) => state.setEvents)
@@ -216,6 +248,7 @@ export const useCalendar = () => {
   const removeToken = useTokenStore((state) => state.removeGoogleCalendarToken)
   const { createNewNote } = useCreateNewNote()
   const { getGoogleAuthUrl } = useApi()
+  const { getUserDetails } = useUserService()
 
   const getUserEvents = () => {
     const events = useCalendarStore.getState().events
@@ -282,15 +315,23 @@ export const useCalendar = () => {
     const reqUrl = encodeURI(
       `${GOOGLE_CAL_BASE}/primary/events?maxResults=${max}&timeMin=${yesterday}&timeMax=${twoDaysFromNow}`
     )
+
+    const getMexUserID = async (email: string) => {
+      const user = await getUserDetails(email)
+      return user?.userID
+    }
+
     axios
       .get(reqUrl, {
         headers: {
           Authorization: `Bearer ${tokens.googleAuth.calendar.accessToken}`
         }
       })
-      .then((res) => {
-        const events = res.data.items.map((event) => converGoogleEventToCalendarEvent(event))
-        // console.log('Got Events', res.data, events)
+      .then(async (res) => {
+        const events = await Promise.all(
+          res.data.items.map(async (event) => await converGoogleEventToCalendarEvent(event, getMexUserID))
+        )
+        console.log('Got Events', res.data, events)
         setEvents(events)
       })
 
