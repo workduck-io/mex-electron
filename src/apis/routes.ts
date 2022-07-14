@@ -99,6 +99,8 @@ export const apiURLs = {
   createSnippet: `${MEXIT_BACKEND_URL_BASE}/snippet`,
   getAllSnippetsByWorkspace: `${MEXIT_BACKEND_URL_BASE}/snippet/all`,
   getSnippetById: (uid: string) => `${MEXIT_BACKEND_URL_BASE}/snippet/${uid}`,
+  // * NOTE: Currently all Snippets have version: 1
+  deleteSnippetById: (snippetId: string) => `${API_URL}/snippet/${snippetId}/1`,
 
   // Sharing
   // Post type determines action
