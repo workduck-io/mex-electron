@@ -154,10 +154,13 @@ const Search = () => {
     }
   }
 
-  const onDeleteSnippet = (id: string) => {
-    deleteSnippet(id)
-    saveData()
-    goTo(ROUTE_PATHS.search, NavigationType.replace)
+  const onDeleteSnippet = async (id: string) => {
+    try {
+      await deleteSnippet(id)
+      saveData()
+    } catch (err) {
+      mog('Unable to delete note')
+    }
   }
 
   // Forwarding ref to focus on the selected result
