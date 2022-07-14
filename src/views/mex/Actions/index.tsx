@@ -1,6 +1,7 @@
 import usePortalStore from '@components/mex/Integrations/Portals/usePortalStore'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { ActionGroupType } from '@components/spotlight/Actions/useActionStore'
+import { useCalendar } from '@hooks/useCalendar'
 import { usePortals } from '@hooks/usePortals'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React, { useEffect, useMemo } from 'react'
@@ -19,6 +20,7 @@ const ActionGroupsPage = () => {
 
   const { getConnectedPortals } = usePortals()
   const { getAuthorizedGroups, sortActionGroups } = useActions()
+  const { getCalendarActions } = useCalendar()
 
   useEffect(() => {
     getAuthorizedGroups(true).then(() => mog('Authorized groups loaded'))
@@ -39,6 +41,8 @@ const ActionGroupsPage = () => {
     [apps, connectedPortals]
   )
 
+  const calendar = useMemo(() => getCalendarActions(), [])
+
   return (
     <Flex>
       <FullHeight>
@@ -52,6 +56,11 @@ const ActionGroupsPage = () => {
             items={portals}
             title="Portals"
             onClick={(item: ActionGroupType) => onClick(`${ROUTE_PATHS.integrations}/portal`, item.actionGroupId)}
+          />
+          <Section
+            items={calendar}
+            title="Calendar"
+            onClick={(item: ActionGroupType) => onClick(`${ROUTE_PATHS.integrations}/calendar`, item.actionGroupId)}
           />
         </IntegrationContainer>
       </FullHeight>

@@ -124,3 +124,36 @@ export const ActionContainer = styled.div`
     font-size: 0.8rem;
   }
 `
+
+export const GoogleCalendarUserCard = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.medium};
+  justify-content: space-between;
+  width: max-content;
+  margin: 0 auto;
+
+  padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
+  background: ${({ theme }) => theme.colors.background.card};
+  border-radius: ${({ theme }) => theme.borderRadius.large};
+`
+
+export const GoogleCalendarUserAvatar = styled.img`
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+`
+
+export const GoogleCalendarUserDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.small};
+  color: ${({ theme }) => theme.colors.text.default};
+  font-size: 1rem;
+`
+
+export const GoogleCalendarUserName = styled.div`
+  font-size: 1.2rem;
+  font-weight: bold;
+`

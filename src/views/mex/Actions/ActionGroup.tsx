@@ -1,7 +1,7 @@
 import React from 'react'
 import Check from '@iconify/icons-bi/check'
 import { MexIcon } from '../../../style/Layouts'
-import { camelCase } from '../../../utils/lib/strings'
+import { titleCaseUnderScore } from '../../../utils/lib/strings'
 import { ActionGroupType } from '../../../components/spotlight/Actions/useActionStore'
 import { ActionGroup } from '@workduck-io/action-request-helper'
 import { ActiveStatus, CenteredFlex, RightCut, ServiceCard, ServiceName } from '../../../style/Integration'
@@ -30,7 +30,7 @@ const ActionGroup: React.FC<ActionGroupProps> = ({ group, onClick }) => {
       <CenteredFlex>
         <ProjectIconMex isMex={mexIcon} icon={group.icon} size={56} />
       </CenteredFlex>
-      <ServiceName>{camelCase(group.actionGroupId)}</ServiceName>
+      <ServiceName>{titleCaseUnderScore(group.actionGroupId)}</ServiceName>
     </ServiceCard>
   )
 }

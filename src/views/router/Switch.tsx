@@ -1,5 +1,6 @@
 import ArchiveNoteEditor from '@components/mex/Archive/ArchiveNoteEditor'
 import Actions from '@components/mex/Integrations/Actions'
+import CalendarIntegrations from '@components/mex/Integrations/Calendar'
 import Portals from '@components/mex/Integrations/Portals'
 import { useEditorBuffer, useSnippetBuffer } from '@hooks/useEditorBuffer'
 import { useSaveNodeName } from '@hooks/useSaveNodeName'
@@ -126,6 +127,10 @@ const Switch = () => {
           <Route
             path={`${ROUTE_PATHS.integrations}/portal/:actionGroupId`}
             element={<ProtectedRoute component={Portals} />}
+          />
+          <Route
+            path={`${ROUTE_PATHS.integrations}/calendar/:actionGroupId`}
+            element={<ProtectedRoute component={CalendarIntegrations} />}
           />
           <Route path={ROUTE_PATHS.archive} element={<ProtectedRoute component={Archive} />} />
           <Route path={`${ROUTE_PATHS.archive}/:nodeid`} element={<ProtectedRoute component={ArchiveNoteEditor} />} />
