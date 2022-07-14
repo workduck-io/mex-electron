@@ -114,6 +114,7 @@ export type IconButtonProps = {
   transparent?: boolean
   highlight?: boolean
   disabled?: boolean
+  color?: string
   shortcut?: string
 }
 
@@ -131,6 +132,7 @@ const IconButton = ({
   transparent,
   shortcut,
   highlight,
+  color,
   singleton
 }: IconButtonProps) => {
   return (
@@ -146,7 +148,7 @@ const IconButton = ({
         onClick={onClick}
         highlight={highlight}
       >
-        <Icon icon={icon} height={size} />
+        <Icon color={color} icon={icon} height={size} />
       </Button>
     </ToolbarTooltip>
   )

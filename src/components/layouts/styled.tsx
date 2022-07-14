@@ -34,6 +34,9 @@ export const StyledTab = styled.div.attrs({
   ${({ selected }) =>
     selected &&
     css`
+      svg {
+        fill: ${({ theme }) => theme.colors.primary};
+      }
       color: ${({ theme }) => theme.colors.primary};
     `}
   &:focus {

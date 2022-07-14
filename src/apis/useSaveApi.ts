@@ -281,7 +281,7 @@ export const useApi = () => {
     if (meta?.[nodeid]?.publicAccess) return apiURLs.getNotePublicURL(nodeid)
   }
 
-  const getDataAPI = async (nodeid: string, isShared = false, isRefresh = false) => {
+  const getDataAPI = async (nodeid: string, isShared = false, isRefresh = false, isUpdate = true) => {
     const url = isShared ? apiURLs.getSharedNode(nodeid) : apiURLs.getNode(nodeid)
     if (!isShared && isRequestedWithin(2, url) && !isRefresh) {
       console.warn('\nAPI has been requested before, cancelling\n')
@@ -300,16 +300,17 @@ export const useApi = () => {
         // console.log(metadata, d.data)
         const content = deserializeContent(d.data.data)
         const metadata = extractMetadata(d.data)
-        updateFromContent(nodeid, content, metadata)
 
-        return { data: d.data.data, metadata, version: d.data.version ?? undefined }
+        if (isUpdate) updateFromContent(nodeid, content, metadata)
+
+        return { content, metadata, version: d.data.version ?? undefined }
       })
       .catch((e) => {
         console.error(`MexError: Fetching nodeid ${nodeid} failed with: `, e)
       })
 
     if (res) {
-      return { content: deserializeContent(res.data), metadata: res.metadata ?? undefined, version: res.version }
+      return { content: res?.content, metadata: res?.metadata ?? undefined, version: res.version }
     }
   }
 

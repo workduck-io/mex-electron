@@ -276,12 +276,12 @@ const Snippets = () => {
     <SnippetsSearchContainer>
       <MainHeader>
         <Title>Snippets</Title>
-        <Button primary large onClick={() => onCreateNew()}>
+        <Button primary onClick={() => onCreateNew()}>
           <Icon icon={quillPenLine} height={24} />
           Create New Snippet
         </Button>
         {IS_DEV && (
-          <Button primary large onClick={() => onCreateSpecialSnippet()}>
+          <Button primary onClick={() => onCreateSpecialSnippet()}>
             <Icon icon={magicLine} height={24} />
             Create New Template Snippet
           </Button>
@@ -297,6 +297,7 @@ const Snippets = () => {
         onDelete={(i) => onDeleteSnippet(i.id)}
         onEscapeExit={onEscapeExit}
         onSearch={onSearch}
+        options={{ view: View.Card }}
         RenderItem={RenderItem}
         RenderPreview={RenderPreview}
       />

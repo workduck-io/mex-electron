@@ -27,6 +27,9 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({ icon, onClick, isConnecte
       <GroupHeader connected={isConnected}>
         <FlexBetween>
           <Title>{title}</Title>
+          <Button primary onClick={onClick} disabled={isConnected}>
+            {isConnected ? 'Disconnect' : 'Connect'}
+          </Button>
         </FlexBetween>
         <ServiceDescription>
           {description ??
@@ -37,9 +40,6 @@ const ServiceHeader: React.FC<ServiceHeaderProps> = ({ icon, onClick, isConnecte
               Amet ut fugiat adipisicing officia aliquip quis non. Veniam magna dolor consequat quis aliqua ea ipsum
               reprehenderit commodo commodo. Minim minim sit sit magna labore sint esse ipsum.`}
         </ServiceDescription>
-        <Button primary onClick={onClick} disabled={isConnected}>
-          {isConnected ? 'Disconnect' : 'Connect'}
-        </Button>
       </GroupHeader>
     </div>
   )

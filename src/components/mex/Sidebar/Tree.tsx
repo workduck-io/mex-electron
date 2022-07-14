@@ -9,18 +9,15 @@ import {
   TreeItem,
   TreeSourcePosition
 } from '@atlaskit/tree'
-import { useTimout } from '@hooks/useRelativeTime'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import useDataStore, { useTreeFromLinks } from '@store/useDataStore'
 import Tippy, { useSingleton } from '@tippyjs/react'
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react'
-import { useContextMenu } from 'react-contexify'
-import { useLocation, useMatch, useParams } from 'react-router-dom'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useLocation, useMatch } from 'react-router-dom'
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
-import { useNavigation } from '../../../hooks/useNavigation'
 import { useAnalysisStore } from '../../../store/useAnalysis'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useTreeStore } from '../../../store/useTreeStore'
@@ -38,7 +35,7 @@ import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { useRefactorStore } from '../Refactor/Refactor'
 import { getNameFromPath, SEPARATOR } from './treeUtils'
-import { MENU_ID, TreeContextMenu } from './TreeWithContextMenu'
+import { TreeContextMenu } from './TreeWithContextMenu'
 import { IS_DEV } from '@data/Defaults/dev_'
 // import { complexTree } from '../mockdata/complexTree'
 
@@ -48,7 +45,7 @@ interface GetIconProps {
   onCollapse: (itemId: ItemId) => void
 }
 
-const GetIcon = ({ item, onCollapse, onExpand }: GetIconProps) => {
+export const GetIcon = ({ item, onCollapse, onExpand }: GetIconProps) => {
   if (item.children && item.children.length > 0) {
     return item?.isExpanded ? (
       <StyledTreeItemSwitcher onClick={() => onCollapse(item.id)}>
@@ -105,38 +102,38 @@ interface TreeProps {
   initTree: TreeData
 }
 
-interface TreeLocalState {
-  tree: TreeData
-  contextOpenNodeid: string | null
+const defaultSnap = {
+  isDragging: false,
+  isDropAnimating: false,
+  dropAnimation: null,
+  mode: null,
+  draggingOver: null,
+  combineTargetFor: null,
+  combineWith: null
 }
 
 const Tree = ({ initTree }: TreeProps) => {
-  const [treeState, setTreeState] = React.useState<TreeLocalState>({ tree: initTree, contextOpenNodeid: null })
-  // const [draggedItem, setDraggedItem] = React.useState<TreeItem | null>(null)
+  const [tree, setTreeState] = React.useState<TreeData>(initTree)
+  const [contextOpenNodeId, setContextOpenNodeId] = useState<string>(null)
   const location = useLocation()
+
+  useEffect(() => {
+    setTreeState(initTree)
+  }, [initTree])
 
   // const node = useEditorStore((state) => state.node)
   const expandNode = useTreeStore((state) => state.expandNode)
   const collapseNode = useTreeStore((state) => state.collapseNode)
   const prefillModal = useRefactorStore((state) => state.prefillModal)
-  const { push } = useNavigation()
   const { goTo } = useRouting()
-  const { tree } = treeState
-  // mog('renderTree', { initTree })
-  //
 
   const match = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
 
   const draggedRef = useRef<TreeItem | null>(null)
 
   const changeTree = (newTree: TreeData) => {
-    setTreeState((state) => ({ ...state, tree: newTree }))
+    setTreeState(() => newTree)
   }
-  //
-  useEffect(() => {
-    mog('renderTree', { initTree })
-    setTreeState({ tree: initTree, contextOpenNodeid: null })
-  }, [initTree?.items])
 
   const [source, target] = useSingleton()
 
@@ -144,26 +141,13 @@ const Tree = ({ initTree }: TreeProps) => {
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
     changeTree(mutateTree(tree, itemId, { isExpanded: true }))
     appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
-
-    // push(nodeid)
   }
 
   const onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, item: TreeItem) => {
-    // mog('onClick', { item })
-
     if (e.button === 0) {
       expandNode(item.data.path)
       onOpenItem(item.id as string, item.data.nodeid)
     }
-  }
-  const defaultSnap = {
-    isDragging: false,
-    isDropAnimating: false,
-    dropAnimation: null,
-    mode: null,
-    draggingOver: null,
-    combineTargetFor: null,
-    combineWith: null
   }
 
   const isInEditor = location.pathname.startsWith(ROUTE_PATHS.node)
@@ -177,8 +161,8 @@ const Tree = ({ initTree }: TreeProps) => {
           <ContextMenu.Root
             onOpenChange={(open) => {
               if (open) {
-                setTreeState((state) => ({ ...state, contextOpenNodeid: item.data.nodeid }))
-              } else setTreeState((state) => ({ ...state, contextOpenNodeid: null }))
+                setContextOpenNodeId(item.data.nodeid)
+              } else setContextOpenNodeId(null)
             }}
           >
             <ContextMenu.Trigger asChild>
@@ -186,7 +170,7 @@ const Tree = ({ initTree }: TreeProps) => {
                 ref={provided.innerRef}
                 selected={isInEditor && item.data && match?.params?.nodeid === item.data.nodeid}
                 isDragging={snapshot.isDragging}
-                hasMenuOpen={treeState.contextOpenNodeid === item.data.nodeid}
+                hasMenuOpen={contextOpenNodeId === item.data.nodeid}
                 isBeingDroppedAt={isTrue}
                 onContextMenu={(e) => {
                   console.log('ContextySe', e, item)
@@ -203,11 +187,6 @@ const Tree = ({ initTree }: TreeProps) => {
                 {item.hasChildren && item.children && item.children.length > 0 && (
                   <ItemCount>{item.children.length}</ItemCount>
                 )}
-                {/* <AkNavigationItem
-          text={item.data ? item.data.title : ''}
-          icon={DragDropWithNestingTree.getIcon(item, onExpand, onCollapse)}
-          dnd={{ dragHandleProps: provided.dragHandleProps }}
-        /> */}
               </StyledTreeItem>
             </ContextMenu.Trigger>
             <TreeContextMenu item={item} />
@@ -218,7 +197,6 @@ const Tree = ({ initTree }: TreeProps) => {
   }
 
   const onExpand = (itemId: ItemId) => {
-    // const { tree }: State = this.state
     const item = tree.items[itemId]
     if (item && item.data && item.data.path) {
       expandNode(item.data.path)

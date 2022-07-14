@@ -2,13 +2,17 @@ import { WORKSPACE_HEADER } from './../data/Defaults/defaults'
 import { client, useAuth } from '@workduck-io/dwindle'
 import { apiURLs } from '../apis/routes'
 import { USE_API } from '../data/Defaults/dev_'
-import { useSaver } from '../editor/Components/Saver'
 import { useAuthStore } from '../services/auth/useAuth'
 import useDataStore from '../store/useDataStore'
 import { ILink } from '../types/Types'
 import { mog } from '../utils/lib/helper'
 import { useSaveData } from './useSaveData'
-// import { apiURLs } from '.../Editor/Store/Types'
+import { hierarchyParser } from './useHierarchy'
+import { iLinksToUpdate } from '@utils/hierarchy'
+import { runBatch } from '@utils/lib/batchPromise'
+import { useApi } from '@apis/useSaveApi'
+import { useContentStore } from '@store/useContentStore'
+import { useSearch } from './useSearch'
 
 const useArchive = () => {
   const setArchive = useDataStore((state) => state.setArchive)
@@ -16,15 +20,34 @@ const useArchive = () => {
   const unArchive = useDataStore((state) => state.unArchive)
   const addInArchive = useDataStore((state) => state.addInArchive)
   const removeArchive = useDataStore((state) => state.removeFromArchive)
+  const { getDataAPI } = useApi()
 
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
 
+  const setContent = useContentStore((store) => store.setContent)
   const updateTagsCache = useDataStore((state) => state.updateTagsCache)
   const updateInternalLinks = useDataStore((state) => state.updateInternalLinks)
 
-  const { onSave } = useSaver()
+  const { updateDocument } = useSearch()
   const { saveData } = useSaveData()
   const { userCred } = useAuth()
+
+  const updateArchiveLinks = (addedILinks: Array<ILink>, removedILinks: Array<ILink>): Array<ILink> => {
+    const archive = useDataStore.getState().archive
+
+    // * Find the Removed Notes
+    const intersection = removedILinks.filter((l) => {
+      const note = addedILinks.find((rem) => l.nodeid === rem.nodeid)
+      return !note
+    })
+
+    const newArchiveNotes = [...archive, ...intersection]
+    setArchive(newArchiveNotes)
+
+    mog('Archiving notes', { newArchiveNotes, intersection })
+
+    return newArchiveNotes
+  }
 
   const archived = (nodeid: string) => {
     return archive.find((node) => node.nodeid === nodeid)
@@ -35,6 +58,7 @@ const useArchive = () => {
       addInArchive(nodes)
       return true
     }
+
     if (userCred) {
       return await client
         .put(
@@ -49,11 +73,21 @@ const useArchive = () => {
             }
           }
         )
-        // .then(console.log)
-        .then(() => {
-          addInArchive(nodes)
+        .then((d) => {
+          const { archivedHierarchy } = d.data
+
+          if (archivedHierarchy) {
+            const addedArchivedLinks = hierarchyParser(archivedHierarchy, {
+              withParentNodeId: true,
+              allowDuplicates: true
+            })
+
+            if (addedArchivedLinks) {
+              // * set the new hierarchy in the tree
+              setArchive(addedArchivedLinks)
+            }
+          }
         })
-        .then(() => onSave())
         .then(() => {
           return true
         })
@@ -90,13 +124,13 @@ const useArchive = () => {
       .catch(console.error)
   }
 
-  const getArchiveData = async () => {
+  const getArchiveNotesHierarchy = async () => {
     if (!USE_API) {
       return archive
     }
 
     await client
-      .get(apiURLs.getArchivedNodes(getWorkspaceId()), {
+      .get(apiURLs.getArchiveNotesHierarchy(), {
         headers: {
           [WORKSPACE_HEADER]: getWorkspaceId(),
           Accept: 'application/json, text/plain, */*'
@@ -104,13 +138,29 @@ const useArchive = () => {
       })
       .then((d) => {
         if (d.data) {
-          const ids = d.data
-          const links = ids.filter((id) => archive.filter((ar) => ar.nodeid === id).length === 0)
-          setArchive(links)
+          const hierarchy = d.data
+
+          const archivedNotes = hierarchyParser(hierarchy, { withParentNodeId: true, allowDuplicates: true })
+
+          if (archivedNotes && archivedNotes.length > 0) {
+            const localILinks = useDataStore.getState().archive
+            const { toUpdateLocal } = iLinksToUpdate(localILinks, archivedNotes)
+
+            runBatch(
+              toUpdateLocal.map((ilink) =>
+                getDataAPI(ilink.nodeid, false, false, false).then((data) => {
+                  setContent(ilink.nodeid, data.content, data.metadata)
+                  updateDocument('archive', ilink.nodeid, data.content)
+                })
+              )
+            )
+          }
+
+          setArchive(archivedNotes)
         }
         return d.data
       })
-      .catch(console.error)
+      .catch(mog)
   }
 
   const cleanCachesAfterDelete = (nodes: ILink[]) => {
@@ -169,7 +219,7 @@ const useArchive = () => {
     return false
   }
 
-  return { archived, addArchiveData, removeArchiveData, getArchiveData, unArchiveData }
+  return { archived, addArchiveData, updateArchiveLinks, removeArchiveData, getArchiveNotesHierarchy, unArchiveData }
 }
 
 export default useArchive

@@ -9,9 +9,11 @@ import Bookmarks from './Bookmarks'
 import { useTheme } from 'styled-components'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { ROUTE_PATHS } from '@views/routes/urls'
-import { useLocation } from 'react-router-dom'
+import { useMatch } from 'react-router-dom'
 import SnippetList from './SnippetList'
 import { usePolling } from '@apis/usePolling'
+import { mog } from '@utils/lib/helper'
+import ArchiveSidebar from './ArchiveSidebar'
 
 const NodeSidebar = () => {
   const sidebar = useLayoutStore((store) => store.sidebar)
@@ -60,18 +62,19 @@ const NodeSidebar = () => {
 
 const SidebarTabs = () => {
   const sidebar = useLayoutStore((store) => store.sidebar)
-  const location = useLocation()
+  const isEditor = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
+  const isArchiveEditor = useMatch(`${ROUTE_PATHS.archive}/:nodeid`)
+  const isArchive = useMatch(ROUTE_PATHS.archive)
 
-  const isEditor = useMemo(() => {
-    if (location.pathname) {
-      if (location.pathname.startsWith(ROUTE_PATHS.node)) {
-        return true
-      }
-    }
-    return false
-  }, [location])
+  mog('IS SIDEBAR', { sidebar, isEditor, isArchive })
 
-  return <>{sidebar.show && (isEditor ? <NodeSidebar /> : <SnippetList />)}</>
+  if (!sidebar.show) return <></>
+
+  if (isEditor) return <NodeSidebar />
+
+  if (isArchive || isArchiveEditor) return <ArchiveSidebar />
+
+  return <SnippetList />
 }
 
 export default SidebarTabs

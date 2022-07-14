@@ -101,8 +101,8 @@ export const useLinks = () => {
     }
   }
 
-  const getTitleFromNoteId = (noteId: string) => {
-    const path = getPathFromNodeid(noteId, true)
+  const getTitleFromNoteId = (noteId: string, options?: { includeShared?: boolean; includeArchived?: boolean }) => {
+    const path = getPathFromNodeid(noteId, true, options?.includeArchived)
 
     return getTitleFromPath(path)
   }
@@ -199,7 +199,7 @@ export const useLinks = () => {
     const separator = withNoteId ? HASH_SEPARATOR : SEPARATOR
     const titleAt = withNoteId ? -2 : -1
 
-    return path.split(separator).slice(titleAt)[0]
+    return path?.split(separator)?.slice(titleAt)[0]
   }
 
   const getNodeidFromPath = (path: string) => {
@@ -217,9 +217,11 @@ export const useLinks = () => {
   }
 
   const updateILinks = (addedILinks: Array<ILink>, removedILinks: Array<ILink>) => {
-    const links = useDataStore.getState().ilinks
+    let links = useDataStore.getState().ilinks
 
-    removedILinks.forEach((ilink) => {
+    const intersection = removedILinks.filter((l) => addedILinks.find((rem) => l.nodeid === rem.nodeid))
+
+    intersection.forEach((ilink) => {
       links.splice(
         links.findIndex((item) => item.nodeid === ilink.nodeid),
         1
@@ -227,8 +229,11 @@ export const useLinks = () => {
     })
 
     addedILinks.forEach((p) => {
-      const idx = links.find((link) => link.nodeid === p.nodeid && link.path === p.path)
-      if (idx === undefined) links.push(p)
+      const idx = links.find((link) => link.nodeid === p.nodeid)
+
+      if (idx && idx.path !== p.path)
+        links = links.map((link) => (link.nodeid === p.nodeid ? { ...link, path: p.path } : link))
+      else if (idx === undefined) links.push({ ...p, createdAt: Infinity })
     })
 
     const newILinks = [...links]
@@ -255,11 +260,17 @@ export const useLinks = () => {
     return note
   }
 
-  const getPathFromNodeid = (nodeid: string, includeShared = false) => {
+  const getPathFromNodeid = (nodeid: string, includeShared = false, includeArchived = false) => {
     const links = useDataStore.getState().ilinks
 
     const link = links.find((l) => l.nodeid === nodeid)
     if (link) return link.path
+
+    if (includeArchived) {
+      const archive = useDataStore.getState().archive
+      const archivedLink = archive.find((l) => l.nodeid === nodeid)
+      if (archivedLink) return archivedLink.path
+    }
 
     if (includeShared) {
       const shared = useDataStore.getState().sharedNodes

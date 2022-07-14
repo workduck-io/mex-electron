@@ -10,7 +10,6 @@ import { Icon } from '@iconify/react'
 //
 import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@ui/components/menus/contextMenu'
 import React from 'react'
-import { useRenameStore } from '../../../store/useRenameStore'
 import { useShareModalStore } from '../Mention/ShareModalStore'
 import { useDeleteStore } from '../Refactor/DeleteModal'
 import { useRefactorStore } from '../Refactor/Refactor'
@@ -34,12 +33,10 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const openShareModal = useShareModalStore((store) => store.openModal)
 
   const handleRefactor = (item: TreeItem) => {
-    // mog('handleRename', { item })
     openRefactorModal()
   }
 
   const handleArchive = (item: TreeItem) => {
-    // mog('handleArchive', { item })
     openDeleteModal(item.data.path)
   }
 
@@ -49,7 +46,6 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   }
 
   const handleShare = (item: TreeItem) => {
-    // mog('handleShare', { item })
     openShareModal('permission', item.data.nodeid)
   }
 
@@ -58,7 +54,6 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
       <ContextMenuContent>
         <ContextMenuItem
           onSelect={(args) => {
-            // console.log('onSelectRename', args, item)
             handleRefactor(item)
           }}
         >
@@ -71,22 +66,8 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
           }}
         >
           <Icon icon={addCircleLine} />
-          Create Child
+          New Note
         </ContextMenuItem>
-        <ContextMenuItem
-          onSelect={(args) => {
-            handleArchive(item)
-          }}
-        >
-          <Icon icon={archiveLine} />
-          Archive
-        </ContextMenuItem>
-        <ContextMenuSeparator />
-        {/* <ContextMenuItem>
-          <Icon icon={refreshFill} />
-          Sync
-        </ContextMenuItem>
-         */}
         <ContextMenuItem
           onSelect={(args) => {
             handleShare(item)
@@ -94,6 +75,22 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
         >
           <Icon icon={shareLine} />
           Share
+        </ContextMenuItem>
+        <ContextMenuSeparator />
+        {/* <ContextMenuItem>
+          <Icon icon={refreshFill} />
+          Sync
+        </ContextMenuItem>
+         */}
+
+        <ContextMenuItem
+          color="#df7777"
+          onSelect={(args) => {
+            handleArchive(item)
+          }}
+        >
+          <Icon icon={archiveLine} />
+          Archive
         </ContextMenuItem>
       </ContextMenuContent>
     </>

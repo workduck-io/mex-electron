@@ -60,7 +60,7 @@ export const useDeleteStore = create<DeleteStoreState>((set) => ({
 }))
 
 const Delete = () => {
-  const { getMockDelete, execDelete } = useDelete()
+  const { getMockArchive, execArchive } = useDelete()
   const { loadNode } = useLoad()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
@@ -108,16 +108,16 @@ const Delete = () => {
   // const { del, mockData, open } = deleteState
   useEffect(() => {
     if (del && !isReserved(del)) {
-      setMockRefactored(getMockDelete(del).archivedNodes.map((item) => item.path))
+      setMockRefactored(getMockArchive(del).archivedNodes.map((item) => item.path))
     }
   }, [del])
 
-  const handleDelete = () => {
-    const { toLoad } = execDelete(del)
+  const handleDelete = async () => {
+    const res = await execArchive(del)
+    if (res) {
+      goTo(ROUTE_PATHS.node, NavigationType.replace, res.toLoad)
+    }
 
-    // Load this node after deletion
-    // mog('handling delete', { toLoad, del })
-    loadNode(toLoad, { savePrev: false, fetch: USE_API })
     closeModal()
   }
 

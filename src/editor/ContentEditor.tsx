@@ -131,11 +131,6 @@ const ContentEditor = () => {
   const viewOnly = accessWhenShared(node.nodeid) === 'READ'
   // const readOnly = !!fetchingContent
 
-  // mog('ContentEditor', {
-  //   node,
-  //   editorId
-  // })
-
   return (
     <>
       <StyledEditor showGraph={infobar.mode === 'graph'} className="mex_editor">

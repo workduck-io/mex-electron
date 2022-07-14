@@ -9,7 +9,6 @@ import { ModalControls, ModalHeader, MRMHead } from '../../components/mex/Refact
 import SearchView, { RenderItemProps, RenderPreviewProps } from '../../components/mex/Search/SearchView'
 import { View } from '../../components/mex/Search/ViewSelector'
 import { defaultContent } from '../../data/Defaults/baseData'
-import { useSaver } from '../../editor/Components/Saver' // FIXME move useSaver to hooks
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import useArchive from '../../hooks/useArchive'
 import useLoad from '../../hooks/useLoad'
@@ -40,6 +39,9 @@ import { GenericSearchResult } from '../../types/search'
 import Infobox from '../../ui/components/Help/Infobox'
 import { ArchiveHelp } from '../../data/Defaults/helpText'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import { useDelete } from '@hooks/useDelete'
+import toast from 'react-hot-toast'
 
 export const ArchivedNode = styled.div`
   display: flex;
@@ -67,24 +69,20 @@ const ActionContainer = styled.div`
 `
 
 const Archive = () => {
-  const archive = useDataStore((store) => store.archive)
-
-  const { createNewNote } = useCreateNewNote()
-  const { unArchiveData, removeArchiveData } = useArchive()
   const [delNode, setDelNode] = useState(undefined)
   const [showModal, setShowModal] = useState(false)
-  const { loadNode } = useLoad()
-  const { onSave } = useSaver()
+
+  const archive = useDataStore((store) => store.archive)
   const contents = useContentStore((store) => store.contents)
-  const theme = useTheme()
+
+  const { goTo } = useRouting()
+  const { loadNode } = useLoad()
   const { queryIndex } = useSearch()
-
+  const { getMockDelete } = useDelete()
+  const { createNewNote } = useCreateNewNote()
   const { updateDocument, removeDocument } = useSearch()
+  const { unArchiveData, removeArchiveData } = useArchive()
 
-  // * TODO: Uncomment this !important
-  // useEffect(() => {
-  //   getArchiveData()
-  // }, [])
   const getArchiveResult = (nodeid: string): GenericSearchResult => {
     const node = archive.find((node) => node.nodeid === nodeid)
     const content = getContent(nodeid)
@@ -95,6 +93,7 @@ const Archive = () => {
       text: convertContentToRawText(content.content)
     }
   }
+
   const onSearch = async (newSearchTerm: string) => {
     const res = await queryIndex('archive', newSearchTerm)
     mog('ArchiveSearch', { newSearchTerm, res })
@@ -105,13 +104,8 @@ const Archive = () => {
   }
 
   const initialArchive: GenericSearchResult[] = archive.map((n) => getArchiveResult(n.nodeid))
+
   const onUnarchiveClick = async (node: ILink) => {
-    // const present = ilinks.find((link) => link.key === node.key)
-
-    // if (present) {
-    //   setShowModal(true)
-    // }
-
     await unArchiveData([node])
     createNewNote({ path: node.path, noteId: node.nodeid })
 
@@ -131,15 +125,15 @@ const Archive = () => {
   }
 
   const onDeleteClick = async () => {
-    mog('Deleting this node...', { archive, delNode })
-    const nodesToDelete = archive.filter((i) => {
-      const match = i.path.startsWith(delNode.title)
-      return match
-    })
+    const notesToDelete = getMockDelete(delNode.id)
 
-    await removeArchiveData(nodesToDelete)
+    try {
+      await removeArchiveData(notesToDelete)
+    } catch (err) {
+      toast('Error deleting Note')
+    }
 
-    nodesToDelete.forEach(async (node) => {
+    notesToDelete.forEach(async (node) => {
       await removeDocument('archive', node.nodeid)
     })
 
@@ -153,12 +147,16 @@ const Archive = () => {
     setDelNode(undefined)
   }
 
+  const handleArchiveCardClick = (nodeid: string) => {
+    goTo(ROUTE_PATHS.archive, NavigationType.push, nodeid)
+  }
+
   // Forwarding ref to focus on the selected result
   const BaseItem = (
     { item, splitOptions, ...props }: RenderItemProps<GenericSearchResult>,
     ref: React.Ref<HTMLDivElement>
   ) => {
-    mog('BaseItem', item)
+    // mog('BaseItem', item)
     const con = contents[item.id]
     const content = con ? con.content : defaultContent.content
     const node = archive.find((node) => node.nodeid === item.id)
@@ -168,7 +166,7 @@ const Archive = () => {
 
     if (props.view === View.Card) {
       return (
-        <Result {...props} key={id} ref={ref}>
+        <Result {...props} key={id} ref={ref} onClick={() => handleArchiveCardClick(item.id)}>
           <ResultHeader>
             <ResultTitle>{node.path}</ResultTitle>
             <ActionContainer>
@@ -186,6 +184,7 @@ const Archive = () => {
                 color="#df7777"
                 onClick={(ev) => {
                   ev.preventDefault()
+                  ev.stopPropagation()
                   setDelNode(item)
                   setShowModal(true)
                 }}
@@ -217,36 +216,25 @@ const Archive = () => {
   const RenderItem = React.forwardRef(BaseItem)
 
   const RenderPreview = ({ item }: RenderPreviewProps<GenericSearchResult>) => {
-    // mog('BaseItem', item)
     if (!item) return null
     const node = archive.find((node) => node.nodeid === item.id)
     if (!node) return null
     const con = contents[item.id]
     const content = con ? con.content : defaultContent.content
-    const icon = fileList2Line
-    // mog('RenderPreview', { item })
     if (item) {
-      // const edNode = { ...node, title: node.path, id: node.nodeid }
       return (
         <SplitSearchPreviewWrapper id={`splitArchiveSearchPreview_for_${item.id}`}>
           <Title>
             {node.path}
 
             <ActionContainer>
-              {/* <StyledIcon
-                fontSize={32}
-                color={theme.colors.primary}
-                onClick={(ev) => {
-                  ev.preventDefault()
-                  onUnarchiveClick(node)
-                }}
-                icon={unarchiveLine}
-              /> */}
               <StyledIcon
                 fontSize={32}
                 color="#df7777"
                 onClick={(ev) => {
                   ev.preventDefault()
+                  ev.stopPropagation()
+
                   setDelNode(item)
                   setShowModal(true)
                 }}
@@ -281,6 +269,7 @@ const Archive = () => {
         onSelect={(node) => {
           mog('onSelect: NodeSelected', { node })
         }}
+        options={{ view: View.Card }}
         onEscapeExit={() => {
           setShowModal(false)
           setDelNode(undefined)
