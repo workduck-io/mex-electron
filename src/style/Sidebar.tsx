@@ -23,7 +23,6 @@ export const SIcon = (props: any) => {
 export const SidebarDiv = styled.div<FocusModeProp>`
   height: 100%;
   padding-top: ${({ theme }) => theme.spacing.large};
-  max-width: ${({ theme }) => PixelToCSS(theme.width.sidebar)};
   width: 100%;
   transition: opacity 0.3s ease-in-out;
   ${focusStyles}
