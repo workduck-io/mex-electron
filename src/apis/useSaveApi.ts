@@ -22,6 +22,7 @@ import { iLinksToUpdate } from '@utils/hierarchy'
 import { runBatch } from '@utils/lib/batchPromise'
 import { useUpdater } from '@hooks/useUpdater'
 import { useSnippetStore } from '@store/useSnippetStore'
+import toast from 'react-hot-toast'
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -415,6 +416,22 @@ export const useApi = () => {
     return data
   }
 
+  const deleteSnippetById = async (id: string) => {
+    const url = apiURLs.deleteSnippetById(id)
+    try {
+      const res = await client.delete(url, {
+        headers: {
+          [WORKSPACE_HEADER]: getWorkspaceId(),
+          Accept: 'application/json, text/plain, */*'
+        }
+      })
+
+      return { status: true }
+    } catch (err) {
+      toast('Unable to delete Snippet')
+    }
+  }
+
   const getSnippetById = async (id: string) => {
     const url = apiURLs.getSnippetById(id)
 
@@ -439,6 +456,7 @@ export const useApi = () => {
     refactorNotes,
     makeNotePrivate,
     saveSnippetAPI,
+    deleteSnippetById,
     getAllSnippetsByWorkspace,
     getSnippetById,
     makeNotePublic,

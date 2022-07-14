@@ -109,5 +109,5 @@ export const DefaultTransforms: Array<DataTransformation> = [
   // Transforms that are applied always
   // (even if the version is not the latest)
   // These are applied at the end of all previous transformations
-  UpdateTemplateSnippets()
+  // UpdateTemplateSnippets()
 ]

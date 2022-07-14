@@ -5,6 +5,7 @@ import { useSearch } from './useSearch'
 import { mog } from '../utils/lib/helper'
 import { convertToCopySnippet, defaultCopyConverter, defaultCopyFilter } from '../utils/search/parseData'
 import { serializeHtml, getPlateEditorRef, createPlateUI, createPlateUIEditor } from '@udecode/plate'
+import { useApi } from '@apis/useSaveApi'
 
 export const useSnippets = () => {
   const addSnippetZus = useSnippetStore((state) => state.addSnippet)
@@ -12,6 +13,7 @@ export const useSnippets = () => {
   const deleteSnippetZus = useSnippetStore((state) => state.deleteSnippet)
 
   const { updateDocument, addDocument, removeDocument } = useSearch()
+  const { deleteSnippetById } = useApi()
 
   const getSnippets = () => {
     return useSnippetStore.getState().snippets
@@ -62,8 +64,11 @@ export const useSnippets = () => {
   }
 
   const deleteSnippet = async (id: string) => {
-    deleteSnippetZus(id)
-    await removeDocument('snippet', id)
+    const res = await deleteSnippetById(id)
+    if (res) {
+      deleteSnippetZus(id)
+      await removeDocument('snippet', id)
+    }
   }
 
   const addSnippet = async (snippet: Snippet) => {

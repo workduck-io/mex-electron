@@ -23,7 +23,6 @@ interface SearchViewState<Item> {
   selected: number
   searchTerm: string
   result: Item[]
-  view: View
 }
 
 export interface RenderPreviewProps<Item> extends RenderSplitProps {
@@ -193,24 +192,21 @@ const SearchView = <Item,>({
   RenderPreview,
   RenderNotFound,
   RenderFilters,
-  options
+  options = { view: View.List }
 }: SearchViewProps<Item>) => {
   const [searchState, setSS] = useState<SearchViewState<Item>>({
     selected: -1,
     searchTerm: '',
-    result: [],
-    view: options?.view ?? View.List
+    result: []
   })
   const { applyCurrentFilters, resetCurrentFilters } = useFilters<Item>()
   const currentFilters = useFilterStore((store) => store.currentFilters) as SearchFilter<Item>[]
   const filters = useFilterStore((store) => store.filters) as SearchFilter<Item>[]
   const idxKeys = useFilterStore((store) => store.indexes) as idxKey[]
+  const [view, setView] = useState<View>(options?.view)
   const setIndexes = useFilterStore((store) => store.setIndexes)
   const setSelected = (selected: number) => setSS((s) => ({ ...s, selected }))
-  const setView = (view: View) => {
-    // mog('setview', { view })
-    setSS((s) => ({ ...s, view }))
-  }
+
   const setOnlyResult = (result: Item[]) => {
     setSS((s) => ({ ...s, result }))
   }
@@ -228,17 +224,10 @@ const SearchView = <Item,>({
     const defaultIndexes = indexes?.indexes[indexes?.default]
     setIndexes(defaultIndexes ?? [])
   }
-  const { selected, searchTerm, result, view } = searchState
+  const { selected, searchTerm, result } = searchState
 
   const inpRef = useRef<HTMLInputElement>(null)
   const selectedRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    // mog('Setting View', { view, id })
-    if (options?.view) {
-      setView(options.view)
-    }
-  }, [options?.view])
 
   useEffect(() => {
     // mog('clearing search on ID change', { searchTerm, id })
