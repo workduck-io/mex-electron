@@ -74,16 +74,18 @@ const useArchive = () => {
           }
         )
         .then((d) => {
-          const { removedPaths, addedPaths } = d.data
+          const { archivedHierarchy } = d.data
 
-          const addedArchivedLinks = hierarchyParser(addedPaths, { withParentNodeId: true, allowDuplicates: true })
-          const removedArchivedLinks = hierarchyParser(removedPaths, { withParentNodeId: true, allowDuplicates: true })
+          if (archivedHierarchy) {
+            const addedArchivedLinks = hierarchyParser(archivedHierarchy, {
+              withParentNodeId: true,
+              allowDuplicates: true
+            })
 
-          mog('LINKS AFTER ARCHIVING', { addedArchivedLinks, removedArchivedLinks })
-
-          if (addedArchivedLinks && removedArchivedLinks) {
-            // * set the new hierarchy in the tree
-            updateArchiveLinks(addedArchivedLinks, removedArchivedLinks)
+            if (addedArchivedLinks) {
+              // * set the new hierarchy in the tree
+              setArchive(addedArchivedLinks)
+            }
           }
         })
         .then(() => {

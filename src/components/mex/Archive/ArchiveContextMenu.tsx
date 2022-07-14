@@ -35,7 +35,7 @@ const ArchiveContextMenu = ({ item }: TreeContextMenuProps) => {
   return (
     <>
       <ContextMenuContent>
-        <ContextMenuItem
+        {/* <ContextMenuItem
           onSelect={(args) => {
             handleUnarchive(item)
           }}
@@ -43,7 +43,7 @@ const ArchiveContextMenu = ({ item }: TreeContextMenuProps) => {
           <Icon icon={unarchiveLine} />
           Unarchive
         </ContextMenuItem>
-        <ContextMenuSeparator />
+        <ContextMenuSeparator /> */}
         <ContextMenuItem
           color="#df7777"
           onSelect={(args) => {
