@@ -112,10 +112,10 @@ const GoogleCalendarActionData = {
 
 export const openCalendarMeetingNote = (
   e: CalendarEvent,
-  getMeetingNote: (title: string, date: number, create?: boolean) => ILink | undefined
+  getMeetingNote: (e: CalendarEvent, create?: boolean) => ILink | undefined
 ) => {
   // if link present use it
-  const node = getMeetingNote(e.summary, e.times.start, true)
+  const node = getMeetingNote(e, true)
   const content = useContentStore.getState().getContent(node?.nodeid)
   // const content = getContent(node.nodeid)
   const realContent =
@@ -146,9 +146,9 @@ export const openCalendarMeetingNote = (
 
 const convertCalendarEventToAction = (
   e: CalendarEvent,
-  getMeetingNote: (title: string, date: number, create?: boolean) => ILink | undefined
+  getMeetingNote: (e: CalendarEvent, create?: boolean) => ILink | undefined
 ) => {
-  const node = getMeetingNote(e.summary, e.times.start, false)
+  const node = getMeetingNote(e, false)
   const desc = e.description ? `: ${e.description}` : ''
   return {
     id: e.id,
@@ -255,13 +255,25 @@ export const useCalendar = () => {
     return events
   }
 
-  const getNodeForMeeting = (title: string, date: number, create?: boolean): ILink | undefined => {
-    const customName = `${MEETING_PREFIX}${SEPARATOR}${getSlug(title)} ${format(date, 'dd-MM-yyyy')}`
+  const getNodeForMeeting = (e: CalendarEvent, create?: boolean): ILink | undefined => {
+    const customName = `${MEETING_PREFIX}${SEPARATOR}${getSlug(e.summary)} ${format(e.times.start, 'dd-MM-yyyy')}`
     const links = useDataStore.getState().ilinks
 
     const link = links?.find((l) => l.path === customName)
 
-    const node = link ? link : create ? createNewNote({ path: customName }) : undefined
+    const node = link
+      ? link
+      : create
+      ? createNewNote({
+          path: customName,
+          noteContent: MeetingSnippetContent({
+            title: e.summary,
+            date: e.times.start,
+            link: e.links.meet ?? e.links.event,
+            attendees: getAttendeeUserIDsFromCalendarEvent(e)
+          })
+        })
+      : undefined
 
     return node
   }
