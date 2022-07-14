@@ -7,7 +7,6 @@ import styled, { css } from 'styled-components'
 import AutoformatHelp from '../../../data/initial/AutoformatHelp'
 import { GetIcon } from '../../../data/links'
 import { useAuthStore } from '../../../services/auth/useAuth'
-import { useInitOlvy } from '../../../services/olvy'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import useOnboard from '../../../store/useOnboarding'
@@ -17,6 +16,7 @@ import { MexIcon } from '../../../style/Layouts'
 import { FocusModeProp } from '../../../style/props'
 import { FlexBetween } from '../../spotlight/Actions/styled'
 import { useTourData } from '../Onboarding/hooks'
+import useModalStore, { ModalsType } from '@store/useModalStore'
 
 export const Float = styled.div<FocusModeProp>`
   position: fixed;
@@ -82,15 +82,17 @@ export const ClickableIcon = styled(Icon)`
 const FloatingButton = () => {
   const [showMenu, setMenu] = useState<boolean>(false)
 
-  const toggleModal = useHelpStore((store) => store.toggleModal)
+  const toggleShortcutModal = useHelpStore((store) => store.toggleModal)
   const focusMode = useLayoutStore((store) => store.focusMode)
   const showLoader = useLayoutStore((store) => store.showLoader)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const authenticated = useAuthStore((store) => store.authenticated)
+  const toggleModal = useModalStore((store) => store.toggleOpen)
 
   const { setOnboardData } = useTourData()
 
-  useInitOlvy(showMenu)
+  // * For release notes
+  // useInitOlvy(showMenu)
 
   const onGettingStartedClick = () => {
     setOnboardData()
@@ -99,7 +101,11 @@ const FloatingButton = () => {
 
   const onShortcutClick = () => {
     setMenu(false)
-    toggleModal()
+    toggleShortcutModal()
+  }
+
+  const handleWhatsNew = () => {
+    toggleModal(ModalsType.releases)
   }
 
   if (!authenticated || showLoader) return null
@@ -122,7 +128,10 @@ const FloatingButton = () => {
               <MenuItem key="wd-mex-getting-started-button" onClick={onGettingStartedClick}>
               Getting Started
             </MenuItem> */}
-            <MenuItem key="wd-mex-what-is-new-button" id="olvy-target">
+            {/* <MenuItem key="wd-mex-what-is-new-button" id="olvy-target">
+              <MexIcon fontSize={20} margin="0 1rem 0 0" icon="fluent:gift-24-filled" /> What&apos;s New
+            </MenuItem> */}
+            <MenuItem key="wd-mex-what-is-new-button" onClick={handleWhatsNew}>
               <MexIcon fontSize={20} margin="0 1rem 0 0" icon="fluent:gift-24-filled" /> What&apos;s New
             </MenuItem>
             <Tippy interactive theme="markdown-help" placement="right" content={<AutoformatHelp />}>

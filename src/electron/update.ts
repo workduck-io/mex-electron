@@ -1,6 +1,5 @@
 import { BrowserWindow, app, autoUpdater, dialog, ipcMain } from 'electron'
 
-import { AppType } from '../hooks/useInitialize'
 import { IpcAction } from '../data/IpcAction'
 import { backupMexJSON } from './backup'
 import { checkIfAlpha } from './utils/version'

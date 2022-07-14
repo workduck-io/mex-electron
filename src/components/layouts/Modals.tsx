@@ -8,6 +8,7 @@ import Rename from '../mex/Refactor/Rename'
 import { useAuthStore } from '@services/auth/useAuth'
 import CreateReminderModal from '../mex/Reminders/CreateReminderModal'
 import ShareModal from '@components/mex/Mention/ShareModal'
+import ReleaseNotesModal from '@components/mex/ReleaseNotes'
 
 export interface ModalOpenAction {
   type: 'share-invite-prefill'
@@ -16,21 +17,8 @@ export interface ModalOpenAction {
 
 const Modals = () => {
   const isAuthenticated = useAuthStore((store) => store.authenticated)
-  // const prefillShareModal = useShareModalStore((state) => state.prefillModal)
-
-  // useEffect(() => {
-  //   ipcRenderer.on(IpcAction.OPEN_MODAL, (_event, { type, data }) => {
-  //     mog('open modal', { type, data })
-  //     switch (type) {
-  //       case 'share-invite-prefill': {
-  //         prefillShareModal('invite', { alias: data.alias, nodeid: data.nodeid })
-  //         break
-  //       }
-  //     }
-  //   })
-  // }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
   if (!isAuthenticated) return <></>
+
   return (
     <>
       <Lookup />
@@ -40,6 +28,7 @@ const Modals = () => {
       <HelpModal />
       <BlockModal />
       <ShareModal />
+      <ReleaseNotesModal />
       <CreateReminderModal />
     </>
   )
