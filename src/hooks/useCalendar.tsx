@@ -188,26 +188,29 @@ const converGoogleEventToCalendarEvent = async (
   const updatedTime = Date.parse(event.updated)
   const startTime = Date.parse(event.start.dateTime ?? event.start.date)
   const endTime = Date.parse(event.end.dateTime ?? event.end.date)
-  const people = await Promise.all(
-    event.attendees.map(async (a) => {
-      const person: EventPerson = {
-        email: a.email,
-        displayName: a.displayName,
-        optional: a.optional,
-        organizer: a.email === event.organizer?.email,
-        responseStatus: a.responseStatus as any,
-        creator: a.email === event.creator?.email,
-        resource: a.resource
-      }
-      if (person.email) {
-        const userID = await getMexUserID(person.email)
-        if (userID) {
-          person.mexUserID = userID
-        }
-      }
-      return person
-    })
-  )
+  const people =
+    event.attendees !== undefined
+      ? await Promise.all(
+          event.attendees.map(async (a) => {
+            const person: EventPerson = {
+              email: a.email,
+              displayName: a.displayName,
+              optional: a.optional,
+              organizer: a.email === event.organizer?.email,
+              responseStatus: a.responseStatus as any,
+              creator: a.email === event.creator?.email,
+              resource: a.resource
+            }
+            if (person.email) {
+              const userID = await getMexUserID(person.email)
+              if (userID) {
+                person.mexUserID = userID
+              }
+            }
+            return person
+          })
+        )
+      : []
 
   return {
     id: event.id,
