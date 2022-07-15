@@ -39,7 +39,13 @@ export const hierarchyParser = (
         */
 
       if (idPathMapping[nodeID]) {
-        if (idPathMapping[nodeID] !== nodePath) throw new Error('Invalid Linkdata Input')
+        if (idPathMapping[nodeID] !== nodePath) {
+          const ilinkAt = ilinks?.findIndex((ilink) => ilink.nodeid === nodeID)
+
+          if (ilinkAt) {
+            ilinks.splice(ilinkAt, 1, { ...ilinks[ilinkAt], path: nodePath })
+          }
+        }
       } else if (pathIdMapping[nodePath] && !options?.allowDuplicates) {
         // mog(`Found existing notePath: ${nodePath} with ${nodeID} at index: ${pathIdMapping[nodePath].index}`)
         ilinks[pathIdMapping[nodePath].index] = { nodeid: nodeID, path: nodePath }

@@ -1,11 +1,9 @@
 import { AppType, useInitialize } from '../../../hooks/useInitialize'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import React, { memo, useEffect, useState } from 'react'
-import config from '../../../config.json'
 
 import { IpcAction } from '../../../data/IpcAction'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { getHtmlString } from '../../../components/spotlight/Source'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { getPlateSelectors } from '@udecode/plate'
 import { ipcRenderer } from 'electron'
@@ -30,13 +28,11 @@ import { useActionsCache } from '../Actions/useActionsCache'
 import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import useDwindleAuthStore from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
-import { useAuth } from '@workduck-io/dwindle'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
   const { setSelection } = useSpotlightContext()
   const setSpotlightTrigger = useSpotlightSettingsStore((state) => state.setSpotlightTrigger)
-  const { initCognito } = useAuth()
 
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
   const setBubble = useSpotlightSettingsStore((state) => state.setBubble)
