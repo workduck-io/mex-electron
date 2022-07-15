@@ -59,6 +59,7 @@ export const DataGroup = styled.div``
 interface MetaDataWrapperProps extends FocusModeProp {
   fadeOnHover?: boolean
 }
+
 export const MetadataWrapper = styled.div<MetaDataWrapperProps>`
   display: flex;
   align-items: center;
@@ -126,10 +127,8 @@ interface MetadataProps {
 }
 const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
   // const node = useEditorStore((state) => state.node)
-  const focusMode = useLayoutStore((s) => s.focusMode)
   const getContent = useContentStore((state) => state.getContent)
   const content = getContent(node.nodeid)
-  const { getFocusProps } = useLayout()
   const [metadata, setMetadata] = useState<NodeMetadata | undefined>(undefined)
 
   const isEmpty =
@@ -151,7 +150,7 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
   if (content === undefined || content.metadata === undefined || metadata === undefined || isEmpty) return null
 
   return (
-    <MetadataWrapper {...getFocusProps(focusMode)} fadeOnHover={fadeOnHover}>
+    <MetadataWrapper fadeOnHover={fadeOnHover}>
       <DataGroup>
         {metadata.createdBy !== undefined && (
           <DataWrapper interactive={metadata.createdAt !== undefined}>
