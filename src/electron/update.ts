@@ -81,7 +81,7 @@ export const setupUpdateService = (mex: BrowserWindow) => {
 
       () => {
         backupMexJSON()
-        setDataAtLocation({ version }, TEMP_DATA_BEFORE_UPDATE)
+        setDataAtLocation({ update: true }, TEMP_DATA_BEFORE_UPDATE)
         mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
         deleteSearchIndexDisk(SEARCH_INDEX_LOCATION)
       }

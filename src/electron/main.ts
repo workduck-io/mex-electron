@@ -208,9 +208,9 @@ const createMexWindow = (tempData?: any) => {
       mex.show()
     }
 
-    if (tempData?.version) {
-      mog('FOUND EXISTING VERSION', { version })
-      mex?.webContents.send(IpcAction.SHOW_RELEASE_NOTES, { version })
+    if (tempData?.update) {
+      mog('FOUND EXISTING VERSION', { d: tempData?.update })
+      mex?.webContents.send(IpcAction.SHOW_RELEASE_NOTES, { update: tempData?.update })
     }
   })
 
