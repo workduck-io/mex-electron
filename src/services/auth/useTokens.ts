@@ -6,6 +6,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { client } from '@workduck-io/dwindle'
 import { GOOGLE_OAUTH2_REFRESH_URL } from '../../apis/routes'
 import { mog } from '../../utils/lib/helper'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 
 interface TokenStore {
   data: AuthTokenData
@@ -63,11 +64,15 @@ export const useTokenStore = create<TokenStore>((set, get) => ({
 export const useTokens = () => {
   const addGoogleCalendarTokenStore = useTokenStore((state) => state.addGoogleCalendarToken)
   const { setTokenData } = useTokenData()
+  const { goTo } = useRouting()
 
   const addGoogleCalendarToken = (token: AuthToken) => {
-    // mog('google calendar', { token })
+    mog('google calendar', { token })
     const tokenData = addGoogleCalendarTokenStore(token)
     setTokenData(tokenData)
+
+    mog('google calendar redirect', { token })
+    goTo(`${ROUTE_PATHS.integrations}/calendar`, NavigationType.push, 'GOOGLE_CALENDAR')
   }
 
   return {
