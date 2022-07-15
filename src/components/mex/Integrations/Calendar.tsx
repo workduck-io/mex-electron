@@ -1,5 +1,5 @@
 import { useCalendar } from '@hooks/useCalendar'
-import { mog } from '@utils/lib/helper'
+import { useTokenStore } from '@services/auth/useTokens'
 import { shell } from 'electron'
 import React, { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
@@ -10,6 +10,7 @@ import ServiceInfo from './ServiceInfo'
 const CalendarIntegrations = () => {
   const params = useParams()
   const actionGroupId = params?.actionGroupId
+  const tokenData = useTokenStore((state) => state.data)
 
   const { getCalendarActions } = useCalendar()
 
@@ -18,7 +19,7 @@ const CalendarIntegrations = () => {
     const action = cActions.find((action) => action.actionGroupId === actionGroupId)
     // mog('CalendarIntegrations', { cActions, action })
     return action
-  }, [])
+  }, [tokenData])
 
   const isConnected = calendarAction.connected
 
