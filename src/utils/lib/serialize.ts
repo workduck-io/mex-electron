@@ -112,7 +112,8 @@ export const serializeSpecial: { [elementType: string]: (element: any, nodeid: s
     return {
       elementType: 'webLink',
       url: el.url,
-      id: el.id ?? generateTempId()
+      id: el.id ?? generateTempId(),
+      children: serializeContent(el.children ?? [], nodeid)
     }
   }
 }
@@ -143,7 +144,7 @@ export const deserializeSpecial: { [elementType: string]: (element: any) => any 
       url: el.url,
       id: el.id,
 
-      children: [{ text: '', id: generateTempId() }]
+      children: deserializeContent(el.children) ?? [{ text: '', id: generateTempId() }]
     }
   }
 }
