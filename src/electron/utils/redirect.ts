@@ -23,6 +23,7 @@ export const getRedirectPath = (window: BrowserWindow, url: string) => {
     const refreshToken = params.get('refresh_token')
     const type = params.get('type')
     window.webContents.send(IpcAction.OAUTH, { type, accessToken, idToken, refreshToken })
+    return
   }
 
   switch (path) {
