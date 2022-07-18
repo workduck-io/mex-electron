@@ -107,7 +107,7 @@ export const useFilters = <Item>() => {
     const tagsFilter: SearchFilter<GenericSearchResult>[] = Object.entries(rankedTags).reduce(
       (p: SearchFilter<GenericSearchResult>[], [tag, rank]) => {
         const tags = tagsCache[tag]
-        if (rank > 1)
+        if (rank >= 1)
           return [
             ...p,
             {

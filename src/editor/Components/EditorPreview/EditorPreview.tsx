@@ -2,7 +2,7 @@ import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import closeCircleLine from '@iconify/icons-ri/close-circle-line'
 import { Icon } from '@iconify/react'
 import Tippy from '@tippyjs/react/headless' // different import path!
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef, useMemo, useState } from 'react'
 import { getNameFromPath } from '../../../components/mex/Sidebar/treeUtils'
 import { TagsRelatedTiny } from '../../../components/mex/Tags/TagsRelated'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
@@ -74,11 +74,16 @@ const EditorPreview = ({
 }: EditorPreviewProps) => {
   const { getILinkFromNodeid } = useLinks()
   const getContent = useContentStore((store) => store.getContent)
-  const nodeContent = getContent(nodeid)
-  const cc = content ?? (nodeContent && nodeContent.content)
   const { hasTags } = useTags()
   const { loadNode } = useLoad()
   const { goTo } = useRouting()
+
+  const cc = useMemo(() => {
+    const nodeContent = getContent(nodeid)
+
+    const ccx = content ?? (nodeContent && nodeContent.content)
+    return ccx
+  }, [nodeid])
 
   const ilink = getILinkFromNodeid(nodeid)
 

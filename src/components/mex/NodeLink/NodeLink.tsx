@@ -73,8 +73,12 @@ const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
       placement="auto-start"
     >
       <NodeLinkStyled
-        onMouseEnter={() => setVisible(true)}
-        onMouseLeave={() => setVisible(false)}
+        onMouseEnter={() => {
+          if (!fixVisible) setVisible(true)
+        }}
+        onMouseLeave={() => {
+          if (!fixVisible) setVisible(false)
+        }}
         selected={fixVisible}
         key={`NodeLink_${keyStr}`}
         {...onClickProps}
