@@ -9,9 +9,9 @@ import { AnalyseContentProps, AnalysisOptions } from './controller'
 // parentPort.postMessage(analyseData(workerData.content))
 //
 const getSingle = (content: NodeEditorContent) => {
-  if (content[0] && content[0].children.length === 1) {
+  if (content[0] && content[0].children && content[0].children.length === 1) {
     return content[0].children
-  } else return getSingle(content[0].children)
+  } else if (content[0] && content[0].children) return getSingle(content[0].children)
 }
 
 const getOutline = (content: NodeEditorContent, options?: AnalysisOptions): OutlineItem[] => {
