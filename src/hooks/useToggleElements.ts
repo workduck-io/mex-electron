@@ -2,10 +2,19 @@ import { InfobarMode, useLayoutStore } from '../store/useLayoutStore'
 
 const useToggleElements = () => {
   const setInfobarMode = useLayoutStore((store) => store.setInfobarMode)
+  const setRHSidebarExpanded = useLayoutStore((store) => store.setRHSidebarExpanded)
 
-  const toggleMode = (mode: InfobarMode) => {
+  const changeSidebarExpand = () => {
+    const rhSidebar = useLayoutStore.getState().rhSidebar
+    if (rhSidebar.show && !rhSidebar.expanded) {
+      setRHSidebarExpanded(true)
+    }
+  }
+
+  const toggleMode = (mode: InfobarMode, notToggle?: boolean) => {
     const infobar = useLayoutStore.getState().infobar
-    if (infobar.mode === mode) {
+    changeSidebarExpand()
+    if (infobar.mode === mode && !notToggle) {
       setInfobarMode('default')
     } else {
       setInfobarMode(mode)
@@ -25,7 +34,7 @@ const useToggleElements = () => {
   }
 
   const toggleReminder = () => {
-    toggleMode('reminders')
+    toggleMode('reminders', true)
   }
 
   return {

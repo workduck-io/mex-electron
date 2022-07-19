@@ -13,7 +13,7 @@ const RHSidebarContent = () => {
   const isArchiveEditor = useMatch(`${ROUTE_PATHS.archive}/:nodeid`)
   const isArchive = useMatch(ROUTE_PATHS.archive)
 
-  mog('IS RHSIDEBAR', { sidebar, isEditor, isArchive })
+  // mog('IS RHSIDEBAR', { sidebar, isEditor, isArchive })
 
   if (!sidebar.show) return <></>
 

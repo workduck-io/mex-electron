@@ -1,4 +1,4 @@
-import { TrafficLightBG } from '@data/illustrations/logo'
+import { TrafficLightBG } from '@components/mex/Sidebar/logo'
 import { transparentize } from 'polished'
 import { css, DefaultTheme, FlattenInterpolation, ThemeProps } from 'styled-components'
 import { GraphWrapper, StyledGraph } from '../../components/mex/Graph/Graph.styles'

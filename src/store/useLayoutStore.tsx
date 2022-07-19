@@ -17,6 +17,7 @@ interface LayoutState {
   hideSidebar: () => void
 
   toggleRHSidebar: () => void
+  setRHSidebarExpanded: (expanded: boolean) => void
   showRHSidebar: () => void
   hideRHSidebar: () => void
 
@@ -59,6 +60,7 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
     show: false
   },
   toggleRHSidebar: () => set((state) => ({ rhSidebar: { ...state.rhSidebar, expanded: !state.rhSidebar.expanded } })),
+  setRHSidebarExpanded: (expanded) => set((state) => ({ rhSidebar: { ...state.rhSidebar, expanded } })),
   showRHSidebar: () => set((state) => ({ rhSidebar: { ...state.rhSidebar, show: true } })),
   hideRHSidebar: () => set((state) => ({ rhSidebar: { ...state.rhSidebar, show: false } })),
 

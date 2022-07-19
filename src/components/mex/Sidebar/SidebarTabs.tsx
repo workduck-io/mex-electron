@@ -66,7 +66,7 @@ const SidebarTabs = () => {
   const isArchiveEditor = useMatch(`${ROUTE_PATHS.archive}/:nodeid`)
   const isArchive = useMatch(ROUTE_PATHS.archive)
 
-  mog('IS SIDEBAR', { sidebar, isEditor, isArchive })
+  // mog('IS SIDEBAR', { sidebar, isEditor, isArchive })
 
   if (!sidebar.show) return <></>
 

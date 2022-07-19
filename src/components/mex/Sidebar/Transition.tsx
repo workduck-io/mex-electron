@@ -41,7 +41,7 @@ export const useSidebarTransition = () => {
     return { style, endColumnWidth }
   }, [sidebar, isDesktop, rhSidebar])
 
-  const gridSpringProps = useSpring(gridStyle)
+  const gridSpringProps = useSpring({ to: gridStyle, immediate: !sidebar.show || !rhSidebar.show })
 
   const switchWrapperStyle = useMemo(() => {
     const style = {
