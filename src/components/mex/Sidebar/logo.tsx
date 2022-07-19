@@ -49,7 +49,7 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
       ? expanded
         ? css`
             top: ${theme.additional.hasBlocks ? 84 : 64}px;
-            left: ${theme.additional.hasBlocks ? 335 : 324}px;
+            left: ${theme.additional.hasBlocks ? 335 : 346}px;
           `
         : css`
             top: ${theme.additional.hasBlocks ? 84 : 64}px;
