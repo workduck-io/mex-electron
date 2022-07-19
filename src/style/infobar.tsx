@@ -22,6 +22,7 @@ const infoWidths = {
   default: '300px'
 }
 
+/*
 const getMainWidth = (mode: string, wide: boolean) => {
   switch (mode) {
     case 'graph':
@@ -35,12 +36,11 @@ const getMainWidth = (mode: string, wide: boolean) => {
       return infoWidths.default
   }
 }
+*/
 
 export const InfoBarWrapper = styled.div<InfoBarWrapperProps>`
   overflow-x: hidden;
-  height: 100vh;
   background-color: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
-  padding: ${({ theme }) => theme.spacing.large} 0 ${({ theme }) => theme.spacing.small};
 
   @media (max-width: ${size.wide}) {
     min-width: ${infoWidths.small.normal};

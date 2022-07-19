@@ -89,10 +89,12 @@ export const TrafficLightBG = styled.div`
   z-index: 10000;
   border-radius: 0 0 10px;
 `
-export const SidebarToggle = () => {
+
+export const SidebarToggles = () => {
   const sidebar = useLayoutStore((state) => state.sidebar)
 
   const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
+  const toggleAllSidebars = useLayoutStore((store) => store.toggleAllSidebars)
 
   /** Set shortcuts */
   const shortcuts = useHelpStore((store) => store.shortcuts)
@@ -106,7 +108,7 @@ export const SidebarToggle = () => {
       [shortcuts.toggleSidebar.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSnippets, () => {
-          toggleSidebar()
+          toggleAllSidebars()
         })
       }
     })

@@ -9,6 +9,7 @@ import { useAuthStore } from '../../services/auth/useAuth'
 import { useLayoutStore } from '../../store/useLayoutStore'
 import { navTooltip } from '../../style/Nav'
 import { useSidebarTransition } from '../mex/Sidebar/Transition'
+import RHSidebar from '@components/mex/RHSidebar/RHSidebar'
 
 const AppWrapper = styled.div`
   min-height: 100%;
@@ -66,6 +67,7 @@ const Main = ({ children }: MainProps) => {
         <Content id="wd-mex-content-view" grid={initialized}>
           {children}
         </Content>
+        {initialized && <RHSidebar />}
       </GridWrapper>
     </AppWrapper>
   )

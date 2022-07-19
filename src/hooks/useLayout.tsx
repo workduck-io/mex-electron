@@ -3,26 +3,22 @@ import { FocusMode, useLayoutStore } from '../store/useLayoutStore'
 const useLayout = () => {
   const toggleFocusModeBool = useLayoutStore((store) => store.toggleFocusMode)
   const setFocusMode = useLayoutStore((store) => store.setFocusMode)
-  const showInfobar = useLayoutStore((store) => store.showInfobar)
-  const hideInfobar = useLayoutStore((store) => store.hideInfobar)
 
   const toggleFocusMode = () => {
-    if (useLayoutStore.getState().focusMode) {
-      toggleFocusModeBool()
-      showInfobar()
-    } else {
-      toggleFocusModeBool()
-      hideInfobar()
-    }
+    // if (useLayoutStore.getState().focusMode) {
+    toggleFocusModeBool()
+    // } else {
+    // toggleFocusModeBool()
+    // }
   }
 
   const setFocusHover = (focusMode: FocusMode) => {
     setFocusMode(focusMode)
-    if (focusMode.on) {
-      showInfobar()
-    } else {
-      hideInfobar()
-    }
+    // if (focusMode.on) {
+    //   showInfobar()
+    // } else {
+    //   hideInfobar()
+    // }
   }
 
   const getFocusProps = (focusMode: FocusMode) => {

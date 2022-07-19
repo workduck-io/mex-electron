@@ -1,6 +1,6 @@
 import WDLogo from '@components/spotlight/Search/Logo'
 import { getRandomQAContent } from '@data/Defaults/baseData'
-import { SidebarToggle, TrafficLightBG } from '@data/illustrations/logo'
+import { SidebarToggles, TrafficLightBG } from '@data/illustrations/logo'
 import useNavlinks, { GetIcon } from '@data/links'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import useLayout from '@hooks/useLayout'
@@ -238,7 +238,7 @@ const Nav = () => {
         </SideNav>
       </NavWrapper>
       <TrafficLightBG />
-      <SidebarToggle />
+      <SidebarToggles />
     </>
   )
 }
