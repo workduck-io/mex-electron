@@ -13,6 +13,7 @@ const directPropertyKeys = [
   'bold',
   'italic',
   'underline',
+  'strikethrough',
   'highlight',
   'code',
   'email',
@@ -144,7 +145,7 @@ export const deserializeSpecial: { [elementType: string]: (element: any) => any 
       url: el.url,
       id: el.id,
 
-      children: deserializeContent(el.children) ?? [{ text: '', id: generateTempId() }]
+      children: el?.children ? deserializeContent(el?.children) : [{ text: '', id: generateTempId() }]
     }
   }
 }
