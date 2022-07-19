@@ -21,16 +21,20 @@ export const useSidebarTransition = () => {
     const showSidebar = sidebar.show && sidebar.expanded
     const firstColumnWidth = `${showSidebar ? '276px' : '0px'}`
     if (!isSmall) {
-      const style = { width: firstColumnWidth, background: transparentize(0.5, theme.colors.gray[9]) }
+      const style = {
+        backdropFilter: 'blur(10px)',
+        width: firstColumnWidth,
+        background: transparentize(0.5, theme.colors.gray[9])
+      }
       return style
     } else {
       const style = {
         width: firstColumnWidth,
         position: 'absolute',
-        top: '0',
+        top: theme.additional.hasBlocks ? '2rem' : '0',
         background: transparentize(0.25, theme.colors.gray[9]),
         backdropFilter: 'blur(10px)',
-        left: '86px',
+        left: theme.additional.hasBlocks ? 'calc(86px + 1rem)' : '86px',
         zIndex: '10'
       }
       return style
@@ -44,17 +48,21 @@ export const useSidebarTransition = () => {
     const visibleEndColumnWidth = `${isDesktop ? '600px' : '400px'}`
     const endColumnWidth = `${showRHSidebar ? visibleEndColumnWidth : '0px'}`
     if (!isSmall) {
-      const style = { width: endColumnWidth, background: transparentize(0.5, theme.colors.gray[9]) }
+      const style = {
+        width: endColumnWidth,
+        backdropFilter: 'blur(10px)',
+        background: transparentize(0.5, theme.colors.gray[9])
+      }
       return style
     } else {
       const style = {
         width: endColumnWidth,
         position: 'absolute',
-        top: '0',
-        background: transparentize(0.25, theme.colors.gray[9]),
         backdropFilter: 'blur(10px)',
+        top: theme.additional.hasBlocks ? '2rem' : '0',
+        background: transparentize(0.25, theme.colors.gray[9]),
         zIndex: '10',
-        right: '0'
+        right: theme.additional.hasBlocks ? '1rem' : '0px'
       }
       return style
     }
@@ -80,7 +88,7 @@ export const useSidebarTransition = () => {
     }
   }, [sidebar, isDesktop, rhSidebar, isSmall])
 
-  const gridSpringProps = useSpring({ to: gridStyle, immediate: !sidebar.show || !rhSidebar.show })
+  const gridSpringProps = useSpring({ to: gridStyle, immediate: !sidebar.show && !rhSidebar.show })
 
   const switchWrapperStyle = useMemo(() => {
     const style = {

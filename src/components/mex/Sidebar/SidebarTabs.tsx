@@ -63,18 +63,22 @@ const NodeSidebar = () => {
 const SidebarTabs = () => {
   const sidebar = useLayoutStore((store) => store.sidebar)
   const isEditor = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
+  const isSnippetNote = useMatch(`${ROUTE_PATHS.snippet}/:snippetid`)
+  const isSnippet = useMatch(ROUTE_PATHS.snippets)
   const isArchiveEditor = useMatch(`${ROUTE_PATHS.archive}/:nodeid`)
   const isArchive = useMatch(ROUTE_PATHS.archive)
 
-  // mog('IS SIDEBAR', { sidebar, isEditor, isArchive })
+  mog('IS SIDEBAR', { sidebar, isSnippet, isSnippetNote, isEditor, isArchive })
 
   if (!sidebar.show) return <></>
 
   if (isEditor) return <NodeSidebar />
 
+  if (isSnippet || isSnippetNote) return <SnippetList />
+
   if (isArchive || isArchiveEditor) return <ArchiveSidebar />
 
-  return <SnippetList />
+  return <></>
 }
 
 export default SidebarTabs

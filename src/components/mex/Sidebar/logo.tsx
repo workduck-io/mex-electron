@@ -48,20 +48,20 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
     side === 'left'
       ? expanded
         ? css`
-            top: ${theme.additional.hasBlocks ? 84 : 64}px;
-            left: ${theme.additional.hasBlocks ? 335 : 346}px;
+            top: ${theme.additional.hasBlocks ? 67 : 64}px;
+            left: ${theme.additional.hasBlocks ? 359 : 346}px;
           `
         : css`
-            top: ${theme.additional.hasBlocks ? 84 : 64}px;
+            top: ${theme.additional.hasBlocks ? 67 : 64}px;
             left: ${theme.additional.hasBlocks ? 86 : 70}px;
           `
       : expanded
       ? css`
-          top: ${theme.additional.hasBlocks ? 84 : 64}px;
-          right: calc(${(endColumnWidth ?? '400px') + ' + ' + (theme.additional.hasBlocks ? -15 : -15)}px);
+          top: ${theme.additional.hasBlocks ? 67 : 64}px;
+          right: calc(${(endColumnWidth ?? '400px') + ' + ' + (theme.additional.hasBlocks ? 0 : -15)}px);
         `
       : css`
-          top: ${theme.additional.hasBlocks ? 84 : 64}px;
+          top: ${theme.additional.hasBlocks ? 67 : 64}px;
           right: ${theme.additional.hasBlocks ? 8 : 8}px;
         `}
 
@@ -72,6 +72,7 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
   align-items: center;
   border-radius: 100%;
   background: ${({ theme }) => theme.colors.secondary};
+  color: ${({ theme }) => theme.colors.text.oppositePrimary};
 
   ${({ show }) =>
     !show &&

@@ -35,7 +35,8 @@ export const StyledBoard = styled.div<{ sidebarExpanded?: boolean }>`
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.medium};
   .react-kanban-column {
-    width: ${({ sidebarExpanded }) => KANBAN_WIDTH(sidebarExpanded)};
+    width: ${({ sidebarExpanded, theme }) =>
+      css`calc(${KANBAN_WIDTH(sidebarExpanded)} - ${theme.additional.hasBlocks ? '1.33rem' : '0px'})`};
     max-height: ${KANBAN_HEIGHT};
     overflow-y: scroll;
     overflow-x: hidden;
@@ -93,10 +94,12 @@ export const TaskColumnHeader = styled.div`
 
 export const TaskCard = styled.div<{ dragging: boolean; selected: boolean; sidebarExpanded?: boolean }>`
   ${TodoContainer} {
-    width: ${({ sidebarExpanded }) => KANBAN_CARD_WIDTH(sidebarExpanded)};
+    width: ${({ sidebarExpanded, theme }) =>
+      css`calc(${KANBAN_CARD_WIDTH(sidebarExpanded)} - ${theme.additional.hasBlocks ? '1.33rem' : '0px'})`};
     padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
   }
-  width: ${({ sidebarExpanded }) => KANBAN_CARD_WIDTH(sidebarExpanded)};
+  width: ${({ sidebarExpanded, theme }) =>
+    css`calc(${KANBAN_CARD_WIDTH(sidebarExpanded)} - ${theme.additional.hasBlocks ? '1.33rem' : '0px'})`};
   margin: ${({ theme }) => theme.spacing.tiny} 0;
   background: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
   border: 1px solid transparent;
