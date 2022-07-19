@@ -18,6 +18,7 @@ import { SuggestionContent, SuggestionType } from './types'
 import SmartSuggestions from './SmartSuggestions'
 import { ELEMENT_INLINE_BLOCK } from '../../../editor/Components/InlineBlock/types'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
+import { mog } from '@utils/lib/helper'
 
 const SuggestionInfoBar = () => {
   // * Store
@@ -86,6 +87,8 @@ const SuggestionInfoBar = () => {
       content: [suggestion.data] ?? getContent(suggestion.id).content
     }
   }
+
+  // mog('SuggestionInfoBar', { suggestions, pinnedSuggestions })
 
   return (
     <InfobarMedium>

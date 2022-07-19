@@ -40,7 +40,6 @@ const getMainWidth = (mode: string, wide: boolean) => {
 
 export const InfoBarWrapper = styled.div<InfoBarWrapperProps>`
   overflow-x: hidden;
-  background-color: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
 
   @media (max-width: ${size.wide}) {
     min-width: ${infoWidths.small.normal};
@@ -145,7 +144,6 @@ export const InfobarTools = styled.div`
   margin: ${({ theme: { spacing } }) => `${spacing.large} ${spacing.medium}`};
   margin-top: 0.5rem;
 
-  background-color: ${({ theme }) => theme.colors.gray[9]};
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.small}`};
   border-radius: ${({ theme }) => theme.borderRadius.small};
 

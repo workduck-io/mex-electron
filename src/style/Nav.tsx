@@ -236,6 +236,8 @@ export const SideNav = styled(animated.div)<NavWrapperProps>`
   ${TabBody} {
     height: calc(100vh - 9rem);
   }
+
+  ${(props) => focusStyles(props)}
 `
 
 export const NavWrapper = styled(animated.div)<NavWrapperProps>`

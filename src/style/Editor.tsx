@@ -58,7 +58,7 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   padding: 0 ${({ theme }) => theme.spacing.medium};
   margin: calc(${({ theme }) => theme.spacing.large}) auto 0;
   width: 100%;
-  max-width: 1000px;
+  max-width: 832px;
   min-width: 400px;
   height: calc(100vh - 3rem);
   flex: 1;

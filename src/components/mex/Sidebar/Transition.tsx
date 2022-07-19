@@ -28,7 +28,7 @@ export const useSidebarTransition = () => {
 
   const springProps = useSpring(sidebarStyle)
 
-  const gridStyle = useMemo(() => {
+  const { style: gridStyle, endColumnWidth } = useMemo(() => {
     const showSidebar = sidebar.show && sidebar.expanded
     const showRHSidebar = rhSidebar.show && rhSidebar.expanded
     const firstColumnWidth = `${showSidebar ? sidebarExpandedWidth : sidebarCollapsedWidth}`
@@ -38,7 +38,7 @@ export const useSidebarTransition = () => {
       gridTemplateColumns: `${firstColumnWidth} 2fr ${endColumnWidth}`
     }
     // if (!sidebar.expanded || !sidebar.show) style.gridTemplateColumns = `${sidebarCollapsedWidth} 2fr auto`
-    return style
+    return { style, endColumnWidth }
   }, [sidebar, isDesktop, rhSidebar])
 
   const gridSpringProps = useSpring(gridStyle)
@@ -56,5 +56,5 @@ export const useSidebarTransition = () => {
 
   const switchWrapperSpringProps = useSpring(switchWrapperStyle)
 
-  return { sidebarStyle, springProps, gridStyle, gridSpringProps, switchWrapperSpringProps }
+  return { sidebarStyle, springProps, gridStyle, gridSpringProps, switchWrapperSpringProps, endColumnWidth }
 }
