@@ -34,6 +34,7 @@ import toast from 'react-hot-toast'
 import { Button } from '@style/Buttons'
 import { Icon } from '@iconify/react'
 import { useSnippetContext } from '@store/Context/context.snippet'
+import { USER_ID_REGEX } from '@data/Defaults/auth'
 // import { StyledCreatatbleSelect } from '@style/Form'
 // import { UserDetails } from '../../../../types/auth'
 // import toast from 'react-hot-toast'
@@ -132,7 +133,11 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
 
   useEffect(() => {
     const _f = (async () => {
-      if (!user) await getUserDetailsUserId(element.value)
+      if (!user) {
+        if (RegExp(USER_ID_REGEX).test(element.value)) {
+          await getUserDetailsUserId(element.value)
+        } //else mog('Not valid userid', { val: element.value })
+      }
     })()
   }, [user])
 

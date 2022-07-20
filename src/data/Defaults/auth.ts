@@ -20,6 +20,8 @@ export const PASSWORD = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\^$*.\[\]{}\(\)
  */
 export const ALIAS_REG = /^[A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*$/
 
+export const USER_ID_REGEX = /^[A-Za-z0-9]{8}(-[A-Za-z0-9]{4}){3}-[A-Za-z0-9]{12}$/
+
 export const MultiEmailValidate = (emailsRaw: string): boolean => {
   const isValid = getWrongEmails(emailsRaw).length === 0
   return isValid
