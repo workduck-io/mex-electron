@@ -1,3 +1,4 @@
+import { TabBody } from '@components/layouts/styled'
 import { transparentize } from 'polished'
 import { css } from 'styled-components'
 import { GraphWrapper, StyledGraph } from '../../components/mex/Graph/Graph.styles'
@@ -18,7 +19,7 @@ import { BackCard } from '../Card'
 import { EditorStyles, StyledEditor } from '../Editor'
 import { InfoBarWrapper } from '../infobar'
 import { MenuTrigger, RightCut, ServiceCard } from '../Integration'
-import { NavButton, NavWrapper } from '../Nav'
+import { MainNav, NavButton, NavWrapper, SideNav } from '../Nav'
 import { Result, ResultHeader, SearchContainer, SplitSearchPreviewWrapper } from '../Search'
 import { SidebarDiv } from '../Sidebar'
 import { CreateSnippet } from '../Snippets'
@@ -87,7 +88,6 @@ const edStyles = css`
     background-color: ${({ theme }) => theme.colors.gray[10]};
   }
   ${EditorStyles} {
-    border-radius: 1rem;
     transition: all 0.25s ease-in-out;
     blockquote {
       background-color: ${({ theme }) => theme.colors.gray[9]};
@@ -112,9 +112,6 @@ const edStyles = css`
   }
   ${Widget} {
     background-color: ${grayMixerTrans(9)};
-  }
-  ${DataInfobarWrapper} {
-    border-radius: ${({ theme }) => theme.borderRadius.small};
   }
   ${BalloonToolbarBase} {
     background-color: ${({ theme }) => theme.colors.gray[8]};
@@ -191,7 +188,6 @@ const searchStyles = css`
 
 const integrationStyles = css`
   ${TemplateCard}, ${ServiceCard} {
-    border-radius: ${({ theme }) => theme.borderRadius.small};
     &:hover {
       border: 0.2rem solid ${({ theme }) => theme.colors.primary};
     }
@@ -210,6 +206,9 @@ const integrationStyles = css`
 
 const navStyles = css`
   ${NavWrapper} {
+    overflow: hidden;
+  }
+  ${MainNav} {
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
   ${NavButton} {
@@ -219,7 +218,11 @@ const navStyles = css`
 
 const sidebarStyles = css`
   ${SidebarDiv} {
-    border-radius: ${({ theme }) => theme.borderRadius.small};
+  }
+
+  ${SideNav} {
+    ${TabBody} {
+    }
   }
 `
 
@@ -263,7 +266,7 @@ const palette = { body: '#211E33', border: '#332A47' }
 const containerStyle = css`
   background-color: ${transparentize(0.15, palette.body)};
   box-shadow: 0px 15px 40px ${({ theme }) => transparentize(0.9, theme.colors.palette.black)};
-  border: 1px solid ${palette.border};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
 `
 
 const containerStyleReset = css`

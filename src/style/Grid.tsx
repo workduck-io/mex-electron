@@ -24,6 +24,7 @@ export const GridWrapper = styled(animated.div)<{ grid?: string }>`
   width: 100vw;
   overflow: auto;
   display: grid;
+  overflow-x: hidden;
 
   ${({ grid }) =>
     grid &&

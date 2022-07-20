@@ -33,6 +33,7 @@ import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { appNotifierWindow } from '@electron/utils/notifiers'
 import { IpcAction } from '@data/IpcAction'
 import { AppType } from '@hooks/useInitialize'
+import useToggleElements from '@hooks/useToggleElements'
 
 interface ModalValue {
   time?: number
@@ -114,6 +115,7 @@ export const useCreateReminderModal = create<CreateReminderModalState>((set) => 
 export const useOpenReminderModal = () => {
   const { saveAndClearBuffer } = useEditorBuffer()
   const spotlightCtx = useSpotlightContext()
+  const { toggleReminder } = useToggleElements()
   const openReminderModal = (query: string) => {
     const openModal = useCreateReminderModal.getState().openModal
     const node = useEditorStore.getState().node
@@ -151,7 +153,7 @@ export const useOpenReminderModal = () => {
           saveAndClearBuffer(true)
         }, 1000)
 
-        setInfobarMode('reminders')
+        toggleReminder()
       } else
         openModal({
           time: parsed.time.getTime(),

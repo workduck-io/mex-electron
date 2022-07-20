@@ -1,4 +1,4 @@
-import { TrafficLightBG } from '@data/illustrations/logo'
+import { TrafficLightBG } from '@components/mex/Sidebar/logo'
 import { transparentize } from 'polished'
 import { css, DefaultTheme, FlattenInterpolation, ThemeProps } from 'styled-components'
 import { GraphWrapper, StyledGraph } from '../../components/mex/Graph/Graph.styles'
@@ -18,7 +18,7 @@ import { EditorStyles, EditorWrapper, NodeInfo, StyledEditor } from '../Editor'
 import { GridWrapper } from '../Grid'
 import { InfobarTools, InfoBarWrapper } from '../infobar'
 import { ServiceCard } from '../Integration'
-import { NavWrapper } from '../Nav'
+import { NavWrapper, SideNav } from '../Nav'
 import { Result, SearchFilterListWrap } from '../Search'
 import { SidebarDiv } from '../Sidebar'
 import { CreateSnippet, SSnippet } from '../Snippets'
@@ -58,35 +58,25 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
       gap: ${({ theme }) => theme.spacing.medium};
     }
     ${InfobarTools} {
-      ${containerStyle}
       margin: 0 0;
     }
     ${InfoBarWrapper} {
       overflow: auto;
     }
     ${GraphWrapper} {
-      ${containerStyle}
     }
   `
 
   const edStyles = css`
     ${StyledEditor} {
       margin: 0 auto;
-      padding: 0 3rem;
       height: calc(100vh - 4rem);
-    }
-    ${NodeInfo} {
+      padding-top: 1rem;
       ${containerStyle}
     }
     ${DataInfobarWrapper} {
       margin-top: 0rem;
-      height: ${heightMain};
-      ${containerStyle}
       margin-top: 0;
-    }
-    ${EditorWrapper} {
-      ${containerStyle}
-      border-radius: ${({ theme }) => theme.borderRadius.small};
     }
     ${BalloonToolbarBase} {
       background-color: ${({ theme }) => theme.colors.gray[8]};
@@ -166,13 +156,19 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
       margin: 0;
       height: ${heightMain};
       min-height: ${heightMain};
-      ${containerStyle}
+    }
+    ${SideNav} {
+      padding: 0;
+      border-radius: ${({ theme }) => theme.borderRadius.small};
+      height: ${heightMain};
+      min-height: ${heightMain};
     }
     ${GridWrapper} {
       margin: 2rem;
       margin-left: ${({ theme }) => theme.spacing.medium};
       margin-right: -1rem;
       margin-bottom: 0;
+      width: calc(100vw - 2rem);
       grid-gap: ${({ theme }) => theme.spacing.medium};
     }
   `

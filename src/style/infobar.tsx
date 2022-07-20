@@ -22,6 +22,7 @@ const infoWidths = {
   default: '300px'
 }
 
+/*
 const getMainWidth = (mode: string, wide: boolean) => {
   switch (mode) {
     case 'graph':
@@ -35,12 +36,10 @@ const getMainWidth = (mode: string, wide: boolean) => {
       return infoWidths.default
   }
 }
+*/
 
 export const InfoBarWrapper = styled.div<InfoBarWrapperProps>`
   overflow-x: hidden;
-  height: 100vh;
-  background-color: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
-  padding: ${({ theme }) => theme.spacing.large} 0 ${({ theme }) => theme.spacing.small};
 
   @media (max-width: ${size.wide}) {
     min-width: ${infoWidths.small.normal};
@@ -130,7 +129,6 @@ export const InfobarMedium = styled.div`
   max-height: 100vh;
   width: 100%;
   position: relative;
-  min-width: ${infoWidths.small.normal};
   height: calc(100vh - 9.5rem);
   * {
     outline: none;
@@ -145,7 +143,6 @@ export const InfobarTools = styled.div`
   margin: ${({ theme: { spacing } }) => `${spacing.large} ${spacing.medium}`};
   margin-top: 0.5rem;
 
-  background-color: ${({ theme }) => theme.colors.gray[9]};
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.small}`};
   border-radius: ${({ theme }) => theme.borderRadius.small};
 

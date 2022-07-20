@@ -1,3 +1,4 @@
+import { useSidebarTransition } from '@components/mex/Sidebar/Transition'
 import arrowLeftSLine from '@iconify/icons-ri/arrow-left-s-line'
 import arrowRightSLine from '@iconify/icons-ri/arrow-right-s-line'
 import { Icon } from '@iconify/react'
@@ -6,13 +7,13 @@ import { transparentize } from 'polished'
 import React, { useEffect } from 'react'
 import styled, { css, useTheme } from 'styled-components'
 import tinykeys from 'tinykeys'
-import { TooltipTitleWithShortcut } from '../../components/mex/Shortcuts'
-import useLayout from '../../hooks/useLayout'
-import { useKeyListener } from '../../hooks/useShortcutListener'
-import { useHelpStore } from '../../store/useHelpStore'
-import { useLayoutStore } from '../../store/useLayoutStore'
-import { focusStyles } from '../../style/focus'
-import { FocusModeProp } from '../../style/props'
+import { TooltipTitleWithShortcut } from '@components/mex/Shortcuts'
+import useLayout from '@hooks/useLayout'
+import { useKeyListener } from '@hooks/useShortcutListener'
+import { useHelpStore } from '@store/useHelpStore'
+import { useLayoutStore } from '@store/useLayoutStore'
+import { focusStyles } from '@style/focus'
+import { FocusModeProp } from '@style/props'
 
 const LogoWrapper = styled.div<{ expanded: boolean }>`
   ${({ expanded }) => (expanded ? 'width: 100%;' : 'width: 40px;')}
@@ -36,29 +37,42 @@ export const Logo = () => {
 interface SidebarToggleWrappperProps extends FocusModeProp {
   expanded: boolean
   show: boolean
+  side: 'right' | 'left'
+  endColumnWidth?: string
 }
 
 export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
   position: absolute;
   ${(props) => focusStyles(props)}
-  ${({ expanded, theme }) =>
-    expanded
+  ${({ expanded, side, theme, endColumnWidth }) =>
+    side === 'left'
+      ? expanded
+        ? css`
+            top: ${theme.additional.hasBlocks ? 67 : 64}px;
+            left: ${theme.additional.hasBlocks ? 359 : 346}px;
+          `
+        : css`
+            top: ${theme.additional.hasBlocks ? 67 : 64}px;
+            left: ${theme.additional.hasBlocks ? 86 : 70}px;
+          `
+      : expanded
       ? css`
-          top: ${theme.additional.hasBlocks ? 84 : 64}px;
-          left: ${theme.additional.hasBlocks ? 335 : 324}px;
+          top: ${theme.additional.hasBlocks ? 67 : 64}px;
+          right: calc(${(endColumnWidth ?? '400px') + ' + ' + (theme.additional.hasBlocks ? 0 : -15)}px);
         `
       : css`
-          top: ${theme.additional.hasBlocks ? 84 : 64}px;
-          left: ${theme.additional.hasBlocks ? 86 : 70}px;
+          top: ${theme.additional.hasBlocks ? 67 : 64}px;
+          right: ${theme.additional.hasBlocks ? 8 : 8}px;
         `}
 
-  transition: left 0.5s ease, top 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;
+  transition: left 0.5s ease, top 0.5s ease, right 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;
   z-index: 11;
   padding: 8px;
   display: flex;
   align-items: center;
   border-radius: 100%;
   background: ${({ theme }) => theme.colors.secondary};
+  color: ${({ theme }) => theme.colors.text.oppositePrimary};
 
   ${({ show }) =>
     !show &&
@@ -89,10 +103,14 @@ export const TrafficLightBG = styled.div`
   z-index: 10000;
   border-radius: 0 0 10px;
 `
-export const SidebarToggle = () => {
+
+export const SidebarToggles = () => {
   const sidebar = useLayoutStore((state) => state.sidebar)
+  const rhSidebar = useLayoutStore((state) => state.rhSidebar)
 
   const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
+  const toggleRHSidebar = useLayoutStore((store) => store.toggleRHSidebar)
+  const toggleAllSidebars = useLayoutStore((store) => store.toggleAllSidebars)
 
   /** Set shortcuts */
   const shortcuts = useHelpStore((store) => store.shortcuts)
@@ -100,13 +118,14 @@ export const SidebarToggle = () => {
 
   const focusMode = useLayoutStore((state) => state.focusMode)
   const { getFocusProps } = useLayout()
+  const { endColumnWidth } = useSidebarTransition()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.toggleSidebar.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSnippets, () => {
-          toggleSidebar()
+          toggleAllSidebars()
         })
       }
     })
@@ -116,26 +135,44 @@ export const SidebarToggle = () => {
   }, [shortcuts, shortcutDisabled]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Tippy
-      theme="mex-bright"
-      placement="right"
-      content={
-        <TooltipTitleWithShortcut
-          title={sidebar.expanded ? 'Collapse Sidebar' : 'Expand Sidebar'}
-          shortcut={shortcuts.toggleSidebar.keystrokes}
-        />
-      }
-    >
-      <SidebarToggleWrapper
-        onClick={toggleSidebar}
-        expanded={sidebar.expanded}
-        show={sidebar.show}
-        {...getFocusProps(focusMode)}
+    <>
+      <Tippy
+        theme="mex-bright"
+        placement="right"
+        content={<TooltipTitleWithShortcut title={sidebar.expanded ? 'Collapse Sidebar' : 'Expand Sidebar'} />}
       >
-        <Icon
-          icon={sidebar.expanded ? 'heroicons-solid:chevron-double-left' : 'heroicons-solid:chevron-double-right'}
-        />
-      </SidebarToggleWrapper>
-    </Tippy>
+        <SidebarToggleWrapper
+          side="left"
+          onClick={toggleSidebar}
+          expanded={sidebar.expanded}
+          show={sidebar.show}
+          {...getFocusProps(focusMode)}
+        >
+          <Icon
+            icon={sidebar.expanded ? 'heroicons-solid:chevron-double-left' : 'heroicons-solid:chevron-double-right'}
+          />
+        </SidebarToggleWrapper>
+      </Tippy>
+      <Tippy
+        theme="mex-bright"
+        placement="left"
+        content={
+          <TooltipTitleWithShortcut title={rhSidebar.expanded ? 'Collapse Cooler Sidebar' : 'Expand Cooler Sidebar'} />
+        }
+      >
+        <SidebarToggleWrapper
+          side="right"
+          onClick={toggleRHSidebar}
+          expanded={rhSidebar.expanded}
+          show={rhSidebar.show}
+          endColumnWidth={endColumnWidth}
+          {...getFocusProps(focusMode)}
+        >
+          <Icon
+            icon={rhSidebar.expanded ? 'heroicons-solid:chevron-double-right' : 'heroicons-solid:chevron-double-left'}
+          />
+        </SidebarToggleWrapper>
+      </Tippy>
+    </>
   )
 }

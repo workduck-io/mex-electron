@@ -9,19 +9,27 @@ export type InfobarMode = 'default' | 'flow' | 'graph' | 'reminders' | 'suggesti
 
 interface LayoutState {
   sidebar: { expanded: boolean; show: boolean }
-  infobar: { visible: boolean; mode: InfobarMode }
+  rhSidebar: { expanded: boolean; show: boolean }
+  infobar: { mode: InfobarMode }
   focusMode: FocusMode
   toggleSidebar: () => void
   showSidebar: () => void
   hideSidebar: () => void
+
+  toggleRHSidebar: () => void
+  setRHSidebarExpanded: (expanded: boolean) => void
+  showRHSidebar: () => void
+  hideRHSidebar: () => void
+
+  showAllSidebars: () => void
+  hideAllSidebars: () => void
+  toggleAllSidebars: () => void
+
   toggleFocusMode: () => void
   setFocusMode: (focusMode: FocusMode) => void
   hoverFocusMode: () => void
   blurFocusMode: () => void
-  toggleInfobar: () => void
   setInfobarMode: (mode: InfobarMode) => void
-  showInfobar: () => void
-  hideInfobar: () => void
   showLoader?: boolean
   setShowLoader?: (showLoader: boolean) => void
 }
@@ -46,6 +54,34 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
   showSidebar: () => set((state) => ({ sidebar: { ...state.sidebar, show: true } })),
   hideSidebar: () => set((state) => ({ sidebar: { ...state.sidebar, show: false } })),
 
+  // RHSidebar
+  rhSidebar: {
+    expanded: true,
+    show: false
+  },
+  toggleRHSidebar: () => set((state) => ({ rhSidebar: { ...state.rhSidebar, expanded: !state.rhSidebar.expanded } })),
+  setRHSidebarExpanded: (expanded) => set((state) => ({ rhSidebar: { ...state.rhSidebar, expanded } })),
+  showRHSidebar: () => set((state) => ({ rhSidebar: { ...state.rhSidebar, show: true } })),
+  hideRHSidebar: () => set((state) => ({ rhSidebar: { ...state.rhSidebar, show: false } })),
+
+  showAllSidebars: () =>
+    set((state) => ({
+      sidebar: { ...state.sidebar, show: true },
+      rhSidebar: { ...state.rhSidebar, show: true }
+    })),
+
+  hideAllSidebars: () =>
+    set((state) => ({
+      sidebar: { ...state.sidebar, show: false },
+      rhSidebar: { ...state.rhSidebar, show: false }
+    })),
+
+  toggleAllSidebars: () =>
+    set((state) => ({
+      sidebar: { ...state.sidebar, expanded: !state.sidebar.expanded },
+      rhSidebar: { ...state.rhSidebar, expanded: !state.rhSidebar.expanded }
+    })),
+
   // Infobar
   infobar: {
     visible: true,
@@ -55,8 +91,5 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
     const curMode = get().infobar.mode
     if (curMode === mode) return
     set({ infobar: { ...get().infobar, mode } })
-  },
-  toggleInfobar: () => set({ infobar: { ...get().infobar, visible: !get().infobar.visible } }),
-  showInfobar: () => set({ infobar: { ...get().infobar, visible: true } }),
-  hideInfobar: () => set({ infobar: { ...get().infobar, visible: false } })
+  }
 }))

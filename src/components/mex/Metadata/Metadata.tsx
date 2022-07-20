@@ -42,6 +42,11 @@ export const DataWrapper = styled.div<DataWrapperProps>`
     margin-right: ${({ theme }) => theme.spacing.small};
   }
 
+  svg,
+  img {
+    box-shadow: none;
+  }
+
   ${({ theme, interactive }) =>
     interactive &&
     css`
@@ -166,7 +171,7 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
               {metadata.createdAt !== undefined && (
                 <Data>
                   <Icon icon={addCircleLine} width={16} />
-                  <RelativeTime prefix="created" dateNum={metadata.createdAt} />
+                  <RelativeTime prefix="Created" dateNum={metadata.createdAt} />
                 </Data>
               )}
             </div>
@@ -189,7 +194,7 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
               {metadata.updatedAt !== undefined && (
                 <Data>
                   <Icon icon={refreshLine} width={16} />
-                  <RelativeTime prefix={'Updated'} dateNum={metadata.updatedAt} />
+                  <RelativeTime prefix="Updated" dateNum={metadata.updatedAt} />
                 </Data>
               )}
             </div>

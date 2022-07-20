@@ -18,7 +18,6 @@ import AutoUpdate from '../../components/mex/Settings/AutoUpdate'
 import Importers from '../../components/mex/Settings/Importers'
 import Shortcuts from '../../components/mex/Settings/Shortcuts'
 import Themes from '../../components/mex/Settings/Themes'
-import { useSidebarTransition } from '../../components/mex/Sidebar/Transition'
 import SnippetEditor from '../../components/Snippets/SnippetEditor'
 import ContentEditor from '../../editor/ContentEditor'
 import { useAuthStore } from '../../services/auth/useAuth'
@@ -41,10 +40,9 @@ import AuthRoute from './AuthRoute'
 import ProtectedRoute from './ProtectedRoute'
 
 export const SwitchWrapper = styled(animated.div)<{ isAuth?: boolean }>`
-  position: fixed;
   height: 100%;
-  width: ${({ theme, isAuth }) =>
-    !isAuth ? '100% !important' : `calc(100% - 300px - ${theme.additional.hasBlocks ? '3rem' : '0px'})`};
+
+  width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
 `
@@ -65,7 +63,10 @@ const Switch = () => {
   const authenticated = useAuthStore((s) => s.authenticated)
   const { saveNodeName } = useSaveNodeName()
   const showSidebar = useLayoutStore((s) => s.showSidebar)
+  const showAllSidebars = useLayoutStore((s) => s.showAllSidebars)
+  const hideAllSidebars = useLayoutStore((s) => s.hideAllSidebars)
   const hideSidebar = useLayoutStore((s) => s.hideSidebar)
+  const hideRHSidebar = useLayoutStore((s) => s.hideRHSidebar)
 
   useEffect(() => {
     const editorNode = useEditorStore.getState().node
@@ -82,19 +83,19 @@ const Switch = () => {
       if (location.pathname.startsWith(ROUTE_PATHS.snippets)) {
         mog('Showing Sidebar', { location })
         showSidebar()
+        hideRHSidebar()
       } else if (location.pathname.startsWith(ROUTE_PATHS.node)) {
         mog('Showing Sidebar', { location })
-        showSidebar()
+        showAllSidebars()
       } else if (location.pathname.startsWith(ROUTE_PATHS.archive)) {
         showSidebar()
+        hideRHSidebar()
       } else {
-        mog('Hiding Sidebar', { location })
-        hideSidebar()
+        mog('Hiding all Sidebar', { location })
+        hideAllSidebars()
       }
     }
   }, [location])
-
-  const { switchWrapperSpringProps } = useSidebarTransition()
 
   /* Hierarchy:
     - login
@@ -114,7 +115,7 @@ const Switch = () => {
   */
 
   return (
-    <SwitchWrapper style={switchWrapperSpringProps} isAuth={authenticated}>
+    <SwitchWrapper isAuth={authenticated}>
       <Routes>
         <Route path={ROUTE_PATHS.login} element={<AuthRoute component={Login} />} />
         <Route path={ROUTE_PATHS.register} element={<AuthRoute component={Register} />} />

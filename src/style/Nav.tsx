@@ -202,6 +202,7 @@ export const MainNav = styled.div<FocusModeProp>`
   align-items: center;
   flex-shrink: 0;
   width: 86px;
+  z-index: 11;
 
   min-height: 100%;
   transition: opacity 0.3s ease-in-out;
@@ -236,6 +237,8 @@ export const SideNav = styled(animated.div)<NavWrapperProps>`
   ${TabBody} {
     height: calc(100vh - 9rem);
   }
+
+  ${(props) => focusStyles(props)}
 `
 
 export const NavWrapper = styled(animated.div)<NavWrapperProps>`
