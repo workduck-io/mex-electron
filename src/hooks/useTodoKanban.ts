@@ -12,6 +12,7 @@ import { useNodes } from './useNodes'
 import { convertContentToRawText } from '../utils/search/parseData'
 import { mog } from '../utils/lib/helper'
 import { useSearchExtra } from './useSearch'
+import { useTaskFilterFunctions } from './useFilterFunctions'
 
 export interface TodoKanbanCard extends KanbanCard {
   todo: TodoType
@@ -52,9 +53,11 @@ export const useTodoKanban = () => {
   const setCurrentFilters = useKanbanFilterStore((state) => state.setCurrentFilters)
   const setFilters = useKanbanFilterStore((s) => s.setFilters)
   const updateTodo = useTodoStore((s) => s.updateTodoOfNode)
+
   const { getPathFromNodeid } = useLinks()
   const { isInArchive } = useNodes()
   const { getSearchExtra } = useSearchExtra()
+  const taskFilterFunctions = useTaskFilterFunctions()
 
   const changeStatus = (todo: TodoType, newStatus: TodoStatus) => {
     updateTodo(todo.nodeid, { ...todo, metadata: { ...todo.metadata, status: newStatus } })
@@ -97,12 +100,13 @@ export const useTodoKanban = () => {
           id: `node_${path}`,
           icon: 'ri:file-list-2-line',
           label: path,
-          filter: (item: TodoType) => {
-            const itemPath = getPathFromNodeid(item.nodeid)
-            if (!itemPath) return false
-            // mog('itemPath being filtered', { item, itemPath, path })
-            return isElder(itemPath, path) || itemPath === path
-          }
+          value: path
+          // filter: (item: TodoType) => {
+          //   const itemPath = getPathFromNodeid(item.nodeid)
+          //   if (!itemPath) return false
+          //   // mog('itemPath being filtered', { item, itemPath, path })
+          //   return isElder(itemPath, path) || itemPath === path
+          // }
         })
       }
       return acc
@@ -139,7 +143,12 @@ export const useTodoKanban = () => {
       if (nodeid.startsWith(SNIPPET_PREFIX)) return
       if (isInArchive(nodeid)) return
       todos
-        .filter((todo) => currentFilters.every((filter) => filter.filter(todo)))
+        .filter((todo) =>
+          currentFilters.every(
+            (filter) => taskFilterFunctions[filter.key](todo, filter.value)
+            // filter.filter(todo)
+          )
+        )
         .filter((todo) => {
           // TODO: Find a faster way to check for empty content // May not need to convert content to raw text
           const text = convertContentToRawText(todo.content, ' ', { extra }).trim()

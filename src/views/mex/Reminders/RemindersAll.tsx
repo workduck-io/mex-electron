@@ -1,4 +1,5 @@
 import Board from '@asseinfo/react-kanban'
+import { reminderFilterFunctions } from '@hooks/useFilterFunctions'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import { Icon } from '@iconify/react'
 import { Button } from '@style/Buttons'
@@ -62,10 +63,18 @@ const useReminderFilters = () => {
     const remindersBase = useReminderStore.getState().reminders
     const currentFilters = useReminderFilter.getState().currentFilters
 
+    mog('remindersBase', { remindersBase, currentFilters })
     const reminders = (
       currentFilters.length > 0
         ? remindersBase.filter((reminder) => {
-            return currentFilters.every((filter) => filter.filter(reminder))
+            return currentFilters.every(
+              (filter) => {
+                // const filterFunction = reminderFilterFunctions[ filter.key ]
+                // mog('filter', { filter, reminder })
+                return reminderFilterFunctions[filter.key](reminder, filter.value)
+              }
+              // filter.filter(reminder)
+            )
           })
         : remindersBase
     ).map((reminder) => {
@@ -135,7 +144,8 @@ const useReminderFilters = () => {
         key: 'note',
         id: nodeid,
         label: path,
-        filter: (reminder) => reminder.nodeid === nodeid,
+        value: nodeid,
+        // filter: (reminder) => reminder.nodeid === nodeid,
         count: nodeCounts[nodeid],
         icon: 'ri:file-list-line'
       })
@@ -157,7 +167,8 @@ const useReminderFilters = () => {
           label: state,
           icon: reminderStateIcons[state],
           count,
-          filter: (reminder: Reminder) => getReminderState(reminder) === state
+          value: state
+          // filter: (reminder: Reminder) => getReminderState(reminder) === state
         })
       })
 
@@ -169,7 +180,8 @@ const useReminderFilters = () => {
         label: 'Task',
         icon: 'ri:ri-task-line',
         count: todoRemindersLen,
-        filter: (reminder: Reminder) => reminder.todoid !== undefined
+        value: 'block_todo'
+        // filter: (reminder: Reminder) => reminder.todoid !== undefined
       })
     }
 
@@ -181,7 +193,10 @@ const useReminderFilters = () => {
   const applyFilters = (reminders: Reminder[]) => {
     const currentFilters = useReminderFilter.getState().currentFilters
     return reminders.filter((reminder) => {
-      return currentFilters.every((filter) => filter.filter(reminder))
+      return currentFilters.every(
+        (filter) => reminderFilterFunctions[filter.key](reminder, filter.value)
+        // filter.filter(reminder)
+      )
     })
   }
 
