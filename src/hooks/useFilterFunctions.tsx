@@ -43,6 +43,14 @@ export const useTaskFilterFunctions = () => {
       // mog('itemPath being filtered', { item, itemPath, path })
       return isElder(itemPath, value) || itemPath === value
       // }
+    },
+
+    tag: (item, value) => {
+      return item.tags?.includes(value)
+    },
+
+    mention: (item, value) => {
+      return item.mentions?.includes(value)
     }
   }
 }

@@ -15,7 +15,7 @@ import { useGenericFilterFunctions } from './useFilterFunctions'
 - Sorting [:?]
 */
 
-export type FilterKey = 'note' | 'tag' | 'date' | 'state' | 'has'
+export type FilterKey = 'note' | 'tag' | 'date' | 'state' | 'has' | 'mention'
 
 export interface SearchFilter<Item> {
   key: FilterKey

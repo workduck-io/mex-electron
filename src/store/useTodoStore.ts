@@ -1,3 +1,4 @@
+import { getMentionsFromContent, getTagsFromContent } from '@utils/lib/content'
 import create from 'zustand'
 import { defaultContent } from '../data/Defaults/baseData'
 import { TodoType, TodoStatus, PriorityType, TodosType } from '../editor/Components/Todo/types'
@@ -6,17 +7,28 @@ import { NodeEditorContent } from '../types/Types'
 import { mog } from '../utils/lib/helper'
 import { convertContentToRawText } from '../utils/search/parseData'
 
-const createTodo = (nodeid: string, todoId: string, content: NodeEditorContent = defaultContent.content) => ({
-  id: todoId,
-  nodeid,
-  content,
-  metadata: {
-    status: TodoStatus.todo,
-    priority: PriorityType.noPriority
-  },
-  createdAt: Date.now(),
-  updatedAt: Date.now()
-})
+const createTodo = (
+  nodeid: string,
+  todoId: string,
+  content: NodeEditorContent = defaultContent.content,
+  mentions: string[] = [],
+  tags: string[] = []
+) => {
+  // mog('createTodo', { nodeid, todoId, content })
+  return {
+    id: todoId,
+    nodeid,
+    content,
+    metadata: {
+      status: TodoStatus.todo,
+      priority: PriorityType.noPriority
+    },
+    mentions,
+    tags,
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  }
+}
 
 type TodoStoreType = {
   // * For all nodes
@@ -128,8 +140,12 @@ const useTodoStore = create<TodoStoreType>((set, get) => ({
     const nTodo = todos[nodeid] ?? []
     const nodeTodos = todosContent.map((content) => {
       const todo = nTodo.find((todo) => todo.id === content.id && nodeid === todo.nodeid)
-      // mog('replaceContent', { nodeid, todosContent, nodeTodos, todo, content })
-      return todo ? { ...todo, content: [content] } : createTodo(nodeid, content.id, [content])
+      const tags = getTagsFromContent([content])
+      const mentions = getMentionsFromContent([content])
+      // mog('replaceContent', { nodeid, tags, mentions, todosContent, nodeTodos, todo, content })
+      return todo
+        ? { ...todo, mentions, tags, content: [content] }
+        : createTodo(nodeid, content.id, [content], mentions, tags)
     })
 
     const leftOutTodos = nTodo.filter((todo) => !nodeTodos.find((t) => t.id === todo.id && nodeid === t.nodeid))

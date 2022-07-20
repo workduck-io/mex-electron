@@ -57,6 +57,7 @@ export const SearchFiltersHelp = (
     <p>Number of results matching a filter are indicated by the number beside it.</p>
     <p>Click on a filter to apply/remove it.</p>
     <p>Use the input to search and apply/remove a filter.</p>
+    <p>Only the filters that can be applied are made available.</p>
   </div>
 )
 
