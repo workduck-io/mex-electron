@@ -14,7 +14,7 @@ export interface ViewStore<Item> {
   setCurrentView: (view: View<Item>) => void
   setViews: (views: View<Item>[]) => void
   addView: (view: View<Item>) => void
-  removeView: (view: View<Item>) => void
+  removeView: (id: string) => void
   updateView: (view: View<Item>) => void
 }
 
@@ -45,10 +45,10 @@ export const useViewStore = create<ViewStore<any>>((set) => ({
       ...state,
       views: [...state.views.filter((v) => v.id !== view.id), view]
     })),
-  removeView: (view) =>
+  removeView: (id) =>
     set((state) => ({
       ...state,
-      views: state.views.filter((v) => v.id !== view.id)
+      views: state.views.filter((v) => v.id !== id)
     })),
   updateView: (view) =>
     set((state) => ({
@@ -56,3 +56,12 @@ export const useViewStore = create<ViewStore<any>>((set) => ({
       views: state.views.map((v) => (v.id === view.id ? view : v))
     }))
 }))
+
+export const useTaskViews = () => {
+  const getView = (id: string) => {
+    const views = useViewStore.getState().views
+    return views.find((v) => v.id === id)
+  }
+
+  return { getView }
+}

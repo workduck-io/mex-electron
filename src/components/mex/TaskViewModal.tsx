@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import React from 'react'
+import React, { useMemo } from 'react'
 import Modal from 'react-modal'
 import create from 'zustand'
 import { Button } from '@style/Buttons'
@@ -9,11 +9,13 @@ import { SearchFilter } from '@hooks/useFilters'
 import { Label, TextAreaBlock } from '@style/Form'
 import { LoadingButton } from './Buttons/LoadingButton'
 import Input, { InputFormError } from './Forms/Input'
-import { useViewStore } from '@hooks/useTaskViews'
+import { useTaskViews, useViewStore } from '@hooks/useTaskViews'
 import { SearchFilterCount, SearchFilterListCurrent, SearchFilterStyled } from '@style/Search'
 import { Icon } from '@iconify/react'
-import stackLine from '@iconify/icons-ri/stack-line';
+import stackLine from '@iconify/icons-ri/stack-line'
 import { generateTaskViewId } from '@data/Defaults/idPrefixes'
+import { useSaveData } from '@hooks/useSaveData'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 
 // Prefill modal has been added to the Tree via withRefactor from useRefactor
 
@@ -59,25 +61,66 @@ const TaskViewModal = () => {
   const closeModal = useTaskViewModalStore((store) => store.closeModal)
 
   const addView = useViewStore((store) => store.addView)
+  const updateView = useViewStore((store) => store.updateView)
+  const setCurrentView = useViewStore((store) => store.setCurrentView)
+
+  const { saveData } = useSaveData()
+
+  const { getView } = useTaskViews()
+
+  const { goTo } = useRouting()
 
   const {
     // control,
     reset,
     register,
-    // setValue,
+    setValue,
     handleSubmit,
     formState: { isSubmitting }
   } = useForm<TaskViewModalFormData>()
 
+  const curView = useMemo(() => {
+    if (viewid) {
+      const curView = getView(viewid)
+      if (curView) {
+        // set the values of the inputs as the default value doesn't work everytime
+        setValue('title', curView.title)
+        setValue('description', curView.description)
+        return curView
+      } else {
+        setValue('title', '')
+        setValue('description', '')
+      }
+    }
+    return undefined
+  }, [viewid])
+
   const onSubmit = async (data: TaskViewModalFormData) => {
     mog('onSubmit', { data, filters, viewid })
-    const view = {
-      title: data.title,
-      description: data.description,
-      filters: filters,
-      id: viewid ?? generateTaskViewId()
+    if (viewid) {
+      const oldview = { ...getView(viewid) }
+      const newView = {
+        ...oldview,
+        title: data.title ?? oldview.title,
+        description: data.description ?? oldview.description,
+        filters
+      }
+      updateView(newView)
+      saveData()
+      setCurrentView(newView)
+      goTo(ROUTE_PATHS.tasks, NavigationType.push, newView.id)
+    } else {
+      const view = {
+        title: data.title,
+        description: data.description,
+        filters: filters,
+        id: generateTaskViewId()
+      }
+      addView(view)
+      saveData()
+      setCurrentView(view)
+      goTo(ROUTE_PATHS.tasks, NavigationType.push, view.id)
     }
-    addView(view)
     reset()
     closeModal()
   }
@@ -87,7 +130,7 @@ const TaskViewModal = () => {
     closeModal()
   }
 
-  // mog('TaskViewModal', { open })
+  // mog('TaskViewModal', { open, curView })
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>{viewid ? 'Update ' : 'New '}Task View</ModalHeader>
@@ -98,6 +141,7 @@ const TaskViewModal = () => {
           label="Title"
           inputProps={{
             autoFocus: true,
+            defaultValue: curView !== undefined ? curView.title : '',
             ...register('title', {
               required: true
             })
@@ -106,7 +150,11 @@ const TaskViewModal = () => {
         ></Input>
 
         <Label htmlFor="description">Description </Label>
-        <TextAreaBlock placeholder="Ex. Bugs of development" {...register('description')} />
+        <TextAreaBlock
+          placeholder="Ex. Bugs of development"
+          defaultValue={curView !== undefined ? curView.description : ''}
+          {...register('description')}
+        />
 
         <Label htmlFor="description">Filters </Label>
         {filters?.length > 0 && (

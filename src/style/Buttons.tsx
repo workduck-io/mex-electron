@@ -39,7 +39,12 @@ export const Button = styled.button<ButtonProps>`
 
   &:disabled {
     background-color: ${({ theme }) => theme.colors.gray[6]};
+    color: ${({ theme }) => transparentize(0.5, theme.colors.form.button.fg)};
     cursor: default;
+    &:hover {
+      color: inherit;
+      box-shadow: inherit;
+    }
   }
 
   ${({ primary, transparent, theme }) =>

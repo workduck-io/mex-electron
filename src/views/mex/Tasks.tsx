@@ -27,7 +27,8 @@ import {
   StyledTasksKanban,
   TaskCard,
   TaskColumnHeader,
-  TaskHeader
+  TaskHeader,
+  TaskHeaderTitleSection
 } from '../../style/Todo'
 import Todo from '../../ui/components/Todo'
 import { mog } from '../../utils/lib/helper'
@@ -48,6 +49,8 @@ const Tasks = () => {
   const sidebar = useLayoutStore((store) => store.sidebar)
   const match = useMatch(`${ROUTE_PATHS.tasks}/:viewid`)
   const currentView = useViewStore((store) => store.currentView)
+  const removeView = useViewStore((store) => store.removeView)
+  const setCurrentView = useViewStore((store) => store.setCurrentView)
   const openTaskViewModal = useTaskViewModalStore((store) => store.openModal)
 
   const { loadNode } = useLoad()
@@ -357,11 +360,34 @@ const Tasks = () => {
     )
   }
 
+  const onRemoveView = () => {
+    if (currentView) {
+      removeView(currentView.id)
+      setCurrentView(undefined)
+      goTo(ROUTE_PATHS.tasks, NavigationType.push)
+    }
+  }
+
   return (
     <PageContainer>
       <TaskHeader>
-        <Title>Tasks</Title>
-        {currentFilters.length > 0 && <button onClick={() => openTaskViewModal(currentFilters)}>CreateNew View</button>}
+        <TaskHeaderTitleSection>
+          <Title>Tasks</Title>
+          <Button onClick={() => openTaskViewModal(currentFilters)} disabled={currentFilters.length === 0}>
+            Create View
+          </Button>
+          {currentView && (
+            <>
+              <Button
+                onClick={() => openTaskViewModal(currentFilters, currentView?.id)}
+                disabled={currentFilters.length === 0}
+              >
+                Update View
+              </Button>
+              <Button onClick={onRemoveView}>Remove View</Button>
+            </>
+          )}
+        </TaskHeaderTitleSection>
         <ShortcutTokens>
           <ShortcutToken>
             Select:

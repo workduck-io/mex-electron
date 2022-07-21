@@ -55,9 +55,18 @@ export const StyledBoard = styled.div<{ sidebarExpanded?: boolean }>`
 
 export const StyledTasksKanban = styled(StyledBoard)``
 
+export const TaskHeaderTitleSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
+`
+
 export const TaskHeader = styled(MainHeader)`
-  ${Title} {
+  ${TaskHeaderTitleSection} {
     flex-grow: 1;
+  }
+  ${TaskHeaderTitleSection} > ${Title} {
+    flex-grow: 0;
   }
 `
 
