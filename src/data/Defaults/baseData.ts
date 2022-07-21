@@ -81,6 +81,7 @@ export const DefaultFileData = (version: string): FileData => ({
   tagsCache: {},
   archive: [],
   bookmarks: [],
+  views: [],
   todos: {},
   reminders: [],
   sharedNodes: [],

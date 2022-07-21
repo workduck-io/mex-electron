@@ -1,29 +1,20 @@
-import fileList2Line from '@iconify/icons-ri/file-list-2-line'
-import filterOffLine from '@iconify/icons-ri/filter-off-line'
 import filter2Line from '@iconify/icons-ri/filter-2-line'
-import React, { useMemo } from 'react'
-import { FilterKey, SearchFilter, useFilters } from '../../../hooks/useFilters'
-import {
-  SearchFilterCancel,
-  SearchFilterCategoryLabel,
-  SearchFilterCount,
-  SearchFilterLabel,
-  SearchFilterList,
-  SearchFilterListCurrent,
-  SearchFilterListSuggested,
-  SearchFilterListWrap,
-  SearchFilterStyled,
-  SearchFiltersWrapper,
-  SearchFilterWrapper
-} from '../../../style/Search'
-import { mog } from '../../../utils/lib/helper'
-import { startCase } from 'lodash'
+import filterOffLine from '@iconify/icons-ri/filter-off-line'
 import { Icon } from '@iconify/react'
-import SearchFilterInput from './SearchFilterInput'
+import { startCase } from 'lodash'
 import { nanoid } from 'nanoid'
-import Infobox from '../../../ui/components/Help/Infobox'
+import React, { useMemo } from 'react'
 import { SearchFiltersHelp } from '../../../data/Defaults/helpText'
+import { FilterKey, SearchFilter } from '../../../hooks/useFilters'
+import {
+    SearchFilterCancel, SearchFilterLabel,
+    SearchFilterList, SearchFiltersWrapper,
+    SearchFilterWrapper
+} from '../../../style/Search'
+import Infobox from '../../../ui/components/Help/Infobox'
+import { mog } from '../../../utils/lib/helper'
 import { ToolbarTooltip } from '../Tooltips'
+import SearchFilterInput from './SearchFilterInput'
 
 interface SearchFiltersProps<Item> {
   result?: any

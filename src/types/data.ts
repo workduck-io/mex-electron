@@ -1,3 +1,4 @@
+import { View } from '@hooks/useTaskViews'
 import { Service, SyncBlockData, SyncBlockTemplate, SyncStoreIntents } from '../editor/Components/SyncBlock'
 import { TodosType } from '../editor/Components/Todo/types'
 import { Snippet } from '../store/useSnippetStore'
@@ -49,6 +50,7 @@ export interface FileData {
 
   // Tasks
   todos: TodosType
+  views: View<any>[]
 
   // Reminders
   reminders: Reminder[]
