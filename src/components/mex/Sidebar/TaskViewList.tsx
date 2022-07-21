@@ -1,13 +1,17 @@
 import { useViewStore, View } from '@hooks/useTaskViews'
+import Tippy, { useSingleton } from '@tippyjs/react'
 import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import { Icon } from '@iconify/react'
-import { ItemContent, ItemTitle } from '@style/Sidebar'
+import { ItemContent, ItemTitle, StyledTreeItem } from '@style/Sidebar'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React, { useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { BList, SItem, SnippetListWrapper } from './SharedNotes.style'
 import home7Line from '@iconify/icons-ri/home-7-line'
 import stackLine from '@iconify/icons-ri/stack-line'
+import { TooltipContent } from './Tree'
+import * as ContextMenu from '@radix-ui/react-context-menu'
+import TaskViewContextMenu from './TaskViewContextMenu'
 
 const TaskViewList = () => {
   const views = useViewStore((store) => store.views)
@@ -36,6 +40,8 @@ const TaskViewList = () => {
     return true
   }, [location.pathname])
 
+  const [source, target] = useSingleton()
+
   const sortedViews = React.useMemo(() => {
     return views.sort((a, b) => {
       if (a.title < b.title) {
@@ -52,24 +58,41 @@ const TaskViewList = () => {
 
   return (
     <SnippetListWrapper>
+      <Tippy theme="mex" placement="right" singleton={source} />
       <BList>
-        <SItem selected={currentView === undefined} key={'Task_View_Default'} onClick={() => onOpenDefaultView()}>
-          <ItemContent>
+        <StyledTreeItem noSwitcher selected={currentView === undefined}>
+          <ItemContent onMouseDown={() => onOpenDefaultView()}>
             <ItemTitle>
               <Icon icon={home7Line} />
-              Default
+              <span>Default</span>
             </ItemTitle>
           </ItemContent>
-        </SItem>
+        </StyledTreeItem>
         {sortedViews.map((view) => (
-          <SItem selected={showSelected && view?.id === currentView?.id} key={view.id} onClick={() => onOpenView(view)}>
-            <ItemContent>
-              <ItemTitle>
-                <Icon icon={stackLine} />
-                {view.title}
-              </ItemTitle>
-            </ItemContent>
-          </SItem>
+          <Tippy
+            theme="mex"
+            placement="right"
+            singleton={target}
+            key={`DisplayTippy_${view.id}`}
+            content={<TooltipContent item={{ id: view.id, children: [], data: { title: view.title } }} />}
+          >
+            <span>
+              <ContextMenu.Root>
+                <ContextMenu.Trigger asChild>
+                  <StyledTreeItem noSwitcher selected={showSelected && view?.id === currentView?.id}>
+                    <ItemContent onClick={() => onOpenView(view)}>
+                      <ItemTitle>
+                        <Icon icon={stackLine} />
+                        <span>{view.title}</span>
+                      </ItemTitle>
+                    </ItemContent>
+                  </StyledTreeItem>
+                </ContextMenu.Trigger>
+                <TaskViewContextMenu view={view} />
+                {/*<ArchiveContextMenu item={item} />*/}
+              </ContextMenu.Root>
+            </span>
+          </Tippy>
         ))}
       </BList>
     </SnippetListWrapper>
