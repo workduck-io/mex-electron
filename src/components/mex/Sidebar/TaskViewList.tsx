@@ -4,7 +4,7 @@ import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import { Icon } from '@iconify/react'
 import { ItemContent, ItemTitle, StyledTreeItem } from '@style/Sidebar'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { BList, SItem, SnippetListWrapper } from './SharedNotes.style'
 import home7Line from '@iconify/icons-ri/home-7-line'
@@ -18,6 +18,7 @@ const TaskViewList = () => {
   const currentView = useViewStore((store) => store.currentView)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
   const { goTo } = useRouting()
+  const [contextOpenViewId, setContextOpenViewId] = useState<string>(null)
 
   const location = useLocation()
 
@@ -61,7 +62,7 @@ const TaskViewList = () => {
       <Tippy theme="mex" placement="right" singleton={source} />
       <BList>
         <StyledTreeItem noSwitcher selected={currentView === undefined}>
-          <ItemContent onMouseDown={() => onOpenDefaultView()}>
+          <ItemContent onClick={() => onOpenDefaultView()}>
             <ItemTitle>
               <Icon icon={home7Line} />
               <span>Default</span>
@@ -77,9 +78,19 @@ const TaskViewList = () => {
             content={<TooltipContent item={{ id: view.id, children: [], data: { title: view.title } }} />}
           >
             <span>
-              <ContextMenu.Root>
+              <ContextMenu.Root
+                onOpenChange={(open) => {
+                  if (open) {
+                    setContextOpenViewId(view.id)
+                  } else setContextOpenViewId(null)
+                }}
+              >
                 <ContextMenu.Trigger asChild>
-                  <StyledTreeItem noSwitcher selected={showSelected && view?.id === currentView?.id}>
+                  <StyledTreeItem
+                    hasMenuOpen={contextOpenViewId === view.id}
+                    noSwitcher
+                    selected={showSelected && view?.id === currentView?.id}
+                  >
                     <ItemContent onClick={() => onOpenView(view)}>
                       <ItemTitle>
                         <Icon icon={stackLine} />

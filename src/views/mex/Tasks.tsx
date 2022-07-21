@@ -41,6 +41,8 @@ import { useLayoutStore } from '@store/useLayoutStore'
 import { useMatch } from 'react-router-dom'
 import { useTaskViewModalStore } from '@components/mex/TaskViewModal'
 import { useViewStore } from '@hooks/useTaskViews'
+import addCircleLine from '@iconify/icons-ri/add-circle-line'
+import edit2Line from '@iconify/icons-ri/edit-2-line'
 
 const Tasks = () => {
   const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
@@ -373,7 +375,8 @@ const Tasks = () => {
       <TaskHeader>
         <TaskHeaderTitleSection>
           <Title>Tasks</Title>
-          <Button onClick={() => openTaskViewModal(currentFilters)} disabled={currentFilters.length === 0}>
+          <Button onClick={() => openTaskViewModal(currentFilters, undefined)} disabled={currentFilters.length === 0}>
+            <Icon icon={addCircleLine} />
             Create View
           </Button>
           {currentView && (
@@ -382,9 +385,13 @@ const Tasks = () => {
                 onClick={() => openTaskViewModal(currentFilters, currentView?.id)}
                 disabled={currentFilters.length === 0}
               >
+                <Icon icon={edit2Line} />
                 Update View
               </Button>
-              <Button onClick={onRemoveView}>Remove View</Button>
+              <Button onClick={onRemoveView}>
+                <Icon icon={trashIcon} />
+                Remove View
+              </Button>
             </>
           )}
         </TaskHeaderTitleSection>

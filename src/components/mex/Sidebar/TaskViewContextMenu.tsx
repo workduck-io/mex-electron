@@ -1,8 +1,10 @@
 import { useViewStore, View } from '@hooks/useTaskViews'
 import trashIcon from '@iconify/icons-codicon/trash'
 import { Icon } from '@iconify/react'
-import { ContextMenuContent, ContextMenuItem } from '@ui/components/menus/contextMenu'
+import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@ui/components/menus/contextMenu'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import { useTaskViewModalStore } from '@components/mex/TaskViewModal'
+import fileCopyLine from '@iconify/icons-ri/file-copy-line'
 import React from 'react'
 
 interface TaskViewContextMenuProps {
@@ -11,6 +13,7 @@ interface TaskViewContextMenuProps {
 
 const TaskViewContextMenu = ({ view }: TaskViewContextMenuProps) => {
   const removeView = useViewStore((store) => store.removeView)
+  const openModal = useTaskViewModalStore((store) => store.openModal)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
   const { goTo } = useRouting()
 
@@ -23,18 +26,22 @@ const TaskViewContextMenu = ({ view }: TaskViewContextMenuProps) => {
     }
   }
 
+  const handleClone = (view: View<any>) => {
+    openModal(view.filters, undefined)
+  }
+
   return (
     <>
       <ContextMenuContent>
-        {/* <ContextMenuItem
+        <ContextMenuItem
           onSelect={(args) => {
-            handleUnarchive(item)
+            handleClone(view)
           }}
         >
-          <Icon icon={unarchiveLine} />
-          Unarchive
+          <Icon icon={fileCopyLine} />
+          Clone
         </ContextMenuItem>
-        <ContextMenuSeparator /> */}
+        <ContextMenuSeparator />
         <ContextMenuItem
           color="#df7777"
           onSelect={(args) => {

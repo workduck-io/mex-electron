@@ -164,11 +164,8 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
       min-height: ${heightMain};
     }
     ${GridWrapper} {
-      margin: 2rem;
-      margin-left: ${({ theme }) => theme.spacing.medium};
-      margin-right: -1rem;
-      margin-bottom: 0;
-      width: calc(100vw - 2rem);
+      width: 100vw;
+      padding: 2rem 1rem;
       grid-gap: ${({ theme }) => theme.spacing.medium};
     }
   `

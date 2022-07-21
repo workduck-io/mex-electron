@@ -27,6 +27,8 @@ export const Button = styled.button<ButtonProps>`
   transition: 0.3s ease;
   background-color: ${({ theme }) => theme.colors.form.button.bg};
 
+  flex-shrink: 0;
+
   &:focus {
     color: ${({ theme }) => theme.colors.primary};
     box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};

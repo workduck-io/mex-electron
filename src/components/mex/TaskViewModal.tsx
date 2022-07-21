@@ -16,6 +16,7 @@ import stackLine from '@iconify/icons-ri/stack-line'
 import { generateTaskViewId } from '@data/Defaults/idPrefixes'
 import { useSaveData } from '@hooks/useSaveData'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import { getPathNum } from '@utils/lib/paths'
 
 // Prefill modal has been added to the Tree via withRefactor from useRefactor
 
@@ -62,6 +63,7 @@ const TaskViewModal = () => {
 
   const addView = useViewStore((store) => store.addView)
   const updateView = useViewStore((store) => store.updateView)
+  const currentView = useViewStore((store) => store.currentView)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
 
   const { saveData } = useSaveData()
@@ -91,9 +93,19 @@ const TaskViewModal = () => {
         setValue('title', '')
         setValue('description', '')
       }
+    } else {
+      const curView = useViewStore.getState().currentView
+      if (curView) {
+        // set the values of the inputs as the default value doesn't work everytime
+        setValue('title', getPathNum(curView.title))
+        setValue('description', curView.description)
+      } else {
+        setValue('title', '')
+        setValue('description', '')
+      }
     }
     return undefined
-  }, [viewid])
+  }, [viewid, currentView])
 
   const onSubmit = async (data: TaskViewModalFormData) => {
     mog('onSubmit', { data, filters, viewid })
