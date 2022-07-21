@@ -263,6 +263,7 @@ const useLoad = () => {
       if (localCheck.isShared) {
         // TODO: Change fetch for shared
         fetchAndSaveNode(node, { withLoading: true, isShared: true })
+        fetchSharedNodeUsers(node.nodeid)
       } else fetchAndSaveNode(node, { withLoading: true, isShared: false })
     }
 

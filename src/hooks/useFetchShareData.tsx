@@ -42,11 +42,12 @@ export const useFetchShareData = () => {
     const usersWithAccess = nodeDetails
       // .filter((p) => p.status === 'fulfilled')
       .map((p: any) => {
-        return p.value as UsersRaw
+        // mog('p', { p })
+        return p[0].value as UsersRaw
       })
 
+    // mog('getUserAccess', { usersWithAccess, nodeDetails })
     const UserAccessDetails = usersWithAccess.reduce((p, n) => {
-      // mog('getUserAccess', { p, n })
       const rawUsers = Object.entries(n.users).map(([uid, access]) => ({ nodeid: n.nodeid, userid: uid, access }))
       return [...p, ...rawUsers]
     }, [])
@@ -78,9 +79,13 @@ export const useFetchShareData = () => {
       ])
     ).fulfilled
       // .filter((p) => p.status === 'fulfilled')
-      .map((p: any) => p.value as MUsersRaw)
+      .reduce((arr, p: any) => {
+        // mog('p', { p })
+        return [...arr, ...p.map((u) => u.value as MUsersRaw)]
+      }, [])
     // .filter((u) => u.userid !== userDetails?.userID)
 
+    // mog('mentionableU', { mentionableU })
     mentionableU.forEach((u) =>
       addMentionable(u.alias ?? getEmailStart(u.email), u.email, u.userid, u.name, u.nodeid, u.access)
     )
