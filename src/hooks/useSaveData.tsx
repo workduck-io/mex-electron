@@ -51,7 +51,7 @@ export const useSaveData = () => {
         }
       }
     }
-    mog('We saved the data for you', { version, fileData })
+    mog('We saved the data for you', { version, views, fileData })
 
     ipcRenderer.send(IpcAction.SET_LOCAL_DATA, fileData)
     // updater()

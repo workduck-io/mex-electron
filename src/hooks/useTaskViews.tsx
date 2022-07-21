@@ -3,12 +3,15 @@ import { SearchFilter } from './useFilters'
 
 export interface View<Item> {
   title: string
+  description?: string
   id: string
   filters: SearchFilter<Item>[]
 }
 
 export interface ViewStore<Item> {
   views: View<Item>[]
+  currentView: View<Item> | undefined
+  setCurrentView: (view: View<Item>) => void
   setViews: (views: View<Item>[]) => void
   addView: (view: View<Item>) => void
   removeView: (view: View<Item>) => void
@@ -26,6 +29,12 @@ export interface ViewStore<Item> {
 
 export const useViewStore = create<ViewStore<any>>((set) => ({
   views: [],
+  currentView: undefined,
+  setCurrentView: (view) =>
+    set((state) => ({
+      ...state,
+      currentView: view
+    })),
   setViews: (views) =>
     set((state) => ({
       ...state,

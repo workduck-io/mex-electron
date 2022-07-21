@@ -268,6 +268,7 @@ export const useTodoKanban = () => {
     resetCurrentFilters,
     resetFilters,
     filters,
-    currentFilters
+    currentFilters,
+    setCurrentFilters
   }
 }

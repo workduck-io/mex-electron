@@ -33,7 +33,12 @@ export const KANBAN_CARD_WIDTH = (sidebarExpanded?: boolean) =>
 export const StyledBoard = styled.div<{ sidebarExpanded?: boolean }>`
   display: flex;
   flex-direction: column;
+
   gap: ${({ theme }) => theme.spacing.medium};
+
+  .react-kanban-board {
+    overflow: hidden;
+  }
   .react-kanban-column {
     width: ${({ sidebarExpanded, theme }) =>
       css`calc(${KANBAN_WIDTH(sidebarExpanded)} - ${theme.additional.hasBlocks ? '1.33rem' : '0px'})`};

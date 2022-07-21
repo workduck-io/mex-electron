@@ -37,12 +37,18 @@ import SearchFilters from '../../components/mex/Search/SearchFilters'
 import Infobox from '../../ui/components/Help/Infobox'
 import { TasksHelp } from '../../data/Defaults/helpText'
 import { useLayoutStore } from '@store/useLayoutStore'
+import { useMatch } from 'react-router-dom'
+import { useTaskViewModalStore } from '@components/mex/TaskViewModal'
+import { useViewStore } from '@hooks/useTaskViews'
 
 const Tasks = () => {
   const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
   const nodesTodo = useTodoStore((store) => store.todos)
   const clearTodos = useTodoStore((store) => store.clearTodos)
   const sidebar = useLayoutStore((store) => store.sidebar)
+  const match = useMatch(`${ROUTE_PATHS.tasks}/:viewid`)
+  const currentView = useViewStore((store) => store.currentView)
+  const openTaskViewModal = useTaskViewModalStore((store) => store.openModal)
 
   const { loadNode } = useLoad()
   const { goTo } = useRouting()
@@ -63,6 +69,7 @@ const Tasks = () => {
     addCurrentFilter,
     removeCurrentFilter,
     resetCurrentFilters,
+    setCurrentFilters,
     filters,
     currentFilters
   } = useTodoKanban()
@@ -293,6 +300,19 @@ const Tasks = () => {
     }
   }, [board, selectedCard])
 
+  useEffect(() => {
+    if (match && match.params && match.params.viewid) {
+      // const viewid = match.params.viewid
+      // loadView(viewid)
+      if (currentView) {
+        setCurrentFilters(currentView.filters)
+      }
+      // goTo(ROUTE_PATHS.view, NavigationType.push, viewid)
+    } else {
+      setCurrentFilters([])
+    }
+  }, [match])
+
   const onDoubleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, nodeid: string) => {
     event.preventDefault()
     //double click
@@ -304,7 +324,7 @@ const Tasks = () => {
     }
   }
 
-  mog('Tasks', { nodesTodo, board, selectedCard })
+  mog('Tasks', { nodesTodo, board, selectedCard, match })
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
     const pC = getPureContent(todo)
@@ -341,6 +361,7 @@ const Tasks = () => {
     <PageContainer>
       <TaskHeader>
         <Title>Tasks</Title>
+        {currentFilters.length > 0 && <button onClick={() => openTaskViewModal(currentFilters)}>CreateNew View</button>}
         <ShortcutTokens>
           <ShortcutToken>
             Select:

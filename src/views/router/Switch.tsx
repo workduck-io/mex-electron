@@ -90,6 +90,9 @@ const Switch = () => {
       } else if (location.pathname.startsWith(ROUTE_PATHS.archive)) {
         showSidebar()
         hideRHSidebar()
+      } else if (location.pathname.startsWith(ROUTE_PATHS.tasks)) {
+        showSidebar()
+        hideRHSidebar()
       } else {
         mog('Hiding all Sidebar', { location })
         hideAllSidebars()
@@ -139,6 +142,7 @@ const Switch = () => {
           <Route path={ROUTE_PATHS.snippets} element={<ProtectedRoute component={Snippets} />} />
           <Route path={ROUTE_PATHS.search} element={<ProtectedRoute component={Search} />} />
           <Route path={ROUTE_PATHS.tasks} element={<ProtectedRoute component={Tasks} />} />
+          <Route path={`${ROUTE_PATHS.tasks}/:viewid`} element={<ProtectedRoute component={Tasks} />} />
           <Route path={ROUTE_PATHS.reminders} element={<ProtectedRoute component={RemindersAll} />} />
 
           <Route path={`${ROUTE_PATHS.snippet}/:snippetid`} element={<ProtectedRoute component={SnippetEditor} />} />
