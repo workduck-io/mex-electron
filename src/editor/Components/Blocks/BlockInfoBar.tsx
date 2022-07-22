@@ -9,6 +9,7 @@ import sendToIcon from '@iconify/icons-ph/arrow-bend-up-right-bold'
 import moveToIcon from '@iconify/icons-ri/anticlockwise-2-fill'
 import { MexIcon } from '../../../style/Layouts'
 import { PrimaryText } from '../../../style/Integration'
+import { useEditorBlockSelection } from '@editor/Actions/useEditorBlockSelection'
 
 const BlockMenu = styled.div`
   display: flex;
@@ -29,9 +30,15 @@ const BlockInfoBar = () => {
   const blocks = useBlockStore((store) => store.blocks)
   const setIsBlockMode = useBlockStore((store) => store.setIsBlockMode)
 
+  const { deleteSelectedBlock } = useEditorBlockSelection()
   const theme = useTheme()
   const length = Object.values(blocks).length
   const blockHeading = length === 0 ? 'Select Blocks' : `Block${length > 1 ? 's' : ''} selected:`
+
+  const handleDelete = () => {
+    deleteSelectedBlock()
+    setIsModalOpen(undefined)
+  }
 
   return (
     <BlockMenu>
@@ -50,7 +57,7 @@ const BlockInfoBar = () => {
         <Button onClick={() => setIsModalOpen(ContextMenuActionType.send)}>
           <MexIcon fontSize={20} noHover color={theme.colors.primary} icon={sendToIcon} /> Send
         </Button>
-        <Button onClick={() => setIsModalOpen(ContextMenuActionType.del)}>
+        <Button onClick={() => handleDelete()}>
           <MexIcon fontSize={20} noHover color={theme.colors.primary} icon={deleteBin6Line} />
           Delete
         </Button>

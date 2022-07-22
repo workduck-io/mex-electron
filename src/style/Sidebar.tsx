@@ -150,6 +150,7 @@ export const StyledTreeItem = styled.div<{
   isDragging?: boolean
   isBeingDroppedAt?: boolean
   hasMenuOpen?: boolean
+  noSwitcher?: boolean
 }>`
   display: flex;
   align-items: center;
@@ -158,6 +159,12 @@ export const StyledTreeItem = styled.div<{
   padding-right: 16px;
 
   transition: 0.1s ease;
+
+  ${({ noSwitcher, theme }) =>
+    noSwitcher &&
+    css`
+      padding-left: ${theme.spacing.small};
+    `}
 
   ${({ hasMenuOpen, theme }) =>
     hasMenuOpen &&

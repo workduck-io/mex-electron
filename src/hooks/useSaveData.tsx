@@ -11,6 +11,7 @@ import { FileData } from '../types/data'
 import { mog } from '../utils/lib/helper'
 import useTodoStore from '../store/useTodoStore'
 import { useReminderStore } from './useReminders'
+import { useViewStore } from './useTaskViews'
 
 // Save the data in the local file database
 export const useSaveData = () => {
@@ -19,6 +20,7 @@ export const useSaveData = () => {
     const { baseNodeId, ilinks, linkCache, tags, tagsCache, archive, bookmarks, sharedNodes } = useDataStore.getState()
     const { syncBlocks, templates, intents, services } = useSyncStore.getState()
     const { reminders } = useReminderStore.getState()
+    const { views } = useViewStore.getState()
     const { version } = useVersionStore.getState()
 
     const fileData: FileData = {
@@ -28,6 +30,7 @@ export const useSaveData = () => {
       ilinks,
       linkCache,
       todos: useTodoStore.getState().todos,
+      views,
       reminders,
       tags,
       tagsCache,
@@ -48,7 +51,7 @@ export const useSaveData = () => {
         }
       }
     }
-    mog('We saved the data for you', { version, fileData })
+    mog('We saved the data for you', { version, views, fileData })
 
     ipcRenderer.send(IpcAction.SET_LOCAL_DATA, fileData)
     // updater()

@@ -1,4 +1,4 @@
-import { mix, transparentize } from 'polished'
+import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 import { TodoContainer } from '../ui/components/Todo.style'
 import { MainHeader } from './Layouts'
@@ -33,7 +33,12 @@ export const KANBAN_CARD_WIDTH = (sidebarExpanded?: boolean) =>
 export const StyledBoard = styled.div<{ sidebarExpanded?: boolean }>`
   display: flex;
   flex-direction: column;
+
   gap: ${({ theme }) => theme.spacing.medium};
+
+  .react-kanban-board {
+    overflow: hidden;
+  }
   .react-kanban-column {
     width: ${({ sidebarExpanded, theme }) =>
       css`calc(${KANBAN_WIDTH(sidebarExpanded)} - ${theme.additional.hasBlocks ? '1.33rem' : '0px'})`};
@@ -50,10 +55,57 @@ export const StyledBoard = styled.div<{ sidebarExpanded?: boolean }>`
 
 export const StyledTasksKanban = styled(StyledBoard)``
 
+export const TaskHeaderTitleSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
+`
+
 export const TaskHeader = styled(MainHeader)`
-  ${Title} {
+  margin: ${({ theme }) => theme.spacing.large} 0;
+  ${TaskHeaderTitleSection} {
     flex-grow: 1;
   }
+  ${TaskHeaderTitleSection} > ${Title} {
+    flex-grow: 0;
+    margin-right: ${({ theme }) => theme.spacing.medium};
+  }
+`
+
+export const TaskHeaderIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: ${({ theme }) => theme.colors.text.default};
+  }
+`
+
+export const TaskViewHeaderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
+`
+
+export const TaskViewTitle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
+  font-size: 2rem;
+  font-weight: bold;
+
+  svg {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`
+
+export const TaskViewControls = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
 `
 
 export const ShortcutTokens = styled.div`

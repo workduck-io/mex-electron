@@ -57,6 +57,7 @@ export const SearchFiltersHelp = (
     <p>Number of results matching a filter are indicated by the number beside it.</p>
     <p>Click on a filter to apply/remove it.</p>
     <p>Use the input to search and apply/remove a filter.</p>
+    <p>Only the filters that can be applied are made available.</p>
   </div>
 )
 
@@ -82,6 +83,7 @@ export const TasksHelp = (
     <p>Tasks are sorted by priority and grouped by their status.</p>
     <p>Drag and drop or use the checkbox to change status.</p>
     <p>Tasks can be filtered by the notes they appear in.</p>
+    <p>Views can be created only when filters are set.</p>
   </div>
 )
 export const ArchiveHelp = (

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useSpring } from 'react-spring'
 import { useTheme } from 'styled-components'
 import { useLayoutStore } from '../../../store/useLayoutStore'
-import { size } from '@style/responsive'
+import { OverlaySidebarWindowWidth, size } from '@style/responsive'
 import { useMediaQuery } from 'react-responsive'
 import { transparentize } from 'polished'
 
@@ -15,14 +15,16 @@ export const useSidebarTransition = () => {
   const theme = useTheme()
 
   const isDesktop = useMediaQuery({ minWidth: size.wide })
-  const isSmall = useMediaQuery({ maxWidth: size.small })
+  const overlaySidebar = useMediaQuery({ maxWidth: OverlaySidebarWindowWidth })
 
   const sidebarStyle = useMemo(() => {
     const showSidebar = sidebar.show && sidebar.expanded
     const firstColumnWidth = `${showSidebar ? '276px' : '0px'}`
-    if (!isSmall) {
+    if (!overlaySidebar) {
       const style = {
         backdropFilter: 'blur(10px)',
+        top: '0',
+        left: '0',
         width: firstColumnWidth,
         background: transparentize(0.5, theme.colors.gray[9])
       }
@@ -32,14 +34,14 @@ export const useSidebarTransition = () => {
         width: firstColumnWidth,
         position: 'absolute',
         top: theme.additional.hasBlocks ? '2rem' : '0',
-        background: transparentize(0.25, theme.colors.gray[9]),
+        background: transparentize(0.25, theme.colors.gray[9]) + ' !important',
         backdropFilter: 'blur(10px)',
         left: theme.additional.hasBlocks ? 'calc(86px + 1rem)' : '86px',
         zIndex: '10'
       }
       return style
     }
-  }, [sidebar, isSmall, theme])
+  }, [sidebar, overlaySidebar, theme])
 
   const springProps = useSpring(sidebarStyle)
 
@@ -47,7 +49,7 @@ export const useSidebarTransition = () => {
     const showRHSidebar = rhSidebar.show && rhSidebar.expanded
     const visibleEndColumnWidth = `${isDesktop ? '600px' : '400px'}`
     const endColumnWidth = `${showRHSidebar ? visibleEndColumnWidth : '0px'}`
-    if (!isSmall) {
+    if (!overlaySidebar) {
       const style = {
         width: endColumnWidth,
         backdropFilter: 'blur(10px)',
@@ -60,13 +62,13 @@ export const useSidebarTransition = () => {
         position: 'absolute',
         backdropFilter: 'blur(10px)',
         top: theme.additional.hasBlocks ? '2rem' : '0',
-        background: transparentize(0.25, theme.colors.gray[9]),
+        background: transparentize(0.25, theme.colors.gray[9]) + ' !important',
         zIndex: '10',
         right: theme.additional.hasBlocks ? '1rem' : '0px'
       }
       return style
     }
-  }, [rhSidebar, theme, isSmall, isDesktop])
+  }, [rhSidebar, theme, overlaySidebar, isDesktop])
 
   const rhSidebarSpringProps = useSpring(rhSidebarStyle)
 
@@ -76,7 +78,7 @@ export const useSidebarTransition = () => {
     const firstColumnWidth = `${showSidebar ? sidebarExpandedWidth : sidebarCollapsedWidth}`
     const visibleEndColumnWidth = `${isDesktop ? '600px' : '400px'}`
     const endColumnWidth = `${showRHSidebar ? visibleEndColumnWidth : '0px'}`
-    if (!isSmall) {
+    if (!overlaySidebar) {
       const style = {
         gridTemplateColumns: `${firstColumnWidth} 2fr ${endColumnWidth}`
       }
@@ -86,7 +88,7 @@ export const useSidebarTransition = () => {
       const style = { gridTemplateColumns: `${sidebarCollapsedWidth} 2fr 0px` }
       return { style, endColumnWidth }
     }
-  }, [sidebar, isDesktop, rhSidebar, isSmall])
+  }, [sidebar, isDesktop, theme, rhSidebar, overlaySidebar])
 
   const gridSpringProps = useSpring({ to: gridStyle, immediate: !sidebar.show && !rhSidebar.show })
 

@@ -60,17 +60,28 @@ export const SearchHeader = styled.div`
 export const SearchFilterWrapper = styled(SearchHeader)`
   flex-grow: 1;
   justify-content: flex-start;
+`
+
+export const SearchFiltersWrapper = styled.div`
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-start;
   flex-wrap: wrap;
   gap: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.large}`};
 `
 
 export const SearchFilterCategoryLabel = styled.div`
   color: ${({ theme }) => theme.colors.text.fade};
-  margin: 0 ${({ theme }) => theme.spacing.small} 0 ${({ theme }) => theme.spacing.medium};
+  padding: ${({ theme }) => `${theme.spacing.small} 0`};
 `
 
 export const SearchFilterLabel = styled.div`
-  ${iconStyle(true)}
+  flex-shrink: 1;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  ${iconStyle(true)};
   color: ${({ theme }) => theme.colors.text.fade};
 `
 
@@ -97,25 +108,28 @@ export const SearchFilterList = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: ${({ theme }) => theme.spacing.small};
+  border: 1px solid ${({ theme }) => transparentize(0.5, theme.colors.gray[7])};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
 `
 
 export const SearchFilterCancel = styled.div`
   cursor: pointer;
   display: flex;
-  padding: ${({ theme }) => ` ${theme.spacing.small}`};
+  padding: ${({ theme }) => ` ${theme.spacing.tiny}`};
   transition: all 0.25s ease-in-out;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
-  margin-left: ${({ theme }) => theme.spacing.large};
 
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
 
   background-color: ${({ theme }) => theme.colors.gray[8]};
   transition: all 0.25s ease-in-out;
+  color: ${({ theme }) => theme.colors.palette.red};
 
   svg {
-    opacity: 0.66;
+    height: 1.5rem;
+    width: 1.5rem;
+    opacity: 1;
   }
 
   &:hover {
@@ -139,7 +153,11 @@ export const SearchFilterStyled = styled.div<{ selected?: boolean }>`
   background-color: ${({ theme }) => theme.colors.gray[8]};
   transition: all 0.25s ease-in-out;
 
+  width: max-content;
+
   svg {
+    height: 1rem;
+    width: 1rem;
     opacity: 0.66;
   }
 
@@ -155,10 +173,15 @@ export const SearchFilterStyled = styled.div<{ selected?: boolean }>`
       background-color: ${({ theme }) => theme.colors.primary};
       color: ${({ theme }) => theme.colors.text.oppositePrimary};
 
+      svg {
+        color: ${({ theme }) => theme.colors.text.oppositePrimary};
+      }
+
       &:hover {
         background-color: ${({ theme }) => transparentize(0.4, theme.colors.primary)};
         color: ${({ theme }) => theme.colors.text.oppositePrimary};
         svg {
+          color: ${({ theme }) => theme.colors.text.oppositePrimary};
           opacity: 1;
         }
       }

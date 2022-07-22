@@ -32,7 +32,7 @@ const Input = ({
   // console.log({ name, label, inputProps, labelProps, error })
 
   return (
-    <InputWrapper transparent key={`FormInput_${name}_${label}`}>
+    <InputWrapper transparent={transparent} key={`FormInput_${name}_${label}`}>
       <Tippy
         render={(attrs) => (
           <ErrorTooltip tabIndex={-1} {...attrs}>

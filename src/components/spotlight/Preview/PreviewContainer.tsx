@@ -1,4 +1,4 @@
-import { getBlockMetadata } from '@editor/Components/Blocks/BlockModal'
+import { getBlockMetadata } from '@editor/Actions/useEditorBlockSelection'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import React, { useEffect } from 'react'
 import tinykeys from 'tinykeys'

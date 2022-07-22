@@ -19,7 +19,7 @@ import { useRouting } from '../../../views/routes/urls'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import { mog } from '@utils/lib/helper'
-import { getBlockMetadata } from '@editor/Components/Blocks/BlockModal'
+import { getBlockMetadata } from '@editor/Actions/useEditorBlockSelection'
 
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)

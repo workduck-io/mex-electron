@@ -27,6 +27,8 @@ export const Button = styled.button<ButtonProps>`
   transition: 0.3s ease;
   background-color: ${({ theme }) => theme.colors.form.button.bg};
 
+  flex-shrink: 0;
+
   &:focus {
     color: ${({ theme }) => theme.colors.primary};
     box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
@@ -38,8 +40,10 @@ export const Button = styled.button<ButtonProps>`
   }
 
   &:disabled {
-    background-color: ${({ theme }) => theme.colors.gray[6]};
-    cursor: default;
+    background-color: ${({ theme }) => theme.colors.form.button.bg};
+    color: ${({ theme }) => transparentize(0.5, theme.colors.form.button.fg)};
+    cursor: not-allowed;
+    pointer-events: none;
   }
 
   ${({ primary, transparent, theme }) =>

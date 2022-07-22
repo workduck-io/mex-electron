@@ -14,6 +14,7 @@ import SnippetList from './SnippetList'
 import { usePolling } from '@apis/usePolling'
 import { mog } from '@utils/lib/helper'
 import ArchiveSidebar from './ArchiveSidebar'
+import TaskViewList from './TaskViewList'
 
 const NodeSidebar = () => {
   const sidebar = useLayoutStore((store) => store.sidebar)
@@ -67,8 +68,10 @@ const SidebarTabs = () => {
   const isSnippet = useMatch(ROUTE_PATHS.snippets)
   const isArchiveEditor = useMatch(`${ROUTE_PATHS.archive}/:nodeid`)
   const isArchive = useMatch(ROUTE_PATHS.archive)
+  const isTasks = useMatch(ROUTE_PATHS.tasks)
+  const isTasksView = useMatch(`${ROUTE_PATHS.tasks}/:viewid`)
 
-  mog('IS SIDEBAR', { sidebar, isSnippet, isSnippetNote, isEditor, isArchive })
+  mog('IS SIDEBAR', { sidebar, isSnippet, isTasks, isSnippetNote, isEditor, isArchive })
 
   if (!sidebar.show) return <></>
 
@@ -77,6 +80,8 @@ const SidebarTabs = () => {
   if (isSnippet || isSnippetNote) return <SnippetList />
 
   if (isArchive || isArchiveEditor) return <ArchiveSidebar />
+
+  if (isTasks || isTasksView) return <TaskViewList />
 
   return <></>
 }

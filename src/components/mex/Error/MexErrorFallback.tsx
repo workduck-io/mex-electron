@@ -22,6 +22,8 @@ const ErrorCard = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.small};
 
   border: 1px solid ${({ theme }) => transparentize(0.75, theme.colors.palette.red)};
+  max-width: 600px;
+  max-height: 800px;
 `
 const SimpleGlobalStyle = createGlobalStyle`
   body, html {

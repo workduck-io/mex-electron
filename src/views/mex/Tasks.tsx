@@ -1,11 +1,13 @@
 import Board from '@asseinfo/react-kanban'
-import trashIcon from '@iconify/icons-codicon/trash'
-import { Icon } from '@iconify/react'
+import TaskHeader from '@components/mex/Tasks/TaskHeader'
+import { useViewStore } from '@hooks/useTaskViews'
+import { useLayoutStore } from '@store/useLayoutStore'
+import { OverlaySidebarWindowWidth } from '@style/responsive'
 import React, { useEffect, useMemo, useRef } from 'react'
-import arrowLeftRightLine from '@iconify/icons-ri/arrow-left-right-line'
-import dragMove2Fill from '@iconify/icons-ri/drag-move-2-fill'
+import { useMediaQuery } from 'react-responsive'
+import { useMatch } from 'react-router-dom'
 import tinykeys from 'tinykeys'
-import { DisplayShortcut, ShortcutMid } from '../../components/mex/Shortcuts'
+import SearchFilters from '../../components/mex/Search/SearchFilters'
 import { Heading } from '../../components/spotlight/SearchResults/styled'
 import { IpcAction } from '../../data/IpcAction'
 import { getNextStatus, getPrevStatus, PriorityType, TodoType } from '../../editor/Components/Todo/types'
@@ -19,30 +21,20 @@ import useDataStore from '../../store/useDataStore'
 import { useEditorStore } from '../../store/useEditorStore'
 import { useRecentsStore } from '../../store/useRecentsStore'
 import useTodoStore from '../../store/useTodoStore'
-import { Button } from '../../style/Buttons'
 import { PageContainer } from '../../style/Layouts'
-import {
-  ShortcutToken,
-  ShortcutTokens,
-  StyledTasksKanban,
-  TaskCard,
-  TaskColumnHeader,
-  TaskHeader
-} from '../../style/Todo'
+import { StyledTasksKanban, TaskCard, TaskColumnHeader } from '../../style/Todo'
 import Todo from '../../ui/components/Todo'
 import { mog } from '../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
-import { Title } from '../../style/Typography'
-import SearchFilters from '../../components/mex/Search/SearchFilters'
-import Infobox from '../../ui/components/Help/Infobox'
-import { TasksHelp } from '../../data/Defaults/helpText'
-import { useLayoutStore } from '@store/useLayoutStore'
 
 const Tasks = () => {
   const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
   const nodesTodo = useTodoStore((store) => store.todos)
   const clearTodos = useTodoStore((store) => store.clearTodos)
   const sidebar = useLayoutStore((store) => store.sidebar)
+  const match = useMatch(`${ROUTE_PATHS.tasks}/:viewid`)
+  const currentView = useViewStore((store) => store.currentView)
+  const setCurrentView = useViewStore((store) => store.setCurrentView)
 
   const { loadNode } = useLoad()
   const { goTo } = useRouting()
@@ -55,6 +47,8 @@ const Tasks = () => {
 
   const todos = useMemo(() => Object.entries(nodesTodo), [nodesTodo])
 
+  const overlaySidebar = useMediaQuery({ maxWidth: OverlaySidebarWindowWidth })
+
   const {
     getTodoBoard,
     changeStatus,
@@ -63,6 +57,7 @@ const Tasks = () => {
     addCurrentFilter,
     removeCurrentFilter,
     resetCurrentFilters,
+    setCurrentFilters,
     filters,
     currentFilters
   } = useTodoKanban()
@@ -293,6 +288,20 @@ const Tasks = () => {
     }
   }, [board, selectedCard])
 
+  useEffect(() => {
+    if (match && match.params && match.params.viewid) {
+      // const viewid = match.params.viewid
+      // loadView(viewid)
+      if (currentView) {
+        setCurrentFilters(currentView.filters)
+      }
+      // goTo(ROUTE_PATHS.view, NavigationType.push, viewid)
+    } else {
+    setCurrentView(undefined)
+      setCurrentFilters([])
+    }
+  }, [match])
+
   const onDoubleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, nodeid: string) => {
     event.preventDefault()
     //double click
@@ -304,7 +313,7 @@ const Tasks = () => {
     }
   }
 
-  mog('Tasks', { nodesTodo, board, selectedCard })
+  mog('Tasks', { nodesTodo, board, selectedCard, match })
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
     const pC = getPureContent(todo)
@@ -314,7 +323,7 @@ const Tasks = () => {
         ref={selectedCard && id === selectedCard.id ? selectedRef : null}
         selected={selectedCard && selectedCard.id === id}
         dragging={dragging}
-        sidebarExpanded={sidebar.show && sidebar.expanded}
+        sidebarExpanded={sidebar.show && sidebar.expanded && !overlaySidebar}
         onMouseDown={(event) => {
           event.preventDefault()
           onDoubleClick(event, todo.nodeid)
@@ -339,43 +348,8 @@ const Tasks = () => {
 
   return (
     <PageContainer>
-      <TaskHeader>
-        <Title>Tasks</Title>
-        <ShortcutTokens>
-          <ShortcutToken>
-            Select:
-            <Icon icon={dragMove2Fill} />
-          </ShortcutToken>
-          {selectedCard && (
-            <>
-              <ShortcutToken>
-                Navigate:
-                <DisplayShortcut shortcut="$mod+Enter" />
-              </ShortcutToken>
-              <ShortcutToken>
-                Move:
-                <DisplayShortcut shortcut="Shift" />
-                <ShortcutMid>+</ShortcutMid>
-                <Icon icon={arrowLeftRightLine} />
-              </ShortcutToken>
-              <ShortcutToken>
-                Change Priority:
-                <DisplayShortcut shortcut="$mod+0-3" />
-              </ShortcutToken>
-            </>
-          )}
-          <ShortcutToken>
-            {selectedCard || currentFilters.length > 0 ? 'Clear Filters:' : 'Navigate to Editor:'}
-            <DisplayShortcut shortcut="Esc" />
-          </ShortcutToken>
-        </ShortcutTokens>
-        {/*<Button onClick={onClearClick}>
-          <Icon icon={trashIcon} height={24} />
-          Clear Todos
-        </Button> */}
-        <Infobox text={TasksHelp} />
-      </TaskHeader>
-      <StyledTasksKanban sidebarExpanded={sidebar.show && sidebar.expanded}>
+      <StyledTasksKanban sidebarExpanded={sidebar.show && sidebar.expanded && !overlaySidebar}>
+        <TaskHeader currentFilters={currentFilters} cardSelected={!!selectedCard} currentView={currentView} />
         <SearchFilters
           result={board}
           addCurrentFilter={addCurrentFilter}

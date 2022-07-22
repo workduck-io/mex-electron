@@ -29,6 +29,21 @@ export const StyledCombobox = styled.div`
   }
 `
 
+export const FilterComboboxToggle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${({ theme }) => theme.spacing.small};
+  padding: 0 ${({ theme }) => theme.spacing.small};
+  background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[7])};
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: ${({ theme }) => theme.colors.text.fade};
+  }
+`
+
 export const SuggestionContentWrapper = styled.div`
   width: 90%;
 `

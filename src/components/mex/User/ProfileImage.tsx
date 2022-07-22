@@ -116,7 +116,7 @@ export const ProfileImageWithToolTip = ({ props, placement }: ProfileImageWithTo
 
   return (
     <Tippy
-      delay={100}
+      delay={500}
       interactiveDebounce={100}
       placement={(placement as any) ?? 'auto'}
       appendTo={() => document.body}

@@ -9,6 +9,7 @@ import { useAuthStore } from '@services/auth/useAuth'
 import CreateReminderModal from '../mex/Reminders/CreateReminderModal'
 import ShareModal from '@components/mex/Mention/ShareModal'
 import ReleaseNotesModal from '@components/mex/ReleaseNotes'
+import TaskViewModal from '@components/mex/TaskViewModal'
 
 export interface ModalOpenAction {
   type: 'share-invite-prefill'
@@ -30,6 +31,7 @@ const Modals = () => {
       <ShareModal />
       <ReleaseNotesModal />
       <CreateReminderModal />
+      <TaskViewModal />
     </>
   )
 }
