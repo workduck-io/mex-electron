@@ -9,6 +9,7 @@ import toast from 'react-hot-toast'
 import useBlockStore, { BlockType, ContextMenuActionType } from '../../../store/useBlockStore'
 import { StyledMenu } from '../../../style/Menu'
 import { useTransform } from '../BalloonToolbar/components/useTransform'
+import { useEditorBlockSelection } from '@editor/Actions/useEditorBlockSelection'
 
 type BlockOptionsProps = {
   blockId: string
@@ -21,26 +22,16 @@ export const BlockOptionsMenu: React.FC<BlockOptionsProps> = () => {
   const { isConvertable } = useTransform()
   const setBlocks = useBlockStore((store) => store.setBlocks)
   const setIsModalOpen = useBlockStore((store) => store.setIsModalOpen)
+  const { convertToBlocks, deleteSelectedBlock } = useEditorBlockSelection()
 
-  const convertToBlocks = () => {
-    const nodes = Array.from(
-      getNodes(editor, {
-        mode: 'highest',
-        block: true,
-        at: editor.selection
-      })
-    )
-
-    const value = nodes.map(([node, _path]) => {
-      return node
-    })
-
-    const blocks = value.reduce((prev: Record<string, BlockType>, current: BlockType) => {
-      prev[current.id] = current
-      return prev
-    }, {})
-
+  const setBlocksFromSelection = () => {
+    const blocks = convertToBlocks()
     setBlocks(blocks)
+  }
+
+  const handleDelete = () => {
+    deleteSelectedBlock()
+    setIsModalOpen(undefined)
   }
 
   const onSendToClick = (item: any) => {
@@ -49,7 +40,7 @@ export const BlockOptionsMenu: React.FC<BlockOptionsProps> = () => {
       return
     }
 
-    convertToBlocks()
+    setBlocksFromSelection()
     setIsModalOpen(ContextMenuActionType.send)
   }
 
@@ -58,13 +49,12 @@ export const BlockOptionsMenu: React.FC<BlockOptionsProps> = () => {
       toast.error('You can not move Flow links from one node to another.')
       return false
     }
-    convertToBlocks()
+    setBlocksFromSelection()
     setIsModalOpen(ContextMenuActionType.move)
   }
 
   const onDeleteClick = (item: any) => {
-    convertToBlocks()
-    setIsModalOpen(ContextMenuActionType.del)
+    handleDelete()
   }
 
   return (
