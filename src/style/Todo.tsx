@@ -62,12 +62,52 @@ export const TaskHeaderTitleSection = styled.div`
 `
 
 export const TaskHeader = styled(MainHeader)`
+  margin: ${({ theme }) => theme.spacing.large} 0;
   ${TaskHeaderTitleSection} {
     flex-grow: 1;
   }
   ${TaskHeaderTitleSection} > ${Title} {
     flex-grow: 0;
+    margin-right: ${({ theme }) => theme.spacing.medium};
   }
+`
+
+export const TaskHeaderIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: ${({ theme }) => theme.colors.text.default};
+  }
+`
+
+export const TaskViewHeaderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.small};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
+`
+
+export const TaskViewTitle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
+  font-size: 2rem;
+
+  svg {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`
+
+export const TaskViewControls = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
 `
 
 export const ShortcutTokens = styled.div`

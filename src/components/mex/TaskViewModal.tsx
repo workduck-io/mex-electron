@@ -22,28 +22,32 @@ import { getPathNum } from '@utils/lib/paths'
 
 interface TaskViewModalState {
   open: boolean
-  // If present, changes will be applied to the view with viewid
-  viewid?: string
+  // If present, changes in title, description will be applied to the view with viewid
+  updateViewId?: string
+  // If present, title, description will be cloned from the view with viewid
+  cloneViewId?: string
   filters: SearchFilter<any>[]
-  openModal: (filters: SearchFilter<any>[], viewid?: string) => void
+  openModal: (args: { filters: SearchFilter<any>[]; updateViewId?: string; cloneViewId?: string }) => void
   closeModal: () => void
 }
 
 export const useTaskViewModalStore = create<TaskViewModalState>((set) => ({
   open: false,
   filters: [],
-  viewid: undefined,
-  openModal: (filters, viewid) =>
+  updateViewId: undefined,
+  cloneViewId: undefined,
+  openModal: ({ filters, updateViewId, cloneViewId }) =>
     set({
       open: true,
       filters,
-      viewid
+      updateViewId,
+      cloneViewId
     }),
   closeModal: () => {
     set({
       open: false,
       filters: [],
-      viewid: undefined
+      updateViewId: undefined
     })
   }
 }))
@@ -55,7 +59,8 @@ interface TaskViewModalFormData {
 
 const TaskViewModal = () => {
   const open = useTaskViewModalStore((store) => store.open)
-  const viewid = useTaskViewModalStore((store) => store.viewid)
+  const updateViewId = useTaskViewModalStore((store) => store.updateViewId)
+  const cloneViewId = useTaskViewModalStore((store) => store.cloneViewId)
   const filters = useTaskViewModalStore((store) => store.filters)
 
   const openModal = useTaskViewModalStore((store) => store.openModal)
@@ -82,35 +87,35 @@ const TaskViewModal = () => {
   } = useForm<TaskViewModalFormData>()
 
   const curView = useMemo(() => {
-    if (viewid) {
-      const curView = getView(viewid)
-      if (curView) {
+    if (updateViewId) {
+      const updateView = getView(updateViewId)
+      if (updateView) {
         // set the values of the inputs as the default value doesn't work everytime
-        setValue('title', curView.title)
-        setValue('description', curView.description)
-        return curView
+        setValue('title', updateView.title)
+        setValue('description', updateView.description)
+        return updateView
       } else {
         setValue('title', '')
         setValue('description', '')
       }
-    } else {
-      const curView = useViewStore.getState().currentView
-      if (curView) {
+    } else if (cloneViewId) {
+      const cloneView = getView(cloneViewId)
+      if (cloneView) {
         // set the values of the inputs as the default value doesn't work everytime
-        setValue('title', getPathNum(curView.title))
-        setValue('description', curView.description)
+        setValue('title', getPathNum(cloneView.title))
+        setValue('description', cloneView.description)
       } else {
         setValue('title', '')
         setValue('description', '')
       }
     }
     return undefined
-  }, [viewid, currentView])
+  }, [cloneViewId, currentView])
 
   const onSubmit = async (data: TaskViewModalFormData) => {
-    mog('onSubmit', { data, filters, viewid })
-    if (viewid) {
-      const oldview = { ...getView(viewid) }
+    mog('onSubmit', { data, filters, cloneViewId })
+    if (updateViewId) {
+      const oldview = { ...getView(updateViewId) }
       const newView = {
         ...oldview,
         title: data.title ?? oldview.title,
@@ -145,7 +150,7 @@ const TaskViewModal = () => {
   // mog('TaskViewModal', { open, curView })
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
-      <ModalHeader>{viewid ? 'Update ' : 'New '}Task View</ModalHeader>
+      <ModalHeader>{updateViewId ? 'Update' : cloneViewId ? 'Clone' : 'New'} Task View</ModalHeader>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Input
@@ -190,7 +195,7 @@ const TaskViewModal = () => {
             alsoDisabled={filters?.length === 0}
             buttonProps={{ type: 'submit', primary: true, large: true }}
           >
-            {viewid ? 'Update' : 'Create'} View
+            {updateViewId ? 'Update' : cloneViewId ? 'Clone' : 'Create'} View
           </LoadingButton>
         </ModalControls>
       </form>

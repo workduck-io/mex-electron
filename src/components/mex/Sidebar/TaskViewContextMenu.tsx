@@ -27,7 +27,7 @@ const TaskViewContextMenu = ({ view }: TaskViewContextMenuProps) => {
   }
 
   const handleClone = (view: View<any>) => {
-    openModal(view.filters, undefined)
+    openModal({ filters: view.filters, cloneViewId: view.id })
   }
 
   return (

@@ -1,11 +1,11 @@
 import Board from '@asseinfo/react-kanban'
-import trashIcon from '@iconify/icons-codicon/trash'
-import { Icon } from '@iconify/react'
+import TaskHeader from '@components/mex/Tasks/TaskHeader'
+import { useViewStore } from '@hooks/useTaskViews'
+import { useLayoutStore } from '@store/useLayoutStore'
 import React, { useEffect, useMemo, useRef } from 'react'
-import arrowLeftRightLine from '@iconify/icons-ri/arrow-left-right-line'
-import dragMove2Fill from '@iconify/icons-ri/drag-move-2-fill'
+import { useMatch } from 'react-router-dom'
 import tinykeys from 'tinykeys'
-import { DisplayShortcut, ShortcutMid } from '../../components/mex/Shortcuts'
+import SearchFilters from '../../components/mex/Search/SearchFilters'
 import { Heading } from '../../components/spotlight/SearchResults/styled'
 import { IpcAction } from '../../data/IpcAction'
 import { getNextStatus, getPrevStatus, PriorityType, TodoType } from '../../editor/Components/Todo/types'
@@ -19,30 +19,11 @@ import useDataStore from '../../store/useDataStore'
 import { useEditorStore } from '../../store/useEditorStore'
 import { useRecentsStore } from '../../store/useRecentsStore'
 import useTodoStore from '../../store/useTodoStore'
-import { Button } from '../../style/Buttons'
 import { PageContainer } from '../../style/Layouts'
-import {
-  ShortcutToken,
-  ShortcutTokens,
-  StyledTasksKanban,
-  TaskCard,
-  TaskColumnHeader,
-  TaskHeader,
-  TaskHeaderTitleSection
-} from '../../style/Todo'
+import { StyledTasksKanban, TaskCard, TaskColumnHeader } from '../../style/Todo'
 import Todo from '../../ui/components/Todo'
 import { mog } from '../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
-import { Title } from '../../style/Typography'
-import SearchFilters from '../../components/mex/Search/SearchFilters'
-import Infobox from '../../ui/components/Help/Infobox'
-import { TasksHelp } from '../../data/Defaults/helpText'
-import { useLayoutStore } from '@store/useLayoutStore'
-import { useMatch } from 'react-router-dom'
-import { useTaskViewModalStore } from '@components/mex/TaskViewModal'
-import { useViewStore } from '@hooks/useTaskViews'
-import addCircleLine from '@iconify/icons-ri/add-circle-line'
-import edit2Line from '@iconify/icons-ri/edit-2-line'
 
 const Tasks = () => {
   const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
@@ -51,9 +32,6 @@ const Tasks = () => {
   const sidebar = useLayoutStore((store) => store.sidebar)
   const match = useMatch(`${ROUTE_PATHS.tasks}/:viewid`)
   const currentView = useViewStore((store) => store.currentView)
-  const removeView = useViewStore((store) => store.removeView)
-  const setCurrentView = useViewStore((store) => store.setCurrentView)
-  const openTaskViewModal = useTaskViewModalStore((store) => store.openModal)
 
   const { loadNode } = useLoad()
   const { goTo } = useRouting()
@@ -65,6 +43,7 @@ const Tasks = () => {
   const { push } = useNavigation()
 
   const todos = useMemo(() => Object.entries(nodesTodo), [nodesTodo])
+
 
   const {
     getTodoBoard,
@@ -362,74 +341,10 @@ const Tasks = () => {
     )
   }
 
-  const onRemoveView = () => {
-    if (currentView) {
-      removeView(currentView.id)
-      setCurrentView(undefined)
-      goTo(ROUTE_PATHS.tasks, NavigationType.push)
-    }
-  }
-
   return (
     <PageContainer>
-      <TaskHeader>
-        <TaskHeaderTitleSection>
-          <Title>Tasks</Title>
-          <Button onClick={() => openTaskViewModal(currentFilters, undefined)} disabled={currentFilters.length === 0}>
-            <Icon icon={addCircleLine} />
-            Create View
-          </Button>
-          {currentView && (
-            <>
-              <Button
-                onClick={() => openTaskViewModal(currentFilters, currentView?.id)}
-                disabled={currentFilters.length === 0}
-              >
-                <Icon icon={edit2Line} />
-                Update View
-              </Button>
-              <Button onClick={onRemoveView}>
-                <Icon icon={trashIcon} />
-                Remove View
-              </Button>
-            </>
-          )}
-        </TaskHeaderTitleSection>
-        <ShortcutTokens>
-          <ShortcutToken>
-            Select:
-            <Icon icon={dragMove2Fill} />
-          </ShortcutToken>
-          {selectedCard && (
-            <>
-              <ShortcutToken>
-                Navigate:
-                <DisplayShortcut shortcut="$mod+Enter" />
-              </ShortcutToken>
-              <ShortcutToken>
-                Move:
-                <DisplayShortcut shortcut="Shift" />
-                <ShortcutMid>+</ShortcutMid>
-                <Icon icon={arrowLeftRightLine} />
-              </ShortcutToken>
-              <ShortcutToken>
-                Change Priority:
-                <DisplayShortcut shortcut="$mod+0-3" />
-              </ShortcutToken>
-            </>
-          )}
-          <ShortcutToken>
-            {selectedCard || currentFilters.length > 0 ? 'Clear Filters:' : 'Navigate to Editor:'}
-            <DisplayShortcut shortcut="Esc" />
-          </ShortcutToken>
-        </ShortcutTokens>
-        {/*<Button onClick={onClearClick}>
-          <Icon icon={trashIcon} height={24} />
-          Clear Todos
-        </Button> */}
-        <Infobox text={TasksHelp} />
-      </TaskHeader>
       <StyledTasksKanban sidebarExpanded={sidebar.show && sidebar.expanded}>
+        <TaskHeader currentFilters={currentFilters} cardSelected={!!selectedCard} currentView={currentView} />
         <SearchFilters
           result={board}
           addCurrentFilter={addCurrentFilter}
