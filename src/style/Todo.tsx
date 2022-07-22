@@ -1,4 +1,4 @@
-import { mix, transparentize } from 'polished'
+import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 import { TodoContainer } from '../ui/components/Todo.style'
 import { MainHeader } from './Layouts'
@@ -88,9 +88,6 @@ export const TaskViewHeaderWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.small};
-  padding: ${({ theme }) => theme.spacing.small};
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-  background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
 `
 
 export const TaskViewTitle = styled.div`
@@ -98,6 +95,7 @@ export const TaskViewTitle = styled.div`
   align-items: center;
   gap: ${({ theme }) => theme.spacing.small};
   font-size: 2rem;
+  font-weight: bold;
 
   svg {
     color: ${({ theme }) => theme.colors.primary};

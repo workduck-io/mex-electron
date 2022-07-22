@@ -96,16 +96,16 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected }: TaskHeaderPro
                   icon={trashIcon}
                   transparent={false}
                 />
+                <IconButton
+                  title="Create New View"
+                  onClick={() => openTaskViewModal({ filters: currentFilters, cloneViewId: currentView?.id })}
+                  disabled={currentFilters.length === 0}
+                  singleton={target}
+                  icon={addCircleLine}
+                  transparent={false}
+                />
               </TaskViewControls>
             </TaskViewHeaderWrapper>
-            <IconButton
-              title="Create New View"
-              onClick={() => openTaskViewModal({ filters: currentFilters, cloneViewId: currentView?.id })}
-              disabled={currentFilters.length === 0}
-              singleton={target}
-              icon={addCircleLine}
-              transparent={false}
-            />
           </>
         ) : (
           <>
