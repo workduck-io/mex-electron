@@ -2,7 +2,9 @@ import Board from '@asseinfo/react-kanban'
 import TaskHeader from '@components/mex/Tasks/TaskHeader'
 import { useViewStore } from '@hooks/useTaskViews'
 import { useLayoutStore } from '@store/useLayoutStore'
+import { OverlaySidebarWindowWidth } from '@style/responsive'
 import React, { useEffect, useMemo, useRef } from 'react'
+import { useMediaQuery } from 'react-responsive'
 import { useMatch } from 'react-router-dom'
 import tinykeys from 'tinykeys'
 import SearchFilters from '../../components/mex/Search/SearchFilters'
@@ -44,6 +46,7 @@ const Tasks = () => {
 
   const todos = useMemo(() => Object.entries(nodesTodo), [nodesTodo])
 
+  const overlaySidebar = useMediaQuery({ maxWidth: OverlaySidebarWindowWidth })
 
   const {
     getTodoBoard,
@@ -318,7 +321,7 @@ const Tasks = () => {
         ref={selectedCard && id === selectedCard.id ? selectedRef : null}
         selected={selectedCard && selectedCard.id === id}
         dragging={dragging}
-        sidebarExpanded={sidebar.show && sidebar.expanded}
+        sidebarExpanded={sidebar.show && sidebar.expanded && !overlaySidebar}
         onMouseDown={(event) => {
           event.preventDefault()
           onDoubleClick(event, todo.nodeid)
@@ -343,7 +346,7 @@ const Tasks = () => {
 
   return (
     <PageContainer>
-      <StyledTasksKanban sidebarExpanded={sidebar.show && sidebar.expanded}>
+      <StyledTasksKanban sidebarExpanded={sidebar.show && sidebar.expanded && !overlaySidebar}>
         <TaskHeader currentFilters={currentFilters} cardSelected={!!selectedCard} currentView={currentView} />
         <SearchFilters
           result={board}

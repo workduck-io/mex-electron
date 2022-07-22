@@ -7,8 +7,10 @@ import { useSaveNodeName } from '@hooks/useSaveNodeName'
 import useBlockStore from '@store/useBlockStore'
 import { useEditorStore } from '@store/useEditorStore'
 import { useLayoutStore } from '@store/useLayoutStore'
+import { OverlaySidebarWindowWidth } from '@style/responsive'
 import { mog } from '@utils/lib/helper'
 import React, { useEffect } from 'react'
+import { useMediaQuery } from 'react-responsive'
 import { Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { animated } from 'react-spring'
 import styled from 'styled-components'
@@ -66,7 +68,10 @@ const Switch = () => {
   const showAllSidebars = useLayoutStore((s) => s.showAllSidebars)
   const hideAllSidebars = useLayoutStore((s) => s.hideAllSidebars)
   const hideSidebar = useLayoutStore((s) => s.hideSidebar)
+  const collapseAllSidebars = useLayoutStore((s) => s.collapseAllSidebars)
   const hideRHSidebar = useLayoutStore((s) => s.hideRHSidebar)
+
+  const overlaySidebar = useMediaQuery({ maxWidth: OverlaySidebarWindowWidth })
 
   useEffect(() => {
     const editorNode = useEditorStore.getState().node
@@ -99,6 +104,12 @@ const Switch = () => {
       }
     }
   }, [location])
+
+  useEffect(() => {
+    if (overlaySidebar) {
+      collapseAllSidebars()
+    }
+  }, [overlaySidebar])
 
   /* Hierarchy:
     - login

@@ -28,7 +28,7 @@ import { Title } from '@style/Typography'
 import { useSingleton } from '@tippyjs/react'
 import Infobox from '@ui/components/Help/Infobox'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { ToolbarTooltip } from '../Tooltips'
 
 interface TaskHeaderProps {
@@ -45,6 +45,10 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected }: TaskHeaderPro
   const { goTo } = useRouting()
 
   const [source, target] = useSingleton()
+
+  const isCurrentFiltersUnchanged = useMemo(() => {
+    return JSON.stringify(currentFilters) === JSON.stringify(currentView?.filters)
+  }, [currentFilters, currentView])
 
   const onRemoveView = () => {
     if (currentView) {
@@ -67,6 +71,7 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected }: TaskHeaderPro
               <TaskViewTitle>
                 <Icon icon={stackLine} />
                 {currentView?.title}
+                {!isCurrentFiltersUnchanged && '*'}
               </TaskViewTitle>
               <TaskViewControls>
                 <Button
@@ -77,6 +82,7 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected }: TaskHeaderPro
                     })
                   }
                   disabled={currentFilters.length === 0}
+                  primary={!isCurrentFiltersUnchanged && currentFilters.length > 0}
                 >
                   <Icon icon={edit2Line} />
                   Update View
