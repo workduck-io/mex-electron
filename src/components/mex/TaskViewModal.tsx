@@ -47,7 +47,8 @@ export const useTaskViewModalStore = create<TaskViewModalState>((set) => ({
     set({
       open: false,
       filters: [],
-      updateViewId: undefined
+      updateViewId: undefined,
+      cloneViewId: undefined
     })
   }
 }))
@@ -108,9 +109,12 @@ const TaskViewModal = () => {
         setValue('title', '')
         setValue('description', '')
       }
+    } else {
+      setValue('title', '')
+      setValue('description', '')
     }
     return undefined
-  }, [cloneViewId, currentView])
+  }, [cloneViewId, updateViewId])
 
   const onSubmit = async (data: TaskViewModalFormData) => {
     mog('onSubmit', { data, filters, cloneViewId })

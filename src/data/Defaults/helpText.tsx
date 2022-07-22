@@ -83,6 +83,7 @@ export const TasksHelp = (
     <p>Tasks are sorted by priority and grouped by their status.</p>
     <p>Drag and drop or use the checkbox to change status.</p>
     <p>Tasks can be filtered by the notes they appear in.</p>
+    <p>Views can be created only when filters are set.</p>
   </div>
 )
 export const ArchiveHelp = (
