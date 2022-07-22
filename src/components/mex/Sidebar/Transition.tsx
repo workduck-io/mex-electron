@@ -23,6 +23,8 @@ export const useSidebarTransition = () => {
     if (!overlaySidebar) {
       const style = {
         backdropFilter: 'blur(10px)',
+        top: '0',
+        left: '0',
         width: firstColumnWidth,
         background: transparentize(0.5, theme.colors.gray[9])
       }
@@ -86,7 +88,7 @@ export const useSidebarTransition = () => {
       const style = { gridTemplateColumns: `${sidebarCollapsedWidth} 2fr 0px` }
       return { style, endColumnWidth }
     }
-  }, [sidebar, isDesktop, rhSidebar, overlaySidebar])
+  }, [sidebar, isDesktop, theme, rhSidebar, overlaySidebar])
 
   const gridSpringProps = useSpring({ to: gridStyle, immediate: !sidebar.show && !rhSidebar.show })
 
