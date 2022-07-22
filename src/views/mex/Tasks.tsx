@@ -34,6 +34,7 @@ const Tasks = () => {
   const sidebar = useLayoutStore((store) => store.sidebar)
   const match = useMatch(`${ROUTE_PATHS.tasks}/:viewid`)
   const currentView = useViewStore((store) => store.currentView)
+  const setCurrentView = useViewStore((store) => store.setCurrentView)
 
   const { loadNode } = useLoad()
   const { goTo } = useRouting()
@@ -296,6 +297,7 @@ const Tasks = () => {
       }
       // goTo(ROUTE_PATHS.view, NavigationType.push, viewid)
     } else {
+    setCurrentView(undefined)
       setCurrentFilters([])
     }
   }, [match])
