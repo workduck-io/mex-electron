@@ -207,7 +207,7 @@ const Nav = () => {
     }
   }
 
-  const { springProps } = useSidebarTransition()
+  const { springProps, overlaySidebar } = useSidebarTransition()
 
   return (
     <>
@@ -231,6 +231,8 @@ const Nav = () => {
           style={springProps}
           expanded={sidebar.expanded}
           show={sidebar.show}
+          overlaySidebar={overlaySidebar}
+          side="left"
           {...getFocusProps(focusMode)}
         >
           {/* Notes, Shared, Bookmarks */}
