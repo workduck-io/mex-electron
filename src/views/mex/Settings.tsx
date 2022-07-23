@@ -62,7 +62,7 @@ export const SettingTitle = styled(NavLink)`
 
 export const SettingsContent = styled.div`
   flex: 4;
-  height: calc(100vh - 14rem);
+  height: calc(100vh - ${({ theme }) => (theme.additional.hasBlocks ? '18rem' : '14rem')});
   width: 98%;
   overflow-y: auto;
   padding: 2rem;

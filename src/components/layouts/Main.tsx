@@ -18,15 +18,10 @@ const AppWrapper = styled.div`
   ${linkTooltip};
 `
 
-const Content = styled.div<{ grid?: boolean }>`
+const Content = styled.div`
   display: flex;
   flex-grow: 1;
-  overflow: auto;
-  ${({ grid }) =>
-    grid &&
-    css`
-      grid-column-start: 2;
-    `}
+  grid-column-start: 2;
 `
 
 const Draggable = styled.div`
@@ -64,9 +59,7 @@ const Main = ({ children }: MainProps) => {
       <Draggable style={styles as any} /> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
       <GridWrapper style={gridSpringProps} grid={initialized ? 'true' : ''}>
         {initialized && <Nav />}
-        <Content id="wd-mex-content-view" grid={initialized}>
-          {children}
-        </Content>
+        <Content id="wd-mex-content-view">{children}</Content>
         {initialized && <RHSidebar />}
       </GridWrapper>
     </AppWrapper>
