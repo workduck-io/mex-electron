@@ -22,26 +22,16 @@ export const useSidebarTransition = () => {
     const firstColumnWidth = `${showSidebar ? '276px' : '0px'}`
     if (!overlaySidebar) {
       const style = {
-        backdropFilter: 'blur(10px)',
-        top: '0',
-        left: '0',
-        width: firstColumnWidth,
-        background: transparentize(0.5, theme.colors.gray[9])
+        width: firstColumnWidth
       }
       return style
     } else {
       const style = {
-        width: firstColumnWidth,
-        position: 'absolute',
-        top: theme.additional.hasBlocks ? '2rem' : '0',
-        background: transparentize(0.25, theme.colors.gray[9]) + ' !important',
-        backdropFilter: 'blur(10px)',
-        left: theme.additional.hasBlocks ? 'calc(86px + 1rem)' : '86px',
-        zIndex: '10'
+        width: firstColumnWidth
       }
       return style
     }
-  }, [sidebar, overlaySidebar, theme])
+  }, [sidebar, overlaySidebar])
 
   const springProps = useSpring(sidebarStyle)
 
@@ -51,25 +41,16 @@ export const useSidebarTransition = () => {
     const endColumnWidth = `${showRHSidebar ? visibleEndColumnWidth : '0px'}`
     if (!overlaySidebar) {
       const style = {
-        width: endColumnWidth,
-        backdropFilter: 'blur(10px)',
-        background: transparentize(0.5, theme.colors.gray[9])
+        width: endColumnWidth
       }
       return style
     } else {
       const style = {
-        width: endColumnWidth,
-        position: 'absolute',
-        backdropFilter: 'blur(10px)',
-        top: theme.additional.hasBlocks ? '2rem' : '0',
-        background: transparentize(0.25, theme.colors.gray[9]) + ' !important',
-        zIndex: '10',
-        right: theme.additional.hasBlocks ? '1rem' : '0px'
+        width: endColumnWidth
       }
       return style
     }
-  }, [rhSidebar, theme, overlaySidebar, isDesktop])
-
+  }, [rhSidebar, overlaySidebar, isDesktop])
   const rhSidebarSpringProps = useSpring(rhSidebarStyle)
 
   const { style: gridStyle, endColumnWidth } = useMemo(() => {
@@ -88,7 +69,7 @@ export const useSidebarTransition = () => {
       const style = { gridTemplateColumns: `${sidebarCollapsedWidth} 2fr 0px` }
       return { style, endColumnWidth }
     }
-  }, [sidebar, isDesktop, theme, rhSidebar, overlaySidebar])
+  }, [sidebar, isDesktop, rhSidebar, overlaySidebar])
 
   const gridSpringProps = useSpring({ to: gridStyle, immediate: !sidebar.show && !rhSidebar.show })
 
@@ -112,6 +93,7 @@ export const useSidebarTransition = () => {
     gridStyle,
     gridSpringProps,
     switchWrapperSpringProps,
-    endColumnWidth
+    endColumnWidth,
+    overlaySidebar
   }
 }
