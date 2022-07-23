@@ -21,7 +21,6 @@ const AppWrapper = styled.div`
 const Content = styled.div<{ grid?: boolean }>`
   display: flex;
   flex-grow: 1;
-  overflow: auto;
   ${({ grid }) =>
     grid &&
     css`
