@@ -10,10 +10,14 @@ export const SidebarListWrapper = styled.div<SidebarListWrapperProps>`
   flex-grow: 1;
 `
 
-export const FilteredItemsWrapper = styled.div`
+export const FilteredItemsWrapper = styled.div<{ hasDefault?: boolean }>`
   display: flex;
   flex-direction: column;
-  height: calc(100vh - ${({ theme }) => (theme.additional.hasBlocks ? '12rem' : '14rem')});
+  height: calc(
+    100vh - ${({ theme }) => (theme.additional.hasBlocks ? '12rem' : '14rem')} -
+      ${({ hasDefault }) => (hasDefault ? '3rem' : '0rem')}
+  );
+
   flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;

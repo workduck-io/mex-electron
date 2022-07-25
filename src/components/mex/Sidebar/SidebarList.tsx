@@ -161,7 +161,7 @@ const SidebarList = ({
         </SidebarListFilter>
       )}
 
-      <FilteredItemsWrapper>
+      <FilteredItemsWrapper hasDefault={!!defaultItem}>
         {listItems.map((item, index) => (
           <Tippy
             theme="mex"
