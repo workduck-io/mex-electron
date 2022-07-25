@@ -7,7 +7,7 @@ import { loader } from '@components/spotlight/ActionStage/Performers/loader'
 const OverlayLoader = styled.div`
   ${ModalStyles}
   height: 100%;
-  width: 100vw;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
