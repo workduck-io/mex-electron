@@ -2,10 +2,9 @@ import { useReadOnly, useFocused, useSelected } from 'slate-react'
 import shareLine from '@iconify/icons-ri/share-line'
 import archivedIcon from '@iconify/icons-ri/archive-line'
 import eyeOffLine from '@iconify/icons-ri/eye-off-line'
-import { useEditorRef } from '@udecode/plate'
+import { useEditorRef, moveSelection } from '@udecode/plate'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { Transforms } from 'slate'
 import { useLinks } from '../../../../hooks/useLinks'
 import { useNavigation } from '../../../../hooks/useNavigation'
 import { useNodes } from '../../../../hooks/useNodes'
@@ -89,7 +88,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
     'backspace',
     () => {
       if (selected && focused && editor.selection) {
-        Transforms.move(editor)
+        moveSelection(editor)
       }
     },
     [element]
@@ -116,7 +115,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
     'delete',
     () => {
       if (selected && focused && editor.selection) {
-        Transforms.move(editor, { reverse: true })
+        moveSelection(editor, { reverse: true })
       }
     },
     [selected, focused]

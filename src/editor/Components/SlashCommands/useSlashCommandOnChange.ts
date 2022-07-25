@@ -1,5 +1,15 @@
-import { getBlockAbove, getPluginType, insertNodes, insertTable, PlateEditor, TElement } from '@udecode/plate'
-import { Editor, Transforms } from 'slate'
+import {
+  deleteText,
+  getBlockAbove,
+  getPluginType,
+  insertNodes,
+  insertTable,
+  isEndPoint,
+  moveSelection,
+  PlateEditor,
+  select,
+  TElement
+} from '@udecode/plate'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
 import { isElder } from '../../../components/mex/Sidebar/treeUtils'
@@ -33,7 +43,7 @@ export const useSlashCommandOnChange = (
     if (targetRange) {
       try {
         const pathAbove = getBlockAbove(editor)?.[1]
-        const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
+        const isBlockEnd = editor.selection && pathAbove && isEndPoint(editor, editor.selection.anchor, pathAbove)
 
         if (isElder(commandKey, 'snip')) {
           mog('im here', { commandKey, item, keys })
@@ -43,15 +53,15 @@ export const useSlashCommandOnChange = (
           trackEvent(eventName, { 'mex-content': content })
 
           if (content) {
-            Transforms.select(editor, targetRange)
+            select(editor, targetRange)
             insertNodes<TElement>(editor, content)
           }
         } else if (item.key === 'table') {
-          Transforms.select(editor, targetRange)
+          select(editor, targetRange)
           insertTable(editor, { header: true })
         } else if (item.extended) {
-          Transforms.select(editor, targetRange)
-          Transforms.delete(editor)
+          select(editor, targetRange)
+          deleteText(editor)
           const search = useComboboxStore.getState().search
           mog('extended', {
             item,
@@ -66,7 +76,7 @@ export const useSlashCommandOnChange = (
           trackEvent(eventName, { 'mex-type': type, 'mex-data': data })
           const itemData = type === ELEMENT_ACTION_BLOCK ? (item.data as any) : {}
 
-          Transforms.select(editor, targetRange)
+          select(editor, targetRange)
           insertNodes<TElement>(editor, {
             type: type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
             children: [{ text: '' }],
@@ -78,7 +88,7 @@ export const useSlashCommandOnChange = (
           insertNodes(editor, defaultContent.content[0])
 
           // move the selection after the inserted content
-          Transforms.move(editor)
+          moveSelection(editor)
         }
       } catch (e) {
         console.error(e)

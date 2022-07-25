@@ -4,7 +4,7 @@ import React from 'react'
 import Modal from 'react-modal'
 import { QuickLink, WrappedNodeSelect } from '@components/mex/NodeSelect/NodeSelect'
 import { useLinks } from '@hooks/useLinks'
-import useBlockStore, { ContextMenuActionType } from '@store/useBlockStore'
+import useBlockStore from '@store/useBlockStore'
 import { useDataSaverFromContent } from '../Saver'
 
 const BlockModal = () => {

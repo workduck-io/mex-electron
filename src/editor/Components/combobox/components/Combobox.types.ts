@@ -1,4 +1,4 @@
-import { ReactEditor } from 'slate-react'
+import { PlateEditor, Value } from '@udecode/plate'
 import { QuickLinkType } from '../../../../components/mex/NodeSelect/NodeSelect'
 import { SlashType } from '../../multi-combobox/types'
 
@@ -71,7 +71,7 @@ export interface ComboboxItemProps {
 
 export interface ComboboxProps {
   isSlash?: boolean
-  onSelectItem: (editor: ReactEditor, item: string) => void
+  onSelectItem: (editor: PlateEditor<Value>, item: string) => void
   onRenderItem?: RenderFunction<ComboboxItemProps>
 }
 

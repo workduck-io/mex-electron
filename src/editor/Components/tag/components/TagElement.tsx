@@ -1,6 +1,5 @@
-import { useEditorRef } from '@udecode/plate'
+import { moveSelection, useEditorRef } from '@udecode/plate'
 import * as React from 'react'
-import { Transforms } from 'slate'
 import { useFocused, useSelected } from 'slate-react'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../../views/routes/urls'
 import { useHotkeys } from '../hooks/useHotkeys'
@@ -26,7 +25,7 @@ export const TagElement = ({ attributes, children, element }: TagElementProps) =
     'backspace',
     () => {
       if (selected && focused && editor.selection) {
-        Transforms.move(editor)
+        moveSelection(editor)
       }
     },
     [selected, focused]
@@ -37,7 +36,7 @@ export const TagElement = ({ attributes, children, element }: TagElementProps) =
     () => {
       if (selected && focused && editor.selection) {
         // mog('delete', { selected, focused, sel: editor.selection })
-        Transforms.move(editor, { reverse: true })
+        moveSelection(editor, { reverse: true })
       }
     },
     [selected, focused]

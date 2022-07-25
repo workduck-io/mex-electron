@@ -24,6 +24,10 @@ module.exports = {
   resolve: {
     alias: aliases,
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
-    fallback: { url: false }
+    fallback: {
+      url: false,
+      'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
+      'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js')
+    }
   }
 }

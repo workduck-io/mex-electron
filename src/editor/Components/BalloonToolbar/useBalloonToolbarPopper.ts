@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
-import { getSelectionText, getText, isSelectionExpanded, useEditorState } from '@udecode/plate-core'
-import { getSelectionBoundingClientRect, usePopperPosition, UsePopperPositionOptions } from '@udecode/plate-ui-popper'
+import { getSelectionText, isSelectionExpanded, useEditorState } from '@udecode/plate-core'
+import { getSelectionBoundingClientRect, usePopperPosition, UsePopperPositionOptions } from '@udecode/plate-floating'
 import { useFocused } from 'slate-react'
 import { clearBlurSelection, isBlurSelection } from '../../../editor/Plugins/blurSelection'
 import tinykeys from 'tinykeys'
@@ -31,7 +31,7 @@ export const useBalloonToolbarPopper = (options: UsePopperPositionOptions) => {
   const selectionExpanded = editor && isSelectionExpanded(editor)
   const selectionText = editor && getSelectionText(editor)
   const blurSelection = editor && isBlurSelection(editor as any)
-  // const blurSelectionText = editor && getText(editor, editor.blurSelection)
+  // const blurSelectionText = editor && getEditorString(editor, editor.blurSelection)
 
   const show = useCallback(() => {
     // mog('Balloon show laddies', { selectionText, selectionExpanded, blurSelection })
