@@ -4,7 +4,7 @@ import { CenteredColumn } from './Layouts'
 
 export const IntegrationContainer = styled.section`
   margin: 0 4rem;
-  height: calc(100vh - ${({ theme }) => (theme.additional.hasBlocks ? '5rem' : '1rem')});
+  height: calc(100vh - ${({ theme }) => (theme.additional.hasBlocks ? '6rem' : '1rem')});
 `
 
 export const TemplateContainer = styled.section`

@@ -1,3 +1,4 @@
+import { ServiceContainer } from '@components/mex/Integrations/styled'
 import { TrafficLightBG } from '@components/mex/Sidebar/logo'
 import { transparentize } from 'polished'
 import { css, DefaultTheme, FlattenInterpolation, ThemeProps } from 'styled-components'
@@ -14,7 +15,7 @@ import { ArchivedNode } from '../../views/mex/Archive'
 import { SettingsOptions } from '../../views/mex/Settings'
 import { SwitchWrapper } from '../../views/router/Switch'
 import { BackCard } from '../Card'
-import { EditorStyles, EditorWrapper, NodeInfo, StyledEditor } from '../Editor'
+import { CenteredMainContent, EditorStyles, EditorWrapper, NodeInfo, StyledEditor } from '../Editor'
 import { GridWrapper } from '../Grid'
 import { InfobarTools, InfoBarWrapper } from '../infobar'
 import { ServiceCard } from '../Integration'
@@ -68,10 +69,13 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
   `
 
   const edStyles = css`
-    ${StyledEditor} {
+    ${CenteredMainContent} {
+      height: calc(100vh - 4rem);
       margin: 0 auto;
       height: calc(100vh - 4rem);
       padding-top: 1rem;
+    }
+    ${StyledEditor} {
       ${containerStyle}
     }
     ${DataInfobarWrapper} {
@@ -145,6 +149,9 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
   const integrationStyles = css`
     ${TemplateCard}, ${ServiceCard} {
       ${containerStyle}
+    }
+    ${ServiceContainer} {
+      ${containerStyleReset}
     }
   `
 

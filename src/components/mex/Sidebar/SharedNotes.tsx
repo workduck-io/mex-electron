@@ -1,15 +1,12 @@
-import Tippy from '@tippyjs/react'
-import { SharedNodeIcon } from '@components/icons/Icons'
+import { SharedNodeIcon, SharedNodeIconify } from '@components/icons/Icons'
 import { useEditorStore } from '@store/useEditorStore'
-import { ItemContent, ItemTitle } from '@style/Sidebar'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React from 'react'
 import { useTheme } from 'styled-components'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
 import { Centered } from './Bookmarks'
-import { SItem } from './SharedNotes.style'
-import { TooltipContent } from './Tree'
+import SidebarList from './SidebarList'
 
 const SharedNotes = () => {
   const sharedNodes = useDataStore((store) => store.sharedNodes)
@@ -26,47 +23,22 @@ const SharedNotes = () => {
   }
 
   return sharedNodes.length > 0 ? (
-    <>
-      {sharedNodes.map((sharedNode) => {
-        return (
-          <Tippy
-            theme="mex"
-            placement="right"
-            key={`shared_notes_link_tooltip${sharedNode.nodeid}`}
-            content={
-              <TooltipContent
-                item={{
-                  id: sharedNode.nodeid,
-                  children: [],
-                  data: {
-                    title: sharedNode.path,
-                    nodeid: sharedNode.nodeid
-                  }
-                }}
-              />
-            }
-          >
-            <SItem
-              selected={node?.nodeid === sharedNode.nodeid}
-              key={`shared_notes_link_${sharedNode.nodeid}`}
-              onClick={() => onOpenNode(sharedNode.nodeid)}
-            >
-              <ItemContent>
-                <ItemTitle>
-                  <SharedNodeIcon />
-                  <span>{sharedNode.path}</span>
-                </ItemTitle>
-              </ItemContent>
-            </SItem>
-          </Tippy>
-        )
-      })}
-
-      {/* <SharedBreak /> */}
-    </>
+    <SidebarList
+      noMargin
+      items={sharedNodes.map((node) => ({
+        id: node.nodeid,
+        title: node.path,
+        icon: SharedNodeIconify
+      }))}
+      onClick={onOpenNode}
+      showSearch
+      selectedItemId={node.nodeid}
+      searchPlaceholder="Filter shared notes..."
+      emptyMessage="No shared notes found"
+    />
   ) : (
     <Centered>
-      <SharedNodeIcon height={22} width={22} fill={theme.colors.text.default} margin="0 0 1rem 0" />
+      <SharedNodeIcon height={64} width={64} fill={theme.colors.text.default} margin="0 0 1rem 0" />
       <span>No one has shared Notes with you yet!</span>
     </Centered>
   )

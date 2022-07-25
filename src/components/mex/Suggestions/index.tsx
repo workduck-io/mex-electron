@@ -78,7 +78,7 @@ const SuggestionInfoBar = () => {
       return {
         title: snippet.title,
         content: snippet.content,
-        isTemplate: snippet.isTemplate
+        template: snippet.template
       }
     }
 

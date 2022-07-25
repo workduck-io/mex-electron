@@ -1,16 +1,9 @@
-import { useViewStore, View } from '@hooks/useTaskViews'
-import Tippy, { useSingleton } from '@tippyjs/react'
-import quillPenLine from '@iconify/icons-ri/quill-pen-line'
-import { Icon } from '@iconify/react'
-import { ItemContent, ItemTitle, StyledTreeItem } from '@style/Sidebar'
-import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import React, { useMemo, useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import { BList, SItem, SnippetListWrapper } from './SharedNotes.style'
+import { useViewStore } from '@hooks/useTaskViews'
 import home7Line from '@iconify/icons-ri/home-7-line'
 import stackLine from '@iconify/icons-ri/stack-line'
-import { TooltipContent } from './Tree'
-import * as ContextMenu from '@radix-ui/react-context-menu'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import React from 'react'
+import SidebarList from './SidebarList'
 import TaskViewContextMenu from './TaskViewContextMenu'
 
 const TaskViewList = () => {
@@ -18,15 +11,6 @@ const TaskViewList = () => {
   const currentView = useViewStore((store) => store.currentView)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
   const { goTo } = useRouting()
-  const [contextOpenViewId, setContextOpenViewId] = useState<string>(null)
-
-  const location = useLocation()
-
-  const onOpenView = (view: View<any>) => {
-    // loadSnippet(id)
-    setCurrentView(view)
-    goTo(ROUTE_PATHS.tasks, NavigationType.push, view.id)
-  }
 
   const onOpenDefaultView = () => {
     // loadSnippet(id)
@@ -34,30 +18,47 @@ const TaskViewList = () => {
     goTo(ROUTE_PATHS.tasks, NavigationType.push)
   }
 
-  const showSelected = useMemo(() => {
-    if (location.pathname === ROUTE_PATHS.tasks) {
-      return false
+  const onOpenView = (viewid: string) => {
+    // loadSnippet(id)
+    if (viewid === 'default') {
+      onOpenDefaultView()
+    } else {
+      const view = views.find((view) => view.id === viewid)
+      if (view) {
+        setCurrentView(view)
+        goTo(ROUTE_PATHS.tasks, NavigationType.push, view.id)
+      }
     }
-    return true
-  }, [location.pathname])
+  }
 
-  const [source, target] = useSingleton()
+  // const showSelected = useMemo(() => {
+  //   if (location.pathname === ROUTE_PATHS.tasks) {
+  //     return false
+  //   }
+  //   return true
+  // }, [location.pathname])
 
   const sortedViews = React.useMemo(() => {
-    return views.sort((a, b) => {
-      if (a.title < b.title) {
-        return -1
-      }
-      if (a.title > b.title) {
-        return 1
-      }
-      return 0
-    })
+    return views
+      .sort((a, b) => {
+        if (a.title < b.title) {
+          return -1
+        }
+        if (a.title > b.title) {
+          return 1
+        }
+        return 0
+      })
+      .map((view) => ({
+        ...view,
+        icon: stackLine
+      }))
   }, [views])
 
   // mog('Snippy', { snippets, showSelected, location })
 
-  return (
+  {
+    /*
     <SnippetListWrapper>
       <Tippy theme="mex" placement="right" singleton={source} />
       <BList>
@@ -100,13 +101,29 @@ const TaskViewList = () => {
                   </StyledTreeItem>
                 </ContextMenu.Trigger>
                 <TaskViewContextMenu view={view} />
-                {/*<ArchiveContextMenu item={item} />*/}
+                /*<ArchiveContextMenu item={item} />/
               </ContextMenu.Root>
             </span>
           </Tippy>
         ))}
       </BList>
     </SnippetListWrapper>
+    */
+  }
+  return (
+    <SidebarList
+      ItemContextMenu={TaskViewContextMenu}
+      items={sortedViews}
+      onClick={(item) => onOpenView(item)}
+      selectedItemId={currentView?.id}
+      showSearch
+      searchPlaceholder="Filter Task Views..."
+      defaultItem={{
+        title: 'Default',
+        id: 'default',
+        icon: home7Line
+      }}
+    />
   )
 }
 

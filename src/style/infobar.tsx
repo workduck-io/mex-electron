@@ -129,7 +129,6 @@ export const InfobarMedium = styled.div`
   max-height: 100vh;
   width: 100%;
   position: relative;
-  height: calc(100vh - 9.5rem);
   * {
     outline: none;
     outline-style: none;

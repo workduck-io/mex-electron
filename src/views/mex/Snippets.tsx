@@ -104,7 +104,7 @@ const Snippets = () => {
     addSnippet({
       id: snippetId,
       title: snippetName,
-      isTemplate: true,
+      template: true,
       icon: 'ri:quill-pen-line',
       content: [{ children: [{ text: '' }], type: ELEMENT_PARAGRAPH }]
     })
@@ -170,7 +170,7 @@ const Snippets = () => {
           <ResultHeader>
             <Icon icon={icon} />
             <ResultTitle onClick={() => onSelect({ id: snip.id, title: snip.title })}>{snip.title}</ResultTitle>
-            {snip.isTemplate && (
+            {snip.template && (
               <ItemTag large>
                 <Icon icon={magicLine} />
                 Template
@@ -195,7 +195,7 @@ const Snippets = () => {
               <ResultTitle>{snip.title}</ResultTitle>
               <ResultDesc>{convertContentToRawText(snip.content, ' ')}</ResultDesc>
             </ResultMain>
-            {snip.isTemplate && (
+            {snip.template && (
               <ItemTag>
                 <Icon icon={magicLine} />
                 Template
@@ -232,7 +232,7 @@ const Snippets = () => {
           <SplitSearchPreviewWrapper id={`splitSnippetSearchPreview_for_${item.id}_${randId}`}>
             <Title onMouseUp={(e) => onDoubleClick(e, item.id, item.title)}>
               <span className="title">{snip.title}</span>
-              {snip.isTemplate && (
+              {snip.template && (
                 <ItemTag large>
                   <Icon icon={magicLine} />
                   Template

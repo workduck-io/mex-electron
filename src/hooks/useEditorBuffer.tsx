@@ -71,10 +71,10 @@ export const useEditorBuffer = () => {
 }
 
 interface SnippetBufferStore {
-  buffer: Record<string, { content: NodeEditorContent; title: string; isTemplate?: boolean }>
+  buffer: Record<string, { content: NodeEditorContent; title: string; template?: boolean }>
   add: (nodeid: string, val: NodeEditorContent) => void
   addTitle: (nodeid: string, title: string) => void
-  toggleIsTemplate: (nodeid: string, isTemplate: boolean) => void
+  toggleTemplate: (nodeid: string, template: boolean) => void
   addAll: (nodeid: string, val: NodeEditorContent, title: string) => void
   remove: (nodeid: string) => void
   clear: () => void
@@ -90,9 +90,9 @@ export const useSnippetBufferStore = create<SnippetBufferStore>((set, get) => ({
     const prev = get().buffer[nodeid]
     set({ buffer: { ...get().buffer, [nodeid]: { ...prev, title } } })
   },
-  toggleIsTemplate: (nodeid: string, isTemplate: boolean) => {
+  toggleTemplate: (nodeid: string, template: boolean) => {
     const prev = get().buffer[nodeid]
-    set({ buffer: { ...get().buffer, [nodeid]: { ...prev, isTemplate } } })
+    set({ buffer: { ...get().buffer, [nodeid]: { ...prev, template } } })
   },
   addAll: (nodeid, val, title) => {
     const prev = get().buffer[nodeid]
@@ -131,7 +131,7 @@ export const useSnippetBuffer = () => {
           const saved = Object.entries(buffer)
         .map(([snippetId, val]) => {
           api.saveSnippetAPI(snippetId, val.title, val?.content)
-          updateSnippetContent(snippetId, val.content, val.title, val.isTemplate)
+          updateSnippetContent(snippetId, val.content, val.title, val.template)
           const snippet = getSnippet(snippetId)
 
           // TODO: Switch snippet to template index
@@ -145,15 +145,21 @@ export const useSnippetBuffer = () => {
       const saved = Object.entries(buffer)
         .map(([snippetId, val]) => {
           const snippet = getSnippet(snippetId)
-          api.saveSnippetAPI(snippetId, val.title ?? snippet.title, val?.content ?? snippet?.content)
-          // updateSnippetContent(snippetId, val.content ?? snippet.content, val.title ?? snippet.title, val.isTemplate)
-          mog('snipppet', { snippetId, val, buffer })
+          mog('snipppet', { snippetId, val, buffer, snippet })
+          api.saveSnippetAPI({
+            snippetId,
+            snippetTitle: val.title ?? snippet.title,
+            content: val?.content ?? snippet?.content,
+            template: val?.template ?? snippet?.template ?? false
+          })
+          // updateSnippetContent(snippetId, val.content ?? snippet.content, val.title ?? snippet.title, val.template)
           // TODO: Switch snippet to template index
+          mog('snipppet', { snippetId, val, buffer, snippet })
           if (snippet)
             updateSnippetIndex({
               ...snippet,
               content: val.content ?? snippet.content,
-              isTemplate: val.isTemplate ?? snippet.isTemplate,
+              template: val.template ?? snippet.template,
               title: val.title ?? snippet.title
             })
           return true

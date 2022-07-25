@@ -81,6 +81,7 @@ const Switch = () => {
       if (isBlockMode) setIsBlockMode(false)
       if (editorNode) saveNodeName(editorNode.nodeid)
       saveEditorBuffer()
+      mog('Saving editor buffer onLocationChange')
       saveSnippetBuffer()
     }
 
@@ -93,6 +94,9 @@ const Switch = () => {
         mog('Showing Sidebar', { location })
         showAllSidebars()
       } else if (location.pathname.startsWith(ROUTE_PATHS.archive)) {
+        showSidebar()
+        hideRHSidebar()
+      } else if (location.pathname.startsWith(ROUTE_PATHS.tag)) {
         showSidebar()
         hideRHSidebar()
       } else if (location.pathname.startsWith(ROUTE_PATHS.tasks)) {
