@@ -145,9 +145,14 @@ export const useSnippetBuffer = () => {
       const saved = Object.entries(buffer)
         .map(([snippetId, val]) => {
           const snippet = getSnippet(snippetId)
-          api.saveSnippetAPI(snippetId, val.title ?? snippet.title, val?.content ?? snippet?.content)
+          mog('snipppet', { snippetId, val, buffer, snippet })
+          api.saveSnippetAPI({
+            snippetId,
+            snippetTitle: val.title ?? snippet.title,
+            content: val?.content ?? snippet?.content,
+            isTemplate: val?.isTemplate ?? snippet?.isTemplate ?? false
+          })
           // updateSnippetContent(snippetId, val.content ?? snippet.content, val.title ?? snippet.title, val.isTemplate)
-          mog('snipppet', { snippetId, val, buffer })
           // TODO: Switch snippet to template index
           if (snippet)
             updateSnippetIndex({

@@ -357,7 +357,17 @@ export const useApi = () => {
       .catch((error) => console.error(error))
   }
 
-  const saveSnippetAPI = async (snippetId: string, snippetTitle: string, content: any[]) => {
+  const saveSnippetAPI = async ({
+    snippetId,
+    snippetTitle,
+    content,
+    isTemplate
+  }: {
+    snippetId: string
+    snippetTitle: string
+    content: any[]
+    isTemplate?: boolean
+  }) => {
     const reqData = {
       id: snippetId,
       type: 'SnippetRequest',
