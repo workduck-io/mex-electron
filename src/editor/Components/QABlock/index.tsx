@@ -9,8 +9,8 @@ import chat from '@iconify/icons-ph/chats-circle-bold'
 
 import { useReadOnly, useSelected } from 'slate-react'
 import {
-  deleteFragment,
   insertNodes,
+  removeNodes,
   selectEditor,
   setNodes,
   usePlateEditorRef,
@@ -111,7 +111,8 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
         }
         goToNextLine()
       } else {
-        insertNodes(editor, defaultContent.content, { at: editor.selection })
+        removeNodes(editor, { at: editor.selection, hanging: false, mode: 'highest' })
+        insertNodes(editor, defaultContent.content)
         selectEditor(editor, { focus: true })
       }
     }

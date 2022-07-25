@@ -275,7 +275,7 @@ export const optionsExitBreakPlugin = {
         query: {
           start: true,
           end: true,
-          allow: KEYS_HEADING
+          allow: [...KEYS_HEADING, ELEMENT_PARAGRAPH]
         }
       }
     ]
