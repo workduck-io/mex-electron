@@ -336,15 +336,15 @@ const Search = () => {
       const con = contents[item.id]
       const content = con ? con.content : defaultContent.content
       const node = getNode(item.id, true)
-      const nodeType = getNodeType(node.nodeid)
+      const nodeType = getNodeType(node?.nodeid)
       const icon = node?.icon ?? (nodeType === NodeType.SHARED ? shareLine : fileList2Line)
-      const edNode = { ...node, title: node.path, id: node.nodeid }
+      const edNode = { ...node, title: node?.path, id: node?.nodeid }
       // mog('RenderPreview', { item, content, node })
       return (
         <SplitSearchPreviewWrapper id={`splitSearchPreview_for_${item.id}`}>
           <Title onMouseUp={(e) => onDoubleClick(e, item)}>
             <Icon icon={icon} />
-            <TitleText>{node.path}</TitleText>
+            <TitleText>{edNode?.title}</TitleText>
             <ResultPreviewMetaData>
               <Metadata fadeOnHover={false} node={edNode} />
             </ResultPreviewMetaData>
@@ -355,8 +355,8 @@ const Search = () => {
             onDoubleClick={(e) => onDoubleClick(e, item)}
             editorId={`SearchPreview_editor_${item.id}`}
           />
-          <Backlinks nodeid={node.nodeid} />
-          <TagsRelated nodeid={node.nodeid} />
+          <Backlinks nodeid={edNode?.id} />
+          <TagsRelated nodeid={edNode?.id} />
         </SplitSearchPreviewWrapper>
       )
     }
