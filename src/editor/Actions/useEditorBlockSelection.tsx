@@ -6,7 +6,8 @@ import {
   usePlateEditorRef,
   removeNodes,
   TNodeEntry,
-  deleteText
+  deleteText,
+  getPlateEditorRef
 } from '@udecode/plate'
 import useBlockStore, { BlockMetaDataType, BlockType } from '@store/useBlockStore'
 import { defaultContent } from '@data/Defaults/baseData'
@@ -28,17 +29,17 @@ export const getBlockMetadata = (text: string, meta?: BlockMetaDataType): BlockM
 
 export const useEditorBlockSelection = () => {
   const blocksFromStore = useBlockStore((store) => store.blocks)
-  const editor = usePlateEditorRef()
 
   const getEditorBlocks = (): TNodeEntry<TNode>[] => {
     const nodeId = useEditorStore.getState().node.nodeid
+    const editor = getPlateEditorRef()
 
     const blocks = Object.values(blocksFromStore)
     const blockIter = getNodeEntries(editor, {
       at: [],
       match: (node) => {
         return blocks.find((block) => {
-          return block.id === node.id
+          return block.id === node?.id
         })
       },
       block: true
@@ -64,6 +65,7 @@ export const useEditorBlockSelection = () => {
   }
 
   const deleteContentBlocks = (blocks: TNodeEntry<TNode>[]): void => {
+    const editor = getPlateEditorRef()
     const selection = editor?.selection
 
     if (blocks.length) {
@@ -88,6 +90,8 @@ export const useEditorBlockSelection = () => {
   }
 
   const convertToBlocks = () => {
+    const editor = getPlateEditorRef()
+
     const nodes = Array.from(
       getNodeEntries(editor, {
         mode: 'highest',

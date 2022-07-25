@@ -2,7 +2,7 @@ import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
 import sendToIcon from '@iconify/icons-ph/arrow-bend-up-right-bold'
 import moveToIcon from '@iconify/icons-ri/anticlockwise-2-fill'
 import { Icon } from '@iconify/react'
-import { usePlateEditorRef } from '@udecode/plate'
+import { getPlateEditorRef, usePlateEditorRef } from '@udecode/plate'
 import React from 'react'
 import { Item } from 'react-contexify'
 import toast from 'react-hot-toast'
@@ -18,7 +18,6 @@ type BlockOptionsProps = {
 export const MENU_ID = 'block-options-menu'
 
 export const BlockOptionsMenu: React.FC<BlockOptionsProps> = () => {
-  const editor = usePlateEditorRef()
   const { isConvertable } = useTransform()
   const setBlocks = useBlockStore((store) => store.setBlocks)
   const setIsModalOpen = useBlockStore((store) => store.setIsModalOpen)
@@ -35,6 +34,8 @@ export const BlockOptionsMenu: React.FC<BlockOptionsProps> = () => {
   }
 
   const onSendToClick = (item: any) => {
+    const editor = getPlateEditorRef()
+
     if (!isConvertable(editor)) {
       toast.error('You can not move Flow links from one node to another.')
       return
@@ -45,6 +46,8 @@ export const BlockOptionsMenu: React.FC<BlockOptionsProps> = () => {
   }
 
   const onMoveToClick = (item: any) => {
+    const editor = getPlateEditorRef()
+
     if (!isConvertable(editor)) {
       toast.error('You can not move Flow links from one node to another.')
       return false
