@@ -210,6 +210,7 @@ export const useSnippetSaver = () => {
     saveAndClearBuffer()
     updater()
 
+    mog('saveSnippet in onSave')
     toast('Snippet Saved!', { duration: 1000 })
   }
 
@@ -218,7 +219,7 @@ export const useSnippetSaver = () => {
 
 interface SnippetExtras {
   title: string
-  isTemplate: boolean
+  template: boolean
 }
 interface SnippetSaverButtonProps extends SaverButtonProps {
   getSnippetExtras: () => SnippetExtras

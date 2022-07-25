@@ -61,7 +61,7 @@ const Suggestion: React.FC<SuggestionProps> = ({ suggestion, onPin, onClick, onE
               icon="lucide:file-input"
               title={isSuggestedNote ? 'Embed Note' : 'Insert Snippet'}
             />
-            {!suggestion?.content?.isTemplate && (
+            {!suggestion?.content?.template && (
               <IconButton highlight={suggestion.pinned} onClick={onPin} icon={pushpin2Line} title="Pin suggestion" />
             )}
           </SuggestionIconsGroup>

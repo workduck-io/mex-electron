@@ -42,31 +42,31 @@ const SnippetEditor = () => {
   const { addOrUpdateValBuffer, saveAndClearBuffer, getBufferVal } = useSnippetBuffer()
   const addTitle = useSnippetBufferStore((store) => store.addTitle)
   const buffer = useSnippetBufferStore((store) => store.buffer)
-  const addAll = useSnippetBufferStore((store) => store.addAll)
-  const toggleIsTemplate = useSnippetBufferStore((store) => store.toggleIsTemplate)
+  // const addAll = useSnippetBufferStore((store) => store.addAll)
+  const toggleTemplate = useSnippetBufferStore((store) => store.toggleTemplate)
 
   useEffect(() => {
     if (snippet) {
       mog('Snippy', { snippet })
-      addAll(snippet.id, snippet.content, snippet.title)
+      // addAll(snippet.id, snippet.content, snippet.title)
       setContent(snippet.content)
     } else {
-      returnToSnippets()
+      // returnToSnippets()
     }
   }, [snippet])
 
   const getSnippetExtras = () => {
     const val = getBufferVal(snippet?.id)
-    return { title: val?.title || snippet?.title || '', isTemplate: val?.isTemplate || snippet?.isTemplate || false }
+    return { title: val?.title || snippet?.title || '', template: val?.template || snippet?.template || false }
   }
 
   const isSnippetTemplate = useMemo(() => {
     const val = getBufferVal(snippet?.id)
     console.log('Getting whether snippet is a template or not', { val, snippet })
-    if (val && val.isTemplate !== undefined) {
-      return val.isTemplate
+    if (val && val.template !== undefined) {
+      return val.template
     }
-    return snippet?.isTemplate || false
+    return snippet?.template || false
   }, [snippet, buffer])
 
   const onChangeSave = (val: any[]) => {
@@ -93,9 +93,9 @@ const SnippetEditor = () => {
 
   const onToggleTemplate = () => {
     const val = getBufferVal(snippet.id)
-    if (val && val.isTemplate !== undefined) {
-      toggleIsTemplate(snippet.id, !val.isTemplate)
-    } else toggleIsTemplate(snippet.id, !snippet.isTemplate)
+    if (val && val.template !== undefined) {
+      toggleTemplate(snippet.id, !val.template)
+    } else toggleTemplate(snippet.id, !snippet.template)
   }
 
   useEffect(() => {
@@ -215,8 +215,6 @@ const CustomDevOnly = ({ snippet, editorId }: CustomDevOnlyProps) => {
     const unsubscribe = tinykeys(window, {
       '$mod+Shift+,': (event) => {
         event.preventDefault()
-        // if (!snippet.isTemplate) return
-        // const edState = editorRef.current.getEditorState()
         console.log('convertSelectionToQABlock', { editor })
         convertSelectionToQABlock(editor)
       }

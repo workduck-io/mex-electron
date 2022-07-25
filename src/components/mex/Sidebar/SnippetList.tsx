@@ -3,6 +3,7 @@ import { useSnippetStore } from '@store/useSnippetStore'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React from 'react'
 import SidebarList from './SidebarList'
+import magicLine from '@iconify/icons-ri/magic-line'
 
 const SnippetList = () => {
   const snippets = useSnippetStore((store) => store.snippets)
@@ -30,7 +31,7 @@ const SnippetList = () => {
       .map((snippet) => ({
         id: snippet.id,
         title: snippet.title,
-        icon: quillPenLine
+        icon: snippet.template ? magicLine : quillPenLine
       }))
   }, [snippets])
 

@@ -5,7 +5,7 @@ export interface Snippet {
   title: string
   icon: string
   content: any[]
-  isTemplate?: boolean
+  template?: boolean
 }
 
 interface SnippetEditorStore {
@@ -18,8 +18,8 @@ interface SnippetStore {
   initSnippets: (snippets: Snippet[]) => void
   addSnippet: (snippets: Snippet) => void
   updateSnippet: (id: string, snippets: Snippet) => void
-  updateSnippetContent: (id: string, content: any[], isTemplate?: boolean) => void
-  updateSnippetContentAndTitle: (id: string, content: any[], title: string, isTemplate?: boolean) => void
+  updateSnippetContent: (id: string, content: any[], template?: boolean) => void
+  updateSnippetContentAndTitle: (id: string, content: any[], title: string, template?: boolean) => void
   deleteSnippet: (id: string) => void
 
   editor: SnippetEditorStore
@@ -44,11 +44,11 @@ export const useSnippetStore = create<SnippetStore>((set, get) => ({
       return { snippets: [...snippets, snippet] }
     }),
 
-  updateSnippetContent: (id: string, content: any[], isTemplate?: boolean) => {
+  updateSnippetContent: (id: string, content: any[], template?: boolean) => {
     const snippets = get().snippets.map((s) => {
       if (s.id === id) {
-        if (isTemplate !== undefined) {
-          return { ...s, content, isTemplate }
+        if (template !== undefined) {
+          return { ...s, content, template }
         }
         return { ...s, content }
       }
@@ -57,11 +57,11 @@ export const useSnippetStore = create<SnippetStore>((set, get) => ({
     set({ snippets })
   },
 
-  updateSnippetContentAndTitle: (id: string, content: any[], title: string, isTemplate?: boolean) => {
+  updateSnippetContentAndTitle: (id: string, content: any[], title: string, template?: boolean) => {
     const snippets = get().snippets.map((s) => {
       if (s.id === id) {
-        if (isTemplate !== undefined) {
-          return { ...s, content, isTemplate, title: title ?? s.title }
+        if (template !== undefined) {
+          return { ...s, content, template, title: title ?? s.title }
         }
         return { ...s, content: content ?? s.content, title: title ?? s.title }
       }

@@ -36,84 +36,84 @@ export const initialSnippets: Snippet[] = [
   {
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),
-    isTemplate: true,
+    template: true,
     title: 'PRD',
     content: PRDTemplate
   },
   {
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),
-    isTemplate: true,
+    template: true,
     title: 'Bug Report',
     content: BugReportTemplate
   },
   {
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),
-    isTemplate: true,
+    template: true,
     title: 'Release Checklist',
     content: ReleaseSnippet
   },
   {
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),
-    isTemplate: true,
+    template: true,
     title: 'One Pager',
     content: OnePagerSnippet
   },
   {
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),
-    isTemplate: true,
+    template: true,
     title: 'A B Testing',
     content: ABTestingSnippet
   },
   {
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),
-    isTemplate: true,
+    template: true,
     title: 'Product Spec',
     content: ProductSpecSnippet
   },
   {
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),
-    isTemplate: true,
+    template: true,
     title: 'GTM Plan',
     content: GTMPlanSnippet
   },
   {
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),
-    isTemplate: true,
+    template: true,
     title: 'Design Spec',
     content: DesignSpecSnippet
   },
   {
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),
-    isTemplate: true,
+    template: true,
     title: 'Design Sprint Retrospective',
     content: DesignSprintSnippet
   },
   {
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),
-    isTemplate: true,
+    template: true,
     title: 'Sprint Review',
     content: SprintReviewSnippet
   },
   {
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),
-    isTemplate: true,
+    template: true,
     title: 'Growth Meeting',
     content: GrowthSnippet
   },
   {
     icon: 'ri:quill-pen-line',
     id: generateSnippetId(),
-    isTemplate: true,
+    template: true,
     title: 'Onboarding',
     content: OnboardingDoc
   }

@@ -75,7 +75,7 @@ const Search = () => {
         .map((snippet) => ({
           id: snippet.id,
           title: snippet.title,
-          index: snippet.isTemplate ? ('template' as const) : ('snippet' as const),
+          index: snippet.template ? ('template' as const) : ('snippet' as const),
           text: convertContentToRawText(snippet.content)
         }))
         .slice(0, 12)
@@ -190,7 +190,7 @@ const Search = () => {
             <ResultHeader>
               <Icon icon={icon} />
               <ResultTitle onClick={() => onSelect({ id: snip.id, title: snip.title })}>{snip.title}</ResultTitle>
-              {snip.isTemplate && (
+              {snip.template && (
                 <ItemTag large>
                   <Icon icon={magicLine} />
                   Template
@@ -215,7 +215,7 @@ const Search = () => {
                 <ResultTitle>{snip.title}</ResultTitle>
                 <ResultDesc>{convertContentToRawText(snip.content, ' ')}</ResultDesc>
               </ResultMain>
-              {snip.isTemplate && (
+              {snip.template && (
                 <ItemTag>
                   <Icon icon={magicLine} />
                   Template
@@ -316,7 +316,7 @@ const Search = () => {
           <SplitSearchPreviewWrapper id={`splitSnippetSearchPreview_for_${item.id}`}>
             <Title onMouseUp={(e) => onDoubleClickSnippet(e, item.id, item.title)}>
               <span className="title">{snip.title}</span>
-              {snip.isTemplate && (
+              {snip.template && (
                 <ItemTag large>
                   <Icon icon={magicLine} />
                   Template

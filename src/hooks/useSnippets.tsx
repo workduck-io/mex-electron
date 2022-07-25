@@ -52,10 +52,10 @@ export const useSnippets = () => {
 
   const updateSnippet = async (snippet: Snippet) => {
     updateSnippetZus(snippet.id, snippet)
-    const tags = snippet.isTemplate ? ['template'] : ['snippet']
-    const idxName = snippet.isTemplate ? 'template' : 'snippet'
+    const tags = snippet.template ? ['template'] : ['snippet']
+    const idxName = snippet.template ? 'template' : 'snippet'
     mog('Update snippet', { snippet, tags })
-    if (snippet.isTemplate) {
+    if (snippet.template) {
       await removeDocument('snippet', snippet.id)
     } else {
       await removeDocument('template', snippet.id)
@@ -73,8 +73,8 @@ export const useSnippets = () => {
 
   const addSnippet = async (snippet: Snippet) => {
     addSnippetZus(snippet)
-    const tags = snippet.isTemplate ? ['template'] : ['snippet']
-    const idxName = snippet.isTemplate ? 'template' : 'snippet'
+    const tags = snippet.template ? ['template'] : ['snippet']
+    const idxName = snippet.template ? 'template' : 'snippet'
     mog('Add snippet', { snippet, tags })
 
     await updateDocument(idxName, snippet.id, snippet.content, snippet.title, tags)

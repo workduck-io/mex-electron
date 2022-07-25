@@ -242,14 +242,14 @@ export const convertDataToIndexable = (data: FileData) => {
 
       case indexNames.snippet:
       case indexNames.template: {
-        const isTemplate = idxName === indexNames.template
+        const template = idxName === indexNames.template
         data.snippets
-          .filter((snip) => (isTemplate ? snip.isTemplate : !snip.isTemplate))
+          .filter((snip) => (template ? snip.template : !snip.template))
           .map((snip) => {
             const title = titleNodeMap.get(snip.id)
             const temp: GenericSearchData = {
               ...convertEntryToRawText(snip.id, snip.content, title),
-              tag: [snip.isTemplate ? 'template' : 'snippet']
+              tag: [snip.template ? 'template' : 'snippet']
             }
             nodeBlockMap[snip.id] = [snip.id] // Redundant right now, not doing block level indexing for snippets
             idxResult.push(temp)

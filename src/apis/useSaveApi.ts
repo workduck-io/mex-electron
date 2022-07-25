@@ -361,19 +361,20 @@ export const useApi = () => {
     snippetId,
     snippetTitle,
     content,
-    isTemplate
+    template
   }: {
     snippetId: string
     snippetTitle: string
     content: any[]
-    isTemplate?: boolean
+    template?: boolean
   }) => {
     const reqData = {
       id: snippetId,
       type: 'SnippetRequest',
       title: snippetTitle,
       namespaceIdentifier: DEFAULT_NAMESPACE,
-      data: serializeContent(content ?? defaultContent.content, snippetId)
+      data: serializeContent(content ?? defaultContent.content, snippetId),
+      template: template ?? false
     }
 
     const data = await client
@@ -417,6 +418,7 @@ export const useApi = () => {
           ...newSnippets.map((item) => ({
             icon: 'ri:quill-pen-line',
             id: item.snippetID,
+            template: item.template,
             title: item.title,
             content: []
           }))
