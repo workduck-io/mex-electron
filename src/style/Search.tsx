@@ -23,7 +23,7 @@ const SearchTransition = css`
 `
 
 const SearchHeight = css`
-  height: calc(100vh - 22rem);
+  height: calc(100vh - ${({ theme }) => (theme.additional.hasBlocks ? '2rem' : '0rem')} - 22rem);
 `
 
 const iconStyle = (primary?: boolean) => css`
@@ -481,7 +481,7 @@ export const SearchIndexValue = styled.div`
   }
 `
 export const SplitSearchPreviewWrapper = styled.div`
-  height: calc(100vh - 22rem);
+  ${SearchHeight}
   overflow-y: auto;
   border-radius: ${({ theme }) => theme.borderRadius.large};
   background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};

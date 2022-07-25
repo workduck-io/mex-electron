@@ -1,4 +1,6 @@
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import { useSnippets } from '@hooks/useSnippets'
+import { useUpdater } from '@hooks/useUpdater'
 import { getNodes, getSelectionText, insertNodes, TEditor } from '@udecode/plate'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import genereateName from 'project-name-generator'
@@ -23,7 +25,9 @@ import { ELEMENT_SYNC_BLOCK } from '../../SyncBlock'
 export const useTransform = () => {
   const addSnippet = useSnippetStore((s) => s.addSnippet)
   const setContent = useContentStore((s) => s.setContent)
+  const { updateSnippet } = useSnippets()
   const { createNewNote } = useCreateNewNote()
+  const { updater } = useUpdater()
 
   const { saveData } = useSaveData()
   // Checks whether a node is a flowblock
@@ -254,12 +258,15 @@ export const useTransform = () => {
 
       const snippetId = generateSnippetId()
       const snippetTitle = genereateName().dashed
-      addSnippet({
+      const newSnippet = {
         id: snippetId,
         title: snippetTitle,
         content: value,
         icon: 'ri:quill-pen-line'
-      })
+      }
+      updateSnippet(newSnippet)
+      updater()
+      // addSnippet()
 
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value })
 

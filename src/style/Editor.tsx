@@ -50,7 +50,7 @@ export const EditorWrapper = styled.div<{ comboboxOpen?: boolean }>`
     `}
 `
 
-export const StyledEditor = styled.div<StyledEditorProps>`
+export const CenteredMainContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -64,19 +64,13 @@ export const StyledEditor = styled.div<StyledEditorProps>`
   flex: 1;
   overflow-y: auto;
 
-  /* ${({ showGraph }) =>
-    showGraph
-      ? css`
-          max-width: 600px;
-        `
-      : css`
-          max-width: 800px;
-        `} */
-
   && > div {
     width: 100%;
   }
 `
+
+export const StyledEditor = styled(CenteredMainContent)<StyledEditorProps>``
+
 export const EditorStyles = styled.div<{ readOnly?: boolean }>`
   ${({ readOnly }) =>
     readOnly &&
