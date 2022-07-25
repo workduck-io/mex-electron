@@ -63,7 +63,7 @@ export const Editor = ({
   const headingQASearch = useSuggestionStore((store) => store.headingQASearch)
 
   // const generateEditorId = () => `${editorId}`
-  const editorRef = usePlateEditorRef()
+  const editorRef = usePlateEditorRef(editorId)
   const { show } = useContextMenu({ id: MENU_ID })
   const { focusBlock } = useFocusBlock()
   const clearHighlights = useBlockHighlightStore((store) => store.clearAllHighlightedBlockIds)
@@ -164,6 +164,7 @@ export const Editor = ({
         >
           {showBalloonToolbar && <BallonMarkToolbarButtons />}
           <MultiComboboxContainer config={comboConfigData} />
+          {showCursorOverlay && <CursorOverlayContainer />}
         </Plate>
       </EditorStyles>
     </>
