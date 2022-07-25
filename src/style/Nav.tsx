@@ -234,6 +234,7 @@ export const SideNav = styled(animated.div)<SideNavProps>`
   overflow-x: hidden;
   overflow-y: auto;
   min-height: 100%;
+  height: 100%;
   z-index: 10;
   background-color: ${({ theme, side }) => transparentize(side === 'left' ? 0.25 : 0.4, theme.colors.gray[9])};
   padding: ${({ theme }) => theme.spacing.large} 0;

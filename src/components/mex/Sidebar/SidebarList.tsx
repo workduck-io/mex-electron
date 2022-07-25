@@ -9,7 +9,7 @@ import { mog } from '@utils/lib/helper'
 import { debounce } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import tinykeys from 'tinykeys'
-import { SidebarListFilter, SidebarListWrapper } from './SidebarList.style'
+import { FilteredItemsWrapper, SidebarListFilter, SidebarListWrapper } from './SidebarList.style'
 import { TooltipContent } from './Tree'
 
 interface SidebarListItem {
@@ -161,41 +161,43 @@ const SidebarList = ({
         </SidebarListFilter>
       )}
 
-      {listItems.map((item, index) => (
-        <Tippy
-          theme="mex"
-          placement="right"
-          singleton={target}
-          key={`DisplayTippy_${item.id}`}
-          content={<TooltipContent item={{ id: item.id, children: [], data: { title: item.title } }} />}
-        >
-          <span>
-            <ContextMenu.Root
-              onOpenChange={(open) => {
-                if (open && ItemContextMenu) {
-                  setContextOpenViewId(item.id)
-                } else setContextOpenViewId(null)
-              }}
-            >
-              <ContextMenu.Trigger asChild>
-                <StyledTreeItem
-                  hasMenuOpen={contextOpenViewId === item.id || selected === index}
-                  noSwitcher
-                  selected={item?.id === selectedItemId}
-                >
-                  <ItemContent onClick={() => onSelectItem(item?.id)}>
-                    <ItemTitle>
-                      <Icon icon={item.icon} />
-                      <span>{item.title}</span>
-                    </ItemTitle>
-                  </ItemContent>
-                </StyledTreeItem>
-              </ContextMenu.Trigger>
-              {ItemContextMenu && <ItemContextMenu item={item} />}
-            </ContextMenu.Root>
-          </span>
-        </Tippy>
-      ))}
+      <FilteredItemsWrapper>
+        {listItems.map((item, index) => (
+          <Tippy
+            theme="mex"
+            placement="right"
+            singleton={target}
+            key={`DisplayTippy_${item.id}`}
+            content={<TooltipContent item={{ id: item.id, children: [], data: { title: item.title } }} />}
+          >
+            <span>
+              <ContextMenu.Root
+                onOpenChange={(open) => {
+                  if (open && ItemContextMenu) {
+                    setContextOpenViewId(item.id)
+                  } else setContextOpenViewId(null)
+                }}
+              >
+                <ContextMenu.Trigger asChild>
+                  <StyledTreeItem
+                    hasMenuOpen={contextOpenViewId === item.id || selected === index}
+                    noSwitcher
+                    selected={item?.id === selectedItemId}
+                  >
+                    <ItemContent onClick={() => onSelectItem(item?.id)}>
+                      <ItemTitle>
+                        <Icon icon={item.icon} />
+                        <span>{item.title}</span>
+                      </ItemTitle>
+                    </ItemContent>
+                  </StyledTreeItem>
+                </ContextMenu.Trigger>
+                {ItemContextMenu && <ItemContextMenu item={item} />}
+              </ContextMenu.Root>
+            </span>
+          </Tippy>
+        ))}
+      </FilteredItemsWrapper>
 
       {listItems.length === 0 && search !== '' && <p>{emptyMessage ?? 'No Items Found'}</p>}
     </SidebarListWrapper>

@@ -5,10 +5,18 @@ interface SidebarListWrapperProps {
   noMargin?: boolean
 }
 export const SidebarListWrapper = styled.div<SidebarListWrapperProps>`
-  overflow-y: auto;
-  overflow-x: hidden;
   margin-top: ${({ noMargin }) => (noMargin ? '0' : '4rem')};
   padding: ${({ theme }) => theme.spacing.small};
+  flex-grow: 1;
+`
+
+export const FilteredItemsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - ${({ theme }) => (theme.additional.hasBlocks ? '12rem' : '14rem')});
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
 `
 
 export const SidebarListFilter = styled.div<SidebarListWrapperProps>`
