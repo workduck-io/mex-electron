@@ -1,6 +1,7 @@
 import { insertText } from '@udecode/plate'
 import { deleteFragment, PlatePlugin, WithOverride, getPreviousNode } from '@udecode/plate-core'
-import { Editor, Range } from 'slate'
+import { mog } from '@utils/lib/helper'
+import { Range } from 'slate'
 import { getPathFromNodeIdHookless } from '../../../hooks/useLinks'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { ComboboxKey } from '../combobox/useComboboxStore'
@@ -25,7 +26,7 @@ export const createILinkPlugin = (): PlatePlugin => ({
  * Check if the node above is a ILink and if so, delete it and insert the Ilink value to be edited by the user
  *
  */
-export const withILink: WithOverride<any, PlatePlugin> = (editor, { type, options }) => {
+export const withILink: WithOverride = (editor, { type, options }) => {
   // mog('Setup Plugin with ILink', { type, options })
   const { deleteBackward } = editor
 
@@ -33,8 +34,9 @@ export const withILink: WithOverride<any, PlatePlugin> = (editor, { type, option
     const prev = getPreviousNode(editor)
     if (prev && prev[0]) {
       const node = prev[0] as any
+      mog('NODE TYPE', { node })
       if (node.type && node.type === ELEMENT_ILINK && node.value) {
-        deleteFragment(editor, { at: prev[1], unit: 'block' })
+        deleteBackward('block')
         const val = getPathFromNodeIdHookless(node.value)
         mog('value in editor is', { node, val })
 

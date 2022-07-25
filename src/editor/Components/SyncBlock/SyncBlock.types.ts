@@ -1,5 +1,7 @@
+import { TElement, Value } from '@udecode/plate'
 import { StyledElementProps } from '@udecode/plate-styled-components'
 import { CSSProp } from 'styled-components'
+import { BlockIdType } from '../Blocks/types'
 
 export const ELEMENT_SYNC_BLOCK = 'sync_block'
 
@@ -14,8 +16,7 @@ export interface SyncBlockData {
   templateId: string
 }
 
-export interface SyncElementData {
-  id: string
+export interface SyncElementData extends BlockIdType, TElement {
   properties?: {
     content: string
     igid: string
@@ -68,7 +69,7 @@ export interface IntentGroup {
 
 type TemplateID = string
 
-export type SyncBlockProps = StyledElementProps<SyncElementData, SyncBlockStyles>
+export type SyncBlockProps = StyledElementProps<Value, SyncElementData, SyncBlockStyles> & { info?: boolean }
 
 export interface NodeIntentConfig {
   intents: Intent[]

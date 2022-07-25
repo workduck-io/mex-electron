@@ -7,4 +7,4 @@ export interface TagNodeData {
 }
 
 // Element node
-export type TagNode = TElement<TagNodeData>
+export interface TagNode extends TElement, TagNodeData {}

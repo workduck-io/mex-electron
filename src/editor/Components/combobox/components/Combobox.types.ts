@@ -1,4 +1,4 @@
-import { PlateEditor, Value } from '@udecode/plate'
+import { PlateEditor, TElement, Value } from '@udecode/plate'
 import { QuickLinkType } from '../../../../components/mex/NodeSelect/NodeSelect'
 import { SlashType } from '../../multi-combobox/types'
 
@@ -75,7 +75,7 @@ export interface ComboboxProps {
   onRenderItem?: RenderFunction<ComboboxItemProps>
 }
 
-export interface InsertableElement {
+export interface InsertableElement extends TElement {
   type: string
   children: any[]
   value: string

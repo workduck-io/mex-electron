@@ -1,9 +1,20 @@
-import { useCallback, useEffect } from 'react'
-import { getSelectionText, isSelectionExpanded, useEditorState } from '@udecode/plate-core'
-import { getSelectionBoundingClientRect, usePopperPosition, UsePopperPositionOptions } from '@udecode/plate-floating'
+import { useEffect, useState } from 'react'
+import {
+  getSelectionText,
+  isSelectionExpanded,
+  mergeProps,
+  useEditorState,
+  useEventEditorSelectors
+} from '@udecode/plate-core'
+import {
+  flip,
+  getSelectionBoundingClientRect,
+  offset,
+  useVirtualFloating,
+  UseVirtualFloatingOptions,
+  UseVirtualFloatingReturn
+} from '@udecode/plate-floating'
 import { useFocused } from 'slate-react'
-import { clearBlurSelection, isBlurSelection } from '../../../editor/Plugins/blurSelection'
-import tinykeys from 'tinykeys'
 import create from 'zustand'
 
 interface BalloonToolbarStore {
@@ -20,66 +31,71 @@ export const useBalloonToolbarStore = create<BalloonToolbarStore>((set, get) => 
   setIsFocused: (isFocused) => set({ isFocused })
 }))
 
-export const useBalloonToolbarPopper = (options: UsePopperPositionOptions) => {
+export const useFloatingToolbar = ({
+  floatingOptions
+}: {
+  floatingOptions?: UseVirtualFloatingOptions
+} = {}): UseVirtualFloatingReturn & {
+  open: boolean
+} => {
+  const focusedEditorId = useEventEditorSelectors.focus()
   const editor = useEditorState()
   const focused = useFocused()
 
-  const isHidden = useBalloonToolbarStore((s) => s.isHidden)
-  const setIsHidden = useBalloonToolbarStore((s) => s.setIsHidden)
-  const isBalloonFocused = useBalloonToolbarStore((s) => s.isFocused)
+  const [waitForCollapsedSelection, setWaitForCollapsedSelection] = useState(false)
+
+  const [open, setOpen] = useState(false)
 
   const selectionExpanded = editor && isSelectionExpanded(editor)
   const selectionText = editor && getSelectionText(editor)
-  const blurSelection = editor && isBlurSelection(editor as any)
-  // const blurSelectionText = editor && getEditorString(editor, editor.blurSelection)
 
-  const show = useCallback(() => {
-    // mog('Balloon show laddies', { selectionText, selectionExpanded, blurSelection })
-    if (isHidden && selectionExpanded) {
-      setIsHidden(false)
+  // On refocus, the editor keeps the previous selection,
+  // so we need to wait it's collapsed at the new position before displaying the floating toolbar.
+  useEffect(() => {
+    if (!focused) {
+      setWaitForCollapsedSelection(true)
     }
-  }, [isHidden, selectionExpanded])
+
+    if (!selectionExpanded) {
+      setWaitForCollapsedSelection(false)
+    }
+  }, [focused, selectionExpanded])
 
   useEffect(() => {
-    if (!focused && !isBalloonFocused) {
-      setIsHidden(true)
-    } else if (!selectionText) {
-      setIsHidden(true)
-    } else if ((selectionText && selectionExpanded) || blurSelection) {
-      setIsHidden(false)
+    if (!selectionExpanded || !selectionText || editor.id !== focusedEditorId) {
+      setOpen(false)
+    } else if (selectionText && selectionExpanded && !waitForCollapsedSelection) {
+      setOpen(true)
     }
-  }, [focused, selectionExpanded, selectionText, blurSelection, show])
+  }, [editor.id, editor.selection, focusedEditorId, selectionExpanded, selectionText, waitForCollapsedSelection])
 
-  useEffect(() => {
-    clearBlurSelection(editor as any)
-  }, [selectionText?.length])
+  const floatingResult = useVirtualFloating(
+    mergeProps(
+      {
+        middleware: [
+          offset(12),
+          flip({
+            padding: 150
+          })
+        ],
+        placement: 'top',
+        getBoundingClientRect: getSelectionBoundingClientRect,
+        open,
+        onOpenChange: setOpen
+      },
+      floatingOptions
+    )
+  )
 
-  useEffect(() => {
-    if (!isHidden) {
-      const unsubscribe = tinykeys(window, {
-        Escape: (event) => {
-          event.preventDefault()
-          setIsHidden(true)
-        }
-      })
-      return () => {
-        unsubscribe()
-      }
-    }
-  }, [isHidden])
-
-  const popperResult = usePopperPosition({
-    isHidden,
-    getBoundingClientRect: getSelectionBoundingClientRect,
-    ...options
-  })
+  const { update } = floatingResult
 
   const selectionTextLength = selectionText?.length ?? 0
-  const { update } = popperResult
 
   useEffect(() => {
-    selectionTextLength > 0 && update?.()
+    if (selectionTextLength > 0) {
+      update?.()
+    }
   }, [selectionTextLength, update])
 
-  return popperResult
+  return { ...floatingResult, open }
 }

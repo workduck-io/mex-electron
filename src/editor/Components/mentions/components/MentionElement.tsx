@@ -6,12 +6,11 @@ import { useMentions } from '@hooks/useMentions'
 import { useEditorStore } from '@store/useEditorStore'
 // import { useMentionStore } from '@store/useMentionStore'
 import Tippy from '@tippyjs/react/headless' // different import path!
-import { useEditorRef } from '@udecode/plate'
+import { moveSelection, useEditorRef } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
 import React, { useEffect, useMemo } from 'react'
-import { Transforms } from 'slate'
 import { useFocused, useSelected } from 'slate-react'
-import { AccessLevel, InvitedUser, Mentionable, permissionOptions, SelfMention } from '../../../../types/mentions'
+import { AccessLevel, InvitedUser, Mentionable, SelfMention } from '../../../../types/mentions'
 import { useHotkeys } from '../../tag/hooks/useHotkeys'
 import { useOnMouseClick } from '../../tag/hooks/useOnMouseClick'
 import {
@@ -23,13 +22,11 @@ import {
   TooltipMail,
   Username
 } from './MentionElement.styles'
-import { useAuthStore } from '@services/auth/useAuth'
 import { MentionElementProps } from './MentionElement.types'
 import { useMentionStore } from '@store/useMentionStore'
 import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { useUserService } from '@services/auth/useUserService'
 import { useUserCacheStore } from '@store/useUserCacheStore'
-import { usePermission } from '@services/auth/usePermission'
 import toast from 'react-hot-toast'
 import { Button } from '@style/Buttons'
 import { Icon } from '@iconify/react'
@@ -149,7 +146,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
     'backspace',
     () => {
       if (selected && focused && editor.selection) {
-        Transforms.move(editor)
+        moveSelection(editor)
       }
     },
     [selected, focused]
@@ -160,7 +157,7 @@ export const MentionElement = ({ attributes, children, element }: MentionElement
     () => {
       if (selected && focused && editor.selection) {
         // mog('delete', { selected, focused, sel: editor.selection })
-        Transforms.move(editor, { reverse: true })
+        moveSelection(editor, { reverse: true })
       }
     },
     [selected, focused]

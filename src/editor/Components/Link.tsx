@@ -1,10 +1,11 @@
 import { Icon } from '@iconify/react'
 import Tippy from '@tippyjs/react'
-import { LinkNodeData } from '@udecode/plate-link'
+import { Value } from '@udecode/plate'
 import { StyledElementProps } from '@udecode/plate-styled-components'
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { EditorIcons } from '../../components/icons/Icons'
+import { ILinkNode } from './ilink/types'
 
 const Link = styled.a`
   position: relative;
@@ -65,7 +66,7 @@ const getSanatizedLink = (raw: string) => {
  * LinkElement with no default styles.
  * [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling)
  */
-const LinkElement = ({ attributes, children, element, nodeProps }: StyledElementProps<LinkNodeData>) => {
+const LinkElement = ({ attributes, children, element, nodeProps }: StyledElementProps<Value, ILinkNode>) => {
   const isExternal = element.url.startsWith('#')
 
   const openLink = (e: React.MouseEvent, meta: boolean) => {

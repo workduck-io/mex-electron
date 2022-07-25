@@ -1,6 +1,6 @@
 import React from 'react'
 import App from './app.mex'
-import { render } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import analytics from './services/analytics/analaytics'
 import config from './services/analytics/config'
 
@@ -10,4 +10,5 @@ try {
   console.error('ANALYTICS ERROR: Could not be setup', { e })
 }
 
-render(<App />, document.getElementById('root'))
+const root = createRoot(document.getElementById('root'))
+root.render(<App />)

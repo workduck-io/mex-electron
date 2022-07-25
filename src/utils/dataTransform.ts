@@ -2,6 +2,7 @@ import { app } from 'electron'
 import { generateTempId } from '../data/Defaults/idPrefixes'
 import semver from 'semver'
 import { DefaultTransforms, ForceLogutVersion } from '../data/transforms'
+import { TNode, TNodeEntry } from '@udecode/plate'
 
 export type getValuefn = (obj?: any) => string
 export type getDatafn = (data?: any) => any

@@ -8,7 +8,6 @@ import {
   ELEMENT_H6,
   ELEMENT_HR,
   ELEMENT_PARAGRAPH,
-  PEditor,
   PlatePlugin,
   autoformatArrow,
   autoformatLegal,
@@ -97,7 +96,7 @@ export const generatePlugins = (options: PluginOptionType) => {
 
     createExcalidrawPlugin({
       component: ExcalidrawElement
-    }),
+    }) as any,
 
     // Marks
     createBoldPlugin(), // bold mark
@@ -165,7 +164,7 @@ export const generatePlugins = (options: PluginOptionType) => {
     createMediaEmbedPlugin(),
 
     // Custom Plugins
-    createBlurSelectionPlugin() as PlatePlugin<PEditor>,
+    createBlurSelectionPlugin(),
 
     // Comboboxes
     createTagPlugin(), // Tags

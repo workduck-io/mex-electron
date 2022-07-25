@@ -56,7 +56,6 @@ const SyncBlockInfo = () => {
             <MarginVertical key={syncBlock.id} selected={syncBlock.id === selectedBlockId}>
               <SyncBlock
                 editor={null as any}
-                plugins={[]}
                 info
                 attributes={{ 'data-slate-inline': true, 'data-slate-node': 'element', ref: null }}
                 element={syncBlock}

@@ -1,11 +1,12 @@
-import { usePlateEditorRef, PlateRenderElementProps, createNodesHOC } from '@udecode/plate-core'
+import { usePlateEditorRef, createNodesHOC } from '@udecode/plate-core'
 import useBlockStore, { BlockType } from '../../../store/useBlockStore'
 
 import Block from './Block'
 import React, { useMemo } from 'react'
 import { findNodePath } from '@udecode/plate'
+import { BlockOptionProps } from './types'
 
-const BlockOptions = (props: PlateRenderElementProps) => {
+const BlockOptions = (props: BlockOptionProps) => {
   const { children, element } = props
 
   const isBlockMode = useBlockStore((store) => store.isBlockMode)

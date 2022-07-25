@@ -1,4 +1,4 @@
-import { RootClassName, RootStyles, StyledElementProps } from '@udecode/plate'
+import { RootClassName, RootStyles, StyledElementProps, Value } from '@udecode/plate'
 import { IStyle } from '@uifabric/styling'
 import { ILinkNode } from '../types'
 
@@ -10,5 +10,6 @@ export interface ILinkElementStyleProps extends RootClassName {
 export interface ILinkElementStyleSet extends RootStyles {
   link?: IStyle
 }
+
 //@ts-ignore
-export type ILinkElementProps = StyledElementProps<ILinkNode, ILinkElementStyleProps, ILinkElementStyleSet>
+export type ILinkElementProps = StyledElementProps<Value, ILinkNode, ILinkElementStyleSet>

@@ -7,8 +7,7 @@ import { mog } from '../../../utils/lib/helper'
 import { useSearch } from '../../../hooks/useSearch'
 import chat from '@iconify/icons-ph/chats-circle-bold'
 
-import { ReactEditor, useReadOnly, useSelected } from 'slate-react'
-import { Editor } from 'slate'
+import { useReadOnly, useSelected } from 'slate-react'
 import {
   deleteFragment,
   insertNodes,
@@ -32,7 +31,6 @@ import { SuggestionElementType } from '../../../components/mex/Suggestions/types
 import { removeStopwords } from '../../../utils/stopwords'
 import useLoad from '@hooks/useLoad'
 import useSuggestionStore from '@store/useSuggestionStore'
-import { useApi } from '@apis/useSaveApi'
 
 interface QABlockProps {
   attributes: any
@@ -113,8 +111,7 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
         }
         goToNextLine()
       } else {
-        deleteFragment(editor, { at: editor.selection, unit: 'block' })
-        insertNodes(editor, defaultContent.content)
+        insertNodes(editor, defaultContent.content, { at: editor.selection })
         selectEditor(editor, { focus: true })
       }
     }

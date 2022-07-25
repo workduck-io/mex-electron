@@ -4,15 +4,16 @@ import DeleteRowIcon from '@iconify/icons-fluent/table-delete-row-20-filled'
 import AddRowIcon from '@iconify/icons-fluent/table-stack-down-20-filled'
 import AddColumnIcon from '@iconify/icons-fluent/table-stack-right-20-filled'
 import {
-  addColumn,
-  addRow,
+  insertTableColumn,
+  insertTableRow,
   deleteColumn,
   deleteRow,
   deleteTable,
   Popover,
   TableElement,
   TableElementProps,
-  TableToolbarButton
+  TableToolbarButton,
+  Value
 } from '@udecode/plate'
 import React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -45,12 +46,12 @@ const TableToolbarButtons = () => {
       <TableToolbarButton
         tooltip={{ content: 'Add Row', ...tooltip }}
         icon={<MexIcon icon={AddRowIcon} />}
-        transform={addRow}
+        transform={insertTableRow}
       />
       <TableToolbarButton
         tooltip={{ content: 'Add Column', ...tooltip }}
         icon={<MexIcon icon={AddColumnIcon} />}
-        transform={addColumn}
+        transform={insertTableColumn}
       />
       <TableToolbarButton
         tooltip={{ content: 'Delete Row', ...tooltip }}
@@ -74,7 +75,7 @@ const TableToolbarButtons = () => {
   )
 }
 
-export const TableModal = ({ element, popoverProps, children }: TableElementProps) => (
+export const TableModal = ({ element, popoverProps, children }: TableElementProps<Value>) => (
   <Popover content={<TableToolbarButtons />} {...popoverProps}>
     {children}
   </Popover>

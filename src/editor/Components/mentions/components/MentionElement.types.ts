@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { ClassName, RootStyled, StyledElementProps } from '@udecode/plate'
+import { ClassName, RootStyled, StyledElementProps, Value } from '@udecode/plate'
 import { IStyle } from '@uifabric/styling'
 import { MentionNode } from '../types'
 
@@ -11,4 +11,4 @@ export interface MentionElementStyleProps extends ClassName {
 export interface MentionElementStyleSet extends RootStyled {
   link?: IStyle
 }
-export type MentionElementProps = StyledElementProps<MentionNode, MentionElementStyleProps, MentionElementStyleSet>
+export type MentionElementProps = StyledElementProps<Value, MentionNode, MentionElementStyleSet>
