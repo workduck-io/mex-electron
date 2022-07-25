@@ -347,10 +347,13 @@ export const Result = styled(animated.div)<{ selected?: boolean; view?: View }>`
         max-height: 400px;
         overflow-y: auto;
         border: 1px solid transparent !important;
+        display: flex;
+        flex-direction: column;
 
         ${SearchPreviewWrapper} {
           max-height: 300px;
           overflow: hidden;
+          flex-grow: 1;
         }
 
         ${selected &&
