@@ -8,10 +8,10 @@ import fileCopyLine from '@iconify/icons-ri/file-copy-line'
 import React from 'react'
 
 interface TaskViewContextMenuProps {
-  view: View<any>
+  item: View<any>
 }
 
-const TaskViewContextMenu = ({ view }: TaskViewContextMenuProps) => {
+const TaskViewContextMenu = ({ item }: TaskViewContextMenuProps) => {
   const removeView = useViewStore((store) => store.removeView)
   const openModal = useTaskViewModalStore((store) => store.openModal)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
@@ -35,7 +35,7 @@ const TaskViewContextMenu = ({ view }: TaskViewContextMenuProps) => {
       <ContextMenuContent>
         <ContextMenuItem
           onSelect={(args) => {
-            handleClone(view)
+            handleClone(item)
           }}
         >
           <Icon icon={fileCopyLine} />
@@ -45,7 +45,7 @@ const TaskViewContextMenu = ({ view }: TaskViewContextMenuProps) => {
         <ContextMenuItem
           color="#df7777"
           onSelect={(args) => {
-            handleDelete(view)
+            handleDelete(item)
           }}
         >
           <Icon icon={trashIcon} />

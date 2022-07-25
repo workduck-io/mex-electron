@@ -178,7 +178,7 @@ export const StyledTreeItem = styled.div<{
     background: ${({ theme }) => theme.colors.gray[7]};
   }
 
-  ${({ selected, theme }) =>
+  ${({ selected, hasMenuOpen, theme }) =>
     selected &&
     css`
       background: ${theme.colors.primary};
@@ -189,6 +189,10 @@ export const StyledTreeItem = styled.div<{
       :hover {
         background: ${transparentize(0.3, theme.colors.primary)};
       }
+      ${hasMenuOpen &&
+      css`
+        color: ${transparentize(0.5, theme.colors.text.oppositePrimary)};
+      `}
       ${StyledTreeItemSwitcher} {
         &:hover svg {
           color: ${theme.colors.primary};
