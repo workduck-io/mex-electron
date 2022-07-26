@@ -14,8 +14,8 @@ export const FilteredItemsWrapper = styled.div<{ hasDefault?: boolean }>`
   display: flex;
   flex-direction: column;
   height: calc(
-    100vh - ${({ theme }) => (theme.additional.hasBlocks ? '12rem' : '14rem')} -
-      ${({ hasDefault }) => (hasDefault ? '3rem' : '0rem')}
+    100vh - ${({ theme }) => (theme.additional.hasBlocks ? '14rem' : '13rem')} -
+      ${({ hasDefault }) => (hasDefault ? '2rem' : '0rem')}
   );
 
   flex-grow: 1;
