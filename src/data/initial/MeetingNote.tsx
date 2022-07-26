@@ -1,17 +1,14 @@
-import { mog } from '@utils/lib/helper'
 import {
   aLink,
-  emptyText,
   emptyP,
+  emptyText,
   heading,
   list,
   mentionList,
   pChildren,
-  pText,
   tag,
   task,
-  text,
-  textChildren
+  text
 } from '@utils/lib/smallContent'
 import { insertId } from '../../utils/lib/content'
 import { toLocaleString } from '../../utils/time'
@@ -58,8 +55,4 @@ const meetingTemplate = ({ title, date, link, attendees }: MeetingTemplateData) 
   ]
 }
 
-export const MeetingSnippetContent = (data: MeetingTemplateData) => {
-  const content = insertId(meetingTemplate(data))
-  mog('COntent Meeting', { content })
-  return content
-}
+export const MeetingSnippetContent = (data: MeetingTemplateData) => insertId(meetingTemplate(data))
