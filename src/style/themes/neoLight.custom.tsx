@@ -17,7 +17,7 @@ import { BackCard } from '../Card'
 import { EditorStyles } from '../Editor'
 import { InfoBarWrapper } from '../infobar'
 import { MenuTrigger, RightCut, ServiceCard, Title } from '../Integration'
-import { NavButton, NavWrapper } from '../Nav'
+import { MainNav, NavButton, NavWrapper } from '../Nav'
 import { Result, ResultHeader, SearchContainer, SplitSearchPreviewWrapper } from '../Search'
 import { SidebarDiv } from '../Sidebar'
 import { CreateSnippet } from '../Snippets'
@@ -29,7 +29,7 @@ const grayMixerTrans = (n: number) => css`
 `
 const grayMainColor = palette.background
 
-const heightMain = `calc(100vh - 3rem)`
+const heightMain = `calc(100vh - 4rem)`
 
 const graphStyles = css`
   ${StyledGraph} {
@@ -175,6 +175,12 @@ const navStyles = css`
   ${NavButton} {
     margin-top: 0;
   }
+  ${MainNav} {
+    ${({ theme }) => css`
+      border-radius: ${theme.borderRadius.small};
+      background-color: ${theme.colors.gray[10]};
+    `}
+  }
 `
 
 const sidebarStyles = css`
@@ -199,6 +205,7 @@ const modalStyles = css`
 const containerStyle = css`
   background-color: ${palette.background};
   box-shadow: 0px 15px 40px ${transparentize(0.9, palette.shadow)};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
 `
 
 const containerStyleReset = css`

@@ -207,9 +207,6 @@ const SearchView = <Item,>({
   const setIndexes = useFilterStore((store) => store.setIndexes)
   const setSelected = (selected: number) => setSS((s) => ({ ...s, selected }))
 
-  const setOnlyResult = (result: Item[]) => {
-    setSS((s) => ({ ...s, result }))
-  }
   const setResult = (result: Item[], searchTerm: string) => {
     // mog('setresult', { result, searchTerm })
     setSS((s) => ({ ...s, result, searchTerm, selected: -1 }))
@@ -334,6 +331,7 @@ const SearchView = <Item,>({
         if (inpRef.current) {
           if (inpRef.current.value !== '') {
             inpRef.current.value = ''
+            executeSearch('')
             if (selected > -1) {
               setSelected(-1)
             }

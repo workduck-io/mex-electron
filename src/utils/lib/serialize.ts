@@ -24,6 +24,7 @@ const directPropertyKeys = [
   'checked',
   'blockId',
   'body',
+  'align',
   'questionId',
   'question',
   'answer',

@@ -312,6 +312,7 @@ export const EditorStyles = styled.div<{ readOnly?: boolean }>`
       font-size: 0.8rem;
       border-radius: ${({ theme }) => theme.borderRadius.tiny};
       color: ${({ theme }) => theme.colors.secondary};
+      padding: ${({ theme }) => theme.spacing.small};
     }
   }
 
