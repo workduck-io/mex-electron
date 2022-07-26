@@ -16,6 +16,9 @@ import { ILinkElementProps } from './ILinkElement.types'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../../views/routes/urls'
 import { getBlock } from '../../../../utils/search/parseData'
 import { ILink, NodeType, SharedNode } from '../../../../types/Types'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
+import useLoad from '@hooks/useLoad'
+import { useSpotlightEditorStore } from '@store/editor.spotlight'
 
 /**
  * ILinkElement with no default styles.
@@ -62,19 +65,33 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const { push } = useNavigation()
   const { getPathFromNodeid } = useLinks()
   const { getArchiveNode, getSharedNode, getNodeType } = useNodes()
+  const spotlightCtx = useSpotlightContext()
+  const { getNode } = useLoad()
   // mog('We reached here', { selected, focused })
 
   // const nodeid = getNodeidFromPath(element.value)
   const readOnly = useReadOnly()
   const path = getPathFromNodeid(element.value)
   const { goTo } = useRouting()
+  const { setPreviewEditorNode } = useSpotlightEditorStore((store) => ({
+    setPreviewEditorNode: store.setNode
+  }))
 
+  const loadLinkNode = async (nodeid: string) => {
+    if (spotlightCtx) {
+      const node = getNode(nodeid)
+      nodeid = node.nodeid
+      setPreviewEditorNode(node)
+    } else {
+      push(nodeid)
+      goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+    }
+  }
   const onClickProps = useOnMouseClick(() => {
     // Show preview on click, if preview is shown, navigate to link
     if (!preview) setPreview(true)
     else {
-      push(element.value)
-      goTo(ROUTE_PATHS.node, NavigationType.push, element.value)
+      loadLinkNode(element.value)
     }
   })
 
@@ -105,8 +122,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
       // Once preview is shown the link looses focus
       if (preview) {
         // mog('working', { element })
-        push(element.value)
-        goTo(ROUTE_PATHS.node, NavigationType.push, element.value)
+        loadLinkNode(element.value)
       }
     },
     [selected, preview]
