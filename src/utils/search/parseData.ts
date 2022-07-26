@@ -10,6 +10,9 @@ import {
   ELEMENT_TODO_LI
 } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
+import { insertId } from '@utils/lib/content'
+import { mog } from '@utils/lib/helper'
+import { textChildren } from '@utils/lib/smallContent'
 import { diskIndex, indexNames } from '../../data/search'
 import { ELEMENT_INLINE_BLOCK } from '../../editor/Components/InlineBlock/types'
 import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin'
@@ -310,12 +313,13 @@ export const defaultCopyConverter = (block) => {
   }
 
   if (block.type === ELEMENT_MEDIA_EMBED || block.type === ELEMENT_IMAGE) {
+    // mog('Converting Block', { block })
     return {
       changed: true,
       block: {
         type: ELEMENT_LINK,
         url: block.url,
-        children: [{ text: '' }]
+        children: insertId(textChildren(block.url))
       }
     }
   }
