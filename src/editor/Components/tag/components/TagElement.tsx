@@ -1,3 +1,4 @@
+import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { moveSelection, useEditorRef } from '@udecode/plate'
 import * as React from 'react'
 import { useFocused, useSelected } from 'slate-react'
@@ -12,6 +13,7 @@ import { TagElementProps } from './TagElement.types'
  * [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling)
  */
 export const TagElement = ({ attributes, children, element }: TagElementProps) => {
+  const spotlightCtx = useSpotlightContext()
   const editor = useEditorRef()
   const selected = useSelected()
   const focused = useFocused()
@@ -43,7 +45,9 @@ export const TagElement = ({ attributes, children, element }: TagElementProps) =
   )
 
   const openTag = (tag: string) => {
-    goTo(ROUTE_PATHS.tag, NavigationType.push, tag)
+    if (!spotlightCtx) {
+      goTo(ROUTE_PATHS.tag, NavigationType.push, tag)
+    }
   }
 
   return (
