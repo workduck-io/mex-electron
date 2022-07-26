@@ -1,5 +1,5 @@
 import {
-  AnyObject,
+  Value,
   AutoformatRule,
   ELEMENT_BLOCKQUOTE,
   ELEMENT_CODE_BLOCK,
@@ -26,7 +26,7 @@ import {
   MARK_STRIKETHROUGH,
   PlateEditor,
   TEditor,
-  getParent,
+  getParentNode,
   getPluginType,
   insertEmptyCodeBlock,
   isBlockAboveEmpty,
@@ -53,14 +53,14 @@ import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import { ELEMENT_INLINE_BLOCK } from '@editor/Components/InlineBlock/types'
 import { SOURCE_PLUGIN } from '@editor/Components/Blocks/createBlockModifierPlugin'
 
-const preFormat = (editor: TEditor<AnyObject>) => unwrapList(editor as PlateEditor)
+const preFormat = (editor: PlateEditor<Value>) => unwrapList(editor)
 
 /*
  * Returns true if the autoformat can be applied:
  * Is outside of code
  */
-const formatQuery = (editor: TEditor<AnyObject>, options: AutoformatQueryOptions) => {
-  const parentEntry = getParent(editor, editor.selection.focus)
+const formatQuery = (editor: PlateEditor<Value>, options: AutoformatQueryOptions) => {
+  const parentEntry = getParentNode(editor, editor.selection.focus)
   if (!parentEntry) return
   const [node] = parentEntry
 
@@ -125,17 +125,13 @@ export const optionsAutoFormatRule: Array<AutoformatRule> = [
     match: ['* ', '- '],
     query: formatQuery,
     preFormat,
-    format: (editor: TEditor<AnyObject>) => {
+    format: (editor: PlateEditor<Value>) => {
       if (editor.selection) {
-        const parentEntry = getParent(editor, editor.selection)
+        const parentEntry = getParentNode(editor, editor.selection)
         if (!parentEntry) return
         const [node] = parentEntry
-        if (
-          isElement(node) &&
-          !isType(editor as PlateEditor, node, ELEMENT_CODE_BLOCK) &&
-          !isType(editor as PlateEditor, node, ELEMENT_CODE_LINE)
-        ) {
-          toggleList(editor as PlateEditor, {
+        if (isElement(node) && !isType(editor, node, ELEMENT_CODE_BLOCK) && !isType(editor, node, ELEMENT_CODE_LINE)) {
+          toggleList(editor, {
             type: ELEMENT_UL
           })
         }
@@ -148,17 +144,13 @@ export const optionsAutoFormatRule: Array<AutoformatRule> = [
     match: ['1.', '1)'],
     preFormat,
     query: formatQuery,
-    format: (editor: TEditor<AnyObject>) => {
+    format: (editor: PlateEditor<Value>) => {
       if (editor.selection) {
-        const parentEntry = getParent(editor, editor.selection)
+        const parentEntry = getParentNode(editor, editor.selection)
         if (!parentEntry) return
         const [node] = parentEntry
-        if (
-          isElement(node) &&
-          !isType(editor as PlateEditor, node, ELEMENT_CODE_BLOCK) &&
-          !isType(editor as PlateEditor, node, ELEMENT_CODE_LINE)
-        ) {
-          toggleList(editor as PlateEditor, {
+        if (isElement(node) && !isType(editor, node, ELEMENT_CODE_BLOCK) && !isType(editor, node, ELEMENT_CODE_LINE)) {
+          toggleList(editor, {
             type: ELEMENT_OL
           })
         }
@@ -220,9 +212,9 @@ export const optionsAutoFormatRule: Array<AutoformatRule> = [
     match: '``',
     trigger: '`',
     triggerAtBlockStart: false,
-    format: (editor: TEditor<AnyObject>) => {
-      insertEmptyCodeBlock(editor as PlateEditor, {
-        defaultType: getPluginType(editor as PlateEditor, ELEMENT_DEFAULT),
+    format: (editor: PlateEditor<Value>) => {
+      insertEmptyCodeBlock(editor, {
+        defaultType: getPluginType(editor, ELEMENT_DEFAULT),
         insertNodesOptions: { select: true }
       })
     }

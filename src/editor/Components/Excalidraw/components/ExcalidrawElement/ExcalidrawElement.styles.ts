@@ -1,8 +1,9 @@
+import { Value } from '@udecode/plate'
 import { createStyles } from '@udecode/plate-styled-components'
 import styled from 'styled-components'
 import { ExcalidrawElementProps } from './ExcalidrawElement.types'
 
-export const getExcalidrawElementStyles = (props: ExcalidrawElementProps) =>
+export const getExcalidrawElementStyles = (props: ExcalidrawElementProps<Value>) =>
   createStyles(
     { prefixClassNames: 'ExcalidrawElement', ...props },
     {

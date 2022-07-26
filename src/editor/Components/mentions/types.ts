@@ -1,10 +1,7 @@
-import { TElement } from '@udecode/plate-core'
+import { TMentionElement } from '@udecode/plate'
 
 // Data of Element node
-export interface MentionNodeData {
+export interface MentionNode extends TMentionElement {
   value: string
   [key: string]: any
 }
-
-// Element node
-export type MentionNode = TElement<MentionNodeData>

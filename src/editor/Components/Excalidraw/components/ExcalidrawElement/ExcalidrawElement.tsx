@@ -6,12 +6,11 @@ import fullscreenLine from '@iconify/icons-ri/fullscreen-line'
 import markupLine from '@iconify/icons-ri/markup-line'
 import { Icon } from '@iconify/react'
 import Tippy from '@tippyjs/react'
+import { findNodePath } from '@udecode/plate'
 import { setNodes } from '@udecode/plate-core'
 import { getRootProps } from '@udecode/plate-styled-components'
 import { debounce } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
-import { ReactEditor } from 'slate-react'
-import { mog } from '../../../../../utils/lib/helper'
 import {
   InputPrompt,
   InputWrapper,
@@ -61,7 +60,7 @@ export const ExcalidrawElement = (props: any) => {
     autoFocus: false,
     onChange: debounce((elements: readonly any[], state: AppState) => {
       try {
-        const path = ReactEditor.findPath(props.editor, element)
+        const path = findNodePath(props.editor, element)
         if (props.editor) {
           const serializedData = serializeAsJSON(elements, state)
           setNodes(

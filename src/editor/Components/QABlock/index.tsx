@@ -7,9 +7,17 @@ import { mog } from '../../../utils/lib/helper'
 import { useSearch } from '../../../hooks/useSearch'
 import chat from '@iconify/icons-ph/chats-circle-bold'
 
-import { ReactEditor, useReadOnly, useSelected } from 'slate-react'
-import { Editor } from 'slate'
-import { deleteFragment, insertNodes, selectEditor, setNodes, usePlateEditorRef } from '@udecode/plate'
+import { useReadOnly, useSelected } from 'slate-react'
+import {
+  insertNodes,
+  removeNodes,
+  selectEditor,
+  setNodes,
+  usePlateEditorRef,
+  getNextNode,
+  getPreviousNode,
+  getPath
+} from '@udecode/plate'
 import { KEYBOARD_KEYS } from '../../../components/spotlight/Home/components/List'
 import { QuestionInput } from './styled'
 import { useRouting } from '../../../views/routes/urls'
@@ -23,7 +31,6 @@ import { SuggestionElementType } from '../../../components/mex/Suggestions/types
 import { removeStopwords } from '../../../utils/stopwords'
 import useLoad from '@hooks/useLoad'
 import useSuggestionStore from '@store/useSuggestionStore'
-import { useApi } from '@apis/useSaveApi'
 
 interface QABlockProps {
   attributes: any
@@ -59,7 +66,7 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
 
   const goToNextLine = () => {
     // * Go to next line
-    const n = Editor.next(editor)
+    const n = getNextNode(editor)
 
     if (n) {
       selectEditor(editor, { at: n[1], focus: true })
@@ -70,7 +77,7 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
   }
 
   const goToPreviousLine = () => {
-    const prev = Editor.previous(editor)
+    const prev = getPreviousNode(editor)
     if (prev) selectEditor(editor, { at: prev[1], focus: true })
   }
 
@@ -84,7 +91,7 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
   }
 
   const saveAnswer = (answer: string) => {
-    const path = ReactEditor.findPath(editor, element)
+    const path = getPath(editor, element)
     if (editor) {
       const question = { questionId: element.questionId, question: element.question, answer }
       setNodes(editor, question, { at: path })
@@ -94,7 +101,7 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
   const onKeyDown = (event) => {
     if (event.key === KEYBOARD_KEYS.Enter) {
       event.preventDefault()
-      const isHeadingBlock = Editor.previous(editor) === undefined
+      const isHeadingBlock = getPreviousNode(editor) === undefined
 
       // TODO: save Draft node name
       if (userResponse) {
@@ -104,7 +111,7 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
         }
         goToNextLine()
       } else {
-        deleteFragment(editor, { at: editor.selection, unit: 'block' })
+        removeNodes(editor, { at: editor.selection, hanging: false, mode: 'highest' })
         insertNodes(editor, defaultContent.content)
         selectEditor(editor, { focus: true })
       }
@@ -127,7 +134,7 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
 
     mog('StopWords', { query })
 
-    const isHeadingBlock = Editor.previous(editor) === undefined
+    const isHeadingBlock = getPreviousNode(editor) === undefined
 
     if (isHeadingBlock) {
       queryIndexWithRanking('template', query).then((results) => {

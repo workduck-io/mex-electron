@@ -1,5 +1,12 @@
 import { Range } from 'slate'
-import { getParent, isCollapsed, isElement, ELEMENT_CODE_BLOCK, ELEMENT_CODE_LINE, PlateEditor } from '@udecode/plate'
+import {
+  getParentNode,
+  isCollapsed,
+  isElement,
+  ELEMENT_CODE_BLOCK,
+  ELEMENT_CODE_LINE,
+  PlateEditor
+} from '@udecode/plate'
 import { ComboboxType, ComboTriggerDataType } from './types'
 import { getTextFromTrigger } from '../combobox/utils/getTextFromTrigger'
 import { debounce } from 'lodash'
@@ -52,7 +59,7 @@ const getTextFromTriggers = (
   if (selection && isCollapsed(selection)) {
     let triggerSelection
 
-    const parentEntry = getParent(editor, editor.selection.focus)
+    const parentEntry = getParentNode(editor, editor.selection.focus)
 
     if (!parentEntry) return
     const [node] = parentEntry

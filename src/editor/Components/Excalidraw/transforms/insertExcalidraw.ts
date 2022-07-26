@@ -1,25 +1,24 @@
-import { getParent, insertNodes, PlateEditor, PlatePluginKey, TElement } from '@udecode/plate-core'
-import { generateTempId } from '../../../../data/Defaults/idPrefixes'
+import { getParentNode, insertNodes, PlateEditor, PlatePluginKey, TNodeProps, Value } from '@udecode/plate-core'
 import { ELEMENT_EXCALIDRAW } from '../createExcalidrawPlugin'
-import { ExcalidrawNodeData } from '../types'
+import { TExcalidrawElement } from '../types'
 
-export const insertExcalidraw = (
-  editor: PlateEditor,
-  { key = ELEMENT_EXCALIDRAW }: Partial<ExcalidrawNodeData> & PlatePluginKey
+export const insertExcalidraw = <V extends Value>(
+  editor: PlateEditor<V>,
+  { key = ELEMENT_EXCALIDRAW, ...props }: TNodeProps<TExcalidrawElement> & PlatePluginKey
 ): void => {
   if (!editor.selection) return
 
-  const selectionParentEntry = getParent(editor, editor.selection)
+  const selectionParentEntry = getParentNode(editor, editor.selection)
   if (!selectionParentEntry) return
 
   const [, path] = selectionParentEntry
 
-  insertNodes<TElement<ExcalidrawNodeData>>(
+  insertNodes<TExcalidrawElement>(
     editor,
     {
-      id: generateTempId(),
       type: key,
-      children: [{ text: '' }]
+      children: [{ text: '' }],
+      ...props
     },
     { at: path }
   )

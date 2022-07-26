@@ -1,10 +1,9 @@
-import { TElement, useEditorRef, setNodes } from '@udecode/plate-core'
-import { MediaEmbedNodeData } from '@udecode/plate-media-embed'
+import { TElement, useEditorRef, setNodes, findNodePath } from '@udecode/plate-core'
+import { TMediaEmbedElement } from '@udecode/plate-media-embed'
 import { debounce } from 'lodash'
 import * as React from 'react'
 import { useEffect } from 'react'
 import EmbedContainer from 'react-oembed-container'
-import { ReactEditor } from 'slate-react'
 import { getEmbedData } from './getEmbedUrl'
 import { IFrame, IFrameWrapper, MediaHtml, RootElement } from './MediaEmbedElement.styles'
 import { MediaEmbedElementProps } from './MediaEmbedElement.types'
@@ -60,8 +59,8 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
             // console.log(val)
 
             try {
-              const path = ReactEditor.findPath(editor, element)
-              setNodes<TElement<MediaEmbedNodeData>>(editor, { url: val }, { at: path })
+              const path = findNodePath(editor, element)
+              setNodes(editor, { url: val }, { at: path })
             } catch (e) {
               console.error(e)
             }

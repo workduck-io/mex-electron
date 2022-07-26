@@ -1,7 +1,17 @@
-import { getBlockAbove, getPluginType, insertNodes, PEditor, PlateEditor, TElement } from '@udecode/plate'
+import {
+  deleteText,
+  getBlockAbove,
+  getPluginType,
+  insertNodes,
+  insertText,
+  isEndPoint,
+  moveSelection,
+  PlateEditor,
+  select,
+  TElement,
+  Value
+} from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
-import { Editor, Transforms } from 'slate'
-import { ReactEditor } from 'slate-react'
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 import { NODE_ID_PREFIX } from '../../../data/Defaults/idPrefixes'
 import { useLinks } from '../../../hooks/useLinks'
@@ -52,11 +62,11 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
 
       if (targetRange) {
         const pathAbove = getBlockAbove(editor)?.[1]
-        const isBlockEnd = editor.selection && pathAbove && Editor.isEnd(editor, editor.selection.anchor, pathAbove)
+        const isBlockEnd = editor.selection && pathAbove && isEndPoint(editor, editor.selection.anchor, pathAbove)
 
         // insert a space to fix the bug
         if (isBlockEnd) {
-          Transforms.insertText(editor, ' ')
+          insertText(editor, ' ')
         }
 
         let itemValue = item.text
@@ -71,7 +81,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         // if (key)
 
         // select the ilink text and insert the ilink element
-        Transforms.select(editor, targetRange)
+        select(editor, targetRange)
         // mog('Inserting Element', { comboType, type, itemValue, item })
 
         const isBlockTriggered = useComboboxStore.getState().isBlockTriggered
@@ -127,11 +137,11 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         })
 
         // move the selection after the ilink element
-        Transforms.move(editor)
+        moveSelection(editor)
 
         // delete the inserted space
         if (isBlockEnd) {
-          Transforms.delete(editor)
+          deleteText(editor)
         }
 
         // return true
@@ -160,7 +170,7 @@ export const useOnSelectItem = (
     comboboxKey === ComboboxKey.SLASH_COMMAND ||
     (comboboxKey === ComboboxKey.INTERNAL && isInternalCommand(search.textAfterTrigger))
 
-  let elementChangeHandler: (editor: PEditor & ReactEditor, item: IComboboxItem) => any
+  let elementChangeHandler: (editor: PlateEditor<Value>, item: IComboboxItem) => any
 
   if (isSlash) {
     elementChangeHandler = slashCommandOnChange

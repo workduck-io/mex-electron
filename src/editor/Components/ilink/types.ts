@@ -1,10 +1,7 @@
 import { TElement } from '@udecode/plate-core'
 
-// Data of Element node
-export interface ILinkNodeData {
+// Element node
+export interface ILinkNode extends TElement {
   value: string
   [key: string]: any
 }
-
-// Element node
-export type ILinkNode = TElement<ILinkNodeData>

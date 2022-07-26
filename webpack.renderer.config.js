@@ -24,6 +24,8 @@ module.exports = {
   resolve: {
     alias: aliases,
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
-    fallback: { url: false }
+    fallback: {
+      url: false
+    }
   }
 }

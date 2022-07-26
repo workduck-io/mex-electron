@@ -1,6 +1,6 @@
-import { escapeRegExp, getText } from '@udecode/plate-core'
+import { getRange } from '@udecode/plate'
+import { escapeRegExp, getEditorString, PlateEditor, Value, getPointBefore } from '@udecode/plate-core'
 import { BaseRange, Editor, Point } from 'slate'
-import { mog } from '../../../../utils/lib/helper'
 import { ComboTriggerType } from '../useComboboxStore'
 
 /**
@@ -23,16 +23,16 @@ export type TextFromTrigger = {
   textAfterBlockTrigger?: string
 }
 
-export const getTextFromTrigger = (editor: Editor, options: TriggerOptions): TextFromTrigger => {
+export const getTextFromTrigger = (editor: PlateEditor<Value>, options: TriggerOptions): TextFromTrigger => {
   const escapedTrigger = escapeRegExp(options.trigger.trigger)
   const triggerRegex = new RegExp(`(?:^)${escapedTrigger}`)
 
   const start: Point | undefined =
-    options.trigger.at ?? Editor.before(editor, options.at, { distance: options.trigger.trigger.length })
+    options.trigger.at ?? getPointBefore(editor, options.at, { distance: options.trigger.trigger.length })
 
   // Range from start to cursor
-  const range = start && Editor.range(editor, start, options.at)
-  const text = getText(editor, range)
+  const range = start && getRange(editor, start, options.at)
+  const text = getEditorString(editor, range)
 
   if (!range || !text?.match(triggerRegex) || text.length > 100) return
 
@@ -52,7 +52,8 @@ export const getTextFromTrigger = (editor: Editor, options: TriggerOptions): Tex
 
   if (isBlockTriggered) {
     const blockRange =
-      blockStart && Editor.range(editor, { ...blockStart, offset: blockStart.offset + range.anchor.offset }, options.at)
+      blockStart && getRange(editor, { ...blockStart, offset: blockStart.offset + range.anchor.offset }, options.at)
+    // const t = getText(editor, blockRange)
     const blockText = text.substring(blockStart.offset + 1)
 
     return {

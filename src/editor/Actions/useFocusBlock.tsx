@@ -1,7 +1,4 @@
-import { Editor, Transforms } from 'slate'
-import { findNode, getPlateEditorRef } from '@udecode/plate'
-import React from 'react'
-import { ReactEditor } from 'slate-react'
+import { findNode, focusEditor, getPlateEditorRef, select, getStartPoint } from '@udecode/plate'
 import { mog } from '../../utils/lib/helper'
 import create from 'zustand'
 
@@ -87,8 +84,8 @@ export const useFocusBlock = () => {
         if (!headingNodePath) return
 
         // setHighlightedBlockIds([blockid], key)
-        Transforms.select(editor, Editor.start(editor, headingNodePath))
-        ReactEditor.focus(editor)
+        select(editor, getStartPoint(editor, headingNodePath))
+        focusEditor(editor)
       }
     } catch (e) {
       console.log('select block error', e)
@@ -115,7 +112,7 @@ export const useFocusBlock = () => {
         if (!headingNodePath) return
 
         // setHighlightedBlockIds([blockid], key)
-        Transforms.select(editor, Editor.start(editor, headingNodePath))
+        select(editor, getStartPoint(editor, headingNodePath))
         setTimeout(() => {
           const highlightEl = document.getElementsByClassName('slate-highlight')[0]
           if (highlightEl) {

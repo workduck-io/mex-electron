@@ -1,13 +1,12 @@
 // TypeScript Users only add this code
-import { BaseEditor } from 'slate'
-import { ReactEditor } from 'slate-react'
+import { PlateEditor } from '@udecode/plate'
 
 type CustomElement = { type: 'paragraph'; children: CustomText[] }
 type CustomText = { text: string }
 
 declare module 'slate' {
   interface CustomTypes {
-    Editor: BaseEditor & ReactEditor
+    CEditor: PlateEditor
     Element: CustomElement
     Text: CustomText
   }

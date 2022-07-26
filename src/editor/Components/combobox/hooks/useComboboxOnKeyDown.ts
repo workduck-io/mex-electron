@@ -1,5 +1,6 @@
 import { PlateEditor } from '@udecode/plate'
-import { KeyboardHandler } from '@udecode/plate-core'
+import { insertText, KeyboardHandler, select } from '@udecode/plate-core'
+import { mog } from '../../../../utils/lib/helper'
 import { useEditorStore } from '../../../../store/useEditorStore'
 import { ComboConfigData } from '../../multi-combobox/multiComboboxContainer'
 import { useElementOnChange as getElementOnChange } from '../../multi-combobox/useMultiComboboxOnKeyDown'
@@ -11,7 +12,7 @@ import { isElder } from '../../../../components/mex/Sidebar/treeUtils'
 import { FlowCommandPrefix } from '../../SlashCommands/useSyncConfig'
 import { SnippetCommandPrefix } from '../../../../hooks/useSnippets'
 import { CreateNewPrefix } from '../../multi-combobox/useMultiComboboxChange'
-import { Editor, Transforms } from 'slate'
+import { Editor } from 'slate'
 import { ComboSearchType } from '../../multi-combobox/types'
 
 const pure = (id: string) => {
@@ -75,8 +76,8 @@ export const replaceFragment = (editor: any, range: any, text: string) => {
   const sel = editor.selection
 
   if (sel) {
-    Transforms.select(editor, range)
-    Editor.insertText(editor, text)
+    select(editor, range)
+    insertText(editor, text)
   }
 }
 

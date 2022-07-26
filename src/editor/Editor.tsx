@@ -1,4 +1,4 @@
-import { Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
+import { getPlateEditorRef, Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
 import React, { useEffect, useMemo } from 'react'
 import generatePlugins, { PluginOptionType } from './Plugins/plugins'
 
@@ -83,7 +83,9 @@ export const Editor = ({
   }, [editorRef, editorId, focusAtBeginning]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (editorRef && hightlightedBlockIds.length > 0) {
+    const tempRef = editorRef || getPlateEditorRef(editorId)
+
+    if (tempRef && hightlightedBlockIds.length > 0) {
       mog('editor highlighted', { hightlightedBlockIds, editorId })
       focusBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
       const clearHighlightTimeoutId = setTimeout(() => {
@@ -164,6 +166,7 @@ export const Editor = ({
         >
           {showBalloonToolbar && <BallonMarkToolbarButtons />}
           <MultiComboboxContainer config={comboConfigData} />
+          {/* {showCursorOverlay && <CursorOverlayContainer />} */}
         </Plate>
       </EditorStyles>
     </>

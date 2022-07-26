@@ -1,5 +1,14 @@
-import { AnyObject, ELEMENT_PARAGRAPH, TNode, getNodes, insertNodes, usePlateEditorRef } from '@udecode/plate'
-import { NodeEntry, Transforms } from 'slate'
+import {
+  ELEMENT_PARAGRAPH,
+  TNode,
+  getNodeEntries,
+  insertNodes,
+  usePlateEditorRef,
+  removeNodes,
+  TNodeEntry,
+  deleteText,
+  getPlateEditorRef
+} from '@udecode/plate'
 import useBlockStore, { BlockMetaDataType, BlockType } from '@store/useBlockStore'
 import { defaultContent } from '@data/Defaults/baseData'
 import { generateTempId } from '@data/Defaults/idPrefixes'
@@ -20,37 +29,33 @@ export const getBlockMetadata = (text: string, meta?: BlockMetaDataType): BlockM
 
 export const useEditorBlockSelection = () => {
   const blocksFromStore = useBlockStore((store) => store.blocks)
-  const editor = usePlateEditorRef()
 
-  const getEditorBlocks = (): Array<NodeEntry<TNode<AnyObject>>> => {
+  const getEditorBlocks = (): TNodeEntry<TNode>[] => {
     const nodeId = useEditorStore.getState().node.nodeid
+    const editor = getPlateEditorRef()
 
     const blocks = Object.values(blocksFromStore)
-    const blockIter = getNodes(editor, {
+    const blockIter = getNodeEntries(editor, {
       at: [],
       match: (node) => {
         return blocks.find((block) => {
-          return block.id === node.id
+          return block.id === node?.id
         })
       },
       block: true
     })
 
-    const blockEnteries = Array.from(blockIter).map(([block, _path]) => {
+    const blockEnteries: TNodeEntry<TNode>[] = Array.from(blockIter).map(([block, _path]) => {
       const blockWithMetadata = { ...block, blockMeta: getBlockMetadata(nodeId, block?.blockMeta) }
       mog('Block enteries are', { blockWithMetadata })
 
       return [updateIds(blockWithMetadata), _path]
     })
 
-    return blockEnteries as NodeEntry<TNode<AnyObject>>[]
+    return blockEnteries
   }
 
-  const getContentWithNewBlocks = (
-    nodeid: string,
-    blocks: NodeEntry<TNode<AnyObject>>[],
-    isAppend = true
-  ): NodeEditorContent => {
+  const getContentWithNewBlocks = (nodeid: string, blocks: TNodeEntry<TNode>[], isAppend = true): NodeEditorContent => {
     const blocksContent = blocks.map(([block, _path]) => block)
 
     if (!isAppend) return blocksContent
@@ -59,16 +64,17 @@ export const useEditorBlockSelection = () => {
     return [...(content?.content ?? defaultContent.content), ...blocksContent]
   }
 
-  const deleteContentBlocks = (blocks: NodeEntry<TNode<AnyObject>>[]): void => {
+  const deleteContentBlocks = (blocks: TNodeEntry<TNode>[]): void => {
+    const editor = getPlateEditorRef()
     const selection = editor?.selection
 
     if (blocks.length) {
       blocks.forEach(([block, path], index) => {
         const at = path[0] - index === -1 ? 0 : path[0] - index
-        Transforms.delete(editor, { at: [at] })
+        deleteText(editor, { at: [at] })
       })
     } else if (selection) {
-      Transforms.removeNodes(editor, { at: selection })
+      removeNodes(editor, { at: selection })
     }
 
     const isEmpty = editor.children.length === 0
@@ -84,8 +90,10 @@ export const useEditorBlockSelection = () => {
   }
 
   const convertToBlocks = () => {
+    const editor = getPlateEditorRef()
+
     const nodes = Array.from(
-      getNodes(editor, {
+      getNodeEntries(editor, {
         mode: 'highest',
         block: true,
         at: editor.selection

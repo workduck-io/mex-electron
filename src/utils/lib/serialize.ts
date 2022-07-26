@@ -18,6 +18,7 @@ const directPropertyKeys = [
   'code',
   'email',
   'url',
+  'caption',
   'value',
   'blockValue',
   'checked',

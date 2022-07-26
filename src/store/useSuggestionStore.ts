@@ -1,6 +1,6 @@
 // import { NodeSearchResult } from './useSearchStore'
 import create from 'zustand'
-import { AnyObject, TNode } from '@udecode/plate'
+import { TNode } from '@udecode/plate'
 import { SuggestionType } from '../components/mex/Suggestions/types'
 import { mog } from '@utils/lib/helper'
 
@@ -17,8 +17,8 @@ type SuggestionStoreType = {
   headingQASearch?: boolean
   setHeadingQASearch: (headingQASearch: boolean) => void
 
-  query?: TNode<AnyObject>[]
-  setQuery?: (query: TNode<AnyObject>[]) => void
+  query?: TNode[]
+  setQuery?: (query: TNode[]) => void
 }
 
 const useSuggestionStore = create<SuggestionStoreType>((set, get) => ({
