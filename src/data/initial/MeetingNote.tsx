@@ -1,3 +1,18 @@
+import { mog } from '@utils/lib/helper'
+import {
+  aLink,
+  emptyText,
+  emptyP,
+  heading,
+  list,
+  mentionList,
+  pChildren,
+  pText,
+  tag,
+  task,
+  text,
+  textChildren
+} from '@utils/lib/smallContent'
 import { insertId } from '../../utils/lib/content'
 import { toLocaleString } from '../../utils/time'
 
@@ -11,86 +26,40 @@ export interface MeetingTemplateData {
 
 const meetingTemplate = ({ title, date, link, attendees }: MeetingTemplateData) => {
   const attendeesJSON =
-    attendees.length > 0
-      ? {
-          type: 'p',
-          children: [
-            {
-              type: 'p',
-              text: 'Attendees: '
-            },
-            ...attendees.map((id) => ({
-              type: 'mention',
-              children: [
-                {
-                  text: ''
-                }
-              ],
-              value: id
-            })),
-            {
-              type: 'p',
-              text: ''
-            }
-          ]
-        }
-      : { type: 'p', children: [{ text: '' }] }
+    attendees.length > 0 ? pChildren([text(`Attendees: `), ...mentionList(attendees), emptyText()]) : emptyP()
 
   return [
-    { type: 'h1', children: [{ text: title }] },
-    {
-      type: 'p',
-      children: [
-        { text: '' },
-        { type: 'tag', children: [{ text: '' }], value: 'meeting' },
-        { text: ` On ${toLocaleString(new Date(date))} - ` },
-        { type: 'a', url: link, children: [{ text: 'Link' }] },
-        { text: '' }
-      ]
-    },
+    heading(1, title),
+    pChildren([
+      emptyText(),
+      tag('meeting'),
+      text(` On ${toLocaleString(new Date(date))} - `),
+      aLink(link, 'Link'),
+      emptyText()
+    ]),
+
     attendeesJSON,
-    { type: 'h2', children: [{ text: 'Updates' }] },
-    {
-      type: 'ul',
-      children: [
-        {
-          type: 'li',
-          children: [{ type: 'lic', children: [{ text: 'Updates of the team here' }] }]
-        }
-      ]
-    },
-    { type: 'p', children: [{ text: '' }] },
-    { type: 'h2', children: [{ text: 'Agenda' }] },
-    {
-      type: 'ul',
-      children: [
-        {
-          type: 'li',
-          children: [{ type: 'lic', children: [{ text: 'List items for agenda here' }] }]
-        }
-      ]
-    },
-    { type: 'p', children: [{ text: '' }] },
-    { type: 'h2', children: [{ text: 'Tasks' }] },
-    { type: 'action_item', children: [{ text: 'Create tasks here' }] },
-    { type: 'p', children: [{ text: '' }] },
-    { type: 'h2', children: [{ text: 'Questions' }] },
-    {
-      type: 'ul',
-      children: [
-        {
-          type: 'li',
-          children: [
-            {
-              type: 'lic',
-              children: [{ text: 'Any Questions asked?' }]
-            }
-          ]
-        }
-      ]
-    },
-    { type: 'p', children: [{ text: '' }] }
+
+    heading(2, 'Updates'),
+    list(['Updates of the team here']),
+
+    emptyP(),
+    heading(2, 'Agenda'),
+    list(['List items for agenda here']),
+
+    emptyP(),
+    heading(2, 'Tasks'),
+    task('Create tasks here'),
+
+    emptyP(),
+    heading(2, 'Questions'),
+    list(['Any questions asked']),
+    emptyP()
   ]
 }
 
-export const MeetingSnippetContent = (data: MeetingTemplateData) => insertId(meetingTemplate(data))
+export const MeetingSnippetContent = (data: MeetingTemplateData) => {
+  const content = insertId(meetingTemplate(data))
+  mog('COntent Meeting', { content })
+  return content
+}
