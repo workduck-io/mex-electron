@@ -85,7 +85,7 @@ const Search = () => {
   const { getNode, getNodeType } = useNodes()
   const { saveData } = useSaveData()
   const { goTo } = useRouting()
-  const { addSnippet, deleteSnippet, getSnippet } = useSnippets()
+  const { deleteSnippet, getSnippet } = useSnippets()
   const {
     applyCurrentFilters,
     addCurrentFilter,
@@ -108,7 +108,10 @@ const Search = () => {
       idxKeys.length === 1 && idxKeys.includes('node')
         ? res.filter((r) => {
             const nodeType = getNodeType(r.id)
-            return nodeType !== NodeType.MISSING && nodeType !== NodeType.ARCHIVED
+            if (r.index === 'node') {
+              return nodeType !== NodeType.MISSING && nodeType !== NodeType.ARCHIVED
+            }
+            return true
           })
         : res
     mog('search', { res, filRes, idxKeys })
@@ -120,11 +123,14 @@ const Search = () => {
   const nodeUID = useEditorStore((store) => store.node.nodeid)
   const baseNodeId = useDataStore((store) => store.baseNodeId)
 
-  // console.log({ result })
-  const onSelect = (item: GenericSearchResult) => {
-    const nodeid = item.id
-    loadNode(nodeid, { highlightBlockId: item.blockId })
-    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+  const onOpenItem = (item: GenericSearchResult) => {
+    if (item.index === 'node') {
+      loadNode(item.id, { highlightBlockId: item.blockId })
+      goTo(ROUTE_PATHS.node, NavigationType.push, item.id)
+    } else if (item.index === 'snippet' || item.index === 'template') {
+      loadSnippet(item.id)
+      goTo(ROUTE_PATHS.snippet, NavigationType.push, item.id, { title: item.title })
+    }
   }
 
   const onEscapeExit = () => {
@@ -135,22 +141,8 @@ const Search = () => {
 
   const onDoubleClick = (e: React.MouseEvent<HTMLElement>, item: GenericSearchResult) => {
     e.preventDefault()
-    const nodeid = item.id
     if (e.detail === 2) {
-      loadNode(nodeid, { highlightBlockId: item.blockId })
-      goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-    }
-  }
-
-  const onOpenSnippet = (id: string) => {
-    loadSnippet(id)
-  }
-
-  const onDoubleClickSnippet = (e: React.MouseEvent<HTMLElement>, id: string, title: string) => {
-    e.preventDefault()
-    if (e.detail === 2) {
-      onOpenSnippet(id)
-      goTo(ROUTE_PATHS.snippet, NavigationType.push, id, { title })
+      onOpenItem(item)
     }
   }
 
@@ -189,7 +181,7 @@ const Search = () => {
           <Result {...props} key={id} ref={ref}>
             <ResultHeader>
               <Icon icon={icon} />
-              <ResultTitle onClick={() => onSelect({ id: snip.id, title: snip.title })}>{snip.title}</ResultTitle>
+              <ResultTitle onClick={() => onOpenItem(item)}>{snip.title}</ResultTitle>
               {snip.template && (
                 <ItemTag large>
                   <Icon icon={magicLine} />
@@ -198,10 +190,7 @@ const Search = () => {
               )}
               <IconButton size={20} icon={deleteBin6Line} title="delete" onClick={() => onDeleteSnippet(snip.id)} />
             </ResultHeader>
-            <SearchPreviewWrapper
-              onClick={() => onSelect({ id: snip.id, title: snip.title })}
-              active={item.matchField?.includes('text')}
-            >
+            <SearchPreviewWrapper onClick={() => onOpenItem(item)} active={item.matchField?.includes('text')}>
               <EditorPreviewRenderer content={snip.content} editorId={`editor_${item.id}`} />
             </SearchPreviewWrapper>
           </Result>
@@ -211,7 +200,7 @@ const Search = () => {
           <Result {...props} key={id} ref={ref}>
             <ResultRow active={item.matchField?.includes('title')} selected={props.selected}>
               <Icon icon={icon} />
-              <ResultMain onClick={() => onSelect({ id: snip.id, title: snip.title })}>
+              <ResultMain onClick={() => onOpenItem(item)}>
                 <ResultTitle>{snip.title}</ResultTitle>
                 <ResultDesc>{convertContentToRawText(snip.content, ' ')}</ResultDesc>
               </ResultMain>
@@ -314,7 +303,7 @@ const Search = () => {
       if (snip)
         return (
           <SplitSearchPreviewWrapper id={`splitSnippetSearchPreview_for_${item.id}`}>
-            <Title onMouseUp={(e) => onDoubleClickSnippet(e, item.id, item.title)}>
+            <Title onMouseUp={(e) => onDoubleClick(e, item)}>
               <span className="title">{snip.title}</span>
               {snip.template && (
                 <ItemTag large>
@@ -325,7 +314,7 @@ const Search = () => {
               <Icon icon={icon} />
             </Title>
             <EditorPreviewRenderer
-              onDoubleClick={(e) => onDoubleClickSnippet(e, item.id, item.title)}
+              onDoubleClick={(e) => onDoubleClick(e, item)}
               content={snip.content}
               editorId={`SnippetSearchPreview_editor_${item.id}`}
             />
@@ -384,10 +373,10 @@ const Search = () => {
             notes: ['node', 'shared'],
             snippets: ['snippet', 'template']
           },
-          default: 'notes'
+          default: 'all'
         }}
         getItemKey={(i) => i.id}
-        onSelect={onSelect}
+        onSelect={onOpenItem}
         onEscapeExit={onEscapeExit}
         onSearch={onSearch}
         filterResults={filterResults}

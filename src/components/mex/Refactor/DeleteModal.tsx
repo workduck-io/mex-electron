@@ -5,18 +5,16 @@ import Modal from 'react-modal'
 import { useLocation } from 'react-router-dom'
 import tinykeys from 'tinykeys'
 import create from 'zustand'
-import { USE_API } from '../../../data/Defaults/dev_'
 import { useDelete } from '../../../hooks/useDelete'
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
-import useLoad from '../../../hooks/useLoad'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { Button } from '../../../style/Buttons'
-import { mog } from '../../../utils/lib/helper'
 import { isReserved } from '../../../utils/lib/paths'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
+import { DisplayShortcut } from '../Shortcuts'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
 interface DeleteStoreState {
@@ -61,7 +59,6 @@ export const useDeleteStore = create<DeleteStoreState>((set) => ({
 
 const Delete = () => {
   const { getMockArchive, execArchive } = useDelete()
-  const { loadNode } = useLoad()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const location = useLocation()
@@ -88,12 +85,18 @@ const Delete = () => {
           goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
           openModal(useEditorStore.getState().node.id)
         })
+      },
+      '$mod+Enter': (event) => {
+        if (open) {
+          event.preventDefault()
+          handleDelete()
+        }
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [shortcuts, shortcutDisabled, location.pathname])
+  }, [shortcuts, open, del, shortcutDisabled, location.pathname])
 
   // console.log({ to, from, open });
 
@@ -113,11 +116,12 @@ const Delete = () => {
   }, [del])
 
   const handleDelete = async () => {
-    const res = await execArchive(del)
-    if (res) {
-      goTo(ROUTE_PATHS.node, NavigationType.replace, res.toLoad)
+    if (del && !isReserved(del)) {
+      const res = await execArchive(del)
+      if (res) {
+        goTo(ROUTE_PATHS.node, NavigationType.replace, res.toLoad)
+      }
     }
-
     closeModal()
   }
 
@@ -128,8 +132,8 @@ const Delete = () => {
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Archive</ModalHeader>
-
       <WrappedNodeSelect
+        autoFocusSelectAll
         autoFocus
         // menuOpen
         disallowReserved
@@ -156,9 +160,11 @@ const Delete = () => {
       <ModalControls>
         <Button large onClick={handleCancel}>
           Cancel
+          <DisplayShortcut shortcut={'Esc'} />
         </Button>
         <Button large primary disabled={mockRefactored.length < 1} onClick={handleDelete}>
           Archive
+          <DisplayShortcut shortcut={'$mod+Enter'} />
         </Button>
       </ModalControls>
     </Modal>
