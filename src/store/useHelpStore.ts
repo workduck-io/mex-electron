@@ -5,8 +5,18 @@ import { defaultShortcuts } from '../data/Defaults/shortcuts'
 import { ipcRenderer } from 'electron'
 import produce from 'immer'
 import { persist } from 'zustand/middleware'
+import { indexedDbStorageZustand } from './Adapters/indexedDB'
 
 export const SHORTCUT_STORE_KEY = 'mex-shortcut-store'
+
+export const mergeShortcuts = (oldShortcuts, newShortcuts) => {
+  const currentShortcuts = newShortcuts
+
+  Object.entries(oldShortcuts).forEach(([key, value]) => {
+    if (currentShortcuts[key]) currentShortcuts[key] = oldShortcuts[key]
+  })
+  return currentShortcuts
+}
 
 export const useHelpStore = create<HelpState>(
   persist(
@@ -48,9 +58,12 @@ export const useHelpStore = create<HelpState>(
     }),
     {
       name: SHORTCUT_STORE_KEY,
-      partialize: (state) => ({
-        shortcuts: state.shortcuts
-      })
+      version: 0,
+      getStorage: () => indexedDbStorageZustand,
+      migrate: (persistedState: any, version: number) => {
+        persistedState.shortcuts = mergeShortcuts(persistedState.shortcuts, defaultShortcuts)
+        return persistedState
+      }
     }
   )
 )
