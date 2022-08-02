@@ -17,6 +17,7 @@ import { NodeLink } from '../../../types/relations'
 import { mog } from '../../../utils/lib/helper'
 import { isMatch, isReserved } from '../../../utils/lib/paths'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
+import { DisplayShortcut } from '../Shortcuts'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
@@ -34,7 +35,7 @@ interface RefactorState {
   setFocus: (focus: boolean) => void
   setFrom: (from: string) => void
   setTo: (from: string) => void
-  prefillModal: (from: string, to: string) => void
+  prefillModal: (from: string, to?: string) => void
 }
 
 export const useRefactorStore = create<RefactorState>((set) => ({
@@ -61,7 +62,7 @@ export const useRefactorStore = create<RefactorState>((set) => ({
   },
   setFrom: (from: string) => set({ from }),
   setTo: (to: string) => set({ to }),
-  prefillModal: (from: string, to: string) =>
+  prefillModal: (from: string, to?: string) =>
     set({
       from,
       to,
@@ -96,12 +97,19 @@ const Refactor = () => {
         shortcutHandler(shortcuts.showRefactor, () => {
           openModal()
         })
+      },
+      '$mod+Enter': (event) => {
+        if (open) {
+          event.preventDefault()
+          mog('Refactor Enter')
+          handleRefactor()
+        }
       }
     })
     return () => {
       unsubscribe()
     }
-  }, [shortcuts, shortcutDisabled])
+  }, [shortcuts, shortcutDisabled, to, from, open])
 
   const handleFromChange = (quickLink: QuickLink) => {
     const newValue = quickLink.value
@@ -138,30 +146,33 @@ const Refactor = () => {
   // console.log({ mockRefactored });
 
   const handleRefactor = async () => {
-    const res = await execRefactorAsync(from, to)
+    mog('Refactor', { open, to, from })
+    if (to && from && !isReserved(from) && !isReserved(to)) {
+      const res = await execRefactorAsync(from, to)
 
-    const { addedPaths, removedPaths } = res
-    const addedILinks = hierarchyParser(addedPaths)
-    const removedILinks = hierarchyParser(removedPaths)
+      const { addedPaths, removedPaths } = res
+      const addedILinks = hierarchyParser(addedPaths)
+      const removedILinks = hierarchyParser(removedPaths)
 
-    mog('RESULT OF REFACTORING', { addedILinks, removedILinks })
+      mog('RESULT OF REFACTORING', { addedILinks, removedILinks })
 
-    // // * set the new hierarchy in the tree
-    const refactored = updateILinks(addedILinks, removedILinks)
+      // // * set the new hierarchy in the tree
+      const refactored = updateILinks(addedILinks, removedILinks)
 
-    // const baseId = linkInRefactor(useDataStore.getState().baseNodeId, refactored)
-    // if (baseId !== false) {
-    //   setBaseNodeId(baseId.to)
-    // }
+      // const baseId = linkInRefactor(useDataStore.getState().baseNodeId, refactored)
+      // if (baseId !== false) {
+      //   setBaseNodeId(baseId.to)
+      // }
 
-    const path = useEditorStore.getState().node.path
-    const nodeid = useEditorStore.getState().node.nodeid
+      const path = useEditorStore.getState().node.path
+      const nodeid = useEditorStore.getState().node.nodeid
 
-    if (doesLinkRemain(path, refactored)) {
-      push(nodeid, { savePrev: false })
-    } else if (res.length > 0) {
-      const nodeid = getNodeidFromPath(res[0].to)
-      push(nodeid, { savePrev: false })
+      if (doesLinkRemain(path, refactored)) {
+        push(nodeid, { savePrev: false })
+      } else if (res.length > 0) {
+        const nodeid = getNodeidFromPath(res[0].to)
+        push(nodeid, { savePrev: false })
+      }
     }
 
     closeModal()
@@ -178,7 +189,7 @@ const Refactor = () => {
         menuOpen={focus}
         autoFocus={focus}
         autoFocusSelectAll
-        defaultValue={from ?? useEditorStore.getState().node.id}
+        defaultValue={from ?? useEditorStore.getState().node.path}
         highlightWhenSelected
         disallowReserved
         iconHighlight={from !== undefined}
@@ -218,6 +229,7 @@ const Refactor = () => {
       <ModalControls>
         <Button primary autoFocus={!focus} large onClick={handleRefactor}>
           Apply
+          <DisplayShortcut shortcut={'$mod+Enter'} />
         </Button>
       </ModalControls>
     </Modal>

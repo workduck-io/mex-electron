@@ -27,13 +27,14 @@ interface TreeContextMenuProps {
 export const MENU_ID = 'Tree-Menu'
 
 export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
-  const openRefactorModal = useRefactorStore((store) => store.openModal)
+  const prefillRefactorModal = useRefactorStore((store) => store.prefillModal)
   const openDeleteModal = useDeleteStore((store) => store.openModal)
   const { createNewNote } = useCreateNewNote()
   const openShareModal = useShareModalStore((store) => store.openModal)
 
   const handleRefactor = (item: TreeItem) => {
-    openRefactorModal()
+    prefillRefactorModal(item?.data?.path)
+    // openRefactorModal()
   }
 
   const handleArchive = (item: TreeItem) => {

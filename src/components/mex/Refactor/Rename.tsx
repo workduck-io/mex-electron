@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react'
 import { mog } from '@utils/lib/helper'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
+import tinykeys from 'tinykeys'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
@@ -14,6 +15,7 @@ import { useRenameStore } from '../../../store/useRenameStore'
 import { Button } from '../../../style/Buttons'
 import { isMatch, isReserved } from '../../../utils/lib/paths'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
+import { DisplayShortcut } from '../Shortcuts'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
@@ -66,8 +68,22 @@ const Rename = () => {
     }
   }, [to, from, q])
 
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      '$mod+Enter': (event) => {
+        if (open) {
+          event.preventDefault()
+          handleRefactor()
+        }
+      }
+    })
+    return () => {
+      unsubscribe()
+    }
+  }, [open, to, from])
+
   const handleRefactor = async () => {
-    if (to && from) {
+    if (to && from && !isReserved(from) && !isReserved(from)) {
       const res = await execRefactorAsync(from, to)
 
       const { addedPaths, removedPaths } = res
@@ -150,6 +166,7 @@ const Rename = () => {
       <ModalControls>
         <Button primary large onClick={handleRefactor}>
           Apply
+          <DisplayShortcut shortcut={'$mod+Enter'} />
         </Button>
       </ModalControls>
     </Modal>
