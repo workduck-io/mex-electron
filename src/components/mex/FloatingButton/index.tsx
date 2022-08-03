@@ -23,8 +23,8 @@ export const Float = styled.div<FocusModeProp>`
   bottom: 10px;
   right: 10px;
   z-index: 1000;
-  ${({ focusMode }) =>
-    focusMode &&
+  ${({ $focusMode }) =>
+    $focusMode &&
     css`
       opacity: ${FOCUS_MODE_OPACITY};
       &:hover {
@@ -111,7 +111,7 @@ const FloatingButton = () => {
   if (!authenticated || showLoader) return null
 
   return (
-    <Float focusMode={focusMode.on}>
+    <Float $focusMode={focusMode.on}>
       {!showMenu ? (
         <FloatButton id="wd-mex-floating-button" key="wd-mex-floating-button" onClick={() => setMenu(true)}>
           {GetIcon(QuestionMarkIcon)}

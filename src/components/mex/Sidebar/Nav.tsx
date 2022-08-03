@@ -213,8 +213,8 @@ const Nav = () => {
     <>
       <NavWrapper
         onMouseUp={(e) => onDoubleClickToogle(e)}
-        expanded={sidebar.expanded}
-        show={sidebar.show}
+        $expanded={sidebar.expanded}
+        $show={sidebar.show}
         {...getFocusProps(focusMode)}
       >
         <MainNav {...getFocusProps(focusMode)}>
@@ -229,10 +229,10 @@ const Nav = () => {
         <SideNav
           onMouseUp={(e) => e.stopPropagation()}
           style={springProps}
-          expanded={sidebar.expanded}
-          show={sidebar.show}
-          overlaySidebar={overlaySidebar}
-          side="left"
+          $expanded={sidebar.expanded}
+          $show={sidebar.show}
+          $overlaySidebar={overlaySidebar}
+          $side="left"
           {...getFocusProps(focusMode)}
         >
           {/* Notes, Shared, Bookmarks */}

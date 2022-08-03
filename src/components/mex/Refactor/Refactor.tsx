@@ -71,6 +71,13 @@ export const useRefactorStore = create<RefactorState>((set) => ({
     })
 }))
 
+/*
+ * Refactor modal
+ *
+ * Allows user to refactor a node to a different path
+ *
+ * Shows mock refactored nodes before executing
+ */
 const Refactor = () => {
   const open = useRefactorStore((store) => store.open)
   const focus = useRefactorStore((store) => store.focus)

@@ -34,10 +34,10 @@ const RHSidebar = () => {
   return (
     <SideNav
       style={rhSidebarSpringProps}
-      show={rhSidebar.show}
-      expanded={rhSidebar.expanded}
-      overlaySidebar={overlaySidebar}
-      side="right"
+      $show={rhSidebar.show}
+      $expanded={rhSidebar.expanded}
+      $overlaySidebar={overlaySidebar}
+      $side="right"
       {...getFocusProps(focusMode)}
     >
       <RHSidebarContent />
