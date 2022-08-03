@@ -1,5 +1,7 @@
 import bookmarkLine from '@iconify/icons-ri/bookmark-line'
 import { Icon } from '@iconify/react'
+import { mog } from '@utils/lib/helper'
+import { getPartialTreeGroups } from '@utils/lib/paths'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React from 'react'
 import { useMatch } from 'react-router-dom'
@@ -8,15 +10,6 @@ import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
 import SidebarList from './SidebarList'
-
-const BList = styled.div`
-  /* max-height: 15rem;
-  list-style: none;
-  overflow-x: hidden;
-  overflow-y: auto; */
-  height: 100%;
-  padding: ${({ theme }) => theme.spacing.small};
-`
 
 export const Centered = styled.div`
   display: flex;
@@ -40,11 +33,21 @@ const Bookmarks = () => {
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
-  const bookmarkItems = bookmarks.map((nodeid) => ({
-    id: nodeid,
-    title: getPathFromNodeid(nodeid),
-    icon: bookmarkLine
-  }))
+  const bookmarkItems = bookmarks
+    .map((nodeid) => ({
+      id: nodeid,
+      title: getPathFromNodeid(nodeid),
+      icon: bookmarkLine
+    }))
+    .filter((item) => item.title !== undefined)
+
+  const groupedBookmarks = getPartialTreeGroups(
+    bookmarkItems.map((item) => ({ id: item.id, title: item.title })),
+    (item) => item.title,
+    (item1, item2) => item1.title.localeCompare(item2.title)
+  )
+
+  mog('Bookmarks', { bookmarks, bookmarkItems, groupedBookmarks })
 
   return bookmarkItems.length > 0 ? (
     <SidebarList

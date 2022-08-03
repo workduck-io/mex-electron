@@ -52,6 +52,10 @@ export const getAllParentIds = (
 //   past = link
 // })
 // return allParents
+//
+export const getPathLevel = (path: string, separator = SEPARATOR) => {
+  return path.split(separator).length
+}
 
 export const isElder = (id: string, xparent: string) => {
   return id?.startsWith(xparent + SEPARATOR)
@@ -66,7 +70,7 @@ export const isTopNode = (id: string) => {
 }
 
 export const getParentFromPath = (id: string) => {
-  if (!id) return []
+  if (!id) return id
 
   const split = id.split(SEPARATOR)
   if (split.length > 1) {
