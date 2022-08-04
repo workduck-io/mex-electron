@@ -21,6 +21,7 @@ import toast from 'react-hot-toast'
 import { useAuth } from '@workduck-io/dwindle'
 import useOnboard from '../../store/useOnboarding'
 import { useTourData } from '../../components/mex/Onboarding/hooks'
+import { mog } from '@utils/lib/helper'
 
 export interface Option {
   label: string
@@ -85,8 +86,6 @@ const Register = () => {
     await registerDetails(data).then((s) => {
       if (s === 'UsernameExistsException') {
         toast('You have already registered, please verify code.')
-      } else {
-        ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails: { email: data.email }, loggedIn: true })
       }
     })
   }
@@ -94,6 +93,7 @@ const Register = () => {
   const onVerifySubmit = async (data: VerifyFormData) => {
     const metadata = { tag: MEX_TAG }
     try {
+      mog('CODE', { data })
       await verifySignup(data.code, metadata)
 
       // TODO: Uncomment this when we've new flow for onboarding

@@ -26,6 +26,7 @@ import {
   withDraggables
 } from '@udecode/plate'
 import React from 'react'
+import { useFocused } from 'slate-react'
 import styled from 'styled-components'
 import { RelativeTime } from '../../components/mex/RelativeTime'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'

@@ -3,8 +3,6 @@ import { useSnippetStore, Snippet } from '../store/useSnippetStore'
 import { SlashCommandConfig } from '../editor/Components/SlashCommands/Types'
 import { useSearch } from './useSearch'
 import { mog } from '../utils/lib/helper'
-import { convertToCopySnippet, defaultCopyConverter, defaultCopyFilter } from '../utils/search/parseData'
-import { serializeHtml, getPlateEditorRef, createPlateUI, createPlateUIEditor } from '@udecode/plate'
 import { useApi } from '@apis/useSaveApi'
 
 export const useSnippets = () => {
@@ -12,7 +10,7 @@ export const useSnippets = () => {
   const updateSnippetZus = useSnippetStore((state) => state.updateSnippet)
   const deleteSnippetZus = useSnippetStore((state) => state.deleteSnippet)
 
-  const { updateDocument, addDocument, removeDocument } = useSearch()
+  const { updateDocument, removeDocument } = useSearch()
   const { deleteSnippetById } = useApi()
 
   const getSnippets = () => {

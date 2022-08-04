@@ -35,6 +35,7 @@ import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
 import { useSpotlightSettingsStore } from '@store/settings.spotlight'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useSaveData } from '@hooks/useSaveData'
+import { useRecentsStore } from '@store/useRecentsStore'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -60,6 +61,7 @@ const List = ({
   const parentRef = useRef(null)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
+  const addInRecents = useRecentsStore((store) => store.addRecent)
 
   const node = useSpotlightEditorStore((s) => s.node)
   const setPreviewEditorNode = useSpotlightEditorStore((s) => s.setNode)
@@ -232,6 +234,7 @@ const List = ({
             } else {
               let nodePath = node.path
               setNormalMode(false)
+              addInRecents(node.nodeid)
 
               if (currentActiveItem?.extras.new && !activeItem.active) {
                 const text = getInputText(search)
@@ -255,6 +258,7 @@ const List = ({
               title: node.path ?? 'Today Tasks',
               id: node.nodeid
             })
+            addInRecents(node.nodeid)
             setNormalMode(false)
           }
           // setSelectedItem({ item: data[activeIndex], active: false })

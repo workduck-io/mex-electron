@@ -3,11 +3,8 @@
 import { mog } from '../../../utils/lib/helper'
 import { orderBy } from 'lodash'
 import { getListItemFromAction } from '../Home/helper'
-import { ActionGroupType, UpdateActionsType } from './useActionStore'
+import { ActionGroupType } from './useActionStore'
 import { useActionsCache } from './useActionsCache'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { IpcAction } from '../../../data/IpcAction'
-import { AppType } from '../../../hooks/useInitialize'
 import { ActionHelperConfig, ActionGroup, LOCALSTORAGE_NAMESPACES } from '@workduck-io/action-request-helper'
 import { actionPerformer } from './useActionPerformer'
 
@@ -26,8 +23,6 @@ const useActions = () => {
       const groups: Record<string, ActionGroup> = await actionPerformer?.getAllGroups(true)
 
       setActionGroups(groups)
-      appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { groups })
-
       return groups
     } catch (err) {
       mog('Failed to fetch action groups', { err })
@@ -45,8 +40,6 @@ const useActions = () => {
       const actions: Record<string, ActionHelperConfig> = await actionPerformer?.getAllActionsOfGroups(actionGroupId)
 
       addGroupedActions(actionGroupId, actions)
-      appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { actionGroupId: actionGroupId, actions })
-
       return actions
     } catch (err) {
       mog('Failed to fetch actions of group', { err })
@@ -89,7 +82,6 @@ const useActions = () => {
 
         if (add) {
           addActions(actionList)
-          appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { actionList })
         }
 
         return actionList
@@ -150,7 +142,6 @@ const useActions = () => {
       })
 
       setConnectedGroups(connectedGroups)
-      appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { connectedGroups, type: UpdateActionsType.AUTH_GROUPS })
     }
   }
 
@@ -158,7 +149,6 @@ const useActions = () => {
     actionPerformer?.clearStore()
     // ! Clear action result
     // useActionStore()
-    appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, { type: UpdateActionsType.CLEAR })
   }
 
   return {

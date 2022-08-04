@@ -2,24 +2,17 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/u
 import NodeSelect, { QuickLink, QuickLinkType } from '../NodeSelect/NodeSelect'
 import React, { useEffect, useState } from 'react'
 import { StyledCombobox, StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
-import { AppType } from '../../../hooks/useInitialize'
 import { Input } from '../../../style/Form'
-import { IpcAction } from '../../../data/IpcAction'
 import Modal from 'react-modal'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { mog } from '../../../utils/lib/helper'
 import tinykeys from 'tinykeys'
 import toast from 'react-hot-toast'
-import { useApi } from '../../../apis/useSaveApi'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useNavigation } from '../../../hooks/useNavigation'
-import { useNodes } from '../../../hooks/useNodes'
 import useOnboard from '../../../store/useOnboarding'
 import { useSnippetStore } from '../../../store/useSnippetStore'
-import { useHierarchy } from '@hooks/useHierarchy'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 
 const StyledModal = styled(Modal)`
@@ -100,8 +93,6 @@ const Lookup = () => {
       const nodeid = quickLink.nodeid
 
       push(nodeid)
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
-
       goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
     }
     closeModal()

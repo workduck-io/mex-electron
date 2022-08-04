@@ -53,7 +53,7 @@ export const ElementComboboxComponent = ({ keys, slashCommands, internal }: Comb
     <Combobox
       isSlash={isSlash}
       onSelectItem={isSlash ? (onSelectItem as any) : creatableOnSelectItem}
-      onRenderItem={comboRenderType.renderElement}
+      onRenderItem={comboRenderType?.renderElement}
     />
   )
 }

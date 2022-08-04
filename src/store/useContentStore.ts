@@ -32,7 +32,7 @@ export const useContentStore = create<ContentStoreState>(
       // console.log('OldContent is here:', { oldContent: oldContent[nodeid] })
 
       const oldMetadata = oldContent[nodeid] && oldContent[nodeid].metadata ? oldContent[nodeid].metadata : undefined
-      delete oldContent[nodeid]
+      if (oldContent?.[nodeid]) delete oldContent?.[nodeid]
       const nmetadata = { ...oldMetadata, ...metadata }
       set({
         contents: { [nodeid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }

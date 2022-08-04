@@ -1,12 +1,9 @@
-import { IpcAction } from '@data/IpcAction'
 import { getUntitledDraftKey, getUntitledKey } from '@editor/Components/SyncBlock/getNewBlockData'
-import { appNotifierWindow } from '@electron/utils/notifiers'
 import useDataStore from '@store/useDataStore'
 import { useEditorStore } from '@store/useEditorStore'
 import { NodeEditorContent } from '../types/Types'
 import toast from 'react-hot-toast'
 import { useHierarchy } from './useHierarchy'
-import { AppType } from './useInitialize'
 import { useLinks } from './useLinks'
 import useLoad from './useLoad'
 import { useNavigation } from './useNavigation'
@@ -63,7 +60,6 @@ export const useCreateNewNote = () => {
 
     if (!options?.noRedirect) {
       push(node.nodeid, { withLoading: false, fetch: false })
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, node.nodeid)
     }
 
     return node

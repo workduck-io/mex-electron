@@ -9,7 +9,7 @@ import { IpcAction } from '../../data/IpcAction'
 import { useUpdater } from '../../hooks/useUpdater'
 import { RegisterFormData } from '../../views/mex/Register'
 import create, { State } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { devtools, persist } from 'zustand/middleware'
 import useAnalytics from '../analytics'
 import { Properties, CustomEvents } from '../analytics/events'
 import { mog } from '../../utils/lib/helper'
@@ -46,31 +46,33 @@ interface AuthStoreState extends State {
 }
 
 export const useAuthStore = create<AuthStoreState>(
-  persist(
-    (set, get) => ({
-      isForgottenPassword: false,
-      authenticated: false,
-      registered: false,
-      userDetails: undefined,
-      workspaceDetails: undefined,
-      setAuthenticated: (userDetails, workspaceDetails) =>
-        set({ authenticated: true, userDetails, workspaceDetails, registered: false }),
-      // setAuthenticatedUserDetails: (userDetails: UserDetails) => set({ authenticated: true, userDetails }),
-      setUnAuthenticated: () => set({ authenticated: false, userDetails: undefined, workspaceDetails: undefined }),
-      setRegistered: (val) => set({ registered: val }),
-      setIsForgottenPassword: (val) => set({ isForgottenPassword: val }),
-      getWorkspaceId: () => {
-        const workspaceDetails = get().workspaceDetails
-        if (workspaceDetails) {
-          return workspaceDetails.id
+  devtools(
+    persist(
+      (set, get) => ({
+        isForgottenPassword: false,
+        authenticated: false,
+        registered: false,
+        userDetails: undefined,
+        workspaceDetails: undefined,
+        setAuthenticated: (userDetails, workspaceDetails) =>
+          set({ authenticated: true, userDetails, workspaceDetails, registered: false }),
+        // setAuthenticatedUserDetails: (userDetails: UserDetails) => set({ authenticated: true, userDetails }),
+        setUnAuthenticated: () => set({ authenticated: false, userDetails: undefined, workspaceDetails: undefined }),
+        setRegistered: (val) => set({ registered: val }),
+        setIsForgottenPassword: (val) => set({ isForgottenPassword: val }),
+        getWorkspaceId: () => {
+          const workspaceDetails = get().workspaceDetails
+          if (workspaceDetails) {
+            return workspaceDetails.id
+          }
+          return undefined
+        },
+        updateUserDetails: (userDetails) => {
+          set({ userDetails: { ...get().userDetails, ...userDetails } })
         }
-        return undefined
-      },
-      updateUserDetails: (userDetails) => {
-        set({ userDetails: { ...get().userDetails, ...userDetails } })
-      }
-    }),
-    { name: 'auth-mex' }
+      }),
+      { name: 'auth-mex' }
+    )
   )
 )
 
@@ -125,8 +127,6 @@ export const useAuthentication = () => {
           initActionPerfomerClient(userDetails?.userID)
           mog('UserDetails', { userDetails, d, data: d.data })
           userDetails['name'] = d.data.metadata.name
-
-          ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, userCred: data, loggedIn: true })
 
           // * For Heap analytics
           identifyUser(email)
@@ -200,13 +200,6 @@ export const useAuthentication = () => {
               }
               const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
               initActionPerfomerClient(userDetails.userID)
-
-              ipcRenderer.send(IpcAction.LOGGED_IN, {
-                userDetails,
-                workspaceDetails,
-                userCred: result.userCred,
-                loggedIn: true
-              })
 
               identifyUser(userDetails.email)
               mog('Login Google BIG success', { d, userDetails, workspaceDetails })
@@ -282,7 +275,6 @@ export const useAuthentication = () => {
 
         initActionPerfomerClient(userDetails.userID)
 
-        ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, userCred: uCred, loggedIn: true })
         identifyUser(userDetails.email)
         mog('Login Google BIG success created user', { userDetails, workspaceDetails })
         addUserProperties({
@@ -343,7 +335,7 @@ export const useAuthentication = () => {
     setShowLoader(true)
 
     const vSign = await verifySignUp(code, formMetaData).catch(console.error)
-    // console.log({ vSign })
+    console.log({ vSign })
 
     const loginData = await login(sensitiveData.email, sensitiveData.password).catch(console.error)
 
@@ -387,10 +379,8 @@ export const useAuthentication = () => {
           name: sensitiveData.name,
           alias: sensitiveData.alias
         }
-        const workspaceDetails = { id: newWorkspaceName, name: 'WORKSPACE_NAME' }
         initActionPerfomerClient(userDetails?.userID)
 
-        ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, userCred: uCred, loggedIn: true })
         addUser({
           userID: userDetails.userID,
           email: userDetails.email,
@@ -427,7 +417,7 @@ export const useAuthentication = () => {
 
       localStorage.clear()
 
-      ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: false })
+      // ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: false })
       goTo(ROUTE_PATHS.login, NavigationType.push)
     }
   }

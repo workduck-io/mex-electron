@@ -3,10 +3,11 @@ import { BrowserWindow, app, autoUpdater, dialog, ipcMain } from 'electron'
 import { IpcAction } from '../data/IpcAction'
 import { backupMexJSON } from './backup'
 import { checkIfAlpha } from './utils/version'
-import { toast, SEARCH_INDEX_LOCATION, TEMP_DATA_BEFORE_UPDATE } from './main'
+import { windows } from './main'
 import { ToastStatus } from '../types/toast'
 import { deleteSearchIndexDisk } from './utils/indexData'
 import { setDataAtLocation } from './utils/filedata'
+import { TEMP_DATA_BEFORE_UPDATE, SEARCH_INDEX_LOCATION } from './utils/fileLocations'
 
 export const buildUpdateFeedURL = (version: string, isAlpha: boolean) => {
   const base = isAlpha ? 'https://alpha-releases.workduck.io' : 'https://releases.workduck.io'
@@ -29,7 +30,7 @@ export const setupAutoUpdates = (version: string, isAlpha: boolean, beforeQuit: 
 
   autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
     console.log("Aye Aye Captain: There's an update")
-    toast?.hide()
+    windows.toast?.hide()
 
     const dialogOpts = {
       title: "Aye Aye Captain: There's a Mex Update!",
@@ -49,7 +50,7 @@ export const setupAutoUpdates = (version: string, isAlpha: boolean, beforeQuit: 
   })
 
   autoUpdater.on('update-available', () => {
-    toast?.showMessageAfterDelay(IpcAction.TOAST_MESSAGE, {
+    windows.toast?.showMessageAfterDelay(IpcAction.TOAST_MESSAGE, {
       status: ToastStatus.SUCCESS,
       title: 'Update available!',
       description: 'Getting update..',
@@ -60,7 +61,10 @@ export const setupAutoUpdates = (version: string, isAlpha: boolean, beforeQuit: 
   autoUpdater.on('update-not-available', () => {
     console.log('No Update Available!')
 
-    toast?.showMessageAfterDelay(IpcAction.TOAST_MESSAGE, { status: ToastStatus.SUCCESS, title: 'You are up to date!' })
+    windows.toast?.showMessageAfterDelay(IpcAction.TOAST_MESSAGE, {
+      status: ToastStatus.SUCCESS,
+      title: 'You are up to date!'
+    })
   })
 
   autoUpdater.on('before-quit-for-update', () => {

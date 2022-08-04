@@ -1,3 +1,4 @@
+import { IS_DEV } from '@data/Defaults/dev_'
 import { electronCookies } from '../../utils/lib/helper'
 
 const analytics = (url: string, id: string) => {

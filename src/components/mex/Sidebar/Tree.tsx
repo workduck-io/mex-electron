@@ -15,9 +15,6 @@ import useDataStore, { useTreeFromLinks } from '@store/useDataStore'
 import Tippy, { useSingleton } from '@tippyjs/react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useMatch } from 'react-router-dom'
-import { IpcAction } from '../../../data/IpcAction'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { AppType } from '../../../hooks/useInitialize'
 import { useAnalysisStore } from '../../../store/useAnalysis'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useTreeStore } from '../../../store/useTreeStore'
@@ -140,7 +137,6 @@ const Tree = ({ initTree }: TreeProps) => {
   const onOpenItem = (itemId: string, nodeid: string) => {
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
     changeTree(mutateTree(tree, itemId, { isExpanded: true }))
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
   }
 
   const onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, item: TreeItem) => {

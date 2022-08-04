@@ -338,7 +338,7 @@ export const useApi = () => {
 
             runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid)))
 
-            ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks: nodes })
+            // ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks: nodes }) // * Synced
           }
 
           setILinks(nodes)

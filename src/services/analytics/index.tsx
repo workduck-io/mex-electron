@@ -3,21 +3,21 @@ import { EventProperties, UserProperties } from './types'
 const useAnalytics = () => {
   /** Not heap's userId */
   const identifyUser = (id: string | undefined) => {
-    if (id) window.heap.identify(id)
+    if (id) window.heap?.identify(id)
   }
 
   /** For this cookies are required */
   const addUserProperties = (properties: UserProperties) => {
-    window.heap.addUserProperties(properties)
+    window.heap?.addUserProperties(properties)
   }
 
   const addEventProperties = (properties: EventProperties) => {
-    window.heap.clearEventProperties()
-    window.heap.addEventProperties(properties)
+    window.heap?.clearEventProperties()
+    window.heap?.addEventProperties(properties)
   }
 
   const trackEvent = (name: string, properties?: Record<string, any>) => {
-    window.heap.track(name, properties)
+    window.heap?.track(name, properties)
   }
 
   const initAnalytics = () => {
