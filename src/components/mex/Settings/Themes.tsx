@@ -1,11 +1,7 @@
 import { Theme, ThemeColorDots, ThemeHeader, ThemePreview, ThemePreviews } from '../../../style/Settings'
 
-import { AppType } from '../../../hooks/useInitialize'
-import { IpcAction } from '../../../data/IpcAction'
 import React from 'react'
 import { ThemeProvider } from 'styled-components'
-import { Wrapper } from '../../../style/Layouts'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { useSaveData } from '../../../hooks/useSaveData'
 import useThemeStore from '../../../store/useThemeStore'
 import { useTransition } from 'react-spring'
@@ -38,7 +34,7 @@ const Themes = () => {
 
   const onThemeSelect = (i: number) => {
     if (themes[i]) {
-      appNotifierWindow(IpcAction.SET_THEME, AppType.MEX, { theme: themes[i] })
+      // appNotifierWindow(IpcAction.SET_THEME, AppType.MEX, { theme: themes[i] })
       setTheme(themes[i])
     }
 

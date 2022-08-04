@@ -44,7 +44,6 @@ const Init = () => {
       })
 
       if (authenticatedUserEmail) {
-        ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: true })
         initActionPerfomerClient(useAuthStore.getState().userDetails?.userID)
 
         getLocalData()
@@ -72,7 +71,6 @@ const Init = () => {
           })
       } else {
         setUnAuthenticated()
-        ipcRenderer.send(IpcAction.LOGGED_IN, { loggedIn: false })
       }
     }
 

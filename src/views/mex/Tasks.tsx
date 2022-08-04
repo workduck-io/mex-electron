@@ -9,11 +9,8 @@ import { useMatch } from 'react-router-dom'
 import tinykeys from 'tinykeys'
 import SearchFilters from '../../components/mex/Search/SearchFilters'
 import { Heading } from '../../components/spotlight/SearchResults/styled'
-import { IpcAction } from '../../data/IpcAction'
 import { getNextStatus, getPrevStatus, PriorityType, TodoType } from '../../editor/Components/Todo/types'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
-import { appNotifierWindow } from '../../electron/utils/notifiers'
-import { AppType } from '../../hooks/useInitialize'
 import useLoad from '../../hooks/useLoad'
 import { useNavigation } from '../../hooks/useNavigation'
 import { KanbanBoardColumn, TodoKanbanCard, useTodoKanban } from '../../hooks/useTodoKanban'
@@ -80,7 +77,6 @@ const Tasks = () => {
     }
     const nodeid = selectedCard.todo.nodeid
     push(nodeid)
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
   }
 
@@ -297,7 +293,7 @@ const Tasks = () => {
       }
       // goTo(ROUTE_PATHS.view, NavigationType.push, viewid)
     } else {
-    setCurrentView(undefined)
+      setCurrentView(undefined)
       setCurrentFilters([])
     }
   }, [match])
@@ -308,7 +304,6 @@ const Tasks = () => {
     mog('double click', { event })
     if (event.detail === 2) {
       push(nodeid)
-      appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.MEX, nodeid)
       goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
     }
   }

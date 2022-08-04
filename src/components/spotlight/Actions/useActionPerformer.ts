@@ -12,9 +12,6 @@ import { mog } from '../../../utils/lib/helper'
 import { ACTION_ENV } from '../../../apis/routes'
 import { useActionsCache } from './useActionsCache'
 import { useActionMenuStore } from '../ActionStage/ActionMenu/useActionMenuStore'
-import { IpcAction } from '@data/IpcAction'
-import { appNotifierWindow } from '@electron/utils/notifiers'
-import { AppType } from '@hooks/useInitialize'
 import { getPlateEditorRef, findNodePath, setNodes } from '@udecode/plate'
 import { useReadOnly } from 'slate-react'
 
@@ -208,11 +205,11 @@ export const useActionPerformer = () => {
   const addResultInCache = (actionId: string, hash: string) => {
     const actionHashKey = getActionCacheKey(actionId, element?.id)
     addResultHash(actionHashKey, hash)
-    appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, {
-      type: UpdateActionsType.UPDATE_HASH,
-      key: actionHashKey,
-      hash
-    })
+    // appNotifierWindow(IpcAction.UPDATE_ACTIONS, AppType.MEX, {
+    //   type: UpdateActionsType.UPDATE_HASH,
+    //   key: actionHashKey,
+    //   hash
+    // })
 
     if (!isMenuActionOpen && activeAction?.subType !== 'form') addSelectionInCache(actionId, undefined)
   }

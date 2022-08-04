@@ -1,7 +1,5 @@
 import { FileData } from '../types/data'
-import { IpcAction } from '../data/IpcAction'
-import { appNotifierWindow } from '../electron/utils/notifiers'
-import { createNodeWithUid, mog } from '../utils/lib/helper'
+import { createNodeWithUid } from '../utils/lib/helper'
 import { getTheme } from '../style/themes/defaultThemes'
 import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
@@ -78,7 +76,6 @@ export const useInitialize = () => {
     setViews(views)
     setReminders(reminders)
     const currentTheme = getTheme(data.userSettings.theme)
-    appNotifierWindow(IpcAction.SET_THEME, AppType.MEX, { theme: currentTheme })
     setTheme(currentTheme)
   }
 

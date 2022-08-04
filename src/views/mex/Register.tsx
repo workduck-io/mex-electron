@@ -86,8 +86,6 @@ const Register = () => {
     await registerDetails(data).then((s) => {
       if (s === 'UsernameExistsException') {
         toast('You have already registered, please verify code.')
-      } else {
-        ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails: { email: data.email }, loggedIn: true })
       }
     })
   }

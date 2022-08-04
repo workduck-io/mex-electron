@@ -128,8 +128,6 @@ export const useAuthentication = () => {
           mog('UserDetails', { userDetails, d, data: d.data })
           userDetails['name'] = d.data.metadata.name
 
-          ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, userCred: data, loggedIn: true })
-
           // * For Heap analytics
           identifyUser(email)
           addUserProperties({
@@ -202,13 +200,6 @@ export const useAuthentication = () => {
               }
               const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
               initActionPerfomerClient(userDetails.userID)
-
-              ipcRenderer.send(IpcAction.LOGGED_IN, {
-                userDetails,
-                workspaceDetails,
-                userCred: result.userCred,
-                loggedIn: true
-              })
 
               identifyUser(userDetails.email)
               mog('Login Google BIG success', { d, userDetails, workspaceDetails })
@@ -284,7 +275,6 @@ export const useAuthentication = () => {
 
         initActionPerfomerClient(userDetails.userID)
 
-        ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, userCred: uCred, loggedIn: true })
         identifyUser(userDetails.email)
         mog('Login Google BIG success created user', { userDetails, workspaceDetails })
         addUserProperties({
@@ -389,10 +379,8 @@ export const useAuthentication = () => {
           name: sensitiveData.name,
           alias: sensitiveData.alias
         }
-        const workspaceDetails = { id: newWorkspaceName, name: 'WORKSPACE_NAME' }
         initActionPerfomerClient(userDetails?.userID)
 
-        ipcRenderer.send(IpcAction.LOGGED_IN, { userDetails, workspaceDetails, userCred: uCred, loggedIn: true })
         addUser({
           userID: userDetails.userID,
           email: userDetails.email,
