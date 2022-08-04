@@ -141,7 +141,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
 
         // delete the inserted space
         if (isBlockEnd) {
-          deleteText(editor)
+          deleteText(editor, { unit: 'character', reverse: true })
         }
 
         // return true

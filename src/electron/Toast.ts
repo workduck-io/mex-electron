@@ -3,7 +3,7 @@ import { BrowserWindow, screen, BrowserWindowConstructorOptions } from 'electron
 import { IpcAction } from '../data/IpcAction'
 import { REMINDERS_DIMENSIONS } from '../services/reminders/reminders'
 import { TOAST_DIMENSIONS } from '../types/toast'
-import { SPOTLIGHT_WINDOW_OPTIONS } from './main'
+import { SPOTLIGHT_WINDOW_OPTIONS } from './utils/helper'
 
 declare const TOAST_WINDOW_WEBPACK_ENTRY: string
 
@@ -39,7 +39,7 @@ class Toast {
       this.window = null
     })
 
-    this.window.webContents.on('did-finish-load', () => {
+    this.window?.webContents.on('did-finish-load', () => {
       if (!this.window) {
         throw new Error('Main Window is not initialized!')
       }
@@ -52,7 +52,7 @@ class Toast {
     this.window.setParentWindow(parent)
     // parent.setHasShadow(false)
 
-    const bounds = parent.getBounds()
+    const bounds = parent?.getBounds()
     this.window.setPosition(
       bounds.x + bounds.width - TOAST_DIMENSIONS.width,
       bounds.y + bounds.height + TOAST_DIMENSIONS.offset

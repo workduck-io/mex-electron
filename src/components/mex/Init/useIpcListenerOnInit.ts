@@ -4,8 +4,9 @@ import { useEditorBuffer } from '@hooks/useEditorBuffer'
 import useLoad from '@hooks/useLoad'
 import { useRecieveMentions, useRecieveTokens, useSyncData } from '@hooks/useSyncData'
 import { useAuthentication } from '@services/auth/useAuth'
+import syncStores from '@store/syncStore/synced'
 import { useAnalysisIPC } from '@store/useAnalysis'
-import { useVersionStore } from '@store/useAppDataStore'
+import { useEditorStore } from '@store/useEditorStore'
 import { useHistoryStore } from '@store/useHistoryStore'
 import useModalStore, { ModalsType } from '@store/useModalStore'
 import useOnboard from '@store/useOnboarding'
@@ -44,17 +45,23 @@ export const useIpcListenerOnInit = () => {
       addRecent(nodeid)
       loadNode(nodeid)
     })
-    ipcRenderer.on(IpcAction.CLEAR_RECENTS, () => {
-      clear()
-    })
-    ipcRenderer.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {
-      const { data } = arg
-      addRecent(data)
-    })
+    // ipcRenderer.on(IpcAction.CLEAR_RECENTS, () => {
+    //   clear()
+    // })
+    // ipcRenderer.on(IpcAction.NEW_RECENT_ITEM, (_event, arg) => {
+    //   const { data } = arg
+    //   addRecent(data)
+    // })
 
     ipcRenderer.on(IpcAction.REDIRECT_TO, (_event, { page }) => {
       if (page) {
         goTo(page, NavigationType.replace)
+      }
+    })
+
+    ipcRenderer.on(IpcAction.REFRESH_NODE, (_event, { nodeid }) => {
+      if (nodeid === useEditorStore.getState().node.nodeid) {
+        loadNode(nodeid, { fetch: false })
       }
     })
 
@@ -70,7 +77,7 @@ export const useIpcListenerOnInit = () => {
       goTo(ROUTE_PATHS.node, NavigationType.push, reminder?.nodeid)
     })
 
-    ipcRenderer.on(IpcAction.MEX_BLURRED, () => {
+    ipcRenderer.on(IpcAction.WINDOW_BLUR, () => {
       saveAndClearBuffer()
     })
 
@@ -96,6 +103,7 @@ export const useIpcListenerOnInit = () => {
 
     // Setup recieving the analysis call
     setAnalysisIpc()
+    syncStores()
 
     ipcRenderer.on(IpcAction.FORCE_SIGNOUT, () => {
       logout()

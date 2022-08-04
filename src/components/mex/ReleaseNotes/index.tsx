@@ -4,7 +4,6 @@ import useModalStore, { ModalsType } from '@store/useModalStore'
 import { ReleaseNote, StyledReleaseNoteWrapper } from './styled'
 
 const RELEASE_NOTE_URL = 'https://mexit.workduck.io/share/NODE_DJffLJCAzWUfmwtigYeni'
-
 const ReleaseNotesModal = () => {
   const open = useModalStore((store) => store.open)
   const toggleModal = useModalStore((store) => store.toggleOpen)

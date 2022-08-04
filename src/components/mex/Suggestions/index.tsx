@@ -1,5 +1,12 @@
 import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
-import { ELEMENT_PARAGRAPH, insertNodes, selectEditor, TElement, usePlateEditorRef } from '@udecode/plate'
+import {
+  ELEMENT_PARAGRAPH,
+  getPlateEditorRef,
+  insertNodes,
+  selectEditor,
+  TElement,
+  usePlateEditorRef
+} from '@udecode/plate'
 import React from 'react'
 import { ELEMENT_ILINK } from '../../../editor/Components/ilink/defaults'
 import { useLinks } from '../../../hooks/useLinks'
@@ -22,17 +29,13 @@ import { mog } from '@utils/lib/helper'
 
 const SuggestionInfoBar = () => {
   // * Store
-  const infobar = useLayoutStore((store) => store.infobar)
-  const shortcuts = useHelpStore((store) => store.shortcuts)
   const actionsVisible = useSuggestionStore((store) => store.actionVisible)
   const toggleActionInSuggestions = useSuggestionStore((store) => store.toggleActionInSuggestion)
   const isQABlock = useSuggestionStore((store) => store.headingQASearch)
 
   // * Custom Hooks
-  const editor = usePlateEditorRef()
   const { getSnippet } = useSnippets()
   const { getPathFromNodeid } = useLinks()
-  const { toggleSuggestedNodes } = useToggleElements()
   const { suggestions, pinSuggestion, pinnedSuggestions } = useSuggestionStore()
 
   const onSuggestionClick = (
@@ -42,6 +45,7 @@ const SuggestionInfoBar = () => {
     embed?: boolean
   ): void => {
     event.stopPropagation()
+    const editor = getPlateEditorRef()
     const selection = editor.selection
     if (suggestion.type === 'snippet' || suggestion.type === 'template') {
       insertNodes<TElement>(editor, content)

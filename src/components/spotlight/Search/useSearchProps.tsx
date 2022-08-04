@@ -117,7 +117,7 @@ export const useSaveChanges = () => {
 
     if (options?.beforeSave) {
       options?.beforeSave({ path, noteId: node.nodeid, noteContent: editorContent })
-    } else onSave(node, true, false, editorContent)
+    } else onSave(node, false, false, editorContent)
 
     if (options?.saveAndClose) appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
@@ -136,7 +136,9 @@ export const useSaveChanges = () => {
     // * Add this item in recents list of Mex
     addRecent(node.nodeid)
     addInResearchNodes(node.nodeid)
-    appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, { nodeid: node.nodeid })
+    appNotifierWindow(IpcAction.REFRESH_NODE, AppType.SPOTLIGHT, { nodeid: node.nodeid })
+
+    // appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, { nodeid: node.nodeid })
   }
 
   return {

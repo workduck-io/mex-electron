@@ -1,3 +1,4 @@
+import { BroadcastSyncedChannel } from '@store/syncStore/types'
 import { CustomEvents, Properties } from './events'
 
 export type UserProperties = {
@@ -31,5 +32,9 @@ declare global {
   interface Window {
     heap: any
     Olvy: any
+  }
+
+  interface globalThis {
+    __MEX_SYNCED_CHANNELS_: Set<BroadcastSyncedChannel>
   }
 }

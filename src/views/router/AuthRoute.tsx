@@ -8,9 +8,10 @@ import { ROUTE_PATHS } from '../routes/urls'
 
 export interface MexRouteProps {
   component: React.ComponentType
+  redirectTo?: string
 }
 
-const AuthRoute: React.FC<MexRouteProps> = ({ component: Component }) => {
+const AuthRoute: React.FC<MexRouteProps> = ({ component: Component, redirectTo }) => {
   const authenticated = useAuthStore((store) => store.authenticated)
   const nodeid = useEditorStore((store) => store.node.nodeid)
   const showLoader = useLayoutStore((store) => store.showLoader)
@@ -18,7 +19,7 @@ const AuthRoute: React.FC<MexRouteProps> = ({ component: Component }) => {
   if (showLoader) return <FullPageLoader />
 
   if (authenticated) {
-    return <Navigate to={`${ROUTE_PATHS.node}/${nodeid}`} />
+    return <Navigate to={redirectTo || `${ROUTE_PATHS.node}/${nodeid}`} />
   }
 
   return <Component />

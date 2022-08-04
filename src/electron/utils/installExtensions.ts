@@ -1,16 +1,16 @@
-// eslint-disable-next-line import/prefer-default-export
-const installExtensions = async () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const installer = require('electron-devtools-installer')
-  const forceDownload = !!process.env.UPGRADE_EXTENSIONS
-  const extensions = ['REACT_DEVELOPER_TOOLS']
+import { app } from 'electron'
+import installExtensions, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
+import { checkIfAlpha } from './version'
 
-  return installer
-    .default(
-      extensions.map((name) => installer[name]),
-      forceDownload
-    )
-    .catch(console.error)
+const extensionsForDevX = async () => {
+  const isAlpha = checkIfAlpha(app.getVersion())
+  const extensions = [REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS]
+
+  if (isAlpha) {
+    installExtensions(extensions)
+      .then((name) => console.log(`Added Extensions: ${name}`))
+      .catch((err) => console.log(`An error occurred: ${err}`))
+  }
 }
 
-export default installExtensions
+export default extensionsForDevX

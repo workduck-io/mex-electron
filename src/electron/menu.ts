@@ -4,9 +4,9 @@ import path from 'path'
 
 import { IpcAction } from '../data/IpcAction'
 import { ToastStatus } from '../types/toast'
-import { toast, mex, spotlight } from './main'
 import { checkIfAlpha } from './utils/version'
 import { getSaveLocation, DataFileName } from '../data/Defaults/data'
+import { windows } from './main'
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string
@@ -36,14 +36,14 @@ export default class MenuBuilder {
   }
 
   setupDevelopmentEnvironment(): void {
-    this.mainWindow.webContents.on('context-menu', (_, props) => {
+    this.mainWindow?.webContents.on('context-menu', (_, props) => {
       const { x, y } = props
 
       Menu.buildFromTemplate([
         {
           label: 'Inspect element',
           click: () => {
-            this.mainWindow.webContents.inspectElement(x, y)
+            this.mainWindow?.webContents.inspectElement(x, y)
           }
         }
       ]).popup({ window: this.mainWindow })
@@ -65,8 +65,11 @@ export default class MenuBuilder {
         {
           label: 'Check for Updates',
           click: () => {
-            toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.LOADING, title: 'Checking for updates..' })
-            toast?.open(true, true, false)
+            windows.toast?.send(IpcAction.TOAST_MESSAGE, {
+              status: ToastStatus.LOADING,
+              title: 'Checking for updates..'
+            })
+            windows.toast?.open(true, true, false)
             autoUpdater.checkForUpdates()
           }
         },
@@ -130,8 +133,8 @@ export default class MenuBuilder {
           label: 'Toggle Developer Tools',
           accelerator: 'Alt+Command+I',
           click: () => {
-            mex.webContents.openDevTools()
-            spotlight.webContents.openDevTools()
+            windows.mex?.webContents.openDevTools()
+            windows.spotlight?.webContents.openDevTools()
           }
         },
         {
@@ -147,8 +150,8 @@ export default class MenuBuilder {
             const srcPath = getSaveLocation(app)
             const destPath = path.join(selectedFiles.filePaths[0], DataFileName)
             await fs.copyFile(srcPath, destPath)
-            toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.SUCCESS, title: 'Exported mex.json' })
-            toast?.open(true, true, false)
+            windows.toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.SUCCESS, title: 'Exported mex.json' })
+            windows.toast?.open(true, true, false)
           }
         },
         {
@@ -250,7 +253,7 @@ export default class MenuBuilder {
                   label: '&Reload',
                   accelerator: 'Ctrl+R',
                   click: () => {
-                    this.mainWindow.webContents.reload()
+                    this.mainWindow?.webContents.reload()
                   }
                 },
                 {
@@ -264,7 +267,7 @@ export default class MenuBuilder {
                   label: 'Toggle &Developer Tools',
                   accelerator: 'Alt+Ctrl+I',
                   click: () => {
-                    this.mainWindow.webContents.toggleDevTools()
+                    this.mainWindow?.webContents.toggleDevTools()
                   }
                 }
               ]

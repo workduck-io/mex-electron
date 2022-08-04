@@ -14,13 +14,12 @@ export const getFileData = (location: string) => {
     if (!writeToFile) return data
 
     const { data: fileData } = applyTransforms(data, UpdateVersionTransforms)
-    fs.writeFileSync(location, JSON.stringify(fileData))
+    setDataAtLocation(fileData, location)
 
     return fileData
   } else {
     const version = app.getVersion()
-    fs.writeFileSync(location, JSON.stringify(DefaultFileData(version)))
-    console.log('---- Loading local data -----', { version })
+    setDataAtLocation(DefaultFileData(version), location)
     return DefaultFileData(version)
   }
 }

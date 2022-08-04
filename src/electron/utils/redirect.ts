@@ -16,13 +16,13 @@ export const getRedirectPath = (window: BrowserWindow, url: string) => {
   if (code) {
     const type = 'login_google'
 
-    window.webContents.send(IpcAction.OAUTH, { type, code })
+    window?.webContents.send(IpcAction.OAUTH, { type, code })
   } else if (accessToken) {
     const accessToken = params.get('access_token')
     const idToken = params.get('id_token')
     const refreshToken = params.get('refresh_token')
     const type = params.get('type')
-    window.webContents.send(IpcAction.OAUTH, { type, accessToken, idToken, refreshToken })
+    window?.webContents.send(IpcAction.OAUTH, { type, accessToken, idToken, refreshToken })
     return
   }
 
@@ -30,13 +30,13 @@ export const getRedirectPath = (window: BrowserWindow, url: string) => {
     case 'integrations': {
       const actionGroupId = params.get('actionGroupId')
       mog('Redirect to integrations page', { actionGroupId })
-      window.webContents.send(IpcAction.OAUTH, { type: 'integrations', actionGroupId })
+      window?.webContents.send(IpcAction.OAUTH, { type: 'integrations', actionGroupId })
       break
     }
 
     default: {
       mog('Redirect to path page', { path })
-      window.webContents.send(IpcAction.REDIRECT_TO, { page: pathWithParams })
+      window?.webContents.send(IpcAction.REDIRECT_TO, { page: pathWithParams })
     }
   }
 
