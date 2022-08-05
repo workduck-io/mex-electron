@@ -23,6 +23,15 @@ export const FilteredItemsWrapper = styled.div<{ hasDefault?: boolean }>`
   overflow-x: hidden;
 `
 
+export const EmptyMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${({ theme }) => theme.colors.text.fade};
+
+  padding: ${({ theme }) => theme.spacing.large};
+`
+
 export const SidebarListFilter = styled.div<SidebarListWrapperProps>`
   display: flex;
   align-items: center;

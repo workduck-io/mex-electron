@@ -9,7 +9,7 @@ import { mog } from '@utils/lib/helper'
 import { debounce } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import tinykeys from 'tinykeys'
-import { FilteredItemsWrapper, SidebarListFilter, SidebarListWrapper } from './SidebarList.style'
+import { EmptyMessage, FilteredItemsWrapper, SidebarListFilter, SidebarListWrapper } from './SidebarList.style'
 import { TooltipContent } from './Tree'
 
 interface SidebarListItem {
@@ -83,7 +83,7 @@ const SidebarList = ({
   useEffect(() => {
     if (showSearch) {
       if (search && search !== '') {
-        const filtered = fuzzySearch(listItems, search, (item) => item.title)
+        const filtered = fuzzySearch(items, search, (item) => item.title)
         mog('Search', { search, filtered })
         setListItems(filtered)
       }
@@ -197,9 +197,8 @@ const SidebarList = ({
             </span>
           </Tippy>
         ))}
+        {listItems.length === 0 && search !== '' && <EmptyMessage>{emptyMessage ?? 'No Items Found'}</EmptyMessage>}
       </FilteredItemsWrapper>
-
-      {listItems.length === 0 && search !== '' && <p>{emptyMessage ?? 'No Items Found'}</p>}
     </SidebarListWrapper>
   )
 }

@@ -46,7 +46,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, openedTab, onChange, visible }) => {
   const index = tabs.findIndex((tab) => tab.type === openedTab)
 
   return (
-    <TabsContainer style={animationProps} visible={visible}>
+    <TabsContainer style={animationProps} $visible={visible}>
       <TabHeaderContainer>
         <TabsWrapper index={index} total={tabs.length}>
           {tabs.map((tab) => (
