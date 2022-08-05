@@ -79,11 +79,12 @@ const SuggestionInfoBar = () => {
     if (suggestion.type === 'snippet' || suggestion.type === 'template') {
       const snippet = getSnippet(suggestion.id)
 
-      return {
-        title: snippet.title,
-        content: snippet.content,
-        template: snippet.template
-      }
+      if (snippet)
+        return {
+          title: snippet.title,
+          content: snippet.content,
+          template: snippet.template
+        }
     }
 
     return {

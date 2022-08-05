@@ -52,6 +52,7 @@ import { uploadImageToWDCDN } from '../../utils/imageUpload'
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import { ELEMENT_INLINE_BLOCK } from '@editor/Components/InlineBlock/types'
 import { SOURCE_PLUGIN } from '@editor/Components/Blocks/createBlockModifierPlugin'
+import { ELEMENT_EXCALIDRAW } from '@editor/Components/Excalidraw'
 
 const preFormat = (editor: PlateEditor<Value>) => unwrapList(editor)
 
@@ -305,7 +306,11 @@ export const optionsResetBlockTypePlugin = {
 }
 
 export const optionsSelectOnBackspacePlugin = {
-  options: { query: { allow: [ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED, ELEMENT_ACTION_BLOCK, ELEMENT_INLINE_BLOCK] } }
+  options: {
+    query: {
+      allow: [ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED, ELEMENT_ACTION_BLOCK, ELEMENT_EXCALIDRAW, ELEMENT_INLINE_BLOCK]
+    }
+  }
 }
 
 export const optionsCreateNodeIdPlugin = {

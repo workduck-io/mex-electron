@@ -9,6 +9,7 @@ export const createExcalidrawPlugin = createPluginFactory({
   key: ELEMENT_EXCALIDRAW,
   isElement: true,
   isVoid: true,
+  isInline: true,
   deserializeHtml: {
     getNode: (el: HTMLElement, node) => {
       if (node.type !== ELEMENT_EXCALIDRAW) return

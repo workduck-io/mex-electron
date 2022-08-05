@@ -95,7 +95,8 @@ export const generatePlugins = (options: PluginOptionType) => {
     createHeadingPlugin(), // heading elements
 
     createExcalidrawPlugin({
-      component: ExcalidrawElement
+      component: ExcalidrawElement,
+      isInline: true
     }) as any,
 
     // Marks
@@ -161,7 +162,7 @@ export const generatePlugins = (options: PluginOptionType) => {
     // createDeserializeMDPlugin(),
 
     // Media and link embed
-    createMediaEmbedPlugin(),
+    createMediaEmbedPlugin({ isInline: true }),
 
     // Custom Plugins
     createBlurSelectionPlugin(),

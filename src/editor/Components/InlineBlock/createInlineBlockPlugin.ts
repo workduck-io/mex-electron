@@ -5,7 +5,7 @@ import { getInlineBlockDeserializer } from './getInlineBlockDeserializer'
 export const createInlineBlockPlugin = (): PlatePlugin => ({
   isElement: true,
   deserializeHtml: getInlineBlockDeserializer(),
-  // isInline: true,
+  isInline: true,
   isVoid: true,
   key: ELEMENT_INLINE_BLOCK
 })
