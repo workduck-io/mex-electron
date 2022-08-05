@@ -106,10 +106,10 @@ export const TodoOptions = styled.span`
 
 export const CheckBoxWrapper = styled.span`
   display: flex;
-  margin-right: 0.5rem;
+  padding: 0.3rem 0.3rem 0 0;
   user-select: none;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 
   input {
     width: 1rem;

@@ -4,6 +4,7 @@ import {
   getPluginType,
   insertNodes,
   insertText,
+  isBlock,
   isEndPoint,
   moveSelection,
   PlateEditor,
@@ -57,6 +58,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
       if (tab) {
         // console.log('TAB', { comboType, type })
         type = type === ELEMENT_ILINK ? ELEMENT_INLINE_BLOCK : type
+        mog('TYPE OF ELEMENT CHANGED TO INLINEEEE BLOCKKKK')
         // if (type)
       }
 
@@ -138,9 +140,10 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
 
         // move the selection after the ilink element
         moveSelection(editor)
+        const isBlockComponent = isBlock(editor, InsertedElement)
 
-        // delete the inserted space
-        if (isBlockEnd) {
+        if (isBlockEnd && !isBlockComponent) {
+          // delete the inserted space
           deleteText(editor, { unit: 'character', reverse: true })
         }
 

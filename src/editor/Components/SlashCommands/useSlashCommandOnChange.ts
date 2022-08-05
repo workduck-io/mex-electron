@@ -4,6 +4,7 @@ import {
   getPluginType,
   insertNodes,
   insertTable,
+  insertText,
   isEndPoint,
   moveSelection,
   PlateEditor,
@@ -85,7 +86,7 @@ export const useSlashCommandOnChange = (
             ...itemData
           })
 
-          insertNodes(editor, defaultContent.content[0])
+          insertText(editor, ' ')
 
           // move the selection after the inserted content
           moveSelection(editor)
