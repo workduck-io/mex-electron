@@ -34,6 +34,7 @@ import { appNotifierWindow } from '@electron/utils/notifiers'
 import { IpcAction } from '@data/IpcAction'
 import { AppType } from '@hooks/useInitialize'
 import useToggleElements from '@hooks/useToggleElements'
+import { TextFieldHeight } from '@workduck-io/action-request-helper'
 
 interface ModalValue {
   time?: number
@@ -277,6 +278,7 @@ const CreateReminderModal = () => {
               disabled={modalValue.todoid !== undefined}
               autoFocus={modalValue.description !== undefined}
               placeholder="Ex. Remember to share new developments"
+              height={TextFieldHeight.MEDIUM}
               {...register('description')}
             />
           </>
