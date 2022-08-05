@@ -67,6 +67,8 @@ export const convertContentToRawText = (
     // * Extract custom components (ILink, Tags, etc) `value` field
     if (n.value && !options?.exclude?.fields?.has('value') && n.value !== '') text.push(n.value)
 
+    if (n.actionContext?.actionGroupId) text.push(camelCase(n.actionContext?.actionGroupId))
+
     // * Extract custom components (Webem, Links) `url` field
     if (n.url && !options?.exclude?.fields?.has('url') && n.url !== '') text.push(n.url)
 
