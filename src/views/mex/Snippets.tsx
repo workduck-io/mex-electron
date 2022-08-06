@@ -12,7 +12,7 @@ import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import { useSnippets } from '../../hooks/useSnippets'
 import { useUpdater } from '../../hooks/useUpdater'
 import { Snippet, useSnippetStore } from '../../store/useSnippetStore'
-import IconButton, { Button } from '../../style/Buttons'
+import IconButton from '../../style/Buttons'
 import { MainHeader } from '../../style/Layouts'
 import {
   Result,
@@ -41,6 +41,7 @@ import ToggleButton from '../../components/spotlight/ToggleButton'
 import { SnippetsSearchContainer } from '../../style/Snippets'
 import { useApi } from '@apis/useSaveApi'
 import { mog } from '@utils/lib/helper'
+import { Button } from '@workduck-io/mex-components'
 
 export type SnippetsProps = {
   title?: string

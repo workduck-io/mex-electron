@@ -2,7 +2,6 @@ import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
 import React from 'react'
 import styled, { useTheme } from 'styled-components'
 import useBlockStore, { ContextMenuActionType } from '../../../store/useBlockStore'
-import { Button } from '../../../style/Buttons'
 import { ButtonWrapper } from '../../../style/Settings'
 import xBold from '@iconify/icons-ph/x-bold'
 import sendToIcon from '@iconify/icons-ph/arrow-bend-up-right-bold'
@@ -10,6 +9,7 @@ import moveToIcon from '@iconify/icons-ri/anticlockwise-2-fill'
 import { MexIcon } from '../../../style/Layouts'
 import { PrimaryText } from '../../../style/Integration'
 import { useEditorBlockSelection } from '@editor/Actions/useEditorBlockSelection'
+import { Button } from '@workduck-io/mex-components'
 
 const BlockMenu = styled.div`
   display: flex;

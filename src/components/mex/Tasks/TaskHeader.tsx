@@ -12,7 +12,7 @@ import dragMove2Fill from '@iconify/icons-ri/drag-move-2-fill'
 import edit2Line from '@iconify/icons-ri/edit-2-line'
 import fileCopyLine from '@iconify/icons-ri/file-copy-line'
 import { Icon } from '@iconify/react'
-import IconButton, { Button } from '@style/Buttons'
+import IconButton from '@style/Buttons'
 import {
   ShortcutToken,
   ShortcutTokens,
@@ -30,6 +30,7 @@ import Infobox from '@ui/components/Help/Infobox'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React, { useMemo } from 'react'
 import { ToolbarTooltip } from '../Tooltips'
+import { Button } from '@workduck-io/mex-components'
 
 interface TaskHeaderProps {
   currentView?: View<any>

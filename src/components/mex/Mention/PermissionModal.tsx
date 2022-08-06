@@ -7,7 +7,7 @@ import { useMentionStore } from '@store/useMentionStore'
 import { StyledCreatatbleSelect } from '@style/Form'
 import { mog } from '@utils/lib/helper'
 import React, { useEffect, useMemo, useState } from 'react'
-import IconButton, { Button } from '../../../style/Buttons'
+import IconButton from '../../../style/Buttons'
 import { AccessLevel, DefaultPermissionValue, Mentionable, permissionOptions } from '../../../types/mentions'
 import { ModalControls, ModalHeader, ModalSection, ModalSectionScroll } from '../Refactor/styles'
 import { InvitedUsersContent } from './InvitedUsersContent'
@@ -31,6 +31,7 @@ import { useAuthStore } from '@services/auth/useAuth'
 import { ProfileImage } from '../User/ProfileImage'
 import ShareOptions from '@components/spotlight/Public'
 import { useLinks } from '@hooks/useLinks'
+import { Button } from '@workduck-io/mex-components'
 
 export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
   const closeModal = useShareModalStore((s) => s.closeModal)

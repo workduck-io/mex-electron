@@ -15,7 +15,6 @@ import { useReminders, useReminderStore } from '../../../hooks/useReminders'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
 import { useEditorStore } from '../../../store/useEditorStore'
-import { Button } from '../../../style/Buttons'
 import { DatePickerStyles, InputBlock, Label, TextAreaBlock } from '../../../style/Form'
 import { Reminder } from '../../../types/reminders'
 import { NodeEditorContent } from '../../../types/Types'
@@ -35,6 +34,7 @@ import { IpcAction } from '@data/IpcAction'
 import { AppType } from '@hooks/useInitialize'
 import useToggleElements from '@hooks/useToggleElements'
 import { TextFieldHeight } from '@workduck-io/action-request-helper'
+import { Button } from '@workduck-io/mex-components'
 
 interface ModalValue {
   time?: number

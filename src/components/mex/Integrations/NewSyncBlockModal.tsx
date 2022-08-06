@@ -13,11 +13,11 @@ import { useSyncStore } from '../../../store/useSyncStore'
 import { Label, InputBlock, TextAreaBlock } from '../../../style/Form'
 import { capitalize, getEventNameFromElement } from '../../../utils/lib/strings'
 import create from 'zustand'
-import { Button } from '../../../style/Buttons'
 import { LoadingButton } from '../Buttons/LoadingButton'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import ServiceSelector from './ServiceSelector'
 import { useAuthStore } from '../../../services/auth/useAuth'
+import { Button } from '@workduck-io/mex-components'
 
 interface NewSyncTemplateModalState {
   open: boolean

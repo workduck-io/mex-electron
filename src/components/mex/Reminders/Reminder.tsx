@@ -20,7 +20,6 @@ import {
   ReminderTime,
   SnoozeControls
 } from './Reminders.style'
-import { Button } from '../../../style/Buttons'
 import { useReminders } from '../../../hooks/useReminders'
 import { sub } from 'date-fns'
 import { add } from 'date-fns/fp'
@@ -29,6 +28,7 @@ import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { TodoType } from '../../../editor/Components/Todo/types'
 import NotificationTodo from '../../toast/NotificationTodo'
 import { getNameFromPath } from '../Sidebar/treeUtils'
+import { Button } from '@workduck-io/mex-components'
 
 export interface ReminderControl {
   type: 'dismiss' | 'open' | 'delete' | 'unarchive'

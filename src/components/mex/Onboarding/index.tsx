@@ -1,6 +1,6 @@
+import { Button } from '@workduck-io/mex-components'
 import React from 'react'
 import useOnboard from '../../../store/useOnboarding'
-import { Button } from '../../../style/Buttons'
 import { ReactTour } from './styled'
 
 const OnBoardingTour = ({ steps }: { steps: Array<any> }) => {

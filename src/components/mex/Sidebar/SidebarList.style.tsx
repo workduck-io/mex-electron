@@ -29,7 +29,7 @@ export const EmptyMessage = styled.div`
   align-items: center;
   color: ${({ theme }) => theme.colors.text.fade};
 
-  padding: ${({ theme }) => theme.spacing.large};
+  padding: ${({ theme }) => theme.spacing.medium};
 `
 
 export const SidebarListFilter = styled.div<SidebarListWrapperProps>`

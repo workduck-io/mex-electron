@@ -1,6 +1,6 @@
-import { Button } from '@style/Buttons'
 import { SelectWrapper } from '@style/Form'
 import { Title } from '@style/Typography'
+import { Button } from '@workduck-io/mex-components'
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 

@@ -15,7 +15,6 @@ import useLoad from '../../hooks/useLoad'
 import { useContentStore } from '../../store/useContentStore'
 import useDataStore from '../../store/useDataStore'
 import { NodeProperties } from '../../store/useEditorStore'
-import { Button } from '../../style/Buttons'
 import { MainHeader } from '../../style/Layouts'
 import {
   Result,
@@ -42,6 +41,7 @@ import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { useDelete } from '@hooks/useDelete'
 import toast from 'react-hot-toast'
+import { Button } from '@workduck-io/mex-components'
 
 export const ArchivedNode = styled.div`
   display: flex;

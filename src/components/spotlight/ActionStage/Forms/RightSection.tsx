@@ -8,7 +8,6 @@ import { ShortcutText } from '../../Home/components/Item'
 import WDLogo from '../../Search/Logo'
 import Tippy from '@tippyjs/react'
 import { useRouting } from '../../../../views/routes/urls'
-import { Button } from '../../../../style/Buttons'
 import ActionMenu from '../ActionMenu'
 import { NoOption } from '../ActionMenu/styled'
 import { useActionMenuStore } from '../ActionMenu/useActionMenuStore'
@@ -17,6 +16,7 @@ import { usePlateEditorRef } from '@udecode/plate'
 import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
 import { DEFAULT_LIST_ITEM_ICON } from '../ActionMenu/ListSelector'
 import { useReadOnly } from 'slate-react'
+import { Button } from '@workduck-io/mex-components'
 
 const JoinService = styled.span<{ left?: boolean }>`
   position: absolute;

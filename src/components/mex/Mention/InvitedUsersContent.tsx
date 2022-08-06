@@ -5,7 +5,7 @@ import { useEditorStore } from '@store/useEditorStore'
 import { StyledCreatatbleSelect } from '@style/Form'
 import { mog } from '@utils/lib/helper'
 import React, { useMemo } from 'react'
-import IconButton, { Button } from '../../../style/Buttons'
+import IconButton from '../../../style/Buttons'
 import { AccessLevel, DefaultPermissionValue, InvitedUser, permissionOptions } from '../../../types/mentions'
 import { ModalControls, ModalHeader, ModalSection, ModalSectionScroll } from '../Refactor/styles'
 import {
@@ -23,6 +23,7 @@ import { useShareModalStore } from './ShareModalStore'
 import { useUserService } from '@services/auth/useUserService'
 import { usePermission } from '@services/auth/usePermission'
 import { useMentionStore } from '@store/useMentionStore'
+import { Button } from '@workduck-io/mex-components'
 
 // Here since we don't have a specific userid we take email to be a unique key.
 export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {

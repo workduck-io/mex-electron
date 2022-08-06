@@ -9,7 +9,6 @@ import { generateTempId } from '../../../data/Defaults/idPrefixes'
 import { useLinks } from '../../../hooks/useLinks'
 import { useTags } from '../../../hooks/useTags'
 import { useContentStore } from '../../../store/useContentStore'
-import { Button } from '../../../style/Buttons'
 import { NodeEditorContent } from '../../../types/Types'
 import { mog } from '../../../utils/lib/helper'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
@@ -21,6 +20,7 @@ import {
 } from './EditorPreview.styles'
 import useLoad from '../../../hooks/useLoad'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import { Button } from '@workduck-io/mex-components'
 
 export interface EditorPreviewProps {
   nodeid: string

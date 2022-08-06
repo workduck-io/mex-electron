@@ -7,7 +7,6 @@ import React, { useState } from 'react'
 import { useAuthStore, useAuthentication } from '../../services/auth/useAuth'
 
 import { AppType } from '../../hooks/useInitialize'
-import { Button } from '../../style/Buttons'
 import { CenteredColumn } from '../../style/Layouts'
 import { IpcAction } from '../../data/IpcAction'
 import { Link } from 'react-router-dom'
@@ -22,6 +21,7 @@ import { useAuth } from '@workduck-io/dwindle'
 import useOnboard from '../../store/useOnboarding'
 import { useTourData } from '../../components/mex/Onboarding/hooks'
 import { mog } from '@utils/lib/helper'
+import { Button } from '@workduck-io/mex-components'
 
 export interface Option {
   label: string

@@ -8,6 +8,7 @@ import { LoadingWrapper } from './Loading'
 import { TooltipTitleWithShortcut } from '../components/mex/Shortcuts'
 import { ToolbarTooltip } from '../components/mex/Tooltips'
 import { mog } from '@utils/lib/helper'
+import { Button } from '@workduck-io/mex-components'
 
 export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   primary?: boolean
@@ -16,98 +17,98 @@ export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   transparent?: boolean
 }
 
-export const Button = styled.button<ButtonProps>`
-  ${centeredCss};
-  gap: ${({ theme }) => theme.spacing.small};
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-  border: none;
-  outline: none;
-  color: ${({ theme }) => theme.colors.text.subheading};
-  cursor: pointer;
-  transition: 0.3s ease;
-  background-color: ${({ theme }) => theme.colors.form.button.bg};
+// export const Button = styled.button<ButtonProps>`
+//   ${centeredCss};
+//   gap: ${({ theme }) => theme.spacing.small};
+//   border-radius: ${({ theme }) => theme.borderRadius.small};
+//   border: none;
+//   outline: none;
+//   color: ${({ theme }) => theme.colors.text.subheading};
+//   cursor: pointer;
+//   transition: 0.3s ease;
+//   background-color: ${({ theme }) => theme.colors.form.button.bg};
 
-  flex-shrink: 0;
+//   flex-shrink: 0;
 
-  &:focus {
-    color: ${({ theme }) => theme.colors.primary};
-    box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
-  }
+//   &:focus {
+//     color: ${({ theme }) => theme.colors.primary};
+//     box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
+//   }
 
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-    box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
-  }
+//   &:hover {
+//     color: ${({ theme }) => theme.colors.primary};
+//     box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
+//   }
 
-  &:disabled {
-    background-color: ${({ theme }) => theme.colors.form.button.bg};
-    color: ${({ theme }) => transparentize(0.5, theme.colors.form.button.fg)};
-    cursor: not-allowed;
-    pointer-events: none;
-  }
+//   &:disabled {
+//     background-color: ${({ theme }) => theme.colors.form.button.bg};
+//     color: ${({ theme }) => transparentize(0.5, theme.colors.form.button.fg)};
+//     cursor: not-allowed;
+//     pointer-events: none;
+//   }
 
-  ${({ primary, transparent, theme }) =>
-    !primary &&
-    transparent &&
-    css`
-      background-color: transparent;
-      &:hover {
-        background-color: ${theme.colors.form.button.bg};
-      }
-      &:disabled {
-        background-color: ${({ theme }) => theme.colors.gray[6]};
-        cursor: default;
-      }
-    `}
+//   ${({ primary, transparent, theme }) =>
+//     !primary &&
+//     transparent &&
+//     css`
+//       background-color: transparent;
+//       &:hover {
+//         background-color: ${theme.colors.form.button.bg};
+//       }
+//       &:disabled {
+//         background-color: ${({ theme }) => theme.colors.gray[6]};
+//         cursor: default;
+//       }
+//     `}
 
-  ${({ theme: { spacing }, large }) =>
-    large
-      ? css`
-          padding: ${`${spacing.small} ${spacing.medium}`};
-          margin: 0 ${spacing.small};
-          font-size: 1.2rem;
-        `
-      : css`
-          padding: ${spacing.small};
-          margin: 0 ${spacing.tiny};
-        `}
+//   ${({ theme: { spacing }, large }) =>
+//     large
+//       ? css`
+//           padding: ${`${spacing.small} ${spacing.medium}`};
+//           margin: 0 ${spacing.small};
+//           font-size: 1.2rem;
+//         `
+//       : css`
+//           padding: ${spacing.small};
+//           margin: 0 ${spacing.tiny};
+//         `}
 
-  ${({ theme, primary }) =>
-    primary
-      ? css`
-          background-color: ${theme.colors.primary};
-          color: ${theme.colors.text.oppositePrimary};
-          &:hover {
-            background-color: ${theme.colors.fade.primary};
-            color: ${theme.colors.text.oppositePrimary};
-          }
-          &:disabled {
-            background-color: ${({ theme }) => theme.colors.gray[6]};
-            cursor: default;
-          }
-          &:focus {
-            color: ${theme.colors.text.oppositePrimary};
-            box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
-          }
-        `
-      : ''}
+//   ${({ theme, primary }) =>
+//     primary
+//       ? css`
+//           background-color: ${theme.colors.primary};
+//           color: ${theme.colors.text.oppositePrimary};
+//           &:hover {
+//             background-color: ${theme.colors.fade.primary};
+//             color: ${theme.colors.text.oppositePrimary};
+//           }
+//           &:disabled {
+//             background-color: ${({ theme }) => theme.colors.gray[6]};
+//             cursor: default;
+//           }
+//           &:focus {
+//             color: ${theme.colors.text.oppositePrimary};
+//             box-shadow: 0px 6px 12px ${({ theme }) => transparentize(0.75, theme.colors.primary)};
+//           }
+//         `
+//       : ''}
 
-  ${({ theme, highlight }) =>
-    highlight
-      ? css`
-          background-color: ${theme.colors.primary};
-          color: ${theme.colors.text.oppositePrimary};
-          box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.primary)};
-          &:hover {
-            background-color: ${theme.colors.fade.primary};
-            color: ${theme.colors.text.oppositePrimary};
-          }
-          &:disabled {
-            background-color: ${({ theme }) => theme.colors.gray[6]};
-          }
-        `
-      : ''}
-`
+//   ${({ theme, highlight }) =>
+//     highlight
+//       ? css`
+//           background-color: ${theme.colors.primary};
+//           color: ${theme.colors.text.oppositePrimary};
+//           box-shadow: 0px 4px 8px ${({ theme }) => transparentize(0.33, theme.colors.primary)};
+//           &:hover {
+//             background-color: ${theme.colors.fade.primary};
+//             color: ${theme.colors.text.oppositePrimary};
+//           }
+//           &:disabled {
+//             background-color: ${({ theme }) => theme.colors.gray[6]};
+//           }
+//         `
+//       : ''}
+// `
 
 export type IconButtonProps = {
   icon: any // eslint-disable-line @typescript-eslint/no-explicit-any

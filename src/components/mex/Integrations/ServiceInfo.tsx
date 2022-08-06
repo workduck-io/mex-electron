@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
 import arrowLeftLine from '@iconify/icons-ri/arrow-left-line'
-import IconButton, { Button } from '../../../style/Buttons'
+import IconButton from '../../../style/Buttons'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { ErrorBoundary } from 'react-error-boundary'
 import tinykeys from 'tinykeys'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { ServiceContainer, GroupHeaderContainer, FloatingIcon } from './styled'
+import { Button } from '@workduck-io/mex-components'
 
 type ServiceInfoProps = {}
 

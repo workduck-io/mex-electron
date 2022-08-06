@@ -1,5 +1,5 @@
+import { Button } from '@workduck-io/mex-components'
 import styled from 'styled-components'
-import { Button } from '../../../../style/Buttons'
 import { ComboboxItem } from '../../tag/components/TagCombobox.styles'
 
 export const ComboSeperator = styled.div`

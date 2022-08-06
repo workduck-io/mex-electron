@@ -1,9 +1,9 @@
 import { FlexBetween } from '@components/spotlight/Actions/styled'
 import { Description } from '@components/spotlight/SearchResults/styled'
-import { Button } from '@style/Buttons'
 import { CenteredMainContent } from '@style/Editor'
 import { CardShadow } from '@style/helpers'
 import { CenteredFlex, Title } from '@style/Integration'
+import { Button } from '@workduck-io/mex-components'
 import styled, { css } from 'styled-components'
 import { CardStyles } from '../Settings/Importers'
 

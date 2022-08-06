@@ -5,10 +5,10 @@ import styled, { css } from 'styled-components'
 import { transparentize } from 'polished'
 import { Wrapper } from '../../../style/Layouts'
 import { Title } from '../../../style/Typography'
-import { Button } from '../../../style/Buttons'
 import { IpcAction } from '../../../data/IpcAction'
 import { CardShadow } from '../../../style/helpers'
 import { useImportExport } from '../../../hooks/useImportExport'
+import { Button } from '@workduck-io/mex-components'
 
 const ComingSoonImporters = [
   { name: 'Docs', icon: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Google_Docs_logo_%282014-2020%29.svg' },

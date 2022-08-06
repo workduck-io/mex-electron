@@ -2,7 +2,6 @@ import { useForm } from 'react-hook-form'
 import React, { useMemo } from 'react'
 import Modal from 'react-modal'
 import create from 'zustand'
-import { Button } from '@style/Buttons'
 import { mog } from '@utils/lib/helper'
 import { ModalControls, ModalHeader } from './Refactor/styles'
 import { SearchFilter } from '@hooks/useFilters'
@@ -17,6 +16,7 @@ import { generateTaskViewId } from '@data/Defaults/idPrefixes'
 import { useSaveData } from '@hooks/useSaveData'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { getPathNum } from '@utils/lib/paths'
+import { Button } from '@workduck-io/mex-components'
 
 // Prefill modal has been added to the Tree via withRefactor from useRefactor
 

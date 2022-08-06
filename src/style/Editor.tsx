@@ -1,6 +1,7 @@
+import { Button } from '@workduck-io/mex-components'
 import { mix, transparentize } from 'polished'
 import styled, { css } from 'styled-components'
-import { AsyncButton, Button } from './Buttons'
+import { AsyncButton } from './Buttons'
 import { focusStyles } from './focus'
 import { FocusModeProp } from './props'
 

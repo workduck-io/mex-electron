@@ -10,13 +10,13 @@ import { useAuthStore } from '../../../services/auth/useAuth'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import useOnboard from '../../../store/useOnboarding'
-import { Button } from '../../../style/Buttons'
 import { FOCUS_MODE_OPACITY } from '../../../style/consts'
 import { MexIcon } from '../../../style/Layouts'
 import { FocusModeProp } from '../../../style/props'
 import { FlexBetween } from '../../spotlight/Actions/styled'
 import { useTourData } from '../Onboarding/hooks'
 import useModalStore, { ModalsType } from '@store/useModalStore'
+import { Button } from '@workduck-io/mex-components'
 
 export const Float = styled.div<FocusModeProp>`
   position: fixed;

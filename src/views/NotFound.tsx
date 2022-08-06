@@ -1,8 +1,8 @@
 import notFound from '@iconify/icons-fluent/document-one-page-24-filled'
 import { Icon } from '@iconify/react'
+import { Button } from '@workduck-io/mex-components'
 import React from 'react'
 import styled, { useTheme } from 'styled-components'
-import { Button } from '../style/Buttons'
 import { NotFoundText } from '../style/Form'
 import { NavigationType, ROUTE_PATHS, useRouting } from './routes/urls'
 
