@@ -12,6 +12,7 @@ import {
   offset,
   useVirtualFloating,
   UseVirtualFloatingOptions,
+  shift,
   UseVirtualFloatingReturn
 } from '@udecode/plate-floating'
 import { useFocused } from 'slate-react'
@@ -74,6 +75,7 @@ export const useFloatingToolbar = ({
       {
         middleware: [
           offset(12),
+          shift(),
           flip({
             padding: 150
           })

@@ -2,6 +2,8 @@
 
 import { IS_DEV } from '@data/Defaults/dev_'
 import { IpcAction } from '@data/IpcAction'
+import { windows } from '@electron/main'
+import { mog } from '@utils/lib/helper'
 import { BrowserWindow, BrowserWindowConstructorOptions, LoadURLOptions, shell } from 'electron'
 
 const toggleWindow = (window: any, isSelection: boolean) => {
@@ -22,7 +24,7 @@ const createWindow = (options: {
   onBlurHide?: boolean
   onLoadShow?: boolean
 }): BrowserWindow => {
-  let window: BrowserWindow = new BrowserWindow(options.windowConstructorOptions)
+  const window: BrowserWindow = new BrowserWindow(options.windowConstructorOptions)
   window.loadURL(options.loadURL.url, options.loadURL.options)
 
   window.webContents.on('did-finish-load', () => {
@@ -41,10 +43,6 @@ const createWindow = (options: {
   window.on('blur', () => {
     if (options.onBlurHide) window.hide()
     window.webContents.send(IpcAction.WINDOW_BLUR)
-  })
-
-  window.on('closed', () => {
-    window = null
   })
 
   if (IS_DEV) window.webContents.openDevTools()
