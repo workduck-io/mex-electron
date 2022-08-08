@@ -1,5 +1,6 @@
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useSnippets } from '@hooks/useSnippets'
+import { useToast } from '@hooks/useToast'
 import { useUpdater } from '@hooks/useUpdater'
 import {
   getSelectionText,
@@ -13,7 +14,6 @@ import {
 } from '@udecode/plate'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import genereateName from 'project-name-generator'
-import toast from 'react-hot-toast'
 import { SEPARATOR } from '../../../../components/mex/Sidebar/treeUtils'
 import { defaultContent } from '../../../../data/Defaults/baseData'
 import { generateSnippetId, generateTempId } from '../../../../data/Defaults/idPrefixes'
@@ -32,6 +32,7 @@ export const useTransform = () => {
   const { updateSnippet } = useSnippets()
   const { createNewNote } = useCreateNewNote()
   const { updater } = useUpdater()
+  const { toast } = useToast()
 
   // Checks whether a node is a flowblock
   const isFlowBlock = (node: any): boolean => {
@@ -272,7 +273,7 @@ export const useTransform = () => {
 
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value })
 
-      toast(`Snippet created [[${snippetTitle}]]`, { duration: 5000 })
+      toast(`Snippet created [[${snippetTitle}]]`)
       // setContent(nodeid, value)
       // saveData()
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path })
