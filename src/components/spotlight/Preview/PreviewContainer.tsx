@@ -128,6 +128,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
       <Editor
         autoFocus={!normalMode}
         padding="1rem"
+        showBalloonToolbar
         focusAtBeginning={!normalMode}
         options={{ exclude: { dnd: true } }}
         readOnly={normalMode}

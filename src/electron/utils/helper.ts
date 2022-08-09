@@ -63,6 +63,10 @@ export const createSpotLighWindow = (show?: boolean) => {
 
   const spotlight = windows.spotlight
 
+  spotlight.on('closed', () => {
+    windows.spotlight = null
+  })
+
   spotlight.setAlwaysOnTop(true, 'modal-panel', 100)
   spotlight.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 }
@@ -103,6 +107,10 @@ export const createMexWindow = (tempData?: any) => {
 
   const menuBuilder = new MenuBuilder(mex)
   menuBuilder.buildMenu()
+
+  mex.on('close', () => {
+    windows.mex = null
+  })
 
   mex.on('enter-full-screen', () => {
     windows.spotlight.setFullScreenable(false)
