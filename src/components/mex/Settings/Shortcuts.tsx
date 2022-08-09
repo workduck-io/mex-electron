@@ -6,7 +6,7 @@ import useShortcutTableData from '../../../hooks/useShortcutTableData'
 import { useShortcutStore } from '../../../store/useShortcutStore'
 import styled, { css } from 'styled-components'
 import InputShortcut from '../Help/InputShortcut'
-import { DisplayShortcut } from '../Shortcuts'
+import { DisplayShortcut } from '@workduck-io/mex-components'
 
 const Shortcut = styled.div<{ highlight: boolean }>`
   width: 100%;

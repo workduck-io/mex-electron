@@ -1,7 +1,7 @@
 import filter2Line from '@iconify/icons-ri/filter-2-line'
 import filterOffLine from '@iconify/icons-ri/filter-off-line'
 import { Icon } from '@iconify/react'
-import { Infobox } from '@workduck-io/mex-components'
+import { Infobox, ToolbarTooltip } from '@workduck-io/mex-components'
 import { startCase } from 'lodash'
 import { nanoid } from 'nanoid'
 import React, { useMemo } from 'react'
@@ -15,7 +15,6 @@ import {
   SearchFilterWrapper
 } from '../../../style/Search'
 import { mog } from '../../../utils/lib/helper'
-import { ToolbarTooltip } from '../Tooltips'
 import SearchFilterInput from './SearchFilterInput'
 
 interface SearchFiltersProps<Item> {

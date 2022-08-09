@@ -1,39 +1,38 @@
-import {
-  ComboboxItem,
-  ComboboxRoot,
-  ItemCenterWrapper,
-  ItemDesc,
-  ItemRightIcons,
-  ItemTitle
-} from '../../tag/components/TagCombobox.styles'
-import { useEditorState } from '@udecode/plate'
-import React, { useEffect, useState } from 'react'
-
-import { ComboboxProps } from './Combobox.types'
+import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
+import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
 import { Icon } from '@iconify/react'
-import { setElementPositionByRange } from '../../tag/utils/setElementPositionByRange'
-import { useComboboxControls } from '../hooks/useComboboxControls'
-import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen'
-import { useComboboxStore } from '../useComboboxStore'
 import useMergedRef from '@react-hook/merged-ref'
-import EditorPreviewRenderer from '../../../EditorPreviewRenderer'
+import { useEditorState } from '@udecode/plate'
+import { DisplayShortcut } from '@workduck-io/mex-components'
+import React, { useEffect, useState } from 'react'
+import { useTheme } from 'styled-components'
 import { QuickLinkType } from '../../../../components/mex/NodeSelect/NodeSelect'
+import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
+import { ShortcutText } from '../../../../components/spotlight/Home/components/Item'
+import { ElementTypeBasedShortcut } from '../../../../components/spotlight/Shortcuts/list'
+import { useSnippets } from '../../../../hooks/useSnippets'
 import { useContentStore } from '../../../../store/useContentStore'
 import { PrimaryText } from '../../../../style/Integration'
-import { useSnippets } from '../../../../hooks/useSnippets'
-import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
 import { NodeEditorContent } from '../../../../types/Types'
-import BlockCombo from './BlockCombo'
-import { ComboboxShortcuts, ComboSeperator } from './styled'
-import { ElementTypeBasedShortcut } from '../../../../components/spotlight/Shortcuts/list'
-import { ShortcutText } from '../../../../components/spotlight/Home/components/Item'
-import { DisplayShortcut } from '../../../../components/mex/Shortcuts'
+import EditorPreviewRenderer from '../../../EditorPreviewRenderer'
+import {
+    ComboboxItem,
+    ComboboxRoot,
+    ItemCenterWrapper,
+    ItemDesc,
+    ItemRightIcons,
+    ItemTitle
+} from '../../tag/components/TagCombobox.styles'
+import { setElementPositionByRange } from '../../tag/utils/setElementPositionByRange'
+import { useComboboxControls } from '../hooks/useComboboxControls'
 import { replaceFragment } from '../hooks/useComboboxOnKeyDown'
+import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen'
+import { useComboboxStore } from '../useComboboxStore'
+import BlockCombo from './BlockCombo'
+import { ComboboxProps } from './Combobox.types'
 import PreviewMeta from './PreviewMeta'
-import { MexIcon } from '../../../../style/Layouts'
-import { useTheme } from 'styled-components'
-import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
-import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
+import { ComboboxShortcuts, ComboSeperator } from './styled'
+
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'

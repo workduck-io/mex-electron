@@ -1,10 +1,9 @@
 import React from 'react'
-import { DisplayShortcut } from '../../../mex/Shortcuts'
 import { ShortcutText } from '../../Home/components/Item'
 import { StyledDefault } from './styled'
 import Tippy from '@tippyjs/react'
 import { useActionMenuStore } from './useActionMenuStore'
-import { Button } from '@workduck-io/mex-components'
+import { Button, DisplayShortcut } from '@workduck-io/mex-components'
 
 export type DefaultProps = {
   title: string

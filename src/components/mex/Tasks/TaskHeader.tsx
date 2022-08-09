@@ -1,5 +1,4 @@
 import checkboxLine from '@iconify/icons-ri/checkbox-line'
-import { DisplayShortcut, ShortcutMid } from '@components/mex/Shortcuts'
 import { useTaskViewModalStore } from '@components/mex/TaskViewModal'
 import stackLine from '@iconify/icons-ri/stack-line'
 import { TasksHelp } from '@data/Defaults/helpText'
@@ -27,8 +26,7 @@ import { Title } from '@style/Typography'
 import { useSingleton } from '@tippyjs/react'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React, { useMemo } from 'react'
-import { ToolbarTooltip } from '../Tooltips'
-import { Button, IconButton, Infobox } from '@workduck-io/mex-components'
+import { Button, IconButton, Infobox, ToolbarTooltip, DisplayShortcut } from '@workduck-io/mex-components'
 
 interface TaskHeaderProps {
   currentView?: View<any>
@@ -139,7 +137,6 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected }: TaskHeaderPro
             <ShortcutToken>
               Move:
               <DisplayShortcut shortcut="Shift" />
-              <ShortcutMid>+</ShortcutMid>
               <Icon icon={arrowLeftRightLine} />
             </ShortcutToken>
             <ShortcutToken>

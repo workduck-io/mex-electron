@@ -2,7 +2,6 @@ import React from 'react'
 import styled, { css, useTheme } from 'styled-components'
 import { MexIcon } from '../../../../style/Layouts'
 import Loading from '../../../../style/Loading'
-import { DisplayShortcut } from '../../../mex/Shortcuts'
 import { useActionStore } from '../../Actions/useActionStore'
 import { ShortcutText } from '../../Home/components/Item'
 import WDLogo from '../../Search/Logo'
@@ -16,7 +15,7 @@ import { usePlateEditorRef } from '@udecode/plate'
 import { getIconType, ProjectIconMex } from '../Project/ProjectIcon'
 import { DEFAULT_LIST_ITEM_ICON } from '../ActionMenu/ListSelector'
 import { useReadOnly } from 'slate-react'
-import { Button } from '@workduck-io/mex-components'
+import { Button, DisplayShortcut } from '@workduck-io/mex-components'
 
 const JoinService = styled.span<{ left?: boolean }>`
   position: absolute;

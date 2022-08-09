@@ -13,9 +13,8 @@ import { getPlateEditorRef } from '@udecode/plate'
 import { getPathFromNodeIdHookless } from '../../../../hooks/useLinks'
 import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
 import { BlockIcons } from '../../Blocks/BlockIcons'
-import { DisplayShortcut } from '../../../../components/mex/Shortcuts'
 import { ShortcutText } from '../../../../components/spotlight/Home/components/Item'
-import { IconButton } from '@workduck-io/mex-components'
+import { DisplayShortcut, IconButton } from '@workduck-io/mex-components'
 
 type BlockComboProps = {
   onSelect

@@ -2,9 +2,9 @@ import { useActionPerformer } from '@components/spotlight/Actions/useActionPerfo
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import { MexIcon } from '@style/Layouts'
 import { MenuPostActionConfig } from '@workduck-io/action-request-helper'
+import { DisplayShortcut } from '@workduck-io/mex-components'
 import React, { useEffect, useRef } from 'react'
 import styled, { useTheme } from 'styled-components'
-import { DisplayShortcut } from '../../../mex/Shortcuts'
 import { ShortcutText } from '../../Home/components/Item'
 import { StyledMenuItem } from './styled'
 

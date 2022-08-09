@@ -10,10 +10,10 @@ import tinykeys from 'tinykeys'
 import { mog } from '@utils/lib/helper'
 import { useActionMenuStore } from './useActionMenuStore'
 import Tippy from '@tippyjs/react'
-import { DisplayShortcut } from '@components/mex/Shortcuts'
 import { ShortcutText } from '@components/spotlight/Home/components/Item'
 import { MexIcon } from '@style/Layouts'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
+import { DisplayShortcut } from '@workduck-io/mex-components'
 
 type MenuActionFormProps = {
   action: MenuPostActionConfig

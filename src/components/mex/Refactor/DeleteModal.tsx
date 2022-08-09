@@ -1,6 +1,6 @@
 import archiveLine from '@iconify/icons-ri/archive-line'
 import { Icon } from '@iconify/react'
-import { Button } from '@workduck-io/mex-components'
+import { Button, DisplayShortcut } from '@workduck-io/mex-components'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
 import { useLocation } from 'react-router-dom'
@@ -14,7 +14,6 @@ import { useHelpStore } from '../../../store/useHelpStore'
 import { isReserved } from '../../../utils/lib/paths'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
-import { DisplayShortcut } from '../Shortcuts'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
 interface DeleteStoreState {

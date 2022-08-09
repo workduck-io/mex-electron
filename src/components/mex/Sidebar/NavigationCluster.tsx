@@ -1,10 +1,9 @@
+import { NavTooltip, TitleWithShortcut } from '@workduck-io/mex-components'
 import React, { useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useHelpStore } from '@store/useHelpStore'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '@data/IpcAction'
-import { NavTooltip } from '../Tooltips'
-import { TooltipTitleWithShortcut } from '../Shortcuts'
 import { NavigationButton, NavigationClusterWrapper } from '@style/Sidebar'
 import { Icon } from '@iconify/react'
 import arrowRightSLine from '@iconify/icons-ri/arrow-right-s-line'
@@ -35,7 +34,7 @@ const NavigationCluster = () => {
     <NavigationClusterWrapper>
       <NavTooltip
         placement="top-start"
-        content={<TooltipTitleWithShortcut title="Backward" shortcut={shortcuts.gotoForward.keystrokes} />}
+        content={<TitleWithShortcut title="Backward" shortcut={shortcuts.gotoForward.keystrokes} />}
       >
         <NavigationButton disabled={!canGoBack} onClick={onBack}>
           <Icon icon={arrowLeftSLine} width={20} />
@@ -43,7 +42,7 @@ const NavigationCluster = () => {
       </NavTooltip>
       <NavTooltip
         placement="top-start"
-        content={<TooltipTitleWithShortcut title="Forward" shortcut={shortcuts.gotoForward.keystrokes} />}
+        content={<TitleWithShortcut title="Forward" shortcut={shortcuts.gotoForward.keystrokes} />}
       >
         <NavigationButton disabled={!canGoForward} onClick={onForward}>
           <Icon icon={arrowRightSLine} width={20} />
