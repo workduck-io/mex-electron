@@ -7,11 +7,11 @@ import { Intent } from '../../../editor/Components/SyncBlock'
 import IntentSelector from '../../../editor/Components/SyncBlock/intentSelector'
 import useIntents from '../../../hooks/useIntents'
 import { useLinks } from '../../../hooks/useLinks'
-import { Button } from '../../../style/Buttons'
 import { IntentMapItem } from '../../../style/Integration'
 import { Para } from '../../../style/Typography'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { Command } from './styled'
+import { Button } from '@workduck-io/mex-components'
 
 export interface NodeIntegrationsModalProps {
   nodeid: string

@@ -10,10 +10,10 @@ import tinykeys from 'tinykeys'
 import { mog } from '@utils/lib/helper'
 import { useActionMenuStore } from './useActionMenuStore'
 import Tippy from '@tippyjs/react'
-import { DisplayShortcut } from '@components/mex/Shortcuts'
 import { ShortcutText } from '@components/spotlight/Home/components/Item'
 import { MexIcon } from '@style/Layouts'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
+import { DisplayShortcut } from '@workduck-io/mex-components'
 
 type MenuActionFormProps = {
   action: MenuPostActionConfig
@@ -137,7 +137,9 @@ const MenuActionForm: React.FC<MenuActionFormProps> = ({ action }) => {
         <FormLoadingButton
           loading={isSubmitting}
           alsoDisabled={!formMethods.formState.isDirty}
-          buttonProps={{ type: 'submit', form: 'menu-action-form', primary: true }}
+          type="submit"
+          form="menu-action-form"
+          primary
         >
           <NoOption>
             <MexIcon noHover icon="ion:create-outline" margin="0 0.5rem 0 0" height="1.25rem" width="1.25rem" />

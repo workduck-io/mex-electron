@@ -1,7 +1,7 @@
+import { Button } from '@workduck-io/mex-components'
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 import { TagFlex } from '../../../components/mex/Tags/TagsRelated'
-import { Button } from '../../../style/Buttons'
 import { CardShadow } from '../../../style/helpers'
 
 export const EditorPreviewWrapper = styled.div`

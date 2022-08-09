@@ -10,11 +10,11 @@ import { ButtonFields, Label, SelectWrapper, StyledCreatatbleSelect } from '@sty
 import { Title } from '@style/Typography'
 import { getPlateEditorRef } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
+import { LoadingButton } from '@workduck-io/mex-components'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { AccessLevel, DefaultPermission, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
-import { LoadingButton } from '../Buttons/LoadingButton'
 import { InputFormError } from '../Forms/Input'
 import { InviteFormFieldset, InviteFormWrapper, InviteWrapper } from './ShareModal.styles'
 import { InviteModalData, useShareModalStore } from './ShareModalStore'
@@ -158,7 +158,9 @@ export const InviteModalContent = () => {
             <LoadingButton
               loading={isSubmitting}
               alsoDisabled={errors.email !== undefined || errors.alias !== undefined}
-              buttonProps={{ type: 'submit', primary: true, large: true }}
+              type="submit"
+              primary
+              large
             >
               Invite
             </LoadingButton>

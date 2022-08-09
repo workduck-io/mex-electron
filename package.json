@@ -108,6 +108,7 @@
     "@workduck-io/action-request-helper": "^0.1.6",
     "@workduck-io/dwindle": "^0.0.17",
     "@workduck-io/flexsearch": "^0.7.22",
+    "@workduck-io/mex-components": "^0.0.5",
     "active-win-universal": "^7.6.2",
     "axios": "^0.21.1",
     "boring-avatars": "^1.5.8",

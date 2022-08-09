@@ -41,7 +41,7 @@ import { ROUTE_PATHS } from '../routes/urls'
 import AuthRoute from './AuthRoute'
 import ProtectedRoute from './ProtectedRoute'
 
-export const SwitchWrapper = styled(animated.div)<{ isAuth?: boolean }>`
+export const SwitchWrapper = styled(animated.div)<{ $isAuth?: boolean }>`
   height: 100%;
 
   width: 100%;
@@ -133,7 +133,7 @@ const Switch = () => {
   */
 
   return (
-    <SwitchWrapper isAuth={authenticated}>
+    <SwitchWrapper $isAuth={authenticated}>
       <Routes>
         <Route path={ROUTE_PATHS.login} element={<AuthRoute component={Login} />} />
         <Route path={ROUTE_PATHS.register} element={<AuthRoute component={Register} />} />

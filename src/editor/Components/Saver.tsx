@@ -19,11 +19,11 @@ import { NodeProperties, useEditorStore } from '@store/useEditorStore'
 import { useHelpStore } from '@store/useHelpStore'
 import { useSnippetStore } from '@store/useSnippetStore'
 import useTodoStore from '@store/useTodoStore'
-import IconButton from '@style/Buttons'
 import { getTodosFromContent } from '@utils/lib/content'
 import { mog } from '@utils/lib/helper'
 import { getEventNameFromElement } from '@utils/lib/strings'
 import { useNodes } from '@hooks/useNodes'
+import { IconButton } from '@workduck-io/mex-components'
 
 interface SaveEditorValueOptions {
   // If not set, defaults to true

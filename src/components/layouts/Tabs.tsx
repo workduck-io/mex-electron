@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { useSpring } from 'react-spring'
 import Tippy from '@tippyjs/react'
 import { StyledTab, TabBody, TabsWrapper, TabsContainer, TabHeaderContainer, TabPanel } from './styled'
-import { TooltipTitleWithShortcut } from '@components/mex/Shortcuts'
 import { InfobarMode } from '@store/useLayoutStore'
+import { TitleWithShortcut } from '@workduck-io/mex-components'
 
 export enum SidebarTab {
   'hierarchy' = 'hierarchy',
@@ -46,7 +46,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, openedTab, onChange, visible }) => {
   const index = tabs.findIndex((tab) => tab.type === openedTab)
 
   return (
-    <TabsContainer style={animationProps} visible={visible}>
+    <TabsContainer style={animationProps} $visible={visible}>
       <TabHeaderContainer>
         <TabsWrapper index={index} total={tabs.length}>
           {tabs.map((tab) => (
@@ -54,7 +54,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, openedTab, onChange, visible }) => {
               delay={200}
               key={tab.type}
               theme="mex-bright"
-              content={<TooltipTitleWithShortcut shortcut={tab.shortcut} title={tab.tooltip} />}
+              content={<TitleWithShortcut shortcut={tab.shortcut} title={tab.tooltip} />}
             >
               <StyledTab key={tab.type} onClick={() => onChange(tab.type)} selected={tab.type === openedTab}>
                 {tab.label}

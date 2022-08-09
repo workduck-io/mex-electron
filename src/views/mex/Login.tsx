@@ -1,21 +1,18 @@
+import { LoadingButton } from '@workduck-io/mex-components'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
-import { EMAIL_REG } from '../../data/Defaults/auth'
+import { GoogleLoginButton } from '../../components/mex/Buttons/LoadingButton'
 import { InputFormError } from '../../components/mex/Forms/Input'
+import { EMAIL_REG } from '../../data/Defaults/auth'
 import { useAuthentication, useAuthStore } from '../../services/auth/useAuth'
 import { BackCard, FooterCard } from '../../style/Card'
+import { AuthForm, ButtonFields } from '../../style/Form'
 import { CenteredColumn } from '../../style/Layouts'
 import { Title } from '../../style/Typography'
-import { LoadingButton, GoogleLoginButton } from '../../components/mex/Buttons/LoadingButton'
-import { AuthForm, ButtonFields } from '../../style/Form'
 import { mog } from '../../utils/lib/helper'
-import { useEditorStore } from '../../store/useEditorStore'
-import useDataStore from '../../store/useDataStore'
-import useLoad from '../../hooks/useLoad'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
-import { useNodes } from '@hooks/useNodes'
+import { ROUTE_PATHS } from '../routes/urls'
 
 interface LoginFormData {
   email: string
@@ -31,10 +28,6 @@ const Login = () => {
   const { login } = useAuthentication()
 
   const setAuthenticated = useAuthStore((s) => s.setAuthenticated)
-  const { loadNode } = useLoad()
-  const { updateBaseNode } = useNodes()
-
-  const { goTo } = useRouting()
 
   const onSubmit = async (data: LoginFormData): Promise<void> => {
     await login(data.email, data.password, true)
@@ -97,7 +90,9 @@ const Login = () => {
             <LoadingButton
               loading={isSubmitting}
               alsoDisabled={errors.email !== undefined || errors.password !== undefined}
-              buttonProps={{ type: 'submit', primary: true, large: true }}
+              type="submit"
+              primary
+              large
             >
               Login
             </LoadingButton>

@@ -221,13 +221,13 @@ export const MainNav = styled.div<FocusModeProp>`
 `
 
 export interface NavWrapperProps extends FocusModeProp {
-  expanded: boolean
-  show: boolean
+  $expanded: boolean
+  $show: boolean
 }
 
 export interface SideNavProps extends NavWrapperProps {
-  overlaySidebar: boolean
-  side: 'left' | 'right'
+  $overlaySidebar: boolean
+  $side: 'left' | 'right'
 }
 
 export const SideNav = styled(animated.div)<SideNavProps>`
@@ -236,13 +236,13 @@ export const SideNav = styled(animated.div)<SideNavProps>`
   min-height: 100%;
   height: 100%;
   z-index: 10;
-  background-color: ${({ theme, side }) => transparentize(side === 'left' ? 0.25 : 0.4, theme.colors.gray[9])};
+  background-color: ${({ theme, $side }) => transparentize($side === 'left' ? 0.25 : 0.4, theme.colors.gray[9])};
   padding: ${({ theme }) => theme.spacing.large} 0;
   backdrop-filter: blur(10px);
 
-  ${({ overlaySidebar, theme, side }) =>
-    side === 'left'
-      ? overlaySidebar
+  ${({ $overlaySidebar, theme, $side }) =>
+    $side === 'left'
+      ? $overlaySidebar
         ? css`
             position: fixed;
             top: ${theme.additional.hasBlocks ? '2rem' : '0'};
@@ -251,7 +251,7 @@ export const SideNav = styled(animated.div)<SideNavProps>`
         : css`
             position: relative;
           `
-      : overlaySidebar
+      : $overlaySidebar
       ? // Now the RHS
         css`
           position: fixed;
@@ -262,9 +262,9 @@ export const SideNav = styled(animated.div)<SideNavProps>`
           position: relative;
         `}
 
-  ${({ theme, expanded, show }) =>
-    expanded &&
-    show &&
+  ${({ theme, $expanded, $show }) =>
+    $expanded &&
+    $show &&
     css`
       width: 100%;
     `}

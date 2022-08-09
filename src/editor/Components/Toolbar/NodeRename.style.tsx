@@ -1,6 +1,6 @@
+import { Button } from '@workduck-io/mex-components'
 import styled from 'styled-components'
 import { StyledInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
-import { Button } from '../../../style/Buttons'
 import { Input } from '../../../style/Form'
 
 export const Wrapper = styled.div`

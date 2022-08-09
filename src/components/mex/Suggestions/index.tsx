@@ -1,31 +1,18 @@
-import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
-import {
-  ELEMENT_PARAGRAPH,
-  getPlateEditorRef,
-  insertNodes,
-  selectEditor,
-  TElement,
-  usePlateEditorRef
-} from '@udecode/plate'
-import React from 'react'
-import { ELEMENT_ILINK } from '../../../editor/Components/ilink/defaults'
-import { useLinks } from '../../../hooks/useLinks'
-import useToggleElements from '../../../hooks/useToggleElements'
-import { useHelpStore } from '../../../store/useHelpStore'
-import { useLayoutStore } from '../../../store/useLayoutStore'
-import useSuggestionStore from '../../../store/useSuggestionStore'
-import IconButton from '../../../style/Buttons'
-import { InfobarMedium, InfobarTools } from '../../../style/infobar'
 import appsLine from '@iconify/icons-ri/apps-line'
-
-import { useSnippets } from '../../../hooks/useSnippets'
-import { getContent } from '../../../utils/helpers'
-import { NodeEditorContent } from '../../../types/Types'
-import { SuggestionContent, SuggestionType } from './types'
-import SmartSuggestions from './SmartSuggestions'
-import { ELEMENT_INLINE_BLOCK } from '../../../editor/Components/InlineBlock/types'
+import { getPlateEditorRef, insertNodes, selectEditor, TElement } from '@udecode/plate'
+import { IconButton } from '@workduck-io/mex-components'
+import React from 'react'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
-import { mog } from '@utils/lib/helper'
+import { ELEMENT_ILINK } from '../../../editor/Components/ilink/defaults'
+import { ELEMENT_INLINE_BLOCK } from '../../../editor/Components/InlineBlock/types'
+import { useLinks } from '../../../hooks/useLinks'
+import { useSnippets } from '../../../hooks/useSnippets'
+import useSuggestionStore from '../../../store/useSuggestionStore'
+import { InfobarMedium, InfobarTools } from '../../../style/infobar'
+import { NodeEditorContent } from '../../../types/Types'
+import { getContent } from '../../../utils/helpers'
+import SmartSuggestions from './SmartSuggestions'
+import { SuggestionContent, SuggestionType } from './types'
 
 const SuggestionInfoBar = () => {
   // * Store

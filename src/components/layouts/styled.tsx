@@ -52,13 +52,13 @@ export const TabBody = styled(animated.div)<{ selected?: boolean }>`
   overflow-x: hidden;
 `
 
-export const TabsContainer = styled(animated.section)<{ visible?: boolean }>`
+export const TabsContainer = styled(animated.section)<{ $visible?: boolean }>`
   padding: 0 ${({ theme }) => theme.spacing.small};
   flex: 1;
 
   * {
-    ${({ visible }) =>
-      !visible &&
+    ${({ $visible }) =>
+      !$visible &&
       css`
         pointer-events: none;
       `}

@@ -1,10 +1,16 @@
-import { add, startOfToday } from 'date-fns'
-import { nanoid } from 'nanoid'
-import toast from 'react-hot-toast'
+import { IpcAction } from '@data/IpcAction'
+import { appNotifierWindow } from '@electron/utils/notifiers'
+import { AppType } from '@hooks/useInitialize'
+import useToggleElements from '@hooks/useToggleElements'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
+import { TextFieldHeight } from '@workduck-io/action-request-helper'
+import { Button, LoadingButton } from '@workduck-io/mex-components'
+import { startOfToday } from 'date-fns'
 import React, { useEffect } from 'react'
 import ReactDatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import Modal from 'react-modal'
 import create from 'zustand'
 import { generateReminderId } from '../../../data/Defaults/idPrefixes'
@@ -15,26 +21,17 @@ import { useReminders, useReminderStore } from '../../../hooks/useReminders'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
 import { useEditorStore } from '../../../store/useEditorStore'
-import { Button } from '../../../style/Buttons'
-import { DatePickerStyles, InputBlock, Label, TextAreaBlock } from '../../../style/Form'
+import { DatePickerStyles, Label, TextAreaBlock } from '../../../style/Form'
 import { Reminder } from '../../../types/reminders'
 import { NodeEditorContent } from '../../../types/Types'
 import Todo from '../../../ui/components/Todo'
-import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { mog } from '../../../utils/lib/helper'
 import { getEventNameFromElement } from '../../../utils/lib/strings'
 import { getNextReminderTime, getRelativeDate, getTimeInText } from '../../../utils/time'
-import { LoadingButton } from '../Buttons/LoadingButton'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { getNameFromPath } from '../Sidebar/treeUtils'
 import { SelectedDate } from './Reminders.style'
-import { useLayoutStore } from '../../../store/useLayoutStore'
-import { useSpotlightContext } from '@store/Context/context.spotlight'
-import { appNotifierWindow } from '@electron/utils/notifiers'
-import { IpcAction } from '@data/IpcAction'
-import { AppType } from '@hooks/useInitialize'
-import useToggleElements from '@hooks/useToggleElements'
-import { TextFieldHeight } from '@workduck-io/action-request-helper'
 
 interface ModalValue {
   time?: number
@@ -121,7 +118,7 @@ export const useOpenReminderModal = () => {
     const openModal = useCreateReminderModal.getState().openModal
     const node = useEditorStore.getState().node
     const addReminder = useReminderStore.getState().addReminder
-    const setInfobarMode = useLayoutStore.getState().setInfobarMode
+    // const setInfobarMode = useLayoutStore.getState().setInfobarMode
     // {}
     const searchTerm = query.slice('remind'.length)
     const parsed = getTimeInText(searchTerm)
@@ -213,7 +210,12 @@ const CreateReminderModal = () => {
 
   const onSubmit = async ({ description }) => {
     // console.log({ intents, command, title, description })
-    const { time, nodeid, todoid, blockContent } = modalValue
+    const {
+      time,
+      nodeid,
+      todoid
+      // blockContent
+    } = modalValue
 
     const path = getPathFromNodeid(nodeid)
     const title = getNameFromPath(path)
@@ -337,7 +339,9 @@ const CreateReminderModal = () => {
           <LoadingButton
             loading={isSubmitting}
             alsoDisabled={!modalValue.time || modalValue.time < Date.now()}
-            buttonProps={{ type: 'submit', primary: true, large: true }}
+            type="submit"
+            primary
+            large
           >
             Save Reminder
           </LoadingButton>

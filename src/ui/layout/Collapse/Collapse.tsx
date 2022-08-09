@@ -3,8 +3,8 @@ import { Icon, IconifyIcon } from '@iconify/react'
 import React, { useMemo } from 'react'
 import { useSpring } from 'react-spring'
 import styled from 'styled-components'
-import Infobox, { InfoboxProps } from '../../components/Help/Infobox'
 import { CollapseContent, CollapseHeader, CollapseToggle, CollapseWrapper } from './Collapse.style'
+import { Infobox, InfoboxProps } from '@workduck-io/mex-components'
 
 interface CollapseProps {
   oid?: string

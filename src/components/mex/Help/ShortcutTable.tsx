@@ -5,9 +5,9 @@ import Modal from 'react-modal'
 import useShortcutTableData from '../../../hooks/useShortcutTableData'
 import { useShortcutStore } from '../../../store/useShortcutStore'
 import { Input } from '../../../style/Form'
-import { DisplayShortcut } from '../Shortcuts'
 import { Shortcut } from './Help.types'
 import InputShortcut from './InputShortcut'
+import { DisplayShortcut } from '@workduck-io/mex-components'
 import {
   StyledRow,
   StyledTable,

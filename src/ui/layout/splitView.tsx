@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useMemo } from 'react'
 import { useSpring } from 'react-spring'
-import { mog } from '../../utils/lib/helper'
 import { SplitPreviewWrapper, SplitWrapper } from './splitView.style'
 
 export enum SplitType {

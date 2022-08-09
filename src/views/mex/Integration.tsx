@@ -3,11 +3,11 @@ import PlusCircle from '@iconify/icons-bi/plus-circle'
 import timeIcon from '@iconify/icons-bx/bx-time-five'
 import { Icon } from '@iconify/react'
 import { client } from '@workduck-io/dwindle'
+import { LoadingButton } from '@workduck-io/mex-components'
 import { shell } from 'electron'
 import React, { useEffect, useMemo } from 'react'
 import { useTheme } from 'styled-components'
 import { integrationURLs } from '../../apis/routes'
-import { LoadingButton } from '../../components/mex/Buttons/LoadingButton'
 import NewSyncTemplateModal, { useNewSyncTemplateModalStore } from '../../components/mex/Integrations/NewSyncBlockModal'
 import Template from '../../components/mex/Integrations/Template'
 import { Service } from '../../editor/Components/SyncBlock'
@@ -255,7 +255,7 @@ const IntegrationPage = () => {
   const template = useIntegrationStore((state) => state.template)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       await updateServices()
     })()
 

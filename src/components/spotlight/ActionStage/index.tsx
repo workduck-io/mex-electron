@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Button } from '../../../style/Buttons'
 import PerformersContainer from './Performers'
 import { useActionStore } from '../Actions/useActionStore'
 import { StyledContent } from '../Content/styled'
+import { Button } from '@workduck-io/mex-components'
 
 const Container = styled(StyledContent)`
   display: flex;

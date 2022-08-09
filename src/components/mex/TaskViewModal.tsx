@@ -1,22 +1,20 @@
-import { useForm } from 'react-hook-form'
+import { generateTaskViewId } from '@data/Defaults/idPrefixes'
+import { SearchFilter } from '@hooks/useFilters'
+import { useSaveData } from '@hooks/useSaveData'
+import { useTaskViews, useViewStore } from '@hooks/useTaskViews'
+import { Icon } from '@iconify/react'
+import { Label, TextAreaBlock } from '@style/Form'
+import { SearchFilterCount, SearchFilterListCurrent, SearchFilterStyled } from '@style/Search'
+import { mog } from '@utils/lib/helper'
+import { getPathNum } from '@utils/lib/paths'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import { Button, LoadingButton } from '@workduck-io/mex-components'
 import React, { useMemo } from 'react'
+import { useForm } from 'react-hook-form'
 import Modal from 'react-modal'
 import create from 'zustand'
-import { Button } from '@style/Buttons'
-import { mog } from '@utils/lib/helper'
+import Input from './Forms/Input'
 import { ModalControls, ModalHeader } from './Refactor/styles'
-import { SearchFilter } from '@hooks/useFilters'
-import { Label, TextAreaBlock } from '@style/Form'
-import { LoadingButton } from './Buttons/LoadingButton'
-import Input, { InputFormError } from './Forms/Input'
-import { useTaskViews, useViewStore } from '@hooks/useTaskViews'
-import { SearchFilterCount, SearchFilterListCurrent, SearchFilterStyled } from '@style/Search'
-import { Icon } from '@iconify/react'
-import stackLine from '@iconify/icons-ri/stack-line'
-import { generateTaskViewId } from '@data/Defaults/idPrefixes'
-import { useSaveData } from '@hooks/useSaveData'
-import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import { getPathNum } from '@utils/lib/paths'
 
 // Prefill modal has been added to the Tree via withRefactor from useRefactor
 
@@ -64,12 +62,12 @@ const TaskViewModal = () => {
   const cloneViewId = useTaskViewModalStore((store) => store.cloneViewId)
   const filters = useTaskViewModalStore((store) => store.filters)
 
-  const openModal = useTaskViewModalStore((store) => store.openModal)
+  // const openModal = useTaskViewModalStore((store) => store.openModal)
   const closeModal = useTaskViewModalStore((store) => store.closeModal)
 
   const addView = useViewStore((store) => store.addView)
   const updateView = useViewStore((store) => store.updateView)
-  const currentView = useViewStore((store) => store.currentView)
+  // const currentView = useViewStore((store) => store.currentView)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
 
   const { saveData } = useSaveData()
@@ -194,11 +192,7 @@ const TaskViewModal = () => {
           <Button large onClick={handleCancel}>
             Cancel
           </Button>
-          <LoadingButton
-            loading={isSubmitting}
-            alsoDisabled={filters?.length === 0}
-            buttonProps={{ type: 'submit', primary: true, large: true }}
-          >
+          <LoadingButton loading={isSubmitting} alsoDisabled={filters?.length === 0} type="submit" primary large>
             {updateViewId ? 'Update' : cloneViewId ? 'Clone' : 'Create'} View
           </LoadingButton>
         </ModalControls>

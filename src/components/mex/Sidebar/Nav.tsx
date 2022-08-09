@@ -31,11 +31,10 @@ import { useSingleton } from '@tippyjs/react'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React, { useEffect } from 'react'
 import tinykeys from 'tinykeys'
-import { TooltipTitleWithShortcut } from '../Shortcuts'
-import { NavTooltip } from '../Tooltips'
 import NavigationCluster from './NavigationCluster'
 import SidebarTabs from './SidebarTabs'
 import { useSidebarTransition } from './Transition'
+import { NavTooltip, TitleWithShortcut } from '@workduck-io/mex-components'
 
 const CreateNewNote: React.FC<{ target: any }> = ({ target }) => {
   const { goTo } = useRouting()
@@ -74,7 +73,7 @@ const CreateNewNote: React.FC<{ target: any }> = ({ target }) => {
     <NavTooltip
       key={shortcuts.newNode.title}
       singleton={target}
-      content={<TooltipTitleWithShortcut title="New Note" shortcut={shortcuts.newNode.keystrokes} />}
+      content={<TitleWithShortcut title="New Note" shortcut={shortcuts.newNode.keystrokes} />}
     >
       <CreateNewButton onClick={onNewNote}>
         <Icon icon={addCircleLine} />
@@ -96,7 +95,7 @@ const NavHeader: React.FC<{ target: any }> = ({ target }) => {
       <NavTooltip
         key={ROUTE_PATHS.search}
         singleton={target}
-        content={<TooltipTitleWithShortcut title="Search" shortcut={shortcuts.showSearch.keystrokes} />}
+        content={<TitleWithShortcut title="Search" shortcut={shortcuts.showSearch.keystrokes} />}
       >
         <SearchLink
           tabIndex={-1}
@@ -118,7 +117,7 @@ const NavHeader: React.FC<{ target: any }> = ({ target }) => {
           <NavTooltip
             key={l.path}
             singleton={target}
-            content={l.shortcut ? <TooltipTitleWithShortcut title={l.title} shortcut={l.shortcut} /> : l.title}
+            content={l.shortcut ? <TitleWithShortcut title={l.title} shortcut={l.shortcut} /> : l.title}
           >
             <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={l.path} key={`nav_${l.title}`}>
               {l.icon !== undefined ? l.icon : l.title}
@@ -140,7 +139,7 @@ const NavFooter: React.FC<{ target: any }> = ({ target }) => {
       <NavTooltip
         key={shortcuts.showArchive.title}
         singleton={target}
-        content={<TooltipTitleWithShortcut title="Archive" shortcut={shortcuts.showArchive.keystrokes} />}
+        content={<TitleWithShortcut title="Archive" shortcut={shortcuts.showArchive.keystrokes} />}
       >
         <Link tabIndex={-1} className={(s) => (s.isActive ? 'active' : '')} to={ROUTE_PATHS.archive} key="nav_search">
           {GetIcon(archiveLine)}
@@ -152,7 +151,7 @@ const NavFooter: React.FC<{ target: any }> = ({ target }) => {
       <NavTooltip
         key={shortcuts.showSettings.title}
         singleton={target}
-        content={<TooltipTitleWithShortcut title="Settings" shortcut={shortcuts.showSettings.keystrokes} />}
+        content={<TitleWithShortcut title="Settings" shortcut={shortcuts.showSettings.keystrokes} />}
       >
         <Link
           tabIndex={-1}
@@ -213,8 +212,8 @@ const Nav = () => {
     <>
       <NavWrapper
         onMouseUp={(e) => onDoubleClickToogle(e)}
-        expanded={sidebar.expanded}
-        show={sidebar.show}
+        $expanded={sidebar.expanded}
+        $show={sidebar.show}
         {...getFocusProps(focusMode)}
       >
         <MainNav {...getFocusProps(focusMode)}>
@@ -229,10 +228,10 @@ const Nav = () => {
         <SideNav
           onMouseUp={(e) => e.stopPropagation()}
           style={springProps}
-          expanded={sidebar.expanded}
-          show={sidebar.show}
-          overlaySidebar={overlaySidebar}
-          side="left"
+          $expanded={sidebar.expanded}
+          $show={sidebar.show}
+          $overlaySidebar={overlaySidebar}
+          $side="left"
           {...getFocusProps(focusMode)}
         >
           {/* Notes, Shared, Bookmarks */}

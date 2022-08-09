@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import arrowLeftLine from '@iconify/icons-ri/arrow-left-line'
 import { MexIcon } from '../../../../style/Layouts'
-import IconButton from '../../../../style/Buttons'
 import { useTheme } from 'styled-components'
 import { ComboboxItem, ItemCenterWrapper, ItemDesc, ItemTitle } from '../../tag/components/TagCombobox.styles'
 import { useComboboxStore } from '../useComboboxStore'
@@ -14,8 +13,8 @@ import { getPlateEditorRef } from '@udecode/plate'
 import { getPathFromNodeIdHookless } from '../../../../hooks/useLinks'
 import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
 import { BlockIcons } from '../../Blocks/BlockIcons'
-import { DisplayShortcut } from '../../../../components/mex/Shortcuts'
 import { ShortcutText } from '../../../../components/spotlight/Home/components/Item'
+import { DisplayShortcut, IconButton } from '@workduck-io/mex-components'
 
 type BlockComboProps = {
   onSelect

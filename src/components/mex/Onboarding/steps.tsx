@@ -4,9 +4,9 @@ import { Command } from '../NodeIntentsModal/styled'
 import styled from 'styled-components'
 import { useFlowMessage } from './tourNode'
 import { CenteredFlex, PrimaryText } from '../../../style/Integration'
-import { Button } from '../../../style/Buttons'
 import useOnboard from '../../../store/useOnboarding'
 import { useRouting, NavigationType, ROUTE_PATHS } from '../../../views/routes/urls'
+import { Button } from '@workduck-io/mex-components'
 
 export const toolTipStyle = {
   padding: '2rem',

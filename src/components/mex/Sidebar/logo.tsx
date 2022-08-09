@@ -7,13 +7,13 @@ import { transparentize } from 'polished'
 import React, { useEffect } from 'react'
 import styled, { css, useTheme } from 'styled-components'
 import tinykeys from 'tinykeys'
-import { TooltipTitleWithShortcut } from '@components/mex/Shortcuts'
 import useLayout from '@hooks/useLayout'
 import { useKeyListener } from '@hooks/useShortcutListener'
 import { useHelpStore } from '@store/useHelpStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { focusStyles } from '@style/focus'
 import { FocusModeProp } from '@style/props'
+import { TitleWithShortcut } from '@workduck-io/mex-components'
 
 const LogoWrapper = styled.div<{ expanded: boolean }>`
   ${({ expanded }) => (expanded ? 'width: 100%;' : 'width: 40px;')}
@@ -139,7 +139,7 @@ export const SidebarToggles = () => {
       <Tippy
         theme="mex-bright"
         placement="right"
-        content={<TooltipTitleWithShortcut title={sidebar.expanded ? 'Collapse Sidebar' : 'Expand Sidebar'} />}
+        content={<TitleWithShortcut title={sidebar.expanded ? 'Collapse Sidebar' : 'Expand Sidebar'} />}
       >
         <SidebarToggleWrapper
           side="left"
@@ -156,9 +156,7 @@ export const SidebarToggles = () => {
       <Tippy
         theme="mex-bright"
         placement="left"
-        content={
-          <TooltipTitleWithShortcut title={rhSidebar.expanded ? 'Collapse Cooler Sidebar' : 'Expand Cooler Sidebar'} />
-        }
+        content={<TitleWithShortcut title={rhSidebar.expanded ? 'Collapse Cooler Sidebar' : 'Expand Cooler Sidebar'} />}
       >
         <SidebarToggleWrapper
           side="right"

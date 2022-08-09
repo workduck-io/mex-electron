@@ -2,7 +2,6 @@ import { Icon } from '@iconify/react'
 import React from 'react'
 import { Item } from 'react-contexify'
 import styled from 'styled-components'
-import { DisplayShortcut } from '../../../components/mex/Shortcuts'
 import { StyledMenu } from '../../../style/Menu'
 import { Priority, PriorityDataType } from './types'
 

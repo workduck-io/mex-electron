@@ -2,9 +2,9 @@ import React from 'react'
 import { FlexBetween } from '@components/spotlight/Actions/styled'
 import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
 import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
-import { Button } from '@style/Buttons'
 import { Title } from '@style/Integration'
 import { ActionGroupIcon, GroupHeader, ServiceDescription } from './styled'
+import { Button } from '@workduck-io/mex-components'
 
 type ServiceHeaderProps = {
   icon: string

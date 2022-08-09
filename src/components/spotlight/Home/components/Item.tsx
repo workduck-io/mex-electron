@@ -3,7 +3,6 @@ import { Description, StyledRow } from '../../SearchResults/styled'
 import { ListItemType } from '../../SearchResults/types'
 import styled, { css, useTheme } from 'styled-components'
 
-import { DisplayShortcut } from '../../../mex/Shortcuts'
 import { Icon } from '@iconify/react'
 import { PrimaryText } from '../../../../style/Integration'
 import React from 'react'
@@ -12,6 +11,7 @@ import { QuickLinkType } from '../../../mex/NodeSelect/NodeSelect'
 import { ItemShortcutContainer, RowTitle } from './styled'
 import { BodyFont } from '@style/spotlight/global'
 import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
+import { DisplayShortcut } from '@workduck-io/mex-components'
 
 export const ActionIcon = styled.div`
   display: flex;

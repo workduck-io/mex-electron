@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react'
+import { ToolbarTooltip } from '@workduck-io/mex-components'
 import React from 'react'
-import { ToolbarTooltip } from '../../../components/mex/Tooltips'
 import { ItemTagWrapper } from './style'
 
 interface ItemTagProps {

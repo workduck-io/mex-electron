@@ -1,7 +1,7 @@
+import { Button } from '@workduck-io/mex-components'
 import { mix, transparentize } from 'polished'
 import styled, { createGlobalStyle, css } from 'styled-components'
 import { ReminderStatus, REMINDERS_DIMENSIONS } from '../../../services/reminders/reminders'
-import { Button } from '../../../style/Buttons'
 import { Title } from '../../../style/Typography'
 
 export const RemindersWrapper = styled.div`

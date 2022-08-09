@@ -6,12 +6,12 @@ import refreshLine from '@iconify/icons-ri/refresh-line'
 import user3Line from '@iconify/icons-ri/user-3-line'
 import { Icon } from '@iconify/react'
 import { MainHeader } from '@style/Layouts'
+import { Button } from '@workduck-io/mex-components'
 import { transparentize } from 'polished'
 import React from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import styled from 'styled-components'
 import { useAuthentication } from '../../services/auth/useAuth'
-import { Button } from '../../style/Buttons'
 import { IntegrationContainer, Margin, Title } from '../../style/Integration'
 
 export const SettingsContainer = styled.section`

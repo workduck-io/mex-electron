@@ -1,11 +1,9 @@
 import bookmarkFill from '@iconify/icons-ri/bookmark-fill'
 import bookmarkLine from '@iconify/icons-ri/bookmark-line'
 import { Icon } from '@iconify/react'
+import { LoadingButton } from '@workduck-io/mex-components'
 import React, { useEffect, useState } from 'react'
 import { useBookmarks } from '../../../hooks/useBookmarks'
-import useDataStore from '../../../store/useDataStore'
-// import IconButton from '../../Styled/Buttons'
-import { LoadingButton } from './LoadingButton'
 
 interface BookmarkButtonProps {
   nodeid: string
@@ -13,7 +11,6 @@ interface BookmarkButtonProps {
 
 const BookmarkButton = ({ nodeid }: BookmarkButtonProps) => {
   const { isBookmark, addBookmark, removeBookmark } = useBookmarks()
-  const bookmarks = useDataStore((store) => store.bookmarks)
   const [bmed, setBmed] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -42,11 +39,7 @@ const BookmarkButton = ({ nodeid }: BookmarkButtonProps) => {
   // mog('BookmarkButton', { bmed, bookmarks, loading, nodeid })
 
   return (
-    <LoadingButton
-      dots={2}
-      loading={loading}
-      buttonProps={{ highlight: bmed, onClick: onBookmark, transparent: false }}
-    >
+    <LoadingButton dots={2} loading={loading} highlight={bmed} onClick={onBookmark} transparent={false}>
       <Icon width={24} icon={bmed ? bookmarkFill : bookmarkLine} />
     </LoadingButton>
   )

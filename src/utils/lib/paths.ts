@@ -1,5 +1,5 @@
 import toast from 'react-hot-toast'
-import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
+import { getParentFromPath, isElder, SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
 import { BASE_DRAFT_PATH, BASE_MEETING_PATH, BASE_TASKS_PATH } from '../../data/Defaults/baseData'
 import { FlowCommandPrefix } from '../../editor/Components/SlashCommands/useSyncConfig'
 import { SnippetCommandPrefix } from '../../hooks/useSnippets'
@@ -89,4 +89,94 @@ export const testing = () => {
 export const isMatch = (path: string, testPath: string) => {
   if (testPath === path) return true
   if (path.startsWith(testPath + SEPARATOR)) return true
+}
+
+type GetPath = (item) => string
+
+export const findParent = <T>(
+  parentPath: string,
+  groupedItems: PartialTreeItem<T>[],
+  getPath: GetPath
+): PartialTreeItem<T> | undefined => {
+  // items have children
+  if (groupedItems.length > 0) {
+    // find the parent
+    for (const item of groupedItems) {
+      const path = getPath(item)
+      if (path === parentPath) return item
+      if (item.stub === true && item.path === parentPath) return item
+      if (isElder(parentPath, path)) {
+        const parent = findParent(parentPath, item.children ?? [], getPath)
+        if (parent) return parent as T
+      }
+    }
+    // groupedItems.forEach((item) => {
+    // })
+  }
+  return
+}
+
+interface PartialTreeItem<K> {
+  item?: K
+  stub?: boolean
+  path?: string
+  children?: PartialTreeItem<K>[]
+}
+
+/**
+ * Get items with path grouped by path
+ * Grouping goes 1 level deep only
+ *
+ * Stubs are added for if parents are missing
+ */
+export const getPartialTreeGroups = <T>(
+  items: T[],
+  getPath: GetPath,
+  sortBy: (a: T, b: T) => number
+): PartialTreeItem<T>[] => {
+  const groupedPaths = items.reduce((acc, item) => {
+    const path = getPath(item)
+    // The parent's path
+    const pathGroup = getParentFromPath(path)
+
+    if (acc[pathGroup]) {
+      acc[pathGroup].push(item)
+    } else {
+      acc[pathGroup] = [item]
+    }
+    return acc
+  }, {} as { [key: string]: T[] })
+
+  const itemArrayGrouped = Object.keys(groupedPaths)
+    .reduce((acc, key) => {
+      acc.push(...groupedPaths[key])
+      return acc
+    }, [] as T[])
+    .sort(sortBy)
+
+  // const itemsInsertedInParent: T[] =
+  const toGroupItems = [...itemArrayGrouped] //.reverse()
+  const groupedItems: PartialTreeItem<T>[] = []
+  toGroupItems.forEach((item, index) => {
+    const path = getPath(item)
+    const parentPath = getParentFromPath(path)
+    if (parentPath) {
+      // mog('getPartialTreeGroups', { data: JSON.stringify({ path, item, parentPath, groupedItems }, null, 2) })
+      const parent = findParent(parentPath, groupedItems, getPath)
+      if (parent) {
+        parent.children = parent.children || []
+        parent.children.push({ item })
+      } else {
+        const stubParent = { path: parentPath, stub: true, children: [item] }
+        groupedItems.push(stubParent)
+      }
+    } else {
+      // mog('getPartialTreeGroups NoParent', { path, item, parentPath, groupedItems })
+      groupedItems.push(item)
+    }
+  })
+
+  // mog('getPartialTreeGroups', { groupedPaths, itemArrayGrouped, toGroupItems, groupedItems })
+
+  return toGroupItems
 }

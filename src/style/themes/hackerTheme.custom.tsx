@@ -1,3 +1,4 @@
+import { Button } from '@workduck-io/mex-components'
 import { transparentize } from 'polished'
 import { css } from 'styled-components'
 import { GraphWrapper, StyledGraph } from '../../components/mex/Graph/Graph.styles'
@@ -10,7 +11,6 @@ import { Widget } from '../../editor/Components/SyncBlock'
 import { ComboboxItem, ComboboxRoot } from '../../editor/Components/tag/components/TagCombobox.styles'
 import { ArchivedNode } from '../../views/mex/Archive'
 import { SettingsOptions, SettingTitle } from '../../views/mex/Settings'
-import { AsyncButton, Button } from '../Buttons'
 import { BackCard } from '../Card'
 import { EditorStyles, NodeInfo } from '../Editor'
 import { GridWrapper } from '../Grid'
@@ -76,7 +76,7 @@ const edStyles = css`
     ${hackerBorder};
     background-color: ${grayMainColor};
     backdrop-filter: blur(10px);
-    ${Button}, ${AsyncButton} {
+    ${Button} {
       ${hackerBorderThin}
       background-color: ${grayMixerTrans(9)};
       color: ${({ theme }) => theme.colors.primary};

@@ -2,6 +2,7 @@ import { hierarchyParser } from '@hooks/useHierarchy'
 import arrowRightLine from '@iconify/icons-ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import useDataStore from '@store/useDataStore'
+import { Button, DisplayShortcut } from '@workduck-io/mex-components'
 import React, { useEffect } from 'react'
 import Modal from 'react-modal'
 import tinykeys from 'tinykeys'
@@ -12,12 +13,10 @@ import { useRefactor } from '../../../hooks/useRefactor'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
-import { Button } from '../../../style/Buttons'
 import { NodeLink } from '../../../types/relations'
 import { mog } from '../../../utils/lib/helper'
 import { isMatch, isReserved } from '../../../utils/lib/paths'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
-import { DisplayShortcut } from '../Shortcuts'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
@@ -71,6 +70,13 @@ export const useRefactorStore = create<RefactorState>((set) => ({
     })
 }))
 
+/*
+ * Refactor modal
+ *
+ * Allows user to refactor a node to a different path
+ *
+ * Shows mock refactored nodes before executing
+ */
 const Refactor = () => {
   const open = useRefactorStore((store) => store.open)
   const focus = useRefactorStore((store) => store.focus)

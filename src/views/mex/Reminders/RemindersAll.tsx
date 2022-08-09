@@ -2,28 +2,25 @@ import Board from '@asseinfo/react-kanban'
 import { reminderFilterFunctions } from '@hooks/useFilterFunctions'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import { Icon } from '@iconify/react'
-import { Button } from '@style/Buttons'
-import React, { useEffect, useMemo } from 'react'
+import { Button } from '@workduck-io/mex-components'
+import React, { useMemo } from 'react'
 import create from 'zustand'
 import { useCreateReminderModal } from '../../../components/mex/Reminders/CreateReminderModal'
 import ReminderUI, { reminderStateIcons } from '../../../components/mex/Reminders/Reminder'
-import { RemindersWrapper } from '../../../components/mex/Reminders/Reminders.style'
 import SearchFilters from '../../../components/mex/Search/SearchFilters'
-import { TodoType } from '../../../editor/Components/Todo/types'
 import { FilterStore, SearchFilter } from '../../../hooks/useFilters'
 import { useLinks } from '../../../hooks/useLinks'
 import {
-  ReminderBoardCard,
-  ReminderBoard,
-  useReminders,
-  useReminderStore,
-  upcoming,
   past,
-  ReminderBoardColumn
+  ReminderBoard,
+  ReminderBoardCard,
+  ReminderBoardColumn,
+  upcoming,
+  useReminders,
+  useReminderStore
 } from '../../../hooks/useReminders'
 import { getReminderState } from '../../../services/reminders/reminders'
 import { MainHeader, PageContainer } from '../../../style/Layouts'
-import { StyledBoard } from '../../../style/Todo'
 import { Title } from '../../../style/Typography'
 import { Reminder } from '../../../types/reminders'
 import { mog } from '../../../utils/lib/helper'

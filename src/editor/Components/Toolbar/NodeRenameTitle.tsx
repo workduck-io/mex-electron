@@ -1,7 +1,6 @@
 import { QuickLink, WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
 import React, { useEffect, useState } from 'react'
 
-import { Button } from '../../../style/Buttons'
 import { Input } from '../../../style/Form'
 import { StyledInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
 import Tippy from '@tippyjs/react'
@@ -16,6 +15,7 @@ import { useRefactor } from '../../../hooks/useRefactor'
 import { useRenameStore } from '../../../store/useRenameStore'
 import { useAnalysisStore } from '../../../store/useAnalysis'
 import { hierarchyParser } from '@hooks/useHierarchy'
+import { Button } from '@workduck-io/mex-components'
 
 const Wrapper = styled.div`
   position: relative;
