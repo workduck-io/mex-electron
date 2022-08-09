@@ -12,7 +12,6 @@ import dragMove2Fill from '@iconify/icons-ri/drag-move-2-fill'
 import edit2Line from '@iconify/icons-ri/edit-2-line'
 import fileCopyLine from '@iconify/icons-ri/file-copy-line'
 import { Icon } from '@iconify/react'
-import IconButton from '@style/Buttons'
 import {
   ShortcutToken,
   ShortcutTokens,
@@ -26,11 +25,10 @@ import {
 // import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
 import { Title } from '@style/Typography'
 import { useSingleton } from '@tippyjs/react'
-import Infobox from '@ui/components/Help/Infobox'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React, { useMemo } from 'react'
 import { ToolbarTooltip } from '../Tooltips'
-import { Button } from '@workduck-io/mex-components'
+import { Button, IconButton, Infobox } from '@workduck-io/mex-components'
 
 interface TaskHeaderProps {
   currentView?: View<any>

@@ -1,4 +1,3 @@
-import { LoadingButton } from '@components/mex/Buttons/LoadingButton'
 import { InputFormError } from '@components/mex/Forms/Input'
 import deleteBack2Line from '@iconify/icons-ri/delete-back-2-line'
 import { ALIAS_REG } from '@data/Defaults/auth'
@@ -10,11 +9,11 @@ import { useForm } from 'react-hook-form'
 import { CopyButton } from '../../components/mex/Buttons/CopyButton'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
 import { useAuthStore } from '../../services/auth/useAuth'
-import IconButton from '../../style/Buttons'
 import { Title } from '../../style/Typography'
 import { Info, InfoData, InfoLabel, ProfileContainer, ProfileIcon, SettingsCard } from '../../style/UserPage'
 import { mog } from '../../utils/lib/helper'
 import { IS_DEV } from '@data/Defaults/dev_'
+import { IconButton, LoadingButton } from '@workduck-io/mex-components'
 
 export interface UpdateUserFormData {
   name: string
@@ -101,10 +100,7 @@ const UserPage = () => {
 
             {updateUserForm.formState.isDirty && Object.keys(updateUserForm.formState.dirtyFields).length > 0 && (
               <ButtonFields>
-                <LoadingButton
-                  loading={updateUserForm.formState.isSubmitting}
-                  buttonProps={{ type: 'submit', primary: true, large: true }}
-                >
+                <LoadingButton loading={updateUserForm.formState.isSubmitting} type="submit" primary large>
                   Save Changes
                 </LoadingButton>
                 <IconButton

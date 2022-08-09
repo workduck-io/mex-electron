@@ -1,37 +1,34 @@
+import ShareOptions from '@components/spotlight/Public'
+import { useLinks } from '@hooks/useLinks'
 import { getAccessValue, useMentions } from '@hooks/useMentions'
 import { useNodes } from '@hooks/useNodes'
 import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
+import { useAuthStore } from '@services/auth/useAuth'
 import { usePermission } from '@services/auth/usePermission'
 import { useEditorStore } from '@store/useEditorStore'
 import { useMentionStore } from '@store/useMentionStore'
 import { StyledCreatatbleSelect } from '@style/Form'
 import { mog } from '@utils/lib/helper'
+import { Button, IconButton } from '@workduck-io/mex-components'
 import React, { useEffect, useMemo, useState } from 'react'
-import IconButton from '../../../style/Buttons'
 import { AccessLevel, DefaultPermissionValue, Mentionable, permissionOptions } from '../../../types/mentions'
 import { ModalControls, ModalHeader, ModalSection, ModalSectionScroll } from '../Refactor/styles'
+import { ProfileImage } from '../User/ProfileImage'
 import { InvitedUsersContent } from './InvitedUsersContent'
 import { MultiEmailInviteModalContent } from './MultiEmailInvite'
 import {
   ShareAlias,
-  ShareAliasInput,
+  ShareAliasWithImage,
   SharedPermissionsTable,
-  SharedPermissionsWrapper,
   ShareEmail,
-  SharePermission,
-  ShareRowAction,
-  ShareRow,
-  ShareRowHeading,
-  ShareRowActionsWrapper,
   ShareOwnerTag,
-  ShareAliasWithImage
+  SharePermission,
+  ShareRow,
+  ShareRowAction,
+  ShareRowActionsWrapper,
+  ShareRowHeading
 } from './ShareModal.styles'
 import { useShareModalStore } from './ShareModalStore'
-import { useAuthStore } from '@services/auth/useAuth'
-import { ProfileImage } from '../User/ProfileImage'
-import ShareOptions from '@components/spotlight/Public'
-import { useLinks } from '@hooks/useLinks'
-import { Button } from '@workduck-io/mex-components'
 
 export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
   const closeModal = useShareModalStore((s) => s.closeModal)
@@ -72,28 +69,28 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
     return []
   }, [nodeid])
 
-  const onCopyLink = () => {
-    closeModal()
-  }
+  // const onCopyLink = () => {
+  //   closeModal()
+  // }
 
   // This is called for every keystroke
-  const onAliasChange = (userid: string, alias: string) => {
-    // mog('onPermissionChange', { userid, alias })
+  // const onAliasChange = (userid: string, alias: string) => {
+  //   // mog('onPermissionChange', { userid, alias })
 
-    // Change the user and add to changedUsers
-    const changedUser = changedUsers.find((u) => u.userID === userid)
-    const dataUser = sharedUsers.find((u) => u.userID === userid)
+  //   // Change the user and add to changedUsers
+  //   const changedUser = changedUsers.find((u) => u.userID === userid)
+  //   const dataUser = sharedUsers.find((u) => u.userID === userid)
 
-    if (changedUser) {
-      changedUser.alias = alias
-      changedUser.change.push('alias')
-      setChangedUsers([...changedUsers.filter((u) => u.userID !== userid), changedUser])
-    } else if (dataUser) {
-      dataUser.alias = alias
-      const changeUser = { ...dataUser, change: ['alias' as const] }
-      setChangedUsers([...changedUsers, changeUser])
-    }
-  }
+  //   if (changedUser) {
+  //     changedUser.alias = alias
+  //     changedUser.change.push('alias')
+  //     setChangedUsers([...changedUsers.filter((u) => u.userID !== userid), changedUser])
+  //   } else if (dataUser) {
+  //     dataUser.alias = alias
+  //     const changeUser = { ...dataUser, change: ['alias' as const] }
+  //     setChangedUsers([...changedUsers, changeUser])
+  //   }
+  // }
 
   // This is called for every keystroke
   const onRevokeAccess = (userid: string) => {

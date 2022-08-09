@@ -5,7 +5,6 @@ import { shell } from 'electron'
 import React, { useMemo } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { useTheme } from 'styled-components'
-import { LoadingButton } from '../../Buttons/LoadingButton'
 import { GlobalSectionContainer, GlobalSectionHeader } from '../GlobalSection/styled'
 import ServiceHeader from '../ServiceHeader'
 import ServiceInfo from '../ServiceInfo'
@@ -14,6 +13,7 @@ import usePortalStore from './usePortalStore'
 import { QuickLink } from '@components/mex/NodeSelect/NodeSelect'
 import { useLinks } from '@hooks/useLinks'
 import { usePortals } from '@hooks/usePortals'
+import { LoadingButton } from '@workduck-io/mex-components'
 
 const Portals = () => {
   const theme = useTheme()
@@ -111,7 +111,7 @@ const Portals = () => {
               onChange={onNodeChange}
             />
           </GlobalSectionHeader>
-          <LoadingButton dots={2} loading={isLoading} buttonProps={{ onClick: onSaveDetails, transparent: true }}>
+          <LoadingButton dots={2} loading={isLoading} onClick={onSaveDetails} transparent>
             <Icon
               color={theme.colors.primary}
               width={24}

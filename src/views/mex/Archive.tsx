@@ -1,20 +1,23 @@
-import unarchiveLine from '@iconify/icons-clarity/unarchive-line'
+import { useDelete } from '@hooks/useDelete'
 import trashIcon from '@iconify/icons-codicon/trash'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import { Button, Infobox } from '@workduck-io/mex-components'
 import React, { useState } from 'react'
+import toast from 'react-hot-toast'
 import Modal from 'react-modal'
-import styled, { useTheme } from 'styled-components'
+import styled from 'styled-components'
 import { ModalControls, ModalHeader, MRMHead } from '../../components/mex/Refactor/styles'
 import SearchView, { RenderItemProps, RenderPreviewProps } from '../../components/mex/Search/SearchView'
 import { View } from '../../components/mex/Search/ViewSelector'
 import { defaultContent } from '../../data/Defaults/baseData'
+import { ArchiveHelp } from '../../data/Defaults/helpText'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import useArchive from '../../hooks/useArchive'
-import useLoad from '../../hooks/useLoad'
+import { useSearch } from '../../hooks/useSearch'
 import { useContentStore } from '../../store/useContentStore'
 import useDataStore from '../../store/useDataStore'
-import { NodeProperties } from '../../store/useEditorStore'
 import { MainHeader } from '../../style/Layouts'
 import {
   Result,
@@ -28,20 +31,10 @@ import {
   SplitSearchPreviewWrapper
 } from '../../style/Search'
 import { Title } from '../../style/Typography'
-import { ILink } from '../../types/Types'
+import { GenericSearchResult } from '../../types/search'
 import { getContent } from '../../utils/helpers'
 import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText } from '../../utils/search/parseData'
-
-import { useSearch } from '../../hooks/useSearch'
-import { GenericSearchResult } from '../../types/search'
-import Infobox from '../../ui/components/Help/Infobox'
-import { ArchiveHelp } from '../../data/Defaults/helpText'
-import { useCreateNewNote } from '@hooks/useCreateNewNote'
-import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import { useDelete } from '@hooks/useDelete'
-import toast from 'react-hot-toast'
-import { Button } from '@workduck-io/mex-components'
 
 export const ArchivedNode = styled.div`
   display: flex;
@@ -76,12 +69,12 @@ const Archive = () => {
   const contents = useContentStore((store) => store.contents)
 
   const { goTo } = useRouting()
-  const { loadNode } = useLoad()
+  // const { loadNode } = useLoad()
   const { queryIndex } = useSearch()
   const { getMockDelete } = useDelete()
-  const { createNewNote } = useCreateNewNote()
-  const { updateDocument, removeDocument } = useSearch()
-  const { unArchiveData, removeArchiveData } = useArchive()
+  // const { createNewNote } = useCreateNewNote()
+  const { removeDocument } = useSearch()
+  const { removeArchiveData } = useArchive()
 
   const getArchiveResult = (nodeid: string): GenericSearchResult => {
     const node = archive.find((node) => node.nodeid === nodeid)
@@ -105,24 +98,24 @@ const Archive = () => {
 
   const initialArchive: GenericSearchResult[] = archive.map((n) => getArchiveResult(n.nodeid))
 
-  const onUnarchiveClick = async (node: ILink) => {
-    await unArchiveData([node])
-    createNewNote({ path: node.path, noteId: node.nodeid })
+  // const onUnarchiveClick = async (node: ILink) => {
+  //   await unArchiveData([node])
+  //   createNewNote({ path: node.path, noteId: node.nodeid })
 
-    const content = getContent(node.nodeid)
-    await removeDocument('archive', node.nodeid)
+  //   const content = getContent(node.nodeid)
+  //   await removeDocument('archive', node.nodeid)
 
-    await updateDocument('node', node.nodeid, content.content, node.path)
+  //   await updateDocument('node', node.nodeid, content.content, node.path)
 
-    const archiveNode: NodeProperties = {
-      id: node.path,
-      path: node.path,
-      title: node.path,
-      nodeid: node.nodeid
-    }
+  //   const archiveNode: NodeProperties = {
+  //     id: node.path,
+  //     path: node.path,
+  //     title: node.path,
+  //     nodeid: node.nodeid
+  //   }
 
-    loadNode(node.nodeid, { savePrev: false, fetch: false, node: archiveNode })
-  }
+  //   loadNode(node.nodeid, { savePrev: false, fetch: false, node: archiveNode })
+  // }
 
   const onDeleteClick = async () => {
     const notesToDelete = getMockDelete(delNode.id)
@@ -213,7 +206,7 @@ const Archive = () => {
 
     return null
   }
-  const RenderItem = React.forwardRef(BaseItem)
+  // const RenderItem = React.forwardRef(BaseItem)
 
   const RenderPreview = ({ item }: RenderPreviewProps<GenericSearchResult>) => {
     if (!item) return null

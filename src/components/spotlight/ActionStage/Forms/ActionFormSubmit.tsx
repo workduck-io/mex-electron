@@ -1,7 +1,7 @@
+import { LoadingButton } from '@workduck-io/mex-components'
 import React from 'react'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
-import { LoadingButton } from '../../../mex/Buttons/LoadingButton'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
 
 const ActionFormSubmit = () => {
@@ -16,7 +16,9 @@ const ActionFormSubmit = () => {
 
   return (
     <LoadingButton
-      buttonProps={{ onClick: onSubmit, type: 'submit', form: 'wd-mex-post-action-form' }}
+      onClick={onSubmit}
+      type="submit"
+      form="wd-mex-post-action-form"
       loading={isLoading}
       alsoDisabled
       style={{ border: 'none' }}

@@ -1,11 +1,10 @@
 import { useAuth } from '@workduck-io/dwindle'
-import { Button } from '@workduck-io/mex-components'
+import { Button, LoadingButton } from '@workduck-io/mex-components'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 import { PasswordNotMatch, PasswordRequirements } from '../../components/mex/Auth/errorMessages'
-import { LoadingButton } from '../../components/mex/Buttons/LoadingButton'
 import Input, { InputFormError } from '../../components/mex/Forms/Input'
 import { EMAIL_REG, PASSWORD } from '../../data/Defaults/auth'
 import { useAuthStore } from '../../services/auth/useAuth'
@@ -29,7 +28,7 @@ interface VerifyFormData {
   code: string
 }
 const ForgotPassword = () => {
-  const [reqCode, setReqCode] = useState(false)
+  // const [reqCode, setReqCode] = useState(false)
   const [newPassword, setNewPassword] = useState<string>()
   const [arePasswordEqual, setArePasswordEqual] = useState<boolean>(true)
   const forgotPasswordForm = useForm<ForgotPasswordFormData>()
@@ -136,7 +135,9 @@ const ForgotPassword = () => {
                   alsoDisabled={
                     regErrors.email !== undefined || regErrors.newpassword !== undefined || !arePasswordEqual
                   }
-                  buttonProps={{ type: 'submit', primary: true, large: true }}
+                  type="submit"
+                  primary
+                  large
                 >
                   Send Verification Code
                 </LoadingButton>
@@ -163,7 +164,9 @@ const ForgotPassword = () => {
               <LoadingButton
                 loading={verSubmitting}
                 alsoDisabled={verErrors.code !== undefined}
-                buttonProps={{ type: 'submit', primary: true, large: true }}
+                type="submit"
+                primary
+                large
               >
                 Verify Code
               </LoadingButton>

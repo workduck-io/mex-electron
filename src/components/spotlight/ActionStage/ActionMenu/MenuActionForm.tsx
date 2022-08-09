@@ -137,7 +137,9 @@ const MenuActionForm: React.FC<MenuActionFormProps> = ({ action }) => {
         <FormLoadingButton
           loading={isSubmitting}
           alsoDisabled={!formMethods.formState.isDirty}
-          buttonProps={{ type: 'submit', form: 'menu-action-form', primary: true }}
+          type="submit"
+          form="menu-action-form"
+          primary
         >
           <NoOption>
             <MexIcon noHover icon="ion:create-outline" margin="0 0.5rem 0 0" height="1.25rem" width="1.25rem" />

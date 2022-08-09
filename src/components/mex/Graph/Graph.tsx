@@ -1,15 +1,9 @@
-import bubbleChartLine from '@iconify/icons-ri/bubble-chart-line'
-import more2Fill from '@iconify/icons-ri/more-2-fill'
 import equal from 'fast-deep-equal'
 import React, { useEffect, useState } from 'react'
 import Graph from 'react-vis-network-graph'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
-import useToggleElements from '../../../hooks/useToggleElements'
 import { useGraphStore } from '../../../store/useGraphStore'
-import { useHelpStore } from '../../../store/useHelpStore'
-import { useLayoutStore } from '../../../store/useLayoutStore'
-import IconButton from '../../../style/Buttons'
 import { InfobarFull, InfobarTools } from '../../../style/infobar'
 import Switch from '../Forms/Switch'
 import { GraphWrapper } from './Graph.styles'
@@ -58,9 +52,6 @@ export const TreeGraph = (props: TreeGraphProps) => {
   const { push } = useNavigation()
   const { getNodeidFromPath } = useLinks()
 
-  const infobar = useLayoutStore((state) => state.infobar)
-  const { toggleGraph } = useToggleElements()
-
   const showTools = useGraphStore((state) => state.showTools)
 
   const showNodePreview = useGraphStore((state) => state.showNodePreview)
@@ -68,7 +59,6 @@ export const TreeGraph = (props: TreeGraphProps) => {
   const setNodePreview = useGraphStore((state) => state.setNodePreview)
   const setSelectedNode = useGraphStore((state) => state.setSelectedNode)
 
-  const shortcuts = useHelpStore((store) => store.shortcuts)
   const showLocal = useGraphStore((state) => state.showLocal)
   const toggleLocal = useGraphStore((state) => state.toggleLocal)
   const [network, setNetwork] = useState<any>()

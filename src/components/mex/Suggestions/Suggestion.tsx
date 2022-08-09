@@ -2,7 +2,6 @@ import pushpin2Line from '@iconify/icons-ri/pushpin-2-line'
 import { nanoid } from 'nanoid'
 import React, { useEffect, useMemo, useState } from 'react'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
-import IconButton from '../../../style/Buttons'
 import { MexIcon } from '../../../style/Layouts'
 import arrowGoBackLine from '@iconify/icons-ri/arrow-go-back-line'
 
@@ -11,6 +10,7 @@ import { Margin, SuggestionContainer, SuggestionIconsGroup, SuggestionPreviewWra
 import { getContent } from '@utils/helpers'
 import { useBlockHighlightStore } from '@editor/Actions/useFocusBlock'
 import { defaultContent } from '@data/Defaults/baseData'
+import { IconButton } from '@workduck-io/mex-components'
 
 type SuggestionProps = {
   suggestion: any

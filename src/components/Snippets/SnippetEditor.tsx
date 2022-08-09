@@ -2,14 +2,12 @@ import arrowLeftLine from '@iconify/icons-ri/arrow-left-line'
 import { mog } from '../../utils/lib/helper'
 import { debounce } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import { SnippetSaverButton } from '../../editor/Components/Saver'
 import Editor from '../../editor/Editor'
 import { EditorWrapper, InfoTools, NodeInfo, NoteTitle, StyledEditor } from '../../style/Editor'
 import { Input } from '../../style/Form'
 import { Snippet, useSnippetStore } from '../../store/useSnippetStore'
 import { useUpdater } from '../../hooks/useUpdater'
-import IconButton from '../../style/Buttons'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 import tinykeys from 'tinykeys'
 import { useSnippetBuffer, useSnippetBufferStore } from '../../hooks/useEditorBuffer'
@@ -22,16 +20,11 @@ import ItemTag from '../../ui/components/ItemTag/ItemTag'
 import { DRAFT_NODE } from '../../data/Defaults/idPrefixes'
 import { getSlug } from '../../utils/lib/strings'
 import { SnippetProvider } from '@store/Context/context.snippet'
-
-type Inputs = {
-  title: string
-}
+import { IconButton } from '@workduck-io/mex-components'
 
 const SnippetEditor = () => {
   const snippet = useSnippetStore((store) => store.editor.snippet)
   const { goTo } = useRouting()
-
-  const { control, handleSubmit } = useForm<Inputs>()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [content, setContent] = useState<any[] | undefined>(undefined)

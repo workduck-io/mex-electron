@@ -4,12 +4,12 @@ import { GlobalSectionContainer, GlobalSectionHeader } from './styled'
 import FormSelector from '@components/spotlight/ActionStage/Forms/FormSelector'
 import { FormProvider, useForm } from 'react-hook-form'
 import { set, get } from 'lodash'
-import { LoadingButton } from '@components/mex/Buttons/LoadingButton'
 import { Icon } from '@iconify/react'
 import { LOCALSTORAGE_NAMESPACES } from '@workduck-io/action-request-helper'
 import { useTheme } from 'styled-components'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import toast from 'react-hot-toast'
+import { LoadingButton } from '@workduck-io/mex-components'
 
 const GlobalSection: React.FC<{ globalId: string; actionGroupId: string }> = ({ actionGroupId, globalId }) => {
   const [isEdit, setIsEdit] = useState<boolean>(false)
@@ -97,7 +97,7 @@ const GlobalSection: React.FC<{ globalId: string; actionGroupId: string }> = ({ 
             )
           })}
         </GlobalSectionHeader>
-        <LoadingButton dots={2} loading={isSubmitting} buttonProps={{ onClick, transparent: true }}>
+        <LoadingButton dots={2} loading={isSubmitting} onClick={onClick} transparent>
           <Icon
             color={theme.colors.primary}
             width={20}

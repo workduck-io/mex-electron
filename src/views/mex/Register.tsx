@@ -1,27 +1,21 @@
-import { AuthForm, ButtonFields, Label, StyledCreatatbleSelect } from '../../style/Form'
-import { BackCard, FooterCard } from '../../style/Card'
-import { Controller, useForm } from 'react-hook-form'
-import { ALIAS_REG, EMAIL_REG, MEX_TAG, PASSWORD } from '../../data/Defaults/auth'
-import Input, { InputFormError } from '../../components/mex/Forms/Input'
+import { mog } from '@utils/lib/helper'
+import { useAuth } from '@workduck-io/dwindle'
+import { Button, LoadingButton } from '@workduck-io/mex-components'
 import React, { useState } from 'react'
-import { useAuthStore, useAuthentication } from '../../services/auth/useAuth'
-
-import { AppType } from '../../hooks/useInitialize'
-import { CenteredColumn } from '../../style/Layouts'
-import { IpcAction } from '../../data/IpcAction'
+import { Controller, useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
-import { LoadingButton, GoogleLoginButton } from '../../components/mex/Buttons/LoadingButton'
 import { PasswordNotMatch, PasswordRequirements } from '../../components/mex/Auth/errorMessages'
-import { ROUTE_PATHS } from '../routes/urls'
+import { GoogleLoginButton } from '../../components/mex/Buttons/LoadingButton'
+import Input, { InputFormError } from '../../components/mex/Forms/Input'
+import { ALIAS_REG, EMAIL_REG, MEX_TAG, PASSWORD } from '../../data/Defaults/auth'
+import { useAuthentication, useAuthStore } from '../../services/auth/useAuth'
+import { BackCard, FooterCard } from '../../style/Card'
+import { AuthForm, ButtonFields, Label, StyledCreatatbleSelect } from '../../style/Form'
+import { CenteredColumn } from '../../style/Layouts'
 import { StyledRolesSelectComponents } from '../../style/Select'
 import { Title } from '../../style/Typography'
-import { ipcRenderer } from 'electron'
-import toast from 'react-hot-toast'
-import { useAuth } from '@workduck-io/dwindle'
-import useOnboard from '../../store/useOnboarding'
-import { useTourData } from '../../components/mex/Onboarding/hooks'
-import { mog } from '@utils/lib/helper'
-import { Button } from '@workduck-io/mex-components'
+import { ROUTE_PATHS } from '../routes/urls'
 
 export interface Option {
   label: string
@@ -58,9 +52,9 @@ const Register = () => {
   const { registerDetails, verifySignup } = useAuthentication()
   const registered = useAuthStore((store) => store.registered)
   const setRegistered = useAuthStore((store) => store.setRegistered)
-  const changeOnboarding = useOnboard((s) => s.changeOnboarding)
+  // const changeOnboarding = useOnboard((s) => s.changeOnboarding)
   const { resendCode } = useAuth()
-  const { setOnboardData } = useTourData()
+  // const { setOnboardData } = useTourData()
 
   const regErrors = registerForm.formState.errors
   const verErrors = verifyForm.formState.errors
@@ -219,7 +213,9 @@ const Register = () => {
                   loading={regSubmitting}
                   style={{ margin: '0 auto' }}
                   alsoDisabled={regErrors.email !== undefined || regErrors.password !== undefined || !arePasswordEqual}
-                  buttonProps={{ type: 'submit', primary: true, large: true }}
+                  type="submit"
+                  primary
+                  large
                 >
                   Send Verification Code
                 </LoadingButton>
@@ -242,13 +238,7 @@ const Register = () => {
               error={verErrors.code?.type === 'required' ? 'Code is required' : undefined}
             ></Input>
 
-            <LoadingButton
-              loading={reqCode}
-              buttonProps={{
-                id: 'resendCodeButton',
-                onClick: onResendRequest
-              }}
-            >
+            <LoadingButton loading={reqCode} id="resendCodeButton" onClick={onResendRequest}>
               Resend Code
             </LoadingButton>
             <ButtonFields>
@@ -258,7 +248,9 @@ const Register = () => {
               <LoadingButton
                 loading={verSubmitting}
                 alsoDisabled={verErrors.code !== undefined}
-                buttonProps={{ type: 'submit', primary: true, large: true }}
+                type="submit"
+                primary
+                large
               >
                 Verify Code
               </LoadingButton>

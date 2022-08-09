@@ -9,10 +9,10 @@ import useLayout from '../hooks/useLayout'
 import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
 import { useLayoutStore } from '../store/useLayoutStore'
-import IconButton from '../style/Buttons'
 import { InfoTools, NodeInfo } from '../style/Editor'
 import Loading from '../style/Loading'
 import NodeRenameOnlyTitle from './Components/Toolbar/NodeRename'
+import { IconButton } from '@workduck-io/mex-components'
 // import NodeRenameTitle from './Components/Toolbar/NodeRenameTitle'
 
 const Toolbar = () => {
@@ -60,59 +60,6 @@ const Toolbar = () => {
           highlight={focusMode.on}
           onClick={toggleFocusMode}
         />
-        {/*
-        <IconButton
-          size={24}
-          singleton={target}
-          icon={settings4Line}
-          title="Node Intents"
-          highlight={nodeIntentsModalOpen}
-          onClick={nodeIntentsModalToggle}
-        />
-        <SaverButton
-          // saveOnUnmount
-          shortcut={shortcuts.save.keystrokes}
-          title="Save"
-          singleton={target}
-          callbackAfterSave={onSave}
-        />
-        <IconButton
-          size={24}
-          singleton={target}
-          icon={messageIcon}
-          shortcut={shortcuts.showSyncBlocks.keystrokes}
-          title="Flow Links"
-          highlight={showSyncBlocks}
-          onClick={toggleSyncBlocks}
-        />
-        <IconButton
-          size={24}
-          singleton={target}
-          icon={timerFlashLine}
-          shortcut={shortcuts.showReminder.keystrokes}
-          title="Reminders"
-          highlight={infobar.mode === 'reminders'}
-          onClick={toggleReminder}
-        />
-        <IconButton
-          size={24}
-          singleton={target}
-          icon={lightbulbFlashLine}
-          shortcut={shortcuts.showSuggestedNodes.keystrokes}
-          title="Smart Suggestions"
-          highlight={infobar.mode === 'suggestions'}
-          onClick={toggleSuggestedNodes}
-        />
-        <IconButton
-          singleton={target}
-          size={24}
-          icon={bubbleChartLine}
-          shortcut={shortcuts.showGraph.keystrokes}
-          title="Context View"
-          highlight={infobar.mode === 'graph'}
-          onClick={toggleGraph}
-        />
-        */}
       </InfoTools>
     </NodeInfo>
   )

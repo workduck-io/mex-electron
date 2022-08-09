@@ -1,7 +1,6 @@
 import { Button } from '@workduck-io/mex-components'
 import { mix, transparentize } from 'polished'
 import styled, { css } from 'styled-components'
-import { AsyncButton } from './Buttons'
 import { focusStyles } from './focus'
 import { FocusModeProp } from './props'
 
@@ -28,7 +27,7 @@ export const InfoTools = styled.div<FocusModeProp>`
   justify-content: space-between;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.small};
-  ${Button}, ${AsyncButton} {
+  ${Button} {
     margin: 0;
   }
   ${(props) => focusStyles(props)}

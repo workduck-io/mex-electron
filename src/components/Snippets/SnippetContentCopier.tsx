@@ -1,7 +1,7 @@
 import fileCopyLine from '@iconify/icons-ri/file-copy-line'
 import { usePlateEditorState } from '@udecode/plate'
-import React, { useEffect } from 'react'
-import IconButton from '../../style/Buttons'
+import { IconButton } from '@workduck-io/mex-components'
+import React from 'react'
 import { removeId } from '../../utils/lib/content'
 
 export const SnippetCopierButton = () => {

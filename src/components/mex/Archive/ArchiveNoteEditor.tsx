@@ -1,4 +1,3 @@
-import IconButton from '@style/Buttons'
 import arrowLeftLine from '@iconify/icons-ri/arrow-left-line'
 import { ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { EditorWrapper, NodeInfo, NoteTitle, StyledEditor } from '@style/Editor'
@@ -16,6 +15,7 @@ import { FlexGap } from './styled'
 import useArchive from '@hooks/useArchive'
 import { useDelete } from '@hooks/useDelete'
 import toast from 'react-hot-toast'
+import { IconButton } from '@workduck-io/mex-components'
 
 const ArchiveNoteEditor = () => {
   const match = useMatch(`${ROUTE_PATHS.archive}/:nodeid`)

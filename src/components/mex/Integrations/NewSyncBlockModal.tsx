@@ -13,11 +13,10 @@ import { useSyncStore } from '../../../store/useSyncStore'
 import { Label, InputBlock, TextAreaBlock } from '../../../style/Form'
 import { capitalize, getEventNameFromElement } from '../../../utils/lib/strings'
 import create from 'zustand'
-import { LoadingButton } from '../Buttons/LoadingButton'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import ServiceSelector from './ServiceSelector'
 import { useAuthStore } from '../../../services/auth/useAuth'
-import { Button } from '@workduck-io/mex-components'
+import { Button, LoadingButton } from '@workduck-io/mex-components'
 
 interface NewSyncTemplateModalState {
   open: boolean
@@ -156,7 +155,7 @@ const NewSyncTemplateModal = () => {
           <Button large onClick={handleCancel}>
             Cancel
           </Button>
-          <LoadingButton loading={isSubmitting} buttonProps={{ type: 'submit', primary: true, large: true }}>
+          <LoadingButton loading={isSubmitting} type="submit" primary large>
             Submit
           </LoadingButton>
         </ModalControls>

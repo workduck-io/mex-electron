@@ -9,13 +9,13 @@ import { useMentionStore } from '@store/useMentionStore'
 import { Label, SelectWrapper, StyledCreatatbleSelect } from '@style/Form'
 import { runBatch } from '@utils/lib/batchPromise'
 import { mog } from '@utils/lib/helper'
+import { LoadingButton } from '@workduck-io/mex-components'
 import React, { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { AccessLevel, DefaultPermission, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
-import { LoadingButton } from '../Buttons/LoadingButton'
 import { InputFormError } from '../Forms/Input'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
-import { InviteFormFieldset, InviteFormWrapper, InviteWrapper, MultipleInviteWrapper } from './ShareModal.styles'
+import { InviteFormFieldset, InviteFormWrapper, MultipleInviteWrapper } from './ShareModal.styles'
 import { InviteModalData, useShareModalStore } from './ShareModalStore'
 
 export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean }) => {
@@ -151,7 +151,9 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
             <LoadingButton
               loading={isSubmitting}
               alsoDisabled={errors.email !== undefined || errors.alias !== undefined}
-              buttonProps={{ type: 'submit', primary: true, large: true }}
+              type="submit"
+              primary
+              large
             >
               Invite
             </LoadingButton>

@@ -1,35 +1,26 @@
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
-import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
-import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
 import { Icon } from '@iconify/react'
+import { Button } from '@workduck-io/mex-components'
 import React, { useMemo } from 'react'
 import { useReminders, useReminderStore } from '../../../hooks/useReminders'
-import useToggleElements from '../../../hooks/useToggleElements'
 import { useEditorStore } from '../../../store/useEditorStore'
-import { useHelpStore } from '../../../store/useHelpStore'
-import { useLayoutStore } from '../../../store/useLayoutStore'
 import useTodoStore from '../../../store/useTodoStore'
-import IconButton from '../../../style/Buttons'
-import { Button } from '@workduck-io/mex-components'
 import { InfobarFull, InfobarTools } from '../../../style/infobar'
 import { Title } from '../../../style/Typography'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { useCreateReminderModal } from './CreateReminderModal'
 import ReminderUI from './Reminder'
 import { ReminderGroupWrapper, ReminderInfobar, RemindersWrapper } from './Reminders.style'
 
 const RemindersInfobar = () => {
-  const infobar = useLayoutStore((s) => s.infobar)
-  const { toggleReminder } = useToggleElements()
-  const shortcuts = useHelpStore((store) => store.shortcuts)
+  // const infobar = useLayoutStore((s) => s.infobar)
+  // const { toggleReminder } = useToggleElements()
+  // const shortcuts = useHelpStore((store) => store.shortcuts)
   const remindersAll = useReminderStore((store) => store.reminders)
   const armedReminders = useReminderStore((store) => store.armedReminders)
-  const { getNodeReminders, clearNodeReminders, getReminderControls } = useReminders()
+  const { getNodeReminders, getReminderControls } = useReminders()
   const nodeid = useEditorStore((store) => store.node.nodeid)
   const openModal = useCreateReminderModal((state) => state.openModal)
   const todos = useTodoStore((store) => store.todos)
-
-  const { goTo } = useRouting()
 
   const reminderGroups = useMemo(() => {
     // mog('RemindersInfobar', { reminderGroups, remindersAll })
@@ -58,12 +49,6 @@ const RemindersInfobar = () => {
           title="All Reminders"
         /> */}
         <label htmlFor="reminders">Reminders</label>
-        <IconButton
-          size={24}
-          icon={deleteBin6Line}
-          onClick={() => clearNodeReminders(nodeid)}
-          title="Delete All Finished Reminders"
-        />
       </InfobarTools>
 
       <ReminderInfobar>
