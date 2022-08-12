@@ -9,6 +9,7 @@ import { ELEMENT_INLINE_BLOCK } from '@editor/Components/InlineBlock/types'
 import { useMentionStore } from '@store/useMentionStore'
 import { ELEMENT_MENTION } from '@editor/Components/mentions/defaults'
 import { useAuthStore } from '@services/auth/useAuth'
+import { ELEMENT_EXCALIDRAW } from '../editor/Components/Excalidraw/createExcalidrawPlugin'
 
 export const useSearchExtra = () => {
   const ilinks = useDataStore((s) => s.ilinks)
@@ -36,6 +37,9 @@ export const useSearchExtra = () => {
       [ELEMENT_MENTION]: {
         keyToIndex: 'value',
         replacements: self_rep
+      },
+      [ELEMENT_EXCALIDRAW]: {
+        keyToIndex: 'value'
       }
     }
   }

@@ -41,7 +41,7 @@ export interface SearchRepExtra {
     /** The key of the block used to index replacements */
     keyToIndex: string
     /** replacements for the block text that is keyed by keyToIndex */
-    replacements: Record<string, string>
+    replacements?: Record<string, string>
   }
 }
 
