@@ -36,6 +36,7 @@ import { useSpotlightSettingsStore } from '@store/settings.spotlight'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useSaveData } from '@hooks/useSaveData'
 import { useRecentsStore } from '@store/useRecentsStore'
+import { useLastOpened } from '@hooks/useLastOpened'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -73,6 +74,8 @@ const List = ({
   const { saveData } = useSaveData()
 
   const { getNewTaskNode } = useTaskFromSelection()
+
+  const { debouncedAddLastOpened } = useLastOpened()
 
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
@@ -235,6 +238,7 @@ const List = ({
               let nodePath = node.path
               setNormalMode(false)
               addInRecents(node.nodeid)
+              debouncedAddLastOpened(node.nodeid)
 
               if (currentActiveItem?.extras.new && !activeItem.active) {
                 const text = getInputText(search)
@@ -259,6 +263,7 @@ const List = ({
               id: node.nodeid
             })
             addInRecents(node.nodeid)
+            debouncedAddLastOpened(node.nodeid)
             setNormalMode(false)
           }
           // setSelectedItem({ item: data[activeIndex], active: false })

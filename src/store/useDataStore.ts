@@ -1,3 +1,4 @@
+import { useUserPropertiesStore } from '@services/user/userProperties'
 import create from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
@@ -290,6 +291,9 @@ export const sanatizeLinks = (links: ILink[]): FlatItem[] => {
 export const useTreeFromLinks = () => {
   const getTreeFromLinks = (links: ILink[]) => {
     const expanded = useTreeStore.getState().expanded
+    const lastOpened = useUserPropertiesStore.getState().lastOpenedNotes
+
+    mog('Expanded', { expanded, lastOpened })
 
     const sanatizedLinks = sanatizeLinks(links)
     const tree = generateTree(sanatizedLinks, expanded)

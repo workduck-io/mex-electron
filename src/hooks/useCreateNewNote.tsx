@@ -8,6 +8,7 @@ import { useLinks } from './useLinks'
 import useLoad from './useLoad'
 import { useNavigation } from './useNavigation'
 import { mog } from '@utils/lib/helper'
+import { useLastOpened } from './useLastOpened'
 
 export type NewNoteOptions = {
   path?: string
@@ -26,6 +27,7 @@ export const useCreateNewNote = () => {
   const { saveNodeName } = useLoad()
   const { getParentILink } = useLinks()
   const { addInHierarchy } = useHierarchy()
+  const { addLastOpened } = useLastOpened()
 
   const createNewNote = (options?: NewNoteOptions) => {
     const childNodepath = options?.parent !== undefined ? getUntitledKey(options?.parent) : getUntitledDraftKey()
@@ -61,6 +63,8 @@ export const useCreateNewNote = () => {
     if (!options?.noRedirect) {
       push(node.nodeid, { withLoading: false, fetch: false })
     }
+
+    addLastOpened(node.nodeid)
 
     return node
   }

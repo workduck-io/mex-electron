@@ -9,8 +9,8 @@ import { BroadcastSyncedChannel } from './types'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useReminderStore } from '@hooks/useReminders'
 import { useMentionStore } from '@store/useMentionStore'
-import useThemeStore from '@store/useThemeStore'
 import { useTokenStore } from '@services/auth/useTokens'
+import { useUserPropertiesStore } from '@services/user/userProperties'
 
 const syncStores = () => {
   if ('BroadcastChannel' in globalThis) {
@@ -42,10 +42,10 @@ const syncStores = () => {
       name: BroadcastSyncedChannel.REMINDERS,
       sync: [{ field: 'reminders' }, { field: 'armedReminders' }]
     })
-    syncStoreState(useThemeStore, {
-      name: BroadcastSyncedChannel.THEME,
-      sync: [{ field: 'theme' }]
-    })
+    // syncStoreState(useThemeStore, {
+    //   name: BroadcastSyncedChannel.THEME,
+    //   sync: [{ field: 'theme' }]
+    // })
     syncStoreState(useMentionStore, {
       name: BroadcastSyncedChannel.MENTIONS,
       sync: [{ field: 'mentionable' }, { field: 'invitedUsers' }]
@@ -57,6 +57,10 @@ const syncStores = () => {
     syncStoreState(useDwindleAuthStore, {
       name: BroadcastSyncedChannel.DWINDLE,
       sync: [{ field: 'userCred' }]
+    })
+    syncStoreState(useUserPropertiesStore, {
+      name: BroadcastSyncedChannel.USER_PROPERTIES,
+      sync: [{ field: 'lastOpenedNotes' }, { field: 'mutedNotes' }, { field: 'theme' }]
     })
     syncStoreState(useActionsCache, {
       name: BroadcastSyncedChannel.ACTIONS,
