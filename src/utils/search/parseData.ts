@@ -46,7 +46,6 @@ const excalidraw_replacement: ReplacementFunction = (blockValue, keyToIndex) => 
 
   parsedExcalidrawElements.forEach((elem) => {
     if (elem.text && elem.text !== '') {
-      console.log('Found Excalidraw Text: ', elem.text)
       text.push(elem.text)
     }
   })
@@ -82,7 +81,6 @@ export const convertContentToRawText = (
         const blockText =
           replacements === undefined ? replacementFunctions[n.type](n, blockKey) : replacements[n[blockKey]]
 
-        console.log('Found Extra', { n, blockKey, blockText })
         if (blockText) text.push(blockText)
         return
       }
