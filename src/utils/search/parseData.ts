@@ -36,13 +36,34 @@ type ContentConverterOptions = {
   extra?: SearchRepExtra
 }
 
+type ReplacementFunction = (blockValue: any, keyToIndex: string) => string
+
+const excalidraw_replacement: ReplacementFunction = (blockValue, keyToIndex) => {
+  const rawValue = blockValue[keyToIndex]
+  const parsedExcalidrawElements = JSON.parse(rawValue).elements
+
+  const text: string[] = []
+
+  parsedExcalidrawElements.forEach((elem) => {
+    if (elem.text && elem.text !== '') {
+      text.push(elem.text)
+    }
+  })
+
+  return text.join(' ')
+}
+
+const replacementFunctions: Record<string, ReplacementFunction> = {
+  [ELEMENT_EXCALIDRAW]: excalidraw_replacement
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const convertContentToRawText = (
   content: any[],
   join?: string,
   options: ContentConverterOptions = {
     exclude: {
-      types: new Set([ELEMENT_EXCALIDRAW])
+      types: new Set([])
     }
   }
 ): string => {
@@ -55,8 +76,11 @@ export const convertContentToRawText = (
     if (extraKeys.includes(n.type)) {
       if (options?.extra[n.type]) {
         const blockKey = options?.extra[n.type].keyToIndex
-        const blockText = options?.extra[n.type].replacements[n[blockKey]]
-        // console.log('Found Extra', { n, blockKey, blockText })
+        const replacements = options?.extra[n.type].replacements
+
+        const blockText =
+          replacements === undefined ? replacementFunctions[n.type](n, blockKey) : replacements[n[blockKey]]
+
         if (blockText) text.push(blockText)
         return
       }
