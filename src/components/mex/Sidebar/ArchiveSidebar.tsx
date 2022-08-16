@@ -4,7 +4,7 @@ import Tippy, { useSingleton } from '@tippyjs/react'
 import useDataStore from '@store/useDataStore'
 import archiveLine from '@iconify/icons-ri/archive-line'
 
-import { GetIcon, TooltipContent } from './Tree'
+import { GetIcon, TooltipContent } from './TreeItem'
 import * as ContextMenu from '@radix-ui/react-context-menu'
 import { ItemContent, ItemCount, ItemTitle, StyledTreeItem } from '@style/Sidebar'
 import { mog } from '@utils/lib/helper'

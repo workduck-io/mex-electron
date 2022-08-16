@@ -225,10 +225,8 @@ export const sortBaseNestedTree = (baseNestedTree: BaseTreeNode[], metadata: Rec
 }
 
 export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
-  const metadata = useContentStore.getState().getAllMetadata()
   const todos = useTodoStore.getState().getAllTodos()
   const reminderGroups = useReminderStore.getState().getNodeReminderGroup()
-  const lastOpenedNotes = useUserPropertiesStore.getState().lastOpenedNotes
 
   let baseNestedTree: BaseTreeNode[] = []
 
@@ -236,13 +234,6 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
     const parentId = getParentNodePath(n.id)
     const tasks = todos[n.nodeid] ? todos[n.nodeid].filter(filterIncompleteTodos).length : 0
     const reminders = reminderGroups[n.nodeid] ? reminderGroups[n.nodeid].length : 0
-    const updatedAt = metadata[n.nodeid] ? metadata[n.nodeid].updatedAt : undefined
-    const lastOpenedNote = lastOpenedNotes[n.nodeid] ? lastOpenedNotes[n.nodeid] : undefined
-    const lastOpenedState = lastOpenedNote && updatedAt ? getLastOpenedState(updatedAt, lastOpenedNote) : undefined
-
-    if (lastOpenedNote) {
-      mog('lastOpenedState', { lastOpenedState, lastOpenedNote, updatedAt })
-    }
 
     const baseTreeNote = {
       path: n.id,
@@ -250,7 +241,6 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
       children: [],
       tasks,
       reminders,
-      lastOpenedState
     }
     if (parentId === null) {
       // add to tree first level

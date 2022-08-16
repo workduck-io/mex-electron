@@ -11,11 +11,13 @@ import { Icon } from '@iconify/react'
 // import * as ContextMenu from '@radix-ui/react-context-menu'
 //
 import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@ui/components/menus/contextMenu'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useShareModalStore } from '../Mention/ShareModalStore'
 import { useDeleteStore } from '../Refactor/DeleteModal'
 import { useRefactorStore } from '../Refactor/Refactor'
 import { LastOpenedState } from '../../../types/userProperties'
+import { useUserPropertiesStore } from '@store/userPropertiesStore'
+import { mog } from '@utils/lib/helper'
 
 // interface ItemProps {
 //   id: string
@@ -34,7 +36,9 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const openDeleteModal = useDeleteStore((store) => store.openModal)
   const { createNewNote } = useCreateNewNote()
   const openShareModal = useShareModalStore((store) => store.openModal)
-  const { muteNode, unmuteNode } = useLastOpened()
+  const { muteNode, unmuteNode, getLastOpened } = useLastOpened()
+  const lastOpenedNote = useUserPropertiesStore((state) => state.lastOpenedNotes[item.data.nodeid])
+  // const lastOpenedNote = lastOpenedNotes[nodeId] ?? undefined
 
   const handleRefactor = (item: TreeItem) => {
     prefillRefactorModal(item?.data?.path)
@@ -54,13 +58,15 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
     openShareModal('permission', item.data.nodeid)
   }
 
-  const isMuted = (item: TreeItem) => {
-    return item.data.lastOpenedState === LastOpenedState.MUTED
-  }
+  const isMuted = useMemo(() => {
+    const lastOpenedState = getLastOpened(item.data.nodeid, lastOpenedNote)
+    // mog('isMuted isupdated', { lastOpenedNote, lastOpenedState })
+    return lastOpenedState === LastOpenedState.MUTED
+  }, [item.data.nodeid, lastOpenedNote])
 
   const handleMute = (item: TreeItem) => {
     // mog('handleMute', { item })
-    if (isMuted(item)) {
+    if (isMuted) {
       unmuteNode(item.data.nodeid)
     } else {
       muteNode(item.data.nodeid)
@@ -101,7 +107,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
           }}
         >
           <Icon icon={volumeMuteLine} />
-          {isMuted(item) ? 'Unmute' : 'Mute'}
+          {isMuted ? 'Unmute' : 'Mute'}
         </ContextMenuItem>
         {/* <ContextMenuItem>
           <Icon icon={refreshFill} />

@@ -10,7 +10,7 @@ import { debounce } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { tinykeys } from '@workduck-io/tinykeys'
 import { EmptyMessage, FilteredItemsWrapper, SidebarListFilter, SidebarListWrapper } from './SidebarList.style'
-import { TooltipContent } from './Tree'
+import { TooltipContent } from './TreeItem'
 
 interface SidebarListItem {
   id: string

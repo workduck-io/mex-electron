@@ -4,6 +4,7 @@ import { getInitialNode } from '@utils/helpers'
 import { mog } from '@utils/lib/helper'
 import { debounce } from 'lodash'
 import { useCallback } from 'react'
+import { useContentStore } from '@store/useContentStore'
 
 const DEBOUNCE_TIME = 3000
 
@@ -31,6 +32,7 @@ export const getLastOpenedState = (updatedAt: number, lastOpenedNote: LastOpened
  */
 export const useLastOpened = () => {
   const setLastOpenedNotes = useUserPropertiesStore((state) => state.setLastOpenedNotes)
+  const getMetadata = useContentStore((state) => state.getMetadata)
   /**
    * Update the last opened timestamp of a node
    * The current timestamp is used as the last opened timestamp
@@ -76,8 +78,16 @@ export const useLastOpened = () => {
     setMuteNode(nodeId, false)
   }
 
+  const getLastOpened = (nodeId: string, lastOpenedNote: LastOpenedNote) => {
+    const metadata = getMetadata(nodeId)
+    const updatedAt = metadata?.updatedAt ?? undefined
+    const lastOpenedState = lastOpenedNote && updatedAt ? getLastOpenedState(updatedAt, lastOpenedNote) : undefined
+
+    return lastOpenedState
+  }
+
   // Callback so that the debounced function is only generated once
   const debouncedAddLastOpened = useCallback(debounce(addLastOpened, DEBOUNCE_TIME, { trailing: true }), [])
 
-  return { addLastOpened, debouncedAddLastOpened, muteNode, unmuteNode }
+  return { addLastOpened, debouncedAddLastOpened, muteNode, unmuteNode, getLastOpened }
 }

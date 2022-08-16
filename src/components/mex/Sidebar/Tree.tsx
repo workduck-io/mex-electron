@@ -1,114 +1,29 @@
-import * as ContextMenu from '@radix-ui/react-context-menu'
 import {
-  default as AtlaskitTree,
-  ItemId,
-  mutateTree,
-  RenderItemParams,
-  TreeData,
-  TreeDestinationPosition,
-  TreeItem,
-  TreeSourcePosition
+    default as AtlaskitTree,
+    ItemId,
+    mutateTree,
+    RenderItemParams,
+    TreeData,
+    TreeDestinationPosition,
+    TreeItem,
+    TreeSourcePosition
 } from '@atlaskit/tree'
-import fileList2Line from '@iconify/icons-ri/file-list-2-line'
-import { Icon } from '@iconify/react'
+import { useTreeFromLinks } from '@hooks/useTreeFromLinks'
 import useDataStore from '@store/useDataStore'
-import Tippy, { useSingleton } from '@tippyjs/react'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useLocation, useMatch } from 'react-router-dom'
-import { useAnalysisStore } from '@store/useAnalysis'
 import { useEditorStore } from '@store/useEditorStore'
 import { useTreeStore } from '@store/useTreeStore'
-import {
-  ItemContent,
-  ItemCount,
-  ItemTitle,
-  StyledTreeItem,
-  StyledTreeItemSwitcher,
-  StyledTreeSwitcher,
-  TooltipContentWrapper,
-  TooltipCount
-} from '@style/Sidebar'
+import Tippy, { useSingleton } from '@tippyjs/react'
 import { mog } from '@utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useLocation, useMatch } from 'react-router-dom'
 import { useRefactorStore } from '../Refactor/Refactor'
+import { RenderTreeItem } from './TreeItem'
 import { getNameFromPath, SEPARATOR } from './treeUtils'
-import { TreeContextMenu } from './TreeWithContextMenu'
-import { IS_DEV } from '@data/Defaults/dev_'
-import { useTreeFromLinks } from '@hooks/useTreeFromLinks'
-import { LastOpenedState } from '../../../types/userProperties'
 // import { complexTree } from '../mockdata/complexTree'
 
-interface GetIconProps {
-  item: TreeItem
-  onExpand: (itemId: ItemId) => void
-  onCollapse: (itemId: ItemId) => void
-}
-
-export const GetIcon = ({ item, onCollapse, onExpand }: GetIconProps) => {
-  if (item.children && item.children.length > 0) {
-    return item?.isExpanded ? (
-      <StyledTreeItemSwitcher onClick={() => onCollapse(item.id)}>
-        <Icon icon={'ri:arrow-down-s-line'} />
-      </StyledTreeItemSwitcher>
-    ) : (
-      <StyledTreeItemSwitcher onClick={() => onExpand(item.id)}>
-        <Icon icon={'ri:arrow-right-s-line'} />
-      </StyledTreeItemSwitcher>
-    )
-  }
-  return <StyledTreeSwitcher></StyledTreeSwitcher>
-}
-
-export const TooltipContent = ({ item }: { item: TreeItem }) => {
-  // console.log('TooltipContent', { item, IS_DEV })
-  return (
-    <TooltipContentWrapper>
-      {item?.data?.title}
-      {IS_DEV && ' ' + item?.data?.nodeid}
-      {item?.data?.tasks !== undefined && item.data.tasks > 0 && (
-        <TooltipCount>
-          <Icon icon="ri:task-line" />
-          {item?.data?.tasks}
-        </TooltipCount>
-      )}
-      {item?.data?.reminders !== undefined && item.data.reminders > 0 && (
-        <TooltipCount>
-          <Icon icon="ri:timer-flash-line" />
-          {item?.data?.reminders}
-        </TooltipCount>
-      )}
-    </TooltipContentWrapper>
-  )
-}
-
-const ItemTitleWithAnalysis = ({ item }: { item: TreeItem }) => {
-  const anal = useAnalysisStore((state) => state.analysis)
-  const title =
-    anal.nodeid && anal.nodeid === item.data.nodeid && anal.title !== undefined && anal.title !== ''
-      ? anal.title
-      : item.data
-      ? item.data.title
-      : 'NoTitle'
-
-  return (
-    <ItemTitle>
-      <Icon icon={item.data.mex_icon ?? fileList2Line} />
-      <span>{title}</span>
-    </ItemTitle>
-  )
-}
 interface TreeProps {
   initTree: TreeData
-}
-
-const defaultSnap = {
-  isDragging: false,
-  isDropAnimating: false,
-  dropAnimation: null,
-  mode: null,
-  draggingOver: null,
-  combineTargetFor: null,
-  combineWith: null
 }
 
 const Tree = ({ initTree }: TreeProps) => {
@@ -150,48 +65,17 @@ const Tree = ({ initTree }: TreeProps) => {
 
   const isInEditor = location.pathname.startsWith(ROUTE_PATHS.node)
 
-  const renderItem = ({ item, onExpand, onCollapse, provided, snapshot }: RenderItemParams) => {
-    const isTrue = JSON.stringify(snapshot) !== JSON.stringify(defaultSnap)
-
+  const renderItem = (renderProps: RenderItemParams) => {
     return (
-      <Tippy theme="mex" placement="right" singleton={target} content={<TooltipContent item={item} />}>
-        <span>
-          <ContextMenu.Root
-            onOpenChange={(open) => {
-              if (open) {
-                setContextOpenNodeId(item.data.nodeid)
-              } else setContextOpenNodeId(null)
-            }}
-          >
-            <ContextMenu.Trigger asChild>
-              <StyledTreeItem
-                ref={provided.innerRef}
-                selected={isInEditor && item.data && match?.params?.nodeid === item.data.nodeid}
-                isDragging={snapshot.isDragging}
-                hasMenuOpen={contextOpenNodeId === item.data.nodeid}
-                isBeingDroppedAt={isTrue}
-                isUnread={item.data.lastOpenedState === LastOpenedState.UNREAD}
-                onContextMenu={(e) => {
-                  console.log('ContextySe', e, item)
-                }}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-              >
-                <GetIcon item={item} onExpand={onExpand} onCollapse={onCollapse} />
-
-                <ItemContent onMouseDown={(e) => onClick(e, item)}>
-                  <ItemTitleWithAnalysis item={item} />
-                </ItemContent>
-
-                {item.hasChildren && item.children && item.children.length > 0 && (
-                  <ItemCount>{item.children.length}</ItemCount>
-                )}
-              </StyledTreeItem>
-            </ContextMenu.Trigger>
-            <TreeContextMenu item={item} />
-          </ContextMenu.Root>
-        </span>
-      </Tippy>
+      <RenderTreeItem
+        {...renderProps}
+        onClick={onClick}
+        match={match}
+        isInEditor={isInEditor}
+        target={target}
+        contextOpenNodeId={contextOpenNodeId}
+        setContextOpenNodeId={setContextOpenNodeId}
+      />
     )
   }
 
