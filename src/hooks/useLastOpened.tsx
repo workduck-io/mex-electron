@@ -22,9 +22,9 @@ export const useLastOpened = () => {
       return
     }
     // This replaces any previous timestamp with the current timestamp
-    lastOpenedNotes[nodeId] = Date.now()
+    const newLastOpenedNotes = { ...lastOpenedNotes, [nodeId]: Date.now() }
     mog('addLastOpened', { nodeId, lastOpenedNotes, mutedNotes })
-    useUserPropertiesStore.setState({ lastOpenedNotes })
+    useUserPropertiesStore.setState({ lastOpenedNotes: newLastOpenedNotes })
   }
 
   // Callback so that the debounced function is only generated once

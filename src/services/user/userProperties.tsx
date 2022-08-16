@@ -1,4 +1,5 @@
 import create from 'zustand'
+import { devtools } from 'zustand/middleware'
 
 interface LastOpenedNodes {
   // Nodeid with date of last opened
@@ -16,16 +17,21 @@ interface UserPropertiesStore extends UserProperties {
   setTheme: (theme: string) => void
 }
 
-export const useUserPropertiesStore = create<UserPropertiesStore>((set) => ({
-  lastOpenedNotes: {},
-  mutedNotes: [],
-  theme: 'xeM',
+export const useUserPropertiesStore = create<UserPropertiesStore>(
+  devtools(
+    (set) => ({
+      lastOpenedNotes: {},
+      mutedNotes: [],
+      theme: 'xeM',
 
-  set: (userProperties) => {
-    set(userProperties)
-  },
+      set: (userProperties) => {
+        set(userProperties)
+      },
 
-  setTheme: (theme) => {
-    set({ theme })
-  }
-}))
+      setTheme: (theme) => {
+        set({ theme })
+      }
+    }),
+    { name: 'User Properties' }
+  )
+)
