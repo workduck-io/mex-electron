@@ -60,11 +60,11 @@ export const useCreateNewNote = () => {
     addInHierarchy({ noteId: node.nodeid, notePath: node.path, parentNoteId, noteContent: options?.noteContent })
     saveNodeName(useEditorStore.getState().node.nodeid)
 
+    addLastOpened(node.nodeid)
+
     if (!options?.noRedirect) {
       push(node.nodeid, { withLoading: false, fetch: false })
     }
-
-    addLastOpened(node.nodeid)
 
     return node
   }
