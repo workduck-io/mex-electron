@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react'
 import Default from './Default'
 import Menu from './Menu'
-import tinykeys from 'tinykeys'
+import { tinykeys } from '@workduck-io/tinykeys'
 import { groupBy } from 'lodash'
 import { useActionMenuStore } from './useActionMenuStore'
 import { useMenuPerformer } from './useMenuPerfomer'

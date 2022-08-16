@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams, matchPath } from 'react-router-dom
 import { useKeyListener } from '../../hooks/useShortcutListener'
 import { useHelpStore } from '../../store/useHelpStore'
 import { useRecentsStore } from '../../store/useRecentsStore'
-import tinykeys from 'tinykeys'
+import { tinykeys } from '@workduck-io/tinykeys'
 import { ipcRenderer } from 'electron'
 import { IpcAction } from '../../data/IpcAction'
 import useLoad from '../../hooks/useLoad'

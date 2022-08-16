@@ -8,7 +8,7 @@ import { fuzzySearch } from '@utils/lib/fuzzySearch'
 import { mog } from '@utils/lib/helper'
 import { debounce } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import tinykeys from 'tinykeys'
+import { tinykeys } from '@workduck-io/tinykeys'
 import { EmptyMessage, FilteredItemsWrapper, SidebarListFilter, SidebarListWrapper } from './SidebarList.style'
 import { TooltipContent } from './Tree'
 

@@ -1,7 +1,7 @@
 import { SharedNodeIcon } from '@components/icons/Icons'
 import { useNodes } from '@hooks/useNodes'
 import React, { useEffect } from 'react'
-import tinykeys from 'tinykeys'
+import { tinykeys } from '@workduck-io/tinykeys'
 import EditorPreview from '../../../editor/Components/EditorPreview/EditorPreview'
 import { useOnMouseClick } from '../../../editor/Components/ilink/hooks/useOnMouseClick'
 import { useLinks } from '../../../hooks/useLinks'

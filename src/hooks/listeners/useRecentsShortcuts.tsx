@@ -1,6 +1,6 @@
 import { performClick } from '../../components/mex/Onboarding/steps'
 import { spotlightShortcuts } from '../../components/spotlight/Shortcuts/list'
-import tinykeys from 'tinykeys'
+import { tinykeys } from '@workduck-io/tinykeys'
 import { useEffect } from 'react'
 import { useKeyListener } from '../useShortcutListener'
 import useLoad from '../useLoad'

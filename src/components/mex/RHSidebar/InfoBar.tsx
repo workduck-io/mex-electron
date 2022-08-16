@@ -1,6 +1,6 @@
 import { MexIcon } from '@style/Layouts'
 import React, { useEffect, useMemo, useState } from 'react'
-import tinykeys from 'tinykeys'
+import { tinykeys } from '@workduck-io/tinykeys'
 import { useGraphData } from '@hooks/useGraphData'
 import useLayout from '@hooks/useLayout'
 import { useKeyListener } from '@hooks/useShortcutListener'
