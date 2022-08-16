@@ -1,7 +1,7 @@
 import { useSuggestions } from '@components/mex/Suggestions/useSuggestions'
 import { selectEditor, usePlateEditorRef } from '@udecode/plate'
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
-import tinykeys from 'tinykeys'
+import { tinykeys } from '@workduck-io/tinykeys'
 import shallow from 'zustand/shallow'
 import Metadata from '../components/mex/Metadata/Metadata'
 import { defaultContent } from '../data/Defaults/baseData'

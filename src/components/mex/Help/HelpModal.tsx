@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import Modal from 'react-modal'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useHelpStore } from '../../../store/useHelpStore'
-import tinykeys from 'tinykeys'
+import { tinykeys } from '@workduck-io/tinykeys'
 import ShortcutTable from './ShortcutTable'
 
 const HelpModal = () => {

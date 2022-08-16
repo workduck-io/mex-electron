@@ -8,7 +8,7 @@ import { ActionRow, StyledActionFormContainer } from './styled'
 import styled from 'styled-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
-import tinykeys from 'tinykeys'
+import { tinykeys } from '@workduck-io/tinykeys'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 
 export type ActionFormProps = {

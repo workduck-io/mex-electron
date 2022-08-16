@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import { Input } from '../../../style/Form'
 import Modal from 'react-modal'
-import tinykeys from 'tinykeys'
+import { tinykeys } from '@workduck-io/tinykeys'
 import toast from 'react-hot-toast'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { useKeyListener } from '../../../hooks/useShortcutListener'

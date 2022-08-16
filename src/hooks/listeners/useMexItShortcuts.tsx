@@ -2,7 +2,7 @@ import { CategoryType, useSpotlightContext } from '../../store/Context/context.s
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 
 import { spotlightShortcuts } from '../../components/spotlight/Shortcuts/list'
-import tinykeys from 'tinykeys'
+import { tinykeys } from '@workduck-io/tinykeys'
 import { useContentStore } from '../../store/useContentStore'
 import { useEffect } from 'react'
 import { useKeyListener } from '../useShortcutListener'

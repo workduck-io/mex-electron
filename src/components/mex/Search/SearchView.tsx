@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react'
 import { idxKey } from '../../../types/search'
 import { debounce } from 'lodash'
 import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react'
-import tinykeys from 'tinykeys'
+import { tinykeys } from '@workduck-io/tinykeys'
 import { SearchFilter, useFilters, useFilterStore } from '../../../hooks/useFilters'
 import {
   InputWrapper,

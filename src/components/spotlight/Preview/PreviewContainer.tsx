@@ -1,7 +1,7 @@
 import { getBlockMetadata } from '@editor/Actions/useEditorBlockSelection'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import React, { useEffect } from 'react'
-import tinykeys from 'tinykeys'
+import { tinykeys } from '@workduck-io/tinykeys'
 import { getDefaultContent, PreviewProps } from '.'
 import { useFocusBlock, useBlockHighlightStore } from '../../../editor/Actions/useFocusBlock'
 import { Editor } from '../../../editor/Editor'

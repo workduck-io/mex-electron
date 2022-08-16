@@ -1,4 +1,4 @@
-import tinykeys from 'tinykeys'
+import { tinykeys } from '@workduck-io/tinykeys'
 import { useContentStore } from '../../store/useContentStore'
 import { useEffect } from 'react'
 import { useHelpStore } from '../../store/useHelpStore'
