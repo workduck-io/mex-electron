@@ -24,7 +24,7 @@ export interface LastOpenedNote {
  * Last opened note mapped to their nodeid
  */
 export interface LastOpenedNotes {
-  [key: string]: LastOpenedNote
+  [nodeid: string]: LastOpenedNote
 }
 
 export interface UserProperties {

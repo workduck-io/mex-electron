@@ -4,7 +4,7 @@ import { useLastOpened } from '@hooks/useLastOpened'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import archiveLine from '@iconify/icons-ri/archive-line'
 import editLine from '@iconify/icons-ri/edit-line'
-import refreshFill from '@iconify/icons-ri/refresh-fill'
+// import refreshFill from '@iconify/icons-ri/refresh-fill'
 import volumeMuteLine from '@iconify/icons-ri/volume-mute-line'
 import shareLine from '@iconify/icons-ri/share-line'
 import { Icon } from '@iconify/react'
@@ -17,13 +17,7 @@ import { useDeleteStore } from '../Refactor/DeleteModal'
 import { useRefactorStore } from '../Refactor/Refactor'
 import { LastOpenedState } from '../../../types/userProperties'
 import { useUserPropertiesStore } from '@store/userPropertiesStore'
-import { mog } from '@utils/lib/helper'
-
-// interface ItemProps {
-//   id: string
-//   path: string
-//   onDisplayMenu: (nodeid: string) => void
-// }
+import volumeDownLine from '@iconify/icons-ri/volume-down-line'
 
 interface TreeContextMenuProps {
   item: TreeItem
@@ -106,7 +100,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
             handleMute(item)
           }}
         >
-          <Icon icon={volumeMuteLine} />
+          <Icon icon={isMuted ? volumeDownLine : volumeMuteLine} />
           {isMuted ? 'Unmute' : 'Mute'}
         </ContextMenuItem>
         {/* <ContextMenuItem>
