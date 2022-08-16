@@ -2,10 +2,10 @@ import React, { useMemo } from 'react'
 import { defaultThemes } from '../../style/themes/defaultThemes'
 import { ThemeProvider } from 'styled-components'
 // import useThemeStore from '../../store/useThemeStore'
-import { useUserPropertiesStore } from '@store/userPropertiesStore'
+import { useUserPreferenceStore } from '@store/userPropertiesStore'
 
 const Providers: React.FC = ({ children }) => {
-  const theme = useUserPropertiesStore((state) => state.theme)
+  const theme = useUserPreferenceStore((state) => state.theme)
   // const [theme] = React.useState<'dark' | 'light'>('dark');
 
   const themeData = useMemo(() => {

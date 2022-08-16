@@ -1,4 +1,5 @@
-import { useUserPropertiesStore } from '@store/userPropertiesStore'
+import { useUserService } from '@services/auth/useUserService'
+import { useUserPreferenceStore } from '@store/userPropertiesStore'
 import { defaultThemes } from '@style/themes/defaultThemes'
 import React from 'react'
 import { useTransition } from 'react-spring'
@@ -8,10 +9,11 @@ import { Theme, ThemeColorDots, ThemeHeader, ThemePreview, ThemePreviews } from 
 
 const Themes = () => {
   const themes = defaultThemes
-  const theme = useUserPropertiesStore((state) => state.theme)
-  const setTheme = useUserPropertiesStore((state) => state.setTheme)
+  const theme = useUserPreferenceStore((state) => state.theme)
+  const setTheme = useUserPreferenceStore((state) => state.setTheme)
 
   const { saveData } = useSaveData()
+  const {updateUserPreferences}= useUserService()
 
   const transition = useTransition(themes, {
     from: {
@@ -38,7 +40,7 @@ const Themes = () => {
       setTheme(themes[i].id)
     }
 
-    saveData()
+    updateUserPreferences()
   }
 
   return (

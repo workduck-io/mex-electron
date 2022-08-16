@@ -16,7 +16,7 @@ import { useShareModalStore } from '../Mention/ShareModalStore'
 import { useDeleteStore } from '../Refactor/DeleteModal'
 import { useRefactorStore } from '../Refactor/Refactor'
 import { LastOpenedState } from '../../../types/userProperties'
-import { useUserPropertiesStore } from '@store/userPropertiesStore'
+import { useUserPreferenceStore } from '@store/userPropertiesStore'
 import volumeDownLine from '@iconify/icons-ri/volume-down-line'
 
 interface TreeContextMenuProps {
@@ -31,7 +31,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const { createNewNote } = useCreateNewNote()
   const openShareModal = useShareModalStore((store) => store.openModal)
   const { muteNode, unmuteNode, getLastOpened } = useLastOpened()
-  const lastOpenedNote = useUserPropertiesStore((state) => state.lastOpenedNotes[item.data.nodeid])
+  const lastOpenedNote = useUserPreferenceStore((state) => state.lastOpenedNotes[item.data.nodeid])
   // const lastOpenedNote = lastOpenedNotes[nodeId] ?? undefined
 
   const handleRefactor = (item: TreeItem) => {

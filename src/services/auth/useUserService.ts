@@ -1,8 +1,10 @@
 import { apiURLs } from '@apis/routes'
 import { useUserCacheStore } from '@store/useUserCacheStore'
+import { UserPreferences } from '../../types/userProperties'
 import { mog } from '@utils/lib/helper'
 import { client } from '@workduck-io/dwindle'
 import { useAuthStore } from './useAuth'
+import { useUserPreferenceStore } from '@store/userPropertiesStore'
 
 export interface TempUser {
   email: string
@@ -92,5 +94,26 @@ export const useUserService = () => {
     }
   }
 
-  return { getUserDetails, getUserDetailsUserId, updateUserInfo }
+  const updateUserPreferences = async (): Promise<boolean> => {
+    const lastOpenedNotes = useUserPreferenceStore.getState().lastOpenedNotes
+    const theme = useUserPreferenceStore.getState().theme
+    const userID = useAuthStore.getState().userDetails.userID
+
+    const userPreferences: UserPreferences = {
+      lastOpenedNotes,
+      theme
+    }
+
+    try {
+      return await client.put(apiURLs.user.updateInfo, { id: userID, preference: userPreferences }).then((resp) => {
+        mog('Response', { data: resp.data })
+        return true
+      })
+    } catch (e) {
+      mog('Error Updating User Info', { error: e, userID })
+      return false
+    }
+  }
+
+  return { getUserDetails, getUserDetailsUserId, updateUserInfo, updateUserPreferences }
 }

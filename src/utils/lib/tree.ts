@@ -7,7 +7,7 @@ import { NodeMetadata } from '../../types/data'
 import useTodoStore from '../../store/useTodoStore'
 import { useReminderStore } from '../../hooks/useReminders'
 import { filterIncompleteTodos } from './filter'
-import { useUserPropertiesStore } from '@store/userPropertiesStore'
+import { useUserPreferenceStore } from '@store/userPropertiesStore'
 import { LastOpenedState } from '../../types/userProperties'
 import { getLastOpenedState } from '@hooks/useLastOpened'
 

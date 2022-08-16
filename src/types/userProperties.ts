@@ -8,13 +8,11 @@ export enum LastOpenedState {
  * Last opened note details
  */
 export interface LastOpenedNote {
-  nodeid: string
-
   /** Number of times opened */
   freq: number
 
   /** Timestamp when last opened */
-  timestamp: number
+  ts: number
 
   /** Whether the note is muted */
   muted: boolean
@@ -27,7 +25,7 @@ export interface LastOpenedNotes {
   [nodeid: string]: LastOpenedNote
 }
 
-export interface UserProperties {
+export interface UserPreferences {
   lastOpenedNotes: LastOpenedNotes
   /** Current mex Theme */
   theme?: string

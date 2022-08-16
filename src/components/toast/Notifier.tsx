@@ -1,4 +1,4 @@
-import { useUserPropertiesStore } from '@store/userPropertiesStore'
+import { useUserPreferenceStore } from '@store/userPropertiesStore'
 import { ipcRenderer } from 'electron'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
@@ -62,7 +62,7 @@ interface NotifierState {
 const Notifier = () => {
   const [nState, setNState] = useState<NotifierState | undefined>(undefined)
 
-  const setTheme = useUserPropertiesStore((state) => state.setTheme)
+  const setTheme = useUserPreferenceStore((state) => state.setTheme)
   useEffect(() => {
     ipcRenderer.on(IpcAction.TOAST_MESSAGE, (ev, message) => {
       if (message.attachment) {

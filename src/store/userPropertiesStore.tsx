@@ -1,20 +1,20 @@
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { LastOpenedNotes, UserProperties } from '../types/userProperties'
+import { LastOpenedNotes, UserPreferences } from '../types/userProperties'
 
-interface UserPropertiesStore extends UserProperties {
+interface UserPreferenceStore extends UserPreferences {
   setTheme: (theme: string) => void
   setLastOpenedNotes: (lastOpenedNotes: LastOpenedNotes) => void
-  setUserProperties: (userProperties: UserProperties) => void
+  setUserPreferences: (userProperties: UserPreferences) => void
 }
 
-export const useUserPropertiesStore = create<UserPropertiesStore>(
+export const useUserPreferenceStore = create<UserPreferenceStore>(
   devtools(
     (set, get) => ({
       lastOpenedNotes: {},
       theme: 'xeM',
-      setUserProperties: (userProperties: UserProperties) => {
-        set(userProperties)
+      setUserPreferences: (userPreferences: UserPreferences) => {
+        set(userPreferences)
       },
       setTheme: (theme) => {
         set({ theme })

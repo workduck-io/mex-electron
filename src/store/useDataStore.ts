@@ -1,4 +1,4 @@
-import { useUserPropertiesStore } from '@store/userPropertiesStore'
+import { useUserPreferenceStore } from '@store/userPropertiesStore'
 import create from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'

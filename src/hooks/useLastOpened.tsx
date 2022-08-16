@@ -1,4 +1,4 @@
-import { useUserPropertiesStore } from '@store/userPropertiesStore'
+import { useUserPreferenceStore } from '@store/userPropertiesStore'
 import { LastOpenedNote, LastOpenedState } from '../types/userProperties'
 import { getInitialNode } from '@utils/helpers'
 import { mog } from '@utils/lib/helper'
@@ -10,16 +10,16 @@ const DEBOUNCE_TIME = 3000
 
 const INIT_LAST_OPENED = {
   freq: 0,
-  timestamp: 0,
+  ts: 0,
   muted: false
 }
 
 export const getLastOpenedState = (updatedAt: number, lastOpenedNote: LastOpenedNote): LastOpenedState => {
   if (lastOpenedNote.muted) {
     return LastOpenedState.MUTED
-  } else if (updatedAt > lastOpenedNote.timestamp) {
+  } else if (updatedAt > lastOpenedNote.ts) {
     return LastOpenedState.UNREAD
-  } else if (updatedAt < lastOpenedNote.timestamp) {
+  } else if (updatedAt < lastOpenedNote.ts) {
     return LastOpenedState.OPENED
   } else {
     // Default to unread
@@ -31,25 +31,25 @@ export const getLastOpenedState = (updatedAt: number, lastOpenedNote: LastOpened
  * Hook to update the last opened timestamp of a node
  */
 export const useLastOpened = () => {
-  const setLastOpenedNotes = useUserPropertiesStore((state) => state.setLastOpenedNotes)
+  const setLastOpenedNotes = useUserPreferenceStore((state) => state.setLastOpenedNotes)
   const getMetadata = useContentStore((state) => state.getMetadata)
   /**
    * Update the last opened timestamp of a node
    * The current timestamp is used as the last opened timestamp
    */
   const addLastOpened = (nodeId: string) => {
-    const lastOpenedNotes = useUserPropertiesStore.getState().lastOpenedNotes
+    const lastOpenedNotes = useUserPreferenceStore.getState().lastOpenedNotes
     const initNode = getInitialNode()
     if (nodeId === initNode.nodeid) {
       return
     }
-    const lastOpenedNote = lastOpenedNotes[nodeId] || { nodeid: nodeId, ...INIT_LAST_OPENED }
+    const lastOpenedNote = lastOpenedNotes[nodeId] || { ...INIT_LAST_OPENED }
     // This replaces any previous timestamp with the current timestamp
     const newLastOpenedNotes = {
       ...lastOpenedNotes,
       [nodeId]: {
         ...lastOpenedNote,
-        timestamp: Date.now(),
+        ts: Date.now(),
         freq: lastOpenedNote.freq + 1
       }
     }
@@ -58,8 +58,8 @@ export const useLastOpened = () => {
   }
 
   const setMuteNode = (nodeId: string, muted: boolean) => {
-    const lastOpenedNotes = useUserPropertiesStore.getState().lastOpenedNotes
-    const lastOpenedNote = lastOpenedNotes[nodeId] || { nodeid: nodeId, ...INIT_LAST_OPENED }
+    const lastOpenedNotes = useUserPreferenceStore.getState().lastOpenedNotes
+    const lastOpenedNote = lastOpenedNotes[nodeId] || { ...INIT_LAST_OPENED }
     const newLastOpenedNotes = {
       ...lastOpenedNotes,
       [nodeId]: {

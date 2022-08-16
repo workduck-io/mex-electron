@@ -1,5 +1,5 @@
 import { getLevel } from '@store/useDataStore'
-import { useUserPropertiesStore } from '@store/userPropertiesStore'
+import { useUserPreferenceStore } from '@store/userPropertiesStore'
 import { useTreeStore } from '@store/useTreeStore'
 import { mog } from '@utils/lib/helper'
 import { FlatItem, generateTree } from '@utils/lib/tree'
@@ -32,7 +32,7 @@ const sanatizeLinks = (links: ILink[]): FlatItem[] => {
 export const useTreeFromLinks = () => {
   const getTreeFromLinks = (links: ILink[]) => {
     const expanded = useTreeStore.getState().expanded
-    const lastOpened = useUserPropertiesStore.getState().lastOpenedNotes
+    const lastOpened = useUserPreferenceStore.getState().lastOpenedNotes
 
     mog('Expanded', { expanded, lastOpened })
 

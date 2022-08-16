@@ -1,4 +1,4 @@
-import { useUserPropertiesStore } from '@store/userPropertiesStore'
+import { useUserPreferenceStore } from '@store/userPropertiesStore'
 import { useReminderStore } from '../hooks/useReminders'
 import { useSpotlightSettingsStore } from '../store/settings.spotlight'
 import { useContentStore } from '../store/useContentStore'
@@ -25,7 +25,7 @@ export const useInitialize = () => {
   const initSpotlightSettings = useSpotlightSettingsStore((state) => state.initSpotlightSettings)
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setReminders = useReminderStore((state) => state.setReminders)
-  const setTheme = useUserPropertiesStore((state) => state.setTheme)
+  const setTheme = useUserPreferenceStore((state) => state.setTheme)
   const setViews = useViewStore((state) => state.setViews)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
   const { generateSlashCommands } = useSlashCommands()

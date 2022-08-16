@@ -11,7 +11,7 @@ import { mog } from '../utils/lib/helper'
 import useTodoStore from '../store/useTodoStore'
 import { useReminderStore } from './useReminders'
 import { useViewStore } from './useTaskViews'
-import { useUserPropertiesStore } from '@store/userPropertiesStore'
+import { useUserPreferenceStore } from '@store/userPropertiesStore'
 
 // Save the data in the local file database
 export const useSaveData = () => {
@@ -45,7 +45,7 @@ export const useSaveData = () => {
 
       snippets: useSnippetStore.getState().snippets,
       userSettings: {
-        theme: useUserPropertiesStore.getState().theme,
+        theme: useUserPreferenceStore.getState().theme,
         spotlight: {
           showSource: useSpotlightSettingsStore.getState().showSource
         }
