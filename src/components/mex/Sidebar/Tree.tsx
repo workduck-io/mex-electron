@@ -11,13 +11,13 @@ import {
 } from '@atlaskit/tree'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
-import useDataStore, { useTreeFromLinks } from '@store/useDataStore'
+import useDataStore from '@store/useDataStore'
 import Tippy, { useSingleton } from '@tippyjs/react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useMatch } from 'react-router-dom'
-import { useAnalysisStore } from '../../../store/useAnalysis'
-import { useEditorStore } from '../../../store/useEditorStore'
-import { useTreeStore } from '../../../store/useTreeStore'
+import { useAnalysisStore } from '@store/useAnalysis'
+import { useEditorStore } from '@store/useEditorStore'
+import { useTreeStore } from '@store/useTreeStore'
 import {
   ItemContent,
   ItemCount,
@@ -27,13 +27,15 @@ import {
   StyledTreeSwitcher,
   TooltipContentWrapper,
   TooltipCount
-} from '../../../style/Sidebar'
-import { mog } from '../../../utils/lib/helper'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+} from '@style/Sidebar'
+import { mog } from '@utils/lib/helper'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { useRefactorStore } from '../Refactor/Refactor'
 import { getNameFromPath, SEPARATOR } from './treeUtils'
 import { TreeContextMenu } from './TreeWithContextMenu'
 import { IS_DEV } from '@data/Defaults/dev_'
+import { useTreeFromLinks } from '@hooks/useTreeFromLinks'
+import { LastOpenedState } from '../../../types/userProperties'
 // import { complexTree } from '../mockdata/complexTree'
 
 interface GetIconProps {
@@ -168,6 +170,7 @@ const Tree = ({ initTree }: TreeProps) => {
                 isDragging={snapshot.isDragging}
                 hasMenuOpen={contextOpenNodeId === item.data.nodeid}
                 isBeingDroppedAt={isTrue}
+                isUnread={item.data.lastOpenedState === LastOpenedState.UNREAD}
                 onContextMenu={(e) => {
                   console.log('ContextySe', e, item)
                 }}

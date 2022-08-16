@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { defaultThemes } from '../../style/themes/defaultThemes'
 import { ThemeProvider } from 'styled-components'
 // import useThemeStore from '../../store/useThemeStore'
-import { useUserPropertiesStore } from '@services/user/userProperties'
+import { useUserPropertiesStore } from '@store/userPropertiesStore'
 
 const Providers: React.FC = ({ children }) => {
   const theme = useUserPropertiesStore((state) => state.theme)

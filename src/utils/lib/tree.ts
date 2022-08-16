@@ -7,6 +7,9 @@ import { NodeMetadata } from '../../types/data'
 import useTodoStore from '../../store/useTodoStore'
 import { useReminderStore } from '../../hooks/useReminders'
 import { filterIncompleteTodos } from './filter'
+import { useUserPropertiesStore } from '@store/userPropertiesStore'
+import { LastOpenedState } from '../../types/userProperties'
+import { getLastOpenedState } from '@hooks/useLastOpened'
 
 // * at: numner (Lower -> asc)
 export type PriorityNode = { path: string; at: number }
@@ -114,6 +117,7 @@ export interface FlatItem {
   parentNodeId?: string
   tasks?: number
   reminders?: number
+  lastOpenedState?: LastOpenedState
   icon?: string
 }
 
@@ -147,6 +151,7 @@ interface BaseTreeNode {
   icon?: string
   tasks?: number
   reminders?: number
+  lastOpenedState?: LastOpenedState
 }
 
 const getItemFromBaseNestedTree = (
@@ -223,18 +228,29 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
   const metadata = useContentStore.getState().getAllMetadata()
   const todos = useTodoStore.getState().getAllTodos()
   const reminderGroups = useReminderStore.getState().getNodeReminderGroup()
+  const lastOpenedNotes = useUserPropertiesStore.getState().lastOpenedNotes
+
   let baseNestedTree: BaseTreeNode[] = []
 
   flatTree.forEach((n) => {
     const parentId = getParentNodePath(n.id)
     const tasks = todos[n.nodeid] ? todos[n.nodeid].filter(filterIncompleteTodos).length : 0
     const reminders = reminderGroups[n.nodeid] ? reminderGroups[n.nodeid].length : 0
+    const updatedAt = metadata[n.nodeid] ? metadata[n.nodeid].updatedAt : undefined
+    const lastOpenedNote = lastOpenedNotes[n.nodeid] ? lastOpenedNotes[n.nodeid] : undefined
+    const lastOpenedState = lastOpenedNote && updatedAt ? getLastOpenedState(updatedAt, lastOpenedNote) : undefined
+
+    if (lastOpenedNote) {
+      mog('lastOpenedState', { lastOpenedState, lastOpenedNote, updatedAt })
+    }
+
     const baseTreeNote = {
       path: n.id,
       nodeid: n.nodeid,
       children: [],
       tasks,
-      reminders
+      reminders,
+      lastOpenedState
     }
     if (parentId === null) {
       // add to tree first level
@@ -295,7 +311,8 @@ export const generateTree = (treeFlat: FlatItem[], expanded: string[]): TreeData
           path: n.id,
           mex_icon: n.icon,
           tasks: nestedItem.tasks,
-          reminders: nestedItem.reminders
+          reminders: nestedItem.reminders,
+          lastOpenedState: nestedItem.lastOpenedState
         }),
         isExpanded: expanded.includes(n.id)
       }
@@ -318,7 +335,8 @@ export const generateTree = (treeFlat: FlatItem[], expanded: string[]): TreeData
             path: n.id,
             mex_icon: n.icon,
             tasks: nestedItem.tasks,
-            reminders: nestedItem.reminders
+            reminders: nestedItem.reminders,
+            lastOpenedState: nestedItem.lastOpenedState
           }),
           isExpanded: expanded.includes(n.id)
         }

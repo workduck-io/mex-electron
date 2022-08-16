@@ -11,7 +11,7 @@ import { mog } from '../utils/lib/helper'
 import useTodoStore from '../store/useTodoStore'
 import { useReminderStore } from './useReminders'
 import { useViewStore } from './useTaskViews'
-import { useUserPropertiesStore } from '@services/user/userProperties'
+import { useUserPropertiesStore } from '@store/userPropertiesStore'
 
 // Save the data in the local file database
 export const useSaveData = () => {

@@ -10,7 +10,7 @@ import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useReminderStore } from '@hooks/useReminders'
 import { useMentionStore } from '@store/useMentionStore'
 import { useTokenStore } from '@services/auth/useTokens'
-import { useUserPropertiesStore } from '@services/user/userProperties'
+import { useUserPropertiesStore } from '@store/userPropertiesStore'
 
 const syncStores = () => {
   if ('BroadcastChannel' in globalThis) {
@@ -60,7 +60,7 @@ const syncStores = () => {
     })
     syncStoreState(useUserPropertiesStore, {
       name: BroadcastSyncedChannel.USER_PROPERTIES,
-      sync: [{ field: 'lastOpenedNotes' }, { field: 'mutedNotes' }, { field: 'theme' }]
+      sync: [{ field: 'lastOpenedNotes' }, { field: 'theme' }]
     })
     syncStoreState(useActionsCache, {
       name: BroadcastSyncedChannel.ACTIONS,

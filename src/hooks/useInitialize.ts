@@ -1,4 +1,4 @@
-import { useUserPropertiesStore } from '@services/user/userProperties'
+import { useUserPropertiesStore } from '@store/userPropertiesStore'
 import { useReminderStore } from '../hooks/useReminders'
 import { useSpotlightSettingsStore } from '../store/settings.spotlight'
 import { useContentStore } from '../store/useContentStore'

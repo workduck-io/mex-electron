@@ -151,6 +151,7 @@ export const StyledTreeItem = styled.div<{
   isBeingDroppedAt?: boolean
   hasMenuOpen?: boolean
   noSwitcher?: boolean
+  isUnread?: boolean
 }>`
   display: flex;
   align-items: center;
@@ -159,6 +160,12 @@ export const StyledTreeItem = styled.div<{
   padding-right: 16px;
 
   transition: 0.1s ease;
+
+  ${({ isUnread }) =>
+    isUnread &&
+    css`
+      font-weight: bold;
+    `}
 
   ${({ noSwitcher, theme }) =>
     noSwitcher &&

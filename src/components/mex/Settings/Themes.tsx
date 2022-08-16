@@ -1,4 +1,4 @@
-import { useUserPropertiesStore } from '@services/user/userProperties'
+import { useUserPropertiesStore } from '@store/userPropertiesStore'
 import { defaultThemes } from '@style/themes/defaultThemes'
 import React from 'react'
 import { useTransition } from 'react-spring'

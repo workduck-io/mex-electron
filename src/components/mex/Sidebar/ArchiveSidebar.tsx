@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import Tree, { RenderItemParams, ItemId, mutateTree, TreeItem, TreeData } from '@atlaskit/tree'
 import Tippy, { useSingleton } from '@tippyjs/react'
-import useDataStore, { useTreeFromLinks } from '@store/useDataStore'
+import useDataStore from '@store/useDataStore'
 import archiveLine from '@iconify/icons-ri/archive-line'
 
 import { GetIcon, TooltipContent } from './Tree'
@@ -17,6 +17,7 @@ import { Margin } from '../Archive/styled'
 import { MexIcon } from '@style/Layouts'
 import { useTheme } from 'styled-components'
 import { Centered } from './Bookmarks'
+import { useTreeFromLinks } from '@hooks/useTreeFromLinks'
 
 const ArchiveTree: React.FC<{ tree: any }> = ({ tree }) => {
   const [archiveTree, setArchiveTree] = React.useState(tree)

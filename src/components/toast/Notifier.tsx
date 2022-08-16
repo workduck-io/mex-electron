@@ -1,4 +1,4 @@
-import { useUserPropertiesStore } from '@services/user/userProperties'
+import { useUserPropertiesStore } from '@store/userPropertiesStore'
 import { ipcRenderer } from 'electron'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
