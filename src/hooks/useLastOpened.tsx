@@ -1,4 +1,5 @@
 import { useUserPropertiesStore } from '@services/user/userProperties'
+import { getInitialNode } from '@utils/helpers'
 import { mog } from '@utils/lib/helper'
 import { debounce } from 'lodash'
 import { useCallback } from 'react'
@@ -14,14 +15,15 @@ export const useLastOpened = () => {
    * The current timestamp is used as the last opened timestamp
    */
   const addLastOpened = (nodeId: string) => {
-    mog('addLastOpened', { nodeId })
     const lastOpenedNotes = useUserPropertiesStore.getState().lastOpenedNotes
     const mutedNotes = useUserPropertiesStore.getState().mutedNotes
-    if (mutedNotes.includes(nodeId)) {
+    const initNode = getInitialNode()
+    if (mutedNotes.includes(nodeId) || nodeId === initNode.nodeid) {
       return
     }
     // This replaces any previous timestamp with the current timestamp
     lastOpenedNotes[nodeId] = Date.now()
+    mog('addLastOpened', { nodeId, lastOpenedNotes, mutedNotes })
     useUserPropertiesStore.setState({ lastOpenedNotes })
   }
 
