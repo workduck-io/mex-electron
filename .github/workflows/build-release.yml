@@ -1,5 +1,6 @@
 name: "Create a GitHub Release, Build and Store the Output Artifacts"
 on:
+  workflow_dispatch:
   release:
     types: [published]
 
