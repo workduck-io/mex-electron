@@ -1,17 +1,14 @@
-import { useUserPreferenceStore } from '@store/userPropertiesStore'
 import create from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import { generateNodeUID } from '../data/Defaults/idPrefixes'
-import { CachedILink, DataStoreState, ILink } from '../types/Types'
+import { CachedILink, DataStoreState } from '../types/Types'
 import { generateTag } from '../utils/generateComboItem'
 import { Settify, typeInvert } from '../utils/helpers'
 import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
 import { getNodeIcon } from '../utils/lib/icons'
 import { removeLink } from '../utils/lib/links'
 import { getUniquePath } from '../utils/lib/paths'
-import { FlatItem, generateTree } from '../utils/lib/tree'
-import { useTreeStore } from './useTreeStore'
 
 const useDataStore = create<DataStoreState>(
   persist(
@@ -262,6 +259,5 @@ const useDataStore = create<DataStoreState>(
 )
 
 export const getLevel = (path: string) => path.split(SEPARATOR).length
-
 
 export default useDataStore

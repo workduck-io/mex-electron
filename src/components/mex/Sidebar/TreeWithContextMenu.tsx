@@ -15,8 +15,8 @@ import React, { useMemo } from 'react'
 import { useShareModalStore } from '../Mention/ShareModalStore'
 import { useDeleteStore } from '../Refactor/DeleteModal'
 import { useRefactorStore } from '../Refactor/Refactor'
-import { LastOpenedState } from '../../../types/userProperties'
-import { useUserPreferenceStore } from '@store/userPropertiesStore'
+import { LastOpenedState } from '../../../types/userPreference'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import volumeDownLine from '@iconify/icons-ri/volume-down-line'
 
 interface TreeContextMenuProps {

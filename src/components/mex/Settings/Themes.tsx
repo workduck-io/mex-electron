@@ -1,5 +1,5 @@
 import { useUserService } from '@services/auth/useUserService'
-import { useUserPreferenceStore } from '@store/userPropertiesStore'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { defaultThemes } from '@style/themes/defaultThemes'
 import React from 'react'
 import { useTransition } from 'react-spring'
@@ -13,7 +13,7 @@ const Themes = () => {
   const setTheme = useUserPreferenceStore((state) => state.setTheme)
 
   const { saveData } = useSaveData()
-  const {updateUserPreferences}= useUserService()
+  const { updateUserPreferences } = useUserService()
 
   const transition = useTransition(themes, {
     from: {

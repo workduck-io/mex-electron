@@ -4,11 +4,20 @@ import { IS_DEV } from '@data/Defaults/dev_'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import * as ContextMenu from '@radix-ui/react-context-menu'
-import { ItemContent, ItemCount, ItemTitle, StyledTreeItem, StyledTreeItemSwitcher, StyledTreeSwitcher, TooltipContentWrapper, TooltipCount } from '@style/Sidebar'
+import {
+  ItemContent,
+  ItemCount,
+  ItemTitle,
+  StyledTreeItem,
+  StyledTreeItemSwitcher,
+  StyledTreeSwitcher,
+  TooltipContentWrapper,
+  TooltipCount
+} from '@style/Sidebar'
 import Tippy from '@tippyjs/react'
 import React from 'react'
 import { PathMatch } from 'react-router-dom'
-import { LastOpenedState } from '../../../types/userProperties'
+import { LastOpenedState } from '../../../types/userPreference'
 import { TreeContextMenu } from './TreeWithContextMenu'
 // import { complexTree } from '../mockdata/complexTree'
 
@@ -86,19 +95,24 @@ interface TreeItemProps extends RenderItemParams {
   target: any
   contextOpenNodeId: string
   isInEditor: boolean
-  match: PathMatch<"nodeid">
+  match: PathMatch<'nodeid'>
   setContextOpenNodeId: (nodeid: string | null) => void
-  onClick:  (e: React.MouseEvent<HTMLDivElement, MouseEvent>, item: TreeItem) => void
+  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>, item: TreeItem) => void
 }
 
 export const RenderTreeItem = ({
-    item, onExpand, onCollapse, provided, snapshot, target,
-    contextOpenNodeId, setContextOpenNodeId,
-    isInEditor, match,
-    onClick
-
-
-    }: TreeItemProps) => {
+  item,
+  onExpand,
+  onCollapse,
+  provided,
+  snapshot,
+  target,
+  contextOpenNodeId,
+  setContextOpenNodeId,
+  isInEditor,
+  match,
+  onClick
+}: TreeItemProps) => {
   const isTrue = JSON.stringify(snapshot) !== JSON.stringify(defaultSnap)
 
   return (

@@ -10,7 +10,7 @@ import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useReminderStore } from '@hooks/useReminders'
 import { useMentionStore } from '@store/useMentionStore'
 import { useTokenStore } from '@services/auth/useTokens'
-import { useUserPreferenceStore } from '@store/userPropertiesStore'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 
 const syncStores = () => {
   if ('BroadcastChannel' in globalThis) {

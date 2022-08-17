@@ -1,5 +1,5 @@
 import { getNameFromPath, isElder, isParent, getParentNodePath } from '../../components/mex/Sidebar/treeUtils'
-import { Contents, useContentStore } from '../../store/useContentStore'
+import { Contents } from '../../store/useContentStore'
 import TreeNode from '../../types/tree'
 import { TreeData, TreeItem } from '@atlaskit/tree'
 import { mog } from './helper'
@@ -7,9 +7,7 @@ import { NodeMetadata } from '../../types/data'
 import useTodoStore from '../../store/useTodoStore'
 import { useReminderStore } from '../../hooks/useReminders'
 import { filterIncompleteTodos } from './filter'
-import { useUserPreferenceStore } from '@store/userPropertiesStore'
-import { LastOpenedState } from '../../types/userProperties'
-import { getLastOpenedState } from '@hooks/useLastOpened'
+import { LastOpenedState } from '../../types/userPreference'
 
 // * at: numner (Lower -> asc)
 export type PriorityNode = { path: string; at: number }
@@ -240,7 +238,7 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
       nodeid: n.nodeid,
       children: [],
       tasks,
-      reminders,
+      reminders
     }
     if (parentId === null) {
       // add to tree first level

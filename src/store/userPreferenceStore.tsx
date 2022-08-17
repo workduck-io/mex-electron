@@ -1,6 +1,6 @@
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { LastOpenedNotes, UserPreferences } from '../types/userProperties'
+import { LastOpenedNotes, UserPreferences } from '../types/userPreference'
 
 interface UserPreferenceStore extends UserPreferences {
   setTheme: (theme: string) => void

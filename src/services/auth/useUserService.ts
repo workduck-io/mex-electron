@@ -1,10 +1,10 @@
 import { apiURLs } from '@apis/routes'
 import { useUserCacheStore } from '@store/useUserCacheStore'
-import { UserPreferences } from '../../types/userProperties'
+import { UserPreferences } from '../../types/userPreference'
 import { mog } from '@utils/lib/helper'
 import { client } from '@workduck-io/dwindle'
 import { useAuthStore } from './useAuth'
-import { useUserPreferenceStore } from '@store/userPropertiesStore'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 
 export interface TempUser {
   email: string

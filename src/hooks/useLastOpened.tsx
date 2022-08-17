@@ -1,5 +1,5 @@
-import { useUserPreferenceStore } from '@store/userPropertiesStore'
-import { LastOpenedNote, LastOpenedState } from '../types/userProperties'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { LastOpenedNote, LastOpenedState } from '../types/userPreference'
 import { getInitialNode } from '@utils/helpers'
 import { mog } from '@utils/lib/helper'
 import { debounce } from 'lodash'

@@ -1,4 +1,4 @@
-import { useUserPreferenceStore } from '@store/userPropertiesStore'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { ipcRenderer } from 'electron'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
