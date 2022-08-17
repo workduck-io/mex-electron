@@ -1,11 +1,12 @@
 name: "Create a GitHub Release, Build and Store the Output Artifacts"
 on:
+  workflow_dispatch:
   release:
     types: [published]
 
 jobs:
   publish_on_mac_x64:
-    runs-on: [self-hosted, mex]
+    runs-on: [self-hosted, mex-electron, mex]
     env:
       GITHUB_TOKEN: ${{ github.token }}
       YARN_TOKEN: ${{ secrets.YARN_TOKEN }}

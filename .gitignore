@@ -99,6 +99,7 @@ src/dist/
 
 # Lock files
 *.lock
+!yarn.lock
 
 .eslintignore
 

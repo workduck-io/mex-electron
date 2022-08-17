@@ -1,7 +1,7 @@
 {
   "name": "mex-alpha",
   "productName": "Mex Alpha",
-  "version": "0.14.0-alpha.7",
+  "version": "0.14.0-alpha.8",
   "description": "Mex it to flex it",
   "main": ".webpack/main",
   "scripts": {
@@ -33,6 +33,7 @@
     "forge": "./forge.config.js"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.24.3",
     "@electron-forge/cli": "6.0.0-beta.63",
     "@electron-forge/maker-deb": "6.0.0-beta.63",
     "@electron-forge/maker-dmg": "6.0.0-beta.63",
