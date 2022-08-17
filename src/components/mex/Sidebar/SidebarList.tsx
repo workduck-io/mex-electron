@@ -1,5 +1,5 @@
 import searchLine from '@iconify/icons-ri/search-line'
-import { Icon, IconifyIcon } from '@iconify/react'
+import { Icon } from '@iconify/react'
 import * as ContextMenu from '@radix-ui/react-context-menu'
 import { Input } from '@style/Form'
 import { ItemContent, ItemTitle, StyledTreeItem } from '@style/Sidebar'
@@ -11,34 +11,7 @@ import React, { useEffect, useState } from 'react'
 import { tinykeys } from '@workduck-io/tinykeys'
 import { EmptyMessage, FilteredItemsWrapper, SidebarListFilter, SidebarListWrapper } from './SidebarList.style'
 import { TooltipContent } from './TreeItem'
-
-interface SidebarListItem {
-  id: string
-  title: string
-  icon?: string | IconifyIcon
-  // tooltip?: string
-}
-
-interface SidebarListProps {
-  items: SidebarListItem[]
-  // Action on item click
-  onClick: (itemId: string) => void
-
-  // If present selected item will be active
-  selectedItemId?: string
-
-  // If true, the list will be preceded by the default item
-  defaultItem?: SidebarListItem
-
-  // To render the context menu if the item is right-clicked
-  ItemContextMenu?: (props: { item: SidebarListItem }) => JSX.Element
-
-  // Searches by title of the items
-  showSearch?: boolean
-  searchPlaceholder?: string
-  emptyMessage?: string
-  noMargin?: boolean
-}
+import { SidebarListProps } from './SidebarList.types'
 
 const SidebarList = ({
   ItemContextMenu,

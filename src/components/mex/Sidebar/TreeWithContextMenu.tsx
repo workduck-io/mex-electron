@@ -19,19 +19,52 @@ import { LastOpenedState } from '../../../types/userPreference'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import volumeDownLine from '@iconify/icons-ri/volume-down-line'
 
+export const MENU_ID = 'Tree-Menu'
+
+interface MuteMenuItemProps {
+  nodeid: string
+}
+
+export const MuteMenuItem = ({ nodeid }: MuteMenuItemProps) => {
+  const { muteNode, unmuteNode, getLastOpened } = useLastOpened()
+  const lastOpenedNote = useUserPreferenceStore((state) => state.lastOpenedNotes[nodeid])
+
+  const isMuted = useMemo(() => {
+    const lastOpenedState = getLastOpened(nodeid, lastOpenedNote)
+    // mog('isMuted isupdated', { lastOpenedNote, lastOpenedState })
+    return lastOpenedState === LastOpenedState.MUTED
+  }, [nodeid, lastOpenedNote])
+
+  const handleMute = () => {
+    // mog('handleMute', { item })
+    if (isMuted) {
+      unmuteNode(nodeid)
+    } else {
+      muteNode(nodeid)
+    }
+  }
+
+  return (
+    <ContextMenuItem
+      onSelect={(args) => {
+        handleMute()
+      }}
+    >
+      <Icon icon={isMuted ? volumeDownLine : volumeMuteLine} />
+      {isMuted ? 'Unmute' : 'Mute'}
+    </ContextMenuItem>
+  )
+}
+
 interface TreeContextMenuProps {
   item: TreeItem
 }
-
-export const MENU_ID = 'Tree-Menu'
 
 export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const prefillRefactorModal = useRefactorStore((store) => store.prefillModal)
   const openDeleteModal = useDeleteStore((store) => store.openModal)
   const { createNewNote } = useCreateNewNote()
   const openShareModal = useShareModalStore((store) => store.openModal)
-  const { muteNode, unmuteNode, getLastOpened } = useLastOpened()
-  const lastOpenedNote = useUserPreferenceStore((state) => state.lastOpenedNotes[item.data.nodeid])
   // const lastOpenedNote = lastOpenedNotes[nodeId] ?? undefined
 
   const handleRefactor = (item: TreeItem) => {
@@ -50,21 +83,6 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
 
   const handleShare = (item: TreeItem) => {
     openShareModal('permission', item.data.nodeid)
-  }
-
-  const isMuted = useMemo(() => {
-    const lastOpenedState = getLastOpened(item.data.nodeid, lastOpenedNote)
-    // mog('isMuted isupdated', { lastOpenedNote, lastOpenedState })
-    return lastOpenedState === LastOpenedState.MUTED
-  }, [item.data.nodeid, lastOpenedNote])
-
-  const handleMute = (item: TreeItem) => {
-    // mog('handleMute', { item })
-    if (isMuted) {
-      unmuteNode(item.data.nodeid)
-    } else {
-      muteNode(item.data.nodeid)
-    }
   }
 
   return (
@@ -95,14 +113,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
           Share
         </ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuItem
-          onSelect={(args) => {
-            handleMute(item)
-          }}
-        >
-          <Icon icon={isMuted ? volumeDownLine : volumeMuteLine} />
-          {isMuted ? 'Unmute' : 'Mute'}
-        </ContextMenuItem>
+        <MuteMenuItem nodeid={item.data.nodeid} />
         {/* <ContextMenuItem>
           <Icon icon={refreshFill} />
           Sync

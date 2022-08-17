@@ -7,6 +7,7 @@ import { useAuthStore } from './useAuth'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { useDebouncedCallback } from 'use-debounce'
 import { useEffect } from 'react'
+import { useVersionStore } from '@store/useAppDataStore'
 export interface TempUser {
   email: string
   userID?: string
@@ -143,8 +144,10 @@ export const useUserService = () => {
     const lastOpenedNotes = useUserPreferenceStore.getState().lastOpenedNotes
     const theme = useUserPreferenceStore.getState().theme
     const userID = useAuthStore.getState().userDetails.userID
+    const version = useVersionStore.getState().version
 
     const userPreferences: UserPreferences = {
+      version,
       lastOpenedNotes,
       theme
     }
@@ -159,6 +162,7 @@ export const useUserService = () => {
       return false
     }
   }
+
   const getCurrentUser = async (): Promise<UserDetails | undefined> => {
     try {
       return await client.get(apiURLs.getUserRecords).then((resp) => {

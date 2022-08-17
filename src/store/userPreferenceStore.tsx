@@ -17,6 +17,7 @@ export const useUserPreferenceStore = create<UserPreferenceStore>(
     devtools(
       (set, get) => ({
         lastOpenedNotes: {},
+        version: 'unset',
         theme: 'xeM',
         setUserPreferences: (userPreferences: UserPreferences) => {
           set(userPreferences)

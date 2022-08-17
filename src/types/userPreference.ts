@@ -26,6 +26,7 @@ export interface LastOpenedNotes {
 }
 
 export interface UserPreferences {
+  version: string
   lastOpenedNotes: LastOpenedNotes
   /** Current mex Theme */
   theme?: string
