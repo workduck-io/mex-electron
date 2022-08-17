@@ -42,10 +42,6 @@ const syncStores = () => {
       name: BroadcastSyncedChannel.REMINDERS,
       sync: [{ field: 'reminders' }, { field: 'armedReminders' }]
     })
-    // syncStoreState(useThemeStore, {
-    //   name: BroadcastSyncedChannel.THEME,
-    //   sync: [{ field: 'theme' }]
-    // })
     syncStoreState(useMentionStore, {
       name: BroadcastSyncedChannel.MENTIONS,
       sync: [{ field: 'mentionable' }, { field: 'invitedUsers' }]

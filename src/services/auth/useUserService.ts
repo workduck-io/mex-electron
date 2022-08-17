@@ -34,38 +34,6 @@ export interface UserDetails {
   preference: UserPreferences
 }
 
-/*
-     {
-    "group": "WORKSPACE_rUNkxwn3VJd3ePRHjdB9Q",
-    "entity": "User",
-    "email": "xypnox+mex1@workduck.io",
-    "name": "xypnoxify",
-    "created": "2022-06-28T07:47:15.793Z",
-    "alias": "GandalfTheGreen",
-    "modified": "2022-08-17T15:50:27.210Z",
-    "metadata": {
-        "name": "xypnox",
-        "alias": "xypnox",
-        "tag": "MEX",
-        "email": "xypnox+mex1@workduck.io",
-        "roles": "development,design"
-    },
-    "tag": "MEX",
-    "properties": {
-        "createdAt": 1656402439579,
-        "itemType": "User",
-        "name": "xypnox",
-        "alias": "xypnox",
-        "id": "16a0f82c-1945-47ac-8638-2e671a382143",
-        "uniqueID": "16a0f82c-1945-47ac-8638-2e671a382143",
-        "email": "xypnox+mex1@workduck.io",
-        "updatedAt": 1656402439579
-    },
-    "id": "16a0f82c-1945-47ac-8638-2e671a382143",
-    "preference": UserPreference
-    }
-     * */
-
 export const useUserService = () => {
   const addUser = useUserCacheStore((s) => s.addUser)
   const getUser = useUserCacheStore((s) => s.getUser)
