@@ -5,7 +5,8 @@ import { mog } from '@utils/lib/helper'
 import { client } from '@workduck-io/dwindle'
 import { useAuthStore } from './useAuth'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
-
+import { useDebouncedCallback } from 'use-debounce'
+import { useEffect } from 'react'
 export interface TempUser {
   email: string
   userID?: string
@@ -19,6 +20,50 @@ export interface TempUserUserID {
   alias?: string
   name?: string
 }
+
+export interface UserDetails {
+  /** User ID */
+  id: string
+  /** Workspace ID */
+  group: string
+  entity: 'User'
+  email: string
+  name: string
+  alias: string
+  preference: UserPreferences
+}
+
+/*
+     {
+    "group": "WORKSPACE_rUNkxwn3VJd3ePRHjdB9Q",
+    "entity": "User",
+    "email": "xypnox+mex1@workduck.io",
+    "name": "xypnoxify",
+    "created": "2022-06-28T07:47:15.793Z",
+    "alias": "GandalfTheGreen",
+    "modified": "2022-08-17T15:50:27.210Z",
+    "metadata": {
+        "name": "xypnox",
+        "alias": "xypnox",
+        "tag": "MEX",
+        "email": "xypnox+mex1@workduck.io",
+        "roles": "development,design"
+    },
+    "tag": "MEX",
+    "properties": {
+        "createdAt": 1656402439579,
+        "itemType": "User",
+        "name": "xypnox",
+        "alias": "xypnox",
+        "id": "16a0f82c-1945-47ac-8638-2e671a382143",
+        "uniqueID": "16a0f82c-1945-47ac-8638-2e671a382143",
+        "email": "xypnox+mex1@workduck.io",
+        "updatedAt": 1656402439579
+    },
+    "id": "16a0f82c-1945-47ac-8638-2e671a382143",
+    "preference": UserPreference
+    }
+     * */
 
 export const useUserService = () => {
   const addUser = useUserCacheStore((s) => s.addUser)
@@ -114,6 +159,17 @@ export const useUserService = () => {
       return false
     }
   }
+  const getCurrentUser = async (): Promise<UserDetails | undefined> => {
+    try {
+      return await client.get(apiURLs.getUserRecords).then((resp) => {
+        mog('Response', { data: resp.data })
+        return resp?.data
+      })
+    } catch (e) {
+      mog('Error Fetching Current User Info', { error: e })
+      return undefined
+    }
+  }
 
-  return { getUserDetails, getUserDetailsUserId, updateUserInfo, updateUserPreferences }
+  return { getUserDetails, getUserDetailsUserId, updateUserInfo, updateUserPreferences, getCurrentUser }
 }

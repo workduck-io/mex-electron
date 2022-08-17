@@ -1,4 +1,5 @@
 import { IpcAction } from '@data/IpcAction'
+import { useAutoSyncUserPreference } from '@hooks/useAutoSave'
 import { useImportExport } from '@hooks/useImportExport'
 import { useInitialize } from '@hooks/useInitialize'
 import { useInternetListener } from '@hooks/useInternetListener'
@@ -85,6 +86,7 @@ const Init = () => {
   useInternetListener()
   useIpcListenerOnInit()
   useBrowserNavigation()
+  useAutoSyncUserPreference()
 
   return null
 }

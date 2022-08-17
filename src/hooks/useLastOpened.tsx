@@ -59,6 +59,7 @@ export const useLastOpened = () => {
 
   const setMuteNode = (nodeId: string, muted: boolean) => {
     const lastOpenedNotes = useUserPreferenceStore.getState().lastOpenedNotes
+    // const storeMeta = useUserPreferenceStore.getState().meta
     const lastOpenedNote = lastOpenedNotes[nodeId] || { ...INIT_LAST_OPENED }
     const newLastOpenedNotes = {
       ...lastOpenedNotes,
