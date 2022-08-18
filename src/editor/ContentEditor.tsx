@@ -19,7 +19,7 @@ import { getEditorId } from '../utils/lib/EditorId'
 import BlockInfoBar from './Components/Blocks/BlockInfoBar'
 import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
 import { BlockOptionsMenu } from './Components/EditorContextMenu'
-import Editor from './Editor'
+import { default as Editor } from './Editor'
 import Toolbar from './Toolbar'
 
 import { useNodes } from '@hooks/useNodes'
@@ -28,6 +28,7 @@ import { getContent } from '@utils/helpers'
 import { areEqual } from '@utils/lib/hash'
 import toast from 'react-hot-toast'
 import { mog } from '@utils/lib/helper'
+import { useLastOpened } from '@hooks/useLastOpened'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -43,6 +44,7 @@ const ContentEditor = () => {
   const infobar = useLayoutStore((store) => store.infobar)
 
   const editorWrapperRef = useRef<HTMLDivElement>(null)
+  const { debouncedAddLastOpened } = useLastOpened()
 
   const { node, fsContent } = useEditorStore(
     (state) => ({ nodeid: state.node.nodeid, node: state.node, fsContent: state.content }),
@@ -61,6 +63,7 @@ const ContentEditor = () => {
       if (val && node && node.nodeid !== '__null__') {
         setIsEditing(false)
         addOrUpdateValBuffer(node.nodeid, val)
+        debouncedAddLastOpened(node.nodeid)
       }
     },
     [node.nodeid]

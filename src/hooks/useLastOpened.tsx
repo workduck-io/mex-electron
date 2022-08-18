@@ -53,7 +53,7 @@ export const useLastOpened = () => {
         freq: lastOpenedNote.freq + 1
       }
     }
-    mog('addLastOpened', { nodeId, lastOpenedNotes })
+    // mog('addLastOpened', { nodeId, lastOpenedNotes })
     setLastOpenedNotes(newLastOpenedNotes)
   }
 

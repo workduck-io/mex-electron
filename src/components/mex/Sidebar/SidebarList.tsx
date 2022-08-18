@@ -12,6 +12,7 @@ import { tinykeys } from '@workduck-io/tinykeys'
 import { EmptyMessage, FilteredItemsWrapper, SidebarListFilter, SidebarListWrapper } from './SidebarList.style'
 import { TooltipContent } from './TreeItem'
 import { SidebarListProps } from './SidebarList.types'
+import { LastOpenedState } from '../../../types/userPreference'
 
 const SidebarList = ({
   ItemContextMenu,
@@ -112,7 +113,11 @@ const SidebarList = ({
       <Tippy theme="mex" placement="right" singleton={source} />
 
       {defaultItem && (
-        <StyledTreeItem noSwitcher selected={selectedItemId === undefined}>
+        <StyledTreeItem
+          isUnread={defaultItem.lastOpened === LastOpenedState.UNREAD}
+          noSwitcher
+          selected={selectedItemId === undefined}
+        >
           <ItemContent onClick={() => onSelectItem(defaultItem.id)}>
             <ItemTitle>
               <Icon icon={defaultItem.icon} />
@@ -155,6 +160,7 @@ const SidebarList = ({
                   <StyledTreeItem
                     hasMenuOpen={contextOpenViewId === item.id || selected === index}
                     noSwitcher
+                    isUnread={item?.lastOpened === LastOpenedState.UNREAD}
                     selected={item?.id === selectedItemId}
                   >
                     <ItemContent onClick={() => onSelectItem(item?.id)}>

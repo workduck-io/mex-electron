@@ -13,10 +13,10 @@ export const useSaveAndExit = () => {
 
   useEffect(() => {
     if (!saved) {
-      // Save data to disk
-      onSave()
       // Save user preferences to server
       updateUserPreferences()
+      // Save data to disk
+      onSave()
     }
   }, [saved]) // eslint-disable-line react-hooks/exhaustive-deps
 

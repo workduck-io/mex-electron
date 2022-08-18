@@ -15,14 +15,13 @@ import { useNodes } from '@hooks/useNodes'
 import { ILink, NodeEditorContent } from '../types/Types'
 import { hierarchyParser } from '@hooks/useHierarchy'
 import { getTagsFromContent } from '@utils/lib/content'
-import { ipcRenderer } from 'electron'
-import { IpcAction } from '@data/IpcAction'
 import useDataStore from '@store/useDataStore'
 import { iLinksToUpdate } from '@utils/hierarchy'
 import { runBatch } from '@utils/lib/batchPromise'
 import { useUpdater } from '@hooks/useUpdater'
 import { useSnippetStore } from '@store/useSnippetStore'
 import toast from 'react-hot-toast'
+import { useLastOpened } from '@hooks/useLastOpened'
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,6 +30,7 @@ export const useApi = () => {
   const setContent = useContentStore((store) => store.setContent)
   const { getTitleFromNoteId, updateILinks } = useLinks()
   const { getSharedNode } = useNodes()
+  const { addLastOpened } = useLastOpened()
   const setILinks = useDataStore((store) => store.setIlinks)
   const initSnippets = useSnippetStore((store) => store.initSnippets)
 
@@ -82,6 +82,7 @@ export const useApi = () => {
         updateILinks(addedILinks, removedILinks)
 
         setMetadata(noteId, extractMetadata(d.data))
+        addLastOpened(noteId)
         return d.data
       })
       .catch((e) => {
@@ -125,6 +126,7 @@ export const useApi = () => {
 
         // * set the new hierarchy in the tree
         updateILinks(addedILinks, removedILinks)
+        addLastOpened(noteId)
 
         return d.data
       })
@@ -169,6 +171,7 @@ export const useApi = () => {
       .then((d) => {
         mog('savedData', { d })
         setMetadata(nodeid, extractMetadata(d.data))
+        addLastOpened(nodeid)
         // setContent(nodeid, deserializeContent(d.data.data), extractMetadata(d.data))
         return d.data
       })

@@ -18,6 +18,7 @@ import { useRefactorStore } from '../Refactor/Refactor'
 import { LastOpenedState } from '../../../types/userPreference'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import volumeDownLine from '@iconify/icons-ri/volume-down-line'
+import { mog } from '@utils/lib/helper'
 
 export const MENU_ID = 'Tree-Menu'
 
@@ -31,6 +32,12 @@ export const MuteMenuItem = ({ nodeid }: MuteMenuItemProps) => {
 
   const isMuted = useMemo(() => {
     const lastOpenedState = getLastOpened(nodeid, lastOpenedNote)
+    if (nodeid === 'NODE_WQgXbba9aBJV6X8ckDWp6') {
+      const lastOpenedNotes = useUserPreferenceStore.getState().lastOpenedNotes
+      const lastOpenedNoteXZ = lastOpenedNotes[nodeid]
+
+      mog('isMuted for special', { lastOpenedState, lastOpenedNote, lastOpenedNotes, nodeid, lastOpenedNoteXZ })
+    }
     // mog('isMuted isupdated', { lastOpenedNote, lastOpenedState })
     return lastOpenedState === LastOpenedState.MUTED
   }, [nodeid, lastOpenedNote])

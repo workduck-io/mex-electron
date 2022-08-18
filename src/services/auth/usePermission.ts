@@ -98,15 +98,35 @@ export const usePermission = () => {
           return resp.data
         })
         .then((sharedNodesRaw) => {
-          const sharedNodes = sharedNodesRaw.map(
-            (n): SharedNode => ({
+          const sharedNodes = sharedNodesRaw.map((n): SharedNode => {
+            let metadata = undefined
+            try {
+              const basemetadata = n?.nodeMetadata
+              metadata = JSON.parse(basemetadata ?? '{}')
+              // mog('metadata', { basemetadata, metadata })
+              if (metadata?.createdAt && metadata.updatedAt) {
+                return {
+                  path: n.nodeTitle,
+                  nodeid: n.nodeID,
+                  currentUserAccess: n.accessType,
+                  owner: n.ownerID,
+                  sharedBy: n.granterID,
+                  createdAt: metadata.createdAt,
+                  updatedAt: metadata.updatedAt
+                }
+              }
+            } catch (e) {
+              mog('Error parsing metadata', { e })
+            }
+
+            return {
               path: n.nodeTitle,
               nodeid: n.nodeID,
               currentUserAccess: n.accessType,
               owner: n.ownerID,
               sharedBy: n.grantedID
-            })
-          )
+            }
+          })
 
           const localSharedNodes = useDataStore.getState().sharedNodes
           const { toUpdateLocal } = iLinksToUpdate(localSharedNodes, sharedNodes)

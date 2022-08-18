@@ -1,9 +1,11 @@
-import { IconifyIcon } from "@iconify/react"
+import { IconifyIcon } from '@iconify/react'
+import { LastOpenedState } from '../../../types/userPreference'
 
 export interface SidebarListItem {
   id: string
   title: string
   icon?: string | IconifyIcon
+  lastOpened?: LastOpenedState
   // tooltip?: string
 }
 
@@ -27,4 +29,3 @@ export interface SidebarListProps {
   emptyMessage?: string
   noMargin?: boolean
 }
-
