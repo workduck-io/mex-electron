@@ -6,6 +6,8 @@ import { indexedDbStorageZustand } from './Adapters/indexedDB'
 // import { baseMetaState, metaState, ZustandStoreMeta } from './middlewares/metaState'
 
 interface UserPreferenceStore extends UserPreferences {
+  _hasHydrated: boolean
+  setHasHydrated: (state) => void
   setTheme: (theme: string) => void
   setLastOpenedNotes: (lastOpenedNotes: LastOpenedNotes) => void
   getUserPreferences: () => UserPreferences
@@ -21,6 +23,12 @@ export const useUserPreferenceStore = create<UserPreferenceStore>(
         lastOpenedNotes: {},
         version: 'unset',
         theme: 'xeM',
+        _hasHydrated: false,
+        setHasHydrated: (state) => {
+          set({
+            _hasHydrated: state
+          })
+        },
         getUserPreferences: () => {
           return {
             lastOpenedNotes: get().lastOpenedNotes,
@@ -44,7 +52,10 @@ export const useUserPreferenceStore = create<UserPreferenceStore>(
     ),
     {
       name: USER_PREF_STORE_KEY,
-      getStorage: () => indexedDbStorageZustand
+      getStorage: () => indexedDbStorageZustand,
+      onRehydrateStorage: () => (state) => {
+        state.setHasHydrated(true)
+      }
     }
   )
 )
