@@ -2,7 +2,7 @@ import { SharedNodeIcon, SharedNodeIconify } from '@components/icons/Icons'
 import { useEditorStore } from '@store/useEditorStore'
 import { ContextMenuContent } from '@ui/components/menus/contextMenu'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useTheme } from 'styled-components'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
@@ -10,16 +10,26 @@ import { Centered } from './Bookmarks'
 import SidebarList from './SidebarList'
 import { SidebarListItem } from './SidebarList.types'
 import { MuteMenuItem } from './TreeWithContextMenu'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { useLastOpened } from '@hooks/useLastOpened'
 
 interface SharedNoteContextMenuProps {
   item: SidebarListItem
 }
 
 const SharedNoteContextMenu = ({ item }: SharedNoteContextMenuProps) => {
+  const lastOpenedNote = useUserPreferenceStore((state) => state.lastOpenedNotes[item?.id])
+  const { getLastOpened } = useLastOpened()
+
+  const lastOpenedState = useMemo(() => {
+    const loState = getLastOpened(item.id, lastOpenedNote)
+    return loState
+  }, [lastOpenedNote, item?.id])
+
   return (
     <>
       <ContextMenuContent>
-        <MuteMenuItem nodeid={item.id} />
+        <MuteMenuItem lastOpenedState={lastOpenedState} nodeid={item.id} />
       </ContextMenuContent>
     </>
   )

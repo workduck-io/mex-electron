@@ -5,6 +5,7 @@ import { mog } from '@utils/lib/helper'
 import { debounce } from 'lodash'
 import { useCallback } from 'react'
 import { useContentStore } from '@store/useContentStore'
+import { useLinks } from './useLinks'
 
 const DEBOUNCE_TIME = 3000
 
@@ -15,6 +16,7 @@ const INIT_LAST_OPENED = {
 }
 
 export const getLastOpenedState = (updatedAt: number, lastOpenedNote: LastOpenedNote): LastOpenedState => {
+  mog('getLastOpenedState', { updatedAt, lastOpenedNote })
   if (lastOpenedNote.muted) {
     return LastOpenedState.MUTED
   } else if (updatedAt > lastOpenedNote.ts) {
@@ -32,7 +34,7 @@ export const getLastOpenedState = (updatedAt: number, lastOpenedNote: LastOpened
  */
 export const useLastOpened = () => {
   const setLastOpenedNotes = useUserPreferenceStore((state) => state.setLastOpenedNotes)
-  const getMetadata = useContentStore((state) => state.getMetadata)
+  const { getILinkFromNodeid } = useLinks()
   /**
    * Update the last opened timestamp of a node
    * The current timestamp is used as the last opened timestamp
@@ -80,7 +82,7 @@ export const useLastOpened = () => {
   }
 
   const getLastOpened = (nodeId: string, lastOpenedNote: LastOpenedNote) => {
-    const metadata = getMetadata(nodeId)
+    const metadata = getILinkFromNodeid(nodeId)
     const updatedAt = metadata?.updatedAt ?? undefined
     const lastOpenedState = lastOpenedNote && updatedAt ? getLastOpenedState(updatedAt, lastOpenedNote) : undefined
 

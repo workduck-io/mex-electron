@@ -3,6 +3,9 @@ import { useAnalysisStore } from '@store/useAnalysis'
 import { IS_DEV } from '@data/Defaults/dev_'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { LastOpenedState } from '../../../types/userPreference'
+import { useLastOpened } from '@hooks/useLastOpened'
 import * as ContextMenu from '@radix-ui/react-context-menu'
 import {
   ItemContent,
@@ -15,9 +18,8 @@ import {
   TooltipCount
 } from '@style/Sidebar'
 import Tippy from '@tippyjs/react'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { PathMatch } from 'react-router-dom'
-import { LastOpenedState } from '../../../types/userPreference'
 import { TreeContextMenu } from './TreeWithContextMenu'
 // import { complexTree } from '../mockdata/complexTree'
 
@@ -114,6 +116,13 @@ export const RenderTreeItem = ({
   onClick
 }: TreeItemProps) => {
   const isTrue = JSON.stringify(snapshot) !== JSON.stringify(defaultSnap)
+  const lastOpenedNote = useUserPreferenceStore((state) => state.lastOpenedNotes[item?.data?.nodeid])
+  const { getLastOpened } = useLastOpened()
+
+  const lastOpenedState = useMemo(() => {
+    const loState = getLastOpened(item.data.nodeid, lastOpenedNote)
+    return loState
+  }, [lastOpenedNote, item?.data?.nodeid])
 
   return (
     <Tippy theme="mex" placement="right" singleton={target} content={<TooltipContent item={item} />}>
@@ -132,7 +141,7 @@ export const RenderTreeItem = ({
               isDragging={snapshot.isDragging}
               hasMenuOpen={contextOpenNodeId === item.data.nodeid}
               isBeingDroppedAt={isTrue}
-              isUnread={item.data.lastOpenedState === LastOpenedState.UNREAD}
+              isUnread={lastOpenedState === LastOpenedState.UNREAD}
               onContextMenu={(e) => {
                 console.log('ContextySe', e, item)
               }}
@@ -150,7 +159,7 @@ export const RenderTreeItem = ({
               )}
             </StyledTreeItem>
           </ContextMenu.Trigger>
-          <TreeContextMenu item={item} />
+          <TreeContextMenu item={{ ...item, data: { ...item.data, lastOpenedState } }} />
         </ContextMenu.Root>
       </span>
     </Tippy>

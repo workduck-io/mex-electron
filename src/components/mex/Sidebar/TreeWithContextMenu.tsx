@@ -16,7 +16,6 @@ import { useShareModalStore } from '../Mention/ShareModalStore'
 import { useDeleteStore } from '../Refactor/DeleteModal'
 import { useRefactorStore } from '../Refactor/Refactor'
 import { LastOpenedState } from '../../../types/userPreference'
-import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import volumeDownLine from '@iconify/icons-ri/volume-down-line'
 import { mog } from '@utils/lib/helper'
 
@@ -24,23 +23,18 @@ export const MENU_ID = 'Tree-Menu'
 
 interface MuteMenuItemProps {
   nodeid: string
+  lastOpenedState: LastOpenedState
 }
 
-export const MuteMenuItem = ({ nodeid }: MuteMenuItemProps) => {
-  const { muteNode, unmuteNode, getLastOpened } = useLastOpened()
-  const lastOpenedNote = useUserPreferenceStore((state) => state.lastOpenedNotes[nodeid])
+export const MuteMenuItem = ({ nodeid, lastOpenedState }: MuteMenuItemProps) => {
+  const { muteNode, unmuteNode } = useLastOpened()
 
   const isMuted = useMemo(() => {
-    const lastOpenedState = getLastOpened(nodeid, lastOpenedNote)
     if (nodeid === 'NODE_WQgXbba9aBJV6X8ckDWp6') {
-      const lastOpenedNotes = useUserPreferenceStore.getState().lastOpenedNotes
-      const lastOpenedNoteXZ = lastOpenedNotes[nodeid]
-
-      mog('isMuted for special', { lastOpenedState, lastOpenedNote, lastOpenedNotes, nodeid, lastOpenedNoteXZ })
+      mog('isMuted for special', { lastOpenedState, nodeid })
     }
-    // mog('isMuted isupdated', { lastOpenedNote, lastOpenedState })
     return lastOpenedState === LastOpenedState.MUTED
-  }, [nodeid, lastOpenedNote])
+  }, [nodeid, lastOpenedState])
 
   const handleMute = () => {
     // mog('handleMute', { item })
@@ -120,7 +114,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
           Share
         </ContextMenuItem>
         <ContextMenuSeparator />
-        <MuteMenuItem nodeid={item.data.nodeid} />
+        <MuteMenuItem nodeid={item.data.nodeid} lastOpenedState={item.data.lastOpenedState} />
         {/* <ContextMenuItem>
           <Icon icon={refreshFill} />
           Sync
