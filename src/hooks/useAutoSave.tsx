@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
 import { useUserService } from '@services/auth/useUserService'
 import { mog } from '@utils/lib/helper'
-import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { mergeUserPreferences, useUserPreferenceStore } from '@store/userPreferenceStore'
 
 const USER_PREF_AUTO_SAVE_MS = 30 * 60 * 1000 // 30 minutes
 
 export const useAutoSyncUserPreference = () => {
+  const getUserPreferences = useUserPreferenceStore((s) => s.getUserPreferences)
   const setUserPreferences = useUserPreferenceStore((store) => store.setUserPreferences)
   const { updateUserPreferences, getCurrentUser } = useUserService()
 
@@ -15,11 +16,11 @@ export const useAutoSyncUserPreference = () => {
       const userPreferences = user.preference
       mog('User Preferences Fetched: ', { userPreferences })
       if (userPreferences) {
-        setUserPreferences(userPreferences)
+        const localUserPreferences = getUserPreferences()
+        const mergedUserPreferences = mergeUserPreferences(localUserPreferences, userPreferences)
+        // setUserPreferences(mergedUserPreferences)
       }
-      // setUserPreferences(userPreferences)
     }
-    // return user.preference
   }
 
   /**
