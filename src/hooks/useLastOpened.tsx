@@ -16,7 +16,7 @@ const INIT_LAST_OPENED = {
 }
 
 export const getLastOpenedState = (updatedAt: number, lastOpenedNote: LastOpenedNote): LastOpenedState => {
-  mog('getLastOpenedState', { updatedAt, lastOpenedNote })
+  // mog('getLastOpenedState', { updatedAt, lastOpenedNote })
   if (lastOpenedNote.muted) {
     return LastOpenedState.MUTED
   } else if (updatedAt > lastOpenedNote.ts) {
@@ -55,7 +55,7 @@ export const useLastOpened = () => {
         freq: lastOpenedNote.freq + 1
       }
     }
-    mog('addLastOpened', { nodeId, lastOpenedNotes })
+    // mog('addLastOpened', { nodeId, lastOpenedNotes })
     setLastOpenedNotes(newLastOpenedNotes)
   }
 
@@ -70,7 +70,7 @@ export const useLastOpened = () => {
         muted
       }
     }
-    mog('setMuteNode', { nodeId, muted, newLastOpenedNotes })
+    // mog('setMuteNode', { nodeId, muted, newLastOpenedNotes })
     setLastOpenedNotes(newLastOpenedNotes)
   }
 

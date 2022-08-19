@@ -1,5 +1,5 @@
 import { IpcAction } from '@data/IpcAction'
-import { useAutoSyncUserPreference } from '@hooks/useAutoSave'
+import { useAutoSyncUserPreference } from '@hooks/useSyncUserPreferences'
 import { useImportExport } from '@hooks/useImportExport'
 import { useInitialize } from '@hooks/useInitialize'
 import { useInternetListener } from '@hooks/useInternetListener'
