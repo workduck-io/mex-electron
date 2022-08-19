@@ -13,6 +13,7 @@ import { EmptyMessage, FilteredItemsWrapper, SidebarListFilter, SidebarListWrapp
 import { TooltipContent } from './TreeItem'
 import { SidebarListProps } from './SidebarList.types'
 import { LastOpenedState } from '../../../types/userPreference'
+import SidebarListItemComponent from './SidebarListItem'
 
 const SidebarList = ({
   ItemContextMenu,
@@ -113,11 +114,7 @@ const SidebarList = ({
       <Tippy theme="mex" placement="right" singleton={source} />
 
       {defaultItem && (
-        <StyledTreeItem
-          isUnread={defaultItem.lastOpened === LastOpenedState.UNREAD}
-          noSwitcher
-          selected={selectedItemId === undefined}
-        >
+        <StyledTreeItem noSwitcher selected={selectedItemId === undefined}>
           <ItemContent onClick={() => onSelectItem(defaultItem.id)}>
             <ItemTitle>
               <Icon icon={defaultItem.icon} />
@@ -141,40 +138,23 @@ const SidebarList = ({
 
       <FilteredItemsWrapper hasDefault={!!defaultItem}>
         {listItems.map((item, index) => (
-          <Tippy
-            theme="mex"
-            placement="right"
-            singleton={target}
-            key={`DisplayTippy_${item.id}`}
-            content={<TooltipContent item={{ id: item.id, children: [], data: { title: item.title } }} />}
-          >
-            <span>
-              <ContextMenu.Root
-                onOpenChange={(open) => {
-                  if (open && ItemContextMenu) {
-                    setContextOpenViewId(item.id)
-                  } else setContextOpenViewId(null)
-                }}
-              >
-                <ContextMenu.Trigger asChild>
-                  <StyledTreeItem
-                    hasMenuOpen={contextOpenViewId === item.id || selected === index}
-                    noSwitcher
-                    isUnread={item?.lastOpened === LastOpenedState.UNREAD}
-                    selected={item?.id === selectedItemId}
-                  >
-                    <ItemContent onClick={() => onSelectItem(item?.id)}>
-                      <ItemTitle>
-                        <Icon icon={item.icon} />
-                        <span>{item.title}</span>
-                      </ItemTitle>
-                    </ItemContent>
-                  </StyledTreeItem>
-                </ContextMenu.Trigger>
-                {ItemContextMenu && <ItemContextMenu item={item} />}
-              </ContextMenu.Root>
-            </span>
-          </Tippy>
+          <SidebarListItemComponent
+            key={item.id}
+            tippyTarget={target}
+            item={item}
+            index={index}
+            select={{
+              selectedItemId: selectedItemId,
+              selectIndex: selected,
+              onSelect: onSelectItem
+            }}
+            // To render the context menu if the item is right-clicked
+            contextMenu={{
+              ItemContextMenu: ItemContextMenu,
+              setContextOpenViewId: setContextOpenViewId,
+              contextOpenViewId: contextOpenViewId
+            }}
+          />
         ))}
         {listItems.length === 0 && search !== '' && <EmptyMessage>{emptyMessage ?? 'No Items Found'}</EmptyMessage>}
       </FilteredItemsWrapper>

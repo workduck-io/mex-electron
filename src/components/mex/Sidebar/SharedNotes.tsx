@@ -18,18 +18,10 @@ interface SharedNoteContextMenuProps {
 }
 
 const SharedNoteContextMenu = ({ item }: SharedNoteContextMenuProps) => {
-  const lastOpenedNote = useUserPreferenceStore((state) => state.lastOpenedNotes[item?.id])
-  const { getLastOpened } = useLastOpened()
-
-  const lastOpenedState = useMemo(() => {
-    const loState = getLastOpened(item.id, lastOpenedNote)
-    return loState
-  }, [lastOpenedNote, item?.id])
-
   return (
     <>
       <ContextMenuContent>
-        <MuteMenuItem lastOpenedState={lastOpenedState} nodeid={item.id} />
+        <MuteMenuItem lastOpenedState={item?.lastOpenedState} nodeid={item.id} />
       </ContextMenuContent>
     </>
   )
@@ -55,7 +47,8 @@ const SharedNotes = () => {
       items={sharedNodes.map((node) => ({
         id: node.nodeid,
         title: node.path,
-        icon: SharedNodeIconify
+        icon: SharedNodeIconify,
+        lastOpenedId: node.nodeid
       }))}
       onClick={onOpenNode}
       showSearch

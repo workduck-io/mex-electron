@@ -5,7 +5,10 @@ export interface SidebarListItem {
   id: string
   title: string
   icon?: string | IconifyIcon
-  lastOpened?: LastOpenedState
+  // Used to calculate the last opened state once in the list item component
+  lastOpenedId?: string
+  // Used to pass the state computed to the context menu
+  lastOpenedState?: LastOpenedState
   // tooltip?: string
 }
 
