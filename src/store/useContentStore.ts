@@ -17,6 +17,7 @@ interface ContentStoreState {
   setContent: (nodeid: string, content: NodeEditorContent, metadata?: NodeMetadata) => void
   // Nodeid mapped metadata
   getAllMetadata: () => Record<string, NodeMetadata>
+  getMetadata: (nodeid: string) => NodeMetadata
   setMetadata: (nodeid: string, metadata: NodeMetadata) => void
   initContents: (contents: Contents) => void
 }
@@ -47,6 +48,10 @@ export const useContentStore = create<ContentStoreState>(
         }
       })
       return metadata
+    },
+    getMetadata: (nodeid) => {
+      const contents = get().contents
+      return contents[nodeid] && contents[nodeid].metadata ? contents[nodeid].metadata : {}
     },
     setMetadata: (nodeid: string, metadata: NodeMetadata) => {
       const oldContent = get().contents

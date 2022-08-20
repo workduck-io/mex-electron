@@ -1,10 +1,10 @@
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { ipcRenderer } from 'electron'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { IpcAction } from '../../data/IpcAction'
 import { appNotifierWindow } from '../../electron/utils/notifiers'
 import { AppType } from '../../hooks/useInitialize'
-import useThemeStore from '../../store/useThemeStore'
 import { ToastStatus, ToastType } from '../../types/toast'
 import { mog } from '../../utils/lib/helper'
 import { Description } from '../spotlight/SearchResults/styled'
@@ -62,7 +62,7 @@ interface NotifierState {
 const Notifier = () => {
   const [nState, setNState] = useState<NotifierState | undefined>(undefined)
 
-  const setTheme = useThemeStore((store) => store.setTheme)
+  const setTheme = useUserPreferenceStore((state) => state.setTheme)
   useEffect(() => {
     ipcRenderer.on(IpcAction.TOAST_MESSAGE, (ev, message) => {
       if (message.attachment) {

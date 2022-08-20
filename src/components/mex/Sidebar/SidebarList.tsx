@@ -1,5 +1,5 @@
 import searchLine from '@iconify/icons-ri/search-line'
-import { Icon, IconifyIcon } from '@iconify/react'
+import { Icon } from '@iconify/react'
 import * as ContextMenu from '@radix-ui/react-context-menu'
 import { Input } from '@style/Form'
 import { ItemContent, ItemTitle, StyledTreeItem } from '@style/Sidebar'
@@ -10,35 +10,10 @@ import { debounce } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { tinykeys } from '@workduck-io/tinykeys'
 import { EmptyMessage, FilteredItemsWrapper, SidebarListFilter, SidebarListWrapper } from './SidebarList.style'
-import { TooltipContent } from './Tree'
-
-interface SidebarListItem {
-  id: string
-  title: string
-  icon?: string | IconifyIcon
-  // tooltip?: string
-}
-
-interface SidebarListProps {
-  items: SidebarListItem[]
-  // Action on item click
-  onClick: (itemId: string) => void
-
-  // If present selected item will be active
-  selectedItemId?: string
-
-  // If true, the list will be preceded by the default item
-  defaultItem?: SidebarListItem
-
-  // To render the context menu if the item is right-clicked
-  ItemContextMenu?: (props: { item: SidebarListItem }) => JSX.Element
-
-  // Searches by title of the items
-  showSearch?: boolean
-  searchPlaceholder?: string
-  emptyMessage?: string
-  noMargin?: boolean
-}
+import { TooltipContent } from './TreeItem'
+import { SidebarListProps } from './SidebarList.types'
+import { LastOpenedState } from '../../../types/userPreference'
+import SidebarListItemComponent from './SidebarListItem'
 
 const SidebarList = ({
   ItemContextMenu,
@@ -163,39 +138,23 @@ const SidebarList = ({
 
       <FilteredItemsWrapper hasDefault={!!defaultItem}>
         {listItems.map((item, index) => (
-          <Tippy
-            theme="mex"
-            placement="right"
-            singleton={target}
-            key={`DisplayTippy_${item.id}`}
-            content={<TooltipContent item={{ id: item.id, children: [], data: { title: item.title } }} />}
-          >
-            <span>
-              <ContextMenu.Root
-                onOpenChange={(open) => {
-                  if (open && ItemContextMenu) {
-                    setContextOpenViewId(item.id)
-                  } else setContextOpenViewId(null)
-                }}
-              >
-                <ContextMenu.Trigger asChild>
-                  <StyledTreeItem
-                    hasMenuOpen={contextOpenViewId === item.id || selected === index}
-                    noSwitcher
-                    selected={item?.id === selectedItemId}
-                  >
-                    <ItemContent onClick={() => onSelectItem(item?.id)}>
-                      <ItemTitle>
-                        <Icon icon={item.icon} />
-                        <span>{item.title}</span>
-                      </ItemTitle>
-                    </ItemContent>
-                  </StyledTreeItem>
-                </ContextMenu.Trigger>
-                {ItemContextMenu && <ItemContextMenu item={item} />}
-              </ContextMenu.Root>
-            </span>
-          </Tippy>
+          <SidebarListItemComponent
+            key={item.id}
+            tippyTarget={target}
+            item={item}
+            index={index}
+            select={{
+              selectedItemId: selectedItemId,
+              selectIndex: selected,
+              onSelect: onSelectItem
+            }}
+            // To render the context menu if the item is right-clicked
+            contextMenu={{
+              ItemContextMenu: ItemContextMenu,
+              setContextOpenViewId: setContextOpenViewId,
+              contextOpenViewId: contextOpenViewId
+            }}
+          />
         ))}
         {listItems.length === 0 && search !== '' && <EmptyMessage>{emptyMessage ?? 'No Items Found'}</EmptyMessage>}
       </FilteredItemsWrapper>

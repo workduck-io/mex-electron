@@ -1,17 +1,19 @@
-import { Theme, ThemeColorDots, ThemeHeader, ThemePreview, ThemePreviews } from '../../../style/Settings'
-
+import { useUserService } from '@services/auth/useUserService'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { defaultThemes } from '@style/themes/defaultThemes'
 import React from 'react'
+import { useTransition } from 'react-spring'
 import { ThemeProvider } from 'styled-components'
 import { useSaveData } from '../../../hooks/useSaveData'
-import useThemeStore from '../../../store/useThemeStore'
-import { useTransition } from 'react-spring'
+import { Theme, ThemeColorDots, ThemeHeader, ThemePreview, ThemePreviews } from '../../../style/Settings'
 
 const Themes = () => {
-  const themes = useThemeStore((state) => state.themes)
-  const theme = useThemeStore((state) => state.theme)
-  const setTheme = useThemeStore((state) => state.setTheme)
+  const themes = defaultThemes
+  const theme = useUserPreferenceStore((state) => state.theme)
+  const setTheme = useUserPreferenceStore((state) => state.setTheme)
 
   const { saveData } = useSaveData()
+  const { updateUserPreferences } = useUserService()
 
   const transition = useTransition(themes, {
     from: {
@@ -35,10 +37,10 @@ const Themes = () => {
   const onThemeSelect = (i: number) => {
     if (themes[i]) {
       // appNotifierWindow(IpcAction.SET_THEME, AppType.MEX, { theme: themes[i] })
-      setTheme(themes[i])
+      setTheme(themes[i].id)
     }
 
-    saveData()
+    updateUserPreferences()
   }
 
   return (
@@ -46,7 +48,7 @@ const Themes = () => {
       {transition((styles, t, _t, i) => {
         return (
           <ThemeProvider key={`mex_theme_key_${t.id}`} theme={t.themeData}>
-            <Theme selected={t.id === theme.id} onClick={() => onThemeSelect(i)} style={styles}>
+            <Theme selected={t.id === theme} onClick={() => onThemeSelect(i)} style={styles}>
               <ThemePreview back={t.themeData.backgroundImages ? t.themeData.backgroundImages.preview : undefined}>
                 <ThemeColorDots>
                   <div className="primary"></div>

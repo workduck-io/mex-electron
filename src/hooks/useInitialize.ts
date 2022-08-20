@@ -1,16 +1,14 @@
-import { FileData } from '../types/data'
-import { createNodeWithUid } from '../utils/lib/helper'
-import { getTheme } from '../style/themes/defaultThemes'
+import { useReminderStore } from '../hooks/useReminders'
+import { useSpotlightSettingsStore } from '../store/settings.spotlight'
 import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
+import { useSnippetStore } from '../store/useSnippetStore'
+import { useSyncStore } from '../store/useSyncStore'
+import useTodoStore from '../store/useTodoStore'
+import { FileData } from '../types/data'
+import { createNodeWithUid } from '../utils/lib/helper'
 import useLoad from './useLoad'
 import { useSlashCommands } from './useSlashCommands'
-import { useSnippetStore } from '../store/useSnippetStore'
-import { useSpotlightSettingsStore } from '../store/settings.spotlight'
-import { useSyncStore } from '../store/useSyncStore'
-import useThemeStore from '../store/useThemeStore'
-import useTodoStore from '../store/useTodoStore'
-import { useReminderStore } from '../hooks/useReminders'
 import { useViewStore } from './useTaskViews'
 
 export enum AppType {
@@ -25,7 +23,6 @@ export const useInitialize = () => {
   const initSpotlightSettings = useSpotlightSettingsStore((state) => state.initSpotlightSettings)
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setReminders = useReminderStore((state) => state.setReminders)
-  const setTheme = useThemeStore((state) => state.setTheme)
   const setViews = useViewStore((state) => state.setViews)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
   const { generateSlashCommands } = useSlashCommands()
@@ -75,8 +72,8 @@ export const useInitialize = () => {
     initTodos(todos)
     setViews(views)
     setReminders(reminders)
-    const currentTheme = getTheme(data.userSettings.theme)
-    setTheme(currentTheme)
+    // const currentTheme = getTheme(data.userSettings.theme)
+    // setTheme(currentTheme.id)
   }
 
   const init = (data: FileData, initNodeId?: string, initFor?: AppType) => {

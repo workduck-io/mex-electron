@@ -24,6 +24,7 @@ import { useBlockHighlightStore } from '@editor/Actions/useFocusBlock'
 import { useTreeStore } from '@store/useTreeStore'
 import { useFetchShareData } from './useFetchShareData'
 import { useAuthStore } from '@services/auth/useAuth'
+import { useLastOpened } from './useLastOpened'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -55,6 +56,7 @@ const useLoad = () => {
   const infobar = useLayoutStore((store) => store.infobar)
   const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)
   const { fetchSharedNodeUsers } = useFetchShareData()
+  const { debouncedAddLastOpened } = useLastOpened()
 
   const setLoadingNodeid = useEditorStore((store) => store.setLoadingNodeid)
   // const { push } = useNavigation()
@@ -275,6 +277,8 @@ const useLoad = () => {
       const allParents = getAllParentIds(node.path)
       expandNodes(allParents)
     }
+
+    debouncedAddLastOpened(nodeid)
 
     loadNodeEditor(node)
   }

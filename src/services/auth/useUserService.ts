@@ -1,9 +1,13 @@
 import { apiURLs } from '@apis/routes'
 import { useUserCacheStore } from '@store/useUserCacheStore'
+import { UserPreferences } from '../../types/userPreference'
 import { mog } from '@utils/lib/helper'
 import { client } from '@workduck-io/dwindle'
 import { useAuthStore } from './useAuth'
-
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { useDebouncedCallback } from 'use-debounce'
+import { useEffect } from 'react'
+import { useVersionStore } from '@store/useAppDataStore'
 export interface TempUser {
   email: string
   userID?: string
@@ -16,6 +20,18 @@ export interface TempUserUserID {
   email?: string
   alias?: string
   name?: string
+}
+
+export interface UserDetails {
+  /** User ID */
+  id: string
+  /** Workspace ID */
+  group: string
+  entity: 'User'
+  email: string
+  name: string
+  alias: string
+  preference: UserPreferences
 }
 
 export const useUserService = () => {
@@ -92,5 +108,40 @@ export const useUserService = () => {
     }
   }
 
-  return { getUserDetails, getUserDetailsUserId, updateUserInfo }
+  const updateUserPreferences = async (): Promise<boolean> => {
+    const lastOpenedNotes = useUserPreferenceStore.getState().lastOpenedNotes
+    const theme = useUserPreferenceStore.getState().theme
+    const userID = useAuthStore.getState().userDetails.userID
+    const version = useVersionStore.getState().version
+
+    const userPreferences: UserPreferences = {
+      version,
+      lastOpenedNotes,
+      theme
+    }
+
+    try {
+      return await client.put(apiURLs.user.updateInfo, { id: userID, preference: userPreferences }).then((resp) => {
+        mog('Response', { data: resp.data })
+        return true
+      })
+    } catch (e) {
+      mog('Error Updating User Info', { error: e, userID })
+      return false
+    }
+  }
+
+  const getCurrentUser = async (): Promise<UserDetails | undefined> => {
+    try {
+      return await client.get(apiURLs.getUserRecords).then((resp) => {
+        mog('Response', { data: resp.data })
+        return resp?.data
+      })
+    } catch (e) {
+      mog('Error Fetching Current User Info', { error: e })
+      return undefined
+    }
+  }
+
+  return { getUserDetails, getUserDetailsUserId, updateUserInfo, updateUserPreferences, getCurrentUser }
 }

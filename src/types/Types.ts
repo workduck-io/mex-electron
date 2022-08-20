@@ -35,6 +35,7 @@ export interface ILink {
   icon?: string
 
   createdAt?: number
+  updatedAt?: number
 
   parentNodeId?: string
 }

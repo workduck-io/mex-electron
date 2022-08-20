@@ -1,23 +1,17 @@
-import GlobalStyle from './style/spotlight/global'
-import { IS_DEV } from './data/Defaults/dev_'
-import Notifier from './components/toast/Notifier'
+import Providers from '@store/Context/Providers'
 import React from 'react'
-import { ThemeProvider } from 'styled-components'
-import { defaultThemes } from './style/themes/defaultThemes'
+import Notifier from './components/toast/Notifier'
+import { IS_DEV } from './data/Defaults/dev_'
 import { initializeSentry } from './services/sentry'
-import useThemeStore from './store/useThemeStore'
+import GlobalStyle from './style/spotlight/global'
 
 if (!IS_DEV) initializeSentry()
 
 export default function App() {
-  const theme = useThemeStore((state) => state.theme)
-
-  const currentTheme = theme?.themeData ?? defaultThemes[0].themeData
-
   return (
-    <ThemeProvider theme={currentTheme}>
+    <Providers>
       <Notifier />
       <GlobalStyle />
-    </ThemeProvider>
+    </Providers>
   )
 }

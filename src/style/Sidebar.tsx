@@ -145,12 +145,21 @@ export const ItemContent = styled.div`
   gap: ${({ theme }) => theme.spacing.tiny};
 `
 
+export const UnreadIndicator = styled.div`
+  color: ${({ theme }) => theme.colors.primary};
+  svg {
+    height: 0.75rem;
+    width: 0.75rem;
+  }
+`
+
 export const StyledTreeItem = styled.div<{
   selected?: boolean
   isDragging?: boolean
   isBeingDroppedAt?: boolean
   hasMenuOpen?: boolean
   noSwitcher?: boolean
+  isUnread?: boolean
 }>`
   display: flex;
   align-items: center;
@@ -159,6 +168,12 @@ export const StyledTreeItem = styled.div<{
   padding-right: 16px;
 
   transition: 0.1s ease;
+
+  ${({ isUnread }) =>
+    isUnread &&
+    css`
+      font-weight: bold;
+    `}
 
   ${({ noSwitcher, theme }) =>
     noSwitcher &&
