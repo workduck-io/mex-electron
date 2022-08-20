@@ -182,6 +182,26 @@ export const DraggerContent = ({ element }: any) => {
   )
 }
 
+const hideOnKeyPress = {
+  name: 'hideOnKeyPress',
+  defaultValue: true,
+  fn({ hide }) {
+    function onKeyDown(event) {
+      console.log('keydown', event)
+      hide()
+    }
+
+    return {
+      onShow() {
+        document.addEventListener('keydown', onKeyDown)
+      },
+      onHide() {
+        document.removeEventListener('keydown', onKeyDown)
+      }
+    }
+  }
+}
+
 export const withStyledDraggables = (components: any) => {
   const isBlockMode = useBlockStore.getState().isBlockMode
   const isEditing = useEditorStore.getState().isEditing
@@ -219,7 +239,11 @@ export const withStyledDraggables = (components: any) => {
         const setIsBlockMode = useBlockStore.getState().setIsBlockMode
 
         return (
-          <Tippy {...grabberTooltipProps} content={<GrabberTooltipContent element={element} />}>
+          <Tippy
+            {...grabberTooltipProps}
+            content={<GrabberTooltipContent element={element} />}
+            plugins={[hideOnKeyPress]}
+          >
             <Tippy theme="mex" placement="top" content={<DraggerContent element={element} />}>
               <StyledDraggable onClick={() => setIsBlockMode(true)} className={className} css={styles}>
                 <Icon icon={checkboxBlankCircleLine} />
