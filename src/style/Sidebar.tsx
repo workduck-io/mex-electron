@@ -145,6 +145,14 @@ export const ItemContent = styled.div`
   gap: ${({ theme }) => theme.spacing.tiny};
 `
 
+export const UnreadIndicator = styled.div`
+  color: ${({ theme }) => theme.colors.primary};
+  svg {
+    height: 0.75rem;
+    width: 0.75rem;
+  }
+`
+
 export const StyledTreeItem = styled.div<{
   selected?: boolean
   isDragging?: boolean

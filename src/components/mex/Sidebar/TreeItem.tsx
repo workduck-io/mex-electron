@@ -2,6 +2,7 @@ import { ItemId, RenderItemParams, TreeItem } from '@atlaskit/tree'
 import { useAnalysisStore } from '@store/useAnalysis'
 import { IS_DEV } from '@data/Defaults/dev_'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
+import checkboxBlankCircleFill from '@iconify/icons-ri/checkbox-blank-circle-fill'
 import { Icon } from '@iconify/react'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { LastOpenedState } from '../../../types/userPreference'
@@ -15,7 +16,8 @@ import {
   StyledTreeItemSwitcher,
   StyledTreeSwitcher,
   TooltipContentWrapper,
-  TooltipCount
+  TooltipCount,
+  UnreadIndicator
 } from '@style/Sidebar'
 import Tippy from '@tippyjs/react'
 import React, { useMemo } from 'react'
@@ -124,6 +126,10 @@ export const RenderTreeItem = ({
     return loState
   }, [lastOpenedNote, item?.data?.nodeid])
 
+  const isUnread = useMemo(() => {
+    return lastOpenedState === LastOpenedState.UNREAD
+  }, [lastOpenedState])
+
   return (
     <Tippy theme="mex" placement="right" singleton={target} content={<TooltipContent item={item} />}>
       <span>
@@ -141,7 +147,7 @@ export const RenderTreeItem = ({
               isDragging={snapshot.isDragging}
               hasMenuOpen={contextOpenNodeId === item.data.nodeid}
               isBeingDroppedAt={isTrue}
-              isUnread={lastOpenedState === LastOpenedState.UNREAD}
+              isUnread={isUnread}
               onContextMenu={(e) => {
                 console.log('ContextySe', e, item)
               }}
@@ -154,8 +160,16 @@ export const RenderTreeItem = ({
                 <ItemTitleWithAnalysis item={item} />
               </ItemContent>
 
-              {item.hasChildren && item.children && item.children.length > 0 && (
-                <ItemCount>{item.children.length}</ItemCount>
+              {isUnread ? (
+                <ItemCount>
+                  <UnreadIndicator>
+                    <Icon icon={checkboxBlankCircleFill} />
+                  </UnreadIndicator>
+                </ItemCount>
+              ) : (
+                item.hasChildren &&
+                item.children &&
+                item.children.length > 0 && <ItemCount>{item.children.length}</ItemCount>
               )}
             </StyledTreeItem>
           </ContextMenu.Trigger>

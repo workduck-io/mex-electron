@@ -2,7 +2,8 @@ import { useLastOpened } from '@hooks/useLastOpened'
 import { Icon } from '@iconify/react'
 import * as ContextMenu from '@radix-ui/react-context-menu'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
-import { ItemContent, ItemTitle, StyledTreeItem } from '@style/Sidebar'
+import { ItemContent, ItemCount, ItemTitle, UnreadIndicator, StyledTreeItem } from '@style/Sidebar'
+import checkboxBlankCircleFill from '@iconify/icons-ri/checkbox-blank-circle-fill'
 import Tippy from '@tippyjs/react'
 import React, { useMemo } from 'react'
 import { LastOpenedState } from '../../../types/userPreference'
@@ -40,6 +41,10 @@ const SidebarListItemComponent = ({ tippyTarget, select, index, item, contextMen
     return loState
   }, [lastOpenedNote, item?.lastOpenedId])
 
+  const isUnread = useMemo(() => {
+    return lastOpenedState === LastOpenedState.UNREAD
+  }, [lastOpenedState])
+
   return (
     <Tippy
       theme="mex"
@@ -60,7 +65,7 @@ const SidebarListItemComponent = ({ tippyTarget, select, index, item, contextMen
             <StyledTreeItem
               hasMenuOpen={contextOpenViewId === item.id || selectIndex === index}
               noSwitcher
-              isUnread={lastOpenedState === LastOpenedState.UNREAD}
+              isUnread={isUnread}
               selected={item?.id === selectedItemId}
             >
               <ItemContent onClick={() => onSelect(item?.id)}>
@@ -69,6 +74,13 @@ const SidebarListItemComponent = ({ tippyTarget, select, index, item, contextMen
                   <span>{item.title}</span>
                 </ItemTitle>
               </ItemContent>
+              {isUnread && (
+                <ItemCount>
+                  <UnreadIndicator>
+                    <Icon icon={checkboxBlankCircleFill} />
+                  </UnreadIndicator>
+                </ItemCount>
+              )}
             </StyledTreeItem>
           </ContextMenu.Trigger>
           {ItemContextMenu && <ItemContextMenu item={{ ...item, lastOpenedState }} />}
