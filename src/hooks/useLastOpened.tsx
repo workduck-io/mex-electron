@@ -6,6 +6,8 @@ import { debounce } from 'lodash'
 import { useCallback } from 'react'
 import { useContentStore } from '@store/useContentStore'
 import { useLinks } from './useLinks'
+import { useNodes } from './useNodes'
+import { NodeType } from '../types/Types'
 
 const DEBOUNCE_TIME = 3000
 
@@ -34,6 +36,7 @@ export const getLastOpenedState = (updatedAt: number, lastOpenedNote: LastOpened
  */
 export const useLastOpened = () => {
   const setLastOpenedNotes = useUserPreferenceStore((state) => state.setLastOpenedNotes)
+  const { getNodeType, getSharedNode } = useNodes()
   const { getILinkFromNodeid } = useLinks()
   /**
    * Update the last opened timestamp of a node
@@ -82,11 +85,24 @@ export const useLastOpened = () => {
   }
 
   const getLastOpened = (nodeId: string, lastOpenedNote: LastOpenedNote) => {
-    const metadata = getILinkFromNodeid(nodeId)
-    const updatedAt = metadata?.updatedAt ?? undefined
-    const lastOpenedState = lastOpenedNote && updatedAt ? getLastOpenedState(updatedAt, lastOpenedNote) : undefined
-
-    return lastOpenedState
+    const nodeType = getNodeType(nodeId)
+    switch (nodeType) {
+      case NodeType.DEFAULT: {
+        const metadata = getILinkFromNodeid(nodeId)
+        const updatedAt = metadata?.updatedAt ?? undefined
+        const lastOpenedState = lastOpenedNote ? getLastOpenedState(updatedAt, lastOpenedNote) : undefined
+        return lastOpenedState
+      }
+      case NodeType.SHARED: {
+        const sharedNote = getSharedNode(nodeId)
+        const updatedAt = sharedNote?.updatedAt ?? undefined
+        const lastOpenedState = lastOpenedNote ? getLastOpenedState(updatedAt, lastOpenedNote) : undefined
+        return lastOpenedState
+      }
+      default: {
+        return undefined
+      }
+    }
   }
 
   // Callback so that the debounced function is only generated once
