@@ -1,5 +1,6 @@
 import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
 import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
+import usePointerMovedSinceMount from '@hooks/listeners/usePointerMovedSinceMount'
 import { Icon } from '@iconify/react'
 import useMergedRef from '@react-hook/merged-ref'
 import { useEditorState } from '@udecode/plate'
@@ -16,12 +17,12 @@ import { PrimaryText } from '../../../../style/Integration'
 import { NodeEditorContent } from '../../../../types/Types'
 import EditorPreviewRenderer from '../../../EditorPreviewRenderer'
 import {
-    ComboboxItem,
-    ComboboxRoot,
-    ItemCenterWrapper,
-    ItemDesc,
-    ItemRightIcons,
-    ItemTitle
+  ComboboxItem,
+  ComboboxRoot,
+  ItemCenterWrapper,
+  ItemDesc,
+  ItemRightIcons,
+  ItemTitle
 } from '../../tag/components/TagCombobox.styles'
 import { setElementPositionByRange } from '../../tag/utils/setElementPositionByRange'
 import { useComboboxControls } from '../hooks/useComboboxControls'
@@ -32,7 +33,6 @@ import BlockCombo from './BlockCombo'
 import { ComboboxProps } from './Combobox.types'
 import PreviewMeta from './PreviewMeta'
 import { ComboboxShortcuts, ComboSeperator } from './styled'
-
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'
@@ -131,6 +131,8 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   const listItem = items[itemIndex]
   const itemShortcut = listItem?.type ? ElementTypeBasedShortcut[listItem?.type] : undefined
 
+  const pointerMoved = usePointerMovedSinceMount()
+
   return (
     <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
       {isOpen && (
@@ -149,9 +151,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
                       <ComboboxItem
                         className={index === itemIndex ? 'highlight' : ''}
                         {...comboProps(item, index)}
-                        onMouseEnter={() => {
-                          setItemIndex(index)
-                        }}
+                        onPointerMove={() => pointerMoved && setItemIndex(index)}
                         onMouseDown={() => {
                           editor && onSelectItem(editor, item)
                         }}
