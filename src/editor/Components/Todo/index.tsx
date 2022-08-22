@@ -3,7 +3,6 @@ import React from 'react'
 import { deleteText, getNodeEntries, getPlateEditorRef, usePlateId } from '@udecode/plate'
 import { getRootProps } from '@udecode/plate-styled-components'
 import { getNodeIdFromEditor } from '@utils/helpers'
-import { mog } from '@utils/lib/helper'
 import toast from 'react-hot-toast'
 import { useReadOnly } from 'slate-react'
 
@@ -11,8 +10,6 @@ import { default as TodoBase } from '../../../ui/components/Todo'
 
 const TodoElement = (props: any) => {
   const { attributes, children, element } = props
-
-  mog('TODO ELMENT IS ', { element })
 
   const rootProps = getRootProps(props)
 

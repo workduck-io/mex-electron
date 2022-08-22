@@ -59,17 +59,22 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, oid, controls, showDel
 
   const changeStatus = () => {
     if (controls && controls.onChangeStatus) controls.onChangeStatus(todoid, getNextStatus(todo.entityMetadata?.status))
-    else
+    else {
+      mog("CHANGE STATUS", { parentNodeId, todoid, entityMetadata: {
+          priority: todo.entityMetadata?.priority || PriorityType.noPriority,
+          status: getNextStatus(todo.entityMetadata?.status)
+        } })
+
       updateNoteTodo(parentNodeId, todoid, {
         entityMetadata: {
           priority: todo.entityMetadata?.priority || PriorityType.noPriority,
           status: getNextStatus(todo.entityMetadata?.status)
         }
       })
+    }
+      
     setAnimate(true)
   }
-
-  mog('TODO ________', { todo })
 
   return (
     <TodoContainer

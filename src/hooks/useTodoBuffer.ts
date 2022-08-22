@@ -16,7 +16,7 @@ export const useTodoBuffer = () => {
   const addTodoInStore = useTodoStore((store) => store.addTodoInNode)
   const setNodeTodos = useTodoStore((store) => store.setNodeTodos)
   const removeTodoFromBuffer = useTodoBufferStore((store) => store.removeTodo)
-
+  const removeNoteBuffer = useTodoBufferStore((store) => store.remove)
   /*
     Adds given to respecive Note's Todo buffer.
   */
@@ -52,7 +52,9 @@ export const useTodoBuffer = () => {
     const getNodeTodos = useTodoStore.getState().getNodeTodos
 
     if (!isTodosBufferEmpty()) {
-      const todosSaveRequests = Object.entries(todosInBuffer).map(([noteId, todosBuffer]) => {
+      const todosSaveRequests = []
+
+      Object.entries(todosInBuffer).forEach(([noteId, todosBuffer]) => {
         if (!isTodosBufferEmpty(noteId)) {
           const existingTodo = getNodeTodos(noteId)?.reduce((prev, todo) => {
             if (todo.entityId) {
@@ -64,13 +66,20 @@ export const useTodoBuffer = () => {
           const updatedTodos = getUpdatedTodos(existingTodo, todosBuffer)
           const serializedTodos = updatedTodos.map(serializeTodo)
 
-          return updateTodos(serializedTodos)
-            .then((d) => {
-              if (isEmpty(d?.UnprocessedItems)) setNodeTodos(noteId, Object.values(todosBuffer))
-            })
-            .catch((err) => {
-              mog(`Error occured while saving ${noteId} - Todos buffer`, { err })
-            })
+          if (serializeTodo?.length > 0) {
+            const req = updateTodos(serializedTodos)
+              .then((d) => {
+                if (isEmpty(d?.UnprocessedItems)) {
+                  setNodeTodos(noteId, Object.values(todosBuffer))
+                  removeNoteBuffer(noteId)
+                }
+              })
+              .catch((err) => {
+                mog(`Error occured while saving ${noteId} - Todos buffer`, { err })
+              })
+
+            todosSaveRequests.push(req)
+          }
         }
       })
 
@@ -100,8 +109,6 @@ export const useTodoBuffer = () => {
       if (existingTodo) {
         if (
           !checkIsEqual(existingTodo, todo, [
-            'mentions',
-            'tags',
             'lastEditedBy',
             'publicAccess',
             'updatedAt',

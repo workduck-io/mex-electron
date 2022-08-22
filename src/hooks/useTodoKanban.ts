@@ -287,7 +287,7 @@ export const useTodoKanban = () => {
           todoBoard.columns
             .find((column) => column.id === todo.entityMetadata?.status)
             ?.cards.push({
-              id: `KANBAN_ID_${todo.nodeid}_${todo.id}`,
+              id: `KANBAN_ID_${todo.nodeid}_${todo.entityId}`,
               todo: todo
             })
         })

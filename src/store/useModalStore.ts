@@ -13,7 +13,8 @@ export enum ModalsType {
   share,
   help,
   template,
-  quickNew
+  quickNew,
+  todo
 }
 
 type ModalStoreType = {
@@ -23,6 +24,7 @@ type ModalStoreType = {
   // Keeping it as any as only template modal data type is known for now
   data: any
   toggleOpen: (modalType: ModalsType, modalData?: any, initialize?: boolean) => void
+  setData: (data: any) => void
 }
 
 // * Create Unified Store for all Modals
@@ -43,7 +45,8 @@ const useModalStore = create<ModalStoreType>((set, get) => ({
     const initModal = initialize ? modalType : undefined
 
     set({ open: changeModalState, init: initModal, data: updatedModalData })
-  }
+  },
+  setData: (data) => set({ data })
 }))
 
 export default useModalStore

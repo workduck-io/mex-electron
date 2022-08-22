@@ -129,6 +129,7 @@ export const serializeSpecial: { [elementType: string]: (element: any, nodeid: s
     return {
       id: el.id || generateTempId(),
       elementType: el.type,
+      children: serializeContent(el.children ?? [], nodeid),
       properties: {
         entityId: el.entityId
       }

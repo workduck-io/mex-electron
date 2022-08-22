@@ -1,6 +1,8 @@
 import { TodoType } from '@editor/Components/Todo/types'
+import { mog } from '@utils/lib/helper'
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
+import { produce } from 'immer'
 
 export type NoteTodoBufferType = Record<string, TodoType> // * entityId, TodoEntity
 export type TodoBufferType = Record<string, NoteTodoBufferType> // * NoteId, NoteTodoBufferType
@@ -15,7 +17,7 @@ type TodoBufferStore = {
   initializeTodosBuffer: (todosBuffer: TodoBufferType) => void
 }
 
-const useTodoBufferStore = create<TodoBufferStore>()(
+const useTodoBufferStore = create<TodoBufferStore>(
   devtools((set, get) => ({
     todosBuffer: {},
     setTodosBuffer: (noteId, todos) => {
@@ -24,9 +26,11 @@ const useTodoBufferStore = create<TodoBufferStore>()(
       set({ todosBuffer: { ...buffer, [noteId]: todos } })
     },
     update: (noteId, todo) => {
-      const buffer = get().todosBuffer
-      const noteBuffer = buffer[noteId] || {}
-      set({ todosBuffer: { ...buffer, [noteId]: { ...noteBuffer, [todo.entityId]: todo } } })
+      const buffer = get().todosBuffer || {}
+      const noteBuffer = buffer?.[noteId] || {}
+      set(produce(draft => {
+        draft.todosBuffer[noteId] = { ...noteBuffer, [todo.entityId]: todo } 
+      }))
     },
     remove: (noteId) => {
       const newBuffer = get().todosBuffer
@@ -37,7 +41,9 @@ const useTodoBufferStore = create<TodoBufferStore>()(
       const newBuffer = get().todosBuffer
       if (newBuffer?.[noteId]) {
         const { [entityId]: removedItem, ...noteTodosBuffer } = newBuffer[noteId]
-        set({ todosBuffer: { ...newBuffer, [noteId]: noteTodosBuffer || {} } })
+        set(produce(draft => {
+          draft.todosBuffer = { todosBuffer: { ...newBuffer, [noteId]: noteTodosBuffer || {} } }
+        }))
       }
     },
     initializeTodosBuffer: (todosBuffer) => set({ todosBuffer }),

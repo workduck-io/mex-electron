@@ -21,7 +21,7 @@ type JobQueueProps = {
   emptyJobsQueue: () => void
 }
 
-export const useJobQueueStore = create<JobQueueProps>()(
+export const useJobQueueStore = create<JobQueueProps>(
   persist(
     devtools((set, get) => ({
       isQueueEnabled: false,

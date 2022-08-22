@@ -8,6 +8,7 @@ import { getTodosFromContent } from '@utils/lib/content'
 import useTodoStore from '@store/useTodoStore'
 import { deserializeTodos, serializeTodo } from '@utils/lib/serialize'
 import { useContentStore } from '@store/useContentStore'
+import { useUpdater } from './useUpdater'
 
 type UpdateTodosType = {
   entityId: string
@@ -19,7 +20,7 @@ type UpdateTodosType = {
 
 const useEntityAPIs = () => {
   const updateTodosOfNode = useTodoStore((store) => store.updateTodosOfNode)
-  const updateTodosContentInEditor = useContentStore((store) => store.updateTodosContent)
+  const { updateTodoInContent } = useUpdater()
 
   const fetchAllEntitiesOfNote = async (noteId: string, content: NodeEditorContent) => {
     const requests = []
@@ -65,9 +66,8 @@ const useEntityAPIs = () => {
 
       if (res && res.data) {
         const todos = deserializeTodos(res.data)
-        mog('UPDATING TODOS', { todos })
         updateTodosOfNode(noteId, todos)
-        updateTodosContentInEditor(noteId, todos)
+        updateTodoInContent(noteId, todos)
 
         return todos
       }
@@ -86,7 +86,9 @@ const useEntityAPIs = () => {
       })
 
       if (res && res.status === 200) {
-        return res.data
+        const todos = deserializeTodos([res.data])
+        mog('todos', { todos })
+        return todos[0]
       }
     }
   }

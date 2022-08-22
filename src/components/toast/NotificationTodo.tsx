@@ -26,7 +26,7 @@ const NotificationTodo = ({ todo, reminder, dismissNotification, isNotification,
     if (isNotification) {
       return
     }
-    const ntodo = getTodoOfNode(todo.nodeid, todo.id)
+    const ntodo = getTodoOfNode(todo.nodeid, todo.entityId)
     if (ntodo) {
       setLocalTodo(ntodo)
     }

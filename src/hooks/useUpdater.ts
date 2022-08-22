@@ -1,18 +1,22 @@
 import { useContentStore } from '@store/useContentStore'
 import useTodoStore from '@store/useTodoStore'
-import { getTodosFromContent } from '@utils/lib/content'
+import { getPlateEditorRef } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
 
 import { client } from '@workduck-io/dwindle'
+import { TodoType } from '@workduck-io/mex-utils'
 
 import { integrationURLs } from '../apis/routes'
 import { Service, SyncBlockTemplate } from '../editor/Components/SyncBlock'
 import { useAuthStore } from '../services/auth/useAuth'
 import useDataStore from '../store/useDataStore'
+import { useEditorStore } from '../store/useEditorStore'
 import useOnboard from '../store/useOnboarding'
 import { useSnippetStore } from '../store/useSnippetStore'
 import { useSyncStore } from '../store/useSyncStore'
 import { NodeEditorContent } from '../types/Types'
+import { getEditorId } from '../utils/lib/EditorId'
+import { useBufferStore } from './useEditorBuffer'
 import { useLinks } from './useLinks'
 import { useSaveData } from './useSaveData'
 import { useSearch } from './useSearch'
@@ -20,16 +24,19 @@ import { useSlashCommands } from './useSlashCommands'
 import { useTags } from './useTags'
 
 export const useUpdater = () => {
+  const isOnboarding = useOnboard((s) => s.isOnboarding)
   const setSlashCommands = useDataStore((state) => state.setSlashCommands)
   const setContent = useContentStore((store) => store.setContent)
   const setServices = useSyncStore((store) => store.setServices)
   const setTemplates = useSyncStore((store) => store.setTemplates)
   const setMetadata = useContentStore((store) => store.setMetadata)
-  const { generateSlashCommands } = useSlashCommands()
-  const isOnboarding = useOnboard((s) => s.isOnboarding)
-
+  const getNoteContent = useContentStore((store) => store.getContent)
+  const replaceContent = useEditorStore((store) => store.loadNodeAndReplaceContent)
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
+  const add2Buffer = useBufferStore((s) => s.add)
+
   const { saveData } = useSaveData()
+  const { generateSlashCommands } = useSlashCommands()
 
   const updater = () => {
     const slashCommands = generateSlashCommands(useSnippetStore.getState().snippets, useSyncStore.getState().templates)
@@ -52,7 +59,41 @@ export const useUpdater = () => {
       updateTagsFromContent(noteId, content)
       // updateNodeTodos(noteId, getTodosFromContent(content))
 
-      updateDocument('node', noteId, content, getTitleFromNoteId(noteId, { includeArchived: true, includeShared: true}))
+      updateDocument(
+        'node',
+        noteId,
+        content,
+        getTitleFromNoteId(noteId, { includeArchived: true, includeShared: true })
+      )
+    }
+  }
+
+  const updateTodoInContent = (noteId: string, todos: Array<TodoType>) => {
+    const nodeContent = getNoteContent(noteId)
+
+    if (nodeContent.content) {
+      const todosToReplace = todos
+      const newContent = nodeContent.content.map((block) => {
+        const todoIndex = todosToReplace.findIndex((td) => td.entityId === block.entityId)
+        if (todoIndex >= 0) {
+          const todo = todosToReplace[todoIndex]
+          todosToReplace.splice(todoIndex, 1)
+          return todo.content[0]
+        }
+        return block
+      })
+
+      const newTodoContent = todosToReplace.length > 0 ? todosToReplace.map((todo) => todo.content[0]) : []
+      const contentWithNewTodos = [...newContent, ...newTodoContent]
+
+      add2Buffer(noteId, contentWithNewTodos)
+      const currentNode = useEditorStore.getState().node
+
+      if (currentNode.nodeid === noteId) {
+        const editorId = getEditorId(noteId, false)
+        const editor = getPlateEditorRef(editorId)
+        replaceContent(currentNode, { type: 'editor', content: contentWithNewTodos })
+      }
     }
   }
 
@@ -126,5 +167,5 @@ export const useUpdater = () => {
     } else console.error('Not authenticated, not fetching default services')
   }
 
-  return { updater, updateServices, updateFromContent, getTemplates, updateDefaultServices }
+  return { updater, updateTodoInContent, updateServices, updateFromContent, getTemplates, updateDefaultServices }
 }

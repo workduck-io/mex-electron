@@ -40,7 +40,7 @@ type TodoStoreType = {
   updateStatusOfTodo: (nodeid: string, todoId: string, status: TodoStatus) => void
 }
 
-const useTodoStore = create<TodoStoreType>()(
+const useTodoStore = create<TodoStoreType>(
   devtools((set, get) => ({
     todos: {},
     initTodos: (todos) => {
@@ -56,17 +56,17 @@ const useTodoStore = create<TodoStoreType>()(
       }
       const todos = get().todos ?? {}
 
-      const nodeTodos = todos?.[nodeid]?.filter((existingTodo) => existingTodo.entityId !== todo.entityId)
+      const nodeTodos = todos?.[nodeid]?.filter((existingTodo) => existingTodo.entityId !== todo.entityId) || []
 
       set({ todos: { ...todos, [nodeid]: [todo, ...nodeTodos] } })
     },
     getTodoOfNodeWithoutCreating: (nodeid, todoId) => {
-      const todo = get().todos?.[nodeid]?.find((todo) => todo.id === todoId && nodeid === todo.nodeid)
+      const todo = get().todos?.[nodeid]?.find((todo) => todo.entityId === todoId && nodeid === todo.nodeid)
       return todo
     },
 
     getTodoOfNode: (nodeid, todoId) => {
-      const todo = get().todos?.[nodeid]?.find((todo) => todo.id === todoId && nodeid === todo.nodeid)
+      const todo = get().todos?.[nodeid]?.find((todo) => todo.entityId === todoId && nodeid === todo.nodeid)
       // mog('getTodoOfNode', { nodeid, todoId, todo })
       // if (!todo) {
       //   const newTodo = createTodo(nodeid, todoId)
@@ -130,7 +130,7 @@ const useTodoStore = create<TodoStoreType>()(
 
       const todos = currentTodos?.[nodeid] ?? []
       const newTodos = todos.map((t) =>
-        t.id === todo.id && todo.nodeid === nodeid ? { ...todo, updatedAt: Date.now() } : t
+        t.entityId === todo.entityId && todo.nodeid === nodeid ? { ...todo, updatedAt: Date.now() } : t
       )
       // mog('currentTodos', { newTodos, nodeid, todos })
       set({ todos: { ...currentTodos, [nodeid]: newTodos } })
@@ -152,7 +152,7 @@ const useTodoStore = create<TodoStoreType>()(
       const nodeTodos = []
 
       todosContent.forEach((content) => {
-        const todo = nTodo.find((todo) => todo.id === content.id && nodeid === todo.nodeid)
+        const todo = nTodo.find((todo) => todo.entityId === content.entityId && nodeid === todo.nodeid)
         const tags = getTagsFromContent([content])
         const mentions = getMentionsFromContent([content])
         // mog('replaceContent', { nodeid, tags, mentions, todosContent, nodeTodos, todo, content })
@@ -165,11 +165,11 @@ const useTodoStore = create<TodoStoreType>()(
         }
       })
 
-      const leftOutTodos = nTodo.filter((todo) => !nodeTodos.find((t) => t.id === todo.id && nodeid === t.nodeid))
+      const leftOutTodos = nTodo.filter((todo) => !nodeTodos.find((t) => t.entityId === todo.entityId && nodeid === t.nodeid))
 
       const reminders = useReminderStore.getState().reminders
       const setReminders = useReminderStore.getState().setReminders
-      const newReminders = reminders.filter((reminder) => !leftOutTodos.find((todo) => todo.id === reminder.todoid))
+      const newReminders = reminders.filter((reminder) => !leftOutTodos.find((todo) => todo.entityId === reminder.todoid))
 
       setReminders(newReminders)
       const newtodos = { ...todos, [nodeid]: nodeTodos }

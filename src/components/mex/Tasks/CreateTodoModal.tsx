@@ -13,10 +13,9 @@ import { TodoType } from '@editor/Components/Todo/types'
 import useEntityAPIs from '@hooks/useEntityAPIs'
 import { TaskEditorWrapper } from './TaskEditor/styled'
 import { mog } from '@utils/lib/helper'
-import { getPlateEditorRef } from '@udecode/plate'
-import useTodoBufferStore from '@hooks/useTodoBufferStore'
 import toast from 'react-hot-toast'
-import { useContentStore } from '@store/useContentStore'
+import { useUpdater } from '@hooks/useUpdater'
+import { useEditorBuffer } from '@hooks/useEditorBuffer'
 
 const CreateTodoModal = () => {
   const open = useModalStore((store) => store.open)
@@ -26,10 +25,12 @@ const CreateTodoModal = () => {
   const { createTodo } = useEntityAPIs()
   const setModalData = useModalStore((store) => store.setData)
   const isOpen = open === ModalsType.todo
-  const updateTodoContentInEditor = useContentStore((store) => store.updateTodosContent)
+  const { updateTodoInContent } = useUpdater()
+  const { saveAndClearBuffer } = useEditorBuffer()
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
+    mog('WHAT IS THE STATUS', { isOpen, open })
     if (isOpen) {
       const dailyNotesId = getNodeidFromPath(BASE_TASKS_PATH)
       const todo = useModalStore.getState().data
@@ -49,6 +50,8 @@ const CreateTodoModal = () => {
         addTodoInBuffer(dailyNotesId, todo)
         setModalData(todo)
       }
+    } else {
+      setModalData(undefined)
     }
   }, [isOpen])
 
@@ -63,19 +66,21 @@ const CreateTodoModal = () => {
   }
 
   const onCreateTask = async () => {
+    setIsLoading(true)
     const modalData = useModalStore.getState().data
     const todo = getTodoFromBuffer(modalData.nodeid, modalData.entityId)
     try {
-      setIsLoading(true)
       const savedTodo = await createTodo(todo)
 
       if (savedTodo) {
         clearAndSaveTodo(savedTodo)
-        updateTodoContentInEditor(savedTodo.nodeid, [savedTodo])
+        updateTodoInContent(savedTodo.nodeid, [savedTodo])
+        saveAndClearBuffer()
         toast('Task created!')
       }
     } catch (err) {
       toast('Error occured while creating Task')
+      mog('Error occured while creating Task', { err })
     } finally {
       setIsLoading(false)
       setOpen(undefined)
@@ -115,7 +120,6 @@ const CreateTodoModal = () => {
 
 const NewTodoSection = ({ onSelectNote }: { onSelectNote?: (item: QuickLink) => void }) => {
   const todo = useModalStore((store) => store.data)
-  const todos = useTodoBufferStore((store) => store.todosBuffer)
 
   const { updateNoteTodo } = useTodoBuffer()
 
@@ -130,7 +134,6 @@ const NewTodoSection = ({ onSelectNote }: { onSelectNote?: (item: QuickLink) => 
   }
 
   if (!todo) return <></>
-  mog('TODO IS', { todo, ed: getPlateEditorRef() })
 
   return (
     <TaskEditorWrapper>

@@ -388,7 +388,11 @@ export const useApi = () => {
             const localILinks = useDataStore.getState().ilinks
             const { toUpdateLocal } = iLinksToUpdate(localILinks, nodes)
 
-            await runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid, { withEntities: true })))
+            runBatch(
+              toUpdateLocal.map((ilink) =>
+                getDataAPI(ilink.nodeid, { isUpdate: true, isRefresh: true, withEntities: true })
+              )
+            )
           }
 
           // setNamespaces(namespaces)
@@ -568,7 +572,6 @@ export const useApi = () => {
     const url = apiURLs.view.getAllViews
 
     if (isRequestedWithin(5, url)) {
-      console.log(API_CACHE_LOG)
       return
     }
 
@@ -647,7 +650,7 @@ export const useApi = () => {
 
           runBatch(
             toUpdateLocal.map((ilink) =>
-              getDataAPI(ilink.nodeid, false, false, false).then((data) => {
+              getDataAPI(ilink.nodeid, { isRefresh: false, isShared: false, isUpdate: false }).then((data) => {
                 mog('toUpdateLocal', { ilink, data })
                 setContent(ilink.nodeid, data.content, data.metadata)
                 updateDocument('archive', ilink.nodeid, data.content, getTitleFromPath(ilink.path))
