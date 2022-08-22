@@ -8,6 +8,7 @@ import { checkIsEqual } from '@utils/lib/objects'
 import { NodeEditorContent } from '../types/Types'
 import { serializeTodo } from '@utils/lib/serialize'
 import { mog } from '@utils/lib/helper'
+import { getMentionsFromContent, getTagsFromContent } from '@utils/lib/content'
 
 export const useTodoBuffer = () => {
   const { updateTodos } = useEntityAPIs()
@@ -31,12 +32,18 @@ export const useTodoBuffer = () => {
     const existingTodos = getExistingTodos(noteId)
 
     const todoBuffer = todos.reduce((prev, todoContent) => {
-      const todo = existingTodos[todoContent.entityId] || createDefaultTodo(noteId, [todoContent])
+      const todo = existingTodos[todoContent.entityId] || createDefaultTodo(noteId, [todoContent]);
+      const tags = getTagsFromContent([todoContent])
+      const mentions = getMentionsFromContent([todoContent])
 
       if (todo)
         return {
           ...prev,
-          [todo.entityId]: { ...todo, content: [todoContent] }
+          [todo.entityId]: { 
+            ...todo, 
+            content: [todoContent], 
+            entityMetadata: { ...todo.entityMetadata, tags, mentions} 
+          }
         }
     }, {})
 

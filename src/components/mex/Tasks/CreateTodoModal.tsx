@@ -1,6 +1,6 @@
 import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
 import useModalStore, { ModalsType } from '@store/useModalStore'
-import { Button, LoadingButton } from '@workduck-io/mex-components'
+import { Button, DisplayShortcut, LoadingButton } from '@workduck-io/mex-components'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import { QuickLink } from '../NodeSelect/NodeSelect'
@@ -16,6 +16,7 @@ import { mog } from '@utils/lib/helper'
 import toast from 'react-hot-toast'
 import { useUpdater } from '@hooks/useUpdater'
 import { useEditorBuffer } from '@hooks/useEditorBuffer'
+import { tinykeys } from '@workduck-io/tinykeys'
 
 const CreateTodoModal = () => {
   const open = useModalStore((store) => store.open)
@@ -30,7 +31,6 @@ const CreateTodoModal = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    mog('WHAT IS THE STATUS', { isOpen, open })
     if (isOpen) {
       const dailyNotesId = getNodeidFromPath(BASE_TASKS_PATH)
       const todo = useModalStore.getState().data
@@ -55,6 +55,20 @@ const CreateTodoModal = () => {
     }
   }, [isOpen])
 
+   useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      '$mod+Enter': (event) => {
+        if (open) {
+          event.preventDefault()
+          onCreateTask()
+        }
+      }
+    })
+    return () => {
+      unsubscribe()
+    }
+  }, [open])
+
   if (!isOpen) return <></>
 
   const onRequestClose = () => {
@@ -74,7 +88,7 @@ const CreateTodoModal = () => {
 
       if (savedTodo) {
         clearAndSaveTodo(savedTodo)
-        updateTodoInContent(savedTodo.nodeid, [savedTodo])
+        updateTodoInContent(savedTodo.nodeid, [savedTodo], true)
         saveAndClearBuffer()
         toast('Task created!')
       }
@@ -110,7 +124,7 @@ const CreateTodoModal = () => {
             onClick={onCreateTask}
             disabled={false}
           >
-            Add
+            Add <DisplayShortcut shortcut={'$mod+Enter'} />
           </LoadingButton>
         </ModalControls>
       </ModalSection>

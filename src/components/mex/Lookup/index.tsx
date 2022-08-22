@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import useModalStore, { ModalsType } from '@store/useModalStore'
 import toast from 'react-hot-toast'
 import Modal from 'react-modal'
 import styled from 'styled-components'
 
-import { mog } from '@workduck-io/mex-utils'
 import { tinykeys } from '@workduck-io/tinykeys'
 
 import { useNavigation } from '../../../hooks/useNavigation'
@@ -54,7 +54,8 @@ const InputWrapper = styled.div`
 `
 
 const Lookup = () => {
-  const [open, setOpen] = useState(false)
+  const setModalOpen = useModalStore((store) => store.toggleOpen)
+  const open = useModalStore((store) => store.open)
   const [tempClose, setTempClose] = useState(false)
   const isOnboarding = useOnboard((s) => s.isOnboarding)
   const setStep = useOnboard((s) => s.setStep)
@@ -66,12 +67,12 @@ const Lookup = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const openModal = () => {
-    setOpen(true)
+    setModalOpen(ModalsType.lookup)
     // searchInput.current.focus();
   }
 
   const closeModal = () => {
-    setOpen(false)
+    setModalOpen(undefined)
   }
 
   const { shortcutDisabled, shortcutHandler } = useKeyListener()
@@ -130,13 +131,18 @@ const Lookup = () => {
 
   const handleCreateItem = (inputValue: QuickLink) => {
     if (tempClose) return
-    mog('VALUE IS', { inputValue })
     createNewNote({ path: inputValue.value, namespace: inputValue?.namespace })
     closeModal()
   }
 
   return (
-    <StyledModal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
+    <StyledModal
+      className="ModalContent"
+      overlayClassName="ModalOverlay"
+      onRequestClose={closeModal}
+      isOpen={open === ModalsType.lookup}
+    >
+      <h1 style={{ textAlign: 'center' }}>Lookup</h1>
       <InputWrapper>
         <Brackets>[[</Brackets>
         <NodeSelect

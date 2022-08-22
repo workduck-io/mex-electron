@@ -35,6 +35,7 @@ const Tasks = () => {
   const currentView = useViewStore((store) => store.currentView)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
   const { enableShortcutHandler } = useEnableShortcutHandler()
+  const isModalOpen = useModalStore((store) => store.open)
 
   const { goTo } = useRouting()
 
@@ -66,8 +67,6 @@ const Tasks = () => {
   } = useTodoKanban()
 
   const board = useMemo(() => getTodoBoard(), [nodesTodo, globalJoin, currentFilters])
-
-  mog('Selected board is', { board })
 
   const selectedRef = useRef<HTMLDivElement>(null)
   const handleCardMove = (card, source, destination) => {
@@ -224,100 +223,108 @@ const Tasks = () => {
   }, [selectedCard])
 
   useEffect(() => {
-    const unsubscribe = tinykeys(window, {
-      Escape: (event) => {
-        enableShortcutHandler(() => {
+    const shorcutConfig = () => {
+      mog('CALLED!!', { isModalOpen })
+      if (isModalOpen !== undefined) return {}
+
+      return {
+        Escape: (event) => {
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            if (selectedCard) {
+              setSelectedCard(null)
+            }
+            // else {
+            // mog('LOAD NODE')
+            // // const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
+            // // loadNode(nodeid)
+            // // goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+            // }
+          })
+        },
+
+        'Shift+ArrowRight': (event) => {
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            handleCardMoveNext()
+          })
+        },
+
+        'Shift+ArrowLeft': (event) => {
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            handleCardMovePrev()
+          })
+        },
+
+        ArrowRight: (event) => {
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            selectNewCard('right')
+          })
+        },
+
+        ArrowLeft: (event) => {
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            selectNewCard('left')
+          })
+        },
+        Enter: (event) => {
           event.preventDefault()
+          if (isOnSearchFilter()) return
           if (selectedCard) {
-            setSelectedCard(null)
+            setTodoModalData(selectedCard.todo)
+            toggleModal(ModalsType.todo)
           }
-          // else {
-          // mog('LOAD NODE')
-          // // const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
-          // // loadNode(nodeid)
-          // // goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-          // }
-        })
-      },
+        },
+        ArrowDown: (event) => {
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            selectNewCard('down')
+          })
+        },
 
-      'Shift+ArrowRight': (event) => {
-        enableShortcutHandler(() => {
-          event.preventDefault()
-          handleCardMoveNext()
-        })
-      },
+        ArrowUp: (event) => {
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            selectNewCard('up')
+          })
+        },
 
-      'Shift+ArrowLeft': (event) => {
-        enableShortcutHandler(() => {
+        '$mod+1': (event) => {
           event.preventDefault()
-          handleCardMovePrev()
-        })
-      },
+          changeSelectedPriority(PriorityType.low)
+        },
 
-      ArrowRight: (event) => {
-        enableShortcutHandler(() => {
+        '$mod+2': (event) => {
           event.preventDefault()
-          selectNewCard('right')
-        })
-      },
+          changeSelectedPriority(PriorityType.medium)
+        },
 
-      ArrowLeft: (event) => {
-        enableShortcutHandler(() => {
+        '$mod+3': (event) => {
           event.preventDefault()
-          selectNewCard('left')
-        })
-      },
-      Enter: (event) => {
-        event.preventDefault()
-        if (isOnSearchFilter()) return
-        if (selectedCard) {
-          setTodoModalData(selectedCard.todo)
-          toggleModal(ModalsType.todo)
+          changeSelectedPriority(PriorityType.high)
+        },
+
+        '$mod+0': (event) => {
+          event.preventDefault()
+          changeSelectedPriority(PriorityType.noPriority)
+        },
+
+        '$mod+Enter': (event) => {
+          event.preventDefault()
+          onNavigateToNode()
         }
-      },
-      ArrowDown: (event) => {
-        enableShortcutHandler(() => {
-          event.preventDefault()
-          selectNewCard('down')
-        })
-      },
-
-      ArrowUp: (event) => {
-        enableShortcutHandler(() => {
-          event.preventDefault()
-          selectNewCard('up')
-        })
-      },
-
-      '$mod+1': (event) => {
-        event.preventDefault()
-        changeSelectedPriority(PriorityType.low)
-      },
-
-      '$mod+2': (event) => {
-        event.preventDefault()
-        changeSelectedPriority(PriorityType.medium)
-      },
-
-      '$mod+3': (event) => {
-        event.preventDefault()
-        changeSelectedPriority(PriorityType.high)
-      },
-
-      '$mod+0': (event) => {
-        event.preventDefault()
-        changeSelectedPriority(PriorityType.noPriority)
-      },
-
-      '$mod+Enter': (event) => {
-        event.preventDefault()
-        onNavigateToNode()
       }
-    })
+    }
+
+    const unsubscribe = tinykeys(window, shorcutConfig())
+
     return () => {
       unsubscribe()
     }
-  }, [board, selectedCard])
+  }, [board, selectedCard, isModalOpen])
 
   useEffect(() => {
     if (match && match.params && match.params.viewid) {

@@ -1,4 +1,4 @@
-import create from 'zustand'
+import create, { StoreApi } from 'zustand'
 import createContext from 'zustand/context'
 import { ReturnType, ActionGroup } from '@workduck-io/action-request-helper'
 import { devtools } from 'zustand/middleware'
@@ -81,116 +81,111 @@ type ActionStoreType = {
   clear: () => void
 }
 
-export const { Provider, useStore: useActionStore } = createContext<ActionStoreType>()
+export const { Provider, useStore: useActionStore } = createContext<StoreApi<ActionStoreType>>()
 
 export const actionStore = () =>
-  create<ActionStoreType>(
-    devtools(
-      (set, get) =>
-        ({
-          isSubmitting: false,
-          setIsSubmitting: (isSubmitting: boolean) => set({ isSubmitting }),
+  create<ActionStoreType>()((set, get) => ({
+    isSubmitting: false,
+    setIsSubmitting: (isSubmitting: boolean) => set({ isSubmitting }),
 
-          element: undefined,
-          setElement: (element: any) => set({ element }),
+    element: undefined,
+    setElement: (element: any) => set({ element }),
 
-          isLoading: false,
-          setIsLoading: (isLoading: boolean) => set({ isLoading }),
+    isLoading: false,
+    setIsLoading: (isLoading: boolean) => set({ isLoading }),
 
-          selectionCache: {},
-          getSelectionCache: (actionId: string) => get().selectionCache[actionId],
-          setSelectionCache: (selectionCache: Record<string, any>) => set({ selectionCache }),
-          addSelectionInCache: (actionId, selection) => {
-            const selectionCache = get().selectionCache
-            set({
-              selectionCache: { ...selectionCache, [actionId]: selection }
-            })
-          },
+    selectionCache: {},
+    getSelectionCache: (actionId: string) => get().selectionCache[actionId],
+    setSelectionCache: (selectionCache: Record<string, any>) => set({ selectionCache }),
+    addSelectionInCache: (actionId, selection) => {
+      const selectionCache = get().selectionCache
+      set({
+        selectionCache: { ...selectionCache, [actionId]: selection }
+      })
+    },
 
-          setSelectedValue: (value) => set({ selectedValue: value }),
+    setSelectedValue: (value) => set({ selectedValue: value }),
 
-          initActionWithElement: (actionContext: any) => {
-            if (actionContext?.selections) get().setSelectionCache(actionContext?.selections)
+    initActionWithElement: (actionContext: any) => {
+      if (actionContext?.selections) get().setSelectionCache(actionContext?.selections)
 
-            get().initAction(actionContext?.actionGroupId, actionContext?.actionId)
-          },
+      get().initAction(actionContext?.actionGroupId, actionContext?.actionId)
+    },
 
-          initAction: (actionGroupId, actionId) => {
-            const actionConfigs = useActionsCache?.getState()?.groupedActions?.[actionGroupId]
-            const config = useActionsCache?.getState()?.actionGroups?.[actionGroupId]
+    initAction: (actionGroupId, actionId) => {
+      const actionConfigs = useActionsCache?.getState()?.groupedActions?.[actionGroupId]
+      const config = useActionsCache?.getState()?.actionGroups?.[actionGroupId]
 
-            const action = actionConfigs?.[actionId]
+      const action = actionConfigs?.[actionId]
 
-            const preActionId = action?.preActionId
+      const preActionId = action?.preActionId
 
-            const renderType = action?.form ? ReturnType.NONE : action?.returnType
-            const subType: ActionSubType = action?.form ? 'form' : undefined
+      const renderType = action?.form ? ReturnType.NONE : action?.returnType
+      const subType: ActionSubType = action?.form ? 'form' : undefined
 
-            if (subType) get().setView('form')
+      if (subType) get().setView('form')
 
-            let actionIds: Array<string> | undefined
+      let actionIds: Array<string> | undefined
 
-            // * Get sequence of all pre-actions required to perform this action
-            if (preActionId) {
-              actionIds = getActionIds(actionId, actionConfigs, [])
-            }
+      // * Get sequence of all pre-actions required to perform this action
+      if (preActionId) {
+        actionIds = getActionIds(actionId, actionConfigs, [])
+      }
 
-            // * Final component will be rendered based on renderType (or with response item type)
-            const activeAction = {
-              id: actionId,
-              actionGroupId,
-              icon: config?.icon,
-              name: action?.name,
-              subType,
-              actionIds,
-              renderType,
-              size: actionIds?.length ?? 0
-            }
+      // * Final component will be rendered based on renderType (or with response item type)
+      const activeAction = {
+        id: actionId,
+        actionGroupId,
+        icon: config?.icon,
+        name: action?.name,
+        subType,
+        actionIds,
+        renderType,
+        size: actionIds?.length ?? 0
+      }
 
-            set({ activeAction })
-          },
+      set({ activeAction })
+    },
 
-          setActionToPerform: (perfomerActionId: string) => {
-            set({ actionToPerform: perfomerActionId })
-          },
-          getPrevActionValue: (actionId: string) => {
-            const activeAction = get().activeAction
-            const groupedActions = useActionsCache?.getState()?.groupedActions
+    setActionToPerform: (perfomerActionId: string) => {
+      set({ actionToPerform: perfomerActionId })
+    },
+    getPrevActionValue: (actionId: string) => {
+      const activeAction = get().activeAction
+      const groupedActions = useActionsCache?.getState()?.groupedActions
 
-            const actionConfig = groupedActions?.[activeAction?.actionGroupId]?.[actionId]
+      const actionConfig = groupedActions?.[activeAction?.actionGroupId]?.[actionId]
 
-            const preActionId = actionConfig?.preActionId
-            const cache = get().selectionCache
+      const preActionId = actionConfig?.preActionId
+      const cache = get().selectionCache
 
-            // set({ activeAction })
+      // set({ activeAction })
 
-            // * If there's a preAction of this action, get the value from cache
-            if (preActionId) return cache?.[preActionId]
+      // * If there's a preAction of this action, get the value from cache
+      if (preActionId) return cache?.[preActionId]
 
-            // * If this is a global action, get the value from cache
-            return cache?.[actionId]
-          },
+      // * If this is a global action, get the value from cache
+      return cache?.[actionId]
+    },
 
-          // Mode for list if false, the editor takes full screen
-          isMenuOpen: false,
-          setIsMenuOpen: (value: boolean) => set({ isMenuOpen: value }),
+    // Mode for list if false, the editor takes full screen
+    isMenuOpen: false,
+    setIsMenuOpen: (value: boolean) => set({ isMenuOpen: value }),
 
-          viewData: undefined,
-          setViewData: (value: ViewDataType) => set({ viewData: value }),
+    viewData: undefined,
+    setViewData: (value: ViewDataType) => set({ viewData: value }),
 
-          setView: (value: ViewType) => set({ view: value }),
+    setView: (value: ViewType) => set({ view: value }),
 
-          clear: () => {
-            set({
-              selectedValue: undefined,
-              activeAction: undefined,
-              actionToPerform: undefined,
-              selectionCache: {},
-              view: undefined,
-              viewData: undefined,
-              isMenuOpen: false
-            })
-          }
-        } as any)
-    )
-  )
+    clear: () => {
+      set({
+        selectedValue: undefined,
+        activeAction: undefined,
+        actionToPerform: undefined,
+        selectionCache: {},
+        view: undefined,
+        viewData: undefined,
+        isMenuOpen: false
+      })
+    }
+  }))

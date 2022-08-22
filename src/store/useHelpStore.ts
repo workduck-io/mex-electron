@@ -18,7 +18,7 @@ export const mergeShortcuts = (oldShortcuts, newShortcuts) => {
   return currentShortcuts
 }
 
-export const useHelpStore = create<HelpState>(
+export const useHelpStore = create<HelpState>()(
   persist(
     (set, get) => ({
       open: false,
@@ -33,7 +33,7 @@ export const useHelpStore = create<HelpState>(
       clearShortcuts: () => set({ shortcuts: defaultShortcuts }),
       changeShortcut: (keybinding) => {
         set(
-          produce((draft) => {
+          produce((draft: HelpState) => {
             Object.keys(draft.shortcuts).map((k) => {
               // * If key already exists, remove it
 

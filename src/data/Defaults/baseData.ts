@@ -80,7 +80,8 @@ export const getDefaultTodo = (): {
         children: [
           {
             id: generateTempId(),
-            text: ''
+            type: ELEMENT_PARAGRAPH,
+            text: '',
           }
         ]
       }

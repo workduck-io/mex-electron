@@ -25,7 +25,7 @@ type PortalStoreType = {
   updateConnectedPortals: (actionGroupId: string, serviceId: string, parentNodeId: string) => void
 }
 
-const usePortalStore = create<PortalStoreType>(
+const usePortalStore = create<PortalStoreType>()(
   devtools(
     persist(
       (set, get) => ({

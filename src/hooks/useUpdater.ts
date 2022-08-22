@@ -1,6 +1,5 @@
 import { useContentStore } from '@store/useContentStore'
 import useTodoStore from '@store/useTodoStore'
-import { getPlateEditorRef } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
 
 import { client } from '@workduck-io/dwindle'
@@ -15,7 +14,6 @@ import useOnboard from '../store/useOnboarding'
 import { useSnippetStore } from '../store/useSnippetStore'
 import { useSyncStore } from '../store/useSyncStore'
 import { NodeEditorContent } from '../types/Types'
-import { getEditorId } from '../utils/lib/EditorId'
 import { useBufferStore } from './useEditorBuffer'
 import { useLinks } from './useLinks'
 import { useSaveData } from './useSaveData'
@@ -57,7 +55,6 @@ export const useUpdater = () => {
       setMetadata(noteId, metadata)
       updateLinksFromContent(noteId, content)
       updateTagsFromContent(noteId, content)
-      // updateNodeTodos(noteId, getTodosFromContent(content))
 
       updateDocument(
         'node',
@@ -68,30 +65,32 @@ export const useUpdater = () => {
     }
   }
 
-  const updateTodoInContent = (noteId: string, todos: Array<TodoType>) => {
+  const updateTodoInContent = (noteId: string, todos: Array<TodoType>, bufferEditorContent = false) => {
     const nodeContent = getNoteContent(noteId)
 
     if (nodeContent.content) {
-      const todosToReplace = todos
-      const newContent = nodeContent.content.map((block) => {
-        const todoIndex = todosToReplace.findIndex((td) => td.entityId === block.entityId)
+      const todosToReplace = [...todos]
+
+      const newContent = nodeContent.content?.map((block) => {
+        const todoIndex = todosToReplace?.findIndex((td) => td.entityId === block.entityId)
         if (todoIndex >= 0) {
           const todo = todosToReplace[todoIndex]
           todosToReplace.splice(todoIndex, 1)
           return todo.content[0]
         }
+
         return block
       })
 
-      const newTodoContent = todosToReplace.length > 0 ? todosToReplace.map((todo) => todo.content[0]) : []
+      const newTodoContent = todosToReplace?.length > 0 ? todosToReplace.map((todo) => todo.content[0]) : []
       const contentWithNewTodos = [...newContent, ...newTodoContent]
 
-      add2Buffer(noteId, contentWithNewTodos)
+      if (bufferEditorContent) {
+        add2Buffer(noteId, contentWithNewTodos)
+      } else useContentStore.getState().setContent(noteId, contentWithNewTodos)
       const currentNode = useEditorStore.getState().node
 
       if (currentNode.nodeid === noteId) {
-        const editorId = getEditorId(noteId, false)
-        const editor = getPlateEditorRef(editorId)
         replaceContent(currentNode, { type: 'editor', content: contentWithNewTodos })
       }
     }

@@ -6,6 +6,7 @@ import { TodoType, TodoStatus, PriorityType, TodosType } from '../editor/Compone
 import { useReminderStore } from '../hooks/useReminders'
 import { NodeEditorContent } from '../types/Types'
 import { convertContentToRawText } from '../utils/search/parseData'
+import { produce } from 'immer'
 
 export const createDefaultTodo = (nodeid: string, content?: NodeEditorContent): TodoType => {
   const defaultTodo = getDefaultTodo()
@@ -80,7 +81,7 @@ const useTodoStore = create<TodoStoreType>(
     },
 
     updateTodosOfNode: (nodeId: string, todos: Array<TodoType>) => {
-      const allTodos = get().todos
+      const allTodos = get().todos || {}
       const nodeTodos = allTodos?.[nodeId]
 
       if (nodeTodos) {
@@ -89,10 +90,15 @@ const useTodoStore = create<TodoStoreType>(
           return updatedTodo || todo
         })
 
-        set({ todos: { ...allTodos, [nodeId]: newTodos } })
+        set(produce(draft => {
+          draft.todos[nodeId] = newTodos
+        }))
       } else {
-        set({ todos: { ...allTodos, [nodeId]: todos } })
+        set(produce(draft => {
+          draft.todos[nodeId] = todos
+        }))
       }
+
     },
 
     getAllTodos: () => {

@@ -41,7 +41,7 @@ type ActionsCacheType = {
   getConfig: (actionGroupId: string, actionId: string) => ActionHelperConfig | undefined
 }
 
-export const useActionsCache = create<ActionsCacheType>(
+export const useActionsCache = create<ActionsCacheType>()(
   persist(
     devtools(
       (set, get) =>

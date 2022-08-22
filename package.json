@@ -182,7 +182,7 @@
     "url": "^0.11.0",
     "use-debounce": "^7.0.0",
     "util": "^0.12.4",
-    "zustand": "^3.7.2"
+    "zustand": "^4.0.0"
   },
   "resolutions": {
     "**/@types/react": "^17.0.18",

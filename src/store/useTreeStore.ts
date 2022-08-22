@@ -10,7 +10,7 @@ interface TreeState {
   collapseNode: (path: string) => void
 }
 
-export const useTreeStore = create<TreeState>(
+export const useTreeStore = create<TreeState>()(
   devtools((set, get) => ({
     expanded: [],
     expandNode: (path: string) => {

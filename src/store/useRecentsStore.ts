@@ -16,7 +16,7 @@ export type RecentsType = {
   initRecents: (recentList: Array<string>) => void
 }
 
-export const useRecentsStore = create<RecentsType>(
+export const useRecentsStore = create<RecentsType>()(
   persist(
     devtools((set, get) => ({
       lastOpened: [],

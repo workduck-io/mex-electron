@@ -42,7 +42,7 @@ const useTodoBufferStore = create<TodoBufferStore>(
       if (newBuffer?.[noteId]) {
         const { [entityId]: removedItem, ...noteTodosBuffer } = newBuffer[noteId]
         set(produce(draft => {
-          draft.todosBuffer = { todosBuffer: { ...newBuffer, [noteId]: noteTodosBuffer || {} } }
+          draft.todosBuffer[noteId] = noteTodosBuffer || {}
         }))
       }
     },

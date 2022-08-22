@@ -7,6 +7,7 @@ import useTodoBufferStore from '@hooks/useTodoBufferStore'
 import { useHelpStore } from '@store/useHelpStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { useRecentsStore } from '@store/useRecentsStore'
+import useTodoStore from '@store/useTodoStore'
 import { useUserCacheStore } from '@store/useUserCacheStore'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { nanoid } from 'nanoid'
@@ -94,6 +95,7 @@ export const useAuthentication = () => {
   const { initActionPerfomerClient } = useActionsPerfomerClient()
   const setShowLoader = useLayoutStore((store) => store.setShowLoader)
   const clearRecents = useRecentsStore((store) => store.clear)
+  const clearTodos = useTodoStore((store) => store.clearTodos)
 
   const { goTo } = useRouting()
   const clearShortcuts = useHelpStore((store) => store.clearShortcuts)
@@ -409,6 +411,7 @@ export const useAuthentication = () => {
       clearActionCache()
       clearShortcuts()
       clearRecents()
+      clearTodos()
       clearTodosBuffer(), removeGoogleCalendarToken()
 
       addEventProperties({ [CustomEvents.LOGGED_IN]: false })

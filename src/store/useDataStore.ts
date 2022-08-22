@@ -12,7 +12,7 @@ import { getNodeIcon } from '../utils/lib/icons'
 import { removeLink } from '../utils/lib/links'
 import { getUniquePath } from '../utils/lib/paths'
 
-const useDataStore = create<DataStoreState>(
+const useDataStore = create<DataStoreState>()(
   persist(
     devtools((set, get) => ({
       // Tags

@@ -20,7 +20,7 @@ interface UserCacheState {
 /**
  * Use the user service to access users, it prefills the user cache
  */
-export const useUserCacheStore = create<UserCacheState>(
+export const useUserCacheStore = create<UserCacheState>()(
   persist(
     (set, get) => ({
       cache: [],

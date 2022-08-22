@@ -129,7 +129,7 @@ export const serializeSpecial: { [elementType: string]: (element: any, nodeid: s
     return {
       id: el.id || generateTempId(),
       elementType: el.type,
-      children: serializeContent(el.children ?? [], nodeid),
+      children: serializeContent([], nodeid),
       properties: {
         entityId: el.entityId
       }
@@ -229,7 +229,7 @@ export const deserializeContent = (sanatizedContent: any[]) => {
     if (el.children && el.children.length > 0) {
       nl.children = deserializeContent(el.children ?? [])
     } else {
-      nl.text = el.content
+      nl.text = el.content || ''
     }
 
     return nl

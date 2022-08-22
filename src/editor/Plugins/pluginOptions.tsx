@@ -25,7 +25,6 @@ import {
   MARK_ITALIC,
   MARK_STRIKETHROUGH,
   PlateEditor,
-  TEditor,
   getParentNode,
   getPluginType,
   insertEmptyCodeBlock,
@@ -42,7 +41,9 @@ import {
   autoformatFraction,
   autoformatSubscriptSymbols,
   autoformatSuperscriptNumbers,
-  autoformatSuperscriptSymbols
+  autoformatSuperscriptSymbols,
+  setNodes,
+  ExitBreakRule
 } from '@udecode/plate'
 
 import { ELEMENT_SYNC_BLOCK } from '../Components/SyncBlock'
@@ -51,8 +52,9 @@ import { generateTempId } from '../../data/Defaults/idPrefixes'
 import { uploadImageToWDCDN } from '../../utils/imageUpload'
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import { ELEMENT_INLINE_BLOCK } from '@editor/Components/InlineBlock/types'
-import { SOURCE_PLUGIN } from '@editor/Components/Blocks/createBlockModifierPlugin'
 import { ELEMENT_EXCALIDRAW } from '@editor/Components/Excalidraw'
+import { getDefaultTodo } from '@data/Defaults/baseData'
+import { mog } from '@utils/lib/helper'
 
 const preFormat = (editor: PlateEditor<Value>) => unwrapList(editor)
 
@@ -277,7 +279,7 @@ export const optionsExitBreakPlugin = {
           start: true,
           end: true,
           allow: KEYS_HEADING
-        }
+        },
       }
     ]
   }
@@ -308,7 +310,14 @@ export const optionsResetBlockTypePlugin = {
 export const optionsSelectOnBackspacePlugin = {
   options: {
     query: {
-      allow: [ELEMENT_IMAGE, ELEMENT_MEDIA_EMBED, ELEMENT_ACTION_BLOCK, ELEMENT_EXCALIDRAW, ELEMENT_INLINE_BLOCK]
+      allow: [
+        ELEMENT_IMAGE,
+        ELEMENT_MEDIA_EMBED,
+        ELEMENT_ACTION_BLOCK,
+        ELEMENT_TODO_LI,
+        ELEMENT_EXCALIDRAW,
+        ELEMENT_INLINE_BLOCK
+      ]
     }
   }
 }
@@ -317,7 +326,9 @@ export const optionsCreateNodeIdPlugin = {
   options: {
     reuseId: true,
     filterText: false,
-    idCreator: () => generateTempId(),
+    idCreator: () => {
+      return generateTempId()
+    },
     exclude: [ELEMENT_SYNC_BLOCK]
   }
 }

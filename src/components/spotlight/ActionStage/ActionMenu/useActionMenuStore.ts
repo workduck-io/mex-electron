@@ -1,4 +1,4 @@
-import create from 'zustand'
+import create, { StoreApi } from 'zustand'
 import { MenuPostActionConfig } from '@workduck-io/action-request-helper'
 import createContext from 'zustand/context'
 
@@ -32,7 +32,7 @@ type MenuActionStoreProps = {
   clearMenuStore: () => void
 }
 
-export const { Provider: MenuProvider, useStore: useActionMenuStore } = createContext<MenuActionStoreProps>()
+export const { Provider: MenuProvider, useStore: useActionMenuStore } = createContext<StoreApi<MenuActionStoreProps>>()
 
 export const actionMenuStore = () =>
   create<MenuActionStoreProps>((set, get) => ({
