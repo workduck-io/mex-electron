@@ -1,5 +1,4 @@
 // import addLine from '@iconify/icons-ri/add-line'
-import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import checkboxBlankCircleLine from '@iconify/icons-radix-icons/drag-handle-dots-2'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import refreshLine from '@iconify/icons-ri/refresh-line'
@@ -8,6 +7,7 @@ import { Icon } from '@iconify/react'
 import Tippy, { TippyProps } from '@tippyjs/react'
 import { default as TippyHeadless, TippyProps as TippyHeadlessProps } from '@tippyjs/react/headless'
 import {
+  DragHandleProps,
   ELEMENT_BLOCKQUOTE,
   ELEMENT_CODE_BLOCK,
   ELEMENT_H1,
@@ -25,15 +25,13 @@ import {
   ELEMENT_UL,
   withDraggables
 } from '@udecode/plate'
-import React from 'react'
-import { useFocused } from 'slate-react'
-import styled from 'styled-components'
+import React, { useEffect, useState } from 'react'
+import styled, { css } from 'styled-components'
 import { RelativeTime } from '../../components/mex/RelativeTime'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
 import { IS_DEV } from '../../data/Defaults/dev_'
 import useBlockStore from '../../store/useBlockStore'
 import { useEditorStore } from '../../store/useEditorStore'
-import { mog } from '../../utils/lib/helper'
 
 const StyledTip = styled.div`
   display: flex;
@@ -47,9 +45,16 @@ const StyledTip = styled.div`
   border-radius: 0.25rem;
 `
 
-export const StyledDraggable = styled(StyledTip)`
+export const StyledDraggable = styled(StyledTip)<{ show?: boolean }>`
+  display: none;
   padding: ${({ theme }) => theme.spacing.tiny};
   background-color: ${({ theme }) => theme.colors.gray[8]};
+
+  ${({ show }) =>
+    show &&
+    css`
+      display: flex;
+    `}
 `
 
 export const ActionDraggableIcon = styled.div`
@@ -182,6 +187,41 @@ export const DraggerContent = ({ element }: any) => {
   )
 }
 
+const DragHandle = ({ className, styles, element }: DragHandleProps) => {
+  const [showHandle, setShowHandle] = useState(true)
+  const setIsBlockMode = useBlockStore.getState().setIsBlockMode
+
+  useEffect(() => {
+    const keyboardHandler = () => {
+      setShowHandle(false)
+    }
+
+    window.addEventListener('keydown', keyboardHandler)
+
+    return () => window.removeEventListener('keydown', keyboardHandler)
+  }, [])
+
+  useEffect(() => {
+    const mouseHandler = () => {
+      setShowHandle(true)
+    }
+
+    window.addEventListener('mousemove', mouseHandler)
+
+    return () => window.removeEventListener('mousemove', mouseHandler)
+  }, [])
+
+  return (
+    <Tippy {...grabberTooltipProps} content={<GrabberTooltipContent element={element} />}>
+      <Tippy theme="mex" placement="top" content={<DraggerContent element={element} />}>
+        <StyledDraggable onClick={() => setIsBlockMode(true)} className={className} css={styles} show={showHandle}>
+          <Icon icon={checkboxBlankCircleLine} />
+        </StyledDraggable>
+      </Tippy>
+    </Tippy>
+  )
+}
+
 export const withStyledDraggables = (components: any) => {
   const isBlockMode = useBlockStore.getState().isBlockMode
   const isEditing = useEditorStore.getState().isEditing
@@ -216,17 +256,7 @@ export const withStyledDraggables = (components: any) => {
         // ELEMENT_ACTION_BLOCK
       ],
       onRenderDragHandle: ({ className, styles, element }) => {
-        const setIsBlockMode = useBlockStore.getState().setIsBlockMode
-
-        return (
-          <Tippy {...grabberTooltipProps} content={<GrabberTooltipContent element={element} />}>
-            <Tippy theme="mex" placement="top" content={<DraggerContent element={element} />}>
-              <StyledDraggable onClick={() => setIsBlockMode(true)} className={className} css={styles}>
-                <Icon icon={checkboxBlankCircleLine} />
-              </StyledDraggable>
-            </Tippy>
-          </Tippy>
-        )
+        return <DragHandle className={className} styles={styles} element={element} />
       }
     },
     {

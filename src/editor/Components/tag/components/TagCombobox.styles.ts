@@ -26,10 +26,6 @@ export const ComboboxItem = styled.div`
   }
   cursor: pointer;
 
-  :hover {
-    background-color: ${({ theme }) => theme.colors.background.highlight};
-  }
-
   & > svg {
     color: ${({ theme }) => theme.colors.gray[4]};
   }

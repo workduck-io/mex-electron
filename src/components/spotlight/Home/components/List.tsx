@@ -1,7 +1,7 @@
 import { ActiveItem, CategoryType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { ItemActionType, ListItemType } from '../../SearchResults/types'
 import { ActionItem, StyledList } from '../styled'
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { findIndex, groupBy } from 'lodash'
 import { Virtuoso } from 'react-virtuoso'
 
@@ -80,6 +80,8 @@ const List = ({
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setCurrentListItem = useSpotlightEditorStore((store) => store.setCurrentListItem)
 
+  const [showHover, setShowHover] = useState(false)
+
   const listStyle = useMemo(() => {
     const style = { width: '55%', marginRight: '0.5rem' }
 
@@ -137,6 +139,8 @@ const List = ({
 
   useEffect(() => {
     const handler = (event) => {
+      setShowHover(false)
+
       if (event.key === KEYBOARD_KEYS.ArrowUp) {
         event.preventDefault()
 
@@ -390,12 +394,15 @@ const List = ({
             onDoubleClick: () => {
               handleDoubleClick(index)
               setInput('')
+            },
+            onPointerMove: () => {
+              setShowHover(true)
             }
           }
           return (
             <ActionItem key={index} {...handlers}>
               {item.category !== lastItem?.category && <ActionTitle key={item.category}>{item.category}</ActionTitle>}
-              <Item active={active} key={item.id} item={item} />
+              <Item active={active} key={item.id} item={item} showHover={showHover} />
             </ActionItem>
           )
         }}

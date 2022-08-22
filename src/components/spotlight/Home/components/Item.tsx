@@ -56,9 +56,9 @@ export const ShortcutText = styled.div`
   }
 `
 
-type ItemProps = { item: ListItemType; active?: boolean; onClick?: () => void }
+type ItemProps = { item: ListItemType; active?: boolean; onClick?: () => void; showHover?: boolean }
 
-const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
+const Item: React.FC<ItemProps> = ({ item, active, onClick, showHover }) => {
   const theme = useTheme()
   const { search, selection, activeItem } = useSpotlightContext()
 
@@ -66,7 +66,7 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick }) => {
   const { mexIcon } = getIconType(item?.icon ?? 'codicon:circle-filled')
 
   return (
-    <StyledRow background={active} onClick={onClick}>
+    <StyledRow background={active} onClick={onClick} showHover={showHover}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Dot active={active ? 'true' : ''} />
         <div style={{ display: 'flex', alignItems: 'center', marginRight: '1rem' }}>

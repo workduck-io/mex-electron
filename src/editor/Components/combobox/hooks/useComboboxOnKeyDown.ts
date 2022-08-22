@@ -1,4 +1,5 @@
 import { PlateEditor } from '@udecode/plate'
+import { findIndex, groupBy } from 'lodash'
 import { insertText, KeyboardHandler, select } from '@udecode/plate-core'
 import { mog } from '../../../../utils/lib/helper'
 import { useEditorStore } from '../../../../store/useEditorStore'
@@ -133,29 +134,41 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
       comboboxKey !== ComboboxKey.SLASH_COMMAND
     )
 
+    const groups = Object.keys(groupBy(items, (n) => n.type))
+    const indexes = groups.map((gn) => findIndex(items, (n: any) => n.type === gn))
+
     if (isOpen) {
       if (!isBlockTriggered) {
         if (e.key === 'ArrowDown') {
           e.preventDefault()
 
-          const newIndex = getNextWrappingIndex(1, itemIndex, items.length, () => undefined, false)
-
-          // * Replace current searched text with list item
-          // replaceFragment(editor, targetRange, items[newIndex].text)
-
-          return setItemIndex(newIndex)
+          if (e.metaKey) {
+            for (let i = 0; i < indexes.length; i++) {
+              const categoryIndex = indexes[i]
+              if (categoryIndex > itemIndex && items[categoryIndex].type !== items[itemIndex].type) {
+                return setItemIndex(categoryIndex)
+              }
+            }
+          } else {
+            const newIndex = getNextWrappingIndex(1, itemIndex, items.length, () => undefined, false)
+            return setItemIndex(newIndex)
+          }
         }
         if (e.key === 'ArrowUp') {
           e.preventDefault()
 
-          const newIndex = getNextWrappingIndex(-1, itemIndex, items.length, () => undefined, false)
-
-          // * Replace current searched text with list item
-          // replaceFragment(editor, targetRange, items[newIndex].text)
-
-          return setItemIndex(newIndex)
+          if (e.metaKey) {
+            for (let i = indexes[indexes.length - 1]; i > -1; i--) {
+              const categoryIndex = indexes[i]
+              if (categoryIndex < itemIndex && items[categoryIndex].type !== items[itemIndex].type) {
+                return setItemIndex(categoryIndex)
+              }
+            }
+          } else {
+            const newIndex = getNextWrappingIndex(-1, itemIndex, items.length, () => undefined, false)
+            return setItemIndex(newIndex)
+          }
         }
-
         if (e.key === 'Escape') {
           e.preventDefault()
           return closeMenu()
