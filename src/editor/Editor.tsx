@@ -57,7 +57,7 @@ export const Editor = ({
   getSuggestions
 }: EditorProps) => {
   const editableProps = {
-    spellCheck: false,
+    spellCheck: true,
     autoFocus,
     style: {
       padding

@@ -1,8 +1,10 @@
+import { useTodoBuffer } from '@hooks/useTodoBuffer'
+import useTodoBufferStore from '@hooks/useTodoBufferStore'
+import { mog } from '@utils/lib/helper'
 import React, { useEffect, useMemo, useState } from 'react'
 import { getNextStatus, PriorityDataType, PriorityType, TodoStatus, TodoType } from '../../editor/Components/Todo/types'
 // import { useReminders } from '../../hooks/useReminders'
 // import { getPureContent } from '../../hooks/useTodoKanban'
-import useTodoStore from '../../store/useTodoStore'
 import { MexIcon } from '../../style/Layouts'
 // import { mog } from '../../utils/lib/helper'
 // import { convertContentToRawText } from '../../utils/search/parseData'
@@ -29,24 +31,18 @@ interface TodoProps {
 }
 
 const Todo = ({ parentNodeId, todoid, children, readOnly, oid, controls, showDelete = true }: TodoProps) => {
-  // mog('Todo', { parentNodeId, todoid, readOnly })
   const [showOptions, setShowOptions] = useState(false)
 
   const [animate, setAnimate] = useState(false)
 
-  const updatePriority = useTodoStore((store) => store.updatePriorityOfTodo)
-  const updateStatus = useTodoStore((store) => store.updateStatusOfTodo)
-  const getTodoFromStore = useTodoStore((store) => store.getTodoOfNode)
-  const todos = useTodoStore((store) => store.todos)
+  const { getNoteTodo: getTodoFromStore, updateNoteTodo } = useTodoBuffer()
+  const todosBuffer = useTodoBufferStore((store) => store.todosBuffer)
 
   const todo = useMemo(() => {
     return controls && controls.getTodo
       ? controls.getTodo(parentNodeId, todoid)
       : getTodoFromStore(parentNodeId, todoid)
-  }, [parentNodeId, todoid, animate, todos])
-
-  // const { getBlockReminder } = useReminders()
-  // const reminder = getBlockReminder(todoid)
+  }, [parentNodeId, todoid, animate, todosBuffer])
 
   useEffect(() => {
     if (animate) setAnimate(false)
@@ -54,28 +50,43 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, oid, controls, showDel
 
   const onPriorityChange = (priority: PriorityDataType) => {
     if (controls && controls.onChangePriority) controls.onChangePriority(todoid, priority.type)
-    else updatePriority(parentNodeId, todoid, priority.type)
+    else
+      updateNoteTodo(parentNodeId, todoid, {
+        entityMetadata: { priority: priority.type, status: todo.entityMetadata?.status || TodoStatus.todo }
+      })
     setAnimate(true)
   }
 
   const changeStatus = () => {
-    if (controls && controls.onChangeStatus) controls.onChangeStatus(todoid, getNextStatus(todo.metadata.status))
-    else updateStatus(parentNodeId, todoid, getNextStatus(todo.metadata.status))
+    if (controls && controls.onChangeStatus) controls.onChangeStatus(todoid, getNextStatus(todo.entityMetadata?.status))
+    else
+      updateNoteTodo(parentNodeId, todoid, {
+        entityMetadata: {
+          priority: todo.entityMetadata?.priority || PriorityType.noPriority,
+          status: getNextStatus(todo.entityMetadata?.status)
+        }
+      })
     setAnimate(true)
   }
 
+  mog('TODO ________', { todo })
+
   return (
     <TodoContainer
-      key={`BasicTodo_${todo.nodeid}_${todo.id}_${oid}`}
-      id={`BasicTodo_${todo.nodeid}_${todo.id}_${oid}`}
-      checked={todo?.metadata.status === TodoStatus.completed}
+      key={`BasicTodo_${todo?.nodeid}_${todo?.entityId}_${oid}`}
+      id={`BasicTodo_${todo?.nodeid}_${todo?.entityId}_${oid}`}
+      checked={todo?.entityMetadata?.status === TodoStatus.completed}
       onMouseEnter={() => {
         setShowOptions(true)
       }}
       onMouseLeave={() => setShowOptions(false)}
     >
-      <CheckBoxWrapper id={`TodoStatusFor_${todo.id}_${oid}`} contentEditable={false}>
-        <StyledTodoStatus animate={animate} status={todo.metadata.status} onClick={changeStatus} />
+      <CheckBoxWrapper id={`TodoStatusFor_${todo?.entityId}_${oid}`} contentEditable={false}>
+        <StyledTodoStatus
+          animate={animate}
+          status={todo?.entityMetadata?.status || TodoStatus.todo}
+          onClick={changeStatus}
+        />
       </CheckBoxWrapper>
 
       <TodoText contentEditable={!readOnly} suppressContentEditableWarning>
@@ -85,7 +96,7 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, oid, controls, showDel
         {showOptions && showDelete && (
           <MexIcon
             onClick={() => {
-              controls.onDeleteClick && controls.onDeleteClick(todo.id)
+              controls.onDeleteClick && controls.onDeleteClick(todo?.entityId)
             }}
             icon="codicon:trash"
             cursor="pointer"
@@ -93,15 +104,13 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, oid, controls, showDel
             fontSize={20}
           />
         )}
-        {/*
-          (showOptions || (reminder && !reminder.state.done)) && (<TodoReminder oid={oid} todoid={todo.id} nodeid={parentNodeId} content={getPureContent(todo)} />)
-        */}
-        {(showOptions || todo.metadata.priority !== PriorityType.noPriority) && (
-          <PrioritySelect value={todo.metadata.priority} onPriorityChange={onPriorityChange} id={todo.id} />
+        {(showOptions || todo?.entityMetadata?.priority !== PriorityType.noPriority) && (
+          <PrioritySelect
+            value={todo?.entityMetadata?.priority || PriorityType.noPriority}
+            onPriorityChange={onPriorityChange}
+            id={todo?.entityId}
+          />
         )}
-        {/* <TaskPriority background="#114a9e" transparent={0.25}>
-            assignee
-          </TaskPriority> */}
       </TodoOptions>
     </TodoContainer>
   )

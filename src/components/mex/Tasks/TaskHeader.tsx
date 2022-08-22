@@ -1,15 +1,19 @@
-import checkboxLine from '@iconify/icons-ri/checkbox-line'
+import React, { useMemo, useState } from 'react'
+
 import { useTaskViewModalStore } from '@components/mex/TaskViewModal'
-import stackLine from '@iconify/icons-ri/stack-line'
 import { TasksHelp } from '@data/Defaults/helpText'
 import { useTaskViews, useViewStore, View } from '@hooks/useTaskViews'
+import IconPlus from '@iconify/icons-bi/plus'
 import trashIcon from '@iconify/icons-codicon/trash'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import arrowLeftRightLine from '@iconify/icons-ri/arrow-left-right-line'
+import checkboxLine from '@iconify/icons-ri/checkbox-line'
 import dragMove2Fill from '@iconify/icons-ri/drag-move-2-fill'
 import edit2Line from '@iconify/icons-ri/edit-2-line'
 import fileCopyLine from '@iconify/icons-ri/file-copy-line'
+import stackLine from '@iconify/icons-ri/stack-line'
 import { Icon } from '@iconify/react'
+import useModalStore, { ModalsType } from '@store/useModalStore'
 import {
   ShortcutToken,
   ShortcutTokens,
@@ -24,7 +28,7 @@ import {
 import { Title } from '@style/Typography'
 import { useSingleton } from '@tippyjs/react'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import React, { useMemo, useState } from 'react'
+
 import {
   Button,
   IconButton,
@@ -46,6 +50,7 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected, globalJoin }: T
   const openTaskViewModal = useTaskViewModalStore((store) => store.openModal)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
   const { deleteView } = useTaskViews()
+  const openTodo = useModalStore((store) => store.toggleOpen)
 
   const { goTo } = useRouting()
 
@@ -66,6 +71,10 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected, globalJoin }: T
       setCurrentView(undefined)
       goTo(ROUTE_PATHS.tasks, NavigationType.push)
     }
+  }
+
+  const onCreateNewTask = () => {
+    openTodo(ModalsType.todo)
   }
 
   return (
@@ -185,6 +194,10 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected, globalJoin }: T
    Clear Todos
    </Button> */}
       <Infobox text={TasksHelp} />
+      <Button onClick={onCreateNewTask} primary>
+        <Icon icon={IconPlus} height={18} width={18} />
+        New Task
+      </Button>
     </StyledTaskHeader>
   )
 }

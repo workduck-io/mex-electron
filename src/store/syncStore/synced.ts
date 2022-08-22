@@ -59,7 +59,7 @@ const syncStores = () => {
     })
     syncStoreState(useDwindleAuthStore, {
       name: BroadcastSyncedChannel.DWINDLE,
-      sync: [{ field: 'userCred' }]
+      sync: [{ field: 'userCred' } as any]
     })
     syncStoreState(useUserPreferenceStore, {
       name: BroadcastSyncedChannel.USER_PROPERTIES,

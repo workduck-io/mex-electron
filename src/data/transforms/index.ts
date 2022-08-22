@@ -1,4 +1,9 @@
+import { TodoBufferType } from '@hooks/useTodoBufferStore'
+import { ELEMENT_TODO_LI } from '@udecode/plate'
+import { getNewTodoAndBlock } from '@utils/search/parseData'
+
 import { Snippet } from '../../store/useSnippetStore'
+import { NodeEditorContent } from '../../types/Types'
 import { ArrayTransform, CustomTransformation, DataTransformation, KeysTransformation } from '../../utils/dataTransform'
 import { initialSnippets } from '../initial/snippets'
 
@@ -30,6 +35,33 @@ const v01404 = (): CustomTransformation => {
   }
 }
 
+const v01409 = (): CustomTransformation => {
+  return {
+    type: 'CustomTransformation',
+    version: '0.14.0-alpha.9',
+    custom: (data) => {
+      const todosBuffer: TodoBufferType = {}
+      if (data.content) {
+        Object.entries(data.content).map(([noteId, noteContent]) => {
+          const nodeTodos = {}
+          const transformedContent = (noteContent as NodeEditorContent).map((block) => {
+            if (block.type === ELEMENT_TODO_LI && !block.entityId) {
+              const { newTodo, newBlock } = getNewTodoAndBlock(block)
+              nodeTodos[newTodo.entityId] = newTodo
+              return newBlock
+            }
+          })
+
+          todosBuffer[noteId] = nodeTodos
+          data.content[noteId] = transformedContent
+        })
+      }
+
+      if (!data.todosBuffer) return { ...data, todosBuffer, todos: {} }
+    }
+  }
+}
+
 const v0120 = (): CustomTransformation => {
   return {
     type: 'CustomTransformation',
@@ -51,6 +83,7 @@ const v0901 = (): CustomTransformation => {
     }
   }
 }
+
 const v081 = (): CustomTransformation => {
   return {
     type: 'CustomTransformation',
@@ -130,6 +163,7 @@ export const UpdateVersionTransforms: Array<DataTransformation> = [
   v0901(),
   v0120(),
   v01404(),
+  v01409(),
   v014010()
 ]
 

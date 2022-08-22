@@ -1,19 +1,20 @@
 import { useEffect } from 'react'
-import { ipcRenderer } from 'electron'
-import { IpcAction } from '../data/IpcAction'
 
-import create from 'zustand'
-import { useBufferStore, useEditorBuffer } from '../hooks/useEditorBuffer'
-import { useEditorStore } from './useEditorStore'
-import { getContent } from '../utils/helpers'
-import { TodoType } from '../editor/Components/Todo/types'
-import useTodoStore from './useTodoStore'
-import { areEqual } from '../utils/lib/hash'
-import { checkIfUntitledDraftNode } from '../utils/lib/strings'
-import { useSearchExtra } from '@hooks/useSearch'
+import { getParentNodePath } from '@components/mex/Sidebar/treeUtils'
 import { AnalysisOptions } from '@electron/worker/controller'
 import { useLinks } from '@hooks/useLinks'
-import { getParentNodePath } from '@components/mex/Sidebar/treeUtils'
+import { useSearchExtra } from '@hooks/useSearch'
+import { useTodoBuffer } from '@hooks/useTodoBuffer'
+import { ipcRenderer } from 'electron'
+import create from 'zustand'
+
+import { IpcAction } from '../data/IpcAction'
+import { TodoType } from '../editor/Components/Todo/types'
+import { useBufferStore, useEditorBuffer } from '../hooks/useEditorBuffer'
+import { getContent } from '../utils/helpers'
+import { areEqual } from '../utils/lib/hash'
+import { checkIfUntitledDraftNode } from '../utils/lib/strings'
+import { useEditorStore } from './useEditorStore'
 
 export interface OutlineItem {
   id: string
@@ -49,19 +50,18 @@ export const useAnalysisStore = create<AnalysisStore>((set, get) => ({
 
 export const useAnalysisTodoAutoUpdate = () => {
   // const { setTodo } = useEditorStore(state => state)
+  const { addInBuffer } = useTodoBuffer()
   const analysis = useAnalysisStore((state) => state.analysis)
-  const updateNodeTodos = useTodoStore((store) => store.replaceContentOfTodos)
   const node = useEditorStore((state) => state.node)
 
   useEffect(() => {
     const { editorTodos, nodeid } = useAnalysisStore.getState().analysis
-    updateNodeTodos(nodeid, editorTodos)
+    addInBuffer(nodeid, editorTodos)
   }, [analysis, node])
 }
 
 export const useAnalysisIPC = () => {
   const setAnalysis = useAnalysisStore((s) => s.setAnalysis)
-  const node = useEditorStore((s) => s.node)
 
   const setIpc = () => {
     ipcRenderer.on(IpcAction.RECEIVE_ANALYSIS, (_event, analysis: any) => {

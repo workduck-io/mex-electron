@@ -1,6 +1,6 @@
 import { AppType } from '../../hooks/useInitialize'
 import { appNotifierWindow } from '../../electron/utils/notifiers'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { PriorityType, TodoStatus, TodoType } from '../../editor/Components/Todo/types'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import Todo, { TodoControls } from '../../ui/components/Todo'
@@ -8,7 +8,6 @@ import { IpcAction } from '../../data/IpcAction'
 import { Reminder } from '../../types/reminders'
 import { getPureContent } from '../../hooks/useTodoKanban'
 import useTodoStore from '../../store/useTodoStore'
-import { mog } from '../../utils/lib/helper'
 
 interface NotificationTodoProps {
   oid?: string
@@ -19,7 +18,7 @@ interface NotificationTodoProps {
 }
 
 const NotificationTodo = ({ todo, reminder, dismissNotification, isNotification, oid }: NotificationTodoProps) => {
-  const [localTodo, setLocalTodo] = useState(todo)
+  const [localTodo, setLocalTodo] = useState<TodoType>(todo)
   const todos = useTodoStore((state) => state.todos)
   const getTodoOfNode = useTodoStore((state) => state.getTodoOfNodeWithoutCreating)
 
@@ -37,7 +36,7 @@ const NotificationTodo = ({ todo, reminder, dismissNotification, isNotification,
   const controls: TodoControls = {
     onChangeStatus: (todoid: string, status: TodoStatus) => {
       console.log('change status', todoid, status)
-      const newTodo = { ...localTodo, metadata: { ...localTodo.metadata, status } }
+      const newTodo = { ...localTodo, entityMetadata: { ...localTodo.entityMetadata, status } }
       setLocalTodo(newTodo)
       appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, {
         action: { type: 'todo', todoAction: 'status', value: newTodo },
@@ -46,7 +45,7 @@ const NotificationTodo = ({ todo, reminder, dismissNotification, isNotification,
     },
     onChangePriority: (todoid: string, priority: PriorityType) => {
       console.log('change priority', todoid, priority)
-      const newTodo = { ...localTodo, metadata: { ...localTodo.metadata, priority } }
+      const newTodo = { ...localTodo, entityMetadata: { ...localTodo.entityMetadata, priority } }
       appNotifierWindow(IpcAction.ACTION_REMINDER, AppType.MEX, {
         action: { type: 'todo', todoAction: 'priority', value: newTodo },
         reminder
@@ -61,17 +60,19 @@ const NotificationTodo = ({ todo, reminder, dismissNotification, isNotification,
 
   return (
     <Todo
-      oid={`NotificationTodo_${todo.id}_${oid}`}
+      oid={`NotificationTodo_${todo.entityId}_${oid}`}
       showDelete={false}
       parentNodeId={todo?.nodeid}
-      todoid={todo.id}
+      todoid={todo.entityId}
       controls={isNotification ? controls : undefined}
       readOnly
     >
       <EditorPreviewRenderer
         noStyle
         content={getPureContent(localTodo)}
-        editorId={`NoticationTodoPreview_${isNotification ? 'notification' : 'normal'}_${todo?.nodeid}_${todo?.id}`}
+        editorId={`NoticationTodoPreview_${isNotification ? 'notification' : 'normal'}_${todo?.nodeid}_${
+          todo?.entityId
+        }`}
       />
     </Todo>
   )

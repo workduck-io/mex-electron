@@ -77,7 +77,7 @@ export const useBrowserNavigation = () => {
   const { updateBaseNode } = useNodes()
 
   useEffect(() => {
-    mog('LOCATION IS HERE', { location })
+    // mog('LOCATION IS HERE', { location })
     if (authenticated) {
       const node = useEditorStore.getState().node
       const initialized = useDataStore.getState().initialized

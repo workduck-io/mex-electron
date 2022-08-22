@@ -1,3 +1,6 @@
+import { defaultContent } from '@data/Defaults/baseData'
+import { TodoType } from '@editor/Components/Todo/types'
+import { mog } from '@utils/lib/helper'
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { NodeContent, NodeMetadata } from '../types/data'
@@ -18,6 +21,7 @@ interface ContentStoreState {
   // Nodeid mapped metadata
   getAllMetadata: () => Record<string, NodeMetadata>
   getMetadata: (nodeid: string) => NodeMetadata
+  updateTodosContent: (nodeId: string, todos: Array<TodoType>) => void
   setMetadata: (nodeid: string, metadata: NodeMetadata) => void
   initContents: (contents: Contents) => void
 }
@@ -35,6 +39,7 @@ export const useContentStore = create<ContentStoreState>(
       const oldMetadata = oldContent[nodeid] && oldContent[nodeid].metadata ? oldContent[nodeid].metadata : undefined
       if (oldContent?.[nodeid]) delete oldContent?.[nodeid]
       const nmetadata = { ...oldMetadata, ...metadata }
+
       set({
         contents: { [nodeid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
       })
@@ -63,6 +68,20 @@ export const useContentStore = create<ContentStoreState>(
       set({
         contents: { [nodeid]: { type: 'editor', content, metadata: nmetadata }, ...oldContent }
       })
+    },
+    updateTodosContent: (noteId: string, todos: Array<TodoType>) => {
+      mog('content is here', { todos })
+      const nodeContent = get().getContent(noteId)
+      if (nodeContent.content) {
+        const newContent = nodeContent.content.map((block) => {
+          const todo = todos.find((block) => block.entityId === todo.entityId)
+          mog('Content of Todo', { todo, block, todos })
+          if (todo) return todo.content[0]
+          return block
+        })
+
+        get().setContent(noteId, newContent)
+      }
     },
     getContent: (nodeid) => {
       return get().contents[nodeid]

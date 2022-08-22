@@ -1,4 +1,4 @@
-import { OnChange, usePlateEditorRef } from '@udecode/plate'
+import { getPlateEditorRef, OnChange, usePlateEditorRef } from '@udecode/plate'
 import { useCallback } from 'react'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange'
@@ -134,7 +134,7 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
       return acc
     }, {} as any)
 
-    const items = Object.values(groups).flat()
+    const items = Object.values(groups).flat() as any
     const dataKeys = items.map((i: any) => i.text)
 
     // Create for new item

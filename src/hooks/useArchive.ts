@@ -1,7 +1,5 @@
 import { useApi } from '@apis/useSaveApi'
 import { useContentStore } from '@store/useContentStore'
-import { iLinksToUpdate } from '@utils/hierarchy'
-import { runBatch } from '@utils/lib/batchPromise'
 
 import { client, useAuth } from '@workduck-io/dwindle'
 
@@ -12,11 +10,8 @@ import useDataStore from '../store/useDataStore'
 import { ILink } from '../types/Types'
 import { mog } from '../utils/lib/helper'
 import { WORKSPACE_HEADER } from './../data/Defaults/defaults'
-import { hierarchyParser } from './useHierarchy'
 import { getTitleFromPath } from './useLinks'
 import { useSaveData } from './useSaveData'
-import { useSearch } from './useSearch'
-import { getTitleFromPath } from './useLinks'
 
 const useArchive = () => {
   const setArchive = useDataStore((state) => state.setArchive)
@@ -28,11 +23,9 @@ const useArchive = () => {
 
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
 
-  const setContent = useContentStore((store) => store.setContent)
   const updateTagsCache = useDataStore((state) => state.updateTagsCache)
   const updateInternalLinks = useDataStore((state) => state.updateInternalLinks)
 
-  const { updateDocument } = useSearch()
   const { saveData } = useSaveData()
   const { userCred } = useAuth()
 

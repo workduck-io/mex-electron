@@ -48,7 +48,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
       const targetRange = useComboboxStore.getState().targetRange
       // mog('Target Range', { targetRange })
 
-      mog('ELEMENT', { elementType, comboType })
+      mog('ELEMENT', { elementType, item, comboType, targetRange })
 
       let type =
         elementType ??

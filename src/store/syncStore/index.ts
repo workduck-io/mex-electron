@@ -1,4 +1,3 @@
-import { mog } from '@utils/lib/helper'
 import { isEqual, isEmpty } from 'lodash'
 import { StoreApi, State } from 'zustand'
 
@@ -8,9 +7,6 @@ if (!globalThis.__MEX_SYNCED_CHANNELS_) globalThis.__MEX_SYNCED_CHANNELS_ = new 
 
 const getExistingSyncedChannels = (): Set<BroadcastSyncedChannel> | undefined => {
   const syncedChannels = globalThis.__MEX_SYNCED_CHANNELS_
-
-  mog('Synced Channels', { syncedChannels })
-
   return syncedChannels
 }
 

@@ -1,7 +1,10 @@
 // import { generateTempId } from '../Defaults/idPrefixes'
 
+import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
+import { TodoType } from '@editor/Components/Todo/types'
 import { useAuthStore } from '@services/auth/useAuth'
 import { generateTempId } from '../../data/Defaults/idPrefixes'
+import { mog } from './helper'
 import { extractMetadata } from './metadata'
 
 // const ElementsWithProperties = [ELEMENT_PARAGRAPH]
@@ -29,8 +32,10 @@ const directPropertyKeys = [
   'question',
   'answer',
   'actionContext',
-  'blockMeta'
+  'blockMeta',
+  'entityId'
 ]
+
 const PropKeysArray = [...directPropertyKeys] as const
 type PropKeys = typeof PropKeysArray[number]
 type DirectProperties = Record<PropKeys, boolean | string>
@@ -118,6 +123,16 @@ export const serializeSpecial: { [elementType: string]: (element: any, nodeid: s
       id: el.id ?? generateTempId(),
       children: serializeContent(el.children ?? [], nodeid)
     }
+  },
+  [ELEMENT_TODO_LI]: (el: any, nodeid: string) => {
+    mog('entity', { el })
+    return {
+      id: el.id || generateTempId(),
+      elementType: el.type,
+      properties: {
+        entityId: el.entityId
+      }
+    }
   }
 }
 
@@ -150,6 +165,30 @@ export const deserializeSpecial: { [elementType: string]: (element: any) => any 
       children: el?.children ? deserializeContent(el?.children) : [{ text: '', id: generateTempId() }]
     }
   }
+}
+
+export const serializeTodo = (todo: TodoType) => {
+  const updatedTodo = {
+    entityId: todo.entityId,
+    nodeId: todo.nodeid,
+    content: todo.content,
+    properties: todo.entityMetadata
+  }
+
+  return todo.type ? { ...updatedTodo, type: todo.type } : updatedTodo
+}
+
+export const deserializeTodos = (todos) => {
+  return todos.map((todo) => {
+    const { properties, entity, workspaceId, created, modified, nodeId, ...restTodo } = todo
+    return {
+      ...restTodo,
+      createdAt: created,
+      updatedAt: modified,
+      entityMetadata: properties,
+      nodeid: nodeId
+    }
+  })
 }
 
 // From API to content

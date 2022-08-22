@@ -116,7 +116,7 @@ const ContentEditor = () => {
             saveApiAndUpdate(node, val)
           } else {
             // * If buffer hasn't changed, refresh the note
-            getDataAPI(node.nodeid, false, true)
+            getDataAPI(node.nodeid, { isUpdate: true, isRefresh: true })
           }
         })
       },

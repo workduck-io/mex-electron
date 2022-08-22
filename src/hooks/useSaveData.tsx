@@ -12,6 +12,7 @@ import useTodoStore from '../store/useTodoStore'
 import { useReminderStore } from './useReminders'
 import { useViewStore } from './useTaskViews'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import useTodoBufferStore from './useTodoBufferStore'
 
 // Save the data in the local file database
 export const useSaveData = () => {
@@ -35,6 +36,7 @@ export const useSaveData = () => {
       tags,
       tagsCache,
       archive,
+      todosBuffer: useTodoBufferStore.getState().todosBuffer,
       bookmarks,
       sharedNodes,
       contents: useContentStore.getState().contents,

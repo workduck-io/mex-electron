@@ -199,7 +199,7 @@ const useLoad = () => {
     // const node = getNode(nodeid)
     if (options.withLoading) setFetchingContent(true)
 
-    getDataAPI(node.nodeid, options.isShared)
+    getDataAPI(node.nodeid, { isShared: options.isShared, isUpdate: true })
       .then((nodeData) => {
         if (nodeData) {
           const { content, metadata, version } = nodeData

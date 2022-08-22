@@ -1,14 +1,19 @@
+import React, { useEffect, useMemo, useRef } from 'react'
+
 import Board from '@asseinfo/react-kanban'
 import TaskHeader from '@components/mex/Tasks/TaskHeader'
 import { useEnableShortcutHandler } from '@hooks/useShortcutListener'
 import { useSyncTaskViews, useViewStore } from '@hooks/useTaskViews'
+import { useTodoBuffer } from '@hooks/useTodoBuffer'
 import { useLayoutStore } from '@store/useLayoutStore'
+import useModalStore, { ModalsType } from '@store/useModalStore'
 import { OverlaySidebarWindowWidth } from '@style/responsive'
-import { mog } from '@workduck-io/mex-utils'
-import { tinykeys } from '@workduck-io/tinykeys'
-import React, { useEffect, useMemo, useRef } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { useMatch } from 'react-router-dom'
+
+import { mog } from '@workduck-io/mex-utils'
+import { tinykeys } from '@workduck-io/tinykeys'
+
 import SearchFilters from '../../components/mex/Search/SearchFilters'
 import { Heading } from '../../components/spotlight/SearchResults/styled'
 import { getNextStatus, getPrevStatus, PriorityType, TodoType } from '../../editor/Components/Todo/types'
@@ -33,6 +38,11 @@ const Tasks = () => {
 
   const { goTo } = useRouting()
 
+  // * Todo Buffer hook
+  const { getNoteTodo } = useTodoBuffer()
+  const setTodoModalData = useModalStore((store) => store.setData)
+  const toggleModal = useModalStore((store) => store.toggleOpen)
+
   const { push } = useNavigation()
 
   const todos = useMemo(() => Object.entries(nodesTodo), [nodesTodo])
@@ -56,6 +66,8 @@ const Tasks = () => {
   } = useTodoKanban()
 
   const board = useMemo(() => getTodoBoard(), [nodesTodo, globalJoin, currentFilters])
+
+  mog('Selected board is', { board })
 
   const selectedRef = useRef<HTMLDivElement>(null)
   const handleCardMove = (card, source, destination) => {
@@ -88,22 +100,22 @@ const Tasks = () => {
 
   const handleCardMoveNext = () => {
     if (!selectedCard) return
-    const newStatus = getNextStatus(selectedCard.todo.metadata.status)
+    const newStatus = getNextStatus(selectedCard.todo.entityMetadata.status)
     changeStatus(selectedCard.todo, newStatus)
     setSelectedCard({
       ...selectedCard,
-      todo: { ...selectedCard.todo, metadata: { ...selectedCard.todo.metadata, status: newStatus } }
+      todo: { ...selectedCard.todo, entityMetadata: { ...selectedCard.todo.entityMetadata, status: newStatus } }
     })
   }
 
   const handleCardMovePrev = () => {
     if (!selectedCard) return
-    const newStatus = getPrevStatus(selectedCard.todo.metadata.status)
+    const newStatus = getPrevStatus(selectedCard.todo.entityMetadata.status)
     // mog('new status', { newStatus, selectedCard })
     changeStatus(selectedCard.todo, newStatus)
     setSelectedCard({
       ...selectedCard,
-      todo: { ...selectedCard.todo, metadata: { ...selectedCard.todo.metadata, status: newStatus } }
+      todo: { ...selectedCard.todo, entityMetadata: { ...selectedCard.todo.entityMetadata, status: newStatus } }
     })
   }
 
@@ -112,7 +124,7 @@ const Tasks = () => {
     changePriority(selectedCard.todo, priority)
     setSelectedCard({
       ...selectedCard,
-      todo: { ...selectedCard.todo, metadata: { ...selectedCard.todo.metadata, priority } }
+      todo: { ...selectedCard.todo, entityMetadata: { ...selectedCard.todo.entityMetadata, priority } }
     })
   }
 
@@ -123,7 +135,7 @@ const Tasks = () => {
     }
 
     const selectedColumn = board.columns.find(
-      (column) => column.id === selectedCard.todo.metadata.status
+      (column) => column.id === selectedCard.todo.entityMetadata.status
     ) as KanbanBoardColumn
     const selectedColumnLength = selectedColumn.cards.length
     const selectedIndex = selectedColumn.cards.findIndex((card) => card.id === selectedCard.id)
@@ -255,7 +267,14 @@ const Tasks = () => {
           selectNewCard('left')
         })
       },
-
+      Enter: (event) => {
+        event.preventDefault()
+        if (isOnSearchFilter()) return
+        if (selectedCard) {
+          setTodoModalData(selectedCard.todo)
+          toggleModal(ModalsType.todo)
+        }
+      },
       ArrowDown: (event) => {
         enableShortcutHandler(() => {
           event.preventDefault()
@@ -315,17 +334,18 @@ const Tasks = () => {
     }
   }, [match])
 
-  const onDoubleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, nodeid: string) => {
+  const onDoubleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, nodeId: string, entityId: string) => {
     event.preventDefault()
     //double click
     // mog('double click', { event })
     if (event.detail === 2) {
-      push(nodeid)
-      goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+      const todo = getNoteTodo(nodeId, entityId)
+      if (todo) {
+        setTodoModalData(todo)
+        toggleModal(ModalsType.todo)
+      }
     }
   }
-
-  // mog('Tasks', { nodesTodo, board, selectedCard, match, currentFilters })
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
     const pC = getPureContent(todo)
@@ -338,20 +358,20 @@ const Tasks = () => {
         sidebarExpanded={sidebar.show && sidebar.expanded && !overlaySidebar}
         onMouseDown={(event) => {
           event.preventDefault()
-          onDoubleClick(event, todo.nodeid)
+          onDoubleClick(event, todo.nodeid, todo.entityId)
         }}
       >
         <Todo
           showDelete={false}
-          key={`TODO_PREVIEW_${todo.nodeid}_${todo.id}`}
-          todoid={todo.id}
+          key={`TODO_PREVIEW_${todo.nodeid}_${todo.entityId}`}
+          todoid={todo.entityId}
           readOnly
           parentNodeId={todo.nodeid}
         >
           <EditorPreviewRenderer
             noStyle
             content={pC}
-            editorId={`NodeTodoPreview_${todo.nodeid}_${todo.id}_${todo.metadata.status}`}
+            editorId={`NodeTodoPreview_${todo.nodeid}_${todo.entityId}_${todo.entityMetadata.status}`}
           />
         </Todo>
       </TaskCard>

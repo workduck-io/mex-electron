@@ -1,36 +1,7 @@
-import {
-  createPluginFactory,
-  HotkeyPlugin,
-  onKeyDownToggleElement
-  // PlateEditor,
-  // WithOverride
-} from '@udecode/plate-core'
-// import { useEditorStore } from '../../../store/useEditorStore'
-// import useTodoStore from '../../../store/useTodoStore'
-// import { getTodosFromContent } from '../../../utils/lib/content'
+import { createPluginFactory, HotkeyPlugin, onKeyDownToggleElement } from '@udecode/plate-core'
+import { withTodoOverride } from './withTodoOverride'
 
 export const ELEMENT_TODO_LI = 'action_item'
-
-// * override TODOs
-// export const withTodos: WithOverride<any, HotkeyPlugin> = (editor: PlateEditor) => {
-//   const updateTodos = useTodoStore.getState().replaceContentOfTodos
-
-//   const nodeid = useEditorStore.getState().node.nodeid
-
-//   const { onChange } = editor
-
-//   const updateTodosFromContent = debounce(() => {
-//     const editorTodoBlocks = getTodosFromContent(editor.children)
-//     updateTodos(nodeid, editorTodoBlocks)
-//   }, 1000)
-
-//   editor.onChange = () => {
-//     onChange()
-//     // updateTodosFromContent()
-//   }
-
-//   return editor
-// }
 
 const createTodoPlugin = createPluginFactory<HotkeyPlugin>({
   key: ELEMENT_TODO_LI,
@@ -38,10 +9,10 @@ const createTodoPlugin = createPluginFactory<HotkeyPlugin>({
   handlers: {
     onKeyDown: onKeyDownToggleElement
   },
+  withOverrides: withTodoOverride,
   options: {
     hotkey: ['mod+opt+4', 'mod+shift+4']
   },
-  // withOverrides: withTodos,
   deserializeHtml: {
     attributeNames: ['data-nodeid'],
     getNode: (el, node) => {

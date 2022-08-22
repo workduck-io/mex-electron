@@ -13,7 +13,7 @@ export const SYNC_BLOCK_ID_PREFIX = 'SYNC'
 export const TEMP_ID_PREFIX = 'TEMP'
 export const SNIPPET_PREFIX = 'SNIPPET'
 export const SYNCTEMP_PREFIX = 'SYNCTEMP'
-export const TODO_PREFIX = 'TODO'
+export const TASK_ENTITY_PREFIX = 'TASK'
 export const DRAFT_PREFIX = 'Drafts'
 export const MEETING_PREFIX = 'Meeting'
 export const QUESTION_ID_PREFIX = 'WD_MEX_QUESTION'
@@ -33,7 +33,7 @@ export const generateSyncBlockId = () => `${SYNC_BLOCK_ID_PREFIX}${ID_SEPARATOR}
 export const generateTempId = () => `${TEMP_ID_PREFIX}${ID_SEPARATOR}${shortId()}`
 export const generateSnippetId = () => `${SNIPPET_PREFIX}${ID_SEPARATOR}${nanoid()}`
 export const generateSyncTempId = () => `${SYNCTEMP_PREFIX}${ID_SEPARATOR}${nanoid()}`
-export const generateTodoId = () => `${TODO_PREFIX}${ID_SEPARATOR}${nanoid()}`
+export const generateTaskEntityId = () => `${TASK_ENTITY_PREFIX}${ID_SEPARATOR}${nanoid()}`
 export const generateQuestionId = () => `${QUESTION_ID_PREFIX}${ID_SEPARATOR}${shortId()}`
 export const generateReminderId = () => `${REMINDER_ID_PREFIX}${ID_SEPARATOR}${shortId()}`
 export const generateTaskViewId = () => `${TASK_VIEW_PREFIX}${ID_SEPARATOR}${shortId()}`

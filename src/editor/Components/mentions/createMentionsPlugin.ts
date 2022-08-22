@@ -1,4 +1,4 @@
-import { PlatePlugin, WithOverride, deleteFragment } from '@udecode/plate-core'
+import { PlatePlugin, WithOverride } from '@udecode/plate-core'
 
 import { ELEMENT_MENTION } from './defaults'
 import { getMentionDeserialize } from './getMentionDeserialize'

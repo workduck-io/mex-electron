@@ -3,6 +3,7 @@ import { useState } from 'react'
 // import { useApi } from '../../apis/useSaveApi'
 import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActionPerformer'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
+import useTodoBufferStore from '@hooks/useTodoBufferStore'
 import { useHelpStore } from '@store/useHelpStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { useRecentsStore } from '@store/useRecentsStore'
@@ -10,7 +11,7 @@ import { useUserCacheStore } from '@store/useUserCacheStore'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { nanoid } from 'nanoid'
 import toast from 'react-hot-toast'
-import create, { State } from 'zustand'
+import create from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
 import { client, useAuth } from '@workduck-io/dwindle'
@@ -29,7 +30,7 @@ interface WorkspaceDetails {
   id: string
 }
 
-interface AuthStoreState extends State {
+interface AuthStoreState {
   isForgottenPassword: boolean
   authenticated: boolean
   registered: boolean
@@ -43,7 +44,7 @@ interface AuthStoreState extends State {
   updateUserDetails: (userDetails: UpdatableUserDetails) => void
 }
 
-export const useAuthStore = create<AuthStoreState>(
+export const useAuthStore = create<AuthStoreState>()(
   devtools(
     persist(
       (set, get) => ({
@@ -89,6 +90,7 @@ export const useAuthentication = () => {
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
   const addUser = useUserCacheStore((s) => s.addUser)
   const { clearActionStore } = useActions()
+  const clearTodosBuffer = useTodoBufferStore((store) => store.clear)
   const { initActionPerfomerClient } = useActionsPerfomerClient()
   const setShowLoader = useLayoutStore((store) => store.setShowLoader)
   const clearRecents = useRecentsStore((store) => store.clear)
@@ -407,7 +409,7 @@ export const useAuthentication = () => {
       clearActionCache()
       clearShortcuts()
       clearRecents()
-      removeGoogleCalendarToken()
+      clearTodosBuffer(), removeGoogleCalendarToken()
 
       addEventProperties({ [CustomEvents.LOGGED_IN]: false })
 

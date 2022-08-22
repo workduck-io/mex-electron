@@ -11,6 +11,7 @@ import useLoad from './useLoad'
 import { useNamespaces } from './useNamespaces'
 import { useSlashCommands } from './useSlashCommands'
 import { useViewStore } from './useTaskViews'
+import useTodoBufferStore from './useTodoBufferStore'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
@@ -25,6 +26,7 @@ export const useInitialize = () => {
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setReminders = useReminderStore((state) => state.setReminders)
   const setViews = useViewStore((state) => state.setViews)
+  const initializeTodosBuffer = useTodoBufferStore((store) => store.initializeTodosBuffer)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
   const { generateSlashCommands } = useSlashCommands()
   const { loadNodeProps } = useLoad()
@@ -39,6 +41,7 @@ export const useInitialize = () => {
       linkCache,
       tagsCache,
       bookmarks,
+      todosBuffer,
       sharedNodes,
       contents,
       archive,
@@ -72,6 +75,7 @@ export const useInitialize = () => {
     initSyncBlocks(syncBlocks, templates, services, intents)
     initSnippets(snippets)
     initTodos(todos)
+    initializeTodosBuffer(todosBuffer)
     setViews(views)
     setReminders(reminders)
     // const currentTheme = getTheme(data.userSettings.theme)

@@ -11,6 +11,7 @@ import { ComboboxType, ComboTriggerDataType } from './types'
 import { getTextFromTrigger } from '../combobox/utils/getTextFromTrigger'
 import { debounce } from 'lodash'
 import { ComboTriggerType } from '../combobox/useComboboxStore'
+import { mog } from '@utils/lib/helper'
 
 export const getTriggeredData = (
   editor: PlateEditor,

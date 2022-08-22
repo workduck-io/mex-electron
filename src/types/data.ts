@@ -87,6 +87,7 @@ export interface FileData {
   archive: ILink[]
   linkCache: LinkCache
   tagsCache: TagsCache
+  todosBuffer?: TodoBufferType
   bookmarks: string[]
   sharedNodes: SharedNode[]
 

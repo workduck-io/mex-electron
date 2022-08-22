@@ -228,7 +228,7 @@ export const Combobox = ({ onSelectItem, onRenderItem, options }: ComboboxProps)
                 }}
                 shortcuts={itemShortcut}
                 nodeId={items[itemIndex]?.key}
-                isNew={items[itemIndex]?.data}
+                isNew={!!items[itemIndex]?.data}
               />
               {((preview && listItem?.type && !isBlockTriggered) ||
                 (isBlockTriggered && textAfterBlockTrigger && preview)) &&

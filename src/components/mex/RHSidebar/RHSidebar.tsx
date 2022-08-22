@@ -1,10 +1,12 @@
+import React from 'react'
+
 import useLayout from '@hooks/useLayout'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { RHSideNav, SideNav } from '@style/Nav'
 import { mog } from '@utils/lib/helper'
 import { ROUTE_PATHS } from '@views/routes/urls'
-import React from 'react'
 import { useMatch } from 'react-router-dom'
+
 import { useSidebarTransition } from '../Sidebar/Transition'
 import InfoBar from './InfoBar'
 
@@ -28,8 +30,6 @@ const RHSidebar = () => {
   const focusMode = useLayoutStore((store) => store.focusMode)
   const rhSidebar = useLayoutStore((store) => store.rhSidebar)
   const { rhSidebarSpringProps, overlaySidebar } = useSidebarTransition()
-
-  // mog('IS RHSIDEBAR', { rhSidebar })
 
   return (
     <RHSideNav

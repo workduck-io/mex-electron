@@ -37,17 +37,20 @@ export const TodoStatusRanks: Record<TodoStatus, number> = {
 export type TodosType = Record<string, Array<TodoType>> // * nodeid, todos
 
 export type TodoType = {
-  id: string
+  id: string // * blockId
+  entityId?: string
   nodeid: string
   content: NodeEditorContent
-  metadata: {
+  entityMetadata?: {
     status: TodoStatus
     priority: PriorityType
+    mentions?: Array<string>
+    tags?: Array<string>
   }
-  createdAt: number
-  updatedAt: number
-  mentions: Array<string>
-  tags: Array<string>
+  draft?: boolean
+  createdAt?: number
+  type?: 'UPDATE' | 'DELETE'
+  updatedAt?: number
 }
 
 export const getNextStatus = (status: TodoStatus): TodoStatus => {

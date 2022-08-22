@@ -1,4 +1,5 @@
 import { generateNamespaceId } from '@data/Defaults/idPrefixes'
+import useEntityAPIs from '@hooks/useEntityAPIs'
 import { hierarchyParser } from '@hooks/useHierarchy'
 import { useLastOpened } from '@hooks/useLastOpened'
 import { useNodes } from '@hooks/useNodes'
@@ -16,7 +17,7 @@ import { client } from '@workduck-io/dwindle'
 import { allNamespacesHierarchyParser } from '@workduck-io/mex-utils'
 
 import { defaultContent } from '../data/Defaults/baseData'
-import { DEFAULT_NAMESPACE, WORKSPACE_HEADER } from '../data/Defaults/defaults'
+import { WORKSPACE_HEADER, DEFAULT_NAMESPACE } from '../data/Defaults/defaults'
 import { USE_API } from '../data/Defaults/dev_'
 import { getTitleFromPath, useLinks } from '../hooks/useLinks'
 import '../services/apiClient/apiClient'
@@ -29,7 +30,7 @@ import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
 
-const API_CACHE_LOG = `\nAPI has been requested before, cancelling.\n`
+type GetDataTypeOptions = { isShared?: boolean; isRefresh?: boolean; isUpdate?: boolean; withEntities?: boolean }
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,6 +50,7 @@ export const useApi = () => {
   const initSnippets = useSnippetStore((store) => store.initSnippets)
   const updateSnippet = useSnippetStore((store) => store.updateSnippet)
   const { updateFromContent } = useUpdater()
+  const { fetchAllEntitiesOfNote } = useEntityAPIs()
 
   const workspaceHeaders = () => ({
     [WORKSPACE_HEADER]: getWorkspaceId(),
@@ -310,36 +312,37 @@ export const useApi = () => {
 
   const getPublicURL = (nodeid: string) => {
     const meta = useContentStore.getState().getAllMetadata()
-    mog('META', { m: meta?.[nodeid] })
+    // mog('META', { m: meta?.[nodeid] })
     if (meta?.[nodeid]?.publicAccess) return apiURLs.getNotePublicURL(nodeid)
   }
 
-  const getDataAPI = async (nodeid: string, isShared = false, isRefresh = false, isUpdate = true) => {
+  const getDataAPI = async (
+    nodeid: string,
+    { isRefresh = false, isShared = false, isUpdate = true, withEntities = true }: GetDataTypeOptions
+  ) => {
     const url = isShared ? apiURLs.getSharedNode(nodeid) : apiURLs.getNode(nodeid)
     if (!isShared && isRequestedWithin(2, url) && !isRefresh) {
-      console.log(API_CACHE_LOG)
       return
     }
 
-    const res = await client
-      .get(url, {
+    try {
+      const res = await client.get(url, {
         headers: workspaceHeaders()
       })
-      .then((d) => {
-        // console.log(metadata, d.data)
-        const content = deserializeContent(d.data.data)
-        const metadata = extractMetadata(d.data)
+
+      if (res) {
+        const data = res.data
+        const content = deserializeContent(data.data)
+        const metadata = extractMetadata(data)
 
         if (isUpdate) updateFromContent(nodeid, content, metadata)
 
-        return { content, metadata, version: d.data.version ?? undefined }
-      })
-      .catch((e) => {
-        console.error(`MexError: Fetching nodeid ${nodeid} failed with: `, e)
-      })
+        if (withEntities) fetchAllEntitiesOfNote(nodeid, content)
 
-    if (res) {
-      return { content: res?.content, metadata: res?.metadata ?? undefined, version: res.version }
+        return { content, metadata, version: data.version ?? undefined }
+      }
+    } catch (e) {
+      console.error(`MexError: Fetching nodeid ${nodeid} failed with: `, e)
     }
   }
 
@@ -385,8 +388,7 @@ export const useApi = () => {
             const localILinks = useDataStore.getState().ilinks
             const { toUpdateLocal } = iLinksToUpdate(localILinks, nodes)
 
-            await runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid)))
-            // ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks: nodes }) // * Synced
+            await runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid, { withEntities: true })))
           }
 
           // setNamespaces(namespaces)

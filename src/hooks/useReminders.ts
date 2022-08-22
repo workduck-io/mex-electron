@@ -403,10 +403,10 @@ export const useReminders = () => {
         mog('USE TODO ACTION', { action, reminder })
         switch (action.todoAction) {
           case 'status':
-            updateStatusOfTodo(action.value.nodeid, action.value.id, action.value.metadata.status)
+            updateStatusOfTodo(action.value.nodeid, action.value.entityId, action.value.entityMetadata.status)
             break
           case 'priority':
-            updatePriorityOfTodo(action.value.nodeid, action.value.id, action.value.metadata.priority)
+            updatePriorityOfTodo(action.value.nodeid, action.value.entityId, action.value.entityMetadata.priority)
             break
           default:
             break

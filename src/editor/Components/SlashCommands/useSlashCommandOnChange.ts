@@ -21,7 +21,6 @@ import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from './Types'
 import { mog } from '../../../utils/lib/helper'
-import { defaultContent } from '../../../data/Defaults/baseData'
 import { ELEMENT_ACTION_BLOCK } from '../Actions/types'
 import { useLastUsedSnippets } from '@hooks/useLastOpened'
 
@@ -56,7 +55,7 @@ export const useSlashCommandOnChange = (
           trackEvent(eventName, { 'mex-content': content })
           if (item.data && item?.data?.id) addLastUsed(item.data.id)
 
-          if (content) {
+          if (content && content.length > 0) {
             select(editor, targetRange)
             insertNodes<TElement>(editor, content)
           }

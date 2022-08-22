@@ -1,4 +1,5 @@
 import { usePlateEditorRef } from '@udecode/plate'
+import { mog } from '@utils/lib/helper'
 import { useEffect } from 'react'
 import create from 'zustand'
 import useDataStore from '../store/useDataStore'
@@ -78,8 +79,9 @@ const useEditorActions = () => {
 
 export const useEditorChange = (editorId: string, content: NodeEditorContent, onChange?: any) => {
   const editor = usePlateEditorRef(editorId)
+
   useEffect(() => {
-    if (editor && content) {
+    if (editor && content?.length > 0) {
       editor.children = content
       if (onChange) onChange(content)
     }

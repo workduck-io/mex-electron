@@ -1,5 +1,7 @@
 // import { FileData, NodeSearchData } from '../Types/data'
+import { generateTaskEntityId } from '@data/Defaults/idPrefixes'
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
+import { PriorityType, TodoStatus } from '@editor/Components/Todo/types'
 import {
   ELEMENT_CODE_BLOCK,
   ELEMENT_IMAGE,
@@ -62,6 +64,29 @@ const excalidraw_replacement: ReplacementFunction = (blockValue, keyToIndex) => 
 
 const replacementFunctions: Record<string, ReplacementFunction> = {
   [ELEMENT_EXCALIDRAW]: excalidraw_replacement
+}
+
+export const getNewTodoAndBlock = (oldContent: any) => {
+  const { metadata, ...restTodoBlock } = oldContent
+  const { status, priority, ...restMetadata } = metadata || {}
+
+  const entityId = generateTaskEntityId()
+
+  return {
+    newTodo: {
+      ...restTodoBlock,
+      entityId,
+      entityMetadata: {
+        status: status || TodoStatus.todo,
+        priority: priority || PriorityType.noPriority
+      }
+    },
+    newBlock: {
+      ...restTodoBlock,
+      entityId,
+      metadata: restMetadata
+    }
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -141,6 +166,16 @@ export const convertEntryToRawText = (
   return { id: nodeUID, title, text: convertContentToRawText(entry, ' ', { extra }) }
 }
 
+export function updateObject<Type extends Record<string, unknown>>(
+  entityObject: Type,
+  fieldsToUpdate: Record<keyof Type, unknown>
+): Type {
+  return {
+    ...entityObject,
+    ...fieldsToUpdate
+  }
+}
+
 export const getHeadingBlock = (content: NodeEditorContent) => {
   const isHeadingBlock = content[0].type === ELEMENT_QA_BLOCK
   if (isHeadingBlock) {
@@ -173,7 +208,7 @@ export const parseNode = (nodeId: string, contents: any[], title = '', extra?: S
 
     if (block.type === ELEMENT_ACTION_BLOCK) blockText = camelCase(block.actionContext?.actionGroupId)
 
-    if (blockText.trim().length !== 0) {
+    if (blockText?.trim().length !== 0) {
       const temp: GenericSearchData = { id: nodeId, text: blockText, blockId: block.id, title, data: block }
       result.push(temp)
     }

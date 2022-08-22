@@ -1,8 +1,10 @@
+import React from 'react'
+
 import { useLayoutStore } from '@store/useLayoutStore'
 import { NoteSidebar } from '@ui/sidebar/Sidebar.notes'
 import { ROUTE_PATHS } from '@views/routes/urls'
-import React from 'react'
 import { useMatch } from 'react-router-dom'
+
 import ArchiveSidebar from './ArchiveSidebar'
 import SnippetList from './SnippetList'
 import TagList from './TagList'

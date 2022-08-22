@@ -1,6 +1,7 @@
 import { useApi } from '@apis/useSaveApi'
 import { useContentStore } from '@store/useContentStore'
 import create from 'zustand'
+
 import { useDataSaverFromContent } from '../editor/Components/Saver'
 import { useSnippetStore } from '../store/useSnippetStore'
 import { NodeEditorContent } from '../types/Types'
@@ -11,6 +12,7 @@ import { useNamespaces } from './useNamespaces'
 import { useNodes } from './useNodes'
 import { useSaveData } from './useSaveData'
 import { useSnippets } from './useSnippets'
+import { useTodoBuffer } from './useTodoBuffer'
 
 interface BufferStore {
   buffer: Record<string, NodeEditorContent>
@@ -36,6 +38,7 @@ export const useEditorBuffer = () => {
   const { saveData } = useSaveData()
   const { isSharedNode } = useNodes()
   const { getNamespaceOfNodeid } = useNamespaces()
+  const { flushTodosBuffer } = useTodoBuffer()
 
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
 
@@ -60,6 +63,7 @@ export const useEditorBuffer = () => {
           // const mT = measureTime(() => areEqual(content.content, val))
           if (!res) {
             saveEditorValueAndUpdateStores(nodeid, namespace.id, val, { saveApi: true, isShared })
+            flushTodosBuffer()
           }
           return !res
         })
@@ -81,10 +85,10 @@ export const useEditorBuffer = () => {
       if (!res) {
         const namespace = getNamespaceOfNodeid(noteId)
         try {
-          await saveEditorValueAndUpdateStores(noteId, namespace.id, buffer, { saveApi: true, })
+          await saveEditorValueAndUpdateStores(noteId, namespace.id, buffer, { saveApi: true })
           return true
         } catch (err) {
-          mog("Unable to save content", { err })
+          mog('Unable to save content', { err })
         }
       }
     }

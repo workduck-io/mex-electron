@@ -1,4 +1,6 @@
+import { getDefaultTodo } from '@data/Defaults/baseData'
 import { ELEMENT_MENTION } from '@editor/Components/mentions/defaults'
+import { PriorityType, TodoStatus } from '@editor/Components/Todo/types'
 import { ELEMENT_TODO_LI } from '@udecode/plate'
 import { uniq } from 'lodash'
 
@@ -37,12 +39,14 @@ export const getMentionsFromContent = (content: any[]): string[] => {
   return uniq(mentions)
 }
 
-export const getTodosFromContent = (content: NodeEditorContent): NodeEditorContent => {
+export const getTodosFromContent = (content: NodeEditorContent, entityCheck = false): NodeEditorContent => {
   const todos: NodeEditorContent = []
 
   content.forEach((n) => {
     if (n.type === ELEMENT_TODO_LI) {
-      todos.push(n)
+      if (entityCheck) {
+        if (n.entityId) todos.push(n)
+      } else todos.push(n)
     }
   })
 
@@ -54,6 +58,7 @@ export const insertId = (content: any[]) => {
   if (content.length === 0) {
     return content
   }
+
   return content.map((item) => {
     if (item.children) item.children = insertId(item.children)
     return {
@@ -68,6 +73,7 @@ export const removeId = (content: any[]) => {
   if (content.length === 0) {
     return content
   }
+
   return content.map((item) => {
     if (item.children) item.children = removeId(item.children)
     if (item.id) delete item.id

@@ -1,10 +1,14 @@
+import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
+import { PriorityType, TodoStatus } from '@editor/Components/Todo/types'
+
 import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin'
 import { questions } from '../../editor/Components/QABlock/starters'
+import { NodeEditorContent } from '../../types/Types'
 import { FileData, NodeContent } from '../../types/data'
 import { generateILinks } from '../../utils/generateComboItem'
 import { draftContent } from '../initial/draftDoc'
 import { onboardingContent } from '../initial/onboardingDoc'
-import { generateNodeUID, generateTempId, MEETING_PREFIX } from './idPrefixes'
+import { generateNodeUID, generateTempId, generateTaskEntityId, MEETING_PREFIX } from './idPrefixes'
 
 // import { generateTempId } from './idPrefixes'
 //]
@@ -56,6 +60,40 @@ export const generateDefaultNode = (): NodeContent => {
   }
 }
 
+export const getDefaultTodo = (): {
+  entityId: string
+  blockId: string
+  content: NodeEditorContent
+  entityMetadata: { status: TodoStatus; priority: PriorityType; tags: string[]; mentions: any[] }
+} => {
+  const entityId = generateTaskEntityId()
+  const blockId = generateTempId()
+
+  return {
+    entityId,
+    blockId,
+    content: [
+      {
+        type: ELEMENT_TODO_LI,
+        id: blockId,
+        entityId,
+        children: [
+          {
+            id: generateTempId(),
+            text: ''
+          }
+        ]
+      }
+    ],
+    entityMetadata: {
+      status: TodoStatus.todo,
+      priority: PriorityType.noPriority,
+      tags: [],
+      mentions: []
+    }
+  }
+}
+
 export const getRandomQAContent = () => {
   const idx = randomNumberBetween(0, questions.length - 1)
   const pickedQuestion = questions[idx]
@@ -97,6 +135,7 @@ export const DefaultFileData = (version: string): FileData => ({
   syncBlocks: [],
   templates: [],
   intents: {},
+  todosBuffer: {},
   services: [],
   userSettings: {
     theme: 'xeM',

@@ -18,6 +18,7 @@ import { useMentions } from './useMentions'
 import { useNodes } from './useNodes'
 import { useSearchExtra } from './useSearch'
 import { useTags } from './useTags'
+import { useTodoBuffer } from './useTodoBuffer'
 
 export interface TodoKanbanCard extends KanbanCard {
   todo: TodoType
@@ -67,6 +68,8 @@ export const useTodoKanban = () => {
   const ilinks = useDataStore((state) => state.ilinks)
   const namespaces = useDataStore((state) => state.namespaces)
 
+  const { updateNoteTodo } = useTodoBuffer()
+
   const { getPathFromNodeid, getILinkFromNodeid } = useLinks()
   const { isInArchive } = useNodes()
   const { getSearchExtra } = useSearchExtra()
@@ -75,11 +78,11 @@ export const useTodoKanban = () => {
   const taskFilterFunctions = useTaskFilterFunctions()
 
   const changeStatus = (todo: TodoType, newStatus: TodoStatus) => {
-    updateTodo(todo.nodeid, { ...todo, metadata: { ...todo.metadata, status: newStatus } })
+    updateNoteTodo(todo.nodeid, todo.entityId, { entityMetadata: { ...todo.entityMetadata, status: newStatus } })
   }
 
   const changePriority = (todo: TodoType, newPriority: PriorityType) => {
-    updateTodo(todo.nodeid, { ...todo, metadata: { ...todo.metadata, priority: newPriority } })
+    updateNoteTodo(todo.nodeid, todo.entityId, { entityMetadata: { ...todo.entityMetadata, priority: newPriority } })
   }
 
   const generateTodoFilters = (board: TodoKanbanBoard) => {
@@ -94,7 +97,7 @@ export const useTodoKanban = () => {
         const tags = getTags(card.todo.nodeid)
         todoNodes.push(card.todo.nodeid)
         todoTags.push(...(tags ?? []))
-        todoMentions.push(...(card.todo.mentions ?? []))
+        todoMentions.push(...(card.todo.entityMetadata?.mentions ?? []))
       })
     })
 
@@ -282,7 +285,7 @@ export const useTodoKanban = () => {
         })
         .forEach((todo) => {
           todoBoard.columns
-            .find((column) => column.id === todo?.metadata?.status)
+            .find((column) => column.id === todo.entityMetadata?.status)
             ?.cards.push({
               id: `KANBAN_ID_${todo.nodeid}_${todo.id}`,
               todo: todo
@@ -297,7 +300,7 @@ export const useTodoKanban = () => {
 
     todoBoard.columns.forEach((column) => {
       column.cards.sort((a, b) => {
-        if (TodoRanks[a.todo?.metadata?.priority] < TodoRanks[b.todo?.metadata?.priority]) return 1
+        if (TodoRanks[a.todo.entityMetadata.priority] < TodoRanks[b.todo.entityMetadata?.priority]) return 1
         else return -1
       })
     })

@@ -134,7 +134,7 @@ export const usePermission = () => {
           const localSharedNodes = useDataStore.getState().sharedNodes
           const { toUpdateLocal } = iLinksToUpdate(localSharedNodes, sharedNodes)
 
-          runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid, true)))
+          runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid, { isShared: true, withEntities: true })))
 
           mog('SharedNodes', { sharedNodes })
           return { status: 'success', data: sharedNodes }

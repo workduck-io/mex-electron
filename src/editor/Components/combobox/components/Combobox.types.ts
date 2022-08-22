@@ -75,7 +75,7 @@ export type ComboboxOptions = {
 
 export interface ComboboxProps {
   isSlash?: boolean
-  onSelectItem: (editor: PlateEditor<Value>, item: string) => void
+  onSelectItem: (editor: PlateEditor<Value>, item: IComboboxItem) => void
   onRenderItem?: RenderFunction<ComboboxItemProps>
   options?: ComboboxOptions
 }

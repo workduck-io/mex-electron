@@ -90,7 +90,7 @@ export const useLinks = () => {
           return acc
         }
         if (t.content === defaultContent.content) return acc
-        if (t.metadata.status !== TodoStatus.completed) {
+        if (t.entityMetadata?.status !== TodoStatus.completed) {
           acc += 1
         }
         return acc

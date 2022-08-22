@@ -45,11 +45,12 @@ export const useUpdater = () => {
 
   const updateFromContent = async (noteId: string, content: NodeEditorContent, metadata?: any) => {
     if (content) {
+      mog('UPDATING CONTNET', { content })
       setContent(noteId, content)
       setMetadata(noteId, metadata)
       updateLinksFromContent(noteId, content)
       updateTagsFromContent(noteId, content)
-      updateNodeTodos(noteId, getTodosFromContent(content))
+      // updateNodeTodos(noteId, getTodosFromContent(content))
 
       updateDocument('node', noteId, content, getTitleFromNoteId(noteId, { includeArchived: true, includeShared: true}))
     }
