@@ -41,7 +41,7 @@ type TodoStoreType = {
   updateStatusOfTodo: (nodeid: string, todoId: string, status: TodoStatus) => void
 }
 
-const useTodoStore = create<TodoStoreType>(
+const useTodoStore = create<TodoStoreType>()(
   devtools((set, get) => ({
     todos: {},
     initTodos: (todos) => {

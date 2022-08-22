@@ -23,7 +23,7 @@ interface ContentStoreState {
   initContents: (contents: Contents) => void
 }
 
-export const useContentStore = create<ContentStoreState>(
+export const useContentStore = create<ContentStoreState>()(
   devtools((set, get) => ({
     contents: {},
     saved: false,

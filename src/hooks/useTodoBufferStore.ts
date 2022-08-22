@@ -17,7 +17,7 @@ type TodoBufferStore = {
   initializeTodosBuffer: (todosBuffer: TodoBufferType) => void
 }
 
-const useTodoBufferStore = create<TodoBufferStore>(
+const useTodoBufferStore = create<TodoBufferStore>()(
   devtools((set, get) => ({
     todosBuffer: {},
     setTodosBuffer: (noteId, todos) => {

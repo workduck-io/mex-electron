@@ -45,7 +45,7 @@ interface AuthStoreState {
   updateUserDetails: (userDetails: UpdatableUserDetails) => void
 }
 
-export const useAuthStore = create<AuthStoreState>(
+export const useAuthStore = create<AuthStoreState>()(
   devtools(
     persist(
       (set, get) => ({

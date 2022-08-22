@@ -18,7 +18,7 @@ interface UserPreferenceStore extends UserPreferences {
 
 export const USER_PREF_STORE_KEY = 'mex-user-preference-store'
 
-export const useUserPreferenceStore = create<UserPreferenceStore>(
+export const useUserPreferenceStore = create<UserPreferenceStore>()(
   persist(
     devtools(
       (set, get) => ({

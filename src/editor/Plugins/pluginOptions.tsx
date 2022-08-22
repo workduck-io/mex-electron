@@ -314,7 +314,6 @@ export const optionsSelectOnBackspacePlugin = {
         ELEMENT_IMAGE,
         ELEMENT_MEDIA_EMBED,
         ELEMENT_ACTION_BLOCK,
-        ELEMENT_TODO_LI,
         ELEMENT_EXCALIDRAW,
         ELEMENT_INLINE_BLOCK
       ]
