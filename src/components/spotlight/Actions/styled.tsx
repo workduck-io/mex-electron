@@ -7,6 +7,7 @@ import { StyledBackground } from '../styled'
 export interface ColorProp {
   background?: boolean
   start?: number
+  showHover?: boolean
 }
 
 export const Draggable = css`

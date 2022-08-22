@@ -18,9 +18,13 @@ export const StyledRow = styled(animated.div)<ColorProp>`
   /* transform: translateY(${(props) => props.start}px); */
   padding: 12px 1rem 12px 0;
 
-  :hover {
-    ${OnHoverItemBackground}
-  }
+  ${({ showHover }) =>
+    showHover &&
+    css`
+      :hover {
+        ${OnHoverItemBackground}
+      }
+    `}
 
   ${({ background }) =>
     background &&
