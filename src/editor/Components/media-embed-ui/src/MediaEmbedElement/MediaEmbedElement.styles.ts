@@ -28,7 +28,7 @@ export const IFrameWrapper = styled.div<IFrameWrapperProps>`
   }
 
   > * {
-    min-width: 25rem;
+    min-width: 32rem;
   }
 `
 

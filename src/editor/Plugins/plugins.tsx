@@ -170,7 +170,6 @@ export const generatePlugins = (options: PluginOptionType) => {
 
     // Media and link embed
     createMediaEmbedPlugin({
-      isInline: true,
       options: {
         transformUrl: parseIframeUrl,
         rules: [
