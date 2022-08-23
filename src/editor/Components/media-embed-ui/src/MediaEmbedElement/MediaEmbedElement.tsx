@@ -1,16 +1,17 @@
-import { TElement, useEditorRef, setNodes, findNodePath } from '@udecode/plate-core'
-import { TMediaEmbedElement } from '@udecode/plate-media-embed'
+import { Media, useFloatingMediaUrlInput, useMedia } from '@udecode/plate'
+import { useEditorRef, setNodes, findNodePath } from '@udecode/plate-core'
 import { debounce } from 'lodash'
 import * as React from 'react'
 import { useEffect } from 'react'
 import EmbedContainer from 'react-oembed-container'
 import { getEmbedData } from './getEmbedUrl'
-import { IFrame, IFrameWrapper, MediaHtml, RootElement } from './MediaEmbedElement.styles'
+import { IFrameWrapper, MediaHtml, RootElement, StyledMediaEmbed } from './MediaEmbedElement.styles'
 import { MediaEmbedElementProps } from './MediaEmbedElement.types'
 import { MediaEmbedUrlInput } from './MediaEmbedUrlInput'
 
 export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
   const { attributes, children, element, nodeProps } = props
+  const { as, ...rootProps } = props
   const [expand, setExpand] = React.useState(false)
   const [max, setMax] = React.useState(false)
 
@@ -18,7 +19,6 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
   const { url } = element
 
   const [htmlData, setHtmlData] = React.useState<string | undefined>(undefined)
-  // console.log('styles', JSON.stringify({ styles }, null, 2));
 
   useEffect(() => {
     const getData = async () => {
@@ -36,19 +36,20 @@ export const MediaEmbedElement = (props: MediaEmbedElementProps) => {
   return (
     <RootElement max={max} {...attributes}>
       <div contentEditable={false}>
-        {htmlData ? (
-          <EmbedContainer markup={htmlData}>
-            <MediaHtml>
-              {/* eslint-disable-next-line react/no-danger */}
-              <div dangerouslySetInnerHTML={{ __html: htmlData }} />
-            </MediaHtml>
-          </EmbedContainer>
-        ) : (
-          <IFrameWrapper expand={expand} max={max}>
-            <IFrame title="embed" src={`${url}`} frameBorder="0" {...nodeProps} />
-          </IFrameWrapper>
-        )}
-
+        <Media.Root {...rootProps} contentEditable={false}>
+          {htmlData ? (
+            <EmbedContainer markup={htmlData}>
+              <MediaHtml>
+                {/* eslint-disable-next-line react/no-danger */}
+                <div dangerouslySetInnerHTML={{ __html: htmlData }} />
+              </MediaHtml>
+            </EmbedContainer>
+          ) : (
+            <IFrameWrapper id="iframe-renderer" expand={expand} max={max} contentEditable={false}>
+              <StyledMediaEmbed {...nodeProps} src={`${url}`} title="embed" frameBorder="0" />
+            </IFrameWrapper>
+          )}
+        </Media.Root>
         <MediaEmbedUrlInput
           url={url}
           setExpand={setExpand}
