@@ -32,9 +32,6 @@
     "*.{ts,tsx}": "eslint --cache --fix"
   },
   "license": "MIT",
-  "config": {
-    "forge": "./forge.config.js"
-  },
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@trivago/prettier-plugin-sort-imports": "^3.2.0",
@@ -56,7 +53,6 @@
     "@iconify/icons-ri": "^1.2.1",
     "@iconify/icons-simple-icons": "^1.1.36",
     "@iconify/react": "^3.1.4",
-    "@timfish/forge-externals-plugin": "^0.1.2",
     "@types/compress.js": "^1.1.1",
     "@types/flexsearch": "^0.7.2",
     "@types/md5": "^2.3.1",
@@ -65,6 +61,7 @@
     "@types/reactour": "^1.18.2",
     "@types/stopword": "^1.0.2",
     "@types/styled-components": "^5.1.12",
+    "@vitejs/plugin-react": "^2.0.0",
     "@welldone-software/why-did-you-render": "^7.0.1",
     "cross-zip": "^4.0.0",
     "css-loader": "^6.0.0",
