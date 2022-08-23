@@ -95,9 +95,14 @@ const main = async () => {
       ...sharedConfig,
       configFile: 'vite.spotlight.config.ts'
     })
+    const toastDevServer = await createServer({
+      ...sharedConfig,
+      configFile: 'vite.toast.config.ts'
+    })
 
     await mexDevServer.listen()
     await spotlightDevServer.listen()
+    await toastDevServer.listen()
 
     await setupMainPackageWatcher(mexDevServer)
   } catch (e) {

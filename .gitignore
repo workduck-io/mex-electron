@@ -108,3 +108,7 @@ CHANGELOG.md
 src/main.prod.js
 
 actionConfigs.ts
+
+	
+dist/
+out/
