@@ -1,5 +1,5 @@
 import { Value } from '@udecode/plate-core'
-import { TMediaEmbedElement } from '@udecode/plate-media-embed'
+import { TMediaEmbedElement } from '@udecode/plate-media'
 import { StyledElementProps } from '@udecode/plate-styled-components'
 import { CSSProp } from 'styled-components'
 

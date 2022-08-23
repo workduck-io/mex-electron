@@ -9,7 +9,7 @@ import {
   deleteColumn,
   deleteRow,
   deleteTable,
-  Popover,
+  ElementPopover,
   TableElement,
   TableElementProps,
   TableToolbarButton,
@@ -30,6 +30,15 @@ const JustifyCenter = styled.div<{ width: string; height: string }>`
   height: ${(props) => props.height};
 `
 
+const StyledTableToolbar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: ${({ theme }) => theme.spacing.tiny};
+  background: ${({ theme }) => theme.colors.background.card};
+  border-radius: ${({ theme }) => theme.borderRadius.tiny};
+`
+
 const TableToolbarButtons = () => {
   const theme = useTheme()
   const tooltip = {
@@ -42,7 +51,7 @@ const TableToolbarButtons = () => {
     placement: 'bottom'
   } as any
   return (
-    <>
+    <StyledTableToolbar>
       <TableToolbarButton
         tooltip={{ content: 'Add Row', ...tooltip }}
         icon={<MexIcon icon={AddRowIcon} />}
@@ -71,20 +80,20 @@ const TableToolbarButtons = () => {
         transform={deleteTable}
         tooltip={{ content: 'Delete Table', ...tooltip }}
       />
-    </>
+    </StyledTableToolbar>
   )
 }
 
 export const TableModal = ({ element, popoverProps, children }: TableElementProps<Value>) => (
-  <Popover content={<TableToolbarButtons />} {...popoverProps}>
+  <ElementPopover content={<TableToolbarButtons />} {...popoverProps}>
     {children}
-  </Popover>
+  </ElementPopover>
 )
 
 const TableWrapper = (props: any) => {
   return (
     <ErrorBoundary fallback={<></>}>
-      <TableElement {...props} onRenderContainer={TableModal} id="hello" />
+      <TableElement {...props} popoverProps={{ content: <TableToolbarButtons /> }} id="hello" />
     </ErrorBoundary>
   )
 }

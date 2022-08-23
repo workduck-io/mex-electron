@@ -39,7 +39,12 @@ import {
   createTablePlugin,
   createUnderlinePlugin,
   insertNodes,
-  setNodes
+  setNodes,
+  parseIframeUrl,
+  parseTwitterUrl,
+  parseVideoUrl,
+  MediaEmbedVideo,
+  MediaEmbedTweet
 } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW, createExcalidrawPlugin } from '@udecode/plate-excalidraw'
 import {
@@ -70,6 +75,8 @@ import { createActionPlugin } from '@editor/Components/Actions/createActionPlugi
 import { createMentionPlugin } from '@editor/Components/mentions/createMentionsPlugin'
 import { withBlockOptions } from '@editor/Components/Blocks'
 import { createBlockModifierPlugin } from '@editor/Components/Blocks/createBlockModifierPlugin'
+// eslint-disable-next-line import/no-unresolved
+import MediaIFrame, { parseRestMediaUrls } from '@editor/Components/media-embed-ui/src/MediaEmbedElement/MediaIFrame'
 
 export type PluginOptionType = {
   exclude: {
@@ -162,7 +169,25 @@ export const generatePlugins = (options: PluginOptionType) => {
     // createDeserializeMDPlugin(),
 
     // Media and link embed
-    createMediaEmbedPlugin({ isInline: true }),
+    createMediaEmbedPlugin({
+      options: {
+        transformUrl: parseIframeUrl,
+        rules: [
+          {
+            parser: parseTwitterUrl,
+            component: MediaEmbedTweet
+          },
+          {
+            parser: parseVideoUrl,
+            component: MediaEmbedVideo
+          },
+          {
+            parser: parseRestMediaUrls,
+            component: MediaIFrame
+          }
+        ]
+      }
+    }),
 
     // Custom Plugins
     createBlurSelectionPlugin(),

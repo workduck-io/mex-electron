@@ -1,5 +1,6 @@
 import { CardShadow } from '../../../../../style/helpers'
 import styled, { css } from 'styled-components'
+import { MediaEmbed } from '@udecode/plate'
 
 interface MaximizeProp {
   max: boolean
@@ -10,16 +11,25 @@ interface IFrameWrapperProps extends MaximizeProp {
 
 export const IFrameWrapper = styled.div<IFrameWrapperProps>`
   position: relative;
-  transition: padding 0.2s ease-in-out;
+  transition: height 0.2s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  ${({ max, expand }) =>
-    max
-      ? css`
-          padding: calc(90vh - 48px) 0 0 0;
-        `
-      : css`
-          padding: ${expand ? '100% 0 0 0' : '50% 0 0 0'};
-        `}
+  iframe {
+    ${({ max, expand }) =>
+      max
+        ? css`
+            height: calc(90vh - 48px);
+          `
+        : css`
+            height: ${expand ? '48rem' : '24rem'};
+          `}
+  }
+
+  > * {
+    min-width: 32rem;
+  }
 `
 
 export const RootElement = styled.div<MaximizeProp>`
@@ -41,17 +51,20 @@ export const RootElement = styled.div<MaximizeProp>`
         `}
 `
 
-export const IFrame = styled.iframe`
-  position: absolute;
-  top: 0px;
-  left: 0px;
+export const IframeStyles = css`
   width: 100%;
   height: 100%;
 
   border-radius: ${({ theme }) => theme.borderRadius.small};
 `
 
-// Input
+export const IFrame = styled.iframe`
+  ${IframeStyles}
+`
+
+export const StyledMediaEmbed = styled(MediaEmbed)`
+  ${IframeStyles}
+`
 
 export const InputWrapper = styled.div`
   display: flex;
