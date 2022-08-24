@@ -49,6 +49,9 @@ const config: UserConfig = {
     },
     emptyOutDir: true,
     reportCompressedSize: false
+  },
+  worker: {
+    format: 'es'
   }
 }
 

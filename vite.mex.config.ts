@@ -35,6 +35,7 @@ const config: UserConfig = {
     }
   },
   build: {
+    ssr: true,
     sourcemap: true,
     target: `chrome96`,
     outDir: 'dist',

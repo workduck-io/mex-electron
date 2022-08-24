@@ -68,7 +68,7 @@ const setupMainPackageWatcher = (viteDevServer: ViteDevServer): WatcherOutput =>
         spawnProcess = null
       }
 
-      spawnProcess = spawn(String(electronPath), ['dist/main.dev.cjs'])
+      spawnProcess = spawn(String(electronPath), ['dist/main.cjs'])
 
       spawnProcess.stdout.on('data', (d) => d.toString().trim() && logger.warn(d.toString(), { timestamp: true }))
 
