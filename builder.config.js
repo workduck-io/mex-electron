@@ -30,7 +30,6 @@ const configuration = {
     output: 'out',
     buildResources: 'assets'
   },
-  compression: 'store',
   files: ['dist/**'],
   appId: appBundleId,
   afterSign: 'electron-builder-notarize',

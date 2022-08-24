@@ -2,7 +2,7 @@ import { dirname } from 'path'
 import { build } from 'vite'
 
 const appMode = (process.env.MODE = process.env.MODE || 'production')
-const packagesConfig = ['vite.main.config.ts', 'vite.mex.config.ts', 'vite.spotlight.config.ts']
+const packagesConfig = ['vite.main.config.ts', 'vite.mex.config.ts', 'vite.spotlight.config.ts', 'vite.toast.config.ts']
 
 const buildByConfig = (configFile: string) => build({ configFile, mode: appMode })
 

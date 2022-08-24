@@ -25,6 +25,9 @@ const config: UserConfig = {
   resolve: {
     alias: aliases
   },
+  esbuild: {
+    logOverride: { 'this-is-undefined-in-esm': 'silent' }
+  },
   root: PACKAGE_ROOT,
   envDir: process.cwd(),
   ssr: {
@@ -33,11 +36,11 @@ const config: UserConfig = {
   },
   build: {
     ssr: true,
-    sourcemap: 'inline',
+    sourcemap: process.env.MODE === 'development',
     target: `node16`,
     outDir: 'dist',
     assetsDir: '.',
-    minify: false,
+    minify: process.env.MODE !== 'development',
     lib: {
       entry: 'src/electron/main.ts',
       formats: ['cjs']

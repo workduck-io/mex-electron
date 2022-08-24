@@ -35,9 +35,11 @@ const config: UserConfig = {
       strict: true
     }
   },
+  esbuild: {
+    logOverride: { 'this-is-undefined-in-esm': 'silent' }
+  },
   build: {
-    ssr: true,
-    sourcemap: true,
+    sourcemap: process.env.MODE === 'development',
     target: `chrome96`,
     outDir: 'dist',
     assetsDir: '.',

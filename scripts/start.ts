@@ -52,6 +52,7 @@ const setupMainPackageWatcher = (viteDevServer: ViteDevServer): WatcherOutput =>
   const path = '/'
   process.env.VITE_MEX_DEV_SERVER_URL = `${protocol}//${host}:${port}${path}`
   process.env.VITE_SPOTLIGHT_DEV_SERVER_URL = `${protocol}//${host}:${port}${path}spotlight.html`
+  process.env.VITE_TOAST_DEV_SERVER_URL = `${protocol}//${host}:${port}${path}/toast.html`
 
   const logger = createLogger(LOG_LEVEL, {
     prefix: '[main]'

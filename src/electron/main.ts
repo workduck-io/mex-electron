@@ -2,6 +2,7 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { app } from 'electron'
+import 'threads/register'
 
 import { initializeSentry } from '../services/sentry'
 import appEventListeners, { WindowsType } from './listeners/app'
