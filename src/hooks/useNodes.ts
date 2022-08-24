@@ -4,6 +4,8 @@ import { AddILinkProps, ILink, NodeType, SharedNode } from '../types/Types'
 import toast from 'react-hot-toast'
 import { AccessLevel } from '../types/mentions'
 import { useRecentsStore } from '@store/useRecentsStore'
+import { getAllParentIds, getNameFromPath } from '@components/mex/Sidebar/treeUtils'
+import { BreadcrumbItem } from '@workduck-io/mex-components'
 
 // Used to ensure no path clashes while adding ILink.
 // path functions to check wether clash is happening can be also used
@@ -103,10 +105,38 @@ export const useNodes = () => {
     const node = nodes.find((l) => l.nodeid === nodeid)
     if (node) return node
   }
+
   const getArchiveNode = (nodeid: string): ILink => {
     const nodes = useDataStore.getState().archive
     const node = nodes.find((l) => l.nodeid === nodeid)
     if (node) return node
+  }
+
+  const getNodeBreadcrumbs = (nodeid: string): BreadcrumbItem[] => {
+    const nodes = useDataStore.getState().ilinks
+    const node = nodes.find((l) => l.nodeid === nodeid)
+
+    if (!node) return []
+
+    const allParents = getAllParentIds(node.path)
+
+    const parents: BreadcrumbItem[] = allParents.reduce((val, p) => {
+      const parentNode = nodes.find((l) => l.path === p)
+      if (parentNode) {
+        return [
+          ...val,
+          {
+            id: parentNode.nodeid,
+            icon: parentNode.icon ?? 'ri:file-list-2-line',
+            label: getNameFromPath(parentNode.path)
+          }
+        ]
+      }
+      return val
+    }, [])
+
+    mog('We have them breadcrumbs', { parents, nodeid, allParents })
+    return parents
   }
 
   return {
@@ -119,6 +149,7 @@ export const useNodes = () => {
     getNode,
     getArchiveNode,
     accessWhenShared,
+    getNodeBreadcrumbs,
     updateBaseNode
   }
 }
