@@ -72,6 +72,18 @@ export const CenteredMainContent = styled.div`
 
 export const StyledEditor = styled(CenteredMainContent)<StyledEditorProps>``
 
+export const EditorBreadcrumbs = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  overflow: hidden;
+
+  opacity: 0.5;
+  &:hover {
+    opacity: 1;
+  }
+`
+
 export const EditorStyles = styled.div<{ readOnly?: boolean }>`
   ${({ readOnly }) =>
     readOnly &&

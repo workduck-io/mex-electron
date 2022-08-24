@@ -14,7 +14,7 @@ import useBlockStore from '../store/useBlockStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
 import { useLayoutStore } from '../store/useLayoutStore'
-import { EditorWrapper, StyledEditor } from '../style/Editor'
+import { EditorBreadcrumbs, EditorWrapper, StyledEditor } from '../style/Editor'
 import { getEditorId } from '../utils/lib/EditorId'
 import BlockInfoBar from './Components/Blocks/BlockInfoBar'
 import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
@@ -29,13 +29,16 @@ import { areEqual } from '@utils/lib/hash'
 import toast from 'react-hot-toast'
 import { mog } from '@utils/lib/helper'
 import { useLastOpened } from '@hooks/useLastOpened'
+import { Breadcrumbs } from '@workduck-io/mex-components'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const setIsEditing = useEditorStore((store) => store.setIsEditing)
   const { toggleFocusMode } = useLayout()
   const { saveApiAndUpdate } = useLoad()
-  const { accessWhenShared } = useNodes()
+  const { accessWhenShared, getNodeBreadcrumbs } = useNodes()
+  const { goTo } = useRouting()
 
   const { getDataAPI } = useApi()
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
@@ -93,6 +96,10 @@ const ContentEditor = () => {
 
   useAnalysisTodoAutoUpdate()
 
+  const openBreadcrumb = (nodeid: string) => {
+    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+  }
+
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.toggleFocusMode.keystrokes]: (event) => {
@@ -137,6 +144,10 @@ const ContentEditor = () => {
   return (
     <>
       <StyledEditor showGraph={infobar.mode === 'graph'} className="mex_editor">
+        <EditorBreadcrumbs>
+          <Breadcrumbs items={getNodeBreadcrumbs(node.nodeid)} key={`bc-${node.nodeid}`} onOpenItem={openBreadcrumb} />
+        </EditorBreadcrumbs>
+
         <Toolbar />
 
         {isBlockMode ? <BlockInfoBar /> : <Metadata node={node} />}

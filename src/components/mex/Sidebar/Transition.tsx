@@ -4,7 +4,6 @@ import { useTheme } from 'styled-components'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import { OverlaySidebarWindowWidth, size } from '@style/responsive'
 import { useMediaQuery } from 'react-responsive'
-import { transparentize } from 'polished'
 
 const sidebarCollapsedWidth = '86px'
 const sidebarExpandedWidth = '362px'
@@ -59,14 +58,15 @@ export const useSidebarTransition = () => {
     const firstColumnWidth = `${showSidebar ? sidebarExpandedWidth : sidebarCollapsedWidth}`
     const visibleEndColumnWidth = `${isDesktop ? '600px' : '400px'}`
     const endColumnWidth = `${showRHSidebar ? visibleEndColumnWidth : '0px'}`
+    // mog('Overlay', { overlaySidebar, showSidebar, showRHSidebar })
     if (!overlaySidebar) {
       const style = {
-        gridTemplateColumns: `${firstColumnWidth} 2fr ${endColumnWidth}`
+        gridTemplateColumns: `${firstColumnWidth} calc(100vw - ${firstColumnWidth} - ${endColumnWidth}) ${endColumnWidth}`
       }
       // if (!sidebar.expanded || !sidebar.show) style.gridTemplateColumns = `${sidebarCollapsedWidth} 2fr auto`
       return { style, endColumnWidth }
     } else {
-      const style = { gridTemplateColumns: `${sidebarCollapsedWidth} 2fr 0px` }
+      const style = { gridTemplateColumns: `${sidebarCollapsedWidth} calc(100vw - ${sidebarCollapsedWidth} - 0px) 0px` }
       return { style, endColumnWidth }
     }
   }, [sidebar, isDesktop, rhSidebar, overlaySidebar])

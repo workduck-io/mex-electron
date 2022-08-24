@@ -2949,16 +2949,16 @@
   resolved "https://npm.pkg.github.com/download/@workduck-io/flexsearch/0.7.22/968178df34cab6b6df5489f73ed86ff0b9e97123#968178df34cab6b6df5489f73ed86ff0b9e97123"
   integrity sha512-NADE1e1euqohnuCt7ymtwzGBC+5rPbtmKjp0VE0BF2w8cjvO1E9o2KNrPkMtHYRR+snr0iqO6lcBLM+J51m9QA==
 
-"@workduck-io/mex-components@^0.0.5":
-  version "0.0.5"
-  resolved "https://npm.pkg.github.com/download/@workduck-io/mex-components/0.0.5/7a95afdfcdaf527a69e162bb42f10375c197eaa2#7a95afdfcdaf527a69e162bb42f10375c197eaa2"
-  integrity sha512-/kmmmOHaPLEYHmhQiPJcSgD8jN9owUNOZMyaoy74mGaBgssptGIGIZmDmSZjDNrEXVMJzT68JsarZxhb1F3oWw==
+"@workduck-io/mex-components@^0.0.9":
+  version "0.0.9"
+  resolved "https://npm.pkg.github.com/download/@workduck-io/mex-components/0.0.9/1cf10b307916eb7ca3ec8e085ddd7befe471c249#1cf10b307916eb7ca3ec8e085ddd7befe471c249"
+  integrity sha512-nJa7xgVzOb1Rx6k7a3vsJ9LN2Qf0BI5NWXwobM63hWCPYkNW2YeoJGUh8agT436kTjOrG+ZpUyTOyk3XMp0kpQ==
   dependencies:
     "@tippyjs/react" "^4.2.6"
     core-js "^3.21.0"
     deepmerge "^4.2.2"
     polished "^4.1.4"
-    zustand "^3.6.9"
+    react-spring "^9.5.2"
 
 "@workduck-io/tinykeys@1.5.0":
   version "1.5.0"
@@ -9856,7 +9856,7 @@ react-sortablejs@^6.0.0:
     classnames "2.3.1"
     tiny-invariant "1.2.0"
 
-react-spring@^9.2.4:
+react-spring@^9.2.4, react-spring@^9.5.2:
   version "9.5.2"
   resolved "https://registry.yarnpkg.com/react-spring/-/react-spring-9.5.2.tgz#b9929ad2806e56e6408b27189ec9cdf1dc003873"
   integrity sha512-OGWNgKi2TSjpqsK67NCUspaCgEvWcG7HcpO9KAaDLFzFGNxWdGdN3YTXhhWUqCsLAx9I6LxPzmRuUPsMNqTgrw==
@@ -12558,7 +12558,7 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zustand@^3.4.2, zustand@^3.6.9, zustand@^3.7.2:
+zustand@^3.4.2, zustand@^3.7.2:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/zustand/-/zustand-3.7.2.tgz#7b44c4f4a5bfd7a8296a3957b13e1c346f42514d"
   integrity sha512-PIJDIZKtokhof+9+60cpockVOq05sJzHCriyvaLBmEJixseQ1a5Kdov6fWZfWOu5SK9c+FhH1jU0tntLxRJYMA==
