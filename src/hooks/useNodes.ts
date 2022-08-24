@@ -135,7 +135,7 @@ export const useNodes = () => {
       return val
     }, [])
 
-    mog('We have them breadcrumbs', { parents, nodeid, allParents })
+    // mog('We have them breadcrumbs', { parents, nodeid, allParents })
     return parents
   }
 
