@@ -28,6 +28,7 @@ const config: UserConfig = {
   root: PACKAGE_ROOT,
   envDir: process.cwd(),
   ssr: {
+    format: 'cjs',
     noExternal: ['nanoid']
   },
   build: {
@@ -36,13 +37,20 @@ const config: UserConfig = {
     target: `node16`,
     outDir: 'dist',
     assetsDir: '.',
-    minify: process.env.MODE !== 'development',
+    minify: false,
     lib: {
       entry: 'src/electron/main.ts',
       formats: ['cjs']
     },
     rollupOptions: {
-      external: ['electron', 'electron-devtools-installer', ...builtinModules],
+      external: [
+        'electron',
+        'electron-devtools-installer',
+        ...builtinModules,
+        'robotjs',
+        'chokidar',
+        'active-win-universal'
+      ],
       output: {
         entryFileNames: '[name].cjs'
       }

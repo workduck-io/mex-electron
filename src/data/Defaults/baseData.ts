@@ -1,15 +1,22 @@
-import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import { questions } from '../../editor/Components/QABlock/starters'
 import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin'
-import { Contents } from '../../store/useContentStore'
+import { questions } from '../../editor/Components/QABlock/starters'
 import { FileData, NodeContent } from '../../types/data'
 import { generateILinks } from '../../utils/generateComboItem'
-import { randomNumberBetween } from '../../utils/helpers'
-import { generateNodeUID, generateTempId, MEETING_PREFIX } from './idPrefixes'
-import { onboardingContent } from '../initial/onboardingDoc'
 import { draftContent } from '../initial/draftDoc'
+import { onboardingContent } from '../initial/onboardingDoc'
+import { generateNodeUID, generateTempId, MEETING_PREFIX } from './idPrefixes'
+
 // import { generateTempId } from './idPrefixes'
-//
+//]
+
+export interface Contents {
+  // Mapped with nodeid
+  [key: string]: NodeContent
+}
+
+const randomNumberBetween = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min)
+
+const ELEMENT_PARAGRAPH = 'p'
 export const BASE_DRAFT_PATH = 'Drafts'
 export const BASE_TASKS_PATH = 'Daily Tasks'
 export const BASE_MEETING_PATH = MEETING_PREFIX

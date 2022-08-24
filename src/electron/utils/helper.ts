@@ -1,18 +1,23 @@
-import { FileData } from '../../types/data'
-import { SAVE_LOCATION } from './fileLocations'
-import { getFileData } from './filedata'
-import { SelectionType, getSelectedTextSync, getSelectedText } from './getSelectedText'
-import { createWindow } from './window'
 import { getSaveLocation } from '@data/Defaults/data'
 import { IpcAction } from '@data/IpcAction'
 import Toast from '@electron/Toast'
 import { windows } from '@electron/main'
 import MenuBuilder from '@electron/menu'
-import { AppType } from '@hooks/useInitialize'
 import { sanitizeHtml } from '@utils/sanitizeHtml'
 import chokidar from 'chokidar'
 import { session, app, BrowserWindow, screen } from 'electron'
 import fs from 'fs'
+
+import { FileData } from '../../types/data'
+import { SAVE_LOCATION } from './fileLocations'
+import { getFileData } from './filedata'
+import { SelectionType, getSelectedTextSync, getSelectedText } from './getSelectedText'
+import { createWindow } from './window'
+
+export enum AppType {
+  SPOTLIGHT = 'SPOTLIGHT',
+  MEX = 'MEX'
+}
 
 const MEX_WINDOW_OPTIONS = {
   width: 1600,

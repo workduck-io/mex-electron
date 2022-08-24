@@ -1,10 +1,10 @@
 import { IpcAction } from '@data/IpcAction'
-import { windows } from '@electron/main'
 import Toast from '@electron/Toast'
+import { windows } from '@electron/main'
 import createTray from '@electron/tray'
 import { setupUpdateService } from '@electron/update'
-import { getDataOfLocation } from '@electron/utils/filedata'
 import { SEARCH_INDEX_LOCATION, TEMP_DATA_BEFORE_UPDATE } from '@electron/utils/fileLocations'
+import { getDataOfLocation } from '@electron/utils/filedata'
 import { handleToggleMainWindow, createAllWindows, createMexWindow, createSpotLighWindow } from '@electron/utils/helper'
 import extensionsForDevX from '@electron/utils/installExtensions'
 import { getRedirectPath } from '@electron/utils/redirect'
@@ -22,7 +22,6 @@ const appEventListeners = () => {
       // * If updated
       const tempData = getDataOfLocation(TEMP_DATA_BEFORE_UPDATE)
 
-      global.appVersion = app.getVersion()
       globalShortcut.register('CommandOrControl+Shift+X', handleToggleMainWindow)
 
       createTray()

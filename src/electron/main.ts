@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { app } from 'electron'
-import handleIPCListener from './listeners/ipc'
+
 import { initializeSentry } from '../services/sentry'
 import appEventListeners, { WindowsType } from './listeners/app'
+import handleIPCListener from './listeners/ipc'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
