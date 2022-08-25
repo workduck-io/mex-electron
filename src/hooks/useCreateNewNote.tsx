@@ -9,6 +9,8 @@ import useLoad from './useLoad'
 import { useNavigation } from './useNavigation'
 import { mog } from '@utils/lib/helper'
 import { useLastOpened } from './useLastOpened'
+import { useContentStore } from '@store/useContentStore'
+import { useSnippets } from './useSnippets'
 
 export type NewNoteOptions = {
   path?: string
@@ -23,6 +25,8 @@ export const useCreateNewNote = () => {
   const { push } = useNavigation()
   const addILink = useDataStore((s) => s.addILink)
   const checkValidILink = useDataStore((s) => s.checkValidILink)
+  const getMetadata = useContentStore((s) => s.getMetadata)
+  const { getSnippet } = useSnippets()
 
   const { saveNodeName } = useLoad()
   const { getParentILink } = useLinks()
@@ -42,6 +46,10 @@ export const useCreateNewNote = () => {
 
     const parentNoteId = getParentILink(uniquePath)?.nodeid
 
+    const nodeMetadata = getMetadata(parentNoteId)
+    const noteContent =
+      options?.noteContent || (nodeMetadata?.templateID && getSnippet(nodeMetadata.templateID).content)
+
     const node = addILink({
       ilink: newNotePath,
       nodeid: options?.noteId,
@@ -57,7 +65,12 @@ export const useCreateNewNote = () => {
 
     mog('NODE CREATED IS HERE', { node })
 
-    addInHierarchy({ noteId: node.nodeid, notePath: node.path, parentNoteId, noteContent: options?.noteContent })
+    addInHierarchy({
+      noteId: node.nodeid,
+      notePath: node.path,
+      parentNoteId,
+      noteContent
+    })
     saveNodeName(useEditorStore.getState().node.nodeid)
 
     addLastOpened(node.nodeid)

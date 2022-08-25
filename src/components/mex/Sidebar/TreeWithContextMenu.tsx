@@ -18,8 +18,6 @@ import { useRefactorStore } from '../Refactor/Refactor'
 import { LastOpenedState } from '../../../types/userPreference'
 import volumeDownLine from '@iconify/icons-ri/volume-down-line'
 import { mog } from '@utils/lib/helper'
-import { useContentStore } from '@store/useContentStore'
-import { useSnippets } from '@hooks/useSnippets'
 import { useTemplateModalStore } from '../Template/TemplateModalStore'
 
 export const MENU_ID = 'Tree-Menu'
@@ -70,8 +68,6 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const { createNewNote } = useCreateNewNote()
   const openShareModal = useShareModalStore((store) => store.openModal)
   const openTemplateModal = useTemplateModalStore((store) => store.openModal)
-  const getMetadata = useContentStore((store) => store.getMetadata)
-  const { getSnippet } = useSnippets()
 
   // const lastOpenedNote = lastOpenedNotes[nodeId] ?? undefined
 
@@ -86,16 +82,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
 
   const handleCreateChild = (item: TreeItem) => {
     // mog('handleCreateChild', { item })
-    const metadata = getMetadata(item.data.nodeid)
-
-    // Checking if a template is set for children of this heirarchy
-    if (metadata?.templateID) {
-      const snippetContent = getSnippet(metadata.templateID).content
-
-      createNewNote({ parent: item.data.path, noteContent: snippetContent })
-    } else {
-      createNewNote({ parent: item.data.path })
-    }
+    createNewNote({ parent: item.data.path })
   }
 
   const handleTemplate = (item: TreeItem) => {
