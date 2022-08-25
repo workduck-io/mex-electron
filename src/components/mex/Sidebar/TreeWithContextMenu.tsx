@@ -71,7 +71,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const openShareModal = useShareModalStore((store) => store.openModal)
   const openTemplateModal = useTemplateModalStore((store) => store.openModal)
   const getMetadata = useContentStore((store) => store.getMetadata)
-  const { getSnippetContent } = useSnippets()
+  const { getSnippet } = useSnippets()
 
   // const lastOpenedNote = lastOpenedNotes[nodeId] ?? undefined
 
@@ -90,7 +90,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
 
     // Checking if a template is set for children of this heirarchy
     if (metadata?.templateID) {
-      const snippetContent = getSnippetContent(metadata.templateID)
+      const snippetContent = getSnippet(metadata.templateID).content
 
       createNewNote({ parent: item.data.path, noteContent: snippetContent })
     } else {

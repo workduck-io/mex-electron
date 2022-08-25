@@ -29,12 +29,12 @@ const TemplateModal = () => {
     formState: { errors, isSubmitting }
   } = useForm<TemplateModalData>()
 
-  const onSubmit = async (data: TemplateModalData) => {
+  const onSubmit = async (data) => {
     const nodeid = node?.nodeid
     const content = getContent(nodeid)
 
     if (nodeid) {
-      saveDataAPI(nodeid, content.content, undefined, undefined, data.templateID)
+      saveDataAPI(nodeid, content.content, undefined, undefined, data.templateID.value)
       toast('Template Set!')
     }
 
