@@ -19,6 +19,7 @@ import { LastOpenedState } from '../../../types/userPreference'
 import volumeDownLine from '@iconify/icons-ri/volume-down-line'
 import { mog } from '@utils/lib/helper'
 import { useTemplateModalStore } from '../Template/TemplateModalStore'
+import { useContentStore } from '@store/useContentStore'
 
 export const MENU_ID = 'Tree-Menu'
 
@@ -68,6 +69,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const { createNewNote } = useCreateNewNote()
   const openShareModal = useShareModalStore((store) => store.openModal)
   const openTemplateModal = useTemplateModalStore((store) => store.openModal)
+  const getMetadata = useContentStore((store) => store.getMetadata)
 
   // const lastOpenedNote = lastOpenedNotes[nodeId] ?? undefined
 
@@ -118,7 +120,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
           }}
         >
           <Icon icon="carbon:template" />
-          Set Template
+          {getMetadata(item.data.nodeid)?.templateID ? 'Change Template' : 'Set Template'}
         </ContextMenuItem>
         <ContextMenuItem
           onSelect={(args) => {
