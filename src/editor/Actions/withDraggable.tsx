@@ -1,4 +1,5 @@
 // import addLine from '@iconify/icons-ri/add-line'
+import { useGlobalListener } from '@hooks/useGlobalListener'
 import checkboxBlankCircleLine from '@iconify/icons-radix-icons/drag-handle-dots-2'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import refreshLine from '@iconify/icons-ri/refresh-line'
@@ -25,8 +26,7 @@ import {
   ELEMENT_UL,
   withDraggables
 } from '@udecode/plate'
-import React, { useEffect, useState } from 'react'
-import { useEditor } from 'slate-react'
+import React from 'react'
 import styled, { css } from 'styled-components'
 import { RelativeTime } from '../../components/mex/RelativeTime'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
@@ -46,7 +46,7 @@ const StyledTip = styled.div`
   border-radius: 0.25rem;
 `
 
-export const StyledDraggable = styled(StyledTip) <{ show?: boolean }>`
+export const StyledDraggable = styled(StyledTip)<{ show?: boolean }>`
   display: none;
   padding: ${({ theme }) => theme.spacing.tiny};
   background-color: ${({ theme }) => theme.colors.gray[8]};
@@ -189,31 +189,8 @@ export const DraggerContent = ({ element }: any) => {
 }
 
 const DragHandle = ({ className, styles, element }: DragHandleProps) => {
-  const isUserTyping = useEditorStore(store => store.isEditing)
-  const setIsUserTyping = useEditorStore(store => store.setIsEditing)
+  const isUserTyping = useEditorStore((store) => store.isEditing)
   const setIsBlockMode = useBlockStore.getState().setIsBlockMode
-
-  useEffect(() => {
-    const keyboardHandler = (event: KeyboardEvent) => {
-      if (event.ctrlKey || event.altKey || event.metaKey) return
-
-      setIsUserTyping(true)
-    }
-
-    window.addEventListener('keydown', keyboardHandler)
-
-    return () => window.removeEventListener('keydown', keyboardHandler)
-  }, [])
-
-  useEffect(() => {
-    const mouseHandler = () => {
-      setIsUserTyping(false)
-    }
-
-    window.addEventListener('mousemove', mouseHandler)
-
-    return () => window.removeEventListener('mousemove', mouseHandler)
-  }, [])
 
   return (
     <Tippy {...grabberTooltipProps} content={<GrabberTooltipContent element={element} />}>
