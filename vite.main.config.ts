@@ -31,8 +31,7 @@ const config: UserConfig = {
   root: PACKAGE_ROOT,
   envDir: process.cwd(),
   ssr: {
-    format: 'cjs',
-    noExternal: ['nanoid']
+    format: 'cjs'
   },
   build: {
     ssr: true,
@@ -41,11 +40,12 @@ const config: UserConfig = {
     outDir: 'dist',
     assetsDir: '.',
     minify: process.env.MODE !== 'development',
-    lib: {
-      entry: 'src/electron/main.ts',
-      formats: ['cjs']
-    },
     rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'src/electron/main.ts'),
+        analysis: path.resolve(__dirname, 'src/electron/worker/analysis.ts'),
+        search: path.resolve(__dirname, 'src/electron/worker/search.ts')
+      },
       external: [
         'electron',
         'electron-devtools-installer',
@@ -55,14 +55,25 @@ const config: UserConfig = {
         'active-win-universal'
       ],
       output: {
-        entryFileNames: '[name].cjs'
+        entryFileNames: (assetInfo) => {
+          switch (assetInfo.name) {
+            case 'analysis':
+              return 'analysis.js'
+
+            case 'search':
+              return 'search.js'
+
+            default:
+              return '[name].cjs'
+          }
+        }
       }
     },
     emptyOutDir: true,
     reportCompressedSize: false
   },
   worker: {
-    format: 'es'
+    format: 'iife'
   }
 }
 

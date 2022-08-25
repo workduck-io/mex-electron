@@ -2,7 +2,6 @@
 
 const { version, productName } = require('./package.json')
 const semver = require('semver')
-const { Configuration } = require('electron-builder')
 
 const checkAlpha = (version) => {
   const parsed = semver.parse(version)
@@ -34,6 +33,8 @@ const configuration = {
   appId: appBundleId,
   afterSign: 'electron-builder-notarize',
   buildDependenciesFromSource: true,
+  asar: true,
+  asarUnpack: ['dist/*.js'],
   mac: {
     artifactName: '${productName}-${version}-${os}-${arch}.${ext}',
     category: 'public.app-category.productivity',

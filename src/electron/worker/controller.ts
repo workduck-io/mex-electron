@@ -1,12 +1,9 @@
+import { spawn, Worker } from 'threads'
+
 import { NodeEditorContent } from '../../types/Types'
 import { FileData } from '../../types/data'
 import { idxKey, SearchOptions, SearchRepExtra } from '../../types/search'
 import { mog } from '../../utils/lib/helper'
-// eslint-disable-next-line import/no-unresolved
-import analysisWorkerContructor from './analysis?worker'
-// eslint-disable-next-line import/no-unresolved
-import searchWorkerConstructor from './search?worker'
-import { spawn } from 'threads'
 
 export let worker = null
 
@@ -14,7 +11,7 @@ export let search_worker = null
 
 export const startAnalysisWorkerService = async () => {
   console.log('startWorkerService')
-  if (!worker) worker = await spawn(new analysisWorkerContructor())
+  if (!worker) worker = await spawn(new Worker('./analysis.js'))
 }
 
 export type AnalysisModifier = SearchRepExtra
@@ -47,7 +44,7 @@ export const analyseContent = async (props: AnalyseContentProps, callback: (data
 }
 export const startSearchWorker = async () => {
   console.log('startSearchWorkerService')
-  if (!search_worker) search_worker = await spawn(new searchWorkerConstructor())
+  if (!search_worker) search_worker = await spawn(new Worker('./search.js'))
 }
 export const initSearchIndex = async (fileData: FileData, indexData: Record<idxKey, any>) => {
   try {
