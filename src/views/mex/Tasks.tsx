@@ -1,6 +1,6 @@
 import Board from '@asseinfo/react-kanban'
 import TaskHeader from '@components/mex/Tasks/TaskHeader'
-import { useViewStore } from '@hooks/useTaskViews'
+import { useSyncTaskViews, useViewStore } from '@hooks/useTaskViews'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { OverlaySidebarWindowWidth } from '@style/responsive'
 import React, { useEffect, useMemo, useRef } from 'react'
@@ -189,6 +189,9 @@ const Tasks = () => {
       }
     }
   }
+
+  // Fetch all task views
+  useSyncTaskViews()
 
   useEffect(() => {
     if (selectedRef.current) {

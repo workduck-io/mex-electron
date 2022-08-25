@@ -102,6 +102,13 @@ export const apiURLs = {
   // * NOTE: Currently all Snippets have version: 1
   deleteSnippetById: (snippetId: string) => `${API_URL}/snippet/${snippetId}/1`,
 
+  // Views
+  view: {
+    saveView: `${MEX_LOCH_BASE_URL}/task/view`,
+    deleteView: (id: string) => `${MEX_LOCH_BASE_URL}/task/view/${id}`,
+    getAllViews: `${MEX_LOCH_BASE_URL}/task/view/all/workspace`
+  },
+
   // Sharing
   // Post type determines action
   sharedNode: `${API_URL}/shared/node`,

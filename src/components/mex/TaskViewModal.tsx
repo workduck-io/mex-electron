@@ -65,14 +65,12 @@ const TaskViewModal = () => {
   // const openModal = useTaskViewModalStore((store) => store.openModal)
   const closeModal = useTaskViewModalStore((store) => store.closeModal)
 
-  const addView = useViewStore((store) => store.addView)
-  const updateView = useViewStore((store) => store.updateView)
   // const currentView = useViewStore((store) => store.currentView)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
 
   const { saveData } = useSaveData()
 
-  const { getView } = useTaskViews()
+  const { getView, addView, updateView } = useTaskViews()
 
   const { goTo } = useRouting()
 
@@ -86,6 +84,11 @@ const TaskViewModal = () => {
   } = useForm<TaskViewModalFormData>()
 
   const curView = useMemo(() => {
+    // Loads up the values of the current View to prefill the inputs
+    // Current view is the view to be changed
+    //
+    // updateViewId loads the view to update
+    // cloneViewId loads the view to clone with modified title
     if (updateViewId) {
       const updateView = getView(updateViewId)
       if (updateView) {
@@ -124,7 +127,7 @@ const TaskViewModal = () => {
         description: data.description ?? oldview.description,
         filters
       }
-      updateView(newView)
+      await updateView(newView)
       saveData()
       setCurrentView(newView)
       goTo(ROUTE_PATHS.tasks, NavigationType.push, newView.id)
@@ -135,7 +138,7 @@ const TaskViewModal = () => {
         filters: filters,
         id: generateTaskViewId()
       }
-      addView(view)
+      await addView(view)
       saveData()
       setCurrentView(view)
       goTo(ROUTE_PATHS.tasks, NavigationType.push, view.id)

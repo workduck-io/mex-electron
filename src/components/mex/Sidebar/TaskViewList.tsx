@@ -57,59 +57,6 @@ const TaskViewList = () => {
 
   // mog('Snippy', { snippets, showSelected, location })
 
-  {
-    /*
-    <SnippetListWrapper>
-      <Tippy theme="mex" placement="right" singleton={source} />
-      <BList>
-        <StyledTreeItem noSwitcher selected={currentView === undefined}>
-          <ItemContent onClick={() => onOpenDefaultView()}>
-            <ItemTitle>
-              <Icon icon={home7Line} />
-              <span>Default</span>
-            </ItemTitle>
-          </ItemContent>
-        </StyledTreeItem>
-        {sortedViews.map((view) => (
-          <Tippy
-            theme="mex"
-            placement="right"
-            singleton={target}
-            key={`DisplayTippy_${view.id}`}
-            content={<TooltipContent item={{ id: view.id, children: [], data: { title: view.title } }} />}
-          >
-            <span>
-              <ContextMenu.Root
-                onOpenChange={(open) => {
-                  if (open) {
-                    setContextOpenViewId(view.id)
-                  } else setContextOpenViewId(null)
-                }}
-              >
-                <ContextMenu.Trigger asChild>
-                  <StyledTreeItem
-                    hasMenuOpen={contextOpenViewId === view.id}
-                    noSwitcher
-                    selected={showSelected && view?.id === currentView?.id}
-                  >
-                    <ItemContent onClick={() => onOpenView(view)}>
-                      <ItemTitle>
-                        <Icon icon={stackLine} />
-                        <span>{view.title}</span>
-                      </ItemTitle>
-                    </ItemContent>
-                  </StyledTreeItem>
-                </ContextMenu.Trigger>
-                <TaskViewContextMenu view={view} />
-                /*<ArchiveContextMenu item={item} />/
-              </ContextMenu.Root>
-            </span>
-          </Tippy>
-        ))}
-      </BList>
-    </SnippetListWrapper>
-    */
-  }
   return (
     <SidebarList
       ItemContextMenu={TaskViewContextMenu}
