@@ -139,14 +139,15 @@ export const useApi = () => {
    * Saves data in the backend
    * Also updates the incoming data in the store
    */
-  const saveDataAPI = async (nodeid: string, content: any[], isShared = false, title?: string) => {
+  const saveDataAPI = async (nodeid: string, content: any[], isShared = false, title?: string, templateID?: string) => {
     const reqData = {
       id: nodeid,
       type: 'NodeRequest',
       title: title || getTitleFromNoteId(nodeid),
       namespaceIdentifier: DEFAULT_NAMESPACE,
       tags: getTagsFromContent(content),
-      data: serializeContent(content ?? defaultContent.content, nodeid)
+      data: serializeContent(content ?? defaultContent.content, nodeid),
+      metadata: { templateID }
     }
 
     // if (!isShared) {
