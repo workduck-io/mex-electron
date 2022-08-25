@@ -1,8 +1,11 @@
 import { useEditorStore } from '@store/useEditorStore'
 import { useEffect } from 'react'
+import { useFocused } from 'slate-react'
 
 export const useGlobalListener = () => {
   const setIsUserTyping = useEditorStore((store) => store.setIsEditing)
+
+  const hasFocus = useFocused()
 
   useEffect(() => {
     const keyboardHandler = (event: KeyboardEvent) => {
@@ -11,12 +14,13 @@ export const useGlobalListener = () => {
       setIsUserTyping(true)
     }
 
-    window.addEventListener('keydown', keyboardHandler)
+    // * Only add listener when focus is on editor
+    if (hasFocus) window.addEventListener('keydown', keyboardHandler)
 
     return () => {
       return window.removeEventListener('keydown', keyboardHandler)
     }
-  }, [])
+  }, [hasFocus])
 
   useEffect(() => {
     const mouseHandler = () => {

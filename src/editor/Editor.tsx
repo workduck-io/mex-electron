@@ -165,8 +165,8 @@ export const Editor = ({
           {showBalloonToolbar && <BallonMarkToolbarButtons />}
           <MultiComboboxContainer config={comboConfigData} />
           {/* {showCursorOverlay && <CursorOverlayContainer />} */}
+          <GlobalEditorListener />
         </Plate>
-        <GlobalEditorListener />
       </EditorStyles>
     </>
   )

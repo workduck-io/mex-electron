@@ -84,7 +84,7 @@ export const EditorBreadcrumbs = styled.div<{ isVisible?: boolean }>`
     opacity: 1;
   }
 
-  ${({ isVisible }) => FadeInOut(isVisible)}
+  ${({ isVisible }) => FadeInOut(isVisible, '0.5', '0.5')}
 `
 
 export const EditorStyles = styled.div<{ readOnly?: boolean }>`
