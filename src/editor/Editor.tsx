@@ -1,5 +1,5 @@
 import { getPlateEditorRef, Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
-import React, { useEffect, useMemo } from 'react'
+import React, { memo, useEffect, useMemo } from 'react'
 import generatePlugins, { PluginOptionType } from './Plugins/plugins'
 
 import BallonMarkToolbarButtons from './Components/EditorBalloonToolbar'
@@ -14,12 +14,12 @@ import { useContextMenu } from 'react-contexify'
 import { useEditorChange } from '../hooks/useEditorActions'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 import { useGraphStore } from '../store/useGraphStore'
-import { useEditorStore } from '../store/useEditorStore'
 import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
 import { mog } from '../utils/lib/helper'
 import { useDebouncedCallback } from 'use-debounce'
 import useSuggestionStore from '@store/useSuggestionStore'
 import { NodeEditorContent } from '../types/Types'
+import { useGlobalListener } from '@hooks/useGlobalListener'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -58,7 +58,6 @@ export const Editor = ({
     readOnly
   }
 
-  const setIsEditing = useEditorStore((store) => store.setIsEditing)
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
   const headingQASearch = useSuggestionStore((store) => store.headingQASearch)
 
@@ -132,7 +131,6 @@ export const Editor = ({
   const delayedHighlightRemoval = debounce(clearHighlights, 2000)
 
   const onChangeContent = (val: any[]) => {
-    setIsEditing(true)
     onDelayPerform(val)
 
     if (getSuggestions && !headingQASearch) {
@@ -167,6 +165,7 @@ export const Editor = ({
           {showBalloonToolbar && <BallonMarkToolbarButtons />}
           <MultiComboboxContainer config={comboConfigData} />
           {/* {showCursorOverlay && <CursorOverlayContainer />} */}
+          <GlobalEditorListener />
         </Plate>
       </EditorStyles>
     </>
@@ -180,6 +179,11 @@ const withDndProvider = (Component: any) => {
     </DndProvider>
   )
   return DndDefaultEditor
+}
+
+const GlobalEditorListener = () => {
+  useGlobalListener()
+  return null
 }
 
 withDndProvider.displayName = 'DefaultEditor'

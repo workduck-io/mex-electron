@@ -3,6 +3,7 @@ import { Button } from '@workduck-io/mex-components'
 import { lighten, mix, transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 import { focusStyles } from './focus'
+import { FadeInOut } from './Layouts'
 import { FocusModeProp } from './props'
 
 export const NoteTitle = styled.h1``
@@ -72,7 +73,7 @@ export const CenteredMainContent = styled.div`
 
 export const StyledEditor = styled(CenteredMainContent)<StyledEditorProps>``
 
-export const EditorBreadcrumbs = styled.div`
+export const EditorBreadcrumbs = styled.div<{ isVisible?: boolean }>`
   display: flex;
   align-items: center;
   padding: 0 1.5rem;
@@ -82,6 +83,8 @@ export const EditorBreadcrumbs = styled.div`
   &:hover {
     opacity: 1;
   }
+
+  ${({ isVisible }) => FadeInOut(isVisible, '0.5', '0.5')}
 `
 
 export const EditorStyles = styled.div<{ readOnly?: boolean }>`

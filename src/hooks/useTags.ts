@@ -4,7 +4,6 @@ import useDataStore from '../store/useDataStore'
 import { TagsCache } from '../types/Types'
 import { Settify } from '../utils/helpers'
 import { getTagsFromContent } from '../utils/lib/content'
-import { mog } from '../utils/lib/helper'
 import { useLinks } from './useLinks'
 import { useNodes } from './useNodes'
 

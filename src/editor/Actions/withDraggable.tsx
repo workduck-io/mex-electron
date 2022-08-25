@@ -1,4 +1,5 @@
 // import addLine from '@iconify/icons-ri/add-line'
+import { useGlobalListener } from '@hooks/useGlobalListener'
 import checkboxBlankCircleLine from '@iconify/icons-radix-icons/drag-handle-dots-2'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import refreshLine from '@iconify/icons-ri/refresh-line'
@@ -25,7 +26,7 @@ import {
   ELEMENT_UL,
   withDraggables
 } from '@udecode/plate'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styled, { css } from 'styled-components'
 import { RelativeTime } from '../../components/mex/RelativeTime'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
@@ -188,33 +189,13 @@ export const DraggerContent = ({ element }: any) => {
 }
 
 const DragHandle = ({ className, styles, element }: DragHandleProps) => {
-  const [showHandle, setShowHandle] = useState(true)
+  const isUserTyping = useEditorStore((store) => store.isEditing)
   const setIsBlockMode = useBlockStore.getState().setIsBlockMode
-
-  useEffect(() => {
-    const keyboardHandler = () => {
-      setShowHandle(false)
-    }
-
-    window.addEventListener('keydown', keyboardHandler)
-
-    return () => window.removeEventListener('keydown', keyboardHandler)
-  }, [])
-
-  useEffect(() => {
-    const mouseHandler = () => {
-      setShowHandle(true)
-    }
-
-    window.addEventListener('mousemove', mouseHandler)
-
-    return () => window.removeEventListener('mousemove', mouseHandler)
-  }, [])
 
   return (
     <Tippy {...grabberTooltipProps} content={<GrabberTooltipContent element={element} />}>
       <Tippy theme="mex" placement="top" content={<DraggerContent element={element} />}>
-        <StyledDraggable onClick={() => setIsBlockMode(true)} className={className} css={styles} show={showHandle}>
+        <StyledDraggable onClick={() => setIsBlockMode(true)} className={className} css={styles} show={!isUserTyping}>
           <Icon icon={checkboxBlankCircleLine} />
         </StyledDraggable>
       </Tippy>

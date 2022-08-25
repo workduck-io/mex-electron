@@ -1,6 +1,8 @@
-import styled, { keyframes } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import { transparentize } from 'polished'
 import { ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
+import { fadeIn, fadeOut } from '@style/animation/fade'
+import { FadeInOut } from '@style/Layouts'
 
 export const Element = styled.span<{ show: boolean }>`
   border-radius: ${(props) => props.theme.borderRadius.tiny};
@@ -39,9 +41,12 @@ export const SourceInfoWrapper = styled.div`
   user-select: none;
 `
 
-export const StyledSource = styled.div`
+export const StyledSource = styled.div<{ isVisible?: boolean }>`
   cursor: pointer;
   display: flex;
+
+  ${({ isVisible }) => FadeInOut(isVisible)}
+
   flex-direction: column;
   align-items: center;
   z-index: 2;
