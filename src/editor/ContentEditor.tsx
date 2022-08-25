@@ -64,7 +64,6 @@ const ContentEditor = () => {
   const onChangeSave = useCallback(
     async (val: any[]) => {
       if (val && node && node.nodeid !== '__null__') {
-        setIsEditing(false)
         addOrUpdateValBuffer(node.nodeid, val)
         debouncedAddLastOpened(node.nodeid)
       }

@@ -26,6 +26,11 @@ export const MexIcon = styled(Icon)<{ margin?: string; noHover?: boolean }>`
     `}
 `
 
+export const FadeInOut = (isVisible: boolean, duration = '0.5s') => css`
+  transition: opacity ${duration};
+  opacity: ${isVisible ? '1' : '0'};
+`
+
 export const centeredCss = css`
   display: flex;
   align-items: center;

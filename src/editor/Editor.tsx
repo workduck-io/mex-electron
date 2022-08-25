@@ -132,7 +132,6 @@ export const Editor = ({
   const delayedHighlightRemoval = debounce(clearHighlights, 2000)
 
   const onChangeContent = (val: any[]) => {
-    setIsEditing(true)
     onDelayPerform(val)
 
     if (getSuggestions && !headingQASearch) {

@@ -2,12 +2,13 @@ import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import refreshLine from '@iconify/icons-ri/refresh-line'
 import timeLine from '@iconify/icons-ri/time-line'
 import { Icon } from '@iconify/react'
+import { FadeInOut } from '@style/Layouts'
 import { mog } from '@utils/lib/helper'
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import useLayout from '../../../hooks/useLayout'
 import { useContentStore } from '../../../store/useContentStore'
-import { NodeProperties } from '../../../store/useEditorStore'
+import { NodeProperties, useEditorStore } from '../../../store/useEditorStore'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import { focusStyles } from '../../../style/focus'
 import { Label } from '../../../style/Form'
@@ -63,6 +64,7 @@ export const DataGroup = styled.div``
 
 interface MetaDataWrapperProps extends FocusModeProp {
   fadeOnHover?: boolean
+  isVisible?: boolean
 }
 
 export const MetadataWrapper = styled.div<MetaDataWrapperProps>`
@@ -101,6 +103,8 @@ export const MetadataWrapper = styled.div<MetaDataWrapperProps>`
   ${DataWrapper}:not(:first-child) {
     margin-top: ${({ theme }) => theme.spacing.small};
   }
+
+  ${({ isVisible }) => FadeInOut(isVisible)}
 `
 
 interface RelDateWithPreviewProps {
@@ -135,6 +139,7 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
   const getContent = useContentStore((state) => state.getContent)
   const content = getContent(node.nodeid)
   const [metadata, setMetadata] = useState<NodeMetadata | undefined>(undefined)
+  const isUserEditing = useEditorStore((store) => store.isEditing)
 
   const isEmpty =
     metadata &&
@@ -155,7 +160,7 @@ const Metadata = ({ node, fadeOnHover = true }: MetadataProps) => {
   if (content === undefined || content.metadata === undefined || metadata === undefined || isEmpty) return null
 
   return (
-    <MetadataWrapper fadeOnHover={fadeOnHover}>
+    <MetadataWrapper fadeOnHover={fadeOnHover} isVisible={!isUserEditing}>
       <DataGroup>
         {metadata.createdBy !== undefined && (
           <DataWrapper interactive={metadata.createdAt !== undefined}>

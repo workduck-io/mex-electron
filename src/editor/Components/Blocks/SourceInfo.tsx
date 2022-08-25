@@ -6,6 +6,7 @@ import {
   ProjectIconContainer,
   ProjectIconMex
 } from '@components/spotlight/ActionStage/Project/ProjectIcon'
+import { useEditorStore } from '@store/useEditorStore'
 
 // * Get Favicon url
 const getFavicon = (source: string) => {
@@ -13,6 +14,7 @@ const getFavicon = (source: string) => {
 }
 
 const Source: React.FC<{ source: string }> = ({ source }) => {
+  const isUserEditing = useEditorStore((store) => store.isEditing)
   const icon = getFavicon(source)
 
   const onClick = () => {
@@ -20,7 +22,7 @@ const Source: React.FC<{ source: string }> = ({ source }) => {
   }
 
   return (
-    <StyledSource contentEditable={false} onClick={onClick}>
+    <StyledSource isVisible={!isUserEditing} contentEditable={false} onClick={onClick}>
       <ProjectIconContainer isView={false}>
         <Tippy
           delay={100}
