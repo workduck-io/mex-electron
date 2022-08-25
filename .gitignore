@@ -36,6 +36,7 @@ build/Release
 
 # Dependency directories
 node_modules/
+node_modules_bak/
 jspm_packages/
 out.json
 
