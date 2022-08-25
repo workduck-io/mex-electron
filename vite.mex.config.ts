@@ -1,7 +1,6 @@
 /* eslint-env node */
 import react from '@vitejs/plugin-react'
 import fs from 'fs'
-import { builtinModules } from 'module'
 import path from 'path'
 import { UserConfig } from 'vite'
 import commonjsExternals from 'vite-plugin-commonjs-externals'
@@ -27,7 +26,6 @@ const config: UserConfig = {
       externals: ['path', /^electron(\/.+)?$/]
     })
   ],
-
   base: '',
   server: {
     fs: {
@@ -38,13 +36,11 @@ const config: UserConfig = {
     logOverride: { 'this-is-undefined-in-esm': 'silent' }
   },
   build: {
+    minify: process.env.MODE !== 'development',
     sourcemap: process.env.MODE === 'development',
     target: `chrome96`,
     outDir: 'dist',
     assetsDir: '.',
-    rollupOptions: {
-      external: [...builtinModules]
-    },
     emptyOutDir: false,
     reportCompressedSize: false
   }

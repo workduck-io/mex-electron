@@ -1,6 +1,8 @@
 import React from 'react'
-import App from './app.mex'
+
 import { createRoot } from 'react-dom/client'
+
+import App from './app.mex'
 import analytics from './services/analytics/analaytics'
 import config from './services/analytics/config'
 
