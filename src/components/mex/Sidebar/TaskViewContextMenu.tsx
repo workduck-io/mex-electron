@@ -1,4 +1,4 @@
-import { useViewStore, View } from '@hooks/useTaskViews'
+import { useTaskViews, useViewStore, View } from '@hooks/useTaskViews'
 import trashIcon from '@iconify/icons-codicon/trash'
 import { Icon } from '@iconify/react'
 import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@ui/components/menus/contextMenu'
@@ -12,14 +12,15 @@ interface TaskViewContextMenuProps {
 }
 
 const TaskViewContextMenu = ({ item }: TaskViewContextMenuProps) => {
-  const removeView = useViewStore((store) => store.removeView)
+  // const removeView = useViewStore((store) => store.removeView)
   const openModal = useTaskViewModalStore((store) => store.openModal)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
   const { goTo } = useRouting()
+  const { deleteView } = useTaskViews()
 
   const handleDelete = async (view: View<any>) => {
     const currentView = useViewStore.getState().currentView
-    removeView(view.id)
+    await deleteView(view.id)
     if (currentView?.id === view.id) {
       setCurrentView(undefined)
       goTo(ROUTE_PATHS.tasks, NavigationType.push)

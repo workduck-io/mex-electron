@@ -22,6 +22,7 @@ import { useUpdater } from '@hooks/useUpdater'
 import { useSnippetStore } from '@store/useSnippetStore'
 import toast from 'react-hot-toast'
 import { useLastOpened } from '@hooks/useLastOpened'
+import { View } from '@hooks/useTaskViews'
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -35,6 +36,11 @@ export const useApi = () => {
   const initSnippets = useSnippetStore((store) => store.initSnippets)
 
   const { updateFromContent } = useUpdater()
+
+  const workspaceHeaders = () => ({
+    [WORKSPACE_HEADER]: getWorkspaceId(),
+    Accept: 'application/json, text/plain, */*'
+  })
 
   /*
    * Saves data in the backend
@@ -67,10 +73,7 @@ export const useApi = () => {
 
     const data = await client
       .post(apiURLs.saveNode, reqData, {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId(),
-          Accept: 'application/json, text/plain, */*'
-        }
+        headers: workspaceHeaders()
       })
       .then((d) => {
         const { addedPaths, removedPaths, node } = d.data
@@ -114,9 +117,7 @@ export const useApi = () => {
 
     const data = await client
       .post(apiURLs.bulkSaveNodes, reqData, {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId()
-        }
+        headers: workspaceHeaders()
       })
       .then((d: any) => {
         const { addedPaths, removedPaths, node } = d.data
@@ -163,10 +164,7 @@ export const useApi = () => {
     const url = isShared ? apiURLs.updateSharedNode : apiURLs.saveNode
     const data = await client
       .post(url, reqData, {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId(),
-          Accept: 'application/json, text/plain, */*'
-        }
+        headers: workspaceHeaders()
       })
       .then((d) => {
         mog('savedData', { d })
@@ -235,10 +233,7 @@ export const useApi = () => {
 
     const data = await client
       .post(apiURLs.refactor, reqData, {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId(),
-          Accept: 'application/json, text/plain, */*'
-        }
+        headers: workspaceHeaders()
       })
       .then((response) => {
         mog('refactor', response.data)
@@ -295,10 +290,7 @@ export const useApi = () => {
     // console.warn('\n\n\n\nAPI has not been requested before, requesting\n\n\n\n')
     const res = await client
       .get(url, {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId(),
-          Accept: 'application/json, text/plain, */*'
-        }
+        headers: workspaceHeaders()
       })
       .then((d) => {
         // console.log(metadata, d.data)
@@ -321,10 +313,7 @@ export const useApi = () => {
   const getNodesByWorkspace = async (): Promise<ILink[]> => {
     const data = await client
       .get(apiURLs.getHierarchy(), {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId(),
-          Accept: 'application/json, text/plain, */*'
-        }
+        headers: workspaceHeaders()
       })
       .then((d) => {
         if (d.data) {
@@ -383,10 +372,7 @@ export const useApi = () => {
 
     const data = await client
       .post(apiURLs.createSnippet, reqData, {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId(),
-          Accept: 'application/json, text/plain, */*'
-        }
+        headers: workspaceHeaders()
       })
       .then((d) => {
         mog('savedData', { d })
@@ -402,10 +388,7 @@ export const useApi = () => {
   const getAllSnippetsByWorkspace = async () => {
     const data = await client
       .get(apiURLs.getAllSnippetsByWorkspace, {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId(),
-          Accept: 'application/json, text/plain, */*'
-        }
+        headers: workspaceHeaders()
       })
       .then((d) => {
         return d.data
@@ -436,10 +419,7 @@ export const useApi = () => {
     const url = apiURLs.deleteSnippetById(id)
     try {
       const res = await client.delete(url, {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId(),
-          Accept: 'application/json, text/plain, */*'
-        }
+        headers: workspaceHeaders()
       })
 
       return { status: true }
@@ -453,10 +433,7 @@ export const useApi = () => {
 
     const data = await client
       .get(url, {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId(),
-          Accept: 'application/json, text/plain, */*'
-        }
+        headers: workspaceHeaders()
       })
       .then((d) => {
         mog('snippet by id', { d })
@@ -464,6 +441,59 @@ export const useApi = () => {
       })
 
     return data
+  }
+
+  const saveView = async (view: View<any>) => {
+    // POST https://http-test.workduck.io/task/view
+
+    const reqData = {
+      workspaceId: getWorkspaceId(),
+
+      // nodeId: string;
+      properties: {
+        title: view.title,
+        description: view.description
+      },
+      entityId: view.id,
+      filters: view.filters
+    }
+
+    const resp = await client.post(apiURLs.view.saveView, reqData, { headers: workspaceHeaders() }).then((resp) => {
+      mog('We saved that view', { resp })
+      return resp.data
+    })
+
+    return resp
+  }
+
+  const getAllViews = async (): Promise<View<any>[]> => {
+    const resp = await client.get(apiURLs.view.getAllViews, { headers: workspaceHeaders() }).then((resp) => {
+      // mog('We fetched them view', { resp })
+      const views = resp.data
+        .map((item: any) => {
+          return item.entity === 'view'
+            ? ({
+                title: item.properties.title,
+                description: item.properties.description,
+                filters: item.filters,
+                id: item.entityId
+              } as View<any>)
+            : undefined
+        })
+        .filter((v: undefined | View<any>) => !!v)
+      return views
+    })
+
+    return resp
+  }
+
+  const deleteView = async (viewid: string) => {
+    const resp = await client.delete(apiURLs.view.deleteView(viewid), { headers: workspaceHeaders() }).then((resp) => {
+      mog('We saved that view', { resp })
+      return resp.data
+    })
+
+    return resp
   }
 
   return {
@@ -481,7 +511,10 @@ export const useApi = () => {
     bulkSaveNodes,
     saveNewNodeAPI,
     getNodesByWorkspace,
-    getGoogleAuthUrl
+    getGoogleAuthUrl,
+    saveView,
+    deleteView,
+    getAllViews
   }
 }
 

@@ -20,9 +20,10 @@ export const MEXIT_BACKEND_URL_BASE = IS_DEV
   ? 'http://localhost:5000/api/v1'
   : 'https://mex-webapp-dev.workduck.io/api/v1'
 
-export const WORKDUCK_API_BASE = 'https://http.workduck.io'
-export const MEX_LOCH_BASE_URL =
+export const WORKDUCK_API_BASE =
   config.constants.STAGE === 'alpha' ? 'https://http-test.workduck.io' : 'https://http.workduck.io'
+
+export const MEX_LOCH_BASE_URL = `${WORKDUCK_API_BASE}/loch`
 
 export const CDN_BASE = 'https://cdn.workduck.io'
 
@@ -65,10 +66,10 @@ export const apiURLs = {
   unArchiveNodes: () => `${API_URL}/node/unarchive`,
 
   // * Loch
-  getLochServices: () => `${MEX_LOCH_BASE_URL}/loch/connect/all`,
-  getConnectedLochServices: () => `${MEX_LOCH_BASE_URL}/loch/connect`,
-  connectToLochService: () => `${MEX_LOCH_BASE_URL}/loch/connect`,
-  updateParentNoteOfService: () => `${MEX_LOCH_BASE_URL}/loch/connect`,
+  getLochServices: () => `${MEX_LOCH_BASE_URL}/connect/all`,
+  getConnectedLochServices: () => `${MEX_LOCH_BASE_URL}/connect`,
+  connectToLochService: () => `${MEX_LOCH_BASE_URL}/connect`,
+  updateParentNoteOfService: () => `${MEX_LOCH_BASE_URL}/connect`,
 
   // Image CDN
   createImageURL: `${WORKDUCK_API_BASE}/testing/upload/s3`,
@@ -101,6 +102,13 @@ export const apiURLs = {
   getSnippetById: (uid: string) => `${MEXIT_BACKEND_URL_BASE}/snippet/${uid}`,
   // * NOTE: Currently all Snippets have version: 1
   deleteSnippetById: (snippetId: string) => `${API_URL}/snippet/${snippetId}/1`,
+
+  // Views
+  view: {
+    saveView: `${WORKDUCK_API_BASE}/task/view`,
+    deleteView: (id: string) => `${WORKDUCK_API_BASE}/task/view/${id}`,
+    getAllViews: `${WORKDUCK_API_BASE}/task/view/all/workspace`
+  },
 
   // Sharing
   // Post type determines action

@@ -3,7 +3,7 @@ import { useTaskViewModalStore } from '@components/mex/TaskViewModal'
 import stackLine from '@iconify/icons-ri/stack-line'
 import { TasksHelp } from '@data/Defaults/helpText'
 import { SearchFilter } from '@hooks/useFilters'
-import { useViewStore, View } from '@hooks/useTaskViews'
+import { useTaskViews, useViewStore, View } from '@hooks/useTaskViews'
 import trashIcon from '@iconify/icons-codicon/trash'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import arrowLeftRightLine from '@iconify/icons-ri/arrow-left-right-line'
@@ -25,8 +25,15 @@ import {
 import { Title } from '@style/Typography'
 import { useSingleton } from '@tippyjs/react'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import React, { useMemo } from 'react'
-import { Button, IconButton, Infobox, ToolbarTooltip, DisplayShortcut } from '@workduck-io/mex-components'
+import React, { useMemo, useState } from 'react'
+import {
+  Button,
+  IconButton,
+  Infobox,
+  ToolbarTooltip,
+  DisplayShortcut,
+  LoadingButton
+} from '@workduck-io/mex-components'
 
 interface TaskHeaderProps {
   currentView?: View<any>
@@ -36,20 +43,23 @@ interface TaskHeaderProps {
 
 const TaskHeader = ({ currentView, currentFilters, cardSelected }: TaskHeaderProps) => {
   const openTaskViewModal = useTaskViewModalStore((store) => store.openModal)
-  const removeView = useViewStore((store) => store.removeView)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
+  const { deleteView } = useTaskViews()
 
   const { goTo } = useRouting()
 
   const [source, target] = useSingleton()
+  const [deleting, setDeleting] = useState(false)
 
   const isCurrentFiltersUnchanged = useMemo(() => {
     return JSON.stringify(currentFilters) === JSON.stringify(currentView?.filters)
   }, [currentFilters, currentView])
 
-  const onRemoveView = () => {
+  const onDeleteView = async () => {
     if (currentView) {
-      removeView(currentView.id)
+      setDeleting(true)
+      await deleteView(currentView.id)
+      setDeleting(false)
       setCurrentView(undefined)
       goTo(ROUTE_PATHS.tasks, NavigationType.push)
     }
@@ -92,20 +102,22 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected }: TaskHeaderPro
                   icon={fileCopyLine}
                   transparent={false}
                 />
-                <IconButton
-                  title="Remove View"
-                  onClick={() => onRemoveView()}
+                <LoadingButton
+                  title="Delete View"
+                  loading={deleting}
+                  onClick={() => onDeleteView()}
                   singleton={target}
-                  icon={trashIcon}
                   transparent={false}
-                />
+                >
+                  <Icon icon={trashIcon} />
+                </LoadingButton>
                 <IconButton
                   title="Create New View"
                   onClick={() => openTaskViewModal({ filters: currentFilters, cloneViewId: currentView?.id })}
                   disabled={currentFilters.length === 0}
                   singleton={target}
-                  icon={addCircleLine}
                   transparent={false}
+                  icon={addCircleLine}
                 />
               </TaskViewControls>
             </TaskViewHeaderWrapper>

@@ -4,6 +4,20 @@ import { initialSnippets } from '../initial/snippets'
 
 export const ForceLogutVersion = '0.14.0-alpha.1'
 
+/**
+ * Adds previous views to saveBuffer
+ */
+const v014010 = (): CustomTransformation => {
+  return {
+    type: 'CustomTransformation',
+    version: '0.14.0-alpha.10',
+    custom: (data) => {
+      if (data.views && data.views.length > 0) return { ...data, saveBuffer: { views: data.views } }
+      return data
+    }
+  }
+}
+
 const v01404 = (): CustomTransformation => {
   return {
     type: 'CustomTransformation',
@@ -114,7 +128,8 @@ export const UpdateVersionTransforms: Array<DataTransformation> = [
   v081(),
   v0901(),
   v0120(),
-  v01404()
+  v01404(),
+  v014010()
 ]
 
 export const DefaultTransforms: Array<DataTransformation> = [
