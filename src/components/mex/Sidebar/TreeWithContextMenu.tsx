@@ -19,7 +19,7 @@ import { LastOpenedState } from '../../../types/userPreference'
 import volumeDownLine from '@iconify/icons-ri/volume-down-line'
 import { mog } from '@utils/lib/helper'
 import { useTemplateModalStore } from '../Template/TemplateModalStore'
-import { useContentStore } from '@store/useContentStore'
+import toast from 'react-hot-toast'
 
 export const MENU_ID = 'Tree-Menu'
 
@@ -69,9 +69,6 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const { createNewNote } = useCreateNewNote()
   const openShareModal = useShareModalStore((store) => store.openModal)
   const openTemplateModal = useTemplateModalStore((store) => store.openModal)
-  const getMetadata = useContentStore((store) => store.getMetadata)
-
-  // const lastOpenedNote = lastOpenedNotes[nodeId] ?? undefined
 
   const handleRefactor = (item: TreeItem) => {
     prefillRefactorModal(item?.data?.path)
@@ -88,7 +85,11 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   }
 
   const handleTemplate = (item: TreeItem) => {
-    openTemplateModal(item.data.nodeid)
+    if (item.data.path !== 'Drafts') {
+      openTemplateModal(item.data.nodeid)
+    } else {
+      toast.error('Template cannot be set for Drafts hierarchy')
+    }
   }
 
   const handleShare = (item: TreeItem) => {
@@ -120,7 +121,8 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
           }}
         >
           <Icon icon="carbon:template" />
-          {getMetadata(item.data.nodeid)?.templateID ? 'Change Template' : 'Set Template'}
+          {/* TODO: unable to make the following line conditional based on metadata, sometimes works */}
+          Set Template
         </ContextMenuItem>
         <ContextMenuItem
           onSelect={(args) => {
