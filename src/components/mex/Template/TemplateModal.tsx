@@ -23,29 +23,32 @@ import SidebarListItemComponent from '../Sidebar/SidebarListItem'
 import { a } from 'react-spring'
 import { ItemContent, ItemTitle } from '@style/Sidebar'
 import SidebarList from '../Sidebar/SidebarList'
+import { useLinks } from '@hooks/useLinks'
 
 // interface PermissionModalContentProps { }
 
 const TemplateModal = () => {
+  const { getILinkFromNodeid } = useLinks()
   const open = useTemplateModalStore((store) => store.open)
   const closeModal = useTemplateModalStore((store) => store.closeModal)
+  const nodeid = useTemplateModalStore((state) => state.data).nodeid
 
+  const node = getILinkFromNodeid(nodeid)
   const templates = useSnippetStore((state) => state.snippets).filter((item) => item?.template)
   const [currentTemplate, setCurrentTemplate] = useState<Snippet>()
 
-  const node = useEditorStore((state) => state.node)
   const getMetadata = useContentStore((store) => store.getMetadata)
   const getContent = useContentStore((store) => store.getContent)
   const { saveDataAPI } = useApi()
 
   useEffect(() => {
-    const metadata = getMetadata(node.nodeid)
+    const metadata = getMetadata(nodeid)
     if (metadata?.templateID) {
       setCurrentTemplate(templates.find((item) => item.id === metadata.templateID))
     } else {
       setCurrentTemplate(templates[0])
     }
-  }, [node])
+  }, [nodeid])
 
   const {
     handleSubmit,
@@ -58,7 +61,6 @@ const TemplateModal = () => {
   }
 
   const onSubmit = async () => {
-    const nodeid = node?.nodeid
     const content = getContent(nodeid)
 
     if (nodeid) {
@@ -72,7 +74,7 @@ const TemplateModal = () => {
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <InviteWrapper>
-        <Title>Set Template for Children</Title>
+        <Title>Set Template for {node?.path}</Title>
         <p>Auto fill new notes using template</p>
         <InviteFormWrapper onSubmit={handleSubmit(onSubmit)}>
           <TemplateContainer>
