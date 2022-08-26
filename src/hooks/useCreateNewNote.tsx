@@ -51,7 +51,7 @@ export const useCreateNewNote = () => {
     // Filling note content by template if nothing in options and notepath is not Drafts (it may cause problems with capture otherwise)
     const noteContent =
       options?.noteContent ||
-      (nodeMetadata?.templateID && parentNote?.path !== 'Drafts' && getSnippet(nodeMetadata.templateID).content)
+      (nodeMetadata?.templateID && parentNote?.path !== 'Drafts' && getSnippet(nodeMetadata.templateID)?.content)
 
     const node = addILink({
       ilink: newNotePath,

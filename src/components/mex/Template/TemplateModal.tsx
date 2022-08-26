@@ -74,32 +74,44 @@ const TemplateModal = () => {
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <InviteWrapper>
-        <Title>Set Template for {node?.path}</Title>
-        <p>Auto fill new notes using template</p>
+        {templates.length !== 0 ? (
+          <>
+            <Title>Set Template for {node?.path}</Title>
+            <p>Auto fill new notes using template</p>
+          </>
+        ) : (
+          <Title>No templates found</Title>
+        )}
         <InviteFormWrapper onSubmit={handleSubmit(onSubmit)}>
-          <TemplateContainer>
-            <SidebarList
-              items={templates}
-              onClick={onSelectItem}
-              selectedItemId={currentTemplate?.id}
-              noMargin
-              showSearch
-              searchPlaceholder="Filter Templates..."
-              emptyMessage="No Templates Found"
-            />
-            <section>
-              <EditorPreviewRenderer
-                noMouseEvents
-                content={currentTemplate?.content || defaultContent.content}
-                editorId={currentTemplate?.id}
+          {templates.length !== 0 && (
+            <TemplateContainer>
+              <SidebarList
+                items={templates}
+                onClick={onSelectItem}
+                selectedItemId={currentTemplate?.id}
+                noMargin
+                showSearch
+                searchPlaceholder="Filter Templates..."
+                emptyMessage="No Templates Found"
               />
-            </section>
-          </TemplateContainer>
-
+              <section>
+                <EditorPreviewRenderer
+                  noMouseEvents
+                  content={currentTemplate?.content || defaultContent.content}
+                  editorId={currentTemplate?.id}
+                />
+              </section>
+            </TemplateContainer>
+          )}
           <ButtonFields position="end">
             <LoadingButton
               loading={isSubmitting}
-              alsoDisabled={errors.templateID !== undefined || errors.nodeid !== undefined}
+              alsoDisabled={
+                errors.templateID !== undefined ||
+                errors.nodeid !== undefined ||
+                templates.length === 0 ||
+                templates.indexOf(currentTemplate) === -1
+              }
               type="submit"
               primary
               large
