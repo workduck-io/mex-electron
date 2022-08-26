@@ -19,6 +19,7 @@ import { useActionsPerfomerClient } from '../../spotlight/Actions/useActionPerfo
 import { useInitLoader } from './useInitLoader'
 import { useIpcListenerOnInit } from './useIpcListenerOnInit'
 import { useNavigator } from './useNavigator'
+import { useFileSaveBuffer } from '@hooks/useFileSaveBuffer'
 
 const Init = () => {
   const { goTo } = useRouting()
@@ -33,6 +34,7 @@ const Init = () => {
   const { getTokenData } = useTokenData()
   const { getMentionData } = useMentionData()
   const { initActionPerfomerClient } = useActionsPerfomerClient()
+  const { saveFileBuffer } = useFileSaveBuffer()
 
   /**
    * Check auth first, hydrate all stores with local data
@@ -50,6 +52,7 @@ const Init = () => {
         getLocalData()
           .then(({ fileData }) => {
             init(fileData)
+            saveFileBuffer(fileData)
             getTokenData()
             getMentionData()
           })

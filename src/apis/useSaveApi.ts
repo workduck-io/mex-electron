@@ -488,7 +488,6 @@ export const useApi = () => {
   }
 
   const deleteView = async (viewid: string) => {
-    // TODO: Fix delete call url with viewid
     const resp = await client.delete(apiURLs.view.deleteView(viewid), { headers: workspaceHeaders() }).then((resp) => {
       mog('We saved that view', { resp })
       return resp.data

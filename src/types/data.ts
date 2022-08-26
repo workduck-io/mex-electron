@@ -30,6 +30,10 @@ export interface NodeContent {
   metadata?: NodeMetadata
 }
 
+export interface FileSaveBuffer {
+  views?: View<any>[]
+}
+
 export interface FileData {
   // Version. Should be same as Mex. Lower versions will be updated.
   version: string
@@ -67,6 +71,8 @@ export interface FileData {
     spotlight: { [key: string]: any } // eslint-disable-line @typescript-eslint/no-explicit-any
   }
   snippets: Snippet[]
+
+  saveBuffer?: FileSaveBuffer
 }
 
 export interface NodeSearchData {
