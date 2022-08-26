@@ -9,6 +9,8 @@ import useLoad from './useLoad'
 import { useNavigation } from './useNavigation'
 import { mog } from '@utils/lib/helper'
 import { useLastOpened } from './useLastOpened'
+import { useContentStore } from '@store/useContentStore'
+import { useSnippets } from './useSnippets'
 
 export type NewNoteOptions = {
   path?: string
@@ -23,6 +25,8 @@ export const useCreateNewNote = () => {
   const { push } = useNavigation()
   const addILink = useDataStore((s) => s.addILink)
   const checkValidILink = useDataStore((s) => s.checkValidILink)
+  const getMetadata = useContentStore((s) => s.getMetadata)
+  const { getSnippet } = useSnippets()
 
   const { saveNodeName } = useLoad()
   const { getParentILink } = useLinks()
@@ -40,7 +44,14 @@ export const useCreateNewNote = () => {
       showAlert: false
     })
 
-    const parentNoteId = getParentILink(uniquePath)?.nodeid
+    const parentNote = getParentILink(uniquePath)
+    const parentNoteId = parentNote?.nodeid
+
+    const nodeMetadata = getMetadata(parentNoteId)
+    // Filling note content by template if nothing in options and notepath is not Drafts (it may cause problems with capture otherwise)
+    const noteContent =
+      options?.noteContent ||
+      (nodeMetadata?.templateID && parentNote?.path !== 'Drafts' && getSnippet(nodeMetadata.templateID)?.content)
 
     const node = addILink({
       ilink: newNotePath,
@@ -57,7 +68,12 @@ export const useCreateNewNote = () => {
 
     mog('NODE CREATED IS HERE', { node })
 
-    addInHierarchy({ noteId: node.nodeid, notePath: node.path, parentNoteId, noteContent: options?.noteContent })
+    addInHierarchy({
+      noteId: node.nodeid,
+      notePath: node.path,
+      parentNoteId,
+      noteContent
+    })
     saveNodeName(useEditorStore.getState().node.nodeid)
 
     addLastOpened(node.nodeid)

@@ -10,6 +10,7 @@ import CreateReminderModal from '../mex/Reminders/CreateReminderModal'
 import ShareModal from '@components/mex/Mention/ShareModal'
 import ReleaseNotesModal from '@components/mex/ReleaseNotes'
 import TaskViewModal from '@components/mex/TaskViewModal'
+import TemplateModal from '@components/mex/Template/TemplateModal'
 
 export interface ModalOpenAction {
   type: 'share-invite-prefill'
@@ -32,6 +33,7 @@ const Modals = () => {
       <ReleaseNotesModal />
       <CreateReminderModal />
       <TaskViewModal />
+      <TemplateModal />
     </>
   )
 }

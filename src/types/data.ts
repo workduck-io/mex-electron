@@ -11,6 +11,9 @@ export interface NodeMetadata {
   lastEditedBy?: string
   updatedAt?: number
   publicAccess?: boolean
+  iconUrl?: string
+  // The snippet ID with which all the children nodes should be populated
+  templateID?: string
 }
 
 export interface NodeContent {

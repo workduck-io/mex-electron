@@ -18,6 +18,8 @@ import { useRefactorStore } from '../Refactor/Refactor'
 import { LastOpenedState } from '../../../types/userPreference'
 import volumeDownLine from '@iconify/icons-ri/volume-down-line'
 import { mog } from '@utils/lib/helper'
+import { useTemplateModalStore } from '../Template/TemplateModalStore'
+import toast from 'react-hot-toast'
 
 export const MENU_ID = 'Tree-Menu'
 
@@ -66,7 +68,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const openDeleteModal = useDeleteStore((store) => store.openModal)
   const { createNewNote } = useCreateNewNote()
   const openShareModal = useShareModalStore((store) => store.openModal)
-  // const lastOpenedNote = lastOpenedNotes[nodeId] ?? undefined
+  const openTemplateModal = useTemplateModalStore((store) => store.openModal)
 
   const handleRefactor = (item: TreeItem) => {
     prefillRefactorModal(item?.data?.path)
@@ -80,6 +82,14 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const handleCreateChild = (item: TreeItem) => {
     // mog('handleCreateChild', { item })
     createNewNote({ parent: item.data.path })
+  }
+
+  const handleTemplate = (item: TreeItem) => {
+    if (item.data.path !== 'Drafts') {
+      openTemplateModal(item.data.nodeid)
+    } else {
+      toast.error('Template cannot be set for Drafts hierarchy')
+    }
   }
 
   const handleShare = (item: TreeItem) => {
@@ -104,6 +114,15 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
         >
           <Icon icon={addCircleLine} />
           New Note
+        </ContextMenuItem>
+        <ContextMenuItem
+          onSelect={(args) => {
+            handleTemplate(item)
+          }}
+        >
+          <Icon icon="carbon:template" />
+          {/* TODO: unable to make the following line conditional based on metadata, sometimes works */}
+          Set Template
         </ContextMenuItem>
         <ContextMenuItem
           onSelect={(args) => {

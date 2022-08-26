@@ -27,6 +27,7 @@ import { View } from '@hooks/useTaskViews'
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
+  const getMetadata = useContentStore((store) => store.getMetadata)
   const setMetadata = useContentStore((store) => store.setMetadata)
   const setContent = useContentStore((store) => store.setContent)
   const { getTitleFromNoteId, updateILinks } = useLinks()
@@ -139,14 +140,15 @@ export const useApi = () => {
    * Saves data in the backend
    * Also updates the incoming data in the store
    */
-  const saveDataAPI = async (nodeid: string, content: any[], isShared = false, title?: string) => {
+  const saveDataAPI = async (nodeid: string, content: any[], isShared = false, title?: string, templateID?: string) => {
     const reqData = {
       id: nodeid,
       type: 'NodeRequest',
       title: title || getTitleFromNoteId(nodeid),
       namespaceIdentifier: DEFAULT_NAMESPACE,
       tags: getTagsFromContent(content),
-      data: serializeContent(content ?? defaultContent.content, nodeid)
+      data: serializeContent(content ?? defaultContent.content, nodeid),
+      metadata: { templateID: templateID ?? getMetadata(nodeid)?.templateID }
     }
 
     // if (!isShared) {
