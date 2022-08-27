@@ -16,7 +16,7 @@ import { useLinks } from '@hooks/useLinks'
 import useModalStore, { ModalsType } from '@store/useModalStore'
 
 const TemplateModal = () => {
-  const { getILinkFromNodeid } = useLinks()
+  const { getILinkFromNodeid, getTitleFromPath } = useLinks()
   const { toggleOpen, open, data: nodeid } = useModalStore()
 
   const node = getILinkFromNodeid(nodeid)
@@ -67,7 +67,7 @@ const TemplateModal = () => {
       <InviteWrapper>
         {templates.length !== 0 ? (
           <>
-            <Title>Set Template for {node?.path}</Title>
+            <Title>Set Template for {getTitleFromPath(node?.path)}</Title>
             <p>Auto fill new notes using template</p>
           </>
         ) : (
