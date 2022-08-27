@@ -122,7 +122,7 @@ export const ProfileImageWithToolTip = ({ props, placement }: ProfileImageWithTo
       appendTo={() => document.body}
       render={(attrs) => <MentionTooltipComponent user={user} hideAccess />}
     >
-      <Centered>
+      <Centered style={{ width: `${size}px`, height: `${size}px` }}>
         <ProfileImage size={size} email={user?.email} DefaultFallback={DefaultFallback} />
       </Centered>
     </Tippy>

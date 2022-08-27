@@ -11,7 +11,7 @@ import { Input } from './Form'
 import { CardShadow, HoverSubtleGlow } from './helpers'
 import { size } from './responsive'
 import { BodyFont, MainFont } from './spotlight/global'
-import { Title } from './Typography'
+import { Title, TitleText } from './Typography'
 import { ProfileIcon } from './UserPage'
 
 interface ResultProps {
@@ -516,7 +516,9 @@ export const SplitSearchPreviewWrapper = styled.div`
     gap: ${({ theme }) => theme.spacing.small};
     flex-wrap: wrap;
     cursor: pointer;
-    .title {
+    .title,
+    ${TitleText} {
+      padding: 0.75rem 0;
       flex-grow: 1;
     }
     & > svg {
