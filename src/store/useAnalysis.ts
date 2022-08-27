@@ -12,6 +12,8 @@ import { areEqual } from '../utils/lib/hash'
 import { checkIfUntitledDraftNode } from '../utils/lib/strings'
 import { useSearchExtra } from '@hooks/useSearch'
 import { AnalysisOptions } from '@electron/worker/controller'
+import { useLinks } from '@hooks/useLinks'
+import { getParentNodePath } from '@components/mex/Sidebar/treeUtils'
 
 export interface OutlineItem {
   id: string
@@ -73,12 +75,17 @@ export const useAnalysisIPC = () => {
 
 export const useAnalysis = () => {
   const node = useEditorStore((s) => s.node)
+  const { getNodeidFromPath } = useLinks()
   const { getBufferVal } = useEditorBuffer()
   const buffer = useBufferStore((s) => s.buffer)
   const { getSearchExtra } = useSearchExtra()
 
   // mog('Setting up IPC for Buffer', { node })
   useEffect(() => {
+    const parentNodePath = getParentNodePath(node.path)
+    const parentNodeId = getNodeidFromPath(parentNodePath)
+    const parentMetadata = getContent(parentNodeId)?.metadata
+
     const bufferContent = getBufferVal(node.nodeid)
     const content = getContent(node.nodeid)
     const metadata = content.metadata
@@ -89,7 +96,7 @@ export const useAnalysis = () => {
     const isNewDraftNode = metadata?.createdAt === metadata?.updatedAt
 
     // * New Draft node, get Title from its content
-    if (isUntitledDraftNode && isNewDraftNode) {
+    if (isUntitledDraftNode && isNewDraftNode && !parentMetadata?.templateID) {
       options['title'] = true
     }
 
