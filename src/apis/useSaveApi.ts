@@ -24,6 +24,8 @@ import toast from 'react-hot-toast'
 import { useLastOpened } from '@hooks/useLastOpened'
 import { View } from '@hooks/useTaskViews'
 
+const API_CACHE_LOG = `\nAPI has been requested before, cancelling.\n`
+
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
@@ -285,7 +287,7 @@ export const useApi = () => {
   const getDataAPI = async (nodeid: string, isShared = false, isRefresh = false, isUpdate = true) => {
     const url = isShared ? apiURLs.getSharedNode(nodeid) : apiURLs.getNode(nodeid)
     if (!isShared && isRequestedWithin(2, url) && !isRefresh) {
-      console.warn('\nAPI has been requested before, cancelling\n')
+      console.log(API_CACHE_LOG)
       return
     }
 
@@ -468,8 +470,18 @@ export const useApi = () => {
     return resp
   }
 
-  const getAllViews = async (): Promise<View<any>[]> => {
-    const resp = await client.get(apiURLs.view.getAllViews, { headers: workspaceHeaders() }).then((resp) => {
+  /**
+   * Returns undefined when request is not made
+   */
+  const getAllViews = async (): Promise<View<any>[] | undefined> => {
+    const url = apiURLs.view.getAllViews
+
+    if (isRequestedWithin(5, url)) {
+      console.log(API_CACHE_LOG)
+      return
+    }
+
+    const resp = await client.get(url, { headers: workspaceHeaders() }).then((resp) => {
       // mog('We fetched them view', { resp })
       const views = resp.data
         .map((item: any) => {

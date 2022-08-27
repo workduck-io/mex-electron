@@ -99,8 +99,10 @@ export const useSyncTaskViews = () => {
   const fetchAndSetAllViews = async () => {
     try {
       const allViews = await getAllViews()
-      mog('All Views', { allViews })
-      setViews(allViews)
+      if (allViews !== undefined) {
+        mog('All Views', { allViews })
+        setViews(allViews)
+      }
     } catch (e) {
       mog('Error fetching the views', { e })
     }

@@ -18,12 +18,14 @@ const INIT_LAST_OPENED = {
 }
 
 export const getLastOpenedState = (updatedAt: number, lastOpenedNote: LastOpenedNote): LastOpenedState => {
-  // mog('getLastOpenedState', { updatedAt, lastOpenedNote })
   if (lastOpenedNote.muted) {
     return LastOpenedState.MUTED
   } else if (updatedAt > lastOpenedNote.ts) {
     return LastOpenedState.UNREAD
   } else if (updatedAt < lastOpenedNote.ts) {
+    return LastOpenedState.OPENED
+  } else if (!updatedAt) {
+    // If the updatedAt is not present -> a new note
     return LastOpenedState.OPENED
   } else {
     // Default to unread

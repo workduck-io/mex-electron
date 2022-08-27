@@ -33,14 +33,17 @@ interface DataWrapperProps {
 export const DataWrapper = styled.div<DataWrapperProps>`
   display: flex;
   align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
 
   ${ProfileIcon} {
     margin: 0;
+    .defaultProfileIcon {
+      padding: 0.2rem;
+    }
   }
 
   svg {
     color: ${({ theme }) => theme.colors.gray[7]};
-    margin-right: ${({ theme }) => theme.spacing.small};
   }
 
   svg,
@@ -71,7 +74,7 @@ export const MetadataWrapper = styled.div<MetaDataWrapperProps>`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 0 ${({ theme }) => theme.spacing.large};
+  padding: ${({ theme }) => theme.spacing.small} ${({ theme }) => theme.spacing.large};
 
   ${({ theme, fadeOnHover }) =>
     fadeOnHover &&

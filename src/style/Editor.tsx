@@ -12,7 +12,7 @@ export const NodeInfo = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 2rem 0.5rem 1.25rem;
+  padding: 0rem 2rem 0rem 1.25rem;
   border-radius: ${({ theme }) => theme.borderRadius.small};
   transition: opacity 0.3s ease-in-out;
 
