@@ -7,6 +7,7 @@ import React from 'react'
 import { useMatch } from 'react-router-dom'
 import { useSidebarTransition } from '../Sidebar/Transition'
 import InfoBar from './InfoBar'
+import { ResizeHandle } from './ResizeHandle'
 
 const RHSidebarContent = () => {
   const sidebar = useLayoutStore((store) => store.rhSidebar)
@@ -33,6 +34,7 @@ const RHSidebar = () => {
 
   return (
     <SideNav
+      id="sidebar"
       style={rhSidebarSpringProps}
       $show={rhSidebar.show}
       $expanded={rhSidebar.expanded}
@@ -41,6 +43,7 @@ const RHSidebar = () => {
       {...getFocusProps(focusMode)}
     >
       <RHSidebarContent />
+      <ResizeHandle />
     </SideNav>
   )
 }
