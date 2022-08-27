@@ -21,7 +21,9 @@ const TemplateModal = () => {
 
   const node = getILinkFromNodeid(nodeid)
   const templates = useSnippetStore((state) => state.snippets).filter((item) => item?.template)
+
   const [currentTemplate, setCurrentTemplate] = useState<Snippet>()
+  const [selectedTemplate, setSelectedTemplate] = useState<Snippet>()
 
   const getMetadata = useContentStore((store) => store.getMetadata)
   const getContent = useContentStore((store) => store.getContent)
@@ -30,9 +32,11 @@ const TemplateModal = () => {
   useEffect(() => {
     const metadata = getMetadata(nodeid)
     if (metadata?.templateID) {
-      setCurrentTemplate(templates.find((item) => item.id === metadata.templateID))
+      const template = templates.find((item) => item.id === metadata.templateID)
+      setCurrentTemplate(template)
+      setSelectedTemplate(template)
     } else {
-      setCurrentTemplate(templates[0])
+      setSelectedTemplate(templates[0])
     }
   }, [nodeid])
 
@@ -43,15 +47,27 @@ const TemplateModal = () => {
   } = useForm()
 
   const onSelectItem = (id: string) => {
-    setCurrentTemplate(templates.find((item) => item.id === id))
+    setSelectedTemplate(templates.find((item) => item.id === id))
   }
 
   const onSubmit = async () => {
     const content = getContent(nodeid)
 
     if (nodeid) {
-      saveDataAPI(nodeid, content.content, undefined, undefined, currentTemplate.id)
+      saveDataAPI(nodeid, content.content, undefined, undefined, selectedTemplate?.id)
       toast('Template Set!')
+    }
+
+    toggleOpen(ModalsType.template)
+  }
+
+  const onRemove = async () => {
+    const content = getContent(nodeid)
+
+    if (nodeid) {
+      // For why '__null__' see useSaveApi.tsx line 151
+      saveDataAPI(nodeid, content.content, undefined, undefined, '__null__')
+      toast('Template Removed!')
     }
 
     toggleOpen(ModalsType.template)
@@ -79,7 +95,7 @@ const TemplateModal = () => {
               <SidebarList
                 items={templates}
                 onClick={onSelectItem}
-                selectedItemId={currentTemplate?.id}
+                selectedItemId={selectedTemplate?.id}
                 noMargin
                 showSearch
                 searchPlaceholder="Filter Templates..."
@@ -88,20 +104,36 @@ const TemplateModal = () => {
               <section>
                 <EditorPreviewRenderer
                   noMouseEvents
-                  content={currentTemplate?.content || defaultContent.content}
-                  editorId={currentTemplate?.id}
+                  placeholder="Select a template"
+                  content={selectedTemplate?.content || defaultContent.content}
+                  editorId={selectedTemplate?.id || 'selected template'}
                 />
               </section>
             </TemplateContainer>
           )}
           <ButtonFields position="end">
+            {currentTemplate && (
+              <LoadingButton
+                loading={isSubmitting}
+                alsoDisabled={
+                  errors?.templateID !== undefined ||
+                  errors?.nodeid !== undefined ||
+                  templates?.length === 0 ||
+                  currentTemplate.id !== selectedTemplate?.id
+                }
+                onClick={onRemove}
+                large
+              >
+                Remove Template
+              </LoadingButton>
+            )}
             <LoadingButton
               loading={isSubmitting}
               alsoDisabled={
                 errors?.templateID !== undefined ||
                 errors?.nodeid !== undefined ||
                 templates?.length === 0 ||
-                templates?.indexOf(currentTemplate) === -1
+                currentTemplate?.id === selectedTemplate?.id
               }
               type="submit"
               primary
