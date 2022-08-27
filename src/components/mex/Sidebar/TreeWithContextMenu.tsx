@@ -18,8 +18,8 @@ import { useRefactorStore } from '../Refactor/Refactor'
 import { LastOpenedState } from '../../../types/userPreference'
 import volumeDownLine from '@iconify/icons-ri/volume-down-line'
 import { mog } from '@utils/lib/helper'
-import { useTemplateModalStore } from '../Template/TemplateModalStore'
 import toast from 'react-hot-toast'
+import useModalStore, { ModalsType } from '@store/useModalStore'
 
 export const MENU_ID = 'Tree-Menu'
 
@@ -68,7 +68,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const openDeleteModal = useDeleteStore((store) => store.openModal)
   const { createNewNote } = useCreateNewNote()
   const openShareModal = useShareModalStore((store) => store.openModal)
-  const openTemplateModal = useTemplateModalStore((store) => store.openModal)
+  const toggleModal = useModalStore((store) => store.toggleOpen)
 
   const handleRefactor = (item: TreeItem) => {
     prefillRefactorModal(item?.data?.path)
@@ -86,7 +86,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
 
   const handleTemplate = (item: TreeItem) => {
     if (item.data.path !== 'Drafts') {
-      openTemplateModal(item.data.nodeid)
+      toggleModal(ModalsType.template, item.data.nodeid)
     } else {
       toast.error('Template cannot be set for Drafts hierarchy')
     }

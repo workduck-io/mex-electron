@@ -1,37 +1,23 @@
-import searchLine from '@iconify/icons-ri/search-line'
 import { useApi } from '@apis/useSaveApi'
 import { defaultContent } from '@data/Defaults/baseData'
 import EditorPreviewRenderer from '@editor/EditorPreviewRenderer'
-import { debounce } from 'lodash'
-import { Icon } from '@iconify/react'
-import { Label } from '@radix-ui/react-context-menu'
 import { useContentStore } from '@store/useContentStore'
-import { useEditorStore } from '@store/useEditorStore'
 import { Snippet, useSnippetStore } from '@store/useSnippetStore'
-import { SelectWrapper, StyledCreatatbleSelect, ButtonFields, Input } from '@style/Form'
+import { ButtonFields } from '@style/Form'
 import { Title, LoadingButton } from '@workduck-io/mex-components'
 import React, { useEffect, useState } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import Modal from 'react-modal'
 import { InviteWrapper, InviteFormWrapper } from '../Mention/ShareModal.styles'
-import { EmptyMessage, FilteredItemsWrapper, SidebarListFilter } from '../Sidebar/SidebarList.style'
-import SnippetList from '../Sidebar/SnippetList'
 import { TemplateContainer } from './TemplateModal.style'
-import { TemplateModalData, useTemplateModalStore } from './TemplateModalStore'
-import SidebarListItemComponent from '../Sidebar/SidebarListItem'
-import { a } from 'react-spring'
-import { ItemContent, ItemTitle } from '@style/Sidebar'
 import SidebarList from '../Sidebar/SidebarList'
 import { useLinks } from '@hooks/useLinks'
-
-// interface PermissionModalContentProps { }
+import useModalStore, { ModalsType } from '@store/useModalStore'
 
 const TemplateModal = () => {
   const { getILinkFromNodeid } = useLinks()
-  const open = useTemplateModalStore((store) => store.open)
-  const closeModal = useTemplateModalStore((store) => store.closeModal)
-  const nodeid = useTemplateModalStore((state) => state.data).nodeid
+  const { toggleOpen, open, data: nodeid } = useModalStore()
 
   const node = getILinkFromNodeid(nodeid)
   const templates = useSnippetStore((state) => state.snippets).filter((item) => item?.template)
@@ -54,7 +40,7 @@ const TemplateModal = () => {
     handleSubmit,
     control,
     formState: { errors, isSubmitting }
-  } = useForm<TemplateModalData>()
+  } = useForm()
 
   const onSelectItem = (id: string) => {
     setCurrentTemplate(templates.find((item) => item.id === id))
@@ -68,11 +54,16 @@ const TemplateModal = () => {
       toast('Template Set!')
     }
 
-    closeModal()
+    toggleOpen(ModalsType.template)
   }
 
   return (
-    <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
+    <Modal
+      className="ModalContent"
+      overlayClassName="ModalOverlay"
+      onRequestClose={() => toggleOpen(ModalsType.template)}
+      isOpen={open === ModalsType.template}
+    >
       <InviteWrapper>
         {templates.length !== 0 ? (
           <>
@@ -107,10 +98,10 @@ const TemplateModal = () => {
             <LoadingButton
               loading={isSubmitting}
               alsoDisabled={
-                errors.templateID !== undefined ||
-                errors.nodeid !== undefined ||
-                templates.length === 0 ||
-                templates.indexOf(currentTemplate) === -1
+                errors?.templateID !== undefined ||
+                errors?.nodeid !== undefined ||
+                templates?.length === 0 ||
+                templates?.indexOf(currentTemplate) === -1
               }
               type="submit"
               primary

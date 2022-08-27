@@ -1,7 +1,6 @@
 import { IpcAction } from '@data/IpcAction'
 import { ipcRenderer } from 'electron'
 import create from 'zustand'
-import { persist } from 'zustand/middleware'
 
 export enum ModalsType {
   blocks,
@@ -12,13 +11,17 @@ export enum ModalsType {
   releases,
   reminders,
   share,
-  help
+  help,
+  template
 }
 
 type ModalStoreType = {
   open: ModalsType | undefined
   init: ModalsType | undefined
-  toggleOpen: (modalType: ModalsType, initialize?: boolean) => void
+  // Would be better if data is of type [typeof ModalsType]: {whatever data needed for specific modal}
+  // Keeping it as any as only template modal data type is known for now
+  data: any
+  toggleOpen: (modalType: ModalsType, modalData?: any, initialize?: boolean) => void
 }
 
 // * Create Unified Store for all Modals
@@ -26,16 +29,19 @@ type ModalStoreType = {
 const useModalStore = create<ModalStoreType>((set, get) => ({
   open: undefined,
   init: undefined,
-  toggleOpen: (modalType, initialize?: boolean) => {
+  data: undefined,
+  toggleOpen: (modalType, modalData, initialize) => {
     const open = get().open
     const init = get().init
 
     if (init) ipcRenderer.send(IpcAction.SHOW_RELEASE_NOTES)
 
     const changeModalState = open === modalType ? undefined : modalType
+    // As only one modal is going to be open at any time, better to reset data on Modal close
+    const updatedModalData = changeModalState ? modalData : undefined
     const initModal = initialize ? modalType : undefined
 
-    set({ open: changeModalState, init: initModal })
+    set({ open: changeModalState, init: initModal, data: updatedModalData })
   }
 }))
 
