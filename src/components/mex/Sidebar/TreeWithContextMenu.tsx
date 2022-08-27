@@ -20,6 +20,7 @@ import volumeDownLine from '@iconify/icons-ri/volume-down-line'
 import { mog } from '@utils/lib/helper'
 import toast from 'react-hot-toast'
 import useModalStore, { ModalsType } from '@store/useModalStore'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 
 export const MENU_ID = 'Tree-Menu'
 
@@ -69,6 +70,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const { createNewNote } = useCreateNewNote()
   const openShareModal = useShareModalStore((store) => store.openModal)
   const toggleModal = useModalStore((store) => store.toggleOpen)
+  const { goTo } = useRouting()
 
   const handleRefactor = (item: TreeItem) => {
     prefillRefactorModal(item?.data?.path)
@@ -81,7 +83,8 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
 
   const handleCreateChild = (item: TreeItem) => {
     // mog('handleCreateChild', { item })
-    createNewNote({ parent: item.data.path })
+    const node = createNewNote({ parent: item.data.path })
+    goTo(ROUTE_PATHS.node, NavigationType.push, node?.nodeid)
   }
 
   const handleTemplate = (item: TreeItem) => {
