@@ -1,6 +1,6 @@
-import semver from 'semver'
 import fs from 'fs'
 import _ from 'lodash'
+import semver from 'semver'
 
 import packageJson from '../package.json'
 import configJson from '../src/config.json'
@@ -42,11 +42,13 @@ const packageJsonValues = {
 const configValues = {
   [BUILD_TYPE.ALPHA]: {
     STAGE: 'alpha',
-    MEX_BACKEND_BASE_URL: 'https://http-test.workduck.io/mex'
+    MEX_BACKEND_BASE_URL: 'https://http-test.workduck.io/mex',
+    ICON: 'assets/icon.alpha.icns'
   },
   [BUILD_TYPE.STABLE]: {
     STAGE: 'stable',
-    MEX_BACKEND_BASE_URL: 'https://http.workduck.io/mex'
+    MEX_BACKEND_BASE_URL: 'https://http.workduck.io/mex',
+    ICON: 'assets/icon.stable.icns'
   }
 }
 
@@ -70,3 +72,4 @@ Object.entries(configValues[buildStage]).forEach(([key, value]) => {
 
 fs.writeFileSync('./package.json', JSON.stringify(packageJson, null, '  '))
 fs.writeFileSync('./src/config.json', JSON.stringify(configJson, null, '  '))
+fs.copyFileSync(configValues[buildStage].ICON, 'assets/icon.icns')
