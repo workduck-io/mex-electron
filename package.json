@@ -7,22 +7,12 @@
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "prepare": "husky install",
-    "start": "electron-forge start --inspect-electron",
-    "prebuild": "ts-node build/prepare-build.ts",
-    "nativedeps:x64": "./node_modules/.bin/electron-rebuild --force --arch=x64 --force-abi=101",
-    "nativedeps:arm64": "./node_modules/.bin/electron-rebuild --force --arch=arm64 --force-abi=101",
-    "prepackage:x64": "ts-node build/prepare-build.ts && yarn nativedeps:x64",
-    "prepackage:arm64": "ts-node build/prepare-build.ts && yarn nativedeps:arm64",
-    "package:x64": "electron-forge package --arch=x64",
-    "package:arm64": "electron-forge package --arch=arm64",
-    "prepublish:x64": "yarn package:x64",
-    "prepublish:arm64": "yarn package:arm64",
-    "publish:x64": "ts-node build/darwin-utils.ts x64",
-    "publish:arm64": "ts-node build/darwin-utils.ts arm64",
     "lint": "eslint --ext .ts,.tsx .",
+    "start": "ts-node -O '{\"module\": \"CommonJS\"}' scripts/start.ts",
+    "prebuild:javascript": "ts-node -O '{\"module\": \"CommonJS\"}' scripts/prepare-build.ts && rm -rf out dist",
     "compile:javascript": "ts-node -O '{\"module\": \"CommonJS\"}' scripts/build.ts",
     "compile:electron": "electron-builder build --config builder.config.js",
-    "watch": "ts-node -O '{\"module\": \"CommonJS\"}' scripts/start.ts"
+    "package": "yarn build:javascript && yarn build:electron"
   },
   "keywords": [],
   "author": {
