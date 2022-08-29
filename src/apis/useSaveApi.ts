@@ -150,12 +150,11 @@ export const useApi = () => {
       namespaceIdentifier: DEFAULT_NAMESPACE,
       tags: getTagsFromContent(content),
       data: serializeContent(content ?? defaultContent.content, nodeid),
-      metadata: { templateID: templateID ?? getMetadata(nodeid)?.templateID }
+      // Because we have to send templateID with every node save call so that it doesn't get unset
+      // We are checking if the id is __null__ for the case when the user wants to remove the template
+      // If not, we send what was passed as prop, if nothing then from metadata
+      metadata: { templateID: templateID === '__null__' ? null : templateID ?? getMetadata(nodeid)?.templateID }
     }
-
-    // if (!isShared) {
-    //   reqData['lastEditedBy'] = useAuthStore.getState().userDetails.email
-    // }
 
     if (isShared) {
       const node = getSharedNode(nodeid)

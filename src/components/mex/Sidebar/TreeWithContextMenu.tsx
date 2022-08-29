@@ -1,3 +1,4 @@
+import magicLine from '@iconify/icons-ri/magic-line'
 import { TreeItem } from '@atlaskit/tree'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useLastOpened } from '@hooks/useLastOpened'
@@ -18,8 +19,11 @@ import { useRefactorStore } from '../Refactor/Refactor'
 import { LastOpenedState } from '../../../types/userPreference'
 import volumeDownLine from '@iconify/icons-ri/volume-down-line'
 import { mog } from '@utils/lib/helper'
-import { useTemplateModalStore } from '../Template/TemplateModalStore'
 import toast from 'react-hot-toast'
+import useModalStore, { ModalsType } from '@store/useModalStore'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import { useContentStore } from '@store/useContentStore'
+import { useSnippetStore } from '@store/useSnippetStore'
 
 export const MENU_ID = 'Tree-Menu'
 
@@ -68,7 +72,19 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const openDeleteModal = useDeleteStore((store) => store.openModal)
   const { createNewNote } = useCreateNewNote()
   const openShareModal = useShareModalStore((store) => store.openModal)
-  const openTemplateModal = useTemplateModalStore((store) => store.openModal)
+  const toggleModal = useModalStore((store) => store.toggleOpen)
+  const { goTo } = useRouting()
+
+  const contents = useContentStore((store) => store.contents)
+
+  const hasTemplate = useMemo(() => {
+    const metadata = contents[item.data.nodeid]?.metadata
+    const templates = useSnippetStore
+      .getState()
+      .snippets.filter((item) => item?.template && item.id === metadata?.templateID)
+
+    return templates.length !== 0
+  }, [item.data.nodeid, contents])
 
   const handleRefactor = (item: TreeItem) => {
     prefillRefactorModal(item?.data?.path)
@@ -81,12 +97,13 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
 
   const handleCreateChild = (item: TreeItem) => {
     // mog('handleCreateChild', { item })
-    createNewNote({ parent: item.data.path })
+    const node = createNewNote({ parent: item.data.path })
+    goTo(ROUTE_PATHS.node, NavigationType.push, node?.nodeid)
   }
 
   const handleTemplate = (item: TreeItem) => {
     if (item.data.path !== 'Drafts') {
-      openTemplateModal(item.data.nodeid)
+      toggleModal(ModalsType.template, item.data.nodeid)
     } else {
       toast.error('Template cannot be set for Drafts hierarchy')
     }
@@ -120,9 +137,8 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
             handleTemplate(item)
           }}
         >
-          <Icon icon="carbon:template" />
-          {/* TODO: unable to make the following line conditional based on metadata, sometimes works */}
-          Set Template
+          <Icon icon={magicLine} />
+          {hasTemplate ? 'Change Template' : 'Set Template'}
         </ContextMenuItem>
         <ContextMenuItem
           onSelect={(args) => {

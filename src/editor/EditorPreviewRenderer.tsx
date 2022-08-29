@@ -13,6 +13,7 @@ interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
   editorId: string
   noStyle?: boolean
+  placeholder?: string
   /**
    * Block that will be focused on render
    */
@@ -36,11 +37,12 @@ const EditorPreviewRenderer = ({
   editorId,
   blockId,
   noStyle,
+  placeholder,
   noMouseEvents,
   onDoubleClick
 }: EditorPreviewRendererProps) => {
   const editableProps = {
-    placeholder: 'Murmuring the mex hype... ',
+    placeholder: placeholder ?? 'Murmuring the mex hype... ',
     spellCheck: false,
     style: noStyle
       ? {}

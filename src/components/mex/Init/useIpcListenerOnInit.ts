@@ -86,7 +86,7 @@ export const useIpcListenerOnInit = () => {
 
       mog('SHOW RELEASE NOTES', { version, showedReleaseNotes })
 
-      if (!showedReleaseNotes) toggleModal(ModalsType.releases, true)
+      if (!showedReleaseNotes) toggleModal(ModalsType.releases, undefined, true)
     })
 
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
