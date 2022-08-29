@@ -47,8 +47,8 @@ const ContentEditor = () => {
   const editorWrapperRef = useRef<HTMLDivElement>(null)
   const { debouncedAddLastOpened } = useLastOpened()
 
+  const { addOrUpdateValBuffer, getBufferVal, saveAndClearBuffer } = useEditorBuffer()
   const { node } = useEditorStore((state) => ({ nodeid: state.node.nodeid, node: state.node }), shallow)
-
   const fsContent = useContentStore((state) => state.contents[node.nodeid])
 
   const { shortcutHandler } = useKeyListener()
@@ -56,7 +56,15 @@ const ContentEditor = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const editorRef = usePlateEditorRef()
-  const { addOrUpdateValBuffer, getBufferVal, saveAndClearBuffer } = useEditorBuffer()
+
+  const nodeContent = useMemo(() => {
+    const bufferContent = getBufferVal(node.nodeid)
+    if (bufferContent) {
+      // mog('Using Buffer Content')
+      return bufferContent
+    }
+    if (fsContent.content) return fsContent.content
+  }, [node.nodeid])
 
   const onChangeSave = useCallback(
     async (val: any[]) => {
@@ -149,7 +157,7 @@ const ContentEditor = () => {
             onAutoSave={onAutoSave}
             getSuggestions={getSuggestions}
             onChange={onChangeSave}
-            content={fsContent?.content?.length ? fsContent?.content : defaultContent.content}
+            content={nodeContent?.length ? nodeContent : defaultContent.content}
             editorId={editorId}
             readOnly={viewOnly}
           />
