@@ -29,6 +29,8 @@ import { areEqual } from '@utils/lib/hash'
 import toast from 'react-hot-toast'
 import { useLastOpened } from '@hooks/useLastOpened'
 import NavBreadCrumbs from '@components/mex/NavBreadcrumbs'
+import { mog } from '@utils/lib/helper'
+import { useContentStore } from '@store/useContentStore'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -45,10 +47,9 @@ const ContentEditor = () => {
   const editorWrapperRef = useRef<HTMLDivElement>(null)
   const { debouncedAddLastOpened } = useLastOpened()
 
-  const { node, fsContent } = useEditorStore(
-    (state) => ({ nodeid: state.node.nodeid, node: state.node, fsContent: state.content }),
-    shallow
-  )
+  const { node } = useEditorStore((state) => ({ nodeid: state.node.nodeid, node: state.node }), shallow)
+
+  const fsContent = useContentStore((state) => state.contents[node.nodeid])
 
   const { shortcutHandler } = useKeyListener()
   const { getSuggestions } = useSuggestions()
@@ -131,6 +132,8 @@ const ContentEditor = () => {
 
   const viewOnly = accessWhenShared(node.nodeid) === 'READ'
   // const readOnly = !!fetchingContent
+
+  // mog('ContentEditor', { node, fsContent })
 
   return (
     <>

@@ -45,7 +45,6 @@ export type LoadNodeFn = (nodeid: string, options?: LoadNodeOptions) => void
 
 const useLoad = () => {
   const loadNodeEditor = useEditorStore((store) => store.loadNode)
-  const loadNodeAndReplaceContent = useEditorStore((store) => store.loadNodeAndReplaceContent)
   const setFetchingContent = useEditorStore((store) => store.setFetchingContent)
   const setContent = useContentStore((store) => store.setContent)
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
@@ -188,22 +187,16 @@ const useLoad = () => {
 
           if (content) {
             updateEmptyBlockTypes(content, ELEMENT_PARAGRAPH)
-            const nodeContent = {
-              type: 'editor',
-              content,
-              version,
-              metadata
-            }
 
             // mog('Fetch and load data', { data, metadata, version })
             const loadingNodeid = useEditorStore.getState().loadingNodeid
 
+            setContent(node.nodeid, content, metadata)
             if (node.nodeid === loadingNodeid) {
-              loadNodeAndReplaceContent(node, nodeContent)
+              loadNodeEditor(node)
             } else {
               mog('CurrentNode is not same for loadNode', { node, loadingNodeid })
             }
-            setContent(node.nodeid, content, metadata)
           }
         }
         if (options.withLoading) setFetchingContent(false)
@@ -224,6 +217,7 @@ const useLoad = () => {
    * fetchAndSave different
    */
   const loadNode: LoadNodeFn = (nodeid, options = { savePrev: true, fetch: USE_API, withLoading: true }) => {
+    // mog('Load Node Called', { nodeid, options })
     const hasBeenLoaded = false
     const currentNodeId = useEditorStore.getState().node.nodeid
     const isAuthenticated = useAuthStore.getState().authenticated
@@ -293,8 +287,9 @@ const useLoad = () => {
 
     const appendedContent = [...nodeContent.content, ...content]
     mog('Appended content', { appendedContent })
+    setContent(nodeid, appendedContent)
 
-    loadNodeAndReplaceContent(nodeProps, { ...nodeContent, content: appendedContent })
+    loadNodeEditor(nodeProps)
   }
 
   return {

@@ -76,7 +76,7 @@ const Switch = () => {
   useEffect(() => {
     const editorNode = useEditorStore.getState().node
     // ? Do we need to save data locally on every route change?
-    mog('Changing location', { location })
+    // mog('Changing location', { location })
     if (authenticated) {
       if (isBlockMode) setIsBlockMode(false)
       if (editorNode) saveNodeName(editorNode.nodeid)
@@ -87,11 +87,11 @@ const Switch = () => {
 
     if (location.pathname) {
       if (location.pathname.startsWith(ROUTE_PATHS.snippets)) {
-        mog('Showing Sidebar', { location })
+        // mog('Showing Sidebar', { location })
         showSidebar()
         hideRHSidebar()
       } else if (location.pathname.startsWith(ROUTE_PATHS.node)) {
-        mog('Showing Sidebar', { location })
+        // mog('Showing Sidebar', { location })
         showAllSidebars()
       } else if (location.pathname.startsWith(ROUTE_PATHS.archive)) {
         showSidebar()
