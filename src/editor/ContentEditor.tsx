@@ -58,7 +58,8 @@ const ContentEditor = () => {
   const editorRef = usePlateEditorRef()
 
   const nodeContent = useMemo(() => {
-    if (fsContent.content) return fsContent.content
+    if (fsContent?.content) return fsContent.content
+    return defaultContent.content
   }, [node.nodeid, fsContent])
 
   const onChangeSave = useCallback(
