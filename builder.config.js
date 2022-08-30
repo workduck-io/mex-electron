@@ -35,7 +35,7 @@ const configuration = {
   afterSign: 'electron-builder-notarize',
   buildDependenciesFromSource: true,
   asar: true,
-  asarUnpack: ['dist/*.js'],
+  asarUnpack: ['dist/**', '!node_modules'],
   compression: 'maximum',
   mac: {
     artifactName: '${productName}-${version}-${os}-${arch}.${ext}',
@@ -50,11 +50,11 @@ const configuration = {
     target: [
       {
         target: 'zip',
-        arch: ['x64']
+        arch: ['x64', 'arm64']
       },
       {
         target: 'dmg',
-        arch: ['x64']
+        arch: ['x64', 'arm64']
       }
     ]
   },

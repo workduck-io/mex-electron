@@ -9,10 +9,10 @@
     "prepare": "husky install",
     "lint": "eslint --ext .ts,.tsx .",
     "start": "ts-node -O '{\"module\": \"CommonJS\"}' scripts/start.ts",
-    "prebuild:javascript": "ts-node -O '{\"module\": \"CommonJS\"}' scripts/prepare-build.ts && rm -rf out dist",
+    "precompile:javascript": "ts-node -O '{\"module\": \"CommonJS\"}' scripts/prepare-build.ts && rm -rf out dist",
     "compile:javascript": "ts-node -O '{\"module\": \"CommonJS\"}' scripts/build.ts",
     "compile:electron": "electron-builder build --config builder.config.js",
-    "package": "yarn build:javascript && yarn build:electron"
+    "package": "yarn compile:javascript && yarn compile:electron"
   },
   "keywords": [],
   "author": {
