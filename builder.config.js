@@ -12,13 +12,14 @@ const checkAlpha = (version) => {
 const isAlpha = checkAlpha(version)
 
 const appBundleId = isAlpha ? 'com.workduck.mex-alpha' : 'com.workduck.mex'
+const updateServerPath = isAlpha ? 'https://http-test.workduck.io/updates/' : 'https://http.workduck.io/updates/'
 
 /** @type {import('electron-builder').Configuration} */
 const configuration = {
   publish: [
     {
       provider: 'generic',
-      url: 'http://localhost:9000/'
+      url: updateServerPath
     }
   ],
   protocols: {
@@ -35,6 +36,7 @@ const configuration = {
   buildDependenciesFromSource: true,
   asar: true,
   asarUnpack: ['dist/*.js'],
+  compression: 'maximum',
   mac: {
     artifactName: '${productName}-${version}-${os}-${arch}.${ext}',
     category: 'public.app-category.productivity',
