@@ -19,7 +19,8 @@ const configuration = {
   publish: [
     {
       provider: 'generic',
-      url: updateServerPath
+      url: updateServerPath,
+      publishAutoUpdate: false
     }
   ],
   protocols: {
@@ -35,8 +36,7 @@ const configuration = {
   afterSign: 'electron-builder-notarize',
   buildDependenciesFromSource: true,
   asar: true,
-  asarUnpack: ['dist/**', '!node_modules'],
-  compression: 'maximum',
+  asarUnpack: ['dist/*.js'],
   mac: {
     artifactName: '${productName}-${version}-${os}-${arch}.${ext}',
     category: 'public.app-category.productivity',

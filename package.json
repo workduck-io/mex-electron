@@ -11,7 +11,7 @@
     "start": "ts-node -O '{\"module\": \"CommonJS\"}' scripts/start.ts",
     "precompile:javascript": "ts-node -O '{\"module\": \"CommonJS\"}' scripts/prepare-build.ts && rm -rf out dist",
     "compile:javascript": "ts-node -O '{\"module\": \"CommonJS\"}' scripts/build.ts",
-    "compile:electron": "electron-builder build --config builder.config.js",
+    "compile:electron": "electron-builder --config builder.config.js --publish=never",
     "package": "yarn compile:javascript && yarn compile:electron"
   },
   "keywords": [],
