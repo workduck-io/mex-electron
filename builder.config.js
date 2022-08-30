@@ -19,8 +19,7 @@ const configuration = {
   publish: [
     {
       provider: 'generic',
-      url: updateServerPath,
-      publishAutoUpdate: false
+      url: updateServerPath
     }
   ],
   protocols: {
