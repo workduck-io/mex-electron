@@ -1,11 +1,11 @@
-name: "Create a GitHub Release, Build and Store the Output Artifacts"
+name: Create a GitHub Release, Build and Store the Output Artifacts
 on:
   workflow_dispatch:
   release:
     types: [published]
 
 jobs:
-  publish_on_mac_x64:
+  publish_mac:
     runs-on: [self-hosted, mex-electron, mex]
     env:
       GITHUB_TOKEN: ${{ github.token }}
@@ -16,37 +16,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install Dependencies
-        run: yarn
-      - name: Build for x64
-        run: yarn publish:x64
+        run: yarn install --frozen-lockfile
+      - name: Compile Javascript
+        run: yarn compile:javascript
+      - name: Compile Electron for arm64 and x64
+        run: yarn compile:electron
       - name: Upload Release Asset
         id: upload-release-asset
         uses: softprops/action-gh-release@v1
         with:
           generate_release_notes: true
           files: |
-            out/make/*.dmg
-            out/make/*.zip
-
-  publish_on_mac_arm64:
-    runs-on: [self-hosted, mex]
-    env:
-      GITHUB_TOKEN: ${{ github.token }}
-      YARN_TOKEN: ${{ secrets.YARN_TOKEN }}
-      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-      APPLE_ID: ${{ secrets.APPLE_ID }}
-      APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Dependencies
-        run: yarn
-      - name: Build for Arm64
-        run: yarn publish:arm64
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: softprops/action-gh-release@v1
-        with:
-          generate_release_notes: true
-          files: |
-            out/make/*.dmg
-            out/make/*.zip
+            out/*.dmg
+            out/*.zip
