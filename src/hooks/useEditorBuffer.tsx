@@ -1,4 +1,5 @@
 import { useApi } from '@apis/useSaveApi'
+import { useContentStore } from '@store/useContentStore'
 import create from 'zustand'
 import { useDataSaverFromContent } from '../editor/Components/Saver'
 import { useSnippetStore } from '../store/useSnippetStore'
@@ -41,7 +42,8 @@ export const useEditorBuffer = () => {
   }
 
   const getBuffer = () => useBufferStore.getState().buffer
-  const getBufferVal = (nodeid: string) => useBufferStore.getState().buffer[nodeid] ?? undefined
+  const getBufferVal = (nodeid: string): NodeEditorContent | undefined =>
+    useBufferStore.getState().buffer[nodeid] ?? undefined
 
   const saveAndClearBuffer = (explicitSave?: boolean) => {
     const buffer = useBufferStore.getState().buffer
@@ -68,6 +70,9 @@ export const useEditorBuffer = () => {
 
   return { addOrUpdateValBuffer, saveAndClearBuffer, getBuffer, getBufferVal, clearBuffer }
 }
+
+export const getLatestContent = (nodeid: string): NodeEditorContent | undefined =>
+  useBufferStore.getState().buffer[nodeid] ?? useContentStore.getState().contents[nodeid]?.content ?? undefined
 
 interface SnippetBufferStore {
   buffer: Record<string, { content: NodeEditorContent; title: string; template?: boolean }>

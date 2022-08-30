@@ -13,7 +13,7 @@ export const useSettingsShortcuts = () => {
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [shortcuts.save.keystrokes]: (event) => {
-        if (!shortcutDisabled) setSaved(true)
+        // if (!shortcutDisabled) setSaved(true)
       }
     })
     return () => {

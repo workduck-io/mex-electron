@@ -17,6 +17,8 @@ import { openNodeInMex } from '../../../utils/combineSources'
 import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import { useSaveChanges } from '../Search/useSearchProps'
 import { spotlightShortcuts } from '../Shortcuts/list'
+import { mog } from '@utils/lib/helper'
+import { getLatestContent } from '@hooks/useEditorBuffer'
 
 export interface PreviewContainerProps extends PreviewProps {
   blockId?: string
@@ -30,7 +32,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
   const { shortcutDisabled } = useKeyListener()
 
   const setNormalMode = useSpotlightAppStore((s) => s.setNormalMode)
-  const getContent = useContentStore((state) => state.getContent)
+  // const getContent = useContentStore((state) => state.getContent)
   const contents = useContentStore((state) => state.contents)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
@@ -57,7 +59,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
         { ...lastBlock, blockMeta: getBlockMetadata(preview.metadata?.url) }
       ]
 
-      const activeNodeContent = getContent(nodeId)?.content ?? []
+      const activeNodeContent = getLatestContent(nodeId) ?? []
 
       if (!isNewTask) setNodeContent([...activeNodeContent, ...deserializedContent])
       else {
@@ -69,13 +71,13 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
 
   useEffect(() => {
     if (!preview.isSelection) {
-      const activeNodeContent = getContent(nodeId)?.content ?? []
+      const activeNodeContent = getLatestContent(nodeId) ?? []
       if (activeNodeContent.length) setNodeContent(activeNodeContent)
     }
   }, [contents])
 
   const handleSaveContent = (saveAndClose: boolean, removeHighlight?: boolean) => {
-    saveIt({ saveAndClose, removeHighlight })
+    saveIt({ saveAndClose, removeHighlight, saveAfterBlur: false })
 
     if (isOnboarding) {
       openNodeInMex(nodeId)

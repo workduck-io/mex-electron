@@ -58,13 +58,8 @@ const ContentEditor = () => {
   const editorRef = usePlateEditorRef()
 
   const nodeContent = useMemo(() => {
-    const bufferContent = getBufferVal(node.nodeid)
-    if (bufferContent) {
-      // mog('Using Buffer Content')
-      return bufferContent
-    }
     if (fsContent.content) return fsContent.content
-  }, [node.nodeid])
+  }, [node.nodeid, fsContent])
 
   const onChangeSave = useCallback(
     async (val: any[]) => {
@@ -141,7 +136,7 @@ const ContentEditor = () => {
   const viewOnly = accessWhenShared(node.nodeid) === 'READ'
   // const readOnly = !!fetchingContent
 
-  // mog('ContentEditor', { node, fsContent })
+  // mog('ContentEditor', { node, fsContent, nodeContent })
 
   return (
     <>

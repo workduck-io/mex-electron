@@ -110,7 +110,7 @@ export const useSaver = () => {
     const cnode = node || defaultNode
 
     // * Editor Id is different from nodeId
-    const editorId = getPlateEditorRef().id
+    const editorId = getPlateEditorRef()?.id
     const hasState = !!state[editorId]
     const isShared = isSharedNode(cnode.nodeid)
 
