@@ -12,12 +12,13 @@ import {
   FloatingPortal,
   useFloatingNodeId,
   FloatingNode,
-  inline,
-  autoPlacement
+  autoPlacement,
+  autoUpdate,
+  useHover
 } from '@floating-ui/react-dom-interactions'
 import { Props } from './types'
 
-export const Floating = ({ children, render, placement }: Props) => {
+export const Floating = ({ children, hover, render, placement }: Props) => {
   const [open, setOpen] = useState<boolean>(false)
 
   const nodeId = useFloatingNodeId()
@@ -25,7 +26,7 @@ export const Floating = ({ children, render, placement }: Props) => {
   const { x, y, reference, floating, strategy, context } = useFloating({
     open,
     onOpenChange: setOpen,
-    middleware: [offset(4), inline(), autoPlacement(), shift()],
+    middleware: [offset(5), autoPlacement(), shift()],
     placement,
     nodeId
     // whileElementsMounted: autoUpdate
@@ -38,6 +39,7 @@ export const Floating = ({ children, render, placement }: Props) => {
   const { getReferenceProps, getFloatingProps } = useInteractions([
     useClick(context),
     useRole(context),
+    hover && useHover(context, { restMs: 200, delay: { open: 200, close: 100 } }),
     useDismiss(context)
   ])
 

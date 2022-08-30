@@ -218,7 +218,8 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
               <section>
                 <EditorPreviewRenderer
                   noMouseEvents
-                  content={preview}
+                  content={preview?.content || preview}
+                  readOnly
                   editorId={isBlockTriggered && activeBlock ? activeBlock.blockId : items[itemIndex]?.key}
                 />
               </section>

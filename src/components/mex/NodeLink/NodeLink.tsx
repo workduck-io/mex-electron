@@ -9,6 +9,7 @@ import { useNavigation } from '../../../hooks/useNavigation'
 import { NodeType } from '../../../types/Types'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { NodeLinkStyled } from '../Backlinks/Backlinks.style'
+import useMultipleEditors from '@store/useEditorsStore'
 
 interface NodeLinkProps {
   keyStr: string
@@ -28,12 +29,15 @@ const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
   const { goTo } = useRouting()
   const { push } = useNavigation()
 
+  const addPreviewInEditors = useMultipleEditors((store) => store.addEditor)
   const nodeType = getNodeType(nodeid)
 
   const onClickProps = useOnMouseClick(() => {
     // Show preview on click, if preview is shown, navigate to link
-    if (!fixVisible) setFixVisible(true)
-    else {
+    if (!fixVisible) {
+      addPreviewInEditors(nodeid)
+      setFixVisible(true)
+    } else {
       push(nodeid)
       goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
     }
@@ -69,6 +73,7 @@ const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
       preview={visible || fixVisible}
       closePreview={() => closePreview()}
       allowClosePreview={fixVisible}
+      hover
       nodeid={nodeid}
       placement="auto-start"
     >

@@ -2,7 +2,7 @@ import { useReadOnly, useFocused, useSelected } from 'slate-react'
 import shareLine from '@iconify/icons-ri/share-line'
 import archivedIcon from '@iconify/icons-ri/archive-line'
 import eyeOffLine from '@iconify/icons-ri/eye-off-line'
-import { useEditorRef, moveSelection } from '@udecode/plate'
+import { useEditorRef, moveSelection, useFloatingTree } from '@udecode/plate'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useLinks } from '../../../../hooks/useLinks'
@@ -10,7 +10,6 @@ import { useNavigation } from '../../../../hooks/useNavigation'
 import { useNodes } from '../../../../hooks/useNodes'
 import EditorPreview from '../../EditorPreview/EditorPreview'
 import { useHotkeys } from '../hooks/useHotkeys'
-import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { SILink, SILinkRoot, StyledIcon } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../../views/routes/urls'
@@ -19,12 +18,12 @@ import { ILink, NodeType, SharedNode } from '../../../../types/Types'
 import { useSpotlightContext } from '@store/Context/context.spotlight'
 import useLoad from '@hooks/useLoad'
 import { useSpotlightEditorStore } from '@store/editor.spotlight'
+import { mog } from '@utils/lib/helper'
+import useMultipleEditors from '@store/useEditorsStore'
+import { useEditorStore } from '@store/useEditorStore'
 
 /**
- * ILinkElement with no default styles.
- * [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling)
- */
-
+ * ILinkElement with no default styles. [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling) */
 const SharedNodeLink = ({ selected, sharedNode }: { selected: boolean; sharedNode: SharedNode }) => {
   return (
     <SILink selected={selected}>
@@ -57,6 +56,7 @@ const MissingNode = ({ selected }: { selected: boolean }) => {
     </SILink>
   )
 }
+
 export const ILinkElement = ({ attributes, children, element }: ILinkElementProps) => {
   const editor = useEditorRef()
   const selected = useSelected()
@@ -67,6 +67,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const { getArchiveNode, getSharedNode, getNodeType } = useNodes()
   const spotlightCtx = useSpotlightContext()
   const { getNode } = useLoad()
+  const timer = React.useRef(undefined)
   // mog('We reached here', { selected, focused })
 
   // const nodeid = getNodeidFromPath(element.value)
@@ -76,6 +77,8 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const { setPreviewEditorNode } = useSpotlightEditorStore((store) => ({
     setPreviewEditorNode: store.setNode
   }))
+  const addPreviewInEditors = useMultipleEditors((store) => store.addEditor)
+  const changeEditorState = useMultipleEditors((store) => store.changeEditorState)
 
   const loadLinkNode = async (nodeid: string) => {
     if (spotlightCtx) {
@@ -87,18 +90,50 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
       goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
     }
   }
-  const onClickProps = useOnMouseClick(() => {
+
+  const blinkPreview = (noteId: string) => {
+    if (timer.current) clearTimeout(timer.current)
+    changeEditorState(noteId, { blink: true })
+
+    // * After 2 seconds set blink false
+    timer.current = setTimeout(() => changeEditorState(noteId, { blink: false }), 2000)
+  }
+
+  const isPreviewPresent = (noteId: string) => {
+    const existingPreview = useMultipleEditors.getState().editors[noteId]
+    return existingPreview
+  }
+
+  const onClickProps = (e) => {
     // Show preview on click, if preview is shown, navigate to link
-    if (!preview) setPreview(true)
-    else {
-      loadLinkNode(element.value)
+    e.preventDefault()
+    e.stopPropagation()
+
+    const noteId = element.value
+    const existingPreview = isPreviewPresent(noteId)
+    const currentMainNode = useEditorStore.getState().node.nodeid
+
+    if (!preview) {
+      if (existingPreview) {
+        blinkPreview(noteId)
+        return
+      }
+
+      if (currentMainNode === noteId) return
+
+      addPreviewInEditors(noteId)
+      setPreview(true)
+    } else {
+      loadLinkNode(noteId)
     }
-  })
+  }
 
   useEffect(() => {
     // If the preview is shown and the element losses focus --> Editor focus is moved
     // Hide the preview
-    if (preview && !selected) setPreview(false)
+    if (preview && !selected) {
+      setPreview(false)
+    }
   }, [selected])
 
   useHotkeys(
@@ -122,7 +157,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
       // Once preview is shown the link looses focus
       if (preview) {
         // mog('working', { element })
-        loadLinkNode(element.value)
+        // loadLinkNode(element.value)
       }
     },
     [selected, preview]
@@ -164,7 +199,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
               content={content}
               closePreview={() => setPreview(false)}
             >
-              <SILink selected={selected} {...onClickProps}>
+              <SILink selected={selected} onClick={onClickProps}>
                 <span className="ILink_decoration ILink_decoration_left">[[</span>
                 <span className="ILink_decoration ILink_decoration_value">
                   {' '}

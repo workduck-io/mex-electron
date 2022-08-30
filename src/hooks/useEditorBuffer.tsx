@@ -52,6 +52,7 @@ export const useEditorBuffer = () => {
       const saved = Object.entries(buffer)
         .map(([nodeid, val]) => {
           const content = getContent(nodeid)
+          mog('content', { content, val, nodeid })
           const res = areEqual(content.content, val)
           const isShared = isSharedNode(nodeid)
           // const mT = measureTime(() => areEqual(content.content, val))

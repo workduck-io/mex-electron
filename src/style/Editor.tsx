@@ -71,7 +71,7 @@ export const CenteredMainContent = styled.div`
   }
 `
 
-export const StyledEditor = styled(CenteredMainContent)<StyledEditorProps>``
+export const StyledEditor = styled(CenteredMainContent) <StyledEditorProps>``
 
 export const EditorBreadcrumbs = styled.div<{ isVisible?: boolean }>`
   display: flex;

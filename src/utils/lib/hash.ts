@@ -2,7 +2,7 @@ import { NodeEditorContent } from '../../types/Types'
 import { isEqual } from 'lodash'
 
 export const areEqual = (val1: NodeEditorContent, val2: NodeEditorContent): boolean => {
-  if (val1.length !== val2.length) {
+  if (!val2 || val1.length !== val2.length) {
     // console.log('lengths not equal')
     return false
   }

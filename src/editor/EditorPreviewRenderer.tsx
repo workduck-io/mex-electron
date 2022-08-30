@@ -1,5 +1,5 @@
 import { Plate } from '@udecode/plate'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { EditorStyles } from '../style/Editor'
 import generatePlugins from './Plugins/plugins'
 import { editorPreviewComponents } from './Components/components'
@@ -8,6 +8,8 @@ import { TodoContainer } from '../ui/components/Todo.style'
 import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
 import { FadeContainer } from '../style/animation/fade'
 import { useEditorChange } from '@hooks/useEditorActions'
+import { NodeEditorContent } from '../types/Types'
+import { debounce } from 'lodash'
 
 interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -19,10 +21,13 @@ interface EditorPreviewRendererProps {
    */
   blockId?: string
   noMouseEvents?: boolean
+  readOnly?: boolean
+  onChange?: (val: NodeEditorContent) => void
+  onClick?: (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   onDoubleClick?: (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
-const PreviewStyles = styled(EditorStyles)<{ noMouseEvents: boolean }>`
+const PreviewStyles = styled(EditorStyles) <{ noMouseEvents: boolean }>`
   ${({ noMouseEvents }) => noMouseEvents && 'pointer-events: none;'};
   /* user-select: none; */
   font-size: 0.9rem;
@@ -39,18 +44,25 @@ const EditorPreviewRenderer = ({
   noStyle,
   placeholder,
   noMouseEvents,
+  onClick,
+  onChange,
+  readOnly,
   onDoubleClick
 }: EditorPreviewRendererProps) => {
-  const editableProps = {
-    placeholder: placeholder ?? 'Murmuring the mex hype... ',
-    spellCheck: false,
-    style: noStyle
-      ? {}
-      : {
+  const editableProps = useMemo(
+    () => ({
+      placeholder: 'Murmuring the mex hype... ',
+      spellCheck: !readOnly,
+      style: noStyle
+        ? {}
+        : {
           padding: '15px'
         },
-    readOnly: true
-  }
+      readOnly,
+      autoFocus: !readOnly
+    }),
+    [readOnly]
+  )
 
   // We get memoized plugins
   const plugins = generatePlugins(editorPreviewComponents, { exclude: { dnd: true } })
@@ -71,22 +83,33 @@ const EditorPreviewRenderer = ({
     }
   }, [blockId, editorId, content])
 
+  const onDelayPerform = debounce(!readOnly && typeof onChange === 'function' ? onChange : () => undefined, 200)
+
   useEditorChange(editorId, content)
+
+  const onContentChange = (val: NodeEditorContent) => {
+    if (onChange) onDelayPerform(val)
+  }
 
   return (
     <>
       <PreviewStyles
         noMouseEvents={noMouseEvents}
         onClick={(ev) => {
-          // ev.preventDefault()
-          // ev.stopPropagation()
+          if (onClick) onClick(ev)
           if (onDoubleClick && ev.detail === 2) {
             onDoubleClick(ev)
           }
         }}
       >
         <FadeContainer fade={blockId !== undefined}>
-          <Plate id={editorId} editableProps={editableProps} value={content} plugins={plugins} />
+          <Plate
+            id={editorId}
+            editableProps={editableProps}
+            onChange={onContentChange}
+            initialValue={content}
+            plugins={plugins}
+          />
         </FadeContainer>
       </PreviewStyles>
     </>

@@ -4,4 +4,5 @@ export interface Props {
   render: (data: { close: () => void; labelId: string; descriptionId: string }) => React.ReactNode
   placement?: Placement
   children: JSX.Element
+  hover?: boolean
 }
