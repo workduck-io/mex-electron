@@ -19,6 +19,7 @@ import { useSaveChanges } from '../Search/useSearchProps'
 import { spotlightShortcuts } from '../Shortcuts/list'
 import { mog } from '@utils/lib/helper'
 import { getLatestContent } from '@hooks/useEditorBuffer'
+import { defaultContent } from '@data/Defaults/baseData'
 
 export interface PreviewContainerProps extends PreviewProps {
   blockId?: string
@@ -59,7 +60,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
         { ...lastBlock, blockMeta: getBlockMetadata(preview.metadata?.url) }
       ]
 
-      const activeNodeContent = getLatestContent(nodeId) ?? []
+      const activeNodeContent = getLatestContent(nodeId) ?? defaultContent.content
 
       if (!isNewTask) setNodeContent([...activeNodeContent, ...deserializedContent])
       else {
@@ -71,7 +72,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
 
   useEffect(() => {
     if (!preview.isSelection) {
-      const activeNodeContent = getLatestContent(nodeId) ?? []
+      const activeNodeContent = getLatestContent(nodeId) ?? defaultContent.content
       if (activeNodeContent.length) setNodeContent(activeNodeContent)
     }
   }, [contents])

@@ -20,7 +20,8 @@ import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import { mog } from '@utils/lib/helper'
 import { getBlockMetadata } from '@editor/Actions/useEditorBlockSelection'
-import { getLatestContent, useEditorBuffer } from '@hooks/useEditorBuffer'
+import { getLatestContent } from '@hooks/useEditorBuffer'
+import { defaultContent } from '@data/Defaults/baseData'
 
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
@@ -91,7 +92,7 @@ export const useSaveChanges = () => {
           ...deserializedContent.slice(0, deserializedContent.length - 1),
           { ...lastBlock, blockMeta: getBlockMetadata(preview.metadata?.url) }
         ]
-        const activeNodeContent = latestContent ?? []
+        const activeNodeContent = latestContent ?? defaultContent.content
 
         if (options?.isNewTask) {
           const convertedContent = convertValueToTasks(previewContent)
