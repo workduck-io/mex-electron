@@ -127,7 +127,7 @@ const GlobalListener = memo(() => {
 
         addRecent(node.nodeid)
         addInRecentResearchNodes(node.nodeid)
-        if (saveAfterBlur) onSave(node, false, false, content)
+        if (saveAfterBlur) onSave(node, true, false, content)
         else setSaveAfterBlur(true)
         // appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, { nodeid: node.nodeid })
         setReset()

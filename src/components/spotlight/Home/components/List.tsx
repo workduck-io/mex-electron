@@ -225,6 +225,7 @@ const List = ({
                     saveData()
                   },
                   saveAndClose: true,
+                  saveToFile: true,
                   removeHighlight: true,
                   isNewTask
                 })
@@ -232,6 +233,7 @@ const List = ({
                 saveIt({
                   path: nodePath,
                   saveAndClose: true,
+                  saveToFile: true,
                   removeHighlight: true,
                   isNewTask
                 })
@@ -279,12 +281,14 @@ const List = ({
                 },
                 saveAndClose: true,
                 removeHighlight: true,
+                saveToFile: true,
                 isNewTask: true
               })
             } else {
               saveIt({
                 path: node.path,
                 saveAndClose: true,
+                saveToFile: true,
                 removeHighlight: true,
                 isNewTask: true
               })

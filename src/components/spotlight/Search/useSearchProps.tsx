@@ -59,6 +59,7 @@ type SaveItProps = {
   // Will not save on blur if false
   // defaults to true if absent
   saveAfterBlur?: boolean
+  saveToFile?: boolean
 }
 
 export const useSaveChanges = () => {
@@ -125,7 +126,7 @@ export const useSaveChanges = () => {
     // mog('Saving via Save', { node, editorContent })
     if (options?.beforeSave) {
       options?.beforeSave({ path, noteId: node.nodeid, noteContent: editorContent })
-    } else onSave(node, false, false, editorContent)
+    } else onSave(node, options?.saveToFile ?? false, false, editorContent)
 
     if (options?.saveAfterBlur === false) {
       setSaveAfterBlur(false)

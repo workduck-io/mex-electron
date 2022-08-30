@@ -78,7 +78,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
   }, [contents])
 
   const handleSaveContent = (saveAndClose: boolean, removeHighlight?: boolean) => {
-    saveIt({ saveAndClose, removeHighlight, saveAfterBlur: false })
+    saveIt({ saveAndClose, removeHighlight, saveAfterBlur: false, saveToFile: true })
 
     if (isOnboarding) {
       openNodeInMex(nodeId)
