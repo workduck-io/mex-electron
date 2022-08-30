@@ -6,8 +6,8 @@ import { ILink } from '../../../types/Types'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { Snippet } from '../../../store/useSnippetStore'
 import { convertContentToRawText } from '../../../utils/search/parseData'
-import { getContent } from '../../../utils/helpers'
 import { SearchRepExtra } from '../../../types/search'
+import { getLatestContent } from '@hooks/useEditorBuffer'
 
 export const getListItemFromNode = (
   node: ILink,
@@ -16,7 +16,7 @@ export const getListItemFromNode = (
   searchRepExtra?: SearchRepExtra
 ) => {
   const rawText =
-    description ?? convertContentToRawText(getContent(node?.nodeid)?.content ?? [], ' ', { extra: searchRepExtra })
+    description ?? convertContentToRawText(getLatestContent(node?.nodeid) ?? [], ' ', { extra: searchRepExtra })
 
   const listItem: ListItemType = {
     icon: node?.icon ?? 'gg:file-document',

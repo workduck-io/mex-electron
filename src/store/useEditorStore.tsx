@@ -17,9 +17,7 @@ export type EditorContextType = {
 
   // Data of the current node
   node: NodeProperties
-  // Contents of the current node
-  // These are loaded internally from ID
-  content: NodeContent
+
   readOnly: boolean
 
   // * Checks if there's an active trigger in the editor
@@ -45,14 +43,11 @@ export type EditorContextType = {
 
   setFetchingContent: (value: boolean) => void
 
-  loadNodeAndReplaceContent: (node: NodeProperties, content: NodeContent) => void
-
   setReadOnly: (isReadOnly: boolean) => void
 }
 
 export const useEditorStore = create<EditorContextType>((set, get) => ({
   node: getInitialNode(),
-  content: defaultContent,
   readOnly: false,
   fetchingContent: false,
   setTrigger: (trigger) => set({ trigger }),
@@ -91,15 +86,9 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
     }),
 
   loadNode: (node: NodeProperties) => {
-    const content = getContent(node.nodeid)
     set({
-      node,
-      content
+      node
     })
-  },
-
-  loadNodeAndReplaceContent: (node, content) => {
-    set({ node, content })
   }
 }))
 

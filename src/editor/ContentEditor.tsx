@@ -29,6 +29,8 @@ import { areEqual } from '@utils/lib/hash'
 import toast from 'react-hot-toast'
 import { useLastOpened } from '@hooks/useLastOpened'
 import NavBreadCrumbs from '@components/mex/NavBreadcrumbs'
+import { mog } from '@utils/lib/helper'
+import { useContentStore } from '@store/useContentStore'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -45,17 +47,20 @@ const ContentEditor = () => {
   const editorWrapperRef = useRef<HTMLDivElement>(null)
   const { debouncedAddLastOpened } = useLastOpened()
 
-  const { node, fsContent } = useEditorStore(
-    (state) => ({ nodeid: state.node.nodeid, node: state.node, fsContent: state.content }),
-    shallow
-  )
+  const { addOrUpdateValBuffer, getBufferVal, saveAndClearBuffer } = useEditorBuffer()
+  const { node } = useEditorStore((state) => ({ nodeid: state.node.nodeid, node: state.node }), shallow)
+  const fsContent = useContentStore((state) => state.contents[node.nodeid])
 
   const { shortcutHandler } = useKeyListener()
   const { getSuggestions } = useSuggestions()
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
   const editorRef = usePlateEditorRef()
-  const { addOrUpdateValBuffer, getBufferVal, saveAndClearBuffer } = useEditorBuffer()
+
+  const nodeContent = useMemo(() => {
+    if (fsContent?.content) return fsContent.content
+    return defaultContent.content
+  }, [node.nodeid, fsContent])
 
   const onChangeSave = useCallback(
     async (val: any[]) => {
@@ -132,6 +137,8 @@ const ContentEditor = () => {
   const viewOnly = accessWhenShared(node.nodeid) === 'READ'
   // const readOnly = !!fetchingContent
 
+  // mog('ContentEditor', { node, fsContent, nodeContent })
+
   return (
     <>
       <StyledEditor showGraph={infobar.mode === 'graph'} className="mex_editor">
@@ -146,7 +153,7 @@ const ContentEditor = () => {
             onAutoSave={onAutoSave}
             getSuggestions={getSuggestions}
             onChange={onChangeSave}
-            content={fsContent?.content?.length ? fsContent?.content : defaultContent.content}
+            content={nodeContent?.length ? nodeContent : defaultContent.content}
             editorId={editorId}
             readOnly={viewOnly}
           />

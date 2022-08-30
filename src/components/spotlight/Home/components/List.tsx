@@ -37,6 +37,7 @@ import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useSaveData } from '@hooks/useSaveData'
 import { useRecentsStore } from '@store/useRecentsStore'
 import { useLastOpened } from '@hooks/useLastOpened'
+import { getDeserializeSelectionToNodes } from '@utils/htmlDeserializer'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -57,8 +58,17 @@ const List = ({
   selectedItem: ActiveItem
   setSelectedItem: (action: ActiveItem) => void
 }) => {
-  const { search, setSelection, activeIndex, searchResults, activeItem, setSearch, selection, setActiveIndex } =
-    useSpotlightContext()
+  const {
+    search,
+    setSelection,
+    setActiveItem,
+    activeIndex,
+    searchResults,
+    activeItem,
+    setSearch,
+    selection,
+    setActiveIndex
+  } = useSpotlightContext()
   const parentRef = useRef(null)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
@@ -196,6 +206,7 @@ const List = ({
         mog('Enter key pressed', { currentActiveItem })
         // * If current item is ILINK
         if (currentActiveItem?.category === CategoryType.backlink && !activeItem.active) {
+          // mog('Matched with node')
           if (event.metaKey) {
             if (currentActiveItem?.type === QuickLinkType.backlink) {
               let nodePath = node.path
@@ -205,7 +216,7 @@ const List = ({
                 nodePath = search.value ? text : node.path
 
                 // TODO: Create new note with specified 'nodeid' and 'path'.
-                mog('NODE PATH IS', { nodePath, search })
+                // mog('NODE PATH IS', { nodePath, search })
 
                 saveIt({
                   path: nodePath,
@@ -214,6 +225,7 @@ const List = ({
                     saveData()
                   },
                   saveAndClose: true,
+                  saveToFile: true,
                   removeHighlight: true,
                   isNewTask
                 })
@@ -221,6 +233,7 @@ const List = ({
                 saveIt({
                   path: nodePath,
                   saveAndClose: true,
+                  saveToFile: true,
                   removeHighlight: true,
                   isNewTask
                 })
@@ -256,11 +269,36 @@ const List = ({
             }
           }
         } else if (currentActiveItem.category === CategoryType.task) {
-          const node = getNewTaskNode(true)
+          // mog('Matched with task')
+          // const content = getDeserializeSelectionToNodes(selection, false)
           if (event.metaKey) {
-            saveIt({ path: node.path, saveAndClose: true, removeHighlight: true, isNewTask: true })
+            const node = getNewTaskNode(false)
+            if (!node) {
+              saveIt({
+                beforeSave: ({ path, noteId, noteContent }) => {
+                  getNewTaskNode(true, noteContent)
+                  saveData()
+                },
+                saveAndClose: true,
+                removeHighlight: true,
+                saveToFile: true,
+                isNewTask: true
+              })
+            } else {
+              saveIt({
+                path: node.path,
+                saveAndClose: true,
+                saveToFile: true,
+                removeHighlight: true,
+                isNewTask: true
+              })
+            }
             setSelection(undefined)
+            setSearch({ value: '', type: CategoryType.search })
+            setActiveItem({ item: null, active: false })
           } else {
+            const node = getNewTaskNode(true)
+            // mog('Taskify', { node, selection })
             setPreviewEditorNode({
               ...node,
               title: node.path ?? 'Today Tasks',

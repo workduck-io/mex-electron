@@ -38,6 +38,7 @@ const GlobalListener = memo(() => {
   const setBubble = useSpotlightSettingsStore((state) => state.setBubble)
   const { addRecent } = useRecentsStore(({ addRecent, clear }) => ({ addRecent, clear }))
   const setReset = useSpotlightAppStore((state) => state.setReset)
+  const setSaveAfterBlur = useSpotlightAppStore((state) => state.setSaveAfterBlur)
   // const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   // const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   // const changeOnboarding = useOnboard((s) => s.changeOnboarding)
@@ -109,6 +110,7 @@ const GlobalListener = memo(() => {
     ipcRenderer.on(IpcAction.WINDOW_BLUR, () => {
       const normalMode = useSpotlightAppStore.getState().normalMode
       const node = useSpotlightEditorStore.getState().node
+      const saveAfterBlur = useSpotlightAppStore.getState().saveAfterBlur
       const ilinks = useDataStore.getState().ilinks
 
       // Close the modal
@@ -125,7 +127,8 @@ const GlobalListener = memo(() => {
 
         addRecent(node.nodeid)
         addInRecentResearchNodes(node.nodeid)
-        onSave(node, false, false, content)
+        if (saveAfterBlur) onSave(node, true, false, content)
+        else setSaveAfterBlur(true)
         // appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, { nodeid: node.nodeid })
         setReset()
       }

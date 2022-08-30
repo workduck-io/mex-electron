@@ -12,7 +12,8 @@ export enum BroadcastSyncedChannel {
   REMINDERS = 'reminders',
   THEME = 'theme',
   TOKEN_DATA = 'token-data',
-  USER_PROPERTIES = 'user-properties'
+  USER_PROPERTIES = 'user-properties',
+  EDITOR_BUFFER = 'editor-buffer'
 }
 
 export type SyncField<Field> = {

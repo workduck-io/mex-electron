@@ -11,6 +11,8 @@ import { useReminderStore } from '@hooks/useReminders'
 import { useMentionStore } from '@store/useMentionStore'
 import { useTokenStore } from '@services/auth/useTokens'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { useBufferStore } from '@hooks/useEditorBuffer'
+import useTodoStore from '@store/useTodoStore'
 
 const syncStores = () => {
   if ('BroadcastChannel' in globalThis) {
@@ -67,6 +69,14 @@ const syncStores = () => {
         { field: 'groupedActions' },
         { field: 'resultHashCache' }
       ]
+    })
+    syncStoreState(useBufferStore, {
+      name: BroadcastSyncedChannel.EDITOR_BUFFER,
+      sync: [{ field: 'buffer' }]
+    })
+    syncStoreState(useTodoStore, {
+      name: BroadcastSyncedChannel.TASKS,
+      sync: [{ field: 'todos' }]
     })
   }
 }

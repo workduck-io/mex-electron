@@ -20,6 +20,8 @@ import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import { mog } from '@utils/lib/helper'
 import { getBlockMetadata } from '@editor/Actions/useEditorBlockSelection'
+import { getLatestContent } from '@hooks/useEditorBuffer'
+import { defaultContent } from '@data/Defaults/baseData'
 
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
@@ -54,6 +56,10 @@ type SaveItProps = {
   removeHighlight?: boolean
   isNewTask?: boolean
   path?: string
+  // Will not save on blur if false
+  // defaults to true if absent
+  saveAfterBlur?: boolean
+  saveToFile?: boolean
 }
 
 export const useSaveChanges = () => {
@@ -63,6 +69,7 @@ export const useSaveChanges = () => {
   const addInResearchNodes = useRecentsStore((store) => store.addInResearchNodes)
   const setNormalMode = useSpotlightAppStore((store) => store.setNormalMode)
   const setInput = useSpotlightAppStore((store) => store.setInput)
+  const setSaveAfterBlur = useSpotlightAppStore((store) => store.setSaveAfterBlur)
   const preview = useSpotlightEditorStore((store) => store.preview)
 
   const { setSearch } = useSpotlightContext()
@@ -76,6 +83,7 @@ export const useSaveChanges = () => {
 
     let editorContent = getPlateSelectors().value()
     const existingContent = getContent(node.nodeid)
+    const latestContent = getLatestContent(node.nodeid)
 
     if (options?.removeHighlight) {
       const deserializedContent = getDeserializeSelectionToNodes(preview, false)
@@ -85,7 +93,7 @@ export const useSaveChanges = () => {
           ...deserializedContent.slice(0, deserializedContent.length - 1),
           { ...lastBlock, blockMeta: getBlockMetadata(preview.metadata?.url) }
         ]
-        const activeNodeContent = existingContent?.content ?? []
+        const activeNodeContent = latestContent ?? defaultContent.content
 
         if (options?.isNewTask) {
           const convertedContent = convertValueToTasks(previewContent)
@@ -115,9 +123,14 @@ export const useSaveChanges = () => {
       }
     }
 
+    // mog('Saving via Save', { node, editorContent })
     if (options?.beforeSave) {
       options?.beforeSave({ path, noteId: node.nodeid, noteContent: editorContent })
-    } else onSave(node, false, false, editorContent)
+    } else onSave(node, options?.saveToFile ?? false, false, editorContent)
+
+    if (options?.saveAfterBlur === false) {
+      setSaveAfterBlur(false)
+    }
 
     if (options?.saveAndClose) appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 

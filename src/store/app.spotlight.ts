@@ -9,6 +9,11 @@ export type SpotlightAppStore = {
   setSearch: (value: string) => void
   normalMode: boolean
   setNormalMode: (value: boolean) => void
+  // Save after window blur?
+  // If false it is reset to true after the window is blurred
+  // without saving on blur
+  saveAfterBlur: boolean
+  setSaveAfterBlur: (value: boolean) => void
   input: string
   setInput: (value: string) => void
   reset: boolean
@@ -31,6 +36,9 @@ export const useSpotlightAppStore = create<SpotlightAppStore>((set, get) => ({
 
   normalMode: true,
   setNormalMode: (value: boolean) => set(() => ({ normalMode: value })),
+
+  saveAfterBlur: true,
+  setSaveAfterBlur: (value: boolean) => set(() => ({ saveAfterBlur: value })),
 
   reset: false,
   setReset: () => set({ reset: !get().reset, normalMode: true }),

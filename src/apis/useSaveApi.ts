@@ -79,15 +79,8 @@ export const useApi = () => {
         headers: workspaceHeaders()
       })
       .then((d) => {
-        const { addedPaths, removedPaths, node } = d.data
-        const addedILinks = hierarchyParser(addedPaths)
-        const removedILinks = hierarchyParser(removedPaths)
-        setMetadata(noteId, extractMetadata(node))
-
-        // * set the new hierarchy in the tree
-        updateILinks(addedILinks, removedILinks)
-
-        setMetadata(noteId, extractMetadata(d.data))
+        const metadata = extractMetadata(d.data)
+        updateFromContent(noteId, d.data.data ?? options.content, metadata)
         addLastOpened(noteId)
         return d.data
       })
@@ -128,6 +121,7 @@ export const useApi = () => {
         const removedILinks = hierarchyParser(removedPaths)
         setMetadata(noteId, extractMetadata(node))
 
+        mog('create new request', { d })
         // * set the new hierarchy in the tree
         updateILinks(addedILinks, removedILinks)
         addLastOpened(noteId)

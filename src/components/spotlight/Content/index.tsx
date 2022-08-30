@@ -1,6 +1,7 @@
 import { SpotlightModals } from '@components/layouts/Modals'
 import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { DRAFT_NODE, DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
+import { getLatestContent } from '@hooks/useEditorBuffer'
 import { useSearchExtra } from '@hooks/useSearch'
 import { getTodayTaskNodePath, useTaskFromSelection } from '@hooks/useTaskFromSelection'
 import React, { useEffect } from 'react'
@@ -18,7 +19,6 @@ import useLoad from '../../../hooks/useLoad'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
-import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { createNodeWithUid, insertItemInArray, mog } from '../../../utils/lib/helper'
@@ -109,6 +109,8 @@ const Content = () => {
 
           const data = [...recentEvents, ...list, ...actions]
 
+          // mog('Recents in spotty', [{ recentList }, { listWithNew }, { listWithAllNew }])
+
           setSearchResults(data)
         }
       }
@@ -173,6 +175,7 @@ const Content = () => {
     }
 
     if (selection) {
+      // mog('Using selection for preview')
       setPreview({
         ...selection,
         isSelection: true
@@ -186,12 +189,11 @@ const Content = () => {
           link: e?.links?.meet ?? e?.links?.event,
           attendees: getAttendeeUserIDsFromCalendarEvent(e)
         })
-        const content =
-          useContentStore.getState().getContent(nodeid)?.content ??
-          (isMeeting ? meetingContent : defaultContent.content)
+        const content = getLatestContent(nodeid) ?? (isMeeting ? meetingContent : defaultContent.content)
         setNodeContent(content)
         setPreview(INIT_PREVIEW)
       } else if (isNewTask) {
+        mog('NewTaskContent is used here')
         const content = getNewTaskContent()
         setNodeContent(content)
         setPreview(INIT_PREVIEW)

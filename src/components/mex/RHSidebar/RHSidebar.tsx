@@ -29,7 +29,7 @@ const RHSidebar = () => {
   const rhSidebar = useLayoutStore((store) => store.rhSidebar)
   const { rhSidebarSpringProps, overlaySidebar } = useSidebarTransition()
 
-  mog('IS RHSIDEBAR', { rhSidebar })
+  // mog('IS RHSIDEBAR', { rhSidebar })
 
   return (
     <SideNav

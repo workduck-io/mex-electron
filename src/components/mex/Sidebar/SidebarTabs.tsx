@@ -73,7 +73,7 @@ const SidebarTabs = () => {
   const isTasksView = useMatch(`${ROUTE_PATHS.tasks}/:viewid`)
   const isTagsView = useMatch(`${ROUTE_PATHS.tag}/:tag`)
 
-  mog('IS SIDEBAR', { sidebar, isSnippet, isTasks, isSnippetNote, isEditor, isArchive })
+  // mog('IS SIDEBAR', { sidebar, isSnippet, isTasks, isSnippetNote, isEditor, isArchive })
 
   if (!sidebar.show) return <></>
 

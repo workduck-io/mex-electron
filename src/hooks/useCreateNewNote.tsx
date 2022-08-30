@@ -7,7 +7,6 @@ import { useHierarchy } from './useHierarchy'
 import { useLinks } from './useLinks'
 import useLoad from './useLoad'
 import { useNavigation } from './useNavigation'
-import { mog } from '@utils/lib/helper'
 import { useLastOpened } from './useLastOpened'
 import { useContentStore } from '@store/useContentStore'
 import { useSnippets } from './useSnippets'
@@ -66,7 +65,7 @@ export const useCreateNewNote = () => {
       return undefined
     }
 
-    mog('NODE CREATED IS HERE', { node })
+    // mog('NODE CREATED IS HERE', { node })
 
     addInHierarchy({
       noteId: node.nodeid,

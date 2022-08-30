@@ -8,6 +8,7 @@ import { NodeEditorContent } from '../../types/Types'
 import { ELEMENT_SYNC_BLOCK } from '../../editor/Components/SyncBlock'
 import { useEditorStore } from '../../store/useEditorStore'
 import { TodoStatus, TodoType } from '../../editor/Components/Todo/types'
+import { useEditorBuffer } from '@hooks/useEditorBuffer'
 
 export type ContentBlockType = typeof ELEMENT_SYNC_BLOCK | typeof ELEMENT_INLINE_BLOCK
 
@@ -29,13 +30,19 @@ export const filterContent = (content: NodeEditorContent, blocks: NodeEditorCont
 }
 
 export const useFilteredContent = (filter: FilterContentType) => {
-  const content = useEditorStore((state) => state.content)
+  const nodeid = useEditorStore((state) => state.node.id)
+  const { getBufferVal } = useEditorBuffer()
 
   const elements = useMemo(() => {
+    // TODO: Also use the content from content store
+    // if the editor buffer is not populated with the content
+    // Not done as this component is no longer being used
+    const content = getBufferVal(nodeid)
+    if (!content) return []
     const data: NodeEditorContent = []
-    filterContent(content.content, data, filter)
+    filterContent(content, data, filter)
     return data
-  }, [content])
+  }, [nodeid])
 
   return { elements }
 }
