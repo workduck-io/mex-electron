@@ -1,7 +1,5 @@
 import create from 'zustand'
-import { useContentStore } from './useContentStore'
 import { produce } from 'immer'
-import { defaultContent } from '@data/Defaults/baseData'
 import { devtools } from 'zustand/middleware'
 import { useBufferStore } from '@hooks/useEditorBuffer'
 
@@ -19,6 +17,8 @@ type MultipleEditors = {
   pinNote: (pinAt: string, noteToPin: string) => void
   unPinNote: (pinnedAt: string, noteToUnpin: string) => void
   addEditor: (noteId: string) => void
+  isEmpty: boolean
+  setIsEmpty: (status: boolean) => void
   changeEditorState: (noteId: string, editorState: EditorState) => void
   removeEditor: (noteId: string) => void
 }
@@ -27,8 +27,8 @@ const useMultipleEditors = create<MultipleEditors>(
   devtools(
     (set, get) => ({
       editors: {},
-      contents: {},
       pinned: {},
+      isEmpty: true,
       setPinned: (pinned) => set({ pinned }),
       unPinNote: (pinnedAt, noteToUnpin) => {
         if (!get().pinned[pinnedAt]) throw new Error('No pinned Note found')
@@ -40,6 +40,7 @@ const useMultipleEditors = create<MultipleEditors>(
           })
         )
       },
+      setIsEmpty: (status) => set({ isEmpty: status }),
       pinNote: (pinAt, noteToPin) => {
         set(
           produce((draft) => {
@@ -50,14 +51,13 @@ const useMultipleEditors = create<MultipleEditors>(
         )
       },
       addEditor: (noteId) => {
-        const existingContent = useContentStore.getState().getContent(noteId)
         set(
           produce((draft) => {
             draft.editors[noteId] = {
               editing: false,
               blink: false
             }
-            draft.contents[noteId] = existingContent || defaultContent.content
+            draft.isEmpty = false
           })
         )
       },
@@ -68,6 +68,7 @@ const useMultipleEditors = create<MultipleEditors>(
         set(
           produce((draft) => {
             delete draft.editors[noteId]
+            if (!draft.editors || Object.entries(draft.editors).length === 0) draft.isEmpty = true
           })
         )
       },

@@ -6,7 +6,7 @@ import { useReadOnly } from 'slate-react'
 import { NODE_ID_PREFIX, SNIPPET_PREFIX } from '../../../data/Defaults/idPrefixes'
 import { default as TodoBase } from '../../../ui/components/Todo'
 
-const cleanEditorId = (editorId: string) => {
+export const cleanEditorId = (editorId: string) => {
   /*
    * Find substring of form NODE_{} in editorid
    */

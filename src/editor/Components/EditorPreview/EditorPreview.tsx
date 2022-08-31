@@ -22,7 +22,9 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/u
 import { Button } from '@workduck-io/mex-components'
 import { NestedFloating } from '@components/FloatingElements'
 import useMultipleEditors from '@store/useEditorsStore'
-import { useBufferStore } from '@hooks/useEditorBuffer'
+import { useBufferStore, useEditorBuffer } from '@hooks/useEditorBuffer'
+import { FloatingOverlay } from '@floating-ui/react-dom-interactions'
+import { useComboboxStore } from '../combobox/useComboboxStore'
 
 export interface EditorPreviewProps {
   nodeid: string
@@ -64,25 +66,32 @@ export interface EditorPreviewProps {
 //   return <Tippy {...computedProps} ref={ref} />
 // })
 
-const EditorPreview = ({ nodeid, allowClosePreview, children, content, hover, closePreview, preview }: EditorPreviewProps) => {
+const EditorPreview = ({
+  nodeid,
+  allowClosePreview,
+  children,
+  content,
+  hover,
+  closePreview,
+  preview
+}: EditorPreviewProps) => {
   const { getILinkFromNodeid } = useLinks()
 
-  mog(`${nodeid} : preview ${preview}`, { preview })
-
   const { hasTags } = useTags()
+  const editorContentFromStore = useContentStore((store) => store.contents?.[nodeid])
   const { loadNode, getNoteContent } = useLoad()
   const { goTo } = useRouting()
 
   const cc = useMemo(() => {
     const nodeContent = getNoteContent(nodeid)
-    mog('node content', { nodeContent })
+
     const ccx = content ?? nodeContent
     return ccx
-  }, [nodeid])
+  }, [nodeid, editorContentFromStore])
 
   const ilink = getILinkFromNodeid(nodeid)
 
-  const editorId = `__preview__${nodeid}_${generateTempId()}`
+  const editorId = `__preview__${nodeid}}`
 
   const onClickNavigate = (e: any) => {
     e.preventDefault()
@@ -94,11 +103,10 @@ const EditorPreview = ({ nodeid, allowClosePreview, children, content, hover, cl
 
   const checkIfAlreadyPresent = (noteId: string) => {
     const isPresent = useMultipleEditors.getState().editors?.[noteId]?.blink
-    mog(`${noteId} is present: ${isPresent}`)
     return isPresent
   }
 
-  const showPreview = (!checkIfAlreadyPresent(nodeid) && preview)
+  const showPreview = !checkIfAlreadyPresent(nodeid) && preview
 
   if (cc) {
     return (
@@ -138,11 +146,11 @@ const EditorPreview = ({ nodeid, allowClosePreview, children, content, hover, cl
 }
 
 const EditablePreview = ({ content, editorId, id: nodeId, onClose }: any) => {
-
   const addToBuffer = useBufferStore((store) => store.add)
   const removeEditor = useMultipleEditors((store) => store.removeEditor)
   const presentEditor = useMultipleEditors((store) => store.editors)[nodeId]
   const changeEditorState = useMultipleEditors((store) => store.changeEditorState)
+  const { saveAndClearBuffer } = useEditorBuffer()
 
   const onEditorClick = (e: any) => {
     e.preventDefault()
@@ -155,6 +163,7 @@ const EditablePreview = ({ content, editorId, id: nodeId, onClose }: any) => {
     return () => {
       if (onClose) onClose()
 
+      saveAndClearBuffer()
       removeEditor(nodeId)
     }
   }, [])

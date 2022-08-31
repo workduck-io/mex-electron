@@ -20,6 +20,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import useSuggestionStore from '@store/useSuggestionStore'
 import { NodeEditorContent } from '../types/Types'
 import { useGlobalListener } from '@hooks/useGlobalListener'
+import useMultipleEditors from '@store/useEditorsStore'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -60,6 +61,7 @@ export const Editor = ({
 
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
   const headingQASearch = useSuggestionStore((store) => store.headingQASearch)
+  const isEmpty = useMultipleEditors((store) => store.isEmpty)
 
   // const generateEditorId = () => `${editorId}`
   const editorRef = usePlateEditorRef()
@@ -163,7 +165,7 @@ export const Editor = ({
           onChange={onChangeContent}
         >
           {showBalloonToolbar && <BallonMarkToolbarButtons />}
-          <MultiComboboxContainer config={comboConfigData} />
+          {isEmpty && <MultiComboboxContainer config={comboConfigData} />}
           {/* {showCursorOverlay && <CursorOverlayContainer />} */}
           <GlobalEditorListener />
         </Plate>

@@ -14,6 +14,8 @@ import { useLayoutStore } from '@store/useLayoutStore'
 import { focusStyles } from '@style/focus'
 import { FocusModeProp } from '@style/props'
 import { TitleWithShortcut } from '@workduck-io/mex-components'
+import { FadeInOut } from '@style/Layouts'
+import { useEditorStore } from '@store/useEditorStore'
 
 const LogoWrapper = styled.div<{ expanded: boolean }>`
   ${({ expanded }) => (expanded ? 'width: 100%;' : 'width: 40px;')}
@@ -36,6 +38,7 @@ export const Logo = () => {
 
 interface SidebarToggleWrappperProps extends FocusModeProp {
   expanded: boolean
+  isVisible?: boolean
   show: boolean
   side: 'right' | 'left'
   endColumnWidth?: string
@@ -44,6 +47,8 @@ interface SidebarToggleWrappperProps extends FocusModeProp {
 export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
   position: absolute;
   ${(props) => focusStyles(props)}
+  
+
   ${({ expanded, side, theme, endColumnWidth }) =>
     side === 'left'
       ? expanded
@@ -56,16 +61,21 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
             left: ${theme.additional.hasBlocks ? 86 : 70}px;
           `
       : expanded
-      ? css`
+        ? css`
           top: ${theme.additional.hasBlocks ? 67 : 64}px;
           right: calc(${(endColumnWidth ?? '400px') + ' + ' + (theme.additional.hasBlocks ? 0 : -15)}px);
         `
-      : css`
+        : css`
           top: ${theme.additional.hasBlocks ? 67 : 64}px;
           right: ${theme.additional.hasBlocks ? 8 : 8}px;
         `}
+  
+  ${({ isVisible, $focusMode }) => !$focusMode && FadeInOut(isVisible)}
 
-  transition: left 0.5s ease, top 0.5s ease, right 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;
+  ${({ isVisible }) =>
+    isVisible && css`transition: left 0.5s ease, top 0.5s ease, right 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;`
+  }
+
   z-index: 11;
   padding: 8px;
   display: flex;
@@ -90,6 +100,7 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
     transition: background 0.1s ease;
     background-color: ${({ theme }) => theme.colors.primary};
   }
+
 `
 
 export const TrafficLightBG = styled.div`
@@ -119,6 +130,7 @@ export const SidebarToggles = () => {
   const focusMode = useLayoutStore((state) => state.focusMode)
   const { getFocusProps } = useLayout()
   const { endColumnWidth } = useSidebarTransition()
+  const isUserEdititng = useEditorStore(store => store.isEditing)
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -143,6 +155,7 @@ export const SidebarToggles = () => {
       >
         <SidebarToggleWrapper
           side="left"
+          isVisible={!isUserEdititng}
           onClick={toggleSidebar}
           expanded={sidebar.expanded}
           show={sidebar.show}
@@ -160,6 +173,7 @@ export const SidebarToggles = () => {
       >
         <SidebarToggleWrapper
           side="right"
+          isVisible={!isUserEdititng}
           onClick={toggleRHSidebar}
           expanded={rhSidebar.expanded}
           show={rhSidebar.show}

@@ -46,10 +46,12 @@ export const EditorPreviewNoteName = styled.div`
 
 const PrimaryBorderKeyFrames = (theme: any) => keyframes`
   0% { border-color: transparent; }
-  100% { border-color: ${theme.colors.primary}; }
+  50% { border-color: ${theme.colors.primary}; }
+  100% { border-color: transparent; }
+
 `
 
-export const EditorPreviewEditorWrapper = styled.div<{ editable?: boolean, blink?: boolean }>`
+export const EditorPreviewEditorWrapper = styled.div<{ editable?: boolean; blink?: boolean }>`
   flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;
@@ -57,9 +59,12 @@ export const EditorPreviewEditorWrapper = styled.div<{ editable?: boolean, blink
   border-width: 1px;
   border-style: solid;
 
-  ${({ blink, editable, theme }) => blink && !editable && css`
-    animation: 1s ease-in-out 2 ${PrimaryBorderKeyFrames(theme)};
-  `}
+  ${({ blink, editable, theme }) =>
+    blink &&
+    !editable &&
+    css`
+      animation: 1s ease-out 1 ${PrimaryBorderKeyFrames(theme)};
+    `}
 
   width: 36vw;
   max-width: 40vw;

@@ -10,15 +10,15 @@ import { FadeContainer } from '../style/animation/fade'
 import { useEditorChange } from '@hooks/useEditorActions'
 import { NodeEditorContent } from '../types/Types'
 import { debounce } from 'lodash'
+import { components } from 'react-select'
+import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
+import { MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
 
 interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
   editorId: string
   noStyle?: boolean
   placeholder?: string
-  /**
-   * Block that will be focused on render
-   */
   blockId?: string
   noMouseEvents?: boolean
   readOnly?: boolean
@@ -27,7 +27,7 @@ interface EditorPreviewRendererProps {
   onDoubleClick?: (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
-const PreviewStyles = styled(EditorStyles) <{ noMouseEvents: boolean }>`
+const PreviewStyles = styled(EditorStyles)<{ noMouseEvents: boolean }>`
   ${({ noMouseEvents }) => noMouseEvents && 'pointer-events: none;'};
   /* user-select: none; */
   font-size: 0.9rem;
@@ -56,8 +56,8 @@ const EditorPreviewRenderer = ({
       style: noStyle
         ? {}
         : {
-          padding: '15px'
-        },
+            padding: '15px'
+          },
       readOnly,
       autoFocus: !readOnly
     }),
@@ -65,9 +65,26 @@ const EditorPreviewRenderer = ({
   )
 
   // We get memoized plugins
-  const plugins = generatePlugins(editorPreviewComponents, { exclude: { dnd: true } })
+  const plugins = useMemo(
+    () => generatePlugins(readOnly ? editorPreviewComponents : components, { exclude: { dnd: true } }),
+    [readOnly]
+  )
+
   const setHighlights = useBlockHighlightStore((s) => s.setHighlightedBlockIds)
   const { focusBlock } = useFocusBlock()
+
+  const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId, { exclude: { dnd: true, mentions: true } })
+
+  const newPlugins = [
+    ...plugins,
+    {
+      key: 'MULTI_COMBOBOX',
+      handlers: {
+        onChange: pluginConfigs.combobox.onChange,
+        onKeyDown: pluginConfigs.combobox.onKeyDown
+      }
+    }
+  ]
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -108,11 +125,14 @@ const EditorPreviewRenderer = ({
             editableProps={editableProps}
             onChange={onContentChange}
             initialValue={content}
-            plugins={plugins}
-          />
+            plugins={newPlugins}
+          >
+            {!readOnly && <MultiComboboxContainer config={comboConfigData} />}
+          </Plate>
         </FadeContainer>
       </PreviewStyles>
     </>
   )
 }
+
 export default EditorPreviewRenderer
