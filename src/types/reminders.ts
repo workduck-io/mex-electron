@@ -1,5 +1,4 @@
-import { PriorityType, TodoStatus, TodoType } from '../editor/Components/Todo/types'
-import { NodeEditorContent } from './Types'
+import { PriorityType, TodoType } from '../editor/Components/Todo/types'
 
 type Weekday = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
 

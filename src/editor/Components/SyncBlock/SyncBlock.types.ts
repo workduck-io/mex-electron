@@ -1,6 +1,7 @@
-import { TElement, Value } from '@udecode/plate'
-import { StyledElementProps } from '@udecode/plate-styled-components'
-import { CSSProp } from 'styled-components'
+import type { TElement, Value } from '@udecode/plate'
+import type { StyledElementProps } from '@udecode/plate-styled-components'
+import type { CSSProp } from 'styled-components'
+
 import { BlockIdType } from '../Blocks/types'
 
 export const ELEMENT_SYNC_BLOCK = 'sync_block'
