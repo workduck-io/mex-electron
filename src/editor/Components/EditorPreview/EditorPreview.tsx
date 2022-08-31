@@ -4,7 +4,6 @@ import { Icon } from '@iconify/react'
 import React, { useEffect, useMemo } from 'react'
 import { getNameFromPath } from '../../../components/mex/Sidebar/treeUtils'
 import { TagsRelatedTiny } from '../../../components/mex/Tags/TagsRelated'
-import { generateTempId } from '../../../data/Defaults/idPrefixes'
 import { useLinks } from '../../../hooks/useLinks'
 import { useTags } from '../../../hooks/useTags'
 import { useContentStore } from '../../../store/useContentStore'
@@ -15,7 +14,8 @@ import {
   EditorPreviewControls,
   EditorPreviewEditorWrapper,
   EditorPreviewNoteName,
-  EditorPreviewWrapper
+  EditorPreviewWrapper,
+  PreviewActionHeader
 } from './EditorPreview.styles'
 import useLoad from '../../../hooks/useLoad'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
@@ -23,8 +23,6 @@ import { Button } from '@workduck-io/mex-components'
 import { NestedFloating } from '@components/FloatingElements'
 import useMultipleEditors from '@store/useEditorsStore'
 import { useBufferStore, useEditorBuffer } from '@hooks/useEditorBuffer'
-import { FloatingOverlay } from '@floating-ui/react-dom-interactions'
-import { useComboboxStore } from '../combobox/useComboboxStore'
 
 export interface EditorPreviewProps {
   nodeid: string
@@ -123,15 +121,17 @@ const EditorPreview = ({
                       {getNameFromPath(ilink.path)}
                     </EditorPreviewNoteName>
                   )}
-                  <TagsRelatedTiny nodeid={nodeid} />
-                  <Button
-                    transparent
-                    onClick={() => {
-                      close()
-                    }}
-                  >
-                    <Icon icon={closeCircleLine} />
-                  </Button>
+                  <PreviewActionHeader>
+                    <TagsRelatedTiny nodeid={nodeid} />
+                    <Button
+                      transparent
+                      onClick={() => {
+                        close()
+                      }}
+                    >
+                      <Icon icon={closeCircleLine} />
+                    </Button>
+                  </PreviewActionHeader>
                 </EditorPreviewControls>
               )}
               <EditablePreview onClose={closePreview} id={nodeid} editorId={editorId} content={cc} />

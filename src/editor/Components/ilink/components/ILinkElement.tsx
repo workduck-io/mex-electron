@@ -74,6 +74,8 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const readOnly = useReadOnly()
   const path = getPathFromNodeid(element.value)
   const { goTo } = useRouting()
+  const isSpotlightCtx = useSpotlightContext()
+
   const { setPreviewEditorNode } = useSpotlightEditorStore((store) => ({
     setPreviewEditorNode: store.setNode
   }))
@@ -114,12 +116,17 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
     const currentMainNode = useEditorStore.getState().node.nodeid
 
     if (!preview) {
+      if (currentMainNode === noteId) return
+
+      if (isSpotlightCtx) {
+        setPreview(true)
+        return
+      }
+
       if (existingPreview) {
         blinkPreview(noteId)
         return
       }
-
-      if (currentMainNode === noteId) return
 
       addPreviewInEditors(noteId)
       setPreview(true)

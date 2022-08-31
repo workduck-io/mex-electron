@@ -56,6 +56,7 @@ export const Floating = ({ children, hover, render, placement }: Props) => {
                   style: {
                     position: strategy,
                     top: y ?? 0,
+                    zIndex: 12,
                     left: x ?? 0
                   },
                   'aria-labelledby': labelId,

@@ -48,7 +48,12 @@ const PrimaryBorderKeyFrames = (theme: any) => keyframes`
   0% { border-color: transparent; }
   50% { border-color: ${theme.colors.primary}; }
   100% { border-color: transparent; }
+`
 
+export const PreviewActionHeader = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 0 ${({ theme }) => theme.spacing.small};
 `
 
 export const EditorPreviewEditorWrapper = styled.div<{ editable?: boolean; blink?: boolean }>`
@@ -67,7 +72,6 @@ export const EditorPreviewEditorWrapper = styled.div<{ editable?: boolean; blink
     `}
 
   width: 36vw;
-  max-width: 40vw;
   ${({ editable, theme }) =>
     editable
       ? css`
