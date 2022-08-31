@@ -9,7 +9,7 @@ import { useLinks } from './useLinks'
 import { useNodes } from './useNodes'
 import { NodeType } from '../types/Types'
 
-const DEBOUNCE_TIME = 3000
+const DEBOUNCE_TIME = 1000
 
 const INIT_LAST_OPENED = {
   freq: 0,

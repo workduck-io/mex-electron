@@ -20,6 +20,7 @@ import { useRenameStore } from '../../../store/useRenameStore'
 import { Input } from '../../../style/Form'
 import { isClash, isMatch, isReserved } from '../../../utils/lib/paths'
 import { ButtonWrapper, TitleStatic, Wrapper } from './NodeRename.style'
+import { useNodes } from '@hooks/useNodes'
 
 const NodeRenameOnlyTitle = () => {
   const { getNodeidFromPath } = useLinks()
@@ -28,23 +29,18 @@ const NodeRenameOnlyTitle = () => {
   // const focus = useRenameStore((store) => store.focus)
   const to = useRenameStore((store) => store.to)
   const ilinks = useDataStore((store) => store.ilinks)
-  // const from = useRenameStore((store) => store.from)
-  const mockRefactored = useRenameStore((store) => store.mockRefactored)
   const nodeTitle = useAnalysisStore((state) => state.analysis.title)
 
   const { push } = useNavigation()
   const { updateILinks } = useLinks()
-  const prefillRefactorModal = useRefactorStore((store) => store.prefillModal)
-  const openModal = useRenameStore((store) => store.openModal)
-  // const closeModal = useRenameStore((store) => store.closeModal)
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
   const modalReset = useRenameStore((store) => store.closeModal)
-  const setTo = useRenameStore((store) => store.setTo)
   const nodeFrom = useEditorStore((store) => store.node.path ?? '')
   const setFrom = useRenameStore((store) => store.setFrom)
   const [editable, setEditable] = useState(false)
   const [newTitle, setNewTitle] = useState(getNameFromPath(nodeFrom))
   const inpRef = useRef<HTMLInputElement>()
+  const { updateBaseNode } = useNodes()
   //
   //
   //
@@ -131,16 +127,9 @@ const NodeRenameOnlyTitle = () => {
       reset()
       return
     }
-    const parent = getParentFromPath(nodeFrom)
-    if (mockRefactored.length > 1) {
-      if (parent) setTo(`${parent}${SEPARATOR}${newTitle}`)
-      else setTo(newTitle)
-      setFrom(nodeFrom)
 
-      openModal()
-      setEditable(false)
-      return
-    }
+    const parent = getParentFromPath(nodeFrom)
+
     if (newTitle && nodeFrom) {
       let newPath = newTitle
       if (parent) newPath = `${parent}${SEPARATOR}${newTitle}`
@@ -154,6 +143,7 @@ const NodeRenameOnlyTitle = () => {
 
       // // * set the new hierarchy in the tree
       const refactored = updateILinks(addedILinks, removedILinks)
+      updateBaseNode()
 
       const path = useEditorStore.getState().node.id
       const nodeid = useEditorStore.getState().node.nodeid
