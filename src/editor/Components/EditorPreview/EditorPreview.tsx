@@ -91,7 +91,7 @@ const EditorPreview = ({
 
   const ilink = getILinkFromNodeid(nodeid)
 
-  const editorId = `__preview__${nodeid}}`
+  const editorId = `${nodeid}_Preview`
 
   const onClickNavigate = (e: any) => {
     e.preventDefault()

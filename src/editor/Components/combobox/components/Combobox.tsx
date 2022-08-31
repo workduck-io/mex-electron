@@ -32,7 +32,6 @@ import BlockCombo from './BlockCombo'
 import { ComboboxProps } from './Combobox.types'
 import PreviewMeta from './PreviewMeta'
 import { ComboboxShortcuts, ComboSeperator } from './styled'
-import { mog } from '@utils/lib/helper'
 
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'
@@ -225,7 +224,9 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
                     noMouseEvents
                     content={preview?.content || preview}
                     readOnly
-                    editorId={isBlockTriggered && activeBlock ? activeBlock.blockId : items[itemIndex]?.key}
+                    editorId={
+                      isBlockTriggered && activeBlock ? activeBlock.blockId : `${items[itemIndex]?.key}_Preview_Block`
+                    }
                   />
                 </section>
                 {preview && <PreviewMeta meta={metaData} />}

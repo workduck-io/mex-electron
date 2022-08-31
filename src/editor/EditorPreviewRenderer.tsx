@@ -13,6 +13,7 @@ import { debounce } from 'lodash'
 import { components } from 'react-select'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 import { MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
+import { ErrorBoundary } from 'react-error-boundary'
 
 interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -46,7 +47,7 @@ const EditorPreviewRenderer = ({
   noMouseEvents,
   onClick,
   onChange,
-  readOnly,
+  readOnly = true,
   onDoubleClick
 }: EditorPreviewRendererProps) => {
   const editableProps = useMemo(
@@ -109,7 +110,7 @@ const EditorPreviewRenderer = ({
   }
 
   return (
-    <>
+    <ErrorBoundary fallbackRender={() => <></>}>
       <PreviewStyles
         noMouseEvents={noMouseEvents}
         onClick={(ev) => {
@@ -131,7 +132,7 @@ const EditorPreviewRenderer = ({
           </Plate>
         </FadeContainer>
       </PreviewStyles>
-    </>
+    </ErrorBoundary>
   )
 }
 

@@ -25,7 +25,7 @@ export const Floating = ({ children, hover, render, placement }: Props) => {
   const { x, y, reference, floating, strategy, context } = useFloating({
     open,
     onOpenChange: setOpen,
-    middleware: [offset(5), autoPlacement(), shift()],
+    middleware: [offset(20), autoPlacement(), shift()],
     placement,
     nodeId
   })
@@ -38,7 +38,7 @@ export const Floating = ({ children, hover, render, placement }: Props) => {
     useClick(context),
     useRole(context),
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    hover && useHover(context, { restMs: 200 }),
+    hover && useHover(context, { delay: { open: 200 } }),
     useDismiss(context)
   ])
 
@@ -55,7 +55,6 @@ export const Floating = ({ children, hover, render, placement }: Props) => {
                   ref: floating,
                   style: {
                     position: strategy,
-                    zIndex: 12,
                     top: y ?? 0,
                     left: x ?? 0
                   },
