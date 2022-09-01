@@ -1,7 +1,7 @@
-import create from 'zustand'
-import { produce } from 'immer'
-import { devtools } from 'zustand/middleware'
 import { useBufferStore } from '@hooks/useEditorBuffer'
+import { produce } from 'immer'
+import create from 'zustand'
+import { devtools } from 'zustand/middleware'
 
 type EditorState = {
   blink?: boolean
@@ -23,6 +23,7 @@ type MultipleEditors = {
   changeEditorState: (noteId: string, editorState: EditorState) => void
   removeEditor: (noteId: string) => void
   lastOpenedEditor: () => any | undefined
+  reset: () => void
 }
 
 const useMultipleEditors = create<MultipleEditors>(
@@ -99,6 +100,13 @@ const useMultipleEditors = create<MultipleEditors>(
             draft.editors[noteId] = { ...(existingState || {}), ...editorState }
           })
         )
+      },
+      reset: () => {
+        set({
+          editors: {},
+          isEmpty: true,
+          pinned: {}
+        })
       }
     }),
     { name: 'Multiple Editors Store' }

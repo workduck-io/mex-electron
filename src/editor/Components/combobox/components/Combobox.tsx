@@ -1,12 +1,16 @@
+import React, { useCallback, useEffect, useState } from 'react'
+
 import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
 import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
+import { shift, offset, flip } from '@floating-ui/react-dom-interactions'
 import usePointerMovedSinceMount from '@hooks/listeners/usePointerMovedSinceMount'
 import { Icon } from '@iconify/react'
-import { FloatingOverlay, shift, offset, flip } from '@floating-ui/react-dom-interactions'
 import { getRangeBoundingClientRect, PortalBody, useEditorState, useVirtualFloating } from '@udecode/plate'
-import { DisplayShortcut } from '@workduck-io/mex-components'
-import React, { useCallback, useEffect, useState } from 'react'
+import { RemoveScroll } from 'react-remove-scroll'
 import { useTheme } from 'styled-components'
+
+import { DisplayShortcut } from '@workduck-io/mex-components'
+
 import { QuickLinkType } from '../../../../components/mex/NodeSelect/NodeSelect'
 import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
 import { ShortcutText } from '../../../../components/spotlight/Home/components/Item'
@@ -138,102 +142,104 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   return (
     <PortalBody>
       {isOpen && (
-        <ComboboxRoot {...menuProps} ref={floating} style={style} isOpen={isOpen}>
-          <>
-            {!isBlockTriggered && (
-              <div id="List" style={{ flex: 1 }}>
-                <section id="items-container">
-                  {items.map((item, index) => {
-                    const Item = onRenderItem ? onRenderItem({ item }) : item.text
-                    const lastItem = index > 0 ? items[index - 1] : undefined
-                    const { mexIcon } = getIconType(item?.icon ?? DEFAULT_LIST_ITEM_ICON)
+        <RemoveScroll>
+          <ComboboxRoot {...menuProps} ref={floating} style={style} isOpen={isOpen}>
+            <>
+              {!isBlockTriggered && (
+                <div id="List" style={{ flex: 1 }}>
+                  <section id="items-container">
+                    {items.map((item, index) => {
+                      const Item = onRenderItem ? onRenderItem({ item }) : item.text
+                      const lastItem = index > 0 ? items[index - 1] : undefined
+                      const { mexIcon } = getIconType(item?.icon ?? DEFAULT_LIST_ITEM_ICON)
 
-                    return (
-                      <span key={`${item.key}-${String(index)}`}>
-                        {item.type !== lastItem?.type && <ActionTitle>{item.type}</ActionTitle>}
-                        <ComboboxItem
-                          className={index === itemIndex ? 'highlight' : ''}
-                          {...comboProps(item, index)}
-                          onPointerMove={() => pointerMoved && setItemIndex(index)}
-                          onMouseDown={() => {
-                            editor && onSelectItem(editor, item)
-                          }}
-                        >
-                          {item.icon && (
-                            <ProjectIconMex
-                              isMex={mexIcon}
-                              size={14}
-                              key={`${item.key}_${item.icon}`}
-                              icon={item.icon}
-                              margin="0 0.25rem 0 0"
-                              color={theme.colors.primary}
-                            />
-                          )}
-                          <ItemCenterWrapper>
-                            {!item.prefix ? (
-                              <ItemTitle>{Item}</ItemTitle>
-                            ) : (
-                              <ItemTitle>
-                                {item.prefix} <PrimaryText>{Item}</PrimaryText>
-                              </ItemTitle>
-                            )}
-                            {item.desc && <ItemDesc>{item.desc}</ItemDesc>}
-                          </ItemCenterWrapper>
-                          {item.rightIcons && (
-                            <ItemRightIcons>
-                              {item.rightIcons.map((i: string) => (
-                                <Icon key={item.key + i} icon={i} />
-                              ))}
-                            </ItemRightIcons>
-                          )}
-                        </ComboboxItem>
-                      </span>
-                    )
-                  })}
-                </section>
-                {itemShortcut && (
-                  <ComboboxShortcuts>
-                    {Object.entries(itemShortcut).map(([key, shortcut]) => {
                       return (
-                        <ShortcutText key={key}>
-                          <DisplayShortcut shortcut={shortcut.keystrokes} />{' '}
-                          <div className="text">{shortcut.title}</div>
-                        </ShortcutText>
+                        <span key={`${item.key}-${String(index)}`}>
+                          {item.type !== lastItem?.type && <ActionTitle>{item.type}</ActionTitle>}
+                          <ComboboxItem
+                            className={index === itemIndex ? 'highlight' : ''}
+                            {...comboProps(item, index)}
+                            onPointerMove={() => pointerMoved && setItemIndex(index)}
+                            onMouseDown={() => {
+                              editor && onSelectItem(editor, item)
+                            }}
+                          >
+                            {item.icon && (
+                              <ProjectIconMex
+                                isMex={mexIcon}
+                                size={14}
+                                key={`${item.key}_${item.icon}`}
+                                icon={item.icon}
+                                margin="0 0.25rem 0 0"
+                                color={theme.colors.primary}
+                              />
+                            )}
+                            <ItemCenterWrapper>
+                              {!item.prefix ? (
+                                <ItemTitle>{Item}</ItemTitle>
+                              ) : (
+                                <ItemTitle>
+                                  {item.prefix} <PrimaryText>{Item}</PrimaryText>
+                                </ItemTitle>
+                              )}
+                              {item.desc && <ItemDesc>{item.desc}</ItemDesc>}
+                            </ItemCenterWrapper>
+                            {item.rightIcons && (
+                              <ItemRightIcons>
+                                {item.rightIcons.map((i: string) => (
+                                  <Icon key={item.key + i} icon={i} />
+                                ))}
+                              </ItemRightIcons>
+                            )}
+                          </ComboboxItem>
+                        </span>
                       )
                     })}
-                  </ComboboxShortcuts>
-                )}
-              </div>
-            )}
-            <BlockCombo
-              onSelect={() => {
-                const item = items[itemIndex]
-                if (item?.type === QuickLinkType.backlink) {
-                  editor && onSelectItem(editor, items[itemIndex])
-                }
-              }}
-              shortcuts={itemShortcut}
-              nodeId={items[itemIndex]?.key}
-              isNew={items[itemIndex]?.data}
-            />
-            {((preview && listItem?.type && !isBlockTriggered) ||
-              (isBlockTriggered && textAfterBlockTrigger && preview)) && (
-              <ComboSeperator>
-                <section>
-                  <EditorPreviewRenderer
-                    noMouseEvents
-                    content={preview?.content || preview}
-                    readOnly
-                    editorId={
-                      isBlockTriggered && activeBlock ? activeBlock.blockId : `${items[itemIndex]?.key}_Preview_Block`
-                    }
-                  />
-                </section>
-                {preview && <PreviewMeta meta={metaData} />}
-              </ComboSeperator>
-            )}
-          </>
-        </ComboboxRoot>
+                  </section>
+                  {itemShortcut && (
+                    <ComboboxShortcuts>
+                      {Object.entries(itemShortcut).map(([key, shortcut]) => {
+                        return (
+                          <ShortcutText key={key}>
+                            <DisplayShortcut shortcut={shortcut.keystrokes} />{' '}
+                            <div className="text">{shortcut.title}</div>
+                          </ShortcutText>
+                        )
+                      })}
+                    </ComboboxShortcuts>
+                  )}
+                </div>
+              )}
+              <BlockCombo
+                onSelect={() => {
+                  const item = items[itemIndex]
+                  if (item?.type === QuickLinkType.backlink) {
+                    editor && onSelectItem(editor, items[itemIndex])
+                  }
+                }}
+                shortcuts={itemShortcut}
+                nodeId={items[itemIndex]?.key}
+                isNew={items[itemIndex]?.data}
+              />
+              {((preview && listItem?.type && !isBlockTriggered) ||
+                (isBlockTriggered && textAfterBlockTrigger && preview)) && (
+                <ComboSeperator>
+                  <section>
+                    <EditorPreviewRenderer
+                      noMouseEvents
+                      content={preview?.content || preview}
+                      readOnly
+                      editorId={
+                        isBlockTriggered && activeBlock ? activeBlock.blockId : `${items[itemIndex]?.key}_Preview_Block`
+                      }
+                    />
+                  </section>
+                  {preview && <PreviewMeta meta={metaData} />}
+                </ComboSeperator>
+              )}
+            </>
+          </ComboboxRoot>
+        </RemoveScroll>
       )}
     </PortalBody>
   )

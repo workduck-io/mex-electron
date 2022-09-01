@@ -1,12 +1,11 @@
 import React from 'react'
-import { RemoveScroll } from 'react-remove-scroll'
-import { mog } from '../../../utils/lib/helper'
+
+import { SlashCommandConfig } from '../SlashCommands/Types'
 import { Combobox } from '../combobox/components/Combobox'
 import { ComboboxItemProps, RenderFunction } from '../combobox/components/Combobox.types'
 import { useComboboxControls } from '../combobox/hooks/useComboboxControls'
 import { getCreateableOnSelect } from '../combobox/hooks/useComboboxOnKeyDown'
 import { useComboboxStore } from '../combobox/useComboboxStore'
-import { SlashCommandConfig } from '../SlashCommands/Types'
 import { useOnSelectItem } from './useMultiComboboxOnKeyDown'
 
 export interface ComboConfigData {
@@ -63,9 +62,5 @@ export const ElementComboboxComponent = ({ keys, slashCommands, internal }: Comb
 export const MultiComboboxContainer = ({ config }: { config: ComboConfigData }) => {
   useComboboxControls(true)
 
-  return (
-    <RemoveScroll>
-      <ElementComboboxComponent {...config} />
-    </RemoveScroll>
-  )
+  return <ElementComboboxComponent {...config} />
 }

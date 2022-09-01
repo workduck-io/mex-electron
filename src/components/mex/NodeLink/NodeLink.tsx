@@ -1,16 +1,17 @@
+import React, { useEffect } from 'react'
+
 import { SharedNodeIcon } from '@components/icons/Icons'
 import { useNodes } from '@hooks/useNodes'
-import React, { useEffect } from 'react'
+import useMultipleEditors from '@store/useEditorsStore'
+
 import { tinykeys } from '@workduck-io/tinykeys'
+
 import EditorPreview from '../../../editor/Components/EditorPreview/EditorPreview'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { NodeType } from '../../../types/Types'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { NodeLinkStyled, NodeLinkWrapper } from '../Backlinks/Backlinks.style'
-import useMultipleEditors from '@store/useEditorsStore'
-import { useEditorStore } from '@store/useEditorStore'
-import { mog } from '@utils/lib/helper'
 
 interface NodeLinkProps {
   keyStr: string
