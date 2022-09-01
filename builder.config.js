@@ -5,9 +5,7 @@ const semver = require('semver')
 
 const checkAlpha = (version) => {
   const parsed = semver.parse(version)
-  if (parsed.prerelease[0] === 'alpha') return true
-
-  return false
+  return parsed.prerelease[0] === 'alpha'
 }
 const isAlpha = checkAlpha(version)
 
@@ -30,7 +28,27 @@ const configuration = {
     output: 'out',
     buildResources: 'assets'
   },
-  files: ['dist/**', '!node_modules/vis-network/**', '!node_modules/date-fns/**', '!node_modules/@udecode/**'],
+  files: [
+    'dist/**',
+    '!node_modules/vis-network/**',
+    '!node_modules/date-fns/**',
+    '!node_modules/@udecode/**',
+    '!node_modules/@babel/**',
+    '!node_modules/lottie-web/**',
+    '!node_modules/vis-data/**',
+    '!node_modules/@testing-library/**',
+    '!node_modules/@excalidraw/**',
+    '!node_modules/styled-components/**',
+    '!node_modules/polished/**',
+    '!node_modules/react-dom/**',
+    '!node_modules/react/**',
+    '!node_modules/react**/**',
+    '!node_modules/core-js/**',
+    '!node_modules/rxjs/**',
+    '!node_modules/@uifabric/**',
+    '!node_modules/prismjs/**',
+    '!node_modules/lodash/**'
+  ],
   appId: appBundleId,
   afterSign: 'electron-builder-notarize',
   buildDependenciesFromSource: true,
