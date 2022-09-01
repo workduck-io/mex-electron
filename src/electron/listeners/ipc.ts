@@ -1,8 +1,15 @@
 import { IpcAction } from '@data/IpcAction'
-import fs from 'fs'
 import { windows } from '@electron/main'
+import {
+  TOKEN_LOCATION,
+  MENTION_LOCATION,
+  SAVE_LOCATION,
+  SEARCH_INDEX_LOCATION,
+  TEMP_DATA_BEFORE_UPDATE
+} from '@electron/utils/fileLocations'
 import { getDataOfLocation, getFileData, setDataAtLocation, setFileData } from '@electron/utils/filedata'
 import { copyToClipboard, getGlobalShortcut, useSnippetFromClipboard } from '@electron/utils/getSelectedText'
+import { closeWindow, handleToggleMainWindow, notifyOtherWindow } from '@electron/utils/helper'
 import { getIndexData } from '@electron/utils/indexData'
 import {
   addDoc,
@@ -14,36 +21,29 @@ import {
   searchIndexWithRanking,
   updateDoc
 } from '@electron/worker/controller'
-import { AppType } from '@hooks/useInitialize'
+import { getReminderDimensions, REMINDERS_DIMENSIONS } from '@services/reminders/reminders'
+import { clearLocalStorage } from '@utils/dataTransform'
+import { getAppleNotes } from '@utils/importers/appleNotes'
+import { mog } from '@utils/lib/helper'
+import { app, autoUpdater, globalShortcut, ipcMain } from 'electron'
+import fs from 'fs'
+
 import { AuthTokenData } from '../../types/auth'
 import { FileData } from '../../types/data'
 import { MentionData } from '../../types/mentions'
+import { Reminder, ReminderActions } from '../../types/reminders'
 import { idxKey } from '../../types/search'
 import { ToastStatus, ToastType } from '../../types/toast'
-import { clearLocalStorage } from '@utils/dataTransform'
-import { mog } from '@utils/lib/helper'
-import { app, autoUpdater, globalShortcut, ipcMain } from 'electron'
-import { getReminderDimensions, REMINDERS_DIMENSIONS } from '@services/reminders/reminders'
-import { Reminder, ReminderActions } from '../../types/reminders'
-import { getAppleNotes } from '@utils/importers/appleNotes'
-import { closeWindow, handleToggleMainWindow, notifyOtherWindow } from '@electron/utils/helper'
-import {
-  TOKEN_LOCATION,
-  MENTION_LOCATION,
-  SAVE_LOCATION,
-  SEARCH_INDEX_LOCATION,
-  TEMP_DATA_BEFORE_UPDATE
-} from '@electron/utils/fileLocations'
 
 export let SPOTLIGHT_SHORTCUT = 'CommandOrCOntrol+Shift+X'
 
+enum AppType {
+  SPOTLIGHT = 'SPOTLIGHT',
+  MEX = 'MEX'
+}
+
 const handleIPCListener = () => {
   ipcMain.on('close', closeWindow)
-
-  // ipcMain.on(IpcAction.SPOTLIGHT_BUBBLE, (_event, arg) => {
-  //   const { isClicked } = arg
-  //   spotlightInBubbleMode(isClicked)
-  // })
 
   ipcMain.on(IpcAction.UPDATE_ILINKS, (event, data) => {
     mog('Getting ilinks from store', { data })
@@ -54,8 +54,6 @@ const handleIPCListener = () => {
     // mog('DATA', { data })
     windows?.spotlight.webContents.send(IpcAction.UPDATE_ACTIONS, data)
   })
-
-  // * TBD: Save locally
 
   ipcMain.on(IpcAction.SET_SPOTLIGHT_SHORTCUT, (event, arg) => {
     const newSpotlightShortcut = getGlobalShortcut(arg.shortcut)

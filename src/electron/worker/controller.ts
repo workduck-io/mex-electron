@@ -1,25 +1,17 @@
 import { spawn, Worker } from 'threads'
 
-import { mog } from '../../utils/lib/helper'
 import { NodeEditorContent } from '../../types/Types'
 import { FileData } from '../../types/data'
 import { idxKey, SearchOptions, SearchRepExtra } from '../../types/search'
+import { mog } from '../../utils/lib/helper'
 
-// @ts-expect-error it don't want .ts
-// eslint-disable-next-line
-import workerURL from 'threads-plugin/dist/loader?name=worker!./analysis.ts'
-// @ts-expect-error it don't want .ts
-//eslint-disable-next-line
-import searchWorkerURL from 'threads-plugin/dist/loader?name=searchWorker!./search.ts'
-
-export const WORKER_LOCATION = './src/electron/worker'
 export let worker = null
 
 export let search_worker = null
 
 export const startAnalysisWorkerService = async () => {
   console.log('startWorkerService')
-  if (!worker) worker = await spawn(new Worker(workerURL))
+  if (!worker) worker = await spawn(new Worker('./analysis.js'))
 }
 
 export type AnalysisModifier = SearchRepExtra
@@ -52,7 +44,7 @@ export const analyseContent = async (props: AnalyseContentProps, callback: (data
 }
 export const startSearchWorker = async () => {
   console.log('startSearchWorkerService')
-  if (!search_worker) search_worker = await spawn(new Worker(searchWorkerURL))
+  if (!search_worker) search_worker = await spawn(new Worker('./search.js'))
 }
 export const initSearchIndex = async (fileData: FileData, indexData: Record<idxKey, any>) => {
   try {

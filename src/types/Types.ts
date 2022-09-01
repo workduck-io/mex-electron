@@ -1,6 +1,21 @@
-import { QuickLinkType } from '../components/mex/NodeSelect/NodeSelect'
-import { CategoryType } from '../store/Context/context.spotlight'
 import { AccessLevel } from './mentions'
+
+export enum CategoryType {
+  backlink = 'Backlinks',
+  action = 'Quick Actions',
+  search = 'Search Results',
+  performed = 'Performed Actions',
+  meeting = 'Meetings',
+  task = 'Task'
+}
+
+export enum QuickLinkType {
+  backlink = 'Backlinks',
+  snippet = 'Snippets',
+  flow = 'Flows',
+  tags = 'Tags',
+  mentions = 'Mentions'
+}
 
 type UserID = string
 

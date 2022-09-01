@@ -36,6 +36,7 @@ build/Release
 
 # Dependency directories
 node_modules/
+node_modules_bak/
 jspm_packages/
 out.json
 
@@ -88,7 +89,6 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-# Webpack
 .webpack/
 
 # Electron-Forge
@@ -108,3 +108,8 @@ CHANGELOG.md
 src/main.prod.js
 
 actionConfigs.ts
+
+	
+dist/
+out/
+assets/icon.icns

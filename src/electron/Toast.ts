@@ -1,11 +1,10 @@
-import { BrowserWindow, screen, BrowserWindowConstructorOptions } from 'electron'
-
 import { IpcAction } from '../data/IpcAction'
 import { REMINDERS_DIMENSIONS } from '../services/reminders/reminders'
 import { TOAST_DIMENSIONS } from '../types/toast'
 import { SPOTLIGHT_WINDOW_OPTIONS } from './utils/helper'
+import { BrowserWindow, screen, BrowserWindowConstructorOptions } from 'electron'
 
-declare const TOAST_WINDOW_WEBPACK_ENTRY: string
+const isDevelopment = import.meta.env.MODE === 'development'
 
 /* Toast for showing custom notifications in the app */
 class Toast {
@@ -27,7 +26,12 @@ class Toast {
       this.window = null
     })
 
-    this.window.loadURL(TOAST_WINDOW_WEBPACK_ENTRY)
+    const toastURL =
+      isDevelopment && import.meta.env.VITE_TOAST_DEV_SERVER_URL !== undefined
+        ? import.meta.env.VITE_TOAST_DEV_SERVER_URL
+        : new URL('dist/toast.html', 'file://' + __dirname).toString()
+
+    this.window.loadURL(toastURL)
     this.window.setParentWindow(spotlightWindow)
     // this.window.webContents.openDevTools({ mode: 'detach' })
     this.window.setAlwaysOnTop(true, 'status')

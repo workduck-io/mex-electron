@@ -1,21 +1,23 @@
 import { getSaveLocation } from '@data/Defaults/data'
 import { IpcAction } from '@data/IpcAction'
+import Toast from '@electron/Toast'
 import { windows } from '@electron/main'
 import MenuBuilder from '@electron/menu'
-import Toast from '@electron/Toast'
-import fs from 'fs'
+import { sanitizeHtml } from '@utils/sanitizeHtml'
 import chokidar from 'chokidar'
-import { FileData } from '../../types/data'
 import { session, app, BrowserWindow, screen } from 'electron'
+import fs from 'fs'
+
+import { FileData } from '../../types/data'
+import { SAVE_LOCATION } from './fileLocations'
+import { getFileData } from './filedata'
 import { SelectionType, getSelectedTextSync, getSelectedText } from './getSelectedText'
 import { createWindow } from './window'
-import { getFileData } from './filedata'
-import { AppType } from '@hooks/useInitialize'
-import { sanitizeHtml } from '@utils/sanitizeHtml'
-import { SAVE_LOCATION } from './fileLocations'
 
-declare const MEX_WINDOW_WEBPACK_ENTRY: string
-declare const SPOTLIGHT_WINDOW_WEBPACK_ENTRY: string
+export enum AppType {
+  SPOTLIGHT = 'SPOTLIGHT',
+  MEX = 'MEX'
+}
 
 const MEX_WINDOW_OPTIONS = {
   width: 1600,
@@ -53,10 +55,17 @@ export const SPOTLIGHT_WINDOW_OPTIONS = {
 let spotlightBubble = false
 let isSelection = false
 
+const isDevelopment = import.meta.env.MODE === 'development'
+
 export const createSpotLighWindow = (show?: boolean) => {
+  const spotlightURL =
+    isDevelopment && import.meta.env.VITE_SPOTLIGHT_DEV_SERVER_URL !== undefined
+      ? import.meta.env.VITE_SPOTLIGHT_DEV_SERVER_URL
+      : new URL('dist/spotlight.html', 'file://' + __dirname).toString()
+
   windows.spotlight = createWindow({
     windowConstructorOptions: SPOTLIGHT_WINDOW_OPTIONS,
-    loadURL: { url: SPOTLIGHT_WINDOW_WEBPACK_ENTRY },
+    loadURL: { url: spotlightURL },
     onBlurHide: true,
     onLoadShow: show
   })
@@ -92,10 +101,15 @@ export const sendToRenderer = (selection: any) => {
 }
 
 export const createMexWindow = (tempData?: any) => {
+  const mexURL =
+    isDevelopment && import.meta.env.VITE_MEX_DEV_SERVER_URL !== undefined
+      ? import.meta.env.VITE_MEX_DEV_SERVER_URL
+      : new URL('dist/index.html', 'file://' + __dirname).toString()
+
   // MEX here
   windows.mex = createWindow({
     windowConstructorOptions: MEX_WINDOW_OPTIONS,
-    loadURL: { url: MEX_WINDOW_WEBPACK_ENTRY },
+    loadURL: { url: mexURL },
     onLoad: () => {
       if (tempData?.update) {
         windows.mex?.webContents.send(IpcAction.SHOW_RELEASE_NOTES, { update: tempData?.update })

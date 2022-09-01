@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { app } from 'electron'
-import handleIPCListener from './listeners/ipc'
+import 'threads/register'
+
 import { initializeSentry } from '../services/sentry'
 import appEventListeners, { WindowsType } from './listeners/app'
+import handleIPCListener from './listeners/ipc'
 
 if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
@@ -12,10 +15,6 @@ if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
 // On windows doesn't work without disabling HW Acceleration
 if (process.platform === 'win32') {
   app.disableHardwareAcceleration()
-}
-
-if (require('electron-squirrel-startup')) {
-  app.quit()
 }
 
 export const windows: WindowsType = { mex: null, spotlight: null, toast: null }

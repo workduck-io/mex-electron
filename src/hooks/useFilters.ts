@@ -1,13 +1,13 @@
 import create from 'zustand'
+
 import { getAllParentIds, isElder } from '../components/mex/Sidebar/treeUtils'
-import useDataStore from '../store/useDataStore'
+// import create from 'zustand'
+import { GenericSearchResult, idxKey } from '../types/search'
 import { mog } from '../utils/lib/helper'
+import { useGenericFilterFunctions } from './useFilterFunctions'
 import { useLinks } from './useLinks'
 import { useTags } from './useTags'
-// import create from 'zustand'
 
-import { GenericSearchResult, idxKey } from '../types/search'
-import { useGenericFilterFunctions } from './useFilterFunctions'
 /*
 - Date
 - Node level - Tag based

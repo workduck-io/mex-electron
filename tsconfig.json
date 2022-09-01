@@ -2,7 +2,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "allowJs": true,
-    "module": "commonjs",
+    "module": "esnext",
+    "target": "esnext",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "jsx": "react",

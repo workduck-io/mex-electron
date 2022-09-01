@@ -1,6 +1,6 @@
 import config from '../../config.json'
 
-export const IS_DEV = process.env.NODE_ENV === 'development'
+export const IS_DEV = process.env.MODE === 'development'
 export const USE_API = config.constants.USE_API
 
 export const FAKE_APP_URI = 'https://localhost'

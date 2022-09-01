@@ -1,13 +1,14 @@
 import React from 'react'
+
+import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
+import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
 import Check from '@iconify/icons-bi/check'
+import { mog } from '@utils/lib/helper'
+
+import { ActionGroupType } from '../../../components/spotlight/Actions/useActionStore'
+import { ActiveStatus, CenteredFlex, RightCut, ServiceCard, ServiceName } from '../../../style/Integration'
 import { MexIcon } from '../../../style/Layouts'
 import { titleCaseUnderScore } from '../../../utils/lib/strings'
-import { ActionGroupType } from '../../../components/spotlight/Actions/useActionStore'
-import { ActionGroup } from '@workduck-io/action-request-helper'
-import { ActiveStatus, CenteredFlex, RightCut, ServiceCard, ServiceName } from '../../../style/Integration'
-import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
-import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
-import { mog } from '@utils/lib/helper'
 
 type ActionGroupProps = {
   group: Partial<ActionGroupType>

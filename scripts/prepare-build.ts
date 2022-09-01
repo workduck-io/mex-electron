@@ -1,6 +1,6 @@
-import semver from 'semver'
 import fs from 'fs'
 import _ from 'lodash'
+import semver from 'semver'
 
 import packageJson from '../package.json'
 import configJson from '../src/config.json'
@@ -70,3 +70,6 @@ Object.entries(configValues[buildStage]).forEach(([key, value]) => {
 
 fs.writeFileSync('./package.json', JSON.stringify(packageJson, null, '  '))
 fs.writeFileSync('./src/config.json', JSON.stringify(configJson, null, '  '))
+
+const iconPath = buildStage === BUILD_TYPE.ALPHA ? 'assets/icon.alpha.icns' : 'assets/icon.stable.icns'
+fs.copyFileSync(iconPath, 'assets/icon.icns')
