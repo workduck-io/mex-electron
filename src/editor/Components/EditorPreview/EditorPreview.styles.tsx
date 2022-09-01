@@ -1,6 +1,8 @@
-import { Button } from '@workduck-io/mex-components'
 import { transparentize } from 'polished'
 import styled, { css, keyframes } from 'styled-components'
+
+import { Button } from '@workduck-io/mex-components'
+
 import { TagFlex } from '../../../components/mex/Tags/TagsRelated'
 import { CardShadow } from '../../../style/helpers'
 
@@ -12,7 +14,7 @@ export const EditorPreviewWrapper = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   color: ${({ theme }) => theme.colors.fade};
   height: 32vh;
-  max-height: 32vw;
+  max-height: 32vh;
   width: 36vw;
   max-width: 36vw;
 

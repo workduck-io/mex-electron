@@ -1,26 +1,28 @@
-import { useReadOnly, useFocused, useSelected } from 'slate-react'
-import shareLine from '@iconify/icons-ri/share-line'
-import archivedIcon from '@iconify/icons-ri/archive-line'
-import eyeOffLine from '@iconify/icons-ri/eye-off-line'
-import { useEditorRef, moveSelection, useFloatingTree } from '@udecode/plate'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
+
+import useLoad from '@hooks/useLoad'
+import archivedIcon from '@iconify/icons-ri/archive-line'
+import eyeOffLine from '@iconify/icons-ri/eye-off-line'
+import shareLine from '@iconify/icons-ri/share-line'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
+import { useSpotlightEditorStore } from '@store/editor.spotlight'
+import { useEditorStore } from '@store/useEditorStore'
+import useMultipleEditors from '@store/useEditorsStore'
+import { useEditorRef, moveSelection, useFloatingTree } from '@udecode/plate'
+import { mog } from '@utils/lib/helper'
+import { useReadOnly, useFocused, useSelected } from 'slate-react'
+
 import { useLinks } from '../../../../hooks/useLinks'
 import { useNavigation } from '../../../../hooks/useNavigation'
 import { useNodes } from '../../../../hooks/useNodes'
+import { ILink, NodeType, SharedNode } from '../../../../types/Types'
+import { getBlock } from '../../../../utils/search/parseData'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../../views/routes/urls'
 import EditorPreview from '../../EditorPreview/EditorPreview'
 import { useHotkeys } from '../hooks/useHotkeys'
 import { SILink, SILinkRoot, StyledIcon } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../../../../views/routes/urls'
-import { getBlock } from '../../../../utils/search/parseData'
-import { ILink, NodeType, SharedNode } from '../../../../types/Types'
-import { useSpotlightContext } from '@store/Context/context.spotlight'
-import useLoad from '@hooks/useLoad'
-import { useSpotlightEditorStore } from '@store/editor.spotlight'
-import { mog } from '@utils/lib/helper'
-import useMultipleEditors from '@store/useEditorsStore'
-import { useEditorStore } from '@store/useEditorStore'
 
 /**
  * ILinkElement with no default styles. [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling) */
@@ -163,7 +165,6 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
     'enter',
     (ev) => {
       // Show preview on Enter, if preview is shown, navigate to link
-      mog('ENTER IS PRESSED', { selected, focused, sel: editor.selection })
       if (selected && focused && editor.selection) {
         if (!preview) {
           onPreviewShow(element.value)

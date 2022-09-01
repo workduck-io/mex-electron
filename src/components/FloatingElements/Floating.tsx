@@ -1,5 +1,5 @@
 import React, { cloneElement } from 'react'
-import { RemoveScroll } from 'react-remove-scroll'
+
 import {
   offset,
   shift,
@@ -19,8 +19,9 @@ import {
   useDelayGroup,
   safePolygon
 } from '@floating-ui/react-dom-interactions'
+import { RemoveScroll } from 'react-remove-scroll'
+
 import { Props } from './types'
-import { mog } from '@utils/lib/helper'
 
 export const Floating = ({ children, open, label, hover, persist, setOpen, render, placement }: Props) => {
   const { delay, setCurrentId } = useDelayGroupContext()
@@ -30,7 +31,6 @@ export const Floating = ({ children, open, label, hover, persist, setOpen, rende
     open,
     onOpenChange: (open: boolean) => {
       if (!persist) {
-        mog('CALLING NOW', { label })
         setOpen(open)
       }
 
