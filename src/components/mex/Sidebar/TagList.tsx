@@ -13,8 +13,9 @@ const TagList = () => {
   // const [tags, setTags] = useState(Object.keys(cleanCache))
   const tags = getAllTags().map((t) => ({
     id: t,
-    title: t,
-    icon: hashtag
+    label: t,
+    icon: hashtag,
+    data: t
   }))
 
   const tag = isTagsView && isTagsView.params?.tag

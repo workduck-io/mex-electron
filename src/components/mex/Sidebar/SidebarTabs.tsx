@@ -37,13 +37,13 @@ const NodeSidebar = () => {
         component: <SharedNotes />,
         type: SidebarTab.shared,
         tooltip: 'Shared Notes'
-      },
-      {
-        label: <MexIcon noHover icon="ri:bookmark-line" width={24} height={24} />,
-        type: SidebarTab.bookmarks,
-        component: <Bookmarks />,
-        tooltip: 'Bookmarks'
       }
+      // {
+      //   label: <MexIcon noHover icon="ri:bookmark-line" width={24} height={24} />,
+      //   type: SidebarTab.bookmarks,
+      //   component: <Bookmarks />,
+      //   tooltip: 'Bookmarks'
+      // }
     ],
     [theme]
   )

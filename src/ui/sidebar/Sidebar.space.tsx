@@ -1,7 +1,10 @@
+import SidebarList from '@components/mex/Sidebar/SidebarList'
+import { SidebarListItem } from '@components/mex/Sidebar/SidebarList.types'
+import SidebarListItemComponent from '@components/mex/Sidebar/SidebarListItem'
 import Tree from '@components/mex/Sidebar/Tree'
 import { useTreeFromLinks } from '@hooks/useTreeFromLinks'
 import React, { useMemo } from 'react'
-import { SidebarSpace } from './Sidebar.types'
+import { FlatSidebarItem, SidebarFlatList, SidebarSpace } from './Sidebar.types'
 
 interface SidebarSpaceProps {
   space: SidebarSpace
@@ -44,7 +47,12 @@ export const SidebarSpaceComponent = ({ space }: SidebarSpaceProps) => {
       <div>
         <h1>Hierarchy</h1>
         <input type="text" placeholder={`Filter ${space.label}`} />
-        {space.list.type === 'hierarchy' ? initTree && <Tree initTree={initTree} /> : <div>Flat list here</div>}
+        {
+          {
+            hierarchy: initTree && <Tree initTree={initTree} />,
+            flat: space.list.type === 'flat' && <space.list.renderItems />
+          }[space.list.type]
+        }
       </div>
     </div>
   )

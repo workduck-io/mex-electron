@@ -60,15 +60,16 @@ const TaskViewList = () => {
   return (
     <SidebarList
       ItemContextMenu={TaskViewContextMenu}
-      items={sortedViews}
+      items={sortedViews.map(({ title, ...t }) => ({ ...t, label: title, data: t }))}
       onClick={(item) => onOpenView(item)}
       selectedItemId={currentView?.id}
       showSearch
       searchPlaceholder="Filter Task Views..."
       defaultItem={{
-        title: 'Default',
+        label: 'Default',
         id: 'default',
-        icon: home7Line
+        icon: home7Line,
+        data: {}
       }}
     />
   )

@@ -9,10 +9,11 @@ import React, { useMemo } from 'react'
 import { LastOpenedState } from '../../../types/userPreference'
 import { SidebarListItem } from './SidebarList.types'
 import { TooltipContent } from './TreeItem'
+import { Entity } from '@mex-types/data'
 
-interface SidebarListItemProps {
+interface SidebarListItemProps<T> {
   tippyTarget: any
-  item: SidebarListItem
+  item: SidebarListItem<T>
   index: number
 
   select: {
@@ -23,13 +24,19 @@ interface SidebarListItemProps {
 
   // To render the context menu if the item is right-clicked
   contextMenu: {
-    ItemContextMenu?: (props: { item: SidebarListItem }) => JSX.Element
+    ItemContextMenu?: (props: { item: SidebarListItem<T> }) => JSX.Element
     setContextOpenViewId: (viewId: string) => void
     contextOpenViewId: string
   }
 }
 
-const SidebarListItemComponent = ({ tippyTarget, select, index, item, contextMenu }: SidebarListItemProps) => {
+const SidebarListItemComponent = <T extends Entity>({
+  tippyTarget,
+  select,
+  index,
+  item,
+  contextMenu
+}: SidebarListItemProps<T>) => {
   const { ItemContextMenu, setContextOpenViewId, contextOpenViewId } = contextMenu
   const { selectedItemId, selectIndex, onSelect } = select
 
@@ -51,7 +58,7 @@ const SidebarListItemComponent = ({ tippyTarget, select, index, item, contextMen
       placement="right"
       singleton={tippyTarget}
       key={`DisplayTippy_${item.id}`}
-      content={<TooltipContent item={{ id: item.id, children: [], data: { title: item.title } }} />}
+      content={<TooltipContent item={{ id: item.id, children: [], data: { title: item.label } }} />}
     >
       <span>
         <ContextMenu.Root
@@ -71,7 +78,7 @@ const SidebarListItemComponent = ({ tippyTarget, select, index, item, contextMen
               <ItemContent onClick={() => onSelect(item?.id)}>
                 <ItemTitle>
                   <Icon icon={item.icon} />
-                  <span>{item.title}</span>
+                  <span>{item.label}</span>
                 </ItemTitle>
               </ItemContent>
               {isUnread && (

@@ -1,16 +1,22 @@
+import { IconifyIcon } from '@iconify/react'
+import { DesignItem } from '@mex-types/design'
+import { LastOpenedState } from '@mex-types/userPreference'
 import { ILink } from '../../types/Types'
 
 /**
  * A generic item to be shown in sidebar
  */
-export interface FlatSidebarItem {
-  id: string
-  label: string
+export interface FlatSidebarItem extends DesignItem {
+  // Used to calculate the last opened state once in the list item component
+  lastOpenedId?: string
+
+  // Used to pass the state computed to the context menu
+  lastOpenedState?: LastOpenedState
 }
 
 export interface SidebarFlatList {
   type: 'flat'
-  items: FlatSidebarItem[]
+  renderItems: () => JSX.Element
 }
 export interface SidebarNestedList {
   type: 'hierarchy'

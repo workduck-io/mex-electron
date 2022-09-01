@@ -1,3 +1,4 @@
+import SharedNotes from '@components/mex/Sidebar/SharedNotes'
 import useDataStore from '@store/useDataStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import React, { useMemo, useState } from 'react'
@@ -8,6 +9,7 @@ import { SidebarSpace } from './Sidebar.types'
 export const NoteSidebar = () => {
   const sidebar = useLayoutStore((store) => store.sidebar)
   const ilinks = useDataStore((store) => store.ilinks)
+  const sharedNotes = useDataStore((store) => store.sharedNodes)
   const [openedSpace, setOpenedSpace] = useState<string>('personal')
 
   const spaces: Array<SidebarSpace> = useMemo(
@@ -29,7 +31,7 @@ export const NoteSidebar = () => {
         tooltip: 'Shared Notes',
         list: {
           type: 'flat',
-          items: []
+          renderItems: () => <SharedNotes />
         },
         pinnedItems: []
       }

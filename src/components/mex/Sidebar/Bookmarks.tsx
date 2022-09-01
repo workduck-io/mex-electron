@@ -49,9 +49,11 @@ const Bookmarks = () => {
 
   mog('Bookmarks', { bookmarks, bookmarkItems, groupedBookmarks })
 
-  return bookmarkItems.length > 0 ? (
+  return
+  /**
+  bookmarkItems.length > 0 ? (
     <SidebarList
-      items={bookmarkItems}
+      items={bookmarkItems.map()}
       onClick={onOpenNode}
       noMargin
       selectedItemId={match?.params?.nodeid}
@@ -65,6 +67,7 @@ const Bookmarks = () => {
       <span>No bookmarks yet!</span>
     </Centered>
   )
+  */
 }
 
 export default Bookmarks

@@ -111,7 +111,7 @@ const TemplateModal = () => {
           {templates.length !== 0 && (
             <TemplateContainer>
               <SidebarList
-                items={templates}
+                items={templates.map(({ title, ...t }) => ({ ...t, label: title, data: t }))}
                 onClick={onSelectItem}
                 selectedItemId={selectedTemplate?.id}
                 noMargin

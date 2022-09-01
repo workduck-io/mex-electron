@@ -1,4 +1,5 @@
 import { SharedNodeIcon, SharedNodeIconify } from '@components/icons/Icons'
+import { SharedNode } from '@mex-types/Types'
 import { useEditorStore } from '@store/useEditorStore'
 import { ContextMenuContent } from '@ui/components/menus/contextMenu'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
@@ -12,7 +13,7 @@ import { SidebarListItem } from './SidebarList.types'
 import { MuteMenuItem } from './TreeWithContextMenu'
 
 interface SharedNoteContextMenuProps {
-  item: SidebarListItem
+  item: SidebarListItem<SharedNode>
 }
 
 const SharedNoteContextMenu = ({ item }: SharedNoteContextMenuProps) => {
@@ -44,9 +45,10 @@ const SharedNotes = () => {
       noMargin
       items={sharedNodes.map((node) => ({
         id: node.nodeid,
-        title: node.path,
+        label: node.path,
         icon: SharedNodeIconify,
-        lastOpenedId: node.nodeid
+        lastOpenedId: node.nodeid,
+        data: node
       }))}
       onClick={onOpenNode}
       showSearch

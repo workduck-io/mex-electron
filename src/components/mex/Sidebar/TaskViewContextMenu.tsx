@@ -6,9 +6,11 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { useTaskViewModalStore } from '@components/mex/TaskViewModal'
 import fileCopyLine from '@iconify/icons-ri/file-copy-line'
 import React from 'react'
+import { SidebarListItem } from './SidebarList.types'
+import { mog } from '@utils/lib/helper'
 
 interface TaskViewContextMenuProps {
-  item: View<any>
+  item: SidebarListItem<View<any>>
 }
 
 const TaskViewContextMenu = ({ item }: TaskViewContextMenuProps) => {
@@ -36,7 +38,8 @@ const TaskViewContextMenu = ({ item }: TaskViewContextMenuProps) => {
       <ContextMenuContent>
         <ContextMenuItem
           onSelect={(args) => {
-            handleClone(item)
+            mog('What what', { item })
+            handleClone(item.data)
           }}
         >
           <Icon icon={fileCopyLine} />
@@ -46,7 +49,8 @@ const TaskViewContextMenu = ({ item }: TaskViewContextMenuProps) => {
         <ContextMenuItem
           color="#df7777"
           onSelect={(args) => {
-            handleDelete(item)
+            mog('What what', { item })
+            handleDelete(item.data)
           }}
         >
           <Icon icon={trashIcon} />

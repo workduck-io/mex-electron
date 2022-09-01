@@ -22,7 +22,7 @@ const SidebarList = ({
   searchPlaceholder,
   emptyMessage,
   noMargin
-}: SidebarListProps) => {
+}: SidebarListProps<any>) => {
   const [contextOpenViewId, setContextOpenViewId] = useState<string>(null)
   const [search, setSearch] = useState('')
   const [listItems, setListItems] = useState(items)
@@ -115,7 +115,7 @@ const SidebarList = ({
           <ItemContent onClick={() => onSelectItem(defaultItem.id)}>
             <ItemTitle>
               <Icon icon={defaultItem.icon} />
-              <span>{defaultItem.title}</span>
+              <span>{defaultItem.label}</span>
             </ItemTitle>
           </ItemContent>
         </StyledTreeItem>

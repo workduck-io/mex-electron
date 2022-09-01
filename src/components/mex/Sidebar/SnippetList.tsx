@@ -30,8 +30,9 @@ const SnippetList = () => {
       })
       .map((snippet) => ({
         id: snippet.id,
-        title: snippet.title,
-        icon: snippet.template ? magicLine : quillPenLine
+        label: snippet.title,
+        icon: snippet.template ? magicLine : quillPenLine,
+        data: snippet
       }))
   }, [snippets])
 
