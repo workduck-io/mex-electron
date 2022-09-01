@@ -8,7 +8,7 @@ import { initializeSentry } from '../services/sentry'
 import appEventListeners, { WindowsType } from './listeners/app'
 import handleIPCListener from './listeners/ipc'
 
-if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
+if (process.env.MODE === 'production' || process.env.FORCE_PRODUCTION) {
   initializeSentry()
 }
 
@@ -19,7 +19,7 @@ if (process.platform === 'win32') {
 
 export const windows: WindowsType = { mex: null, spotlight: null, toast: null }
 
-if (process.env.NODE_ENV === 'production' || process.env.FORCE_PRODUCTION) {
+if (process.env.MODE === 'production' || process.env.FORCE_PRODUCTION) {
   const sourceMapSupport = require('source-map-support')
   sourceMapSupport.install()
 }
