@@ -164,7 +164,6 @@ export const useApi = () => {
         headers: workspaceHeaders()
       })
       .then((d) => {
-        mog('savedData', { d })
         setMetadata(nodeid, extractMetadata(d.data))
         addLastOpened(nodeid)
         // setContent(nodeid, deserializeContent(d.data.data), extractMetadata(d.data))

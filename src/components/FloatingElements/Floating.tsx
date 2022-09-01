@@ -1,4 +1,5 @@
-import React, { cloneElement, useEffect, useRef, useState } from 'react'
+import React, { cloneElement } from 'react'
+import { RemoveScroll } from 'react-remove-scroll'
 import {
   offset,
   shift,
@@ -13,19 +14,29 @@ import {
   useFloatingNodeId,
   FloatingNode,
   autoPlacement,
+  useDelayGroupContext,
   useHover,
-  FloatingOverlay
+  useDelayGroup,
+  safePolygon
 } from '@floating-ui/react-dom-interactions'
 import { Props } from './types'
+import { mog } from '@utils/lib/helper'
 
-export const Floating = ({ children, hover, render, placement }: Props) => {
-  const [open, setOpen] = useState<boolean>(false)
+export const Floating = ({ children, open, label, hover, persist, setOpen, render, placement }: Props) => {
+  const { delay, setCurrentId } = useDelayGroupContext()
   const nodeId = useFloatingNodeId()
 
   const { x, y, reference, floating, strategy, context } = useFloating({
     open,
-    onOpenChange: setOpen,
-    middleware: [offset(20), autoPlacement(), shift()],
+    onOpenChange: (open: boolean) => {
+      if (!persist) {
+        mog('CALLING NOW', { label })
+        setOpen(open)
+      }
+
+      if (label && open) setCurrentId(label)
+    },
+    middleware: [offset(15), autoPlacement(), shift()],
     placement,
     nodeId
   })
@@ -35,11 +46,18 @@ export const Floating = ({ children, hover, render, placement }: Props) => {
   const descriptionId = `${id}-description`
 
   const { getReferenceProps, getFloatingProps } = useInteractions([
+    useHover(context, {
+      enabled: hover ?? false,
+      delay: label ? delay : 1000,
+      move: false,
+      handleClose: safePolygon({
+        buffer: 1
+      })
+    }),
     useClick(context),
     useRole(context),
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    hover && useHover(context, { delay: { open: 200 } }),
-    useDismiss(context)
+    useDismiss(context),
+    label && useDelayGroup(context, { id: label })
   ])
 
   return (
@@ -47,16 +65,16 @@ export const Floating = ({ children, hover, render, placement }: Props) => {
       {cloneElement(children, getReferenceProps({ ref: reference, ...children.props }))}
       <FloatingPortal>
         {open && (
-          <FloatingOverlay lockScroll>
-            <FloatingFocusManager context={context}>
+          <FloatingFocusManager context={context}>
+            <RemoveScroll>
               <div
                 {...getFloatingProps({
                   className: 'Popover',
                   ref: floating,
                   style: {
                     position: strategy,
-                    top: y ?? 0,
                     zIndex: 12,
+                    top: y ?? 0,
                     left: x ?? 0
                   },
                   'aria-labelledby': labelId,
@@ -71,8 +89,8 @@ export const Floating = ({ children, hover, render, placement }: Props) => {
                   }
                 })}
               </div>
-            </FloatingFocusManager>
-          </FloatingOverlay>
+            </RemoveScroll>
+          </FloatingFocusManager>
         )}
       </FloatingPortal>
     </FloatingNode>

@@ -81,6 +81,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   }))
   const addPreviewInEditors = useMultipleEditors((store) => store.addEditor)
   const changeEditorState = useMultipleEditors((store) => store.changeEditorState)
+  const isEditingPreview = useMultipleEditors((store) => store.isEditingAnyPreview)
 
   const loadLinkNode = async (nodeid: string) => {
     if (spotlightCtx) {
@@ -106,30 +107,35 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
     return existingPreview
   }
 
+  const onPreviewShow = (noteId: string) => {
+    const existingPreview = isPreviewPresent(noteId)
+    const currentMainNode = useEditorStore.getState().node.nodeid
+
+    if (currentMainNode === noteId) return
+
+    if (isSpotlightCtx) {
+      setPreview(true)
+      return
+    }
+
+    if (existingPreview) {
+      blinkPreview(noteId)
+      return
+    }
+
+    addPreviewInEditors(noteId)
+    setPreview(true)
+  }
+
   const onClickProps = (e) => {
     // Show preview on click, if preview is shown, navigate to link
     e.preventDefault()
     e.stopPropagation()
 
     const noteId = element.value
-    const existingPreview = isPreviewPresent(noteId)
-    const currentMainNode = useEditorStore.getState().node.nodeid
 
     if (!preview) {
-      if (currentMainNode === noteId) return
-
-      if (isSpotlightCtx) {
-        setPreview(true)
-        return
-      }
-
-      if (existingPreview) {
-        blinkPreview(noteId)
-        return
-      }
-
-      addPreviewInEditors(noteId)
-      setPreview(true)
+      onPreviewShow(noteId)
     } else {
       loadLinkNode(noteId)
     }
@@ -155,20 +161,23 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
 
   useHotkeys(
     'enter',
-    () => {
-      // mog('Enter the dragon', { selected, preview, focused, esl: editor.selection })
+    (ev) => {
       // Show preview on Enter, if preview is shown, navigate to link
+      mog('ENTER IS PRESSED', { selected, focused, sel: editor.selection })
       if (selected && focused && editor.selection) {
-        if (!preview) setPreview(true)
+        if (!preview) {
+          onPreviewShow(element.value)
+        }
       }
+
       // Once preview is shown the link looses focus
-      if (preview) {
-        // mog('working', { element })
-        // loadLinkNode(element.value)
+      if (preview && !isEditingPreview()) {
+        loadLinkNode(element.value)
       }
     },
-    [selected, preview]
+    [selected, focused, preview]
   )
+
   useHotkeys(
     'delete',
     () => {
@@ -178,6 +187,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
     },
     [selected, focused]
   )
+
   const nodeType = getNodeType(element.value)
   const block = element.blockId ? getBlock(element.value, element.blockId) : undefined
   const content = block ? [block] : undefined
@@ -200,11 +210,11 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
           [NodeType.DEFAULT]: (
             <EditorPreview
               placement="auto"
-              allowClosePreview={readOnly}
               preview={preview}
               nodeid={element.value}
+              allowClosePreview
               content={content}
-              closePreview={() => setPreview(false)}
+              setPreview={setPreview}
             >
               <SILink selected={selected} onClick={onClickProps}>
                 <span className="ILink_decoration ILink_decoration_left">[[</span>

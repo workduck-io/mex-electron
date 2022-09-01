@@ -9,15 +9,19 @@ export const SBackLinks = styled.div`
   margin: 3rem 0;
 `
 
+export const NodeLinkWrapper = styled.div`
+  padding-bottom: ${({ theme }) => theme.spacing.small};
+  background: none;
+`
+
 export const NodeLinkStyled = styled.div<{ selected?: boolean }>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.small};
   cursor: pointer;
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
-  margin-bottom: ${({ theme }) => theme.spacing.small};
+  /* margin-bottom: ${({ theme }) => theme.spacing.small}; */
   background: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
-
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.medium}`};
 
   svg {

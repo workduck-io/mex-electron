@@ -1,4 +1,5 @@
 import React from 'react'
+import { RemoveScroll } from 'react-remove-scroll'
 import { mog } from '../../../utils/lib/helper'
 import { Combobox } from '../combobox/components/Combobox'
 import { ComboboxItemProps, RenderFunction } from '../combobox/components/Combobox.types'
@@ -62,5 +63,9 @@ export const ElementComboboxComponent = ({ keys, slashCommands, internal }: Comb
 export const MultiComboboxContainer = ({ config }: { config: ComboConfigData }) => {
   useComboboxControls(true)
 
-  return <ElementComboboxComponent {...config} />
+  return (
+    <RemoveScroll>
+      <ElementComboboxComponent {...config} />
+    </RemoveScroll>
+  )
 }

@@ -11,9 +11,10 @@ export const EditorPreviewWrapper = styled.div`
 
   border-radius: ${({ theme }) => theme.borderRadius.small};
   color: ${({ theme }) => theme.colors.fade};
-  min-height: 300px;
-  max-height: 400px;
-  max-width: 700px;
+  height: 32vh;
+  max-height: 32vw;
+  width: 36vw;
+  max-width: 36vw;
 
   overflow-y: auto;
   overflow-x: hidden;
@@ -22,7 +23,6 @@ export const EditorPreviewWrapper = styled.div`
   flex-direction: column;
 
   ${CardShadow}
-  min-width: 400px;
 `
 
 export const EditorPreviewNoteName = styled.div`
@@ -71,7 +71,7 @@ export const EditorPreviewEditorWrapper = styled.div<{ editable?: boolean; blink
       animation: 1s ease-out 1 ${PrimaryBorderKeyFrames(theme)};
     `}
 
-  width: 36vw;
+  /* width: 36vw; */
   ${({ editable, theme }) =>
     editable
       ? css`

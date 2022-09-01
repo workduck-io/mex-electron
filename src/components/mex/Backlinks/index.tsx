@@ -1,3 +1,4 @@
+import { FloatingDelayGroup } from '@floating-ui/react-dom-interactions'
 import arrowGoBackLine from '@iconify/icons-ri/arrow-go-back-line'
 import { Icon } from '@iconify/react'
 import React from 'react'
@@ -18,25 +19,27 @@ const Backlinks = ({ nodeid }: BackLinkProps) => {
 
   return (
     <InfoWidgetWrapper>
-      <Collapse
-        maximumHeight="40vh"
-        defaultOpen
-        icon={arrowGoBackLine}
-        title="Backlinks"
-        infoProps={{
-          text: BacklinksHelp
-        }}
-      >
-        {backlinks.length === 0 && (
-          <>
-            <Note>No backlinks found.</Note>
-            <Note>Link from other notes to view them here.</Note>
-          </>
-        )}
-        {backlinks.map((l, i) => (
-          <NodeLink key={`backlink_${l.nodeid}_${i}`} keyStr={`backlink_${l.nodeid}_${i}`} nodeid={l.nodeid} />
-        ))}
-      </Collapse>
+      <FloatingDelayGroup delay={{ open: 1000 }}>
+        <Collapse
+          maximumHeight="40vh"
+          defaultOpen
+          icon={arrowGoBackLine}
+          title="Backlinks"
+          infoProps={{
+            text: BacklinksHelp
+          }}
+        >
+          {backlinks.length === 0 && (
+            <>
+              <Note>No backlinks found.</Note>
+              <Note>Link from other notes to view them here.</Note>
+            </>
+          )}
+          {backlinks.map((l, i) => (
+            <NodeLink key={`backlink_${l.nodeid}_${i}`} keyStr={`backlink_${l.nodeid}_${i}`} nodeid={l.nodeid} />
+          ))}
+        </Collapse>
+      </FloatingDelayGroup>
     </InfoWidgetWrapper>
   )
 }

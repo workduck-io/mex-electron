@@ -241,7 +241,7 @@ const useLoad = () => {
 
     if (options.savePrev) {
       saveNodeName(currentNodeId)
-      saveAndClearBuffer()
+      saveAndClearBuffer(false)
     }
 
     const node = options.node ?? getNode(nodeid)

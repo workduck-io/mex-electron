@@ -3,13 +3,14 @@ import { useNodes } from '@hooks/useNodes'
 import React, { useEffect } from 'react'
 import { tinykeys } from '@workduck-io/tinykeys'
 import EditorPreview from '../../../editor/Components/EditorPreview/EditorPreview'
-import { useOnMouseClick } from '../../../editor/Components/ilink/hooks/useOnMouseClick'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { NodeType } from '../../../types/Types'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
-import { NodeLinkStyled } from '../Backlinks/Backlinks.style'
+import { NodeLinkStyled, NodeLinkWrapper } from '../Backlinks/Backlinks.style'
 import useMultipleEditors from '@store/useEditorsStore'
+import { useEditorStore } from '@store/useEditorStore'
+import { mog } from '@utils/lib/helper'
 
 interface NodeLinkProps {
   keyStr: string
@@ -22,9 +23,8 @@ interface NodeLinkProps {
 
 const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
   const [visible, setVisible] = React.useState(false)
-  const [fixVisible, setFixVisible] = React.useState(false)
+  const isEditorPresent = useMultipleEditors((store) => store.editors)?.[nodeid]
   const { getPathFromNodeid } = useLinks()
-  // const { loadNode } = useLoad()
   const { getNodeType } = useNodes()
   const { goTo } = useRouting()
   const { push } = useNavigation()
@@ -32,16 +32,22 @@ const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
   const addPreviewInEditors = useMultipleEditors((store) => store.addEditor)
   const nodeType = getNodeType(nodeid)
 
-  const onClickProps = useOnMouseClick(() => {
+  const onClickProps = (ev) => {
     // Show preview on click, if preview is shown, navigate to link
-    if (!fixVisible) {
-      addPreviewInEditors(nodeid)
-      setFixVisible(true)
-    } else {
+    ev.preventDefault()
+    ev.stopPropagation()
+
+    if (ev.detail === 2) {
       push(nodeid)
       goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
     }
-  })
+
+    addPreviewInEditors(nodeid)
+
+    if (!visible) {
+      setVisible(true)
+    }
+  }
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -50,6 +56,7 @@ const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
         closePreview()
       }
     })
+
     return () => {
       unsubscribe()
     }
@@ -57,41 +64,25 @@ const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
 
   const closePreview = () => {
     setVisible(false)
-    setFixVisible(false)
   }
-
-  // useEffect(() => {
-  //   // If the preview is shown and the element losses focus --> Editor focus is moved
-  //   // Hide the preview
-  //   if (preview && !selected) setPreview(false)
-  // }, [selected])
-  // mog('NodeLink', { nodeid, preview, icon, visible, fixVisible })
 
   return (
     <EditorPreview
       key={keyStr}
-      preview={visible || fixVisible}
-      closePreview={() => closePreview()}
-      allowClosePreview={fixVisible}
+      preview={visible}
+      label={nodeid}
+      setPreview={setVisible}
+      allowClosePreview={!isEditorPresent}
       hover
       nodeid={nodeid}
       placement="auto-start"
     >
-      <NodeLinkStyled
-        onMouseEnter={() => {
-          if (!fixVisible) setVisible(true)
-        }}
-        onMouseLeave={() => {
-          if (!fixVisible) setVisible(false)
-        }}
-        selected={fixVisible}
-        key={`NodeLink_${keyStr}`}
-        {...onClickProps}
-      >
-        {nodeType === NodeType.SHARED && <SharedNodeIcon />}
-
-        {getPathFromNodeid(nodeid, true)}
-      </NodeLinkStyled>
+      <NodeLinkWrapper onClick={onClickProps}>
+        <NodeLinkStyled selected={!!isEditorPresent} key={`NodeLink_${keyStr}`}>
+          {nodeType === NodeType.SHARED && <SharedNodeIcon />}
+          {getPathFromNodeid(nodeid, true)}
+        </NodeLinkStyled>
+      </NodeLinkWrapper>
     </EditorPreview>
   )
 }

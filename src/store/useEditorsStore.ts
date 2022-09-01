@@ -18,9 +18,11 @@ type MultipleEditors = {
   unPinNote: (pinnedAt: string, noteToUnpin: string) => void
   addEditor: (noteId: string) => void
   isEmpty: boolean
+  isEditingAnyPreview: () => boolean
   setIsEmpty: (status: boolean) => void
   changeEditorState: (noteId: string, editorState: EditorState) => void
   removeEditor: (noteId: string) => void
+  lastOpenedEditor: () => any | undefined
 }
 
 const useMultipleEditors = create<MultipleEditors>(
@@ -61,6 +63,21 @@ const useMultipleEditors = create<MultipleEditors>(
           })
         )
       },
+      isEditingAnyPreview: () => {
+        const currentState = get().editors || {}
+        const isEditing = Object.values(currentState)?.find((item) => item.editing)
+
+        return !!isEditing
+      },
+      lastOpenedEditor: () => {
+        const editors = get().editors || {}
+        const mapOfEditors = Object.entries(editors)
+        if (mapOfEditors.length > 0)
+          return {
+            nodeId: mapOfEditors.at(-1)[0],
+            editorState: mapOfEditors.at(-1)[1]
+          }
+      },
       removeEditor: (noteId) => {
         const currentState = useBufferStore.getState().buffer?.[noteId]
         useBufferStore.getState().add(noteId, currentState)
@@ -68,7 +85,10 @@ const useMultipleEditors = create<MultipleEditors>(
         set(
           produce((draft) => {
             delete draft.editors[noteId]
-            if (!draft.editors || Object.entries(draft.editors).length === 0) draft.isEmpty = true
+            if (!draft.editors || Object.entries(draft.editors).length === 0) {
+              draft.editors = {}
+              draft.isEmpty = true
+            }
           })
         )
       },
@@ -76,7 +96,7 @@ const useMultipleEditors = create<MultipleEditors>(
         set(
           produce((draft) => {
             const existingState = draft.editors[noteId]
-            if (existingState) draft.editors[noteId] = { ...existingState, ...editorState }
+            draft.editors[noteId] = { ...(existingState || {}), ...editorState }
           })
         )
       }

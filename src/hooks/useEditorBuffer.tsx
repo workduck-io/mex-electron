@@ -47,12 +47,11 @@ export const useEditorBuffer = () => {
 
   const saveAndClearBuffer = (explicitSave?: boolean) => {
     const buffer = useBufferStore.getState().buffer
-    mog('Save And Clear Buffer', { buffer })
+    // mog('Save And Clear Buffer', { buffer })
     if (Object.keys(buffer).length > 0) {
       const saved = Object.entries(buffer)
         .map(([nodeid, val]) => {
           const content = getContent(nodeid)
-          mog('content', { content, val, nodeid })
           const res = areEqual(content.content, val)
           const isShared = isSharedNode(nodeid)
           // const mT = measureTime(() => areEqual(content.content, val))
