@@ -30,7 +30,7 @@ const configuration = {
     output: 'out',
     buildResources: 'assets'
   },
-  files: ['dist/**'],
+  files: ['dist/**', '!node_modules/vis-network/**', '!node_modules/date-fns/**', '!node_modules/@udecode/**'],
   appId: appBundleId,
   afterSign: 'electron-builder-notarize',
   buildDependenciesFromSource: true,
