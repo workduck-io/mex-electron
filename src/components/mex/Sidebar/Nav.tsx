@@ -32,7 +32,7 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React, { useEffect } from 'react'
 import { tinykeys } from '@workduck-io/tinykeys'
 import NavigationCluster from './NavigationCluster'
-import SidebarTabs from './SidebarTabs'
+import SidebarTabs from '@ui/sidebar/Sidebar'
 import { useSidebarTransition } from './Transition'
 import { NavTooltip, TitleWithShortcut } from '@workduck-io/mex-components'
 
