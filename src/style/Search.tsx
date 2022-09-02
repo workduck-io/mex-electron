@@ -1,18 +1,19 @@
+import { TagFlex } from '@components/mex/Tags/TagsRelated.styles'
 import { transparentize } from 'polished'
 import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
+
 import { Ellipsis } from '../components/mex/Integrations/Template/styled'
 import { DataGroup, MetadataWrapper } from '../components/mex/Metadata/Metadata'
 import { StyledInputWrapper } from '../components/mex/NodeSelect/NodeSelect.styles'
 import { View } from '../components/mex/Search/ViewSelector'
-import { TagFlex } from '../components/mex/Tags/TagsRelated'
 import { EditorStyles } from './Editor'
 import { Input } from './Form'
+import { Title, TitleText } from './Typography'
+import { ProfileIcon } from './UserPage'
 import { CardShadow, HoverSubtleGlow } from './helpers'
 import { size } from './responsive'
 import { BodyFont, MainFont } from './spotlight/global'
-import { Title, TitleText } from './Typography'
-import { ProfileIcon } from './UserPage'
 
 interface ResultProps {
   selected?: boolean
