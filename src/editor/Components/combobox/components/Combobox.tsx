@@ -1,12 +1,16 @@
+import React, { useCallback, useEffect, useState } from 'react'
+
 import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
 import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
+import { shift, offset, flip } from '@floating-ui/react-dom-interactions'
 import usePointerMovedSinceMount from '@hooks/listeners/usePointerMovedSinceMount'
 import { Icon } from '@iconify/react'
-import useMergedRef from '@react-hook/merged-ref'
-import { useEditorState } from '@udecode/plate'
-import { DisplayShortcut } from '@workduck-io/mex-components'
-import React, { useEffect, useState } from 'react'
+import { getRangeBoundingClientRect, PortalBody, useEditorState, useVirtualFloating } from '@udecode/plate'
+import { RemoveScroll } from 'react-remove-scroll'
 import { useTheme } from 'styled-components'
+
+import { DisplayShortcut } from '@workduck-io/mex-components'
+
 import { QuickLinkType } from '../../../../components/mex/NodeSelect/NodeSelect'
 import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
 import { ShortcutText } from '../../../../components/spotlight/Home/components/Item'
@@ -24,7 +28,6 @@ import {
   ItemRightIcons,
   ItemTitle
 } from '../../tag/components/TagCombobox.styles'
-import { setElementPositionByRange } from '../../tag/utils/setElementPositionByRange'
 import { useComboboxControls } from '../hooks/useComboboxControls'
 import { replaceFragment } from '../hooks/useComboboxOnKeyDown'
 import { useComboboxIsOpen } from '../selectors/useComboboxIsOpen'
@@ -37,9 +40,9 @@ import { ComboboxShortcuts, ComboSeperator } from './styled'
 export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'
 
-  const at = useComboboxStore((state) => state.targetRange)
   const items = useComboboxStore((state) => state.items)
   const closeMenu = useComboboxStore((state) => state.closeMenu)
+
   const itemIndex = useComboboxStore((state) => state.itemIndex)
   const targetRange = useComboboxStore((state) => state.targetRange)
   const setItemIndex = useComboboxStore((state) => state.setItemIndex)
@@ -56,23 +59,10 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   const { getSnippetContent } = useSnippets()
   const setIsSlash = useComboboxStore((store) => store.setIsSlash)
   const [metaData, setMetaData] = useState(undefined)
-  const ref = React.useRef<any>(null) // eslint-disable-line @typescript-eslint/no-explicit-any
   const editor = useEditorState()
   const theme = useTheme()
 
-  useEffect(() => {
-    // Throws error when the combobox is open and editor is switched or removed
-    try {
-      if (editor) setElementPositionByRange(editor, { ref, at })
-    } catch (e) {
-      closeMenu()
-      console.error(e)
-    }
-  }, [at, editor])
-
-  const menuProps = combobox ? combobox.getMenuProps() : { ref: null }
-
-  const multiRef = useMergedRef(menuProps.ref, ref)
+  const menuProps = combobox ? combobox.getMenuProps({}, { suppressRefError: true }) : { ref: null }
 
   const comboProps = (item, index) => {
     if (combobox) {
@@ -103,6 +93,10 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
   }, [isBlockTriggered])
 
   useEffect(() => {
+    return () => closeMenu()
+  }, [])
+
+  useEffect(() => {
     const comboItem = items[itemIndex]
 
     if (comboItem && comboItem.type && isOpen) {
@@ -126,107 +120,127 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
     }
   }, [itemIndex, items, activeBlock, isOpen, search])
 
+  const pointerMoved = usePointerMovedSinceMount()
+
+  const getBoundingClientRect = useCallback(
+    () => getRangeBoundingClientRect(editor, targetRange),
+    [editor, targetRange]
+  )
+
+  // Update popper position
+  const { style, floating } = useVirtualFloating({
+    placement: 'bottom-start',
+    getBoundingClientRect,
+    middleware: [offset(4), shift(), flip()]
+  })
+
   if (!combobox) return null
 
   const listItem = items[itemIndex]
   const itemShortcut = listItem?.type ? ElementTypeBasedShortcut[listItem?.type] : undefined
 
-  const pointerMoved = usePointerMovedSinceMount()
-
   return (
-    <ComboboxRoot {...menuProps} ref={multiRef} isOpen={isOpen}>
+    <PortalBody>
       {isOpen && (
-        <>
-          {!isBlockTriggered && (
-            <div id="List" style={{ flex: 1 }}>
-              <section id="items-container">
-                {items.map((item, index) => {
-                  const Item = onRenderItem ? onRenderItem({ item }) : item.text
-                  const lastItem = index > 0 ? items[index - 1] : undefined
-                  const { mexIcon } = getIconType(item?.icon ?? DEFAULT_LIST_ITEM_ICON)
+        <RemoveScroll>
+          <ComboboxRoot {...menuProps} ref={floating} style={style} isOpen={isOpen}>
+            <>
+              {!isBlockTriggered && (
+                <div id="List" style={{ flex: 1 }}>
+                  <section id="items-container">
+                    {items.map((item, index) => {
+                      const Item = onRenderItem ? onRenderItem({ item }) : item.text
+                      const lastItem = index > 0 ? items[index - 1] : undefined
+                      const { mexIcon } = getIconType(item?.icon ?? DEFAULT_LIST_ITEM_ICON)
 
-                  return (
-                    <span key={`${item.key}-${String(index)}`}>
-                      {item.type !== lastItem?.type && <ActionTitle>{item.type}</ActionTitle>}
-                      <ComboboxItem
-                        className={index === itemIndex ? 'highlight' : ''}
-                        {...comboProps(item, index)}
-                        onPointerMove={() => pointerMoved && setItemIndex(index)}
-                        onMouseDown={() => {
-                          editor && onSelectItem(editor, item)
-                        }}
-                      >
-                        {item.icon && (
-                          <ProjectIconMex
-                            isMex={mexIcon}
-                            size={14}
-                            key={`${item.key}_${item.icon}`}
-                            icon={item.icon}
-                            margin="0 0.25rem 0 0"
-                            color={theme.colors.primary}
-                          />
-                        )}
-                        <ItemCenterWrapper>
-                          {!item.prefix ? (
-                            <ItemTitle>{Item}</ItemTitle>
-                          ) : (
-                            <ItemTitle>
-                              {item.prefix} <PrimaryText>{Item}</PrimaryText>
-                            </ItemTitle>
-                          )}
-                          {item.desc && <ItemDesc>{item.desc}</ItemDesc>}
-                        </ItemCenterWrapper>
-                        {item.rightIcons && (
-                          <ItemRightIcons>
-                            {item.rightIcons.map((i: string) => (
-                              <Icon key={item.key + i} icon={i} />
-                            ))}
-                          </ItemRightIcons>
-                        )}
-                      </ComboboxItem>
-                    </span>
-                  )
-                })}
-              </section>
-              {itemShortcut && (
-                <ComboboxShortcuts>
-                  {Object.entries(itemShortcut).map(([key, shortcut]) => {
-                    return (
-                      <ShortcutText key={key}>
-                        <DisplayShortcut shortcut={shortcut.keystrokes} /> <div className="text">{shortcut.title}</div>
-                      </ShortcutText>
-                    )
-                  })}
-                </ComboboxShortcuts>
+                      return (
+                        <span key={`${item.key}-${String(index)}`}>
+                          {item.type !== lastItem?.type && <ActionTitle>{item.type}</ActionTitle>}
+                          <ComboboxItem
+                            className={index === itemIndex ? 'highlight' : ''}
+                            {...comboProps(item, index)}
+                            onPointerMove={() => pointerMoved && setItemIndex(index)}
+                            onMouseDown={() => {
+                              editor && onSelectItem(editor, item)
+                            }}
+                          >
+                            {item.icon && (
+                              <ProjectIconMex
+                                isMex={mexIcon}
+                                size={14}
+                                key={`${item.key}_${item.icon}`}
+                                icon={item.icon}
+                                margin="0 0.25rem 0 0"
+                                color={theme.colors.primary}
+                              />
+                            )}
+                            <ItemCenterWrapper>
+                              {!item.prefix ? (
+                                <ItemTitle>{Item}</ItemTitle>
+                              ) : (
+                                <ItemTitle>
+                                  {item.prefix} <PrimaryText>{Item}</PrimaryText>
+                                </ItemTitle>
+                              )}
+                              {item.desc && <ItemDesc>{item.desc}</ItemDesc>}
+                            </ItemCenterWrapper>
+                            {item.rightIcons && (
+                              <ItemRightIcons>
+                                {item.rightIcons.map((i: string) => (
+                                  <Icon key={item.key + i} icon={i} />
+                                ))}
+                              </ItemRightIcons>
+                            )}
+                          </ComboboxItem>
+                        </span>
+                      )
+                    })}
+                  </section>
+                  {itemShortcut && (
+                    <ComboboxShortcuts>
+                      {Object.entries(itemShortcut).map(([key, shortcut]) => {
+                        return (
+                          <ShortcutText key={key}>
+                            <DisplayShortcut shortcut={shortcut.keystrokes} />{' '}
+                            <div className="text">{shortcut.title}</div>
+                          </ShortcutText>
+                        )
+                      })}
+                    </ComboboxShortcuts>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          <BlockCombo
-            onSelect={() => {
-              const item = items[itemIndex]
-              if (item?.type === QuickLinkType.backlink) {
-                editor && onSelectItem(editor, items[itemIndex])
-              }
-            }}
-            shortcuts={itemShortcut}
-            nodeId={items[itemIndex]?.key}
-            isNew={items[itemIndex]?.data}
-          />
-          {((preview && listItem?.type && !isBlockTriggered) ||
-            (isBlockTriggered && textAfterBlockTrigger && preview)) && (
-            <ComboSeperator>
-              <section>
-                <EditorPreviewRenderer
-                  noMouseEvents
-                  content={preview}
-                  editorId={isBlockTriggered && activeBlock ? activeBlock.blockId : items[itemIndex]?.key}
-                />
-              </section>
-              {preview && <PreviewMeta meta={metaData} />}
-            </ComboSeperator>
-          )}
-        </>
+              <BlockCombo
+                onSelect={() => {
+                  const item = items[itemIndex]
+                  if (item?.type === QuickLinkType.backlink) {
+                    editor && onSelectItem(editor, items[itemIndex])
+                  }
+                }}
+                shortcuts={itemShortcut}
+                nodeId={items[itemIndex]?.key}
+                isNew={items[itemIndex]?.data}
+              />
+              {((preview && listItem?.type && !isBlockTriggered) ||
+                (isBlockTriggered && textAfterBlockTrigger && preview)) && (
+                <ComboSeperator>
+                  <section>
+                    <EditorPreviewRenderer
+                      noMouseEvents
+                      content={preview?.content || preview}
+                      readOnly
+                      editorId={
+                        isBlockTriggered && activeBlock ? activeBlock.blockId : `${items[itemIndex]?.key}_Preview_Block`
+                      }
+                    />
+                  </section>
+                  {preview && <PreviewMeta meta={metaData} />}
+                </ComboSeperator>
+              )}
+            </>
+          </ComboboxRoot>
+        </RemoveScroll>
       )}
-    </ComboboxRoot>
+    </PortalBody>
   )
 }

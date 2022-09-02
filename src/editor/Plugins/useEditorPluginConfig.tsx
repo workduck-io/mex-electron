@@ -29,13 +29,14 @@ import { useAuthStore } from '../../services/auth/useAuth'
 import { PluginOptionType } from './plugins'
 import { mog } from '@utils/lib/helper'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import { cleanEditorId } from '@editor/Components/Todo'
 
 const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => {
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
   const sharedNodes = useDataStore((state) => state.sharedNodes)
   const slashCommands = useDataStore((state) => state.slashCommands)
-  const nodeid = useEditorStore((state) => state.node.nodeid)
+  const nodeid = cleanEditorId(editorId)
   const actionGroups = useActionsCache((store) => store.actionGroups)
   const mentionable = useMentionStore((state) => state.mentionable)
   const invitedUsers = useMentionStore((state) => state.invitedUsers)

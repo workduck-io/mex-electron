@@ -82,7 +82,7 @@ export type PluginOptionType = {
   exclude: {
     dnd?: boolean
     mentions?: boolean
-  }
+  },
 }
 
 /**

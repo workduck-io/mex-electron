@@ -9,7 +9,7 @@ import toast from 'react-hot-toast'
 import { useApi } from '@apis/useSaveApi'
 import { useContentStore } from '@store/useContentStore'
 import useDataStore from '@store/useDataStore'
-import { useEditorBuffer } from './useEditorBuffer'
+import { useBufferStore, useEditorBuffer } from './useEditorBuffer'
 import { useGraphStore } from '@store/useGraphStore'
 import useSuggestionStore from '@store/useSuggestionStore'
 import useToggleElements from './useToggleElements'
@@ -239,17 +239,9 @@ const useLoad = () => {
 
     setSelectedNode(undefined)
 
-    // const q = useQStore.getState().q
     if (options.savePrev) {
-      // if (q.includes(nodeid)) {
-      //   hasBeenLoaded = true
-      // }
       saveNodeName(currentNodeId)
-      saveAndClearBuffer()
-
-      // if (q.length > 0) {
-      // saveQ()
-      // }
+      saveAndClearBuffer(false)
     }
 
     const node = options.node ?? getNode(nodeid)
@@ -281,6 +273,11 @@ const useLoad = () => {
     loadNodeEditor(nodeProps)
   }
 
+  const getNoteContent = (noteId: string) => {
+    const buffer = useBufferStore.getState().buffer?.[noteId] || getContent(noteId)?.content
+    return buffer
+  }
+
   const loadNodeAndAppend = async (nodeid: string, content: NodeEditorContent) => {
     const nodeProps = getNode(nodeid)
     const nodeContent = getContent(nodeid)
@@ -300,6 +297,7 @@ const useLoad = () => {
     isLocalNode,
     loadNodeProps,
     getNode,
+    getNoteContent,
     saveApiAndUpdate
   }
 }

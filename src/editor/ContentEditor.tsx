@@ -1,5 +1,5 @@
 import { useSuggestions } from '@components/mex/Suggestions/useSuggestions'
-import { selectEditor, usePlateEditorRef } from '@udecode/plate'
+import { selectEditor, useFloatingTree, usePlateEditorRef } from '@udecode/plate'
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import { tinykeys } from '@workduck-io/tinykeys'
 import shallow from 'zustand/shallow'
@@ -14,7 +14,7 @@ import useBlockStore from '../store/useBlockStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
 import { useLayoutStore } from '../store/useLayoutStore'
-import { EditorBreadcrumbs, EditorWrapper, StyledEditor } from '../style/Editor'
+import { EditorWrapper, StyledEditor } from '../style/Editor'
 import { getEditorId } from '../utils/lib/EditorId'
 import BlockInfoBar from './Components/Blocks/BlockInfoBar'
 import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
@@ -31,6 +31,7 @@ import { useLastOpened } from '@hooks/useLastOpened'
 import NavBreadCrumbs from '@components/mex/NavBreadcrumbs'
 import { mog } from '@utils/lib/helper'
 import { useContentStore } from '@store/useContentStore'
+import useMultipleEditors from '@store/useEditorsStore'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)

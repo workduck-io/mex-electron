@@ -1,11 +1,11 @@
 import React from 'react'
-import { mog } from '../../../utils/lib/helper'
+
+import { SlashCommandConfig } from '../SlashCommands/Types'
 import { Combobox } from '../combobox/components/Combobox'
 import { ComboboxItemProps, RenderFunction } from '../combobox/components/Combobox.types'
 import { useComboboxControls } from '../combobox/hooks/useComboboxControls'
 import { getCreateableOnSelect } from '../combobox/hooks/useComboboxOnKeyDown'
 import { useComboboxStore } from '../combobox/useComboboxStore'
-import { SlashCommandConfig } from '../SlashCommands/Types'
 import { useOnSelectItem } from './useMultiComboboxOnKeyDown'
 
 export interface ComboConfigData {

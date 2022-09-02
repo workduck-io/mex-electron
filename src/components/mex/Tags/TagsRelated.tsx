@@ -1,5 +1,5 @@
 import hashtagIcon from '@iconify/icons-ri/hashtag'
-import { Icon } from '@iconify/react'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { transparentize } from 'polished'
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
@@ -8,22 +8,24 @@ import { useTags } from '../../../hooks/useTags'
 import { useAnalysisStore } from '../../../store/useAnalysis'
 import useDataStore from '../../../store/useDataStore'
 import { HoverSubtleGlow } from '../../../style/helpers'
-import { InfoWidgetScroll, InfoWidgetWrapper } from '../../../style/infobar'
+import { InfoWidgetWrapper } from '../../../style/infobar'
 import { Note } from '../../../style/Typography'
 import Collapse from '../../../ui/layout/Collapse/Collapse'
-import { mog } from '../../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
-import { DataInfoHeader } from '../Backlinks/Backlinks.style'
 import NodeLink from '../NodeLink/NodeLink'
 
-export const TagFlex = styled.div`
-  cursor: pointer;
+export const TagFlex = styled.div<{ isDisabled?: boolean }>`
   padding: ${({ theme }) => theme.spacing.tiny} ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
   background-color: ${({ theme }) => theme.colors.gray[9]};
   color: ${({ theme }) => theme.colors.text.fade};
 
-  ${HoverSubtleGlow}
+  ${({ isDisabled }) =>
+    !isDisabled &&
+    css`
+      cursor: pointer;
+      ${HoverSubtleGlow}
+    `}
 `
 
 const TagsFlex = styled.div`
@@ -33,8 +35,7 @@ const TagsFlex = styled.div`
 `
 
 const InfoSubHeading = styled.h2`
-  margin: ${({ theme }) => theme.spacing.large} 0 ${({ theme }) => theme.spacing.medium}
-    ${({ theme }) => theme.spacing.medium};
+  margin: ${({ theme }) => `${theme.spacing.large} 0 ${theme.spacing.medium} ${theme.spacing.medium}`};
   font-size: 1.2rem;
   font-weight: normal;
   color: ${({ theme }) => theme.colors.text.fade};
@@ -133,12 +134,14 @@ export const TagsRelatedTiny = ({ nodeid }: TagsRelated) => {
   const tagsCache = useDataStore((state) => state.tagsCache)
   const [tags, setTags] = useState<string[]>([])
   const { goTo } = useRouting()
+  const isSpotlight = useSpotlightContext()
 
   useEffect(() => {
     setTags(getTags(nodeid))
   }, [nodeid, tagsCache])
 
   const navigateToTag = (tag: string) => {
+    if (isSpotlight) return
     goTo(ROUTE_PATHS.tag, NavigationType.push, tag)
   }
 
@@ -153,6 +156,7 @@ export const TagsRelatedTiny = ({ nodeid }: TagsRelated) => {
             e.preventDefault()
             navigateToTag(t)
           }}
+          isDisabled={!!isSpotlight}
         >
           #{t}
         </TagFlex>

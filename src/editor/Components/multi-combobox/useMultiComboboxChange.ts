@@ -11,6 +11,7 @@ import { useLinks } from '../../../hooks/useLinks'
 import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { makeQuickLink, QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 import { getTimeInText, toLocaleString } from '../../../utils/time'
+import { cleanEditorId } from '../Todo'
 
 export const CreateNewPrefix = `Create `
 
@@ -100,7 +101,8 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
     if (params.snippetid && textAfterTrigger?.startsWith('.')) return
 
     const { isChild, key: pathKey } = withoutContinuousDelimiter(textAfterTrigger)
-    const searchTerm = isChild ? `${getPathFromNodeid(editorId)}${pathKey}` : pathKey
+    const noteId = cleanEditorId(editorId)
+    const searchTerm = isChild ? `${getPathFromNodeid(noteId)}${pathKey}` : pathKey
 
     const searchItems = fuzzySearch(data, searchTerm, (item) => item.text)
 
