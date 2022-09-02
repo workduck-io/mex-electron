@@ -178,7 +178,6 @@ const navStyles = css`
   ${MainNav} {
     ${({ theme }) => css`
       border-radius: ${theme.borderRadius.small};
-      background-color: ${theme.colors.gray[10]};
     `}
   }
 `

@@ -18,6 +18,7 @@ import { MexIcon } from '@style/Layouts'
 import { useTheme } from 'styled-components'
 import { Centered } from './Bookmarks'
 import { getTreeFromLinks } from '@hooks/useTreeFromLinks'
+import { SidebarWrapper } from '@ui/sidebar/Sidebar.style'
 
 const ArchiveTree: React.FC<{ tree: any }> = ({ tree }) => {
   const [archiveTree, setArchiveTree] = React.useState(tree)
@@ -123,9 +124,9 @@ const ArchiveSidebar = () => {
   const tree = getTreeFromLinks(archiveNotes)
 
   return (
-    <>
+    <SidebarWrapper>
       <ArchiveTree tree={tree} />
-    </>
+    </SidebarWrapper>
   )
 }
 

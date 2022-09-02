@@ -110,6 +110,7 @@ export interface BackgroundImages {
 }
 
 export interface ThemePalette {
+  type: 'dark' | 'light'
   // Colors
   primary: string
   secondary: string
@@ -169,10 +170,10 @@ export const generateTheme = (p: ThemePalette): DefaultTheme => {
 
         //
         background: {
-          app: p.gray[10],
+          app: p.type === 'dark' ? mix(0.5, p.gray[10], p.gray[9]) : p.gray[10],
           card: p.gray[9],
           modal: p.gray[9],
-          sidebar: p.gray[10],
+          sidebar: p.type === 'dark' ? p.gray[10] : p.gray[9],
           highlight: p.gray[8]
         },
         divider: p.gray[4],

@@ -234,7 +234,7 @@ const Nav = () => {
           $side="left"
           {...getFocusProps(focusMode)}
         >
-          {/* Notes, Shared, Bookmarks */}
+          {/* Notes,  Shared, Bookmarks */}
           <SidebarTabs />
         </SideNav>
       </NavWrapper>

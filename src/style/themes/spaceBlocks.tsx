@@ -160,6 +160,7 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
       background-color: transparent;
     }
     ${NavWrapper} {
+      ${containerStyle}
       margin: 0;
       height: ${heightMain};
       min-height: ${heightMain};

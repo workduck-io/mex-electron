@@ -7,13 +7,6 @@ import { transparentize } from 'polished'
 import { css } from 'styled-components'
 
 export const MexStyles = css`
-  body {
-    background-color: #36393e;
-    /*background: linear-gradient(-60deg, #17111f, #182033);*/
-  }
-  ${MainNav}, ${SideNav} {
-    background: #1e2124 !important;
-  }
   ${StyledBoard} {
     .react-kanban-column {
       background-color: ${transparentize(0.1, '#1E2124')};

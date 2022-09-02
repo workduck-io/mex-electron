@@ -13,6 +13,7 @@ import { getPartialTreeGroups } from '@utils/lib/paths'
 import { getPartialTreeFromLinks, getTreeFromLinks } from '@hooks/useTreeFromLinks'
 import { TreeData } from '@atlaskit/tree'
 import { getTitleFromPath } from '@hooks/useLinks'
+import { SpaceList } from './Sidebar.style'
 
 interface SpaceTreeProps {
   items: ILink[]
@@ -60,16 +61,18 @@ export const MexTree = ({ items, filterText }: SpaceTreeProps) => {
 
   return (
     <>
-      <SidebarListFilter>
+      <SidebarListFilter noMargin>
         <Icon icon={searchLine} />
         <Input
-          placeholder="Filter items"
+          placeholder={filterText ?? 'Filter items'}
           onChange={debounce((e) => onSearchChange(e), 250)}
           ref={inputRef}
           // onKeyUp={debounce(onKeyUpSearch, 250)}
         />
       </SidebarListFilter>
-      <Tree initTree={filteredTree ? filteredTree : initTree} />
+      <SpaceList>
+        <Tree initTree={filteredTree ? filteredTree : initTree} />
+      </SpaceList>
     </>
   )
 }

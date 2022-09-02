@@ -170,12 +170,6 @@ export const StyledTreeItem = styled.div<{
 
   transition: 0.1s ease;
 
-  ${({ isStub }) =>
-    isStub &&
-    css`
-      color: ${({ theme }) => theme.colors.gray[5]};
-    `}
-
   ${({ isUnread }) =>
     isUnread &&
     css`
@@ -220,6 +214,16 @@ export const StyledTreeItem = styled.div<{
           color: ${theme.colors.primary};
         }
       }
+    `}
+
+  ${({ isStub }) =>
+    isStub &&
+    css`
+      color: ${({ theme }) => theme.colors.gray[5]};
+      svg {
+        color: ${({ theme }) => theme.colors.gray[5]};
+      }
+      background-color: transparent;
     `}
 
   ${({ isBeingDroppedAt, isDragging, theme }) =>

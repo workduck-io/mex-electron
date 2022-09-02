@@ -1,6 +1,7 @@
 import { generateTheme } from '../themeGenerator'
 
 export const lightTheme = generateTheme({
+  type: 'light',
   // Colors
   primary: '#34be79',
   secondary: '#2b76cc',
@@ -16,15 +17,15 @@ export const lightTheme = generateTheme({
     4: '#64867f',
     3: '#45665f',
     2: '#2a413c',
-    1: '#162421', // Lightest
+    1: '#162421' // Lightest
   },
   palette: {
     white: '#ffffff',
     black: '#000000',
     green: '#00e676',
     yellow: '#eeff41',
-    red: '#ff3b30',
-  },
+    red: '#ff3b30'
+  }
   // text: {
   //   heading: '#CBCDD2',
   //   default: '#A6ACCD',

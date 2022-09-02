@@ -1,6 +1,7 @@
 import { DesignItem } from '../../types/design'
 import { LastOpenedState } from '../../types/userPreference'
 import { ILink } from '../../types/Types'
+import { IconifyIcon } from '@iconify/react'
 
 /**
  * A generic item to be shown in sidebar
@@ -36,7 +37,7 @@ export interface SidebarSpace {
   /**
    * Icon of the space
    */
-  icon?: string
+  icon: string | IconifyIcon
 
   /**
    * Label of the space
@@ -67,7 +68,7 @@ export interface SidebarSpace {
   /**
    * Items of a space that have been pinned
    */
-  pinnedItems: FlatSidebarItem[]
+  pinnedItems?: () => JSX.Element
 
   /**
    * Tags that have been used most often in a given space

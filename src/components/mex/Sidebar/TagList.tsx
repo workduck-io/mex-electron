@@ -1,5 +1,6 @@
 import { useTags } from '@hooks/useTags'
 import hashtag from '@iconify/icons-ri/hashtag'
+import { SidebarWrapper } from '@ui/sidebar/Sidebar.style'
 import { mog } from '@utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React from 'react'
@@ -29,14 +30,16 @@ const TagList = () => {
   mog('Tags', { tags, isTagsView, tag })
 
   return (
-    <SidebarList
-      showSearch
-      searchPlaceholder="Filter tags..."
-      emptyMessage="No tags found"
-      items={tags}
-      selectedItemId={tag}
-      onClick={navigateToTag}
-    />
+    <SidebarWrapper>
+      <SidebarList
+        showSearch
+        searchPlaceholder="Filter tags..."
+        emptyMessage="No tags found"
+        items={tags}
+        selectedItemId={tag}
+        onClick={navigateToTag}
+      />
+    </SidebarWrapper>
   )
 }
 

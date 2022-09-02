@@ -1,6 +1,7 @@
 import { useViewStore } from '@hooks/useTaskViews'
 import home7Line from '@iconify/icons-ri/home-7-line'
 import stackLine from '@iconify/icons-ri/stack-line'
+import { SidebarWrapper } from '@ui/sidebar/Sidebar.style'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React from 'react'
 import SidebarList from './SidebarList'
@@ -58,20 +59,22 @@ const TaskViewList = () => {
   // mog('Snippy', { snippets, showSelected, location })
 
   return (
-    <SidebarList
-      ItemContextMenu={TaskViewContextMenu}
-      items={sortedViews.map(({ title, ...t }) => ({ ...t, label: title, data: t }))}
-      onClick={(item) => onOpenView(item)}
-      selectedItemId={currentView?.id}
-      showSearch
-      searchPlaceholder="Filter Task Views..."
-      defaultItem={{
-        label: 'Default',
-        id: 'default',
-        icon: home7Line,
-        data: {}
-      }}
-    />
+    <SidebarWrapper>
+      <SidebarList
+        ItemContextMenu={TaskViewContextMenu}
+        items={sortedViews.map(({ title, ...t }) => ({ ...t, label: title, data: t }))}
+        onClick={(item) => onOpenView(item)}
+        selectedItemId={currentView?.id}
+        showSearch
+        searchPlaceholder="Filter Task Views..."
+        defaultItem={{
+          label: 'Default',
+          id: 'default',
+          icon: home7Line,
+          data: {}
+        }}
+      />
+    </SidebarWrapper>
   )
 }
 

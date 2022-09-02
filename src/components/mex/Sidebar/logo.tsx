@@ -46,40 +46,40 @@ interface SidebarToggleWrappperProps extends FocusModeProp {
 
 export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
   position: absolute;
+  display: flex;
+  align-items: center;
   ${(props) => focusStyles(props)}
-  
 
   ${({ expanded, side, theme, endColumnWidth }) =>
     side === 'left'
       ? expanded
         ? css`
-            top: ${theme.additional.hasBlocks ? 67 : 64}px;
-            left: ${theme.additional.hasBlocks ? 359 : 346}px;
+            display: none;
           `
         : css`
             top: ${theme.additional.hasBlocks ? 67 : 64}px;
             left: ${theme.additional.hasBlocks ? 86 : 70}px;
           `
       : expanded
-        ? css`
+      ? css`
           top: ${theme.additional.hasBlocks ? 67 : 64}px;
           right: calc(${(endColumnWidth ?? '400px') + ' + ' + (theme.additional.hasBlocks ? 0 : -15)}px);
         `
-        : css`
+      : css`
           top: ${theme.additional.hasBlocks ? 67 : 64}px;
           right: ${theme.additional.hasBlocks ? 8 : 8}px;
         `}
-  
+
   ${({ isVisible, $focusMode }) => !$focusMode && FadeInOut(isVisible)}
 
   ${({ isVisible }) =>
-    isVisible && css`transition: left 0.5s ease, top 0.5s ease, right 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;`
-  }
+    isVisible &&
+    css`
+      transition: left 0.5s ease, top 0.5s ease, right 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;
+    `}
 
   z-index: 11;
   padding: 8px;
-  display: flex;
-  align-items: center;
   border-radius: 100%;
   background: ${({ theme }) => theme.colors.secondary};
   color: ${({ theme }) => theme.colors.text.oppositePrimary};
@@ -100,7 +100,6 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
     transition: background 0.1s ease;
     background-color: ${({ theme }) => theme.colors.primary};
   }
-
 `
 
 export const TrafficLightBG = styled.div`
@@ -130,7 +129,7 @@ export const SidebarToggles = () => {
   const focusMode = useLayoutStore((state) => state.focusMode)
   const { getFocusProps } = useLayout()
   const { endColumnWidth } = useSidebarTransition()
-  const isUserEdititng = useEditorStore(store => store.isEditing)
+  const isUserEdititng = useEditorStore((store) => store.isEditing)
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {

@@ -1,5 +1,7 @@
 import bookmarkLine from '@iconify/icons-ri/bookmark-line'
 import { Icon } from '@iconify/react'
+import Tippy, { useSingleton } from '@tippyjs/react'
+import { PinnedList } from '@ui/sidebar/Sidebar.style'
 import { mog } from '@utils/lib/helper'
 import { getPartialTreeGroups } from '@utils/lib/paths'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
@@ -10,6 +12,7 @@ import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
 import SidebarList from './SidebarList'
+import SidebarListItemComponent from './SidebarListItem'
 
 export const Centered = styled.div`
   display: flex;
@@ -27,6 +30,7 @@ const Bookmarks = () => {
   const match = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
   const { goTo } = useRouting()
   // const [ bookmarks, setBookmarks ] = useState<string[]>([])
+  const [source, target] = useSingleton()
 
   const onOpenNode = (nodeid: string) => {
     push(nodeid, { fetch: true })
@@ -36,38 +40,39 @@ const Bookmarks = () => {
   const bookmarkItems = bookmarks
     .map((nodeid) => ({
       id: nodeid,
-      title: getPathFromNodeid(nodeid),
-      icon: bookmarkLine
+      label: getPathFromNodeid(nodeid),
+      icon: bookmarkLine,
+      data: {}
     }))
-    .filter((item) => item.title !== undefined)
+    .filter((item) => item.label !== undefined)
+    .slice(0, 5)
 
-  const groupedBookmarks = getPartialTreeGroups(
-    bookmarkItems.map((item) => ({ id: item.id, title: item.title })),
-    (item) => item.title,
-    (item1, item2) => item1.title.localeCompare(item2.title)
+  mog('Bookmarks', { bookmarks, bookmarkItems })
+
+  return (
+    <>
+      <Tippy theme="mex" placement="right" singleton={source} />
+      <PinnedList>
+        {bookmarkItems.map((b, i) => (
+          <SidebarListItemComponent
+            key={`bookmark_${b.id}`}
+            item={b}
+            contextMenu={{
+              setContextOpenViewId: () => undefined,
+              contextOpenViewId: ''
+            }}
+            select={{
+              onSelect: onOpenNode,
+              selectIndex: -1,
+              selectedItemId: ''
+            }}
+            index={i}
+            tippyTarget={target}
+          />
+        ))}
+      </PinnedList>
+    </>
   )
-
-  mog('Bookmarks', { bookmarks, bookmarkItems, groupedBookmarks })
-
-  return
-  /**
-  bookmarkItems.length > 0 ? (
-    <SidebarList
-      items={bookmarkItems.map()}
-      onClick={onOpenNode}
-      noMargin
-      selectedItemId={match?.params?.nodeid}
-      showSearch
-      searchPlaceholder="Filter bookmarks..."
-      emptyMessage="No bookmarks found"
-    />
-  ) : (
-    <Centered>
-      <Icon icon={bookmarkLine} height={64} width={64} style={{ margin: '0 0 1rem 0' }} />
-      <span>No bookmarks yet!</span>
-    </Centered>
-  )
-  */
 }
 
 export default Bookmarks

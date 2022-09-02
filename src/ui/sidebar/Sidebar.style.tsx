@@ -1,253 +1,123 @@
-import { Icon } from '@iconify/react'
-import { transparentize } from 'polished'
-import React from 'react'
 import styled, { css } from 'styled-components'
-import { Ellipsis } from '@components/mex/Integrations/Template/styled'
-import { focusStyles } from '@style/focus'
-import { ThinScrollbar } from '@style/helpers'
-import { FocusModeProp } from '@style/props'
 
-export const Sicon = styled(Icon)`
-  height: 26px;
-  width: 26px;
-  padding-left: 7px;
-  border-left: 1px solid ${({ theme }) => theme.colors.gray[7]};
-  margin-left: -8px;
-`
-// Disabled as IconifyIcon type doesn't work
-// eslint-disable-next-line  @typescript-eslint/no-explicit-any
-export const SIcon = (props: any) => {
-  return <Sicon {...props} />
-}
-
-export const SidebarDiv = styled.div<FocusModeProp>`
+export const SidebarWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
   height: 100%;
-  padding-top: ${({ theme }) => theme.spacing.large};
+  padding: ${({ theme }) => theme.spacing.small};
+`
+
+export const SpaceWrapper = styled(SidebarWrapper)`
+  gap: ${({ theme }) => theme.spacing.medium};
+`
+
+export const SingleSpace = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 93%;
+  gap: ${({ theme }) => theme.spacing.large};
+`
+
+export const SpaceHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  gap: ${({ theme }) => theme.spacing.small};
+
   width: 100%;
-  transition: opacity 0.3s ease-in-out;
-  ${focusStyles}
 `
 
-export const SidebarContent = styled.div`
-  ${ThinScrollbar};
-  flex-grow: 1;
-  overflow-x: hidden;
-  max-height: 95vh;
-  overflow-y: auto;
-  padding: ${({ theme }) => theme.spacing.medium};
-`
-export const SectionHeading = styled.div`
-  user-select: none;
-  margin: ${({ theme }) => theme.spacing.medium} 0 ${({ theme }) => theme.spacing.small};
-  display: flex;
+export const SpaceTitleWrapper = styled.div`
   align-items: center;
-  h2 {
-    margin: 0;
-    font-weight: normal;
-    font-size: 1.2rem;
-  }
-  svg {
-    margin-right: ${({ theme }) => theme.spacing.tiny};
-  }
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-`
-
-export const SidebarDivider = styled.div`
-  height: 2px;
-  background: ${({ theme }) => theme.colors.gray[8]};
-  margin: ${({ theme }) => theme.spacing.large} 0;
-`
-
-export const SidebarSection = styled.div`
-  color: ${({ theme }) => theme.colors.text.subheading};
-
-  /* &.starred:hover {
-    color: ${({ theme }) => theme.colors.palette.yellow};
-  }
-  &.tree:hover {
-    color: ${({ theme }) => theme.colors.secondary};
-  } */
-`
-export const StyledTreeSwitcher = styled.button`
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  outline: none;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 24px;
-  flex-shrink: 0;
-  margin-left: ${({ theme }) => theme.spacing.tiny};
-`
-export const StyledTreeItemSwitcher = styled(StyledTreeSwitcher)`
-  color: ${({ theme }) => transparentize(0.3, theme.colors.text.fade)};
-  border-radius: 3px;
-  transition: 0.1s ease;
-  &:hover {
-    transition: 0s ease;
-    color: ${({ theme }) => theme.colors.primary};
-    background: ${({ theme }) => theme.colors.gray[8]};
-  }
+  width: 100%;
+  justify-content: space-between;
+  padding-left: ${({ theme }) => theme.spacing.small};
 `
 
-export const ItemTitle = styled.div`
-  flex-grow: 1;
-  flex-shrink: 1;
-  max-width: 220px;
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.tiny};
-  span {
-    ${Ellipsis}
-  }
-
-  svg {
-    flex-shrink: 0;
-    width: 16px;
-    height: 16px;
-  }
-`
-
-export const ItemCount = styled.div`
-  flex-shrink: 0;
-  font-size: 0.9rem;
-  color: ${({ theme }) => theme.colors.text.fade};
-`
-
-export const TooltipContentWrapper = styled.div`
+export const SpaceTitle = styled.div`
+  font-size: 16px;
+  font-weight: 500;
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.small};
 `
 
-export const TooltipCount = styled.div`
+export const SidebarToggle = styled.div<{ isVisible?: boolean }>`
   display: flex;
   align-items: center;
-  font-size: 0.9rem;
-  gap: ${({ theme }) => theme.spacing.tiny};
+  padding: ${({ theme }) => theme.spacing.small};
   color: ${({ theme }) => theme.colors.text.fade};
-`
-export const ItemContent = styled.div`
-  cursor: pointer;
-  padding: 8px 0px;
-  display: flex;
-  flex-grow: 1;
-  flex-shrink: 1;
-  align-items: center;
-  justify-content: space-between;
-  gap: ${({ theme }) => theme.spacing.tiny};
-`
+  border-radius: ${({ theme }) => theme.borderRadius.small};
 
-export const UnreadIndicator = styled.div`
-  color: ${({ theme }) => theme.colors.primary};
+  :hover {
+    color: ${({ theme }) => theme.colors.text.heading};
+    background-color: ${({ theme }) => theme.colors.gray[8]};
+  }
+
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+
   svg {
-    height: 0.75rem;
-    width: 0.75rem;
+    height: 16px;
+    width: 16px;
   }
 `
 
-export const StyledTreeItem = styled.div<{
-  selected?: boolean
-  isDragging?: boolean
-  isBeingDroppedAt?: boolean
-  hasMenuOpen?: boolean
-  noSwitcher?: boolean
-  isUnread?: boolean
-}>`
+export const PinnedList = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+export const SpaceList = styled.div`
+  flex-grow: 1;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+`
+
+export const SpaceSwitcher = styled.div`
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+`
+
+export const SwitcherSpaceItems = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.small};
+  align-items: center;
+`
+
+export const SpaceItem = styled.div<{ active: boolean }>`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.tiny};
+  justify-content: center;
+  padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  padding-right: 16px;
 
-  transition: 0.1s ease;
-
-  ${({ isUnread }) =>
-    isUnread &&
+  color: ${({ theme }) => theme.colors.gray[6]};
+  ${({ theme, active }) =>
+    active &&
     css`
-      font-weight: bold;
+      color: ${theme.colors.text.heading};
     `}
 
-  ${({ noSwitcher, theme }) =>
-    noSwitcher &&
-    css`
-      padding-left: ${theme.spacing.small};
-    `}
-
-  ${({ hasMenuOpen, theme }) =>
-    hasMenuOpen &&
-    css`
-      background: ${transparentize(0.5, theme.colors.gray[7])};
-      color: ${theme.colors.text.fade};
-    `}
-
-  &:hover {
-    transition: 0s ease;
-    background: ${({ theme }) => theme.colors.gray[7]};
+  :hover {
+    background-color: ${({ theme }) => theme.colors.gray[8]};
   }
 
-  ${({ selected, hasMenuOpen, theme }) =>
-    selected &&
-    css`
-      background: ${theme.colors.primary};
-      color: ${theme.colors.text.oppositePrimary};
-      ${ItemCount}, svg {
-        color: ${theme.colors.text.oppositePrimary};
-      }
-      :hover {
-        background: ${transparentize(0.3, theme.colors.primary)};
-      }
-      ${hasMenuOpen &&
-      css`
-        color: ${transparentize(0.5, theme.colors.text.oppositePrimary)};
-      `}
-      ${StyledTreeItemSwitcher} {
-        &:hover svg {
-          color: ${theme.colors.primary};
-        }
-      }
-    `}
-
-  ${({ isBeingDroppedAt, isDragging, theme }) =>
-    (isBeingDroppedAt || isDragging) &&
-    css`
-      ${isDragging &&
-      css`
-        color: ${theme.colors.primary};
-      `}
-      background: ${theme.colors.gray[7]};
-      box-shadow: inset 0 0 0 1px ${isDragging ? theme.colors.secondary : theme.colors.secondary};
-    `}
+  svg {
+    height: 24px;
+    width: 24px;
+  }
 `
-
-export const NavigationClusterWrapper = styled.div`
+export const CreateNewButton = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  gap: ${({ theme }) => theme.spacing.tiny};
-  margin-bottom: ${({ theme }) => theme.spacing.medium};
-`
-
-export const NavigationButton = styled.div<{ disabled: boolean }>`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: ${({ theme }) => theme.spacing.tiny};
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-  ${({ disabled }) =>
-    disabled &&
-    css`
-      opacity: 0.25;
-      pointer-events: none;
-    `}
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.gray[7]};
+  padding: ${({ theme }) => theme.spacing.small};
+  svg {
+    height: 24px;
+    width: 24px;
   }
 `

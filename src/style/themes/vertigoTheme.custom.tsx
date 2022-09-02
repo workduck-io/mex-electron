@@ -208,9 +208,6 @@ const navStyles = css`
   ${NavWrapper} {
     overflow: hidden;
   }
-  ${MainNav} {
-    border-radius: ${({ theme }) => theme.borderRadius.small};
-  }
   ${NavButton} {
     margin-top: 0;
   }

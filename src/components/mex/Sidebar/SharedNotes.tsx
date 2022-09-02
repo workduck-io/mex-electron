@@ -54,7 +54,7 @@ const SharedNotes = () => {
       showSearch
       ItemContextMenu={SharedNoteContextMenu}
       selectedItemId={node.nodeid}
-      searchPlaceholder="Filter shared notes..."
+      searchPlaceholder="Filter Shared Notes"
       emptyMessage="No shared notes found"
     />
   ) : (
