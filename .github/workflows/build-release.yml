@@ -29,3 +29,12 @@ jobs:
           files: |
             out/*.dmg
             out/*.zip
+      - name: Setup AWS Credentials to upload release assets 
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload Assets to S3
+        run: yarn upload:s3
