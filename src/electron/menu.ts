@@ -1,12 +1,13 @@
-import { BrowserWindow, Menu, MenuItemConstructorOptions, app, autoUpdater, shell, dialog } from 'electron'
+import { BrowserWindow, Menu, MenuItemConstructorOptions, app, shell, dialog } from 'electron'
 import fs from 'fs/promises'
 import path from 'path'
 
+import { getSaveLocation, DataFileName } from '../data/Defaults/data'
 import { IpcAction } from '../data/IpcAction'
 import { ToastStatus } from '../types/toast'
-import { checkIfAlpha } from './utils/version'
-import { getSaveLocation, DataFileName } from '../data/Defaults/data'
 import { windows } from './main'
+import { checkForUpdatesAndNotifyWrapper } from './update'
+import { checkIfAlpha } from './utils/version'
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string
@@ -70,7 +71,7 @@ export default class MenuBuilder {
               title: 'Checking for updates..'
             })
             windows.toast?.open(true, true, false)
-            autoUpdater.checkForUpdates()
+            checkForUpdatesAndNotifyWrapper()
           }
         },
         { type: 'separator' },

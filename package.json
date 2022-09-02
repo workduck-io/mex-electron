@@ -13,7 +13,8 @@
     "compile:javascript": "ts-node -O '{\"module\": \"CommonJS\"}' scripts/build.ts",
     "compile:electron": "electron-builder --config builder.config.js",
     "package": "yarn compile:javascript && yarn compile:electron",
-    "upload:s3": "ts-node -O '{\"module\": \"CommonJS\"}' scripts/upload-s3.ts"
+    "upload:s3": "ts-node -O '{\"module\": \"CommonJS\"}' scripts/upload-s3.ts",
+    "postpackage": "electron-builder install-app-deps"
   },
   "keywords": [],
   "author": {

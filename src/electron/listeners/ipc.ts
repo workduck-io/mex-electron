@@ -25,8 +25,11 @@ import { getReminderDimensions, REMINDERS_DIMENSIONS } from '@services/reminders
 import { clearLocalStorage } from '@utils/dataTransform'
 import { getAppleNotes } from '@utils/importers/appleNotes'
 import { mog } from '@utils/lib/helper'
-import { app, autoUpdater, globalShortcut, ipcMain } from 'electron'
+import { app, globalShortcut, ipcMain } from 'electron'
+import { autoUpdater } from 'electron-updater'
 import fs from 'fs'
+
+import useAuthStore from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
 
 import { AuthTokenData } from '../../types/auth'
 import { FileData } from '../../types/data'
@@ -167,7 +170,9 @@ const handleIPCListener = () => {
       windows.toast?.setParent(windows.spotlight)
       windows.toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.LOADING, title: 'Checking for updates..' })
       windows.toast?.open(false, false, true)
-      autoUpdater.checkForUpdates()
+      const token = useAuthStore.getState().userCred.token
+      autoUpdater.addAuthHeader(token)
+      autoUpdater.checkForUpdatesAndNotify()
     }
   })
 
