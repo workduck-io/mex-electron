@@ -18,7 +18,7 @@ import { useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
 import { useTags } from '../../../hooks/useTags'
 import { useContentStore } from '../../../store/useContentStore'
-import { NodeEditorContent } from '../../../types/Types'
+import { NodeEditorContent } from '../../../types/types'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
 import {

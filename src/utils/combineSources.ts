@@ -1,5 +1,5 @@
 import { IpcAction } from '../data/IpcAction'
-import { NodeEditorContent } from '../types/Types'
+import { NodeEditorContent } from '../types/types'
 /* eslint-disable import/prefer-default-export */
 import { ipcRenderer } from 'electron'
 import { isFromSameSource } from './helpers'

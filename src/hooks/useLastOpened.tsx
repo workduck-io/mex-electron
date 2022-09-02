@@ -7,7 +7,7 @@ import { useCallback } from 'react'
 import { useContentStore } from '@store/useContentStore'
 import { useLinks } from './useLinks'
 import { useNodes } from './useNodes'
-import { NodeType } from '../types/Types'
+import { NodeType } from '../types/types'
 
 const DEBOUNCE_TIME = 1000
 

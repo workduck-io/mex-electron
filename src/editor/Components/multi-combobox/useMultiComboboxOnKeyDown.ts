@@ -25,7 +25,7 @@ import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { ELEMENT_ILINK } from '../ilink/defaults'
 import { ELEMENT_INLINE_BLOCK } from '../InlineBlock/types'
 import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChange'
-import { ComboConfigData, ConfigDataSlashCommands, SingleComboboxConfig } from './multiComboboxContainer'
+import { ComboConfigData, ConfigDataSlashCommands, SingleComboboxConfig } from './types'
 import { ComboSearchType } from './types'
 
 export interface ComboTypeHandlers {

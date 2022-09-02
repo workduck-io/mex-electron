@@ -16,7 +16,7 @@ import { updateIds } from '@utils/dataTransform'
 import { useContentStore } from '@store/useContentStore'
 import { useEditorStore } from '@store/useEditorStore'
 import { mog } from '@utils/lib/helper'
-import { NodeEditorContent } from '../../types/Types'
+import { NodeEditorContent } from '../../types/types'
 
 export const getBlockMetadata = (text: string, meta?: BlockMetaDataType): BlockMetaDataType => {
   const metadata = meta || {}

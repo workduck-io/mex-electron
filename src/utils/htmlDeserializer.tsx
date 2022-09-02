@@ -7,7 +7,7 @@ import {
 } from '@udecode/plate-core'
 
 import { BlockType } from '../store/useBlockStore'
-import { NodeEditorContent } from '../types/Types'
+import { NodeEditorContent } from '../types/types'
 import components from '../editor/Components/components'
 import { createPlateUIEditor } from '@udecode/plate'
 import getPlugins from '../editor/Plugins/plugins'

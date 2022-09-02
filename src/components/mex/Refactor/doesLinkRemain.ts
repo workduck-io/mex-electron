@@ -1,4 +1,4 @@
-import { ILink } from '../../../types/Types'
+import { ILink } from '../../../types/types'
 import { NodeLink } from '../../../types/relations'
 
 export const doesLinkRemain = (id: string, refactored: ILink[]): boolean => {

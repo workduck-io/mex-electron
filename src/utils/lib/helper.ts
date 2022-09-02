@@ -1,7 +1,7 @@
 import { FAKE_APP_URI, IS_DEV } from '../../data/Defaults/dev_'
 
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import { NodeEditorContent } from '../../types/Types'
+import { NodeEditorContent } from '../../types/types'
 import { NodeProperties } from '../../store/useEditorStore'
 import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
 import WebStorageCookieStore from 'tough-cookie-web-storage-store'

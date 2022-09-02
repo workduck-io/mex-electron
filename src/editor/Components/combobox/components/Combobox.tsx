@@ -18,8 +18,8 @@ import { ElementTypeBasedShortcut } from '../../../../components/spotlight/Short
 import { useSnippets } from '../../../../hooks/useSnippets'
 import { useContentStore } from '../../../../store/useContentStore'
 import { PrimaryText } from '../../../../style/Integration'
-import { NodeEditorContent } from '../../../../types/Types'
-import EditorPreviewRenderer from '../../../EditorPreviewRenderer'
+import { NodeEditorContent } from '../../../../types/types'
+import EditorPreviewRenderer from '../../../type'
 import {
   ComboboxItem,
   ComboboxRoot,

@@ -1,6 +1,6 @@
 import { spawn, Worker } from 'threads'
 
-import { NodeEditorContent } from '../../types/Types'
+import { NodeEditorContent } from '../../types/types'
 import { FileData } from '../../types/data'
 import { idxKey, SearchOptions, SearchRepExtra } from '../../types/search'
 import { mog } from '../../utils/lib/helper'

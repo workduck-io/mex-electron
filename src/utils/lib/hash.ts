@@ -1,4 +1,4 @@
-import { NodeEditorContent } from '../../types/Types'
+import { NodeEditorContent } from '../../types/types'
 import { isEqual } from 'lodash'
 
 export const areEqual = (val1: NodeEditorContent, val2: NodeEditorContent): boolean => {

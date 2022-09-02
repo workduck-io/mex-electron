@@ -1,5 +1,5 @@
 import { NodeAnalysis, OutlineItem } from '../../store/useAnalysis'
-import { NodeEditorContent } from '../../types/Types'
+import { NodeEditorContent } from '../../types/types'
 import { convertContentToRawText, getTitleFromContent } from '../../utils/search/parseData'
 import { expose } from 'threads/worker'
 import { getTagsFromContent, getTodosFromContent } from '../../utils/lib/content'

@@ -9,7 +9,7 @@ import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import { MexIcon } from '../../style/Layouts'
 import { useLayoutStore } from '../../store/useLayoutStore'
 import { getRelativeTime } from '../../utils/time'
-import { NodeEditorContent } from '../../types/Types'
+import { NodeEditorContent } from '../../types/types'
 
 interface TodoReminderProps {
   oid: string

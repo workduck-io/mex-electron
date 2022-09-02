@@ -1,6 +1,6 @@
 import { INIT_PREVIEW } from '../components/spotlight/Content'
 import { ListItemType } from '../components/spotlight/SearchResults/types'
-import { NodeEditorContent } from '../types/Types'
+import { NodeEditorContent } from '../types/types'
 import { NodeProperties, useEditorStore } from '../store/useEditorStore'
 import { PreviewType } from '../components/spotlight/Preview'
 import create from 'zustand'

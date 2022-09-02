@@ -2,7 +2,7 @@ import { ItemActionType, ListItemType } from '../SearchResults/types'
 import { ActionHelperConfig, ActionGroup } from '@workduck-io/action-request-helper'
 
 import { CategoryType } from '../../../store/Context/context.spotlight'
-import { ILink } from '../../../types/Types'
+import { ILink } from '../../../types/types'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { Snippet } from '../../../store/useSnippetStore'
 import { convertContentToRawText } from '../../../utils/search/parseData'

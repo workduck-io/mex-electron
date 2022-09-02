@@ -1,5 +1,5 @@
 import { GenericSearchResult } from '../../../types/search'
-import { NodeEditorContent } from '../../../types/Types'
+import { NodeEditorContent } from '../../../types/types'
 
 export type SuggestionContent = {
   title: string

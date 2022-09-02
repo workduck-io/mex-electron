@@ -19,7 +19,7 @@ import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin
 import { BlockType } from '../../store/useBlockStore'
 import { useContentStore } from '../../store/useContentStore'
 import { FileData } from '../../types/data'
-import { NodeEditorContent } from '../../types/Types'
+import { NodeEditorContent } from '../../types/types'
 import { getBlocks } from '../helpers'
 import { camelCase, getSlug } from '../lib/strings'
 import { GenericSearchData, SearchRepExtra } from './../../types/search'

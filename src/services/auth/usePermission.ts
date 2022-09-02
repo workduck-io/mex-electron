@@ -1,5 +1,5 @@
 import { AccessLevel } from '../../types/mentions'
-import { SharedNode } from '../../types/Types'
+import { SharedNode } from '../../types/types'
 import { mog } from '@utils/lib/helper'
 import { client } from '@workduck-io/dwindle'
 import { apiURLs } from '@apis/routes'

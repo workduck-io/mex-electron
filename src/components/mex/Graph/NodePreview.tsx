@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useLinks } from '../../../hooks/useLinks'
 import { useContentStore } from '../../../store/useContentStore'
-import { ILink } from '../../../types/Types'
+import { ILink } from '../../../types/types'
 import { getRelativeTime } from '../../../utils/time'
 
 export const Container = styled.section`

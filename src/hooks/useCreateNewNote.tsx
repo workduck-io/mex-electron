@@ -1,7 +1,7 @@
 import { getUntitledDraftKey, getUntitledKey } from '@editor/Components/SyncBlock/getNewBlockData'
 import useDataStore from '@store/useDataStore'
 import { useEditorStore } from '@store/useEditorStore'
-import { NodeEditorContent } from '../types/Types'
+import { NodeEditorContent } from '../types/types'
 import toast from 'react-hot-toast'
 import { useHierarchy } from './useHierarchy'
 import { useLinks } from './useLinks'

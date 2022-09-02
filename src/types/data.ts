@@ -5,7 +5,7 @@ import {
   SyncStoreIntents
 } from '../editor/Components/SyncBlock/SyncBlock.types'
 import { TodosType } from '../editor/Components/Todo/types'
-import { ILink, LinkCache, NodeEditorContent, SharedNode, Tag, TagsCache } from '../types/Types'
+import { ILink, LinkCache, NodeEditorContent, SharedNode, Tag, TagsCache } from './types'
 import { Reminder } from './reminders'
 
 export interface Snippet {

@@ -14,7 +14,7 @@ import toast from 'react-hot-toast'
 import Modal from 'react-modal'
 import create from 'zustand'
 import { generateReminderId } from '../../../data/Defaults/idPrefixes'
-import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
+import EditorPreviewRenderer from '../../../editor/type'
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
 import { useLinks } from '../../../hooks/useLinks'
 import { useReminders, useReminderStore } from '../../../hooks/useReminders'
@@ -23,7 +23,7 @@ import { ActionType } from '../../../services/analytics/events'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { DatePickerStyles, Label, TextAreaBlock } from '../../../style/Form'
 import { Reminder } from '../../../types/reminders'
-import { NodeEditorContent } from '../../../types/Types'
+import { NodeEditorContent } from '../../../types/types'
 import Todo from '../../../ui/components/Todo'
 import { mog } from '../../../utils/lib/helper'
 import { getEventNameFromElement } from '../../../utils/lib/strings'
@@ -32,28 +32,9 @@ import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { getNameFromPath } from '../Sidebar/treeUtils'
 import { SelectedDate } from './Reminders.style'
+import { CreateReminderModalState } from './Type'
 
-interface ModalValue {
-  time?: number
-  nodeid?: string
-  todoid?: string
-  description?: string
-  blockContent?: NodeEditorContent
-}
 
-interface CreateReminderModalState {
-  open: boolean
-  focus: boolean
-
-  modalValue: ModalValue
-  toggleModal: () => void
-  openModal: (modalValue?: ModalValue) => void
-  setFocus: (focus: boolean) => void
-  closeModal: () => void
-  setModalValue: (modalValue: ModalValue) => void
-  setTime: (time: number) => void
-  setNodeId: (nodeid: string) => void
-}
 
 export const initModal = {
   todoid: undefined,

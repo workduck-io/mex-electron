@@ -1,5 +1,5 @@
 import { differenceWith } from 'lodash'
-import { ILink } from '../types/Types'
+import { ILink } from '../types/types'
 
 const compareIlinks = (a: ILink, b: ILink) => a.nodeid === b.nodeid
 

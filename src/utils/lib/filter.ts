@@ -4,7 +4,7 @@
 // import { useEditorStore } from './../Editor/Store/EditorStore'
 import { useMemo } from 'react'
 import { ELEMENT_INLINE_BLOCK } from '../../editor/Components/InlineBlock/types'
-import { NodeEditorContent } from '../../types/Types'
+import { NodeEditorContent } from '../../types/types'
 import { ELEMENT_SYNC_BLOCK } from '../../editor/Components/SyncBlock'
 import { useEditorStore } from '../../store/useEditorStore'
 import { TodoStatus, TodoType } from '../../editor/Components/Todo/types'

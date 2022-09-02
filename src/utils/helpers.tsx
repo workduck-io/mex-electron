@@ -3,7 +3,7 @@ import { defaultContent } from '../data/Defaults/baseData'
 import { useContentStore } from '../store/useContentStore'
 import { NodeProperties } from '../store/useEditorStore'
 import { NodeContent } from '../types/data'
-import { NodeEditorContent } from '../types/Types'
+import { NodeEditorContent } from '../types/types'
 import { convertContentToRawText } from './search/parseData'
 
 /** Get the contents of the node with id */

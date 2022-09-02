@@ -42,7 +42,7 @@ import {
 } from '../../../style/Search'
 import { Title, TitleText } from '../../../style/Typography'
 import { GenericSearchResult, idxKey } from '../../../types/search'
-import { NodeType } from '../../../types/Types'
+import { NodeType } from '../../../types/types'
 import { SplitType } from '../../../ui/layout/splitView'
 import { getInitialNode } from '../../../utils/helpers'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'

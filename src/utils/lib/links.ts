@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash'
-import { CachedILink } from '../../types/Types'
+import { CachedILink } from '../../types/types'
 
 export const hasLink = (link: CachedILink, links: CachedILink[]): boolean => {
   const filtered = links.filter((l) => {

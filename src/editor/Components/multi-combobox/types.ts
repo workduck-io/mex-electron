@@ -2,7 +2,9 @@ import { ListItemType } from '@components/spotlight/SearchResults/types'
 import { BaseRange } from 'slate'
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 import { CategoryType } from '../../../store/Context/context.spotlight'
+import { ComboboxItemProps, RenderFunction } from '../combobox/components/Combobox.types'
 import { ComboboxKey } from '../combobox/useComboboxStore'
+import { SlashCommandConfig } from '../SlashCommands/Types'
 
 export enum SlashType {
   embed = 'media_embed',
@@ -47,4 +49,28 @@ export interface ComboTriggerDataType {
 export interface ComboSearchType {
   textAfterTrigger: string
   textAfterBlockTrigger?: string
+}
+
+export interface ComboConfigData {
+  keys: ConfigDataKeys
+  slashCommands: ConfigDataSlashCommands
+  internal: {
+    ilink: SingleComboboxConfig
+    commands: ConfigDataSlashCommands
+  }
+}
+
+export interface ConfigDataKeys {
+  [type: string]: SingleComboboxConfig
+}
+
+export interface ConfigDataSlashCommands {
+  [type: string]: SlashCommandConfig
+}
+export interface SingleComboboxConfig {
+  slateElementType: string
+  newItemHandler: (newItem: string, parentId?: any) => any | Promise<any>
+  // Called when an item is inserted, Not called when a new item is inserted, use newItemHandler to handle the new item case
+  onItemInsert?: (item: string) => any
+  renderElement: RenderFunction<ComboboxItemProps>
 }

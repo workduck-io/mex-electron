@@ -1,5 +1,5 @@
 import React from 'react'
-import { NodeEditorContent } from '../../../types/Types'
+import { NodeEditorContent } from '../../../types/types'
 import Suggestion from './Suggestion'
 import { SuggestionType } from './types'
 

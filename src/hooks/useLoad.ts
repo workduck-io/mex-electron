@@ -1,4 +1,4 @@
-import { ILink, NodeEditorContent } from '../types/Types'
+import { ILink, NodeEditorContent } from '../types/types'
 import { NodeProperties, useEditorStore } from '@store/useEditorStore'
 import { mog, updateEmptyBlockTypes } from '@utils/lib/helper'
 
