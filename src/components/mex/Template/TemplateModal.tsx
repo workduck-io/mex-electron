@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { useApi } from '@apis/useSaveApi'
 import { defaultContent } from '@data/Defaults/baseData'
 import EditorPreviewRenderer from '@editor/EditorPreviewRenderer'
-import { useLinks } from '@hooks/useLinks'
 import { useContentStore } from '@store/useContentStore'
 import useModalStore, { ModalsType } from '@store/useModalStore'
 import { Snippet, useSnippetStore } from '@store/useSnippetStore'
@@ -18,9 +17,10 @@ import { Title, LoadingButton } from '@workduck-io/mex-components'
 import { InviteWrapper, InviteFormWrapper } from '../Mention/ShareModal.styles'
 import SidebarList from '../Sidebar/SidebarList'
 import { RemovalButton, TemplateContainer } from './TemplateModal.style'
+import { useLinks, getTitleFromPath } from '@hooks/useLinks'
 
 const TemplateModal = () => {
-  const { getILinkFromNodeid, getTitleFromPath } = useLinks()
+  const { getILinkFromNodeid } = useLinks()
   const { toggleOpen, open, data: nodeid } = useModalStore()
 
   const node = getILinkFromNodeid(nodeid)

@@ -16,7 +16,7 @@ export const NoteSidebar = () => {
     () => [
       {
         id: 'personal',
-        label: 'Personal',
+        label: 'Personal Shit',
         tooltip: 'All Notes',
         list: {
           type: 'hierarchy',

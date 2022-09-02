@@ -155,6 +155,7 @@ export const UnreadIndicator = styled.div`
 
 export const StyledTreeItem = styled.div<{
   selected?: boolean
+  isStub?: boolean
   isDragging?: boolean
   isBeingDroppedAt?: boolean
   hasMenuOpen?: boolean
@@ -168,6 +169,12 @@ export const StyledTreeItem = styled.div<{
   padding-right: 16px;
 
   transition: 0.1s ease;
+
+  ${({ isStub }) =>
+    isStub &&
+    css`
+      color: ${({ theme }) => theme.colors.gray[5]};
+    `}
 
   ${({ isUnread }) =>
     isUnread &&

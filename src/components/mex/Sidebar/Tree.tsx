@@ -1,14 +1,14 @@
 import {
-    default as AtlaskitTree,
-    ItemId,
-    mutateTree,
-    RenderItemParams,
-    TreeData,
-    TreeDestinationPosition,
-    TreeItem,
-    TreeSourcePosition
+  default as AtlaskitTree,
+  ItemId,
+  mutateTree,
+  RenderItemParams,
+  TreeData,
+  TreeDestinationPosition,
+  TreeItem,
+  TreeSourcePosition
 } from '@atlaskit/tree'
-import { useTreeFromLinks } from '@hooks/useTreeFromLinks'
+import { getTreeFromLinks } from '@hooks/useTreeFromLinks'
 import useDataStore from '@store/useDataStore'
 import { useEditorStore } from '@store/useEditorStore'
 import { useTreeStore } from '@store/useTreeStore'
@@ -163,8 +163,6 @@ const Tree = ({ initTree }: TreeProps) => {
 export const TreeContainer = () => {
   const node = useEditorStore((store) => store.node)
   const ilinks = useDataStore((store) => store.ilinks)
-
-  const { getTreeFromLinks } = useTreeFromLinks()
 
   const initTree = useMemo(() => getTreeFromLinks(ilinks), [node, ilinks])
 

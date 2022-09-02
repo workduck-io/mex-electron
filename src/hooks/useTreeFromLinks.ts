@@ -1,8 +1,10 @@
+import { getAllParentIds } from '@components/mex/Sidebar/treeUtils'
 import { getLevel } from '@store/useDataStore'
 import { useTreeStore } from '@store/useTreeStore'
 import { mog } from '@utils/lib/helper'
 import { FlatItem, generateTree } from '@utils/lib/tree'
 import { ILink } from '../types/Types'
+import { uniqBy } from 'lodash'
 
 /** Link sanatization
  *
@@ -28,16 +30,46 @@ const sanatizeLinks = (links: ILink[]): FlatItem[] => {
   return newLinks
 }
 
-export const useTreeFromLinks = () => {
-  const getTreeFromLinks = (links: ILink[]) => {
-    const expanded = useTreeStore.getState().expanded
-    // mog('Expanded', { expanded })
+export const getTreeFromLinks = (links: ILink[]) => {
+  const expanded = useTreeStore.getState().expanded
+  mog('Expanded', { expanded })
 
-    const sanatizedLinks = sanatizeLinks(links)
-    const tree = generateTree(sanatizedLinks, expanded)
+  const sanatizedLinks = sanatizeLinks(links)
+  const tree = generateTree(sanatizedLinks, expanded)
 
-    return tree
-  }
+  return tree
+}
 
-  return { getTreeFromLinks }
+export const getPartialTreeFromLinks = (matchedLinks: ILink[], allLinks: ILink[]) => {
+  // Contains duplicates
+  const dirtyTreeFlatItems = matchedLinks.reduce((p, c) => {
+    const parents = getAllParentIds(c.path)
+      .map((par) => allLinks.find((l) => l.path === par))
+      .map((l) => ({
+        id: l.path,
+        nodeid: l.nodeid,
+        icon: l.icon,
+        stub: l.path !== c.path
+      }))
+      .filter((par) => {
+        return par !== undefined
+      })
+    return [...p, ...parents]
+  }, [])
+
+  const treeFlatItems = uniqBy(dirtyTreeFlatItems, 'id')
+
+  const allExpanded = treeFlatItems.map((l) => l.id)
+
+  const tree = generateTree(
+    treeFlatItems,
+    allExpanded,
+    // No need to sort as already ordered by search
+    (a, b) => {
+      return 0
+    }
+  )
+
+  // mog('Made the partialTree From Links', { matchedLinks, allLinks, tree, dirtyTreeLinks, treeLinks })
+  return tree
 }

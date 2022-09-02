@@ -146,6 +146,7 @@ export const RenderTreeItem = ({
               selected={isInEditor && item.data && match?.params?.nodeid === item.data.nodeid}
               isDragging={snapshot.isDragging}
               hasMenuOpen={contextOpenNodeId === item.data.nodeid}
+              isStub={item?.data?.stub}
               isBeingDroppedAt={isTrue}
               isUnread={isUnread}
               onContextMenu={(e) => {

@@ -17,7 +17,7 @@ import { Margin } from '../Archive/styled'
 import { MexIcon } from '@style/Layouts'
 import { useTheme } from 'styled-components'
 import { Centered } from './Bookmarks'
-import { useTreeFromLinks } from '@hooks/useTreeFromLinks'
+import { getTreeFromLinks } from '@hooks/useTreeFromLinks'
 
 const ArchiveTree: React.FC<{ tree: any }> = ({ tree }) => {
   const [archiveTree, setArchiveTree] = React.useState(tree)
@@ -117,7 +117,6 @@ const NoArchiveNotes = () => {
 
 const ArchiveSidebar = () => {
   const archiveNotes = useDataStore((store) => store.archive)
-  const { getTreeFromLinks } = useTreeFromLinks()
 
   if (!archiveNotes || archiveNotes.length === 0) return <NoArchiveNotes />
 

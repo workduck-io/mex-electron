@@ -1,9 +1,6 @@
-import SidebarList from '@components/mex/Sidebar/SidebarList'
-import { SidebarListItem } from '@components/mex/Sidebar/SidebarList.types'
-import SidebarListItemComponent from '@components/mex/Sidebar/SidebarListItem'
 import Tree from '@components/mex/Sidebar/Tree'
-import { useTreeFromLinks } from '@hooks/useTreeFromLinks'
 import React, { useMemo } from 'react'
+import { MexTree } from './Sidebar.tree'
 import { FlatSidebarItem, SidebarFlatList, SidebarSpace } from './Sidebar.types'
 
 interface SidebarSpaceProps {
@@ -12,15 +9,6 @@ interface SidebarSpaceProps {
 
 export const SidebarSpaceComponent = ({ space }: SidebarSpaceProps) => {
   // const node = useEditorStore((store) => store.node)
-
-  const { getTreeFromLinks } = useTreeFromLinks()
-
-  const initTree = useMemo(() => {
-    if (space.list.type === 'hierarchy') {
-      return getTreeFromLinks(space.list.items)
-    }
-    return
-  }, [space])
 
   return (
     <div>
@@ -45,11 +33,12 @@ export const SidebarSpaceComponent = ({ space }: SidebarSpaceProps) => {
         </div>
       )}
       <div>
-        <h1>Hierarchy</h1>
-        <input type="text" placeholder={`Filter ${space.label}`} />
+        <h1>Notes</h1>
         {
           {
-            hierarchy: initTree && <Tree initTree={initTree} />,
+            hierarchy: space.list.type === 'hierarchy' && (
+              <MexTree items={space.list.items} filterText="Filter Notes" />
+            ),
             flat: space.list.type === 'flat' && <space.list.renderItems />
           }[space.list.type]
         }

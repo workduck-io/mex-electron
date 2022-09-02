@@ -176,7 +176,7 @@ export const getPartialTreeGroups = <T>(
     }
   })
 
-  // mog('getPartialTreeGroups', { groupedPaths, itemArrayGrouped, toGroupItems, groupedItems })
+  mog('getPartialTreeGroups', { groupedPaths, itemArrayGrouped, toGroupItems, groupedItems })
 
-  return toGroupItems
+  return groupedItems
 }
