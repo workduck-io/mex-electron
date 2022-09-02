@@ -2,8 +2,8 @@ import { ListItemType } from '@components/spotlight/SearchResults/types'
 import { BaseRange } from 'slate'
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 import { CategoryType } from '../../../store/Context/context.spotlight'
-import { ComboboxItemProps, RenderFunction } from '../combobox/components/type'
-import { ComboboxKey } from '../combobox/type'
+import { ComboboxItemProps, RenderFunction } from '../combobox/components/Combobox.types'
+import { ComboboxKey } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from '../SlashCommands/Types'
 
 export enum SlashType {
@@ -73,9 +73,4 @@ export interface SingleComboboxConfig {
   // Called when an item is inserted, Not called when a new item is inserted, use newItemHandler to handle the new item case
   onItemInsert?: (item: string) => any
   renderElement: RenderFunction<ComboboxItemProps>
-}
-
-export interface ComboTypeHandlers {
-  slateElementType: string
-  newItemHandler: (newItem: string, parentId?) => any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
