@@ -9,7 +9,7 @@ import React, { useMemo } from 'react'
 import { LastOpenedState } from '../../../types/userPreference'
 import { SidebarListItem } from './SidebarList.types'
 import { TooltipContent } from './TreeItem'
-import { Entity } from '@mex-types/data'
+import { Entity } from '../../../types/data'
 
 interface SidebarListItemProps<T> {
   tippyTarget: any

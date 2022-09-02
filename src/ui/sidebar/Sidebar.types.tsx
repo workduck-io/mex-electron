@@ -1,6 +1,5 @@
-import { IconifyIcon } from '@iconify/react'
-import { DesignItem } from '@mex-types/design'
-import { LastOpenedState } from '@mex-types/userPreference'
+import { DesignItem } from '../../types/design'
+import { LastOpenedState } from '../../types/userPreference'
 import { ILink } from '../../types/Types'
 
 /**

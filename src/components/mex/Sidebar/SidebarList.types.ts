@@ -1,5 +1,5 @@
 import { IconifyIcon } from '@iconify/react'
-import { DesignItem } from '@mex-types/design'
+import { DesignItem } from '../../../types/design'
 import { LastOpenedState } from '../../../types/userPreference'
 
 export interface SidebarListItem<T> extends DesignItem {

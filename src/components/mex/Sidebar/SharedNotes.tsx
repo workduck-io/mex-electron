@@ -1,5 +1,5 @@
 import { SharedNodeIcon, SharedNodeIconify } from '@components/icons/Icons'
-import { SharedNode } from '@mex-types/Types'
+import { SharedNode } from '../../../types/Types'
 import { useEditorStore } from '@store/useEditorStore'
 import { ContextMenuContent } from '@ui/components/menus/contextMenu'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
