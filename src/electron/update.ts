@@ -1,20 +1,26 @@
-import { BrowserWindow, app, autoUpdater, dialog, ipcMain } from 'electron'
+import { BrowserWindow, app, dialog, ipcMain } from 'electron'
+import { autoUpdater } from 'electron-updater'
 
 import { IpcAction } from '../data/IpcAction'
-import { backupMexJSON } from './backup'
-import { checkIfAlpha } from './utils/version'
-import { windows } from './main'
 import { ToastStatus } from '../types/toast'
-import { deleteSearchIndexDisk } from './utils/indexData'
-import { setDataAtLocation } from './utils/filedata'
+import { backupMexJSON } from './backup'
+import { windows } from './main'
 import { TEMP_DATA_BEFORE_UPDATE, SEARCH_INDEX_LOCATION } from './utils/fileLocations'
+import { setDataAtLocation } from './utils/filedata'
+import { deleteSearchIndexDisk } from './utils/indexData'
+import { checkIfAlpha } from './utils/version'
 
-export const buildUpdateFeedURL = (version: string, isAlpha: boolean) => {
-  const base = isAlpha ? 'https://alpha-releases.workduck.io' : 'https://releases.workduck.io'
-  const platform = process.arch === 'arm64' ? 'darwin_arm64' : 'darwin'
+const logger = require('electron-log') // eslint-disable-line
+logger.transports.file.level = 'info'
+autoUpdater.logger = logger
 
-  const url = `${base}/update/${platform}/${version}`
-  return url
+export const checkForUpdatesAndNotifyWrapper = async () => {
+  const authAWSStore = JSON.parse(
+    await windows.mex?.webContents.executeJavaScript('localStorage.getItem("auth-aws");', true)
+  )
+  const token = authAWSStore.state.token ?? authAWSStore.state.userCred.token
+  autoUpdater.addAuthHeader(token)
+  autoUpdater.checkForUpdatesAndNotify()
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,12 +29,9 @@ export const handleUpdateErrors = (err) => {
 }
 
 export const setupAutoUpdates = (version: string, isAlpha: boolean, beforeQuit: () => void) => {
-  const feedURL = buildUpdateFeedURL(version, isAlpha)
-  autoUpdater.setFeedURL({ url: feedURL })
-
   autoUpdater.on('error', handleUpdateErrors)
 
-  autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+  autoUpdater.on('update-downloaded', (info) => {
     console.log("Aye Aye Captain: There's an update")
     windows.toast?.hide()
 
@@ -36,24 +39,26 @@ export const setupAutoUpdates = (version: string, isAlpha: boolean, beforeQuit: 
       title: "Aye Aye Captain: There's a Mex Update!",
       type: 'info',
       buttons: ['Install Update!', 'Later'],
-      message: process.platform === 'win32' ? releaseName : releaseNotes,
+      message: process.platform === 'win32' ? info.releaseName : (info.releaseNotes as string),
       detail: 'Updates are on the way'
     }
 
     dialog.showMessageBox(dialogOpts).then((returnValue) => {
       if (returnValue.response === 0) autoUpdater.quitAndInstall()
     })
+
+    beforeQuit()
   })
 
   autoUpdater.on('checking-for-update', () => {
     console.log('Checking for update...')
   })
 
-  autoUpdater.on('update-available', () => {
+  autoUpdater.on('update-available', (info) => {
     windows.toast?.showMessageAfterDelay(IpcAction.TOAST_MESSAGE, {
       status: ToastStatus.SUCCESS,
       title: 'Update available!',
-      description: 'Getting update..',
+      description: `Getting version ${info.version}`,
       dontHide: true
     })
   })
@@ -65,10 +70,6 @@ export const setupAutoUpdates = (version: string, isAlpha: boolean, beforeQuit: 
       status: ToastStatus.SUCCESS,
       title: 'You are up to date!'
     })
-  })
-
-  autoUpdater.on('before-quit-for-update', () => {
-    beforeQuit()
   })
 }
 
@@ -92,11 +93,11 @@ export const setupUpdateService = (mex: BrowserWindow) => {
     )
 
     setTimeout(() => {
-      autoUpdater.checkForUpdates()
+      checkForUpdatesAndNotifyWrapper()
     }, 5 * 60 * 1000)
 
     updateSetInterval = setInterval(() => {
-      autoUpdater.checkForUpdates()
+      checkForUpdatesAndNotifyWrapper()
     }, updateCheckingFrequency)
 
     ipcMain.on(IpcAction.SET_UPDATE_FREQ, (_event, arg) => {
@@ -105,7 +106,7 @@ export const setupUpdateService = (mex: BrowserWindow) => {
       clearInterval(updateSetInterval)
 
       updateSetInterval = setInterval(() => {
-        autoUpdater.checkForUpdates()
+        checkForUpdatesAndNotifyWrapper()
       }, updateFreq * 60 * 60 * 1000)
       console.log(`Changed Update Freq to ${updateFreq} hours`)
     })

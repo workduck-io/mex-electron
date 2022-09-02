@@ -49,10 +49,9 @@ const setupMainPackageWatcher = (viteDevServer: ViteDevServer): WatcherOutput =>
   const protocol = `http${viteDevServer.config.server.https ? 's' : ''}:`
   const host = viteDevServer.config.server.host || 'localhost'
   const port = viteDevServer.config.server.port // Vite searches for and occupies the first free port: 3000, 3001, 3002 and so on
-  const path = '/'
-  process.env.VITE_MEX_DEV_SERVER_URL = `${protocol}//${host}:${port}${path}`
-  process.env.VITE_SPOTLIGHT_DEV_SERVER_URL = `${protocol}//${host}:${port}${path}spotlight.html`
-  process.env.VITE_TOAST_DEV_SERVER_URL = `${protocol}//${host}:${port}${path}/toast.html`
+  process.env.VITE_MEX_DEV_SERVER_URL = `${protocol}//${host}:${port}`
+  process.env.VITE_SPOTLIGHT_DEV_SERVER_URL = `${protocol}//${host}:${port}/spotlight.html`
+  process.env.VITE_TOAST_DEV_SERVER_URL = `${protocol}//${host}:${port}/toast.html`
 
   const logger = createLogger(LOG_LEVEL, {
     prefix: '[main]'

@@ -9,7 +9,7 @@ const extensionsForDevX = async () => {
   const isAlpha = checkIfAlpha(app.getVersion())
   const extensions = [REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS]
 
-  if (isAlpha && isDevelopment) {
+  if (isAlpha || isDevelopment) {
     installExtensions(extensions)
       .then((name) => console.log(`Added Extensions: ${name}`))
       .catch((err) => console.log(`An error occurred: ${err}`))
