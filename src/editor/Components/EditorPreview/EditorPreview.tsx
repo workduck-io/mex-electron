@@ -5,11 +5,9 @@ import { useBufferStore, useEditorBuffer } from '@hooks/useEditorBuffer'
 import closeCircleLine from '@iconify/icons-ri/close-circle-line'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
-import { useEditorStore } from '@store/useEditorStore'
 import useMultipleEditors from '@store/useEditorsStore'
-import { focusEditor, getPlateEditorRef, selectEditor } from '@udecode/plate'
-import { mog } from '@utils/lib/helper'
-import { useMatch, useParams } from 'react-router-dom'
+import { getPlateEditorRef, selectEditor } from '@udecode/plate'
+import { useMatch } from 'react-router-dom'
 
 import { Button } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
@@ -114,7 +112,9 @@ const EditorPreview = ({
                     <TagsRelatedTiny nodeid={nodeid} />
                     <Button
                       transparent
-                      onClick={() => {
+                      onClick={(ev) => {
+                        ev.preventDefault()
+                        ev.stopPropagation()
                         close()
                       }}
                     >
