@@ -1,19 +1,23 @@
+import React, { useEffect, useState } from 'react'
+
 import { useApi } from '@apis/useSaveApi'
 import { defaultContent } from '@data/Defaults/baseData'
 import EditorPreviewRenderer from '@editor/EditorPreviewRenderer'
+import { useLinks } from '@hooks/useLinks'
 import { useContentStore } from '@store/useContentStore'
+import useModalStore, { ModalsType } from '@store/useModalStore'
 import { Snippet, useSnippetStore } from '@store/useSnippetStore'
 import { ButtonFields } from '@style/Form'
-import { Title, LoadingButton } from '@workduck-io/mex-components'
-import React, { useEffect, useState } from 'react'
+import { PrimaryText } from '@style/Integration'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import Modal from 'react-modal'
+
+import { Title, LoadingButton } from '@workduck-io/mex-components'
+
 import { InviteWrapper, InviteFormWrapper } from '../Mention/ShareModal.styles'
-import { TemplateContainer } from './TemplateModal.style'
 import SidebarList from '../Sidebar/SidebarList'
-import { useLinks } from '@hooks/useLinks'
-import useModalStore, { ModalsType } from '@store/useModalStore'
+import { RemovalButton, TemplateContainer } from './TemplateModal.style'
 
 const TemplateModal = () => {
   const { getILinkFromNodeid, getTitleFromPath } = useLinks()
@@ -30,7 +34,8 @@ const TemplateModal = () => {
   const { saveDataAPI } = useApi()
 
   useEffect(() => {
-    const metadata = getMetadata(nodeid)
+    const contents = useContentStore.getState().contents
+    const metadata = contents[nodeid]?.metadata
     if (metadata?.templateID) {
       const template = templates.find((item) => item.id === metadata.templateID)
       setCurrentTemplate(template)
@@ -38,7 +43,11 @@ const TemplateModal = () => {
     } else {
       setSelectedTemplate(templates[0])
     }
-  }, [nodeid])
+
+    return () => {
+      setCurrentTemplate(undefined)
+    }
+  }, [nodeid, open])
 
   const {
     handleSubmit,
@@ -82,10 +91,19 @@ const TemplateModal = () => {
     >
       <InviteWrapper>
         {templates.length !== 0 ? (
-          <>
-            <Title>Set Template for {getTitleFromPath(node?.path)}</Title>
-            <p>Auto fill new notes using template</p>
-          </>
+          !currentTemplate ? (
+            <>
+              <Title>Set Template for {getTitleFromPath(node?.path)}</Title>
+              <p>Auto fill new notes using template</p>
+            </>
+          ) : (
+            <>
+              <Title>Update Template for {getTitleFromPath(node?.path)}</Title>
+              <p>
+                Currently using <PrimaryText>{currentTemplate.title}</PrimaryText>
+              </p>
+            </>
+          )
         ) : (
           <Title>No templates found</Title>
         )}
@@ -113,7 +131,7 @@ const TemplateModal = () => {
           )}
           <ButtonFields position="end">
             {currentTemplate && (
-              <LoadingButton
+              <RemovalButton
                 loading={isSubmitting}
                 alsoDisabled={
                   errors?.templateID !== undefined ||
@@ -125,7 +143,7 @@ const TemplateModal = () => {
                 large
               >
                 Remove Template
-              </LoadingButton>
+              </RemovalButton>
             )}
             <LoadingButton
               loading={isSubmitting}
